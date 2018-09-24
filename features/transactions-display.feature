@@ -7,7 +7,7 @@ Feature: Display wallet transactions
 
   Background:
     Given I have completed the basic setup
-    And I have a "Genesis wallet" with funds
+    And I have a "Imported Wallet" with funds
     And I have the following wallets:
       | name   |
       | TargetWallet |
@@ -22,13 +22,13 @@ Feature: Display wallet transactions
 
   Scenario: More than five transactions
     Given I have made the following transactions:
-      | sender         | receiver      | amount |
-      | Genesis wallet | TargetWallet  | 1      |
-      | Genesis wallet | TargetWallet  | 2      |
-      | Genesis wallet | TargetWallet  | 3      |
-      | Genesis wallet | TargetWallet  | 4      |
-      | Genesis wallet | TargetWallet  | 5      |
-      | Genesis wallet | TargetWallet  | 6      |
+      | source          | destination   | amount |
+      | Imported Wallet | TargetWallet  | 1      |
+      | Imported Wallet | TargetWallet  | 2      |
+      | Imported Wallet | TargetWallet  | 3      |
+      | Imported Wallet | TargetWallet  | 4      |
+      | Imported Wallet | TargetWallet  | 5      |
+      | Imported Wallet | TargetWallet  | 6      |
     When I am on the "TargetWallet" wallet "summary" screen
     Then I should see the following transactions:
       | type   | amount |

@@ -12,6 +12,7 @@ import { installChromeExtensions } from './utils/installChromeExtensions';
 import environment from '../common/environment';
 import { OPEN_ABOUT_DIALOG_CHANNEL } from '../common/ipc-api/open-about-dialog';
 import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../common/ipc-api/go-to-ada-redemption-screen';
+import { GO_TO_NETWORK_STATUS_SCREEN_CHANNEL } from '../common/ipc-api/go-to-network-status-screen';
 import mainErrorHandler from './utils/mainErrorHandler';
 import {
   loadLauncherConfig,
@@ -48,6 +49,10 @@ const goToAdaRedemption = () => {
   if (mainWindow) mainWindow.webContents.send(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL);
 };
 
+const goToNetworkStatus = () => {
+  if (mainWindow) mainWindow.webContents.send(GO_TO_NETWORK_STATUS_SCREEN_CHANNEL);
+};
+
 const restartInSafeMode = async () => {
   Logger.info('restarting in SafeMode …');
   if (cardanoNode) await cardanoNode.stop();
@@ -65,6 +70,7 @@ const restartWithoutSafeMode = async () => {
 const menuActions = {
   openAbout,
   goToAdaRedemption,
+  goToNetworkStatus,
   restartInSafeMode,
   restartWithoutSafeMode,
 };

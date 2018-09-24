@@ -11,7 +11,7 @@ in
   , logsPrefix       = "${dataDir}/Logs"
   , topology         = "\${DAEDALUS_CONFIG}/wallet-topology.yaml"
   , updateLatestPath = "${dataDir}/installer.sh"
-  , walletDBPath     = "${dataDir}/Wallet/"
+  , walletDBPath     = "${dataDir}/Wallet"
   , tlsPath          = "${dataDir}/tls"
   }
 , pass      =

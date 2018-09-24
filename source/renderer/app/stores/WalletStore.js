@@ -6,7 +6,6 @@ import Wallet from '../domains/Wallet';
 import Request from './lib/LocalizedRequest';
 import { buildRoute, matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
-import type { GetWalletRecoveryPhraseResponse } from '../api/common';
 import environment from '../../../common/environment';
 
 /**
@@ -27,10 +26,10 @@ export default class WalletsStore extends Store {
   @observable isRestoreActive: boolean = false;
   @observable lastDiscardedAntivirusRestorationSlowdownNotificationWalletId: ?string = null;
 
-  _newWalletDetails: { name: string, mnemonic: string, password: ?string } = {
+  _newWalletDetails: { name: string, mnemonic: string, spendingPassword: ?string } = {
     name: '',
     mnemonic: '',
-    password: null,
+    spendingPassword: null,
   };
 
   setup() {
@@ -45,11 +44,11 @@ export default class WalletsStore extends Store {
 
   _create = async (params: {
     name: string,
-    password: ?string,
+    spendingPassword: ?string,
   }) => {
     Object.assign(this._newWalletDetails, params);
     try {
-      const recoveryPhrase: ?GetWalletRecoveryPhraseResponse = await (
+      const recoveryPhrase: ?Array<string> = await (
         this.getWalletRecoveryPhraseRequest.execute().promise
       );
       if (recoveryPhrase != null) {

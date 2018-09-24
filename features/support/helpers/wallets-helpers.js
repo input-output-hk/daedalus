@@ -14,8 +14,8 @@ export const fillOutWalletSendForm = async function (values) {
   const formSelector = '.WalletSendForm_component';
   await this.client.setValue(`${formSelector} .receiver .SimpleInput_input`, values.address);
   await this.client.setValue(`${formSelector} .amount .SimpleInput_input`, values.amount);
-  if (values.walletPassword) {
-    await this.client.setValue(`${formSelector} .walletPassword .SimpleInput_input`, values.walletPassword);
+  if (values.spendingPassword) {
+    await this.client.setValue(`${formSelector} .spendingPassword .SimpleInput_input`, values.spendingPassword);
   }
   this.walletSendFormValues = values;
 };
@@ -58,8 +58,8 @@ export const addOrSetWalletsForScenario = function (wallet) {
 };
 
 export const importWalletWithFunds = async (client, { keyFilePath, password }) => (
-  await client.executeAsync((filePath, walletPassword, done) => {
-    daedalus.api.ada.importWalletFromKey({ filePath, walletPassword })
+  await client.executeAsync((filePath, spendingPassword, done) => {
+    daedalus.api.ada.importWalletFromKey({ filePath, spendingPassword })
       .then(() => (
         daedalus.stores.ada.wallets.refreshWalletsData()
           .then(done)
@@ -75,7 +75,7 @@ const createWalletsAsync = async (table, context) => {
       daedalus.api.ada.createWallet({
         name: wallet.name,
         mnemonic: daedalus.utils.crypto.generateMnemonic(),
-        password: wallet.password || null,
+        spendingPassword: wallet.password || null,
       })
     )))
       .then(() => (
@@ -104,7 +104,7 @@ const createWalletsSequentially = async (wallets, context) => {
       daedalus.api.ada.createWallet({
         name: wallet.name,
         mnemonic: daedalus.utils.crypto.generateMnemonic(),
-        password: wallet.password || null,
+        spendingPassword: wallet.password || null,
       }).then(() => (
         daedalus.stores.ada.wallets.walletsRequest.execute()
           .then((storeWallets) => (

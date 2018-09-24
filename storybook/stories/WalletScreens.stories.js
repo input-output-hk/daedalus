@@ -23,7 +23,7 @@ import WalletSendForm from '../../source/renderer/app/components/wallet/WalletSe
 import WalletReceive from '../../source/renderer/app/components/wallet/WalletReceive';
 import WalletTransactionsList from '../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
 import WalletSettings from '../../source/renderer/app/components/wallet/WalletSettings';
-import { assuranceModeOptions } from '../../source/renderer/app/types/transactionAssuranceTypes';
+import { WalletAssuranceModeOptions } from '../../source/renderer/app/domains/Wallet';
 import ChangeWalletPasswordDialog from '../../source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog';
 import DeleteWalletConfirmationDialog from '../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
 import ExportWalletToFileDialog from '../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
@@ -113,22 +113,24 @@ storiesOf('WalletScreens', module)
 
   .add('Transactions', () => (
     <WalletTransactionsList
-      transactions={[
-        ...Array.from(Array(number('Transactions Sent', 1))).map((x, i) =>
-          generateTransaction(
-            transactionTypes.EXPEND,
-            moment().subtract(i, 'days').toDate(),
-            new BigNumber(faker.random.number(5))
-          )
-        ),
-        ...Array.from(Array(number('Transactions Received', 1))).map((x, i) =>
-          generateTransaction(
-            transactionTypes.INCOME,
-            moment().subtract(i, 'days').toDate(),
-            new BigNumber(faker.random.number(5))
-          )
-        ),
-      ]}
+      transactions={
+        [
+          ...Array.from(Array(number('Transactions Sent', 1))).map((x, i) =>
+            generateTransaction(
+              transactionTypes.EXPEND,
+              moment().subtract(i, 'days').toDate(),
+              new BigNumber(faker.random.number(5))
+            )
+          ),
+          ...Array.from(Array(number('Transactions Received', 1))).map((x, i) =>
+            generateTransaction(
+              transactionTypes.INCOME,
+              moment().subtract(i, 'days').toDate(),
+              new BigNumber(faker.random.number(5))
+            )
+          ),
+        ]
+      }
       isLoadingTransactions={false}
       hasMoreToLoad={false}
       assuranceMode={{ low: 1, medium: 2 }}
@@ -142,7 +144,7 @@ storiesOf('WalletScreens', module)
       activeField={null}
       assuranceLevels={[
         {
-          value: assuranceModeOptions.NORMAL,
+          value: WalletAssuranceModeOptions.NORMAL,
           label: {
             id: 'global.assuranceLevel.normal',
             defaultMessage: '!!!Normal',
@@ -150,7 +152,7 @@ storiesOf('WalletScreens', module)
           }
         },
         {
-          value: assuranceModeOptions.STRICT,
+          value: WalletAssuranceModeOptions.STRICT,
           label: {
             id: 'global.assuranceLevel.strict',
             defaultMessage: '!!!Strict',
@@ -179,7 +181,7 @@ storiesOf('WalletScreens', module)
       onStartEditing={() => {}}
       onStopEditing={() => {}}
       openDialogAction={() => {}}
-      walletAssurance={assuranceModeOptions.NORMAL}
+      walletAssurance={WalletAssuranceModeOptions.NORMAL}
       walletName={text('Wallet Name', 'Wallet Name')}
       walletPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
       changeWalletPasswordDialog={

@@ -20,6 +20,7 @@ storiesOf('SidebarWalletsMenu', module)
       onAddWallet={action('addWallet')}
       onWalletItemClick={() => {}}
       isActiveWallet={() => false}
+      isAddWalletButtonActive={false}
       visible
     />
   ))
@@ -35,6 +36,7 @@ storiesOf('SidebarWalletsMenu', module)
       isActiveWallet={(id) => id === '2'}
       onWalletItemClick={action('walletItemClick')}
       onAddWallet={action('addWallet')}
+      isAddWalletButtonActive={false}
       visible
     />
   ));

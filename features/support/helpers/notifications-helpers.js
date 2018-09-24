@@ -1,9 +1,9 @@
-import { syncStateTags } from '../../../source/renderer/app/domains/Wallet';
+import { WalletSyncStateTags } from '../../../source/renderer/app/domains/Wallet';
 
 export const isActiveWalletBeingRestored = async (client) => {
   const result = await client.execute((expectedSyncTag) => (
     daedalus.stores.ada.wallets.active.syncState.tag === expectedSyncTag
-  ), syncStateTags.RESTORING);
+  ), WalletSyncStateTags.RESTORING);
   return result.value;
 };
 

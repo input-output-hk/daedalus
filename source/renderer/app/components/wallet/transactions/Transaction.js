@@ -7,10 +7,14 @@ import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon';
 import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
-import WalletTransaction, { transactionStates, transactionTypes } from '../../../domains/WalletTransaction';
-import { assuranceLevels } from '../../../types/transactionAssuranceTypes';
+import WalletTransaction,
+{
+  TxnAssuranceLevelOptions,
+  transactionStates,
+  transactionTypes
+} from '../../../domains/WalletTransaction';
 import { environmentSpecificMessages } from '../../../i18n/global-messages';
-import type { TransactionState } from '../../../domains/WalletTransaction';
+import type { TransactionState } from '../../../api/transactions/types';
 import environment from '../../../../../common/environment';
 import { getNetworkExplorerUrl } from '../../../utils/network';
 
@@ -88,17 +92,17 @@ const messages = defineMessages({
 });
 
 const assuranceLevelTranslations = defineMessages({
-  [assuranceLevels.LOW]: {
+  [TxnAssuranceLevelOptions.LOW]: {
     id: 'wallet.transaction.assuranceLevel.low',
     defaultMessage: '!!!low',
     description: 'Transaction assurance level "low".',
   },
-  [assuranceLevels.MEDIUM]: {
+  [TxnAssuranceLevelOptions.MEDIUM]: {
     id: 'wallet.transaction.assuranceLevel.medium',
     defaultMessage: '!!!medium',
     description: 'Transaction assurance level "medium".',
   },
-  [assuranceLevels.HIGH]: {
+  [TxnAssuranceLevelOptions.HIGH]: {
     id: 'wallet.transaction.assuranceLevel.high',
     defaultMessage: '!!!high',
     description: 'Transaction assurance level "high".',
@@ -306,8 +310,9 @@ export default class Transaction extends Component<Props, State> {
                   <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
                   {(transactionState === transactionStates.OK) ? (
                     <span>
-                      <span className={styles.assuranceLevel}>{status}</span>
-                      . {data.numberOfConfirmations} {intl.formatMessage(messages.confirmations)}.
+                      <span className={styles.assuranceLevel}>{status}</span>.&nbsp;
+                      {data.numberOfConfirmations.toLocaleString()}&nbsp;
+                      {intl.formatMessage(messages.confirmations)}.
                     </span>
                   ) : null}
                 </div>

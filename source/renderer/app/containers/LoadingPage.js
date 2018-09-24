@@ -25,8 +25,9 @@ export default class LoadingPage extends Component<InjectedProps> {
   render() {
     const { stores } = this.props;
     const {
-      isConnecting, isSyncing, isSynced, syncPercentage, hasBeenConnected,
-      hasBlockSyncingStarted, localTimeDifference, isSystemTimeCorrect,
+      isConnected, isSynced, syncPercentage, hasBeenConnected,
+      localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
+      forceCheckLocalTimeDifference,
     } = stores.networkStatus;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
     return (
@@ -34,20 +35,20 @@ export default class LoadingPage extends Component<InjectedProps> {
         <Loading
           currencyIcon={adaLogo}
           apiIcon={cardanoLogo}
-          isSyncing={isSyncing}
+          isConnected={isConnected}
           isSynced={isSynced}
           localTimeDifference={localTimeDifference}
           isSystemTimeCorrect={isSystemTimeCorrect}
-          isConnecting={isConnecting}
+          isCheckingSystemTime={forceCheckTimeDifferenceRequest.isExecuting}
           syncPercentage={syncPercentage}
           loadingDataForNextScreenMessage={messages.loadingWalletData}
           hasBeenConnected={hasBeenConnected}
-          hasBlockSyncingStarted={hasBlockSyncingStarted}
           hasLoadedCurrentLocale={hasLoadedCurrentLocale}
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           currentLocale={currentLocale}
           handleReportIssue={this.handleReportIssue}
           onProblemSolutionClick={this.handleProblemSolutionClick}
+          onCheckTheTimeAgain={forceCheckLocalTimeDifference}
         />
         <WalletSupportRequestPage />
       </CenteredLayout>
@@ -62,5 +63,5 @@ export default class LoadingPage extends Component<InjectedProps> {
 
   handleProblemSolutionClick = (link: string) => {
     shell.openExternal(`https://${link}`);
-  }
+  };
 }

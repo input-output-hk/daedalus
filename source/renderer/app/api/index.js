@@ -1,6 +1,6 @@
 // @flow
-import AdaApi from './ada/index';
-import LocalStorageApi from './localStorage/index';
+import AdaApi from './api';
+import LocalStorageApi from './utils/localStorage';
 import environment from '../../../common/environment';
 
 export type Api = {

@@ -3,6 +3,7 @@ import { observable, action, computed, runInAction } from 'mobx';
 import { get, chunk, find } from 'lodash';
 import WalletStore from '../WalletStore';
 import Wallet from '../../domains/Wallet';
+import WalletTransaction from '../../domains/WalletTransaction';
 import { MAX_ADA_WALLETS_COUNT } from '../../config/numbersConfig';
 import { matchRoute, buildRoute } from '../../utils/routing';
 import { i18nContext } from '../../utils/i18nContext';
@@ -12,33 +13,22 @@ import { mnemonicToSeedHex } from '../../utils/crypto';
 import { downloadPaperWalletCertificate } from '../../utils/paperWalletPdfGenerator';
 import type { walletExportTypeChoices } from '../../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../../actions/ada/wallets-actions';
-import type { ImportWalletFromFileResponse } from '../../api/ada/index';
-import type {
-  CreateTransactionResponse, CreateWalletResponse, DeleteWalletResponse,
-  GetWalletsResponse, RestoreWalletResponse,
-  GetWalletRecoveryPhraseResponse,
-} from '../../api/common';
-import type {
-  GetWalletCertificateAdditionalMnemonicsResponse,
-  GetWalletCertificateRecoveryPhraseResponse,
-  GetWalletRecoveryPhraseFromCertificateResponse,
-} from '../../api/ada/types';
 
 export default class AdaWalletsStore extends WalletStore {
 
   // REQUESTS
   /* eslint-disable max-len */
-  @observable walletsRequest: Request<GetWalletsResponse> = new Request(this.api.ada.getWallets);
-  @observable importFromFileRequest: Request<ImportWalletFromFileResponse> = new Request(this.api.ada.importWalletFromFile);
-  @observable createWalletRequest: Request<CreateWalletResponse> = new Request(this.api.ada.createWallet);
+  @observable walletsRequest: Request<Array<Wallet>> = new Request(this.api.ada.getWallets);
+  @observable importFromFileRequest: Request<Wallet> = new Request(this.api.ada.importWalletFromFile);
+  @observable createWalletRequest: Request<Wallet> = new Request(this.api.ada.createWallet);
   @observable getWalletAddressesRequest: Request<any> = new Request(this.api.ada.getAddresses);
-  @observable deleteWalletRequest: Request<DeleteWalletResponse> = new Request(this.api.ada.deleteWallet);
-  @observable sendMoneyRequest: Request<CreateTransactionResponse> = new Request(this.api.ada.createTransaction);
-  @observable getWalletRecoveryPhraseRequest: Request<GetWalletRecoveryPhraseResponse> = new Request(this.api.ada.getWalletRecoveryPhrase);
-  @observable getWalletCertificateAdditionalMnemonicsRequest: Request<GetWalletCertificateAdditionalMnemonicsResponse> = new Request(this.api.ada.getWalletCertificateAdditionalMnemonics);
-  @observable getWalletCertificateRecoveryPhraseRequest: Request<GetWalletCertificateRecoveryPhraseResponse> = new Request(this.api.ada.getWalletCertificateRecoveryPhrase);
-  @observable getWalletRecoveryPhraseFromCertificateRequest: Request<GetWalletRecoveryPhraseFromCertificateResponse> = new Request(this.api.ada.getWalletRecoveryPhraseFromCertificate);
-  @observable restoreRequest: Request<RestoreWalletResponse> = new Request(this.api.ada.restoreWallet);
+  @observable deleteWalletRequest: Request<boolean> = new Request(this.api.ada.deleteWallet);
+  @observable sendMoneyRequest: Request<WalletTransaction> = new Request(this.api.ada.createTransaction);
+  @observable getWalletRecoveryPhraseRequest: Request<Array<string>> = new Request(this.api.ada.getWalletRecoveryPhrase);
+  @observable getWalletCertificateAdditionalMnemonicsRequest: Request<Array<string>> = new Request(this.api.ada.getWalletCertificateAdditionalMnemonics);
+  @observable getWalletCertificateRecoveryPhraseRequest: Request<Array<string>> = new Request(this.api.ada.getWalletCertificateRecoveryPhrase);
+  @observable getWalletRecoveryPhraseFromCertificateRequest: Request<Array<string>> = new Request(this.api.ada.getWalletRecoveryPhraseFromCertificate);
+  @observable restoreRequest: Request<Wallet> = new Request(this.api.ada.restoreWallet);
   /* eslint-enable max-len */
 
   @observable walletExportType: walletExportTypeChoices = 'paperWallet';
@@ -73,18 +63,21 @@ export default class AdaWalletsStore extends WalletStore {
     walletBackup.finishWalletBackup.listen(this._finishCreation);
   }
 
-  _sendMoney = async (transactionDetails: {
+  _sendMoney = async ({ receiver, amount, password }: {
     receiver: string,
     amount: string,
     password: ?string,
   }) => {
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
-    const accountId = await this.stores.ada.addresses.getAccountIdByWalletId(wallet.id);
-    if (!accountId) throw new Error('Active account required before sending.');
+    const accountIndex = await this.stores.ada.addresses.getAccountIndexByWalletId(wallet.id);
+
     await this.sendMoneyRequest.execute({
-      ...transactionDetails,
-      sender: accountId,
+      address: receiver,
+      amount: parseInt(amount, 10),
+      spendingPassword: password,
+      accountIndex,
+      walletId: wallet.id,
     });
     this.refreshWalletsData();
     this.actions.dialogs.closeActiveDialog.trigger();
@@ -197,7 +190,7 @@ export default class AdaWalletsStore extends WalletStore {
       const spendingPassword = mnemonicToSeedHex(certificatePassword.join(' '));
 
       // Unscramble 18-word wallet certificate mnemonic to 12-word mnemonic
-      const unscrambledRecoveryPhrase: GetWalletRecoveryPhraseFromCertificateResponse = await (
+      const unscrambledRecoveryPhrase: Array<string> = await (
         this.getWalletRecoveryPhraseFromCertificateRequest.execute({
           passphrase: spendingPassword,
           scrambledInput: scrambledInput.join(' '),
@@ -217,9 +210,9 @@ export default class AdaWalletsStore extends WalletStore {
   };
 
   @action _importWalletFromFile = async (params: WalletImportFromFileParams) => {
-    const { filePath, walletName, walletPassword } = params;
+    const { filePath, walletName, spendingPassword } = params;
     const importedWallet = await this.importFromFileRequest.execute({
-      filePath, walletName, walletPassword,
+      filePath, walletName, spendingPassword,
     }).promise;
     if (!importedWallet) throw new Error('Imported wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(importedWallet);
@@ -277,12 +270,12 @@ export default class AdaWalletsStore extends WalletStore {
       this._updateCertificateCreationState(true);
 
       // Generate wallet recovery phrase
-      const recoveryPhrase: GetWalletRecoveryPhraseResponse = await (
+      const recoveryPhrase: Array<string> = await (
         this.getWalletRecoveryPhraseRequest.execute().promise
       );
 
       // Generate 9-words (additional) mnemonic
-      const additionalMnemonicWords: GetWalletCertificateAdditionalMnemonicsResponse = await (
+      const additionalMnemonicWords: Array<string> = await (
         this.getWalletCertificateAdditionalMnemonicsRequest.execute().promise
       );
       this.additionalMnemonicWords = additionalMnemonicWords.join(' ');
@@ -292,7 +285,7 @@ export default class AdaWalletsStore extends WalletStore {
       this.walletCertificatePassword = spendingPassword;
 
       // Generate paper wallet scrambled mnemonic
-      const walletCertificateRecoveryPhrase: GetWalletCertificateRecoveryPhraseResponse = await (
+      const walletCertificateRecoveryPhrase: Array<string> = await (
         this.getWalletCertificateRecoveryPhraseRequest.execute({
           passphrase: spendingPassword,
           input: recoveryPhrase.join(' '),
