@@ -119,7 +119,9 @@ const createWalletsSequentially = async (wallets, context) => {
   );
 };
 
-export const createWallets = async (wallets, context, sequentially) => {
+export const createWallets = async (wallets, context, options) => {
+
+  const { sequentially, skipDataLayerMigration } = options;
 
   if (sequentially === true) {
     await createWalletsSequentially(wallets, context);
@@ -127,6 +129,8 @@ export const createWallets = async (wallets, context, sequentially) => {
     await createWalletsAsync(wallets, context);
   }
 
-  await dataLayerMigrationHelpers.startMigration(context.client);
+  if (skipDataLayerMigration !== true) {
+    await dataLayerMigrationHelpers.startMigration(context.client);
+  }
 
 };

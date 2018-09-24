@@ -20,20 +20,3 @@ When(/^I click the migration button$/, function () {
   return this.waitAndClick(`${DATA_LAYER_MIGRATION_COMPONENT} .DataLayerMigrationForm_submitButton`);
 });
 
-When(/^I refresh the application$/, function () {
-  this.client.keys(['command', 'r']);
-  this.client.keys(['control', 'r']);
-  this.client.keys(['super', 'r']);
-});
-
-Then(/^I should go to the initial screen$/, function () {
-  return this.client.waitForVisible('.SidebarLayout_component');
-});
-
-When('I delete all wallets', async function () {
-  await this.client.executeAsync(() => {
-    daedalus.stores.sidebar.wallets.forEach(({ id: walletId }) =>
-      daedalus.actions.ada.wallets.deleteWallet.trigger({ walletId })
-    );
-  });
-});
