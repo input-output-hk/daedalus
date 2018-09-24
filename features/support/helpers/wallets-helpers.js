@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import dataLayerMigrationHelpers from './data-layer-migration-helpers';
 
 export const getNameOfActiveWalletInSidebar = async function () {
   await this.client.waitForVisible('.SidebarWalletMenuItem_active');
@@ -125,5 +126,7 @@ export const createWallets = async (wallets, context, sequentially) => {
   } else {
     await createWalletsAsync(wallets, context);
   }
+
+  await dataLayerMigrationHelpers.startMigration(context.client);
 
 };
