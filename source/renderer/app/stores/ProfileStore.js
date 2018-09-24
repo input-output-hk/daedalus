@@ -194,6 +194,11 @@ export default class SettingsStore extends Store {
     this.getTermsOfUseAcceptanceRequest.execute();
   };
 
+  _skipDataLayerMigration = async () => {
+    await this.setDataLayerMigrationStartRequest.execute();
+    await this.getDataLayerMigrationStartRequest.execute();
+  };
+
   _startDataLayerMigration = async () => {
     await this.setDataLayerMigrationStartRequest.execute();
     await this.getDataLayerMigrationStartRequest.execute();
@@ -232,7 +237,7 @@ export default class SettingsStore extends Store {
       dataLayerMigrationNotStarted
     ) {
       if (!this.stores.ada.wallets.hasAnyWallets) {
-        this._startDataLayerMigration();
+        this._skipDataLayerMigration();
       } else {
         this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.DATA_LAYER_MIGRATION });
       }
