@@ -75,7 +75,10 @@ let
     DAEDALUS_CONFIG = if (cluster == "demo") then demoConfig else "${daedalusPkgs.daedalus.cfg}/etc/";
     DAEDALUS_DIR = "./";
     CLUSTER = cluster;
-    shellHook = ''
+    shellHook = let
+      secretsDir = if pkgs.stdenv.isLinux then "Secrets" else "Secrets-1.0";
+      systemStartString = builtins.toString systemStart;
+    in ''
       ${localLib.optionalString pkgs.stdenv.isLinux "export XDG_DATA_HOME=$HOME/.local/share"}
       ln -svf $(type -P cardano-node)
       ${pkgs.lib.optionalString autoStartBackend ''
@@ -84,8 +87,17 @@ let
         done
         ${pkgs.lib.optionalString (cluster == "demo") ''
           ln -svf ${demoTopologyYaml} wallet-topology.yaml
+          if [[ -f "${launcher-config.statePath}/system-start" && "${systemStartString}" == $(cat "${launcher-config.statePath}/system-start") ]]
+          then
+            echo "running pre-existing demo cluster matching system start: ${systemStartString}"
+          else
+            echo "removing pre-existing demo cluster because system-start differs or doesn't exist"
+            rm -rf "${launcher-config.statePath}"
+            mkdir -p "${launcher-config.statePath}"
+            echo -n ${systemStartString} > "${launcher-config.statePath}/system-start"
+          fi
         ''}
-        mkdir -p ${launcher-config.statePath}/Secrets
+        mkdir -p "${launcher-config.statePath}/${secretsDir}"
       ''}
         ${localLib.optionalString autoStartBackend ''
           mkdir -p "${launcher-config.tlsPath}/server" "${launcher-config.tlsPath}/client"

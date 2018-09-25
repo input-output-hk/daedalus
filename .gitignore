@@ -85,3 +85,7 @@ result*
 
 # Npm
 package-lock.json
+
+# cardano public keys
+public.key
+public.key.lock
