@@ -48,7 +48,7 @@ let
       fallbacks = 7;
       valency = 1;
       relays = [
-        [ { addr = "127.0.0.1"; port = 3101; } ]
+        [ { addr = "127.0.0.1"; port = 3100; } ]
       ];
     };
   };
@@ -85,8 +85,8 @@ let
         ${pkgs.lib.optionalString (cluster == "demo") ''
           ln -svf ${demoTopologyYaml} wallet-topology.yaml
         ''}
+        mkdir -p ${launcher-config.statePath}/Secrets
       ''}
-      mkdir -p Secrets ${cluster}
         ${localLib.optionalString autoStartBackend ''
           mkdir -p "${launcher-config.tlsPath}/server" "${launcher-config.tlsPath}/client"
           cardano-x509-certificates \

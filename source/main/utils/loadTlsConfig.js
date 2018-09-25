@@ -8,9 +8,6 @@ import type { TlsConfig } from '../../common/ipc-api/tls-config';
 const isProd = process.env.NODE_ENV === 'production';
 const caDevelopmentPath = process.env.CARDANO_TLS_PATH || '';
 
-if (!isProd && !caDevelopmentPath) {
-  throw new Error('Environment variable missing: CARDANO_TLS_PATH');
-}
 
 /**
  * Here we are reading the TLS certificate from the file system and returns them
@@ -21,6 +18,10 @@ export const loadTlsConfig = (tlsPath: string): ?TlsConfig => {
   const pathToCa = path.join(tlsFolder, 'ca.crt');
   const pathToClientKey = path.join(tlsFolder, 'client.key');
   const pathToClientCert = path.join(tlsFolder, 'client.pem');
+
+  if (!isProd && !caDevelopmentPath) {
+    throw new Error('Environment variable missing: CARDANO_TLS_PATH');
+  }
 
   try {
     log.info('Loading tls certificates from: ' + tlsFolder);
