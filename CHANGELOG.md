@@ -26,6 +26,7 @@ Changelog
 - Integrated the V1 API endpoint for creating and restoring Wallets ([PR 1018](https://github.com/input-output-hk/daedalus/pull/1018))
 - Integrated the V1 API endpoints for fetching all accounts associated with a wallet, fetching a single address, and creating a new address ([PR 1037](https://github.com/input-output-hk/daedalus/pull/1037))
 - Send cert and key with api requests to support tls-auth ([PR 1072](https://github.com/input-output-hk/daedalus/pull/1072))
+- Implemented Japanese Terms of use for Testnet network ([PR 1097](https://github.com/input-output-hk/daedalus/pull/1097))
 
 ### Fixes
 
