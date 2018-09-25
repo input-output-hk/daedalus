@@ -5,13 +5,13 @@ import type { walletExportTypeChoices } from '../../types/walletExportTypes';
 export type WalletImportFromFileParams = {
   filePath: string,
   walletName: ?string,
-  walletPassword: ?string,
+  spendingPassword: ?string,
 };
 
 // ======= WALLET ACTIONS =======
 
 export default class WalletsActions {
-  createWallet: Action<{ name: string, password: ?string }> = new Action();
+  createWallet: Action<{ name: string, spendingPassword: ?string }> = new Action();
   // eslint-disable-next-line max-len
   restoreWallet: Action<{recoveryPhrase: string, walletName: string, walletPassword: ?string, type?: string }> = new Action();
   importWalletFromFile: Action<WalletImportFromFileParams> = new Action();

@@ -6,6 +6,7 @@ import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
 import { OPEN_ABOUT_DIALOG_CHANNEL } from '../../../common/ipc-api/open-about-dialog';
 import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../../../common/ipc-api/go-to-ada-redemption-screen';
+import { GO_TO_NETWORK_STATUS_SCREEN_CHANNEL } from '../../../common/ipc-api/go-to-network-status-screen';
 import { GET_GPU_STATUS } from '../../../common/ipc-api';
 import { INIT_ENVIRONMENT } from '../../../common/ipc-api/init-environment';
 import { ROUTES } from '../routes-config';
@@ -26,6 +27,7 @@ export default class AppStore extends Store {
     this.actions.app.initEnvironment.listen(this._initEnvironment);
     ipcRenderer.on(OPEN_ABOUT_DIALOG_CHANNEL, this._openAboutDialog);
     ipcRenderer.on(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
+    ipcRenderer.on(GO_TO_NETWORK_STATUS_SCREEN_CHANNEL, this._goToNetworkStatusScreen);
     ipcRenderer.on(GET_GPU_STATUS.SUCCESS, this._onGetGpuStatusSuccess);
     ipcRenderer.on(INIT_ENVIRONMENT, this._initEnvironment);
   }
@@ -33,6 +35,7 @@ export default class AppStore extends Store {
   teardown() {
     ipcRenderer.removeListener(OPEN_ABOUT_DIALOG_CHANNEL, this._openAboutDialog);
     ipcRenderer.removeListener(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
+    ipcRenderer.removeListener(GO_TO_NETWORK_STATUS_SCREEN_CHANNEL, this._goToNetworkStatusScreen);
   }
 
   @computed get currentRoute(): string {
@@ -82,5 +85,14 @@ export default class AppStore extends Store {
 
   @action _initEnvironment = (environment: Object) => {
     this.environment = environment;
+  };
+
+  @computed get isNetworkStatusPage(): boolean {
+    return this.currentRoute === ROUTES.NETWORK_STATUS;
+  }
+
+  @action _goToNetworkStatusScreen = () => {
+    const route = this.isNetworkStatusPage ? ROUTES.ROOT : ROUTES.NETWORK_STATUS;
+    this.actions.router.goToRoute.trigger({ route });
   };
 }

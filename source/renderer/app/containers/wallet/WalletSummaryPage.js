@@ -11,7 +11,7 @@ import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
-import { syncStateTags } from '../../domains/Wallet';
+import { WalletSyncStateTags } from '../../domains/Wallet';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -51,7 +51,7 @@ export default class WalletSummaryPage extends Component<Props> {
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
-    const isRestoreActive = get(wallet, 'syncState.tag') === syncStateTags.RESTORING;
+    const isRestoreActive = get(wallet, 'syncState.tag') === WalletSyncStateTags.RESTORING;
 
     if (recentTransactionsRequest.isExecutingFirstTime || hasAny || isRestoreActive) {
       walletTransactions = (

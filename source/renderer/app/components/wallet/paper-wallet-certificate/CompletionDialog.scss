@@ -48,4 +48,35 @@
       margin: auto;
     }
   }
+
+
+  .copyIconBig,
+  .copyIcon {
+    cursor: pointer;
+    object-fit: contain;
+  }
+
+  .copyIconBig {
+    margin-left: 6px;
+    & > svg {
+      height: 14.5px;
+      width: 11.5px;
+      path {
+        fill: var(--theme-icon-copy-address-color);
+      }
+    }
+  }
+
+  .copyIcon {
+    margin-left: 4px;
+    & > svg {
+      height: 12px;
+      width: 10px;
+      path {
+        fill: var(--theme-icon-copy-address-color);
+      }
+    }
+  }
+
+
 }

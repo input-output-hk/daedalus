@@ -144,6 +144,7 @@ export default class StoryLayout extends Component<Props> {
       onAddWallet={action('onAddWallet')}
       openDialogAction={action('openDialog')}
       onSubmitSupportRequest={() => {}}
+      pathname="/"
     />
   );
 
