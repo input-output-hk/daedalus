@@ -67,7 +67,7 @@ export default class SupportSettings extends Component<Props> {
   };
 
   render() {
-    const { onExternalLinkClick, onSupportRequestClick, onDownloadLogs } = this.props;
+    const { onExternalLinkClick, /* onSupportRequestClick, */ onDownloadLogs } = this.props;
     const { intl } = this.context;
 
     const faqLink = (
@@ -80,7 +80,7 @@ export default class SupportSettings extends Component<Props> {
     );
 
     const supportRequestLink = (
-      <button onClick={onSupportRequestClick}>
+      <button onClick={() => window.zE.activate({ hideOnClose: true })}>
         {intl.formatMessage(messages.supportRequestLink)}
       </button>
     );

@@ -13,6 +13,7 @@ import type { StoresMap } from './stores/index';
 import type { ActionsMap } from './actions/index';
 import ThemeManager from './ThemeManager';
 import AboutDialog from './containers/static/AboutDialog';
+import supportWidget from './containers/static/supportWidget';
 
 @observer
 export default class App extends Component<{
@@ -27,6 +28,7 @@ export default class App extends Component<{
     const mobxDevTools = environment.MOBX_DEV_TOOLS ? <DevTools /> : null;
     const currentTheme = stores.profile.currentTheme;
     const themeVars = require(`./themes/daedalus/${currentTheme}.js`); // eslint-disable-line
+    supportWidget(stores);
 
     return (
       <div>

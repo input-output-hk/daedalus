@@ -305,6 +305,8 @@ export default {
   '--theme-support-settings-text-color': '#e9f4fe',
   '--theme-support-settings-link-color': '#20b56b',
 
+  '--theme-support-widget-header-color': '#263345',
+
   '--theme-terms-of-use-text-color': '#e9f4fe',
 
   '--theme-wallet-password-switch-label-color': '#e9f4fe',
