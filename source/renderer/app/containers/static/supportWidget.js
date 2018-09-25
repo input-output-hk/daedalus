@@ -12,10 +12,20 @@ export default (stores: StoresMap) => {
     'light-blue': lightBlue,
   };
 
-  const theme = stores.profile.currentTheme;
-  const colors = themes[theme];
+  const locales = {
+    'en-US': 'en-US',
+    'ja-JP': 'ja',
+  };
 
-  window.zE(() => window.zE.hide());
+  const { currentTheme, currentLocale } = stores.profile;
+  const colors = themes[currentTheme];
+  const locale = locales[currentLocale];
+
+  window.zE(() => {
+    window.zE.hide();
+    if (locale !== 'en-US') window.zE.setLocale(locale);
+  });
+
   window.zESettings = {
     webWidget: {
       color: {
