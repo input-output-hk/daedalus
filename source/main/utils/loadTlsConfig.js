@@ -15,7 +15,7 @@ if (!isProd && !caDevelopmentPath) {
 /**
  * Here we are reading the TLS certificate from the file system and returns them
  */
-export const loadTlsConfig = (tlsPath: string): TlsConfig => {
+export const loadTlsConfig = (tlsPath: string): ?TlsConfig => {
   const tlsBasePath = tlsPath || path.join(runtimeFolderPath, 'tls');
   const tlsFolder = isProd ? path.join(tlsBasePath, 'client') : caDevelopmentPath;
   const pathToCa = path.join(tlsFolder, 'ca.crt');
@@ -26,8 +26,8 @@ export const loadTlsConfig = (tlsPath: string): TlsConfig => {
     log.info('Loading tls certificates from: ' + tlsFolder);
     return {
       ca: fs.readFileSync(pathToCa),
-      clientKey: fs.readFileSync(pathToClientKey),
-      clientCert: fs.readFileSync(pathToClientCert),
+      key: fs.readFileSync(pathToClientKey),
+      cert: fs.readFileSync(pathToClientCert),
       port: 8090,
     };
   } catch (error) {

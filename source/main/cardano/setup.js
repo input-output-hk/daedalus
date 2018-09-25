@@ -92,7 +92,7 @@ export const setupCardano = (launcherConfig: LauncherConfig, mainWindow: Browser
       Logger.info(`CardanoNode exited unexpectatly with code ${code}. Restarting it …`);
       restartOrExit(cardanoNode);
     },
-    onError: (error) => {}
+    onError: (error) => {} // eslint-disable-line
   });
   startCardanoNode(cardanoNode, launcherConfig);
 

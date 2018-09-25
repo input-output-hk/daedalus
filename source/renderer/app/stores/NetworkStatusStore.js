@@ -314,7 +314,7 @@ export default class NetworkStatusStore extends Store {
     }
   };
 
-  @action _setDisconnected = (wasConnected: Boolean) => {
+  @action _setDisconnected = (wasConnected: boolean) => {
     this.isNodeResponding = false;
     this.isNodeSubscribed = false;
     this.isNodeSyncing = false;
