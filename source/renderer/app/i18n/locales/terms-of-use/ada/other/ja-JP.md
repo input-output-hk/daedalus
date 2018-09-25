@@ -1,93 +1,94 @@
-# Terms of Service Agreement
 
-THIS TERMS OF SERVICE AGREEMENT (&quot;Agreement&quot;) is made between Input Output HK Limited (&quot;Company&quot;) and any person (&quot;User&quot;) who completes the process to download, utilize, or operate any software, data processing service, application, communication service, or other content created or offered by Company, including, but not limited to, the Daedalus Cryptocurrency Wallet application (&quot;Software&quot;). Company and User are collectively referred to as the &quot;parties.&quot;
+# 業務委託契約の条項
 
-BY CLICKING THE ACCEPTANCE BUTTON OR ACCESSING, USING OR INSTALLING ANY PART OF THE SOFTWARE, USER EXPRESSLY AGREES TO AND CONSENTS TO BE BOUND BY ALL OF THE TERMS OF THIS AGREEMENT. IF USER DOES NOT AGREE TO ALL OF THE TERMS OF THIS AGREEMENT, THE USER IS NOT AUTHORIZED TO ACCESS, USE OR INSTALL ANY PART OF THE SOFTWARE.
+本業務委託契約の条項（「契約」）は、インプット・アウトプット・ホンコン（「会社」）とソフトウェアをダウンロード、ソフトウェア、データ処理サービス、アプリケーション、通信サービス又は本会社が作成もしくは提供するその他のコンテンツを利用もしくは操作するいかなる人物（「ユーザー」）との間に締結される。これらのソフトウェアはダイダロス・クリプトカレンシーウォレットのアプリケーション（「ソフトウェア」）を含むが、これらに限定されない。本会社、及び本ユーザーを総称して、「両当事者」という。
 
-1. ## 1. Service Terms and Limitations
+承諾ボタンのクリック、本ソフトウェアの一部へのアクセス、その使用又はインストールにより、本ユーザーは、本契約のすべての条項に拘束されることに明示的に同意、及び合意する。本契約のすべての条項に合意しない場合、本ユーザーは、本ソフトウェアの一部にアクセスしたり、これを使用又はインストールしたりすることはできない。
 
-**a. Description.** The Software functions as a free, open source, digital cryptocurrency wallet. The Software does not constitute an account by which the Company or any other third parties serve as financial intermediaries or custodians of User&#39;s ADA or any other cryptocurrency.
+1. ## 第1条 サービス利用規約、及び制限事項
 
-While the Software has undergone beta testing and continues to be improved by feedback from the developers community, open-source contributors and beta-testers, the Company cannot guarantee there will not be bugs in the Software. User acknowledges that User&#39;s use of this Software is at User&#39;s risk, discretion and in compliance with all applicable laws. User is responsible for safekeeping User&#39;s passwords, PINs, private keys, redemption keys, shielded vending keys, backup recovery mnemonic passphrases, ADA passcodes and any other codes User uses to access the Software or any information, ADA, voucher, or other cryptocurrency unit.
+**a. ソフトウェアについて** 　本ソフトウェアは、無料のオープンソースのデジタル・クリプトカレンシーウォレットとして機能する。本ソフトウェアは、本会社又はその他の第三者が本ユーザーのエイダコイン又はその他のクリプトカレンシーの金融仲介又はカストディアンとして機能するアカウントを構成しない。
 
-IF USER LOSES ACCESS TO USER&#39;S CRYPTOCURRENCY WALLET OR PRIVATE KEYS AND HAS NOT SEPARATELY STORED A BACKUP OF USER&#39;S CRYPTOCURRENCY WALLET OR BACKUP RECOVERY MNEMONIC PHRASE(S) AND CORRESPONDING PASSWORD(S), USER ACKNOWLEDGES AND AGREES THAT ANY ADA OR ANY OTHER CRYPTOCURRENCIES USER HAS ASSOCIATED WITH THAT CRYPTOCURRENCY WALLET WILL BECOME INACCESSIBLE. All transaction requests are irreversible. The Company and its shareholders, directors, officers, employees, affiliates and agents cannot guarantee transaction confirmation or retrieve User&#39;s private keys or passwords if User loses or forgets them.
+本ソフトウェアは、ベータテストを受け、開発コミュニティ、オープンソースコミュニティにおけるコントリビューター、及びベータテスターからのフィードバックによって継続的に改良されているが、本会社は、本ソフトウェアにバグがないことを保証しない。本ユーザーは、そのリスク又は自由裁量により、すべての適用法に準拠して、本ソフトウェアを使用することに同意する。本ユーザーは、自身のパスワード、暗証番号、秘密鍵、還元キー、シールドされたベンディングキー、バックアップ・リカバリーフレーズ・ニーモニック、エイダパスコード、及び本ユーザーが本ソフトウェアもしくは情報にアクセスするために使用するその他のコード、エイダコイン、バウチャー又はその他のクリプトカレンシーを管理する責任を負う。
 
-**b. Accessibility.** User agrees that from time to time the Software may be inaccessible or inoperable for any reason, including, without limitation: (i) equipment malfunctions; (ii) periodic maintenance procedures or repairs which Company may undertake from time to time; or (iii) causes beyond the control of Company or which are not reasonably foreseeable by Company.
+本ユーザーがそのクリプトカレンシーウォレット又は秘密鍵にアクセスできなくなり、本ユーザーのクリプトカレンシーウォレット又はバックアップ・リカバリーフレーズ・ニーモニック、及び必要なパスワードを別に保管していない場合、本ユーザーは、そのクリプトカレンシーウォレットのエイダコイン又はその他のクリプトカレンシーにはアクセスできなくなることを認識し、これに合意する。トランザクションはすべて、取消不能である。本会社、及びその株主、取締役、役員、従業員、関連会社、及び代理人は、トランザクションの確認について保証すること、又は本ユーザーが秘密鍵もしくはパスワードを紛失するか、忘れた場合でも、それらを回復させることはできない。
 
-**c. Equipment.** User shall be solely responsible for providing, maintaining and ensuring compatibility with the Software, all hardware, software, electrical and other physical requirements for User&#39;s use of the Software, including, without limitation, telecommunications and internet access connections and links, web browsers or other equipment, programs and services required to access and use the Software.
+**b. アクセシビリティ　** 本ユーザーは、本ソフトウェアが、以下の理由により、アクセス不能又は作動不能になる場合があることに合意する。その理由は、(i) 機器の不具合、(ii) 本会社が随時行う定期的なメンテナンスもしくは修理、又は(iii) 本会社が制御できない、もしくは合理的に予測できない要因を含むが、これらに限定されない。
 
-2. ## 2. Limitations
+**c. 機器　** 本ユーザーは、本ソフトウェア、すべてのハードウェア、ソフトウェアの互換性、本ユーザーによる本ソフトウェアの使用に必要な電力、及びその他の物理的要件を提供、管理、並びに確保することにつき、全責任を負うものとする。これらの要件は、電気通信、インターネット回線、リンク、webブラウザ又は本ソフトウェアへのアクセス、及びその使用に必要なその他の機器、プログラム、及びサービスが含むが、これらに限定されない。
 
-**a. Security.** User shall be solely responsible for the security, confidentiality and integrity of all information and content that User receives, transmits through or stores on the Software. User shall be solely responsible for any authorized or unauthorized access to any account of User by any person. User agrees to bear all responsibility for the confidentiality of User&#39;s security devices, information, keys, or passwords.
+2. ## 第2条 制限事項
 
-**b. Privacy.** When reasonably practicable, Company will attempt to respect User&#39;s privacy. Company will not monitor, edit, or disclose any personal information about User or User&#39;s account, including its contents or User&#39;s use of the Software, without User&#39;s prior consent unless Company has a good faith belief that such action is necessary to: (i) comply with legal process or other legal requirements of any governmental authority; (ii) protect and defend the rights or property of Company; (iii) enforce this Agreement; (iv) protect the interests of users of the Software other than User or any other person; or (v) operate or conduct maintenance and repair of Company&#39;s services or equipment, including the Software as authorized by law. User has no expectation of privacy with respect to the Internet generally. User&#39;s IP address is transmitted and recorded with each message or other information User sends from the Software.
+**a. セキュリティ　** 本ユーザーは、それが受領するか、本ソフトウェアを介して送信するか、又は本ソフトウェアに保管するすべての情報、及びコンテンツの安全性、機密性、及び整合性につき、一切の責任を負うものとする。本ユーザーは、いかなる人物による本ユーザーのアカウントへのアクセスにつき、これが正当であるか、不正であるかに関係なく、一切の責任を負うものとする。本ユーザーは、そのセキュリティデバイス、情報、キー又はパスワードの秘密保持に関し、一切の責任を負うことに合意する。
 
-3. ## 3. Taxes and Fees
+**b. プライバシー　** 合理的に実行可能な場合、本会社は、本ユーザーのプライバシーを尊重する。本会社は、本ユーザーからの事前の合意なくして、本ユーザー又は本ユーザーのアカウントに関する個人情報（アカウントの内容又は本ユーザーによる本ソフトウェアの使用など）を監視、編集又は開示しない。但し、本会社が、(i) 政府当局による法的手続き又はその他の法的要件への準拠、(ii) 本会社の権利又は財産の保護、及び擁護、(iii) 本契約の条項の履行、(iv) 本ユーザーもしくはその他の人物以外の本ソフトウェアのユーザーの権益の保護、又は(v) 法律で許可される、本会社のサービスもしくは機器（本ソフトウェアを含む）の運用又はメンテナンス、及び修理を行う上で、当該行為の必要性を確信する場合を除く。本ユーザーは、一般的にインターネットに関してプライバシーを期待しない。本ユーザーのIPアドレスは、本ユーザーが本ソフトウェアから送信する各メッセージ又はその他の情報と共に伝送、記録される。
 
-All currency conversion charges, third party fees, sales, use, value-added, personal property or other tax, duty or levy of any kind, including interest and penalties thereon, whether imposed now or hereinafter by any governmental entity fees incurred by User by reason of User&#39;s access, use or installation of the Software shall be the sole responsibility of User.
+3. ## 第3条 税金、及び手数料
 
-4. ## 4. User Representations
+本ユーザーは、すべての通貨換算手数料、第三者の手数料、売上税、使用税、付加価値税、動産税又はその他いかなる種類の税金、関税もしくは徴税（それらの税金に課される利息、及び罰金など）が、政府機関に現時点で課されるか、今後課されるかに関係なく、これらの税金、及び本ユーザーの本ソフトウェアへのアクセス、その使用又はインストールによって本ユーザーが負担する手数料につき、一切の責任を負うものとする。
 
-User represents and warrants to Company that: (a) User is over the age of eighteen (18) and has the power and authority to enter into and perform User&#39;s obligations under this Agreement; (b) all information provided by User to Company is truthful, accurate and complete; (c) User will comply with all laws and regulations of any applicable jurisdiction with regard to the User&#39;s access, use or installation of the Software; (d) User shall comply with all terms and conditions of this Agreement, including, without limitation, the provisions set forth at Section 5; and (e) User has provided and will provide accurate and complete information as required for access, use or installation of the Software.
+4. ## 第4条 ユーザーの表明
 
-5. ## 5. Prohibited Uses
+本ユーザーは、本会社に対し、(a) 本ユーザーが十八(18)歳以上であり、本契約を締結し、本契約における本ユーザーの義務を履行するための権能、及び権限を有していること、(b) 本会社に提供した本ユーザーのすべての情報が真実、正確、且つ完全であること、(c) 本ユーザーが、それによる本ソフトウェアへのアクセス、その使用もしくはインストールにつき、該当する管轄区域におけるすべての法律、及び規則に準拠すること、(d) 本ユーザーが、第5項に記載の条項を含むが、これらに限定されない、本契約のすべての諸条件に準拠すること、並びに(e) 本ユーザーが、本ソフトウェアへのアクセス、その使用又はインストールに必要な正確且つ完全な情報を提供していること、及びこれから提供することを表明、保証する。
 
-User is solely responsible for any and all acts and omissions that occur under User&#39;s account, security information, keys or password, and User agrees not to engage in unacceptable use of the Software, which includes, without limitation, use of the Software to: (a) disseminate, store or transmit unsolicited messages, chain letters or unsolicited commercial email; (b) disseminate or transmit material that, to a reasonable person may be abusive, obscene, pornographic, defamatory, harassing, grossly offensive, vulgar, threatening or malicious; (c) disseminate, store or transmit files, graphics, software or other material that actually or potentially infringes the copyright, trademark, patent, trade secret or other intellectual property right of any person; (d) create a false identity or to otherwise attempt to mislead any person as to the identity or origin of any communication; (e) export, re-export or permit downloading of any message or content in violation of any export or import law, regulation or restriction of the any applicable jurisdiction, or without all required approvals, licenses or exemptions; (f) interfere, disrupt or attempt to gain unauthorized access to other accounts on the Software or any other computer network; or (g) disseminate, store or transmit viruses, trojan horses or any other malicious code or program.
+5. ## 第5条 禁止事項
 
-6. ## 6. Termination
+本ユーザーは、そのアカウント、セキュリティ情報、キー又はパスワードに生じる作為、及び不作為の一切につき、全責任を負い、許可されていない目的に本ソフトウェアを使用しないことに合意する。その目的とは、(a) 一方的なメッセージ、チェーンレター又は一方的な商用電子メールを広め、保管し、又は送信すること、(b) 虐待的な、卑猥な、猥褻な、中傷的な、迷惑な、極めて攻撃的な、下品な、脅迫的な、又は悪質な資料を広めるか、それを合理的な人物に対し送信すること、(c) いかなる人物の著作権、商標、特許、企業秘密又はその他の知的財産権を実際に侵害するか、侵害する可能性があるファイル、図形、ソフトウェア又はその他の資料を広めるか、保管するか、又は送信すること、(d) 虚偽のアイデンティティを作成すること、又はいかなる情報の同一性もしくは起源に関し、いかなる人物に誤解を与えようとすること、(e) 該当する管轄区域におけるエクスポートもしくはインポートに関する法律、規則又は制限に違反するか、必要な承認、ライセンスもしくは免責のないメッセージ又はコンテンツをエクスポート、リエクスポートすること又はそれらのダウンロードを許可すること、(f) 本ソフトウェアのその他のアカウントもしくはその他のコンピューターネットワークを妨害するか、混乱させるか、又はそれらへの不正アクセスを試みること、又は(g) ウィルス、トロイの木馬又はその他の悪質なコードもしくはプログラムを広めるか、保管するか、又は送信することなどである。
 
-This Agreement is effective upon User&#39;s acceptance as set forth herein and shall continue in full force so long as User engages in any access, use or installation of the Software. Company reserves the right, in its sole discretion and without notice, at any time and for any reason, to: (a) remove or disable access to all or any portion of the Software; (b) suspend User&#39;s access to or use of all or any portion of the Software; and (c) terminate this Agreement.
+6. ## 第6条 契約期間
 
-7. ## 7. Disclaimer of Warranties
+本契約は、本書に記載したとおり、本ユーザーが承認した時点で発効し、本ユーザーが本ソフトウェアへのアクセス、その使用又はインストールを行っている間、有効に存続するものとする。本会社は、独自の裁量により、且つ通知なしに、その理由に関係なく、適宜、(a) 本ソフトウェアの全部又は一部へのアクセスを削除又は無効にする、(b) 本ユーザーによる本ソフトウェアの全部又は一部へのアクセスを一時中断する、及び(c) 本契約を終了させる権利を留保する。
 
-THE SOFTWARE IS PROVIDED &quot;AS IS&quot; WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. USE OF THE SOFTWARE IS AT USER&#39;S SOLE RISK. COMPANY DOES NOT WARRANT THAT THE SOFTWARE WILL BE UNINTERRUPTED OR ERROR FREE, NOR DOES COMPANY MAKE ANY WARRANTY AS TO ANY RESULTS THAT MAY BE OBTAINED BY USE OF THE SOFTWARE. COMPANY MAKES NO OTHER WARRANTIES, EXPRESS OR IMPLIED. COMPANY EXPRESSLY DISCLAIMS ANY WARRANTY OF MERCHANTABILITY, WARRANTY OF SUITABILITY FOR A PARTICULAR PURPOSE, WARRANTY OF TITLE, OR WARRANTY OF NONINFRINGEMENT.
+7. ## 第7条 保証免責
 
-8. ## 8. Limitation of Liability
+本ソフトウェアは、明示的であるか黙示的であるかを問わず、いかなる種類の保証なくして、「現状有姿」で提供される。本ソフトウェアの使用については、本ユーザーが一切の責任を負う。本会社は、ソフトウェアの使用中に動作の中断又はエラーが生じないことも、本ソフトウェアの使用によって得られるいかなる結果についても保証しない。本会社は、明示的であるか黙示的であるかを問わず、その他の保証を行わない。本会社は、商品性、特定の目的に対する適合性、権原又は非侵害に関する保証を明示的に否認する。
 
-IN NO EVENT WILL THE COMPANY OR ITS SHAREHOLDERS, DIRECTORS, OFFICERS, EMPLOYEES, AFFILIATES OR AGENTS, OR ANY OF ITS OR THEIR RESPECTIVE SERVICE PROVIDERS, BE LIABLE TO USER OR ANY THIRD PARTY FOR ANY USE, INTERRUPTION, DELAY OR INABILITY TO USE THE SOFTWARE, LOST REVENUES OR PROFITS, DELAYS, INTERRUPTION OR LOSS OF SERVICES, BUSINESS OR GOODWILL, LOSS OR CORRUPTION OF DATA, LOSS RESULTING FROM SYSTEM OR SYSTEM SERVICE FAILURE, MALFUNCTION OR SHUTDOWN, FAILURE TO ACCURATELY TRANSFER, READ OR TRANSMIT INFORMATION, FAILURE TO UPDATE OR PROVIDE CORRECT INFORMATION, SYSTEM INCOMPATIBILITY OR PROVISION OF INCORRECT COMPATIBILITY INFORMATION OR BREACHES IN SYSTEM SECURITY, OR FOR ANY CONSEQUENTIAL, INCIDENTAL, INDIRECT, EXEMPLARY, SPECIAL OR PUNITIVE DAMAGES, WHETHER ARISING OUT OF OR IN CONNECTION WITH THIS AGREEMENT, BREACH OF CONTRACT, TORT (INCLUDING NEGLIGENCE) OR OTHERWISE, REGARDLESS OF WHETHER SUCH DAMAGES WERE FORESEEABLE AND WHETHER OR NOT WE WERE ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+8. ## 第8条 責任制限
 
-IN NO EVENT SHALL THE COMPANY OR ITS SHAREHOLDERS, DIRECTORS, OFFICERS, EMPLOYEES, AFFILIATES OR AGENTS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM OR IN ANY WAY RELATED TO USER&#39;S ACCESS, USE OR INSTALLATION OF THE SOFTWARE.
+いかなる場合も、本会社又はその株主、取締役、役員、従業員、関連会社もしくは代理人又はそのもしくはそれら各々のサービスプロバイダーは、本ユーザー又は第三者に対し、本ソフトウェアの使用、動作の中断、遅延、使用不能、収益もしくは利益の損失、サービス、ビジネスもしくは営業権の遅延、中断もしくは損失、データの損失もしくは破損、システムもしくはシステムサービスの不具合、故障もしくは停止から生じる損失、情報の的確な転送、通読もしくは送信の失敗、情報の更新もしくは正確な情報の提供の失敗、システムの非互換性もしくは不正確な互換性情報の提供、システムセキュリティに対する違反、又は派生的損害賠償、付随的損害賠償、間接損害賠償、加重的損害賠償、特別損害賠償もしくは懲罰的損害賠償について、これらが本契約、契約の違反、不法行為（過失を含む）もしくはその他の事象から生じるか、もしくはそれらに関連するかを問わず、当該損害賠償が予見可能であった場合でも、当該損害賠償が生じる可能性を事前に通知されていた場合でも責任を負わない。
 
-SOME JURISDICTIONS PROHIBIT THE EXCLUSION OR LIMITATION OF INCIDENTAL OR CONSEQUENTIAL DAMAGES, THUS THIS LIMITATION OF LIABILITY MAY NOT APPLY TO USER. IF USER IS DISSATISFIED WITH THE SOFTWARE, USER&#39;S SOLE AND EXCLUSIVE REMEDY SHALL BE FOR USER TO DISCONTINUE USE OF THE SOFTWARE.
+いかなる場合も、本会社又はその株主、取締役、役員、従業員、関連会社もしくは代理人は、法的主張、損害賠償又はその他の法的責任につき、それらが契約上の行為であるか、不法行為であるか、本ユーザーによる本ソフトウェアへのアクセス、その使用もしくはインストールに起因する、又はいかなる方法でそれに関連するその他の事象によるかを問わず、責任を負わないものとする。
 
-9. ## 9. Indemnification
+付随的又は派生的損害賠償の免責又は制限を禁止する管轄区域があるため、この責任制限を本ユーザーに適用することはできない。本ユーザーが本ソフトウェアに満足しない場合、本ユーザーの唯一且つ排他的な救済方法は、本ユーザーが本ソフトウェアの使用を中止することである。
 
-User agrees to indemnify, hold harmless and defend Company, its shareholders, directors, officers, employees, affiliates and agents (&quot;Indemnified Parties&quot;) from and against any action, cause, claim, damage, debt, demand or liability, including reasonable costs and attorney&#39;s fees, asserted by any person, arising out of or relating to: (a) this Agreement; (b) User&#39;s access, use or installation of the Software, including any data or work transmitted or received by User; and (c) any unacceptable use of the Software by any person, including, without limitation, any statement, data or content made, transmitted or republished by User or any person which is prohibited as unacceptable under Section 5. THIS INDEMNIFICATION INCLUDES THE EXPRESS INDEMNIFICATION OF COMPANY AND ALL INDEMNIFIED PARTIES FOR ANY ALLEGED NEGLIGENCE, ALLEGED GROSS NEGLIGENCE, OR OTHER ALLEGED MISCONDUCT OF COMPANY OR ANY INDEMNIFIED PARTIES.
+9. ## 第9条 補償
 
-10. ## 10. Intellectual Property
+本ユーザーは、(a) 本契約、(b) 本ユーザーによる本ソフトウェアへのアクセス、その使用又はインストール（本ユーザーが伝送又は受領したデータ又は作業を含む）、及び(c) 本ユーザー又はいかなる人物が作成、送信又は再発行する、声明、データ又はコンテンツ（第5項で未承認として禁止される）を含むが、これらに限定されない、いかなる人物による本ソフトウェアの未承認の使用に起因するか、これらに関連する、いかなる行為、原因、法的主張、損害、負債、要求又はいかなる人物によって主張された合理的な費用、及び弁護士費用を含む法的責任から、本会社、その株主、取締役、役員、従業員、関連会社、及び代理人（「被免責当事者」）を免責、無害に保ち、これらを保護する。この免責には、過失の疑い、重大な過失の疑い又は本会社もしくは被免責当事者の不正行為の疑いに対する、本会社、及びすべての被免責当事者の明示的な免責が含まれる。
 
-The Company retains all right, title, and interest in and to all of the Company&#39;s brands, logos, and trademarks, including, but not limited to, Input Output HK Limited, IOHK, Daedalus, Daedalus Cryptocurrency Wallet, Daedalus Wallet, Daedalus App, and variations of the wording of the aforementioned brands, logos, and trademarks.
+10. ## 第10条 知的財産
 
-11. ## 11. ADA Redemption
+本会社は、そのブランド、ロゴ、及び商標に関するすべての権利、権原、及び権益を留保する。当該ブランド、ロゴ、及び商標は、インプット・アウトプット・ホンコン、IOHK、ダイダロス、ダイダロス・クリプトカレンシーウォレット、ダイダロスウォレット、ダイダロス・アプリケーション、及び前述のブランド、ロゴ、及び商標の多様な表現を含むが、これらに限定されない。
 
-User agrees and consents to redeem User&#39;s ADA by choosing one of the three available redemption options:
+11. ## 第11条 エイダコイン還元
 
-a) User may redeem User&#39;s ADA by uploading User&#39;s certificate or by copying and pasting User&#39;s redemption key from User&#39;s certificate. If User uploads a PDF file with User&#39;s certificate, a redemption key shall be automatically extracted. If User uploads an encrypted certificate, User&#39;s redemption code shall be automatically extracted only after User provides User&#39;s 9 word mnemonic passphrase;
+本ユーザーは、エイダコインの還元方法について、以下の3つから1つを選択することに合意し、これを承諾する。
 
-b) User may redeem User&#39;s ADA by uploading User&#39;s certificate or by copying and pasting User&#39;s redemption key from User&#39;s certificate. If User uploads a PDF file with User&#39;s certificate, a redemption key shall be automatically extracted. If User uploads an encrypted certificate, User&#39;s redemption key shall be automatically extracted only after User provides User&#39;s email address, ADA passcode and ADA amount; or
+a) 本ユーザーは、証明書をアップロードするか、証明書から還元キーをコピー・ペーストすることで、エイダコインの還元を行うことができる。本ユーザーがPDF形式の証明書をアップロードすると、還元キーが自動で入力される。本ユーザーが暗号化された証明書をアップロードすると、本ユーザーが9つのニーモニックフレーズを入力した場合に限り、本ユーザーの還元コードが自動的に表示される。
 
-c) User may redeem User&#39;s ADA by (i) entering the shielded vending key from User&#39;s certificate, (ii) choosing a wallet where User&#39;s ADA shall be redeemed and (iii) entering User&#39;s 9 word mnemonic passphrase.
+b) 本ユーザーは、証明書をアップロードするか、証明書から還元キーをコピー・ペーストすることで、エイダコインの還元を行うことができる。本ユーザーがPDF形式の証明書をアップロードすると、還元キーが自動で入力される。本ユーザーが暗号化された証明書をアップロードすると、本ユーザーが電子メールアドレス、エイダパスコード、及びエイダコインの金額を入力した場合に限り、本ユーザーの還元キーが自動的に表示される。又は
 
-12. ## 12. Warnings
+c) 本ユーザーは、(i) 本ユーザーの証明書のシールドされたベンディングコードを入力、(ii) 本ユーザーがエイダコインを還元するウォレットを選択、及び、(iii) 本ユーザーの9つのニーモニックフレーズを入力することで、エイダコインの還元を行うことができる。
 
-User acknowledges that IOHK shall not be responsible for transferring, safeguarding, or maintaining private keys and/or User&#39;s ADA or any other cryptocurrency. If User and/or any co-signing authorities lose, mishandle, or have stolen associated private keys, or if User&#39;s cosigners refuse to provide requisite authority, User acknowledges that User may not be able to recover User&#39;s ADA or any other cryptocurrency, and that the Company shall not be responsible for such loss.
+12. ## 第12条 警告
 
-User acknowledges and agrees that ADA or any other cryptocurrency transactions facilitated by Daedalus and/or the Company may be delayed, and that the Company shall not be responsible for any associated loss.
+本ユーザーは、IOHKが秘密鍵及び本ユーザーのエイダコインもしくはその他のクリプトカレンシーの両方又はいずれか一方を転送、保護又は管理する責任を負わないことを認める。本ユーザー及びその連帯保証人の両方又はいずれか一方が関連する秘密鍵を紛失したり、これを誤って取り扱ったり、盗まれたりした場合、又は本ユーザーの連帯保証人が必要な権限の付与を拒否した場合、本ユーザーは、そのエイダコイン又はその他のクリプトカレンシーを復元することができないこと、及び本会社には当該紛失についての責任がないことを認める。
 
-User acknowledges and agrees that the Company shall not be responsible for any aspect of the information, content, or services contained in any third-party materials or on any third party sites accessible or linked to Daedalus and/or the Company.
+本ユーザーは、ダイダロス及び本会社の両方又はいずれか一方が行う、エイダコイン又はその他のクリプトカレンシーのトランザクションが遅延する場合があること、及び本会社が、この遅延に関連する損失について責任を負わないことを認め、これに合意する。
 
-User agrees that User should never share User&#39;s certificate with any natural or legal person, including the Company, Cardano Foundation, Attain Corporation, or any other entity. Further, User acknowledges that sharing User&#39;s certificate may result in loss of User&#39;s ADA or any other cryptocurrency, and User agrees that the Company shall not be responsible for such loss.
+本ユーザーは、本会社が第三者の資料又はダイダロス及び本会社の両方もしくはいずれか一方にアクセス可能な、又はリンクされる第三者のサイトに含まれる情報、コンテンツ又はサービスのあらゆる側面について責任を負わないことを認め、これに合意する。
 
-User acknowledges and agrees that by redeeming ADA in the testnet User redeems test-ADA only, and that in order to redeem actual ADA, User must repeat the procedure in the mainnet, once released.
+本ユーザーは、その証明書を自然人又は法人（本会社、カルダノ財団、アテイン株式会社又はその他の団体）と共有しないことに合意する。また本ユーザーは、その証明書を共有すると、本ユーザー所有のエイダコイン又はその他のクリプトカレンシーを喪失する可能性があることを認め、本会社が当該喪失について責任を負わないことに合意する。
 
-By using Daedalus, User acknowledges and agrees: (i) that the Company is not responsible for operation of the underlying protocols and that the Company makes no guarantee of their functionality, security, or availability; and (ii) that the underlying protocols are subject to sudden changes in operating rules (&quot;forks&quot;), and that such forks may materially affect the value, and/or function of the ADA or any other cryptocurrency that User stores on Daedalus. In the event of a fork, User agrees that the Company may temporarily suspend Daedalus operations (with or without notice to User) and that the Company may, in its sole discretion, (a) configure or reconfigure its systems or (b) decide not to support (or cease supporting) the forked protocol entirely, provided, however, that User will have an opportunity to withdraw funds from Daedalus. User acknowledges and agrees that the Company assumes absolutely no responsibility whatsoever in respect of an unsupported branch of a forked protocol.
+本ユーザーは、テストネットで還元できるのはテストエイダコインに限ること、及び本ユーザーが公式のエイダコインを還元するには、メインネットが公開されてからメインネットでその還元手続きを繰り返す必要があることを認め、これに合意する。
 
-13. ## 13. Miscellaneous
+ダイダロスを使用することによって、本ユーザーは、(i) 本会社には基本的なプロトコルを実行する責任がないこと、及び本会社がその機能、安全性又は有効性について保証しないこと、並びに(ii) 基本的なプロトコルが運用に関する規定の急な変更（「フォーク」）の影響を受ける可能性があること、及び当該フォークが、ダイダロスに保管する本ユーザーのエイダコインもしくはその他のクリプトカレンシーの価値及び機能の両方又はいずれか一方に重大な影響を与える可能性があることを認識し、これらに合意する。フォークの発生に伴い、本ユーザーは、本会社がダイダロスの運用を一時停止する場合があること（本ユーザーに対する通知の有無を問わない）、及び本会社がその単独の裁量により、(a) そのシステムを設定もしくは再設定する場合があること、又は(b) 完全にフォークプロトコルをサポートしない（もしくはサポートを停止する）場合があることに合意する。但し、本ユーザーは、ダイダロスからファンドを引き出すことができる。本ユーザーは、本会社がフォークプロトコルにおけるサポートされていないブランチにつき、いかなる点においても一切の責任を負わないことを認め、これに合意する。
 
-**a. Amendment.** Company shall have the right, at any time and without notice, to add to or modify the terms of this Agreement, simply by delivering such amended terms to User by electronic message through any medium to any address provided to Company by User. User&#39;s access to or use of the Software after the date such amended terms are delivered to User shall be deemed to constitute acceptance of such amended terms.
+13. ## 第13条 雑則
 
-**b. Severance.** If any provision or part-provision of this Agreement is, or becomes invalid, illegal or unenforceable, it shall be deemed modified to the minimum extent necessary to make it valid, legal and enforceable. If such modification is not possible, the relevant provision or part-provision shall be deemed deleted. Any modification to or deletion of a provision or part-provision under this Article shall not affect the validity and enforceability of the rest of this Agreement.
+**a. 条項の修正　** 本会社は、随時、通知なくして、本契約の条項の追加又は修正を行う権利を有するものとする。この場合、本会社は単に、いずれかの媒体による電子メッセージを利用して、当該修正条項を本ユーザーが本会社に提供したアドレス宛に送信する。当該修正条項が本ユーザーに送信された日以降に、本ユーザーが本ソフトウェアにアクセスしたり、それを使用したりした場合、本ユーザーは、当該修正条項を承諾したとみなされる。
 
-**c. Entire Agreement – Disclaimer of Reliance.** This Agreement constitutes the entire agreement between the Parties with respect to the subject matter hereof and supersedes all prior agreements or understandings between the Parties. Each Party expressly warrants and represents that: a) it has authority to enter this Agreement; and b) it is not relying upon any statements, understandings, representations, expectations or agreements other than those expressly set forth in this Agreement.
+**b. 契約解除　** 本契約のいずれの条項又は一部の条項が無効もしくは違法になるか、法的強制力がなくなった場合、それを有効、合法、及び強制執行可能にするために、必要最小限の範囲で修正を行うものとする。当該修正が不可能な場合、該当する条項又は一部の条項は、削除されるものとする。本項に基づき条項もしくは一部の条項の修正又は削除があった場合でも、本契約の他の条項の有効性、及び法的強制力には影響を与えないものとする。
 
-**d. THIS AGREEMENT IS SUBJECT TO BINDING ARBITRATION.** User agrees that any and all disputes or claims against any person arising out of or in any way related to this Agreement or the access, use or installation of the Software by User or any other person shall be subject to binding arbitration under the Rules of Arbitration of the International Chamber of Commerce by one or more arbitrators appointed in accordance with the said Rules. The location of the arbitration shall be Hong Kong. The language of the arbitration shall be English.
+**c. 完全条項 – 依存の否定　** 本契約は、その主題事項に関する本両当事者の完全な合意を構成し、本両当事者間の従前のすべての合意又は了解事項に優先する。各当事者は、a) 本契約を締結する権限を有すること、並びにb) 本契約に明示的に記載されるもの以外の声明、了解事項、表明、期待又は合意に依存していないことを明示的に保証且つ表明する。
+
+**d. 拘束力のある仲裁による本契約の紛争解決　** 本ユーザーは、本契約又は本ユーザーもしくはその他の人物による本ソフトウェアへのアクセス、その使用もしくはインストールに起因するか、いかなる方法でこれらに関連する、いかなる人物に対する紛争又は法的主張の一切は、国際商業会議所の仲裁規則による拘束力のある仲裁に基づいて、当該規則に従って指名された1名以上の仲裁人によって解決されるものとする。仲裁地は香港とし、仲裁手続きの使用言語は英語とする。
