@@ -28,7 +28,7 @@ export default class App extends Component<{
     const mobxDevTools = environment.MOBX_DEV_TOOLS ? <DevTools /> : null;
     const currentTheme = stores.profile.currentTheme;
     const themeVars = require(`./themes/daedalus/${currentTheme}.js`); // eslint-disable-line
-    supportWidget(stores);
+    supportWidget(locale, themeVars);
 
     return (
       <div>
