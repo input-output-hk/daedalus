@@ -9,24 +9,29 @@ import styles from './DataLayerMigrationForm.scss';
 
 const messages = defineMessages({
   title: {
-    id: 'profile.dataMigrationLayer.title',
+    id: 'profile.dataLayerMigration.title',
     defaultMessage: '!!!New data layer migration',
     description: 'Title for the Data Layer Migration screen.'
   },
-  content: {
-    id: 'profile.dataMigrationLayer.content',
-    defaultMessage: '!!!We are introducing new data layer Cardano 1.4.7, so we need import wallet again. We are importing wallet, which are not protected with password by ourselves, but password protected wallets should be imported manualy. You will need to check which wallets to import. Make a note that unchecked wallets would be deleted.',
+  content1: {
+    id: 'profile.dataLayerMigration.content1',
+    defaultMessage: '!!!You have installed a version of Daedalus which changes how wallet data is stored and managed. Because of this all of your wallets need to be restored and synchronized with the complete history of Cardano blockchain.',
+    description: 'Content for the Data Layer Migration screen.'
+  },
+  content2: {
+    id: 'profile.dataLayerMigration.content2',
+    defaultMessage: '!!!This is an automatic process and does not require any actions on your behalf.',
+    description: 'Content for the Data Layer Migration screen.'
+  },
+  content3: {
+    id: 'profile.dataLayerMigration.content3',
+    defaultMessage: '!!!Your transaction history and used addresses will be appearing in your wallets as they are recovered during the restoration process. Addresses which were not used will not be recovered since there are not recorded on the blockchain. If funds are sent to those addresses you will receive them and those addresses will then appear in your wallet.',
     description: 'Content for the Data Layer Migration screen.'
   },
   submitLabel: {
-    id: 'profile.dataMigrationLayer.submitLabel',
+    id: 'profile.dataLayerMigration.submitLabel',
     defaultMessage: '!!!Migrate Wallets',
     description: 'Submit label for the Data Layer Migration screen.'
-  },
-  blogPostLink: {
-    id: 'profile.dataMigrationLayer.blogPostLink',
-    defaultMessage: '!!!Read blog post',
-    description: 'Link text for the blog post in the Data Layer Migration screen.'
   },
 });
 
@@ -55,9 +60,16 @@ export default class DataLayerMigrationForm extends Component<Props> {
 
         <h1 className={styles.title}>{intl.formatMessage(messages.title)}</h1>
 
-        <p className={styles.content}>
-          {intl.formatMessage(messages.content)}
+        <p className={styles.content1}>
+          {intl.formatMessage(messages.content1)}
         </p>
+        <p className={styles.content2}>
+          {intl.formatMessage(messages.content2)}
+        </p>
+        <p className={styles.content3}>
+          {intl.formatMessage(messages.content3)}
+        </p>
+
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
@@ -67,10 +79,6 @@ export default class DataLayerMigrationForm extends Component<Props> {
           onClick={this.submit}
           skin={ButtonSkin}
         />
-
-        <button className={styles.blogPost}>
-          {intl.formatMessage(messages.blogPostLink)}
-        </button>
 
       </div>
     );

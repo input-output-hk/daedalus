@@ -310,6 +310,7 @@ export default {
   '--theme-data-migration-background-color': '#2C4567',
   '--theme-data-migration-layer-box-shadow-color': 'rgba(0, 0, 0, 0.25)',
   '--theme-data-migration-layer-text-color': '#fafbfc',
+  '--theme-data-migration-layer-text-opacity-color': 'rgba(250, 251, 252, 0.5)',
 
   '--theme-wallet-password-switch-label-color': '#e9f4fe',
 

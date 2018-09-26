@@ -20,23 +20,29 @@
 
 .title {
   color: var(--theme-data-migration-layer-text-color);
+  cursor: default;
   font-family: var(--font-regular);
   font-size: 20px;
   line-height: 1.2;
-  margin-bottom: 8px;
+  margin-bottom: 8.5px;
   text-align: center;
 }
 
-.content {
+.content1, .content2, .content3 {
   color: var(--theme-data-migration-layer-text-color);
+  cursor: default;
   font-family: var(--font-regular);
   font-size: 16px;
   font-weight: 600;
   line-height: 1.38;
-  margin-bottom: 30px;
+  margin-bottom: 12px;
   max-width: 670px;
   opacity: 0.7;
   text-align: center;
+}
+.content3 {
+  color: var(--theme-data-migration-layer-text-opacity-color);
+  margin-bottom: 30px;
 }
 
 .submitButton {
@@ -44,16 +50,6 @@
   color: var(--theme-data-migration-layer-text-color) !important;
   line-height: 1.36 !important;
   margin-bottom: 30px;
-}
-
-.blogPost {
-  border-bottom: 1px solid rgba(250, 251, 252, 0.6);
-  color: var(--theme-data-migration-layer-text-color);
-  cursor: pointer;
-  font-family: var(--font-regular);
-  font-size: 14px;
-  line-height: 1.36;
-  opacity: 0.8;
 }
 
 .error {
