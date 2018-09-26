@@ -21,6 +21,15 @@ export default class App extends Component<{
   actions: ActionsMap,
   history: Object,
 }> {
+
+  componentDidMount() {
+    const { stores } = this.props;
+    const locale = stores.profile.currentLocale;
+    const currentTheme = stores.profile.currentTheme;
+    const themeVars = require(`./themes/daedalus/${currentTheme}.js`); // eslint-disable-line
+    supportWidget(locale, themeVars);
+  }
+
   render() {
     const { stores, actions, history } = this.props;
     const { app } = stores;
@@ -28,7 +37,6 @@ export default class App extends Component<{
     const mobxDevTools = environment.MOBX_DEV_TOOLS ? <DevTools /> : null;
     const currentTheme = stores.profile.currentTheme;
     const themeVars = require(`./themes/daedalus/${currentTheme}.js`); // eslint-disable-line
-    supportWidget(locale, themeVars);
 
     return (
       <div>
