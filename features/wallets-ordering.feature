@@ -9,8 +9,20 @@ Feature: Wallet Odering
       | Wallet 1 |
       | Wallet 2 |
       | Wallet 3 |
+      | Wallet 4 |
+      | Wallet 5 |
+      | Wallet 6 |
+      | Wallet 7 |
+      | Wallet 8 |
+      | Wallet 9 |
     Then I should see the wallets in the following order:
       | name     |
       | Wallet 1 |
       | Wallet 2 |
       | Wallet 3 |
+      | Wallet 4 |
+      | Wallet 5 |
+      | Wallet 6 |
+      | Wallet 7 |
+      | Wallet 8 |
+      | Wallet 9 |
