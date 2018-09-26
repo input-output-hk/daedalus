@@ -14,7 +14,7 @@ import DeleteWalletButton from './settings/DeleteWalletButton';
 import DeleteWalletConfirmationDialog from './settings/DeleteWalletConfirmationDialog';
 import ExportWalletToFileDialog from './settings/ExportWalletToFileDialog';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
-import ChangeWalletPasswordDialog from './settings/ChangeWalletPasswordDialog';
+import ChangeSpendingPasswordDialog from './settings/ChangeSpendingPasswordDialog';
 import globalMessages from '../../i18n/global-messages';
 import styles from './WalletSettings.scss';
 
@@ -55,8 +55,8 @@ type Props = {
   assuranceLevels: Array<{ value: string, label: ReactIntlMessage }>,
   walletName: string,
   walletAssurance: string,
-  isWalletPasswordSet: boolean,
-  walletPasswordUpdateDate: ?Date,
+  isSpendingPasswordSet: boolean,
+  spendingPasswordUpdateDate: ?Date,
   error?: ?LocalizableError,
   openDialogAction: Function,
   isDialogOpen: Function,
@@ -69,7 +69,7 @@ type Props = {
   isSubmitting: boolean,
   isInvalid: boolean,
   lastUpdatedField: ?string,
-  changeWalletPasswordDialog: Node,
+  changeSpendingPasswordDialog: Node,
   deleteWalletDialogContainer: Node,
   exportWalletDialogContainer: Node,
 };
@@ -90,15 +90,15 @@ export default class WalletSettings extends Component<Props> {
     const { intl } = this.context;
     const {
       assuranceLevels, walletAssurance,
-      walletName, isWalletPasswordSet,
-      walletPasswordUpdateDate, error,
+      walletName, isSpendingPasswordSet,
+      spendingPasswordUpdateDate, error,
       openDialogAction, isDialogOpen,
       onFieldValueChange, onStartEditing,
       onStopEditing, onCancelEditing,
       nameValidator, activeField,
       isSubmitting, isInvalid,
       lastUpdatedField,
-      changeWalletPasswordDialog,
+      changeSpendingPasswordDialog,
       deleteWalletDialogContainer,
       exportWalletDialogContainer,
     } = this.props;
@@ -108,9 +108,9 @@ export default class WalletSettings extends Component<Props> {
       label: intl.formatMessage(assurance.label),
     }));
 
-    const passwordMessage = isWalletPasswordSet ? (
+    const passwordMessage = isSpendingPasswordSet ? (
       intl.formatMessage(messages.passwordLastUpdated, {
-        lastUpdated: moment(walletPasswordUpdateDate).fromNow(),
+        lastUpdated: moment(spendingPasswordUpdateDate).fromNow(),
       })
     ) : intl.formatMessage(messages.passwordNotSet);
 
@@ -148,9 +148,9 @@ export default class WalletSettings extends Component<Props> {
           <ReadOnlyInput
             label={intl.formatMessage(messages.passwordLabel)}
             value={passwordMessage}
-            isSet={isWalletPasswordSet}
+            isSet={isSpendingPasswordSet}
             onClick={() => openDialogAction({
-              dialog: ChangeWalletPasswordDialog,
+              dialog: ChangeSpendingPasswordDialog,
             })}
           />
 
@@ -177,8 +177,8 @@ export default class WalletSettings extends Component<Props> {
 
         </BorderedBox>
 
-        {isDialogOpen(ChangeWalletPasswordDialog) ? (
-          changeWalletPasswordDialog
+        {isDialogOpen(ChangeSpendingPasswordDialog) ? (
+          changeSpendingPasswordDialog
         ) : false}
 
         {isDialogOpen(DeleteWalletConfirmationDialog) ? (

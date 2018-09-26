@@ -39,7 +39,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
 
     return (
       <WalletSendConfirmationDialog
-        isWalletPasswordSet={activeWallet.hasPassword}
+        isSpendingPasswordSet={activeWallet.hasPassword}
         amount={amount}
         receiver={receiver}
         totalAmount={totalAmount}

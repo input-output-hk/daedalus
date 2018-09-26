@@ -11,10 +11,10 @@ import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
-import { isValidWalletPassword, isValidRepeatPassword } from '../../../utils/validations';
+import { isValidSpendingPassword, isValidRepeatPassword } from '../../../utils/validations';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
-import styles from './ChangeWalletPasswordDialog.scss';
+import styles from './ChangeSpendingPasswordDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
 
@@ -77,7 +77,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  isWalletPasswordSet: boolean,
+  isSpendingPasswordSet: boolean,
   currentPasswordValue: string,
   newPasswordValue: string,
   repeatedPasswordValue: string,
@@ -94,7 +94,7 @@ type State = {
 };
 
 @observer
-export default class ChangeWalletPasswordDialog extends Component<Props, State> {
+export default class ChangeSpendingPasswordDialog extends Component<Props, State> {
 
   static defaultProps = {
     currentPasswordValue: '',
@@ -118,17 +118,17 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
         placeholder: this.context.intl.formatMessage(messages.currentPasswordFieldPlaceholder),
         value: '',
         validators: [({ field }) => {
-          if (!this.props.isWalletPasswordSet) return [true];
+          if (!this.props.isSpendingPasswordSet) return [true];
           return [
-            isValidWalletPassword(field.value),
-            this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
+            isValidSpendingPassword(field.value),
+            this.context.intl.formatMessage(globalMessages.invalidSpendingPassword)
           ];
         }],
       },
-      walletPassword: {
+      spendingPassword: {
         type: 'password',
         label: this.context.intl.formatMessage(messages[
-          this.props.isWalletPasswordSet ? 'newPasswordLabel' : 'spendingPasswordLabel'
+          this.props.isSpendingPasswordSet ? 'newPasswordLabel' : 'spendingPasswordLabel'
         ]),
         placeholder: this.context.intl.formatMessage(messages.newPasswordFieldPlaceholder),
         value: '',
@@ -139,8 +139,8 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
             repeatPasswordField.validate({ showErrors: true });
           }
           return [
-            isValidWalletPassword(field.value),
-            this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
+            isValidSpendingPassword(field.value),
+            this.context.intl.formatMessage(globalMessages.invalidSpendingPassword)
           ];
         }],
       },
@@ -151,10 +151,10 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
         value: '',
         validators: [({ field, form }) => {
           if (this.state.removePassword) return [true];
-          const walletPassword = form.$('walletPassword').value;
-          if (walletPassword.length === 0) return [true];
+          const spendingPassword = form.$('spendingPassword').value;
+          if (spendingPassword.length === 0) return [true];
           return [
-            isValidRepeatPassword(walletPassword, field.value),
+            isValidRepeatPassword(spendingPassword, field.value),
             this.context.intl.formatMessage(globalMessages.invalidRepeatPassword)
           ];
         }],
@@ -171,10 +171,10 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
     this.form.submit({
       onSuccess: (form) => {
         const { removePassword } = this.state;
-        const { currentPassword, walletPassword } = form.values();
+        const { currentPassword, spendingPassword } = form.values();
         const passwordData = {
           oldPassword: currentPassword || null,
-          newPassword: removePassword ? null : walletPassword,
+          newPassword: removePassword ? null : spendingPassword,
         };
         this.props.onSave(passwordData);
       },
@@ -195,7 +195,7 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
     const { form } = this;
     const { intl } = this.context;
     const {
-      isWalletPasswordSet,
+      isSpendingPasswordSet,
       onCancel,
       currentPasswordValue,
       newPasswordValue,
@@ -206,12 +206,12 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
     const { removePassword } = this.state;
 
     const dialogClasses = classnames([
-      isWalletPasswordSet ? 'changePasswordDialog' : 'createPasswordDialog',
+      isSpendingPasswordSet ? 'changePasswordDialog' : 'createPasswordDialog',
       styles.dialog,
     ]);
 
-    const walletPasswordFieldsClasses = classnames([
-      styles.walletPasswordFields,
+    const spendingPasswordFieldsClasses = classnames([
+      styles.spendingPasswordFields,
       removePassword ? styles.hidden : null
     ]);
 
@@ -236,13 +236,13 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
     ];
 
     const currentPasswordField = form.$('currentPassword');
-    const newPasswordField = form.$('walletPassword');
+    const newPasswordField = form.$('spendingPassword');
     const repeatedPasswordField = form.$('repeatPassword');
 
     return (
       <Dialog
         title={intl.formatMessage(
-          messages[!isWalletPasswordSet ? 'dialogTitleSetPassword' : 'dialogTitleChangePassword']
+          messages[!isSpendingPasswordSet ? 'dialogTitleSetPassword' : 'dialogTitleChangePassword']
         )}
         actions={actions}
         closeOnOverlayClick
@@ -251,9 +251,9 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
         closeButton={<DialogCloseButton onClose={onCancel} />}
       >
 
-        {isWalletPasswordSet ? (
-          <div className={styles.walletPassword}>
-            <div className={styles.walletPasswordSwitch}>
+        {isSpendingPasswordSet ? (
+          <div className={styles.spendingPassword}>
+            <div className={styles.spendingPasswordSwitch}>
               <div className={styles.passwordLabel}>
                 {intl.formatMessage(messages.passwordSwitchLabel)}
               </div>
@@ -280,7 +280,7 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
           </div>
         ) : null}
 
-        <div className={walletPasswordFieldsClasses}>
+        <div className={spendingPasswordFieldsClasses}>
           <Input
             type="password"
             className={newPasswordClasses}

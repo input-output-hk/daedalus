@@ -183,12 +183,12 @@ where Ada should be redeemed and enter {adaRedemptionPassphraseLength} word mnem
     description: 'Hint for the Ada amount input field.'
   },
   spendingPasswordPlaceholder: {
-    id: 'wallet.redeem.dialog.walletPasswordPlaceholder',
+    id: 'wallet.redeem.dialog.spendingPasswordPlaceholder',
     defaultMessage: '!!!Password',
     description: 'Placeholder for "spending password"',
   },
   spendingPasswordLabel: {
-    id: 'wallet.redeem.dialog.walletPasswordLabel',
+    id: 'wallet.redeem.dialog.spendingPasswordLabel',
     defaultMessage: '!!!Password',
     description: 'Label for "spending password"',
   },
@@ -587,7 +587,7 @@ export default class AdaRedemptionForm extends Component<Props> {
               <div className={styles.passwordInput}>
                 <Input
                   onKeyPress={submitOnEnter.bind(this, submit)}
-                  className="walletPassword"
+                  className="spendingPassword"
                   {...spendingPasswordField.bind()}
                   error={spendingPasswordField.error}
                   skin={InputSkin}

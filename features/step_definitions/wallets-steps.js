@@ -112,7 +112,7 @@ When(/^I toggle "Activate to create password" switch on the import wallet key di
 
 When(/^I enter wallet spending password:$/, async function (table) {
   const fields = table.hashes()[0];
-  await this.client.setValue('.WalletFileImportDialog .walletPassword input', fields.password);
+  await this.client.setValue('.WalletFileImportDialog .spendingPassword input', fields.password);
   await this.client.setValue('.WalletFileImportDialog .repeatedPassword input', fields.repeatedPassword);
 });
 
@@ -121,7 +121,7 @@ When(/^I click on the import wallet button in import wallet dialog$/, function (
 });
 
 When(/^I should see wallet spending password inputs$/, function () {
-  return this.client.waitForVisible('.WalletFileImportDialog .walletPassword input');
+  return this.client.waitForVisible('.WalletFileImportDialog .spendingPassword input');
 });
 
 When(/^I have one wallet address$/, function () {
@@ -188,7 +188,7 @@ When(/^I see send money confirmation dialog$/, function () {
 });
 
 When(/^I enter wallet spending password in confirmation dialog "([^"]*)"$/, async function (password) {
-  await this.client.setValue('.WalletSendConfirmationDialog_walletPassword input', password);
+  await this.client.setValue('.WalletSendConfirmationDialog_spendingPassword input', password);
 });
 
 When(/^I submit the wallet send form$/, async function () {
@@ -213,7 +213,7 @@ When(/^I submit the create wallet dialog with the following inputs:$/, async fun
 When(/^I submit the create wallet with spending password dialog with the following inputs:$/, async function (table) {
   const fields = table.hashes()[0];
   await this.client.setValue('.WalletCreateDialog .walletName input', fields.walletName);
-  await this.client.setValue('.WalletCreateDialog .walletPassword input', fields.password);
+  await this.client.setValue('.WalletCreateDialog .spendingPassword input', fields.password);
   await this.client.setValue('.WalletCreateDialog .repeatedPassword input', fields.repeatedPassword);
   return this.client.click('.WalletCreateDialog .primary');
 });
@@ -236,7 +236,7 @@ When(/^I enter recovery phrase in restore wallet dialog:$/, async function (tabl
 
 When(/^I enter wallet password in restore wallet dialog:$/, async function (table) {
   const fields = table.hashes()[0];
-  await this.client.setValue('.WalletRestoreDialog .walletPassword input', fields.password);
+  await this.client.setValue('.WalletRestoreDialog .spendingPassword input', fields.password);
   await this.client.setValue('.WalletRestoreDialog .repeatedPassword input', fields.repeatedPassword);
 });
 

@@ -8,7 +8,7 @@ const messages = defineMessages({
     defaultMessage: '!!!An error occurred, please try again later.',
     description: 'Generic error message.'
   },
-  incorrectWalletPasswordError: {
+  incorrectSpendingPasswordError: {
     id: 'api.errors.IncorrectPasswordError',
     defaultMessage: '!!!Incorrect wallet password.',
     description: '"Incorrect wallet password." error message.'
@@ -40,11 +40,11 @@ export class GenericApiError extends LocalizableError {
   }
 }
 
-export class IncorrectWalletPasswordError extends LocalizableError {
+export class IncorrectSpendingPasswordError extends LocalizableError {
   constructor() {
     super({
-      id: messages.incorrectWalletPasswordError.id,
-      defaultMessage: messages.incorrectWalletPasswordError.defaultMessage,
+      id: messages.incorrectSpendingPasswordError.id,
+      defaultMessage: messages.incorrectSpendingPasswordError.defaultMessage,
     });
   }
 }

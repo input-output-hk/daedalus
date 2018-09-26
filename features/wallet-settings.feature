@@ -27,7 +27,7 @@ Feature: Wallet Settings
     And I submit the wallet password dialog
     Then I should see the following error messages:
     | message                             |
-    | global.errors.invalidWalletPassword |
+    | global.errors.invalidSpendingPassword |
 
   Scenario: User changes Wallet password
     Given I am on the "second" wallet "settings" screen

@@ -11,7 +11,7 @@ export type TransactionParams = {
     },
     destinations: Array<PaymentDistribution>,
     groupingPolicy: ?'OptimizeForSecurity' | 'OptimizeForSize',
-    spendingPassword: ?string
+    spendingPassword?: string,
   },
 };
 

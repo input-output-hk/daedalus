@@ -27,7 +27,7 @@ export default class AddressesStore extends Store {
     actions.resetErrors.listen(this._resetErrors);
   }
 
-  _createAddress = async (params: { walletId: string, spendingPassword?: string }) => {
+  _createAddress = async (params: { walletId: string, spendingPassword: ?string }) => {
     try {
       const { walletId, spendingPassword } = params;
       const accountIndex = await this.getAccountIndexByWalletId(walletId);

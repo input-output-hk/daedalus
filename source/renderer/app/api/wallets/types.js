@@ -43,7 +43,7 @@ export type CreateWalletRequest = {
   spendingPassword: ?string,
 };
 
-export type UpdateWalletPasswordRequest = {
+export type UpdateSpendingPasswordRequest = {
   walletId: string,
   oldPassword?: string,
   newPassword: ?string,
@@ -56,7 +56,7 @@ export type DeleteWalletRequest = {
 export type RestoreWalletRequest = {
   recoveryPhrase: string,
   walletName: string,
-  walletPassword: ?string,
+  spendingPassword?: ?string,
 };
 
 export type UpdateWalletRequest = {
