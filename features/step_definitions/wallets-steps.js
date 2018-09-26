@@ -37,6 +37,7 @@ Given(/^I have a "Imported Wallet" with funds$/, async function () {
   addOrSetWalletsForScenario.call(this, wallet);
 });
 
+// V1 API endpoint for importing a wallet with a spending-password is currently broken
 Given(/^I have a "Imported Wallet" with funds and password$/, async function () {
   await importWalletWithFunds(this.client, {
     keyFilePath: defaultWalletKeyFilePath,
