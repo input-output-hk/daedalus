@@ -39,6 +39,10 @@
   max-width: 670px;
   opacity: 0.7;
   text-align: center;
+
+  strong {
+    font-family: var(--font-bold);
+  }
 }
 .content3 {
   color: var(--theme-data-migration-layer-text-opacity-color);

@@ -775,7 +775,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!New data layer migration",
+        "defaultMessage": "!!!Wallet data migration",
         "description": "Title for the Data Layer Migration screen.",
         "end": {
           "column": 3,
@@ -789,7 +789,7 @@
         }
       },
       {
-        "defaultMessage": "!!!You have installed a version of Daedalus which changes how wallet data is stored and managed. Because of this all of your wallets need to be restored and synchronized with the complete history of Cardano blockchain.",
+        "defaultMessage": "!!!You have installed a version of Daedalus that changes how wallet data is stored and managed. Because of this, all of your wallets need to be restored and synchronized with the complete history of the Cardano blockchain.",
         "description": "Content for the Data Layer Migration screen.",
         "end": {
           "column": 3,
@@ -803,7 +803,7 @@
         }
       },
       {
-        "defaultMessage": "!!!This is an automatic process and does not require any actions on your behalf.",
+        "defaultMessage": "!!!This is an automatic process and does not require any action on your behalf.",
         "description": "Content for the Data Layer Migration screen.",
         "end": {
           "column": 3,
@@ -817,7 +817,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Your transaction history and used addresses will be appearing in your wallets as they are recovered during the restoration process. Addresses which were not used will not be recovered since there are not recorded on the blockchain. If funds are sent to those addresses you will receive them and those addresses will then appear in your wallet.",
+        "defaultMessage": "!!!Your transaction history and used addresses will appear in your wallets as they are recovered during the restoration process. Addresses that were not used will not be recovered because they are not recorded on the blockchain. If funds were sent to those addresses you will receive the funds and those addresses will appear in your wallet.",
         "description": "Content for the Data Layer Migration screen.",
         "end": {
           "column": 3,
@@ -831,7 +831,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Migrate Wallets",
+        "defaultMessage": "!!!Start migration",
         "description": "Submit label for the Data Layer Migration screen.",
         "end": {
           "column": 3,
