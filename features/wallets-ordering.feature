@@ -1,9 +1,9 @@
-Feature: Wallet Settings
+Feature: Wallet Odering
 
   Background:
     Given I have completed the basic setup
 
-  Scenario: User sets Wallet password
+  Scenario: Wallets ordering
     Given I have created the following wallets:
       | name     |
       | Wallet 1 |
