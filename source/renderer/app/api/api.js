@@ -526,7 +526,7 @@ export default class AdaApi {
     request: ImportWalletFromFileRequest
   ): Promise<Wallet> => {
     Logger.debug('AdaApi::importWalletFromFile called');
-    const { filePath } = request;
+    const { filePath, spendingPassword: passwordString } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     const isKeyFile = filePath.split('.').pop().toLowerCase() === 'key';
     try {
