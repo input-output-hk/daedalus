@@ -19,7 +19,6 @@ export const createMainWindow = (isInSafeMode) => {
     }
   };
 
-  console.log(runtimeFolderPath);
 
   if (process.platform === 'linux') {
     windowOptions.icon = path.join(runtimeFolderPath, 'icon.png');
