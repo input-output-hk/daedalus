@@ -21,7 +21,7 @@ export default () => {
     if (supportWindow) return;
     supportWindow = createSupportWindow(unsetSupportWindow);
     supportWindow.webContents.on('did-finish-load', () => {
-      supportWindow.webContents.send(SUPPORT_WINDOW.INFO, info);
+      supportWindow && supportWindow.webContents.send(SUPPORT_WINDOW.INFO, info);
     });
   });
 
