@@ -11,6 +11,7 @@ export default class ProfileActions {
     email: string, subject: string, problem: string, compressedLogsFile: ?string,
   }> = new Action();
   resetBugReportDialog: Action<any> = new Action();
+  openSupportWindow: Action<any> = new Action();
   downloadLogs: Action<{ fileName: string, destination: string, fresh?: boolean }> = new Action();
   updateLocale: Action<{ locale: string }> = new Action();
   updateTheme: Action<{ theme: string }> = new Action();

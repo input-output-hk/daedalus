@@ -97,7 +97,12 @@ gulp.task('build:main', buildMain());
 gulp.task('build:main:watch', buildMainWatch());
 
 gulp.task('build:renderer:html', () => (
-  gulp.src('source/renderer/index.html').pipe(gulp.dest('dist/renderer/'))
+  gulp
+    .src([
+      'source/renderer/index.html',
+      'source/renderer/support.html',
+    ])
+    .pipe(gulp.dest('dist/renderer/'))
 ));
 
 gulp.task('build:renderer:assets', buildRenderer());

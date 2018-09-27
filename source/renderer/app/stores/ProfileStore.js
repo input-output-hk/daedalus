@@ -9,7 +9,7 @@ import Request from './lib/LocalizedRequest';
 import environment from '../../../common/environment';
 import { THEMES } from '../themes/index';
 import { ROUTES } from '../routes-config';
-import { GET_LOGS, DOWNLOAD_LOGS, COMPRESS_LOGS } from '../../../common/ipc-api';
+import { GET_LOGS, DOWNLOAD_LOGS, COMPRESS_LOGS, SUPPORT_WINDOW } from '../../../common/ipc-api';
 import LocalizableError from '../i18n/LocalizableError';
 import globalMessages from '../i18n/global-messages';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
@@ -59,6 +59,7 @@ export default class SettingsStore extends Store {
     this.actions.profile.getLogsAndCompress.listen(this._getLogsAndCompress);
     this.actions.profile.sendBugReport.listen(this._sendBugReport);
     this.actions.profile.resetBugReportDialog.listen(this._resetBugReportDialog);
+    this.actions.profile.openSupportWindow.listen(this._openSupportWindow);
     this.actions.profile.downloadLogs.listen(this._downloadLogs);
     ipcRenderer.on(GET_LOGS.SUCCESS, this._onGetLogsSuccess);
     ipcRenderer.on(DOWNLOAD_LOGS.SUCCESS, this._onDownloadLogsSuccess);
@@ -265,6 +266,13 @@ export default class SettingsStore extends Store {
         this.isSubmittingBugReport = false;
         this.error = error;
       }));
+  });
+
+  _openSupportWindow = action(() => {
+    const locale = this.stores.profile.currentLocale;
+    const currentTheme = this.stores.profile.currentTheme;
+    const themeVars = require(`../themes/daedalus/${currentTheme}.js`); // eslint-disable-line
+    ipcRenderer.send(SUPPORT_WINDOW.OPEN, { locale, themeVars });
   });
 
   _resetBugReportDialog = () => {

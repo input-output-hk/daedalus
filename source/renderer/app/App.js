@@ -13,7 +13,6 @@ import type { StoresMap } from './stores/index';
 import type { ActionsMap } from './actions/index';
 import ThemeManager from './ThemeManager';
 import AboutDialog from './containers/static/AboutDialog';
-import supportWidget from './containers/static/supportWidget';
 
 @observer
 export default class App extends Component<{
@@ -21,14 +20,6 @@ export default class App extends Component<{
   actions: ActionsMap,
   history: Object,
 }> {
-
-  componentDidMount() {
-    const { stores } = this.props;
-    const locale = stores.profile.currentLocale;
-    const currentTheme = stores.profile.currentTheme;
-    const themeVars = require(`./themes/daedalus/${currentTheme}.js`); // eslint-disable-line
-    supportWidget(locale, themeVars);
-  }
 
   render() {
     const { stores, actions, history } = this.props;

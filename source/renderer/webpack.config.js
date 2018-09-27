@@ -14,10 +14,13 @@ const isCi = process.env.CI && process.env.CI !== '';
 
 module.exports = {
   devtool: 'cheap-module-source-map',
-  entry: './source/renderer/index.js',
+  entry: {
+    index: './source/renderer/index.js',
+    support: './source/renderer/support.js',
+  },
   output: {
     path: path.join(__dirname, './dist/renderer'),
-    filename: 'index.js'
+    filename: '[name].js'
   },
   // https://github.com/chentsulin/webpack-target-electron-renderer#how-this-module-works
   target: 'electron-renderer',
