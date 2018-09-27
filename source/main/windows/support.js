@@ -6,7 +6,7 @@ import RendererErrorHandler from '../utils/rendererErrorHandler';
 
 const rendererErrorHandler = new RendererErrorHandler();
 
-export const createSupportWindow = () => {
+export const createSupportWindow = (unsetSupportWindow) => {
   const windowOptions = {
     show: false,
     width: 375,
@@ -50,6 +50,10 @@ export const createSupportWindow = () => {
     } else {
       window.show(); // show also focuses the window
     }
+  });
+
+  window.on('closed', () => {
+    unsetSupportWindow();
   });
 
   window.webContents.on('did-fail-load', (err) => {
