@@ -21,7 +21,7 @@ const printMainProcessLogs = () => (
     })
 );
 
-const getFile = (testName) => {
+const generateFilePath = (testName) => {
   testName = testName
     .replace('features/', '')
     .replace('.feature', '');
@@ -33,7 +33,7 @@ const getFile = (testName) => {
 
 const saveScreenshot = async (testName) => {
   await context.app.browserWindow.capturePage()
-    .then((imageBuffer) => fs.writeFile(getFile(testName), imageBuffer))
+    .then((imageBuffer) => fs.writeFile(generateFilePath(testName), imageBuffer))
     .catch((err) => {
       console.log(err);
     });
