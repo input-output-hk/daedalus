@@ -1,11 +1,8 @@
 import { Application } from 'spectron';
 import { defineSupportCode } from 'cucumber';
-import fs from 'fs';
-import path from 'path';
 import electronPath from 'electron';
 import environment from '../../source/common/environment';
-import { generateFileNameWithTimestamp } from '../../source/common/fileName';
-import ensureDirectoryExists from '../../source/main/utils/ensureDirectoryExists';
+import { generateScreenshotFilePath, getTestNameFromTestFile, saveScreenshot } from './helpers/screenshot';
 
 const context = {};
 const DEFAULT_TIMEOUT = 20000;
@@ -20,24 +17,6 @@ const printMainProcessLogs = () => (
       return true;
     })
 );
-
-const generateFilePath = (testName) => {
-  testName = testName
-    .replace('features/', '')
-    .replace('.feature', '');
-  const filePath = path.resolve(__dirname, '../screenshots', testName);
-  const fileName = generateFileNameWithTimestamp(testName, 'png');
-  ensureDirectoryExists(filePath);
-  return `${filePath}/${fileName}`;
-};
-
-const saveScreenshot = async (testName) => {
-  await context.app.browserWindow.capturePage()
-    .then((imageBuffer) => fs.writeFile(generateFilePath(testName), imageBuffer))
-    .catch((err) => {
-      console.log(err);
-    });
-};
 
 const startApp = async () => {
   const app = new Application({
@@ -122,7 +101,9 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
   After(async function ({ sourceLocation, result }) {
     scenariosCount++;
     if (result.status === 'failed') {
-      await saveScreenshot(sourceLocation.uri);
+      const testName = getTestNameFromTestFile(sourceLocation.uri);
+      const file = generateScreenshotFilePath(testName);
+      await saveScreenshot(context, file);
       await printMainProcessLogs();
     }
   });
