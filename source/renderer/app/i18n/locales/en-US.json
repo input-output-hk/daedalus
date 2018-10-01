@@ -3,7 +3,7 @@
   "ImageUploadWidget.dropFileHint": "Drop file here",
   "api.errors.AllFundsAlreadyAtReceiverAddressError": "All your funds are already at the address you are trying send money to.",
   "api.errors.ApiMethodNotYetImplementedError": "This API method is not yet implemented.",
-  "api.errors.GenericApiError": "An error occurred, please try again later.",
+  "api.errors.GenericApiError": "An error occurred.",
   "api.errors.IncorrectPasswordError": "Incorrect wallet password.",
   "api.errors.NotAllowedToSendMoneyToRedeemAddressError": "It is not allowed to send money to Ada redemption address.",
   "api.errors.NotAllowedToSendMoneyToSameAddressError": "It's not allowed to send money to the same address you are sending from. Make sure you have enough addresses with money in this account or send to a different address.",
