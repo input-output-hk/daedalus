@@ -145,6 +145,7 @@ export default class NetworkStatusStore extends Store {
 
   _requestTlsConfig = async () => {
     try {
+      Logger.info('NetworkStatusStore: requesting tls config from main process.');
       const tlsConfig = await tlsConfigChannel.send();
       await this._updateTlsConfig(tlsConfig);
     } catch (error) {

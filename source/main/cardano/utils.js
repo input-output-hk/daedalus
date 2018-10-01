@@ -40,7 +40,7 @@ export const portIsTaken = (port: number): Promise<boolean> => (
   })
 );
 
-export const processIsRunning = async (pid: number): boolean => {
+export const processIsRunning = async (pid: number): Promise<boolean> => {
   try {
     await process.kill(pid, 0);
     return true;
@@ -55,7 +55,7 @@ export const getContentLength = (content: string) => (
   (new TextEncoder()).encode(content).length
 );
 
-export const encryptPassphrase = (passphrase: ?string) => (
+export const encryptPassphrase = (_passphrase: ?string) => (
   ''
 );
 

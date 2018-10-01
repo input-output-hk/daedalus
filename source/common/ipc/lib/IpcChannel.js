@@ -28,16 +28,15 @@ export class IpcChannel<Request, AwaitedResponse, ReceivedRequest, Response> {
    */
   static _instances = {};
   /**
-   * The ipc channel name
+   * The public broadcast channel (any process will receive these messages)
    * @private
    */
-  _channel: string;
+  _broadcastChannel: string;
   /**
-   * Flag that indicates if we are awaiting a reply from the receiver.
+   * The response channel between a main and render process
    * @private
    */
-  _isAwaitingResponse: boolean;
-
+  _responseChannel: string;
   /**
    * Sets up the ipc channel and checks that its name is valid.
    * Ensures that only one instance per channel name can exist.
@@ -53,8 +52,8 @@ export class IpcChannel<Request, AwaitedResponse, ReceivedRequest, Response> {
     if (existingChannel) return existingChannel;
     IpcChannel._instances[channelName] = this;
 
-    this._channel = channelName;
-    this._isAwaitingResponse = false;
+    this._broadcastChannel = channelName + '-broadcast';
+    this._responseChannel = channelName + '-response';
   }
 
   /**
@@ -69,16 +68,14 @@ export class IpcChannel<Request, AwaitedResponse, ReceivedRequest, Response> {
    */
   async send(request: Request, sender: IpcSender, receiver: IpcReceiver): Promise<AwaitedResponse> {
     return new Promise((resolve, reject) => {
-      sender.send(this._channel, request);
-      this._isAwaitingResponse = true;
+      sender.send(this._broadcastChannel, request);
       // Handle response to the sent request once
-      receiver.once(this._channel, (event, isOk: boolean, response: AwaitedResponse) => {
+      receiver.once(this._responseChannel, (event, isOk: boolean, response: AwaitedResponse) => {
         if (isOk) {
           resolve(response);
         } else {
           reject(response);
         }
-        this._isAwaitingResponse = false;
       });
     });
   }
@@ -92,14 +89,12 @@ export class IpcChannel<Request, AwaitedResponse, ReceivedRequest, Response> {
    * @param handler
    */
   onReceive(handler: (request: ReceivedRequest) => Promise<Response>, receiver: IpcReceiver): void {
-    receiver.on(this._channel, async (event: IpcEvent, request: ReceivedRequest) => {
-      // Only handle messages if they are not yet part of a request / response cycle.
-      if (this._isAwaitingResponse) return;
+    receiver.on(this._broadcastChannel, async (event: IpcEvent, request: ReceivedRequest) => {
       try {
         const response = await handler(request);
-        event.sender.send(this._channel, true, response);
+        event.sender.send(this._responseChannel, true, response);
       } catch (error) {
-        event.sender.send(this._channel, false, error);
+        event.sender.send(this._responseChannel, false, error);
       }
     });
   }

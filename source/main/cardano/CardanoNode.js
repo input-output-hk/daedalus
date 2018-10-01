@@ -202,7 +202,7 @@ export class CardanoNode {
         }
       });
     });
-  }
+  };
 
   /**
    * Stops cardano-node, first by disconnecting and waiting up to `shutdownTimeout`
@@ -446,21 +446,25 @@ export class CardanoNode {
    */
   _canBeStarted = async (tlsPath: string): Promise<boolean> => {
     if (this._isAwake()) { return false; }
-    await this._defensiveStartup(tlsPath);
+    await this._ensurePreviousCardanoNodeIsNotRunning(tlsPath);
     return true;
   };
 
   _canBeStopped = () => this._isAwake();
 
-  _defensiveStartup = async (tlsPath: string): Promise<boolean> => {
+  _ensurePreviousCardanoNodeIsNotRunning = async (tlsPath: string): Promise<void> => {
     this._log.info('CardanoNode: checking previous port and pid for an instance of cardano-node');
     const previousPort: ?number = await this._getPreviousPort();
     const previousPID: ?number = await this._getPreviousPID();
 
+    if (previousPort == null || previousPID == null) return;
+
     const previousPortTaken = previousPort ? await portIsTaken(previousPort) : false;
     this._log.info(`previous port was taken: ${previousPortTaken.toString()}`);
 
-    const portIsCardanoNode = previousPortTaken ? await this._portIsCardanoNode(tlsPath) : false;
+    const portIsCardanoNode = (
+      previousPortTaken ? await this._portIsCardanoNode(tlsPath, previousPort) : false
+    );
     const previousProcessIsRunning = previousPID ? await processIsRunning(previousPID) : false;
     this._log.info(`previousProcessIsRunning result: ${previousProcessIsRunning.toString()}`);
 
@@ -469,9 +473,7 @@ export class CardanoNode {
       // kill previous process
       await this._killPreviousProcess(previousPID);
     }
-
     this._log.info('Previous instance of cardano-node does not exist');
-    return false;
   };
 
   _portIsCardanoNode = async (tlsPath: string, previousPort: number): Promise<boolean> => {
