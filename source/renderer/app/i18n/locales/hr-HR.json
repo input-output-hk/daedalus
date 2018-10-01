@@ -3,7 +3,7 @@
   "ImageUploadWidget.dropFileHint": "!!!Drop file here",
   "api.errors.AllFundsAlreadyAtReceiverAddressError": "!!!All your funds are already at the address you are trying send money to.",
   "api.errors.ApiMethodNotYetImplementedError": "!!!This API method is not yet implemented.",
-  "api.errors.ForbiddenMnemonicError": "!!!Forbidden Mnemonic: an example Mnemonic has been submitted. Please generate a fresh and private Mnemonic from a trusted source.",
+  "api.errors.ForbiddenMnemonicError": "!!!Invalid recovery phrase. Submitted recovery phrase is one of the example recovery phrases from the documentation and should not be used for wallets holding funds.",
   "api.errors.GenericApiError": "!!!An error occurred, please try again later.",
   "api.errors.IncorrectPasswordError": "!!!Incorrect wallet password.",
   "api.errors.NotAllowedToSendMoneyToRedeemAddressError": "!!!It is not allowed to send money to Ada redemption address.",

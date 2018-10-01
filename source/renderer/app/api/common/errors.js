@@ -25,7 +25,7 @@ const messages = defineMessages({
   },
   forbiddenMnemonicError: {
     id: 'api.errors.ForbiddenMnemonicError',
-    defaultMessage: '!!!Forbidden Mnemonic: an example Mnemonic has been submitted. Please generate a fresh and private Mnemonic from a trusted source.',
+    defaultMessage: '!!!Invalid recovery phrase. Submitted recovery phrase is one of the example recovery phrases from the documentation and should not be used for wallets holding funds.',
     description: '"Forbidden Mnemonic: an example Mnemonic has been submitted." error message',
   },
 });
