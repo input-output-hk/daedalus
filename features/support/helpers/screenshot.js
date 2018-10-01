@@ -15,7 +15,7 @@ export const getTestNameFromTestFile = (testFile) => testFile
   .replace('.feature', '');
 
 export const saveScreenshot = async (context, file) => {
-  await context.app.browserWindow.capturePage()
+  await context.browserWindow.capturePage()
     .then((imageBuffer) => fs.writeFile(file, imageBuffer))
     .catch((err) => {
       console.log(err);

@@ -103,7 +103,7 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
     if (result.status === 'failed') {
       const testName = getTestNameFromTestFile(sourceLocation.uri);
       const file = generateScreenshotFilePath(testName);
-      await saveScreenshot(context, file);
+      await saveScreenshot(context.app, file);
       await printMainProcessLogs();
     }
   });
