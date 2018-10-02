@@ -2,8 +2,10 @@
 import Store from 'electron-store';
 import type { spawn, ChildProcess } from 'child_process';
 import type { WriteStream } from 'fs';
+import psList from 'ps-list';
+import { isEmpty } from 'lodash';
 import type { CardanoNodeState, TlsConfig } from '../../common/types/cardanoNode.types';
-import { promisedCondition, portIsTaken, processIsRunning, request } from './utils';
+import { promisedCondition } from './utils';
 import { CardanoNodeStates } from '../../common/types/cardanoNode.types';
 
 type Logger = {
@@ -50,9 +52,10 @@ export type CardanoNodeConfig = {
   updateTimeout: number, // Milliseconds to wait for cardano-node to update itself
 };
 
-// store for persisting CardanoNode data
-const PREVIOUS_PORT = 'PREVIOUS_PORT';
-const PREVIOUS_PID = 'PREVIOUS_PID';
+// store for persisting CardanoNode and Daedalus data
+const PREVIOUS_CARDANO_PORT = 'PREVIOUS_CARDANO_PORT';
+const PREVIOUS_CARDANO_PID = 'PREVIOUS_CARDANO_PID';
+const PREVIOUS_DAEDALUS_PID = 'PREVIOUS_DAEDALUS_PID';
 const store = new Store();
 
 export class CardanoNode {
@@ -160,7 +163,7 @@ export class CardanoNode {
    */
   start = async (config: CardanoNodeConfig): Promise<void> => {
     // Guards
-    const nodeCanBeStarted = await this._canBeStarted(config.tlsPath);
+    const nodeCanBeStarted = await this._canBeStarted();
 
     if (!nodeCanBeStarted) {
       return Promise.reject('CardanoNode: Cannot be started.');
@@ -212,7 +215,7 @@ export class CardanoNode {
    * @returns {Promise<void>} resolves if the node could be stopped, rejects with error otherwise.
    */
   stop(): Promise<void> {
-    const { _node, _log, _config, tlsConfig, _storePreviousPID, _storePreviousPort } = this;
+    const { _node, _log, _config, tlsConfig } = this;
     if (!_node || !this._canBeStopped()) return Promise.resolve();
     return new Promise(async (resolve, reject) => {
       _log.info('CardanoNode: disconnecting from cardano-node process.');
@@ -223,9 +226,10 @@ export class CardanoNode {
           () => this._state === CardanoNodeStates.STOPPED,
           _config.shutdownTimeout
         );
-        // store _node's pid and port for reference in next session
-        await _storePreviousPID(_node.pid);
-        await _storePreviousPort(tlsConfig.port);
+        // store cardano-node's pid and port, and Daedalus pid for reference in next session
+        await this._storeData(PREVIOUS_CARDANO_PID, _node.pid);
+        await this._storeData(PREVIOUS_CARDANO_PORT, tlsConfig.port);
+        await this._storeData(PREVIOUS_DAEDALUS_PID, process.pid);
 
         this._reset();
         resolve();
@@ -247,7 +251,7 @@ export class CardanoNode {
    * @returns {Promise<void>} resolves if the node could be killed, rejects with error otherwise.
    */
   kill(): Promise<void> {
-    const { _node, _log, _config, tlsConfig, _storePreviousPID, _storePreviousPort } = this;
+    const { _node, _log, _config, tlsConfig } = this;
     if (!_node || !this._canBeStopped()) return Promise.reject('Node not active.');
     return new Promise(async (resolve, reject) => {
       try {
@@ -257,17 +261,19 @@ export class CardanoNode {
           () => this._state === CardanoNodeStates.STOPPED,
           _config.killTimeout
         );
-        // store _node's pid and port for reference in next session
-        await _storePreviousPID(_node.pid);
-        await _storePreviousPort(tlsConfig.port);
+        // store cardano-node's pid and port, and Daedalus pid for reference in next session
+        await this._storeData(PREVIOUS_CARDANO_PID, _node.pid);
+        await this._storeData(PREVIOUS_CARDANO_PORT, tlsConfig.port);
+        await this._storeData(PREVIOUS_DAEDALUS_PID, process.pid);
 
         this._reset();
         resolve();
       } catch (_) {
         _log.info('CardanoNode: could not kill cardano-node.');
-        // store _node's pid and port for reference in next session
-        await _storePreviousPID(_node.pid);
-        await _storePreviousPort(tlsConfig.port);
+        // store cardano-node's pid and port, and Daedalus pid for reference in next session
+        await this._storeData(PREVIOUS_CARDANO_PID, _node.pid);
+        await this._storeData(PREVIOUS_CARDANO_PORT, tlsConfig.port);
+        await this._storeData(PREVIOUS_DAEDALUS_PID, process.pid);
 
         this._reset();
         reject('Could not kill cardano-node.');
@@ -444,151 +450,166 @@ export class CardanoNode {
    * @returns {boolean}
    * @private
    */
-  _canBeStarted = async (tlsPath: string): Promise<boolean> => {
+  _canBeStarted = async (): Promise<boolean> => {
     if (this._isAwake()) { return false; }
-    await this._ensurePreviousCardanoNodeIsNotRunning(tlsPath);
+    await this._ensurePreviousCardanoNodeIsNotRunning();
+    await this._ensurePreviousDaedalusIsNotRunning();
     return true;
   };
 
   _canBeStopped = () => this._isAwake();
 
-  _ensurePreviousCardanoNodeIsNotRunning = async (tlsPath: string): Promise<void> => {
-    this._log.info('CardanoNode: checking previous port and pid for an instance of cardano-node');
-    const previousPort: ?number = await this._getPreviousPort();
-    const previousPID: ?number = await this._getPreviousPID();
-
-    if (previousPort == null || previousPID == null) return;
-
-    const previousPortTaken = previousPort ? await portIsTaken(previousPort) : false;
-    this._log.info(`previous port was taken: ${previousPortTaken.toString()}`);
-
-    const portIsCardanoNode = (
-      previousPortTaken ? await this._portIsCardanoNode(tlsPath, previousPort) : false
+  _ensurePreviousCardanoNodeIsNotRunning = async (): Promise<void> => {
+    this._log.info(
+      'CardanoNode: checking for previous instance of cardano-node still running on last known process'
     );
-    const previousProcessIsRunning = previousPID ? await processIsRunning(previousPID) : false;
-    this._log.info(`previousProcessIsRunning result: ${previousProcessIsRunning.toString()}`);
+    const previousPID: ?number = await this._retrieveData(PREVIOUS_CARDANO_PID);
 
-    if (portIsCardanoNode && previousProcessIsRunning) {
-      this._log.info('CardanoNode: attempting to kill running process of previous cardano-node');
+    if (previousPID == null) { return; }
+
+    const processIsCardanoNode = (
+      previousPID ? await this._processIsRunning(previousPID, 'cardano-node') : false
+    );
+
+    if (processIsCardanoNode) {
+      this._log.info(`CardanoNode: attempting to kill previous cardano-node process with PID: ${previousPID}`);
       // kill previous process
       await this._killPreviousProcess(previousPID);
+      return;
     }
+
     this._log.info('Previous instance of cardano-node does not exist');
   };
 
-  _portIsCardanoNode = async (tlsPath: string, previousPort: number): Promise<boolean> => {
-    // make req to identify as cardano-node
-    const { ca, cert, key } = Object.assign({}, {
-      ca: this._actions.readFileSync(tlsPath + '/client/ca.crt'),
-      key: this._actions.readFileSync(tlsPath + '/client/client.key'),
-      cert: this._actions.readFileSync(tlsPath + '/client/client.pem'),
-    });
+  _ensurePreviousDaedalusIsNotRunning = async (): Promise<void> => {
+    this._log.info(
+      'CardanoNode: checking for previous instance of Daedalus still running on last known process'
+    );
+    const previousPID: ?number = await this._retrieveData(PREVIOUS_DAEDALUS_PID);
 
+    if (previousPID == null) { return; }
+
+    // TODO: Change the Daedalus process.name from 'Electron' to 'Daedalus'
+    const processIsDaedalus = (
+      previousPID ? await this._processIsRunning(previousPID, 'Electron') : false
+    );
+
+    if (processIsDaedalus) {
+      this._log.info(`CardanoNode: attempting to kill previous Daedalus process with PID: ${previousPID}`);
+      // kill previous process
+      await this._killPreviousProcess(previousPID);
+      return;
+    }
+
+    this._log.info('Previous instance of Daedalus does not exist');
+  };
+
+  _processIsRunning = async (_previousPID: number, _processName: string): Promise<boolean> => {
     try {
-      this._log.info(`CardanoNode: sending node-info req to previous port: ${previousPort}`);
-      const nodeInfo = await request({
-        hostname: 'localhost',
-        method: 'GET',
-        path: '/api/v1/node-info',
-        ca,
-        cert,
-        key,
-        port: previousPort
-      }, {});
-      this._log.info(`CardanoNode: node-info req success. Response: ${JSON.stringify(nodeInfo)}`);
-
-      // previous cardano-node successfuly identified
-      return (nodeInfo && nodeInfo.status === 'success');
+      // retrieves all running processes and filters against previous PID
+      const matchingProcesses: Array<{}> = await psList().filter(({ pid }) => _previousPID === pid);
+      // return false if no processes exist with a matching PID
+      if (!matchingProcesses.length) { return false; }
+      // pull first result
+      const previousProcess: Object = matchingProcesses[0];
+      // check name of process to identify cardano-node or Daedalus
+      return (!isEmpty(previousProcess) && previousProcess.name === _processName);
     } catch (error) {
-      if (error.code === 'ECONNREFUSED') {
-        this._log.info(`
-          CardanoNode: node-info req failed. Error Code: ${JSON.stringify(error.code)}
-          Previous port is not occupied by an instance of cardano-node.
-        `);
-        return false;
-      }
-      this._log.info(`CardanoNode: node-info req failed. Error: ${JSON.stringify(error)}`);
       return false;
     }
   };
 
-  // kills the previous process on which the cardano-node child_process was running.
-  _killPreviousProcess = (pid: number): Promise<void> => new Promise((resolve, reject) => {
-    try {
-      setTimeout(() => process.kill(pid), 1000);
-      this._log.info(`CardanoNode: cardano-node child process with pid ${pid} was killed.`);
-      resolve();
-    } catch (error) {
-      this._log.info(`
-        CardanoNode: _killPreviousProcess returned an error after an attempting
-        to kill a process with pid ${pid}. Error received: ${JSON.stringify(error)}
-      `);
-      reject(error);
-    }
-  });
+  /**
+  // TODO: Determine if this method is still needed
+  * */
 
-  // persists the current port on which the cardano-node child_process is running.
-  _storePreviousPort = (port: number): Promise<void> => new Promise((resolve, reject) => {
-    try {
-      // saves current port in file system
-      store.set(PREVIOUS_PORT, port);
-      this._log.info('CardanoNode: previous port stored successfuly');
-      resolve();
-    } catch (error) {
-      this._log.info(`CardanoNode: failed to store previous port. Error: ${JSON.stringify(error)}`);
-      reject(error);
-    }
-  });
+  // _portIsCardanoNode = async (tlsPath: string, previousPort: number): Promise<boolean> => {
+  //   // make req to identify as cardano-node
+  //   const { ca, cert, key } = Object.assign({}, {
+  //     ca: this._actions.readFileSync(tlsPath + '/client/ca.crt'),
+  //     key: this._actions.readFileSync(tlsPath + '/client/client.key'),
+  //     cert: this._actions.readFileSync(tlsPath + '/client/client.pem'),
+  //   });
+  //
+  //   try {
+  //     this._log.info(`CardanoNode: sending node-info req to previous port: ${previousPort}`);
+  //     const nodeInfo = await request({
+  //       hostname: 'localhost',
+  //       method: 'GET',
+  //       path: '/api/v1/node-info',
+  //       ca,
+  //       cert,
+  //       key,
+  //       port: previousPort
+  //     }, {});
+  //     this._log.info(`CardanoNode: node-info req success. Response: ${JSON.stringify(nodeInfo)}`);
+  //
+  //     // previous cardano-node successfuly identified
+  //     return (nodeInfo && nodeInfo.status === 'success');
+  //   } catch (error) {
+  //     if (error.code === 'ECONNREFUSED') {
+  //       this._log.info(`
+  //         CardanoNode: node-info req failed. Error Code: ${JSON.stringify(error.code)}
+  //         Previous port is not occupied by an instance of cardano-node.
+  //       `);
+  //       return false;
+  //     }
+  //     this._log.info(`CardanoNode: node-info req failed. Error: ${JSON.stringify(error)}`);
+  //     return false;
+  //   }
+  // };
 
-  // retrieves the last known port on which the cardano-node child_process was running.
-  _getPreviousPort = (): Promise<?number> => new Promise((resolve, reject) => {
-    try {
-      // retrieves previous port from file system
-      const port: ?number = store.get(PREVIOUS_PORT);
-
-      if (!port) {
-        this._log.info('CardanoNode: get previous port returned null');
-        resolve(null);
+  // kills running process which did not shut down properly between sessions
+  _killPreviousProcess = (pid: number): Promise<void> => (
+    new Promise((resolve, reject) => {
+      try {
+        setTimeout(() => process.kill(pid), 1000);
+        this._log.info(`CardanoNode: successfuly killed process with pid ${pid}`);
+        resolve();
+      } catch (error) {
+        this._log.info(`
+          CardanoNode: _killPreviousProcess returned an error attempting to kill
+          process with pid ${pid}. Error: ${JSON.stringify(error)}
+        `);
+        reject(error);
       }
+    })
+  );
 
-      this._log.info(`CardanoNode: get previous port success. Port: ${JSON.stringify(port)}`);
-      resolve(port);
-    } catch (error) {
-      this._log.info(`CardanoNode: get previous port failed. Error: ${JSON.stringify(error)}`);
-      reject(error);
-    }
-  });
-
-  // persists the current PID on which the cardano-node child_process is running.
-  _storePreviousPID = (pid: number): Promise<void> => new Promise((resolve, reject) => {
-    try {
-      // saves current PID in file system
-      store.set(PREVIOUS_PID, pid);
-      this._log.info('CardanoNode: previous PID stored successfuly');
-      resolve();
-    } catch (error) {
-      this._log.info(`CardanoNode: failed to store previous PID. Error: ${JSON.stringify(error)}`);
-      reject(error);
-    }
-  });
-
-  // retrieves the last known PID on which the cardano-node child_process was running.
-  _getPreviousPID = (): Promise<?number> => new Promise((resolve, reject) => {
-    try {
-      // retrieves previous PID from file system
-      const pid: ?number = store.get(PREVIOUS_PID);
-
-      if (!pid) {
-        this._log.info('CardanoNode: get previous PID returned null');
-        resolve(null);
+  // stores the current port/pid on which cardano-node or Daedalus is running
+  _storeData = (identifier: string, data: number): Promise<void> => (
+    new Promise((resolve, reject) => {
+      try {
+        // saves current port/pid in file system
+        store.set(identifier, data);
+        this._log.info(`CardanoNode: ${identifier} stored successfuly`);
+        resolve();
+      } catch (error) {
+        this._log.info(`CardanoNode: failed to store ${identifier}. Error: ${JSON.stringify(error)}`);
+        reject(error);
       }
+    })
+  );
 
-      this._log.info(`CardanoNode: get previous PID success. PID: ${JSON.stringify(pid)}`);
-      resolve(pid);
-    } catch (error) {
-      this._log.info(`CardanoNode: get previous PID failed. Error: ${JSON.stringify(error)}`);
-      reject(error);
-    }
-  });
+  // retrieves the last known port/pid on which cardano-node or Daedalus was running
+  _retrieveData = (identifier: string): Promise<?number> => (
+    new Promise((resolve, reject) => {
+      try {
+        // retrieves previous port/pid from file system
+        const data: ?number = store.get(identifier);
+
+        if (!data) {
+          this._log.info(`CardanoNode: get ${identifier} returned null`);
+          resolve(null);
+        }
+
+        this._log.info(`CardanoNode: get ${identifier} success: ${JSON.stringify(data)}`);
+        resolve(data);
+      } catch (error) {
+        this._log.info(`CardanoNode: get ${identifier} failed. Error: ${JSON.stringify(error)}`);
+        reject(error);
+      }
+    })
+  );
 
 }
