@@ -5,7 +5,7 @@ import globalMessages from '../../i18n/global-messages';
 const messages = defineMessages({
   genericApiError: {
     id: 'api.errors.GenericApiError',
-    defaultMessage: '!!!An error occurred, please try again later.',
+    defaultMessage: '!!!An error occurred.',
     description: 'Generic error message.'
   },
   incorrectWalletPasswordError: {

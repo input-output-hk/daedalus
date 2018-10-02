@@ -2,6 +2,7 @@ import { Application } from 'spectron';
 import { defineSupportCode } from 'cucumber';
 import electronPath from 'electron';
 import environment from '../../source/common/environment';
+import { generateScreenshotFilePath, getTestNameFromTestFile, saveScreenshot } from './helpers/screenshot';
 
 const context = {};
 const DEFAULT_TIMEOUT = 20000;
@@ -97,9 +98,12 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
   });
 
   // eslint-disable-next-line prefer-arrow-callback
-  After(async function ({ result }) {
+  After(async function ({ sourceLocation, result }) {
     scenariosCount++;
     if (result.status === 'failed') {
+      const testName = getTestNameFromTestFile(sourceLocation.uri);
+      const file = generateScreenshotFilePath(testName);
+      await saveScreenshot(context.app, file);
       await printMainProcessLogs();
     }
   });
