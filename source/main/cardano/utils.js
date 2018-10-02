@@ -1,6 +1,4 @@
 // @flow
-import net from 'net';
-
 const checkCondition = async (
   condition: () => boolean,
   timeout: number,
