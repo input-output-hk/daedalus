@@ -2,7 +2,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!An error occurred, please try again later.",
+        "defaultMessage": "!!!An error occurred.",
         "description": "Generic error message.",
         "end": {
           "column": 3,
