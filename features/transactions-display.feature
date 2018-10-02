@@ -9,7 +9,7 @@ Feature: Display wallet transactions
     Given I have completed the basic setup
     And I have a "Imported Wallet" with funds
     And I have the following wallets:
-      | name   |
+      | name         |
       | TargetWallet |
 
   Scenario: No recent transactions
