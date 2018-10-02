@@ -37,6 +37,7 @@ export const GET_GPU_STATUS = {
 const SUPPORT_WINDOW_CHANNEL = 'get-gpu-status';
 export const SUPPORT_WINDOW = {
   OPEN: `${SUPPORT_WINDOW_CHANNEL}-open`,
-  INFO: `${SUPPORT_WINDOW_CHANNEL}-info`,
   CLOSE: `${SUPPORT_WINDOW_CHANNEL}-close`,
+  ZENDESK_INFO: `${SUPPORT_WINDOW_CHANNEL}-zendesk-info`,
+  LOGS_INFO: `${SUPPORT_WINDOW_CHANNEL}-logs-info`,
 };

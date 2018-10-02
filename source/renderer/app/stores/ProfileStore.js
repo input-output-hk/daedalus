@@ -219,7 +219,7 @@ export default class SettingsStore extends Store {
   _onGetLogsSuccess = action((event, files) => {
     this.logFiles = files;
     const { isDownloading } = this.compressedLogsStatus;
-    if (isDownloading || this.isSubmittingBugReport) {
+    if (isDownloading || this.isSubmittingBugReport || this.openSupportOnLogFilesSuccess) {
       this._compressLogs({ logs: files });
     }
   });
@@ -242,6 +242,10 @@ export default class SettingsStore extends Store {
     const { isDownloading, destination, fileName } = this.compressedLogsStatus;
     if (isDownloading) {
       this._downloadLogs({ destination, fileName });
+    }
+    if (this.openSupportOnLogFilesSuccess) {
+      this.openSupportOnLogFilesSuccess = false;
+      this._openSupportWindow(this.compressedLogsFile);
     }
   });
 
@@ -269,11 +273,17 @@ export default class SettingsStore extends Store {
       }));
   });
 
-  _openSupportWindow = action(() => {
-    const locale = this.stores.profile.currentLocale;
-    const currentTheme = this.stores.profile.currentTheme;
-    const themeVars = require(`../themes/daedalus/${currentTheme}.js`); // eslint-disable-line
-    ipcRenderer.send(SUPPORT_WINDOW.OPEN, { locale, themeVars });
+  _openSupportWindow = action((compressedLogsFile) => {
+    if (!compressedLogsFile) {
+      this.openSupportOnLogFilesSuccess = true;
+      this._getLogs();
+      const locale = this.stores.profile.currentLocale;
+      const currentTheme = this.stores.profile.currentTheme;
+      const themeVars = require(`../themes/daedalus/${currentTheme}.js`); // eslint-disable-line
+      ipcRenderer.send(SUPPORT_WINDOW.OPEN, { locale, themeVars });
+    } else {
+      ipcRenderer.send(SUPPORT_WINDOW.LOGS_INFO, { compressedLogsFile, environment });
+    }
   });
 
   _resetBugReportDialog = () => {

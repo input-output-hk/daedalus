@@ -1,7 +1,9 @@
 // @flow
 import { ipcMain } from 'electron';
+import path from 'path';
 import { createSupportWindow } from '../windows/support';
 import { SUPPORT_WINDOW } from '../../common/ipc-api';
+import { appLogsFolderPath } from '../config';
 
 export default () => {
   let supportWindow;
@@ -17,12 +19,18 @@ export default () => {
     supportWindow = null;
   };
 
-  ipcMain.on(SUPPORT_WINDOW.OPEN, (event, info) => {
+  ipcMain.on(SUPPORT_WINDOW.OPEN, (event, zendeskInfo) => {
     if (supportWindow) return;
     supportWindow = createSupportWindow(unsetSupportWindow);
     supportWindow.webContents.on('did-finish-load', () => {
-      supportWindow && supportWindow.webContents.send(SUPPORT_WINDOW.INFO, info);
+      supportWindow.webContents.send(SUPPORT_WINDOW.ZENDESK_INFO, zendeskInfo);
     });
+  });
+
+  ipcMain.on(SUPPORT_WINDOW.LOGS_INFO, (event, formInfo) => {
+    if (!supportWindow) return;
+    formInfo.compressedLogsFile = path.join(appLogsFolderPath, formInfo.compressedLogsFile);
+    supportWindow.webContents.send(SUPPORT_WINDOW.LOGS_INFO, formInfo);
   });
 
   ipcMain.on(SUPPORT_WINDOW.CLOSE, closeSupportWindow);

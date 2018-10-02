@@ -53,7 +53,7 @@ export const createSupportWindow = (unsetSupportWindow) => {
   });
 
   window.on('closed', () => {
-    unsetSupportWindow();
+    unsetSupportWindow && unsetSupportWindow();
   });
 
   window.webContents.on('did-fail-load', (err) => {
