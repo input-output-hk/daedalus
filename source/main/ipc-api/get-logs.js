@@ -3,34 +3,22 @@ import { ipcMain } from 'electron';
 import { includes, sortBy } from 'lodash';
 import fs from 'fs';
 import path from 'path';
-import { pubLogsFolderPath } from '../config';
+import {
+  pubLogsFolderPath,
+  MAX_NODE_LOGS_ALLOWED,
+  ALLOWED_LOGS,
+  ALLOWED_NODE_LOGS,
+  ALLOWED_LAUNCHER_LOGS,
+  MAX_LAUNCHER_LOGS_ALLOWED,
+} from '../config';
 import { GET_LOGS } from '../../common/ipc-api';
 
-const ALLOWED_LOGS = [
-  'Daedalus.log',
-  'launcher',
-  'node.pub',
-  'node.pub.0',
-  'node.pub.1',
-  'node.pub.2',
-  'node.pub.3',
-  'node.pub.4',
-  'node.pub.5',
-  'node.pub.6',
-  'node.pub.7',
-  'node.pub.8',
-  'node.pub.9',
-  'node.pub.10',
-  'node.pub.11',
-  'node.pub.12',
-  'node.pub.13',
-  'node.pub.14',
-  'node.pub.15',
-  'node.pub.16',
-  'node.pub.17',
-  'node.pub.18',
-  'node.pub.19',
-];
+const isFileAllowed = (fileName: string) => includes(ALLOWED_LOGS, fileName);
+const isFileNodeLog = (fileName: string, nodeLogsIncluded: number) =>
+  ALLOWED_NODE_LOGS.test(fileName) && nodeLogsIncluded < MAX_NODE_LOGS_ALLOWED;
+const isFileLauncherLog = (fileName: string, nodeLogsIncluded: number) =>
+  ALLOWED_LAUNCHER_LOGS.test(fileName) && nodeLogsIncluded < MAX_LAUNCHER_LOGS_ALLOWED;
+
 
 export default () => {
   ipcMain.on(GET_LOGS.REQUEST, (event) => {
@@ -39,14 +27,26 @@ export default () => {
     // check if pub folder exists and create array of log file names
     const logFiles = [];
     if (fs.existsSync(pubLogsFolderPath)) {
-      const files = fs.readdirSync(pubLogsFolderPath);
+
+      const files = fs
+        .readdirSync(pubLogsFolderPath)
+        .sort()
+        .reverse();
+
+      let nodeLogsIncluded = 0;
+      let launcherLogsIncluded = 0;
       for (let i = 0; i < files.length; i++) {
         const currentFile = path.join(pubLogsFolderPath, files[i]);
         if (fs.statSync(currentFile).isFile()) {
           const fileName = path.basename(currentFile);
-          const isFileAllowed = includes(ALLOWED_LOGS, fileName);
-          if (isFileAllowed) {
+          if (isFileAllowed(fileName)) {
             logFiles.push(fileName);
+          } else if (isFileNodeLog(fileName, nodeLogsIncluded)) {
+            logFiles.push(fileName);
+            nodeLogsIncluded++;
+          } else if (isFileLauncherLog(fileName, launcherLogsIncluded)) {
+            logFiles.push(fileName);
+            launcherLogsIncluded++;
           }
         }
       }
