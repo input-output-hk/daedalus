@@ -11,6 +11,7 @@ Changelog
 - Fixed broken storybook [PR 1041](https://github.com/input-output-hk/daedalus/pull/1041)
 - Remove all ETC specific files [PR 1068](https://github.com/input-output-hk/daedalus/pull/1068)
 - Make "port" and "ca" of Ada Api configurable during runtime [PR 1067](https://github.com/input-output-hk/daedalus/pull/1067)
+- Added screenshots record of failed acceptance tests [PR 1103](https://github.com/input-output-hk/daedalus/pull/1103)
 
 ### Features
 
