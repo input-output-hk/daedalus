@@ -12,8 +12,8 @@ When('I click the ShowUsed switch', async function () {
   await waitAndClick(this.client, '.SimpleSwitch_switch');
 });
 
-Then('I should see {int} used addresses', async function (numberOfAddresses) {
-  const addressesFound = await getVisibleElementsCountForSelector(this.client, '.WalletReceive_usedWalletAddress');
+Then('I should see {int} used addresses', { timeout: 40000 }, async function (numberOfAddresses) {
+  const addressesFound = await getVisibleElementsCountForSelector(this.client, '.WalletReceive_usedWalletAddress', '.WalletReceive_usedWalletAddress', 40000);
   expect(addressesFound).to.equal(numberOfAddresses);
 });
 
