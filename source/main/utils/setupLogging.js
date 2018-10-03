@@ -1,3 +1,4 @@
+// @flow
 import fs from 'fs';
 import path from 'path';
 import log from 'electron-log';
@@ -7,13 +8,14 @@ import { pubLogsFolderPath, appLogsFolderPath, APP_NAME } from '../config';
 import { isFileNameWithTimestamp } from '../../common/fileName';
 
 const isTest = process.env.NODE_ENV === 'test';
+const isDev = process.env.NODE_ENV === 'development';
 
 export const setupLogging = () => {
   const logFilePath = path.join(pubLogsFolderPath, APP_NAME + '.log');
   ensureDirectoryExists(pubLogsFolderPath);
 
-  log.transports.console.level = isTest ? 'error' : false;
-  log.transports.rendererConsole.level = 'error';
+  log.transports.console.level = isTest ? 'error' : 'info';
+  log.transports.rendererConsole.level = isDev ? 'info' : 'error';
   log.transports.file.level = 'debug';
   log.transports.file.maxSize = 20 * 1024 * 1024;
   log.transports.file.file = logFilePath;

@@ -1,7 +1,7 @@
 import path from 'path';
 import { app, BrowserWindow, ipcMain, Menu } from 'electron';
 import environment from '../../common/environment';
-import ipcApi from '../ipc-api';
+import ipcApi from '../ipc';
 import { runtimeFolderPath } from '../config';
 import RendererErrorHandler from '../utils/rendererErrorHandler';
 

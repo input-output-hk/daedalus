@@ -56,10 +56,7 @@ export const downloadPaperWalletCertificate = async (
 
   const printMnemonic = (index) => `${index + 1}. ${mnemonics[index]}`;
 
-  const loadAssetFromPath = async (path) => {
-    const asset = await loadAssetChannel.send({ fileName: path });
-    return asset;
-  };
+  const loadAssetFromPath = async (path) => await loadAssetChannel.send({ fileName: path });
 
   const loadFontBufferFromPath = async (path) => {
     const asset = await loadAssetFromPath(path);
