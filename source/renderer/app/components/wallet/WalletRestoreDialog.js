@@ -14,7 +14,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import Dialog from '../widgets/Dialog';
-import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../utils/validations';
+import { isValidWalletName, isValidSpendingPassword, isValidRepeatPassword } from '../../utils/validations';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
 import { PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT, WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../config/cryptoConfig';
@@ -78,8 +78,8 @@ const messages = defineMessages({
     defaultMessage: '!!!Spending password',
     description: 'Label for the "Spending password" switch in the wallet restore dialog.',
   },
-  walletPasswordLabel: {
-    id: 'wallet.restore.dialog.walletPasswordLabel',
+  spendingPasswordLabel: {
+    id: 'wallet.restore.dialog.spendingPasswordLabel',
     defaultMessage: '!!!Enter password',
     description: 'Label for the "Wallet password" input in the wallet restore dialog.',
   },
@@ -185,9 +185,9 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           ];
         },
       },
-      walletPassword: {
+      spendingPassword: {
         type: 'password',
-        label: this.context.intl.formatMessage(messages.walletPasswordLabel),
+        label: this.context.intl.formatMessage(messages.spendingPasswordLabel),
         placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
         value: '',
         validators: [({ field, form }) => {
@@ -197,8 +197,8 @@ export default class WalletRestoreDialog extends Component<Props, State> {
             repeatPasswordField.validate({ showErrors: true });
           }
           return [
-            isValidWalletPassword(field.value),
-            this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
+            isValidSpendingPassword(field.value),
+            this.context.intl.formatMessage(globalMessages.invalidSpendingPassword)
           ];
         }],
       },
@@ -209,10 +209,10 @@ export default class WalletRestoreDialog extends Component<Props, State> {
         value: '',
         validators: [({ field, form }) => {
           if (!this.state.createPassword) return [true];
-          const walletPassword = form.$('walletPassword').value;
-          if (walletPassword.length === 0) return [true];
+          const spendingPassword = form.$('spendingPassword').value;
+          if (spendingPassword.length === 0) return [true];
           return [
-            isValidRepeatPassword(walletPassword, field.value),
+            isValidRepeatPassword(spendingPassword, field.value),
             this.context.intl.formatMessage(globalMessages.invalidRepeatPassword)
           ];
         }],
@@ -237,13 +237,13 @@ export default class WalletRestoreDialog extends Component<Props, State> {
         const {
           recoveryPhrase,
           walletName,
-          walletPassword,
+          spendingPassword,
         } = form.values();
 
         const walletData: Object = {
           recoveryPhrase: join(recoveryPhrase, ' '),
           walletName,
-          walletPassword: createPassword ? walletPassword : null,
+          spendingPassword: createPassword ? spendingPassword : null,
         };
 
         if (showCertificateRestore) {
@@ -290,14 +290,14 @@ export default class WalletRestoreDialog extends Component<Props, State> {
       styles.walletName,
     ]);
 
-    const walletPasswordFieldsClasses = classnames([
-      styles.walletPasswordFields,
+    const spendingPasswordFieldsClasses = classnames([
+      styles.spendingPasswordFields,
       createPassword ? styles.show : null,
     ]);
 
     const walletNameField = form.$('walletName');
     const recoveryPhraseField = form.$('recoveryPhrase');
-    const walletPasswordField = form.$('walletPassword');
+    const spendingPasswordField = form.$('spendingPassword');
     const repeatedPasswordField = form.$('repeatPassword');
 
     const actions = [
@@ -375,8 +375,8 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           skin={AutocompleteSkin}
         />
 
-        <div className={styles.walletPassword}>
-          <div className={styles.walletPasswordSwitch}>
+        <div className={styles.spendingPassword}>
+          <div className={styles.spendingPasswordSwitch}>
             <div className={styles.passwordLabel}>
               {intl.formatMessage(messages.passwordSwitchLabel)}
             </div>
@@ -389,12 +389,12 @@ export default class WalletRestoreDialog extends Component<Props, State> {
             />
           </div>
 
-          <div className={walletPasswordFieldsClasses}>
+          <div className={spendingPasswordFieldsClasses}>
             <Input
-              className="walletPassword"
+              className="spendingPassword"
               onKeyPress={submitOnEnter.bind(this, this.submit)}
-              {...walletPasswordField.bind()}
-              error={walletPasswordField.error}
+              {...spendingPasswordField.bind()}
+              error={spendingPasswordField.error}
               skin={InputSkin}
             />
             <Input

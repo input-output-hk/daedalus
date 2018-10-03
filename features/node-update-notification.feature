@@ -3,7 +3,7 @@ Feature: Node Update Notification
   Background:
     Given I have completed the basic setup
     And I have the following wallets:
-      | name   |
+      | name        |
       | Test wallet |
     When I am on the "Test wallet" wallet "summary" screen
     When I make a node update available
@@ -19,6 +19,7 @@ Feature: Node Update Notification
     When I click the notification's postpone button
     Then I should not see the notification component anymore
 
+  @skip
   @restartApp
   Scenario: User accepts a node update notification
     When I click the notification's accept button

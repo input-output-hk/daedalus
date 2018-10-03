@@ -18,7 +18,7 @@ export type GetAddressesRequest = {
 };
 
 export type CreateAddressRequest = {
-  spendingPassword?: string,
+  spendingPassword: ?string,
   accountIndex: number,
   walletId: string,
 };
