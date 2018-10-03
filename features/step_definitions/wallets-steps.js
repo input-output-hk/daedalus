@@ -38,13 +38,30 @@ Given(/^I have a "Imported Wallet" with funds$/, async function () {
 });
 
 // V1 API endpoint for importing a wallet with a spending-password is currently broken
+// As a temporary workaround we import the wallet without a spending-password
+// and then create a spending-password in a separate call
 Given(/^I have a "Imported Wallet" with funds and password$/, async function () {
   await importWalletWithFunds(this.client, {
     keyFilePath: defaultWalletKeyFilePath,
-    password: 'Secret123',
+    password: null, // 'Secret123',
   });
   const wallet = await waitUntilWalletIsLoaded.call(this, 'Imported Wallet');
   addOrSetWalletsForScenario.call(this, wallet);
+
+  // Create a spending-password in a separate call
+  await this.client.executeAsync((walletId, done) => {
+    daedalus.api.ada.updateSpendingPassword({
+      walletId,
+      oldPassword: null,
+      newPassword: 'Secret123',
+    })
+      .then(() => (
+        daedalus.stores.ada.wallets.refreshWalletsData()
+          .then(done)
+          .catch((error) => done(error))
+      ))
+      .catch((error) => done(error));
+  }, wallet.id);
 });
 
 Given(/^I have the following wallets:$/, async function (table) {
@@ -427,13 +444,13 @@ Then(/^the latest transaction should show:$/, async function (table) {
 
 // Extended timeout is used for this step as it takes more than DEFAULT_TIMEOUT
 // for the receiver wallet's balance to be updated on the backend after creating transactions
-Then(/^the balance of "([^"]*)" wallet should be:$/, { timeout: 40000 }, async function (walletName, table) {
+Then(/^the balance of "([^"]*)" wallet should be:$/, { timeout: 60000 }, async function (walletName, table) {
   const expectedData = table.hashes()[0];
   const receiverWallet = getWalletByName.call(this, walletName);
   return this.client.waitUntil(async () => {
     const receiverWalletBalance = await this.client.getText(`.SidebarWalletsMenu_wallets .Wallet_${receiverWallet.id} .SidebarWalletMenuItem_info`);
     return receiverWalletBalance === `${expectedData.balance} ADA`;
-  });
+  }, 60000);
 });
 
 Then(/^I should see newly generated address as active address on the wallet receive screen$/, async function () {

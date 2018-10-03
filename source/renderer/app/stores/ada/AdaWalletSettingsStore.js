@@ -1,6 +1,6 @@
 // @flow
 import { observable, action } from 'mobx';
-import { findIndex, merge } from 'lodash';
+import { findIndex } from 'lodash';
 import WalletSettingsStore from '../WalletSettingsStore';
 import Wallet from '../../domains/Wallet';
 import Request from '../lib/LocalizedRequest';
@@ -51,10 +51,7 @@ export default class EtcWalletSettingsStore extends WalletSettingsStore {
 
     await this.stores.ada.wallets.walletsRequest.patch(result => {
       const walletIndex = findIndex(result, { id: walletId });
-      // TODO: revert to this original update after full transition to V1 Api
-      // result[walletIndex] = wallet;
-      const existingWalletData = result[walletIndex];
-      result[walletIndex] = merge(existingWalletData, wallet);
+      result[walletIndex] = wallet;
     });
     this.updateWalletRequest.reset();
     this.stores.ada.wallets._setActiveWallet({ walletId });
