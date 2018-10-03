@@ -34,7 +34,7 @@ export const GET_GPU_STATUS = {
   ERROR: `${GET_GPU_STATUS_CHANNEL}-error`,
 };
 
-const SUPPORT_WINDOW_CHANNEL = 'get-gpu-status';
+const SUPPORT_WINDOW_CHANNEL = 'support-window';
 export const SUPPORT_WINDOW = {
   OPEN: `${SUPPORT_WINDOW_CHANNEL}-open`,
   CLOSE: `${SUPPORT_WINDOW_CHANNEL}-close`,
