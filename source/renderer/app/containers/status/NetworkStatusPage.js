@@ -23,7 +23,7 @@ export default class NetworkStatusPage extends Component<InjectedProps> {
       isConnected, isSynced, syncPercentage, hasBeenConnected,
       localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
       forceCheckLocalTimeDifference, isSystemTimeChanged, getNetworkStatusRequest,
-      localBlockHeight, networkBlockHeight, mostRecentBlockTimestamp,
+      localBlockHeight, networkBlockHeight, mostRecentBlockTimestamp, restartNode,
     } = stores.networkStatus;
     return (
       <CenteredLayout>
@@ -48,6 +48,7 @@ export default class NetworkStatusPage extends Component<InjectedProps> {
           localBlockHeight={localBlockHeight}
           networkBlockHeight={networkBlockHeight}
           onForceCheckLocalTimeDifference={forceCheckLocalTimeDifference}
+          onRestartNode={restartNode}
           onClose={this.handleClose}
         />
       </CenteredLayout>

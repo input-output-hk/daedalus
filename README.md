@@ -38,9 +38,27 @@ The result can be found at `./result/daedalus-*.bin`.
 
 # Nix Shell
 
-`shell.nix` provides a way to load a shell with all the correct versions of all the required dependencies for development. Run `nix-shell` in the daedalus directory to start the shell.
+`shell.nix` provides a way to load a shell with all the correct versions of all the 
+required dependencies for development.
 
-`shell.nix` also provides a script for updating yarn.lock. Run `nix-shell -A fixYarnLock` to update `yarn.lock` file.
+## Connect to staging cluster:
+
+1. Run `nix-shell --arg autoStartBackend true --argstr cluster staging`
+2. Within the nix-shell run any command like `yarn dev`
+
+## Connect to local demo cluster:
+
+1. Start local cardano-sl demo cluster (`./scripts/launch/demo-nix.sh`)
+2. Inspect the terminal output of cardano-sl and copy the timestamp from the message 
+   `Using system start time 1537184804`
+3. Run `nix-shell --arg autoStartBackend true --arg systemStart 1537184804` (using
+   the same timestamp for `--arg systemStart X`)
+4. Within the nix-shell run any command like `yarn dev`
+  
+## Notes:
+
+`shell.nix` also provides a script for updating yarn.lock. Run `nix-shell -A fixYarnLock` 
+to update `yarn.lock` file.
 
 # Windows
 

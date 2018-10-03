@@ -1,3 +1,4 @@
+// @flow
 export type GpuStatus = {
   '2d_canvas': string,
   flash_3d: string,
