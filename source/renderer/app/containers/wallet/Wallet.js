@@ -82,7 +82,7 @@ export default class Wallet extends Component<Props> {
         {showAdaRedemptionSuccessMessage ? (
           <AdaRedemptionSuccessOverlay
             amount={amountRedeemed}
-            onClose={actions.ada.adaRedemption.closeAdaRedemptionSuccessOverlay.trigger}
+            onClose={actions.adaRedemption.closeAdaRedemptionSuccessOverlay.trigger}
           />
         ) : null}
         {

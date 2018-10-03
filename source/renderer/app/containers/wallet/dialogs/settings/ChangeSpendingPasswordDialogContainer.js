@@ -29,7 +29,7 @@ export default class ChangeSpendingPasswordDialogContainer extends Component<Inj
         onSave={(values: { oldPassword: string, newPassword: string }) => {
           const walletId = activeWallet.id;
           const { oldPassword, newPassword } = values;
-          actions.ada.walletSettings.updateSpendingPassword.trigger({
+          actions.walletSettings.updateSpendingPassword.trigger({
             walletId, oldPassword, newPassword
           });
         }}

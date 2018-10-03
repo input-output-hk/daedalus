@@ -22,7 +22,7 @@ export default class AddressesStore extends Store {
   /* eslint-disable max-len */
 
   setup() {
-    const actions = this.actions.ada.addresses;
+    const actions = this.actions.addresses;
     actions.createAddress.listen(this._createAddress);
     actions.resetErrors.listen(this._resetErrors);
   }

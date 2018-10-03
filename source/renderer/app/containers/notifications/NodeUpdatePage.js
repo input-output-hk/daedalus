@@ -11,7 +11,7 @@ export default class NodeUpdatePage extends Component<InjectedProps> {
 
   render() {
     const store = this.props.stores.ada.nodeUpdate;
-    const actions = this.props.actions.ada.nodeUpdate;
+    const actions = this.props.actions.nodeUpdate;
 
     return (
       <NodeUpdateNotification

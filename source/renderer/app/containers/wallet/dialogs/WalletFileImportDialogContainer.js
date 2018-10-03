@@ -12,7 +12,7 @@ export default class WalletFileImportDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
 
   onSubmit = (values: { filePath: string, spendingPassword: ?string, walletName: ?string }) => {
-    this.props.actions.ada.wallets.importWalletFromFile.trigger(values);
+    this.props.actions.wallets.importWalletFromFile.trigger(values);
   };
 
   onCancel = () => {

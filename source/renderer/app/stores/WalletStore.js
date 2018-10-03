@@ -33,7 +33,7 @@ export default class WalletsStore extends Store {
 
   setup() {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
-    this.actions.ada.wallets.discardAntivirusRestorationSlowdownNotificationForActiveWallet.listen(
+    this.actions.wallets.discardAntivirusRestorationSlowdownNotificationForActiveWallet.listen(
       this._discardAntivirusNotificationForRestoration
     );
     this.registerReactions([

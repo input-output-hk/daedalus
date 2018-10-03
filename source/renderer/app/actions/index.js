@@ -7,9 +7,13 @@ import WalletBackupActions from './wallet-backup-actions';
 import ProfileActions from './profile-actions';
 import DialogsActions from './dialogs-actions';
 import NotificationsActions from './notifications-actions';
-import adaActionsMap from './ada/index';
-import type { AdaActionsMap } from './ada/index';
 import AppActions from './app-actions';
+import WalletsActions from './wallets-actions';
+import AdaRedemptionActions from './ada-redemption-actions';
+import TransactionsActions from './transactions-actions';
+import NodeUpdateActions from './node-update-actions';
+import WalletSettingsActions from './wallet-settings-actions';
+import AddressesActions from './addresses-actions';
 
 export type ActionsMap = {
   app: AppActions,
@@ -21,7 +25,12 @@ export type ActionsMap = {
   profile: ProfileActions,
   dialogs: DialogsActions,
   notifications: NotificationsActions,
-  ada: AdaActionsMap,
+  wallets: WalletsActions,
+  adaRedemption: AdaRedemptionActions,
+  transactions: TransactionsActions,
+  nodeUpdate: NodeUpdateActions,
+  walletSettings: WalletSettingsActions,
+  addresses: AddressesActions,
 };
 
 const actionsMap: ActionsMap = {
@@ -34,7 +43,12 @@ const actionsMap: ActionsMap = {
   profile: new ProfileActions(),
   dialogs: new DialogsActions(),
   notifications: new NotificationsActions(),
-  ada: adaActionsMap,
+  wallets: new WalletsActions(),
+  adaRedemption: new AdaRedemptionActions(),
+  transactions: new TransactionsActions(),
+  nodeUpdate: new NodeUpdateActions(),
+  walletSettings: new WalletSettingsActions(),
+  addresses: new AddressesActions(),
 };
 
 export default actionsMap;

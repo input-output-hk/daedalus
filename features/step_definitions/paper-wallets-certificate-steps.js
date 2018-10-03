@@ -20,7 +20,7 @@ When(/^I click on the print button$/, async function () {
   };
 
   await this.client.execute(params => {
-    daedalus.actions.ada.wallets.generateCertificate.trigger({
+    daedalus.actions.wallets.generateCertificate.trigger({
       filePath: params.filePath,
     });
   }, data);

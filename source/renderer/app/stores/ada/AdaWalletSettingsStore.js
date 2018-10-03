@@ -15,7 +15,7 @@ export default class AdaWalletSettingsStore extends WalletSettingsStore {
   /* eslint-enable max-len */
 
   setup() {
-    const a = this.actions.ada.walletSettings;
+    const a = this.actions.walletSettings;
     a.startEditingWalletField.listen(this._startEditingWalletField);
     a.stopEditingWalletField.listen(this._stopEditingWalletField);
     a.cancelEditingWalletField.listen(this._cancelEditingWalletField);

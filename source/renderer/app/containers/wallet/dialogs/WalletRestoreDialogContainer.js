@@ -18,7 +18,7 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
     spendingPassword: ?string,
     type?: string,
   }) => {
-    this.props.actions.ada.wallets.restoreWallet.trigger(values);
+    this.props.actions.wallets.restoreWallet.trigger(values);
   };
 
   onCancel = () => {

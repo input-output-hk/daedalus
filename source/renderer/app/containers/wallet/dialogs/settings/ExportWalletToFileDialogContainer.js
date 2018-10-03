@@ -24,7 +24,7 @@ export default class ExportWalletToFileDialogContainer extends Component<Props> 
     const { stores, actions } = this.props;
     const activeWallet = stores.ada.wallets.active;
     if (!filePath || !activeWallet) return;
-    actions.ada.walletSettings.exportToFile.trigger({
+    actions.walletSettings.exportToFile.trigger({
       walletId: activeWallet.id,
       filePath,
       ...params

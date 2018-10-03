@@ -44,7 +44,7 @@ export default class AdaRedemptionStore extends Store {
   @observable isRedemptionDisclaimerAccepted = false;
 
   setup() {
-    const actions = this.actions.ada.adaRedemption;
+    const actions = this.actions.adaRedemption;
     actions.chooseRedemptionType.listen(this._chooseRedemptionType);
     actions.setCertificate.listen(this._setCertificate);
     actions.setPassPhrase.listen(this._setPassPhrase);
@@ -221,7 +221,7 @@ export default class AdaRedemptionStore extends Store {
         spendingPassword: spendingPassword && encryptPassphrase(spendingPassword)
       });
       this._reset();
-      this.actions.ada.adaRedemption.adaSuccessfullyRedeemed.trigger({
+      this.actions.adaRedemption.adaSuccessfullyRedeemed.trigger({
         walletId,
         amount: transaction.amount.toFormat(DECIMAL_PLACES_IN_ADA),
       });
@@ -248,7 +248,7 @@ export default class AdaRedemptionStore extends Store {
         spendingPassword: spendingPassword && encryptPassphrase(spendingPassword)
       });
       this._reset();
-      this.actions.ada.adaRedemption.adaSuccessfullyRedeemed.trigger({
+      this.actions.adaRedemption.adaSuccessfullyRedeemed.trigger({
         walletId,
         amount: transaction.amount.toFormat(DECIMAL_PLACES_IN_ADA)
       });

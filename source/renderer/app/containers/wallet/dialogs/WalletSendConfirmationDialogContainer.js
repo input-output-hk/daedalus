@@ -22,7 +22,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
   static defaultProps = { actions: null, stores: null };
 
   handleWalletSendFormSubmit = (values: Object) => {
-    this.props.actions.ada.wallets.sendMoney.trigger(values);
+    this.props.actions.wallets.sendMoney.trigger(values);
   };
 
   render() {

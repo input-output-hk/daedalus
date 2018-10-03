@@ -119,7 +119,7 @@ export default class PaperWalletCreateCertificatePage extends Component<Props, S
     const prevDialog = this.CREATE_CERTIFICATE_DIALOGS[prevStep];
     this.setState({ currentStep: prevStep });
     this.switchDialog(prevDialog);
-    this.props.actions.ada.wallets.updateCertificateStep.trigger(true);
+    this.props.actions.wallets.updateCertificateStep.trigger(true);
   };
 
   onClose = () => {
@@ -127,7 +127,7 @@ export default class PaperWalletCreateCertificatePage extends Component<Props, S
       currentStep: 0,
       showConfirmationDialog: false,
     });
-    this.props.actions.ada.wallets.closeCertificateGeneration.trigger();
+    this.props.actions.wallets.closeCertificateGeneration.trigger();
   };
 
   showConfirmationDialog = () => {

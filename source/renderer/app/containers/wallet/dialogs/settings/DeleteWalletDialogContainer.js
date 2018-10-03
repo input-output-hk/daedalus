@@ -33,7 +33,7 @@ export default class DeleteWalletDialogContainer extends Component<Props> {
           data: { isBackupNoticeAccepted: true }
         })}
         onContinue={() => {
-          actions.ada.wallets.deleteWallet.trigger({ walletId: activeWallet.id });
+          actions.wallets.deleteWallet.trigger({ walletId: activeWallet.id });
         }}
         onCancel={() => {
           actions.dialogs.closeActiveDialog.trigger();

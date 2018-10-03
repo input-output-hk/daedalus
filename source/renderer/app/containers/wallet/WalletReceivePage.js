@@ -44,7 +44,7 @@ export default class WalletReceivePage extends Component<Props, State> {
     const wallet = wallets.active;
 
     if (wallet) {
-      this.props.actions.ada.addresses.createAddress.trigger({
+      this.props.actions.addresses.createAddress.trigger({
         walletId: wallet.id,
         spendingPassword,
       });
@@ -52,7 +52,7 @@ export default class WalletReceivePage extends Component<Props, State> {
   };
 
   resetErrors = () => {
-    this.props.actions.ada.addresses.resetErrors.trigger();
+    this.props.actions.addresses.resetErrors.trigger();
   };
 
   closeNotification = () => {
