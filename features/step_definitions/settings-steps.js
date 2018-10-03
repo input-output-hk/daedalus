@@ -94,7 +94,7 @@ Then(/^I should see "([^"]*)" label in password field$/, function (label) {
 
 Then(/^I should see the following error messages:$/, async function (data) {
   const error = data.hashes()[0];
-  const errorSelector = '.ChangeWalletPasswordDialog_newPassword .SimpleFormField_error';
+  const errorSelector = '.ChangeSpendingPasswordDialog_newPassword .SimpleFormField_error';
   await this.client.waitForText(errorSelector);
   const errorsOnScreen = await this.client.getText(errorSelector);
   const expectedError = await this.intl(error.message);

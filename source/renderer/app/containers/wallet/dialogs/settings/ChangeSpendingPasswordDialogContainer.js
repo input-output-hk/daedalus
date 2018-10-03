@@ -1,12 +1,12 @@
 // @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import ChangeWalletPasswordDialog from '../../../../components/wallet/settings/ChangeWalletPasswordDialog';
+import ChangeSpendingPasswordDialog from '../../../../components/wallet/settings/ChangeSpendingPasswordDialog';
 import type { InjectedProps } from '../../../../types/injectedPropsType';
 import environment from '../../../../../../common/environment';
 
 @inject('actions', 'stores') @observer
-export default class ChangeWalletPasswordDialogContainer extends Component<InjectedProps> {
+export default class ChangeSpendingPasswordDialogContainer extends Component<InjectedProps> {
 
   static defaultProps = { actions: null, stores: null };
 
@@ -17,35 +17,35 @@ export default class ChangeWalletPasswordDialogContainer extends Component<Injec
     const dialogData = uiDialogs.dataForActiveDialog;
     const { updateDataForActiveDialog } = actions.dialogs;
     const activeWallet = wallets.active;
-    const { updateWalletPasswordRequest } = walletSettings;
+    const { updateSpendingPasswordRequest } = walletSettings;
 
-    if (!activeWallet) throw new Error('Active wallet required for ChangeWalletPasswordDialogContainer.');
+    if (!activeWallet) throw new Error('Active wallet required for ChangeSpendingPasswordDialogContainer.');
 
     return (
-      <ChangeWalletPasswordDialog
-        isWalletPasswordSet={activeWallet.hasPassword}
+      <ChangeSpendingPasswordDialog
+        isSpendingPasswordSet={activeWallet.hasPassword}
         currentPasswordValue={dialogData.currentPasswordValue}
         newPasswordValue={dialogData.newPasswordValue}
         repeatedPasswordValue={dialogData.repeatedPasswordValue}
         onSave={(values: { oldPassword: string, newPassword: string }) => {
           const walletId = activeWallet.id;
           const { oldPassword, newPassword } = values;
-          actions[environment.API].walletSettings.updateWalletPassword.trigger({
+          actions[environment.API].walletSettings.updateSpendingPassword.trigger({
             walletId, oldPassword, newPassword
           });
         }}
         onCancel={() => {
           actions.dialogs.closeActiveDialog.trigger();
-          updateWalletPasswordRequest.reset();
+          updateSpendingPasswordRequest.reset();
         }}
         onPasswordSwitchToggle={() => {
-          updateWalletPasswordRequest.reset();
+          updateSpendingPasswordRequest.reset();
         }}
         onDataChange={data => {
           updateDataForActiveDialog.trigger({ data });
         }}
-        isSubmitting={updateWalletPasswordRequest.isExecuting}
-        error={updateWalletPasswordRequest.error}
+        isSubmitting={updateSpendingPasswordRequest.isExecuting}
+        error={updateSpendingPasswordRequest.error}
       />
     );
   }

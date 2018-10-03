@@ -169,7 +169,7 @@ export default class AdaWalletsStore extends WalletStore {
   @action _restoreWallet = async (params: {
     recoveryPhrase: string,
     walletName: string,
-    walletPassword: ?string,
+    spendingPassword: ?string,
     type?: string,
   }) => {
     // reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
@@ -178,7 +178,7 @@ export default class AdaWalletsStore extends WalletStore {
     const data = {
       recoveryPhrase: params.recoveryPhrase,
       walletName: params.walletName,
-      walletPassword: params.walletPassword,
+      spendingPassword: params.spendingPassword,
     };
 
     if (params.type === 'certificate') {
@@ -297,7 +297,6 @@ export default class AdaWalletsStore extends WalletStore {
       const walletData = {
         name: 'Paper Wallet',
         mnemonic: recoveryPhrase.join(' '),
-        password: spendingPassword,
       };
       const wallet = await this.createWalletRequest.execute(walletData).promise;
 

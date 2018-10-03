@@ -1,6 +1,6 @@
 // @flow
 import { observable, action } from 'mobx';
-import { findIndex, merge } from 'lodash';
+import { findIndex } from 'lodash';
 import WalletSettingsStore from '../WalletSettingsStore';
 import Wallet from '../../domains/Wallet';
 import Request from '../lib/LocalizedRequest';
@@ -10,7 +10,7 @@ export default class EtcWalletSettingsStore extends WalletSettingsStore {
 
   /* eslint-disable max-len */
   @observable updateWalletRequest: Request<Wallet> = new Request(this.api.ada.updateWallet);
-  @observable updateWalletPasswordRequest: Request<boolean> = new Request(this.api.ada.updateWalletPassword);
+  @observable updateSpendingPasswordRequest: Request<boolean> = new Request(this.api.ada.updateSpendingPassword);
   @observable exportWalletToFileRequest: Request<Promise<[]>> = new Request(this.api.ada.exportWalletToFile);
   /* eslint-enable max-len */
 
@@ -20,16 +20,16 @@ export default class EtcWalletSettingsStore extends WalletSettingsStore {
     a.stopEditingWalletField.listen(this._stopEditingWalletField);
     a.cancelEditingWalletField.listen(this._cancelEditingWalletField);
     a.updateWalletField.listen(this._updateWalletField);
-    a.updateWalletPassword.listen(this._updateWalletPassword);
+    a.updateSpendingPassword.listen(this._updateSpendingPassword);
     a.exportToFile.listen(this._exportToFile);
   }
 
-  @action _updateWalletPassword = async ({ walletId, oldPassword, newPassword }: {
+  @action _updateSpendingPassword = async ({ walletId, oldPassword, newPassword }: {
     walletId: string, oldPassword: ?string, newPassword: ?string,
   }) => {
-    await this.updateWalletPasswordRequest.execute({ walletId, oldPassword, newPassword });
+    await this.updateSpendingPasswordRequest.execute({ walletId, oldPassword, newPassword });
     this.actions.dialogs.closeActiveDialog.trigger();
-    this.updateWalletPasswordRequest.reset();
+    this.updateSpendingPasswordRequest.reset();
     this.stores.ada.wallets.refreshWalletsData();
   };
 
@@ -51,10 +51,7 @@ export default class EtcWalletSettingsStore extends WalletSettingsStore {
 
     await this.stores.ada.wallets.walletsRequest.patch(result => {
       const walletIndex = findIndex(result, { id: walletId });
-      // TODO: revert to this original update after full transition to V1 Api
-      // result[walletIndex] = wallet;
-      const existingWalletData = result[walletIndex];
-      result[walletIndex] = merge(existingWalletData, wallet);
+      result[walletIndex] = wallet;
     });
     this.updateWalletRequest.reset();
     this.stores.ada.wallets._setActiveWallet({ walletId });

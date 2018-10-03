@@ -6,7 +6,7 @@ import { request } from '../../utils/request';
 export type RedeemAdaParams = {
   redemptionCode: string,
   mnemonic: ?Array<string>,
-  spendingPassword: string,
+  spendingPassword?: string,
   walletId: string,
   accountIndex: number
 };

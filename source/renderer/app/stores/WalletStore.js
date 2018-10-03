@@ -97,7 +97,7 @@ export default class WalletsStore extends Store {
   _restore = async (params: {
     recoveryPhrase: string,
     walletName: string,
-    walletPassword: ?string,
+    spendingPassword: ?string,
   }) => {
     const restoredWallet = await this.restoreRequest.execute(params).promise;
     if (!restoredWallet) throw new Error('Restored wallet was not received correctly');
