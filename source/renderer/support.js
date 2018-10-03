@@ -10,7 +10,7 @@ type ZendeskInfo = {
 };
 
 type LogsInfo = {
-  compressedLogsFile: string,
+  compressedLogsFileData: any,
   environment: any,
 };
 
@@ -40,20 +40,22 @@ const loadFormHandlerWhenIframeIsReady = (logsInfo: LogsInfo) => {
       }
     } catch (e) { // eslint-disable-line
       count++;
-      if (count < 20) {
-        setTimeout(check, 500);
+      if (count > 20) {
+        clearInterval(interval);
       }
     }
+
   };
   const interval = setInterval(check, 500);
 };
 
-const formHandler = (iframeDocument, fileInput, { compressedLogsFile, environment }: LogsInfo) => {
-  console.log('compressedLogsFile', compressedLogsFile);
+const formHandler = (
+  iframeDocument, fileInput, { environment, compressedLogsFileData }: LogsInfo
+) => {
   const dT = new DataTransfer();
   if (dT.items) {
-    dT.items.add(new File(['logs'], compressedLogsFile));
-    dT.items.add(new File(['logs'], `~/Library/Application Support/Daedalus Staging/${compressedLogsFile}`));
+    const file = new File([compressedLogsFileData], 'compressedLogs.zip');
+    dT.items.add(file);
     fileInput.files = dT.files;
   }
   fields;
