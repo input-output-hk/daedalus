@@ -68,8 +68,6 @@ export default class TermsOfUseForm extends Component<Props, State> {
       isSubmitting ? styles.submitButtonSpinning : styles.submitButton,
     ]);
 
-    const checkboxLabel = 'checkboxLabel';
-
     return (
       <div className={styles.component}>
         <div className={styles.centeredBox}>
@@ -78,7 +76,7 @@ export default class TermsOfUseForm extends Component<Props, State> {
 
           <div className={styles.checkbox}>
             <Checkbox
-              label={intl.formatMessage(messages[checkboxLabel])}
+              label={intl.formatMessage(messages.checkboxLabel)}
               onChange={this.toggleAcceptance.bind(this)}
               checked={areTermsOfUseAccepted}
               skin={CheckboxSkin}

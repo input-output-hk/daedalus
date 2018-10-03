@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import { environmentSpecificMessages } from '../../i18n/global-messages';
+import globalMessages from '../../i18n/global-messages';
 import styles from './About.scss';
 import daedalusIcon from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import cardanoIcon from '../../assets/images/cardano-logo.inline.svg';
@@ -69,7 +69,7 @@ export default class About extends Component<Props> {
       API_VERSION,
     } = environment;
 
-    const apiName = intl.formatMessage(environmentSpecificMessages.ada.apiName);
+    const apiName = intl.formatMessage(globalMessages.apiName);
     const apiIcon = cardanoIcon;
     const apiHeadline = intl.formatMessage(messages.aboutContentCardanoHeadline);
     const apiMembers = intl.formatMessage(messages.aboutContentCardanoMembers);

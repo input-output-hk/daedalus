@@ -13,7 +13,7 @@ import WalletTransaction,
   transactionStates,
   transactionTypes
 } from '../../../domains/WalletTransaction';
-import { environmentSpecificMessages } from '../../../i18n/global-messages';
+import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';
 import { getNetworkExplorerUrl } from '../../../utils/network';
 
@@ -197,7 +197,7 @@ export default class Transaction extends Component<Props, State> {
     ]);
 
     const status = intl.formatMessage(assuranceLevelTranslations[assuranceLevel]);
-    const currency = intl.formatMessage(environmentSpecificMessages.ada.currency);
+    const currency = intl.formatMessage(globalMessages.currency);
     const symbol = adaSymbol;
 
     return (

@@ -5433,28 +5433,28 @@
         "defaultMessage": "!!!Ada",
         "description": "Name for \"Ada\" unit.",
         "end": {
-          "column": 5,
-          "line": 157
+          "column": 3,
+          "line": 153
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.currency.ada",
         "start": {
-          "column": 14,
-          "line": 153
+          "column": 12,
+          "line": 149
         }
       },
       {
         "defaultMessage": "!!!Cardano",
         "description": "Name for \"Cardano\" client.",
         "end": {
-          "column": 5,
-          "line": 162
+          "column": 3,
+          "line": 158
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.apiName.cardano",
         "start": {
-          "column": 13,
-          "line": 158
+          "column": 11,
+          "line": 154
         }
       }
     ],

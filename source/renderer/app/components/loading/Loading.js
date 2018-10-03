@@ -165,7 +165,7 @@ export default class Loading extends Component<Props, State> {
       !isConnected ? styles.connectingLogo : styles.syncingLogo,
     ]);
     const apiLogoStyles = classNames([
-      styles['ada-logo'],
+      styles['ada-apiLogo'],
       !isConnected ? styles.connectingLogo : styles.syncingLogo,
     ]);
 
