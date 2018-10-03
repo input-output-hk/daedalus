@@ -54,7 +54,7 @@ module.exports = {
     }, process.env.NODE_ENV === 'production' ? {
       // Only bake in NODE_ENV and WALLET_PORT values for production builds.
       // This is so that the test suite based on the webpack build will
-      // choose the correct path to ca.crt (see setupTls.js).
+      // choose the correct path to ca.crt (see loadTlsConfig.jss).
       'process.env.NODE_ENV': '"production"',
       'process.env.WALLET_PORT': JSON.stringify(process.env.WALLET_PORT || ''),
     } : {})),

@@ -9,10 +9,18 @@ import {
   NETWORK_STATUS_REQUEST_TIMEOUT,
   NETWORK_STATUS_POLL_INTERVAL,
   SYSTEM_TIME_POLL_INTERVAL,
+  REQUEST_TLS_CONFIG_RETRY_INTERVAL,
 } from '../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
 import { Logger } from '../../../common/logging';
+import {
+  cardanoStateChangeChannel,
+  tlsConfigChannel,
+  restartCardanoNodeChannel
+} from '../ipc/cardano.ipc';
+import { CardanoNodeStates } from '../../../common/types/cardanoNode.types';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
+import type { CardanoNodeState, TlsConfig } from '../../../common/types/cardanoNode.types';
 import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
@@ -30,6 +38,7 @@ export default class NetworkStatusStore extends Store {
 
   // Initialize store properties
   _startTime = Date.now();
+  _hasReceivedTlsConfig = false;
   _systemTime = Date.now();
   _nodeStatus = NODE_STATUS.CONNECTING;
   _networkStatusPollingInterval: ?number = null;
@@ -63,6 +72,18 @@ export default class NetworkStatusStore extends Store {
 
   // DEFINE STORE METHODS
   setup() {
+    // ========== IPC CHANNELS =========== //
+
+    // Actively ask the main process to send tls config to this renderer process
+    this._requestTlsConfig();
+    // Passively receive broadcasted tls config changes (which can happen without requesting it)
+    // E.g if the cardano-node restarted for some reason
+    tlsConfigChannel.onReceive(this._updateTlsConfig);
+    // Passively receive state changes of the cardano-node
+    cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
+
+    // ========== MOBX REACTIONS =========== //
+
     this.registerReactions([
       this._updateNetworkStatusWhenDisconnected,
       this._updateLocalTimeDifferenceWhenSystemTimeChanged,
@@ -77,6 +98,15 @@ export default class NetworkStatusStore extends Store {
     this._systemTimeChangeCheckPollingInterval = setInterval(
       this._updateSystemTime, SYSTEM_TIME_POLL_INTERVAL
     );
+  }
+
+  async restartNode() {
+    try {
+      Logger.info('NetwortStatusStore: Requesting a restart of cardano-node.');
+      await restartCardanoNodeChannel.send();
+    } catch (error) {
+      Logger.info(`NetwortStatusStore: Restart of cardano-node failed with ${error}`);
+    }
   }
 
   teardown() {
@@ -113,6 +143,40 @@ export default class NetworkStatusStore extends Store {
     return Date.now() - this._startTime;
   }
 
+  _requestTlsConfig = async () => {
+    try {
+      Logger.info('NetworkStatusStore: requesting tls config from main process.');
+      const tlsConfig = await tlsConfigChannel.send();
+      await this._updateTlsConfig(tlsConfig);
+    } catch (error) {
+      Logger.info(`NetworkStatusStore: error while requesting tls config ${error}. Retrying …`);
+      setTimeout(this._requestTlsConfig, REQUEST_TLS_CONFIG_RETRY_INTERVAL);
+    }
+  };
+
+  _updateTlsConfig = (config: TlsConfig): Promise<void> => {
+    Logger.info('NetworkStatusStore: received tls config from main process.');
+    this.api.ada.setRequestConfig(config);
+    this._hasReceivedTlsConfig = true;
+    return Promise.resolve();
+  };
+
+  _handleCardanoNodeStateChange = (state: CardanoNodeState): Promise<void> => {
+    Logger.info(`NetworkStatusStore: handling cardano-node state change to <${state}>`);
+    const wasConnected = this.isConnected;
+    switch (state) {
+      case CardanoNodeStates.STOPPED:
+      case CardanoNodeStates.UPDATING:
+      case CardanoNodeStates.UPDATED:
+      case CardanoNodeStates.CRASHED:
+        this._setDisconnected(wasConnected);
+        this._hasReceivedTlsConfig = false;
+        break;
+      default:
+    }
+    return Promise.resolve();
+  };
+
   // DEFINE ACTIONS
   @action initialize() {
     super.initialize();
@@ -130,6 +194,9 @@ export default class NetworkStatusStore extends Store {
   };
 
   @action _updateNetworkStatus = async (queryParams?: NodeQueryParams) => {
+    // In case we haven't received TLS config we shouldn't trigger any API calls
+    if (!this._hasReceivedTlsConfig) return;
+
     const isForcedTimeDifferenceCheck = !!queryParams;
 
     // Prevent network status requests in case there is an already executing
@@ -277,18 +344,20 @@ export default class NetworkStatusStore extends Store {
       }
     } catch (error) {
       // Node is not responding, switch to disconnected state
-      runInAction('update connected status', () => {
-        this.isNodeResponding = false;
-        this.isNodeSubscribed = false;
-        this.isNodeSyncing = false;
-        this.isNodeInSync = false;
-        if (wasConnected) {
-          if (!this.hasBeenConnected) {
-            runInAction('update hasBeenConnected', () => this.hasBeenConnected = true);
-          }
-          Logger.debug('Connection Lost. Reconnecting...');
-        }
-      });
+      this._setDisconnected(wasConnected);
+    }
+  };
+
+  @action _setDisconnected = (wasConnected: boolean) => {
+    this.isNodeResponding = false;
+    this.isNodeSubscribed = false;
+    this.isNodeSyncing = false;
+    this.isNodeInSync = false;
+    if (wasConnected) {
+      if (!this.hasBeenConnected) {
+        runInAction('update hasBeenConnected', () => this.hasBeenConnected = true);
+      }
+      Logger.debug('Connection Lost. Reconnecting...');
     }
   };
 
@@ -317,5 +386,4 @@ export default class NetworkStatusStore extends Store {
     }
     return 0;
   }
-
 }

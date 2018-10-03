@@ -6,6 +6,7 @@ Feature: Send Money to Receiver
       | name   |
       | first  |
 
+  @skip
   Scenario: User Sends Money to Receiver
     Given I have a "Imported Wallet" with funds
     And I am on the "Imported Wallet" wallet "send" screen
@@ -25,6 +26,7 @@ Feature: Send Money to Receiver
       | balance  |
       | 0.000010 |
 
+  @skip
   Scenario: User Sends Money from wallet with spending password to Receiver
     Given I have a "Imported Wallet" with funds and password
     And I am on the "Imported Wallet" wallet "send" screen

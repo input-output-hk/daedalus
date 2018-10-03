@@ -33,3 +33,4 @@ export const GET_GPU_STATUS = {
   SUCCESS: `${GET_GPU_STATUS_CHANNEL}-success`,
   ERROR: `${GET_GPU_STATUS_CHANNEL}-error`,
 };
+

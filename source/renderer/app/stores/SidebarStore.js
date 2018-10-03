@@ -5,7 +5,7 @@ import { ipcRenderer } from 'electron';
 import Store from './lib/Store';
 import { sidebarConfig } from '../config/sidebarConfig';
 import { WalletSyncStateTags } from '../domains/Wallet';
-import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../../../common/ipc-api/go-to-ada-redemption-screen';
+import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../../../common/ipc/go-to-ada-redemption-screen';
 import { formattedWalletAmount } from '../utils/formatters';
 import type { SidebarWalletType } from '../types/sidebarTypes';
 
