@@ -15,14 +15,11 @@ export default class DataLayerMigrationPage extends Component<InjectedProps> {
   };
 
   render() {
-    const { setDataLayerMigrationAcceptanceRequest, termsOfUse } = this.props.stores.profile;
-    const isSubmitting = setDataLayerMigrationAcceptanceRequest.isExecuting;
+    const { setDataLayerMigrationAcceptanceRequest } = this.props.stores.profile;
     return (
       <CenteredLayout>
         <DataLayerMigrationForm
-          localizedDataLayerMigration={termsOfUse}
           onSubmit={this.onSubmit}
-          isSubmitting={isSubmitting}
           error={setDataLayerMigrationAcceptanceRequest.error}
         />
       </CenteredLayout>

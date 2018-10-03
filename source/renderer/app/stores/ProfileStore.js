@@ -159,7 +159,7 @@ export default class SettingsStore extends Store {
     );
   }
 
-  @computed get hasDataLayerMigrationAcceptanceed(): boolean {
+  @computed get hasDataLayerMigrationAccepted(): boolean {
     return this.getDataLayerMigrationAcceptanceRequest.result === true;
   }
 
@@ -228,7 +228,7 @@ export default class SettingsStore extends Store {
   _redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted = () => {
     const { isConnected } = this.stores.networkStatus;
     const dataLayerMigrationNotAccepted =
-      this.hasLoadedDataLayerMigrationAcceptance && !this.hasDataLayerMigrationAcceptanceed;
+      this.hasLoadedDataLayerMigrationAcceptance && !this.hasDataLayerMigrationAccepted;
     if (
       isConnected &&
       this.isCurrentLocaleSet &&
@@ -239,7 +239,7 @@ export default class SettingsStore extends Store {
       if (!this.stores.ada.wallets.hasAnyWallets) {
         this._skipDataLayerMigration();
       } else {
-        this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.DATA_LAYER_MIGRATION_ACCEPTANCE });
+        this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.DATA_LAYER_MIGRATION });
       }
     }
   };
@@ -251,13 +251,13 @@ export default class SettingsStore extends Store {
   };
 
   _redirectToMainUiAfterDataLayerMigrationIsAccepted = () => {
-    if (this.hasDataLayerMigrationAcceptanceed && this._isOnDataLayerMigrationPage()) {
+    if (this.hasDataLayerMigrationAccepted && this._isOnDataLayerMigrationPage()) {
       this._redirectToRoot();
     }
   };
 
   _isOnDataLayerMigrationPage = () =>
-    this.stores.app.currentRoute === ROUTES.PROFILE.DATA_LAYER_MIGRATION_ACCEPTANCE;
+    this.stores.app.currentRoute === ROUTES.PROFILE.DATA_LAYER_MIGRATION;
 
   _redirectToRoot = () => {
     this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });

@@ -8,7 +8,7 @@ const storageKeys = {
   USER_LOCALE: networkForLocalStorage + '-USER-LOCALE',
   TERMS_OF_USE_ACCEPTANCE: networkForLocalStorage + '-TERMS-OF-USE-ACCEPTANCE',
   THEME: networkForLocalStorage + '-THEME',
-  DATA_LAYER_MIGRATION_ACCEPTANCE: networkForLocalStorage + '-DATA_LAYER_MIGRATION_ACCEPTANCE',
+  DATA_LAYER_MIGRATION_ACCEPTANCE: networkForLocalStorage + '-DATA-LAYER-MIGRATION-ACCEPTANCE',
 };
 
 /**
