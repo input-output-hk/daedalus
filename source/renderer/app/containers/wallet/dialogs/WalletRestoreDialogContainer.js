@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletRestoreDialog from '../../../components/wallet/WalletRestoreDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
-import environment from '../../../../../common/environment';
 import validWords from '../../../../../common/valid-words.en';
 
 type Props = InjectedDialogContainerProps;
@@ -19,7 +18,7 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
     spendingPassword: ?string,
     type?: string,
   }) => {
-    this.props.actions[environment.API].wallets.restoreWallet.trigger(values);
+    this.props.actions.ada.wallets.restoreWallet.trigger(values);
   };
 
   onCancel = () => {
@@ -33,9 +32,7 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
     const { restoreRequest } = wallets;
     if (!restoreRequest.isExecuting) {
       restoreRequest.reset();
-      if (environment.isAdaApi()) {
-        wallets.getWalletRecoveryPhraseFromCertificateRequest.reset();
-      }
+      wallets.getWalletRecoveryPhraseFromCertificateRequest.reset();
     }
   };
 
@@ -43,25 +40,24 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
     const wallets = this._getWalletsStore();
     const { restoreRequest, isValidMnemonic } = wallets;
 
-    const error = environment.isAdaApi()
-      ? (restoreRequest.error || wallets.getWalletRecoveryPhraseFromCertificateRequest.error)
-      : restoreRequest.error;
+    const error = (
+      restoreRequest.error || wallets.getWalletRecoveryPhraseFromCertificateRequest.error
+    );
 
     return (
       <WalletRestoreDialog
         mnemonicValidator={mnemonic => isValidMnemonic(mnemonic)}
-        showCertificateRestore={environment.isAdaApi()}
         suggestedMnemonics={validWords}
         isSubmitting={restoreRequest.isExecuting}
         onSubmit={this.onSubmit}
         onCancel={this.onCancel}
-        onChoiceChange={environment.isAdaApi() ? this.resetRequests : null}
+        onChoiceChange={this.resetRequests}
         error={error}
       />
     );
   }
 
   _getWalletsStore() {
-    return this.props.stores[environment.API].wallets;
+    return this.props.stores.ada.wallets;
   }
 }

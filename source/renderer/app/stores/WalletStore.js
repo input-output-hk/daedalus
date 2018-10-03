@@ -6,7 +6,6 @@ import Wallet from '../domains/Wallet';
 import Request from './lib/LocalizedRequest';
 import { buildRoute, matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
-import environment from '../../../common/environment';
 
 /**
  * The base wallet store that contains the shared logic
@@ -171,7 +170,7 @@ export default class WalletsStore extends Store {
         this._setActiveWallet({ walletId: this.active.id });
       }
     });
-    const transactions = this.stores[environment.API].transactions;
+    const transactions = this.stores.ada.transactions;
     runInAction('refresh transaction data', () => {
       const walletIds = result.map((wallet: Wallet) => wallet.id);
       transactions.transactionsRequests = walletIds.map(walletId => ({

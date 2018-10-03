@@ -10,7 +10,6 @@ import { defineMessages, intlShape } from 'react-intl';
 import LocalizableError from '../../../i18n/LocalizableError';
 import TermsOfUseText from './TermsOfUseText';
 import styles from './TermsOfUseForm.scss';
-import environment from '../../../../../common/environment';
 
 const messages = defineMessages({
   checkboxLabel: {

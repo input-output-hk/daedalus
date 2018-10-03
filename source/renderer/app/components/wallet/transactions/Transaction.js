@@ -15,7 +15,6 @@ import WalletTransaction,
 } from '../../../domains/WalletTransaction';
 import { environmentSpecificMessages } from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';
-import environment from '../../../../../common/environment';
 import { getNetworkExplorerUrl } from '../../../utils/network';
 
 const messages = defineMessages({
@@ -198,7 +197,7 @@ export default class Transaction extends Component<Props, State> {
     ]);
 
     const status = intl.formatMessage(assuranceLevelTranslations[assuranceLevel]);
-    const currency = intl.formatMessage(environmentSpecificMessages[environment.API].currency);
+    const currency = intl.formatMessage(environmentSpecificMessages.ada.currency);
     const symbol = adaSymbol;
 
     return (
@@ -301,18 +300,16 @@ export default class Transaction extends Component<Props, State> {
                 </span>
               ))}
 
-              {environment.isAdaApi() ? (
-                <div className={styles.row}>
-                  <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
-                  {(transactionState === transactionStates.OK) ? (
-                    <span>
-                      <span className={styles.assuranceLevel}>{status}</span>.&nbsp;
-                      {data.numberOfConfirmations.toLocaleString()}&nbsp;
-                      {intl.formatMessage(messages.confirmations)}.
-                    </span>
-                  ) : null}
-                </div>
-              ) : null}
+              <div className={styles.row}>
+                <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
+                {(transactionState === transactionStates.OK) ? (
+                  <span>
+                    <span className={styles.assuranceLevel}>{status}</span>.&nbsp;
+                    {data.numberOfConfirmations.toLocaleString()}&nbsp;
+                    {intl.formatMessage(messages.confirmations)}.
+                  </span>
+                ) : null}
+              </div>
 
               <h2>{intl.formatMessage(messages.transactionId)}</h2>
               <span

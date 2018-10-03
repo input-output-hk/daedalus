@@ -66,10 +66,10 @@ export default class About extends Component<Props> {
     const { onOpenExternalLink } = this.props;
     const {
       version, build, os,
-      API, API_VERSION,
+      API_VERSION,
     } = environment;
 
-    const apiName = intl.formatMessage(environmentSpecificMessages[API].apiName);
+    const apiName = intl.formatMessage(environmentSpecificMessages.ada.apiName);
     const apiIcon = cardanoIcon;
     const apiHeadline = intl.formatMessage(messages.aboutContentCardanoHeadline);
     const apiMembers = intl.formatMessage(messages.aboutContentCardanoMembers);

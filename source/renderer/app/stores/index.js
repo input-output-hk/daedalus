@@ -10,7 +10,6 @@ import UiNotificationsStore from './UiNotificationsStore';
 import NetworkStatusStore from './NetworkStatusStore';
 import setupAdaStores from './ada/index';
 import type { AdaStoresMap } from './ada/index';
-import environment from '../../../common/environment';
 
 export const storeClasses = {
   profile: ProfileStore,
@@ -59,9 +58,6 @@ export default action((api, actions, router): StoresMap => {
   storeNames.forEach(name => { if (stores[name]) stores[name].teardown(); });
   storeNames.forEach(name => { stores[name] = new storeClasses[name](stores, api, actions); });
   storeNames.forEach(name => { if (stores[name]) stores[name].initialize(); });
-
-  // Add currency specific stores
-  if (environment.API === 'ada') stores.ada = setupAdaStores(stores, api, actions);
-
+  stores.ada = setupAdaStores(stores, api, actions);
   return stores;
 });

@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import type { StoresMap } from '../../../stores/index';
 import type { ActionsMap } from '../../../actions/index';
-import environment from '../../../../../common/environment';
 import WalletSendConfirmationDialog from '../../../components/wallet/WalletSendConfirmationDialog';
 
 type Props = {
@@ -23,7 +22,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
   static defaultProps = { actions: null, stores: null };
 
   handleWalletSendFormSubmit = (values: Object) => {
-    this.props.actions[environment.API].wallets.sendMoney.trigger(values);
+    this.props.actions.ada.wallets.sendMoney.trigger(values);
   };
 
   render() {
@@ -31,7 +30,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
       actions, amount, receiver, totalAmount,
       transactionFee, amountToNaturalUnits, currencyUnit
     } = this.props;
-    const { wallets } = this.props.stores[environment.API];
+    const { wallets } = this.props.stores.ada;
     const { sendMoneyRequest } = wallets;
     const activeWallet = wallets.active;
 

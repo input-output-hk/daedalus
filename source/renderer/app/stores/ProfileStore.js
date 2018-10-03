@@ -43,7 +43,7 @@ export default class SettingsStore extends Store {
   @observable setTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.localStorage.setTermsOfUseAcceptance);
   @observable getThemeRequest: Request<string> = new Request(this.api.localStorage.getUserTheme);
   @observable setThemeRequest: Request<string> = new Request(this.api.localStorage.setUserTheme);
-  @observable sendBugReport: Request<any> = new Request(this.api[environment.API].sendBugReport);
+  @observable sendBugReport: Request<any> = new Request(this.api.ada.sendBugReport);
   @observable error: ?LocalizableError = null;
   @observable logFiles: LogFiles = {};
   @observable compressedLogsFile: ?string = null;
@@ -129,7 +129,7 @@ export default class SettingsStore extends Store {
 
   @computed get termsOfUse(): string {
     const network = environment.isMainnet() ? 'mainnet' : 'other';
-    return require(`../i18n/locales/terms-of-use/${environment.API}/${network}/${this.currentLocale}.md`);
+    return require(`../i18n/locales/terms-of-use/ada/${network}/${this.currentLocale}.md`);
   }
 
   @computed get hasLoadedTermsOfUseAcceptance(): boolean {
