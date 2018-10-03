@@ -66,6 +66,11 @@ export default class SettingsStore extends Store {
     ipcRenderer.on(COMPRESS_LOGS.SUCCESS, this._onCompressLogsSuccess);
     ipcRenderer.on(COMPRESS_LOGS.ERROR, this._onCompressLogsError);
     ipcRenderer.send(SUPPORT_WINDOW.CLOSE);
+    ipcRenderer.on(SUPPORT_WINDOW.LOGS_INFO, (e, logsInfo) => {
+      console.log('SUPPORT_WINDOW.LOGS_INFO');
+      console.log('e', e);
+      console.log('logsInfo', logsInfo);
+    });
     this.registerReactions([
       this._setBigNumberFormat,
       this._updateMomentJsLocaleAfterLocaleChange,
@@ -217,14 +222,17 @@ export default class SettingsStore extends Store {
   };
 
   _onGetLogsSuccess = action((event, files) => {
+    console.log('_onGetLogsSuccess', files);
     this.logFiles = files;
     const { isDownloading } = this.compressedLogsStatus;
     if (isDownloading || this.isSubmittingBugReport || this.openSupportOnLogFilesSuccess) {
+      console.log('this.openSupportOnLogFilesSuccess', this.openSupportOnLogFilesSuccess);
       this._compressLogs({ logs: files });
     }
   });
 
   _getLogsAndCompress = action(() => {
+    console.log('_getLogsAndCompress');
     this.compressedLogsStatus = {
       fileName: generateFileNameWithTimestamp(),
     };
@@ -239,6 +247,7 @@ export default class SettingsStore extends Store {
 
   _onCompressLogsSuccess = action((event, file) => {
     this.compressedLogsFile = file;
+    console.log('this.compressedLogsFile', this.compressedLogsFile);
     const { isDownloading, destination, fileName } = this.compressedLogsStatus;
     if (isDownloading) {
       this._downloadLogs({ destination, fileName });

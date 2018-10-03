@@ -49,14 +49,18 @@ const loadFormHandlerWhenIframeIsReady = (logsInfo: LogsInfo) => {
 };
 
 const formHandler = (iframeDocument, fileInput, { compressedLogsFile, environment }: LogsInfo) => {
+  console.log('compressedLogsFile', compressedLogsFile);
   const dT = new DataTransfer();
   if (dT.items) {
     dT.items.add(new File(['logs'], compressedLogsFile));
+    dT.items.add(new File(['logs'], `~/Library/Application Support/Daedalus Staging/${compressedLogsFile}`));
     fileInput.files = dT.files;
   }
   fields;
   environment;
 };
+
+const closeWindow = () => window.close();
 
 ipcRenderer.on(
   SUPPORT_WINDOW.ZENDESK_INFO,
@@ -77,7 +81,7 @@ ipcRenderer.on(
   }
 );
 
-ipcRenderer.on(SUPPORT_WINDOW.CLOSE, () => window.close());
+ipcRenderer.on(SUPPORT_WINDOW.CLOSE, () => closeWindow);
 
 ipcRenderer.on(SUPPORT_WINDOW.LOGS_INFO, (event, logsInfo: LogsInfo) =>
   loadFormHandlerWhenIframeIsReady(logsInfo));

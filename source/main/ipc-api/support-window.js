@@ -1,9 +1,9 @@
 // @flow
 import { ipcMain } from 'electron';
-import path from 'path';
+// import path from 'path';
 import { createSupportWindow } from '../windows/support';
 import { SUPPORT_WINDOW } from '../../common/ipc-api';
-import { appLogsFolderPath } from '../config';
+import { appLogsFolderPath, runtimeFolderPath, pubLogsFolderPath } from '../config';
 
 export default () => {
   let supportWindow;
@@ -29,8 +29,11 @@ export default () => {
 
   ipcMain.on(SUPPORT_WINDOW.LOGS_INFO, (event, formInfo) => {
     if (!supportWindow) return;
-    formInfo.compressedLogsFile = path.join(appLogsFolderPath, formInfo.compressedLogsFile);
+    formInfo.appLogsFolderPath = appLogsFolderPath;
+    formInfo.runtimeFolderPath = runtimeFolderPath;
+    formInfo.pubLogsFolderPath = pubLogsFolderPath;
     supportWindow.webContents.send(SUPPORT_WINDOW.LOGS_INFO, formInfo);
+    event.sender.send(SUPPORT_WINDOW.LOGS_INFO, formInfo);
   });
 
   ipcMain.on(SUPPORT_WINDOW.CLOSE, closeSupportWindow);
