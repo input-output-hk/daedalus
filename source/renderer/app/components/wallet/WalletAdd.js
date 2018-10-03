@@ -148,7 +148,6 @@ export default class WalletAdd extends Component<Props> {
               isDisabled={
                 isMaxNumberOfWalletsReached ||
                 isRestoreActive ||
-                environment.isEtcApi() ||
                 (environment.isAdaApi() && environment.isMainnet())
               }
             />

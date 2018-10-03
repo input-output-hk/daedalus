@@ -37,7 +37,6 @@ const environment = Object.assign({
   isStaging: () => environment.NETWORK === 'staging',
   isTestnet: () => environment.NETWORK === 'testnet',
   isAdaApi: () => environment.API === 'ada',
-  isEtcApi: () => environment.API === 'etc',
   build,
   buildNumber: uniq([API_VERSION, build]).join('.'),
   getBuildLabel: () => {

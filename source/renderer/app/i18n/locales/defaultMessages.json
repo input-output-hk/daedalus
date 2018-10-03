@@ -1188,31 +1188,17 @@
         }
       },
       {
-        "defaultMessage": "!!!Mantis Team:",
-        "description": "About page mantis team headline",
+        "defaultMessage": "!!!Alexander Rukin, Charles Hoskinson, Clemens Helm, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Stefan Malzner, Tomislav Horaček",
+        "description": "About page daedalus team members",
         "end": {
           "column": 3,
           "line": 31
         },
         "file": "source/renderer/app/components/static/About.js",
-        "id": "static.about.content.mantis.headline",
-        "start": {
-          "column": 30,
-          "line": 27
-        }
-      },
-      {
-        "defaultMessage": "!!!Alexander Rukin, Charles Hoskinson, Clemens Helm, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Stefan Malzner, Tomislav Horaček",
-        "description": "About page daedalus team members",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.daedalus.members",
         "start": {
           "column": 31,
-          "line": 32
+          "line": 27
         }
       },
       {
@@ -1220,27 +1206,13 @@
         "description": "About page cardano team members",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 36
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.cardano.members",
         "start": {
           "column": 30,
-          "line": 37
-        }
-      },
-      {
-        "defaultMessage": "!!!Adam Smolarek, Alan McSherry, Alan Verbner, Alejandro Garcia, Charles Hoskinson, Domen Kožar, Eileen Fitzgerald, Hiroto Shioi, Jane Wild, Jan Ziniewicz, Javier Diaz, Jeremy Wood, Laurie Wang, Łukasz Gąsior, Konrad Staniec, Michael Bishop, Mirko Alić, Nicolás Tallar, Radek Tkaczyk, Serge Kosyrev",
-        "description": "About page mantis team members",
-        "end": {
-          "column": 3,
-          "line": 46
-        },
-        "file": "source/renderer/app/components/static/About.js",
-        "id": "static.about.content.mantis.members",
-        "start": {
-          "column": 29,
-          "line": 42
+          "line": 32
         }
       },
       {
@@ -1248,13 +1220,13 @@
         "description": "About \"copyright\"",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 41
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.copyright",
         "start": {
           "column": 18,
-          "line": 47
+          "line": 37
         }
       },
       {
@@ -1262,13 +1234,13 @@
         "description": "About page license name",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 46
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.license",
         "start": {
           "column": 15,
-          "line": 52
+          "line": 42
         }
       },
       {
@@ -1276,13 +1248,13 @@
         "description": "About page build information",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 51
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.buildInfo",
         "start": {
           "column": 18,
-          "line": 57
+          "line": 47
         }
       }
     ],

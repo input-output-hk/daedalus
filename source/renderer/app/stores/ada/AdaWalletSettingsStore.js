@@ -6,7 +6,7 @@ import Wallet from '../../domains/Wallet';
 import Request from '../lib/LocalizedRequest';
 import type { WalletExportToFileParams } from '../../actions/ada/wallet-settings-actions';
 
-export default class EtcWalletSettingsStore extends WalletSettingsStore {
+export default class AdaWalletSettingsStore extends WalletSettingsStore {
 
   /* eslint-disable max-len */
   @observable updateWalletRequest: Request<Wallet> = new Request(this.api.ada.updateWallet);

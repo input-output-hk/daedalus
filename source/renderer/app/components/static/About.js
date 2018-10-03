@@ -24,11 +24,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Cardano Team:',
     description: 'About page cardano team headline',
   },
-  aboutContentMantisHeadline: {
-    id: 'static.about.content.mantis.headline',
-    defaultMessage: '!!!Mantis Team:',
-    description: 'About page mantis team headline',
-  },
   aboutContentDaedalusMembers: {
     id: 'static.about.content.daedalus.members',
     defaultMessage: '!!!Alexander Rukin, Charles Hoskinson, Clemens Helm, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Stefan Malzner, Tomislav Horaček',
@@ -38,11 +33,6 @@ const messages = defineMessages({
     id: 'static.about.content.cardano.members',
     defaultMessage: '!!!Alexander Sukhoverkhov, Alexander Vieth, Alexandre Rodrigues Baldé, Alfredo Di Napoli, Anastasiya Besman, Andrzej Rybczak, Ante Kegalj, Anton Belyy, Anupam Jain, Arseniy Seroka, Artyom Kazak, Carlos D\'Agostino, Charles Hoskinson, Dan Friedman, Denis Shevchenko, Dmitry Kovanikov, Dmitry Mukhutdinov, Dmitry Nikulin, Domen Kožar, Duncan Coutts, Edsko de Vries, Eileen Fitzgerald, George Agapov, Hiroto Shioi, Ilya Lubimov, Ilya Peresadin, Ivan Gromakovskii, Jake Mitchell, Jane Wild, Jens Krause, Jeremy Wood, Joel Mislov Kunst, Jonn Mostovoy, Konstantin Ivanov, Kristijan Šarić, Lars Brünjes, Laurie Wang, Lionel Miller, Michael Bishop, Mikhail Volkhov, Niklas Hambüchen, Peter Gaži, Philipp Kant, Serge Kosyrev, Vincent Hanquez',
     description: 'About page cardano team members',
-  },
-  aboutContentMantisMembers: {
-    id: 'static.about.content.mantis.members',
-    defaultMessage: '!!!Adam Smolarek, Alan McSherry, Alan Verbner, Alejandro Garcia, Charles Hoskinson, Domen Kožar, Eileen Fitzgerald, Hiroto Shioi, Jane Wild, Jan Ziniewicz, Javier Diaz, Jeremy Wood, Laurie Wang, Łukasz Gąsior, Konrad Staniec, Michael Bishop, Mirko Alić, Nicolás Tallar, Radek Tkaczyk, Serge Kosyrev',
-    description: 'About page mantis team members',
   },
   aboutCopyright: {
     id: 'static.about.copyright',

@@ -69,7 +69,7 @@ export default class TermsOfUseForm extends Component<Props, State> {
       isSubmitting ? styles.submitButtonSpinning : styles.submitButton,
     ]);
 
-    const checkboxLabel = environment.isEtcApi() ? 'checkboxLabelWithDisclaimer' : 'checkboxLabel';
+    const checkboxLabel = 'checkboxLabel';
 
     return (
       <div className={styles.component}>
