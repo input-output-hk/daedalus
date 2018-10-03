@@ -70,7 +70,7 @@ Given(/^I have the following wallets:$/, async function (table) {
 
 // Creates them sequentially
 Given(/^I have created the following wallets:$/, async function (table) {
-  await createWallets(table.hashes(), this, true);
+  await createWallets(table.hashes(), this, { sequentially: true });
 });
 
 Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function (walletName, screen) {

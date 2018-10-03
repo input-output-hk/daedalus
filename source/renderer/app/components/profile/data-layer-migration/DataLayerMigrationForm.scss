@@ -1,0 +1,63 @@
+@import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/error-message';
+
+.component {
+  align-items: center;
+  background-color: var(--theme-data-migration-background-color);
+  bottom: 0;
+  box-shadow: 0 5px 20px 0 var(--theme-data-migration-layer-box-shadow-color);
+  color: var(--theme-data-migration-layer-text-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  left: 0;
+  padding: 50px;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: 0;
+}
+
+.title {
+  color: var(--theme-data-migration-layer-text-color);
+  cursor: default;
+  font-family: var(--font-regular);
+  font-size: 20px;
+  line-height: 1.2;
+  margin-bottom: 8.5px;
+  text-align: center;
+}
+
+.content1, .content2, .content3 {
+  color: var(--theme-data-migration-layer-text-color);
+  cursor: default;
+  font-family: var(--font-regular);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.38;
+  margin-bottom: 12px;
+  max-width: 670px;
+  opacity: 0.7;
+  text-align: center;
+
+  strong {
+    font-family: var(--font-bold);
+  }
+}
+.content3 {
+  color: var(--theme-data-migration-layer-text-opacity-color);
+  margin-bottom: 30px;
+}
+
+.submitButton {
+  border: solid 1px var(--theme-data-migration-layer-text-color) !important;
+  color: var(--theme-data-migration-layer-text-color) !important;
+  line-height: 1.36 !important;
+  margin-bottom: 30px;
+}
+
+.error {
+  @include error-message;
+  text-align: center;
+  margin-bottom: 1rem;
+}

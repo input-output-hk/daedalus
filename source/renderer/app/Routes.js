@@ -14,6 +14,7 @@ import GeneralSettingsPage from './containers/settings/categories/GeneralSetting
 import SupportSettingsPage from './containers/settings/categories/SupportSettingsPage';
 import TermsOfUseSettingsPage from './containers/settings/categories/TermsOfUseSettingsPage';
 import TermsOfUsePage from './containers/profile/TermsOfUsePage';
+import DataLayerMigrationPage from './containers/profile/DataLayerMigrationPage';
 import DisplaySettingsPage from './containers/settings/categories/DisplaySettingsPage';
 import PaperWalletCreateCertificatePage from './containers/wallet/PaperWalletCreateCertificatePage';
 import Wallet from './containers/wallet/Wallet';
@@ -29,6 +30,7 @@ export const Routes = (
     <IndexRedirect to={ROUTES.WALLETS.ROOT} />
     <Route path={ROUTES.PROFILE.LANGUAGE_SELECTION} component={LanguageSelectionPage} />
     <Route path={ROUTES.PROFILE.TERMS_OF_USE} component={TermsOfUsePage} />
+    <Route path={ROUTES.PROFILE.DATA_LAYER_MIGRATION} component={DataLayerMigrationPage} />
     {/* <Route path={ROUTES.STAKING} component={StakingPage} /> */}
     <Route path={ROUTES.ADA_REDEMPTION} component={AdaRedemptionPage} />
     <Route path={ROUTES.NETWORK_STATUS} component={NetworkStatusPage} />

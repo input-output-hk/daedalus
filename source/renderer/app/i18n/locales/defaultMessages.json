@@ -775,6 +775,81 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Wallet data migration",
+        "description": "Title for the Data Layer Migration screen.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/profile/data-layer-migration/DataLayerMigrationForm.js",
+        "id": "profile.dataLayerMigration.title",
+        "start": {
+          "column": 9,
+          "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!You have installed a version of Daedalus that changes how wallet data is stored and managed. Because of this, all of your wallets need to be restored and synchronized with the complete history of the Cardano blockchain.",
+        "description": "Content for the Data Layer Migration screen.",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "source/renderer/app/components/profile/data-layer-migration/DataLayerMigrationForm.js",
+        "id": "profile.dataLayerMigration.content1",
+        "start": {
+          "column": 12,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!This is an automatic process and does not require any action on your behalf.",
+        "description": "Content for the Data Layer Migration screen.",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/profile/data-layer-migration/DataLayerMigrationForm.js",
+        "id": "profile.dataLayerMigration.content2",
+        "start": {
+          "column": 12,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!Your transaction history and used addresses will appear in your wallets as they are recovered during the restoration process. Addresses that were not used will not be recovered because they are not recorded on the blockchain. If funds were sent to those addresses you will receive the funds and those addresses will appear in your wallet.",
+        "description": "Content for the Data Layer Migration screen.",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/profile/data-layer-migration/DataLayerMigrationForm.js",
+        "id": "profile.dataLayerMigration.content3",
+        "start": {
+          "column": 12,
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!Start migration",
+        "description": "Submit label for the Data Layer Migration screen.",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/profile/data-layer-migration/DataLayerMigrationForm.js",
+        "id": "profile.dataLayerMigration.submitLabel",
+        "start": {
+          "column": 15,
+          "line": 31
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/profile/data-layer-migration/DataLayerMigrationForm.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Select your language",
         "description": "Label for the language select.",
         "end": {
