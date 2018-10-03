@@ -11,8 +11,7 @@ export default class ChangeSpendingPasswordDialogContainer extends Component<Inj
 
   render() {
     const { actions } = this.props;
-    const { uiDialogs } = this.props.stores;
-    const { wallets, walletSettings } = this.props.stores.ada;
+    const { uiDialogs, wallets, walletSettings } = this.props.stores;
     const dialogData = uiDialogs.dataForActiveDialog;
     const { updateDataForActiveDialog } = actions.dialogs;
     const activeWallet = wallets.active;

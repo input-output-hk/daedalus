@@ -37,7 +37,7 @@ export default class ExportWalletToFileDialogContainer extends Component<Props> 
   };
 
   render() {
-    const { wallets, walletSettings } = this.props.stores.ada;
+    const { wallets, walletSettings } = this.props.stores;
     const activeWallet = wallets.active;
     const { exportWalletToFileRequest } = walletSettings;
 

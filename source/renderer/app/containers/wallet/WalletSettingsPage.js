@@ -16,8 +16,7 @@ export default class WalletSettingsPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    const { uiDialogs } = this.props.stores;
-    const { wallets, walletSettings } = this.props.stores.ada;
+    const { uiDialogs, wallets, walletSettings } = this.props.stores;
     const { actions } = this.props;
     const activeWallet = wallets.active;
     const {

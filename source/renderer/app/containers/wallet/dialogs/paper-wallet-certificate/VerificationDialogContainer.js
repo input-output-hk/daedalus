@@ -16,7 +16,7 @@ export default class VerificationDialogContainer extends Component<Props> {
   };
 
   render() {
-    const { wallets } = this.props.stores.ada;
+    const { wallets } = this.props.stores;
     const {
       walletCertificateRecoveryPhrase,
       additionalMnemonicWords,

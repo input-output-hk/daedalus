@@ -13,8 +13,7 @@ export default class DeleteWalletDialogContainer extends Component<Props> {
 
   render() {
     const { actions } = this.props;
-    const { uiDialogs } = this.props.stores;
-    const { wallets } = this.props.stores.ada;
+    const { uiDialogs, wallets } = this.props.stores;
     const dialogData = uiDialogs.dataForActiveDialog;
     const { updateDataForActiveDialog } = actions.dialogs;
     const activeWallet = wallets.active;

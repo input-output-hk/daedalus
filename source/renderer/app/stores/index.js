@@ -24,6 +24,12 @@ export const storeClasses = {
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
   networkStatus: NetworkStatusStore,
+  wallets: AdaWalletsStore,
+  transactions: TransactionsStore,
+  adaRedemption: AdaRedemptionStore,
+  nodeUpdate: NodeUpdateStore,
+  walletSettings: AdaWalletSettingsStore,
+  addresses: AddressesStore,
 };
 
 export type StoresMap = {

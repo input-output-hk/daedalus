@@ -15,7 +15,7 @@ export default class SecuringPasswordDialogContainer extends Component<Props> {
   };
 
   render() {
-    const { wallets } = this.props.stores.ada;
+    const { wallets } = this.props.stores;
     const { additionalMnemonicWords } = wallets;
 
     return (

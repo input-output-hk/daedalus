@@ -27,7 +27,7 @@ export default class InstructionsDialogContainer extends Component<Props> {
   };
 
   render() {
-    const { wallets } = this.props.stores.ada;
+    const { wallets } = this.props.stores;
 
     return (
       <InstructionsDialog

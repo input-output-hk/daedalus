@@ -42,8 +42,7 @@ export default class WalletTransactionsPage extends Component<Props> {
   render() {
     const { intl } = this.context;
     const actions = this.props.actions;
-    const { ada, app } = this.props.stores;
-    const { wallets, transactions } = ada;
+    const { app, wallets, transactions } = this.props.stores;
     const { openExternalLink } = app;
     const activeWallet = wallets.active;
     const {

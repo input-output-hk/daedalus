@@ -23,7 +23,7 @@ export default class WalletFileImportDialogContainer extends Component<Props> {
   };
 
   render() {
-    const { wallets } = this.props.stores.ada;
+    const { wallets } = this.props.stores;
     const { importFromFileRequest } = wallets;
 
     return (

@@ -46,8 +46,7 @@ export default class AdaWalletsStore extends WalletStore {
 
   setup() {
     super.setup();
-    const { router, walletBackup, ada } = this.actions;
-    const { wallets } = ada;
+    const { router, walletBackup, wallets } = this.actions;
     wallets.createWallet.listen(this._create);
     wallets.deleteWallet.listen(this._deleteWallet);
     wallets.sendMoney.listen(this._sendMoney);
