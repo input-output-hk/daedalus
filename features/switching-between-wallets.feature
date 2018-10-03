@@ -5,10 +5,10 @@ Feature: Switching Between Wallets
 
   Scenario Outline: Using the Sidebar to Switch Wallets
     Given I have the following wallets:
-    | name   |
-    | first  |
-    | second |
-    | third  |
+      | name   |
+      | first  |
+      | second |
+      | third  |
     And I am on the "<START>" wallet "summary" screen
     And The sidebar shows the "wallets" category
     And the sidebar submenu is visible

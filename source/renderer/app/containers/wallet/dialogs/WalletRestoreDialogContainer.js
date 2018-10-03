@@ -16,7 +16,7 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
   onSubmit = (values: {
     recoveryPhrase: string,
     walletName: string,
-    walletPassword: ?string,
+    spendingPassword: ?string,
     type?: string,
   }) => {
     this.props.actions[environment.API].wallets.restoreWallet.trigger(values);

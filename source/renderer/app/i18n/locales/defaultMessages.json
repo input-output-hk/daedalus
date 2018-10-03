@@ -25,7 +25,7 @@
         "file": "source/renderer/app/api/common/errors.js",
         "id": "api.errors.IncorrectPasswordError",
         "start": {
-          "column": 32,
+          "column": 34,
           "line": 11
         }
       },
@@ -1901,7 +1901,7 @@
           "line": 189
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
-        "id": "wallet.redeem.dialog.walletPasswordPlaceholder",
+        "id": "wallet.redeem.dialog.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
           "line": 185
@@ -1915,7 +1915,7 @@
           "line": 194
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
-        "id": "wallet.redeem.dialog.walletPasswordLabel",
+        "id": "wallet.redeem.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
           "line": 190
@@ -3034,7 +3034,7 @@
           "column": 3,
           "line": 26
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.title.setPassword",
         "start": {
           "column": 26,
@@ -3048,7 +3048,7 @@
           "column": 3,
           "line": 31
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.title.changePassword",
         "start": {
           "column": 29,
@@ -3062,7 +3062,7 @@
           "column": 3,
           "line": 36
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
@@ -3076,7 +3076,7 @@
           "column": 3,
           "line": 41
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.currentPasswordLabel",
         "start": {
           "column": 24,
@@ -3090,7 +3090,7 @@
           "column": 3,
           "line": 46
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.newPasswordLabel",
         "start": {
           "column": 20,
@@ -3104,7 +3104,7 @@
           "column": 3,
           "line": 51
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.repeatPasswordLabel",
         "start": {
           "column": 23,
@@ -3118,7 +3118,7 @@
           "column": 3,
           "line": 56
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.currentPasswordFieldPlaceholder",
         "start": {
           "column": 35,
@@ -3132,7 +3132,7 @@
           "column": 3,
           "line": 61
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.newPasswordFieldPlaceholder",
         "start": {
           "column": 31,
@@ -3146,7 +3146,7 @@
           "column": 3,
           "line": 66
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.repeatPasswordFieldPlaceholder",
         "start": {
           "column": 34,
@@ -3160,7 +3160,7 @@
           "column": 3,
           "line": 71
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.passwordSwitchLabel",
         "start": {
           "column": 23,
@@ -3174,7 +3174,7 @@
           "column": 3,
           "line": 76
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.passwordSwitchPlaceholder",
         "start": {
           "column": 29,
@@ -3182,7 +3182,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.json"
+    "path": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.json"
   },
   {
     "descriptors": [
@@ -3990,9 +3990,9 @@
           "line": 55
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
-        "id": "wallet.create.dialog.walletPasswordLabel",
+        "id": "wallet.create.dialog.spendingPasswordLabel",
         "start": {
-          "column": 23,
+          "column": 25,
           "line": 51
         }
       },
@@ -4280,9 +4280,9 @@
           "line": 85
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
-        "id": "wallet.restore.dialog.walletPasswordLabel",
+        "id": "wallet.restore.dialog.spendingPasswordLabel",
         "start": {
-          "column": 23,
+          "column": 25,
           "line": 81
         }
       },
@@ -4397,9 +4397,9 @@
           "line": 27
         },
         "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.walletPasswordLabel",
+        "id": "wallet.send.confirmationDialog.spendingPasswordLabel",
         "start": {
-          "column": 23,
+          "column": 25,
           "line": 23
         }
       },
@@ -4467,9 +4467,9 @@
           "line": 52
         },
         "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.walletPasswordFieldPlaceholder",
+        "id": "wallet.send.confirmationDialog.spendingPasswordFieldPlaceholder",
         "start": {
-          "column": 34,
+          "column": 36,
           "line": 48
         }
       },
@@ -5157,9 +5157,9 @@
           "line": 43
         },
         "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.errors.invalidWalletPassword",
+        "id": "global.errors.invalidSpendingPassword",
         "start": {
-          "column": 25,
+          "column": 27,
           "line": 39
         }
       },

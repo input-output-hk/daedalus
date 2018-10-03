@@ -24,7 +24,7 @@ import WalletReceive from '../../source/renderer/app/components/wallet/WalletRec
 import WalletTransactionsList from '../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
 import WalletSettings from '../../source/renderer/app/components/wallet/WalletSettings';
 import { WalletAssuranceModeOptions } from '../../source/renderer/app/domains/Wallet';
-import ChangeWalletPasswordDialog from '../../source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog';
+import ChangeSpendingPasswordDialog from '../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
 import DeleteWalletConfirmationDialog from '../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
 import ExportWalletToFileDialog from '../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
 
@@ -161,7 +161,7 @@ storiesOf('WalletScreens', module)
         }
       ]}
       isDialogOpen={(dialog) => {
-        if (dialog === ChangeWalletPasswordDialog) {
+        if (dialog === ChangeSpendingPasswordDialog) {
           return boolean('Change Password - Show dialog', false);
         }
         if (dialog === DeleteWalletConfirmationDialog) {
@@ -173,7 +173,7 @@ storiesOf('WalletScreens', module)
       }}
       isInvalid={false}
       isSubmitting={false}
-      isWalletPasswordSet={boolean('isWalletPasswordSet', false)}
+      isSpendingPasswordSet={boolean('isSpendingPasswordSet', false)}
       lastUpdatedField={null}
       nameValidator={() => true}
       onCancelEditing={() => {}}
@@ -183,13 +183,13 @@ storiesOf('WalletScreens', module)
       openDialogAction={() => {}}
       walletAssurance={WalletAssuranceModeOptions.NORMAL}
       walletName={text('Wallet Name', 'Wallet Name')}
-      walletPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
-      changeWalletPasswordDialog={
-        <ChangeWalletPasswordDialog
+      spendingPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
+      changeSpendingPasswordDialog={
+        <ChangeSpendingPasswordDialog
           currentPasswordValue="current"
           newPasswordValue="new"
           repeatedPasswordValue="new"
-          isWalletPasswordSet={boolean('isWalletPasswordSet', false)}
+          isSpendingPasswordSet={boolean('isSpendingPasswordSet', false)}
           onSave={action('Change Password - onSave')}
           onCancel={action('Change Password - onCancel')}
           onPasswordSwitchToggle={action('Change Password - onPasswordSwitchToggle')}
@@ -215,7 +215,7 @@ storiesOf('WalletScreens', module)
       exportWalletDialogContainer={
         <ExportWalletToFileDialog
           walletName={text('Wallet Name', 'Wallet Name')}
-          hasSpendingPassword={boolean('isWalletPasswordSet', false)}
+          hasSpendingPassword={boolean('isSpendingPasswordSet', false)}
           isSubmitting={boolean('Export Wallet - isSubmitting', false)}
           onSubmit={action('Export Wallet - onSubmit')}
           onClose={action('Export Wallet - onClose')}
