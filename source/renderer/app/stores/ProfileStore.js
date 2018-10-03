@@ -194,11 +194,6 @@ export default class SettingsStore extends Store {
     this.getTermsOfUseAcceptanceRequest.execute();
   };
 
-  _skipDataLayerMigration = async () => {
-    await this.setDataLayerMigrationAcceptanceRequest.execute();
-    await this.getDataLayerMigrationAcceptanceRequest.execute();
-  };
-
   _acceptDataLayerMigration = async () => {
     await this.setDataLayerMigrationAcceptanceRequest.execute();
     await this.getDataLayerMigrationAcceptanceRequest.execute();
@@ -237,7 +232,10 @@ export default class SettingsStore extends Store {
       dataLayerMigrationNotAccepted
     ) {
       if (!this.stores.ada.wallets.hasAnyWallets) {
-        this._skipDataLayerMigration();
+        // There are no wallets to migrate so we just need
+        // to set the data layer migration acceptance to true
+        // in order to prevent future data migration checks
+        this._acceptDataLayerMigration();
       } else {
         this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.DATA_LAYER_MIGRATION });
       }

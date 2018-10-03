@@ -118,9 +118,7 @@ const createWalletsSequentially = async (wallets, context) => {
 };
 
 export const createWallets = async (wallets, context, options) => {
-
   const { sequentially } = options || {};
-
   if (sequentially === true) {
     await createWalletsSequentially(wallets, context);
   } else {
