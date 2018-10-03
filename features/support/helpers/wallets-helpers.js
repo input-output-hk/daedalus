@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import dataLayerMigrationHelpers from './data-layer-migration-helpers';
 
 export const getNameOfActiveWalletInSidebar = async function () {
   await this.client.waitForVisible('.SidebarWalletMenuItem_active');
