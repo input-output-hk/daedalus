@@ -77,6 +77,7 @@
     "API_VERSION": true,
     "NETWORK": true,
     "MOBX_DEV_TOOLS": true,
-    "BUILD_NUMBER": true
+    "BUILD_NUMBER": true,
+    "Process": true // TODO: remove after fix
   }
 }
