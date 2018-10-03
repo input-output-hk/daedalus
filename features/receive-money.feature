@@ -15,6 +15,7 @@ Feature: Receive money
       | source          | destination   | amount |
       | Imported Wallet | TargetWallet  | 1      |
     Then I should see 2 addresses
+    And I should see 1 used addresses
     When I click the ShowUsed switch
     Then I should see 1 addresses
 

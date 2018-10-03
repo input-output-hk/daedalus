@@ -1,8 +1,8 @@
 @import '../../themes/mixins/loading-spinner';
 @import '../../themes/mixins/place-form-field-error-below-input';
 
-.walletPassword {
-  .walletPasswordSwitch {
+.spendingPassword {
+  .spendingPasswordSwitch {
     border-top: 1px solid var(--theme-separation-border-color);
     margin-top: 30px;
     padding-top: 20px;
@@ -22,7 +22,7 @@
     }
   }
 
-  .walletPasswordFields {
+  .spendingPasswordFields {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;

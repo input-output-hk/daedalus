@@ -4,7 +4,7 @@ import { observer, inject } from 'mobx-react';
 import WalletSettings from '../../components/wallet/WalletSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { isValidWalletName } from '../../utils/validations';
-import ChangeWalletPasswordDialogContainer from './dialogs/settings/ChangeWalletPasswordDialogContainer';
+import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
 import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
 import ExportWalletToFileDialogContainer from './dialogs/settings/ExportWalletToFileDialogContainer';
 
@@ -42,8 +42,8 @@ export default class WalletSettingsPage extends Component<Props> {
         walletAssurance={activeWallet.assurance}
         error={updateWalletRequest.error}
         openDialogAction={actions.dialogs.open.trigger}
-        isWalletPasswordSet={activeWallet.hasPassword}
-        walletPasswordUpdateDate={activeWallet.passwordUpdateDate}
+        isSpendingPasswordSet={activeWallet.hasPassword}
+        spendingPasswordUpdateDate={activeWallet.passwordUpdateDate}
         isDialogOpen={uiDialogs.isOpen}
         walletName={activeWallet.name}
         isSubmitting={updateWalletRequest.isExecuting}
@@ -55,7 +55,7 @@ export default class WalletSettingsPage extends Component<Props> {
         onCancelEditing={cancelEditingWalletField.trigger}
         activeField={walletFieldBeingEdited}
         nameValidator={name => isValidWalletName(name)}
-        changeWalletPasswordDialog={<ChangeWalletPasswordDialogContainer />}
+        changeSpendingPasswordDialog={<ChangeSpendingPasswordDialogContainer />}
         deleteWalletDialogContainer={<DeleteWalletDialogContainer />}
         exportWalletDialogContainer={<ExportWalletToFileDialogContainer />}
       />

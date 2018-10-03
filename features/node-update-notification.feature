@@ -3,7 +3,7 @@ Feature: Node Update Notification
   Background:
     Given I have completed the basic setup
     And I have the following wallets:
-      | name   |
+      | name        |
       | Test wallet |
     When I am on the "Test wallet" wallet "summary" screen
     When I make a node update available
