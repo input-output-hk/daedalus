@@ -9,18 +9,19 @@ import {
   NETWORK_STATUS_REQUEST_TIMEOUT,
   NETWORK_STATUS_POLL_INTERVAL,
   SYSTEM_TIME_POLL_INTERVAL,
+  REQUEST_TLS_CONFIG_RETRY_INTERVAL,
 } from '../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
 import { Logger } from '../../../common/logging';
-import type { RequestConfig } from '../api/common/types';
-import { tlsConfigChannel } from '../ipc/tlsConfigChannel';
-import { cardanoNodeStateChangeChannel } from '../ipc/cardanoNodeStateChangeChannel';
-import type { CardanoNodeState } from '../../../common/types/cardanoNodeTypes';
-import { CardanoNodeStates } from '../../../common/types/cardanoNodeTypes';
-import { restartCardanoNodeChannel } from '../ipc/cardanoNodeChannels';
+import {
+  cardanoStateChangeChannel,
+  tlsConfigChannel,
+  restartCardanoNodeChannel
+} from '../ipc/cardano.ipc';
+import { CardanoNodeStates } from '../../../common/types/cardanoNode.types';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
+import type { CardanoNodeState, TlsConfig } from '../../../common/types/cardanoNode.types';
 import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
-
 
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedState = null;
@@ -71,9 +72,18 @@ export default class NetworkStatusStore extends Store {
 
   // DEFINE STORE METHODS
   setup() {
-    tlsConfigChannel.receive(this._updateApiConfig);
-    tlsConfigChannel.request();
-    cardanoNodeStateChangeChannel.receive(this._handleCardanoNodeStateChange);
+    // ========== IPC CHANNELS =========== //
+
+    // Actively ask the main process to send tls config to this renderer process
+    this._requestTlsConfig();
+    // Passively receive broadcasted tls config changes (which can happen without requesting it)
+    // E.g if the cardano-node restarted for some reason
+    tlsConfigChannel.onReceive(this._updateTlsConfig);
+    // Passively receive state changes of the cardano-node
+    cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
+
+    // ========== MOBX REACTIONS =========== //
+
     this.registerReactions([
       this._updateNetworkStatusWhenDisconnected,
       this._updateLocalTimeDifferenceWhenSystemTimeChanged,
@@ -88,6 +98,15 @@ export default class NetworkStatusStore extends Store {
     this._systemTimeChangeCheckPollingInterval = setInterval(
       this._updateSystemTime, SYSTEM_TIME_POLL_INTERVAL
     );
+  }
+
+  async restartNode() {
+    try {
+      Logger.info('NetwortStatusStore: Requesting a restart of cardano-node.');
+      await restartCardanoNodeChannel.send();
+    } catch (error) {
+      Logger.info(`NetwortStatusStore: Restart of cardano-node failed with ${error}`);
+    }
   }
 
   teardown() {
@@ -124,13 +143,25 @@ export default class NetworkStatusStore extends Store {
     return Date.now() - this._startTime;
   }
 
-  _updateApiConfig = (config: RequestConfig) => {
+  _requestTlsConfig = async () => {
+    try {
+      Logger.info('NetworkStatusStore: requesting tls config from main process.');
+      const tlsConfig = await tlsConfigChannel.send();
+      await this._updateTlsConfig(tlsConfig);
+    } catch (error) {
+      Logger.info(`NetworkStatusStore: error while requesting tls config ${error}. Retrying …`);
+      setTimeout(this._requestTlsConfig, REQUEST_TLS_CONFIG_RETRY_INTERVAL);
+    }
+  };
+
+  _updateTlsConfig = (config: TlsConfig): Promise<void> => {
     Logger.info('NetworkStatusStore: received tls config from main process.');
     this.api.ada.setRequestConfig(config);
     this._hasReceivedTlsConfig = true;
+    return Promise.resolve();
   };
 
-  _handleCardanoNodeStateChange = (state: CardanoNodeState) => {
+  _handleCardanoNodeStateChange = (state: CardanoNodeState): Promise<void> => {
     Logger.info(`NetworkStatusStore: handling cardano-node state change to <${state}>`);
     const wasConnected = this.isConnected;
     switch (state) {
@@ -143,6 +174,7 @@ export default class NetworkStatusStore extends Store {
         break;
       default:
     }
+    return Promise.resolve();
   };
 
   // DEFINE ACTIONS
@@ -328,15 +360,6 @@ export default class NetworkStatusStore extends Store {
       Logger.debug('Connection Lost. Reconnecting...');
     }
   };
-
-  async restartNode() {
-    try {
-      Logger.info('NetwortStatusStore: Requesting a restart of cardano-node.');
-      await restartCardanoNodeChannel().send();
-    } catch (error) {
-      Logger.info(`NetwortStatusStore: Restart of cardano-node failed with ${error}`);
-    }
-  }
 
   forceCheckLocalTimeDifference = async () => {
     await this._updateNetworkStatus({ force_ntp_check: true });

@@ -1,4 +1,5 @@
 // @flow
+import type { BrowserWindow } from 'electron';
 import compressLogsApi from './compress-logs';
 import downloadLogsApi from './download-logs';
 import getLogsApi from './get-logs';
@@ -7,12 +8,12 @@ import resizeWindowApi from './resize-window';
 import loadAsset from './load-asset';
 import getGpuStatus from './get-gpu-status';
 
-export default (params: any) => {
+export default (window: BrowserWindow) => {
   compressLogsApi();
   downloadLogsApi();
   getLogsApi();
   parseRedemptionCodeApi();
-  resizeWindowApi(params);
+  resizeWindowApi(window);
   loadAsset();
   getGpuStatus();
 };

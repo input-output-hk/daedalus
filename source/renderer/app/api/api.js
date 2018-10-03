@@ -44,7 +44,7 @@ import { restoreWallet } from './wallets/requests/restoreWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
 
 // utility functions
-import { awaitUpdateChannel } from '../ipc/awaitUpdateChannel';
+import { awaitUpdateChannel } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
 import { isValidMnemonic } from '../../../common/decrypt';
 import { utcStringToDate, encryptPassphrase } from './utils';
@@ -614,7 +614,7 @@ export default class AdaApi {
   applyUpdate = async (): Promise<void> => {
     Logger.debug('AdaApi::applyUpdate called');
     try {
-      awaitUpdateChannel.request();
+      awaitUpdateChannel.send();
       const response: Promise<any> = await applyNodeUpdate(this.config);
       Logger.debug('AdaApi::applyUpdate success: ' + stringifyData(response));
     } catch (error) {

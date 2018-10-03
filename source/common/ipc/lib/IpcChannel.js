@@ -28,35 +28,22 @@ export class IpcChannel<Request, AwaitedResponse, ReceivedRequest, Response> {
    */
   static _instances = {};
   /**
-   * The ipc channel name
+   * The public broadcast channel (any process will receive these messages)
    * @private
    */
-  _channel: string;
+  _broadcastChannel: string;
   /**
-   * The ipc interface that is used to send messages.
+   * The response channel between a main and render process
    * @private
    */
-  _sender: IpcSender;
-  /**
-   * The ipc interfaces that is used to receive messages
-   * @private
-   */
-  _receiver: IpcReceiver;
-  /**
-   * Flag that indicates if we are awaiting a reply from the receiver.
-   * @private
-   */
-  _isAwaitingResponse: boolean;
-
+  _responseChannel: string;
   /**
    * Sets up the ipc channel and checks that its name is valid.
    * Ensures that only one instance per channel name can exist.
    *
    * @param channelName {String}
-   * @param sender {IpcSender}
-   * @param receiver {IpcReceiver}
    */
-  constructor(channelName: string, sender: IpcSender, receiver: IpcReceiver) {
+  constructor(channelName: string) {
     if (!isString(channelName) || channelName === '') {
       throw new Error(`Invalid channel name ${channelName} provided`);
     }
@@ -65,10 +52,8 @@ export class IpcChannel<Request, AwaitedResponse, ReceivedRequest, Response> {
     if (existingChannel) return existingChannel;
     IpcChannel._instances[channelName] = this;
 
-    this._channel = channelName;
-    this._sender = sender;
-    this._receiver = receiver;
-    this._isAwaitingResponse = false;
+    this._broadcastChannel = channelName + '-broadcast';
+    this._responseChannel = channelName + '-response';
   }
 
   /**
@@ -76,21 +61,21 @@ export class IpcChannel<Request, AwaitedResponse, ReceivedRequest, Response> {
    * same channel. It returns a promise which is resolved or rejected with the response
    * depending on the `isOk` flag set by the respondant.
    *
-   * @param request
+   * @param request {Request}
+   * @param sender {IpcSender}
+   * @param receiver {IpcReceiver}
    * @returns {Promise<AwaitedResponse>}
    */
-  async send(request: Request): Promise<AwaitedResponse> {
+  async send(request: Request, sender: IpcSender, receiver: IpcReceiver): Promise<AwaitedResponse> {
     return new Promise((resolve, reject) => {
-      this._sender.send(this._channel, request);
-      this._isAwaitingResponse = true;
+      sender.send(this._broadcastChannel, request);
       // Handle response to the sent request once
-      this._receiver.once(this._channel, (event, isOk: boolean, response: AwaitedResponse) => {
+      receiver.once(this._responseChannel, (event, isOk: boolean, response: AwaitedResponse) => {
         if (isOk) {
           resolve(response);
         } else {
           reject(response);
         }
-        this._isAwaitingResponse = false;
       });
     });
   }
@@ -100,17 +85,16 @@ export class IpcChannel<Request, AwaitedResponse, ReceivedRequest, Response> {
    * This should be used to receive messages that are broadcasted by the other end of
    * the ipc channel and are not responses to requests sent by this party.
    *
+   * @param receiver {IpcReceiver}
    * @param handler
    */
-  receive(handler: (request: ReceivedRequest) => Promise<Response>): void {
-    this._receiver.on(this._channel, async (event: IpcEvent, request: ReceivedRequest) => {
-      // Only handle messages if they are not yet part of a request / response cycle.
-      if (this._isAwaitingResponse) return;
+  onReceive(handler: (request: ReceivedRequest) => Promise<Response>, receiver: IpcReceiver): void {
+    receiver.on(this._broadcastChannel, async (event: IpcEvent, request: ReceivedRequest) => {
       try {
         const response = await handler(request);
-        event.sender.send(this._channel, true, response);
+        event.sender.send(this._responseChannel, true, response);
       } catch (error) {
-        event.sender.send(this._channel, false, error);
+        event.sender.send(this._responseChannel, false, error);
       }
     });
   }

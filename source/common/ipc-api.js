@@ -34,8 +34,3 @@ export const GET_GPU_STATUS = {
   ERROR: `${GET_GPU_STATUS_CHANNEL}-error`,
 };
 
-export const AWAIT_UPDATE_CHANNEL = 'AWAIT_UPDATE';
-export const CARDANO_NODE_STATE_CHANGE_CHANNEL = 'CARDANO_NODE_STATE_CHANGE';
-
-export const RESTART_CARDANO_NODE_CHANNEL = 'RESTART_CARDANO_NODE_CHANNEL';
-export type RestartCardanoNodeMainResponse = void | string; // success or error

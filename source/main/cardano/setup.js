@@ -1,20 +1,19 @@
 // @flow
 import { createWriteStream, readFileSync } from 'fs';
 import { spawn } from 'child_process';
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import { Logger } from '../../common/logging';
 import { prepareArgs, readLauncherConfig } from './config';
 import { CardanoNode } from './CardanoNode';
-import { TLS_CONFIG_CHANNEL } from '../../common/ipc-api/tls-config';
+import { CardanoNodeStates } from '../../common/types/cardanoNode.types';
 import {
-  AWAIT_UPDATE_CHANNEL,
-  CARDANO_NODE_STATE_CHANGE_CHANNEL,
-} from '../../common/ipc-api';
-import { CardanoNodeStates } from '../../common/types/cardanoNodeTypes';
-import type { TlsConfig } from '../../common/ipc-api/tls-config';
-import type { CardanoNodeState } from '../../common/types/cardanoNodeTypes';
-import { restartCardanoNodeChannel } from '../ipc-api/cardanoIpcApi';
+  cardanoTlsConfigChannel,
+  cardanoRestartChannel,
+  cardanoAwaitUpdateChannel,
+  cardanoStateChangeChannel
+} from '../ipc/cardano.ipc';
 import { flushLogsAndExitWithCode } from '../utils/flushLogsAndExitWithCode';
+import type { TlsConfig, CardanoNodeState } from '../../common/types/cardanoNode.types';
 import type { LauncherConfig } from './config';
 
 export const shouldCardanoBeLaunchedByDaedalus = (launcherConfig: Object): boolean => (
@@ -49,7 +48,7 @@ const restartOrExit = async (node: CardanoNode) => {
   }
 };
 
-export const loadLauncherConfig = (configPath: string): ?LauncherConfig => {
+export const loadLauncherConfig = (configPath?: ?string): ?LauncherConfig => {
   // Check if we should start cardano
   if (!configPath) return null;
   return readLauncherConfig(configPath);
@@ -65,20 +64,18 @@ export const loadLauncherConfig = (configPath: string): ?LauncherConfig => {
 export const setupCardano = (launcherConfig: LauncherConfig, mainWindow: BrowserWindow) => {
 
   const cardanoNode = new CardanoNode(Logger, {
+    // Dependencies on node.js apis are passed as props to ease testing
     spawn,
     readFileSync,
     createWriteStream,
     broadcastTlsConfig: (tlsConfig: TlsConfig) => {
-      if (!mainWindow.isDestroyed()) {
-        mainWindow.send(TLS_CONFIG_CHANNEL, true, tlsConfig);
-      }
+      if (!mainWindow.isDestroyed()) cardanoTlsConfigChannel.send(tlsConfig, mainWindow);
     },
     broadcastStateChange: (state: CardanoNodeState) => {
-      if (!mainWindow.isDestroyed()) {
-        mainWindow.send(CARDANO_NODE_STATE_CHANGE_CHANNEL, true, state);
-      }
+      if (!mainWindow.isDestroyed()) cardanoStateChangeChannel.send(state, mainWindow);
     },
   }, {
+    // CardanoNode lifecycle hooks
     onStarting: () => {},
     onRunning: () => {},
     onStopping: () => {},
@@ -92,27 +89,22 @@ export const setupCardano = (launcherConfig: LauncherConfig, mainWindow: Browser
       Logger.info(`CardanoNode exited unexpectatly with code ${code}. Restarting it …`);
       restartOrExit(cardanoNode);
     },
-    onError: (error) => {} // eslint-disable-line
+    onError: () => {}
   });
   startCardanoNode(cardanoNode, launcherConfig);
 
   // Respond with TLS config whenever a render process asks for it
-  ipcMain.on(TLS_CONFIG_CHANNEL, ({ sender }) => {
-    Logger.info('ipcMain: Sending tls config to renderer.');
-    sender.send(TLS_CONFIG_CHANNEL, true, cardanoNode.tlsConfig);
+  cardanoTlsConfigChannel.onReceive(() => {
+    Logger.info('ipcMain: Received request to send tls config to renderer.');
+    return Promise.resolve(cardanoNode.tlsConfig);
   });
   // Handle update notification from frontend
-  ipcMain.on(AWAIT_UPDATE_CHANNEL, async ({ sender }) => {
+  cardanoAwaitUpdateChannel.onReceive(() => {
     Logger.info('ipcMain: Received request from renderer to await update.');
-    try {
-      await cardanoNode.expectNodeUpdate();
-      sender.send(AWAIT_UPDATE_CHANNEL, true);
-    } catch (error) {
-      sender.send(AWAIT_UPDATE_CHANNEL, false);
-    }
+    return cardanoNode.expectNodeUpdate();
   });
-  // Stop and restart cardano node if frontend requests it.
-  restartCardanoNodeChannel(mainWindow).receive(() => {
+  // Restart cardano node if frontend requests it.
+  cardanoRestartChannel.onReceive(() => {
     Logger.info('ipcMain: Received request from renderer to restart node.');
     return cardanoNode.restart();
   });

@@ -1,5 +1,6 @@
+// @flow
 import os from 'os';
-import { app, ipcMain, globalShortcut, Menu, dialog } from 'electron';
+import { app, globalShortcut, Menu, dialog } from 'electron';
 import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { Logger } from '../common/logging';
@@ -10,9 +11,9 @@ import { winLinuxMenu } from './menus/win-linux';
 import { osxMenu } from './menus/osx';
 import { installChromeExtensions } from './utils/installChromeExtensions';
 import environment from '../common/environment';
-import { OPEN_ABOUT_DIALOG_CHANNEL } from '../common/ipc-api/open-about-dialog';
-import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../common/ipc-api/go-to-ada-redemption-screen';
-import { GO_TO_NETWORK_STATUS_SCREEN_CHANNEL } from '../common/ipc-api/go-to-network-status-screen';
+import { OPEN_ABOUT_DIALOG_CHANNEL } from '../common/ipc/open-about-dialog';
+import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../common/ipc/go-to-ada-redemption-screen';
+import { GO_TO_NETWORK_STATUS_SCREEN_CHANNEL } from '../common/ipc/go-to-network-status-screen';
 import mainErrorHandler from './utils/mainErrorHandler';
 import {
   loadLauncherConfig,
@@ -22,8 +23,8 @@ import {
 import { CardanoNode } from './cardano/CardanoNode';
 import { flushLogsAndExitWithCode } from './utils/flushLogsAndExitWithCode';
 import { ensureXDGDataIsSet } from './cardano/config';
-import { TLS_CONFIG_CHANNEL } from '../common/ipc-api/tls-config';
 import { loadTlsConfig } from './utils/loadTlsConfig';
+import { cardanoTlsConfigChannel } from './ipc/cardano.ipc';
 
 const { LAUNCHER_CONFIG } = process.env;
 const { CARDANO_TLS_PATH } = process.env;
@@ -31,7 +32,7 @@ const { CARDANO_TLS_PATH } = process.env;
 setupLogging();
 mainErrorHandler();
 
-Logger.info(`========== Daedalus is starting at ${new Date()} ==========`);
+Logger.info(`========== Daedalus is starting at ${new Date().toString()} ==========`);
 
 Logger.debug(`!!! Daedalus is running on ${os.platform()} version ${os.release()}
             with CPU: ${JSON.stringify(os.cpus(), null, 2)} with
@@ -109,9 +110,9 @@ app.on('ready', async () => {
     Logger.info('Launcher config not found, assuming cardano is ran externally');
     const tlsConfig = loadTlsConfig(CARDANO_TLS_PATH);
     // Respond with TLS config whenever a render process asks for it
-    ipcMain.on(TLS_CONFIG_CHANNEL, ({ sender }) => {
-      Logger.info('ipcMain: Sending tls config to renderer.');
-      sender.send(TLS_CONFIG_CHANNEL, true, tlsConfig);
+    cardanoTlsConfigChannel.onReceive(() => {
+      Logger.info('ipcMain: Received request to send tls config to renderer.');
+      return Promise.resolve(tlsConfig);
     });
   }
 
