@@ -1,7 +1,7 @@
 Feature: Data Layer Migration
 
   Background:
-    Given I haven't clicked the migration button
+    Given I haven't accepted the data layer migration
     And I have completed the basic setup
 
   Scenario: I don't have any wallets

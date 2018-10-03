@@ -73,7 +73,6 @@ export default class DataLayerMigrationForm extends Component<Props> {
           {intl.formatMessage(messages.content3)}
         </p>
 
-
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
         <Button

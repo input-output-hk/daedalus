@@ -130,7 +130,7 @@ export const createWallets = async (wallets, context, options) => {
   }
 
   if (skipDataLayerMigration !== true) {
-    await dataLayerMigrationHelpers.startMigration(context.client);
+    await dataLayerMigrationHelpers.acceptMigration(context.client);
   }
 
 };

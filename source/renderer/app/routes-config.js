@@ -8,7 +8,7 @@ export const ROUTES = {
   PROFILE: {
     LANGUAGE_SELECTION: '/profile/language-selection',
     TERMS_OF_USE: '/profile/terms-of-use',
-    DATA_LAYER_MIGRATION: '/profile/data-layer-migration',
+    DATA_LAYER_MIGRATION_ACCEPTANCE: '/profile/data-layer-migration',
   },
   WALLETS: {
     ROOT: '/wallets',

@@ -30,7 +30,7 @@ export const Routes = (
     <IndexRedirect to={ROUTES.WALLETS.ROOT} />
     <Route path={ROUTES.PROFILE.LANGUAGE_SELECTION} component={LanguageSelectionPage} />
     <Route path={ROUTES.PROFILE.TERMS_OF_USE} component={TermsOfUsePage} />
-    <Route path={ROUTES.PROFILE.DATA_LAYER_MIGRATION} component={DataLayerMigrationPage} />
+    <Route path={ROUTES.PROFILE.DATA_LAYER_MIGRATION_ACCEPTANCE} component={DataLayerMigrationPage} />
     {/* <Route path={ROUTES.STAKING} component={StakingPage} /> */}
     <Route path={ROUTES.ADA_REDEMPTION} component={AdaRedemptionPage} />
     <Route path={ROUTES.NETWORK_STATUS} component={NetworkStatusPage} />

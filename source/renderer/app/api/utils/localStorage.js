@@ -8,7 +8,7 @@ const storageKeys = {
   USER_LOCALE: networkForLocalStorage + '-USER-LOCALE',
   TERMS_OF_USE_ACCEPTANCE: networkForLocalStorage + '-TERMS-OF-USE-ACCEPTANCE',
   THEME: networkForLocalStorage + '-THEME',
-  DATA_LAYER_MIGRATION: networkForLocalStorage + '-DATA_LAYER_MIGRATION',
+  DATA_LAYER_MIGRATION_ACCEPTANCE: networkForLocalStorage + '-DATA_LAYER_MIGRATION_ACCEPTANCE',
 };
 
 /**
@@ -96,9 +96,9 @@ export default class LocalStorageApi {
     } catch (error) {} // eslint-disable-line
   });
 
-  getDataLayerMigrationStart = () => new Promise((resolve, reject) => {
+  getDataLayerMigrationAcceptance = () => new Promise((resolve, reject) => {
     try {
-      const accepted = store.get(storageKeys.DATA_LAYER_MIGRATION);
+      const accepted = store.get(storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE);
       if (!accepted) return resolve(false);
       resolve(accepted);
     } catch (error) {
@@ -106,18 +106,18 @@ export default class LocalStorageApi {
     }
   });
 
-  setDataLayerMigrationStart = () => new Promise((resolve, reject) => {
+  setDataLayerMigrationAcceptance = () => new Promise((resolve, reject) => {
     try {
-      store.set(storageKeys.DATA_LAYER_MIGRATION, true);
+      store.set(storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE, true);
       resolve();
     } catch (error) {
       return reject(error);
     }
   });
 
-  unsetDataLayerMigrationStart = () => new Promise((resolve) => {
+  unsetDataLayerMigrationAcceptance = () => new Promise((resolve) => {
     try {
-      store.delete(storageKeys.DATA_LAYER_MIGRATION);
+      store.delete(storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE);
       resolve();
     } catch (error) {} // eslint-disable-line
   });
@@ -126,7 +126,7 @@ export default class LocalStorageApi {
     await this.unsetUserLocale();
     await this.unsetTermsOfUseAcceptance();
     await this.unsetUserTheme();
-    await this.unsetDataLayerMigrationStart();
+    await this.unsetDataLayerMigrationAcceptance();
   }
 
 }
