@@ -1,18 +1,18 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
 import { get, chunk, find } from 'lodash';
-import WalletStore from '../WalletStore';
-import Wallet from '../../domains/Wallet';
-import WalletTransaction from '../../domains/WalletTransaction';
-import { MAX_ADA_WALLETS_COUNT } from '../../config/numbersConfig';
-import { matchRoute, buildRoute } from '../../utils/routing';
-import { i18nContext } from '../../utils/i18nContext';
-import Request from '.././lib/LocalizedRequest';
-import { ROUTES } from '../../routes-config';
-import { mnemonicToSeedHex } from '../../utils/crypto';
-import { downloadPaperWalletCertificate } from '../../utils/paperWalletPdfGenerator';
-import type { walletExportTypeChoices } from '../../types/walletExportTypes';
-import type { WalletImportFromFileParams } from '../../actions/ada/wallets-actions';
+import WalletStore from './WalletStore';
+import Wallet from '../domains/Wallet';
+import WalletTransaction from '../domains/WalletTransaction';
+import { MAX_ADA_WALLETS_COUNT } from '../config/numbersConfig';
+import { matchRoute, buildRoute } from '../utils/routing';
+import { i18nContext } from '../utils/i18nContext';
+import Request from './lib/LocalizedRequest';
+import { ROUTES } from '../routes-config';
+import { mnemonicToSeedHex } from '../utils/crypto';
+import { downloadPaperWalletCertificate } from '../utils/paperWalletPdfGenerator';
+import type { walletExportTypeChoices } from '../types/walletExportTypes';
+import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 
 export default class AdaWalletsStore extends WalletStore {
 
@@ -70,7 +70,7 @@ export default class AdaWalletsStore extends WalletStore {
   }) => {
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
-    const accountIndex = await this.stores.ada.addresses.getAccountIndexByWalletId(wallet.id);
+    const accountIndex = await this.stores.addresses.getAccountIndexByWalletId(wallet.id);
 
     await this.sendMoneyRequest.execute({
       address: receiver,
@@ -114,20 +114,20 @@ export default class AdaWalletsStore extends WalletStore {
       });
       runInAction('refresh address data', () => {
         const walletIds = result.map((wallet: Wallet) => wallet.id);
-        this.stores.ada.addresses.addressesRequests = walletIds.map(walletId => ({
+        this.stores.addresses.addressesRequests = walletIds.map(walletId => ({
           walletId,
-          allRequest: this.stores.ada.addresses._getAddressesAllRequest(walletId),
+          allRequest: this.stores.addresses._getAddressesAllRequest(walletId),
         }));
-        this.stores.ada.addresses._refreshAddresses();
+        this.stores.addresses._refreshAddresses();
       });
       runInAction('refresh transaction data', () => {
         const walletIds = result.map((wallet: Wallet) => wallet.id);
-        this.stores.ada.transactions.transactionsRequests = walletIds.map(walletId => ({
+        this.stores.transactions.transactionsRequests = walletIds.map(walletId => ({
           walletId,
-          recentRequest: this.stores.ada.transactions._getTransactionsRecentRequest(walletId),
-          allRequest: this.stores.ada.transactions._getTransactionsAllRequest(walletId),
+          recentRequest: this.stores.transactions._getTransactionsRecentRequest(walletId),
+          allRequest: this.stores.transactions._getTransactionsAllRequest(walletId),
         }));
-        this.stores.ada.transactions._refreshTransactionData();
+        this.stores.transactions._refreshTransactionData();
       });
       runInAction('refresh active wallet restore', () => {
         const restoringWallet = typeof find(result, ['syncState.tag', 'restoring']) !== 'undefined';
@@ -226,14 +226,14 @@ export default class AdaWalletsStore extends WalletStore {
     if (this.hasAnyWallets) {
       const activeWalletId = this.active ? this.active.id : null;
       const activeWalletChange = activeWalletId !== walletId;
-      if (activeWalletChange) this.stores.ada.addresses.lastGeneratedAddress = null;
+      if (activeWalletChange) this.stores.addresses.lastGeneratedAddress = null;
       this.active = this.all.find(wallet => wallet.id === walletId);
     }
   };
 
   @action _unsetActiveWallet = () => {
     this.active = null;
-    this.stores.ada.addresses.lastGeneratedAddress = null;
+    this.stores.addresses.lastGeneratedAddress = null;
   };
 
   @action _onRouteChange = (options: { route: string, params: ?Object }) => {

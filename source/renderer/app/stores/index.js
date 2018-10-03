@@ -8,8 +8,12 @@ import WindowStore from './WindowStore';
 import UiDialogsStore from './UiDialogsStore';
 import UiNotificationsStore from './UiNotificationsStore';
 import NetworkStatusStore from './NetworkStatusStore';
-import setupAdaStores from './ada/index';
-import type { AdaStoresMap } from './ada/index';
+import AdaWalletsStore from './AdaWalletsStore';
+import TransactionsStore from './AdaTransactionsStore';
+import AdaRedemptionStore from './AdaRedemptionStore';
+import NodeUpdateStore from './NodeUpdateStore';
+import AdaWalletSettingsStore from './AdaWalletSettingsStore';
+import AddressesStore from './AddressesStore';
 
 export const storeClasses = {
   profile: ProfileStore,
@@ -32,7 +36,12 @@ export type StoresMap = {
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
   networkStatus: NetworkStatusStore,
-  ada: AdaStoresMap,
+  wallets: AdaWalletsStore,
+  transactions: TransactionsStore,
+  adaRedemption: AdaRedemptionStore,
+  nodeUpdate: NodeUpdateStore,
+  walletSettings: AdaWalletSettingsStore,
+  addresses: AddressesStore,
 };
 
 // Constant that does never change during lifetime
@@ -46,7 +55,12 @@ const stores = observable({
   uiDialogs: null,
   uiNotifications: null,
   networkStatus: null,
-  ada: null,
+  wallets: null,
+  transactions: null,
+  adaRedemption: null,
+  nodeUpdate: null,
+  walletSettings: null,
+  addresses: null
 });
 
 // Set up and return the stores for this app -> also used to reset all stores to defaults
@@ -58,6 +72,5 @@ export default action((api, actions, router): StoresMap => {
   storeNames.forEach(name => { if (stores[name]) stores[name].teardown(); });
   storeNames.forEach(name => { stores[name] = new storeClasses[name](stores, api, actions); });
   storeNames.forEach(name => { if (stores[name]) stores[name].initialize(); });
-  stores.ada = setupAdaStores(stores, api, actions);
   return stores;
 });

@@ -46,21 +46,21 @@ export default class TransactionsStore extends Store {
   };
 
   @computed get recentTransactionsRequest(): CachedRequest<GetTransactionsResponse> {
-    const wallet = this.stores.ada.wallets.active;
+    const wallet = this.stores.wallets.active;
     // TODO: Do not return new request here
     if (!wallet) return new CachedRequest(this.api.ada.getTransactions);
     return this._getTransactionsRecentRequest(wallet.id);
   }
 
   @computed get searchRequest(): CachedRequest<GetTransactionsResponse> {
-    const wallet = this.stores.ada.wallets.active;
+    const wallet = this.stores.wallets.active;
     // TODO: Do not return new request here
     if (!wallet) return new CachedRequest(this.api.ada.getTransactions);
     return this._getTransactionsAllRequest(wallet.id);
   }
 
   @computed get searchOptions(): ?TransactionSearchOptionsStruct {
-    const wallet = this.stores.ada.wallets.active;
+    const wallet = this.stores.wallets.active;
     if (!wallet) return null;
     let options = this._searchOptionsForWallets[wallet.id];
     if (!options) {
@@ -78,7 +78,7 @@ export default class TransactionsStore extends Store {
   }
 
   @computed get filtered(): Array<WalletTransaction> {
-    const wallet = this.stores.ada.wallets.active;
+    const wallet = this.stores.wallets.active;
     if (!wallet || !this.searchOptions) return [];
     const { searchTerm } = this.searchOptions;
     const request = this._getTransactionsAllRequest(wallet.id);
@@ -91,35 +91,35 @@ export default class TransactionsStore extends Store {
   }
 
   @computed get recent(): Array<WalletTransaction> {
-    const wallet = this.stores.ada.wallets.active;
+    const wallet = this.stores.wallets.active;
     if (!wallet) return [];
     const result = this._getTransactionsRecentRequest(wallet.id).result;
     return result ? result.transactions.slice(0, this.RECENT_TRANSACTIONS_LIMIT) : [];
   }
 
   @computed get hasAnyFiltered(): boolean {
-    const wallet = this.stores.ada.wallets.active;
+    const wallet = this.stores.wallets.active;
     if (!wallet) return false;
     const result = this._getTransactionsAllRequest(wallet.id).result;
     return result ? result.transactions.length > 0 : false;
   }
 
   @computed get hasAny(): boolean {
-    const wallet = this.stores.ada.wallets.active;
+    const wallet = this.stores.wallets.active;
     if (!wallet) return false;
     const result = this._getTransactionsRecentRequest(wallet.id).result;
     return result ? result.transactions.length > 0 : false;
   }
 
   @computed get totalAvailable(): number {
-    const wallet = this.stores.ada.wallets.active;
+    const wallet = this.stores.wallets.active;
     if (!wallet) return 0;
     const result = this._getTransactionsAllRequest(wallet.id).result;
     return result ? result.transactions.length : 0;
   }
 
   @computed get totalFilteredAvailable(): number {
-    const wallet = this.stores.ada.wallets.active;
+    const wallet = this.stores.wallets.active;
     if (!wallet) return 0;
     const result = this._getTransactionsAllRequest(wallet.id).result;
     return result ? result.transactions.length : 0;
@@ -127,7 +127,7 @@ export default class TransactionsStore extends Store {
 
   @action _refreshTransactionData = () => {
     if (this.stores.networkStatus.isConnected) {
-      const allWallets = this.stores.ada.wallets.all;
+      const allWallets = this.stores.wallets.all;
       for (const wallet of allWallets) {
         const recentRequest = this._getTransactionsRecentRequest(wallet.id);
         recentRequest.invalidate({ immediately: false });

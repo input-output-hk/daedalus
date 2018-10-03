@@ -225,10 +225,10 @@ export default class SettingsStore extends Store {
       isConnected &&
       this.isCurrentLocaleSet &&
       this.areTermsOfUseAccepted &&
-      this.stores.ada.wallets.hasLoadedWallets &&
+      this.stores.wallets.hasLoadedWallets &&
       dataLayerMigrationNotAccepted
     ) {
-      if (!this.stores.ada.wallets.hasAnyWallets) {
+      if (!this.stores.wallets.hasAnyWallets) {
         // There are no wallets to migrate so we just need
         // to set the data layer migration acceptance to true
         // in order to prevent future data migration checks

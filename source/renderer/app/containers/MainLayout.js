@@ -23,11 +23,11 @@ export default class MainLayout extends Component<InjectedContainerProps> {
   render() {
     const { actions, stores } = this.props;
     const { sidebar } = stores;
-    const wallets = stores.ada.wallets;
+    const wallets = stores.wallets;
     const activeWallet = wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
-    const isNodeUpdateAvailable = this.props.stores.ada.nodeUpdate.isUpdateAvailable;
-    const isUpdatePostponed = this.props.stores.ada.nodeUpdate.isUpdatePostponed;
+    const isNodeUpdateAvailable = this.props.stores.nodeUpdate.isUpdateAvailable;
+    const isUpdatePostponed = this.props.stores.nodeUpdate.isUpdatePostponed;
 
     const sidebarMenus = sidebar.wallets.length > 0 ? {
       wallets: {
@@ -72,7 +72,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
           <WalletSupportRequestPage key="WalletSupportRequestPage" />,
           <PaperWalletCreateCertificatePage
             key="PaperWalletCreateCertificatePage"
-            certificateStep={this.props.stores.ada.wallets.certificateStep}
+            certificateStep={this.props.stores.wallets.certificateStep}
           />,
         ]}
       >

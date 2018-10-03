@@ -170,7 +170,7 @@ export default class WalletsStore extends Store {
         this._setActiveWallet({ walletId: this.active.id });
       }
     });
-    const transactions = this.stores.ada.transactions;
+    const transactions = this.stores.transactions;
     runInAction('refresh transaction data', () => {
       const walletIds = result.map((wallet: Wallet) => wallet.id);
       transactions.transactionsRequests = walletIds.map(walletId => ({

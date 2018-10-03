@@ -63,7 +63,7 @@ export default class SidebarStore extends Store {
   };
 
   @action _onWalletSelected = ({ walletId }: { walletId: string }) => {
-    this.stores.ada.wallets.goToWalletRoute(walletId);
+    this.stores.wallets.goToWalletRoute(walletId);
   };
 
   @action _setActivateSidebarCategory = (category: string) => {

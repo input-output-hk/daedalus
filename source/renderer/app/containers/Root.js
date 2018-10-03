@@ -15,7 +15,7 @@ export default class Root extends Component<Props> {
     const { networkStatus, profile, ada, app } = stores;
     const { isNetworkStatusPage } = app;
     const { isConnected, isSynced, isSystemTimeCorrect } = networkStatus;
-    const wallets = stores.ada.wallets;
+    const wallets = stores.wallets;
     const isPageThatDoesntNeedWallets = (
       profile.isSettingsPage || ada.adaRedemption.isAdaRedemptionPage
     );

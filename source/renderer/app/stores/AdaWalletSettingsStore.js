@@ -1,10 +1,10 @@
 // @flow
 import { observable, action } from 'mobx';
 import { findIndex } from 'lodash';
-import WalletSettingsStore from '../WalletSettingsStore';
-import Wallet from '../../domains/Wallet';
-import Request from '../lib/LocalizedRequest';
-import type { WalletExportToFileParams } from '../../actions/ada/wallet-settings-actions';
+import WalletSettingsStore from './WalletSettingsStore';
+import Wallet from '../domains/Wallet';
+import Request from './lib/LocalizedRequest';
+import type { WalletExportToFileParams } from '../actions/wallet-settings-actions';
 
 export default class AdaWalletSettingsStore extends WalletSettingsStore {
 
@@ -30,11 +30,11 @@ export default class AdaWalletSettingsStore extends WalletSettingsStore {
     await this.updateSpendingPasswordRequest.execute({ walletId, oldPassword, newPassword });
     this.actions.dialogs.closeActiveDialog.trigger();
     this.updateSpendingPasswordRequest.reset();
-    this.stores.ada.wallets.refreshWalletsData();
+    this.stores.wallets.refreshWalletsData();
   };
 
   @action _updateWalletField = async ({ field, value }: { field: string, value: string }) => {
-    const activeWallet = this.stores.ada.wallets.active;
+    const activeWallet = this.stores.wallets.active;
     if (!activeWallet) return;
 
     const { id: walletId, name, assurance } = activeWallet;
@@ -49,12 +49,12 @@ export default class AdaWalletSettingsStore extends WalletSettingsStore {
 
     if (!wallet) return;
 
-    await this.stores.ada.wallets.walletsRequest.patch(result => {
+    await this.stores.wallets.walletsRequest.patch(result => {
       const walletIndex = findIndex(result, { id: walletId });
       result[walletIndex] = wallet;
     });
     this.updateWalletRequest.reset();
-    this.stores.ada.wallets._setActiveWallet({ walletId });
+    this.stores.wallets._setActiveWallet({ walletId });
   };
 
   @action _exportToFile = async (params: WalletExportToFileParams) => {

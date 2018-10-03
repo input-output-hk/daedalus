@@ -1,9 +1,9 @@
 // @flow
 import { observable, action, runInAction } from 'mobx';
-import Store from '../lib/Store';
-import Request from '../lib/LocalizedRequest';
-import type { NodeSoftware } from '../../api/nodes/types';
-import { NODE_UPDATE_POLL_INTERVAL } from '../../config/timingConfig';
+import Store from './lib/Store';
+import Request from './lib/LocalizedRequest';
+import type { NodeSoftware } from '../api/nodes/types';
+import { NODE_UPDATE_POLL_INTERVAL } from '../config/timingConfig';
 
 export default class NodeUpdateStore extends Store {
 

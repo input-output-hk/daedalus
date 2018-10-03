@@ -1,10 +1,10 @@
 // @flow
 import { computed } from 'mobx';
 import BigNumber from 'bignumber.js';
-import type { UnconfirmedAmount } from '../../types/unconfirmedAmountType';
-import { isValidAmountInLovelaces } from '../../utils/validations';
-import TransactionsStore from '../TransactionsStore';
-import { transactionTypes } from '../../domains/WalletTransaction';
+import type { UnconfirmedAmount } from '../types/unconfirmedAmountType';
+import { isValidAmountInLovelaces } from '../utils/validations';
+import TransactionsStore from './TransactionsStore';
+import { transactionTypes } from '../domains/WalletTransaction';
 
 type TransactionFeeRequest = {
   walletId: string,
@@ -20,7 +20,7 @@ export default class AdaTransactionsStore extends TransactionsStore {
       incoming: new BigNumber(0),
       outgoing: new BigNumber(0),
     };
-    const wallet = this.stores.ada.wallets.active;
+    const wallet = this.stores.wallets.active;
     if (!wallet) return unconfirmedAmount;
     const result = this._getTransactionsAllRequest(wallet.id).result;
     if (!result || !result.transactions) return unconfirmedAmount;
@@ -46,7 +46,7 @@ export default class AdaTransactionsStore extends TransactionsStore {
 
   calculateTransactionFee = async (transactionFeeRequest: TransactionFeeRequest) => {
     const { walletId } = transactionFeeRequest;
-    const accountIndex = await this.stores.ada.addresses.getAccountIndexByWalletId(walletId);
+    const accountIndex = await this.stores.addresses.getAccountIndexByWalletId(walletId);
 
     if (!accountIndex) {
       throw new Error('Active account required before calculating transaction fees.');

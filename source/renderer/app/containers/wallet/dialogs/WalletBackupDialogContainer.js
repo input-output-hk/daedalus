@@ -40,7 +40,7 @@ export default class WalletBackupDialogContainer extends Component<Props> {
       acceptPrivacyNoticeForWalletBackup,
       continueToRecoveryPhraseForWalletBackup
     } = actions.walletBackup;
-    const { createWalletRequest } = stores.ada.wallets;
+    const { createWalletRequest } = stores.wallets;
     return (
       <WalletBackupDialog
         // Global props for all dialogs

@@ -54,7 +54,7 @@ export default class WalletAddPage extends Component<Props> {
   }
 
   _getWalletsStore() {
-    return this.props.stores.ada.wallets;
+    return this.props.stores.wallets;
   }
 
 }

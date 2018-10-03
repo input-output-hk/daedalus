@@ -10,7 +10,7 @@ export default class NodeUpdatePage extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    const store = this.props.stores.ada.nodeUpdate;
+    const store = this.props.stores.nodeUpdate;
     const actions = this.props.actions.nodeUpdate;
 
     return (
