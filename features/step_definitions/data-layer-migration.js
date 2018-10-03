@@ -4,7 +4,7 @@ const DATA_LAYER_MIGRATION_ACCEPTANCE_COMPONENT = '.DataLayerMigrationForm_compo
 
 Given(/^I haven't accepted the data layer migration$/, async function () {
   await this.client.execute(() => {
-    daedalus.api.localStorage.reset();
+    daedalus.api.localStorage.unsetDataLayerMigrationAcceptance();
   });
 });
 

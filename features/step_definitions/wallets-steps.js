@@ -50,11 +50,6 @@ Given(/^I have the following wallets:$/, async function (table) {
   await createWallets(table.hashes(), this);
 });
 
-// Does not automatically trigger the Data Layer Migration
-Given(/^I have the following wallets, skiping the data layer migration:$/, async function (table) {
-  await createWallets(table.hashes(), this, { skipDataLayerMigration: true });
-});
-
 // Creates them sequentially
 Given(/^I have created the following wallets:$/, async function (table) {
   await createWallets(table.hashes(), this, { sequentially: true });

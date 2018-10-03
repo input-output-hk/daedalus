@@ -5,7 +5,6 @@ const dataLayerMigration = {
     client.waitForVisible(DATA_LAYER_MIGRATION_ACCEPTANCE_COMPONENT, null, isHidden)
   ),
   acceptMigration: async (client) => {
-    await dataLayerMigration.waitForVisible(client);
     await client.execute(() => {
       daedalus.actions.profile.acceptDataLayerMigration.trigger();
     });
