@@ -159,7 +159,7 @@ export default class SettingsStore extends Store {
     );
   }
 
-  @computed get hasDataLayerMigrationAccepted(): boolean {
+  @computed get isDataLayerMigrationAccepted(): boolean {
     return this.getDataLayerMigrationAcceptanceRequest.result === true;
   }
 
@@ -228,7 +228,7 @@ export default class SettingsStore extends Store {
   _redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted = () => {
     const { isConnected } = this.stores.networkStatus;
     const dataLayerMigrationNotAccepted =
-      this.hasLoadedDataLayerMigrationAcceptance && !this.hasDataLayerMigrationAccepted;
+      this.hasLoadedDataLayerMigrationAcceptance && !this.isDataLayerMigrationAccepted;
     if (
       isConnected &&
       this.isCurrentLocaleSet &&
@@ -251,7 +251,7 @@ export default class SettingsStore extends Store {
   };
 
   _redirectToMainUiAfterDataLayerMigrationIsAccepted = () => {
-    if (this.hasDataLayerMigrationAccepted && this._isOnDataLayerMigrationPage()) {
+    if (this.isDataLayerMigrationAccepted && this._isOnDataLayerMigrationPage()) {
       this._redirectToRoot();
     }
   };
