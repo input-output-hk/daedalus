@@ -37,8 +37,8 @@ const getNetworkName = (network: NetworkNames): string => (
 );
 
 export const deriveStorageKeys = (network: NetworkNames): CardanoNodeStorageKeys => ({
-  PREVIOUS_CARDANO_PID: `${getNetworkName(network)}_PREVIOUS_CARDANO_PID`,
-  PREVIOUS_DAEDALUS_PID: `${getNetworkName(network)}_PREVIOUS_DAEDALUS_PID`
+  PREVIOUS_CARDANO_PID: `${getNetworkName(network)}-PREVIOUS-CARDANO-PID`,
+  PREVIOUS_DAEDALUS_PID: `${getNetworkName(network)}-PREVIOUS-DAEDALUS-PID`
 });
 
 export const deriveProcessNames = (network: NetworkNames): ProcessNames => ({

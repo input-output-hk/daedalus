@@ -11,10 +11,10 @@ export type NetworkNames = (
 );
 
 export const NetworkNameOptions = {
-  mainnet: 'MAINNET',
-  staging: 'STAGING',
-  testnet: 'TESTNET',
-  development: 'DEVELOPMENT'
+  mainnet: 'mainnet',
+  staging: 'staging',
+  testnet: 'testnet',
+  development: 'development'
 };
 
 export type CardanoNodeState = (
@@ -43,18 +43,18 @@ export const CardanoNodeStates: {
 };
 
 export type CardanoPidOptions = (
-  'mainnet_PREVIOUS_CARDANO_PID' |
-  'staging_PREVIOUS_CARDANO_PID' |
-  'testnet_PREVIOUS_CARDANO_PID' |
-  'development_PREVIOUS_CARDANO_PID' |
+  'mainnet-PREVIOUS-CARDANO-PID' |
+  'staging-PREVIOUS-CARDANO-PID' |
+  'testnet-PREVIOUS-CARDANO-PID' |
+  'development-PREVIOUS-CARDANO-PID' |
   string
 );
 
 export type DaedalusPidOptions = (
-  'mainnet_PREVIOUS_DAEDALUS_PID' |
-  'staging_PREVIOUS_DAEDALUS_PID' |
-  'testnet_PREVIOUS_DAEDALUS_PID' |
-  'development_PREVIOUS_DAEDALUS_PID' |
+  'mainnet-PREVIOUS-DAEDALUS-PID' |
+  'staging-PREVIOUS-DAEDALUS-PID' |
+  'testnet-PREVIOUS-DAEDALUS-PID' |
+  'development-PREVIOUS-DAEDALUS-PID' |
   string
 );
 
