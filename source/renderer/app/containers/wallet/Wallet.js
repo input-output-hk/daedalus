@@ -40,7 +40,7 @@ export default class Wallet extends Component<Props> {
   };
 
   handleAntivirusNotificationDiscard = () => {
-    const { wallets } = this.props.actions.ada;
+    const { wallets } = this.props.actions;
     wallets.discardAntivirusRestorationSlowdownNotificationForActiveWallet.trigger();
   };
 
