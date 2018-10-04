@@ -11,6 +11,7 @@ type ZendeskInfo = {
 
 type LogsInfo = {
   compressedLogsFileData: any,
+  compressedLogsFileName: string,
   environment: any,
 };
 
@@ -50,11 +51,13 @@ const loadFormHandlerWhenIframeIsReady = (logsInfo: LogsInfo) => {
 };
 
 const formHandler = (
-  iframeDocument, fileInput, { environment, compressedLogsFileData }: LogsInfo
+  iframeDocument, fileInput, {
+    environment, compressedLogsFileData, compressedLogsFileName
+  }: LogsInfo
 ) => {
   const dT = new DataTransfer();
   if (dT.items) {
-    const file = new File([compressedLogsFileData], 'compressedLogs.zip');
+    const file = new File([compressedLogsFileData], compressedLogsFileName);
     dT.items.add(file);
     fileInput.files = dT.files;
   }
