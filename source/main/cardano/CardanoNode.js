@@ -4,8 +4,9 @@ import type { spawn, ChildProcess } from 'child_process';
 import type { WriteStream } from 'fs';
 import psList from 'ps-list';
 import { isEmpty } from 'lodash';
+import environment from '../../common/environment';
 import type { CardanoNodeState, TlsConfig } from '../../common/types/cardanoNode.types';
-import { promisedCondition } from './utils';
+import { promisedCondition, deriveStorageKeys, deriveProcessNames } from './utils';
 import { CardanoNodeStates } from '../../common/types/cardanoNode.types';
 
 type Logger = {
@@ -52,13 +53,22 @@ export type CardanoNodeConfig = {
   updateTimeout: number, // Milliseconds to wait for cardano-node to update itself
 };
 
-const CARDANO_PROCESS_NAME = 'cardano-node';
-// TODO: Daedalus process name should depend on the cluster this instance is running on
-const DAEDALUS_PROCESS_NAME = 'Electron';
+// grab the current network on which Daedalus is running
+const network = String(environment.NETWORK);
 
-// store for persisting CardanoNode and Daedalus data
-const PREVIOUS_CARDANO_PID = 'PREVIOUS_CARDANO_PID';
-const PREVIOUS_DAEDALUS_PID = 'PREVIOUS_DAEDALUS_PID';
+// derive storage keys based on current network
+const {
+  PREVIOUS_CARDANO_PID,
+  PREVIOUS_DAEDALUS_PID
+} = deriveStorageKeys(network);
+
+// derive process names based on current network
+const {
+  CARDANO_PROCESS_NAME,
+  DAEDALUS_PROCESS_NAME
+} = deriveProcessNames(network);
+
+// create store for persisting CardanoNode and Daedalus PID's in fs
 const store = new Store();
 
 export class CardanoNode {
