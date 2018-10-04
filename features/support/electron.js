@@ -115,7 +115,10 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
     if (scenariosCount === 0) {
       await printMainProcessLogs();
     }
-
+    if (process.env.KEEP_APP_AFTER_TESTS === 'true') {
+      console.log('Keeping the app running since KEEP_APP_AFTER_TESTS env var is true');
+      return;
+    }
     return context.app.stop();
   });
 });
