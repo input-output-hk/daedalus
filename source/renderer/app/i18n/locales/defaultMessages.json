@@ -159,6 +159,34 @@
           "column": 41,
           "line": 30
         }
+      },
+      {
+        "defaultMessage": "!!!Not enough Ada. Try sending a smaller amount.",
+        "description": "\"Not enough Ada. Try sending a smaller amount.\" error message",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/api/transactions/errors.js",
+        "id": "api.errors.NotEnoughFundsForTransactionError",
+        "start": {
+          "column": 37,
+          "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!Can not calculate fees while there are pending transactions.",
+        "description": "\"Can not calculate fees while there are pending transactions.\" error message",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/api/transactions/errors.js",
+        "id": "api.errors.CanNotCalculateTransactionFeesError",
+        "start": {
+          "column": 39,
+          "line": 40
+        }
       }
     ],
     "path": "source/renderer/app/api/transactions/errors.json"
@@ -4675,31 +4703,17 @@
         }
       },
       {
-        "defaultMessage": "!!!Not enough Ada for fees. Try sending a smaller amount.",
-        "description": "\"Not enough Ada for fees. Try sending a smaller amount.\" error message",
+        "defaultMessage": "!!!This wallet is currently being synced with the blockchain. While synchronisation is in progress transacting is not possible and transaction history is not complete.",
+        "description": "Syncing transactions message shown during async wallet restore in the wallet send form.",
         "end": {
           "column": 3,
           "line": 89
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
-        "id": "wallet.send.form.transactionFeeError",
-        "start": {
-          "column": 23,
-          "line": 85
-        }
-      },
-      {
-        "defaultMessage": "!!!This wallet is currently being synced with the blockchain. While synchronisation is in progress transacting is not possible and transaction history is not complete.",
-        "description": "Syncing transactions message shown during async wallet restore in the wallet send form.",
-        "end": {
-          "column": 3,
-          "line": 94
-        },
-        "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.syncingTransactionsMessage",
         "start": {
           "column": 30,
-          "line": 90
+          "line": 85
         }
       }
     ],

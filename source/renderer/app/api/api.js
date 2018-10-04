@@ -146,8 +146,10 @@ import {
 
 // Transactions errors
 import {
+  CanNotCalculateTransactionFeesError,
   NotAllowedToSendMoneyToRedeemAddressError,
   NotEnoughFundsForTransactionFeesError,
+  NotEnoughFundsForTransactionError,
   NotEnoughMoneyToSendError,
   RedeemAdaError
 } from './transactions/errors';
@@ -330,7 +332,12 @@ export default class AdaApi {
     request: TransactionRequest
   ): Promise<BigNumber> => {
     Logger.debug('AdaApi::calculateTransactionFee called');
-    const { accountIndex, walletId, address, amount, spendingPassword: passwordString } = request;
+    const {
+      accountIndex,
+      walletId, walletBalance,
+      address, amount,
+      spendingPassword: passwordString,
+    } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     try {
       const data = {
@@ -353,7 +360,34 @@ export default class AdaApi {
     } catch (error) {
       Logger.debug('AdaApi::calculateTransactionFee error: ' + stringifyError(error));
       if (error.message === 'NotEnoughMoney') {
-        throw new NotEnoughFundsForTransactionFeesError();
+        const errorMessage = get(error, 'diagnostic.details.msg', '');
+        if (errorMessage.includes('Not enough coins to cover fee')) {
+          // Amount + fees exceeds walletBalance:
+          // - error.diagnostic.details.msg === 'Not enough coins to cover fee.'
+          // = show "Not enough Ada for fees. Try sending a smaller amount."
+          throw new NotEnoughFundsForTransactionFeesError();
+        } else if (errorMessage.includes('Not enough available coins to proceed')) {
+          const availableBalance = new BigNumber(
+            get(error, 'diagnostic.details.availableBalance', 0)
+          ).dividedBy(LOVELACES_PER_ADA);
+          if (walletBalance.gt(availableBalance)) {
+            // Amount exceeds availableBalance due to pending transactions:
+            // - error.diagnostic.details.msg === 'Not enough available coins to proceed.'
+            // - total walletBalance > error.diagnostic.details.availableBalance
+            // = show "Can not calculate fees while there are pending transactions."
+            throw new CanNotCalculateTransactionFeesError();
+          } else {
+            // Amount exceeds walletBalance:
+            // - error.diagnostic.details.msg === 'Not enough available coins to proceed.'
+            // - total walletBalance === error.diagnostic.details.availableBalance
+            // = show "Not enough Ada. Try sending a smaller amount."
+            throw new NotEnoughFundsForTransactionError();
+          }
+        } else {
+          // Amount exceeds walletBalance:
+          // = show "Not enough Ada. Try sending a smaller amount."
+          throw new NotEnoughFundsForTransactionError();
+        }
       }
       throw new GenericApiError();
     }
