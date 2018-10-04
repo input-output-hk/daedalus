@@ -101,6 +101,7 @@ gulp.task('build:renderer:html', () => (
     .src([
       'source/renderer/index.html',
       'source/renderer/support.html',
+      'source/renderer/support.css',
     ])
     .pipe(gulp.dest('dist/renderer/'))
 ));

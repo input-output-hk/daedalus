@@ -1,4 +1,3 @@
-// @flow
 import { ipcMain } from 'electron';
 import fs from 'fs';
 import { createSupportWindow } from '../windows/support';
