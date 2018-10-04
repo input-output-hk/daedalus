@@ -1,4 +1,15 @@
 // @flow
+import {
+  DaedalusProcessNameOptions,
+  CardanoProcessNameOptions,
+  NetworkNameOptions
+} from '../../common/types/cardanoNode.types';
+import type {
+  CardanoNodeStorageKeys,
+  ProcessNames,
+  NetworkNames
+} from '../../common/types/cardanoNode.types';
+
 const checkCondition = async (
   condition: () => boolean,
   timeout: number,
@@ -20,3 +31,17 @@ const checkCondition = async (
 export const promisedCondition = async (
   cond: Function, timeout: number = 5000, retryEvery: number = 1000
 ): Promise<void> => await checkCondition(cond, timeout, retryEvery);
+
+const getNetworkName = (network: NetworkNames): string => (
+  NetworkNameOptions[network] || NetworkNameOptions.development
+);
+
+export const deriveStorageKeys = (network: NetworkNames): CardanoNodeStorageKeys => ({
+  PREVIOUS_CARDANO_PID: `${getNetworkName(network)}_PREVIOUS_CARDANO_PID`,
+  PREVIOUS_DAEDALUS_PID: `${getNetworkName(network)}_PREVIOUS_DAEDALUS_PID`
+});
+
+export const deriveProcessNames = (network: NetworkNames): ProcessNames => ({
+  DAEDALUS_PROCESS_NAME: DaedalusProcessNameOptions[network] || 'Electron',
+  CARDANO_PROCESS_NAME: CardanoProcessNameOptions[network] || 'cardano-node'
+});
