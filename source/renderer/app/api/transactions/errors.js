@@ -39,8 +39,8 @@ const messages = defineMessages({
   },
   canNotCalculateTransactionFeesError: {
     id: 'api.errors.CanNotCalculateTransactionFeesError',
-    defaultMessage: '!!!Can not calculate fees while there are pending transactions.',
-    description: '"Can not calculate fees while there are pending transactions." error message'
+    defaultMessage: '!!!Cannot calculate fees while there are pending transactions.',
+    description: '"Cannot calculate fees while there are pending transactions." error message'
   },
 });
 

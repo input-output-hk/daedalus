@@ -3,7 +3,7 @@
   "ImageUploadWidget.dropFileHint": "ファイルをここにドロップしてください",
   "api.errors.AllFundsAlreadyAtReceiverAddressError": "送ろうとしている資金は既に送金先のアドレスにて反映済みです。",
   "api.errors.ApiMethodNotYetImplementedError": "このAPIは未実装です。",
-  "api.errors.CanNotCalculateTransactionFeesError": "!!!Can not calculate fees while there are pending transactions.",
+  "api.errors.CanNotCalculateTransactionFeesError": "!!!Cannot calculate fees while there are pending transactions.",
   "api.errors.ForbiddenMnemonicError": "ウォレットの復元パスフレーズが無効です。送信された復元パスフレーズは、ドキュメントの復元パスフレーズの一つですので、資金を保持するウォレットには使用しないでください。",
   "api.errors.GenericApiError": "エラーが発生しました。",
   "api.errors.IncorrectPasswordError": "無効なウォレットパスワード",

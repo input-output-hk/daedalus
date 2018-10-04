@@ -374,7 +374,7 @@ export default class AdaApi {
             // Amount exceeds availableBalance due to pending transactions:
             // - error.diagnostic.details.msg === 'Not enough available coins to proceed.'
             // - total walletBalance > error.diagnostic.details.availableBalance
-            // = show "Can not calculate fees while there are pending transactions."
+            // = show "Cannot calculate fees while there are pending transactions."
             throw new CanNotCalculateTransactionFeesError();
           } else {
             // Amount exceeds walletBalance:

@@ -175,8 +175,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Can not calculate fees while there are pending transactions.",
-        "description": "\"Can not calculate fees while there are pending transactions.\" error message",
+        "defaultMessage": "!!!Cannot calculate fees while there are pending transactions.",
+        "description": "\"Cannot calculate fees while there are pending transactions.\" error message",
         "end": {
           "column": 3,
           "line": 44
