@@ -19,11 +19,11 @@ CLUSTERS="$(xargs echo -n < "$(dirname "$0")/../installer-clusters.cfg")"
 for cluster in ${CLUSTERS}
 do
   echo '~~~ Building '"${cluster}"' installer'
-  nix-build -Q release.nix -A "${cluster}.appImage" --argstr buildNum "$BUILDKITE_BUILD_NUMBER" -o csl-daedalus
+  nix-build --show-trace release.nix -A "${cluster}.appImage" --argstr buildNum "$BUILDKITE_BUILD_NUMBER" -o csl-daedalus
   if [ -n "${BUILDKITE_JOB_ID:-}" ]; then
     upload_artifacts_public csl-daedalus/*.AppImage
   fi
-  nix-build -Q release.nix -A "${cluster}.linuxInstaller" --argstr buildNum "$BUILDKITE_BUILD_NUMBER" -o csl-daedalus
+  nix-build --show-trace release.nix -A "${cluster}.linuxInstaller" --argstr buildNum "$BUILDKITE_BUILD_NUMBER" -o csl-daedalus
   if [ -n "${BUILDKITE_JOB_ID:-}" ]; then
     upload_artifacts_public csl-daedalus/*.bin
   fi
