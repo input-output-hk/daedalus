@@ -7,7 +7,7 @@ Changelog
 
 ### Chores
 
-- Adds dynamic prefix derivation to local storage keys in CardanoNode based on the current network. Adds dynamic derivation of process names for both Daedalus and cardano-node based on the current network. [PR 1109](https://github.com/input-output-hk/daedalus/pull/1109)
+- Adds dynamic prefix derivation to local storage keys in CardanoNode based on the current network. Adds dynamic derivation of process names for cardano-node based on the current platform. [PR 1109](https://github.com/input-output-hk/daedalus/pull/1109)
 - Integrates the latest features from the develop branch of react-polymorph. Features include: render props architecture, theme composition, and a ThemeProvider HOC. [PR 950](https://github.com/input-output-hk/daedalus/pull/950)
 - Fixed broken storybook [PR 1041](https://github.com/input-output-hk/daedalus/pull/1041)
 - Remove all ETC specific files [PR 1068](https://github.com/input-output-hk/daedalus/pull/1068)
