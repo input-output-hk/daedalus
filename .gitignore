@@ -74,6 +74,7 @@ features/screenshots
 build-id
 ci-url
 commit-id
+mainnet
 staging
 cardano-node
 configuration.yaml
