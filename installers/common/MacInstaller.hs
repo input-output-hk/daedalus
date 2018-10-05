@@ -13,7 +13,6 @@ module MacInstaller
     , run
     , run'
     , readCardanoVersionFile
-    , withDir
     ) where
 
 ---
@@ -39,7 +38,7 @@ import           Turtle.Line               (unsafeTextToLine)
 import           Config
 import           RewriteLibs               (chain)
 import           Types
-import           Util                      (exportBuildVars)
+import           Util                      (exportBuildVars, rewritePackageJson)
 
 data DarwinConfig = DarwinConfig {
     dcAppNameApp :: Text -- ^ Daedalus.app for example
@@ -69,7 +68,7 @@ main opts@Options{..} = do
   exportBuildVars opts installerConfig ver
 
   buildIcons oCluster
-  appRoot <- buildElectronApp darwinConfig
+  appRoot <- buildElectronApp darwinConfig installerConfig
   makeComponentRoot opts appRoot darwinConfig
   daedalusVer <- getDaedalusVersion "../package.json"
 
@@ -122,14 +121,16 @@ buildIcons cluster = do
 -- component root path.
 -- NB: If webpack scripts are changed then this function may need to
 -- be updated.
-buildElectronApp :: DarwinConfig -> IO FilePath
-buildElectronApp darwinConfig@DarwinConfig{..} = do
+buildElectronApp :: DarwinConfig -> InstallerConfig -> IO FilePath
+buildElectronApp darwinConfig@DarwinConfig{..} installerConfig = do
   withDir ".." . sh $ npmPackage darwinConfig
 
   let
     formatter :: Format r (Text -> Text -> r)
     formatter = "../release/darwin-x64/" % s % "-darwin-x64/" % s
-  pure $ fromString $ T.unpack $ format formatter dcAppName dcAppNameApp
+    pathtoapp = format formatter dcAppName dcAppNameApp
+  rewritePackageJson (T.unpack $ pathtoapp <> "/Contents/Resources/app/package.json") (installDirectory installerConfig)
+  pure $ fromString $ T.unpack $ pathtoapp
 
 npmPackage :: DarwinConfig -> Shell ()
 npmPackage DarwinConfig{..} = do
