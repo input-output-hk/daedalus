@@ -24,7 +24,7 @@ let
 
     cd "''${DAEDALUS_DIR}/${cluster}/"
 
-    exec ${electron}/bin/electron ${rawapp}/share/daedalus/main/ "$@"
+    exec ${electron}/bin/electron ${rawapp}/share/daedalus "$@"
   '';
   daedalus = writeScriptBin "daedalus" ''
     #!${stdenv.shell}
