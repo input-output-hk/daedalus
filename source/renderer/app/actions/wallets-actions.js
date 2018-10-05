@@ -1,6 +1,6 @@
 // @flow
-import Action from '../lib/Action';
-import type { walletExportTypeChoices } from '../../types/walletExportTypes';
+import Action from './lib/Action';
+import type { walletExportTypeChoices } from '../types/walletExportTypes';
 
 export type WalletImportFromFileParams = {
   filePath: string,

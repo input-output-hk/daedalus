@@ -124,7 +124,6 @@ type Props = {
   mnemonicValidator: Function,
   error?: ?LocalizableError,
   suggestedMnemonics: Array<string>,
-  showCertificateRestore: boolean,
   onChoiceChange: ?Function,
 };
 
@@ -233,7 +232,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     this.form.submit({
       onSuccess: (form) => {
         const { createPassword } = this.state;
-        const { showCertificateRestore, onSubmit } = this.props;
+        const { onSubmit } = this.props;
         const {
           recoveryPhrase,
           walletName,
@@ -246,9 +245,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           spendingPassword: createPassword ? spendingPassword : null,
         };
 
-        if (showCertificateRestore) {
-          walletData.type = this.state.activeChoice;
-        }
+        walletData.type = this.state.activeChoice;
 
         onSubmit(walletData);
       },
@@ -272,7 +269,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     const { form } = this;
     const {
       suggestedMnemonics,
-      showCertificateRestore,
       isSubmitting,
       error,
       onCancel,
@@ -281,7 +277,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
     const dialogClasses = classnames([
       styles.component,
-      showCertificateRestore ? styles.dialogWithCertificateRestore : null,
+      styles.dialogWithCertificateRestore,
       'WalletRestoreDialog',
     ]);
 
@@ -329,22 +325,20 @@ export default class WalletRestoreDialog extends Component<Props, State> {
         onClose={onCancel}
         closeButton={<DialogCloseButton />}
       >
-        {showCertificateRestore &&
-          <div className={styles.restoreTypeChoice}>
-            <button
-              className={regularTabClasses}
-              onClick={this.onSelectChoice.bind(this, RESTORE_TYPES.REGULAR)}
-            >
-              {intl.formatMessage(messages.recoveryPhraseTabTitle)}
-            </button>
-            <button
-              className={certificateTabClasses}
-              onClick={this.onSelectChoice.bind(this, RESTORE_TYPES.CERTIFICATE)}
-            >
-              {intl.formatMessage(messages.certificateTabTitle)}
-            </button>
-          </div>
-        }
+        <div className={styles.restoreTypeChoice}>
+          <button
+            className={regularTabClasses}
+            onClick={this.onSelectChoice.bind(this, RESTORE_TYPES.REGULAR)}
+          >
+            {intl.formatMessage(messages.recoveryPhraseTabTitle)}
+          </button>
+          <button
+            className={certificateTabClasses}
+            onClick={this.onSelectChoice.bind(this, RESTORE_TYPES.CERTIFICATE)}
+          >
+            {intl.formatMessage(messages.certificateTabTitle)}
+          </button>
+        </div>
 
         <Input
           className={walletNameFieldClasses}

@@ -1,5 +1,5 @@
 // @flow
-import Action from '../lib/Action';
+import Action from './lib/Action';
 
 // ======= TRANSACTIONS ACTIONS =======
 

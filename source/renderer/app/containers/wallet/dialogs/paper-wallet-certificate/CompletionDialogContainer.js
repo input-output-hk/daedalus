@@ -12,7 +12,7 @@ export default class CompletionDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
 
   render() {
-    const { walletCertificateAddress } = this.props.stores.ada.wallets;
+    const { walletCertificateAddress } = this.props.stores.wallets;
 
     return (
       <CompletionDialog

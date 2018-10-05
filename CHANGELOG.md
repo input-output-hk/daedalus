@@ -7,6 +7,7 @@ Changelog
 
 ### Chores
 
+- Adds dynamic prefix derivation to local storage keys in CardanoNode based on the current network. Adds dynamic derivation of process names for cardano-node based on the current platform. [PR 1109](https://github.com/input-output-hk/daedalus/pull/1109)
 - Integrates the latest features from the develop branch of react-polymorph. Features include: render props architecture, theme composition, and a ThemeProvider HOC. [PR 950](https://github.com/input-output-hk/daedalus/pull/950)
 - Fixed broken storybook [PR 1041](https://github.com/input-output-hk/daedalus/pull/1041)
 - Remove all ETC specific files [PR 1068](https://github.com/input-output-hk/daedalus/pull/1068)
@@ -39,6 +40,8 @@ Changelog
 - Prevented wallet data polling during wallet deletion ([PR 996]https://github.com/input-output-hk/daedalus/pull/996)
 - Fixed a bug in the Electron which results in blank/white screen rendering on some OS/Graphics-card/Drivers combinations.  ([PR 1007](https://github.com/input-output-hk/daedalus/pull/1007))
 - Removed the Ada Redemption link from the 'app bar' menu and added it to system menu ([PR 972](https://github.com/input-output-hk/daedalus/pull/972))
+- Finished etc code cleanup ([PR 1108](https://github.com/input-output-hk/daedalus/pull/1108))
+
 
 ### Chores
 

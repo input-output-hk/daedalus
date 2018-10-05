@@ -21,8 +21,8 @@ Given(/^I have made the following transactions:$/, { timeout: 40000 }, async fun
       new window.Promise((resolve) => (
         // Need to fetch the wallets data async and wait for all results
         window.Promise.all([
-          daedalus.stores.ada.addresses.getAccountIndexByWalletId(transaction.walletId),
-          daedalus.stores.ada.addresses.getAddressesByWalletId(transaction.destinationWalletId)
+          daedalus.stores.addresses.getAccountIndexByWalletId(transaction.walletId),
+          daedalus.stores.addresses.getAddressesByWalletId(transaction.destinationWalletId)
         ]).then(results => (
           daedalus.api.ada.createTransaction(window.Object.assign(transaction, {
             accountIndex: results[0], // Account index of sender wallet

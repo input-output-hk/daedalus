@@ -10,7 +10,6 @@ import { defineMessages, intlShape } from 'react-intl';
 import LocalizableError from '../../../i18n/LocalizableError';
 import TermsOfUseText from './TermsOfUseText';
 import styles from './TermsOfUseForm.scss';
-import environment from '../../../../../common/environment';
 
 const messages = defineMessages({
   checkboxLabel: {
@@ -69,8 +68,6 @@ export default class TermsOfUseForm extends Component<Props, State> {
       isSubmitting ? styles.submitButtonSpinning : styles.submitButton,
     ]);
 
-    const checkboxLabel = environment.isEtcApi() ? 'checkboxLabelWithDisclaimer' : 'checkboxLabel';
-
     return (
       <div className={styles.component}>
         <div className={styles.centeredBox}>
@@ -79,7 +76,7 @@ export default class TermsOfUseForm extends Component<Props, State> {
 
           <div className={styles.checkbox}>
             <Checkbox
-              label={intl.formatMessage(messages[checkboxLabel])}
+              label={intl.formatMessage(messages.checkboxLabel)}
               onChange={this.toggleAcceptance.bind(this)}
               checked={areTermsOfUseAccepted}
               skin={CheckboxSkin}
