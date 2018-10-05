@@ -56,7 +56,7 @@ Given(/^I have a "Imported Wallet" with funds and password$/, async function () 
       newPassword: 'Secret123',
     })
       .then(() => (
-        daedalus.stores.ada.wallets.refreshWalletsData()
+        daedalus.stores.wallets.refreshWalletsData()
           .then(done)
           .catch((error) => done(error))
       ))
@@ -385,7 +385,7 @@ Then(/^I should not see the restore status notification once restore is finished
 
 Then(/^I should have newly created "([^"]*)" wallet loaded$/, async function (walletName) {
   const result = await this.client.executeAsync((done) => {
-    daedalus.stores.ada.wallets.walletsRequest.execute()
+    daedalus.stores.wallets.walletsRequest.execute()
       .then(done)
       .catch((error) => done(error));
   });

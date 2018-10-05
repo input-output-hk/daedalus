@@ -34,8 +34,7 @@ export default class WalletSummaryPage extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { ada, app } = this.props.stores;
-    const { wallets, transactions } = ada;
+    const { app, wallets, transactions } = this.props.stores;
     const { openExternalLink } = app;
     const {
       hasAny,

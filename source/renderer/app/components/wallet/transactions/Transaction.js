@@ -13,9 +13,8 @@ import WalletTransaction,
   transactionStates,
   transactionTypes
 } from '../../../domains/WalletTransaction';
-import { environmentSpecificMessages } from '../../../i18n/global-messages';
+import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';
-import environment from '../../../../../common/environment';
 import { getNetworkExplorerUrl } from '../../../utils/network';
 
 const messages = defineMessages({
@@ -198,7 +197,7 @@ export default class Transaction extends Component<Props, State> {
     ]);
 
     const status = intl.formatMessage(assuranceLevelTranslations[assuranceLevel]);
-    const currency = intl.formatMessage(environmentSpecificMessages[environment.API].currency);
+    const currency = intl.formatMessage(globalMessages.currency);
     const symbol = adaSymbol;
 
     return (
@@ -273,9 +272,7 @@ export default class Transaction extends Component<Props, State> {
             )}
             <div>
               <h2>
-                {intl.formatMessage(messages[
-                  environment.isEtcApi() ? 'fromAddress' : 'fromAddresses'
-                ])}
+                {intl.formatMessage(messages.fromAddresses)}
               </h2>
               {data.addresses.from.map((address, addressIndex) => (
                 <span
@@ -289,9 +286,7 @@ export default class Transaction extends Component<Props, State> {
                 </span>
               ))}
               <h2>
-                {intl.formatMessage(messages[
-                  environment.isEtcApi() ? 'toAddress' : 'toAddresses'
-                ])}
+                {intl.formatMessage(messages.toAddresses)}
               </h2>
               {data.addresses.to.map((address, addressIndex) => (
                 <span
@@ -305,30 +300,16 @@ export default class Transaction extends Component<Props, State> {
                 </span>
               ))}
 
-              {environment.isAdaApi() ? (
-                <div className={styles.row}>
-                  <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
-                  {(transactionState === transactionStates.OK) ? (
-                    <span>
-                      <span className={styles.assuranceLevel}>{status}</span>.&nbsp;
-                      {data.numberOfConfirmations.toLocaleString()}&nbsp;
-                      {intl.formatMessage(messages.confirmations)}.
-                    </span>
-                  ) : null}
-                </div>
-              ) : null}
-
-              {environment.isEtcApi() ? (
-                <div className={styles.row}>
-                  <h2>{intl.formatMessage(messages.transactionAmount)}</h2>
+              <div className={styles.row}>
+                <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
+                {(transactionState === transactionStates.OK) ? (
                   <span>
-                    {
-                      // show currency and use long format (e.g. in ETC show all decimal places)
-                      formattedWalletAmount(data.amount, true, true)
-                    }
+                    <span className={styles.assuranceLevel}>{status}</span>.&nbsp;
+                    {data.numberOfConfirmations.toLocaleString()}&nbsp;
+                    {intl.formatMessage(messages.confirmations)}.
                   </span>
-                </div>
-              ) : null}
+                ) : null}
+              </div>
 
               <h2>{intl.formatMessage(messages.transactionId)}</h2>
               <span

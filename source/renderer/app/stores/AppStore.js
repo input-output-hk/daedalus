@@ -9,7 +9,6 @@ import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../../../common/ipc/go-to-a
 import { GO_TO_NETWORK_STATUS_SCREEN_CHANNEL } from '../../../common/ipc/go-to-network-status-screen';
 import { GET_GPU_STATUS } from '../../../common/ipc-api';
 import { ROUTES } from '../routes-config';
-import environment from '../../../common/environment';
 import type { GpuStatus } from '../types/gpuStatus';
 
 export default class AppStore extends Store {
@@ -74,7 +73,7 @@ export default class AppStore extends Store {
 
   @action _goToAdaRedemptionScreen = () => {
     const { isConnected, isSynced } = this.stores.networkStatus;
-    const { hasLoadedWallets } = this.stores[environment.API].wallets;
+    const { hasLoadedWallets } = this.stores.wallets;
     if (isConnected && isSynced && hasLoadedWallets && !this.isSetupPage) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.ADA_REDEMPTION });
     }

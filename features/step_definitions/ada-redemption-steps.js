@@ -13,7 +13,7 @@ const REDEMPTION_SUBMIT_BUTTON = '.AdaRedemptionForm_component .AdaRedemptionFor
 
 Given(/^I have accepted "Daedalus Redemption Disclaimer"$/, async function () {
   await this.client.execute(() => {
-    daedalus.actions.ada.adaRedemption.acceptRedemptionDisclaimer.trigger();
+    daedalus.actions.adaRedemption.acceptRedemptionDisclaimer.trigger();
   });
 });
 

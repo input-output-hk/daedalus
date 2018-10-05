@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
+import { map } from 'lodash';
 
 export default class ThemeManager extends Component {
   componentDidMount() {
@@ -13,7 +13,7 @@ export default class ThemeManager extends Component {
   }
 
   updateCSSVariables(variables) {
-    _.map(variables, (value, prop) => {
+    map(variables, (value, prop) => {
       document.documentElement.style.setProperty(prop, value);
     });
   }

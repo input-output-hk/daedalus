@@ -6,7 +6,6 @@ import blakejs from 'blakejs';
 export const unixTimestampToDate = (timestamp: number) => new Date(timestamp * 1000);
 export const utcStringToDate = (createDate: string) => moment.utc(createDate).toDate();
 
-
 // passphrase utils
 const bytesToB16 = (bytes) => Buffer.from(bytes).toString('hex');
 const blake2b = (data) => blakejs.blake2b(data, null, 32);
