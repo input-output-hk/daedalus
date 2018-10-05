@@ -53,7 +53,7 @@ module.exports = {
       'process.env.BUILD_NUMBER': JSON.stringify(process.env.BUILD_NUMBER || 'dev'),
       'process.env.REPORT_URL': JSON.stringify(reportUrl),
     }, process.env.NODE_ENV === 'production' ? {
-      // Only bake in NODE_ENV values for production builds.
+      // Only bake in NODE_ENV value for production builds.
       'process.env.NODE_ENV': '"production"',
     } : {})),
     !isCi && (
