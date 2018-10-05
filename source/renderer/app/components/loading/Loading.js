@@ -97,37 +97,37 @@ export default class Loading extends Component<Props, State> {
     }
   }
 
-  componentWillReceiveProps(nextProps: Props) {
-    const startConnectingTimer = !nextProps.isConnected && connectingInterval === null;
-    const stopConnectingTimer = (
-      !this.props.isConnected &&
-      nextProps.isConnected &&
-      connectingInterval !== null
-    );
-
-    if (startConnectingTimer) {
-      connectingInterval = setInterval(this.connectingTimer, 1000);
-    } else if (stopConnectingTimer) {
-      this.resetConnectingTimer();
-    }
-
-    const startSyncingTimer = (
-      nextProps.isConnected &&
-      !nextProps.isSynced &&
-      syncingInterval === null
-    );
-    const stopSyncingTimer = (
-      !this.props.isSynced &&
-      nextProps.isSynced &&
-      syncingInterval !== null
-    );
-
-    if (startSyncingTimer) {
-      syncingInterval = setInterval(this.syncingTimer, 1000);
-    } else if (stopSyncingTimer) {
-      this.resetSyncingTimer();
-    }
-  }
+  // componentWillReceiveProps(nextProps: Props) {
+  //   const startConnectingTimer = !nextProps.isConnected && connectingInterval === null;
+  //   const stopConnectingTimer = (
+  //     !this.props.isConnected &&
+  //     nextProps.isConnected &&
+  //     connectingInterval !== null
+  //   );
+  //
+  //   if (startConnectingTimer) {
+  //     connectingInterval = setInterval(this.connectingTimer, 1000);
+  //   } else if (stopConnectingTimer) {
+  //     this.resetConnectingTimer();
+  //   }
+  //
+  //   const startSyncingTimer = (
+  //     nextProps.isConnected &&
+  //     !nextProps.isSynced &&
+  //     syncingInterval === null
+  //   );
+  //   const stopSyncingTimer = (
+  //     !this.props.isSynced &&
+  //     nextProps.isSynced &&
+  //     syncingInterval !== null
+  //   );
+  //
+  //   if (startSyncingTimer) {
+  //     syncingInterval = setInterval(this.syncingTimer, 1000);
+  //   } else if (stopSyncingTimer) {
+  //     this.resetSyncingTimer();
+  //   }
+  // }
 
   componentDidUpdate() {
     const stopSyncingTimer = (
