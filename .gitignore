@@ -75,7 +75,6 @@ build-id
 ci-url
 commit-id
 staging
-mainnet
 cardano-node
 configuration.yaml
 mainnet-genesis-dryrun-with-stakeholders.json
