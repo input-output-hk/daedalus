@@ -192,11 +192,12 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
 lshow :: Show a => a -> String
 lshow = T.unpack . lshowText
 
-packageFrontend :: Cluster -> IO ()
-packageFrontend cluster = do
+packageFrontend :: Cluster -> InstallerConfig -> IO ()
+packageFrontend cluster installerConfig = do
     let icon = format ("installers/icons/"%s%"/"%s) (lshowText cluster) (lshowText cluster)
     export "NODE_ENV" "production"
     shells ("npm run package -- --icon " <> icon) empty
+    rewritePackageJson "../release/win32-x64/Daedalus-win32-x64/resources/app/package.json" (installDirectory installerConfig)
 
 -- | The contract of `main` is not to produce unsigned installer binaries.
 main :: Options -> IO ()
@@ -214,7 +215,7 @@ main opts@Options{..}  = do
 
     echo "Packaging frontend"
     exportBuildVars opts installerConfig ver
-    packageFrontend oCluster
+    packageFrontend oCluster installerConfig
 
     let fullName = packageFileName Win64 oCluster fullVersion oBackend ver oBuildJob
 
