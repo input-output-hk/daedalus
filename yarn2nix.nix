@@ -15,6 +15,17 @@ let
   dotGitExists = builtins.pathExists ./.git;
   isNix2 = 0 <= builtins.compareVersions builtins.nixVersion "1.12";
   canUseFetchGit = dotGitExists && isNix2;
+  origPackage = builtins.fromJSON (builtins.readFile ./package.json);
+  nameTable = {
+    mainnet = "Daedalus";
+    staging = "Daedalus Staging";
+    testnet = "Daedalus Testnet";
+  };
+  newPackage = origPackage // {
+    productName = nameTable.${cluster};
+    main = "main/index.js";
+  };
+  newPackagePath = builtins.toFile "package.json" (builtins.toJSON newPackage);
 in
 yarn2nix.mkYarnPackage {
   name = "daedalus-js";
@@ -31,6 +42,7 @@ yarn2nix.mkYarnPackage {
     npm run build
     mkdir -p $out/bin $out/share/daedalus
     cp -R dist/* $out/share/daedalus
+    cp ${newPackagePath} $out/share/daedalus/package.json
     ${nukeReferences}/bin/nuke-refs $out/share/daedalus/main/index.js.map
     ${nukeReferences}/bin/nuke-refs $out/share/daedalus/main/0.index.js.map
     ${nukeReferences}/bin/nuke-refs $out/share/daedalus/renderer/index.js.map
