@@ -8,8 +8,8 @@ import type { LauncherConfig } from '../config';
  * @param configPath {String}
  * @returns {LauncherConfig}
  */
-export const readLauncherConfig = (configPath: string): LauncherConfig => {
-  const inputYaml = readFileSync(configPath, 'utf8');
+export const readLauncherConfig = (configPath: ?string): LauncherConfig => {
+  const inputYaml = configPath ? readFileSync(configPath, 'utf8') : '';
   const finalYaml = inputYaml.replace(/\${([^}]+)}/g,
     (a, b) => {
       if (process.env[b]) {

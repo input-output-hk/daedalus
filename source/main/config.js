@@ -2,9 +2,10 @@
 import path from 'path';
 import { readLauncherConfig } from './utils/config';
 
-const { LAUNCHER_CONFIG } = process.env;
+const { NODE_ENV, LAUNCHER_CONFIG } = process.env;
+const isDev = NODE_ENV === 'development';
 // Daedalus cannot proceed without a launcher config
-if (!LAUNCHER_CONFIG) throw new Error('Daedalus should be started using nix-shell. Find more details here: https://github.com/input-output-hk/daedalus/blob/develop/README.md\n');
+if (isDev && !LAUNCHER_CONFIG) throw new Error('Daedalus should be started using nix-shell. Find more details here: https://github.com/input-output-hk/daedalus/blob/develop/README.md\n');
 
 /**
  * The shape of the config params, usually provided to the cadano-node launcher
