@@ -16,5 +16,6 @@ export const acquireDaedalusInstanceLock = () => {
       throw error;
     }
   }
-}
+};
+
 export const releaseDaedalusInstanceLock = () => unlockSync(lockFilePath);

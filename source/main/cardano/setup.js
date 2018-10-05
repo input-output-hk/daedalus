@@ -1,9 +1,9 @@
 // @flow
 import { createWriteStream, readFileSync } from 'fs';
 import { spawn } from 'child_process';
-import { app, BrowserWindow } from 'electron';
+import { BrowserWindow } from 'electron';
 import { Logger } from '../../common/logging';
-import { prepareArgs} from './config';
+import { prepareArgs } from './config';
 import { CardanoNode } from './CardanoNode';
 import {
   cardanoTlsConfigChannel,
@@ -33,13 +33,11 @@ const startCardanoNode = (node: CardanoNode, launcherConfig: Object) => {
   return node.start(config);
 };
 
-const restartOrExit = async (node: CardanoNode) => {
+const restartCardanoNode = async (node: CardanoNode) => {
   try {
     await node.restart();
   } catch (error) {
     Logger.info(`Could not restart CardanoNode: ${error}`);
-    Logger.info('Exiting Daedalus since CardanoNode is not starting.');
-    safeExitWithCode(0);
   }
 };
 
@@ -78,7 +76,7 @@ export const setupCardano = (
     },
     onCrashed: (code) => {
       Logger.info(`CardanoNode exited unexpectatly with code ${code}. Restarting it …`);
-      restartOrExit(cardanoNode);
+      restartCardanoNode(cardanoNode);
     },
     onError: () => {}
   });

@@ -90,7 +90,6 @@ module.exports = {
       'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
       'process.env.BUILD_NUMBER': JSON.stringify(process.env.BUILD_NUMBER || 'dev'),
       'process.env.REPORT_URL': JSON.stringify(reportUrl),
-      'process.env.WALLET_PORT': JSON.stringify(process.env.WALLET_PORT || ''),
     }, process.env.NODE_ENV === 'production' ? {
       // Only bake in NODE_ENV value for production builds.
       'process.env.NODE_ENV': '"production"',
