@@ -7,7 +7,8 @@ import {
 import type {
   CardanoNodeStorageKeys,
   ProcessNames,
-  NetworkNames
+  NetworkNames,
+  PlatformNames
 } from '../../common/types/cardanoNode.types';
 
 const checkCondition = async (
@@ -40,7 +41,9 @@ export const deriveStorageKeys = (network: NetworkNames): CardanoNodeStorageKeys
   PREVIOUS_CARDANO_PID: `${getNetworkName(network)}-PREVIOUS-CARDANO-PID`
 });
 
-export const deriveProcessNames = (network: NetworkNames): ProcessNames => ({
+export const deriveProcessNames = (
+  network: NetworkNames, platform: PlatformNames
+): ProcessNames => ({
   DAEDALUS_PROCESS_NAME: DaedalusProcessNameOptions[network] || 'Electron',
-  CARDANO_PROCESS_NAME: CardanoProcessNameOptions[network] || 'cardano-node'
+  CARDANO_PROCESS_NAME: CardanoProcessNameOptions[platform] || 'cardano-node'
 });

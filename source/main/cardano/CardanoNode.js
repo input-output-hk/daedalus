@@ -55,16 +55,16 @@ export type CardanoNodeConfig = {
 
 // grab the current network on which Daedalus is running
 const network = String(environment.NETWORK);
-
+const platform = String(environment.platform);
 // derive storage keys based on current network
 const { PREVIOUS_CARDANO_PID } = deriveStorageKeys(network);
 
 // derive process names based on current network
-// TODO: Determine where or if we will use DAEDALUS_PROCESS_NAME
+// TODO: Determine if we need to derive DAEDALUS_PROCESS_NAME, it's not used
 const {
   CARDANO_PROCESS_NAME,
   // DAEDALUS_PROCESS_NAME
-} = deriveProcessNames(network);
+} = deriveProcessNames(network, platform);
 
 // create store for persisting CardanoNode and Daedalus PID's in fs
 const store = new Store();
