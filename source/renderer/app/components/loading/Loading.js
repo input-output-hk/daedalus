@@ -87,6 +87,16 @@ export default class Loading extends Component<Props, State> {
     };
   }
 
+  componentDidMount() {
+    const { isConnected, isSynced } = this.props;
+
+    if (!isConnected && connectingInterval === null) {
+      connectingInterval = setInterval(this.connectingTimer, 1000);
+    } else if (isConnected && !isSynced && syncingInterval === null) {
+      syncingInterval = setInterval(this.syncingTimer, 1000);
+    }
+  }
+
   componentWillReceiveProps(nextProps: Props) {
     const startConnectingTimer = !nextProps.isConnected && connectingInterval === null;
     const stopConnectingTimer = (
@@ -116,6 +126,26 @@ export default class Loading extends Component<Props, State> {
       syncingInterval = setInterval(this.syncingTimer, 1000);
     } else if (stopSyncingTimer) {
       this.resetSyncingTimer();
+    }
+  }
+
+  componentDidUpdate() {
+    const stopSyncingTimer = (
+      this.props.isSynced &&
+      syncingInterval !== null
+    );
+
+    const stopConnectingTimer = (
+      this.props.isConnected &&
+      connectingInterval !== null
+    );
+
+    if (stopSyncingTimer) {
+      this.resetSyncingTimer();
+    }
+
+    if (stopConnectingTimer) {
+      this.resetConnectingTimer();
     }
   }
 
