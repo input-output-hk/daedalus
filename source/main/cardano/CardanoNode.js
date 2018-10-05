@@ -59,12 +59,8 @@ const platform = String(environment.platform);
 // derive storage keys based on current network
 const { PREVIOUS_CARDANO_PID } = deriveStorageKeys(network);
 
-// derive process names based on current network
-// TODO: Determine if we need to derive DAEDALUS_PROCESS_NAME, it's not used
-const {
-  CARDANO_PROCESS_NAME,
-  // DAEDALUS_PROCESS_NAME
-} = deriveProcessNames(network, platform);
+// derive Cardano process name based on current platform
+const { CARDANO_PROCESS_NAME } = deriveProcessNames(platform);
 
 // create store for persisting CardanoNode and Daedalus PID's in fs
 const store = new Store();
@@ -188,9 +184,9 @@ export class CardanoNode {
     const { createWriteStream } = this._actions;
     this._config = config;
 
-    _log.info(`CardanoNode: trying to start cardano-node for the ${this._startupTries}. time.`);
     this._startupTries++;
     this._changeToState(CardanoNodeStates.STARTING);
+    _log.info(`CardanoNode: trying to start cardano-node for the ${this._startupTries}. time.`);
 
     return new Promise((resolve, reject) => {
       const logFile = createWriteStream(config.logFilePath, { flags: 'a' });

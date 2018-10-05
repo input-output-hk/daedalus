@@ -1,6 +1,5 @@
 // @flow
 import {
-  DaedalusProcessNameOptions,
   CardanoProcessNameOptions,
   NetworkNameOptions
 } from '../../common/types/cardanoNode.types';
@@ -41,9 +40,6 @@ export const deriveStorageKeys = (network: NetworkNames): CardanoNodeStorageKeys
   PREVIOUS_CARDANO_PID: `${getNetworkName(network)}-PREVIOUS-CARDANO-PID`
 });
 
-export const deriveProcessNames = (
-  network: NetworkNames, platform: PlatformNames
-): ProcessNames => ({
-  DAEDALUS_PROCESS_NAME: DaedalusProcessNameOptions[network] || 'Electron',
+export const deriveProcessNames = (platform: PlatformNames): ProcessNames => ({
   CARDANO_PROCESS_NAME: CardanoProcessNameOptions[platform] || 'cardano-node'
 });

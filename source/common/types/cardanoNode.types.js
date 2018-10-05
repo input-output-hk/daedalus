@@ -58,32 +58,12 @@ export type CardanoNodeStorageKeys = {
   PREVIOUS_CARDANO_PID: CardanoPidOptions
 };
 
-// TODO: Add more options when the exact process names are established
-export type DaedalusProcessNames = (
-  'Electron'
-);
-
-// TODO: Determine if the cardano-node can be named anything else
 export type CardanoNodeProcessNames = (
   'cardano-node' | 'cardano-node.exe'
 );
 
 export type ProcessNames = {
-  DAEDALUS_PROCESS_NAME: DaedalusProcessNames,
   CARDANO_PROCESS_NAME: CardanoNodeProcessNames
-};
-
-// TODO: Modify values when the exact process names are established
-export const DaedalusProcessNameOptions: {
-  mainnet: DaedalusProcessNames,
-  staging: DaedalusProcessNames,
-  testnet: DaedalusProcessNames,
-  development: DaedalusProcessNames
-} = {
-  mainnet: 'Electron',
-  staging: 'Electron',
-  testnet: 'Electron',
-  development: 'Electron'
 };
 
 export const CardanoProcessNameOptions: {
