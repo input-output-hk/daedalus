@@ -1,45 +1,10 @@
 // @flow
-import { readFileSync } from 'fs';
-import yamljs from 'yamljs';
-
-/**
- * The shape of the config params, usually provided to the cadano-node launcher
- */
-export type LauncherConfig = {
-  nodePath: string,
-  nodeArgs: Array<string>,
-  tlsPath: string,
-  reportServer?: string,
-  nodeDbPath?: string,
-  logsPrefix?: string,
-  nodeTimeoutSec: number,
-  configuration?: {
-    filePath?: string,
-    key?: string,
-    systemStart?: string,
-    seed?: string,
-  }
-};
+import type { LauncherConfig } from '../config';
 
 export const ensureXDGDataIsSet = () => {
   if (process.env.HOME && process.env.XDG_DATA_HOME === undefined) {
     process.env.XDG_DATA_HOME = process.env.HOME + '/.local/share/';
   }
-};
-
-export const readLauncherConfig = (configPath?: string): ?LauncherConfig => {
-  if (!configPath) return null;
-  const inputYaml = readFileSync(configPath, 'utf8');
-  const finalYaml = inputYaml.replace(/\${([^}]+)}/g,
-    (a, b) => {
-      if (process.env[b]) {
-        return process.env[b];
-      }
-      console.log('readLauncherConfig: warning var undefined:', b);
-      return '';
-    }
-  );
-  return yamljs.parse(finalYaml);
 };
 
 /**

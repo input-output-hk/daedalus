@@ -31,6 +31,7 @@ Changelog
 - Send cert and key with api requests to support tls-auth ([PR 1072](https://github.com/input-output-hk/daedalus/pull/1072))
 - Implemented new data layer migration screen ([PR 1096](https://github.com/input-output-hk/daedalus/pull/1096))
 - Implemented Japanese Terms of use for Testnet network ([PR 1097](https://github.com/input-output-hk/daedalus/pull/1097))
+- Implemented lock file mechanism to prevent multiple Daedalus instances from running against the same state directory ([PR 1113](https://github.com/input-output-hk/daedalus/pull/1113))
 
 ### Fixes
 
