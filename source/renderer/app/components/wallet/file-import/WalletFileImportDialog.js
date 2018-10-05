@@ -102,7 +102,6 @@ export default class WalletFileImportDialog extends Component<Props, State> {
     this.setState({ createPassword: value });
   };
 
-
   form = new ReactToolboxMobxForm({
     fields: {
       walletFile: {

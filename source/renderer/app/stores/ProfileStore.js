@@ -135,7 +135,7 @@ export default class SettingsStore extends Store {
 
   @computed get termsOfUse(): string {
     const network = environment.isMainnet() ? 'mainnet' : 'other';
-    return require(`../i18n/locales/terms-of-use/ada/${network}/${this.currentLocale}.md`);
+    return require(`../i18n/locales/terms-of-use/${network}/${this.currentLocale}.md`);
   }
 
   @computed get hasLoadedTermsOfUseAcceptance(): boolean {
@@ -351,4 +351,5 @@ export default class SettingsStore extends Store {
     this.compressedLogsStatus = {};
     this.isSubmittingBugReport = false;
   };
+
 }

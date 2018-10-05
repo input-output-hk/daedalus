@@ -2,9 +2,9 @@
 import { observable, action } from 'mobx';
 import { findIndex } from 'lodash';
 import Store from './lib/Store';
+import Request from './lib/LocalizedRequest';
 import globalMessages from '../i18n/global-messages';
 import Wallet, { WalletAssuranceModeOptions } from '../domains/Wallet';
-import Request from './lib/LocalizedRequest';
 import type { WalletExportToFileParams } from '../actions/wallet-settings-actions';
 
 export default class WalletSettingsStore extends Store {
@@ -13,7 +13,6 @@ export default class WalletSettingsStore extends Store {
     { value: WalletAssuranceModeOptions.NORMAL, label: globalMessages.assuranceLevelNormal },
     { value: WalletAssuranceModeOptions.STRICT, label: globalMessages.assuranceLevelStrict },
   ];
-
 
   /* eslint-disable max-len */
   @observable updateWalletRequest: Request<Wallet> = new Request(this.api.ada.updateWallet);
@@ -49,7 +48,6 @@ export default class WalletSettingsStore extends Store {
     this.lastUpdatedWalletField = null;
     this.walletFieldBeingEdited = null;
   };
-
 
   @action _updateSpendingPassword = async ({ walletId, oldPassword, newPassword }: {
     walletId: string, oldPassword: ?string, newPassword: ?string,
@@ -89,6 +87,5 @@ export default class WalletSettingsStore extends Store {
     await this.exportWalletToFileRequest.execute({ walletId, filePath, password });
     this.actions.dialogs.closeActiveDialog.trigger();
   }
-
 
 }

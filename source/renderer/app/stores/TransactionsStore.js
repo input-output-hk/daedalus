@@ -1,15 +1,13 @@
 // @flow
 import { observable, computed, action, extendObservable } from 'mobx';
 import BigNumber from 'bignumber.js';
-import _ from 'lodash';
+import { find } from 'lodash';
 import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
 import WalletTransaction, { transactionTypes } from '../domains/WalletTransaction';
 import type { GetTransactionsResponse } from '../api/transactions/types';
-
 import type { UnconfirmedAmount } from '../types/unconfirmedAmountType';
 import { isValidAmountInLovelaces } from '../utils/validations';
-
 
 export type TransactionSearchOptionsStruct = {
   searchTerm: string,
@@ -190,7 +188,6 @@ export default class TransactionsStore extends Store {
     }
   };
 
-
   calculateTransactionFee = async (transactionFeeRequest: TransactionFeeRequest) => {
     const { walletId } = transactionFeeRequest;
     const accountIndex = await this.stores.addresses.getAccountIndexByWalletId(walletId);
@@ -211,13 +208,13 @@ export default class TransactionsStore extends Store {
   );
 
   _getTransactionsRecentRequest = (walletId: string): CachedRequest<GetTransactionsResponse> => {
-    const foundRequest = _.find(this.transactionsRequests, { walletId });
+    const foundRequest = find(this.transactionsRequests, { walletId });
     if (foundRequest && foundRequest.recentRequest) return foundRequest.recentRequest;
     return new CachedRequest(this.api.ada.getTransactions);
   };
 
   _getTransactionsAllRequest = (walletId: string): CachedRequest<GetTransactionsResponse> => {
-    const foundRequest = _.find(this.transactionsRequests, { walletId });
+    const foundRequest = find(this.transactionsRequests, { walletId });
     if (foundRequest && foundRequest.allRequest) return foundRequest.allRequest;
     return new CachedRequest(this.api.ada.getTransactions);
   };

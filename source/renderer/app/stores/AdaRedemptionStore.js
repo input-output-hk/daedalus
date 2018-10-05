@@ -17,8 +17,8 @@ import {
 import { DECIMAL_PLACES_IN_ADA } from '../config/numbersConfig';
 import LocalizableError from '../i18n/LocalizableError';
 import { ROUTES } from '../routes-config';
-import type { RedemptionTypeChoices } from '../types/redemptionTypes';
 import { ADA_REDEMPTION_TYPES } from '../types/redemptionTypes';
+import type { RedemptionTypeChoices } from '../types/redemptionTypes';
 import type { RedeemAdaParams } from '../api/transactions/requests/redeemAda';
 import type { RedeemPaperVendedAdaParams } from '../api/transactions/requests/redeemPaperVendedAda';
 
@@ -303,4 +303,5 @@ export default class AdaRedemptionStore extends Store {
     this.adaAmount = null;
     this.decryptionKey = null;
   };
+
 }

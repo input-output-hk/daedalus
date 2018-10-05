@@ -1,11 +1,11 @@
 // @flow
-import _ from 'lodash';
+import { find } from 'lodash';
 import { observable, computed, action, runInAction } from 'mobx';
 import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
 import Request from './lib/LocalizedRequest';
-import type { Address, Addresses, GetAddressesResponse } from '../api/addresses/types';
 import LocalizableError from '../i18n/LocalizableError';
+import type { Address, Addresses, GetAddressesResponse } from '../api/addresses/types';
 
 export default class AddressesStore extends Store {
 
@@ -103,7 +103,7 @@ export default class AddressesStore extends Store {
   };
 
   _getAddressesAllRequest = (walletId: string): CachedRequest<GetAddressesResponse> => {
-    const foundRequest = _.find(this.addressesRequests, { walletId });
+    const foundRequest = find(this.addressesRequests, { walletId });
     if (foundRequest && foundRequest.allRequest) return foundRequest.allRequest;
     return new CachedRequest(this.api.ada.getAddresses);
   };

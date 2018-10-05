@@ -1,17 +1,16 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
-import _, { get, chunk, find } from 'lodash';
+import { get, chunk, find } from 'lodash';
 import Store from './lib/Store';
-import Wallet from '../domains/Wallet';
 import Request from './lib/LocalizedRequest';
-import { buildRoute, matchRoute } from '../utils/routing';
-import { ROUTES } from '../routes-config';
-
+import Wallet from '../domains/Wallet';
 import WalletTransaction from '../domains/WalletTransaction';
 import { MAX_ADA_WALLETS_COUNT } from '../config/numbersConfig';
 import { i18nContext } from '../utils/i18nContext';
 import { mnemonicToSeedHex } from '../utils/crypto';
 import { downloadPaperWalletCertificate } from '../utils/paperWalletPdfGenerator';
+import { buildRoute, matchRoute } from '../utils/routing';
+import { ROUTES } from '../routes-config';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 
@@ -63,12 +62,15 @@ export default class WalletsStore extends Store {
 
   setup() {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
+
     this.actions.wallets.discardAntivirusRestorationSlowdownNotificationForActiveWallet.listen(
       this._discardAntivirusNotificationForRestoration
     );
+
     this.registerReactions([
       this._updateActiveWalletOnRouteChanges,
     ]);
+
     const { router, walletBackup, wallets } = this.actions;
     wallets.createWallet.listen(this._create);
     wallets.deleteWallet.listen(this._deleteWallet);
@@ -112,18 +114,18 @@ export default class WalletsStore extends Store {
     }
   };
 
-  _delete = async (params: { walletId: string }) => {
+  _deleteWallet = async (params: { walletId: string }) => {
+    // Pause polling in order to avoid fetching data for wallet we are about to delete
+    this._pausePolling();
+
     const walletToDelete = this.getWalletById(params.walletId);
     if (!walletToDelete) return;
     const indexOfWalletToDelete = this.all.indexOf(walletToDelete);
-    if (this.hasDiscardedAntivirusRestorationSlowdownNotificationForActiveWallet) {
-      this._resetAntivirusNotificationForActiveWallet();
-    }
     await this.deleteWalletRequest.execute({ walletId: params.walletId });
     await this.walletsRequest.patch(result => {
       result.splice(indexOfWalletToDelete, 1);
     });
-    runInAction('WalletsStore::_delete', () => {
+    runInAction('AdaWalletsStore::_deleteWallet', () => {
       if (this.hasAnyWallets) {
         const nextIndexInList = Math.max(indexOfWalletToDelete - 1, 0);
         const nextWalletInList = this.all[nextIndexInList];
@@ -133,6 +135,7 @@ export default class WalletsStore extends Store {
         this.active = null;
       }
     });
+    this._resumePolling();
     this.deleteWalletRequest.reset();
     this.refreshWalletsData();
   };
@@ -151,6 +154,28 @@ export default class WalletsStore extends Store {
     this.refreshWalletsData();
   };
 
+  _sendMoney = async ({ receiver, amount, password }: {
+    receiver: string,
+    amount: string,
+    password: ?string,
+  }) => {
+    const wallet = this.active;
+    if (!wallet) throw new Error('Active wallet required before sending.');
+    const accountIndex = await this.stores.addresses.getAccountIndexByWalletId(wallet.id);
+
+    await this.sendMoneyRequest.execute({
+      address: receiver,
+      amount: parseInt(amount, 10),
+      spendingPassword: password,
+      accountIndex,
+      walletId: wallet.id,
+    });
+    this.refreshWalletsData();
+    this.actions.dialogs.closeActiveDialog.trigger();
+    this.sendMoneyRequest.reset();
+    this.goToWalletRoute(wallet.id);
+  };
+
   // =================== PUBLIC API ==================== //
 
   // GETTERS
@@ -166,6 +191,10 @@ export default class WalletsStore extends Store {
   @computed get hasAnyWallets(): boolean {
     if (this.walletsRequest.result == null) return false;
     return this.walletsRequest.wasExecuted && this.walletsRequest.result.length > 0;
+  }
+
+  @computed get hasMaxWallets(): boolean {
+    return this.all.length >= MAX_ADA_WALLETS_COUNT;
   }
 
   @computed get all(): Array<Wallet> {
@@ -251,7 +280,7 @@ export default class WalletsStore extends Store {
   _patchWalletRequestWithNewWallet = async (wallet: Wallet) => {
     // Only add the new wallet if it does not exist yet in the result!
     await this.walletsRequest.patch(result => {
-      if (!_.find(result, { id: wallet.id })) result.push(wallet);
+      if (!find(result, { id: wallet.id })) result.push(wallet);
     });
   };
 
@@ -300,29 +329,6 @@ export default class WalletsStore extends Store {
     this.lastDiscardedAntivirusRestorationSlowdownNotificationWalletId = null;
   }
 
-
-  _sendMoney = async ({ receiver, amount, password }: {
-    receiver: string,
-    amount: string,
-    password: ?string,
-  }) => {
-    const wallet = this.active;
-    if (!wallet) throw new Error('Active wallet required before sending.');
-    const accountIndex = await this.stores.addresses.getAccountIndexByWalletId(wallet.id);
-
-    await this.sendMoneyRequest.execute({
-      address: receiver,
-      amount: parseInt(amount, 10),
-      spendingPassword: password,
-      accountIndex,
-      walletId: wallet.id,
-    });
-    this.refreshWalletsData();
-    this.actions.dialogs.closeActiveDialog.trigger();
-    this.sendMoneyRequest.reset();
-    this.goToWalletRoute(wallet.id);
-  };
-
   isValidAddress = (address: string) => this.api.ada.isValidAddress(address);
 
   isValidMnemonic = (mnemonic: string) => this.api.ada.isValidMnemonic(mnemonic);
@@ -333,10 +339,6 @@ export default class WalletsStore extends Store {
 
   // TODO - call endpoint to check if private key is valid
   isValidPrivateKey = () => { return true; }; // eslint-disable-line
-
-  @computed get hasMaxWallets(): boolean {
-    return this.all.length >= MAX_ADA_WALLETS_COUNT;
-  }
 
   @action refreshWalletsData = async () => {
     // Prevent wallets data refresh if polling is blocked
@@ -372,32 +374,6 @@ export default class WalletsStore extends Store {
         this._setIsRestoreActive(restoringWallet);
       });
     }
-  };
-
-  _deleteWallet = async (params: { walletId: string }) => {
-    // Pause polling in order to avoid fetching data for wallet we are about to delete
-    this._pausePolling();
-
-    const walletToDelete = this.getWalletById(params.walletId);
-    if (!walletToDelete) return;
-    const indexOfWalletToDelete = this.all.indexOf(walletToDelete);
-    await this.deleteWalletRequest.execute({ walletId: params.walletId });
-    await this.walletsRequest.patch(result => {
-      result.splice(indexOfWalletToDelete, 1);
-    });
-    runInAction('AdaWalletsStore::_deleteWallet', () => {
-      if (this.hasAnyWallets) {
-        const nextIndexInList = Math.max(indexOfWalletToDelete - 1, 0);
-        const nextWalletInList = this.all[nextIndexInList];
-        this.actions.dialogs.closeActiveDialog.trigger();
-        this.goToWalletRoute(nextWalletInList.id);
-      } else {
-        this.active = null;
-      }
-    });
-    this._resumePolling();
-    this.deleteWalletRequest.reset();
-    this.refreshWalletsData();
   };
 
   @action _setIsRestoreActive = (active: boolean) => {
@@ -628,6 +604,5 @@ export default class WalletsStore extends Store {
     this.certificateTemplate = false;
     this.certificateStep = null;
   };
-
 
 }
