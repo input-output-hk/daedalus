@@ -10,6 +10,10 @@ export type NetworkNames = (
   'mainnet' | 'staging' | 'testnet' | 'development' | string
 );
 
+export type PlatformNames = (
+  'win32' | 'linux' | 'darwin' | string
+);
+
 export const NetworkNameOptions = {
   mainnet: 'mainnet',
   staging: 'staging',
@@ -61,7 +65,7 @@ export type DaedalusProcessNames = (
 
 // TODO: Determine if the cardano-node can be named anything else
 export type CardanoNodeProcessNames = (
-  'cardano-node'
+  'cardano-node' | 'cardano-node.exe'
 );
 
 export type ProcessNames = {
@@ -82,15 +86,12 @@ export const DaedalusProcessNameOptions: {
   development: 'Electron'
 };
 
-// TODO: Determine if the cardano-node can be named anything else
 export const CardanoProcessNameOptions: {
-  mainnet: CardanoNodeProcessNames,
-  staging: CardanoNodeProcessNames,
-  testnet: CardanoNodeProcessNames,
-  development: CardanoNodeProcessNames
+  win32: CardanoNodeProcessNames,
+  linux: CardanoNodeProcessNames,
+  darwin: CardanoNodeProcessNames,
 } = {
-  mainnet: 'cardano-node',
-  staging: 'cardano-node',
-  testnet: 'cardano-node',
-  development: 'cardano-node'
+  win32: 'cardano-node.exe',
+  linux: 'cardano-node',
+  darwin: 'cardano-node'
 };
