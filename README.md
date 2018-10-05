@@ -90,22 +90,6 @@ $ yarn dev
 
 # Testing
 
-You can run the test suite in two different modes:
-
-## One-time run:
-For running tests once using the application in production mode:
-
-```bash
-$ yarn test
-```
-
-## Watch & Rerun on file changes:
-For development purposes run the tests continuously in watch mode which will re-run tests when source code changes:
-
-```bash
-$ yarn test:watch
-```
-
 You can find more details regarding tests setup within
 [Running Daedalus acceptance tests](https://github.com/input-output-hk/daedalus/blob/master/features/README.md) README file.
 
