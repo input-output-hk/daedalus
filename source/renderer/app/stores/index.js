@@ -8,11 +8,11 @@ import WindowStore from './WindowStore';
 import UiDialogsStore from './UiDialogsStore';
 import UiNotificationsStore from './UiNotificationsStore';
 import NetworkStatusStore from './NetworkStatusStore';
-import AdaWalletsStore from './AdaWalletsStore';
-import TransactionsStore from './AdaTransactionsStore';
+import WalletsStore from './WalletsStore';
+import TransactionsStore from './TransactionsStore';
 import AdaRedemptionStore from './AdaRedemptionStore';
 import NodeUpdateStore from './NodeUpdateStore';
-import AdaWalletSettingsStore from './AdaWalletSettingsStore';
+import WalletSettingsStore from './WalletSettingsStore';
 import AddressesStore from './AddressesStore';
 
 export const storeClasses = {
@@ -24,11 +24,11 @@ export const storeClasses = {
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
   networkStatus: NetworkStatusStore,
-  wallets: AdaWalletsStore,
+  wallets: WalletsStore,
   transactions: TransactionsStore,
   adaRedemption: AdaRedemptionStore,
   nodeUpdate: NodeUpdateStore,
-  walletSettings: AdaWalletSettingsStore,
+  walletSettings: WalletSettingsStore,
   addresses: AddressesStore,
 };
 
@@ -42,11 +42,11 @@ export type StoresMap = {
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
   networkStatus: NetworkStatusStore,
-  wallets: AdaWalletsStore,
+  wallets: WalletsStore,
   transactions: TransactionsStore,
   adaRedemption: AdaRedemptionStore,
   nodeUpdate: NodeUpdateStore,
-  walletSettings: AdaWalletSettingsStore,
+  walletSettings: WalletSettingsStore,
   addresses: AddressesStore,
 };
 

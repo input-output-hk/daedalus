@@ -1,15 +1,26 @@
 // @flow
 import { observable, computed, action, extendObservable } from 'mobx';
+import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
-import WalletTransaction from '../domains/WalletTransaction';
+import WalletTransaction, { transactionTypes } from '../domains/WalletTransaction';
 import type { GetTransactionsResponse } from '../api/transactions/types';
+
+import type { UnconfirmedAmount } from '../types/unconfirmedAmountType';
+import { isValidAmountInLovelaces } from '../utils/validations';
+
 
 export type TransactionSearchOptionsStruct = {
   searchTerm: string,
   searchLimit: number,
   searchSkip: number,
+};
+
+type TransactionFeeRequest = {
+  walletId: string,
+  address: string,
+  amount: number,
 };
 
 export default class TransactionsStore extends Store {
@@ -125,6 +136,36 @@ export default class TransactionsStore extends Store {
     return result ? result.transactions.length : 0;
   }
 
+  @computed get unconfirmedAmount(): UnconfirmedAmount {
+    const unconfirmedAmount = {
+      total: new BigNumber(0),
+      incoming: new BigNumber(0),
+      outgoing: new BigNumber(0),
+    };
+    const wallet = this.stores.wallets.active;
+    if (!wallet) return unconfirmedAmount;
+    const result = this._getTransactionsAllRequest(wallet.id).result;
+    if (!result || !result.transactions) return unconfirmedAmount;
+
+    for (const transaction of result.transactions) {
+      // TODO: move this magic constant (required numberOfConfirmations) to config!
+      if (transaction.numberOfConfirmations <= 6) {
+        unconfirmedAmount.total = unconfirmedAmount.total.plus(transaction.amount.absoluteValue());
+        if (transaction.type === transactionTypes.EXPEND) {
+          unconfirmedAmount.outgoing = unconfirmedAmount.outgoing.plus(
+            transaction.amount.absoluteValue()
+          );
+        }
+        if (transaction.type === transactionTypes.INCOME) {
+          unconfirmedAmount.incoming = unconfirmedAmount.incoming.plus(
+            transaction.amount.absoluteValue()
+          );
+        }
+      }
+    }
+    return unconfirmedAmount;
+  }
+
   @action _refreshTransactionData = () => {
     if (this.stores.networkStatus.isConnected) {
       const allWallets = this.stores.wallets.all;
@@ -148,6 +189,26 @@ export default class TransactionsStore extends Store {
       }
     }
   };
+
+
+  calculateTransactionFee = async (transactionFeeRequest: TransactionFeeRequest) => {
+    const { walletId } = transactionFeeRequest;
+    const accountIndex = await this.stores.addresses.getAccountIndexByWalletId(walletId);
+
+    if (!accountIndex) {
+      throw new Error('Active account required before calculating transaction fees.');
+    }
+    return this.api.ada.calculateTransactionFee(
+      {
+        ...transactionFeeRequest,
+        accountIndex,
+      }
+    );
+  };
+
+  validateAmount = (amountInLovelaces: string): Promise<boolean> => (
+    Promise.resolve(isValidAmountInLovelaces(amountInLovelaces))
+  );
 
   _getTransactionsRecentRequest = (walletId: string): CachedRequest<GetTransactionsResponse> => {
     const foundRequest = _.find(this.transactionsRequests, { walletId });
