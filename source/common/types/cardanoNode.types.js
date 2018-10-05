@@ -50,17 +50,8 @@ export type CardanoPidOptions = (
   string
 );
 
-export type DaedalusPidOptions = (
-  'mainnet-PREVIOUS-DAEDALUS-PID' |
-  'staging-PREVIOUS-DAEDALUS-PID' |
-  'testnet-PREVIOUS-DAEDALUS-PID' |
-  'development-PREVIOUS-DAEDALUS-PID' |
-  string
-);
-
 export type CardanoNodeStorageKeys = {
-  PREVIOUS_CARDANO_PID: CardanoPidOptions,
-  PREVIOUS_DAEDALUS_PID: DaedalusPidOptions
+  PREVIOUS_CARDANO_PID: CardanoPidOptions
 };
 
 // TODO: Add more options when the exact process names are established
