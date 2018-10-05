@@ -19,7 +19,6 @@ const isFileNodeLog = (fileName: string, nodeLogsIncluded: number) =>
 const isFileLauncherLog = (fileName: string, nodeLogsIncluded: number) =>
   ALLOWED_LAUNCHER_LOGS.test(fileName) && nodeLogsIncluded < MAX_LAUNCHER_LOGS_ALLOWED;
 
-
 export default () => {
   ipcMain.on(GET_LOGS.REQUEST, (event) => {
     const sender = event.sender;

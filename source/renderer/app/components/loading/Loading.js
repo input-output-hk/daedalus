@@ -11,7 +11,6 @@ import LoadingSpinner from '../widgets/LoadingSpinner';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import styles from './Loading.scss';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
-import environment from '../../../../common/environment';
 import { REPORT_ISSUE_TIME_TRIGGER } from '../../config/timingConfig';
 
 let connectingInterval = null;
@@ -162,11 +161,11 @@ export default class Loading extends Component<Props, State> {
       !isConnected ? styles.connectingLogo : styles.syncingLogo,
     ]);
     const currencyLogoStyles = classNames([
-      styles[`${environment.API}-logo`],
+      styles['ada-logo'],
       !isConnected ? styles.connectingLogo : styles.syncingLogo,
     ]);
     const apiLogoStyles = classNames([
-      styles[`${environment.API}-apiLogo`],
+      styles['ada-apiLogo'],
       !isConnected ? styles.connectingLogo : styles.syncingLogo,
     ]);
 

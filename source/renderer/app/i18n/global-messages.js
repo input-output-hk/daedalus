@@ -146,19 +146,14 @@ export default defineMessages({
     defaultMessage: '!!!https://daedaluswallet.io/faq/',
     description: 'URL for the "FAQ on Daedalus website" link in the FAQ section on the support settings page',
   },
+  currency: {
+    id: 'environment.currency.ada',
+    defaultMessage: '!!!Ada',
+    description: 'Name for "Ada" unit.'
+  },
+  apiName: {
+    id: 'environment.apiName.cardano',
+    defaultMessage: '!!!Cardano',
+    description: 'Name for "Cardano" client.'
+  },
 });
-
-export const environmentSpecificMessages = {
-  ada: defineMessages({
-    currency: {
-      id: 'environment.currency.ada',
-      defaultMessage: '!!!Ada',
-      description: 'Name for "Ada" unit.'
-    },
-    apiName: {
-      id: 'environment.apiName.cardano',
-      defaultMessage: '!!!Cardano',
-      description: 'Name for "Cardano" client.'
-    },
-  }),
-};

@@ -20,7 +20,7 @@ export default class AdaRedemptionPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   onSubmit = (values: { walletId: string, spendingPassword: ?string }) => {
-    this.props.actions.ada.adaRedemption.redeemAda.trigger(values);
+    this.props.actions.adaRedemption.redeemAda.trigger(values);
   };
 
   onSubmitPaperVended = (values: {
@@ -28,7 +28,7 @@ export default class AdaRedemptionPage extends Component<Props> {
     shieldedRedemptionKey: string,
     spendingPassword: ?string,
   }) => {
-    this.props.actions.ada.adaRedemption.redeemPaperVendedAda.trigger(values);
+    this.props.actions.adaRedemption.redeemPaperVendedAda.trigger(values);
   };
 
   handleGoToCreateWalletClick = () => {
@@ -36,7 +36,7 @@ export default class AdaRedemptionPage extends Component<Props> {
   };
 
   render() {
-    const { wallets, adaRedemption } = this.props.stores.ada;
+    const { wallets, adaRedemption } = this.props.stores;
     const {
       redeemAdaRequest, redeemPaperVendedAdaRequest, isCertificateEncrypted, isValidRedemptionKey,
       redemptionType, isValidRedemptionMnemonic, isValidPaperVendRedemptionKey,
@@ -45,7 +45,7 @@ export default class AdaRedemptionPage extends Component<Props> {
     const {
       chooseRedemptionType, setCertificate, setPassPhrase, setRedemptionCode, removeCertificate,
       setEmail, setAdaPasscode, setAdaAmount, setDecryptionKey, acceptRedemptionDisclaimer
-    } = this.props.actions.ada.adaRedemption;
+    } = this.props.actions.adaRedemption;
     const selectableWallets = wallets.all.map((w) => ({
       value: w.id, label: w.name
     }));
