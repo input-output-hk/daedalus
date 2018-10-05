@@ -57,15 +57,13 @@ export type CardanoNodeConfig = {
 const network = String(environment.NETWORK);
 
 // derive storage keys based on current network
-const {
-  PREVIOUS_CARDANO_PID,
-  PREVIOUS_DAEDALUS_PID
-} = deriveStorageKeys(network);
+const { PREVIOUS_CARDANO_PID } = deriveStorageKeys(network);
 
 // derive process names based on current network
+// TODO: Determine where or if we will use DAEDALUS_PROCESS_NAME
 const {
   CARDANO_PROCESS_NAME,
-  DAEDALUS_PROCESS_NAME
+  // DAEDALUS_PROCESS_NAME
 } = deriveProcessNames(network);
 
 // create store for persisting CardanoNode and Daedalus PID's in fs
@@ -454,7 +452,6 @@ export class CardanoNode {
   _canBeStarted = async (): Promise<boolean> => {
     if (this._isAwake()) { return false; }
     await this._ensurePreviousCardanoNodeIsNotRunning();
-    await this._ensurePreviousDaedalusIsNotRunning();
     return true;
   };
 
@@ -480,28 +477,6 @@ export class CardanoNode {
     }
 
     this._log.info('Previous instance of cardano-node does not exist');
-  };
-
-  _ensurePreviousDaedalusIsNotRunning = async (): Promise<void> => {
-    this._log.info(
-      'CardanoNode: checking for previous instance of Daedalus still running on last known process'
-    );
-    const previousPID: ?number = await this._retrieveData(PREVIOUS_DAEDALUS_PID);
-
-    if (previousPID == null) { return; }
-
-    const processIsDaedalus = (
-      previousPID ? await this._processIsRunning(previousPID, DAEDALUS_PROCESS_NAME) : false
-    );
-
-    if (processIsDaedalus) {
-      this._log.info(`CardanoNode: attempting to kill previous Daedalus process with PID: ${previousPID}`);
-      // kill previous process
-      await this._killProcessWithName(previousPID, DAEDALUS_PROCESS_NAME);
-      return;
-    }
-
-    this._log.info('Previous instance of Daedalus does not exist');
   };
 
   _processIsRunning = async (previousPID: number, processName: string): Promise<boolean> => {
@@ -541,8 +516,6 @@ export class CardanoNode {
       _log.info(`CardanoNode: storing last cardano-node PID: ${pid}`);
       await this._storeData(PREVIOUS_CARDANO_PID, pid);
     }
-    _log.info(`CardanoNode: storing last Daedalus PID: ${process.pid}`);
-    await this._storeData(PREVIOUS_DAEDALUS_PID, process.pid);
   }
 
   // stores the current port/pid on which cardano-node or Daedalus is running
