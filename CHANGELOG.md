@@ -16,6 +16,7 @@ Changelog
 
 ### Features
 
+- Extended error messages for transaction fee calculation failures ([PR 1111](https://github.com/input-output-hk/daedalus/pull/1111))
 - Removes depreciated types, requests, and API methods associated with the V0 API. Within the /api directory, organizes requests, types, and errors into subdirectories based on the categories Accounts, Addresses, Common, Nodes, Transactions, and Wallets. ([PR 1088](https://github.com/input-output-hk/daedalus/pull/1088))
 - Refactors and improves Network Status Store to use V1 API. ([PR 1081](https://github.com/input-output-hk/daedalus/pull/1081))
 - Implemented the V1 API endpoints for redeeming ADA with all types of certificates. Updates ADA redemption API methods, flow types, and variable names to match the V1 nomenclature. ([PR 1080](https://github.com/input-output-hk/daedalus/pull/1080))
