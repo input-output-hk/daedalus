@@ -25,9 +25,8 @@ export default class WalletAddPage extends Component<Props> {
   };
 
   render() {
-    const wallets = this._getWalletsStore();
     const { actions, stores } = this.props;
-    const { uiDialogs } = stores;
+    const { wallets, uiDialogs } = stores;
     const { isRestoreActive } = wallets;
     let content = null;
 
@@ -51,10 +50,6 @@ export default class WalletAddPage extends Component<Props> {
       );
     }
     return <Layout>{content}</Layout>;
-  }
-
-  _getWalletsStore() {
-    return this.props.stores.wallets;
   }
 
 }

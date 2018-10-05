@@ -28,7 +28,7 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
 
   resetRequests = () => {
     // Restore request should be reset only in case restore is finished/errored
-    const wallets = this._getWalletsStore();
+    const { wallets } = this.props.stores;
     const { restoreRequest } = wallets;
     if (!restoreRequest.isExecuting) {
       restoreRequest.reset();
@@ -37,11 +37,14 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
   };
 
   render() {
-    const wallets = this._getWalletsStore();
-    const { restoreRequest, isValidMnemonic } = wallets;
+    const { wallets } = this.props.stores;
+    const {
+      restoreRequest, isValidMnemonic,
+      getWalletRecoveryPhraseFromCertificateRequest,
+    } = wallets;
 
     const error = (
-      restoreRequest.error || wallets.getWalletRecoveryPhraseFromCertificateRequest.error
+      restoreRequest.error || getWalletRecoveryPhraseFromCertificateRequest.error
     );
 
     return (
@@ -57,7 +60,4 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
     );
   }
 
-  _getWalletsStore() {
-    return this.props.stores.wallets;
-  }
 }

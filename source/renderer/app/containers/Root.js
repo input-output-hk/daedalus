@@ -12,10 +12,9 @@ export default class Root extends Component<Props> {
 
   render() {
     const { stores, actions, children } = this.props;
-    const { networkStatus, profile, adaRedemption, app } = stores;
+    const { networkStatus, profile, adaRedemption, app, wallets } = stores;
     const { isNetworkStatusPage } = app;
     const { isConnected, isSynced, isSystemTimeCorrect } = networkStatus;
-    const wallets = stores.wallets;
     const isPageThatDoesntNeedWallets = (
       profile.isSettingsPage || adaRedemption.isAdaRedemptionPage
     );

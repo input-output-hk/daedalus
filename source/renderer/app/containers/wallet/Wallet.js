@@ -51,9 +51,9 @@ export default class Wallet extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { wallets, adaRedemption } = stores;
+    const { wallets, adaRedemption, profile } = stores;
     const { showAdaRedemptionSuccessMessage, amountRedeemed } = adaRedemption;
-    const { currentLocale } = stores.profile;
+    const { currentLocale } = profile;
 
     if (!wallets.active) return <MainLayout><LoadingSpinner /></MainLayout>;
 

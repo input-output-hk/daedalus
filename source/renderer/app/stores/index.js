@@ -1,44 +1,47 @@
 // @flow
 import { observable, action } from 'mobx';
+import AdaRedemptionStore from './AdaRedemptionStore';
+import AddressesStore from './AddressesStore';
 import AppStore from './AppStore';
+import NetworkStatusStore from './NetworkStatusStore';
+import NodeUpdateStore from './NodeUpdateStore';
 import ProfileStore from './ProfileStore';
-import WalletBackupStore from './WalletBackupStore';
 import SidebarStore from './SidebarStore';
-import WindowStore from './WindowStore';
+import TransactionsStore from './TransactionsStore';
 import UiDialogsStore from './UiDialogsStore';
 import UiNotificationsStore from './UiNotificationsStore';
-import NetworkStatusStore from './NetworkStatusStore';
 import WalletsStore from './WalletsStore';
-import TransactionsStore from './TransactionsStore';
-import AdaRedemptionStore from './AdaRedemptionStore';
-import NodeUpdateStore from './NodeUpdateStore';
 import WalletSettingsStore from './WalletSettingsStore';
-import AddressesStore from './AddressesStore';
+import WalletBackupStore from './WalletBackupStore';
+import WindowStore from './WindowStore';
 
 export const storeClasses = {
-  profile: ProfileStore,
+  adaRedemption: AdaRedemptionStore,
+  addresses: AddressesStore,
   app: AppStore,
+  networkStatus: NetworkStatusStore,
+  nodeUpdate: NodeUpdateStore,
+  profile: ProfileStore,
   sidebar: SidebarStore,
-  walletBackup: WalletBackupStore,
-  window: WindowStore,
+  transactions: TransactionsStore,
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
-  networkStatus: NetworkStatusStore,
   wallets: WalletsStore,
-  transactions: TransactionsStore,
-  adaRedemption: AdaRedemptionStore,
-  nodeUpdate: NodeUpdateStore,
   walletSettings: WalletSettingsStore,
-  addresses: AddressesStore,
+  walletBackup: WalletBackupStore,
+  window: WindowStore,
 };
 
 export type StoresMap = {
-  profile: ProfileStore,
+  adaRedemption: AdaRedemptionStore,
+  addresses: AddressesStore,
   app: AppStore,
+  networkStatus: NetworkStatusStore,
+  nodeUpdate: NodeUpdateStore,
+  profile: ProfileStore,
   router: Object,
   sidebar: SidebarStore,
-  walletBackup: WalletBackupStore,
-  window: WindowStore,
+  transactions: TransactionsStore,
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
   networkStatus: NetworkStatusStore,
@@ -48,25 +51,27 @@ export type StoresMap = {
   nodeUpdate: NodeUpdateStore,
   walletSettings: WalletSettingsStore,
   addresses: AddressesStore,
+  walletBackup: WalletBackupStore,
+  window: WindowStore,
 };
 
 // Constant that does never change during lifetime
 const stores = observable({
+  adaRedemption: null,
+  addresses: null,
+  app: null,
+  networkStatus: null,
+  nodeUpdate: null,
   profile: null,
   router: null,
-  app: null,
   sidebar: null,
-  walletBackup: null,
-  window: null,
+  transactions: null,
   uiDialogs: null,
   uiNotifications: null,
-  networkStatus: null,
   wallets: null,
-  transactions: null,
-  adaRedemption: null,
-  nodeUpdate: null,
+  walletBackup: null,
   walletSettings: null,
-  addresses: null
+  window: null,
 });
 
 // Set up and return the stores for this app -> also used to reset all stores to defaults
