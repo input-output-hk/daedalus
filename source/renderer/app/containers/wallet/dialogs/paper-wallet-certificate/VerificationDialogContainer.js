@@ -12,11 +12,11 @@ export default class VerificationDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
 
   onContinue = () => {
-    this.props.actions.ada.wallets.updateCertificateStep.trigger();
+    this.props.actions.wallets.updateCertificateStep.trigger();
   };
 
   render() {
-    const { wallets } = this.props.stores.ada;
+    const { wallets } = this.props.stores;
     const {
       walletCertificateRecoveryPhrase,
       additionalMnemonicWords,

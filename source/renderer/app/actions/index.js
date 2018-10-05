@@ -1,40 +1,54 @@
 // @flow
+import AdaRedemptionActions from './ada-redemption-actions';
+import AddressesActions from './addresses-actions';
+import AppActions from './app-actions';
+import DialogsActions from './dialogs-actions';
+import NetworkStatusActions from './network-status-actions';
+import NodeUpdateActions from './node-update-actions';
+import NotificationsActions from './notifications-actions';
+import ProfileActions from './profile-actions';
 import RouterActions from './router-actions';
 import SidebarActions from './sidebar-actions';
-import WindowActions from './window-actions';
-import NetworkStatusActions from './network-status-actions';
+import TransactionsActions from './transactions-actions';
+import WalletsActions from './wallets-actions';
 import WalletBackupActions from './wallet-backup-actions';
-import ProfileActions from './profile-actions';
-import DialogsActions from './dialogs-actions';
-import NotificationsActions from './notifications-actions';
-import adaActionsMap from './ada/index';
-import type { AdaActionsMap } from './ada/index';
-import AppActions from './app-actions';
+import WalletSettingsActions from './wallet-settings-actions';
+import WindowActions from './window-actions';
 
 export type ActionsMap = {
+  adaRedemption: AdaRedemptionActions,
+  addresses: AddressesActions,
   app: AppActions,
+  dialogs: DialogsActions,
+  networkStatus: NetworkStatusActions,
+  nodeUpdate: NodeUpdateActions,
+  notifications: NotificationsActions,
+  profile: ProfileActions,
   router: RouterActions,
   sidebar: SidebarActions,
-  window: WindowActions,
-  networkStatus: NetworkStatusActions,
+  transactions: TransactionsActions,
+  wallets: WalletsActions,
   walletBackup: WalletBackupActions,
-  profile: ProfileActions,
-  dialogs: DialogsActions,
-  notifications: NotificationsActions,
-  ada: AdaActionsMap,
+  walletSettings: WalletSettingsActions,
+  window: WindowActions,
 };
 
 const actionsMap: ActionsMap = {
+  adaRedemption: new AdaRedemptionActions(),
+  addresses: new AddressesActions(),
   app: new AppActions(),
+  dialogs: new DialogsActions(),
+  networkStatus: new NetworkStatusActions(),
+  nodeUpdate: new NodeUpdateActions(),
+  notifications: new NotificationsActions(),
+  profile: new ProfileActions(),
   router: new RouterActions(),
   sidebar: new SidebarActions(),
-  window: new WindowActions(),
-  networkStatus: new NetworkStatusActions(),
+  transactions: new TransactionsActions(),
+  wallets: new WalletsActions(),
   walletBackup: new WalletBackupActions(),
-  profile: new ProfileActions(),
-  dialogs: new DialogsActions(),
-  notifications: new NotificationsActions(),
-  ada: adaActionsMap,
+  walletSettings: new WalletSettingsActions(),
+  window: new WindowActions(),
 };
 
 export default actionsMap;

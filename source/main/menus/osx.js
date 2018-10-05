@@ -1,5 +1,4 @@
 import { compact } from 'lodash';
-import environment from '../../common/environment';
 
 export const osxMenu = (app, window, {
   openAbout, goToAdaRedemption, goToNetworkStatus, restartInSafeMode, restartWithoutSafeMode
@@ -11,7 +10,7 @@ export const osxMenu = (app, window, {
       click() {
         openAbout();
       },
-    }, environment.API === 'ada' && {
+    }, {
       label: 'Ada redemption',
       click() {
         goToAdaRedemption();

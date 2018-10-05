@@ -22,9 +22,9 @@ export default class ExportWalletToFileDialogContainer extends Component<Props> 
       }],
     });
     const { stores, actions } = this.props;
-    const activeWallet = stores.ada.wallets.active;
+    const activeWallet = stores.wallets.active;
     if (!filePath || !activeWallet) return;
-    actions.ada.walletSettings.exportToFile.trigger({
+    actions.walletSettings.exportToFile.trigger({
       walletId: activeWallet.id,
       filePath,
       ...params
@@ -33,11 +33,11 @@ export default class ExportWalletToFileDialogContainer extends Component<Props> 
 
   onCancel = () => {
     this.props.actions.dialogs.closeActiveDialog.trigger();
-    this.props.stores.ada.walletSettings.exportWalletToFileRequest.reset();
+    this.props.stores.walletSettings.exportWalletToFileRequest.reset();
   };
 
   render() {
-    const { wallets, walletSettings } = this.props.stores.ada;
+    const { wallets, walletSettings } = this.props.stores;
     const activeWallet = wallets.active;
     const { exportWalletToFileRequest } = walletSettings;
 

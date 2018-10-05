@@ -1,6 +1,6 @@
 // @flow
-import Action from '../lib/Action';
-import type { RedemptionTypeChoices } from '../../types/redemptionTypes';
+import Action from './lib/Action';
+import type { RedemptionTypeChoices } from '../types/redemptionTypes';
 
 // ======= ADA REDEMPTION ACTIONS =======
 
