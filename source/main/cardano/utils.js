@@ -1,4 +1,15 @@
 // @flow
+import {
+  CardanoProcessNameOptions,
+  NetworkNameOptions
+} from '../../common/types/cardanoNode.types';
+import type {
+  CardanoNodeStorageKeys,
+  ProcessNames,
+  NetworkNames,
+  PlatformNames
+} from '../../common/types/cardanoNode.types';
+
 const checkCondition = async (
   condition: () => boolean,
   timeout: number,
@@ -20,3 +31,15 @@ const checkCondition = async (
 export const promisedCondition = async (
   cond: Function, timeout: number = 5000, retryEvery: number = 1000
 ): Promise<void> => await checkCondition(cond, timeout, retryEvery);
+
+const getNetworkName = (network: NetworkNames): string => (
+  NetworkNameOptions[network] || NetworkNameOptions.development
+);
+
+export const deriveStorageKeys = (network: NetworkNames): CardanoNodeStorageKeys => ({
+  PREVIOUS_CARDANO_PID: `${getNetworkName(network)}-PREVIOUS-CARDANO-PID`
+});
+
+export const deriveProcessNames = (platform: PlatformNames): ProcessNames => ({
+  CARDANO_PROCESS_NAME: CardanoProcessNameOptions[platform] || 'cardano-node'
+});
