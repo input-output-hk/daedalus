@@ -4,8 +4,9 @@ import type { spawn, ChildProcess } from 'child_process';
 import type { WriteStream } from 'fs';
 import psList from 'ps-list';
 import { isEmpty } from 'lodash';
+import environment from '../../common/environment';
 import type { CardanoNodeState, TlsConfig } from '../../common/types/cardanoNode.types';
-import { promisedCondition } from './utils';
+import { promisedCondition, deriveStorageKeys, deriveProcessNames } from './utils';
 import { CardanoNodeStates } from '../../common/types/cardanoNode.types';
 
 type Logger = {
@@ -52,13 +53,16 @@ export type CardanoNodeConfig = {
   updateTimeout: number, // Milliseconds to wait for cardano-node to update itself
 };
 
-const CARDANO_PROCESS_NAME = 'cardano-node';
-// TODO: Daedalus process name should depend on the cluster this instance is running on
-const DAEDALUS_PROCESS_NAME = 'Electron';
+// grab the current network on which Daedalus is running
+const network = String(environment.NETWORK);
+const platform = String(environment.platform);
+// derive storage keys based on current network
+const { PREVIOUS_CARDANO_PID } = deriveStorageKeys(network);
 
-// store for persisting CardanoNode and Daedalus data
-const PREVIOUS_CARDANO_PID = 'PREVIOUS_CARDANO_PID';
-const PREVIOUS_DAEDALUS_PID = 'PREVIOUS_DAEDALUS_PID';
+// derive Cardano process name based on current platform
+const { CARDANO_PROCESS_NAME } = deriveProcessNames(platform);
+
+// create store for persisting CardanoNode and Daedalus PID's in fs
 const store = new Store();
 
 export class CardanoNode {
@@ -180,9 +184,9 @@ export class CardanoNode {
     const { createWriteStream } = this._actions;
     this._config = config;
 
-    _log.info(`CardanoNode: trying to start cardano-node for the ${this._startupTries}. time.`);
     this._startupTries++;
     this._changeToState(CardanoNodeStates.STARTING);
+    _log.info(`CardanoNode: trying to start cardano-node for the ${this._startupTries}. time.`);
 
     return new Promise((resolve, reject) => {
       const logFile = createWriteStream(config.logFilePath, { flags: 'a' });
@@ -444,7 +448,6 @@ export class CardanoNode {
   _canBeStarted = async (): Promise<boolean> => {
     if (this._isAwake()) { return false; }
     await this._ensurePreviousCardanoNodeIsNotRunning();
-    await this._ensurePreviousDaedalusIsNotRunning();
     return true;
   };
 
@@ -470,28 +473,6 @@ export class CardanoNode {
     }
 
     this._log.info('Previous instance of cardano-node does not exist');
-  };
-
-  _ensurePreviousDaedalusIsNotRunning = async (): Promise<void> => {
-    this._log.info(
-      'CardanoNode: checking for previous instance of Daedalus still running on last known process'
-    );
-    const previousPID: ?number = await this._retrieveData(PREVIOUS_DAEDALUS_PID);
-
-    if (previousPID == null) { return; }
-
-    const processIsDaedalus = (
-      previousPID ? await this._processIsRunning(previousPID, DAEDALUS_PROCESS_NAME) : false
-    );
-
-    if (processIsDaedalus) {
-      this._log.info(`CardanoNode: attempting to kill previous Daedalus process with PID: ${previousPID}`);
-      // kill previous process
-      await this._killProcessWithName(previousPID, DAEDALUS_PROCESS_NAME);
-      return;
-    }
-
-    this._log.info('Previous instance of Daedalus does not exist');
   };
 
   _processIsRunning = async (previousPID: number, processName: string): Promise<boolean> => {
@@ -531,8 +512,6 @@ export class CardanoNode {
       _log.info(`CardanoNode: storing last cardano-node PID: ${pid}`);
       await this._storeData(PREVIOUS_CARDANO_PID, pid);
     }
-    _log.info(`CardanoNode: storing last Daedalus PID: ${process.pid}`);
-    await this._storeData(PREVIOUS_DAEDALUS_PID, process.pid);
   }
 
   // stores the current port/pid on which cardano-node or Daedalus is running
