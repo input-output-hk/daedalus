@@ -17,8 +17,8 @@ export default class TopBarContainer extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar, app, networkStatus } = stores;
-    const walletsStore = stores.wallets;
+    const { sidebar, app, networkStatus, wallets } = stores;
+    const { active, isWalletRoute, hasAnyWallets } = wallets;
     const isMainnet = environment.isMainnet();
     const testnetLabel = (
       !isMainnet ? <WalletTestEnvironmentLabel network={environment.NETWORK} /> : null
@@ -27,11 +27,11 @@ export default class TopBarContainer extends Component<Props> {
     return (
       <TopBar
         onToggleSidebar={actions.sidebar.toggleSubMenus.trigger}
-        activeWallet={walletsStore.active}
+        activeWallet={active}
         currentRoute={app.currentRoute}
         showSubMenus={sidebar.isShowingSubMenus}
         formattedWalletAmount={formattedWalletAmount}
-        showSubMenuToggle={walletsStore.isWalletRoute && walletsStore.hasAnyWallets}
+        showSubMenuToggle={isWalletRoute && hasAnyWallets}
       >
         {testnetLabel}
         <NodeSyncStatusIcon
