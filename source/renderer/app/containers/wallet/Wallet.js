@@ -24,15 +24,14 @@ export default class Wallet extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   isActiveScreen = (page: string) => {
-    const { app } = this.props.stores;
-    const { wallets } = this.props.stores.ada;
+    const { app, wallets } = this.props.stores;
     if (!wallets.active) return false;
     const screenRoute = buildRoute(ROUTES.WALLETS.PAGE, { id: wallets.active.id, page });
     return app.currentRoute === screenRoute;
   };
 
   handleWalletNavItemClick = (page: string) => {
-    const { wallets } = this.props.stores.ada;
+    const { wallets } = this.props.stores;
     if (!wallets.active) return;
     this.props.actions.router.goToRoute.trigger({
       route: ROUTES.WALLETS.PAGE,
@@ -41,7 +40,7 @@ export default class Wallet extends Component<Props> {
   };
 
   handleAntivirusNotificationDiscard = () => {
-    const { wallets } = this.props.actions.ada;
+    const { wallets } = this.props.actions;
     wallets.discardAntivirusRestorationSlowdownNotificationForActiveWallet.trigger();
   };
 
@@ -52,9 +51,9 @@ export default class Wallet extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { wallets, adaRedemption } = stores.ada;
+    const { wallets, adaRedemption, profile } = stores;
     const { showAdaRedemptionSuccessMessage, amountRedeemed } = adaRedemption;
-    const { currentLocale } = stores.profile;
+    const { currentLocale } = profile;
 
     if (!wallets.active) return <MainLayout><LoadingSpinner /></MainLayout>;
 
@@ -82,7 +81,7 @@ export default class Wallet extends Component<Props> {
         {showAdaRedemptionSuccessMessage ? (
           <AdaRedemptionSuccessOverlay
             amount={amountRedeemed}
-            onClose={actions.ada.adaRedemption.closeAdaRedemptionSuccessOverlay.trigger}
+            onClose={actions.adaRedemption.closeAdaRedemptionSuccessOverlay.trigger}
           />
         ) : null}
         {

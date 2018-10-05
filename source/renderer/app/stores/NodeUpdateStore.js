@@ -1,9 +1,9 @@
 // @flow
 import { observable, action, runInAction } from 'mobx';
-import Store from '../lib/Store';
-import Request from '../lib/LocalizedRequest';
-import type { NodeSoftware } from '../../api/nodes/types';
-import { NODE_UPDATE_POLL_INTERVAL } from '../../config/timingConfig';
+import Store from './lib/Store';
+import Request from './lib/LocalizedRequest';
+import type { NodeSoftware } from '../api/nodes/types';
+import { NODE_UPDATE_POLL_INTERVAL } from '../config/timingConfig';
 
 export default class NodeUpdateStore extends Store {
 
@@ -21,7 +21,7 @@ export default class NodeUpdateStore extends Store {
   /* eslint-disable max-len */
 
   setup() {
-    const actions = this.actions.ada.nodeUpdate;
+    const actions = this.actions.nodeUpdate;
     actions.acceptNodeUpdate.listen(this._acceptNodeUpdate);
     actions.postponeNodeUpdate.listen(this._postponeNodeUpdate);
     actions.toggleNodeUpdateNotificationExpanded.listen(this._toggleNotificationExpanded);

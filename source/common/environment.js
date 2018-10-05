@@ -24,7 +24,6 @@ const environment = Object.assign({
   TEST: 'test',
   PRODUCTION: 'production',
   NETWORK: process.env.NETWORK || 'development',
-  API: process.env.API || 'ada',
   API_VERSION,
   MOBX_DEV_TOOLS: process.env.MOBX_DEV_TOOLS,
   current: process.env.NODE_ENV || 'development',
@@ -35,8 +34,6 @@ const environment = Object.assign({
   isMainnet: () => environment.NETWORK === 'mainnet',
   isStaging: () => environment.NETWORK === 'staging',
   isTestnet: () => environment.NETWORK === 'testnet',
-  isAdaApi: () => environment.API === 'ada',
-  isEtcApi: () => environment.API === 'etc',
   build,
   buildNumber: uniq([API_VERSION, build]).join('.'),
   getBuildLabel: () => {

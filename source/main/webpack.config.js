@@ -46,7 +46,6 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin(Object.assign({
-      'process.env.API': JSON.stringify(process.env.API || 'ada'),
       'process.env.API_VERSION': JSON.stringify(process.env.API_VERSION || 'dev'),
       'process.env.NETWORK': JSON.stringify(process.env.NETWORK || 'development'),
       'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,

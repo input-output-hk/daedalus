@@ -386,4 +386,5 @@ export default class NetworkStatusStore extends Store {
     }
     return 0;
   }
+
 }

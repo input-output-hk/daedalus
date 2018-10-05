@@ -12,7 +12,6 @@ import WalletBackupDialogContainer from '../wallet/dialogs/WalletBackupDialogCon
 import WalletCreateDialogContainer from '../wallet/dialogs/WalletCreateDialogContainer';
 import Layout from '../../containers/MainLayout';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import environment from '../../../../common/environment';
 
 type Props = InjectedProps;
 
@@ -26,9 +25,8 @@ export default class WalletAddPage extends Component<Props> {
   };
 
   render() {
-    const wallets = this._getWalletsStore();
     const { actions, stores } = this.props;
-    const { uiDialogs } = stores;
+    const { wallets, uiDialogs } = stores;
     const { isRestoreActive } = wallets;
     let content = null;
 
@@ -47,15 +45,11 @@ export default class WalletAddPage extends Component<Props> {
           onRestore={() => actions.dialogs.open.trigger({ dialog: WalletRestoreDialog })}
           onImportFile={() => actions.dialogs.open.trigger({ dialog: WalletFileImportDialog })}
           isRestoreActive={isRestoreActive}
-          isMaxNumberOfWalletsReached={environment.isAdaApi() && wallets.hasMaxWallets}
+          isMaxNumberOfWalletsReached={wallets.hasMaxWallets}
         />
       );
     }
     return <Layout>{content}</Layout>;
-  }
-
-  _getWalletsStore() {
-    return this.props.stores[environment.API].wallets;
   }
 
 }

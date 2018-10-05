@@ -33,7 +33,7 @@ Then('I should see the following addresses:', async function (table) {
 });
 
 Then('The active address should be the newest one', async function () {
-  const { value: { id: lastGeneratedAddress } } = await this.client.execute(() => daedalus.stores.ada.addresses.lastGeneratedAddress);
+  const { value: { id: lastGeneratedAddress } } = await this.client.execute(() => daedalus.stores.addresses.lastGeneratedAddress);
   const activeAddress = await this.client.getText('.WalletReceive_hash');
   expect(lastGeneratedAddress).to.equal(activeAddress);
 });

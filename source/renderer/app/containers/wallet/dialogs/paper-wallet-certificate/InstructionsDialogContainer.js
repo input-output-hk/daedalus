@@ -23,11 +23,11 @@ export default class InstructionsDialogContainer extends Component<Props> {
     // if cancel button is clicked or path is empty
     if (!filePath) return;
 
-    this.props.actions.ada.wallets.generateCertificate.trigger({ filePath });
+    this.props.actions.wallets.generateCertificate.trigger({ filePath });
   };
 
   render() {
-    const { wallets } = this.props.stores.ada;
+    const { wallets } = this.props.stores;
 
     return (
       <InstructionsDialog

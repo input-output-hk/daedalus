@@ -152,7 +152,6 @@ import {
   RedeemAdaError
 } from './transactions/errors';
 
-
 export default class AdaApi {
 
   config: RequestConfig;
