@@ -19,8 +19,8 @@ export default () => {
   };
 
   const sendLogsInfo = (event, logsInfo) => {
+    console.log('sendLogsInfo!!!!!!');
     supportWindow.webContents.send(SUPPORT_WINDOW.LOGS_INFO, logsInfo);
-    event.sender.send(SUPPORT_WINDOW.LOGS_INFO, logsInfo);
   };
 
   ipcMain.on(SUPPORT_WINDOW.OPEN, (event, zendeskInfo) => {
@@ -33,8 +33,7 @@ export default () => {
   });
 
   ipcMain.on(SUPPORT_WINDOW.LOGS_INFO, (event, logsInfo) => {
-    const fileExists = fs.existsSync(logsInfo.compressedLogsFile);
-    if (!supportWindow || !fileExists) return;
+    if (!supportWindow) return;
     fs.readFile(logsInfo.compressedLogsFile, (err, compressedLogsFileData) => {
       if (err) throw err;
       logsInfo.compressedLogsFileData = compressedLogsFileData;

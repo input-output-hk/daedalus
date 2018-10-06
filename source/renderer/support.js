@@ -2,13 +2,14 @@
 import { ipcRenderer } from 'electron';
 import { SUPPORT_WINDOW } from '../common/ipc-api';
 import updateCSSVariables from './app/utils/updateCSSVariables';
-// import './app/themes/index.global.scss';
+import waitForExist from './app/utils/waitForExist';
 
 declare class File {
   data: [],
   name: string,
 }
 
+const SECONDS_TO_REMOVE_OVERLAY = 10;
 
 const support = () => {
 
@@ -30,33 +31,26 @@ const support = () => {
     'ja-JP': 'ja',
   };
 
-  const loadFormHandlerWhenIframeIsReady = (logsInfo: LogsInfo) => {
-    let count = 0;
-    const check = () => {
-      try {
-        const webWidget = document.getElementById('webWidget');
-        const iframeDocument = webWidget && webWidget.contentWindow.document;
-        const fileInput = iframeDocument.getElementById('dropzone-input');
-
-        if (fileInput) {
-          formHandler(iframeDocument, fileInput, logsInfo);
-          clearInterval(interval);
-        }
-      } catch (e) { // eslint-disable-line
-        count++;
-        if (count > 20) {
-          clearInterval(interval);
-        }
-      }
-
-    };
-    const interval = setInterval(check, 500);
+  // Hides the loading overlay
+  const removeOverlay = () => {
+    if (document.body) {
+      document.body.classList.add('hideOverlay');
+    }
   };
 
-  const formHandler = (
-    iframeDocument, fileInput, {
-      compressedLogsFileData, compressedLogsFileName
-    }: LogsInfo
+  const formHandler = (iframe: HTMLElement) => {
+    // Closes the support window when cancelling the form
+    const form = iframe.contentDocument.forms[0];
+    const cancelButton = form.querySelector('button');
+    cancelButton.onclick = closeWindow;
+  };
+
+  const attachCompressedLogs = (
+    fileInput: HTMLElement,
+    {
+      compressedLogsFileData,
+      compressedLogsFileName
+    },
   ) => {
     const dT = new DataTransfer();
     if (dT.items) {
@@ -64,20 +58,15 @@ const support = () => {
       dT.items.add(file);
       fileInput.files = dT.files;
     }
-
-    // Closes the support window when cancelling the form
-    const form = iframeDocument.forms[0];
-    const cancelButton = form.querySelector('button');
-    cancelButton.onclick = window.top.close;
-
-    // Hides the loading overlay
-    if (document.body) {
-      document.body.classList.add('hideOverlay');
-    }
-
+    removeOverlay();
   };
 
-  const closeWindow = () => window.close();
+  const closeWindow = () => {
+    window.close();
+    window.top && window.top.close();
+  };
+
+  setTimeout(removeOverlay, SECONDS_TO_REMOVE_OVERLAY * 1000);
 
   ipcRenderer.on(
     SUPPORT_WINDOW.ZENDESK_INFO,
@@ -101,7 +90,17 @@ const support = () => {
   ipcRenderer.on(SUPPORT_WINDOW.CLOSE, () => closeWindow);
 
   ipcRenderer.on(SUPPORT_WINDOW.LOGS_INFO, (event, logsInfo: LogsInfo) =>
-    loadFormHandlerWhenIframeIsReady(logsInfo));
+    waitForExist('#webWidget')
+      .then((iframe) =>
+        window.Promise.all([iframe, waitForExist('#dropzone-input', { doc: iframe })])
+      )
+      .then((results) => attachCompressedLogs(results[1], logsInfo))
+      .catch(() => {})
+  );
+
+  waitForExist('#webWidget')
+    .then(formHandler)
+    .catch(() => {});
 
 };
 
