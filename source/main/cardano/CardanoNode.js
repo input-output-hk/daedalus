@@ -3,7 +3,7 @@ import Store from 'electron-store';
 import type { spawn, ChildProcess } from 'child_process';
 import type { WriteStream } from 'fs';
 import psList from 'ps-list';
-import { isEmpty } from 'lodash';
+import { isObject } from 'lodash';
 import environment from '../../common/environment';
 import type { CardanoNodeState, TlsConfig } from '../../common/types/cardanoNode.types';
 import { promisedCondition, deriveStorageKeys, deriveProcessNames } from './utils';
@@ -484,7 +484,8 @@ export class CardanoNode {
       // pull first result
       const previousProcess: Object = matchingProcesses[0];
       // check name of process to identify cardano-node or Daedalus
-      return (!isEmpty(previousProcess) && previousProcess.name === processName);
+      this._log.info(`CardanoNode: previous cardano-node process found: ${JSON.stringify(previousProcess)} - expecting to match against process name: ${processName} (${(previousProcess.name === processName) ? 'MATCH' : 'NO-MATCH'})`);
+      return (isObject(previousProcess) && previousProcess.name === processName);
     } catch (error) {
       return false;
     }
