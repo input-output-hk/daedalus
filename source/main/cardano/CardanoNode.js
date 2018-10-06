@@ -455,7 +455,7 @@ export class CardanoNode {
 
   _ensurePreviousCardanoNodeIsNotRunning = async (): Promise<void> => {
     this._log.info(
-      'CardanoNode: checking for previous instance of cardano-node still running on last known process'
+      'CardanoNode: checking for previous instance of cardano-node still running on last known PID'
     );
     const previousPID: ?number = await this._retrieveData(PREVIOUS_CARDANO_PID);
 
@@ -477,8 +477,14 @@ export class CardanoNode {
 
   _processIsRunning = async (previousPID: number, processName: string): Promise<boolean> => {
     try {
-      // retrieves all running processes and filters against previous PID
-      const matchingProcesses: Array<{}> = await psList().filter(({ pid }) => previousPID === pid);
+      // retrieves all running processes
+      const runningProcesses: Array<{ pid: number, name: string }> = await psList();
+      this._log.info(`CardanoNode: running processes found: ${JSON.stringify(runningProcesses)}`);
+      // filters running processes against previous PID
+      const matchingProcesses: Array<{
+        pid: number,
+        name: string
+      }> = runningProcesses.filter(({ pid }) => previousPID === pid);
       // return false if no processes exist with a matching PID
       if (!matchingProcesses.length) { return false; }
       // pull first result
