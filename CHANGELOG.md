@@ -35,6 +35,7 @@ Changelog
 
 ### Fixes
 
+- Fixes the Loading.js component's "Having Trouble Connecting" and the "Having Trouble Syncing" notification. Refactors Loading.js for maintainability and readability purposes [PR 1112](https://github.com/input-output-hk/daedalus/pull/1112)
 - Fixed a bug that allowed to submit invalid send form via ENTER key ([PR 1002](https://github.com/input-output-hk/daedalus/pull/1002))
 - Fixed a bug that would submit the "Generate address" button on the Receive screen in case right-mouse click was used ([PR 1082](https://github.com/input-output-hk/daedalus/pull/1082))
 - Fixed the button outline color on special buttons. ([PR 990](https://github.com/input-output-hk/daedalus/pull/990))
