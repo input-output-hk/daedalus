@@ -9,6 +9,11 @@ import type { CardanoNodeState, TlsConfig } from '../../common/types/cardanoNode
 import { promisedCondition, deriveStorageKeys, deriveProcessNames } from './utils';
 import { CardanoNodeStates } from '../../common/types/cardanoNode.types';
 
+type Process = {
+  pid: number,
+  name: string,
+};
+
 type Logger = {
   debug: (string) => void,
   info: (string) => void,
@@ -478,17 +483,14 @@ export class CardanoNode {
   _processIsRunning = async (previousPID: number, processName: string): Promise<boolean> => {
     try {
       // retrieves all running processes
-      const runningProcesses: Array<{ pid: number, name: string }> = await psList();
-      this._log.info(`CardanoNode: running processes found: ${JSON.stringify(runningProcesses)}`);
+      const runningProcesses: Array<Process> = await psList();
       // filters running processes against previous PID
-      const matchingProcesses: Array<{
-        pid: number,
-        name: string
-      }> = runningProcesses.filter(({ pid }) => previousPID === pid);
+      const matchingProcesses: Array<Process> =
+        runningProcesses.filter(({ pid }) => previousPID === pid);
       // return false if no processes exist with a matching PID
       if (!matchingProcesses.length) { return false; }
       // pull first result
-      const previousProcess: Object = matchingProcesses[0];
+      const previousProcess: Process = matchingProcesses[0];
       // check name of process to identify cardano-node or Daedalus
       this._log.info(`CardanoNode: previous cardano-node process found: ${JSON.stringify(previousProcess)} - expecting to match against process name: ${processName} (${(previousProcess.name === processName) ? 'MATCH' : 'NO-MATCH'})`);
       return (isObject(previousProcess) && previousProcess.name === processName);
