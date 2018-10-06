@@ -77,85 +77,154 @@ type Props = {
 @observer
 export default class Loading extends Component<Props, State> {
 
-  constructor() {
-    super();
-    this.state = {
-      connectingTime: 0,
-      syncingTime: 0,
-      syncPercentage: '0',
-    };
-  }
-
-  componentDidMount() {
-    const { isConnected, isSynced } = this.props;
-
-    if (!isConnected && connectingInterval === null) {
-      connectingInterval = setInterval(this.connectingTimer, 1000);
-    } else if (isConnected && !isSynced && syncingInterval === null) {
-      syncingInterval = setInterval(this.syncingTimer, 1000);
-    }
-  }
-
-  // componentWillReceiveProps(nextProps: Props) {
-  //   const startConnectingTimer = !nextProps.isConnected && connectingInterval === null;
-  //   const stopConnectingTimer = (
-  //     !this.props.isConnected &&
-  //     nextProps.isConnected &&
-  //     connectingInterval !== null
-  //   );
-  //
-  //   if (startConnectingTimer) {
-  //     connectingInterval = setInterval(this.connectingTimer, 1000);
-  //   } else if (stopConnectingTimer) {
-  //     this.resetConnectingTimer();
-  //   }
-  //
-  //   const startSyncingTimer = (
-  //     nextProps.isConnected &&
-  //     !nextProps.isSynced &&
-  //     syncingInterval === null
-  //   );
-  //   const stopSyncingTimer = (
-  //     !this.props.isSynced &&
-  //     nextProps.isSynced &&
-  //     syncingInterval !== null
-  //   );
-  //
-  //   if (startSyncingTimer) {
-  //     syncingInterval = setInterval(this.syncingTimer, 1000);
-  //   } else if (stopSyncingTimer) {
-  //     this.resetSyncingTimer();
-  //   }
-  // }
-
-  componentDidUpdate() {
-    const stopSyncingTimer = (
-      this.props.isSynced &&
-      syncingInterval !== null
-    );
-
-    const stopConnectingTimer = (
-      this.props.isConnected &&
-      connectingInterval !== null
-    );
-
-    if (stopSyncingTimer) {
-      this.resetSyncingTimer();
-    }
-
-    if (stopConnectingTimer) {
-      this.resetConnectingTimer();
-    }
-  }
-
-  componentWillUnmount() {
-    this.resetConnectingTimer();
-    this.resetSyncingTimer();
-  }
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
+  state = {
+    connectingTime: 0,
+    syncingTime: 0,
+    syncPercentage: '0',
+  };
+
+  componentDidMount() {
+    this._defensivelyStartTimers(this.props.isConnected, this.props.isSynced);
+  }
+
+  componentWillReceiveProps(nextProps: Props) {
+    this._defensivelyStartTimers(nextProps.isConnected, nextProps.isSynced);
+  }
+
+  componentDidUpdate() {
+    const canResetSyncing = this._syncingTimerShouldStop(this.props.isSynced);
+    const canResetConnecting = this._connectingTimerShouldStop(this.props.isConnected);
+
+    if (canResetSyncing) { this._resetSyncingTime(); }
+    if (canResetConnecting) { this._resetConnectingTime(); }
+  }
+
+  componentWillUnmount() {
+    this._resetConnectingTime();
+    this._resetSyncingTime();
+  }
+
+  _connectingTimerShouldStart = (isConnected: boolean): boolean => (
+    !isConnected && connectingInterval === null
+  );
+
+  _syncingTimerShouldStart = (isConnected: boolean, isSynced: boolean): boolean => (
+    isConnected && !isSynced && syncingInterval === null
+  );
+
+  _syncingTimerShouldStop = (isSynced: boolean): boolean => (
+    isSynced && syncingInterval !== null
+  );
+
+  _connectingTimerShouldStop = (isConnected: boolean): boolean => (
+    isConnected && connectingInterval !== null
+  );
+
+  _defensivelyStartTimers = (isConnected: boolean, isSynced: boolean) => {
+    const needConnectingTimer = this._connectingTimerShouldStart(isConnected);
+    const needSyncingTimer = this._syncingTimerShouldStart(isConnected, isSynced);
+
+    if (needConnectingTimer) {
+      connectingInterval = setInterval(this._incrementConnectingTime, 1000);
+    } else if (needSyncingTimer) {
+      syncingInterval = setInterval(this._incrementSyncingTime, 1000);
+    }
+  };
+
+  _resetSyncingTime = () => {
+    if (syncingInterval !== null) {
+      clearInterval(syncingInterval);
+      syncingInterval = null;
+    }
+    this.setState({ syncingTime: 0 });
+  };
+
+  _resetConnectingTime = () => {
+    if (connectingInterval !== null) {
+      clearInterval(connectingInterval);
+      connectingInterval = null;
+    }
+    this.setState({ connectingTime: 0 });
+  };
+
+  _incrementConnectingTime = () => {
+    this.setState({ connectingTime: this.state.connectingTime + 1 });
+  };
+
+  _incrementSyncingTime = () => {
+    const syncPercentage = this.props.syncPercentage.toFixed(2);
+    if (syncPercentage === this.state.syncPercentage) {
+      // syncPercentage not increased, increase syncing time
+      this.setState({ syncingTime: this.state.syncingTime + 1 });
+    } else {
+      // reset syncingTime and set new max percentage
+      this.setState({ syncingTime: 0, syncPercentage });
+    }
+  };
+
+  _getConnectingMessage = () => (
+    this.props.hasBeenConnected ? messages.reconnecting : messages.connecting
+  );
+
+  _renderLoadingScreen = () => {
+    const { intl } = this.context;
+    const {
+      isConnected,
+      isSystemTimeCorrect,
+      isSynced,
+      localTimeDifference,
+      currentLocale,
+      onProblemSolutionClick,
+      onCheckTheTimeAgain,
+      isCheckingSystemTime,
+      syncPercentage,
+      loadingDataForNextScreenMessage
+    } = this.props;
+
+    if (!isConnected) {
+      return (
+        <div className={styles.connecting}>
+          <h1 className={styles.headline}>
+            {intl.formatMessage(this._getConnectingMessage())}
+          </h1>
+        </div>
+      );
+    } else if (!isSystemTimeCorrect) {
+      return (
+        <SystemTimeErrorOverlay
+          localTimeDifference={localTimeDifference}
+          currentLocale={currentLocale}
+          onProblemSolutionClick={onProblemSolutionClick}
+          onCheckTheTimeAgain={onCheckTheTimeAgain}
+          isCheckingSystemTime={isCheckingSystemTime}
+        />
+      );
+    } else if (!isSynced) {
+      return (
+        <div className={styles.syncing}>
+          <h1 className={styles.headline}>
+            {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(2)}%
+          </h1>
+        </div>
+      );
+    }
+
+    return (
+      <div className={styles.syncing}>
+        <div>
+          <h1 className={styles.headline}>
+            {intl.formatMessage(loadingDataForNextScreenMessage)}
+          </h1>
+          <LoadingSpinner />
+        </div>
+      </div>
+    );
+  }
+
 
   render() {
     const { intl } = this.context;
@@ -164,18 +233,9 @@ export default class Loading extends Component<Props, State> {
       apiIcon,
       isConnected,
       isSynced,
-      syncPercentage,
-      loadingDataForNextScreenMessage,
-      hasBeenConnected,
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
-      localTimeDifference,
-      isSystemTimeCorrect,
-      isCheckingSystemTime,
-      currentLocale,
       handleReportIssue,
-      onProblemSolutionClick,
-      onCheckTheTimeAgain,
     } = this.props;
 
     const { connectingTime, syncingTime } = this.state;
@@ -203,13 +263,6 @@ export default class Loading extends Component<Props, State> {
     const currencyLoadingLogo = currencyIcon;
     const apiLoadingLogo = apiIcon;
 
-    let connectingMessage;
-    if (hasBeenConnected) {
-      connectingMessage = messages.reconnecting;
-    } else {
-      connectingMessage = messages.connecting;
-    }
-
     const canReportConnectingIssue = (
       !isConnected && connectingTime >= REPORT_ISSUE_TIME_TRIGGER
     );
@@ -222,47 +275,6 @@ export default class Loading extends Component<Props, State> {
       'primary',
       styles.reportIssueButton,
     ]);
-
-    let loadingScreen = null;
-
-    if (!isConnected) {
-      loadingScreen = (
-        <div className={styles.connecting}>
-          <h1 className={styles.headline}>
-            {intl.formatMessage(connectingMessage)}
-          </h1>
-        </div>
-      );
-    } else if (!isSystemTimeCorrect) {
-      loadingScreen = (
-        <SystemTimeErrorOverlay
-          localTimeDifference={localTimeDifference}
-          currentLocale={currentLocale}
-          onProblemSolutionClick={onProblemSolutionClick}
-          onCheckTheTimeAgain={onCheckTheTimeAgain}
-          isCheckingSystemTime={isCheckingSystemTime}
-        />
-      );
-    } else if (!isSynced) {
-      loadingScreen = (
-        <div className={styles.syncing}>
-          <h1 className={styles.headline}>
-            {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(2)}%
-          </h1>
-        </div>
-      );
-    } else {
-      loadingScreen = (
-        <div className={styles.syncing}>
-          <div>
-            <h1 className={styles.headline}>
-              {intl.formatMessage(loadingDataForNextScreenMessage)}
-            </h1>
-            <LoadingSpinner />
-          </div>
-        </div>
-      );
-    }
 
     return (
       <div className={componentStyles}>
@@ -287,39 +299,9 @@ export default class Loading extends Component<Props, State> {
           <SVGInline svg={daedalusLoadingLogo} className={daedalusLogoStyles} />
           <SVGInline svg={apiLoadingLogo} className={apiLogoStyles} />
         </div>
-        {hasLoadedCurrentLocale ? loadingScreen : null}
+        {hasLoadedCurrentLocale ? this._renderLoadingScreen() : null}
       </div>
     );
   }
 
-  connectingTimer = () => {
-    this.setState({ connectingTime: this.state.connectingTime + 1 });
-  };
-
-  resetConnectingTimer = () => {
-    if (connectingInterval !== null) {
-      clearInterval(connectingInterval);
-      connectingInterval = null;
-    }
-    this.setState({ connectingTime: 0 });
-  };
-
-  syncingTimer = () => {
-    const syncPercentage = this.props.syncPercentage.toFixed(2);
-    if (syncPercentage === this.state.syncPercentage) {
-      // syncPercentage not increased, increase syncing time
-      this.setState({ syncingTime: this.state.syncingTime + 1 });
-    } else {
-      // reset syncingTime and set new max percentage
-      this.setState({ syncingTime: 0, syncPercentage });
-    }
-  };
-
-  resetSyncingTimer = () => {
-    if (syncingInterval !== null) {
-      clearInterval(syncingInterval);
-      syncingInterval = null;
-    }
-    this.setState({ syncingTime: 0 });
-  };
 }
