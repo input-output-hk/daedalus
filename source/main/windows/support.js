@@ -27,16 +27,16 @@ export const createSupportWindow = (unsetSupportWindow) => {
   rendererErrorHandler.setup(window, createSupportWindow);
 
 
-  // if (environment.isDev()) {
-  window.webContents.openDevTools();
-  // Focus the main window after dev tools opened
-  window.webContents.on('devtools-opened', () => {
-    window.focus();
-    setImmediate(() => {
+  if (environment.isDev()) {
+    window.webContents.openDevTools();
+    // Focus the main window after dev tools opened
+    window.webContents.on('devtools-opened', () => {
       window.focus();
+      setImmediate(() => {
+        window.focus();
+      });
     });
-  });
-  // }
+  }
 
   window.loadURL(`file://${__dirname}/../renderer/support.html`);
   window.on('page-title-updated', event => { event.preventDefault(); });
