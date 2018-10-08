@@ -6,9 +6,10 @@ type Options = {
   contentDocument?: HTMLElement,
 };
 
+const REJECT_TIMEOUT = 10000;
+const CHECK_INTERVAL = 500;
+
 export default (selector: string, options?: Options = {}): Promise<HTMLElement> => {
-  const REJECT_TIMEOUT = 5000;
-  const CHECK_INTERVAL = 500;
   const {
     rejectTimeoutTime = REJECT_TIMEOUT,
     checkIntervalTime = CHECK_INTERVAL,
