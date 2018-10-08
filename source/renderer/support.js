@@ -4,10 +4,10 @@ import { SUPPORT_WINDOW } from '../common/ipc-api';
 import updateCSSVariables from './app/utils/updateCSSVariables';
 import waitForExist from './app/utils/waitForExist';
 
-declare class File {
-  data: [],
-  name: string,
-}
+// declare class File {
+//   data: [ {} ],
+//   name: string,
+// }
 
 const SECONDS_TO_REMOVE_OVERLAY = 10;
 
@@ -38,15 +38,15 @@ const support = () => {
     }
   };
 
-  const formHandler = (iframe: HTMLElement) => {
+  const formHandler = (iframe: window) => {
     // Closes the support window when cancelling the form
-    const form = iframe.contentDocument.forms[0];
+    const form = iframe.contentDocument && iframe.contentDocument.forms[0];
     const cancelButton = form.querySelector('button');
     cancelButton.onclick = closeWindow;
   };
 
   const attachCompressedLogs = (
-    fileInput: HTMLElement,
+    fileInput: HTMLInputElement,
     {
       compressedLogsFileData,
       compressedLogsFileName
@@ -91,7 +91,7 @@ const support = () => {
 
   ipcRenderer.on(SUPPORT_WINDOW.LOGS_INFO, (event, logsInfo: LogsInfo) =>
     waitForExist('#webWidget')
-      .then((iframe) =>
+      .then((iframe: window) =>
         window.Promise.all([
           iframe,
           waitForExist('#dropzone-input', { doc: iframe.contentDocument })

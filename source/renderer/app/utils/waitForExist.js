@@ -1,12 +1,12 @@
 // @flow
 
 type Options = {
-  rejectTimeoutTime: number,
-  checkIntervalTime: number,
-  doc: document
+  rejectTimeoutTime?: number,
+  checkIntervalTime?: number,
+  doc?: HTMLElement
 };
 
-export default (selector: HTMLElement, options?: Options = {}): Promise<HTMLElement> => {
+export default (selector: string, options?: Options = {}): Promise<HTMLElement> => {
   const REJECT_TIMEOUT = 5000;
   const CHECK_INTERVAL = 500;
   const {

@@ -22,6 +22,11 @@ import type { RedemptionTypeChoices } from '../types/redemptionTypes';
 import type { RedeemAdaParams } from '../api/transactions/requests/redeemAda';
 import type { RedeemPaperVendedAdaParams } from '../api/transactions/requests/redeemPaperVendedAda';
 
+declare class File {
+  name: string,
+  path: string,
+}
+
 export default class AdaRedemptionStore extends Store {
 
   @observable redemptionType: RedemptionTypeChoices = ADA_REDEMPTION_TYPES.REGULAR;

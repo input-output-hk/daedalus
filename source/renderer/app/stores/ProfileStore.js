@@ -16,7 +16,7 @@ import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
 import type { LogFiles, CompressedLogStatus } from '../types/LogTypes';
 import { generateFileNameWithTimestamp } from '../../../common/fileName';
 
-export default class SettingsStore extends Store {
+export default class ProfileStore extends Store {
 
   LANGUAGE_OPTIONS = [
     { value: 'en-US', label: globalMessages.languageEnglish },
@@ -51,6 +51,7 @@ export default class SettingsStore extends Store {
   @observable compressedLogsFile: ?string = null;
   @observable compressedLogsStatus: CompressedLogStatus = {};
   @observable isSubmittingBugReport: boolean = false;
+  @observable openSupportOnLogFilesSuccess: boolean = false;
   /* eslint-enable max-len */
 
   setup() {

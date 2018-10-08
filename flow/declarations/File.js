@@ -1,4 +1,4 @@
-declare class File {
-  name: string,
-  path: string,
-}
+// declare class File {
+//   name: string,
+//   path: string,
+// }
