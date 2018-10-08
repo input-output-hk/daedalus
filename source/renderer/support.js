@@ -43,7 +43,8 @@ const support = () => {
     await waitForExist('form', { contentDocument: iframe.contentDocument })
       .then((form) => {
         const cancelButton = form.querySelector('button');
-        return cancelButton.onclick = closeWindow;
+        if (cancelButton) cancelButton.onclick = closeWindow;
+        return cancelButton;
       })
       .catch(() => {});
   };
