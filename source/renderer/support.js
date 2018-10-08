@@ -73,8 +73,9 @@ const support = () => {
     (event, { locale, themeVars }: ZendeskInfo) => {
       updateCSSVariables(themeVars);
       window.zE(() => {
-        // window.zE.hide();
-        if (locale !== 'en-US') window.zE.setLocale(locales[locale]);
+        if (locale !== 'en-US') {
+          window.zE.setLocale(locales[locale]);
+        }
         window.zE.activate();
       });
       window.zESettings = {

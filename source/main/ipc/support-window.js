@@ -6,7 +6,6 @@ import { SUPPORT_WINDOW } from '../../common/ipc-api';
 
 export default () => {
   let supportWindow;
-  let didFinishLoad = false;
 
   const closeSupportWindow = () => {
     if (supportWindow && supportWindow.webContents && supportWindow.webContents.send) {
@@ -27,7 +26,6 @@ export default () => {
     if (supportWindow) return;
     supportWindow = createSupportWindow(unsetSupportWindow);
     supportWindow.webContents.on('did-finish-load', () => {
-      didFinishLoad = true;
       supportWindow.webContents.send(SUPPORT_WINDOW.ZENDESK_INFO, zendeskInfo);
     });
   });
@@ -38,13 +36,9 @@ export default () => {
       if (err) throw err;
       logsInfo.compressedLogsFileData = compressedLogsFileData;
       logsInfo.compressedLogsFileName = path.basename(logsInfo.compressedLogsFile);
-      if (didFinishLoad) {
+      supportWindow.webContents.on('did-finish-load', () => {
         sendLogsInfo(event, logsInfo);
-      } else {
-        supportWindow.webContents.on('did-finish-load', () => {
-          sendLogsInfo(event, logsInfo);
-        });
-      }
+      });
     });
 
   });
