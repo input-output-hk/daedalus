@@ -75,8 +75,10 @@ export const setupCardano = (
       safeExitWithCode(20);
     },
     onCrashed: (code) => {
-      Logger.info(`CardanoNode exited unexpectatly with code ${code}. Restarting it …`);
-      restartCardanoNode(cardanoNode);
+      const restartTimeout = cardanoNode.startupTries > 0 ? 30000 : 0;
+      Logger.info(`CardanoNode exited unexpectatly with code ${code}.
+      Restarting it in ${restartTimeout}ms …`);
+      setTimeout(() => restartCardanoNode(cardanoNode), restartTimeout);
     },
     onError: () => {}
   });
@@ -95,7 +97,7 @@ export const setupCardano = (
   // Restart cardano node if frontend requests it.
   cardanoRestartChannel.onReceive(() => {
     Logger.info('ipcMain: Received request from renderer to restart node.');
-    return cardanoNode.restart();
+    return cardanoNode.restart(true); // forced restart
   });
 
   return cardanoNode;

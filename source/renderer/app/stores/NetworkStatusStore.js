@@ -38,6 +38,7 @@ export default class NetworkStatusStore extends Store {
 
   // Initialize store properties
   _startTime = Date.now();
+  _canReceiveTlsConfig = false;
   _hasReceivedTlsConfig = false;
   _systemTime = Date.now();
   _nodeStatus = NODE_STATUS.CONNECTING;
@@ -144,6 +145,7 @@ export default class NetworkStatusStore extends Store {
   }
 
   _requestTlsConfig = async () => {
+    if (!this._canReceiveTlsConfig) return Promise.reject();
     try {
       Logger.info('NetworkStatusStore: requesting tls config from main process.');
       const tlsConfig = await tlsConfigChannel.send();
@@ -154,7 +156,8 @@ export default class NetworkStatusStore extends Store {
     }
   };
 
-  _updateTlsConfig = (config: TlsConfig): Promise<void> => {
+  _updateTlsConfig = (config: ?TlsConfig): Promise<void> => {
+    if (!this._canReceiveTlsConfig || config == null) return Promise.reject();
     Logger.info('NetworkStatusStore: received tls config from main process.');
     this.api.ada.setRequestConfig(config);
     this._hasReceivedTlsConfig = true;
@@ -165,12 +168,14 @@ export default class NetworkStatusStore extends Store {
     Logger.info(`NetworkStatusStore: handling cardano-node state change to <${state}>`);
     const wasConnected = this.isConnected;
     switch (state) {
+      case CardanoNodeStates.STARTING:
+        this._canReceiveTlsConfig = true;
+        break;
       case CardanoNodeStates.STOPPED:
       case CardanoNodeStates.UPDATING:
       case CardanoNodeStates.UPDATED:
       case CardanoNodeStates.CRASHED:
         this._setDisconnected(wasConnected);
-        this._hasReceivedTlsConfig = false;
         break;
       default:
     }
@@ -353,6 +358,8 @@ export default class NetworkStatusStore extends Store {
     this.isNodeSubscribed = false;
     this.isNodeSyncing = false;
     this.isNodeInSync = false;
+    this._canReceiveTlsConfig = false;
+    this._hasReceivedTlsConfig = false;
     if (wasConnected) {
       if (!this.hasBeenConnected) {
         runInAction('update hasBeenConnected', () => this.hasBeenConnected = true);

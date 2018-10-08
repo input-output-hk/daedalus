@@ -14,7 +14,7 @@ export const cardanoRestartChannel: MainIpcChannel<void, void, void, void> = (
   new MainIpcChannel(CARDANO_RESTART_CHANNEL)
 );
 
-export const cardanoTlsConfigChannel: MainIpcChannel<TlsConfig, void, void, TlsConfig> = (
+export const cardanoTlsConfigChannel: MainIpcChannel<?TlsConfig, void, void, ?TlsConfig> = (
   new MainIpcChannel(CARDANO_TLS_CONFIG_CHANNEL)
 );
 

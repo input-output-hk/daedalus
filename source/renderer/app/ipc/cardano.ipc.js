@@ -10,7 +10,7 @@ import {
 
 // IpcChannel<Request, AwaitedResponse, ReceivedMessage, Response>
 
-export const tlsConfigChannel: RendererIpcChannel<void, TlsConfig, TlsConfig, void> = (
+export const tlsConfigChannel: RendererIpcChannel<void, ?TlsConfig, ?TlsConfig, void> = (
   new RendererIpcChannel(CARDANO_TLS_CONFIG_CHANNEL)
 );
 

@@ -151,6 +151,14 @@ export class CardanoNode {
   }
 
   /**
+   * Getter for the number of tried (and failed) startups
+   * @returns {number}
+   */
+  get startupTries(): number {
+    return this._startupTries;
+  }
+
+  /**
    * Constructs and prepares the CardanoNode instance for life.
    * @param log
    * @param actions
@@ -170,17 +178,18 @@ export class CardanoNode {
    * Asks the node to reply with the current port.
    * Transitions into STARTING state.
    *
-   * @param config
+   * @param config {CardanoNodeConfig}
+   * @param isForced {boolean}
    * @returns {Promise<void>} resolves if the node could be started, rejects with error otherwise.
    */
-  start = async (config: CardanoNodeConfig): Promise<void> => {
+  start = async (config: CardanoNodeConfig, isForced: boolean = false): Promise<void> => {
     // Guards
     const nodeCanBeStarted = await this._canBeStarted();
 
     if (!nodeCanBeStarted) {
       return Promise.reject('CardanoNode: Cannot be started.');
     }
-    if (this._startupTries >= config.startupMaxRetries) {
+    if (!isForced && this._startupTries >= config.startupMaxRetries) {
       return Promise.reject('CardanoNode: Too many startup retries.');
     }
     // Setup
@@ -281,13 +290,20 @@ export class CardanoNode {
     });
   }
 
-  async restart(): Promise<void> {
+  /**
+   * Stops cardano-node if necessary and starts it again with current config.
+   * Optionally the restart can be forced, so that the `maxRestartTries` is ignored.
+   *
+   * @param isForced {boolean}
+   * @returns {Promise<void>} resolves if the node could be restarted, rejects with error otherwise.
+   */
+  async restart(isForced: boolean = false): Promise<void> {
     const { _log } = this;
     try {
       if (this._canBeStopped()) {
         await this.stop();
       }
-      await this.start(this._config);
+      await this.start(this._config, isForced);
     } catch (error) {
       _log.info(`CardanoNode: Could not restart cardano-node "${error}"`);
       return Promise.reject(error);
