@@ -3,7 +3,7 @@
 type Options = {
   rejectTimeoutTime?: number,
   checkIntervalTime?: number,
-  doc?: HTMLElement
+  contentDocument?: HTMLElement,
 };
 
 export default (selector: string, options?: Options = {}): Promise<HTMLElement> => {
@@ -12,7 +12,7 @@ export default (selector: string, options?: Options = {}): Promise<HTMLElement> 
   const {
     rejectTimeoutTime = REJECT_TIMEOUT,
     checkIntervalTime = CHECK_INTERVAL,
-    doc = document
+    contentDocument = document,
   } = options;
   return new Promise((resolve, reject) => {
     const rejectTimeout = setTimeout(() => {
@@ -20,7 +20,7 @@ export default (selector: string, options?: Options = {}): Promise<HTMLElement> 
       return reject('Element not found');
     }, rejectTimeoutTime);
     const check = () => {
-      const element = doc.querySelector(selector);
+      const element = contentDocument.querySelector(selector);
       if (element) {
         resolve(element);
         clearInterval(checkInterval);

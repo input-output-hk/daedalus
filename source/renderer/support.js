@@ -38,11 +38,14 @@ const support = () => {
     }
   };
 
-  const formHandler = (iframe: window) => {
-    // Closes the support window when cancelling the form
-    const form = iframe.contentDocument && iframe.contentDocument.forms[0];
-    const cancelButton = form.querySelector('button');
-    cancelButton.onclick = closeWindow;
+  const formHandler = async (iframe: window) => {
+
+    await waitForExist('form', { contentDocument: iframe.contentDocument })
+      .then((form) => {
+        const cancelButton = form.querySelector('button');
+        return cancelButton.onclick = closeWindow;
+      })
+      .catch(() => {});
   };
 
   const attachCompressedLogs = (
@@ -95,7 +98,7 @@ const support = () => {
       .then((iframe: window) =>
         window.Promise.all([
           iframe,
-          waitForExist('#dropzone-input', { doc: iframe.contentDocument })
+          waitForExist('#dropzone-input', { contentDocument: iframe.contentDocument })
         ])
       )
       .then((results) => attachCompressedLogs(results[1], logsInfo))
