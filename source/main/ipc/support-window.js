@@ -1,5 +1,6 @@
 import { ipcMain } from 'electron';
 import fs from 'fs';
+import path from 'path';
 import { createSupportWindow } from '../windows/support';
 import { SUPPORT_WINDOW } from '../../common/ipc-api';
 
@@ -19,7 +20,6 @@ export default () => {
   };
 
   const sendLogsInfo = (event, logsInfo) => {
-    console.log('sendLogsInfo!!!!!!');
     supportWindow.webContents.send(SUPPORT_WINDOW.LOGS_INFO, logsInfo);
   };
 
@@ -37,6 +37,7 @@ export default () => {
     fs.readFile(logsInfo.compressedLogsFile, (err, compressedLogsFileData) => {
       if (err) throw err;
       logsInfo.compressedLogsFileData = compressedLogsFileData;
+      logsInfo.compressedLogsFileName = path.basename(logsInfo.compressedLogsFile);
       if (didFinishLoad) {
         sendLogsInfo(event, logsInfo);
       } else {

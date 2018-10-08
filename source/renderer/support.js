@@ -92,7 +92,10 @@ const support = () => {
   ipcRenderer.on(SUPPORT_WINDOW.LOGS_INFO, (event, logsInfo: LogsInfo) =>
     waitForExist('#webWidget')
       .then((iframe) =>
-        window.Promise.all([iframe, waitForExist('#dropzone-input', { doc: iframe })])
+        window.Promise.all([
+          iframe,
+          waitForExist('#dropzone-input', { doc: iframe.contentDocument })
+        ])
       )
       .then((results) => attachCompressedLogs(results[1], logsInfo))
       .catch(() => {})

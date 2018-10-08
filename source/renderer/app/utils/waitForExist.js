@@ -21,8 +21,6 @@ export default (selector: HTMLElement, options?: Options = {}): Promise<HTMLElem
     }, rejectTimeoutTime);
     const check = () => {
       const element = doc.querySelector(selector);
-      console.log('element', element);
-      console.log('doc', doc);
       if (element) {
         resolve(element);
         clearInterval(checkInterval);
