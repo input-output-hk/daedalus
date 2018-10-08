@@ -7,7 +7,6 @@ Feature: Receive money
       | name         |
       | TargetWallet |
 
-  @skip
   Scenario: Hide/show used addresses
     Given I am on the "TargetWallet" wallet "receive" screen
     And I generate 1 addresses
