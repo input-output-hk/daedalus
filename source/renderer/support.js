@@ -38,12 +38,22 @@ const support = () => {
     }
   };
 
+  const onSubmit = async (iframe) => {
+    await waitForExist(
+      '.src-component-submitTicket-SubmitTicket-button',
+      { contentDocument: iframe.contentDocument }
+    )
+      .then((doneButton) => doneButton.onclick = closeWindow)
+      .catch(() => {});
+  };
+
   const formHandler = async (iframe: window) => {
 
     await waitForExist('form', { contentDocument: iframe.contentDocument })
       .then((form) => {
-        const cancelButton = form.querySelector('button');
+        const [cancelButton, successButton] = form.querySelectorAll('footer button');
         if (cancelButton) cancelButton.onclick = closeWindow;
+        if (successButton) successButton.onclick = onSubmit.bind(this, iframe);
         return cancelButton;
       })
       .catch(() => {});
