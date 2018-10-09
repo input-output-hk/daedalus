@@ -4,11 +4,6 @@ import { SUPPORT_WINDOW } from '../common/ipc-api';
 import updateCSSVariables from './app/utils/updateCSSVariables';
 import waitForExist from './app/utils/waitForExist';
 
-// declare class File {
-//   data: [ {} ],
-//   name: string,
-// }
-
 const SECONDS_TO_REMOVE_OVERLAY = 10;
 
 const support = () => {
@@ -31,32 +26,25 @@ const support = () => {
     'ja-JP': 'ja',
   };
 
-  // Hides the loading overlay
-  const removeOverlay = () => {
+  const hideLoadingOverlay = () => {
     if (document.body) {
       document.body.classList.add('hideOverlay');
     }
   };
 
   const onSubmit = async (iframe) => {
-    await waitForExist(
+    const doneButton = waitForExist(
       '.src-component-submitTicket-SubmitTicket-button',
-      { contentDocument: iframe.contentDocument }
-    )
-      .then((doneButton) => doneButton.onclick = closeWindow)
-      .catch(() => {});
+      { context: iframe.contentDocument }
+    );
+    doneButton.onclick = closeWindow;
   };
 
   const formHandler = async (iframe: window) => {
-
-    await waitForExist('form', { contentDocument: iframe.contentDocument })
-      .then((form) => {
-        const [cancelButton, successButton] = form.querySelectorAll('footer button');
-        if (cancelButton) cancelButton.onclick = closeWindow;
-        if (successButton) successButton.onclick = onSubmit.bind(this, iframe);
-        return cancelButton;
-      })
-      .catch(() => {});
+    const form = await waitForExist('form', { context: iframe.contentDocument });
+    const [cancelButton, successButton] = form.querySelectorAll('footer button');
+    if (cancelButton) cancelButton.onclick = closeWindow;
+    if (successButton) successButton.onclick = onSubmit.bind(this, iframe);
   };
 
   const attachCompressedLogs = (
@@ -72,7 +60,7 @@ const support = () => {
       dT.items.add(file);
       fileInput.files = dT.files;
     }
-    removeOverlay();
+    hideLoadingOverlay();
   };
 
   const closeWindow = () => {
@@ -80,7 +68,7 @@ const support = () => {
     window.top && window.top.close();
   };
 
-  setTimeout(removeOverlay, SECONDS_TO_REMOVE_OVERLAY * 1000);
+  setTimeout(hideLoadingOverlay, SECONDS_TO_REMOVE_OVERLAY * 1000);
 
   ipcRenderer.on(
     SUPPORT_WINDOW.ZENDESK_INFO,
@@ -104,17 +92,14 @@ const support = () => {
 
   ipcRenderer.on(SUPPORT_WINDOW.CLOSE, () => closeWindow);
 
-  ipcRenderer.on(SUPPORT_WINDOW.LOGS_INFO, (event, logsInfo: LogsInfo) =>
-    waitForExist('#webWidget')
-      .then((iframe: window) =>
-        window.Promise.all([
-          iframe,
-          waitForExist('#dropzone-input', { contentDocument: iframe.contentDocument })
-        ])
-      )
-      .then((results) => attachCompressedLogs(results[1], logsInfo))
-      .catch(() => {})
-  );
+  ipcRenderer.on(SUPPORT_WINDOW.LOGS_INFO, async (event, logsInfo: LogsInfo) => {
+    const iframe = await waitForExist('#webWidget');
+    const fileInput = await waitForExist(
+      '#dropzone-input',
+      { context: iframe.contentDocument }
+    );
+    attachCompressedLogs(fileInput, logsInfo);
+  });
 
   waitForExist('#webWidget')
     .then(formHandler)
