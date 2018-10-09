@@ -8,20 +8,20 @@ import {
   CARDANO_RESTART_CHANNEL
 } from '../../../common/ipc/cardano.ipc';
 
-// IpcChannel<Request, AwaitedResponse, ReceivedMessage, Response>
+// IpcChannel<Incoming, Outgoing>
 
-export const tlsConfigChannel: RendererIpcChannel<void, ?TlsConfig, ?TlsConfig, void> = (
+export const tlsConfigChannel: RendererIpcChannel<?TlsConfig, void> = (
   new RendererIpcChannel(CARDANO_TLS_CONFIG_CHANNEL)
 );
 
-export const restartCardanoNodeChannel: RendererIpcChannel<void, void, void, void> = (
+export const restartCardanoNodeChannel: RendererIpcChannel<void, void> = (
   new RendererIpcChannel(CARDANO_RESTART_CHANNEL)
 );
 
-export const cardanoStateChangeChannel: RendererIpcChannel<void, void, CardanoNodeState, void> = (
+export const cardanoStateChangeChannel: RendererIpcChannel<CardanoNodeState, void> = (
   new RendererIpcChannel(CARDANO_STATE_CHANGE_CHANNEL)
 );
 
-export const awaitUpdateChannel: RendererIpcChannel<void, void, void, void> = (
+export const awaitUpdateChannel: RendererIpcChannel<void, void> = (
   new RendererIpcChannel(CARDANO_AWAIT_UPDATE_CHANNEL)
 );

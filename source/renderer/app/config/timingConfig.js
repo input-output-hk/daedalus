@@ -11,4 +11,3 @@ export const MAX_ALLOWED_STALL_DURATION = 2 * 60 * 1000; // 2 minutes | unit: mi
 export const NETWORK_STATUS_REQUEST_TIMEOUT = 30 * 1000; // 30 seconds | unit: milliseconds
 export const NETWORK_STATUS_POLL_INTERVAL = 2000; // 2 seconds | unit: milliseconds
 export const SYSTEM_TIME_POLL_INTERVAL = 1000; // 1 second | unit: milliseconds
-export const REQUEST_TLS_CONFIG_RETRY_INTERVAL = 5000; // 5 seconds | unit milliseconds

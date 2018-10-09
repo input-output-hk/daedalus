@@ -26,8 +26,8 @@ const startCardanoNode = (node: CardanoNode, launcherConfig: Object) => {
     nodeArgs,
     startupTimeout: 5000,
     startupMaxRetries: 5,
-    shutdownTimeout: 5000,
-    killTimeout: 5000,
+    shutdownTimeout: 10000,
+    killTimeout: 10000,
     updateTimeout: 20000,
   };
   return node.start(config);
@@ -57,8 +57,8 @@ export const setupCardano = (
     spawn,
     readFileSync,
     createWriteStream,
-    broadcastTlsConfig: (tlsConfig: TlsConfig) => {
-      if (!mainWindow.isDestroyed()) cardanoTlsConfigChannel.send(tlsConfig, mainWindow);
+    broadcastTlsConfig: (config: ?TlsConfig) => {
+      if (!mainWindow.isDestroyed()) cardanoTlsConfigChannel.send(config, mainWindow);
     },
     broadcastStateChange: (state: CardanoNodeState) => {
       if (!mainWindow.isDestroyed()) cardanoStateChangeChannel.send(state, mainWindow);
@@ -76,25 +76,25 @@ export const setupCardano = (
     },
     onCrashed: (code) => {
       const restartTimeout = cardanoNode.startupTries > 0 ? 30000 : 0;
-      Logger.info(`CardanoNode exited unexpectatly with code ${code}.
-      Restarting it in ${restartTimeout}ms …`);
+      Logger.info(`CardanoNode crashed with code ${code}. Restarting in ${restartTimeout}ms …`);
       setTimeout(() => restartCardanoNode(cardanoNode), restartTimeout);
     },
     onError: () => {}
   });
   startCardanoNode(cardanoNode, launcherConfig);
 
-  // Respond with TLS config whenever a render process asks for it
+  cardanoStateChangeChannel.onReceive(() => {
+    Logger.info('ipcMain: Received request from renderer for node state.');
+    return Promise.resolve(cardanoNode.state);
+  });
   cardanoTlsConfigChannel.onReceive(() => {
-    Logger.info('ipcMain: Received request to send tls config to renderer.');
+    Logger.info('ipcMain: Received request from renderer for tls config.');
     return Promise.resolve(cardanoNode.tlsConfig);
   });
-  // Handle update notification from frontend
   cardanoAwaitUpdateChannel.onReceive(() => {
     Logger.info('ipcMain: Received request from renderer to await update.');
     return cardanoNode.expectNodeUpdate();
   });
-  // Restart cardano node if frontend requests it.
   cardanoRestartChannel.onReceive(() => {
     Logger.info('ipcMain: Received request from renderer to restart node.');
     return cardanoNode.restart(true); // forced restart

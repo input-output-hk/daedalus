@@ -8,20 +8,20 @@ import {
 import type { CardanoNodeState, TlsConfig } from '../../common/types/cardanoNode.types';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 
-// IpcChannel<Request, AwaitedResponse, ReceivedRequest, Response>
+// IpcChannel<Incoming, Outgoing>
 
-export const cardanoRestartChannel: MainIpcChannel<void, void, void, void> = (
+export const cardanoRestartChannel: MainIpcChannel<void, void> = (
   new MainIpcChannel(CARDANO_RESTART_CHANNEL)
 );
 
-export const cardanoTlsConfigChannel: MainIpcChannel<?TlsConfig, void, void, ?TlsConfig> = (
+export const cardanoTlsConfigChannel: MainIpcChannel<void, ?TlsConfig> = (
   new MainIpcChannel(CARDANO_TLS_CONFIG_CHANNEL)
 );
 
-export const cardanoAwaitUpdateChannel: MainIpcChannel<void, void, void, void> = (
+export const cardanoAwaitUpdateChannel: MainIpcChannel<void, void> = (
   new MainIpcChannel(CARDANO_AWAIT_UPDATE_CHANNEL)
 );
 
-export const cardanoStateChangeChannel: MainIpcChannel<CardanoNodeState, void, void, void> = (
+export const cardanoStateChangeChannel: MainIpcChannel<void, CardanoNodeState> = (
   new MainIpcChannel(CARDANO_STATE_CHANGE_CHANNEL)
 );
