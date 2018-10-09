@@ -33,7 +33,7 @@ const support = () => {
   };
 
   const onSubmit = async (iframe) => {
-    const doneButton = waitForExist(
+    const doneButton:any = waitForExist(
       '.src-component-submitTicket-SubmitTicket-button',
       { context: iframe.contentDocument }
     );
