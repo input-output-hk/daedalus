@@ -20,7 +20,7 @@ When(/^I click on the print button$/, async function () {
   };
 
   await this.client.execute(params => {
-    daedalus.actions.ada.wallets.generateCertificate.trigger({
+    daedalus.actions.wallets.generateCertificate.trigger({
       filePath: params.filePath,
     });
   }, data);
@@ -54,8 +54,8 @@ When(/^I see the "Verify Certificate" dialog$/, function () {
 
 When(/^I enter paper wallet recovery phrase$/, async function () {
   const fields = await this.client.execute(() => ({
-    walletCertificateRecoveryPhrase: daedalus.stores.ada.wallets.walletCertificateRecoveryPhrase,
-    additionalMnemonicWords: daedalus.stores.ada.wallets.additionalMnemonicWords,
+    walletCertificateRecoveryPhrase: daedalus.stores.wallets.walletCertificateRecoveryPhrase,
+    additionalMnemonicWords: daedalus.stores.wallets.additionalMnemonicWords,
   }));
 
   const walletCertificateRecoveryPhrase = `${fields.value.walletCertificateRecoveryPhrase} ${fields.value.additionalMnemonicWords}`;
@@ -128,7 +128,7 @@ When(/^I see the "Paper Wallet Certificate" dialog$/, function () {
 When(/^Cardano explorer link and wallet address should be valid$/, async function () {
   const visibleCardanoExplorerLink = await this.client.getText('.CompletionDialog_linkInstructionsWrapper .CompletionDialog_infoBox .CompletionDialog_link');
   const walletCertificateAddress = await this.client.execute(() => (
-    daedalus.stores.ada.wallets.walletCertificateAddress
+    daedalus.stores.wallets.walletCertificateAddress
   ));
   const cardanoExplorerLink = `https://cardanoexplorer.com/address/${walletCertificateAddress.value}`;
   this.certificateWalletAddress = walletCertificateAddress.value;

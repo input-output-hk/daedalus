@@ -2,7 +2,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!An error occurred, please try again later.",
+        "defaultMessage": "!!!An error occurred.",
         "description": "Generic error message.",
         "end": {
           "column": 3,
@@ -25,7 +25,7 @@
         "file": "source/renderer/app/api/common/errors.js",
         "id": "api.errors.IncorrectPasswordError",
         "start": {
-          "column": 32,
+          "column": 34,
           "line": 11
         }
       },
@@ -58,7 +58,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Forbidden Mnemonic: an example Mnemonic has been submitted. Please generate a fresh and private Mnemonic from a trusted source.",
+        "defaultMessage": "!!!Invalid recovery phrase. Submitted recovery phrase is one of the example recovery phrases from the documentation and should not be used for wallets holding funds.",
         "description": "\"Forbidden Mnemonic: an example Mnemonic has been submitted.\" error message",
         "end": {
           "column": 3,
@@ -217,13 +217,13 @@
         "description": "Message \"Connecting to network\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 24
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.connectingToNetworkMessage",
         "start": {
           "column": 14,
-          "line": 21
+          "line": 20
         }
       },
       {
@@ -231,13 +231,13 @@
         "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 29
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reconnectingToNetworkMessage",
         "start": {
           "column": 16,
-          "line": 26
+          "line": 25
         }
       },
       {
@@ -245,13 +245,13 @@
         "description": "Message \"Syncing blocks\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 34
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.syncingBlocksMessage",
         "start": {
           "column": 11,
-          "line": 31
+          "line": 30
         }
       },
       {
@@ -259,13 +259,13 @@
         "description": "Report connecting issue text on the loading screen.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 39
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.connecting.text",
         "start": {
           "column": 29,
-          "line": 36
+          "line": 35
         }
       },
       {
@@ -273,13 +273,13 @@
         "description": "Report syncing issue text on the loading screen.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 44
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.syncing.text",
         "start": {
           "column": 26,
-          "line": 41
+          "line": 40
         }
       },
       {
@@ -287,13 +287,13 @@
         "description": "Report an issue button label on the loading .",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 49
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.buttonLabel",
         "start": {
           "column": 26,
-          "line": 46
+          "line": 45
         }
       }
     ],
@@ -775,6 +775,81 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Wallet data migration",
+        "description": "Title for the Data Layer Migration screen.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/profile/data-layer-migration/DataLayerMigrationForm.js",
+        "id": "profile.dataLayerMigration.title",
+        "start": {
+          "column": 9,
+          "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!You have installed a version of Daedalus that changes how wallet data is stored and managed. Because of this, all of your wallets need to be restored and synchronized with the complete history of the Cardano blockchain.",
+        "description": "Content for the Data Layer Migration screen.",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "source/renderer/app/components/profile/data-layer-migration/DataLayerMigrationForm.js",
+        "id": "profile.dataLayerMigration.content1",
+        "start": {
+          "column": 12,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!This is an automatic process and does not require any action on your behalf.",
+        "description": "Content for the Data Layer Migration screen.",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/profile/data-layer-migration/DataLayerMigrationForm.js",
+        "id": "profile.dataLayerMigration.content2",
+        "start": {
+          "column": 12,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!Your transaction history and used addresses will appear in your wallets as they are recovered during the restoration process. Addresses that were not used will not be recovered because they are not recorded on the blockchain. If funds were sent to those addresses you will receive the funds and those addresses will appear in your wallet.",
+        "description": "Content for the Data Layer Migration screen.",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/profile/data-layer-migration/DataLayerMigrationForm.js",
+        "id": "profile.dataLayerMigration.content3",
+        "start": {
+          "column": 12,
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!Start migration",
+        "description": "Submit label for the Data Layer Migration screen.",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/profile/data-layer-migration/DataLayerMigrationForm.js",
+        "id": "profile.dataLayerMigration.submitLabel",
+        "start": {
+          "column": 15,
+          "line": 31
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/profile/data-layer-migration/DataLayerMigrationForm.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Select your language",
         "description": "Label for the language select.",
         "end": {
@@ -812,13 +887,13 @@
         "description": "Label for the \"I agree with terms of use\" checkbox.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 19
         },
         "file": "source/renderer/app/components/profile/terms-of-use/TermsOfUseForm.js",
         "id": "profile.termsOfUse.checkboxLabel",
         "start": {
           "column": 17,
-          "line": 16
+          "line": 15
         }
       },
       {
@@ -826,13 +901,13 @@
         "description": "Label for the \"I agree with terms of use\" checkbox when terms of use are not translated.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 24
         },
         "file": "source/renderer/app/components/profile/terms-of-use/TermsOfUseForm.js",
         "id": "profile.termsOfUse.checkboxLabelWithDisclaimer",
         "start": {
           "column": 31,
-          "line": 21
+          "line": 20
         }
       },
       {
@@ -840,13 +915,13 @@
         "description": "Label for the \"Terms of use\" form submit button.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 29
         },
         "file": "source/renderer/app/components/profile/terms-of-use/TermsOfUseForm.js",
         "id": "profile.termsOfUse.submitLabel",
         "start": {
           "column": 15,
-          "line": 26
+          "line": 25
         }
       }
     ],
@@ -1188,31 +1263,17 @@
         }
       },
       {
-        "defaultMessage": "!!!Mantis Team:",
-        "description": "About page mantis team headline",
+        "defaultMessage": "!!!Alexander Rukin, Charles Hoskinson, Clemens Helm, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Stefan Malzner, Tomislav Horaček",
+        "description": "About page daedalus team members",
         "end": {
           "column": 3,
           "line": 31
         },
         "file": "source/renderer/app/components/static/About.js",
-        "id": "static.about.content.mantis.headline",
-        "start": {
-          "column": 30,
-          "line": 27
-        }
-      },
-      {
-        "defaultMessage": "!!!Alexander Rukin, Charles Hoskinson, Clemens Helm, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Stefan Malzner, Tomislav Horaček",
-        "description": "About page daedalus team members",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.daedalus.members",
         "start": {
           "column": 31,
-          "line": 32
+          "line": 27
         }
       },
       {
@@ -1220,27 +1281,13 @@
         "description": "About page cardano team members",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 36
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.cardano.members",
         "start": {
           "column": 30,
-          "line": 37
-        }
-      },
-      {
-        "defaultMessage": "!!!Adam Smolarek, Alan McSherry, Alan Verbner, Alejandro Garcia, Charles Hoskinson, Domen Kožar, Eileen Fitzgerald, Hiroto Shioi, Jane Wild, Jan Ziniewicz, Javier Diaz, Jeremy Wood, Laurie Wang, Łukasz Gąsior, Konrad Staniec, Michael Bishop, Mirko Alić, Nicolás Tallar, Radek Tkaczyk, Serge Kosyrev",
-        "description": "About page mantis team members",
-        "end": {
-          "column": 3,
-          "line": 46
-        },
-        "file": "source/renderer/app/components/static/About.js",
-        "id": "static.about.content.mantis.members",
-        "start": {
-          "column": 29,
-          "line": 42
+          "line": 32
         }
       },
       {
@@ -1248,13 +1295,13 @@
         "description": "About \"copyright\"",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 41
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.copyright",
         "start": {
           "column": 18,
-          "line": 47
+          "line": 37
         }
       },
       {
@@ -1262,13 +1309,13 @@
         "description": "About page license name",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 46
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.license",
         "start": {
           "column": 15,
-          "line": 52
+          "line": 42
         }
       },
       {
@@ -1276,13 +1323,13 @@
         "description": "About page build information",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 51
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.buildInfo",
         "start": {
           "column": 18,
-          "line": 57
+          "line": 47
         }
       }
     ],
@@ -1826,7 +1873,7 @@
           "line": 189
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
-        "id": "wallet.redeem.dialog.walletPasswordPlaceholder",
+        "id": "wallet.redeem.dialog.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
           "line": 185
@@ -1840,7 +1887,7 @@
           "line": 194
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
-        "id": "wallet.redeem.dialog.walletPasswordLabel",
+        "id": "wallet.redeem.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
           "line": 190
@@ -2959,7 +3006,7 @@
           "column": 3,
           "line": 26
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.title.setPassword",
         "start": {
           "column": 26,
@@ -2973,7 +3020,7 @@
           "column": 3,
           "line": 31
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.title.changePassword",
         "start": {
           "column": 29,
@@ -2987,7 +3034,7 @@
           "column": 3,
           "line": 36
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
@@ -3001,7 +3048,7 @@
           "column": 3,
           "line": 41
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.currentPasswordLabel",
         "start": {
           "column": 24,
@@ -3015,7 +3062,7 @@
           "column": 3,
           "line": 46
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.newPasswordLabel",
         "start": {
           "column": 20,
@@ -3029,7 +3076,7 @@
           "column": 3,
           "line": 51
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.repeatPasswordLabel",
         "start": {
           "column": 23,
@@ -3043,7 +3090,7 @@
           "column": 3,
           "line": 56
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.currentPasswordFieldPlaceholder",
         "start": {
           "column": 35,
@@ -3057,7 +3104,7 @@
           "column": 3,
           "line": 61
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.newPasswordFieldPlaceholder",
         "start": {
           "column": 31,
@@ -3071,7 +3118,7 @@
           "column": 3,
           "line": 66
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.repeatPasswordFieldPlaceholder",
         "start": {
           "column": 34,
@@ -3085,7 +3132,7 @@
           "column": 3,
           "line": 71
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.passwordSwitchLabel",
         "start": {
           "column": 23,
@@ -3099,7 +3146,7 @@
           "column": 3,
           "line": 76
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.passwordSwitchPlaceholder",
         "start": {
           "column": 29,
@@ -3107,7 +3154,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.json"
+    "path": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.json"
   },
   {
     "descriptors": [
@@ -3323,13 +3370,13 @@
         "description": "Transaction type shown for credit card payments.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 25
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.card",
         "start": {
           "column": 8,
-          "line": 22
+          "line": 21
         }
       },
       {
@@ -3337,13 +3384,13 @@
         "description": "Transaction type shown for {currency} transactions.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type",
         "start": {
           "column": 8,
-          "line": 27
+          "line": 26
         }
       },
       {
@@ -3351,13 +3398,13 @@
         "description": "Transaction type shown for money exchanges between currencies.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 35
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.exchange",
         "start": {
           "column": 12,
-          "line": 32
+          "line": 31
         }
       },
       {
@@ -3365,13 +3412,13 @@
         "description": "Transaction assurance level.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 40
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel",
         "start": {
           "column": 18,
-          "line": 37
+          "line": 36
         }
       },
       {
@@ -3379,13 +3426,13 @@
         "description": "Transaction confirmations.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 45
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.confirmations",
         "start": {
           "column": 17,
-          "line": 42
+          "line": 41
         }
       },
       {
@@ -3393,13 +3440,13 @@
         "description": "Transaction ID.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 50
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionId",
         "start": {
           "column": 17,
-          "line": 47
+          "line": 46
         }
       },
       {
@@ -3407,13 +3454,13 @@
         "description": "Conversion rate.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 55
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.conversion.rate",
         "start": {
           "column": 18,
-          "line": 52
+          "line": 51
         }
       },
       {
@@ -3421,13 +3468,13 @@
         "description": "Label \"{currency} sent\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 60
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.sent",
         "start": {
           "column": 8,
-          "line": 57
+          "line": 56
         }
       },
       {
@@ -3435,13 +3482,13 @@
         "description": "Label \"{currency} received\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.received",
         "start": {
           "column": 12,
-          "line": 62
+          "line": 61
         }
       },
       {
@@ -3449,13 +3496,13 @@
         "description": "From address",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 70
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.from",
         "start": {
           "column": 15,
-          "line": 67
+          "line": 66
         }
       },
       {
@@ -3463,13 +3510,13 @@
         "description": "From addresses",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 75
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.from",
         "start": {
           "column": 17,
-          "line": 72
+          "line": 71
         }
       },
       {
@@ -3477,13 +3524,13 @@
         "description": "To address",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 80
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.to",
         "start": {
           "column": 13,
-          "line": 77
+          "line": 76
         }
       },
       {
@@ -3491,13 +3538,13 @@
         "description": "To addresses",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 85
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.to",
         "start": {
           "column": 15,
-          "line": 82
+          "line": 81
         }
       },
       {
@@ -3505,13 +3552,13 @@
         "description": "Transaction amount.",
         "end": {
           "column": 3,
-          "line": 91
+          "line": 90
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionAmount",
         "start": {
           "column": 21,
-          "line": 87
+          "line": 86
         }
       },
       {
@@ -3519,13 +3566,13 @@
         "description": "Transaction assurance level \"low\".",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 98
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.low",
         "start": {
           "column": 34,
-          "line": 95
+          "line": 94
         }
       },
       {
@@ -3533,13 +3580,13 @@
         "description": "Transaction assurance level \"medium\".",
         "end": {
           "column": 3,
-          "line": 104
+          "line": 103
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.medium",
         "start": {
           "column": 37,
-          "line": 100
+          "line": 99
         }
       },
       {
@@ -3547,13 +3594,13 @@
         "description": "Transaction assurance level \"high\".",
         "end": {
           "column": 3,
-          "line": 109
+          "line": 108
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.high",
         "start": {
           "column": 35,
-          "line": 105
+          "line": 104
         }
       },
       {
@@ -3561,13 +3608,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 117
+          "line": 116
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 113
+          "line": 112
         }
       },
       {
@@ -3575,13 +3622,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 122
+          "line": 121
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.failed",
         "start": {
           "column": 30,
-          "line": 118
+          "line": 117
         }
       }
     ],
@@ -3915,9 +3962,9 @@
           "line": 55
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
-        "id": "wallet.create.dialog.walletPasswordLabel",
+        "id": "wallet.create.dialog.spendingPasswordLabel",
         "start": {
-          "column": 23,
+          "column": 25,
           "line": 51
         }
       },
@@ -4205,9 +4252,9 @@
           "line": 85
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
-        "id": "wallet.restore.dialog.walletPasswordLabel",
+        "id": "wallet.restore.dialog.spendingPasswordLabel",
         "start": {
-          "column": 23,
+          "column": 25,
           "line": 81
         }
       },
@@ -4322,9 +4369,9 @@
           "line": 27
         },
         "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.walletPasswordLabel",
+        "id": "wallet.send.confirmationDialog.spendingPasswordLabel",
         "start": {
-          "column": 23,
+          "column": 25,
           "line": 23
         }
       },
@@ -4392,9 +4439,9 @@
           "line": 52
         },
         "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
-        "id": "wallet.send.confirmationDialog.walletPasswordFieldPlaceholder",
+        "id": "wallet.send.confirmationDialog.spendingPasswordFieldPlaceholder",
         "start": {
-          "column": 34,
+          "column": 36,
           "line": 48
         }
       },
@@ -5082,9 +5129,9 @@
           "line": 43
         },
         "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.errors.invalidWalletPassword",
+        "id": "global.errors.invalidSpendingPassword",
         "start": {
-          "column": 25,
+          "column": 27,
           "line": 39
         }
       },
@@ -5386,28 +5433,28 @@
         "defaultMessage": "!!!Ada",
         "description": "Name for \"Ada\" unit.",
         "end": {
-          "column": 5,
-          "line": 157
+          "column": 3,
+          "line": 153
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.currency.ada",
         "start": {
-          "column": 14,
-          "line": 153
+          "column": 12,
+          "line": 149
         }
       },
       {
         "defaultMessage": "!!!Cardano",
         "description": "Name for \"Cardano\" client.",
         "end": {
-          "column": 5,
-          "line": 162
+          "column": 3,
+          "line": 158
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.apiName.cardano",
         "start": {
-          "column": 13,
-          "line": 158
+          "column": 11,
+          "line": 154
         }
       }
     ],

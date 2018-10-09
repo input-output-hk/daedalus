@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import type { StoresMap } from '../../../stores/index';
 import type { ActionsMap } from '../../../actions/index';
-import environment from '../../../../../common/environment';
 import WalletSendConfirmationDialog from '../../../components/wallet/WalletSendConfirmationDialog';
 
 type Props = {
@@ -23,7 +22,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
   static defaultProps = { actions: null, stores: null };
 
   handleWalletSendFormSubmit = (values: Object) => {
-    this.props.actions[environment.API].wallets.sendMoney.trigger(values);
+    this.props.actions.wallets.sendMoney.trigger(values);
   };
 
   render() {
@@ -31,15 +30,14 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
       actions, amount, receiver, totalAmount,
       transactionFee, amountToNaturalUnits, currencyUnit
     } = this.props;
-    const { wallets } = this.props.stores[environment.API];
-    const { sendMoneyRequest } = wallets;
-    const activeWallet = wallets.active;
+    const { wallets } = this.props.stores;
+    const { sendMoneyRequest, active: activeWallet } = wallets;
 
     if (!activeWallet) throw new Error('Active wallet required for WalletSendPage.');
 
     return (
       <WalletSendConfirmationDialog
-        isWalletPasswordSet={activeWallet.hasPassword}
+        isSpendingPasswordSet={activeWallet.hasPassword}
         amount={amount}
         receiver={receiver}
         totalAmount={totalAmount}

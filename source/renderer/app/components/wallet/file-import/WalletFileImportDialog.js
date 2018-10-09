@@ -12,7 +12,7 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import FileUploadWidget from '../../widgets/forms/FileUploadWidget';
-import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../../utils/validations';
+import { isValidWalletName, isValidSpendingPassword, isValidRepeatPassword } from '../../../utils/validations';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './WalletFileImportDialog.scss';
@@ -102,7 +102,6 @@ export default class WalletFileImportDialog extends Component<Props, State> {
     this.setState({ createPassword: value });
   };
 
-
   form = new ReactToolboxMobxForm({
     fields: {
       walletFile: {
@@ -134,8 +133,8 @@ export default class WalletFileImportDialog extends Component<Props, State> {
             repeatPasswordField.validate({ showErrors: true });
           }
           return [
-            isValidWalletPassword(field.value),
-            this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
+            isValidSpendingPassword(field.value),
+            this.context.intl.formatMessage(globalMessages.invalidSpendingPassword)
           ];
         }],
       },
@@ -240,8 +239,8 @@ export default class WalletFileImportDialog extends Component<Props, State> {
             skin={InputSkin}
           />
 
-          <div className={styles.walletPassword}>
-            <div className={styles.walletPasswordSwitch}>
+          <div className={styles.spendingPassword}>
+            <div className={styles.spendingPasswordSwitch}>
               <div className={styles.passwordLabel}>
                 {intl.formatMessage(messages.passwordSwitchLabel)}
               </div>

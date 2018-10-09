@@ -4,8 +4,12 @@ module Util where
 
 import Control.Monad (mapM_)
 import Data.Text (Text)
+import qualified Data.ByteString as BS
+import qualified Data.ByteString.Lazy as BSL
 import System.Directory (listDirectory, withCurrentDirectory, removeDirectory, removeFile, doesDirectoryExist)
 import Turtle (export, format, d)
+import Data.Aeson (Value, decodeStrict', FromJSON, Value(Object, String), ToJSON, encode)
+import qualified Data.HashMap.Strict as HM
 
 import Config (Options(..), Backend(..))
 import Types (InstallerConfig(walletPort), fromBuildJob, clusterNetwork)
@@ -37,3 +41,18 @@ exportBuildVars Options{oBackend, oBuildJob, oCluster} cfg backendVersion = do
     where
         apiName (Cardano _) = "ada"
         apiName Mantis      = "etc"
+
+decodeFileStrict' :: FromJSON a => FilePath -> IO (Maybe a)
+decodeFileStrict' = fmap decodeStrict' . BS.readFile
+
+encodeFile :: ToJSON a => FilePath -> a -> IO ()
+encodeFile fp = BSL.writeFile fp . encode
+
+rewritePackageJson :: FilePath -> Text -> IO ()
+rewritePackageJson path name = do
+  rawObject <- (decodeFileStrict' path :: IO (Maybe Value))
+  newObject <- case rawObject of
+    Just (Object hashmap) -> do
+      pure $ Object $ HM.insert "productName" (String name) hashmap
+    _ -> error "invalid package.json detected"
+  encodeFile path newObject

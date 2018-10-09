@@ -26,7 +26,7 @@ in
 
   , walletPath          = "\${DAEDALUS_INSTALL_DIRECTORY}/Frontend"
   , walletLogging       = True
-  , frontendOnlyMode    = False
+  , frontendOnlyMode    = True
 
   , updaterPath         = "/usr/bin/open"
   , updaterArgs         = ["-FW"]

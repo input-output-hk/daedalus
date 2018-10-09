@@ -36,8 +36,8 @@ export default defineMessages({
     defaultMessage: '!!!Wallet name requires at least 3 and at most 40 letters.',
     description: 'Error message shown when invalid wallet name was entered in create wallet dialog.'
   },
-  invalidWalletPassword: {
-    id: 'global.errors.invalidWalletPassword',
+  invalidSpendingPassword: {
+    id: 'global.errors.invalidSpendingPassword',
     defaultMessage: '!!!Invalid password',
     description: 'Error message shown when invalid wallet password was entered in create wallet dialog.'
   },
@@ -146,19 +146,14 @@ export default defineMessages({
     defaultMessage: '!!!https://daedaluswallet.io/faq/',
     description: 'URL for the "FAQ on Daedalus website" link in the FAQ section on the support settings page',
   },
+  currency: {
+    id: 'environment.currency.ada',
+    defaultMessage: '!!!Ada',
+    description: 'Name for "Ada" unit.'
+  },
+  apiName: {
+    id: 'environment.apiName.cardano',
+    defaultMessage: '!!!Cardano',
+    description: 'Name for "Cardano" client.'
+  },
 });
-
-export const environmentSpecificMessages = {
-  ada: defineMessages({
-    currency: {
-      id: 'environment.currency.ada',
-      defaultMessage: '!!!Ada',
-      description: 'Name for "Ada" unit.'
-    },
-    apiName: {
-      id: 'environment.apiName.cardano',
-      defaultMessage: '!!!Cardano',
-      description: 'Name for "Cardano" client.'
-    },
-  }),
-};

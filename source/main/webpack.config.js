@@ -46,18 +46,14 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin(Object.assign({
-      'process.env.API': JSON.stringify(process.env.API || 'ada'),
       'process.env.API_VERSION': JSON.stringify(process.env.API_VERSION || 'dev'),
       'process.env.NETWORK': JSON.stringify(process.env.NETWORK || 'development'),
       'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
       'process.env.BUILD_NUMBER': JSON.stringify(process.env.BUILD_NUMBER || 'dev'),
       'process.env.REPORT_URL': JSON.stringify(reportUrl),
     }, process.env.NODE_ENV === 'production' ? {
-      // Only bake in NODE_ENV and WALLET_PORT values for production builds.
-      // This is so that the test suite based on the webpack build will
-      // choose the correct path to ca.crt (see setupTls.js).
+      // Only bake in NODE_ENV value for production builds.
       'process.env.NODE_ENV': '"production"',
-      'process.env.WALLET_PORT': JSON.stringify(process.env.WALLET_PORT || ''),
     } : {})),
     !isCi && (
       new HardSourceWebpackPlugin({

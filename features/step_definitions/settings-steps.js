@@ -75,7 +75,7 @@ When(/^I select "Strict" assurance level$/, function () {
 Then(/^I should have wallet with "Strict" assurance level set$/, async function () {
   const activeWalletName = await getNameOfActiveWalletInSidebar.call(this);
   const wallets = await this.client.executeAsync((done) => {
-    daedalus.stores.ada.wallets.walletsRequest.execute()
+    daedalus.stores.wallets.walletsRequest.execute()
       .then(done)
       .catch((error) => done(error));
   });
@@ -94,7 +94,7 @@ Then(/^I should see "([^"]*)" label in password field$/, function (label) {
 
 Then(/^I should see the following error messages:$/, async function (data) {
   const error = data.hashes()[0];
-  const errorSelector = '.ChangeWalletPasswordDialog_newPassword .SimpleFormField_error';
+  const errorSelector = '.ChangeSpendingPasswordDialog_newPassword .SimpleFormField_error';
   await this.client.waitForText(errorSelector);
   const errorsOnScreen = await this.client.getText(errorSelector);
   const expectedError = await this.intl(error.message);

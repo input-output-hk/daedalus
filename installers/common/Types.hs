@@ -57,6 +57,7 @@ data Cluster
   = Mainnet
   | Staging
   | Testnet
+  | Demo
   deriving (Bounded, Enum, Eq, Read, Show)
 
 -- | The wallet backend to include in the installer.
@@ -112,6 +113,7 @@ clusterNetwork :: Cluster -> Text
 clusterNetwork Mainnet = "mainnet"
 clusterNetwork Staging = "staging"
 clusterNetwork Testnet = "testnet"
+clusterNetwork Demo = "demo"
 
 packageFileName :: OS -> Cluster -> Version -> Backend -> Text -> Maybe BuildJob -> FilePath
 packageFileName os cluster ver backend backendVer build = fromText name <.> ext

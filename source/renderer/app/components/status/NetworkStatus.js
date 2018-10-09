@@ -40,6 +40,7 @@ type Props = {
   localBlockHeight: number,
   networkBlockHeight: number,
   onForceCheckLocalTimeDifference: Function,
+  onRestartNode: Function,
   onClose: Function,
 };
 
@@ -89,7 +90,7 @@ export default class NetworkStatus extends Component<Props, State> {
       isConnected, isSynced, syncPercentage, hasBeenConnected,
       localTimeDifference, isSystemTimeCorrect, isForceCheckingNodeTime,
       isSystemTimeChanged, mostRecentBlockTimestamp, localBlockHeight, networkBlockHeight,
-      onForceCheckLocalTimeDifference, onClose, nodeConnectionError,
+      onForceCheckLocalTimeDifference, onClose, nodeConnectionError, onRestartNode,
     } = this.props;
     const { data } = this.state;
     const isNTPServiceReachable = !!localTimeDifference;
@@ -240,6 +241,14 @@ export default class NetworkStatus extends Component<Props, State> {
                 <td>isNodeInSync:</td>
                 <td className={this.getClass(isNodeInSync)}>
                   {isNodeInSync ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td className={styles.topPadding}>Cardano Node actions:</td>
+                <td className={styles.topPadding}>
+                  <button onClick={() => onRestartNode()}>
+                    Restart
+                  </button>
                 </td>
               </tr>
               {!isConnected && nodeConnectionError ? (

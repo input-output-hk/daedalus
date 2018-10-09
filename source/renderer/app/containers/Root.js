@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import environment from '../../../common/environment';
 import WalletAddPage from './wallet/WalletAddPage';
 import LoadingPage from './LoadingPage';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
@@ -13,13 +12,11 @@ export default class Root extends Component<Props> {
 
   render() {
     const { stores, actions, children } = this.props;
-    const { networkStatus, profile, ada, app } = stores;
+    const { networkStatus, profile, adaRedemption, app, wallets } = stores;
     const { isNetworkStatusPage } = app;
     const { isConnected, isSynced, isSystemTimeCorrect } = networkStatus;
-    const wallets = stores[environment.API].wallets;
-    const isAdaRedemptionPage = environment.isAdaApi() && ada.adaRedemption.isAdaRedemptionPage;
     const isPageThatDoesntNeedWallets = (
-      profile.isSettingsPage || isAdaRedemptionPage
+      profile.isSettingsPage || adaRedemption.isAdaRedemptionPage
     );
     // Just render any page that doesn't require wallets to be loaded
     if (

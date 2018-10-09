@@ -5,10 +5,10 @@ import globalMessages from '../../i18n/global-messages';
 const messages = defineMessages({
   genericApiError: {
     id: 'api.errors.GenericApiError',
-    defaultMessage: '!!!An error occurred, please try again later.',
+    defaultMessage: '!!!An error occurred.',
     description: 'Generic error message.'
   },
-  incorrectWalletPasswordError: {
+  incorrectSpendingPasswordError: {
     id: 'api.errors.IncorrectPasswordError',
     defaultMessage: '!!!Incorrect wallet password.',
     description: '"Incorrect wallet password." error message.'
@@ -25,7 +25,7 @@ const messages = defineMessages({
   },
   forbiddenMnemonicError: {
     id: 'api.errors.ForbiddenMnemonicError',
-    defaultMessage: '!!!Forbidden Mnemonic: an example Mnemonic has been submitted. Please generate a fresh and private Mnemonic from a trusted source.',
+    defaultMessage: '!!!Invalid recovery phrase. Submitted recovery phrase is one of the example recovery phrases from the documentation and should not be used for wallets holding funds.',
     description: '"Forbidden Mnemonic: an example Mnemonic has been submitted." error message',
   },
 });
@@ -40,11 +40,11 @@ export class GenericApiError extends LocalizableError {
   }
 }
 
-export class IncorrectWalletPasswordError extends LocalizableError {
+export class IncorrectSpendingPasswordError extends LocalizableError {
   constructor() {
     super({
-      id: messages.incorrectWalletPasswordError.id,
-      defaultMessage: messages.incorrectWalletPasswordError.defaultMessage,
+      id: messages.incorrectSpendingPasswordError.id,
+      defaultMessage: messages.incorrectSpendingPasswordError.defaultMessage,
     });
   }
 }

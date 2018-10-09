@@ -7,10 +7,12 @@ Changelog
 
 ### Chores
 
+- Adds dynamic prefix derivation to local storage keys in CardanoNode based on the current network. Adds dynamic derivation of process names for cardano-node based on the current platform. [PR 1109](https://github.com/input-output-hk/daedalus/pull/1109)
 - Integrates the latest features from the develop branch of react-polymorph. Features include: render props architecture, theme composition, and a ThemeProvider HOC. [PR 950](https://github.com/input-output-hk/daedalus/pull/950)
 - Fixed broken storybook [PR 1041](https://github.com/input-output-hk/daedalus/pull/1041)
 - Remove all ETC specific files [PR 1068](https://github.com/input-output-hk/daedalus/pull/1068)
 - Make "port" and "ca" of Ada Api configurable during runtime [PR 1067](https://github.com/input-output-hk/daedalus/pull/1067)
+- Added screenshots record of failed acceptance tests [PR 1103](https://github.com/input-output-hk/daedalus/pull/1103)
 
 ### Features
 
@@ -26,10 +28,13 @@ Changelog
 - Integrated the V1 API endpoint for creating and restoring Wallets ([PR 1018](https://github.com/input-output-hk/daedalus/pull/1018))
 - Integrated the V1 API endpoints for fetching all accounts associated with a wallet, fetching a single address, and creating a new address ([PR 1037](https://github.com/input-output-hk/daedalus/pull/1037))
 - Send cert and key with api requests to support tls-auth ([PR 1072](https://github.com/input-output-hk/daedalus/pull/1072))
+- Implemented new data layer migration screen ([PR 1096](https://github.com/input-output-hk/daedalus/pull/1096))
 - Implemented Japanese Terms of use for Testnet network ([PR 1097](https://github.com/input-output-hk/daedalus/pull/1097))
+- Implemented lock file mechanism to prevent multiple Daedalus instances from running against the same state directory ([PR 1113](https://github.com/input-output-hk/daedalus/pull/1113))
 
 ### Fixes
 
+- Fixes the Loading.js component's "Having Trouble Connecting" and the "Having Trouble Syncing" notification. Refactors Loading.js for maintainability and readability purposes [PR 1112](https://github.com/input-output-hk/daedalus/pull/1112)
 - Fixed a bug that allowed to submit invalid send form via ENTER key ([PR 1002](https://github.com/input-output-hk/daedalus/pull/1002))
 - Fixed a bug that would submit the "Generate address" button on the Receive screen in case right-mouse click was used ([PR 1082](https://github.com/input-output-hk/daedalus/pull/1082))
 - Fixed the button outline color on special buttons. ([PR 990](https://github.com/input-output-hk/daedalus/pull/990))
@@ -37,6 +42,8 @@ Changelog
 - Prevented wallet data polling during wallet deletion ([PR 996]https://github.com/input-output-hk/daedalus/pull/996)
 - Fixed a bug in the Electron which results in blank/white screen rendering on some OS/Graphics-card/Drivers combinations.  ([PR 1007](https://github.com/input-output-hk/daedalus/pull/1007))
 - Removed the Ada Redemption link from the 'app bar' menu and added it to system menu ([PR 972](https://github.com/input-output-hk/daedalus/pull/972))
+- Finished etc code cleanup ([PR 1108](https://github.com/input-output-hk/daedalus/pull/1108))
+
 
 ### Chores
 

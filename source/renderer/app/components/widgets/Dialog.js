@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
+import { map } from 'lodash';
 import classnames from 'classnames';
 import type { Node } from 'react';
 import { Modal } from 'react-polymorph/lib/components/Modal';
@@ -58,7 +58,7 @@ export default class Dialog extends Component<Props> {
 
           {actions &&
             <div className={styles.actions}>
-              {_.map(actions, (action, key) => {
+              {map(actions, (action, key) => {
                 const buttonClasses = classnames([
                   action.className ? action.className : null,
                   action.primary ? 'primary' : 'flat',

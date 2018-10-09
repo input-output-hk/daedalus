@@ -8,7 +8,7 @@ export type WalletInitData = {
   backupPhrase: [string],
   assuranceLevel: WalletAssuranceLevel,
   name: string,
-  spendingPassword: ?string,
+  spendingPassword?: string,
 };
 
 export const createWallet = (

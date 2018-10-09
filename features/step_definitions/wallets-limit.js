@@ -20,7 +20,7 @@ When('I should see maximum number of wallets in the wallets list', async functio
 When('I delete the last wallet', async function () {
   const wallet = getWalletByName.call(this, 'Wallet 20');
   await this.client.execute(
-    walletId => daedalus.actions.ada.wallets.deleteWallet.trigger({ walletId }),
+    walletId => daedalus.actions.wallets.deleteWallet.trigger({ walletId }),
     wallet.id
   );
   await this.client.waitUntil(async () => {
