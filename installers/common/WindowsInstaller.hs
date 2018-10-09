@@ -51,6 +51,7 @@ writeUninstallerNSIS (Version fullVersion) installerConfig = do
         _ <- constantStr "InstallDir" (str $ unpack $ installDirectory installerConfig)
         name "$InstallDir Uninstaller $Version"
         outFile . str . encodeString $ tempDir </> "tempinstaller.exe"
+        unsafeInjectGlobal "Unicode true"
         unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
         unsafeInjectGlobal "SetCompress off"
         _ <- section "" [Required] $ do
@@ -73,6 +74,10 @@ writeUninstallerNSIS (Version fullVersion) installerConfig = do
 -- See non-INNER blocks at http://nsis.sourceforge.net/Signing_an_Uninstaller
 signUninstaller :: Options -> IO SigningResult
 signUninstaller opts = do
+    rawnsi <- readFile "uninstaller.nsi"
+    putStr rawnsi
+    IO.hFlush IO.stdout
+
     procs "C:\\Program Files (x86)\\NSIS\\makensis" ["uninstaller.nsi"] mempty
     tempDir <- getTempDir
     writeTextFile "runtempinstaller.bat" $ format (fp%" /S") (tempDir </> "tempinstaller.exe")
