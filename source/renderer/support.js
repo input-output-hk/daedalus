@@ -40,11 +40,30 @@ const support = () => {
     doneButton.onclick = closeWindow;
   };
 
+  const setSelectValue = async (iframe, select) => {
+    select.click();
+    const options = await waitForExist(
+      '[data-garden-id="select.item"]',
+      {
+        context: iframe.contentDocument,
+        selectAll: true,
+      }
+    );
+    // TODO: Click the correct option
+    options[0].click();
+    select.blur();
+  };
+
   const formHandler = async (iframe: window) => {
     const form = await waitForExist('form', { context: iframe.contentDocument });
     const [cancelButton, successButton] = form.querySelectorAll('footer button');
     if (cancelButton) cancelButton.onclick = closeWindow;
     if (successButton) successButton.onclick = onSubmit.bind(this, iframe);
+    const selects = form.querySelectorAll('[data-garden-id="select.select_view"]');
+    for (const select of selects) {
+      await setSelectValue(iframe, select);
+    }
+    form.querySelector('[data-garden-id="textfields.input"]').focus();
   };
 
   const attachCompressedLogs = (
