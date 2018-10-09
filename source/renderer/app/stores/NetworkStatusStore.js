@@ -211,7 +211,7 @@ export default class NetworkStatusStore extends Store {
 
   @action _updateNetworkStatus = async (queryParams?: NodeQueryParams) => {
     // In case we haven't received TLS config we shouldn't trigger any API calls
-    if (!this._hasReceivedTlsConfig) return;
+    if (!this._tlsConfig) return;
 
     const isForcedTimeDifferenceCheck = !!queryParams;
 
