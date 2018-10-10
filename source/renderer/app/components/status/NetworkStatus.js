@@ -23,7 +23,7 @@ import type { CardanoNodeState } from '../../../../common/types/cardanoNode.type
 let syncingInterval = null;
 
 type Props = {
-  cardanoNodeState: CardanoNodeState,
+  cardanoNodeState: ?CardanoNodeState,
   isNodeResponding: boolean,
   isNodeSubscribed: boolean,
   isNodeSyncing: boolean,
@@ -218,7 +218,7 @@ export default class NetworkStatus extends Component<Props, State> {
               <tr>
                 <td>cardanoNodeState:</td>
                 <td>
-                  {cardanoNodeState}
+                  {cardanoNodeState != null ? cardanoNodeState : 'unknown'}
                 </td>
               </tr>
               <tr>
