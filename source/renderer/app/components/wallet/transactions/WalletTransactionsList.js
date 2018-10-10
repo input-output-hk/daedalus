@@ -45,6 +45,7 @@ type Props = {
   assuranceMode: WalletAssuranceMode,
   walletId: string,
   formattedWalletAmount: Function,
+  network: string,
   showMoreTransactionsButton?: boolean,
   onShowMoreTransactions?: Function,
   onOpenExternalLink?: Function,
@@ -151,6 +152,7 @@ export default class WalletTransactionsList extends Component<Props> {
                   <Transaction
                     data={transaction}
                     isLastInList={transactionIndex === group.transactions.length - 1}
+                    network={this.props.network}
                     state={transaction.state}
                     assuranceLevel={transaction.getAssuranceLevelForMode(assuranceMode)}
                     formattedWalletAmount={formattedWalletAmount}

@@ -95,7 +95,7 @@ export default class InstructionsDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, onPrint, inProgress, onOpenExternalLink } = this.props;
+    const { onClose, onPrint, inProgress, onOpenExternalLink, network } = this.props;
     const dialogClasses = classnames([
       styles.component,
       'instructionsDialog',
@@ -115,7 +115,7 @@ export default class InstructionsDialog extends Component<Props> {
       }
     ];
 
-    const openNetworkExplorer = onOpenExternalLink.bind(null, getNetworkExplorerUrl());
+    const openNetworkExplorer = onOpenExternalLink.bind(null, getNetworkExplorerUrl(network));
 
     const cardanoExplorerLink = (
       <span
