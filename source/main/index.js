@@ -5,13 +5,11 @@ import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { Logger } from '../common/logging';
 import { setupLogging } from './utils/setupLogging';
-// import { makeEnvironmentGlobal } from './utils/makeEnvironmentGlobal';
 import { createMainWindow } from './windows/main';
 import { winLinuxMenu } from './menus/win-linux';
 import { osxMenu } from './menus/osx';
 import { installChromeExtensions } from './utils/installChromeExtensions';
 import environment from '../common/environment';
-import { INIT_ENVIRONMENT } from '../common/ipc-api/init-environment';
 import { OPEN_ABOUT_DIALOG_CHANNEL } from '../common/ipc/open-about-dialog';
 import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../common/ipc/go-to-ada-redemption-screen';
 import { GO_TO_NETWORK_STATUS_SCREEN_CHANNEL } from '../common/ipc/go-to-network-status-screen';
@@ -86,7 +84,6 @@ app.on('ready', async () => {
   }
 
   ensureXDGDataIsSet();
-  // makeEnvironmentGlobal(process.env);
   await installChromeExtensions(environment.isDev());
 
   // Detect safe mode
@@ -94,9 +91,6 @@ app.on('ready', async () => {
 
   mainWindow = createMainWindow(isInSafeMode);
   cardanoNode = setupCardano(launcherConfig, mainWindow);
-
-  // send environment to renderer process
-  mainWindow.webContents.send(INIT_ENVIRONMENT, environment);
 
   if (environment.isDev()) {
     // Connect to electron-connect server which restarts / reloads windows on file changes
