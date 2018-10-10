@@ -20,6 +20,10 @@ export default class App extends Component<{
   actions: ActionsMap,
   history: Object,
 }> {
+  componentWillMount() {
+    // loads app's global environment variables over ipc channel
+    this.props.actions.app.initAppEnvironment.trigger();
+  }
   render() {
     const { stores, actions, history } = this.props;
     const { app } = stores;
@@ -27,7 +31,6 @@ export default class App extends Component<{
     const mobxDevTools = environment.MOBX_DEV_TOOLS ? <DevTools /> : null;
     const currentTheme = stores.profile.currentTheme;
     const themeVars = require(`./themes/daedalus/${currentTheme}.js`); // eslint-disable-line
-
     return (
       <div>
         <ThemeManager variables={themeVars} />
