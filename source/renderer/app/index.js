@@ -10,7 +10,6 @@ import ja from 'react-intl/locale-data/ja';
 import { RouterStore, syncHistoryWithStore } from 'mobx-react-router';
 import { hashHistory } from 'react-router';
 import App from './App';
-import environment from '../../common/environment';
 import setupStores from './stores';
 import actions from './actions';
 import utils from './utils';
@@ -30,6 +29,7 @@ const initializeDaedalus = () => {
   const router = new RouterStore();
   const history = syncHistoryWithStore(hashHistory, router);
   const stores = setupStores(api, actions, router);
+  const { app: { environment } } = stores;
 
   window.daedalus = {
     api,
