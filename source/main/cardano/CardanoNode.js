@@ -242,7 +242,7 @@ export class CardanoNode {
       try {
         _node.disconnect();
         this._changeToState(CardanoNodeStates.STOPPING);
-        await promisedCondition(this._isNodeProcessNotRunningAnymore, _config.shutdownTimeout);
+        await this._waitForNodeProcessToExit(_config.shutdownTimeout);
         await this._storeProcessStates();
         this._reset();
         resolve();
@@ -270,7 +270,7 @@ export class CardanoNode {
       try {
         _log.info('CardanoNode: killing cardano-node process.');
         _node.kill();
-        await promisedCondition(this._isNodeProcessNotRunningAnymore, _config.killTimeout);
+        await this._waitForNodeProcessToExit(_config.killTimeout);
         await this._storeProcessStates();
         this._reset();
         resolve();
@@ -317,22 +317,19 @@ export class CardanoNode {
    *
    * @returns {Promise<void>} resolves if the node updated, rejects with error otherwise.
    */
-  expectNodeUpdate(): Promise<void> {
+  async expectNodeUpdate(): Promise<void> {
     const { _log, _config } = this;
     this._changeToState(CardanoNodeStates.UPDATING);
-    return new Promise(async (resolve) => {
-      try {
-        _log.info('CardanoNode: waiting for node to apply update.');
-        await promisedCondition(
-          () => this._state === CardanoNodeStates.UPDATED,
-          _config.updateTimeout
-        );
-        resolve();
-      } catch (stopError) {
-        _log.info('CardanoNode: did not apply update correctly. Killing it.');
-        return await this.kill();
-      }
-    });
+    _log.info('CardanoNode: waiting for node to apply update.');
+    try {
+      await promisedCondition(() => (
+        this._state === CardanoNodeStates.UPDATED
+      ), _config.updateTimeout);
+      await this._waitForNodeProcessToExit(_config.updateTimeout);
+    } catch (error) {
+      _log.info('CardanoNode: did not apply update as expected. Killing it.');
+      return this.kill();
+    }
   }
 
   // ================================= PRIVATE ===================================
@@ -390,14 +387,19 @@ export class CardanoNode {
     await this.restart();
   };
 
-  _handleCardanoNodeExit = (code: number, signal: string) => {
+  _handleCardanoNodeExit = async (code: number, signal: string) => {
     // console.log(`ON EXIT: ${JSON.stringify(this._tlsConfig.ca)}`);
-    const { _log } = this;
+    const { _log, _config } = this;
     _log.info(`CardanoNode: cardano-node exited with: ${code}, ${signal}`);
     if (this._state === CardanoNodeStates.STOPPING) {
       this._changeToState(CardanoNodeStates.STOPPED);
     } else if (this._state === CardanoNodeStates.UPDATING && code === CARDANO_UPDATE_EXIT_CODE) {
-      this._changeToState(CardanoNodeStates.UPDATED);
+      try {
+        await this._waitForNodeProcessToExit(_config.shutdownTimeout);
+        this._changeToState(CardanoNodeStates.UPDATED);
+      } catch (error) {
+        _log.error('CardanoNode: cardano-node process did not exit as expected during update.');
+      }
     } else if (this._state !== CardanoNodeStates.UPDATED) {
       this._changeToState(CardanoNodeStates.CRASHED, code, signal);
     }
@@ -568,5 +570,9 @@ export class CardanoNode {
   );
 
   _isNodeProcessNotRunningAnymore = async () => await this._isNodeProcessStillRunning() === false
+
+  _waitForNodeProcessToExit = async (timeout: number) => (
+    await promisedCondition(this._isNodeProcessNotRunningAnymore, timeout)
+  );
 
 }
