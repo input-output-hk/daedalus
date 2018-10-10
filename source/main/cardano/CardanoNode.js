@@ -58,15 +58,14 @@ export type CardanoNodeConfig = {
   updateTimeout: number, // Milliseconds to wait for cardano-node to update itself
 };
 
+const CARDANO_UPDATE_EXIT_CODE = 20;
 // grab the current network on which Daedalus is running
 const network = String(environment.NETWORK);
 const platform = String(environment.platform);
 // derive storage keys based on current network
 const { PREVIOUS_CARDANO_PID } = deriveStorageKeys(network);
-
 // derive Cardano process name based on current platform
 const { CARDANO_PROCESS_NAME } = deriveProcessNames(platform);
-
 // create store for persisting CardanoNode and Daedalus PID's in fs
 const store = new Store();
 
@@ -397,7 +396,7 @@ export class CardanoNode {
     _log.info(`CardanoNode: cardano-node exited with: ${code}, ${signal}`);
     if (this._state === CardanoNodeStates.STOPPING) {
       this._changeToState(CardanoNodeStates.STOPPED);
-    } else if (this._state === CardanoNodeStates.UPDATING) {
+    } else if (this._state === CardanoNodeStates.UPDATING && code === CARDANO_UPDATE_EXIT_CODE) {
       this._changeToState(CardanoNodeStates.UPDATED);
     } else if (this._state !== CardanoNodeStates.UPDATED) {
       this._changeToState(CardanoNodeStates.CRASHED, code, signal);
