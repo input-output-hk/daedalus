@@ -1,4 +1,5 @@
 // @flow
+import BigNumber from 'bignumber.js';
 import WalletTransaction from '../../domains/WalletTransaction';
 import type { ResponseBase } from '../common/types';
 
@@ -50,6 +51,7 @@ export type GetTransactionsRequest = {
 export type TransactionRequest = {
   accountIndex: number,
   walletId: string,
+  walletBalance: BigNumber,
   address: string,
   amount: number,
   spendingPassword?: ?string,
