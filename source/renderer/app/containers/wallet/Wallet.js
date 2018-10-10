@@ -12,7 +12,6 @@ import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import { WalletSyncStateTags } from '../../domains/Wallet';
-import environment from '../../../../common/environment';
 import AntivirusRestaurationSlowdownNotification
   from '../../components/notifications/AntivirusRestaurationSlowdownNotification';
 
@@ -51,9 +50,10 @@ export default class Wallet extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { wallets, adaRedemption, profile } = stores;
+    const { wallets, adaRedemption, profile, app: { environment } } = stores;
     const { showAdaRedemptionSuccessMessage, amountRedeemed } = adaRedemption;
     const { currentLocale } = profile;
+    const platformIsWindows = (environment.platform === 'win32');
 
     if (!wallets.active) return <MainLayout><LoadingSpinner /></MainLayout>;
 
@@ -85,7 +85,7 @@ export default class Wallet extends Component<Props> {
           />
         ) : null}
         {
-          environment.isWindows() &&
+          platformIsWindows &&
           isRestoreActive &&
           !wallets.hasDiscardedAntivirusRestorationSlowdownNotificationForActiveWallet ? (
             <AntivirusRestaurationSlowdownNotification

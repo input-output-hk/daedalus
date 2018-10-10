@@ -27,11 +27,12 @@ export default class InstructionsDialogContainer extends Component<Props> {
   };
 
   render() {
-    const { wallets } = this.props.stores;
+    const { wallets, app } = this.props.stores;
 
     return (
       <InstructionsDialog
         inProgress={wallets.generatingCertificateInProgress}
+        network={app.environment.NETWORK}
         onPrint={this.onPrint}
         onClose={this.props.onClose}
         onOpenExternalLink={this.props.stores.app.openExternalLink}

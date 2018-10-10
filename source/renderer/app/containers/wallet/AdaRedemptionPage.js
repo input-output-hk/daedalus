@@ -8,7 +8,6 @@ import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import { AdaRedemptionCertificateParseError } from '../../i18n/errors';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import validWords from '../../../../common/valid-words.en';
-import environment from '../../../../common/environment';
 import { ADA_REDEMPTION_TYPES } from '../../types/redemptionTypes';
 import { ROUTES } from '../../routes-config';
 
@@ -36,7 +35,8 @@ export default class AdaRedemptionPage extends Component<Props> {
   };
 
   render() {
-    const { wallets, adaRedemption } = this.props.stores;
+    const { wallets, adaRedemption, app: { environment } } = this.props.stores;
+    const isMainnet = (environment.NETWORK === 'mainnet');
     const {
       redeemAdaRequest, redeemPaperVendedAdaRequest, isCertificateEncrypted, isValidRedemptionKey,
       redemptionType, isValidRedemptionMnemonic, isValidPaperVendRedemptionKey,
@@ -118,7 +118,7 @@ export default class AdaRedemptionPage extends Component<Props> {
           }
           showInputForDecryptionKey={showInputForDecryptionKey}
           showPassPhraseWidget={showPassPhraseWidget}
-          isRedemptionDisclaimerAccepted={environment.isMainnet() || isRedemptionDisclaimerAccepted}
+          isRedemptionDisclaimerAccepted={isMainnet || isRedemptionDisclaimerAccepted}
           onAcceptRedemptionDisclaimer={() => acceptRedemptionDisclaimer.trigger()}
           getSelectedWallet={walletId => wallets.getWalletById(walletId)}
         />
