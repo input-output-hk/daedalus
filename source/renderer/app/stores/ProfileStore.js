@@ -6,10 +6,9 @@ import { ipcRenderer } from 'electron';
 import { includes } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import environment from '../../../common/environment';
 import { THEMES } from '../themes/index';
 import { ROUTES } from '../routes-config';
-import { GET_LOGS, DOWNLOAD_LOGS, COMPRESS_LOGS } from '../../../common/ipc-api';
+import { GET_LOGS, DOWNLOAD_LOGS, COMPRESS_LOGS, GET_APP_ENVIRONMENT } from '../../../common/ipc-api';
 import LocalizableError from '../i18n/LocalizableError';
 import globalMessages from '../i18n/global-messages';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
@@ -26,6 +25,8 @@ export default class SettingsStore extends Store {
     // { value: 'de-DE', label: globalMessages.languageGerman },
     // { value: 'hr-HR', label: globalMessages.languageCroatian },
   ];
+
+  _network: ?string = null;
 
   @observable bigNumberDecimalFormat = {
     decimalSeparator: '.',
@@ -63,10 +64,12 @@ export default class SettingsStore extends Store {
     this.actions.profile.sendBugReport.listen(this._sendBugReport);
     this.actions.profile.resetBugReportDialog.listen(this._resetBugReportDialog);
     this.actions.profile.downloadLogs.listen(this._downloadLogs);
+    this.actions.app.initAppEnvironment.listen(() => {});
     ipcRenderer.on(GET_LOGS.SUCCESS, this._onGetLogsSuccess);
     ipcRenderer.on(DOWNLOAD_LOGS.SUCCESS, this._onDownloadLogsSuccess);
     ipcRenderer.on(COMPRESS_LOGS.SUCCESS, this._onCompressLogsSuccess);
     ipcRenderer.on(COMPRESS_LOGS.ERROR, this._onCompressLogsError);
+    ipcRenderer.on(GET_APP_ENVIRONMENT.SUCCESS, this._onGetAppEnvironmentSuccess);
     this.registerReactions([
       this._setBigNumberFormat,
       this._updateMomentJsLocaleAfterLocaleChange,
@@ -93,6 +96,10 @@ export default class SettingsStore extends Store {
     BigNumber.config({ FORMAT: this.bigNumberDecimalFormat });
   };
 
+  @computed get isMainnet(): boolean {
+    return (this._network === 'mainnet');
+  }
+
   @computed get currentLocale(): string {
     const { result } = this.getProfileLocaleRequest.execute();
     if (this.isCurrentLocaleSet) return result;
@@ -116,7 +123,7 @@ export default class SettingsStore extends Store {
   @computed get currentTheme(): string {
     const { result } = this.getThemeRequest.execute();
     if (this.isCurrentThemeSet) return result;
-    return environment.isMainnet() ? THEMES.DARK_BLUE : THEMES.LIGHT_BLUE; // defaults
+    return this.isMainnet ? THEMES.DARK_BLUE : THEMES.LIGHT_BLUE; // defaults
   }
 
   @computed get isCurrentThemeSet(): boolean {
@@ -134,7 +141,7 @@ export default class SettingsStore extends Store {
   }
 
   @computed get termsOfUse(): string {
-    const network = environment.isMainnet() ? 'mainnet' : 'other';
+    const network = this.isMainnet ? 'mainnet' : 'other';
     return require(`../i18n/locales/terms-of-use/${network}/${this.currentLocale}.md`);
   }
 
@@ -267,6 +274,10 @@ export default class SettingsStore extends Store {
   _getLogs = () => {
     ipcRenderer.send(GET_LOGS.REQUEST);
   };
+
+  _onGetAppEnvironmentSuccess = action((event, environment) => {
+    this._network = environment.NETWORK;
+  });
 
   _onGetLogsSuccess = action((event, files) => {
     this.logFiles = files;

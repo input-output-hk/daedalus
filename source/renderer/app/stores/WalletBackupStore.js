@@ -1,12 +1,14 @@
 // @flow
 import { observable, action, computed } from 'mobx';
+import { ipcRenderer } from 'electron';
 import Store from './lib/Store';
-import environment from '../../../common/environment';
+import { GET_APP_ENVIRONMENT } from '../../../common/ipc-api';
 import WalletBackupDialog from '../components/wallet/WalletBackupDialog';
 import type { walletBackupStep } from '../types/walletBackupTypes';
 import { WALLET_BACKUP_STEPS } from '../types/walletBackupTypes';
 
 export default class WalletBackupStore extends Store {
+  _network: ?string = null;
 
   @observable inProgress = false;
   @observable currentStep: walletBackupStep = WALLET_BACKUP_STEPS.NOT_INITIATED;
@@ -36,7 +38,17 @@ export default class WalletBackupStore extends Store {
     a.restartWalletBackup.listen(this._restartWalletBackup);
     a.cancelWalletBackup.listen(this._cancelWalletBackup);
     a.finishWalletBackup.listen(this._finishWalletBackup);
+    this.actions.app.initAppEnvironment.listen(() => {});
+    ipcRenderer.on(GET_APP_ENVIRONMENT.SUCCESS, this._onGetAppEnvironmentSuccess);
   }
+
+  @computed get isTestnet(): boolean {
+    return (this._network === 'testnet');
+  }
+
+  _onGetAppEnvironmentSuccess = action((event, environment) => {
+    this._network = environment.NETWORK;
+  });
 
   @action _initiateWalletBackup = (params: { recoveryPhrase: Array<string> }) => {
     this.recoveryPhrase = params.recoveryPhrase;
@@ -52,7 +64,7 @@ export default class WalletBackupStore extends Store {
     this.isEntering = false;
     this.isTermDeviceAccepted = false;
     this.isTermRecoveryAccepted = false;
-    this.countdownRemaining = environment.isTest() ? 0 : 10;
+    this.countdownRemaining = this.isTestnet ? 0 : 10;
     if (this.countdownTimerInterval) clearInterval(this.countdownTimerInterval);
     this.countdownTimerInterval = setInterval(() => {
       if (this.countdownRemaining > 0) {
