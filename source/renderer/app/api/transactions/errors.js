@@ -32,6 +32,16 @@ const messages = defineMessages({
     defaultMessage: '!!!Not enough Ada for fees. Try sending a smaller amount.',
     description: '"Not enough Ada for fees. Try sending a smaller amount." error message'
   },
+  notEnoughFundsForTransactionError: {
+    id: 'api.errors.NotEnoughFundsForTransactionError',
+    defaultMessage: '!!!Not enough Ada. Try sending a smaller amount.',
+    description: '"Not enough Ada. Try sending a smaller amount." error message'
+  },
+  canNotCalculateTransactionFeesError: {
+    id: 'api.errors.CanNotCalculateTransactionFeesError',
+    defaultMessage: '!!!Cannot calculate fees while there are pending transactions.',
+    description: '"Cannot calculate fees while there are pending transactions." error message'
+  },
 });
 
 export class NotAllowedToSendMoneyToSameAddressError extends LocalizableError {
@@ -84,6 +94,24 @@ export class NotEnoughFundsForTransactionFeesError extends LocalizableError {
     super({
       id: messages.notEnoughFundsForTransactionFeesError.id,
       defaultMessage: messages.notEnoughFundsForTransactionFeesError.defaultMessage,
+    });
+  }
+}
+
+export class NotEnoughFundsForTransactionError extends LocalizableError {
+  constructor() {
+    super({
+      id: messages.notEnoughFundsForTransactionError.id,
+      defaultMessage: messages.notEnoughFundsForTransactionError.defaultMessage,
+    });
+  }
+}
+
+export class CanNotCalculateTransactionFeesError extends LocalizableError {
+  constructor() {
+    super({
+      id: messages.canNotCalculateTransactionFeesError.id,
+      defaultMessage: messages.canNotCalculateTransactionFeesError.defaultMessage,
     });
   }
 }
