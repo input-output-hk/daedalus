@@ -82,11 +82,6 @@ export const messages = defineMessages({
     defaultMessage: '!!!Please enter a title with at least 3 characters.',
     description: 'Error message shown when invalid transaction title was entered.',
   },
-  transactionFeeError: {
-    id: 'wallet.send.form.transactionFeeError',
-    defaultMessage: '!!!Not enough Ada for fees. Try sending a smaller amount.',
-    description: '"Not enough Ada for fees. Try sending a smaller amount." error message',
-  },
   syncingTransactionsMessage: {
     id: 'wallet.send.form.syncingTransactionsMessage',
     defaultMessage: '!!!This wallet is currently being synced with the blockchain. While synchronisation is in progress transacting is not possible and transaction history is not complete.',
@@ -345,7 +340,7 @@ export default class WalletSendForm extends Component<Props, State> {
         this.setState({
           isTransactionFeeCalculated: false,
           transactionFee: new BigNumber(0),
-          transactionFeeError: this.context.intl.formatMessage(error)
+          transactionFeeError: this.context.intl.formatMessage(error),
         });
       }
     }
