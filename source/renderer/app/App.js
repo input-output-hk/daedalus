@@ -7,7 +7,6 @@ import { Router } from 'react-router';
 import { IntlProvider } from 'react-intl';
 import { Routes } from './Routes';
 import { daedalusTheme } from './themes/daedalus';
-import environment from '../../common/environment';
 import translations from './i18n/translations';
 import type { StoresMap } from './stores/index';
 import type { ActionsMap } from './actions/index';
@@ -27,10 +26,12 @@ export default class App extends Component<{
   render() {
     const { stores, actions, history } = this.props;
     const { app } = stores;
+    const { environment } = app;
     const locale = stores.profile.currentLocale;
-    const mobxDevTools = environment.MOBX_DEV_TOOLS ? <DevTools /> : null;
+    const mobxDevTools = environment && environment.MOBX_DEV_TOOLS ? <DevTools /> : null;
     const currentTheme = stores.profile.currentTheme;
     const themeVars = require(`./themes/daedalus/${currentTheme}.js`); // eslint-disable-line
+
     return (
       <div>
         <ThemeManager variables={themeVars} />
