@@ -7,8 +7,7 @@ import { buildRoute } from '../utils/routing';
 import { OPEN_ABOUT_DIALOG_CHANNEL } from '../../../common/ipc/open-about-dialog';
 import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../../../common/ipc/go-to-ada-redemption-screen';
 import { GO_TO_NETWORK_STATUS_SCREEN_CHANNEL } from '../../../common/ipc/go-to-network-status-screen';
-import { GET_GPU_STATUS } from '../../../common/ipc-api';
-import { INIT_ENVIRONMENT } from '../../../common/ipc-api/init-environment';
+import { GET_GPU_STATUS, GET_APP_ENVIRONMENT } from '../../../common/ipc-api';
 import { ROUTES } from '../routes-config';
 import type { GpuStatus } from '../types/gpuStatus';
 
@@ -17,19 +16,19 @@ export default class AppStore extends Store {
   @observable error: ?LocalizableError = null;
   @observable isAboutDialogOpen = false;
   @observable gpuStatus: ?GpuStatus = null;
-  @observable enviroment: ?Object = null;
+  @observable environment: ?Object = null;
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
     this.actions.app.openAboutDialog.listen(this._openAboutDialog);
     this.actions.app.closeAboutDialog.listen(this._closeAboutDialog);
     this.actions.app.getGpuStatus.listen(this._getGpuStatus);
-    this.actions.app.initEnvironment.listen(this._initEnvironment);
+    this.actions.app.initAppEnvironment.listen(this._getAppEnvironment);
     ipcRenderer.on(OPEN_ABOUT_DIALOG_CHANNEL, this._openAboutDialog);
     ipcRenderer.on(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
     ipcRenderer.on(GO_TO_NETWORK_STATUS_SCREEN_CHANNEL, this._goToNetworkStatusScreen);
     ipcRenderer.on(GET_GPU_STATUS.SUCCESS, this._onGetGpuStatusSuccess);
-    ipcRenderer.on(INIT_ENVIRONMENT, this._initEnvironment);
+    ipcRenderer.on(GET_APP_ENVIRONMENT.SUCCESS, this._onGetAppEnvironmentSuccess);
   }
 
   teardown() {
@@ -52,6 +51,14 @@ export default class AppStore extends Store {
 
   _onGetGpuStatusSuccess = action((event, status) => {
     this.gpuStatus = status;
+  });
+
+  _getAppEnvironment = () => {
+    ipcRenderer.send(GET_APP_ENVIRONMENT.REQUEST);
+  }
+
+  _onGetAppEnvironmentSuccess = action((event, environment) => {
+    this.environment = environment;
   });
 
   _updateRouteLocation = (options: { route: string, params: ?Object }) => {
@@ -81,10 +88,6 @@ export default class AppStore extends Store {
     if (isConnected && isSynced && hasLoadedWallets && !this.isSetupPage) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.ADA_REDEMPTION });
     }
-  };
-
-  @action _initEnvironment = (environment: Object) => {
-    this.environment = environment;
   };
 
   @computed get isNetworkStatusPage(): boolean {
