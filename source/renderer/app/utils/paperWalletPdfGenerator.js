@@ -9,7 +9,6 @@ import paperWalletPage1PathTestnet from '../assets/pdf/paper-wallet-certificate-
 import paperWalletPage2Path from '../assets/pdf/paper-wallet-certificate-page-2.png';
 import paperWalletPage2PathTestnet from '../assets/pdf/paper-wallet-certificate-page-2-testnet.png';
 import paperWalletCertificateBgPath from '../assets/pdf/paper-wallet-certificate-background.png';
-import environment from '../../../common/environment';
 import { loadAssetChannel } from '../ipc/loadAsset';
 
 const messages = defineMessages({
@@ -45,12 +44,14 @@ type DownloadPaperWalletCertificateParams = {
   filePath: string,
   mnemonics: Array<string>,
   intl: Object,
+  isMainnet: boolean,
+  buildLabel: string
 };
 
 export const downloadPaperWalletCertificate = async (
-  { address, mnemonics, intl, filePath }: DownloadPaperWalletCertificateParams
+  { address, mnemonics, intl, filePath, isMainnet, buildLabel }:
+  DownloadPaperWalletCertificateParams
 ) => {
-  const { getBuildLabel, isMainnet } = environment;
   const qrCodeImage = qr.imageSync(address, { type: 'png', size: 10, ec_level: 'L', margin: 0 });
   const textColor = '#3b5c9b';
 
@@ -95,7 +96,7 @@ export const downloadPaperWalletCertificate = async (
 
   // first page
   const page1Uri = await loadImageUriFromPath(
-    isMainnet() ? paperWalletPage1Path : paperWalletPage1PathTestnet
+    isMainnet ? paperWalletPage1Path : paperWalletPage1PathTestnet
   );
   doc.image(page1Uri, 0, 0, { fit: [width, height] });
   doc.rotate(180, { origin: [width / 2, height / 2] });
@@ -110,7 +111,7 @@ export const downloadPaperWalletCertificate = async (
   // second page
   doc.addPage();
   const page2Uri = await loadImageUriFromPath(
-    isMainnet() ? paperWalletPage2Path : paperWalletPage2PathTestnet
+    isMainnet ? paperWalletPage2Path : paperWalletPage2PathTestnet
   );
   doc.image(page2Uri, 0, 0, { fit: [width, height] });
   doc.rotate(180, { origin: [width / 2, height / 2] });
@@ -140,7 +141,7 @@ export const downloadPaperWalletCertificate = async (
   doc.text(printMnemonic(16), 344, 602);
   doc.text(printMnemonic(17), 388, 602);
 
-  doc.fontSize(7).text(getBuildLabel(), (width - 270) / 2, 705, { width: 270, align: 'left' });
+  doc.fontSize(7).text(buildLabel, (width - 270) / 2, 705, { width: 270, align: 'left' });
   doc.rotate(-180, { origin: [width / 2, height / 2] });
   /* eslint-enable max-len */
 
