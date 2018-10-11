@@ -51,8 +51,11 @@ const messages = defineMessages({
 });
 
 type Props = {
-  environment: Object,
+  apiVersion: string,
+  build: string,
   onOpenExternalLink: Function,
+  os: string,
+  version: string
 };
 
 export default class About extends Component<Props> {
@@ -62,10 +65,8 @@ export default class About extends Component<Props> {
   };
 
   render() {
-
     const { intl } = this.context;
-    const { onOpenExternalLink, environment } = this.props;
-    const { version, build, os, API_VERSION } = environment;
+    const { apiVersion, build, onOpenExternalLink, os, version } = this.props;
 
     const apiName = intl.formatMessage(globalMessages.apiName);
     const apiIcon = cardanoIcon;
@@ -89,7 +90,7 @@ export default class About extends Component<Props> {
             <div className={styles.daedalusBuildInfo}>
               <FormattedHTMLMessage
                 {...messages.aboutBuildInfo}
-                values={{ platform: os, build, apiName, apiVersion: API_VERSION }}
+                values={{ platform: os, build, apiName, apiVersion }}
               />
             </div>
           </div>
