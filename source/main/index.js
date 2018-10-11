@@ -62,6 +62,7 @@ const restartWithoutSafeMode = async () => {
   safeExitWithCode(22);
 };
 
+const { isDev, isProduction, isMacOS, isWindows } = environment;
 const menuActions = {
   openAbout,
   goToAdaRedemption,
@@ -71,10 +72,8 @@ const menuActions = {
 };
 
 app.on('ready', async () => {
-  const isProd = process.env.NODE_ENV === 'production';
   const isStartedByLauncher = !!process.env.LAUNCHER_CONFIG;
-  if (isProd && !isStartedByLauncher) {
-    const isWindows = process.platform === 'win32';
+  if (isProduction && !isStartedByLauncher) {
     const dialogTitle = 'Daedalus improperly started!';
     const dialogMessage = isWindows ?
       'Please start Daedalus using the icon in the Windows start menu or using Daedalus icon on your desktop.' :
@@ -84,7 +83,7 @@ app.on('ready', async () => {
   }
 
   ensureXDGDataIsSet();
-  await installChromeExtensions(environment.isDev());
+  await installChromeExtensions(isDev);
 
   // Detect safe mode
   const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
@@ -92,14 +91,13 @@ app.on('ready', async () => {
   mainWindow = createMainWindow(isInSafeMode);
   cardanoNode = setupCardano(launcherConfig, mainWindow);
 
-  if (environment.isDev()) {
-    // Connect to electron-connect server which restarts / reloads windows on file changes
-    client.create(mainWindow);
-  }
+  // If NODE_ENV is running in development mode,
+  // Connect to electron-connect server which restarts / reloads windows on file changes
+  if (isDev) { client.create(mainWindow); }
 
   // Build app menus
   let menu;
-  if (process.platform === 'darwin') {
+  if (isMacOS) {
     menu = Menu.buildFromTemplate(osxMenu(app, mainWindow, menuActions, isInSafeMode));
     Menu.setApplicationMenu(menu);
   } else {
@@ -108,7 +106,7 @@ app.on('ready', async () => {
   }
 
   // Hide application window on Cmd+H hotkey (OSX only!)
-  if (process.platform === 'darwin') {
+  if (isMacOS) {
     app.on('activate', () => {
       if (!mainWindow.isVisible()) app.show();
     });
