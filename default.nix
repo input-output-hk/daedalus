@@ -68,6 +68,7 @@ let
     };
     iconPath = {
       # the target of these paths must not be a symlink
+      demo    = ./installers/icons/staging.iconset/icon_512x512.png;
       mainnet = ./installers/icons/mainnet/1024x1024.png;
       staging = ./installers/icons/staging.iconset/icon_512x512.png;
       testnet = ./installers/icons/testnet.iconset/icon_512x512.png;
