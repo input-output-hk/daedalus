@@ -80,6 +80,7 @@ let
       systemStartString = builtins.toString systemStart;
     in ''
       ${localLib.optionalString pkgs.stdenv.isLinux "export XDG_DATA_HOME=$HOME/.local/share"}
+      cp -f ${daedalusPkgs.iconPath.${cluster}} $DAEDALUS_DIR/icon.png
       ln -svf $(type -P cardano-node)
       ${pkgs.lib.optionalString autoStartBackend ''
         for x in wallet-topology.yaml configuration.yaml mainnet-genesis-dryrun-with-stakeholders.json ; do
