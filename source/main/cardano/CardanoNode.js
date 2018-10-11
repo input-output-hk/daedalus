@@ -296,14 +296,13 @@ export class CardanoNode {
   async restart(isForced: boolean = false): Promise<void> {
     const { _log, _config } = this;
     try {
-      try {
-        await this._waitForNodeProcessToExit(_config.shutdownTimeout);
-      } catch (_) {
+      if (await this._canBeStopped()) {
         _log.info('CardanoNode#restart: stopping current node.');
         await this.stop();
       }
       _log.info(`CardanoNode#restart: restarting node with previous config (isForced: ${isForced.toString()}).`);
-      await this.start(this._config, isForced);
+      await this._waitForCardanoToExitOrKillIt();
+      await this.start(_config, isForced);
     } catch (error) {
       _log.info(`CardanoNode#restart: Could not restart cardano-node "${error}"`);
       return Promise.reject(error);
@@ -490,12 +489,7 @@ export class CardanoNode {
     }
   };
 
-  _canBeStopped = async (): Promise<boolean> => (
-    this._node != null ||
-    this._isAwake() ||
-    !this._isNodeExiting() ||
-    await this._isNodeProcessStillRunning()
-  );
+  _canBeStopped = async (): Promise<boolean> => this._isAwake() && !this._isNodeExiting();
 
   _ensureProcessIsNotRunning = async (pid: number, name: string) => {
     const { _log } = this;
@@ -511,6 +505,13 @@ export class CardanoNode {
       }
     }
     this._log.info(`No ${name} process (PID: ${pid}) is running.`);
+  };
+
+  _ensureCurrentCardanoNodeIsNotRunning = async (): Promise<void> => {
+    const { _log, _node } = this;
+    _log.info('CardanoNode: checking if current cardano-node process is still running');
+    if (_node == null) { return Promise.resolve(); }
+    return await this._ensureProcessIsNotRunning(_node.pid, CARDANO_PROCESS_NAME);
   };
 
   _ensurePreviousCardanoNodeIsNotRunning = async (): Promise<void> => {
@@ -615,5 +616,15 @@ export class CardanoNode {
   _waitForNodeProcessToExit = async (timeout: number) => (
     await promisedCondition(this._isNodeProcessNotRunningAnymore, timeout)
   );
+
+  _waitForCardanoToExitOrKillIt = async () => {
+    const { _config } = this;
+    if (this._isNodeProcessNotRunningAnymore()) return Promise.resolve();
+    try {
+      await this._waitForNodeProcessToExit(_config.shutdownTimeout);
+    } catch (_) {
+      await this._ensureCurrentCardanoNodeIsNotRunning();
+    }
+  }
 
 }
