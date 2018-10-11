@@ -28,7 +28,7 @@ export default class WalletAddPage extends Component<Props> {
     const { actions, stores } = this.props;
     const { wallets, uiDialogs, app } = stores;
     const { isRestoreActive } = wallets;
-    const { environment } = app;
+    const { environment: { isMainnet } } = app;
 
     let content = null;
 
@@ -43,7 +43,7 @@ export default class WalletAddPage extends Component<Props> {
     } else {
       content = (
         <WalletAdd
-          isMainnet={(environment.NETWORK === 'mainnet')}
+          isMainnet={isMainnet}
           onCreate={() => actions.dialogs.open.trigger({ dialog: WalletCreateDialog })}
           onRestore={() => actions.dialogs.open.trigger({ dialog: WalletRestoreDialog })}
           onImportFile={() => actions.dialogs.open.trigger({ dialog: WalletFileImportDialog })}

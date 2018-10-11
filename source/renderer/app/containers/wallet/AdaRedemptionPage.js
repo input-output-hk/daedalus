@@ -36,7 +36,7 @@ export default class AdaRedemptionPage extends Component<Props> {
 
   render() {
     const { wallets, adaRedemption, app: { environment } } = this.props.stores;
-    const isMainnet = (environment.NETWORK === 'mainnet');
+    const { isMainnet } = environment;
     const {
       redeemAdaRequest, redeemPaperVendedAdaRequest, isCertificateEncrypted, isValidRedemptionKey,
       redemptionType, isValidRedemptionMnemonic, isValidPaperVendRedemptionKey,

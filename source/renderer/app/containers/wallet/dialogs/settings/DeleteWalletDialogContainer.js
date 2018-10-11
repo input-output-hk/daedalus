@@ -18,14 +18,14 @@ export default class DeleteWalletDialogContainer extends Component<Props> {
     const { updateDataForActiveDialog } = actions.dialogs;
     const activeWallet = wallets.active;
     const { deleteWalletRequest } = wallets;
-    const { environment } = app;
+    const { environment: { isTest } } = app;
 
     // Guard against potential null values
     if (!activeWallet) throw new Error('Active wallet required for DeleteWalletDialogContainer.');
 
     return (
       <DeleteWalletConfirmationDialog
-        isTestnet={(environment.current === environment.TEST)}
+        isTest={isTest}
         walletName={activeWallet.name}
         hasWalletFunds={activeWallet.hasFunds}
         countdownFn={uiDialogs.countdownSinceDialogOpened}

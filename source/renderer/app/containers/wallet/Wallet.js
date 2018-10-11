@@ -53,7 +53,7 @@ export default class Wallet extends Component<Props> {
     const { wallets, adaRedemption, profile, app: { environment } } = stores;
     const { showAdaRedemptionSuccessMessage, amountRedeemed } = adaRedemption;
     const { currentLocale } = profile;
-    const platformIsWindows = (environment.platform === 'win32');
+    const { isWindows } = environment;
 
     if (!wallets.active) return <MainLayout><LoadingSpinner /></MainLayout>;
 
@@ -85,7 +85,7 @@ export default class Wallet extends Component<Props> {
           />
         ) : null}
         {
-          platformIsWindows &&
+          isWindows &&
           isRestoreActive &&
           !wallets.hasDiscardedAntivirusRestorationSlowdownNotificationForActiveWallet ? (
             <AntivirusRestaurationSlowdownNotification
