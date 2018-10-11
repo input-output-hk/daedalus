@@ -1,4 +1,5 @@
 // @flow
+import { ipcRenderer } from 'electron';
 import { observable, action, computed, runInAction } from 'mobx';
 import { get, chunk, find } from 'lodash';
 import Store from './lib/Store';
@@ -11,6 +12,7 @@ import { mnemonicToSeedHex } from '../utils/crypto';
 import { downloadPaperWalletCertificate } from '../utils/paperWalletPdfGenerator';
 import { buildRoute, matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
+import { GET_APP_ENVIRONMENT } from '../../../common/ipc-api';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 
@@ -57,8 +59,9 @@ export default class WalletsStore extends Store {
     mnemonic: '',
     spendingPassword: null,
   };
-
   _pollingBlocked = false;
+  _isMainnet = false;
+  _buildLabel = '';
 
   setup() {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
@@ -71,7 +74,7 @@ export default class WalletsStore extends Store {
       this._updateActiveWalletOnRouteChanges,
     ]);
 
-    const { router, walletBackup, wallets } = this.actions;
+    const { router, walletBackup, wallets, app } = this.actions;
     wallets.createWallet.listen(this._create);
     wallets.deleteWallet.listen(this._deleteWallet);
     wallets.sendMoney.listen(this._sendMoney);
@@ -85,6 +88,8 @@ export default class WalletsStore extends Store {
     wallets.finishCertificate.listen(this._finishCertificate);
     router.goToRoute.listen(this._onRouteChange);
     walletBackup.finishWalletBackup.listen(this._finishCreation);
+    app.initAppEnvironment.listen(() => {});
+    ipcRenderer.on(GET_APP_ENVIRONMENT.SUCCESS, this._onGetAppEnvironmentSuccess);
   }
 
   _create = async (params: {
@@ -549,12 +554,16 @@ export default class WalletsStore extends Store {
   ) => {
     const locale = this.stores.profile.currentLocale;
     const intl = i18nContext(locale);
+    const isMainnet = this._isMainnet;
+    const buildLabel = this._buildLabel;
     try {
       await downloadPaperWalletCertificate({
         address,
         mnemonics: recoveryPhrase,
         intl,
-        filePath
+        filePath,
+        isMainnet,
+        buildLabel
       });
       runInAction('handle successful certificate download', () => {
         // Reset progress
@@ -573,6 +582,11 @@ export default class WalletsStore extends Store {
 
   _updateCertificateCreationState = action((state: boolean) => {
     this.generatingCertificateInProgress = state;
+  });
+
+  _onGetAppEnvironmentSuccess = action((event, { isMainnet, BUILD_LABEL }) => {
+    this._isMainnet = isMainnet;
+    this._buildLabel = BUILD_LABEL;
   });
 
   @action _setCertificateTemplate = (params: {

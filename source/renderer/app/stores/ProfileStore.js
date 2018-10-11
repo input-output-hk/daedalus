@@ -26,7 +26,16 @@ export default class SettingsStore extends Store {
     // { value: 'hr-HR', label: globalMessages.languageCroatian },
   ];
 
-  _network: ?string = null;
+  _environment = {
+    network: '',
+    isMainnet: false,
+    version: '',
+    os: '',
+    apiVersion: '',
+    build: '',
+    installerVersion: '',
+    reportURL: '',
+  };
 
   @observable bigNumberDecimalFormat = {
     decimalSeparator: '.',
@@ -96,10 +105,6 @@ export default class SettingsStore extends Store {
     BigNumber.config({ FORMAT: this.bigNumberDecimalFormat });
   };
 
-  @computed get isMainnet(): boolean {
-    return (this._network === 'mainnet');
-  }
-
   @computed get currentLocale(): string {
     const { result } = this.getProfileLocaleRequest.execute();
     if (this.isCurrentLocaleSet) return result;
@@ -123,7 +128,7 @@ export default class SettingsStore extends Store {
   @computed get currentTheme(): string {
     const { result } = this.getThemeRequest.execute();
     if (this.isCurrentThemeSet) return result;
-    return this.isMainnet ? THEMES.DARK_BLUE : THEMES.LIGHT_BLUE; // defaults
+    return this._environment.isMainnet ? THEMES.DARK_BLUE : THEMES.LIGHT_BLUE; // defaults
   }
 
   @computed get isCurrentThemeSet(): boolean {
@@ -141,7 +146,7 @@ export default class SettingsStore extends Store {
   }
 
   @computed get termsOfUse(): string {
-    const network = this.isMainnet ? 'mainnet' : 'other';
+    const network = this._environment.isMainnet ? 'mainnet' : 'other';
     return require(`../i18n/locales/terms-of-use/${network}/${this.currentLocale}.md`);
   }
 
@@ -276,7 +281,16 @@ export default class SettingsStore extends Store {
   };
 
   _onGetAppEnvironmentSuccess = action((event, environment) => {
-    this._network = environment.NETWORK;
+    this._environment = {
+      network: environment.NETWORK,
+      isMainnet: environment.isMainnet,
+      version: environment.version,
+      os: environment.os,
+      apiVersion: environment.API_VERSION,
+      build: environment.build,
+      installerVersion: environment.installerVersion,
+      reportURL: environment.REPORT_URL
+    };
   });
 
   _onGetLogsSuccess = action((event, files) => {
@@ -320,8 +334,10 @@ export default class SettingsStore extends Store {
     compressedLogsFile: ?string,
   }) => {
     this.isSubmittingBugReport = true;
+    const { isMainnet, ...restEnvironment } = this._environment;
     this.sendBugReport.execute({
-      email, subject, problem, compressedLogsFile,
+      requestFormData: { email, subject, problem, compressedLogsFile },
+      environmentData: { ...restEnvironment }
     })
       .then(action(() => {
         this._resetBugReportDialog();
