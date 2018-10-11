@@ -52,7 +52,7 @@ type Props = {
   onCancel: Function,
   onConfirmationValueChange: Function,
   isSubmitting: boolean,
-  isTestnet: boolean
+  isTest: boolean
 };
 
 @observer
@@ -79,10 +79,10 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
       confirmationValue,
       onConfirmationValueChange,
       isSubmitting,
-      isTestnet
+      isTest
     } = this.props;
 
-    const countdownRemaining = countdownFn(isTestnet ? 0 : DELETE_WALLET_COUNTDOWN);
+    const countdownRemaining = countdownFn(isTest ? 0 : DELETE_WALLET_COUNTDOWN);
     const countdownDisplay = countdownRemaining > 0 ? ` (${countdownRemaining})` : '';
     const isCountdownFinished = countdownRemaining <= 0;
     const isWalletNameConfirmationCorrect = confirmationValue === walletName;
