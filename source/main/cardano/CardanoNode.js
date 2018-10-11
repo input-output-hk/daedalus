@@ -1,18 +1,14 @@
 // @flow
 import Store from 'electron-store';
-import type { spawn, ChildProcess } from 'child_process';
+import type { ChildProcess, spawn } from 'child_process';
 import type { WriteStream } from 'fs';
 import psList from 'ps-list';
 import { isObject, toInteger } from 'lodash';
 import environment from '../../common/environment';
 import type { CardanoNodeState, TlsConfig } from '../../common/types/cardanoNode.types';
-import { promisedCondition, deriveStorageKeys, deriveProcessNames } from './utils';
 import { CardanoNodeStates } from '../../common/types/cardanoNode.types';
-
-type Process = {
-  pid: number,
-  name: string,
-};
+import type { Process } from './utils';
+import { deriveProcessNames, deriveStorageKeys, getProcess, promisedCondition } from './utils';
 
 type Logger = {
   debug: (string) => void,
@@ -525,21 +521,13 @@ export class CardanoNode {
   _isProcessRunning = async (previousPID: number, processName: string): Promise<boolean> => {
     const { _log } = this;
     try {
-      // retrieves all running processes
-      const runningProcesses: Array<Process> = await psList();
-      // filters running processes against previous PID
-      const matchingProcesses: Array<Process> =
-        runningProcesses.filter(({ pid }) => previousPID === pid);
-      // return false if no processes exist with a matching PID
-      if (!matchingProcesses.length) {
+      const previousProcess = await getProcess(previousPID, processName);
+      if (!previousProcess) {
         _log.debug(`CardanoNode: No previous ${processName} process is running anymore.`);
         return false;
       }
-      // pull first result
-      const previousProcess: Process = matchingProcesses[0];
-      // check name of process to identify cardano-node or Daedalus
-      _log.debug(`CardanoNode: previous ${processName} process found: ${JSON.stringify(previousProcess)} - expecting to match against process name: ${processName} (${(previousProcess.name === processName) ? 'MATCH' : 'NO-MATCH'})`);
-      return (isObject(previousProcess) && previousProcess.name === processName);
+      _log.debug(`CardanoNode: previous ${processName} process found: ${JSON.stringify(previousProcess)}`);
+      return true;
     } catch (error) {
       return false;
     }

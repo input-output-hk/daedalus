@@ -1,14 +1,25 @@
 // @flow
+import psList from 'ps-list';
+import { isObject } from 'lodash';
+import type {
+  CardanoNodeStorageKeys,
+  NetworkNames,
+  PlatformNames,
+  ProcessNames
+} from '../../common/types/cardanoNode.types';
 import {
   CardanoProcessNameOptions,
   NetworkNameOptions
 } from '../../common/types/cardanoNode.types';
-import type {
-  CardanoNodeStorageKeys,
-  ProcessNames,
-  NetworkNames,
-  PlatformNames
-} from '../../common/types/cardanoNode.types';
+
+export type Process = {
+  pid: number,
+  name: string,
+  cmd: string,
+  ppid?: number,
+  cpu: number,
+  memore: number,
+};
 
 const checkCondition = async (
   condition: () => boolean,
@@ -47,3 +58,23 @@ export const deriveStorageKeys = (network: NetworkNames): CardanoNodeStorageKeys
 export const deriveProcessNames = (platform: PlatformNames): ProcessNames => ({
   CARDANO_PROCESS_NAME: CardanoProcessNameOptions[platform] || 'cardano-node'
 });
+
+export const getProcess = async (processId: number, processName: string): Promise<?Process> => {
+  try {
+    // retrieves all running processes
+    const runningProcesses: Array<Process> = await psList();
+    // filters running processes against given pid
+    const matchingProcesses: Array<Process> = runningProcesses.filter(({ pid }) => (
+      pid === processId
+    ));
+    // no processes exist with a matching PID
+    if (!matchingProcesses.length) return null;
+    // Return first matching process if names match
+    const previousProcess: Process = matchingProcesses[0];
+    if (isObject(previousProcess) && previousProcess.name === processName) {
+      return previousProcess;
+    }
+  } catch (error) {
+    return null;
+  }
+};
