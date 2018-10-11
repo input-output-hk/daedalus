@@ -20,12 +20,12 @@ import { setupApi } from './api/index';
 
 // run MobX in strict mode
 useStrict(true);
-
-// https://github.com/yahoo/react-intl/wiki#loading-locale-data
-addLocaleData([en, de, hr, ja]);
+addLocaleData([en, de, hr, ja]); // https://github.com/yahoo/react-intl/wiki#loading-locale-data
+const { NODE_ENV, NETWORK } = window.process.env;
+const isTest = NODE_ENV === 'test';
 
 const initializeDaedalus = () => {
-  const api = setupApi();
+  const api = setupApi(isTest, String(NETWORK));
   const router = new RouterStore();
   const history = syncHistoryWithStore(hashHistory, router);
   const stores = setupStores(api, actions, router);
