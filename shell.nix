@@ -61,7 +61,7 @@ let
     rm $out/wallet-topology.yaml
     cp ${demoTopologyYaml} $out/wallet-topology.yaml
   '';
-  daedalusShell = pkgs.stdenv.mkDerivation {
+  daedalusShell = pkgs.stdenv.mkDerivation (rec {
     name = "daedalus";
     buildInputs = [ nodejs yarn ] ++ (with pkgs; [
       nix bash binutils coreutils curl gnutar
@@ -73,14 +73,19 @@ let
     ]));
     LAUNCHER_CONFIG = launcherConfig';
     DAEDALUS_CONFIG = if (cluster == "demo") then demoConfig else "${daedalusPkgs.daedalus.cfg}/etc/";
-    DAEDALUS_DIR = "./";
+    DAEDALUS_INSTALL_DIRECTORY = "./";
+    DAEDALUS_DIR = DAEDALUS_INSTALL_DIRECTORY;
     CLUSTER = cluster;
     shellHook = let
       secretsDir = if pkgs.stdenv.isLinux then "Secrets" else "Secrets-1.0";
       systemStartString = builtins.toString systemStart;
     in ''
+      if ! test -x "$(type -P cardano-node)"
+      then echo "WARNING: cardano-node not in $PATH" >&2; fi
+      if   test -z "${systemStartString}"
+      then echo "WARNING: --arg systemStart wasn't passed, cardano won't be able to connect to the demo cluster!" >&2; fi
       ${localLib.optionalString pkgs.stdenv.isLinux "export XDG_DATA_HOME=$HOME/.local/share"}
-      cp -f ${daedalusPkgs.iconPath.${cluster}} $DAEDALUS_DIR/icon.png
+      cp -f ${daedalusPkgs.iconPath.${cluster}} $DAEDALUS_INSTALL_DIRECTORY/icon.png
       ln -svf $(type -P cardano-node)
       ${pkgs.lib.optionalString autoStartBackend ''
         for x in wallet-topology.yaml configuration.yaml mainnet-genesis-dryrun-with-stakeholders.json ; do
@@ -110,7 +115,7 @@ let
           echo ${launcher-config.tlsPath}
         ''
       }
-      export DAEDALUS_INSTALL_DIRECTORY="$DAEDALUS_DIR"
+      export DAEDALUS_INSTALL_DIRECTORY
       export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${nodejs}/include/node"
       yarn install
       ln -svf ${pkgs.electron}/bin/electron ./node_modules/electron/dist/electron
@@ -121,7 +126,7 @@ let
       echo "yarn dev"
       ''}
     '';
-  };
+  });
   daedalus = daedalusShell.overrideAttrs (oldAttrs: {
     shellHook = ''
        if [ ! -f "$CARDANO_TLS_PATH/ca.crt" ] || [ ! -f "tls/client/ca.crt" ]
