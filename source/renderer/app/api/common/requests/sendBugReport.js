@@ -2,7 +2,6 @@
 import moment from 'moment';
 import url from 'url';
 import { request } from '../../utils/reportRequest';
-import environment from '../../../../../common/environment';
 
 export type SendBugReportParams = {
   requestFormData: {
@@ -11,18 +10,26 @@ export type SendBugReportParams = {
     problem: string,
     compressedLogsFile: string,
   },
+  environmentData: {
+    network: string,
+    version: string,
+    os: string,
+    apiVersion: string,
+    build: string,
+    installerVersion: string,
+    reportURL: string,
+  }
 };
 
 export const sendBugReport = (
-  { requestFormData }: SendBugReportParams
+  { requestFormData, environmentData }: SendBugReportParams
 ) => {
   const { email, subject, problem, compressedLogsFile } = requestFormData;
-  const { version, os, API_VERSION, NETWORK, build, getInstallerVersion, REPORT_URL } = environment;
-  const reportUrl = url.parse(REPORT_URL);
-  const { hostname, port } = reportUrl;
-
+  const { version, os, apiVersion, network, build, installerVersion, reportURL } = environmentData;
+  const parsedReportURL = url.parse(reportURL);
+  const { hostname, port } = parsedReportURL;
   // Report server recognizes the following networks: mainnet, staging and testnet
-  const network = NETWORK === 'development' ? 'staging' : NETWORK;
+  const serverNetwork = network === 'development' ? 'staging' : network;
 
   return request({
     hostname,
@@ -32,10 +39,10 @@ export const sendBugReport = (
   }, {
     product: 'Daedalus Wallet',
     frontendVersion: version,
-    backendVersion: API_VERSION,
-    network,
+    backendVersion: apiVersion,
+    network: serverNetwork,
     build,
-    installerVersion: getInstallerVersion(),
+    installerVersion,
     os,
     compressedLogsFile,
     date: moment().format('YYYY-MM-DDTHH:mm:ss'),
