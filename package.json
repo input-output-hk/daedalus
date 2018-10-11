@@ -7,7 +7,7 @@
   "scripts": {
     "build": "gulp build",
     "start": "gulp start",
-    "start:watch": "gulp start:watch",
+    "start:dev": "NODE_ENV=development gulp start",
     "dev": "gulp dev",
     "test": "gulp test",
     "test:watch": "gulp test:watch",
