@@ -18,10 +18,12 @@ import { UNSYNCED_BLOCKS_ALLOWED } from '../../config/numbersConfig';
 import closeCross from '../../assets/images/close-cross.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
 import styles from './NetworkStatus.scss';
+import type { CardanoNodeState } from '../../../../common/types/cardanoNode.types';
 
 let syncingInterval = null;
 
 type Props = {
+  cardanoNodeState: ?CardanoNodeState,
   isNodeResponding: boolean,
   isNodeSubscribed: boolean,
   isNodeSyncing: boolean,
@@ -86,8 +88,8 @@ export default class NetworkStatus extends Component<Props, State> {
 
   render() {
     const {
-      isNodeResponding, isNodeSubscribed, isNodeSyncing, isNodeInSync, isNodeTimeCorrect,
-      isConnected, isSynced, syncPercentage, hasBeenConnected,
+      cardanoNodeState, isNodeResponding, isNodeSubscribed, isNodeSyncing, isNodeInSync,
+      isNodeTimeCorrect, isConnected, isSynced, syncPercentage, hasBeenConnected,
       localTimeDifference, isSystemTimeCorrect, isForceCheckingNodeTime,
       isSystemTimeChanged, mostRecentBlockTimestamp, localBlockHeight, networkBlockHeight,
       onForceCheckLocalTimeDifference, onClose, nodeConnectionError, onRestartNode,
@@ -212,6 +214,12 @@ export default class NetworkStatus extends Component<Props, State> {
                 <th colSpan={2}>
                   CARDANO NODE STATUS<hr />
                 </th>
+              </tr>
+              <tr>
+                <td>cardanoNodeState:</td>
+                <td>
+                  {cardanoNodeState != null ? cardanoNodeState : 'unknown'}
+                </td>
               </tr>
               <tr>
                 <td>isNodeResponding:</td>

@@ -43,7 +43,7 @@ required dependencies for development.
 
 ## Connect to staging cluster:
 
-1. Run `nix-shell --arg autoStartBackend true --argstr cluster staging`
+1. Start the nix-shell with staging environment `yarn nix:staging`
 2. Within the nix-shell run any command like `yarn dev`
 
 ## Connect to Local Demo Cluster:
@@ -69,8 +69,8 @@ required dependencies for development.
 1. Start local cardano-sl demo cluster (`./scripts/launch/demo-nix.sh`)
 2. Inspect the terminal output of cardano-sl and copy the timestamp from the message
    `Using system start time 1537184804`
-3. Run `nix-shell --arg autoStartBackend true --arg systemStart 1537184804` (using
-   the same timestamp for `--arg systemStart X`)
+3. Start the nix-shell with development environment `yarn nix:dev 1537184804` (timestamp is 
+different each time you restart the cardano-sl demo cluster)
 4. Within the nix-shell run any command like `yarn dev`
 
 ## Notes:

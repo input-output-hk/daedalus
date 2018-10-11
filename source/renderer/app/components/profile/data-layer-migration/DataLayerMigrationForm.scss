@@ -3,7 +3,7 @@
 
 .component {
   align-items: center;
-  background-color: var(--theme-data-migration-background-color);
+  background-color: var(--theme-data-migration-layer-background-color);
   bottom: 0;
   box-shadow: 0 5px 20px 0 var(--theme-data-migration-layer-box-shadow-color);
   color: var(--theme-data-migration-layer-text-color);
@@ -50,10 +50,17 @@
 }
 
 .submitButton {
+  background: none !important;
   border: solid 1px var(--theme-data-migration-layer-text-color) !important;
   color: var(--theme-data-migration-layer-text-color) !important;
   line-height: 1.36 !important;
   margin-bottom: 30px;
+  transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover, &:active {
+    background: var(--theme-data-migration-layer-button-background-color-hover) !important;
+    color: var(--theme-data-migration-layer-background-color) !important;
+  }
 }
 
 .error {

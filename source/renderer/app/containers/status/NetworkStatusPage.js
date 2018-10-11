@@ -18,7 +18,8 @@ export default class NetworkStatusPage extends Component<InjectedProps> {
     const { stores } = this.props;
     const {
       // Node state
-      isNodeResponding, isNodeSubscribed, isNodeSyncing, isNodeInSync, isNodeTimeCorrect,
+      cardanoNodeState, isNodeResponding, isNodeSubscribed,
+      isNodeSyncing, isNodeInSync, isNodeTimeCorrect,
       // Application state
       isConnected, isSynced, syncPercentage, hasBeenConnected,
       localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
@@ -28,6 +29,7 @@ export default class NetworkStatusPage extends Component<InjectedProps> {
     return (
       <CenteredLayout>
         <NetworkStatus
+          cardanoNodeState={cardanoNodeState}
           isNodeResponding={isNodeResponding}
           isNodeSubscribed={isNodeSubscribed}
           isNodeSyncing={isNodeSyncing}
