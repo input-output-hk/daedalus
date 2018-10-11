@@ -241,17 +241,101 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Starting Cardano node",
+        "description": "Message \"Starting Cardano node\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "source/renderer/app/components/loading/Loading.js",
+        "id": "loading.screen.startingCardanoMessage",
+        "start": {
+          "column": 12,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!Stopping Cardano node",
+        "description": "Message \"Stopping Cardano node\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/loading/Loading.js",
+        "id": "loading.screen.stoppingCardanoMessage",
+        "start": {
+          "column": 12,
+          "line": 27
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano node stopped",
+        "description": "Message \"Cardano node stopped\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/loading/Loading.js",
+        "id": "loading.screen.stoppedCardanoMessage",
+        "start": {
+          "column": 11,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Updating Cardano node",
+        "description": "Message \"Updating Cardano node\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/components/loading/Loading.js",
+        "id": "loading.screen.updatingCardanoMessage",
+        "start": {
+          "column": 12,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano node updated",
+        "description": "Message \"Cardano node updated\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 46
+        },
+        "file": "source/renderer/app/components/loading/Loading.js",
+        "id": "loading.screen.updatedCardanoMessage",
+        "start": {
+          "column": 11,
+          "line": 42
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano node crashed",
+        "description": "Message \"Cardano node crashed\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 51
+        },
+        "file": "source/renderer/app/components/loading/Loading.js",
+        "id": "loading.screen.crashedCardanoMessage",
+        "start": {
+          "column": 11,
+          "line": 47
+        }
+      },
+      {
         "defaultMessage": "!!!Connecting to network",
         "description": "Message \"Connecting to network\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 56
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.connectingToNetworkMessage",
         "start": {
           "column": 14,
-          "line": 20
+          "line": 52
         }
       },
       {
@@ -259,13 +343,13 @@
         "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 61
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reconnectingToNetworkMessage",
         "start": {
           "column": 16,
-          "line": 25
+          "line": 57
         }
       },
       {
@@ -273,13 +357,13 @@
         "description": "Message \"Syncing blocks\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 66
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.syncingBlocksMessage",
         "start": {
           "column": 11,
-          "line": 30
+          "line": 62
         }
       },
       {
@@ -287,13 +371,13 @@
         "description": "Report connecting issue text on the loading screen.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 71
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.connecting.text",
         "start": {
           "column": 29,
-          "line": 35
+          "line": 67
         }
       },
       {
@@ -301,13 +385,13 @@
         "description": "Report syncing issue text on the loading screen.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 76
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.syncing.text",
         "start": {
           "column": 26,
-          "line": 40
+          "line": 72
         }
       },
       {
@@ -315,13 +399,13 @@
         "description": "Report an issue button label on the loading .",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 81
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.buttonLabel",
         "start": {
           "column": 26,
-          "line": 45
+          "line": 77
         }
       }
     ],

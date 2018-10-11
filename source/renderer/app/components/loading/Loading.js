@@ -9,14 +9,46 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import SystemTimeErrorOverlay from './SystemTimeErrorOverlay';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
+import { CardanoNodeStates } from '../../../../common/types/cardanoNode.types';
 import styles from './Loading.scss';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
+import type { CardanoNodeState } from '../../../../common/types/cardanoNode.types';
 import { REPORT_ISSUE_TIME_TRIGGER } from '../../config/timingConfig';
 
 let connectingInterval = null;
 let syncingInterval = null;
 
 const messages = defineMessages({
+  starting: {
+    id: 'loading.screen.startingCardanoMessage',
+    defaultMessage: '!!!Starting Cardano node',
+    description: 'Message "Starting Cardano node" on the loading screen.'
+  },
+  stopping: {
+    id: 'loading.screen.stoppingCardanoMessage',
+    defaultMessage: '!!!Stopping Cardano node',
+    description: 'Message "Stopping Cardano node" on the loading screen.'
+  },
+  stopped: {
+    id: 'loading.screen.stoppedCardanoMessage',
+    defaultMessage: '!!!Cardano node stopped',
+    description: 'Message "Cardano node stopped" on the loading screen.'
+  },
+  updating: {
+    id: 'loading.screen.updatingCardanoMessage',
+    defaultMessage: '!!!Updating Cardano node',
+    description: 'Message "Updating Cardano node" on the loading screen.'
+  },
+  updated: {
+    id: 'loading.screen.updatedCardanoMessage',
+    defaultMessage: '!!!Cardano node updated',
+    description: 'Message "Cardano node updated" on the loading screen.'
+  },
+  crashed: {
+    id: 'loading.screen.crashedCardanoMessage',
+    defaultMessage: '!!!Cardano node crashed',
+    description: 'Message "Cardano node crashed" on the loading screen.'
+  },
   connecting: {
     id: 'loading.screen.connectingToNetworkMessage',
     defaultMessage: '!!!Connecting to network',
@@ -58,6 +90,7 @@ type State = {
 type Props = {
   currencyIcon: string,
   apiIcon: string,
+  cardanoNodeState: ?CardanoNodeState,
   hasBeenConnected: boolean,
   isConnected: boolean,
   isSynced: boolean,
@@ -166,9 +199,35 @@ export default class Loading extends Component<Props, State> {
     }
   };
 
-  _getConnectingMessage = () => (
-    this.props.hasBeenConnected ? messages.reconnecting : messages.connecting
-  );
+  _getConnectingMessage = () => {
+    const { cardanoNodeState, hasBeenConnected } = this.props;
+    let connectingMessage;
+    switch (cardanoNodeState) {
+      case null:
+      case CardanoNodeStates.STARTING:
+        connectingMessage = messages.starting;
+        break;
+      case CardanoNodeStates.STOPPING:
+        connectingMessage = messages.stopping;
+        break;
+      case CardanoNodeStates.STOPPED:
+        connectingMessage = messages.stopped;
+        break;
+      case CardanoNodeStates.UPDATING:
+        connectingMessage = messages.updating;
+        break;
+      case CardanoNodeStates.UPDATED:
+        connectingMessage = messages.updated;
+        break;
+      case CardanoNodeStates.CRASHED:
+      case CardanoNodeStates.ERRORED:
+        connectingMessage = messages.crashed;
+        break;
+      default: // also covers CardanoNodeStates.RUNNING state
+        connectingMessage = hasBeenConnected ? messages.reconnecting : messages.connecting;
+    }
+    return connectingMessage;
+  };
 
   _renderLoadingScreen = () => {
     const { intl } = this.context;
