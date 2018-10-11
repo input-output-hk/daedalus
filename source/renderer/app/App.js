@@ -20,7 +20,7 @@ export default class App extends Component<{
   history: Object,
 }> {
   componentWillMount() {
-    // loads app's global environment variables over ipc channel
+    // loads app's global environment variables into AppStore via ipc
     this.props.actions.app.initAppEnvironment.trigger();
   }
   render() {
