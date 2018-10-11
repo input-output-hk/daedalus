@@ -2,7 +2,10 @@ const _process = process;
 
 process.once('loaded', () => {
   global.process = {
-    env: { NODE_ENV: _process.env.NODE_ENV },
+    env: {
+      NODE_ENV: _process.env.NODE_ENV,
+      NETWORK: _process.env.NETWORK || 'development'
+    },
     umask: _process.umask,
     version: _process.version,
     cwd: _process.cwd,
