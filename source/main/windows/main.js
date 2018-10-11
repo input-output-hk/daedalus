@@ -7,6 +7,8 @@ import RendererErrorHandler from '../utils/rendererErrorHandler';
 
 const rendererErrorHandler = new RendererErrorHandler();
 
+const { isDev, isTest, buildLabel, isLinux } = environment;
+
 export const createMainWindow = (isInSafeMode) => {
   const windowOptions = {
     show: false,
@@ -20,7 +22,7 @@ export const createMainWindow = (isInSafeMode) => {
   };
 
 
-  if (process.platform === 'linux') {
+  if (isLinux) {
     windowOptions.icon = path.join(runtimeFolderPath, 'icon.png');
   }
 
@@ -40,7 +42,7 @@ export const createMainWindow = (isInSafeMode) => {
     window.setSize(width, height, animate);
   });
 
-  if (environment.isDev()) {
+  if (isDev) {
     window.webContents.openDevTools();
     // Focus the main window after dev tools opened
     window.webContents.on('devtools-opened', () => {
@@ -54,7 +56,7 @@ export const createMainWindow = (isInSafeMode) => {
   window.loadURL(`file://${__dirname}/../renderer/index.html`);
   window.on('page-title-updated', event => { event.preventDefault(); });
 
-  let title = environment.getBuildLabel();
+  let title = buildLabel;
   if (isInSafeMode) title += ' [GPU safe mode]';
   window.setTitle(title);
 
@@ -64,7 +66,7 @@ export const createMainWindow = (isInSafeMode) => {
       { label: 'Paste', accelerator: 'CmdOrCtrl+V', role: 'paste' },
     ];
 
-    if (environment.isDev() || environment.isTest()) {
+    if (isDev || isTest) {
       const { x, y } = props;
       contextMenuOptions.push({
         label: 'Inspect element',
@@ -78,7 +80,7 @@ export const createMainWindow = (isInSafeMode) => {
   });
 
   window.webContents.on('did-finish-load', () => {
-    if (environment.isTest()) {
+    if (isTest) {
       window.showInactive(); // show without focusing the window
     } else {
       window.show(); // show also focuses the window
