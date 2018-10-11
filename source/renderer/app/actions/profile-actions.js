@@ -9,7 +9,18 @@ export default class ProfileActions {
   getLogs: Action<any> = new Action();
   getLogsAndCompress: Action<any> = new Action();
   sendBugReport: Action<{
-    email: string, subject: string, problem: string, compressedLogsFile: ?string,
+    requestFormData: {
+      email: string, subject: string, problem: string, compressedLogsFile: ?string,
+    },
+    environmentData: {
+      network: string,
+      version: string,
+      os: string,
+      apiVersion: string,
+      build: string,
+      installerVersion: string,
+      reportURL: string,
+    }
   }> = new Action();
   resetBugReportDialog: Action<any> = new Action();
   downloadLogs: Action<{ fileName: string, destination: string, fresh?: boolean }> = new Action();

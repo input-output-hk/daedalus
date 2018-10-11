@@ -619,10 +619,10 @@ export default class AdaApi {
     }
   }
 
-  async sendBugReport(requestFormData: SendBugReportRequest): Promise<any> {
-    Logger.debug('AdaApi::sendBugReport called: ' + stringifyData(requestFormData));
+  async sendBugReport({ requestFormData, environmentData }: SendBugReportRequest): Promise<any> {
+    Logger.debug('AdaApi::sendBugReport called: ' + stringifyData({ requestFormData, environmentData }));
     try {
-      await sendBugReport({ requestFormData });
+      await sendBugReport({ requestFormData, environmentData });
       Logger.debug('AdaApi::sendBugReport success');
       return true;
     } catch (error) {
