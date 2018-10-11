@@ -18,7 +18,7 @@ export const createMainWindow = (isInSafeMode) => {
   };
 
   if (process.platform === 'linux') {
-    windowOptions.icon = path.join(runtimeFolderPath, 'icon.png');
+    windowOptions.icon = path.join(process.env.DAEDALUS_INSTALL_DIRECTORY, 'icon.png');
   }
 
   // Construct new BrowserWindow
