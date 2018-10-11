@@ -9,43 +9,76 @@ if (process.version !== '' && process.release !== undefined && process.release.n
   remote = require('electron').remote;
 }
 
-const osNames = {
-  darwin: 'macOS',
-  win32: 'Windows',
-  linux: 'Linux',
+// constants
+const PRODUCTION = 'production';
+const DEVELOPMENT = 'development';
+const TEST = 'test';
+const MAINNET = 'mainnet';
+const STAGING = 'staging';
+const TESTNET = 'testnet';
+const MAC_OS = 'darwin';
+const WINDOWS = 'win32';
+const LINUX = 'linux';
+const OS_NAMES = {
+  [MAC_OS]: 'macOS',
+  [WINDOWS]: 'Windows',
+  [LINUX]: 'Linux',
 };
 
-const platform = os.platform();
-const build = process.env.BUILD_NUMBER || 'dev';
+// environment variables
+const STAGING_REPORT_URL = 'http://staging-report-server.awstest.iohkdev.io:8080/';
+const CURRENT_NODE_ENV = process.env.NODE_ENV || DEVELOPMENT;
+const NETWORK = process.env.NETWORK || DEVELOPMENT;
+const REPORT_URL = process.env.REPORT_URL || STAGING_REPORT_URL;
+const isDev = CURRENT_NODE_ENV === DEVELOPMENT;
+const isTest = CURRENT_NODE_ENV === TEST;
+const isProduction = CURRENT_NODE_ENV === PRODUCTION;
+const isMainnet = CURRENT_NODE_ENV === MAINNET;
+const isStaging = CURRENT_NODE_ENV === STAGING;
+const isTestnet = CURRENT_NODE_ENV === TESTNET;
 const API_VERSION = process.env.API_VERSION || 'dev';
+const PLATFORM = os.platform();
+const OS = OS_NAMES[PLATFORM] || PLATFORM;
+const BUILD = process.env.BUILD_NUMBER || 'dev';
+const BUILD_NUMBER = uniq([API_VERSION, BUILD]).join('.');
+const BUILD_LABEL = (isProduction ?
+  `Daedalus (${version}#${BUILD_NUMBER})` :
+  `Daedalus (${version}#${BUILD_NUMBER}) ${CURRENT_NODE_ENV}`
+);
+const INSTALLER_VERSION = uniq([API_VERSION, BUILD]).join('.');
+const MOBX_DEV_TOOLS = process.env.MOBX_DEV_TOOLS;
+const isMacOS = PLATFORM === MAC_OS;
+const isWindows = PLATFORM === WINDOWS;
+const isLinux = PLATFORM === LINUX;
 
-const environment = Object.assign({
-  DEVELOPMENT: 'development',
-  TEST: 'test',
-  PRODUCTION: 'production',
-  NETWORK: process.env.NETWORK || 'development',
+// compose environment
+const daedalusEnv = Object.assign({}, {
+  DEVELOPMENT,
+  TEST,
+  PRODUCTION,
+  NETWORK,
   API_VERSION,
-  MOBX_DEV_TOOLS: process.env.MOBX_DEV_TOOLS,
-  current: process.env.NODE_ENV || 'development',
-  REPORT_URL: process.env.REPORT_URL || 'http://staging-report-server.awstest.iohkdev.io:8080/',
-  isDev: () => environment.current === environment.DEVELOPMENT,
-  isTest: () => environment.current === environment.TEST,
-  isProduction: () => environment.current === environment.PRODUCTION,
-  isMainnet: () => environment.NETWORK === 'mainnet',
-  isStaging: () => environment.NETWORK === 'staging',
-  isTestnet: () => environment.NETWORK === 'testnet',
-  build,
-  buildNumber: uniq([API_VERSION, build]).join('.'),
-  getBuildLabel: () => {
-    let buildLabel = `Daedalus (${environment.version}#${environment.buildNumber})`;
-    if (!environment.isProduction()) buildLabel += ` ${environment.current}`;
-    return buildLabel;
-  },
-  platform,
-  os: osNames[platform] || platform,
-  getInstallerVersion: () => uniq([environment.API_VERSION, environment.build]).join('.'),
+  MOBX_DEV_TOOLS,
+  current: CURRENT_NODE_ENV,
+  REPORT_URL,
+  isDev,
+  isTest,
+  isProduction,
+  isMainnet,
+  isStaging,
+  isTestnet,
+  build: BUILD,
+  buildNumber: BUILD_NUMBER,
+  buildLabel: BUILD_LABEL,
+  platform: PLATFORM,
+  os: OS,
+  installerVersion: INSTALLER_VERSION,
   version,
-  isWindows: () => environment.platform === 'win32'
-}, remote ? remote.getGlobal('env') : process.env);
+  isWindows,
+  isMacOS,
+  isLinux
+});
+const sourceEnv = remote ? remote.getGlobal('env') : process.env;
+const environment = Object.assign(daedalusEnv, sourceEnv);
 
 export default environment;
