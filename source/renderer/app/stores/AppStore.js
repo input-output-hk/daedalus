@@ -10,13 +10,36 @@ import { GO_TO_NETWORK_STATUS_SCREEN_CHANNEL } from '../../../common/ipc/go-to-n
 import { GET_GPU_STATUS, GET_APP_ENVIRONMENT } from '../../../common/ipc-api';
 import { ROUTES } from '../routes-config';
 import type { GpuStatus } from '../types/gpuStatus';
+import type { Environment } from '../../../common/types/environment.types';
 
 export default class AppStore extends Store {
 
   @observable error: ?LocalizableError = null;
   @observable isAboutDialogOpen = false;
   @observable gpuStatus: ?GpuStatus = null;
-  @observable environment: ?Object = null;
+  @observable environment: Environment = {
+    NETWORK: '',
+    API_VERSION: '',
+    MOBX_DEV_TOOLS: false,
+    current: '',
+    REPORT_URL: '',
+    isDev: false,
+    isTest: false,
+    isProduction: false,
+    isMainnet: false,
+    isStaging: false,
+    isTestnet: false,
+    build: '',
+    buildNumber: '',
+    buildLabel: '',
+    platform: '',
+    os: '',
+    installerVersion: '',
+    version: '',
+    isWindows: false,
+    isMacOS: false,
+    isLinux: false
+  };
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
