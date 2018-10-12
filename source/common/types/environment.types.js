@@ -1,11 +1,8 @@
 // @flow
 export type Environment = {
-  DEVELOPMENT: string,
-  TEST: string,
-  PRODUCTION: string,
   NETWORK: string,
   API_VERSION: string,
-  MOBX_DEV_TOOLS: ?string,
+  MOBX_DEV_TOOLS: boolean | string,
   current: string,
   REPORT_URL: string,
   isDev: boolean,
