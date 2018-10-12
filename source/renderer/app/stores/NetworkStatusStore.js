@@ -175,17 +175,9 @@ export default class NetworkStatusStore extends Store {
     Logger.info(`NetworkStatusStore: handling cardano-node state <${state}>`);
     const wasConnected = this.isConnected;
     switch (state) {
-      case CardanoNodeStates.RUNNING:
-        this._requestTlsConfig();
-        break;
-      case CardanoNodeStates.STOPPING:
-      case CardanoNodeStates.STOPPED:
-      case CardanoNodeStates.UPDATING:
-      case CardanoNodeStates.UPDATED:
-      case CardanoNodeStates.CRASHED:
-        this._setDisconnected(wasConnected);
-        break;
-      default:
+      case CardanoNodeStates.STARTING: break;
+      case CardanoNodeStates.RUNNING: this._requestTlsConfig(); break;
+      default: this._setDisconnected(wasConnected);
     }
     runInAction('setting cardanoNodeState', () => {
       this.cardanoNodeState = state;
