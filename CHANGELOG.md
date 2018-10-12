@@ -7,6 +7,7 @@ Changelog
 
 ### Features
 
+- Refactors environment setup so that environment is loaded into AppStore during the app's initial render and accessible to all containers. This removes all references to Node API's in the renderer process as environment was previously imported as a module throughout. ([PR 1099](https://github.com/input-output-hk/daedalus/pull/1099/commits))
 - Implemented extended error messages for transaction fee calculation failures ([PR 1111](https://github.com/input-output-hk/daedalus/pull/1111))
 - Implemented forms submission on "Enter" key press ([PR 981](https://github.com/input-output-hk/daedalus/pull/981))
 - Implemented Japanese "Terms of use" for the "Testnet" network ([PR 1097](https://github.com/input-output-hk/daedalus/pull/1097))
