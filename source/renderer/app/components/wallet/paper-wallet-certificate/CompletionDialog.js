@@ -11,6 +11,7 @@ import { getNetworkExplorerUrl } from '../../../utils/network';
 import styles from './CompletionDialog.scss';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import InlineNotification from '../../widgets/InlineNotification';
+import { DEVELOPMENT } from '../../../../../common/environment';
 
 const messages = defineMessages({
   headline: {
@@ -73,6 +74,10 @@ export default class CompletionDialog extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  static defaultProps = {
+    network: DEVELOPMENT
   };
 
   state = {

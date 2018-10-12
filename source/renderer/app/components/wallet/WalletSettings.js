@@ -81,6 +81,10 @@ export default class WalletSettings extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  static defaultProps = {
+    isMainnet: false
+  };
+
   componentWillUnmount() {
     // This call is used to prevent display of old successfully-updated messages
     this.props.onCancelEditing();

@@ -10,6 +10,7 @@ import styles from './WalletTransactionsList.scss';
 import Transaction from './Transaction';
 import WalletTransaction from '../../../domains/WalletTransaction';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+import { DEVELOPMENT } from '../../../../../common/environment';
 import type { WalletAssuranceMode } from '../../../api/wallets/types';
 
 const messages = defineMessages({
@@ -56,6 +57,10 @@ export default class WalletTransactionsList extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  static defaultProps = {
+    network: DEVELOPMENT
   };
 
   componentWillMount() {

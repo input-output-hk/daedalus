@@ -87,7 +87,11 @@ type Props = {
 export default class WalletAdd extends Component<Props> {
 
   static contextTypes = {
-    intl: intlShape.isRequired,
+    intl: intlShape.isRequired
+  };
+
+  static defaultProps = {
+    isMainnet: false
   };
 
   render() {

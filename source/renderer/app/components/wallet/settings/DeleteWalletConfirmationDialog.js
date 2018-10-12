@@ -61,6 +61,7 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
   static defaultProps = {
     isBackupNoticeAccepted: false,
     confirmationValue: '',
+    isTest: false
   };
 
   static contextTypes = {

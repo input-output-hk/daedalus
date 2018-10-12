@@ -12,6 +12,7 @@ import {
   PAPER_WALLET_WRITTEN_WORDS_COUNT,
   WALLET_RECOVERY_PHRASE_WORD_COUNT
 } from '../../../config/cryptoConfig';
+import { DEVELOPMENT } from '../../../../../common/environment';
 
 const messages = defineMessages({
   headline: {
@@ -92,6 +93,10 @@ export default class InstructionsDialog extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  static defaultProps = {
+    network: DEVELOPMENT
   };
 
   render() {
