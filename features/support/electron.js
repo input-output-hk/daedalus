@@ -1,7 +1,7 @@
 import { Application } from 'spectron';
 import { defineSupportCode } from 'cucumber';
 import electronPath from 'electron';
-import environment from '../../source/common/environment';
+import { environment } from '../../source/common/environment';
 import { generateScreenshotFilePath, getTestNameFromTestFile, saveScreenshot } from './helpers/screenshot';
 
 const context = {};

@@ -4,7 +4,7 @@ import type { spawn, ChildProcess } from 'child_process';
 import type { WriteStream } from 'fs';
 import psList from 'ps-list';
 import { isObject, toInteger } from 'lodash';
-import environment from '../../common/environment';
+import { environment } from '../../common/environment';
 import type { CardanoNodeState, TlsConfig } from '../../common/types/cardanoNode.types';
 import { promisedCondition, deriveStorageKeys, deriveProcessNames } from './utils';
 import { CardanoNodeStates } from '../../common/types/cardanoNode.types';
