@@ -208,6 +208,7 @@ export default class Loading extends Component<Props, State> {
         connectingMessage = messages.starting;
         break;
       case CardanoNodeStates.STOPPING:
+      case CardanoNodeStates.EXITING:
         connectingMessage = messages.stopping;
         break;
       case CardanoNodeStates.STOPPED:

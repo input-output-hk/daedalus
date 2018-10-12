@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { get } from 'lodash';
+import { get, includes, upperFirst } from 'lodash';
 import moment from 'moment';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
@@ -17,6 +17,7 @@ import {
 import { UNSYNCED_BLOCKS_ALLOWED } from '../../config/numbersConfig';
 import closeCross from '../../assets/images/close-cross.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
+import { CardanoNodeStates } from '../../../../common/types/cardanoNode.types';
 import styles from './NetworkStatus.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardanoNode.types';
 
@@ -52,6 +53,7 @@ type State = {
     networkBlockHeight: ?number,
     time: number,
   }>,
+  isNodeRestarting: boolean,
 };
 
 @observer
@@ -75,11 +77,32 @@ export default class NetworkStatus extends Component<Props, State> {
         { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 4000).format('HH:mm:ss') },
         { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 2000).format('HH:mm:ss') },
       ],
+      isNodeRestarting: false,
     };
   }
 
   componentWillMount() {
     syncingInterval = setInterval(this.syncingTimer, 2000);
+  }
+
+  componentWillReceiveProps(nextProps: Props) {
+    const { cardanoNodeState } = this.props;
+    const { cardanoNodeState: nextCardanoNodeState } = nextProps;
+    const { isNodeRestarting } = this.state;
+    const finalCardanoNodeStates = [
+      CardanoNodeStates.RUNNING,
+      CardanoNodeStates.STOPPED,
+      CardanoNodeStates.UPDATED,
+      CardanoNodeStates.CRASHED,
+      CardanoNodeStates.ERRORED,
+    ];
+    if (
+      isNodeRestarting &&
+      cardanoNodeState === CardanoNodeStates.STARTING &&
+      includes(finalCardanoNodeStates, nextCardanoNodeState)
+    ) {
+      this.setState({ isNodeRestarting: false });
+    }
   }
 
   componentWillUnmount() {
@@ -92,9 +115,9 @@ export default class NetworkStatus extends Component<Props, State> {
       isNodeTimeCorrect, isConnected, isSynced, syncPercentage, hasBeenConnected,
       localTimeDifference, isSystemTimeCorrect, isForceCheckingNodeTime,
       isSystemTimeChanged, mostRecentBlockTimestamp, localBlockHeight, networkBlockHeight,
-      onForceCheckLocalTimeDifference, onClose, nodeConnectionError, onRestartNode,
+      onForceCheckLocalTimeDifference, onClose, nodeConnectionError,
     } = this.props;
-    const { data } = this.state;
+    const { data, isNodeRestarting } = this.state;
     const isNTPServiceReachable = !!localTimeDifference;
     const connectionError = get(nodeConnectionError, 'values', '{}');
     const { message, code } = connectionError;
@@ -218,7 +241,7 @@ export default class NetworkStatus extends Component<Props, State> {
               <tr>
                 <td>cardanoNodeState:</td>
                 <td>
-                  {cardanoNodeState != null ? cardanoNodeState : 'unknown'}
+                  {upperFirst(cardanoNodeState != null ? cardanoNodeState : 'unknown')}
                 </td>
               </tr>
               <tr>
@@ -254,8 +277,11 @@ export default class NetworkStatus extends Component<Props, State> {
               <tr>
                 <td className={styles.topPadding}>Cardano Node actions:</td>
                 <td className={styles.topPadding}>
-                  <button onClick={() => onRestartNode()}>
-                    Restart
+                  <button
+                    onClick={() => this.restartNode()}
+                    disabled={isNodeRestarting}
+                  >
+                    {isNodeRestarting ? 'Restarting...' : 'Restart'}
                   </button>
                 </td>
               </tr>
@@ -301,6 +327,11 @@ export default class NetworkStatus extends Component<Props, State> {
       </div>
     );
   }
+
+  restartNode = () => {
+    this.setState({ isNodeRestarting: true });
+    this.props.onRestartNode();
+  };
 
   getClass = (isTrue: boolean) => (
     classNames([
