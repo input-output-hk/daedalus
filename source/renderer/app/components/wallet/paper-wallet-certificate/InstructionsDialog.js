@@ -81,9 +81,10 @@ const messages = defineMessages({
 
 type Props = {
   inProgress: boolean,
-  onPrint: Function,
+  network: string,
   onClose: Function,
   onOpenExternalLink: Function,
+  onPrint: Function,
 };
 
 @observer
