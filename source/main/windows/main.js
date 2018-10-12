@@ -2,7 +2,6 @@ import path from 'path';
 import { app, BrowserWindow, ipcMain, Menu } from 'electron';
 import environment from '../../common/environment';
 import ipcApi from '../ipc';
-import { runtimeFolderPath } from '../config';
 import RendererErrorHandler from '../utils/rendererErrorHandler';
 
 const rendererErrorHandler = new RendererErrorHandler();
@@ -21,9 +20,8 @@ export const createMainWindow = (isInSafeMode) => {
     }
   };
 
-
   if (isLinux) {
-    windowOptions.icon = path.join(runtimeFolderPath, 'icon.png');
+    windowOptions.icon = path.join(process.env.DAEDALUS_INSTALL_DIRECTORY, 'icon.png');
   }
 
   // Construct new BrowserWindow

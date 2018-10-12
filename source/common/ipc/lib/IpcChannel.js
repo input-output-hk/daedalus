@@ -20,7 +20,7 @@ export type IpcReceiver = {
  * promises to reduce the necessary boilerplate for request
  * and response cycles.
  */
-export class IpcChannel<Request, AwaitedResponse, ReceivedRequest, Response> {
+export class IpcChannel<Incoming, Outgoing> {
 
   /**
    * Each ipc channel should be a singleton (based on the channelName)
@@ -61,16 +61,16 @@ export class IpcChannel<Request, AwaitedResponse, ReceivedRequest, Response> {
    * same channel. It returns a promise which is resolved or rejected with the response
    * depending on the `isOk` flag set by the respondant.
    *
-   * @param request {Request}
+   * @param message {Outgoing}
    * @param sender {IpcSender}
    * @param receiver {IpcReceiver}
-   * @returns {Promise<AwaitedResponse>}
+   * @returns {Promise<Incoming>}
    */
-  async send(request: Request, sender: IpcSender, receiver: IpcReceiver): Promise<AwaitedResponse> {
+  async send(message: Outgoing, sender: IpcSender, receiver: IpcReceiver): Promise<Incoming> {
     return new Promise((resolve, reject) => {
-      sender.send(this._broadcastChannel, request);
+      sender.send(this._broadcastChannel, message);
       // Handle response to the sent request once
-      receiver.once(this._responseChannel, (event, isOk: boolean, response: AwaitedResponse) => {
+      receiver.once(this._responseChannel, (event, isOk: boolean, response: Incoming) => {
         if (isOk) {
           resolve(response);
         } else {
@@ -88,10 +88,10 @@ export class IpcChannel<Request, AwaitedResponse, ReceivedRequest, Response> {
    * @param receiver {IpcReceiver}
    * @param handler
    */
-  onReceive(handler: (request: ReceivedRequest) => Promise<Response>, receiver: IpcReceiver): void {
-    receiver.on(this._broadcastChannel, async (event: IpcEvent, request: ReceivedRequest) => {
+  onReceive(handler: (message: Incoming) => Promise<Outgoing>, receiver: IpcReceiver): void {
+    receiver.on(this._broadcastChannel, async (event: IpcEvent, message: Incoming) => {
       try {
-        const response = await handler(request);
+        const response = await handler(message);
         event.sender.send(this._responseChannel, true, response);
       } catch (error) {
         event.sender.send(this._responseChannel, false, error);

@@ -6,22 +6,20 @@ import type { IpcReceiver, IpcSender } from '../../../../common/ipc/lib/IpcChann
 /**
  * Subclass of IpcChannel that uses ipcRenderer to send and receive messages.
  */
-export class RendererIpcChannel<
-  Request, AwaitedResponse, ReceivedRequest, Response
-> extends IpcChannel<
-  Request, AwaitedResponse, ReceivedRequest, Response
-> {
+export class RendererIpcChannel<Incoming, Outgoing> extends IpcChannel<Incoming, Outgoing> {
+
   async send(
-    request: Request,
+    message: Outgoing,
     sender: IpcSender = ipcRenderer,
     receiver: IpcReceiver = ipcRenderer
-  ): Promise<AwaitedResponse> {
-    return super.send(request, sender, receiver);
+  ): Promise<Incoming> {
+    return super.send(message, sender, receiver);
   }
   onReceive(
-    handler: (request: ReceivedRequest) => Promise<Response>,
+    handler: (message: Incoming) => Promise<Outgoing>,
     receiver: IpcReceiver = ipcRenderer
   ): void {
     super.onReceive(handler, receiver);
   }
+
 }

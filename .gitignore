@@ -5,6 +5,7 @@ Logs
 
 # Runtime data
 pids
+icon.png
 *.exe
 *.pid
 *.seed

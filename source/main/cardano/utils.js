@@ -12,25 +12,29 @@ import type {
 
 const checkCondition = async (
   condition: () => boolean,
+  resolve: Function,
+  reject: Function,
   timeout: number,
   retryEvery: number,
   timeWaited: number = 0
 ): Promise<void> => {
   const result = await condition();
-  if (!result) {
-    if (timeWaited >= timeout) {
-      throw new Error('Condition not met in time');
-    } else {
-      setTimeout(() => checkCondition(
-        condition, timeout, retryEvery, timeWaited + retryEvery
-      ), retryEvery);
-    }
+  if (result) {
+    resolve();
+  } else if (timeWaited >= timeout) {
+    reject(`Condition not met within ${timeout}ms: ${condition.toString()}`);
+  } else {
+    setTimeout(() => checkCondition(
+      condition, resolve, reject, timeout, retryEvery, timeWaited + retryEvery
+    ), retryEvery);
   }
 };
 
-export const promisedCondition = async (
+export const promisedCondition = (
   cond: Function, timeout: number = 5000, retryEvery: number = 1000
-): Promise<void> => await checkCondition(cond, timeout, retryEvery);
+): Promise<void> => new Promise((resolve, reject) => {
+  checkCondition(cond, resolve, reject, timeout, retryEvery);
+});
 
 const getNetworkName = (network: NetworkNames): string => (
   NetworkNameOptions[network] || NetworkNameOptions.development
