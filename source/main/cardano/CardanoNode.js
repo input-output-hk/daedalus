@@ -2,12 +2,10 @@
 import Store from 'electron-store';
 import type { ChildProcess, spawn } from 'child_process';
 import type { WriteStream } from 'fs';
-import psList from 'ps-list';
-import { isObject, toInteger } from 'lodash';
+import { toInteger } from 'lodash';
 import environment from '../../common/environment';
 import type { CardanoNodeState, TlsConfig } from '../../common/types/cardanoNode.types';
 import { CardanoNodeStates } from '../../common/types/cardanoNode.types';
-import type { Process } from './utils';
 import { deriveProcessNames, deriveStorageKeys, getProcess, promisedCondition } from './utils';
 
 type Logger = {
@@ -231,7 +229,7 @@ export class CardanoNode {
    */
   async stop(): Promise<void> {
     const { _node, _log, _config } = this;
-    if (!(await this._canBeStopped())) {
+    if (await this._isDead()) {
       _log.info('CardanoNode#stop: process is not running anymore.');
       return Promise.resolve();
     }
@@ -260,16 +258,16 @@ export class CardanoNode {
    * @returns {Promise<void>} resolves if the node could be killed, rejects with error otherwise.
    */
   kill(): Promise<void> {
-    const { _node, _log, _config } = this;
+    const { _node, _log } = this;
     return new Promise(async (resolve, reject) => {
-      if (!(await this._canBeStopped())) {
-        _log.info('CardanoNode#kill: process is not running anymore.');
+      if (await this._isDead()) {
+        _log.info('CardanoNode#kill: process is already dead.');
         return Promise.resolve();
       }
       try {
         _log.info('CardanoNode#kill: killing cardano-node process.');
         if (_node) _node.kill();
-        await this._waitForNodeProcessToExit(_config.killTimeout);
+        await this._waitForCardanoToExitOrKillIt();
         await this._storeProcessStates();
         this._reset();
         resolve();
@@ -292,7 +290,8 @@ export class CardanoNode {
   async restart(isForced: boolean = false): Promise<void> {
     const { _log, _config } = this;
     try {
-      if (await this._canBeStopped()) {
+      // Stop cardano nicely if it is still awake
+      if (await this._isConnected()) {
         _log.info('CardanoNode#restart: stopping current node.');
         await this.stop();
       }
@@ -443,28 +442,17 @@ export class CardanoNode {
   }
 
   /**
-   * Checks if cardano-node child_process has been created, and is connected, and is stateful
+   * Checks if cardano-node child_process is connected and can be interacted with
    * @returns {boolean}
    */
-  _isAwake = (): boolean => (
-    this._node != null && this._node.connected && (
-      this._state === CardanoNodeStates.STARTING ||
-      this._state === CardanoNodeStates.RUNNING ||
-      this._state === CardanoNodeStates.STOPPING ||
-      this._state === CardanoNodeStates.UPDATING
-    )
-  );
+  _isConnected = (): boolean => this._node != null && this._node.connected;
 
   /**
-   * Checks if cardano-node is in any exiting state
+   * Checks if cardano-node child_process is not running anymore
    * @returns {boolean}
    */
-  _isNodeExiting = (): boolean => (
-    this._node != null && (
-      this._state === CardanoNodeStates.EXITING ||
-      this._state === CardanoNodeStates.STOPPING ||
-      this._state === CardanoNodeStates.UPDATING
-    )
+  _isDead = async (): Promise<boolean> => (
+    !this._isConnected() && await this._isNodeProcessNotRunningAnymore()
   );
 
   /**
@@ -476,7 +464,7 @@ export class CardanoNode {
    * @private
    */
   _canBeStarted = async (): Promise<boolean> => {
-    if (this._isAwake()) { return false; }
+    if (this._isConnected()) { return false; }
     try {
       await this._ensurePreviousCardanoNodeIsNotRunning();
       return true;
@@ -484,8 +472,6 @@ export class CardanoNode {
       return false;
     }
   };
-
-  _canBeStopped = async (): Promise<boolean> => this._isAwake() && !this._isNodeExiting();
 
   _ensureProcessIsNotRunning = async (pid: number, name: string) => {
     const { _log } = this;
@@ -599,7 +585,7 @@ export class CardanoNode {
     this._node != null && await this._isProcessRunning(this._node.pid, CARDANO_PROCESS_NAME)
   );
 
-  _isNodeProcessNotRunningAnymore = async () => await this._isNodeProcessStillRunning() === false
+  _isNodeProcessNotRunningAnymore = async () => await this._isNodeProcessStillRunning() === false;
 
   _waitForNodeProcessToExit = async (timeout: number) => (
     await promisedCondition(this._isNodeProcessNotRunningAnymore, timeout)
