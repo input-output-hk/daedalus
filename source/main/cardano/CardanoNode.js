@@ -8,11 +8,7 @@ import environment from '../../common/environment';
 import type { CardanoNodeState, TlsConfig } from '../../common/types/cardanoNode.types';
 import { promisedCondition, deriveStorageKeys, deriveProcessNames } from './utils';
 import { CardanoNodeStates } from '../../common/types/cardanoNode.types';
-
-type Process = {
-  pid: number,
-  name: string,
-};
+import type { Process } from '../utils/processes';
 
 type Logger = {
   debug: (string) => void,
