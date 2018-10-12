@@ -1,3 +1,4 @@
+// @flow
 import psList from 'ps-list';
 
 export type Process = {
