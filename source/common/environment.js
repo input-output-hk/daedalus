@@ -11,23 +11,23 @@ if (process.version !== '' && process.release !== undefined && process.release.n
 }
 
 // constants
-const PRODUCTION = 'production';
-const DEVELOPMENT = 'development';
-const TEST = 'test';
-const MAINNET = 'mainnet';
-const STAGING = 'staging';
-const TESTNET = 'testnet';
-const MAC_OS = 'darwin';
-const WINDOWS = 'win32';
-const LINUX = 'linux';
-const OS_NAMES = {
+export const PRODUCTION = 'production';
+export const DEVELOPMENT = 'development';
+export const TEST = 'test';
+export const MAINNET = 'mainnet';
+export const STAGING = 'staging';
+export const TESTNET = 'testnet';
+export const STAGING_REPORT_URL = 'http://staging-report-server.awstest.iohkdev.io:8080/';
+export const MAC_OS = 'darwin';
+export const WINDOWS = 'win32';
+export const LINUX = 'linux';
+export const OS_NAMES = {
   [MAC_OS]: 'macOS',
   [WINDOWS]: 'Windows',
   [LINUX]: 'Linux',
 };
 
 // environment variables
-const STAGING_REPORT_URL = 'http://staging-report-server.awstest.iohkdev.io:8080/';
 const CURRENT_NODE_ENV = process.env.NODE_ENV || DEVELOPMENT;
 const NETWORK = process.env.NETWORK || DEVELOPMENT;
 const REPORT_URL = process.env.REPORT_URL || STAGING_REPORT_URL;
@@ -47,16 +47,13 @@ const BUILD_LABEL = (isProduction ?
   `Daedalus (${version}#${BUILD_NUMBER}) ${CURRENT_NODE_ENV}`
 );
 const INSTALLER_VERSION = uniq([API_VERSION, BUILD]).join('.');
-const MOBX_DEV_TOOLS = process.env.MOBX_DEV_TOOLS;
+const MOBX_DEV_TOOLS = process.env.MOBX_DEV_TOOLS || false;
 const isMacOS = PLATFORM === MAC_OS;
 const isWindows = PLATFORM === WINDOWS;
 const isLinux = PLATFORM === LINUX;
 
 // compose environment
 const daedalusEnv = Object.assign({}, {
-  DEVELOPMENT,
-  TEST,
-  PRODUCTION,
   NETWORK,
   API_VERSION,
   MOBX_DEV_TOOLS,
