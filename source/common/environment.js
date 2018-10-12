@@ -2,6 +2,7 @@
 import os from 'os';
 import { uniq } from 'lodash';
 import { version } from '../../package.json';
+import type { Environment } from './types/environment.types';
 
 // Only require electron / remote if we are in a node.js environment
 let remote;
@@ -79,6 +80,5 @@ const daedalusEnv = Object.assign({}, {
   isLinux
 });
 const sourceEnv = remote ? remote.getGlobal('env') : process.env;
-const environment = Object.assign(daedalusEnv, sourceEnv);
 
-export default environment;
+export const environment: Environment = Object.assign(daedalusEnv, sourceEnv);
