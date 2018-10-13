@@ -584,9 +584,9 @@ export default class WalletsStore extends Store {
     this.generatingCertificateInProgress = state;
   });
 
-  _onGetAppEnvironmentSuccess = action((event, { isMainnet, BUILD_LABEL }) => {
+  _onGetAppEnvironmentSuccess = action((event, { isMainnet, buildLabel }) => {
     this._isMainnet = isMainnet;
-    this._buildLabel = BUILD_LABEL;
+    this._buildLabel = buildLabel;
   });
 
   @action _setCertificateTemplate = (params: {
