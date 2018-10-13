@@ -22,16 +22,6 @@ import { ensureXDGDataIsSet } from './cardano/config';
 import { acquireDaedalusInstanceLock } from './utils/lockFiles';
 import { CardanoNodeStates } from '../common/types/cardanoNode.types';
 
-acquireDaedalusInstanceLock();
-setupLogging();
-mainErrorHandler();
-
-Logger.info(`========== Daedalus is starting at ${new Date().toString()} ==========`);
-
-Logger.debug(`!!! Daedalus is running on ${os.platform()} version ${os.release()}
-            with CPU: ${JSON.stringify(os.cpus(), null, 2)} with
-            ${JSON.stringify(os.totalmem(), null, 2)} total RAM !!!`);
-
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
 let cardanoNode: CardanoNode;
@@ -72,6 +62,17 @@ const menuActions = {
 };
 
 app.on('ready', async () => {
+  // Make sure this is the only Daedalus instance running per cluster before doing anything else
+  await acquireDaedalusInstanceLock();
+  setupLogging();
+  mainErrorHandler();
+
+  Logger.info(`========== Daedalus is starting at ${new Date().toString()} ==========`);
+
+  Logger.debug(`!!! Daedalus is running on ${os.platform()} version ${os.release()}
+            with CPU: ${JSON.stringify(os.cpus(), null, 2)} with
+            ${JSON.stringify(os.totalmem(), null, 2)} total RAM !!!`);
+
   const isStartedByLauncher = !!process.env.LAUNCHER_CONFIG;
   if (isProduction && !isStartedByLauncher) {
     const dialogTitle = 'Daedalus improperly started!';
