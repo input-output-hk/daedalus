@@ -28,7 +28,7 @@ const startCardanoNode = (node: CardanoNode, launcherConfig: Object) => {
     startupMaxRetries: 5,
     shutdownTimeout: 30000,
     killTimeout: 30000,
-    updateTimeout: 20000,
+    updateTimeout: 60000,
   };
   return node.start(config);
 };
