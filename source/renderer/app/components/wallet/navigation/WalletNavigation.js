@@ -79,7 +79,7 @@ export default class WalletNavigation extends Component<Props> {
         <div className={styles.navItem}>
           <WalletNavButton
             className="receive"
-            label={intl.formatMessage(messages.onReceive)}
+            label={intl.formatMessage(messages.receive)}
             icon={receiveIcon}
             isActive={isActiveNavItem('receive')}
             onClick={() => onNavItemClick('receive')}
