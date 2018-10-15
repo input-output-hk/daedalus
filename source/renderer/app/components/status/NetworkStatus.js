@@ -132,7 +132,10 @@ export default class NetworkStatus extends Component<Props, State> {
 
     const remainingUnsyncedBlocks = networkBlockHeight - localBlockHeight;
     const remainingUnsyncedBlocksClasses = classNames([
-      remainingUnsyncedBlocks > UNSYNCED_BLOCKS_ALLOWED ? styles.red : styles.green,
+      (
+        remainingUnsyncedBlocks < 0 ||
+        remainingUnsyncedBlocks > UNSYNCED_BLOCKS_ALLOWED
+      ) ? styles.red : styles.green,
     ]);
 
     const timeSinceLastBlock = moment(Date.now()).diff(moment(mostRecentBlockTimestamp));
@@ -184,7 +187,7 @@ export default class NetworkStatus extends Component<Props, State> {
               <tr>
                 <td>remainingUnsyncedBlocks:</td>
                 <td className={remainingUnsyncedBlocksClasses}>
-                  {remainingUnsyncedBlocks}
+                  {remainingUnsyncedBlocks >= 0 ? remainingUnsyncedBlocks : '-'}
                 </td>
               </tr>
               <tr>
