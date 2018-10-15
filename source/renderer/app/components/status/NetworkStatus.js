@@ -95,6 +95,7 @@ export default class NetworkStatus extends Component<Props, State> {
       CardanoNodeStates.UPDATED,
       CardanoNodeStates.CRASHED,
       CardanoNodeStates.ERRORED,
+      CardanoNodeStates.UNRECOVERABLE
     ];
     if (
       isNodeRestarting &&

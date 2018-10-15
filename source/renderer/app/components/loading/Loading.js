@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import { includes } from 'lodash';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -31,8 +32,8 @@ const messages = defineMessages({
   },
   stopped: {
     id: 'loading.screen.stoppedCardanoMessage',
-    defaultMessage: '!!!Cardano node stopped',
-    description: 'Message "Cardano node stopped" on the loading screen.'
+    defaultMessage: '!!!Cardano node stopped.',
+    description: 'Message "Cardano node stopped." on the loading screen.'
   },
   updating: {
     id: 'loading.screen.updatingCardanoMessage',
@@ -41,13 +42,18 @@ const messages = defineMessages({
   },
   updated: {
     id: 'loading.screen.updatedCardanoMessage',
-    defaultMessage: '!!!Cardano node updated',
-    description: 'Message "Cardano node updated" on the loading screen.'
+    defaultMessage: '!!!Cardano node updated.',
+    description: 'Message "Cardano node updated." on the loading screen.'
   },
   crashed: {
     id: 'loading.screen.crashedCardanoMessage',
-    defaultMessage: '!!!Cardano node crashed',
-    description: 'Message "Cardano node crashed" on the loading screen.'
+    defaultMessage: '!!!Cardano node crashed.',
+    description: 'Message "Cardano node crashed." on the loading screen.'
+  },
+  unrecoverable: {
+    id: 'loading.screen.unrecoverableCardanoMessage',
+    defaultMessage: '!!!Unable to start Cardano node. Please submit a support request.',
+    description: 'Message "Unable to start Cardano node. Please submit a support request." on the loading screen.'
   },
   connecting: {
     id: 'loading.screen.connectingToNetworkMessage',
@@ -77,7 +83,7 @@ const messages = defineMessages({
   reportIssueButtonLabel: {
     id: 'loading.screen.reportIssue.buttonLabel',
     defaultMessage: '!!!Report an issue',
-    description: 'Report an issue button label on the loading .'
+    description: 'Report an issue button label on the loading.'
   },
 });
 
@@ -224,6 +230,9 @@ export default class Loading extends Component<Props, State> {
       case CardanoNodeStates.ERRORED:
         connectingMessage = messages.crashed;
         break;
+      case CardanoNodeStates.UNRECOVERABLE:
+        connectingMessage = messages.unrecoverable;
+        break;
       default: // also covers CardanoNodeStates.RUNNING state
         connectingMessage = hasBeenConnected ? messages.reconnecting : messages.connecting;
     }
@@ -233,6 +242,7 @@ export default class Loading extends Component<Props, State> {
   _renderLoadingScreen = () => {
     const { intl } = this.context;
     const {
+      cardanoNodeState,
       isConnected,
       isSystemTimeCorrect,
       isSynced,
@@ -246,9 +256,21 @@ export default class Loading extends Component<Props, State> {
     } = this.props;
 
     if (!isConnected) {
+      const finalCardanoNodeStates = [
+        CardanoNodeStates.STOPPED,
+        CardanoNodeStates.UPDATED,
+        CardanoNodeStates.CRASHED,
+        CardanoNodeStates.ERRORED,
+        CardanoNodeStates.UNRECOVERABLE
+      ];
+      const headlineClasses = classNames([
+        styles.headline,
+        includes(finalCardanoNodeStates, cardanoNodeState) ? styles.withoutAnimation : null,
+      ]);
+
       return (
         <div className={styles.connecting}>
-          <h1 className={styles.headline}>
+          <h1 className={headlineClasses}>
             {intl.formatMessage(this._getConnectingMessage())}
           </h1>
         </div>
@@ -289,6 +311,7 @@ export default class Loading extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const {
+      cardanoNodeState,
       currencyIcon,
       apiIcon,
       isConnected,
@@ -324,7 +347,10 @@ export default class Loading extends Component<Props, State> {
     const apiLoadingLogo = apiIcon;
 
     const canReportConnectingIssue = (
-      !isConnected && connectingTime >= REPORT_ISSUE_TIME_TRIGGER
+      !isConnected && (
+        connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
+        cardanoNodeState === CardanoNodeStates.UNRECOVERABLE
+      )
     );
     const canReportSyncingIssue = (
       isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER
