@@ -313,7 +313,10 @@ export default class NetworkStatusStore extends Store {
 
         // Node is syncing in case we are receiving blocks and they are not stalling
         runInAction('update isNodeSyncing', () => {
-          this.isNodeSyncing = isBlockchainHeightIncreasing || !isBlockchainHeightStalling;
+          this.isNodeSyncing = (
+            hasStartedReceivingBlocks &&
+            (isBlockchainHeightIncreasing || !isBlockchainHeightStalling)
+          );
         });
 
         runInAction('update isNodeInSync', () => {
