@@ -96,7 +96,7 @@ let
       cp -f ${daedalusPkgs.iconPath.${cluster}} $DAEDALUS_INSTALL_DIRECTORY/icon.png
       ln -svf $(type -P cardano-node)
       ${pkgs.lib.optionalString autoStartBackend ''
-        for x in wallet-topology.yaml configuration.yaml mainnet-genesis-dryrun-with-stakeholders.json ; do
+        for x in wallet-topology.yaml log-config-prod.yaml configuration.yaml mainnet-genesis-dryrun-with-stakeholders.json ; do
           ln -svf ${daedalusPkgs.daedalus.cfg}/etc/$x
         done
         ${pkgs.lib.optionalString (cluster == "demo") ''
