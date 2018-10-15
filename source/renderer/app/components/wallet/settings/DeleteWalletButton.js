@@ -1,3 +1,4 @@
+// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './DeleteWalletButton.scss';

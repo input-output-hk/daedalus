@@ -1,3 +1,4 @@
+// @flow
 export type RequestConfig = {
   port: number,
   ca: Uint8Array,

@@ -1,3 +1,4 @@
+// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import closeCross from '../../assets/images/close-cross.inline.svg';

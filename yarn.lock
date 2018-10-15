@@ -4540,6 +4540,12 @@ eslint-plugin-flowtype-errors@3.3.6:
     babel-runtime "^6.26.0"
     slash "^1.0.0"
 
+eslint-plugin-flowtype@^2.50.1:
+  version "2.50.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-2.50.1.tgz#36d4c961ac8b9e9e1dc091d3fba0537dad34ae8a"
+  dependencies:
+    lodash "^4.17.10"
+
 eslint-plugin-import@2.8.0:
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-import/-/eslint-plugin-import-2.8.0.tgz#fa1b6ef31fcb3c501c09859c1b86f1fc5b986894"
@@ -5142,9 +5148,9 @@ flatten@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.2.tgz#dae46a9d78fbe25292258cc1e780a41d95c03782"
 
-flow-bin@0.60.1:
-  version "0.60.1"
-  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.60.1.tgz#0f4fa7b49be2a916f18cd946fc4a51e32ffe4b48"
+flow-bin@0.81.0:
+  version "0.81.0"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.81.0.tgz#7f0a733dce1dad3cb1447c692639292dc3d60bf5"
 
 flush-write-stream@^1.0.0, flush-write-stream@^1.0.2:
   version "1.0.3"

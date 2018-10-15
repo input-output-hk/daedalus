@@ -1,3 +1,4 @@
+// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
@@ -8,8 +9,8 @@ type Props = {
   description: string,
   icon: string,
   onClick: ?Function,
-  isDisabled: ?boolean,
-  className: string,
+  isDisabled?: boolean,
+  className?: string,
 };
 
 export default class BigButtonForDialogs extends Component<Props> {

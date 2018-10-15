@@ -302,7 +302,7 @@ export default class SettingsStore extends Store {
     this.error = new WalletSupportRequestLogsCompressError();
   });
 
-  _sendBugReport = action(({ email, subject, problem, compressedLogsFile } : {
+  _sendBugReport = action(({ email, subject, problem, compressedLogsFile }: {
     email: string,
     subject: string,
     problem: string,

@@ -106,14 +106,16 @@ export default class StoryLayout extends Component<Props> {
   @observable
   isShowingSubMenus = this.props.activeSidebarCategory === '/wallets' && !!this.props.children;
 
-  getSidebarWallets = (wallets: Array<Wallet>) => wallets.map(wallet => ({
-    id: wallet.id,
-    title: wallet.name,
-    info: `${wallet.amount} ADA`,
-    isConnected: true,
-    isRestoreActive: false,
-    restoreProgress: 0,
-  }));
+  getSidebarWallets = (wallets: Array<Wallet>): Array<SidebarWalletType> => (
+    wallets.map((wallet: Wallet) => ({
+      id: wallet.id,
+      title: wallet.name,
+      info: `${wallet.amount} ADA`,
+      isConnected: true,
+      isRestoreActive: false,
+      restoreProgress: 0,
+    }))
+  );
 
   getSidebarMenus = (
     items: Array<SidebarWalletType>,

@@ -54,7 +54,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  onExternalLinkClick: Function,
+  onExternalLinkClick: (event: MouseEvent, url: string) => void,
   onSupportRequestClick: Function,
   onDownloadLogs: Function,
 };
@@ -69,11 +69,12 @@ export default class SupportSettings extends Component<Props> {
   render() {
     const { onExternalLinkClick, onSupportRequestClick, onDownloadLogs } = this.props;
     const { intl } = this.context;
+    const faqLinkUrl = intl.formatMessage(globalMessages.faqLinkUrl);
 
     const faqLink = (
       <a
-        href={intl.formatMessage(globalMessages.faqLinkUrl)}
-        onClick={event => onExternalLinkClick(event)}
+        href={faqLinkUrl}
+        onClick={event => onExternalLinkClick(event, faqLinkUrl)}
       >
         {intl.formatMessage(messages.faqLink)}
       </a>
