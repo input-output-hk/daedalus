@@ -31,6 +31,7 @@ type StateTransitions = {
   onUpdated: () => void,
   onCrashed: (code: number, signal: string) => void,
   onError: (error: Error) => void,
+  onUnrecoverable: () => void,
 }
 
 type CardanoNodeIpcMessage = {
@@ -181,7 +182,7 @@ export class CardanoNode {
     if (!nodeCanBeStarted) {
       return Promise.reject('CardanoNode: Cannot be started.');
     }
-    if (!isForced && this._startupTries >= config.startupMaxRetries) {
+    if (this._isUnrecoverable(config) && !isForced) {
       return Promise.reject('CardanoNode: Too many startup retries.');
     }
     // Setup
@@ -412,6 +413,8 @@ export class CardanoNode {
       this._changeToState(CardanoNodeStates.STOPPED);
     } else if (this._state === CardanoNodeStates.UPDATING && code === CARDANO_UPDATE_EXIT_CODE) {
       this._changeToState(CardanoNodeStates.UPDATED);
+    } else if (this._isUnrecoverable(_config)) {
+      this._changeToState(CardanoNodeStates.UNRECOVERABLE);
     } else {
       this._changeToState(CardanoNodeStates.CRASHED, code, signal);
     }
@@ -437,6 +440,7 @@ export class CardanoNode {
       case CardanoNodeStates.UPDATING: return _transitionListeners.onUpdating();
       case CardanoNodeStates.UPDATED: return _transitionListeners.onUpdated();
       case CardanoNodeStates.CRASHED: return _transitionListeners.onCrashed(...args);
+      case CardanoNodeStates.UNRECOVERABLE: return _transitionListeners.onUnrecoverable();
       default:
     }
   }
@@ -599,6 +603,10 @@ export class CardanoNode {
     } catch (_) {
       await this._ensureCurrentCardanoNodeIsNotRunning();
     }
-  }
+  };
+
+  _isUnrecoverable = (config: CardanoNodeConfig) => (
+    this._startupTries >= config.startupMaxRetries
+  );
 
 }

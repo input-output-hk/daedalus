@@ -76,7 +76,8 @@ export const setupCardano = (
       Logger.info(`CardanoNode crashed with code ${code}. Restarting in ${restartTimeout}ms …`);
       setTimeout(() => restartCardanoNode(cardanoNode), restartTimeout);
     },
-    onError: () => {}
+    onError: () => {},
+    onUnrecoverable: () => {}
   });
   startCardanoNode(cardanoNode, launcherConfig);
 
