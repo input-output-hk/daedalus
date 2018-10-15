@@ -9,10 +9,19 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { ModalSkin } from 'react-polymorph/lib/skins/simple/ModalSkin';
 import styles from './Dialog.scss';
 
+export type DialogAction = {
+  className?: ?string,
+  label: string,
+  primary?: boolean,
+  disabled?: boolean,
+  onClick?: Function,
+  onDisabled?: Function,
+};
+
 type Props = {
   title?: string,
   children?: Node,
-  actions?: Node,
+  actions?: Array<DialogAction>,
   closeButton?: Element<any>,
   backButton?: Node,
   className?: string,

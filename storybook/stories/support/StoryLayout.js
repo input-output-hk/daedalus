@@ -167,6 +167,7 @@ export default class StoryLayout extends Component<Props> {
           syncPercentage: 100,
         }}
         isProduction
+        isMainnet
       />
     </TopBar>
   );

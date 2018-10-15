@@ -260,18 +260,6 @@ export default class Transaction extends Component<Props, State> {
             role="presentation"
             aria-hidden
           >
-            {data.exchange && data.conversionRate ? (
-              <div className={styles.conversion}>
-                <div>
-                  <h2>{intl.formatMessage(messages.exchange)}</h2>
-                  <span>{data.exchange}</span>
-                </div>
-                <div className={styles.conversionRate}>
-                  <h2>{intl.formatMessage(messages.conversionRate)}</h2>
-                  <span>{data.conversionRate}</span>
-                </div>
-              </div>
-            ) : null}
             <div>
               <h2>
                 {intl.formatMessage(messages.fromAddresses)}

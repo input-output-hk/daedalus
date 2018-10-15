@@ -579,6 +579,7 @@ export default class AdaApi {
     }
   };
 
+  /* :: redeemAda: Function */
   async redeemAda(request: RedeemAdaParams): Promise<WalletTransaction> {
     Logger.debug('AdaApi::redeemAda called');
     const { spendingPassword: passwordString } = request;
@@ -598,6 +599,7 @@ export default class AdaApi {
     }
   }
 
+  /* :: redeemPaperVendedAda: Function */
   async redeemPaperVendedAda(
     request: RedeemPaperVendedAdaParams
   ): Promise<WalletTransaction> {
@@ -764,6 +766,11 @@ export default class AdaApi {
       throw new GenericApiError(error);
     }
   };
+
+  // No implementation here but can be overwritten
+  getLocalTimeDifference: Function;
+  setLocalTimeDifference: Function;
+  setNextUpdate: Function;
 }
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========

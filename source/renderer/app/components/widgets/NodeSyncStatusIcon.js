@@ -16,8 +16,8 @@ const messages = defineMessages({
 
 type Props = {
   networkStatus: {
-    isSynced: boolean,
-    syncPercentage: number,
+    +isSynced: boolean,
+    +syncPercentage: number,
   },
   isMainnet: boolean,
 };

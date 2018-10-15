@@ -8,11 +8,11 @@ import WalletTransaction, {
   transactionStates,
   transactionTypes
 } from '../../../source/renderer/app/domains/WalletTransaction';
+import WalletAddress from '../../../source/renderer/app/domains/WalletAddress';
 import type {
   TransactionState,
   TransactionType
-} from '../../../source/renderer/app/domains/WalletTransaction';
-import WalletAddress from '../../../source/renderer/app/domains/WalletAddress';
+} from '../../../source/renderer/app/api/transactions/types';
 
 export const generateHash = () => {
   const now = (new Date()).valueOf().toString();
@@ -49,10 +49,11 @@ export const generateRandomTransaction = (index: number) =>
     new BigNumber(faker.random.number(5))
   );
 
-export const generateAddress = (isUsed: boolean = false): WalletAddress => (new WalletAddress({
+export const generateAddress = (used: boolean = false): WalletAddress => (new WalletAddress({
   id: generateHash(),
   amount: new BigNumber(faker.random.number(5)),
-  isUsed
+  changeAddress: false,
+  used
 }));
 
 export const promise = (returnValue: any): () => Promise<any> => (
