@@ -120,6 +120,7 @@ const messages = defineMessages({
 type Props = {
   compressedLogsFile?: ?string,
   logFiles: LogFiles,
+  compressedLogsFile: ?string,
   onCancel: Function,
   onSubmit: Function,
   onSubmitManually: Function,
@@ -152,7 +153,7 @@ export default class BugReportDialog extends Component<Props, State> {
     this.props.onGetLogs();
   }
 
-  componentWillReceiveProps(nextProps: Object) {
+  componentWillReceiveProps(nextProps: Props) {
     const compressedLogsFileChanged = (
       !this.props.compressedLogsFile &&
       !!nextProps.compressedLogsFile

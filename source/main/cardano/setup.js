@@ -28,7 +28,7 @@ const startCardanoNode = (node: CardanoNode, launcherConfig: Object) => {
     startupMaxRetries: 5,
     shutdownTimeout: 30000,
     killTimeout: 30000,
-    updateTimeout: 20000,
+    updateTimeout: 60000,
   };
   return node.start(config);
 };
@@ -76,7 +76,8 @@ export const setupCardano = (
       Logger.info(`CardanoNode crashed with code ${code}. Restarting in ${restartTimeout}ms …`);
       setTimeout(() => restartCardanoNode(cardanoNode), restartTimeout);
     },
-    onError: () => {}
+    onError: () => {},
+    onUnrecoverable: () => {}
   });
   startCardanoNode(cardanoNode, launcherConfig);
 

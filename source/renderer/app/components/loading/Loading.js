@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import { includes } from 'lodash';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -9,14 +10,51 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import SystemTimeErrorOverlay from './SystemTimeErrorOverlay';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
+import { CardanoNodeStates } from '../../../../common/types/cardanoNode.types';
 import styles from './Loading.scss';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
+import type { CardanoNodeState } from '../../../../common/types/cardanoNode.types';
 import { REPORT_ISSUE_TIME_TRIGGER } from '../../config/timingConfig';
 
 let connectingInterval = null;
 let syncingInterval = null;
 
 const messages = defineMessages({
+  starting: {
+    id: 'loading.screen.startingCardanoMessage',
+    defaultMessage: '!!!Starting Cardano node',
+    description: 'Message "Starting Cardano node" on the loading screen.'
+  },
+  stopping: {
+    id: 'loading.screen.stoppingCardanoMessage',
+    defaultMessage: '!!!Stopping Cardano node',
+    description: 'Message "Stopping Cardano node" on the loading screen.'
+  },
+  stopped: {
+    id: 'loading.screen.stoppedCardanoMessage',
+    defaultMessage: '!!!Cardano node stopped',
+    description: 'Message "Cardano node stopped" on the loading screen.'
+  },
+  updating: {
+    id: 'loading.screen.updatingCardanoMessage',
+    defaultMessage: '!!!Updating Cardano node',
+    description: 'Message "Updating Cardano node" on the loading screen.'
+  },
+  updated: {
+    id: 'loading.screen.updatedCardanoMessage',
+    defaultMessage: '!!!Cardano node updated',
+    description: 'Message "Cardano node updated" on the loading screen.'
+  },
+  crashed: {
+    id: 'loading.screen.crashedCardanoMessage',
+    defaultMessage: '!!!Cardano node crashed',
+    description: 'Message "Cardano node crashed" on the loading screen.'
+  },
+  unrecoverable: {
+    id: 'loading.screen.unrecoverableCardanoMessage',
+    defaultMessage: '!!!Unable to start Cardano node. Please submit a support request.',
+    description: 'Message "Unable to start Cardano node. Please submit a support request." on the loading screen.'
+  },
   connecting: {
     id: 'loading.screen.connectingToNetworkMessage',
     defaultMessage: '!!!Connecting to network',
@@ -45,7 +83,7 @@ const messages = defineMessages({
   reportIssueButtonLabel: {
     id: 'loading.screen.reportIssue.buttonLabel',
     defaultMessage: '!!!Report an issue',
-    description: 'Report an issue button label on the loading .'
+    description: 'Report an issue button label on the loading.'
   },
 });
 
@@ -58,6 +96,7 @@ type State = {
 type Props = {
   currencyIcon: string,
   apiIcon: string,
+  cardanoNodeState: ?CardanoNodeState,
   hasBeenConnected: boolean,
   isConnected: boolean,
   isSynced: boolean,
@@ -166,13 +205,44 @@ export default class Loading extends Component<Props, State> {
     }
   };
 
-  _getConnectingMessage = () => (
-    this.props.hasBeenConnected ? messages.reconnecting : messages.connecting
-  );
+  _getConnectingMessage = () => {
+    const { cardanoNodeState, hasBeenConnected } = this.props;
+    let connectingMessage;
+    switch (cardanoNodeState) {
+      case null:
+      case CardanoNodeStates.STARTING:
+        connectingMessage = messages.starting;
+        break;
+      case CardanoNodeStates.STOPPING:
+      case CardanoNodeStates.EXITING:
+        connectingMessage = messages.stopping;
+        break;
+      case CardanoNodeStates.STOPPED:
+        connectingMessage = messages.stopped;
+        break;
+      case CardanoNodeStates.UPDATING:
+        connectingMessage = messages.updating;
+        break;
+      case CardanoNodeStates.UPDATED:
+        connectingMessage = messages.updated;
+        break;
+      case CardanoNodeStates.CRASHED:
+      case CardanoNodeStates.ERRORED:
+        connectingMessage = messages.crashed;
+        break;
+      case CardanoNodeStates.UNRECOVERABLE:
+        connectingMessage = messages.unrecoverable;
+        break;
+      default: // also covers CardanoNodeStates.RUNNING state
+        connectingMessage = hasBeenConnected ? messages.reconnecting : messages.connecting;
+    }
+    return connectingMessage;
+  };
 
   _renderLoadingScreen = () => {
     const { intl } = this.context;
     const {
+      cardanoNodeState,
       isConnected,
       isSystemTimeCorrect,
       isSynced,
@@ -186,9 +256,21 @@ export default class Loading extends Component<Props, State> {
     } = this.props;
 
     if (!isConnected) {
+      const finalCardanoNodeStates = [
+        CardanoNodeStates.STOPPED,
+        CardanoNodeStates.UPDATED,
+        CardanoNodeStates.CRASHED,
+        CardanoNodeStates.ERRORED,
+        CardanoNodeStates.UNRECOVERABLE
+      ];
+      const headlineClasses = classNames([
+        styles.headline,
+        includes(finalCardanoNodeStates, cardanoNodeState) ? styles.withoutAnimation : null,
+      ]);
+
       return (
         <div className={styles.connecting}>
-          <h1 className={styles.headline}>
+          <h1 className={headlineClasses}>
             {intl.formatMessage(this._getConnectingMessage())}
           </h1>
         </div>
@@ -229,6 +311,7 @@ export default class Loading extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const {
+      cardanoNodeState,
       currencyIcon,
       apiIcon,
       isConnected,
@@ -264,7 +347,10 @@ export default class Loading extends Component<Props, State> {
     const apiLoadingLogo = apiIcon;
 
     const canReportConnectingIssue = (
-      !isConnected && connectingTime >= REPORT_ISSUE_TIME_TRIGGER
+      !isConnected && (
+        connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
+        cardanoNodeState === CardanoNodeStates.UNRECOVERABLE
+      )
     );
     const canReportSyncingIssue = (
       isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER
