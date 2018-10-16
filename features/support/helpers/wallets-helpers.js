@@ -98,8 +98,9 @@ const createWalletsAsync = async (table, context) => {
 };
 
 const createWalletsSequentially = async (wallets, context) => {
-  context.wallets = await wallets.map(async (walletData) =>
-    await context.client.executeAsync((wallet, done) => {
+  context.wallets = [];
+  for (const walletData of wallets) {
+    const result = await context.client.executeAsync((wallet, done) => {
       daedalus.api.ada.createWallet({
         name: wallet.name,
         mnemonic: daedalus.utils.crypto.generateMnemonic(),
@@ -113,13 +114,13 @@ const createWalletsSequentially = async (wallets, context) => {
           ))
           .catch((error) => done(error))
       )).catch((error) => done(error.stack));
-    }, walletData)
-  );
+    }, walletData);
+    context.wallets = result.value;
+  }
 };
 
-export const createWallets = async (wallets, context, options) => {
-  const { sequentially } = options || {};
-  if (sequentially === true) {
+export const createWallets = async (wallets, context, options = {}) => {
+  if (options.sequentially === true) {
     await createWalletsSequentially(wallets, context);
   } else {
     await createWalletsAsync(wallets, context);
