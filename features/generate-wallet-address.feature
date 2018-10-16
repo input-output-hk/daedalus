@@ -5,8 +5,8 @@ Feature: Generate Wallet Address
 
   Scenario: Generating wallet address
     Given I have the following wallets:
-    | name   |
-    | first  |
+      | name   |
+      | first  |
     And I am on the "first" wallet "receive" screen
     And I have one wallet address
     And I click on the "Generate new address" button
@@ -14,8 +14,8 @@ Feature: Generate Wallet Address
 
   Scenario: Generating wallet address for a wallet with spending password
     Given I have the following wallets:
-    | name   | password  |
-    | first  | Secret123 |
+      | name   | password  |
+      | first  | Secret123 |
     And I am on the "first" wallet "receive" screen
     And I have one wallet address
     And I enter spending password "Secret123"

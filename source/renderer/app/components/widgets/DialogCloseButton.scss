@@ -11,3 +11,9 @@
     }
   }
 }
+
+.disabled {
+  @extend .component;
+  cursor: default;
+  opacity: .5;
+}

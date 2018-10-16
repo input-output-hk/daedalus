@@ -3,6 +3,7 @@
 <PROJECT_ROOT>/node_modules/electron-packager/.*
 <PROJECT_ROOT>/node_modules/npm/.*
 <PROJECT_ROOT>/node_modules/oboe/.*
+<PROJECT_ROOT>/node_modules/jsonlint/.*
 <PROJECT_ROOT>/dist/.*
 <PROJECT_ROOT>/release/.*
 <PROJECT_ROOT>/git/.*

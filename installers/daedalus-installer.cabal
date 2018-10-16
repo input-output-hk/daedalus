@@ -27,6 +27,7 @@ library
                      , Glob
                      , base
                      , bytestring
+                     , unordered-containers
                      , containers
                      , dhall
                      , dhall-json

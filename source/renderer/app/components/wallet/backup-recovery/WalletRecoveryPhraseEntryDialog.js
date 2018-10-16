@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSkin';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import WalletRecoveryPhraseMnemonic from './WalletRecoveryPhraseMnemonic';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -130,15 +130,19 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
 
         {!isValid && (
           <div className={styles.words}>
-            {recoveryPhraseShuffled.map(({ word, isActive }, index) => (
-              <MnemonicWord
-                key={index}
-                word={word}
-                index={index}
-                isActive={isActive}
-                onClick={(value) => isActive && onAddWord(value)}
-              />
-            ))}
+            {recoveryPhraseShuffled.map(({ word, isActive }, index) => {
+              const handleClick = value => isActive && onAddWord(value);
+
+              return (
+                <MnemonicWord
+                  key={index}
+                  word={word}
+                  index={index}
+                  isActive={isActive}
+                  onClick={handleClick}
+                />
+              );
+            })}
           </div>
         )}
 
@@ -149,7 +153,7 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
                 label={<FormattedHTMLMessage {...messages.termDevice} />}
                 onChange={onAcceptTermDevice}
                 checked={isTermDeviceAccepted}
-                skin={<SimpleCheckboxSkin />}
+                skin={CheckboxSkin}
               />
             </div>
             <div className={styles.checkbox}>
@@ -157,7 +161,7 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
                 label={intl.formatMessage(messages.termRecovery)}
                 onChange={onAcceptTermRecovery}
                 checked={isTermRecoveryAccepted}
-                skin={<SimpleCheckboxSkin />}
+                skin={CheckboxSkin}
               />
             </div>
           </div>

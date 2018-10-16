@@ -2,6 +2,7 @@
 // Theme config overrides go here …
 @import "~react-polymorph/lib/themes/simple/SimpleButton";
 // Css module overrides go here …
+@import '../mixins/buttons';
 
 .root {
   background: var(--theme-button-primary-background-color);
@@ -12,51 +13,25 @@
   position: relative;
   text-transform: none;
   width: 360px;
+  padding: 0;
 }
 
 :global {
-  .primary {
-    &[disabled] {
-      background: var(--theme-button-primary-background-color-disabled);
-      color: var(--theme-button-primary-text-color-disabled);
-      cursor: default !important;
-      &:hover,
-      &:active {
-        background: var(--theme-button-primary-background-color-disabled);
-      }
-    }
-    &:not([disabled]) {
-      background: var(--theme-button-primary-background-color);
-      color: var(--theme-button-primary-text-color);
-      &:hover {
-        background: var(--theme-button-primary-background-color-hover);
-      }
-      &:active {
-        background: var(--theme-button-primary-background-color-active);
-      }
-    }
-  }
+  @include simpleButton('primary');
+  @include simpleButton('flat');
+  @include simpleButton('attention');
+  @include simpleButton('disclaimer');
+  .disclaimer {
+    border: 1px solid var(--theme-button-disclaimer-border-color);
+    min-height: 50px;
+    transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
-  .flat {
-    &[disabled] {
-      background: var(--theme-button-flat-background-color-disabled);
-      color: var(--theme-button-flat-text-color-disabled);
-      cursor: default !important;
-      &:hover,
-      &:active {
-        background: var(--theme-button-flat-background-color-disabled);
-      }
+    &:hover, &:active {
+      color: var(--theme-button-disclaimer-background-color);
     }
-    &:not([disabled]) {
-      background-color: var(--theme-button-flat-background-color);
-      color: var(--theme-button-flat-text-color);
-      &:hover {
-        background-color: var(--theme-button-flat-background-color-hover);
-        color: var(--theme-button-flat-text-color);
-      }
-      &:active {
-        background-color: var(--theme-button-flat-background-color-active);
-      }
+    &:disabled {
+      color: var(--theme-button-disclaimer-text-color-disabled);
+      border-color: var(--theme-button-disclaimer-border-color-disabled);
     }
   }
 }

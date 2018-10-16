@@ -6,7 +6,7 @@ import SidebarLayout from '../../source/renderer/app/components/layout/SidebarLa
 import TopBar from '../../source/renderer/app/components/layout/TopBar';
 import NodeSyncStatusIcon from '../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
 import WalletTestEnvironmentLabel from '../../source/renderer/app/components/widgets/WalletTestEnvironmentLabel';
-import { formattedWalletAmount } from '../../source/renderer/app/utils/ada/formatters';
+import { formattedWalletAmount } from '../../source/renderer/app/utils/formatters';
 
 const topBarTestEnv = (
   <TopBar

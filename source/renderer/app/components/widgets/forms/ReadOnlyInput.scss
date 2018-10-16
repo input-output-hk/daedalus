@@ -2,18 +2,14 @@
   margin-bottom: 32px;
   position: relative;
 
-  :global {
-    .SimpleInput_disabled {
-      .SimpleInput_input {
-        background-color: var(--theme-input-background-color);
-        border-color: var(--theme-input-border-color);
-        color: var(--theme-input-text-color);
-      }
-    }
+  .disabled {
+    background-color: var(--theme-input-background-color);
+    border-color: var(--theme-input-border-color);
+    color: var(--theme-input-text-color);
   }
 
   .button {
-    bottom: 15px;
+    bottom: 14px;
     color: var(--theme-label-button-color);
     cursor: pointer;
     font-family: var(--font-light);

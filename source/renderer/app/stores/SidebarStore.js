@@ -1,15 +1,13 @@
 // @flow
-import { observable, action, computed } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import { get } from 'lodash';
 import { ipcRenderer } from 'electron';
 import Store from './lib/Store';
-import resolver from '../utils/imports';
-import environment from '../../../common/environment';
-import { syncStateTags } from '../domains/Wallet';
-import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../../../common/ipc-api/go-to-ada-redemption-screen';
-
-const sidebarConfig = resolver('config/sidebarConfig');
-const { formattedWalletAmount } = resolver('utils/formatters');
+import { sidebarConfig } from '../config/sidebarConfig';
+import { WalletSyncStateTags } from '../domains/Wallet';
+import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../../../common/ipc/go-to-ada-redemption-screen';
+import { formattedWalletAmount } from '../utils/formatters';
+import type { SidebarWalletType } from '../types/sidebarTypes';
 
 export default class SidebarStore extends Store {
 
@@ -38,14 +36,13 @@ export default class SidebarStore extends Store {
   }
 
   @computed get wallets(): Array<SidebarWalletType> {
-    const { networkStatus } = this.stores;
-    const { wallets } = this.stores[environment.API];
+    const { networkStatus, wallets } = this.stores;
     return wallets.all.map(w => ({
       id: w.id,
       title: w.name,
       info: formattedWalletAmount(w.amount),
       isConnected: networkStatus.isConnected,
-      isRestoreActive: get(w, 'syncState.tag') === syncStateTags.RESTORING,
+      isRestoreActive: get(w, 'syncState.tag') === WalletSyncStateTags.RESTORING,
       restoreProgress: get(w, 'syncState.data.percentage.quantity', 0),
     }));
   }
@@ -65,7 +62,7 @@ export default class SidebarStore extends Store {
   };
 
   @action _onWalletSelected = ({ walletId }: { walletId: string }) => {
-    this.stores[environment.API].wallets.goToWalletRoute(walletId);
+    this.stores.wallets.goToWalletRoute(walletId);
   };
 
   @action _setActivateSidebarCategory = (category: string) => {
@@ -97,12 +94,3 @@ export default class SidebarStore extends Store {
   };
 
 }
-
-export type SidebarWalletType = {
-  id: string,
-  title: string,
-  info: string,
-  isConnected: bool,
-  isRestoreActive: bool,
-  restoreProgress: number,
-};

@@ -1,8 +1,7 @@
 import { compact } from 'lodash';
-import environment from '../../common/environment';
 
 export const winLinuxMenu = (app, window, {
-  openAbout, goToAdaRedemption, restartInSafeMode, restartWithoutSafeMode
+  openAbout, goToAdaRedemption, goToNetworkStatus, restartInSafeMode, restartWithoutSafeMode
 }, isInSafeMode) => (
   [{
     label: 'Daedalus',
@@ -11,7 +10,7 @@ export const winLinuxMenu = (app, window, {
       click() {
         openAbout();
       }
-    }, environment.API === 'ada' && {
+    }, {
       label: 'Ada redemption',
       click() {
         goToAdaRedemption();
@@ -24,6 +23,12 @@ export const winLinuxMenu = (app, window, {
         isInSafeMode ?
           restartWithoutSafeMode() :
           restartInSafeMode();
+      },
+    }, {
+      label: 'Network status',
+      accelerator: 'Ctrl+S',
+      click() {
+        goToNetworkStatus();
       },
     }, {
       label: 'Close',

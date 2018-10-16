@@ -69,18 +69,18 @@ When(/^I open "Transaction assurance security level" selection dropdown$/, funct
 });
 
 When(/^I select "Strict" assurance level$/, function () {
-  return this.waitAndClick('//li[contains(text(), "Strict")]');
+  return this.waitAndClick('//*[@class="SimpleOptions_label"][contains(text(), "Strict")]');
 });
 
 Then(/^I should have wallet with "Strict" assurance level set$/, async function () {
   const activeWalletName = await getNameOfActiveWalletInSidebar.call(this);
   const wallets = await this.client.executeAsync((done) => {
-    daedalus.stores.ada.wallets.walletsRequest.execute()
+    daedalus.stores.wallets.walletsRequest.execute()
       .then(done)
       .catch((error) => done(error));
   });
   const activeWallet = wallets.value.find((w) => w.name === activeWalletName);
-  expect(activeWallet.assurance).to.equal('CWAStrict');
+  expect(activeWallet.assurance).to.equal('strict');
 });
 
 Then(/^I should see new wallet name "([^"]*)"$/, async function (walletName) {
@@ -94,7 +94,7 @@ Then(/^I should see "([^"]*)" label in password field$/, function (label) {
 
 Then(/^I should see the following error messages:$/, async function (data) {
   const error = data.hashes()[0];
-  const errorSelector = '.ChangeWalletPasswordDialog_newPassword .SimpleFormField_error';
+  const errorSelector = '.ChangeSpendingPasswordDialog_newPassword .SimpleFormField_error';
   await this.client.waitForText(errorSelector);
   const errorsOnScreen = await this.client.getText(errorSelector);
   const expectedError = await this.intl(error.message);

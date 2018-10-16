@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { intlShape } from 'react-intl';
-import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './ReadOnlyInput.scss';
 
@@ -41,12 +41,12 @@ export default class ReadOnlyInput extends Component<Props> {
       <div className={mainClasses}>
 
         <Input
-          className={styles.input}
+          themeOverrides={styles}
           type="text"
           label={label}
           value={value}
           disabled
-          skin={<SimpleInputSkin />}
+          skin={InputSkin}
         />
 
         <button

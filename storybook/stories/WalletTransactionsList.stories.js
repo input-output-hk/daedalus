@@ -1,34 +1,16 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import faker from 'faker';
 import moment from 'moment';
 import BigNumber from 'bignumber.js';
 import StoryDecorator from './support/StoryDecorator';
+import { generateTransaction } from './support/utils';
 import WalletTransactionsList from '../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
-import WalletTransaction, {
+import {
   transactionStates,
   transactionTypes
 } from '../../source/renderer/app/domains/WalletTransaction';
-import { formattedWalletAmount } from '../../source/renderer/app/utils/ada/formatters';
-
-const generateTransaction = (
-  type, date, amount, confirmations = 1, state = transactionStates.OK
-) => (
-  new WalletTransaction({
-    id: faker.random.uuid(),
-    title: '',
-    type,
-    amount,
-    date,
-    state,
-    description: '',
-    numberOfConfirmations: confirmations,
-    addresses: {
-      from: [faker.random.uuid()], to: [faker.random.uuid()]
-    },
-  })
-);
+import { formattedWalletAmount } from '../../source/renderer/app/utils/formatters';
 
 storiesOf('WalletTransactionsList', module)
 

@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
-import Button from 'react-polymorph/lib/components/Button';
-import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 
 import styles from './AdaRedemptionNoWallets.scss';
 import icon from '../../../assets/images/attention-big-thin.inline.svg';
@@ -49,7 +49,7 @@ export default class AdaRedemptionNoWallets extends Component<Props> {
             className="primary"
             onClick={this.props.onGoToCreateWalletClick}
             label={intl.formatMessage(messages.createWalletLink)}
-            skin={<SimpleButtonSkin />}
+            skin={ButtonSkin}
           />
         </p>
       </div>

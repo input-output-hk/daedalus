@@ -27,10 +27,6 @@ export default {
   '--theme-ada-redemption-success-overlay-button-background-color-hover': '#e9f4fe',
   '--theme-ada-redemption-disclaimer-background-color': 'rgba(171, 23, 0, 0.94)',
   '--theme-ada-redemption-disclaimer-text-color': '#fafbfc',
-  '--theme-ada-redemption-disclaimer-button-background-color': '#ab1700',
-  '--theme-ada-redemption-disclaimer-button-text-color': '#fafbfc',
-  '--theme-ada-redemption-disclaimer-button-background-color-hover': '#fafbfc',
-  '--theme-ada-redemption-disclaimer-button-text-color-hover': '#ab1700',
   '--theme-ada-redemption-disclaimer-checkbox-color-check': '#fafbfc',
   '--theme-ada-redemption-disclaimer-checkbox-color-checked': '#fafbfc',
   '--theme-ada-redemption-disclaimer-checkbox-color-after': '#ab1700',
@@ -60,6 +56,7 @@ export default {
   '--theme-button-primary-background-color-disabled': 'rgba(83, 99, 112, 0.3)',
   '--theme-button-primary-text-color-disabled': 'rgba(233, 244, 254, 0.5)',
   '--theme-button-primary-text-color': '#e9f4fe',
+  '--theme-button-primary-outline-color': '#667a8a',
 
   '--theme-button-flat-background-color': 'rgba(83, 99, 112, 0.3)',
   '--theme-button-flat-background-color-hover': 'rgba(102, 122, 138, 0.3)',
@@ -67,9 +64,30 @@ export default {
   '--theme-button-flat-background-color-disabled': 'rgba(83, 99, 112, 0.1)',
   '--theme-button-flat-text-color-disabled': 'rgba(233, 244, 254, 0.3)',
   '--theme-button-flat-text-color': '#e9f4fe',
+  '--theme-button-flat-outline-color': 'rgba(102,122,138, 0.3)',
+
+  '--theme-button-attention-background-color': '#ea4c5b',
+  '--theme-button-attention-background-color-hover': '#ec5d6b',
+  '--theme-button-attention-background-color-active': '#d34452',
+  '--theme-button-attention-background-color-disabled': 'rgba(234, 76, 91, 0.3)',
+  '--theme-button-attention-text-color-disabled': '#fafbfc',
+  '--theme-button-attention-text-color': '#fafbfc',
+  '--theme-button-attention-outline-color': '#ff707e',
+
+  '--theme-button-disclaimer-background-color': '#ab1700',
+  '--theme-button-disclaimer-background-color-hover': '#fafbfc',
+  '--theme-button-disclaimer-background-color-active': '#fafbfc',
+  '--theme-button-disclaimer-background-color-disabled': 'rgba(171, 23, 0, .3)',
+  '--theme-button-disclaimer-text-color-disabled': 'rgba(250, 251, 252, .3)',
+  '--theme-button-disclaimer-text-color': '#fafbfc',
+  '--theme-button-disclaimer-outline-color': 'rgba(250, 251, 252, .3)',
+  '--theme-button-disclaimer-border-color': '#fafbfc',
+  '--theme-button-disclaimer-border-color-disabled': 'rgba(250, 251, 252, .3)',
 
   '--theme-checkbox-label-color': '#e9f4fe',
+  '--theme-checkbox-label-disabled-color': 'rgba(233, 244, 254, 0.3)',
   '--theme-checkbox-border-color': '#536370',
+  '--theme-checkbox-border-disabled-color': 'rgba(83, 99, 112, 0.4)',
   '--theme-checkbox-background-color-checked': '#536370',
 
   '--theme-select-arrow-color': '#606d7b',
@@ -79,6 +97,7 @@ export default {
   '--theme-select-option-text-color': '#e9f4fe',
   '--theme-select-options-border-color': '#667a8a',
   '--theme-select-options-shadow': '0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 0 4px 0 rgba(0, 0, 0, 0.1)',
+  '--theme-select-options-checkmark-color': '#fff',
 
   '--theme-choice-tabs-text-color': '#e9f4fe',
   '--theme-choice-tabs-text-color-active': '#e9f4fe',
@@ -96,7 +115,7 @@ export default {
   '--theme-input-border-color': 'rgba(102, 122, 138, 0.3)',
   '--theme-input-label-color': '#e9f4fe',
   '--theme-input-text-color': '#e9f4fe',
-  '--theme-input-right-floating-text-color': '#8793a1',
+  '--theme-input-right-floating-text-color': 'rgba(233, 244, 254, 0.5)',
   '--theme-input-placeholder-color': '#8793a1',
   '--theme-input-error-color': '#ea4c5b',
   '--theme-input-remove-color-dark': '#d34452',
@@ -158,16 +177,17 @@ export default {
   '--theme-settings-theme-select-title-color': '#cecfd1',
 
   '--theme-sidebar-background-color': '#314259',
-  '--theme-sidebar-category-background-color-hover': '#263345',
+  '--theme-sidebar-category-background-color-hover': 'rgba(38, 51, 69, 0.5)',
   '--theme-sidebar-category-background-color-active': '#263345',
   '--theme-sidebar-category-text-color': '#e9f4fe',
   '--theme-sidebar-menu-background-color': '#263345',
-  '--theme-sidebar-menu-item-background-color-hover': '#1b2430',
+  '--theme-sidebar-menu-item-background-color-hover': 'rgba(27, 36, 48, 0.5)',
   '--theme-sidebar-menu-item-background-color-active': '#1b2430',
   '--theme-sidebar-menu-item-wallet-name-color': '#e9f4fe',
   '--theme-sidebar-menu-item-wallet-info-color': '#bdc0c1',
-  '--theme-sidebar-menu-add-button-background-color-active': '#1b2430',
-  '--theme-sidebar-menu-add-button-background-color-hover': '#171f29',
+  '--theme-sidebar-menu-add-button-background-color': '#1b2430',
+  '--theme-sidebar-menu-add-button-background-color-active': '#1f2a38',
+  '--theme-sidebar-menu-add-button-background-color-hover': '#1f2a38',
   '--theme-sidebar-menu-add-button-text-color': '#e9f4fe',
 
   '--theme-staking-background-color': '#0b1926',
@@ -183,11 +203,6 @@ export default {
 
   '--theme-system-error-overlay-attention-icon-color': '#fafbfc',
   '--theme-system-error-overlay-background-color': 'rgba(171, 23, 0, 0.94)',
-  '--theme-system-error-overlay-button-background-color': '#ab1700',
-  '--theme-system-error-overlay-button-background-color-hover': '#fafbfc',
-  '--theme-system-error-overlay-button-border-color': '#fafbfc',
-  '--theme-system-error-overlay-button-text-color': '#fafbfc',
-  '--theme-system-error-overlay-button-text-color-hover': '#ab1700',
   '--theme-system-error-overlay-text-color': '#fafbfc',
 
   '--theme-test-environment-label-background-color': '#ab1700',
@@ -219,6 +234,7 @@ export default {
   '--theme-transactions-icon-type-income-background-color': '#3b6956',
   '--theme-transactions-icon-type-exchange-background-color': '#10aca4',
   '--theme-transactions-icon-type-failed-background-color': 'rgba(234, 76, 91, 0.5)',
+  '--theme-transactions-arrow-stroke-color': '#e9f4fe',
 
   '--theme-uploader-text-color': '#e9f4fe',
   '--theme-uploader-border-color': 'rgba(102, 122, 138, 0.3)',
@@ -277,7 +293,7 @@ export default {
 
   '--theme-instructions-text-color': '#e9f4fe',
 
-  '--theme-label-button-color': '#8793a1',
+  '--theme-label-button-color': 'rgba(233, 244, 254, 0.5)',
 
   '--theme-loading-background-color': '#0b1926',
 
@@ -290,6 +306,12 @@ export default {
   '--theme-support-settings-link-color': '#20b56b',
 
   '--theme-terms-of-use-text-color': '#e9f4fe',
+
+  '--theme-data-migration-layer-background-color': '#2c4567',
+  '--theme-data-migration-layer-box-shadow-color': 'rgba(0, 0, 0, 0.25)',
+  '--theme-data-migration-layer-button-background-color-hover': '#fafbfc',
+  '--theme-data-migration-layer-text-color': '#fafbfc',
+  '--theme-data-migration-layer-text-opacity-color': 'rgba(250, 251, 252, 0.5)',
 
   '--theme-wallet-password-switch-label-color': '#e9f4fe',
 

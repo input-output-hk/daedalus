@@ -23,7 +23,7 @@ When(/^I open language selection dropdown$/, function () {
 });
 
 When(/^I select Japanese language$/, function () {
-  return this.waitAndClick('//li[contains(text(), "Japanese")]');
+  return this.waitAndClick('//*[@class="SimpleOptions_label"][contains(text(), "Japanese")]');
 });
 
 When(/^I submit the language selection form$/, function () {

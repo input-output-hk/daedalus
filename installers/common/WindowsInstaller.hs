@@ -51,6 +51,7 @@ writeUninstallerNSIS (Version fullVersion) installerConfig = do
         _ <- constantStr "InstallDir" (str $ unpack $ installDirectory installerConfig)
         name "$InstallDir Uninstaller $Version"
         outFile . str . encodeString $ tempDir </> "tempinstaller.exe"
+        unsafeInjectGlobal "Unicode true"
         unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
         unsafeInjectGlobal "SetCompress off"
         _ <- section "" [Required] $ do
@@ -73,6 +74,10 @@ writeUninstallerNSIS (Version fullVersion) installerConfig = do
 -- See non-INNER blocks at http://nsis.sourceforge.net/Signing_an_Uninstaller
 signUninstaller :: Options -> IO SigningResult
 signUninstaller opts = do
+    rawnsi <- readFile "uninstaller.nsi"
+    putStr rawnsi
+    IO.hFlush IO.stdout
+
     procs "C:\\Program Files (x86)\\NSIS\\makensis" ["uninstaller.nsi"] mempty
     tempDir <- getTempDir
     writeTextFile "runtempinstaller.bat" $ format (fp%" /S") (tempDir </> "tempinstaller.exe")
@@ -192,11 +197,12 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
 lshow :: Show a => a -> String
 lshow = T.unpack . lshowText
 
-packageFrontend :: Cluster -> IO ()
-packageFrontend cluster = do
+packageFrontend :: Cluster -> InstallerConfig -> IO ()
+packageFrontend cluster installerConfig = do
     let icon = format ("installers/icons/"%s%"/"%s) (lshowText cluster) (lshowText cluster)
     export "NODE_ENV" "production"
     shells ("npm run package -- --icon " <> icon) empty
+    rewritePackageJson "../release/win32-x64/Daedalus-win32-x64/resources/app/package.json" (installDirectory installerConfig)
 
 -- | The contract of `main` is not to produce unsigned installer binaries.
 main :: Options -> IO ()
@@ -214,7 +220,7 @@ main opts@Options{..}  = do
 
     echo "Packaging frontend"
     exportBuildVars opts installerConfig ver
-    packageFrontend oCluster
+    packageFrontend oCluster installerConfig
 
     let fullName = packageFileName Win64 oCluster fullVersion oBackend ver oBuildJob
 

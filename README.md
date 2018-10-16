@@ -1,4 +1,6 @@
-<sub>Author: [Nikola Glumac](https://github.com/nikolaglumac)<br/>Status: Active</sub>
+<blockquote>
+<sub>Document maintainer: Nikola Glumac<br/>Document status: Active</sub>
+</blockquote>
 
 # Daedalus
 [![Build status](https://badge.buildkite.com/e173494257519752d79bb52c7859df6277c6d759b217b68384.svg?branch=master)](https://buildkite.com/input-output-hk/daedalus)
@@ -14,7 +16,7 @@ Daedalus - cryptocurrency wallet
 Platform-specific build scripts facilitate building Daedalus the way it is built
 by the IOHK CI:
 
-# Linux/macOS
+#### Linux/macOS
 
 This script requires [Nix](https://nixos.org/nix/), (optionally)
 configured with the [IOHK binary cache][cache].
@@ -25,7 +27,7 @@ The result can be found at `installers/csl-daedalus/daedalus-*.pkg`.
 
 [cache]: https://github.com/input-output-hk/cardano-sl/blob/3dbe220ae108fa707b55c47e689ed794edf5f4d4/docs/how-to/build-cardano-sl-and-daedalus-from-source-code.md#nix-build-mode-recommended
 
-# Pure Nix installer build
+#### Pure Nix installer build
 
 This will use nix to build a Linux installer. Using the [IOHK binary
 cache][cache] will speed things up.
@@ -33,6 +35,66 @@ cache][cache] will speed things up.
     nix build -f ./release.nix mainnet.installer
 
 The result can be found at `./result/daedalus-*.bin`.
+
+# Development
+
+`shell.nix` provides a way to load a shell with all the correct versions of all the
+required dependencies for development.
+
+## Connect to staging cluster:
+
+1. Start the nix-shell with staging environment `yarn nix:staging`
+2. Within the nix-shell run any command like `yarn dev`
+
+## Connect to Local Demo Cluster:
+
+### Build and Run cardano-sl Demo Cluster
+
+1. Install nix: `curl https://nixos.org/nix/install | sh`
+2. Employ the signed IOHK binary cache:
+   ```bash
+   $ sudo mkdir -p /etc/nix
+   $ sudo vi /etc/nix/nix.conf       # ..or any other editor, if you prefer
+   ```
+   and then add the following lines:
+   ```
+   substituters = https://hydra.iohk.io https://cache.nixos.org/
+   trusted-substituters =
+   trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspc
+   ```
+3. Build and run demo cluster: `scripts/launch/demo-nix.sh`
+
+### Start Daedalus Using Demo Cluster
+
+1. Start local cardano-sl demo cluster (`./scripts/launch/demo-nix.sh`)
+2. Inspect the terminal output of cardano-sl and copy the timestamp from the message
+   `Using system start time 1537184804`
+3. Start the nix-shell with development environment `yarn nix:dev 1537184804` (timestamp is 
+different each time you restart the cardano-sl demo cluster)
+4. Within the nix-shell run any command like `yarn dev`
+
+## Notes:
+
+`shell.nix` also provides a script for updating yarn.lock. Run `nix-shell -A fixYarnLock`
+to update `yarn.lock` file.
+
+### Configuring the Network
+
+There are three different network options you can run Daedalus in: `mainnet`, `testnet` and `development` (default).
+To set desired network option use `NETWORK` environment variable:
+
+```bash
+$ export NETWORK=testnet
+$ yarn dev
+```
+
+# Testing
+
+You can find more details regarding tests setup within
+[Running Daedalus acceptance tests](https://github.com/input-output-hk/daedalus/blob/master/features/README.md) README file.
+
+**Notes:** Be aware that only a single Daedalus instance can run per state directory.
+So you have to exit any development instances before running tests!
 
 # Windows
 
@@ -42,84 +104,6 @@ This batch file requires [Node.js](https://nodejs.org/en/download/) and
     scripts/build-installer-win64.bat
 
 The result will can be found at `.\daedalus-*.exe`.
-
-## Stepwise build
-
-### Install Node.js dependencies.
-
-```bash
-$ npm install
-```
-
-## Development
-
-Run with:
-
-```bash
-$ export CARDANO_TLS_PATH={path-to-cardano-sl}/run/tls-files/
-$ npm run dev
-```
-
-*Note: requires a node version >= 8 and an npm version >= 5. This project defaults to 8.x*
-
-### Development - with Cardano Wallet
-
-Build and run [Cardano SL](https://github.com/input-output-hk/cardano-sl)
-
-Build with:
-
-```bash
-$ brew install haskell-stack # OR curl -ssl https://get.haskellstack.org/ | sh
-$ stack setup
-$ stack install cpphs
-$ brew install xz # OR sudo apt-get install xz-utils
-$ brew install rocksdb # OR sudo apt-get install librocksdb-dev
-$ git clone git@github.com:input-output-hk/cardano-sl.git
-$ cd cardano-sl/
-$ ./scripts/build/cardano-sl.sh
-```
-
-Run with:
-
-```bash
-$ tmux new-session -s cardano
-$ WALLET_CLIENT_AUTH_DISABLE=1 ./scripts/launch/demo-with-wallet-api.sh
-```
-
-Stop with:
-
-```bash
-$ tmux kill-session -t cardano
-```
-
-### Development - network options
-
-There are three different network options you can run Daedalus in: `mainnet`, `testnet` and `development` (default).
-To set desired network option use `NETWORK` environment variable:
-
-```bash
-$ NETWORK=testnet npm run dev
-```
-
-### Testing
-
-You can run the test suite in two different modes:
-
-**One-time run:**
-For running tests once using the application in production mode:
-
-```bash
-$ npm run test
-```
-
-**Watch & Rerun on file changes:**
-For development purposes run the tests continuously in watch mode which will re-run tests when source code changes:
-
-```bash
-$ npm run test:watch
-```
-
-You can find more details regarding tests setup within [Running Daedalus acceptance tests](https://github.com/input-output-hk/daedalus/blob/master/features/README.md) README file.
 
 ### CSS Modules
 
@@ -140,7 +124,7 @@ externals: [
 ]
 ```
 
-For a common example, to install Bootstrap, `npm i --save bootstrap` and link them in the head of app.html
+For a common example, to install Bootstrap, `yarn install --save bootstrap` and link them in the head of app.html
 
 ```html
 <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css" />
@@ -156,19 +140,19 @@ externals: ['bootstrap']
 ## Packaging
 
 ```bash
-$ npm run package
+$ yarn run package
 ```
 
 To package apps for all platforms:
 
 ```bash
-$ npm run package:all
+$ yarn run package:all
 ```
 
 To package apps with options:
 
 ```bash
-$ npm run package -- --[option]
+$ yarn run package -- --[option]
 ```
 
 ### Options

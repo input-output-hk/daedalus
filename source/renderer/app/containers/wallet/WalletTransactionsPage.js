@@ -8,10 +8,8 @@ import WalletTransactionsList from '../../components/wallet/transactions/WalletT
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import resolver from '../../utils/imports';
-import { syncStateTags } from '../../domains/Wallet';
-
-const { formattedWalletAmount } = resolver('utils/formatters');
+import { formattedWalletAmount } from '../../utils/formatters';
+import { WalletSyncStateTags } from '../../domains/Wallet';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -38,14 +36,13 @@ export default class WalletTransactionsPage extends Component<Props> {
   };
 
   // _handleSearchInputChange = (value: string, event: Object) => {
-  //   this.props.actions.ada.transactions.filterTransactions({ searchTerm: event.target.value });
+  //   this.props.actions.transactions.filterTransactions({ searchTerm: event.target.value });
   // };
 
   render() {
     const { intl } = this.context;
     const actions = this.props.actions;
-    const { ada, app } = this.props.stores;
-    const { wallets, transactions } = ada;
+    const { app, wallets, transactions } = this.props.stores;
     const { openExternalLink } = app;
     const activeWallet = wallets.active;
     const {
@@ -65,8 +62,9 @@ export default class WalletTransactionsPage extends Component<Props> {
     // let transactionSearch = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
     const noTransactionsFoundLabel = intl.formatMessage(messages.noTransactionsFound);
+    const hasMoreToLoad = () => searchLimit !== null && totalAvailable > searchLimit;
 
-    const isRestoreActive = get(activeWallet, 'syncState.tag') === syncStateTags.RESTORING;
+    const isRestoreActive = get(activeWallet, 'syncState.tag') === WalletSyncStateTags.RESTORING;
 
     // if (wasSearched || hasAny) {
     //   transactionSearch = (
@@ -85,8 +83,8 @@ export default class WalletTransactionsPage extends Component<Props> {
           transactions={filtered}
           isLoadingTransactions={searchRequest.isExecutingFirstTime}
           isRestoreActive={isRestoreActive}
-          hasMoreToLoad={totalAvailable > searchLimit}
-          onLoadMore={actions.ada.transactions.loadMoreTransactions.trigger}
+          hasMoreToLoad={hasMoreToLoad()}
+          onLoadMore={actions.transactions.loadMoreTransactions.trigger}
           assuranceMode={activeWallet.assuranceMode}
           walletId={activeWallet.id}
           formattedWalletAmount={formattedWalletAmount}

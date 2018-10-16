@@ -9,10 +9,10 @@ import { getWalletByName } from '../support/helpers/wallets-helpers';
 // use only when the order is important because it's slower!
 Given(/^I have made the following transactions:$/, { timeout: 40000 }, async function (table) {
   const txData = table.hashes().map((t) => ({
-    sender: getWalletByName.call(this, t.sender).id,
-    receiver: getWalletByName.call(this, t.receiver).id,
-    amount: new BigNumber(t.amount).times(LOVELACES_PER_ADA),
-    password: t.password || null,
+    walletId: getWalletByName.call(this, t.source).id,
+    destinationWalletId: getWalletByName.call(this, t.destination).id,
+    amount: parseInt(new BigNumber(t.amount).times(LOVELACES_PER_ADA), 10),
+    spendingPassword: t.password || null,
   }));
   this.transactions = [];
   // Sequentially (and async) create transactions with for loop
@@ -21,12 +21,12 @@ Given(/^I have made the following transactions:$/, { timeout: 40000 }, async fun
       new window.Promise((resolve) => (
         // Need to fetch the wallets data async and wait for all results
         window.Promise.all([
-          daedalus.stores.ada.addresses.getAccountIdByWalletId(transaction.sender),
-          daedalus.stores.ada.addresses.getAddressesByWalletId(transaction.receiver)
+          daedalus.stores.addresses.getAccountIndexByWalletId(transaction.walletId),
+          daedalus.stores.addresses.getAddressesByWalletId(transaction.destinationWalletId)
         ]).then(results => (
           daedalus.api.ada.createTransaction(window.Object.assign(transaction, {
-            sender: results[0], // Account id of sender wallet
-            receiver: results[1][0].id // First address of receiving wallet
+            accountIndex: results[0], // Account index of sender wallet
+            address: results[1][0].id // First address of receiving wallet
           })).then(resolve)
         ))
       )).then(done)

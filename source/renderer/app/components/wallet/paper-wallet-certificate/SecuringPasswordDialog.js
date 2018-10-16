@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSkin';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import paperWalletImage from '../../../assets/images/paper-wallet-certificate/certificate.png';
@@ -20,8 +20,8 @@ const messages = defineMessages({
   },
   infoLabel1: {
     id: 'paper.wallet.create.certificate.securingPassword.dialog.infoLabel1',
-    defaultMessage: `!!!To complete your paper wallet certificate you will need to 
-      write the remaining {paperWalletWrittenWordsCount} words of your paper wallet recovery 
+    defaultMessage: `!!!To complete your paper wallet certificate you will need to
+      write the remaining {paperWalletWrittenWordsCount} words of your paper wallet recovery
       phrase on your certificate.`,
     description: '"Paper wallet create certificate securing password dialog" first info label.'
   },
@@ -112,7 +112,7 @@ export default class SecuringPasswordDialog extends Component<Props, State> {
               })}
               onChange={this.onSecurePasswordConfirmationChange.bind(this)}
               checked={securePasswordConfirmed}
-              skin={<SimpleCheckboxSkin />}
+              skin={CheckboxSkin}
             />
           </div>
         </div>

@@ -2,6 +2,7 @@ import { Application } from 'spectron';
 import { defineSupportCode } from 'cucumber';
 import electronPath from 'electron';
 import environment from '../../source/common/environment';
+import { generateScreenshotFilePath, getTestNameFromTestFile, saveScreenshot } from './helpers/screenshot';
 
 const context = {};
 const DEFAULT_TIMEOUT = 20000;
@@ -17,6 +18,20 @@ const printMainProcessLogs = () => (
     })
 );
 
+const startApp = async () => {
+  const app = new Application({
+    path: electronPath,
+    args: ['./dist/main/index.js'],
+    env: Object.assign({}, process.env, {
+      NODE_ENV: environment.TEST,
+    }),
+    waitTimeout: DEFAULT_TIMEOUT
+  });
+  await app.start();
+  await app.client.waitUntilWindowLoaded();
+  return app;
+};
+
 defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) => {
   // The cucumber timeout should be high (and never reached in best case)
   // because the errors thrown by webdriver.io timeouts are more descriptive
@@ -25,17 +40,7 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
 
   // Boot up the electron app before all features
   BeforeAll({ timeout: 5 * 60 * 1000 }, async () => {
-    const app = new Application({
-      path: electronPath,
-      args: ['./dist/main/index.js'],
-      env: {
-        NODE_ENV: environment.TEST,
-      },
-      waitTimeout: DEFAULT_TIMEOUT
-    });
-    await app.start();
-    await app.client.waitUntilWindowLoaded();
-    context.app = app;
+    context.app = await startApp();
   });
 
   // Make the electron app accessible in each scenario context
@@ -85,18 +90,34 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
     });
   });
 
+  // this ensures that the spectron instance of the app restarts
+  // after the node update acceptance test shuts it down via 'kill-process'
   // eslint-disable-next-line prefer-arrow-callback
-  After(async function ({ result }) {
+  After({ tags: '@restartApp' }, async function () {
+    context.app = await startApp();
+  });
+
+  // eslint-disable-next-line prefer-arrow-callback
+  After(async function ({ sourceLocation, result }) {
     scenariosCount++;
     if (result.status === 'failed') {
+      const testName = getTestNameFromTestFile(sourceLocation.uri);
+      const file = generateScreenshotFilePath(testName);
+      await saveScreenshot(context.app, file);
       await printMainProcessLogs();
     }
   });
 
   // eslint-disable-next-line prefer-arrow-callback
   AfterAll(async function () {
+    if (!context.app.running) return;
+
     if (scenariosCount === 0) {
       await printMainProcessLogs();
+    }
+    if (process.env.KEEP_APP_AFTER_TESTS === 'true') {
+      console.log('Keeping the app running since KEEP_APP_AFTER_TESTS env var is true');
+      return;
     }
     return context.app.stop();
   });

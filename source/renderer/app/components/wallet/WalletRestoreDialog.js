@@ -3,22 +3,24 @@ import React, { Component } from 'react';
 import { join } from 'lodash';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import Autocomplete from 'react-polymorph/lib/components/Autocomplete';
-import SimpleAutocompleteSkin from 'react-polymorph/lib/skins/simple/raw/AutocompleteSkin';
-import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/raw/SwitchSkin';
+import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
+import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import Dialog from '../widgets/Dialog';
-import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../utils/validations';
+import { isValidWalletName, isValidSpendingPassword, isValidRepeatPassword } from '../../utils/validations';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
 import { PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT, WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../config/cryptoConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import styles from './WalletRestoreDialog.scss';
+import { submitOnEnter } from '../../utils/form';
 
 const RESTORE_TYPES = {
   REGULAR: 'regular',
@@ -76,8 +78,8 @@ const messages = defineMessages({
     defaultMessage: '!!!Spending password',
     description: 'Label for the "Spending password" switch in the wallet restore dialog.',
   },
-  walletPasswordLabel: {
-    id: 'wallet.restore.dialog.walletPasswordLabel',
+  spendingPasswordLabel: {
+    id: 'wallet.restore.dialog.spendingPasswordLabel',
     defaultMessage: '!!!Enter password',
     description: 'Label for the "Wallet password" input in the wallet restore dialog.',
   },
@@ -122,7 +124,6 @@ type Props = {
   mnemonicValidator: Function,
   error?: ?LocalizableError,
   suggestedMnemonics: Array<string>,
-  showCertificateRestore: boolean,
   onChoiceChange: ?Function,
 };
 
@@ -183,9 +184,9 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           ];
         },
       },
-      walletPassword: {
+      spendingPassword: {
         type: 'password',
-        label: this.context.intl.formatMessage(messages.walletPasswordLabel),
+        label: this.context.intl.formatMessage(messages.spendingPasswordLabel),
         placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
         value: '',
         validators: [({ field, form }) => {
@@ -195,8 +196,8 @@ export default class WalletRestoreDialog extends Component<Props, State> {
             repeatPasswordField.validate({ showErrors: true });
           }
           return [
-            isValidWalletPassword(field.value),
-            this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
+            isValidSpendingPassword(field.value),
+            this.context.intl.formatMessage(globalMessages.invalidSpendingPassword)
           ];
         }],
       },
@@ -207,10 +208,10 @@ export default class WalletRestoreDialog extends Component<Props, State> {
         value: '',
         validators: [({ field, form }) => {
           if (!this.state.createPassword) return [true];
-          const walletPassword = form.$('walletPassword').value;
-          if (walletPassword.length === 0) return [true];
+          const spendingPassword = form.$('spendingPassword').value;
+          if (spendingPassword.length === 0) return [true];
           return [
-            isValidRepeatPassword(walletPassword, field.value),
+            isValidRepeatPassword(spendingPassword, field.value),
             this.context.intl.formatMessage(globalMessages.invalidRepeatPassword)
           ];
         }],
@@ -231,22 +232,20 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     this.form.submit({
       onSuccess: (form) => {
         const { createPassword } = this.state;
-        const { showCertificateRestore, onSubmit } = this.props;
+        const { onSubmit } = this.props;
         const {
           recoveryPhrase,
           walletName,
-          walletPassword,
+          spendingPassword,
         } = form.values();
 
         const walletData: Object = {
           recoveryPhrase: join(recoveryPhrase, ' '),
           walletName,
-          walletPassword: createPassword ? walletPassword : null,
+          spendingPassword: createPassword ? spendingPassword : null,
         };
 
-        if (showCertificateRestore) {
-          walletData.type = this.state.activeChoice;
-        }
+        walletData.type = this.state.activeChoice;
 
         onSubmit(walletData);
       },
@@ -262,7 +261,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     form.showErrors(false);
 
     // Autocomplete has to be reset manually
-    this.recoveryPhraseAutocomplete.clear();
+    this.recoveryPhraseAutocomplete.getRef().clear();
   };
 
   render() {
@@ -270,7 +269,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     const { form } = this;
     const {
       suggestedMnemonics,
-      showCertificateRestore,
       isSubmitting,
       error,
       onCancel,
@@ -279,7 +277,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
     const dialogClasses = classnames([
       styles.component,
-      showCertificateRestore ? styles.dialogWithCertificateRestore : null,
+      styles.dialogWithCertificateRestore,
       'WalletRestoreDialog',
     ]);
 
@@ -288,14 +286,14 @@ export default class WalletRestoreDialog extends Component<Props, State> {
       styles.walletName,
     ]);
 
-    const walletPasswordFieldsClasses = classnames([
-      styles.walletPasswordFields,
+    const spendingPasswordFieldsClasses = classnames([
+      styles.spendingPasswordFields,
       createPassword ? styles.show : null,
     ]);
 
     const walletNameField = form.$('walletName');
     const recoveryPhraseField = form.$('recoveryPhrase');
-    const walletPasswordField = form.$('walletPassword');
+    const spendingPasswordField = form.$('spendingPassword');
     const repeatedPasswordField = form.$('repeatPassword');
 
     const actions = [
@@ -307,7 +305,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
         onClick: this.submit,
       },
     ];
-
 
     const regularTabClasses = classnames([
       'regularTab',
@@ -328,28 +325,27 @@ export default class WalletRestoreDialog extends Component<Props, State> {
         onClose={onCancel}
         closeButton={<DialogCloseButton />}
       >
-        {showCertificateRestore &&
-          <div className={styles.restoreTypeChoice}>
-            <button
-              className={regularTabClasses}
-              onClick={this.onSelectChoice.bind(this, RESTORE_TYPES.REGULAR)}
-            >
-              {intl.formatMessage(messages.recoveryPhraseTabTitle)}
-            </button>
-            <button
-              className={certificateTabClasses}
-              onClick={this.onSelectChoice.bind(this, RESTORE_TYPES.CERTIFICATE)}
-            >
-              {intl.formatMessage(messages.certificateTabTitle)}
-            </button>
-          </div>
-        }
+        <div className={styles.restoreTypeChoice}>
+          <button
+            className={regularTabClasses}
+            onClick={this.onSelectChoice.bind(this, RESTORE_TYPES.REGULAR)}
+          >
+            {intl.formatMessage(messages.recoveryPhraseTabTitle)}
+          </button>
+          <button
+            className={certificateTabClasses}
+            onClick={this.onSelectChoice.bind(this, RESTORE_TYPES.CERTIFICATE)}
+          >
+            {intl.formatMessage(messages.certificateTabTitle)}
+          </button>
+        </div>
 
         <Input
           className={walletNameFieldClasses}
+          onKeyPress={submitOnEnter.bind(this, this.submit)}
           {...walletNameField.bind()}
           error={walletNameField.error}
-          skin={<SimpleInputSkin />}
+          skin={InputSkin}
         />
 
         <Autocomplete
@@ -370,34 +366,37 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           error={recoveryPhraseField.error}
           maxVisibleOptions={5}
           noResultsMessage={intl.formatMessage(messages.recoveryPhraseNoResults)}
-          skin={<SimpleAutocompleteSkin />}
+          skin={AutocompleteSkin}
         />
 
-        <div className={styles.walletPassword}>
-          <div className={styles.walletPasswordSwitch}>
+        <div className={styles.spendingPassword}>
+          <div className={styles.spendingPasswordSwitch}>
             <div className={styles.passwordLabel}>
               {intl.formatMessage(messages.passwordSwitchLabel)}
             </div>
             <Checkbox
+              themeId={IDENTIFIERS.SWITCH}
               onChange={this.handlePasswordSwitchToggle}
               label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
               checked={createPassword}
-              skin={<SimpleSwitchSkin />}
+              skin={SwitchSkin}
             />
           </div>
 
-          <div className={walletPasswordFieldsClasses}>
+          <div className={spendingPasswordFieldsClasses}>
             <Input
-              className="walletPassword"
-              {...walletPasswordField.bind()}
-              error={walletPasswordField.error}
-              skin={<SimpleInputSkin />}
+              className="spendingPassword"
+              onKeyPress={submitOnEnter.bind(this, this.submit)}
+              {...spendingPasswordField.bind()}
+              error={spendingPasswordField.error}
+              skin={InputSkin}
             />
             <Input
               className="repeatedPassword"
+              onKeyPress={submitOnEnter.bind(this, this.submit)}
               {...repeatedPasswordField.bind()}
               error={repeatedPasswordField.error}
-              skin={<SimpleInputSkin />}
+              skin={InputSkin}
             />
             <p className={styles.passwordInstructions}>
               {intl.formatMessage(globalMessages.passwordInstructions)}

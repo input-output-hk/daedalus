@@ -77,7 +77,7 @@
     word-break: break-word;
   }
 
-  .walletPassword {
+  .spendingPassword {
     margin-top: 20px;
   }
 
@@ -89,5 +89,6 @@
 }
 
 .submitButtonSpinning {
+  box-shadow: none !important;
   @include loading-spinner("../../assets/images/spinner-light.svg");
 }

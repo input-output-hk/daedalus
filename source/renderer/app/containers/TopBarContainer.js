@@ -6,9 +6,7 @@ import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
 import type { InjectedProps } from '../types/injectedPropsType';
 import environment from '../../../common/environment';
-import resolver from '../utils/imports';
-
-const { formattedWalletAmount } = resolver('utils/formatters');
+import { formattedWalletAmount } from '../utils/formatters';
 
 type Props = InjectedProps;
 
@@ -19,22 +17,21 @@ export default class TopBarContainer extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar, app, networkStatus } = stores;
-    const walletsStore = stores[environment.API].wallets;
+    const { sidebar, app, networkStatus, wallets } = stores;
+    const { active, isWalletRoute, hasAnyWallets } = wallets;
     const isMainnet = environment.isMainnet();
-    const isAdaApi = environment.isAdaApi();
     const testnetLabel = (
-      isAdaApi && !isMainnet ? <WalletTestEnvironmentLabel network={environment.NETWORK} /> : null
+      !isMainnet ? <WalletTestEnvironmentLabel network={environment.NETWORK} /> : null
     );
 
     return (
       <TopBar
         onToggleSidebar={actions.sidebar.toggleSubMenus.trigger}
-        activeWallet={walletsStore.active}
+        activeWallet={active}
         currentRoute={app.currentRoute}
         showSubMenus={sidebar.isShowingSubMenus}
         formattedWalletAmount={formattedWalletAmount}
-        showSubMenuToggle={walletsStore.isWalletRoute && walletsStore.hasAnyWallets}
+        showSubMenuToggle={isWalletRoute && hasAnyWallets}
       >
         {testnetLabel}
         <NodeSyncStatusIcon

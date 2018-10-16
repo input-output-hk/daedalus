@@ -14,8 +14,8 @@ Feature: Add Wallet via Sidebar
     And I see the restore wallet dialog
     And I enter wallet name "Restored wallet" in restore wallet dialog
     And I enter recovery phrase in restore wallet dialog:
-    | recoveryPhrase                                                            |
-    | marriage glide need gold actress grant judge eager spawn plug sister whip |
+      | recoveryPhrase                                                            |
+      | marriage glide need gold actress grant judge eager spawn plug sister whip |
     And I toggle "Spending password" switch on the restore wallet dialog
     And I submit the restore wallet dialog
     Then I should not see the restore wallet dialog anymore
@@ -32,11 +32,11 @@ Feature: Add Wallet via Sidebar
     And I see the restore wallet dialog
     And I enter wallet name "Restored wallet" in restore wallet dialog
     And I enter recovery phrase in restore wallet dialog:
-    | recoveryPhrase                                                            |
-    | marriage glide need gold actress grant judge eager spawn plug sister whip |
+      | recoveryPhrase                                                            |
+      | marriage glide need gold actress grant judge eager spawn plug sister whip |
     And I enter wallet password in restore wallet dialog:
-    | password  | repeatedPassword |
-    | Secret123 | Secret123        |
+      | password  | repeatedPassword |
+      | Secret123 | Secret123        |
     And I submit the restore wallet dialog
     Then I should not see the restore wallet dialog anymore
     And I should have newly created "Restored wallet" wallet loaded

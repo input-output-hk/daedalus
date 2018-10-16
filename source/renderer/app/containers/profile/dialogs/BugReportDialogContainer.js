@@ -5,6 +5,7 @@ import { get } from 'lodash';
 import { observer, inject } from 'mobx-react';
 import BugReportDialog from '../../../components/profile/bug-report/BugReportDialog';
 import type { InjectedProps } from '../../../types/injectedPropsType';
+import { generateFileNameWithTimestamp } from '../../../../../common/fileName';
 
 const shell = require('electron').shell;
 
@@ -14,16 +15,19 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   onSubmit = (values: {
-    email: string, subject: string, problem: string, compressedLog: ?string
+    email: string, subject: string, problem: string, compressedLogsFile: ?string
   }) => {
     this.props.actions.profile.sendBugReport.trigger(values);
   };
 
   onDownload = () => {
+    const fileName = generateFileNameWithTimestamp();
     const destination = remote.dialog.showSaveDialog({
-      defaultPath: 'logs.zip',
+      defaultPath: fileName,
     });
-    if (destination) this.props.actions.profile.downloadLogs.trigger({ destination });
+    if (destination) {
+      this.props.actions.profile.downloadLogs.trigger({ fileName, destination, fresh: true });
+    }
   };
 
   onSubmitManually = (link: string) => {
@@ -36,36 +40,31 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
 
   render() {
     const { actions, stores } = this.props;
-    const { getLogs, compressLogs, deleteCompressedLogs } = actions.profile;
+    const { getLogs, getLogsAndCompress } = actions.profile;
     const {
       logFiles,
-      compressedLog,
-      isCompressing,
-      sendBugReport,
-      compressedFileDownload,
+      compressedLogsFile,
+      compressedLogsStatus,
+      isSubmittingBugReport,
       error,
     } = stores.profile;
 
     return (
       <BugReportDialog
-        isDownloading={get(compressedFileDownload, 'inProgress', false)}
+        isDownloading={get(compressedLogsStatus, 'isDownloading', false)}
+        isSubmittingBugReport={isSubmittingBugReport}
         logFiles={logFiles}
-        compressedLog={compressedLog}
-        isCompressing={isCompressing}
-        isSubmitting={sendBugReport.isExecuting}
+        compressedLogsFile={compressedLogsFile}
         error={error}
         onSubmit={this.onSubmit}
         onSubmitManually={this.onSubmitManually}
         onDownload={this.onDownload}
         onCancel={this.resetBugReportDialog}
+        onGetLogsAndCompress={(logs) => {
+          getLogsAndCompress.trigger({ logs });
+        }}
         onGetLogs={() => {
           getLogs.trigger();
-        }}
-        onCompressLogs={(logs) => {
-          compressLogs.trigger({ logs });
-        }}
-        onDeleteCompressedLogs={() => {
-          deleteCompressedLogs.trigger();
         }}
       />
     );

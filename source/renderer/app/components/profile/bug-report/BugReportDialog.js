@@ -5,12 +5,13 @@ import { observer } from 'mobx-react';
 import { isEmail, isEmpty } from 'validator';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
-import TextArea from 'react-polymorph/lib/components/TextArea';
-import SimpleTextAreaSkin from 'react-polymorph/lib/skins/simple/raw/TextAreaSkin';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/raw/SwitchSkin';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { TextArea } from 'react-polymorph/lib/components/TextArea';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { TextAreaSkin } from 'react-polymorph/lib/skins/simple/TextAreaSkin';
+import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
+import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
@@ -19,6 +20,7 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './BugReportDialog.scss';
 import type { LogFiles } from '../../../types/LogTypes';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import { submitOnEnter } from '../../../utils/form';
 
 const messages = defineMessages({
   title: {
@@ -117,22 +119,21 @@ const messages = defineMessages({
 
 type Props = {
   logFiles: LogFiles,
-  compressedLog: ?string,
+  compressedLogsFile: ?string,
   onCancel: Function,
   onSubmit: Function,
   onSubmitManually: Function,
   onDownload: Function,
   onGetLogs: Function,
-  onCompressLogs: Function,
-  onDeleteCompressedLogs: Function,
-  isSubmitting: boolean,
-  isCompressing: boolean,
+  onGetLogsAndCompress: Function,
   isDownloading?: boolean,
+  isSubmittingBugReport?: boolean,
   error: ?LocalizableError,
 };
 
 type State = {
-  showLogs: boolean,
+  attachLogs: boolean,
+  compressedLogsFile: ?string,
 };
 
 @observer
@@ -143,19 +144,23 @@ export default class BugReportDialog extends Component<Props, State> {
   };
 
   state = {
-    showLogs: true,
+    attachLogs: true,
+    compressedLogsFile: null,
   };
 
   componentWillMount() {
     this.props.onGetLogs();
-    this.props.onDeleteCompressedLogs();
   }
 
-  componentWillReceiveProps(nextProps: Object) {
-    const commpressionFilesChanged = this.props.compressedLog !== nextProps.compressedLog;
-    if (nextProps.compressedLog && commpressionFilesChanged && !nextProps.isDownloading) {
-      // proceed to submit when ipc rendered successfully return compressed files
-      this.submit(nextProps.compressedLog);
+  componentWillReceiveProps(nextProps: Props) {
+    const compressedLogsFileChanged = (
+      !this.props.compressedLogsFile &&
+      !!nextProps.compressedLogsFile
+    );
+    const { compressedLogsFile } = this.state;
+    if (compressedLogsFile) return false;
+    if (nextProps.compressedLogsFile && compressedLogsFileChanged && !nextProps.isDownloading) {
+      this.setState({ compressedLogsFile: nextProps.compressedLogsFile }, this.submit);
     }
   }
 
@@ -205,40 +210,36 @@ export default class BugReportDialog extends Component<Props, State> {
     },
   });
 
-  submit = (compressedLog: ?string) => {
+  submit = () => {
     this.form.submit({
       onSuccess: (form) => {
-        const { logFiles } = this.props;
-        const logsExist = get(logFiles, ['files'], []).length > 0;
-
+        const { attachLogs, compressedLogsFile } = this.state;
+        if (attachLogs && !compressedLogsFile) {
+          this.props.onGetLogsAndCompress();
+          return false;
+        }
         const { email, subject, problem } = form.values();
         const data = {
-          email, subject, problem, compressedLog
+          email, subject, problem, compressedLogsFile
         };
-
-        if (this.state.showLogs && logsExist && !compressedLog) {
-          // submit request with commpressed logs files
-          this.props.onCompressLogs(this.props.logFiles);
-        } else {
-          // regular submit
-          this.props.onSubmit(data);
-        }
+        this.props.onSubmit(data);
       },
       onError: () => {},
     });
   };
 
   handleLogsSwitchToggle = (value: boolean) => {
-    this.setState({ showLogs: value });
+    this.setState({ attachLogs: value });
   };
+
+  onClose = () => !this.props.isSubmittingBugReport && this.props.onCancel();
 
   render() {
     const { intl } = this.context;
-    const { showLogs } = this.state;
+    const { attachLogs } = this.state;
     const { form } = this;
     const {
-      onCancel, isSubmitting, isCompressing,
-      logFiles, error, onDownload, isDownloading,
+      logFiles, error, onDownload, isDownloading, isSubmittingBugReport
     } = this.props;
 
     const submitManuallyLink = intl.formatMessage(messages.submitManuallyLink);
@@ -249,12 +250,12 @@ export default class BugReportDialog extends Component<Props, State> {
 
     const attachedLogsClasses = classnames([
       styles.attachedLogs,
-      (showLogs && logFiles) ? styles.show : null,
+      (attachLogs && logFiles) ? styles.show : null,
     ]);
 
     const submitButtonClasses = classnames([
       'submitButton',
-      (isSubmitting || isCompressing) ? styles.isSubmitting : null,
+      isSubmittingBugReport ? styles.isSubmitting : null,
     ]);
 
     const downloadButtonClasses = classnames([
@@ -271,8 +272,8 @@ export default class BugReportDialog extends Component<Props, State> {
         className: submitButtonClasses,
         label: this.context.intl.formatMessage(messages.submitButtonLabel),
         primary: true,
-        disabled: isSubmitting,
-        onClick: this.submit.bind(this, null),
+        disabled: isSubmittingBugReport,
+        onClick: this.submit,
       },
     ];
 
@@ -298,8 +299,13 @@ export default class BugReportDialog extends Component<Props, State> {
         title={intl.formatMessage(messages.title)}
         actions={!error ? actions : alternativeActions}
         closeOnOverlayClick
-        onClose={onCancel}
-        closeButton={<DialogCloseButton onClose={onCancel} />}
+        onClose={this.onClose}
+        closeButton={
+          <DialogCloseButton
+            disabled={isSubmittingBugReport}
+            onClose={this.onClose}
+          />
+        }
       >
         {error ? (
           <div>
@@ -320,7 +326,8 @@ export default class BugReportDialog extends Component<Props, State> {
                 className="email"
                 {...emailField.bind()}
                 error={emailField.error}
-                skin={<SimpleInputSkin />}
+                skin={InputSkin}
+                onKeyPress={submitOnEnter.bind(this, this.submit)}
               />
             </div>
 
@@ -329,7 +336,8 @@ export default class BugReportDialog extends Component<Props, State> {
                 className="subject"
                 {...subjectField.bind()}
                 error={subjectField.error}
-                skin={<SimpleInputSkin />}
+                skin={InputSkin}
+                onKeyPress={submitOnEnter.bind(this, this.submit)}
               />
             </div>
 
@@ -340,7 +348,7 @@ export default class BugReportDialog extends Component<Props, State> {
                 rows={3}
                 {...problemField.bind()}
                 error={problemField.error}
-                skin={<SimpleTextAreaSkin />}
+                skin={TextAreaSkin}
               />
             </div>
 
@@ -351,10 +359,11 @@ export default class BugReportDialog extends Component<Props, State> {
                 </div>
 
                 <Checkbox
+                  themeId={IDENTIFIERS.SWITCH}
                   onChange={this.handleLogsSwitchToggle}
                   label={intl.formatMessage(messages.logsSwitchPlaceholder)}
-                  checked={showLogs}
-                  skin={<SimpleSwitchSkin />}
+                  checked={attachLogs}
+                  skin={SwitchSkin}
                 />
               </div>
 
