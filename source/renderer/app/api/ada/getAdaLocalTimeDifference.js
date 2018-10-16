@@ -1,6 +1,7 @@
 // @flow
 import type { AdaLocalTimeDifference } from './types';
 import { request } from './lib/request';
+import environment from '../../../../common/environment';
 
 export type GetAdaLocalTimeDifferenceParams = {
   ca: string,
@@ -13,7 +14,7 @@ export const getAdaLocalTimeDifference = (
     hostname: 'localhost',
     method: 'GET',
     path: '/api/settings/time/difference',
-    port: 8090,
+    port: environment.WALLET_PORT,
     ca,
   })
 );

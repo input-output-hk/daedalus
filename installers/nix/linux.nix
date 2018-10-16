@@ -7,14 +7,11 @@ sandboxed ? false
 let
   daedalus-config = runCommand "daedalus-config" {} ''
     mkdir -pv $out
-    cd $out
-    cp -v ${daedalus-bridge}/config/configuration.yaml configuration.yaml
-    ## TODO: we don't need both of those genesis files (even if file names sound cool),
+    ## TODO: we don't need all of the genesis files (even if file names sound cool),
     ##       but the choice would have to be made in the Dhall-generated files,
     ##       splitting the dep chain further:
-    cp -v ${daedalus-bridge}/config/mainnet-genesis-dryrun-with-stakeholders.json mainnet-genesis-dryrun-with-stakeholders.json
-    cp -v ${daedalus-bridge}/config/mainnet-genesis.json mainnet-genesis.json
-    cp -v ${daedalus-bridge}/config/log-config-prod.yaml daedalus.yaml
+    cp -v ${daedalus-bridge}/config/* $out
+    cd $out
     ${daedalus-installer}/bin/make-installer --out-dir "." --cluster ${cluster} config "${daedalus-installer.src}/dhall" "."
   '';
   # closure size TODO list
@@ -27,7 +24,7 @@ let
 
     cd "''${DAEDALUS_DIR}/${cluster}/"
 
-    exec ${electron}/bin/electron ${rawapp}/share/daedalus/main/
+    exec ${electron}/bin/electron ${rawapp}/share/daedalus/main/ "$@"
   '';
   daedalus = writeScriptBin "daedalus" ''
     #!${stdenv.shell}

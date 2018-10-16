@@ -1,6 +1,7 @@
 // @flow
 import type { AdaWallet } from './types';
 import { request } from './lib/request';
+import environment from '../../../../common/environment';
 
 export type UpdateAdaWalletParams = {
   ca: string,
@@ -19,7 +20,7 @@ export const updateAdaWallet = (
     hostname: 'localhost',
     method: 'PUT',
     path: `/api/wallets/${walletId}`,
-    port: 8090,
+    port: environment.WALLET_PORT,
     ca,
   }, {}, walletMeta)
 );

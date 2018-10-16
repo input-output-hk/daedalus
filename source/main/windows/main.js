@@ -3,8 +3,11 @@ import { app, BrowserWindow, ipcMain, Menu } from 'electron';
 import environment from '../../common/environment';
 import ipcApi from '../ipc-api';
 import { runtimeFolderPath } from '../config';
+import RendererErrorHandler from '../utils/rendererErrorHandler';
 
-export const createMainWindow = () => {
+const rendererErrorHandler = new RendererErrorHandler();
+
+export const createMainWindow = (isInSafeMode) => {
   const windowOptions = {
     show: false,
     width: 1150,
@@ -20,6 +23,8 @@ export const createMainWindow = () => {
 
   // Construct new BrowserWindow
   const window = new BrowserWindow(windowOptions);
+
+  rendererErrorHandler.setup(window, createMainWindow);
 
   window.setMinimumSize(900, 600);
 
@@ -46,7 +51,9 @@ export const createMainWindow = () => {
   window.loadURL(`file://${__dirname}/../renderer/index.html`);
   window.on('page-title-updated', event => { event.preventDefault(); });
 
-  window.setTitle(environment.getBuildLabel());
+  let title = environment.getBuildLabel();
+  if (isInSafeMode) title += ' [GPU safe mode]';
+  window.setTitle(title);
 
   window.webContents.on('context-menu', (e, props) => {
     const contextMenuOptions = [
@@ -77,6 +84,14 @@ export const createMainWindow = () => {
 
   window.on('closed', () => {
     app.quit();
+  });
+
+  window.webContents.on('did-fail-load', (err) => {
+    rendererErrorHandler.onError('did-fail-load', err);
+  });
+
+  window.webContents.on('crashed', (err) => {
+    rendererErrorHandler.onError('crashed', err);
   });
 
   return window;

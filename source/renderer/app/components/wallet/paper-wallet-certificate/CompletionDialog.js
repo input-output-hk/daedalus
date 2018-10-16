@@ -5,6 +5,7 @@ import QRCode from 'qrcode.react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import Dialog from '../../widgets/Dialog';
+import { getNetworkExplorerUrl } from '../../../utils/ada/network';
 import styles from './CompletionDialog.scss';
 
 const messages = defineMessages({
@@ -76,8 +77,7 @@ export default class CompletionDialog extends Component<Props> {
         onClick: onClose,
       }
     ];
-
-    const cardanoExplorerLink = `https://cardanoexplorer.com/address/${walletCertificateAddress}`;
+    const cardanoExplorerLink = `${getNetworkExplorerUrl()}/address/${walletCertificateAddress}`;
 
     // Get QRCode color value from active theme's CSS variable
     const qrCodeBackgroundColor = document.documentElement ?

@@ -47,6 +47,7 @@ data DarwinConfig = DarwinConfig {
   , dcPkgName :: Text -- ^ org.daedalus.pkg for example
   } deriving (Show)
 
+-- | The contract of `main` is not to produce unsigned installer binaries.
 main :: Options -> IO ()
 main opts@Options{..} = do
   hSetBuffering stdout NoBuffering
@@ -65,8 +66,9 @@ main opts@Options{..} = do
   print darwinConfig
 
   ver <- getBackendVersion oBackend
-  exportBuildVars opts ver
+  exportBuildVars opts installerConfig ver
 
+  buildIcons oCluster
   appRoot <- buildElectronApp darwinConfig
   makeComponentRoot opts appRoot darwinConfig
   daedalusVer <- getDaedalusVersion "../package.json"
@@ -77,7 +79,6 @@ main opts@Options{..} = do
   tempInstaller <- makeInstaller opts darwinConfig appRoot pkg
 
   signInstaller signingConfig tempInstaller opkg
-  checkSignature opkg
 
   run "rm" [tt tempInstaller]
   printf ("Generated "%fp%"\n") opkg
@@ -85,6 +86,11 @@ main opts@Options{..} = do
   when (oTestInstaller == TestInstaller) $ do
     echo $ "--test-installer passed, will test the installer for installability"
     procs "sudo" ["installer", "-dumplog", "-verbose", "-target", "/", "-pkg", tt opkg] empty
+
+  signed <- checkSignature opkg
+  case signed of
+    SignedOK -> pure ()
+    NotSigned -> rm opkg
 
 makePostInstall :: Format a (Text -> a)
 makePostInstall = "#!/usr/bin/env bash\n" %
@@ -105,16 +111,19 @@ makeScriptsDir Options{..} DarwinConfig{..} = case oBackend of
     pure $ tt tempdir
   Mantis    -> pure "[DEVOPS-533]"
 
+buildIcons :: Cluster -> IO ()
+buildIcons cluster = do
+  let iconset = format ("icons/"%s%".iconset") (lshowText cluster)
+  echo "Creating icons ..."
+  procs "iconutil" ["--convert", "icns", "--output", "icons/electron.icns"
+                   , iconset] mempty
+
 -- | Builds the electron app with "npm package" and returns its
 -- component root path.
 -- NB: If webpack scripts are changed then this function may need to
 -- be updated.
 buildElectronApp :: DarwinConfig -> IO FilePath
 buildElectronApp darwinConfig@DarwinConfig{..} = do
-  echo "Creating icons ..."
-  procs "iconutil" ["--convert", "icns", "--output", "icons/electron.icns"
-                   , "icons/electron.iconset"] mempty
-
   withDir ".." . sh $ npmPackage darwinConfig
 
   let
@@ -226,10 +235,9 @@ writeLauncherFile dir DarwinConfig{..} = do
     dataDir = "$HOME/Library/Application Support/" <> (dcAppName)
     contents =
       [ "#!/usr/bin/env bash"
-      , "cd \"$(dirname \"$0\")\""
       , "mkdir -p \"" <> dataDir <> "/Secrets-1.0\""
       , "mkdir -p \"" <> dataDir <> "/Logs/pub\""
-      , "./cardano-launcher"
+      , "\"$(dirname \"$0\")/cardano-launcher\""
       ]
 
 data SigningConfig = SigningConfig
@@ -270,9 +278,13 @@ signInstaller SigningConfig{..} src dst =
     sign = [ "--sign", signingIdentity ]
     keychain = maybe [] (\k -> [ "--keychain", k]) signingKeyChain
 
--- | Use pkgutil to verify that signing worked.
-checkSignature :: FilePath -> IO ()
-checkSignature pkg = run "pkgutil" ["--check-signature", tt pkg]
+-- | This will raise an exception if signing was unsuccessful.
+checkSignature :: FilePath -> IO SigningResult
+checkSignature pkg = do
+  result <- run' "pkgutil" ["--check-signature", tt pkg]
+  pure $ case result of
+           ExitSuccess -> SignedOK
+           _           -> NotSigned
 
 -- | Print the command then run it. Raises an exception on exit
 -- failure.

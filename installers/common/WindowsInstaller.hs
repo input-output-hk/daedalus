@@ -23,7 +23,7 @@ import           Prelude ((!!))
 import qualified System.IO as IO
 import           Filesystem.Path (FilePath, (</>))
 import           Filesystem.Path.CurrentOS (encodeString, fromText)
-import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, shells, testfile, stdout, input, export, sed, strict, format, printf, fp, w, (%), need, writeTextFile, die)
+import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, shells, testfile, stdout, input, export, sed, strict, format, printf, fp, w, s, (%), need, writeTextFile, die, cp, rm)
 import           Turtle.Pattern (text, plus, noneOf, star, dot)
 import           AppVeyor
 import qualified Codec.Archive.Zip    as Zip
@@ -71,7 +71,7 @@ writeUninstallerNSIS (Version fullVersion) installerConfig = do
             -- Note: we leave user data alone
 
 -- See non-INNER blocks at http://nsis.sourceforge.net/Signing_an_Uninstaller
-signUninstaller :: Options -> IO ()
+signUninstaller :: Options -> IO SigningResult
 signUninstaller opts = do
     procs "C:\\Program Files (x86)\\NSIS\\makensis" ["uninstaller.nsi"] mempty
     tempDir <- getTempDir
@@ -79,7 +79,7 @@ signUninstaller opts = do
     void $ proc "runtempinstaller.bat" [] mempty
     signFile opts (tempDir </> "uninstall.exe")
 
-signFile :: Options -> FilePath -> IO ()
+signFile :: Options -> FilePath -> IO SigningResult
 signFile Options{..} filename = do
     exists   <- testfile filename
     mCertPass <- need "CERT_PASS"
@@ -90,10 +90,12 @@ signFile Options{..} filename = do
         -- procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\iohk-windows-certificate.p12", "/p", toText pass, "/t", "http://timestamp.comodoca.com", "/v", toText filename] mempty
         exitcode <- proc "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\iohk-windows-certificate.p12", "/p", toText certPass, "/fd", "sha256", "/tr", "http://timestamp.comodoca.com/?td=sha256", "/td", "sha256", "/v", tt filename] mempty
         unless (exitcode == ExitSuccess) $ die "Signing failed"
+        pure SignedOK
       (False, _) ->
         die $ format ("Unable to sign missing file '"%fp%"'\n") filename
-      (_, Nothing) ->
+      (_, Nothing) -> do
         echo "Not signing: CERT_PASS not specified."
+        pure NotSigned
 
 parseVersion :: Text -> [String]
 parseVersion ver =
@@ -110,11 +112,11 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
 
     IO.writeFile "daedalus.nsi" $ nsis $ do
         _ <- constantStr "Version" (str fullVersion)
-        _ <- constantStr "Cluster" (str $ unpack $ lshowText clusterName)
+        _ <- constantStr "Cluster" (str $ lshow clusterName)
         _ <- constantStr "InstallDir" (str $ unpack $ installDirectory installerConfig)
         name "$InstallDir ($Version)"                  -- The name of the installer
         outFile $ str $ encodeString outName        -- Where to produce the installer
-        unsafeInjectGlobal $ "!define MUI_ICON \"icons\\64x64.ico\""
+        unsafeInjectGlobal $ "!define MUI_ICON \"icons\\" ++ lshow clusterName ++ "\\" ++ lshow clusterName ++ ".ico\""
         unsafeInjectGlobal $ "!define MUI_HEADERIMAGE"
         unsafeInjectGlobal $ "!define MUI_HEADERIMAGE_BITMAP \"icons\\installBanner.bmp\""
         unsafeInjectGlobal $ "!define MUI_HEADERIMAGE_RIGHT"
@@ -187,14 +189,22 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                 createShortcut "$SMPROGRAMS/$InstallDir/$InstallDir.lnk" daedalusShortcut
         return ()
 
-packageFrontend :: IO ()
-packageFrontend = do
-    export "NODE_ENV" "production"
-    shells "npm run package -- --icon installers/icons/64x64" empty
+lshow :: Show a => a -> String
+lshow = T.unpack . lshowText
 
+packageFrontend :: Cluster -> IO ()
+packageFrontend cluster = do
+    let icon = format ("installers/icons/"%s%"/"%s) (lshowText cluster) (lshowText cluster)
+    export "NODE_ENV" "production"
+    shells ("npm run package -- --icon " <> icon) empty
+
+-- | The contract of `main` is not to produce unsigned installer binaries.
 main :: Options -> IO ()
 main opts@Options{..}  = do
     generateOSClusterConfigs "./dhall" "." opts
+    cp (fromText "launcher-config.yaml") (fromText "../launcher-config.yaml")
+
+    installerConfig <- getInstallerConfig "./dhall" Win64 oCluster
 
     fetchCardanoSL "."
     printCardanoBuildInfo "."
@@ -203,14 +213,12 @@ main opts@Options{..}  = do
     ver <- getCardanoVersion
 
     echo "Packaging frontend"
-    exportBuildVars opts ver
-    packageFrontend
+    exportBuildVars opts installerConfig ver
+    packageFrontend oCluster
 
     let fullName = packageFileName Win64 oCluster fullVersion oBackend ver oBuildJob
 
     printf ("Building: "%fp%"\n") fullName
-
-    installerConfig <- getInstallerConfig "./dhall" Win64 oCluster
 
     echo "Adding permissions manifest to cardano-launcher.exe"
     procs "C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\mt.exe" ["-manifest", "cardano-launcher.exe.manifest", "-outputresource:cardano-launcher.exe;#1"] mempty
@@ -233,7 +241,11 @@ main opts@Options{..}  = do
 
     echo "Generating NSIS installer"
     procs "C:\\Program Files (x86)\\NSIS\\makensis" ["daedalus.nsi", "-V4"] mempty
-    signFile opts fullName
+
+    signed <- signFile opts fullName
+    case signed of
+      SignedOK  -> pure ()
+      NotSigned -> rm fullName
 
 -- | Download and extract the cardano-sl windows build.
 fetchCardanoSL :: FilePath -> IO ()

@@ -1,8 +1,9 @@
 { name         = "testnet"
-, keyPrefix    = "devnet"
-, relays       = "relays.FIXME.cardano-mainnet.iohk.io"
-, updateServer = "https://update-cardano-mainnet.iohk.io"
+, keyPrefix    = "testnet_wallet"
+, relays       = "relays.cardano-testnet.iohkdev.io"
+, updateServer = "http://updates-cardano-testnet.s3.amazonaws.com"
 , reportServer = "http://report-server.cardano-mainnet.iohk.io:8080"
 , installDirectorySuffix = " Testnet"
 , macPackageSuffix       = "Testnet"
+, walletPort             = 8094
 }

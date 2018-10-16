@@ -1,12 +1,36 @@
 Changelog
 =========
 
+## 0.11.1
+=======
+
+### Features
+
+- Added support for configurable Api port ([PR 992](https://github.com/input-output-hk/daedalus/pull/992))
+- Added initial configuration for a testnet build of Daedalus ([PR 991](https://github.com/input-output-hk/daedalus/pull/991))
+
+### Fixes
+
+- Implemented error dialog shown in case Daedalus is not started using Launcher ([PR 1054](https://github.com/input-output-hk/daedalus/pull/1054))
+- Improved paper wallet certificate QR code compatibility ([PR 999](https://github.com/input-output-hk/daedalus/pull/999))
+- Fixed a bug in the Electron which results in blank/white screen rendering on some OS/Graphics-card/Drivers combinations ([PR 1007](https://github.com/input-output-hk/daedalus/pull/1007))
+- Changed the information we are sending on support requests to the reporting server. ([PR 1036](https://github.com/input-output-hk/daedalus/pull/1036))
+- Fixed the bug on Windows where Daedalus couldn't start if the Windows username contained non-ASCII characters. ([PR 1057](https://github.com/input-output-hk/daedalus/pull/1057))
+- Fixed Daedalus icon scaling issues on Windows ([PR 1064](https://github.com/input-output-hk/daedalus/pull/1064))
+- Updated to `electon@1.7.16` to avoid the known vulnarability [CVE-2018-15685](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-15685) ([PR 1066](https://github.com/input-output-hk/daedalus/pull/1066))
+
+### Chores
+
+- Implemented `NETWORK` specific Cardano Blockchain Explorer links (Mainnet, Testnet, Staging) [PR 1051](https://github.com/input-output-hk/daedalus/pull/1051)
+- Improved network label in the Top bar ([PR 988](https://github.com/input-output-hk/daedalus/pull/988))
+- Added "testnet" label to paper wallet certificates which are not generated on the mainnet ([PR 1055](https://github.com/input-output-hk/daedalus/pull/1055))
+
 ## 0.11.0
 
 ### Features
 
 - Implemented a switch instead of a link for "hide used" addresses on the Receive screen ([PR 935](https://github.com/input-output-hk/daedalus/pull/935))
-- Added a notification for Windows users that using antivirus software might slow down wallet 
+- Added a notification for Windows users that using antivirus software might slow down wallet
   restoration ([PR 1020](https://github.com/input-output-hk/daedalus/pull/1020))
 
 ### Fixes

@@ -1,5 +1,6 @@
 # Logs
 logs
+Logs
 *.log*
 
 # Runtime data
@@ -71,3 +72,6 @@ commit-id
 
 # nix-build results
 result*
+
+# Npm
+package-lock.json
