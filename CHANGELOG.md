@@ -2,7 +2,7 @@
 Changelog
 =========
 
-## vNext
+## 0.12.0
 =======
 
 ### Features
