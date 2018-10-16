@@ -1,9 +1,9 @@
 // @flow
 import path from 'path';
+import { environment } from '../common/environment';
 import { readLauncherConfig } from './utils/config';
 
-const { NODE_ENV, LAUNCHER_CONFIG } = process.env;
-const isDev = NODE_ENV === 'development';
+const { isDev, LAUNCHER_CONFIG } = environment;
 // Daedalus cannot proceed without a launcher config
 if (isDev && !LAUNCHER_CONFIG) throw new Error('Daedalus should be started using nix-shell. Find more details here: https://github.com/input-output-hk/daedalus/blob/develop/README.md\n');
 
