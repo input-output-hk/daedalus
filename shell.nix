@@ -7,6 +7,7 @@ in
 , cluster ? "demo"
 , autoStartBackend ? false
 , systemStart ? null
+, walletExtraArgs ? []
 }:
 
 let
@@ -19,10 +20,12 @@ let
   patches = builtins.concatLists [
     (pkgs.lib.optional (systemStart != null) ".configuration.systemStart = ${toString systemStart}")
     (pkgs.lib.optional (cluster == "demo") ''.configuration.key = "default"'')
+    (pkgs.lib.optional (walletExtraArgs != []) ''.nodeArgs += ${builtins.toJSON walletExtraArgs}'')
   ];
   patchesString = pkgs.lib.concatStringsSep " | " patches;
   launcherYamlWithStartTime = pkgs.runCommand "launcher-config.yaml" { buildInputs = [ pkgs.jq yaml2json ]; } ''
     jq '${patchesString}' < ${launcher-json} | json2yaml > $out
+    echo "Launcher config:  $out"
   '';
   launcherConfig' = if (patches == []) then "${daedalusPkgs.daedalus.cfg}/etc/launcher-config.yaml" else launcherYamlWithStartTime;
   fixYarnLock = pkgs.stdenv.mkDerivation {
