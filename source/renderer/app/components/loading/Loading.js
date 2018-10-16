@@ -32,8 +32,8 @@ const messages = defineMessages({
   },
   stopped: {
     id: 'loading.screen.stoppedCardanoMessage',
-    defaultMessage: '!!!Cardano node stopped.',
-    description: 'Message "Cardano node stopped." on the loading screen.'
+    defaultMessage: '!!!Cardano node stopped',
+    description: 'Message "Cardano node stopped" on the loading screen.'
   },
   updating: {
     id: 'loading.screen.updatingCardanoMessage',
@@ -42,13 +42,13 @@ const messages = defineMessages({
   },
   updated: {
     id: 'loading.screen.updatedCardanoMessage',
-    defaultMessage: '!!!Cardano node updated.',
-    description: 'Message "Cardano node updated." on the loading screen.'
+    defaultMessage: '!!!Cardano node updated',
+    description: 'Message "Cardano node updated" on the loading screen.'
   },
   crashed: {
     id: 'loading.screen.crashedCardanoMessage',
-    defaultMessage: '!!!Cardano node crashed.',
-    description: 'Message "Cardano node crashed." on the loading screen.'
+    defaultMessage: '!!!Cardano node crashed',
+    description: 'Message "Cardano node crashed" on the loading screen.'
   },
   unrecoverable: {
     id: 'loading.screen.unrecoverableCardanoMessage',

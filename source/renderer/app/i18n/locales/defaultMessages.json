@@ -269,8 +269,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano node stopped.",
-        "description": "Message \"Cardano node stopped.\" on the loading screen.",
+        "defaultMessage": "!!!Cardano node stopped",
+        "description": "Message \"Cardano node stopped\" on the loading screen.",
         "end": {
           "column": 3,
           "line": 37
@@ -297,8 +297,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano node updated.",
-        "description": "Message \"Cardano node updated.\" on the loading screen.",
+        "defaultMessage": "!!!Cardano node updated",
+        "description": "Message \"Cardano node updated\" on the loading screen.",
         "end": {
           "column": 3,
           "line": 47
@@ -311,8 +311,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano node crashed.",
-        "description": "Message \"Cardano node crashed.\" on the loading screen.",
+        "defaultMessage": "!!!Cardano node crashed",
+        "description": "Message \"Cardano node crashed\" on the loading screen.",
         "end": {
           "column": 3,
           "line": 52
