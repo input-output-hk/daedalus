@@ -79,3 +79,5 @@ export const CardanoProcessNameOptions: {
   linux: 'cardano-node',
   darwin: 'cardano-node'
 };
+
+export type FaultInjection = [string, boolean];

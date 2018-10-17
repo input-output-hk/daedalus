@@ -9,7 +9,7 @@ import {
   cardanoTlsConfigChannel,
   cardanoRestartChannel,
   cardanoAwaitUpdateChannel,
-  cardanoStateChangeChannel
+  cardanoStateChangeChannel, cardanoFaultInjectionChannel
 } from '../ipc/cardano.ipc';
 import { safeExitWithCode } from '../utils/safeExitWithCode';
 import type { TlsConfig, CardanoNodeState } from '../../common/types/cardanoNode.types';
@@ -102,8 +102,10 @@ export const setupCardano = (
     Logger.info('ipcMain: Received request from renderer to restart node.');
     return cardanoNode.restart(true); // forced restart
   });
-
-  cardanoNode.setFault('FInjIgnoreShutdown', true);
+  cardanoFaultInjectionChannel.onReceive((fault) => {
+    Logger.info(`ipcMain: Received request to inject a fault into cardano node: ${fault}`);
+    return cardanoNode.setFault(fault);
+  });
 
   return cardanoNode;
 };
