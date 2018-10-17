@@ -8,6 +8,7 @@ in
 , autoStartBackend ? false
 , systemStart ? null
 , walletExtraArgs ? []
+, allowFaultInjection ? false
 }:
 
 let
@@ -17,10 +18,11 @@ let
   nodejs = pkgs.nodejs-8_x;
   launcher-json = pkgs.runCommand "read-launcher-config.json" { buildInputs = [ yaml2json ]; } "yaml2json ${daedalusPkgs.daedalus.cfg}/etc/launcher-config.yaml > $out";
   launcher-config = builtins.fromJSON (builtins.readFile launcher-json);
+  fullExtraArgs = walletExtraArgs ++ pkgs.lib.optional allowFaultInjection "--allow-fault-injection";
   patches = builtins.concatLists [
     (pkgs.lib.optional (systemStart != null) ".configuration.systemStart = ${toString systemStart}")
     (pkgs.lib.optional (cluster == "demo") ''.configuration.key = "default"'')
-    (pkgs.lib.optional (walletExtraArgs != []) ''.nodeArgs += ${builtins.toJSON walletExtraArgs}'')
+    (pkgs.lib.optional (fullExtraArgs != []) ''.nodeArgs += ${builtins.toJSON fullExtraArgs}'')
   ];
   patchesString = pkgs.lib.concatStringsSep " | " patches;
   launcherYamlWithStartTime = pkgs.runCommand "launcher-config.yaml" { buildInputs = [ pkgs.jq yaml2json ]; } ''
