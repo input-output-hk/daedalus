@@ -103,5 +103,7 @@ export const setupCardano = (
     return cardanoNode.restart(true); // forced restart
   });
 
+  cardanoNode.setFault('FInjIgnoreShutdown', true);
+
   return cardanoNode;
 };

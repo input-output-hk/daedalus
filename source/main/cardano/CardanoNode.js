@@ -334,6 +334,11 @@ export class CardanoNode {
     }
   }
 
+  setFault = (faultType: string, isEnabled: boolean) => {
+    if (!this._node) return;
+    this._node.send({ SetFInject: [faultType, isEnabled] });
+  };
+
   // ================================= PRIVATE ===================================
 
   /**
