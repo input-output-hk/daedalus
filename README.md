@@ -96,6 +96,15 @@ You can find more details regarding tests setup within
 **Notes:** Be aware that only a single Daedalus instance can run per state directory.
 So you have to exit any development instances before running tests!
 
+## Wallet fault injection
+
+General information about wallet fault injection can be found in the [Cardano's wallet-new README file](https://github.com/input-output-hk/cardano-sl/tree/develop/wallet-new#fault-injection).
+
+`shell.nix` has support for passing the necessary flags:
+
+- `--arg allowFaultInjection true` is necessary to enable any processing of faults, and
+- `--arg walletExtraArgs '[ "--somefault" ]'` can be used for enabling certain fault types at startup.
+
 # Windows
 
 This batch file requires [Node.js](https://nodejs.org/en/download/) and
