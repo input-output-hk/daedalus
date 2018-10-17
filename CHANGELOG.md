@@ -2,6 +2,18 @@
 Changelog
 =========
 
+## vNext
+=======
+
+### Features
+
+- Implemented Zendesk web-form direct submissions ([PR 1098](https://github.com/input-output-hk/daedalus/pull/1098))
+
+### Fixes
+
+### Chores
+
+
 ## 0.12.0
 =======
 
