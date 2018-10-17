@@ -1,7 +1,6 @@
 // @flow
 import { ipcRenderer } from 'electron';
 import { SUPPORT_WINDOW } from '../common/ipc-api';
-import updateCSSVariables from './app/utils/updateCSSVariables';
 import waitForExist from './app/utils/waitForExist';
 
 const support = () => {
@@ -22,7 +21,6 @@ const support = () => {
     compressedLogsFileName: string,
   };
 
-  const SECONDS_TO_REMOVE_OVERLAY = 10;
   let logsWereAttached = false;
 
   const localesSetLanguage = {
@@ -42,12 +40,6 @@ const support = () => {
     'productVersion',
     'productAttribute',
   ];
-
-  const hideLoadingOverlay = () => {
-    if (document.body) {
-      document.body.classList.add('hideOverlay');
-    }
-  };
 
   const onSubmit = async (iframe) => {
     const doneButton:any = waitForExist(
@@ -98,7 +90,6 @@ const support = () => {
       dT.items.add(file);
       fileInput.files = dT.files;
     }
-    hideLoadingOverlay();
   };
 
   const fillForm = async (formInfo: ZendeskInfo) => {
@@ -132,13 +123,10 @@ const support = () => {
     window.top && window.top.close();
   };
 
-  setTimeout(hideLoadingOverlay, SECONDS_TO_REMOVE_OVERLAY * 1000);
-
   ipcRenderer.on(
     SUPPORT_WINDOW.ZENDESK_INFO,
     (event, zendeskInfo: ZendeskInfo) => {
       const { locale, themeVars } = zendeskInfo;
-      updateCSSVariables(themeVars);
       window.zE(() => {
         if (locale !== 'en-US') {
           window.zE.setLocale(localesSetLanguage[locale]);
