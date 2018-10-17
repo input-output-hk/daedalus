@@ -8,33 +8,34 @@
   position: absolute;
   bottom: 0;
   align-items: center;
-  padding: 10px 0;
-}
 
-.text {
-  color: white;
-  font-family: $theme-font-light;
-  text-align: center;
-  font-size: 12px;
-  flex-grow: 1;
-  line-height: 1.2em;
-
-  a:link, a:visited {
+  .text {
+    padding: 10px 0;
     color: white;
-  }
-}
+    font-family: $theme-font-light;
+    text-align: center;
+    font-size: 12px;
+    flex-grow: 1;
+    line-height: 1.2em;
 
-.closeButton {
-  width: 50px;
-  &:hover {
-    cursor: pointer;
-    background-color: #951604;
+    a:link, a:visited {
+      color: white;
+    }
   }
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
-.closeCross {
-  width: 10px;
+  .closeButton {
+    width: 50px;
+    padding: 25px 0;
+    &:hover {
+      cursor: pointer;
+      background-color: #951604;
+    }
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .closeCross {
+    width: 10px;
+  }
 }
