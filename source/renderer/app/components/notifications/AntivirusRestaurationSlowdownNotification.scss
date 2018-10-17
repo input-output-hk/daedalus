@@ -1,41 +1,42 @@
 @import "../../themes/simple/config";
 
 .component {
-  width: 100%;
+  align-items: center;
   background-color: #b2311d;
-  box-shadow: 0 -5px 20px 0 rgba(0, 0, 0, 0.25);
+  bottom: 0;
+  box-shadow: 0 -5px 20px 0 rgba(0,0,0,0.25);
   display: flex;
   position: absolute;
-  bottom: 0;
-  align-items: center;
+  width: 100%;
 
   .text {
-    padding: 10px 0;
-    color: white;
+    color: #fff;
     font-family: $theme-font-light;
-    text-align: center;
     font-size: 12px;
     flex-grow: 1;
     line-height: 1.2em;
+    padding: 10px 0;
+    text-align: center;
 
     a:link, a:visited {
-      color: white;
+      color: #fff;
     }
   }
 
   .closeButton {
-    width: 50px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
     padding: 25px 0;
+    width: 50px;
+
     &:hover {
       cursor: pointer;
       background-color: #951604;
     }
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
 
-  .closeCross {
-    width: 10px;
+    .closeCross {
+      width: 10px;
+    }
   }
 }
