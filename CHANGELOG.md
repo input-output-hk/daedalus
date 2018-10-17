@@ -24,6 +24,8 @@ Changelog
 
 ### Fixes
 
+- Fixes the close button's hover state within the AntivirusRestaurationSlowdownNotification so it's full height.
+([PR 1131](https://github.com/input-output-hk/daedalus/pull/1131))
 - Fixed an issue which allowed to submit invalid form on the "Send" screen using an "enter" key ([PR 1002](https://github.com/input-output-hk/daedalus/pull/1002))
 - Fixed an issue which would trigger submission of the "Generate address" button on the "Receive" screen on right-mouse click ([PR 1082](https://github.com/input-output-hk/daedalus/pull/1082))
 - Fixed an issue with the "Having Trouble Connecting" notification not showing up on the "Connection lost. Reconnecting..." screen ([PR 1112](https://github.com/input-output-hk/daedalus/pull/1112))
