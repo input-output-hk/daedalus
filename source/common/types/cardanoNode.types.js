@@ -23,27 +23,31 @@ export const NetworkNameOptions = {
 
 export type CardanoNodeState = (
   'stopped' | 'starting' | 'running' | 'stopping' | 'updating' |
-  'updated' | 'crashed' | 'errored'
+  'updated' | 'crashed' | 'errored' | 'exiting' | 'unrecoverable'
 );
 
 export const CardanoNodeStates: {
   STARTING: CardanoNodeState,
   RUNNING: CardanoNodeState;
+  EXITING: CardanoNodeState;
   STOPPING: CardanoNodeState;
   STOPPED: CardanoNodeState;
   UPDATING: CardanoNodeState;
   UPDATED: CardanoNodeState;
   CRASHED: CardanoNodeState;
   ERRORED: CardanoNodeState;
+  UNRECOVERABLE: CardanoNodeState;
 } = {
   STARTING: 'starting',
   RUNNING: 'running',
+  EXITING: 'exiting',
   STOPPING: 'stopping',
   STOPPED: 'stopped',
   UPDATING: 'updating',
   UPDATED: 'updated',
   CRASHED: 'crashed',
   ERRORED: 'errored',
+  UNRECOVERABLE: 'unrecoverable',
 };
 
 export type CardanoPidOptions = (

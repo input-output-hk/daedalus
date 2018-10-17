@@ -5,6 +5,7 @@ Logs
 
 # Runtime data
 pids
+icon.png
 *.exe
 *.pid
 *.seed
@@ -78,6 +79,7 @@ mainnet
 staging
 cardano-node
 configuration.yaml
+log-config-prod.yaml
 mainnet-genesis-dryrun-with-stakeholders.json
 wallet-topology.yaml
 

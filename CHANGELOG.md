@@ -2,59 +2,59 @@
 Changelog
 =========
 
-## vNext
+## 0.12.0
 =======
-
-### Chores
-
-- Adds dynamic prefix derivation to local storage keys in CardanoNode based on the current network. Adds dynamic derivation of process names for cardano-node based on the current platform. [PR 1109](https://github.com/input-output-hk/daedalus/pull/1109)
-- Integrates the latest features from the develop branch of react-polymorph. Features include: render props architecture, theme composition, and a ThemeProvider HOC. [PR 950](https://github.com/input-output-hk/daedalus/pull/950)
-- Fixed broken storybook [PR 1041](https://github.com/input-output-hk/daedalus/pull/1041)
-- Remove all ETC specific files [PR 1068](https://github.com/input-output-hk/daedalus/pull/1068)
-- Make "port" and "ca" of Ada Api configurable during runtime [PR 1067](https://github.com/input-output-hk/daedalus/pull/1067)
-- Added screenshots record of failed acceptance tests [PR 1103](https://github.com/input-output-hk/daedalus/pull/1103)
 
 ### Features
 
-- Removes depreciated types, requests, and API methods associated with the V0 API. Within the /api directory, organizes requests, types, and errors into subdirectories based on the categories Accounts, Addresses, Common, Nodes, Transactions, and Wallets. ([PR 1088](https://github.com/input-output-hk/daedalus/pull/1088))
-- Refactors and improves Network Status Store to use V1 API. ([PR 1081](https://github.com/input-output-hk/daedalus/pull/1081))
-- Implemented the V1 API endpoints for redeeming ADA with all types of certificates. Updates ADA redemption API methods, flow types, and variable names to match the V1 nomenclature. ([PR 1080](https://github.com/input-output-hk/daedalus/pull/1080))
-- Implements the missing V1 API endpoints for checking if a node update is available and responding to the update by either applying it or postponing it. Adds the V1 endpoint for adaTestReset.js. ([PR 1079](https://github.com/input-output-hk/daedalus/pull/1079))
-- Implemented the V1 API specifications for 4 pieces of functionality and their associated API requests within Daedalus. These include: Setting a passphrase or changing an existing passphrase. Deleting an existing wallet and all its accounts. Checking for an available node update and displaying a notification about the update and versioning. Updating the name and/or assurance level of an existing wallet. ([PR 1042](https://github.com/input-output-hk/daedalus/pull/1042))
-- Implemented a switch instead of a link for “hide used” addresses on the Receive screen ([PR 935](https://github.com/input-output-hk/daedalus/pull/935))
+- Implemented "Forbidden mnemonic" error message ([PR 1093](https://github.com/input-output-hk/daedalus/pull/1093), [PR 1100](https://github.com/input-output-hk/daedalus/pull/1100))
+- Implemented extended error messages for transaction fee calculation failures ([PR 1111](https://github.com/input-output-hk/daedalus/pull/1111))
 - Implemented forms submission on "Enter" key press ([PR 981](https://github.com/input-output-hk/daedalus/pull/981))
+- Implemented Japanese "Terms of use" for the "Testnet" network ([PR 1097](https://github.com/input-output-hk/daedalus/pull/1097))
+- Implemented lock-file mechanism which prevents multiple Daedalus instances from running against the same state directory and network ([PR 1113](https://github.com/input-output-hk/daedalus/pull/1113), [PR 1114](https://github.com/input-output-hk/daedalus/pull/1114), [PR 1121](https://github.com/input-output-hk/daedalus/pull/1121))
+- Implemented "New data layer migration" screen ([PR 1096](https://github.com/input-output-hk/daedalus/pull/1096))
+- Implemented sending of `cert` and `key` with API requests in order to enable 2-way TLS authentication ([PR 1072](https://github.com/input-output-hk/daedalus/pull/1072))
+- Implemented support for Cardano node "structured logging" ([PR 1092](https://github.com/input-output-hk/daedalus/pull/1092), [PR 1122](https://github.com/input-output-hk/daedalus/pull/1122))
+- Implemented the IPC driven Cardano node / Daedalus communication ([PR 1075](https://github.com/input-output-hk/daedalus/pull/1075), [PR 1107](https://github.com/input-output-hk/daedalus/pull/1107), [PR 1109](https://github.com/input-output-hk/daedalus/pull/1109), [PR 1115](https://github.com/input-output-hk/daedalus/pull/1115), [PR 1118](https://github.com/input-output-hk/daedalus/pull/1118), [PR 1119](https://github.com/input-output-hk/daedalus/pull/1119))
 - Improved the loading UX ([PR 723](https://github.com/input-output-hk/daedalus/pull/723))
-- Integrated the V1 API endpoint for Ada payments ([PR 1031](https://github.com/input-output-hk/daedalus/pull/1031))
-- Integrated the V1 API endpoint for creating and restoring Wallets ([PR 1018](https://github.com/input-output-hk/daedalus/pull/1018))
-- Integrated the V1 API endpoints for fetching all accounts associated with a wallet, fetching a single address, and creating a new address ([PR 1037](https://github.com/input-output-hk/daedalus/pull/1037))
-- Send cert and key with api requests to support tls-auth ([PR 1072](https://github.com/input-output-hk/daedalus/pull/1072))
-- Implemented new data layer migration screen ([PR 1096](https://github.com/input-output-hk/daedalus/pull/1096))
-- Implemented Japanese Terms of use for Testnet network ([PR 1097](https://github.com/input-output-hk/daedalus/pull/1097))
-- Implemented lock file mechanism to prevent multiple Daedalus instances from running against the same state directory ([PR 1113](https://github.com/input-output-hk/daedalus/pull/1113))
+- Improved the NTP check handling ([PR 1086](https://github.com/input-output-hk/daedalus/pull/1086))
+- Improved the transaction details text selection ([PR 1073](https://github.com/input-output-hk/daedalus/pull/1073), [PR 1095](https://github.com/input-output-hk/daedalus/pull/1095))
+- Integrated Cardano V1 API endpoints ([PR 1018](https://github.com/input-output-hk/daedalus/pull/1018), [PR 1031](https://github.com/input-output-hk/daedalus/pull/1031), [PR 1037](https://github.com/input-output-hk/daedalus/pull/1037), [PR 1042](https://github.com/input-output-hk/daedalus/pull/1042), [PR 1045](https://github.com/input-output-hk/daedalus/pull/1045), [PR 1070](https://github.com/input-output-hk/daedalus/pull/1070), [PR 1078](https://github.com/input-output-hk/daedalus/pull/1078), [PR 1079](https://github.com/input-output-hk/daedalus/pull/1079), [PR 1080](https://github.com/input-output-hk/daedalus/pull/1080), [PR 1088](https://github.com/input-output-hk/daedalus/pull/1088))
+- Refactored and improved `NetworkStatus` store to use V1 API data ([PR 1081](https://github.com/input-output-hk/daedalus/pull/1081))
 
 ### Fixes
 
-- Fixes the Loading.js component's "Having Trouble Connecting" and the "Having Trouble Syncing" notification. Refactors Loading.js for maintainability and readability purposes [PR 1112](https://github.com/input-output-hk/daedalus/pull/1112)
-- Fixed a bug that allowed to submit invalid send form via ENTER key ([PR 1002](https://github.com/input-output-hk/daedalus/pull/1002))
-- Fixed a bug that would submit the "Generate address" button on the Receive screen in case right-mouse click was used ([PR 1082](https://github.com/input-output-hk/daedalus/pull/1082))
-- Fixed the button outline color on special buttons. ([PR 990](https://github.com/input-output-hk/daedalus/pull/990))
-- Fixed broken Export wallet to file dialog and improved Wallet settings dialogs file structure and namings ([PR 998](https://github.com/input-output-hk/daedalus/pull/998))
-- Prevented wallet data polling during wallet deletion ([PR 996]https://github.com/input-output-hk/daedalus/pull/996)
-- Fixed a bug in the Electron which results in blank/white screen rendering on some OS/Graphics-card/Drivers combinations.  ([PR 1007](https://github.com/input-output-hk/daedalus/pull/1007))
-- Removed the Ada Redemption link from the 'app bar' menu and added it to system menu ([PR 972](https://github.com/input-output-hk/daedalus/pull/972))
-- Finished etc code cleanup ([PR 1108](https://github.com/input-output-hk/daedalus/pull/1108))
-
+- Fixed an issue which allowed to submit invalid form on the "Send" screen using an "enter" key ([PR 1002](https://github.com/input-output-hk/daedalus/pull/1002))
+- Fixed an issue which would trigger submission of the "Generate address" button on the "Receive" screen on right-mouse click ([PR 1082](https://github.com/input-output-hk/daedalus/pull/1082))
+- Fixed an issue with the "Having Trouble Connecting" notification not showing up on the "Connection lost. Reconnecting..." screen ([PR 1112](https://github.com/input-output-hk/daedalus/pull/1112))
+- Fixed broken "Export wallet to file" dialog and improved "Wallet settings" screen dialogs file structure and namings ([PR 998](https://github.com/input-output-hk/daedalus/pull/998))
+- Fixed special buttons outline color ([PR 990](https://github.com/input-output-hk/daedalus/pull/990))
+- Fixed the close button's hover state within the AntivirusRestaurationSlowdownNotification so it's full height ([PR 1131](https://github.com/input-output-hk/daedalus/pull/1131))
+- Fixed uninstaller unicode issue ([PR 1116](https://github.com/input-output-hk/daedalus/pull/1116))
+- Implement design review fixes and improvements ([PR 1090](https://github.com/input-output-hk/daedalus/pull/1090))
+- Pinned eslint-scope version via the yarn resolutions feature ([PR 1017](https://github.com/input-output-hk/daedalus/pull/1017))
+- Prevented wallet data polling during wallet deletion ([PR 996](https://github.com/input-output-hk/daedalus/pull/996))
 
 ### Chores
 
 - Added acceptance tests for node update notification with apply and postpone update scenarios ([PR 977](https://github.com/input-output-hk/daedalus/pull/977))
 - Added acceptance tests for maximum wallets limit ([PR 979](https://github.com/input-output-hk/daedalus/pull/979))
-- Added acceptance tests for the About dialog ([PR 975](https://github.com/input-output-hk/daedalus/pull/975))
+- Added acceptance tests for the "About" dialog ([PR 975](https://github.com/input-output-hk/daedalus/pull/975))
 - Added acceptance tests for wallets, transactions and addresses ordering ([PR 976](https://github.com/input-output-hk/daedalus/pull/976))
-- Created new Storybook stories for the Wallet screens ([942](https://github.com/input-output-hk/daedalus/pull/942))
+- Added Daedalus and Cardano version to Daedalus log ([PR 1094](https://github.com/input-output-hk/daedalus/pull/1094))
+- Added dynamic prefix derivation to local storage keys used to store previous Cardano node PID and added dynamic derivation of Cardano node process names based on the current platform ([PR 1109](https://github.com/input-output-hk/daedalus/pull/1109))
+- Added logging of "GPU-crashed" events ([PR 1083](https://github.com/input-output-hk/daedalus/pull/1083))
+- Added screenshot recording of failed acceptance tests ([PR 1103](https://github.com/input-output-hk/daedalus/pull/1103))
+- Added Storybook stories for the wallet screens ([942](https://github.com/input-output-hk/daedalus/pull/942))
+- Disabled logging to `cardano-node.log` since it was not needed for the support and it was impacting performance ([PR 1027](https://github.com/input-output-hk/daedalus/pull/1027))
+- Fixated all `npm` dependencies and update script names ([PR 1014](https://github.com/input-output-hk/daedalus/pull/1014))
+- Fixed broken storybook ([PR 1041](https://github.com/input-output-hk/daedalus/pull/1041))
 - Improved compress/download logs handling ([PR 995](https://github.com/input-output-hk/daedalus/pull/995))
-- `nodelLogPath` entry in `launcher-config.yaml` made optional  ([PR 1027](https://github.com/input-output-hk/daedalus/pull/1027))
-- Disabled logging to `cardano-node.log` since it was not needed for the support and it was impacting performance  ([PR 1027](https://github.com/input-output-hk/daedalus/pull/1027))
+- Integrated latest React-Polymorph features: render props architecture, theme composition, and a ThemeProvider HOC ([PR 950](https://github.com/input-output-hk/daedalus/pull/950))
+- Made `nodelLogPath` entry in `launcher-config.yaml` optional ([PR 1027](https://github.com/input-output-hk/daedalus/pull/1027))
+- Made `port` and `ca` of Ada Api configurable during runtime ([PR 1067](https://github.com/input-output-hk/daedalus/pull/1067))
+- Removed all ETC specific files ([PR 1068](https://github.com/input-output-hk/daedalus/pull/1068), [PR 1108](https://github.com/input-output-hk/daedalus/pull/1108))
+- Switched from `npm` to `yarn` ([PR 989](https://github.com/input-output-hk/daedalus/pull/989))
 
 ## 0.11.1
 =======
@@ -66,19 +66,19 @@ Changelog
 
 ### Fixes
 
+- Changed the information we are sending on support requests to the reporting server ([PR 1036](https://github.com/input-output-hk/daedalus/pull/1036))
+- Fixed an issue on Windows where Daedalus couldn't start if the Windows username contained non-ASCII characters ([PR 1057](https://github.com/input-output-hk/daedalus/pull/1057))
+- Fixed a issue with Electron which results in blank/white screen rendering on some OS/Graphics-card/Drivers combinations ([PR 1007](https://github.com/input-output-hk/daedalus/pull/1007))
+- Fixed Daedalus icon scaling issues on Windows ([PR 1064](https://github.com/input-output-hk/daedalus/pull/1064))
 - Implemented error dialog shown in case Daedalus is not started using Launcher ([PR 1054](https://github.com/input-output-hk/daedalus/pull/1054))
 - Improved paper wallet certificate QR code compatibility ([PR 999](https://github.com/input-output-hk/daedalus/pull/999))
-- Fixed a bug in the Electron which results in blank/white screen rendering on some OS/Graphics-card/Drivers combinations ([PR 1007](https://github.com/input-output-hk/daedalus/pull/1007))
-- Changed the information we are sending on support requests to the reporting server. ([PR 1036](https://github.com/input-output-hk/daedalus/pull/1036))
-- Fixed the bug on Windows where Daedalus couldn't start if the Windows username contained non-ASCII characters. ([PR 1057](https://github.com/input-output-hk/daedalus/pull/1057))
-- Fixed Daedalus icon scaling issues on Windows ([PR 1064](https://github.com/input-output-hk/daedalus/pull/1064))
 - Updated to `electon@1.7.16` to avoid the known vulnarability [CVE-2018-15685](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-15685) ([PR 1066](https://github.com/input-output-hk/daedalus/pull/1066))
 
 ### Chores
 
-- Implemented `NETWORK` specific Cardano Blockchain Explorer links (Mainnet, Testnet, Staging) [PR 1051](https://github.com/input-output-hk/daedalus/pull/1051)
+- Implemented `NETWORK` specific Cardano Blockchain Explorer links (Mainnet, Testnet, Staging) ([PR 1051](https://github.com/input-output-hk/daedalus/pull/1051))
 - Improved network label in the Top bar ([PR 988](https://github.com/input-output-hk/daedalus/pull/988))
-- Added "testnet" label to paper wallet certificates which are not generated on the mainnet ([PR 1055](https://github.com/input-output-hk/daedalus/pull/1055))
+- Added "Testnet" label to paper wallet certificates which are not generated on the mainnet ([PR 1055](https://github.com/input-output-hk/daedalus/pull/1055))
 
 ## 0.11.0
 =======
@@ -86,8 +86,7 @@ Changelog
 ### Features
 
 - Implemented a switch instead of a link for "hide used" addresses on the Receive screen ([PR 935](https://github.com/input-output-hk/daedalus/pull/935))
-- Added a notification for Windows users that using antivirus software might slow down wallet
-  restoration ([PR 1020](https://github.com/input-output-hk/daedalus/pull/1020))
+- Added a notification for Windows users that using antivirus software might slow down wallet restoration ([PR 1020](https://github.com/input-output-hk/daedalus/pull/1020))
 
 ### Fixes
 
@@ -130,7 +129,7 @@ Changelog
 - Fixed reporting server URL used for submitting support requests for the Linux build of Daedalus ([PR 959](https://github.com/input-output-hk/daedalus/pull/959))
 - Fixed missing launcher log file ([PR 963](https://github.com/input-output-hk/daedalus/pull/963))
 - Fixed issue with multiple cardano-node processes running and windows allowing skipping of files in installer ([PR 953](https://github.com/input-output-hk/daedalus/pull/953))
-- Limit maximum number of wallets to 20 ([PR 966](https://github.com/input-output-hk/daedalus/pull/966))
+- Limited maximum number of wallets to 20 ([PR 966](https://github.com/input-output-hk/daedalus/pull/966))
 
 ## 0.10.0
 =======
@@ -149,7 +148,7 @@ Changelog
 
 ### Fixes
 
-- Fixed color of ADA logo color on the loading screen (logo was too transparent) ([PR 850](https://github.com/input-output-hk/daedalus/pull/850))
+- Fixed color of Ada logo color on the loading screen (logo was too transparent) ([PR 850](https://github.com/input-output-hk/daedalus/pull/850))
 - Fixed styling of "click to upload" text on Ada redemption screen (text was too bold) ([PR 850](https://github.com/input-output-hk/daedalus/pull/850))
 - Fixed node syncing state bubble background color in Dark blue theme ([PR 850](https://github.com/input-output-hk/daedalus/pull/850))
 - Fixed cropped log list within the support request dialog ([PR 850](https://github.com/input-output-hk/daedalus/pull/850))
@@ -193,10 +192,10 @@ Changelog
 
 ### Fixes
 
-- A presentation bug has been fixed that caused only five recent transactions to be shown on the transaction list, even though there were more than five transactions in the wallet. ([PR 778](https://github.com/input-output-hk/daedalus/pull/778))
-- An issue has been fixed that stopped copy and paste operations from working when initiated using the right-click context menu. ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
-- On Windows, the desktop icon was not showing the Daedalus image; this has now been fixed. ([837](https://github.com/input-output-hk/daedalus/pull/837))
-- An error has been fixed that in some cases prevented users creating a wallet with a name containing non-latin characters, like Japanese Kanji or Chinese. ([PR 840](https://github.com/input-output-hk/daedalus/pull/840))
+- A presentation bug has been fixed that caused only five recent transactions to be shown on the transaction list, even though there were more than five transactions in the wallet ([PR 778](https://github.com/input-output-hk/daedalus/pull/778))
+- An issue has been fixed that stopped copy and paste operations from working when initiated using the right-click context menu ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
+- On Windows, the desktop icon was not showing the Daedalus image; this has now been fixed ([837](https://github.com/input-output-hk/daedalus/pull/837))
+- An error has been fixed that in some cases prevented users creating a wallet with a name containing non-latin characters, like Japanese Kanji or Chinese ([PR 840](https://github.com/input-output-hk/daedalus/pull/840))
 
 ## 0.9.0
 =======
@@ -205,7 +204,7 @@ Changelog
 
 - Do not block the UI while wallet is being restored/imported ([PR 457](https://github.com/input-output-hk/daedalus/pull/457))
 - Start and stop Mantis Client from Daedalus main process ([PR 568](https://github.com/input-output-hk/daedalus/pull/568))
-- Add ADA and Mantis logo to loader screens ([PR 584](https://github.com/input-output-hk/daedalus/pull/584))
+- Add Ada and Mantis logo to loader screens ([PR 584](https://github.com/input-output-hk/daedalus/pull/584))
 - New Edit section in system menu with copy & paste and related actions ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
 
 ### Fixes
@@ -217,13 +216,13 @@ Changelog
 - Remove transactions sorting ([PR 587](https://github.com/input-output-hk/daedalus/pull/587))
 - Improve ETC transaction amount validation ([PR 590](https://github.com/input-output-hk/daedalus/pull/590))
 - Fixed storybook and resolver issues ([PR 617](https://github.com/input-output-hk/daedalus/pull/617))
-- Time of your machine is different from global time. You are 0 seconds behind. ([PR 678](https://github.com/input-output-hk/daedalus/pull/678))
+- Time of your machine is different from global time. You are 0 seconds behind ([PR 678](https://github.com/input-output-hk/daedalus/pull/678))
 - Updated copy for the sync error screen ([PR 657](https://github.com/input-output-hk/daedalus/pull/657))
 - Detect when wallet is disconnected ([PR 689](https://github.com/input-output-hk/daedalus/pull/689))
 - Improve connecting/reconnecting messages on Loading screen ([PR 696](https://github.com/input-output-hk/daedalus/pull/696))
 - Send bug reports with logs from Daedalus ([PR 691](https://github.com/input-output-hk/daedalus/pull/691))
 - Poll local time difference every 1 hour, only when connected ([PR 719](https://github.com/input-output-hk/daedalus/pull/719))
-- Fixed various styling issues and updated to react-polymorph 0.6.2 ([PR 726](https://github.com/input-output-hk/daedalus/pull/726))
+- Fixed various styling issues and updated to React-Polymorph 0.6.2 ([PR 726](https://github.com/input-output-hk/daedalus/pull/726))
 - Fixed async restore/import dialogs logic ([PR 735](https://github.com/input-output-hk/daedalus/pull/735))
 - Fixed minor UI issue on receive screen when generating wallet addresses with spending password ([PR 738](https://github.com/input-output-hk/daedalus/pull/738))
 - Fixed `Time sync error notification` not showing up in case blocks syncing has not started ([PR 752](https://github.com/input-output-hk/daedalus/pull/752))
@@ -259,7 +258,7 @@ Changelog
 ### Fixes
 
 - Fix error message text for A to A transaction error ([PR 484](https://github.com/input-output-hk/daedalus/pull/484))
-- Fix "label prop type" checkbox issue in react-polymorph ([PR 487](https://github.com/input-output-hk/daedalus/pull/487))
+- Fix "label prop type" checkbox issue in React-Polymorph ([PR 487](https://github.com/input-output-hk/daedalus/pull/487))
 - Remove all drag and drop instructions from UI ([PR 495](https://github.com/input-output-hk/daedalus/pull/495))
 - Preferences saved to local storage prefixed with network ([PR 501](https://github.com/input-output-hk/daedalus/pull/501))
 - Disable wallet import and export features for the mainnet ([PR 503](https://github.com/input-output-hk/daedalus/pull/503))
@@ -279,7 +278,7 @@ Changelog
 - Update flow-bin to version `0.59.0` ([PR 544](https://github.com/input-output-hk/daedalus/pull/544))
 - Cleanup and standardization of ETC Api calls ([PR 549](https://github.com/input-output-hk/daedalus/pull/549))
 - Unused vendor dependencies cleanup and DLL file optimization ([PR 555](https://github.com/input-output-hk/daedalus/pull/555))
-- Introduce `testReset` endpoint for ETC api ([PR 558](https://github.com/input-output-hk/daedalus/pull/558))
+- Introduce `testReset` endpoint for ETC API ([PR 558](https://github.com/input-output-hk/daedalus/pull/558))
 - Update acceptance tests suite dependencies ([PR 561](https://github.com/input-output-hk/daedalus/pull/561))
 - Refactor Cardano type declarations to type folder ([PR 557](https://github.com/input-output-hk/daedalus/pull/557))
 
@@ -290,7 +289,7 @@ Changelog
 - Fix all features eslint warnings ([PR 468](https://github.com/input-output-hk/daedalus/pull/468))
 - Fix for disabled buttons on dark-blue theme ([PR 473](https://github.com/input-output-hk/daedalus/pull/473))
 - Remove maximum screen width and height in full-screen mode ([PR 472](https://github.com/input-output-hk/daedalus/pull/472))
-- Fix "label click" dropdown issue in react-polymorph ([PR 479](https://github.com/input-output-hk/daedalus/pull/479))
+- Fix "label click" dropdown issue in React-Polymorph ([PR 479](https://github.com/input-output-hk/daedalus/pull/479))
 
 ## 0.8.0
 
@@ -323,7 +322,7 @@ Changelog
 - Fixed the issue of dialogs being closable while wallet import/creation/restoring is happening ([PR 393](https://github.com/input-output-hk/daedalus/pull/414))
 - Fixed calculation and display of transaction assurance levels ([PR 390](https://github.com/input-output-hk/daedalus/pull/416))
 - Fixes Transaction additional info showing/hiding affects all user's wallets ([PR 411](https://github.com/input-output-hk/daedalus/pull/411))
-- Fixed promise handling for unmounted wallet send form [PR 412](https://github.com/input-output-hk/daedalus/pull/412)
+- Fixed promise handling for unmounted wallet send form ([PR 412](https://github.com/input-output-hk/daedalus/pull/412))
 - Fixes Transaction toggle issue on active wallet change ([PR 421](https://github.com/input-output-hk/daedalus/pull/421))
 - Fixed missing 'used address' styling for default wallet address on wallet receive screen ([PR 422](https://github.com/input-output-hk/daedalus/pull/422))
 - Terms of service for the mainnet ([PR 425](https://github.com/input-output-hk/daedalus/pull/425))
@@ -349,7 +348,7 @@ Changelog
 - Improved webpack build performance ([PR 402](https://github.com/input-output-hk/daedalus/pull/402))
 - Updated README file "Development - network options" section ([PR 410](https://github.com/input-output-hk/daedalus/pull/410))
 - All CSS hardcoded values replaced with variables ([PR 370](https://github.com/input-output-hk/daedalus/pull/398))
-- Implemented sync progress and payment requests with new JS api as first step to remove the purescript api ([PR 437](https://github.com/input-output-hk/daedalus/pull/437))
+- Implemented sync progress and payment requests with new JS API as first step to remove the purescript API ([PR 437](https://github.com/input-output-hk/daedalus/pull/437))
 - Speed optimizations for page reloads while running tests by loading bundled up for one-time tests runs ([PR 448](https://github.com/input-output-hk/daedalus/pull/445))
 - Optimized structure and naming of theming files ([PR 453](https://github.com/input-output-hk/daedalus/pull/453))
 - Added testnet label, loaded from translations for release candidate ([PR 460](https://github.com/input-output-hk/daedalus/pull/460))
@@ -509,7 +508,7 @@ Changelog
 
 ### Chores
 
-- Fixed and improved first acceptance test, made api data configurable for future test cases
+- Fixed and improved first acceptance test, made API data configurable for future test cases
 
 ## 0.4.0
 
@@ -531,7 +530,7 @@ Changelog
 
 ### Chores
 
-- First version of the backend api
+- First version of the backend API
 - Improved and simplified mobx state management
 
 ## 0.3.0

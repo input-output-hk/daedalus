@@ -18,6 +18,7 @@ export type LauncherConfig = {
   reportServer?: string,
   nodeDbPath: string,
   logsPrefix: string,
+  nodeLogConfig: string,
   nodeTimeoutSec: number,
   configuration: {
     filePath: string,

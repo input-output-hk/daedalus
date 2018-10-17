@@ -159,6 +159,34 @@
           "column": 41,
           "line": 30
         }
+      },
+      {
+        "defaultMessage": "!!!Not enough Ada. Try sending a smaller amount.",
+        "description": "\"Not enough Ada. Try sending a smaller amount.\" error message",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/api/transactions/errors.js",
+        "id": "api.errors.NotEnoughFundsForTransactionError",
+        "start": {
+          "column": 37,
+          "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!Cannot calculate fees while there are pending transactions.",
+        "description": "\"Cannot calculate fees while there are pending transactions.\" error message",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/api/transactions/errors.js",
+        "id": "api.errors.CanNotCalculateTransactionFeesError",
+        "start": {
+          "column": 39,
+          "line": 40
+        }
       }
     ],
     "path": "source/renderer/app/api/transactions/errors.json"
@@ -213,17 +241,115 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Starting Cardano node",
+        "description": "Message \"Starting Cardano node\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/loading/Loading.js",
+        "id": "loading.screen.startingCardanoMessage",
+        "start": {
+          "column": 12,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Stopping Cardano node",
+        "description": "Message \"Stopping Cardano node\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/loading/Loading.js",
+        "id": "loading.screen.stoppingCardanoMessage",
+        "start": {
+          "column": 12,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano node stopped",
+        "description": "Message \"Cardano node stopped\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/loading/Loading.js",
+        "id": "loading.screen.stoppedCardanoMessage",
+        "start": {
+          "column": 11,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Updating Cardano node",
+        "description": "Message \"Updating Cardano node\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/loading/Loading.js",
+        "id": "loading.screen.updatingCardanoMessage",
+        "start": {
+          "column": 12,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano node updated",
+        "description": "Message \"Cardano node updated\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/loading/Loading.js",
+        "id": "loading.screen.updatedCardanoMessage",
+        "start": {
+          "column": 11,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano node crashed",
+        "description": "Message \"Cardano node crashed\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/loading/Loading.js",
+        "id": "loading.screen.crashedCardanoMessage",
+        "start": {
+          "column": 11,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Unable to start Cardano node. Please submit a support request.",
+        "description": "Message \"Unable to start Cardano node. Please submit a support request.\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "source/renderer/app/components/loading/Loading.js",
+        "id": "loading.screen.unrecoverableCardanoMessage",
+        "start": {
+          "column": 17,
+          "line": 53
+        }
+      },
+      {
         "defaultMessage": "!!!Connecting to network",
         "description": "Message \"Connecting to network\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 62
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.connectingToNetworkMessage",
         "start": {
           "column": 14,
-          "line": 20
+          "line": 58
         }
       },
       {
@@ -231,13 +357,13 @@
         "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 67
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reconnectingToNetworkMessage",
         "start": {
           "column": 16,
-          "line": 25
+          "line": 63
         }
       },
       {
@@ -245,13 +371,13 @@
         "description": "Message \"Syncing blocks\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 72
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.syncingBlocksMessage",
         "start": {
           "column": 11,
-          "line": 30
+          "line": 68
         }
       },
       {
@@ -259,13 +385,13 @@
         "description": "Report connecting issue text on the loading screen.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 77
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.connecting.text",
         "start": {
           "column": 29,
-          "line": 35
+          "line": 73
         }
       },
       {
@@ -273,27 +399,27 @@
         "description": "Report syncing issue text on the loading screen.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 82
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.syncing.text",
         "start": {
           "column": 26,
-          "line": 40
+          "line": 78
         }
       },
       {
         "defaultMessage": "!!!Report an issue",
-        "description": "Report an issue button label on the loading .",
+        "description": "Report an issue button label on the loading.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 87
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.buttonLabel",
         "start": {
           "column": 26,
-          "line": 45
+          "line": 83
         }
       }
     ],
@@ -4647,31 +4773,17 @@
         }
       },
       {
-        "defaultMessage": "!!!Not enough Ada for fees. Try sending a smaller amount.",
-        "description": "\"Not enough Ada for fees. Try sending a smaller amount.\" error message",
+        "defaultMessage": "!!!This wallet is currently being synced with the blockchain. While synchronisation is in progress transacting is not possible and transaction history is not complete.",
+        "description": "Syncing transactions message shown during async wallet restore in the wallet send form.",
         "end": {
           "column": 3,
           "line": 89
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
-        "id": "wallet.send.form.transactionFeeError",
-        "start": {
-          "column": 23,
-          "line": 85
-        }
-      },
-      {
-        "defaultMessage": "!!!This wallet is currently being synced with the blockchain. While synchronisation is in progress transacting is not possible and transaction history is not complete.",
-        "description": "Syncing transactions message shown during async wallet restore in the wallet send form.",
-        "end": {
-          "column": 3,
-          "line": 94
-        },
-        "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.syncingTransactionsMessage",
         "start": {
           "column": 30,
-          "line": 90
+          "line": 85
         }
       }
     ],

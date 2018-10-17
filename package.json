@@ -1,13 +1,13 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "0.11.1",
+  "version": "0.12.0",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
     "build": "gulp build",
     "start": "gulp start",
-    "start:watch": "gulp start:watch",
+    "start:dev": "NODE_ENV=development gulp start",
     "dev": "gulp dev",
     "test": "gulp test",
     "test:watch": "gulp test:watch",
@@ -22,7 +22,9 @@
     "flow:test": "flow; test $? -eq 0 -o $? -eq 2",
     "manage:translations": "gulp purge:translations && gulp clear:cache && gulp build && node ./translations/translation-runner.js",
     "storybook": "start-storybook -p 6006 -c storybook",
-    "clear:cache": "gulp clear:cache"
+    "clear:cache": "gulp clear:cache",
+    "nix:dev": "nix-shell --arg autoStartBackend true --arg systemStart",
+    "nix:staging": "nix-shell --arg autoStartBackend true --argstr cluster staging"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
