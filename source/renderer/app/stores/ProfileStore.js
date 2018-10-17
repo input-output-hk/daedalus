@@ -337,7 +337,7 @@ export default class ProfileStore extends Store {
       const themeVars = require(`../themes/daedalus/${currentTheme}.js`); // eslint-disable-line
       ipcRenderer.send(SUPPORT_WINDOW.OPEN, { locale, themeVars });
     } else {
-      ipcRenderer.send(SUPPORT_WINDOW.LOGS_INFO, { compressedLogsFile, environment });
+      ipcRenderer.send(SUPPORT_WINDOW.LOGS_INFO, { compressedLogsFile });
     }
   });
 

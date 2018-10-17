@@ -12,19 +12,35 @@ const support = () => {
     locale: string,
     themeVars: {
       '--theme-support-widget-header-color': string
-    }
+    },
+    network: string,
+    locale: string,
+    version: string,
+    buildNumber: string,
   };
 
   type LogsInfo = {
     compressedLogsFileData: any,
     compressedLogsFileName: string,
-    environment: any,
   };
 
-  const locales = {
+  const localesSetLanguage = {
     'en-US': 'en-US',
     'ja-JP': 'ja',
   };
+
+  const localesFillForm = {
+    'en-US': 'English',
+    'ja-JP': 'Japanese',
+  };
+
+  const zenDeskFormSelects = [
+    'product',
+    'supportLanguage',
+    'operatingSystem',
+    'productVersion',
+    'productAttribute',
+  ];
 
   const hideLoadingOverlay = () => {
     if (document.body) {
@@ -40,7 +56,7 @@ const support = () => {
     doneButton.onclick = closeWindow;
   };
 
-  const setSelectValue = async (iframe, select) => {
+  const setSelectValue = async (iframe: window, select: HTMLElement, value: any) => {
     select.click();
     const options = await waitForExist(
       '[data-garden-id="select.item"]',
@@ -49,28 +65,30 @@ const support = () => {
         selectAll: true,
       }
     );
-    // TODO: Click the correct option
-    options[0].click();
+    if (typeof value === 'function') {
+      value(options);
+    } else {
+      options.forEach((option: HTMLElement) => {
+        if (option.innerText === value) {
+          option.click();
+        }
+      });
+    }
     select.blur();
   };
 
-  const formHandler = async (iframe: window) => {
+  const addFormEventListeners = async (iframe: window) => {
     const form = await waitForExist('form', { context: iframe.contentDocument });
     const [cancelButton, successButton] = form.querySelectorAll('footer button');
     if (cancelButton) cancelButton.onclick = closeWindow;
     if (successButton) successButton.onclick = onSubmit.bind(this, iframe);
-    const selects = form.querySelectorAll('[data-garden-id="select.select_view"]');
-    for (const select of selects) {
-      await setSelectValue(iframe, select);
-    }
-    form.querySelector('[data-garden-id="textfields.input"]').focus();
   };
 
   const attachCompressedLogs = (
     fileInput: HTMLInputElement,
     {
       compressedLogsFileData,
-      compressedLogsFileName
+      compressedLogsFileName,
     },
   ) => {
     const dT = new DataTransfer();
@@ -82,6 +100,32 @@ const support = () => {
     hideLoadingOverlay();
   };
 
+  const fillForm = async (formInfo: ZendeskInfo) => {
+    const iframe = await waitForExist('#webWidget');
+    const { network, locale } = formInfo;
+    let { version, buildNumber } = formInfo;
+    const form = await waitForExist('form', { context: iframe.contentDocument });
+    const selects = form.querySelectorAll('[data-garden-id="select.select_view"]');
+
+    // TODO: Find a better way to handle non-existent versions
+    if (buildNumber === 'dev') buildNumber = '1.3.0';
+    if (version === '0.12.0') version = '0.11.0';
+
+    const values = {
+      product: `Daedalus wallet - ${network}`,
+      supportLanguage: localesFillForm[locale],
+      productVersion: `Daedalus ${version}+Cardano ${buildNumber}`,
+    };
+
+    for (let i = 0; i < selects.length; i++) {
+      const valuesKey: string = zenDeskFormSelects[i];
+      const value = values[valuesKey];
+      if (value) await setSelectValue(iframe, selects[i], value);
+    }
+
+    form.querySelector('[data-garden-id="textfields.input"]').focus();
+  };
+
   const closeWindow = () => {
     window.close();
     window.top && window.top.close();
@@ -91,11 +135,12 @@ const support = () => {
 
   ipcRenderer.on(
     SUPPORT_WINDOW.ZENDESK_INFO,
-    (event, { locale, themeVars }: ZendeskInfo) => {
+    (event, zendeskInfo: ZendeskInfo) => {
+      const { locale, themeVars } = zendeskInfo;
       updateCSSVariables(themeVars);
       window.zE(() => {
         if (locale !== 'en-US') {
-          window.zE.setLocale(locales[locale]);
+          window.zE.setLocale(localesSetLanguage[locale]);
         }
         window.zE.activate();
       });
@@ -106,6 +151,7 @@ const support = () => {
           }
         }
       };
+      fillForm(zendeskInfo);
     }
   );
 
@@ -121,7 +167,7 @@ const support = () => {
   });
 
   waitForExist('#webWidget')
-    .then(formHandler)
+    .then(addFormEventListeners)
     .catch(() => {});
 
 };

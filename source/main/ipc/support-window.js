@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { createSupportWindow } from '../windows/support';
 import { SUPPORT_WINDOW } from '../../common/ipc-api';
+import environment from '../../common/environment';
 
 export default () => {
   let supportWindow;
@@ -24,7 +25,17 @@ export default () => {
 
   ipcMain.on(SUPPORT_WINDOW.OPEN, (event, zendeskInfo) => {
     if (supportWindow) return;
+    const { isMainnet, version, buildNumber } = environment;
     supportWindow = createSupportWindow(unsetSupportWindow);
+    zendeskInfo = Object.assign(
+      {},
+      zendeskInfo,
+      {
+        network: isMainnet() ? 'mainnet' : 'testnet',
+        version,
+        buildNumber,
+      }
+    );
     supportWindow.webContents.on('did-finish-load', () => {
       supportWindow.webContents.send(SUPPORT_WINDOW.ZENDESK_INFO, zendeskInfo);
     });
@@ -34,8 +45,14 @@ export default () => {
     if (!supportWindow) return;
     fs.readFile(logsInfo.compressedLogsFile, (err, compressedLogsFileData) => {
       if (err) throw err;
-      logsInfo.compressedLogsFileData = compressedLogsFileData;
-      logsInfo.compressedLogsFileName = path.basename(logsInfo.compressedLogsFile);
+      logsInfo = Object.assign(
+        {},
+        logsInfo,
+        {
+          compressedLogsFileData,
+          compressedLogsFileName: path.basename(logsInfo.compressedLogsFile),
+        }
+      );
       supportWindow.webContents.on('did-finish-load', () => {
         sendLogsInfo(event, logsInfo);
       });
