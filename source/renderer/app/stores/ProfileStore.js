@@ -331,11 +331,11 @@ export default class ProfileStore extends Store {
   _openSupportWindow = action((compressedLogsFile) => {
     if (!compressedLogsFile) {
       this.openSupportOnLogFilesSuccess = true;
-      this._getLogs();
       const locale = this.stores.profile.currentLocale;
       const currentTheme = this.stores.profile.currentTheme;
       const themeVars = require(`../themes/daedalus/${currentTheme}.js`); // eslint-disable-line
       ipcRenderer.send(SUPPORT_WINDOW.OPEN, { locale, themeVars });
+      this._getLogs();
     } else {
       ipcRenderer.send(SUPPORT_WINDOW.LOGS_INFO, { compressedLogsFile });
     }

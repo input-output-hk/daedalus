@@ -4,8 +4,6 @@ import { SUPPORT_WINDOW } from '../common/ipc-api';
 import updateCSSVariables from './app/utils/updateCSSVariables';
 import waitForExist from './app/utils/waitForExist';
 
-const SECONDS_TO_REMOVE_OVERLAY = 10;
-
 const support = () => {
 
   type ZendeskInfo = {
@@ -23,6 +21,9 @@ const support = () => {
     compressedLogsFileData: any,
     compressedLogsFileName: string,
   };
+
+  const SECONDS_TO_REMOVE_OVERLAY = 10;
+  let logsWereAttached = false;
 
   const localesSetLanguage = {
     'en-US': 'en-US',
@@ -158,6 +159,8 @@ const support = () => {
   ipcRenderer.on(SUPPORT_WINDOW.CLOSE, () => closeWindow);
 
   ipcRenderer.on(SUPPORT_WINDOW.LOGS_INFO, async (event, logsInfo: LogsInfo) => {
+    if (logsWereAttached) return false;
+    logsWereAttached = true;
     const iframe = await waitForExist('#webWidget');
     const fileInput = await waitForExist(
       '#dropzone-input',

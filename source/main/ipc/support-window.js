@@ -27,15 +27,12 @@ export default () => {
     if (supportWindow) return;
     const { isMainnet, version, buildNumber } = environment;
     supportWindow = createSupportWindow(unsetSupportWindow);
-    zendeskInfo = Object.assign(
-      {},
-      zendeskInfo,
-      {
-        network: isMainnet() ? 'mainnet' : 'testnet',
-        version,
-        buildNumber,
-      }
-    );
+    zendeskInfo = {
+      ...zendeskInfo,
+      network: isMainnet() ? 'mainnet' : 'testnet',
+      version,
+      buildNumber,
+    };
     supportWindow.webContents.on('did-finish-load', () => {
       supportWindow.webContents.send(SUPPORT_WINDOW.ZENDESK_INFO, zendeskInfo);
     });
@@ -45,14 +42,12 @@ export default () => {
     if (!supportWindow) return;
     fs.readFile(logsInfo.compressedLogsFile, (err, compressedLogsFileData) => {
       if (err) throw err;
-      logsInfo = Object.assign(
-        {},
-        logsInfo,
-        {
-          compressedLogsFileData,
-          compressedLogsFileName: path.basename(logsInfo.compressedLogsFile),
-        }
-      );
+      logsInfo = {
+        ...logsInfo,
+        compressedLogsFileData,
+        compressedLogsFileName: path.basename(logsInfo.compressedLogsFile),
+      };
+      sendLogsInfo(event, logsInfo);
       supportWindow.webContents.on('did-finish-load', () => {
         sendLogsInfo(event, logsInfo);
       });
