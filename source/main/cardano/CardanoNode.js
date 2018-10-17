@@ -4,7 +4,11 @@ import type { ChildProcess, spawn } from 'child_process';
 import type { WriteStream } from 'fs';
 import { toInteger } from 'lodash';
 import environment from '../../common/environment';
-import type { CardanoNodeState, TlsConfig } from '../../common/types/cardanoNode.types';
+import type {
+  CardanoNodeState,
+  FaultInjection,
+  TlsConfig
+} from '../../common/types/cardanoNode.types';
 import { CardanoNodeStates } from '../../common/types/cardanoNode.types';
 import { deriveProcessNames, deriveStorageKeys, getProcess, promisedCondition } from './utils';
 
@@ -334,9 +338,10 @@ export class CardanoNode {
     }
   }
 
-  setFault = (faultType: string, isEnabled: boolean) => {
+  setFault = async (fault: FaultInjection) => {
     if (!this._node) return;
-    this._node.send({ SetFInject: [faultType, isEnabled] });
+    this._node.send({ SetFInject: fault });
+    return Promise.resolve();
   };
 
   // ================================= PRIVATE ===================================
