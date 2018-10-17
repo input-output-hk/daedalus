@@ -14,6 +14,8 @@ const support = () => {
     locale: string,
     version: string,
     buildNumber: string,
+    os: string,
+    release: string,
   };
 
   type LogsInfo = {
@@ -70,6 +72,15 @@ const support = () => {
     select.blur();
   };
 
+  const getOSInfo = (os, release) => {
+    // gets 00.00 out of 00.00.00
+    const regEx = /([0-9])?([0-9])?([0-9])?([0-9])(.)([0-9])?([0-9])?([0-9])?([0-9])/;
+    const [shortRelease] = release.match(regEx) || [];
+    if (shortRelease && os === 'macOS') {
+      return `MacOS ${shortRelease}`;
+    }
+  };
+
   const addFormEventListeners = async (iframe: window) => {
     const form = await waitForExist('form', { context: iframe.contentDocument });
     const [cancelButton, successButton] = form.querySelectorAll('footer button');
@@ -94,7 +105,7 @@ const support = () => {
 
   const fillForm = async (formInfo: ZendeskInfo) => {
     const iframe = await waitForExist('#webWidget');
-    const { network, locale } = formInfo;
+    const { network, locale, os, release } = formInfo;
     let { version, buildNumber } = formInfo;
     const form = await waitForExist('form', { context: iframe.contentDocument });
     const selects = form.querySelectorAll('[data-garden-id="select.select_view"]');
@@ -105,6 +116,7 @@ const support = () => {
 
     const values = {
       product: `Daedalus wallet - ${network}`,
+      operatingSystem: getOSInfo(os, release),
       supportLanguage: localesFillForm[locale],
       productVersion: `Daedalus ${version}+Cardano ${buildNumber}`,
     };

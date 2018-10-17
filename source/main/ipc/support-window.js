@@ -1,6 +1,7 @@
 import { ipcMain } from 'electron';
 import fs from 'fs';
 import path from 'path';
+import systemInformation from 'systeminformation';
 import { createSupportWindow } from '../windows/support';
 import { SUPPORT_WINDOW } from '../../common/ipc-api';
 import environment from '../../common/environment';
@@ -23,15 +24,18 @@ export default () => {
     supportWindow.webContents.send(SUPPORT_WINDOW.LOGS_INFO, logsInfo);
   };
 
-  ipcMain.on(SUPPORT_WINDOW.OPEN, (event, zendeskInfo) => {
+  ipcMain.on(SUPPORT_WINDOW.OPEN, async (event, zendeskInfo) => {
     if (supportWindow) return;
-    const { isMainnet, version, buildNumber } = environment;
+    const { isMainnet, version, buildNumber, os } = environment;
+    const { release } = await systemInformation.osInfo();
     supportWindow = createSupportWindow(unsetSupportWindow);
     zendeskInfo = {
       ...zendeskInfo,
       network: isMainnet() ? 'mainnet' : 'testnet',
       version,
       buildNumber,
+      os,
+      release,
     };
     supportWindow.webContents.on('did-finish-load', () => {
       supportWindow.webContents.send(SUPPORT_WINDOW.ZENDESK_INFO, zendeskInfo);
