@@ -44,7 +44,7 @@ import { restoreWallet } from './wallets/requests/restoreWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
 
 // utility functions
-import { awaitUpdateChannel } from '../ipc/cardano.ipc';
+import { awaitUpdateChannel, cardanoFaultInjectionChannel } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
 import { isValidMnemonic } from '../../../common/decrypt';
 import { utcStringToDate, encryptPassphrase } from './utils';
@@ -153,6 +153,7 @@ import {
   NotEnoughMoneyToSendError,
   RedeemAdaError
 } from './transactions/errors';
+import type { FaultInjection } from '../../../common/types/cardanoNode.types';
 
 export default class AdaApi {
 
@@ -764,6 +765,10 @@ export default class AdaApi {
       throw new GenericApiError(error);
     }
   };
+
+  setCardanoNodeFault = async (fault: FaultInjection) => {
+    await cardanoFaultInjectionChannel.send(fault);
+  }
 }
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
