@@ -3,10 +3,20 @@ Feature: Send Money to Receiver
   Background:
     Given I have completed the basic setup
     And I am on the General Settings "support" screen
+    And I open the Support Request window
 
-  Scenario: Open and close the support window
-    Given I click on the support request button
-    Then The Support Window should open
-    And The Zendesk form should appear
-    When I click the cancel button
+  Scenario: The form is automatically filled
+    Then The following fields are filled:
+      | field            |
+      | product          |
+      | supportLanguage  |
+      | productVersion   |
+
+  @skip
+  Scenario: Cancel button to close the support window
+    Given I click the cancel button
     Then The window should close
+
+  @skip
+  Scenario: Logs attached
+    Then The compressed logs zip was attached
