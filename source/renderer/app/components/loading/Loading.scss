@@ -122,7 +122,9 @@ $adaLogoWidth: 43px;
   color: var(--theme-connecting-text-color);
   .headline {
     overflow: visible;
-    @include animated-ellipsis($width: 16px);
+    &:not(.withoutAnimation) {
+      @include animated-ellipsis($width: 16px);
+    }
   }
 }
 
