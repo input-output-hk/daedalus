@@ -41,6 +41,7 @@ type StateTransitions = {
 type CardanoNodeIpcMessage = {
   Started?: Array<any>,
   ReplyPort?: number,
+  FInjects?: Array<any>,
 }
 
 type NodeArgs = Array<string>;
