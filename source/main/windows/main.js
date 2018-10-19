@@ -37,6 +37,12 @@ export const createMainWindow = (isInSafeMode) => {
     window.setSize(width, height, animate);
   });
 
+  // Provide render process with an api to cause a normal application shutdown
+  ipcMain.on('quit-window', (event, { }) => {
+    if (event.sender !== window.webContents) return;
+    app.quit();
+  });
+
   if (environment.isDev()) {
     window.webContents.openDevTools();
     // Focus the main window after dev tools opened
