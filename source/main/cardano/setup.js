@@ -103,7 +103,7 @@ export const setupCardano = (
     return cardanoNode.restart(true); // forced restart
   });
   cardanoFaultInjectionChannel.onReceive((fault) => {
-    Logger.info(`ipcMain: Received request to inject a fault into cardano node: ${fault}`);
+    Logger.info(`ipcMain: Received request to inject a fault into cardano node: ${String(fault)}`);
     return cardanoNode.setFault(fault);
   });
 
