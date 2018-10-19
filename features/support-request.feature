@@ -12,11 +12,9 @@ Feature: Send Money to Receiver
       | supportLanguage  |
       | productVersion   |
 
-  @skip
+  Scenario: Logs attached
+    Then The compressed logs zip was attached
+
   Scenario: Cancel button to close the support window
     Given I click the cancel button
     Then The window should close
-
-  @skip
-  Scenario: Logs attached
-    Then The compressed logs zip was attached
