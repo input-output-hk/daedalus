@@ -10,7 +10,7 @@ Feature: Send Money to Receiver
       | field            |
       | product          |
       | supportLanguage  |
-      | productVersion   |
+      # | productVersion   |
 
   Scenario: Logs attached
     Then The compressed logs zip file was attached

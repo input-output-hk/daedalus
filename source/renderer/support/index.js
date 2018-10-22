@@ -50,27 +50,6 @@ const onSubmit = async (iframe) => {
   doneButton.onclick = closeWindow;
 };
 
-const setSelectValue = async (iframe: window, select: HTMLElement, value: any) => {
-  select.click();
-  const options = await waitForExist(
-    '[data-garden-id="select.item"]',
-    {
-      context: iframe.contentDocument,
-      selectAll: true,
-    }
-  );
-  if (typeof value === 'function') {
-    value(options);
-  } else {
-    options.forEach((option: HTMLElement) => {
-      if (option.innerText === value) {
-        option.click();
-      }
-    });
-  }
-  select.blur();
-};
-
 const addFormEventListeners = async (iframe: window) => {
   const form = await waitForExist('form', { context: iframe.contentDocument });
   const [cancelButton, successButton] = form.querySelectorAll('footer button');
@@ -93,16 +72,33 @@ const attachCompressedLogs = (
   }
 };
 
+const setSelectValue = async (iframe: window, select: HTMLElement, value: any) => {
+  select.click();
+  const options = await waitForExist(
+    '[data-garden-id="select.item"]',
+    {
+      context: iframe.contentDocument,
+      selectAll: true,
+    }
+  );
+  let selectValueWasSet = false;
+  options.forEach((option: HTMLElement) => {
+    if (option.innerText === value) {
+      selectValueWasSet = true;
+      option.click();
+    }
+  });
+  if (!selectValueWasSet) {
+    select.click();
+  }
+  select.blur();
+};
+
 const fillForm = async (formInfo: ZendeskInfo) => {
   const iframe = await waitForExist('#webWidget');
-  const { network, locale, os, release } = formInfo;
-  let { version, buildNumber } = formInfo;
+  const { network, locale, os, release, version, buildNumber } = formInfo;
   const form = await waitForExist('form', { context: iframe.contentDocument });
   const selects = form.querySelectorAll('[data-garden-id="select.select_view"]');
-
-  // TODO: Find a better way to handle non-existent versions
-  // if (buildNumber === 'dev') buildNumber = '1.3.0';
-  // if (version === '0.12.0') version = '0.11.0';
 
   const values = {
     product: `Daedalus wallet - ${network}`,
