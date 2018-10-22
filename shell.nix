@@ -68,6 +68,7 @@ let
       git python27 curl electron
       nodePackages.node-gyp nodePackages.node-pre-gyp
       gnumake
+      chromedriver
     ] ++ (localLib.optionals autoStartBackend [
       daedalusPkgs.daedalus-bridge
     ]));
@@ -126,7 +127,8 @@ let
       export DAEDALUS_INSTALL_DIRECTORY
       export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${nodejs}/include/node"
       yarn install
-      ln -svf ${pkgs.electron}/bin/electron ./node_modules/electron/dist/electron
+      ln -svf ${pkgs.electron}/bin/electron         ./node_modules/electron/dist/electron
+      ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
       ${localLib.optionalString (! autoStartBackend) ''
       echo "Instructions for manually running cardano-node:"
       echo "DEPRECATION NOTICE: This should only be used for debugging a specific revision of cardano. Use --autoStartBackend --system-start SYSTEM_START_TIME as parameters to this script to auto-start the wallet"
