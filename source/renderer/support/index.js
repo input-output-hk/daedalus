@@ -53,8 +53,10 @@ const onSubmit = async (iframe) => {
 const addFormEventListeners = async (iframe: window) => {
   const form = await waitForExist('form', { context: iframe.contentDocument });
   const [cancelButton, successButton] = form.querySelectorAll('footer button');
+  const minimizeButton = iframe.contentDocument.querySelector('[aria-label="Close"]');
   if (cancelButton) cancelButton.onclick = closeWindow;
   if (successButton) successButton.onclick = onSubmit.bind(this, iframe);
+  if (minimizeButton) minimizeButton.style.display = 'none';
 };
 
 const attachCompressedLogs = (
