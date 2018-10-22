@@ -13,7 +13,7 @@ Feature: Send Money to Receiver
       | productVersion   |
 
   Scenario: Logs attached
-    Then The compressed logs zip was attached
+    Then The compressed logs zip file was attached
 
   Scenario: Cancel button to close the support window
     Given I click the cancel button

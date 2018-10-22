@@ -2,9 +2,8 @@
 export const resetSupportWindow = async (context) => {
   context.client.frameParent();
   const windows = await context.client.getTabIds();
-  if (windows.length === 1) return;
   const currentWindow = await context.client.getCurrentTabId();
-  if (windows[1] === currentWindow) {
+  if (windows.length > 1 && windows[1] === currentWindow) {
     context.client.close();
   }
   await switchToWindow(context, 0);

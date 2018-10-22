@@ -44,7 +44,7 @@ Then(/^The following fields are filled:$/, async function (table) {
 
 });
 
-Then(/^The compressed logs zip was attached$/, async function () {
+Then(/^The compressed logs zip file was attached$/, async function () {
   await this.client.waitForExist(ATTACHED_LOG_CONTAINER);
   await resetSupportWindow(this);
 });
@@ -58,5 +58,5 @@ Then(/^The window should close$/, async function () {
     const windows = await this.client.getTabIds();
     return windows.length === 1;
   });
-  await resetSupportWindow(this);
+  await switchToWindow(this, 0);
 });
