@@ -4,6 +4,11 @@ import { SUPPORT_WINDOW } from '../../common/ipc-api';
 import waitForExist from './utils/waitForExist';
 import getOSInfo from './utils/getOSInfo';
 
+const messages = {
+  'en-US': 'We have attached your public logs. If you prefer not to send them, click on the x button bellow',
+  'ja-JP': 'We have attached your public logs. If you prefer not to send them, click on the x button bellow',
+};
+
 type ZendeskInfo = {
   locale: string,
   themeVars: {
@@ -18,6 +23,7 @@ type ZendeskInfo = {
 };
 
 type LogsInfo = {
+  locale: string,
   compressedLogsFileData: any,
   compressedLogsFileName: string,
 };
@@ -64,13 +70,25 @@ const attachCompressedLogs = (
   {
     compressedLogsFileData,
     compressedLogsFileName,
+    locale
   },
+  iframe: window,
 ) => {
   const dT = new DataTransfer();
   if (dT.items) {
     const file = new File([compressedLogsFileData], compressedLogsFileName);
     dT.items.add(file);
     fileInput.files = dT.files;
+
+    const doc = iframe.contentDocument;
+    const attachmentLabelSelector = '.src-component-attachment-AttachmentList-container label';
+    const attachmentLabel = doc.querySelector(attachmentLabelSelector);
+    if (!attachmentLabel) return;
+    const { className } = doc.querySelector('[data-garden-id="checkboxes.hint"]') || {};
+    const attachmentWarningDiv = document.createElement('div');
+    attachmentWarningDiv.className = className;
+    attachmentWarningDiv.innerText = messages[locale];
+    attachmentLabel.parentNode.insertBefore(attachmentWarningDiv, attachmentLabel.nextSibling);
   }
 };
 
@@ -154,7 +172,7 @@ ipcRenderer.on(SUPPORT_WINDOW.LOGS_INFO, async (event, logsInfo: LogsInfo) => {
     '#dropzone-input',
     { context: iframe.contentDocument }
   );
-  attachCompressedLogs(fileInput, logsInfo);
+  attachCompressedLogs(fileInput, logsInfo, iframe);
 });
 
 waitForExist('#webWidget')
