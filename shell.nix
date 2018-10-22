@@ -9,6 +9,7 @@ in
 , systemStart ? null
 , walletExtraArgs ? []
 , allowFaultInjection ? false
+, purgeNpmCache ? false
 }:
 
 let
@@ -131,6 +132,13 @@ let
       }
       export DAEDALUS_INSTALL_DIRECTORY
       export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${nodejs}/include/node"
+      ${localLib.optionalString purgeNpmCache ''
+        warn "purging all NPM/Yarn caches"
+        rm -rf node_modules
+        yarn cache clean
+        npm cache clean --force
+        ''
+      }
       yarn install
       ln -svf ${pkgs.electron}/bin/electron         ./node_modules/electron/dist/electron
       ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
