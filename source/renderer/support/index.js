@@ -60,6 +60,27 @@ const addFormEventListeners = async (iframe: window) => {
   if (minimizeButton) minimizeButton.style.display = 'none';
 };
 
+const removeAttachmentWarning = (attachmentWarningDiv: HTMLElement) =>
+  attachmentWarningDiv.parentNode.removeChild(attachmentWarningDiv);
+
+const addAttachmentWarning = async (
+  iframe: window,
+  userConsentText: string
+) => {
+  const context = iframe.contentDocument;
+  const attachmentLabel =
+    context.querySelector('.src-component-attachment-AttachmentList-container label');
+  if (!attachmentLabel) return;
+  const { className } = context.querySelector('[data-garden-id="checkboxes.hint"]') || {};
+  const attachmentWarningDiv = document.createElement('div');
+  attachmentWarningDiv.className = className;
+  attachmentWarningDiv.innerText = userConsentText;
+  attachmentLabel.parentNode.insertBefore(attachmentWarningDiv, attachmentLabel.nextSibling);
+
+  const removeAttachmentButton = await waitForExist('.Icon--close', { context });
+  removeAttachmentButton.onclick = removeAttachmentWarning.bind(this, attachmentWarningDiv);
+};
+
 const attachCompressedLogs = (
   fileInput: HTMLInputElement,
   {
@@ -75,15 +96,9 @@ const attachCompressedLogs = (
     dT.items.add(file);
     fileInput.files = dT.files;
 
-    const doc = iframe.contentDocument;
-    const attachmentLabelSelector = '.src-component-attachment-AttachmentList-container label';
-    const attachmentLabel = doc.querySelector(attachmentLabelSelector);
-    if (!attachmentLabel) return;
-    const { className } = doc.querySelector('[data-garden-id="checkboxes.hint"]') || {};
-    const attachmentWarningDiv = document.createElement('div');
-    attachmentWarningDiv.className = className;
-    attachmentWarningDiv.innerText = userConsentText;
-    attachmentLabel.parentNode.insertBefore(attachmentWarningDiv, attachmentLabel.nextSibling);
+    addAttachmentWarning(iframe, userConsentText);
+
+
   }
 };
 
