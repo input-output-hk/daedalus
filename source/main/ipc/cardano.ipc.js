@@ -8,7 +8,7 @@ import {
 } from '../../common/ipc/cardano.ipc';
 import type {
   CardanoNodeState,
-  FaultInjection,
+  FaultInjectionIpcRequest,
   TlsConfig
 } from '../../common/types/cardanoNode.types';
 import { MainIpcChannel } from './lib/MainIpcChannel';
@@ -31,6 +31,6 @@ export const cardanoStateChangeChannel: MainIpcChannel<void, CardanoNodeState> =
   new MainIpcChannel(CARDANO_STATE_CHANGE_CHANNEL)
 );
 
-export const cardanoFaultInjectionChannel: MainIpcChannel<FaultInjection, void> = (
+export const cardanoFaultInjectionChannel: MainIpcChannel<FaultInjectionIpcRequest, void> = (
   new MainIpcChannel(CARDANO_FAULT_INJECTION_CHANNEL)
 );

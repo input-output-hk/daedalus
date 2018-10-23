@@ -5,12 +5,14 @@ import type { WriteStream } from 'fs';
 import { toInteger } from 'lodash';
 import environment from '../../common/environment';
 import type {
-  CardanoNodeState,
-  FaultInjection,
+  CardanoNodeState, FaultInjection,
+  FaultInjectionIpcRequest,
+  FaultInjectionIpcResponse,
   TlsConfig
 } from '../../common/types/cardanoNode.types';
 import { CardanoNodeStates } from '../../common/types/cardanoNode.types';
-import { deriveProcessNames, deriveStorageKeys, getProcess, promisedCondition } from './utils';
+import { deriveProcessNames, deriveStorageKeys, promisedCondition } from './utils';
+import { getProcess } from '../utils/processes';
 
 type Logger = {
   debug: (string) => void,
@@ -41,7 +43,7 @@ type StateTransitions = {
 type CardanoNodeIpcMessage = {
   Started?: Array<any>,
   ReplyPort?: number,
-  FInjects?: Array<any>,
+  FInjects?: FaultInjectionIpcResponse,
 }
 
 type NodeArgs = Array<string>;
@@ -124,6 +126,16 @@ export class CardanoNode {
    * Number of retries to startup the node (without ever reaching running state)
    */
   _startupTries: number = 0;
+
+  /**
+   * All faults that have been injected and confirmed by cardano-node.
+   * These faults can be used during testing to trigger faulty behavior
+   * that would not be testable with a correctly working node.
+   *
+   * @type {Array}
+   * @private
+   */
+  _injectedFaults: Array<FaultInjection> = [];
 
   /**
    * Getter which copies and returns the internal tls config.
@@ -339,10 +351,25 @@ export class CardanoNode {
     }
   }
 
-  setFault = async (fault: FaultInjection) => {
+  /**
+   * Sends an ipc message to cardano-node to inject a specific fault.
+   * This is useful for testing certain error cases that cannot be tested
+   * with a properly working cardano-node.
+   *
+   * Returns a promise that resolves as soon as cardano-node confirmed the injection.
+   *
+   * @param request
+   * @returns {Promise<void>}
+   */
+  setFault = async (request: FaultInjectionIpcRequest) => {
     if (!this._node) return;
-    this._node.send({ SetFInject: fault });
-    return Promise.resolve();
+    const fault = request[0];
+    const isEnabled = request[1];
+    this._node.send({ SetFInject: request });
+    return await promisedCondition(() => {
+      const hasFault = this._injectedFaults.includes(fault);
+      return isEnabled ? hasFault : !hasFault;
+    });
   };
 
   // ================================= PRIVATE ===================================
@@ -372,24 +399,47 @@ export class CardanoNode {
    * @private
    */
   _handleCardanoNodeMessage = (msg: CardanoNodeIpcMessage) => {
-    const { _log, _actions } = this;
+    if (msg == null) return;
+    this._log.info(`CardanoNode: received message: ${JSON.stringify(msg)}`);
+    if (msg.ReplyPort != null) this._handleCardanoReplyPortMessage(msg.ReplyPort);
+    if (msg.FInjects != null) this._handleCardanoFaultInjectionResponse(msg.FInjects);
+  };
+
+  /**
+   * Reads the tls certificates and uses them together with the given port
+   * to set the tls config, which will be used for any http communication
+   * with the node.
+   *
+   * Changes state to RUNNING.
+   *
+   * @param port
+   * @private
+   */
+  _handleCardanoReplyPortMessage = (port: number) => {
+    const { _actions } = this;
     const { tlsPath } = this._config;
-    _log.info(`CardanoNode: received message: ${JSON.stringify(msg)}`);
-    if (msg != null && msg.ReplyPort != null) {
-      const port: number = msg.ReplyPort;
-      this._tlsConfig = {
-        ca: _actions.readFileSync(tlsPath + '/client/ca.crt'),
-        key: _actions.readFileSync(tlsPath + '/client/client.key'),
-        cert: _actions.readFileSync(tlsPath + '/client/client.pem'),
-        port,
-      };
-      if (this._state === CardanoNodeStates.STARTING) {
-        this._changeToState(CardanoNodeStates.RUNNING);
-        this.broadcastTlsConfig();
-        // Reset the startup tries when we managed to get the node running
-        this._startupTries = 0;
-      }
+    this._tlsConfig = {
+      ca: _actions.readFileSync(tlsPath + '/client/ca.crt'),
+      key: _actions.readFileSync(tlsPath + '/client/client.key'),
+      cert: _actions.readFileSync(tlsPath + '/client/client.pem'),
+      port,
+    };
+    if (this._state === CardanoNodeStates.STARTING) {
+      this._changeToState(CardanoNodeStates.RUNNING);
+      this.broadcastTlsConfig();
+      // Reset the startup tries when we managed to get the node running
+      this._startupTries = 0;
     }
+  };
+
+  /**
+   * Updates the active, injected faults confirmed by cardano-node.
+   * @param response
+   * @private
+   */
+  _handleCardanoFaultInjectionResponse = (response: FaultInjectionIpcResponse) => {
+    this._log.info(`CardanoNode: the following faults are active\n${JSON.stringify(response)}`);
+    this._injectedFaults = response;
   };
 
   _handleCardanoNodeError = async (error: Error) => {
