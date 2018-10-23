@@ -6,7 +6,7 @@
 , memory, mtl, optparse-generic, parsers, prettyprinter
 , prettyprinter-ansi-terminal, repline, scientific, stdenv, tasty
 , tasty-hunit, text, transformers, trifecta, unordered-containers
-, vector
+, vector, text-format
 }:
 mkDerivation {
   pname = "dhall";
@@ -24,7 +24,7 @@ mkDerivation {
     formatting http-client http-client-tls insert-ordered-containers
     lens-family-core memory parsers prettyprinter
     prettyprinter-ansi-terminal scientific text transformers trifecta
-    unordered-containers vector
+    unordered-containers vector text-format
   ];
   executableHaskellDepends = [
     ansi-terminal base haskeline mtl optparse-generic prettyprinter
