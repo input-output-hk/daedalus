@@ -3,7 +3,7 @@ let
 in
 { system ? builtins.currentSystem
 , config ? {}
-, pkgs ? (import (localLib.fetchNixPkgs) { inherit system config; })
+, pkgs ? import localLib.fetchNixPkgs { inherit system config; }
 , cluster ? "mainnet"
 , version ? "versionNotSet"
 , buildNum ? null

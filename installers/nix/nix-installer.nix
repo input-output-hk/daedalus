@@ -2,7 +2,8 @@
 , postInstall ? null, nix-bundle, preInstall ? null
 , cluster }:
 let
-  pkgs = import (import ../../fetchNixpkgs.nix (builtins.fromJSON (builtins.readFile ../../nixpkgs-src.json))) { config = {}; overlays = []; };
+  localLib = import ../../lib.nix;
+  pkgs = import localLib.fetchNixPkgs { config = {}; overlays = []; };
   installerBundle = nix-bundle.nix-bootstrap {
     target = "${installer}";
     run = "/bin/installer";

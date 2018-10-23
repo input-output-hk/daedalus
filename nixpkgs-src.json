@@ -1,5 +1,6 @@
 {
-  "rev": "fda4b93cd4fd3775408117c380aab0f33737d30f",
-  "sha256": "1vlmiq65ybh9r6bsgs4bqzg7g6ggdrrf32cd1j95gv7cp6fmm435",
-  "sha256unpacked": "0f3nnsqgr1qpy9h65ssfmwj6c5nxadk3p043qca4glzw2k5pyrpw"
+  "url": "https://github.com/NixOS/nixpkgs",
+  "rev": "09195057114a0a8d112c847a9a8f52957420857d",
+  "sha256": "0hszcsvgcphjny8j0p5inhl45ja61vjiz0csb0kx0b9lzmrafr7b",
+  "fetchSubmodules": false
 }
