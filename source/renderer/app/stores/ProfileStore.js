@@ -300,7 +300,7 @@ export default class ProfileStore extends Store {
     }
     if (this.openSupportOnLogFilesSuccess) {
       this.openSupportOnLogFilesSuccess = false;
-      this._openSupportWindow(this.compressedLogsFile);
+      this._sendLogsToSupportWindow(this.compressedLogsFile);
     }
   });
 
@@ -328,17 +328,19 @@ export default class ProfileStore extends Store {
       }));
   });
 
-  _openSupportWindow = action((compressedLogsFile) => {
+  _openSupportWindow = action((userConsentText) => {
     const locale = this.stores.profile.currentLocale;
-    if (!compressedLogsFile) {
-      this.openSupportOnLogFilesSuccess = true;
-      const currentTheme = this.stores.profile.currentTheme;
-      const themeVars = require(`../themes/daedalus/${currentTheme}.js`); // eslint-disable-line
-      ipcRenderer.send(SUPPORT_WINDOW.OPEN, { locale, themeVars });
-      this._getLogs();
-    } else {
-      ipcRenderer.send(SUPPORT_WINDOW.LOGS_INFO, { compressedLogsFile, locale });
-    }
+    this.openSupportOnLogFilesSuccess = true;
+    this.userConsentText = userConsentText;
+    const currentTheme = this.stores.profile.currentTheme;
+    const themeVars = require(`../themes/daedalus/${currentTheme}.js`); // eslint-disable-line
+    ipcRenderer.send(SUPPORT_WINDOW.OPEN, { locale, themeVars });
+    this._getLogs();
+  });
+
+  _sendLogsToSupportWindow = action((compressedLogsFile) => {
+    const { userConsentText } = this;
+    ipcRenderer.send(SUPPORT_WINDOW.LOGS_INFO, { compressedLogsFile, userConsentText });
   });
 
   _resetBugReportDialog = () => {

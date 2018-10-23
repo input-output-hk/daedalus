@@ -165,6 +165,7 @@
   "settings.support.reportProblem.content": "If the FAQ does not solve the issue you are experiencing, please use our {supportRequestLink} feature.",
   "settings.support.reportProblem.link": "Support request",
   "settings.support.reportProblem.title": "Reporting a problem",
+  "settings.support.supportRequest.userConsent": "We have attached your public logs. If you prefer not to send them, click on the x button bellow",
   "sidebar.wallets.addWallet": "Add wallet",
   "static.about.buildInfo": "{platform} build <strong>{build}</strong>, with {apiName} <strong>{apiVersion}</strong>",
   "static.about.content.cardano.headline": "Cardano Team:",

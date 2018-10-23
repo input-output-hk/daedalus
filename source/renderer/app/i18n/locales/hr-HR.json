@@ -165,6 +165,7 @@
   "settings.support.reportProblem.content": "If the FAQ does not contain a solution for the issue you are experiencing, please use <a href=\"#\">problem reporting feature</a> to report the issue you are experiencing.",
   "settings.support.reportProblem.link": "Support request",
   "settings.support.reportProblem.title": "!!!Reporting a problem",
+  "settings.support.supportRequest.userConsent": "!!!We have attached your public logs. If you prefer not to send them, click on the x button bellow",
   "sidebar.wallets.addWallet": "Dodaj novčanik",
   "static.about.buildInfo": "!!!MacOS build 3769, with Cardano 1.0.4",
   "static.about.content.cardano.headline": "!!!Cardano Team:",

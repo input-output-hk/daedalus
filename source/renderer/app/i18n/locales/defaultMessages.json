@@ -1260,6 +1260,20 @@
           "column": 20,
           "line": 49
         }
+      },
+      {
+        "defaultMessage": "!!!We have attached your public logs. If you prefer not to send them, click on the x button bellow",
+        "description": "\"user consent\" warning in the support request pop up window",
+        "end": {
+          "column": 3,
+          "line": 58
+        },
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
+        "id": "settings.support.supportRequest.userConsent",
+        "start": {
+          "column": 15,
+          "line": 54
+        }
       }
     ],
     "path": "source/renderer/app/components/settings/categories/SupportSettings.json"

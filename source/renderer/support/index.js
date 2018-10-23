@@ -4,11 +4,6 @@ import { SUPPORT_WINDOW } from '../../common/ipc-api';
 import waitForExist from './utils/waitForExist';
 import getOSInfo from './utils/getOSInfo';
 
-const messages = {
-  'en-US': 'We have attached your public logs. If you prefer not to send them, click on the x button bellow',
-  'ja-JP': 'We have attached your public logs. If you prefer not to send them, click on the x button bellow',
-};
-
 type ZendeskInfo = {
   locale: string,
   themeVars: {
@@ -23,9 +18,9 @@ type ZendeskInfo = {
 };
 
 type LogsInfo = {
-  locale: string,
   compressedLogsFileData: any,
   compressedLogsFileName: string,
+  userConsentText: string,
 };
 
 const localesSetLanguage = {
@@ -70,7 +65,7 @@ const attachCompressedLogs = (
   {
     compressedLogsFileData,
     compressedLogsFileName,
-    locale
+    userConsentText
   },
   iframe: window,
 ) => {
@@ -87,7 +82,7 @@ const attachCompressedLogs = (
     const { className } = doc.querySelector('[data-garden-id="checkboxes.hint"]') || {};
     const attachmentWarningDiv = document.createElement('div');
     attachmentWarningDiv.className = className;
-    attachmentWarningDiv.innerText = messages[locale];
+    attachmentWarningDiv.innerText = userConsentText;
     attachmentLabel.parentNode.insertBefore(attachmentWarningDiv, attachmentLabel.nextSibling);
   }
 };
@@ -115,6 +110,7 @@ const setSelectValue = async (iframe: window, select: HTMLElement, value: any) =
 };
 
 const fillForm = async (formInfo: ZendeskInfo) => {
+
   const iframe = await waitForExist('#webWidget');
   const { network, locale, os, release, version, buildNumber } = formInfo;
   const form = await waitForExist('form', { context: iframe.contentDocument });

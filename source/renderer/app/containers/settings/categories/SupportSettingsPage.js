@@ -18,7 +18,8 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
     if (event.target.href) shell.openExternal(event.target.href);
   };
 
-  handleSupportRequestClick = () => this.props.actions.profile.openSupportWindow.trigger();
+  handleSupportRequestClick = (userConsentText) =>
+    this.props.actions.profile.openSupportWindow.trigger(userConsentText);
 
   handleDownloadLogs = () => {
     const fileName = generateFileNameWithTimestamp();
