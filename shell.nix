@@ -139,7 +139,6 @@ let
         ''
       }
       yarn install
-      npm install
       ln -svf ${pkgs.electron}/bin/electron ./node_modules/electron/dist/electron
       ${localLib.optionalString (! autoStartBackend) ''
       echo "Instructions for manually running cardano-node:"
