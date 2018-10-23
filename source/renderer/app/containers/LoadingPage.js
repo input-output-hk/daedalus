@@ -5,8 +5,6 @@ import { defineMessages } from 'react-intl';
 import { shell } from 'electron';
 import CenteredLayout from '../components/layout/CenteredLayout';
 import Loading from '../components/loading/Loading';
-import BugReportDialog from '../components/profile/bug-report/BugReportDialog';
-import WalletSupportRequestPage from '../containers/wallet/WalletSupportRequestPage';
 import adaLogo from '../assets/images/ada-logo.inline.svg';
 import cardanoLogo from '../assets/images/cardano-logo.inline.svg';
 import type { InjectedProps } from '../types/injectedPropsType';
@@ -47,22 +45,18 @@ export default class LoadingPage extends Component<InjectedProps> {
           hasLoadedCurrentLocale={hasLoadedCurrentLocale}
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           currentLocale={currentLocale}
-          handleReportIssue={this.handleReportIssue}
           onProblemSolutionClick={this.handleProblemSolutionClick}
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
+          onOpenSupportWindow={this.handleOpenSupportWindow}
         />
-        <WalletSupportRequestPage />
       </CenteredLayout>
     );
   }
 
-  handleReportIssue = () => {
-    this.props.actions.dialogs.open.trigger({
-      dialog: BugReportDialog
-    });
-  };
-
   handleProblemSolutionClick = (link: string) => {
     shell.openExternal(`https://${link}`);
   };
+
+  handleOpenSupportWindow = (logsWarningText: string) =>
+    this.props.actions.profile.openSupportWindow.trigger(logsWarningText);
 }

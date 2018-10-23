@@ -51,8 +51,8 @@ const messages = defineMessages({
     defaultMessage: '!!!download them here',
     description: '"download them here" link in the Logs section on the support settings page',
   },
-  userConsent: {
-    id: 'settings.support.supportRequest.userConsent',
+  logsWarning: {
+    id: 'settings.support.supportRequest.logsWarning',
     defaultMessage: '!!!We have attached your public logs. If you prefer not to send them, click on the x button bellow',
     description: '"user consent" warning in the support request pop up window',
   }
@@ -85,7 +85,7 @@ export default class SupportSettings extends Component<Props> {
     );
 
     const supportRequestLink = (
-      <button onClick={onSupportRequestClick.bind(this, intl.formatMessage(messages.userConsent))}>
+      <button onClick={onSupportRequestClick.bind(this, intl.formatMessage(messages.logsWarning))}>
         {intl.formatMessage(messages.supportRequestLink)}
       </button>
     );

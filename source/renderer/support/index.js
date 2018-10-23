@@ -20,7 +20,7 @@ type ZendeskInfo = {
 type LogsInfo = {
   compressedLogsFileData: any,
   compressedLogsFileName: string,
-  userConsentText: string,
+  logsWarningText: string,
 };
 
 const localesSetLanguage = {
@@ -61,11 +61,12 @@ const addFormEventListeners = async (iframe: window) => {
 };
 
 const removeAttachmentWarning = (attachmentWarningDiv: HTMLElement) =>
+  attachmentWarningDiv.parentNode &&
   attachmentWarningDiv.parentNode.removeChild(attachmentWarningDiv);
 
 const addAttachmentWarning = async (
   iframe: window,
-  userConsentText: string
+  logsWarningText: string
 ) => {
   const context = iframe.contentDocument;
   const attachmentLabel =
@@ -74,7 +75,7 @@ const addAttachmentWarning = async (
   const { className } = context.querySelector('[data-garden-id="checkboxes.hint"]') || {};
   const attachmentWarningDiv = document.createElement('div');
   attachmentWarningDiv.className = className;
-  attachmentWarningDiv.innerText = userConsentText;
+  attachmentWarningDiv.innerText = logsWarningText;
   attachmentLabel.parentNode.insertBefore(attachmentWarningDiv, attachmentLabel.nextSibling);
 
   const removeAttachmentButton = await waitForExist('.Icon--close', { context });
@@ -86,7 +87,7 @@ const attachCompressedLogs = (
   {
     compressedLogsFileData,
     compressedLogsFileName,
-    userConsentText
+    logsWarningText
   },
   iframe: window,
 ) => {
@@ -96,7 +97,7 @@ const attachCompressedLogs = (
     dT.items.add(file);
     fileInput.files = dT.files;
 
-    addAttachmentWarning(iframe, userConsentText);
+    addAttachmentWarning(iframe, logsWarningText);
 
 
   }

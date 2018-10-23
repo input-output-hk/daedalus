@@ -85,6 +85,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Report an issue',
     description: 'Report an issue button label on the loading.'
   },
+  logsWarning: {
+    id: 'loading.screen.reportIssue.logsWarning',
+    defaultMessage: '!!!We have attached your public logs. If you prefer not to send them, click on the x button bellow',
+    description: '"user consent" warning in the support request pop up window',
+  }
 });
 
 type State = {
@@ -108,7 +113,7 @@ type Props = {
   isSystemTimeCorrect: boolean,
   isCheckingSystemTime: boolean,
   currentLocale: string,
-  handleReportIssue: Function,
+  onOpenSupportWindow: Function,
   onProblemSolutionClick: Function,
   onCheckTheTimeAgain: Function,
 };
@@ -318,7 +323,7 @@ export default class Loading extends Component<Props, State> {
       isSynced,
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
-      handleReportIssue,
+      onOpenSupportWindow,
     } = this.props;
 
     const { connectingTime, syncingTime } = this.state;
@@ -375,7 +380,7 @@ export default class Loading extends Component<Props, State> {
             <Button
               className={buttonClasses}
               label={intl.formatMessage(messages.reportIssueButtonLabel)}
-              onClick={handleReportIssue}
+              onClick={onOpenSupportWindow.bind(this, intl.formatMessage(messages.logsWarning))}
               skin={ButtonSkin}
             />
           </div>

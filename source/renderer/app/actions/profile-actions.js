@@ -8,9 +8,6 @@ export default class ProfileActions {
   acceptDataLayerMigration: Action<any> = new Action();
   getLogs: Action<any> = new Action();
   getLogsAndCompress: Action<any> = new Action();
-  sendBugReport: Action<{
-    email: string, subject: string, problem: string, compressedLogsFile: ?string,
-  }> = new Action();
   resetBugReportDialog: Action<any> = new Action();
   openSupportWindow: Action<any> = new Action();
   downloadLogs: Action<{ fileName: string, destination: string, fresh?: boolean }> = new Action();
