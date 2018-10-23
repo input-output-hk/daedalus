@@ -52,6 +52,7 @@ export default class ProfileStore extends Store {
   @observable compressedLogsStatus: CompressedLogStatus = {};
   @observable isSubmittingBugReport: boolean = false;
   @observable openSupportOnLogFilesSuccess: boolean = false;
+  @observable userConsentText: string = '';
   /* eslint-enable max-len */
 
   setup() {
