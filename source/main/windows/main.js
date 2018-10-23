@@ -37,10 +37,10 @@ export const createMainWindow = (isInSafeMode) => {
     window.setSize(width, height, animate);
   });
 
-  // Provide render process with an api to cause a normal application shutdown
-  ipcMain.on('quit-window', (event, { }) => {
+  // Provide render process with an api to close the main window
+  ipcMain.on('close-window', (event) => {
     if (event.sender !== window.webContents) return;
-    app.quit();
+    window.close();
   });
 
   if (environment.isDev()) {
