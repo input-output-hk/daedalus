@@ -80,4 +80,28 @@ export const CardanoProcessNameOptions: {
   darwin: 'cardano-node'
 };
 
-export type FaultInjection = [string, boolean];
+/**
+ * Expected fault injection types that can be used to tell
+ * cardano-node to behave faulty (useful for testing)
+ */
+export type FaultInjection = (
+  'FInjIgnoreShutdown' |
+  'FInjIgnoreApi' |
+  'FInjApplyUpdateNoExit' |
+  'FInjApplyUpdateWrongExitCode'
+);
+
+export const FaultInjections: {
+  IgnoreShutdown: FaultInjection,
+  IgnoreApi: FaultInjection,
+  ApplyUpdateNoExit: FaultInjection,
+  ApplyUpdateWrongExitCode: FaultInjection
+} = {
+  IgnoreShutdown: 'FInjIgnoreShutdown',
+  IgnoreApi: 'FInjIgnoreApi',
+  ApplyUpdateNoExit: 'FInjApplyUpdateNoExit',
+  ApplyUpdateWrongExitCode: 'FInjApplyUpdateWrongExitCode',
+};
+
+export type FaultInjectionIpcResponse = Array<FaultInjection>;
+export type FaultInjectionIpcRequest = [FaultInjection, boolean];

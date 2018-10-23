@@ -153,7 +153,7 @@ import {
   NotEnoughMoneyToSendError,
   RedeemAdaError
 } from './transactions/errors';
-import type { FaultInjection } from '../../../common/types/cardanoNode.types';
+import type { FaultInjectionIpcRequest } from '../../../common/types/cardanoNode.types';
 
 export default class AdaApi {
 
@@ -766,7 +766,7 @@ export default class AdaApi {
     }
   };
 
-  setCardanoNodeFault = async (fault: FaultInjection) => {
+  setCardanoNodeFault = async (fault: FaultInjectionIpcRequest) => {
     await cardanoFaultInjectionChannel.send(fault);
   }
 }
