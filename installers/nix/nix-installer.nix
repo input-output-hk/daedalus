@@ -40,7 +40,7 @@ let
     bash "$1" --extract
     ls -ltrh dat/nix/store/*-tarball/tarball/tarball.tar.xz
     UNPACK2=$(mktemp -d)
-    tar -C $UNPACK2 -xf dat/nix/store/*-tarball/tarball/tarball.tar.xz
+    tar --delay-directory-restore -C $UNPACK2 -xf dat/nix/store/*-tarball/tarball/tarball.tar.xz
     cd
     rmrf $UNPACK
     ls -ltrh $UNPACK2
@@ -125,7 +125,7 @@ let
 
     UNPACK=$(mktemp -d)
 
-    pv $TARPATH | unxz | tar -x -C $UNPACK
+    pv $TARPATH | unxz | tar --delay-directory-restore -x -C $UNPACK
 
     NIX_REMOTE=local?root=$UNPACK nix-store --load-db < $UNPACK/nix-path-registration
     pwd

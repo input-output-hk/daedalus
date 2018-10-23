@@ -18,5 +18,4 @@ export default class WindowStore extends Store {
     ipcRenderer.send('resize-window', { width, height, animate: !environment.isTest() });
   };
 
-
 }

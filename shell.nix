@@ -9,6 +9,7 @@ in
 , systemStart ? null
 , walletExtraArgs ? []
 , allowFaultInjection ? false
+, keepNpmCache ? false
 }:
 
 let
@@ -130,6 +131,13 @@ let
       }
       export DAEDALUS_INSTALL_DIRECTORY
       export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${nodejs}/include/node"
+      ${localLib.optionalString (! keepNpmCache) ''
+        warn "purging all NPM/Yarn caches -- to keep instead, pass:  --arg keepNpmCache true"
+        rm -rf node_modules
+        yarn cache clean
+        npm cache clean --force
+        ''
+      }
       yarn install
       ln -svf ${pkgs.electron}/bin/electron ./node_modules/electron/dist/electron
       ${localLib.optionalString (! autoStartBackend) ''

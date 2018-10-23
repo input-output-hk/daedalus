@@ -5,7 +5,8 @@ import type { WriteStream } from 'fs';
 import { toInteger } from 'lodash';
 import environment from '../../common/environment';
 import type {
-  CardanoNodeState, FaultInjection,
+  CardanoNodeState,
+  FaultInjection,
   FaultInjectionIpcRequest,
   FaultInjectionIpcResponse,
   TlsConfig
