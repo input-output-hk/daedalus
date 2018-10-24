@@ -33,6 +33,7 @@ const rpFonts = {
   '--rp-font-bold': 'NotoSans-Bold, NotoSansCJKjp-Bold',
 };
 
+// FORMFIELD
 const rpFormfield = {
   '--rp-formfield-disabled-background-color': 'none',
   '--rp-formfield-disabled-label-color': '#5e6066',
