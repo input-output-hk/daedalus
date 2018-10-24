@@ -1,6 +1,111 @@
-//  ==== Theme: Dark blue === //
+//  ==== react-polymorph: theme config === //
+// AUTOCOMPLETE
+const rpAutocomplete = {
+  '--rp-autocomplete-bg-color': '#263345',
+  '--rp-autocomplete-border': '1px solid rgba(102, 122, 138, 0.3)',
+  '--rp-autocomplete-border-focus-color': '#667a8a',
+  '--rp-autocomplete-placeholder-color': '#8793a1',
+  '--rp-autocomplete-search-color': '#e9f4fe',
+  '--rp-autocomplete-selected-word-text-color': '#fafbfc',
+  '--rp-autocomplete-selected-word-box-background-color': 'rgba(83, 99, 112, 0.5)',
+  '--rp-autocomplete-selected-words-font-family': 'NotoSans-Regular, NotoSansCJKjp-Regular',
+};
 
+// BUBBLE
+const rpBubble = {
+  '--rp-bubble-bg-color': '#263345',
+  '--rp-bubble-border-color': '#667a8a',
+  '--rp-bubble-border-radius': '2px',
+};
+
+// CHECKBOX
+const rpCheckbox = {
+  '--rp-checkbox-border-disabled-color': 'rgba(83, 99, 112, 0.4)',
+  '--rp-checkbox-label-disabled-color': 'rgba(233, 244, 254, 0.3)',
+};
+
+// FONTS
+const rpFonts = {
+  '--rp-font-thin': 'NotoSans-Thin, NotoSansCJKjp-Thin',
+  '--rp-font-light': 'NotoSans-Light, NotoSansCJKjp-Light',
+  '--rp-font-medium': 'NotoSans-Medium, NotoSansCJKjp-Medium',
+  '--rp-font-regular': 'NotoSans-Regular, NotoSansCJKjp-Regular',
+  '--rp-font-bold': 'NotoSans-Bold, NotoSansCJKjp-Bold',
+};
+
+// INPUT
+const rpInput = {
+  '--rp-input-background-color': '#263345',
+  '--rp-input-border-color': 'rgba(102, 122, 138, 0.3)',
+  '--rp-input-disabled-background-color': 'rgba(135, 147, 161, 0.1)',
+  '--rp-input-disabled-border-color': 'rgba(135, 147, 161, 0.1)',
+  '--rp-input-error-color': '#ea4c5b',
+  '--rp-input-focus-border-color': '#667a8a',
+  '--rp-input-placeholder-color': '#8793a1',
+  '--rp-input-text-color': '#e9f4fe',
+};
+
+// MODAL
+const rpModal = {
+  '--rp-modal-bg-color': '#263345',
+  '--rp-modal-overlay-color': 'rgba(0, 0, 0, 0.4)',
+};
+
+// OPTIONS
+const rpOptions = {
+  '--rp-option-bg-color': '#263345',
+  '--rp-option-border-color': '#667a8a',
+  '--rp-option-checkmark-color': '#fff',
+  '--rp-option-font-color': '#e9f4fe',
+  '--rp-option-highlight-color': '#536370',
+  '--rp-options-border-color': '#667a8a',
+  '--rp-options-shadow': '0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 0 4px 0 rgba(0, 0, 0, 0.1)',
+};
+
+// SELECT
+const rpSelect = {
+  '--rp-select-arrow-color': '#606d7b',
+  '--rp-select-arrow-color-open': '#e9f4fe',
+  '--rp-select-background-color': '#263345',
+  '--rp-select-input-border-focus-color': '#667a8a',
+};
+
+// SWITCH
+const rpSwitch = {
+  '--rp-switch-label-color': '#e9f4fe',
+  '--rp-switch-off-accent-color': '#536370',
+  '--rp-switch-on-accent-color': '#536370',
+  '--rp-switch-thumb-accent-color': '#fff',
+};
+
+// TEXTAREA
+const rpTextArea = {
+  '--rp-textarea-bg-color': '#263345',
+  '--rp-textarea-border': '1px solid rgba(102, 122, 138, 0.3)',
+  '--rp-textarea-border-focus-color': '#667a8a',
+  '--rp-textarea-color': '#e9f4fe',
+  '--rp-textarea-disabled-bg-color': 'rgba(135, 147, 161, 0.1)',
+  '--rp-textarea-disabled-border-color': 'rgba(135, 147, 161, 0.1)',
+  '--rp-textarea-error-color': '#ea4c5b',
+  '--rp-textarea-placeholder-color': '#8793a1',
+};
+
+const rpDarkBlueTheme = {
+  ...rpAutocomplete,
+  ...rpBubble,
+  ...rpCheckbox,
+  ...rpFonts,
+  ...rpInput,
+  ...rpModal,
+  ...rpOptions,
+  ...rpSelect,
+  ...rpSwitch,
+  ...rpTextArea,
+};
+
+//  ==== Theme: Dark blue === //
 export default {
+  ...rpDarkBlueTheme,
   '--preferred-font': '"Times New Roman", serif',
 
   '--font-ultralight': 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
