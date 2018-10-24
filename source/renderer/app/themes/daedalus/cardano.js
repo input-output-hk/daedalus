@@ -33,6 +33,13 @@ const rpFonts = {
   '--rp-font-bold': 'NotoSans-Bold, NotoSansCJKjp-Bold',
 };
 
+const rpFormfield = {
+  '--rp-formfield-disabled-background-color': 'none',
+  '--rp-formfield-disabled-label-color': '#5e6066',
+  '--rp-formfield-error-color': '#ea4c5b',
+  '--rp-formfield-label-color': '#5e6066',
+};
+
 // INPUT
 const rpInput = {
   '--rp-input-background-color': '#fafbfc',
@@ -95,6 +102,7 @@ const rpCardanoTheme = {
   ...rpBubble,
   ...rpCheckbox,
   ...rpFonts,
+  ...rpFormfield,
   ...rpInput,
   ...rpModal,
   ...rpOptions,
