@@ -18,6 +18,16 @@ const rpBubble = {
   '--rp-bubble-border-radius': '2px',
 };
 
+// BUTTON
+const rpButton = {
+  '--rp-button-bg-color-active': '#239554',
+  '--rp-button-bg-color-disabled': 'rgba(44, 187, 105, 0.3)',
+  '--rp-button-bg-color-hover': '#56c887',
+  '--rp-button-bg-color-primary': '#2cbb69',
+  '--rp-button-font-family': 'NotoSans-Medium, NotoSansCJKjp-Medium',
+  '--rp-button-text-color': '#fafbfc',
+};
+
 // CHECKBOX
 const rpCheckbox = {
   '--rp-checkbox-border-disabled-color': 'rgba(44, 187, 105, 0.2)',
@@ -102,6 +112,7 @@ const rpTextArea = {
 const rpCardanoTheme = {
   ...rpAutocomplete,
   ...rpBubble,
+  ...rpButton,
   ...rpCheckbox,
   ...rpFonts,
   ...rpFormfield,

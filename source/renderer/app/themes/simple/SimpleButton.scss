@@ -5,9 +5,9 @@
 @import '../mixins/buttons';
 
 .root {
-  background: var(--theme-button-primary-background-color);
+  background: var(--theme-button-primary-background-color); // TODO: remove before merging DDW-376
   font-size: 14px;
-  font-family: var(--font-medium);
+  font-family: var(--font-medium); // TODO: remove before merging DDW-376
   height: 50px;
   line-height: 20px;
   position: relative;
