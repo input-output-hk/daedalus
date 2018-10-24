@@ -33,6 +33,14 @@ const rpFonts = {
   '--rp-font-bold': 'NotoSans-Bold, NotoSansCJKjp-Bold',
 };
 
+// FORMFIELD
+const rpFormfield = {
+  '--rp-formfield-disabled-background-color': 'none',
+  '--rp-formfield-disabled-label-color': '#e9f4fe',
+  '--rp-formfield-error-color': '#ea4c5b',
+  '--rp-formfield-label-color': '#e9f4fe',
+};
+
 // INPUT
 const rpInput = {
   '--rp-input-background-color': '#263345',
@@ -95,6 +103,7 @@ const rpDarkBlueTheme = {
   ...rpBubble,
   ...rpCheckbox,
   ...rpFonts,
+  ...rpFormfield,
   ...rpInput,
   ...rpModal,
   ...rpOptions,
