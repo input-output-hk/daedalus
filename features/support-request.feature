@@ -1,4 +1,5 @@
-Feature: Send Money to Receiver
+@skip
+Feature: Support request
 
   Background:
     Given I have completed the basic setup
