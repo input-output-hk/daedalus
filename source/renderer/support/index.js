@@ -44,7 +44,7 @@ const zenDeskFormSelects = [
 let logsWereAttached = false;
 
 const onSubmit = async (iframe) => {
-  const doneButton:any = waitForExist(
+  const doneButton:any = await waitForExist(
     '.src-component-submitTicket-SubmitTicket-button',
     { context: iframe.contentDocument }
   );
