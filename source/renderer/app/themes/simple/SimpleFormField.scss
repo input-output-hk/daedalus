@@ -4,18 +4,18 @@
 // Css module overrides go here …
 
 .error {
-  color: var(--theme-input-error-color);
-  opacity: 0.75;
+  color: var(--theme-input-error-color); // TODO: remove before merging DDW-376
+  opacity: 0.75; // TODO: move to themeOverrides before merging DDW-376
 }
 
 .label {
-  color: var(--theme-input-label-color);
+  color: var(--theme-input-label-color);// TODO: remove before merging DDW-376
 }
 
 .disabled {
-  background: none !important;
+  background: none !important; // TODO: remove before merging DDW-376
 
   .label {
-    color: var(--theme-input-label-color);
+    color: var(--theme-input-label-color); // TODO: remove before merging DDW-376
   }
 }
