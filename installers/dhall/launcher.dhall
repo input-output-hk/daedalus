@@ -17,6 +17,7 @@
     , "--tlscert",             "${os.nodeArgs.tlsPath}/server/server.crt"
     , "--tlskey",              "${os.nodeArgs.tlsPath}/server/server.key"
     , "--no-client-auth"
+    , "--log-console-off"
     , "--update-server",       cluster.updateServer
     , "--keyfile",             os.nodeArgs.keyfile
     , "--topology",            os.nodeArgs.topology
