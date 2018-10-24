@@ -47,6 +47,7 @@ const rpInput = {
   '--rp-input-border-color': '#c6cdd6',
   '--rp-input-disabled-background-color': 'rgba(94, 96, 102, 0.05)',
   '--rp-input-disabled-border-color': 'rgba(94, 96, 102, 0.05)',
+  '--rp-input-disabled-placeholder-color': 'rgba(94, 96, 102, 0.5)',
   '--rp-input-error-color': '#ea4c5b',
   '--rp-input-focus-border-color': '#5e6066',
   '--rp-input-placeholder-color': 'rgba(94, 96, 102, 0.5)',
