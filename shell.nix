@@ -144,8 +144,9 @@ let
       ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
       ${localLib.optionalString (! autoStartBackend) ''
       echo "Instructions for manually running cardano-node:"
-      echo "In cardano repo run scripts/launch/demo-nix.sh"
-      echo "export CARDANO_TLS_PATH=/path/to/cardano-sl/state-demo/tls/client"
+      echo "DEPRECATION NOTICE: This should only be used for debugging a specific revision of cardano. Use --autoStartBackend --system-start SYSTEM_START_TIME as parameters to this script to auto-start the wallet"
+      echo "In cardano repo run scripts/launch/demo-nix.sh -w"
+      echo "export CARDANO_TLS_PATH=/path/to/cardano-sl/state-demo/tls/wallet"
       echo "yarn dev"
       ''}
     '';
