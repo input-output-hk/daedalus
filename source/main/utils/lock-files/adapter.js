@@ -1,8 +1,8 @@
 import fs from 'graceful-fs';
 
-function createSyncFs(fs) {
+function createSyncFs(fileSystem) {
   const methods = ['mkdir', 'realpath', 'stat', 'rmdir', 'utimes'];
-  const newFs = { ...fs };
+  const newFs = { ...fileSystem };
 
   methods.forEach((method) => {
     newFs[method] = (...args) => {
@@ -10,7 +10,7 @@ function createSyncFs(fs) {
       let ret;
 
       try {
-        ret = fs[`${method}Sync`](...args);
+        ret = fileSystem[`${method}Sync`](...args);
       } catch (err) {
         return callback(err);
       }
