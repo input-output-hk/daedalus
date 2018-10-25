@@ -58,14 +58,14 @@ const rpFormfield = {
 
 // INPUT
 const rpInput = {
-  '--rp-input-background-color': '#263345',
+  '--rp-input-bg-color': '#263345',
+  '--rp-input-bg-color-disabled': 'rgba(135, 147, 161, 0.1)',
   '--rp-input-border-color': 'rgba(102, 122, 138, 0.3)',
-  '--rp-input-disabled-background-color': 'rgba(135, 147, 161, 0.1)',
-  '--rp-input-disabled-border-color': 'rgba(135, 147, 161, 0.1)',
-  '--rp-input-disabled-placeholder-color': '#8793a1',
+  '--rp-input-border-color-disabled': 'rgba(135, 147, 161, 0.1)',
+  '--rp-input-border-color-focus': '#667a8a',
   '--rp-input-error-color': '#ea4c5b',
-  '--rp-input-focus-border-color': '#667a8a',
   '--rp-input-placeholder-color': '#8793a1',
+  '--rp-input-placeholder-color-disabled': '#8793a1',
   '--rp-input-text-color': '#e9f4fe',
 };
 
