@@ -34,6 +34,11 @@ const rpCheckbox = {
   '--rp-checkbox-label-disabled-color': 'rgba(94, 96, 102, 0.3)',
 };
 
+// COLORS
+const rpColors = {
+  '--rp-theme-color-error': '#ea4c5b',
+};
+
 // FONTS
 const rpFonts = {
   '--rp-font-thin': 'NotoSans-Thin, NotoSansCJKjp-Thin',
@@ -114,6 +119,7 @@ const rpLightBlueTheme = {
   ...rpBubble,
   ...rpButton,
   ...rpCheckbox,
+  ...rpColors,
   ...rpFonts,
   ...rpFormfield,
   ...rpInput,
@@ -415,7 +421,7 @@ export default {
   '--theme-syncing-background-color': '#fafbfc',
   '--theme-syncing-text-color': '#5e6066',
 
-  '--theme-error-color': '#ea4c5b',
+  '--theme-color-error': '#ea4c5b',
 
   '--theme-instructions-text-color': '#5e6066',
 
