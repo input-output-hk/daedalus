@@ -68,8 +68,8 @@ required dependencies for development.
 
 1. Start local cardano-sl demo cluster (`./scripts/launch/demo-nix.sh`)
 2. Inspect the terminal output of cardano-sl and copy the timestamp from the message
-   `Using system start time 1537184804`
-3. Start the nix-shell with development environment `yarn nix:dev 1537184804` (timestamp is 
+   `system start:  1537184804`
+3. Start the nix-shell with development environment `yarn nix:dev 1537184804` (timestamp is
 different each time you restart the cardano-sl demo cluster)
 4. Within the nix-shell run any command like `yarn dev`
 
