@@ -62,7 +62,7 @@ yarn2nix.mkYarnPackage {
       '';
     };
     flow-bin = {
-      postInstall = lib.optionalString stdenv.Linux ''
+      postInstall = lib.optionalString stdenv.isLinux ''
         patchelf --set-interpreter ${stdenv.cc.libc}/lib/ld-linux-x86-64.so.2 flow-linux64-v0.60.1/flow
       '';
     };
