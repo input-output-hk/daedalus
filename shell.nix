@@ -7,6 +7,9 @@ in
 , cluster ? "demo"
 , autoStartBackend ? false
 , systemStart ? null
+, walletExtraArgs ? []
+, allowFaultInjection ? false
+, purgeNpmCache ? false
 }:
 
 let
@@ -16,13 +19,16 @@ let
   nodejs = pkgs.nodejs-8_x;
   launcher-json = pkgs.runCommand "read-launcher-config.json" { buildInputs = [ yaml2json ]; } "yaml2json ${daedalusPkgs.daedalus.cfg}/etc/launcher-config.yaml > $out";
   launcher-config = builtins.fromJSON (builtins.readFile launcher-json);
+  fullExtraArgs = walletExtraArgs ++ pkgs.lib.optional allowFaultInjection "--allow-fault-injection";
   patches = builtins.concatLists [
     (pkgs.lib.optional (systemStart != null) ".configuration.systemStart = ${toString systemStart}")
     (pkgs.lib.optional (cluster == "demo") ''.configuration.key = "default"'')
+    (pkgs.lib.optional (fullExtraArgs != []) ''.nodeArgs += ${builtins.toJSON fullExtraArgs}'')
   ];
   patchesString = pkgs.lib.concatStringsSep " | " patches;
   launcherYamlWithStartTime = pkgs.runCommand "launcher-config.yaml" { buildInputs = [ pkgs.jq yaml2json ]; } ''
     jq '${patchesString}' < ${launcher-json} | json2yaml > $out
+    echo "Launcher config:  $out"
   '';
   launcherConfig' = if (patches == []) then "${daedalusPkgs.daedalus.cfg}/etc/launcher-config.yaml" else launcherYamlWithStartTime;
   fixYarnLock = pkgs.stdenv.mkDerivation {
@@ -68,6 +74,7 @@ let
       git python27 curl electron
       nodePackages.node-gyp nodePackages.node-pre-gyp
       gnumake
+      chromedriver
     ] ++ (localLib.optionals autoStartBackend [
       daedalusPkgs.daedalus-bridge
     ]));
@@ -125,8 +132,16 @@ let
       }
       export DAEDALUS_INSTALL_DIRECTORY
       export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${nodejs}/include/node"
+      ${localLib.optionalString purgeNpmCache ''
+        warn "purging all NPM/Yarn caches"
+        rm -rf node_modules
+        yarn cache clean
+        npm cache clean --force
+        ''
+      }
       yarn install
-      ln -svf ${pkgs.electron}/bin/electron ./node_modules/electron/dist/electron
+      ln -svf ${pkgs.electron}/bin/electron         ./node_modules/electron/dist/electron
+      ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
       ${localLib.optionalString (! autoStartBackend) ''
       echo "Instructions for manually running cardano-node:"
       echo "DEPRECATION NOTICE: This should only be used for debugging a specific revision of cardano. Use --autoStartBackend --system-start SYSTEM_START_TIME as parameters to this script to auto-start the wallet"
