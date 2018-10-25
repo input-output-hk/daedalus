@@ -33,29 +33,33 @@ function acquireLock(file, options, callback) {
 
     // Otherwise, check if lock is stale by analyzing the file mtime
     if (options.stale <= 0) {
-      return callback(Object.assign(new Error('Lock file is already being hold'), { code: 'ELOCKED', file }));
+      return callback(Object.assign(
+        new Error('Lock file is already being hold'), { code: 'ELOCKED', file }
+      ));
     }
 
-    options.fs.stat(getLockFile(file), (err, stat) => {
-      if (err) {
+    options.fs.stat(getLockFile(file), (statError, stat) => {
+      if (statError) {
         // Retry if the lockfile has been removed (meanwhile)
         // Skip stale check to avoid recursiveness
-        if (err.code === 'ENOENT') {
+        if (statError.code === 'ENOENT') {
           return acquireLock(file, { ...options, stale: 0 }, callback);
         }
 
-        return callback(err);
+        return callback(statError);
       }
 
       if (!isLockStale(stat, options)) {
-        return callback(Object.assign(new Error('Lock file is already being hold'), { code: 'ELOCKED', file }));
+        return callback(Object.assign(
+          new Error('Lock file is already being hold'), { code: 'ELOCKED', file }
+        ));
       }
 
       // If it's stale, remove it and try again!
       // Skip stale check to avoid recursiveness
-      removeLock(file, options, (err) => {
-        if (err) {
-          return callback(err);
+      removeLock(file, options, (removeLockError) => {
+        if (removeLockError) {
+          return callback(removeLockError);
         }
 
         acquireLock(file, { ...options, stale: 0 }, callback);
@@ -80,34 +84,40 @@ function removeLock(file, options, callback) {
 }
 
 function updateLock(file, options) {
-  const lock = locks[file];
+  const _lock = locks[file];
 
   // Just for safety, should never happen
   /* istanbul ignore if */
-  if (lock.updateTimeout) {
+  if (_lock.updateTimeout) {
     return;
   }
 
-  lock.updateDelay = lock.updateDelay || options.update;
-  lock.updateTimeout = setTimeout(() => {
+  _lock.updateDelay = _lock.updateDelay || options.update;
+  _lock.updateTimeout = setTimeout(() => {
     const mtime = Date.now() / 1000;
 
-    lock.updateTimeout = null;
+    _lock.updateTimeout = null;
 
-    options.fs.utimes(getLockFile(file), mtime, mtime, (err) => {
+    options.fs.utimes(getLockFile(file), mtime, mtime, (utimesError) => {
       // Ignore if the lock was released
-      if (lock.released) {
+      if (_lock.released) {
         return;
       }
 
       // Verify if we are within the stale threshold
-      if (lock.lastUpdate <= Date.now() - options.stale && lock.lastUpdate > Date.now() - (options.stale * 2)) {
-        const err = Object.assign(
-          new Error(lock.updateError || 'Unable to update lock within the stale threshold'),
+      const isCompromised = (
+        _lock.lastUpdate <= Date.now() - options.stale
+      ) && (
+        _lock.lastUpdate > Date.now() - (options.stale * 2)
+      );
+
+      if (isCompromised) {
+        const error = Object.assign(
+          new Error(_lock.updateError || 'Unable to update lock within the stale threshold'),
           { code: 'ECOMPROMISED' }
         );
 
-        return setLockAsCompromised(file, lock, err);
+        return setLockAsCompromised(file, _lock, error);
       }
 
       // If the file is older than (stale * 2), we assume the clock is moved manually,
@@ -115,24 +125,24 @@ function updateLock(file, options) {
 
       // If it failed to update the lockfile, keep trying unless
       // the lockfile was deleted!
-      if (err) {
-        if (err.code === 'ENOENT') {
-          return setLockAsCompromised(file, lock, Object.assign(err, { code: 'ECOMPROMISED' }));
+      if (utimesError) {
+        if (utimesError.code === 'ENOENT') {
+          return setLockAsCompromised(file, _lock, Object.assign(utimesError, { code: 'ECOMPROMISED' }));
         }
 
-        lock.updateError = err;
-        lock.updateDelay = 1000;
+        _lock.updateError = utimesError;
+        _lock.updateDelay = 1000;
 
         return updateLock(file, options);
       }
 
       // All ok, keep updating..
-      lock.lastUpdate = Date.now();
-      lock.updateError = null;
-      lock.updateDelay = null;
+      _lock.lastUpdate = Date.now();
+      _lock.updateError = null;
+      _lock.updateDelay = null;
       updateLock(file, options);
     });
-  }, lock.updateDelay);
+  }, _lock.updateDelay);
 
   // Unref the timer so that the nodejs process can exit freely
   // This is safe because all acquired locks will be automatically released
@@ -142,32 +152,32 @@ function updateLock(file, options) {
   // may be using this module outside of NodeJS (e.g., in an electron app),
   // and in those cases `setTimeout` return an integer.
   /* istanbul ignore else */
-  if (lock.updateTimeout.unref) {
-    lock.updateTimeout.unref();
+  if (_lock.updateTimeout.unref) {
+    _lock.updateTimeout.unref();
   }
 }
 
-function setLockAsCompromised(file, lock, err) {
+function setLockAsCompromised(file, _lock, err) {
   // Signal the lock has been released
-  lock.released = true;
+  _lock.released = true;
 
   // Cancel lock mtime update
   // Just for safety, at this point updateTimeout should be null
   /* istanbul ignore if */
-  if (lock.updateTimeout) {
-    clearTimeout(lock.updateTimeout);
+  if (_lock.updateTimeout) {
+    clearTimeout(_lock.updateTimeout);
   }
 
-  if (locks[file] === lock) {
+  if (locks[file] === _lock) {
     delete locks[file];
   }
 
-  lock.options.onCompromised(err);
+  _lock.options.onCompromised(err);
 }
 
 // ----------------------------------------------------------
 
-function lock(file, options, callback) {
+function lock(filePath, options, callback) {
   /* istanbul ignore next */
   options = {
     stale: 10000,
@@ -186,7 +196,7 @@ function lock(file, options, callback) {
   options.update = Math.max(Math.min(options.update, options.stale / 2), 1000);
 
   // Resolve to a canonical file path
-  resolveCanonicalPath(file, options, (err, file) => {
+  resolveCanonicalPath(filePath, options, (err, file) => {
     if (err) {
       return callback(err);
     }
@@ -195,26 +205,27 @@ function lock(file, options, callback) {
     const operation = retry.operation(options.retries);
 
     operation.attempt(() => {
-      acquireLock(file, options, (err) => {
-        if (operation.retry(err)) {
+      acquireLock(file, options, (acquireError) => {
+        if (operation.retry(acquireError)) {
           return;
         }
 
-        if (err) {
+        if (acquireError) {
           return callback(operation.mainError());
         }
 
         // We now own the lock
-        const lock = locks[file] = {
+        const _lock = {
           options,
           lastUpdate: Date.now(),
         };
+        locks[file] = _lock;
 
         // We must keep the lock fresh to avoid staleness
         updateLock(file, options);
 
         callback(null, (releasedCallback) => {
-          if (lock.released) {
+          if (_lock.released) {
             return releasedCallback &&
               releasedCallback(Object.assign(new Error('Lock is already released'), { code: 'ERELEASED' }));
           }
@@ -227,7 +238,7 @@ function lock(file, options, callback) {
   });
 }
 
-function unlock(file, options, callback) {
+function unlock(filePath, options, callback) {
   options = {
     fs,
     realpath: true,
@@ -235,20 +246,20 @@ function unlock(file, options, callback) {
   };
 
   // Resolve to a canonical file path
-  resolveCanonicalPath(file, options, (err, file) => {
+  resolveCanonicalPath(filePath, options, (err, file) => {
     if (err) {
       return callback(err);
     }
 
     // Skip if the lock is not acquired
-    const lock = locks[file];
+    const _lock = locks[file];
 
-    if (!lock) {
+    if (!_lock) {
       return callback(Object.assign(new Error('Lock is not acquired/owned by you'), { code: 'ENOTACQUIRED' }));
     }
 
-    lock.updateTimeout && clearTimeout(lock.updateTimeout); // Cancel lock mtime update
-    lock.released = true; // Signal the lock has been released
+    _lock.updateTimeout && clearTimeout(_lock.updateTimeout); // Cancel lock mtime update
+    _lock.released = true; // Signal the lock has been released
     delete locks[file]; // Delete from locks
 
     removeLock(file, options, callback);
@@ -292,11 +303,12 @@ function getLocks() {
 /* istanbul ignore next */
 process.on('exit', () => {
   for (const file in locks) {
-    try { locks[file].options.fs.rmdirSync(getLockFile(file)); } catch (e) { /* Empty */ }
+    if (Object.hasOwnProperty.call(locks, file)) {
+      try {
+        locks[file].options.fs.rmdirSync(getLockFile(file));
+      } catch (e) { /* Empty */ }
+    }
   }
 });
 
-module.exports.lock = lock;
-module.exports.unlock = unlock;
-module.exports.check = check;
-module.exports.getLocks = getLocks;
+export default { lock, unlock, check, getLocks };
