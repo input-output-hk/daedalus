@@ -10,8 +10,8 @@ Given(/^cardano-node is running$/, async function () {
   ));
 });
 
-Then(/^cardano-node process is not running$/, { timeout: 31000 }, async function () {
+Then(/^cardano-node process is not running$/, { timeout: 61000 }, async function () {
   return await this.client.waitUntil(async () => (
     (await getProcessesByName('cardano-node')).length === 0
-  ), 31000);
+  ), 61000);
 });
