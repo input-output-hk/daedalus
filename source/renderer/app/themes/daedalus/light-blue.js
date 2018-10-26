@@ -96,8 +96,8 @@ const rpSelect = {
 // SWITCH
 const rpSwitch = {
   '--rp-switch-label-color': '#5e6066',
-  '--rp-switch-off-accent-color': '#2f496e',
-  '--rp-switch-on-accent-color': '#2f496e',
+  '--rp-switch-accent-color-off': '#2f496e',
+  '--rp-switch-accent-color-on': '#2f496e',
   '--rp-switch-thumb-accent-color': '#fff',
 };
 
