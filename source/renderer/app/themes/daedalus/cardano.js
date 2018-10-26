@@ -90,8 +90,7 @@ const rpOptions = {
 const rpSelect = {
   '--rp-select-arrow-color': '#c6cdd6',
   '--rp-select-arrow-color-open': '#5e6066',
-  '--rp-select-background-color': '#fafbfc',
-  '--rp-select-input-border-focus-color': '#5e6066',
+  '--rp-select-input-border-color-focus': '#5e6066',
 };
 
 // SWITCH
