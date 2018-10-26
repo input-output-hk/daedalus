@@ -20,7 +20,8 @@ When(/^I close the main window$/, async function () {
 });
 
 Then(/^Daedalus process is not running$/, async function () {
+  const daedalusProcessName = process.platform === 'linux' ? 'electron' : 'Electron';
   return await this.client.waitUntil(async () => (
-      (await getProcessesByName(process.platform === 'linux' ? 'electron' : 'Electron')).length === 0
+    (await getProcessesByName(daedalusProcessName)).length === 0
   ));
 });
