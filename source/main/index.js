@@ -61,6 +61,19 @@ const menuActions = {
   restartWithoutSafeMode,
 };
 
+const safeExit = async () => {
+  if (cardanoNode.state === CardanoNodeStates.STOPPING) return;
+  try {
+    Logger.info(`Daedalus:safeExit: stopping cardano-node with PID ${cardanoNode.pid || 'null'}`);
+    await cardanoNode.stop();
+    Logger.info('Daedalus:safeExit: exiting Daedalus with code 0.');
+    safeExitWithCode(0);
+  } catch (stopError) {
+    Logger.info(`Daedalus:safeExit: cardano-node did not exit correctly: ${stopError}`);
+    safeExitWithCode(0);
+  }
+};
+
 app.on('ready', async () => {
   // Make sure this is the only Daedalus instance running per cluster before doing anything else
   await acquireDaedalusInstanceLock();
@@ -125,18 +138,16 @@ app.on('ready', async () => {
     });
   }
 
+  mainWindow.on('close', async (event) => {
+    Logger.info('mainWindow received <close> event. Safe exiting Daedalus now.');
+    event.preventDefault();
+    await safeExit();
+  });
+
   // Wait for controlled cardano-node shutdown before quitting the app
   app.on('before-quit', async (event) => {
+    Logger.info('app received <before-quit> event. Safe exiting Daedalus now.');
     event.preventDefault(); // prevent Daedalus from quitting immediately
-    if (cardanoNode.state === CardanoNodeStates.STOPPING) return;
-    try {
-      Logger.info(`Daedalus:before-quit: stopping cardano-node with PID ${cardanoNode.pid || 'null'}`);
-      await cardanoNode.stop();
-      Logger.info('Daedalus:before-quit: exiting Daedalus with code 0.');
-      safeExitWithCode(0);
-    } catch (stopError) {
-      Logger.info(`Daedalus:before-quit: cardano-node did not exit correctly: ${stopError}`);
-      safeExitWithCode(0);
-    }
+    await safeExit();
   });
 });

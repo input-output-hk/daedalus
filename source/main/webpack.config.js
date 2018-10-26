@@ -1,4 +1,3 @@
-const path = require('path');
 const webpack = require('webpack');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const lodash = require('lodash');
@@ -14,7 +13,6 @@ module.exports = {
   devtool: 'cheap-module-source-map',
   entry: './source/main/index.js',
   output: {
-    path: path.join(__dirname, './dist/main'),
     filename: 'index.js'
   },
   /**
