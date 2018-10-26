@@ -22,7 +22,7 @@ let
     testnet = "Daedalus Testnet";
   };
   newPackage = origPackage // {
-    productName = nameTable.${cluster};
+    productName = nameTable.${if cluster == null then "testnet" else cluster};
     main = "main/index.js";
   };
   newPackagePath = builtins.toFile "package.json" (builtins.toJSON newPackage);
@@ -64,7 +64,7 @@ yarn2nix.mkYarnPackage {
     };
     flow-bin = {
       postInstall = ''
-        flow_ver=$(${pkgs.jq}/bin/jq .devDependencies.'"flow-bin"' ${newPackagePath} | sed 's/"//g')
+      flow_ver=$(${pkgs.jq}/bin/jq .devDependencies.'"flow-bin"' ${newPackagePath} | sed 's/"//g')
         patchelf --set-interpreter ${stdenv.cc.libc}/lib/ld-linux-x86-64.so.2 flow-linux64-v$flow_ver/flow
       '';
     };
