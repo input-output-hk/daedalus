@@ -50,6 +50,7 @@ yarn2nix.mkYarnPackage {
   '';
   allowedReferences = [];
   yarnPreBuild = ''
+    set -x
     mkdir -p $HOME/.node-gyp/${nodejs.version}
     echo 9 > $HOME/.node-gyp/${nodejs.version}/installVersion
     ln -sfv ${nodejs}/include $HOME/.node-gyp/${nodejs.version}
@@ -63,7 +64,8 @@ yarn2nix.mkYarnPackage {
     };
     flow-bin = {
       postInstall = ''
-        patchelf --set-interpreter ${stdenv.cc.libc}/lib/ld-linux-x86-64.so.2 flow-linux64-v0.60.1/flow
+        flow_ver=$(${pkgs.jq}/bin/jq .devDependencies.'"flow-bin"' ${newPackagePath} | sed 's/"//g')
+        patchelf --set-interpreter ${stdenv.cc.libc}/lib/ld-linux-x86-64.so.2 flow-linux64-v$flow_ver/flow
       '';
     };
   };
