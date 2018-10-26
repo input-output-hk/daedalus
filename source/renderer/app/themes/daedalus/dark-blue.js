@@ -104,13 +104,13 @@ const rpSwitch = {
 // TEXTAREA
 const rpTextArea = {
   '--rp-textarea-bg-color': '#263345',
+  '--rp-textarea-bg-color-disabled': 'rgba(135, 147, 161, 0.1)',
   '--rp-textarea-border': '1px solid rgba(102, 122, 138, 0.3)',
-  '--rp-textarea-border-focus-color': '#667a8a',
-  '--rp-textarea-color': '#e9f4fe',
-  '--rp-textarea-disabled-bg-color': 'rgba(135, 147, 161, 0.1)',
-  '--rp-textarea-disabled-border-color': 'rgba(135, 147, 161, 0.1)',
+  '--rp-textarea-border-color-disabled': 'rgba(135, 147, 161, 0.1)',
+  '--rp-textarea-border-color-focus': '#667a8a',
   '--rp-textarea-error-color': '#ea4c5b',
   '--rp-textarea-placeholder-color': '#8793a1',
+  '--rp-textarea-text-color': '#e9f4fe',
 };
 
 const rpDarkBlueTheme = {
