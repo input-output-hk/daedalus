@@ -366,10 +366,16 @@ export class CardanoNode {
     const fault = request[0];
     const isEnabled = request[1];
     this._node.send({ SetFInject: request });
-    return await promisedCondition(() => {
-      const hasFault = this._injectedFaults.includes(fault);
-      return isEnabled ? hasFault : !hasFault;
-    });
+    try {
+      return await promisedCondition(() => {
+        const hasFault = this._injectedFaults.includes(fault);
+        return isEnabled ? hasFault : !hasFault;
+      });
+    } catch (error) {
+      return Promise.reject(
+        `cardano-node did not inject the fault "${fault}" correctly.`
+      );
+    }
   };
 
   // ================================= PRIVATE ===================================
