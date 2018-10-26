@@ -26,7 +26,7 @@ export type RequestPayload = {
   date: string,
   magic: number,
   type: {
-    type : string,
+    type: string,
     email: string,
     subject: string,
     problem: string,

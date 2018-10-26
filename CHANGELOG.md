@@ -2,6 +2,13 @@
 Changelog
 =========
 
+## vNext
+=======
+
+### Fixes
+
+- Fixed the partly broken flow setup ([PR 1124](https://github.com/input-output-hk/daedalus/pull/1124))
+
 ## 0.12.0
 =======
 

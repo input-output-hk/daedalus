@@ -1,3 +1,4 @@
+// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
@@ -15,8 +16,8 @@ const messages = defineMessages({
 
 type Props = {
   networkStatus: {
-    isSynced: boolean,
-    syncPercentage: number,
+    +isSynced: boolean,
+    +syncPercentage: number,
   },
   isMainnet: boolean,
 };
