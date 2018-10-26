@@ -24,7 +24,7 @@ Feature: Node Update Notification
     When I click the notification's accept button
     Then I should see the Daedalus window close
 
-  @watch @restartApp
+  @restartApp
   Scenario: apply-update endpoint triggered, and node fails to exit, that's still handled
     Given Daedalus is running
     And cardano-node is running
@@ -33,7 +33,7 @@ Feature: Node Update Notification
     Then cardano-node process is not running
     And Daedalus process is not running
 
-  @watch @restartApp
+  @restartApp
   Scenario: apply-update endpoint triggered, and node exits with wrong exit code, that's still handled
     Given Daedalus is running
     And cardano-node is running
@@ -42,7 +42,7 @@ Feature: Node Update Notification
     Then cardano-node process is not running
     And Daedalus process is not running
 
-  @watch @restartApp
+  @restartApp
   Scenario: apply-update endpoint triggered, and node ignores the endpoint call, that's still handled
     Given Daedalus is running
     And cardano-node is running

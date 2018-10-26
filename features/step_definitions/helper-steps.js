@@ -18,21 +18,12 @@ When(/^I take a screenshot named "([^"]*)"$/, async function (testName) {
 
 When(/^I inject fault named "([^"]*)"$/, async function (faultName) {
   await this.client.executeAsync((name, done) => {
-    daedalus.api.ada.setCardanoNodeFault([name, true])
-      .then((response) => (
-        done(true)
-      ))
-      .catch((error) => done(error));
+    daedalus.api.ada.setCardanoNodeFault([name, true]).then(done).catch(e => { throw e; });
   }, faultName);
 });
 
 When(/^I trigger the apply-update endpoint$/, async function () {
   await this.client.executeAsync((done) => {
-    daedalus.api.ada.applyUpdate()
-      // .then(done)
-      .then((response) => (
-        done(true)
-      ))
-      .catch((error) => done(error));
+    daedalus.api.ada.applyUpdate().then(done).catch(e => { throw e; });
   });
 });
