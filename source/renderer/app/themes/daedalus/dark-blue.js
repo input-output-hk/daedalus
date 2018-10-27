@@ -20,10 +20,10 @@ const rpBubble = {
 
 // BUTTON
 const rpButton = {
+  '--rp-button-bg-color': '#536370',
   '--rp-button-bg-color-active': '#495863',
   '--rp-button-bg-color-disabled': 'rgba(233, 244, 254, 0.5)',
   '--rp-button-bg-color-hover': '#667a8a',
-  '--rp-button-bg-color-primary': '#536370',
   '--rp-button-font-family': 'NotoSans-Medium, NotoSansCJKjp-Medium',
   '--rp-button-text-color': '#e9f4fe',
 };
