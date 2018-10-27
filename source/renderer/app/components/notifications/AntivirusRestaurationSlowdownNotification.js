@@ -33,7 +33,7 @@ const messages = defineMessages({
 
 type Props = {
   onDiscard: () => void,
-  onFaqLinkClick: (event: MouseEvent) => void,
+  onFaqLinkClick: (event: MouseEvent, url: string) => void,
 };
 
 @observer
@@ -46,11 +46,12 @@ export default class AntivirusRestaurationSlowdownNotification extends Component
   render() {
     const { onFaqLinkClick } = this.props;
     const { intl } = this.context;
+    const faqLinkUrl = intl.formatMessage(globalMessages.faqLinkUrl);
 
     const faqLink = (
       <a
-        href={intl.formatMessage(globalMessages.faqLinkUrl)}
-        onClick={event => onFaqLinkClick(event)}
+        href={faqLinkUrl}
+        onClick={(event) => onFaqLinkClick(event, faqLinkUrl)}
       >
         {intl.formatMessage(messages.faqLinkText)}
       </a>

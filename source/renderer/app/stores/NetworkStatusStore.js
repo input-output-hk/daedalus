@@ -41,21 +41,19 @@ export default class NetworkStatusStore extends Store {
   _tlsConfig: ?TlsConfig = null;
   _systemTime = Date.now();
   _networkStatus = NETWORK_STATUS.CONNECTING;
-  _networkStatusPollingInterval: ?number = null;
-  _systemTimeChangeCheckPollingInterval: ?number = null;
+  _networkStatusPollingInterval: ?IntervalID = null;
+  _systemTimeChangeCheckPollingInterval: ?IntervalID = null;
 
   // Initialize store observables
 
   // Internal Node states
-  /* eslint-disable indent */
   @observable cardanoNodeState: ?CardanoNodeState = null;
   @observable isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
   @observable isNodeSubscribed = false; // Is 'true' in case node is subscribed to the network
   @observable isNodeSyncing = false; // Is 'true' in case we are receiving blocks and not stalling
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
-  @observable isNodeInSync = false; // Is 'true' if node is syncing and local/network block height
-                                    // difference is within the allowed limit
-  /* eslint-enabme indent */
+  @observable isNodeInSync = false; // 'true' if syncing & local/network blocks diff within limit
+
   @observable hasBeenConnected = false;
   @observable syncProgress = null;
   @observable initialLocalHeight = null;
