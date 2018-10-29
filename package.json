@@ -11,6 +11,8 @@
     "dev": "IS_WATCH_MODE=true gulp dev",
     "test": "gulp test",
     "test:watch": "IS_WATCH_MODE=true gulp test:watch",
+    "test:debug": "KEEP_APP_AFTER_TESTS=true gulp test",
+    "test:watch:debug": "IS_WATCH_MODE=true KEEP_APP_AFTER_TESTS=true gulp test:watch",
     "debug": "gulp debug",
     "package": "gulp build && cross-env NODE_ENV=production node -r babel-register -r babel-polyfill scripts/package.js",
     "package:all": "npm run package -- --all",
