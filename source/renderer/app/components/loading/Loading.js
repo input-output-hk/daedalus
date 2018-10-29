@@ -111,6 +111,7 @@ type Props = {
   handleReportIssue: Function,
   onProblemSolutionClick: Function,
   onCheckTheTimeAgain: Function,
+  onContinueWithoutClockSyncCheck: Function,
 };
 
 @observer
@@ -250,6 +251,7 @@ export default class Loading extends Component<Props, State> {
       currentLocale,
       onProblemSolutionClick,
       onCheckTheTimeAgain,
+      onContinueWithoutClockSyncCheck,
       isCheckingSystemTime,
       syncPercentage,
       loadingDataForNextScreenMessage
@@ -282,6 +284,7 @@ export default class Loading extends Component<Props, State> {
           currentLocale={currentLocale}
           onProblemSolutionClick={onProblemSolutionClick}
           onCheckTheTimeAgain={onCheckTheTimeAgain}
+          onContinueWithoutClockSyncCheck={onContinueWithoutClockSyncCheck}
           isCheckingSystemTime={isCheckingSystemTime}
         />
       );
