@@ -456,16 +456,16 @@
         }
       },
       {
-        "defaultMessage": "!!!more than 15 seconds",
-        "description": "Time offset text shown in case NTP service is unreachable",
+        "defaultMessage": "!!!Attention, Daedalus is unable to check if the clock on your computer is synchronized with global time because NTP (Network Time Protocol) servers are unreachable, possibly due to firewalls on your network. If your computer clock is off by more than 15 seconds, Daedalus will be unable to connect to the network.<br>To synchronize the time and fix this issue, please visit the FAQ section of the Daedalus website:",
+        "description": "Text of Sync error overlay when NTP service is unreachable",
         "end": {
           "column": 3,
           "line": 28
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
-        "id": "systemTime.error.timeOffsetIndeterminable",
+        "id": "systemTime.error.ntpUnreachableText",
         "start": {
-          "column": 28,
+          "column": 22,
           "line": 24
         }
       },
@@ -495,6 +495,20 @@
         "start": {
           "column": 27,
           "line": 34
+        }
+      },
+      {
+        "defaultMessage": "!!!Continue without clock synchronization checks",
+        "description": "Text of \"Continue without clock synchronization checks\" button",
+        "end": {
+          "column": 3,
+          "line": 43
+        },
+        "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
+        "id": "systemTime.error.onContinueWithoutClockSyncCheckLink",
+        "start": {
+          "column": 39,
+          "line": 39
         }
       }
     ],

@@ -27,7 +27,7 @@ export default class LoadingPage extends Component<InjectedProps> {
     const {
       cardanoNodeState, isConnected, isSynced, syncPercentage, hasBeenConnected,
       localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
-      forceCheckLocalTimeDifference,
+      forceCheckLocalTimeDifference, ignoreSystemTimeChecks,
     } = stores.networkStatus;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
     return (
@@ -50,6 +50,7 @@ export default class LoadingPage extends Component<InjectedProps> {
           handleReportIssue={this.handleReportIssue}
           onProblemSolutionClick={this.handleProblemSolutionClick}
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
+          onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
         />
         <WalletSupportRequestPage />
       </CenteredLayout>

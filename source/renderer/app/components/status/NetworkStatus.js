@@ -36,6 +36,7 @@ type Props = {
   syncPercentage: number,
   hasBeenConnected: boolean,
   localTimeDifference: ?number,
+  isSystemTimeIgnored: boolean,
   isSystemTimeCorrect: boolean,
   isForceCheckingNodeTime: boolean,
   isSystemTimeChanged: boolean,
@@ -116,7 +117,7 @@ export default class NetworkStatus extends Component<Props, State> {
       isNodeTimeCorrect, isConnected, isSynced, syncPercentage, hasBeenConnected,
       localTimeDifference, isSystemTimeCorrect, isForceCheckingNodeTime,
       isSystemTimeChanged, mostRecentBlockTimestamp, localBlockHeight, networkBlockHeight,
-      onForceCheckLocalTimeDifference, onClose, nodeConnectionError,
+      onForceCheckLocalTimeDifference, onClose, nodeConnectionError, isSystemTimeIgnored,
     } = this.props;
     const { data, isNodeRestarting } = this.state;
     const isNTPServiceReachable = !!localTimeDifference;
@@ -218,6 +219,12 @@ export default class NetworkStatus extends Component<Props, State> {
                 <td>isSystemTimeCorrect:</td>
                 <td className={this.getClass(isSystemTimeCorrect)}>
                   {isSystemTimeCorrect ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>isSystemTimeIgnored:</td>
+                <td className={this.getClass(!isSystemTimeIgnored)}>
+                  {isSystemTimeIgnored ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>

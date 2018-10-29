@@ -21,10 +21,10 @@ const messages = defineMessages({
     defaultMessage: '!!!Attention, Daedalus is unable to sync with the blockchain because the time on your machine is different from the global time. Your time is off by 2 hours 12 minutes 54 seconds.<br>To synchronize the time and fix this issue, please visit the FAQ section of Daedalus website:',
     description: 'Text of Sync error overlay'
   },
-  timeOffsetIndeterminable: {
-    id: 'systemTime.error.timeOffsetIndeterminable',
-    defaultMessage: '!!!more than 15 seconds',
-    description: 'Time offset text shown in case NTP service is unreachable'
+  ntpUnreachableText: {
+    id: 'systemTime.error.ntpUnreachableText',
+    defaultMessage: '!!!Attention, Daedalus is unable to check if the clock on your computer is synchronized with global time because NTP (Network Time Protocol) servers are unreachable, possibly due to firewalls on your network. If your computer clock is off by more than 15 seconds, Daedalus will be unable to connect to the network.<br>To synchronize the time and fix this issue, please visit the FAQ section of the Daedalus website:',
+    description: 'Text of Sync error overlay when NTP service is unreachable'
   },
   problemSolutionLink: {
     id: 'systemTime.error.problemSolutionLink',
@@ -36,6 +36,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Check the time again',
     description: 'Text of Check the time again button'
   },
+  onContinueWithoutClockSyncCheckLink: {
+    id: 'systemTime.error.onContinueWithoutClockSyncCheckLink',
+    defaultMessage: '!!!Continue without clock synchronization checks',
+    description: 'Text of "Continue without clock synchronization checks" button'
+  },
 });
 
 type Props = {
@@ -43,6 +48,7 @@ type Props = {
   currentLocale: string,
   onProblemSolutionClick: Function,
   onCheckTheTimeAgain: Function,
+  onContinueWithoutClockSyncCheck: Function,
   isCheckingSystemTime: boolean,
 };
 
@@ -55,7 +61,10 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { localTimeDifference, currentLocale, isCheckingSystemTime } = this.props;
+    const {
+      localTimeDifference, currentLocale, isCheckingSystemTime,
+      onCheckTheTimeAgain, onContinueWithoutClockSyncCheck,
+    } = this.props;
     const problemSolutionLink = intl.formatMessage(messages.problemSolutionLink);
 
     let humanizedDurationLanguage;
@@ -79,22 +88,26 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
     const isNTPServiceReachable = !!localTimeDifference;
     const allowedTimeDifferenceInSeconds = ALLOWED_TIME_DIFFERENCE / 1000000;
 
-    const timeOffset = isNTPServiceReachable ? (
-      humanizeDuration((localTimeDifference || 0) / 1000, {
-        round: true, // round seconds to prevent e.g. 1 day 3 hours *11,56 seconds*
-        language: humanizedDurationLanguage,
-      }).replace(/,/g, '') // replace 1 day, 3 hours, 12 seconds* to clean period without comma
-    ) : (
-      // NTP service is unreachable so we need to show a generic time offset message
-      intl.formatMessage(messages.timeOffsetIndeterminable, { allowedTimeDifferenceInSeconds })
-    );
+    const timeOffset = humanizeDuration((localTimeDifference || 0) / 1000, {
+      round: true, // round seconds to prevent e.g. 1 day 3 hours *11,56 seconds*
+      language: humanizedDurationLanguage,
+    }).replace(/,/g, ''); // replace 1 day, 3 hours, 12 seconds* to clean period without comma
 
     return (
       <div className={styles.component}>
 
         <SVGInline svg={attentionIcon} className={styles.icon} />
 
-        <p><FormattedHTMLMessage {...messages.overlayText} values={{ timeOffset }} /></p>
+        <p>
+          {isNTPServiceReachable ? (
+            <FormattedHTMLMessage {...messages.overlayText} values={{ timeOffset }} />
+          ) : (
+            <FormattedHTMLMessage
+              {...messages.ntpUnreachableText}
+              values={{ allowedTimeDifferenceInSeconds }}
+            />
+          )}
+        </p>
 
         <Button
           className="disclaimer"
@@ -103,13 +116,22 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
           onClick={this.onProblemSolutionClick.bind(this, problemSolutionLink)}
         />
 
-        <button
-          className={styles.checkLink}
-          onClick={() => this.props.onCheckTheTimeAgain()}
-          disabled={isCheckingSystemTime}
-        >
-          {intl.formatMessage(messages.onCheckTheTimeAgainLink)}
-        </button>
+        {isNTPServiceReachable ? (
+          <button
+            className={styles.checkLink}
+            onClick={() => onCheckTheTimeAgain()}
+            disabled={isCheckingSystemTime}
+          >
+            {intl.formatMessage(messages.onCheckTheTimeAgainLink)}
+          </button>
+        ) : (
+          <button
+            className={styles.checkLink}
+            onClick={() => onContinueWithoutClockSyncCheck()}
+          >
+            {intl.formatMessage(messages.onContinueWithoutClockSyncCheckLink)}
+          </button>
+        )}
 
       </div>
     );
