@@ -64,6 +64,6 @@ export default class LoadingPage extends Component<InjectedProps> {
   };
 
   handleProblemSolutionClick = (link: string) => {
-    shell.openExternal(`https://${link}`);
+    shell.openExternal(link);
   };
 }

@@ -432,55 +432,97 @@
         "description": "Title of Sync error overlay",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 16
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.overlayTitle",
         "start": {
           "column": 16,
-          "line": 14
+          "line": 12
         }
       },
       {
-        "defaultMessage": "!!!Attention, Daedalus is unable to sync with the blockchain because the time on your machine is different from the global time. Your time is off by 2 hours 12 minutes 54 seconds.<br>To synchronize the time and fix this issue, please visit the FAQ section of Daedalus website:",
-        "description": "Text of Sync error overlay",
+        "defaultMessage": "!!!Attention, Daedalus is unable to sync with the blockchain because the time on your machine is different from the global time. Your time is off by 2 hours 12 minutes 54 seconds.",
+        "description": "First paragraph of Sync error overlay",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 21
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
-        "id": "systemTime.error.overlayText",
+        "id": "systemTime.error.overlayTextP1",
         "start": {
-          "column": 15,
-          "line": 19
+          "column": 17,
+          "line": 17
         }
       },
       {
-        "defaultMessage": "!!!Attention, Daedalus is unable to check if the clock on your computer is synchronized with global time because NTP (Network Time Protocol) servers are unreachable, possibly due to firewalls on your network. If your computer clock is off by more than 15 seconds, Daedalus will be unable to connect to the network.<br>To synchronize the time and fix this issue, please visit the FAQ section of the Daedalus website:",
+        "defaultMessage": "!!!To synchronise the time and fix the issue, please read our {supportPortalLink} article.",
+        "description": "Second paragraph of Sync error overlay",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
+        "id": "systemTime.error.overlayTextP2",
+        "start": {
+          "column": 17,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!Attention, Daedalus is unable to check if the clock on your computer is synchronized with global time because NTP (Network Time Protocol) servers are unreachable, possibly due to firewalls on your network.",
         "description": "Text of Sync error overlay when NTP service is unreachable",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 31
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
-        "id": "systemTime.error.ntpUnreachableText",
+        "id": "systemTime.error.ntpUnreachableTextP1",
         "start": {
-          "column": 22,
-          "line": 24
+          "column": 24,
+          "line": 27
         }
       },
       {
-        "defaultMessage": "!!!daedaluswallet.io/faq",
-        "description": "Link to Daedalus website FAQ page",
+        "defaultMessage": "!!!If your computer clock is off by more than 15 seconds, Daedalus will be unable to connect to the network. If you have this issue, please read our Support Portal article to synchronize the time on your machine.",
+        "description": "Text of Sync error overlay when NTP service is unreachable",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 36
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
-        "id": "systemTime.error.problemSolutionLink",
+        "id": "systemTime.error.ntpUnreachableTextP2",
         "start": {
-          "column": 23,
-          "line": 29
+          "column": 24,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Support Portal",
+        "description": "\"Support Portal\" link text",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
+        "id": "systemTime.error.supportPortalLink",
+        "start": {
+          "column": 21,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360010230873",
+        "description": "Link to \"Machine clock out of sync with Cardano network\" support page",
+        "end": {
+          "column": 3,
+          "line": 46
+        },
+        "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
+        "id": "systemTime.error.supportPortalLinkUrl",
+        "start": {
+          "column": 24,
+          "line": 42
         }
       },
       {
@@ -488,13 +530,13 @@
         "description": "Text of Check the time again button",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 51
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.onCheckTheTimeAgainLink",
         "start": {
           "column": 27,
-          "line": 34
+          "line": 47
         }
       },
       {
@@ -502,13 +544,13 @@
         "description": "Text of \"Continue without clock synchronization checks\" button",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 56
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.onContinueWithoutClockSyncCheckLink",
         "start": {
           "column": 39,
-          "line": 39
+          "line": 52
         }
       }
     ],
@@ -1150,8 +1192,8 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Frequently asked questions",
-        "description": "Title \"Frequently asked questions\" on the support settings page.",
+        "defaultMessage": "!!!Help and support",
+        "description": "Title \"Help and support\" on the support settings page.",
         "end": {
           "column": 3,
           "line": 13
@@ -1164,8 +1206,8 @@
         }
       },
       {
-        "defaultMessage": "!!!If you are experiencing issues, please see the {faqLink} for guidance on known issues.",
-        "description": "Content for the \"Frequently asked questions\" section on the support settings page.",
+        "defaultMessage": "!!!If you are experiencing issues, for guidance please see the {faqLink} article in the Support Portal.",
+        "description": "Content for the \"Help and support\" section on the support settings page.",
         "end": {
           "column": 3,
           "line": 18
@@ -1178,8 +1220,8 @@
         }
       },
       {
-        "defaultMessage": "!!!FAQ on Daedalus website",
-        "description": "\"FAQ on Daedalus website\" link in the FAQ section on the support settings page",
+        "defaultMessage": "!!!Known Issues",
+        "description": "\"Known Issues\" link in the \"Help and support\" section on the support settings page",
         "end": {
           "column": 3,
           "line": 23
@@ -5542,8 +5584,8 @@
         }
       },
       {
-        "defaultMessage": "!!!https://daedaluswallet.io/faq/",
-        "description": "URL for the \"FAQ on Daedalus website\" link in the FAQ section on the support settings page",
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360011451693",
+        "description": "URL for the \"Known Issues\" link in the \"Help and support\" section on the support settings page",
         "end": {
           "column": 3,
           "line": 148
