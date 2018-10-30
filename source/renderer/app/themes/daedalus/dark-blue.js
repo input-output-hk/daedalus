@@ -3,11 +3,11 @@
 const rpAutocomplete = {
   '--rp-autocomplete-bg-color': '#263345',
   '--rp-autocomplete-border': '1px solid rgba(102, 122, 138, 0.3)',
-  '--rp-autocomplete-border-focus-color': '#667a8a',
+  '--rp-autocomplete-border-color-opened': '#667a8a',
+  '--rp-autocomplete-input-text-color': '#e9f4fe',
   '--rp-autocomplete-placeholder-color': '#8793a1',
-  '--rp-autocomplete-search-color': '#e9f4fe',
+  '--rp-autocomplete-selected-word-box-bg-color': 'rgba(83, 99, 112, 0.5)',
   '--rp-autocomplete-selected-word-text-color': '#fafbfc',
-  '--rp-autocomplete-selected-word-box-background-color': 'rgba(83, 99, 112, 0.5)',
   '--rp-autocomplete-selected-words-font-family': 'NotoSans-Regular, NotoSansCJKjp-Regular',
 };
 
