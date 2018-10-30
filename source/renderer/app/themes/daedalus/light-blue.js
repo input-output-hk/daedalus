@@ -51,9 +51,9 @@ const rpFonts = {
 // FORMFIELD
 const rpFormfield = {
   '--rp-formfield-bg-color-disabled': 'none',
-  '--rp-formfield-label-color': '#5e6066',
-  '--rp-formfield-label-color-disabled': '#5e6066',
-  '--rp-formfield-error-color': '#ea4c5b',
+  '--rp-formfield-label-text-color': '#5e6066',
+  '--rp-formfield-label-text-color-disabled': '#5e6066',
+  '--rp-formfield-error-text-color': '#ea4c5b',
 };
 
 // INPUT
@@ -62,8 +62,8 @@ const rpInput = {
   '--rp-input-bg-color-disabled': 'rgba(94, 96, 102, 0.05)',
   '--rp-input-border-color': '#c6cdd6',
   '--rp-input-border-color-disabled': 'rgba(94, 96, 102, 0.05)',
+  '--rp-input-border-color-errored': '#ea4c5b',
   '--rp-input-border-color-focus': '#5e6066',
-  '--rp-input-error-color': '#ea4c5b',
   '--rp-input-placeholder-color': 'rgba(94, 96, 102, 0.5)',
   '--rp-input-placeholder-color-disabled': 'rgba(94, 96, 102, 0.5)',
   '--rp-input-text-color': '#5e6066',
