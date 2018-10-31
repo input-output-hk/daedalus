@@ -107,8 +107,8 @@ const rpTextArea = {
   '--rp-textarea-bg-color-disabled': 'rgba(94, 96, 102, 0.05)',
   '--rp-textarea-border': '1px solid #c6cdd6',
   '--rp-textarea-border-color-disabled': 'rgba(94, 96, 102, 0.05)',
+  '--rp-textarea-border-color-errored': '#ea4c5b',
   '--rp-textarea-border-color-focus': '#5e6066',
-  '--rp-textarea-error-color': '#ea4c5b',
   '--rp-textarea-placeholder-color': 'rgba(94, 96, 102, 0.5)',
   '--rp-textarea-text-color': '#5e6066',
 };
