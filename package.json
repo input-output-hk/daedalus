@@ -18,7 +18,8 @@
     "package:all": "npm run package -- --all",
     "postinstall": "node node_modules/fbjs-scripts/node/check-dev-engines.js package.json",
     "cleanup": "mop -v",
-    "cucumber": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 cucumber-js --compiler js:babel-register --format 'progress-bar' --format-options '{\"snippetInterface\": \"synchronous\"}' --tags 'not @skip'",
+    "cucumber": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 cucumber-js --compiler js:babel-register -f node_modules/cucumber-pretty --format-options '{\"snippetInterface\": \"async-await\"}' --tags 'not @skip'",
+    "cucumber:fast": "npm run cucumber -- --tags 'not @slow'",
     "cucumber:watch": "npm run cucumber -- --tags @watch",
     "lint": "eslint --format=node_modules/eslint-formatter-pretty source features storybook *.js",
     "flow:test": "flow; test $? -eq 0 -o $? -eq 2",
@@ -61,6 +62,7 @@
     "concurrently": "3.5.1",
     "cross-env": "5.1.1",
     "cucumber": "3.1.0",
+    "cucumber-pretty": "1.4.4",
     "del": "3.0.0",
     "devtron": "1.4.0",
     "electron": "1.7.16",
@@ -128,6 +130,7 @@
     "eslint-plugin-flowtype": "3.0.0",
     "fbjs-scripts": "0.8.3",
     "form-data": "2.3.1",
+    "graceful-fs": "4.1.11",
     "gulp": "4.0.0",
     "humanize-duration": "3.12.0",
     "lockfile": "1.0.4",
@@ -157,6 +160,7 @@
     "react-router": "3.0.3",
     "react-svg-inline": "2.1.0",
     "recharts": "1.0.0-beta.10",
+    "retry": "0.12.0",
     "route-parser": "0.0.5",
     "rust-cardano-crypto": "0.2.0",
     "safe-buffer": "5.1.1",
@@ -164,9 +168,7 @@
     "split-file": "2.1.0",
     "unorm": "1.4.1",
     "validator": "9.1.2",
-    "web3-utils": "1.0.0-beta.30",
-    "graceful-fs": "4.1.11",
-    "retry": "0.12.0"
+    "web3-utils": "1.0.0-beta.30"
   },
   "resolutions": {
     "eslint-scope": "3.7.3"

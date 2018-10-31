@@ -2,7 +2,9 @@
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import type { Daedalus } from '../support/global-types';
-import { getProcessesByName } from '../../source/main/utils/processes';
+import { waitUntilTextInSelector } from '../support/helpers/shared-helpers';
+import { waitForCardanoNodeToExit } from '../support/helpers/cardano-node-helpers';
+import { waitForDaedalusToExit } from '../support/helpers/app-helpers';
 
 declare var daedalus: Daedalus;
 
@@ -16,12 +18,20 @@ When(/^I refresh the main window$/, async function () {
 
 When(/^I close the main window$/, async function () {
   await this.client.execute(() => daedalus.stores.window.closeWindow());
-  await this.client.waitUntil(async () => (await this.client.getWindowCount()) === 0);
 });
 
 Then(/^Daedalus process is not running$/, async function () {
-  const daedalusProcessName = process.platform === 'linux' ? 'electron' : 'Electron';
-  return await this.client.waitUntil(async () => (
-    (await getProcessesByName(daedalusProcessName)).length === 0
-  ));
+  await waitForDaedalusToExit(this.client);
+});
+
+Then(/^Daedalus should quit$/, { timeout: 70000 }, async function () {
+  await waitForCardanoNodeToExit(this.client);
+  await waitForDaedalusToExit(this.client);
+});
+
+Then(/^I should see the loading screen with "([^"]*)"$/, async function (message) {
+  await waitUntilTextInSelector(this.client, {
+    selector: '.Loading_connecting h1',
+    text: message
+  });
 });

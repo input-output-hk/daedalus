@@ -1,8 +1,10 @@
 // @flow
 import { Given, Then } from 'cucumber';
 import { CardanoNodeStates } from '../../source/common/types/cardanoNode.types';
-import { getCardanoNodeState } from '../support/helpers/cardano-node-helpers';
-import { getProcessesByName } from '../../source/main/utils/processes';
+import {
+  getCardanoNodeState,
+  waitForCardanoNodeToExit
+} from '../support/helpers/cardano-node-helpers';
 
 Given(/^cardano-node is running$/, async function () {
   return await this.client.waitUntil(async () => (
@@ -10,8 +12,6 @@ Given(/^cardano-node is running$/, async function () {
   ));
 });
 
-Then(/^cardano-node process is not running$/, { timeout: 61000 }, async function () {
-  return await this.client.waitUntil(async () => (
-    (await getProcessesByName('cardano-node')).length === 0
-  ), 61000);
+Then(/^cardano-node process is not running$/, { timeout: 61000 }, async function() {
+  return waitForCardanoNodeToExit(this.client);
 });

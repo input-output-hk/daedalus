@@ -15,5 +15,6 @@ export type Daedalus = {
 export type WebdriverExecuteResult<T> = { value: T };
 
 export type WebdriverClient = {
-  execute: (script: Function) => WebdriverExecuteResult<any>
+  execute: (script: Function) => WebdriverExecuteResult<any>,
+  waitUntil: (script: Function) => Promise<any>
 };

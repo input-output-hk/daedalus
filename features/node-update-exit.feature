@@ -1,48 +1,27 @@
-Feature: Node Update Notification
+Feature: Node Update Exit
 
   Background:
-    Given I have completed the basic setup
-    And I have the following wallets:
-      | name        |
-      | Test wallet |
-    When I am on the "Test wallet" wallet "summary" screen
-    When I make a node update available
-    Then I should see the node update notification component
-    Then I should see the notification's title bar
-    Then I should see the expected update version in the notification's title bar
-    Then I should see the notification's toggle button
-    Then I should see the notification's update message
-    Then I should see the notification's accept button
-    Then I should see the notification's postpone button
-
-  Scenario: User postpones a node update notification
-    When I click the notification's postpone button
-    Then I should not see the notification component anymore
-
-  @restartApp @skip
-  Scenario: User accepts a node update notification
-    When I click the notification's accept button
-    Then I should see the Daedalus window close
-
-  @restartApp
-  Scenario: apply-update endpoint triggered, and node fails to exit, that's still handled
     Given Daedalus is running
     And cardano-node is running
+
+  @slow @restartApp
+  Scenario: apply-update endpoint triggered, and node fails to exit, that's still handled
     When I inject fault named "FInjApplyUpdateNoExit"
     When I trigger the apply-update endpoint
-    Then cardano-node process is not running
-    And Daedalus process is not running
+    Then I should see the loading screen with "Updating Cardano node"
+    And Daedalus should quit
 
-  @restartApp
+  # TODO: clarify what should happen when cardano exits with wrong code!
+  # Currently Daedalus thinks that cardano-node crashed and restarts it …
+  @skip @slow @restartApp
   Scenario: apply-update endpoint triggered, and node exits with wrong exit code, that's still handled
-    Given Daedalus is running
-    And cardano-node is running
     When I inject fault named "FInjApplyUpdateWrongExitCode"
     When I trigger the apply-update endpoint
-    Then cardano-node process is not running
-    And Daedalus process is not running
+    Then I should see the loading screen with "Updating Cardano node"
+    And Daedalus should quit
 
-  @restartApp
+  # TODO: Daedalus doesn't handle ignored api calls atm
+  @skip @slow @restartApp
   Scenario: apply-update endpoint triggered, and node ignores the endpoint call, that's still handled
     Given Daedalus is running
     And cardano-node is running
