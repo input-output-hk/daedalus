@@ -1,5 +1,4 @@
 // @flow
-import { isObject } from 'lodash';
 import type {
   CardanoNodeStorageKeys,
   NetworkNames,

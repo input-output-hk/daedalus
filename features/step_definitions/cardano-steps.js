@@ -12,6 +12,6 @@ Given(/^cardano-node is running$/, async function () {
   ));
 });
 
-Then(/^cardano-node process is not running$/, { timeout: 61000 }, async function() {
+Then(/^cardano-node process is not running$/, { timeout: 61000 }, async function () {
   return waitForCardanoNodeToExit(this.client);
 });

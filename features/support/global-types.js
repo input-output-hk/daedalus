@@ -16,5 +16,5 @@ export type WebdriverExecuteResult<T> = { value: T };
 
 export type WebdriverClient = {
   execute: (script: Function) => WebdriverExecuteResult<any>,
-  waitUntil: (script: Function) => Promise<any>
+  waitUntil: (script: Function, timeout?: number) => Promise<any>
 };

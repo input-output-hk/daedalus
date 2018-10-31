@@ -15,4 +15,4 @@ export const waitForCardanoNodeToExit = async (client: WebdriverClient) => (
   await client.waitUntil(async () => (
     (await getProcessesByName('cardano-node')).length === 0
   ), 61000)
-)
+);
