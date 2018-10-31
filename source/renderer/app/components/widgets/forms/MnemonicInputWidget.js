@@ -1,3 +1,4 @@
+// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { Input } from 'react-polymorph/lib/components/Input';
@@ -8,7 +9,7 @@ type Props = {
   label: string,
   tokens: Array<string>,
   onTokenChanged: Function,
-  error: string,
+  error?: string,
 };
 
 @observer
