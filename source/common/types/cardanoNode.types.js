@@ -86,7 +86,7 @@ export const CardanoProcessNameOptions: {
  */
 export type FaultInjection = (
   'FInjIgnoreShutdown' |
-  'FInjIgnoreApi' |
+  'FInjIgnoreAPI' |
   'FInjApplyUpdateNoExit' |
   'FInjApplyUpdateWrongExitCode'
 );
@@ -98,7 +98,7 @@ export const FaultInjections: {
   ApplyUpdateWrongExitCode: FaultInjection
 } = {
   IgnoreShutdown: 'FInjIgnoreShutdown',
-  IgnoreApi: 'FInjIgnoreApi',
+  IgnoreApi: 'FInjIgnoreAPI',
   ApplyUpdateNoExit: 'FInjApplyUpdateNoExit',
   ApplyUpdateWrongExitCode: 'FInjApplyUpdateWrongExitCode',
 };
