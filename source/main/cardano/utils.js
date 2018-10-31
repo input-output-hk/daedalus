@@ -32,7 +32,7 @@ const checkCondition = async (
   if (result) {
     resolve();
   } else if (timeWaited >= timeout) {
-    reject(`Condition not met within ${timeout}ms: ${condition.toString()}`);
+    reject(`Promised condition not met within ${timeout}ms.`);
   } else {
     setTimeout(() => checkCondition(
       condition, resolve, reject, timeout, retryEvery, timeWaited + retryEvery
