@@ -47,18 +47,24 @@
   p {
     font-size: 16px;
     line-height: 1.38;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     opacity: 0.8;
   }
 
+  a {
+    border-bottom: 1px solid var(--theme-system-error-overlay-text-color);
+    color: var(--theme-system-error-overlay-text-color);
+    text-decoration: none;
+  }
+
   .checkLink {
+    border-bottom: 1px solid var(--theme-system-error-overlay-text-color);
     color: var(--theme-system-error-overlay-text-color);
     cursor: pointer;
     font-size: 14px;
     line-height: 1.36;
-    margin-top: 20px;
+    margin-top: 30px;
     opacity: 0.8;
-    border-bottom: 1px solid var(--theme-system-error-overlay-text-color);
 
     &:disabled {
       text-decoration: none;
