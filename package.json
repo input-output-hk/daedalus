@@ -25,7 +25,7 @@
     "manage:translations": "gulp purge:translations && gulp clear:cache && gulp build && node ./translations/translation-runner.js",
     "storybook": "start-storybook -p 6006 -c storybook",
     "clear:cache": "gulp clear:cache",
-    "nix:dev": "nix-shell --arg autoStartBackend true --arg systemStart",
+    "nix:dev": "nix-shell --arg autoStartBackend true --arg allowFaultInjection true --arg systemStart",
     "nix:staging": "nix-shell --arg autoStartBackend true --argstr cluster staging"
   },
   "bin": {
