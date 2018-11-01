@@ -29,6 +29,12 @@ export default class LoadingPage extends Component<InjectedProps> {
       localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
       forceCheckLocalTimeDifference, ignoreSystemTimeChecks,
     } = stores.networkStatus;
+
+    // TODO:
+    const noDiskSpace = true;
+    const isCheckingNoDiskSpace = false;
+    const spaceRequired = '4Gb';
+
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
     return (
       <CenteredLayout>
@@ -38,6 +44,9 @@ export default class LoadingPage extends Component<InjectedProps> {
           cardanoNodeState={cardanoNodeState}
           isConnected={isConnected}
           isSynced={isSynced}
+          noDiskSpace={noDiskSpace}
+          spaceRequired={spaceRequired}
+          isCheckingNoDiskSpace={isCheckingNoDiskSpace}
           localTimeDifference={localTimeDifference}
           isSystemTimeCorrect={isSystemTimeCorrect}
           isCheckingSystemTime={forceCheckTimeDifferenceRequest.isExecuting}

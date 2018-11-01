@@ -245,13 +245,13 @@
         "description": "Message \"Starting Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.startingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -259,13 +259,13 @@
         "description": "Message \"Stopping Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.stoppingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -273,13 +273,13 @@
         "description": "Message \"Cardano node stopped\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.stoppedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -287,13 +287,13 @@
         "description": "Message \"Updating Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.updatingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -301,13 +301,13 @@
         "description": "Message \"Cardano node updated\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 48
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.updatedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 43
+          "line": 44
         }
       },
       {
@@ -315,13 +315,13 @@
         "description": "Message \"Cardano node crashed\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 53
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.crashedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 48
+          "line": 49
         }
       },
       {
@@ -329,13 +329,13 @@
         "description": "Message \"Unable to start Cardano node. Please submit a support request.\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 58
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.unrecoverableCardanoMessage",
         "start": {
           "column": 17,
-          "line": 53
+          "line": 54
         }
       },
       {
@@ -343,13 +343,13 @@
         "description": "Message \"Connecting to network\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 63
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.connectingToNetworkMessage",
         "start": {
           "column": 14,
-          "line": 58
+          "line": 59
         }
       },
       {
@@ -357,13 +357,13 @@
         "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 68
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reconnectingToNetworkMessage",
         "start": {
           "column": 16,
-          "line": 63
+          "line": 64
         }
       },
       {
@@ -371,13 +371,13 @@
         "description": "Message \"Syncing blocks\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 73
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.syncingBlocksMessage",
         "start": {
           "column": 11,
-          "line": 68
+          "line": 69
         }
       },
       {
@@ -385,13 +385,13 @@
         "description": "Report connecting issue text on the loading screen.",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 78
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.connecting.text",
         "start": {
           "column": 29,
-          "line": 73
+          "line": 74
         }
       },
       {
@@ -399,13 +399,13 @@
         "description": "Report syncing issue text on the loading screen.",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 83
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.syncing.text",
         "start": {
           "column": 26,
-          "line": 78
+          "line": 79
         }
       },
       {
@@ -413,17 +413,64 @@
         "description": "Report an issue button label on the loading.",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 88
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.buttonLabel",
         "start": {
           "column": 26,
-          "line": 83
+          "line": 84
         }
       }
     ],
     "path": "source/renderer/app/components/loading/Loading.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Daedalus Disk Space Error",
+        "description": "Title of No disk space overlay",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "source/renderer/app/components/loading/NoDiskSpaceOverlay.js",
+        "id": "noDiskSpace.error.overlayTitle",
+        "start": {
+          "column": 16,
+          "line": 12
+        }
+      },
+      {
+        "defaultMessage": "!!!ATTENTION: No disk space left on a device. Node requires {spaceRequired} more space. Free the space and click a button to continue. You need to fix issue, because you are gonna be unable to sync system!",
+        "description": "Content of No disk space overlay",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/loading/NoDiskSpaceOverlay.js",
+        "id": "noDiskSpace.error.overlayContent",
+        "start": {
+          "column": 18,
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!Check and continue",
+        "description": "Button Text of No disk space overlay",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "source/renderer/app/components/loading/NoDiskSpaceOverlay.js",
+        "id": "noDiskSpace.error.overlayButtonText",
+        "start": {
+          "column": 21,
+          "line": 22
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/loading/NoDiskSpaceOverlay.json"
   },
   {
     "descriptors": [

@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import SystemTimeErrorOverlay from './SystemTimeErrorOverlay';
+import NoDiskSpaceOverlay from './NoDiskSpaceOverlay';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import { CardanoNodeStates } from '../../../../common/types/cardanoNode.types';
@@ -100,6 +101,9 @@ type Props = {
   hasBeenConnected: boolean,
   isConnected: boolean,
   isSynced: boolean,
+  noDiskSpace: boolean,
+  spaceRequired: string,
+  isCheckingNoDiskSpace: boolean,
   syncPercentage: number,
   loadingDataForNextScreenMessage: ReactIntlMessage,
   hasLoadedCurrentLocale: boolean,
@@ -319,6 +323,9 @@ export default class Loading extends Component<Props, State> {
       apiIcon,
       isConnected,
       isSynced,
+      noDiskSpace,
+      isCheckingNoDiskSpace,
+      spaceRequired,
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
       handleReportIssue,
@@ -367,6 +374,15 @@ export default class Loading extends Component<Props, State> {
 
     return (
       <div className={componentStyles}>
+        {
+          noDiskSpace && (
+            <NoDiskSpaceOverlay
+              onCheckAndContinue={() => {}}
+              isCheckingNoDiskSpace={isCheckingNoDiskSpace}
+              spaceRequired={spaceRequired}
+            />
+          )
+        }
         {showReportIssue && (
           <div className={styles.reportIssue}>
             <h1 className={styles.reportIssueText}>

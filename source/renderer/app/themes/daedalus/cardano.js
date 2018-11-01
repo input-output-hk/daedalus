@@ -297,6 +297,10 @@ export default {
 
   '--theme-loading-background-color': '#fafbfc',
 
+  '--theme-loading-no-disk-space-background-color': 'rgba(171, 23, 0, 0.94)',
+  '--theme-loading-no-disk-space-text-color': '#fafbfc',
+  '--theme-loading-no-disk-space-attention-icon-color': '#fafbfc',
+
   '--theme-mnemonic-background-color': '#f0f3f5',
   '--theme-mnemonic-background-color-hover': '#f3f5f7',
 
