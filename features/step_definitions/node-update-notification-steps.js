@@ -1,5 +1,6 @@
 import { When, Then } from 'cucumber';
 import { expect } from 'chai';
+import { getProcessesByName } from '../../source/main/utils/processes';
 
 const NODE_UPDATE_COMPONENT = '.NodeUpdateNotification_component';
 const TITLE_BAR = '.NodeUpdateNotification_titleBar';
@@ -70,4 +71,10 @@ Then(/^I should see the Daedalus window close$/, async function () {
     const windowCount = await this.client.getWindowCount();
     expect(windowCount).to.equal(0);
   }, 1500);
+});
+
+Then(/^I should see Daedalus process not running$/, { timeout: 30000 }, async function () {
+  return await this.client.waitUntil(async () => (
+    (await getProcessesByName('Electron')).length === 0
+  ), 30000);
 });

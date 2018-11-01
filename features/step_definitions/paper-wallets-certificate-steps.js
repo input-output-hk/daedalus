@@ -65,12 +65,21 @@ When(/^I enter paper wallet recovery phrase$/, async function () {
   }
 
   const recoveryPhrase = this.walletCertificateRecoveryPhrase.split(' ');
+  console.log('recoveryPhrase', recoveryPhrase);
+  const input = await this.client.element('.SimpleAutocomplete_autocompleteWrapper input');
+  console.log('input', input);
   for (let i = 0; i < recoveryPhrase.length; i++) {
     const word = recoveryPhrase[i];
+    console.log('word', word);
+    console.log('1');
     await this.client.setValue('.SimpleAutocomplete_autocompleteWrapper input', word);
+    console.log('2');
     await this.client.waitForVisible(`//li[contains(text(), '${word}')]`);
+    console.log('4');
     await this.waitAndClick(`//li[contains(text(), '${word}')]`);
+    console.log('5');
     await this.client.waitForVisible(`//span[contains(text(), '${word}')]`);
+    console.log('6');
   }
 });
 
