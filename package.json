@@ -162,7 +162,9 @@
     "split-file": "2.1.0",
     "unorm": "1.4.1",
     "validator": "9.1.2",
-    "web3-utils": "1.0.0-beta.30"
+    "web3-utils": "1.0.0-beta.30",
+    "graceful-fs": "4.1.11",
+    "retry": "0.12.0"
   },
   "resolutions": {
     "eslint-scope": "3.7.3"

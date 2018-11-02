@@ -1,34 +1,42 @@
 // @flow
-import fs from 'fs';
 import path from 'path';
-import { lockSync, unlockSync } from 'lockfile';
+import { lockSync, unlockSync, checkSync } from './lock-files';
 import { launcherConfig } from '../config';
-import { getProcessName, getProcessesByName } from './processes';
+import { getProcessName } from './processes';
+
+const OPTIONS = {
+  realpath: false, // Resolve symlinks (note that if true, the file must exist previously)
+};
 
 const getLockFilePath = async (): Promise<string> => {
   const processName = await getProcessName(process.pid);
-  return path.join(launcherConfig.statePath, `${processName}.lock`);
+  return path.join(launcherConfig.statePath, processName);
+};
+
+const isLockfileActive = (lockFilePath) => {
+  try {
+    return checkSync(lockFilePath, OPTIONS);
+  } catch (error) {
+    return false;
+  }
 };
 
 export const acquireDaedalusInstanceLock = async () => {
   const lockFilePath = await getLockFilePath();
-  try {
-    lockSync(lockFilePath);
-  } catch (error) {
-    if (error.code === 'EEXIST') {
-      console.log('Lockfile already exists. Checking for other Daedalus instance.');
-      const processName = await getProcessName(process.pid);
-      const processesWithSameName = await getProcessesByName(processName);
-      if (processesWithSameName.length > 1) {
-        throw new Error('Another Daedalus instance is already running.');
-      }
-      console.log('No other Daedalus instance running. Recreating the lockfile.');
-      fs.unlinkSync(lockFilePath);
-      await acquireDaedalusInstanceLock();
-    } else {
-      throw error;
-    }
+  const isOtherInstanceActive = isLockfileActive(lockFilePath);
+  if (isOtherInstanceActive) {
+    return Promise.reject(new Error('Another Daedalus instance is already running.'));
   }
+  lockSync(lockFilePath, OPTIONS);
 };
 
-export const releaseDaedalusInstanceLock = async () => unlockSync(await getLockFilePath());
+export const releaseDaedalusInstanceLock = async () => (
+  unlockSync(await getLockFilePath(), OPTIONS)
+);
+
+// Map SIGINT & SIGTERM to process exit
+// so that lockfile removes the lockfile automatically
+// https://www.npmjs.com/package/proper-lockfile
+process
+  .once('SIGINT', () => process.exit(1))
+  .once('SIGTERM', () => process.exit(1));
