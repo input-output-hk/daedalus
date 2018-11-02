@@ -88,8 +88,8 @@ const rpOptions = {
 
 // SELECT
 const rpSelect = {
-  '--rp-select-arrow-color': '#606d7b',
-  '--rp-select-arrow-color-open': '#e9f4fe',
+  '--rp-select-arrow-bg-color': '#606d7b',
+  '--rp-select-arrow-bg-color-open': '#e9f4fe',
   '--rp-select-input-border-color-focus': '#667a8a',
 };
 
