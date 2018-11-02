@@ -72,7 +72,7 @@ const rpInput = {
 // MODAL
 const rpModal = {
   '--rp-modal-bg-color': '#fafbfc',
-  '--rp-modal-overlay-color': 'rgba(0, 0, 0, 0.4)',
+  '--rp-modal-overlay-bg-color': 'rgba(0, 0, 0, 0.4)',
 };
 
 // OPTIONS
