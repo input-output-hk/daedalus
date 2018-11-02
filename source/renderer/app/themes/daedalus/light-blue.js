@@ -41,11 +41,11 @@ const rpColors = {
 
 // FONTS
 const rpFonts = {
-  '--rp-font-thin': 'NotoSans-Thin, NotoSansCJKjp-Thin',
-  '--rp-font-light': 'NotoSans-Light, NotoSansCJKjp-Light',
-  '--rp-font-medium': 'NotoSans-Medium, NotoSansCJKjp-Medium',
-  '--rp-font-regular': 'NotoSans-Regular, NotoSansCJKjp-Regular',
-  '--rp-font-bold': 'NotoSans-Bold, NotoSansCJKjp-Bold',
+  '--rp-theme-font-thin': 'NotoSans-Thin, NotoSansCJKjp-Thin',
+  '--rp-theme-font-light': 'NotoSans-Light, NotoSansCJKjp-Light',
+  '--rp-theme-font-medium': 'NotoSans-Medium, NotoSansCJKjp-Medium',
+  '--rp-theme-font-regular': 'NotoSans-Regular, NotoSansCJKjp-Regular',
+  '--rp-theme-font-bold': 'NotoSans-Bold, NotoSansCJKjp-Bold',
 };
 
 // FORMFIELD
