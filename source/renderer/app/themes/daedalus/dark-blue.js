@@ -95,10 +95,10 @@ const rpSelect = {
 
 // SWITCH
 const rpSwitch = {
-  '--rp-switch-label-color': '#e9f4fe',
-  '--rp-switch-accent-color-off': '#536370',
-  '--rp-switch-accent-color-on': '#536370',
-  '--rp-switch-thumb-accent-color': '#fff',
+  '--rp-switch-bg-color-off': '#536370',
+  '--rp-switch-bg-color-on': '#536370',
+  '--rp-switch-label-text-color': '#e9f4fe',
+  '--rp-switch-thumb-bg-color': '#fff',
 };
 
 // TEXTAREA
