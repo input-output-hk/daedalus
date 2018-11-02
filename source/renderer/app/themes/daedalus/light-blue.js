@@ -78,10 +78,10 @@ const rpModal = {
 // OPTIONS
 const rpOptions = {
   '--rp-option-bg-color': '#fafbfc',
+  '--rp-option-bg-color-highlighted': '#edf0f3',
   '--rp-option-border-color': '#c6cdd6',
   '--rp-option-checkmark-color': '#5e6066',
-  '--rp-option-font-color': '#5e6066',
-  '--rp-option-highlight-color': '#edf0f3',
+  '--rp-option-text-color': '#5e6066',
   '--rp-options-border-color': '#c6cdd6',
   '--rp-options-shadow': 'none',
 };
