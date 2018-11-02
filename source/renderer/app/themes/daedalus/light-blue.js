@@ -31,7 +31,7 @@ const rpButton = {
 // CHECKBOX
 const rpCheckbox = {
   '--rp-checkbox-border-color-disabled': 'rgba(47, 73, 110, 0.2)',
-  '--rp-checkbox-label-color-disabled': 'rgba(94, 96, 102, 0.3)',
+  '--rp-checkbox-label-text-color-disabled': 'rgba(94, 96, 102, 0.3)',
 };
 
 // COLORS
