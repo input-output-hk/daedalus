@@ -50,10 +50,11 @@ const rpFonts = {
 
 // FORMFIELD
 const rpFormfield = {
-  '--rp-formfield-bg-color-disabled': 'none',
+  '--rp-formfield-bg-color-disabled': 'none !important',
   '--rp-formfield-label-text-color': '#5e6066',
   '--rp-formfield-label-text-color-disabled': '#5e6066',
   '--rp-formfield-error-text-color': '#ea4c5b',
+  '--rp-formfield-error-text-opacity': '0.75',
 };
 
 // INPUT
