@@ -3,7 +3,8 @@ import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 // react-polymorph components
 import SimpleFormField from 'react-polymorph/lib/themes/simple/SimpleFormField.scss';
 // import SimpleFormField from './simple/SimpleFormField.scss';
-import SimpleInput from './simple/SimpleInput.scss';
+import SimpleInput from 'react-polymorph/lib/themes/simple/SimpleInput.scss';
+// import SimpleInput from './simple/SimpleInput.scss';
 import SimpleCheckbox from './simple/SimpleCheckbox.scss';
 import SimpleSwitch from './simple/SimpleSwitch.scss';
 import SimpleModal from './simple/SimpleModal.scss';

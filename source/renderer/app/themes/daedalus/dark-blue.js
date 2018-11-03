@@ -65,9 +65,12 @@ const rpInput = {
   '--rp-input-border-color-disabled': 'rgba(135, 147, 161, 0.1)',
   '--rp-input-border-color-errored': '#ea4c5b',
   '--rp-input-border-color-focus': '#667a8a',
+  '--rp-input-line-height': '22px',
+  '--rp-input-padding': '12px 20px !important',
   '--rp-input-placeholder-color': '#8793a1',
   '--rp-input-placeholder-color-disabled': '#8793a1',
   '--rp-input-text-color': '#e9f4fe',
+  '--rp-input-text-color-disabled': '#8793a1',
 };
 
 // MODAL
