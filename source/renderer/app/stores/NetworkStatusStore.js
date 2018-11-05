@@ -2,6 +2,7 @@
 import { observable, action, computed, runInAction } from 'mobx';
 import moment from 'moment';
 import { isEqual } from 'lodash';
+import { ipcRenderer } from 'electron';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
@@ -13,6 +14,7 @@ import {
 } from '../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
 import { Logger } from '../../../common/logging';
+import { CHECK_DISK_SPACE } from '../../../common/ipc-api';
 import {
   cardanoStateChangeChannel,
   tlsConfigChannel,
@@ -22,6 +24,7 @@ import { CardanoNodeStates } from '../../../common/types/cardanoNode.types';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
 import type { CardanoNodeState, TlsConfig } from '../../../common/types/cardanoNode.types';
 import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
+import type { IpcEvent } from '../../../common/ipc/lib/IpcChannel';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedState = null;
@@ -70,6 +73,10 @@ export default class NetworkStatusStore extends Store {
     this.api.ada.getNetworkStatus
   );
 
+  @observable noDiskSpace: boolean = true;
+  @observable isCheckingNoDiskSpace: boolean = false;
+  @observable diskSpaceRequired: number = 1040;
+
   // DEFINE STORE METHODS
   setup() {
     // ========== IPC CHANNELS =========== //
@@ -96,6 +103,9 @@ export default class NetworkStatusStore extends Store {
     this._systemTimeChangeCheckPollingInterval = setInterval(
       this._updateSystemTime, SYSTEM_TIME_POLL_INTERVAL
     );
+
+    ipcRenderer.on(CHECK_DISK_SPACE.SUCCESS, this.onCheckDiskSpaceSuccess);
+    ipcRenderer.on(CHECK_DISK_SPACE.ERROR, this.onCheckDiskSpaceError);
   }
 
   async restartNode() {
@@ -381,6 +391,21 @@ export default class NetworkStatusStore extends Store {
 
   forceCheckLocalTimeDifference = async () => {
     await this._updateNetworkStatus({ force_ntp_check: true });
+  };
+
+  @action onCheckDiskSpace = () => {
+    this.isCheckingNoDiskSpace = true;
+    ipcRenderer.send(CHECK_DISK_SPACE.REQUEST);
+  };
+
+  @action onCheckDiskSpaceSuccess = (event: IpcEvent, noDiskSpace: boolean) => {
+    this.noDiskSpace = noDiskSpace;
+    this.isCheckingNoDiskSpace = false;
+  };
+
+  @action onCheckDiskSpaceError = () => {
+    this.noDiskSpace = false;
+    this.isCheckingNoDiskSpace = false;
   };
 
   // DEFINE COMPUTED VALUES

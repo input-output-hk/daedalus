@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import prettysize from 'prettysize';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import attentionIcon from '../../assets/images/attention-big-light.inline.svg';
@@ -16,7 +17,7 @@ const messages = defineMessages({
   },
   overlayContent: {
     id: 'noDiskSpace.error.overlayContent',
-    defaultMessage: '!!!ATTENTION: No disk space left on a device. Node requires {spaceRequired} more space. Free the space and click a button to continue. You need to fix issue, because you are gonna be unable to sync system!',
+    defaultMessage: '!!!ATTENTION: No disk space left on a device. Node requires {diskSpaceRequired} more space. Free the space and click a button to continue. You need to fix issue, because you are gonna be unable to sync system!',
     description: 'Content of No disk space overlay'
   },
   overlayButtonText: {
@@ -27,9 +28,9 @@ const messages = defineMessages({
 });
 
 type Props = {
-  onCheckAndContinue: Function,
+  onCheckDiskSpace: Function,
   isCheckingNoDiskSpace: boolean,
-  spaceRequired: string,
+  diskSpaceRequired: number,
 };
 
 @observer
@@ -42,9 +43,9 @@ export default class NoDiskSpaceErrorOverlay extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      onCheckAndContinue,
+      onCheckDiskSpace,
       isCheckingNoDiskSpace,
-      spaceRequired
+      diskSpaceRequired
     } = this.props;
 
     return (
@@ -58,14 +59,14 @@ export default class NoDiskSpaceErrorOverlay extends Component<Props> {
           <p>
             <FormattedMessage
               {...messages.overlayContent}
-              values={{ spaceRequired }}
+              values={{ diskSpaceRequired: prettysize(diskSpaceRequired) }}
             />
           </p>
 
           <Button
             className="disclaimer"
             label={intl.formatMessage(messages.overlayButtonText)}
-            onClick={() => onCheckAndContinue()}
+            onClick={() => onCheckDiskSpace()}
             disabled={isCheckingNoDiskSpace}
             skin={ButtonSkin}
           />
