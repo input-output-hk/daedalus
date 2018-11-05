@@ -29,6 +29,11 @@ import type { IpcEvent } from '../../../common/ipc/lib/IpcChannel';
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedState = null;
 
+type CheckDiskSpaceResponse = {
+  noDiskSpace: boolean,
+  diskSpaceRequired: number
+};
+
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
   CONNECTING: 0,
@@ -75,7 +80,7 @@ export default class NetworkStatusStore extends Store {
 
   @observable noDiskSpace: boolean = true;
   @observable isCheckingNoDiskSpace: boolean = false;
-  @observable diskSpaceRequired: number = 1040;
+  @observable diskSpaceRequired: number = 123456789;
 
   // DEFINE STORE METHODS
   setup() {
@@ -398,8 +403,14 @@ export default class NetworkStatusStore extends Store {
     ipcRenderer.send(CHECK_DISK_SPACE.REQUEST);
   };
 
-  @action onCheckDiskSpaceSuccess = (event: IpcEvent, noDiskSpace: boolean) => {
+  @action onCheckDiskSpaceSuccess = (
+    event: IpcEvent,
+    { noDiskSpace,
+      diskSpaceRequired,
+    }: CheckDiskSpaceResponse
+  ) => {
     this.noDiskSpace = noDiskSpace;
+    this.diskSpaceRequired = diskSpaceRequired;
     this.isCheckingNoDiskSpace = false;
   };
 
