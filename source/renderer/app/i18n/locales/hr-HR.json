@@ -89,7 +89,7 @@
   "loading.screen.updatedCardanoMessage": "!!!Cardano node updated",
   "loading.screen.updatingCardanoMessage": "!!!Updating Cardano node",
   "noDiskSpace.error.overlayButtonText": "!!!Check and continue",
-  "noDiskSpace.error.overlayContent": "!!!ATTENTION: No disk space left on a device. Node requires {spaceRequired} more space. Free the space and click a button to continue. You need to fix issue, because you are gonna be unable to sync system!",
+  "noDiskSpace.error.overlayContent": "!!!ATTENTION: No disk space left on a device. Node requires {diskSpaceRequired} more space. Free the space and click a button to continue. You need to fix issue, because you are gonna be unable to sync system!",
   "noDiskSpace.error.overlayTitle": "!!!Daedalus Disk Space Error",
   "paper.wallet.create.certificate.completion.dialog.addressCopiedLabel": "!!!copied",
   "paper.wallet.create.certificate.completion.dialog.addressInstructions": "!!!To receive funds to your paper wallet simply share your wallet address with others.",

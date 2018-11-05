@@ -432,27 +432,27 @@
         "description": "Title of No disk space overlay",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 17
         },
         "file": "source/renderer/app/components/loading/NoDiskSpaceOverlay.js",
         "id": "noDiskSpace.error.overlayTitle",
         "start": {
           "column": 16,
-          "line": 12
+          "line": 13
         }
       },
       {
-        "defaultMessage": "!!!ATTENTION: No disk space left on a device. Node requires {spaceRequired} more space. Free the space and click a button to continue. You need to fix issue, because you are gonna be unable to sync system!",
+        "defaultMessage": "!!!ATTENTION: No disk space left on a device. Node requires {diskSpaceRequired} more space. Free the space and click a button to continue. You need to fix issue, because you are gonna be unable to sync system!",
         "description": "Content of No disk space overlay",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "source/renderer/app/components/loading/NoDiskSpaceOverlay.js",
         "id": "noDiskSpace.error.overlayContent",
         "start": {
           "column": 18,
-          "line": 17
+          "line": 18
         }
       },
       {
@@ -460,13 +460,13 @@
         "description": "Button Text of No disk space overlay",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "source/renderer/app/components/loading/NoDiskSpaceOverlay.js",
         "id": "noDiskSpace.error.overlayButtonText",
         "start": {
           "column": 21,
-          "line": 22
+          "line": 23
         }
       }
     ],
