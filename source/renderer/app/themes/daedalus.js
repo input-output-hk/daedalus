@@ -5,13 +5,14 @@ import SimpleFormField from 'react-polymorph/lib/themes/simple/SimpleFormField.s
 // import SimpleFormField from './simple/SimpleFormField.scss';
 import SimpleInput from 'react-polymorph/lib/themes/simple/SimpleInput.scss';
 // import SimpleInput from './simple/SimpleInput.scss';
+import SimpleBubble from 'react-polymorph/lib/themes/simple/SimpleBubble.scss';
+// import SimpleBubble from './simple/SimpleBubble.scss';
 import SimpleCheckbox from './simple/SimpleCheckbox.scss';
 import SimpleSwitch from './simple/SimpleSwitch.scss';
 import SimpleModal from './simple/SimpleModal.scss';
 import SimpleButton from './simple/SimpleButton.scss';
 import SimpleTextArea from './simple/SimpleTextArea.scss';
 import SimpleAutocomplete from './simple/SimpleAutocomplete.scss';
-import SimpleBubble from './simple/SimpleBubble.scss';
 import SimpleOptions from './simple/SimpleOptions.scss';
 import SimpleSelect from './simple/SimpleSelect.scss';
 
