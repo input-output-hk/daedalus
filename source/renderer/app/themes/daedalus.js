@@ -17,7 +17,8 @@ import SimpleOptions from 'react-polymorph/lib/themes/simple/SimpleOptions.scss'
 // import SimpleOptions from './simple/SimpleOptions.scss';
 import SimpleSelect from 'react-polymorph/lib/themes/simple/SimpleSelect.scss';
 // import SimpleSelect from './simple/SimpleSelect.scss';
-import SimpleSwitch from './simple/SimpleSwitch.scss';
+import SimpleSwitch from 'react-polymorph/lib/themes/simple/SimpleSwitch.scss';
+// import SimpleSwitch from './simple/SimpleSwitch.scss';
 import SimpleModal from './simple/SimpleModal.scss';
 import SimpleAutocomplete from './simple/SimpleAutocomplete.scss';
 
