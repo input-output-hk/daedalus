@@ -21,7 +21,8 @@ import SimpleSwitch from 'react-polymorph/lib/themes/simple/SimpleSwitch.scss';
 // import SimpleSwitch from './simple/SimpleSwitch.scss';
 import SimpleModal from 'react-polymorph/lib/themes/simple/SimpleModal.scss';
 // import SimpleModal from './simple/SimpleModal.scss';
-import SimpleAutocomplete from './simple/SimpleAutocomplete.scss';
+import SimpleAutocomplete from 'react-polymorph/lib/themes/simple/SimpleAutocomplete.scss';
+// import SimpleAutocomplete from './simple/SimpleAutocomplete.scss';
 
 const {
   SELECT, INPUT, FORM_FIELD, CHECKBOX, SWITCH, MODAL,
