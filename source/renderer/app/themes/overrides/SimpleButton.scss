@@ -1,19 +1,8 @@
-@import "_config";
-// Theme config overrides go here …
-@import "~react-polymorph/lib/themes/simple/SimpleButton";
 // Css module overrides go here …
 @import '../mixins/buttons';
 
 .root {
-  background: var(--theme-button-primary-background-color); // TODO: remove before merging DDW-376
-  font-size: 14px;
-  font-family: var(--font-medium); // TODO: remove before merging DDW-376
-  height: 50px;
-  line-height: 20px;
   position: relative;
-  text-transform: none;
-  width: 360px;
-  padding: 0;
 }
 
 :global {
