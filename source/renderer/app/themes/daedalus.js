@@ -13,10 +13,12 @@ import SimpleCheckbox from 'react-polymorph/lib/themes/simple/SimpleCheckbox.scs
 // import SimpleCheckbox from './simple/SimpleCheckbox.scss';
 import SimpleTextArea from 'react-polymorph/lib/themes/simple/SimpleTextArea.scss';
 // import SimpleTextArea from './simple/SimpleTextArea.scss';
+import SimpleOptions from 'react-polymorph/lib/themes/simple/SimpleOptions.scss';
+// import SimpleOptions from './simple/SimpleOptions.scss';
 import SimpleSwitch from './simple/SimpleSwitch.scss';
 import SimpleModal from './simple/SimpleModal.scss';
 import SimpleAutocomplete from './simple/SimpleAutocomplete.scss';
-import SimpleOptions from './simple/SimpleOptions.scss';
+
 import SimpleSelect from './simple/SimpleSelect.scss';
 
 const {

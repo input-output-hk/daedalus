@@ -93,6 +93,7 @@ const rpOptions = {
   '--rp-option-bg-color-highlighted': '#536370',
   '--rp-option-border-color': '#667a8a',
   '--rp-option-checkmark-color': '#fff',
+  '--rp-option-line-height': '22px',
   '--rp-option-text-color': '#e9f4fe',
   '--rp-options-border-color': '#667a8a',
   '--rp-options-shadow': '0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 0 4px 0 rgba(0, 0, 0, 0.1)',
