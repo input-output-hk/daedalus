@@ -84,6 +84,7 @@ const rpInput = {
 // MODAL
 const rpModal = {
   '--rp-modal-bg-color': '#263345',
+  '--rp-modal-max-height': '90%',
   '--rp-modal-overlay-bg-color': 'rgba(0, 0, 0, 0.4)',
 };
 
