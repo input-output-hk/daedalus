@@ -1,8 +1,10 @@
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
-import ButtonOverrides from './SimpleButton.scss';
+import ButtonOverrides from './ButtonOverrides.scss';
+import SwitchOverrides from './SwitchOverrides.scss';
 
-const { BUTTON } = IDENTIFIERS;
+const { BUTTON, SWITCH } = IDENTIFIERS;
 
 export const themeOverrides = {
-  [BUTTON]: ButtonOverrides
+  [BUTTON]: ButtonOverrides,
+  [SWITCH]: SwitchOverrides,
 };
