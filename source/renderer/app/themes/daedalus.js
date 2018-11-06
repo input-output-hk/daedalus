@@ -15,11 +15,11 @@ import SimpleTextArea from 'react-polymorph/lib/themes/simple/SimpleTextArea.scs
 // import SimpleTextArea from './simple/SimpleTextArea.scss';
 import SimpleOptions from 'react-polymorph/lib/themes/simple/SimpleOptions.scss';
 // import SimpleOptions from './simple/SimpleOptions.scss';
+import SimpleSelect from 'react-polymorph/lib/themes/simple/SimpleSelect.scss';
+// import SimpleSelect from './simple/SimpleSelect.scss';
 import SimpleSwitch from './simple/SimpleSwitch.scss';
 import SimpleModal from './simple/SimpleModal.scss';
 import SimpleAutocomplete from './simple/SimpleAutocomplete.scss';
-
-import SimpleSelect from './simple/SimpleSelect.scss';
 
 const {
   SELECT, INPUT, FORM_FIELD, CHECKBOX, SWITCH, MODAL,
