@@ -110,7 +110,12 @@ const rpSelect = {
 const rpSwitch = {
   '--rp-switch-bg-color-off': '#536370',
   '--rp-switch-bg-color-on': '#536370',
+  '--rp-switch-label-margin': '0 30px 0 0 !important',
+  '--rp-switch-label-opacity': '0.5',
   '--rp-switch-label-text-color': '#e9f4fe',
+  '--rp-switch-label-width': '100%',
+  '--rp-switch-opacity-off': '0.3',
+  '--rp-switch-root-margin': '0 0 30px 0',
   '--rp-switch-thumb-bg-color': '#fff',
 };
 
