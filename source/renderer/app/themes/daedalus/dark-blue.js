@@ -25,7 +25,12 @@ const rpButton = {
   '--rp-button-bg-color-disabled': 'rgba(233, 244, 254, 0.5)',
   '--rp-button-bg-color-hover': '#667a8a',
   '--rp-button-font-family': 'NotoSans-Medium, NotoSansCJKjp-Medium',
+  '--rp-button-height': '50px',
+  '--rp-button-line-height': '20px',
+  '--rp-button-padding': '0',
   '--rp-button-text-color': '#e9f4fe',
+  '--rp-button-text-transform': 'none',
+  '--rp-button-width': '360px',
 };
 
 // CHECKBOX
