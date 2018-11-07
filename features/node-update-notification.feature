@@ -1,4 +1,3 @@
-@watch
 Feature: Node Update Notification
 
   Background:

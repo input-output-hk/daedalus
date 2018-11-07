@@ -3,7 +3,6 @@ import { defineSupportCode } from 'cucumber';
 import electronPath from 'electron';
 import environment from '../../source/common/environment';
 import { generateScreenshotFilePath, getTestNameFromTestFile, saveScreenshot } from './helpers/screenshot';
-import { getProcessesByName } from '../../source/main/utils/processes';
 
 const context = {};
 const DEFAULT_TIMEOUT = 20000;
@@ -96,9 +95,6 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
   // after the node update acceptance test shuts it down via 'kill-process'
   // eslint-disable-next-line prefer-arrow-callback
   After({ tags: '@restartApp' }, async function () {
-    // await this.client.waitUntil(async () => (
-    //   (await getProcessesByName('Electron')).length === 0
-    // ), 30000);
     context.app = await startApp();
   });
 

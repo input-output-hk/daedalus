@@ -1,4 +1,3 @@
-@watch
 Feature: Paper Wallets Certificate generation
 
   Background:

@@ -1,10 +1,8 @@
-@watch
 Feature: Generate Wallet Address
 
   Background:
     Given I have completed the basic setup
 
-  @skip
   Scenario: Generating wallet address
     Given I have the following wallets:
       | name   |
