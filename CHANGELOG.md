@@ -9,6 +9,10 @@ Changelog
 
 - Fixed the partly broken flow setup ([PR 1124](https://github.com/input-output-hk/daedalus/pull/1124))
 
+### Chores
+
+- Added --rp prefixed css variables to Daedalus themes to configure styles of react-polymorph components and removed SimpleTheme imports previously used for react-polymorph overrides in favor of using ThemeProvider's themeOverrides feature ([PR 1139])(https://github.com/input-output-hk/daedalus/pull/1139)
+
 ## 0.12.0
 =======
 
