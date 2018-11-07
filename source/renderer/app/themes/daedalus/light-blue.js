@@ -1,4 +1,5 @@
 //  ==== react-polymorph: theme config === //
+
 // AUTOCOMPLETE
 const rpAutocomplete = {
   '--rp-autocomplete-bg-color': '#fafbfc',
