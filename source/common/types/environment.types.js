@@ -11,6 +11,7 @@ export type Environment = {
   isMainnet: boolean,
   isStaging: boolean,
   isTestnet: boolean,
+  isWatchMode: boolean,
   build: string,
   buildNumber: string,
   buildLabel: string,
