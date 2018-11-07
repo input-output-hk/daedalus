@@ -1,2 +1,2 @@
 // @flow
-export type networkType = 'mainnet' | 'staging' | 'testnet' | 'development';
+export type networkType = 'mainnet' | 'staging' | 'testnet' | 'development' | string;
