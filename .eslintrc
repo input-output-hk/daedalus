@@ -1,6 +1,6 @@
 {
   "parser": "babel-eslint",
-  "extends": "airbnb",
+  "extends": ["airbnb", "plugin:flowtype/recommended"],
   "env": {
     "browser": true,
     "mocha": true,
@@ -68,6 +68,7 @@
     "import/extensions": 0
   },
   "plugins": [
+    "flowtype",
     "import",
     "promise",
     "react"

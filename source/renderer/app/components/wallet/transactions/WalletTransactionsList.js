@@ -52,6 +52,8 @@ type Props = {
   onOpenExternalLink?: Function,
 };
 
+type TransactionsGroup = { date: moment.Moment, transactions: Array<WalletTransaction>};
+
 @observer
 export default class WalletTransactionsList extends Component<Props> {
 
@@ -74,20 +76,20 @@ export default class WalletTransactionsList extends Component<Props> {
   loadingSpinner: ?LoadingSpinner;
   localizedDateFormat: 'MM/DD/YYYY';
 
-  groupTransactionsByDay(transactions: Array<WalletTransaction>) {
-    const groups = [];
+  groupTransactionsByDay(transactions: Array<WalletTransaction>): Array<TransactionsGroup> {
+    const groups: Array<TransactionsGroup> = [];
     for (const transaction of transactions) {
-      const date = moment(transaction.date).format(dateFormat);
-      let group = groups.find((g) => g.date === date);
+      const date = moment(transaction.date);
+      let group = groups.find((g) => g.date.format(dateFormat) === date.format(dateFormat));
       if (!group) {
         group = { date, transactions: [] };
         groups.push(group);
       }
       group.transactions.push(transaction);
     }
-    return groups.sort(
-      (a, b) => b.transactions[0].date.getTime() - a.transactions[0].date.getTime()
-    );
+    return groups.sort((a: TransactionsGroup, b: TransactionsGroup) => (
+      b.date.valueOf() - a.date.valueOf()
+    ));
   }
 
   isSpinnerVisible() {

@@ -143,8 +143,8 @@ export default defineMessages({
   },
   faqLinkUrl: {
     id: 'settings.support.faq.faqLinkURL',
-    defaultMessage: '!!!https://daedaluswallet.io/faq/',
-    description: 'URL for the "FAQ on Daedalus website" link in the FAQ section on the support settings page',
+    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/articles/360011451693',
+    description: 'URL for the "Known Issues" link in the "Help and support" section on the support settings page',
   },
   currency: {
     id: 'environment.currency.ada',

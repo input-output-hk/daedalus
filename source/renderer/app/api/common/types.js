@@ -1,3 +1,4 @@
+// @flow
 export type RequestConfig = {
   port: number,
   ca: Uint8Array,
@@ -26,7 +27,7 @@ export type SendBugReportRequest = {
     email: string,
     subject: string,
     problem: string,
-    logs: Array<string>,
+    compressedLogsFile: string,
   },
   environmentData: {
     network: string,

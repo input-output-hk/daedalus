@@ -68,8 +68,8 @@ required dependencies for development.
 
 1. Start local cardano-sl demo cluster (`./scripts/launch/demo-nix.sh`)
 2. Inspect the terminal output of cardano-sl and copy the timestamp from the message
-   `Using system start time 1537184804`
-3. Start the nix-shell with development environment `yarn nix:dev 1537184804` (timestamp is 
+   `system start:  1537184804`
+3. Start the nix-shell with development environment `yarn nix:dev 1537184804` (timestamp is
 different each time you restart the cardano-sl demo cluster)
 4. Within the nix-shell run any command like `yarn dev`
 
@@ -95,6 +95,15 @@ You can find more details regarding tests setup within
 
 **Notes:** Be aware that only a single Daedalus instance can run per state directory.
 So you have to exit any development instances before running tests!
+
+## Wallet fault injection
+
+General information about wallet fault injection can be found in the [Cardano's wallet-new README file](https://github.com/input-output-hk/cardano-sl/tree/develop/wallet-new#fault-injection).
+
+`shell.nix` has support for passing the necessary flags:
+
+- `--arg allowFaultInjection true` is necessary to enable any processing of faults, and
+- `--arg walletExtraArgs '[ "--somefault" ]'` can be used for enabling certain fault types at startup.
 
 # Windows
 

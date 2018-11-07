@@ -37,6 +37,7 @@ const isProduction = CURRENT_NODE_ENV === PRODUCTION;
 const isMainnet = CURRENT_NODE_ENV === MAINNET;
 const isStaging = CURRENT_NODE_ENV === STAGING;
 const isTestnet = CURRENT_NODE_ENV === TESTNET;
+const isWatchMode = process.env.IS_WATCH_MODE;
 const API_VERSION = process.env.API_VERSION || 'dev';
 const PLATFORM = os.platform();
 const OS = OS_NAMES[PLATFORM] || PLATFORM;
@@ -65,6 +66,7 @@ const daedalusEnv = Object.assign({}, {
   isMainnet,
   isStaging,
   isTestnet,
+  isWatchMode,
   build: BUILD,
   buildNumber: BUILD_NUMBER,
   buildLabel: BUILD_LABEL,

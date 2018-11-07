@@ -9,7 +9,7 @@ import {
   cardanoTlsConfigChannel,
   cardanoRestartChannel,
   cardanoAwaitUpdateChannel,
-  cardanoStateChangeChannel
+  cardanoStateChangeChannel, cardanoFaultInjectionChannel
 } from '../ipc/cardano.ipc';
 import { safeExitWithCode } from '../utils/safeExitWithCode';
 import type { TlsConfig, CardanoNodeState } from '../../common/types/cardanoNode.types';
@@ -26,8 +26,8 @@ const startCardanoNode = (node: CardanoNode, launcherConfig: Object) => {
     nodeArgs,
     startupTimeout: 5000,
     startupMaxRetries: 5,
-    shutdownTimeout: 30000,
-    killTimeout: 30000,
+    shutdownTimeout: 10000,
+    killTimeout: 10000,
     updateTimeout: 60000,
   };
   return node.start(config);
@@ -101,6 +101,10 @@ export const setupCardano = (
   cardanoRestartChannel.onReceive(() => {
     Logger.info('ipcMain: Received request from renderer to restart node.');
     return cardanoNode.restart(true); // forced restart
+  });
+  cardanoFaultInjectionChannel.onReceive((fault) => {
+    Logger.info(`ipcMain: Received request to inject a fault into cardano node: ${String(fault)}`);
+    return cardanoNode.setFault(fault);
   });
 
   return cardanoNode;

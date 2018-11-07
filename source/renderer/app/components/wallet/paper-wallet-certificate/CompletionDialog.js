@@ -82,9 +82,9 @@ export default class CompletionDialog extends Component<Props, State> {
 
   state = {
     showCopyNotification: false,
-  }
+  };
 
-  copyNotificationTimeout: number;
+  copyNotificationTimeout: TimeoutID;
 
   onShowCopyNotification = () => {
     const { copyAddressNotificationDuration } = this.props;
@@ -94,7 +94,7 @@ export default class CompletionDialog extends Component<Props, State> {
     this.setState({ showCopyNotification: true });
     this.copyNotificationTimeout = setTimeout(() =>
       this.setState({ showCopyNotification: false }), timeInSeconds);
-  }
+  };
 
   render() {
     const { intl } = this.context;

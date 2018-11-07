@@ -10,18 +10,22 @@ export default class WindowStore extends Store {
 
   setup() {
     this.actions.window.resizeWindow.listen(this._resizeWindow);
+    this.actions.window.closeWindow.listen(this.closeWindow);
     this.actions.app.initAppEnvironment.listen(() => {});
     ipcRenderer.on(GET_APP_ENVIRONMENT.SUCCESS, this._onGetAppEnvironmentSuccess);
   }
+
+  closeWindow = () => ipcRenderer.send('close-window');
+
+  // PRIVATE
 
   _onGetAppEnvironmentSuccess = action((event, { isTest }) => {
     this._isTest = isTest;
   });
 
-  // PRIVATE
-
   _resizeWindow = ({ width, height }: { width: number, height: number }) => {
     ipcRenderer.send('resize-window', { width, height, animate: !this._isTest });
   };
+
 
 }

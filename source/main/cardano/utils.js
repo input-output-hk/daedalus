@@ -1,6 +1,4 @@
 // @flow
-import psList from 'ps-list';
-import { isObject } from 'lodash';
 import type {
   CardanoNodeStorageKeys,
   NetworkNames,
@@ -33,7 +31,7 @@ const checkCondition = async (
   if (result) {
     resolve();
   } else if (timeWaited >= timeout) {
-    reject(`Condition not met within ${timeout}ms: ${condition.toString()}`);
+    reject(`Promised condition not met within ${timeout}ms.`);
   } else {
     setTimeout(() => checkCondition(
       condition, resolve, reject, timeout, retryEvery, timeWaited + retryEvery
@@ -59,22 +57,3 @@ export const deriveProcessNames = (platform: PlatformNames): ProcessNames => ({
   CARDANO_PROCESS_NAME: CardanoProcessNameOptions[platform] || 'cardano-node'
 });
 
-export const getProcess = async (processId: number, processName: string): Promise<?Process> => {
-  try {
-    // retrieves all running processes
-    const runningProcesses: Array<Process> = await psList();
-    // filters running processes against given pid
-    const matchingProcesses: Array<Process> = runningProcesses.filter(({ pid }) => (
-      pid === processId
-    ));
-    // no processes exist with a matching PID
-    if (!matchingProcesses.length) return null;
-    // Return first matching process if names match
-    const previousProcess: Process = matchingProcesses[0];
-    if (isObject(previousProcess) && previousProcess.name === processName) {
-      return previousProcess;
-    }
-  } catch (error) {
-    return null;
-  }
-};

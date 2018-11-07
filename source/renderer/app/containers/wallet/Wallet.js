@@ -43,9 +43,9 @@ export default class Wallet extends Component<Props> {
     wallets.discardAntivirusRestorationSlowdownNotificationForActiveWallet.trigger();
   };
 
-  openExternalLinkInDefaultBrowser = (event: MouseEvent) => {
+  openExternalLinkInDefaultBrowser = (event: MouseEvent, url: string) => {
     event.preventDefault();
-    if (event.target.href) shell.openExternal(event.target.href);
+    shell.openExternal(url);
   };
 
   render() {
