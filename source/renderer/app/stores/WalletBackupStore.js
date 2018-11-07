@@ -4,9 +4,8 @@ import { ipcRenderer } from 'electron';
 import Store from './lib/Store';
 import WalletBackupDialog from '../components/wallet/WalletBackupDialog';
 import { GET_APP_ENVIRONMENT } from '../../../common/ipc-api';
-import type { RecoveryPhraseWord, walletBackupStep } from '../types/walletBackupTypes';
 import { WALLET_BACKUP_STEPS } from '../types/walletBackupTypes';
-import type { walletBackupStep } from '../types/walletBackupTypes';
+import type { RecoveryPhraseWord, walletBackupStep } from '../types/walletBackupTypes';
 
 export default class WalletBackupStore extends Store {
 
