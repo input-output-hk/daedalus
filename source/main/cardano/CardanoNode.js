@@ -538,7 +538,10 @@ export class CardanoNode {
         this._log.info(`CardanoNode (Windows): using "${windowsKillCmd}" to kill.`);
         this._actions.exec(windowsKillCmd);
       }
-      await promisedCondition(() => !this._isProcessRunning(pid, name), _config.killTimeout);
+      await promisedCondition(async () => (
+        (await this._isProcessRunning(pid, name)) === false
+      ), _config.killTimeout);
+
       this._log.info(`CardanoNode: successfuly killed ${name} process (PID: ${pid})`);
       return Promise.resolve();
     } catch (error) {
