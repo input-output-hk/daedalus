@@ -16,6 +16,7 @@ type Logger = {
 
 type Actions = {
   spawn: spawn,
+  exec: exec,
   readFileSync: (path: string) => Buffer,
   createWriteStream: (path: string, options?: Object) => WriteStream,
   broadcastTlsConfig: (config: ?TlsConfig) => void,
@@ -529,12 +530,13 @@ export class CardanoNode {
     const { _config } = this;
     try {
       if (!environment.isWindows()) {
-        this._log.info(`CardanoNode: using "process.kill(pid)" to kill.`);
+        this._log.info('CardanoNode: using "process.kill(pid)" to kill.');
         process.kill(pid);
       } else {
-        const windowsKillCmd = `taskkill /pid ${pid} /T /F`;
+        // https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/taskkill
+        const windowsKillCmd = `taskkill /pid ${pid} /t /f`;
         this._log.info(`CardanoNode (Windows): using "${windowsKillCmd}" to kill.`);
-        exec(windowsKillCmd);
+        this._actions.exec(windowsKillCmd);
       }
       await promisedCondition(() => !this._isProcessRunning(pid, name), _config.killTimeout);
       this._log.info(`CardanoNode: successfuly killed ${name} process (PID: ${pid})`);
