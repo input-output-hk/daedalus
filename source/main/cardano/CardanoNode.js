@@ -301,6 +301,7 @@ export class CardanoNode {
       await this.start(_config, isForced);
     } catch (error) {
       _log.info(`CardanoNode#restart: Could not restart cardano-node "${error}"`);
+      this._changeToState(CardanoNodeStates.ERRORED);
       return Promise.reject(error);
     }
   }
