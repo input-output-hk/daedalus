@@ -29,6 +29,7 @@ export default class AppStore extends Store {
     isMainnet: false,
     isStaging: false,
     isTestnet: false,
+    isWatchMode: false,
     build: '',
     buildNumber: '',
     buildLabel: '',
