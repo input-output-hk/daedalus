@@ -1,6 +1,6 @@
 // @flow
-import { ipcMain } from 'electron';
-import { CHECK_DISK_SPACE } from '../../common/ipc-api';
+import { ipcMain, BrowserWindow } from 'electron';
+import { NO_DISK_SPACE, CHECK_DISK_SPACE } from '../../common/ipc-api';
 
 export default () => {
   let checkedOnce = false;
@@ -23,4 +23,8 @@ export default () => {
       event.sender.send(CHECK_DISK_SPACE.SUCCESS, response);
     }, 2000);
   });
+};
+
+export const handleNoDiskSpace = (mainWindow: BrowserWindow) => {
+  mainWindow.webContents.send(NO_DISK_SPACE);
 };

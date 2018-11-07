@@ -1,7 +1,7 @@
 // @flow
 import { createWriteStream, readFileSync } from 'fs';
 import { spawn } from 'child_process';
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, ipcMain } from 'electron';
 import { Logger } from '../../common/logging';
 import { prepareArgs } from './config';
 import { CardanoNode } from './CardanoNode';
@@ -14,6 +14,12 @@ import {
 import { safeExitWithCode } from '../utils/safeExitWithCode';
 import type { TlsConfig, CardanoNodeState } from '../../common/types/cardanoNode.types';
 import type { LauncherConfig } from '../config';
+import { CHECK_DISK_SPACE, NO_DISK_SPACE } from '../../common/ipc-api';
+
+ipcMain.on(CHECK_DISK_SPACE.SUCCESS, (event, response) => {
+  console.log('event', event);
+  console.log('response', response);
+});
 
 const startCardanoNode = (node: CardanoNode, launcherConfig: Object) => {
   const { nodePath, tlsPath, logsPrefix } = launcherConfig;
@@ -38,6 +44,13 @@ const restartCardanoNode = async (node: CardanoNode) => {
     await node.restart();
   } catch (error) {
     Logger.info(`Could not restart CardanoNode: ${error}`);
+  }
+};
+
+const onCardanoError = (mainWindow, code) => {
+  Logger.info(`CardanoNode error with code ${code}`);
+  if (code === 'notEnoughDiskSpace') {
+    mainWindow.webContents.send(NO_DISK_SPACE);
   }
 };
 
@@ -76,7 +89,7 @@ export const setupCardano = (
       Logger.info(`CardanoNode crashed with code ${code}. Restarting in ${restartTimeout}ms …`);
       setTimeout(() => restartCardanoNode(cardanoNode), restartTimeout);
     },
-    onError: () => {},
+    onError: onCardanoError.bind(this, mainWindow),
     onUnrecoverable: () => {}
   });
   startCardanoNode(cardanoNode, launcherConfig);

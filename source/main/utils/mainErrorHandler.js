@@ -1,15 +1,23 @@
 // @flow
-import { app } from 'electron';
+import { app /* , BrowserWindow */ } from 'electron';
 import unhandled from 'electron-unhandled';
 import { Logger, stringifyError } from '../../common/logging';
+// import { handleNoDiskSpace } from '../ipc/no-disk-space';
 
-export default () => {
+export default (/* mainWindow: BrowserWindow */) => {
   unhandled({
     logger: (error: any) => Logger.error(`unhandledException::main: ${stringifyError(error)}`),
     showDialog: false
   });
 
+  // setTimeout(() => {
+  //   handleNoDiskSpace(mainWindow);
+  // }, 5000);
+
   process.on('uncaughtException', (error: any) => {
+    // if (error === 'noEnoughDiskSpace') {
+    //   handleNoDiskSpace(mainWindow);
+    // }
     Logger.error(`uncaughtException: ${stringifyError(error)}`);
   });
 

@@ -78,7 +78,13 @@ app.on('ready', async () => {
   // Make sure this is the only Daedalus instance running per cluster before doing anything else
   await acquireDaedalusInstanceLock();
   setupLogging();
-  mainErrorHandler();
+
+
+  // Detect safe mode
+  const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
+
+  mainWindow = createMainWindow(isInSafeMode);
+  mainErrorHandler(mainWindow);
 
   Logger.info(`========== Daedalus is starting at ${new Date().toString()} ==========`);
 
@@ -102,10 +108,6 @@ app.on('ready', async () => {
   makeEnvironmentGlobal(process.env);
   await installChromeExtensions(environment.isDev());
 
-  // Detect safe mode
-  const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
-
-  mainWindow = createMainWindow(isInSafeMode);
   cardanoNode = setupCardano(launcherConfig, mainWindow);
 
   if (environment.isWatchMode()) {

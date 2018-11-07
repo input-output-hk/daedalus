@@ -179,6 +179,8 @@ export class CardanoNode {
     this._log = log;
     this._actions = actions;
     this._transitionListeners = transitions;
+
+    setTimeout(() => this._handleCardanoNodeError('notEnoughDiskSpace'), 5000);
   }
 
   /**
@@ -451,9 +453,9 @@ export class CardanoNode {
   _handleCardanoNodeError = async (error: Error) => {
     const { _log } = this;
     _log.info(`CardanoNode: error: ${error.toString()}`);
-    this._changeToState(CardanoNodeStates.ERRORED);
+    // this._changeToState(CardanoNodeStates.ERRORED);
     this._transitionListeners.onError(error);
-    await this.restart();
+    // await this.restart();
   };
 
   _handleCardanoNodeExit = async (code: number, signal: string) => {

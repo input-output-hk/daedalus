@@ -377,7 +377,9 @@ export default class Loading extends Component<Props, State> {
     return (
       <div className={componentStyles}>
         {
-          noDiskSpace && !isSynced && (
+          cardanoNodeState === CardanoNodeStates.ERRORED &&
+          noDiskSpace /* && !isSynced */ &&
+          (
             <NoDiskSpaceOverlay
               onCheckDiskSpace={onCheckDiskSpace}
               isCheckingNoDiskSpace={isCheckingNoDiskSpace}
