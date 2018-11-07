@@ -1,6 +1,10 @@
 {
   "parser": "babel-eslint",
-  "extends": ["airbnb", "plugin:flowtype/recommended"],
+  "extends": [
+    "airbnb",
+    "plugin:flowtype/recommended",
+    "plugin:react/recommended"
+  ],
   "env": {
     "browser": true,
     "mocha": true,
