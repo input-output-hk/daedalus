@@ -52,7 +52,7 @@ const restartWithoutSafeMode = async () => {
   safeExitWithCode(22);
 };
 
-const { isDev, isProduction, isMacOS, isWindows, isWatchMode } = environment;
+const { isDev, isProduction, isMacOS, isWindows, isWatchMode, buildLabel } = environment;
 const menuActions = {
   openAbout,
   goToAdaRedemption,
@@ -82,7 +82,7 @@ app.on('ready', async () => {
 
   Logger.info(`========== Daedalus is starting at ${new Date().toString()} ==========`);
 
-  Logger.debug(`!!! ${environment.getBuildLabel()} is running on ${os.platform()} version ${os.release()}
+  Logger.debug(`!!! ${buildLabel} is running on ${os.platform()} version ${os.release()}
             with CPU: ${JSON.stringify(os.cpus(), null, 2)} with
             ${JSON.stringify(os.totalmem(), null, 2)} total RAM !!!`);
 
