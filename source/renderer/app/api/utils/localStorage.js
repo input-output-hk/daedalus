@@ -3,12 +3,21 @@ import Store from 'electron-store';
 
 const store = new Store();
 
+type StorageKeys = {
+  USER_LOCALE: string,
+  TERMS_OF_USE_ACCEPTANCE: string,
+  THEME: string,
+  DATA_LAYER_MIGRATION_ACCEPTANCE: string,
+};
+
 /**
  * This api layer provides access to the electron local storage
  * for user settings that are not synced with any coin backend.
  */
 
 export default class LocalStorageApi {
+  storageKeys: StorageKeys;
+
   constructor(NETWORK: string) {
     this.storageKeys = {
       USER_LOCALE: `${NETWORK}-USER-LOCALE`,
