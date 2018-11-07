@@ -428,21 +428,21 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Daedalus Disk Space Error",
-        "description": "Title of No disk space overlay",
+        "defaultMessage": "!!!Check and continue",
+        "description": "Button Text of No disk space overlay",
         "end": {
           "column": 3,
           "line": 17
         },
         "file": "source/renderer/app/components/loading/NoDiskSpaceOverlay.js",
-        "id": "noDiskSpace.error.overlayTitle",
+        "id": "noDiskSpace.error.overlayButtonText",
         "start": {
-          "column": 16,
+          "column": 21,
           "line": 13
         }
       },
       {
-        "defaultMessage": "!!!ATTENTION: No disk space left on a device. Node requires {diskSpaceRequired} more space. Free the space and click a button to continue. You need to fix issue, because you are gonna be unable to sync system!",
+        "defaultMessage": "!!!<b>Attention, there is not enough disk space left on the device.</b><br />Daedalus requires {diskSpaceRequired} more space to operate. Please, free some disk space and then click the button below to continue.",
         "description": "Content of No disk space overlay",
         "end": {
           "column": 3,
@@ -456,16 +456,16 @@
         }
       },
       {
-        "defaultMessage": "!!!Check and continue",
-        "description": "Button Text of No disk space overlay",
+        "defaultMessage": "!!!Not enough disk space",
+        "description": "Title of No disk space overlay",
         "end": {
           "column": 3,
           "line": 27
         },
         "file": "source/renderer/app/components/loading/NoDiskSpaceOverlay.js",
-        "id": "noDiskSpace.error.overlayButtonText",
+        "id": "noDiskSpace.error.overlayTitle",
         "start": {
-          "column": 21,
+          "column": 16,
           "line": 23
         }
       }
