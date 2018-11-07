@@ -246,7 +246,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props, State
         )}
         actions={actions}
         closeOnOverlayClick
-        onClose={!isSubmitting ? onCancel : null}
+        onClose={!isSubmitting ? onCancel : () => {}}
         className={dialogClasses}
         closeButton={<DialogCloseButton onClose={onCancel} />}
       >

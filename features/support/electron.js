@@ -46,6 +46,7 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
 
   // Make the electron app accessible in each scenario context
   Before({ timeout: DEFAULT_TIMEOUT * 2 }, async function () {
+    this.app = context.app;
     this.client = context.app.client;
     this.browserWindow = context.app.browserWindow;
 
@@ -114,8 +115,8 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
 
   // eslint-disable-next-line prefer-arrow-callback
   AfterAll(async function () {
-    if (!context.app.running) return;
-
+    const allWindowsClosed = (await context.app.client.getWindowCount()) === 0;
+    if (allWindowsClosed || !context.app.running) return;
     if (scenariosCount === 0) {
       await printMainProcessLogs();
     }

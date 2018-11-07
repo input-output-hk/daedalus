@@ -6,7 +6,7 @@ import StoryDecorator from './support/StoryDecorator';
 import StakingChart from '../../source/renderer/app/components/staking/StakingChart';
 import StakingChartTooltip from '../../source/renderer/app/components/staking/StakingChartTooltip';
 
-const generateRandomSlots = (count:number) => {
+const generateRandomSlots = (count: number) => {
   const slots = [];
   for (let i = 0; i < count; i += 1) {
     const numberOfTransactions = i < (count / 2) ? Math.floor(Math.random() * 50) : 0;
