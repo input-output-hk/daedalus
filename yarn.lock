@@ -4069,6 +4069,7 @@ cucumber-expressions@^5.0.0, cucumber-expressions@^5.0.13:
 cucumber-pretty@1.4.4:
   version "1.4.4"
   resolved "https://registry.yarnpkg.com/cucumber-pretty/-/cucumber-pretty-1.4.4.tgz#ee041b043a4c7ad7059f8b33a2037ddee3dc99ca"
+  integrity sha512-pSRYaewQg6DqQbcCn4AfxzzgQSVQ0d5nyLxUUBqnPkinp73aMYqBvOmY6tlb6f3YkPnDzB9tf3vC6wdnGjGBzQ==
   dependencies:
     cli-table "^0.3.1"
     colors "^1.2.5"
@@ -4115,6 +4116,7 @@ cucumber@3.1.0:
 cucumber@^4.2.1:
   version "4.2.1"
   resolved "http://registry.npmjs.org/cucumber/-/cucumber-4.2.1.tgz#64cfff6150bbe6b5e94b173470057353d6206719"
+  integrity sha512-3gQ0Vv4kSHsvXEFC6b1c+TfLRDzWD1/kU7e5vm8Kh8j35b95k6favan9/4ixcBNqd7UsU1T6FYcawC87+DlNKw==
   dependencies:
     assertion-error-formatter "^2.0.1"
     babel-runtime "^6.11.6"
@@ -5252,6 +5254,7 @@ eslint-plugin-flowtype-errors@3.3.6:
 eslint-plugin-flowtype@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-3.0.0.tgz#4b72588d8a5a5c836439752fe52e8e0f4b9954df"
+  integrity sha512-84utjHfQeykSyNuhO885pp18yGKYuK2S03EFbhl/BpXR9jk0TABnDP/KhUAqDjjkB43mxK2WZjJesrhnncvR9Q==
   dependencies:
     lodash "^4.17.10"
 
@@ -5941,6 +5944,7 @@ flatten@^1.0.2:
 flow-bin@0.81.0:
   version "0.81.0"
   resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.81.0.tgz#7f0a733dce1dad3cb1447c692639292dc3d60bf5"
+  integrity sha512-5e8oL3/5rm3G0Eet3yDCne2R/TLo5Fkn+Z5MtHd4wtz+1miLC35Sgo8XvnbTmiZ9epdTZ1q6GLmJWYh7tUlfGg==
 
 flush-write-stream@^1.0.0, flush-write-stream@^1.0.2:
   version "1.0.3"
@@ -8024,6 +8028,7 @@ klaw@^1.0.0:
 knuth-shuffle-seeded@^1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/knuth-shuffle-seeded/-/knuth-shuffle-seeded-1.0.6.tgz#01f1b65733aa7540ee08d8b0174164d22081e4e1"
+  integrity sha1-AfG2VzOqdUDuCNiwF0Fk0iCB5OE=
   dependencies:
     seed-random "~2.2.0"
 
@@ -10853,9 +10858,9 @@ react-onclickoutside@^6.5.0:
   resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-6.7.1.tgz#6a5b5b8b4eae6b776259712c89c8a2b36b17be93"
   integrity sha512-p84kBqGaMoa7VYT0vZ/aOYRfJB+gw34yjpda1Z5KeLflg70HipZOT+MXQenEhdkPAABuE2Astq4zEPdMqUQxcg==
 
-"react-polymorph@git://github.com/input-output-hk/react-polymorph.git#chore/ddw-376-reconfigure-css-vars":
+"react-polymorph@git://github.com/input-output-hk/react-polymorph.git#29fd0ee70aa96bf14004ebc20969db154e5eebb7":
   version "0.7.1"
-  resolved "git://github.com/input-output-hk/react-polymorph.git#cb4b9f455ab4ad72a13759afcc52504984a035df"
+  resolved "git://github.com/input-output-hk/react-polymorph.git#29fd0ee70aa96bf14004ebc20969db154e5eebb7"
   dependencies:
     create-react-context "0.2.2"
     create-react-ref "0.1.0"
@@ -11527,6 +11532,7 @@ ret@~0.1.10:
 retry@0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/retry/-/retry-0.12.0.tgz#1b42a6266a21f07421d1b0b54b7dc167b01c013b"
+  integrity sha1-G0KmJmoh8HQh0bC1S33BZ7AcATs=
 
 rgb2hex@^0.1.9, rgb2hex@~0.1.0:
   version "0.1.9"
@@ -11692,6 +11698,7 @@ sec@^1.0.0:
 seed-random@~2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/seed-random/-/seed-random-2.2.0.tgz#2a9b19e250a817099231a5b99a4daf80b7fbed54"
+  integrity sha1-KpsZ4lCoFwmSMaW5mk2vgLf77VQ=
 
 select-hose@^2.0.0:
   version "2.0.0"
@@ -11751,6 +11758,7 @@ send@0.16.2:
 serialize-error@^2.1.0:
   version "2.1.0"
   resolved "http://registry.npmjs.org/serialize-error/-/serialize-error-2.1.0.tgz#50b679d5635cdf84667bdc8e59af4e5b81d5f60a"
+  integrity sha1-ULZ51WNc34Rme9yOWa9OW4HV9go=
 
 serialize-javascript@^1.4.0:
   version "1.5.0"
