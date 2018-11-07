@@ -49,8 +49,7 @@ type DownloadPaperWalletCertificateParams = {
 };
 
 export const downloadPaperWalletCertificate = async (
-  { address, mnemonics, intl, filePath, isMainnet, buildLabel }:
-  DownloadPaperWalletCertificateParams
+  { address, mnemonics, intl, filePath, isMainnet, buildLabel }: DownloadPaperWalletCertificateParams
 ) => {
   const qrCodeImage = qr.imageSync(address, { type: 'png', size: 10, ec_level: 'L', margin: 0 });
   const textColor = '#3b5c9b';
