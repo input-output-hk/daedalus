@@ -1,5 +1,5 @@
 // @flow
-export const ellipsis = (str:string, minCharsInit:number, minCharsEnd?: number) => {
+export const ellipsis = (str: string, minCharsInit: number, minCharsEnd?: number) => {
   if (str.length <= minCharsInit) return str;
 
   const initStr = str.substr(0, minCharsInit);
@@ -7,7 +7,5 @@ export const ellipsis = (str:string, minCharsInit:number, minCharsEnd?: number) 
   const endStr = minCharsEnd && shouldHaveEndStr()
     ? str.substr(str.length - minCharsEnd)
     : '';
-
   return initStr + '\u2026' + endStr;
-
 };
