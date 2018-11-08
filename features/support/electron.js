@@ -1,7 +1,7 @@
 import { Application } from 'spectron';
 import { defineSupportCode } from 'cucumber';
 import electronPath from 'electron';
-import { environment } from '../../source/common/environment';
+import { TEST } from '../../source/common/environment';
 import { generateScreenshotFilePath, getTestNameFromTestFile, saveScreenshot } from './helpers/screenshot';
 
 const context = {};
@@ -23,12 +23,11 @@ const startApp = async () => {
     path: electronPath,
     args: ['./dist/main/index.js'],
     env: Object.assign({}, process.env, {
-      NODE_ENV: environment.TEST,
+      NODE_ENV: TEST,
     }),
     waitTimeout: DEFAULT_TIMEOUT
   });
   await app.start();
-  await app.client.waitUntilWindowLoaded();
   return app;
 };
 
