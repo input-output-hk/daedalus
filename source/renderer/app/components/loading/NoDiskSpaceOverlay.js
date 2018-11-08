@@ -17,7 +17,7 @@ const messages = defineMessages({
   },
   overlayContent: {
     id: 'noDiskSpace.error.overlayContent',
-    defaultMessage: '!!!<b>Attention, there is not enough disk space left on the device.</b><br />Daedalus requires {diskSpaceRequired} more space to operate. Please, free some disk space and then click the button below to continue.',
+    defaultMessage: '!!!<b>There is not enough disk space left on your device.</b><br />Daedalus requires {diskSpaceRequired} more space to operate. Please free up some disk space and then click the button below to continue.',
     description: 'Content of No disk space overlay'
   },
   overlayTitle: {
