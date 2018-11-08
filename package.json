@@ -156,7 +156,7 @@
     "react-intl": "2.4.0",
     "react-markdown": "3.1.0",
     "react-number-format": "3.0.3",
-    "react-polymorph": "git://github.com/input-output-hk/react-polymorph.git#c25e34b7446b5bba29d19a2b7229392c0e970c1e",
+    "react-polymorph": "git://github.com/input-output-hk/react-polymorph.git#e306e9eaed84d4a4dbe173c20b715aee4de598da",
     "react-router": "3.0.3",
     "react-svg-inline": "2.1.0",
     "recharts": "1.0.0-beta.10",
