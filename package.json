@@ -21,6 +21,7 @@
     "cucumber": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 cucumber-js --compiler js:babel-register -f node_modules/cucumber-pretty --format-options '{\"snippetInterface\": \"async-await\"}' --tags 'not @skip'",
     "cucumber:fast": "npm run cucumber -- --tags 'not @slow'",
     "cucumber:watch": "npm run cucumber -- --tags @watch",
+    "cucumber:watch:debug": "KEEP_APP_AFTER_TESTS=true npm run cucumber -- --tags @watch",
     "lint": "eslint --format=node_modules/eslint-formatter-pretty source features storybook *.js",
     "flow:test": "flow; test $? -eq 0 -o $? -eq 2",
     "manage:translations": "gulp purge:translations && gulp clear:cache && gulp build && node ./translations/translation-runner.js",
