@@ -105,7 +105,10 @@ const rpOptions = {
 const rpSelect = {
   '--rp-select-arrow-bg-color': '#c6cdd6',
   '--rp-select-arrow-bg-color-open': '#5e6066',
+  '--rp-select-input-bg-color': '#fafbfc',
+  '--rp-select-input-border-color': '#c6cdd6',
   '--rp-select-input-border-color-focus': '#5e6066',
+  '--rp-select-input-text-color': '#5e6066',
 };
 
 // SWITCH
