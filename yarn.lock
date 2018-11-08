@@ -10858,9 +10858,9 @@ react-onclickoutside@^6.5.0:
   resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-6.7.1.tgz#6a5b5b8b4eae6b776259712c89c8a2b36b17be93"
   integrity sha512-p84kBqGaMoa7VYT0vZ/aOYRfJB+gw34yjpda1Z5KeLflg70HipZOT+MXQenEhdkPAABuE2Astq4zEPdMqUQxcg==
 
-"react-polymorph@git://github.com/input-output-hk/react-polymorph.git#29fd0ee70aa96bf14004ebc20969db154e5eebb7":
+"react-polymorph@git://github.com/input-output-hk/react-polymorph.git#c25e34b7446b5bba29d19a2b7229392c0e970c1e":
   version "0.7.1"
-  resolved "git://github.com/input-output-hk/react-polymorph.git#29fd0ee70aa96bf14004ebc20969db154e5eebb7"
+  resolved "git://github.com/input-output-hk/react-polymorph.git#c25e34b7446b5bba29d19a2b7229392c0e970c1e"
   dependencies:
     create-react-context "0.2.2"
     create-react-ref "0.1.0"
