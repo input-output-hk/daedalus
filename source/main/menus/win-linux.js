@@ -75,17 +75,15 @@ export const winLinuxMenu = (app, window, {
         accelerator: 'Ctrl+R',
         click() { window.webContents.reload(); }
       },
-      environment.iswindows()
-        ? {
-          label: 'Toggle Full Screen',
-          accelerator: 'F11',
-          click() { window.setFullScreen(!window.isFullScreen()); }
-        }
-        : {
-          label: 'Maximize',
-          accelerator: 'F11',
-          click() { window.maximize(); }
-        },
+      environment.isWindows() ? {
+        label: 'Toggle Full Screen',
+        accelerator: 'F11',
+        click() { window.setFullScreen(!window.isFullScreen()); }
+      } : {
+        label: 'Maximize',
+        accelerator: 'F11',
+        click() { window.maximize(); }
+      },
       {
         label: 'Toggle Developer Tools',
         accelerator: 'Alt+Ctrl+I',
