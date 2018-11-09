@@ -59,7 +59,7 @@ const rpFonts = {
 
 // FORMFIELD
 const rpFormfield = {
-  '--rp-formfield-bg-color-disabled': 'none !important',
+  '--rp-formfield-bg-color-disabled': 'none',
   '--rp-formfield-label-text-color': '#5e6066',
   '--rp-formfield-label-text-color-disabled': '#5e6066',
   '--rp-formfield-error-text-color': '#ea4c5b',
@@ -75,7 +75,7 @@ const rpInput = {
   '--rp-input-border-color-errored': '#ea4c5b',
   '--rp-input-border-color-focus': '#5e6066',
   '--rp-input-line-height': '22px',
-  '--rp-input-padding': '12px 20px !important',
+  '--rp-input-padding': '12px 20px',
   '--rp-input-placeholder-color': 'rgba(94, 96, 102, 0.5)',
   '--rp-input-placeholder-color-disabled': 'rgba(94, 96, 102, 0.5)',
   '--rp-input-text-color': '#5e6066',
@@ -115,7 +115,7 @@ const rpSelect = {
 const rpSwitch = {
   '--rp-switch-bg-color-off': '#2f496e',
   '--rp-switch-bg-color-on': '#2f496e',
-  '--rp-switch-label-margin': '0 30px 0 0 !important',
+  '--rp-switch-label-margin': '0 30px 0 0',
   '--rp-switch-label-opacity': '0.5',
   '--rp-switch-label-text-color': '#5e6066',
   '--rp-switch-label-width': '100%',

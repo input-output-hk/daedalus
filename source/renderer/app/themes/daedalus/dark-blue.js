@@ -59,7 +59,7 @@ const rpFonts = {
 
 // FORMFIELD
 const rpFormfield = {
-  '--rp-formfield-bg-color-disabled': 'none !important',
+  '--rp-formfield-bg-color-disabled': 'none',
   '--rp-formfield-label-text-color': '#e9f4fe',
   '--rp-formfield-label-text-color-disabled': '#e9f4fe',
   '--rp-formfield-error-text-color': '#ea4c5b',
@@ -75,7 +75,7 @@ const rpInput = {
   '--rp-input-border-color-errored': '#ea4c5b',
   '--rp-input-border-color-focus': '#667a8a',
   '--rp-input-line-height': '22px',
-  '--rp-input-padding': '12px 20px !important',
+  '--rp-input-padding': '12px 20px',
   '--rp-input-placeholder-color': '#8793a1',
   '--rp-input-placeholder-color-disabled': '#8793a1',
   '--rp-input-text-color': '#e9f4fe',
@@ -115,7 +115,7 @@ const rpSelect = {
 const rpSwitch = {
   '--rp-switch-bg-color-off': '#536370',
   '--rp-switch-bg-color-on': '#536370',
-  '--rp-switch-label-margin': '0 30px 0 0 !important',
+  '--rp-switch-label-margin': '0 30px 0 0',
   '--rp-switch-label-opacity': '0.5',
   '--rp-switch-label-text-color': '#e9f4fe',
   '--rp-switch-label-width': '100%',
