@@ -11,7 +11,7 @@ Changelog
 - Implemented extended error messages for transaction fee calculation failures ([PR 1111](https://github.com/input-output-hk/daedalus/pull/1111))
 - Implemented forms submission on "Enter" key press ([PR 981](https://github.com/input-output-hk/daedalus/pull/981))
 - Implemented Japanese "Terms of use" for the "Testnet" network ([PR 1097](https://github.com/input-output-hk/daedalus/pull/1097))
-- Implemented lock-file mechanism which prevents multiple Daedalus instances from running against the same state directory and network ([PR 1113](https://github.com/input-output-hk/daedalus/pull/1113), [PR 1114](https://github.com/input-output-hk/daedalus/pull/1114), [PR 1121](https://github.com/input-output-hk/daedalus/pull/1121))
+- Implemented lock-file mechanism which prevents multiple Daedalus instances from running against the same state directory and network ([PR 1113](https://github.com/input-output-hk/daedalus/pull/1113), [PR 1114](https://github.com/input-output-hk/daedalus/pull/1114), [PR 1121](https://github.com/input-output-hk/daedalus/pull/1121), [PR 1166](https://github.com/input-output-hk/daedalus/pull/1166))
 - Implemented "New data layer migration" screen ([PR 1096](https://github.com/input-output-hk/daedalus/pull/1096))
 - Implemented sending of `cert` and `key` with API requests in order to enable 2-way TLS authentication ([PR 1072](https://github.com/input-output-hk/daedalus/pull/1072))
 - Implemented support for Cardano node "structured logging" ([PR 1092](https://github.com/input-output-hk/daedalus/pull/1092), [PR 1122](https://github.com/input-output-hk/daedalus/pull/1122))
