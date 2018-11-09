@@ -1,4 +1,5 @@
 import { compact } from 'lodash';
+import environment from '../../common/environment';
 
 export const winLinuxMenu = (app, window, {
   openAbout, goToAdaRedemption, goToNetworkStatus, restartInSafeMode, restartWithoutSafeMode
@@ -77,7 +78,11 @@ export const winLinuxMenu = (app, window, {
       {
         label: 'Toggle Full Screen',
         accelerator: 'F11',
-        click() { window.setFullScreen(!window.isFullScreen()); }
+        click() {
+          environment.iswindows()
+            ? window.setFullScreen(!window.isFullScreen())
+            : window.maximize();
+        }
       },
       {
         label: 'Toggle Developer Tools',
