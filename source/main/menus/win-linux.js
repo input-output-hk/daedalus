@@ -2,7 +2,12 @@ import { compact } from 'lodash';
 import environment from '../../common/environment';
 
 export const winLinuxMenu = (app, window, {
-  openAbout, goToAdaRedemption, goToNetworkStatus, restartInSafeMode, restartWithoutSafeMode
+  openAbout,
+  goToAdaRedemption,
+  goToNetworkStatus,
+  restartInSafeMode,
+  restartWithoutSafeMode,
+  onToggleMaxWindowSize
 }, isInSafeMode) => (
   [{
     label: 'Daedalus',
@@ -80,9 +85,9 @@ export const winLinuxMenu = (app, window, {
         accelerator: 'F11',
         click() { window.setFullScreen(!window.isFullScreen()); }
       } : {
-        label: 'Maximize',
+        label: 'Toggle Maximum Window Size',
         accelerator: 'F11',
-        click() { window.maximize(); }
+        click() { onToggleMaxWindowSize(); }
       },
       {
         label: 'Toggle Developer Tools',

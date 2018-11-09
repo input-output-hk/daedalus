@@ -6,6 +6,7 @@ import { includes } from 'lodash';
 import { Logger } from '../common/logging';
 import { setupLogging } from './utils/setupLogging';
 import { makeEnvironmentGlobal } from './utils/makeEnvironmentGlobal';
+import HandleToggleMaxWindowSize from './utils/HandleToggleMaxWindowSize';
 import { createMainWindow } from './windows/main';
 import { winLinuxMenu } from './menus/win-linux';
 import { osxMenu } from './menus/osx';
@@ -53,14 +54,6 @@ const restartWithoutSafeMode = async () => {
   safeExitWithCode(22);
 };
 
-const menuActions = {
-  openAbout,
-  goToAdaRedemption,
-  goToNetworkStatus,
-  restartInSafeMode,
-  restartWithoutSafeMode,
-};
-
 const safeExit = async () => {
   if (cardanoNode.state === CardanoNodeStates.STOPPING) return;
   try {
@@ -104,10 +97,21 @@ app.on('ready', async () => {
   mainWindow = createMainWindow(isInSafeMode);
   cardanoNode = setupCardano(launcherConfig, mainWindow);
 
+  const onToggleMaxWindowSize = new HandleToggleMaxWindowSize(mainWindow);
+
   if (environment.isDev()) {
     // Connect to electron-connect server which restarts / reloads windows on file changes
     client.create(mainWindow);
   }
+
+  const menuActions = {
+    openAbout,
+    goToAdaRedemption,
+    goToNetworkStatus,
+    restartInSafeMode,
+    restartWithoutSafeMode,
+    onToggleMaxWindowSize,
+  };
 
   // Build app menus
   let menu;
