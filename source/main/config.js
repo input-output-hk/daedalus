@@ -2,11 +2,6 @@
 import path from 'path';
 import { readLauncherConfig } from './utils/config';
 
-const { NODE_ENV, LAUNCHER_CONFIG } = process.env;
-const isDev = NODE_ENV === 'development';
-// Daedalus cannot proceed without a launcher config
-if (isDev && !LAUNCHER_CONFIG) throw new Error('Daedalus should be started using nix-shell. Find more details here: https://github.com/input-output-hk/daedalus/blob/develop/README.md\n');
-
 /**
  * The shape of the config params, usually provided to the cadano-node launcher
  */
@@ -29,7 +24,7 @@ export type LauncherConfig = {
 };
 
 export const APP_NAME = 'Daedalus';
-export const launcherConfig: LauncherConfig = readLauncherConfig(LAUNCHER_CONFIG);
+export const launcherConfig: LauncherConfig = readLauncherConfig(process.env.LAUNCHER_CONFIG);
 export const appLogsFolderPath = launcherConfig.logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
 export const ALLOWED_LOGS = ['Daedalus.log'];
