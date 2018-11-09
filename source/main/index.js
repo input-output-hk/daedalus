@@ -78,25 +78,6 @@ app.on('ready', async () => {
   // Make sure this is the only Daedalus instance running per cluster before doing anything else
   await acquireDaedalusInstanceLock();
 
-  // Make sure Daedalus is started with required configuration
-  const { NODE_ENV, LAUNCHER_CONFIG } = process.env;
-  const isProd = NODE_ENV === 'production';
-  const isStartedByLauncher = !!LAUNCHER_CONFIG;
-  if (!isStartedByLauncher) {
-    const isWindows = process.platform === 'win32';
-    const dialogTitle = 'Daedalus improperly started!';
-    let dialogMessage;
-    if (isProd) {
-      dialogMessage = isWindows ?
-        'Please start Daedalus using the icon in the Windows start menu or using Daedalus icon on your desktop.' :
-        'Daedalus was launched without needed configuration. Please start Daedalus using the shortcut provided by the installer.';
-    } else {
-      dialogMessage = 'Daedalus should be started using nix-shell. Find more details here: https://github.com/input-output-hk/daedalus/blob/develop/README.md';
-    }
-    dialog.showErrorBox(dialogTitle, dialogMessage);
-    app.quit();
-  }
-
   setupLogging();
   mainErrorHandler();
 

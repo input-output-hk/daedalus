@@ -2,6 +2,24 @@
 import path from 'path';
 import { readLauncherConfig } from './utils/config';
 
+// Make sure Daedalus is started with required configuration
+const { NODE_ENV, LAUNCHER_CONFIG } = process.env;
+const isProd = NODE_ENV === 'production';
+const isStartedByLauncher = !!LAUNCHER_CONFIG;
+if (!isStartedByLauncher) {
+  const isWindows = process.platform === 'win32';
+  const errorTitle = 'Daedalus improperly started!';
+  let errorMessage;
+  if (isProd) {
+    errorMessage = isWindows ?
+      'Please start Daedalus using the icon in the Windows start menu or using Daedalus icon on your desktop.' :
+      'Daedalus was launched without needed configuration. Please start Daedalus using the shortcut provided by the installer.';
+  } else {
+    errorMessage = 'Daedalus should be started using nix-shell. Find more details here: https://github.com/input-output-hk/daedalus/blob/develop/README.md';
+  }
+  throw new Error(`${errorTitle}\n${errorMessage}`);
+}
+
 /**
  * The shape of the config params, usually provided to the cadano-node launcher
  */
@@ -24,7 +42,7 @@ export type LauncherConfig = {
 };
 
 export const APP_NAME = 'Daedalus';
-export const launcherConfig: LauncherConfig = readLauncherConfig(process.env.LAUNCHER_CONFIG);
+export const launcherConfig: LauncherConfig = readLauncherConfig(LAUNCHER_CONFIG);
 export const appLogsFolderPath = launcherConfig.logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
 export const ALLOWED_LOGS = ['Daedalus.log'];
