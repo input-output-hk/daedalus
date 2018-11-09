@@ -1,5 +1,6 @@
 // @flow
 import path from 'path';
+import { app, dialog } from 'electron';
 import { readLauncherConfig } from './utils/config';
 
 // Make sure Daedalus is started with required configuration
@@ -8,16 +9,17 @@ const isProd = NODE_ENV === 'production';
 const isStartedByLauncher = !!LAUNCHER_CONFIG;
 if (!isStartedByLauncher) {
   const isWindows = process.platform === 'win32';
-  const errorTitle = 'Daedalus improperly started!';
-  let errorMessage;
+  const dialogTitle = 'Daedalus improperly started!';
+  let dialogMessage;
   if (isProd) {
-    errorMessage = isWindows ?
+    dialogMessage = isWindows ?
       'Please start Daedalus using the icon in the Windows start menu or using Daedalus icon on your desktop.' :
       'Daedalus was launched without needed configuration. Please start Daedalus using the shortcut provided by the installer.';
   } else {
-    errorMessage = 'Daedalus should be started using nix-shell. Find more details here: https://github.com/input-output-hk/daedalus/blob/develop/README.md';
+    dialogMessage = 'Daedalus should be started using nix-shell. Find more details here: https://github.com/input-output-hk/daedalus/blob/develop/README.md';
   }
-  throw new Error(`${errorTitle}\n${errorMessage}`);
+  dialog.showErrorBox(dialogTitle, dialogMessage);
+  app.exit(1);
 }
 
 /**

@@ -76,7 +76,14 @@ const safeExit = async () => {
 
 app.on('ready', async () => {
   // Make sure this is the only Daedalus instance running per cluster before doing anything else
-  await acquireDaedalusInstanceLock();
+  try {
+    await acquireDaedalusInstanceLock();
+  } catch (e) {
+    const dialogTitle = 'Daedalus is unable to start!';
+    const dialogMessage = 'Another Daedalus instance is already running.';
+    dialog.showErrorBox(dialogTitle, dialogMessage);
+    app.exit(1);
+  }
 
   setupLogging();
   mainErrorHandler();
