@@ -1,4 +1,5 @@
-export default (mainWindow) => {
+// @flow
+export default (mainWindow: any) => {
   let currentWindowBounds = mainWindow.webContents.getOwnerBrowserWindow().getBounds();
   let isMaximized = false;
   let isToggling = false;
