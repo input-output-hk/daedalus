@@ -7,7 +7,6 @@ export const winLinuxMenu = (app, window, {
   goToNetworkStatus,
   restartInSafeMode,
   restartWithoutSafeMode,
-  onToggleMaxWindowSize
 }, isInSafeMode) => (
   [{
     label: 'Daedalus',
@@ -87,7 +86,13 @@ export const winLinuxMenu = (app, window, {
       } : {
         label: 'Toggle Maximum Window Size',
         accelerator: 'F11',
-        click() { onToggleMaxWindowSize(); }
+        click() {
+          if (window.isMaximized()) {
+            window.unmaximize();
+          } else {
+            window.maximize();
+          }
+        }
       },
       {
         label: 'Toggle Developer Tools',

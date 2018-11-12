@@ -6,7 +6,6 @@ import { includes } from 'lodash';
 import { Logger } from '../common/logging';
 import { setupLogging } from './utils/setupLogging';
 import { makeEnvironmentGlobal } from './utils/makeEnvironmentGlobal';
-import HandleToggleMaxWindowSize from './utils/HandleToggleMaxWindowSize';
 import { createMainWindow } from './windows/main';
 import { winLinuxMenu } from './menus/win-linux';
 import { osxMenu } from './menus/osx';
@@ -97,8 +96,6 @@ app.on('ready', async () => {
   mainWindow = createMainWindow(isInSafeMode);
   cardanoNode = setupCardano(launcherConfig, mainWindow);
 
-  const onToggleMaxWindowSize = new HandleToggleMaxWindowSize(mainWindow);
-
   if (environment.isDev()) {
     // Connect to electron-connect server which restarts / reloads windows on file changes
     client.create(mainWindow);
@@ -110,13 +107,12 @@ app.on('ready', async () => {
     goToNetworkStatus,
     restartInSafeMode,
     restartWithoutSafeMode,
-    onToggleMaxWindowSize,
   };
 
   // Build app menus
   let menu;
   if (process.platform === 'darwin') {
-    menu = Menu.buildFromTemplate(osxMenu(app, mainWindow, menuActions, isInSafeMode));
+    menu = Menu.buildFromTemplate(winLinuxMenu(app, mainWindow, menuActions, isInSafeMode));
     Menu.setApplicationMenu(menu);
   } else {
     menu = Menu.buildFromTemplate(winLinuxMenu(app, mainWindow, menuActions, isInSafeMode));
