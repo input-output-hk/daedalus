@@ -54,6 +54,7 @@ Changelog
 - Made `nodelLogPath` entry in `launcher-config.yaml` optional ([PR 1027](https://github.com/input-output-hk/daedalus/pull/1027))
 - Made `port` and `ca` of Ada Api configurable during runtime ([PR 1067](https://github.com/input-output-hk/daedalus/pull/1067))
 - Removed all ETC specific files ([PR 1068](https://github.com/input-output-hk/daedalus/pull/1068), [PR 1108](https://github.com/input-output-hk/daedalus/pull/1108))
+- Removed Wallet `export` and `import` features for the "Testnet" network ([PR 1168](https://github.com/input-output-hk/daedalus/pull/1168))
 - Switched from `npm` to `yarn` ([PR 989](https://github.com/input-output-hk/daedalus/pull/989))
 
 ## 0.11.1
