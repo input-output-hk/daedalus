@@ -141,11 +141,7 @@ export default class WalletAdd extends Component<Props> {
               icon={importIcon}
               label={intl.formatMessage(messages.importLabel)}
               description={intl.formatMessage(messages.importDescription)}
-              isDisabled={
-                isMaxNumberOfWalletsReached ||
-                isRestoreActive ||
-                environment.isMainnet()
-              }
+              isDisabled={!environment.isDev()}
             />
           </div>
           {activeNotification ? (

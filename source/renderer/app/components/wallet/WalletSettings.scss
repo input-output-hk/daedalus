@@ -25,6 +25,11 @@
     cursor: pointer;
     font-family: var(--font-medium);
     font-size: 16px;
+
+    &:disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
   }
 }
 
