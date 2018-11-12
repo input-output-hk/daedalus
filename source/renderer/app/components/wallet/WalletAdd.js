@@ -9,7 +9,6 @@ import createIcon from '../../assets/images/create-ic.inline.svg';
 import importIcon from '../../assets/images/import-ic.inline.svg';
 import joinSharedIcon from '../../assets/images/join-shared-ic.inline.svg';
 import restoreIcon from '../../assets/images/restore-ic.inline.svg';
-import environment from '../../../../common/environment';
 import { MAX_ADA_WALLETS_COUNT } from '../../config/numbersConfig';
 
 const messages = defineMessages({
@@ -141,7 +140,7 @@ export default class WalletAdd extends Component<Props> {
               icon={importIcon}
               label={intl.formatMessage(messages.importLabel)}
               description={intl.formatMessage(messages.importDescription)}
-              isDisabled={!environment.isDev()}
+              isDisabled
             />
           </div>
           {activeNotification ? (
