@@ -53,6 +53,14 @@ const restartWithoutSafeMode = async () => {
   safeExitWithCode(22);
 };
 
+const menuActions = {
+  openAbout,
+  goToAdaRedemption,
+  goToNetworkStatus,
+  restartInSafeMode,
+  restartWithoutSafeMode,
+};
+
 const safeExit = async () => {
   if (cardanoNode.state === CardanoNodeStates.STOPPING) return;
   try {
@@ -64,14 +72,6 @@ const safeExit = async () => {
     Logger.info(`Daedalus:safeExit: cardano-node did not exit correctly: ${stopError}`);
     safeExitWithCode(0);
   }
-};
-
-const menuActions = {
-  openAbout,
-  goToAdaRedemption,
-  goToNetworkStatus,
-  restartInSafeMode,
-  restartWithoutSafeMode,
 };
 
 app.on('ready', async () => {
@@ -112,7 +112,7 @@ app.on('ready', async () => {
   // Build app menus
   let menu;
   if (process.platform === 'darwin') {
-    menu = Menu.buildFromTemplate(winLinuxMenu(app, mainWindow, menuActions, isInSafeMode));
+    menu = Menu.buildFromTemplate(osxMenu(app, mainWindow, menuActions, isInSafeMode));
     Menu.setApplicationMenu(menu);
   } else {
     menu = Menu.buildFromTemplate(winLinuxMenu(app, mainWindow, menuActions, isInSafeMode));
