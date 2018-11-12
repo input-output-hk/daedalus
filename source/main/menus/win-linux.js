@@ -80,7 +80,7 @@ export const winLinuxMenu = (app, window, {
         accelerator: 'F11',
         click() { window.setFullScreen(!window.isFullScreen()); }
       } : {
-        label: 'Maximize (unmaximize)',
+        label: 'Toggle Maximum Window Size',
         accelerator: 'F11',
         click() {
           if (window.isMaximized()) {
