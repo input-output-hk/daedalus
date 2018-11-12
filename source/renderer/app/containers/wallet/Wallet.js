@@ -11,9 +11,6 @@ import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import { WalletSyncStateTags } from '../../domains/Wallet';
-import AntivirusRestaurationSlowdownNotification
-  from '../../components/notifications/AntivirusRestaurationSlowdownNotification';
-import { openExternalUrlChannel } from '../../ipc/open-external-url';
 
 type Props = InjectedContainerProps;
 
@@ -38,22 +35,11 @@ export default class Wallet extends Component<Props> {
     });
   };
 
-  handleAntivirusNotificationDiscard = () => {
-    const { wallets } = this.props.actions;
-    wallets.discardAntivirusRestorationSlowdownNotificationForActiveWallet.trigger();
-  };
-
-  openExternalLinkInDefaultBrowser = (event: MouseEvent, url: string) => {
-    event.preventDefault();
-    openExternalUrlChannel.send(url);
-  };
-
   render() {
     const { actions, stores } = this.props;
-    const { wallets, adaRedemption, profile, app: { environment } } = stores;
+    const { wallets, adaRedemption, profile } = stores;
     const { showAdaRedemptionSuccessMessage, amountRedeemed } = adaRedemption;
     const { currentLocale } = profile;
-    const { isWindows } = environment;
 
     if (!wallets.active) return <MainLayout><LoadingSpinner /></MainLayout>;
 
@@ -83,15 +69,6 @@ export default class Wallet extends Component<Props> {
             amount={amountRedeemed}
             onClose={actions.adaRedemption.closeAdaRedemptionSuccessOverlay.trigger}
           />
-        ) : null}
-        {
-          isWindows &&
-          isRestoreActive &&
-          !wallets.hasDiscardedAntivirusRestorationSlowdownNotificationForActiveWallet ? (
-            <AntivirusRestaurationSlowdownNotification
-              onDiscard={this.handleAntivirusNotificationDiscard}
-              onFaqLinkClick={this.openExternalLinkInDefaultBrowser}
-            />
         ) : null}
       </MainLayout>
     );

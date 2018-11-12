@@ -30,7 +30,6 @@ export default class WalletsStore extends Store {
   /* eslint-disable max-len */
   @observable active: ?Wallet = null;
   @observable isRestoreActive: boolean = false;
-  @observable lastDiscardedAntivirusRestorationSlowdownNotificationWalletId: ?string = null;
   @observable walletsRequest: Request<Array<Wallet>> = new Request(this.api.ada.getWallets);
   @observable importFromFileRequest: Request<Wallet> = new Request(this.api.ada.importWalletFromFile);
   @observable createWalletRequest: Request<Wallet> = new Request(this.api.ada.createWallet);
@@ -64,10 +63,6 @@ export default class WalletsStore extends Store {
 
   setup() {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
-
-    this.actions.wallets.discardAntivirusRestorationSlowdownNotificationForActiveWallet.listen(
-      this._discardAntivirusNotificationForRestoration
-    );
 
     this.registerReactions([
       this._updateActiveWalletOnRouteChanges,
@@ -222,11 +217,6 @@ export default class WalletsStore extends Store {
     return matchRoute(ROUTES.WALLETS.ROOT + '(/*rest)', currentRoute);
   }
 
-  @computed get hasDiscardedAntivirusRestorationSlowdownNotificationForActiveWallet(): boolean {
-    if (!this.active) return false;
-    return this.lastDiscardedAntivirusRestorationSlowdownNotificationWalletId === this.active.id;
-  }
-
   getWalletById = (id: string): (?Wallet) => this.all.find(w => w.id === id);
 
   getWalletByName = (name: string): (?Wallet) => this.all.find(w => w.name === name);
@@ -322,15 +312,6 @@ export default class WalletsStore extends Store {
       }
     });
   };
-
-  @action _discardAntivirusNotificationForRestoration = () => {
-    if (!this.active) return;
-    this.lastDiscardedAntivirusRestorationSlowdownNotificationWalletId = this.active.id;
-  };
-
-  @action _resetAntivirusNotificationForActiveWallet = () => {
-    this.lastDiscardedAntivirusRestorationSlowdownNotificationWalletId = null;
-  }
 
   isValidAddress = (address: string) => this.api.ada.isValidAddress(address);
 
