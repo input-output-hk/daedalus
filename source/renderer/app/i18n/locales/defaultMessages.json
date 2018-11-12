@@ -559,53 +559,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!<strong>Note:</strong> Antivirus software, like Windows Defender, can cause slow wallet restoration times.",
-        "description": "Warning about antivirus software slowing down restoration process on Windows.",
-        "end": {
-          "column": 3,
-          "line": 21
-        },
-        "file": "source/renderer/app/components/notifications/AntivirusRestaurationSlowdownNotification.js",
-        "id": "wallet.statusMessages.antivirusRestaurationSlowdownNotification.note",
-        "start": {
-          "column": 8,
-          "line": 17
-        }
-      },
-      {
-        "defaultMessage": "!!!see the FAQ",
-        "description": "\"see the FAQ\" link text in the antivirus restoration slowdown notification",
-        "end": {
-          "column": 3,
-          "line": 26
-        },
-        "file": "source/renderer/app/components/notifications/AntivirusRestaurationSlowdownNotification.js",
-        "id": "wallet.statusMessages.antivirusRestaurationSlowdownNotification.faqLinkText",
-        "start": {
-          "column": 15,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!Please {faqLink} on the Daedalus website for more information.",
-        "description": "Warning about antivirus software slowing down restoration process on Windows.",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/components/notifications/AntivirusRestaurationSlowdownNotification.js",
-        "id": "wallet.statusMessages.antivirusRestaurationSlowdownNotification.faqLink",
-        "start": {
-          "column": 11,
-          "line": 27
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/notifications/AntivirusRestaurationSlowdownNotification.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Update and restart",
         "description": "Label \"Update and restart\" on the Cardano node update notification.",
         "end": {
