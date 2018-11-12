@@ -1,6 +1,6 @@
 // @flow
 import { createWriteStream, readFileSync } from 'fs';
-import { spawn } from 'child_process';
+import { spawn, exec } from 'child_process';
 import { BrowserWindow, ipcMain } from 'electron';
 import { Logger } from '../../common/logging';
 import { prepareArgs } from './config';
@@ -68,6 +68,7 @@ export const setupCardano = (
   const cardanoNode = new CardanoNode(Logger, {
     // Dependencies on node.js apis are passed as props to ease testing
     spawn,
+    exec,
     readFileSync,
     createWriteStream,
     broadcastTlsConfig: (config: ?TlsConfig) => {

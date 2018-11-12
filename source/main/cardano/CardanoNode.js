@@ -1,6 +1,6 @@
 // @flow
 import Store from 'electron-store';
-import type { ChildProcess, spawn } from 'child_process';
+import type { ChildProcess, spawn, exec } from 'child_process';
 import type { WriteStream } from 'fs';
 import { toInteger } from 'lodash';
 import environment from '../../common/environment';
@@ -22,6 +22,7 @@ type Logger = {
 
 type Actions = {
   spawn: spawn,
+  exec: exec,
   readFileSync: (path: string) => Buffer,
   createWriteStream: (path: string, options?: Object) => WriteStream,
   broadcastTlsConfig: (config: ?TlsConfig) => void,
@@ -318,6 +319,7 @@ export class CardanoNode {
       await this.start(_config, isForced);
     } catch (error) {
       _log.info(`CardanoNode#restart: Could not restart cardano-node "${error}"`);
+      this._changeToState(CardanoNodeStates.ERRORED);
       return Promise.reject(error);
     }
   }
@@ -596,13 +598,24 @@ export class CardanoNode {
   _killProcessWithName = async (pid: number, name: string): Promise<void> => {
     const { _config } = this;
     try {
-      process.kill(pid);
-      await promisedCondition(() => !this._isProcessRunning(pid, name), _config.killTimeout);
+      if (!environment.isWindows()) {
+        this._log.info('CardanoNode: using "process.kill(pid)" to kill.');
+        process.kill(pid);
+      } else {
+        // https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/taskkill
+        const windowsKillCmd = `taskkill /pid ${pid} /t /f`;
+        this._log.info(`CardanoNode (Windows): using "${windowsKillCmd}" to kill.`);
+        this._actions.exec(windowsKillCmd);
+      }
+      await promisedCondition(async () => (
+        (await this._isProcessRunning(pid, name)) === false
+      ), _config.killTimeout);
+
       this._log.info(`CardanoNode: successfuly killed ${name} process (PID: ${pid})`);
       return Promise.resolve();
     } catch (error) {
       this._log.info(
-        `CardanoNode: _killPreviousProcess returned an error attempting to kill ${name}
+        `CardanoNode: _killProcessWithName returned an error attempting to kill ${name}
         process (PID: ${pid}). Error: ${JSON.stringify(error)}`
       );
       return Promise.reject(error);

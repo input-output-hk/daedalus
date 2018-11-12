@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { get } from 'lodash';
-import { shell } from 'electron';
 import MainLayout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
@@ -12,9 +11,6 @@ import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import { WalletSyncStateTags } from '../../domains/Wallet';
-import environment from '../../../../common/environment';
-import AntivirusRestaurationSlowdownNotification
-  from '../../components/notifications/AntivirusRestaurationSlowdownNotification';
 
 type Props = InjectedContainerProps;
 
@@ -37,16 +33,6 @@ export default class Wallet extends Component<Props> {
       route: ROUTES.WALLETS.PAGE,
       params: { id: wallets.active.id, page },
     });
-  };
-
-  handleAntivirusNotificationDiscard = () => {
-    const { wallets } = this.props.actions;
-    wallets.discardAntivirusRestorationSlowdownNotificationForActiveWallet.trigger();
-  };
-
-  openExternalLinkInDefaultBrowser = (event: MouseEvent, url: string) => {
-    event.preventDefault();
-    shell.openExternal(url);
   };
 
   render() {
@@ -83,15 +69,6 @@ export default class Wallet extends Component<Props> {
             amount={amountRedeemed}
             onClose={actions.adaRedemption.closeAdaRedemptionSuccessOverlay.trigger}
           />
-        ) : null}
-        {
-          environment.isWindows() &&
-          isRestoreActive &&
-          !wallets.hasDiscardedAntivirusRestorationSlowdownNotificationForActiveWallet ? (
-            <AntivirusRestaurationSlowdownNotification
-              onDiscard={this.handleAntivirusNotificationDiscard}
-              onFaqLinkClick={this.openExternalLinkInDefaultBrowser}
-            />
         ) : null}
       </MainLayout>
     );
