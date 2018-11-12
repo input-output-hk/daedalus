@@ -66,6 +66,14 @@ const safeExit = async () => {
   }
 };
 
+const menuActions = {
+  openAbout,
+  goToAdaRedemption,
+  goToNetworkStatus,
+  restartInSafeMode,
+  restartWithoutSafeMode,
+};
+
 app.on('ready', async () => {
   // Make sure this is the only Daedalus instance running per cluster before doing anything else
   try {
@@ -100,14 +108,6 @@ app.on('ready', async () => {
     // Connect to electron-connect server which restarts / reloads windows on file changes
     client.create(mainWindow);
   }
-
-  const menuActions = {
-    openAbout,
-    goToAdaRedemption,
-    goToNetworkStatus,
-    restartInSafeMode,
-    restartWithoutSafeMode,
-  };
 
   // Build app menus
   let menu;
