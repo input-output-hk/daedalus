@@ -144,13 +144,13 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                 setOutPath "$INSTDIR"        -- Where to install files in this section
                 unsafeInject "AllowSkipFiles off"
                 writeRegStr HKLM "Software/$InstallDir" "Install_Dir" "$INSTDIR" -- Used by launcher batch script
-                createDirectory "$APPDATA\\$InstallDir\\Secrets-1.0"
-                createDirectory "$APPDATA\\$InstallDir\\Logs"
-                createDirectory "$APPDATA\\$InstallDir\\Logs\\pub"
-                onError (delete [] "$APPDATA\\$InstallDir\\launcher.lock") $
+                createDirectory "..\$InstallDir\\Secrets-1.0"
+                createDirectory "..\$InstallDir\\Logs"
+                createDirectory "..\$InstallDir\\Logs\\pub"
+                onError (delete [] "..\$InstallDir\\launcher.lock") $
                     abort "$InstallDir is running. It needs to be fully shut down before running the installer!"
-                iff_ (fileExists "$APPDATA\\$InstallDir\\Wallet-1.0\\open\\*.*") $
-                    rmdir [] "$APPDATA\\$InstallDir\\Wallet-1.0\\open"
+                iff_ (fileExists "..\$InstallDir\\Wallet-1.0\\open\\*.*") $
+                    rmdir [] "..\$InstallDir\\Wallet-1.0\\open"
                 file [] "cardano-node.exe"
                 file [] "cardano-launcher.exe"
                 file [] "cardano-x509-certificates.exe"
