@@ -17,6 +17,7 @@ import Action from './actions/lib/Action';
 import translations from './i18n/translations';
 import './themes/index.global.scss';
 import { setupApi } from './api/index';
+import { environment } from '../../common/environment';
 
 // run MobX in strict mode
 useStrict(true);
@@ -29,7 +30,6 @@ const initializeDaedalus = () => {
   const router = new RouterStore();
   const history = syncHistoryWithStore(hashHistory, router);
   const stores = setupStores(api, actions, router);
-  const { app: { environment } } = stores;
 
   window.daedalus = {
     api,

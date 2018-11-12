@@ -596,7 +596,7 @@ export class CardanoNode {
   _killProcessWithName = async (pid: number, name: string): Promise<void> => {
     const { _config } = this;
     try {
-      if (!environment.isWindows()) {
+      if (!environment.isWindows) {
         this._log.info('CardanoNode: using "process.kill(pid)" to kill.');
         process.kill(pid);
       } else {
@@ -688,5 +688,4 @@ export class CardanoNode {
   _isUnrecoverable = (config: CardanoNodeConfig) => (
     this._startupTries >= config.startupMaxRetries
   );
-
 }

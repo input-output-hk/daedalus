@@ -1,8 +1,9 @@
 // @flow
-import { ipcRenderer } from 'electron';
 import { action } from 'mobx';
 import Store from './lib/Store';
-import { GET_APP_ENVIRONMENT } from '../../../common/ipc-api';
+
+// TODO: refactor all parts that rely on this to ipc channels!
+const { ipcRenderer } = global;
 
 export default class WindowStore extends Store {
 
@@ -12,10 +13,12 @@ export default class WindowStore extends Store {
     this.actions.window.resizeWindow.listen(this._resizeWindow);
     this.actions.window.closeWindow.listen(this.closeWindow);
     this.actions.app.initAppEnvironment.listen(() => {});
-    ipcRenderer.on(GET_APP_ENVIRONMENT.SUCCESS, this._onGetAppEnvironmentSuccess);
   }
 
-  closeWindow = () => ipcRenderer.send('close-window');
+  closeWindow = () => {
+    // TODO: refactor to ipc channel
+    ipcRenderer.send('close-window');
+  };
 
   // PRIVATE
 
@@ -24,6 +27,7 @@ export default class WindowStore extends Store {
   });
 
   _resizeWindow = ({ width, height }: { width: number, height: number }) => {
+    // TODO: refactor to ipc channel
     ipcRenderer.send('resize-window', { width, height, animate: !this._isTest });
   };
 

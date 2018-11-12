@@ -2,18 +2,20 @@
 import { action, observable, computed, toJS } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment/moment';
-import { ipcRenderer } from 'electron';
 import { includes } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { THEMES } from '../themes/index';
 import { ROUTES } from '../routes-config';
-import { GET_LOGS, DOWNLOAD_LOGS, COMPRESS_LOGS, GET_APP_ENVIRONMENT } from '../../../common/ipc-api';
+import { GET_LOGS, DOWNLOAD_LOGS, COMPRESS_LOGS } from '../../../common/ipc-api';
 import LocalizableError from '../i18n/LocalizableError';
 import globalMessages from '../i18n/global-messages';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
 import type { LogFiles, CompressedLogStatus } from '../types/LogTypes';
 import { generateFileNameWithTimestamp } from '../../../common/fileName';
+
+// TODO: refactor all parts that rely on this to ipc channels!
+const { ipcRenderer } = global;
 
 export default class SettingsStore extends Store {
 
@@ -25,17 +27,6 @@ export default class SettingsStore extends Store {
     // { value: 'de-DE', label: globalMessages.languageGerman },
     // { value: 'hr-HR', label: globalMessages.languageCroatian },
   ];
-
-  _environment = {
-    network: '',
-    isMainnet: false,
-    version: '',
-    os: '',
-    apiVersion: '',
-    build: '',
-    installerVersion: '',
-    reportURL: '',
-  };
 
   @observable bigNumberDecimalFormat = {
     decimalSeparator: '.',
@@ -74,11 +65,13 @@ export default class SettingsStore extends Store {
     this.actions.profile.resetBugReportDialog.listen(this._resetBugReportDialog);
     this.actions.profile.downloadLogs.listen(this._downloadLogs);
     this.actions.app.initAppEnvironment.listen(() => {});
+
+    // TODO: refactor to ipc channels
     ipcRenderer.on(GET_LOGS.SUCCESS, this._onGetLogsSuccess);
     ipcRenderer.on(DOWNLOAD_LOGS.SUCCESS, this._onDownloadLogsSuccess);
     ipcRenderer.on(COMPRESS_LOGS.SUCCESS, this._onCompressLogsSuccess);
     ipcRenderer.on(COMPRESS_LOGS.ERROR, this._onCompressLogsError);
-    ipcRenderer.on(GET_APP_ENVIRONMENT.SUCCESS, this._onGetAppEnvironmentSuccess);
+
     this.registerReactions([
       this._setBigNumberFormat,
       this._updateMomentJsLocaleAfterLocaleChange,
@@ -95,6 +88,7 @@ export default class SettingsStore extends Store {
 
   teardown() {
     super.teardown();
+    // TODO: refactor to ipc channels
     ipcRenderer.removeAllListeners(GET_LOGS.SUCCESS);
     ipcRenderer.removeAllListeners(DOWNLOAD_LOGS.SUCCESS);
     ipcRenderer.removeAllListeners(COMPRESS_LOGS.SUCCESS);
@@ -128,7 +122,7 @@ export default class SettingsStore extends Store {
   @computed get currentTheme(): string {
     const { result } = this.getThemeRequest.execute();
     if (this.isCurrentThemeSet) return result;
-    return this._environment.isMainnet ? THEMES.DARK_BLUE : THEMES.LIGHT_BLUE; // defaults
+    return this.environment.isMainnet ? THEMES.DARK_BLUE : THEMES.LIGHT_BLUE; // defaults
   }
 
   @computed get isCurrentThemeSet(): boolean {
@@ -146,7 +140,7 @@ export default class SettingsStore extends Store {
   }
 
   @computed get termsOfUse(): string {
-    const network = this._environment.isMainnet ? 'mainnet' : 'other';
+    const network = this.environment.isMainnet ? 'mainnet' : 'other';
     return require(`../i18n/locales/terms-of-use/${network}/${this.currentLocale}.md`);
   }
 
@@ -273,25 +267,14 @@ export default class SettingsStore extends Store {
   _reloadAboutWindowOnLocaleChange = () => {
     // register mobx observer for currentLocale in order to trigger reaction on change
     this.currentLocale; // eslint-disable-line
+    // TODO: refactor to ipc channel
     ipcRenderer.send('reload-about-window');
   };
 
   _getLogs = () => {
+    // TODO: refactor to ipc channels
     ipcRenderer.send(GET_LOGS.REQUEST);
   };
-
-  _onGetAppEnvironmentSuccess = action((event, environment) => {
-    this._environment = {
-      network: environment.NETWORK,
-      isMainnet: environment.isMainnet,
-      version: environment.version,
-      os: environment.os,
-      apiVersion: environment.API_VERSION,
-      build: environment.build,
-      installerVersion: environment.installerVersion,
-      reportURL: environment.REPORT_URL
-    };
-  });
 
   _onGetLogsSuccess = action((event, files) => {
     this.logFiles = files;
@@ -311,6 +294,8 @@ export default class SettingsStore extends Store {
 
   _compressLogs = action(({ logs }) => {
     const { fileName = generateFileNameWithTimestamp() } = this.compressedLogsStatus;
+
+    // TODO: refactor to ipc channels
     ipcRenderer.send(COMPRESS_LOGS.REQUEST, toJS(logs), fileName);
   });
 
@@ -334,7 +319,7 @@ export default class SettingsStore extends Store {
     compressedLogsFile: ?string,
   }) => {
     this.isSubmittingBugReport = true;
-    const { isMainnet, ...restEnvironment } = this._environment;
+    const { isMainnet, ...restEnvironment } = this.environment;
     this.sendBugReport.execute({
       requestFormData: { email, subject, problem, compressedLogsFile },
       environmentData: { ...restEnvironment }
@@ -361,6 +346,7 @@ export default class SettingsStore extends Store {
     };
     if (this.compressedLogsFile && fresh !== true) {
       // logs already compressed, trigger the download
+      // TODO: refactor to ipc channel
       ipcRenderer.send(DOWNLOAD_LOGS.REQUEST, this.compressedLogsFile, destination);
     } else {
       // start process: getLogs -> compressLogs -> downloadLogs (again)

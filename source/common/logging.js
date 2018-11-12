@@ -1,18 +1,11 @@
 // @flow
-import log from 'electron-log';
+import { isNodeEnvironment } from './environment';
 
-const isRenderer = () => {
-  const envProcess: Process & { type?: ?string } = process;
-  // running in a web browser
-  if (typeof envProcess === 'undefined') return true;
-  // node-integration is disabled
-  if (!envProcess) return true;
-  // We're in node.js somehow
-  if (!envProcess.type) return false;
-  return envProcess.type === 'renderer';
-};
+// TODO: Expose log via preload script to renderer
+const _nodeRequire = require;
+const log = isNodeEnvironment ? _nodeRequire('electron-log') : global.electronLog;
 
-const prefixProcessType = (str: string) => (isRenderer() ? '[renderer] ' : '[main] ') + str;
+const prefixProcessType = (str: string) => (isNodeEnvironment ? '[main] ' : '[renderer] ') + str;
 
 const logToLevel = (level) => (message: string) => log[level](prefixProcessType(message));
 

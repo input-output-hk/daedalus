@@ -1,5 +1,4 @@
 // @flow
-import { ipcRenderer } from 'electron';
 import { observable, action, computed, runInAction } from 'mobx';
 import { get, chunk, find } from 'lodash';
 import Store from './lib/Store';
@@ -12,9 +11,11 @@ import { mnemonicToSeedHex } from '../utils/crypto';
 import { downloadPaperWalletCertificate } from '../utils/paperWalletPdfGenerator';
 import { buildRoute, matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
-import { GET_APP_ENVIRONMENT } from '../../../common/ipc-api';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
+
+// TODO: refactor all parts that rely on this to ipc channels!
+const { ipcRenderer } = global;
 
 /**
  * The base wallet store that contains the shared logic
@@ -60,8 +61,6 @@ export default class WalletsStore extends Store {
     spendingPassword: null,
   };
   _pollingBlocked = false;
-  _isMainnet = false;
-  _buildLabel = '';
 
   setup() {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
@@ -89,7 +88,6 @@ export default class WalletsStore extends Store {
     router.goToRoute.listen(this._onRouteChange);
     walletBackup.finishWalletBackup.listen(this._finishCreation);
     app.initAppEnvironment.listen(() => {});
-    ipcRenderer.on(GET_APP_ENVIRONMENT.SUCCESS, this._onGetAppEnvironmentSuccess);
   }
 
   _create = async (params: {
@@ -554,8 +552,8 @@ export default class WalletsStore extends Store {
   ) => {
     const locale = this.stores.profile.currentLocale;
     const intl = i18nContext(locale);
-    const isMainnet = this._isMainnet;
-    const buildLabel = this._buildLabel;
+    const isMainnet = this.environment.isMainnet;
+    const buildLabel = this.environment.buildLabel;
     try {
       await downloadPaperWalletCertificate({
         address,
@@ -582,11 +580,6 @@ export default class WalletsStore extends Store {
 
   _updateCertificateCreationState = action((state: boolean) => {
     this.generatingCertificateInProgress = state;
-  });
-
-  _onGetAppEnvironmentSuccess = action((event, { isMainnet, buildLabel }) => {
-    this._isMainnet = isMainnet;
-    this._buildLabel = buildLabel;
   });
 
   @action _setCertificateTemplate = (params: {

@@ -1,61 +1,40 @@
 // @flow
 import { observable, computed, action } from 'mobx';
-import { ipcRenderer, shell } from 'electron';
 import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
 import { OPEN_ABOUT_DIALOG_CHANNEL } from '../../../common/ipc/open-about-dialog';
 import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../../../common/ipc/go-to-ada-redemption-screen';
 import { GO_TO_NETWORK_STATUS_SCREEN_CHANNEL } from '../../../common/ipc/go-to-network-status-screen';
-import { GET_GPU_STATUS, GET_APP_ENVIRONMENT } from '../../../common/ipc-api';
+import { GET_GPU_STATUS } from '../../../common/ipc-api';
 import { ROUTES } from '../routes-config';
 import type { GpuStatus } from '../types/gpuStatus';
-import type { Environment } from '../../../common/types/environment.types';
+import { openExternalUrlChannel } from '../ipc/open-external-url';
+
+// TODO: refactor all parts that rely on this to ipc channels!
+const { ipcRenderer } = global;
 
 export default class AppStore extends Store {
 
   @observable error: ?LocalizableError = null;
   @observable isAboutDialogOpen = false;
   @observable gpuStatus: ?GpuStatus = null;
-  @observable environment: Environment = {
-    NETWORK: '',
-    API_VERSION: '',
-    MOBX_DEV_TOOLS: false,
-    current: '',
-    REPORT_URL: '',
-    isDev: false,
-    isTest: false,
-    isProduction: false,
-    isMainnet: false,
-    isStaging: false,
-    isTestnet: false,
-    isWatchMode: false,
-    build: '',
-    buildNumber: '',
-    buildLabel: '',
-    platform: '',
-    os: '',
-    installerVersion: '',
-    version: '',
-    isWindows: false,
-    isMacOS: false,
-    isLinux: false
-  };
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
     this.actions.app.openAboutDialog.listen(this._openAboutDialog);
     this.actions.app.closeAboutDialog.listen(this._closeAboutDialog);
     this.actions.app.getGpuStatus.listen(this._getGpuStatus);
-    this.actions.app.initAppEnvironment.listen(this._getAppEnvironment);
+
+    // TODO: refactor to ipc channels
     ipcRenderer.on(OPEN_ABOUT_DIALOG_CHANNEL, this._openAboutDialog);
     ipcRenderer.on(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
     ipcRenderer.on(GO_TO_NETWORK_STATUS_SCREEN_CHANNEL, this._goToNetworkStatusScreen);
     ipcRenderer.on(GET_GPU_STATUS.SUCCESS, this._onGetGpuStatusSuccess);
-    ipcRenderer.on(GET_APP_ENVIRONMENT.SUCCESS, this._onGetAppEnvironmentSuccess);
   }
 
   teardown() {
+    // TODO: refactor to ipc channels
     ipcRenderer.removeListener(OPEN_ABOUT_DIALOG_CHANNEL, this._openAboutDialog);
     ipcRenderer.removeListener(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
     ipcRenderer.removeListener(GO_TO_NETWORK_STATUS_SCREEN_CHANNEL, this._goToNetworkStatusScreen);
@@ -65,24 +44,17 @@ export default class AppStore extends Store {
     return this.stores.router.location.pathname;
   }
 
-  openExternalLink(link: string): void {
-    shell.openExternal(link);
+  openExternalLink(url: string): void {
+    openExternalUrlChannel.send(url);
   }
 
   _getGpuStatus = () => {
+    // TODO: refactor to ipc channel
     ipcRenderer.send(GET_GPU_STATUS.REQUEST);
   };
 
   _onGetGpuStatusSuccess = action((event, status) => {
     this.gpuStatus = status;
-  });
-
-  _getAppEnvironment = () => {
-    ipcRenderer.send(GET_APP_ENVIRONMENT.REQUEST);
-  }
-
-  _onGetAppEnvironmentSuccess = action((event, environment) => {
-    this.environment = environment;
   });
 
   _updateRouteLocation = (options: { route: string, params: ?Object }) => {

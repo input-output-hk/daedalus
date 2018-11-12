@@ -1,14 +1,17 @@
 // @flow
-import os from 'os';
 import { uniq } from 'lodash';
 import { version } from '../../package.json';
 import type { Environment } from './types/environment.types';
+import { getOsPlatform } from './getOsPlatform';
 
-// Only require electron / remote if we are in a node.js environment
-let remote;
-if (process.version !== '' && process.release !== undefined && process.release.name === 'node') {
-  remote = require('electron').remote;
-}
+export const isNodeEnvironment = (
+  process.version !== '' &&
+  process.release !== undefined &&
+  process.release.name === 'node'
+);
+
+// The process env is exposed to the renderer as global via preload script
+const processEnv = isNodeEnvironment ? process.env : global.process.env;
 
 // constants
 export const PRODUCTION = 'production';
@@ -28,33 +31,33 @@ export const OS_NAMES = {
 };
 
 // environment variables
-const CURRENT_NODE_ENV = process.env.NODE_ENV || DEVELOPMENT;
-const NETWORK = process.env.NETWORK || DEVELOPMENT;
-const REPORT_URL = process.env.REPORT_URL || STAGING_REPORT_URL;
+const CURRENT_NODE_ENV = processEnv.NODE_ENV || DEVELOPMENT;
+const NETWORK = processEnv.NETWORK || DEVELOPMENT;
+const REPORT_URL = processEnv.REPORT_URL || STAGING_REPORT_URL;
 const isDev = CURRENT_NODE_ENV === DEVELOPMENT;
 const isTest = CURRENT_NODE_ENV === TEST;
 const isProduction = CURRENT_NODE_ENV === PRODUCTION;
 const isMainnet = CURRENT_NODE_ENV === MAINNET;
 const isStaging = CURRENT_NODE_ENV === STAGING;
 const isTestnet = CURRENT_NODE_ENV === TESTNET;
-const isWatchMode = process.env.IS_WATCH_MODE;
-const API_VERSION = process.env.API_VERSION || 'dev';
-const PLATFORM = os.platform();
+const isWatchMode = processEnv.IS_WATCH_MODE;
+const API_VERSION = processEnv.API_VERSION || 'dev';
+const PLATFORM = getOsPlatform(isNodeEnvironment);
 const OS = OS_NAMES[PLATFORM] || PLATFORM;
-const BUILD = process.env.BUILD_NUMBER || 'dev';
+const BUILD = processEnv.BUILD_NUMBER || 'dev';
 const BUILD_NUMBER = uniq([API_VERSION, BUILD]).join('.');
 const BUILD_LABEL = (isProduction ?
   `Daedalus (${version}#${BUILD_NUMBER})` :
   `Daedalus (${version}#${BUILD_NUMBER}) ${CURRENT_NODE_ENV}`
 );
 const INSTALLER_VERSION = uniq([API_VERSION, BUILD]).join('.');
-const MOBX_DEV_TOOLS = process.env.MOBX_DEV_TOOLS || false;
+const MOBX_DEV_TOOLS = processEnv.MOBX_DEV_TOOLS || false;
 const isMacOS = PLATFORM === MAC_OS;
 const isWindows = PLATFORM === WINDOWS;
 const isLinux = PLATFORM === LINUX;
 
 // compose environment
-const daedalusEnv = Object.assign({}, {
+export const environment: Environment = Object.assign({}, {
   NETWORK,
   API_VERSION,
   MOBX_DEV_TOOLS,
@@ -77,7 +80,4 @@ const daedalusEnv = Object.assign({}, {
   isWindows,
   isMacOS,
   isLinux
-});
-const sourceEnv = remote ? remote.getGlobal('env') : process.env;
-
-export const environment: Environment = Object.assign(daedalusEnv, sourceEnv);
+}, processEnv);

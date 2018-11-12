@@ -1,7 +1,14 @@
 // @flow
-import Store from 'electron-store';
-
-const store = new Store();
+// TODO: refactor to a solution without node integration
+// import Store from 'electron-store';
+//
+// const store = new Store();
+// TODO: this is just a HACK to make it work in the meantime
+const store = {
+  get: (...args) => localStorage.getItem(...args),
+  set: (...args) => localStorage.setItem(...args),
+  delete: (...args) => localStorage.removeItem(...args),
+};
 
 type StorageKeys = {
   USER_LOCALE: string,

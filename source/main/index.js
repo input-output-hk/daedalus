@@ -1,6 +1,6 @@
 // @flow
 import os from 'os';
-import { app, BrowserWindow, globalShortcut, Menu, dialog } from 'electron';
+import { app, BrowserWindow, globalShortcut, Menu, dialog, shell } from 'electron';
 import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { Logger } from '../common/logging';
@@ -139,6 +139,26 @@ app.on('ready', async () => {
     Logger.info('mainWindow received <close> event. Safe exiting Daedalus now.');
     event.preventDefault();
     await safeExit();
+  });
+
+  // TODO: properly validate our TLS certificate or fix errors in-browser somehow
+  app.on('certificate-error', (event, webContents, url, error, certificate, callback) => {
+    // On certificate error we disable default behaviour (stop loading the page)
+    // and we then say "it is all fine - true" to the callback
+    event.preventDefault();
+    callback(true);
+  });
+
+  // Security feature: Prevent creation of new browser windows
+  // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows
+  app.on('web-contents-created', (_, contents) => {
+    contents.on('new-window', (event, url) => {
+      // Prevent creation of new BrowserWindows via links / window.open
+      event.preventDefault();
+      Logger.info(`Prevented creation of new browser window with url ${url}`);
+      // Open these links with the default browser
+      shell.openExternal(url);
+    });
   });
 
   // Wait for controlled cardano-node shutdown before quitting the app

@@ -40,6 +40,7 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
   // Boot up the electron app before all features
   BeforeAll({ timeout: 5 * 60 * 1000 }, async () => {
     context.app = await startApp();
+    await context.app.client.waitUntilWindowLoaded();
   });
 
   // Make the electron app accessible in each scenario context

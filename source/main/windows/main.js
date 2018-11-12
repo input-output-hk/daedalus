@@ -10,28 +10,17 @@ const rendererErrorHandler = new RendererErrorHandler();
 const { isDev, isTest, buildLabel, isLinux } = environment;
 
 export const createMainWindow = (isInSafeMode) => {
-  let windowOptions = {};
-  if (isTest) {
-    windowOptions = {
-      show: false,
-      width: 1150,
-      height: 870,
-      webPreferences: {
-        webviewTag: false,
-      }
-    };
-  } else {
-    windowOptions = {
-      show: false,
-      width: 1150,
-      height: 870,
-      webPreferences: {
-        nodeIntegration: false,
-        webviewTag: false,
-        preload: path.join(`${__dirname}/../../source/main/utils/`, 'preload.js')
-      }
-    };
-  }
+  const windowOptions = {
+    show: false,
+    width: 1150,
+    height: 870,
+    webPreferences: {
+      nodeIntegration: false,
+      webviewTag: false,
+      enableRemoteModule: false,
+      preload: path.join(__dirname, '/../../source/main/utils/preload.js')
+    }
+  };
 
   if (isLinux) {
     windowOptions.icon = path.join(launcherConfig.statePath, 'icon.png');

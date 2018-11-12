@@ -1,18 +1,24 @@
+const _os = require('os');
+const _ipcRenderer = require('electron').ipcRenderer;
+const _electronLog = require('electron-log');
+
 const _process = process;
+const _require = require;
 
 process.once('loaded', () => {
   global.process = {
-    env: {
-      NODE_ENV: _process.env.NODE_ENV,
-      NETWORK: _process.env.NETWORK || 'development'
-    },
-    umask: _process.umask,
-    version: _process.version,
-    cwd: _process.cwd,
-    platform: _process.platform
+    env: Object.assign({}, _process.env)
   };
+  global.os = {
+    platform: _os.platform(),
+  };
+  global.ipcRenderer = _ipcRenderer;
+  global.electronLog = _electronLog;
   global.Buffer = Buffer;
-  global.require = require;
+  // Expose require for Spectron!
+  if (_process.env.NODE_ENV === 'test') {
+    global.require = _require;
+  }
   // ESLint will warn about any use of eval(), even this one
   // eslint-disable-next-line
   global.eval = () => {

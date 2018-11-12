@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { get } from 'lodash';
-import { shell } from 'electron';
 import MainLayout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
@@ -14,6 +13,7 @@ import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import { WalletSyncStateTags } from '../../domains/Wallet';
 import AntivirusRestaurationSlowdownNotification
   from '../../components/notifications/AntivirusRestaurationSlowdownNotification';
+import { openExternalUrlChannel } from '../../ipc/open-external-url';
 
 type Props = InjectedContainerProps;
 
@@ -45,7 +45,7 @@ export default class Wallet extends Component<Props> {
 
   openExternalLinkInDefaultBrowser = (event: MouseEvent, url: string) => {
     event.preventDefault();
-    shell.openExternal(url);
+    openExternalUrlChannel.send(url);
   };
 
   render() {

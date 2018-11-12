@@ -1,13 +1,11 @@
 // @flow
 import React, { Component } from 'react';
-import { remote } from 'electron';
 import { get } from 'lodash';
 import { observer, inject } from 'mobx-react';
 import BugReportDialog from '../../../components/profile/bug-report/BugReportDialog';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import { generateFileNameWithTimestamp } from '../../../../../common/fileName';
-
-const shell = require('electron').shell;
+import { openExternalUrlChannel } from '../../../ipc/open-external-url';
 
 @inject('stores', 'actions') @observer
 export default class BugReportDialogContainer extends Component<InjectedProps> {
@@ -22,16 +20,17 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
 
   onDownload = () => {
     const fileName = generateFileNameWithTimestamp();
-    const destination = remote.dialog.showSaveDialog({
-      defaultPath: fileName,
-    });
-    if (destination) {
-      this.props.actions.profile.downloadLogs.trigger({ fileName, destination, fresh: true });
-    }
+    // TODO: Implement dialog with IPC channel
+    // const destination = remote.dialog.showSaveDialog({
+    //   defaultPath: fileName,
+    // });
+    // if (destination) {
+    //   this.props.actions.profile.downloadLogs.trigger({ fileName, destination, fresh: true });
+    // }
   };
 
-  onSubmitManually = (link: string) => {
-    shell.openExternal(`https://${link}`);
+  onSubmitManually = (url: string) => {
+    openExternalUrlChannel.send(url);
   };
 
   resetBugReportDialog = () => {

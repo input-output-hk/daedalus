@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { remote } from 'electron';
+// import { remote } from 'electron';
 import ExportWalletToFileDialog from '../../../../components/wallet/settings/ExportWalletToFileDialog';
 import type { OnSubmitParams } from '../../../../components/wallet/settings/ExportWalletToFileDialog';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
@@ -14,21 +14,22 @@ export default class ExportWalletToFileDialogContainer extends Component<Props> 
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
 
   onSubmit = (params: OnSubmitParams) => {
-    const filePath = remote.dialog.showSaveDialog({
-      defaultPath: 'wallet-export.json',
-      filters: [{
-        name: 'wallet-export',
-        extensions: ['json'],
-      }],
-    });
-    const { stores, actions } = this.props;
-    const activeWallet = stores.wallets.active;
-    if (!filePath || !activeWallet) return;
-    actions.walletSettings.exportToFile.trigger({
-      walletId: activeWallet.id,
-      filePath,
-      ...params
-    });
+    // TODO: Implement dialog with IPC channel
+    // const filePath = remote.dialog.showSaveDialog({
+    //   defaultPath: 'wallet-export.json',
+    //   filters: [{
+    //     name: 'wallet-export',
+    //     extensions: ['json'],
+    //   }],
+    // });
+    // const { stores, actions } = this.props;
+    // const activeWallet = stores.wallets.active;
+    // if (!filePath || !activeWallet) return;
+    // actions.walletSettings.exportToFile.trigger({
+    //   walletId: activeWallet.id,
+    //   filePath,
+    //   ...params
+    // });
   };
 
   onCancel = () => {
