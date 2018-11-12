@@ -163,7 +163,6 @@ export default class WalletSettings extends Component<Props> {
                 onClick={() => openDialogAction({
                   dialog: ExportWalletToFileDialog
                 })}
-                disabled={!environment.isDev()}
               >
                 {intl.formatMessage(messages.exportButtonLabel)}
               </button>
