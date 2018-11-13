@@ -68,10 +68,22 @@ let
     };
     iconPath = {
       # the target of these paths must not be a symlink
-      demo    = ./installers/icons/staging.iconset/icon_512x512.png;
-      mainnet = ./installers/icons/mainnet/1024x1024.png;
-      staging = ./installers/icons/staging.iconset/icon_512x512.png;
-      testnet = ./installers/icons/testnet.iconset/icon_512x512.png;
+      demo    = {
+        small = ./installers/icons/staging.iconset/icon_64x64.png;
+        large = ./installers/icons/staging.iconset/icon_512x512.png;
+      };
+      mainnet = {
+        small = ./installers/icons/mainnet/64x64.png;
+        large = ./installers/icons/mainnet/1024x1024.png;
+      };
+      staging = {
+        small = ./installers/icons/staging.iconset/icon_64x64.png;
+        large = ./installers/icons/staging.iconset/icon_512x512.png;
+      };
+      testnet = {
+        small = ./installers/icons/testnet.iconset/icon_64x64.png;
+        large = ./installers/icons/testnet.iconset/icon_512x512.png;
+      };
     };
     namespaceHelper = pkgs.writeScriptBin "namespaceHelper" ''
       #!/usr/bin/env bash
@@ -105,7 +117,8 @@ let
 
       echo "in post-install hook"
 
-      cp -f ${self.iconPath.${cluster}} $DAEDALUS_DIR/icon.png
+      cp -f ${self.iconPath.${cluster}.large} $DAEDALUS_DIR/icon_large.png
+      cp -f ${self.iconPath.${cluster}.small} $DAEDALUS_DIR/icon.png
       cp -Lf ${self.namespaceHelper}/bin/namespaceHelper $DAEDALUS_DIR/namespaceHelper
       mkdir -pv ~/.local/bin ''${XDG_DATA_HOME}/applications
       ${pkgs.lib.optionalString (cluster == "mainnet") "cp -Lf ${self.namespaceHelper}/bin/namespaceHelper ~/.local/bin/daedalus"}
@@ -113,7 +126,7 @@ let
 
       cat ${self.desktopItem}/share/applications/Daedalus*.desktop | sed \
         -e "s+INSERT_PATH_HERE+''${DAEDALUS_DIR}/namespaceHelper+g" \
-        -e "s+INSERT_ICON_PATH_HERE+''${DAEDALUS_DIR}/icon.png+g" \
+        -e "s+INSERT_ICON_PATH_HERE+''${DAEDALUS_DIR}/icon_large.png+g" \
         > "''${XDG_DATA_HOME}/applications/Daedalus${if cluster != "mainnet" then "-${cluster}" else ""}.desktop"
     '';
     xdg-open = pkgs.writeScriptBin "xdg-open" ''
