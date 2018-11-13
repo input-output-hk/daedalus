@@ -4,6 +4,8 @@ import unhandled from 'electron-unhandled';
 import { Logger, stringifyError } from '../../common/logging';
 import { handleNoDiskSpace } from '../ipc/no-disk-space';
 
+let summyTrigger = false;
+
 export default (mainWindow: BrowserWindow) => {
 
   Logger.info('mainErrorHandler.js started ==========--------=====');
@@ -12,6 +14,11 @@ export default (mainWindow: BrowserWindow) => {
     logger: (error: any) => Logger.error(`unhandledException::main: ${stringifyError(error)}`),
     showDialog: false
   });
+
+  if (!summyTrigger) {
+    summyTrigger = true;
+    setTimeout(() => handleNoDiskSpace(mainWindow), 15000);
+  }
 
   process.on('uncaughtException', (error: any) => {
 

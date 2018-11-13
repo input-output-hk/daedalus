@@ -78,7 +78,7 @@ export default class NetworkStatusStore extends Store {
     this.api.ada.getNetworkStatus
   );
 
-  @observable noDiskSpace: boolean = true;
+  @observable noDiskSpace: boolean = false;
   @observable isCheckingNoDiskSpace: boolean = false;
   @observable diskSpaceRequired: number = 123456789;
 

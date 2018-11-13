@@ -40,6 +40,3 @@ export const CHECK_DISK_SPACE = {
   SUCCESS: `${CHECK_DISK_SPACE_CHANNEL}-success`,
   ERROR: `${CHECK_DISK_SPACE_CHANNEL}-error`,
 };
-
-export const NO_DISK_SPACE = 'no-disk-space';
-
