@@ -89,7 +89,7 @@ app.on('ready', async () => {
   const isStartedByLauncher = !!process.env.LAUNCHER_CONFIG;
   if (isProduction && !isStartedByLauncher) {
     const dialogTitle = 'Daedalus improperly started!';
-    const dialogMessage = environment.isWindows ?
+    const dialogMessage = isWindows ?
       'Please start Daedalus using the icon in the Windows start menu or using Daedalus icon on your desktop.' :
       'Daedalus was launched without needed configuration. Please start Daedalus using the shortcut provided by the installer.';
     dialog.showErrorBox(dialogTitle, dialogMessage);
