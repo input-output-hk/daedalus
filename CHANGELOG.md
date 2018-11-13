@@ -31,6 +31,7 @@ Changelog
 - Fixed special buttons outline color ([PR 990](https://github.com/input-output-hk/daedalus/pull/990))
 - Fixed the close button's hover state within the AntivirusRestaurationSlowdownNotification so it's full height ([PR 1131](https://github.com/input-output-hk/daedalus/pull/1131))
 - Fixed uninstaller unicode issue ([PR 1116](https://github.com/input-output-hk/daedalus/pull/1116))
+- Fixed window icon quality issue on Linux ([PR 1170](https://github.com/input-output-hk/daedalus/pull/1170))
 - Implement design review fixes and improvements ([PR 1090](https://github.com/input-output-hk/daedalus/pull/1090))
 - Pinned eslint-scope version via the yarn resolutions feature ([PR 1017](https://github.com/input-output-hk/daedalus/pull/1017))
 - Prevented wallet data polling during wallet deletion ([PR 996](https://github.com/input-output-hk/daedalus/pull/996))

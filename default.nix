@@ -69,20 +69,20 @@ let
     iconPath = {
       # the target of these paths must not be a symlink
       demo    = {
-        small = ./installers/icons/staging.iconset/icon_64x64.png;
-        large = ./installers/icons/staging.iconset/icon_512x512.png;
+        small = ./installers/icons/staging/64x64.png;
+        large = ./installers/icons/staging/1024x1024.png;
       };
       mainnet = {
         small = ./installers/icons/mainnet/64x64.png;
         large = ./installers/icons/mainnet/1024x1024.png;
       };
       staging = {
-        small = ./installers/icons/staging.iconset/icon_64x64.png;
-        large = ./installers/icons/staging.iconset/icon_512x512.png;
+        small = ./installers/icons/staging/64x64.png;
+        large = ./installers/icons/staging/1024x1024.png;
       };
       testnet = {
-        small = ./installers/icons/testnet.iconset/icon_64x64.png;
-        large = ./installers/icons/testnet.iconset/icon_512x512.png;
+        small = ./installers/icons/testnet/64x64.png;
+        large = ./installers/icons/testnet/1024x1024.png;
       };
     };
     namespaceHelper = pkgs.writeScriptBin "namespaceHelper" ''
