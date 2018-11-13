@@ -69,8 +69,8 @@ let
     iconPath = {
       # the target of these paths must not be a symlink
       demo    = {
-        small = ./installers/icons/staging/64x64.png;
-        large = ./installers/icons/staging/1024x1024.png;
+        small = ./installers/icons/mainnet/64x64.png;
+        large = ./installers/icons/mainnet/1024x1024.png;
       };
       mainnet = {
         small = ./installers/icons/mainnet/64x64.png;
