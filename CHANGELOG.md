@@ -8,6 +8,7 @@ Changelog
 ### Fixes
 
 - Fixed the partly broken flow setup ([PR 1124](https://github.com/input-output-hk/daedalus/pull/1124))
+- Removed Antivirus notification ([PR 1164](https://github.com/input-output-hk/daedalus/pull/1164))
 
 ### Chores
 
