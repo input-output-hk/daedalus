@@ -53,6 +53,7 @@ Changelog
 - Fixed broken storybook ([PR 1041](https://github.com/input-output-hk/daedalus/pull/1041))
 - Improved compress/download logs handling ([PR 995](https://github.com/input-output-hk/daedalus/pull/995))
 - Integrated latest React-Polymorph features: render props architecture, theme composition, and a ThemeProvider HOC ([PR 950](https://github.com/input-output-hk/daedalus/pull/950))
+- Integrated latest React-Polymorph with a fix for `NumericInput` component carrot positioning issues ([PR 1172](https://github.com/input-output-hk/daedalus/pull/1172))
 - Made `nodelLogPath` entry in `launcher-config.yaml` optional ([PR 1027](https://github.com/input-output-hk/daedalus/pull/1027))
 - Made `port` and `ca` of Ada Api configurable during runtime ([PR 1067](https://github.com/input-output-hk/daedalus/pull/1067))
 - Removed all ETC specific files ([PR 1068](https://github.com/input-output-hk/daedalus/pull/1068), [PR 1108](https://github.com/input-output-hk/daedalus/pull/1108))
