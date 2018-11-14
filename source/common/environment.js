@@ -1,6 +1,6 @@
 // @flow
 import os from 'os';
-import { uniq } from 'lodash';
+import { uniq, upperFirst } from 'lodash';
 import { version } from '../../package.json';
 
 // Only require electron / remote if we are in a node.js environment
@@ -34,11 +34,14 @@ const environment = Object.assign({
   isMainnet: () => environment.NETWORK === 'mainnet',
   isStaging: () => environment.NETWORK === 'staging',
   isTestnet: () => environment.NETWORK === 'testnet',
+  isDevelopment: () => environment.NETWORK === 'development',
   isWatchMode: () => process.env.IS_WATCH_MODE,
   build,
   buildNumber: uniq([API_VERSION, build]).join('.'),
   getBuildLabel: () => {
-    let buildLabel = `Daedalus (${environment.version}#${environment.buildNumber})`;
+    const networkLabel = !(environment.isMainnet() || environment.isDevelopment()) ?
+      ` ${upperFirst(environment.NETWORK)}` : '';
+    let buildLabel = `Daedalus${networkLabel} (${environment.version}#${environment.buildNumber})`;
     if (!environment.isProduction()) buildLabel += ` ${environment.current}`;
     return buildLabel;
   },

@@ -76,7 +76,15 @@ const safeExit = async () => {
 
 app.on('ready', async () => {
   // Make sure this is the only Daedalus instance running per cluster before doing anything else
-  await acquireDaedalusInstanceLock();
+  try {
+    await acquireDaedalusInstanceLock();
+  } catch (e) {
+    const dialogTitle = 'Daedalus is unable to start!';
+    const dialogMessage = 'Another Daedalus instance is already running.';
+    dialog.showErrorBox(dialogTitle, dialogMessage);
+    app.exit(1);
+  }
+
   setupLogging();
   mainErrorHandler();
 
@@ -85,17 +93,6 @@ app.on('ready', async () => {
   Logger.debug(`!!! ${environment.getBuildLabel()} is running on ${os.platform()} version ${os.release()}
             with CPU: ${JSON.stringify(os.cpus(), null, 2)} with
             ${JSON.stringify(os.totalmem(), null, 2)} total RAM !!!`);
-
-  const isProd = process.env.NODE_ENV === 'production';
-  const isStartedByLauncher = !!process.env.LAUNCHER_CONFIG;
-  if (isProd && !isStartedByLauncher) {
-    const dialogTitle = 'Daedalus improperly started!';
-    const dialogMessage = environment.isWindows() ?
-      'Please start Daedalus using the icon in the Windows start menu or using Daedalus icon on your desktop.' :
-      'Daedalus was launched without needed configuration. Please start Daedalus using the shortcut provided by the installer.';
-    dialog.showErrorBox(dialogTitle, dialogMessage);
-    app.quit();
-  }
 
   ensureXDGDataIsSet();
   makeEnvironmentGlobal(process.env);

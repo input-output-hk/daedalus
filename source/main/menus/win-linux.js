@@ -1,4 +1,5 @@
 import { compact } from 'lodash';
+import environment from '../../common/environment';
 
 export const winLinuxMenu = (app, window, {
   openAbout, goToAdaRedemption, goToNetworkStatus, restartInSafeMode, restartWithoutSafeMode
@@ -74,10 +75,20 @@ export const winLinuxMenu = (app, window, {
         accelerator: 'Ctrl+R',
         click() { window.webContents.reload(); }
       },
-      {
+      environment.isWindows() ? {
         label: 'Toggle Full Screen',
         accelerator: 'F11',
         click() { window.setFullScreen(!window.isFullScreen()); }
+      } : {
+        label: 'Toggle Maximum Window Size',
+        accelerator: 'F11',
+        click() {
+          if (window.isMaximized()) {
+            window.unmaximize();
+          } else {
+            window.maximize();
+          }
+        }
       },
       {
         label: 'Toggle Developer Tools',
