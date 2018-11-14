@@ -18,8 +18,13 @@ if (!isStartedByLauncher) {
   } else {
     dialogMessage = 'Daedalus should be started using nix-shell. Find more details here: https://github.com/input-output-hk/daedalus/blob/develop/README.md';
   }
-  dialog.showErrorBox(dialogTitle, dialogMessage);
-  app.exit(1);
+  try {
+    // app may not be available at this moment so we need to use try-catch
+    dialog.showErrorBox(dialogTitle, dialogMessage);
+    app.exit(1);
+  } catch (e) {
+    throw new Error(`${dialogTitle}\n\n${dialogMessage}\n`);
+  }
 }
 
 /**
