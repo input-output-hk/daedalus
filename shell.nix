@@ -100,7 +100,7 @@ let
       then warn "--arg systemStart is in 12 hours in the past, unless there is a cluster running with this systemStart cardano won't be able to connect to the demo cluster!"
       fi
       ${localLib.optionalString pkgs.stdenv.isLinux "export XDG_DATA_HOME=$HOME/.local/share"}
-      cp -f ${daedalusPkgs.iconPath.${cluster}} $DAEDALUS_INSTALL_DIRECTORY/icon.png
+      cp -f ${daedalusPkgs.iconPath.${cluster}.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
       ln -svf $(type -P cardano-node)
       ${pkgs.lib.optionalString autoStartBackend ''
         for x in wallet-topology.yaml log-config-prod.yaml configuration.yaml mainnet-genesis-dryrun-with-stakeholders.json ; do
