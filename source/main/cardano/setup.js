@@ -14,6 +14,12 @@ import {
 import { safeExitWithCode } from '../utils/safeExitWithCode';
 import type { TlsConfig, CardanoNodeState } from '../../common/types/cardanoNode.types';
 import type { LauncherConfig } from '../config';
+import {
+  NODE_KILL_TIMEOUT,
+  NODE_SHUTDOWN_TIMEOUT,
+  NODE_STARTUP_MAX_RETRIES,
+  NODE_STARTUP_TIMEOUT, NODE_UPDATE_TIMEOUT
+} from '../config';
 
 const startCardanoNode = (node: CardanoNode, launcherConfig: Object) => {
   const { nodePath, tlsPath, logsPrefix } = launcherConfig;
@@ -24,11 +30,11 @@ const startCardanoNode = (node: CardanoNode, launcherConfig: Object) => {
     logFilePath,
     tlsPath,
     nodeArgs,
-    startupTimeout: 5000,
-    startupMaxRetries: 5,
-    shutdownTimeout: 10000,
-    killTimeout: 10000,
-    updateTimeout: 60000,
+    startupTimeout: NODE_STARTUP_TIMEOUT,
+    startupMaxRetries: NODE_STARTUP_MAX_RETRIES,
+    shutdownTimeout: NODE_SHUTDOWN_TIMEOUT,
+    killTimeout: NODE_KILL_TIMEOUT,
+    updateTimeout: NODE_UPDATE_TIMEOUT,
   };
   return node.start(config);
 };
