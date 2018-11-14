@@ -35,6 +35,7 @@ const environment = Object.assign({
   isStaging: () => environment.NETWORK === 'staging',
   isTestnet: () => environment.NETWORK === 'testnet',
   isDevelopment: () => environment.NETWORK === 'development',
+  isWatchMode: () => process.env.IS_WATCH_MODE,
   build,
   buildNumber: uniq([API_VERSION, build]).join('.'),
   getBuildLabel: () => {

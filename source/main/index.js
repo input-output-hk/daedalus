@@ -104,7 +104,7 @@ app.on('ready', async () => {
   mainWindow = createMainWindow(isInSafeMode);
   cardanoNode = setupCardano(launcherConfig, mainWindow);
 
-  if (environment.isDev()) {
+  if (environment.isWatchMode()) {
     // Connect to electron-connect server which restarts / reloads windows on file changes
     client.create(mainWindow);
   }

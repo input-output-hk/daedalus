@@ -44,7 +44,7 @@ import { restoreWallet } from './wallets/requests/restoreWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
 
 // utility functions
-import { awaitUpdateChannel } from '../ipc/cardano.ipc';
+import { awaitUpdateChannel, cardanoFaultInjectionChannel } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
 import { isValidMnemonic } from '../../../common/decrypt';
 import { utcStringToDate, encryptPassphrase } from './utils';
@@ -153,6 +153,7 @@ import {
   NotEnoughMoneyToSendError,
   RedeemAdaError
 } from './transactions/errors';
+import type { FaultInjectionIpcRequest } from '../../../common/types/cardanoNode.types';
 
 export default class AdaApi {
 
@@ -579,6 +580,7 @@ export default class AdaApi {
     }
   };
 
+  /* :: redeemAda: Function */
   async redeemAda(request: RedeemAdaParams): Promise<WalletTransaction> {
     Logger.debug('AdaApi::redeemAda called');
     const { spendingPassword: passwordString } = request;
@@ -598,6 +600,7 @@ export default class AdaApi {
     }
   }
 
+  /* :: redeemPaperVendedAda: Function */
   async redeemPaperVendedAda(
     request: RedeemPaperVendedAdaParams
   ): Promise<WalletTransaction> {
@@ -764,6 +767,16 @@ export default class AdaApi {
       throw new GenericApiError(error);
     }
   };
+
+  setCardanoNodeFault = async (fault: FaultInjectionIpcRequest) => {
+    await cardanoFaultInjectionChannel.send(fault);
+  };
+
+  // No implementation here but can be overwritten
+  getLocalTimeDifference: Function;
+  setLocalTimeDifference: Function;
+  setNextUpdate: Function;
+
 }
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
