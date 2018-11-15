@@ -72,9 +72,3 @@ Then(/^I should see the Daedalus window close$/, async function () {
     expect(windowCount).to.equal(0);
   }, 1500);
 });
-
-Then(/^I should see Daedalus process not running$/, { timeout: 30000 }, async function () {
-  return await this.client.waitUntil(async () => (
-    (await getProcessesByName('Electron')).length === 0
-  ), 30000);
-});
