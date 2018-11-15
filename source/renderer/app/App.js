@@ -7,6 +7,7 @@ import { Router } from 'react-router';
 import { IntlProvider } from 'react-intl';
 import { Routes } from './Routes';
 import { daedalusTheme } from './themes/daedalus';
+import { themeOverrides } from './themes/overrides/index.js';
 import environment from '../../common/environment';
 import translations from './i18n/translations';
 import type { StoresMap } from './stores/index';
@@ -32,7 +33,7 @@ export default class App extends Component<{
       <div>
         <ThemeManager variables={themeVars} />
         <Provider stores={stores} actions={actions}>
-          <ThemeProvider theme={daedalusTheme}>
+          <ThemeProvider theme={daedalusTheme} themeOverrides={themeOverrides}>
             <IntlProvider {...{ locale, key: locale, messages: translations[locale] }}>
               <div style={{ height: '100%' }}>
                 <Router history={history} routes={Routes} />

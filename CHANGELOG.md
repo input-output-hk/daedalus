@@ -11,6 +11,10 @@ Changelog
 - Fixed failing apply-node-update test ([PR 1156](https://github.com/input-output-hk/daedalus/pull/1156))
 - Removed Antivirus notification ([PR 1164](https://github.com/input-output-hk/daedalus/pull/1164))
 
+### Chores
+
+- Added `--rp` prefixed CSS variables to Daedalus themes to configure styles of React-Polymorph components and removed SimpleTheme imports previously used for React-Polymorph overrides in favor of using ThemeProvider's themeOverrides feature ([PR 1139](https://github.com/input-output-hk/daedalus/pull/1139))
+
 ## 0.12.0
 =======
 
