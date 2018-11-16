@@ -1,7 +1,6 @@
 // @flow
 import { isNodeEnvironment } from './environment';
 
-// TODO: Expose log via preload script to renderer
 const _nodeRequire = require;
 const log = isNodeEnvironment ? _nodeRequire('electron-log') : global.electronLog;
 

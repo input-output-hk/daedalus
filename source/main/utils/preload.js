@@ -1,6 +1,7 @@
 const _os = require('os');
 const _ipcRenderer = require('electron').ipcRenderer;
 const _electronLog = require('electron-log');
+const _electronStore = require('electron-store');
 
 const _process = process;
 const _require = require;
@@ -14,6 +15,7 @@ process.once('loaded', () => {
   };
   global.ipcRenderer = _ipcRenderer;
   global.electronLog = _electronLog;
+  global.ElectronStore = _electronStore;
   global.Buffer = Buffer;
   // Expose require for Spectron!
   if (_process.env.NODE_ENV === 'test') {
