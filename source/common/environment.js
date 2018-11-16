@@ -1,5 +1,5 @@
 // @flow
-import { uniq } from 'lodash';
+import { uniq, upperFirst } from 'lodash';
 import { version } from '../../package.json';
 import type { Environment } from './types/environment.types';
 import { getOsPlatform } from './getOsPlatform';
@@ -46,10 +46,12 @@ const PLATFORM = getOsPlatform(isNodeEnvironment);
 const OS = OS_NAMES[PLATFORM] || PLATFORM;
 const BUILD = processEnv.BUILD_NUMBER || 'dev';
 const BUILD_NUMBER = uniq([API_VERSION, BUILD]).join('.');
-const BUILD_LABEL = (isProduction ?
-  `Daedalus (${version}#${BUILD_NUMBER})` :
-  `Daedalus (${version}#${BUILD_NUMBER}) ${CURRENT_NODE_ENV}`
-);
+const BUILD_LABEL = (() => {
+  const networkLabel = !(isMainnet || isDev) ? ` ${upperFirst(NETWORK)}` : '';
+  let buildLabel = `Daedalus${networkLabel} (${version}#${BUILD_NUMBER})`;
+  if (!isProduction) buildLabel += ` ${CURRENT_NODE_ENV}`;
+  return buildLabel;
+})();
 const INSTALLER_VERSION = uniq([API_VERSION, BUILD]).join('.');
 const MOBX_DEV_TOOLS = processEnv.MOBX_DEV_TOOLS || false;
 const isMacOS = PLATFORM === MAC_OS;

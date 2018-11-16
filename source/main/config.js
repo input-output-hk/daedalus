@@ -1,12 +1,31 @@
 // @flow
 import path from 'path';
-import { environment } from '../common/environment';
+import { app, dialog } from 'electron';
 import { readLauncherConfig } from './utils/config';
 
-const { isDev } = environment;
-const { LAUNCHER_CONFIG } = process.env;
-// Daedalus cannot proceed without a launcher config
-if (isDev && !LAUNCHER_CONFIG) throw new Error('Daedalus should be started using nix-shell. Find more details here: https://github.com/input-output-hk/daedalus/blob/develop/README.md\n');
+// Make sure Daedalus is started with required configuration
+const { NODE_ENV, LAUNCHER_CONFIG } = process.env;
+const isProd = NODE_ENV === 'production';
+const isStartedByLauncher = !!LAUNCHER_CONFIG;
+if (!isStartedByLauncher) {
+  const isWindows = process.platform === 'win32';
+  const dialogTitle = 'Daedalus improperly started!';
+  let dialogMessage;
+  if (isProd) {
+    dialogMessage = isWindows ?
+      'Please start Daedalus using the icon in the Windows start menu or using Daedalus icon on your desktop.' :
+      'Daedalus was launched without needed configuration. Please start Daedalus using the shortcut provided by the installer.';
+  } else {
+    dialogMessage = 'Daedalus should be started using nix-shell. Find more details here: https://github.com/input-output-hk/daedalus/blob/develop/README.md';
+  }
+  try {
+    // app may not be available at this moment so we need to use try-catch
+    dialog.showErrorBox(dialogTitle, dialogMessage);
+    app.exit(1);
+  } catch (e) {
+    throw new Error(`${dialogTitle}\n\n${dialogMessage}\n`);
+  }
+}
 
 /**
  * The shape of the config params, usually provided to the cadano-node launcher

@@ -52,7 +52,7 @@ const restartWithoutSafeMode = async () => {
   safeExitWithCode(22);
 };
 
-const { isDev, isProduction, isMacOS, isWindows, isWatchMode, buildLabel } = environment;
+const { isDev, isMacOS, isWatchMode, buildLabel } = environment;
 const menuActions = {
   openAbout,
   goToAdaRedemption,
@@ -76,7 +76,15 @@ const safeExit = async () => {
 
 app.on('ready', async () => {
   // Make sure this is the only Daedalus instance running per cluster before doing anything else
-  await acquireDaedalusInstanceLock();
+  try {
+    await acquireDaedalusInstanceLock();
+  } catch (e) {
+    const dialogTitle = 'Daedalus is unable to start!';
+    const dialogMessage = 'Another Daedalus instance is already running.';
+    dialog.showErrorBox(dialogTitle, dialogMessage);
+    app.exit(1);
+  }
+
   setupLogging();
   mainErrorHandler();
 
@@ -85,16 +93,6 @@ app.on('ready', async () => {
   Logger.debug(`!!! ${buildLabel} is running on ${os.platform()} version ${os.release()}
             with CPU: ${JSON.stringify(os.cpus(), null, 2)} with
             ${JSON.stringify(os.totalmem(), null, 2)} total RAM !!!`);
-
-  const isStartedByLauncher = !!process.env.LAUNCHER_CONFIG;
-  if (isProduction && !isStartedByLauncher) {
-    const dialogTitle = 'Daedalus improperly started!';
-    const dialogMessage = isWindows ?
-      'Please start Daedalus using the icon in the Windows start menu or using Daedalus icon on your desktop.' :
-      'Daedalus was launched without needed configuration. Please start Daedalus using the shortcut provided by the installer.';
-    dialog.showErrorBox(dialogTitle, dialogMessage);
-    app.quit();
-  }
 
   ensureXDGDataIsSet();
   await installChromeExtensions(isDev);

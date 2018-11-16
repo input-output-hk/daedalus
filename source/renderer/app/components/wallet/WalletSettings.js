@@ -67,7 +67,7 @@ type Props = {
   activeField: ?string,
   isSubmitting: boolean,
   isInvalid: boolean,
-  isMainnet: boolean,
+  showExportLink: boolean,
   lastUpdatedField: ?string,
   changeSpendingPasswordDialog: Node,
   deleteWalletDialogContainer: Node,
@@ -82,7 +82,7 @@ export default class WalletSettings extends Component<Props> {
   };
 
   static defaultProps = {
-    isMainnet: false
+    showExportLink: false
   };
 
   componentWillUnmount() {
@@ -101,7 +101,7 @@ export default class WalletSettings extends Component<Props> {
       onStopEditing, onCancelEditing,
       nameValidator, activeField,
       isSubmitting, isInvalid,
-      lastUpdatedField, isMainnet,
+      lastUpdatedField, showExportLink,
       changeSpendingPasswordDialog,
       deleteWalletDialogContainer,
       exportWalletDialogContainer,
@@ -161,7 +161,7 @@ export default class WalletSettings extends Component<Props> {
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
           <div className={styles.actionButtons}>
-            {!isMainnet ? (
+            {showExportLink ? (
               <button
                 className={styles.exportLink}
                 onClick={() => openDialogAction({

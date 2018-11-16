@@ -80,6 +80,7 @@ type Props = {
   onImportFile: Function,
   isRestoreActive: boolean,
   isMainnet: boolean,
+  isTestnet: boolean,
   isMaxNumberOfWalletsReached: boolean,
 };
 
@@ -91,7 +92,8 @@ export default class WalletAdd extends Component<Props> {
   };
 
   static defaultProps = {
-    isMainnet: false
+    isMainnet: false,
+    isTestnet: false
   };
 
   render() {
@@ -99,7 +101,7 @@ export default class WalletAdd extends Component<Props> {
     const {
       onCreate, onRestore, onImportFile,
       isRestoreActive, isMaxNumberOfWalletsReached,
-      isMainnet
+      isMainnet, isTestnet
     } = this.props;
 
     const componentClasses = classnames([styles.component, 'WalletAdd']);
@@ -149,7 +151,8 @@ export default class WalletAdd extends Component<Props> {
               isDisabled={
                 isMaxNumberOfWalletsReached ||
                 isRestoreActive ||
-                isMainnet
+                isMainnet ||
+                isTestnet
               }
             />
           </div>
