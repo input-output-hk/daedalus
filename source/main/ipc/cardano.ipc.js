@@ -4,10 +4,11 @@ import {
   CARDANO_RESTART_CHANNEL,
   CARDANO_TLS_CONFIG_CHANNEL,
   CARDANO_STATE_CHANGE_CHANNEL,
-  CARDANO_FAULT_INJECTION_CHANNEL
+  CARDANO_FAULT_INJECTION_CHANNEL,
+  CARDANO_STATUS_CHANNEL,
 } from '../../common/ipc/cardano.ipc';
 import type {
-  CardanoNodeState,
+  CardanoNodeState, CardanoStatus,
   FaultInjectionIpcRequest,
   TlsConfig
 } from '../../common/types/cardanoNode.types';
@@ -33,4 +34,8 @@ export const cardanoStateChangeChannel: MainIpcChannel<void, CardanoNodeState> =
 
 export const cardanoFaultInjectionChannel: MainIpcChannel<FaultInjectionIpcRequest, void> = (
   new MainIpcChannel(CARDANO_FAULT_INJECTION_CHANNEL)
+);
+
+export const cardanoStatusChannel: MainIpcChannel<CardanoStatus, ?CardanoStatus> = (
+  new MainIpcChannel(CARDANO_STATUS_CHANNEL)
 );
