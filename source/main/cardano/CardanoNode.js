@@ -5,7 +5,9 @@ import type { WriteStream } from 'fs';
 import { toInteger } from 'lodash';
 import { environment } from '../../common/environment';
 import type {
-  CardanoNodeState, FaultInjection,
+  CardanoNodeState,
+  CardanoStatus,
+  FaultInjection,
   FaultInjectionIpcRequest,
   FaultInjectionIpcResponse,
   TlsConfig
@@ -118,10 +120,20 @@ export class CardanoNode {
   /**
    * The current state of the node, used for making decisions
    * when events like process crashes happen.
+   *
    * @type {CardanoNodeState}
    * @private
    */
   _state: CardanoNodeState = CardanoNodeStates.STOPPED;
+
+  /**
+   * The last saved status of cardano node, acting as a cache for the
+   * frontend to enable faster page reloads.
+   *
+   * @type {CardanoStatus}
+   * @private
+   */
+  _status: ?CardanoStatus = null;
 
   /**
    * Number of retries to startup the node (without ever reaching running state)
@@ -160,6 +172,14 @@ export class CardanoNode {
    */
   get state(): CardanoNodeState {
     return this._state;
+  }
+
+  /**
+   * Getter for the cached status of the node.
+   * @returns {CardanoStatus}
+   */
+  get status(): ?CardanoStatus {
+    return this._status;
   }
 
   /**
@@ -379,6 +399,10 @@ export class CardanoNode {
       );
     }
   };
+
+  saveStatus(status: CardanoStatus) {
+    this._status = status;
+  }
 
   // ================================= PRIVATE ===================================
 
