@@ -1,6 +1,5 @@
 import { When, Then } from 'cucumber';
 import { expect } from 'chai';
-import { getProcessesByName } from '../../source/main/utils/processes';
 
 const NODE_UPDATE_COMPONENT = '.NodeUpdateNotification_component';
 const TITLE_BAR = '.NodeUpdateNotification_titleBar';
