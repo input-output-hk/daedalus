@@ -1,9 +1,10 @@
 // @flow
 import fs from 'fs';
 import path from 'path';
-import { LOAD_ASSET_CHANNEL } from '../../common/ipc/load-asset';
-import type { LoadAssetRequest, LoadAssetResponse } from '../../common/ipc/load-asset';
+import { LOAD_ASSET_CHANNEL } from '../../common/ipc/channels';
+import type { LoadAssetRequest} from '../../common/ipc/contracts';
 import { MainIpcChannel } from './lib/MainIpcChannel';
+import type { LoadAssetResponse } from '../../common/ipc/contracts';
 
 // IpcChannel<Incoming, Outgoing>
 

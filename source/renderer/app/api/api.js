@@ -46,13 +46,13 @@ import { updateWallet } from './wallets/requests/updateWallet';
 // utility functions
 import { awaitUpdateChannel, cardanoFaultInjectionChannel } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
-import { isValidMnemonic } from '../../../common/decrypt';
+import { isValidMnemonic } from '../../../common/crypto/decrypt';
 import { utcStringToDate, encryptPassphrase } from './utils';
 import {
   Logger,
   stringifyData,
   stringifyError
-} from '../../../common/logging';
+} from '../../../common/utils/logging';
 import {
   isValidRedemptionKey,
   isValidPaperVendRedemptionKey
@@ -153,7 +153,7 @@ import {
   NotEnoughMoneyToSendError,
   RedeemAdaError
 } from './transactions/errors';
-import type { FaultInjectionIpcRequest } from '../../../common/types/cardanoNode.types';
+import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
 
 export default class AdaApi {
 

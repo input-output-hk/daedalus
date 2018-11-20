@@ -5,9 +5,9 @@ import fs from 'fs';
 import {
   decryptRegularVend, decryptForceVend,
   decryptRecoveryRegularVend, decryptRecoveryForceVend,
-} from '../../common/decrypt';
+} from '../../common/crypto/decrypt';
 import { PARSE_REDEMPTION_CODE } from '../../common/ipc-api';
-import { Logger } from '../../common/logging';
+import { Logger } from '../../common/utils/logging';
 
 export default () => {
   ipcMain.on(PARSE_REDEMPTION_CODE.REQUEST, (event, filePath, decryptionKey, redemptionType) => {

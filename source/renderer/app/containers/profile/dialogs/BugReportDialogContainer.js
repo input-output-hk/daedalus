@@ -4,7 +4,7 @@ import { get } from 'lodash';
 import { observer, inject } from 'mobx-react';
 import BugReportDialog from '../../../components/profile/bug-report/BugReportDialog';
 import type { InjectedProps } from '../../../types/injectedPropsType';
-import { generateFileNameWithTimestamp } from '../../../../../common/fileName';
+import { generateFileNameWithTimestamp } from '../../../../../common/utils/files';
 import { openExternalUrlChannel } from '../../../ipc/open-external-url';
 
 @inject('stores', 'actions') @observer

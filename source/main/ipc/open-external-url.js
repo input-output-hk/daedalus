@@ -1,8 +1,8 @@
 // @flow
 import { shell } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
-import { OPEN_EXTERNAL_URL_CHANNEL } from '../../common/ipc/open-external-url';
-import type { Url } from '../../common/ipc/open-external-url';
+import { OPEN_EXTERNAL_URL_CHANNEL } from '../../common/ipc/channels';
+import type { Url } from '../../common/ipc/contracts';
 
 // IpcChannel<Incoming, Outgoing>
 

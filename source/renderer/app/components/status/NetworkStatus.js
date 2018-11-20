@@ -17,9 +17,9 @@ import {
 import { UNSYNCED_BLOCKS_ALLOWED } from '../../config/numbersConfig';
 import closeCross from '../../assets/images/close-cross.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
-import { CardanoNodeStates } from '../../../../common/types/cardanoNode.types';
+import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './NetworkStatus.scss';
-import type { CardanoNodeState } from '../../../../common/types/cardanoNode.types';
+import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
 
 let syncingInterval = null;
 

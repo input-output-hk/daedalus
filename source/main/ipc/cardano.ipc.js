@@ -1,18 +1,18 @@
 // @flow
 import {
   CARDANO_AWAIT_UPDATE_CHANNEL,
-  CARDANO_RESTART_CHANNEL,
-  CARDANO_TLS_CONFIG_CHANNEL,
-  CARDANO_STATE_CHANGE_CHANNEL,
-  CARDANO_FAULT_INJECTION_CHANNEL,
-  CARDANO_STATUS_CHANNEL,
-} from '../../common/ipc/cardano.ipc';
+  } from '../../common/ipc/channels';
 import type {
   CardanoNodeState, CardanoStatus,
   FaultInjectionIpcRequest,
   TlsConfig
-} from '../../common/types/cardanoNode.types';
+} from '../../common/types/cardano-node.types';
 import { MainIpcChannel } from './lib/MainIpcChannel';
+import {
+  CARDANO_FAULT_INJECTION_CHANNEL,
+  CARDANO_RESTART_CHANNEL, CARDANO_STATE_CHANGE_CHANNEL,
+  CARDANO_STATUS_CHANNEL, CARDANO_TLS_CONFIG_CHANNEL
+} from '../../common/ipc/channels';
 
 // IpcChannel<Incoming, Outgoing>
 

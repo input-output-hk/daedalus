@@ -1,5 +1,5 @@
 // @flow
-import { isNodeEnvironment } from './environment';
+import { isNodeEnvironment } from '../environment';
 
 const _nodeRequire = require;
 const log = isNodeEnvironment ? _nodeRequire('electron-log') : global.electronLog;

@@ -1,6 +1,6 @@
 // @flow
 import { Given, Then } from 'cucumber';
-import { CardanoNodeStates } from '../../source/common/types/cardanoNode.types';
+import { CardanoNodeStates } from '../../source/common/types/cardano-node.types';
 import {
   getCardanoNodeState,
   waitForCardanoNodeToExit

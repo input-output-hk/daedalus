@@ -3,16 +3,18 @@ import os from 'os';
 import { app, BrowserWindow, globalShortcut, Menu, dialog, shell } from 'electron';
 import { client } from 'electron-connect';
 import { includes } from 'lodash';
-import { Logger } from '../common/logging';
+import { Logger } from '../common/utils/logging';
 import { setupLogging } from './utils/setupLogging';
 import { createMainWindow } from './windows/main';
 import { winLinuxMenu } from './menus/win-linux';
 import { osxMenu } from './menus/osx';
 import { installChromeExtensions } from './utils/installChromeExtensions';
 import { environment } from '../common/environment';
-import { OPEN_ABOUT_DIALOG_CHANNEL } from '../common/ipc/open-about-dialog';
-import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../common/ipc/go-to-ada-redemption-screen';
-import { GO_TO_NETWORK_STATUS_SCREEN_CHANNEL } from '../common/ipc/go-to-network-status-screen';
+import {
+  OPEN_ABOUT_DIALOG_CHANNEL,
+  GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL,
+  GO_TO_NETWORK_STATUS_SCREEN_CHANNEL
+} from '../common/ipc/channels';
 import mainErrorHandler from './utils/mainErrorHandler';
 import { launcherConfig } from './config';
 import { setupCardano } from './cardano/setup';
@@ -20,7 +22,7 @@ import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { acquireDaedalusInstanceLock } from './utils/lockFiles';
-import { CardanoNodeStates } from '../common/types/cardanoNode.types';
+import { CardanoNodeStates } from '../common/types/cardano-node.types';
 
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;

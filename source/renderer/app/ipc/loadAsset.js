@@ -1,7 +1,8 @@
 // @flow
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
-import { LOAD_ASSET_CHANNEL } from '../../../common/ipc/load-asset';
-import type { LoadAssetRequest, LoadAssetResponse } from '../../../common/ipc/load-asset';
+import { LOAD_ASSET_CHANNEL } from '../../../common/ipc/channels';
+import type { LoadAssetRequest} from '../../../common/ipc/contracts';
+import type { LoadAssetResponse } from '../../../common/ipc/contracts';
 
 // IpcChannel<Incoming, Outgoing>
 

@@ -12,7 +12,7 @@ import LocalizableError from '../i18n/LocalizableError';
 import globalMessages from '../i18n/global-messages';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
 import type { LogFiles, CompressedLogStatus } from '../types/LogTypes';
-import { generateFileNameWithTimestamp } from '../../../common/fileName';
+import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 
 // TODO: refactor all parts that rely on this to ipc channels!
 const { ipcRenderer } = global;

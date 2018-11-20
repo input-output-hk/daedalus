@@ -10,10 +10,10 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import SystemTimeErrorOverlay from './SystemTimeErrorOverlay';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
-import { CardanoNodeStates } from '../../../../common/types/cardanoNode.types';
+import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './Loading.scss';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
-import type { CardanoNodeState } from '../../../../common/types/cardanoNode.types';
+import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
 import { REPORT_ISSUE_TIME_TRIGGER } from '../../config/timingConfig';
 
 let connectingInterval = null;

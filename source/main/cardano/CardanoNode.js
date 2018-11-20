@@ -11,8 +11,8 @@ import type {
   FaultInjectionIpcRequest,
   FaultInjectionIpcResponse,
   TlsConfig
-} from '../../common/types/cardanoNode.types';
-import { CardanoNodeStates } from '../../common/types/cardanoNode.types';
+} from '../../common/types/cardano-node.types';
+import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import { deriveProcessNames, deriveStorageKeys, promisedCondition } from './utils';
 import { getProcess } from '../utils/processes';
 

@@ -2,7 +2,7 @@
 import { uniq, upperFirst } from 'lodash';
 import { version } from '../../package.json';
 import type { Environment } from './types/environment.types';
-import { getOsPlatform } from './getOsPlatform';
+import { getOsPlatform } from './utils/getOsPlatform';
 
 export const isNodeEnvironment = (
   process.version !== '' &&
