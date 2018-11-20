@@ -24,14 +24,14 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
   };
 
   handleDownloadLogs = () => {
-    // TODO: Implement dialog with IPC channel
-    // const fileName = generateFileNameWithTimestamp();
-    // const destination = remote.dialog.showSaveDialog({
-    //   defaultPath: fileName,
-    // });
-    // if (destination) {
-    //   this.props.actions.profile.downloadLogs.trigger({ fileName, destination, fresh: true });
-    // }
+    // TODO: refactor this direct access to the dialog api
+    const fileName = generateFileNameWithTimestamp();
+    const destination = global.dialog.showSaveDialog({
+      defaultPath: fileName,
+    });
+    if (destination) {
+      this.props.actions.profile.downloadLogs.trigger({ fileName, destination, fresh: true });
+    }
   };
 
   render() {

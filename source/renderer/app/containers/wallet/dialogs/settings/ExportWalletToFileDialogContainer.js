@@ -14,22 +14,22 @@ export default class ExportWalletToFileDialogContainer extends Component<Props> 
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
 
   onSubmit = (params: OnSubmitParams) => {
-    // TODO: Implement dialog with IPC channel
-    // const filePath = remote.dialog.showSaveDialog({
-    //   defaultPath: 'wallet-export.json',
-    //   filters: [{
-    //     name: 'wallet-export',
-    //     extensions: ['json'],
-    //   }],
-    // });
-    // const { stores, actions } = this.props;
-    // const activeWallet = stores.wallets.active;
-    // if (!filePath || !activeWallet) return;
-    // actions.walletSettings.exportToFile.trigger({
-    //   walletId: activeWallet.id,
-    //   filePath,
-    //   ...params
-    // });
+    // TODO: refactor this direct access to the dialog api
+    const filePath = global.dialog.showSaveDialog({
+      defaultPath: 'wallet-export.json',
+      filters: [{
+        name: 'wallet-export',
+        extensions: ['json'],
+      }],
+    });
+    const { stores, actions } = this.props;
+    const activeWallet = stores.wallets.active;
+    if (!filePath || !activeWallet) return;
+    actions.walletSettings.exportToFile.trigger({
+      walletId: activeWallet.id,
+      filePath,
+      ...params
+    });
   };
 
   onCancel = () => {

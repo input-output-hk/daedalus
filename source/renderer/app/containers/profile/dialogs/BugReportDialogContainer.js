@@ -20,13 +20,13 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
 
   onDownload = () => {
     const fileName = generateFileNameWithTimestamp();
-    // TODO: Implement dialog with IPC channel
-    // const destination = remote.dialog.showSaveDialog({
-    //   defaultPath: fileName,
-    // });
-    // if (destination) {
-    //   this.props.actions.profile.downloadLogs.trigger({ fileName, destination, fresh: true });
-    // }
+    // TODO: refactor this direct access to the dialog api
+    const destination = global.dialog.showSaveDialog({
+      defaultPath: fileName,
+    });
+    if (destination) {
+      this.props.actions.profile.downloadLogs.trigger({ fileName, destination, fresh: true });
+    }
   };
 
   onSubmitManually = (url: string) => {

@@ -12,19 +12,19 @@ export default class InstructionsDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
 
   onPrint = () => {
-    // TODO: Implement dialog with IPC channel
-    // const filePath = remote.dialog.showSaveDialog({
-    //   defaultPath: 'paper-wallet-certificate.pdf',
-    //   filters: [{
-    //     name: 'paper-wallet-certificate',
-    //     extensions: ['pdf'],
-    //   }],
-    // });
-    //
-    // // if cancel button is clicked or path is empty
-    // if (!filePath) return;
-    //
-    // this.props.actions.wallets.generateCertificate.trigger({ filePath });
+    // TODO: refactor this direct access to the dialog api
+    const filePath = global.dialog.showSaveDialog({
+      defaultPath: 'paper-wallet-certificate.pdf',
+      filters: [{
+        name: 'paper-wallet-certificate',
+        extensions: ['pdf'],
+      }],
+    });
+
+    // if cancel button is clicked or path is empty
+    if (!filePath) return;
+
+    this.props.actions.wallets.generateCertificate.trigger({ filePath });
   };
 
   render() {

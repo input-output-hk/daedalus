@@ -1,22 +1,28 @@
-const _os = require('os');
-const _ipcRenderer = require('electron').ipcRenderer;
-const _electronLog = require('electron-log');
-const _electronStore = require('electron-store');
+const os = require('os');
+const https = require('https');
+const ipcRenderer = require('electron').ipcRenderer;
+const remote = require('electron').remote;
+const electronLog = require('electron-log');
+const ElectronStore = require('electron-store');
 
 const _process = process;
 const _require = require;
 
 process.once('loaded', () => {
-  global.process = {
-    env: Object.assign({}, _process.env)
-  };
-  global.os = {
-    platform: _os.platform(),
-  };
-  global.ipcRenderer = _ipcRenderer;
-  global.electronLog = _electronLog;
-  global.ElectronStore = _electronStore;
-  global.Buffer = Buffer;
+  Object.assign(global, {
+    process: {
+      env: Object.assign({}, _process.env)
+    },
+    os: {
+      platform: os.platform(),
+    },
+    ipcRenderer,
+    https,
+    electronLog,
+    ElectronStore,
+    Buffer,
+    dialog: remote.dialog,
+  });
   // Expose require for Spectron!
   if (_process.env.NODE_ENV === 'test') {
     global.require = _require;
