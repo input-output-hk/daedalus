@@ -139,14 +139,6 @@ app.on('ready', async () => {
     await safeExit();
   });
 
-  // TODO: properly validate our TLS certificate or fix errors in-browser somehow
-  app.on('certificate-error', (event, webContents, url, error, certificate, callback) => {
-    // On certificate error we disable default behaviour (stop loading the page)
-    // and we then say "it is all fine - true" to the callback
-    event.preventDefault();
-    callback(true);
-  });
-
   // Security feature: Prevent creation of new browser windows
   // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows
   app.on('web-contents-created', (_, contents) => {
