@@ -9,10 +9,16 @@ import {
   cardanoTlsConfigChannel,
   cardanoRestartChannel,
   cardanoAwaitUpdateChannel,
-  cardanoStateChangeChannel, cardanoFaultInjectionChannel
+  cardanoStateChangeChannel,
+  cardanoFaultInjectionChannel,
+  cardanoStatusChannel,
 } from '../ipc/cardano.ipc';
 import { safeExitWithCode } from '../utils/safeExitWithCode';
-import type { TlsConfig, CardanoNodeState } from '../../common/types/cardanoNode.types';
+import type {
+  TlsConfig,
+  CardanoNodeState,
+  CardanoStatus
+} from '../../common/types/cardanoNode.types';
 import type { LauncherConfig } from '../config';
 
 const startCardanoNode = (node: CardanoNode, launcherConfig: Object) => {
@@ -89,14 +95,27 @@ export const setupCardano = (
   });
   startCardanoNode(cardanoNode, launcherConfig);
 
-  cardanoStateChangeChannel.onReceive(() => {
+  cardanoStatusChannel.onRequest(() => {
+    Logger.info('ipcMain: Received request from renderer for cardano status.');
+    return Promise.resolve(cardanoNode.status);
+  });
+
+  cardanoStatusChannel.onReceive((status: CardanoStatus) => {
+    Logger.info('ipcMain: Received request from renderer to cache cardano status.');
+    cardanoNode.saveStatus(status);
+    return Promise.resolve(cardanoNode.status);
+  });
+
+  cardanoStateChangeChannel.onRequest(() => {
     Logger.info('ipcMain: Received request from renderer for node state.');
     return Promise.resolve(cardanoNode.state);
   });
-  cardanoTlsConfigChannel.onReceive(() => {
+
+  cardanoTlsConfigChannel.onRequest(() => {
     Logger.info('ipcMain: Received request from renderer for tls config.');
     return Promise.resolve(cardanoNode.tlsConfig);
   });
+
   cardanoAwaitUpdateChannel.onReceive(() => {
     Logger.info('ipcMain: Received request from renderer to await update.');
     setTimeout(async () => {
@@ -106,10 +125,12 @@ export const setupCardano = (
     });
     return Promise.resolve();
   });
+
   cardanoRestartChannel.onReceive(() => {
     Logger.info('ipcMain: Received request from renderer to restart node.');
     return cardanoNode.restart(true); // forced restart
   });
+
   cardanoFaultInjectionChannel.onReceive((fault) => {
     Logger.info(`ipcMain: Received request to inject a fault into cardano node: ${String(fault)}`);
     return cardanoNode.setFault(fault);

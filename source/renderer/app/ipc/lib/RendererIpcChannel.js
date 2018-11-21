@@ -15,11 +15,26 @@ export class RendererIpcChannel<Incoming, Outgoing> extends IpcChannel<Incoming,
   ): Promise<Incoming> {
     return super.send(message, sender, receiver);
   }
+
+  async request(
+    sender: IpcSender = ipcRenderer,
+    receiver: IpcReceiver = ipcRenderer
+  ): Promise<Incoming> {
+    return super.request(sender, receiver);
+  }
+
   onReceive(
     handler: (message: Incoming) => Promise<Outgoing>,
     receiver: IpcReceiver = ipcRenderer
   ): void {
     super.onReceive(handler, receiver);
+  }
+
+  onRequest(
+    handler: () => Promise<Outgoing>,
+    receiver: IpcReceiver = ipcRenderer
+  ): void {
+    super.onRequest(handler, receiver);
   }
 
 }

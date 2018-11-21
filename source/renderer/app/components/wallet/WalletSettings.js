@@ -114,6 +114,8 @@ export default class WalletSettings extends Component<Props> {
       })
     ) : intl.formatMessage(messages.passwordNotSet);
 
+    const showExportLink = !environment.isMainnet() && !environment.isTestnet();
+
     return (
       <div className={styles.component}>
 
@@ -157,7 +159,7 @@ export default class WalletSettings extends Component<Props> {
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
           <div className={styles.actionButtons}>
-            {!environment.isMainnet() ? (
+            {showExportLink ? (
               <button
                 className={styles.exportLink}
                 onClick={() => openDialogAction({

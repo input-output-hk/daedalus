@@ -1,6 +1,164 @@
-//  ==== Theme: Cardano === //
+//  ==== react-polymorph: theme config === //
 
+// AUTOCOMPLETE
+const rpAutocomplete = {
+  '--rp-autocomplete-bg-color': '#fafbfc',
+  '--rp-autocomplete-border': '1px solid #c6cdd6',
+  '--rp-autocomplete-border-color-opened': '#5e6066',
+  '--rp-autocomplete-input-text-color': '#5e6066',
+  '--rp-autocomplete-placeholder-color': 'rgba(94, 96, 102, 0.5)',
+  '--rp-autocomplete-selected-word-box-bg-color': 'rgba(44, 187, 105, 0.5)',
+  '--rp-autocomplete-selected-word-text-color': '#fafbfc',
+  '--rp-autocomplete-selected-words-font-family': 'NotoSans-Regular, NotoSansCJKjp-Regular',
+};
+
+// BUBBLE
+const rpBubble = {
+  '--rp-bubble-bg-color': '#fafbfc',
+  '--rp-bubble-border-color': '#c6cdd6',
+  '--rp-bubble-border-radius': '2px',
+};
+
+// BUTTON
+const rpButton = {
+  '--rp-button-bg-color': '#2cbb69',
+  '--rp-button-bg-color-active': '#239554',
+  '--rp-button-bg-color-disabled': 'rgba(44, 187, 105, 0.3)',
+  '--rp-button-bg-color-hover': '#56c887',
+  '--rp-button-font-family': 'NotoSans-Medium, NotoSansCJKjp-Medium',
+  '--rp-button-font-size': '14px',
+  '--rp-button-height': '50px',
+  '--rp-button-line-height': '20px',
+  '--rp-button-padding': '0',
+  '--rp-button-text-color': '#fafbfc',
+  '--rp-button-text-transform': 'none',
+  '--rp-button-width': '360px',
+};
+
+// CHECKBOX
+const rpCheckbox = {
+  '--rp-checkbox-border': '1px solid #2cbb69',
+  '--rp-checkbox-border-color-disabled': 'rgba(44, 187, 105, 0.2)',
+  '--rp-checkbox-check-bg-color': '#2cbb69',
+  '--rp-checkbox-label-text-color': '#5e6066',
+  '--rp-checkbox-label-text-color-disabled': 'rgba(94, 96, 102, 0.3)',
+};
+
+// COLORS
+const rpColors = {
+  '--rp-theme-color-error': '#ea4c5b',
+};
+
+// FONTS
+const rpFonts = {
+  '--rp-theme-font-thin': 'NotoSans-Thin, NotoSansCJKjp-Thin',
+  '--rp-theme-font-light': 'NotoSans-Light, NotoSansCJKjp-Light',
+  '--rp-theme-font-medium': 'NotoSans-Medium, NotoSansCJKjp-Medium',
+  '--rp-theme-font-regular': 'NotoSans-Regular, NotoSansCJKjp-Regular',
+  '--rp-theme-font-bold': 'NotoSans-Bold, NotoSansCJKjp-Bold',
+};
+
+// FORMFIELD
+const rpFormfield = {
+  '--rp-formfield-bg-color-disabled': 'none',
+  '--rp-formfield-label-text-color': '#5e6066',
+  '--rp-formfield-label-text-color-disabled': '#5e6066',
+  '--rp-formfield-error-text-color': '#ea4c5b',
+  '--rp-formfield-error-text-opacity': '0.75',
+};
+
+// INPUT
+const rpInput = {
+  '--rp-input-bg-color': '#fafbfc',
+  '--rp-input-bg-color-disabled': 'rgba(94, 96, 102, 0.05)',
+  '--rp-input-border-color': '#c6cdd6',
+  '--rp-input-border-color-disabled': 'rgba(94, 96, 102, 0.05)',
+  '--rp-input-border-color-errored': '#ea4c5b',
+  '--rp-input-border-color-focus': '#5e6066',
+  '--rp-input-line-height': '22px',
+  '--rp-input-padding': '12px 20px',
+  '--rp-input-placeholder-color': 'rgba(94, 96, 102, 0.5)',
+  '--rp-input-placeholder-color-disabled': 'rgba(94, 96, 102, 0.5)',
+  '--rp-input-text-color': '#5e6066',
+  '--rp-input-text-color-disabled': 'rgba(94, 96, 102, 0.5)',
+};
+
+// MODAL
+const rpModal = {
+  '--rp-modal-bg-color': '#fafbfc',
+  '--rp-modal-max-height': '90%',
+  '--rp-modal-overlay-bg-color': 'rgba(0, 0, 0, 0.4)',
+};
+
+// OPTIONS
+const rpOptions = {
+  '--rp-option-bg-color': '#fafbfc',
+  '--rp-option-bg-color-highlighted': '#edeeef',
+  '--rp-option-border-color': '#c6cdd6',
+  '--rp-option-checkmark-color': '#5e6066',
+  '--rp-option-line-height': '22px',
+  '--rp-option-text-color': '#5e6066',
+  '--rp-options-border-color': '#c6cdd6',
+  '--rp-options-shadow': 'none',
+};
+
+// SELECT
+const rpSelect = {
+  '--rp-select-arrow-bg-color': '#c6cdd6',
+  '--rp-select-arrow-bg-color-open': '#5e6066',
+  '--rp-select-input-bg-color': '#fafbfc',
+  '--rp-select-input-border-color': '#c6cdd6',
+  '--rp-select-input-border-color-focus': '#5e6066',
+  '--rp-select-input-text-color': '#5e6066',
+};
+
+// SWITCH
+const rpSwitch = {
+  '--rp-switch-bg-color-off': '#2cbb69',
+  '--rp-switch-bg-color-on': '#2cbb69',
+  '--rp-switch-label-margin': '0 30px 0 0',
+  '--rp-switch-label-opacity': '0.5',
+  '--rp-switch-label-text-color': '#5e6066',
+  '--rp-switch-label-width': '100%',
+  '--rp-switch-opacity-off': '0.3',
+  '--rp-switch-root-margin': '0 0 30px 0',
+  '--rp-switch-thumb-bg-color': '#fff',
+};
+
+// TEXTAREA
+const rpTextArea = {
+  '--rp-textarea-bg-color': '#fafbfc',
+  '--rp-textarea-bg-color-disabled': 'rgba(94, 96, 102, 0.05)',
+  '--rp-textarea-border': '1px solid #c6cdd6',
+  '--rp-textarea-border-color-disabled': 'rgba(94, 96, 102, 0.05)',
+  '--rp-textarea-border-color-errored': '#ea4c5b',
+  '--rp-textarea-border-color-focus': '#5e6066',
+  '--rp-textarea-border-radius': '2px',
+  '--rp-textarea-line-height': '20px',
+  '--rp-textarea-placeholder-color': 'rgba(94, 96, 102, 0.5)',
+  '--rp-textarea-resize': 'none',
+  '--rp-textarea-text-color': '#5e6066',
+};
+
+const rpCardanoTheme = {
+  ...rpAutocomplete,
+  ...rpBubble,
+  ...rpButton,
+  ...rpCheckbox,
+  ...rpColors,
+  ...rpFonts,
+  ...rpFormfield,
+  ...rpInput,
+  ...rpModal,
+  ...rpOptions,
+  ...rpSelect,
+  ...rpSwitch,
+  ...rpTextArea,
+};
+
+//  ==== Theme: Cardano === //
 export default {
+  ...rpCardanoTheme,
   '--preferred-font': '"Times New Roman", serif',
 
   '--font-ultralight': 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
@@ -33,18 +191,6 @@ export default {
   '--theme-ada-redemption-disclaimer-checkbox-label-color': '#fafbfc',
   '--theme-ada-redemption-disclaimer-button-border-color': '#fafbfc',
   '--theme-ada-redemption-no-wallets-instructions-color': '#5e6066',
-
-  '--theme-autocomplete-bg-color': '#fafbfc',
-  '--theme-autocomplete-border': '1px solid #c6cdd6',
-  '--theme-autocomplete-border-focus-color': '#5e6066',
-  '--theme-autocomplete-search-color': '#5e6066',
-  '--theme-autocomplete-placeholder-color': 'rgba(94, 96, 102, 0.5)',
-  '--theme-autocomplete-selected-word-text-color': '#fafbfc',
-  '--theme-autocomplete-selected-word-box-background-color': 'rgba(44, 187, 105, 0.5)',
-  '--theme-autocomplete-suggestions-list-border-color': '#c6cdd6',
-  '--theme-autocomplete-suggestions-list-item-bg-color': '#fafbfc',
-  '--theme-autocomplete-suggestions-list-item-font-color': '#5e6066',
-  '--theme-autocomplete-suggestions-list-item-highlight-color': '#edeeef',
 
   '--theme-bordered-box-background-color': '#fafbfc',
   '--theme-bordered-box-border': '1px solid #c6cdd6',
@@ -84,21 +230,6 @@ export default {
   '--theme-button-disclaimer-border-color': '#fafbfc',
   '--theme-button-disclaimer-border-color-disabled': 'rgba(250, 251, 252, .3)',
 
-  '--theme-checkbox-label-color': '#5e6066',
-  '--theme-checkbox-label-disabled-color': 'rgba(94, 96, 102, 0.3)',
-  '--theme-checkbox-border-color': '#2cbb69',
-  '--theme-checkbox-border-disabled-color': 'rgba(44, 187, 105, 0.2)',
-  '--theme-checkbox-background-color-checked': '#2cbb69',
-
-  '--theme-select-arrow-color': '#c6cdd6',
-  '--theme-select-arrow-color-open': '#5e6066',
-  '--theme-select-background-color': '#fafbfc',
-  '--theme-select-option-highlight-color': '#edeeef',
-  '--theme-select-option-text-color': '#5e6066',
-  '--theme-select-options-border-color': '#c6cdd6',
-  '--theme-select-options-shadow': 'none',
-  '--theme-select-options-checkmark-color': '#5e6066',
-
   '--theme-choice-tabs-text-color': '#5e6066',
   '--theme-choice-tabs-text-color-active': '#5e6066',
   '--theme-choice-tabs-bottom-border-color-active': '#5e6066',
@@ -131,7 +262,6 @@ export default {
   '--theme-main-body-messages-color': '#5e6066',
 
   '--theme-modal-overlay-background-color': 'rgba(0, 0, 0, 0.4)',
-  '--theme-modal-background-color': '#fafbfc',
 
   '--theme-nav-item-background-color': '#202225',
   '--theme-nav-item-background-color-hover': 'rgba(250, 251, 252, 0.1)',
@@ -196,9 +326,6 @@ export default {
   '--theme-staking-font-color-accent': '#5e6066',
   '--theme-staking-font-color-regular': '#5e6066',
 
-  '--theme-switch-background-color': '#2cbb69',
-  '--theme-switch-background-color-checked': '#2cbb69',
-  '--theme-switch-thumb-color-checked': '#fff',
   '--theme-switch-label-color': '#5e6066',
 
   '--theme-system-error-overlay-attention-icon-color': '#fafbfc',
@@ -289,7 +416,7 @@ export default {
   '--theme-syncing-background-color': '#fafbfc',
   '--theme-syncing-text-color': '#5e6066',
 
-  '--theme-error-color': '#ea4c5b',
+  '--theme-color-error': '#ea4c5b',
 
   '--theme-instructions-text-color': '#5e6066',
 
@@ -318,8 +445,6 @@ export default {
   '--theme-data-migration-layer-text-opacity-color': 'rgba(250, 251, 252, 0.5)',
 
   '--theme-wallet-password-switch-label-color': '#5e6066',
-
-  '--theme-password-toggler-color': '#5e6066',
 
   '--theme-loading-spinner-color': '#5e6066',
 

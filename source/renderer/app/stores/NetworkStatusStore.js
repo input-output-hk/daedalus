@@ -18,21 +18,18 @@ import { CHECK_DISK_SPACE } from '../../../common/ipc-api';
 import {
   cardanoStateChangeChannel,
   tlsConfigChannel,
-  restartCardanoNodeChannel
+  restartCardanoNodeChannel,
+  cardanoStatusChannel,
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardanoNode.types';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
-import type { CardanoNodeState, TlsConfig } from '../../../common/types/cardanoNode.types';
+import type {
+  CardanoNodeState,
+  CardanoStatus,
+  TlsConfig
+} from '../../../common/types/cardanoNode.types';
 import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { IpcEvent } from '../../../common/ipc/lib/IpcChannel';
-
-// To avoid slow reconnecting on store reset, we cache the most important props
-let cachedState = null;
-
-type CheckDiskSpaceResponse = {
-  noDiskSpace: boolean,
-  diskSpaceRequired: number
-};
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
@@ -85,18 +82,23 @@ export default class NetworkStatusStore extends Store {
   // DEFINE STORE METHODS
   setup() {
     // ========== IPC CHANNELS =========== //
+
+    // Request cached node status for fast bootstrapping of frontend
+    this._requestCardanoStatus();
+
     // Passively receive broadcasted tls config changes (which can happen without requesting it)
     // E.g if the cardano-node restarted for some reason
     tlsConfigChannel.onReceive(this._updateTlsConfig);
+
     // Passively receive state changes of the cardano-node
     cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
-    this._requestCardanoNodeState();
 
     // ========== MOBX REACTIONS =========== //
 
     this.registerReactions([
       this._updateNetworkStatusWhenDisconnected,
       this._updateLocalTimeDifferenceWhenSystemTimeChanged,
+      this._updateNodeStatus,
     ]);
 
     // Setup network status polling interval
@@ -132,14 +134,9 @@ export default class NetworkStatusStore extends Store {
     if (this._systemTimeChangeCheckPollingInterval) {
       clearInterval(this._systemTimeChangeCheckPollingInterval);
     }
-
-    // Save current state into the cache
-    cachedState = {
-      hasBeenConnected: this.hasBeenConnected,
-      localBlockHeight: this.localBlockHeight,
-      networkBlockHeight: this.networkBlockHeight,
-    };
   }
+
+  // ================= REACTIONS ==================
 
   _updateNetworkStatusWhenDisconnected = async () => {
     if (!this.isConnected) await this._updateNetworkStatus();
@@ -152,15 +149,30 @@ export default class NetworkStatusStore extends Store {
     }
   };
 
+  _updateNodeStatus = async () => {
+    if (!this.isConnected) return;
+    try {
+      Logger.info('NetworkStatusStore: Updating node status');
+      await cardanoStatusChannel.send(this._extractNodeStatus(this));
+    } catch (error) {
+      Logger.error(`NetworkStatusStore: Error while updating node status: ${error}`);
+    }
+  };
+
+  // =============== PRIVATE ===============
+
   _getStartupTimeDelta() {
     return Date.now() - this._startTime;
   }
 
-  _requestCardanoNodeState = async () => {
+  _requestCardanoStatus = async () => {
     try {
-      Logger.info('NetworkStatusStore: requesting node state.');
-      const state = await cardanoStateChangeChannel.send();
+      Logger.info('NetworkStatusStore: requesting node status.');
+      const state = await cardanoStateChangeChannel.request();
       await this._handleCardanoNodeStateChange(state);
+      const status = await cardanoStatusChannel.request();
+      Logger.info(`NetworkStatusStore: received cached node status: ${JSON.stringify(status)}`);
+      if (status) runInAction('assigning node status', () => Object.assign(this, status));
     } catch (error) {
       Logger.info(`NetworkStatusStore: error while requesting node state ${error}`);
     }
@@ -169,7 +181,7 @@ export default class NetworkStatusStore extends Store {
   _requestTlsConfig = async () => {
     try {
       Logger.info('NetworkStatusStore: requesting tls config from main process.');
-      const tlsConfig = await tlsConfigChannel.send();
+      const tlsConfig = await tlsConfigChannel.request();
       await this._updateTlsConfig(tlsConfig);
     } catch (error) {
       Logger.info(`NetworkStatusStore: error while requesting tls config ${error}.`);
@@ -184,13 +196,13 @@ export default class NetworkStatusStore extends Store {
     return Promise.resolve();
   };
 
-  _handleCardanoNodeStateChange = (state: CardanoNodeState): Promise<void> => {
+  _handleCardanoNodeStateChange = async (state: CardanoNodeState) => {
     if (state === this.cardanoNodeState) return Promise.resolve();
     Logger.info(`NetworkStatusStore: handling cardano-node state <${state}>`);
     const wasConnected = this.isConnected;
     switch (state) {
       case CardanoNodeStates.STARTING: break;
-      case CardanoNodeStates.RUNNING: this._requestTlsConfig(); break;
+      case CardanoNodeStates.RUNNING: await this._requestTlsConfig(); break;
       default: this._setDisconnected(wasConnected);
     }
     runInAction('setting cardanoNodeState', () => {
@@ -199,11 +211,23 @@ export default class NetworkStatusStore extends Store {
     return Promise.resolve();
   };
 
-  // DEFINE ACTIONS
-  @action initialize() {
-    super.initialize();
-    if (cachedState !== null) Object.assign(this, cachedState);
-  }
+  _extractNodeStatus = (from: Object & CardanoStatus): CardanoStatus => {
+    const {
+      isNodeResponding,
+      isNodeSubscribed,
+      isNodeSyncing,
+      isNodeInSync,
+      hasBeenConnected,
+    } = from;
+
+    return {
+      isNodeResponding,
+      isNodeSubscribed,
+      isNodeSyncing,
+      isNodeInSync,
+      hasBeenConnected,
+    };
+  };
 
   @action _updateSystemTime = () => {
     // In order to detect system time changes (e.g. user updates machine's date/time)

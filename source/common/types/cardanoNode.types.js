@@ -105,3 +105,11 @@ export const FaultInjections: {
 
 export type FaultInjectionIpcResponse = Array<FaultInjection>;
 export type FaultInjectionIpcRequest = [FaultInjection, boolean];
+
+export type CardanoStatus = {
+  isNodeResponding: boolean,
+  isNodeSubscribed: boolean,
+  isNodeSyncing: boolean,
+  isNodeInSync: boolean,
+  hasBeenConnected: boolean,
+};
