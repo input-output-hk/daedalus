@@ -4,7 +4,7 @@ import unhandled from 'electron-unhandled';
 import { Logger, stringifyError } from '../../common/logging';
 import { handleNoDiskSpace } from '../ipc/no-disk-space';
 
-let summyTrigger = false;
+// let dummyTrigger = false;
 
 export default (mainWindow: BrowserWindow) => {
 
@@ -15,20 +15,22 @@ export default (mainWindow: BrowserWindow) => {
     showDialog: false
   });
 
-  if (!summyTrigger) {
-    summyTrigger = true;
-    setTimeout(() => handleNoDiskSpace(mainWindow), 15000);
-  }
+  // if (!dummyTrigger) {
+  //   dummyTrigger = true;
+  //   // setTimeout(() => handleNoDiskSpace(mainWindow), 15000);
+  // }
 
   process.on('uncaughtException', (error: any) => {
 
     const err = `${stringifyError(error)}`;
 
+    Logger.error(`uncaughtException: ${err}`);
+
     if (err.indexOf('ENOSPC') > -1 || err.indexOf('notEnoughDiskSpace') > -1) {
       handleNoDiskSpace(mainWindow);
+      return false;
     }
 
-    Logger.error(`uncaughtException: ${stringifyError(error)}`);
   });
 
   app.on('gpu-process-crashed', (event: any, killed: boolean) => {
