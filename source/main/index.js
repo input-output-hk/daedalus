@@ -40,14 +40,14 @@ const goToNetworkStatus = () => {
 };
 
 const restartInSafeMode = async () => {
-  Logger.info('restarting in SafeMode …');
+  Logger.info('Restarting in SafeMode...');
   if (cardanoNode) await cardanoNode.stop();
   Logger.info('Exiting Daedalus with code 21.');
   safeExitWithCode(21);
 };
 
 const restartWithoutSafeMode = async () => {
-  Logger.info('restarting without SafeMode …');
+  Logger.info('Restarting without SafeMode...');
   if (cardanoNode) await cardanoNode.stop();
   Logger.info('Exiting Daedalus with code 22.');
   safeExitWithCode(22);
