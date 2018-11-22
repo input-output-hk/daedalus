@@ -4,6 +4,7 @@ export const ROUTES = {
   STAKING: '/staking',
   ADA_REDEMPTION: '/ada-redemption',
   NETWORK_STATUS: '/network-status',
+  EKG: '/network-status', // really, should go to http://localhost:8002
   PAPER_WALLET_CREATE_CERTIFICATE: '/paper-wallet/create-certificate',
   PROFILE: {
     LANGUAGE_SELECTION: '/profile/language-selection',

@@ -2,7 +2,7 @@ import { compact } from 'lodash';
 import environment from '../../common/environment';
 
 export const winLinuxMenu = (app, window, {
-  openAbout, goToAdaRedemption, goToNetworkStatus, restartInSafeMode, restartWithoutSafeMode
+   openAbout, goToAdaRedemption, goToNetworkStatus, goToEKG, restartInSafeMode, restartWithoutSafeMode
 }, isInSafeMode) => (
   [{
     label: 'Daedalus',
@@ -30,6 +30,11 @@ export const winLinuxMenu = (app, window, {
       accelerator: 'Ctrl+S',
       click() {
         goToNetworkStatus();
+      },
+    }, {
+      label: 'EKG metrics',
+      click() {
+        goToEKG();
       },
     }, {
       label: 'Close',
