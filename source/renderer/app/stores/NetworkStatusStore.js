@@ -31,6 +31,10 @@ import type {
 import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { IpcEvent } from '../../../common/ipc/lib/IpcChannel';
 
+type CheckDiskSpaceResponse = {
+  diskSpaceRequired: number,
+};
+
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
   CONNECTING: 0,
@@ -75,9 +79,8 @@ export default class NetworkStatusStore extends Store {
     this.api.ada.getNetworkStatus
   );
 
-  @observable noDiskSpace: boolean = false;
   @observable isCheckingNoDiskSpace: boolean = false;
-  @observable diskSpaceRequired: number = 123456789;
+  @observable diskSpaceRequired: number = 0;
 
   // DEFINE STORE METHODS
   setup() {
@@ -429,17 +432,15 @@ export default class NetworkStatusStore extends Store {
 
   @action onCheckDiskSpaceSuccess = (
     event: IpcEvent,
-    { noDiskSpace,
+    {
       diskSpaceRequired,
     }: CheckDiskSpaceResponse
   ) => {
-    this.noDiskSpace = noDiskSpace;
     this.diskSpaceRequired = diskSpaceRequired;
     this.isCheckingNoDiskSpace = false;
   };
 
   @action onCheckDiskSpaceError = () => {
-    this.noDiskSpace = false;
     this.isCheckingNoDiskSpace = false;
   };
 
