@@ -3,9 +3,11 @@ import { observable, computed, action } from 'mobx';
 import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
-import { OPEN_ABOUT_DIALOG_CHANNEL } from '../../../common/ipc/channels';
-import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../../../common/ipc/channels';
-import { GO_TO_NETWORK_STATUS_SCREEN_CHANNEL } from '../../../common/ipc/channels';
+import {
+  OPEN_ABOUT_DIALOG_CHANNEL,
+  GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL,
+  GO_TO_NETWORK_STATUS_SCREEN_CHANNEL
+} from '../../../common/ipc/api';
 import { GET_GPU_STATUS } from '../../../common/ipc-api';
 import { ROUTES } from '../routes-config';
 import type { GpuStatus } from '../types/gpuStatus';

@@ -60,11 +60,11 @@ const isLinux = PLATFORM === LINUX;
 
 // compose environment
 export const environment: Environment = Object.assign({}, {
-  NETWORK,
-  API_VERSION,
-  MOBX_DEV_TOOLS,
+  network: NETWORK,
+  apiVersion: API_VERSION,
+  mobxDevTools: MOBX_DEV_TOOLS,
   current: CURRENT_NODE_ENV,
-  REPORT_URL,
+  reportUrl: REPORT_URL,
   isDev,
   isTest,
   isProduction,

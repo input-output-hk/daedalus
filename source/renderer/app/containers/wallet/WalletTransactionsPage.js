@@ -43,7 +43,7 @@ export default class WalletTransactionsPage extends Component<Props> {
     const { intl } = this.context;
     const actions = this.props.actions;
     const { app, wallets, transactions } = this.props.stores;
-    const { openExternalLink, environment: { NETWORK } } = app;
+    const { openExternalLink, environment: { network } } = app;
     const activeWallet = wallets.active;
     const {
       searchOptions,
@@ -80,7 +80,7 @@ export default class WalletTransactionsPage extends Component<Props> {
     if (searchRequest.isExecutingFirstTime || hasAny || isRestoreActive) {
       walletTransactions = (
         <WalletTransactionsList
-          network={NETWORK}
+          network={network}
           transactions={filtered}
           isLoadingTransactions={searchRequest.isExecutingFirstTime}
           isRestoreActive={isRestoreActive}

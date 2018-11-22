@@ -49,7 +49,7 @@ export default class PaperWalletCreateCertificatePage extends Component<Props, S
   render() {
     const { uiDialogs, app } = this.props.stores;
     const { showConfirmationDialog } = this.state;
-    const { environment: NETWORK } = app;
+    const { environment: network } = app;
     let activeDialog = null;
 
     if (uiDialogs.isOpen(InstructionsDialog)) {
@@ -101,7 +101,7 @@ export default class PaperWalletCreateCertificatePage extends Component<Props, S
         {activeDialog}
         {showConfirmationDialog && (
           <ConfirmationDialog
-            network={NETWORK}
+            network={network}
             onCancel={this.hideConfirmationDialog}
             onConfirm={this.onClose}
           />

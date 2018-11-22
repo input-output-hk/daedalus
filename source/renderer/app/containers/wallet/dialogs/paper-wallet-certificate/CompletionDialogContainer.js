@@ -13,7 +13,7 @@ export default class CompletionDialogContainer extends Component<Props> {
 
   render() {
     const { walletCertificateAddress } = this.props.stores.wallets;
-    const { environment: { NETWORK } } = this.props.stores.app;
+    const { environment: { network } } = this.props.stores.app;
 
     return (
       <CompletionDialog
@@ -21,7 +21,7 @@ export default class CompletionDialogContainer extends Component<Props> {
         onClose={this.props.onClose}
         onOpenExternalLink={this.props.stores.app.openExternalLink}
         copyAddressNotificationDuration={ADDRESS_COPY_NOTIFICATION_SMALL_DURATION}
-        network={NETWORK}
+        network={network}
       />
     );
   }

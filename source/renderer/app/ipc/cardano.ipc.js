@@ -6,11 +6,11 @@ import type {
 } from '../../../common/types/cardano-node.types';
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
 import {
-  CARDANO_AWAIT_UPDATE_CHANNEL} from '../../../common/ipc/channels';
+  CARDANO_AWAIT_UPDATE_CHANNEL} from '../../../common/ipc/api';
 import {
   CARDANO_FAULT_INJECTION_CHANNEL, CARDANO_RESTART_CHANNEL, CARDANO_STATE_CHANGE_CHANNEL,
   CARDANO_STATUS_CHANNEL, CARDANO_TLS_CONFIG_CHANNEL
-} from '../../../common/ipc/channels';
+} from '../../../common/ipc/api';
 
 // IpcChannel<Incoming, Outgoing>
 

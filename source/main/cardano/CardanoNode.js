@@ -65,7 +65,7 @@ export type CardanoNodeConfig = {
 
 const CARDANO_UPDATE_EXIT_CODE = 20;
 // grab the current network on which Daedalus is running
-const network = String(environment.NETWORK);
+const network = String(environment.network);
 const platform = String(environment.platform);
 // derive storage keys based on current network
 const { PREVIOUS_CARDANO_PID } = deriveStorageKeys(network);

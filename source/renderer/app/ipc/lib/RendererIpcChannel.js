@@ -16,8 +16,8 @@ export class RendererIpcChannel<Incoming, Outgoing> extends IpcChannel<Incoming,
   }
 
   async request(
-    sender: IpcSender = ipcRenderer,
-    receiver: IpcReceiver = ipcRenderer
+    sender: IpcSender = global.ipcRenderer,
+    receiver: IpcReceiver = global.ipcRenderer
   ): Promise<Incoming> {
     return super.request(sender, receiver);
   }
@@ -31,7 +31,7 @@ export class RendererIpcChannel<Incoming, Outgoing> extends IpcChannel<Incoming,
 
   onRequest(
     handler: () => Promise<Outgoing>,
-    receiver: IpcReceiver = ipcRenderer
+    receiver: IpcReceiver = global.ipcRenderer
   ): void {
     super.onRequest(handler, receiver);
   }

@@ -14,7 +14,7 @@ import {
   OPEN_ABOUT_DIALOG_CHANNEL,
   GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL,
   GO_TO_NETWORK_STATUS_SCREEN_CHANNEL
-} from '../common/ipc/channels';
+} from '../common/ipc/api';
 import mainErrorHandler from './utils/mainErrorHandler';
 import { launcherConfig } from './config';
 import { setupCardano } from './cardano/setup';

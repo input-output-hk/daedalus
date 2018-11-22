@@ -1,7 +1,7 @@
 // @flow
 import moment from 'moment';
 import url from 'url';
-import { request } from '../../utils/reportRequest';
+import { reportRequestChannel } from '../../../ipc/reportRequestChannel';
 
 export type SendBugReportParams = {
   requestFormData: {
@@ -31,27 +31,30 @@ export const sendBugReport = (
   // Report server recognizes the following networks: mainnet, staging and testnet
   const serverNetwork = network === 'development' ? 'staging' : network;
 
-  return request({
-    hostname,
-    method: 'POST',
-    path: '/api/v1/report',
-    port,
-  }, {
-    product: 'Daedalus Wallet',
-    frontendVersion: version,
-    backendVersion: apiVersion,
-    network: serverNetwork,
-    build,
-    installerVersion,
-    os,
-    compressedLogsFile,
-    date: moment().format('YYYY-MM-DDTHH:mm:ss'),
-    magic: 2000000000,
-    type: {
-      type: 'customreport',
-      email,
-      subject,
-      problem,
+  return reportRequestChannel.send({
+    httpOptions: {
+      hostname,
+      method: 'POST',
+      path: '/api/v1/report',
+      port,
+    },
+    requestPayload: {
+      product: 'Daedalus Wallet',
+      frontendVersion: version,
+      backendVersion: apiVersion,
+      network: serverNetwork,
+      build,
+      installerVersion,
+      os,
+      compressedLogsFile,
+      date: moment().format('YYYY-MM-DDTHH:mm:ss'),
+      magic: 2000000000,
+      type: {
+        type: 'customreport',
+        email,
+        subject,
+        problem,
+      }
     }
   });
 };

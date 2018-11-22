@@ -29,7 +29,7 @@ export default class App extends Component<{
     const { stores, actions, history } = this.props;
     const { app } = stores;
     const locale = stores.profile.currentLocale;
-    const mobxDevTools = environment.MOBX_DEV_TOOLS ? <DevTools /> : null;
+    const mobxDevTools = environment.mobxDevTools ? <DevTools /> : null;
     const currentTheme = stores.profile.currentTheme;
     const themeVars = require(`./themes/daedalus/${currentTheme}.js`); // eslint-disable-line
 

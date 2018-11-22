@@ -18,10 +18,10 @@ export default class TopBarContainer extends Component<Props> {
     const { actions, stores } = this.props;
     const { sidebar, app, networkStatus, wallets } = stores;
     const { active, isWalletRoute, hasAnyWallets } = wallets;
-    const { currentRoute, environment: { isMainnet, NETWORK } } = app;
+    const { currentRoute, environment: { isMainnet, network } } = app;
 
     const testnetLabel = (
-      !isMainnet ? <WalletTestEnvironmentLabel network={NETWORK} /> : null
+      !isMainnet ? <WalletTestEnvironmentLabel network={network} /> : null
     );
 
     return (
