@@ -101,7 +101,6 @@ type Props = {
   hasBeenConnected: boolean,
   isConnected: boolean,
   isSynced: boolean,
-  noDiskSpace: boolean,
   diskSpaceRequired: number,
   isCheckingNoDiskSpace: boolean,
   onCheckDiskSpace: Function,
@@ -324,7 +323,6 @@ export default class Loading extends Component<Props, State> {
       apiIcon,
       isConnected,
       isSynced,
-      noDiskSpace,
       isCheckingNoDiskSpace,
       diskSpaceRequired,
       onCheckDiskSpace,
@@ -377,7 +375,7 @@ export default class Loading extends Component<Props, State> {
     return (
       <div className={componentStyles}>
         {
-          noDiskSpace /* && !isSynced */ &&
+          diskSpaceRequired > 0 /* && !isSynced */ &&
           (
             <NoDiskSpaceOverlay
               onCheckDiskSpace={onCheckDiskSpace}
