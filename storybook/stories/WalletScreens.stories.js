@@ -78,6 +78,7 @@ storiesOf('WalletScreens', module)
       }}
       numberOfTransactions={number('Number of transactions', 20303585)}
       isLoadingTransactions={boolean('isLoadingTransactions', false)}
+      isRestoreActive={boolean('isRestoreActive', false)}
     />
   ))
 
@@ -131,7 +132,8 @@ storiesOf('WalletScreens', module)
           ),
         ]
       }
-      isLoadingTransactions={false}
+      isLoadingTransactions={boolean('isLoadingTransactions', false)}
+      isRestoreActive={boolean('isRestoreActive', false)}
       hasMoreToLoad={false}
       assuranceMode={{ low: 1, medium: 2 }}
       walletId="test-wallet"
