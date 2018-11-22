@@ -6,5 +6,5 @@
 , installDirectorySuffix = " Demo"
 , macPackageSuffix       = "Demo"
 , walletPort             = 8092
-, extraNodeArgs          = [ "--ekg-server", "localhost:8001" ] : List Text
+, extraNodeArgs          = [ "--ekg-server", "localhost:8002", "+RTS", "-T", "-RTS" ] : List Text
 }
