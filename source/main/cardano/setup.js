@@ -47,13 +47,6 @@ const restartCardanoNode = async (node: CardanoNode) => {
   }
 };
 
-const onCardanoError = (mainWindow, code) => {
-  Logger.info(`CardanoNode error with code ${code}`);
-  // if (code === 'notEnoughDiskSpace') {
-  //   mainWindow.webContents.send(NO_DISK_SPACE);
-  // }
-};
-
 /**
  * Configures, starts and manages the CardanoNode responding to node
  * state changes, app events and IPC messages coming from the renderer.
@@ -90,7 +83,7 @@ export const setupCardano = (
       Logger.info(`CardanoNode crashed with code ${code}. Restarting in ${restartTimeout}ms …`);
       setTimeout(() => restartCardanoNode(cardanoNode), restartTimeout);
     },
-    onError: onCardanoError.bind(this, mainWindow),
+    onError: () => {},
     onUnrecoverable: () => {}
   });
   startCardanoNode(cardanoNode, launcherConfig);
