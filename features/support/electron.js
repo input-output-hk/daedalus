@@ -1,3 +1,4 @@
+import path from 'path';
 import { Application } from 'spectron';
 import { defineSupportCode } from 'cucumber';
 import electronPath from 'electron';
@@ -25,7 +26,9 @@ const startApp = async () => {
     env: Object.assign({}, process.env, {
       NODE_ENV: environment.TEST,
     }),
-    waitTimeout: DEFAULT_TIMEOUT
+    waitTimeout: DEFAULT_TIMEOUT,
+    chromeDriverLogPath: path.join(__dirname, '../../logs/chrome-driver.log'),
+    webdriverLogPath: path.join(__dirname, '../../logs/webdriver'),
   });
   await app.start();
   await app.client.waitUntilWindowLoaded();
