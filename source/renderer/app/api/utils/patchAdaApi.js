@@ -10,6 +10,7 @@ import type { RedeemAdaParams } from '../transactions/requests/redeemAda';
 import type { RedeemPaperVendedAdaParams } from '../transactions/requests/redeemPaperVendedAda';
 import type { NodeQueryParams } from '../nodes/requests/getNodeInfo';
 import type { NodeInfo, GetNetworkStatusResponse } from '../nodes/types';
+import Wallet from '../../domains/Wallet';
 
 // ========== LOGGING =========
 
@@ -97,5 +98,15 @@ export default (api: AdaApi) => {
 
   api.setNextUpdate = async (nextUpdate) => {
     NEXT_ADA_UPDATE = nextUpdate;
+  };
+
+  let isFirstRun = true;
+  const oldGetWallets = api.getWallets;
+  api.getWallets = (): Promise<Array<Wallet>> => {
+    if (isFirstRun) {
+      isFirstRun = false;
+      return Promise.resolve([]);
+    }
+    return oldGetWallets.call(api);
   };
 };

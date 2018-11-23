@@ -67,6 +67,7 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
         if (daedalus.stores.networkStatus.isConnected) {
           daedalus.api.ada.testReset()
             .then(() => daedalus.api.localStorage.reset())
+            .then(() => daedalus.stores.wallets.walletsRequest.execute())
             .then(done)
             .catch((error) => done(error));
         } else {
