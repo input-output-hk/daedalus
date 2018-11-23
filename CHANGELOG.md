@@ -52,6 +52,7 @@ Changelog
 - Added screenshot recording of failed acceptance tests ([PR 1103](https://github.com/input-output-hk/daedalus/pull/1103))
 - Added Storybook stories for the wallet screens ([942](https://github.com/input-output-hk/daedalus/pull/942))
 - Disabled logging to `cardano-node.log` since it was not needed for the support and it was impacting performance ([PR 1027](https://github.com/input-output-hk/daedalus/pull/1027))
+- Enabled Cardano node EKG for non-mainnet networks and made it accessible from the "Network status" screen ([PR 1188](https://github.com/input-output-hk/daedalus/pull/1188))
 - Fixated all `npm` dependencies and update script names ([PR 1014](https://github.com/input-output-hk/daedalus/pull/1014))
 - Fixed broken storybook ([PR 1041](https://github.com/input-output-hk/daedalus/pull/1041))
 - Improved compress/download logs handling ([PR 995](https://github.com/input-output-hk/daedalus/pull/995))

@@ -5,8 +5,8 @@ in
 , config ? {}
 , pkgs ? (import (localLib.fetchNixPkgs) { inherit system config; })
 , cluster ? "demo"
-, autoStartBackend ? false
 , systemStart ? null
+, autoStartBackend ? systemStart != null
 , walletExtraArgs ? []
 , allowFaultInjection ? false
 , purgeNpmCache ? false

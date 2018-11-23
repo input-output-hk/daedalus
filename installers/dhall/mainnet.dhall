@@ -6,4 +6,5 @@
 , installDirectorySuffix = ""
 , macPackageSuffix       = ""
 , walletPort             = 8090
+, extraNodeArgs          = [] : List Text
 }
