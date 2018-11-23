@@ -75,6 +75,13 @@ Changelog
 - Removed Wallet `export` and `import` features for the "Testnet" network ([PR 1168](https://github.com/input-output-hk/daedalus/pull/1168))
 - Switched from `npm` to `yarn` ([PR 989](https://github.com/input-output-hk/daedalus/pull/989))
 
+## 0.11.2
+=======
+
+### Fixes
+
+- Update Cardano SL revision to version `1.3.2` ([PR 1181](https://github.com/input-output-hk/daedalus/pull/1181))
+
 ## 0.11.1
 =======
 
