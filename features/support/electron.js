@@ -76,10 +76,8 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
       resetBackend();
     });
 
-    const url = `file://${__dirname}/../../dist/renderer/index.html`;
-
     // Load fresh root url with test environment for each test case
-    await this.client.url(url);
+    await this.client.refresh();
 
     // Ensure that frontend is synced and ready before test case
     await this.client.executeAsync((done) => {
