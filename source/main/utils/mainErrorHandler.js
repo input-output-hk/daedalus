@@ -2,7 +2,7 @@
 import { app, BrowserWindow } from 'electron';
 import unhandled from 'electron-unhandled';
 import { Logger, stringifyError } from '../../common/logging';
-import { handleNoDiskSpaceFromMain } from '../ipc/no-disk-space';
+import { onNoDiskSpaceError } from '../ipc/no-disk-space';
 
 let dummyTrigger = false;
 
@@ -15,11 +15,6 @@ export default (mainWindow: BrowserWindow) => {
     showDialog: false
   });
 
-  if (!dummyTrigger) {
-    dummyTrigger = true;
-    setTimeout(() => handleNoDiskSpaceFromMain(mainWindow), 5000);
-  }
-
   process.on('uncaughtException', (error: any) => {
 
     const err = `${stringifyError(error)}`;
@@ -27,7 +22,7 @@ export default (mainWindow: BrowserWindow) => {
     Logger.error(`uncaughtException: ${err}`);
 
     if (err.indexOf('ENOSPC') > -1) {
-      handleNoDiskSpaceFromMain(mainWindow);
+      onNoDiskSpaceError(mainWindow);
       return false;
     }
 
