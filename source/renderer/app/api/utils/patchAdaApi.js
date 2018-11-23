@@ -99,14 +99,4 @@ export default (api: AdaApi) => {
   api.setNextUpdate = async (nextUpdate) => {
     NEXT_ADA_UPDATE = nextUpdate;
   };
-
-  let isFirstRun = true;
-  const oldGetWallets = api.getWallets;
-  api.getWallets = (): Promise<Array<Wallet>> => {
-    if (isFirstRun) {
-      isFirstRun = false;
-      return Promise.resolve([]);
-    }
-    return oldGetWallets.call(api);
-  };
 };
