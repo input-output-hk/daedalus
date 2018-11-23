@@ -1,7 +1,7 @@
 import { compact } from 'lodash';
 
 export const osxMenu = (app, window, {
-  openAbout, goToAdaRedemption, goToNetworkStatus, goToEKG, restartInSafeMode, restartWithoutSafeMode
+  openAbout, goToAdaRedemption, goToNetworkStatus, restartInSafeMode, restartWithoutSafeMode
 }, isInSafeMode) => (
   [{
     label: 'Daedalus',
@@ -29,11 +29,6 @@ export const osxMenu = (app, window, {
       accelerator: 'Command+S',
       click() {
         goToNetworkStatus();
-      },
-    }, {
-      label: 'EKG metrics',
-      click() {
-        goToEKG();
       },
     }, {
       label: 'Quit',

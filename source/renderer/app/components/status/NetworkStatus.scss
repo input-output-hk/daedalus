@@ -67,6 +67,10 @@
         display: none;
       }
     }
+
+    & + button {
+      margin-left: 10px;
+    }
   }
 
   hr {

@@ -14,7 +14,6 @@ import environment from '../common/environment';
 import { OPEN_ABOUT_DIALOG_CHANNEL } from '../common/ipc/open-about-dialog';
 import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../common/ipc/go-to-ada-redemption-screen';
 import { GO_TO_NETWORK_STATUS_SCREEN_CHANNEL } from '../common/ipc/go-to-network-status-screen';
-import { GO_TO_EKG_SCREEN_CHANNEL } from '../common/ipc/go-to-ekg-screen';
 import mainErrorHandler from './utils/mainErrorHandler';
 import { launcherConfig } from './config';
 import { setupCardano } from './cardano/setup';
@@ -40,10 +39,6 @@ const goToNetworkStatus = () => {
   if (mainWindow) mainWindow.webContents.send(GO_TO_NETWORK_STATUS_SCREEN_CHANNEL);
 };
 
-const goToEKG = () => {
-  if (mainWindow) mainWindow.webContents.send(GO_TO_EKG_SCREEN_CHANNEL);
-};
-
 const restartInSafeMode = async () => {
   Logger.info('restarting in SafeMode …');
   if (cardanoNode) await cardanoNode.stop();
@@ -62,7 +57,6 @@ const menuActions = {
   openAbout,
   goToAdaRedemption,
   goToNetworkStatus,
-  goToEKG,
   restartInSafeMode,
   restartWithoutSafeMode,
 };

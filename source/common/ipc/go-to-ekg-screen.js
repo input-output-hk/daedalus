@@ -1,1 +1,0 @@
-export const GO_TO_EKG_SCREEN_CHANNEL = 'GO_TO_EKG_SCREEN';
