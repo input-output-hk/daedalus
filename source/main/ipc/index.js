@@ -7,7 +7,7 @@ import parseRedemptionCodeApi from './parse-redemption-code-from-pdf';
 import resizeWindowApi from './resize-window';
 import loadAsset from './load-asset';
 import getGpuStatus from './get-gpu-status';
-import handleNoDiskSpace from './no-disk-space';
+import { handleNoDiskSpaceFromRenderer } from './no-disk-space';
 
 export default (window: BrowserWindow) => {
   compressLogsApi();
@@ -17,5 +17,5 @@ export default (window: BrowserWindow) => {
   resizeWindowApi(window);
   loadAsset();
   getGpuStatus();
-  handleNoDiskSpace();
+  handleNoDiskSpaceFromRenderer();
 };

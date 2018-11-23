@@ -476,7 +476,6 @@ export class CardanoNode {
 
   _handleCardanoNodeError = async (error: Error) => {
     const { _log } = this;
-
     _log.info(`CardanoNode: error: ${error.toString()}`);
     this._changeToState(CardanoNodeStates.ERRORED);
     this._transitionListeners.onError(error);
