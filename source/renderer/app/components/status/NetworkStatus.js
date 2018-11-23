@@ -295,14 +295,6 @@ export default class NetworkStatus extends Component<Props, State> {
               <tr>
                 <td className={styles.topPadding}>Cardano Node actions:</td>
                 <td className={styles.topPadding}>
-                  {cardanoNodeEkgLink ? (
-                    <button
-                      onClick={() => onOpenExternalLink(cardanoNodeEkgLink)}
-                    >
-                      EKG monitor
-                    </button>
-                  ) : null}
-
                   <button
                     onClick={() => this.restartNode()}
                     disabled={isNodeRestarting}
@@ -311,6 +303,18 @@ export default class NetworkStatus extends Component<Props, State> {
                   </button>
                 </td>
               </tr>
+              {cardanoNodeEkgLink ? (
+                <tr>
+                  <td>Cardano Node diagnostics:</td>
+                  <td>
+                    <button
+                      onClick={() => onOpenExternalLink(cardanoNodeEkgLink)}
+                    >
+                      Realtime statistics monitor
+                    </button>
+                  </td>
+                </tr>
+              ) : null}
               {!isConnected && nodeConnectionError ? (
                 <tr>
                   <td className={styles.topPadding} colSpan={2}>
