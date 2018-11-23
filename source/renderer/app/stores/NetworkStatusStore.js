@@ -14,7 +14,7 @@ import {
 } from '../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
 import { Logger } from '../../../common/logging';
-import { CHECK_DISK_SPACE } from '../../../common/ipc-api';
+import { DISK_SPACE_STATUS_CHANNEL } from '../../../common/ipc/check-disk-space';
 import {
   cardanoStateChangeChannel,
   tlsConfigChannel,
@@ -32,7 +32,10 @@ import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { IpcEvent } from '../../../common/ipc/lib/IpcChannel';
 
 type CheckDiskSpaceResponse = {
+  diskSpaceAvailable: number,
   diskSpaceRequired: number,
+  diskSpaceMissing: number,
+  notEnoughSpace: boolean,
 };
 
 // DEFINE CONSTANTS -------------------------
@@ -79,8 +82,10 @@ export default class NetworkStatusStore extends Store {
     this.api.ada.getNetworkStatus
   );
 
-  @observable isCheckingNoDiskSpace: boolean = false;
+  @observable diskSpaceAvailable: number = 0;
   @observable diskSpaceRequired: number = 0;
+  @observable diskSpaceMissing: number = 0;
+  @observable notEnoughSpace: boolean = false;
 
   // DEFINE STORE METHODS
   setup() {
@@ -114,8 +119,7 @@ export default class NetworkStatusStore extends Store {
       this._updateSystemTime, SYSTEM_TIME_POLL_INTERVAL
     );
 
-    ipcRenderer.on(CHECK_DISK_SPACE.SUCCESS, this.onCheckDiskSpaceSuccess);
-    ipcRenderer.on(CHECK_DISK_SPACE.ERROR, this.onCheckDiskSpaceError);
+    ipcRenderer.on(DISK_SPACE_STATUS_CHANNEL, this.onCheckDiskSpace);
   }
 
   async restartNode() {
@@ -425,23 +429,19 @@ export default class NetworkStatusStore extends Store {
     await this._updateNetworkStatus({ force_ntp_check: true });
   };
 
-  @action onCheckDiskSpace = () => {
-    this.isCheckingNoDiskSpace = true;
-    ipcRenderer.send(CHECK_DISK_SPACE.REQUEST);
-  };
-
-  @action onCheckDiskSpaceSuccess = (
+  @action onCheckDiskSpace = (
     event: IpcEvent,
     {
+      diskSpaceAvailable,
       diskSpaceRequired,
+      diskSpaceMissing,
+      notEnoughSpace,
     }: CheckDiskSpaceResponse
   ) => {
+    this.diskSpaceAvailable = diskSpaceAvailable;
     this.diskSpaceRequired = diskSpaceRequired;
-    this.isCheckingNoDiskSpace = false;
-  };
-
-  @action onCheckDiskSpaceError = () => {
-    this.isCheckingNoDiskSpace = false;
+    this.diskSpaceMissing = diskSpaceMissing;
+    this.notEnoughSpace = notEnoughSpace;
   };
 
   // DEFINE COMPUTED VALUES

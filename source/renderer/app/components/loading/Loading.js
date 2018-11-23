@@ -101,9 +101,10 @@ type Props = {
   hasBeenConnected: boolean,
   isConnected: boolean,
   isSynced: boolean,
+  diskSpaceAvailable: number,
   diskSpaceRequired: number,
-  isCheckingNoDiskSpace: boolean,
-  onCheckDiskSpace: Function,
+  diskSpaceMissing: number,
+  notEnoughSpace: boolean,
   syncPercentage: number,
   loadingDataForNextScreenMessage: ReactIntlMessage,
   hasLoadedCurrentLocale: boolean,
@@ -323,9 +324,10 @@ export default class Loading extends Component<Props, State> {
       apiIcon,
       isConnected,
       isSynced,
-      isCheckingNoDiskSpace,
+      diskSpaceAvailable,
       diskSpaceRequired,
-      onCheckDiskSpace,
+      diskSpaceMissing,
+      notEnoughSpace,
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
       handleReportIssue,
@@ -375,12 +377,13 @@ export default class Loading extends Component<Props, State> {
     return (
       <div className={componentStyles}>
         {
-          diskSpaceRequired > 0 /* && !isSynced */ &&
+          notEnoughSpace &&
           (
             <NoDiskSpaceOverlay
-              onCheckDiskSpace={onCheckDiskSpace}
-              isCheckingNoDiskSpace={isCheckingNoDiskSpace}
+              diskSpaceAvailable={diskSpaceAvailable}
               diskSpaceRequired={diskSpaceRequired}
+              diskSpaceMissing={diskSpaceMissing}
+              notEnoughSpace={notEnoughSpace}
             />
           )
         }

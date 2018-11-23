@@ -33,10 +33,3 @@ export const GET_GPU_STATUS = {
   SUCCESS: `${GET_GPU_STATUS_CHANNEL}-success`,
   ERROR: `${GET_GPU_STATUS_CHANNEL}-error`,
 };
-
-const CHECK_DISK_SPACE_CHANNEL = 'check-disk-space';
-export const CHECK_DISK_SPACE = {
-  REQUEST: CHECK_DISK_SPACE_CHANNEL,
-  SUCCESS: `${CHECK_DISK_SPACE_CHANNEL}-success`,
-  ERROR: `${CHECK_DISK_SPACE_CHANNEL}-error`,
-};

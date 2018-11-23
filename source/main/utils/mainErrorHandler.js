@@ -2,9 +2,7 @@
 import { app, BrowserWindow } from 'electron';
 import unhandled from 'electron-unhandled';
 import { Logger, stringifyError } from '../../common/logging';
-import { onNoDiskSpaceError } from '../ipc/no-disk-space';
-
-let dummyTrigger = false;
+import { onNoDiskSpaceError } from '../ipc/handle-disk-space';
 
 export default (mainWindow: BrowserWindow) => {
 

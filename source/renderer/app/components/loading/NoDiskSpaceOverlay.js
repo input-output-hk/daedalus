@@ -4,17 +4,10 @@ import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import prettysize from 'prettysize';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import attentionIcon from '../../assets/images/attention-big-light.inline.svg';
 import styles from './NoDiskSpaceErrorOverlay.scss';
 
 const messages = defineMessages({
-  overlayButtonText: {
-    id: 'noDiskSpace.error.overlayButtonText',
-    defaultMessage: '!!!Check and continue',
-    description: 'Button Text of No disk space overlay'
-  },
   overlayContent: {
     id: 'noDiskSpace.error.overlayContent',
     defaultMessage: '!!!<b>There is not enough disk space left on your device.</b><br />Daedalus requires {diskSpaceRequired} more space to operate. Please free up some disk space and then click the button below to continue.',
@@ -28,9 +21,9 @@ const messages = defineMessages({
 });
 
 type Props = {
-  onCheckDiskSpace: Function,
-  isCheckingNoDiskSpace: boolean,
+  diskSpaceAvailable: number,
   diskSpaceRequired: number,
+  diskSpaceMissing: number,
 };
 
 @observer
@@ -43,9 +36,7 @@ export default class NoDiskSpaceErrorOverlay extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      onCheckDiskSpace,
-      isCheckingNoDiskSpace,
-      diskSpaceRequired
+      /* diskSpaceAvailable, */ diskSpaceRequired/* , diskSpaceMissing */
     } = this.props;
 
     return (
@@ -63,13 +54,6 @@ export default class NoDiskSpaceErrorOverlay extends Component<Props> {
             />
           </p>
 
-          <Button
-            className="disclaimer"
-            label={intl.formatMessage(messages.overlayButtonText)}
-            onClick={() => onCheckDiskSpace()}
-            disabled={isCheckingNoDiskSpace}
-            skin={ButtonSkin}
-          />
         </div>
 
       </div>
