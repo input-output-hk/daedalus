@@ -88,6 +88,10 @@ $ export NETWORK=testnet
 $ yarn dev
 ```
 
+### Cardano Wallet API documentation
+
+While running Daedalus in development mode you can access Cardano Wallet API documentation on the following URL: https://localhost:8091/docs/v1/index/.
+
 # Testing
 
 You can find more details regarding tests setup within
