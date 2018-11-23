@@ -6,4 +6,5 @@
 , installDirectorySuffix : Text
 , macPackageSuffix       : Text
 , walletPort             : Integer
+, extraNodeArgs          : List Text
 }
