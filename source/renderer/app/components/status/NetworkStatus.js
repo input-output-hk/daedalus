@@ -15,9 +15,11 @@ import {
   MAX_ALLOWED_STALL_DURATION,
 } from '../../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../../config/numbersConfig';
+import { getNetworkEkgUrl } from '../../utils/network';
 import closeCross from '../../assets/images/close-cross.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
 import { CardanoNodeStates } from '../../../../common/types/cardanoNode.types';
+import environment from '../../../../common/environment';
 import styles from './NetworkStatus.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardanoNode.types';
 
@@ -44,6 +46,7 @@ type Props = {
   localBlockHeight: number,
   networkBlockHeight: number,
   onForceCheckLocalTimeDifference: Function,
+  onOpenExternalLink: Function,
   onRestartNode: Function,
   onClose: Function,
 };
@@ -118,6 +121,7 @@ export default class NetworkStatus extends Component<Props, State> {
       localTimeDifference, isSystemTimeCorrect, isForceCheckingNodeTime,
       isSystemTimeChanged, mostRecentBlockTimestamp, localBlockHeight, networkBlockHeight,
       onForceCheckLocalTimeDifference, onClose, nodeConnectionError, isSystemTimeIgnored,
+      onOpenExternalLink,
     } = this.props;
     const { data, isNodeRestarting } = this.state;
     const isNTPServiceReachable = !!localTimeDifference;
@@ -144,6 +148,9 @@ export default class NetworkStatus extends Component<Props, State> {
     const timeSinceLastBlockClasses = classNames([
       mostRecentBlockTimestamp > 0 && !isBlockchainHeightStalling ? styles.green : styles.red,
     ]);
+
+    // Cardano Node EKG server is not enabled for the Mainnet!
+    const cardanoNodeEkgLink = environment.isMainnet() ? false : getNetworkEkgUrl();
 
     return (
       <div className={styles.component}>
@@ -296,6 +303,18 @@ export default class NetworkStatus extends Component<Props, State> {
                   </button>
                 </td>
               </tr>
+              {cardanoNodeEkgLink ? (
+                <tr>
+                  <td>Cardano Node diagnostics:</td>
+                  <td>
+                    <button
+                      onClick={() => onOpenExternalLink(cardanoNodeEkgLink)}
+                    >
+                      Realtime statistics monitor
+                    </button>
+                  </td>
+                </tr>
+              ) : null}
               {!isConnected && nodeConnectionError ? (
                 <tr>
                   <td className={styles.topPadding} colSpan={2}>

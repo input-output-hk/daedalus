@@ -26,5 +26,5 @@
     , "--wallet-address",      "127.0.0.1:0"
     -- XXX: this is a workaround for Linux
     , "--update-with-package"
-    ]
+    ] # cluster.extraNodeArgs
 } // os.pass
