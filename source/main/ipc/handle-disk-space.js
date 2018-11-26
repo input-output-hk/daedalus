@@ -3,6 +3,7 @@ import { BrowserWindow } from 'electron';
 import checkDiskSpace from 'check-disk-space';
 import { DISK_SPACE_STATUS_CHANNEL } from '../../common/ipc/check-disk-space';
 import environment from '../../common/environment';
+import { Logger } from '../../common/logging';
 
 const DISK_SPACE_REQUIRED = 2000000000; // 2Gb
 const DISK_SPACE_REQUIRED_MARGIN =
@@ -42,10 +43,21 @@ const handleCheckDiskSpace = async () => {
 const setDiskSpaceIntervalChecking = (interval) => {
   clearInterval(diskSpaceCheckInterval);
   diskSpaceCheckInterval =
-    setInterval(() => handleCheckDiskSpace(), interval);
+    setInterval(() => {
+      if (interval === DISK_SPACE_CHECK_LONG_INTERVAL) {
+        Logger.error('Long interval disk space check');
+      } else {
+        Logger.error('Short interval disk space check');
+      }
+      handleCheckDiskSpace();
+    }, interval);
 };
 setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_LONG_INTERVAL);
-handleCheckDiskSpace();
+
+setTimeout(() => {
+  handleCheckDiskSpace();
+  Logger.error('Initial disk space check');
+}, 5000);
 
 export const onNoDiskSpaceError = async (mainWindow: BrowserWindow) => {
   const response = await handleCheckDiskSpace();
