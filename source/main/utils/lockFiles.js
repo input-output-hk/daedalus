@@ -3,7 +3,7 @@ import path from 'path';
 import { lockSync, unlockSync, checkSync } from './lock-files';
 import { launcherConfig } from '../config';
 import { getProcessName } from './processes';
-import { Logger } from '../../common/logging';
+import { Logger } from '../../common/utils/logging';
 
 const OPTIONS = {
   onCompromised: (error) => Logger.warn(error),
