@@ -36,6 +36,6 @@ export type SendBugReportRequest = {
     apiVersion: string,
     build: string,
     installerVersion: string,
-    reportURL: string,
+    reportUrl: string,
   }
 };

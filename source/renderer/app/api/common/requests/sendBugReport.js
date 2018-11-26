@@ -17,7 +17,7 @@ export type SendBugReportParams = {
     apiVersion: string,
     build: string,
     installerVersion: string,
-    reportURL: string,
+    reportUrl: string,
   }
 };
 
@@ -25,8 +25,8 @@ export const sendBugReport = (
   { requestFormData, environmentData }: SendBugReportParams
 ) => {
   const { email, subject, problem, compressedLogsFile } = requestFormData;
-  const { version, os, apiVersion, network, build, installerVersion, reportURL } = environmentData;
-  const parsedReportURL = url.parse(reportURL);
+  const { version, os, apiVersion, network, build, installerVersion, reportUrl } = environmentData;
+  const parsedReportURL = url.parse(reportUrl);
   const { hostname, port } = parsedReportURL;
   // Report server recognizes the following networks: mainnet, staging and testnet
   const serverNetwork = network === 'development' ? 'staging' : network;
