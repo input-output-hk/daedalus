@@ -6,6 +6,7 @@ import { includes } from 'lodash';
 import { Logger } from '../common/logging';
 import { setupLogging } from './utils/setupLogging';
 import { makeEnvironmentGlobal } from './utils/makeEnvironmentGlobal';
+import HandleDiskSpace from './utils/HandleDiskSpace';
 import { createMainWindow } from './windows/main';
 import { winLinuxMenu } from './menus/win-linux';
 import { osxMenu } from './menus/osx';
@@ -22,6 +23,7 @@ import { safeExitWithCode } from './utils/safeExitWithCode';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { acquireDaedalusInstanceLock } from './utils/lockFiles';
 import { CardanoNodeStates } from '../common/types/cardanoNode.types';
+import type { CheckDiskSpaceResponse } from '../common/ipc/check-disk-space';
 
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
@@ -87,12 +89,29 @@ app.on('ready', async () => {
 
   setupLogging();
 
-
   // Detect safe mode
   const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
 
   mainWindow = createMainWindow(isInSafeMode);
-  mainErrorHandler(mainWindow);
+
+  const onCheckDiskSpace = ({ notEnoughSpace }: CheckDiskSpaceResponse) => {
+    if (notEnoughSpace) {
+      // cardanoNode.stop();
+    } else {
+      // cardanoNode.start();
+    }
+  };
+
+  const handleCheckDiskSpace = HandleDiskSpace(mainWindow, onCheckDiskSpace);
+
+  const onMainError = (error: string) => {
+    if (error.indexOf('ENOSPC') > -1) {
+      handleCheckDiskSpace();
+      return false;
+    }
+  };
+
+  mainErrorHandler(onMainError);
 
   Logger.info(`========== Daedalus is starting at ${new Date().toString()} ==========`);
 

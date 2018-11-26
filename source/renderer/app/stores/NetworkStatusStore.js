@@ -30,13 +30,7 @@ import type {
 } from '../../../common/types/cardanoNode.types';
 import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { IpcEvent } from '../../../common/ipc/lib/IpcChannel';
-
-type CheckDiskSpaceResponse = {
-  diskSpaceAvailable: number,
-  diskSpaceRequired: number,
-  diskSpaceMissing: number,
-  notEnoughSpace: boolean,
-};
+import type { CheckDiskSpaceResponse } from '../../../common/ipc/check-disk-space';
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {

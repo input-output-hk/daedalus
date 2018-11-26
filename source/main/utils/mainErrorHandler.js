@@ -1,10 +1,9 @@
 // @flow
-import { app, BrowserWindow } from 'electron';
+import { app } from 'electron';
 import unhandled from 'electron-unhandled';
 import { Logger, stringifyError } from '../../common/logging';
-import { onNoDiskSpaceError } from '../ipc/handle-disk-space';
 
-export default (mainWindow: BrowserWindow) => {
+export default (onError?: Function) => {
 
   Logger.info('mainErrorHandler.js started ==========--------=====');
 
@@ -19,9 +18,8 @@ export default (mainWindow: BrowserWindow) => {
 
     Logger.error(`uncaughtException: ${err}`);
 
-    if (err.indexOf('ENOSPC') > -1) {
-      onNoDiskSpaceError(mainWindow);
-      return false;
+    if (typeof onError === 'function') {
+      onError.trigger(this, err);
     }
 
   });
