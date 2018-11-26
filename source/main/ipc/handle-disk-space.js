@@ -45,6 +45,7 @@ const setDiskSpaceIntervalChecking = (interval) => {
     setInterval(() => handleCheckDiskSpace(), interval);
 };
 setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_LONG_INTERVAL);
+handleCheckDiskSpace();
 
 export const onNoDiskSpaceError = async (mainWindow: BrowserWindow) => {
   const response = await handleCheckDiskSpace();
