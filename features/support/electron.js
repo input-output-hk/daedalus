@@ -1,3 +1,4 @@
+import path from 'path';
 import { Application } from 'spectron';
 import { defineSupportCode } from 'cucumber';
 import electronPath from 'electron';
@@ -25,7 +26,9 @@ const startApp = async () => {
     env: Object.assign({}, process.env, {
       NODE_ENV: TEST,
     }),
-    waitTimeout: DEFAULT_TIMEOUT
+    waitTimeout: DEFAULT_TIMEOUT,
+    chromeDriverLogPath: path.join(__dirname, '../../logs/chrome-driver.log'),
+    webdriverLogPath: path.join(__dirname, '../../logs/webdriver'),
   });
   await app.start();
   return app;
@@ -73,10 +76,8 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
       resetBackend();
     });
 
-    const url = `file://${__dirname}/../../dist/renderer/index.html`;
-
     // Load fresh root url with test environment for each test case
-    await this.client.url(url);
+    await this.client.refresh();
 
     // Ensure that frontend is synced and ready before test case
     await this.client.executeAsync((done) => {

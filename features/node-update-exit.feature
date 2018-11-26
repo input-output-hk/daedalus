@@ -1,6 +1,7 @@
 Feature: Node Update Exit
 
   Background:
+    Given I have completed the basic setup
     Given Daedalus is running
     And cardano-node is running
 
