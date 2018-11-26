@@ -27,4 +27,4 @@ module.name_mapper.extension='svg' -> '<PROJECT_ROOT>/flow/mappers/WebpackAsset.
 module.name_mapper='\(react-dropzone\)' -> '<PROJECT_ROOT>/flow/mappers/GeneralStub.js.flow'
 suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe
 suppress_comment=\\(.\\|\n\\)*\\$FlowIssue
-unsafe.enable_getters_and_setters=true
+;unsafe.enable_getters_and_setters=true

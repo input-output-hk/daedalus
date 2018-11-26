@@ -6,13 +6,13 @@
         "description": "Generic error message.",
         "end": {
           "column": 3,
-          "line": 10
+          "line": 11
         },
         "file": "source/renderer/app/api/common/errors.js",
         "id": "api.errors.GenericApiError",
         "start": {
           "column": 19,
-          "line": 6
+          "line": 7
         }
       },
       {
@@ -20,13 +20,13 @@
         "description": "\"Incorrect wallet password.\" error message.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 16
         },
         "file": "source/renderer/app/api/common/errors.js",
         "id": "api.errors.IncorrectPasswordError",
         "start": {
           "column": 34,
-          "line": 11
+          "line": 12
         }
       },
       {
@@ -34,13 +34,13 @@
         "description": "\"There was a problem sending the support request.\" error message",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "source/renderer/app/api/common/errors.js",
         "id": "api.errors.ReportRequestError",
         "start": {
           "column": 22,
-          "line": 16
+          "line": 17
         }
       },
       {
@@ -48,13 +48,13 @@
         "description": "\"This API method is not yet implemented.\" error message.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "source/renderer/app/api/common/errors.js",
         "id": "api.errors.ApiMethodNotYetImplementedError",
         "start": {
           "column": 35,
-          "line": 21
+          "line": 22
         }
       },
       {
@@ -62,13 +62,13 @@
         "description": "\"Forbidden Mnemonic: an example Mnemonic has been submitted.\" error message",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 31
         },
         "file": "source/renderer/app/api/common/errors.js",
         "id": "api.errors.ForbiddenMnemonicError",
         "start": {
           "column": 26,
-          "line": 26
+          "line": 27
         }
       }
     ],
@@ -555,53 +555,6 @@
       }
     ],
     "path": "source/renderer/app/components/loading/SystemTimeErrorOverlay.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!<strong>Note:</strong> Antivirus software, like Windows Defender, can cause slow wallet restoration times.",
-        "description": "Warning about antivirus software slowing down restoration process on Windows.",
-        "end": {
-          "column": 3,
-          "line": 21
-        },
-        "file": "source/renderer/app/components/notifications/AntivirusRestaurationSlowdownNotification.js",
-        "id": "wallet.statusMessages.antivirusRestaurationSlowdownNotification.note",
-        "start": {
-          "column": 8,
-          "line": 17
-        }
-      },
-      {
-        "defaultMessage": "!!!see the FAQ",
-        "description": "\"see the FAQ\" link text in the antivirus restoration slowdown notification",
-        "end": {
-          "column": 3,
-          "line": 26
-        },
-        "file": "source/renderer/app/components/notifications/AntivirusRestaurationSlowdownNotification.js",
-        "id": "wallet.statusMessages.antivirusRestaurationSlowdownNotification.faqLinkText",
-        "start": {
-          "column": 15,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!Please {faqLink} on the Daedalus website for more information.",
-        "description": "Warning about antivirus software slowing down restoration process on Windows.",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/components/notifications/AntivirusRestaurationSlowdownNotification.js",
-        "id": "wallet.statusMessages.antivirusRestaurationSlowdownNotification.faqLink",
-        "start": {
-          "column": 11,
-          "line": 27
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/notifications/AntivirusRestaurationSlowdownNotification.json"
   },
   {
     "descriptors": [
@@ -2245,13 +2198,13 @@
         "description": "Instructions for verifying wallet recovery phrase on dialog for entering wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.verification.instructions",
         "start": {
           "column": 28,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -2259,13 +2212,13 @@
         "description": "Label for button \"Confirm\" on wallet backup dialog",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.recovery.phrase.show.entry.dialog.button.labelConfirm",
         "start": {
           "column": 22,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -2273,13 +2226,13 @@
         "description": "Label for button \"Clear\" on wallet backup dialog",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.recovery.phrase.show.entry.dialog.button.labelClear",
         "start": {
           "column": 20,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -2287,13 +2240,13 @@
         "description": "Term and condition on wallet backup dialog describing that wallet is on a users device, not on company servers",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.device",
         "start": {
           "column": 14,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -2301,13 +2254,13 @@
         "description": "Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery",
         "start": {
           "column": 16,
-          "line": 38
+          "line": 39
         }
       }
     ],
@@ -3345,13 +3298,13 @@
         "description": "Label for the delete button on wallet settings",
         "end": {
           "column": 3,
-          "line": 10
+          "line": 11
         },
         "file": "source/renderer/app/components/wallet/settings/DeleteWalletButton.js",
         "id": "wallet.settings.deleteWalletButtonLabel",
         "start": {
           "column": 9,
-          "line": 6
+          "line": 7
         }
       }
     ],
@@ -3486,13 +3439,13 @@
         "description": "Label for the \"+ 12.042481 of fees\" message above amount input field.",
         "end": {
           "column": 3,
-          "line": 12
+          "line": 13
         },
         "file": "source/renderer/app/components/wallet/skins/AmountInputSkin.js",
         "id": "wallet.amountInput.feesLabel",
         "start": {
           "column": 13,
-          "line": 8
+          "line": 9
         }
       }
     ],
@@ -3552,13 +3505,13 @@
         "description": "Transaction type shown for credit card payments.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.card",
         "start": {
           "column": 8,
-          "line": 21
+          "line": 22
         }
       },
       {
@@ -3566,13 +3519,13 @@
         "description": "Transaction type shown for {currency} transactions.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type",
         "start": {
           "column": 8,
-          "line": 26
+          "line": 27
         }
       },
       {
@@ -3580,13 +3533,13 @@
         "description": "Transaction type shown for money exchanges between currencies.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.exchange",
         "start": {
           "column": 12,
-          "line": 31
+          "line": 32
         }
       },
       {
@@ -3594,13 +3547,13 @@
         "description": "Transaction assurance level.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel",
         "start": {
           "column": 18,
-          "line": 36
+          "line": 37
         }
       },
       {
@@ -3608,13 +3561,13 @@
         "description": "Transaction confirmations.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.confirmations",
         "start": {
           "column": 17,
-          "line": 41
+          "line": 42
         }
       },
       {
@@ -3622,13 +3575,13 @@
         "description": "Transaction ID.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionId",
         "start": {
           "column": 17,
-          "line": 46
+          "line": 47
         }
       },
       {
@@ -3636,13 +3589,13 @@
         "description": "Conversion rate.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 56
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.conversion.rate",
         "start": {
           "column": 18,
-          "line": 51
+          "line": 52
         }
       },
       {
@@ -3650,13 +3603,13 @@
         "description": "Label \"{currency} sent\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 61
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.sent",
         "start": {
           "column": 8,
-          "line": 56
+          "line": 57
         }
       },
       {
@@ -3664,13 +3617,13 @@
         "description": "Label \"{currency} received\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 66
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.received",
         "start": {
           "column": 12,
-          "line": 61
+          "line": 62
         }
       },
       {
@@ -3678,13 +3631,13 @@
         "description": "From address",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.from",
         "start": {
           "column": 15,
-          "line": 66
+          "line": 67
         }
       },
       {
@@ -3692,13 +3645,13 @@
         "description": "From addresses",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 76
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.from",
         "start": {
           "column": 17,
-          "line": 71
+          "line": 72
         }
       },
       {
@@ -3706,13 +3659,13 @@
         "description": "To address",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 81
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.to",
         "start": {
           "column": 13,
-          "line": 76
+          "line": 77
         }
       },
       {
@@ -3720,13 +3673,13 @@
         "description": "To addresses",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 86
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.to",
         "start": {
           "column": 15,
-          "line": 81
+          "line": 82
         }
       },
       {
@@ -3734,13 +3687,13 @@
         "description": "Transaction amount.",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 91
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionAmount",
         "start": {
           "column": 21,
-          "line": 86
+          "line": 87
         }
       },
       {
@@ -3748,13 +3701,13 @@
         "description": "Transaction assurance level \"low\".",
         "end": {
           "column": 3,
-          "line": 98
+          "line": 99
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.low",
         "start": {
           "column": 34,
-          "line": 94
+          "line": 95
         }
       },
       {
@@ -3762,13 +3715,13 @@
         "description": "Transaction assurance level \"medium\".",
         "end": {
           "column": 3,
-          "line": 103
+          "line": 104
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.medium",
         "start": {
           "column": 37,
-          "line": 99
+          "line": 100
         }
       },
       {
@@ -3776,13 +3729,13 @@
         "description": "Transaction assurance level \"high\".",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 109
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.high",
         "start": {
           "column": 35,
-          "line": 104
+          "line": 105
         }
       },
       {
@@ -3790,13 +3743,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 116
+          "line": 117
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 112
+          "line": 113
         }
       },
       {
@@ -3804,13 +3757,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 121
+          "line": 122
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.failed",
         "start": {
           "column": 30,
-          "line": 117
+          "line": 118
         }
       }
     ],
@@ -5040,13 +4993,13 @@
         "description": "Label for the blocks synced info overlay on node sync status icon.",
         "end": {
           "column": 3,
-          "line": 13
+          "line": 14
         },
         "file": "source/renderer/app/components/widgets/NodeSyncStatusIcon.js",
         "id": "cardano.node.sync.status.blocksSynced",
         "start": {
           "column": 16,
-          "line": 9
+          "line": 10
         }
       }
     ],
@@ -5059,13 +5012,13 @@
         "description": "Label for staging network with version.",
         "end": {
           "column": 3,
-          "line": 11
+          "line": 12
         },
         "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
         "id": "test.environment.stagingLabel",
         "start": {
           "column": 11,
-          "line": 7
+          "line": 8
         }
       },
       {
@@ -5073,13 +5026,13 @@
         "description": "Label for testnet with version.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 17
         },
         "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
         "id": "test.environment.testnetLabel",
         "start": {
           "column": 11,
-          "line": 12
+          "line": 13
         }
       },
       {
@@ -5087,13 +5040,13 @@
         "description": "Label for development with version.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
         "id": "test.environment.developmentLabel",
         "start": {
           "column": 15,
-          "line": 17
+          "line": 18
         }
       }
     ],

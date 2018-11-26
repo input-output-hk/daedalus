@@ -79,10 +79,11 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
       onCheckTheTimeAgain, onContinueWithoutClockSyncCheck,
     } = this.props;
 
+    const supportPortalLinkUrl = intl.formatMessage(messages.supportPortalLinkUrl);
     const supportPortalLink = (
       <a
-        href={intl.formatMessage(messages.supportPortalLinkUrl)}
-        onClick={event => this.onProblemSolutionClick(event)}
+        href={supportPortalLinkUrl}
+        onClick={event => this.onProblemSolutionClick(event, supportPortalLinkUrl)}
       >
         {intl.formatMessage(messages.supportPortalLink)}
       </a>
@@ -172,9 +173,9 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
     );
   }
 
-  onProblemSolutionClick = (event: MouseEvent) => {
+  onProblemSolutionClick = (event: MouseEvent, url: string) => {
     event.preventDefault();
-    if (event.target.href) this.props.onProblemSolutionClick(event.target.href);
+    this.props.onProblemSolutionClick(url);
   };
 
 }

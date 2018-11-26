@@ -1,3 +1,4 @@
+// @flow
 import BigNumber from 'bignumber.js';
 import { get } from 'lodash';
 import AdaApi from '../api';

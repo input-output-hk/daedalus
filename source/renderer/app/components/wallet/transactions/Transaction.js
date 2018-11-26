@@ -1,3 +1,4 @@
+// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
@@ -149,11 +150,12 @@ export default class Transaction extends Component<Props, State> {
     this.setState({ isExpanded: !this.state.isExpanded });
   }
 
-  handleOpenExplorer(type, param, e) {
-    if (this.props.onOpenExternalLink) {
+  handleOpenExplorer(type: string, param: string, e: Event) {
+    const { onOpenExternalLink } = this.props;
+    if (onOpenExternalLink) {
       e.stopPropagation();
       const link = `${getNetworkExplorerUrl()}/${type}/${param}`;
-      this.props.onOpenExternalLink(link);
+      onOpenExternalLink(link);
     }
   }
 
@@ -266,18 +268,6 @@ export default class Transaction extends Component<Props, State> {
             role="presentation"
             aria-hidden
           >
-            {data.exchange && data.conversionRate && (
-              <div className={styles.conversion}>
-                <div>
-                  <h2>{intl.formatMessage(messages.exchange)}</h2>
-                  <span>{data.exchange}</span>
-                </div>
-                <div className={styles.conversionRate}>
-                  <h2>{intl.formatMessage(messages.conversionRate)}</h2>
-                  <span>{data.conversionRate}</span>
-                </div>
-              </div>
-            )}
             <div>
               <h2>
                 {intl.formatMessage(messages.fromAddresses)}

@@ -118,6 +118,7 @@ const messages = defineMessages({
 });
 
 type Props = {
+  compressedLogsFile?: ?string,
   logFiles: LogFiles,
   compressedLogsFile: ?string,
   onCancel: Function,

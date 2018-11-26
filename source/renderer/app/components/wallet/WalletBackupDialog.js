@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import WalletBackupPrivacyWarningDialog from '../../components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog';
 import WalletRecoveryPhraseDisplayDialog from '../../components/wallet/backup-recovery/WalletRecoveryPhraseDisplayDialog';
 import WalletRecoveryPhraseEntryDialog from '../../components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog';
-import type { walletBackupStep } from '../../types/walletBackupTypes';
+import type { RecoveryPhraseWord, walletBackupStep } from '../../types/walletBackupTypes';
 import { WALLET_BACKUP_STEPS } from '../../types/walletBackupTypes';
 
 type Props = {
@@ -18,7 +18,7 @@ type Props = {
   isValid: boolean,
   isSubmitting: boolean,
   recoveryPhrase: string,
-  recoveryPhraseShuffled: Array<{ word: string, isActive: boolean }>,
+  recoveryPhraseShuffled: Array<RecoveryPhraseWord>,
   enteredPhrase: Array<{ word: string }>,
   onCancelBackup: Function,
   onAcceptPrivacyNotice: Function,
