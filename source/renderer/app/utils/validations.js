@@ -13,7 +13,7 @@ export const isValidSpendingPassword = (spendingPassword: string) => {
   // - should contain at least one lower case: (?=.*[а-я])
   // - should contain at least one upper case: (?=.*[А-Я])
   // - should contain at least 7 characters long: .{7,}
-  const passwordRegex = /^(?=.*\d)(?=.*[а-я])(?=.*[А-Я]).{7,}$/;
+  const passwordRegex = /^(?=.*\d)(?=.*[\wа-я])(?=.*[\wА-Я]).{7,}$/;
   return passwordRegex.test(spendingPassword);
 };
 
