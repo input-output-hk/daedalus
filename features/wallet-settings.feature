@@ -59,7 +59,6 @@ Feature: Wallet Settings
     And I submit the wallet password dialog
     Then I should not see the change password dialog anymore
 
-
   Scenario: User removes Wallet password
     Given I am on the "second" wallet "settings" screen
     And I click on the "change" password label
