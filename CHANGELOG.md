@@ -21,7 +21,7 @@ Changelog
 
 ### Features
 
-- Refactored environment so it's loaded into stores during the wallet's initial render and removes all references to Node APIs in the renderer process for increased security ([PR 1099](https://github.com/input-output-hk/daedalus/pull/1099/commits))
+- Refactored environmetn setup and disabled electron node integration for the render process ([PR 1099](https://github.com/input-output-hk/daedalus/pull/1099/commits))
 - Implemented "Forbidden mnemonic" error message ([PR 1093](https://github.com/input-output-hk/daedalus/pull/1093), [PR 1100](https://github.com/input-output-hk/daedalus/pull/1100))
 - Implemented extended error messages for transaction fee calculation failures ([PR 1111](https://github.com/input-output-hk/daedalus/pull/1111))
 - Implemented forms submission on "Enter" key press ([PR 981](https://github.com/input-output-hk/daedalus/pull/981))
