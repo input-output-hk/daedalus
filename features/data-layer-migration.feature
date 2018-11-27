@@ -1,4 +1,3 @@
-@watch
 Feature: Data Layer Migration
 
   Background:
