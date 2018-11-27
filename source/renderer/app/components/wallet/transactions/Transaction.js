@@ -126,6 +126,7 @@ type Props = {
   data: WalletTransaction,
   state: TransactionState,
   assuranceLevel: string,
+  isRestoreActive: boolean,
   isLastInList: boolean,
   formattedWalletAmount: Function,
   network: string,
@@ -163,6 +164,7 @@ export default class Transaction extends Component<Props, State> {
     const {
       data, isLastInList, state, assuranceLevel,
       formattedWalletAmount, onOpenExternalLink,
+      isRestoreActive,
     } = this.props;
     const { isExpanded } = this.state;
     const { intl } = this.context;
@@ -203,6 +205,19 @@ export default class Transaction extends Component<Props, State> {
     const currency = intl.formatMessage(globalMessages.currency);
     const symbol = adaSymbol;
 
+    const transactionStateTag = () => {
+      if (isRestoreActive) return;
+      return (
+        (transactionState === transactionStates.OK) ? (
+          <div className={styles[assuranceLevel]}>{status}</div>
+        ) : (
+          <div className={styles[`${transactionState}Label`]}>
+            {intl.formatMessage(stateTranslations[transactionState])}
+          </div>
+        )
+      );
+    };
+
     return (
       <div
         onClick={this.toggleDetails.bind(this)}
@@ -239,14 +254,7 @@ export default class Transaction extends Component<Props, State> {
                 {intl.formatMessage(messages.type, { currency })}
                 , {moment(data.date).format('hh:mm:ss A')}
               </div>
-
-              {(transactionState === transactionStates.OK) ? (
-                <div className={styles[assuranceLevel]}>{status}</div>
-              ) : (
-                <div className={styles[`${transactionState}Label`]}>
-                  {intl.formatMessage(stateTranslations[transactionState])}
-                </div>
-              )}
+              {transactionStateTag()}
             </div>
           </div>
         </div>
@@ -293,7 +301,7 @@ export default class Transaction extends Component<Props, State> {
 
               <div className={styles.row}>
                 <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
-                {(transactionState === transactionStates.OK) ? (
+                {!isRestoreActive && (transactionState === transactionStates.OK) ? (
                   <span>
                     <span className={styles.assuranceLevel}>{status}</span>.&nbsp;
                     {data.numberOfConfirmations.toLocaleString()}&nbsp;

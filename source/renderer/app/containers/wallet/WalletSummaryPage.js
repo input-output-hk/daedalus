@@ -81,6 +81,7 @@ export default class WalletSummaryPage extends Component<Props> {
           numberOfTransactions={totalAvailable}
           pendingAmount={unconfirmedAmount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
+          isRestoreActive={isRestoreActive}
         />
         {walletTransactions}
       </VerticalFlexContainer>

@@ -27,6 +27,7 @@ storiesOf('WalletSummary', module)
         }}
         numberOfTransactions={20303585}
         isLoadingTransactions={false}
+        isRestoreActive={false}
       />
     </div>
   ));

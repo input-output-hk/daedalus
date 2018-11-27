@@ -16,6 +16,7 @@ export default class NetworkStatusPage extends Component<InjectedProps> {
 
   render() {
     const { stores } = this.props;
+    const { openExternalLink } = stores.app;
     const {
       // Node state
       cardanoNodeState, isNodeResponding, isNodeSubscribed,
@@ -25,12 +26,13 @@ export default class NetworkStatusPage extends Component<InjectedProps> {
       localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
       forceCheckLocalTimeDifference, isSystemTimeChanged, getNetworkStatusRequest,
       localBlockHeight, networkBlockHeight, mostRecentBlockTimestamp, restartNode,
-      isSystemTimeIgnored,
+      isSystemTimeIgnored, environment
     } = stores.networkStatus;
     return (
       <CenteredLayout>
         <NetworkStatus
           cardanoNodeState={cardanoNodeState}
+          isMainnet={environment.isMainnet}
           isNodeResponding={isNodeResponding}
           isNodeSubscribed={isNodeSubscribed}
           isNodeSyncing={isNodeSyncing}
@@ -52,6 +54,7 @@ export default class NetworkStatusPage extends Component<InjectedProps> {
           localBlockHeight={localBlockHeight}
           networkBlockHeight={networkBlockHeight}
           onForceCheckLocalTimeDifference={forceCheckLocalTimeDifference}
+          onOpenExternalLink={openExternalLink}
           onRestartNode={restartNode}
           onClose={this.handleClose}
         />

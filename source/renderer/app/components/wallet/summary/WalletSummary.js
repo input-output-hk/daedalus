@@ -34,6 +34,7 @@ type Props = {
   numberOfTransactions: number,
   pendingAmount: UnconfirmedAmount,
   isLoadingTransactions: boolean,
+  isRestoreActive: boolean,
 };
 
 @observer
@@ -49,7 +50,8 @@ export default class WalletSummary extends Component<Props> {
       amount,
       pendingAmount,
       numberOfTransactions,
-      isLoadingTransactions
+      isLoadingTransactions,
+      isRestoreActive,
     } = this.props;
     const { intl } = this.context;
     return (
@@ -60,20 +62,26 @@ export default class WalletSummary extends Component<Props> {
             {amount}
             <SVGInline svg={adaSymbolBig} className={styles.currencySymbolBig} />
           </div>
-          {pendingAmount.incoming.greaterThan(0) &&
-            <div className={styles.pendingConfirmation}>
-              {`${intl.formatMessage(messages.pendingIncomingConfirmationLabel)}`}
-              : {pendingAmount.incoming.toFormat(DECIMAL_PLACES_IN_ADA)}
-              <SVGInline svg={adaSymbolSmallest} className={styles.currencySymbolSmallest} />
+
+          {!isRestoreActive ? (
+            <div>
+              {pendingAmount.incoming.greaterThan(0) &&
+                <div className={styles.pendingConfirmation}>
+                  {`${intl.formatMessage(messages.pendingIncomingConfirmationLabel)}`}
+                  : {pendingAmount.incoming.toFormat(DECIMAL_PLACES_IN_ADA)}
+                  <SVGInline svg={adaSymbolSmallest} className={styles.currencySymbolSmallest} />
+                </div>
+              }
+              {pendingAmount.outgoing.greaterThan(0) &&
+                <div className={styles.pendingConfirmation}>
+                  {`${intl.formatMessage(messages.pendingOutgoingConfirmationLabel)}`}
+                  : {pendingAmount.outgoing.toFormat(DECIMAL_PLACES_IN_ADA)}
+                  <SVGInline svg={adaSymbolSmallest} className={styles.currencySymbolSmallest} />
+                </div>
+              }
             </div>
-          }
-          {pendingAmount.outgoing.greaterThan(0) &&
-            <div className={styles.pendingConfirmation}>
-              {`${intl.formatMessage(messages.pendingOutgoingConfirmationLabel)}`}
-              : {pendingAmount.outgoing.toFormat(DECIMAL_PLACES_IN_ADA)}
-              <SVGInline svg={adaSymbolSmallest} className={styles.currencySymbolSmallest} />
-            </div>
-          }
+          ) : null}
+
           {!isLoadingTransactions ? (
             <div className={styles.numberOfTransactions}>
               {intl.formatMessage(messages.transactionsLabel)}: {numberOfTransactions}

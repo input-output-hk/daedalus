@@ -257,7 +257,18 @@ export default class Loading extends Component<Props, State> {
       loadingDataForNextScreenMessage
     } = this.props;
 
-    if (!isConnected) {
+    if (!isSystemTimeCorrect) {
+      return (
+        <SystemTimeErrorOverlay
+          localTimeDifference={localTimeDifference}
+          currentLocale={currentLocale}
+          onProblemSolutionClick={onProblemSolutionClick}
+          onCheckTheTimeAgain={onCheckTheTimeAgain}
+          onContinueWithoutClockSyncCheck={onContinueWithoutClockSyncCheck}
+          isCheckingSystemTime={isCheckingSystemTime}
+        />
+      );
+    } else if (!isConnected) {
       const finalCardanoNodeStates = [
         CardanoNodeStates.STOPPED,
         CardanoNodeStates.UPDATED,
@@ -269,24 +280,12 @@ export default class Loading extends Component<Props, State> {
         styles.headline,
         includes(finalCardanoNodeStates, cardanoNodeState) ? styles.withoutAnimation : null,
       ]);
-
       return (
         <div className={styles.connecting}>
           <h1 className={headlineClasses}>
             {intl.formatMessage(this._getConnectingMessage())}
           </h1>
         </div>
-      );
-    } else if (!isSystemTimeCorrect) {
-      return (
-        <SystemTimeErrorOverlay
-          localTimeDifference={localTimeDifference}
-          currentLocale={currentLocale}
-          onProblemSolutionClick={onProblemSolutionClick}
-          onCheckTheTimeAgain={onCheckTheTimeAgain}
-          onContinueWithoutClockSyncCheck={onContinueWithoutClockSyncCheck}
-          isCheckingSystemTime={isCheckingSystemTime}
-        />
       );
     } else if (!isSynced) {
       return (
@@ -308,8 +307,7 @@ export default class Loading extends Component<Props, State> {
         </div>
       </div>
     );
-  }
-
+  };
 
   render() {
     const { intl } = this.context;

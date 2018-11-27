@@ -354,9 +354,9 @@ export default class SettingsStore extends Store {
     }
   });
 
-  _onDownloadLogsSuccess = action(() => {
-    this.compressedLogsStatus = {};
-  });
+  _onDownloadLogsSuccess = () => {
+    this._reset();
+  };
 
   @action _reset = () => {
     this.error = null;
