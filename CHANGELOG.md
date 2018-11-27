@@ -24,6 +24,7 @@ Changelog
 
 ### Fixes
 
+- Added support for non-Latin characters in spending password ([PR 1197](https://github.com/input-output-hk/daedalus/pull/1197))
 - Fixed an issue which allowed to submit invalid form on the "Send" screen using an "enter" key ([PR 1002](https://github.com/input-output-hk/daedalus/pull/1002))
 - Fixed an issue which caused the send bug report form to hang and not send the support request if the logs were downloaded before attempting to send the request ([PR 1176](https://github.com/input-output-hk/daedalus/pull/1176))
 - Fixed an issue which would show a runtime JavaScript error in case Daedalus is not started using Launcher ([PR 1169](https://github.com/input-output-hk/daedalus/pull/1169))
