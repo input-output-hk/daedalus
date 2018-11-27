@@ -40,7 +40,7 @@ const dateFormat = 'YYYY-MM-DD';
 type Props = {
   transactions: Array<WalletTransaction>,
   isLoadingTransactions: boolean,
-  isRestoreActive?: boolean,
+  isRestoreActive: boolean,
   hasMoreToLoad: boolean,
   assuranceMode: WalletAssuranceMode,
   walletId: string,
@@ -152,6 +152,7 @@ export default class WalletTransactionsList extends Component<Props> {
                 <div key={`${walletId}-${transaction.id}-${transaction.type}`}>
                   <Transaction
                     data={transaction}
+                    isRestoreActive={isRestoreActive}
                     isLastInList={transactionIndex === group.transactions.length - 1}
                     state={transaction.state}
                     assuranceLevel={transaction.getAssuranceLevelForMode(assuranceMode)}
