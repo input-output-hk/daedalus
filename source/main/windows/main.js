@@ -37,6 +37,12 @@ export const createMainWindow = (isInSafeMode) => {
     window.setSize(width, height, animate);
   });
 
+  // Provide render process with an api to close the main window
+  ipcMain.on('close-window', (event) => {
+    if (event.sender !== window.webContents) return;
+    window.close();
+  });
+
   if (environment.isDev()) {
     window.webContents.openDevTools();
     // Focus the main window after dev tools opened

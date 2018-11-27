@@ -14,9 +14,9 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
 
   static defaultProps = { actions: null, stores: null };
 
-  handleExternalLinkClick = (event: MouseEvent) => {
+  handleExternalLinkClick = (event: MouseEvent, url: string) => {
     event.preventDefault();
-    if (event.target.href) shell.openExternal(event.target.href);
+    shell.openExternal(url);
   };
 
   handleSupportRequestClick = () => {

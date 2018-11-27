@@ -41,7 +41,7 @@ export default class StakingChart extends Component<Props, State> {
     tooltipPos: null
   };
 
-  onMouseMove(event:MouseEvent) {
+  onMouseMove(event: MouseEvent) {
     if (this.state.isHovered) {
       this.setState({
         tooltipPos: {
