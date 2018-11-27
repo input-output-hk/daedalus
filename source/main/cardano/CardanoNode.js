@@ -3,7 +3,7 @@ import Store from 'electron-store';
 import type { ChildProcess, spawn, exec } from 'child_process';
 import type { WriteStream } from 'fs';
 import { toInteger } from 'lodash';
-import { environment } from '../../common/environment';
+import { environment } from '../environment';
 import type {
   CardanoNodeState,
   CardanoStatus,

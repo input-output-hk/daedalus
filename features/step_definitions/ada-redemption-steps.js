@@ -1,7 +1,7 @@
 import { Given, When, Then } from 'cucumber';
 import path from 'path';
 import { navigateTo } from '../support/helpers/route-helpers';
-import { environment } from '../../source/common/environment';
+import { environment } from '../../source/main/environment';
 
 const regularAdaCertificateFilePath = path.resolve(__dirname, '../support/ada_certificates/regular.pdf');
 const regularEncryptedAdaCertificateFilePath = path.resolve(__dirname, '../support/ada_certificates/regular.pdf.enc');

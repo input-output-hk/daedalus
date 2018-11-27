@@ -12,7 +12,7 @@ import {
   PAPER_WALLET_WRITTEN_WORDS_COUNT,
   WALLET_RECOVERY_PHRASE_WORD_COUNT
 } from '../../../config/cryptoConfig';
-import { DEVELOPMENT } from '../../../../../common/environment';
+import { DEVELOPMENT } from '../../../../../common/types/environment.types';
 
 const messages = defineMessages({
   headline: {

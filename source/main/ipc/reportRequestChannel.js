@@ -9,16 +9,17 @@ import type {
   ReportRequestMainResponse,
   ReportRequestRendererRequest
 } from '../../common/ipc/api';
-import { Logger, stringifyData } from '../../common/utils/logging';
+import { Logger} from '../utils/logging';
+import { stringifyData } from '../../common/utils/logging';
 
-export default () => {
-  const reportRequestChannel: (
-    // IpcChannel<Incoming, Outgoing>
-    MainIpcChannel<ReportRequestRendererRequest, ReportRequestMainResponse>
-  ) = (
-    new MainIpcChannel(ReportRequestChannelName)
-  );
+export const reportRequestChannel: (
+  // IpcChannel<Incoming, Outgoing>
+  MainIpcChannel<ReportRequestRendererRequest, ReportRequestMainResponse>
+) = (
+  new MainIpcChannel(ReportRequestChannelName)
+);
 
+export const handleReportRequests = () => {
   reportRequestChannel.onReceive((request: ReportRequestRendererRequest) => (
     new Promise((resolve, reject) => {
       Logger.info(`reportRequestChannel::onReceive ${stringifyData(request)}`);
@@ -58,4 +59,4 @@ export default () => {
       formData.pipe(httpRequest);
     })
   ));
-}
+};

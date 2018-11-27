@@ -12,7 +12,7 @@ import {
   SYSTEM_TIME_POLL_INTERVAL,
 } from '../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
-import { Logger } from '../../../common/utils/logging';
+import { Logger } from '../utils/logging';
 import {
   cardanoStateChangeChannel,
   tlsConfigChannel,

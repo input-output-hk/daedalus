@@ -7,7 +7,7 @@ import {
   decryptRecoveryRegularVend, decryptRecoveryForceVend,
 } from '../../common/crypto/decrypt';
 import { PARSE_REDEMPTION_CODE } from '../../common/ipc-api';
-import { Logger } from '../../common/utils/logging';
+import { Logger } from '../utils/logging';
 
 export default () => {
   ipcMain.on(PARSE_REDEMPTION_CODE.REQUEST, (event, filePath, decryptionKey, redemptionType) => {

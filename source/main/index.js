@@ -3,13 +3,13 @@ import os from 'os';
 import { app, BrowserWindow, globalShortcut, Menu, dialog, shell } from 'electron';
 import { client } from 'electron-connect';
 import { includes } from 'lodash';
-import { Logger } from '../common/utils/logging';
+import { Logger } from './utils/logging';
 import { setupLogging } from './utils/setupLogging';
 import { createMainWindow } from './windows/main';
 import { winLinuxMenu } from './menus/win-linux';
 import { osxMenu } from './menus/osx';
 import { installChromeExtensions } from './utils/installChromeExtensions';
-import { environment } from '../common/environment';
+import { environment } from './environment';
 import {
   OPEN_ABOUT_DIALOG_CHANNEL,
   GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL,

@@ -8,3 +8,7 @@ export const waitForDaedalusToExit = async (client: WebdriverClient, timeout: nu
     (await getProcessesByName(daedalusProcessName)).length === 0
   ), timeout);
 };
+
+export const refreshClient = async (client: WebdriverClient) => {
+  await client.url(`file://${__dirname}/../../../dist/renderer/index.html`);
+};

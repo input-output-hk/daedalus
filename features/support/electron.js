@@ -2,8 +2,9 @@ import path from 'path';
 import { Application } from 'spectron';
 import { defineSupportCode } from 'cucumber';
 import electronPath from 'electron';
-import { TEST } from '../../source/common/environment';
+import { TEST } from '../../source/common/types/environment.types';
 import { generateScreenshotFilePath, getTestNameFromTestFile, saveScreenshot } from './helpers/screenshot';
+import { refreshClient } from './helpers/app-helpers';
 
 const context = {};
 const DEFAULT_TIMEOUT = 20000;
@@ -23,6 +24,7 @@ const startApp = async () => {
   const app = new Application({
     path: electronPath,
     args: ['./dist/main/index.js'],
+    requireName: 'spectronRequre',
     env: Object.assign({}, process.env, {
       NODE_ENV: TEST,
     }),
@@ -31,6 +33,7 @@ const startApp = async () => {
     webdriverLogPath: path.join(__dirname, '../../logs/webdriver'),
   });
   await app.start();
+  await app.client.waitUntilWindowLoaded();
   return app;
 };
 
@@ -43,7 +46,6 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
   // Boot up the electron app before all features
   BeforeAll({ timeout: 5 * 60 * 1000 }, async () => {
     context.app = await startApp();
-    await context.app.client.waitUntilWindowLoaded();
   });
 
   // Make the electron app accessible in each scenario context
@@ -66,9 +68,9 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
       const resetBackend = () => {
         if (daedalus.stores.networkStatus.isConnected) {
           daedalus.api.ada.testReset()
-            .then(() => daedalus.api.localStorage.reset())
+            .then(daedalus.api.localStorage.reset)
             .then(done)
-            .catch((error) => done(error));
+            .catch((error) => { throw error; });
         } else {
           setTimeout(resetBackend, 50);
         }
@@ -77,7 +79,7 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
     });
 
     // Load fresh root url with test environment for each test case
-    await this.client.refresh();
+    await refreshClient(this.client);
 
     // Ensure that frontend is synced and ready before test case
     await this.client.executeAsync((done) => {

@@ -2,7 +2,7 @@
 import { createWriteStream, readFileSync } from 'fs';
 import { spawn, exec } from 'child_process';
 import { BrowserWindow } from 'electron';
-import { Logger } from '../../common/utils/logging';
+import { Logger } from '../utils/logging';
 import { prepareArgs } from './config';
 import { CardanoNode } from './CardanoNode';
 import {

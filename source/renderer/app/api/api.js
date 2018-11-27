@@ -49,10 +49,7 @@ import patchAdaApi from './utils/patchAdaApi';
 import { isValidMnemonic } from '../../../common/crypto/decrypt';
 import { utcStringToDate, encryptPassphrase } from './utils';
 import {
-  Logger,
-  stringifyData,
-  stringifyError
-} from '../../../common/utils/logging';
+  Logger} from '../utils/logging';
 import {
   isValidRedemptionKey,
   isValidPaperVendRedemptionKey
@@ -154,6 +151,7 @@ import {
   RedeemAdaError
 } from './transactions/errors';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
+import { stringifyData, stringifyError } from '../../../common/utils/logging';
 
 export default class AdaApi {
 

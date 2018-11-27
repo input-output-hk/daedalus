@@ -4,7 +4,8 @@ import {
   STAGING_EXPLORER_URL,
   TESTNET_EXPLORER_URL
 } from '../config/urlsConfig';
-import { MAINNET, STAGING, TESTNET } from '../../../common/environment';
+import { MAINNET} from '../../../common/types/environment.types';
+import { STAGING, TESTNET } from '../../../common/types/environment.types';
 
 export const getNetworkExplorerUrl = (network: string): string => {
   let explorerUrl = MAINNET_EXPLORER_URL;

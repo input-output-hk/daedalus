@@ -17,12 +17,12 @@ import Action from './actions/lib/Action';
 import translations from './i18n/translations';
 import './themes/index.global.scss';
 import { setupApi } from './api/index';
-import { environment } from '../../common/environment';
 
 // run MobX in strict mode
 useStrict(true);
 addLocaleData([en, de, hr, ja]); // https://github.com/yahoo/react-intl/wiki#loading-locale-data
-const { NODE_ENV, NETWORK } = window.process.env;
+const environment = global.environment;
+const { NODE_ENV, NETWORK } = environment;
 const isTest = NODE_ENV === 'test';
 
 const initializeDaedalus = () => {

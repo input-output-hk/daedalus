@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from 'react';
-// import { remote } from 'electron';
 import { observer, inject } from 'mobx-react';
 import InstructionsDialog from '../../../../components/wallet/paper-wallet-certificate/InstructionsDialog';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';

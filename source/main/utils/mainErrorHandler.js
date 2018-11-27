@@ -1,7 +1,8 @@
 // @flow
 import { app } from 'electron';
 import unhandled from 'electron-unhandled';
-import { Logger, stringifyError } from '../../common/utils/logging';
+import { Logger} from './logging';
+import { stringifyError } from '../../common/utils/logging';
 
 export default () => {
   unhandled({

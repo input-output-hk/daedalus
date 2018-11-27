@@ -4,7 +4,7 @@ import { isString } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import WalletTransaction from '../domains/WalletTransaction';
-import { Logger } from '../../../common/utils/logging';
+import { Logger } from '../utils/logging';
 import { encryptPassphrase } from '../api/utils';
 import { matchRoute } from '../utils/routing';
 import { PARSE_REDEMPTION_CODE } from '../../../common/ipc-api';

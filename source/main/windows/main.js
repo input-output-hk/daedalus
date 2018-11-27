@@ -1,6 +1,6 @@
 import path from 'path';
 import { app, BrowserWindow, ipcMain, Menu } from 'electron';
-import { environment } from '../../common/environment';
+import { environment } from '../environment';
 import ipcApi from '../ipc';
 import RendererErrorHandler from '../utils/rendererErrorHandler';
 import { launcherConfig } from '../config';
@@ -15,10 +15,10 @@ export const createMainWindow = (isInSafeMode) => {
     width: 1150,
     height: 870,
     webPreferences: {
-      nodeIntegration: false,
+      nodeIntegration: isTest,
       webviewTag: false,
-      enableRemoteModule: false,
-      preload: path.join(__dirname, '/../../source/main/utils/preload.js')
+      enableRemoteModule: isTest,
+      preload: path.join(__dirname, './preload.js')
     }
   };
 

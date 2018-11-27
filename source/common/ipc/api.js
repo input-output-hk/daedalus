@@ -8,6 +8,7 @@ import type {
   ReportRequestHttpOptions,
   ReportRequestPayload
 } from '../types/report-request.types';
+import type { GeneratePaperWalletParams } from '../types/paper-wallet-request.types';
 
 /**
  * Channel for loading an base64 encoded asset from within the `source/renderer` folder
@@ -22,12 +23,22 @@ export const OpenExternalUrlChannelName = 'OpenExternalUrlChannel';
 export type OpenExternalUrlRendererRequest = string;
 export type OpenExternalUrlMainResponse = void;
 
+/**
+ * Channel to send bug report requests
+ */
 export const ReportRequestChannelName = 'ReportRequestChannel';
 export type ReportRequestRendererRequest = {
   httpOptions: ReportRequestHttpOptions,
   requestPayload?: ReportRequestPayload
 }
 export type ReportRequestMainResponse = void;
+
+/**
+ * Channel to generate and save a paper wallet certificate
+ */
+export const GeneratePaperWalletChannelName = 'GeneratePaperWalletChannel';
+export type GeneratePaperWalletRendererRequest = GeneratePaperWalletParams;
+export type GeneratePaperWalletMainResponse = void;
 
 // CardanoNode ipc channels
 // TODO: refactor to improved structure above

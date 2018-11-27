@@ -1,5 +1,5 @@
 // @flow
-const store = new global.ElectronStore();
+const store = global.electronStore;
 
 type StorageKeys = {
   USER_LOCALE: string,
@@ -129,7 +129,7 @@ export default class LocalStorageApi {
     } catch (error) {} // eslint-disable-line
   });
 
-  async reset() {
+  reset = async () => {
     await this.unsetUserLocale();
     await this.unsetTermsOfUseAcceptance();
     await this.unsetUserTheme();
