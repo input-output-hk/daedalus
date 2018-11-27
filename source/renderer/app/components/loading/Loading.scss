@@ -29,6 +29,17 @@
         background-color: var(--theme-report-issue-button-background-color-active) !important;
       }
     }
+
+    .downloadLogsButton {
+      border-bottom: 1px solid var(--theme-report-issue-syncing-download-logs-text-color);
+      color: var(--theme-report-issue-syncing-download-logs-text-color);
+      cursor: pointer;
+      font-family: var(--font-regular);
+      font-size: 14px;
+      line-height: 1.36;
+      margin-bottom: 20px;
+      opacity: 0.8;
+    }
   }
   &.is-loading-theme {
     background-color: transparent !important;

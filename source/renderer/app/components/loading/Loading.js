@@ -82,8 +82,13 @@ const messages = defineMessages({
   },
   reportIssueButtonLabel: {
     id: 'loading.screen.reportIssue.buttonLabel',
-    defaultMessage: '!!!Report an issue',
-    description: 'Report an issue button label on the loading.'
+    defaultMessage: '!!!Open support ticket',
+    description: 'Open support ticket button label on the loading.'
+  },
+  reportIssueDownloadLogsLinkLabel: {
+    id: 'loading.screen.reportIssue.downloadLogsLinkLabel',
+    defaultMessage: '!!!Download logs',
+    description: 'Download logs button label on the loading.'
   },
 });
 
@@ -356,7 +361,8 @@ export default class Loading extends Component<Props, State> {
     const canReportSyncingIssue = (
       isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER
     );
-    const showReportIssue = canReportConnectingIssue || canReportSyncingIssue;
+    // const showReportIssue = canReportConnectingIssue || canReportSyncingIssue;
+    const showReportIssue = true;
 
     const buttonClasses = classNames([
       'primary',
@@ -379,6 +385,12 @@ export default class Loading extends Component<Props, State> {
               onClick={handleReportIssue}
               skin={ButtonSkin}
             />
+            <br />
+            <button
+              className={styles.downloadLogsButton}
+            >
+              { intl.formatMessage(messages.reportIssueDownloadLogsLinkLabel) }
+            </button>
           </div>
         )}
         <div className={styles.logos}>

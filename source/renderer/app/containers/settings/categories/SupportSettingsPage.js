@@ -4,7 +4,6 @@ import { observer, inject } from 'mobx-react';
 import { remote } from 'electron';
 import SupportSettings from '../../../components/settings/categories/SupportSettings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
-import BugReportDialog from '../../../components/profile/bug-report/BugReportDialog';
 import { generateFileNameWithTimestamp } from '../../../../../common/fileName';
 
 const shell = require('electron').shell;
@@ -20,9 +19,9 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
   };
 
   handleSupportRequestClick = () => {
-    this.props.actions.dialogs.open.trigger({
-      dialog: BugReportDialog,
-    });
+    // this.props.actions.dialogs.open.trigger({
+    //   dialog: BugReportDialog,
+    // });
   };
 
   handleDownloadLogs = () => {

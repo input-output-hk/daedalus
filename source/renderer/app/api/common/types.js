@@ -22,9 +22,3 @@ export type Pagination = {
   }
 };
 
-export type SendBugReportRequest = {
-  email: string,
-  subject: string,
-  problem: string,
-  compressedLogsFile: string,
-};
