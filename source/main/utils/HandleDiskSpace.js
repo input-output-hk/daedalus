@@ -45,7 +45,9 @@ export default (
       diskSpaceMissing,
     };
 
-    Logger.info(JSON.stringify(response, null, 2));
+    const isNotEnoughSpace = notEnoughSpace ? 'yes' : 'no';
+
+    Logger.info(`Action: ${action}. n.e.s: ${isNotEnoughSpace}. d.s.a.: ${diskSpaceAvailable}`);
 
     if (typeof onCheckDiskSpace === 'function') {
       onCheckDiskSpace(response);
