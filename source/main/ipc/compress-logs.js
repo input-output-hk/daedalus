@@ -5,7 +5,7 @@ import archiver from 'archiver';
 import path from 'path';
 import { get } from 'lodash';
 import { appLogsFolderPath, pubLogsFolderPath } from '../config';
-import { Logger} from '../utils/logging';
+import { Logger } from '../utils/logging';
 import { COMPRESS_LOGS } from '../../common/ipc-api';
 import { stringifyError } from '../../common/utils/logging';
 

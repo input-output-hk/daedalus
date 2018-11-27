@@ -9,7 +9,7 @@ import type {
   ReportRequestMainResponse,
   ReportRequestRendererRequest
 } from '../../common/ipc/api';
-import { Logger} from '../utils/logging';
+import { Logger } from '../utils/logging';
 import { stringifyData } from '../../common/utils/logging';
 
 export const reportRequestChannel: (

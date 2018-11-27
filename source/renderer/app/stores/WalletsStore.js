@@ -14,9 +14,6 @@ import { ROUTES } from '../routes-config';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 
-// TODO: refactor all parts that rely on this to ipc channels!
-const { ipcRenderer } = global;
-
 /**
  * The base wallet store that contains the shared logic
  * dealing with wallets / accounts.

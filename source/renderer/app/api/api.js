@@ -48,8 +48,7 @@ import { awaitUpdateChannel, cardanoFaultInjectionChannel } from '../ipc/cardano
 import patchAdaApi from './utils/patchAdaApi';
 import { isValidMnemonic } from '../../../common/crypto/decrypt';
 import { utcStringToDate, encryptPassphrase } from './utils';
-import {
-  Logger} from '../utils/logging';
+import { Logger } from '../utils/logging';
 import {
   isValidRedemptionKey,
   isValidPaperVendRedemptionKey

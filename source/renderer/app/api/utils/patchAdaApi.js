@@ -4,7 +4,7 @@ import { get } from 'lodash';
 import AdaApi from '../api';
 import { getNodeInfo } from '../nodes/requests/getNodeInfo';
 import { GenericApiError } from '../common/errors';
-import { Logger} from '../../utils/logging';
+import { Logger } from '../../utils/logging';
 import { RedeemAdaError } from '../transactions/errors';
 import type { RedeemAdaParams } from '../transactions/requests/redeemAda';
 import type { RedeemPaperVendedAdaParams } from '../transactions/requests/redeemPaperVendedAda';
