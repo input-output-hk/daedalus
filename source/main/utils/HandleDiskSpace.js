@@ -20,7 +20,7 @@ export default (
   let diskSpaceCheckInterval;
   let notEnoughSpace = false;
 
-  const handleCheckDiskSpace = async () => {
+  const handleCheckDiskSpace = async (action: string) => {
 
     const { free: diskSpaceAvailable } = await checkDiskSpace(path);
     let diskSpaceMissing = DISK_SPACE_REQUIRED - diskSpaceAvailable;
@@ -38,6 +38,7 @@ export default (
       notEnoughSpace = false;
     }
     const response = {
+      action,
       diskSpaceAvailable,
       diskSpaceRequired: DISK_SPACE_REQUIRED,
       notEnoughSpace,
@@ -55,20 +56,21 @@ export default (
   const setDiskSpaceIntervalChecking = (interval) => {
     clearInterval(diskSpaceCheckInterval);
     diskSpaceCheckInterval =
-      setInterval(() => {
+      setInterval(async () => {
+        let action;
         if (interval === DISK_SPACE_CHECK_LONG_INTERVAL) {
-          Logger.info('Long interval disk space check');
+          action = 'Long interval disk space check';
         } else {
-          Logger.info('Short interval disk space check');
+          action = 'Short interval disk space check';
         }
-        handleCheckDiskSpace();
+        await handleCheckDiskSpace(action);
       }, interval);
   };
   setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_LONG_INTERVAL);
 
-  setTimeout(() => {
-    handleCheckDiskSpace();
-    Logger.info('Initial disk space check');
+  setTimeout(async () => {
+    const action = 'Initial disk space check';
+    await handleCheckDiskSpace(action);
   }, 5000);
 
   return handleCheckDiskSpace;
