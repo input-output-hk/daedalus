@@ -63,6 +63,7 @@
   "loading.screen.reportIssue.buttonLabel": "サポートチケットを作成する",
   "loading.screen.reportIssue.connecting.text": "接続に問題がありますか？",
   "loading.screen.reportIssue.downloadLogsLinkLabel": "ログをダウンロードする",
+  "loading.screen.reportIssue.reportIssueButtonUrl": "!!!https://iohk.zendesk.com/hc/en-us/categories/360000877653-Daedalus-wallet-mainnet",
   "loading.screen.reportIssue.syncing.text": "同期に問題がありますか?",
   "loading.screen.startingCardanoMessage": "カルダノ・ノードを起動中",
   "loading.screen.stoppedCardanoMessage": "カルダノ・ノードが停止しました",

@@ -124,6 +124,12 @@ $adaLogoWidth: 43px;
   fill: var(--theme-icon-syncing-logo-color);
 }
 
+.linkNewWindow {
+  display: inline-block;
+  width: 12px;
+  margin-right: 10px;
+}
+
 .headline {
   font-family: var(--font-light);
   font-size: 16px;

@@ -2,12 +2,13 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { defineMessages } from 'react-intl';
-import { shell } from 'electron';
+import { shell, remote } from 'electron';
 import CenteredLayout from '../components/layout/CenteredLayout';
 import Loading from '../components/loading/Loading';
 import adaLogo from '../assets/images/ada-logo.inline.svg';
 import cardanoLogo from '../assets/images/cardano-logo.inline.svg';
 import type { InjectedProps } from '../types/injectedPropsType';
+import { generateFileNameWithTimestamp } from '../../../common/fileName';
 
 export const messages = defineMessages({
   loadingWalletData: {
@@ -47,20 +48,27 @@ export default class LoadingPage extends Component<InjectedProps> {
           currentLocale={currentLocale}
           handleReportIssue={this.handleReportIssue}
           onProblemSolutionClick={this.handleProblemSolutionClick}
+          onExternalLinkClick={this.handleExternalLinkClick}
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
           onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
+          onDownloadLogs={this.handleDownloadLogs}
         />
       </CenteredLayout>
     );
   }
 
-  handleReportIssue = () => {
-    // this.props.actions.dialogs.open.trigger({
-    //   dialog: BugReportDialog
-    // });
+  handleExternalLinkClick = (event: MouseEvent, url: string) => {
+    event.preventDefault();
+    shell.openExternal(url);
   };
 
-  handleProblemSolutionClick = (link: string) => {
-    shell.openExternal(link);
+  handleDownloadLogs = () => {
+    const fileName = generateFileNameWithTimestamp();
+    const destination = remote.dialog.showSaveDialog({
+      defaultPath: fileName,
+    });
+    if (destination) {
+      this.props.actions.profile.downloadLogs.trigger({ fileName, destination, fresh: true });
+    }
   };
 }

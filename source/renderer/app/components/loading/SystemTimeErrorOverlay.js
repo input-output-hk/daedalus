@@ -59,7 +59,7 @@ const messages = defineMessages({
 type Props = {
   localTimeDifference: ?number,
   currentLocale: string,
-  onProblemSolutionClick: Function,
+  onExternalLinkClick: Function,
   onCheckTheTimeAgain: Function,
   onContinueWithoutClockSyncCheck: Function,
   isCheckingSystemTime: boolean,
@@ -77,13 +77,14 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
     const {
       localTimeDifference, currentLocale, isCheckingSystemTime,
       onCheckTheTimeAgain, onContinueWithoutClockSyncCheck,
+      onExternalLinkClick
     } = this.props;
 
     const supportPortalLinkUrl = intl.formatMessage(messages.supportPortalLinkUrl);
     const supportPortalLink = (
       <a
         href={supportPortalLinkUrl}
-        onClick={event => this.onProblemSolutionClick(event, supportPortalLinkUrl)}
+        onClick={event => onExternalLinkClick(event, supportPortalLinkUrl)}
       >
         {intl.formatMessage(messages.supportPortalLink)}
       </a>
@@ -172,10 +173,5 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
       </div>
     );
   }
-
-  onProblemSolutionClick = (event: MouseEvent, url: string) => {
-    event.preventDefault();
-    this.props.onProblemSolutionClick(url);
-  };
 
 }

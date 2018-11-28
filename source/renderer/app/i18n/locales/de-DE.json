@@ -63,6 +63,7 @@
   "loading.screen.reportIssue.buttonLabel": "!!!Open support ticket",
   "loading.screen.reportIssue.connecting.text": "!!!Having trouble connecting to network?",
   "loading.screen.reportIssue.downloadLogsLinkLabel": "!!!Download logs",
+  "loading.screen.reportIssue.reportIssueButtonUrl": "!!!https://iohk.zendesk.com/hc/en-us/categories/360000877653-Daedalus-wallet-mainnet",
   "loading.screen.reportIssue.syncing.text": "!!!Having trouble syncing?",
   "loading.screen.startingCardanoMessage": "!!!Starting Cardano node",
   "loading.screen.stoppedCardanoMessage": "!!!Cardano node stopped",
