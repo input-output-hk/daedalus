@@ -39,6 +39,26 @@ Feature: Wallet Settings
     And I submit the wallet password dialog
     Then I should not see the change password dialog anymore
 
+  Scenario: User changes wallet password to one which contains only cyrillic characters and numbers
+    Given I am on the "second" wallet "settings" screen
+    And I click on the "change" password label
+    And I should see the "change" wallet password dialog
+    And I change wallet password:
+      | currentPassword | password           | repeatedPassword   |
+      | Secret123       | ЬнЫгзукЗфыыцщкв123 | ЬнЫгзукЗфыыцщкв123 |
+    And I submit the wallet password dialog
+    Then I should not see the change password dialog anymore
+
+  Scenario: User changes wallet password to one which contains only japanese characters and numbers
+    Given I am on the "second" wallet "settings" screen
+    And I click on the "change" password label
+    And I should see the "change" wallet password dialog
+    And I change wallet password:
+      | currentPassword | password     | repeatedPassword |
+      | Secret123       | 新しい秘密123  | 新しい秘密123     |
+    And I submit the wallet password dialog
+    Then I should not see the change password dialog anymore
+
   Scenario: User removes Wallet password
     Given I am on the "second" wallet "settings" screen
     And I click on the "change" password label
