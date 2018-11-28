@@ -1,9 +1,11 @@
 // @flow
-import { BrowserWindow } from 'electron';
-import checkDiskSpace from 'check-disk-space';
+import { BrowserWindow, ipcMain } from 'electron';
+// import checkDiskSpace from 'check-disk-space';
 import { DISK_SPACE_STATUS_CHANNEL } from '../../common/ipc/check-disk-space';
 import environment from '../../common/environment';
 import { Logger } from '../../common/logging';
+
+let diskSpaceAvailable = 67169787904;
 
 export default (
   mainWindow: BrowserWindow,
@@ -16,13 +18,13 @@ export default (
   const DISK_SPACE_CHECK_LONG_INTERVAL = 600000; // 10 minutes
   const DISK_SPACE_CHECK_SHORT_INTERVAL = 10000; // 10 seconds
 
-  const path = environment.isWindows() ? 'c:' : '/';
+  // const path = environment.isWindows() ? 'c:' : '/';
   let diskSpaceCheckInterval;
   let notEnoughSpace = false;
 
   const handleCheckDiskSpace = async (action: string) => {
 
-    const { free: diskSpaceAvailable } = await checkDiskSpace(path);
+    // const { free: diskSpaceAvailable } = await checkDiskSpace(path);
     let diskSpaceMissing = DISK_SPACE_REQUIRED - diskSpaceAvailable;
     diskSpaceMissing = diskSpaceMissing > -1 ? diskSpaceMissing : 0;
 
@@ -47,7 +49,7 @@ export default (
 
     const isNotEnoughSpace = notEnoughSpace ? 'yes' : 'no';
 
-    Logger.info(`Action: ${action}. n.e.s: ${isNotEnoughSpace}. d.s.a.: ${diskSpaceAvailable}`);
+    Logger.info(`DISK: Action: ${action}. n.e.s: ${isNotEnoughSpace}. d.s.a.: ${diskSpaceAvailable}`);
 
     if (typeof onCheckDiskSpace === 'function') {
       onCheckDiskSpace(response);
@@ -73,9 +75,17 @@ export default (
   setTimeout(async () => {
     const action = 'Initial disk space check';
     await handleCheckDiskSpace(action);
-  }, 5000);
+  }, 10000);
+
+  ipcMain.on('check-disk-space', async () => {
+    await handleCheckDiskSpace('check-disk-space');
+  });
+
+  ipcMain.on('set-disk-space', async (event, diskSpace) => {
+    diskSpaceAvailable = diskSpace;
+    await handleCheckDiskSpace('check-disk-space');
+  });
 
   return handleCheckDiskSpace;
 
 };
-

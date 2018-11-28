@@ -423,6 +423,14 @@ export default class NetworkStatusStore extends Store {
     await this._updateNetworkStatus({ force_ntp_check: true });
   };
 
+  @action checkDiskSpace = () => {
+    ipcRenderer.send('check-disk-space');
+  };
+
+  @action setDiskSpace = (diskSpace: number) => {
+    ipcRenderer.send('set-disk-space', diskSpace);
+  };
+
   @action onCheckDiskSpace = (
     event: IpcEvent,
     {
