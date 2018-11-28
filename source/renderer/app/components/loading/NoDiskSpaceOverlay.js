@@ -10,7 +10,7 @@ import styles from './NoDiskSpaceErrorOverlay.scss';
 const messages = defineMessages({
   overlayContent: {
     id: 'noDiskSpace.error.overlayContent',
-    defaultMessage: '!!!<b>There is not enough disk space left on your device.</b><br />Daedalus requires {diskSpaceRequired} more space to operate. Please free up some disk space and then click the button below to continue.',
+    defaultMessage: '!!!<b>There is not enough disk space left on your device.</b><br />Daedalus requires at least {diskSpaceRequired} to operate. Please free up some disk space to continue.',
     description: 'Content of No disk space overlay'
   },
   overlayTitle: {

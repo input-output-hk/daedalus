@@ -88,7 +88,7 @@
   "loading.screen.unrecoverableCardanoMessage": "カルダノ・ノードの起動に失敗しました。サポートセンターに問い合わせてください。",
   "loading.screen.updatedCardanoMessage": "カルダノ・ノードがアップデートされました",
   "loading.screen.updatingCardanoMessage": "カルダノ・ノードをアップデート中",
-  "noDiskSpace.error.overlayContent": "!!!<b>There is not enough disk space left on your device.</b><br />Daedalus requires {diskSpaceRequired} more space to operate. Please free up some disk space and then click the button below to continue.",
+  "noDiskSpace.error.overlayContent": "!!!<b>There is not enough disk space left on your device.</b><br />Daedalus requires at least {diskSpaceRequired} to operate. Please free up some disk space to continue.",
   "noDiskSpace.error.overlayTitle": "!!!Not enough disk space",
   "paper.wallet.create.certificate.completion.dialog.addressCopiedLabel": "コピーされました",
   "paper.wallet.create.certificate.completion.dialog.addressInstructions": "ペーパーウォレットを用いて資金を受け取る際は、下記のウォレットアドレスを共有してください。",
