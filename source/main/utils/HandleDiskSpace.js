@@ -1,5 +1,5 @@
 // @flow
-import { BrowserWindow, ipcMain } from 'electron';
+import { BrowserWindow } from 'electron';
 import checkDiskSpace from 'check-disk-space';
 import { DISK_SPACE_STATUS_CHANNEL } from '../../common/ipc/check-disk-space';
 import environment from '../../common/environment';
@@ -10,7 +10,7 @@ export default (
   onCheckDiskSpace?: Function,
 ) => {
 
-  const DISK_SPACE_REQUIRED = 2000000000; // 2Gb
+  const DISK_SPACE_REQUIRED = 2147483648; // 2Gb
   const DISK_SPACE_REQUIRED_MARGIN =
     DISK_SPACE_REQUIRED - (DISK_SPACE_REQUIRED * 10 / 100); // 2Gb - 10%
   const DISK_SPACE_CHECK_LONG_INTERVAL = 600000; // 10 minutes
@@ -20,17 +20,9 @@ export default (
   let diskSpaceCheckInterval;
   let notEnoughSpace = false;
 
-  const handleCheckDiskSpace = async (action: string, forceDiskSpaceAvailable) => {
+  const handleCheckDiskSpace = async () => {
 
-    let diskSpaceAvailable;
-
-    if (forceDiskSpaceAvailable) {
-      diskSpaceAvailable = forceDiskSpaceAvailable;
-    } else {
-      const check = await checkDiskSpace(path);
-      diskSpaceAvailable = check.free;
-    }
-    // const { free: diskSpaceAvailable } = await checkDiskSpace(path);
+    const { free: diskSpaceAvailable } = await checkDiskSpace(path);
     let diskSpaceMissing = DISK_SPACE_REQUIRED - diskSpaceAvailable;
     diskSpaceMissing = diskSpaceMissing > -1 ? diskSpaceMissing : 0;
 
@@ -46,18 +38,13 @@ export default (
       notEnoughSpace = false;
     }
     const response = {
-      action,
       diskSpaceAvailable,
       diskSpaceRequired: DISK_SPACE_REQUIRED,
       notEnoughSpace,
       diskSpaceMissing,
     };
 
-    const isNotEnoughSpace = notEnoughSpace ? 'yes' : 'no';
-
-    Logger.info(
-      `DISK: Action: ${action}. n.e.s: ${isNotEnoughSpace}. d.s.a.: ${diskSpaceAvailable}`
-    );
+    Logger.info(JSON.stringify(response, null, 2));
 
     if (typeof onCheckDiskSpace === 'function') {
       onCheckDiskSpace(response);
@@ -69,23 +56,13 @@ export default (
     clearInterval(diskSpaceCheckInterval);
     diskSpaceCheckInterval =
       setInterval(async () => {
-        let action;
-        if (interval === DISK_SPACE_CHECK_LONG_INTERVAL) {
-          action = 'Long interval disk space check';
-        } else {
-          action = 'Short interval disk space check';
-        }
-        await handleCheckDiskSpace(action);
+        handleCheckDiskSpace();
       }, interval);
   };
   setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_LONG_INTERVAL);
 
-  // const action = 'Initial disk space check';
-  // handleCheckDiskSpace(action);
-
-  ipcMain.on('check-disk-space', async (event, forceDiskSpace) => {
-    await handleCheckDiskSpace('check-disk-space', forceDiskSpace);
-  });
+  // Initial checking
+  handleCheckDiskSpace();
 
   return handleCheckDiskSpace;
 

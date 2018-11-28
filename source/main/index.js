@@ -104,9 +104,9 @@ app.on('ready', async () => {
 
   const handleCheckDiskSpace = HandleDiskSpace(mainWindow, onCheckDiskSpace);
 
-  const onMainError = async (error: string) => {
+  const onMainError = (error: string) => {
     if (error.indexOf('ENOSPC') > -1) {
-      await handleCheckDiskSpace('onMainError ENOSPC');
+      handleCheckDiskSpace();
       return false;
     }
   };
