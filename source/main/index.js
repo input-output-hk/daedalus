@@ -17,7 +17,7 @@ import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../common/ipc/go-to-ada-red
 import { GO_TO_NETWORK_STATUS_SCREEN_CHANNEL } from '../common/ipc/go-to-network-status-screen';
 import mainErrorHandler from './utils/mainErrorHandler';
 import { launcherConfig } from './config';
-import { setupCardano } from './cardano/setup';
+import { setupCardano, restartCardanoNode } from './cardano/setup';
 import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { ensureXDGDataIsSet } from './cardano/config';
@@ -96,9 +96,9 @@ app.on('ready', async () => {
 
   const onCheckDiskSpace = ({ notEnoughSpace }: CheckDiskSpaceResponse) => {
     if (notEnoughSpace) {
-      // cardanoNode.stop();
+      cardanoNode.stop();
     } else {
-      // cardanoNode.start();
+      restartCardanoNode(cardanoNode);
     }
   };
 

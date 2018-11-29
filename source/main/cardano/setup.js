@@ -17,8 +17,9 @@ import { safeExitWithCode } from '../utils/safeExitWithCode';
 import type {
   TlsConfig,
   CardanoNodeState,
-  CardanoStatus
+  CardanoStatus,
 } from '../../common/types/cardanoNode.types';
+import { CardanoNodeStates } from '../../common/types/cardanoNode.types';
 import type { LauncherConfig } from '../config';
 import {
   NODE_KILL_TIMEOUT,
@@ -45,7 +46,11 @@ const startCardanoNode = (node: CardanoNode, launcherConfig: Object) => {
   return node.start(config);
 };
 
-const restartCardanoNode = async (node: CardanoNode) => {
+export const restartCardanoNode = async (node: CardanoNode) => {
+  if (
+    node.state === CardanoNodeStates.STARTING ||
+    node.state === CardanoNodeStates.RUNNING
+  ) return false;
   try {
     await node.restart();
   } catch (error) {
