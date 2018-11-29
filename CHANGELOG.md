@@ -35,7 +35,7 @@ Changelog
 - Improved the transaction details text selection ([PR 1073](https://github.com/input-output-hk/daedalus/pull/1073), [PR 1095](https://github.com/input-output-hk/daedalus/pull/1095))
 - Integrated Cardano V1 API endpoints ([PR 1018](https://github.com/input-output-hk/daedalus/pull/1018), [PR 1031](https://github.com/input-output-hk/daedalus/pull/1031), [PR 1037](https://github.com/input-output-hk/daedalus/pull/1037), [PR 1042](https://github.com/input-output-hk/daedalus/pull/1042), [PR 1045](https://github.com/input-output-hk/daedalus/pull/1045), [PR 1070](https://github.com/input-output-hk/daedalus/pull/1070), [PR 1078](https://github.com/input-output-hk/daedalus/pull/1078), [PR 1079](https://github.com/input-output-hk/daedalus/pull/1079), [PR 1080](https://github.com/input-output-hk/daedalus/pull/1080), [PR 1088](https://github.com/input-output-hk/daedalus/pull/1088))
 - Refactored and improved `NetworkStatus` store to use V1 API data ([PR 1081](https://github.com/input-output-hk/daedalus/pull/1081))
-- Implemented a better handling for no-diskspace error ([PR 1157](https://github.com/input-output-hk/daedalus/pull/1157))
+- Implemented a better handling for no disk space error ([PR 1157](https://github.com/input-output-hk/daedalus/pull/1157))
 
 ### Fixes
 
