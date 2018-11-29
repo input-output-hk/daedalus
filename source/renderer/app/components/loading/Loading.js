@@ -119,7 +119,6 @@ type Props = {
   isSystemTimeCorrect: boolean,
   isCheckingSystemTime: boolean,
   currentLocale: string,
-  handleReportIssue: Function,
   onExternalLinkClick: Function,
   onCheckTheTimeAgain: Function,
   onContinueWithoutClockSyncCheck: Function,
@@ -331,7 +330,6 @@ export default class Loading extends Component<Props, State> {
       isSynced,
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
-      handleReportIssue,
       onExternalLinkClick,
       onDownloadLogs,
     } = this.props;

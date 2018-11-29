@@ -46,8 +46,6 @@ export default class LoadingPage extends Component<InjectedProps> {
           hasLoadedCurrentLocale={hasLoadedCurrentLocale}
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           currentLocale={currentLocale}
-          handleReportIssue={this.handleReportIssue}
-          onProblemSolutionClick={this.handleProblemSolutionClick}
           onExternalLinkClick={this.handleExternalLinkClick}
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
           onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}

@@ -18,12 +18,6 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
     shell.openExternal(url);
   };
 
-  handleSupportRequestClick = () => {
-    // this.props.actions.dialogs.open.trigger({
-    //   dialog: BugReportDialog,
-    // });
-  };
-
   handleDownloadLogs = () => {
     const fileName = generateFileNameWithTimestamp();
     const destination = remote.dialog.showSaveDialog({
@@ -38,7 +32,6 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
     return (
       <SupportSettings
         onExternalLinkClick={this.handleExternalLinkClick}
-        onSupportRequestClick={this.handleSupportRequestClick}
         onDownloadLogs={this.handleDownloadLogs}
       />
     );

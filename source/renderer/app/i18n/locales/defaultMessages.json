@@ -1000,17 +1000,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Logs",
-        "description": "Title \"Logs\" on the support settings page.",
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/categories/360000877653-Daedalus-wallet-mainnet",
+        "description": "\"Support request\" link URL in the \"Report a problem\" section on the support settings page.",
         "end": {
           "column": 3,
           "line": 43
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
+        "id": "settings.support.reportProblem.linkUrl",
+        "start": {
+          "column": 25,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!Logs",
+        "description": "Title \"Logs\" on the support settings page.",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.logs.title",
         "start": {
           "column": 13,
-          "line": 39
+          "line": 44
         }
       },
       {
@@ -1018,13 +1032,13 @@
         "description": "Content for the \"Logs\" section on the support settings page.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 53
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.logs.content",
         "start": {
           "column": 15,
-          "line": 44
+          "line": 49
         }
       },
       {
@@ -1032,13 +1046,13 @@
         "description": "\"download them here\" link in the Logs section on the support settings page",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 58
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.logs.downloadLogsLink",
         "start": {
           "column": 20,
-          "line": 49
+          "line": 54
         }
       }
     ],

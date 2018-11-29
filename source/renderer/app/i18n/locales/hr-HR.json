@@ -148,6 +148,7 @@
   "settings.support.logs.title": "!!!Logs",
   "settings.support.reportProblem.content": "If the FAQ does not contain a solution for the issue you are experiencing, please use <a href=\"#\">problem reporting feature</a> to report the issue you are experiencing.",
   "settings.support.reportProblem.link": "Support request",
+  "settings.support.reportProblem.linkUrl": "!!!https://iohk.zendesk.com/hc/en-us/categories/360000877653-Daedalus-wallet-mainnet",
   "settings.support.reportProblem.title": "!!!Reporting a problem",
   "sidebar.wallets.addWallet": "Dodaj novčanik",
   "static.about.buildInfo": "!!!MacOS build 3769, with Cardano 1.0.4",
