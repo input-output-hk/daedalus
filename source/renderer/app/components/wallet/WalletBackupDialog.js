@@ -60,9 +60,7 @@ export default class WalletBackupDialog extends Component<Props> {
           onContinue={onContinue}
         />
       );
-    }
-
-    if (currentStep === WALLET_BACKUP_STEPS.RECOVERY_PHRASE_DISPLAY) {
+    } else if (currentStep === WALLET_BACKUP_STEPS.RECOVERY_PHRASE_DISPLAY) {
       return (
         <WalletRecoveryPhraseDisplayDialog
           recoveryPhrase={recoveryPhrase}
@@ -70,9 +68,7 @@ export default class WalletBackupDialog extends Component<Props> {
           onCancelBackup={onCancelBackup}
         />
       );
-    }
-
-    if (currentStep === WALLET_BACKUP_STEPS.RECOVERY_PHRASE_ENTRY) {
+    } else if (currentStep === WALLET_BACKUP_STEPS.RECOVERY_PHRASE_ENTRY) {
       return (
         <WalletRecoveryPhraseEntryDialog
           isTermDeviceAccepted={isTermDeviceAccepted}
@@ -92,5 +88,6 @@ export default class WalletBackupDialog extends Component<Props> {
         />
       );
     }
+    return null;
   }
 }

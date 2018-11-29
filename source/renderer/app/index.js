@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { action, useStrict } from 'mobx';
+import { configure, action } from 'mobx';
 import { render } from 'react-dom';
 import { addLocaleData } from 'react-intl';
 import en from 'react-intl/locale-data/en';
@@ -20,7 +20,9 @@ import './themes/index.global.scss';
 import { setupApi } from './api/index';
 
 // run MobX in strict mode
-useStrict(true);
+configure({
+  enforceActions: 'always',
+});
 
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([en, de, hr, ja]);

@@ -26,7 +26,7 @@ export default class UiDialogsStore extends Store {
   @action _onOpen = ({ dialog }: { dialog: Function }) => {
     this._reset();
     this.activeDialog = dialog;
-    this.dataForActiveDialog = observable(dialog.defaultProps);
+    this.dataForActiveDialog = observable(dialog.defaultProps || {});
     this.secondsSinceActiveDialogIsOpen = 0;
     if (this._secondsTimerInterval) clearInterval(this._secondsTimerInterval);
     this._secondsTimerInterval = setInterval(this._updateSeconds, 1000);
