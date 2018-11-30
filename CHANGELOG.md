@@ -4,6 +4,10 @@ Changelog
 ## vNext
 =======
 
+### Features
+
+- Refactored environment setup and disabled Electron Node integration for the render process ([PR 1099](https://github.com/input-output-hk/daedalus/pull/1099/commits))
+
 ### Fixes
 
 - Fixed the partly broken flow setup ([PR 1124](https://github.com/input-output-hk/daedalus/pull/1124))
@@ -21,7 +25,6 @@ Changelog
 
 ### Features
 
-- Refactored environment setup and disabled electron node integration for the render process ([PR 1099](https://github.com/input-output-hk/daedalus/pull/1099/commits))
 - Implemented "Forbidden mnemonic" error message ([PR 1093](https://github.com/input-output-hk/daedalus/pull/1093), [PR 1100](https://github.com/input-output-hk/daedalus/pull/1100))
 - Implemented extended error messages for transaction fee calculation failures ([PR 1111](https://github.com/input-output-hk/daedalus/pull/1111))
 - Implemented forms submission on "Enter" key press ([PR 981](https://github.com/input-output-hk/daedalus/pull/981))
