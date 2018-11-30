@@ -1,3 +1,8 @@
-export default (obj) =>
+// @flow
+
+export default (obj: {}) =>
   Object.entries(obj)
-    .map(([key, val]) => `${encodeURIComponent(key)}=${encodeURIComponent(val)}`).join('&');
+    .map(
+      ([key, val]: [string, any]) => `${encodeURIComponent(key)}=${encodeURIComponent(val)}`
+    )
+    .join('&');
