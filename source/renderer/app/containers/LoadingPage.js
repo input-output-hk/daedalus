@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { defineMessages } from 'react-intl';
+import { defineMessages, intlShape } from 'react-intl';
 import { shell, remote } from 'electron';
 import CenteredLayout from '../components/layout/CenteredLayout';
 import Loading from '../components/loading/Loading';
@@ -9,7 +9,7 @@ import adaLogo from '../assets/images/ada-logo.inline.svg';
 import cardanoLogo from '../assets/images/cardano-logo.inline.svg';
 import type { InjectedProps } from '../types/injectedPropsType';
 import { generateFileNameWithTimestamp } from '../../../common/fileName';
-import getSupportUrl from '../utils/getSupportUrl';
+import { getSupportUrl } from '../utils/network';
 
 export const messages = defineMessages({
   loadingWalletData: {
@@ -17,10 +17,19 @@ export const messages = defineMessages({
     defaultMessage: '!!!Loading wallet data',
     description: 'Message "Loading wallet data" on the loading screen.'
   },
+  reportIssueButtonUrl: {
+    id: 'loading.screen.reportIssue.reportIssueButtonUrl',
+    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/categories/360000877653-Daedalus-wallet-mainnet',
+    description: 'Link to Open Support page'
+  },
 });
 
 @inject('stores', 'actions') @observer
 export default class LoadingPage extends Component<InjectedProps> {
+
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
 
   render() {
     const { stores } = this.props;
@@ -63,8 +72,9 @@ export default class LoadingPage extends Component<InjectedProps> {
   };
 
   handleReportIssueClick = (event: MouseEvent) => {
-    const locale = this.props.stores.profile.currentLocale;
-    this.handleExternalLinkClick(event, getSupportUrl(locale));
+    const { intl } = this.context;
+    const reportIssueButtonUrl = intl.formatMessage(messages.reportIssueButtonUrl);
+    this.handleExternalLinkClick(event, getSupportUrl(reportIssueButtonUrl));
   };
 
   handleDownloadLogs = () => {

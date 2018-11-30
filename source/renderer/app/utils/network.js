@@ -8,6 +8,7 @@ import {
   TESTNET_EKG_URL,
 } from '../config/urlsConfig';
 import environment from '../../../common/environment';
+import serialize from './serialize';
 
 const { isMainnet, isStaging, isTestnet, isDevelopment } = environment;
 
@@ -28,3 +29,19 @@ export const getNetworkEkgUrl = () => {
   if (isTestnet()) { ekgUrl = TESTNET_EKG_URL; }
   return ekgUrl;
 };
+
+export const getSupportUrl = (baseUrl: string) => {
+  const { version, os, API_VERSION, NETWORK, build, getInstallerVersion } = environment;
+  const network = NETWORK === 'development' ? 'staging' : NETWORK;
+  const info = {
+    product: 'Daedalus Wallet',
+    frontendVersion: version,
+    backendVersion: API_VERSION,
+    network,
+    build,
+    installerVersion: getInstallerVersion(),
+    os,
+  };
+  return `${baseUrl}?${serialize(info)}`;
+};
+
