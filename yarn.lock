@@ -10996,6 +10996,10 @@ symbol.prototype.description@^1.0.0:
   dependencies:
     has-symbols "^1.0.0"
 
+systeminformation@3.51.3:
+  version "3.51.3"
+  resolved "https://registry.yarnpkg.com/systeminformation/-/systeminformation-3.51.3.tgz#d5f5d408d14aa2389cb85a8ca18217fd26a38a07"
+
 table@4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/table/-/table-4.0.2.tgz#a33447375391e766ad34d3486e6e2aedc84d2e36"

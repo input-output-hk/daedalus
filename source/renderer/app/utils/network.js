@@ -1,4 +1,5 @@
 // @flow
+import systemInformation from 'systeminformation';
 import {
   MAINNET_EXPLORER_URL,
   STAGING_EXPLORER_URL,
@@ -9,6 +10,12 @@ import {
 } from '../config/urlsConfig';
 import environment from '../../../common/environment';
 import serialize from './serialize';
+import getOSInfo from './getOSInfo';
+
+const localesFillForm = {
+  'en-US': 'English',
+  'ja-JP': 'Japanese',
+};
 
 const { isMainnet, isStaging, isTestnet, isDevelopment } = environment;
 
@@ -30,17 +37,24 @@ export const getNetworkEkgUrl = () => {
   return ekgUrl;
 };
 
-export const getSupportUrl = (baseUrl: string) => {
-  const { version, os, API_VERSION, NETWORK, build, getInstallerVersion } = environment;
+export const getSupportUrl = async (baseUrl: string, locale: string) => {
+  const {
+    version, os, API_VERSION, NETWORK, build, buildNumber, getInstallerVersion
+  } = environment;
+  const { release } = await systemInformation.osInfo();
   const network = NETWORK === 'development' ? 'staging' : NETWORK;
   const info = {
-    product: 'Daedalus Wallet',
     frontendVersion: version,
     backendVersion: API_VERSION,
     network,
     build,
     installerVersion: getInstallerVersion(),
     os,
+    locale,
+    product: `Daedalus wallet - ${network}`,
+    operatingSystem: getOSInfo(os, release),
+    supportLanguage: localesFillForm[locale],
+    productVersion: `Daedalus ${version}+Cardano ${buildNumber}`,
   };
   return `${baseUrl}?${serialize(info)}`;
 };

@@ -66,15 +66,20 @@ export default class LoadingPage extends Component<InjectedProps> {
     );
   }
 
-  handleExternalLinkClick = (event: MouseEvent, url: string) => {
+  handleExternalLinkClick = (
+    event: MouseEvent | SyntheticEvent<HTMLButtonElement>, url: string
+  ) => {
     event.preventDefault();
     shell.openExternal(url);
   };
 
-  handleReportIssueClick = (event: MouseEvent) => {
+  handleReportIssueClick = async (event: SyntheticEvent<HTMLButtonElement>) => {
+    event.persist();
     const { intl } = this.context;
     const reportIssueButtonUrl = intl.formatMessage(messages.reportIssueButtonUrl);
-    this.handleExternalLinkClick(event, getSupportUrl(reportIssueButtonUrl));
+    const locale = this.props.stores.profile.currentLocale;
+    const supportUrl = await getSupportUrl(reportIssueButtonUrl, locale);
+    this.handleExternalLinkClick(event, supportUrl);
   };
 
   handleDownloadLogs = () => {

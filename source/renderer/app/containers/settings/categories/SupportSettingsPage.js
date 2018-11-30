@@ -27,15 +27,20 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
 
   static defaultProps = { actions: null, stores: null };
 
-  handleExternalLinkClick = (event: MouseEvent, url: string) => {
+  handleExternalLinkClick = (
+    event: MouseEvent | SyntheticEvent<HTMLButtonElement>, url: string
+  ) => {
     event.preventDefault();
     shell.openExternal(url);
   };
 
-  handleSupportRequestClick = (event: MouseEvent) => {
+  handleSupportRequestClick = async (event: SyntheticEvent<HTMLButtonElement>) => {
+    event.persist();
     const { intl } = this.context;
     const supportRequestLinkUrl = intl.formatMessage(messages.supportRequestLinkUrl);
-    this.handleExternalLinkClick(event, getSupportUrl(supportRequestLinkUrl));
+    const locale = this.props.stores.profile.currentLocale;
+    const supportUrl = await getSupportUrl(supportRequestLinkUrl, locale);
+    this.handleExternalLinkClick(event, supportUrl);
   };
 
   handleDownloadLogs = () => {
