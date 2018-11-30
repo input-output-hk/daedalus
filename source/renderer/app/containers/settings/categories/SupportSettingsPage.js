@@ -5,6 +5,7 @@ import { remote } from 'electron';
 import SupportSettings from '../../../components/settings/categories/SupportSettings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import { generateFileNameWithTimestamp } from '../../../../../common/fileName';
+import getSupportUrl from '../../../utils/getSupportUrl';
 
 const shell = require('electron').shell;
 
@@ -16,6 +17,11 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
   handleExternalLinkClick = (event: MouseEvent, url: string) => {
     event.preventDefault();
     shell.openExternal(url);
+  };
+
+  handleSupportRequestClick = (event: MouseEvent) => {
+    const locale = this.props.stores.profile.currentLocale;
+    this.handleExternalLinkClick(event, getSupportUrl(locale));
   };
 
   handleDownloadLogs = () => {
@@ -32,6 +38,7 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
     return (
       <SupportSettings
         onExternalLinkClick={this.handleExternalLinkClick}
+        onSupportRequestClick={this.handleSupportRequestClick}
         onDownloadLogs={this.handleDownloadLogs}
       />
     );

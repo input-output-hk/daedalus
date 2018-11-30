@@ -9,6 +9,7 @@ import adaLogo from '../assets/images/ada-logo.inline.svg';
 import cardanoLogo from '../assets/images/cardano-logo.inline.svg';
 import type { InjectedProps } from '../types/injectedPropsType';
 import { generateFileNameWithTimestamp } from '../../../common/fileName';
+import getSupportUrl from '../utils/getSupportUrl';
 
 export const messages = defineMessages({
   loadingWalletData: {
@@ -47,6 +48,7 @@ export default class LoadingPage extends Component<InjectedProps> {
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           currentLocale={currentLocale}
           onExternalLinkClick={this.handleExternalLinkClick}
+          onReportIssueClick={this.handleReportIssueClick}
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
           onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
           onDownloadLogs={this.handleDownloadLogs}
@@ -58,6 +60,11 @@ export default class LoadingPage extends Component<InjectedProps> {
   handleExternalLinkClick = (event: MouseEvent, url: string) => {
     event.preventDefault();
     shell.openExternal(url);
+  };
+
+  handleReportIssueClick = (event: MouseEvent) => {
+    const locale = this.props.stores.profile.currentLocale;
+    this.handleExternalLinkClick(event, getSupportUrl(locale));
   };
 
   handleDownloadLogs = () => {

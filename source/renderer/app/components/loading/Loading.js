@@ -86,11 +86,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Open support ticket',
     description: 'Open support ticket button label on the loading.'
   },
-  reportIssueButtonUrl: {
-    id: 'loading.screen.reportIssue.reportIssueButtonUrl',
-    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/categories/360000877653-Daedalus-wallet-mainnet',
-    description: 'Link to Open Support page'
-  },
   reportIssueDownloadLogsLinkLabel: {
     id: 'loading.screen.reportIssue.downloadLogsLinkLabel',
     defaultMessage: '!!!Download logs',
@@ -120,6 +115,7 @@ type Props = {
   isCheckingSystemTime: boolean,
   currentLocale: string,
   onExternalLinkClick: Function,
+  onReportIssueClick: Function,
   onCheckTheTimeAgain: Function,
   onContinueWithoutClockSyncCheck: Function,
   onDownloadLogs: Function,
@@ -330,7 +326,7 @@ export default class Loading extends Component<Props, State> {
       isSynced,
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
-      onExternalLinkClick,
+      onReportIssueClick,
       onDownloadLogs,
     } = this.props;
 
@@ -379,8 +375,6 @@ export default class Loading extends Component<Props, State> {
       styles.reportIssueButton,
     ]);
 
-    const reportIssueButtonUrl = intl.formatMessage(messages.reportIssueButtonUrl);
-
     return (
       <div className={componentStyles}>
         {showReportIssue && (
@@ -399,7 +393,7 @@ export default class Loading extends Component<Props, State> {
                   {intl.formatMessage(messages.reportIssueButtonLabel)}
                 </p>
               }
-              onClick={event => onExternalLinkClick(event, reportIssueButtonUrl)}
+              onClick={onReportIssueClick}
               skin={ButtonSkin}
             />
             <br />

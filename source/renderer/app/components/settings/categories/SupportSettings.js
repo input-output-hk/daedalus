@@ -36,11 +36,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Support request',
     description: '"Support request" link in the "Report a problem" section on the support settings page.',
   },
-  supportRequestLinkUrl: {
-    id: 'settings.support.reportProblem.linkUrl',
-    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/categories/360000877653-Daedalus-wallet-mainnet',
-    description: '"Support request" link URL in the "Report a problem" section on the support settings page.',
-  },
   logsTitle: {
     id: 'settings.support.logs.title',
     defaultMessage: '!!!Logs',
@@ -60,6 +55,7 @@ const messages = defineMessages({
 
 type Props = {
   onExternalLinkClick: (event: MouseEvent, url: string) => void,
+  onSupportRequestClick: Function,
   onDownloadLogs: Function,
 };
 
@@ -71,7 +67,7 @@ export default class SupportSettings extends Component<Props> {
   };
 
   render() {
-    const { onExternalLinkClick, onDownloadLogs } = this.props;
+    const { onExternalLinkClick, onSupportRequestClick, onDownloadLogs } = this.props;
     const { intl } = this.context;
     const faqLinkUrl = intl.formatMessage(globalMessages.faqLinkUrl);
 
@@ -84,9 +80,8 @@ export default class SupportSettings extends Component<Props> {
       </a>
     );
 
-    const supportRequestLinkUrl = intl.formatMessage(messages.supportRequestLinkUrl);
     const supportRequestLink = (
-      <button onClick={event => onExternalLinkClick(event, supportRequestLinkUrl)}>
+      <button onClick={onSupportRequestClick}>
         {intl.formatMessage(messages.supportRequestLink)}
       </button>
     );
