@@ -40,6 +40,10 @@
       margin-bottom: 20px;
       opacity: 0.8;
     }
+    .downloadLogsButtonConnecting {
+      border-bottom: 1px solid var(--theme-report-issue-syncing-download-logs-text-color-connecting);
+      color: var(--theme-report-issue-syncing-download-logs-text-color-connecting);
+    }
   }
   &.is-loading-theme {
     background-color: transparent !important;

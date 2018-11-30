@@ -354,6 +354,10 @@ export default class Loading extends Component<Props, State> {
       styles['ada-apiLogo'],
       !isConnected ? styles.connectingLogo : styles.syncingLogo,
     ]);
+    const downloadLogsButtonStyles = classNames([
+      styles.downloadLogsButton,
+      !isConnected ? styles.downloadLogsButtonConnecting : null,
+    ]);
 
     const daedalusLoadingLogo = daedalusLogo;
     const currencyLoadingLogo = currencyIcon;
@@ -400,7 +404,7 @@ export default class Loading extends Component<Props, State> {
             />
             <br />
             <button
-              className={styles.downloadLogsButton}
+              className={downloadLogsButtonStyles}
               onClick={onDownloadLogs}
             >
               { intl.formatMessage(messages.reportIssueDownloadLogsLinkLabel) }
