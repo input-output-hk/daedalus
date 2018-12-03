@@ -1,11 +1,10 @@
 // @flow
 import { action, computed, observable, runInAction } from 'mobx';
-import { ipcRenderer } from 'electron';
 import { isString } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import WalletTransaction from '../domains/WalletTransaction';
-import { Logger } from '../../../common/logging';
+import { Logger } from '../utils/logging';
 import { encryptPassphrase } from '../api/utils';
 import { matchRoute } from '../utils/routing';
 import { PARSE_REDEMPTION_CODE } from '../../../common/ipc-api';
@@ -21,6 +20,9 @@ import { ADA_REDEMPTION_TYPES } from '../types/redemptionTypes';
 import type { RedemptionTypeChoices } from '../types/redemptionTypes';
 import type { RedeemAdaParams } from '../api/transactions/requests/redeemAda';
 import type { RedeemPaperVendedAdaParams } from '../api/transactions/requests/redeemPaperVendedAda';
+
+// TODO: refactor all parts that rely on this to ipc channels!
+const { ipcRenderer } = global;
 
 export default class AdaRedemptionStore extends Store {
 
@@ -59,6 +61,8 @@ export default class AdaRedemptionStore extends Store {
     actions.closeAdaRedemptionSuccessOverlay.listen(this._onCloseAdaRedemptionSuccessOverlay);
     actions.removeCertificate.listen(this._onRemoveCertificate);
     actions.acceptRedemptionDisclaimer.listen(this._onAcceptRedemptionDisclaimer);
+
+    // TODO: refactor to ipc channels
     ipcRenderer.on(PARSE_REDEMPTION_CODE.SUCCESS, this._onCodeParsed);
     ipcRenderer.on(PARSE_REDEMPTION_CODE.ERROR, this._onParseError);
     this.registerReactions([
@@ -68,6 +72,7 @@ export default class AdaRedemptionStore extends Store {
 
   teardown() {
     super.teardown();
+    // TODO: refactor to ipc channel
     ipcRenderer.removeAllListeners(PARSE_REDEMPTION_CODE.SUCCESS);
     ipcRenderer.removeAllListeners(PARSE_REDEMPTION_CODE.ERROR);
   }
@@ -181,6 +186,7 @@ export default class AdaRedemptionStore extends Store {
     ) {
       decryptionKey = this.decryptionKey;
     }
+    // TODO: refactor to ipc channel
     ipcRenderer.send(PARSE_REDEMPTION_CODE.REQUEST, path, decryptionKey, this.redemptionType);
   }
 

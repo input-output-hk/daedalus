@@ -10,7 +10,6 @@ import ja from 'react-intl/locale-data/ja';
 import { RouterStore, syncHistoryWithStore } from 'mobx-react-router';
 import { hashHistory } from 'react-router';
 import App from './App';
-import environment from '../../common/environment';
 import setupStores from './stores';
 import actions from './actions';
 import utils from './utils';
@@ -27,8 +26,12 @@ configure({
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([en, de, hr, ja]);
 
+const environment = global.environment;
+const { NODE_ENV, NETWORK } = environment;
+const isTest = NODE_ENV === 'test';
+
 const initializeDaedalus = () => {
-  const api = setupApi();
+  const api = setupApi(isTest, String(NETWORK));
   const router = new RouterStore();
   const history = syncHistoryWithStore(hashHistory, router);
   const stores = setupStores(api, actions, router);

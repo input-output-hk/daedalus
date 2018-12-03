@@ -2,7 +2,7 @@
 import { createWriteStream, readFileSync } from 'fs';
 import { spawn, exec } from 'child_process';
 import { BrowserWindow } from 'electron';
-import { Logger } from '../../common/logging';
+import { Logger } from '../utils/logging';
 import { prepareArgs } from './config';
 import { CardanoNode } from './CardanoNode';
 import {
@@ -18,7 +18,7 @@ import type {
   TlsConfig,
   CardanoNodeState,
   CardanoStatus
-} from '../../common/types/cardanoNode.types';
+} from '../../common/types/cardano-node.types';
 import type { LauncherConfig } from '../config';
 import {
   NODE_KILL_TIMEOUT,

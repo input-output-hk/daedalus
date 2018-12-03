@@ -3,12 +3,14 @@ import Reaction from './Reaction';
 import type { ActionsMap } from '../../actions/index';
 import type { StoresMap } from '../../stores/index';
 import type { Api } from '../../api/index';
+import type { Environment } from '../../../../common/types/environment.types';
 
 export default class Store {
 
   stores: StoresMap;
   api: Api;
   actions: ActionsMap;
+  environment: Environment = global.environment;
 
   _reactions: Array<Reaction> = [];
 

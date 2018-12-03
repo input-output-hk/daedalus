@@ -56,7 +56,6 @@ export default class WalletsStore extends Store {
     mnemonic: '',
     spendingPassword: null,
   };
-
   _pollingBlocked = false;
 
   setup() {
@@ -66,7 +65,7 @@ export default class WalletsStore extends Store {
       this._updateActiveWalletOnRouteChanges,
     ]);
 
-    const { router, walletBackup, wallets } = this.actions;
+    const { router, walletBackup, wallets, app } = this.actions;
     wallets.createWallet.listen(this._create);
     wallets.deleteWallet.listen(this._deleteWallet);
     wallets.sendMoney.listen(this._sendMoney);
@@ -80,6 +79,7 @@ export default class WalletsStore extends Store {
     wallets.finishCertificate.listen(this._finishCertificate);
     router.goToRoute.listen(this._onRouteChange);
     walletBackup.finishWalletBackup.listen(this._finishCreation);
+    app.initAppEnvironment.listen(() => {});
   }
 
   _create = async (params: {
@@ -538,12 +538,16 @@ export default class WalletsStore extends Store {
   ) => {
     const locale = this.stores.profile.currentLocale;
     const intl = i18nContext(locale);
+    const isMainnet = this.environment.isMainnet;
+    const buildLabel = this.environment.buildLabel;
     try {
       await downloadPaperWalletCertificate({
         address,
         mnemonics: recoveryPhrase,
         intl,
-        filePath
+        filePath,
+        isMainnet,
+        buildLabel
       });
       runInAction('handle successful certificate download', () => {
         // Reset progress

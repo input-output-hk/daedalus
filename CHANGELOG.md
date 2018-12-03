@@ -4,6 +4,10 @@ Changelog
 ## vNext
 =======
 
+### Features
+
+- Refactored environment setup and disabled Electron Node integration for the render process ([PR 1099](https://github.com/input-output-hk/daedalus/pull/1099/commits))
+
 ### Fixes
 
 - Fixed the partly broken flow setup ([PR 1124](https://github.com/input-output-hk/daedalus/pull/1124))

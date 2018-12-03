@@ -7,6 +7,8 @@ import parseRedemptionCodeApi from './parse-redemption-code-from-pdf';
 import resizeWindowApi from './resize-window';
 import loadAsset from './load-asset';
 import getGpuStatus from './get-gpu-status';
+import { handleReportRequests } from './reportRequestChannel';
+import { handlePaperWalletRequests } from './generatePaperWalletChannel';
 
 export default (window: BrowserWindow) => {
   compressLogsApi();
@@ -16,4 +18,6 @@ export default (window: BrowserWindow) => {
   resizeWindowApi(window);
   loadAsset();
   getGpuStatus();
+  handleReportRequests();
+  handlePaperWalletRequests();
 };

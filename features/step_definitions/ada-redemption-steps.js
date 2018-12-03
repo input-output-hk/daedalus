@@ -1,7 +1,7 @@
 import { Given, When, Then } from 'cucumber';
 import path from 'path';
 import { navigateTo } from '../support/helpers/route-helpers';
-import environment from '../../source/common/environment';
+import { environment } from '../../source/main/environment';
 
 const regularAdaCertificateFilePath = path.resolve(__dirname, '../support/ada_certificates/regular.pdf');
 const regularEncryptedAdaCertificateFilePath = path.resolve(__dirname, '../support/ada_certificates/regular.pdf.enc');
@@ -23,19 +23,19 @@ Given(/^I am on the ada redemption screen$/, async function () {
 });
 
 Given(/^I see the "Daedalus Redemption Disclaimer" overlay$/, function () {
-  return environment.isMainnet() || this.client.waitForVisible('.AdaRedemptionDisclaimer_component');
+  return environment.isMainnet || this.client.waitForVisible('.AdaRedemptionDisclaimer_component');
 });
 
 When(/^I click on the "I've understood the information above" checkbox$/, function () {
-  return environment.isMainnet() || this.waitAndClick('.AdaRedemptionDisclaimer_component .SimpleCheckbox_root');
+  return environment.isMainnet || this.waitAndClick('.AdaRedemptionDisclaimer_component .SimpleCheckbox_root');
 });
 
 When(/^I click on the "Continue" button$/, function () {
-  return environment.isMainnet() || this.waitAndClick('.AdaRedemptionDisclaimer_component button');
+  return environment.isMainnet || this.waitAndClick('.AdaRedemptionDisclaimer_component button');
 });
 
 Then(/^I should not see the "Daedalus Redemption Disclaimer" overlay anymore$/, function () {
-  return environment.isMainnet() || this.client.waitForVisible('.AdaRedemptionDisclaimer_component', null, true);
+  return environment.isMainnet || this.client.waitForVisible('.AdaRedemptionDisclaimer_component', null, true);
 });
 
 Then(/^I should(?: still)? be on the ada redemption screen$/, function () {

@@ -1,5 +1,5 @@
 import { compact } from 'lodash';
-import environment from '../../common/environment';
+import environment from '../environment';
 
 export const winLinuxMenu = (app, window, {
   openAbout, goToAdaRedemption, goToNetworkStatus, restartInSafeMode, restartWithoutSafeMode

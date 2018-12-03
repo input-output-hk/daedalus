@@ -18,16 +18,20 @@ export default class CompletionDialogContainer extends Component<Props> {
   };
 
   render() {
-    const { walletCertificateAddress } = this.props.stores.wallets;
+    const { app, wallets } = this.props.stores;
+    const { environment: { network } } = app;
+    const { walletCertificateAddress } = wallets;
     if (!walletCertificateAddress) {
       throw new Error('Prop "walletCertificateAddress" is required but was null.');
     }
+
     return (
       <CompletionDialog
         walletCertificateAddress={walletCertificateAddress}
         onClose={this.props.onClose}
         onOpenExternalLink={this.props.stores.app.openExternalLink}
         copyAddressNotificationDuration={ADDRESS_COPY_NOTIFICATION_SMALL_DURATION}
+        network={network}
       />
     );
   }

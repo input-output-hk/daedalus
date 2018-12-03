@@ -4,11 +4,11 @@ import type {
   NetworkNames,
   PlatformNames,
   ProcessNames
-} from '../../common/types/cardanoNode.types';
+} from '../../common/types/cardano-node.types';
 import {
   CardanoProcessNameOptions,
   NetworkNameOptions
-} from '../../common/types/cardanoNode.types';
+} from '../../common/types/cardano-node.types';
 
 export type Process = {
   pid: number,
