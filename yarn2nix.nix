@@ -45,7 +45,7 @@ yarn2nix.mkYarnPackage {
     cp ${newPackagePath} $out/share/daedalus/package.json
     ${nukeReferences}/bin/nuke-refs $out/share/daedalus/main/index.js.map
     ${nukeReferences}/bin/nuke-refs $out/share/daedalus/main/preload.js.map
-    ${nukeReferences}/bin/nuke-refs $out/share/daedalus/main/0.index.js.map
+    ${nukeReferences}/bin/nuke-refs $out/share/daedalus/main/0.js.map
     ${nukeReferences}/bin/nuke-refs $out/share/daedalus/renderer/index.js.map
     ${nukeReferences}/bin/nuke-refs $out/share/daedalus/renderer/styles.css.map
   '';
