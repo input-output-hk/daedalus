@@ -1,5 +1,5 @@
 // @flow
-import { observable, computed, action, extendObservable } from 'mobx';
+import { observable, computed, action, extendObservable, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import { find } from 'lodash';
 import Store from './lib/Store';
@@ -40,6 +40,9 @@ export default class TransactionsStore extends Store {
     // const actions = this.actions.transactions;
     // actions.filterTransactions.listen(this._updateSearchTerm);
     // actions.loadMoreTransactions.listen(this._increaseSearchLimit);
+    this.registerReactions([
+      this._ensureSearchOptionsForActiveWallet,
+    ]);
   }
 
   @action _updateSearchTerm = ({ searchTerm }: { searchTerm: string }) => {
@@ -71,19 +74,7 @@ export default class TransactionsStore extends Store {
   @computed get searchOptions(): ?TransactionSearchOptionsStruct {
     const wallet = this.stores.wallets.active;
     if (!wallet) return null;
-    let options = this._searchOptionsForWallets[wallet.id];
-    if (!options) {
-      // Setup options for each requested wallet
-      extendObservable(this._searchOptionsForWallets, {
-        [wallet.id]: {
-          searchTerm: '',
-          searchLimit: this.INITIAL_SEARCH_LIMIT,
-          searchSkip: this.SEARCH_SKIP
-        }
-      });
-      options = this._searchOptionsForWallets[wallet.id];
-    }
-    return options;
+    return this._searchOptionsForWallets[wallet.id];
   }
 
   @computed get filtered(): Array<WalletTransaction> {
@@ -220,5 +211,30 @@ export default class TransactionsStore extends Store {
     if (foundRequest && foundRequest.allRequest) return foundRequest.allRequest;
     return new CachedRequest(this.api.ada.getTransactions);
   };
+
+  // ======================= REACTIONS ========================== //
+
+  /**
+   * Reaction that makes sure that we have some default (empty)
+   * search options for the active wallet.
+   * @private
+   */
+  _ensureSearchOptionsForActiveWallet = () => {
+    const wallet = this.stores.wallets.active;
+    if (!wallet) return;
+    const options = this._searchOptionsForWallets[wallet.id];
+    if (!options) {
+      // Setup options for active wallet
+      runInAction('setSearchOptionsForActiveWallet', () => {
+        extendObservable(this._searchOptionsForWallets, {
+          [wallet.id]: {
+            searchTerm: '',
+            searchLimit: this.INITIAL_SEARCH_LIMIT,
+            searchSkip: this.SEARCH_SKIP
+          }
+        });
+      });
+    }
+  }
 
 }

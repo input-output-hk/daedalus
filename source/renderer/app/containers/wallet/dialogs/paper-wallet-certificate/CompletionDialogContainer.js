@@ -9,11 +9,21 @@ type Props = InjectedDialogContainerProps;
 
 @inject('stores') @observer
 export default class CompletionDialogContainer extends Component<Props> {
-  static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
+
+  static defaultProps = {
+    actions: null,
+    stores: null,
+    children: null,
+    onClose: () => {}
+  };
 
   render() {
-    const { walletCertificateAddress } = this.props.stores.wallets;
-    const { environment: { network } } = this.props.stores.app;
+    const { app, wallets } = this.props.stores;
+    const { environment: { network } } = app;
+    const { walletCertificateAddress } = wallets;
+    if (!walletCertificateAddress) {
+      throw new Error('Prop "walletCertificateAddress" is required but was null.');
+    }
 
     return (
       <CompletionDialog

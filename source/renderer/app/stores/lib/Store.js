@@ -14,14 +14,17 @@ export default class Store {
 
   _reactions: Array<Reaction> = [];
 
-  constructor(stores: StoresMap, api: Api, actions: ActionsMap) {
-    this.stores = stores;
+  constructor(api: Api, actions: ActionsMap) {
     this.api = api;
     this.actions = actions;
   }
 
   registerReactions(reactions: Array<Function>) {
     reactions.forEach(reaction => this._reactions.push(new Reaction(reaction)));
+  }
+
+  configure(stores: StoresMap) {
+    this.stores = stores;
   }
 
   setup() {}
