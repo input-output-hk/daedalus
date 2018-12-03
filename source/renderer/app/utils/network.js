@@ -1,5 +1,4 @@
 // @flow
-import systemInformation from 'systeminformation';
 import {
   MAINNET_EXPLORER_URL,
   STAGING_EXPLORER_URL,
@@ -10,7 +9,6 @@ import {
 } from '../config/urlsConfig';
 import environment from '../../../common/environment';
 import serialize from './serialize';
-import getOSInfo from './getOSInfo';
 
 const localesFillForm = {
   'en-US': 'English',
@@ -41,7 +39,6 @@ export const getSupportUrl = async (baseUrl: string, locale: string) => {
   const {
     version, os, API_VERSION, NETWORK, build, buildNumber, getInstallerVersion
   } = environment;
-  const { release } = await systemInformation.osInfo();
   const network = NETWORK === 'development' ? 'staging' : NETWORK;
   const info = {
     frontendVersion: version,
@@ -52,7 +49,6 @@ export const getSupportUrl = async (baseUrl: string, locale: string) => {
     os,
     locale,
     product: `Daedalus wallet - ${network}`,
-    operatingSystem: getOSInfo(os, release),
     supportLanguage: localesFillForm[locale],
     productVersion: `Daedalus ${version}+Cardano ${buildNumber}`,
   };
