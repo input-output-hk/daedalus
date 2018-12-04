@@ -1,20 +1,26 @@
+// @flow
+import type { App, BrowserWindow } from 'electron';
 import { compact } from 'lodash';
-import environment from '../environment';
+import type { MenuActions } from './MenuActions.types';
+import { environment } from '../environment';
 
-export const winLinuxMenu = (app, window, {
-  openAbout, goToAdaRedemption, goToNetworkStatus, restartInSafeMode, restartWithoutSafeMode
-}, isInSafeMode) => (
+export const winLinuxMenu = (
+  app: App,
+  window: BrowserWindow,
+  actions: MenuActions,
+  isInSafeMode: boolean
+) => (
   [{
     label: 'Daedalus',
     submenu: compact([{
       label: 'About',
       click() {
-        openAbout();
+        actions.openAbout();
       }
     }, {
       label: 'Ada redemption',
       click() {
-        goToAdaRedemption();
+        actions.goToAdaRedemption();
       }
     }, {
       label: 'GPU safe mode',
@@ -22,14 +28,14 @@ export const winLinuxMenu = (app, window, {
       checked: isInSafeMode,
       click() {
         isInSafeMode ?
-          restartWithoutSafeMode() :
-          restartInSafeMode();
+          actions.restartWithoutSafeMode() :
+          actions.restartInSafeMode();
       },
     }, {
       label: 'Network status',
       accelerator: 'Ctrl+S',
       click() {
-        goToNetworkStatus();
+        actions.goToNetworkStatus();
       },
     }, {
       label: 'Close',
@@ -75,7 +81,7 @@ export const winLinuxMenu = (app, window, {
         accelerator: 'Ctrl+R',
         click() { window.webContents.reload(); }
       },
-      environment.isWindows() ? {
+      environment.isWindows ? {
         label: 'Toggle Full Screen',
         accelerator: 'F11',
         click() { window.setFullScreen(!window.isFullScreen()); }
