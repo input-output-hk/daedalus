@@ -1,19 +1,25 @@
+// @flow
+import type { App, BrowserWindow } from 'electron';
 import { compact } from 'lodash';
+import type { MenuActions } from './MenuActions.types';
 
-export const osxMenu = (app, window, {
-  openAbout, goToAdaRedemption, goToNetworkStatus, restartInSafeMode, restartWithoutSafeMode
-}, isInSafeMode) => (
+export const osxMenu = (
+  app: App,
+  window: BrowserWindow,
+  actions: MenuActions,
+  isInSafeMode: boolean
+) => (
   [{
     label: 'Daedalus',
     submenu: compact([{
       label: 'About',
       click() {
-        openAbout();
+        actions.openAbout();
       },
     }, {
       label: 'Ada redemption',
       click() {
-        goToAdaRedemption();
+        actions.goToAdaRedemption();
       }
     }, {
       label: 'GPU safe mode',
@@ -21,14 +27,14 @@ export const osxMenu = (app, window, {
       checked: isInSafeMode,
       click() {
         isInSafeMode ?
-          restartWithoutSafeMode() :
-          restartInSafeMode();
+          actions.restartWithoutSafeMode() :
+          actions.restartInSafeMode();
       },
     }, {
       label: 'Network status',
       accelerator: 'Command+S',
       click() {
-        goToNetworkStatus();
+        actions.goToNetworkStatus();
       },
     }, {
       label: 'Quit',
