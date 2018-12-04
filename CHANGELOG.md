@@ -13,6 +13,7 @@ Changelog
 - Fixed the partly broken flow setup ([PR 1124](https://github.com/input-output-hk/daedalus/pull/1124))
 - Fixed failing apply-node-update test ([PR 1156](https://github.com/input-output-hk/daedalus/pull/1156))
 - Removed Antivirus notification ([PR 1164](https://github.com/input-output-hk/daedalus/pull/1164))
+- Fixed design implementations issues ([PR 1209](https://github.com/input-output-hk/daedalus/pull/1209))
 
 ### Chores
 
