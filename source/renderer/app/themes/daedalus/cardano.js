@@ -7,7 +7,7 @@ const rpAutocomplete = {
   '--rp-autocomplete-border-color-opened': '#5e6066',
   '--rp-autocomplete-input-text-color': '#5e6066',
   '--rp-autocomplete-placeholder-color': 'rgba(94, 96, 102, 0.5)',
-  '--rp-autocomplete-selected-word-box-bg-color': 'rgba(44, 187, 105, 0.5)',
+  '--rp-autocomplete-selected-word-box-bg-color': 'rgba(44, 187, 105, 0.9)',
   '--rp-autocomplete-selected-word-text-color': '#fafbfc',
   '--rp-autocomplete-selected-words-font-family': 'NotoSans-Regular, NotoSansCJKjp-Regular',
 };
