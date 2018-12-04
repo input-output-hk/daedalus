@@ -24,7 +24,7 @@ const startApp = async () => {
   const app = new Application({
     path: electronPath,
     args: ['./dist/main/index.js'],
-    requireName: 'spectronRequre',
+    requireName: 'spectronRequire',
     env: Object.assign({}, process.env, {
       NODE_ENV: TEST,
     }),
