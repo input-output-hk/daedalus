@@ -342,7 +342,7 @@ export default {
 
   '--theme-transactions-list-background-color': '#fafbfc',
   '--theme-transactions-list-border-color': '#c6cdd6',
-  '--theme-transactions-list-group-date-color': '#a6a7aa',
+  '--theme-transactions-list-group-date-color': '#5e6066',
   '--theme-transactions-list-item-details-color': '#5e6066',
   '--theme-transactions-card-background-color': '#e6ebf2',
   '--theme-transactions-card-income-background-color': '#e6ebf2',
