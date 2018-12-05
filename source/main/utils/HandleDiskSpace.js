@@ -3,8 +3,8 @@ import { BrowserWindow, ipcMain } from 'electron';
 import checkDiskSpace from 'check-disk-space';
 import prettysize from 'prettysize';
 import { GET_DISK_SPACE_STATUS } from '../../common/ipc-api';
-import environment from '../../common/environment';
-import { Logger } from '../../common/logging';
+import { environment } from '../environment';
+import { Logger } from './logging';
 
 export type CheckDiskSpaceResponse = {
   notEnoughSpace: boolean,
@@ -25,7 +25,7 @@ export default (
   const DISK_SPACE_CHECK_SHORT_INTERVAL = 10000; // 10 seconds
   const DISK_SPACE_RECOMMENDED_PERCENTAGE = 15; // 15% of the total disk space
 
-  const path = environment.isWindows() ? 'C:' : '/';
+  const path = environment.isWindows ? 'C:' : '/';
   let diskSpaceCheckInterval;
   let notEnoughSpace = false;
 
