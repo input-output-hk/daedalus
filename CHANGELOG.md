@@ -7,12 +7,14 @@ Changelog
 ### Features
 
 - Implemented a better handling for no disk space error ([PR 1157](https://github.com/input-output-hk/daedalus/pull/1157))
+- Refactored environment setup and disabled Electron Node integration for the render process ([PR 1099](https://github.com/input-output-hk/daedalus/pull/1099/commits))
 
 ### Fixes
 
 - Fixed the partly broken flow setup ([PR 1124](https://github.com/input-output-hk/daedalus/pull/1124))
 - Fixed failing apply-node-update test ([PR 1156](https://github.com/input-output-hk/daedalus/pull/1156))
 - Removed Antivirus notification ([PR 1164](https://github.com/input-output-hk/daedalus/pull/1164))
+- Fixed the flickering issue on Network Status screen syncing chart ([PR 1206](https://github.com/input-output-hk/daedalus/pull/1206))
 
 ### Chores
 

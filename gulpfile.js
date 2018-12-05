@@ -88,7 +88,7 @@ gulp.task('server:create:dev', (done) => {
 });
 
 gulp.task('server:create:debug', (done) => {
-  createElectronServer({ NODE_ENV: 'development' }, ['--inspect', '--inspect-brk']);
+  createElectronServer({ NODE_ENV: process.env.NODE_ENV || 'development' }, ['--inspect', '--inspect-brk']);
   done();
 });
 

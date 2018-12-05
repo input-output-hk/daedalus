@@ -2,7 +2,7 @@
 import path from 'path';
 import { app, dialog } from 'electron';
 import { readLauncherConfig } from './utils/config';
-import environment from '../common/environment';
+import { environment } from './environment';
 
 // Make sure Daedalus is started with required configuration
 const { NODE_ENV, LAUNCHER_CONFIG } = process.env;

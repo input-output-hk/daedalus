@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { defineMessages } from 'react-intl';
-import { shell } from 'electron';
 import CenteredLayout from '../components/layout/CenteredLayout';
 import Loading from '../components/loading/Loading';
 import BugReportDialog from '../components/profile/bug-report/BugReportDialog';
@@ -10,6 +9,7 @@ import WalletSupportRequestPage from '../containers/wallet/WalletSupportRequestP
 import adaLogo from '../assets/images/ada-logo.inline.svg';
 import cardanoLogo from '../assets/images/cardano-logo.inline.svg';
 import type { InjectedProps } from '../types/injectedPropsType';
+import { openExternalUrlChannel } from '../ipc/open-external-url';
 
 export const messages = defineMessages({
   loadingWalletData: {
@@ -68,7 +68,7 @@ export default class LoadingPage extends Component<InjectedProps> {
     });
   };
 
-  handleProblemSolutionClick = (link: string) => {
-    shell.openExternal(link);
+  handleProblemSolutionClick = (url: string) => {
+    openExternalUrlChannel.send(url);
   };
 }

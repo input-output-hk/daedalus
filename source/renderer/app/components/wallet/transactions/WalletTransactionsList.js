@@ -10,6 +10,7 @@ import styles from './WalletTransactionsList.scss';
 import Transaction from './Transaction';
 import WalletTransaction from '../../../domains/WalletTransaction';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+import { DEVELOPMENT } from '../../../../../common/types/environment.types';
 import type { WalletAssuranceMode } from '../../../api/wallets/types';
 
 const messages = defineMessages({
@@ -45,6 +46,7 @@ type Props = {
   assuranceMode: WalletAssuranceMode,
   walletId: string,
   formattedWalletAmount: Function,
+  network: string,
   showMoreTransactionsButton?: boolean,
   onShowMoreTransactions?: Function,
   onOpenExternalLink?: Function,
@@ -57,6 +59,10 @@ export default class WalletTransactionsList extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  static defaultProps = {
+    network: DEVELOPMENT
   };
 
   componentWillMount() {
@@ -154,6 +160,7 @@ export default class WalletTransactionsList extends Component<Props> {
                     data={transaction}
                     isRestoreActive={isRestoreActive}
                     isLastInList={transactionIndex === group.transactions.length - 1}
+                    network={this.props.network}
                     state={transaction.state}
                     assuranceLevel={transaction.getAssuranceLevelForMode(assuranceMode)}
                     formattedWalletAmount={formattedWalletAmount}

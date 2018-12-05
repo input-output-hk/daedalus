@@ -4,6 +4,6 @@ export type SidebarWalletType = {
   title: string,
   info: string,
   isConnected: boolean,
-  isRestoreActive: boolean,
-  restoreProgress: number,
+  isRestoreActive?: boolean,
+  restoreProgress?: number,
 };

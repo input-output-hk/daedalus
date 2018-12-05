@@ -1,15 +1,11 @@
 // @flow
-import Store from 'electron-store';
-import environment from '../../../../common/environment';
+const store = global.electronStore;
 
-const store = new Store();
-
-const networkForLocalStorage = String(environment.NETWORK);
-const storageKeys = {
-  USER_LOCALE: networkForLocalStorage + '-USER-LOCALE',
-  TERMS_OF_USE_ACCEPTANCE: networkForLocalStorage + '-TERMS-OF-USE-ACCEPTANCE',
-  THEME: networkForLocalStorage + '-THEME',
-  DATA_LAYER_MIGRATION_ACCEPTANCE: networkForLocalStorage + '-DATA-LAYER-MIGRATION-ACCEPTANCE',
+type StorageKeys = {
+  USER_LOCALE: string,
+  TERMS_OF_USE_ACCEPTANCE: string,
+  THEME: string,
+  DATA_LAYER_MIGRATION_ACCEPTANCE: string,
 };
 
 /**
@@ -18,10 +14,20 @@ const storageKeys = {
  */
 
 export default class LocalStorageApi {
+  storageKeys: StorageKeys;
+
+  constructor(NETWORK: string) {
+    this.storageKeys = {
+      USER_LOCALE: `${NETWORK}-USER-LOCALE`,
+      TERMS_OF_USE_ACCEPTANCE: `${NETWORK}-TERMS-OF-USE-ACCEPTANCE`,
+      THEME: `${NETWORK}-THEME`,
+      DATA_LAYER_MIGRATION_ACCEPTANCE: `${NETWORK}-DATA-LAYER-MIGRATION-ACCEPTANCE`,
+    };
+  }
 
   getUserLocale = (): Promise<string> => new Promise((resolve, reject) => {
     try {
-      const locale = store.get(storageKeys.USER_LOCALE);
+      const locale = store.get(this.storageKeys.USER_LOCALE);
       if (!locale) return resolve('');
       resolve(locale);
     } catch (error) {
@@ -31,7 +37,7 @@ export default class LocalStorageApi {
 
   setUserLocale = (locale: string): Promise<void> => new Promise((resolve, reject) => {
     try {
-      store.set(storageKeys.USER_LOCALE, locale);
+      store.set(this.storageKeys.USER_LOCALE, locale);
       resolve();
     } catch (error) {
       return reject(error);
@@ -40,14 +46,14 @@ export default class LocalStorageApi {
 
   unsetUserLocale = (): Promise<void> => new Promise((resolve) => {
     try {
-      store.delete(storageKeys.USER_LOCALE);
+      store.delete(this.storageKeys.USER_LOCALE);
       resolve();
     } catch (error) {} // eslint-disable-line
   });
 
   getTermsOfUseAcceptance = (): Promise<boolean> => new Promise((resolve, reject) => {
     try {
-      const accepted = store.get(storageKeys.TERMS_OF_USE_ACCEPTANCE);
+      const accepted = store.get(this.storageKeys.TERMS_OF_USE_ACCEPTANCE);
       if (!accepted) return resolve(false);
       resolve(accepted);
     } catch (error) {
@@ -57,7 +63,7 @@ export default class LocalStorageApi {
 
   setTermsOfUseAcceptance = (): Promise<void> => new Promise((resolve, reject) => {
     try {
-      store.set(storageKeys.TERMS_OF_USE_ACCEPTANCE, true);
+      store.set(this.storageKeys.TERMS_OF_USE_ACCEPTANCE, true);
       resolve();
     } catch (error) {
       return reject(error);
@@ -66,14 +72,14 @@ export default class LocalStorageApi {
 
   unsetTermsOfUseAcceptance = (): Promise<void> => new Promise((resolve) => {
     try {
-      store.delete(storageKeys.TERMS_OF_USE_ACCEPTANCE);
+      store.delete(this.storageKeys.TERMS_OF_USE_ACCEPTANCE);
       resolve();
     } catch (error) {} // eslint-disable-line
   });
 
   getUserTheme = (): Promise<string> => new Promise((resolve, reject) => {
     try {
-      const theme = store.get(storageKeys.THEME);
+      const theme = store.get(this.storageKeys.THEME);
       if (!theme) return resolve('');
       resolve(theme);
     } catch (error) {
@@ -83,7 +89,7 @@ export default class LocalStorageApi {
 
   setUserTheme = (theme: string): Promise<void> => new Promise((resolve, reject) => {
     try {
-      store.set(storageKeys.THEME, theme);
+      store.set(this.storageKeys.THEME, theme);
       resolve();
     } catch (error) {
       return reject(error);
@@ -92,14 +98,14 @@ export default class LocalStorageApi {
 
   unsetUserTheme = (): Promise<void> => new Promise((resolve) => {
     try {
-      store.delete(storageKeys.THEME);
+      store.delete(this.storageKeys.THEME);
       resolve();
     } catch (error) {} // eslint-disable-line
   });
 
   getDataLayerMigrationAcceptance = (): Promise<boolean> => new Promise((resolve, reject) => {
     try {
-      const accepted = store.get(storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE);
+      const accepted = store.get(this.storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE);
       if (!accepted) return resolve(false);
       resolve(true);
     } catch (error) {
@@ -109,7 +115,7 @@ export default class LocalStorageApi {
 
   setDataLayerMigrationAcceptance = (): Promise<void> => new Promise((resolve, reject) => {
     try {
-      store.set(storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE, true);
+      store.set(this.storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE, true);
       resolve();
     } catch (error) {
       return reject(error);
@@ -118,12 +124,12 @@ export default class LocalStorageApi {
 
   unsetDataLayerMigrationAcceptance = (): Promise<void> => new Promise((resolve) => {
     try {
-      store.delete(storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE);
+      store.delete(this.storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE);
       resolve();
     } catch (error) {} // eslint-disable-line
   });
 
-  async reset() {
+  reset = async () => {
     await this.unsetUserLocale();
     await this.unsetTermsOfUseAcceptance();
     await this.unsetUserTheme();

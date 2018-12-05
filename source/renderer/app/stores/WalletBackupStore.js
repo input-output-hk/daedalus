@@ -1,10 +1,9 @@
 // @flow
 import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
-import environment from '../../../common/environment';
 import WalletBackupDialog from '../components/wallet/WalletBackupDialog';
-import type { RecoveryPhraseWord, walletBackupStep } from '../types/walletBackupTypes';
 import { WALLET_BACKUP_STEPS } from '../types/walletBackupTypes';
+import type { RecoveryPhraseWord, walletBackupStep } from '../types/walletBackupTypes';
 
 export default class WalletBackupStore extends Store {
 
@@ -36,6 +35,7 @@ export default class WalletBackupStore extends Store {
     a.restartWalletBackup.listen(this._restartWalletBackup);
     a.cancelWalletBackup.listen(this._cancelWalletBackup);
     a.finishWalletBackup.listen(this._finishWalletBackup);
+    this.actions.app.initAppEnvironment.listen(() => {});
   }
 
   @action _initiateWalletBackup = (params: { recoveryPhrase: Array<string> }) => {
@@ -52,7 +52,7 @@ export default class WalletBackupStore extends Store {
     this.isEntering = false;
     this.isTermDeviceAccepted = false;
     this.isTermRecoveryAccepted = false;
-    this.countdownRemaining = environment.isTest() ? 0 : 10;
+    this.countdownRemaining = this.environment.isTest ? 0 : 10;
     if (this.countdownTimerInterval) clearInterval(this.countdownTimerInterval);
     this.countdownTimerInterval = setInterval(() => {
       if (this.countdownRemaining > 0) {

@@ -8,7 +8,6 @@ import { IntlProvider } from 'react-intl';
 import { Routes } from './Routes';
 import { daedalusTheme } from './themes/daedalus';
 import { themeOverrides } from './themes/overrides/index.js';
-import environment from '../../common/environment';
 import translations from './i18n/translations';
 import type { StoresMap } from './stores/index';
 import type { ActionsMap } from './actions/index';
@@ -21,11 +20,15 @@ export default class App extends Component<{
   actions: ActionsMap,
   history: Object,
 }> {
+  componentWillMount() {
+    // loads app's global environment variables into AppStore via ipc
+    this.props.actions.app.initAppEnvironment.trigger();
+  }
   render() {
     const { stores, actions, history } = this.props;
     const { app } = stores;
     const locale = stores.profile.currentLocale;
-    const mobxDevTools = environment.MOBX_DEV_TOOLS ? <DevTools /> : null;
+    const mobxDevTools = global.environment.mobxDevTools ? <DevTools /> : null;
     const currentTheme = stores.profile.currentTheme;
     const themeVars = require(`./themes/daedalus/${currentTheme}.js`); // eslint-disable-line
 

@@ -129,6 +129,7 @@ type Props = {
   isRestoreActive: boolean,
   isLastInList: boolean,
   formattedWalletAmount: Function,
+  network: string,
   onOpenExternalLink: ?Function,
 };
 
@@ -151,10 +152,10 @@ export default class Transaction extends Component<Props, State> {
   }
 
   handleOpenExplorer(type: string, param: string, e: Event) {
-    const { onOpenExternalLink } = this.props;
+    const { onOpenExternalLink, network } = this.props;
     if (onOpenExternalLink) {
       e.stopPropagation();
-      const link = `${getNetworkExplorerUrl()}/${type}/${param}`;
+      const link = `${getNetworkExplorerUrl(network)}/${type}/${param}`;
       onOpenExternalLink(link);
     }
   }
