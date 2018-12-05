@@ -23,7 +23,7 @@ import { safeExitWithCode } from './utils/safeExitWithCode';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { acquireDaedalusInstanceLock } from './utils/lockFiles';
 import { CardanoNodeStates } from '../common/types/cardanoNode.types';
-import type { CheckDiskSpaceResponse } from '../common/ipc/check-disk-space';
+import type { CheckDiskSpaceResponse } from './utils/HandleDiskSpace';
 
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;

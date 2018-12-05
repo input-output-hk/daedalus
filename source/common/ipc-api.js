@@ -34,3 +34,9 @@ export const GET_GPU_STATUS = {
   ERROR: `${GET_GPU_STATUS_CHANNEL}-error`,
 };
 
+const GET_DISK_SPACE_STATUS_CHANNEL = 'get-disk-space-status';
+export const GET_DISK_SPACE_STATUS = {
+  REQUEST: GET_DISK_SPACE_STATUS_CHANNEL,
+  SUCCESS: `${GET_DISK_SPACE_STATUS_CHANNEL}-success`,
+};
+

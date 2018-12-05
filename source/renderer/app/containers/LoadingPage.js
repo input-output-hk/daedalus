@@ -28,7 +28,7 @@ export default class LoadingPage extends Component<InjectedProps> {
       cardanoNodeState, isConnected, isSynced, syncPercentage, hasBeenConnected,
       localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
       forceCheckLocalTimeDifference, ignoreSystemTimeChecks,
-      diskSpaceAvailable, diskSpaceRequired, diskSpaceMissing, notEnoughSpace,
+      notEnoughSpace, diskSpaceRequired, diskSpaceMissing, diskSpaceRecommended,
     } = stores.networkStatus;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
     return (
@@ -39,10 +39,10 @@ export default class LoadingPage extends Component<InjectedProps> {
           cardanoNodeState={cardanoNodeState}
           isConnected={isConnected}
           isSynced={isSynced}
-          diskSpaceAvailable={diskSpaceAvailable}
+          notEnoughSpace={notEnoughSpace}
           diskSpaceRequired={diskSpaceRequired}
           diskSpaceMissing={diskSpaceMissing}
-          notEnoughSpace={notEnoughSpace}
+          diskSpaceRecommended={diskSpaceRecommended}
           localTimeDifference={localTimeDifference}
           isSystemTimeCorrect={isSystemTimeCorrect}
           isCheckingSystemTime={forceCheckTimeDifferenceRequest.isExecuting}

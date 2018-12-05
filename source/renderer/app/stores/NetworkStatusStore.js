@@ -14,7 +14,7 @@ import {
 } from '../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
 import { Logger } from '../../../common/logging';
-import { DISK_SPACE_STATUS_CHANNEL } from '../../../common/ipc/check-disk-space';
+import { GET_DISK_SPACE_STATUS } from '../../../common/ipc-api';
 import {
   cardanoStateChangeChannel,
   tlsConfigChannel,
@@ -30,7 +30,7 @@ import type {
 } from '../../../common/types/cardanoNode.types';
 import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { IpcEvent } from '../../../common/ipc/lib/IpcChannel';
-import type { CheckDiskSpaceResponse } from '../../../common/ipc/check-disk-space';
+import type { CheckDiskSpaceResponse } from '../../../main/utils/HandleDiskSpace';
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
@@ -76,10 +76,10 @@ export default class NetworkStatusStore extends Store {
     this.api.ada.getNetworkStatus
   );
 
-  @observable diskSpaceAvailable: number = 0;
-  @observable diskSpaceRequired: number = 0;
-  @observable diskSpaceMissing: number = 0;
   @observable notEnoughSpace: boolean = false;
+  @observable diskSpaceRequired: string = '';
+  @observable diskSpaceMissing: string = '';
+  @observable diskSpaceRecommended: string = '';
 
   // DEFINE STORE METHODS
   setup() {
@@ -113,7 +113,8 @@ export default class NetworkStatusStore extends Store {
       this._updateSystemTime, SYSTEM_TIME_POLL_INTERVAL
     );
 
-    ipcRenderer.on(DISK_SPACE_STATUS_CHANNEL, this.onCheckDiskSpace);
+    ipcRenderer.on(GET_DISK_SPACE_STATUS.SUCCESS, this.onCheckDiskSpace);
+    ipcRenderer.send(GET_DISK_SPACE_STATUS.REQUEST);
   }
 
   async restartNode() {
@@ -426,16 +427,16 @@ export default class NetworkStatusStore extends Store {
   @action onCheckDiskSpace = (
     event: IpcEvent,
     {
-      diskSpaceAvailable,
+      notEnoughSpace,
       diskSpaceRequired,
       diskSpaceMissing,
-      notEnoughSpace,
+      diskSpaceRecommended,
     }: CheckDiskSpaceResponse
   ) => {
-    this.diskSpaceAvailable = diskSpaceAvailable;
+    this.notEnoughSpace = notEnoughSpace;
     this.diskSpaceRequired = diskSpaceRequired;
     this.diskSpaceMissing = diskSpaceMissing;
-    this.notEnoughSpace = notEnoughSpace;
+    this.diskSpaceRecommended = diskSpaceRecommended;
   };
 
   // DEFINE COMPUTED VALUES

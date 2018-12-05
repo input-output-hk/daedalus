@@ -1,9 +1,17 @@
 // @flow
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, ipcMain } from 'electron';
 import checkDiskSpace from 'check-disk-space';
-import { DISK_SPACE_STATUS_CHANNEL } from '../../common/ipc/check-disk-space';
+import prettysize from 'prettysize';
+import { GET_DISK_SPACE_STATUS } from '../../common/ipc-api';
 import environment from '../../common/environment';
 import { Logger } from '../../common/logging';
+
+export type CheckDiskSpaceResponse = {
+  notEnoughSpace: boolean,
+  diskSpaceRequired: string,
+  diskSpaceMissing: string,
+  diskSpaceRecommended: string,
+};
 
 export default (
   mainWindow: BrowserWindow,
@@ -15,6 +23,7 @@ export default (
     DISK_SPACE_REQUIRED - (DISK_SPACE_REQUIRED * 10 / 100); // 2Gb - 10%
   const DISK_SPACE_CHECK_LONG_INTERVAL = 600000; // 10 minutes
   const DISK_SPACE_CHECK_SHORT_INTERVAL = 10000; // 10 seconds
+  const DISK_SPACE_RECOMMENDED_PERCENTAGE = 15; // 15% of the total disk space
 
   const path = environment.isWindows() ? 'C:' : '/';
   let diskSpaceCheckInterval;
@@ -22,9 +31,12 @@ export default (
 
   const handleCheckDiskSpace = async () => {
 
-    const { free: diskSpaceAvailable } = await checkDiskSpace(path);
+    const diskSpaceRequired = prettysize(DISK_SPACE_REQUIRED);
+    const { free: diskSpaceAvailable, size: diskTotalSpace } = await checkDiskSpace(path);
     let diskSpaceMissing = DISK_SPACE_REQUIRED - diskSpaceAvailable;
-    diskSpaceMissing = diskSpaceMissing > -1 ? diskSpaceMissing : 0;
+    diskSpaceMissing = diskSpaceMissing > -1 ? prettysize(diskSpaceMissing) : '0';
+    const diskSpaceRecommended =
+      prettysize(diskTotalSpace * DISK_SPACE_RECOMMENDED_PERCENTAGE / 100);
 
     if (diskSpaceAvailable <= DISK_SPACE_REQUIRED_MARGIN) {
       if (!notEnoughSpace) {
@@ -38,10 +50,10 @@ export default (
       notEnoughSpace = false;
     }
     const response = {
-      diskSpaceAvailable,
-      diskSpaceRequired: DISK_SPACE_REQUIRED,
       notEnoughSpace,
+      diskSpaceRequired,
       diskSpaceMissing,
+      diskSpaceRecommended,
     };
 
     Logger.info(JSON.stringify(response, null, 2));
@@ -49,7 +61,7 @@ export default (
     if (typeof onCheckDiskSpace === 'function') {
       onCheckDiskSpace(response);
     }
-    mainWindow.webContents.send(DISK_SPACE_STATUS_CHANNEL, response);
+    mainWindow.webContents.send(GET_DISK_SPACE_STATUS.SUCCESS, response);
   };
 
   const setDiskSpaceIntervalChecking = (interval) => {
@@ -61,8 +73,7 @@ export default (
   };
   setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_LONG_INTERVAL);
 
-  // Initial checking
-  handleCheckDiskSpace();
+  ipcMain.on(GET_DISK_SPACE_STATUS.REQUEST, handleCheckDiskSpace);
 
   return handleCheckDiskSpace;
 
