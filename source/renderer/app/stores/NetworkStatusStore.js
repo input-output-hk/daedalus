@@ -2,7 +2,6 @@
 import { observable, action, computed, runInAction } from 'mobx';
 import moment from 'moment';
 import { isEqual } from 'lodash';
-import { ipcRenderer } from 'electron';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
@@ -31,6 +30,9 @@ import type {
 import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { IpcEvent } from '../../../common/ipc/lib/IpcChannel';
 import type { CheckDiskSpaceResponse } from '../../../main/utils/HandleDiskSpace';
+
+// TODO: refactor all parts that rely on this to ipc channels!
+const { ipcRenderer } = global;
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
