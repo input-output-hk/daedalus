@@ -1,11 +1,10 @@
 // @flow
 import { action, computed, observable, runInAction } from 'mobx';
-import { ipcRenderer } from 'electron';
 import { isString } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import WalletTransaction from '../domains/WalletTransaction';
-import { Logger } from '../../../common/logging';
+import { Logger } from '../utils/logging';
 import { encryptPassphrase } from '../api/utils';
 import { matchRoute } from '../utils/routing';
 import { PARSE_REDEMPTION_CODE } from '../../../common/ipc-api';
@@ -21,6 +20,9 @@ import { ADA_REDEMPTION_TYPES } from '../types/redemptionTypes';
 import type { RedemptionTypeChoices } from '../types/redemptionTypes';
 import type { RedeemAdaParams } from '../api/transactions/requests/redeemAda';
 import type { RedeemPaperVendedAdaParams } from '../api/transactions/requests/redeemPaperVendedAda';
+
+// TODO: refactor all parts that rely on this to ipc channels!
+const { ipcRenderer } = global;
 
 export default class AdaRedemptionStore extends Store {
 
@@ -59,6 +61,8 @@ export default class AdaRedemptionStore extends Store {
     actions.closeAdaRedemptionSuccessOverlay.listen(this._onCloseAdaRedemptionSuccessOverlay);
     actions.removeCertificate.listen(this._onRemoveCertificate);
     actions.acceptRedemptionDisclaimer.listen(this._onAcceptRedemptionDisclaimer);
+
+    // TODO: refactor to ipc channels
     ipcRenderer.on(PARSE_REDEMPTION_CODE.SUCCESS, this._onCodeParsed);
     ipcRenderer.on(PARSE_REDEMPTION_CODE.ERROR, this._onParseError);
     this.registerReactions([
@@ -68,6 +72,7 @@ export default class AdaRedemptionStore extends Store {
 
   teardown() {
     super.teardown();
+    // TODO: refactor to ipc channel
     ipcRenderer.removeAllListeners(PARSE_REDEMPTION_CODE.SUCCESS);
     ipcRenderer.removeAllListeners(PARSE_REDEMPTION_CODE.ERROR);
   }
@@ -113,31 +118,31 @@ export default class AdaRedemptionStore extends Store {
     this._parseCodeFromCertificate();
   });
 
-  _setPassPhrase = action(({ passPhrase } : { passPhrase: string }) => {
+  _setPassPhrase = action(({ passPhrase }: { passPhrase: string }) => {
     this.passPhrase = passPhrase;
     if (this.isValidRedemptionMnemonic(passPhrase)) this._parseCodeFromCertificate();
   });
 
-  _setRedemptionCode = action(({ redemptionCode } : { redemptionCode: string }) => {
+  _setRedemptionCode = action(({ redemptionCode }: { redemptionCode: string }) => {
     this.redemptionCode = redemptionCode;
   });
 
-  _setEmail = action(({ email } : { email: string }) => {
+  _setEmail = action(({ email }: { email: string }) => {
     this.email = email;
     this._parseCodeFromCertificate();
   });
 
-  _setAdaPasscode = action(({ adaPasscode } : { adaPasscode: string }) => {
+  _setAdaPasscode = action(({ adaPasscode }: { adaPasscode: string }) => {
     this.adaPasscode = adaPasscode;
     this._parseCodeFromCertificate();
   });
 
-  _setAdaAmount = action(({ adaAmount } : { adaAmount: string }) => {
+  _setAdaAmount = action(({ adaAmount }: { adaAmount: string }) => {
     this.adaAmount = adaAmount;
     this._parseCodeFromCertificate();
   });
 
-  _setDecryptionKey = action(({ decryptionKey } : { decryptionKey: string }) => {
+  _setDecryptionKey = action(({ decryptionKey }: { decryptionKey: string }) => {
     this.decryptionKey = decryptionKey;
     this._parseCodeFromCertificate();
   });
@@ -181,6 +186,7 @@ export default class AdaRedemptionStore extends Store {
     ) {
       decryptionKey = this.decryptionKey;
     }
+    // TODO: refactor to ipc channel
     ipcRenderer.send(PARSE_REDEMPTION_CODE.REQUEST, path, decryptionKey, this.redemptionType);
   }
 
@@ -205,7 +211,7 @@ export default class AdaRedemptionStore extends Store {
     this.decryptionKey = null;
   });
 
-  _redeemAda = async ({ walletId, spendingPassword } : {
+  _redeemAda = async ({ walletId, spendingPassword }: {
     walletId: string,
     spendingPassword: ?string,
   }) => {
@@ -230,7 +236,7 @@ export default class AdaRedemptionStore extends Store {
     }
   };
 
-  _redeemPaperVendedAda = async ({ walletId, shieldedRedemptionKey, spendingPassword } : {
+  _redeemPaperVendedAda = async ({ walletId, shieldedRedemptionKey, spendingPassword }: {
     walletId: string,
     shieldedRedemptionKey: string,
     spendingPassword: ?string,
@@ -257,7 +263,7 @@ export default class AdaRedemptionStore extends Store {
     }
   };
 
-  _onAdaSuccessfullyRedeemed = action(({ walletId, amount } : {
+  _onAdaSuccessfullyRedeemed = action(({ walletId, amount }: {
     walletId: string,
     amount: number,
   }) => {

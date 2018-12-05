@@ -14,7 +14,7 @@ export default class WalletBackupDialogContainer extends Component<Props> {
   onCancelBackup = () => {
     this.props.onClose();
     this.props.actions.walletBackup.cancelWalletBackup.trigger();
-  }
+  };
 
   render() {
     const { actions, stores } = this.props;

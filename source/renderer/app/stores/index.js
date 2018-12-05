@@ -1,5 +1,6 @@
 // @flow
 import { observable, action } from 'mobx';
+import type Store from './lib/Store';
 import AdaRedemptionStore from './AdaRedemptionStore';
 import AddressesStore from './AddressesStore';
 import AppStore from './AppStore';
@@ -55,33 +56,46 @@ export type StoresMap = {
   window: WindowStore,
 };
 
-// Constant that does never change during lifetime
-const stores = observable({
-  adaRedemption: null,
-  addresses: null,
-  app: null,
-  networkStatus: null,
-  nodeUpdate: null,
-  profile: null,
-  router: null,
-  sidebar: null,
-  transactions: null,
-  uiDialogs: null,
-  uiNotifications: null,
-  wallets: null,
-  walletBackup: null,
-  walletSettings: null,
-  window: null,
-});
+let stores: ?StoresMap = null;
+const storeNames = Object.keys(storeClasses);
+
+// Helpers
+function executeOnEveryStore(fn: (store: Store) => void) {
+  storeNames.forEach((name) => {
+    if (stores && stores[name]) fn(stores[name]);
+  });
+}
 
 // Set up and return the stores for this app -> also used to reset all stores to defaults
 export default action((api, actions, router): StoresMap => {
-  // Assign mobx-react-router only once
-  if (stores.router == null) stores.router = router;
-  // All other stores have our lifecycle
-  const storeNames = Object.keys(storeClasses);
-  storeNames.forEach(name => { if (stores[name]) stores[name].teardown(); });
-  storeNames.forEach(name => { stores[name] = new storeClasses[name](stores, api, actions); });
-  storeNames.forEach(name => { if (stores[name]) stores[name].initialize(); });
+
+  function createStoreInstanceOf<T: Store>(StoreSubClass: Class<T>): T {
+    return new StoreSubClass(api, actions);
+  }
+
+  // Teardown existing stores
+  if (stores) executeOnEveryStore((store) => store.teardown());
+
+  // Create fresh instances of all stores
+  stores = observable({
+    adaRedemption: createStoreInstanceOf(AdaRedemptionStore),
+    addresses: createStoreInstanceOf(AddressesStore),
+    app: createStoreInstanceOf(AppStore),
+    networkStatus: createStoreInstanceOf(NetworkStatusStore),
+    nodeUpdate: createStoreInstanceOf(NodeUpdateStore),
+    profile: createStoreInstanceOf(ProfileStore),
+    router,
+    sidebar: createStoreInstanceOf(SidebarStore),
+    transactions: createStoreInstanceOf(TransactionsStore),
+    uiDialogs: createStoreInstanceOf(UiDialogsStore),
+    uiNotifications: createStoreInstanceOf(UiNotificationsStore),
+    wallets: createStoreInstanceOf(WalletsStore),
+    walletBackup: createStoreInstanceOf(WalletBackupStore),
+    walletSettings: createStoreInstanceOf(WalletSettingsStore),
+    window: createStoreInstanceOf(WindowStore),
+  });
+  // Configure and initialize all stores
+  executeOnEveryStore((store) => { if (stores) store.configure(stores); });
+  executeOnEveryStore((store) => store.initialize());
   return stores;
 });

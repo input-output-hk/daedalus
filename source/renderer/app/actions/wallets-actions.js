@@ -23,5 +23,4 @@ export default class WalletsActions {
   closeCertificateGeneration: Action<any> = new Action();
   setCertificateTemplate: Action<{ selectedTemplate: string }> = new Action();
   finishCertificate: Action<any> = new Action();
-  discardAntivirusRestorationSlowdownNotificationForActiveWallet: Action<any> = new Action();
 }

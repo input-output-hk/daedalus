@@ -11,6 +11,7 @@ reportUrl = yamljs.parseFile('launcher-config.yaml').reportServer;
 
 // Process env flags from buildkite and appveyor
 const isCi = process.env.CI && process.env.CI !== '';
+const isTestEnv = process.env.NODE_ENV === 'test';
 
 module.exports = {
   devtool: 'cheap-module-source-map',
@@ -20,8 +21,7 @@ module.exports = {
     filename: 'index.js'
   },
   // https://github.com/chentsulin/webpack-target-electron-renderer#how-this-module-works
-  target: 'electron-renderer',
-  cache: true,
+  target: isTestEnv ? 'electron-renderer' : 'web',
   module: {
     rules: [
       {
@@ -72,12 +72,6 @@ module.exports = {
           { loader: 'markdown-loader?gfm=false' },
         ]
       },
-      {
-        test: /(pdfkit|linebreak|fontkit|unicode|brotli|png-js).*\.js$/,
-        use: {
-          loader: 'transform-loader?brfs',
-        }
-      }
     ]
   },
   plugins: [

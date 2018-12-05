@@ -18,15 +18,15 @@ import { UNSYNCED_BLOCKS_ALLOWED } from '../../config/numbersConfig';
 import { getNetworkEkgUrl } from '../../utils/network';
 import closeCross from '../../assets/images/close-cross.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
-import { CardanoNodeStates } from '../../../../common/types/cardanoNode.types';
-import environment from '../../../../common/environment';
+import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './NetworkStatus.scss';
-import type { CardanoNodeState } from '../../../../common/types/cardanoNode.types';
+import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
 
 let syncingInterval = null;
 
 type Props = {
   cardanoNodeState: ?CardanoNodeState,
+  isMainnet: boolean,
   isNodeResponding: boolean,
   isNodeSubscribed: boolean,
   isNodeSyncing: boolean,
@@ -116,8 +116,8 @@ export default class NetworkStatus extends Component<Props, State> {
 
   render() {
     const {
-      cardanoNodeState, isNodeResponding, isNodeSubscribed, isNodeSyncing, isNodeInSync,
-      isNodeTimeCorrect, isConnected, isSynced, syncPercentage, hasBeenConnected,
+      cardanoNodeState, isMainnet, isNodeResponding, isNodeSubscribed, isNodeSyncing,
+      isNodeInSync, isNodeTimeCorrect, isConnected, isSynced, syncPercentage, hasBeenConnected,
       localTimeDifference, isSystemTimeCorrect, isForceCheckingNodeTime,
       isSystemTimeChanged, mostRecentBlockTimestamp, localBlockHeight, networkBlockHeight,
       onForceCheckLocalTimeDifference, onClose, nodeConnectionError, isSystemTimeIgnored,
@@ -150,7 +150,7 @@ export default class NetworkStatus extends Component<Props, State> {
     ]);
 
     // Cardano Node EKG server is not enabled for the Mainnet!
-    const cardanoNodeEkgLink = environment.isMainnet() ? false : getNetworkEkgUrl();
+    const cardanoNodeEkgLink = isMainnet ? false : getNetworkEkgUrl();
 
     return (
       <div className={styles.component}>
