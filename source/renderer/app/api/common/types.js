@@ -21,4 +21,3 @@ export type Pagination = {
     totalEntries: number
   }
 };
-

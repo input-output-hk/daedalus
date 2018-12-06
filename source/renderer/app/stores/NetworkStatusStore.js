@@ -12,20 +12,20 @@ import {
   SYSTEM_TIME_POLL_INTERVAL,
 } from '../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
-import { Logger } from '../../../common/logging';
+import { Logger } from '../utils/logging';
 import {
   cardanoStateChangeChannel,
   tlsConfigChannel,
   restartCardanoNodeChannel,
   cardanoStatusChannel,
 } from '../ipc/cardano.ipc';
-import { CardanoNodeStates } from '../../../common/types/cardanoNode.types';
+import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
 import type {
   CardanoNodeState,
   CardanoStatus,
   TlsConfig
-} from '../../../common/types/cardanoNode.types';
+} from '../../../common/types/cardano-node.types';
 import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
 
 // DEFINE CONSTANTS -------------------------

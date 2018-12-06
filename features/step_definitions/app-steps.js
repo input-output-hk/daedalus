@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import type { Daedalus } from '../support/global-types';
 import { waitUntilTextInSelector } from '../support/helpers/shared-helpers';
 import { waitForCardanoNodeToExit } from '../support/helpers/cardano-node-helpers';
-import { waitForDaedalusToExit } from '../support/helpers/app-helpers';
+import { refreshClient, waitForDaedalusToExit } from '../support/helpers/app-helpers';
 
 declare var daedalus: Daedalus;
 
@@ -13,7 +13,7 @@ Given(/^Daedalus is running$/, function () {
 });
 
 When(/^I refresh the main window$/, async function () {
-  return this.client.refresh();
+  await refreshClient(this.client);
 });
 
 When(/^I close the main window$/, async function () {

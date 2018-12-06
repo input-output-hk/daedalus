@@ -11,8 +11,8 @@ type Props = {
   active: boolean,
   className: string,
   onClick: Function,
-  isRestoreActive: boolean,
-  restoreProgress: number,
+  isRestoreActive?: boolean,
+  restoreProgress?: number,
 };
 
 @observer

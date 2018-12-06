@@ -2,11 +2,11 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { remote } from 'electron';
 import SupportSettings from '../../../components/settings/categories/SupportSettings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
-import { generateFileNameWithTimestamp } from '../../../../../common/fileName';
+import { generateFileNameWithTimestamp } from '../../../../../common/utils/files';
 import { getSupportUrl } from '../../../utils/network';
+import { openExternalUrlChannel } from '../../../ipc/open-external-url';
 
 const messages = defineMessages({
   supportRequestLinkUrl: {
@@ -15,8 +15,6 @@ const messages = defineMessages({
     description: '"Support request" link URL in the "Report a problem" section on the support settings page.',
   },
 });
-
-const shell = require('electron').shell;
 
 @inject('stores', 'actions') @observer
 export default class SupportSettingsPage extends Component<InjectedProps> {
@@ -31,7 +29,7 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
     event: MouseEvent | SyntheticEvent<HTMLButtonElement>, url: string
   ) => {
     event.preventDefault();
-    shell.openExternal(url);
+    openExternalUrlChannel.send(url);
   };
 
   handleSupportRequestClick = async (event: SyntheticEvent<HTMLButtonElement>) => {
@@ -44,8 +42,9 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
   };
 
   handleDownloadLogs = () => {
+    // TODO: refactor this direct access to the dialog api
     const fileName = generateFileNameWithTimestamp();
-    const destination = remote.dialog.showSaveDialog({
+    const destination = global.dialog.showSaveDialog({
       defaultPath: fileName,
     });
     if (destination) {

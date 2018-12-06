@@ -3,7 +3,7 @@ import Store from 'electron-store';
 import type { ChildProcess, spawn, exec } from 'child_process';
 import type { WriteStream } from 'fs';
 import { toInteger } from 'lodash';
-import environment from '../../common/environment';
+import { environment } from '../environment';
 import type {
   CardanoNodeState,
   CardanoStatus,
@@ -11,8 +11,8 @@ import type {
   FaultInjectionIpcRequest,
   FaultInjectionIpcResponse,
   TlsConfig
-} from '../../common/types/cardanoNode.types';
-import { CardanoNodeStates } from '../../common/types/cardanoNode.types';
+} from '../../common/types/cardano-node.types';
+import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import { deriveProcessNames, deriveStorageKeys, promisedCondition } from './utils';
 import { getProcess } from '../utils/processes';
 
@@ -65,7 +65,7 @@ export type CardanoNodeConfig = {
 
 const CARDANO_UPDATE_EXIT_CODE = 20;
 // grab the current network on which Daedalus is running
-const network = String(environment.NETWORK);
+const network = String(environment.network);
 const platform = String(environment.platform);
 // derive storage keys based on current network
 const { PREVIOUS_CARDANO_PID } = deriveStorageKeys(network);
@@ -620,7 +620,7 @@ export class CardanoNode {
   _killProcessWithName = async (pid: number, name: string): Promise<void> => {
     const { _config } = this;
     try {
-      if (!environment.isWindows()) {
+      if (!environment.isWindows) {
         this._log.info('CardanoNode: using "process.kill(pid)" to kill.');
         process.kill(pid);
       } else {
@@ -712,5 +712,4 @@ export class CardanoNode {
   _isUnrecoverable = (config: CardanoNodeConfig) => (
     this._startupTries >= config.startupMaxRetries
   );
-
 }

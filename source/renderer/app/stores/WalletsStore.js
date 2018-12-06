@@ -1,5 +1,5 @@
 // @flow
-import { observable, action, computed, runInAction } from 'mobx';
+import { observable, action, computed, runInAction, flow } from 'mobx';
 import { get, chunk, find } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -56,7 +56,6 @@ export default class WalletsStore extends Store {
     mnemonic: '',
     spendingPassword: null,
   };
-
   _pollingBlocked = false;
 
   setup() {
@@ -66,7 +65,7 @@ export default class WalletsStore extends Store {
       this._updateActiveWalletOnRouteChanges,
     ]);
 
-    const { router, walletBackup, wallets } = this.actions;
+    const { router, walletBackup, wallets, app } = this.actions;
     wallets.createWallet.listen(this._create);
     wallets.deleteWallet.listen(this._deleteWallet);
     wallets.sendMoney.listen(this._sendMoney);
@@ -80,6 +79,7 @@ export default class WalletsStore extends Store {
     wallets.finishCertificate.listen(this._finishCertificate);
     router.goToRoute.listen(this._onRouteChange);
     walletBackup.finishWalletBackup.listen(this._finishCreation);
+    app.initAppEnvironment.listen(() => {});
   }
 
   _create = async (params: {
@@ -454,9 +454,17 @@ export default class WalletsStore extends Store {
     this._pollingBlocked = false;
   };
 
-  @action _generateCertificate = async (params: {
-    filePath: string,
-  }) => {
+  /**
+   * Generates a paper wallet certificate by creating a temporary wallet
+   * and extracting its data before deleting it. Saves the certificate
+   * as PDF to the user selected file location.
+   *
+   * Using mobx flows: https://mobx.js.org/best/actions.html#flows
+   * @private
+   */
+  _generateCertificate = flow(function *generateCertificate(
+    params: { filePath: string }
+  ): Generator<any, any, any> {
     try {
       // Pause polling in order not to show Paper wallet in the UI
       this._pausePolling();
@@ -465,12 +473,12 @@ export default class WalletsStore extends Store {
       this._updateCertificateCreationState(true);
 
       // Generate wallet recovery phrase
-      const recoveryPhrase: Array<string> = await (
+      const recoveryPhrase: Array<string> = yield (
         this.getWalletRecoveryPhraseRequest.execute().promise
       );
 
       // Generate 9-words (additional) mnemonic
-      const additionalMnemonicWords: Array<string> = await (
+      const additionalMnemonicWords: Array<string> = yield (
         this.getWalletCertificateAdditionalMnemonicsRequest.execute().promise
       );
       this.additionalMnemonicWords = additionalMnemonicWords.join(' ');
@@ -480,7 +488,7 @@ export default class WalletsStore extends Store {
       this.walletCertificatePassword = spendingPassword;
 
       // Generate paper wallet scrambled mnemonic
-      const walletCertificateRecoveryPhrase: Array<string> = await (
+      const walletCertificateRecoveryPhrase: Array<string> = yield (
         this.getWalletCertificateRecoveryPhraseRequest.execute({
           passphrase: spendingPassword,
           input: recoveryPhrase.join(' '),
@@ -493,17 +501,17 @@ export default class WalletsStore extends Store {
         name: 'Paper Wallet',
         mnemonic: recoveryPhrase.join(' '),
       };
-      const wallet = await this.createWalletRequest.execute(walletData).promise;
+      const wallet = yield this.createWalletRequest.execute(walletData).promise;
 
       // Get temporary wallet address
       let walletAddresses;
       if (wallet) {
-        walletAddresses = await this.getWalletAddressesRequest.execute({
+        walletAddresses = yield this.getWalletAddressesRequest.execute({
           walletId: wallet.id,
         }).promise;
 
         // delete temporary wallet
-        await this.deleteWalletRequest.execute({ walletId: wallet.id });
+        yield this.deleteWalletRequest.execute({ walletId: wallet.id });
       }
 
       // Set wallet certificate address
@@ -511,7 +519,7 @@ export default class WalletsStore extends Store {
       this.walletCertificateAddress = walletAddress;
 
       // download pdf certificate
-      await this._downloadCertificate(
+      yield this._downloadCertificate(
         walletAddress,
         walletCertificateRecoveryPhrase,
         params.filePath,
@@ -521,7 +529,7 @@ export default class WalletsStore extends Store {
     } finally {
       this._resumePolling();
     }
-  };
+  }).bind(this);
 
   _downloadCertificate = async (
     address: string,
@@ -530,12 +538,16 @@ export default class WalletsStore extends Store {
   ) => {
     const locale = this.stores.profile.currentLocale;
     const intl = i18nContext(locale);
+    const isMainnet = this.environment.isMainnet;
+    const buildLabel = this.environment.buildLabel;
     try {
       await downloadPaperWalletCertificate({
         address,
         mnemonics: recoveryPhrase,
         intl,
-        filePath
+        filePath,
+        isMainnet,
+        buildLabel
       });
       runInAction('handle successful certificate download', () => {
         // Reset progress

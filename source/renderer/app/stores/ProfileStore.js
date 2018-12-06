@@ -2,11 +2,9 @@
 import { action, observable, computed, toJS } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment/moment';
-import { ipcRenderer } from 'electron';
 import { includes } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import environment from '../../../common/environment';
 import { THEMES } from '../themes/index';
 import { ROUTES } from '../routes-config';
 import { GET_LOGS, DOWNLOAD_LOGS, COMPRESS_LOGS } from '../../../common/ipc-api';
@@ -14,7 +12,10 @@ import LocalizableError from '../i18n/LocalizableError';
 import globalMessages from '../i18n/global-messages';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
 import type { LogFiles, CompressedLogStatus } from '../types/LogTypes';
-import { generateFileNameWithTimestamp } from '../../../common/fileName';
+import { generateFileNameWithTimestamp } from '../../../common/utils/files';
+
+// TODO: refactor all parts that rely on this to ipc channels!
+const { ipcRenderer } = global;
 
 export default class SettingsStore extends Store {
 
@@ -60,10 +61,14 @@ export default class SettingsStore extends Store {
     this.actions.profile.getLogs.listen(this._getLogs);
     this.actions.profile.getLogsAndCompress.listen(this._getLogsAndCompress);
     this.actions.profile.downloadLogs.listen(this._downloadLogs);
+    this.actions.app.initAppEnvironment.listen(() => {});
+
+    // TODO: refactor to ipc channels
     ipcRenderer.on(GET_LOGS.SUCCESS, this._onGetLogsSuccess);
     ipcRenderer.on(DOWNLOAD_LOGS.SUCCESS, this._onDownloadLogsSuccess);
     ipcRenderer.on(COMPRESS_LOGS.SUCCESS, this._onCompressLogsSuccess);
     ipcRenderer.on(COMPRESS_LOGS.ERROR, this._onCompressLogsError);
+
     this.registerReactions([
       this._setBigNumberFormat,
       this._updateMomentJsLocaleAfterLocaleChange,
@@ -80,6 +85,7 @@ export default class SettingsStore extends Store {
 
   teardown() {
     super.teardown();
+    // TODO: refactor to ipc channels
     ipcRenderer.removeAllListeners(GET_LOGS.SUCCESS);
     ipcRenderer.removeAllListeners(DOWNLOAD_LOGS.SUCCESS);
     ipcRenderer.removeAllListeners(COMPRESS_LOGS.SUCCESS);
@@ -113,7 +119,7 @@ export default class SettingsStore extends Store {
   @computed get currentTheme(): string {
     const { result } = this.getThemeRequest.execute();
     if (this.isCurrentThemeSet) return result;
-    return environment.isMainnet() ? THEMES.DARK_BLUE : THEMES.LIGHT_BLUE; // defaults
+    return this.environment.isMainnet ? THEMES.DARK_BLUE : THEMES.LIGHT_BLUE; // defaults
   }
 
   @computed get isCurrentThemeSet(): boolean {
@@ -131,7 +137,7 @@ export default class SettingsStore extends Store {
   }
 
   @computed get termsOfUse(): string {
-    const network = environment.isMainnet() ? 'mainnet' : 'other';
+    const network = this.environment.isMainnet ? 'mainnet' : 'other';
     return require(`../i18n/locales/terms-of-use/${network}/${this.currentLocale}.md`);
   }
 
@@ -258,10 +264,12 @@ export default class SettingsStore extends Store {
   _reloadAboutWindowOnLocaleChange = () => {
     // register mobx observer for currentLocale in order to trigger reaction on change
     this.currentLocale; // eslint-disable-line
+    // TODO: refactor to ipc channel
     ipcRenderer.send('reload-about-window');
   };
 
   _getLogs = () => {
+    // TODO: refactor to ipc channels
     ipcRenderer.send(GET_LOGS.REQUEST);
   };
 
@@ -283,6 +291,8 @@ export default class SettingsStore extends Store {
 
   _compressLogs = action(({ logs }) => {
     const { fileName = generateFileNameWithTimestamp() } = this.compressedLogsStatus;
+
+    // TODO: refactor to ipc channels
     ipcRenderer.send(COMPRESS_LOGS.REQUEST, toJS(logs), fileName);
   });
 
@@ -307,6 +317,7 @@ export default class SettingsStore extends Store {
     };
     if (this.compressedLogsFile && fresh !== true) {
       // logs already compressed, trigger the download
+      // TODO: refactor to ipc channel
       ipcRenderer.send(DOWNLOAD_LOGS.REQUEST, this.compressedLogsFile, destination);
     } else {
       // start process: getLogs -> compressLogs -> downloadLogs (again)

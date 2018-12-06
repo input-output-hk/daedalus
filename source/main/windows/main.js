@@ -1,11 +1,13 @@
 import path from 'path';
 import { app, BrowserWindow, ipcMain, Menu } from 'electron';
-import environment from '../../common/environment';
+import { environment } from '../environment';
 import ipcApi from '../ipc';
 import RendererErrorHandler from '../utils/rendererErrorHandler';
 import { launcherConfig } from '../config';
 
 const rendererErrorHandler = new RendererErrorHandler();
+
+const { isDev, isTest, buildLabel, isLinux } = environment;
 
 export const createMainWindow = (isInSafeMode) => {
   const windowOptions = {
@@ -13,11 +15,14 @@ export const createMainWindow = (isInSafeMode) => {
     width: 1150,
     height: 870,
     webPreferences: {
+      nodeIntegration: isTest,
       webviewTag: false,
+      enableRemoteModule: isTest,
+      preload: path.join(__dirname, './preload.js')
     }
   };
 
-  if (process.platform === 'linux') {
+  if (isLinux) {
     windowOptions.icon = path.join(launcherConfig.statePath, 'icon.png');
   }
 
@@ -43,7 +48,7 @@ export const createMainWindow = (isInSafeMode) => {
     window.close();
   });
 
-  if (environment.isDev()) {
+  if (isDev) {
     window.webContents.openDevTools();
     // Focus the main window after dev tools opened
     window.webContents.on('devtools-opened', () => {
@@ -57,7 +62,7 @@ export const createMainWindow = (isInSafeMode) => {
   window.loadURL(`file://${__dirname}/../renderer/index.html`);
   window.on('page-title-updated', event => { event.preventDefault(); });
 
-  let title = environment.getBuildLabel();
+  let title = buildLabel;
   if (isInSafeMode) title += ' [GPU safe mode]';
   window.setTitle(title);
 
@@ -67,7 +72,7 @@ export const createMainWindow = (isInSafeMode) => {
       { label: 'Paste', accelerator: 'CmdOrCtrl+V', role: 'paste' },
     ];
 
-    if (environment.isDev() || environment.isTest()) {
+    if (isDev || isTest) {
       const { x, y } = props;
       contextMenuOptions.push({
         label: 'Inspect element',
@@ -81,7 +86,7 @@ export const createMainWindow = (isInSafeMode) => {
   });
 
   window.webContents.on('did-finish-load', () => {
-    if (environment.isTest()) {
+    if (isTest) {
       window.showInactive(); // show without focusing the window
     } else {
       window.show(); // show also focuses the window
