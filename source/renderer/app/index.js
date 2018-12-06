@@ -24,7 +24,7 @@ configure({
 });
 
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
-addLocaleData([en, de, hr, ja]);
+addLocaleData([...en, ...de, ...hr, ...ja]);
 
 const environment = global.environment;
 const { NODE_ENV, NETWORK } = environment;

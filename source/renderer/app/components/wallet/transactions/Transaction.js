@@ -5,11 +5,10 @@ import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
 import styles from './Transaction.scss';
-import TransactionTypeIcon from './TransactionTypeIcon';
+import TransactionTypeIcon from './TransactionTypeIcon.js';
 import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
-import WalletTransaction,
-{
+import WalletTransaction, {
   TxnAssuranceLevelOptions,
   transactionStates,
   transactionTypes

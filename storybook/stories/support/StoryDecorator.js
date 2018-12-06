@@ -7,11 +7,11 @@ import { observer } from 'mobx-react';
 import { daedalusTheme } from '../../../source/renderer/app/themes/daedalus';
 import translations from '../../../source/renderer/app/i18n/translations';
 import ThemeManager from '../../../source/renderer/app/ThemeManager';
-import { THEMES } from '../../../source/renderer/app/themes/index';
+import { THEMES } from '../../../source/renderer/app/themes';
 
 type Props = {
   children: Node,
-  propsForChildren?: any,
+  propsForChildren: any,
 };
 
 @observer

@@ -3,15 +3,19 @@ const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const AutoDllPlugin = require('autodll-webpack-plugin');
 const yamljs = require('yamljs');
+
+// TODO: enable again when hard-source is fixed
+// https://github.com/mzgoddard/hard-source-webpack-plugin/issues/443
+
 // const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 // const lodash = require('lodash');
+// const isCi = process.env.CI && process.env.CI !== '';
 
 let reportUrl = '';
 reportUrl = yamljs.parseFile('launcher-config.yaml').reportServer;
 
 // Process env flags from buildkite and appveyor
 const isTestEnv = process.env.NODE_ENV === 'test';
-const isCi = process.env.CI && process.env.CI !== '';
 
 module.exports = {
   mode: 'development',
@@ -119,7 +123,6 @@ module.exports = {
           'pbkdf2',
           'qrcode.react',
           'react',
-          'react-addons-css-transition-group',
           'react-copy-to-clipboard',
           'react-dom',
           'react-dropzone',
@@ -134,8 +137,9 @@ module.exports = {
         ]
       }
     }),
-    // Hard source plugin is broken for webpack 4 :(
+    // TODO: enable again when hard-source is fixed
     // https://github.com/mzgoddard/hard-source-webpack-plugin/issues/443
+
     // Dont use caching for CI builds!
     // !isCi && (
     //   new HardSourceWebpackPlugin({

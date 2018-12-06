@@ -8,8 +8,7 @@ import {
   TESTNET_EKG_URL,
 } from '../config/urlsConfig';
 import { MAINNET, STAGING, TESTNET } from '../../../common/types/environment.types';
-
-const { isStaging, isTestnet, isDevelopment } = global.environment;
+import type { Environment } from '../../../common/types/environment.types';
 
 export const getNetworkExplorerUrl = (network: string): string => {
   // sets default to mainnet in case env.NETWORK is undefined
@@ -20,11 +19,11 @@ export const getNetworkExplorerUrl = (network: string): string => {
   return explorerUrl; // sets default to mainnet incase env.NETWORK is undefined
 };
 
-export const getNetworkEkgUrl = () => {
+export const getNetworkEkgUrl = (env: Environment) => {
   // sets default to development in case env.NETWORK is undefined
   let ekgUrl = DEVELOPMENT_EKG_URL;
-  if (isDevelopment) { ekgUrl = DEVELOPMENT_EKG_URL; }
-  if (isStaging) { ekgUrl = STAGING_EKG_URL; }
-  if (isTestnet) { ekgUrl = TESTNET_EKG_URL; }
+  if (env.isDev) { ekgUrl = DEVELOPMENT_EKG_URL; }
+  if (env.isStaging) { ekgUrl = STAGING_EKG_URL; }
+  if (env.isTestnet) { ekgUrl = TESTNET_EKG_URL; }
   return ekgUrl;
 };

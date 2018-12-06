@@ -1,29 +1,26 @@
 {
   "presets": [
-    "env",
-    "stage-0",
-    "react"
+    "@babel/preset-env",
+    "@babel/preset-react",
+    "@babel/preset-flow"
   ],
   "plugins": [
-    "add-module-exports",
-    "transform-decorators-legacy",
-    "lodash",
-    ["transform-runtime", {
-      "polyfill": true,
+    ["@babel/plugin-proposal-decorators", {
+      "legacy": true
+    }],
+    ["@babel/plugin-proposal-class-properties", {
+      "loose": true
+    }],
+    ["@babel/plugin-proposal-object-rest-spread", {}],
+    ["@babel/plugin-transform-runtime", {
       "regenerator": true
     }],
     ["react-intl", {
       "messagesDir": "./translations/messages/",
-      "enforceDescriptions": true,
+      "enforceDescriptions": false,
       "extractSourceLocation": true
     }]
   ],
-  "env": {
-    "production": {
-      "presets": ["react-optimize"],
-      "plugins": ["babel-plugin-dev-expression"]
-    }
-  },
   "ignore": [
     "node_modules"
   ]
