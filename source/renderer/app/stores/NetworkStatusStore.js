@@ -1,5 +1,6 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
+import { ipcRenderer } from 'electron';
 import moment from 'moment';
 import { isEqual } from 'lodash';
 import Store from './lib/Store';
@@ -18,6 +19,10 @@ import {
   tlsConfigChannel,
   restartCardanoNodeChannel
 } from '../ipc/cardano.ipc';
+import {
+  SYSTEM_SUSPEND_CHANNEL,
+  SYSTEM_WAKE_UP_CHANNEL
+} from '../../../common/ipc/system-power-monitor';
 import { CardanoNodeStates } from '../../../common/types/cardanoNode.types';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
 import type { CardanoNodeState, TlsConfig } from '../../../common/types/cardanoNode.types';
@@ -65,6 +70,8 @@ export default class NetworkStatusStore extends Store {
   @observable localTimeDifference: ?number = 0; // microseconds
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
   @observable isSystemTimeChanged = false; // Tracks system time change event
+  @observable isSystemGoingToSleep = false; // Tracks if system is going to sleep
+  @observable isSystemFreshlyWokenUp = false; // Tracks if system has just been woken up
   @observable getNetworkStatusRequest: Request<GetNetworkStatusResponse> = new Request(
     this.api.ada.getNetworkStatus
   );
@@ -81,6 +88,9 @@ export default class NetworkStatusStore extends Store {
     // Passively receive state changes of the cardano-node
     cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
     this._requestCardanoNodeState();
+    // Receive system suspend and wake-up events
+    ipcRenderer.on(SYSTEM_SUSPEND_CHANNEL, this._handleSystemSuspend);
+    ipcRenderer.on(SYSTEM_WAKE_UP_CHANNEL, this._handleSystemWakeUp);
 
     // ========== MOBX REACTIONS =========== //
 
@@ -220,9 +230,22 @@ export default class NetworkStatusStore extends Store {
     }
 
     if (isForcedTimeDifferenceCheck) {
+      // Prevent NTP forced time checks in case system is going into sleep
+      if (this.isSystemGoingToSleep) return;
+
+      // Prevent NTP forced time checks in case system has just woken up from sleep
+      if (this.isSystemFreshlyWokenUp) {
+        runInAction('reset isSystemFreshlyWokenUp', () => {
+          this.isSystemFreshlyWokenUp = false;
+        });
+        return;
+      }
+
       // Set most recent block timestamp into the future as a guard
       // against system time changes - e.g. if system time was set into the past
-      this.mostRecentBlockTimestamp = Date.now() + NETWORK_STATUS_REQUEST_TIMEOUT;
+      runInAction('update mostRecentBlockTimestamp', () => {
+        this.mostRecentBlockTimestamp = Date.now() + NETWORK_STATUS_REQUEST_TIMEOUT;
+      });
     }
 
     // Record connection status before running network status call
@@ -383,6 +406,16 @@ export default class NetworkStatusStore extends Store {
 
   forceCheckLocalTimeDifference = async () => {
     await this._updateNetworkStatus({ force_ntp_check: true });
+  };
+
+  @action _handleSystemSuspend = () => {
+    this.isSystemGoingToSleep = true;
+    this.isSystemFreshlyWokenUp = false;
+  };
+
+  @action _handleSystemWakeUp = () => {
+    this.isSystemGoingToSleep = false;
+    this.isSystemFreshlyWokenUp = true;
   };
 
   // DEFINE COMPUTED VALUES
