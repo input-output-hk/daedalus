@@ -70,7 +70,7 @@ export default class NetworkStatusStore extends Store {
   @observable localTimeDifference: ?number = 0; // microseconds
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
   @observable isSystemTimeChanged = false; // Tracks system time change event
-  @observable isSystemGoingToSleep = false; // Tracks if system is going to sleep
+  @observable isSystemGoingToSleep = false; // Tracks if system is going into sleep
   @observable isSystemFreshlyWokenUp = false; // Tracks if system has just been woken up
   @observable getNetworkStatusRequest: Request<GetNetworkStatusResponse> = new Request(
     this.api.ada.getNetworkStatus
@@ -142,10 +142,10 @@ export default class NetworkStatusStore extends Store {
     if (!this.isConnected) await this._updateNetworkStatus();
   };
 
-  _updateLocalTimeDifferenceWhenSystemTimeChanged = async () => {
+  _updateLocalTimeDifferenceWhenSystemTimeChanged = () => {
     if (this.isSystemTimeChanged) {
       Logger.debug('System time change detected');
-      await this._updateNetworkStatus({ force_ntp_check: true });
+      this._updateNetworkStatus({ force_ntp_check: true });
     }
   };
 
@@ -207,6 +207,17 @@ export default class NetworkStatusStore extends Store {
     // we are checking current system time and comparing the difference to the last known value.
     // If the difference is larger than the polling interval plus a safety margin of 100%
     // we can be sure the user has update the time.
+
+    // Prevent isSystemTimeChanged update in case system is going into sleep
+    if (this.isSystemGoingToSleep) return;
+
+    // Prevent isSystemTimeChanged update in case system has just woken up from sleep
+    if (this.isSystemFreshlyWokenUp) {
+      this.isSystemFreshlyWokenUp = false;
+      this._systemTime = Date.now();
+      return;
+    }
+
     const systemTimeDifference = Math.abs(moment(Date.now()).diff(moment(this._systemTime)));
     this.isSystemTimeChanged = Math.floor(systemTimeDifference / SYSTEM_TIME_POLL_INTERVAL) > 1;
     this._systemTime = Date.now();
@@ -230,17 +241,6 @@ export default class NetworkStatusStore extends Store {
     }
 
     if (isForcedTimeDifferenceCheck) {
-      // Prevent NTP forced time checks in case system is going into sleep
-      if (this.isSystemGoingToSleep) return;
-
-      // Prevent NTP forced time checks in case system has just woken up from sleep
-      if (this.isSystemFreshlyWokenUp) {
-        runInAction('reset isSystemFreshlyWokenUp', () => {
-          this.isSystemFreshlyWokenUp = false;
-        });
-        return;
-      }
-
       // Set most recent block timestamp into the future as a guard
       // against system time changes - e.g. if system time was set into the past
       runInAction('update mostRecentBlockTimestamp', () => {
