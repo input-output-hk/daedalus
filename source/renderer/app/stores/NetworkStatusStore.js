@@ -386,12 +386,10 @@ export default class NetworkStatusStore extends Store {
   };
 
   @action _setDisconnected = (wasConnected: boolean) => {
-    this.cardanoNodeState = null;
     this.isNodeResponding = false;
     this.isNodeSubscribed = false;
     this.isNodeSyncing = false;
     this.isNodeInSync = false;
-    this._tlsConfig = null;
     if (wasConnected) {
       if (!this.hasBeenConnected) {
         runInAction('update hasBeenConnected', () => this.hasBeenConnected = true);
