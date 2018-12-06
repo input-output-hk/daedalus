@@ -8,7 +8,7 @@ import Loading from '../components/loading/Loading';
 import adaLogo from '../assets/images/ada-logo.inline.svg';
 import cardanoLogo from '../assets/images/cardano-logo.inline.svg';
 import type { InjectedProps } from '../types/injectedPropsType';
-import { generateFileNameWithTimestamp } from '../../../common/fileName';
+import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import { getSupportUrl } from '../utils/network';
 
 export const messages = defineMessages({
