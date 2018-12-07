@@ -171,14 +171,12 @@ export default class NetworkStatusStore extends Store {
       case CardanoNodeStates.STOPPING:
       case CardanoNodeStates.EXITING:
       case CardanoNodeStates.UPDATING:
+        runInAction('reset _tlsConfig', () => this._tlsConfig = null);
         this._setDisconnected(wasConnected);
-        runInAction('reset TlsConfig', () => { this._tlsConfig = null; });
         break;
       default: this._setDisconnected(wasConnected);
     }
-    runInAction('setting cardanoNodeState', () => {
-      this.cardanoNodeState = state;
-    });
+    runInAction('setting cardanoNodeState', () => this.cardanoNodeState = state);
     return Promise.resolve();
   };
 
@@ -226,6 +224,13 @@ export default class NetworkStatusStore extends Store {
         networkStatus = await this.forceCheckTimeDifferenceRequest.execute(queryParams).promise;
       } else {
         networkStatus = await this.getNetworkStatusRequest.execute().promise;
+      }
+
+      // In case we no longer have TLS config we ignore all API call responses
+      // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
+      if (!this._tlsConfig) {
+        Logger.debug('Ignoring NetworkStatusRequest result during Cardano shutdown sequence...');
+        return;
       }
 
       const {
