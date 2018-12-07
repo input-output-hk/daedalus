@@ -1,6 +1,6 @@
 // @flow
 import os from 'os';
-import { app, BrowserWindow, globalShortcut, Menu, dialog, powerMonitor } from 'electron';
+import { app, BrowserWindow, globalShortcut, Menu, dialog } from 'electron';
 import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { Logger } from '../common/logging';
@@ -14,10 +14,6 @@ import environment from '../common/environment';
 import { OPEN_ABOUT_DIALOG_CHANNEL } from '../common/ipc/open-about-dialog';
 import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../common/ipc/go-to-ada-redemption-screen';
 import { GO_TO_NETWORK_STATUS_SCREEN_CHANNEL } from '../common/ipc/go-to-network-status-screen';
-import {
-  SYSTEM_SUSPEND_CHANNEL,
-  SYSTEM_WAKE_UP_CHANNEL
-} from '../common/ipc/system-power-monitor';
 import mainErrorHandler from './utils/mainErrorHandler';
 import { launcherConfig } from './config';
 import { setupCardano } from './cardano/setup';
@@ -137,16 +133,6 @@ app.on('ready', async () => {
       globalShortcut.unregister('CommandOrControl+H');
     });
   }
-
-  // Detect system suspend event
-  powerMonitor.on('suspend', () => {
-    mainWindow.webContents.send(SYSTEM_SUSPEND_CHANNEL);
-  });
-
-  // Detect system wake-up event
-  powerMonitor.on('resume', () => {
-    mainWindow.webContents.send(SYSTEM_WAKE_UP_CHANNEL);
-  });
 
   mainWindow.on('close', async (event) => {
     Logger.info('mainWindow received <close> event. Safe exiting Daedalus now.');

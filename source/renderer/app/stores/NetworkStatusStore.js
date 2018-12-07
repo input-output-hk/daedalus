@@ -1,6 +1,5 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
-import { ipcRenderer } from 'electron';
 import moment from 'moment';
 import { isEqual } from 'lodash';
 import Store from './lib/Store';
@@ -19,10 +18,6 @@ import {
   tlsConfigChannel,
   restartCardanoNodeChannel
 } from '../ipc/cardano.ipc';
-import {
-  SYSTEM_SUSPEND_CHANNEL,
-  SYSTEM_WAKE_UP_CHANNEL
-} from '../../../common/ipc/system-power-monitor';
 import { CardanoNodeStates } from '../../../common/types/cardanoNode.types';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
 import type { CardanoNodeState, TlsConfig } from '../../../common/types/cardanoNode.types';
@@ -70,8 +65,6 @@ export default class NetworkStatusStore extends Store {
   @observable localTimeDifference: ?number = 0; // microseconds
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
   @observable isSystemTimeChanged = false; // Tracks system time change event
-  @observable isSystemGoingToSleep = false; // Tracks if system is going into sleep
-  @observable isSystemFreshlyWokenUp = false; // Tracks if system has just been woken up
   @observable getNetworkStatusRequest: Request<GetNetworkStatusResponse> = new Request(
     this.api.ada.getNetworkStatus
   );
@@ -88,9 +81,6 @@ export default class NetworkStatusStore extends Store {
     // Passively receive state changes of the cardano-node
     cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
     this._requestCardanoNodeState();
-    // Receive system suspend and wake-up events
-    ipcRenderer.on(SYSTEM_SUSPEND_CHANNEL, this._handleSystemSuspend);
-    ipcRenderer.on(SYSTEM_WAKE_UP_CHANNEL, this._handleSystemWakeUp);
 
     // ========== MOBX REACTIONS =========== //
 
@@ -191,9 +181,8 @@ export default class NetworkStatusStore extends Store {
       case CardanoNodeStates.STOPPING:
       case CardanoNodeStates.EXITING:
       case CardanoNodeStates.UPDATING:
-        runInAction('reset TlsConfig', () => {
-          this._tlsConfig = null;
-        });
+        this._setDisconnected(wasConnected);
+        runInAction('reset TlsConfig', () => { this._tlsConfig = null; });
         break;
       default: this._setDisconnected(wasConnected);
     }
@@ -214,17 +203,6 @@ export default class NetworkStatusStore extends Store {
     // we are checking current system time and comparing the difference to the last known value.
     // If the difference is larger than the polling interval plus a safety margin of 100%
     // we can be sure the user has update the time.
-
-    // Prevent isSystemTimeChanged update in case system is going into sleep
-    if (this.isSystemGoingToSleep) return;
-
-    // Prevent isSystemTimeChanged update in case system has just woken up from sleep
-    if (this.isSystemFreshlyWokenUp) {
-      this.isSystemFreshlyWokenUp = false;
-      this._systemTime = Date.now();
-      return;
-    }
-
     const systemTimeDifference = Math.abs(moment(Date.now()).diff(moment(this._systemTime)));
     this.isSystemTimeChanged = Math.floor(systemTimeDifference / SYSTEM_TIME_POLL_INTERVAL) > 1;
     this._systemTime = Date.now();
@@ -411,18 +389,6 @@ export default class NetworkStatusStore extends Store {
 
   forceCheckLocalTimeDifference = async () => {
     await this._updateNetworkStatus({ force_ntp_check: true });
-  };
-
-  @action _handleSystemSuspend = () => {
-    Logger.debug('System is going into sleep...');
-    this.isSystemGoingToSleep = true;
-    this.isSystemFreshlyWokenUp = false;
-  };
-
-  @action _handleSystemWakeUp = () => {
-    Logger.debug('System has woken up.');
-    this.isSystemGoingToSleep = false;
-    this.isSystemFreshlyWokenUp = true;
   };
 
   // DEFINE COMPUTED VALUES
