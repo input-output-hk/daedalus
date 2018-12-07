@@ -188,6 +188,13 @@ export default class NetworkStatusStore extends Store {
     switch (state) {
       case CardanoNodeStates.STARTING: break;
       case CardanoNodeStates.RUNNING: this._requestTlsConfig(); break;
+      case CardanoNodeStates.STOPPING:
+      case CardanoNodeStates.EXITING:
+      case CardanoNodeStates.UPDATING:
+        runInAction('reset TlsConfig', () => {
+          this._tlsConfig = null;
+        });
+        break;
       default: this._setDisconnected(wasConnected);
     }
     runInAction('setting cardanoNodeState', () => {
@@ -407,11 +414,13 @@ export default class NetworkStatusStore extends Store {
   };
 
   @action _handleSystemSuspend = () => {
+    Logger.debug('System is going into sleep...');
     this.isSystemGoingToSleep = true;
     this.isSystemFreshlyWokenUp = false;
   };
 
   @action _handleSystemWakeUp = () => {
+    Logger.debug('System has woken up.');
     this.isSystemGoingToSleep = false;
     this.isSystemFreshlyWokenUp = true;
   };
