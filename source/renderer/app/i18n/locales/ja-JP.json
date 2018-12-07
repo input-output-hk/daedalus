@@ -88,8 +88,8 @@
   "loading.screen.unrecoverableCardanoMessage": "カルダノ・ノードの起動に失敗しました。サポートセンターに問い合わせてください。",
   "loading.screen.updatedCardanoMessage": "カルダノ・ノードがアップデートされました",
   "loading.screen.updatingCardanoMessage": "カルダノ・ノードをアップデート中",
-  "noDiskSpace.error.overlayContent": "!!!<b>There is not enough disk space left on your device.</b><br />Daedalus requires at least {diskSpaceRequired} to operate. Please free up some disk space to continue.",
-  "noDiskSpace.error.overlayTitle": "!!!Not enough disk space",
+  "noDiskSpace.error.overlayContent": "<b>ダイダロスは、動作に{diskSpaceRequired}以上のハードディスクドライブの空き容量が必要です。 お使いのコンピュータでは、{diskSpaceMissing}の空き容量が足りません。 ダイダロスを使用し続けるために、いくつかのファイルを削除して空き容量を増やしてください。</b><br /><br />ダイダロスを使用し続けるために、いくつかのファイルを削除して空き容量を増やしてください。  オペレーティングシステムとインストールされているプログラムを正常かつ安定した状態で動作させるには、少なくとも15％（お使いのコンピュータの場合は{diskSpaceRecommended}）のハードディスクドライブの空き容量が必要です。 少なくともこの容量をハードディスクドライブから解放することを強くお奨めします。",
+  "noDiskSpace.error.overlayTitle": "ダイダロスはもっと大きなハードディスクドライブの空き容量を必要としています",
   "paper.wallet.create.certificate.completion.dialog.addressCopiedLabel": "コピーされました",
   "paper.wallet.create.certificate.completion.dialog.addressInstructions": "ペーパーウォレットを用いて資金を受け取る際は、下記のウォレットアドレスを共有してください。",
   "paper.wallet.create.certificate.completion.dialog.addressLabel": "ウォレットアドレス",
