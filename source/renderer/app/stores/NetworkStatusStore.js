@@ -9,7 +9,7 @@ import {
   MAX_ALLOWED_STALL_DURATION,
   NETWORK_STATUS_REQUEST_TIMEOUT,
   NETWORK_STATUS_POLL_INTERVAL,
-  SYSTEM_TIME_POLL_INTERVAL,
+  NTP_FORCE_CHECK_POLL_INTERVAL,
 } from '../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
 import { Logger } from '../../../common/logging';
@@ -39,10 +39,9 @@ export default class NetworkStatusStore extends Store {
   // Initialize store properties
   _startTime = Date.now();
   _tlsConfig: ?TlsConfig = null;
-  _systemTime = Date.now();
   _networkStatus = NETWORK_STATUS.CONNECTING;
   _networkStatusPollingInterval: ?number = null;
-  _systemTimeChangeCheckPollingInterval: ?number = null;
+  _forceCheckTimeDifferencePollingInterval: ?number = null;
 
   // Initialize store observables
 
@@ -64,7 +63,6 @@ export default class NetworkStatusStore extends Store {
   @observable mostRecentBlockTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
-  @observable isSystemTimeChanged = false; // Tracks system time change event
   @observable getNetworkStatusRequest: Request<GetNetworkStatusResponse> = new Request(
     this.api.ada.getNetworkStatus
   );
@@ -86,7 +84,6 @@ export default class NetworkStatusStore extends Store {
 
     this.registerReactions([
       this._updateNetworkStatusWhenDisconnected,
-      this._updateLocalTimeDifferenceWhenSystemTimeChanged,
     ]);
 
     // Setup network status polling interval
@@ -94,9 +91,9 @@ export default class NetworkStatusStore extends Store {
       this._updateNetworkStatus, NETWORK_STATUS_POLL_INTERVAL
     );
 
-    // Setup system time change polling interval
-    this._systemTimeChangeCheckPollingInterval = setInterval(
-      this._updateSystemTime, SYSTEM_TIME_POLL_INTERVAL
+    // Forced time difference check polling interval
+    this._forceCheckTimeDifferencePollingInterval = setInterval(
+      this._forceCheckTimeDifference, NTP_FORCE_CHECK_POLL_INTERVAL
     );
   }
 
@@ -116,8 +113,8 @@ export default class NetworkStatusStore extends Store {
     if (this._networkStatusPollingInterval) {
       clearInterval(this._networkStatusPollingInterval);
     }
-    if (this._systemTimeChangeCheckPollingInterval) {
-      clearInterval(this._systemTimeChangeCheckPollingInterval);
+    if (this._forceCheckTimeDifferencePollingInterval) {
+      clearInterval(this._forceCheckTimeDifferencePollingInterval);
     }
 
     // Save current state into the cache
@@ -128,15 +125,8 @@ export default class NetworkStatusStore extends Store {
     };
   }
 
-  _updateNetworkStatusWhenDisconnected = async () => {
-    if (!this.isConnected) await this._updateNetworkStatus();
-  };
-
-  _updateLocalTimeDifferenceWhenSystemTimeChanged = () => {
-    if (this.isSystemTimeChanged) {
-      Logger.debug('System time change detected');
-      this._updateNetworkStatus({ force_ntp_check: true });
-    }
+  _updateNetworkStatusWhenDisconnected = () => {
+    if (!this.isConnected) this._updateNetworkStatus();
   };
 
   _getStartupTimeDelta() {
@@ -192,21 +182,15 @@ export default class NetworkStatusStore extends Store {
     return Promise.resolve();
   };
 
+  _forceCheckTimeDifference = () => {
+    this._updateNetworkStatus({ force_ntp_check: true });
+  };
+
   // DEFINE ACTIONS
   @action initialize() {
     super.initialize();
     if (cachedState !== null) Object.assign(this, cachedState);
   }
-
-  @action _updateSystemTime = () => {
-    // In order to detect system time changes (e.g. user updates machine's date/time)
-    // we are checking current system time and comparing the difference to the last known value.
-    // If the difference is larger than the polling interval plus a safety margin of 100%
-    // we can be sure the user has update the time.
-    const systemTimeDifference = Math.abs(moment(Date.now()).diff(moment(this._systemTime)));
-    this.isSystemTimeChanged = Math.floor(systemTimeDifference / SYSTEM_TIME_POLL_INTERVAL) > 1;
-    this._systemTime = Date.now();
-  };
 
   @action _updateNetworkStatus = async (queryParams?: NodeQueryParams) => {
     // In case we haven't received TLS config we shouldn't trigger any API calls
