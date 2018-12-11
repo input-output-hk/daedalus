@@ -12,11 +12,11 @@ export default class Root extends Component<Props> {
 
   render() {
     const { stores, actions, children } = this.props;
-    const { networkStatus, profile, adaRedemption, app, wallets } = stores;
+    const { networkStatus, profile, app, wallets } = stores;
     const { isNetworkStatusPage } = app;
     const { isConnected, isSynced, isSystemTimeCorrect } = networkStatus;
     const isPageThatDoesntNeedWallets = (
-      profile.isSettingsPage || adaRedemption.isAdaRedemptionPage
+      profile.isSettingsPage
     );
     // Just render any page that doesn't require wallets to be loaded
     if (

@@ -18,6 +18,11 @@ export default class AdaRedemptionPage extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
 
+  constructor(props) {
+    super(props);
+    props.stores.sidebar._hideSubMenus();
+  }
+
   onSubmit = (values: { walletId: string, spendingPassword: ?string }) => {
     this.props.actions.adaRedemption.redeemAda.trigger(values);
   };

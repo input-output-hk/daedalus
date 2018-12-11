@@ -25,20 +25,9 @@ export default class SidebarStore extends Store {
     actions.activateSidebarCategory.listen(this._onActivateSidebarCategory);
     actions.walletSelected.listen(this._onWalletSelected);
 
-    // TODO: refactor to ipc channel
-    ipcRenderer.on(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._resetActivateSidebarCategory);
-
     this.registerReactions([
       this._syncSidebarRouteWithRouter,
     ]);
-  }
-
-  teardown() {
-    // TODO: refactor to ipc channel
-    ipcRenderer.removeListener(
-      GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL,
-      this._resetActivateSidebarCategory
-    );
   }
 
   @computed get wallets(): Array<SidebarWalletType> {
@@ -73,10 +62,6 @@ export default class SidebarStore extends Store {
 
   @action _setActivateSidebarCategory = (category: string) => {
     this.activeSidebarCategory = category;
-  };
-
-  @action _resetActivateSidebarCategory = () => {
-    this.activeSidebarCategory = '';
   };
 
   @action _showSubMenus = () => {
