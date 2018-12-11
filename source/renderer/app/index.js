@@ -49,7 +49,7 @@ const initializeDaedalus = () => {
     }),
   };
 
-  const rootElement = document.getElementById('app');
+  const rootElement = document.getElementById('root');
   if (!rootElement) throw new Error('No #root element found.');
   render(<App stores={stores} actions={actions} history={history} />, rootElement);
 };

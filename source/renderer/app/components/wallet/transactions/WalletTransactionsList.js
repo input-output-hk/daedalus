@@ -8,7 +8,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import styles from './WalletTransactionsList.scss';
 import Transaction from './Transaction';
-import WalletTransaction from '../../../domains/WalletTransaction';
+import { WalletTransaction } from '../../../domains/WalletTransaction';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { DEVELOPMENT } from '../../../../../common/types/environment.types';
 import type { WalletAssuranceMode } from '../../../api/wallets/types';
@@ -62,7 +62,10 @@ export default class WalletTransactionsList extends Component<Props> {
   };
 
   static defaultProps = {
-    network: DEVELOPMENT
+    network: DEVELOPMENT,
+    showMoreTransactionsButton: false,
+    onShowMoreTransactions: () => {},
+    onOpenExternalLink: () => {},
   };
 
   componentWillMount() {

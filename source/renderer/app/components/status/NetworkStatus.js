@@ -26,7 +26,10 @@ let syncingInterval = null;
 
 type Props = {
   cardanoNodeState: ?CardanoNodeState,
+  isDev: boolean,
   isMainnet: boolean,
+  isStaging: boolean,
+  isTestnet: boolean,
   isNodeResponding: boolean,
   isNodeSubscribed: boolean,
   isNodeSyncing: boolean,
@@ -116,9 +119,9 @@ export default class NetworkStatus extends Component<Props, State> {
 
   render() {
     const {
-      cardanoNodeState, isMainnet, isNodeResponding, isNodeSubscribed, isNodeSyncing,
-      isNodeInSync, isNodeTimeCorrect, isConnected, isSynced, syncPercentage, hasBeenConnected,
-      localTimeDifference, isSystemTimeCorrect, isForceCheckingNodeTime,
+      cardanoNodeState, isDev, isTestnet, isStaging, isMainnet, isNodeResponding, isNodeSubscribed,
+      isNodeSyncing, isNodeInSync, isNodeTimeCorrect, isConnected, isSynced, syncPercentage,
+      hasBeenConnected, localTimeDifference, isSystemTimeCorrect, isForceCheckingNodeTime,
       isSystemTimeChanged, mostRecentBlockTimestamp, localBlockHeight, networkBlockHeight,
       onForceCheckLocalTimeDifference, onClose, nodeConnectionError, isSystemTimeIgnored,
       onOpenExternalLink,
@@ -150,7 +153,9 @@ export default class NetworkStatus extends Component<Props, State> {
     ]);
 
     // Cardano Node EKG server is not enabled for the Mainnet!
-    const cardanoNodeEkgLink = isMainnet ? false : getNetworkEkgUrl();
+    const cardanoNodeEkgLink = isMainnet ? false : getNetworkEkgUrl({
+      isDev, isStaging, isTestnet
+    });
 
     return (
       <div className={styles.component}>

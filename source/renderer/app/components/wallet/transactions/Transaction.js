@@ -8,10 +8,11 @@ import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon.js';
 import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
-import WalletTransaction, {
-  TxnAssuranceLevelOptions,
+import {
   transactionStates,
-  transactionTypes
+  transactionTypes,
+  TxnAssuranceLevelOptions,
+  WalletTransaction,
 } from '../../../domains/WalletTransaction';
 import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';

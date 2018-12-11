@@ -33,7 +33,7 @@ export const transactionTypes: {
   EXCHANGE: 'exchange',
 };
 
-export default class WalletTransaction {
+export class WalletTransaction {
 
   @observable id: string = '';
   @observable type: TransactionType;

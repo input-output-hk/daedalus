@@ -31,7 +31,6 @@ export default class App extends Component<{
     const mobxDevTools = global.environment.mobxDevTools ? <DevTools /> : null;
     const currentTheme = stores.profile.currentTheme;
     const themeVars = require(`./themes/daedalus/${currentTheme}.js`).default;
-
     return (
       <Fragment>
         <ThemeManager variables={themeVars} />

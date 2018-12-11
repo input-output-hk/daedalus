@@ -36,6 +36,7 @@
     "react/no-unused-prop-types": "off",
     "react/prop-types": 0,
     "react/sort-comp": 0,
+    "react/require-default-props": 0,
     "class-methods-use-this": 0,
     "no-duplicate-imports": 0,
     "no-param-reassign": 0,

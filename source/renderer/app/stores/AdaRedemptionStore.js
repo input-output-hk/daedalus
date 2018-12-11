@@ -3,7 +3,7 @@ import { action, computed, observable, runInAction } from 'mobx';
 import { isString } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import WalletTransaction from '../domains/WalletTransaction';
+import { WalletTransaction } from '../domains/WalletTransaction';
 import { Logger } from '../utils/logging';
 import { encryptPassphrase } from '../api/utils';
 import { matchRoute } from '../utils/routing';

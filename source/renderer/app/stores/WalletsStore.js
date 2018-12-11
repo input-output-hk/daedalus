@@ -4,7 +4,7 @@ import { get, chunk, find } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
-import WalletTransaction from '../domains/WalletTransaction';
+import { WalletTransaction } from '../domains/WalletTransaction';
 import { MAX_ADA_WALLETS_COUNT } from '../config/numbersConfig';
 import { i18nContext } from '../utils/i18nContext';
 import { mnemonicToSeedHex } from '../utils/crypto';
