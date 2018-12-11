@@ -116,7 +116,7 @@ export default class NetworkStatusStore extends Store {
     );
 
     ipcRenderer.on(GET_DISK_SPACE_STATUS.SUCCESS, this.onCheckDiskSpace);
-    ipcRenderer.send(GET_DISK_SPACE_STATUS.REQUEST);
+    this._checkDiskSpace();
   }
 
   async restartNode() {
@@ -167,6 +167,10 @@ export default class NetworkStatusStore extends Store {
 
   _getStartupTimeDelta() {
     return Date.now() - this._startTime;
+  }
+
+  _checkDiskSpace(diskSpaceRequired) {
+    ipcRenderer.send(GET_DISK_SPACE_STATUS.REQUEST, diskSpaceRequired);
   }
 
   _requestCardanoStatus = async () => {

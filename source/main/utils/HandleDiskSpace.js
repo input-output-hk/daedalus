@@ -5,6 +5,13 @@ import prettysize from 'prettysize';
 import { GET_DISK_SPACE_STATUS } from '../../common/ipc-api';
 import { environment } from '../environment';
 import { Logger } from './logging';
+import {
+  DISK_SPACE_REQUIRED,
+  DISK_SPACE_REQUIRED_MARGIN_PERCENTAGE,
+  DISK_SPACE_CHECK_LONG_INTERVAL,
+  DISK_SPACE_CHECK_SHORT_INTERVAL,
+  DISK_SPACE_RECOMMENDED_PERCENTAGE
+} from '../config';
 
 export type CheckDiskSpaceResponse = {
   notEnoughSpace: boolean,
@@ -13,37 +20,31 @@ export type CheckDiskSpaceResponse = {
   diskSpaceRecommended: string,
 };
 
+
 export default (
   mainWindow: BrowserWindow,
   onCheckDiskSpace?: Function,
 ) => {
 
-  const DISK_SPACE_REQUIRED = 2147483648; // 2Gb
-  const DISK_SPACE_REQUIRED_MARGIN =
-    DISK_SPACE_REQUIRED - (DISK_SPACE_REQUIRED * 10 / 100); // 2Gb - 10%
-  const DISK_SPACE_CHECK_LONG_INTERVAL = 600000; // 10 minutes
-  const DISK_SPACE_CHECK_SHORT_INTERVAL = 10000; // 10 seconds
-  const DISK_SPACE_RECOMMENDED_PERCENTAGE = 15; // 15% of the total disk space
-
   const path = environment.isWindows ? 'C:' : '/';
   let diskSpaceCheckInterval;
   let notEnoughSpace = false;
 
-  const handleCheckDiskSpace = async () => {
+  const handleCheckDiskSpace = async (diskSpaceRequired = DISK_SPACE_REQUIRED) => {
 
-    const diskSpaceRequired = prettysize(DISK_SPACE_REQUIRED);
     const { free: diskSpaceAvailable, size: diskTotalSpace } = await checkDiskSpace(path);
-    let diskSpaceMissing = DISK_SPACE_REQUIRED - diskSpaceAvailable;
-    diskSpaceMissing = diskSpaceMissing > -1 ? prettysize(diskSpaceMissing) : '0';
+    const diskSpaceMissing = Math.max((diskSpaceRequired - diskSpaceAvailable), 0);
     const diskSpaceRecommended =
-      prettysize(diskTotalSpace * DISK_SPACE_RECOMMENDED_PERCENTAGE / 100);
+      diskTotalSpace * DISK_SPACE_RECOMMENDED_PERCENTAGE / 100;
+    const diskSpaceRequiredMargin =
+      diskSpaceRequired - (diskSpaceRequired * DISK_SPACE_REQUIRED_MARGIN_PERCENTAGE / 100);
 
-    if (diskSpaceAvailable <= DISK_SPACE_REQUIRED_MARGIN) {
+    if (diskSpaceAvailable <= diskSpaceRequiredMargin) {
       if (!notEnoughSpace) {
         setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_SHORT_INTERVAL);
       }
       notEnoughSpace = true;
-    } else if (diskSpaceAvailable >= DISK_SPACE_REQUIRED) {
+    } else if (diskSpaceAvailable >= diskSpaceRequired) {
       if (notEnoughSpace) {
         setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_LONG_INTERVAL);
       }
@@ -51,9 +52,9 @@ export default (
     }
     const response = {
       notEnoughSpace,
-      diskSpaceRequired,
-      diskSpaceMissing,
-      diskSpaceRecommended,
+      diskSpaceRequired: prettysize(diskSpaceRequired),
+      diskSpaceMissing: prettysize(diskSpaceMissing),
+      diskSpaceRecommended: prettysize(diskSpaceRecommended),
     };
 
     Logger.info(JSON.stringify(response, null, 2));
@@ -62,6 +63,7 @@ export default (
       onCheckDiskSpace(response);
     }
     mainWindow.webContents.send(GET_DISK_SPACE_STATUS.SUCCESS, response);
+    return response;
   };
 
   const setDiskSpaceIntervalChecking = (interval) => {
@@ -73,7 +75,10 @@ export default (
   };
   setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_LONG_INTERVAL);
 
-  ipcMain.on(GET_DISK_SPACE_STATUS.REQUEST, handleCheckDiskSpace);
+  ipcMain.on(
+    GET_DISK_SPACE_STATUS.REQUEST,
+    (event, diskSpaceRequired) => handleCheckDiskSpace(diskSpaceRequired)
+  );
 
   return handleCheckDiskSpace;
 
