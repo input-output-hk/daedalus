@@ -3425,13 +3425,13 @@
         "description": "headline for \"export wallet to file\" dialog.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/wallet/settings/ExportWalletToFileDialog.js",
         "id": "wallet.settings.exportToFile.dialog.headline",
         "start": {
           "column": 12,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -3439,13 +3439,13 @@
         "description": "headline for \"export wallet to file\" dialog.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/components/wallet/settings/ExportWalletToFileDialog.js",
         "id": "wallet.settings.exportToFile.dialog.introduction",
         "start": {
           "column": 16,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -3453,13 +3453,13 @@
         "description": "Label for export wallet to file submit button.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/wallet/settings/ExportWalletToFileDialog.js",
         "id": "wallet.settings.exportToFile.dialog.submit.label",
         "start": {
           "column": 21,
-          "line": 28
+          "line": 29
         }
       }
     ],
