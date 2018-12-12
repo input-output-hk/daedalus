@@ -12,18 +12,20 @@ export default class DeleteWalletDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    const { actions } = this.props;
-    const { uiDialogs, wallets } = this.props.stores;
+    const { actions, stores } = this.props;
+    const { uiDialogs, wallets, app } = stores;
     const dialogData = uiDialogs.dataForActiveDialog;
     const { updateDataForActiveDialog } = actions.dialogs;
     const activeWallet = wallets.active;
     const { deleteWalletRequest } = wallets;
+    const { environment: { isTest } } = app;
 
     // Guard against potential null values
     if (!activeWallet) throw new Error('Active wallet required for DeleteWalletDialogContainer.');
 
     return (
       <DeleteWalletConfirmationDialog
+        isTest={isTest}
         walletName={activeWallet.name}
         hasWalletFunds={activeWallet.hasFunds}
         countdownFn={uiDialogs.countdownSinceDialogOpened}

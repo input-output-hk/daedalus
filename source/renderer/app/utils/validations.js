@@ -1,12 +1,13 @@
+// @flow
 import BigNumber from 'bignumber.js';
 import isInt from 'validator/lib/isInt';
 
-export const isValidWalletName = (walletName) => {
+export const isValidWalletName = (walletName: string) => {
   const nameLength = walletName.length;
   return nameLength >= 3 && nameLength <= 40;
 };
 
-export const isValidSpendingPassword = (spendingPassword) => {
+export const isValidSpendingPassword = (spendingPassword: string) => {
   // Validation rules:
   // - should contain at least one digit: (?=.*\d)
   // - should contain at least one lower case: (?=.*[а-я])
@@ -17,9 +18,11 @@ export const isValidSpendingPassword = (spendingPassword) => {
 };
 
 // eslint-disable-next-line max-len
-export const isValidRepeatPassword = (spendingPassword, repeatPassword) => spendingPassword === repeatPassword;
+export const isValidRepeatPassword = (spendingPassword: string, repeatPassword: string) => (
+  spendingPassword === repeatPassword
+);
 
-export const isNotEmptyString = (value) => value !== '';
+export const isNotEmptyString = (value: string) => value !== '';
 
 export const isValidAmountInLovelaces = (value: string) => {
   const isNumeric = isInt(value, { allow_leading_zeroes: false });
@@ -27,6 +30,5 @@ export const isValidAmountInLovelaces = (value: string) => {
   const numericValue = new BigNumber(value);
   const minValue = new BigNumber(1);
   const maxValue = new BigNumber(45000000000000000);
-  const isValid = numericValue.gte(minValue) && numericValue.lte(maxValue);
-  return isValid;
+  return numericValue.gte(minValue) && numericValue.lte(maxValue);
 };

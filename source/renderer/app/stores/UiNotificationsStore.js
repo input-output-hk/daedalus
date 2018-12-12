@@ -17,7 +17,7 @@ export default class UiNotificationsStore extends Store {
   _findNotificationById = (id: string): ?Notification =>
     this.activeNotifications.find(notification => notification.id === id);
 
-  @action _onOpen = ({ id, duration } : { id: string, duration?: number }) => {
+  @action _onOpen = ({ id, duration }: { id: string, duration?: number }) => {
     const notification = {
       id,
       duration: duration || null,
@@ -37,7 +37,7 @@ export default class UiNotificationsStore extends Store {
     this.activeNotifications.push(notification);
   };
 
-  @action _onClose = ({ id } : { id: string }) => {
+  @action _onClose = ({ id }: { id: string }) => {
     const notification = this._findNotificationById(id);
     if (notification) {
       if (notification.secondsTimerInterval) clearInterval(notification.secondsTimerInterval);
