@@ -4816,13 +4816,13 @@
         "description": "Message \"Loading wallet data\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 18
         },
         "file": "source/renderer/app/containers/LoadingPage.js",
         "id": "loading.screen.loadingWalletData",
         "start": {
           "column": 21,
-          "line": 15
+          "line": 14
         }
       },
       {
@@ -4830,13 +4830,13 @@
         "description": "Link to Open Support page",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 23
         },
         "file": "source/renderer/app/containers/LoadingPage.js",
         "id": "loading.screen.reportIssue.reportIssueButtonUrl",
         "start": {
           "column": 24,
-          "line": 20
+          "line": 19
         }
       }
     ],
@@ -4849,13 +4849,13 @@
         "description": "\"Support request\" link URL in the \"Report a problem\" section on the support settings page.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 15
         },
         "file": "source/renderer/app/containers/settings/categories/SupportSettingsPage.js",
         "id": "settings.support.reportProblem.linkUrl",
         "start": {
           "column": 25,
-          "line": 12
+          "line": 11
         }
       }
     ],
