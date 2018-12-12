@@ -7,7 +7,7 @@ const rpAutocomplete = {
   '--rp-autocomplete-border-color-opened': '#5e6066',
   '--rp-autocomplete-input-text-color': '#5e6066',
   '--rp-autocomplete-placeholder-color': 'rgba(94, 96, 102, 0.5)',
-  '--rp-autocomplete-selected-word-box-bg-color': 'rgba(44, 187, 105, 0.5)',
+  '--rp-autocomplete-selected-word-box-bg-color': 'rgba(44, 187, 105, 0.9)',
   '--rp-autocomplete-selected-word-text-color': '#fafbfc',
   '--rp-autocomplete-selected-words-font-family': 'NotoSans-Regular, NotoSansCJKjp-Regular',
 };
@@ -342,7 +342,7 @@ export default {
 
   '--theme-transactions-list-background-color': '#fafbfc',
   '--theme-transactions-list-border-color': '#c6cdd6',
-  '--theme-transactions-list-group-date-color': '#a6a7aa',
+  '--theme-transactions-list-group-date-color': '#5e6066',
   '--theme-transactions-list-item-details-color': '#5e6066',
   '--theme-transactions-card-background-color': '#e6ebf2',
   '--theme-transactions-card-income-background-color': '#e6ebf2',
@@ -436,7 +436,7 @@ export default {
 
   '--theme-terms-of-use-text-color': '#5e6066',
 
-  '--theme-data-migration-layer-background-color': '#2c4567',
+  '--theme-data-migration-layer-background-color': '#243E62',
   '--theme-data-migration-layer-box-shadow-color': 'rgba(0, 0, 0, 0.25)',
   '--theme-data-migration-layer-button-background-color-hover': '#fafbfc',
   '--theme-data-migration-layer-text-color': '#fafbfc',

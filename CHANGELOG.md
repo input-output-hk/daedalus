@@ -11,9 +11,11 @@ Changelog
 
 ### Fixes
 
+- Fixed the contents of `/etc/nix/nix.conf` file listed as a part of Cardano setup in Daedalus README file ([PR 1215](https://github.com/input-output-hk/daedalus/pull/1215))
 - Fixed the partly broken flow setup ([PR 1124](https://github.com/input-output-hk/daedalus/pull/1124))
 - Fixed failing apply-node-update test ([PR 1156](https://github.com/input-output-hk/daedalus/pull/1156))
 - Removed Antivirus notification ([PR 1164](https://github.com/input-output-hk/daedalus/pull/1164))
+- Fixed design implementations issues ([PR 1209](https://github.com/input-output-hk/daedalus/pull/1209))
 - Fixed the flickering issue on Network Status screen syncing chart ([PR 1206](https://github.com/input-output-hk/daedalus/pull/1206))
 
 ### Chores
@@ -37,7 +39,7 @@ Changelog
 - Implemented support for Cardano node "structured logging" ([PR 1092](https://github.com/input-output-hk/daedalus/pull/1092), [PR 1122](https://github.com/input-output-hk/daedalus/pull/1122))
 - Implemented the IPC driven Cardano node / Daedalus communication ([PR 1075](https://github.com/input-output-hk/daedalus/pull/1075), [PR 1107](https://github.com/input-output-hk/daedalus/pull/1107), [PR 1109](https://github.com/input-output-hk/daedalus/pull/1109), [PR 1115](https://github.com/input-output-hk/daedalus/pull/1115), [PR 1118](https://github.com/input-output-hk/daedalus/pull/1118), [PR 1119](https://github.com/input-output-hk/daedalus/pull/1119), [PR 1162](https://github.com/input-output-hk/daedalus/pull/1162))
 - Improved the loading UX ([PR 723](https://github.com/input-output-hk/daedalus/pull/723))
-- Improved the NTP check handling ([PR 1086](https://github.com/input-output-hk/daedalus/pull/1086), [PR 1149](https://github.com/input-output-hk/daedalus/pull/1149), [PR 1158](https://github.com/input-output-hk/daedalus/pull/1158), [PR 1194](https://github.com/input-output-hk/daedalus/pull/1194))
+- Improved the NTP check handling ([PR 1086](https://github.com/input-output-hk/daedalus/pull/1086), [PR 1149](https://github.com/input-output-hk/daedalus/pull/1149), [PR 1158](https://github.com/input-output-hk/daedalus/pull/1158), [PR 1194](https://github.com/input-output-hk/daedalus/pull/1194), [PR 1213](https://github.com/input-output-hk/daedalus/pull/1213))
 - Improved the transaction details text selection ([PR 1073](https://github.com/input-output-hk/daedalus/pull/1073), [PR 1095](https://github.com/input-output-hk/daedalus/pull/1095))
 - Integrated Cardano V1 API endpoints ([PR 1018](https://github.com/input-output-hk/daedalus/pull/1018), [PR 1031](https://github.com/input-output-hk/daedalus/pull/1031), [PR 1037](https://github.com/input-output-hk/daedalus/pull/1037), [PR 1042](https://github.com/input-output-hk/daedalus/pull/1042), [PR 1045](https://github.com/input-output-hk/daedalus/pull/1045), [PR 1070](https://github.com/input-output-hk/daedalus/pull/1070), [PR 1078](https://github.com/input-output-hk/daedalus/pull/1078), [PR 1079](https://github.com/input-output-hk/daedalus/pull/1079), [PR 1080](https://github.com/input-output-hk/daedalus/pull/1080), [PR 1088](https://github.com/input-output-hk/daedalus/pull/1088))
 - Refactored and improved `NetworkStatus` store to use V1 API data ([PR 1081](https://github.com/input-output-hk/daedalus/pull/1081))
