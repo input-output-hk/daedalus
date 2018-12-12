@@ -60,6 +60,10 @@ export default class SidebarStore extends Store {
     this.activeSidebarCategory = category;
   };
 
+  @action _resetActivateSidebarCategory = () => {
+    this.activeSidebarCategory = '';
+  };
+
   @action _showSubMenus = () => {
     this.isShowingSubMenus = true;
   };

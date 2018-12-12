@@ -18,9 +18,9 @@ export default class AdaRedemptionPage extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
 
-  constructor(props: any) {
+  constructor(props: Props) {
     super(props);
-    props.stores.sidebar._hideSubMenus();
+    props.stores.sidebar._resetActivateSidebarCategory();
   }
 
   onSubmit = (values: { walletId: string, spendingPassword: ?string }) => {
