@@ -10,17 +10,17 @@
     font-size: 18px;
     line-height: 1.39;
     letter-spacing: 1px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     text-align: center;
     text-transform: uppercase;
   }
 
   & > .content {
     flex: 1;
-    margin-right: -24px;
+    margin-right: -25px;
     overflow-x: hidden;
     overflow-y: overlay;
-    padding-right: 24px;
+    padding-right: 25px;
   }
 
   & > .actions {
