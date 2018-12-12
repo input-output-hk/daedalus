@@ -84,7 +84,7 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
     const supportPortalLink = (
       <a
         href={supportPortalLinkUrl}
-        onClick={event => onExternalLinkClick(event, supportPortalLinkUrl)}
+        onClick={() => onExternalLinkClick(supportPortalLinkUrl)}
       >
         {intl.formatMessage(messages.supportPortalLink)}
       </a>

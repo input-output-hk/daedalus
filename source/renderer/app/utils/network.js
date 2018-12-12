@@ -17,7 +17,7 @@ const localesFillForm = {
 
 const {
   isStaging, isTestnet, isDevelopment,
-  version, os, API_VERSION, NETWORK, build, buildNumber, getInstallerVersion
+  version, os, API_VERSION, NETWORK, build, buildNumber, installerVersion
 } = global.environment;
 
 export const getNetworkExplorerUrl = (network: string): string => {
@@ -45,7 +45,7 @@ export const getSupportUrl = async (baseUrl: string, locale: string) => {
     backendVersion: API_VERSION,
     network,
     build,
-    installerVersion: getInstallerVersion(),
+    installerVersion,
     os,
     locale,
     product: `Daedalus wallet - ${network}`,

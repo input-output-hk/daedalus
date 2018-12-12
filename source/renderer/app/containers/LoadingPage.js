@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { shell, remote } from 'electron';
 import CenteredLayout from '../components/layout/CenteredLayout';
 import Loading from '../components/loading/Loading';
 import adaLogo from '../assets/images/ada-logo.inline.svg';
@@ -56,7 +55,7 @@ export default class LoadingPage extends Component<InjectedProps> {
           hasLoadedCurrentLocale={hasLoadedCurrentLocale}
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           currentLocale={currentLocale}
-          onExternalLinkClick={this.handleExternalLinkClick}
+          onExternalLinkClick={stores.app.openExternalLink}
           onReportIssueClick={this.handleReportIssueClick}
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
           onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
@@ -66,25 +65,18 @@ export default class LoadingPage extends Component<InjectedProps> {
     );
   }
 
-  handleExternalLinkClick = (
-    event: MouseEvent | SyntheticEvent<HTMLButtonElement>, url: string
-  ) => {
-    event.preventDefault();
-    shell.openExternal(url);
-  };
-
   handleReportIssueClick = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.persist();
     const { intl } = this.context;
     const reportIssueButtonUrl = intl.formatMessage(messages.reportIssueButtonUrl);
     const locale = this.props.stores.profile.currentLocale;
     const supportUrl = await getSupportUrl(reportIssueButtonUrl, locale);
-    this.handleExternalLinkClick(event, supportUrl);
+    this.props.stores.app.openExternalLink(supportUrl);
   };
 
   handleDownloadLogs = () => {
     const fileName = generateFileNameWithTimestamp();
-    const destination = remote.dialog.showSaveDialog({
+    const destination = global.dialog.showSaveDialog({
       defaultPath: fileName,
     });
     if (destination) {

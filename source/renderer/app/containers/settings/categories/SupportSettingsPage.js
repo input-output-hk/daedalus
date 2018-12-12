@@ -6,7 +6,6 @@ import SupportSettings from '../../../components/settings/categories/SupportSett
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import { generateFileNameWithTimestamp } from '../../../../../common/utils/files';
 import { getSupportUrl } from '../../../utils/network';
-import { openExternalUrlChannel } from '../../../ipc/open-external-url';
 
 const messages = defineMessages({
   supportRequestLinkUrl: {
@@ -25,20 +24,13 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
 
   static defaultProps = { actions: null, stores: null };
 
-  handleExternalLinkClick = (
-    event: MouseEvent | SyntheticEvent<HTMLButtonElement>, url: string
-  ) => {
-    event.preventDefault();
-    openExternalUrlChannel.send(url);
-  };
-
   handleSupportRequestClick = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.persist();
     const { intl } = this.context;
     const supportRequestLinkUrl = intl.formatMessage(messages.supportRequestLinkUrl);
     const locale = this.props.stores.profile.currentLocale;
     const supportUrl = await getSupportUrl(supportRequestLinkUrl, locale);
-    this.handleExternalLinkClick(event, supportUrl);
+    this.props.stores.app.openExternalLink(supportUrl);
   };
 
   handleDownloadLogs = () => {
@@ -55,7 +47,7 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
   render() {
     return (
       <SupportSettings
-        onExternalLinkClick={this.handleExternalLinkClick}
+        onExternalLinkClick={this.props.stores.app.openExternalLink}
         onSupportRequestClick={this.handleSupportRequestClick}
         onDownloadLogs={this.handleDownloadLogs}
       />
