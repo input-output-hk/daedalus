@@ -10,4 +10,4 @@ export const ALLOWED_TIME_DIFFERENCE = 15 * 1000000; // 15 seconds | unit: micro
 export const MAX_ALLOWED_STALL_DURATION = 2 * 60 * 1000; // 2 minutes | unit: milliseconds
 export const NETWORK_STATUS_REQUEST_TIMEOUT = 30 * 1000; // 30 seconds | unit: milliseconds
 export const NETWORK_STATUS_POLL_INTERVAL = 2000; // 2 seconds | unit: milliseconds
-export const SYSTEM_TIME_POLL_INTERVAL = 1000; // 1 second | unit: milliseconds
+export const NTP_FORCE_CHECK_POLL_INTERVAL = 30 * 60 * 1000; // 30 minutes | unit: milliseconds
