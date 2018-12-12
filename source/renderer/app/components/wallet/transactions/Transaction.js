@@ -301,9 +301,13 @@ export default class Transaction extends Component<Props, State> {
 
               <div className={styles.row}>
                 <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
-                {!isRestoreActive && (transactionState === transactionStates.OK) ? (
+                {!isRestoreActive && (
+                  transactionState === transactionStates.OK ||
+                  transactionState === transactionStates.PENDING
+                ) ? (
                   <span>
-                    <span className={styles.assuranceLevel}>{status}</span>.&nbsp;
+                    {transactionState === transactionStates.OK &&
+                      <span className={styles.assuranceLevel}>{status}.&nbsp;</span>}
                     {data.numberOfConfirmations.toLocaleString()}&nbsp;
                     {intl.formatMessage(messages.confirmations)}.
                   </span>
