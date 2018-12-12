@@ -7,11 +7,8 @@ When(/^I freeze$/, { timeout: oneHour }, (callback) => {
   setTimeout(callback, oneHour);
 });
 
-When(/^After {int} seconds$/, { timeout: oneHour }, (a, b) => {
-  console.log('a', a);
-  console.log('b', b);
-  return true;
-  // setTimeout(callback, oneHour);
+When(/^After {int} seconds$/, { timeout: oneHour }, (seconds, callback) => {
+  setTimeout(callback, (seconds * 1000));
 });
 
 Then(/^I should see the initial screen$/, function () {
