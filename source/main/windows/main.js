@@ -31,7 +31,7 @@ export const createMainWindow = (isInSafeMode) => {
 
   rendererErrorHandler.setup(window, createMainWindow);
 
-  window.setMinimumSize(900, 600);
+  window.setMinimumSize(905, 600);
 
   // Initialize our ipc api methods that can be called by the render processes
   ipcApi({ window });
