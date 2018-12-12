@@ -9,7 +9,7 @@ import {
   MAX_ALLOWED_STALL_DURATION,
   NETWORK_STATUS_REQUEST_TIMEOUT,
   NETWORK_STATUS_POLL_INTERVAL,
-  SYSTEM_TIME_POLL_INTERVAL,
+  NTP_FORCE_CHECK_POLL_INTERVAL,
 } from '../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
 import { Logger } from '../utils/logging';
@@ -41,10 +41,9 @@ export default class NetworkStatusStore extends Store {
   // Initialize store properties
   _startTime = Date.now();
   _tlsConfig: ?TlsConfig = null;
-  _systemTime = Date.now();
   _networkStatus = NETWORK_STATUS.CONNECTING;
   _networkStatusPollingInterval: ?IntervalID = null;
-  _systemTimeChangeCheckPollingInterval: ?IntervalID = null;
+  _forceCheckTimeDifferencePollingInterval: ?IntervalID = null;
 
   // Initialize store observables
 
@@ -64,7 +63,6 @@ export default class NetworkStatusStore extends Store {
   @observable mostRecentBlockTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
-  @observable isSystemTimeChanged = false; // Tracks system time change event
   @observable getNetworkStatusRequest: Request<GetNetworkStatusResponse> = new Request(
     this.api.ada.getNetworkStatus
   );
@@ -90,7 +88,6 @@ export default class NetworkStatusStore extends Store {
 
     this.registerReactions([
       this._updateNetworkStatusWhenDisconnected,
-      this._updateLocalTimeDifferenceWhenSystemTimeChanged,
       this._updateNodeStatus,
     ]);
 
@@ -99,9 +96,9 @@ export default class NetworkStatusStore extends Store {
       this._updateNetworkStatus, NETWORK_STATUS_POLL_INTERVAL
     );
 
-    // Setup system time change polling interval
-    this._systemTimeChangeCheckPollingInterval = setInterval(
-      this._updateSystemTime, SYSTEM_TIME_POLL_INTERVAL
+    // Forced time difference check polling interval
+    this._forceCheckTimeDifferencePollingInterval = setInterval(
+      this.forceCheckLocalTimeDifference, NTP_FORCE_CHECK_POLL_INTERVAL
     );
   }
 
@@ -121,22 +118,15 @@ export default class NetworkStatusStore extends Store {
     if (this._networkStatusPollingInterval) {
       clearInterval(this._networkStatusPollingInterval);
     }
-    if (this._systemTimeChangeCheckPollingInterval) {
-      clearInterval(this._systemTimeChangeCheckPollingInterval);
+    if (this._forceCheckTimeDifferencePollingInterval) {
+      clearInterval(this._forceCheckTimeDifferencePollingInterval);
     }
   }
 
   // ================= REACTIONS ==================
 
-  _updateNetworkStatusWhenDisconnected = async () => {
-    if (!this.isConnected) await this._updateNetworkStatus();
-  };
-
-  _updateLocalTimeDifferenceWhenSystemTimeChanged = async () => {
-    if (this.isSystemTimeChanged) {
-      Logger.debug('System time change detected');
-      await this._updateNetworkStatus({ force_ntp_check: true });
-    }
+  _updateNetworkStatusWhenDisconnected = () => {
+    if (!this.isConnected) this._updateNetworkStatus();
   };
 
   _updateNodeStatus = async () => {
@@ -193,11 +183,15 @@ export default class NetworkStatusStore extends Store {
     switch (state) {
       case CardanoNodeStates.STARTING: break;
       case CardanoNodeStates.RUNNING: await this._requestTlsConfig(); break;
+      case CardanoNodeStates.STOPPING:
+      case CardanoNodeStates.EXITING:
+      case CardanoNodeStates.UPDATING:
+        runInAction('reset _tlsConfig', () => this._tlsConfig = null);
+        this._setDisconnected(wasConnected);
+        break;
       default: this._setDisconnected(wasConnected);
     }
-    runInAction('setting cardanoNodeState', () => {
-      this.cardanoNodeState = state;
-    });
+    runInAction('setting cardanoNodeState', () => this.cardanoNodeState = state);
     return Promise.resolve();
   };
 
@@ -219,15 +213,7 @@ export default class NetworkStatusStore extends Store {
     };
   };
 
-  @action _updateSystemTime = () => {
-    // In order to detect system time changes (e.g. user updates machine's date/time)
-    // we are checking current system time and comparing the difference to the last known value.
-    // If the difference is larger than the polling interval plus a safety margin of 100%
-    // we can be sure the user has update the time.
-    const systemTimeDifference = Math.abs(moment(Date.now()).diff(moment(this._systemTime)));
-    this.isSystemTimeChanged = Math.floor(systemTimeDifference / SYSTEM_TIME_POLL_INTERVAL) > 1;
-    this._systemTime = Date.now();
-  };
+  // DEFINE ACTIONS
 
   @action _updateNetworkStatus = async (queryParams?: NodeQueryParams) => {
     // In case we haven't received TLS config we shouldn't trigger any API calls
@@ -249,7 +235,9 @@ export default class NetworkStatusStore extends Store {
     if (isForcedTimeDifferenceCheck) {
       // Set most recent block timestamp into the future as a guard
       // against system time changes - e.g. if system time was set into the past
-      this.mostRecentBlockTimestamp = Date.now() + NETWORK_STATUS_REQUEST_TIMEOUT;
+      runInAction('update mostRecentBlockTimestamp', () => {
+        this.mostRecentBlockTimestamp = Date.now() + NETWORK_STATUS_REQUEST_TIMEOUT;
+      });
     }
 
     // Record connection status before running network status call
@@ -261,6 +249,13 @@ export default class NetworkStatusStore extends Store {
         networkStatus = await this.forceCheckTimeDifferenceRequest.execute(queryParams).promise;
       } else {
         networkStatus = await this.getNetworkStatusRequest.execute().promise;
+      }
+
+      // In case we no longer have TLS config we ignore all API call responses
+      // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
+      if (!this._tlsConfig) {
+        Logger.debug('Ignoring NetworkStatusRequest result during Cardano shutdown sequence...');
+        return;
       }
 
       const {
@@ -390,12 +385,10 @@ export default class NetworkStatusStore extends Store {
   };
 
   @action _setDisconnected = (wasConnected: boolean) => {
-    this.cardanoNodeState = null;
     this.isNodeResponding = false;
     this.isNodeSubscribed = false;
     this.isNodeSyncing = false;
     this.isNodeInSync = false;
-    this._tlsConfig = null;
     if (wasConnected) {
       if (!this.hasBeenConnected) {
         runInAction('update hasBeenConnected', () => this.hasBeenConnected = true);
@@ -408,11 +401,12 @@ export default class NetworkStatusStore extends Store {
     this.isSystemTimeIgnored = true;
   };
 
-  forceCheckLocalTimeDifference = async () => {
-    await this._updateNetworkStatus({ force_ntp_check: true });
+  forceCheckLocalTimeDifference = () => {
+    this._updateNetworkStatus({ force_ntp_check: true });
   };
 
   // DEFINE COMPUTED VALUES
+
   @computed get isConnected(): boolean {
     return this.isNodeResponding && this.isNodeSubscribed && this.isNodeSyncing;
   }

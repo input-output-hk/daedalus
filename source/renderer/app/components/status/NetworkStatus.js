@@ -44,7 +44,6 @@ type Props = {
   isSystemTimeIgnored: boolean,
   isSystemTimeCorrect: boolean,
   isForceCheckingNodeTime: boolean,
-  isSystemTimeChanged: boolean,
   mostRecentBlockTimestamp: number,
   localBlockHeight: number,
   networkBlockHeight: number,
@@ -122,7 +121,7 @@ export default class NetworkStatus extends Component<Props, State> {
       cardanoNodeState, isDev, isTestnet, isStaging, isMainnet, isNodeResponding, isNodeSubscribed,
       isNodeSyncing, isNodeInSync, isNodeTimeCorrect, isConnected, isSynced, syncPercentage,
       hasBeenConnected, localTimeDifference, isSystemTimeCorrect, isForceCheckingNodeTime,
-      isSystemTimeChanged, mostRecentBlockTimestamp, localBlockHeight, networkBlockHeight,
+      mostRecentBlockTimestamp, localBlockHeight, networkBlockHeight,
       onForceCheckLocalTimeDifference, onClose, nodeConnectionError, isSystemTimeIgnored,
       onOpenExternalLink,
     } = this.props;
@@ -237,12 +236,6 @@ export default class NetworkStatus extends Component<Props, State> {
                 <td>isSystemTimeIgnored:</td>
                 <td className={this.getClass(!isSystemTimeIgnored)}>
                   {isSystemTimeIgnored ? 'YES' : 'NO'}
-                </td>
-              </tr>
-              <tr>
-                <td>isSystemTimeChanged:</td>
-                <td className={this.getClass(!isSystemTimeChanged)}>
-                  {isSystemTimeChanged ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
