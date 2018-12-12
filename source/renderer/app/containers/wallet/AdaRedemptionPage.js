@@ -18,7 +18,7 @@ export default class AdaRedemptionPage extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
 
-  constructor(props) {
+  constructor(props: any) {
     super(props);
     props.stores.sidebar._hideSubMenus();
   }
