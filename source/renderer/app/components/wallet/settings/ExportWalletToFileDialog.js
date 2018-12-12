@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
@@ -75,7 +76,7 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
-  constructor(props: any, children: any) {
+  constructor(props: Props, children: Node) {
     super(props, children);
     this.state = {
       exportType: EXPORT_TYPE.FULL,
