@@ -14,7 +14,7 @@
     "test:debug": "NODE_ENV=test KEEP_APP_AFTER_TESTS=true gulp test",
     "test:watch:debug": "NODE_ENV=test IS_WATCH_MODE=true KEEP_APP_AFTER_TESTS=true gulp test:watch",
     "debug": "gulp debug",
-    "package": "gulp build && cross-env NODE_ENV=production node -r babel-register -r babel-polyfill scripts/package.js",
+    "package": "gulp build && cross-env NODE_ENV=production node -r @babel/register -r @babel/polyfill scripts/package.js",
     "package:all": "npm run package -- --all",
     "postinstall": "node node_modules/fbjs-scripts/node/check-dev-engines.js package.json",
     "cleanup": "mop -v",
