@@ -5,7 +5,6 @@ import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { Logger } from './utils/logging';
 import { setupLogging } from './utils/setupLogging';
-import HandleDiskSpace from './utils/HandleDiskSpace';
 import { createMainWindow } from './windows/main';
 import { winLinuxMenu } from './menus/win-linux';
 import { osxMenu } from './menus/osx';
@@ -18,13 +17,12 @@ import {
 } from '../common/ipc/api';
 import mainErrorHandler from './utils/mainErrorHandler';
 import { launcherConfig } from './config';
-import { setupCardano, restartCardanoNode } from './cardano/setup';
+import { setupCardano } from './cardano/setup';
 import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { acquireDaedalusInstanceLock } from './utils/lockFiles';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
-import type { CheckDiskSpaceResponse } from './utils/HandleDiskSpace';
 
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
@@ -90,6 +88,7 @@ app.on('ready', async () => {
   }
 
   setupLogging();
+  mainErrorHandler();
 
   Logger.info(`========== Daedalus is starting at ${new Date().toString()} ==========`);
 
@@ -104,23 +103,6 @@ app.on('ready', async () => {
   const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
 
   mainWindow = createMainWindow(isInSafeMode);
-
-  const onCheckDiskSpace = ({ notEnoughSpace }: CheckDiskSpaceResponse) => {
-    if (notEnoughSpace) {
-      cardanoNode.stop();
-    } else {
-      restartCardanoNode(cardanoNode);
-    }
-  };
-  const handleCheckDiskSpace = HandleDiskSpace(mainWindow, onCheckDiskSpace);
-  const onMainError = (error: string) => {
-    if (error.indexOf('ENOSPC') > -1) {
-      // handleCheckDiskSpace();
-      return false;
-    }
-  };
-  mainErrorHandler(onMainError);
-
   cardanoNode = setupCardano(launcherConfig, mainWindow);
 
   if (isWatchMode) {
