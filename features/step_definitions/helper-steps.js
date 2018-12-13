@@ -7,7 +7,7 @@ When(/^I freeze$/, { timeout: oneHour }, (callback) => {
   setTimeout(callback, oneHour);
 });
 
-When(/^After {int} seconds$/, { timeout: oneHour }, (seconds, callback) => {
+When('After {int} seconds', { timeout: oneHour }, (seconds, callback) => {
   setTimeout(callback, (seconds * 1000));
 });
 

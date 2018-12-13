@@ -4,14 +4,13 @@ let diskSpaceRequired;
 const hundredTb = 100 * 1e+12; // 100 TB | unit: bytes
 const NO_DISK_SPACE_COMPONENT = '.NoDiskSpaceErrorOverlay_component';
 
-Given(/^I set the required space to 100 TB$/, () => diskSpaceRequired = hundredTb);
+Given(/^I set the required space to 100 TB$/, () => {
+  diskSpaceRequired = hundredTb;
+  return true;
+});
 
-When(/^I check the disk space$/, async function () {
-  await this.client.executeAsync((diskRequired, done) => {
-    daedalus.stores.networkStatus.onCheckDiskSpace({}, diskRequired)
-      .then(done)
-      .catch((error) => done(error));
-  }, diskSpaceRequired);
+When(/^I check the disk space$/, function () {
+  this.client.execute(() => daedalus.stores.networkStatus._checkDiskSpace(diskSpaceRequired));
 });
 
 Then(/^The No Disk Space overlay should be (hidden|visible)$/, function (state) {
