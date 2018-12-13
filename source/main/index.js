@@ -91,6 +91,15 @@ app.on('ready', async () => {
 
   setupLogging();
 
+  Logger.info(`========== Daedalus is starting at ${new Date().toString()} ==========`);
+
+  Logger.debug(`!!! ${buildLabel} is running on ${os.platform()} version ${os.release()}
+            with CPU: ${JSON.stringify(os.cpus(), null, 2)} with
+            ${JSON.stringify(os.totalmem(), null, 2)} total RAM !!!`);
+
+  ensureXDGDataIsSet();
+  await installChromeExtensions(isDev);
+
   // Detect safe mode
   const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
 
@@ -103,26 +112,14 @@ app.on('ready', async () => {
       restartCardanoNode(cardanoNode);
     }
   };
-
   const handleCheckDiskSpace = HandleDiskSpace(mainWindow, onCheckDiskSpace);
-
   const onMainError = (error: string) => {
     if (error.indexOf('ENOSPC') > -1) {
-      handleCheckDiskSpace();
+      // handleCheckDiskSpace();
       return false;
     }
   };
-
   mainErrorHandler(onMainError);
-
-  Logger.info(`========== Daedalus is starting at ${new Date().toString()} ==========`);
-
-  Logger.debug(`!!! ${buildLabel} is running on ${os.platform()} version ${os.release()}
-            with CPU: ${JSON.stringify(os.cpus(), null, 2)} with
-            ${JSON.stringify(os.totalmem(), null, 2)} total RAM !!!`);
-
-  ensureXDGDataIsSet();
-  await installChromeExtensions(isDev);
 
   cardanoNode = setupCardano(launcherConfig, mainWindow);
 

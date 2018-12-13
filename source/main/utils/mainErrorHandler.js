@@ -20,7 +20,7 @@ export default (onError?: Function) => {
     Logger.error(`uncaughtException: ${err}`);
 
     if (typeof onError === 'function') {
-      onError.trigger(this, err);
+      onError(err);
     }
 
   });
