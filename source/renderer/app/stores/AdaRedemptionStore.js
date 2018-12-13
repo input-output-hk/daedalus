@@ -6,7 +6,6 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import WalletTransaction from '../domains/WalletTransaction';
 import { Logger } from '../../../common/logging';
-import { encryptPassphrase } from '../api/utils';
 import { matchRoute } from '../utils/routing';
 import { PARSE_REDEMPTION_CODE } from '../../../common/ipc-api';
 import {
@@ -216,9 +215,10 @@ export default class AdaRedemptionStore extends Store {
 
     try {
       const transaction: WalletTransaction = await this.redeemAdaRequest.execute({
+        walletId,
         accountIndex,
-        redemptionCode: this.redemptionCode,
-        spendingPassword: spendingPassword && encryptPassphrase(spendingPassword)
+        spendingPassword,
+        redemptionCode: this.redemptionCode
       });
       this._reset();
       this.actions.adaRedemption.adaSuccessfullyRedeemed.trigger({
@@ -242,10 +242,11 @@ export default class AdaRedemptionStore extends Store {
 
     try {
       const transaction: WalletTransaction = await this.redeemPaperVendedAdaRequest.execute({
-        mnemonics: this.passPhrase && this.passPhrase.split(' '),
+        walletId,
         accountIndex,
+        spendingPassword,
         redemptionCode: shieldedRedemptionKey,
-        spendingPassword: spendingPassword && encryptPassphrase(spendingPassword)
+        mnemonics: this.passPhrase && this.passPhrase.split(' ')
       });
       this._reset();
       this.actions.adaRedemption.adaSuccessfullyRedeemed.trigger({
