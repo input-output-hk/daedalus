@@ -44,15 +44,11 @@ import { restoreWallet } from './wallets/requests/restoreWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
 
 // utility functions
-import { awaitUpdateChannel } from '../ipc/cardano.ipc';
+import { awaitUpdateChannel, cardanoFaultInjectionChannel } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
-import { isValidMnemonic } from '../../../common/decrypt';
+import { isValidMnemonic } from '../../../common/crypto/decrypt';
 import { utcStringToDate, encryptPassphrase } from './utils';
-import {
-  Logger,
-  stringifyData,
-  stringifyError
-} from '../../../common/logging';
+import { Logger } from '../utils/logging';
 import {
   isValidRedemptionKey,
   isValidPaperVendRedemptionKey
@@ -153,6 +149,8 @@ import {
   NotEnoughMoneyToSendError,
   RedeemAdaError
 } from './transactions/errors';
+import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
+import { stringifyData, stringifyError } from '../../../common/utils/logging';
 
 export default class AdaApi {
 
@@ -621,10 +619,10 @@ export default class AdaApi {
     }
   };
 
-  async sendBugReport(requestFormData: SendBugReportRequest): Promise<any> {
-    Logger.debug('AdaApi::sendBugReport called: ' + stringifyData(requestFormData));
+  async sendBugReport({ requestFormData, environmentData }: SendBugReportRequest): Promise<any> {
+    Logger.debug('AdaApi::sendBugReport called: ' + stringifyData({ requestFormData, environmentData }));
     try {
-      await sendBugReport({ requestFormData });
+      await sendBugReport({ requestFormData, environmentData });
       Logger.debug('AdaApi::sendBugReport success');
       return true;
     } catch (error) {
@@ -766,6 +764,16 @@ export default class AdaApi {
       throw new GenericApiError(error);
     }
   };
+
+  setCardanoNodeFault = async (fault: FaultInjectionIpcRequest) => {
+    await cardanoFaultInjectionChannel.send(fault);
+  };
+
+  // No implementation here but can be overwritten
+  getLocalTimeDifference: Function;
+  setLocalTimeDifference: Function;
+  setNextUpdate: Function;
+
 }
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========

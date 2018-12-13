@@ -13,6 +13,7 @@ import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import MnemonicWord from './MnemonicWord';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletRecoveryPhraseEntryDialog.scss';
+import type { RecoveryPhraseWord } from '../../../types/walletBackupTypes';
 
 const messages = defineMessages({
   verificationInstructions: {
@@ -44,7 +45,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  recoveryPhraseShuffled: Array<{ word: string, isActive: boolean }>,
+  recoveryPhraseShuffled: Array<RecoveryPhraseWord>,
   enteredPhrase: Array<{ word: string }>,
   isValid: boolean,
   isTermDeviceAccepted: boolean,
@@ -138,7 +139,7 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
                   key={index}
                   word={word}
                   index={index}
-                  isActive={isActive}
+                  isActive={isActive != null ? isActive : false}
                   onClick={handleClick}
                 />
               );

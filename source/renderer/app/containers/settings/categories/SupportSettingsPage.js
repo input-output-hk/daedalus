@@ -1,22 +1,20 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { remote } from 'electron';
 import SupportSettings from '../../../components/settings/categories/SupportSettings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import BugReportDialog from '../../../components/profile/bug-report/BugReportDialog';
-import { generateFileNameWithTimestamp } from '../../../../../common/fileName';
-
-const shell = require('electron').shell;
+import { generateFileNameWithTimestamp } from '../../../../../common/utils/files';
+import { openExternalUrlChannel } from '../../../ipc/open-external-url';
 
 @inject('stores', 'actions') @observer
 export default class SupportSettingsPage extends Component<InjectedProps> {
 
   static defaultProps = { actions: null, stores: null };
 
-  handleExternalLinkClick = (event: MouseEvent) => {
+  handleExternalLinkClick = (event: MouseEvent, url: string) => {
     event.preventDefault();
-    if (event.target.href) shell.openExternal(event.target.href);
+    openExternalUrlChannel.send(url);
   };
 
   handleSupportRequestClick = () => {
@@ -26,8 +24,9 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
   };
 
   handleDownloadLogs = () => {
+    // TODO: refactor this direct access to the dialog api
     const fileName = generateFileNameWithTimestamp();
-    const destination = remote.dialog.showSaveDialog({
+    const destination = global.dialog.showSaveDialog({
       defaultPath: fileName,
     });
     if (destination) {

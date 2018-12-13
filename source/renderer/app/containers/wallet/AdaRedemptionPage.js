@@ -7,8 +7,7 @@ import AdaRedemptionNoWallets from '../../components/wallet/ada-redemption/AdaRe
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import { AdaRedemptionCertificateParseError } from '../../i18n/errors';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import validWords from '../../../../common/valid-words.en';
-import environment from '../../../../common/environment';
+import validWords from '../../../../common/crypto/valid-words.en';
 import { ADA_REDEMPTION_TYPES } from '../../types/redemptionTypes';
 import { ROUTES } from '../../routes-config';
 
@@ -18,6 +17,11 @@ type Props = InjectedProps;
 export default class AdaRedemptionPage extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
+
+  constructor(props: Props) {
+    super(props);
+    props.stores.sidebar._resetActivateSidebarCategory();
+  }
 
   onSubmit = (values: { walletId: string, spendingPassword: ?string }) => {
     this.props.actions.adaRedemption.redeemAda.trigger(values);
@@ -36,7 +40,8 @@ export default class AdaRedemptionPage extends Component<Props> {
   };
 
   render() {
-    const { wallets, adaRedemption } = this.props.stores;
+    const { wallets, adaRedemption, app: { environment } } = this.props.stores;
+    const { isMainnet } = environment;
     const {
       redeemAdaRequest, redeemPaperVendedAdaRequest, isCertificateEncrypted, isValidRedemptionKey,
       redemptionType, isValidRedemptionMnemonic, isValidPaperVendRedemptionKey,
@@ -118,7 +123,7 @@ export default class AdaRedemptionPage extends Component<Props> {
           }
           showInputForDecryptionKey={showInputForDecryptionKey}
           showPassPhraseWidget={showPassPhraseWidget}
-          isRedemptionDisclaimerAccepted={environment.isMainnet() || isRedemptionDisclaimerAccepted}
+          isRedemptionDisclaimerAccepted={isMainnet || isRedemptionDisclaimerAccepted}
           onAcceptRedemptionDisclaimer={() => acceptRedemptionDisclaimer.trigger()}
           getSelectedWallet={walletId => wallets.getWalletById(walletId)}
         />

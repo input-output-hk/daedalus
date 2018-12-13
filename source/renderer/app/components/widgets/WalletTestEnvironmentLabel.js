@@ -1,7 +1,8 @@
+// @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './WalletTestEnvironmentLabel.scss';
-import type networkType from '../../types/networkTypes';
+import type { networkType } from '../../types/networkTypes';
 
 const messages = defineMessages({
   staging: {
