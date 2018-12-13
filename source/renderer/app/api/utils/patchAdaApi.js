@@ -19,7 +19,9 @@ let NEXT_ADA_UPDATE = null;
 
 export default (api: AdaApi) => {
   // Since we cannot test ada redemption in dev mode, just resolve the requests
-  api.redeemAda = (request: RedeemAdaParams) => new Promise((resolve) => {
+  api.redeemAda = (
+    request: RedeemAdaParams
+  ): Promise<any> => new Promise((resolve) => {
     try {
       Logger.debug('AdaApi::redeemAda (PATCHED) called: ' + stringifyData(request));
       const { redemptionCode } = request;
@@ -36,7 +38,9 @@ export default (api: AdaApi) => {
     }
   });
 
-  api.redeemPaperVendedAda = (request: RedeemPaperVendedAdaParams) => new Promise((resolve) => {
+  api.redeemPaperVendedAda = (
+    request: RedeemPaperVendedAdaParams
+  ): Promise<any> => new Promise((resolve) => {
     try {
       Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) called: ' + stringifyData(request));
       const { redemptionCode, mnemonics } = request;
