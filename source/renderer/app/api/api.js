@@ -572,8 +572,9 @@ export default class AdaApi {
     }
   };
 
-  /* :: redeemAda: Function */
-  async redeemAda(request: RedeemAdaParams): Promise<WalletTransaction> {
+  redeemAda = async (
+    request: RedeemAdaParams
+  ): Promise<WalletTransaction> => {
     Logger.debug('AdaApi::redeemAda called');
     const { spendingPassword: passwordString } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
@@ -590,12 +591,11 @@ export default class AdaApi {
       }
       throw new RedeemAdaError();
     }
-  }
+  };
 
-  /* :: redeemPaperVendedAda: Function */
-  async redeemPaperVendedAda(
+  redeemPaperVendedAda = async (
     request: RedeemPaperVendedAdaParams
-  ): Promise<WalletTransaction> {
+  ): Promise<WalletTransaction> => {
     Logger.debug('AdaApi::redeemAdaPaperVend called');
     const { spendingPassword: passwordString } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
@@ -612,7 +612,7 @@ export default class AdaApi {
       }
       throw new RedeemAdaError();
     }
-  }
+  };
 
   nextUpdate = async (): Promise<NodeSoftware | null> => {
     Logger.debug('AdaApi::nextUpdate called');
