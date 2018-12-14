@@ -12,7 +12,9 @@
 1. [React](#react)
     - [Naming](#naming)
     - [Alignment](#alignment)
+    - [Spacing](#spacing)
     - [Quotes](#quotes)
+    - [Props](#props)
 1. [CSS](#css)
 1. [Other](#other)
     - [Git](#git)
@@ -329,6 +331,41 @@ Follow these alignment styles for JSX.
 {showButton && <Button />}
 ```
 
+## Spacing
+
+Always include a single space in your self-closing tag.
+
+:white_check_mark: ***Do***
+
+```jsx
+<Foo />
+```
+
+:no_entry_sign: ***Don't***
+
+```jsx
+<Foo/>
+
+<Foo
+/>
+
+<Foo   />
+```
+
+Do **not** pad JSX curly braces with spaces.
+
+:white_check_mark: ***Do***
+
+```jsx
+<Foo bar={baz} />
+```
+
+:no_entry_sign: ***Don't***
+
+```jsx
+<Foo bar={ baz } />
+```
+
 ## Quotes
 
 Always use double quotes `""` for JSX attributes.
@@ -350,6 +387,68 @@ Use single quotes `''` for all other JS.
 
 <Foo style={{ left: "20px" }} />
 ```
+
+## Props
+
+Always use camelCase for prop names.
+
+:white_check_mark: ***Do***
+
+```jsx
+<Foo
+  userName="hello"
+  phoneNumber={12345678}
+/>
+```
+
+:no_entry_sign: ***Don't***
+
+```jsx
+<Foo
+  UserName="hello"
+  phone_number={12345678}
+/>
+```
+
+Omit the value of the prop when it is explicitly `true`.
+
+:white_check_mark: ***Do***
+
+```jsx
+<Foo hidden />
+```
+
+:no_entry_sign: ***Don't***
+
+```jsx
+<Foo hidden={true} />
+```
+
+Filter out unused props when using the spread operator to pass props.
+
+:white_check_mark: ***Do***
+
+```jsx
+render() {
+  const { unusedProp1, unusedProp2, ...usedProps  } = this.props;
+  return <WrappedComponent {...usedProps} />;
+}
+```
+
+:no_entry_sign: ***Don't***
+
+```jsx
+render() {
+  const { unusedProp1, unusedProp2, ...usedProps  } = this.props;
+  return <WrappedComponent {...this.props} />;
+}
+```
+
+## Parentheses
+
+Wrap JSX tags in parentheses when they span more than one line.
+
+
 
 **[⬆ back to top](#table-of-contents)**
 
