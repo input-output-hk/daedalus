@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Provider, observer } from 'mobx-react';
 import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
 import DevTools from 'mobx-react-devtools';
@@ -30,23 +30,22 @@ export default class App extends Component<{
     const locale = stores.profile.currentLocale;
     const mobxDevTools = global.environment.mobxDevTools ? <DevTools /> : null;
     const currentTheme = stores.profile.currentTheme;
-    const themeVars = require(`./themes/daedalus/${currentTheme}.js`); // eslint-disable-line
-
+    const themeVars = require(`./themes/daedalus/${currentTheme}.js`).default;
     return (
-      <div>
+      <Fragment>
         <ThemeManager variables={themeVars} />
         <Provider stores={stores} actions={actions}>
           <ThemeProvider theme={daedalusTheme} themeOverrides={themeOverrides}>
             <IntlProvider {...{ locale, key: locale, messages: translations[locale] }}>
-              <div style={{ height: '100%' }}>
+              <Fragment>
                 <Router history={history} routes={Routes} />
                 {mobxDevTools}
                 {app.isAboutDialogOpen && <AboutDialog />}
-              </div>
+              </Fragment>
             </IntlProvider>
           </ThemeProvider>
         </Provider>
-      </div>
+      </Fragment>
     );
   }
 }

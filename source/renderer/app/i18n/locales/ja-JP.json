@@ -24,7 +24,7 @@
   "bugReport.dialog.alternative.instructions.step2": "「<strong>手動で送信</strong>」ボタンを押すとダイダロス公式サイトにあるバグ報告ページへ移動します。",
   "bugReport.dialog.alternative.instructions.step3": "サポートリクエストにログを添付し、必要事項を記入した上でフォームを送信してください。",
   "bugReport.dialog.alternative.submitManually.button.label": "手動で送信",
-  "bugReport.dialog.alternative.submitManually.link": "daedaluswallet.io/ja/problem",
+  "bugReport.dialog.alternative.submitManually.link": "https://daedaluswallet.io/ja/problem",
   "bugReport.dialog.button.label": "お問い合わせ",
   "bugReport.dialog.emailLabel": "あなたのメールアドレスl",
   "bugReport.dialog.emailPlaceholder": "ここにあなたのメールアドレスを入力してください。",
