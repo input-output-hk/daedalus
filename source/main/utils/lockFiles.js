@@ -3,8 +3,10 @@ import path from 'path';
 import { lockSync, unlockSync, checkSync } from './lock-files';
 import { launcherConfig } from '../config';
 import { getProcessName } from './processes';
+import { Logger } from './logging';
 
 const OPTIONS = {
+  onCompromised: (error) => Logger.warn(error),
   realpath: false, // Resolve symlinks (note that if true, the file must exist previously)
 };
 

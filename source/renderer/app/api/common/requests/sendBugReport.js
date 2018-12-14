@@ -1,8 +1,7 @@
 // @flow
 import moment from 'moment';
 import url from 'url';
-import { request } from '../../utils/reportRequest';
-import environment from '../../../../../common/environment';
+import { reportRequestChannel } from '../../../ipc/reportRequestChannel';
 
 export type SendBugReportParams = {
   requestFormData: {
@@ -11,40 +10,51 @@ export type SendBugReportParams = {
     problem: string,
     compressedLogsFile: string,
   },
+  environmentData: {
+    network: string,
+    version: string,
+    os: string,
+    apiVersion: string,
+    build: string,
+    installerVersion: string,
+    reportUrl: string,
+  }
 };
 
 export const sendBugReport = (
-  { requestFormData }: SendBugReportParams
+  { requestFormData, environmentData }: SendBugReportParams
 ) => {
   const { email, subject, problem, compressedLogsFile } = requestFormData;
-  const { version, os, API_VERSION, NETWORK, build, getInstallerVersion, REPORT_URL } = environment;
-  const reportUrl = url.parse(REPORT_URL);
-  const { hostname, port } = reportUrl;
-
+  const { version, os, apiVersion, network, build, installerVersion, reportUrl } = environmentData;
+  const parsedReportURL = url.parse(reportUrl);
+  const { hostname, port } = parsedReportURL;
   // Report server recognizes the following networks: mainnet, staging and testnet
-  const network = NETWORK === 'development' ? 'staging' : NETWORK;
+  const serverNetwork = network === 'development' ? 'staging' : network;
 
-  return request({
-    hostname,
-    method: 'POST',
-    path: '/api/v1/report',
-    port,
-  }, {
-    product: 'Daedalus Wallet',
-    frontendVersion: version,
-    backendVersion: API_VERSION,
-    network,
-    build,
-    installerVersion: getInstallerVersion(),
-    os,
-    compressedLogsFile,
-    date: moment().format('YYYY-MM-DDTHH:mm:ss'),
-    magic: 2000000000,
-    type: {
-      type: 'customreport',
-      email,
-      subject,
-      problem,
+  return reportRequestChannel.send({
+    httpOptions: {
+      hostname,
+      method: 'POST',
+      path: '/api/v1/report',
+      port,
+    },
+    requestPayload: {
+      product: 'Daedalus Wallet',
+      frontendVersion: version,
+      backendVersion: apiVersion,
+      network: serverNetwork,
+      build,
+      installerVersion,
+      os,
+      compressedLogsFile,
+      date: moment().format('YYYY-MM-DDTHH:mm:ss'),
+      magic: 2000000000,
+      type: {
+        type: 'customreport',
+        email,
+        subject,
+        problem,
+      }
     }
   });
 };

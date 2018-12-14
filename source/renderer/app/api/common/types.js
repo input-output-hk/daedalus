@@ -1,3 +1,4 @@
+// @flow
 export type RequestConfig = {
   port: number,
   ca: Uint8Array,
@@ -22,8 +23,19 @@ export type Pagination = {
 };
 
 export type SendBugReportRequest = {
-  email: string,
-  subject: string,
-  problem: string,
-  logs: Array<string>,
+  requestFormData: {
+    email: string,
+    subject: string,
+    problem: string,
+    compressedLogsFile: string,
+  },
+  environmentData: {
+    network: string,
+    version: string,
+    os: string,
+    apiVersion: string,
+    build: string,
+    installerVersion: string,
+    reportUrl: string,
+  }
 };

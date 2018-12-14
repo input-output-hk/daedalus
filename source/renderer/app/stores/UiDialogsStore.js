@@ -8,7 +8,7 @@ export default class UiDialogsStore extends Store {
   @observable secondsSinceActiveDialogIsOpen: number = 0;
   @observable dataForActiveDialog: Object = {};
 
-  _secondsTimerInterval: ?number = null;
+  _secondsTimerInterval: ?IntervalID = null;
 
   setup() {
     this.actions.dialogs.open.listen(this._onOpen);
@@ -23,10 +23,10 @@ export default class UiDialogsStore extends Store {
     Math.max(countDownTo - this.secondsSinceActiveDialogIsOpen, 0)
   );
 
-  @action _onOpen = ({ dialog } : { dialog : Function }) => {
+  @action _onOpen = ({ dialog }: { dialog: Function }) => {
     this._reset();
     this.activeDialog = dialog;
-    this.dataForActiveDialog = observable(dialog.defaultProps);
+    this.dataForActiveDialog = observable(dialog.defaultProps || {});
     this.secondsSinceActiveDialogIsOpen = 0;
     if (this._secondsTimerInterval) clearInterval(this._secondsTimerInterval);
     this._secondsTimerInterval = setInterval(this._updateSeconds, 1000);
@@ -40,7 +40,7 @@ export default class UiDialogsStore extends Store {
     this.secondsSinceActiveDialogIsOpen += 1;
   };
 
-  @action _onUpdateDataForActiveDialog = ({ data } : { data: Object }) => {
+  @action _onUpdateDataForActiveDialog = ({ data }: { data: Object }) => {
     Object.assign(this.dataForActiveDialog, data);
   };
 

@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from 'react';
-import { remote } from 'electron';
 import { observer, inject } from 'mobx-react';
 import InstructionsDialog from '../../../../components/wallet/paper-wallet-certificate/InstructionsDialog';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
@@ -12,7 +11,8 @@ export default class InstructionsDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
 
   onPrint = () => {
-    const filePath = remote.dialog.showSaveDialog({
+    // TODO: refactor this direct access to the dialog api
+    const filePath = global.dialog.showSaveDialog({
       defaultPath: 'paper-wallet-certificate.pdf',
       filters: [{
         name: 'paper-wallet-certificate',
@@ -27,14 +27,15 @@ export default class InstructionsDialogContainer extends Component<Props> {
   };
 
   render() {
-    const { wallets } = this.props.stores;
-
+    const { wallets, app } = this.props.stores;
+    const { openExternalLink, environment: { network } } = app;
     return (
       <InstructionsDialog
         inProgress={wallets.generatingCertificateInProgress}
+        network={network}
         onPrint={this.onPrint}
         onClose={this.props.onClose}
-        onOpenExternalLink={this.props.stores.app.openExternalLink}
+        onOpenExternalLink={openExternalLink}
       />
     );
   }
