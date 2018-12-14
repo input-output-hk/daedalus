@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
-import { storiesOf, action } from '@storybook/react';
+import { storiesOf } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
 import StoryDecorator from './support/StoryDecorator';
 import LanguageSelectionForm from '../../source/renderer/app/components/profile/language-selection/LanguageSelectionForm';
 import globalMessages from '../../source/renderer/app/i18n/global-messages';
