@@ -16,8 +16,8 @@ const localesFillForm = {
 };
 
 const {
-  isStaging, isTestnet, isDevelopment,
-  version, os, API_VERSION, NETWORK, build, buildNumber, installerVersion
+  version, os, API_VERSION, NETWORK,
+  build, buildNumber, installerVersion
 } = global.environment;
 
 export const getNetworkExplorerUrl = (network: string): string => {
