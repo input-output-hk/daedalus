@@ -446,7 +446,70 @@ render() {
 
 ## Parentheses
 
-Wrap JSX tags in parentheses when they span more than one line.
+Wrap JSX tags in parentheses when they span more than one line. Multiline JSX should not start on the same line as a parentheses.
+
+:white_check_mark: ***Do***
+
+```jsx
+// single line
+render() {
+  const body = <div>hello</div>;
+
+  return <MyComponent>{body}</MyComponent>;
+}
+
+// multiline
+render() {
+  return (
+    <MyComponent foo="bar">
+      <MyChild />
+    </MyComponent>
+  );
+}
+
+// both
+render() {
+  const body = (
+    <div>
+      <h1>Hello</h1>
+    </div>
+  );
+
+  return <MyComponent>{body}</MyComponent>;
+}
+
+// stateless single line
+const Name = () => <h1>Bobby Smith</h1>;
+
+// stateless multiline
+const Names = () => (
+  <div>
+    <h1>Bobby Smith</h1>
+    <h1>Brenda Smith</h1>
+  </div>
+);
+```
+
+:no_entry_sign: ***Don't***
+
+```jsx
+render() {
+  return <MyComponent variant="long body" foo="bar">
+            <MyChild />
+          </MyComponent>;
+}
+
+render() {
+  return (<MyComponent variant="long body" foo="bar">
+            <MyChild />
+          </MyComponent>);
+}
+
+const Names = () => (<div>
+    <h1>Bobby Smith</h1>
+    <h1>Brenda Smith</h1>
+  </div>);
+```
 
 
 
