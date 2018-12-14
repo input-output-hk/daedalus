@@ -32,7 +32,10 @@ export default class NetworkStatusPage extends Component<InjectedProps> {
       <CenteredLayout>
         <NetworkStatus
           cardanoNodeState={cardanoNodeState}
+          isDev={environment.isDev}
           isMainnet={environment.isMainnet}
+          isStaging={environment.isStaging}
+          isTestnet={environment.isTestnet}
           isNodeResponding={isNodeResponding}
           isNodeSubscribed={isNodeSubscribed}
           isNodeSyncing={isNodeSyncing}

@@ -1,6 +1,6 @@
 // @flow
 import BigNumber from 'bignumber.js';
-import WalletTransaction from '../../domains/WalletTransaction';
+import { WalletTransaction } from '../../domains/WalletTransaction';
 import type { ResponseBase } from '../common/types';
 
 export type Transactions = ResponseBase & {

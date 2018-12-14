@@ -29,12 +29,16 @@ export const getNetworkExplorerUrl = (network: string): string => {
   return explorerUrl; // sets default to mainnet incase env.NETWORK is undefined
 };
 
-export const getNetworkEkgUrl = () => {
+export const getNetworkEkgUrl = (env: {
+  isDev: boolean,
+  isStaging: boolean,
+  isTestnet: boolean
+}) => {
   // sets default to development in case env.NETWORK is undefined
   let ekgUrl = DEVELOPMENT_EKG_URL;
-  if (isDevelopment) { ekgUrl = DEVELOPMENT_EKG_URL; }
-  if (isStaging) { ekgUrl = STAGING_EKG_URL; }
-  if (isTestnet) { ekgUrl = TESTNET_EKG_URL; }
+  if (env.isDev) { ekgUrl = DEVELOPMENT_EKG_URL; }
+  if (env.isStaging) { ekgUrl = STAGING_EKG_URL; }
+  if (env.isTestnet) { ekgUrl = TESTNET_EKG_URL; }
   return ekgUrl;
 };
 

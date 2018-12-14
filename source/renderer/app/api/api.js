@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js';
 
 // domains
 import Wallet from '../domains/Wallet';
-import WalletTransaction, { transactionTypes } from '../domains/WalletTransaction';
+import { WalletTransaction, transactionTypes } from '../domains/WalletTransaction';
 import WalletAddress from '../domains/WalletAddress';
 
 // Accounts requests

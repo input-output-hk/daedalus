@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 import { find } from 'lodash';
 import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
-import WalletTransaction, { transactionTypes } from '../domains/WalletTransaction';
+import { WalletTransaction, transactionTypes } from '../domains/WalletTransaction';
 import type { GetTransactionsResponse } from '../api/transactions/types';
 import type { UnconfirmedAmount } from '../types/unconfirmedAmountType';
 import { isValidAmountInLovelaces } from '../utils/validations';

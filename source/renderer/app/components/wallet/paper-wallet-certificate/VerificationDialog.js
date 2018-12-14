@@ -154,7 +154,7 @@ export default class VerificationDialog extends Component<Props, State> {
 
   resetForm = () => {
     const { form } = this;
-    const autocomplete = this.recoveryPhraseAutocomplete.getRef();
+    const autocomplete = this.recoveryPhraseAutocomplete;
 
     // Cancel all debounced field validations
     form.each((field) => { field.debouncedValidation.cancel(); });
@@ -162,7 +162,7 @@ export default class VerificationDialog extends Component<Props, State> {
     form.showErrors(false);
 
     // Autocomplete has to be reset manually
-    this.recoveryPhraseAutocomplete.getRef().clear();
+    autocomplete.clear();
 
     if (autocomplete && autocomplete.focus) {
       autocomplete.focus();

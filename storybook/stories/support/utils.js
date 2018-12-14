@@ -4,7 +4,8 @@ import faker from 'faker';
 import moment from 'moment';
 import BigNumber from 'bignumber.js';
 
-import WalletTransaction, {
+import {
+  WalletTransaction,
   transactionStates,
   transactionTypes
 } from '../../../source/renderer/app/domains/WalletTransaction';
