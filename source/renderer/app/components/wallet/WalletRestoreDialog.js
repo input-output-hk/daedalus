@@ -265,7 +265,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     form.showErrors(false);
 
     // Autocomplete has to be reset manually
-    this.recoveryPhraseAutocomplete.getRef().clear();
+    this.recoveryPhraseAutocomplete.clear();
   };
 
   render() {

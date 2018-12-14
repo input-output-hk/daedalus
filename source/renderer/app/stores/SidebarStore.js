@@ -4,12 +4,8 @@ import { get } from 'lodash';
 import Store from './lib/Store';
 import { sidebarConfig } from '../config/sidebarConfig';
 import { WalletSyncStateTags } from '../domains/Wallet';
-import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../../../common/ipc/api';
 import { formattedWalletAmount } from '../utils/formatters';
 import type { SidebarWalletType } from '../types/sidebarTypes';
-
-// TODO: refactor all parts that rely on this to ipc channels!
-const { ipcRenderer } = global;
 
 export default class SidebarStore extends Store {
 
@@ -25,20 +21,9 @@ export default class SidebarStore extends Store {
     actions.activateSidebarCategory.listen(this._onActivateSidebarCategory);
     actions.walletSelected.listen(this._onWalletSelected);
 
-    // TODO: refactor to ipc channel
-    ipcRenderer.on(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._resetActivateSidebarCategory);
-
     this.registerReactions([
       this._syncSidebarRouteWithRouter,
     ]);
-  }
-
-  teardown() {
-    // TODO: refactor to ipc channel
-    ipcRenderer.removeListener(
-      GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL,
-      this._resetActivateSidebarCategory
-    );
   }
 
   @computed get wallets(): Array<SidebarWalletType> {
