@@ -24,6 +24,7 @@ Changelog
 - Added `--rp` prefixed CSS variables to Daedalus themes to configure styles of React-Polymorph components and removed SimpleTheme imports previously used for React-Polymorph overrides in favor of using ThemeProvider's themeOverrides feature ([PR 1139](https://github.com/input-output-hk/daedalus/pull/1139))
 - Changed API call logging level from `debug` to `info` ([PR 1183](https://github.com/input-output-hk/daedalus/pull/1183))
 - Enabled Cardano Wallet API documentation server in development mode - reacheable on https://localhost:8091/docs/v1/index/ ([PR 1187](https://github.com/input-output-hk/daedalus/pull/1187))
+- Updated application dependencies ([PR 1201](https://github.com/input-output-hk/daedalus/pull/1201), [PR 1216](https://github.com/input-output-hk/daedalus/pull/1216))
 
 ## 0.12.0
 =======
@@ -42,7 +43,7 @@ Changelog
 - Improved the loading UX ([PR 723](https://github.com/input-output-hk/daedalus/pull/723))
 - Improved the NTP check handling ([PR 1086](https://github.com/input-output-hk/daedalus/pull/1086), [PR 1149](https://github.com/input-output-hk/daedalus/pull/1149), [PR 1158](https://github.com/input-output-hk/daedalus/pull/1158), [PR 1194](https://github.com/input-output-hk/daedalus/pull/1194), [PR 1213](https://github.com/input-output-hk/daedalus/pull/1213))
 - Improved the transaction details text selection ([PR 1073](https://github.com/input-output-hk/daedalus/pull/1073), [PR 1095](https://github.com/input-output-hk/daedalus/pull/1095))
-- Integrated Cardano V1 API endpoints ([PR 1018](https://github.com/input-output-hk/daedalus/pull/1018), [PR 1031](https://github.com/input-output-hk/daedalus/pull/1031), [PR 1037](https://github.com/input-output-hk/daedalus/pull/1037), [PR 1042](https://github.com/input-output-hk/daedalus/pull/1042), [PR 1045](https://github.com/input-output-hk/daedalus/pull/1045), [PR 1070](https://github.com/input-output-hk/daedalus/pull/1070), [PR 1078](https://github.com/input-output-hk/daedalus/pull/1078), [PR 1079](https://github.com/input-output-hk/daedalus/pull/1079), [PR 1080](https://github.com/input-output-hk/daedalus/pull/1080), [PR 1088](https://github.com/input-output-hk/daedalus/pull/1088))
+- Integrated Cardano V1 API endpoints ([PR 1018](https://github.com/input-output-hk/daedalus/pull/1018), [PR 1031](https://github.com/input-output-hk/daedalus/pull/1031), [PR 1037](https://github.com/input-output-hk/daedalus/pull/1037), [PR 1042](https://github.com/input-output-hk/daedalus/pull/1042), [PR 1045](https://github.com/input-output-hk/daedalus/pull/1045), [PR 1070](https://github.com/input-output-hk/daedalus/pull/1070), [PR 1078](https://github.com/input-output-hk/daedalus/pull/1078), [PR 1079](https://github.com/input-output-hk/daedalus/pull/1079), [PR 1080](https://github.com/input-output-hk/daedalus/pull/1080), [PR 1088](https://github.com/input-output-hk/daedalus/pull/1088), [PR 1220](https://github.com/input-output-hk/daedalus/pull/1220))
 - Refactored and improved `NetworkStatus` store to use V1 API data ([PR 1081](https://github.com/input-output-hk/daedalus/pull/1081))
 
 ### Fixes

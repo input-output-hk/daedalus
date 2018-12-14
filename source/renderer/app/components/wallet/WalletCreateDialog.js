@@ -88,7 +88,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
   };
 
   componentDidMount() {
-    setTimeout(() => { this.walletNameInput.getRef().focus(); });
+    setTimeout(() => { this.walletNameInput.focus(); });
   }
 
   walletNameInput: Input;

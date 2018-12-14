@@ -9,6 +9,7 @@ import loadAsset from './load-asset';
 import getGpuStatus from './get-gpu-status';
 import { handleReportRequests } from './reportRequestChannel';
 import { handlePaperWalletRequests } from './generatePaperWalletChannel';
+import { openExternalUrlChannel } from './open-external-url';
 
 export default (window: BrowserWindow) => {
   compressLogsApi();
@@ -20,4 +21,5 @@ export default (window: BrowserWindow) => {
   getGpuStatus();
   handleReportRequests();
   handlePaperWalletRequests();
+  openExternalUrlChannel;
 };
