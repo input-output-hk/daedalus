@@ -5,6 +5,7 @@ import SimpleButton from 'react-polymorph/lib/themes/simple/SimpleButton.scss';
 import SimpleCheckbox from 'react-polymorph/lib/themes/simple/SimpleCheckbox.scss';
 import SimpleFormField from 'react-polymorph/lib/themes/simple/SimpleFormField.scss';
 import SimpleInput from 'react-polymorph/lib/themes/simple/SimpleInput.scss';
+import SimpleLoadingSpinner from 'react-polymorph/lib/themes/simple/SimpleLoadingSpinner.scss';
 import SimpleModal from 'react-polymorph/lib/themes/simple/SimpleModal.scss';
 import SimpleOptions from 'react-polymorph/lib/themes/simple/SimpleOptions.scss';
 import SimpleSelect from 'react-polymorph/lib/themes/simple/SimpleSelect.scss';
@@ -19,6 +20,7 @@ const {
   CHECKBOX,
   FORM_FIELD,
   INPUT,
+  LOADING_SPINNER,
   MODAL,
   OPTIONS,
   SELECT,
@@ -33,6 +35,7 @@ export const daedalusTheme = {
   [CHECKBOX]: SimpleCheckbox,
   [FORM_FIELD]: SimpleFormField,
   [INPUT]: SimpleInput,
+  [LOADING_SPINNER]: SimpleLoadingSpinner,
   [MODAL]: SimpleModal,
   [OPTIONS]: SimpleOptions,
   [SELECT]: SimpleSelect,

@@ -24,7 +24,7 @@ configure({
 });
 
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
-addLocaleData([en, de, hr, ja]);
+addLocaleData([...en, ...de, ...hr, ...ja]);
 
 const environment = global.environment;
 const { NODE_ENV, NETWORK } = environment;
@@ -49,7 +49,7 @@ const initializeDaedalus = () => {
     }),
   };
 
-  const rootElement = document.getElementById('app');
+  const rootElement = document.getElementById('root');
   if (!rootElement) throw new Error('No #root element found.');
   render(<App stores={stores} actions={actions} history={history} />, rootElement);
 };
