@@ -7,8 +7,14 @@
 1. [Javascript](#javascript)
     - [Variables](#variables)
     - [Naming Conventions](#naming-conventions)
-    - [Strings](#strings)
     - [Whitespace](#whitespace)
+    - [Modules](#modules)
+    - [Properties](#properties)
+    - [Comparison Operators & Equality](#comparison-operators--equality)
+    - [Blocks](#blocks)
+    - [Control Statements](#control-statements)
+    - [Strings](#strings)
+    - [Arrow Functions](#arrow-functions)
 1. [React](#react)
     - [Naming](#naming)
     - [Alignment](#alignment)
@@ -141,44 +147,6 @@ const robot = {
 };
 ```
 
-## Strings
-
-Use single quotes `''`.
-
-:white_check_mark: ***Do***
-
-```javascript
-  const name = 'Ada Lovelace';
-```
-
-:no_entry_sign: ***Don't***
-
-```javascript
-  const name = "Mary Poppins";
-  const name = `Mary Poppins`;
-```
-
-Template string literals should contain interpolation of data or newlines.
-
-:white_check_mark: ***Do***
-
-```javascript
-  const firstName = 'Ada';
-  const lastName = 'Lovelace';
-  const fullName = `${firstName} ${lastName}`;
-
-  const bio = `
-    My name is ${fullName}. I was born in London, England.
-    The year was 1815 and winter was upon us.
-  `;
-```
-
-:no_entry_sign: ***Don't***
-
-```javascript
-  const fullName = `Ada Lovelace`;
-```
-
 ## Whitespace
 
 Place 1 space before the leading brace.
@@ -261,6 +229,673 @@ const { inputs, outputs } = txn;
 
 ```javascript
 const {inputs, outputs} = txn;
+```
+
+Do not pad your blocks with blank lines.
+
+:no_entry_sign: ***Don't***
+
+```javascript
+function bar() {
+
+  console.log(foo);
+
+}
+
+if (baz) {
+
+  console.log(qux);
+} else {
+  console.log(foo);
+
+}
+
+class Foo {
+
+  constructor(bar) {
+    this.bar = bar;
+  }
+}
+```
+
+:white_check_mark: ***Do***
+
+```javascript
+function bar() {
+  console.log(foo);
+}
+
+if (baz) {
+  console.log(qux);
+} else {
+  console.log(foo);
+}
+```
+
+## Modules
+
+Use named exports instead of default exports when possible.
+
+:white_check_mark: ***Do***
+
+```javascript
+export const foo = () => {};
+```
+
+```javascript
+const bar = () => {};
+
+export bar;
+```
+
+Only import from a path in one place.
+
+:white_check_mark: ***Do***
+
+```javascript
+import foo, { named1, named2 } from 'foo';
+```
+
+```javascript
+import foo, {
+  named1,
+  named2,
+} from 'foo';
+```
+
+:no_entry_sign: ***Don't***
+
+```javascript
+import foo from 'foo';
+// … some other imports … //
+import { named1, named2 } from 'foo';
+```
+
+Put all `import` statements above non-import statements.
+
+:white_check_mark: ***Do***
+
+```javascript
+import { foo } from 'foo';
+import { bar } from 'bar';
+
+foo.init();
+```
+
+:no_entry_sign: ***Don't***
+
+```javascript
+import { foo } from 'foo';
+foo.init();
+import { bar } from 'bar';
+```
+
+Multiline imports should be indented just like multiline array and object literals.
+
+:white_check_mark: ***Do***
+
+```javascript
+import {
+  longNameA,
+  longNameB,
+  longNameC,
+  longNameD,
+  longNameE,
+} from 'path';
+```
+
+:no_entry_sign: ***Don't***
+
+```javascript
+import { longNameA, longNameB, longNameC, longNameD, longNameE } from 'path';
+```
+
+## Properties
+
+Use dot notation when accessing properties.
+
+:white_check_mark: ***Do***
+
+```javascript
+const luke = {
+  jedi: true,
+  age: 28,
+};
+
+const isJedi = luke.jedi;
+```
+
+:no_entry_sign: ***Don't***
+
+```javascript
+const luke = {
+  jedi: true,
+  age: 28,
+};
+
+const isJedi = luke['jedi'];
+```
+
+Use bracket notation `[]` when accessing properties with a variable.
+
+:white_check_mark: ***Do***
+
+```javascript
+const luke = {
+  jedi: true,
+  age: 28,
+};
+
+function getProp(prop) {
+  return luke[prop];
+}
+
+const isJedi = getProp('jedi');
+```
+
+## Comparison Operators & Equality
+
+Use `===` and `!==` over `==` and `!=` to avoid unintented coercions by the `ToBoolean` abstract method that evaluates expressions in JavaScript.
+
+- **Objects** evaluate to **true**
+- **Undefined** evaluates to **false**
+- **Null** evaluates to **false**
+- **Booleans** evaluate to **the value of the boolean**
+- **Numbers** evaluate to **false** if **+0, -0, or NaN**, otherwise **true**
+- **Strings** evaluate to **false** if an empty string `''`, otherwise **true**
+
+```javascript
+// objects, empty or not, evaluate to true
+if ({}) {
+  // true
+}
+
+// an array (even an empty one) is an object
+if ([0] && []) {
+  // true
+}
+```
+
+Use shortcuts for booleans, but explicit comparisons for strings and numbers.
+
+:white_check_mark: ***Do***
+
+```javascript
+if (isValid) {
+  // ...
+}
+
+if (name !== '') {
+  // ...
+}
+
+if (collection.length > 0) {
+  // ...
+}
+```
+
+:no_entry_sign: ***Don't***
+
+```javascript
+if (isValid === true) {
+  // use a comparison shortcut for booleans
+}
+
+if (name) {
+  // can unexpectedly evaluate to truthy
+  // use explicit comparison instead
+}
+
+if (collection.length) {
+  // ...
+}
+
+// Example of unexpected truthy evaluation for a string.
+// Result: alerts "It's true".
+
+const name = ' ';
+
+if (name) {
+  alert("It's true");
+} else {
+  alert("It's false")
+}
+```
+
+When writing a switch statement, use curly braces to create block scope for each `case` and `default` clause that contain lexical declarations. When each `case`/`default` clause has its own block scope, it prevents unintentional pollution of the namespace with duplicate lexical declarations.
+
+:white_check_mark: ***Do***
+
+```javascript
+switch (foo) {
+  case 1: {
+    let x = 1;
+    break;
+  }
+  case 2: {
+    let x = 2;
+    break;
+  }
+  case 3: {
+    const y = 1;
+    function f() {
+      alert(y);
+    }
+    break;
+  }
+  case 4:
+    const y = 2;
+    function f() {
+      alert(y);
+    }
+    break;
+  default: {
+    class C {}
+  }
+}
+```
+
+:no_entry_sign: ***Don't***
+
+```javascript
+switch (foo) {
+  case 1:
+    let x = 1;
+    break;
+  case 2:
+    let x = 2;
+    break;
+  case 3:
+    const y = 1;
+    break;
+  default:
+    const y = 2;
+    class C {}
+}
+```
+
+Ternaries should not be nested and generally be single line expressions.
+
+:no_entry_sign: ***Don't***
+
+```javascript
+const foo = maybe1 > maybe2
+  ? "bar"
+  : value1 > value2 ? "baz" : null;
+```
+
+:white_check_mark: ***Do***
+
+```javascript
+// split into 2 separated ternary expressions
+const maybeNull = value1 > value2 ? 'baz' : null;
+
+// better, but still uses multiple lines
+const foo = maybe1 > maybe2
+  ? 'bar'
+  : maybeNull;
+
+ // single line is best
+const foo = maybe1 > maybe2 ? 'bar' : maybeNull;
+```
+
+Avoid unneeded ternary statements.
+
+:no_entry_sign: ***Don't***
+
+```javascript
+const foo = a ? a : b;
+const bar = c ? true : false;
+const baz = c ? false : true;
+```
+
+:white_check_mark: ***Do***
+
+```javascript
+const foo = a || b;
+const bar = !!c;
+const baz = !c;
+```
+
+When mixing operators, enclose them in parentheses. The only exception is the standard arithmetic operators (`+`, `-`, `*`, & `/`) since their precedence is broadly understood.
+
+:white_check_mark: ***Do***
+
+```javascript
+const foo = (a && b < 0) || c > 0 || (d + 1 === 0);
+
+const bar = (a ** b) - (5 % d);
+
+if (a || (b && c)) {
+  return d;
+}
+
+const bar = a + b / c * d;
+```
+
+:no_entry_sign: ***Don't***
+
+```javascript
+const foo = a && b < 0 || c > 0 || d + 1 === 0;
+
+const bar = a ** b - 5 % d;
+
+// one may be confused into thinking (a || b) && c
+if (a || b && c) {
+  return d;
+}
+```
+
+## Blocks
+
+Use braces with all multi-line blocks.
+
+:white_check_mark: ***Do***
+
+```javascript
+if (test) return false;
+
+if (test) { return false; }
+
+if (test) {
+  return false;
+}
+
+function bar() {
+  return false;
+}
+```
+
+:no_entry_sign: ***Don't***
+
+```javascript
+if (test)
+  return false;
+```
+
+If you’re using multi-line blocks with `if` and `else`, put `else` on the same line as your `if` block’s closing brace.
+
+:white_check_mark: ***Do***
+
+```javascript
+if (test) {
+  thing1();
+  thing2();
+} else {
+  thing3();
+}
+```
+
+:no_entry_sign: ***Don't***
+
+```javascript
+if (test) {
+  thing1();
+  thing2();
+}
+else {
+  thing3();
+}
+```
+
+If an `if` block always executes a `return` statement, the subsequent `else` block is unnecessary. A `return` in an `else if` block following an `if` block that contains a `return` can be separated into multiple `if` blocks.
+
+:white_check_mark: ***Do***
+
+```javascript
+function foo() {
+  if (x) {
+    return x;
+  }
+  return y;
+}
+
+function cats() {
+  if (x) {
+    return x;
+  }
+
+  if (y) {
+    return y;
+  }
+}
+
+function dogs(x) {
+  if (x) {
+    if (z) {
+      return y;
+    }
+  }
+  return z;
+}
+```
+
+:no_entry_sign: ***Don't***
+
+```javascript
+function foo() {
+  if (x) {
+    return x;
+  } else {
+    return y;
+  }
+}
+
+function cats() {
+  if (x) {
+    return x;
+  } else if (y) {
+    return y;
+  }
+}
+
+function dogs() {
+  if (x) {
+    return x;
+  } else {
+    if (y) {
+      return y;
+    }
+  }
+}
+```
+
+## Control Statements
+
+If your control statement (`if`, `while` etc.) exceeds the maximum line length, each (grouped) condition could be put into a new line. The logical operator should begin the line.
+
+- *Requiring operators at the beginning of the line persists alignment and follows a pattern similar to method chaining. This visual improvement assists the reader in following complex logic when reading the statement.*
+
+:white_check_mark: ***Do***
+
+```javascript
+if (
+  foo === 123
+  && bar === 'abc'
+) {
+  thing1();
+}
+
+if (
+  (foo === 123 || bar === 'abc')
+  && doesItLookGoodWhenItBecomesThatLong()
+  && isThisReallyHappening()
+) {
+  thing1();
+}
+
+if (foo === 123 && bar === 'abc') {
+  thing1();
+}
+```
+
+:no_entry_sign: ***Don't***
+
+```javascript
+if ((foo === 123 || bar === 'abc') && doesItLookGoodWhenItBecomesThatLong() && isThisReallyHappening()) {
+  thing1();
+}
+
+if (foo === 123 &&
+  bar === 'abc') {
+  thing1();
+}
+
+if (foo === 123
+  && bar === 'abc') {
+  thing1();
+}
+
+if (
+  foo === 123 &&
+  bar === 'abc'
+) {
+  thing1();
+}
+```
+
+When a function contains a control statement, always return early if the return value is known or `null`.
+
+:white_check_mark: ***Do***
+
+```javascript
+function meetsMinimum(amount) {
+  // return early
+  if (!amount) return;
+
+  return amount >= 1;
+}
+```
+
+:no_entry_sign: ***Don't***
+
+```javascript
+function txnIsPending(txn) {
+  if (txn && txn.status === 'creating') {
+    return true;
+  }
+  return false;
+}
+```
+
+## Strings
+
+Use single quotes `''`.
+
+:white_check_mark: ***Do***
+
+```javascript
+  const name = 'Ada Lovelace';
+```
+
+:no_entry_sign: ***Don't***
+
+```javascript
+  const name = "Mary Poppins";
+  const name = `Mary Poppins`;
+```
+
+Template string literals should contain interpolation of data or newlines.
+
+:white_check_mark: ***Do***
+
+```javascript
+  const firstName = 'Ada';
+  const lastName = 'Lovelace';
+  const fullName = `${firstName} ${lastName}`;
+
+  const bio = `
+    My name is ${fullName}. I was born in London, England.
+    The year was 1815 and winter was upon us.
+  `;
+```
+
+:no_entry_sign: ***Don't***
+
+```javascript
+  const fullName = `Ada Lovelace`;
+```
+
+## Arrow Functions
+
+If your function takes a single argument, omit the parentheses for less visual clutter.
+
+:white_check_mark: ***Do***
+
+```javascript
+[1, 2, 3].map(x => x * x);
+
+[1, 2, 3].map(number => (
+  `A long string with the ${number}. It’s so long that we don’t want it to take up space on the .map line!`
+));
+```
+
+:no_entry_sign: ***Don't***
+
+```javascript
+[1, 2, 3].map((x) => x * x);
+
+[1, 2, 3].map((x) => {
+  const y = x + 1;
+  return x * y;
+});
+```
+
+Enforce the location of arrow function bodies with implicit returns.
+
+:white_check_mark: ***Do***
+
+```javascript
+foo => bar;
+foo => (bar);
+foo => (
+    bar
+)
+```
+
+:no_entry_sign: ***Don't***
+
+```javascript
+foo =>
+  bar;
+
+foo =>
+  (bar);
+```
+
+In case the expression spans over multiple lines, wrap it in parentheses for better readability.
+
+:white_check_mark: ***Do***
+
+```javascript
+['get', 'post', 'put'].map(httpMethod => (
+  Object.prototype.hasOwnProperty.call(
+    httpMagicObjectWithAVeryLongName,
+    httpMethod,
+  )
+));
+```
+
+:no_entry_sign: ***Don't***
+
+```javascript
+['get', 'post', 'put'].map(httpMethod => Object.prototype.hasOwnProperty.call(
+    httpMagicObjectWithAVeryLongName,
+    httpMethod,
+  )
+);
+```
+
+If the function body consists of a single statement omit the braces and use the implicit return.
+
+:white_check_mark: ***Do***
+
+```javascript
+[1, 2, 3].map(number => `A string containing the ${number}.`);
+
+[1, 2, 3].map((number, index) => ({
+  [index]: number,
+}));
 ```
 
 # React
