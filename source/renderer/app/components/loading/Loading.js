@@ -268,7 +268,8 @@ export default class Loading extends Component<Props, State> {
           isCheckingSystemTime={isCheckingSystemTime}
         />
       );
-    } else if (!isConnected) {
+    }
+    if (!isConnected) {
       const finalCardanoNodeStates = [
         CardanoNodeStates.STOPPED,
         CardanoNodeStates.UPDATED,
@@ -287,7 +288,8 @@ export default class Loading extends Component<Props, State> {
           </h1>
         </div>
       );
-    } else if (!isSynced) {
+    }
+    if (!isSynced) {
       return (
         <div className={styles.syncing}>
           <h1 className={styles.headline}>

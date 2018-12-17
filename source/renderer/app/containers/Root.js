@@ -32,10 +32,10 @@ export default class Root extends Component<Props> {
       !isSystemTimeCorrect
     ) {
       return <LoadingPage stores={stores} actions={actions} />;
-    } else if (!wallets.hasAnyWallets) {
+    }
+    if (!wallets.hasAnyWallets) {
       return <WalletAddPage />;
     }
     return React.Children.only(children);
   }
 }
-

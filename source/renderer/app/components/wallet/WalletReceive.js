@@ -162,7 +162,7 @@ export default class WalletReceive extends Component<Props, State> {
     const passwordField = form.$('spendingPassword');
     const generateAddressForm = (
       <div className={generateAddressWrapperClasses}>
-        {walletHasPassword &&
+        {walletHasPassword && (
           <Input
             className={styles.spendingPassword}
             {...passwordField.bind()}
@@ -171,7 +171,7 @@ export default class WalletReceive extends Component<Props, State> {
             skin={InputSkin}
             onKeyPress={submitOnEnter.bind(this, this.submit)}
           />
-        }
+        )}
 
         <Button
           className={generateAddressButtonClasses}

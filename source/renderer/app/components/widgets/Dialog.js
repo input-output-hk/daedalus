@@ -54,19 +54,19 @@ export default class Dialog extends Component<Props> {
       >
 
         <div className={classnames([styles.dialogWrapper, className])}>
-          {title &&
+          {title && (
             <div className={styles.title}>
               <h1>{title}</h1>
             </div>
-          }
+          )}
 
-          {children &&
+          {children && (
             <div className={styles.content}>
               {children}
             </div>
-          }
+          )}
 
-          {actions &&
+          {actions && (
             <div className={styles.actions}>
               {map(actions, (action, key) => {
                 const buttonClasses = classnames([
@@ -86,7 +86,7 @@ export default class Dialog extends Component<Props> {
                 );
               })}
             </div>
-          }
+          )}
 
           {closeButton ? React.cloneElement(closeButton, { onClose }) : null}
           {backButton}

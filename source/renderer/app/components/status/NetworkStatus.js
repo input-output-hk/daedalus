@@ -163,7 +163,8 @@ export default class NetworkStatus extends Component<Props, State> {
             <tbody>
               <tr>
                 <th colSpan={2}>
-                  DAEDALUS STATUS<hr />
+                  DAEDALUS STATUS
+                  <hr />
                 </th>
               </tr>
               <tr>

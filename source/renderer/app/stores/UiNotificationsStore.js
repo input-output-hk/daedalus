@@ -14,8 +14,9 @@ export default class UiNotificationsStore extends Store {
 
   isOpen = (id: string): boolean => !!this._findNotificationById(id);
 
-  _findNotificationById = (id: string): ?Notification =>
-    this.activeNotifications.find(notification => notification.id === id);
+  _findNotificationById = (id: string): ?Notification => (
+    this.activeNotifications.find(notification => notification.id === id)
+  );
 
   @action _onOpen = ({ id, duration }: { id: string, duration?: number }) => {
     const notification = {

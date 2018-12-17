@@ -62,7 +62,8 @@ export class WalletTransaction {
   getAssuranceLevelForMode(mode: WalletAssuranceMode): TxnAssuranceLevel {
     if (this.numberOfConfirmations < mode.low) {
       return TxnAssuranceLevelOptions.LOW;
-    } else if (this.numberOfConfirmations < mode.medium) {
+    }
+    if (this.numberOfConfirmations < mode.medium) {
       return TxnAssuranceLevelOptions.MEDIUM;
     }
     return TxnAssuranceLevelOptions.HIGH;

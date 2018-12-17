@@ -56,4 +56,3 @@ export const deriveStorageKeys = (network: NetworkNames): CardanoNodeStorageKeys
 export const deriveProcessNames = (platform: PlatformNames): ProcessNames => ({
   CARDANO_PROCESS_NAME: CardanoProcessNameOptions[platform] || 'cardano-node'
 });
-

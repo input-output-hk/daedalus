@@ -1,9 +1,9 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import WalletBackupPrivacyWarningDialog from '../../components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog';
-import WalletRecoveryPhraseDisplayDialog from '../../components/wallet/backup-recovery/WalletRecoveryPhraseDisplayDialog';
-import WalletRecoveryPhraseEntryDialog from '../../components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog';
+import WalletBackupPrivacyWarningDialog from './backup-recovery/WalletBackupPrivacyWarningDialog';
+import WalletRecoveryPhraseDisplayDialog from './backup-recovery/WalletRecoveryPhraseDisplayDialog';
+import WalletRecoveryPhraseEntryDialog from './backup-recovery/WalletRecoveryPhraseEntryDialog';
 import type { RecoveryPhraseWord, walletBackupStep } from '../../types/walletBackupTypes';
 import { WALLET_BACKUP_STEPS } from '../../types/walletBackupTypes';
 
@@ -60,7 +60,8 @@ export default class WalletBackupDialog extends Component<Props> {
           onContinue={onContinue}
         />
       );
-    } else if (currentStep === WALLET_BACKUP_STEPS.RECOVERY_PHRASE_DISPLAY) {
+    }
+    if (currentStep === WALLET_BACKUP_STEPS.RECOVERY_PHRASE_DISPLAY) {
       return (
         <WalletRecoveryPhraseDisplayDialog
           recoveryPhrase={recoveryPhrase}
@@ -68,7 +69,8 @@ export default class WalletBackupDialog extends Component<Props> {
           onCancelBackup={onCancelBackup}
         />
       );
-    } else if (currentStep === WALLET_BACKUP_STEPS.RECOVERY_PHRASE_ENTRY) {
+    }
+    if (currentStep === WALLET_BACKUP_STEPS.RECOVERY_PHRASE_ENTRY) {
       return (
         <WalletRecoveryPhraseEntryDialog
           isTermDeviceAccepted={isTermDeviceAccepted}

@@ -1,10 +1,10 @@
 const gulp = require('gulp');
 const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
-const mainWebpackConfig = require('./source/main/webpack.config');
-const rendererWebpackConfig = require('./source/renderer/webpack.config');
 const shell = require('gulp-shell');
 const electronConnect = require('electron-connect');
+const mainWebpackConfig = require('./source/main/webpack.config');
+const rendererWebpackConfig = require('./source/renderer/webpack.config');
 
 // Setup electron-connect server to start the app in development mode
 let electronServer;

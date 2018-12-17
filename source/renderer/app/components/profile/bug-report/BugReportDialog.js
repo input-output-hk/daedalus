@@ -301,12 +301,12 @@ export default class BugReportDialog extends Component<Props, State> {
         actions={!error ? actions : alternativeActions}
         closeOnOverlayClick
         onClose={this.onClose}
-        closeButton={
+        closeButton={(
           <DialogCloseButton
             disabled={isSubmittingBugReport}
             onClose={this.onClose}
           />
-        }
+        )}
       >
         {error ? (
           <div>
