@@ -68,7 +68,7 @@
     "electron": "3.0.11",
     "electron-connect": "0.6.3",
     "electron-devtools-installer": "2.2.4",
-    "electron-packager": "13.0.0",
+    "electron-packager": "10.1.0",
     "electron-rebuild": "1.8.2",
     "eslint": "4.19.1",
     "eslint-config-airbnb": "16.1.0",
