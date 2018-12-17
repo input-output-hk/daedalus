@@ -6,6 +6,7 @@ Changelog
 
 ### Features
 
+- Implemented a success message for logs download ([PR 1228](https://github.com/input-output-hk/daedalus/pull/1228))
 - Replaced in-app support request with links to support page ([PR 1199](https://github.com/input-output-hk/daedalus/pull/1199))
 - Refactored environment setup and disabled Electron Node integration for the render process ([PR 1099](https://github.com/input-output-hk/daedalus/pull/1099/commits))
 
