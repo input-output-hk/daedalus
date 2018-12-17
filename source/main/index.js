@@ -1,6 +1,8 @@
 // @flow
 import os from 'os';
-import { app, BrowserWindow, globalShortcut, Menu, dialog, shell } from 'electron';
+import {
+  app, BrowserWindow, globalShortcut, Menu, dialog, shell, ipcMain
+} from 'electron';
 import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { Logger } from './utils/logging';
@@ -13,7 +15,8 @@ import { environment } from './environment';
 import {
   OPEN_ABOUT_DIALOG_CHANNEL,
   GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL,
-  GO_TO_NETWORK_STATUS_SCREEN_CHANNEL
+  GO_TO_NETWORK_STATUS_SCREEN_CHANNEL,
+  WINDOW_HAS_LOADED,
 } from '../common/ipc/api';
 import mainErrorHandler from './utils/mainErrorHandler';
 import { launcherConfig } from './config';
@@ -81,10 +84,16 @@ app.on('ready', async () => {
   try {
     await acquireDaedalusInstanceLock();
   } catch (e) {
-    const dialogTitle = 'Daedalus is unable to start!';
-    const dialogMessage = 'Another Daedalus instance is already running.';
-    dialog.showErrorBox(dialogTitle, dialogMessage);
-    app.exit(1);
+    ipcMain.on(WINDOW_HAS_LOADED, () => {
+      mainWindow.focus();
+      const dialogTitle = 'Daedalus is unable to start!';
+      const dialogMessage = 'Another Daedalus instance is already running.';
+      // This timeout is necessary otherwise the window is not focused in time
+      setTimeout(() => {
+        dialog.showErrorBox(dialogTitle, dialogMessage);
+        app.exit(1);
+      }, 100);
+    });
   }
 
   setupLogging();
