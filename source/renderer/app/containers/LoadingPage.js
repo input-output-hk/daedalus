@@ -1,14 +1,19 @@
 // @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import CenteredLayout from '../components/layout/CenteredLayout';
 import Loading from '../components/loading/Loading';
 import adaLogo from '../assets/images/ada-logo.inline.svg';
 import cardanoLogo from '../assets/images/cardano-logo.inline.svg';
+import { ellipsis } from '../utils/strings';
 import type { InjectedProps } from '../types/injectedPropsType';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import { getSupportUrl } from '../utils/network';
+import NotificationMessage from '../components/widgets/NotificationMessage';
+import successIcon from '../assets/images/success-small.inline.svg';
+import { DOWNLOAD_LOGS_SUCCESS_DURATION } from '../config/timingConfig';
+import { DOWNLOAD_LOGS_SUCCESS_ELLIPSIS } from '../config/formattingConfig';
 
 export const messages = defineMessages({
   loadingWalletData: {
@@ -20,6 +25,11 @@ export const messages = defineMessages({
     id: 'loading.screen.reportIssue.reportIssueButtonUrl',
     defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/categories/360000877653-Daedalus-wallet-mainnet',
     description: 'Link to Open Support page'
+  },
+  downloadLogsSuccess: {
+    id: 'loading.screen.reportIssue.logsDownloadSuccessMessage',
+    defaultMessage: '!!!Logs were downloaded',
+    description: 'Success message for download logs.',
   },
 });
 
@@ -38,6 +48,7 @@ export default class LoadingPage extends Component<InjectedProps> {
       forceCheckLocalTimeDifference, ignoreSystemTimeChecks,
     } = stores.networkStatus;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
+    const { id, message } = this.notification;
     return (
       <CenteredLayout>
         <Loading
@@ -61,8 +72,26 @@ export default class LoadingPage extends Component<InjectedProps> {
           onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
           onDownloadLogs={this.handleDownloadLogs}
         />
+        <NotificationMessage
+          icon={successIcon}
+          show={stores.uiNotifications.isOpen(id)}
+          onClose={() => this.props.actions.notifications.closeActiveNotification.trigger({ id })}
+          clickToClose
+          hasCloseButton
+        >
+          {message}
+        </NotificationMessage>
       </CenteredLayout>
     );
+  }
+
+  get notification() {
+    const { intl } = this.context;
+    return {
+      id: 'download-logs-success',
+      duration: DOWNLOAD_LOGS_SUCCESS_DURATION,
+      message: intl.formatMessage(messages.downloadLogsSuccess),
+    };
   }
 
   handleReportIssueClick = async (event: SyntheticEvent<HTMLButtonElement>) => {
@@ -82,5 +111,8 @@ export default class LoadingPage extends Component<InjectedProps> {
     if (destination) {
       this.props.actions.profile.downloadLogs.trigger({ fileName, destination, fresh: true });
     }
+    const { id, duration } = this.notification;
+    this.props.actions.notifications.open.trigger({ id, duration, });
+
   };
 }
