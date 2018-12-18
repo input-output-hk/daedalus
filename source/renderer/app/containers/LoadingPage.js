@@ -102,16 +102,17 @@ export default class LoadingPage extends Component<InjectedProps> {
   };
 
   handleDownloadLogs = () => {
-    const { actions } = this.props;
+    const { profile, notifications } = this.props.actions;
     const fileName = generateFileNameWithTimestamp();
     const destination = global.dialog.showSaveDialog({
       defaultPath: fileName,
     });
+    profile.downloadLogs.listen(() => {
+      const { id, duration } = this.notification;
+      notifications.open.trigger({ id, duration, });
+    });
     if (destination) {
-      actions.profile.downloadLogs.trigger({ fileName, destination, fresh: true });
+      profile.downloadLogs.trigger({ fileName, destination, fresh: true });
     }
-    const { id, duration } = this.notification;
-    actions.notifications.open.trigger({ id, duration, });
-
   };
 }
