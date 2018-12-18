@@ -6,7 +6,7 @@ vNext
 
 ### Features
 
-- Improved the UX of inline editing fields (like wallet renaming) ([PR 1099](https://github.com/input-output-hk/daedalus/pull/1231))
+- Improved the UX of inline editing fields (like wallet renaming) ([PR 1231](https://github.com/input-output-hk/daedalus/pull/1231))
 - Refactored environment setup and disabled Electron Node integration for the render process ([PR 1099](https://github.com/input-output-hk/daedalus/pull/1099/commits))
 
 ### Fixes
