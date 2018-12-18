@@ -16,7 +16,7 @@ const localesFillForm = {
 };
 
 const {
-  version, os, API_VERSION, NETWORK,
+  version, os, apiVersion, network: NETWORK,
   build, buildNumber, installerVersion
 } = global.environment;
 
@@ -46,7 +46,7 @@ export const getSupportUrl = async (baseUrl: string, locale: string) => {
   const network = NETWORK === 'development' ? 'staging' : NETWORK;
   const info = {
     frontendVersion: version,
-    backendVersion: API_VERSION,
+    backendVersion: apiVersion,
     network,
     build,
     installerVersion,
