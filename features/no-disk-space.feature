@@ -1,4 +1,3 @@
-@watch
 Feature: No Disk Space Overlay
 
   Background:
