@@ -22,6 +22,10 @@
     - [Quotes](#quotes)
     - [Props](#props)
 1. [CSS](#css)
+    - [Formatting Selectors](#formatting)
+    - [Properties](#properties)
+    - [Sass](#sass)
+    - [Variables](#variables)
 1. [Other](#other)
     - [Git](#git)
     - [CHANGELOG](#changelog)
@@ -1145,6 +1149,192 @@ const Names = () => (<div>
     <h1>Brenda Smith</h1>
   </div>);
 ```
+
+# CSS
+
+## Formatting Selectors
+
+* Prefer class selectors instead of ID selectors.
+* Prefer camelCase or dashes (`-`) instead of PascelCase or underscores (`_`).
+* When using multiple selectors in a rule declaration, give each selector its own line.
+* Put a space before the opening brace `{` in rule declarations.
+* In properties, put a space after, but not before, the `:` character.
+* Put closing braces `}` of rule declarations on a new line.
+* Put blank lines between rule declarations.
+
+:white_check_mark: ***Do***
+
+```css
+.avatar {
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.one,
+.selector,
+.perLine {
+  // ...
+}
+```
+
+:no_entry_sign: ***Don't***
+
+```css
+.avatar{
+    border-radius:50%;
+    border:2px solid white; }
+
+.no, .nope, .not_good {
+    // ...
+}
+#id_selector {
+  // ...
+}
+```
+
+## Properties
+
+The properties of a selector should always be defined in **ABC order**.
+
+:white_check_mark: ***Do***
+
+```css
+.supportRequest {
+  bottom: 0;
+  position: absolute;
+  width: auto;
+}
+```
+
+:no_entry_sign: ***Don't***
+
+```css
+.title {
+  text-align: center;
+  cursor: default;
+  margin-bottom: 8.5px;
+  line-height: 1.2;
+  font-family: var(--font-regular);
+  font-size: 20px;
+}
+```
+
+## Sass
+
+* Always use the `.scss` extension when creating a Sass file.
+* Nested selectors go last and nothing goes after them. 
+* Add whitespace between your rule declarations and nested selectors, as well as between adjacent nested selectors. 
+* The properties of nested selectors should always be defined in **ABC order**.
+
+:white_check_mark: ***Do***
+
+```scss
+.btn {
+  background: green;
+  font-weight: bold;
+  @include transition(background 0.5s ease);
+
+  .icon {
+    margin-right: 10px;
+  }
+}
+```
+
+:no_entry_sign: ***Don't***
+
+```scss
+.btn {
+  width: 30px;
+  background: green;
+  font-weight: bold;
+  .icon {
+    margin-right: 10px;
+  }
+  @include transition(background 0.5s ease);
+}
+```
+
+Define nested selectors in the same order they are applied to their associated HTML. 
+
+**Example**:
+
+```jsx
+import React from 'react';
+
+const Modal = () => (
+  <div className="modal">
+    <h3 className="title">Your Modal</h3>
+    <button className="btn">Accept</button>
+    <span className="close">X</span>
+  </div>
+);
+```
+
+:white_check_mark: ***Do***
+
+```scss
+.modal {
+  height: 300px;
+  width: 400px;
+  z-index: 1;
+
+  .title {
+    // ...
+  }
+
+  .btn {
+    // ...
+  }
+
+  .close {
+    // ...
+  }
+}
+```
+
+:no_entry_sign: ***Don't***
+
+```scss
+.modal {
+  height: 300px;
+  width: 400px;
+  z-index: 1;
+
+  .btn {
+    // ...
+  }
+
+  .close {
+    // ...
+  }
+
+  .title {
+    // ...
+  }
+}
+```
+
+Do not nest selectors more than three levels deep. When selectors become this long, you're likely writing CSS that is:
+
+* Strongly coupled to the HTML (fragile) *—OR—*
+* Overly specific *—OR—*
+* Not reusable
+
+:no_entry_sign: ***Don't***
+
+```scss
+.pageContainer {
+  .content {
+    .profile {
+      // STOP!
+    }
+  }
+}
+```
+
+## Variables
+
+Use dash-cased CSS variable names (e.g. `$--font-regular`) over camelCased or snake_cased variable names. Begin CSS variable names with two dashes `--`.
 
 
 
