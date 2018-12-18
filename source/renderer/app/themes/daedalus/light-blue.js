@@ -281,7 +281,7 @@ export default {
   '--theme-node-update-deny-button-background-color-active': 'rgba(30, 48, 74, 0.3)',
   '--theme-node-update-button-text-color': '#fafbfc',
 
-  '--theme-notification-message-background-color': 'rgba(36, 61, 98, 0.8)',
+  '--theme-notification-message-background-color': 'rgba(36, 61, 98, 0.88)',
   '--theme-notification-message-text-color': '#fafbfc',
 
   '--theme-receive-qr-code-background-color': 'transparent',

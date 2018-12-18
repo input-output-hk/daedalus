@@ -1,19 +1,17 @@
 // @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import { defineMessages, intlShape } from 'react-intl';
 import CenteredLayout from '../components/layout/CenteredLayout';
 import Loading from '../components/loading/Loading';
 import adaLogo from '../assets/images/ada-logo.inline.svg';
 import cardanoLogo from '../assets/images/cardano-logo.inline.svg';
-import { ellipsis } from '../utils/strings';
 import type { InjectedProps } from '../types/injectedPropsType';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import { getSupportUrl } from '../utils/network';
 import NotificationMessage from '../components/widgets/NotificationMessage';
 import successIcon from '../assets/images/success-small.inline.svg';
 import { DOWNLOAD_LOGS_SUCCESS_DURATION } from '../config/timingConfig';
-import { DOWNLOAD_LOGS_SUCCESS_ELLIPSIS } from '../config/formattingConfig';
 
 export const messages = defineMessages({
   loadingWalletData: {
@@ -27,7 +25,7 @@ export const messages = defineMessages({
     description: 'Link to Open Support page'
   },
   downloadLogsSuccess: {
-    id: 'loading.screen.reportIssue.logsDownloadSuccessMessage',
+    id: 'loading.screen.reportIssue.downloadLogsSuccessMessage',
     defaultMessage: '!!!Logs were downloaded',
     description: 'Success message for download logs.',
   },
@@ -88,7 +86,7 @@ export default class LoadingPage extends Component<InjectedProps> {
   get notification() {
     const { intl } = this.context;
     return {
-      id: 'download-logs-success',
+      id: 'loading-page-download-logs-success',
       duration: DOWNLOAD_LOGS_SUCCESS_DURATION,
       message: intl.formatMessage(messages.downloadLogsSuccess),
     };
@@ -104,15 +102,16 @@ export default class LoadingPage extends Component<InjectedProps> {
   };
 
   handleDownloadLogs = () => {
+    const { actions } = this.props;
     const fileName = generateFileNameWithTimestamp();
     const destination = global.dialog.showSaveDialog({
       defaultPath: fileName,
     });
     if (destination) {
-      this.props.actions.profile.downloadLogs.trigger({ fileName, destination, fresh: true });
+      actions.profile.downloadLogs.trigger({ fileName, destination, fresh: true });
     }
     const { id, duration } = this.notification;
-    this.props.actions.notifications.open.trigger({ id, duration, });
+    actions.notifications.open.trigger({ id, duration, });
 
   };
 }
