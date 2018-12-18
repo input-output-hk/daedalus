@@ -26,6 +26,7 @@
     - [Properties](#properties)
     - [Sass](#sass)
     - [Variables](#variables)
+    - [Comments](#comments)
 1. [Other](#other)
     - [Git](#git)
     - [CHANGELOG](#changelog)
@@ -1155,7 +1156,7 @@ const Names = () => (<div>
 ## Formatting Selectors
 
 * Prefer class selectors instead of ID selectors.
-* Prefer camelCase or dashes (`-`) instead of PascelCase or underscores (`_`).
+* Prefer camelCase or dashed-case instead of PascelCase or underscores (`_`).
 * When using multiple selectors in a rule declaration, give each selector its own line.
 * Put a space before the opening brace `{` in rule declarations.
 * In properties, put a space after, but not before, the `:` character.
@@ -1216,6 +1217,26 @@ The properties of a selector should always be defined in **ABC order**.
   line-height: 1.2;
   font-family: var(--font-regular);
   font-size: 20px;
+}
+```
+
+End every property declaration with a semicolon for consistency and extensibility.
+
+:white_check_mark: ***Do***
+
+```css
+.test {
+  display: block;
+  height: 100px;
+}
+```
+
+:no_entry_sign: ***Don't***
+
+```css
+.test {
+  display: block;
+  height: 100px
 }
 ```
 
@@ -1316,8 +1337,8 @@ const Modal = () => (
 
 Do not nest selectors more than three levels deep. When selectors become this long, you're likely writing CSS that is:
 
-* Strongly coupled to the HTML (fragile) *—OR—*
-* Overly specific *—OR—*
+* Strongly coupled to the HTML (fragile) **-- or --**
+* Overly specific **-- or --**
 * Not reusable
 
 :no_entry_sign: ***Don't***
@@ -1334,9 +1355,47 @@ Do not nest selectors more than three levels deep. When selectors become this lo
 
 ## Variables
 
-Use dash-cased CSS variable names (e.g. `$--font-regular`) over camelCased or snake_cased variable names. Begin CSS variable names with two dashes `--`.
+Use dash-cased CSS variable names (e.g. `$--font-regular`) over camelCased or snake_cased variable names. Begin a variable name with two dashes `--`.
 
+## Comments
 
+* Prefer line comments (`//` for Sass) to block comments.
+* Prefer comments on their own line. Avoid end-of-line comments.
+* Write detailed comments for code that isn't self-documenting:
+  - Uses of z-index
+  - Compatibility or browser-specific hacks
+
+# Other
+
+## Git
+
+#### Branch Types
+
+- The Daedalus `master` branch is protected by `develop`. Only `develop` is merged into `master`.
+- A release branch contains the version in its name (`release/x.y.z`).
+- Release branches are based from `master`, but their version specific changes are not merged into `master`.
+- To make additions to the Daedalus codebase, create a branch based from `develop`.
+- There are three main branch types --> `feature`, `chore`, and `fix`.
+- A `feature` branch adds a new feature to Daedalus that does not yet exist.
+- A `chore` branch is appropriate when cleaning up or refactoring a section within the codebase.
+- A `fix` branch is used to introduce a fix for a bug.
+
+#### Branch Prefix
+
+- A branch prefix is a combination of its type (`feature`, `chore`, `fix`) and its YouTrack issue ID.
+- YouTrack issue ID's for Daedalus start with the letters `DDW-` + **issue number**.
+
+*Examples*:
+
+* `feature/ddw-41-create-daedalus-best-practices-guide`
+* `chore/ddw-225-refactor-api-to-use-v1`
+* `fix/ddw-315-fix-wallet-stuck-syncing`
+
+#### Commits
+
+Commit messages should begin with the YouTrack issue ID.
+
+Example: `git commit -m "[DDW-41] Adds Git section to Best Practices"`
 
 **[⬆ back to top](#table-of-contents)**
 
