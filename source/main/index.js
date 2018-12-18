@@ -21,7 +21,7 @@ import { setupCardano } from './cardano/setup';
 import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { ensureXDGDataIsSet } from './cardano/config';
-import { acquireDaedalusInstanceLock } from './utils/lockFiles';
+import { acquireDaedalusInstanceLock } from './utils/app-instance-lock';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 
 // Global references to windows to prevent them from being garbage collected
@@ -79,7 +79,7 @@ const safeExit = async () => {
 app.on('ready', async () => {
   // Make sure this is the only Daedalus instance running per cluster before doing anything else
   try {
-    await acquireDaedalusInstanceLock();
+    acquireDaedalusInstanceLock();
   } catch (e) {
     const dialogTitle = 'Daedalus is unable to start!';
     const dialogMessage = 'Another Daedalus instance is already running.';
