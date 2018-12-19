@@ -54,10 +54,10 @@ for a certificate decryption password, or you can put this in the
 
 The cardano-sl node and configuration files used by the installer
 builder are available as the `daedalus-bridge` attribute of the
-top-level file [`cardano-sl.nix`](../cardano-sl.nix). To get/build the
+top-level file [`default.nix`](../default.nix). To get/build the
 files, run:
 
-    nix-build cardano-sl.nix -A daedalus-bridge
+    nix-build -A daedalus-bridge
     ls result/
 
 To update the cardano-sl version, update the revision in
