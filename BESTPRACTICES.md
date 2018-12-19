@@ -1397,6 +1397,15 @@ Commit messages should begin with the YouTrack issue ID.
 
 Example: `git commit -m "[DDW-41] Adds Git section to Best Practices"`
 
+## CHANGELOG
+
+* The CHANGELOG is organized by release number.
+* Each release contains 3 sections that match the branch types: `features`, `chores`, `fixes`.
+* Add your entry to the appropriate section based on its content.
+* Add 1 entry per PR and include a URL to the PR at the end of your entry.
+* Entries are organized in **ABC order**.
+* Write your entry in past tense.
+
 **[⬆ back to top](#table-of-contents)**
 
 :white_check_mark: ***Do***
