@@ -2,7 +2,7 @@ import { compact } from 'lodash';
 import environment from '../../common/environment';
 
 export const winLinuxMenu = (app, window, {
-  openAbout, goToAdaRedemption, restartInSafeMode, restartWithoutSafeMode
+  openAbout, goToAdaRedemption, goToNetworkStatus, restartInSafeMode, restartWithoutSafeMode
 }, isInSafeMode) => (
   [{
     label: 'Daedalus',
@@ -11,7 +11,7 @@ export const winLinuxMenu = (app, window, {
       click() {
         openAbout();
       }
-    }, environment.API === 'ada' && {
+    }, {
       label: 'Ada redemption',
       click() {
         goToAdaRedemption();
@@ -24,6 +24,12 @@ export const winLinuxMenu = (app, window, {
         isInSafeMode ?
           restartWithoutSafeMode() :
           restartInSafeMode();
+      },
+    }, {
+      label: 'Network status',
+      accelerator: 'Ctrl+S',
+      click() {
+        goToNetworkStatus();
       },
     }, {
       label: 'Close',
@@ -69,10 +75,20 @@ export const winLinuxMenu = (app, window, {
         accelerator: 'Ctrl+R',
         click() { window.webContents.reload(); }
       },
-      {
+      environment.isWindows() ? {
         label: 'Toggle Full Screen',
         accelerator: 'F11',
         click() { window.setFullScreen(!window.isFullScreen()); }
+      } : {
+        label: 'Toggle Maximum Window Size',
+        accelerator: 'F11',
+        click() {
+          if (window.isMaximized()) {
+            window.unmaximize();
+          } else {
+            window.maximize();
+          }
+        }
       },
       {
         label: 'Toggle Developer Tools',

@@ -55,8 +55,8 @@ let
     nix-bundle = import (pkgs.fetchFromGitHub {
       owner = "matthewbauer";
       repo = "nix-bundle";
-      rev = "496f2b524743da67717e4533745394575c6aab1f";
-      sha256 = "0p9hsrbc1b0i4aipwnl4vxjsayc5m865xhp8q139ggaxq7xd0lps";
+      rev = "7f12322399fd87d937355d0fc263d37d798496fc";
+      sha256 = "07wnmdadchf73p03wk51abzgd3zm2xz5khwadz1ypbvv3cqlzp5m";
     }) { nixpkgs = pkgs; };
     desktopItem = pkgs.makeDesktopItem {
       name = "Daedalus${if cluster != "mainnet" then "-${cluster}" else ""}";
@@ -68,9 +68,22 @@ let
     };
     iconPath = {
       # the target of these paths must not be a symlink
-      mainnet = ./installers/icons/mainnet/1024x1024.png;
-      staging = ./installers/icons/staging.iconset/icon_512x512.png;
-      testnet = ./installers/icons/testnet.iconset/icon_512x512.png;
+      demo    = {
+        small = ./installers/icons/mainnet/64x64.png;
+        large = ./installers/icons/mainnet/1024x1024.png;
+      };
+      mainnet = {
+        small = ./installers/icons/mainnet/64x64.png;
+        large = ./installers/icons/mainnet/1024x1024.png;
+      };
+      staging = {
+        small = ./installers/icons/staging/64x64.png;
+        large = ./installers/icons/staging/1024x1024.png;
+      };
+      testnet = {
+        small = ./installers/icons/testnet/64x64.png;
+        large = ./installers/icons/testnet/1024x1024.png;
+      };
     };
     namespaceHelper = pkgs.writeScriptBin "namespaceHelper" ''
       #!/usr/bin/env bash
@@ -83,7 +96,12 @@ let
       cat /etc/nsswitch.conf > etc/nsswitch.conf
       cat /etc/machine-id > etc/machine-id
       cat /etc/resolv.conf > etc/resolv.conf
-      exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -- /nix/var/nix/profiles/profile-${cluster}/bin/enter-phase2 daedalus
+
+      if [ "x$DEBUG_SHELL" == x ]; then
+        exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -e -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -- /nix/var/nix/profiles/profile-${cluster}/bin/enter-phase2 daedalus
+      else
+        exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -e -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -- /nix/var/nix/profiles/profile-${cluster}/bin/enter-phase2 bash
+      fi
     '';
     postInstall = pkgs.writeScriptBin "post-install" ''
       #!${pkgs.stdenv.shell}
@@ -99,16 +117,22 @@ let
 
       echo "in post-install hook"
 
-      cp -f ${self.iconPath.${cluster}} $DAEDALUS_DIR/icon.png
+      cp -f ${self.iconPath.${cluster}.large} $DAEDALUS_DIR/icon_large.png
+      cp -f ${self.iconPath.${cluster}.small} $DAEDALUS_DIR/icon.png
       cp -Lf ${self.namespaceHelper}/bin/namespaceHelper $DAEDALUS_DIR/namespaceHelper
       mkdir -pv ~/.local/bin ''${XDG_DATA_HOME}/applications
-      cp -Lf ${self.namespaceHelper}/bin/namespaceHelper ~/.local/bin/daedalus
+      ${pkgs.lib.optionalString (cluster == "mainnet") "cp -Lf ${self.namespaceHelper}/bin/namespaceHelper ~/.local/bin/daedalus"}
       cp -Lf ${self.namespaceHelper}/bin/namespaceHelper ~/.local/bin/daedalus-${cluster}
 
       cat ${self.desktopItem}/share/applications/Daedalus*.desktop | sed \
         -e "s+INSERT_PATH_HERE+''${DAEDALUS_DIR}/namespaceHelper+g" \
-        -e "s+INSERT_ICON_PATH_HERE+''${DAEDALUS_DIR}/icon.png+g" \
+        -e "s+INSERT_ICON_PATH_HERE+''${DAEDALUS_DIR}/icon_large.png+g" \
         > "''${XDG_DATA_HOME}/applications/Daedalus${if cluster != "mainnet" then "-${cluster}" else ""}.desktop"
+    '';
+    xdg-open = pkgs.writeScriptBin "xdg-open" ''
+      #!${pkgs.stdenv.shell}
+
+      echo -n "xdg-open \"$1\"" > /escape-hatch
     '';
     preInstall = pkgs.writeText "pre-install" ''
       if grep sse4 /proc/cpuinfo -q; then
@@ -123,7 +147,7 @@ let
     in (import ./installers/nix/nix-installer.nix {
       inherit (self) postInstall preInstall cluster;
       installationSlug = installPath;
-      installedPackages = [ daedalus' self.postInstall self.namespaceHelper daedalus'.cfg self.daedalus-bridge daedalus'.daedalus-frontend ];
+      installedPackages = [ daedalus' self.postInstall self.namespaceHelper daedalus'.cfg self.daedalus-bridge daedalus'.daedalus-frontend self.xdg-open ];
       nix-bundle = self.nix-bundle;
     }).installerBundle;
   };

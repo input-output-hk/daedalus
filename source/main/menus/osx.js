@@ -1,8 +1,7 @@
 import { compact } from 'lodash';
-import environment from '../../common/environment';
 
 export const osxMenu = (app, window, {
-  openAbout, goToAdaRedemption, restartInSafeMode, restartWithoutSafeMode
+  openAbout, goToAdaRedemption, goToNetworkStatus, restartInSafeMode, restartWithoutSafeMode
 }, isInSafeMode) => (
   [{
     label: 'Daedalus',
@@ -11,7 +10,7 @@ export const osxMenu = (app, window, {
       click() {
         openAbout();
       },
-    }, environment.API === 'ada' && {
+    }, {
       label: 'Ada redemption',
       click() {
         goToAdaRedemption();
@@ -24,6 +23,12 @@ export const osxMenu = (app, window, {
         isInSafeMode ?
           restartWithoutSafeMode() :
           restartInSafeMode();
+      },
+    }, {
+      label: 'Network status',
+      accelerator: 'Command+S',
+      click() {
+        goToNetworkStatus();
       },
     }, {
       label: 'Quit',

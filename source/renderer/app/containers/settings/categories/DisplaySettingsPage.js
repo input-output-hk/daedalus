@@ -11,7 +11,7 @@ export default class DisplaySettingsPage extends Component<InjectedProps> {
 
   selectTheme = (values: { theme: string }) => {
     this.props.actions.profile.updateTheme.trigger(values);
-  }
+  };
 
   render() {
     const { currentTheme } = this.props.stores.profile;

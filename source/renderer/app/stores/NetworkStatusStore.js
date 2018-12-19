@@ -1,293 +1,405 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
 import moment from 'moment';
+import { isEqual } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import { ROUTES } from '../routes-config';
+import {
+  ALLOWED_TIME_DIFFERENCE,
+  MAX_ALLOWED_STALL_DURATION,
+  NETWORK_STATUS_REQUEST_TIMEOUT,
+  NETWORK_STATUS_POLL_INTERVAL,
+  NTP_FORCE_CHECK_POLL_INTERVAL,
+} from '../config/timingConfig';
+import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
 import { Logger } from '../../../common/logging';
-import type { GetSyncProgressResponse, GetLocalTimeDifferenceResponse } from '../api/common';
-import environment from '../../../common/environment';
+import {
+  cardanoStateChangeChannel,
+  tlsConfigChannel,
+  restartCardanoNodeChannel
+} from '../ipc/cardano.ipc';
+import { CardanoNodeStates } from '../../../common/types/cardanoNode.types';
+import type { GetNetworkStatusResponse } from '../api/nodes/types';
+import type { CardanoNodeState, TlsConfig } from '../../../common/types/cardanoNode.types';
+import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
-let cachedDifficulties = null;
+let cachedState = null;
 
-// Maximum number of out-of-sync blocks above which we consider to be out-of-sync
-const OUT_OF_SYNC_BLOCKS_LIMIT = 6;
-const SYNC_PROGRESS_INTERVAL = 2000;
-const TIME_DIFF_POLL_INTERVAL = 30 * 60 * 1000; // 30 minutes
-const ALLOWED_TIME_DIFFERENCE = 15 * 1000000; // 15 seconds
-const ALLOWED_NETWORK_DIFFICULTY_STALL = 2 * 60 * 1000; // 2 minutes
-
-const STARTUP_STAGES = {
+// DEFINE CONSTANTS -------------------------
+const NETWORK_STATUS = {
   CONNECTING: 0,
   SYNCING: 1,
-  LOADING: 2,
-  RUNNING: 3,
+  RUNNING: 2,
 };
+// END CONSTANTS ----------------------------
 
 export default class NetworkStatusStore extends Store {
 
+  // Initialize store properties
   _startTime = Date.now();
-  _startupStage = STARTUP_STAGES.CONNECTING;
-  _lastNetworkDifficultyChange = 0;
+  _tlsConfig: ?TlsConfig = null;
+  _networkStatus = NETWORK_STATUS.CONNECTING;
+  _networkStatusPollingInterval: ?number = null;
+  _forceCheckTimeDifferencePollingInterval: ?number = null;
 
-  @observable isConnected = false;
+  // Initialize store observables
+
+  // Internal Node states
+  /* eslint-disable indent */
+  @observable cardanoNodeState: ?CardanoNodeState = null;
+  @observable isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
+  @observable isNodeSubscribed = false; // Is 'true' in case node is subscribed to the network
+  @observable isNodeSyncing = false; // Is 'true' in case we are receiving blocks and not stalling
+  @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
+  @observable isNodeInSync = false; // Is 'true' if node is syncing and local/network block height
+                                    // difference is within the allowed limit
+  /* eslint-enabme indent */
   @observable hasBeenConnected = false;
-  @observable localDifficulty = 0;
-  @observable networkDifficulty = 0;
-  @observable isLoadingWallets = true;
-  @observable localTimeDifference = 0;
-  @observable syncProgressRequest: Request<GetSyncProgressResponse> = new Request(
-    // Use the sync progress for target API
-    this.api[environment.API].getSyncProgress
+  @observable syncProgress = null;
+  @observable initialLocalHeight = null;
+  @observable localBlockHeight = 0;
+  @observable networkBlockHeight = 0;
+  @observable mostRecentBlockTimestamp = 0; // milliseconds
+  @observable localTimeDifference: ?number = 0; // microseconds
+  @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
+  @observable getNetworkStatusRequest: Request<GetNetworkStatusResponse> = new Request(
+    this.api.ada.getNetworkStatus
   );
-  @observable localTimeDifferenceRequest: Request<GetLocalTimeDifferenceResponse> = new Request(
-    this.api.ada.getLocalTimeDifference
+  @observable forceCheckTimeDifferenceRequest: Request<GetNetworkStatusResponse> = new Request(
+    this.api.ada.getNetworkStatus
   );
-  @observable _localDifficultyStartedWith = null;
 
-  _timeDifferencePollInterval: ?number = null;
+  // DEFINE STORE METHODS
+  setup() {
+    // ========== IPC CHANNELS =========== //
+    // Passively receive broadcasted tls config changes (which can happen without requesting it)
+    // E.g if the cardano-node restarted for some reason
+    tlsConfigChannel.onReceive(this._updateTlsConfig);
+    // Passively receive state changes of the cardano-node
+    cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
+    this._requestCardanoNodeState();
 
-  @action initialize() {
-    super.initialize();
-    if (cachedDifficulties !== null) Object.assign(this, cachedDifficulties);
+    // ========== MOBX REACTIONS =========== //
+
+    this.registerReactions([
+      this._updateNetworkStatusWhenDisconnected,
+    ]);
+
+    // Setup network status polling interval
+    this._networkStatusPollingInterval = setInterval(
+      this._updateNetworkStatus, NETWORK_STATUS_POLL_INTERVAL
+    );
+
+    // Forced time difference check polling interval
+    this._forceCheckTimeDifferencePollingInterval = setInterval(
+      this._forceCheckTimeDifference, NTP_FORCE_CHECK_POLL_INTERVAL
+    );
   }
 
-  setup() {
-    this.registerReactions([
-      this._redirectToWalletAfterSync,
-      this._redirectToLoadingWhenDisconnected,
-      this._redirectToSyncingWhenOutOfSync,
-      this._pollTimeDifferenceWhenConnected,
-    ]);
-    this._pollSyncProgress();
+  async restartNode() {
+    try {
+      Logger.info('NetwortStatusStore: Requesting a restart of cardano-node.');
+      await restartCardanoNodeChannel.send();
+    } catch (error) {
+      Logger.info(`NetwortStatusStore: Restart of cardano-node failed with: "${error}"`);
+    }
   }
 
   teardown() {
     super.teardown();
-    cachedDifficulties = {
-      isConnected: this.isConnected,
+
+    // Teardown polling intervals
+    if (this._networkStatusPollingInterval) {
+      clearInterval(this._networkStatusPollingInterval);
+    }
+    if (this._forceCheckTimeDifferencePollingInterval) {
+      clearInterval(this._forceCheckTimeDifferencePollingInterval);
+    }
+
+    // Save current state into the cache
+    cachedState = {
       hasBeenConnected: this.hasBeenConnected,
-      localDifficulty: this.localDifficulty,
-      networkDifficulty: this.networkDifficulty,
-      isLoadingWallets: true,
+      localBlockHeight: this.localBlockHeight,
+      networkBlockHeight: this.networkBlockHeight,
     };
   }
 
-  @computed get isConnecting(): boolean {
-    // until we start receiving network difficulty messages we are not connected to node and
-    // we should be on the blue connecting screen instead of displaying 'Loading wallet data'
-    return !this.isConnected || this.networkDifficulty <= 1;
-  }
-
-  @computed get hasBlockSyncingStarted(): boolean {
-    // until we start receiving network difficulty messages we are not connected to node and
-    // we should be on the blue connecting screen instead of displaying 'Loading wallet data'
-    return this.networkDifficulty >= 1;
-  }
-
-  @computed get relativeSyncPercentage(): number {
-    if (this.networkDifficulty > 0 && this._localDifficultyStartedWith !== null) {
-      const relativeLocal = this.localDifficulty - this._localDifficultyStartedWith;
-      const relativeNetwork = this.networkDifficulty - this._localDifficultyStartedWith;
-      // In case node is in sync after first local difficulty messages
-      // local and network difficulty will be the same (0)
-      Logger.debug('Network difficulty: ' + this.networkDifficulty);
-      Logger.debug('Local difficulty: ' + this.localDifficulty);
-      Logger.debug('Relative local difficulty: ' + relativeLocal);
-      Logger.debug('Relative network difficulty: ' + relativeNetwork);
-
-      if (relativeLocal >= relativeNetwork) return 100;
-      return relativeLocal / relativeNetwork * 100;
-    }
-    return 0;
-  }
-
-  @computed get relativeSyncBlocksDifference(): number {
-    if (this.networkDifficulty > 0 && this._localDifficultyStartedWith !== null) {
-      const relativeLocal = this.localDifficulty - this._localDifficultyStartedWith;
-      const relativeNetwork = this.networkDifficulty - this._localDifficultyStartedWith;
-      // In case node is in sync after first local difficulty messages
-      // local and network difficulty will be the same (0)
-      Logger.debug('Network difficulty: ' + this.networkDifficulty);
-      Logger.debug('Local difficulty: ' + this.localDifficulty);
-      Logger.debug('Relative local difficulty: ' + relativeLocal);
-      Logger.debug('Relative network difficulty: ' + relativeNetwork);
-
-      if (relativeLocal >= relativeNetwork) return 0;
-      return relativeNetwork - relativeLocal;
-    }
-    return 0;
-  }
-
-  @computed get syncPercentage(): number {
-    if (this.networkDifficulty > 0) {
-      if (this.localDifficulty >= this.networkDifficulty) return 100;
-      return this.localDifficulty / this.networkDifficulty * 100;
-    }
-    return 0;
-  }
-
-  @computed get isSystemTimeCorrect(): boolean {
-    if (!environment.isAdaApi()) return true;
-    return (this.localTimeDifference <= ALLOWED_TIME_DIFFERENCE);
-  }
-
-  @computed get isSyncing(): boolean {
-    return !this.isConnecting && this.hasBlockSyncingStarted && !this.isSynced;
-  }
-
-  @computed get isSynced(): boolean {
-    return (
-      !this.isConnecting &&
-      this.hasBlockSyncingStarted &&
-      this.relativeSyncBlocksDifference <= OUT_OF_SYNC_BLOCKS_LIMIT &&
-      this.isSystemTimeCorrect
-    );
-  }
-
-  @computed get isSetupPage(): boolean {
-    return (
-      this.stores.app.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION ||
-      this.stores.app.currentRoute === ROUTES.PROFILE.TERMS_OF_USE
-    );
-  }
-
-  @action _updateSyncProgress = async () => {
-    try {
-      const difficulty = await this.syncProgressRequest.execute().promise;
-      runInAction('update difficulties', () => {
-        // We are connected, move on to syncing stage
-        if (this._startupStage === STARTUP_STAGES.CONNECTING) {
-          Logger.info(
-            `========== Connected after ${this._getStartupTimeDelta()} milliseconds ==========`
-          );
-          this._startupStage = STARTUP_STAGES.SYNCING;
-        }
-        // If we haven't set local difficulty before, mark the first
-        // result as 'start' difficulty for the sync progress
-        if (this._localDifficultyStartedWith === null) {
-          this._localDifficultyStartedWith = difficulty.localDifficulty;
-          Logger.debug('Initial difficulty: ' + JSON.stringify(difficulty));
-        }
-        // Update the local difficulty on each request
-        this.localDifficulty = difficulty.localDifficulty;
-        Logger.debug('Local difficulty changed: ' + this.localDifficulty);
-        // Check if network difficulty is stalled (e.g. unchanged for more than 2 minutes)
-        // e.g. in case there is no Internet connection Api will send the last known value
-        if (this.networkDifficulty !== difficulty.networkDifficulty) {
-          if (!this.isConnected) this.isConnected = true;
-          this._lastNetworkDifficultyChange = Date.now();
-        } else if (this.isConnected) {
-          const currentNetworkDifficultyStall = moment(Date.now()).diff(
-            moment(this._lastNetworkDifficultyChange)
-          );
-          if (currentNetworkDifficultyStall > ALLOWED_NETWORK_DIFFICULTY_STALL) {
-            this.isConnected = false;
-            if (!this.hasBeenConnected) this.hasBeenConnected = true;
-          }
-        }
-        // Update the network difficulty on each request
-        this.networkDifficulty = difficulty.networkDifficulty;
-      });
-      Logger.debug('Network difficulty changed: ' + this.networkDifficulty);
-    } catch (error) {
-      // If the sync progress request fails, switch to disconnected state
-      runInAction('update connected status', () => {
-        if (this.isConnected) {
-          this.isConnected = false;
-          if (!this.hasBeenConnected) this.hasBeenConnected = true;
-        }
-      });
-      Logger.debug('Connection Lost. Reconnecting...');
-    }
-  };
-
-  @action _updateLocalTimeDifference = async () => {
-    if (!this.isConnected) return;
-    try {
-      const response = await this.localTimeDifferenceRequest.execute().promise;
-      runInAction('update time difference', () => (this.localTimeDifference = response));
-    } catch (error) {
-      runInAction('update time difference', () => (this.localTimeDifference = 0));
-    }
-  };
-
-  _pollLocalTimeDifference() {
-    Logger.debug('Started polling local time difference');
-    if (this._timeDifferencePollInterval) clearInterval(this._timeDifferencePollInterval);
-    this._timeDifferencePollInterval = setInterval(
-      this._updateLocalTimeDifference, TIME_DIFF_POLL_INTERVAL
-    );
-    this._updateLocalTimeDifference();
-  }
-
-  _stopPollingLocalTimeDifference() {
-    Logger.debug('Stopped polling local time difference');
-    if (this._timeDifferencePollInterval) clearInterval(this._timeDifferencePollInterval);
-  }
-
-  _pollSyncProgress() {
-    setInterval(this._updateSyncProgress, SYNC_PROGRESS_INTERVAL);
-    this._updateSyncProgress();
-  }
-
-  _redirectToWalletAfterSync = () => {
-    const { app } = this.stores;
-    const { wallets } = this.stores[environment.API];
-    if (this._startupStage === STARTUP_STAGES.SYNCING && this.isSynced) {
-      Logger.info(`========== Synced after ${this._getStartupTimeDelta()} milliseconds ==========`);
-      this._startupStage = STARTUP_STAGES.LOADING;
-      // close reportIssue dialog if is opened and app synced in meanwhile
-      this.actions.dialogs.closeActiveDialog.trigger();
-    }
-    // TODO: introduce smarter way to bootsrap initial screens
-    if (this.isConnected && this.isSynced && wallets.hasLoadedWallets) {
-      if (this._startupStage === STARTUP_STAGES.LOADING) {
-        Logger.info(`========== Loaded after ${this._getStartupTimeDelta()} milliseconds ==========`);
-        this._startupStage = STARTUP_STAGES.RUNNING;
-      }
-      runInAction('NetworkStatusStore::_redirectToWalletAfterSync', () => (this.isLoadingWallets = false));
-      if (app.currentRoute === ROUTES.ROOT) {
-        if (wallets.first) {
-          this.actions.router.goToRoute.trigger({
-            route: ROUTES.WALLETS.SUMMARY,
-            params: { id: wallets.first.id }
-          });
-        } else {
-          this.actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD });
-        }
-      }
-      this.actions.networkStatus.isSyncedAndReady.trigger();
-    }
-  };
-
-  _redirectToLoadingWhenDisconnected = () => {
-    if (this.stores.app.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION) return;
-    if (!this.isConnected) {
-      this._updateSyncProgress();
-      this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
-    }
-  };
-
-  _redirectToSyncingWhenOutOfSync = () => {
-    if (!this.isSynced && !this.isSetupPage) {
-      this._updateSyncProgress();
-      this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
-    }
+  _updateNetworkStatusWhenDisconnected = () => {
+    if (!this.isConnected) this._updateNetworkStatus();
   };
 
   _getStartupTimeDelta() {
     return Date.now() - this._startTime;
   }
 
-  _pollTimeDifferenceWhenConnected = () => {
-    if (!environment.isAdaApi()) return;
-    if (this.isConnected) {
-      this._pollLocalTimeDifference();
-    } else {
-      this._stopPollingLocalTimeDifference();
+  _requestCardanoNodeState = async () => {
+    try {
+      Logger.info('NetworkStatusStore: requesting node state.');
+      const state = await cardanoStateChangeChannel.send();
+      await this._handleCardanoNodeStateChange(state);
+    } catch (error) {
+      Logger.info(`NetworkStatusStore: error while requesting node state ${error}`);
     }
   };
+
+  _requestTlsConfig = async () => {
+    try {
+      Logger.info('NetworkStatusStore: requesting tls config from main process.');
+      const tlsConfig = await tlsConfigChannel.send();
+      await this._updateTlsConfig(tlsConfig);
+    } catch (error) {
+      Logger.info(`NetworkStatusStore: error while requesting tls config ${error}.`);
+    }
+  };
+
+  _updateTlsConfig = (config: ?TlsConfig): Promise<void> => {
+    if (config == null || isEqual(config, this._tlsConfig)) return Promise.resolve();
+    Logger.info('NetworkStatusStore: received tls config from main process.');
+    this.api.ada.setRequestConfig(config);
+    this._tlsConfig = config;
+    return Promise.resolve();
+  };
+
+  _handleCardanoNodeStateChange = (state: CardanoNodeState): Promise<void> => {
+    if (state === this.cardanoNodeState) return Promise.resolve();
+    Logger.info(`NetworkStatusStore: handling cardano-node state <${state}>`);
+    const wasConnected = this.isConnected;
+    switch (state) {
+      case CardanoNodeStates.STARTING: break;
+      case CardanoNodeStates.RUNNING: this._requestTlsConfig(); break;
+      case CardanoNodeStates.STOPPING:
+      case CardanoNodeStates.EXITING:
+      case CardanoNodeStates.UPDATING:
+        runInAction('reset _tlsConfig', () => this._tlsConfig = null);
+        this._setDisconnected(wasConnected);
+        break;
+      default: this._setDisconnected(wasConnected);
+    }
+    runInAction('setting cardanoNodeState', () => this.cardanoNodeState = state);
+    return Promise.resolve();
+  };
+
+  _forceCheckTimeDifference = () => {
+    this._updateNetworkStatus({ force_ntp_check: true });
+  };
+
+  // DEFINE ACTIONS
+  @action initialize() {
+    super.initialize();
+    if (cachedState !== null) Object.assign(this, cachedState);
+  }
+
+  @action _updateNetworkStatus = async (queryParams?: NodeQueryParams) => {
+    // In case we haven't received TLS config we shouldn't trigger any API calls
+    if (!this._tlsConfig) return;
+
+    const isForcedTimeDifferenceCheck = !!queryParams;
+
+    // Prevent network status requests in case there is an already executing
+    // forced time difference check unless we are trying to run another
+    // forced time difference check in which case we need to wait for it to finish
+    if (this.forceCheckTimeDifferenceRequest.isExecuting) {
+      if (isForcedTimeDifferenceCheck) {
+        await this.forceCheckTimeDifferenceRequest;
+      } else {
+        return;
+      }
+    }
+
+    if (isForcedTimeDifferenceCheck) {
+      // Set most recent block timestamp into the future as a guard
+      // against system time changes - e.g. if system time was set into the past
+      runInAction('update mostRecentBlockTimestamp', () => {
+        this.mostRecentBlockTimestamp = Date.now() + NETWORK_STATUS_REQUEST_TIMEOUT;
+      });
+    }
+
+    // Record connection status before running network status call
+    const wasConnected = this.isConnected;
+
+    try {
+      let networkStatus: GetNetworkStatusResponse;
+      if (isForcedTimeDifferenceCheck) {
+        networkStatus = await this.forceCheckTimeDifferenceRequest.execute(queryParams).promise;
+      } else {
+        networkStatus = await this.getNetworkStatusRequest.execute().promise;
+      }
+
+      // In case we no longer have TLS config we ignore all API call responses
+      // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
+      if (!this._tlsConfig) {
+        Logger.debug('Ignoring NetworkStatusRequest result during Cardano shutdown sequence...');
+        return;
+      }
+
+      const {
+        subscriptionStatus,
+        syncProgress,
+        blockchainHeight,
+        localBlockchainHeight,
+        localTimeDifference,
+      } = networkStatus;
+
+      // We got response which means node is responding
+      runInAction('update isNodeResponding', () => {
+        this.isNodeResponding = true;
+      });
+
+      // Node is subscribed in case it is subscribed to at least one other node in the network
+      runInAction('update isNodeSubscribed', () => {
+        const nodeIPs = Object.values(subscriptionStatus || {});
+        this.isNodeSubscribed = nodeIPs.includes('subscribed');
+      });
+
+      // System time is correct if local time difference is below allowed threshold
+      runInAction('update localTimeDifference and isNodeTimeCorrect', () => {
+        this.localTimeDifference = localTimeDifference;
+        this.isNodeTimeCorrect = (
+          this.localTimeDifference !== null && // If we receive 'null' it means NTP check failed
+          this.localTimeDifference <= ALLOWED_TIME_DIFFERENCE
+        );
+      });
+
+      if (this._networkStatus === NETWORK_STATUS.CONNECTING && this.isNodeSubscribed) {
+        // We are connected for the first time, move on to syncing stage
+        this._networkStatus = NETWORK_STATUS.SYNCING;
+        Logger.info(
+          `========== Connected after ${this._getStartupTimeDelta()} milliseconds ==========`
+        );
+      }
+
+      // Update sync progress
+      runInAction('update syncProgress', () => {
+        this.syncProgress = syncProgress;
+      });
+
+      runInAction('update block heights', () => {
+        if (this.initialLocalHeight === null) {
+          // If initial local block height isn't set, mark the first
+          // result as the 'starting' height for the sync progress
+          this.initialLocalHeight = localBlockchainHeight;
+          Logger.debug('Initial local block height: ' + JSON.stringify(localBlockchainHeight));
+        }
+
+        // Update the local block height on each request
+        this.localBlockHeight = localBlockchainHeight;
+        Logger.debug('Local blockchain height: ' + localBlockchainHeight);
+
+        // Update the network block height on each request
+        const hasStartedReceivingBlocks = blockchainHeight > 0;
+        const lastBlockchainHeight = this.networkBlockHeight;
+        this.networkBlockHeight = blockchainHeight;
+        if (hasStartedReceivingBlocks) {
+          Logger.debug('Network blockchain height: ' + blockchainHeight);
+        }
+
+        // Check if the network's block height has ceased to change
+        const isBlockchainHeightIncreasing = (
+          hasStartedReceivingBlocks &&
+          this.networkBlockHeight > lastBlockchainHeight
+        );
+        if (
+          isBlockchainHeightIncreasing || // New block detected
+          this.mostRecentBlockTimestamp > Date.now() || // Guard against future timestamps
+          ( // Guard against incorrect system time
+            !this.isNodeTimeCorrect && !this.isSystemTimeIgnored
+          )
+        ) {
+          this.mostRecentBlockTimestamp = Date.now(); // Record latest block timestamp
+        }
+        const timeSinceLastBlock = moment(Date.now()).diff(moment(this.mostRecentBlockTimestamp));
+        const isBlockchainHeightStalling = timeSinceLastBlock > MAX_ALLOWED_STALL_DURATION;
+
+        // Node is syncing in case we are receiving blocks and they are not stalling
+        runInAction('update isNodeSyncing', () => {
+          this.isNodeSyncing = (
+            hasStartedReceivingBlocks &&
+            (isBlockchainHeightIncreasing || !isBlockchainHeightStalling)
+          );
+        });
+
+        runInAction('update isNodeInSync', () => {
+          const remainingUnsyncedBlocks = this.networkBlockHeight - this.localBlockHeight;
+          this.isNodeInSync = (
+            this.isNodeSyncing &&
+            remainingUnsyncedBlocks <= UNSYNCED_BLOCKS_ALLOWED
+          );
+        });
+
+        if (hasStartedReceivingBlocks) {
+          const initialLocalHeight = this.initialLocalHeight || 0;
+          const blocksSyncedSinceStart = this.localBlockHeight - initialLocalHeight;
+          const totalUnsyncedBlocksAtStart = this.networkBlockHeight - initialLocalHeight;
+          Logger.debug('Total unsynced blocks at node start: ' + totalUnsyncedBlocksAtStart);
+          Logger.debug('Blocks synced since node start: ' + blocksSyncedSinceStart);
+        }
+      });
+
+      if (this._networkStatus === NETWORK_STATUS.SYNCING && this.isNodeInSync) {
+        // We are synced for the first time, move on to running stage
+        this._networkStatus = NETWORK_STATUS.RUNNING;
+        this.actions.networkStatus.isSyncedAndReady.trigger();
+        Logger.info(`========== Synced after ${this._getStartupTimeDelta()} milliseconds ==========`);
+      }
+
+      if (wasConnected !== this.isConnected) {
+        if (!this.isConnected) {
+          if (!this.hasBeenConnected) {
+            runInAction('update hasBeenConnected', () => this.hasBeenConnected = true);
+          }
+          Logger.debug('Connection Lost. Reconnecting...');
+        } else if (this.hasBeenConnected) {
+          Logger.debug('Connection Restored');
+        }
+      }
+    } catch (error) {
+      // Node is not responding, switch to disconnected state
+      this._setDisconnected(wasConnected);
+    }
+  };
+
+  @action _setDisconnected = (wasConnected: boolean) => {
+    this.isNodeResponding = false;
+    this.isNodeSubscribed = false;
+    this.isNodeSyncing = false;
+    this.isNodeInSync = false;
+    if (wasConnected) {
+      if (!this.hasBeenConnected) {
+        runInAction('update hasBeenConnected', () => this.hasBeenConnected = true);
+      }
+      Logger.debug('Connection Lost. Reconnecting...');
+    }
+  };
+
+  @action ignoreSystemTimeChecks = () => {
+    this.isSystemTimeIgnored = true;
+  };
+
+  forceCheckLocalTimeDifference = async () => {
+    await this._updateNetworkStatus({ force_ntp_check: true });
+  };
+
+  // DEFINE COMPUTED VALUES
+  @computed get isConnected(): boolean {
+    return this.isNodeResponding && this.isNodeSubscribed && this.isNodeSyncing;
+  }
+
+  @computed get isSystemTimeCorrect(): boolean {
+    return this.isNodeTimeCorrect || this.isSystemTimeIgnored;
+  }
+
+  @computed get isSynced(): boolean {
+    return this.isConnected && this.isNodeInSync && this.isSystemTimeCorrect;
+  }
+
+  @computed get syncPercentage(): number {
+    const { networkBlockHeight, localBlockHeight } = this;
+    if (networkBlockHeight >= 1) {
+      if (localBlockHeight >= networkBlockHeight) { return 100; }
+      return localBlockHeight / networkBlockHeight * 100;
+    }
+    return 0;
+  }
 
 }

@@ -6,18 +6,18 @@ export const isValidWalletName = (walletName) => {
   return nameLength >= 3 && nameLength <= 40;
 };
 
-export const isValidWalletPassword = (walletPassword) => {
+export const isValidSpendingPassword = (spendingPassword) => {
   // Validation rules:
   // - should contain at least one digit: (?=.*\d)
-  // - should contain at least one lower case: (?=.*[a-z])
-  // - should contain at least one upper case: (?=.*[A-Z])
+  // - should contain at least one lower case: (?=.*[а-я])
+  // - should contain at least one upper case: (?=.*[А-Я])
   // - should contain at least 7 characters long: .{7,}
-  const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,}$/;
-  return passwordRegex.test(walletPassword);
+  const passwordRegex = /^(?=.*\d)(?=.*[\wа-я])(?=.*[\wА-Я]).{7,}$/;
+  return passwordRegex.test(spendingPassword);
 };
 
 // eslint-disable-next-line max-len
-export const isValidRepeatPassword = (walletPassword, repeatPassword) => walletPassword === repeatPassword;
+export const isValidRepeatPassword = (spendingPassword, repeatPassword) => spendingPassword === repeatPassword;
 
 export const isNotEmptyString = (value) => value !== '';
 

@@ -2,15 +2,15 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Button from 'react-polymorph/lib/components/Button';
-import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import styles from './WalletTransactionsList.scss';
 import Transaction from './Transaction';
 import WalletTransaction from '../../../domains/WalletTransaction';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-import type { AssuranceMode } from '../../../types/transactionAssuranceTypes';
+import type { WalletAssuranceMode } from '../../../api/wallets/types';
 
 const messages = defineMessages({
   today: {
@@ -42,7 +42,7 @@ type Props = {
   isLoadingTransactions: boolean,
   isRestoreActive?: boolean,
   hasMoreToLoad: boolean,
-  assuranceMode: AssuranceMode,
+  assuranceMode: WalletAssuranceMode,
   walletId: string,
   formattedWalletAmount: Function,
   showMoreTransactionsButton?: boolean,
@@ -150,6 +150,7 @@ export default class WalletTransactionsList extends Component<Props> {
                 <div key={`${walletId}-${transaction.id}-${transaction.type}`}>
                   <Transaction
                     data={transaction}
+                    isRestoreActive={isRestoreActive}
                     isLastInList={transactionIndex === group.transactions.length - 1}
                     state={transaction.state}
                     assuranceLevel={transaction.getAssuranceLevelForMode(assuranceMode)}
@@ -169,7 +170,7 @@ export default class WalletTransactionsList extends Component<Props> {
             className={buttonClasses}
             label={intl.formatMessage(messages.showMoreTransactionsButtonLabel)}
             onClick={this.onShowMoreTransactions.bind(this, walletId)}
-            skin={<SimpleButtonSkin />}
+            skin={ButtonSkin}
           />
         }
       </div>

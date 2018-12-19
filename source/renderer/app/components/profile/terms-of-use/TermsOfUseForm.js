@@ -2,15 +2,14 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
-import Button from 'react-polymorph/lib/components/Button';
-import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { defineMessages, intlShape } from 'react-intl';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSkin';
 import LocalizableError from '../../../i18n/LocalizableError';
 import TermsOfUseText from './TermsOfUseText';
 import styles from './TermsOfUseForm.scss';
-import environment from '../../../../../common/environment';
 
 const messages = defineMessages({
   checkboxLabel: {
@@ -69,8 +68,6 @@ export default class TermsOfUseForm extends Component<Props, State> {
       isSubmitting ? styles.submitButtonSpinning : styles.submitButton,
     ]);
 
-    const checkboxLabel = environment.isEtcApi() ? 'checkboxLabelWithDisclaimer' : 'checkboxLabel';
-
     return (
       <div className={styles.component}>
         <div className={styles.centeredBox}>
@@ -79,10 +76,10 @@ export default class TermsOfUseForm extends Component<Props, State> {
 
           <div className={styles.checkbox}>
             <Checkbox
-              label={intl.formatMessage(messages[checkboxLabel])}
+              label={intl.formatMessage(messages.checkboxLabel)}
               onChange={this.toggleAcceptance.bind(this)}
               checked={areTermsOfUseAccepted}
-              skin={<SimpleCheckboxSkin />}
+              skin={CheckboxSkin}
             />
           </div>
 
@@ -91,9 +88,9 @@ export default class TermsOfUseForm extends Component<Props, State> {
           <Button
             className={buttonClasses}
             label={intl.formatMessage(messages.submitLabel)}
-            onMouseUp={this.submit}
+            onClick={this.submit}
             disabled={!areTermsOfUseAccepted}
-            skin={<SimpleButtonSkin />}
+            skin={ButtonSkin}
           />
 
         </div>

@@ -2,11 +2,11 @@
 import React from 'react';
 import { Route, IndexRedirect } from 'react-router';
 import { ROUTES } from './routes-config';
-import resolver from './utils/imports';
 
 // PAGES
-// import StakingPage from './containers/staking/StakingPage';
+import Root from './containers/Root';
 import AdaRedemptionPage from './containers/wallet/AdaRedemptionPage';
+import NetworkStatusPage from './containers/status/NetworkStatusPage';
 import WalletAddPage from './containers/wallet/WalletAddPage';
 import LanguageSelectionPage from './containers/profile/LanguageSelectionPage';
 import Settings from './containers/settings/Settings';
@@ -14,25 +14,26 @@ import GeneralSettingsPage from './containers/settings/categories/GeneralSetting
 import SupportSettingsPage from './containers/settings/categories/SupportSettingsPage';
 import TermsOfUseSettingsPage from './containers/settings/categories/TermsOfUseSettingsPage';
 import TermsOfUsePage from './containers/profile/TermsOfUsePage';
+import DataLayerMigrationPage from './containers/profile/DataLayerMigrationPage';
 import DisplaySettingsPage from './containers/settings/categories/DisplaySettingsPage';
 import PaperWalletCreateCertificatePage from './containers/wallet/PaperWalletCreateCertificatePage';
-
-// Dynamic container loading - resolver loads file relative to '/app/' directory
-const LoadingPage = resolver('containers/LoadingPage');
-const Wallet = resolver('containers/wallet/Wallet');
-const WalletSummaryPage = resolver('containers/wallet/WalletSummaryPage');
-const WalletSendPage = resolver('containers/wallet/WalletSendPage');
-const WalletReceivePage = resolver('containers/wallet/WalletReceivePage');
-const WalletTransactionsPage = resolver('containers/wallet/WalletTransactionsPage');
-const WalletSettingsPage = resolver('containers/wallet/WalletSettingsPage');
+import Wallet from './containers/wallet/Wallet';
+import WalletSummaryPage from './containers/wallet/WalletSummaryPage';
+import WalletSendPage from './containers/wallet/WalletSendPage';
+import WalletReceivePage from './containers/wallet/WalletReceivePage';
+import WalletTransactionsPage from './containers/wallet/WalletTransactionsPage';
+import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
+// import StakingPage from './containers/staking/StakingPage';
 
 export const Routes = (
-  <div>
-    <Route path={ROUTES.ROOT} component={LoadingPage} />
+  <Route path={ROUTES.ROOT} component={Root}>
+    <IndexRedirect to={ROUTES.WALLETS.ROOT} />
     <Route path={ROUTES.PROFILE.LANGUAGE_SELECTION} component={LanguageSelectionPage} />
     <Route path={ROUTES.PROFILE.TERMS_OF_USE} component={TermsOfUsePage} />
+    <Route path={ROUTES.PROFILE.DATA_LAYER_MIGRATION} component={DataLayerMigrationPage} />
     {/* <Route path={ROUTES.STAKING} component={StakingPage} /> */}
     <Route path={ROUTES.ADA_REDEMPTION} component={AdaRedemptionPage} />
+    <Route path={ROUTES.NETWORK_STATUS} component={NetworkStatusPage} />
     <Route path={ROUTES.WALLETS.ADD} component={WalletAddPage} />
     <Route path={ROUTES.WALLETS.ROOT} component={Wallet}>
       <Route path={ROUTES.WALLETS.SUMMARY} component={WalletSummaryPage} />
@@ -52,5 +53,5 @@ export const Routes = (
       path={ROUTES.PAPER_WALLET_CREATE_CERTIFICATE}
       component={PaperWalletCreateCertificatePage}
     />
-  </div>
+  </Route>
 );

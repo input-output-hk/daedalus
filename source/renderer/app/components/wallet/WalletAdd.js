@@ -97,10 +97,6 @@ export default class WalletAdd extends Component<Props> {
       isRestoreActive, isMaxNumberOfWalletsReached,
     } = this.props;
 
-    const restoreButtonDescription = environment.isAdaApi()
-      ? messages.restoreWithCertificateDescription
-      : messages.restoreWithoutCertificateDescription;
-
     const componentClasses = classnames([styles.component, 'WalletAdd']);
 
     let activeNotification = null;
@@ -136,7 +132,7 @@ export default class WalletAdd extends Component<Props> {
               onClick={onRestore}
               icon={restoreIcon}
               label={intl.formatMessage(messages.restoreLabel)}
-              description={intl.formatMessage(restoreButtonDescription)}
+              description={intl.formatMessage(messages.restoreWithCertificateDescription)}
               isDisabled={isMaxNumberOfWalletsReached || isRestoreActive}
             />
             <BigButtonForDialogs
@@ -148,8 +144,8 @@ export default class WalletAdd extends Component<Props> {
               isDisabled={
                 isMaxNumberOfWalletsReached ||
                 isRestoreActive ||
-                environment.isEtcApi() ||
-                (environment.isAdaApi() && environment.isMainnet())
+                environment.isMainnet() ||
+                environment.isTestnet()
               }
             />
           </div>

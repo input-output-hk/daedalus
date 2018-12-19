@@ -8,18 +8,18 @@ import globalMessages from '../../../i18n/global-messages.js';
 const messages = defineMessages({
   faqTitle: {
     id: 'settings.support.faq.title',
-    defaultMessage: '!!!Frequently asked questions',
-    description: 'Title "Frequently asked questions" on the support settings page.',
+    defaultMessage: '!!!Help and support',
+    description: 'Title "Help and support" on the support settings page.',
   },
   faqContent: {
     id: 'settings.support.faq.content',
-    defaultMessage: '!!!If you are experiencing issues, please see the {faqLink} for guidance on known issues.',
-    description: 'Content for the "Frequently asked questions" section on the support settings page.',
+    defaultMessage: '!!!If you are experiencing issues, for guidance please see the {faqLink} article in the Support Portal.',
+    description: 'Content for the "Help and support" section on the support settings page.',
   },
   faqLink: {
     id: 'settings.support.faq.faqLink',
-    defaultMessage: '!!!FAQ on Daedalus website',
-    description: '"FAQ on Daedalus website" link in the FAQ section on the support settings page',
+    defaultMessage: '!!!Known Issues',
+    description: '"Known Issues" link in the "Help and support" section on the support settings page',
   },
   reportProblemTitle: {
     id: 'settings.support.reportProblem.title',

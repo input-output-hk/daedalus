@@ -53,4 +53,5 @@ export default class UiNotificationsStore extends Store {
       if (notification.duration === 0) this._onClose({ id });
     }
   };
+
 }

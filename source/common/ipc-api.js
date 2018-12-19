@@ -20,13 +20,6 @@ export const COMPRESS_LOGS = {
   ERROR: `${COMPRESS_LOGS_CHANNEL}-error`,
 };
 
-const DELETE_COMPRESSED_LOGS_CHANNEL = 'delete-compressed-logs';
-export const DELETE_COMPRESSED_LOGS = {
-  REQUEST: DELETE_COMPRESSED_LOGS_CHANNEL,
-  SUCCESS: `${DELETE_COMPRESSED_LOGS_CHANNEL}-success`,
-  ERROR: `${DELETE_COMPRESSED_LOGS_CHANNEL}-error`,
-};
-
 const DOWNLOAD_LOGS_CHANNEL = 'download-logs';
 export const DOWNLOAD_LOGS = {
   REQUEST: DOWNLOAD_LOGS_CHANNEL,
@@ -40,3 +33,4 @@ export const GET_GPU_STATUS = {
   SUCCESS: `${GET_GPU_STATUS_CHANNEL}-success`,
   ERROR: `${GET_GPU_STATUS_CHANNEL}-error`,
 };
+

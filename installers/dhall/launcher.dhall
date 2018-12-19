@@ -17,13 +17,14 @@
     , "--tlscert",             "${os.nodeArgs.tlsPath}/server/server.crt"
     , "--tlskey",              "${os.nodeArgs.tlsPath}/server/server.key"
     , "--no-client-auth"
+    , "--log-console-off"
     , "--update-server",       cluster.updateServer
     , "--keyfile",             os.nodeArgs.keyfile
     , "--topology",            os.nodeArgs.topology
     , "--wallet-db-path",      os.nodeArgs.walletDBPath
     , "--update-latest-path",  os.nodeArgs.updateLatestPath
-    , "--wallet-address",      "127.0.0.1:${Integer/show cluster.walletPort}"
+    , "--wallet-address",      "127.0.0.1:0"
     -- XXX: this is a workaround for Linux
     , "--update-with-package"
-    ]
+    ] # cluster.extraNodeArgs
 } // os.pass

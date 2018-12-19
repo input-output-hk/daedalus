@@ -4,10 +4,10 @@ import { join } from 'lodash';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
-import Autocomplete from 'react-polymorph/lib/components/Autocomplete';
-import SimpleAutocompleteSkin from 'react-polymorph/lib/skins/simple/raw/AutocompleteSkin';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSkin';
+import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
+import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
@@ -154,13 +154,19 @@ export default class VerificationDialog extends Component<Props, State> {
 
   resetForm = () => {
     const { form } = this;
+    const autocomplete = this.recoveryPhraseAutocomplete.getRef();
+
     // Cancel all debounced field validations
     form.each((field) => { field.debouncedValidation.cancel(); });
     form.reset();
     form.showErrors(false);
 
     // Autocomplete has to be reset manually
-    this.recoveryPhraseAutocomplete.clear();
+    this.recoveryPhraseAutocomplete.getRef().clear();
+
+    if (autocomplete && autocomplete.focus) {
+      autocomplete.focus();
+    }
 
     this.setState({
       storingConfirmed: false,
@@ -237,7 +243,7 @@ export default class VerificationDialog extends Component<Props, State> {
               error={recoveryPhraseField.error}
               maxVisibleOptions={5}
               noResultsMessage={intl.formatMessage(messages.recoveryPhraseNoResults)}
-              skin={<SimpleAutocompleteSkin />}
+              skin={AutocompleteSkin}
             />
 
             <Checkbox
@@ -246,7 +252,7 @@ export default class VerificationDialog extends Component<Props, State> {
               onChange={this.onStoringConfirmationChange.bind(this)}
               checked={storingConfirmed}
               disabled={!isRecoveryPhraseValid}
-              skin={<SimpleCheckboxSkin />}
+              skin={CheckboxSkin}
             />
 
             <Checkbox
@@ -255,7 +261,7 @@ export default class VerificationDialog extends Component<Props, State> {
               onChange={this.onRecoveringConfirmationChange.bind(this)}
               checked={recoveringConfirmed}
               disabled={!isRecoveryPhraseValid}
-              skin={<SimpleCheckboxSkin />}
+              skin={CheckboxSkin}
             />
           </div>
         </div>

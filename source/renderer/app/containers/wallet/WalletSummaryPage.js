@@ -10,10 +10,8 @@ import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import resolver from '../../utils/imports';
-import { syncStateTags } from '../../domains/Wallet';
-
-const { formattedWalletAmount } = resolver('utils/formatters');
+import { formattedWalletAmount } from '../../utils/formatters';
+import { WalletSyncStateTags } from '../../domains/Wallet';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -36,8 +34,7 @@ export default class WalletSummaryPage extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { ada, app } = this.props.stores;
-    const { wallets, transactions } = ada;
+    const { app, wallets, transactions } = this.props.stores;
     const { openExternalLink } = app;
     const {
       hasAny,
@@ -53,7 +50,7 @@ export default class WalletSummaryPage extends Component<Props> {
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
-    const isRestoreActive = get(wallet, 'syncState.tag') === syncStateTags.RESTORING;
+    const isRestoreActive = get(wallet, 'syncState.tag') === WalletSyncStateTags.RESTORING;
 
     if (recentTransactionsRequest.isExecutingFirstTime || hasAny || isRestoreActive) {
       walletTransactions = (
@@ -83,6 +80,7 @@ export default class WalletSummaryPage extends Component<Props> {
           numberOfTransactions={totalAvailable}
           pendingAmount={unconfirmedAmount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
+          isRestoreActive={isRestoreActive}
         />
         {walletTransactions}
       </VerticalFlexContainer>

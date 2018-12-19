@@ -6,13 +6,16 @@ import classNames from 'classnames';
 import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon';
 import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
-import etcSymbol from '../../../assets/images/etc-symbol.inline.svg';
-import WalletTransaction, { transactionStates, transactionTypes } from '../../../domains/WalletTransaction';
-import { assuranceLevels } from '../../../types/transactionAssuranceTypes';
-import { environmentSpecificMessages } from '../../../i18n/global-messages';
-import type { TransactionState } from '../../../domains/WalletTransaction';
-import environment from '../../../../../common/environment';
-import { getNetworkExplorerUrl } from '../../../utils/ada/network';
+import arrow from '../../../assets/images/collapse-arrow.inline.svg';
+import WalletTransaction,
+{
+  TxnAssuranceLevelOptions,
+  transactionStates,
+  transactionTypes
+} from '../../../domains/WalletTransaction';
+import globalMessages from '../../../i18n/global-messages';
+import type { TransactionState } from '../../../api/transactions/types';
+import { getNetworkExplorerUrl } from '../../../utils/network';
 
 const messages = defineMessages({
   card: {
@@ -88,17 +91,17 @@ const messages = defineMessages({
 });
 
 const assuranceLevelTranslations = defineMessages({
-  [assuranceLevels.LOW]: {
+  [TxnAssuranceLevelOptions.LOW]: {
     id: 'wallet.transaction.assuranceLevel.low',
     defaultMessage: '!!!low',
     description: 'Transaction assurance level "low".',
   },
-  [assuranceLevels.MEDIUM]: {
+  [TxnAssuranceLevelOptions.MEDIUM]: {
     id: 'wallet.transaction.assuranceLevel.medium',
     defaultMessage: '!!!medium',
     description: 'Transaction assurance level "medium".',
   },
-  [assuranceLevels.HIGH]: {
+  [TxnAssuranceLevelOptions.HIGH]: {
     id: 'wallet.transaction.assuranceLevel.high',
     defaultMessage: '!!!high',
     description: 'Transaction assurance level "high".',
@@ -122,6 +125,7 @@ type Props = {
   data: WalletTransaction,
   state: TransactionState,
   assuranceLevel: string,
+  isRestoreActive: boolean,
   isLastInList: boolean,
   formattedWalletAmount: Function,
   onOpenExternalLink: ?Function,
@@ -146,7 +150,7 @@ export default class Transaction extends Component<Props, State> {
   }
 
   handleOpenExplorer(type, param, e) {
-    if (this.props.onOpenExternalLink && environment.isAdaApi()) {
+    if (this.props.onOpenExternalLink) {
       e.stopPropagation();
       const link = `${getNetworkExplorerUrl()}/${type}/${param}`;
       this.props.onOpenExternalLink(link);
@@ -157,11 +161,12 @@ export default class Transaction extends Component<Props, State> {
     const {
       data, isLastInList, state, assuranceLevel,
       formattedWalletAmount, onOpenExternalLink,
+      isRestoreActive,
     } = this.props;
     const { isExpanded } = this.state;
     const { intl } = this.context;
 
-    const canOpenExplorer = onOpenExternalLink && environment.isAdaApi();
+    const canOpenExplorer = onOpenExternalLink;
 
     const hasConfirmations = data.numberOfConfirmations > 0;
     const isFailedTransaction = state === transactionStates.FAILED;
@@ -178,28 +183,48 @@ export default class Transaction extends Component<Props, State> {
 
     const contentStyles = classNames([
       styles.content,
-      isLastInList ? styles.last : null
+      isLastInList ? styles.last : null,
+      isExpanded ? styles.contentExpanded : null
     ]);
 
     const detailsStyles = classNames([
       styles.details,
       canOpenExplorer ? styles.clickable : null,
-      isExpanded ? styles.expanded : styles.closed
+      isExpanded ? styles.detailsExpanded : styles.detailsClosed
+    ]);
+
+    const arrowStyles = classNames([
+      styles.arrow,
+      isExpanded ? styles.arrowExpanded : null
     ]);
 
     const status = intl.formatMessage(assuranceLevelTranslations[assuranceLevel]);
-    const currency = intl.formatMessage(environmentSpecificMessages[environment.API].currency);
-    const symbol = environment.isAdaApi() ? adaSymbol : etcSymbol;
+    const currency = intl.formatMessage(globalMessages.currency);
+    const symbol = adaSymbol;
+
+    const transactionStateTag = () => {
+      if (isRestoreActive) return;
+      return (
+        (transactionState === transactionStates.OK) ? (
+          <div className={styles[assuranceLevel]}>{status}</div>
+        ) : (
+          <div className={styles[`${transactionState}Label`]}>
+            {intl.formatMessage(stateTranslations[transactionState])}
+          </div>
+        )
+      );
+    };
 
     return (
       <div
-        className={componentStyles}
         onClick={this.toggleDetails.bind(this)}
+        className={componentStyles}
         role="presentation"
         aria-hidden
       >
-
-        <div className={styles.toggler}>
+        <div
+          className={styles.toggler}
+        >
           <TransactionTypeIcon
             iconType={isFailedTransaction ? transactionStates.FAILED : data.type}
           />
@@ -226,21 +251,21 @@ export default class Transaction extends Component<Props, State> {
                 {intl.formatMessage(messages.type, { currency })}
                 , {moment(data.date).format('hh:mm:ss A')}
               </div>
-
-              {(transactionState === transactionStates.OK) ? (
-                <div className={styles[assuranceLevel]}>{status}</div>
-              ) : (
-                <div className={styles[`${transactionState}Label`]}>
-                  {intl.formatMessage(stateTranslations[transactionState])}
-                </div>
-              )}
+              {transactionStateTag()}
             </div>
           </div>
         </div>
 
         {/* ==== Toggleable Transaction Details ==== */}
-        <div className={contentStyles}>
-          <div className={detailsStyles}>
+        <div
+          className={contentStyles}
+        >
+          <div
+            className={detailsStyles}
+            onClick={(event) => event.stopPropagation()}
+            role="presentation"
+            aria-hidden
+          >
             {data.exchange && data.conversionRate && (
               <div className={styles.conversion}>
                 <div>
@@ -255,9 +280,7 @@ export default class Transaction extends Component<Props, State> {
             )}
             <div>
               <h2>
-                {intl.formatMessage(messages[
-                  environment.isEtcApi() ? 'fromAddress' : 'fromAddresses'
-                ])}
+                {intl.formatMessage(messages.fromAddresses)}
               </h2>
               {data.addresses.from.map((address, addressIndex) => (
                 <span
@@ -271,9 +294,7 @@ export default class Transaction extends Component<Props, State> {
                 </span>
               ))}
               <h2>
-                {intl.formatMessage(messages[
-                  environment.isEtcApi() ? 'toAddress' : 'toAddresses'
-                ])}
+                {intl.formatMessage(messages.toAddresses)}
               </h2>
               {data.addresses.to.map((address, addressIndex) => (
                 <span
@@ -287,29 +308,16 @@ export default class Transaction extends Component<Props, State> {
                 </span>
               ))}
 
-              {environment.isAdaApi() ? (
-                <div className={styles.row}>
-                  <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
-                  {(transactionState === transactionStates.OK) ? (
-                    <span>
-                      <span className={styles.assuranceLevel}>{status}</span>
-                      . {data.numberOfConfirmations} {intl.formatMessage(messages.confirmations)}.
-                    </span>
-                  ) : null}
-                </div>
-              ) : null}
-
-              {environment.isEtcApi() ? (
-                <div className={styles.row}>
-                  <h2>{intl.formatMessage(messages.transactionAmount)}</h2>
+              <div className={styles.row}>
+                <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
+                {!isRestoreActive && (transactionState === transactionStates.OK) ? (
                   <span>
-                    {
-                      // show currency and use long format (e.g. in ETC show all decimal places)
-                      formattedWalletAmount(data.amount, true, true)
-                    }
+                    <span className={styles.assuranceLevel}>{status}</span>.&nbsp;
+                    {data.numberOfConfirmations.toLocaleString()}&nbsp;
+                    {intl.formatMessage(messages.confirmations)}.
                   </span>
-                </div>
-              ) : null}
+                ) : null}
+              </div>
 
               <h2>{intl.formatMessage(messages.transactionId)}</h2>
               <span
@@ -328,8 +336,8 @@ export default class Transaction extends Component<Props, State> {
             </div>
             */}
           </div>
+          <SVGInline svg={arrow} className={arrowStyles} />
         </div>
-
       </div>
     );
   }

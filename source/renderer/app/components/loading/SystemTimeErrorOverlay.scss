@@ -1,3 +1,5 @@
+@import "../../themes/mixins/animations";
+
 .component {
   align-items: center;
   background-color: var(--theme-system-error-overlay-background-color);
@@ -45,28 +47,30 @@
   p {
     font-size: 16px;
     line-height: 1.38;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     opacity: 0.8;
   }
 
-  button {
-    background-color: var(--theme-system-error-overlay-button-background-color);
-    border: solid 1px var(--theme-system-error-overlay-button-border-color);
-    border-radius: 5px;
-    color: var(--theme-system-error-overlay-button-text-color);
+  a {
+    border-bottom: 1px solid var(--theme-system-error-overlay-text-color);
+    color: var(--theme-system-error-overlay-text-color);
+    text-decoration: none;
+  }
+
+  .checkLink {
+    border-bottom: 1px solid var(--theme-system-error-overlay-text-color);
+    color: var(--theme-system-error-overlay-text-color);
     cursor: pointer;
     font-size: 14px;
-    height: 50px;
-    letter-spacing: 1px;
-    min-height: 50px;
-    transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    width: 360px;
+    line-height: 1.36;
+    margin-top: 30px;
+    opacity: 0.8;
 
-    &:not(.disabled) {
-      &:hover {
-        background-color: var(--theme-system-error-overlay-button-background-color-hover);
-        color: var(--theme-system-error-overlay-button-text-color-hover);
-      }
+    &:disabled {
+      text-decoration: none;
+      cursor: default;
+      @include animated-ellipsis($width: 16px);
     }
   }
+
 }

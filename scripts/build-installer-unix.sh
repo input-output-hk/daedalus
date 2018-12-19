@@ -18,7 +18,7 @@ usage() {
 
   Options:
     --clusters "[CLUSTER-NAME...]"
-                              Build installers for CLUSTERS.  Defaults to "mainnet staging"
+                              Build installers for CLUSTERS.  Defaults to "mainnet staging testnet"
     --fast-impure             Fast, impure, incremental build
     --build-id BUILD-NO       Identifier of the build; defaults to '0'
 

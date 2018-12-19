@@ -2,18 +2,20 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/raw/SwitchSkin';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import Dialog from '../widgets/Dialog';
-import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../utils/validations';
+import { isValidWalletName, isValidSpendingPassword, isValidRepeatPassword } from '../../utils/validations';
 import globalMessages from '../../i18n/global-messages';
 import styles from './WalletCreateDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
+import { submitOnEnter } from '../../utils/form';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -46,8 +48,8 @@ const messages = defineMessages({
     defaultMessage: '!!!Spending password',
     description: 'Label for the "Activate to create password" switch in the create wallet dialog.',
   },
-  walletPasswordLabel: {
-    id: 'wallet.create.dialog.walletPasswordLabel',
+  spendingPasswordLabel: {
+    id: 'wallet.create.dialog.spendingPasswordLabel',
     defaultMessage: '!!!Enter password',
     description: 'Label for the "Wallet password" input in the create wallet dialog.',
   },
@@ -86,7 +88,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
   };
 
   componentDidMount() {
-    setTimeout(() => { this.walletNameInput.focus(); });
+    setTimeout(() => { this.walletNameInput.getRef().focus(); });
   }
 
   walletNameInput: Input;
@@ -104,9 +106,9 @@ export default class WalletCreateDialog extends Component<Props, State> {
           ]
         )],
       },
-      walletPassword: {
+      spendingPassword: {
         type: 'password',
-        label: this.context.intl.formatMessage(messages.walletPasswordLabel),
+        label: this.context.intl.formatMessage(messages.spendingPasswordLabel),
         placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
         value: '',
         validators: [({ field, form }) => {
@@ -116,8 +118,8 @@ export default class WalletCreateDialog extends Component<Props, State> {
             repeatPasswordField.validate({ showErrors: true });
           }
           return [
-            isValidWalletPassword(field.value),
-            this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
+            isValidSpendingPassword(field.value),
+            this.context.intl.formatMessage(globalMessages.invalidSpendingPassword)
           ];
         }],
       },
@@ -128,10 +130,10 @@ export default class WalletCreateDialog extends Component<Props, State> {
         value: '',
         validators: [({ field, form }) => {
           if (!this.state.createPassword) return [true];
-          const walletPassword = form.$('walletPassword').value;
-          if (walletPassword.length === 0) return [true];
+          const spendingPassword = form.$('spendingPassword').value;
+          if (spendingPassword.length === 0) return [true];
           return [
-            isValidRepeatPassword(walletPassword, field.value),
+            isValidRepeatPassword(spendingPassword, field.value),
             this.context.intl.formatMessage(globalMessages.invalidRepeatPassword)
           ];
         }],
@@ -149,10 +151,10 @@ export default class WalletCreateDialog extends Component<Props, State> {
       onSuccess: (form) => {
         this.setState({ isSubmitting: true });
         const { createPassword } = this.state;
-        const { walletName, walletPassword } = form.values();
+        const { walletName, spendingPassword } = form.values();
         const walletData = {
           name: walletName,
-          password: createPassword ? walletPassword : null,
+          spendingPassword: createPassword ? spendingPassword : null,
         };
         this.props.onSubmit(walletData);
       },
@@ -161,12 +163,6 @@ export default class WalletCreateDialog extends Component<Props, State> {
       },
     });
   };
-
-  checkForEnterKey(event: KeyboardEvent) {
-    if (event.key === 'Enter') {
-      this.submit();
-    }
-  }
 
   handlePasswordSwitchToggle = (value: boolean) => {
     this.setState({ createPassword: value });
@@ -181,8 +177,8 @@ export default class WalletCreateDialog extends Component<Props, State> {
       styles.component,
       'WalletCreateDialog',
     ]);
-    const walletPasswordFieldsClasses = classnames([
-      styles.walletPasswordFields,
+    const spendingPasswordFieldsClasses = classnames([
+      styles.spendingPasswordFields,
       createPassword ? styles.show : null,
     ]);
 
@@ -196,7 +192,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
     ];
 
     const walletNameField = form.$('walletName');
-    const walletPasswordField = form.$('walletPassword');
+    const spendingPasswordField = form.$('spendingPassword');
     const repeatedPasswordField = form.$('repeatPassword');
 
     return (
@@ -211,38 +207,41 @@ export default class WalletCreateDialog extends Component<Props, State> {
 
         <Input
           className="walletName"
-          onKeyPress={this.checkForEnterKey.bind(this)}
+          onKeyPress={submitOnEnter.bind(this, this.submit)}
           ref={(input) => { this.walletNameInput = input; }}
           {...walletNameField.bind()}
           error={walletNameField.error}
-          skin={<SimpleInputSkin />}
+          skin={InputSkin}
         />
 
-        <div className={styles.walletPassword}>
-          <div className={styles.walletPasswordSwitch}>
+        <div className={styles.spendingPassword}>
+          <div className={styles.spendingPasswordSwitch}>
             <div className={styles.passwordLabel}>
               {intl.formatMessage(messages.passwordSwitchLabel)}
             </div>
             <Checkbox
+              themeId={IDENTIFIERS.SWITCH}
               onChange={this.handlePasswordSwitchToggle}
               label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
               checked={createPassword}
-              skin={<SimpleSwitchSkin />}
+              skin={SwitchSkin}
             />
           </div>
 
-          <div className={walletPasswordFieldsClasses}>
+          <div className={spendingPasswordFieldsClasses}>
             <Input
-              className="walletPassword"
-              {...walletPasswordField.bind()}
-              error={walletPasswordField.error}
-              skin={<SimpleInputSkin />}
+              className="spendingPassword"
+              onKeyPress={submitOnEnter.bind(this, this.submit)}
+              {...spendingPasswordField.bind()}
+              error={spendingPasswordField.error}
+              skin={InputSkin}
             />
             <Input
               className="repeatedPassword"
+              onKeyPress={submitOnEnter.bind(this, this.submit)}
               {...repeatedPasswordField.bind()}
               error={repeatedPasswordField.error}
-              skin={<SimpleInputSkin />}
+              skin={InputSkin}
             />
             <p className={styles.passwordInstructions}>
               {intl.formatMessage(globalMessages.passwordInstructions)}

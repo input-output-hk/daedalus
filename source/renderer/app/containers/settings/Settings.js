@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import SettingsLayout from '../../components/settings/SettingsLayout';
 import SettingsMenu from '../../components/settings/menu/SettingsMenu';
-import resolver from '../../utils/imports';
+import Layout from '../MainLayout';
 import { buildRoute } from '../../utils/routing';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
-
-const Layout = resolver('containers/MainLayout');
 
 @inject('stores', 'actions') @observer
 export default class Settings extends Component<InjectedContainerProps> {

@@ -25,9 +25,9 @@ export default class LoadingPage extends Component<InjectedProps> {
   render() {
     const { stores } = this.props;
     const {
-      isConnecting, isSyncing, syncPercentage, isLoadingWallets,
-      hasBeenConnected, hasBlockSyncingStarted, localTimeDifference,
-      isSystemTimeCorrect,
+      cardanoNodeState, isConnected, isSynced, syncPercentage, hasBeenConnected,
+      localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
+      forceCheckLocalTimeDifference, ignoreSystemTimeChecks,
     } = stores.networkStatus;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
     return (
@@ -35,20 +35,22 @@ export default class LoadingPage extends Component<InjectedProps> {
         <Loading
           currencyIcon={adaLogo}
           apiIcon={cardanoLogo}
-          isSyncing={isSyncing}
+          cardanoNodeState={cardanoNodeState}
+          isConnected={isConnected}
+          isSynced={isSynced}
           localTimeDifference={localTimeDifference}
           isSystemTimeCorrect={isSystemTimeCorrect}
-          isConnecting={isConnecting}
+          isCheckingSystemTime={forceCheckTimeDifferenceRequest.isExecuting}
           syncPercentage={syncPercentage}
-          isLoadingDataForNextScreen={isLoadingWallets}
           loadingDataForNextScreenMessage={messages.loadingWalletData}
           hasBeenConnected={hasBeenConnected}
-          hasBlockSyncingStarted={hasBlockSyncingStarted}
           hasLoadedCurrentLocale={hasLoadedCurrentLocale}
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           currentLocale={currentLocale}
           handleReportIssue={this.handleReportIssue}
           onProblemSolutionClick={this.handleProblemSolutionClick}
+          onCheckTheTimeAgain={forceCheckLocalTimeDifference}
+          onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
         />
         <WalletSupportRequestPage />
       </CenteredLayout>
@@ -62,6 +64,6 @@ export default class LoadingPage extends Component<InjectedProps> {
   };
 
   handleProblemSolutionClick = (link: string) => {
-    shell.openExternal(`https://${link}`);
-  }
+    shell.openExternal(link);
+  };
 }

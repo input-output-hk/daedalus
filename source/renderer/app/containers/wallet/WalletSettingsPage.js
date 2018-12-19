@@ -4,6 +4,9 @@ import { observer, inject } from 'mobx-react';
 import WalletSettings from '../../components/wallet/WalletSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { isValidWalletName } from '../../utils/validations';
+import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
+import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
+import ExportWalletToFileDialogContainer from './dialogs/settings/ExportWalletToFileDialogContainer';
 
 type Props = InjectedProps
 
@@ -13,8 +16,7 @@ export default class WalletSettingsPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    const { uiDialogs } = this.props.stores;
-    const { wallets, walletSettings } = this.props.stores.ada;
+    const { uiDialogs, wallets, walletSettings } = this.props.stores;
     const { actions } = this.props;
     const activeWallet = wallets.active;
     const {
@@ -28,7 +30,7 @@ export default class WalletSettingsPage extends Component<Props> {
       stopEditingWalletField,
       cancelEditingWalletField,
       updateWalletField,
-    } = actions.ada.walletSettings;
+    } = actions.walletSettings;
 
     // Guard against potential null values
     if (!activeWallet) throw new Error('Active wallet required for WalletSettingsPage.');
@@ -39,8 +41,8 @@ export default class WalletSettingsPage extends Component<Props> {
         walletAssurance={activeWallet.assurance}
         error={updateWalletRequest.error}
         openDialogAction={actions.dialogs.open.trigger}
-        isWalletPasswordSet={activeWallet.hasPassword}
-        walletPasswordUpdateDate={activeWallet.passwordUpdateDate}
+        isSpendingPasswordSet={activeWallet.hasPassword}
+        spendingPasswordUpdateDate={activeWallet.passwordUpdateDate}
         isDialogOpen={uiDialogs.isOpen}
         walletName={activeWallet.name}
         isSubmitting={updateWalletRequest.isExecuting}
@@ -52,6 +54,9 @@ export default class WalletSettingsPage extends Component<Props> {
         onCancelEditing={cancelEditingWalletField.trigger}
         activeField={walletFieldBeingEdited}
         nameValidator={name => isValidWalletName(name)}
+        changeSpendingPasswordDialog={<ChangeSpendingPasswordDialogContainer />}
+        deleteWalletDialogContainer={<DeleteWalletDialogContainer />}
+        exportWalletDialogContainer={<ExportWalletToFileDialogContainer />}
       />
     );
   }

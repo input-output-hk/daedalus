@@ -1,6 +1,5 @@
 // THEME CONFIGURATION
 
-$path: "react-polymorph/lib/themes/simple/";
 $theme-assets-path: "react-polymorph/lib/themes/simple/assets";
 
 $theme-font-thin: var(--font-thin);
@@ -50,12 +49,18 @@ $option-bg-color: var(--theme-select-background-color);
 $option-font-color: var(--theme-select-option-text-color);
 $option-border-color: var(--theme-select-options-border-color);
 $option-highlight-color: var(--theme-select-option-highlight-color);
+$option-checkmark-color: var(--theme-select-options-checkmark-color);
 
 // BUBBLE
 
 $bubble-bg-color: var(--theme-select-background-color);
 $bubble-border-color: var(--theme-select-options-border-color);
 $bubble-border-radius: 2px;
+
+// CHECKBOX
+
+$checkbox-border-disabled-color: var(--theme-checkbox-border-disabled-color);
+$checkbox-label-disabled-color: var(--theme-checkbox-label-disabled-color);
 
 // SWITCH
 

@@ -2,11 +2,10 @@
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import { environmentSpecificMessages } from '../../i18n/global-messages';
+import globalMessages from '../../i18n/global-messages';
 import styles from './About.scss';
 import daedalusIcon from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import cardanoIcon from '../../assets/images/cardano-logo.inline.svg';
-import mantisIcon from '../../assets/images/mantis-logo.inline.svg';
 import environment from '../../../../common/environment';
 
 const messages = defineMessages({
@@ -25,11 +24,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Cardano Team:',
     description: 'About page cardano team headline',
   },
-  aboutContentMantisHeadline: {
-    id: 'static.about.content.mantis.headline',
-    defaultMessage: '!!!Mantis Team:',
-    description: 'About page mantis team headline',
-  },
   aboutContentDaedalusMembers: {
     id: 'static.about.content.daedalus.members',
     defaultMessage: '!!!Alexander Rukin, Charles Hoskinson, Clemens Helm, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Stefan Malzner, Tomislav Horaček',
@@ -39,11 +33,6 @@ const messages = defineMessages({
     id: 'static.about.content.cardano.members',
     defaultMessage: '!!!Alexander Sukhoverkhov, Alexander Vieth, Alexandre Rodrigues Baldé, Alfredo Di Napoli, Anastasiya Besman, Andrzej Rybczak, Ante Kegalj, Anton Belyy, Anupam Jain, Arseniy Seroka, Artyom Kazak, Carlos D\'Agostino, Charles Hoskinson, Dan Friedman, Denis Shevchenko, Dmitry Kovanikov, Dmitry Mukhutdinov, Dmitry Nikulin, Domen Kožar, Duncan Coutts, Edsko de Vries, Eileen Fitzgerald, George Agapov, Hiroto Shioi, Ilya Lubimov, Ilya Peresadin, Ivan Gromakovskii, Jake Mitchell, Jane Wild, Jens Krause, Jeremy Wood, Joel Mislov Kunst, Jonn Mostovoy, Konstantin Ivanov, Kristijan Šarić, Lars Brünjes, Laurie Wang, Lionel Miller, Michael Bishop, Mikhail Volkhov, Niklas Hambüchen, Peter Gaži, Philipp Kant, Serge Kosyrev, Vincent Hanquez',
     description: 'About page cardano team members',
-  },
-  aboutContentMantisMembers: {
-    id: 'static.about.content.mantis.members',
-    defaultMessage: '!!!Adam Smolarek, Alan McSherry, Alan Verbner, Alejandro Garcia, Charles Hoskinson, Domen Kožar, Eileen Fitzgerald, Hiroto Shioi, Jane Wild, Jan Ziniewicz, Javier Diaz, Jeremy Wood, Laurie Wang, Łukasz Gąsior, Konrad Staniec, Michael Bishop, Mirko Alić, Nicolás Tallar, Radek Tkaczyk, Serge Kosyrev',
-    description: 'About page mantis team members',
   },
   aboutCopyright: {
     id: 'static.about.copyright',
@@ -77,19 +66,13 @@ export default class About extends Component<Props> {
     const { onOpenExternalLink } = this.props;
     const {
       version, build, os,
-      API, API_VERSION, isAdaApi,
+      API_VERSION,
     } = environment;
 
-    const apiName = intl.formatMessage(environmentSpecificMessages[API].apiName);
-    const apiIcon = isAdaApi() ? cardanoIcon : mantisIcon;
-
-    const apiHeadline = isAdaApi()
-      ? intl.formatMessage(messages.aboutContentCardanoHeadline)
-      : intl.formatMessage(messages.aboutContentMantisHeadline);
-
-    const apiMembers = isAdaApi()
-      ? intl.formatMessage(messages.aboutContentCardanoMembers)
-      : intl.formatMessage(messages.aboutContentMantisMembers);
+    const apiName = intl.formatMessage(globalMessages.apiName);
+    const apiIcon = cardanoIcon;
+    const apiHeadline = intl.formatMessage(messages.aboutContentCardanoHeadline);
+    const apiMembers = intl.formatMessage(messages.aboutContentCardanoMembers);
 
     return (
       <div className={styles.container}>

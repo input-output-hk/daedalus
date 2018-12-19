@@ -3,15 +3,16 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
-// import Input from 'react-polymorph/lib/components/Input';
-// import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
-// import Checkbox from 'react-polymorph/lib/components/Checkbox';
-// import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/raw/SwitchSkin';
+// import { Input } from 'react-polymorph/lib/components/Input';
+// import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+// import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+// import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
+// import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import FileUploadWidget from '../../widgets/forms/FileUploadWidget';
-import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../../utils/validations';
+import { isValidWalletName, isValidSpendingPassword, isValidRepeatPassword } from '../../../utils/validations';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './WalletFileImportDialog.scss';
@@ -58,8 +59,8 @@ const messages = defineMessages({
     defaultMessage: '!!!Password',
     description: 'Label for the "Activate to create password" switch in the wallet file import dialog.',
   },
-  walletPasswordLabel: {
-    id: 'wallet.file.import.dialog.walletPasswordLabel',
+  spendingPasswordLabel: {
+    id: 'wallet.file.import.dialog.spendingPasswordLabel',
     defaultMessage: '!!!Wallet password',
     description: 'Label for the "Wallet password" input in the wallet file import dialog.',
   },
@@ -101,7 +102,6 @@ export default class WalletFileImportDialog extends Component<Props, State> {
     this.setState({ createPassword: value });
   };
 
-
   form = new ReactToolboxMobxForm({
     fields: {
       walletFile: {
@@ -121,9 +121,9 @@ export default class WalletFileImportDialog extends Component<Props, State> {
           ];
         }],
       },
-      walletPassword: {
+      spendingPassword: {
         type: 'password',
-        label: this.context.intl.formatMessage(messages.walletPasswordLabel),
+        label: this.context.intl.formatMessage(messages.spendingPasswordLabel),
         placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
         value: '',
         validators: [({ field, form }) => {
@@ -133,8 +133,8 @@ export default class WalletFileImportDialog extends Component<Props, State> {
             repeatPasswordField.validate({ showErrors: true });
           }
           return [
-            isValidWalletPassword(field.value),
-            this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
+            isValidSpendingPassword(field.value),
+            this.context.intl.formatMessage(globalMessages.invalidSpendingPassword)
           ];
         }],
       },
@@ -145,10 +145,10 @@ export default class WalletFileImportDialog extends Component<Props, State> {
         value: '',
         validators: [({ field, form }) => {
           if (!this.state.createPassword) return [true];
-          const walletPassword = form.$('walletPassword').value;
-          if (walletPassword.length === 0) return [true];
+          const spendingPassword = form.$('spendingPassword').value;
+          if (spendingPassword.length === 0) return [true];
           return [
-            isValidRepeatPassword(walletPassword, field.value),
+            isValidRepeatPassword(spendingPassword, field.value),
             this.context.intl.formatMessage(globalMessages.invalidRepeatPassword)
           ];
         }],
@@ -165,10 +165,10 @@ export default class WalletFileImportDialog extends Component<Props, State> {
     this.form.submit({
       onSuccess: (form) => {
         const { createPassword } = this.state;
-        const { walletFile, walletPassword, walletName } = form.values();
+        const { walletFile, spendingPassword, walletName } = form.values();
         const walletData = {
           filePath: walletFile.path,
-          walletPassword: createPassword ? walletPassword : null,
+          spendingPassword: createPassword ? spendingPassword : null,
           walletName: (walletName.length > 0) ? walletName : null,
         };
         this.props.onSubmit(walletData);
@@ -189,8 +189,8 @@ export default class WalletFileImportDialog extends Component<Props, State> {
       'WalletFileImportDialog',
     ]);
 
-    // const walletPasswordFieldsClasses = classnames([
-    //   styles.walletPasswordFields,
+    // const spendingPasswordFieldsClasses = classnames([
+    //   styles.spendingPasswordFields,
     //   createPassword ? styles.show : null,
     // ]);
 
@@ -205,7 +205,7 @@ export default class WalletFileImportDialog extends Component<Props, State> {
     ];
 
     // const walletNameField = form.$('walletName');
-    // const walletPasswordField = form.$('walletPassword');
+    // const spendingPasswordField = form.$('spendingPassword');
     // const repeatedPasswordField = form.$('repeatPassword');
 
     return (
@@ -232,44 +232,45 @@ export default class WalletFileImportDialog extends Component<Props, State> {
         {/* TODO: re-enable when wallet-name and wallet-password
             support is added to the API endpoint
 
-        <Input
-          className="walletName"
-          {...walletNameField.bind()}
-          error={walletNameField.error}
-          skin={<SimpleInputSkin />}
-        />
+          <Input
+            className="walletName"
+            {...walletNameField.bind()}
+            error={walletNameField.error}
+            skin={InputSkin}
+          />
 
-        <div className={styles.walletPassword}>
-          <div className={styles.walletPasswordSwitch}>
-            <div className={styles.passwordLabel}>
-              {intl.formatMessage(messages.passwordSwitchLabel)}
+          <div className={styles.spendingPassword}>
+            <div className={styles.spendingPasswordSwitch}>
+              <div className={styles.passwordLabel}>
+                {intl.formatMessage(messages.passwordSwitchLabel)}
+              </div>
+              <Checkbox
+                themeId={IDENTIFIERS.SWITCH}
+                onChange={this.handlePasswordSwitchToggle}
+                label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
+                checked={createPassword}
+                skin={SwitchSkin}
+              />
             </div>
-            <Checkbox
-              onChange={this.handlePasswordSwitchToggle}
-              label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
-              checked={createPassword}
-              skin={<SimpleSwitchSkin />}
-            />
-          </div>
 
-          <div className={walletPasswordFieldsClasses}>
-            <Input
-              className="walletPassword"
-              {...walletPasswordField.bind()}
-              error={walletPasswordField.error}
-              skin={<SimpleInputSkin />}
-            />
-            <Input
-              className="repeatedPassword"
-              {...repeatedPasswordField.bind()}
-              error={repeatedPasswordField.error}
-              skin={<SimpleInputSkin />}
-            />
-            <p className={styles.passwordInstructions}>
-              {intl.formatMessage(globalMessages.passwordInstructions)}
-            </p>
+            <div className={spendingPasswordFieldsClasses}>
+              <Input
+                className="spendingPassword"
+                {...spendingPasswordField.bind()}
+                error={spendingPasswordField.error}
+                skin={InputSkin}
+              />
+              <Input
+                className="repeatedPassword"
+                {...repeatedPasswordField.bind()}
+                error={repeatedPasswordField.error}
+                skin={InputSkin}
+              />
+              <p className={styles.passwordInstructions}>
+                {intl.formatMessage(globalMessages.passwordInstructions)}
+              </p>
+            </div>
           </div>
-        </div>
         */}
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}

@@ -1,5 +1,7 @@
 .component {
   color: var(--theme-transactions-list-item-details-color);
+  position: relative;
+  cursor: pointer;
 
   &.failed {
     .title, .amount, .details {
@@ -22,6 +24,39 @@
   -webkit-user-select: none;
 }
 
+.arrow {
+  bottom: 10px;
+  display: none;
+  float: left;
+  margin-left: -70px;
+  margin-top: -20px;
+  opacity: .1;
+  position: sticky;
+  text-align: center;
+  width: 74px;
+  z-index: 1;
+  > svg {
+    height: 8px;
+    width: 25px;
+    path {
+      stroke: var(--theme-transactions-arrow-stroke-color);
+    }
+  }
+  .component:hover & {
+    opacity: .2;
+  }
+  .content:hover & {
+    opacity: .1;
+    &:hover {
+      opacity: .2;
+    }
+  }
+}
+
+.arrowExpanded {
+  display: block;
+}
+
 .togglerContent {
   flex: 1;
   margin-left: 20px;
@@ -37,18 +72,18 @@
 
 .title, .amount {
   color: var(--theme-transactions-list-item-details-color);
-  font-size: 16px;
   font-family: var(--font-semibold);
+  font-size: 16px;
   height: 22px;
   line-height: 1.38;
   text-align: left;
 }
 
 .amount {
-  margin-left: auto;
   font-family: var(--font-medium);
   font-size: 16px;
   letter-spacing: 1px;
+  margin-left: auto;
   user-select: auto;
 }
 
@@ -124,8 +159,13 @@
 
 .content {
   border-bottom: 1px solid var(--theme-separation-border-color);
-  margin-left: 84px;
-  margin-right: 20px;
+  margin-left: 74px;
+  margin-right: 10px;
+}
+
+.contentExpanded {
+  padding-bottom: 20px;
+  margin-top: -10px;
 }
 
 .last {
@@ -134,6 +174,7 @@
 
 .details {
   height: auto;
+  cursor: default;
   * + h2,
   * + .row {
     margin-top: 20px;
@@ -166,15 +207,15 @@
   }
 }
 
-.closed {
+.detailsClosed {
   max-height: 0;
   overflow: hidden;
   padding-bottom: 0;
 }
 
-.expanded {
+.detailsExpanded {
   max-height: 100%;
-  padding-bottom: 20px;
+  padding: 10px 10px 0;
 }
 
 .conversion {

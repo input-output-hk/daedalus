@@ -8,34 +8,37 @@ import SidebarCategory from './SidebarCategory';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import InstructionsDialog from '../wallet/paper-wallet-certificate/InstructionsDialog';
 import supportIcon from '../../assets/images/sidebar/bug-report-ic.inline.svg';
-import type { SidebarWalletType } from '../../stores/SidebarStore';
+import type { SidebarWalletType } from '../../types/sidebarTypes';
 import { ROUTES } from '../../routes-config';
-import resolver from '../../utils/imports';
-
-const sidebarConfig = resolver('config/sidebarConfig');
+import { CATEGORIES_BY_NAME } from '../../config/sidebarConfig.js';
 
 type Props = {
-  menus: ?{
-    wallets: {
-      items: Array<SidebarWalletType>,
-      activeWalletId: ?string,
-      actions: {
-        onWalletItemClick: Function,
-      }
-    }
-  },
-  categories: Array<{
-    name: string,
-    route: string,
-    icon: string,
-  }>,
+  menus: SidebarMenus,
+  categories: SidebarCategories,
   activeSidebarCategory: string,
   onCategoryClicked: Function,
   isShowingSubMenus: boolean,
   openDialogAction: Function,
   onAddWallet: Function,
   onSubmitSupportRequest: Function,
+  pathname: string,
 };
+
+export type SidebarMenus = ?{
+  wallets: {
+    items: Array<SidebarWalletType>,
+    activeWalletId: ?string,
+    actions: {
+      onWalletItemClick: Function,
+    }
+  }
+};
+
+export type SidebarCategories = Array<{
+  name: string,
+  route: string,
+  icon: string,
+}>;
 
 @observer
 export default class Sidebar extends Component<Props> {
@@ -46,13 +49,13 @@ export default class Sidebar extends Component<Props> {
 
   render() {
     const {
-      menus, categories, activeSidebarCategory,
+      menus, categories, activeSidebarCategory, pathname,
       isShowingSubMenus, onAddWallet, onSubmitSupportRequest,
     } = this.props;
     let subMenu = null;
 
     const walletsCategory = find(categories, {
-      name: sidebarConfig.CATEGORIES_BY_NAME.WALLETS.name
+      name: CATEGORIES_BY_NAME.WALLETS.name
     }).route;
 
     if (menus && activeSidebarCategory === walletsCategory) {
@@ -62,6 +65,7 @@ export default class Sidebar extends Component<Props> {
           onAddWallet={onAddWallet}
           onWalletItemClick={menus.wallets.actions.onWalletItemClick}
           isActiveWallet={id => id === menus.wallets.activeWalletId}
+          isAddWalletButtonActive={pathname === '/wallets/add'}
           visible={isShowingSubMenus}
         />
       );

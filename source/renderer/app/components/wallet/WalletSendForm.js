@@ -2,14 +2,15 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Button from 'react-polymorph/lib/components/Button';
-import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
-import Input from 'react-polymorph/lib/components/Input';
-import NumericInput from 'react-polymorph/lib/components/NumericInput';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
+import { submitOnEnter } from '../../utils/form';
 import AmountInputSkin from './skins/AmountInputSkin';
 import BorderedBox from '../widgets/BorderedBox';
 import LoadingSpinner from '../widgets/LoadingSpinner';
@@ -17,7 +18,7 @@ import styles from './WalletSendForm.scss';
 import globalMessages from '../../i18n/global-messages';
 import WalletSendConfirmationDialog from './WalletSendConfirmationDialog';
 import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
-import { formattedAmountToBigNumber, formattedAmountToNaturalUnits } from '../../utils/formatters';
+import { formattedAmountToBigNumber, formattedAmountToNaturalUnits, formattedAmountToLovelace } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 
 export const messages = defineMessages({
@@ -81,11 +82,6 @@ export const messages = defineMessages({
     defaultMessage: '!!!Please enter a title with at least 3 characters.',
     description: 'Error message shown when invalid transaction title was entered.',
   },
-  transactionFeeError: {
-    id: 'wallet.send.form.transactionFeeError',
-    defaultMessage: '!!!Not enough Ada for fees. Try sending a smaller amount.',
-    description: '"Not enough Ada for fees. Try sending a smaller amount." error message',
-  },
   syncingTransactionsMessage: {
     id: 'wallet.send.form.syncingTransactionsMessage',
     defaultMessage: '!!!This wallet is currently being synced with the blockchain. While synchronisation is in progress transacting is not possible and transaction history is not complete.',
@@ -100,7 +96,7 @@ type Props = {
   currencyMaxIntegerDigits?: number,
   currencyMaxFractionalDigits: number,
   validateAmount: (amountInNaturalUnits: string) => Promise<boolean>,
-  calculateTransactionFee: (receiver: string, amount: string) => Promise<BigNumber>,
+  calculateTransactionFee: (address: string, amount: number) => Promise<BigNumber>,
   addressValidator: Function,
   openDialogAction: Function,
   isDialogOpen: Function,
@@ -146,6 +142,17 @@ export default class WalletSendForm extends Component<Props, State> {
     this._isMounted = false;
   }
 
+  handleOnSubmit = () => {
+    if (this.isDisabled()) {
+      return false;
+    }
+    this.props.openDialogAction({
+      dialog: WalletSendConfirmationDialog,
+    });
+  };
+
+  isDisabled = () => this._isCalculatingFee || !this.state.isTransactionFeeCalculated;
+
   // FORM VALIDATION
   form = new ReactToolboxMobxForm({
     fields: {
@@ -159,16 +166,16 @@ export default class WalletSendForm extends Component<Props, State> {
             this._resetTransactionFee();
             return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           }
-          const isValid = await this.props.addressValidator(value);
+          const isValidAddress = await this.props.addressValidator(value);
           const amountField = form.$('amount');
           const amountValue = amountField.value;
           const isAmountValid = amountField.isValid;
-          if (isValid && isAmountValid) {
+          if (isValidAddress && isAmountValid) {
             await this._calculateTransactionFee(value, amountValue);
           } else {
             this._resetTransactionFee();
           }
-          return [isValid, this.context.intl.formatMessage(messages.invalidAddress)];
+          return [isValidAddress, this.context.intl.formatMessage(messages.invalidAddress)];
         }],
       },
       amount: {
@@ -209,7 +216,7 @@ export default class WalletSendForm extends Component<Props, State> {
     const { intl } = this.context;
     const {
       currencyUnit, currencyMaxIntegerDigits, currencyMaxFractionalDigits,
-      openDialogAction, isDialogOpen, isRestoreActive,
+      isDialogOpen, isRestoreActive,
     } = this.props;
     const { isTransactionFeeCalculated, transactionFee, transactionFeeError } = this.state;
     const amountField = form.$('amount');
@@ -246,13 +253,15 @@ export default class WalletSendForm extends Component<Props, State> {
               <div className={styles.receiverInput}>
                 <Input
                   className="receiver"
+                  label={intl.formatMessage(messages.receiverLabel)}
                   {...receiverField.bind()}
                   error={receiverField.error}
                   onChange={(value) => {
                     this._isCalculatingFee = true;
                     receiverField.onChange(value || '');
                   }}
-                  skin={<SimpleInputSkin />}
+                  skin={InputSkin}
+                  onKeyPress={submitOnEnter.bind(this, this.handleOnSubmit)}
                 />
               </div>
 
@@ -272,18 +281,17 @@ export default class WalletSendForm extends Component<Props, State> {
                   currency={currencyUnit}
                   fees={fees}
                   total={total}
-                  skin={<AmountInputSkin />}
+                  skin={AmountInputSkin}
+                  onKeyPress={submitOnEnter.bind(this, this.handleOnSubmit)}
                 />
               </div>
 
               <Button
                 className={buttonClasses}
                 label={intl.formatMessage(messages.nextButtonLabel)}
-                onMouseUp={() => openDialogAction({
-                  dialog: WalletSendConfirmationDialog,
-                })}
-                disabled={this._isCalculatingFee || !isTransactionFeeCalculated}
-                skin={<SimpleButtonSkin />}
+                onClick={this.handleOnSubmit}
+                skin={ButtonSkin}
+                disabled={this.isDisabled()}
               />
             </div>
           </BorderedBox>
@@ -314,10 +322,10 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   }
 
-  async _calculateTransactionFee(receiver: string, amountValue: string) {
-    const amount = formattedAmountToNaturalUnits(amountValue);
+  async _calculateTransactionFee(address: string, amountValue: string) {
+    const amount = formattedAmountToLovelace(amountValue);
     try {
-      const fee = await this.props.calculateTransactionFee(receiver, amount);
+      const fee = await this.props.calculateTransactionFee(address, amount);
       if (this._isMounted) {
         this._isCalculatingFee = false;
         this.setState({
@@ -332,7 +340,7 @@ export default class WalletSendForm extends Component<Props, State> {
         this.setState({
           isTransactionFeeCalculated: false,
           transactionFee: new BigNumber(0),
-          transactionFeeError: this.context.intl.formatMessage(error)
+          transactionFeeError: this.context.intl.formatMessage(error),
         });
       }
     }

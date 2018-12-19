@@ -1,0 +1,20 @@
+.component {
+  background-color: var(--theme-notification-message-background-color);
+  border-radius: 4px;
+  color: var(--theme-notification-message-text-color);
+  cursor: default;
+  float: right;
+  font-family: var(--font-regular);
+  font-size: 13px;
+  height: 22px;
+  line-height: 21px;
+  margin-top: -22px;
+  opacity: 0;
+  padding: 0 6px;
+  text-align: center;
+  transition: opacity .3s ease-out;
+}
+
+.show {
+  opacity: .7;
+}

@@ -1,18 +1,20 @@
-.component {
-  background-color: var(--theme-mnemonic-background-color) !important;
+.root {
+  background-color: var(--theme-mnemonic-background-color);
   font-size: 16px !important;
   margin: 10px 0;
   width: 130px !important;
-}
 
-.inactive {
-  cursor: default !important;
-  opacity: 0.3;
-}
+  &.disabled {
+    cursor: default !important;
+    opacity: 0.3;
+  }
 
-.active {
-  cursor: pointer;
-  &:hover {
-    background-color: var(--theme-mnemonic-background-color-hover) !important;
+  &:not(.disabled) {
+    &:active {
+      cursor: pointer;
+      &:hover {
+        background-color: var(--theme-mnemonic-background-color-hover) !important;
+      }
+    }
   }
 }

@@ -48,32 +48,6 @@
     opacity: 0.8;
   }
 
-  button {
-    background-color: var(--theme-ada-redemption-disclaimer-button-background-color);
-    border: solid 1px var(--theme-ada-redemption-disclaimer-button-border-color);
-    border-radius: 5px;
-    color: var(--theme-ada-redemption-disclaimer-button-text-color);
-    cursor: pointer;
-    height: 50px;
-    font-size: 14px;
-    letter-spacing: 1px;
-    min-height: 50px;
-    transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    width: 360px;
-
-    &:not(.disabled) {
-      &:hover {
-        background-color: var(--theme-ada-redemption-disclaimer-button-background-color-hover);
-        color: var(--theme-ada-redemption-disclaimer-button-text-color-hover);
-      }
-    }
-
-    &.disabled {
-      cursor: default;
-      opacity: 0.3;
-    }
-  }
-
   :global .adaRedemptionDisclaimerCheckbox {
     .SimpleCheckbox_root {
       margin-bottom: 30px;

@@ -3,11 +3,12 @@ import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import classNames from 'classnames';
 import SidebarSubMenu from '../SidebarMenu';
 import styles from './SidebarWalletsMenu.scss';
 import addWalletIcon from '../../../assets/images/sidebar/add-wallet-ic.inline.svg';
 import SidebarWalletMenuItem from './SidebarWalletMenuItem';
-import type { SidebarWalletType } from '../../../stores/SidebarStore';
+import type { SidebarWalletType } from '../../../types/sidebarTypes';
 
 const messages = defineMessages({
   addAdaWallet: {
@@ -23,6 +24,7 @@ type Props = {
   onAddWallet: Function,
   onWalletItemClick: Function,
   visible: boolean,
+  isAddWalletButtonActive: boolean,
 };
 
 @observer
@@ -34,7 +36,14 @@ export default class SidebarWalletsMenu extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { wallets, onAddWallet, isActiveWallet, onWalletItemClick } = this.props;
+    const {
+      wallets, onAddWallet, isActiveWallet, onWalletItemClick, isAddWalletButtonActive
+    } = this.props;
+
+    const addWalletButtonStyles = classNames([
+      styles.addWalletButton,
+      isAddWalletButtonActive ? styles.active : null,
+    ]);
 
     return (
       <SidebarSubMenu visible={this.props.visible}>
@@ -52,7 +61,7 @@ export default class SidebarWalletsMenu extends Component<Props> {
             />
           ))}
         </div>
-        <button className={styles.addWalletButton} onClick={onAddWallet}>
+        <button className={addWalletButtonStyles} onClick={onAddWallet}>
           <SVGInline svg={addWalletIcon} className={styles.icon} />
           <span>{intl.formatMessage(messages.addAdaWallet)}</span>
         </button>

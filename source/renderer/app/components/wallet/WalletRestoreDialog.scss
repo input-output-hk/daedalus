@@ -2,7 +2,6 @@
 @import '../../themes/mixins/error-message';
 @import '../../themes/mixins/place-form-field-error-below-input';
 
-
 .component {
   &.dialogWithCertificateRestore {
     :global {
@@ -16,8 +15,8 @@
     margin-bottom: 20px;
   }
 
-  .walletPassword {
-    .walletPasswordSwitch {
+  .spendingPassword {
+    .spendingPasswordSwitch {
       border-top: 1px solid var(--theme-separation-border-color);
       margin-top: 30px;
       padding-top: 20px;
@@ -37,7 +36,7 @@
       }
     }
 
-    .walletPasswordFields {
+    .spendingPasswordFields {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
@@ -101,6 +100,7 @@
   }
 
   .isSubmitting {
+    box-shadow: none !important;
     @include loading-spinner("../../assets/images/spinner-light.svg");
   }
 }

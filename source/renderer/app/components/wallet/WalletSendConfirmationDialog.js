@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import Dialog from '../widgets/Dialog';
@@ -12,6 +12,7 @@ import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
 import styles from './WalletSendConfirmationDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
+import { submitOnEnter } from '../../utils/form';
 
 export const messages = defineMessages({
   dialogTitle: {
@@ -19,8 +20,8 @@ export const messages = defineMessages({
     defaultMessage: '!!!Confirm transaction',
     description: 'Title for the "Confirm transaction" dialog.'
   },
-  walletPasswordLabel: {
-    id: 'wallet.send.confirmationDialog.walletPasswordLabel',
+  spendingPasswordLabel: {
+    id: 'wallet.send.confirmationDialog.spendingPasswordLabel',
     defaultMessage: '!!!Spending password',
     description: 'Label for the "Spending password" input in the wallet send confirmation dialog.',
   },
@@ -44,8 +45,8 @@ export const messages = defineMessages({
     defaultMessage: '!!!Total',
     description: 'Label for the "Total" in the wallet send confirmation dialog.',
   },
-  walletPasswordFieldPlaceholder: {
-    id: 'wallet.send.confirmationDialog.walletPasswordFieldPlaceholder',
+  spendingPasswordFieldPlaceholder: {
+    id: 'wallet.send.confirmationDialog.spendingPasswordFieldPlaceholder',
     defaultMessage: '!!!Type your spending password',
     description: 'Placeholder for the "Spending password" inputs in the wallet send confirmation dialog.',
   },
@@ -64,11 +65,11 @@ export const messages = defineMessages({
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
-  isWalletPasswordSet: boolean,
+  isSpendingPasswordSet: boolean,
   amount: string,
   receiver: string,
-  totalAmount: string,
-  transactionFee: string,
+  totalAmount: ?string,
+  transactionFee: ?string,
   onSubmit: Function,
   amountToNaturalUnits: (amountWithFractions: string) => string,
   onCancel: Function,
@@ -86,13 +87,13 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
 
   form = new ReactToolboxMobxForm({
     fields: {
-      walletPassword: {
+      spendingPassword: {
         type: 'password',
-        label: this.context.intl.formatMessage(messages.walletPasswordLabel),
-        placeholder: this.context.intl.formatMessage(messages.walletPasswordFieldPlaceholder),
+        label: this.context.intl.formatMessage(messages.spendingPasswordLabel),
+        placeholder: this.context.intl.formatMessage(messages.spendingPasswordFieldPlaceholder),
         value: '',
         validators: [({ field }) => {
-          if (this.props.isWalletPasswordSet && field.value === '') {
+          if (this.props.isSpendingPasswordSet && field.value === '') {
             return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           }
           return [true];
@@ -106,29 +107,31 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
     },
   });
 
-  submit() {
+  submit = () => {
     this.form.submit({
       onSuccess: (form) => {
-        const { isWalletPasswordSet, receiver, amount, amountToNaturalUnits } = this.props;
-        const { walletPassword } = form.values();
+        const { isSpendingPasswordSet, receiver, amount, amountToNaturalUnits } = this.props;
+        const { spendingPassword } = form.values();
         const transactionData = {
           receiver,
           amount: amountToNaturalUnits(amount),
-          password: isWalletPasswordSet ? walletPassword : null,
+          password: isSpendingPasswordSet ? spendingPassword : null,
         };
         this.props.onSubmit(transactionData);
       },
       onError: () => {}
     });
-  }
+  };
+
+  submitOnEnter = (event: {}) => this.form.$('spendingPassword').isValid && submitOnEnter(this.submit, event);
 
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const walletPasswordField = form.$('walletPassword');
+    const spendingPasswordField = form.$('spendingPassword');
     const {
       onCancel,
-      isWalletPasswordSet,
+      isSpendingPasswordSet,
       amount,
       receiver,
       totalAmount,
@@ -150,10 +153,10 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
       },
       {
         label: intl.formatMessage(messages.sendButtonLabel),
-        onClick: this.submit.bind(this),
+        onClick: this.submit,
         primary: true,
         className: confirmButtonClasses,
-        disabled: !walletPasswordField.isValid,
+        disabled: !spendingPasswordField.isValid,
       },
     ];
 
@@ -162,11 +165,12 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
         title={intl.formatMessage(messages.dialogTitle)}
         actions={actions}
         closeOnOverlayClick
+        primaryButtonAutoFocus
         onClose={!isSubmitting ? onCancel : null}
         className={styles.dialog}
         closeButton={<DialogCloseButton />}
       >
-        <div className={styles.walletPasswordFields}>
+        <div className={styles.spendingPasswordFields}>
           <div className={styles.addressToLabelWrapper}>
             <div className={styles.addressToLabel}>
               {intl.formatMessage(messages.addressToLabel)}
@@ -197,13 +201,15 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
             </div>
           </div>
 
-          {isWalletPasswordSet ? (
+          {isSpendingPasswordSet ? (
             <Input
               type="password"
-              className={styles.walletPassword}
-              {...walletPasswordField.bind()}
-              error={walletPasswordField.error}
-              skin={<SimpleInputSkin />}
+              className={styles.spendingPassword}
+              {...spendingPasswordField.bind()}
+              error={spendingPasswordField.error}
+              skin={InputSkin}
+              onKeyPress={this.submitOnEnter}
+              autoFocus
             />
           ) : null}
         </div>
