@@ -14,13 +14,14 @@ const topBarTestEnv = (
     currentRoute=""
     showSubMenuToggle={false}
   >
-    <WalletTestEnvironmentLabel version={0.5} />
+    <WalletTestEnvironmentLabel network="testnet" />
     <NodeSyncStatusIcon
       networkStatus={{
         isSynced: true,
         syncPercentage: 100,
       }}
       isProduction={false}
+      isMainnet={false}
     />
   </TopBar>
 );
@@ -37,6 +38,7 @@ const topBarProductionEnv = (
         syncPercentage: 100,
       }}
       isProduction
+      isMainnet
     />
   </TopBar>
 );

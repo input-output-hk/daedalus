@@ -128,8 +128,8 @@ export default class WalletReceive extends Component<Props, State> {
       onError: () => {}
     });
 
-    this.passwordField && this.passwordField.getRef().focus();
-  }
+    this.passwordField && this.passwordField.focus();
+  };
 
   render() {
     const { form } = this;

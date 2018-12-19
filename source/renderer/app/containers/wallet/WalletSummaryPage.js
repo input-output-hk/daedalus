@@ -35,7 +35,7 @@ export default class WalletSummaryPage extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { app, wallets, transactions } = this.props.stores;
-    const { openExternalLink } = app;
+    const { openExternalLink, environment: { network } } = app;
     const {
       hasAny,
       totalAvailable,
@@ -64,6 +64,7 @@ export default class WalletSummaryPage extends Component<Props> {
           isRestoreActive={isRestoreActive}
           formattedWalletAmount={formattedWalletAmount}
           showMoreTransactionsButton={totalAvailable > 5}
+          network={network}
           onOpenExternalLink={openExternalLink}
           onShowMoreTransactions={this.handleShowMoreTransaction}
         />

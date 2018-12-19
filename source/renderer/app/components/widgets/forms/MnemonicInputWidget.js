@@ -1,4 +1,6 @@
+// @flow
 import React, { Component } from 'react';
+import { IObservableArray } from 'mobx';
 import { observer } from 'mobx-react';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
@@ -6,9 +8,9 @@ import styles from './MnemonicInputWidget.scss';
 
 type Props = {
   label: string,
-  tokens: Array<string>,
+  tokens: IObservableArray<string>,
   onTokenChanged: Function,
-  error: string,
+  error?: string,
 };
 
 @observer

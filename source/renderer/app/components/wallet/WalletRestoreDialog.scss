@@ -52,7 +52,7 @@
       }
 
       & > div {
-        margin-top: 30px;
+        margin-top: 20px;
         width: 275px;
       }
 
@@ -95,7 +95,7 @@
 
   .error {
     @include error-message;
-    margin-top: 30px;
+    margin-top: 20px;
     text-align: center;
   }
 

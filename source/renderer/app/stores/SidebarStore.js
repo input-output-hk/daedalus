@@ -1,11 +1,9 @@
 // @flow
 import { action, computed, observable } from 'mobx';
 import { get } from 'lodash';
-import { ipcRenderer } from 'electron';
 import Store from './lib/Store';
 import { sidebarConfig } from '../config/sidebarConfig';
 import { WalletSyncStateTags } from '../domains/Wallet';
-import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../../../common/ipc/go-to-ada-redemption-screen';
 import { formattedWalletAmount } from '../utils/formatters';
 import type { SidebarWalletType } from '../types/sidebarTypes';
 
@@ -22,17 +20,10 @@ export default class SidebarStore extends Store {
     actions.toggleSubMenus.listen(this._toggleSubMenus);
     actions.activateSidebarCategory.listen(this._onActivateSidebarCategory);
     actions.walletSelected.listen(this._onWalletSelected);
-    ipcRenderer.on(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._resetActivateSidebarCategory);
+
     this.registerReactions([
       this._syncSidebarRouteWithRouter,
     ]);
-  }
-
-  teardown() {
-    ipcRenderer.removeListener(
-      GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL,
-      this._resetActivateSidebarCategory
-    );
   }
 
   @computed get wallets(): Array<SidebarWalletType> {

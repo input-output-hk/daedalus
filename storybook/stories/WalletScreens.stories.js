@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
-import { storiesOf, action } from '@storybook/react';
+import { storiesOf } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
 import { linkTo } from '@storybook/addon-links';
 import { withKnobs, text, boolean, number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
@@ -12,7 +13,7 @@ import startCase from 'lodash/startCase';
 import StoryLayout from './support/StoryLayout';
 import StoryProvider from './support/StoryProvider';
 import StoryDecorator from './support/StoryDecorator';
-import { generateTransaction, generateAddres, promise } from './support/utils';
+import { generateTransaction, generateAddress, promise } from './support/utils';
 import { formattedWalletAmount } from '../../source/renderer/app/utils/formatters';
 import { transactionTypes } from '../../source/renderer/app/domains/WalletTransaction';
 import WalletWithNavigation from '../../source/renderer/app/components/wallet/layouts/WalletWithNavigation';
@@ -101,8 +102,8 @@ storiesOf('WalletScreens', module)
       walletAddress={text('Wallet address', '5628aab8ac98c963e4a2e8cfce5aa1cbd4384fe2f9a0f3c5f791bfb83a5e02ds')}
       isWalletAddressUsed={boolean('isWalletAddressUsed', false)}
       walletAddresses={[
-        ...Array.from(Array(number('Addresses', 1))).map(() => generateAddres()),
-        ...Array.from(Array(number('Addresses (used)', 1))).map(() => generateAddres(true)),
+        ...Array.from(Array(number('Addresses', 1))).map(() => generateAddress()),
+        ...Array.from(Array(number('Addresses (used)', 1))).map(() => generateAddress(true)),
       ]}
       onGenerateAddress={() => {}}
       onCopyAddress={() => {}}

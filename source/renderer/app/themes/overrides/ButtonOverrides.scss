@@ -1,0 +1,26 @@
+// Css module overrides go here …
+@import '../mixins/buttons';
+
+.root {
+  position: relative;
+}
+
+:global {
+  @include simpleButton('primary');
+  @include simpleButton('flat');
+  @include simpleButton('attention');
+  @include simpleButton('disclaimer');
+  .disclaimer {
+    border: 1px solid var(--theme-button-disclaimer-border-color);
+    min-height: 50px;
+    transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover, &:active {
+      color: var(--theme-button-disclaimer-background-color);
+    }
+    &:disabled {
+      color: var(--theme-button-disclaimer-text-color-disabled);
+      border-color: var(--theme-button-disclaimer-border-color-disabled);
+    }
+  }
+}

@@ -149,7 +149,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
     const actions = [
       {
         label: intl.formatMessage(messages.backButtonLabel),
-        onClick: !isSubmitting && onCancel,
+        onClick: !isSubmitting ? onCancel : () => {},
       },
       {
         label: intl.formatMessage(messages.sendButtonLabel),
@@ -166,7 +166,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
         actions={actions}
         closeOnOverlayClick
         primaryButtonAutoFocus
-        onClose={!isSubmitting ? onCancel : null}
+        onClose={!isSubmitting ? onCancel : () => {}}
         className={styles.dialog}
         closeButton={<DialogCloseButton />}
       >

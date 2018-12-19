@@ -1,0 +1,8 @@
+.root {
+  flex-direction: row-reverse;
+  &:not(.checked) {
+    .switch {
+      box-shadow: 0 2px 0 -1px transparent; // fix for cut-off bottom
+    }
+  }
+}

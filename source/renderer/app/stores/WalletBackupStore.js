@@ -1,18 +1,17 @@
 // @flow
 import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
-import environment from '../../../common/environment';
 import WalletBackupDialog from '../components/wallet/WalletBackupDialog';
-import type { walletBackupStep } from '../types/walletBackupTypes';
 import { WALLET_BACKUP_STEPS } from '../types/walletBackupTypes';
+import type { RecoveryPhraseWord, walletBackupStep } from '../types/walletBackupTypes';
 
 export default class WalletBackupStore extends Store {
 
   @observable inProgress = false;
   @observable currentStep: walletBackupStep = WALLET_BACKUP_STEPS.NOT_INITIATED;
   @observable recoveryPhrase = [];
-  @observable recoveryPhraseWords = [];
-  @observable recoveryPhraseShuffled = [];
+  @observable recoveryPhraseWords: Array<RecoveryPhraseWord> = [];
+  @observable recoveryPhraseShuffled: Array<RecoveryPhraseWord> = [];
   @observable completed = false;
   @observable enteredPhrase = [];
   @observable isPrivacyNoticeAccepted = false;
@@ -21,7 +20,7 @@ export default class WalletBackupStore extends Store {
   @observable isTermRecoveryAccepted = false;
   @observable countdownRemaining = 0;
 
-  countdownTimerInterval: ?number = null;
+  countdownTimerInterval: ?IntervalID = null;
 
   setup() {
     const a = this.actions.walletBackup;
@@ -36,13 +35,14 @@ export default class WalletBackupStore extends Store {
     a.restartWalletBackup.listen(this._restartWalletBackup);
     a.cancelWalletBackup.listen(this._cancelWalletBackup);
     a.finishWalletBackup.listen(this._finishWalletBackup);
+    this.actions.app.initAppEnvironment.listen(() => {});
   }
 
   @action _initiateWalletBackup = (params: { recoveryPhrase: Array<string> }) => {
     this.recoveryPhrase = params.recoveryPhrase;
     this.inProgress = true;
     this.currentStep = WALLET_BACKUP_STEPS.PRIVACY_WARNING;
-    this.recoveryPhraseWords = this.recoveryPhrase.map(word => ({ word }));
+    this.recoveryPhraseWords = this.recoveryPhrase.map((word: string) => ({ word }));
     this.recoveryPhraseShuffled = this.recoveryPhrase
       .sort(() => 0.5 - Math.random())
       .map(w => ({ word: w, isActive: true }));
@@ -52,7 +52,7 @@ export default class WalletBackupStore extends Store {
     this.isEntering = false;
     this.isTermDeviceAccepted = false;
     this.isTermRecoveryAccepted = false;
-    this.countdownRemaining = environment.isTest() ? 0 : 10;
+    this.countdownRemaining = this.environment.isTest ? 0 : 10;
     if (this.countdownTimerInterval) clearInterval(this.countdownTimerInterval);
     this.countdownTimerInterval = setInterval(() => {
       if (this.countdownRemaining > 0) {

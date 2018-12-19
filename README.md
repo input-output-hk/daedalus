@@ -60,7 +60,7 @@ required dependencies for development.
    ```
    substituters = https://hydra.iohk.io https://cache.nixos.org/
    trusted-substituters =
-   trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspc
+   trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
    ```
 3. Build and run demo cluster: `scripts/launch/demo-nix.sh`
 
@@ -88,6 +88,10 @@ $ export NETWORK=testnet
 $ yarn dev
 ```
 
+### Cardano Wallet API documentation
+
+While running Daedalus in development mode you can access Cardano Wallet API documentation on the following URL: https://localhost:8091/docs/v1/index/.
+
 # Testing
 
 You can find more details regarding tests setup within
@@ -95,6 +99,15 @@ You can find more details regarding tests setup within
 
 **Notes:** Be aware that only a single Daedalus instance can run per state directory.
 So you have to exit any development instances before running tests!
+
+## Wallet fault injection
+
+General information about wallet fault injection can be found in the [Cardano's wallet-new README file](https://github.com/input-output-hk/cardano-sl/tree/develop/wallet-new#fault-injection).
+
+`shell.nix` has support for passing the necessary flags:
+
+- `--arg allowFaultInjection true` is necessary to enable any processing of faults, and
+- `--arg walletExtraArgs '[ "--somefault" ]'` can be used for enabling certain fault types at startup.
 
 # Windows
 

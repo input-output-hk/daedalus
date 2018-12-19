@@ -4,7 +4,7 @@ import { Buffer } from 'safe-buffer';
 import { pbkdf2Sync as pbkdf2 } from 'pbkdf2';
 import * as unorm from 'unorm';
 import CardanoCrypto from 'rust-cardano-crypto';
-import validWords from '../../../common/valid-words.en';
+import validWords from '../../../common/crypto/valid-words.en';
 
 /**
   CS = ENT / 32

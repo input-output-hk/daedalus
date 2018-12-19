@@ -8,8 +8,9 @@ import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import styles from './WalletTransactionsList.scss';
 import Transaction from './Transaction';
-import WalletTransaction from '../../../domains/WalletTransaction';
+import { WalletTransaction } from '../../../domains/WalletTransaction';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+import { DEVELOPMENT } from '../../../../../common/types/environment.types';
 import type { WalletAssuranceMode } from '../../../api/wallets/types';
 
 const messages = defineMessages({
@@ -40,21 +41,31 @@ const dateFormat = 'YYYY-MM-DD';
 type Props = {
   transactions: Array<WalletTransaction>,
   isLoadingTransactions: boolean,
-  isRestoreActive?: boolean,
+  isRestoreActive: boolean,
   hasMoreToLoad: boolean,
   assuranceMode: WalletAssuranceMode,
   walletId: string,
   formattedWalletAmount: Function,
+  network: string,
   showMoreTransactionsButton?: boolean,
   onShowMoreTransactions?: Function,
   onOpenExternalLink?: Function,
 };
+
+type TransactionsGroup = { date: moment.Moment, transactions: Array<WalletTransaction>};
 
 @observer
 export default class WalletTransactionsList extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  static defaultProps = {
+    network: DEVELOPMENT,
+    showMoreTransactionsButton: false,
+    onShowMoreTransactions: () => {},
+    onOpenExternalLink: () => {},
   };
 
   componentWillMount() {
@@ -68,20 +79,20 @@ export default class WalletTransactionsList extends Component<Props> {
   loadingSpinner: ?LoadingSpinner;
   localizedDateFormat: 'MM/DD/YYYY';
 
-  groupTransactionsByDay(transactions: Array<WalletTransaction>) {
-    const groups = [];
+  groupTransactionsByDay(transactions: Array<WalletTransaction>): Array<TransactionsGroup> {
+    const groups: Array<TransactionsGroup> = [];
     for (const transaction of transactions) {
-      const date = moment(transaction.date).format(dateFormat);
-      let group = groups.find((g) => g.date === date);
+      const date = moment(transaction.date);
+      let group = groups.find((g) => g.date.format(dateFormat) === date.format(dateFormat));
       if (!group) {
         group = { date, transactions: [] };
         groups.push(group);
       }
       group.transactions.push(transaction);
     }
-    return groups.sort(
-      (a, b) => b.transactions[0].date.getTime() - a.transactions[0].date.getTime()
-    );
+    return groups.sort((a: TransactionsGroup, b: TransactionsGroup) => (
+      b.date.valueOf() - a.date.valueOf()
+    ));
   }
 
   isSpinnerVisible() {
@@ -152,6 +163,7 @@ export default class WalletTransactionsList extends Component<Props> {
                     data={transaction}
                     isRestoreActive={isRestoreActive}
                     isLastInList={transactionIndex === group.transactions.length - 1}
+                    network={this.props.network}
                     state={transaction.state}
                     assuranceLevel={transaction.getAssuranceLevelForMode(assuranceMode)}
                     formattedWalletAmount={formattedWalletAmount}

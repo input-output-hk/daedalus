@@ -1,10 +1,11 @@
+// @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import closeCross from '../../assets/images/close-cross.inline.svg';
 import styles from './DialogCloseButton.scss';
 
 type Props = {
-  onClose: Function,
+  onClose?: Function,
   icon?: string,
   disabled?: boolean
 };
@@ -15,7 +16,7 @@ export default class DialogCloseButton extends Component<Props> {
     const { onClose, icon, disabled } = this.props;
     return (
       <button
-        onClick={onClose}
+        onClick={onClose != null ? onClose : () => {}}
         className={!disabled ? styles.component : styles.disabled}
         tabIndex={-1}
       >

@@ -4,7 +4,6 @@
 
 /** Build file to package the app for release */
 
-require('babel-polyfill');
 const os = require('os');
 const packager = require('electron-packager');
 const del = require('del');

@@ -26,12 +26,16 @@ export default class NetworkStatusPage extends Component<InjectedProps> {
       localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
       forceCheckLocalTimeDifference, getNetworkStatusRequest,
       localBlockHeight, networkBlockHeight, mostRecentBlockTimestamp, restartNode,
-      isSystemTimeIgnored,
+      isSystemTimeIgnored, environment
     } = stores.networkStatus;
     return (
       <CenteredLayout>
         <NetworkStatus
           cardanoNodeState={cardanoNodeState}
+          isDev={environment.isDev}
+          isMainnet={environment.isMainnet}
+          isStaging={environment.isStaging}
+          isTestnet={environment.isTestnet}
           isNodeResponding={isNodeResponding}
           isNodeSubscribed={isNodeSubscribed}
           isNodeSyncing={isNodeSyncing}
