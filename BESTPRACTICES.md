@@ -446,17 +446,18 @@ if (isValid === true) {
   // use a comparison shortcut for booleans
 }
 
-if (name) {
-  // can unexpectedly evaluate to truthy
-  // use explicit comparison instead
-}
-
 if (collection.length) {
   // ...
 }
 
-// Example of unexpected truthy evaluation for a string.
-// Result: alerts "It's true".
+if (name) {
+  // can unexpectedly evaluate to truthy
+  // use explicit comparison instead
+  // see example below
+}
+
+// Example: unexpected truthy evaluation for a string
+// Result: alerts "It's true"
 
 const name = ' ';
 
@@ -670,6 +671,7 @@ function dogs(x) {
     if (z) {
       return y;
     }
+    return q;
   }
   return z;
 }
@@ -907,12 +909,12 @@ If the function body consists of a single statement omit the braces and use the 
 
 ## Naming
 
-- **Extensions**: Use `.js` extension for React components.
+- **Extensions**: Use the `.js` extension for React components.
 
 - **Filenames**: Use PascalCase for component filenames. :point_right: `TransactionsList.js`.
 
 
-- **Component Naming**: Use the filename as the component name. For example, `TransactionsList.js` should contain a component named `TransactionsList`.
+- **Component Naming**: Use the component name as the filename. For example, `TransactionsList.js` should contain a component named `TransactionsList`.
 
 - **HOC Naming**: Use camelCase to name a higher-order component. Also, use the component name as the filename.  For example, `withTheme.js` should contain an HOC named `withTheme`.
 
@@ -994,16 +996,16 @@ Always include a single space in your self-closing tag.
 
 Do **not** pad JSX curly braces with spaces.
 
-:white_check_mark: ***Do***
-
-```jsx
-<Foo bar={baz} />
-```
-
 :no_entry_sign: ***Don't***
 
 ```jsx
 <Foo bar={ baz } />
+```
+
+:white_check_mark: ***Do***
+
+```jsx
+<Foo bar={baz} />
 ```
 
 ## Quotes
@@ -1155,12 +1157,12 @@ const Names = () => (<div>
 
 ## Formatting Selectors
 
-* Prefer class selectors instead of ID selectors.
-* Prefer camelCase or dashed-case instead of PascelCase or underscores (`_`).
-* When using multiple selectors in a rule declaration, give each selector its own line.
+* Use class selectors instead of ID selectors.
+* Use camelCase or dashed-case instead of PascelCase or names_with_underscores.
+* Give each selector its own line.
 * Put a space before the opening brace `{` in rule declarations.
-* In properties, put a space after, but not before, the `:` character.
 * Put closing braces `}` of rule declarations on a new line.
+* In properties, put a space after, but not before, the `:` character.
 * Put blank lines between rule declarations.
 
 :white_check_mark: ***Do***
@@ -1244,7 +1246,8 @@ End every property declaration with a semicolon for consistency and extensibilit
 
 * Always use the `.scss` extension when creating a Sass file.
 * Nested selectors go last and nothing goes after them. 
-* Add whitespace between your rule declarations and nested selectors, as well as between adjacent nested selectors. 
+* Add whitespace between your rule declarations.
+* Add whitespace between your nested selectors and between adjacent nested selectors.
 * The properties of nested selectors should always be defined in **ABC order**.
 
 :white_check_mark: ***Do***
@@ -1283,10 +1286,10 @@ Define nested selectors in the same order they are applied to their associated H
 import React from 'react';
 
 const Modal = () => (
-  <div className="modal">
-    <h3 className="title">Your Modal</h3>
-    <button className="btn">Accept</button>
-    <span className="close">X</span>
+  <div className="modal"> /* --- 1st --- */
+    <h3 className="title">Your Modal</h3> /* --- 2nd --- */
+    <button className="btn">Accept</button> /* --- 3rd --- */
+    <span className="close">X</span> /* --- 4th  --- */
   </div>
 );
 ```
@@ -1295,20 +1298,21 @@ const Modal = () => (
 
 ```scss
 .modal {
+  // comes 1st...
   height: 300px;
   width: 400px;
   z-index: 1;
 
   .title {
-    // ...
+    // comes 2nd...
   }
 
   .btn {
-    // ...
+    // comes 3rd...
   }
 
   .close {
-    // ...
+    // comes 4th...
   }
 }
 ```
@@ -1317,20 +1321,21 @@ const Modal = () => (
 
 ```scss
 .modal {
+  // comes 1st...
   height: 300px;
   width: 400px;
   z-index: 1;
 
   .btn {
-    // ...
+    // // comes 3rd...
   }
 
   .close {
-    // ...
+    // comes 4th...
   }
 
   .title {
-    // ...
+    // comes 2nd...
   }
 }
 ```
@@ -1355,7 +1360,10 @@ Do not nest selectors more than three levels deep. When selectors become this lo
 
 ## Variables
 
-Use dash-cased CSS variable names (e.g. `$--font-regular`) over camelCased or snake_cased variable names. Begin a variable name with two dashes `--`.
+* Begin a variable name with two dashes `--`.
+* Use dash-case CSS variable names (e.g. `$--font-regular`).
+* Do ***not*** use camelCase or snake_case variable names. 
+
 
 ## Comments
 
@@ -1372,24 +1380,25 @@ Use dash-cased CSS variable names (e.g. `$--font-regular`) over camelCased or sn
 #### Branch Types
 
 - The Daedalus `master` branch is protected by `develop`. Only `develop` is merged into `master`.
-- A release branch contains the version in its name (`release/x.y.z`).
+- A release branch contains the version in its name in this format `release/version`. Example: (`release/0.12.0`).
 - Release branches are based from `master`, but their version specific changes are not merged into `master`.
 - To make additions to the Daedalus codebase, create a branch based from `develop`.
 - There are three main branch types --> `feature`, `chore`, and `fix`.
 - A `feature` branch adds a new feature to Daedalus that does not yet exist.
-- A `chore` branch is appropriate when cleaning up or refactoring a section within the codebase.
+- A `chore` branch is appropriate when cleaning up or refactoring an area within the codebase.
 - A `fix` branch is used to introduce a fix for a bug.
 
 #### Branch Prefix
 
-- A branch prefix is a combination of its type (`feature`, `chore`, `fix`) and its YouTrack issue ID.
-- YouTrack issue ID's for Daedalus start with the letters `DDW-` + **issue number**.
+- A branch prefix is a combination of its type (`feature`, `chore`, or `fix`) and its YouTrack ID.
+- YouTrack ID's for Daedalus start with the letters `DDW-` + **issue number**.
+- A branch suffix is a concise description of the changes contained in the branch.
 
 *Examples*:
 
 * `feature/ddw-41-create-daedalus-best-practices-guide`
 * `chore/ddw-225-refactor-api-to-use-v1`
-* `fix/ddw-315-fix-wallet-stuck-syncing`
+* `fix/ddw-315-fix-wallet-stuck-on-syncing`
 
 #### Commits
 
@@ -1399,30 +1408,11 @@ Example: `git commit -m "[DDW-41] Adds Git section to Best Practices"`
 
 ## CHANGELOG
 
-* The CHANGELOG is organized by release number.
-* Each release contains 3 sections that match the branch types: `features`, `chores`, `fixes`.
-* Add your entry to the appropriate section based on its content.
+* All Entries are in **ABC order**, written in **past tense**, and preferably **1 sentence**.
+* The CHANGELOG.md document is organized into sections by release number.
+* Each release section contains 3 subsections titled to align with the branch types: `features`, `chores`, `fixes`.
+* Add your entry to the appropriate subsection based on its content.
 * Add 1 entry per PR and include a URL to the PR at the end of your entry.
-* Entries are organized in **ABC order**.
-* Write your entry in past tense.
+  - Example: `- Reduced resource usage ([PR 886](https://github.com/input-output-hk/daedalus/pull/886))`
 
 **[⬆ back to top](#table-of-contents)**
-
-:white_check_mark: ***Do***
-
-```jsx
-```
-
-:no_entry_sign: ***Don't***
-
-```jsx
-```
-
-:white_check_mark: ***Do***
-```javascript
-```
-
-:no_entry_sign: ***Don't***
-
-```javascript
-```
