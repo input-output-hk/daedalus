@@ -13,12 +13,6 @@ import type { StoresMap } from './stores/index';
 import type { ActionsMap } from './actions/index';
 import ThemeManager from './ThemeManager';
 import AboutDialog from './containers/static/AboutDialog';
-import {
-  WINDOW_HAS_LOADED,
-} from '../../common/ipc/api';
-
-// TODO: refactor all parts that rely on this to ipc channels!
-const { ipcRenderer } = global;
 
 @observer
 export default class App extends Component<{
@@ -29,9 +23,6 @@ export default class App extends Component<{
   componentWillMount() {
     // loads app's global environment variables into AppStore via ipc
     this.props.actions.app.initAppEnvironment.trigger();
-  }
-  componentDidMount() {
-    ipcRenderer.send(WINDOW_HAS_LOADED);
   }
   render() {
     const { stores, actions, history } = this.props;
