@@ -6,8 +6,18 @@ let
     inherit system buildNum cluster;
     version = "${version}${suffix}";
   };
+  shellEnvs = {
+    linux = import ./shell.nix { system = "x86_64-linux"; autoStartBackend = true; };
+    darwin = import ./shell.nix { system = "x86_64-darwin"; autoStartBackend = true; };
+  };
   suffix = if buildNum == null then "" else "-${toString buildNum}";
   version = (builtins.fromJSON (builtins.readFile (./. + "/package.json"))).version;
+  yaml2json = let
+    daedalusPkgsWithSystem = system: import ./. { inherit system; };
+  in {
+    x86_64-linux = (daedalusPkgsWithSystem "x86_64-linux").yaml2json;
+    x86_64-darwin = (daedalusPkgsWithSystem "x86_64-darwin").yaml2json;
+  };
 
   makeJobs = cluster: with daedalusPkgs { inherit cluster; }; {
     inherit daedalus;
@@ -26,5 +36,6 @@ let
   lib = (import ./. {}).pkgs.lib;
   clusters = lib.splitString " " (builtins.replaceStrings ["\n"] [""] (builtins.readFile ./installer-clusters.cfg));
 in {
+  inherit shellEnvs yaml2json;
   tests = (daedalusPkgs {}).tests;
 } // builtins.listToAttrs (map (x: { name = x; value = makeJobs x; }) clusters)
