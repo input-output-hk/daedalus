@@ -18,7 +18,7 @@ export const messages = defineMessages({
   },
   reportIssueButtonUrl: {
     id: 'loading.screen.reportIssue.reportIssueButtonUrl',
-    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/categories/360000877653-Daedalus-wallet-mainnet',
+    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/requests/new/',
     description: 'Link to Open Support page'
   },
 });
