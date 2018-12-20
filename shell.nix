@@ -114,7 +114,7 @@ let
         for x in wallet-topology.yaml log-config-prod.yaml configuration.yaml mainnet-genesis-dryrun-with-stakeholders.json ; do
           ln -svf ${daedalusPkgs.daedalus.cfg}/etc/$x
         done
-        STATE_PATH=$(jq ".statePath" < ${launcher-json})
+        STATE_PATH=$(eval echo $(jq ".statePath" < ${launcher-json}))
         ${pkgs.lib.optionalString (cluster == "demo") ''
           ln -svf ${demoTopologyYaml} wallet-topology.yaml
           if [[ -f "''${STATE_PATH}/system-start" && "${systemStartString}" == $(cat "$''${STATE_PATH}/system-start") ]]
@@ -130,7 +130,7 @@ let
         mkdir -p "''${STATE_PATH}/${secretsDir}"
       ''}
       ${localLib.optionalString autoStartBackend ''
-          TLS_PATH=$(jq ".tlsPath" < ${launcher-json})
+          TLS_PATH=$(eval echo $(jq ".tlsPath" < ${launcher-json}))
           mkdir -p "''${TLS_PATH}/server" "''${TLS_PATH}/client"
           cardano-x509-certificates \
           --server-out-dir "''${TLS_PATH}/server" \
