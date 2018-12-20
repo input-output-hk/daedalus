@@ -5,7 +5,7 @@
 , http-client-tls, insert-ordered-containers, lens-family-core
 , memory, mtl, optparse-generic, parsers, prettyprinter
 , prettyprinter-ansi-terminal, repline, scientific, stdenv, tasty
-, tasty-hunit, text, transformers, trifecta, unordered-containers
+, tasty-hunit, text, text-format, transformers, trifecta, unordered-containers
 , vector
 }:
 mkDerivation {
@@ -24,15 +24,15 @@ mkDerivation {
     formatting http-client http-client-tls insert-ordered-containers
     lens-family-core memory parsers prettyprinter
     prettyprinter-ansi-terminal scientific text transformers trifecta
-    unordered-containers vector
+    unordered-containers vector text-format
   ];
   executableHaskellDepends = [
     ansi-terminal base haskeline mtl optparse-generic prettyprinter
-    prettyprinter-ansi-terminal repline text trifecta
+    prettyprinter-ansi-terminal repline text trifecta text-format
   ];
   testHaskellDepends = [
     base deepseq insert-ordered-containers prettyprinter tasty
-    tasty-hunit text vector
+    tasty-hunit text vector text-format
   ];
   description = "A configuration language guaranteed to terminate";
   license = stdenv.lib.licenses.bsd3;
