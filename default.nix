@@ -3,7 +3,7 @@ let
 in
 { system ? builtins.currentSystem
 , config ? {}
-, pkgs ? (import (localLib.fetchNixPkgs) { inherit system config; })
+, pkgs ? localLib.iohkNix.getPkgs { inherit system config; }
 , cluster ? "mainnet"
 , version ? "versionNotSet"
 , buildNum ? null
@@ -11,9 +11,7 @@ in
 
 let
   installPath = ".daedalus";
-  cardanoPkgs = import ./cardano-sl.nix {
-    inherit system config;
-  };
+  cardanoSL = localLib.cardanoSL { inherit system config; };
   cleanSourceFilter = with pkgs.stdenv;
     name: type: let baseName = baseNameOf (toString name); in ! (
       # Filter out .git repo
@@ -36,16 +34,21 @@ let
     );
   packages = self: {
     inherit cluster pkgs version;
-    inherit (cardanoPkgs) daedalus-bridge;
+    inherit (cardanoSL) daedalus-bridge;
     ## TODO: move to installers/nix
-    daedalus-installer = self.callPackage ./installers/default.nix {};
+    daedalus-installer = import ./installers/default.nix {
+      inherit (cardanoSL) daedalus-bridge;
+      inherit localLib system;
+    };
     daedalus = self.callPackage ./installers/nix/linux.nix {};
     rawapp = self.callPackage ./yarn2nix.nix {
       inherit buildNum;
       api = "ada";
-      apiVersion = cardanoPkgs.daedalus-bridge.version;
+      apiVersion = cardanoSL.daedalus-bridge.version;
     };
     source = builtins.filterSource cleanSourceFilter ./.;
+    yaml2json = pkgs.haskell.lib.disableCabalFlag pkgs.haskellPackages.yaml "no-exe";
+
 
     tests = {
       runFlow = self.callPackage ./tests/flow.nix {};
@@ -146,6 +149,7 @@ let
       daedalus' = self.daedalus.override { sandboxed = true; };
     in (import ./installers/nix/nix-installer.nix {
       inherit (self) postInstall preInstall cluster;
+      inherit pkgs;
       installationSlug = installPath;
       installedPackages = [ daedalus' self.postInstall self.namespaceHelper daedalus'.cfg self.daedalus-bridge daedalus'.daedalus-frontend self.xdg-open ];
       nix-bundle = self.nix-bundle;
