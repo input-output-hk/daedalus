@@ -15,3 +15,8 @@ steps:
     command: 'scripts/build-installer-nix.sh $BUILDKITE_BUILD_NUMBER'
     agents:
       system: x86_64-linux
+
+  - label: 'release.nix'
+    command: 'ci/check-hydra.sh'
+    agents:
+      system: x86_64-linux
