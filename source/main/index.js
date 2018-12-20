@@ -87,6 +87,14 @@ app.on('ready', async () => {
     app.exit(1);
   }
 
+  app.makeSingleInstance(() => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.show();
+      mainWindow.focus();
+    }
+  });
+
   setupLogging();
   mainErrorHandler();
 
