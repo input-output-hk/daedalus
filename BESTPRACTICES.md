@@ -1408,7 +1408,7 @@ Example: `git commit -m "[DDW-41] Adds Git section to Best Practices"`
 
 ## CHANGELOG
 
-* All Entries are in **ABC order**, written in **past tense**, and preferably **1 sentence**.
+* All entries should be written in **past tense**, preferably be **1 sentence** in length, and ordered from **most recent to least recent** using their PR's time of creation.
 * The CHANGELOG.md document is organized into sections by release number.
 * Each release section contains 3 subsections titled to align with the branch types: `features`, `chores`, `fixes`.
 * Add your entry to the appropriate subsection based on its content.
