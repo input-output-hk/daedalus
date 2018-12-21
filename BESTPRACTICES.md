@@ -21,6 +21,7 @@
     - [Spacing](#spacing)
     - [Quotes](#quotes)
     - [Props](#props)
+    - [Flow](#flow)
 1. [CSS](#css)
     - [Formatting Selectors](#formatting)
     - [Properties](#properties)
@@ -1084,6 +1085,51 @@ render() {
   const { unusedProp1, unusedProp2, ...usedProps  } = this.props;
   return <WrappedComponent {...this.props} />;
 }
+```
+
+## Flow
+
+When creating a flow type definition, define its properties in **ABC order**.
+
+:white_check_mark: ***Do***
+
+```javascript
+type Props = {
+  autoFocus: boolean,
+  autoResize: boolean,
+  className?: string,
+  context: ThemeContextProp,
+  disabled?: boolean,
+  label?: string | Element<any>,
+  error?: string | Node,
+  onBlur?: Function,
+  onChange?: Function,
+  onFocus?: Function,
+};
+```
+
+For preventing syntax errors, leave a comma after the last key/value pair incase the type definition's properties are rearranged or expanded upon in the future.
+
+:white_check_mark: ***Do***
+
+```jsx
+type State = {
+  inputValue: string,
+  error: string,
+  isOpen: boolean,
+  composedTheme: Object,
+};
+```
+
+:no_entry_sign: ***Don't***
+
+```jsx
+type State = {
+  inputValue: string,
+  error: string,
+  isOpen: boolean,
+  composedTheme: Object
+};
 ```
 
 ## Parentheses
