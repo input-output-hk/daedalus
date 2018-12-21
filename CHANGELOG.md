@@ -5,7 +5,7 @@ Changelog
 =======
 
 ### Features
-
+- Added a BESTPRACTICES.md document containing rules and recommendations for writing better JavaScript and CSS. ([PR 1233](https://github.com/input-output-hk/daedalus/pull/1233))
 - Refactored environment setup and disabled Electron Node integration for the render process ([PR 1099](https://github.com/input-output-hk/daedalus/pull/1099/commits))
 
 ### Fixes
