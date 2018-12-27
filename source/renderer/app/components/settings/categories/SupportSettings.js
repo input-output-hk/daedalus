@@ -74,7 +74,7 @@ export default class SupportSettings extends Component<Props> {
     const faqLink = (
       <a
         href={faqLinkUrl}
-        onClick={() => onExternalLinkClick(faqLinkUrl)}
+        onClick={event => onExternalLinkClick(faqLinkUrl, event)}
       >
         {intl.formatMessage(messages.faqLink)}
       </a>
