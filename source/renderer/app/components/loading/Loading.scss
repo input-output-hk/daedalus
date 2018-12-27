@@ -19,7 +19,7 @@
 
     .reportIssueButton {
       background-color: var(--theme-report-issue-button-background-color);
-      margin: 20px 0;
+      margin: 20px 0 10px;
       width: 240px;
 
       &:hover {
@@ -28,6 +28,21 @@
       &:active {
         background-color: var(--theme-report-issue-button-background-color-active) !important;
       }
+    }
+
+    .downloadLogsButton {
+      border-bottom: 1px solid var(--theme-report-issue-syncing-download-logs-text-color);
+      color: var(--theme-report-issue-syncing-download-logs-text-color);
+      cursor: pointer;
+      font-family: var(--font-regular);
+      font-size: 14px;
+      line-height: 1.36;
+      margin-bottom: 20px;
+      opacity: 0.8;
+    }
+    .downloadLogsButtonConnecting {
+      border-bottom: 1px solid var(--theme-report-issue-syncing-download-logs-text-color-connecting);
+      color: var(--theme-report-issue-syncing-download-logs-text-color-connecting);
     }
   }
   &.is-loading-theme {
@@ -111,6 +126,12 @@ $adaLogoWidth: 43px;
 
 .syncingLogo svg path {
   fill: var(--theme-icon-syncing-logo-color);
+}
+
+.linkNewWindow {
+  display: inline-block;
+  width: 12px;
+  margin-right: 10px;
 }
 
 .headline {
