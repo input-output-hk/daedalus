@@ -3261,9 +3261,13 @@ core-js@^1.0.0:
   version "1.2.7"
   resolved "http://registry.npmjs.org/core-js/-/core-js-1.2.7.tgz#652294c14651db28fa93bd2d5ff2983a4f08c636"
 
-core-js@^2.4.0, core-js@^2.4.1, core-js@^2.5.0, core-js@^2.5.7:
+core-js@^2.4.0, core-js@^2.5.0, core-js@^2.5.7:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.0.tgz#1e30793e9ee5782b307e37ffa22da0eacddd84d4"
+
+core-js@^2.4.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.1.tgz#87416ae817de957a3f249b3b5ca475d4aaed6042"
 
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
@@ -4101,9 +4105,9 @@ electron-osx-sign@^0.4.11:
     minimist "^1.2.0"
     plist "^3.0.1"
 
-electron-packager@13.0.0:
-  version "13.0.0"
-  resolved "https://registry.yarnpkg.com/electron-packager/-/electron-packager-13.0.0.tgz#3c0212a5f128759fde1b5a41763381ca88310449"
+electron-packager@13.0.1:
+  version "13.0.1"
+  resolved "https://registry.yarnpkg.com/electron-packager/-/electron-packager-13.0.1.tgz#126b697aa2006d8e5df9eb28faa303b6167b08d4"
   dependencies:
     asar "^0.14.0"
     debug "^4.0.1"
@@ -4157,9 +4161,9 @@ electron-unhandled@2.1.0:
     ensure-error "^1.0.0"
     lodash.debounce "^4.0.8"
 
-electron@3.0.11:
-  version "3.0.11"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-3.0.11.tgz#81e350db741fc0f2997ecb2fef5ed085ca42a723"
+electron@3.0.13:
+  version "3.0.13"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-3.0.13.tgz#7b065a3d130c6b6379dc78d49515e03f392c1303"
   dependencies:
     "@types/node" "^8.0.24"
     electron-download "^4.1.0"

@@ -10,6 +10,7 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import SystemTimeErrorOverlay from './SystemTimeErrorOverlay';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
+import linkNewWindow from '../../assets/images/link-ic.inline.svg';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './Loading.scss';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
@@ -82,8 +83,13 @@ const messages = defineMessages({
   },
   reportIssueButtonLabel: {
     id: 'loading.screen.reportIssue.buttonLabel',
-    defaultMessage: '!!!Report an issue',
-    description: 'Report an issue button label on the loading.'
+    defaultMessage: '!!!Open support ticket',
+    description: 'Open support ticket button label on the loading.'
+  },
+  reportIssueDownloadLogsLinkLabel: {
+    id: 'loading.screen.reportIssue.downloadLogsLinkLabel',
+    defaultMessage: '!!!Download logs',
+    description: 'Download logs button label on the loading.'
   },
 });
 
@@ -108,10 +114,11 @@ type Props = {
   isSystemTimeCorrect: boolean,
   isCheckingSystemTime: boolean,
   currentLocale: string,
-  handleReportIssue: Function,
-  onProblemSolutionClick: Function,
+  onExternalLinkClick: Function,
+  onReportIssueClick: Function,
   onCheckTheTimeAgain: Function,
   onContinueWithoutClockSyncCheck: Function,
+  onDownloadLogs: Function,
 };
 
 @observer
@@ -249,7 +256,7 @@ export default class Loading extends Component<Props, State> {
       isSynced,
       localTimeDifference,
       currentLocale,
-      onProblemSolutionClick,
+      onExternalLinkClick,
       onCheckTheTimeAgain,
       onContinueWithoutClockSyncCheck,
       isCheckingSystemTime,
@@ -262,7 +269,7 @@ export default class Loading extends Component<Props, State> {
         <SystemTimeErrorOverlay
           localTimeDifference={localTimeDifference}
           currentLocale={currentLocale}
-          onProblemSolutionClick={onProblemSolutionClick}
+          onExternalLinkClick={onExternalLinkClick}
           onCheckTheTimeAgain={onCheckTheTimeAgain}
           onContinueWithoutClockSyncCheck={onContinueWithoutClockSyncCheck}
           isCheckingSystemTime={isCheckingSystemTime}
@@ -321,7 +328,8 @@ export default class Loading extends Component<Props, State> {
       isSynced,
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
-      handleReportIssue,
+      onReportIssueClick,
+      onDownloadLogs,
     } = this.props;
 
     const { connectingTime, syncingTime } = this.state;
@@ -343,6 +351,10 @@ export default class Loading extends Component<Props, State> {
     const apiLogoStyles = classNames([
       styles['ada-apiLogo'],
       !isConnected ? styles.connectingLogo : styles.syncingLogo,
+    ]);
+    const downloadLogsButtonStyles = classNames([
+      styles.downloadLogsButton,
+      !isConnected ? styles.downloadLogsButtonConnecting : null,
     ]);
 
     const daedalusLoadingLogo = daedalusLogo;
@@ -377,10 +389,22 @@ export default class Loading extends Component<Props, State> {
             </h1>
             <Button
               className={buttonClasses}
-              label={intl.formatMessage(messages.reportIssueButtonLabel)}
-              onClick={handleReportIssue}
+              label={
+                <p>
+                  <SVGInline svg={linkNewWindow} className={styles.linkNewWindow} />
+                  {intl.formatMessage(messages.reportIssueButtonLabel)}
+                </p>
+              }
+              onClick={onReportIssueClick}
               skin={ButtonSkin}
             />
+            <br />
+            <button
+              className={downloadLogsButtonStyles}
+              onClick={onDownloadLogs}
+            >
+              { intl.formatMessage(messages.reportIssueDownloadLogsLinkLabel) }
+            </button>
           </div>
         )}
         <div className={styles.logos}>
