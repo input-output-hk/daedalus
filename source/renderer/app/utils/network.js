@@ -58,4 +58,3 @@ export const getSupportUrl = async (baseUrl: string, locale: string) => {
   };
   return `${baseUrl}?${serialize(info)}`;
 };
-
