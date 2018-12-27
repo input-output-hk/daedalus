@@ -47,7 +47,7 @@ export default class AppStore extends Store {
   }
 
   openExternalLink(url: string, event?: MouseEvent): void {
-    event && event.preventDefault();
+    if (event) event.preventDefault();
     openExternalUrlChannel.send(url);
   }
 
