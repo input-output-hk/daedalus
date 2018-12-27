@@ -76,7 +76,6 @@ const safeExit = async () => {
 };
 
 const onAppReady = async () => {
-
   setupLogging();
   mainErrorHandler();
 
