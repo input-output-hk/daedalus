@@ -15,9 +15,6 @@ import { getAccounts } from './accounts/requests/getAccounts';
 import { getAddress } from './addresses/requests/getAddress';
 import { createAddress } from './addresses/requests/createAddress';
 
-// Common requests
-import { sendBugReport } from './common/requests/sendBugReport';
-
 // Nodes requests
 import { applyNodeUpdate } from './nodes/requests/applyNodeUpdate';
 import { getNodeInfo } from './nodes/requests/getNodeInfo';
@@ -85,7 +82,6 @@ import type {
 // Common Types
 import type {
   RequestConfig,
-  SendBugReportRequest
 } from './common/types';
 
 // Nodes Types
@@ -128,7 +124,6 @@ import type {
 import {
   GenericApiError,
   IncorrectSpendingPasswordError,
-  ReportRequestError,
   InvalidMnemonicError,
   ForbiddenMnemonicError
 } from './common/errors';
@@ -618,18 +613,6 @@ export default class AdaApi {
       throw new RedeemAdaError();
     }
   };
-
-  async sendBugReport({ requestFormData, environmentData }: SendBugReportRequest): Promise<any> {
-    Logger.debug('AdaApi::sendBugReport called: ' + stringifyData({ requestFormData, environmentData }));
-    try {
-      await sendBugReport({ requestFormData, environmentData });
-      Logger.debug('AdaApi::sendBugReport success');
-      return true;
-    } catch (error) {
-      Logger.error('AdaApi::sendBugReport error: ' + stringifyError(error));
-      throw new ReportRequestError();
-    }
-  }
 
   nextUpdate = async (): Promise<NodeSoftware | null> => {
     Logger.debug('AdaApi::nextUpdate called');
