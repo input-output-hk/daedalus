@@ -152,9 +152,9 @@ const onAppReady = async () => {
 };
 
 // Make sure this is the only Daedalus instance running per cluster before doing anything else
-const hasSingleInstanceLock = app.requestSingleInstanceLock();
+const isSingleInstance = app.requestSingleInstanceLock();
 
-if (hasSingleInstanceLock) {
+if (!isSingleInstance) {
   app.quit();
 } else {
   app.on('second-instance', () => {
