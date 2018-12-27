@@ -7,7 +7,18 @@ import {
   STAGING_EKG_URL,
   TESTNET_EKG_URL,
 } from '../config/urlsConfig';
+import serialize from './serialize';
 import { MAINNET, STAGING, TESTNET } from '../../../common/types/environment.types';
+
+const localesFillForm = {
+  'en-US': 'English',
+  'ja-JP': 'Japanese',
+};
+
+const {
+  version, os, apiVersion, network: NETWORK,
+  build, buildNumber, installerVersion
+} = global.environment;
 
 export const getNetworkExplorerUrl = (network: string): string => {
   // sets default to mainnet in case env.NETWORK is undefined
@@ -30,3 +41,21 @@ export const getNetworkEkgUrl = (env: {
   if (env.isTestnet) { ekgUrl = TESTNET_EKG_URL; }
   return ekgUrl;
 };
+
+export const getSupportUrl = async (baseUrl: string, locale: string) => {
+  const network = NETWORK === 'development' ? 'staging' : NETWORK;
+  const info = {
+    frontendVersion: version,
+    backendVersion: apiVersion,
+    network,
+    build,
+    installerVersion,
+    os,
+    locale,
+    product: `Daedalus wallet - ${network}`,
+    supportLanguage: localesFillForm[locale],
+    productVersion: `Daedalus ${version}+Cardano ${buildNumber}`,
+  };
+  return `${baseUrl}?${serialize(info)}`;
+};
+

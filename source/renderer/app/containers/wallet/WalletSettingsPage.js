@@ -18,7 +18,7 @@ export default class WalletSettingsPage extends Component<Props> {
   render() {
     const { uiDialogs, wallets, walletSettings, app } = this.props.stores;
     const { actions } = this.props;
-    const { environment: { isMainnet, isTestnet } } = app;
+    const { environment: { isProduction } } = app;
     const activeWallet = wallets.active;
     const {
       WALLET_ASSURANCE_LEVEL_OPTIONS,
@@ -48,7 +48,7 @@ export default class WalletSettingsPage extends Component<Props> {
         walletName={activeWallet.name}
         isSubmitting={updateWalletRequest.isExecuting}
         isInvalid={updateWalletRequest.wasExecuted && updateWalletRequest.result === false}
-        showExportLink={!isMainnet && !isTestnet}
+        showExportLink={!isProduction}
         lastUpdatedField={lastUpdatedWalletField}
         onFieldValueChange={(field, value) => updateWalletField.trigger({ field, value })}
         onStartEditing={field => startEditingWalletField.trigger({ field })}
