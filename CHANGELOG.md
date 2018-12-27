@@ -6,6 +6,7 @@ Changelog
 
 ### Features
 
+- Improved the lock-file UX by replacing "Daedalus is already running" dialog with focusing of the already running Daedalus instance ([PR 1229](https://github.com/input-output-hk/daedalus/pull/1229))
 - Replaced in-app support request with links to support page ([PR 1199](https://github.com/input-output-hk/daedalus/pull/1199))
 - Improved the UX of inline editing fields (like wallet renaming) ([PR 1231](https://github.com/input-output-hk/daedalus/pull/1231))
 - Added a BESTPRACTICES.md document containing rules and recommendations for writing better JavaScript and CSS ([PR 1233](https://github.com/input-output-hk/daedalus/pull/1233))
@@ -13,7 +14,7 @@ Changelog
 
 ### Fixes
 
-- Updated to electron 3 instance lock to fix issues with custom lock files ([PR 1229](https://github.com/input-output-hk/daedalus/pull/1229))
+- Fixed issues with custom lock files by implementing "instance-lock" feature from Electron 3 ([PR 1229](https://github.com/input-output-hk/daedalus/pull/1229))
 - Fixed app reloading issues in the Ada Redemption page ([PR 1217](https://github.com/input-output-hk/daedalus/pull/1217))
 - Fixed the contents of `/etc/nix/nix.conf` file listed as a part of Cardano setup in Daedalus README file ([PR 1215](https://github.com/input-output-hk/daedalus/pull/1215))
 - Fixed the partly broken flow setup ([PR 1124](https://github.com/input-output-hk/daedalus/pull/1124))
