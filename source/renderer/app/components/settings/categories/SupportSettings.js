@@ -54,7 +54,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  onExternalLinkClick: (event: MouseEvent, url: string) => void,
+  onExternalLinkClick: Function,
   onSupportRequestClick: Function,
   onDownloadLogs: Function,
 };
@@ -74,7 +74,7 @@ export default class SupportSettings extends Component<Props> {
     const faqLink = (
       <a
         href={faqLinkUrl}
-        onClick={event => onExternalLinkClick(event, faqLinkUrl)}
+        onClick={() => onExternalLinkClick(faqLinkUrl)}
       >
         {intl.formatMessage(messages.faqLink)}
       </a>
