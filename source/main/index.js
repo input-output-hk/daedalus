@@ -1,6 +1,6 @@
 // @flow
 import os from 'os';
-import { app, BrowserWindow, globalShortcut, Menu, dialog, shell } from 'electron';
+import { app, BrowserWindow, globalShortcut, Menu, shell } from 'electron';
 import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { Logger } from './utils/logging';
@@ -81,9 +81,6 @@ app.on('ready', async () => {
   try {
     await acquireDaedalusInstanceLock();
   } catch (e) {
-    const dialogTitle = 'Daedalus is unable to start!';
-    const dialogMessage = 'Another Daedalus instance is already running.';
-    dialog.showErrorBox(dialogTitle, dialogMessage);
     app.exit(1);
   }
 
