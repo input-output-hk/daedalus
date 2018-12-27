@@ -7,6 +7,9 @@ Changelog
 ### Features
 
 - Replaced in-app support request with links to support page ([PR 1199](https://github.com/input-output-hk/daedalus/pull/1199))
+- Improved the UX of inline editing fields (like wallet renaming) ([PR 1231](https://github.com/input-output-hk/daedalus/pull/1231))
+- Added a BESTPRACTICES.md document containing rules and recommendations for writing better JavaScript and CSS ([PR 1233](https://github.com/input-output-hk/daedalus/pull/1233))
+>>>>>>> develop
 - Refactored environment setup and disabled Electron Node integration for the render process ([PR 1099](https://github.com/input-output-hk/daedalus/pull/1099/commits))
 
 ### Fixes
@@ -21,6 +24,7 @@ Changelog
 
 ### Chores
 
+- Fixed Daedalus shell to evaluate embedded variables properly ([PR 1235](https://github.com/input-output-hk/daedalus/pull/1235))
 - Added `--rp` prefixed CSS variables to Daedalus themes to configure styles of React-Polymorph components and removed SimpleTheme imports previously used for React-Polymorph overrides in favor of using ThemeProvider's themeOverrides feature ([PR 1139](https://github.com/input-output-hk/daedalus/pull/1139))
 - Changed API call logging level from `debug` to `info` ([PR 1183](https://github.com/input-output-hk/daedalus/pull/1183))
 - Enabled Cardano Wallet API documentation server in development mode - reacheable on https://localhost:8091/docs/v1/index/ ([PR 1187](https://github.com/input-output-hk/daedalus/pull/1187))
