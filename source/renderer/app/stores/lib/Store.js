@@ -1,7 +1,7 @@
 // @flow
 import Reaction from './Reaction';
 import type { ActionsMap } from '../../actions/index';
-import type { StoresMap } from '../../stores/index';
+import type { StoresMap } from '../index';
 import type { Api } from '../../api/index';
 import type { Environment } from '../../../../common/types/environment.types';
 

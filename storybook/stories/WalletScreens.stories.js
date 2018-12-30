@@ -117,20 +117,20 @@ storiesOf('WalletScreens', module)
     <WalletTransactionsList
       transactions={
         [
-          ...Array.from(Array(number('Transactions Sent', 1))).map((x, i) =>
+          ...Array.from(Array(number('Transactions Sent', 1))).map((x, i) => (
             generateTransaction(
               transactionTypes.EXPEND,
               moment().subtract(i, 'days').toDate(),
               new BigNumber(faker.random.number(5))
             )
-          ),
-          ...Array.from(Array(number('Transactions Received', 1))).map((x, i) =>
+          )),
+          ...Array.from(Array(number('Transactions Received', 1))).map((x, i) => (
             generateTransaction(
               transactionTypes.INCOME,
               moment().subtract(i, 'days').toDate(),
               new BigNumber(faker.random.number(5))
             )
-          ),
+          )),
         ]
       }
       isLoadingTransactions={boolean('isLoadingTransactions', false)}
@@ -187,7 +187,7 @@ storiesOf('WalletScreens', module)
       walletAssurance={WalletAssuranceModeOptions.NORMAL}
       walletName={text('Wallet Name', 'Wallet Name')}
       spendingPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
-      changeSpendingPasswordDialog={
+      changeSpendingPasswordDialog={(
         <ChangeSpendingPasswordDialog
           currentPasswordValue="current"
           newPasswordValue="new"
@@ -200,8 +200,8 @@ storiesOf('WalletScreens', module)
           isSubmitting={boolean('Change Password - isSubmitting', false)}
           error={null}
         />
-      }
-      deleteWalletDialogContainer={
+      )}
+      deleteWalletDialogContainer={(
         <DeleteWalletConfirmationDialog
           walletName={text('DeleteWalletConfirmationDialog: Wallet Name', 'Wallet To Delete')}
           hasWalletFunds={boolean('hasWalletFunds', false)}
@@ -214,8 +214,8 @@ storiesOf('WalletScreens', module)
           onConfirmationValueChange={action('Delete Wallet - onConfirmationValueChange')}
           isSubmitting={boolean('Delete Wallet - isSubmitting', false)}
         />
-      }
-      exportWalletDialogContainer={
+      )}
+      exportWalletDialogContainer={(
         <ExportWalletToFileDialog
           walletName={text('Wallet Name', 'Wallet Name')}
           hasSpendingPassword={boolean('isSpendingPasswordSet', false)}
@@ -223,6 +223,6 @@ storiesOf('WalletScreens', module)
           onSubmit={action('Export Wallet - onSubmit')}
           onClose={action('Export Wallet - onClose')}
         />
-      }
+      )}
     />
   ));

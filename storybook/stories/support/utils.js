@@ -43,12 +43,12 @@ export const generateTransaction = (
   })
 );
 
-export const generateRandomTransaction = (index: number) =>
+export const generateRandomTransaction = (index: number) => (
   generateTransaction(
     transactionTypes.INCOME,
     moment().subtract(index, 'days').toDate(),
     new BigNumber(faker.random.number(5))
-  );
+  ));
 
 export const generateAddress = (used: boolean = false): WalletAddress => (new WalletAddress({
   id: generateHash(),

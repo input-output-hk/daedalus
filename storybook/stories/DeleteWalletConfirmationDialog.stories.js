@@ -111,4 +111,3 @@ storiesOf('DeleteWalletConfirmationDialog', module)
       />
     </div>
   ));
-

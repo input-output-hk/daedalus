@@ -92,8 +92,10 @@ export default class CompletionDialog extends Component<Props, State> {
     clearTimeout(this.copyNotificationTimeout);
 
     this.setState({ showCopyNotification: true });
-    this.copyNotificationTimeout = setTimeout(() =>
-      this.setState({ showCopyNotification: false }), timeInSeconds);
+    this.copyNotificationTimeout = setTimeout(
+      () => (this.setState({ showCopyNotification: false })),
+      timeInSeconds
+    );
   };
 
   render() {

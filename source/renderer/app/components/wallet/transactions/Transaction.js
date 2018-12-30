@@ -311,7 +311,7 @@ export default class Transaction extends Component<Props, State> {
                     {data.numberOfConfirmations.toLocaleString()}&nbsp;
                     {intl.formatMessage(messages.confirmations)}.
                   </span>
-                ) : null}
+                  ) : null}
               </div>
 
               <h2>{intl.formatMessage(messages.transactionId)}</h2>
