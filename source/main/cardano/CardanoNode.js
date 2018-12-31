@@ -454,6 +454,7 @@ export class CardanoNode {
       ca: _actions.readFileSync(tlsPath + '/client/ca.crt'),
       key: _actions.readFileSync(tlsPath + '/client/client.key'),
       cert: _actions.readFileSync(tlsPath + '/client/client.pem'),
+      hostname: 'localhost',
       port,
     };
     if (this._state === CardanoNodeStates.STARTING) {

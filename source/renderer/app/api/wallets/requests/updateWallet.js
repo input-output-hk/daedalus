@@ -14,7 +14,6 @@ export const updateWallet = (
   { walletId, assuranceLevel, name }: UpdateWalletParams
 ): Promise<AdaWallet> => (
   request({
-    hostname: 'localhost',
     method: 'PUT',
     path: `/api/v1/wallets/${walletId}`,
     ...config,

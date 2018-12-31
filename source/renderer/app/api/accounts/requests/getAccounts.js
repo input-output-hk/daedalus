@@ -12,7 +12,6 @@ export const getAccounts = (
   { walletId }: GetAccountsParams
 ): Promise<Accounts> => (
   request({
-    hostname: 'localhost',
     method: 'GET',
     path: `/api/v1/wallets/${walletId}/accounts`,
     ...config,
