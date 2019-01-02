@@ -46,7 +46,6 @@ export default class SettingsStore extends Store {
   @observable setDataLayerMigrationAcceptanceRequest: Request<string> = new Request(this.api.localStorage.setDataLayerMigrationAcceptance);
   @observable getThemeRequest: Request<string> = new Request(this.api.localStorage.getUserTheme);
   @observable setThemeRequest: Request<string> = new Request(this.api.localStorage.setUserTheme);
-  @observable sendBugReport: Request<any> = new Request(this.api.ada.sendBugReport);
   @observable error: ?LocalizableError = null;
   @observable logFiles: LogFiles = {};
   @observable compressedLogsFile: ?string = null;
@@ -61,8 +60,6 @@ export default class SettingsStore extends Store {
     this.actions.profile.updateTheme.listen(this._updateTheme);
     this.actions.profile.getLogs.listen(this._getLogs);
     this.actions.profile.getLogsAndCompress.listen(this._getLogsAndCompress);
-    this.actions.profile.sendBugReport.listen(this._sendBugReport);
-    this.actions.profile.resetBugReportDialog.listen(this._resetBugReportDialog);
     this.actions.profile.downloadLogs.listen(this._downloadLogs);
     this.actions.app.initAppEnvironment.listen(() => {});
 
@@ -257,8 +254,9 @@ export default class SettingsStore extends Store {
     }
   };
 
-  _isOnDataLayerMigrationPage = () =>
-    this.stores.app.currentRoute === ROUTES.PROFILE.DATA_LAYER_MIGRATION;
+  _isOnDataLayerMigrationPage = () => (
+    this.stores.app.currentRoute === ROUTES.PROFILE.DATA_LAYER_MIGRATION
+  );
 
   _redirectToRoot = () => {
     this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
@@ -311,32 +309,6 @@ export default class SettingsStore extends Store {
     this.isSubmittingBugReport = false;
     this.error = new WalletSupportRequestLogsCompressError();
   });
-
-  _sendBugReport = action(({ email, subject, problem, compressedLogsFile }: {
-    email: string,
-    subject: string,
-    problem: string,
-    compressedLogsFile: ?string,
-  }) => {
-    this.isSubmittingBugReport = true;
-    const { isMainnet, ...restEnvironment } = this.environment;
-    this.sendBugReport.execute({
-      requestFormData: { email, subject, problem, compressedLogsFile },
-      environmentData: { ...restEnvironment }
-    })
-      .then(action(() => {
-        this._resetBugReportDialog();
-      }))
-      .catch(action((error) => {
-        this.isSubmittingBugReport = false;
-        this.error = error;
-      }));
-  });
-
-  _resetBugReportDialog = () => {
-    this._reset();
-    this.actions.dialogs.closeActiveDialog.trigger();
-  };
 
   _downloadLogs = action(({ fileName, destination, fresh }) => {
     this.compressedLogsStatus = {

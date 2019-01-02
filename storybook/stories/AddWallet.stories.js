@@ -54,4 +54,3 @@ storiesOf('AddWallet', module)
       />
     </div>
   ));
-

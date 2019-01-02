@@ -1,6 +1,6 @@
 // @flow
 import os from 'os';
-import { app, BrowserWindow, globalShortcut, Menu, dialog, shell } from 'electron';
+import { app, BrowserWindow, globalShortcut, Menu, shell } from 'electron';
 import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { Logger } from './utils/logging';
@@ -22,7 +22,6 @@ import { setupCardano, restartCardanoNode } from './cardano/setup';
 import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { ensureXDGDataIsSet } from './cardano/config';
-import { acquireDaedalusInstanceLock } from './utils/lockFiles';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from './utils/HandleDiskSpace';
 
@@ -78,17 +77,7 @@ const safeExit = async () => {
   }
 };
 
-app.on('ready', async () => {
-  // Make sure this is the only Daedalus instance running per cluster before doing anything else
-  try {
-    await acquireDaedalusInstanceLock();
-  } catch (e) {
-    const dialogTitle = 'Daedalus is unable to start!';
-    const dialogMessage = 'Another Daedalus instance is already running.';
-    dialog.showErrorBox(dialogTitle, dialogMessage);
-    app.exit(1);
-  }
-
+const onAppReady = async () => {
   setupLogging();
 
   Logger.info(`========== Daedalus is starting at ${new Date().toString()} ==========`);
@@ -177,4 +166,19 @@ app.on('ready', async () => {
     event.preventDefault(); // prevent Daedalus from quitting immediately
     await safeExit();
   });
-});
+};
+
+// Make sure this is the only Daedalus instance running per cluster before doing anything else
+const isSingleInstance = app.requestSingleInstanceLock();
+
+if (!isSingleInstance) {
+  app.quit();
+} else {
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
+  app.on('ready', onAppReady);
+}

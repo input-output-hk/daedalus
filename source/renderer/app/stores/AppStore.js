@@ -46,7 +46,8 @@ export default class AppStore extends Store {
     return this.stores.router.location.pathname;
   }
 
-  openExternalLink(url: string): void {
+  openExternalLink(url: string, event?: MouseEvent): void {
+    if (event) event.preventDefault();
     openExternalUrlChannel.send(url);
   }
 
