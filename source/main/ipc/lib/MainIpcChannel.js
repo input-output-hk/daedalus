@@ -30,4 +30,3 @@ export class MainIpcChannel<Incoming, Outgoing> extends IpcChannel<Incoming, Out
   }
 
 }
-

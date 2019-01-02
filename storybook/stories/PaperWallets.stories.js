@@ -77,4 +77,3 @@ storiesOf('PaperWallets', module)
       />
     </div>
   ));
-

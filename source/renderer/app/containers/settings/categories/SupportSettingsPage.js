@@ -13,7 +13,7 @@ import { DOWNLOAD_LOGS_SUCCESS_DURATION } from '../../../config/timingConfig';
 const messages = defineMessages({
   supportRequestLinkUrl: {
     id: 'settings.support.reportProblem.linkUrl',
-    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/categories/360000877653-Daedalus-wallet-mainnet',
+    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/requests/new/',
     description: '"Support request" link URL in the "Report a problem" section on the support settings page.',
   },
   downloadLogsSuccess: {

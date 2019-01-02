@@ -275,7 +275,8 @@ export default class Loading extends Component<Props, State> {
           isCheckingSystemTime={isCheckingSystemTime}
         />
       );
-    } else if (!isConnected) {
+    }
+    if (!isConnected) {
       const finalCardanoNodeStates = [
         CardanoNodeStates.STOPPED,
         CardanoNodeStates.UPDATED,
@@ -294,7 +295,8 @@ export default class Loading extends Component<Props, State> {
           </h1>
         </div>
       );
-    } else if (!isSynced) {
+    }
+    if (!isSynced) {
       return (
         <div className={styles.syncing}>
           <h1 className={styles.headline}>
@@ -387,12 +389,12 @@ export default class Loading extends Component<Props, State> {
             </h1>
             <Button
               className={buttonClasses}
-              label={
+              label={(
                 <p>
                   <SVGInline svg={linkNewWindow} className={styles.linkNewWindow} />
                   {intl.formatMessage(messages.reportIssueButtonLabel)}
                 </p>
-              }
+              )}
               onClick={onReportIssueClick}
               skin={ButtonSkin}
             />
@@ -401,7 +403,7 @@ export default class Loading extends Component<Props, State> {
               className={downloadLogsButtonStyles}
               onClick={onDownloadLogs}
             >
-              { intl.formatMessage(messages.reportIssueDownloadLogsLinkLabel) }
+              {intl.formatMessage(messages.reportIssueDownloadLogsLinkLabel)}
             </button>
           </div>
         )}

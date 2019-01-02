@@ -818,6 +818,7 @@ const _createTransactionFromServerData = action(
 );
 
 const _createTransactionFeeFromServerData = action(
-  'AdaApi::_createTransactionFeeFromServerData', (data: TransactionFee) =>
+  'AdaApi::_createTransactionFeeFromServerData', (data: TransactionFee) => (
     new BigNumber(data.estimatedAmount).dividedBy(LOVELACES_PER_ADA)
+  )
 );

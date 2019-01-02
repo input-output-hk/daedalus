@@ -177,14 +177,14 @@ export default class WalletTransactionsList extends Component<Props> {
 
         {loadingSpinner}
 
-        {showMoreTransactionsButton &&
+        {showMoreTransactionsButton && (
           <Button
             className={buttonClasses}
             label={intl.formatMessage(messages.showMoreTransactionsButtonLabel)}
             onClick={this.onShowMoreTransactions.bind(this, walletId)}
             skin={ButtonSkin}
           />
-        }
+        )}
       </div>
     );
   }

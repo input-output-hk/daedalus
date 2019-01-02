@@ -4826,7 +4826,7 @@
         }
       },
       {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/categories/360000877653-Daedalus-wallet-mainnet",
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/requests/new/",
         "description": "Link to Open Support page",
         "end": {
           "column": 3,
@@ -4859,7 +4859,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/categories/360000877653-Daedalus-wallet-mainnet",
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/requests/new/",
         "description": "\"Support request\" link URL in the \"Report a problem\" section on the support settings page.",
         "end": {
           "column": 3,

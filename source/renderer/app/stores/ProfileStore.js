@@ -254,8 +254,9 @@ export default class SettingsStore extends Store {
     }
   };
 
-  _isOnDataLayerMigrationPage = () =>
-    this.stores.app.currentRoute === ROUTES.PROFILE.DATA_LAYER_MIGRATION;
+  _isOnDataLayerMigrationPage = () => (
+    this.stores.app.currentRoute === ROUTES.PROFILE.DATA_LAYER_MIGRATION
+  );
 
   _redirectToRoot = () => {
     this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });

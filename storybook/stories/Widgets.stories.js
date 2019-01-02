@@ -100,4 +100,3 @@ storiesOf('Widgets', module)
       label="My switch"
     />
   ));
-
