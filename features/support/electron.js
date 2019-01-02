@@ -62,8 +62,6 @@ Before({ timeout: DEFAULT_TIMEOUT * 2 }, async function () {
   // Do not set 'implicit' timeout here because of this issue:
   // https://github.com/webdriverio/webdriverio/issues/974
 
-  console.log('reset backend');
-
   // Reset backend
   await this.client.executeAsync((done) => {
     const resetBackend = () => {
