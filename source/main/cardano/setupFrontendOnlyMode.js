@@ -73,4 +73,6 @@ export const setupFrontendOnlyMode = (mainWindow: BrowserWindow) => {
     Logger.info(`ipcMain: Received request to inject a fault into cardano node: ${String(fault)}`);
     return Promise.reject(fault);
   });
+
+  return null;
 };
