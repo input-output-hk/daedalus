@@ -24,7 +24,7 @@ let
     (pkgs.lib.optional (systemStart != null) ".configuration.systemStart = ${toString systemStart}")
     (pkgs.lib.optional (cluster == "demo") ''.configuration.key = "default"'')
     (pkgs.lib.optional (fullExtraArgs != []) ''.nodeArgs += ${builtins.toJSON fullExtraArgs}'')
-    (pkgs.lib.optional (autoStartBackend == false) ''.frontendOnlyMode = false'')
+    (pkgs.lib.optional (autoStartBackend == true) ''.frontendOnlyMode = false'')
   ];
   patchesString = pkgs.lib.concatStringsSep " | " patches;
   launcherYamlWithStartTime = pkgs.runCommand "launcher-config.yaml" { buildInputs = [ pkgs.jq yaml2json ]; } ''
