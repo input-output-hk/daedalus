@@ -22,7 +22,7 @@ export default (
   let diskSpaceCheckInterval;
   let notEnoughSpace = false;
 
-  const handleCheckDiskSpace = async (diskSpaceRequired = DISK_SPACE_REQUIRED) => {
+  const handleCheckDiskSpace = async (diskSpaceRequired?: number = DISK_SPACE_REQUIRED) => {
 
     const { free: diskSpaceAvailable, size: diskTotalSpace } = await checkDiskSpace(path);
     const diskSpaceMissing = Math.max((diskSpaceRequired - diskSpaceAvailable), 0);

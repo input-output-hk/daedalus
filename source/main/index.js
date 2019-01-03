@@ -23,7 +23,7 @@ import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
-import type { CheckDiskSpaceResponse } from './utils/HandleDiskSpace';
+import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
 
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;

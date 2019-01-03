@@ -159,7 +159,7 @@ export default class NetworkStatusStore extends Store {
     return Date.now() - this._startTime;
   }
 
-  _checkDiskSpace(diskSpaceRequired) {
+  _checkDiskSpace(diskSpaceRequired?: number) {
     ipcRenderer.send(GET_DISK_SPACE_STATUS.REQUEST, diskSpaceRequired);
   }
 
