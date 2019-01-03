@@ -29,7 +29,7 @@ import type {
 } from '../../../common/types/cardano-node.types';
 import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { IpcEvent } from '../../../common/ipc/lib/IpcChannel';
-import type { CheckDiskSpaceResponse } from '../../../main/utils/HandleDiskSpace';
+import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 
 // TODO: refactor all parts that rely on this to ipc channels!
 const { ipcRenderer } = global;

@@ -13,14 +13,6 @@ import {
   DISK_SPACE_RECOMMENDED_PERCENTAGE
 } from '../config';
 
-export type CheckDiskSpaceResponse = {
-  notEnoughSpace: boolean,
-  diskSpaceRequired: string,
-  diskSpaceMissing: string,
-  diskSpaceRecommended: string,
-};
-
-
 export default (
   mainWindow: BrowserWindow,
   onCheckDiskSpace?: Function,

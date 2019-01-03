@@ -1,16 +1,24 @@
 import { Given, When, Then } from 'cucumber';
 
 let diskSpaceRequired;
-const hundredTb = 100 * 1e+12; // 100 TB | unit: bytes
+const HUNDRED_TB = 100 * 1e+12; // 100 TB | unit: bytes
+const ONE_KB = 1 * 1000; // 1 KB | unit: bytes
 const NO_DISK_SPACE_COMPONENT = '.NoDiskSpaceErrorOverlay_component';
 
 Given(/^I set the required space to 100 TB$/, () => {
-  diskSpaceRequired = hundredTb;
+  diskSpaceRequired = HUNDRED_TB;
+  return true;
+});
+
+Given(/^I set the required space to 1 KB$/, () => {
+  diskSpaceRequired = ONE_KB;
   return true;
 });
 
 When(/^I check the disk space$/, function () {
-  this.client.execute(() => daedalus.stores.networkStatus._checkDiskSpace(diskSpaceRequired));
+  this.client.execute((diskSpace) => {
+    daedalus.stores.networkStatus._checkDiskSpace(diskSpace);
+  }, diskSpaceRequired);
 });
 
 Then(/^The No Disk Space overlay should be (hidden|visible)$/, function (state) {
