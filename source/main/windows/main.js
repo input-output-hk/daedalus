@@ -17,7 +17,8 @@ export const createMainWindow = (isInSafeMode) => {
     webPreferences: {
       nodeIntegration: isTest,
       webviewTag: false,
-      enableRemoteModule: isTest,
+      // enableRemoteModule: isTest,
+      enableRemoteModule: true, // TODO: revert to original state
       preload: path.join(__dirname, './preload.js')
     }
   };
