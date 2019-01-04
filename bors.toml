@@ -3,7 +3,7 @@ status = [
   "buildkite/daedalus",
 
   # Appveyor: windows installers
-  "continuous-integration/appveyor/branch",
+  #"continuous-integration/appveyor/branch",
 
   # Hydra: we just care about tests attribute set
   "ci/hydra:serokell:daedalus:tests.runFlow",
