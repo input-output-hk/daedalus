@@ -96,7 +96,9 @@ const onAppReady = async () => {
 
   const onCheckDiskSpace = ({ notEnoughSpace }: CheckDiskSpaceResponse) => {
     if (notEnoughSpace) {
-      cardanoNode.stop();
+      try {
+        cardanoNode.stop();
+      } catch (e) {} // eslint-disable-line
     } else {
       restartCardanoNode(cardanoNode);
     }
@@ -109,7 +111,7 @@ const onAppReady = async () => {
     }
   };
   mainErrorHandler(onMainError);
-
+  await handleCheckDiskSpace();
   cardanoNode = setupCardano(launcherConfig, mainWindow);
 
   if (isWatchMode) {

@@ -20,7 +20,6 @@ export default (
 
   const path = environment.isWindows ? 'C:' : '/';
   let diskSpaceCheckInterval;
-  let notEnoughSpace = false;
 
   const handleCheckDiskSpace = async (forceDiskSpaceRequired?: number) => {
     const diskSpaceRequired = forceDiskSpaceRequired || DISK_SPACE_REQUIRED;
@@ -30,6 +29,7 @@ export default (
       diskTotalSpace * DISK_SPACE_RECOMMENDED_PERCENTAGE / 100;
     const diskSpaceRequiredMargin =
       diskSpaceRequired - (diskSpaceRequired * DISK_SPACE_REQUIRED_MARGIN_PERCENTAGE / 100);
+    let notEnoughSpace = false;
 
     if (diskSpaceAvailable <= diskSpaceRequiredMargin) {
       if (!notEnoughSpace) {
