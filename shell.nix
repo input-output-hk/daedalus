@@ -24,6 +24,7 @@ let
     (pkgs.lib.optional (systemStart != null) ".configuration.systemStart = ${toString systemStart}")
     (pkgs.lib.optional (cluster == "demo") ''.configuration.key = "default"'')
     (pkgs.lib.optional (fullExtraArgs != []) ''.nodeArgs += ${builtins.toJSON fullExtraArgs}'')
+    (pkgs.lib.optional (autoStartBackend == true) ''.frontendOnlyMode = false'')
   ];
   patchesString = pkgs.lib.concatStringsSep " | " patches;
   launcherYamlWithStartTime = pkgs.runCommand "launcher-config.yaml" { buildInputs = [ pkgs.jq yaml2json ]; } ''
@@ -71,13 +72,16 @@ let
   # to evaluate it.
   daedalusShellBuildInputs = [ nodejs yarn ] ++ (with pkgs; [
       nix bash binutils coreutils curl gnutar
-      git python27 curl electron jq
+      git python27 curl jq
       nodePackages.node-gyp nodePackages.node-pre-gyp
       gnumake
       chromedriver
     ] ++ (localLib.optionals autoStartBackend [
       daedalusPkgs.daedalus-bridge
-    ]));
+    ]) ++ (localLib.optionals (pkgs.stdenv.hostPlatform.system != "x86_64-darwin") [
+      daedalusPkgs.electron_3_0_13
+    ])
+    );
   buildShell = pkgs.stdenv.mkDerivation {
     name = "daedalus-build";
     buildInputs = daedalusShellBuildInputs;
@@ -150,8 +154,10 @@ let
         ''
       }
       yarn install
-      ln -svf ${pkgs.electron}/bin/electron         ./node_modules/electron/dist/electron
-      ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
+      ${pkgs.lib.optionalString (pkgs.stdenv.hostPlatform.system != "x86_64-darwin") ''
+        ln -svf ${daedalusPkgs.electron_3_0_13}/bin/electron         ./node_modules/electron/dist/electron
+        ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
+      ''}
       ${localLib.optionalString (! autoStartBackend) ''
       echo "Instructions for manually running cardano-node:"
       echo "DEPRECATION NOTICE: This should only be used for debugging a specific revision of cardano. Use --autoStartBackend --system-start SYSTEM_START_TIME as parameters to this script to auto-start the wallet"

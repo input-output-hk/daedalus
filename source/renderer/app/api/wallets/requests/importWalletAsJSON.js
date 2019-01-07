@@ -8,7 +8,6 @@ export const importWalletAsJSON = (
   filePath: string,
 ): Promise<AdaWallet> => (
   request({
-    hostname: 'localhost',
     method: 'POST',
     path: '/api/backup/import',
     ...config,

@@ -16,7 +16,6 @@ export const redeemAda = (
   redemptionParams: RedeemAdaParams
 ): Promise<Transaction> => (
   request({
-    hostname: 'localhost',
     method: 'POST',
     path: '/api/v1/transactions/certificates',
     ...config

@@ -73,6 +73,29 @@ required dependencies for development.
 different each time you restart the cardano-sl demo cluster)
 4. Within the nix-shell run any command like `yarn dev`
 
+## "Frontend only" mode
+
+The `frontendOnlyMode` makes it possible to connect to manually started instances of cardano-node for advanced debugging purposes.
+
+### How to connect:
+1. Within the [cardano-sl repository](https://github.com/input-output-hk/cardano-sl), build a script for a certain network. E.g. for testnet: `nix-build -A connectScripts.testnet.wallet -o launch_testnet`
+2. Launch this cluster + node with `./launch_testnet`
+3. You should now have a `state-wallet-testnet` folder inside the cardano-sl repo. Copy the full path to the sub folder `tls` in there.
+4. Within the Daedalus repo checkout this branch and run: `CARDANO_TLS_PATH=/path/to/tls CARDANO_HOST=localhost CARDANO_PORT=8090 nix-shell`
+
+Now you should have a pre-configured nix-shell session where you can `yarn dev` as usual and Daedalus connects itself to the manually started cardano node.
+
+### Parameters:
+
+| Param              | Mandatory | Default     |
+|--------------------|-----------|-------------|
+| `CARDANO_TLS_PATH` | Yes       |             |
+| `CARDANO_HOST`     | No        | `localhost` |
+| `CARDANO_PORT`     | No        | `8090`      |
+
+So if you just start the default cardano node (which runs on localhost:8090) you can also start nix-shell with `CARDANO_TLS_PATH=/path/to/tls nix-shell`
+
+
 ## Notes:
 
 `shell.nix` also provides a script for updating yarn.lock. Run `nix-shell -A fixYarnLock`

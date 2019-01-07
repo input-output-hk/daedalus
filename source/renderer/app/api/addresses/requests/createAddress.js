@@ -14,7 +14,6 @@ export const createAddress = (
   { spendingPassword, accountIndex, walletId }: CreateAddressParams
 ): Promise<Address> => (
   request({
-    hostname: 'localhost',
     method: 'POST',
     path: '/api/v1/addresses',
     ...config,
