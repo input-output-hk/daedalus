@@ -72,7 +72,7 @@ let
   # to evaluate it.
   daedalusShellBuildInputs = [ nodejs yarn ] ++ (with pkgs; [
       nix bash binutils coreutils curl gnutar
-      git python27 curl electron jq
+      git python27 curl daedalusPkgs.electron_3_0_13 jq
       nodePackages.node-gyp nodePackages.node-pre-gyp
       gnumake
       chromedriver
@@ -151,7 +151,7 @@ let
         ''
       }
       yarn install
-      ln -svf ${pkgs.electron}/bin/electron         ./node_modules/electron/dist/electron
+      ln -svf ${daedalusPkgs.electron_3_0_13}/bin/electron         ./node_modules/electron/dist/electron
       ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
       ${localLib.optionalString (! autoStartBackend) ''
       echo "Instructions for manually running cardano-node:"
