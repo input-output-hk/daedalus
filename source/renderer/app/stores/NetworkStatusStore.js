@@ -103,10 +103,7 @@ export default class NetworkStatusStore extends Store {
       this._updateNodeStatus,
     ]);
 
-    // Setup network status polling interval
-    this._networkStatusPollingInterval = setInterval(
-      this._updateNetworkStatus, NETWORK_STATUS_POLL_INTERVAL
-    );
+    this._setNetworkStatusPollingInterval();
 
     // Forced time difference check polling interval
     this._forceCheckTimeDifferencePollingInterval = setInterval(
@@ -115,6 +112,13 @@ export default class NetworkStatusStore extends Store {
 
     ipcRenderer.on(GET_DISK_SPACE_STATUS.SUCCESS, this.onCheckDiskSpace);
     this._checkDiskSpace();
+  }
+
+  // Setup network status polling interval
+  _setNetworkStatusPollingInterval = () => {
+    this._networkStatusPollingInterval = setInterval(
+      this._updateNetworkStatus, NETWORK_STATUS_POLL_INTERVAL
+    );
   }
 
   async restartNode() {
@@ -464,6 +468,13 @@ export default class NetworkStatusStore extends Store {
     this.diskSpaceRequired = diskSpaceRequired;
     this.diskSpaceMissing = diskSpaceMissing;
     this.diskSpaceRecommended = diskSpaceRecommended;
+
+    if (this.notEnoughSpace) {
+      clearInterval(this._networkStatusPollingInterval);
+      this._networkStatusPollingInterval = null;
+    } else if (!this._networkStatusPollingInterval) {
+      this._setNetworkStatusPollingInterval();
+    }
   };
 
   // DEFINE COMPUTED VALUES
