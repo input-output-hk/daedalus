@@ -469,7 +469,7 @@ export default class NetworkStatusStore extends Store {
     this.diskSpaceMissing = diskSpaceMissing;
     this.diskSpaceRecommended = diskSpaceRecommended;
 
-    if (this.notEnoughSpace) {
+    if (this.notEnoughSpace && this._networkStatusPollingInterval) {
       clearInterval(this._networkStatusPollingInterval);
       this._networkStatusPollingInterval = null;
     } else if (!this._networkStatusPollingInterval) {
