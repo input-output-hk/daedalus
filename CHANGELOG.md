@@ -14,6 +14,7 @@ Changelog
 
 ### Fixes
 
+- Fixed `getTransactionHistory` API endpoint account index query parameter name ([PR 1255](https://github.com/input-output-hk/daedalus/pull/1255))
 - Fixed issues with custom lock files by implementing "instance-lock" feature from Electron 3 ([PR 1229](https://github.com/input-output-hk/daedalus/pull/1229), [PR 1244](https://github.com/input-output-hk/daedalus/pull/1244))
 - Fixed app reloading issues in the Ada Redemption page ([PR 1217](https://github.com/input-output-hk/daedalus/pull/1217))
 - Fixed the contents of `/etc/nix/nix.conf` file listed as a part of Cardano setup in Daedalus README file ([PR 1215](https://github.com/input-output-hk/daedalus/pull/1215))
