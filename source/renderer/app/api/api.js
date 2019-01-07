@@ -209,10 +209,10 @@ export default class AdaApi {
     }
 
     const params = {
-      accountIndex: accounts[0].index,
+      wallet_id: walletId,
+      account_index: accounts[0].index,
       page: skip === 0 ? 1 : (skip / limit) + 1,
       per_page: perPage,
-      wallet_id: walletId,
       sort_by: 'DES[created_at]',
     };
     const pagesToBeLoaded = Math.ceil(limit / params.per_page);
