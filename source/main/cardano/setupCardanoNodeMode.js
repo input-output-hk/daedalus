@@ -24,7 +24,6 @@ import {
   cardanoTlsConfigChannel
 } from '../ipc/cardano.ipc';
 import { safeExitWithCode } from '../utils/safeExitWithCode';
-import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 
 const startCardanoNode = (node: CardanoNode, launcherConfig: Object) => {
   const { nodePath, tlsPath, logsPrefix } = launcherConfig;
@@ -45,10 +44,6 @@ const startCardanoNode = (node: CardanoNode, launcherConfig: Object) => {
 };
 
 export const restartCardanoNode = async (node: CardanoNode) => {
-  if (
-    node.state === CardanoNodeStates.STARTING ||
-    node.state === CardanoNodeStates.RUNNING
-  ) return false;
   try {
     await node.restart();
   } catch (error) {

@@ -105,7 +105,10 @@ const onAppReady = async () => {
         try {
           cardanoNode.stop();
         } catch (e) {} // eslint-disable-line
-      } else {
+      } else if (
+        cardanoNode.state !== CardanoNodeStates.STARTING &&
+        cardanoNode.state !== CardanoNodeStates.RUNNING
+      ) {
         restartCardanoNode(cardanoNode);
       }
     }
