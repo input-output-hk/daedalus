@@ -11,7 +11,6 @@ export const deleteWallet = (
   { walletId }: DeleteWalletParams
 ): Promise<*> => (
   request({
-    hostname: 'localhost',
     method: 'DELETE',
     path: `/api/v1/wallets/${walletId}`,
     ...config,
