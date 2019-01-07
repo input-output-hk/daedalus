@@ -20,7 +20,6 @@ export const getTransactionHistory = (
   { ...requestParams }: GetTxnHistoryParams
 ): Promise<Transactions> => (
   request({
-    hostname: 'localhost',
     method: 'GET',
     path: '/api/v1/transactions',
     ...config,

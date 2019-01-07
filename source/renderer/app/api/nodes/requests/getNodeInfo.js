@@ -12,7 +12,6 @@ export const getNodeInfo = (
   queryParams?: NodeQueryParams,
 ): Promise<NodeInfo> => (
   request({
-    hostname: 'localhost',
     method: 'GET',
     path: '/api/v1/node-info',
     ...config,
