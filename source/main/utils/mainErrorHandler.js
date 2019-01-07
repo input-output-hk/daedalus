@@ -5,7 +5,7 @@ import { Logger } from './logging';
 import { stringifyError } from '../../common/utils/logging';
 
 export default (onError?: Function) => {
-  Logger.info('========== mainErrorHandler.js started ==========');
+  Logger.info('========== Main Error Handler started ==========');
 
   unhandled({
     logger: (error: any) => Logger.error(`unhandledException::main: ${stringifyError(error)}`),
