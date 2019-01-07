@@ -5,9 +5,9 @@ import { request } from '../../utils/request';
 
 export type GetTxnHistoryParams = {
   wallet_id: string,
+  account_index: number,
   page: number,
   per_page: number,
-  accountIndex: number,
   sort_by: string,
 };
 
