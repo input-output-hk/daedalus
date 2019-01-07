@@ -9,6 +9,7 @@ export type Api = {
 
 export const setupApi = (isTest: boolean, network: string): Api => ({
   ada: new AdaApi(isTest, {
+    hostname: 'localhost',
     port: 8090,
     ca: Uint8Array.from([]),
     key: Uint8Array.from([]),

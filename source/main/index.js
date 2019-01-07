@@ -25,7 +25,7 @@ import { CardanoNodeStates } from '../common/types/cardano-node.types';
 
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
-let cardanoNode: CardanoNode;
+let cardanoNode: ?CardanoNode;
 
 const openAbout = () => {
   if (mainWindow) mainWindow.webContents.send(OPEN_ABOUT_DIALOG_CHANNEL);
@@ -63,6 +63,10 @@ const menuActions = {
 };
 
 const safeExit = async () => {
+  if (!cardanoNode) {
+    Logger.info('Daedalus:safeExit: exiting Daedalus with code 0.');
+    return safeExitWithCode(0);
+  }
   if (cardanoNode.state === CardanoNodeStates.STOPPING) return;
   try {
     Logger.info(`Daedalus:safeExit: stopping cardano-node with PID ${cardanoNode.pid || 'null'}`);

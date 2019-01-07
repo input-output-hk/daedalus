@@ -32,6 +32,7 @@ if (!isStartedByLauncher) {
  * The shape of the config params, usually provided to the cadano-node launcher
  */
 export type LauncherConfig = {
+  frontendOnlyMode: boolean,
   statePath: string,
   nodePath: string,
   nodeArgs: Array<string>,

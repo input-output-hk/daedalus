@@ -8,7 +8,6 @@ export const getWallets = (
   config: RequestConfig
 ): Promise<AdaWallets> => (
   request({
-    hostname: 'localhost',
     method: 'GET',
     path: '/api/v1/wallets',
     ...config,

@@ -13,7 +13,6 @@ export const redeemPaperVendedAda = (
   redemptionParams: RedeemPaperVendedAdaParams
 ): Promise<Transaction> => (
   request({
-    hostname: 'localhost',
     method: 'POST',
     path: '/api/v1/transactions/certificates',
     ...config

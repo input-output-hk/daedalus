@@ -32,6 +32,7 @@ let
       # Filter out nix-build result symlinks
       (type == "symlink" && lib.hasPrefix "result" baseName)
     );
+  throwSystem = throw "Unsupported system: ${pkgs.stdenv.hostPlatform.system}";
   packages = self: {
     inherit cluster pkgs version;
     inherit (cardanoSL) daedalus-bridge;
@@ -49,6 +50,17 @@ let
     source = builtins.filterSource cleanSourceFilter ./.;
     yaml2json = pkgs.haskell.lib.disableCabalFlag pkgs.haskellPackages.yaml "no-exe";
 
+    electron4 = pkgs.callPackage ./installers/nix/electron.nix {};
+    electron_3_0_13 = self.electron4.overrideAttrs (old: rec {
+      name = "electron-${version}";
+      version = "3.0.13";
+      src = {
+        x86_64-linux = pkgs.fetchurl {
+          url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-x64.zip";
+          sha256 = "0lz6hx91xzp3xwc6d2bhl4290v0ynjfpbnwpm6civ8ijzm6b8zxh";
+        };
+      }.${pkgs.stdenv.hostPlatform.system} or throwSystem;
+    });
 
     tests = {
       runFlow = self.callPackage ./tests/flow.nix {};
