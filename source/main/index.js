@@ -100,13 +100,14 @@ const onAppReady = async () => {
   mainWindow = createMainWindow(isInSafeMode);
 
   const onCheckDiskSpace = ({ notEnoughSpace }: CheckDiskSpaceResponse) => {
-    if (launcherConfig.frontendOnlyMode) return;
-    if (notEnoughSpace) {
-      try {
-        cardanoNode.stop();
-      } catch (e) {} // eslint-disable-line
-    } else {
-      restartCardanoNode(cardanoNode);
+    if (cardanoNode) {
+      if (notEnoughSpace) {
+        try {
+          cardanoNode.stop();
+        } catch (e) {} // eslint-disable-line
+      } else {
+        restartCardanoNode(cardanoNode);
+      }
     }
   };
   const handleCheckDiskSpace = HandleDiskSpace(mainWindow, onCheckDiskSpace);
