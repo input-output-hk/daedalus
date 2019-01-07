@@ -60,7 +60,8 @@ export default class NetworkStatusStore extends Store {
   @observable initialLocalHeight = null;
   @observable localBlockHeight = 0;
   @observable networkBlockHeight = 0;
-  @observable mostRecentBlockTimestamp = 0; // milliseconds
+  @observable latestLocalBlockTimestamp = 0; // milliseconds
+  @observable latestNetworkBlockTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
   @observable getNetworkStatusRequest: Request<GetNetworkStatusResponse> = new Request(
@@ -233,10 +234,12 @@ export default class NetworkStatusStore extends Store {
     }
 
     if (isForcedTimeDifferenceCheck) {
-      // Set most recent block timestamp into the future as a guard
+      // Set latest block timestamps into the future as a guard
       // against system time changes - e.g. if system time was set into the past
-      runInAction('update mostRecentBlockTimestamp', () => {
-        this.mostRecentBlockTimestamp = Date.now() + NETWORK_STATUS_REQUEST_TIMEOUT;
+      runInAction('update latest block timestamps', () => {
+        const futureTimestamp = Date.now() + NETWORK_STATUS_REQUEST_TIMEOUT;
+        this.latestLocalBlockTimestamp = futureTimestamp;
+        this.latestNetworkBlockTimestamp = futureTimestamp;
       });
     }
 
@@ -308,39 +311,64 @@ export default class NetworkStatusStore extends Store {
         }
 
         // Update the local block height on each request
+        const lastLocalBlockHeight = this.localBlockHeight;
         this.localBlockHeight = localBlockchainHeight;
         Logger.debug('Local blockchain height: ' + localBlockchainHeight);
 
         // Update the network block height on each request
         const hasStartedReceivingBlocks = blockchainHeight > 0;
-        const lastBlockchainHeight = this.networkBlockHeight;
+        const lastNetworkBlockHeight = this.networkBlockHeight;
         this.networkBlockHeight = blockchainHeight;
         if (hasStartedReceivingBlocks) {
           Logger.debug('Network blockchain height: ' + blockchainHeight);
         }
 
-        // Check if the network's block height has ceased to change
-        const isBlockchainHeightIncreasing = (
-          hasStartedReceivingBlocks &&
-          this.networkBlockHeight > lastBlockchainHeight
-        );
+        // Check if the local block height has ceased to change
+        const isLocalBlockHeightIncreasing = this.localBlockHeight > lastLocalBlockHeight;
         if (
-          isBlockchainHeightIncreasing || // New block detected
-          this.mostRecentBlockTimestamp > Date.now() || // Guard against future timestamps
+          isLocalBlockHeightIncreasing || // New local block detected
+          this.latestLocalBlockTimestamp > Date.now() || // Guard against future timestamps
           ( // Guard against incorrect system time
             !this.isNodeTimeCorrect && !this.isSystemTimeIgnored
           )
         ) {
-          this.mostRecentBlockTimestamp = Date.now(); // Record latest block timestamp
+          this.latestLocalBlockTimestamp = Date.now(); // Record latest local block timestamp
         }
-        const timeSinceLastBlock = moment(Date.now()).diff(moment(this.mostRecentBlockTimestamp));
-        const isBlockchainHeightStalling = timeSinceLastBlock > MAX_ALLOWED_STALL_DURATION;
+        const latestLocalBlockAge = moment(
+          Date.now()).diff(moment(this.latestLocalBlockTimestamp)
+        );
+        const isLocalBlockHeightStalling = latestLocalBlockAge > MAX_ALLOWED_STALL_DURATION;
+        const isLocalBlockHeightSyncing = (
+          isLocalBlockHeightIncreasing || !isLocalBlockHeightStalling
+        );
+
+        // Check if the network's block height has ceased to change
+        const isNetworkBlockHeightIncreasing = (
+          hasStartedReceivingBlocks &&
+          this.networkBlockHeight > lastNetworkBlockHeight
+        );
+        if (
+          isNetworkBlockHeightIncreasing || // New network block detected
+          this.latestNetworkBlockTimestamp > Date.now() || // Guard against future timestamps
+          ( // Guard against incorrect system time
+            !this.isNodeTimeCorrect && !this.isSystemTimeIgnored
+          )
+        ) {
+          this.latestNetworkBlockTimestamp = Date.now(); // Record latest network block timestamp
+        }
+        const latestNetworkBlockAge = moment(
+          Date.now()).diff(moment(this.latestNetworkBlockTimestamp)
+        );
+        const isNetworkBlockHeightStalling = latestNetworkBlockAge > MAX_ALLOWED_STALL_DURATION;
+        const isNetworkBlockHeightSyncing = (
+          isNetworkBlockHeightIncreasing || !isNetworkBlockHeightStalling
+        );
 
         // Node is syncing in case we are receiving blocks and they are not stalling
         runInAction('update isNodeSyncing', () => {
           this.isNodeSyncing = (
             hasStartedReceivingBlocks &&
-            (isBlockchainHeightIncreasing || !isBlockchainHeightStalling)
+            (isLocalBlockHeightSyncing || isNetworkBlockHeightSyncing)
           );
         });
 
