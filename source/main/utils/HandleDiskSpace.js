@@ -17,7 +17,6 @@ export default (
   mainWindow: BrowserWindow,
   onCheckDiskSpace?: Function,
 ) => {
-
   const path = environment.isWindows ? 'C:' : '/';
   let diskSpaceCheckInterval;
 
@@ -29,19 +28,16 @@ export default (
       diskTotalSpace * DISK_SPACE_RECOMMENDED_PERCENTAGE / 100;
     const diskSpaceRequiredMargin =
       diskSpaceRequired - (diskSpaceRequired * DISK_SPACE_REQUIRED_MARGIN_PERCENTAGE / 100);
-    let notEnoughSpace = false;
 
+    let notEnoughSpace = false;
     if (diskSpaceAvailable <= diskSpaceRequiredMargin) {
-      if (!notEnoughSpace) {
-        setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_SHORT_INTERVAL);
-      }
+      if (!notEnoughSpace) setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_SHORT_INTERVAL);
       notEnoughSpace = true;
     } else if (diskSpaceAvailable >= diskSpaceRequired) {
-      if (notEnoughSpace) {
-        setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_LONG_INTERVAL);
-      }
+      if (notEnoughSpace) setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_LONG_INTERVAL);
       notEnoughSpace = false;
     }
+
     const response = {
       notEnoughSpace,
       diskSpaceRequired: prettysize(diskSpaceRequired),
@@ -51,9 +47,8 @@ export default (
 
     Logger.info(JSON.stringify(response, null, 2));
 
-    if (typeof onCheckDiskSpace === 'function') {
-      onCheckDiskSpace(response);
-    }
+    if (typeof onCheckDiskSpace === 'function') onCheckDiskSpace(response);
+
     mainWindow.webContents.send(GET_DISK_SPACE_STATUS.SUCCESS, response);
     return response;
   };
@@ -73,5 +68,4 @@ export default (
   );
 
   return handleCheckDiskSpace;
-
 };

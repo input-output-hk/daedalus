@@ -388,16 +388,13 @@ export default class Loading extends Component<Props, State> {
 
     return (
       <div className={componentStyles}>
-        {
-          notEnoughSpace &&
-          (
-            <NoDiskSpaceOverlay
-              diskSpaceRequired={diskSpaceRequired}
-              diskSpaceMissing={diskSpaceMissing}
-              diskSpaceRecommended={diskSpaceRecommended}
-            />
-          )
-        }
+        {notEnoughSpace && (
+          <NoDiskSpaceOverlay
+            diskSpaceRequired={diskSpaceRequired}
+            diskSpaceMissing={diskSpaceMissing}
+            diskSpaceRecommended={diskSpaceRecommended}
+          />
+        )}
         {showReportIssue && (
           <div className={styles.reportIssue}>
             <h1 className={styles.reportIssueText}>

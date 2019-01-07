@@ -5,7 +5,7 @@ import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { Logger } from './utils/logging';
 import { setupLogging } from './utils/setupLogging';
-import HandleDiskSpace from './utils/HandleDiskSpace';
+import handleDiskSpace from './utils/handleDiskSpace';
 import { createMainWindow } from './windows/main';
 import { winLinuxMenu } from './menus/win-linux';
 import { osxMenu } from './menus/osx';
@@ -110,7 +110,7 @@ const onAppReady = async () => {
       }
     }
   };
-  const handleCheckDiskSpace = HandleDiskSpace(mainWindow, onCheckDiskSpace);
+  const handleCheckDiskSpace = handleDiskSpace(mainWindow, onCheckDiskSpace);
   const onMainError = (error: string) => {
     if (error.indexOf('ENOSPC') > -1) {
       handleCheckDiskSpace();
