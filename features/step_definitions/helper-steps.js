@@ -7,10 +7,6 @@ When(/^I freeze$/, { timeout: oneHour }, (callback) => {
   setTimeout(callback, oneHour);
 });
 
-When('After {int} seconds', { timeout: oneHour }, (seconds, callback) => {
-  setTimeout(callback, (seconds * 1000));
-});
-
 Then(/^I should see the initial screen$/, function () {
   return this.client.waitForVisible('.SidebarLayout_component');
 });
