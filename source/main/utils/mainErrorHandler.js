@@ -5,8 +5,7 @@ import { Logger } from './logging';
 import { stringifyError } from '../../common/utils/logging';
 
 export default (onError?: Function) => {
-
-  Logger.info('mainErrorHandler.js started ==========--------=====');
+  Logger.info('========== mainErrorHandler.js started ==========');
 
   unhandled({
     logger: (error: any) => Logger.error(`unhandledException::main: ${stringifyError(error)}`),
@@ -14,15 +13,9 @@ export default (onError?: Function) => {
   });
 
   process.on('uncaughtException', (error: any) => {
-
     const err = `${stringifyError(error)}`;
-
     Logger.error(`uncaughtException: ${err}`);
-
-    if (typeof onError === 'function') {
-      onError(err);
-    }
-
+    if (typeof onError === 'function') onError(err);
   });
 
   app.on('gpu-process-crashed', (event: any, killed: boolean) => {
