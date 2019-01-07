@@ -4,9 +4,8 @@ import type { Transaction } from '../types';
 import type { RedeemAdaParams } from './redeemAda';
 import { request } from '../../utils/request';
 
-export type RedeemPaperVendedAdaParams = {
-  ...RedeemAdaParams,
-  mnemonic: Array<string>,
+export type RedeemPaperVendedAdaParams = RedeemAdaParams & {
+  mnemonics: Array<string>,
 };
 
 export const redeemPaperVendedAda = (

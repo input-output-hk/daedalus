@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Select } from 'react-polymorph/lib/components/Select';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { ButtonSpinnerSkin } from 'react-polymorph/lib/skins/simple/ButtonSpinnerSkin';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
@@ -34,6 +34,10 @@ type Props = {
 
 @observer
 export default class LanguageSelectionForm extends Component<Props> {
+
+  static defaultProps = {
+    error: null,
+  };
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -71,11 +75,6 @@ export default class LanguageSelectionForm extends Component<Props> {
       value: language.value,
       label: intl.formatMessage(language.label)
     }));
-    const buttonClasses = classnames([
-      'primary',
-      isSubmitting ? styles.submitButtonSpinning : styles.submitButton,
-    ]);
-
     return (
       <div className={styles.component}>
         <div className={styles.centeredBox}>
@@ -90,9 +89,13 @@ export default class LanguageSelectionForm extends Component<Props> {
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
           <Button
-            className={buttonClasses}
+            className={classnames([
+              'primary',
+              styles.submitButton,
+            ])}
             label={intl.formatMessage(messages.submitLabel)}
-            skin={ButtonSkin}
+            skin={ButtonSpinnerSkin}
+            loading={isSubmitting}
             onClick={this.submit}
           />
 

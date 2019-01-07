@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { map } from 'lodash';
 
 export default class ThemeManager extends Component {
@@ -18,6 +18,6 @@ export default class ThemeManager extends Component {
     });
   }
   render() {
-    return <div>{this.props.children}</div>;
+    return <Fragment>{this.props.children}</Fragment>;
   }
 }

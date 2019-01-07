@@ -2,18 +2,30 @@
 import { createWriteStream, readFileSync } from 'fs';
 import { spawn, exec } from 'child_process';
 import { BrowserWindow } from 'electron';
-import { Logger } from '../../common/logging';
+import { Logger } from '../utils/logging';
 import { prepareArgs } from './config';
 import { CardanoNode } from './CardanoNode';
 import {
   cardanoTlsConfigChannel,
   cardanoRestartChannel,
   cardanoAwaitUpdateChannel,
-  cardanoStateChangeChannel
+  cardanoStateChangeChannel,
+  cardanoFaultInjectionChannel,
+  cardanoStatusChannel,
 } from '../ipc/cardano.ipc';
 import { safeExitWithCode } from '../utils/safeExitWithCode';
-import type { TlsConfig, CardanoNodeState } from '../../common/types/cardanoNode.types';
+import type {
+  TlsConfig,
+  CardanoNodeState,
+  CardanoStatus
+} from '../../common/types/cardano-node.types';
 import type { LauncherConfig } from '../config';
+import {
+  NODE_KILL_TIMEOUT,
+  NODE_SHUTDOWN_TIMEOUT,
+  NODE_STARTUP_MAX_RETRIES,
+  NODE_STARTUP_TIMEOUT, NODE_UPDATE_TIMEOUT
+} from '../config';
 
 const startCardanoNode = (node: CardanoNode, launcherConfig: Object) => {
   const { nodePath, tlsPath, logsPrefix } = launcherConfig;
@@ -24,11 +36,11 @@ const startCardanoNode = (node: CardanoNode, launcherConfig: Object) => {
     logFilePath,
     tlsPath,
     nodeArgs,
-    startupTimeout: 5000,
-    startupMaxRetries: 5,
-    shutdownTimeout: 10000,
-    killTimeout: 10000,
-    updateTimeout: 60000,
+    startupTimeout: NODE_STARTUP_TIMEOUT,
+    startupMaxRetries: NODE_STARTUP_MAX_RETRIES,
+    shutdownTimeout: NODE_SHUTDOWN_TIMEOUT,
+    killTimeout: NODE_KILL_TIMEOUT,
+    updateTimeout: NODE_UPDATE_TIMEOUT,
   };
   return node.start(config);
 };
@@ -82,14 +94,27 @@ export const setupCardano = (
   });
   startCardanoNode(cardanoNode, launcherConfig);
 
-  cardanoStateChangeChannel.onReceive(() => {
+  cardanoStatusChannel.onRequest(() => {
+    Logger.info('ipcMain: Received request from renderer for cardano status.');
+    return Promise.resolve(cardanoNode.status);
+  });
+
+  cardanoStatusChannel.onReceive((status: CardanoStatus) => {
+    Logger.info('ipcMain: Received request from renderer to cache cardano status.');
+    cardanoNode.saveStatus(status);
+    return Promise.resolve(cardanoNode.status);
+  });
+
+  cardanoStateChangeChannel.onRequest(() => {
     Logger.info('ipcMain: Received request from renderer for node state.');
     return Promise.resolve(cardanoNode.state);
   });
-  cardanoTlsConfigChannel.onReceive(() => {
+
+  cardanoTlsConfigChannel.onRequest(() => {
     Logger.info('ipcMain: Received request from renderer for tls config.');
     return Promise.resolve(cardanoNode.tlsConfig);
   });
+
   cardanoAwaitUpdateChannel.onReceive(() => {
     Logger.info('ipcMain: Received request from renderer to await update.');
     setTimeout(async () => {
@@ -99,9 +124,15 @@ export const setupCardano = (
     });
     return Promise.resolve();
   });
+
   cardanoRestartChannel.onReceive(() => {
     Logger.info('ipcMain: Received request from renderer to restart node.');
     return cardanoNode.restart(true); // forced restart
+  });
+
+  cardanoFaultInjectionChannel.onReceive((fault) => {
+    Logger.info(`ipcMain: Received request to inject a fault into cardano node: ${String(fault)}`);
+    return cardanoNode.setFault(fault);
   });
 
   return cardanoNode;

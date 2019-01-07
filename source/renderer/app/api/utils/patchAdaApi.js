@@ -1,14 +1,16 @@
+// @flow
 import BigNumber from 'bignumber.js';
 import { get } from 'lodash';
 import AdaApi from '../api';
 import { getNodeInfo } from '../nodes/requests/getNodeInfo';
 import { GenericApiError } from '../common/errors';
-import { Logger, stringifyData, stringifyError } from '../../../../common/logging';
+import { Logger } from '../../utils/logging';
 import { RedeemAdaError } from '../transactions/errors';
 import type { RedeemAdaParams } from '../transactions/requests/redeemAda';
 import type { RedeemPaperVendedAdaParams } from '../transactions/requests/redeemPaperVendedAda';
 import type { NodeQueryParams } from '../nodes/requests/getNodeInfo';
 import type { NodeInfo, GetNetworkStatusResponse } from '../nodes/types';
+import { stringifyData, stringifyError } from '../../../../common/utils/logging';
 
 // ========== LOGGING =========
 
@@ -17,7 +19,9 @@ let NEXT_ADA_UPDATE = null;
 
 export default (api: AdaApi) => {
   // Since we cannot test ada redemption in dev mode, just resolve the requests
-  api.redeemAda = (request: RedeemAdaParams) => new Promise((resolve) => {
+  api.redeemAda = (
+    request: RedeemAdaParams
+  ): Promise<any> => new Promise((resolve) => {
     try {
       Logger.debug('AdaApi::redeemAda (PATCHED) called: ' + stringifyData(request));
       const { redemptionCode } = request;
@@ -34,7 +38,9 @@ export default (api: AdaApi) => {
     }
   });
 
-  api.redeemPaperVendedAda = (request: RedeemPaperVendedAdaParams) => new Promise((resolve) => {
+  api.redeemPaperVendedAda = (
+    request: RedeemPaperVendedAdaParams
+  ): Promise<any> => new Promise((resolve) => {
     try {
       Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) called: ' + stringifyData(request));
       const { redemptionCode, mnemonics } = request;

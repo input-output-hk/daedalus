@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js';
 
 // domains
 import Wallet from '../domains/Wallet';
-import WalletTransaction, { transactionTypes } from '../domains/WalletTransaction';
+import { WalletTransaction, transactionTypes } from '../domains/WalletTransaction';
 import WalletAddress from '../domains/WalletAddress';
 
 // Accounts requests
@@ -14,9 +14,6 @@ import { getAccounts } from './accounts/requests/getAccounts';
 // Addresses requests
 import { getAddress } from './addresses/requests/getAddress';
 import { createAddress } from './addresses/requests/createAddress';
-
-// Common requests
-import { sendBugReport } from './common/requests/sendBugReport';
 
 // Nodes requests
 import { applyNodeUpdate } from './nodes/requests/applyNodeUpdate';
@@ -44,15 +41,11 @@ import { restoreWallet } from './wallets/requests/restoreWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
 
 // utility functions
-import { awaitUpdateChannel } from '../ipc/cardano.ipc';
+import { awaitUpdateChannel, cardanoFaultInjectionChannel } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
-import { isValidMnemonic } from '../../../common/decrypt';
+import { isValidMnemonic } from '../../../common/crypto/decrypt';
 import { utcStringToDate, encryptPassphrase } from './utils';
-import {
-  Logger,
-  stringifyData,
-  stringifyError
-} from '../../../common/logging';
+import { Logger } from '../utils/logging';
 import {
   isValidRedemptionKey,
   isValidPaperVendRedemptionKey
@@ -89,7 +82,6 @@ import type {
 // Common Types
 import type {
   RequestConfig,
-  SendBugReportRequest
 } from './common/types';
 
 // Nodes Types
@@ -132,7 +124,6 @@ import type {
 import {
   GenericApiError,
   IncorrectSpendingPasswordError,
-  ReportRequestError,
   InvalidMnemonicError,
   ForbiddenMnemonicError
 } from './common/errors';
@@ -153,6 +144,8 @@ import {
   NotEnoughMoneyToSendError,
   RedeemAdaError
 } from './transactions/errors';
+import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
+import { stringifyData, stringifyError } from '../../../common/utils/logging';
 
 export default class AdaApi {
 
@@ -621,18 +614,6 @@ export default class AdaApi {
     }
   };
 
-  async sendBugReport(requestFormData: SendBugReportRequest): Promise<any> {
-    Logger.debug('AdaApi::sendBugReport called: ' + stringifyData(requestFormData));
-    try {
-      await sendBugReport({ requestFormData });
-      Logger.debug('AdaApi::sendBugReport success');
-      return true;
-    } catch (error) {
-      Logger.error('AdaApi::sendBugReport error: ' + stringifyError(error));
-      throw new ReportRequestError();
-    }
-  }
-
   nextUpdate = async (): Promise<NodeSoftware | null> => {
     Logger.debug('AdaApi::nextUpdate called');
     try {
@@ -766,6 +747,16 @@ export default class AdaApi {
       throw new GenericApiError(error);
     }
   };
+
+  setCardanoNodeFault = async (fault: FaultInjectionIpcRequest) => {
+    await cardanoFaultInjectionChannel.send(fault);
+  };
+
+  // No implementation here but can be overwritten
+  getLocalTimeDifference: Function;
+  setLocalTimeDifference: Function;
+  setNextUpdate: Function;
+
 }
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
@@ -827,6 +818,7 @@ const _createTransactionFromServerData = action(
 );
 
 const _createTransactionFeeFromServerData = action(
-  'AdaApi::_createTransactionFeeFromServerData', (data: TransactionFee) =>
+  'AdaApi::_createTransactionFeeFromServerData', (data: TransactionFee) => (
     new BigNumber(data.estimatedAmount).dividedBy(LOVELACES_PER_ADA)
+  )
 );

@@ -16,7 +16,8 @@ export default class Root extends Component<Props> {
     const { isNetworkStatusPage } = app;
     const { isConnected, isSynced, isSystemTimeCorrect } = networkStatus;
     const isPageThatDoesntNeedWallets = (
-      profile.isSettingsPage || adaRedemption.isAdaRedemptionPage
+      profile.isSettingsPage ||
+      (adaRedemption.isAdaRedemptionPage && wallets.hasLoadedWallets)
     );
     // Just render any page that doesn't require wallets to be loaded
     if (
@@ -31,10 +32,10 @@ export default class Root extends Component<Props> {
       !isSystemTimeCorrect
     ) {
       return <LoadingPage stores={stores} actions={actions} />;
-    } else if (!wallets.hasAnyWallets) {
+    }
+    if (!wallets.hasAnyWallets) {
       return <WalletAddPage />;
     }
     return React.Children.only(children);
   }
 }
-
