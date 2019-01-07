@@ -134,6 +134,6 @@ export default class LocalStorageApi {
     await this.unsetTermsOfUseAcceptance();
     await this.unsetUserTheme();
     await this.unsetDataLayerMigrationAcceptance();
-  }
+  };
 
 }
