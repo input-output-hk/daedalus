@@ -13,7 +13,7 @@ import {
   DISK_SPACE_RECOMMENDED_PERCENTAGE
 } from '../config';
 
-export default (
+export const handleDiskSpace = (
   mainWindow: BrowserWindow,
   onCheckDiskSpace?: Function,
 ) => {
