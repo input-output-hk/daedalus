@@ -13,7 +13,6 @@ import {
 } from '../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
 import { Logger } from '../utils/logging';
-import { GET_DISK_SPACE_STATUS } from '../../../common/ipc-api';
 import {
   cardanoStateChangeChannel,
   tlsConfigChannel,
@@ -21,6 +20,7 @@ import {
   cardanoStatusChannel,
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
+import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
 import type {
   CardanoNodeState,
@@ -28,11 +28,7 @@ import type {
   TlsConfig
 } from '../../../common/types/cardano-node.types';
 import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
-import type { IpcEvent } from '../../../common/ipc/lib/IpcChannel';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
-
-// TODO: refactor all parts that rely on this to ipc channels!
-const { ipcRenderer } = global;
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
@@ -110,7 +106,7 @@ export default class NetworkStatusStore extends Store {
       this.forceCheckLocalTimeDifference, NTP_FORCE_CHECK_POLL_INTERVAL
     );
 
-    ipcRenderer.on(GET_DISK_SPACE_STATUS.SUCCESS, this.onCheckDiskSpace);
+    getDiskSpaceStatusChannel.onReceive(this._onCheckDiskSpace);
     this._checkDiskSpace();
   }
 
@@ -165,7 +161,7 @@ export default class NetworkStatusStore extends Store {
   }
 
   _checkDiskSpace(diskSpaceRequired?: number) {
-    ipcRenderer.send(GET_DISK_SPACE_STATUS.REQUEST, diskSpaceRequired);
+    getDiskSpaceStatusChannel.send(diskSpaceRequired);
   }
 
   _requestCardanoStatus = async () => {
@@ -455,15 +451,14 @@ export default class NetworkStatusStore extends Store {
     this._updateNetworkStatus({ force_ntp_check: true });
   };
 
-  @action onCheckDiskSpace = (
-    event: IpcEvent,
+  @action _onCheckDiskSpace = (
     {
       notEnoughSpace,
       diskSpaceRequired,
       diskSpaceMissing,
       diskSpaceRecommended,
     }: CheckDiskSpaceResponse
-  ) => {
+  ): Promise<void> => {
     this.notEnoughSpace = notEnoughSpace;
     this.diskSpaceRequired = diskSpaceRequired;
     this.diskSpaceMissing = diskSpaceMissing;
@@ -475,6 +470,8 @@ export default class NetworkStatusStore extends Store {
     } else if (!this._networkStatusPollingInterval) {
       this._setNetworkStatusPollingInterval();
     }
+
+    return Promise.resolve();
   };
 
   // DEFINE COMPUTED VALUES

@@ -1,8 +1,8 @@
 // @flow
-import { BrowserWindow, ipcMain } from 'electron';
+import { BrowserWindow } from 'electron';
 import checkDiskSpace from 'check-disk-space';
 import prettysize from 'prettysize';
-import { GET_DISK_SPACE_STATUS } from '../../common/ipc-api';
+import { openExternalUrlChannel } from '../ipc/get-disk-space-status';
 import { environment } from '../environment';
 import { Logger } from './logging';
 import {
@@ -49,7 +49,7 @@ export default (
 
     if (typeof onCheckDiskSpace === 'function') onCheckDiskSpace(response);
 
-    mainWindow.webContents.send(GET_DISK_SPACE_STATUS.SUCCESS, response);
+    openExternalUrlChannel.send(response, mainWindow.webContents);
     return response;
   };
 
@@ -62,10 +62,7 @@ export default (
   };
   setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_LONG_INTERVAL);
 
-  ipcMain.on(
-    GET_DISK_SPACE_STATUS.REQUEST,
-    (event, diskSpaceRequired) => handleCheckDiskSpace(diskSpaceRequired)
-  );
+  openExternalUrlChannel.onReceive(diskSpaceRequired => handleCheckDiskSpace(diskSpaceRequired));
 
   return handleCheckDiskSpace;
 };
