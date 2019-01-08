@@ -8,7 +8,7 @@ import type {
 
 // IpcChannel<Incoming, Outgoing>
 
-export const openExternalUrlChannel: (
+export const getDiskSpaceStatusChannel: (
   MainIpcChannel<GetDiskSpaceStatusRendererRequest, GetDiskSpaceStatusMainResponse>
 ) = (
   new MainIpcChannel(GetDiskSpaceStatusChannelName)

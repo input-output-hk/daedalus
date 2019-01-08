@@ -2,7 +2,7 @@
 import { BrowserWindow } from 'electron';
 import checkDiskSpace from 'check-disk-space';
 import prettysize from 'prettysize';
-import { openExternalUrlChannel } from '../ipc/get-disk-space-status';
+import { getDiskSpaceStatusChannel } from '../ipc/get-disk-space-status';
 import { environment } from '../environment';
 import { Logger } from './logging';
 import {
@@ -49,7 +49,7 @@ export const handleDiskSpace = (
 
     if (typeof onCheckDiskSpace === 'function') onCheckDiskSpace(response);
 
-    openExternalUrlChannel.send(response, mainWindow.webContents);
+    getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
     return response;
   };
 
@@ -62,7 +62,7 @@ export const handleDiskSpace = (
   };
   setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_LONG_INTERVAL);
 
-  openExternalUrlChannel.onReceive(diskSpaceRequired => handleCheckDiskSpace(diskSpaceRequired));
+  getDiskSpaceStatusChannel.onReceive(diskSpaceRequired => handleCheckDiskSpace(diskSpaceRequired));
 
   return handleCheckDiskSpace;
 };
