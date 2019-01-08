@@ -1,5 +1,5 @@
 <blockquote>
-DO NOT MERGE again
+DO NOT MERGE again twice
 <sub>Document maintainer: Nikola Glumac<br/>Document status: Active</sub>
 </blockquote>
 
