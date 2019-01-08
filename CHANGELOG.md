@@ -2,7 +2,6 @@ Changelog
 =========
 
 ## vNext
-=======
 
 ### Features
 
@@ -36,14 +35,12 @@ Changelog
 - Updated application dependencies ([PR 1201](https://github.com/input-output-hk/daedalus/pull/1201), [PR 1216](https://github.com/input-output-hk/daedalus/pull/1216), [PR 1227](https://github.com/input-output-hk/daedalus/pull/1227), [PR 1251](https://github.com/input-output-hk/daedalus/pull/1251))
 
 ## 0.12.1
-=======
 
 ### Fixes
 
 - Fixed the network block stalling logic in order to prevent showing "Network connection lost - reconnecting..." screen in case network block height is stalling while local block height is still increasing ([PR 1246](https://github.com/input-output-hk/daedalus/pull/1246))
 
 ## 0.12.0
-=======
 
 ### Features
 
@@ -106,14 +103,12 @@ Changelog
 - Switched from `npm` to `yarn` ([PR 989](https://github.com/input-output-hk/daedalus/pull/989))
 
 ## 0.11.2
-=======
 
 ### Fixes
 
 - Update Cardano SL revision to version `1.3.2` ([PR 1181](https://github.com/input-output-hk/daedalus/pull/1181))
 
 ## 0.11.1
-=======
 
 ### Features
 
@@ -137,7 +132,6 @@ Changelog
 - Added "Testnet" label to paper wallet certificates which are not generated on the mainnet ([PR 1055](https://github.com/input-output-hk/daedalus/pull/1055))
 
 ## 0.11.0
-=======
 
 ### Features
 
@@ -176,7 +170,6 @@ Changelog
 - Refactored various magic numbers & strings into constants ([PR 881](https://github.com/input-output-hk/daedalus/pull/881))
 
 ## 0.10.1
-=======
 
 ### Fixes
 
@@ -188,7 +181,6 @@ Changelog
 - Limited maximum number of wallets to 20 ([PR 966](https://github.com/input-output-hk/daedalus/pull/966))
 
 ## 0.10.0
-=======
 
 ### Features
 
@@ -241,7 +233,6 @@ Changelog
 - Updated Daedalus and Cardano team members on the about dialog ([PR 872](https://github.com/input-output-hk/daedalus/pull/872))
 
 ## 0.9.1
-=======
 
 ### Features
 - New Edit section in system menu with copy & paste and related actions ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
@@ -254,7 +245,6 @@ Changelog
 - An error has been fixed that in some cases prevented users creating a wallet with a name containing non-latin characters, like Japanese Kanji or Chinese ([PR 840](https://github.com/input-output-hk/daedalus/pull/840))
 
 ## 0.9.0
-=======
 
 ### Features
 
@@ -296,14 +286,12 @@ Changelog
 - Log file moved to public folder and Electron crash reporter removed ([PR 682](https://github.com/input-output-hk/daedalus/pull/682))
 
 ## 0.8.3
-=======
 
 ### Fixes
 
 - Improved messages for update notifications ([PR 526](https://github.com/input-output-hk/daedalus/pull/526))
 
 ## 0.8.2
-=======
 
 ### Features
 
