@@ -5,7 +5,7 @@ import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { Logger } from './utils/logging';
 import { setupLogging } from './utils/setupLogging';
-import handleDiskSpace from './utils/handleDiskSpace';
+import handleDiskSpace from './utils/diskSpace';
 import { createMainWindow } from './windows/main';
 import { winLinuxMenu } from './menus/win-linux';
 import { osxMenu } from './menus/osx';
