@@ -99,6 +99,7 @@ const onAppReady = async () => {
   mainWindow = createMainWindow(isInSafeMode);
 
   const onCheckDiskSpace = ({ notEnoughSpace }: CheckDiskSpaceResponse) => {
+    // Only checks if it's not in `frontendOnlyMode`
     if (cardanoNode) {
       if (notEnoughSpace) {
         try {
