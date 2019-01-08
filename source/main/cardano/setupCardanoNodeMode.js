@@ -43,7 +43,7 @@ const startCardanoNode = (node: CardanoNode, launcherConfig: Object) => {
   return node.start(config);
 };
 
-export const restartCardanoNode = async (node: CardanoNode) => {
+const restartCardanoNode = async (node: CardanoNode) => {
   try {
     await node.restart();
   } catch (error) {

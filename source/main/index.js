@@ -19,7 +19,6 @@ import {
 import mainErrorHandler from './utils/mainErrorHandler';
 import { launcherConfig } from './config';
 import { setupCardano } from './cardano/setup';
-import { restartCardanoNode } from './cardano/setupCardanoNodeMode';
 import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { ensureXDGDataIsSet } from './cardano/config';
@@ -109,7 +108,7 @@ const onAppReady = async () => {
         cardanoNode.state !== CardanoNodeStates.STARTING &&
         cardanoNode.state !== CardanoNodeStates.RUNNING
       ) {
-        restartCardanoNode(cardanoNode);
+        cardanoNode.restart(cardanoNode);
       }
     }
   };
