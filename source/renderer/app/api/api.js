@@ -330,14 +330,12 @@ export default class AdaApi {
   calculateTransactionFee = async (
     request: TransactionRequest
   ): Promise<BigNumber> => {
-    Logger.debug('AdaApi::calculateTransactionFee called');
+    Logger.debug('AdaApi::calculateTransactionFee called: ' + stringifyData(request));
     const {
       accountIndex,
       walletId, walletBalance,
       address, amount,
-      spendingPassword: passwordString,
     } = request;
-    const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     try {
       const data = {
         source: {
@@ -351,13 +349,12 @@ export default class AdaApi {
           },
         ],
         groupingPolicy: 'OptimizeForSecurity',
-        spendingPassword,
       };
       const response: TransactionFee = await getTransactionFee(this.config, { data });
       Logger.debug('AdaApi::calculateTransactionFee success: ' + stringifyData(response));
       return _createTransactionFeeFromServerData(response);
     } catch (error) {
-      Logger.debug('AdaApi::calculateTransactionFee error: ' + stringifyError(error));
+      Logger.debug('AdaApi::calculateTransactionFee error: ' + stringifyData(error));
       if (error.message === 'NotEnoughMoney') {
         const errorMessage = get(error, 'diagnostic.details.msg', '');
         if (errorMessage.includes('Not enough coins to cover fee')) {

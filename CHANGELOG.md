@@ -9,6 +9,10 @@ Changelog
 
 - Fixed the network block stalling logic in order to prevent showing "Network connection lost - reconnecting..." screen in case network block height is stalling while local block height is still increasing ([PR 1246](https://github.com/input-output-hk/daedalus/pull/1246))
 
+### Chores
+
+- Added more logging for transaction fee calculation API endpoint ([PR 1259](https://github.com/input-output-hk/daedalus/pull/1259))
+
 ## 0.12.0
 =======
 
