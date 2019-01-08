@@ -10,6 +10,7 @@ import {
   NETWORK_STATUS_REQUEST_TIMEOUT,
   NETWORK_STATUS_POLL_INTERVAL,
   NTP_FORCE_CHECK_POLL_INTERVAL,
+  NTP_IGNORE_CHECKS_GRACE_PERIOD,
 } from '../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
 import { Logger } from '../utils/logging';
@@ -100,6 +101,13 @@ export default class NetworkStatusStore extends Store {
     // Forced time difference check polling interval
     this._forceCheckTimeDifferencePollingInterval = setInterval(
       this.forceCheckLocalTimeDifference, NTP_FORCE_CHECK_POLL_INTERVAL
+    );
+
+    // Ignore system time checks for the first 30 seconds:
+    this.ignoreSystemTimeChecks();
+    setTimeout(
+      () => this.ignoreSystemTimeChecks(false),
+      NTP_IGNORE_CHECKS_GRACE_PERIOD
     );
   }
 
@@ -425,8 +433,8 @@ export default class NetworkStatusStore extends Store {
     }
   };
 
-  @action ignoreSystemTimeChecks = () => {
-    this.isSystemTimeIgnored = true;
+  @action ignoreSystemTimeChecks = (flag: boolean = true) => {
+    this.isSystemTimeIgnored = flag;
   };
 
   forceCheckLocalTimeDifference = () => {
