@@ -101,7 +101,11 @@ const onAppReady = async () => {
   const onCheckDiskSpace = ({ notEnoughSpace }: CheckDiskSpaceResponse) => {
     // Only checks if it's not in `frontendOnlyMode`
     if (cardanoNode) {
-      if (notEnoughSpace) {
+      if (
+        notEnoughSpace &&
+        cardanoNode.state !== CardanoNodeStates.STOPPING &&
+        cardanoNode.state !== CardanoNodeStates.STOPPED
+      ) {
         try {
           cardanoNode.stop();
         } catch (e) {} // eslint-disable-line
