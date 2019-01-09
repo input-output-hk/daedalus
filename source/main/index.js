@@ -5,7 +5,7 @@ import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { Logger } from './utils/logging';
 import { setupLogging } from './utils/setupLogging';
-import { handleDiskSpace } from './utils/diskSpace';
+import { handleDiskSpace } from './utils/handleDiskSpace';
 import { createMainWindow } from './windows/main';
 import { winLinuxMenu } from './menus/win-linux';
 import { osxMenu } from './menus/osx';
@@ -98,11 +98,11 @@ const onAppReady = async () => {
 
   mainWindow = createMainWindow(isInSafeMode);
 
-  const onCheckDiskSpace = ({ notEnoughSpace }: CheckDiskSpaceResponse) => {
+  const onCheckDiskSpace = ({ isNotEnoughDiskSpace }: CheckDiskSpaceResponse) => {
     // Only checks if it's not in `frontendOnlyMode`
     if (cardanoNode) {
       if (
-        notEnoughSpace &&
+        isNotEnoughDiskSpace &&
         cardanoNode.state !== CardanoNodeStates.STOPPING &&
         cardanoNode.state !== CardanoNodeStates.STOPPED
       ) {

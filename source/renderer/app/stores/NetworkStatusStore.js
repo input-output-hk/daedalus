@@ -73,7 +73,7 @@ export default class NetworkStatusStore extends Store {
     this.api.ada.getNetworkStatus
   );
 
-  @observable notEnoughSpace: boolean = false;
+  @observable isNotEnoughDiskSpace: boolean = false;
   @observable diskSpaceRequired: string = '';
   @observable diskSpaceMissing: string = '';
   @observable diskSpaceRecommended: string = '';
@@ -453,18 +453,18 @@ export default class NetworkStatusStore extends Store {
 
   @action _onCheckDiskSpace = (
     {
-      notEnoughSpace,
+      isNotEnoughDiskSpace,
       diskSpaceRequired,
       diskSpaceMissing,
       diskSpaceRecommended,
     }: CheckDiskSpaceResponse
   ): Promise<void> => {
-    this.notEnoughSpace = notEnoughSpace;
+    this.isNotEnoughDiskSpace = isNotEnoughDiskSpace;
     this.diskSpaceRequired = diskSpaceRequired;
     this.diskSpaceMissing = diskSpaceMissing;
     this.diskSpaceRecommended = diskSpaceRecommended;
 
-    if (this.notEnoughSpace && this._networkStatusPollingInterval) {
+    if (this.isNotEnoughDiskSpace && this._networkStatusPollingInterval) {
       clearInterval(this._networkStatusPollingInterval);
       this._networkStatusPollingInterval = null;
     } else if (!this._networkStatusPollingInterval) {

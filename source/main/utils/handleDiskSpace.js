@@ -29,17 +29,17 @@ export const handleDiskSpace = (
     const diskSpaceRequiredMargin =
       diskSpaceRequired - (diskSpaceRequired * DISK_SPACE_REQUIRED_MARGIN_PERCENTAGE / 100);
 
-    let notEnoughSpace = false;
+    let isNotEnoughDiskSpace = false;
     if (diskSpaceAvailable <= diskSpaceRequiredMargin) {
-      if (!notEnoughSpace) setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_SHORT_INTERVAL);
-      notEnoughSpace = true;
+      if (!isNotEnoughDiskSpace) setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_SHORT_INTERVAL);
+      isNotEnoughDiskSpace = true;
     } else if (diskSpaceAvailable >= diskSpaceRequired) {
-      if (notEnoughSpace) setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_LONG_INTERVAL);
-      notEnoughSpace = false;
+      if (isNotEnoughDiskSpace) setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_LONG_INTERVAL);
+      isNotEnoughDiskSpace = false;
     }
 
     const response = {
-      notEnoughSpace,
+      isNotEnoughDiskSpace,
       diskSpaceRequired: prettysize(diskSpaceRequired),
       diskSpaceMissing: prettysize(diskSpaceMissing),
       diskSpaceRecommended: prettysize(diskSpaceRecommended),

@@ -14,7 +14,7 @@ export default class Root extends Component<Props> {
     const { stores, actions, children } = this.props;
     const { networkStatus, profile, adaRedemption, app, wallets } = stores;
     const { isNetworkStatusPage } = app;
-    const { isConnected, isSynced, isSystemTimeCorrect, notEnoughSpace } = networkStatus;
+    const { isConnected, isSynced, isSystemTimeCorrect, isNotEnoughDiskSpace } = networkStatus;
     const isPageThatDoesntNeedWallets = (
       profile.isSettingsPage ||
       (adaRedemption.isAdaRedemptionPage && wallets.hasLoadedWallets)
@@ -30,7 +30,7 @@ export default class Root extends Component<Props> {
       !isSynced ||
       !wallets.hasLoadedWallets ||
       !isSystemTimeCorrect ||
-      notEnoughSpace
+      isNotEnoughDiskSpace
     ) {
       return <LoadingPage stores={stores} actions={actions} />;
     }
