@@ -140,16 +140,19 @@ export default class Loading extends Component<Props, State> {
   };
 
   componentDidMount() {
+    if (this.props.isNotEnoughDiskSpace) return;
     this._defensivelyStartTimers(this.props.isConnected, this.props.isSynced);
   }
 
   componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.isNotEnoughDiskSpace) return;
     this._defensivelyStartTimers(nextProps.isConnected, nextProps.isSynced);
   }
 
   componentDidUpdate() {
-    const canResetSyncing = this._syncingTimerShouldStop(this.props.isSynced);
-    const canResetConnecting = this._connectingTimerShouldStop(this.props.isConnected);
+    const { isConnected, isSynced, isNotEnoughDiskSpace } = this.props;
+    const canResetSyncing = this._syncingTimerShouldStop(isSynced, isNotEnoughDiskSpace);
+    const canResetConnecting = this._connectingTimerShouldStop(isConnected, isNotEnoughDiskSpace);
 
     if (canResetSyncing) { this._resetSyncingTime(); }
     if (canResetConnecting) { this._resetConnectingTime(); }
@@ -168,12 +171,16 @@ export default class Loading extends Component<Props, State> {
     isConnected && !isSynced && syncingInterval === null
   );
 
-  _syncingTimerShouldStop = (isSynced: boolean): boolean => (
-    isSynced && syncingInterval !== null
+  _syncingTimerShouldStop = (
+    isSynced: boolean, isNotEnoughDiskSpace: boolean
+  ): boolean => (
+    (isNotEnoughDiskSpace || isSynced) && syncingInterval !== null
   );
 
-  _connectingTimerShouldStop = (isConnected: boolean): boolean => (
-    isConnected && connectingInterval !== null
+  _connectingTimerShouldStop = (
+    isConnected: boolean, isNotEnoughDiskSpace: boolean
+  ): boolean => (
+    (isNotEnoughDiskSpace || isConnected) && connectingInterval !== null
   );
 
   _defensivelyStartTimers = (isConnected: boolean, isSynced: boolean) => {
