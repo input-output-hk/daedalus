@@ -98,17 +98,22 @@ const onAppReady = async () => {
 
   mainWindow = createMainWindow(isInSafeMode);
 
+  const { frontendOnlyMode } = launcherConfig;
   const onCheckDiskSpace = ({ isNotEnoughDiskSpace }: CheckDiskSpaceResponse) => {
-    // Only checks if it's not in `frontendOnlyMode`
+    // Daedalus is not managing cardano-node in `frontendOnlyMode`
+    // so we don't have a way to stop it in case there is not enough disk space
+    if (frontendOnlyMode) return;
+
     if (cardanoNode) {
-      if (
-        isNotEnoughDiskSpace &&
-        cardanoNode.state !== CardanoNodeStates.STOPPING &&
-        cardanoNode.state !== CardanoNodeStates.STOPPED
-      ) {
-        try {
-          cardanoNode.stop();
-        } catch (e) {} // eslint-disable-line
+      if (isNotEnoughDiskSpace) {
+        if (
+          cardanoNode.state !== CardanoNodeStates.STOPPING &&
+          cardanoNode.state !== CardanoNodeStates.STOPPED
+        ) {
+          try {
+            cardanoNode.stop();
+          } catch (e) {} // eslint-disable-line
+        }
       } else if (
         cardanoNode.state !== CardanoNodeStates.STARTING &&
         cardanoNode.state !== CardanoNodeStates.RUNNING
@@ -126,6 +131,7 @@ const onAppReady = async () => {
   };
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
+
   cardanoNode = setupCardano(launcherConfig, mainWindow);
 
   if (isWatchMode) {

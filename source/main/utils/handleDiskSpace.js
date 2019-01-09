@@ -45,7 +45,7 @@ export const handleDiskSpace = (
       diskSpaceRecommended: prettysize(diskSpaceRecommended),
     };
 
-    Logger.info(JSON.stringify(response, null, 2));
+    if (isNotEnoughDiskSpace) Logger.info(JSON.stringify(response, null, 2));
 
     if (typeof onCheckDiskSpace === 'function') onCheckDiskSpace(response);
 
