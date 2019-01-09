@@ -1,5 +1,5 @@
 // @flow
-import { observable, action, computed, runInAction } from 'mobx';
+import { observable, action, computed, runInAction, when } from 'mobx';
 import moment from 'moment';
 import { isEqual } from 'lodash';
 import Store from './lib/Store';
@@ -76,6 +76,9 @@ export default class NetworkStatusStore extends Store {
   setup() {
     // ========== IPC CHANNELS =========== //
 
+    // Request node state
+    this._requestCardanoState();
+
     // Request cached node status for fast bootstrapping of frontend
     this._requestCardanoStatus();
 
@@ -89,6 +92,7 @@ export default class NetworkStatusStore extends Store {
     // ========== MOBX REACTIONS =========== //
 
     this.registerReactions([
+      this._updateNetworkStatusWhenReconnected,
       this._updateNetworkStatusWhenDisconnected,
       this._updateNodeStatus,
     ]);
@@ -106,7 +110,10 @@ export default class NetworkStatusStore extends Store {
     // Ignore system time checks for the first 30 seconds:
     this.ignoreSystemTimeChecks();
     setTimeout(
-      () => this.ignoreSystemTimeChecks(false),
+      () => {
+        this.ignoreSystemTimeChecks(false);
+        this._updateNetworkStatus({ force_ntp_check: true });
+      },
       NTP_IGNORE_CHECKS_GRACE_PERIOD
     );
   }
@@ -138,6 +145,15 @@ export default class NetworkStatusStore extends Store {
     if (!this.isConnected) this._updateNetworkStatus();
   };
 
+  _updateNetworkStatusWhenReconnected = async () => {
+    if (this.isConnected && this.hasBeenConnected) {
+      Logger.info('NetworkStatusStore: reconnected, forcing NTP check now.');
+      this.ignoreSystemTimeChecks();
+      await this._updateNetworkStatus({ force_ntp_check: true });
+      this.ignoreSystemTimeChecks(false);
+    }
+  };
+
   _updateNodeStatus = async () => {
     if (!this.isConnected) return;
     try {
@@ -154,11 +170,16 @@ export default class NetworkStatusStore extends Store {
     return Date.now() - this._startTime;
   }
 
+  _requestCardanoState = async () => {
+    Logger.info('NetworkStatusStore: requesting node state.');
+    const state = await cardanoStateChangeChannel.request();
+    Logger.info(`NetworkStatusStore: handling node state <${state}>.`);
+    await this._handleCardanoNodeStateChange(state);
+  };
+
   _requestCardanoStatus = async () => {
     try {
       Logger.info('NetworkStatusStore: requesting node status.');
-      const state = await cardanoStateChangeChannel.request();
-      await this._handleCardanoNodeStateChange(state);
       const status = await cardanoStatusChannel.request();
       Logger.info(`NetworkStatusStore: received cached node status: ${JSON.stringify(status)}`);
       if (status) runInAction('assigning node status', () => Object.assign(this, status));
