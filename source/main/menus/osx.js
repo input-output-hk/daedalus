@@ -2,27 +2,32 @@
 import type { App, BrowserWindow } from 'electron';
 import { compact } from 'lodash';
 import type { MenuActions } from './MenuActions.types';
+import { getTranslation } from '../utils/getTranslation';
+
+const id = 'menu.osx';
 
 export const osxMenu = (
   app: App,
   window: BrowserWindow,
   actions: MenuActions,
-  isInSafeMode: boolean
+  isInSafeMode: boolean,
+  translations: {},
+  translation: function = getTranslation(translations, id)
 ) => (
   [{
-    label: 'Daedalus',
+    label: translation('daedalus'),
     submenu: compact([{
-      label: 'About',
+      label: translation('daedalus.about'),
       click() {
         actions.openAbout();
       },
     }, {
-      label: 'Ada redemption',
+      label: translation('daedalus.adaRedemption'),
       click() {
         actions.goToAdaRedemption();
       }
     }, {
-      label: 'GPU safe mode',
+      label: translation('daedalus.gpuSafeMode'),
       type: 'checkbox',
       checked: isInSafeMode,
       click() {
@@ -31,62 +36,62 @@ export const osxMenu = (
           actions.restartInSafeMode();
       },
     }, {
-      label: 'Network status',
+      label: translation('daedalus.networkStatus'),
       accelerator: 'Command+S',
       click() {
         actions.goToNetworkStatus();
       },
     }, {
-      label: 'Quit',
+      label: translation('daedalus.quit'),
       accelerator: 'Command+Q',
       click() {
         app.quit();
       }
     }])
   }, {
-    label: 'Edit',
+    label: translation('edit'),
     submenu: [{
-      label: 'Undo',
+      label: translation('edit.undo'),
       accelerator: 'Command+Z',
       role: 'undo'
     }, {
-      label: 'Redo',
+      label: translation('edit.redo'),
       accelerator: 'Shift+Command+Z',
       role: 'redo'
     }, {
       type: 'separator'
     }, {
-      label: 'Cut',
+      label: translation('edit.cut'),
       accelerator: 'Command+X',
       role: 'cut'
     }, {
-      label: 'Copy',
+      label: translation('edit.copy'),
       accelerator: 'Command+C',
       role: 'copy'
     }, {
-      label: 'Paste',
+      label: translation('edit.paste'),
       accelerator: 'Command+V',
       role: 'paste'
     }, {
-      label: 'Select All',
+      label: translation('edit.selectAll'),
       accelerator: 'Command+A',
       role: 'selectall'
     }]
   }, {
-    label: 'View',
+    label: translation('view'),
     submenu: [
       {
-        label: 'Reload',
+        label: translation('view.reload'),
         accelerator: 'Command+R',
         click: () => window.webContents.reload()
       },
       {
-        label: 'Toggle Full Screen',
+        label: translation('view.toggleFullScreen'),
         accelerator: 'Ctrl+Command+F',
         click: () => window.setFullScreen(!window.isFullScreen())
       },
       {
-        label: 'Toggle Developer Tools',
+        label: translation('view.toggleDeveloperTools'),
         accelerator: 'Alt+Command+I',
         click: () => window.toggleDevTools()
       }

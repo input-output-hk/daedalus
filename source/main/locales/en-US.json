@@ -1,0 +1,19 @@
+{
+  "menu.osx.daedalus": "Daedalus",
+  "menu.osx.daedalus.about": "About",
+  "menu.osx.daedalus.adaRedemption": "Ada redemption",
+  "menu.osx.daedalus.gpuSafeMode": "GPU safe mode",
+  "menu.osx.daedalus.networkStatus": "Network status",
+  "menu.osx.daedalus.quit": "Quit",
+  "menu.osx.edit": "Edit",
+  "menu.osx.edit.undo": "Undo",
+  "menu.osx.edit.redo": "Redo",
+  "menu.osx.edit.cut": "Cut",
+  "menu.osx.edit.copy": "Copy",
+  "menu.osx.edit.paste": "Paste",
+  "menu.osx.edit.selectAll": "Select All",
+  "menu.osx.view": "View",
+  "menu.osx.view.reload": "Reload",
+  "menu.osx.view.toggleFullScreen": "Toggle Full Screen",
+  "menu.osx.view.toggleDeveloperTools": "Toggle Developer Tools"
+}
