@@ -60,6 +60,12 @@ export const ALLOWED_LAUNCHER_LOGS = new RegExp(/(launcher-)(\d{14}$)/);
 export const MAX_NODE_LOGS_ALLOWED = 3;
 export const MAX_LAUNCHER_LOGS_ALLOWED = 3;
 
+// We need to invert 'frontendOnlyMode' value received from the launcherConfig
+// as this variable has an opposite meaning from the launcher's perspective.
+// Launcher treats the 'frontendOnlyMode' set to 'true' as the case where Daedalus
+// takes the responsiblity for launching and managing the cardano-node.
+export const frontendOnlyMode = !launcherConfig.frontendOnlyMode;
+
 // CardanoNode config
 export const NODE_STARTUP_TIMEOUT = 5000;
 export const NODE_STARTUP_MAX_RETRIES = 5;
