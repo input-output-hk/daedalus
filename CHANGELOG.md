@@ -6,6 +6,7 @@ Changelog
 
 ### Features
 
+- Implemented translations for the application menu ([PR 1262](https://github.com/input-output-hk/daedalus/pull/1262))
 - Added support for "frontend-only" mode ([PR 1241](https://github.com/input-output-hk/daedalus/pull/1241), [PR 1260](https://github.com/input-output-hk/daedalus/pull/1260))
 - Improved the lock-file UX by replacing "Daedalus is already running" dialog with focusing of the already running Daedalus instance ([PR 1229](https://github.com/input-output-hk/daedalus/pull/1229))
 - Replaced in-app support request with links to support page ([PR 1199](https://github.com/input-output-hk/daedalus/pull/1199))
