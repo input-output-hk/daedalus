@@ -1,5 +1,5 @@
 // @flow
-import { observable, action, computed, runInAction, when } from 'mobx';
+import { observable, action, computed, runInAction } from 'mobx';
 import moment from 'moment';
 import { isEqual } from 'lodash';
 import Store from './lib/Store';
@@ -92,7 +92,7 @@ export default class NetworkStatusStore extends Store {
     // ========== MOBX REACTIONS =========== //
 
     this.registerReactions([
-      this._updateNetworkStatusWhenReconnected,
+      this._updateNetworkStatusWhenConnected,
       this._updateNetworkStatusWhenDisconnected,
       this._updateNodeStatus,
     ]);
@@ -110,10 +110,7 @@ export default class NetworkStatusStore extends Store {
     // Ignore system time checks for the first 30 seconds:
     this.ignoreSystemTimeChecks();
     setTimeout(
-      () => {
-        this.ignoreSystemTimeChecks(false);
-        this._updateNetworkStatus({ force_ntp_check: true });
-      },
+      () => this.ignoreSystemTimeChecks(false),
       NTP_IGNORE_CHECKS_GRACE_PERIOD
     );
   }
@@ -145,12 +142,10 @@ export default class NetworkStatusStore extends Store {
     if (!this.isConnected) this._updateNetworkStatus();
   };
 
-  _updateNetworkStatusWhenReconnected = async () => {
-    if (this.isConnected && this.hasBeenConnected) {
-      Logger.info('NetworkStatusStore: reconnected, forcing NTP check now.');
-      this.ignoreSystemTimeChecks();
-      await this._updateNetworkStatus({ force_ntp_check: true });
-      this.ignoreSystemTimeChecks(false);
+  _updateNetworkStatusWhenConnected = () => {
+    if (this.isConnected) {
+      Logger.info('NetworkStatusStore: Connected, forcing NTP check now...');
+      this._updateNetworkStatus({ force_ntp_check: true });
     }
   };
 
@@ -459,7 +454,7 @@ export default class NetworkStatusStore extends Store {
   };
 
   forceCheckLocalTimeDifference = () => {
-    this._updateNetworkStatus({ force_ntp_check: true });
+    if (this.isConnected) this._updateNetworkStatus({ force_ntp_check: true });
   };
 
   // DEFINE COMPUTED VALUES
