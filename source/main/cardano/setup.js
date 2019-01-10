@@ -1,6 +1,7 @@
 // @flow
 import { BrowserWindow } from 'electron';
 import { CardanoNode } from './CardanoNode';
+import { frontendOnlyMode } from '../config';
 import type { LauncherConfig } from '../config';
 import { setupFrontendOnlyMode } from './setupFrontendOnlyMode';
 import { setupCardanoNodeMode } from './setupCardanoNodeMode';
@@ -15,8 +16,6 @@ import { setupCardanoNodeMode } from './setupCardanoNodeMode';
 export const setupCardano = (
   launcherConfig: LauncherConfig, mainWindow: BrowserWindow
 ): ?CardanoNode => {
-  const { frontendOnlyMode } = launcherConfig;
-
   if (frontendOnlyMode) {
     return setupFrontendOnlyMode(mainWindow);
   }
