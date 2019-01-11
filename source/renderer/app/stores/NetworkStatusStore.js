@@ -112,7 +112,7 @@ export default class NetworkStatusStore extends Store {
     this.ignoreSystemTimeChecks();
     setTimeout(
       () => this.ignoreSystemTimeChecks(false),
-      this.environment.isTest ? 1000 : NTP_IGNORE_CHECKS_GRACE_PERIOD
+      NTP_IGNORE_CHECKS_GRACE_PERIOD
     );
 
     // Setup disk space checks

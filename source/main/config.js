@@ -73,8 +73,10 @@ export const NODE_SHUTDOWN_TIMEOUT = environment.isTest ? 5000 : 10000;
 export const NODE_KILL_TIMEOUT = environment.isTest ? 5000 : 10000;
 export const NODE_UPDATE_TIMEOUT = environment.isTest ? 10000 : 60000;
 
+/* eslint-disable max-len */
 export const DISK_SPACE_REQUIRED = 2 * 1073741274; // 2Gb | unit: bytes
 export const DISK_SPACE_REQUIRED_MARGIN_PERCENTAGE = 10; // 10% of the available disk space
 export const DISK_SPACE_CHECK_LONG_INTERVAL = 10 * 60 * 1000; // 10 minutes | unit: milliseconds
-export const DISK_SPACE_CHECK_SHORT_INTERVAL = 10 * 1000; // 10 seconds | unit: milliseconds
+export const DISK_SPACE_CHECK_SHORT_INTERVAL = environment.isTest ? 1000 : 10 * 1000; // 10 seconds | unit: milliseconds
 export const DISK_SPACE_RECOMMENDED_PERCENTAGE = 15; // 15% of the total disk space
+/* eslint-disable max-len */

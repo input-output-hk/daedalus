@@ -17,8 +17,7 @@ export const handleDiskSpace = (
   mainWindow: BrowserWindow,
   onCheckDiskSpace?: Function,
 ) => {
-  const { isWindows, isTest } = environment;
-  const path = isWindows ? 'C:' : '/';
+  const path = environment.isWindows ? 'C:' : '/';
   let diskSpaceCheckInterval;
 
   const handleCheckDiskSpace = async (forceDiskSpaceRequired?: number) => {
@@ -32,11 +31,7 @@ export const handleDiskSpace = (
 
     let isNotEnoughDiskSpace = false;
     if (diskSpaceAvailable <= diskSpaceRequiredMargin) {
-      if (!isNotEnoughDiskSpace) {
-        setDiskSpaceIntervalChecking(
-          isTest ? 1000 : DISK_SPACE_CHECK_SHORT_INTERVAL
-        );
-      }
+      if (!isNotEnoughDiskSpace) setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_SHORT_INTERVAL);
       isNotEnoughDiskSpace = true;
     } else if (diskSpaceAvailable >= diskSpaceRequired) {
       if (isNotEnoughDiskSpace) setDiskSpaceIntervalChecking(DISK_SPACE_CHECK_LONG_INTERVAL);
