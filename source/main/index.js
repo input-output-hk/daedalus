@@ -17,7 +17,7 @@ import {
   GO_TO_NETWORK_STATUS_SCREEN_CHANNEL
 } from '../common/ipc/api';
 import mainErrorHandler from './utils/mainErrorHandler';
-import { launcherConfig } from './config';
+import { launcherConfig, frontendOnlyMode } from './config';
 import { setupCardano } from './cardano/setup';
 import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
@@ -98,7 +98,6 @@ const onAppReady = async () => {
 
   mainWindow = createMainWindow(isInSafeMode);
 
-  const { frontendOnlyMode } = launcherConfig;
   const onCheckDiskSpace = ({ isNotEnoughDiskSpace }: CheckDiskSpaceResponse) => {
     // Daedalus is not managing cardano-node in `frontendOnlyMode`
     // so we don't have a way to stop it in case there is not enough disk space
