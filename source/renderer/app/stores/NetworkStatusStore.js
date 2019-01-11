@@ -10,6 +10,7 @@ import {
   NETWORK_STATUS_REQUEST_TIMEOUT,
   NETWORK_STATUS_POLL_INTERVAL,
   NTP_FORCE_CHECK_POLL_INTERVAL,
+  NTP_IGNORE_CHECKS_GRACE_PERIOD,
 } from '../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
 import { Logger } from '../utils/logging';
@@ -75,6 +76,9 @@ export default class NetworkStatusStore extends Store {
   setup() {
     // ========== IPC CHANNELS =========== //
 
+    // Request node state
+    this._requestCardanoState();
+
     // Request cached node status for fast bootstrapping of frontend
     this._requestCardanoStatus();
 
@@ -88,6 +92,7 @@ export default class NetworkStatusStore extends Store {
     // ========== MOBX REACTIONS =========== //
 
     this.registerReactions([
+      this._updateNetworkStatusWhenConnected,
       this._updateNetworkStatusWhenDisconnected,
       this._updateNodeStatus,
     ]);
@@ -100,6 +105,13 @@ export default class NetworkStatusStore extends Store {
     // Forced time difference check polling interval
     this._forceCheckTimeDifferencePollingInterval = setInterval(
       this.forceCheckLocalTimeDifference, NTP_FORCE_CHECK_POLL_INTERVAL
+    );
+
+    // Ignore system time checks for the first 30 seconds:
+    this.ignoreSystemTimeChecks();
+    setTimeout(
+      () => this.ignoreSystemTimeChecks(false),
+      NTP_IGNORE_CHECKS_GRACE_PERIOD
     );
   }
 
@@ -130,6 +142,13 @@ export default class NetworkStatusStore extends Store {
     if (!this.isConnected) this._updateNetworkStatus();
   };
 
+  _updateNetworkStatusWhenConnected = () => {
+    if (this.isConnected) {
+      Logger.info('NetworkStatusStore: Connected, forcing NTP check now...');
+      this._updateNetworkStatus({ force_ntp_check: true });
+    }
+  };
+
   _updateNodeStatus = async () => {
     if (!this.isConnected) return;
     try {
@@ -146,11 +165,16 @@ export default class NetworkStatusStore extends Store {
     return Date.now() - this._startTime;
   }
 
+  _requestCardanoState = async () => {
+    Logger.info('NetworkStatusStore: requesting node state.');
+    const state = await cardanoStateChangeChannel.request();
+    Logger.info(`NetworkStatusStore: handling node state <${state}>.`);
+    await this._handleCardanoNodeStateChange(state);
+  };
+
   _requestCardanoStatus = async () => {
     try {
       Logger.info('NetworkStatusStore: requesting node status.');
-      const state = await cardanoStateChangeChannel.request();
-      await this._handleCardanoNodeStateChange(state);
       const status = await cardanoStatusChannel.request();
       Logger.info(`NetworkStatusStore: received cached node status: ${JSON.stringify(status)}`);
       if (status) runInAction('assigning node status', () => Object.assign(this, status));
@@ -425,12 +449,12 @@ export default class NetworkStatusStore extends Store {
     }
   };
 
-  @action ignoreSystemTimeChecks = () => {
-    this.isSystemTimeIgnored = true;
+  @action ignoreSystemTimeChecks = (flag: boolean = true) => {
+    this.isSystemTimeIgnored = flag;
   };
 
   forceCheckLocalTimeDifference = () => {
-    this._updateNetworkStatus({ force_ntp_check: true });
+    if (this.isConnected) this._updateNetworkStatus({ force_ntp_check: true });
   };
 
   // DEFINE COMPUTED VALUES
