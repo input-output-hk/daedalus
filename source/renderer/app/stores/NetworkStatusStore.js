@@ -10,6 +10,7 @@ import {
   NETWORK_STATUS_REQUEST_TIMEOUT,
   NETWORK_STATUS_POLL_INTERVAL,
   NTP_FORCE_CHECK_POLL_INTERVAL,
+  NTP_IGNORE_CHECKS_GRACE_PERIOD,
 } from '../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
 import { Logger } from '../utils/logging';
@@ -82,6 +83,9 @@ export default class NetworkStatusStore extends Store {
   setup() {
     // ========== IPC CHANNELS =========== //
 
+    // Request node state
+    this._requestCardanoState();
+
     // Request cached node status for fast bootstrapping of frontend
     this._requestCardanoStatus();
 
@@ -95,17 +99,23 @@ export default class NetworkStatusStore extends Store {
     // ========== MOBX REACTIONS =========== //
 
     this.registerReactions([
+      this._updateNetworkStatusWhenConnected,
       this._updateNetworkStatusWhenDisconnected,
       this._updateNodeStatus,
     ]);
 
+    // Setup polling intervals
     this._setNetworkStatusPollingInterval();
+    this._setForceCheckTimeDifferencePollingInterval();
 
-    // Forced time difference check polling interval
-    this._forceCheckTimeDifferencePollingInterval = setInterval(
-      this.forceCheckLocalTimeDifference, NTP_FORCE_CHECK_POLL_INTERVAL
+    // Ignore system time checks for the first 30 seconds:
+    this.ignoreSystemTimeChecks();
+    setTimeout(
+      () => this.ignoreSystemTimeChecks(false),
+      this.environment.isTest ? 1000 : NTP_IGNORE_CHECKS_GRACE_PERIOD
     );
 
+    // Setup disk space checks
     getDiskSpaceStatusChannel.onReceive(this._onCheckDiskSpace);
     this._checkDiskSpace();
   }
@@ -115,7 +125,14 @@ export default class NetworkStatusStore extends Store {
     this._networkStatusPollingInterval = setInterval(
       this._updateNetworkStatus, NETWORK_STATUS_POLL_INTERVAL
     );
-  }
+  };
+
+  // Setup forced time difference check polling interval
+  _setForceCheckTimeDifferencePollingInterval = () => {
+    this._forceCheckTimeDifferencePollingInterval = setInterval(
+      this.forceCheckLocalTimeDifference, NTP_FORCE_CHECK_POLL_INTERVAL
+    );
+  };
 
   async restartNode() {
     try {
@@ -144,6 +161,13 @@ export default class NetworkStatusStore extends Store {
     if (!this.isConnected) this._updateNetworkStatus();
   };
 
+  _updateNetworkStatusWhenConnected = () => {
+    if (this.isConnected) {
+      Logger.info('NetworkStatusStore: Connected, forcing NTP check now...');
+      this._updateNetworkStatus({ force_ntp_check: true });
+    }
+  };
+
   _updateNodeStatus = async () => {
     if (!this.isConnected) return;
     try {
@@ -164,11 +188,16 @@ export default class NetworkStatusStore extends Store {
     getDiskSpaceStatusChannel.send(diskSpaceRequired);
   }
 
+  _requestCardanoState = async () => {
+    Logger.info('NetworkStatusStore: requesting node state.');
+    const state = await cardanoStateChangeChannel.request();
+    Logger.info(`NetworkStatusStore: handling node state <${state}>.`);
+    await this._handleCardanoNodeStateChange(state);
+  };
+
   _requestCardanoStatus = async () => {
     try {
       Logger.info('NetworkStatusStore: requesting node status.');
-      const state = await cardanoStateChangeChannel.request();
-      await this._handleCardanoNodeStateChange(state);
       const status = await cardanoStatusChannel.request();
       Logger.info(`NetworkStatusStore: received cached node status: ${JSON.stringify(status)}`);
       if (status) runInAction('assigning node status', () => Object.assign(this, status));
@@ -443,12 +472,12 @@ export default class NetworkStatusStore extends Store {
     }
   };
 
-  @action ignoreSystemTimeChecks = () => {
-    this.isSystemTimeIgnored = true;
+  @action ignoreSystemTimeChecks = (flag: boolean = true) => {
+    this.isSystemTimeIgnored = flag;
   };
 
   forceCheckLocalTimeDifference = () => {
-    this._updateNetworkStatus({ force_ntp_check: true });
+    if (this.isConnected) this._updateNetworkStatus({ force_ntp_check: true });
   };
 
   @action _onCheckDiskSpace = (
@@ -469,8 +498,17 @@ export default class NetworkStatusStore extends Store {
         clearInterval(this._networkStatusPollingInterval);
         this._networkStatusPollingInterval = null;
       }
-    } else if (!this._networkStatusPollingInterval) {
-      this._setNetworkStatusPollingInterval();
+      if (this._forceCheckTimeDifferencePollingInterval) {
+        clearInterval(this._forceCheckTimeDifferencePollingInterval);
+        this._forceCheckTimeDifferencePollingInterval = null;
+      }
+    } else {
+      if (!this._networkStatusPollingInterval) {
+        this._setNetworkStatusPollingInterval();
+      }
+      if (!this._forceCheckTimeDifferencePollingInterval) {
+        this._setForceCheckTimeDifferencePollingInterval();
+      }
     }
 
     return Promise.resolve();
