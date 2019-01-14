@@ -39,6 +39,7 @@ Changelog
 
 ### Fixes
 
+- Fixed the transactions loading logic ([PR 1261](https://github.com/input-output-hk/daedalus/pull/1261))
 - Fixed the network block stalling logic in order to prevent showing "Network connection lost - reconnecting..." screen in case network block height is stalling while local block height is still increasing ([PR 1246](https://github.com/input-output-hk/daedalus/pull/1246))
 
 ## 0.12.0
