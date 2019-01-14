@@ -234,7 +234,7 @@ export default class NetworkStatus extends Component<Props, State> {
                   </span> |&nbsp;
                   <button
                     onClick={() => onForceCheckLocalTimeDifference()}
-                    disabled={isForceCheckingNodeTime}
+                    disabled={isForceCheckingNodeTime || !isConnected}
                   >
                     {isForceCheckingNodeTime ? 'Checking...' : 'Check time'}
                   </button>

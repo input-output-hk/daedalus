@@ -5,17 +5,19 @@ import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { Logger } from './utils/logging';
 import { setupLogging } from './utils/setupLogging';
+import { handleDiskSpace } from './utils/handleDiskSpace';
 import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
 import { environment } from './environment';
 import mainErrorHandler from './utils/mainErrorHandler';
-import { launcherConfig } from './config';
+import { launcherConfig, frontendOnlyMode } from './config';
 import { setupCardano } from './cardano/setup';
 import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { buildAppMenus } from './utils/buildAppMenus';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
+import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
 
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
@@ -42,7 +44,6 @@ const safeExit = async () => {
 
 const onAppReady = async () => {
   setupLogging();
-  mainErrorHandler();
 
   Logger.info(`========== Daedalus is starting at ${new Date().toString()} ==========`);
 
@@ -57,6 +58,40 @@ const onAppReady = async () => {
   const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
 
   mainWindow = createMainWindow(isInSafeMode);
+
+  const onCheckDiskSpace = ({ isNotEnoughDiskSpace }: CheckDiskSpaceResponse) => {
+    // Daedalus is not managing cardano-node in `frontendOnlyMode`
+    // so we don't have a way to stop it in case there is not enough disk space
+    if (frontendOnlyMode) return;
+
+    if (cardanoNode) {
+      if (isNotEnoughDiskSpace) {
+        if (
+          cardanoNode.state !== CardanoNodeStates.STOPPING &&
+          cardanoNode.state !== CardanoNodeStates.STOPPED
+        ) {
+          try {
+            cardanoNode.stop();
+          } catch (e) {} // eslint-disable-line
+        }
+      } else if (
+        cardanoNode.state !== CardanoNodeStates.STARTING &&
+        cardanoNode.state !== CardanoNodeStates.RUNNING
+      ) {
+        cardanoNode.restart();
+      }
+    }
+  };
+  const handleCheckDiskSpace = handleDiskSpace(mainWindow, onCheckDiskSpace);
+  const onMainError = (error: string) => {
+    if (error.indexOf('ENOSPC') > -1) {
+      handleCheckDiskSpace();
+      return false;
+    }
+  };
+  mainErrorHandler(onMainError);
+  await handleCheckDiskSpace();
+
   cardanoNode = setupCardano(launcherConfig, mainWindow);
 
   if (isWatchMode) {
