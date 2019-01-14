@@ -51,13 +51,13 @@ let
     yaml2json = pkgs.haskell.lib.disableCabalFlag pkgs.haskellPackages.yaml "no-exe";
 
     electron4 = pkgs.callPackage ./installers/nix/electron.nix {};
-    electron_3_0_13 = self.electron4.overrideAttrs (old: rec {
+    electron3 = self.electron4.overrideAttrs (old: rec {
       name = "electron-${version}";
-      version = "3.0.13";
+      version = "3.1.0";
       src = {
         x86_64-linux = pkgs.fetchurl {
           url = "https://github.com/electron/electron/releases/download/v${version}/electron-v${version}-linux-x64.zip";
-          sha256 = "0lz6hx91xzp3xwc6d2bhl4290v0ynjfpbnwpm6civ8ijzm6b8zxh";
+          sha256 = "1a8jm01qqadz0ya86ivx2y5zadasx8pi34asp54d7g75hn20p5pp";
         };
       }.${pkgs.stdenv.hostPlatform.system} or throwSystem;
     });
