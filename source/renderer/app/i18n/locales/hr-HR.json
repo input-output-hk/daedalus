@@ -72,6 +72,8 @@
   "loading.screen.unrecoverableCardanoMessage": "!!!Unable to start Cardano node. Please submit a support request.",
   "loading.screen.updatedCardanoMessage": "!!!Cardano node updated",
   "loading.screen.updatingCardanoMessage": "!!!Updating Cardano node",
+  "noDiskSpace.error.overlayContent": "!!!<b>There is not enough disk space left on your device.</b><br />Daedalus requires at least {diskSpaceRequired} to operate. Please free up some disk space to continue.",
+  "noDiskSpace.error.overlayTitle": "!!!Not enough disk space",
   "paper.wallet.create.certificate.completion.dialog.addressCopiedLabel": "!!!copied",
   "paper.wallet.create.certificate.completion.dialog.addressInstructions": "!!!To receive funds to your paper wallet simply share your wallet address with others.",
   "paper.wallet.create.certificate.completion.dialog.addressLabel": "!!!Wallet address",

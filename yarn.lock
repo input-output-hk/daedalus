@@ -2569,6 +2569,10 @@ chardet@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/chardet/-/chardet-0.7.0.tgz#90094849f0937f2eedc2425d0d28a9e5f0cbad9e"
 
+check-disk-space@1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/check-disk-space/-/check-disk-space-1.5.0.tgz#66647518e1d075186c0b3aa6c24983b1f6865474"
+
 check-error@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/check-error/-/check-error-1.0.2.tgz#574d312edd88bb5dd8912e9286dd6c0aed4aac82"
@@ -7886,6 +7890,10 @@ pretty-error@^2.1.1:
 pretty-hrtime@^1.0.0:
   version "1.0.3"
   resolved "http://registry.npmjs.org/pretty-hrtime/-/pretty-hrtime-1.0.3.tgz#b7e3ea42435a4c9b2759d99e0f201eb195802ee1"
+
+prettysize@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/prettysize/-/prettysize-1.1.0.tgz#c6c52f87161ff172ea435f375f99831dd9a97bb0"
 
 private@^0.1.6, private@~0.1.5:
   version "0.1.8"
