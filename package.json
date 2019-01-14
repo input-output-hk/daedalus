@@ -64,7 +64,7 @@
     "cucumber-pretty": "1.5.0",
     "del": "3.0.0",
     "devtron": "1.4.0",
-    "electron": "3.0.13",
+    "electron": "3.0.14",
     "electron-chromedriver": "4.0.0-beta.1",
     "electron-connect": "0.6.3",
     "electron-devtools-installer": "2.2.4",
