@@ -1,8 +1,7 @@
 // @flow
-import https from 'https';
 import { size, has, get, omit } from 'lodash';
 import querystring from 'querystring';
-import { encryptPassphrase, getContentLength } from './';
+import { encryptPassphrase, getContentLength } from '.';
 
 export type RequestOptions = {
   hostname: string,
@@ -66,7 +65,7 @@ function typedRequest<Response>(
       };
     }
 
-    const httpsRequest = https.request(options);
+    const httpsRequest = global.https.request(options);
     if (hasRequestBody) {
       httpsRequest.write(requestBody);
     }

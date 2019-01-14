@@ -1,4 +1,4 @@
-{ stdenv, runCommand, writeText, writeScriptBin, fetchurl, fetchFromGitHub, electron,
+{ stdenv, runCommand, writeText, writeScriptBin, electron_3_0_13,
 coreutils, utillinux, procps, cluster,
 rawapp, daedalus-bridge, daedalus-installer,
 sandboxed ? false
@@ -24,7 +24,7 @@ let
 
     cd "''${DAEDALUS_DIR}/${cluster}/"
 
-    exec ${electron}/bin/electron ${rawapp}/share/daedalus "$@"
+    exec ${electron_3_0_13}/bin/electron ${rawapp}/share/daedalus "$@"
   '';
   daedalus = writeScriptBin "daedalus" ''
     #!${stdenv.shell}

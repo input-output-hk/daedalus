@@ -1,0 +1,11 @@
+.selectInput {
+  &:after {
+    bottom: 22.5px;
+  }
+}
+
+.isOpen {
+  .selectInput:after {
+    bottom: 22.5px;
+  }
+}

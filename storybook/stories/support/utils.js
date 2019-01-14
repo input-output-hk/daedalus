@@ -1,12 +1,19 @@
+// @flow
 import hash from 'hash.js';
 import faker from 'faker';
 import moment from 'moment';
 import BigNumber from 'bignumber.js';
 
-import WalletTransaction, {
+import {
+  WalletTransaction,
   transactionStates,
   transactionTypes
 } from '../../../source/renderer/app/domains/WalletTransaction';
+import WalletAddress from '../../../source/renderer/app/domains/WalletAddress';
+import type {
+  TransactionState,
+  TransactionType
+} from '../../../source/renderer/app/api/transactions/types';
 
 export const generateHash = () => {
   const now = (new Date()).valueOf().toString();
@@ -15,7 +22,11 @@ export const generateHash = () => {
 };
 
 export const generateTransaction = (
-  type, date, amount, confirmations = 1, state = transactionStates.OK
+  type: TransactionType,
+  date: Date,
+  amount: BigNumber,
+  confirmations: number = 1,
+  state: TransactionState = transactionStates.OK
 ) => (
   new WalletTransaction({
     id: faker.random.uuid(),
@@ -32,23 +43,26 @@ export const generateTransaction = (
   })
 );
 
-export const generateRandomTransaction = (index: number) =>
+export const generateRandomTransaction = (index: number) => (
   generateTransaction(
     transactionTypes.INCOME,
     moment().subtract(index, 'days').toDate(),
     new BigNumber(faker.random.number(5))
-  );
+  ));
 
-export const generateAddres = (isUsed: boolean) => ({
+export const generateAddress = (used: boolean = false): WalletAddress => (new WalletAddress({
   id: generateHash(),
   amount: new BigNumber(faker.random.number(5)),
-  isUsed
-});
+  changeAddress: false,
+  used
+}));
 
-export const promise = (returnValue: any) => (
-  new Promise(resolve => {
-    setTimeout(() => {
-      resolve(returnValue);
-    }, 2000);
-  })
+export const promise = (returnValue: any): () => Promise<any> => (
+  () => (
+    new Promise(resolve => {
+      setTimeout(() => {
+        resolve(returnValue);
+      }, 2000);
+    })
+  )
 );

@@ -5,7 +5,7 @@ import log from 'electron-log';
 import moment from 'moment';
 import ensureDirectoryExists from './ensureDirectoryExists';
 import { pubLogsFolderPath, appLogsFolderPath, APP_NAME } from '../config';
-import { isFileNameWithTimestamp } from '../../common/fileName';
+import { isFileNameWithTimestamp } from '../../common/utils/files';
 
 const isTest = process.env.NODE_ENV === 'test';
 const isDev = process.env.NODE_ENV === 'development';
@@ -21,7 +21,10 @@ export const setupLogging = () => {
   log.transports.file.file = logFilePath;
   log.transports.file.format = (msg) => {
     const formattedDate = moment.utc(msg.date).format('YYYY-MM-DDTHH:mm:ss.0SSS');
-    return `[${formattedDate}Z] [${msg.level}] ${msg.data}`;
+    // Debug level logging is recorded as "info" as we need it in Daedalus log files
+    // but in the same time we do not want to output it to console or terminal window
+    const level = msg.level === 'debug' ? 'info' : msg.level;
+    return `[${formattedDate}Z] [${level}] ${msg.data}`;
   };
 
   // Removes existing compressed logs

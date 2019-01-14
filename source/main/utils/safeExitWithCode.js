@@ -1,7 +1,6 @@
 // @flow
 import { app } from 'electron';
 import log from 'electron-log';
-import { releaseDaedalusInstanceLock } from './lockFiles';
 
 export const safeExitWithCode = (exitCode: number) => {
   const { file } = log.transports;
@@ -13,7 +12,7 @@ export const safeExitWithCode = (exitCode: number) => {
     `========== Flushing logs and exiting with code ${exitCode} ===========`,
     'utf8',
     () => {
-      releaseDaedalusInstanceLock();
+      app.releaseSingleInstanceLock();
       app.exit(exitCode);
     }
   );

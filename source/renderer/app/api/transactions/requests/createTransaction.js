@@ -20,7 +20,6 @@ export const createTransaction = (
   { data }: TransactionParams
 ): Promise<Transaction> => (
   request({
-    hostname: 'localhost',
     method: 'POST',
     path: '/api/v1/transactions',
     ...config,

@@ -119,7 +119,7 @@ export default class InlineEditingInput extends Component<Props, State> {
 
   componentDidUpdate() {
     if (this.props.isActive) {
-      this.inputField && this.inputField.getRef().focus();
+      this.inputField && this.inputField.focus();
     }
   }
 
@@ -150,7 +150,7 @@ export default class InlineEditingInput extends Component<Props, State> {
       <div
         className={componentStyles}
         onBlur={this.onBlur}
-        onClick={this.onFocus}
+        onMouseUp={this.onFocus}
         role="presentation"
         aria-hidden
       >

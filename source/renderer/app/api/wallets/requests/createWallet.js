@@ -16,7 +16,6 @@ export const createWallet = (
   { walletInitData }: { walletInitData: WalletInitData }
 ): Promise<AdaWallet> => (
   request({
-    hostname: 'localhost',
     method: 'POST',
     path: '/api/v1/wallets',
     ...config,

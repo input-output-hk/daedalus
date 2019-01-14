@@ -5,7 +5,6 @@ import Sidebar from '../components/sidebar/Sidebar';
 import TopBarContainer from './TopBarContainer';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import NodeUpdatePage from './notifications/NodeUpdatePage';
-import WalletSupportRequestPage from './wallet/WalletSupportRequestPage';
 import PaperWalletCreateCertificatePage from './wallet/PaperWalletCreateCertificatePage';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 import { ROUTES } from '../routes-config';
@@ -68,7 +67,6 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         topbar={<TopBarContainer />}
         notification={addNodeUpdateNotification}
         contentDialogs={[
-          <WalletSupportRequestPage key="WalletSupportRequestPage" />,
           <PaperWalletCreateCertificatePage
             key="PaperWalletCreateCertificatePage"
             certificateStep={this.props.stores.wallets.certificateStep}

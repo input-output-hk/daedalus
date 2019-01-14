@@ -140,7 +140,7 @@ button {
 
 // ============ BASE ===========
 
-html, body, :global(#app), :global(#app) > [data-reactroot] {
+html, body, :global(#root), :global(#root) > [data-reactroot] {
   width: 100%;
   height: 100%;
   // Make the default font ugly so we immediately see when something

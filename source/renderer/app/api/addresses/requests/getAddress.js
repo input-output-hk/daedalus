@@ -13,7 +13,6 @@ export const getAddress = (
 ): Promise<Address> => {
   const encodedAddress = encodeURIComponent(address);
   return request({
-    hostname: 'localhost',
     method: 'GET',
     path: `/api/v1/addresses/${encodedAddress}`,
     ...config,
