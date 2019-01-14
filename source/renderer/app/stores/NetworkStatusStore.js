@@ -21,6 +21,7 @@ import {
   cardanoStatusChannel,
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
+import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
 import type {
   CardanoNodeState,
@@ -28,6 +29,7 @@ import type {
   TlsConfig
 } from '../../../common/types/cardano-node.types';
 import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
+import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
@@ -72,6 +74,11 @@ export default class NetworkStatusStore extends Store {
     this.api.ada.getNetworkStatus
   );
 
+  @observable isNotEnoughDiskSpace: boolean = false;
+  @observable diskSpaceRequired: string = '';
+  @observable diskSpaceMissing: string = '';
+  @observable diskSpaceRecommended: string = '';
+
   // DEFINE STORE METHODS
   setup() {
     // ========== IPC CHANNELS =========== //
@@ -97,15 +104,9 @@ export default class NetworkStatusStore extends Store {
       this._updateNodeStatus,
     ]);
 
-    // Setup network status polling interval
-    this._networkStatusPollingInterval = setInterval(
-      this._updateNetworkStatus, NETWORK_STATUS_POLL_INTERVAL
-    );
-
-    // Forced time difference check polling interval
-    this._forceCheckTimeDifferencePollingInterval = setInterval(
-      this.forceCheckLocalTimeDifference, NTP_FORCE_CHECK_POLL_INTERVAL
-    );
+    // Setup polling intervals
+    this._setNetworkStatusPollingInterval();
+    this._setForceCheckTimeDifferencePollingInterval();
 
     // Ignore system time checks for the first 30 seconds:
     this.ignoreSystemTimeChecks();
@@ -113,7 +114,25 @@ export default class NetworkStatusStore extends Store {
       () => this.ignoreSystemTimeChecks(false),
       NTP_IGNORE_CHECKS_GRACE_PERIOD
     );
+
+    // Setup disk space checks
+    getDiskSpaceStatusChannel.onReceive(this._onCheckDiskSpace);
+    this._checkDiskSpace();
   }
+
+  // Setup network status polling interval
+  _setNetworkStatusPollingInterval = () => {
+    this._networkStatusPollingInterval = setInterval(
+      this._updateNetworkStatus, NETWORK_STATUS_POLL_INTERVAL
+    );
+  };
+
+  // Setup forced time difference check polling interval
+  _setForceCheckTimeDifferencePollingInterval = () => {
+    this._forceCheckTimeDifferencePollingInterval = setInterval(
+      this.forceCheckLocalTimeDifference, NTP_FORCE_CHECK_POLL_INTERVAL
+    );
+  };
 
   async restartNode() {
     try {
@@ -163,6 +182,10 @@ export default class NetworkStatusStore extends Store {
 
   _getStartupTimeDelta() {
     return Date.now() - this._startTime;
+  }
+
+  _checkDiskSpace(diskSpaceRequired?: number) {
+    getDiskSpaceStatusChannel.send(diskSpaceRequired);
   }
 
   _requestCardanoState = async () => {
@@ -455,6 +478,40 @@ export default class NetworkStatusStore extends Store {
 
   forceCheckLocalTimeDifference = () => {
     if (this.isConnected) this._updateNetworkStatus({ force_ntp_check: true });
+  };
+
+  @action _onCheckDiskSpace = (
+    {
+      isNotEnoughDiskSpace,
+      diskSpaceRequired,
+      diskSpaceMissing,
+      diskSpaceRecommended,
+    }: CheckDiskSpaceResponse
+  ): Promise<void> => {
+    this.isNotEnoughDiskSpace = isNotEnoughDiskSpace;
+    this.diskSpaceRequired = diskSpaceRequired;
+    this.diskSpaceMissing = diskSpaceMissing;
+    this.diskSpaceRecommended = diskSpaceRecommended;
+
+    if (this.isNotEnoughDiskSpace) {
+      if (this._networkStatusPollingInterval) {
+        clearInterval(this._networkStatusPollingInterval);
+        this._networkStatusPollingInterval = null;
+      }
+      if (this._forceCheckTimeDifferencePollingInterval) {
+        clearInterval(this._forceCheckTimeDifferencePollingInterval);
+        this._forceCheckTimeDifferencePollingInterval = null;
+      }
+    } else {
+      if (!this._networkStatusPollingInterval) {
+        this._setNetworkStatusPollingInterval();
+      }
+      if (!this._forceCheckTimeDifferencePollingInterval) {
+        this._setForceCheckTimeDifferencePollingInterval();
+      }
+    }
+
+    return Promise.resolve();
   };
 
   // DEFINE COMPUTED VALUES
