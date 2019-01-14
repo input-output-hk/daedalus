@@ -79,7 +79,7 @@ let
     ] ++ (localLib.optionals autoStartBackend [
       daedalusPkgs.daedalus-bridge
     ]) ++ (localLib.optionals (pkgs.stdenv.hostPlatform.system != "x86_64-darwin") [
-      daedalusPkgs.electron_3_0_13
+      daedalusPkgs.electron3
     ])
     );
   buildShell = pkgs.stdenv.mkDerivation {
@@ -155,7 +155,7 @@ let
       }
       yarn install
       ${pkgs.lib.optionalString (pkgs.stdenv.hostPlatform.system != "x86_64-darwin") ''
-        ln -svf ${daedalusPkgs.electron_3_0_13}/bin/electron         ./node_modules/electron/dist/electron
+        ln -svf ${daedalusPkgs.electron3}/bin/electron ./node_modules/electron/dist/electron
         ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
       ''}
       ${localLib.optionalString (! autoStartBackend) ''
