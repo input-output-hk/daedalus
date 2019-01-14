@@ -1,5 +1,8 @@
 // @flow
+const { isTest } = global.environment;
+
 // All configuration values for timeouts / intervals should go here
+/* eslint-disable max-len */
 export const REPORT_ISSUE_TIME_TRIGGER = 5 * 60; // 5 minutes | unit: seconds
 export const ADDRESS_COPY_NOTIFICATION_DURATION = 10; // unit: seconds
 export const ADDRESS_COPY_NOTIFICATION_SMALL_DURATION = 3; // unit: seconds
@@ -12,4 +15,5 @@ export const MAX_ALLOWED_STALL_DURATION = 2 * 60 * 1000; // 2 minutes | unit: mi
 export const NETWORK_STATUS_REQUEST_TIMEOUT = 30 * 1000; // 30 seconds | unit: milliseconds
 export const NETWORK_STATUS_POLL_INTERVAL = 2000; // 2 seconds | unit: milliseconds
 export const NTP_FORCE_CHECK_POLL_INTERVAL = 30 * 60 * 1000; // 30 minutes | unit: milliseconds
-export const NTP_IGNORE_CHECKS_GRACE_PERIOD = 30 * 1000; // 30 seconds | unit: milliseconds
+export const NTP_IGNORE_CHECKS_GRACE_PERIOD = isTest ? 1000 : 30 * 1000; // 30 seconds | unit: milliseconds
+/* eslint-disable max-len */

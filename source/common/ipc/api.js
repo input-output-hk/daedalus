@@ -9,6 +9,7 @@ import type {
   ReportRequestPayload
 } from '../types/report-request.types';
 import type { GeneratePaperWalletParams } from '../types/paper-wallet-request.types';
+import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
 
 /**
  * Channel for loading an base64 encoded asset from within the `source/renderer` folder
@@ -22,6 +23,13 @@ export type LoadAssetMainResponse = string;
 export const OpenExternalUrlChannelName = 'OpenExternalUrlChannel';
 export type OpenExternalUrlRendererRequest = string;
 export type OpenExternalUrlMainResponse = void;
+
+/**
+ * Channel for checking the disk space available
+ */
+export const GetDiskSpaceStatusChannelName = 'GetDiskSpaceStatusChannel';
+export type GetDiskSpaceStatusRendererRequest = number | any;
+export type GetDiskSpaceStatusMainResponse = CheckDiskSpaceResponse;
 
 /**
  * Channel to send bug report requests

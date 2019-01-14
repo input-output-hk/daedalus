@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import SystemTimeErrorOverlay from './SystemTimeErrorOverlay';
+import NoDiskSpaceOverlay from './NoDiskSpaceOverlay';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import linkNewWindow from '../../assets/images/link-ic.inline.svg';
@@ -106,6 +107,10 @@ type Props = {
   hasBeenConnected: boolean,
   isConnected: boolean,
   isSynced: boolean,
+  isNotEnoughDiskSpace: boolean,
+  diskSpaceRequired: string,
+  diskSpaceMissing: string,
+  diskSpaceRecommended: string,
   syncPercentage: number,
   loadingDataForNextScreenMessage: ReactIntlMessage,
   hasLoadedCurrentLocale: boolean,
@@ -135,16 +140,19 @@ export default class Loading extends Component<Props, State> {
   };
 
   componentDidMount() {
+    if (this.props.isNotEnoughDiskSpace) return;
     this._defensivelyStartTimers(this.props.isConnected, this.props.isSynced);
   }
 
   componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.isNotEnoughDiskSpace) return;
     this._defensivelyStartTimers(nextProps.isConnected, nextProps.isSynced);
   }
 
   componentDidUpdate() {
-    const canResetSyncing = this._syncingTimerShouldStop(this.props.isSynced);
-    const canResetConnecting = this._connectingTimerShouldStop(this.props.isConnected);
+    const { isConnected, isSynced, isNotEnoughDiskSpace } = this.props;
+    const canResetSyncing = this._syncingTimerShouldStop(isSynced, isNotEnoughDiskSpace);
+    const canResetConnecting = this._connectingTimerShouldStop(isConnected, isNotEnoughDiskSpace);
 
     if (canResetSyncing) { this._resetSyncingTime(); }
     if (canResetConnecting) { this._resetConnectingTime(); }
@@ -163,12 +171,16 @@ export default class Loading extends Component<Props, State> {
     isConnected && !isSynced && syncingInterval === null
   );
 
-  _syncingTimerShouldStop = (isSynced: boolean): boolean => (
-    isSynced && syncingInterval !== null
+  _syncingTimerShouldStop = (
+    isSynced: boolean, isNotEnoughDiskSpace: boolean
+  ): boolean => (
+    (isNotEnoughDiskSpace || isSynced) && syncingInterval !== null
   );
 
-  _connectingTimerShouldStop = (isConnected: boolean): boolean => (
-    isConnected && connectingInterval !== null
+  _connectingTimerShouldStop = (
+    isConnected: boolean, isNotEnoughDiskSpace: boolean
+  ): boolean => (
+    (isNotEnoughDiskSpace || isConnected) && connectingInterval !== null
   );
 
   _defensivelyStartTimers = (isConnected: boolean, isSynced: boolean) => {
@@ -326,6 +338,10 @@ export default class Loading extends Component<Props, State> {
       apiIcon,
       isConnected,
       isSynced,
+      isNotEnoughDiskSpace,
+      diskSpaceRequired,
+      diskSpaceMissing,
+      diskSpaceRecommended,
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
       onReportIssueClick,
@@ -379,6 +395,13 @@ export default class Loading extends Component<Props, State> {
 
     return (
       <div className={componentStyles}>
+        {isNotEnoughDiskSpace && (
+          <NoDiskSpaceOverlay
+            diskSpaceRequired={diskSpaceRequired}
+            diskSpaceMissing={diskSpaceMissing}
+            diskSpaceRecommended={diskSpaceRecommended}
+          />
+        )}
         {showReportIssue && (
           <div className={styles.reportIssue}>
             <h1 className={styles.reportIssueText}>
