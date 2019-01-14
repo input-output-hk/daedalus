@@ -145,7 +145,7 @@
     "pdf.js-extract": "0.0.9",
     "pdfkit": "0.8.3",
     "prop-types": "15.6.2",
-    "ps-list": "5.0.0",
+    "ps-list": "6.0.0",
     "qr-image": "3.2.0",
     "qrcode.react": "0.8.0",
     "react": "16.6.3",
