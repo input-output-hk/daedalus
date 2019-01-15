@@ -118,11 +118,11 @@ export default class WalletReceivePage extends Component<Props, State> {
         <NotificationMessage
           icon={successIcon}
           show={uiNotifications.isOpen(notification.id)}
-          onClose={() =>
-            this.props.actions.notifications.closeActiveNotification.trigger({
+          onClose={() => {
+            actions.notifications.closeActiveNotification.trigger({
               id: notification.id
-            })
-          }
+            });
+          }}
           clickToClose
           hasCloseButton
         >

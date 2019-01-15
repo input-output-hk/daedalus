@@ -40,12 +40,11 @@ export default class NotificationMessage extends Component<Props> {
           {children}
         </div>
 
-        {
-          hasCloseButton &&
+        {hasCloseButton && (
           <button className={styles.closeButton} onClick={() => onClose && onClose()}>
             <SVGInline svg={closeCross} />
           </button>
-        }
+        )}
 
       </div>
     );
