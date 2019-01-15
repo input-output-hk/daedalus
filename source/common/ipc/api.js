@@ -5,10 +5,13 @@ import type {
 } from '../types/report-request.types';
 import type { GeneratePaperWalletParams } from '../types/paper-wallet-request.types';
 import type {
-  CardanoNodeState, CardanoStatus,
+  CardanoNodeState,
+  CardanoStatus,
   FaultInjectionIpcRequest,
   TlsConfig
 } from '../types/cardano-node.types';
+import type { AdaRedemptionCode, AdaRedemptionDecryptionKey } from '../types/ada-redemption.types';
+import type { RedemptionTypeChoices } from '../../renderer/app/types/redemptionTypes';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -24,6 +27,7 @@ import type {
 export const LOAD_ASSET_CHANNEL = 'LoadAssetChannel';
 export type LoadAssetRendererRequest = { fileName: string };
 export type LoadAssetMainResponse = string;
+
 /**
  * Channel for opening an external url in the default browser
  */
@@ -40,6 +44,25 @@ export type SubmitBugReportRequest = {
   requestPayload?: BugReportRequestPayload
 }
 export type SubmitBugReportRequestResponse = void;
+
+/**
+ * Channel where renderer can ask the main process to parse the redemption
+ * code from a given certificate, providing the file path, decryption key
+ * and type of redemption that is required.
+ */
+export const PARSE_REDEMPTION_CODE_CHANNEL = 'PARSE_REDEMPTION_CODE_CHANNEL';
+export type ParseRedemptionCodeRequest = {
+  certificateFilePath: string,
+  decryptionKey: AdaRedemptionDecryptionKey,
+  redemptionType: RedemptionTypeChoices
+};
+export type ParseRedemptionCodeResponse = AdaRedemptionCode;
+
+// TODO: refactor to typed ipc channels
+export const GET_LOGS_CHANNEL = 'get-logs';
+export const COMPRESS_LOGS_CHANNEL = 'compress-logs';
+export const DOWNLOAD_LOGS_CHANNEL = 'download-logs';
+export const GET_GPU_STATUS_CHANNEL = 'get-gpu-status';
 
 /**
  * Channel to generate and save a paper wallet certificate

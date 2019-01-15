@@ -10,6 +10,7 @@ import getGpuStatus from './get-gpu-status';
 import { handleReportRequests } from './reportRequestChannel';
 import { handlePaperWalletRequests } from './generatePaperWalletChannel';
 import { openExternalUrlChannel } from './open-external-url';
+import { parseRedemptionCode } from './parse-redemption-code';
 
 export default (window: BrowserWindow) => {
   compressLogsApi();
@@ -22,4 +23,5 @@ export default (window: BrowserWindow) => {
   handleReportRequests();
   handlePaperWalletRequests();
   openExternalUrlChannel;
+  parseRedemptionCode();
 };

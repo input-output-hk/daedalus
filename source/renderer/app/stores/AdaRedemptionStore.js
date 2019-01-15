@@ -7,6 +7,7 @@ import { WalletTransaction } from '../domains/WalletTransaction';
 import { Logger } from '../utils/logging';
 import { matchRoute } from '../utils/routing';
 import { PARSE_REDEMPTION_CODE } from '../../../common/ipc-api';
+import { parseRedemptionCodeChannel } from '../ipc/parse-redemption-code';
 import {
   InvalidMnemonicError,
   AdaRedemptionCertificateParseError,
@@ -186,6 +187,11 @@ export default class AdaRedemptionStore extends Store {
       decryptionKey = this.decryptionKey;
     }
     // TODO: refactor to ipc channel
+    parseRedemptionCodeChannel.send({
+      certificateFilePath: path,
+      redemptionType: this.redemptionType,
+      decryptionKey,
+    });
     ipcRenderer.send(PARSE_REDEMPTION_CODE.REQUEST, path, decryptionKey, this.redemptionType);
   }
 
