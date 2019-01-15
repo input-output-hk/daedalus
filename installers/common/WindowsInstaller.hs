@@ -5,7 +5,7 @@ module WindowsInstaller
     , writeInstallerNSIS
     ) where
 
-import           Universum hiding (pass, writeFile, stdout, FilePath, die)
+import           Universum hiding (pass, writeFile, stdout, FilePath, die, view)
 
 import           Control.Monad (unless)
 import qualified Data.List as L
@@ -23,7 +23,7 @@ import           Prelude ((!!))
 import qualified System.IO as IO
 import           Filesystem.Path (FilePath, (</>))
 import           Filesystem.Path.CurrentOS (encodeString, fromText)
-import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, shells, testfile, stdout, input, export, sed, strict, format, printf, fp, w, s, (%), need, writeTextFile, die, cp, rm)
+import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, shells, testfile, stdout, input, export, sed, strict, format, printf, fp, w, s, (%), need, writeTextFile, die, cp, rm, view, ls)
 import           Turtle.Pattern (text, plus, noneOf, star, dot)
 import           AppVeyor
 import qualified Codec.Archive.Zip    as Zip
@@ -203,6 +203,8 @@ packageFrontend cluster installerConfig = do
     export "NODE_ENV" "production"
     shells ("npm run package -- --icon " <> icon) empty
     rewritePackageJson "../release/win32-x64/Daedalus-win32-x64/resources/app/package.json" (installDirectory installerConfig)
+    view (ls "../release/win32-x64/Daedalus-win32-x64/resources/app/dist")
+    cp "../node_modules/ps-list/fastlist.exe" "../release/win32-x64/Daedalus-win32-x64/resources/app/dist/main/fastlist.exe"
 
 -- | The contract of `main` is not to produce unsigned installer binaries.
 main :: Options -> IO ()
