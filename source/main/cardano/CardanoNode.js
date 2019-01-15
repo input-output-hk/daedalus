@@ -400,7 +400,7 @@ export class CardanoNode {
     }
   };
 
-  saveStatus(status: CardanoStatus) {
+  saveStatus(status: ?CardanoStatus) {
     this._status = status;
   }
 

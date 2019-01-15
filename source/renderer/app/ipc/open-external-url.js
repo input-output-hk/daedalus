@@ -1,15 +1,15 @@
 // @flow
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
-import { OpenExternalUrlChannelName } from '../../../common/ipc/api';
+import { OPEN_EXTERNAL_URL_CHANNEL } from '../../../common/ipc/api';
 import type {
-  OpenExternalUrlMainResponse,
-  OpenExternalUrlRendererRequest,
+  OpenExternalUrlResponse,
+  OpenExternalUrlRequest,
 } from '../../../common/ipc/api';
 
 
 export const openExternalUrlChannel: (
   // IpcChannel<Incoming, Outgoing>
-  RendererIpcChannel<OpenExternalUrlMainResponse, OpenExternalUrlRendererRequest>
+  RendererIpcChannel<OpenExternalUrlResponse, OpenExternalUrlRequest>
 ) = (
-  new RendererIpcChannel(OpenExternalUrlChannelName)
+  new RendererIpcChannel(OPEN_EXTERNAL_URL_CHANNEL)
 );

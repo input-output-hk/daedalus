@@ -4,23 +4,23 @@ import FormData from 'form-data/lib/form_data';
 import fs from 'fs';
 import { extractFileNameFromPath } from '../../common/utils/files';
 import { MainIpcChannel } from './lib/MainIpcChannel';
-import { ReportRequestChannelName } from '../../common/ipc/api';
+import { SUBMIT_BUG_REPORT_REQUEST_CHANNEL } from '../../common/ipc/api';
 import type {
-  ReportRequestMainResponse,
-  ReportRequestRendererRequest
+  SubmitBugReportRequestResponse,
+  SubmitBugReportRequest
 } from '../../common/ipc/api';
 import { Logger } from '../utils/logging';
 import { stringifyData } from '../../common/utils/logging';
 
 export const reportRequestChannel: (
   // IpcChannel<Incoming, Outgoing>
-  MainIpcChannel<ReportRequestRendererRequest, ReportRequestMainResponse>
+  MainIpcChannel<SubmitBugReportRequest, SubmitBugReportRequestResponse>
 ) = (
-  new MainIpcChannel(ReportRequestChannelName)
+  new MainIpcChannel(SUBMIT_BUG_REPORT_REQUEST_CHANNEL)
 );
 
 export const handleReportRequests = () => {
-  reportRequestChannel.onReceive((request: ReportRequestRendererRequest) => (
+  reportRequestChannel.onReceive((request: SubmitBugReportRequest) => (
     new Promise((resolve, reject) => {
       Logger.info(`reportRequestChannel::onReceive ${stringifyData(request)}`);
       const { httpOptions, requestPayload } = request;

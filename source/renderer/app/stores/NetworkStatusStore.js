@@ -15,7 +15,7 @@ import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
 import { Logger } from '../utils/logging';
 import {
   cardanoStateChangeChannel,
-  tlsConfigChannel,
+  cardanoTlsConfigChannel,
   restartCardanoNodeChannel,
   cardanoStatusChannel,
 } from '../ipc/cardano.ipc';
@@ -80,7 +80,7 @@ export default class NetworkStatusStore extends Store {
 
     // Passively receive broadcasted tls config changes (which can happen without requesting it)
     // E.g if the cardano-node restarted for some reason
-    tlsConfigChannel.onReceive(this._updateTlsConfig);
+    cardanoTlsConfigChannel.onReceive(this._updateTlsConfig);
 
     // Passively receive state changes of the cardano-node
     cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
@@ -162,7 +162,7 @@ export default class NetworkStatusStore extends Store {
   _requestTlsConfig = async () => {
     try {
       Logger.info('NetworkStatusStore: requesting tls config from main process.');
-      const tlsConfig = await tlsConfigChannel.request();
+      const tlsConfig = await cardanoTlsConfigChannel.request();
       await this._updateTlsConfig(tlsConfig);
     } catch (error) {
       Logger.info(`NetworkStatusStore: error while requesting tls config ${error}.`);

@@ -1,14 +1,14 @@
 // @flow
-import { ReportRequestChannelName } from '../../../common/ipc/api';
+import { SUBMIT_BUG_REPORT_REQUEST_CHANNEL } from '../../../common/ipc/api';
 import type {
-  ReportRequestMainResponse,
-  ReportRequestRendererRequest
+  SubmitBugReportRequestResponse,
+  SubmitBugReportRequest
 } from '../../../common/ipc/api';
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
 
 export const reportRequestChannel: (
   // IpcChannel<Incoming, Outgoing>
-  RendererIpcChannel<ReportRequestMainResponse, ReportRequestRendererRequest>
+  RendererIpcChannel<SubmitBugReportRequestResponse, SubmitBugReportRequest>
 ) = (
-  new RendererIpcChannel(ReportRequestChannelName)
+  new RendererIpcChannel(SUBMIT_BUG_REPORT_REQUEST_CHANNEL)
 );
