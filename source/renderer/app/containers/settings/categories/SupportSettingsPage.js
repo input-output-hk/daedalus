@@ -18,7 +18,7 @@ const messages = defineMessages({
   },
   downloadLogsSuccess: {
     id: 'settings.support.reportProblem.downloadLogsSuccessMessage',
-    defaultMessage: '!!!Logs were downloaded',
+    defaultMessage: '!!!Logs successfully downloaded',
     description: 'Success message for download logs.',
   },
 });

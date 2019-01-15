@@ -26,7 +26,7 @@ export const messages = defineMessages({
   },
   downloadLogsSuccess: {
     id: 'loading.screen.reportIssue.downloadLogsSuccessMessage',
-    defaultMessage: '!!!Logs were downloaded',
+    defaultMessage: '!!!Logs successfully downloaded',
     description: 'Success message for download logs.',
   },
 });

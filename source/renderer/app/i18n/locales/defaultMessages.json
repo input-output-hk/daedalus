@@ -4873,7 +4873,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Logs were downloaded",
+        "defaultMessage": "!!!Logs successfully downloaded",
         "description": "Success message for download logs.",
         "end": {
           "column": 3,
@@ -4906,7 +4906,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Logs were downloaded",
+        "defaultMessage": "!!!Logs successfully downloaded",
         "description": "Success message for download logs.",
         "end": {
           "column": 3,
