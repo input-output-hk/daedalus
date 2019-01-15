@@ -613,6 +613,7 @@ export class CardanoNode {
       _log.debug(`CardanoNode: previous ${processName} process found: ${JSON.stringify(previousProcess)}`);
       return true;
     } catch (error) {
+      _log.error(`CardanoNode: _isProcessRunning error: ${JSON.stringify(error, null, 2)}`);
       return false;
     }
   };
