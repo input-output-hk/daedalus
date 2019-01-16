@@ -308,6 +308,7 @@ export class CardanoNode {
         if (_node) _node.kill();
         await this._waitForCardanoToExitOrKillIt();
         await this._storeProcessStates();
+        this._changeToState(CardanoNodeStates.STOPPED);
         this._reset();
         resolve();
       } catch (_) {
