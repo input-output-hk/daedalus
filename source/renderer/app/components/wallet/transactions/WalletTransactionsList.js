@@ -138,30 +138,44 @@ export default class WalletTransactionsList extends Component<Props> {
       styles.showMoreTransactionsButton,
     ]);
 
+    const transactionsList = [];
+    transactionsGroups.forEach((group, groupIndex) => {
+      transactionsList.push(
+        <div className={styles.groupDate} key={walletId + '-' + groupIndex}>
+          {this.localizedDate(group.date)}
+        </div>
+      );
+
+      group.transactions.forEach((transaction, transactionIndex) => {
+        const isLastInGroup = (group.transactions.length === (transactionIndex + 1));
+        const transactionClasses = classnames([
+          styles.transaction,
+          isLastInGroup ? styles.lastInGroup : null,
+        ]);
+        transactionsList.push(
+          <div
+            className={transactionClasses}
+            key={`${walletId}-${transaction.id}-${transaction.type}`}
+          >
+            <Transaction
+              data={transaction}
+              isRestoreActive={isRestoreActive}
+              isLastInList={transactionIndex === group.transactions.length - 1}
+              state={transaction.state}
+              assuranceLevel={transaction.getAssuranceLevelForMode(assuranceMode)}
+              formattedWalletAmount={formattedWalletAmount}
+              onOpenExternalLink={onOpenExternalLink}
+            />
+          </div>
+        );
+      });
+    });
+
     return (
       <div className={styles.component}>
         {syncingTransactionsSpinner}
 
-        {transactionsGroups.map((group, groupIndex) => (
-          <div className={styles.group} key={walletId + '-' + groupIndex}>
-            <div className={styles.groupDate}>{this.localizedDate(group.date)}</div>
-            <div className={styles.list}>
-              {group.transactions.map((transaction, transactionIndex) => (
-                <div key={`${walletId}-${transaction.id}-${transaction.type}`}>
-                  <Transaction
-                    data={transaction}
-                    isRestoreActive={isRestoreActive}
-                    isLastInList={transactionIndex === group.transactions.length - 1}
-                    state={transaction.state}
-                    assuranceLevel={transaction.getAssuranceLevelForMode(assuranceMode)}
-                    formattedWalletAmount={formattedWalletAmount}
-                    onOpenExternalLink={onOpenExternalLink}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
+        {transactionsList}
 
         {loadingSpinner}
 
