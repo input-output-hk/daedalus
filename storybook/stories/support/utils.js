@@ -22,9 +22,9 @@ export const generateHash = () => {
 };
 
 export const generateTransaction = (
-  type: TransactionType,
-  date: Date,
-  amount: BigNumber,
+  type: TransactionType = transactionTypes.INCOME,
+  date: Date = faker.date.past(),
+  amount: BigNumber = new BigNumber(faker.finance.amount()),
   confirmations: number = 1,
   state: TransactionState = transactionStates.OK
 ) => (
@@ -48,14 +48,23 @@ export const generateRandomTransaction = (index: number) => (
     transactionTypes.INCOME,
     moment().subtract(index, 'days').toDate(),
     new BigNumber(faker.random.number(5))
-  ));
+  )
+);
 
-export const generateAddress = (used: boolean = false): WalletAddress => (new WalletAddress({
-  id: generateHash(),
-  amount: new BigNumber(faker.random.number(5)),
-  changeAddress: false,
-  used
-}));
+export const generateMultipleTransactions = (amount: number): WalletTransaction[] => (
+  Array.from(Array(amount).keys()).map((key: number) => (
+    generateRandomTransaction(key)
+  ))
+);
+
+export const generateAddress = (used: boolean = false): WalletAddress => (
+  new WalletAddress({
+    id: generateHash(),
+    amount: new BigNumber(faker.random.number(5)),
+    changeAddress: false,
+    used
+  })
+);
 
 export const promise = (returnValue: any): () => Promise<any> => (
   () => (

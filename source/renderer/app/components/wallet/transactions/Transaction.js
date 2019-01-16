@@ -126,10 +126,12 @@ type Props = {
   data: WalletTransaction,
   state: TransactionState,
   assuranceLevel: string,
+  isExpanded: boolean,
   isRestoreActive: boolean,
   isLastInList: boolean,
   formattedWalletAmount: Function,
   network: string,
+  onDetailsToggled: ?Function,
   onOpenExternalLink: ?Function,
 };
 
@@ -143,12 +145,9 @@ export default class Transaction extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
-  state = {
-    isExpanded: false
-  };
-
   toggleDetails() {
-    this.setState({ isExpanded: !this.state.isExpanded });
+    const { onDetailsToggled } = this.props;
+    if (onDetailsToggled) onDetailsToggled();
   }
 
   handleOpenExplorer(type: string, param: string, e: Event) {
@@ -165,8 +164,8 @@ export default class Transaction extends Component<Props, State> {
       data, isLastInList, state, assuranceLevel,
       formattedWalletAmount, onOpenExternalLink,
       isRestoreActive,
+      isExpanded,
     } = this.props;
-    const { isExpanded } = this.state;
     const { intl } = this.context;
 
     const canOpenExplorer = onOpenExternalLink;
