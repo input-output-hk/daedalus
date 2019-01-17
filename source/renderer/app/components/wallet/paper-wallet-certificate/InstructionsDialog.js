@@ -12,6 +12,7 @@ import {
   PAPER_WALLET_WRITTEN_WORDS_COUNT,
   WALLET_RECOVERY_PHRASE_WORD_COUNT
 } from '../../../config/cryptoConfig';
+import { DEVELOPMENT } from '../../../../../common/types/environment.types';
 
 const messages = defineMessages({
   headline: {
@@ -81,9 +82,10 @@ const messages = defineMessages({
 
 type Props = {
   inProgress: boolean,
-  onPrint: Function,
+  network: string,
   onClose: Function,
   onOpenExternalLink: Function,
+  onPrint: Function,
 };
 
 @observer
@@ -93,9 +95,13 @@ export default class InstructionsDialog extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  static defaultProps = {
+    network: DEVELOPMENT
+  };
+
   render() {
     const { intl } = this.context;
-    const { onClose, onPrint, inProgress, onOpenExternalLink } = this.props;
+    const { onClose, onPrint, inProgress, onOpenExternalLink, network } = this.props;
     const dialogClasses = classnames([
       styles.component,
       'instructionsDialog',
@@ -115,7 +121,7 @@ export default class InstructionsDialog extends Component<Props> {
       }
     ];
 
-    const openNetworkExplorer = onOpenExternalLink.bind(null, getNetworkExplorerUrl());
+    const openNetworkExplorer = onOpenExternalLink.bind(null, getNetworkExplorerUrl(network));
 
     const cardanoExplorerLink = (
       <span

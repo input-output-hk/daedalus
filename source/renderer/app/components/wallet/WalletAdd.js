@@ -9,7 +9,6 @@ import createIcon from '../../assets/images/create-ic.inline.svg';
 import importIcon from '../../assets/images/import-ic.inline.svg';
 import joinSharedIcon from '../../assets/images/join-shared-ic.inline.svg';
 import restoreIcon from '../../assets/images/restore-ic.inline.svg';
-import environment from '../../../../common/environment';
 import { MAX_ADA_WALLETS_COUNT } from '../../config/numbersConfig';
 
 const messages = defineMessages({
@@ -80,6 +79,8 @@ type Props = {
   onRestore: Function,
   onImportFile: Function,
   isRestoreActive: boolean,
+  isMainnet: boolean,
+  isTestnet: boolean,
   isMaxNumberOfWalletsReached: boolean,
 };
 
@@ -87,7 +88,12 @@ type Props = {
 export default class WalletAdd extends Component<Props> {
 
   static contextTypes = {
-    intl: intlShape.isRequired,
+    intl: intlShape.isRequired
+  };
+
+  static defaultProps = {
+    isMainnet: false,
+    isTestnet: false
   };
 
   render() {
@@ -95,6 +101,7 @@ export default class WalletAdd extends Component<Props> {
     const {
       onCreate, onRestore, onImportFile,
       isRestoreActive, isMaxNumberOfWalletsReached,
+      isMainnet, isTestnet
     } = this.props;
 
     const componentClasses = classnames([styles.component, 'WalletAdd']);
@@ -144,8 +151,8 @@ export default class WalletAdd extends Component<Props> {
               isDisabled={
                 isMaxNumberOfWalletsReached ||
                 isRestoreActive ||
-                environment.isMainnet() ||
-                environment.isTestnet()
+                isMainnet ||
+                isTestnet
               }
             />
           </div>

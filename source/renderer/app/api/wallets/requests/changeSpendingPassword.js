@@ -17,7 +17,6 @@ export const changeSpendingPassword = (
   const encryptedOldPassphrase = oldPassword ? encryptPassphrase(oldPassword) : '';
   const encryptedNewPassphrase = newPassword ? encryptPassphrase(newPassword) : '';
   return request({
-    hostname: 'localhost',
     method: 'PUT',
     path: `/api/v1/wallets/${walletId}/password`,
     ...config,

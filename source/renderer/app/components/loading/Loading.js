@@ -8,12 +8,14 @@ import classNames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import SystemTimeErrorOverlay from './SystemTimeErrorOverlay';
+import NoDiskSpaceOverlay from './NoDiskSpaceOverlay';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
-import { CardanoNodeStates } from '../../../../common/types/cardanoNode.types';
+import linkNewWindow from '../../assets/images/link-ic.inline.svg';
+import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './Loading.scss';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
-import type { CardanoNodeState } from '../../../../common/types/cardanoNode.types';
+import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
 import { REPORT_ISSUE_TIME_TRIGGER } from '../../config/timingConfig';
 
 let connectingInterval = null;
@@ -82,8 +84,13 @@ const messages = defineMessages({
   },
   reportIssueButtonLabel: {
     id: 'loading.screen.reportIssue.buttonLabel',
-    defaultMessage: '!!!Report an issue',
-    description: 'Report an issue button label on the loading.'
+    defaultMessage: '!!!Open support ticket',
+    description: 'Open support ticket button label on the loading.'
+  },
+  reportIssueDownloadLogsLinkLabel: {
+    id: 'loading.screen.reportIssue.downloadLogsLinkLabel',
+    defaultMessage: '!!!Download logs',
+    description: 'Download logs button label on the loading.'
   },
 });
 
@@ -100,6 +107,10 @@ type Props = {
   hasBeenConnected: boolean,
   isConnected: boolean,
   isSynced: boolean,
+  isNotEnoughDiskSpace: boolean,
+  diskSpaceRequired: string,
+  diskSpaceMissing: string,
+  diskSpaceRecommended: string,
   syncPercentage: number,
   loadingDataForNextScreenMessage: ReactIntlMessage,
   hasLoadedCurrentLocale: boolean,
@@ -108,10 +119,11 @@ type Props = {
   isSystemTimeCorrect: boolean,
   isCheckingSystemTime: boolean,
   currentLocale: string,
-  handleReportIssue: Function,
-  onProblemSolutionClick: Function,
+  onExternalLinkClick: Function,
+  onReportIssueClick: Function,
   onCheckTheTimeAgain: Function,
   onContinueWithoutClockSyncCheck: Function,
+  onDownloadLogs: Function,
 };
 
 @observer
@@ -128,16 +140,19 @@ export default class Loading extends Component<Props, State> {
   };
 
   componentDidMount() {
+    if (this.props.isNotEnoughDiskSpace) return;
     this._defensivelyStartTimers(this.props.isConnected, this.props.isSynced);
   }
 
   componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.isNotEnoughDiskSpace) return;
     this._defensivelyStartTimers(nextProps.isConnected, nextProps.isSynced);
   }
 
   componentDidUpdate() {
-    const canResetSyncing = this._syncingTimerShouldStop(this.props.isSynced);
-    const canResetConnecting = this._connectingTimerShouldStop(this.props.isConnected);
+    const { isConnected, isSynced, isNotEnoughDiskSpace } = this.props;
+    const canResetSyncing = this._syncingTimerShouldStop(isSynced, isNotEnoughDiskSpace);
+    const canResetConnecting = this._connectingTimerShouldStop(isConnected, isNotEnoughDiskSpace);
 
     if (canResetSyncing) { this._resetSyncingTime(); }
     if (canResetConnecting) { this._resetConnectingTime(); }
@@ -156,12 +171,16 @@ export default class Loading extends Component<Props, State> {
     isConnected && !isSynced && syncingInterval === null
   );
 
-  _syncingTimerShouldStop = (isSynced: boolean): boolean => (
-    isSynced && syncingInterval !== null
+  _syncingTimerShouldStop = (
+    isSynced: boolean, isNotEnoughDiskSpace: boolean
+  ): boolean => (
+    (isNotEnoughDiskSpace || isSynced) && syncingInterval !== null
   );
 
-  _connectingTimerShouldStop = (isConnected: boolean): boolean => (
-    isConnected && connectingInterval !== null
+  _connectingTimerShouldStop = (
+    isConnected: boolean, isNotEnoughDiskSpace: boolean
+  ): boolean => (
+    (isNotEnoughDiskSpace || isConnected) && connectingInterval !== null
   );
 
   _defensivelyStartTimers = (isConnected: boolean, isSynced: boolean) => {
@@ -249,7 +268,7 @@ export default class Loading extends Component<Props, State> {
       isSynced,
       localTimeDifference,
       currentLocale,
-      onProblemSolutionClick,
+      onExternalLinkClick,
       onCheckTheTimeAgain,
       onContinueWithoutClockSyncCheck,
       isCheckingSystemTime,
@@ -262,13 +281,14 @@ export default class Loading extends Component<Props, State> {
         <SystemTimeErrorOverlay
           localTimeDifference={localTimeDifference}
           currentLocale={currentLocale}
-          onProblemSolutionClick={onProblemSolutionClick}
+          onExternalLinkClick={onExternalLinkClick}
           onCheckTheTimeAgain={onCheckTheTimeAgain}
           onContinueWithoutClockSyncCheck={onContinueWithoutClockSyncCheck}
           isCheckingSystemTime={isCheckingSystemTime}
         />
       );
-    } else if (!isConnected) {
+    }
+    if (!isConnected) {
       const finalCardanoNodeStates = [
         CardanoNodeStates.STOPPED,
         CardanoNodeStates.UPDATED,
@@ -287,7 +307,8 @@ export default class Loading extends Component<Props, State> {
           </h1>
         </div>
       );
-    } else if (!isSynced) {
+    }
+    if (!isSynced) {
       return (
         <div className={styles.syncing}>
           <h1 className={styles.headline}>
@@ -317,9 +338,14 @@ export default class Loading extends Component<Props, State> {
       apiIcon,
       isConnected,
       isSynced,
+      isNotEnoughDiskSpace,
+      diskSpaceRequired,
+      diskSpaceMissing,
+      diskSpaceRecommended,
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
-      handleReportIssue,
+      onReportIssueClick,
+      onDownloadLogs,
     } = this.props;
 
     const { connectingTime, syncingTime } = this.state;
@@ -341,6 +367,10 @@ export default class Loading extends Component<Props, State> {
     const apiLogoStyles = classNames([
       styles['ada-apiLogo'],
       !isConnected ? styles.connectingLogo : styles.syncingLogo,
+    ]);
+    const downloadLogsButtonStyles = classNames([
+      styles.downloadLogsButton,
+      !isConnected ? styles.downloadLogsButtonConnecting : null,
     ]);
 
     const daedalusLoadingLogo = daedalusLogo;
@@ -365,6 +395,13 @@ export default class Loading extends Component<Props, State> {
 
     return (
       <div className={componentStyles}>
+        {isNotEnoughDiskSpace && (
+          <NoDiskSpaceOverlay
+            diskSpaceRequired={diskSpaceRequired}
+            diskSpaceMissing={diskSpaceMissing}
+            diskSpaceRecommended={diskSpaceRecommended}
+          />
+        )}
         {showReportIssue && (
           <div className={styles.reportIssue}>
             <h1 className={styles.reportIssueText}>
@@ -375,10 +412,22 @@ export default class Loading extends Component<Props, State> {
             </h1>
             <Button
               className={buttonClasses}
-              label={intl.formatMessage(messages.reportIssueButtonLabel)}
-              onClick={handleReportIssue}
+              label={(
+                <p>
+                  <SVGInline svg={linkNewWindow} className={styles.linkNewWindow} />
+                  {intl.formatMessage(messages.reportIssueButtonLabel)}
+                </p>
+              )}
+              onClick={onReportIssueClick}
               skin={ButtonSkin}
             />
+            <br />
+            <button
+              className={downloadLogsButtonStyles}
+              onClick={onDownloadLogs}
+            >
+              {intl.formatMessage(messages.reportIssueDownloadLogsLinkLabel)}
+            </button>
           </div>
         )}
         <div className={styles.logos}>

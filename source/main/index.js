@@ -1,31 +1,33 @@
 // @flow
 import os from 'os';
-import { app, BrowserWindow, globalShortcut, Menu, dialog } from 'electron';
+import { app, BrowserWindow, globalShortcut, Menu, shell } from 'electron';
 import { client } from 'electron-connect';
 import { includes } from 'lodash';
-import { Logger } from '../common/logging';
+import { Logger } from './utils/logging';
 import { setupLogging } from './utils/setupLogging';
-import { makeEnvironmentGlobal } from './utils/makeEnvironmentGlobal';
+import { handleDiskSpace } from './utils/handleDiskSpace';
 import { createMainWindow } from './windows/main';
 import { winLinuxMenu } from './menus/win-linux';
 import { osxMenu } from './menus/osx';
 import { installChromeExtensions } from './utils/installChromeExtensions';
-import environment from '../common/environment';
-import { OPEN_ABOUT_DIALOG_CHANNEL } from '../common/ipc/open-about-dialog';
-import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../common/ipc/go-to-ada-redemption-screen';
-import { GO_TO_NETWORK_STATUS_SCREEN_CHANNEL } from '../common/ipc/go-to-network-status-screen';
+import { environment } from './environment';
+import {
+  OPEN_ABOUT_DIALOG_CHANNEL,
+  GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL,
+  GO_TO_NETWORK_STATUS_SCREEN_CHANNEL
+} from '../common/ipc/api';
 import mainErrorHandler from './utils/mainErrorHandler';
-import { launcherConfig } from './config';
+import { launcherConfig, frontendOnlyMode } from './config';
 import { setupCardano } from './cardano/setup';
 import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { ensureXDGDataIsSet } from './cardano/config';
-import { acquireDaedalusInstanceLock } from './utils/lockFiles';
-import { CardanoNodeStates } from '../common/types/cardanoNode.types';
+import { CardanoNodeStates } from '../common/types/cardano-node.types';
+import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
 
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
-let cardanoNode: CardanoNode;
+let cardanoNode: ?CardanoNode;
 
 const openAbout = () => {
   if (mainWindow) mainWindow.webContents.send(OPEN_ABOUT_DIALOG_CHANNEL);
@@ -40,19 +42,20 @@ const goToNetworkStatus = () => {
 };
 
 const restartInSafeMode = async () => {
-  Logger.info('restarting in SafeMode …');
+  Logger.info('Restarting in SafeMode...');
   if (cardanoNode) await cardanoNode.stop();
   Logger.info('Exiting Daedalus with code 21.');
   safeExitWithCode(21);
 };
 
 const restartWithoutSafeMode = async () => {
-  Logger.info('restarting without SafeMode …');
+  Logger.info('Restarting without SafeMode...');
   if (cardanoNode) await cardanoNode.stop();
   Logger.info('Exiting Daedalus with code 22.');
   safeExitWithCode(22);
 };
 
+const { isDev, isMacOS, isWatchMode, buildLabel } = environment;
 const menuActions = {
   openAbout,
   goToAdaRedemption,
@@ -62,6 +65,10 @@ const menuActions = {
 };
 
 const safeExit = async () => {
+  if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
+    Logger.info('Daedalus:safeExit: exiting Daedalus with code 0.');
+    return safeExitWithCode(0);
+  }
   if (cardanoNode.state === CardanoNodeStates.STOPPING) return;
   try {
     Logger.info(`Daedalus:safeExit: stopping cardano-node with PID ${cardanoNode.pid || 'null'}`);
@@ -74,44 +81,66 @@ const safeExit = async () => {
   }
 };
 
-app.on('ready', async () => {
-  // Make sure this is the only Daedalus instance running per cluster before doing anything else
-  try {
-    await acquireDaedalusInstanceLock();
-  } catch (e) {
-    const dialogTitle = 'Daedalus is unable to start!';
-    const dialogMessage = 'Another Daedalus instance is already running.';
-    dialog.showErrorBox(dialogTitle, dialogMessage);
-    app.exit(1);
-  }
-
+const onAppReady = async () => {
   setupLogging();
-  mainErrorHandler();
 
   Logger.info(`========== Daedalus is starting at ${new Date().toString()} ==========`);
 
-  Logger.debug(`!!! ${environment.getBuildLabel()} is running on ${os.platform()} version ${os.release()}
+  Logger.debug(`!!! ${buildLabel} is running on ${os.platform()} version ${os.release()}
             with CPU: ${JSON.stringify(os.cpus(), null, 2)} with
             ${JSON.stringify(os.totalmem(), null, 2)} total RAM !!!`);
 
   ensureXDGDataIsSet();
-  makeEnvironmentGlobal(process.env);
-  await installChromeExtensions(environment.isDev());
+  await installChromeExtensions(isDev);
 
   // Detect safe mode
   const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
 
   mainWindow = createMainWindow(isInSafeMode);
+
+  const onCheckDiskSpace = ({ isNotEnoughDiskSpace }: CheckDiskSpaceResponse) => {
+    // Daedalus is not managing cardano-node in `frontendOnlyMode`
+    // so we don't have a way to stop it in case there is not enough disk space
+    if (frontendOnlyMode) return;
+
+    if (cardanoNode) {
+      if (isNotEnoughDiskSpace) {
+        if (
+          cardanoNode.state !== CardanoNodeStates.STOPPING &&
+          cardanoNode.state !== CardanoNodeStates.STOPPED
+        ) {
+          try {
+            cardanoNode.stop();
+          } catch (e) {} // eslint-disable-line
+        }
+      } else if (
+        cardanoNode.state !== CardanoNodeStates.STARTING &&
+        cardanoNode.state !== CardanoNodeStates.RUNNING
+      ) {
+        cardanoNode.restart();
+      }
+    }
+  };
+  const handleCheckDiskSpace = handleDiskSpace(mainWindow, onCheckDiskSpace);
+  const onMainError = (error: string) => {
+    if (error.indexOf('ENOSPC') > -1) {
+      handleCheckDiskSpace();
+      return false;
+    }
+  };
+  mainErrorHandler(onMainError);
+  await handleCheckDiskSpace();
+
   cardanoNode = setupCardano(launcherConfig, mainWindow);
 
-  if (environment.isDev()) {
+  if (isWatchMode) {
     // Connect to electron-connect server which restarts / reloads windows on file changes
     client.create(mainWindow);
   }
 
   // Build app menus
   let menu;
-  if (process.platform === 'darwin') {
+  if (isMacOS) {
     menu = Menu.buildFromTemplate(osxMenu(app, mainWindow, menuActions, isInSafeMode));
     Menu.setApplicationMenu(menu);
   } else {
@@ -120,7 +149,7 @@ app.on('ready', async () => {
   }
 
   // Hide application window on Cmd+H hotkey (OSX only!)
-  if (process.platform === 'darwin') {
+  if (isMacOS) {
     app.on('activate', () => {
       if (!mainWindow.isVisible()) app.show();
     });
@@ -140,10 +169,37 @@ app.on('ready', async () => {
     await safeExit();
   });
 
+  // Security feature: Prevent creation of new browser windows
+  // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows
+  app.on('web-contents-created', (_, contents) => {
+    contents.on('new-window', (event, url) => {
+      // Prevent creation of new BrowserWindows via links / window.open
+      event.preventDefault();
+      Logger.info(`Prevented creation of new browser window with url ${url}`);
+      // Open these links with the default browser
+      shell.openExternal(url);
+    });
+  });
+
   // Wait for controlled cardano-node shutdown before quitting the app
   app.on('before-quit', async (event) => {
     Logger.info('app received <before-quit> event. Safe exiting Daedalus now.');
     event.preventDefault(); // prevent Daedalus from quitting immediately
     await safeExit();
   });
-});
+};
+
+// Make sure this is the only Daedalus instance running per cluster before doing anything else
+const isSingleInstance = app.requestSingleInstanceLock();
+
+if (!isSingleInstance) {
+  app.quit();
+} else {
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
+  app.on('ready', onAppReady);
+}

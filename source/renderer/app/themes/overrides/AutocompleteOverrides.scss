@@ -1,0 +1,13 @@
+.autocompleteWrapper {
+  .autocompleteContent {
+    .selectedWords {
+      input {
+        &::-webkit-input-placeholder {
+          text-overflow: ellipsis !important;
+          // ^^ used only to cut-off to long placeholder text
+          //    does not affect regular text input
+        }
+      }
+    }
+  }
+}

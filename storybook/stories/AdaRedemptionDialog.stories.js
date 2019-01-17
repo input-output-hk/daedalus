@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
-import { storiesOf, action } from '@storybook/react';
+import { storiesOf } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
 import wordlist from 'bip39/wordlists/english';
 import StoryDecorator from './support/StoryDecorator';
 import AdaRedemptionForm from '../../source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm';
