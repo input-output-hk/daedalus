@@ -4,6 +4,7 @@ export const ROUTES = {
   STAKING: '/staking',
   ADA_REDEMPTION: '/ada-redemption',
   NETWORK_STATUS: '/network-status',
+  BLOCK_CONSOLIDATION_STATUS: '/block-consolidation-status',
   PAPER_WALLET_CREATE_CERTIFICATE: '/paper-wallet/create-certificate',
   PROFILE: {
     LANGUAGE_SELECTION: '/profile/language-selection',

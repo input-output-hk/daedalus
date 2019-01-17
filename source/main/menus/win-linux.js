@@ -2,7 +2,12 @@ import { compact } from 'lodash';
 import environment from '../../common/environment';
 
 export const winLinuxMenu = (app, window, {
-  openAbout, goToAdaRedemption, goToNetworkStatus, restartInSafeMode, restartWithoutSafeMode
+  openAbout,
+  goToAdaRedemption,
+  goToNetworkStatus,
+  restartInSafeMode,
+  restartWithoutSafeMode,
+  goBlockConsolidationStatus
 }, isInSafeMode) => (
   [{
     label: 'Daedalus',
@@ -24,6 +29,11 @@ export const winLinuxMenu = (app, window, {
         isInSafeMode ?
           restartWithoutSafeMode() :
           restartInSafeMode();
+      },
+    }, {
+      label: 'Block-consolidation status',
+      click() {
+        goBlockConsolidationStatus();
       },
     }, {
       label: 'Network status',
