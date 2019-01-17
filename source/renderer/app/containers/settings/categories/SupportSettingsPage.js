@@ -32,6 +32,12 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
 
   static defaultProps = { actions: null, stores: null };
 
+  constructor(props: any, context: any) {
+    super(props);
+    this.context = context;
+    this.registerOnDownloadLogsNotification();
+  }
+
   handleSupportRequestClick = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.persist();
     const { intl } = this.context;
@@ -41,16 +47,20 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
     this.props.stores.app.openExternalLink(supportUrl);
   };
 
+  registerOnDownloadLogsNotification = () => {
+    const { notifications, profile } = this.props.actions;
+    const { id, duration } = this.notification;
+    profile.downloadLogs.listen(() => {
+      notifications.open.trigger({ id, duration });
+    });
+  };
+
   handleDownloadLogs = () => {
     // TODO: refactor this direct access to the dialog api
     const fileName = generateFileNameWithTimestamp();
-    const { profile, notifications } = this.props.actions;
+    const { profile } = this.props.actions;
     const destination = global.dialog.showSaveDialog({
       defaultPath: fileName,
-    });
-    profile.downloadLogs.listen(() => {
-      const { id, duration } = this.notification;
-      notifications.open.trigger({ id, duration, });
     });
     if (destination) {
       profile.downloadLogs.trigger({ fileName, destination, fresh: true });
@@ -67,7 +77,7 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
   }
 
   render() {
-    const { stores } = this.props;
+    const { stores, actions } = this.props;
     const { id, message } = this.notification;
     return (
       <Fragment>
@@ -79,7 +89,7 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
         <NotificationMessage
           icon={successIcon}
           show={stores.uiNotifications.isOpen(id)}
-          onClose={() => this.props.actions.notifications.closeActiveNotification.trigger({ id })}
+          onClose={() => actions.notifications.closeActiveNotification.trigger({ id })}
           clickToClose
           hasCloseButton
         >

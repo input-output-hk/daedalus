@@ -38,8 +38,14 @@ export default class LoadingPage extends Component<InjectedProps> {
     intl: intlShape.isRequired,
   };
 
+  constructor(props: any, context: any) {
+    super(props);
+    this.context = context;
+    this.registerOnDownloadLogsNotification();
+  }
+
   render() {
-    const { stores } = this.props;
+    const { stores, actions } = this.props;
     const {
       cardanoNodeState, isConnected, isSynced, syncPercentage, hasBeenConnected,
       localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
@@ -78,7 +84,7 @@ export default class LoadingPage extends Component<InjectedProps> {
         <NotificationMessage
           icon={successIcon}
           show={stores.uiNotifications.isOpen(id)}
-          onClose={() => this.props.actions.notifications.closeActiveNotification.trigger({ id })}
+          onClose={() => actions.notifications.closeActiveNotification.trigger({ id })}
           clickToClose
           hasCloseButton
         >
@@ -106,15 +112,19 @@ export default class LoadingPage extends Component<InjectedProps> {
     this.props.stores.app.openExternalLink(supportUrl);
   };
 
+  registerOnDownloadLogsNotification = () => {
+    const { notifications, profile } = this.props.actions;
+    const { id, duration } = this.notification;
+    profile.downloadLogs.listen(() => {
+      notifications.open.trigger({ id, duration });
+    });
+  };
+
   handleDownloadLogs = () => {
-    const { profile, notifications } = this.props.actions;
+    const { profile } = this.props.actions;
     const fileName = generateFileNameWithTimestamp();
     const destination = global.dialog.showSaveDialog({
       defaultPath: fileName,
-    });
-    profile.downloadLogs.listen(() => {
-      const { id, duration } = this.notification;
-      notifications.open.trigger({ id, duration, });
     });
     if (destination) {
       profile.downloadLogs.trigger({ fileName, destination, fresh: true });
