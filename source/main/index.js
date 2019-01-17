@@ -65,7 +65,7 @@ const menuActions = {
 };
 
 const safeExit = async () => {
-  if (!cardanoNode) {
+  if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
     Logger.info('Daedalus:safeExit: exiting Daedalus with code 0.');
     return safeExitWithCode(0);
   }

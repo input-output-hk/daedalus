@@ -36,6 +36,8 @@ let
   packages = self: {
     inherit cluster pkgs version;
     inherit (cardanoSL) daedalus-bridge;
+    # TODO, use this cross-compiled fastlist when we no longer build windows installers on windows
+    fastlist = pkgs.pkgsCross.mingwW64.callPackage ./fastlist.nix {};
     ## TODO: move to installers/nix
     daedalus-installer = import ./installers/default.nix {
       inherit (cardanoSL) daedalus-bridge;
