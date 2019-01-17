@@ -1,15 +1,14 @@
 // @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { defineMessages } from 'react-intl';
-import { shell } from 'electron';
+import { defineMessages, intlShape } from 'react-intl';
 import CenteredLayout from '../components/layout/CenteredLayout';
 import Loading from '../components/loading/Loading';
-import BugReportDialog from '../components/profile/bug-report/BugReportDialog';
-import WalletSupportRequestPage from '../containers/wallet/WalletSupportRequestPage';
 import adaLogo from '../assets/images/ada-logo.inline.svg';
 import cardanoLogo from '../assets/images/cardano-logo.inline.svg';
 import type { InjectedProps } from '../types/injectedPropsType';
+import { generateFileNameWithTimestamp } from '../../../common/utils/files';
+import { getSupportUrl } from '../utils/network';
 
 export const messages = defineMessages({
   loadingWalletData: {
@@ -17,10 +16,19 @@ export const messages = defineMessages({
     defaultMessage: '!!!Loading wallet data',
     description: 'Message "Loading wallet data" on the loading screen.'
   },
+  reportIssueButtonUrl: {
+    id: 'loading.screen.reportIssue.reportIssueButtonUrl',
+    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/requests/new/',
+    description: 'Link to Open Support page'
+  },
 });
 
 @inject('stores', 'actions') @observer
 export default class LoadingPage extends Component<InjectedProps> {
+
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
 
   render() {
     const { stores } = this.props;
@@ -28,6 +36,7 @@ export default class LoadingPage extends Component<InjectedProps> {
       cardanoNodeState, isConnected, isSynced, syncPercentage, hasBeenConnected,
       localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
       forceCheckLocalTimeDifference, ignoreSystemTimeChecks,
+      isNotEnoughDiskSpace, diskSpaceRequired, diskSpaceMissing, diskSpaceRecommended,
     } = stores.networkStatus;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
     return (
@@ -38,6 +47,10 @@ export default class LoadingPage extends Component<InjectedProps> {
           cardanoNodeState={cardanoNodeState}
           isConnected={isConnected}
           isSynced={isSynced}
+          isNotEnoughDiskSpace={isNotEnoughDiskSpace}
+          diskSpaceRequired={diskSpaceRequired}
+          diskSpaceMissing={diskSpaceMissing}
+          diskSpaceRecommended={diskSpaceRecommended}
           localTimeDifference={localTimeDifference}
           isSystemTimeCorrect={isSystemTimeCorrect}
           isCheckingSystemTime={forceCheckTimeDifferenceRequest.isExecuting}
@@ -47,23 +60,32 @@ export default class LoadingPage extends Component<InjectedProps> {
           hasLoadedCurrentLocale={hasLoadedCurrentLocale}
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           currentLocale={currentLocale}
-          handleReportIssue={this.handleReportIssue}
-          onProblemSolutionClick={this.handleProblemSolutionClick}
+          onExternalLinkClick={stores.app.openExternalLink}
+          onReportIssueClick={this.handleReportIssueClick}
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
           onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
+          onDownloadLogs={this.handleDownloadLogs}
         />
-        <WalletSupportRequestPage />
       </CenteredLayout>
     );
   }
 
-  handleReportIssue = () => {
-    this.props.actions.dialogs.open.trigger({
-      dialog: BugReportDialog
-    });
+  handleReportIssueClick = async (event: SyntheticEvent<HTMLButtonElement>) => {
+    event.persist();
+    const { intl } = this.context;
+    const reportIssueButtonUrl = intl.formatMessage(messages.reportIssueButtonUrl);
+    const locale = this.props.stores.profile.currentLocale;
+    const supportUrl = await getSupportUrl(reportIssueButtonUrl, locale);
+    this.props.stores.app.openExternalLink(supportUrl);
   };
 
-  handleProblemSolutionClick = (link: string) => {
-    shell.openExternal(link);
+  handleDownloadLogs = () => {
+    const fileName = generateFileNameWithTimestamp();
+    const destination = global.dialog.showSaveDialog({
+      defaultPath: fileName,
+    });
+    if (destination) {
+      this.props.actions.profile.downloadLogs.trigger({ fileName, destination, fresh: true });
+    }
   };
 }

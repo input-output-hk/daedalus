@@ -1,33 +1,42 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { remote } from 'electron';
+import { defineMessages, intlShape } from 'react-intl';
 import SupportSettings from '../../../components/settings/categories/SupportSettings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
-import BugReportDialog from '../../../components/profile/bug-report/BugReportDialog';
-import { generateFileNameWithTimestamp } from '../../../../../common/fileName';
+import { generateFileNameWithTimestamp } from '../../../../../common/utils/files';
+import { getSupportUrl } from '../../../utils/network';
 
-const shell = require('electron').shell;
+const messages = defineMessages({
+  supportRequestLinkUrl: {
+    id: 'settings.support.reportProblem.linkUrl',
+    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/requests/new/',
+    description: '"Support request" link URL in the "Report a problem" section on the support settings page.',
+  },
+});
 
 @inject('stores', 'actions') @observer
 export default class SupportSettingsPage extends Component<InjectedProps> {
 
-  static defaultProps = { actions: null, stores: null };
-
-  handleExternalLinkClick = (event: MouseEvent) => {
-    event.preventDefault();
-    if (event.target.href) shell.openExternal(event.target.href);
+  static contextTypes = {
+    intl: intlShape.isRequired,
   };
 
-  handleSupportRequestClick = () => {
-    this.props.actions.dialogs.open.trigger({
-      dialog: BugReportDialog,
-    });
+  static defaultProps = { actions: null, stores: null };
+
+  handleSupportRequestClick = async (event: SyntheticEvent<HTMLButtonElement>) => {
+    event.persist();
+    const { intl } = this.context;
+    const supportRequestLinkUrl = intl.formatMessage(messages.supportRequestLinkUrl);
+    const locale = this.props.stores.profile.currentLocale;
+    const supportUrl = await getSupportUrl(supportRequestLinkUrl, locale);
+    this.props.stores.app.openExternalLink(supportUrl);
   };
 
   handleDownloadLogs = () => {
+    // TODO: refactor this direct access to the dialog api
     const fileName = generateFileNameWithTimestamp();
-    const destination = remote.dialog.showSaveDialog({
+    const destination = global.dialog.showSaveDialog({
       defaultPath: fileName,
     });
     if (destination) {
@@ -38,7 +47,7 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
   render() {
     return (
       <SupportSettings
-        onExternalLinkClick={this.handleExternalLinkClick}
+        onExternalLinkClick={this.props.stores.app.openExternalLink}
         onSupportRequestClick={this.handleSupportRequestClick}
         onDownloadLogs={this.handleDownloadLogs}
       />

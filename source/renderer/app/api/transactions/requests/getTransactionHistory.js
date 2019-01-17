@@ -5,9 +5,9 @@ import { request } from '../../utils/request';
 
 export type GetTxnHistoryParams = {
   wallet_id: string,
+  account_index: number,
   page: number,
   per_page: number,
-  accountIndex: number,
   sort_by: string,
 };
 
@@ -20,7 +20,6 @@ export const getTransactionHistory = (
   { ...requestParams }: GetTxnHistoryParams
 ): Promise<Transactions> => (
   request({
-    hostname: 'localhost',
     method: 'GET',
     path: '/api/v1/transactions',
     ...config,

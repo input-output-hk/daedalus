@@ -18,15 +18,18 @@ import { UNSYNCED_BLOCKS_ALLOWED } from '../../config/numbersConfig';
 import { getNetworkEkgUrl } from '../../utils/network';
 import closeCross from '../../assets/images/close-cross.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
-import { CardanoNodeStates } from '../../../../common/types/cardanoNode.types';
-import environment from '../../../../common/environment';
+import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './NetworkStatus.scss';
-import type { CardanoNodeState } from '../../../../common/types/cardanoNode.types';
+import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
 
 let syncingInterval = null;
 
 type Props = {
   cardanoNodeState: ?CardanoNodeState,
+  isDev: boolean,
+  isMainnet: boolean,
+  isStaging: boolean,
+  isTestnet: boolean,
   isNodeResponding: boolean,
   isNodeSubscribed: boolean,
   isNodeSyncing: boolean,
@@ -121,7 +124,7 @@ export default class NetworkStatus extends Component<Props, State> {
       localTimeDifference, isSystemTimeCorrect, isForceCheckingNodeTime,
       localBlockHeight, networkBlockHeight, latestLocalBlockTimestamp, latestNetworkBlockTimestamp,
       onForceCheckLocalTimeDifference, onClose, nodeConnectionError, isSystemTimeIgnored,
-      onOpenExternalLink,
+      onOpenExternalLink, isDev, isTestnet, isStaging, isMainnet,
     } = this.props;
     const { data, isNodeRestarting } = this.state;
     const isNTPServiceReachable = !!localTimeDifference;
@@ -156,7 +159,9 @@ export default class NetworkStatus extends Component<Props, State> {
     ]);
 
     // Cardano Node EKG server is not enabled for the Mainnet!
-    const cardanoNodeEkgLink = environment.isMainnet() ? false : getNetworkEkgUrl();
+    const cardanoNodeEkgLink = isMainnet ? false : getNetworkEkgUrl({
+      isDev, isStaging, isTestnet
+    });
 
     return (
       <div className={styles.component}>
@@ -165,7 +170,8 @@ export default class NetworkStatus extends Component<Props, State> {
             <tbody>
               <tr>
                 <th colSpan={2}>
-                  DAEDALUS STATUS<hr />
+                  DAEDALUS STATUS
+                  <hr />
                 </th>
               </tr>
               <tr>
@@ -228,7 +234,7 @@ export default class NetworkStatus extends Component<Props, State> {
                   </span> |&nbsp;
                   <button
                     onClick={() => onForceCheckLocalTimeDifference()}
-                    disabled={isForceCheckingNodeTime}
+                    disabled={isForceCheckingNodeTime || !isConnected}
                   >
                     {isForceCheckingNodeTime ? 'Checking...' : 'Check time'}
                   </button>

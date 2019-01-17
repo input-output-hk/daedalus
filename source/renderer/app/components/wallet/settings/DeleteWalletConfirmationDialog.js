@@ -11,7 +11,6 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './DeleteWalletConfirmationDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
-import environment from '../../../../../common/environment';
 import { DELETE_WALLET_COUNTDOWN } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
 
@@ -53,6 +52,7 @@ type Props = {
   onCancel: Function,
   onConfirmationValueChange: Function,
   isSubmitting: boolean,
+  isTest: boolean
 };
 
 @observer
@@ -61,6 +61,7 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
   static defaultProps = {
     isBackupNoticeAccepted: false,
     confirmationValue: '',
+    isTest: false
   };
 
   static contextTypes = {
@@ -79,9 +80,10 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
       confirmationValue,
       onConfirmationValueChange,
       isSubmitting,
+      isTest
     } = this.props;
 
-    const countdownRemaining = countdownFn(environment.isTest() ? 0 : DELETE_WALLET_COUNTDOWN);
+    const countdownRemaining = countdownFn(isTest ? 0 : DELETE_WALLET_COUNTDOWN);
     const countdownDisplay = countdownRemaining > 0 ? ` (${countdownRemaining})` : '';
     const isCountdownFinished = countdownRemaining <= 0;
     const isWalletNameConfirmationCorrect = confirmationValue === walletName;
