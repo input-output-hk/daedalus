@@ -38,6 +38,10 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
     this.registerOnDownloadLogsNotification();
   }
 
+  componentWillUnmount() {
+    this.closeNotification();
+  }
+
   handleSupportRequestClick = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.persist();
     const { intl } = this.context;
@@ -76,8 +80,13 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
     };
   }
 
+  closeNotification = () => {
+    const { id } = this.notification;
+    this.props.actions.notifications.closeActiveNotification.trigger({ id });
+  }
+
   render() {
-    const { stores, actions } = this.props;
+    const { stores } = this.props;
     const { id, message } = this.notification;
     return (
       <Fragment>
@@ -89,7 +98,7 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
         <NotificationMessage
           icon={successIcon}
           show={stores.uiNotifications.isOpen(id)}
-          onClose={() => actions.notifications.closeActiveNotification.trigger({ id })}
+          onClose={this.closeNotification}
           clickToClose
           hasCloseButton
         >

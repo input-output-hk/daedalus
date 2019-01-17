@@ -44,8 +44,12 @@ export default class LoadingPage extends Component<InjectedProps> {
     this.registerOnDownloadLogsNotification();
   }
 
+  componentWillUnmount() {
+    this.closeNotification();
+  }
+
   render() {
-    const { stores, actions } = this.props;
+    const { stores } = this.props;
     const {
       cardanoNodeState, isConnected, isSynced, syncPercentage, hasBeenConnected,
       localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
@@ -84,7 +88,7 @@ export default class LoadingPage extends Component<InjectedProps> {
         <NotificationMessage
           icon={successIcon}
           show={stores.uiNotifications.isOpen(id)}
-          onClose={() => actions.notifications.closeActiveNotification.trigger({ id })}
+          onClose={this.closeNotification}
           clickToClose
           hasCloseButton
         >
@@ -101,6 +105,11 @@ export default class LoadingPage extends Component<InjectedProps> {
       duration: DOWNLOAD_LOGS_SUCCESS_DURATION,
       message: intl.formatMessage(messages.downloadLogsSuccess),
     };
+  }
+
+  closeNotification = () => {
+    const { id } = this.notification;
+    this.props.actions.notifications.closeActiveNotification.trigger({ id });
   }
 
   handleReportIssueClick = async (event: SyntheticEvent<HTMLButtonElement>) => {
