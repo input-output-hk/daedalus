@@ -110,7 +110,7 @@ export default class LoadingPage extends Component<InjectedProps> {
   closeNotification = () => {
     const { id } = this.notification;
     this.props.actions.notifications.closeActiveNotification.trigger({ id });
-  }
+  };
 
   handleReportIssueClick = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.persist();
