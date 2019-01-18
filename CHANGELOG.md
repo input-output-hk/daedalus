@@ -2,6 +2,13 @@
 Changelog
 =========
 
+## 0.12.2
+=======
+
+### Features
+
+- Implemented a block-consolidation status screen ([PR 1275](https://github.com/input-output-hk/daedalus/pull/1275))
+
 ## 0.12.1
 =======
 
@@ -15,7 +22,6 @@ Changelog
 
 ### Features
 
-- Implemented a block-consolidation status screen ([PR 1275](https://github.com/input-output-hk/daedalus/pull/1275))
 - Implemented "Forbidden mnemonic" error message ([PR 1093](https://github.com/input-output-hk/daedalus/pull/1093), [PR 1100](https://github.com/input-output-hk/daedalus/pull/1100))
 - Implemented extended error messages for transaction fee calculation failures ([PR 1111](https://github.com/input-output-hk/daedalus/pull/1111))
 - Implemented forms submission on "Enter" key press ([PR 981](https://github.com/input-output-hk/daedalus/pull/981))
