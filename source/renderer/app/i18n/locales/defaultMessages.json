@@ -4849,13 +4849,13 @@
         "description": "Message \"Loading wallet data\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 21
         },
         "file": "source/renderer/app/containers/LoadingPage.js",
         "id": "loading.screen.loadingWalletData",
         "start": {
           "column": 21,
-          "line": 14
+          "line": 17
         }
       },
       {
@@ -4863,13 +4863,27 @@
         "description": "Link to Open Support page",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 26
         },
         "file": "source/renderer/app/containers/LoadingPage.js",
         "id": "loading.screen.reportIssue.reportIssueButtonUrl",
         "start": {
           "column": 24,
-          "line": 19
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!Logs successfully downloaded",
+        "description": "Success message for download logs.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/containers/LoadingPage.js",
+        "id": "loading.screen.reportIssue.downloadLogsSuccessMessage",
+        "start": {
+          "column": 23,
+          "line": 27
         }
       }
     ],
@@ -4882,13 +4896,27 @@
         "description": "\"Support request\" link URL in the \"Report a problem\" section on the support settings page.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 18
         },
         "file": "source/renderer/app/containers/settings/categories/SupportSettingsPage.js",
         "id": "settings.support.reportProblem.linkUrl",
         "start": {
           "column": 25,
-          "line": 11
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!Logs successfully downloaded",
+        "description": "Success message for download logs.",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/containers/settings/categories/SupportSettingsPage.js",
+        "id": "settings.support.reportProblem.downloadLogsSuccessMessage",
+        "start": {
+          "column": 23,
+          "line": 19
         }
       }
     ],

@@ -295,8 +295,9 @@ When(/^I click on recovery phrase mnemonics in correct order$/, async function (
   for (let i = 0; i < this.recoveryPhrase.length; i++) {
     const text = this.recoveryPhrase[i];
     const selector = 'MnemonicWord_root';
+    const disabledSelector = 'MnemonicWord_disabled';
     await this.waitAndClick(
-      `//button[contains(@class,'${selector}') and contains(text(), '${text}')]`
+      `//button[contains(@class,'${selector}') and not(contains(@class, '${disabledSelector}')) and contains(text(), '${text}')]`
     );
   }
 });
