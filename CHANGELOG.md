@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Improve performance of rendering huge lists of transactions and addresses ([PR 1276](https://github.com/input-output-hk/daedalus/pull/1276))
 - Implemented a better handling for "No disk space" error ([PR 1157](https://github.com/input-output-hk/daedalus/pull/1157))
 - Improved the NTP check logic ([PR 1258](https://github.com/input-output-hk/daedalus/pull/1258))
 - Added support for "frontend-only" mode ([PR 1241](https://github.com/input-output-hk/daedalus/pull/1241), [PR 1260](https://github.com/input-output-hk/daedalus/pull/1260))
