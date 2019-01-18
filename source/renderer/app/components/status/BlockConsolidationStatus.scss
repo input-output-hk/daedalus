@@ -1,0 +1,27 @@
+.component {
+  background-color: var(--theme-block-consolidation-background-color);
+  width: 100%;
+  height: 100%;
+}
+
+.container {
+  margin: 20px;
+  padding: 20px;
+  background-color: var(--theme-block-consolidation-container-background-color);
+  border-radius: 4px;
+  font-family: var(--font-medium);
+  text-align: center;
+
+  h1 {
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--theme-block-consolidation-title-text-color);
+    margin-bottom: 14px;
+  }
+
+  p {
+    color: var(--theme-block-consolidation-text-color);
+    font-size: 16px;
+  }
+}
+
