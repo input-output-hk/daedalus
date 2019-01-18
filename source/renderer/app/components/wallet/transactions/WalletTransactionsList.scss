@@ -23,6 +23,10 @@
   }
 }
 
+.listWrapper {
+  height: calc(100% - 90px);
+}
+
 .list {
   &:focus {
     outline: 0;

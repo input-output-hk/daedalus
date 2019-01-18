@@ -306,9 +306,9 @@ export default class WalletTransactionsList extends Component<Props, State> {
     return (
       <div className={styles.component}>
         {syncingTransactionsSpinner}
-        {renderedTransactionsList}
-        {loadingSpinner}
-
+        <div className={styles.listWrapper}>
+          {renderedTransactionsList}
+        </div>
         {showMoreTransactionsButton && (
           <Button
             className={buttonClasses}
@@ -317,6 +317,7 @@ export default class WalletTransactionsList extends Component<Props, State> {
             skin={ButtonSkin}
           />
         )}
+        {loadingSpinner}
       </div>
     );
   }
