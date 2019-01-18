@@ -321,4 +321,10 @@ export default {
 
   '--theme-progress-bar-background-color': 'rgba(255, 255, 255, 0.3)',
   '--theme-progress-bar-foreground-color': 'rgba(255, 255, 255, 0.7)',
+
+  '--theme-block-consolidation-background-color': '#ebeff2',
+  '--theme-block-consolidation-container-background-color': '#fafbfc',
+  '--theme-block-consolidation-title-text-color': '#5e6066',
+  '--theme-block-consolidation-text-color': 'rgba(94, 96, 102, 0.7)',
+  '--theme-block-consolidation-text-link-color': '#296fd0',
 };

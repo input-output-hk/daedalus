@@ -2,9 +2,10 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { ROUTES } from '../../routes-config';
-import CenteredLayout from '../../components/layout/CenteredLayout';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import BlockConsolidationStatus from '../../components/status/BlockConsolidationStatus';
+
+const shell = require('electron').shell;
 
 @inject('stores', 'actions') @observer
 export default class NetworkStatusPage extends Component<InjectedProps> {
@@ -14,24 +15,15 @@ export default class NetworkStatusPage extends Component<InjectedProps> {
     actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
   };
 
+  handleExternalLinkClick = (event: MouseEvent) => {
+    event.preventDefault();
+    if (event.target.href) shell.openExternal(event.target.href);
+  };
+
   render() {
-    // const { stores } = this.props;
-    // const { openExternalLink } = stores.app;
-    // const {
-    //   // Node state
-    //   cardanoNodeState, isNodeResponding, isNodeSubscribed,
-    //   isNodeSyncing, isNodeInSync, isNodeTimeCorrect,
-    //   // Application state
-    //   isConnected, isSynced, syncPercentage, hasBeenConnected,
-    //   localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
-    //   forceCheckLocalTimeDifference, getNetworkStatusRequest,
-    //   localBlockHeight, networkBlockHeight, latestLocalBlockTimestamp,
-    //   latestNetworkBlockTimestamp,
-    //   restartNode, isSystemTimeIgnored,
-    // } = stores.networkStatus;
     return (
       <BlockConsolidationStatus
-
+        onExternalLinkClick={this.handleExternalLinkClick}
       />
     );
   }
