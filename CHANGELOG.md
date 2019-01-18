@@ -17,6 +17,7 @@ Changelog
 
 ### Fixes
 
+- Fixed `ps-list` buffer issues which caused false "Another Daedalus instance is already running" error messages ([PR 1266](https://github.com/input-output-hk/daedalus/pull/1266))
 - Fixed `getTransactionHistory` API endpoint account index query parameter name ([PR 1255](https://github.com/input-output-hk/daedalus/pull/1255))
 - Fixed issues with custom lock files by implementing "instance-lock" feature from Electron 3 ([PR 1229](https://github.com/input-output-hk/daedalus/pull/1229), [PR 1244](https://github.com/input-output-hk/daedalus/pull/1244))
 - Fixed app reloading issues in the Ada Redemption page ([PR 1217](https://github.com/input-output-hk/daedalus/pull/1217))
@@ -40,7 +41,7 @@ Changelog
 
 ### Fixes
 
-- Fixed the transactions loading logic ([PR 1261](https://github.com/input-output-hk/daedalus/pull/1261))
+- Fixed the transactions loading logic ([PR 1261](https://github.com/input-output-hk/daedalus/pull/1261), [PR 1267](https://github.com/input-output-hk/daedalus/pull/1267))
 - Fixed the network block stalling logic in order to prevent showing "Network connection lost - reconnecting..." screen in case network block height is stalling while local block height is still increasing ([PR 1246](https://github.com/input-output-hk/daedalus/pull/1246))
 
 ## 0.12.0

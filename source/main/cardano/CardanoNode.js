@@ -308,6 +308,7 @@ export class CardanoNode {
         if (_node) _node.kill();
         await this._waitForCardanoToExitOrKillIt();
         await this._storeProcessStates();
+        this._changeToState(CardanoNodeStates.STOPPED);
         this._reset();
         resolve();
       } catch (_) {
@@ -613,6 +614,7 @@ export class CardanoNode {
       _log.debug(`CardanoNode: previous ${processName} process found: ${JSON.stringify(previousProcess)}`);
       return true;
     } catch (error) {
+      _log.error(`CardanoNode: _isProcessRunning error: ${JSON.stringify(error, null, 2)}`);
       return false;
     }
   };
