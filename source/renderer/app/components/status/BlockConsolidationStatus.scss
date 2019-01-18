@@ -21,8 +21,7 @@
 
   p {
     color: var(--theme-block-consolidation-text-color);
-    font-size: 16px;
-    margin-bottom: 30px;
+    font-size: 14px;
   }
 
   a {
@@ -30,9 +29,86 @@
     border-bottom: 1px solid var(--theme-block-consolidation-text-link-color);
     text-decoration: none;
   }
+
+  .description {
+    margin-bottom: 80px;
+    font-size: 16px;
+  }
+
 }
+
 
 .consolidationDescription {
-  font-size: 14px;
+  font-size: 16px;
 }
 
+.consolidationIndicator {
+  position: relative;
+  margin-bottom: 53px;
+}
+
+.consolidationIndicatorContainer {
+  width: 600px;
+  height: 24px;
+  border-radius: 5px;
+  background-color: var(--theme-block-consolidation-indicator-container-background-color);
+  margin: 0 auto;
+  position: relative;
+}
+
+.consolidationIndicatorEpochsSynced {
+  height: 24px;
+  width: 70%;
+  border-radius: 5px;
+  background: repeating-linear-gradient(
+    -63deg,
+    var(--theme-block-consolidation-stripe-light-1-background-color),
+    var(--theme-block-consolidation-stripe-light-1-background-color) 10px,
+    var(--theme-block-consolidation-stripe-light-2-background-color) 10px,
+    var(--theme-block-consolidation-stripe-light-2-background-color) 20px
+  );
+  position: relative;
+
+  p {
+    position: absolute;
+    right: 0;
+    font-size: 14px;
+    top: -25px;
+  }
+
+}
+
+.consolidationIndicatorEpochsConsolidated {
+  height: 24px;
+  width: 50%;
+  border-radius: 5px;
+  position: absolute;
+  left: 0;
+  background: repeating-linear-gradient(
+    -63deg,
+    var(--theme-block-consolidation-stripe-dark-1-background-color),
+    var(--theme-block-consolidation-stripe-dark-1-background-color) 10px,
+    var(--theme-block-consolidation-stripe-dark-2-background-color) 10px,
+    var(--theme-block-consolidation-stripe-dark-2-background-color) 20px
+  );
+  top: 0;
+
+  p {
+    position: absolute;
+    right: 0;
+    font-size: 14px;
+    top: -25px;
+  }
+}
+
+.zeroEpoch {
+  position: absolute;
+  left: -65px;
+  line-height: 24px;
+}
+.fullEpoch {
+  position: absolute;
+  right: -79px;
+  line-height: 24px;
+  top: 0;
+}

@@ -60,7 +60,7 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
         />
         <div className={styles.container}>
           <h1>{ formatMessage(messages.title) }</h1>
-          <p>
+          <p className={styles.description}>
             <FormattedHTMLMessage {...messages.description} /> &nbsp;
             <a
               href={formatMessage(messages.linkURL)}
@@ -70,6 +70,20 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
             </a>
 
           </p>
+
+          <div className={styles.consolidationIndicator}>
+            <div className={styles.consolidationIndicatorContainer}>
+              <p className={styles.zeroEpoch}>0 epoch</p>
+              <div className={styles.consolidationIndicatorEpochsSynced} >
+                <p>93 epoch</p>
+              </div>
+              <div className={styles.consolidationIndicatorEpochsConsolidated} >
+                <p>75 epochs consolidated</p>
+              </div>
+              <p className={styles.fullEpoch}>95 epoch</p>
+            </div>
+          </div>
+
           <p className={styles.consolidationDescription}>
             { formatMessage(messages.consolidationDescription) }
           </p>
