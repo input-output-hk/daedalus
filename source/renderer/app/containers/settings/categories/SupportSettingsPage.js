@@ -39,6 +39,8 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
   }
 
   componentWillUnmount() {
+    const { profile } = this.props.actions;
+    profile.downloadLogs.remove(this.openNotification);
     this.closeNotification();
   }
 
@@ -51,12 +53,15 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
     this.props.stores.app.openExternalLink(supportUrl);
   };
 
-  registerOnDownloadLogsNotification = () => {
-    const { notifications, profile } = this.props.actions;
+  openNotification = () => {
+    const { notifications } = this.props.actions;
     const { id, duration } = this.notification;
-    profile.downloadLogs.listen(() => {
-      notifications.open.trigger({ id, duration });
-    });
+    notifications.open.trigger({ id, duration });
+  };
+
+  registerOnDownloadLogsNotification = () => {
+    const { profile } = this.props.actions;
+    profile.downloadLogs.listen(this.openNotification);
   };
 
   handleDownloadLogs = () => {
@@ -74,7 +79,7 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
   get notification() {
     const { intl } = this.context;
     return {
-      id: 'download-logs-success',
+      id: 'settings-page-download-logs-success',
       duration: DOWNLOAD_LOGS_SUCCESS_DURATION,
       message: intl.formatMessage(messages.downloadLogsSuccess),
     };
