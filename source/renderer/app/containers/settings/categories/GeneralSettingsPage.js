@@ -2,7 +2,10 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import GeneralSettings from '../../../components/settings/categories/GeneralSettings';
+import { REBUILD_APPLICATION_MENU } from '../../../../../common/ipc/api';
 import type { InjectedProps } from '../../../types/injectedPropsType';
+
+const { ipcRenderer } = global;
 
 @inject('stores', 'actions') @observer
 export default class GeneralSettingsPage extends Component<InjectedProps> {
@@ -11,6 +14,7 @@ export default class GeneralSettingsPage extends Component<InjectedProps> {
 
   onSelectLanguage = (values: { locale: string }) => {
     this.props.actions.profile.updateLocale.trigger(values);
+    ipcRenderer.send(REBUILD_APPLICATION_MENU);
   };
 
   render() {
