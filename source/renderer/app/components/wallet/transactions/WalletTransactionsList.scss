@@ -1,7 +1,7 @@
 .component {
   width: 100%;
   height: 100%;
-  padding: 20px;
+  padding: 20px 0 0 20px;
 
   .syncingTransactionsWrapper {
     margin-bottom: 20px;
@@ -24,10 +24,11 @@
 }
 
 .listWrapper {
-  height: calc(100% - 90px);
+  height: calc(100% - 110px);
 }
 
 .list {
+  overflow-y: scroll;
   &:focus {
     outline: 0;
   }
@@ -46,6 +47,7 @@
 }
 
 .transaction {
+  height: 100%;
   background-blend-mode: lighten;
   background-color: var(--theme-transactions-list-background-color);
 
@@ -63,6 +65,7 @@
     // Round corners on bottom border
     border-bottom-width: 1px;
     border-radius: 0 0 4px 4px;
+    height: calc(100% - 20px);
   }
 
   &.firstInGroup.lastInGroup {

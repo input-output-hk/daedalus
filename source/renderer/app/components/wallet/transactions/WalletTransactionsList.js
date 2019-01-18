@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -61,6 +61,7 @@ type GroupMarker = 'GROUP';
 type TransactionInfo = {
   tx: WalletTransaction,
   isLastInGroup: boolean,
+  isFirstInGroup: boolean,
 };
 type Row = TransactionInfo | GroupMarker;
 type RowHeight = { height: number };
@@ -69,8 +70,9 @@ const DATE_FORMAT = 'YYYY-MM-DD';
 const GROUP_MARKER: GroupMarker = 'GROUP';
 const GROUP_DATE_HEIGHT = 30;
 const TX_ROW_HEIGHT = 86;
-const TX_ROW_HEIGHT_EXPANDED = 332;
+const TX_ROW_HEIGHT_EXPANDED = 310;
 const TX_LAST_IN_GROUP_MARGIN = 20;
+const TX_HEIGHT_PER_ADDRESS = 38;
 
 @observer
 export default class WalletTransactionsList extends Component<Props, State> {
@@ -157,10 +159,19 @@ export default class WalletTransactionsList extends Component<Props, State> {
       return GROUP_DATE_HEIGHT;
     }
     if (row.tx instanceof WalletTransaction) {
+      // Calculate the height of a transaction row:
+      const { addresses } = row.tx;
       const isExpanded = this.isTxExpanded(row.tx);
       const baseHeight = isExpanded ? TX_ROW_HEIGHT_EXPANDED : TX_ROW_HEIGHT;
+      const totalAddresses = addresses.from.length + addresses.to.length;
+
+      // Extra height for addresses when expanded
+      const heightForAddresses = isExpanded ? totalAddresses * TX_HEIGHT_PER_ADDRESS : 0;
+
+      // Add spacing for the next date header to the last transaction in a group
       const headerSpacing = row.isLastInGroup ? TX_LAST_IN_GROUP_MARGIN : 0;
-      return baseHeight + headerSpacing;
+
+      return baseHeight + heightForAddresses + headerSpacing;
     }
     return 0;
   };
@@ -244,27 +255,20 @@ export default class WalletTransactionsList extends Component<Props, State> {
       group.transactions.forEach((transaction, transactionIndex) => {
         const isFirstInGroup = (transactionIndex === 0);
         const isLastInGroup = (group.transactions.length === (transactionIndex + 1));
-        const transactionClasses = classnames([
-          styles.transaction,
-          isLastInGroup ? styles.lastInGroup : null,
-          isFirstInGroup ? styles.firstInGroup : null,
-        ]);
-        listItemsData.push({ tx: transaction, isLastInGroup });
+        listItemsData.push({ tx: transaction, isLastInGroup, isFirstInGroup });
         listItems.push(
-          <div className={transactionClasses}>
-            <Transaction
-              assuranceLevel={transaction.getAssuranceLevelForMode(assuranceMode)}
-              data={transaction}
-              formattedWalletAmount={formattedWalletAmount}
-              isExpanded={this.isTxExpanded(transaction)}
-              isLastInList={isLastInGroup}
-              isRestoreActive={isRestoreActive}
-              network={network}
-              onDetailsToggled={() => this.toggleTransactionExpandedState(transaction)}
-              onOpenExternalLink={onOpenExternalLink}
-              state={transaction.state}
-            />
-          </div>
+          <Transaction
+            assuranceLevel={transaction.getAssuranceLevelForMode(assuranceMode)}
+            data={transaction}
+            formattedWalletAmount={formattedWalletAmount}
+            isExpanded={this.isTxExpanded(transaction)}
+            isLastInList={isLastInGroup}
+            isRestoreActive={isRestoreActive}
+            network={network}
+            onDetailsToggled={() => this.toggleTransactionExpandedState(transaction)}
+            onOpenExternalLink={onOpenExternalLink}
+            state={transaction.state}
+          />
         );
       });
     });
@@ -277,9 +281,20 @@ export default class WalletTransactionsList extends Component<Props, State> {
       index, // Index of row within collection
       style // Style object to be applied to row (to position it)
     }: { key: string, index: number, style: string }) => {
+      const rowData = listItemsData[index];
+      const isTxRow = rowData !== GROUP_MARKER;
+      const rowClasses = isTxRow ? (
+        classnames([
+          styles.transaction,
+          rowData.isLastInGroup ? styles.lastInGroup : null,
+          rowData.isFirstInGroup ? styles.firstInGroup : null,
+        ])
+      ) : null;
       return (
         <div key={key} style={style}>
-          {listItems[index]}
+          <div className={rowClasses}>
+            {listItems[index]}
+          </div>
         </div>
       );
     };
@@ -298,24 +313,33 @@ export default class WalletTransactionsList extends Component<Props, State> {
               return rowHeights[index] ? rowHeights[index].height : 100;
             }}
             rowRenderer={rowRenderer}
+            style={{ overflowY: 'scroll' }}
           />
         )}
       </AutoSizer>
     );
 
+    const showMoreTxButton = (
+      <Button
+        className={buttonClasses}
+        label={intl.formatMessage(messages.showMoreTransactionsButtonLabel)}
+        onClick={this.onShowMoreTransactions.bind(this, walletId)}
+        skin={ButtonSkin}
+      />
+    );
+
     return (
       <div className={styles.component}>
         {syncingTransactionsSpinner}
-        <div className={styles.listWrapper}>
-          {renderedTransactionsList}
-        </div>
-        {showMoreTransactionsButton && (
-          <Button
-            className={buttonClasses}
-            label={intl.formatMessage(messages.showMoreTransactionsButtonLabel)}
-            onClick={this.onShowMoreTransactions.bind(this, walletId)}
-            skin={ButtonSkin}
-          />
+        {showMoreTransactionsButton ? (
+          <Fragment>
+            <div className={styles.listWrapper}>
+              {renderedTransactionsList}
+            </div>
+            {showMoreTxButton}
+          </Fragment>
+        ) : (
+          renderedTransactionsList
         )}
         {loadingSpinner}
       </div>
