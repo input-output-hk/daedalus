@@ -1,6 +1,6 @@
 // @flow
 import os from 'os';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell } from 'electron';
 import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { Logger } from './utils/logging';
@@ -17,9 +17,10 @@ import { safeExitWithCode } from './utils/safeExitWithCode';
 import { buildAppMenus } from './utils/buildAppMenus';
 import { getLocale } from './utils/getLocale';
 import { ensureXDGDataIsSet } from './cardano/config';
-import { REBUILD_APPLICATION_MENU } from '../common/ipc/api';
+import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
+
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
 let cardanoNode: ?CardanoNode;
@@ -108,12 +109,14 @@ const onAppReady = async () => {
 
   let locale = getLocale(network);
   buildAppMenus(mainWindow, cardanoNode, isInSafeMode, locale);
-  
-  ipcMain.on(REBUILD_APPLICATION_MENU, () => {
-    locale = getLocale(network);
-    buildAppMenus(mainWindow, cardanoNode, isInSafeMode, locale);
-  });
 
+  await rebuildApplicationMenu.onReceive(() => (
+    new Promise(resolve => {
+      locale = getLocale(network);
+      buildAppMenus(mainWindow, cardanoNode, isInSafeMode, locale);
+      resolve();
+    })
+  ));
 
   // Security feature: Prevent creation of new browser windows
   // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows
