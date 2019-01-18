@@ -63,6 +63,7 @@ type TransactionInfo = {
   isLastInGroup: boolean,
 };
 type Row = TransactionInfo | GroupMarker;
+type RowHeight = { height: number };
 
 const DATE_FORMAT = 'YYYY-MM-DD';
 const GROUP_MARKER: GroupMarker = 'GROUP';
@@ -144,7 +145,7 @@ export default class WalletTransactionsList extends Component<Props, State> {
     !!this.state.expandedTransactions.find(t => t.id === tx.id)
   );
 
-  calculateRowHeights = (rows: Row[]) => (
+  calculateRowHeights = (rows: Row[]): RowHeight[] => (
     rows.map((tx, index) => ({
       height: this.calculateRowHeight(rows, index)
     }))
@@ -154,7 +155,8 @@ export default class WalletTransactionsList extends Component<Props, State> {
     const row = rows[index];
     if (row === GROUP_MARKER) {
       return GROUP_DATE_HEIGHT;
-    } else if (row.tx instanceof WalletTransaction) {
+    }
+    if (row.tx instanceof WalletTransaction) {
       const isExpanded = this.isTxExpanded(row.tx);
       const baseHeight = isExpanded ? TX_ROW_HEIGHT_EXPANDED : TX_ROW_HEIGHT;
       const headerSpacing = row.isLastInGroup ? TX_LAST_IN_GROUP_MARGIN : 0;
@@ -176,7 +178,7 @@ export default class WalletTransactionsList extends Component<Props, State> {
     if (this.isTxExpanded(tx)) {
       const existing = this.state.expandedTransactions;
       this.setState({
-        expandedTransactions: existing.filter((t) => t !== tx)
+        expandedTransactions: existing.filter((t) => t.id !== tx.id)
       });
     }
   };
