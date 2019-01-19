@@ -4,7 +4,7 @@ import { compact } from 'lodash';
 import type { MenuActions } from './MenuActions.types';
 import { getTranslation } from '../utils/getTranslation';
 
-const id = 'menu.osx';
+const id = 'menu';
 
 export const osxMenu = (
   app: App,
@@ -12,7 +12,7 @@ export const osxMenu = (
   actions: MenuActions,
   isInSafeMode: boolean,
   translations: {},
-  translation: function = getTranslation(translations, id)
+  translation: Function = getTranslation(translations, id)
 ) => (
   [{
     label: translation('daedalus'),

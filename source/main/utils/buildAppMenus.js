@@ -64,7 +64,7 @@ export const buildAppMenus = async (
     Menu.setApplicationMenu(menu);
   } else {
     menu = Menu.buildFromTemplate(
-      winLinuxMenu(app, mainWindow, menuActions, isInSafeMode)
+      winLinuxMenu(app, mainWindow, menuActions, isInSafeMode, translations)
     );
     mainWindow.setMenu(menu);
   }
