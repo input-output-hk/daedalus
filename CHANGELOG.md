@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented translations for the application menu ([PR 1262](https://github.com/input-output-hk/daedalus/pull/1262))
 - Implemented a success message for logs download ([PR 1228](https://github.com/input-output-hk/daedalus/pull/1228))
 - Implemented a better handling for "No disk space" error ([PR 1157](https://github.com/input-output-hk/daedalus/pull/1157))
 - Improved the NTP check logic ([PR 1258](https://github.com/input-output-hk/daedalus/pull/1258))
