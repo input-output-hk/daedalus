@@ -1,22 +1,19 @@
 // @flow
 import { observable, action } from 'mobx';
+import { set, omit } from 'lodash';
 import Store from './lib/Store';
 import type { Notification } from '../types/notificationType';
 
 export default class UiNotificationsStore extends Store {
 
-  @observable activeNotifications: Array<Notification> = [];
+  @observable activeNotifications: {} = {};
 
   setup() {
     this.actions.notifications.open.listen(this._onOpen);
     this.actions.notifications.closeActiveNotification.listen(this._onClose);
   }
 
-  isOpen = (id: string): boolean => !!this._findNotificationById(id);
-
-  _findNotificationById = (id: string): ?Notification => (
-    this.activeNotifications.find(notification => notification.id === id)
-  );
+  isOpen = (id: string): boolean => !!this.activeNotifications[id];
 
   @action _onOpen = ({ id, duration }: { id: string, duration?: number }) => {
     const notification = {
@@ -35,20 +32,22 @@ export default class UiNotificationsStore extends Store {
   };
 
   @action _set = (notification: Notification) => {
-    this.activeNotifications.push(notification);
+    this.activeNotifications = {
+      ...this.activeNotifications,
+      ...set({}, notification.id, notification)
+    };
   };
 
   @action _onClose = ({ id }: { id: string }) => {
-    const notification = this._findNotificationById(id);
+    const notification = this.activeNotifications[id];
     if (notification) {
       if (notification.secondsTimerInterval) clearInterval(notification.secondsTimerInterval);
-      const indexOfNotification = this.activeNotifications.indexOf(notification);
-      this.activeNotifications.splice(indexOfNotification, 1);
+      this.activeNotifications = omit(this.activeNotifications, id);
     }
   };
 
   @action _updateSeconds = (id: string) => {
-    const notification = this._findNotificationById(id);
+    const notification = this.activeNotifications[id];
     if (notification && notification.duration) {
       notification.duration -= 1;
       if (notification.duration === 0) this._onClose({ id });

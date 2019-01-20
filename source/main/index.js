@@ -1,27 +1,23 @@
 // @flow
 import os from 'os';
-import { app, BrowserWindow, globalShortcut, Menu, shell } from 'electron';
+import { app, BrowserWindow, shell } from 'electron';
 import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { Logger } from './utils/logging';
 import { setupLogging } from './utils/setupLogging';
 import { handleDiskSpace } from './utils/handleDiskSpace';
 import { createMainWindow } from './windows/main';
-import { winLinuxMenu } from './menus/win-linux';
-import { osxMenu } from './menus/osx';
 import { installChromeExtensions } from './utils/installChromeExtensions';
 import { environment } from './environment';
-import {
-  OPEN_ABOUT_DIALOG_CHANNEL,
-  GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL,
-  GO_TO_NETWORK_STATUS_SCREEN_CHANNEL
-} from '../common/ipc/api';
 import mainErrorHandler from './utils/mainErrorHandler';
 import { launcherConfig, frontendOnlyMode } from './config';
 import { setupCardano } from './cardano/setup';
 import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
+import { buildAppMenus } from './utils/buildAppMenus';
+import { getLocale } from './utils/getLocale';
 import { ensureXDGDataIsSet } from './cardano/config';
+import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
 
@@ -29,40 +25,7 @@ import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types
 let mainWindow: BrowserWindow;
 let cardanoNode: ?CardanoNode;
 
-const openAbout = () => {
-  if (mainWindow) mainWindow.webContents.send(OPEN_ABOUT_DIALOG_CHANNEL);
-};
-
-const goToAdaRedemption = () => {
-  if (mainWindow) mainWindow.webContents.send(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL);
-};
-
-const goToNetworkStatus = () => {
-  if (mainWindow) mainWindow.webContents.send(GO_TO_NETWORK_STATUS_SCREEN_CHANNEL);
-};
-
-const restartInSafeMode = async () => {
-  Logger.info('Restarting in SafeMode...');
-  if (cardanoNode) await cardanoNode.stop();
-  Logger.info('Exiting Daedalus with code 21.');
-  safeExitWithCode(21);
-};
-
-const restartWithoutSafeMode = async () => {
-  Logger.info('Restarting without SafeMode...');
-  if (cardanoNode) await cardanoNode.stop();
-  Logger.info('Exiting Daedalus with code 22.');
-  safeExitWithCode(22);
-};
-
-const { isDev, isMacOS, isWatchMode, buildLabel } = environment;
-const menuActions = {
-  openAbout,
-  goToAdaRedemption,
-  goToNetworkStatus,
-  restartInSafeMode,
-  restartWithoutSafeMode,
-};
+const { isDev, isWatchMode, buildLabel, network } = environment;
 
 const safeExit = async () => {
   if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
@@ -138,36 +101,22 @@ const onAppReady = async () => {
     client.create(mainWindow);
   }
 
-  // Build app menus
-  let menu;
-  if (isMacOS) {
-    menu = Menu.buildFromTemplate(osxMenu(app, mainWindow, menuActions, isInSafeMode));
-    Menu.setApplicationMenu(menu);
-  } else {
-    menu = Menu.buildFromTemplate(winLinuxMenu(app, mainWindow, menuActions, isInSafeMode));
-    mainWindow.setMenu(menu);
-  }
-
-  // Hide application window on Cmd+H hotkey (OSX only!)
-  if (isMacOS) {
-    app.on('activate', () => {
-      if (!mainWindow.isVisible()) app.show();
-    });
-
-    mainWindow.on('focus', () => {
-      globalShortcut.register('CommandOrControl+H', app.hide);
-    });
-
-    mainWindow.on('blur', () => {
-      globalShortcut.unregister('CommandOrControl+H');
-    });
-  }
-
   mainWindow.on('close', async (event) => {
     Logger.info('mainWindow received <close> event. Safe exiting Daedalus now.');
     event.preventDefault();
     await safeExit();
   });
+
+  let locale = getLocale(network);
+  buildAppMenus(mainWindow, cardanoNode, isInSafeMode, locale);
+
+  await rebuildApplicationMenu.onReceive(() => (
+    new Promise(resolve => {
+      locale = getLocale(network);
+      buildAppMenus(mainWindow, cardanoNode, isInSafeMode, locale);
+      resolve();
+    })
+  ));
 
   // Security feature: Prevent creation of new browser windows
   // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows

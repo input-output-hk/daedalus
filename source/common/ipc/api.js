@@ -48,6 +48,11 @@ export const GeneratePaperWalletChannelName = 'GeneratePaperWalletChannel';
 export type GeneratePaperWalletRendererRequest = GeneratePaperWalletParams;
 export type GeneratePaperWalletMainResponse = void;
 
+/**
+ * Channel to rebuild the electron application menu after the language setting changes
+ */
+export const RebuildApplicationMenu = 'RebuildApplicationMenu';
+
 // CardanoNode ipc channels
 // TODO: refactor to improved structure above
 export const CARDANO_AWAIT_UPDATE_CHANNEL = 'CARDANO_AWAIT_UPDATE_CHANNEL';

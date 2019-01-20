@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import GeneralSettings from '../../../components/settings/categories/GeneralSettings';
+import { rebuildApplicationMenu } from '../../../ipc/rebuild-application-menu.js';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
@@ -9,8 +10,9 @@ export default class GeneralSettingsPage extends Component<InjectedProps> {
 
   static defaultProps = { actions: null, stores: null };
 
-  onSelectLanguage = (values: { locale: string }) => {
+  onSelectLanguage = async (values: { locale: string }) => {
     this.props.actions.profile.updateLocale.trigger(values);
+    await rebuildApplicationMenu.send();
   };
 
   render() {
