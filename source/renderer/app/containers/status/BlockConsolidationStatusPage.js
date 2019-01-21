@@ -15,15 +15,19 @@ export default class NetworkStatusPage extends Component<InjectedProps> {
     actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
   };
 
-  handleExternalLinkClick = (event: MouseEvent) => {
-    event.preventDefault();
-    if (event.target.href) shell.openExternal(event.target.href);
+  handleExternalLinkClick = (url, event?: MouseEvent) => {
+    if (event) event.preventDefault();
+    shell.openExternal(url);
   };
 
   render() {
     return (
       <BlockConsolidationStatus
         onExternalLinkClick={this.handleExternalLinkClick}
+        epochsConsolidated={75}
+        epochsDownloaded={93}
+        totalEpochs={95}
+        epochsSynced={80}
       />
     );
   }

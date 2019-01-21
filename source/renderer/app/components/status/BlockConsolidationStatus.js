@@ -2,8 +2,11 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './BlockConsolidationStatus.scss';
 import TopBar from '../layout/TopBar';
+import epochs from '../../assets/images/block-consolidation/epochs.png';
 
 const messages = defineMessages({
   title: {
@@ -30,11 +33,26 @@ const messages = defineMessages({
     id: 'blockConsolidationStatus.consolidationDescription',
     defaultMessage: 'Uninterrupted consolidation usually takes less than 24 hours',
     description: 'Consolidation Description on "Block consolidation status" page.'
-  }
+  },
+  supportButton: {
+    id: 'blockConsolidationStatus.supportButton',
+    defaultMessage: '!!!Support',
+    description: 'Support Button on "Block consolidation status" page.'
+  },
+  epochsConsolidatedOfTotal: {
+    id: 'blockConsolidationStatus.epochsConsolidatedOfTotal',
+    defaultMessage: '!!!<p><b>{consolidated}</b> <em>of</em> <b>{downloaded}</b> epochs consolidated</p>',
+    description: 'Epochs Consolidated on "Block consolidation status" page.'
+  },
+
 });
 
 type Props = {
   onExternalLinkClick: Function,
+  epochsConsolidated: number,
+  epochsDownloaded: number,
+  totalEpochs: number,
+  epochsSynced: number
 };
 
 type State = {
@@ -48,6 +66,13 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
   };
 
   render() {
+
+    const {
+      epochsConsolidated,
+      epochsDownloaded,
+      totalEpochs,
+      epochsSynced
+    } = this.props;
 
     const { formatMessage } = this.context.intl;
 
@@ -64,32 +89,49 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
             <FormattedHTMLMessage {...messages.description} /> &nbsp;
             <a
               href={formatMessage(messages.linkURL)}
-              onClick={onExternalLinkClick}
+              onClick={(event) => onExternalLinkClick(formatMessage(messages.linkURL), event)}
             >
               { formatMessage(messages.linkText) }
             </a>
 
           </p>
 
+          <div className={styles.epochs} >
+            <FormattedHTMLMessage
+              {...messages.epochsConsolidatedOfTotal}
+              values={{
+                consolidated: epochsConsolidated,
+                downloaded: epochsDownloaded
+              }}
+            />
+            <img src={epochs} role="presentation" draggable="false" />
+          </div>
+
           <div className={styles.indicator}>
             <div className={styles.indicatorContainer}>
               <p className={styles.zeroEpoch}>0 epoch</p>
-              <div className={styles.indicatorEpochsSynced} >
-                <p>80% synced</p>
+              <div className={styles.indicatorEpochsSynced}>
+                <p>{ epochsSynced }% synced</p>
               </div>
-              <div className={styles.indicatorEpochsConsolidated} >
-                <p>75 epochs consolidated</p>
+              <div className={styles.indicatorEpochsConsolidated}>
+                <p>{ epochsConsolidated } epochs consolidated</p>
               </div>
-              <div className={styles.indicatorEpochsDownloaded} >
-                <p>93 epoch</p>
+              <div className={styles.indicatorEpochsDownloaded}>
+                <p>{ epochsDownloaded } epoch</p>
               </div>
-              <p className={styles.fullEpoch}>95 epoch</p>
+              <p className={styles.fullEpoch}>{ totalEpochs } epoch</p>
             </div>
           </div>
 
-          <p className={styles.Description}>
+          <p className={styles.consolidationDescription}>
             { formatMessage(messages.consolidationDescription) }
           </p>
+
+          <Button
+            label={formatMessage(messages.supportButton)}
+            onClick={() => onExternalLinkClick(formatMessage(messages.linkURL))}
+            skin={ButtonSkin}
+          />
         </div>
       </div>
     );

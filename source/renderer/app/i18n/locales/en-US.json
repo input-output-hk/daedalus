@@ -22,6 +22,8 @@
   "blockConsolidationStatus.linkText": "Learn more about this process.",
   "blockConsolidationStatus.linkURL": "https://cardanoexplorer.com/",
   "blockConsolidationStatus.consolidationDescription": "Uninterrupted consolidation usually takes less than 24 hours",
+  "blockConsolidationStatus.epochsConsolidatedOfTotal": "<p><b>{consolidated}</b> <em>of</em> <b>{downloaded}</b> epochs consolidated</p>",
+  "blockConsolidationStatus.supportButton": "Suport",
   "bugReport.dialog.alternative.description": "Alternatively, to help the development team investigate the issue you are experiencing, you can send your support request manually. You should first download your logs. Please take the following steps to submit your support request:",
   "bugReport.dialog.alternative.download.button.label": "Download",
   "bugReport.dialog.alternative.errorMessage": "There was a problem sending the support request.",

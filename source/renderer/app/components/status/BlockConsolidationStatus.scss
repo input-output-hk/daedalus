@@ -37,9 +37,34 @@
 
 }
 
-
 .description {
   font-size: 16px;
+}
+
+.epochs {
+  width: 620px;
+  height: 149px;
+  margin: 0 auto 60px;
+  position: relative;
+  p {
+    position: absolute;
+    right: 21px;
+    top: 56px;
+    color: white;
+    width: 106px;
+    font-size: 14px;
+    line-height: 1.29;
+    em {
+      font-size: 16px
+    }
+    b {
+      font-size: 18px;
+      font-weight: 600;
+    }
+  }
+  img {
+    width: 100%;
+  }
 }
 
 .indicator {
@@ -111,6 +136,11 @@
   line-height: 24px;
   top: 0;
 }
+
+.consolidationDescription {
+  margin-bottom: 14px
+}
+
 
 .indicatorEpochsDownloaded {
   position: absolute;
