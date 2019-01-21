@@ -1,5 +1,6 @@
 // @flow
 import '../../source/renderer/app/themes/index.global.scss';
+import './support/environment';
 import './Sidebar.stories';
 import './SidebarCategory.stories';
 import './SidebarWalletsMenu.stories';
