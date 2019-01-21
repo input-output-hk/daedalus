@@ -71,20 +71,23 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
 
           </p>
 
-          <div className={styles.consolidationIndicator}>
-            <div className={styles.consolidationIndicatorContainer}>
+          <div className={styles.indicator}>
+            <div className={styles.indicatorContainer}>
               <p className={styles.zeroEpoch}>0 epoch</p>
-              <div className={styles.consolidationIndicatorEpochsSynced} >
-                <p>93 epoch</p>
+              <div className={styles.indicatorEpochsSynced} >
+                <p>80% synced</p>
               </div>
-              <div className={styles.consolidationIndicatorEpochsConsolidated} >
+              <div className={styles.indicatorEpochsConsolidated} >
                 <p>75 epochs consolidated</p>
+              </div>
+              <div className={styles.indicatorEpochsDownloaded} >
+                <p>93 epoch</p>
               </div>
               <p className={styles.fullEpoch}>95 epoch</p>
             </div>
           </div>
 
-          <p className={styles.consolidationDescription}>
+          <p className={styles.Description}>
             { formatMessage(messages.consolidationDescription) }
           </p>
         </div>

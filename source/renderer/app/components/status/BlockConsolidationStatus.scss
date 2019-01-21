@@ -38,16 +38,16 @@
 }
 
 
-.consolidationDescription {
+.description {
   font-size: 16px;
 }
 
-.consolidationIndicator {
+.indicator {
   position: relative;
   margin-bottom: 53px;
 }
 
-.consolidationIndicatorContainer {
+.indicatorContainer {
   width: 600px;
   height: 24px;
   border-radius: 5px;
@@ -56,7 +56,7 @@
   position: relative;
 }
 
-.consolidationIndicatorEpochsSynced {
+.indicatorEpochsSynced {
   height: 24px;
   width: 70%;
   border-radius: 5px;
@@ -72,13 +72,12 @@
   p {
     position: absolute;
     right: 0;
-    font-size: 14px;
-    top: -25px;
+    bottom: -18px;
   }
 
 }
 
-.consolidationIndicatorEpochsConsolidated {
+.indicatorEpochsConsolidated {
   height: 24px;
   width: 50%;
   border-radius: 5px;
@@ -96,8 +95,8 @@
   p {
     position: absolute;
     right: 0;
-    font-size: 14px;
-    top: -25px;
+    top: -23px;
+    line-height: 1.43;
   }
 }
 
@@ -111,4 +110,24 @@
   right: -79px;
   line-height: 24px;
   top: 0;
+}
+
+.indicatorEpochsDownloaded {
+  position: absolute;
+  bottom: 0;
+  left: 92%;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 .5px 47px .5px;
+  border-color: transparent transparent #445b7c transparent;
+
+  p {
+    position: absolute;
+    left: 8px;
+    top: 0;
+    white-space: nowrap;
+    line-height: 1.43;
+
+  }
 }
