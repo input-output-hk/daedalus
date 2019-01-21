@@ -309,9 +309,9 @@ export default class WalletTransactionsList extends Component<Props, State> {
             width={width}
             height={height}
             rowCount={listItems.length}
-            rowHeight={({ index }) => {
-              return rowHeights[index] ? rowHeights[index].height : 100;
-            }}
+            rowHeight={({ index }) => (
+              rowHeights[index] ? rowHeights[index].height : 100
+            )}
             rowRenderer={rowRenderer}
             style={{ overflowY: 'scroll' }}
           />
