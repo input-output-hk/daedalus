@@ -17,6 +17,7 @@ export default class AppStore extends Store {
   @observable error: ?LocalizableError = null;
   @observable isAboutDialogOpen = false;
   @observable gpuStatus: ?GpuStatus = null;
+  @observable numberOfEpochFiles: number = 0;
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);

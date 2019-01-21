@@ -19,9 +19,11 @@ import {
   restartCardanoNodeChannel
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardanoNode.types';
+import { getNumberOfEpochFilesChannel } from '../ipc/getNumberOfEpochFilesChannel';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
 import type { CardanoNodeState, TlsConfig } from '../../../common/types/cardanoNode.types';
 import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
+import type { GetNumberOfEpochFilesChannelResponse } from '../../../common/types/epochs.types';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedState = null;
@@ -60,6 +62,7 @@ export default class NetworkStatusStore extends Store {
   @observable initialLocalHeight = null;
   @observable localBlockHeight = 0;
   @observable networkBlockHeight = 0;
+  @observable numberOfEpochFiles: ?number = null;
   @observable latestLocalBlockTimestamp = 0; // milliseconds
   @observable latestNetworkBlockTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
@@ -73,6 +76,8 @@ export default class NetworkStatusStore extends Store {
 
   // DEFINE STORE METHODS
   setup() {
+    const actions = this.actions.networkStatus;
+    actions.getNumberOfEpochFiles.listen(this._getNumberOfEpochFiles);
     // ========== IPC CHANNELS =========== //
     // Passively receive broadcasted tls config changes (which can happen without requesting it)
     // E.g if the cardano-node restarted for some reason
@@ -96,6 +101,8 @@ export default class NetworkStatusStore extends Store {
     this._forceCheckTimeDifferencePollingInterval = setInterval(
       this._forceCheckTimeDifference, NTP_FORCE_CHECK_POLL_INTERVAL
     );
+
+    getNumberOfEpochFilesChannel.onReceive(this._onReceiveNumberOfEpochFiles);
   }
 
   async restartNode() {
@@ -184,6 +191,18 @@ export default class NetworkStatusStore extends Store {
   _forceCheckTimeDifference = () => {
     this._updateNetworkStatus({ force_ntp_check: true });
   };
+
+  @action _onReceiveNumberOfEpochFiles = (
+    numberOfEpochFiles: GetNumberOfEpochFilesChannelResponse
+    ): Promise<void> => {
+    this.numberOfEpochFiles = numberOfEpochFiles;
+    return Promise.resolve();
+  }
+
+  @action _getNumberOfEpochFiles = () => {
+    this.numberOfEpochFiles = null;
+    getNumberOfEpochFilesChannel.send();
+  }
 
   // DEFINE ACTIONS
   @action initialize() {

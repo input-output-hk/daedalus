@@ -5,4 +5,5 @@ import Action from './lib/Action';
 
 export default class NetworkStatusActions {
   isSyncedAndReady: Action<any> = new Action();
+  getNumberOfEpochFiles: Action<any> = new Action();
 }

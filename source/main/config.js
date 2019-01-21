@@ -37,6 +37,7 @@ export type LauncherConfig = {
   tlsPath: string,
   reportServer?: string,
   nodeDbPath: string,
+  workingDir: string,
   logsPrefix: string,
   nodeLogConfig: string,
   nodeTimeoutSec: number,
@@ -52,6 +53,7 @@ export const APP_NAME = 'Daedalus';
 export const launcherConfig: LauncherConfig = readLauncherConfig(LAUNCHER_CONFIG);
 export const appLogsFolderPath = launcherConfig.logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
+export const appFolderPath = launcherConfig.workingDir;
 export const ALLOWED_LOGS = ['Daedalus.log'];
 export const ALLOWED_NODE_LOGS = new RegExp(/(node.json-)(\d{14}$)/);
 export const ALLOWED_LAUNCHER_LOGS = new RegExp(/(launcher-)(\d{14}$)/);

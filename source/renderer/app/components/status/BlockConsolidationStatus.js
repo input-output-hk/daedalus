@@ -82,6 +82,7 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
       <div className={styles.component}>
         <TopBar
           showSubMenuToggle={false}
+          currentRoute=""
         />
         <div className={styles.container}>
           <h1>{ formatMessage(messages.title) }</h1>

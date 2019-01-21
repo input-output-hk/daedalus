@@ -6,6 +6,7 @@ import { includes } from 'lodash';
 import { Logger } from '../common/logging';
 import { setupLogging } from './utils/setupLogging';
 import { makeEnvironmentGlobal } from './utils/makeEnvironmentGlobal';
+import { getNumberOfEpochFiles } from './utils/getNumberOfEpochFiles';
 import { createMainWindow } from './windows/main';
 import { winLinuxMenu } from './menus/win-linux';
 import { osxMenu } from './menus/osx';
@@ -114,6 +115,8 @@ app.on('ready', async () => {
     // Connect to electron-connect server which restarts / reloads windows on file changes
     client.create(mainWindow);
   }
+
+  getNumberOfEpochFiles(mainWindow);
 
   // Build app menus
   let menu;
