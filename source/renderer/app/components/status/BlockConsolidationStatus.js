@@ -65,6 +65,16 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
+  getWidthOfEpochsConsolidated = (
+    epochsConsolidated: number,
+    epochsDownloaded: number,
+  ) => `${epochsConsolidated * 100 / epochsDownloaded}%`;
+
+  getPositionOfEpochsDownloaded = (
+    epochsDownloaded: number,
+    totalEpochs: number,
+  ) => `${epochsDownloaded * 100 / totalEpochs}%`;
+
   render() {
 
     const {
@@ -111,13 +121,28 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
           <div className={styles.indicator}>
             <div className={styles.indicatorContainer}>
               <p className={styles.zeroEpoch}>0 epoch</p>
-              <div className={styles.indicatorEpochsSynced}>
+              <div
+                className={styles.indicatorEpochsSynced}
+                style={{
+                  width: `${epochsSynced}%`
+                }}
+              >
                 <p>{ epochsSynced }% synced</p>
               </div>
-              <div className={styles.indicatorEpochsConsolidated}>
+              <div
+                className={styles.indicatorEpochsConsolidated}
+                style={{
+                  width: this.getWidthOfEpochsConsolidated(epochsConsolidated, totalEpochs)
+                }}
+              >
                 <p>{ epochsConsolidated } epochs consolidated</p>
               </div>
-              <div className={styles.indicatorEpochsDownloaded}>
+              <div
+                className={styles.indicatorEpochsDownloaded}
+                style={{
+                  left: this.getPositionOfEpochsDownloaded(epochsDownloaded, totalEpochs)
+                }}
+              >
                 <p>{ epochsDownloaded } epoch</p>
               </div>
               <p className={styles.fullEpoch}>{ totalEpochs } epoch</p>

@@ -27,13 +27,12 @@ export default class NetworkStatusPage extends Component<InjectedProps> {
 
   render() {
 
-    const epochFiles = this.props.stores.networkStatus.numberOfEpochFiles;
+    // const epochFiles = this.props.stores.networkStatus.numberOfEpochFiles;
 
     return (
-      epochFiles !== null &&
       <BlockConsolidationStatus
         onExternalLinkClick={this.handleExternalLinkClick}
-        epochsConsolidated={epochFiles}
+        epochsConsolidated={57}
         epochsDownloaded={93}
         totalEpochs={95}
         epochsSynced={80}

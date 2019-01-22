@@ -17,3 +17,4 @@ import './ExportWalletToFileDialog.stories';
 import './PaperWallets.stories';
 import './AntivirusRestaurationSlowdownNotification.stories';
 import './WalletScreens.stories';
+import './BlockConsolidationStatus.stories';
