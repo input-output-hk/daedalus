@@ -1,0 +1,22 @@
+{
+  "menu.daedalus": "Daedalus",
+  "menu.daedalus.about": "About",
+  "menu.daedalus.adaRedemption": "Ada Redemption",
+  "menu.daedalus.gpuSafeMode": "GPU Safe Mode",
+  "menu.daedalus.networkStatus": "Network Status",
+  "menu.daedalus.blockConsolidationStatus": "Block Consolidation Status",
+  "menu.daedalus.quit": "Quit",
+  "menu.daedalus.close": "Close",
+  "menu.edit": "Edit",
+  "menu.edit.undo": "Undo",
+  "menu.edit.redo": "Redo",
+  "menu.edit.cut": "Cut",
+  "menu.edit.copy": "Copy",
+  "menu.edit.paste": "Paste",
+  "menu.edit.selectAll": "Select All",
+  "menu.view": "View",
+  "menu.view.reload": "Reload",
+  "menu.view.toggleFullScreen": "Toggle Full Screen",
+  "menu.view.toggleMaximumWindowSize": "Toggle Maximum Window Size",
+  "menu.view.toggleDeveloperTools": "Toggle Developer Tools"
+}

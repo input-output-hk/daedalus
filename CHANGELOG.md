@@ -6,6 +6,8 @@ Changelog
 ### Features
 
 - Improve performance of rendering huge lists of transactions and addresses ([PR 1276](https://github.com/input-output-hk/daedalus/pull/1276))
+- Implemented translations for the application menu ([PR 1262](https://github.com/input-output-hk/daedalus/pull/1262))
+- Implemented a success message for logs download ([PR 1228](https://github.com/input-output-hk/daedalus/pull/1228))
 - Implemented a better handling for "No disk space" error ([PR 1157](https://github.com/input-output-hk/daedalus/pull/1157))
 - Improved the NTP check logic ([PR 1258](https://github.com/input-output-hk/daedalus/pull/1258))
 - Added support for "frontend-only" mode ([PR 1241](https://github.com/input-output-hk/daedalus/pull/1241), [PR 1260](https://github.com/input-output-hk/daedalus/pull/1260))
@@ -30,6 +32,7 @@ Changelog
 
 ### Chores
 
+- Added more logging for API errors ([PR 1278](https://github.com/input-output-hk/daedalus/pull/1278)
 - Removed node version check as nix shell is enforcing the version ([PR 1236](https://github.com/input-output-hk/daedalus/pull/1236))
 - Fixed Daedalus shell to evaluate embedded variables properly ([PR 1235](https://github.com/input-output-hk/daedalus/pull/1235))
 - Added `--rp` prefixed CSS variables to Daedalus themes to configure styles of React-Polymorph components and removed SimpleTheme imports previously used for React-Polymorph overrides in favor of using ThemeProvider's themeOverrides feature ([PR 1139](https://github.com/input-output-hk/daedalus/pull/1139))
@@ -41,7 +44,7 @@ Changelog
 
 ### Fixes
 
-- Fixed the transactions loading logic ([PR 1261](https://github.com/input-output-hk/daedalus/pull/1261))
+- Fixed the transactions loading logic ([PR 1261](https://github.com/input-output-hk/daedalus/pull/1261), [PR 1267](https://github.com/input-output-hk/daedalus/pull/1267))
 - Fixed the network block stalling logic in order to prevent showing "Network connection lost - reconnecting..." screen in case network block height is stalling while local block height is still increasing ([PR 1246](https://github.com/input-output-hk/daedalus/pull/1246))
 
 ## 0.12.0
