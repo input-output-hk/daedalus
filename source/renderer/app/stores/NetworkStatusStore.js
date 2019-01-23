@@ -1,7 +1,7 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
 import moment from 'moment';
-import { isEqual } from 'lodash';
+import { isEqual, includes } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
@@ -37,6 +37,20 @@ const NETWORK_STATUS = {
   SYNCING: 1,
   RUNNING: 2,
 };
+
+const NODE_STOPPING_STATES = [
+  CardanoNodeStates.EXITING,
+  CardanoNodeStates.STOPPING,
+  CardanoNodeStates.UPDATING,
+];
+
+const NODE_STOPPED_STATES = [
+  CardanoNodeStates.CRASHED,
+  CardanoNodeStates.ERRORED,
+  CardanoNodeStates.STOPPED,
+  CardanoNodeStates.UPDATED,
+  CardanoNodeStates.UNRECOVERABLE,
+];
 // END CONSTANTS ----------------------------
 
 export default class NetworkStatusStore extends Store {
@@ -57,6 +71,8 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeSyncing = false; // Is 'true' in case we are receiving blocks and not stalling
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
   @observable isNodeInSync = false; // 'true' if syncing & local/network blocks diff within limit
+  @observable isNodeStopping = false; // 'true' if node is in `NODE_STOPPING_STATES` states
+  @observable isNodeStopped = false // 'true' if node is in `NODE_STOPPED_STATES` states
 
   @observable hasBeenConnected = false;
   @observable syncProgress = null;
@@ -239,7 +255,11 @@ export default class NetworkStatusStore extends Store {
         break;
       default: this._setDisconnected(wasConnected);
     }
-    runInAction('setting cardanoNodeState', () => this.cardanoNodeState = state);
+    runInAction('setting cardanoNodeState', () => {
+      this.cardanoNodeState = state;
+      this.isNodeStopping = includes(NODE_STOPPING_STATES, state);
+      this.isNodeStopped = includes(NODE_STOPPED_STATES, state);
+    });
     return Promise.resolve();
   };
 
