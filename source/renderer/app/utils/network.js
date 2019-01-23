@@ -44,16 +44,20 @@ export const getNetworkEkgUrl = () => {
   return ekgUrl;
 };
 
+// const today = new Date();
+// today.setHours(0, 0, 0, 0);
+
 const getEpochData = () => {
 
   if (isDevelopment()) {
     return {
       // startTime: Math.round((developmentStartTime / 1000)),
       // startTime: START_TIME_DEVNET,
+      // startTime: Math.round((new Date(today)).getTime() / 1000),
       startTime: START_TIME_MAINNET,
       slotDuration: SLOT_DURATION_DEVNET,
-      // epochLengthBase: EPOCH_LENGTH_BASE_DEVNET,
       epochLengthBase: EPOCH_LENGTH_BASE_MAINNET,
+      // epochLengthBase: EPOCH_LENGTH_BASE_MAINNET,
     };
   } else if (isStaging()) {
     return {
