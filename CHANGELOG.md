@@ -18,6 +18,7 @@ Changelog
 
 ### Fixes
 
+- Decoupled initial setup of language locale and terms of use from loading and syncing screens ([PR 1279](https://github.com/input-output-hk/daedalus/pull/1279))
 - Fixed `ps-list` buffer issues which caused false "Another Daedalus instance is already running" error messages ([PR 1266](https://github.com/input-output-hk/daedalus/pull/1266))
 - Fixed `getTransactionHistory` API endpoint account index query parameter name ([PR 1255](https://github.com/input-output-hk/daedalus/pull/1255))
 - Fixed issues with custom lock files by implementing "instance-lock" feature from Electron 3 ([PR 1229](https://github.com/input-output-hk/daedalus/pull/1229), [PR 1244](https://github.com/input-output-hk/daedalus/pull/1244))
