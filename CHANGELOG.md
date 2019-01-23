@@ -19,6 +19,7 @@ Changelog
 
 ### Fixes
 
+- Decoupled initial setup of language locale and terms of use from loading and syncing screens ([PR 1279](https://github.com/input-output-hk/daedalus/pull/1279))
 - Fixed `ps-list` buffer issues which caused false "Another Daedalus instance is already running" error messages ([PR 1266](https://github.com/input-output-hk/daedalus/pull/1266))
 - Fixed `getTransactionHistory` API endpoint account index query parameter name ([PR 1255](https://github.com/input-output-hk/daedalus/pull/1255))
 - Fixed issues with custom lock files by implementing "instance-lock" feature from Electron 3 ([PR 1229](https://github.com/input-output-hk/daedalus/pull/1229), [PR 1244](https://github.com/input-output-hk/daedalus/pull/1244))
@@ -32,6 +33,7 @@ Changelog
 
 ### Chores
 
+- Added more logging for API errors ([PR 1278](https://github.com/input-output-hk/daedalus/pull/1278)
 - Removed node version check as nix shell is enforcing the version ([PR 1236](https://github.com/input-output-hk/daedalus/pull/1236))
 - Fixed Daedalus shell to evaluate embedded variables properly ([PR 1235](https://github.com/input-output-hk/daedalus/pull/1235))
 - Added `--rp` prefixed CSS variables to Daedalus themes to configure styles of React-Polymorph components and removed SimpleTheme imports previously used for React-Polymorph overrides in favor of using ThemeProvider's themeOverrides feature ([PR 1139](https://github.com/input-output-hk/daedalus/pull/1139))

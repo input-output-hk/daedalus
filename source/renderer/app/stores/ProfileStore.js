@@ -204,16 +204,14 @@ export default class SettingsStore extends Store {
   };
 
   _redirectToLanguageSelectionIfNoLocaleSet = () => {
-    const { isConnected } = this.stores.networkStatus;
-    if (isConnected && this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) {
+    if (this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.LANGUAGE_SELECTION });
     }
   };
 
   _redirectToTermsOfUseScreenIfTermsNotAccepted = () => {
-    const { isConnected } = this.stores.networkStatus;
     const termsOfUseNotAccepted = this.hasLoadedTermsOfUseAcceptance && !this.areTermsOfUseAccepted;
-    if (isConnected && this.isCurrentLocaleSet && termsOfUseNotAccepted) {
+    if (this.isCurrentLocaleSet && termsOfUseNotAccepted) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.TERMS_OF_USE });
     }
   };

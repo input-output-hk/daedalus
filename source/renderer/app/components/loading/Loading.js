@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from 'react';
-import { includes } from 'lodash';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -107,6 +106,8 @@ type Props = {
   hasBeenConnected: boolean,
   isConnected: boolean,
   isSynced: boolean,
+  isNodeStopping: boolean,
+  isNodeStopped: boolean,
   isNotEnoughDiskSpace: boolean,
   diskSpaceRequired: string,
   diskSpaceMissing: string,
@@ -153,7 +154,6 @@ export default class Loading extends Component<Props, State> {
     const { isConnected, isSynced, isNotEnoughDiskSpace } = this.props;
     const canResetSyncing = this._syncingTimerShouldStop(isSynced, isNotEnoughDiskSpace);
     const canResetConnecting = this._connectingTimerShouldStop(isConnected, isNotEnoughDiskSpace);
-
     if (canResetSyncing) { this._resetSyncingTime(); }
     if (canResetConnecting) { this._resetConnectingTime(); }
   }
@@ -186,7 +186,6 @@ export default class Loading extends Component<Props, State> {
   _defensivelyStartTimers = (isConnected: boolean, isSynced: boolean) => {
     const needConnectingTimer = this._connectingTimerShouldStart(isConnected);
     const needSyncingTimer = this._syncingTimerShouldStart(isConnected, isSynced);
-
     if (needConnectingTimer) {
       connectingInterval = setInterval(this._incrementConnectingTime, 1000);
     } else if (needSyncingTimer) {
@@ -262,10 +261,15 @@ export default class Loading extends Component<Props, State> {
   _renderLoadingScreen = () => {
     const { intl } = this.context;
     const {
-      cardanoNodeState,
       isConnected,
       isSystemTimeCorrect,
       isSynced,
+      isNodeStopping,
+      isNodeStopped,
+      isNotEnoughDiskSpace,
+      diskSpaceRequired,
+      diskSpaceMissing,
+      diskSpaceRecommended,
       localTimeDifference,
       currentLocale,
       onExternalLinkClick,
@@ -276,7 +280,17 @@ export default class Loading extends Component<Props, State> {
       loadingDataForNextScreenMessage
     } = this.props;
 
-    if (!isSystemTimeCorrect) {
+    if (isNotEnoughDiskSpace) {
+      return (
+        <NoDiskSpaceOverlay
+          diskSpaceRequired={diskSpaceRequired}
+          diskSpaceMissing={diskSpaceMissing}
+          diskSpaceRecommended={diskSpaceRecommended}
+        />
+      );
+    }
+
+    if (!isSystemTimeCorrect && !isNodeStopping && !isNodeStopped) {
       return (
         <SystemTimeErrorOverlay
           localTimeDifference={localTimeDifference}
@@ -288,17 +302,11 @@ export default class Loading extends Component<Props, State> {
         />
       );
     }
+
     if (!isConnected) {
-      const finalCardanoNodeStates = [
-        CardanoNodeStates.STOPPED,
-        CardanoNodeStates.UPDATED,
-        CardanoNodeStates.CRASHED,
-        CardanoNodeStates.ERRORED,
-        CardanoNodeStates.UNRECOVERABLE
-      ];
       const headlineClasses = classNames([
         styles.headline,
-        includes(finalCardanoNodeStates, cardanoNodeState) ? styles.withoutAnimation : null,
+        isNodeStopped ? styles.withoutAnimation : null,
       ]);
       return (
         <div className={styles.connecting}>
@@ -308,6 +316,7 @@ export default class Loading extends Component<Props, State> {
         </div>
       );
     }
+
     if (!isSynced) {
       return (
         <div className={styles.syncing}>
@@ -338,10 +347,6 @@ export default class Loading extends Component<Props, State> {
       apiIcon,
       isConnected,
       isSynced,
-      isNotEnoughDiskSpace,
-      diskSpaceRequired,
-      diskSpaceMissing,
-      diskSpaceRecommended,
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
       onReportIssueClick,
@@ -395,13 +400,6 @@ export default class Loading extends Component<Props, State> {
 
     return (
       <div className={componentStyles}>
-        {isNotEnoughDiskSpace && (
-          <NoDiskSpaceOverlay
-            diskSpaceRequired={diskSpaceRequired}
-            diskSpaceMissing={diskSpaceMissing}
-            diskSpaceRecommended={diskSpaceRecommended}
-          />
-        )}
         {showReportIssue && (
           <div className={styles.reportIssue}>
             <h1 className={styles.reportIssueText}>
