@@ -12,7 +12,7 @@ export default class NetworkStatusPage extends Component<InjectedProps> {
 
   constructor(props) {
     super(props);
-    this.props.actions.networkStatus.getNumberOfEpochFiles.trigger();
+    this.props.actions.networkStatus.getNumberOfEpochsConsolidated.trigger();
   }
 
   handleClose = () => {
@@ -27,7 +27,7 @@ export default class NetworkStatusPage extends Component<InjectedProps> {
 
   render() {
 
-    // const epochFiles = this.props.stores.networkStatus.numberOfEpochFiles;
+    // const epochsConsolidated = this.props.stores.networkStatus.numberOfEpochsConsolidated;
 
     return (
       <BlockConsolidationStatus

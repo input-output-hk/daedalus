@@ -19,11 +19,11 @@ import {
   restartCardanoNodeChannel
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardanoNode.types';
-import { getNumberOfEpochFilesChannel } from '../ipc/getNumberOfEpochFilesChannel';
+import { getNumberOfEpochsConsolidatedChannel } from '../ipc/getNumberOfEpochsConsolidatedChannel';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
 import type { CardanoNodeState, TlsConfig } from '../../../common/types/cardanoNode.types';
 import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
-import type { GetNumberOfEpochFilesChannelResponse } from '../../../common/types/epochs.types';
+import type { GetNumberOfEpochsConsolidatedChannelResponse } from '../../../common/types/epochs.types';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedState = null;
@@ -62,7 +62,7 @@ export default class NetworkStatusStore extends Store {
   @observable initialLocalHeight = null;
   @observable localBlockHeight = 0;
   @observable networkBlockHeight = 0;
-  @observable numberOfEpochFiles: ?number = null;
+  @observable numberOfEpochsConsolidated: ?number = null;
   @observable latestLocalBlockTimestamp = 0; // milliseconds
   @observable latestNetworkBlockTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
@@ -77,7 +77,7 @@ export default class NetworkStatusStore extends Store {
   // DEFINE STORE METHODS
   setup() {
     const actions = this.actions.networkStatus;
-    actions.getNumberOfEpochFiles.listen(this._getNumberOfEpochFiles);
+    actions.getNumberOfEpochsConsolidated.listen(this._getNumberOfEpochsConsolidated);
     // ========== IPC CHANNELS =========== //
     // Passively receive broadcasted tls config changes (which can happen without requesting it)
     // E.g if the cardano-node restarted for some reason
@@ -102,7 +102,7 @@ export default class NetworkStatusStore extends Store {
       this._forceCheckTimeDifference, NTP_FORCE_CHECK_POLL_INTERVAL
     );
 
-    getNumberOfEpochFilesChannel.onReceive(this._onReceiveNumberOfEpochFiles);
+    getNumberOfEpochsConsolidatedChannel.onReceive(this._onReceiveNumberOfEpochsConsolidated);
   }
 
   async restartNode() {
@@ -192,16 +192,16 @@ export default class NetworkStatusStore extends Store {
     this._updateNetworkStatus({ force_ntp_check: true });
   };
 
-  @action _onReceiveNumberOfEpochFiles = (
-    numberOfEpochFiles: GetNumberOfEpochFilesChannelResponse
+  @action _onReceiveNumberOfEpochsConsolidated = (
+    numberOfEpochsConsolidated: GetNumberOfEpochsConsolidatedChannelResponse
     ): Promise<void> => {
-    this.numberOfEpochFiles = numberOfEpochFiles;
+    this.numberOfEpochsConsolidated = numberOfEpochsConsolidated;
     return Promise.resolve();
   }
 
-  @action _getNumberOfEpochFiles = () => {
-    this.numberOfEpochFiles = null;
-    getNumberOfEpochFilesChannel.send();
+  @action _getNumberOfEpochsConsolidated = () => {
+    this.numberOfEpochsConsolidated = null;
+    getNumberOfEpochsConsolidatedChannel.send();
   }
 
   // DEFINE ACTIONS

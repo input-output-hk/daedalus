@@ -6,7 +6,7 @@ import { includes } from 'lodash';
 import { Logger } from '../common/logging';
 import { setupLogging } from './utils/setupLogging';
 import { makeEnvironmentGlobal } from './utils/makeEnvironmentGlobal';
-import { getNumberOfEpochFiles } from './utils/getNumberOfEpochFiles';
+import { getNumberOfEpochsConsolidated } from './utils/getNumberOfEpochsConsolidated';
 import { createMainWindow } from './windows/main';
 import { winLinuxMenu } from './menus/win-linux';
 import { osxMenu } from './menus/osx';
@@ -116,7 +116,7 @@ app.on('ready', async () => {
     client.create(mainWindow);
   }
 
-  getNumberOfEpochFiles(mainWindow);
+  getNumberOfEpochsConsolidated(mainWindow);
 
   // Build app menus
   let menu;

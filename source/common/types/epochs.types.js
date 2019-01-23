@@ -1,3 +1,3 @@
 // @flow
-export type GetNumberOfEpochFilesChannelResponse = number;
+export type GetNumberOfEpochsConsolidatedChannelResponse = number;
 

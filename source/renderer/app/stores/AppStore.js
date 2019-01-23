@@ -17,7 +17,7 @@ export default class AppStore extends Store {
   @observable error: ?LocalizableError = null;
   @observable isAboutDialogOpen = false;
   @observable gpuStatus: ?GpuStatus = null;
-  @observable numberOfEpochFiles: number = 0;
+  @observable numberOfEpochsConsolidated: number = 0;
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
@@ -61,7 +61,6 @@ export default class AppStore extends Store {
   });
 
   _updateRouteLocation = (options: { route: string, params: ?Object }) => {
-    console.log('options', options);
     const routePath = buildRoute(options.route, options.params);
     const currentRoute = this.stores.router.location.pathname;
     if (currentRoute !== routePath) this.stores.router.push(routePath);

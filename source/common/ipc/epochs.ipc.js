@@ -1,2 +1,2 @@
 // @flow
-export const GetNumberOfEpochFilesChannel = 'GetNumberOfEpochFilesChannel';
+export const GetNumberOfEpochsConsolidatedChannel = 'GetNumberOfEpochsConsolidatedChannel';
