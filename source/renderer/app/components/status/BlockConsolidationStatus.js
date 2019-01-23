@@ -11,48 +11,67 @@ import epochs from '../../assets/images/block-consolidation/epochs.png';
 const messages = defineMessages({
   title: {
     id: 'blockConsolidationStatus.title',
-    defaultMessage: '!!!Block consolidation status',
+    defaultMessage: '!!!Block storage consolidation status',
     description: 'Title of "Block consolidation status" page.'
   },
-  description: {
-    id: 'blockConsolidationStatus.description',
-    defaultMessage: '!!!Block consolidation status',
-    description: 'Description of "Block consolidation status" page.'
+  description1: {
+    id: 'blockConsolidationStatus.description1',
+    defaultMessage: '!!!Block storage is being consolidated.',
+    description: 'Description 1 of "Block consolidation status" page.'
   },
-  linkText: {
-    id: 'blockConsolidationStatus.linkText',
-    defaultMessage: '!!!Learn more about this process.',
-    description: 'Link Text of "Block consolidation status" page.'
+  description2: {
+    id: 'blockConsolidationStatus.description2',
+    defaultMessage: '!!!Blocks for the current epoch <b>({currentEpoch})</b> and the previous epoch <b>({currentEpochBehind})</b> are stored as one file per block. All previous epochs will be consolidated to two files per epoch.',
+    description: 'Description 2 of "Block consolidation status" page.'
   },
-  linkURL: {
-    id: 'blockConsolidationStatus.linkURL',
-    defaultMessage: '!!!https://cardanoexplorer.com/',
-    description: 'Link URL of "Block consolidation status" page.'
+  description3: {
+    id: 'blockConsolidationStatus.description3',
+    defaultMessage: '!!!This reduces the number of files and the amount of hard drive space required to store the blockchain on your machine.',
+    description: 'Description 3 of "Block consolidation status" page.'
   },
-  consolidationDescription: {
-    id: 'blockConsolidationStatus.consolidationDescription',
-    defaultMessage: 'Uninterrupted consolidation usually takes less than 24 hours',
-    description: 'Consolidation Description on "Block consolidation status" page.'
+  epochsConsolidatedOfTotal: {
+    id: 'blockConsolidationStatus.epochsConsolidatedOfTotal',
+    defaultMessage: '!!!<p><b>{consolidated}</b> <em>of</em> <b>{downloaded}</b> epochs consolidated</p>',
+    description: 'Epochs Consolidated Of Total on "Block consolidation status" page.'
+  },
+  epoch: {
+    id: 'blockConsolidationStatus.epoch',
+    defaultMessage: '!!!epoch',
+    description: 'Singular Epoch on "Block consolidation status" page.'
+  },
+  epochs: {
+    id: 'blockConsolidationStatus.epochs',
+    defaultMessage: '!!!epochs',
+    description: 'Plural Epochs on "Block consolidation status" page.'
+  },
+  epochsConsolidated: {
+    id: 'blockConsolidationStatus.epochsConsolidated',
+    defaultMessage: '!!!Epochs consolidated',
+    description: 'Epochs consolidated on "Block consolidation status" page.'
+  },
+  synced: {
+    id: 'blockConsolidationStatus.synced',
+    defaultMessage: '!!!synced',
+    description: 'synced on "Block consolidation status" page.'
   },
   supportButton: {
     id: 'blockConsolidationStatus.supportButton',
     defaultMessage: '!!!Support',
     description: 'Support Button on "Block consolidation status" page.'
   },
-  epochsConsolidatedOfTotal: {
-    id: 'blockConsolidationStatus.epochsConsolidatedOfTotal',
-    defaultMessage: '!!!<p><b>{consolidated}</b> <em>of</em> <b>{downloaded}</b> epochs consolidated</p>',
-    description: 'Epochs Consolidated on "Block consolidation status" page.'
+  supportButtonURL: {
+    id: 'blockConsolidationStatus.linkURL',
+    defaultMessage: '!!!https://cardanoexplorer.com/',
+    description: 'Link URL of "Block consolidation status" page.'
   },
 
 });
 
 type Props = {
+  currentEpoch: number,
+  epochsConsolidated?: ?number,
+  epochsSynced: number,
   onExternalLinkClick: Function,
-  epochsConsolidated: number,
-  currentEpoch: number,
-  currentEpoch: number,
-  epochsSynced: number
 };
 
 type State = {
@@ -68,19 +87,33 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
   getWidthOfEpochsConsolidated = (
     epochsConsolidated: number,
     currentEpoch: number,
-  ) => `${epochsConsolidated * 100 / (currentEpoch - 2)}%`;
+  ) => epochsConsolidated * 100 / (currentEpoch - 2);
+
+  getPositionOfEpochsConsolidated = (widthOfEpochsConsolidated: number) => {
+    if (widthOfEpochsConsolidated > 40) {
+      return {
+        right: 8
+      };
+    }
+    return {
+      left: 0,
+      textAlign: 'left',
+    };
+  };
 
   render() {
 
     const {
-      epochsConsolidated,
       currentEpoch,
-      epochsSynced
+      epochsConsolidated,
+      epochsSynced,
+      onExternalLinkClick
     } = this.props;
 
     const { formatMessage } = this.context.intl;
 
-    const { onExternalLinkClick } = this.props;
+    const widthOfEpochsConsolidated =
+      this.getWidthOfEpochsConsolidated(epochsConsolidated || 0, currentEpoch);
 
     return (
       <div className={styles.component}>
@@ -91,14 +124,19 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
         <div className={styles.container}>
           <h1>{ formatMessage(messages.title) }</h1>
           <p className={styles.description}>
-            <FormattedHTMLMessage {...messages.description} /> &nbsp;
-            <a
-              href={formatMessage(messages.linkURL)}
-              onClick={(event) => onExternalLinkClick(formatMessage(messages.linkURL), event)}
-            >
-              { formatMessage(messages.linkText) }
-            </a>
-
+            { formatMessage(messages.description1) }
+          </p>
+          <p className={styles.description}>
+            <FormattedHTMLMessage
+              {...messages.description2}
+              values={{
+                currentEpoch,
+                currentEpochBehind: currentEpoch - 2,
+              }}
+            />
+          </p>
+          <p className={styles.description}>
+            { formatMessage(messages.description3) }
           </p>
 
           <div className={styles.epochs} >
@@ -114,11 +152,11 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
 
           <div className={styles.indicator}>
             <div className={styles.indicatorContainer}>
-              <p className={styles.zeroEpoch}>0 epoch</p>
+              <p className={styles.zeroEpoch}>0 { formatMessage(messages.epoch) }</p>
               <div
                 className={styles.indicatorEpochsBehind}
               >
-                <p>{ currentEpoch - 2 } epoch</p>
+                <p>{ currentEpoch - 2 } { formatMessage(messages.epoch) }</p>
               </div>
               <div
                 className={styles.indicatorEpochsSynced}
@@ -126,25 +164,27 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
                   width: `${epochsSynced}%`
                 }}
               >
-                <p>{ epochsSynced }% synced</p>
+                <p>{ epochsSynced }% { formatMessage(messages.synced) }</p>
               </div>
               <div className={styles.indicatorEpochsConsolidatedContainer}>
                 <div
                   className={styles.indicatorEpochsConsolidated}
                   style={{
-                    width: this.getWidthOfEpochsConsolidated(epochsConsolidated, currentEpoch)
+                    width: `${widthOfEpochsConsolidated}%`
                   }}
                 >
-                  <p>{ epochsConsolidated } epochs consolidated</p>
+                  <p
+                    style={this.getPositionOfEpochsConsolidated(widthOfEpochsConsolidated)}
+                  >
+                    { epochsConsolidated } { formatMessage(messages.epochsConsolidated) }
+                  </p>
                 </div>
               </div>
-              <p className={styles.fullEpoch}>{ currentEpoch } epoch</p>
+              <p className={styles.fullEpoch}>
+                { currentEpoch } { formatMessage(messages.epoch) }
+              </p>
             </div>
           </div>
-
-          <p className={styles.consolidationDescription}>
-            { formatMessage(messages.consolidationDescription) }
-          </p>
 
           <Button
             label={formatMessage(messages.supportButton)}

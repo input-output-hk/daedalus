@@ -1520,6 +1520,165 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Block storage consolidation status",
+        "description": "Title of \"Block consolidation status\" page.",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
+        "id": "blockConsolidationStatus.title",
+        "start": {
+          "column": 9,
+          "line": 12
+        }
+      },
+      {
+        "defaultMessage": "!!!Block storage is being consolidated.",
+        "description": "Description 1 of \"Block consolidation status\" page.",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
+        "id": "blockConsolidationStatus.description1",
+        "start": {
+          "column": 16,
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!Blocks for the current epoch <b>({currentEpoch})</b> and the previous epoch <b>({currentEpochBehind})</b> are stored as one file per block. All previous epochs will be consolidated to two files per epoch.",
+        "description": "Description 2 of \"Block consolidation status\" page.",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
+        "id": "blockConsolidationStatus.description2",
+        "start": {
+          "column": 16,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!This reduces the number of files and the amount of hard drive space required to store the blockchain on your machine.",
+        "description": "Description 3 of \"Block consolidation status\" page.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
+        "id": "blockConsolidationStatus.description3",
+        "start": {
+          "column": 16,
+          "line": 27
+        }
+      },
+      {
+        "defaultMessage": "!!!<p><b>{consolidated}</b> <em>of</em> <b>{downloaded}</b> epochs consolidated</p>",
+        "description": "Epochs Consolidated Of Total on \"Block consolidation status\" page.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
+        "id": "blockConsolidationStatus.epochsConsolidatedOfTotal",
+        "start": {
+          "column": 29,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!epoch",
+        "description": "Singular Epoch on \"Block consolidation status\" page.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
+        "id": "blockConsolidationStatus.epoch",
+        "start": {
+          "column": 9,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!epochs",
+        "description": "Plural Epochs on \"Block consolidation status\" page.",
+        "end": {
+          "column": 3,
+          "line": 46
+        },
+        "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
+        "id": "blockConsolidationStatus.epochs",
+        "start": {
+          "column": 10,
+          "line": 42
+        }
+      },
+      {
+        "defaultMessage": "!!!Epochs consolidated",
+        "description": "Epochs consolidated on \"Block consolidation status\" page.",
+        "end": {
+          "column": 3,
+          "line": 51
+        },
+        "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
+        "id": "blockConsolidationStatus.epochsConsolidated",
+        "start": {
+          "column": 22,
+          "line": 47
+        }
+      },
+      {
+        "defaultMessage": "!!!synced",
+        "description": "synced on \"Block consolidation status\" page.",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
+        "id": "blockConsolidationStatus.synced",
+        "start": {
+          "column": 10,
+          "line": 52
+        }
+      },
+      {
+        "defaultMessage": "!!!Support",
+        "description": "Support Button on \"Block consolidation status\" page.",
+        "end": {
+          "column": 3,
+          "line": 61
+        },
+        "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
+        "id": "blockConsolidationStatus.supportButton",
+        "start": {
+          "column": 17,
+          "line": 57
+        }
+      },
+      {
+        "defaultMessage": "!!!https://cardanoexplorer.com/",
+        "description": "Link URL of \"Block consolidation status\" page.",
+        "end": {
+          "column": 3,
+          "line": 66
+        },
+        "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
+        "id": "blockConsolidationStatus.linkURL",
+        "start": {
+          "column": 20,
+          "line": 62
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/status/BlockConsolidationStatus.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Regular",
         "description": "Tab title \"Regular\" on Ada redemption page.",
         "end": {

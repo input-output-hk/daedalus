@@ -7,7 +7,7 @@
 .container {
   background-color: var(--theme-block-consolidation-container-background-color);
   border-radius: 4px;
-  font-family: var(--font-medium);
+  font-family: var(--font-regular);
   margin: 20px;
   padding: 20px;
   text-align: center;
@@ -21,7 +21,7 @@
 
   p {
     color: var(--theme-block-consolidation-text-color);
-    font-size: 14px;
+    font-size: 16px;
   }
 
   a {
@@ -31,15 +31,22 @@
   }
 
   .description {
-    font-size: 16px;
-    margin-bottom: 80px;
+    line-height: 1.38;
+    margin: 0 auto 8px;
+    max-width: 610px;
+
+    b {
+      font-family: var(--font-medium);
+    }
+
+    &:last-of-type {
+      margin-bottom: 40px;
+
+    }
   }
 
 }
 
-.description {
-  font-size: 16px;
-}
 
 .epochs {
   height: 149px;
@@ -70,6 +77,10 @@
 .indicator {
   margin-bottom: 53px;
   position: relative;
+
+  p {
+    font-size: 14px;
+  }
 }
 
 .indicatorContainer {
@@ -135,14 +146,11 @@
   position: absolute;
 }
 .fullEpoch {
+  left: 614px;
   line-height: 24px;
   position: absolute;
-  right: -79px;
   top: 0;
-}
-
-.consolidationDescription {
-  margin-bottom: 14px
+  white-space: nowrap;
 }
 
 .indicatorEpochsBehind {

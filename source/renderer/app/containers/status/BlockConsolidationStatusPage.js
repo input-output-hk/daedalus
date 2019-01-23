@@ -11,7 +11,7 @@ const shell = require('electron').shell;
 @inject('stores', 'actions') @observer
 export default class BlockConsolidationStatusPage extends Component<InjectedProps> {
 
-  constructor(props) {
+  constructor(props: any) {
     super(props);
     this.props.actions.networkStatus.getNumberOfEpochsConsolidated.trigger();
   }
@@ -28,15 +28,15 @@ export default class BlockConsolidationStatusPage extends Component<InjectedProp
 
   render() {
 
-    const { epochsConsolidated, syncProgress /* , _startTime */ } =
+    const { epochsConsolidated, syncProgress } =
       this.props.stores.networkStatus;
 
     return (
       <BlockConsolidationStatus
-        onExternalLinkClick={this.handleExternalLinkClick}
-        epochsConsolidated={epochsConsolidated}
         currentEpoch={getCurrentEpoch()}
+        epochsConsolidated={epochsConsolidated}
         epochsSynced={syncProgress}
+        onExternalLinkClick={this.handleExternalLinkClick}
       />
     );
   }
