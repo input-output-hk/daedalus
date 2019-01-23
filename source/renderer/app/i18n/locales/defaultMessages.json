@@ -1660,14 +1660,14 @@
         }
       },
       {
-        "defaultMessage": "!!!https://cardanoexplorer.com/",
-        "description": "Link URL of \"Block consolidation status\" page.",
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360016060314",
+        "description": "URL of Support Button on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
           "line": 66
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
-        "id": "blockConsolidationStatus.linkURL",
+        "id": "blockConsolidationStatus.supportButtonURL",
         "start": {
           "column": 20,
           "line": 62

@@ -60,9 +60,9 @@ const messages = defineMessages({
     description: 'Support Button on "Block consolidation status" page.'
   },
   supportButtonURL: {
-    id: 'blockConsolidationStatus.linkURL',
-    defaultMessage: '!!!https://cardanoexplorer.com/',
-    description: 'Link URL of "Block consolidation status" page.'
+    id: 'blockConsolidationStatus.supportButtonURL',
+    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/articles/360016060314',
+    description: 'URL of Support Button on "Block consolidation status" page.'
   },
 
 });
@@ -188,7 +188,7 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
 
           <Button
             label={formatMessage(messages.supportButton)}
-            onClick={() => onExternalLinkClick(formatMessage(messages.linkURL))}
+            onClick={() => onExternalLinkClick(formatMessage(messages.supportButtonURL))}
             skin={ButtonSkin}
           />
         </div>
