@@ -102,12 +102,16 @@
 
 }
 
-.indicatorEpochsConsolidated {
-  height: 24px;
-  width: 50%;
-  border-radius: 5px;
+.indicatorEpochsConsolidatedContainer {
+  padding-right: 80px;
   position: absolute;
-  left: 0;
+  width: 100%;
+  top: 0;}
+
+.indicatorEpochsConsolidated {
+  position: relative;
+  height: 24px;
+  border-radius: 5px;
   background: repeating-linear-gradient(
     -63deg,
     var(--theme-block-consolidation-stripe-dark-1-background-color),
@@ -115,11 +119,10 @@
     var(--theme-block-consolidation-stripe-dark-2-background-color) 10px,
     var(--theme-block-consolidation-stripe-dark-2-background-color) 20px
   );
-  top: 0;
 
   p {
     position: absolute;
-    right: 0;
+    right: 8px;
     top: -23px;
     line-height: 1.43;
     white-space: nowrap;

@@ -128,13 +128,15 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
                 </div>
                 <p>{ epochsSynced }% synced</p>
               </div>
-              <div
-                className={styles.indicatorEpochsConsolidated}
-                style={{
-                  width: this.getWidthOfEpochsConsolidated(epochsConsolidated, currentEpoch)
-                }}
-              >
-                <p>{ epochsConsolidated } epochs consolidated</p>
+              <div className={styles.indicatorEpochsConsolidatedContainer}>
+                <div
+                  className={styles.indicatorEpochsConsolidated}
+                  style={{
+                    width: this.getWidthOfEpochsConsolidated(epochsConsolidated, currentEpoch)
+                  }}
+                >
+                  <p>{ epochsConsolidated } epochs consolidated</p>
+                </div>
               </div>
               <p className={styles.fullEpoch}>{ currentEpoch } epoch</p>
             </div>
