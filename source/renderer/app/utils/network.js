@@ -13,7 +13,7 @@ import {
   START_TIME_MAINNET,
   START_TIME_STAGING,
   START_TIME_TESTNET,
-  // START_TIME_DEVNET,
+  START_TIME_DEVNET,
   SLOT_DURATION_MAINNET,
   SLOT_DURATION_STAGING,
   SLOT_DURATION_TESTNET,
@@ -21,7 +21,7 @@ import {
   EPOCH_LENGTH_BASE_MAINNET,
   EPOCH_LENGTH_BASE_STAGING,
   EPOCH_LENGTH_BASE_TESTNET,
-  // EPOCH_LENGTH_BASE_DEVNET,
+  EPOCH_LENGTH_BASE_DEVNET,
 } from '../config/epochsConfig';
 
 const { isMainnet, isStaging, isTestnet, isDevelopment } = environment;
@@ -52,12 +52,12 @@ const getEpochData = () => {
   if (isDevelopment()) {
     return {
       // startTime: Math.round((developmentStartTime / 1000)),
-      // startTime: START_TIME_DEVNET,
       // startTime: Math.round((new Date(today)).getTime() / 1000),
-      startTime: START_TIME_MAINNET,
+      // startTime: START_TIME_MAINNET,
+      startTime: START_TIME_DEVNET,
       slotDuration: SLOT_DURATION_DEVNET,
-      epochLengthBase: EPOCH_LENGTH_BASE_MAINNET,
       // epochLengthBase: EPOCH_LENGTH_BASE_MAINNET,
+      epochLengthBase: EPOCH_LENGTH_BASE_DEVNET,
     };
   } else if (isStaging()) {
     return {
