@@ -50,8 +50,8 @@ const messages = defineMessages({
 type Props = {
   onExternalLinkClick: Function,
   epochsConsolidated: number,
-  epochsDownloaded: number,
-  totalEpochs: number,
+  currentEpoch: number,
+  currentEpoch: number,
   epochsSynced: number
 };
 
@@ -67,20 +67,14 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
 
   getWidthOfEpochsConsolidated = (
     epochsConsolidated: number,
-    epochsDownloaded: number,
-  ) => `${epochsConsolidated * 100 / epochsDownloaded}%`;
-
-  getPositionOfEpochsDownloaded = (
-    epochsDownloaded: number,
-    totalEpochs: number,
-  ) => `${epochsDownloaded * 100 / totalEpochs}%`;
+    currentEpoch: number,
+  ) => `${epochsConsolidated * 100 / (currentEpoch - 2)}%`;
 
   render() {
 
     const {
       epochsConsolidated,
-      epochsDownloaded,
-      totalEpochs,
+      currentEpoch,
       epochsSynced
     } = this.props;
 
@@ -112,7 +106,7 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
               {...messages.epochsConsolidatedOfTotal}
               values={{
                 consolidated: epochsConsolidated,
-                downloaded: epochsDownloaded
+                downloaded: currentEpoch
               }}
             />
             <img src={epochs} role="presentation" draggable="false" />
@@ -127,25 +121,22 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
                   width: `${epochsSynced}%`
                 }}
               >
+                <div
+                  className={styles.indicatorEpochsBehind}
+                >
+                  <p>{ currentEpoch - 2 } epoch</p>
+                </div>
                 <p>{ epochsSynced }% synced</p>
               </div>
               <div
                 className={styles.indicatorEpochsConsolidated}
                 style={{
-                  width: this.getWidthOfEpochsConsolidated(epochsConsolidated, totalEpochs)
+                  width: this.getWidthOfEpochsConsolidated(epochsConsolidated, currentEpoch)
                 }}
               >
                 <p>{ epochsConsolidated } epochs consolidated</p>
               </div>
-              <div
-                className={styles.indicatorEpochsDownloaded}
-                style={{
-                  left: this.getPositionOfEpochsDownloaded(epochsDownloaded, totalEpochs)
-                }}
-              >
-                <p>{ epochsDownloaded } epoch</p>
-              </div>
-              <p className={styles.fullEpoch}>{ totalEpochs } epoch</p>
+              <p className={styles.fullEpoch}>{ currentEpoch } epoch</p>
             </div>
           </div>
 

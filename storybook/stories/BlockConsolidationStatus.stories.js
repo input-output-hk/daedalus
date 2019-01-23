@@ -9,8 +9,7 @@ import StoryDecorator from './support/StoryDecorator';
 // Screens
 import BlockConsolidationStatus from '../../source/renderer/app/components/status/BlockConsolidationStatus';
 
-const epochsDownloaded = 93;
-const totalEpochs = 95;
+const currentEpoch = 95;
 
 storiesOf('BlockConsolidationStatus', module)
 
@@ -25,9 +24,8 @@ storiesOf('BlockConsolidationStatus', module)
   .add('Default', () => (
     <BlockConsolidationStatus
       onExternalLinkClick={() => {}}
-      epochsConsolidated={number('Epochs Consolidated', 57, { range: true, min: 0, max: epochsDownloaded, step: 1, })}
-      epochsDownloaded={number('Epochs Downloaded', epochsDownloaded, { range: true, min: 0, max: totalEpochs - 2, step: 1, })}
-      totalEpochs={totalEpochs}
+      epochsConsolidated={number('Epochs Consolidated', 57, { range: true, min: 0, max: currentEpoch - 2, step: 1, })}
+      currentEpoch={currentEpoch}
       epochsSynced={number('Epochs Synced', 80, { range: true, min: 0, max: 100, step: 1, })}
     />
   ));

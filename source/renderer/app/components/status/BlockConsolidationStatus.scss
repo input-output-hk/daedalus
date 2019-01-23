@@ -143,10 +143,10 @@
 }
 
 
-.indicatorEpochsDownloaded {
+.indicatorEpochsBehind {
   position: absolute;
   bottom: 0;
-  // left: 92%;
+  right: 80px;
   width: 0;
   height: 0;
   border-style: solid;

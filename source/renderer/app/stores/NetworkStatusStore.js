@@ -62,7 +62,7 @@ export default class NetworkStatusStore extends Store {
   @observable initialLocalHeight = null;
   @observable localBlockHeight = 0;
   @observable networkBlockHeight = 0;
-  @observable numberOfEpochsConsolidated: ?number = null;
+  @observable epochsConsolidated: ?number = null;
   @observable latestLocalBlockTimestamp = 0; // milliseconds
   @observable latestNetworkBlockTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
@@ -193,14 +193,14 @@ export default class NetworkStatusStore extends Store {
   };
 
   @action _onReceiveNumberOfEpochsConsolidated = (
-    numberOfEpochsConsolidated: GetNumberOfEpochsConsolidatedChannelResponse
+    epochsConsolidated: GetNumberOfEpochsConsolidatedChannelResponse
     ): Promise<void> => {
-    this.numberOfEpochsConsolidated = numberOfEpochsConsolidated;
+    this.epochsConsolidated = epochsConsolidated;
     return Promise.resolve();
   }
 
   @action _getNumberOfEpochsConsolidated = () => {
-    this.numberOfEpochsConsolidated = null;
+    this.epochsConsolidated = null;
     getNumberOfEpochsConsolidatedChannel.send();
   }
 

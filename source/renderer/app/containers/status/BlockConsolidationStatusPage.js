@@ -4,11 +4,12 @@ import { inject, observer } from 'mobx-react';
 import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import BlockConsolidationStatus from '../../components/status/BlockConsolidationStatus';
+import { getCurrentEpoch } from '../../utils/network';
 
 const shell = require('electron').shell;
 
 @inject('stores', 'actions') @observer
-export default class NetworkStatusPage extends Component<InjectedProps> {
+export default class BlockConsolidationStatusPage extends Component<InjectedProps> {
 
   constructor(props) {
     super(props);
@@ -27,15 +28,15 @@ export default class NetworkStatusPage extends Component<InjectedProps> {
 
   render() {
 
-    // const epochsConsolidated = this.props.stores.networkStatus.numberOfEpochsConsolidated;
+    const { epochsConsolidated, syncProgress /* , _startTime */ } =
+      this.props.stores.networkStatus;
 
     return (
       <BlockConsolidationStatus
         onExternalLinkClick={this.handleExternalLinkClick}
-        epochsConsolidated={57}
-        epochsDownloaded={93}
-        totalEpochs={95}
-        epochsSynced={80}
+        epochsConsolidated={epochsConsolidated}
+        currentEpoch={getCurrentEpoch()}
+        epochsSynced={syncProgress}
       />
     );
   }
