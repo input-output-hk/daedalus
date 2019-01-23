@@ -116,16 +116,16 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
             <div className={styles.indicatorContainer}>
               <p className={styles.zeroEpoch}>0 epoch</p>
               <div
+                className={styles.indicatorEpochsBehind}
+              >
+                <p>{ currentEpoch - 2 } epoch</p>
+              </div>
+              <div
                 className={styles.indicatorEpochsSynced}
                 style={{
                   width: `${epochsSynced}%`
                 }}
               >
-                <div
-                  className={styles.indicatorEpochsBehind}
-                >
-                  <p>{ currentEpoch - 2 } epoch</p>
-                </div>
                 <p>{ epochsSynced }% synced</p>
               </div>
               <div className={styles.indicatorEpochsConsolidatedContainer}>
