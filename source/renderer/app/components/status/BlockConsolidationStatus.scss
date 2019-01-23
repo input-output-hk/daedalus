@@ -1,21 +1,21 @@
 .component {
   background-color: var(--theme-block-consolidation-background-color);
-  width: 100%;
   height: 100%;
+  width: 100%;
 }
 
 .container {
-  margin: 20px;
-  padding: 20px;
   background-color: var(--theme-block-consolidation-container-background-color);
   border-radius: 4px;
   font-family: var(--font-medium);
+  margin: 20px;
+  padding: 20px;
   text-align: center;
 
   h1 {
+    color: var(--theme-block-consolidation-title-text-color);
     font-size: 19px;
     font-weight: 600;
-    color: var(--theme-block-consolidation-title-text-color);
     margin-bottom: 14px;
   }
 
@@ -25,14 +25,14 @@
   }
 
   a {
-    color: var(--theme-block-consolidation-text-link-color);
     border-bottom: 1px solid var(--theme-block-consolidation-text-link-color);
+    color: var(--theme-block-consolidation-text-link-color);
     text-decoration: none;
   }
 
   .description {
-    margin-bottom: 80px;
     font-size: 16px;
+    margin-bottom: 80px;
   }
 
 }
@@ -42,18 +42,18 @@
 }
 
 .epochs {
-  width: 620px;
   height: 149px;
   margin: 0 auto 60px;
   position: relative;
+  width: 620px;
   p {
+    color: white;
+    font-size: 14px;
+    line-height: 1.29;
     position: absolute;
     right: 21px;
     top: 56px;
-    color: white;
     width: 106px;
-    font-size: 14px;
-    line-height: 1.29;
     em {
       font-size: 16px
     }
@@ -68,23 +68,20 @@
 }
 
 .indicator {
-  position: relative;
   margin-bottom: 53px;
+  position: relative;
 }
 
 .indicatorContainer {
-  width: 600px;
-  height: 24px;
-  border-radius: 5px;
   background-color: var(--theme-block-consolidation-indicator-container-background-color);
+  border-radius: 5px;
+  height: 24px;
   margin: 0 auto;
   position: relative;
+  width: 600px;
 }
 
 .indicatorEpochsSynced {
-  height: 24px;
-  // width: 70%;
-  border-radius: 5px;
   background: repeating-linear-gradient(
     -63deg,
     var(--theme-block-consolidation-stripe-light-1-background-color),
@@ -92,12 +89,14 @@
     var(--theme-block-consolidation-stripe-light-2-background-color) 10px,
     var(--theme-block-consolidation-stripe-light-2-background-color) 20px
   );
+  border-radius: 5px;
+  height: 24px;
   position: relative;
 
   p {
+    bottom: -18px;
     position: absolute;
     right: 0;
-    bottom: -18px;
   }
 
 }
@@ -105,13 +104,11 @@
 .indicatorEpochsConsolidatedContainer {
   padding-right: 80px;
   position: absolute;
+  top: 0;
   width: 100%;
-  top: 0;}
+}
 
 .indicatorEpochsConsolidated {
-  position: relative;
-  height: 24px;
-  border-radius: 5px;
   background: repeating-linear-gradient(
     -63deg,
     var(--theme-block-consolidation-stripe-dark-1-background-color),
@@ -119,25 +116,28 @@
     var(--theme-block-consolidation-stripe-dark-2-background-color) 10px,
     var(--theme-block-consolidation-stripe-dark-2-background-color) 20px
   );
+  border-radius: 5px;
+  height: 24px;
+  position: relative;
 
   p {
+    line-height: 1.43;
     position: absolute;
     right: 8px;
     top: -23px;
-    line-height: 1.43;
     white-space: nowrap;
   }
 }
 
 .zeroEpoch {
-  position: absolute;
   left: -65px;
   line-height: 24px;
+  position: absolute;
 }
 .fullEpoch {
+  line-height: 24px;
   position: absolute;
   right: -79px;
-  line-height: 24px;
   top: 0;
 }
 
@@ -145,23 +145,21 @@
   margin-bottom: 14px
 }
 
-
 .indicatorEpochsBehind {
-  position: absolute;
-  bottom: 0;
-  right: 80px;
-  width: 0;
-  height: 0;
+  border-color: transparent transparent #445b7c transparent;
   border-style: solid;
   border-width: 0 .5px 47px .5px;
-  border-color: transparent transparent #445b7c transparent;
+  bottom: 0;
+  height: 0;
+  position: absolute;
+  right: 80px;
+  width: 0;
 
   p {
-    position: absolute;
     left: 8px;
+    line-height: 1.43;
+    position: absolute;
     top: 0;
     white-space: nowrap;
-    line-height: 1.43;
-
   }
 }
