@@ -90,6 +90,7 @@ export default class WalletTransactionsPage extends Component<Props> {
           walletId={activeWallet.id}
           formattedWalletAmount={formattedWalletAmount}
           onOpenExternalLink={openExternalLink}
+          isRenderingAsVirtualList
         />
       );
     } else if (wasSearched && !hasAny) {

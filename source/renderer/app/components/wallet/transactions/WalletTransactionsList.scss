@@ -23,17 +23,6 @@
   }
 }
 
-.listWrapper {
-  height: calc(100% - 110px);
-}
-
-.list {
-  overflow-y: scroll;
-  &:focus {
-    outline: 0;
-  }
-}
-
 .groupDate {
   color: var(--theme-transactions-list-group-date-color);
   font-family: var(--font-regular);
@@ -66,6 +55,7 @@
     border-bottom-width: 1px;
     border-radius: 0 0 4px 4px;
     height: calc(100% - 20px);
+    margin-bottom: 20px;
   }
 
   &.firstInGroup.lastInGroup {

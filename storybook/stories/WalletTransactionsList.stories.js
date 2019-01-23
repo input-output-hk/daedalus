@@ -64,7 +64,9 @@ storiesOf('WalletTransactionsList', module)
 
   .add('rendering many transactions', () => (
     <WalletTransactionsList
-      transactions={generateMultipleTransactions(1000)}
+      isRenderingAsVirtualList
+      isRestoreActive={false}
+      transactions={generateMultipleTransactions(500)}
       isLoadingTransactions={false}
       hasMoreToLoad={false}
       assuranceMode={{ low: 1, medium: 2 }}

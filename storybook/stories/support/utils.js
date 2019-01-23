@@ -53,7 +53,7 @@ export const generateRandomTransaction = (index: number) => (
 
 export const generateMultipleTransactions = (amount: number): WalletTransaction[] => (
   Array.from(Array(amount).keys()).map((key: number) => (
-    generateRandomTransaction(key)
+    generateRandomTransaction(Math.round(Math.random() * key))
   ))
 );
 
