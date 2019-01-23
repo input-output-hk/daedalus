@@ -18,5 +18,6 @@
   "menu.view.reload": "リロード",
   "menu.view.toggleFullScreen": "フルスクリーン切り替え",
   "menu.view.toggleMaximumWindowSize": "最大ウインドウサイズ切り切り替え",
-  "menu.view.toggleDeveloperTools": "「開発者ツールの切り替え」"
+  "menu.view.toggleDeveloperTools": "「開発者ツールの切り替え」",
+  "window.title.gpuSafeMode": "[GPUセーフモード]"
 }

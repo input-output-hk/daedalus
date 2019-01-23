@@ -59,7 +59,10 @@ const onAppReady = async () => {
   // Detect safe mode
   const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
 
-  mainWindow = createMainWindow(isInSafeMode);
+  // Detect locale
+  let locale = getLocale(network);
+
+  mainWindow = createMainWindow(isInSafeMode, locale);
 
   const onCheckDiskSpace = ({ isNotEnoughDiskSpace }: CheckDiskSpaceResponse) => {
     // Daedalus is not managing cardano-node in `frontendOnlyMode`
@@ -107,13 +110,13 @@ const onAppReady = async () => {
     await safeExit();
   });
 
-  let locale = getLocale(network);
   buildAppMenus(mainWindow, cardanoNode, isInSafeMode, locale);
 
   await rebuildApplicationMenu.onReceive(() => (
     new Promise(resolve => {
       locale = getLocale(network);
       buildAppMenus(mainWindow, cardanoNode, isInSafeMode, locale);
+      mainWindow.updateTitle(locale);
       resolve();
     })
   ));
