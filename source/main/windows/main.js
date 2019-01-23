@@ -1,16 +1,47 @@
+// @flow
 import path from 'path';
 import { app, BrowserWindow, ipcMain, Menu } from 'electron';
 import { environment } from '../environment';
 import ipcApi from '../ipc';
 import RendererErrorHandler from '../utils/rendererErrorHandler';
+import { getTranslation } from '../utils/getTranslation';
 import { launcherConfig } from '../config';
 
 const rendererErrorHandler = new RendererErrorHandler();
 
 const { isDev, isTest, buildLabel, isLinux } = environment;
 
-export const createMainWindow = (isInSafeMode) => {
-  const windowOptions = {
+const id = 'window';
+
+const getWindowTitle = (
+  isInSafeMode: boolean,
+  locale: string,
+): string => {
+  const translations = require(`../locales/${locale}`);
+  const translation = getTranslation(translations, id);
+  let title = buildLabel;
+  if (isInSafeMode) title += ` ${translation('title.gpuSafeMode')}`;
+  return title;
+};
+
+type WindowOptionsType = {
+  show: boolean,
+  width: number,
+  height: number,
+  webPreferences: {
+    nodeIntegration: boolean,
+    webviewTag: boolean,
+    enableRemoteModule: boolean,
+    preload: string,
+  },
+  icon?: string,
+};
+
+export const createMainWindow = (
+  isInSafeMode: boolean,
+  locale: string,
+) => {
+  const windowOptions: WindowOptionsType = {
     show: false,
     width: 1150,
     height: 870,
@@ -61,10 +92,7 @@ export const createMainWindow = (isInSafeMode) => {
 
   window.loadURL(`file://${__dirname}/../renderer/index.html`);
   window.on('page-title-updated', event => { event.preventDefault(); });
-
-  let title = buildLabel;
-  if (isInSafeMode) title += ' [GPU safe mode]';
-  window.setTitle(title);
+  window.setTitle(getWindowTitle(isInSafeMode, locale));
 
   window.webContents.on('context-menu', (e, props) => {
     const contextMenuOptions = [
@@ -104,6 +132,10 @@ export const createMainWindow = (isInSafeMode) => {
   window.webContents.on('crashed', (err) => {
     rendererErrorHandler.onError('crashed', err);
   });
+
+  window.updateTitle = (locale: string) => {
+    window.setTitle(getWindowTitle(isInSafeMode, locale));
+  };
 
   return window;
 };

@@ -98,15 +98,6 @@ export class VirtualTransactionList extends Component<Props> {
     }
     if (needsUpdate) {
       this.props.getExpandedTransactions().map(this.recomputeHeightForTransaction);
-      // const sortedTxByIndex = this.props.getExpandedTransactions().sort((a, b) => (
-      //   this.findIndexForTx(a) - this.findIndexForTx(b)
-      // ));
-      // console.log(sortedTxByIndex);
-      // const firstExpandedInList = sortedTxByIndex[0];
-      // if (firstExpandedInList) {
-      //   console.log(this.findIndexForTx(firstExpandedInList));
-      //   this.recomputeHeightForTransaction(firstExpandedInList);
-      // }
     }
   };
 
@@ -119,13 +110,11 @@ export class VirtualTransactionList extends Component<Props> {
       key, // Unique key within array of rows
       index, // Index of row within collection
       style // Style object to be applied to row (to position it)
-    }: { key: string, index: number, style: string }) => {
-      return (
-        <div key={key} style={style}>
-          {this.props.renderRow(rows[index])}
-        </div>
-      );
-    };
+    }: { key: string, index: number, style: string }) => (
+      <div key={key} style={style}>
+        {this.props.renderRow(rows[index])}
+      </div>
+    );
 
     return (
       <div className={styles.component}>

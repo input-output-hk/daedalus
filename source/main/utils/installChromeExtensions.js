@@ -1,4 +1,5 @@
-export const installChromeExtensions = async (isDev) => {
+// @flow
+export const installChromeExtensions = async (isDev: boolean) => {
   if (isDev) {
     const installer = require('electron-devtools-installer'); // eslint-disable-line global-require
 
