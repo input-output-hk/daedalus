@@ -1,4 +1,5 @@
 // @flow
+import moment from 'moment';
 import {
   MAINNET_EXPLORER_URL,
   STAGING_EXPLORER_URL,
@@ -44,19 +45,13 @@ export const getNetworkEkgUrl = () => {
   return ekgUrl;
 };
 
-// const today = new Date();
-// today.setHours(0, 0, 0, 0);
-
-const getEpochData = () => {
+const getEpochData = (devnetStartTime: number) => {
 
   if (isDevelopment()) {
+    const startTime = moment(devnetStartTime).startOf('day').valueOf();
     return {
-      // startTime: Math.round((developmentStartTime / 1000)),
-      // startTime: Math.round((new Date(today)).getTime() / 1000),
-      // startTime: START_TIME_MAINNET,
-      startTime: START_TIME_DEVNET,
+      startTime: Math.round((startTime / 1000)),
       slotDuration: SLOT_DURATION_DEVNET,
-      // epochLengthBase: EPOCH_LENGTH_BASE_MAINNET,
       epochLengthBase: EPOCH_LENGTH_BASE_DEVNET,
     };
   } else if (isStaging()) {
@@ -79,8 +74,8 @@ const getEpochData = () => {
   };
 };
 
-export const getCurrentEpoch = () => {
-  const { startTime, epochLengthBase, slotDuration } = getEpochData();
+export const getCurrentEpoch = (devnetStartTime) => {
+  const { startTime, epochLengthBase, slotDuration } = getEpochData(devnetStartTime);
   const currentTimeInUTC = Math.round((new Date()).getTime() / 1000);
   const numberOfSlots = epochLengthBase * slotDuration * 10;
   return Math.round((currentTimeInUTC - startTime) / numberOfSlots);

@@ -31,6 +31,7 @@ export const osxMenu = (app, window, {
       },
     }, {
       label: 'Block-consolidation status',
+      accelerator: 'Command+B',
       click() {
         goBlockConsolidationStatus();
       },
