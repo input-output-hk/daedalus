@@ -1,7 +1,8 @@
+// @flow
 import mkdirp from 'mkdirp';
 import fs from 'fs';
 
-export default (filepath) => {
+export default (filepath: string) => {
   let stats;
 
   try {
@@ -15,7 +16,7 @@ export default (filepath) => {
     }
   }
 
-  if (!stats.isDirectory()) {
+  if (!stats || !stats.isDirectory()) {
     process.exit(1);
   }
 };
