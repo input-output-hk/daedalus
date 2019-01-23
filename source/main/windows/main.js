@@ -1,3 +1,4 @@
+// @flow
 import path from 'path';
 import { app, BrowserWindow, ipcMain, Menu } from 'electron';
 import { environment } from '../environment';
@@ -23,11 +24,24 @@ const getWindowTitle = (
   return title;
 };
 
+type WindowOptionsType = {
+  show: boolean,
+  width: number,
+  height: number,
+  webPreferences: {
+    nodeIntegration: boolean,
+    webviewTag: boolean,
+    enableRemoteModule: boolean,
+    preload: string,
+  },
+  icon?: string,
+};
+
 export const createMainWindow = (
   isInSafeMode: boolean,
   locale: string,
 ) => {
-  const windowOptions = {
+  const windowOptions: WindowOptionsType = {
     show: false,
     width: 1150,
     height: 870,
