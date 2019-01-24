@@ -64,7 +64,6 @@ const messages = defineMessages({
     defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/articles/360016060314',
     description: 'URL of Support Button on "Block consolidation status" page.'
   },
-
 });
 
 type Props = {
@@ -74,11 +73,8 @@ type Props = {
   onExternalLinkClick: Function,
 };
 
-type State = {
-};
-
 @observer
-export default class BlockConsolidationStatus extends Component<Props, State> {
+export default class BlockConsolidationStatus extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -116,16 +112,13 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
   };
 
   render() {
-
     const {
       currentEpoch,
       epochsConsolidated,
       epochsSynced,
       onExternalLinkClick
     } = this.props;
-
     const { formatMessage } = this.context.intl;
-
     const widthOfEpochsConsolidated =
       this.getWidthOfEpochsConsolidated(epochsConsolidated, currentEpoch);
 
@@ -135,23 +128,24 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
           showSubMenuToggle={false}
           currentRoute=""
         />
+
         <div className={styles.container}>
           <div className={styles.content}>
-            <h1>{ formatMessage(messages.title) }</h1>
+            <h1>{formatMessage(messages.title)}</h1>
             <p className={styles.description}>
-              { formatMessage(messages.description1) }
+              {formatMessage(messages.description1)}
             </p>
             <p className={styles.description}>
               <FormattedHTMLMessage
                 {...messages.description2}
                 values={{
                   currentEpoch,
-                  currentEpochBehind: currentEpoch - 2,
+                  currentEpochBehind: currentEpoch - 1,
                 }}
               />
             </p>
             <p className={styles.description}>
-              { formatMessage(messages.description3) }
+              {formatMessage(messages.description3)}
             </p>
 
             <div className={styles.epochs}>
@@ -169,21 +163,15 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
 
             <div className={styles.indicator}>
               <div className={styles.indicatorContainer}>
-                <p className={styles.zeroEpoch}>0 { formatMessage(messages.epoch) }</p>
-                <div
-                  className={styles.indicatorEpochsBehind}
-                >
-                  <p>{ currentEpoch - 2 } { formatMessage(messages.epoch) }</p>
+                <p className={styles.zeroEpoch}>0 {formatMessage(messages.epoch)}</p>
+                <div className={styles.indicatorEpochsBehind}>
+                  <p>{currentEpoch - 2} {formatMessage(messages.epoch)}</p>
                 </div>
                 <div
                   className={styles.indicatorEpochsSynced}
-                  style={{
-                    width: `${epochsSynced}%`
-                  }}
+                  style={{ width: `${epochsSynced}%` }}
                 >
-                  <p
-                    style={this.getPositionOfEpochsSynced(epochsSynced)}
-                  >
+                  <p style={this.getPositionOfEpochsSynced(epochsSynced)}>
                     <FormattedHTMLMessage
                       {...messages.synced}
                       values={{ epochsSynced }}
@@ -193,19 +181,15 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
                 <div className={styles.indicatorEpochsConsolidatedContainer}>
                   <div
                     className={styles.indicatorEpochsConsolidated}
-                    style={{
-                      width: `${widthOfEpochsConsolidated}%`
-                    }}
+                    style={{ width: `${widthOfEpochsConsolidated}%` }}
                   >
-                    <p
-                      style={this.getPositionOfEpochsConsolidated(widthOfEpochsConsolidated)}
-                    >
-                      { epochsConsolidated } { formatMessage(messages.epochsConsolidated) }
+                    <p style={this.getPositionOfEpochsConsolidated(widthOfEpochsConsolidated)}>
+                      {epochsConsolidated} {formatMessage(messages.epochsConsolidated)}
                     </p>
                   </div>
                 </div>
                 <p className={styles.fullEpoch}>
-                  { currentEpoch } { formatMessage(messages.epoch) }
+                  {currentEpoch} {formatMessage(messages.epoch)}
                 </p>
               </div>
             </div>

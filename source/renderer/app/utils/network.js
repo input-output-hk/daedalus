@@ -31,7 +31,7 @@ const localesFillForm = {
 const {
   version, os, apiVersion, network: NETWORK,
   build, buildNumber, installerVersion,
-  isDev, isStaging, isTestnet,
+  isMainnet, isStaging, isTestnet,
 } = global.environment;
 
 export const getNetworkExplorerUrl = (network: string): string => {
@@ -57,12 +57,11 @@ export const getNetworkEkgUrl = (env: {
 };
 
 const getEpochData = (devnetStartTime: number) => {
-
-  if (isDev) {
+  if (isMainnet) {
     return {
-      startTime: devnetStartTime,
-      slotDuration: SLOT_DURATION_DEVNET,
-      epochLengthBase: EPOCH_LENGTH_BASE_DEVNET,
+      startTime: START_TIME_MAINNET,
+      slotDuration: SLOT_DURATION_MAINNET,
+      epochLengthBase: EPOCH_LENGTH_BASE_MAINNET,
     };
   }
   if (isStaging) {
@@ -80,15 +79,15 @@ const getEpochData = (devnetStartTime: number) => {
     };
   }
   return {
-    startTime: START_TIME_MAINNET,
-    slotDuration: SLOT_DURATION_MAINNET,
-    epochLengthBase: EPOCH_LENGTH_BASE_MAINNET,
+    startTime: devnetStartTime,
+    slotDuration: SLOT_DURATION_DEVNET,
+    epochLengthBase: EPOCH_LENGTH_BASE_DEVNET,
   };
 };
 
 export const getCurrentEpoch = (devnetStartTime: number) => {
   const { startTime, epochLengthBase, slotDuration } = getEpochData(devnetStartTime);
-  const currentTimeInUTC = Math.round((new Date()).getTime() / 1000);
+  const currentTimeInUTC = Math.round(Date.now() / 1000);
   const numberOfSlots = epochLengthBase * slotDuration * 10;
   return Math.round((currentTimeInUTC - startTime) / numberOfSlots);
 };
