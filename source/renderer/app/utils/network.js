@@ -30,7 +30,8 @@ const localesFillForm = {
 
 const {
   version, os, apiVersion, network: NETWORK,
-  build, buildNumber, installerVersion
+  build, buildNumber, installerVersion,
+  isDev, isStaging, isTestnet,
 } = global.environment;
 
 export const getNetworkExplorerUrl = (network: string): string => {
@@ -57,19 +58,21 @@ export const getNetworkEkgUrl = (env: {
 
 const getEpochData = (devnetStartTime: number) => {
 
-  if (isDevelopment()) {
+  if (isDev) {
     return {
       startTime: devnetStartTime,
       slotDuration: SLOT_DURATION_DEVNET,
       epochLengthBase: EPOCH_LENGTH_BASE_DEVNET,
     };
-  } else if (isStaging()) {
+  }
+  if (isStaging) {
     return {
       startTime: START_TIME_STAGING,
       slotDuration: SLOT_DURATION_STAGING,
       epochLengthBase: EPOCH_LENGTH_BASE_STAGING,
     };
-  } else if (isTestnet()) {
+  }
+  if (isTestnet) {
     return {
       startTime: START_TIME_TESTNET,
       slotDuration: SLOT_DURATION_TESTNET,

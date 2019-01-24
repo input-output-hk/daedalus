@@ -10,4 +10,3 @@ export const getNumberOfEpochsConsolidatedChannel: (
 ) = (
   new MainIpcChannel(GetNumberOfEpochsConsolidatedChannel)
 );
-

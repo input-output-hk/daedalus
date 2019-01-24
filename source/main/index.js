@@ -5,7 +5,6 @@ import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { Logger } from './utils/logging';
 import { setupLogging } from './utils/setupLogging';
-import { makeEnvironmentGlobal } from './utils/makeEnvironmentGlobal';
 import { getNumberOfEpochsConsolidated } from './utils/getNumberOfEpochsConsolidated';
 import { handleDiskSpace } from './utils/handleDiskSpace';
 import { createMainWindow } from './windows/main';
@@ -62,6 +61,8 @@ const onAppReady = async () => {
   // Detect safe mode
   const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
 
+  const systemStart = launcherConfig.configuration.systemStart;
+
   mainWindow = createMainWindow(isInSafeMode);
 
   const onCheckDiskSpace = ({ isNotEnoughDiskSpace }: CheckDiskSpaceResponse) => {
@@ -104,10 +105,10 @@ const onAppReady = async () => {
     client.create(mainWindow);
   }
 
-  getSystemStartTimeChannel.onReceive(() => {
-    const systemStart = launcherConfig.configuration.systemStart;
-    getSystemStartTimeChannel.send(parseInt(systemStart, 10), mainWindow.webContents);
-  });
+  getSystemStartTimeChannel.onReceive(() => (
+    new Promise(resolve => resolve(parseInt(systemStart, 10)))
+  ));
+
   getNumberOfEpochsConsolidated(mainWindow);
 
   mainWindow.on('close', async (event) => {

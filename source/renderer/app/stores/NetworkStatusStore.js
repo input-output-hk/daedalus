@@ -294,7 +294,7 @@ export default class NetworkStatusStore extends Store {
 
   @action _onReceiveNumberOfEpochsConsolidated = (
     epochsConsolidated: GetNumberOfEpochsConsolidatedChannelResponse
-    ): Promise<void> => {
+  ): Promise<void> => {
     this.epochsConsolidated = epochsConsolidated;
     return Promise.resolve();
   }

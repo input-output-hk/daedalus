@@ -139,7 +139,7 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
             { formatMessage(messages.description3) }
           </p>
 
-          <div className={styles.epochs} >
+          <div className={styles.epochs}>
             <FormattedHTMLMessage
               {...messages.epochsConsolidatedOfTotal}
               values={{

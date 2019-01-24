@@ -5,4 +5,5 @@ export type MenuActions = {
   goToNetworkStatus: Function,
   restartInSafeMode: Function,
   restartWithoutSafeMode: Function,
+  goBlockConsolidationStatus: Function,
 };

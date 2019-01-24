@@ -29,4 +29,3 @@ storiesOf('BlockConsolidationStatus', module)
       epochsSynced={number('Epochs Synced', 80, { range: true, min: 0, max: 100, step: 1, })}
     />
   ));
-
