@@ -23,7 +23,7 @@
   "blockConsolidationStatus.epoch": "epoch",
   "blockConsolidationStatus.epochs": "epochs",
   "blockConsolidationStatus.epochsConsolidated": "epochs consolidated",
-  "blockConsolidationStatus.epochsConsolidatedOfTotal": "<b>{consolidated}</b> <em>of</em> <b>{downloaded}</b> epochs consolidated",
+  "blockConsolidationStatus.epochsConsolidatedOfTotal": "<b>{consolidated}</b> <em>of</em> <b>{downloaded}</b><br />epochs consolidated",
   "blockConsolidationStatus.supportButton": "Support",
   "blockConsolidationStatus.supportButtonURL": "https://iohk.zendesk.com/hc/en-us/articles/360016060314",
   "blockConsolidationStatus.synced": "{epochsSynced}% blocks synced",
