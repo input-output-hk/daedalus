@@ -31,7 +31,7 @@ const messages = defineMessages({
   },
   epochsConsolidatedOfTotal: {
     id: 'blockConsolidationStatus.epochsConsolidatedOfTotal',
-    defaultMessage: '!!!<p><b>{consolidated}</b> <em>of</em> <b>{downloaded}</b> epochs consolidated</p>',
+    defaultMessage: '!!!<b>{consolidated}</b> <em>of</em> <b>{downloaded}</b> epochs consolidated',
     description: 'Epochs Consolidated Of Total on "Block consolidation status" page.'
   },
   epoch: {
@@ -51,7 +51,7 @@ const messages = defineMessages({
   },
   synced: {
     id: 'blockConsolidationStatus.synced',
-    defaultMessage: '!!!synced',
+    defaultMessage: '!!!{epochsSynced}% blocks synced',
     description: 'synced on "Block consolidation status" page.'
   },
   supportButton: {
@@ -140,13 +140,15 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
           </p>
 
           <div className={styles.epochs}>
-            <FormattedHTMLMessage
-              {...messages.epochsConsolidatedOfTotal}
-              values={{
-                consolidated: epochsConsolidated,
-                downloaded: currentEpoch
-              }}
-            />
+            <p>
+              <FormattedHTMLMessage
+                {...messages.epochsConsolidatedOfTotal}
+                values={{
+                  consolidated: epochsConsolidated,
+                  downloaded: currentEpoch
+                }}
+              />
+            </p>
             <img src={epochs} role="presentation" draggable="false" />
           </div>
 
@@ -164,7 +166,12 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
                   width: `${epochsSynced}%`
                 }}
               >
-                <p>{ epochsSynced }% { formatMessage(messages.synced) }</p>
+                <p>
+                  <FormattedHTMLMessage
+                    {...messages.synced}
+                    values={{ epochsSynced }}
+                  />
+                </p>
               </div>
               <div className={styles.indicatorEpochsConsolidatedContainer}>
                 <div

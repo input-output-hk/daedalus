@@ -1319,7 +1319,7 @@
         }
       },
       {
-        "defaultMessage": "!!!<p><b>{consolidated}</b> <em>of</em> <b>{downloaded}</b> epochs consolidated</p>",
+        "defaultMessage": "!!!<b>{consolidated}</b> <em>of</em> <b>{downloaded}</b> epochs consolidated",
         "description": "Epochs Consolidated Of Total on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
@@ -1375,7 +1375,7 @@
         }
       },
       {
-        "defaultMessage": "!!!synced",
+        "defaultMessage": "!!!{epochsSynced}% blocks synced",
         "description": "synced on \"Block consolidation status\" page.",
         "end": {
           "column": 3,

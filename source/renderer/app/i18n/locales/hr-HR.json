@@ -26,7 +26,7 @@
   "blockConsolidationStatus.epochsConsolidatedOfTotal": "!!!<p><b>{consolidated}</b> <em>of</em> <b>{downloaded}</b> epochs consolidated</p>",
   "blockConsolidationStatus.supportButton": "!!!Support",
   "blockConsolidationStatus.supportButtonURL": "!!!https://iohk.zendesk.com/hc/en-us/articles/360016060314",
-  "blockConsolidationStatus.synced": "!!!synced",
+  "blockConsolidationStatus.synced": "!!!{epochsSynced}% blocks synced",
   "blockConsolidationStatus.title": "!!!Block storage consolidation status",
   "cardano.node.sync.status.blocksSynced": "!!!Blocks synced {percentage}%",
   "cardano.node.update.notification.accept.button.label": "!!!Update and restart",
