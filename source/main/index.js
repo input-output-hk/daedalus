@@ -16,7 +16,7 @@ import { OPEN_ABOUT_DIALOG_CHANNEL } from '../common/ipc/open-about-dialog';
 import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../common/ipc/go-to-ada-redemption-screen';
 import { GO_TO_NETWORK_STATUS_SCREEN_CHANNEL } from '../common/ipc/go-to-network-status-screen';
 import { GO_TO_BLOCK_CONSOLIDATION_STATUS_CHANNEL } from '../common/ipc/go-to-block-consolidation-status-screen';
-import { getSystemStartTimeChannel } from './ipc/get-system-start-time.ipc';
+import { getSystemStartTimeChannel } from './ipc/getSystemStartTime.ipc';
 import mainErrorHandler from './utils/mainErrorHandler';
 import { launcherConfig } from './config';
 import { setupCardano } from './cardano/setup';
@@ -123,7 +123,7 @@ app.on('ready', async () => {
   }
 
   getSystemStartTimeChannel.onReceive(() => {
-    const systemStart = launcherConfig.configuration.systemStart || 0;
+    const systemStart = launcherConfig.configuration.systemStart;
     getSystemStartTimeChannel.send(parseInt(systemStart, 10), mainWindow.webContents);
   });
   getNumberOfEpochsConsolidated(mainWindow);

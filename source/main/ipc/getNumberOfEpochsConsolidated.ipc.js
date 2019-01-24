@@ -1,7 +1,7 @@
 // @flow
 import { MainIpcChannel } from './lib/MainIpcChannel';
-import { GetNumberOfEpochsConsolidatedChannel } from '../../common/ipc/epochs.ipc';
-import type { GetNumberOfEpochsConsolidatedChannelResponse } from '../../common/types/epochs.types';
+import { GetNumberOfEpochsConsolidatedChannel } from '../../common/ipc/getNumberOfEpochsConsolidated.ipc';
+import type { GetNumberOfEpochsConsolidatedChannelResponse } from '../../common/types/getNumberOfEpochsConsolidated.types';
 
 // IpcChannel<Incoming, Outgoing>
 

@@ -2,7 +2,7 @@ import { BrowserWindow } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import { appFolderPath } from '../config';
-import { getNumberOfEpochsConsolidatedChannel } from '../ipc/get-number-of-epochs-consolidated.ipc';
+import { getNumberOfEpochsConsolidatedChannel } from '../ipc/getNumberOfEpochsConsolidated.ipc';
 
 
 export const getNumberOfEpochsConsolidated = (mainWindow: BrowserWindow) => {

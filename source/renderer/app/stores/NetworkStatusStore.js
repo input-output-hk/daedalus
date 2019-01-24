@@ -24,7 +24,7 @@ import { getSystemStartTimeChannel } from '../ipc/getSystemStartTime.ipc';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
 import type { CardanoNodeState, TlsConfig } from '../../../common/types/cardanoNode.types';
 import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
-import type { GetNumberOfEpochsConsolidatedChannelResponse } from '../../../common/types/epochs.types';
+import type { GetNumberOfEpochsConsolidatedChannelResponse } from '../../../common/types/getNumberOfEpochsConsolidated.types';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedState = null;
@@ -212,7 +212,6 @@ export default class NetworkStatusStore extends Store {
   }
 
   @action _onReceiveSystemStartTime = (systemStartTime: number) => {
-    console.log('_onReceiveSystemStartTime', systemStartTime);
     this.systemStartTime = systemStartTime;
   }
 

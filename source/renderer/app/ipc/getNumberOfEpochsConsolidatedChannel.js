@@ -1,6 +1,6 @@
 // @flow
-import { GetNumberOfEpochsConsolidatedChannel } from '../../../common/ipc/epochs.ipc';
-import type { GetNumberOfEpochsConsolidatedChannelResponse } from '../../../common/types/epochs.types';
+import { GetNumberOfEpochsConsolidatedChannel } from '../../../common/ipc/getNumberOfEpochsConsolidated.ipc';
+import type { GetNumberOfEpochsConsolidatedChannelResponse } from '../../../common/types/getNumberOfEpochsConsolidated.types';
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
 
 export const getNumberOfEpochsConsolidatedChannel: (

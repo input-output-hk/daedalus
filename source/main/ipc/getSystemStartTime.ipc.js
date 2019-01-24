@@ -1,7 +1,7 @@
 // @flow
 import { MainIpcChannel } from './lib/MainIpcChannel';
-import { GetSystemStartTimeChannel } from '../../common/ipc/get-system-start-time.ipc';
-import type { GetSystemStartTimeResponse } from '../../common/types/get-system-start-time.types';
+import { GetSystemStartTimeChannel } from '../../common/ipc/getSystemStartTime.ipc';
+import type { GetSystemStartTimeResponse } from '../../common/types/getSystemStartTime.types';
 
 // IpcChannel<Incoming, Outgoing>
 
