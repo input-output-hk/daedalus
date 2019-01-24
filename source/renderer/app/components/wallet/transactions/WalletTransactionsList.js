@@ -75,6 +75,7 @@ export default class WalletTransactionsList extends Component<Props> {
 
   expandedTransactions: WalletTransaction[] = [];
   virtualList: ?VirtualTransactionList;
+  simpleList: ?SimpleTransactionList;
   loadingSpinner: ?LoadingSpinner;
   localizedDateFormat: 'MM/DD/YYYY';
 
@@ -146,8 +147,9 @@ export default class WalletTransactionsList extends Component<Props> {
       this.registerTxAsExpanded(tx);
     }
     if (this.virtualList) {
-      const { virtualList } = this;
-      virtualList.recomputeHeightForTransaction(tx);
+      this.virtualList.updateHeightOfTxRow(tx);
+    } else if (this.simpleList) {
+      this.simpleList.forceUpdate();
     }
   };
 
@@ -178,7 +180,7 @@ export default class WalletTransactionsList extends Component<Props> {
       isLastInGroup ? styles.lastInGroup : null,
     ]);
     return (
-      <div className={txClasses}>
+      <div id={`tx-${tx.id}`} className={txClasses}>
         <Transaction
           assuranceLevel={tx.getAssuranceLevelForMode(assuranceMode)}
           data={tx}
@@ -276,6 +278,7 @@ export default class WalletTransactionsList extends Component<Props> {
           />
         ) : (
           <SimpleTransactionList
+            ref={(list) => this.simpleList = list}
             renderRow={this.renderItem}
             rows={rows}
           />
