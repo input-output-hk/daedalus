@@ -1,10 +1,22 @@
 .component {
   background-color: var(--theme-block-consolidation-background-color);
-  height: 100%;
   width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 20;
 }
 
 .container {
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: overlay;
+  position: relative;
+}
+
+.content {
   background-color: var(--theme-block-consolidation-container-background-color);
   border-radius: 4px;
   font-family: var(--font-regular);

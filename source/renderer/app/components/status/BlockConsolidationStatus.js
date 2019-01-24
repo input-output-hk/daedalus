@@ -122,82 +122,84 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
           currentRoute=""
         />
         <div className={styles.container}>
-          <h1>{ formatMessage(messages.title) }</h1>
-          <p className={styles.description}>
-            { formatMessage(messages.description1) }
-          </p>
-          <p className={styles.description}>
-            <FormattedHTMLMessage
-              {...messages.description2}
-              values={{
-                currentEpoch,
-                currentEpochBehind: currentEpoch - 2,
-              }}
-            />
-          </p>
-          <p className={styles.description}>
-            { formatMessage(messages.description3) }
-          </p>
-
-          <div className={styles.epochs}>
-            <p>
+          <div className={styles.content}>
+            <h1>{ formatMessage(messages.title) }</h1>
+            <p className={styles.description}>
+              { formatMessage(messages.description1) }
+            </p>
+            <p className={styles.description}>
               <FormattedHTMLMessage
-                {...messages.epochsConsolidatedOfTotal}
+                {...messages.description2}
                 values={{
-                  consolidated: epochsConsolidated,
-                  downloaded: currentEpoch
+                  currentEpoch,
+                  currentEpochBehind: currentEpoch - 2,
                 }}
               />
             </p>
-            <img src={epochs} role="presentation" draggable="false" />
-          </div>
+            <p className={styles.description}>
+              { formatMessage(messages.description3) }
+            </p>
 
-          <div className={styles.indicator}>
-            <div className={styles.indicatorContainer}>
-              <p className={styles.zeroEpoch}>0 { formatMessage(messages.epoch) }</p>
-              <div
-                className={styles.indicatorEpochsBehind}
-              >
-                <p>{ currentEpoch - 2 } { formatMessage(messages.epoch) }</p>
-              </div>
-              <div
-                className={styles.indicatorEpochsSynced}
-                style={{
-                  width: `${epochsSynced}%`
-                }}
-              >
-                <p>
-                  <FormattedHTMLMessage
-                    {...messages.synced}
-                    values={{ epochsSynced }}
-                  />
-                </p>
-              </div>
-              <div className={styles.indicatorEpochsConsolidatedContainer}>
+            <div className={styles.epochs}>
+              <p>
+                <FormattedHTMLMessage
+                  {...messages.epochsConsolidatedOfTotal}
+                  values={{
+                    consolidated: epochsConsolidated,
+                    downloaded: currentEpoch
+                  }}
+                />
+              </p>
+              <img src={epochs} role="presentation" draggable="false" />
+            </div>
+
+            <div className={styles.indicator}>
+              <div className={styles.indicatorContainer}>
+                <p className={styles.zeroEpoch}>0 { formatMessage(messages.epoch) }</p>
                 <div
-                  className={styles.indicatorEpochsConsolidated}
+                  className={styles.indicatorEpochsBehind}
+                >
+                  <p>{ currentEpoch - 2 } { formatMessage(messages.epoch) }</p>
+                </div>
+                <div
+                  className={styles.indicatorEpochsSynced}
                   style={{
-                    width: `${widthOfEpochsConsolidated}%`
+                    width: `${epochsSynced}%`
                   }}
                 >
-                  <p
-                    style={this.getPositionOfEpochsConsolidated(widthOfEpochsConsolidated)}
-                  >
-                    { epochsConsolidated } { formatMessage(messages.epochsConsolidated) }
+                  <p>
+                    <FormattedHTMLMessage
+                      {...messages.synced}
+                      values={{ epochsSynced }}
+                    />
                   </p>
                 </div>
+                <div className={styles.indicatorEpochsConsolidatedContainer}>
+                  <div
+                    className={styles.indicatorEpochsConsolidated}
+                    style={{
+                      width: `${widthOfEpochsConsolidated}%`
+                    }}
+                  >
+                    <p
+                      style={this.getPositionOfEpochsConsolidated(widthOfEpochsConsolidated)}
+                    >
+                      { epochsConsolidated } { formatMessage(messages.epochsConsolidated) }
+                    </p>
+                  </div>
+                </div>
+                <p className={styles.fullEpoch}>
+                  { currentEpoch } { formatMessage(messages.epoch) }
+                </p>
               </div>
-              <p className={styles.fullEpoch}>
-                { currentEpoch } { formatMessage(messages.epoch) }
-              </p>
             </div>
-          </div>
 
-          <Button
-            label={formatMessage(messages.supportButton)}
-            onClick={() => onExternalLinkClick(formatMessage(messages.supportButtonURL))}
-            skin={ButtonSkin}
-          />
+            <Button
+              label={formatMessage(messages.supportButton)}
+              onClick={() => onExternalLinkClick(formatMessage(messages.supportButtonURL))}
+              skin={ButtonSkin}
+            />
+          </div>
         </div>
       </div>
     );
