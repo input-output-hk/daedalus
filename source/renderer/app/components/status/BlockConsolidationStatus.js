@@ -87,10 +87,13 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
   getWidthOfEpochsConsolidated = (
     epochsConsolidated: number,
     currentEpoch: number,
-  ) => epochsConsolidated * 100 / (currentEpoch - 2);
+  ) => {
+    const widthOfEpochsConsolidated = epochsConsolidated * 100 / (currentEpoch - 2);
+    return widthOfEpochsConsolidated > 100 ? 100 : widthOfEpochsConsolidated;
+  };
 
   getPositionOfEpochsConsolidated = (widthOfEpochsConsolidated: number) => {
-    if (widthOfEpochsConsolidated > 40) {
+    if (widthOfEpochsConsolidated > 32) {
       return {
         right: 8
       };
@@ -98,6 +101,17 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
     return {
       left: 0,
       textAlign: 'left',
+    };
+  };
+
+  getPositionOfEpochsSynced = (widthOfEpochsSynced: number) => {
+    if (widthOfEpochsSynced > 20) {
+      return {
+        right: 0,
+      };
+    }
+    return {
+      left: 0,
     };
   };
 
@@ -167,7 +181,9 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
                     width: `${epochsSynced}%`
                   }}
                 >
-                  <p>
+                  <p
+                    style={this.getPositionOfEpochsSynced(epochsSynced)}
+                  >
                     <FormattedHTMLMessage
                       {...messages.synced}
                       values={{ epochsSynced }}
