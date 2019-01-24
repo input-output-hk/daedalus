@@ -48,9 +48,8 @@ export const getNetworkEkgUrl = () => {
 const getEpochData = (devnetStartTime: number) => {
 
   if (isDevelopment()) {
-    const startTime = moment(devnetStartTime).startOf('day').valueOf();
     return {
-      startTime: Math.round((startTime / 1000)),
+      startTime: devnetStartTime,
       slotDuration: SLOT_DURATION_DEVNET,
       epochLengthBase: EPOCH_LENGTH_BASE_DEVNET,
     };
@@ -74,7 +73,7 @@ const getEpochData = (devnetStartTime: number) => {
   };
 };
 
-export const getCurrentEpoch = (devnetStartTime) => {
+export const getCurrentEpoch = (devnetStartTime: number) => {
   const { startTime, epochLengthBase, slotDuration } = getEpochData(devnetStartTime);
   const currentTimeInUTC = Math.round((new Date()).getTime() / 1000);
   const numberOfSlots = epochLengthBase * slotDuration * 10;

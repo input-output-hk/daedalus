@@ -28,12 +28,12 @@ export default class BlockConsolidationStatusPage extends Component<InjectedProp
 
   render() {
 
-    const { epochsConsolidated, syncProgress, _startTime } =
+    const { epochsConsolidated, syncProgress, systemStartTime } =
       this.props.stores.networkStatus;
 
     return (
       <BlockConsolidationStatus
-        currentEpoch={getCurrentEpoch(_startTime)}
+        currentEpoch={getCurrentEpoch(systemStartTime)}
         epochsConsolidated={epochsConsolidated}
         epochsSynced={syncProgress}
         onExternalLinkClick={this.handleExternalLinkClick}

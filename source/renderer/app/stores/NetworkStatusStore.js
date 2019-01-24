@@ -20,6 +20,7 @@ import {
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardanoNode.types';
 import { getNumberOfEpochsConsolidatedChannel } from '../ipc/getNumberOfEpochsConsolidatedChannel';
+import { getSystemStartTimeChannel } from '../ipc/getSystemStartTime.ipc';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
 import type { CardanoNodeState, TlsConfig } from '../../../common/types/cardanoNode.types';
 import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
@@ -57,6 +58,9 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeInSync = false; // Is 'true' if node is syncing and local/network block height
                                     // difference is within the allowed limit
   /* eslint-enabme indent */
+  // System start time. Initialized with local _startTime,
+  // while it doesn't receive data from main IPC
+  @observable systemStartTime: number = Math.round((this._startTime / 1000));
   @observable hasBeenConnected = false;
   @observable syncProgress = null;
   @observable initialLocalHeight = null;
@@ -85,6 +89,9 @@ export default class NetworkStatusStore extends Store {
     // Passively receive state changes of the cardano-node
     cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
     this._requestCardanoNodeState();
+
+    getSystemStartTimeChannel.send();
+    getSystemStartTimeChannel.onReceive(this._onReceiveSystemStartTime);
 
     // ========== MOBX REACTIONS =========== //
 
@@ -202,6 +209,11 @@ export default class NetworkStatusStore extends Store {
   @action _getNumberOfEpochsConsolidated = () => {
     this.epochsConsolidated = null;
     getNumberOfEpochsConsolidatedChannel.send();
+  }
+
+  @action _onReceiveSystemStartTime = (systemStartTime: number) => {
+    console.log('_onReceiveSystemStartTime', systemStartTime);
+    this.systemStartTime = systemStartTime;
   }
 
   // DEFINE ACTIONS
