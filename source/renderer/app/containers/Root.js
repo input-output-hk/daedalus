@@ -20,12 +20,13 @@ export default class Root extends Component<Props> {
     } = networkStatus;
     const isPageThatDoesntNeedWallets = (
       profile.isSettingsPage ||
+      isBlockConsolidationStatusPage ||
       (adaRedemption.isAdaRedemptionPage && wallets.hasLoadedWallets)
     );
 
     // Just render any page that doesn't require wallets to be loaded or node to be connected
     if (
-      isNetworkStatusPage || isBlockConsolidationStatusPage ||
+      isNetworkStatusPage ||
       (!isNodeStopping && !isNodeStopped && isPageThatDoesntNeedWallets)
     ) {
       return React.Children.only(children);

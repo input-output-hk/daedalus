@@ -87,9 +87,9 @@ const getEpochData = (devnetStartTime: number) => {
 
 export const getCurrentEpoch = (devnetStartTime: number) => {
   const { startTime, epochLengthBase, slotDuration } = getEpochData(devnetStartTime);
-  const currentTimeInUTC = Math.round(Date.now() / 1000);
+  const currentTimeInUTC = Math.floor(Date.now() / 1000);
   const numberOfSlots = epochLengthBase * slotDuration * 10;
-  return Math.round((currentTimeInUTC - startTime) / numberOfSlots);
+  return Math.floor((currentTimeInUTC - startTime) / numberOfSlots) || 1;
 };
 
 export const getSupportUrl = async (baseUrl: string, locale: string) => {
