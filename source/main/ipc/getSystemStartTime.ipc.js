@@ -1,7 +1,7 @@
 // @flow
 import { MainIpcChannel } from './lib/MainIpcChannel';
-import { GetSystemStartTimeChannel } from '../../common/ipc/getSystemStartTime.ipc';
-import type { GetSystemStartTimeResponse } from '../../common/types/getSystemStartTime.types';
+import { GetSystemStartTimeChannel } from '../../common/ipc/api';
+import type { GetSystemStartTimeResponse } from '../../common/ipc/api';
 
 // IpcChannel<Incoming, Outgoing>
 
@@ -10,4 +10,3 @@ export const getSystemStartTimeChannel: (
 ) = (
   new MainIpcChannel(GetSystemStartTimeChannel)
 );
-

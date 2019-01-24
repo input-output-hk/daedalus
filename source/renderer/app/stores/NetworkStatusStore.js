@@ -31,7 +31,7 @@ import type {
   TlsConfig
 } from '../../../common/types/cardano-node.types';
 import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
-import type { GetNumberOfEpochsConsolidatedChannelResponse } from '../../../common/types/getNumberOfEpochsConsolidated.types';
+import type { GetNumberOfEpochsConsolidatedChannelResponse } from '../../../common/ipc/api';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 
 // DEFINE CONSTANTS -------------------------
