@@ -9,7 +9,6 @@ export const getTransactionFee = (
   { data }: TransactionParams
 ): Promise<TransactionFee> => (
   request({
-    hostname: 'localhost',
     method: 'POST',
     path: '/api/v1/transactions/fees',
     ...config,

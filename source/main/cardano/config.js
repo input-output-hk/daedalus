@@ -1,6 +1,8 @@
 // @flow
 import type { LauncherConfig } from '../config';
 
+const isDev = process.env.NODE_ENV === 'development';
+
 export const ensureXDGDataIsSet = () => {
   if (process.env.HOME && process.env.XDG_DATA_HOME === undefined) {
     process.env.XDG_DATA_HOME = process.env.HOME + '/.local/share/';
@@ -27,5 +29,6 @@ export const prepareArgs = (config: LauncherConfig) => {
     if (config.configuration.systemStart) args.push('--system-start', config.configuration.systemStart);
     if (config.configuration.seed) args.push('--configuration-seed', config.configuration.seed);
   }
+  if (isDev) args.push('--wallet-doc-address', '127.0.0.1:8091');
   return args;
 };

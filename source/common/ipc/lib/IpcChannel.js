@@ -33,6 +33,11 @@ export class IpcChannel<Incoming, Outgoing> {
    */
   _broadcastChannel: string;
   /**
+   * The public request channel (any process will receive these messages)
+   * @private
+   */
+  _requestChannel: string;
+  /**
    * The response channel between a main and render process
    * @private
    */
@@ -53,6 +58,7 @@ export class IpcChannel<Incoming, Outgoing> {
     IpcChannel._instances[channelName] = this;
 
     this._broadcastChannel = channelName + '-broadcast';
+    this._requestChannel = channelName + '-request';
     this._responseChannel = channelName + '-response';
   }
 
@@ -81,6 +87,28 @@ export class IpcChannel<Incoming, Outgoing> {
   }
 
   /**
+   * Request a message from the other side.
+   * Can be used to get the current state of some information.
+   *
+   * @param sender {IpcSender}
+   * @param receiver {IpcReceiver}
+   * @returns {Promise<Incoming>}
+   */
+  async request(sender: IpcSender, receiver: IpcReceiver): Promise<Incoming> {
+    return new Promise((resolve, reject) => {
+      sender.send(this._requestChannel);
+      // Handle response to the sent request once
+      receiver.once(this._responseChannel, (event, isOk: boolean, response: Incoming) => {
+        if (isOk) {
+          resolve(response);
+        } else {
+          reject(response);
+        }
+      });
+    });
+  }
+
+  /**
    * Sets up a permanent handler for receiving messages on this channel.
    * This should be used to receive messages that are broadcasted by the other end of
    * the ipc channel and are not responses to requests sent by this party.
@@ -92,6 +120,23 @@ export class IpcChannel<Incoming, Outgoing> {
     receiver.on(this._broadcastChannel, async (event: IpcEvent, message: Incoming) => {
       try {
         const response = await handler(message);
+        event.sender.send(this._responseChannel, true, response);
+      } catch (error) {
+        event.sender.send(this._responseChannel, false, error);
+      }
+    });
+  }
+
+  /**
+   * Sets up a permanent handler for receiving request from the other side.
+   *
+   * @param receiver {IpcReceiver}
+   * @param handler
+   */
+  onRequest(handler: () => Promise<Outgoing>, receiver: IpcReceiver): void {
+    receiver.on(this._requestChannel, async (event: IpcEvent) => {
+      try {
+        const response = await handler();
         event.sender.send(this._responseChannel, true, response);
       } catch (error) {
         event.sender.send(this._responseChannel, false, error);

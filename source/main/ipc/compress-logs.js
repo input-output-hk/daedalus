@@ -5,8 +5,9 @@ import archiver from 'archiver';
 import path from 'path';
 import { get } from 'lodash';
 import { appLogsFolderPath, pubLogsFolderPath } from '../config';
-import { Logger, stringifyError } from '../../common/logging';
+import { Logger } from '../utils/logging';
 import { COMPRESS_LOGS } from '../../common/ipc-api';
+import { stringifyError } from '../../common/utils/logging';
 
 export default () => {
   ipcMain.on(COMPRESS_LOGS.REQUEST, (event, logs, compressedFileName) => {
@@ -18,7 +19,7 @@ export default () => {
     });
 
     output.on('close', () => {
-      Logger.info('COMPRESS_LOGS.SUCCESS');
+      Logger.debug('COMPRESS_LOGS.SUCCESS');
       return sender.send(COMPRESS_LOGS.SUCCESS, outputPath);
     });
 
@@ -27,7 +28,7 @@ export default () => {
       return sender.send(COMPRESS_LOGS.ERROR, err);
     });
 
-    Logger.info('COMPRESS_LOGS started');
+    Logger.debug('COMPRESS_LOGS.START');
 
     // compress files
     const logFiles = get(logs, ['files'], []);

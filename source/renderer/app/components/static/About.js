@@ -6,7 +6,6 @@ import globalMessages from '../../i18n/global-messages';
 import styles from './About.scss';
 import daedalusIcon from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import cardanoIcon from '../../assets/images/cardano-logo.inline.svg';
-import environment from '../../../../common/environment';
 
 const messages = defineMessages({
   aboutTitle: {
@@ -52,7 +51,11 @@ const messages = defineMessages({
 });
 
 type Props = {
+  apiVersion: string,
+  build: string,
   onOpenExternalLink: Function,
+  os: string,
+  version: string
 };
 
 export default class About extends Component<Props> {
@@ -63,11 +66,7 @@ export default class About extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onOpenExternalLink } = this.props;
-    const {
-      version, build, os,
-      API_VERSION,
-    } = environment;
+    const { apiVersion, build, onOpenExternalLink, os, version } = this.props;
 
     const apiName = intl.formatMessage(globalMessages.apiName);
     const apiIcon = cardanoIcon;
@@ -91,7 +90,7 @@ export default class About extends Component<Props> {
             <div className={styles.daedalusBuildInfo}>
               <FormattedHTMLMessage
                 {...messages.aboutBuildInfo}
-                values={{ platform: os, build, apiName, apiVersion: API_VERSION }}
+                values={{ platform: os, build, apiName, apiVersion }}
               />
             </div>
           </div>

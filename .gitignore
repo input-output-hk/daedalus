@@ -1,7 +1,7 @@
 # Logs
-logs
-Logs
 *.log*
+logs/*
+!logs/.keep
 
 # Runtime data
 pids

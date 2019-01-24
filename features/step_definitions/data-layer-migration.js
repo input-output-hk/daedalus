@@ -19,4 +19,3 @@ Then(/^I should not see the Data Layer Migration screen$/, function () {
 When(/^I click the migration button$/, function () {
   return this.waitAndClick(`${DATA_LAYER_MIGRATION_ACCEPTANCE_COMPONENT} .DataLayerMigrationForm_submitButton`);
 });
-

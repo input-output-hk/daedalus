@@ -1,5 +1,4 @@
 // @flow
-import { ipcRenderer } from 'electron';
 import { IpcChannel } from '../../../../common/ipc/lib/IpcChannel';
 import type { IpcReceiver, IpcSender } from '../../../../common/ipc/lib/IpcChannel';
 
@@ -10,16 +9,31 @@ export class RendererIpcChannel<Incoming, Outgoing> extends IpcChannel<Incoming,
 
   async send(
     message: Outgoing,
-    sender: IpcSender = ipcRenderer,
-    receiver: IpcReceiver = ipcRenderer
+    sender: IpcSender = global.ipcRenderer,
+    receiver: IpcReceiver = global.ipcRenderer
   ): Promise<Incoming> {
     return super.send(message, sender, receiver);
   }
+
+  async request(
+    sender: IpcSender = global.ipcRenderer,
+    receiver: IpcReceiver = global.ipcRenderer
+  ): Promise<Incoming> {
+    return super.request(sender, receiver);
+  }
+
   onReceive(
     handler: (message: Incoming) => Promise<Outgoing>,
-    receiver: IpcReceiver = ipcRenderer
+    receiver: IpcReceiver = global.ipcRenderer
   ): void {
     super.onReceive(handler, receiver);
+  }
+
+  onRequest(
+    handler: () => Promise<Outgoing>,
+    receiver: IpcReceiver = global.ipcRenderer
+  ): void {
+    super.onRequest(handler, receiver);
   }
 
 }

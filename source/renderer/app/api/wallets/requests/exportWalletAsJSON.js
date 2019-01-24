@@ -12,7 +12,6 @@ export const exportWalletAsJSON = (
   { walletId, filePath }: ExportWalletAsJSONParams,
 ): Promise<[]> => (
   request({
-    hostname: 'localhost',
     method: 'POST',
     path: `/api/backup/export/${walletId}`,
     ...config,

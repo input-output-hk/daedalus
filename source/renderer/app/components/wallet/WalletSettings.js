@@ -4,7 +4,6 @@ import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
-import environment from '../../../../common/environment';
 import LocalizableError from '../../i18n/LocalizableError';
 import BorderedBox from '../widgets/BorderedBox';
 import InlineEditingInput from '../widgets/forms/InlineEditingInput';
@@ -68,6 +67,7 @@ type Props = {
   activeField: ?string,
   isSubmitting: boolean,
   isInvalid: boolean,
+  showExportLink: boolean,
   lastUpdatedField: ?string,
   changeSpendingPasswordDialog: Node,
   deleteWalletDialogContainer: Node,
@@ -79,6 +79,10 @@ export default class WalletSettings extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  static defaultProps = {
+    showExportLink: false
   };
 
   componentWillUnmount() {
@@ -97,7 +101,7 @@ export default class WalletSettings extends Component<Props> {
       onStopEditing, onCancelEditing,
       nameValidator, activeField,
       isSubmitting, isInvalid,
-      lastUpdatedField,
+      lastUpdatedField, showExportLink,
       changeSpendingPasswordDialog,
       deleteWalletDialogContainer,
       exportWalletDialogContainer,
@@ -113,8 +117,6 @@ export default class WalletSettings extends Component<Props> {
         lastUpdated: moment(spendingPasswordUpdateDate).fromNow(),
       })
     ) : intl.formatMessage(messages.passwordNotSet);
-
-    const showExportLink = !environment.isMainnet() && !environment.isTestnet();
 
     return (
       <div className={styles.component}>

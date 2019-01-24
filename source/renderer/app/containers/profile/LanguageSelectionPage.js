@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import TopBar from '../../components/layout/TopBar';
 import TopBarLayout from '../../components/layout/TopBarLayout';
 import LanguageSelectionForm from '../../components/profile/language-selection/LanguageSelectionForm';
+import { rebuildApplicationMenu } from '../../ipc/rebuild-application-menu';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
@@ -11,8 +12,9 @@ export default class LanguageSelectionPage extends Component<InjectedProps> {
 
   static defaultProps = { actions: null, stores: null };
 
-  onSubmit = (values: { locale: string }) => {
+  onSubmit = async (values: { locale: string }) => {
     this.props.actions.profile.updateLocale.trigger(values);
+    await rebuildApplicationMenu.send();
   };
 
   render() {

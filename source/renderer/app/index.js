@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { action, useStrict } from 'mobx';
+import { configure, action } from 'mobx';
 import { render } from 'react-dom';
 import { addLocaleData } from 'react-intl';
 import en from 'react-intl/locale-data/en';
@@ -10,7 +10,6 @@ import ja from 'react-intl/locale-data/ja';
 import { RouterStore, syncHistoryWithStore } from 'mobx-react-router';
 import { hashHistory } from 'react-router';
 import App from './App';
-import environment from '../../common/environment';
 import setupStores from './stores';
 import actions from './actions';
 import utils from './utils';
@@ -20,13 +19,18 @@ import './themes/index.global.scss';
 import { setupApi } from './api/index';
 
 // run MobX in strict mode
-useStrict(true);
+configure({
+  enforceActions: 'always',
+});
 
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
-addLocaleData([en, de, hr, ja]);
+addLocaleData([...en, ...de, ...hr, ...ja]);
+
+const environment = global.environment;
+const { isTest, network } = environment;
 
 const initializeDaedalus = () => {
-  const api = setupApi();
+  const api = setupApi(isTest, String(network));
   const router = new RouterStore();
   const history = syncHistoryWithStore(hashHistory, router);
   const stores = setupStores(api, actions, router);
@@ -44,7 +48,7 @@ const initializeDaedalus = () => {
     }),
   };
 
-  const rootElement = document.getElementById('app');
+  const rootElement = document.getElementById('root');
   if (!rootElement) throw new Error('No #root element found.');
   render(<App stores={stores} actions={actions} history={history} />, rootElement);
 };

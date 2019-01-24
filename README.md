@@ -60,7 +60,7 @@ required dependencies for development.
    ```
    substituters = https://hydra.iohk.io https://cache.nixos.org/
    trusted-substituters =
-   trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspc
+   trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
    ```
 3. Build and run demo cluster: `scripts/launch/demo-nix.sh`
 
@@ -72,6 +72,29 @@ required dependencies for development.
 3. Start the nix-shell with development environment `yarn nix:dev 1537184804` (timestamp is
 different each time you restart the cardano-sl demo cluster)
 4. Within the nix-shell run any command like `yarn dev`
+
+## "Frontend only" mode
+
+The `frontendOnlyMode` makes it possible to connect to manually started instances of cardano-node for advanced debugging purposes.
+
+### How to connect:
+1. Within the [cardano-sl repository](https://github.com/input-output-hk/cardano-sl), build a script for a certain network. E.g. for testnet: `nix-build -A connectScripts.testnet.wallet -o launch_testnet`
+2. Launch this cluster + node with `./launch_testnet`
+3. You should now have a `state-wallet-testnet` folder inside the cardano-sl repo. Copy the full path to the sub folder `tls` in there.
+4. Within the Daedalus repo checkout this branch and run: `CARDANO_TLS_PATH=/path/to/tls CARDANO_HOST=localhost CARDANO_PORT=8090 nix-shell`
+
+Now you should have a pre-configured nix-shell session where you can `yarn dev` as usual and Daedalus connects itself to the manually started cardano node.
+
+### Parameters:
+
+| Param              | Mandatory | Default     |
+|--------------------|-----------|-------------|
+| `CARDANO_TLS_PATH` | Yes       |             |
+| `CARDANO_HOST`     | No        | `localhost` |
+| `CARDANO_PORT`     | No        | `8090`      |
+
+So if you just start the default cardano node (which runs on localhost:8090) you can also start nix-shell with `CARDANO_TLS_PATH=/path/to/tls nix-shell`
+
 
 ## Notes:
 
@@ -88,6 +111,10 @@ $ export NETWORK=testnet
 $ yarn dev
 ```
 
+### Cardano Wallet API documentation
+
+While running Daedalus in development mode you can access Cardano Wallet API documentation on the following URL: https://localhost:8091/docs/v1/index/.
+
 # Testing
 
 You can find more details regarding tests setup within
@@ -95,6 +122,15 @@ You can find more details regarding tests setup within
 
 **Notes:** Be aware that only a single Daedalus instance can run per state directory.
 So you have to exit any development instances before running tests!
+
+## Wallet fault injection
+
+General information about wallet fault injection can be found in the [Cardano's wallet-new README file](https://github.com/input-output-hk/cardano-sl/tree/develop/wallet-new#fault-injection).
+
+`shell.nix` has support for passing the necessary flags:
+
+- `--arg allowFaultInjection true` is necessary to enable any processing of faults, and
+- `--arg walletExtraArgs '[ "--somefault" ]'` can be used for enabling certain fault types at startup.
 
 # Windows
 
