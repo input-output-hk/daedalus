@@ -1,6 +1,15 @@
 {
   "parser": "babel-eslint",
-  "extends": "airbnb",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "legacyDecorators": true
+    }
+  },
+  "extends": [
+    "airbnb",
+    "plugin:flowtype/recommended",
+    "plugin:react/recommended"
+  ],
   "env": {
     "browser": true,
     "mocha": true,
@@ -15,18 +24,25 @@
     "import/no-extraneous-dependencies": "off",
     "import/no-dynamic-require": "off",
     "import/prefer-default-export": "off",
+    "lines-between-class-members": 0,
     "no-use-before-define": "off",
+    "operator-linebreak": 0,
     "promise/param-names": 2,
     "promise/always-return": 2,
     "promise/catch-or-return": 2,
     "promise/no-native": 0,
-    "react/jsx-no-bind": "off",
+    "react/button-has-type": 0,
+    "react/jsx-no-bind": 0,
     "react/jsx-filename-extension": ["error", { "extensions": [".js", ".jsx"] }],
     "react/jsx-closing-bracket-location": 1,
+    "react/jsx-one-expression-per-line": 0,
     "react/prefer-stateless-function": "off",
     "react/no-unused-prop-types": "off",
     "react/prop-types": 0,
     "react/sort-comp": 0,
+    "react/require-default-props": 0,
+    "react/destructuring-assignment": 0,
+    "react/no-access-state-in-setstate": 0,
     "class-methods-use-this": 0,
     "no-duplicate-imports": 0,
     "no-param-reassign": 0,
@@ -68,6 +84,7 @@
     "import/extensions": 0
   },
   "plugins": [
+    "flowtype",
     "import",
     "promise",
     "react"

@@ -14,30 +14,36 @@ export default class Root extends Component<Props> {
     const { stores, actions, children } = this.props;
     const { networkStatus, profile, adaRedemption, app, wallets } = stores;
     const { isNetworkStatusPage, isBlockConsolidationStatusPage } = app;
-    const { isConnected, isSynced, isSystemTimeCorrect } = networkStatus;
+    const {
+      isSynced, isNodeStopping, isNodeStopped,
+      isSystemTimeCorrect, isNotEnoughDiskSpace,
+    } = networkStatus;
     const isPageThatDoesntNeedWallets = (
-      profile.isSettingsPage || adaRedemption.isAdaRedemptionPage
+      profile.isSettingsPage ||
+      (adaRedemption.isAdaRedemptionPage && wallets.hasLoadedWallets)
     );
-    // Just render any page that doesn't require wallets to be loaded
+
+    // Just render any page that doesn't require wallets to be loaded or node to be connected
     if (
-      (isConnected && isPageThatDoesntNeedWallets) ||
-      // "Network" and "Block Consolidation" Status pages
-      // should be loaded regardless of the network status
-      isNetworkStatusPage ||
-      isBlockConsolidationStatusPage
+      isNetworkStatusPage || isBlockConsolidationStatusPage ||
+      (!isNodeStopping && !isNodeStopped && isPageThatDoesntNeedWallets)
     ) {
       return React.Children.only(children);
     }
+
     if (
       !isSynced ||
       !wallets.hasLoadedWallets ||
-      !isSystemTimeCorrect
+      !isSystemTimeCorrect ||
+      isNotEnoughDiskSpace
     ) {
       return <LoadingPage stores={stores} actions={actions} />;
-    } else if (!wallets.hasAnyWallets) {
+    }
+
+    if (!wallets.hasAnyWallets) {
       return <WalletAddPage />;
     }
+
     return React.Children.only(children);
   }
 }
-

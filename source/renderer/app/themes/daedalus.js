@@ -1,33 +1,44 @@
+// @flow
+import SimpleAutocomplete from 'react-polymorph/lib/themes/simple/SimpleAutocomplete.scss';
+import SimpleBubble from 'react-polymorph/lib/themes/simple/SimpleBubble.scss';
+import SimpleButton from 'react-polymorph/lib/themes/simple/SimpleButton.scss';
+import SimpleCheckbox from 'react-polymorph/lib/themes/simple/SimpleCheckbox.scss';
+import SimpleFormField from 'react-polymorph/lib/themes/simple/SimpleFormField.scss';
+import SimpleInput from 'react-polymorph/lib/themes/simple/SimpleInput.scss';
+import SimpleLoadingSpinner from 'react-polymorph/lib/themes/simple/SimpleLoadingSpinner.scss';
+import SimpleModal from 'react-polymorph/lib/themes/simple/SimpleModal.scss';
+import SimpleOptions from 'react-polymorph/lib/themes/simple/SimpleOptions.scss';
+import SimpleSelect from 'react-polymorph/lib/themes/simple/SimpleSelect.scss';
+import SimpleSwitch from 'react-polymorph/lib/themes/simple/SimpleSwitch.scss';
+import SimpleTextArea from 'react-polymorph/lib/themes/simple/SimpleTextArea.scss';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 
-// react-polymorph components
-import SimpleFormField from './simple/SimpleFormField.scss';
-import SimpleInput from './simple/SimpleInput.scss';
-import SimpleCheckbox from './simple/SimpleCheckbox.scss';
-import SimpleSwitch from './simple/SimpleSwitch.scss';
-import SimpleModal from './simple/SimpleModal.scss';
-import SimpleButton from './simple/SimpleButton.scss';
-import SimpleTextArea from './simple/SimpleTextArea.scss';
-import SimpleAutocomplete from './simple/SimpleAutocomplete.scss';
-import SimpleBubble from './simple/SimpleBubble.scss';
-import SimpleOptions from './simple/SimpleOptions.scss';
-import SimpleSelect from './simple/SimpleSelect.scss';
-
 const {
-  SELECT, INPUT, FORM_FIELD, CHECKBOX, SWITCH, MODAL,
-  BUTTON, TEXT_AREA, AUTOCOMPLETE, OPTIONS, BUBBLE
+  AUTOCOMPLETE,
+  BUBBLE,
+  BUTTON,
+  CHECKBOX,
+  FORM_FIELD,
+  INPUT,
+  LOADING_SPINNER,
+  MODAL,
+  OPTIONS,
+  SELECT,
+  SWITCH,
+  TEXT_AREA,
 } = IDENTIFIERS;
 
 export const daedalusTheme = {
+  [AUTOCOMPLETE]: SimpleAutocomplete,
+  [BUBBLE]: SimpleBubble,
+  [BUTTON]: SimpleButton,
+  [CHECKBOX]: SimpleCheckbox,
   [FORM_FIELD]: SimpleFormField,
   [INPUT]: SimpleInput,
-  [CHECKBOX]: SimpleCheckbox,
-  [SWITCH]: SimpleSwitch,
+  [LOADING_SPINNER]: SimpleLoadingSpinner,
   [MODAL]: SimpleModal,
-  [BUTTON]: SimpleButton,
-  [TEXT_AREA]: SimpleTextArea,
-  [BUBBLE]: SimpleBubble,
   [OPTIONS]: SimpleOptions,
   [SELECT]: SimpleSelect,
-  [AUTOCOMPLETE]: SimpleAutocomplete,
+  [SWITCH]: SimpleSwitch,
+  [TEXT_AREA]: SimpleTextArea,
 };

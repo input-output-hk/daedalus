@@ -22,7 +22,7 @@ let
     testnet = "Daedalus Testnet";
   };
   newPackage = origPackage // {
-    productName = nameTable.${cluster};
+    productName = nameTable.${if cluster == null then "testnet" else cluster};
     main = "main/index.js";
   };
   newPackagePath = builtins.toFile "package.json" (builtins.toJSON newPackage);
@@ -44,12 +44,17 @@ yarn2nix.mkYarnPackage {
     cp -R dist/* $out/share/daedalus
     cp ${newPackagePath} $out/share/daedalus/package.json
     ${nukeReferences}/bin/nuke-refs $out/share/daedalus/main/index.js.map
-    ${nukeReferences}/bin/nuke-refs $out/share/daedalus/main/0.index.js.map
+    ${nukeReferences}/bin/nuke-refs $out/share/daedalus/main/preload.js.map
+    ${nukeReferences}/bin/nuke-refs $out/share/daedalus/main/0.js.map
     ${nukeReferences}/bin/nuke-refs $out/share/daedalus/renderer/index.js.map
     ${nukeReferences}/bin/nuke-refs $out/share/daedalus/renderer/styles.css.map
+    for x in $out/share/daedalus/renderer/index.js $out/share/daedalus/main/preload.js $out/share/daedalus/main/index.js $out/share/daedalus/main/0.js; do
+      ${nukeReferences}/bin/nuke-refs $x
+    done
   '';
   allowedReferences = [];
   yarnPreBuild = ''
+    set -x
     mkdir -p $HOME/.node-gyp/${nodejs.version}
     echo 9 > $HOME/.node-gyp/${nodejs.version}/installVersion
     ln -sfv ${nodejs}/include $HOME/.node-gyp/${nodejs.version}
@@ -63,7 +68,8 @@ yarn2nix.mkYarnPackage {
     };
     flow-bin = {
       postInstall = ''
-        patchelf --set-interpreter ${stdenv.cc.libc}/lib/ld-linux-x86-64.so.2 flow-linux64-v0.60.1/flow
+      flow_ver=$(${pkgs.jq}/bin/jq .devDependencies.'"flow-bin"' ${newPackagePath} | sed 's/"//g')
+        patchelf --set-interpreter ${stdenv.cc.libc}/lib/ld-linux-x86-64.so.2 flow-linux64-v$flow_ver/flow
       '';
     };
   };

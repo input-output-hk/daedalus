@@ -13,7 +13,6 @@ export const importWalletAsKey = (
   walletImportData: ImportWalletAsKey
 ): Promise<AdaWallet> => (
   request({
-    hostname: 'localhost',
     method: 'POST',
     path: '/api/internal/import-wallet',
     ...config,

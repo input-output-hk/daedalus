@@ -11,6 +11,7 @@ import { getNetworkExplorerUrl } from '../../../utils/network';
 import styles from './CompletionDialog.scss';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import InlineNotification from '../../widgets/InlineNotification';
+import { DEVELOPMENT } from '../../../../../common/types/environment.types';
 
 const messages = defineMessages({
   headline: {
@@ -61,6 +62,7 @@ type Props = {
   onClose: Function,
   onOpenExternalLink: Function,
   copyAddressNotificationDuration: number,
+  network: string
 };
 
 type State = {
@@ -74,11 +76,15 @@ export default class CompletionDialog extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
+  static defaultProps = {
+    network: DEVELOPMENT
+  };
+
   state = {
     showCopyNotification: false,
-  }
+  };
 
-  copyNotificationTimeout: number;
+  copyNotificationTimeout: TimeoutID;
 
   onShowCopyNotification = () => {
     const { copyAddressNotificationDuration } = this.props;
@@ -86,13 +92,15 @@ export default class CompletionDialog extends Component<Props, State> {
     clearTimeout(this.copyNotificationTimeout);
 
     this.setState({ showCopyNotification: true });
-    this.copyNotificationTimeout = setTimeout(() =>
-      this.setState({ showCopyNotification: false }), timeInSeconds);
-  }
+    this.copyNotificationTimeout = setTimeout(
+      () => (this.setState({ showCopyNotification: false })),
+      timeInSeconds
+    );
+  };
 
   render() {
     const { intl } = this.context;
-    const { onClose, walletCertificateAddress, onOpenExternalLink } = this.props;
+    const { onClose, walletCertificateAddress, onOpenExternalLink, network } = this.props;
     const { showCopyNotification } = this.state;
     const dialogClasses = classnames([
       styles.component,
@@ -107,7 +115,7 @@ export default class CompletionDialog extends Component<Props, State> {
         onClick: onClose,
       }
     ];
-    const cardanoExplorerLink = `${getNetworkExplorerUrl()}/address/${walletCertificateAddress}`;
+    const cardanoExplorerLink = `${getNetworkExplorerUrl(network)}/address/${walletCertificateAddress}`;
 
     // Get QRCode color value from active theme's CSS variable
     const qrCodeBackgroundColor = document.documentElement ?

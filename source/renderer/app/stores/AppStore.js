@@ -1,16 +1,21 @@
 // @flow
 import { observable, computed, action } from 'mobx';
-import { ipcRenderer, shell } from 'electron';
 import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
-import { OPEN_ABOUT_DIALOG_CHANNEL } from '../../../common/ipc/open-about-dialog';
-import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../../../common/ipc/go-to-ada-redemption-screen';
-import { GO_TO_NETWORK_STATUS_SCREEN_CHANNEL } from '../../../common/ipc/go-to-network-status-screen';
-import { GO_TO_BLOCK_CONSOLIDATION_STATUS_CHANNEL } from '../../../common/ipc/go-to-block-consolidation-status-screen';
+import {
+  OPEN_ABOUT_DIALOG_CHANNEL,
+  GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL,
+  GO_TO_NETWORK_STATUS_SCREEN_CHANNEL,
+  GO_TO_BLOCK_CONSOLIDATION_STATUS_CHANNEL
+} from '../../../common/ipc/api';
 import { GET_GPU_STATUS } from '../../../common/ipc-api';
 import { ROUTES } from '../routes-config';
 import type { GpuStatus } from '../types/gpuStatus';
+import { openExternalUrlChannel } from '../ipc/open-external-url';
+
+// TODO: refactor all parts that rely on this to ipc channels!
+const { ipcRenderer } = global;
 
 export default class AppStore extends Store {
 
@@ -24,6 +29,8 @@ export default class AppStore extends Store {
     this.actions.app.openAboutDialog.listen(this._openAboutDialog);
     this.actions.app.closeAboutDialog.listen(this._closeAboutDialog);
     this.actions.app.getGpuStatus.listen(this._getGpuStatus);
+
+    // TODO: refactor to ipc channels
     ipcRenderer.on(OPEN_ABOUT_DIALOG_CHANNEL, this._openAboutDialog);
     ipcRenderer.on(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
     ipcRenderer.on(GO_TO_NETWORK_STATUS_SCREEN_CHANNEL, this._goToNetworkStatusScreen);
@@ -35,6 +42,7 @@ export default class AppStore extends Store {
   }
 
   teardown() {
+    // TODO: refactor to ipc channels
     ipcRenderer.removeListener(OPEN_ABOUT_DIALOG_CHANNEL, this._openAboutDialog);
     ipcRenderer.removeListener(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
     ipcRenderer.removeListener(GO_TO_NETWORK_STATUS_SCREEN_CHANNEL, this._goToNetworkStatusScreen);
@@ -48,11 +56,13 @@ export default class AppStore extends Store {
     return this.stores.router.location.pathname;
   }
 
-  openExternalLink(link: string): void {
-    shell.openExternal(link);
+  openExternalLink(url: string, event?: MouseEvent): void {
+    if (event) event.preventDefault();
+    openExternalUrlChannel.send(url);
   }
 
   _getGpuStatus = () => {
+    // TODO: refactor to ipc channel
     ipcRenderer.send(GET_GPU_STATUS.REQUEST);
   };
 
