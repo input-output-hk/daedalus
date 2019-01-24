@@ -41,7 +41,8 @@ type Props = {
   isSystemTimeIgnored: boolean,
   isSystemTimeCorrect: boolean,
   isForceCheckingNodeTime: boolean,
-  mostRecentBlockTimestamp: number,
+  latestLocalBlockTimestamp: number,
+  latestNetworkBlockTimestamp: number,
   localBlockHeight: number,
   networkBlockHeight: number,
   onForceCheckLocalTimeDifference: Function,
@@ -118,7 +119,7 @@ export default class NetworkStatus extends Component<Props, State> {
       cardanoNodeState, isNodeResponding, isNodeSubscribed, isNodeSyncing, isNodeInSync,
       isNodeTimeCorrect, isConnected, isSynced, syncPercentage, hasBeenConnected,
       localTimeDifference, isSystemTimeCorrect, isForceCheckingNodeTime,
-      mostRecentBlockTimestamp, localBlockHeight, networkBlockHeight,
+      localBlockHeight, networkBlockHeight, latestLocalBlockTimestamp, latestNetworkBlockTimestamp,
       onForceCheckLocalTimeDifference, onClose, nodeConnectionError, isSystemTimeIgnored,
       onOpenExternalLink,
     } = this.props;
@@ -142,10 +143,16 @@ export default class NetworkStatus extends Component<Props, State> {
       ) ? styles.red : styles.green,
     ]);
 
-    const timeSinceLastBlock = moment(Date.now()).diff(moment(mostRecentBlockTimestamp));
-    const isBlockchainHeightStalling = timeSinceLastBlock > MAX_ALLOWED_STALL_DURATION;
-    const timeSinceLastBlockClasses = classNames([
-      mostRecentBlockTimestamp > 0 && !isBlockchainHeightStalling ? styles.green : styles.red,
+    const latestLocalBlockAge = moment(Date.now()).diff(moment(latestLocalBlockTimestamp));
+    const isLocalBlockHeightStalling = latestLocalBlockAge > MAX_ALLOWED_STALL_DURATION;
+    const latestLocalBlockAgeClasses = classNames([
+      latestLocalBlockTimestamp > 0 && !isLocalBlockHeightStalling ? styles.green : styles.red,
+    ]);
+
+    const latestNetworkBlockAge = moment(Date.now()).diff(moment(latestNetworkBlockTimestamp));
+    const isNetworkBlockHeightStalling = latestNetworkBlockAge > MAX_ALLOWED_STALL_DURATION;
+    const latestNetworkBlockAgeClasses = classNames([
+      latestNetworkBlockTimestamp > 0 && !isNetworkBlockHeightStalling ? styles.green : styles.red,
     ]);
 
     // Cardano Node EKG server is not enabled for the Mainnet!
@@ -198,9 +205,15 @@ export default class NetworkStatus extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>timeSinceLastNetworkBlockChange:</td>
-                <td className={timeSinceLastBlockClasses}>
-                  {mostRecentBlockTimestamp > 0 ? `${timeSinceLastBlock} ms` : '-'}
+                <td>latestLocalBlockAge:</td>
+                <td className={latestLocalBlockAgeClasses}>
+                  {latestLocalBlockTimestamp > 0 ? `${latestLocalBlockAge} ms` : '-'}
+                </td>
+              </tr>
+              <tr>
+                <td>latestNetworkBlockAge:</td>
+                <td className={latestNetworkBlockAgeClasses}>
+                  {latestNetworkBlockTimestamp > 0 ? `${latestNetworkBlockAge} ms` : '-'}
                 </td>
               </tr>
               <tr>

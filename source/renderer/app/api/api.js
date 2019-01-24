@@ -211,13 +211,14 @@ export default class AdaApi {
     }
 
     let perPage = limit;
-    if (limit === null || limit > MAX_TRANSACTIONS_PER_PAGE) {
+    const shouldLoadAll = limit === null;
+    if (shouldLoadAll || limit > MAX_TRANSACTIONS_PER_PAGE) {
       perPage = MAX_TRANSACTIONS_PER_PAGE;
     }
 
     const params = {
       accountIndex: accounts[0].index,
-      page: skip === 0 ? 1 : (skip / limit) + 1,
+      page: skip === 0 ? 1 : skip + 1,
       per_page: perPage,
       wallet_id: walletId,
       sort_by: 'DES[created_at]',
@@ -228,19 +229,19 @@ export default class AdaApi {
       const response: Transactions = await getTransactionHistory(this.config, params);
       const { meta, data: txnHistory } = response;
       const { totalPages } = meta.pagination;
-      const hasMultiplePages = (totalPages > 1 && limit > MAX_TRANSACTIONS_PER_PAGE);
+      const hasMultiplePages = (totalPages > 1 && (shouldLoadAll || limit > perPage));
 
       if (hasMultiplePages) {
         let page = 2;
         const hasNextPage = () => page < totalPages + 1;
-        const shouldLoadNextPage = () => limit === null || page <= pagesToBeLoaded;
+        const shouldLoadNextPage = () => shouldLoadAll || page <= pagesToBeLoaded;
 
         for (page; (hasNextPage() && shouldLoadNextPage()); page++) {
           const { data: pageHistory } =
             await getTransactionHistory(this.config, Object.assign(params, { page }));
           txnHistory.push(...pageHistory);
         }
-        if (limit !== null) txnHistory.splice(limit);
+        if (!shouldLoadAll) txnHistory.splice(limit);
       }
 
       const transactions = txnHistory.map(txn => _createTransactionFromServerData(txn));
