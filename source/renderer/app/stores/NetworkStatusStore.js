@@ -74,10 +74,10 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeSyncing = false; // Is 'true' in case we are receiving blocks and not stalling
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
   @observable systemStartTime: number = 0;
-  // @observable systemStartTime: number = Math.round((this._startTime / 1000));
   @observable isNodeInSync = false; // 'true' if syncing & local/network blocks diff within limit
   @observable isNodeStopping = false; // 'true' if node is in `NODE_STOPPING_STATES` states
   @observable isNodeStopped = false // 'true' if node is in `NODE_STOPPED_STATES` states
+
   @observable hasBeenConnected = false;
   @observable syncProgress = null;
   @observable initialLocalHeight = null;
