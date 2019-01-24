@@ -69,7 +69,7 @@ const messages = defineMessages({
 
 type Props = {
   currentEpoch: number,
-  epochsConsolidated?: ?number,
+  epochsConsolidated: number,
   epochsSynced: number,
   onExternalLinkClick: Function,
 };
@@ -113,7 +113,7 @@ export default class BlockConsolidationStatus extends Component<Props, State> {
     const { formatMessage } = this.context.intl;
 
     const widthOfEpochsConsolidated =
-      this.getWidthOfEpochsConsolidated(epochsConsolidated || 0, currentEpoch);
+      this.getWidthOfEpochsConsolidated(epochsConsolidated, currentEpoch);
 
     return (
       <div className={styles.component}>

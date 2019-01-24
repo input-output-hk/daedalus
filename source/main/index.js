@@ -61,7 +61,7 @@ const onAppReady = async () => {
   // Detect safe mode
   const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
 
-  const systemStart = launcherConfig.configuration.systemStart;
+  const systemStart = parseInt(launcherConfig.configuration.systemStart, 10);
 
   mainWindow = createMainWindow(isInSafeMode);
 
@@ -105,9 +105,10 @@ const onAppReady = async () => {
     client.create(mainWindow);
   }
 
-  getSystemStartTimeChannel.onReceive(() => (
-    new Promise(resolve => resolve(parseInt(systemStart, 10)))
-  ));
+  await getSystemStartTimeChannel.onReceive(() => {
+    getSystemStartTimeChannel.send(systemStart, mainWindow.webContents);
+    return new Promise(resolve => resolve(systemStart));
+  });
 
   getNumberOfEpochsConsolidated(mainWindow);
 

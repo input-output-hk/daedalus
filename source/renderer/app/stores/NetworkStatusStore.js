@@ -73,7 +73,8 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeSubscribed = false; // Is 'true' in case node is subscribed to the network
   @observable isNodeSyncing = false; // Is 'true' in case we are receiving blocks and not stalling
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
-  @observable systemStartTime: number = Math.round((this._startTime / 1000));
+  @observable systemStartTime: number = 0;
+  // @observable systemStartTime: number = Math.round((this._startTime / 1000));
   @observable isNodeInSync = false; // 'true' if syncing & local/network blocks diff within limit
   @observable isNodeStopping = false; // 'true' if node is in `NODE_STOPPING_STATES` states
   @observable isNodeStopped = false // 'true' if node is in `NODE_STOPPED_STATES` states
@@ -82,7 +83,7 @@ export default class NetworkStatusStore extends Store {
   @observable initialLocalHeight = null;
   @observable localBlockHeight = 0;
   @observable networkBlockHeight = 0;
-  @observable epochsConsolidated: ?number = null;
+  @observable epochsConsolidated: number = 0;
   @observable latestLocalBlockTimestamp = 0; // milliseconds
   @observable latestNetworkBlockTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
@@ -300,12 +301,13 @@ export default class NetworkStatusStore extends Store {
   }
 
   @action _getNumberOfEpochsConsolidated = () => {
-    this.epochsConsolidated = null;
+    this.epochsConsolidated = 0;
     getNumberOfEpochsConsolidatedChannel.send();
   }
 
-  @action _onReceiveSystemStartTime = (systemStartTime: number) => {
+  @action _onReceiveSystemStartTime = (systemStartTime: number): Promise<void> => {
     this.systemStartTime = systemStartTime;
+    return Promise.resolve();
   }
 
   // DEFINE ACTIONS
