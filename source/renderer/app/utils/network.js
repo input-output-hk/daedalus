@@ -16,11 +16,11 @@ import {
   SLOT_DURATION_MAINNET,
   SLOT_DURATION_STAGING,
   SLOT_DURATION_TESTNET,
-  SLOT_DURATION_DEVNET,
+  SLOT_DURATION_DEVELOPMENT,
   EPOCH_LENGTH_BASE_MAINNET,
   EPOCH_LENGTH_BASE_STAGING,
   EPOCH_LENGTH_BASE_TESTNET,
-  EPOCH_LENGTH_BASE_DEVNET,
+  EPOCH_LENGTH_BASE_DEVELOPMENT,
 } from '../config/epochsConfig';
 
 const localesFillForm = {
@@ -56,7 +56,7 @@ export const getNetworkEkgUrl = (env: {
   return ekgUrl;
 };
 
-const getEpochData = (devnetStartTime: number) => {
+const getEpochData = (developmentStartTime: number) => {
   if (isMainnet) {
     return {
       startTime: START_TIME_MAINNET,
@@ -79,14 +79,14 @@ const getEpochData = (devnetStartTime: number) => {
     };
   }
   return {
-    startTime: devnetStartTime,
-    slotDuration: SLOT_DURATION_DEVNET,
-    epochLengthBase: EPOCH_LENGTH_BASE_DEVNET,
+    startTime: developmentStartTime,
+    slotDuration: SLOT_DURATION_DEVELOPMENT,
+    epochLengthBase: EPOCH_LENGTH_BASE_DEVELOPMENT,
   };
 };
 
-export const getCurrentEpoch = (devnetStartTime: number) => {
-  const { startTime, epochLengthBase, slotDuration } = getEpochData(devnetStartTime);
+export const getCurrentEpoch = (developmentStartTime: number) => {
+  const { startTime, epochLengthBase, slotDuration } = getEpochData(developmentStartTime);
   const currentTimeInUTC = Math.floor(Date.now() / 1000);
   const numberOfSlots = epochLengthBase * slotDuration * 10;
   return Math.floor((currentTimeInUTC - startTime) / numberOfSlots) || 1;
