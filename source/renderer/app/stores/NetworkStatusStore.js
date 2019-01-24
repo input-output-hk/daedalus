@@ -119,8 +119,7 @@ export default class NetworkStatusStore extends Store {
     // Passively receive state changes of the cardano-node
     cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
 
-    getSystemStartTimeChannel.send();
-    getSystemStartTimeChannel.onReceive(this._onReceiveSystemStartTime);
+    this._getSystemStartTime();
 
     // ========== MOBX REACTIONS =========== //
 
@@ -140,8 +139,6 @@ export default class NetworkStatusStore extends Store {
       () => this.ignoreSystemTimeChecks(false),
       NTP_IGNORE_CHECKS_GRACE_PERIOD
     );
-
-    getNumberOfEpochsConsolidatedChannel.onReceive(this._onReceiveNumberOfEpochsConsolidated);
 
     // Setup disk space checks
     getDiskSpaceStatusChannel.onReceive(this._onCheckDiskSpace);
@@ -293,24 +290,29 @@ export default class NetworkStatusStore extends Store {
     };
   };
 
-  @action _onReceiveNumberOfEpochsConsolidated = (
-    epochsConsolidated: GetNumberOfEpochsConsolidatedChannelResponse
-  ): Promise<void> => {
-    this.epochsConsolidated = epochsConsolidated;
-    return Promise.resolve();
-  }
+  _getSystemStartTime = async () => {
+    this._onReceiveSystemStartTime(
+      await getSystemStartTimeChannel.request()
+    );
+  };
 
-  @action _getNumberOfEpochsConsolidated = () => {
-    this.epochsConsolidated = 0;
-    getNumberOfEpochsConsolidatedChannel.send();
-  }
-
-  @action _onReceiveSystemStartTime = (systemStartTime: number): Promise<void> => {
-    this.systemStartTime = systemStartTime;
-    return Promise.resolve();
+  _getNumberOfEpochsConsolidated = async () => {
+    this._onReceiveNumberOfEpochsConsolidated(
+      await getNumberOfEpochsConsolidatedChannel.send()
+    );
   }
 
   // DEFINE ACTIONS
+
+  @action _onReceiveSystemStartTime = (systemStartTime: number) => {
+    this.systemStartTime = systemStartTime;
+  }
+
+  @action _onReceiveNumberOfEpochsConsolidated = (
+    epochsConsolidated: GetNumberOfEpochsConsolidatedChannelResponse
+  ) => {
+    this.epochsConsolidated = epochsConsolidated;
+  }
 
   @action _updateNetworkStatus = async (queryParams?: NodeQueryParams) => {
     // In case we haven't received TLS config we shouldn't trigger any API calls

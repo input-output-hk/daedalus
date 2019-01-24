@@ -105,12 +105,9 @@ const onAppReady = async () => {
     client.create(mainWindow);
   }
 
-  await getSystemStartTimeChannel.onReceive(() => {
-    getSystemStartTimeChannel.send(systemStart, mainWindow.webContents);
-    return new Promise(resolve => resolve(systemStart));
-  });
+  getSystemStartTimeChannel.onRequest(() => Promise.resolve(systemStart));
 
-  getNumberOfEpochsConsolidated(mainWindow);
+  getNumberOfEpochsConsolidated();
 
   mainWindow.on('close', async (event) => {
     Logger.info('mainWindow received <close> event. Safe exiting Daedalus now.');

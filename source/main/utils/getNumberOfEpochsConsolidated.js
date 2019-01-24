@@ -1,15 +1,13 @@
 // @flow
-import { BrowserWindow } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import { appFolderPath } from '../config';
 import { getNumberOfEpochsConsolidatedChannel } from '../ipc/getNumberOfEpochsConsolidated.ipc';
 import type { GetNumberOfEpochsConsolidatedChannelResponse } from '../../common/ipc/api';
 
-
-export const getNumberOfEpochsConsolidated = (mainWindow: BrowserWindow) => {
+export const getNumberOfEpochsConsolidated = () => {
   getNumberOfEpochsConsolidatedChannel
-    .onReceive((): Promise<GetNumberOfEpochsConsolidatedChannelResponse> => {
+    .onRequest((): Promise<GetNumberOfEpochsConsolidatedChannelResponse> => {
       const epochsPath = path.join(appFolderPath, 'DB-1.0/epochs');
       let epochsConsolidatedLength = 123;
       if (fs.existsSync(epochsPath)) {
@@ -20,10 +18,6 @@ export const getNumberOfEpochsConsolidated = (mainWindow: BrowserWindow) => {
 
         epochsConsolidatedLength = epochsConsolidated.length;
       }
-      getNumberOfEpochsConsolidatedChannel.send(
-        epochsConsolidatedLength,
-        mainWindow.webContents
-      );
       return Promise.resolve(epochsConsolidatedLength);
     });
 };
