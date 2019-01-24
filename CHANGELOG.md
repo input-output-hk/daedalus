@@ -1,10 +1,6 @@
 Changelog
 =========
 
-
-### Features
-
-=======
 ## vNext
 
 ### Features
