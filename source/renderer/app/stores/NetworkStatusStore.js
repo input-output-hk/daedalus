@@ -300,19 +300,19 @@ export default class NetworkStatusStore extends Store {
     this._onReceiveNumberOfEpochsConsolidated(
       await getNumberOfEpochsConsolidatedChannel.send()
     );
-  }
+  };
 
   // DEFINE ACTIONS
 
   @action _onReceiveSystemStartTime = (systemStartTime: number) => {
     this.systemStartTime = systemStartTime;
-  }
+  };
 
   @action _onReceiveNumberOfEpochsConsolidated = (
     epochsConsolidated: GetNumberOfEpochsConsolidatedChannelResponse
   ) => {
     this.epochsConsolidated = epochsConsolidated;
-  }
+  };
 
   @action _updateNetworkStatus = async (queryParams?: NodeQueryParams) => {
     // In case we haven't received TLS config we shouldn't trigger any API calls

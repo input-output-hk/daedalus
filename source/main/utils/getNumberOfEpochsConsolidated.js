@@ -8,14 +8,12 @@ import type { GetNumberOfEpochsConsolidatedChannelResponse } from '../../common/
 export const getNumberOfEpochsConsolidated = () => {
   getNumberOfEpochsConsolidatedChannel
     .onRequest((): Promise<GetNumberOfEpochsConsolidatedChannelResponse> => {
-      const epochsPath = path.join(appFolderPath, 'DB-1.0/epochs');
-      let epochsConsolidatedLength = 123;
+      const epochsPath = path.join(appFolderPath, 'DB-1.0', 'epochs');
+      let epochsConsolidatedLength = 0;
       if (fs.existsSync(epochsPath)) {
-
         const epochsConsolidated = fs
           .readdirSync(epochsPath)
           .filter(file => file.indexOf('.epoch') > -1);
-
         epochsConsolidatedLength = epochsConsolidated.length;
       }
       return Promise.resolve(epochsConsolidatedLength);

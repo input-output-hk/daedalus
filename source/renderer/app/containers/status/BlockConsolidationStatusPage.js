@@ -14,7 +14,6 @@ export default class BlockConsolidationStatusPage extends Component<InjectedProp
   }
 
   render() {
-
     const { app, networkStatus } = this.props.stores;
     const { epochsConsolidated, syncProgress, systemStartTime } = networkStatus;
     const { openExternalLink } = app;
