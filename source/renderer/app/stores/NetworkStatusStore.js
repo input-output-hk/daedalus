@@ -14,6 +14,7 @@ import {
 } from '../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
 import { Logger } from '../utils/logging';
+import { getCurrentEpoch } from '../utils/network';
 import {
   cardanoStateChangeChannel,
   tlsConfigChannel,
@@ -21,6 +22,7 @@ import {
   cardanoStatusChannel,
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
+import { getNumberOfEpochsConsolidatedChannel } from '../ipc/getNumberOfEpochsConsolidatedChannel';
 import { getSystemStartTimeChannel } from '../ipc/getSystemStartTime.ipc';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
@@ -30,7 +32,10 @@ import type {
   TlsConfig
 } from '../../../common/types/cardano-node.types';
 import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
+import type { GetNumberOfEpochsConsolidatedChannelResponse } from '../../../common/ipc/api';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
+
+const { isDevelopment } = global.environment;
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
@@ -81,6 +86,8 @@ export default class NetworkStatusStore extends Store {
   @observable initialLocalHeight = null;
   @observable localBlockHeight = 0;
   @observable networkBlockHeight = 0;
+  @observable epochsConsolidated: number = 0;
+  @observable currentEpoch: number = 0;
   @observable latestLocalBlockTimestamp = 0; // milliseconds
   @observable latestNetworkBlockTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
@@ -99,6 +106,8 @@ export default class NetworkStatusStore extends Store {
 
   // DEFINE STORE METHODS
   setup() {
+    const actions = this.actions.networkStatus;
+    actions.getEpochsData.listen(this._getEpochsData);
     // ========== IPC CHANNELS =========== //
 
     // Request node state
@@ -114,7 +123,9 @@ export default class NetworkStatusStore extends Store {
     // Passively receive state changes of the cardano-node
     cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
 
-    this._getSystemStartTime();
+    if (isDevelopment) {
+      this._getSystemStartTime();
+    }
 
     // ========== MOBX REACTIONS =========== //
 
@@ -291,10 +302,25 @@ export default class NetworkStatusStore extends Store {
     );
   };
 
+  _getEpochsData = async () => {
+    this._onReceiveEpochsData(
+      await getNumberOfEpochsConsolidatedChannel.request(),
+      getCurrentEpoch(this.systemStartTime)
+    );
+  };
+
   // DEFINE ACTIONS
 
   @action _onReceiveSystemStartTime = (systemStartTime: number) => {
     this.systemStartTime = systemStartTime;
+  };
+
+  @action _onReceiveEpochsData = (
+    epochsConsolidated: GetNumberOfEpochsConsolidatedChannelResponse,
+    currentEpoch: number
+  ) => {
+    this.epochsConsolidated = epochsConsolidated;
+    this.currentEpoch = currentEpoch;
   };
 
   @action _updateNetworkStatus = async (queryParams?: NodeQueryParams) => {

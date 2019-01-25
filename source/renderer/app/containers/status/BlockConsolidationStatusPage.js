@@ -1,64 +1,41 @@
 // @flow
 import React, { Component } from 'react';
-import { observable, action /* , when */ } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import BlockConsolidationStatus from '../../components/status/BlockConsolidationStatus';
-import { getCurrentEpoch } from '../../utils/network';
 
-import { getNumberOfEpochsConsolidatedChannel } from '../../ipc/getNumberOfEpochsConsolidatedChannel';
-import type { GetNumberOfEpochsConsolidatedChannelResponse } from '../../../../common/ipc/api';
-
-const EPOCH_DATA_UPDATE_INTERVAL = 20000;
+const EPOCH_DATA_UPDATE_INTERVAL = 60 * 1000; // 60 seconds | unit: miliseconds
 
 @inject('stores', 'actions') @observer
 export default class BlockConsolidationStatusPage extends Component<InjectedProps> {
 
-  constructor(props: any) {
-    super(props);
+  pollersInterval: IntervalID = null;
 
-    // const { systemStartTime } = props.stores.networkStatus;
-    // when(
-    //   () => systemStartTime > 0,
-    //   () => this.updateEpochsData
-    // );
-
-    this.updateEpochsData();
+  componentWillMount() {
+    this.pollersInterval = setInterval(
+      this.getEpochData,
+      EPOCH_DATA_UPDATE_INTERVAL
+    );
+    this.getEpochData();
   }
 
-  pollersInterval: IntervalID = setInterval(
-    this.updateEpochsData,
-    EPOCH_DATA_UPDATE_INTERVAL
-  );
+  componeneWillUnmount() {
+    clearInterval(this.pollersInterval);
+  }
 
-  @observable epochsConsolidated: number = 0;
-  @observable currentEpoch: number = 0;
-
-  updateEpochsData = async () => {
-    const { systemStartTime } = this.props.stores.networkStatus;
-    this._onReceiveEpochData(
-      await getNumberOfEpochsConsolidatedChannel.request(),
-      getCurrentEpoch(systemStartTime),
-    );
-  };
-
-  @action _onReceiveEpochData = (
-    epochsConsolidated: GetNumberOfEpochsConsolidatedChannelResponse,
-    currentEpoch: number,
-  ) => {
-    this.epochsConsolidated = epochsConsolidated;
-    this.currentEpoch = currentEpoch;
-  };
+  getEpochData = () => {
+    this.props.actions.networkStatus.getEpochsData.trigger();
+  }
 
   render() {
     const { app, networkStatus } = this.props.stores;
-    const { syncProgress } = networkStatus;
+    const { epochsConsolidated, syncProgress, currentEpoch } = networkStatus;
     const { openExternalLink } = app;
 
     return (
       <BlockConsolidationStatus
-        currentEpoch={this.currentEpoch}
-        epochsConsolidated={this.epochsConsolidated}
+        currentEpoch={currentEpoch}
+        epochsConsolidated={epochsConsolidated}
         epochsSynced={syncProgress}
         onExternalLinkClick={openExternalLink}
       />
