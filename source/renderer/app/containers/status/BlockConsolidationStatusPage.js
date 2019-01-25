@@ -9,7 +9,7 @@ const EPOCH_DATA_UPDATE_INTERVAL = 60 * 1000; // 60 seconds | unit: miliseconds
 @inject('stores', 'actions') @observer
 export default class BlockConsolidationStatusPage extends Component<InjectedProps> {
 
-  pollersInterval: IntervalID = null;
+  pollersInterval: ?IntervalID = null;
 
   componentWillMount() {
     this.pollersInterval = setInterval(
@@ -20,7 +20,7 @@ export default class BlockConsolidationStatusPage extends Component<InjectedProp
   }
 
   componeneWillUnmount() {
-    clearInterval(this.pollersInterval);
+    if (this.pollersInterval) clearInterval(this.pollersInterval);
   }
 
   getEpochData = () => {
