@@ -14,20 +14,29 @@ export default class Root extends Component<Props> {
     const { stores, actions, children } = this.props;
     const { networkStatus, profile, adaRedemption, app, wallets } = stores;
     const { isNetworkStatusPage, isBlockConsolidationStatusPage } = app;
+    const { isSettingsPage } = profile;
+    const { isAdaRedemptionPage } = adaRedemption;
+    const { hasLoadedWallets } = wallets;
     const {
       isSynced, isNodeStopping, isNodeStopped,
       isSystemTimeCorrect, isNotEnoughDiskSpace,
     } = networkStatus;
+
     const isPageThatDoesntNeedWallets = (
-      profile.isSettingsPage ||
       isBlockConsolidationStatusPage ||
-      (adaRedemption.isAdaRedemptionPage && wallets.hasLoadedWallets)
+      (isAdaRedemptionPage && hasLoadedWallets)
     );
+
+    // In case node is in stopping sequence we must show the "Connecting" screen
+    // with the "Stopping Cardano node..." and "Cardano node stopped" messages
+    // for all the screens except of the "Network status" screen.
+    const isNodeInStoppingSequence = isNodeStopping || isNodeStopped;
 
     // Just render any page that doesn't require wallets to be loaded or node to be connected
     if (
       isNetworkStatusPage ||
-      (!isNodeStopping && !isNodeStopped && isPageThatDoesntNeedWallets)
+      (isPageThatDoesntNeedWallets && !isNodeInStoppingSequence) ||
+      (isSettingsPage && (isNotEnoughDiskSpace || !isNodeInStoppingSequence))
     ) {
       return React.Children.only(children);
     }
