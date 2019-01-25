@@ -85,31 +85,16 @@ export default class BlockConsolidationStatus extends Component<Props> {
     currentEpoch: number,
   ) => {
     const widthOfEpochsConsolidated = epochsConsolidated * 100 / (currentEpoch - 2);
-    return widthOfEpochsConsolidated > 100 ? 100 : widthOfEpochsConsolidated;
+    return Math.min(widthOfEpochsConsolidated, 100);
   };
 
-  getPositionOfEpochsConsolidated = (widthOfEpochsConsolidated: number) => {
-    if (widthOfEpochsConsolidated > 32) {
-      return {
-        right: 8
-      };
-    }
-    return {
-      left: 0,
-      textAlign: 'left',
-    };
-  };
+  getPositionOfEpochsConsolidated = (widthOfEpochsConsolidated: number) => (
+    (widthOfEpochsConsolidated > 32) ? { right: 8 } : { left: 0, textAlign: 'left' }
+  );
 
-  getPositionOfEpochsSynced = (widthOfEpochsSynced: number) => {
-    if (widthOfEpochsSynced > 20) {
-      return {
-        right: 0,
-      };
-    }
-    return {
-      left: 0,
-    };
-  };
+  getPositionOfEpochsSynced = (widthOfEpochsSynced: number) => (
+    (widthOfEpochsSynced > 20) ? { right: 0 } : { left: 0 }
+  );
 
   render() {
     const {
@@ -163,9 +148,9 @@ export default class BlockConsolidationStatus extends Component<Props> {
 
             <div className={styles.indicator}>
               <div className={styles.indicatorContainer}>
-                <p className={styles.zeroEpoch}>0 {formatMessage(messages.epoch)}</p>
+                <p className={styles.zeroEpoch}>{formatMessage(messages.epoch)} 0</p>
                 <div className={styles.indicatorEpochsBehind}>
-                  <p>{Math.max(currentEpoch - 2, 0)} {formatMessage(messages.epoch)}</p>
+                  <p>{formatMessage(messages.epoch)} {Math.max(currentEpoch - 2, 0)}</p>
                 </div>
                 <div
                   className={styles.indicatorEpochsSynced}
@@ -189,7 +174,7 @@ export default class BlockConsolidationStatus extends Component<Props> {
                   </div>
                 </div>
                 <p className={styles.fullEpoch}>
-                  {currentEpoch} {formatMessage(messages.epoch)}
+                  {formatMessage(messages.epoch)} {currentEpoch}
                 </p>
               </div>
             </div>
