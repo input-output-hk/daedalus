@@ -21,7 +21,6 @@ import {
   cardanoStatusChannel,
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
-import { getNumberOfEpochsConsolidatedChannel } from '../ipc/getNumberOfEpochsConsolidatedChannel';
 import { getSystemStartTimeChannel } from '../ipc/getSystemStartTime.ipc';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
@@ -31,7 +30,6 @@ import type {
   TlsConfig
 } from '../../../common/types/cardano-node.types';
 import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
-import type { GetNumberOfEpochsConsolidatedChannelResponse } from '../../../common/ipc/api';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 
 // DEFINE CONSTANTS -------------------------
@@ -83,7 +81,6 @@ export default class NetworkStatusStore extends Store {
   @observable initialLocalHeight = null;
   @observable localBlockHeight = 0;
   @observable networkBlockHeight = 0;
-  @observable epochsConsolidated: number = 0;
   @observable latestLocalBlockTimestamp = 0; // milliseconds
   @observable latestNetworkBlockTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
@@ -102,8 +99,6 @@ export default class NetworkStatusStore extends Store {
 
   // DEFINE STORE METHODS
   setup() {
-    const actions = this.actions.networkStatus;
-    actions.getNumberOfEpochsConsolidated.listen(this._getNumberOfEpochsConsolidated);
     // ========== IPC CHANNELS =========== //
 
     // Request node state
@@ -296,22 +291,10 @@ export default class NetworkStatusStore extends Store {
     );
   };
 
-  _getNumberOfEpochsConsolidated = async () => {
-    this._onReceiveNumberOfEpochsConsolidated(
-      await getNumberOfEpochsConsolidatedChannel.send()
-    );
-  };
-
   // DEFINE ACTIONS
 
   @action _onReceiveSystemStartTime = (systemStartTime: number) => {
     this.systemStartTime = systemStartTime;
-  };
-
-  @action _onReceiveNumberOfEpochsConsolidated = (
-    epochsConsolidated: GetNumberOfEpochsConsolidatedChannelResponse
-  ) => {
-    this.epochsConsolidated = epochsConsolidated;
   };
 
   @action _updateNetworkStatus = async (queryParams?: NodeQueryParams) => {
