@@ -55,14 +55,13 @@ process.once('loaded', () => {
     throw new Error('This app does not support window.eval().');
   };
 
-  // elements containing data that can be copied using the context menu (right click)
-  // must have an attribute set as follows: data-type="selectable" or be an input element
+  // elements that can be copied using the context menu (right click),
+  // must have a css property of user-select: 'auto' or be an input element
   global.document.addEventListener('contextmenu', event => {
-    const targetData = Object.values(event.target.dataset);
-    const dataIsSelectable = targetData.includes('selectable');
+    const targetIsSelectable = getComputedStyle(event.target).userSelect === 'auto';
     const targetIsInput = event.target.nodeName === 'INPUT';
 
-    if (dataIsSelectable || targetIsInput) { return true; }
+    if (targetIsSelectable || targetIsInput) { return true; }
 
     event.preventDefault();
   }, false);
