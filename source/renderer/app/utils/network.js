@@ -89,7 +89,7 @@ export const getCurrentEpoch = (developmentStartTime: number) => {
   const { startTime, epochLengthBase, slotDuration } = getEpochData(developmentStartTime);
   const currentTimeInUTC = Math.floor(Date.now() / 1000);
   const numberOfSlots = epochLengthBase * slotDuration * 10;
-  return Math.floor((currentTimeInUTC - startTime) / numberOfSlots) || 1;
+  return Math.floor((currentTimeInUTC - startTime) / numberOfSlots);
 };
 
 export const getSupportUrl = async (baseUrl: string, locale: string) => {

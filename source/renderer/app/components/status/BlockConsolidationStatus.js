@@ -121,7 +121,6 @@ export default class BlockConsolidationStatus extends Component<Props> {
     const { formatMessage } = this.context.intl;
     const widthOfEpochsConsolidated =
       this.getWidthOfEpochsConsolidated(epochsConsolidated, currentEpoch);
-    const latestEpochToConsolidate = (currentEpoch - 2) < 0 ? 0 : (currentEpoch - 2);
 
     return (
       <div className={styles.component}>
@@ -141,7 +140,7 @@ export default class BlockConsolidationStatus extends Component<Props> {
                 {...messages.description2}
                 values={{
                   currentEpoch,
-                  currentEpochBehind: currentEpoch - 1,
+                  currentEpochBehind: Math.max(currentEpoch - 1, 0),
                 }}
               />
             </p>
@@ -166,7 +165,7 @@ export default class BlockConsolidationStatus extends Component<Props> {
               <div className={styles.indicatorContainer}>
                 <p className={styles.zeroEpoch}>0 {formatMessage(messages.epoch)}</p>
                 <div className={styles.indicatorEpochsBehind}>
-                  <p>{latestEpochToConsolidate} {formatMessage(messages.epoch)}</p>
+                  <p>{Math.max(currentEpoch - 2, 0)} {formatMessage(messages.epoch)}</p>
                 </div>
                 <div
                   className={styles.indicatorEpochsSynced}
