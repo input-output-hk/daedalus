@@ -96,7 +96,6 @@ export class VirtualTransactionList extends Component<Props> {
    * @param index
    */
   recalcRowHeightForIndex = (index: number) => {
-    const { rows } = this.props;
     this.rowHeights[index] = this.calculateRowHeight(index);
   };
 
