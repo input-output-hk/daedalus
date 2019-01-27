@@ -123,9 +123,8 @@ export default class NetworkStatusStore extends Store {
     // Passively receive state changes of the cardano-node
     cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
 
-    if (isDevelopment) {
-      this._getSystemStartTime();
-    }
+    // Get cluster start time (only needed for demo cluster)
+    if (isDevelopment) this._getSystemStartTime();
 
     // ========== MOBX REACTIONS =========== //
 

@@ -9,14 +9,14 @@ export const getNumberOfEpochsConsolidated = () => {
   getNumberOfEpochsConsolidatedChannel
     .onRequest((): Promise<GetNumberOfEpochsConsolidatedChannelResponse> => {
       const epochsPath = path.join(appFolderPath, 'DB-1.0', 'epochs');
-      let epochsConsolidated = 0;
+      let latestConsolidatedEpoch = 0;
       if (fs.existsSync(epochsPath)) {
         const epochfiles = fs
           .readdirSync(epochsPath)
           .filter(file => file.indexOf('.epoch') > -1)
-          .map(file => parseInt(file, 10));
-        epochsConsolidated = Math.max(...epochfiles);
+          .map(file => parseInt(file.split('.').shift(), 10));
+        if (epochfiles.length) latestConsolidatedEpoch = Math.max(...epochfiles);
       }
-      return Promise.resolve(epochsConsolidated);
+      return Promise.resolve(latestConsolidatedEpoch);
     });
 };
