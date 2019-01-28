@@ -27,5 +27,6 @@ storiesOf('BlockConsolidationStatus', module)
       epochsConsolidated={number('Epochs Consolidated', 57, { range: true, min: 0, max: currentEpoch - 2, step: 1, })}
       currentEpoch={currentEpoch}
       epochsSynced={number('Epochs Synced', 80, { range: true, min: 0, max: 100, step: 1, })}
+      onClose={() => {}}
     />
   ));

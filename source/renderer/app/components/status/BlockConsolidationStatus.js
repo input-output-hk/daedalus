@@ -7,6 +7,7 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './BlockConsolidationStatus.scss';
 import TopBar from '../layout/TopBar';
 import epochs from '../../assets/images/block-consolidation/epochs.png';
+import backArrow from '../../assets/images/back-arrow-thin-ic.inline.svg';
 
 const messages = defineMessages({
   title: {
@@ -71,6 +72,7 @@ type Props = {
   epochsConsolidated: number,
   epochsSynced: number,
   onExternalLinkClick: Function,
+  onClose: Function,
 };
 
 @observer
@@ -101,7 +103,8 @@ export default class BlockConsolidationStatus extends Component<Props> {
       currentEpoch,
       epochsConsolidated,
       epochsSynced,
-      onExternalLinkClick
+      onExternalLinkClick,
+      onClose,
     } = this.props;
     const { formatMessage } = this.context.intl;
     const widthOfEpochsConsolidated =
@@ -110,8 +113,8 @@ export default class BlockConsolidationStatus extends Component<Props> {
     return (
       <div className={styles.component}>
         <TopBar
-          showSubMenuToggle={false}
-          currentRoute=""
+          onLeftIconClick={onClose}
+          leftIcon={backArrow}
         />
 
         <div className={styles.container}>

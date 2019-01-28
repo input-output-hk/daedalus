@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import BlockConsolidationStatus from '../../components/status/BlockConsolidationStatus';
 import { EPOCH_DATA_UPDATE_INTERVAL } from '../../config/timingConfig';
+import { ROUTES } from '../../routes-config';
 
 @inject('stores', 'actions') @observer
 export default class BlockConsolidationStatusPage extends Component<InjectedProps> {
@@ -26,6 +27,10 @@ export default class BlockConsolidationStatusPage extends Component<InjectedProp
     this.props.actions.networkStatus.getEpochsData.trigger();
   };
 
+  handleClose = () => {
+    this.props.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
+  };
+
   render() {
     const { app, networkStatus } = this.props.stores;
     const { epochsConsolidated, syncProgress, currentEpoch } = networkStatus;
@@ -37,6 +42,7 @@ export default class BlockConsolidationStatusPage extends Component<InjectedProp
         epochsConsolidated={epochsConsolidated}
         epochsSynced={syncProgress}
         onExternalLinkClick={openExternalLink}
+        onClose={this.handleClose}
       />
     );
   }
