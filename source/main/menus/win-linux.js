@@ -46,7 +46,7 @@ export const winLinuxMenu = (
       label: translation('daedalus.networkStatus'),
       accelerator: 'Ctrl+S',
       click() {
-        actions.goToNetworkStatus();
+        actions.openNetworkStatus();
       },
     }, {
       label: translation('daedalus.close'),

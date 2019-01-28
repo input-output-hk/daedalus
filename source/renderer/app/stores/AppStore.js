@@ -4,10 +4,10 @@ import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
 import {
-  OPEN_ABOUT_DIALOG_CHANNEL,
+  TOGGLE_ABOUT_DIALOG_CHANNEL,
+  TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL,
   GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL,
-  GO_TO_NETWORK_STATUS_SCREEN_CHANNEL,
-  GO_TO_BLOCK_CONSOLIDATION_STATUS_CHANNEL
+  TOGGLE_BLOCK_CONSOLIDATION_STATUS_CHANNEL
 } from '../../../common/ipc/api';
 import { GET_GPU_STATUS } from '../../../common/ipc-api';
 import { ROUTES } from '../routes-config';
@@ -21,6 +21,7 @@ export default class AppStore extends Store {
 
   @observable error: ?LocalizableError = null;
   @observable isAboutDialogOpen = false;
+  @observable isNetworkStatusDialogOpen = false;
   @observable gpuStatus: ?GpuStatus = null;
   @observable numberOfEpochsConsolidated: number = 0;
   @observable previousRoute: string = ROUTES.ROOT;
@@ -29,31 +30,31 @@ export default class AppStore extends Store {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
     this.actions.app.openAboutDialog.listen(this._openAboutDialog);
     this.actions.app.closeAboutDialog.listen(this._closeAboutDialog);
+    this.actions.app.openNetworkStatusDialog.listen(this._openNetworkStatusDialog);
+    this.actions.app.closeNetworkStatusDialog.listen(this._closeNetworkStatusDialog);
     this.actions.app.getGpuStatus.listen(this._getGpuStatus);
     this.actions.app.toggleBlockConsolidationStatusScreen.listen(
       this._toggleBlockConsolidationStatusScreen
     );
 
+    /* eslint-disable max-len */
     // TODO: refactor to ipc channels
-    ipcRenderer.on(OPEN_ABOUT_DIALOG_CHANNEL, this._openAboutDialog);
+    ipcRenderer.on(TOGGLE_ABOUT_DIALOG_CHANNEL, this._toggleAboutDialog);
+    ipcRenderer.on(TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL, this._toggleNetworkStatusDialog);
     ipcRenderer.on(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
-    ipcRenderer.on(GO_TO_NETWORK_STATUS_SCREEN_CHANNEL, this._goToNetworkStatusScreen);
-    ipcRenderer.on(
-      GO_TO_BLOCK_CONSOLIDATION_STATUS_CHANNEL,
-      this._toggleBlockConsolidationStatusScreen
-    );
+    ipcRenderer.on(TOGGLE_BLOCK_CONSOLIDATION_STATUS_CHANNEL, this._toggleBlockConsolidationStatusScreen);
     ipcRenderer.on(GET_GPU_STATUS.SUCCESS, this._onGetGpuStatusSuccess);
+    /* eslint-disable max-len */
   }
 
   teardown() {
+    /* eslint-disable max-len */
     // TODO: refactor to ipc channels
-    ipcRenderer.removeListener(OPEN_ABOUT_DIALOG_CHANNEL, this._openAboutDialog);
+    ipcRenderer.removeListener(TOGGLE_ABOUT_DIALOG_CHANNEL, this._toggleAboutDialog);
+    ipcRenderer.removeListener(TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL, this._toggleNetworkStatusDialog);
     ipcRenderer.removeListener(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
-    ipcRenderer.removeListener(GO_TO_NETWORK_STATUS_SCREEN_CHANNEL, this._goToNetworkStatusScreen);
-    ipcRenderer.removeListener(
-      GO_TO_BLOCK_CONSOLIDATION_STATUS_CHANNEL,
-      this._toggleBlockConsolidationStatusScreen
-    );
+    ipcRenderer.removeListener(TOGGLE_BLOCK_CONSOLIDATION_STATUS_CHANNEL, this._toggleBlockConsolidationStatusScreen);
+    /* eslint-disable max-len */
   }
 
   @computed get currentRoute(): string {
@@ -93,12 +94,21 @@ export default class AppStore extends Store {
     this.isAboutDialogOpen = false;
   };
 
-  @computed get isSetupPage(): boolean {
-    return (
-      this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION ||
-      this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE
-    );
-  }
+  @action _toggleAboutDialog = () => {
+    this.isAboutDialogOpen = !this.isAboutDialogOpen;
+  };
+
+  @action _openNetworkStatusDialog = () => {
+    this.isNetworkStatusDialogOpen = true;
+  };
+
+  @action _closeNetworkStatusDialog = () => {
+    this.isNetworkStatusDialogOpen = false;
+  };
+
+  @action _toggleNetworkStatusDialog = () => {
+    this.isNetworkStatusDialogOpen = !this.isNetworkStatusDialogOpen;
+  };
 
   @action _goToAdaRedemptionScreen = () => {
     const { isConnected, isSynced } = this.stores.networkStatus;
@@ -108,24 +118,22 @@ export default class AppStore extends Store {
     }
   };
 
-  @computed get isNetworkStatusPage(): boolean {
-    return this.currentRoute === ROUTES.NETWORK_STATUS;
-  }
-
-  @computed get isBlockConsolidationStatusPage(): boolean {
-    return this.currentRoute === ROUTES.BLOCK_CONSOLIDATION_STATUS;
-  }
-
-  @action _goToNetworkStatusScreen = () => {
-    const route = this.isNetworkStatusPage ? ROUTES.ROOT : ROUTES.NETWORK_STATUS;
-    this.actions.router.goToRoute.trigger({ route });
-  };
-
   @action _toggleBlockConsolidationStatusScreen = () => {
     const route = this.isBlockConsolidationStatusPage
       ? this.previousRoute
       : ROUTES.BLOCK_CONSOLIDATION_STATUS;
     this._updateRouteLocation({ route });
   };
+
+  @computed get isBlockConsolidationStatusPage(): boolean {
+    return this.currentRoute === ROUTES.BLOCK_CONSOLIDATION_STATUS;
+  }
+
+  @computed get isSetupPage(): boolean {
+    return (
+      this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION ||
+      this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE
+    );
+  }
 
 }

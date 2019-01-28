@@ -45,7 +45,7 @@ export const osxMenu = (
       label: translation('daedalus.networkStatus'),
       accelerator: 'Command+S',
       click() {
-        actions.goToNetworkStatus();
+        actions.openNetworkStatus();
       },
     }, {
       label: translation('daedalus.quit'),
