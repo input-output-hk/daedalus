@@ -13,6 +13,7 @@ import type { StoresMap } from './stores/index';
 import type { ActionsMap } from './actions/index';
 import ThemeManager from './ThemeManager';
 import AboutDialog from './containers/static/AboutDialog';
+import NetworkStatusDialog from './containers/status/NetworkStatusDialog';
 
 @observer
 export default class App extends Component<{
@@ -27,6 +28,7 @@ export default class App extends Component<{
   render() {
     const { stores, actions, history } = this.props;
     const { app } = stores;
+    const { isAboutDialogOpen, isNetworkStatusDialogOpen } = app;
     const locale = stores.profile.currentLocale;
     const mobxDevTools = global.environment.mobxDevTools ? <DevTools /> : null;
     const currentTheme = stores.profile.currentTheme;
@@ -40,7 +42,8 @@ export default class App extends Component<{
               <Fragment>
                 <Router history={history} routes={Routes} />
                 {mobxDevTools}
-                {app.isAboutDialogOpen && <AboutDialog />}
+                {isNetworkStatusDialogOpen && <NetworkStatusDialog />}
+                {isAboutDialogOpen && <AboutDialog />}
               </Fragment>
             </IntlProvider>
           </ThemeProvider>

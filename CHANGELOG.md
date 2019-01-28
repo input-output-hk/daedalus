@@ -34,6 +34,7 @@ Changelog
 
 ### Chores
 
+- Changed the behavior of "Network status" from screen to dialog ([PR 1286](https://github.com/input-output-hk/daedalus/pull/1286))
 - Updated the list of contributors on the "About" screen ([PR 1282](https://github.com/input-output-hk/daedalus/pull/1282))
 - Added more logging for API errors ([PR 1278](https://github.com/input-output-hk/daedalus/pull/1278)
 - Removed node version check as nix shell is enforcing the version ([PR 1236](https://github.com/input-output-hk/daedalus/pull/1236))

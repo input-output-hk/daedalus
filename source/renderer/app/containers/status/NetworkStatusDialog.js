@@ -1,22 +1,23 @@
 // @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { ROUTES } from '../../routes-config';
-import CenteredLayout from '../../components/layout/CenteredLayout';
+import ReactModal from 'react-modal';
 import NetworkStatus from '../../components/status/NetworkStatus';
+import styles from './NetworkStatusDialog.scss';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
-@inject('stores', 'actions') @observer
-export default class NetworkStatusPage extends Component<InjectedProps> {
+type Props = InjectedProps;
 
-  handleClose = () => {
-    const { actions } = this.props;
-    actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
-  };
+@inject('stores', 'actions') @observer
+export default class NetworkStatusDialog extends Component<Props> {
+
+  static defaultProps = { actions: null, stores: null };
 
   render() {
-    const { stores } = this.props;
-    const { openExternalLink } = stores.app;
+    const { actions, stores } = this.props;
+    const { closeNetworkStatusDialog } = actions.app;
+    const { app, networkStatus } = stores;
+    const { openExternalLink } = app;
     const {
       // Node state
       cardanoNodeState, isNodeResponding, isNodeSubscribed,
@@ -27,9 +28,17 @@ export default class NetworkStatusPage extends Component<InjectedProps> {
       forceCheckLocalTimeDifference, getNetworkStatusRequest,
       localBlockHeight, networkBlockHeight, latestLocalBlockTimestamp, latestNetworkBlockTimestamp,
       restartNode, isSystemTimeIgnored, environment,
-    } = stores.networkStatus;
+    } = networkStatus;
+
     return (
-      <CenteredLayout>
+      <ReactModal
+        isOpen
+        closeOnOverlayClick
+        onRequestClose={closeNetworkStatusDialog.trigger}
+        className={styles.dialog}
+        overlayClassName={styles.overlay}
+        ariaHideApp={false}
+      >
         <NetworkStatus
           cardanoNodeState={cardanoNodeState}
           isDev={environment.isDev}
@@ -59,9 +68,9 @@ export default class NetworkStatusPage extends Component<InjectedProps> {
           onForceCheckLocalTimeDifference={forceCheckLocalTimeDifference}
           onOpenExternalLink={openExternalLink}
           onRestartNode={restartNode}
-          onClose={this.handleClose}
+          onClose={closeNetworkStatusDialog.trigger}
         />
-      </CenteredLayout>
+      </ReactModal>
     );
   }
 

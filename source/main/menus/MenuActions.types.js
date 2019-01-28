@@ -1,8 +1,8 @@
 // @flow
 export type MenuActions = {
   openAbout: Function,
+  openNetworkStatus: Function,
   goToAdaRedemption: Function,
-  goToNetworkStatus: Function,
   restartInSafeMode: Function,
   restartWithoutSafeMode: Function,
   goBlockConsolidationStatus: Function,
