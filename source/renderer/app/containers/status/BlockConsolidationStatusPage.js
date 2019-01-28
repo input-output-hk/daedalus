@@ -4,7 +4,6 @@ import { inject, observer } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import BlockConsolidationStatus from '../../components/status/BlockConsolidationStatus';
 import { EPOCH_DATA_UPDATE_INTERVAL } from '../../config/timingConfig';
-import { ROUTES } from '../../routes-config';
 
 @inject('stores', 'actions') @observer
 export default class BlockConsolidationStatusPage extends Component<InjectedProps> {

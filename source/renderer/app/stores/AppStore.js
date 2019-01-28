@@ -6,8 +6,8 @@ import { buildRoute } from '../utils/routing';
 import {
   TOGGLE_ABOUT_DIALOG_CHANNEL,
   TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL,
-  GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL,
-  TOGGLE_BLOCK_CONSOLIDATION_STATUS_CHANNEL
+  TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL,
+  GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL
 } from '../../../common/ipc/api';
 import { GET_GPU_STATUS } from '../../../common/ipc-api';
 import { ROUTES } from '../routes-config';
@@ -41,8 +41,8 @@ export default class AppStore extends Store {
     // TODO: refactor to ipc channels
     ipcRenderer.on(TOGGLE_ABOUT_DIALOG_CHANNEL, this._toggleAboutDialog);
     ipcRenderer.on(TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL, this._toggleNetworkStatusDialog);
+    ipcRenderer.on(TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL, this._toggleBlockConsolidationStatusScreen);
     ipcRenderer.on(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
-    ipcRenderer.on(TOGGLE_BLOCK_CONSOLIDATION_STATUS_CHANNEL, this._toggleBlockConsolidationStatusScreen);
     ipcRenderer.on(GET_GPU_STATUS.SUCCESS, this._onGetGpuStatusSuccess);
     /* eslint-disable max-len */
   }
@@ -52,8 +52,9 @@ export default class AppStore extends Store {
     // TODO: refactor to ipc channels
     ipcRenderer.removeListener(TOGGLE_ABOUT_DIALOG_CHANNEL, this._toggleAboutDialog);
     ipcRenderer.removeListener(TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL, this._toggleNetworkStatusDialog);
+    ipcRenderer.removeListener(TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL, this._toggleBlockConsolidationStatusScreen);
     ipcRenderer.removeListener(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
-    ipcRenderer.removeListener(TOGGLE_BLOCK_CONSOLIDATION_STATUS_CHANNEL, this._toggleBlockConsolidationStatusScreen);
+    ipcRenderer.removeListener(GET_GPU_STATUS.SUCCESS, this._onGetGpuStatusSuccess);
     /* eslint-disable max-len */
   }
 
@@ -75,7 +76,7 @@ export default class AppStore extends Store {
     this.gpuStatus = status;
   });
 
-  _updateRouteLocation = (options: { route: string, params: ?Object }) => {
+  _updateRouteLocation = (options: { route: string, params?: ?Object }) => {
     const routePath = buildRoute(options.route, options.params);
     const currentRoute = this.stores.router.location.pathname;
     if (currentRoute !== routePath) this.stores.router.push(routePath);
@@ -83,7 +84,7 @@ export default class AppStore extends Store {
   };
 
   @action _updatePreviousRoute = (currentRoute?: string) => {
-    this.previousRoute = currentRoute;
+    this.previousRoute = currentRoute || ROUTES.ROOT;
   }
 
   @action _openAboutDialog = () => {
