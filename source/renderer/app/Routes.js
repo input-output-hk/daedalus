@@ -6,7 +6,6 @@ import { ROUTES } from './routes-config';
 // PAGES
 import Root from './containers/Root';
 import AdaRedemptionPage from './containers/wallet/AdaRedemptionPage';
-import NetworkStatusPage from './containers/status/NetworkStatusPage';
 import WalletAddPage from './containers/wallet/WalletAddPage';
 import LanguageSelectionPage from './containers/profile/LanguageSelectionPage';
 import Settings from './containers/settings/Settings';
@@ -33,7 +32,6 @@ export const Routes = (
     <Route path={ROUTES.PROFILE.DATA_LAYER_MIGRATION} component={DataLayerMigrationPage} />
     {/* <Route path={ROUTES.STAKING} component={StakingPage} /> */}
     <Route path={ROUTES.ADA_REDEMPTION} component={AdaRedemptionPage} />
-    <Route path={ROUTES.NETWORK_STATUS} component={NetworkStatusPage} />
     <Route path={ROUTES.WALLETS.ADD} component={WalletAddPage} />
     <Route path={ROUTES.WALLETS.ROOT} component={Wallet}>
       <Route path={ROUTES.WALLETS.SUMMARY} component={WalletSummaryPage} />

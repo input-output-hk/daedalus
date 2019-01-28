@@ -12,8 +12,7 @@ export default class Root extends Component<Props> {
 
   render() {
     const { stores, actions, children } = this.props;
-    const { networkStatus, profile, adaRedemption, app, wallets } = stores;
-    const { isNetworkStatusPage } = app;
+    const { networkStatus, profile, adaRedemption, wallets } = stores;
     const { isSettingsPage } = profile;
     const { isAdaRedemptionPage } = adaRedemption;
     const { hasLoadedWallets } = wallets;
@@ -29,7 +28,6 @@ export default class Root extends Component<Props> {
 
     // Just render any page that doesn't require wallets to be loaded or node to be connected
     if (
-      isNetworkStatusPage ||
       (isSettingsPage && (isNotEnoughDiskSpace || !isNodeInStoppingSequence)) ||
       (isAdaRedemptionPage && hasLoadedWallets && !isNodeInStoppingSequence)
     ) {
