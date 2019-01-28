@@ -23,12 +23,16 @@ export default class AppStore extends Store {
   @observable isAboutDialogOpen = false;
   @observable gpuStatus: ?GpuStatus = null;
   @observable numberOfEpochsConsolidated: number = 0;
+  @observable previousRoute: string = ROUTES.ROOT;
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
     this.actions.app.openAboutDialog.listen(this._openAboutDialog);
     this.actions.app.closeAboutDialog.listen(this._closeAboutDialog);
     this.actions.app.getGpuStatus.listen(this._getGpuStatus);
+    this.actions.app.toggleBlockConsolidationStatusScreen.listen(
+      this._toggleBlockConsolidationStatusScreen
+    );
 
     // TODO: refactor to ipc channels
     ipcRenderer.on(OPEN_ABOUT_DIALOG_CHANNEL, this._openAboutDialog);
@@ -36,7 +40,7 @@ export default class AppStore extends Store {
     ipcRenderer.on(GO_TO_NETWORK_STATUS_SCREEN_CHANNEL, this._goToNetworkStatusScreen);
     ipcRenderer.on(
       GO_TO_BLOCK_CONSOLIDATION_STATUS_CHANNEL,
-      this._goToBlockConsolidationStatusScreen
+      this._toggleBlockConsolidationStatusScreen
     );
     ipcRenderer.on(GET_GPU_STATUS.SUCCESS, this._onGetGpuStatusSuccess);
   }
@@ -48,7 +52,7 @@ export default class AppStore extends Store {
     ipcRenderer.removeListener(GO_TO_NETWORK_STATUS_SCREEN_CHANNEL, this._goToNetworkStatusScreen);
     ipcRenderer.removeListener(
       GO_TO_BLOCK_CONSOLIDATION_STATUS_CHANNEL,
-      this._goToBlockConsolidationStatusScreen
+      this._toggleBlockConsolidationStatusScreen
     );
   }
 
@@ -74,7 +78,12 @@ export default class AppStore extends Store {
     const routePath = buildRoute(options.route, options.params);
     const currentRoute = this.stores.router.location.pathname;
     if (currentRoute !== routePath) this.stores.router.push(routePath);
+    this._updatePreviousRoute(currentRoute);
   };
+
+  @action _updatePreviousRoute = (currentRoute?: string) => {
+    this.previousRoute = currentRoute;
+  }
 
   @action _openAboutDialog = () => {
     this.isAboutDialogOpen = true;
@@ -112,11 +121,11 @@ export default class AppStore extends Store {
     this.actions.router.goToRoute.trigger({ route });
   };
 
-  @action _goToBlockConsolidationStatusScreen = () => {
+  @action _toggleBlockConsolidationStatusScreen = () => {
     const route = this.isBlockConsolidationStatusPage
-      ? ROUTES.ROOT
+      ? this.previousRoute
       : ROUTES.BLOCK_CONSOLIDATION_STATUS;
-    this.actions.router.goToRoute.trigger({ route });
+    this._updateRouteLocation({ route });
   };
 
 }

@@ -8,4 +8,5 @@ export default class AppActions {
   closeAboutDialog: Action<any> = new Action();
   getGpuStatus: Action<any> = new Action();
   initAppEnvironment: Action<any> = new Action();
+  toggleBlockConsolidationStatusScreen: Action<any> = new Action();
 }

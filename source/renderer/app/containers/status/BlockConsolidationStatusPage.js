@@ -28,7 +28,7 @@ export default class BlockConsolidationStatusPage extends Component<InjectedProp
   };
 
   handleClose = () => {
-    this.props.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
+    this.props.actions.app.toggleBlockConsolidationStatusScreen.trigger();
   };
 
   render() {
