@@ -7,9 +7,9 @@ import { Logger } from './logging';
 import { safeExitWithCode } from './safeExitWithCode';
 import { CardanoNode } from '../cardano/CardanoNode';
 import {
-  OPEN_ABOUT_DIALOG_CHANNEL,
+  TOGGLE_ABOUT_DIALOG_CHANNEL,
   GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL,
-  GO_TO_NETWORK_STATUS_SCREEN_CHANNEL
+  TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL
 } from '../../common/ipc/api';
 
 export const buildAppMenus = async (
@@ -20,15 +20,15 @@ export const buildAppMenus = async (
 ) => {
 
   const openAbout = () => {
-    if (mainWindow) mainWindow.webContents.send(OPEN_ABOUT_DIALOG_CHANNEL);
+    if (mainWindow) mainWindow.webContents.send(TOGGLE_ABOUT_DIALOG_CHANNEL);
+  };
+
+  const openNetworkStatus = () => {
+    if (mainWindow) mainWindow.webContents.send(TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL);
   };
 
   const goToAdaRedemption = () => {
     if (mainWindow) mainWindow.webContents.send(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL);
-  };
-
-  const goToNetworkStatus = () => {
-    if (mainWindow) mainWindow.webContents.send(GO_TO_NETWORK_STATUS_SCREEN_CHANNEL);
   };
 
   const restartInSafeMode = async () => {
@@ -49,8 +49,8 @@ export const buildAppMenus = async (
   const translations = require(`../locales/${locale}`);
   const menuActions = {
     openAbout,
+    openNetworkStatus,
     goToAdaRedemption,
-    goToNetworkStatus,
     restartInSafeMode,
     restartWithoutSafeMode,
   };

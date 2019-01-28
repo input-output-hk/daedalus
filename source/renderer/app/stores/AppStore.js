@@ -4,9 +4,9 @@ import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
 import {
-  OPEN_ABOUT_DIALOG_CHANNEL,
-  GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL,
-  GO_TO_NETWORK_STATUS_SCREEN_CHANNEL
+  TOGGLE_ABOUT_DIALOG_CHANNEL,
+  TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL,
+  GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL
 } from '../../../common/ipc/api';
 import { GET_GPU_STATUS } from '../../../common/ipc-api';
 import { ROUTES } from '../routes-config';
@@ -20,26 +20,31 @@ export default class AppStore extends Store {
 
   @observable error: ?LocalizableError = null;
   @observable isAboutDialogOpen = false;
+  @observable isNetworkStatusDialogOpen = false;
   @observable gpuStatus: ?GpuStatus = null;
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
     this.actions.app.openAboutDialog.listen(this._openAboutDialog);
     this.actions.app.closeAboutDialog.listen(this._closeAboutDialog);
+    this.actions.app.openNetworkStatusDialog.listen(this._openNetworkStatusDialog);
+    this.actions.app.closeNetworkStatusDialog.listen(this._closeNetworkStatusDialog);
     this.actions.app.getGpuStatus.listen(this._getGpuStatus);
 
     // TODO: refactor to ipc channels
-    ipcRenderer.on(OPEN_ABOUT_DIALOG_CHANNEL, this._openAboutDialog);
+    ipcRenderer.on(TOGGLE_ABOUT_DIALOG_CHANNEL, this._toggleAboutDialog);
     ipcRenderer.on(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
-    ipcRenderer.on(GO_TO_NETWORK_STATUS_SCREEN_CHANNEL, this._goToNetworkStatusScreen);
+    ipcRenderer.on(TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL, this._toggleNetworkStatusDialog);
     ipcRenderer.on(GET_GPU_STATUS.SUCCESS, this._onGetGpuStatusSuccess);
   }
 
   teardown() {
+    /* eslint-disable max-len */
     // TODO: refactor to ipc channels
-    ipcRenderer.removeListener(OPEN_ABOUT_DIALOG_CHANNEL, this._openAboutDialog);
+    ipcRenderer.removeListener(TOGGLE_ABOUT_DIALOG_CHANNEL, this._toggleAboutDialog);
     ipcRenderer.removeListener(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
-    ipcRenderer.removeListener(GO_TO_NETWORK_STATUS_SCREEN_CHANNEL, this._goToNetworkStatusScreen);
+    ipcRenderer.removeListener(TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL, this._toggleNetworkStatusDialog);
+    /* eslint-disable max-len */
   }
 
   @computed get currentRoute(): string {
@@ -74,6 +79,22 @@ export default class AppStore extends Store {
     this.isAboutDialogOpen = false;
   };
 
+  @action _toggleAboutDialog = () => {
+    this.isAboutDialogOpen = !this.isAboutDialogOpen;
+  };
+
+  @action _openNetworkStatusDialog = () => {
+    this.isNetworkStatusDialogOpen = true;
+  };
+
+  @action _closeNetworkStatusDialog = () => {
+    this.isNetworkStatusDialogOpen = false;
+  };
+
+  @action _toggleNetworkStatusDialog = () => {
+    this.isNetworkStatusDialogOpen = !this.isNetworkStatusDialogOpen;
+  };
+
   @computed get isSetupPage(): boolean {
     return (
       this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION ||
@@ -87,14 +108,5 @@ export default class AppStore extends Store {
     if (isConnected && isSynced && hasLoadedWallets && !this.isSetupPage) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.ADA_REDEMPTION });
     }
-  };
-
-  @computed get isNetworkStatusPage(): boolean {
-    return this.currentRoute === ROUTES.NETWORK_STATUS;
-  }
-
-  @action _goToNetworkStatusScreen = () => {
-    const route = this.isNetworkStatusPage ? ROUTES.ROOT : ROUTES.NETWORK_STATUS;
-    this.actions.router.goToRoute.trigger({ route });
   };
 }
