@@ -5,4 +5,5 @@ export type MenuActions = {
   goToAdaRedemption: Function,
   restartInSafeMode: Function,
   restartWithoutSafeMode: Function,
+  goBlockConsolidationStatus: Function,
 };

@@ -3,6 +3,7 @@ export const ROUTES = {
   ROOT: '/',
   STAKING: '/staking',
   ADA_REDEMPTION: '/ada-redemption',
+  BLOCK_CONSOLIDATION_STATUS: '/block-consolidation-status',
   PAPER_WALLET_CREATE_CERTIFICATE: '/paper-wallet/create-certificate',
   PROFILE: {
     LANGUAGE_SELECTION: '/profile/language-selection',

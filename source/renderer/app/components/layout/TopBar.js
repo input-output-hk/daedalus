@@ -5,20 +5,14 @@ import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import Wallet from '../../domains/Wallet';
-import menuIconOpened from '../../assets/images/menu-opened-ic.inline.svg';
-import menuIconClosed from '../../assets/images/menu-ic.inline.svg';
 import styles from './TopBar.scss';
-import { matchRoute } from '../../utils/routing';
-import { ROUTES } from '../../routes-config';
+import { formattedWalletAmount } from '../../utils/formatters';
 
 type Props = {
-  onToggleSidebar?: ?Function,
+  onLeftIconClick?: ?Function,
+  leftIcon?: ?string,
   children?: ?Node,
   activeWallet?: ?Wallet,
-  currentRoute: string,
-  showSubMenus?: ?boolean,
-  formattedWalletAmount?: Function,
-  showSubMenuToggle: boolean,
 };
 
 @observer
@@ -26,44 +20,42 @@ export default class TopBar extends Component<Props> {
 
   render() {
     const {
-      onToggleSidebar, activeWallet, currentRoute,
-      showSubMenus, formattedWalletAmount, showSubMenuToggle
+      onLeftIconClick, leftIcon, activeWallet, children,
     } = this.props;
-    const walletRoutesMatch = matchRoute(`${ROUTES.WALLETS.ROOT}/:id(*page)`, currentRoute);
-    const isWalletPage = walletRoutesMatch && activeWallet != null;
+
     const topBarStyles = classNames([
       styles.topBar,
-      isWalletPage ? styles.withWallet : styles.withoutWallet,
+      activeWallet ? styles.withWallet : styles.withoutWallet,
     ]);
 
-    const topBarTitle = walletRoutesMatch && activeWallet != null && formattedWalletAmount ? (
+    const topBarTitle = activeWallet ? (
       <div className={styles.walletInfo}>
         <div className={styles.walletName}>{activeWallet.name}</div>
         <div className={styles.walletAmount}>
           {
             // show currency and use long format
-            formattedWalletAmount(activeWallet.amount, true, true)
+            formattedWalletAmount(activeWallet.amount, true)
           }
         </div>
       </div>
     ) : null;
 
-    const sidebarToggleIcon = (
+    const leftIconSVG = leftIcon && (
       <SVGInline
-        svg={showSubMenus ? menuIconOpened : menuIconClosed}
+        svg={leftIcon}
         className={styles.sidebarIcon}
       />
     );
 
     return (
       <header className={topBarStyles}>
-        {showSubMenuToggle && (
-          <button className={styles.leftIcon} onClick={onToggleSidebar}>
-            {sidebarToggleIcon}
+        {leftIcon && (
+          <button className={styles.leftIcon} onClick={onLeftIconClick}>
+            {leftIconSVG}
           </button>
         )}
         <div className={styles.topBarTitle}>{topBarTitle}</div>
-        {this.props.children}
+        {children}
       </header>
     );
   }

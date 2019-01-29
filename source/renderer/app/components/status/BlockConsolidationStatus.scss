@@ -1,0 +1,191 @@
+.component {
+  background-color: var(--theme-block-consolidation-background-color);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  z-index: 20;
+}
+
+.container {
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: overlay;
+  position: relative;
+}
+
+.content {
+  background-color: var(--theme-block-consolidation-container-background-color);
+  border-radius: 4px;
+  font-family: var(--font-regular);
+  margin: 20px;
+  padding: 20px;
+  text-align: center;
+
+  h1 {
+    color: var(--theme-block-consolidation-title-text-color);
+    font-size: 19px;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+
+  p {
+    color: var(--theme-block-consolidation-text-color);
+    font-size: 16px;
+  }
+
+  a {
+    border-bottom: 1px solid var(--theme-block-consolidation-text-link-color);
+    color: var(--theme-block-consolidation-text-link-color);
+    text-decoration: none;
+  }
+
+  .description {
+    line-height: 1.38;
+    margin: 0 auto 8px;
+    max-width: 610px;
+
+    b {
+      font-family: var(--font-medium);
+    }
+
+    &:last-of-type {
+      margin-bottom: 40px;
+    }
+  }
+}
+
+
+.epochs {
+  height: 149px;
+  margin: 0 auto 60px;
+  position: relative;
+  width: 620px;
+
+  p {
+    color: white;
+    font-size: 14px;
+    line-height: 1.29;
+    position: absolute;
+    right: 25px;
+    top: 54px;
+    width: 118px;
+
+    em {
+      font-size: 16px
+    }
+
+    b {
+      font-size: 18px;
+      font-weight: 600;
+    }
+  }
+
+  img {
+    width: 100%;
+  }
+}
+
+.indicator {
+  margin-bottom: 53px;
+  position: relative;
+
+  p {
+    font-size: 14px;
+  }
+}
+
+.indicatorContainer {
+  background-color: var(--theme-block-consolidation-indicator-container-background-color);
+  border-radius: 5px;
+  height: 24px;
+  margin: 0 auto;
+  position: relative;
+  width: 600px;
+}
+
+.indicatorEpochsSynced {
+  background: repeating-linear-gradient(
+    -63deg,
+    var(--theme-block-consolidation-stripe-light-1-background-color),
+    var(--theme-block-consolidation-stripe-light-1-background-color) 10px,
+    var(--theme-block-consolidation-stripe-light-2-background-color) 10px,
+    var(--theme-block-consolidation-stripe-light-2-background-color) 20px
+  );
+  border-radius: 5px;
+  height: 24px;
+  position: relative;
+
+  p {
+    position: absolute;
+    bottom: -18px;
+    white-space: nowrap;
+  }
+}
+
+.indicatorEpochsConsolidatedContainer {
+  padding-right: 80px;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.indicatorEpochsConsolidated {
+  background: repeating-linear-gradient(
+    -63deg,
+    var(--theme-block-consolidation-stripe-dark-1-background-color),
+    var(--theme-block-consolidation-stripe-dark-1-background-color) 10px,
+    var(--theme-block-consolidation-stripe-dark-2-background-color) 10px,
+    var(--theme-block-consolidation-stripe-dark-2-background-color) 20px
+  );
+  border-radius: 5px;
+  height: 24px;
+  position: relative;
+
+  p {
+    line-height: 1.43;
+    position: absolute;
+    right: 8px;
+    top: -23px;
+    white-space: nowrap;
+  }
+}
+
+.zeroEpoch {
+  line-height: 24px;
+  margin-right: 15px;
+  position: absolute;
+  right: 100%;
+  white-space: nowrap;
+}
+
+.fullEpoch {
+  left: 100%;
+  line-height: 24px;
+  margin-left: 15px;
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+}
+
+.indicatorEpochsBehind {
+  border-color: transparent transparent #445b7c transparent;
+  border-style: solid;
+  border-width: 0 0 47px 1px;
+  bottom: 0;
+  height: 0;
+  position: absolute;
+  right: 80px;
+  width: 0;
+  z-index: 1;
+
+  p {
+    left: 8px;
+    line-height: 1.43;
+    position: absolute;
+    top: 0;
+    white-space: nowrap;
+  }
+}

@@ -16,4 +16,5 @@ export const NETWORK_STATUS_REQUEST_TIMEOUT = 30 * 1000; // 30 seconds | unit: m
 export const NETWORK_STATUS_POLL_INTERVAL = 2000; // 2 seconds | unit: milliseconds
 export const NTP_FORCE_CHECK_POLL_INTERVAL = 30 * 60 * 1000; // 30 minutes | unit: milliseconds
 export const NTP_IGNORE_CHECKS_GRACE_PERIOD = isTest ? 1000 : 30 * 1000; // 30 seconds | unit: milliseconds
+export const EPOCH_DATA_UPDATE_INTERVAL = 10 * 1000; // 10 seconds | unit: milliseconds
 /* eslint-disable max-len */

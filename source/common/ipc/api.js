@@ -53,6 +53,18 @@ export type GeneratePaperWalletMainResponse = void;
  */
 export const RebuildApplicationMenu = 'RebuildApplicationMenu';
 
+/**
+ * Channel to get the number of epochs consolidated
+ */
+export const GetNumberOfEpochsConsolidatedChannel = 'GetNumberOfEpochsConsolidatedChannel';
+export type GetNumberOfEpochsConsolidatedChannelResponse = number;
+
+/**
+ * Channel to get the system start time
+ */
+export const GetSystemStartTimeChannel = 'GetSystemStartTimeChannel';
+export type GetSystemStartTimeResponse = number;
+
 // CardanoNode ipc channels
 // TODO: refactor to improved structure above
 export const CARDANO_AWAIT_UPDATE_CHANNEL = 'CARDANO_AWAIT_UPDATE_CHANNEL';
@@ -66,3 +78,4 @@ export const GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL = 'GO_TO_ADA_REDEMPTION_SCREEN_
 
 export const TOGGLE_ABOUT_DIALOG_CHANNEL = 'TOGGLE_ABOUT_DIALOG_CHANNEL';
 export const TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL = 'TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL';
+export const TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL = 'TOGGLE_BLOCK_CONSOLIDATION_STATUS';
