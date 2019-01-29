@@ -1,6 +1,14 @@
 {-# LANGUAGE NoImplicitPrelude, OverloadedStrings, LambdaCase, RecordWildCards, DeriveDataTypeable, DeriveGeneric #-}
 
-module AppVeyor (downloadCardanoSL, AppVeyorError(..)) where
+module AppVeyor
+  ( downloadCardanoSL
+  , downloadCardanoSLOld
+  , AppVeyorError(..)
+  , HydraBuild(..)
+  , HydraBuildProduct(..)
+  , hydraURL'
+  , findHydraBuildProductURL
+  ) where
 
 import Universum hiding (get)
 import Data.Aeson
@@ -10,6 +18,9 @@ import qualified GitHub as GH
 import qualified Data.ByteString.Char8 as S8
 import qualified Data.ByteString.Lazy.Char8 as L8
 import qualified Data.Text as T
+import qualified Data.Map as M
+import Data.Map (Map)
+import Data.Text (Text)
 import Network.URI
 import Data.Maybe (mapMaybe)
 import Network.Wreq
@@ -20,6 +31,37 @@ import System.Environment (lookupEnv)
 
 downloadCardanoSL :: FilePath -> IO L8.ByteString
 downloadCardanoSL srcJson = do
+  src <- getCardanoRev srcJson
+  downloadCardanoSLHydraBuildProduct src
+
+-- | Filename of the hydra build product which contains windows
+-- executables.
+theBuildProduct = "CardanoSL.zip" :: Text
+-- | Where to find the windows build product.
+theHydraJob = "daedalus-mingw32-pkg" :: Text
+
+-- | Gets CardanoSL.zip corresponding to the src json revision from Hydra
+downloadCardanoSLHydraBuildProduct :: CardanoSource -> IO L8.ByteString
+downloadCardanoSLHydraBuildProduct src@CardanoSource{..} = do
+  printf ("Fetching GitHub CI status for commit "%n%" of "%n%"/"%n%"\n") srcRev srcOwner srcRepo
+  buildURL <- hydraURL theHydraJob src
+  printf ("Build URL is "%s%"\n") (getUrl buildURL)
+
+  build <- getHydraBuild buildURL
+  let bp = hydraBuildProducts build
+
+  printf ("Build has "%d%" build product(s), status "%w%".\n")
+    (M.size bp) (hydraBuildStatus build)
+
+  printf ("Artifacts are: "%ss%"\n") (map bpName (M.elems bp))
+  case findHydraBuildProductURL theBuildProduct buildURL bp of
+    Just url -> downloadHydra url
+    Nothing -> throwM (MissingArtifactsError $ getUrl buildURL)
+
+-- | Old download method -- first try S3 then look for an AppVeyor
+-- build in the github status.
+downloadCardanoSLOld :: FilePath -> IO L8.ByteString
+downloadCardanoSLOld srcJson = do
   src <- getCardanoRev srcJson
   maybeZip <- downloadCardanoSLS3 src
   case maybeZip of
@@ -151,6 +193,76 @@ instance FromJSON Job where
 
 instance ToJSON JobStatus
 instance ToJSON Job -- Only required for _JSON prism
+
+----------------------------------------------------------------------------
+
+data HydraBuild = HydraBuild
+  { hydraBuildStatus :: Int
+  , hydraBuildProducts :: Map Text HydraBuildProduct
+  , hydraBuildJobsetEvals :: [Int]
+  } deriving (Show, Eq, Generic)
+
+data HydraBuildProduct = HydraBuildProduct
+  { bpName :: Text
+  , bpSHA256Hash :: Text
+  , bpStorePath :: Text
+  } deriving (Show, Eq, Generic)
+
+instance FromJSON HydraBuild where
+  parseJSON = withObject "HydraBuild" $ \o -> HydraBuild
+    <$> o .: "buildstatus"
+    <*> o .: "buildproducts"
+    <*> o .: "jobsetevals"
+
+instance FromJSON HydraBuildProduct where
+  parseJSON = withObject "HydraBuildProduct" $ \o -> HydraBuildProduct
+    <$> o .: "name"
+    <*> o .: "sha256hash"
+    <*> o .: "path"
+
+-- | Use GitHub API to find the first Hydra build status.
+-- The result will be something like =https://hydra.iohk.io/build/544009=
+hydraURL :: Text -> CardanoSource -> IO GH.URL
+hydraURL job src = fmap (hydraURL' job . toList) <$> statusFor' src >>= \case
+  Right (Just u) -> pure u
+  Right Nothing  -> throwM $ StatusMissingError src
+  Left err       -> throwM $ GitHubStatusError src err
+
+-- | Find the CI URL for the first Hydra "required" job status.
+-- An example status name: "ci/hydra:serokell:cardano-sl:required"
+hydraURL' :: Text -> [GH.Status] -> Maybe GH.URL
+hydraURL' job = safeHead . mapMaybe statusTargetUrl . filter isHydraStatus
+  where
+    isHydraStatus st = maybe False isHydraJob (statusContext st)
+    isHydraJob st = T.isPrefixOf "ci/hydra:" st && T.isSuffixOf (":" <> job) st
+
+-- | Fetch information about a hydra build. Hydra will return JSON if
+-- the Accept header asks for it.
+getHydraBuild :: GH.URL -> IO HydraBuild
+getHydraBuild url = do
+  printf ("Fetching "%w%" ... ") url
+  let opts = defaults &  header "Accept" .~ ["application/json"]
+  r <- asJSON =<< getWith opts (T.unpack $ getUrl url)
+  printf "Done\n"
+  pure (r ^. responseBody)
+
+-- | Download a file with logging.
+downloadHydra :: Text -> IO L8.ByteString
+downloadHydra url = do
+  printf ("Downloading "%w%" ... ") url
+  r <- get (T.unpack url)
+  let bs = r ^. responseBody
+  printf "Done\n"
+  pure bs
+
+-- | Look in the build products for a match filename and then return
+-- a download URL which looks like:
+-- https://hydra.iohk.io/build/362609/download/1/blockchain-spec.pdf
+findHydraBuildProductURL :: Text -> GH.URL -> Map Text HydraBuildProduct -> Maybe Text
+findHydraBuildProductURL name buildUrl = fmap url . find isCSL . M.toList
+  where
+    isCSL = (== name) . bpName . snd
+    url (num, bp) = getUrl buildUrl <> "/download/" <> num <> "/" <> bpName bp
 
 ----------------------------------------------------------------------------
 
