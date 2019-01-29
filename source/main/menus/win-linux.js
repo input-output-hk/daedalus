@@ -37,6 +37,12 @@ export const winLinuxMenu = (
           actions.restartInSafeMode();
       },
     }, {
+      label: translation('daedalus.blockConsolidationStatus'),
+      accelerator: 'Ctrl+B',
+      click() {
+        actions.goBlockConsolidationStatus();
+      },
+    }, {
       label: translation('daedalus.networkStatus'),
       accelerator: 'Ctrl+S',
       click() {

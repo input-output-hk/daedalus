@@ -17,3 +17,4 @@ import './WalletTransactionsList.stories';
 import './ExportWalletToFileDialog.stories';
 import './PaperWallets.stories';
 import './WalletScreens.stories';
+import './BlockConsolidationStatus.stories';

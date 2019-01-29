@@ -6,6 +6,7 @@ Changelog
 ### Features
 
 - Improve performance of rendering huge lists of transactions and addresses ([PR 1276](https://github.com/input-output-hk/daedalus/pull/1276))
+- Implemented a block-consolidation status screen ([PR 1275](https://github.com/input-output-hk/daedalus/pull/1275))
 - Implemented translations for the application menu ([PR 1262](https://github.com/input-output-hk/daedalus/pull/1262))
 - Implemented a success message for logs download ([PR 1228](https://github.com/input-output-hk/daedalus/pull/1228))
 - Implemented a better handling for "No disk space" error ([PR 1157](https://github.com/input-output-hk/daedalus/pull/1157))

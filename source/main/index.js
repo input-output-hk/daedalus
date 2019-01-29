@@ -5,9 +5,11 @@ import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { Logger } from './utils/logging';
 import { setupLogging } from './utils/setupLogging';
+import { getNumberOfEpochsConsolidated } from './utils/getNumberOfEpochsConsolidated';
 import { handleDiskSpace } from './utils/handleDiskSpace';
 import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
+import { getSystemStartTimeChannel } from './ipc/getSystemStartTime.ipc';
 import { environment } from './environment';
 import mainErrorHandler from './utils/mainErrorHandler';
 import { launcherConfig, frontendOnlyMode } from './config';
@@ -103,6 +105,11 @@ const onAppReady = async () => {
     // Connect to electron-connect server which restarts / reloads windows on file changes
     client.create(mainWindow);
   }
+
+  const systemStart = parseInt(launcherConfig.configuration.systemStart, 10);
+  getSystemStartTimeChannel.onRequest(() => Promise.resolve(systemStart));
+
+  getNumberOfEpochsConsolidated();
 
   mainWindow.on('close', async (event) => {
     Logger.info('mainWindow received <close> event. Safe exiting Daedalus now.');

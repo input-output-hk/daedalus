@@ -6,6 +6,7 @@ import { buildRoute } from '../utils/routing';
 import {
   TOGGLE_ABOUT_DIALOG_CHANNEL,
   TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL,
+  TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL,
   GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL
 } from '../../../common/ipc/api';
 import { GET_GPU_STATUS } from '../../../common/ipc-api';
@@ -22,6 +23,8 @@ export default class AppStore extends Store {
   @observable isAboutDialogOpen = false;
   @observable isNetworkStatusDialogOpen = false;
   @observable gpuStatus: ?GpuStatus = null;
+  @observable numberOfEpochsConsolidated: number = 0;
+  @observable previousRoute: string = ROUTES.ROOT;
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
@@ -30,20 +33,28 @@ export default class AppStore extends Store {
     this.actions.app.openNetworkStatusDialog.listen(this._openNetworkStatusDialog);
     this.actions.app.closeNetworkStatusDialog.listen(this._closeNetworkStatusDialog);
     this.actions.app.getGpuStatus.listen(this._getGpuStatus);
+    this.actions.app.toggleBlockConsolidationStatusScreen.listen(
+      this._toggleBlockConsolidationStatusScreen
+    );
 
+    /* eslint-disable max-len */
     // TODO: refactor to ipc channels
     ipcRenderer.on(TOGGLE_ABOUT_DIALOG_CHANNEL, this._toggleAboutDialog);
-    ipcRenderer.on(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
     ipcRenderer.on(TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL, this._toggleNetworkStatusDialog);
+    ipcRenderer.on(TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL, this._toggleBlockConsolidationStatusScreen);
+    ipcRenderer.on(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
     ipcRenderer.on(GET_GPU_STATUS.SUCCESS, this._onGetGpuStatusSuccess);
+    /* eslint-disable max-len */
   }
 
   teardown() {
     /* eslint-disable max-len */
     // TODO: refactor to ipc channels
     ipcRenderer.removeListener(TOGGLE_ABOUT_DIALOG_CHANNEL, this._toggleAboutDialog);
-    ipcRenderer.removeListener(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
     ipcRenderer.removeListener(TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL, this._toggleNetworkStatusDialog);
+    ipcRenderer.removeListener(TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL, this._toggleBlockConsolidationStatusScreen);
+    ipcRenderer.removeListener(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
+    ipcRenderer.removeListener(GET_GPU_STATUS.SUCCESS, this._onGetGpuStatusSuccess);
     /* eslint-disable max-len */
   }
 
@@ -65,11 +76,16 @@ export default class AppStore extends Store {
     this.gpuStatus = status;
   });
 
-  _updateRouteLocation = (options: { route: string, params: ?Object }) => {
+  _updateRouteLocation = (options: { route: string, params?: ?Object }) => {
     const routePath = buildRoute(options.route, options.params);
     const currentRoute = this.stores.router.location.pathname;
     if (currentRoute !== routePath) this.stores.router.push(routePath);
+    this._updatePreviousRoute(currentRoute);
   };
+
+  @action _updatePreviousRoute = (currentRoute?: string) => {
+    this.previousRoute = currentRoute || ROUTES.ROOT;
+  }
 
   @action _openAboutDialog = () => {
     this.isAboutDialogOpen = true;
@@ -95,13 +111,6 @@ export default class AppStore extends Store {
     this.isNetworkStatusDialogOpen = !this.isNetworkStatusDialogOpen;
   };
 
-  @computed get isSetupPage(): boolean {
-    return (
-      this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION ||
-      this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE
-    );
-  }
-
   @action _goToAdaRedemptionScreen = () => {
     const { isConnected, isSynced } = this.stores.networkStatus;
     const { hasLoadedWallets } = this.stores.wallets;
@@ -109,4 +118,23 @@ export default class AppStore extends Store {
       this.actions.router.goToRoute.trigger({ route: ROUTES.ADA_REDEMPTION });
     }
   };
+
+  @action _toggleBlockConsolidationStatusScreen = () => {
+    const route = this.isBlockConsolidationStatusPage
+      ? this.previousRoute
+      : ROUTES.BLOCK_CONSOLIDATION_STATUS;
+    this._updateRouteLocation({ route });
+  };
+
+  @computed get isBlockConsolidationStatusPage(): boolean {
+    return this.currentRoute === ROUTES.BLOCK_CONSOLIDATION_STATUS;
+  }
+
+  @computed get isSetupPage(): boolean {
+    return (
+      this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION ||
+      this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE
+    );
+  }
+
 }
