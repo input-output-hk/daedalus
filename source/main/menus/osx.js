@@ -36,6 +36,12 @@ export const osxMenu = (
           actions.restartInSafeMode();
       },
     }, {
+      label: translation('daedalus.blockConsolidationStatus'),
+      accelerator: 'Command+B',
+      click() {
+        actions.goBlockConsolidationStatus();
+      },
+    }, {
       label: translation('daedalus.networkStatus'),
       accelerator: 'Command+S',
       click() {

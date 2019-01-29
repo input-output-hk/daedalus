@@ -27,6 +27,7 @@ const isProduction = CURRENT_NODE_ENV === PRODUCTION;
 const isMainnet = NETWORK === MAINNET;
 const isStaging = NETWORK === STAGING;
 const isTestnet = NETWORK === TESTNET;
+const isDevelopment = NETWORK === DEVELOPMENT;
 const isWatchMode = process.env.IS_WATCH_MODE;
 const API_VERSION = process.env.API_VERSION || 'dev';
 const PLATFORM = os.platform();
@@ -58,6 +59,7 @@ export const environment: Environment = Object.assign({}, {
   isMainnet,
   isStaging,
   isTestnet,
+  isDevelopment,
   isWatchMode,
   build: BUILD,
   buildNumber: BUILD_NUMBER,

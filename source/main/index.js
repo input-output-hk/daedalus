@@ -5,9 +5,11 @@ import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { Logger } from './utils/logging';
 import { setupLogging } from './utils/setupLogging';
+import { getNumberOfEpochsConsolidated } from './utils/getNumberOfEpochsConsolidated';
 import { handleDiskSpace } from './utils/handleDiskSpace';
 import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
+import { getSystemStartTimeChannel } from './ipc/getSystemStartTime.ipc';
 import { environment } from './environment';
 import mainErrorHandler from './utils/mainErrorHandler';
 import { launcherConfig, frontendOnlyMode } from './config';
@@ -59,6 +61,8 @@ const onAppReady = async () => {
   // Detect safe mode
   const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
 
+  const systemStart = parseInt(launcherConfig.configuration.systemStart, 10);
+
   mainWindow = createMainWindow(isInSafeMode);
 
   const onCheckDiskSpace = ({ isNotEnoughDiskSpace }: CheckDiskSpaceResponse) => {
@@ -100,6 +104,10 @@ const onAppReady = async () => {
     // Connect to electron-connect server which restarts / reloads windows on file changes
     client.create(mainWindow);
   }
+
+  getSystemStartTimeChannel.onRequest(() => Promise.resolve(systemStart));
+
+  getNumberOfEpochsConsolidated();
 
   mainWindow.on('close', async (event) => {
     Logger.info('mainWindow received <close> event. Safe exiting Daedalus now.');
