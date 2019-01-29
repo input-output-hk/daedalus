@@ -1,1 +1,1 @@
-(import ./default.nix {}).env
+(import ../. {}).daedalus-installer.env
