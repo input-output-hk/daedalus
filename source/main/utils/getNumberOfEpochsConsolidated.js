@@ -5,8 +5,6 @@ import { nodeDbPath } from '../config';
 import { getNumberOfEpochsConsolidatedChannel } from '../ipc/getNumberOfEpochsConsolidated.ipc';
 import type { GetNumberOfEpochsConsolidatedChannelResponse } from '../../common/ipc/api';
 
-console.log('nodeDbPath', nodeDbPath);
-
 export const getNumberOfEpochsConsolidated = () => {
   getNumberOfEpochsConsolidatedChannel
     .onRequest((): Promise<GetNumberOfEpochsConsolidatedChannelResponse> => {
