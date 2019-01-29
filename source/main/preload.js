@@ -23,6 +23,11 @@ process.once('loaded', () => {
       info: (...args) => _electronLog.info(...args),
       error: (...args) => _electronLog.error(...args),
       warn: (...args) => _electronLog.warn(...args),
+      appName: 'daedalus',
+      transports: {
+        console: { format: '[{y}-{m}-{d} {h}:{i}:{s}.{ms}]' },
+        file: { format: '[{y}-{m}-{d} {h}:{i}:{s}.{ms}]' },
+      }
     },
     electronStore: {
       get: (...args) => _electronStore.get(...args),

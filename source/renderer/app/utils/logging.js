@@ -1,9 +1,15 @@
 // @flow
 const log = global.electronLog;
+const environment = global.environment;
 
-const prefixProcessType = (str: string) => '[renderer] ' + str;
+const { appName } = log;
+const { network } = environment;
 
-const logToLevel = (level) => (message: string) => log[level](prefixProcessType(message));
+const prefixContext = (level: string, message: string): string => (
+  `[${appName}.*${network}*:${level}:ipcRenderer] ${message}`
+);
+
+const logToLevel = (level) => (message: string) => log[level](prefixContext(level, message));
 
 export const Logger = {
   debug: logToLevel('debug'),
