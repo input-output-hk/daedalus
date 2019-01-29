@@ -11,7 +11,7 @@ let
     darwin = import ./shell.nix { system = "x86_64-darwin"; autoStartBackend = true; };
   };
   suffix = if buildNum == null then "" else "-${toString buildNum}";
-  version = (builtins.fromJSON (builtins.readFile (./. + "/package.json"))).version;
+  version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
   yaml2json = let
     daedalusPkgsWithSystem = system: import ./. { inherit system; };
   in {
@@ -20,8 +20,12 @@ let
   };
 
   makeJobs = cluster: with daedalusPkgs { inherit cluster; }; {
-    inherit daedalus;
-    installer = wrappedBundle newBundle pkgs cluster daedalus-bridge.version;
+    daedalus.x86_64-linux = daedalus;
+    installer.x86_64-linux = wrappedBundle newBundle pkgs cluster daedalus-bridge.version;
+    installer.x86_64-windows = (import ./devops-970.nix { inherit cluster; }).installer;
+    devops-970 = {
+      inherit (import ./devops-970.nix { inherit cluster; }) installer nsisFiles uninstaller;
+    };
   };
   wrappedBundle = newBundle: pkgs: cluster: cardanoVersion: let
     backend = "cardano-sl-${cardanoVersion}";
@@ -37,5 +41,6 @@ let
   clusters = lib.splitString " " (builtins.replaceStrings ["\n"] [""] (builtins.readFile ./installer-clusters.cfg));
 in {
   inherit shellEnvs yaml2json;
+  inherit ((daedalusPkgs {}).pkgs) mono;
   tests = (daedalusPkgs {}).tests;
 } // builtins.listToAttrs (map (x: { name = x; value = makeJobs x; }) clusters)

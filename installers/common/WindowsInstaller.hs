@@ -3,6 +3,7 @@
 module WindowsInstaller
     ( main
     , writeInstallerNSIS
+    , writeUninstallerNSIS
     ) where
 
 import           Universum hiding (pass, writeFile, stdout, FilePath, die, view)
@@ -55,7 +56,7 @@ writeUninstallerNSIS (Version fullVersion) installerConfig = do
         unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
         unsafeInjectGlobal "SetCompress off"
         _ <- section "" [Required] $ do
-            unsafeInject . T.unpack $ format ("WriteUninstaller \""%fp%"\"") (tempDir </> "uninstall.exe")
+            unsafeInject . T.unpack $ format ("WriteUninstaller \""%fp%"\"") ("c:\\uninstall.exe")
 
         uninstall $ do
             -- Remove registry keys
@@ -81,8 +82,13 @@ signUninstaller opts = do
     procs "C:\\Program Files (x86)\\NSIS\\makensis" ["uninstaller.nsi"] mempty
     tempDir <- getTempDir
     writeTextFile "runtempinstaller.bat" $ format (fp%" /S") (tempDir </> "tempinstaller.exe")
+    -- in order to sign the uninstaller, we must first create a dummy nsis script that generates a stand-alone uninstaller at "install time"
+    -- then "install" that dummy on the CI system, to create the uninstaller
     void $ proc "runtempinstaller.bat" [] mempty
-    signFile opts (tempDir </> "uninstall.exe")
+    result <- signFile opts ("c:/uninstall.exe")
+    tempDir <- getTempDir
+    cp "c:/uninstall.exe" (tempDir </> "uninstall.exe")
+    pure result
 
 signFile :: Options -> FilePath -> IO SigningResult
 signFile Options{..} filename = do

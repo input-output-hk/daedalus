@@ -6,8 +6,8 @@ import           Universum
 import qualified System.Info                      as Sys
 import           Turtle                              (export)
 
-import qualified MacInstaller                        (main)
-import qualified WindowsInstaller                    (main)
+import qualified MacInstaller
+import qualified WindowsInstaller
 import           System.Environment (getEnv)
 import           Data.List.Split (splitOn)
 import           Data.Maybe                          (fromJust)
@@ -33,7 +33,15 @@ main = do
     CheckConfigs{..} ->
       checkAllConfigs          cfDhallRoot
     GenInstaller -> do
-        genSignedInstaller os options'
+        genSignedInstaller (oOS options') options'
+    BuildkiteCrossWin -> do
+      fullVersion <- getDaedalusVersion "../package.json"
+      let ver = "TODO"
+      let fullName = packageFileName Win64 (oCluster options') fullVersion (oBackend options') ver (oBuildJob options')
+      installerConfig <- getInstallerConfig "./dhall" Win64 (oCluster options')
+      WindowsInstaller.writeInstallerNSIS fullName fullVersion installerConfig (oCluster options')
+      WindowsInstaller.writeUninstallerNSIS fullVersion installerConfig
+      generateOSClusterConfigs "./dhall" "." options'
     Appveyor -> do
         buildNumber <- getEnv "APPVEYOR_BUILD_NUMBER"
         let

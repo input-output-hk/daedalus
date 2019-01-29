@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# generate a fake (self-signed) certificate, that is usable for signing windows binaries (but currently, windows reports self-signed things as not even signed)
+
+# generate a self-signed x509 cert
+openssl req -new -nodes -keyout private.key -days 256 -out cert.pem -x509
+
+#openssl pkcs12 -export -out cert.pfx -inkey private.key -in cert.pem
+
+# convert the key&cert to windows style
+openssl crl2pkcs7 -nocrl -certfile cert.pem -outform DER -out authenticode.spc
+openssl rsa -in private.key -outform PVK -pvk-strong -out authenticode.pvk

@@ -33,6 +33,7 @@ let
       (type == "symlink" && lib.hasPrefix "result" baseName)
     );
   throwSystem = throw "Unsupported system: ${pkgs.stdenv.hostPlatform.system}";
+  ghcWithCardano = cardanoSL.haskellPackages.ghcWithPackages (ps: [ ps.cardano-sl ps.cardano-sl-x509 ]);
   packages = self: {
     inherit cluster pkgs version;
     inherit (cardanoSL) daedalus-bridge;
@@ -45,11 +46,17 @@ let
     };
     daedalus-installer = self.hsDaedalusPkgs.daedalus-installer;
     daedalus = self.callPackage ./installers/nix/linux.nix {};
+    configMutator = pkgs.runCommand "configMutator" { buildInputs = [ ghcWithCardano ]; } ''
+      cp ${./ConfigMutator.hs} ConfigMutator.hs
+      mkdir -p $out/bin/
+      ghc ConfigMutator.hs -o $out/bin/config-mutator
+    '';
     rawapp = self.callPackage ./yarn2nix.nix {
       inherit buildNum;
       api = "ada";
       apiVersion = cardanoSL.daedalus-bridge.version;
     };
+    rawapp-win64 = self.rawapp.override { win64 = true; };
     source = builtins.filterSource cleanSourceFilter ./.;
     yaml2json = pkgs.haskell.lib.disableCabalFlag pkgs.haskellPackages.yaml "no-exe";
 
