@@ -51,8 +51,10 @@ yarn2nix.mkYarnPackage {
     for x in $out/share/daedalus/renderer/index.js $out/share/daedalus/main/preload.js $out/share/daedalus/main/index.js $out/share/daedalus/main/0.js; do
       ${nukeReferences}/bin/nuke-refs $x
     done
+    mkdir -p $out/share/fonts
+    ln -sv $out/share/daedalus/renderer/assets $out/share/fonts/daedalus
   '';
-  allowedReferences = [];
+  allowedReferences = [ "out" ];
   yarnPreBuild = ''
     set -x
     mkdir -p $HOME/.node-gyp/${nodejs.version}
