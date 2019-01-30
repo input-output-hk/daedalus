@@ -83,7 +83,7 @@
   font-size: 16px;
   letter-spacing: 1px;
   margin-left: auto;
-  user-select: auto;
+  user-select: text;
 }
 
 .pendingLabel, .failedLabel, .low, .medium, .high {
@@ -186,7 +186,7 @@
   span {
     font-family: var(--font-light);
     font-size: 14px;
-    user-select: auto;
+    user-select: text;
     word-break: break-all;
 
     &.address {
