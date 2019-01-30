@@ -41,3 +41,18 @@ export const setupLogging = () => {
       });
   });
 };
+
+type Props = {
+  startTime: string,
+  build: string,
+  platform: string,
+  platformVersion: string,
+  CPU: string,
+  RAM: string,
+  isInSafeMode: boolean,
+};
+
+export const updateInitialLog = (props: Props) => fs.writeFileSync(
+  path.join(pubLogsFolderPath, 'System-info.json'),
+  JSON.stringify(props)
+);

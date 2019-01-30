@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented a "System-info.json" file, containing the system specification of the machine user is running Daedalus ([PR 1292](https://github.com/input-output-hk/daedalus/pull/1292))
 - Implemented a block-consolidation status screen ([PR 1275](https://github.com/input-output-hk/daedalus/pull/1275))
 - Implemented translations for the application menu ([PR 1262](https://github.com/input-output-hk/daedalus/pull/1262))
 - Implemented a success message for logs download ([PR 1228](https://github.com/input-output-hk/daedalus/pull/1228))

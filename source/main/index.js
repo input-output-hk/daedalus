@@ -4,7 +4,7 @@ import { app, BrowserWindow, shell } from 'electron';
 import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { Logger } from './utils/logging';
-import { setupLogging } from './utils/setupLogging';
+import { setupLogging, updateInitialLog } from './utils/setupLogging';
 import { getNumberOfEpochsConsolidated } from './utils/getNumberOfEpochsConsolidated';
 import { handleDiskSpace } from './utils/handleDiskSpace';
 import { createMainWindow } from './windows/main';
@@ -27,7 +27,7 @@ import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types
 let mainWindow: BrowserWindow;
 let cardanoNode: ?CardanoNode;
 
-const { isDev, isWatchMode, buildLabel, network } = environment;
+const { isDev, isWatchMode, buildLabel: build, network } = environment;
 
 const safeExit = async () => {
   if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
@@ -49,19 +49,26 @@ const safeExit = async () => {
 const onAppReady = async () => {
   setupLogging();
 
-  Logger.info(`========== Daedalus is starting at ${new Date().toString()} ==========`);
+  const startTime = new Date().toString();
+  const platform = os.platform();
+  const platformVersion = os.release();
+  const CPU = JSON.stringify(os.cpus(), null, 2);
+  const RAM = JSON.stringify(os.totalmem(), null, 2);
+  const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
+  const systemStart = parseInt(launcherConfig.configuration.systemStart, 10);
 
-  Logger.debug(`!!! ${buildLabel} is running on ${os.platform()} version ${os.release()}
-            with CPU: ${JSON.stringify(os.cpus(), null, 2)} with
-            ${JSON.stringify(os.totalmem(), null, 2)} total RAM !!!`);
+  updateInitialLog({
+    startTime, build, platform, platformVersion, CPU, RAM, isInSafeMode
+  });
+
+  Logger.info(`========== Daedalus is starting at ${startTime} ==========`);
+
+  Logger.debug(`!!! ${build} is running on ${platform} version ${platformVersion}
+            with CPU: ${CPU} with
+            ${RAM} total RAM !!!`);
 
   ensureXDGDataIsSet();
   await installChromeExtensions(isDev);
-
-  // Detect safe mode
-  const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
-
-  const systemStart = parseInt(launcherConfig.configuration.systemStart, 10);
 
   mainWindow = createMainWindow(isInSafeMode);
 
