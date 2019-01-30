@@ -4,7 +4,7 @@
   flex-direction: column;
   height: 100%;
   padding: 30px 30px 20px;
-  user-select: auto;
+  user-select: text;
 
   .headerWrapper {
     border-bottom: 1px solid var(--theme-about-window-header-bottom-border-color);
