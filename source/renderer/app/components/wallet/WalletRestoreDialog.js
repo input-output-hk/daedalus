@@ -139,9 +139,13 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
+  static defaultProps = {
+    error: null,
+  };
+
   state = {
-    createPassword: true,
     activeChoice: RESTORE_TYPES.REGULAR, // regular | certificate
+    createPassword: true,
   };
 
   recoveryPhraseAutocomplete: Autocomplete;
@@ -261,7 +265,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     form.showErrors(false);
 
     // Autocomplete has to be reset manually
-    this.recoveryPhraseAutocomplete.getRef().clear();
+    this.recoveryPhraseAutocomplete.clear();
   };
 
   render() {

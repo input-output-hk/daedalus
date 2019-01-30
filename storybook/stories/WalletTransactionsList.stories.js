@@ -31,6 +31,7 @@ storiesOf('WalletTransactionsList', module)
         generateTransaction(transactionTypes.INCOME, moment().subtract(2, 'days').toDate(), new BigNumber(1)),
         generateTransaction(transactionTypes.INCOME, moment().subtract(1, 'days').toDate(), new BigNumber(1)),
       ]}
+      isRestoreActive={false}
       isLoadingTransactions={false}
       hasMoreToLoad={false}
       assuranceMode={{ low: 1, medium: 2 }}
@@ -52,6 +53,7 @@ storiesOf('WalletTransactionsList', module)
           transactionTypes.INCOME, new Date(), new BigNumber(1), 0, transactionStates.FAILED
         ),
       ]}
+      isRestoreActive={false}
       isLoadingTransactions={false}
       hasMoreToLoad={false}
       assuranceMode={{ low: 1, medium: 2 }}

@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { observer } from 'mobx-react';
-import { inject } from 'mobx-react/index';
+import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
 import About from '../../components/static/About';
 import styles from './AboutDialog.scss';
@@ -16,18 +15,25 @@ export default class AboutDialog extends Component<Props> {
 
   render() {
     const { app } = this.props.stores;
-    const { openExternalLink } = app;
+    const { openExternalLink, environment } = app;
+    const { apiVersion, build, os, version } = environment;
 
     return (
       <ReactModal
         isOpen
-        shouldCloseOnOverlayClick
+        closeOnOverlayClick
         onRequestClose={this.props.actions.app.closeAboutDialog.trigger}
         className={styles.dialog}
         overlayClassName={styles.overlay}
         ariaHideApp={false}
       >
-        <About onOpenExternalLink={openExternalLink} />
+        <About
+          apiVersion={apiVersion}
+          build={build}
+          onOpenExternalLink={openExternalLink}
+          os={os}
+          version={version}
+        />
       </ReactModal>
     );
   }

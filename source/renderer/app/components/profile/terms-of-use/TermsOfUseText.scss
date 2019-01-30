@@ -1,7 +1,7 @@
 .terms {
   color: var(--theme-terms-of-use-text-color);
   text-align: justify;
-  user-select: auto;
+  user-select: text;
 
   h1, h2 {
     font-family: var(--font-medium);

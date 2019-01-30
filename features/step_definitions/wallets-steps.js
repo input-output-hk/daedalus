@@ -245,7 +245,7 @@ When(/^I enter recovery phrase in restore wallet dialog:$/, async function (tabl
   const recoveryPhrase = fields.recoveryPhrase.split(' ');
   for (let i = 0; i < recoveryPhrase.length; i++) {
     const word = recoveryPhrase[i];
-    await this.client.setValue('.SimpleAutocomplete_autocompleteWrapper input', word);
+    await this.client.setValue('.AutocompleteOverrides_autocompleteWrapper input', word);
     await this.client.waitForVisible(`//li[contains(text(), '${word}')]`);
     await this.waitAndClick(`//li[contains(text(), '${word}')]`);
     await this.client.waitForVisible(`//span[contains(text(), '${word}')]`);
@@ -293,8 +293,12 @@ When(/^I see the create wallet recovery phrase entry dialog$/, function () {
 
 When(/^I click on recovery phrase mnemonics in correct order$/, async function () {
   for (let i = 0; i < this.recoveryPhrase.length; i++) {
-    const recoveryPhraseMnemonic = this.recoveryPhrase[i];
-    await this.waitAndClick(`//button[contains(text(), "${recoveryPhraseMnemonic}") and @class="flat SimpleButton_root MnemonicWord_root"]`);
+    const text = this.recoveryPhrase[i];
+    const selector = 'MnemonicWord_root';
+    const disabledSelector = 'MnemonicWord_disabled';
+    await this.waitAndClick(
+      `//button[contains(@class,'${selector}') and not(contains(@class, '${disabledSelector}')) and contains(text(), '${text}')]`
+    );
   }
 });
 
