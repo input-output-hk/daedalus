@@ -39,10 +39,11 @@ let
     # TODO, use this cross-compiled fastlist when we no longer build windows installers on windows
     fastlist = pkgs.pkgsCross.mingwW64.callPackage ./fastlist.nix {};
     ## TODO: move to installers/nix
-    daedalus-installer = import ./installers/default.nix {
+    hsDaedalusPkgs = import ./installers {
       inherit (cardanoSL) daedalus-bridge;
       inherit localLib system;
     };
+    daedalus-installer = self.hsDaedalusPkgs.daedalus-installer;
     daedalus = self.callPackage ./installers/nix/linux.nix {};
     rawapp = self.callPackage ./yarn2nix.nix {
       inherit buildNum;
