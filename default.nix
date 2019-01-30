@@ -162,7 +162,7 @@ let
     newBundle = let
       daedalus' = self.daedalus.override { sandboxed = true; };
     in (import ./installers/nix/nix-installer.nix {
-      inherit (self) postInstall preInstall cluster;
+      inherit (self) postInstall preInstall cluster rawapp;
       inherit pkgs;
       installationSlug = installPath;
       installedPackages = [ daedalus' self.postInstall self.namespaceHelper daedalus'.cfg self.daedalus-bridge daedalus'.daedalus-frontend self.xdg-open ];
