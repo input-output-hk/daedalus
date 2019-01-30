@@ -52,7 +52,7 @@ type Props = {
   isInSafeMode: boolean,
 };
 
-export const updateInitialLog = (props: Props) => fs.writeFileSync(
+export const updateUserSystemInfoLog = (props: Props) => fs.writeFileSync(
   path.join(pubLogsFolderPath, 'System-info.json'),
   JSON.stringify(props)
 );

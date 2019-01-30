@@ -4,7 +4,7 @@ import { app, BrowserWindow, shell } from 'electron';
 import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { Logger } from './utils/logging';
-import { setupLogging, updateInitialLog } from './utils/setupLogging';
+import { setupLogging, updateUserSystemInfoLog } from './utils/setupLogging';
 import { getNumberOfEpochsConsolidated } from './utils/getNumberOfEpochsConsolidated';
 import { handleDiskSpace } from './utils/handleDiskSpace';
 import { createMainWindow } from './windows/main';
@@ -57,7 +57,7 @@ const onAppReady = async () => {
   const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
   const systemStart = parseInt(launcherConfig.configuration.systemStart, 10);
 
-  updateInitialLog({
+  updateUserSystemInfoLog({
     startTime, build, platform, platformVersion, CPU, RAM, isInSafeMode
   });
 
