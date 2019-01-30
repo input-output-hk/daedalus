@@ -19,6 +19,7 @@ import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recurs
                                    name, nsis, onPagePre, onError, outFile, page, readRegStr,
                                    requestExecutionLevel, rmdir, section, setOutPath, str,
                                    strLength, uninstall, unsafeInject, unsafeInjectGlobal,
+                                   loadLanguage,
                                    writeRegDWORD, writeRegStr, (%/=), fileExists)
 import           Prelude ((!!))
 import qualified System.IO as IO
@@ -50,11 +51,21 @@ writeUninstallerNSIS (Version fullVersion) installerConfig = do
     IO.writeFile "uninstaller.nsi" $ nsis $ do
         _ <- constantStr "Version" (str $ unpack fullVersion)
         _ <- constantStr "InstallDir" (str $ unpack $ installDirectory installerConfig)
-        name "$InstallDir Uninstaller $Version"
+        mapM_ unsafeInjectGlobal
+          [ "LangString UninstallName ${LANG_ENGLISH} \"Uninstaller\""
+          , "LangString UninstallName ${LANG_JAPANESE} \"アンインストーラー\""
+          ]
+        -- TODO, the nsis library doesnt support translation vars
+        -- name "$InstallDir $(UninstallName) $Version"
+        unsafeInjectGlobal $ unpack ( "Name \"" <> (installDirectory installerConfig) <> " $(UninstallName) " <> (fullVersion) <> "\"")
         outFile . str . encodeString $ tempDir </> "tempinstaller.exe"
         unsafeInjectGlobal "Unicode true"
         unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
         unsafeInjectGlobal "SetCompress off"
+
+        loadLanguage "English"
+        loadLanguage "Japanese"
+
         _ <- section "" [Required] $ do
             unsafeInject . T.unpack $ format ("WriteUninstaller \""%fp%"\"") ("c:\\uninstall.exe")
 
@@ -146,6 +157,13 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
 
         page InstFiles                   -- Give a progress bar while installing
 
+        loadLanguage "English"
+        loadLanguage "Japanese"
+        mapM_ unsafeInjectGlobal
+          [ "LangString AlreadyRunning ${LANG_ENGLISH} \"is running. It needs to be fully shut down before running the installer!\""
+          , "LangString AlreadyRunning ${LANG_JAPANESE} \"が起動中です。 インストーラーを実行する前に完全にシャットダウンする必要があります！\""
+          ]
+
         _ <- section "" [Required] $ do
                 setOutPath "$INSTDIR"        -- Where to install files in this section
                 unsafeInject "AllowSkipFiles off"
@@ -154,7 +172,8 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                 createDirectory "$APPDATA\\$InstallDir\\Logs"
                 createDirectory "$APPDATA\\$InstallDir\\Logs\\pub"
                 onError (delete [] "$APPDATA\\$InstallDir\\launcher.lock") $
-                    abort "$InstallDir is running. It needs to be fully shut down before running the installer!"
+                    --abort "$InstallDir $(AlreadyRunning)"
+                    unsafeInject $ unpack $ "Abort \" " <> (installDirectory installerConfig) <> "$(AlreadyRunning)\""
                 iff_ (fileExists "$APPDATA\\$InstallDir\\Wallet-1.0\\open\\*.*") $
                     rmdir [] "$APPDATA\\$InstallDir\\Wallet-1.0\\open"
                 file [] "cardano-node.exe"
@@ -193,6 +212,7 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                     writeRegDWORD HKLM uninstallKey "NoRepair" 1
                 file [] $ (str . encodeString $ tempDir </> "uninstall.exe")
 
+        -- this string never appears in the UI
         _ <- section "Start Menu Shortcuts" [] $ do
                 createDirectory "$SMPROGRAMS/$InstallDir"
                 createShortcut "$SMPROGRAMS/$InstallDir/Uninstall $InstallDir.lnk"

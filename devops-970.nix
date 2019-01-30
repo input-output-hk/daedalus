@@ -1,4 +1,4 @@
-{ cluster ? "staging", signingKeys ? null, fudgeConfig ? null, dummyInstaller ? true }:
+{ cluster ? "staging", signingKeys ? null, fudgeConfig ? null, dummyInstaller ? false }:
 
 let
   old = import ./. { inherit cluster; };
@@ -77,18 +77,19 @@ let
       touch cardano-launcher.exe cardano-node.exe cardano-x509-certificates.exe log-config-prod.yaml configuration.yaml mainnet-genesis.json
     '';
     unpackedCardano = if dummyInstaller then self.dummyUnpacked else (if signingKeys != null then self.signedCardano else self.unsignedUnpackedCardano);
-    nsisFiles = pkgs.runCommand "nsis-files" { buildInputs = [ old.daedalus-installer ]; } ''
+    nsisFiles = pkgs.runCommand "nsis-files" { buildInputs = [ old.daedalus-installer pkgs.glibcLocales ]; } ''
       mkdir installers
       cp -vir ${./package.json} package.json
       cp -vir ${./installers/dhall} installers/dhall
       cd installers
 
+      export LANG=en_US.UTF-8
       make-installer --os win64 -o $out --cluster ${cluster} buildkite-cross
 
       mkdir $out
       cp daedalus.nsi uninstaller.nsi launcher-config.yaml wallet-topology.yaml $out/
     '';
-    uninstaller = pkgs.runCommand "uninstaller" { buildInputs = [ self.nsis pkgs.winePackages.minimal ]; } ''
+    unsignedUninstaller = pkgs.runCommand "uninstaller" { buildInputs = [ self.nsis pkgs.winePackages.minimal ]; } ''
       mkdir home
       export HOME=$(realpath home)
 
@@ -101,6 +102,11 @@ let
       mkdir $out
       mv -v $HOME/.wine/drive_c/uninstall.exe $out/uninstall.exe
     '';
+    signedUninstaller = pkgs.runCommand "uninstaller-signed" {} ''
+      mkdir $out
+      cp ${self.signFile "${self.unsignedUninstaller}/uninstall.exe"} $out/uninstall.exe
+    '';
+    uninstaller = if (signingKeys != null) then self.signedUninstaller else self.unsignedUninstaller;
     installer = pkgs.runCommand "win64-installer-${cluster}" { buildInputs = [ old.daedalus-installer self.nsis pkgs.unzip old.configMutator pkgs.jq old.yaml2json ]; } ''
       mkdir home
       export HOME=$(realpath home)
@@ -134,8 +140,6 @@ let
         mv temp configuration.yaml
         set +x
       ''}
-
-      du -h
 
       makensis daedalus.nsi -V4
 

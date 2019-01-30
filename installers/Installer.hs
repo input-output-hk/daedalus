@@ -5,6 +5,7 @@ import           Data.Text                           (pack)
 import           Universum
 import qualified System.Info                      as Sys
 import           Turtle                              (export)
+import qualified System.IO as IO
 
 import qualified MacInstaller
 import qualified WindowsInstaller
@@ -18,6 +19,8 @@ import           Config
 
 main :: IO ()
 main = do
+  IO.hSetEncoding IO.stderr IO.utf8
+  IO.hSetEncoding IO.stdout IO.utf8
   let os = case Sys.os of
              "linux"   -> Linux64
              "darwin"  -> Macos64
