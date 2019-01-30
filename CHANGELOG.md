@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Implemented a block-consolidation status screen ([PR 1275](https://github.com/input-output-hk/daedalus/pull/1275))
+- Implemented a block-consolidation status screen ([PR 1275](https://github.com/input-output-hk/daedalus/pull/1275), [PR 1294](https://github.com/input-output-hk/daedalus/pull/1294))
 - Implemented translations for the application menu ([PR 1262](https://github.com/input-output-hk/daedalus/pull/1262))
 - Implemented a success message for logs download ([PR 1228](https://github.com/input-output-hk/daedalus/pull/1228))
 - Implemented a better handling for "No disk space" error ([PR 1157](https://github.com/input-output-hk/daedalus/pull/1157))
@@ -19,7 +19,6 @@ Changelog
 
 ### Fixes
 
-- Fixed broken Windows launcher config due to the `dataDir` undefined environment variable ([PR 1294](https://github.com/input-output-hk/daedalus/pull/1294)).
 - Fixed text selection issues (disabled drag and drop of selected text and enabled unselect option) ([PR 1289](https://github.com/input-output-hk/daedalus/pull/1289))
 - Disabled the default behavior of the context menu following a right click for non-input elements ([PR 1281](https://github.com/input-output-hk/daedalus/pull/1281))
 - Decoupled initial setup of language locale and terms of use from loading and syncing screens ([PR 1279](https://github.com/input-output-hk/daedalus/pull/1279), [PR 1284](https://github.com/input-output-hk/daedalus/pull/1284))
