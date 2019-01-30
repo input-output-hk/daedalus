@@ -61,9 +61,9 @@ process.once('loaded', () => {
   };
 
   // elements that can be copied using the context menu (right click),
-  // must have a css property of user-select: 'auto' or be an input element
+  // must have a css property of user-select: 'text' or be an input element
   global.document.addEventListener('contextmenu', event => {
-    const targetIsSelectable = getComputedStyle(event.target).userSelect === 'auto';
+    const targetIsSelectable = getComputedStyle(event.target).userSelect === 'text';
     const targetIsInput = event.target.nodeName === 'INPUT';
 
     if (targetIsSelectable || targetIsInput) { return true; }
