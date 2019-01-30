@@ -18,6 +18,7 @@ import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recurs
                                    name, nsis, onPagePre, onError, outFile, page, readRegStr,
                                    requestExecutionLevel, rmdir, section, setOutPath, str,
                                    strLength, uninstall, unsafeInject, unsafeInjectGlobal,
+                                   loadLanguage,
                                    writeRegDWORD, writeRegStr, (%/=), fileExists)
 import           Prelude ((!!))
 import qualified System.IO as IO
@@ -54,6 +55,10 @@ writeUninstallerNSIS (Version fullVersion) installerConfig = do
         unsafeInjectGlobal "Unicode true"
         unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
         unsafeInjectGlobal "SetCompress off"
+
+        loadLanguage "English"
+        loadLanguage "Japanese"
+
         _ <- section "" [Required] $ do
             unsafeInject . T.unpack $ format ("WriteUninstaller \""%fp%"\"") (tempDir </> "uninstall.exe")
 
@@ -139,6 +144,9 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
         onPagePre Directory (iff_ (strLength "$INSTALLEDAT" %/= 0) $ abort "")
 
         page InstFiles                   -- Give a progress bar while installing
+
+        loadLanguage "English"
+        loadLanguage "Japanese"
 
         _ <- section "" [Required] $ do
                 setOutPath "$INSTDIR"        -- Where to install files in this section
