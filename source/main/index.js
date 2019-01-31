@@ -60,7 +60,6 @@ const onAppReady = async () => {
   const ram = JSON.stringify(os.totalmem(), null, 2);
   const startTimeStr = new Date().toString();
   const startTime = `${moment(startTimeStr).format('YYYY-MM-DDTHHmmss.0SSS')}Z`;
-  const systemStart = parseInt(launcherConfig.configuration.systemStart, 10);
 
   updateUserSystemInfoLog({
     cardanoVersion,
@@ -129,6 +128,7 @@ const onAppReady = async () => {
     client.create(mainWindow);
   }
 
+  // systemStart refers to the Cardano Demo cluster start time!
   const systemStart = parseInt(launcherConfig.configuration.systemStart, 10);
   getSystemStartTimeChannel.onRequest(() => Promise.resolve(systemStart));
 
