@@ -1,13 +1,54 @@
 // @flow
+import { isEmpty } from 'lodash';
+import { environment } from '../../main/environment';
+import type { MessageContext } from '../types/logging.types';
+
 export const stringifyData = (data: any) => JSON.stringify(data, null, 2);
 
 export const stringifyError = (error: any) => (
   JSON.stringify(error, Object.getOwnPropertyNames(error), 2)
 );
 
-export const formatMessage = (msg: Object) => {
-  const [year, time] = msg.date.toISOString().split('T');
-  const [context, body] = msg.data;
+export const formatContext = (context: MessageContext): string => {
+  const { appName, electronProcess, level, network } = context;
+  return `[${appName}.*${network}*:${level}:${electronProcess}]`;
+};
 
-  console.log(`${context} [${year} ${time.slice(0, -1)} UTC] ${body}`);
+export const formatMessage = (message: Object) => {
+  // message data
+  const date = message.date.toISOString();
+  const [year, time] = date.split('T');
+  const [context, msg, data] = message.data;
+
+  // environment data
+  const { network, os, platformVersion, version } = environment;
+
+  let messageBody = {
+    at: date,
+    env: `${network}:${os}:${platformVersion}`,
+    ns: [
+      'daedalus',
+      `${version}`,
+      `*${network}*`,
+    ],
+    data: {},
+    app: [
+      'daedalus'
+    ],
+    msg,
+    pid: '',
+    sev: '',
+    thread: ''
+  };
+
+  if (typeof data === 'object' && !isEmpty(data)) {
+    messageBody = { ...messageBody, data };
+  }
+
+  if (typeof data === 'string' && data !== ' ') {
+    messageBody = { ...messageBody, data: { response: data } };
+  }
+
+  console.log(`${context} [${year} ${time.slice(0, -1)} UTC]`);
+  console.log(stringifyData(messageBody));
 };

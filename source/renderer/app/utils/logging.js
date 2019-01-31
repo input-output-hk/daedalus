@@ -1,15 +1,21 @@
 // @flow
+import { formatContext } from '../../../common/utils/logging';
+
 const log = global.electronLog;
 const environment = global.environment;
 
 const appName = 'daedalus';
-const { network } = environment;
 const electronProcess = 'ipcRenderer';
+const { network } = environment;
 
-const formatContext = (level: string): string => `[${appName}.*${network}*:${level}:${electronProcess}]`;
+const messageContext = {
+  appName,
+  electronProcess,
+  network,
+};
 
-const logToLevel = (level: string) => (message: string) => (
-  log[level](formatContext(level), message)
+const logToLevel = (level: string) => (message: string, data: ?Object) => (
+  log[level](formatContext({ ...messageContext, level }), message, data)
 );
 
 export const Logger = {
