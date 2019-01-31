@@ -14,6 +14,7 @@ import {
   TxnAssuranceLevelOptions,
   WalletTransaction,
 } from '../../../domains/WalletTransaction';
+import { MAX_TRANSACTION_CONFIRMATIONS } from '../../../config/numbersConfig';
 import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';
 import { getNetworkExplorerUrl } from '../../../utils/network';
@@ -135,15 +136,27 @@ type Props = {
   onOpenExternalLink: ?Function,
 };
 
-type State = {
-  isExpanded: boolean,
-};
-
-export default class Transaction extends Component<Props, State> {
+export default class Transaction extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
+  shouldComponentUpdate(nextProps: Props) {
+    const { assuranceLevel, data, isExpanded } = this.props;
+    const { numberOfConfirmations } = data;
+    const {
+      assuranceLevel: nextAssuranceLevel,
+      data: nextData,
+      isExpanded: nextIsExpanded
+    } = nextProps;
+    const { numberOfConfirmations: nextNumberOfConfirmations } = nextData;
+    return (
+      (nextIsExpanded !== isExpanded) ||
+      (nextAssuranceLevel !== assuranceLevel) ||
+      (nextIsExpanded && nextNumberOfConfirmations !== numberOfConfirmations)
+    );
+  }
 
   toggleDetails() {
     const { onDetailsToggled } = this.props;
@@ -158,6 +171,12 @@ export default class Transaction extends Component<Props, State> {
       onOpenExternalLink(link);
     }
   }
+
+  displayNumberOfConfirmations = (confirmations: number) => {
+    let text = Math.min(confirmations, MAX_TRANSACTION_CONFIRMATIONS).toLocaleString();
+    if (confirmations > MAX_TRANSACTION_CONFIRMATIONS) text += '+';
+    return text;
+  };
 
   render() {
     const {
@@ -307,7 +326,7 @@ export default class Transaction extends Component<Props, State> {
                   <span>
                     {transactionState === transactionStates.OK &&
                       <span className={styles.assuranceLevel}>{status}.&nbsp;</span>}
-                    {data.numberOfConfirmations.toLocaleString()}&nbsp;
+                    {this.displayNumberOfConfirmations(data.numberOfConfirmations)}&nbsp;
                     {intl.formatMessage(messages.confirmations)}.
                   </span>
                   ) : null}

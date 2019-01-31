@@ -91,6 +91,7 @@ export default class WalletTransactionsPage extends Component<Props> {
           formattedWalletAmount={formattedWalletAmount}
           onOpenExternalLink={openExternalLink}
           isRenderingAsVirtualList
+          totalAvailable={filtered.length}
         />
       );
     } else if (wasSearched && !hasAny) {

@@ -7,7 +7,6 @@ import WalletTransactionsList from '../../components/wallet/transactions/WalletT
 import WalletSummary from '../../components/wallet/summary/WalletSummary';
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
-import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';

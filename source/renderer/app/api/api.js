@@ -60,7 +60,8 @@ import {
 // config constants
 import {
   LOVELACES_PER_ADA,
-  MAX_TRANSACTIONS_PER_PAGE
+  MAX_TRANSACTIONS_PER_PAGE,
+  MAX_TRANSACTION_CONFIRMATIONS
 } from '../config/numbersConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
@@ -810,7 +811,7 @@ const _createTransactionFromServerData = action(
       amount: new BigNumber(direction === 'outgoing' ? (amount * -1) : amount).dividedBy(LOVELACES_PER_ADA),
       date: utcStringToDate(creationTime),
       description: '',
-      numberOfConfirmations: confirmations,
+      numberOfConfirmations: Math.min(confirmations || 0, MAX_TRANSACTION_CONFIRMATIONS + 1),
       addresses: {
         from: inputs.map(({ address }) => address),
         to: outputs.map(({ address }) => address),

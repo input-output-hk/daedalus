@@ -37,6 +37,7 @@ storiesOf('WalletTransactionsList', module)
       assuranceMode={{ low: 1, medium: 2 }}
       walletId="test-wallet"
       formattedWalletAmount={formattedWalletAmount}
+      totalAvailable={5}
     />
   ))
 
@@ -59,6 +60,7 @@ storiesOf('WalletTransactionsList', module)
       assuranceMode={{ low: 1, medium: 2 }}
       walletId="test-wallet"
       formattedWalletAmount={formattedWalletAmount}
+      totalAvailable={3}
     />
   ))
 
@@ -72,5 +74,6 @@ storiesOf('WalletTransactionsList', module)
       assuranceMode={{ low: 1, medium: 2 }}
       walletId="test-wallet"
       formattedWalletAmount={formattedWalletAmount}
+      totalAvailable={500}
     />
   ));

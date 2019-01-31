@@ -3,13 +3,14 @@ import hash from 'hash.js';
 import faker from 'faker';
 import moment from 'moment';
 import BigNumber from 'bignumber.js';
-
 import {
   WalletTransaction,
   transactionStates,
   transactionTypes
 } from '../../../source/renderer/app/domains/WalletTransaction';
+import Wallet from '../../../source/renderer/app/domains/Wallet';
 import WalletAddress from '../../../source/renderer/app/domains/WalletAddress';
+import { LOVELACES_PER_ADA } from '../../../source/renderer/app/config/numbersConfig';
 import type {
   TransactionState,
   TransactionType
@@ -20,6 +21,18 @@ export const generateHash = () => {
   const random = Math.random().toString();
   return hash.sha512().update(now + random).digest('hex');
 };
+
+export const generateWallet = (name: string, amount: string) => (
+  new Wallet({
+    id: generateHash(),
+    amount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
+    name,
+    assurance: 'normal',
+    hasPassword: false,
+    passwordUpdateDate: new Date(),
+    syncState: { data: null, tag: 'synced' },
+  })
+);
 
 export const generateTransaction = (
   type: TransactionType = transactionTypes.INCOME,
