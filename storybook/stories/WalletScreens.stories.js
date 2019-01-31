@@ -21,7 +21,7 @@ import WalletWithNavigation from '../../source/renderer/app/components/wallet/la
 // Screens
 import WalletSummary from '../../source/renderer/app/components/wallet/summary/WalletSummary';
 import WalletSendForm from '../../source/renderer/app/components/wallet/WalletSendForm';
-import WalletReceive from '../../source/renderer/app/components/wallet/WalletReceive';
+import WalletReceive from '../../source/renderer/app/components/wallet/receive/WalletReceive';
 import WalletTransactionsList from '../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
 import WalletSettings from '../../source/renderer/app/components/wallet/WalletSettings';
 import { WalletAssuranceModeOptions } from '../../source/renderer/app/domains/Wallet';

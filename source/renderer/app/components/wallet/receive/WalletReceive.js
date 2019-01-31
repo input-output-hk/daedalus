@@ -10,15 +10,18 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
-import { submitOnEnter } from '../../utils/form';
-import BorderedBox from '../widgets/BorderedBox';
-import TinySwitch from '../widgets/forms/TinySwitch';
-import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
-import type { Addresses } from '../../api/addresses/types';
-import globalMessages from '../../i18n/global-messages';
-import LocalizableError from '../../i18n/LocalizableError';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+import { submitOnEnter } from '../../../utils/form';
+import BorderedBox from '../../widgets/BorderedBox';
+import TinySwitch from '../../widgets/forms/TinySwitch';
+import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
+import type { Addresses, Address as AddressType } from '../../../api/addresses/types';
+import globalMessages from '../../../i18n/global-messages';
+import LocalizableError from '../../../i18n/LocalizableError';
+import { SimpleAddressesList } from './render-strategies/SimpleAddressesList';
+import { VirtualAddressesList } from './render-strategies/VirtualAddressesList';
 import styles from './WalletReceive.scss';
+import { Address } from './Address';
 
 const messages = defineMessages({
   walletAddressLabel: {
@@ -68,6 +71,7 @@ type Props = {
   onCopyAddress: Function,
   isSidebarExpanded: boolean,
   walletHasPassword: boolean,
+  isRenderingAsVirtualList: boolean,
   isSubmitting: boolean,
   error?: ?LocalizableError,
 };
@@ -116,6 +120,15 @@ export default class WalletReceive extends Component<Props, State> {
     },
   });
 
+  renderRow = (address: AddressType, index: number) => (
+    <Address
+      index={index}
+      address={address}
+      onCopyAddress={this.props.onCopyAddress}
+      copyAddressLabel={this.context.intl.formatMessage(messages.copyAddressLabel)}
+    />
+  );
+
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
@@ -138,6 +151,7 @@ export default class WalletReceive extends Component<Props, State> {
       onCopyAddress, isSidebarExpanded,
       walletHasPassword, isSubmitting,
       error, isWalletAddressUsed,
+      isRenderingAsVirtualList,
     } = this.props;
     const { intl } = this.context;
     const { showUsed } = this.state;
@@ -242,34 +256,19 @@ export default class WalletReceive extends Component<Props, State> {
               </div>
             </h2>
 
-            {walletAddresses.map((address, index) => {
-              const isAddressVisible = !address.used || showUsed;
-              if (!isAddressVisible) return null;
-
-              const addressClasses = classnames([
-                'generatedAddress-' + (index + 1),
-                styles.walletAddress,
-                address.used ? styles.usedWalletAddress : null,
-              ]);
-              return (
-                <div key={index} className={addressClasses}>
-                  <div className={styles.addressId}>{address.id}</div>
-                  <div className={styles.addressActions}>
-                    <CopyToClipboard
-                      text={address.id}
-                      onCopy={onCopyAddress.bind(this, address.id)}
-                    >
-                      <span className={styles.copyAddress}>
-                        <SVGInline svg={iconCopy} className={styles.copyIcon} />
-                        <span className={styles.copyAddressLabel}>
-                          {intl.formatMessage(messages.copyAddressLabel)}
-                        </span>
-                      </span>
-                    </CopyToClipboard>
-                  </div>
-                </div>
-              );
-            })}
+            {isRenderingAsVirtualList ? (
+              <VirtualAddressesList
+                rows={walletAddresses}
+                showUsed={showUsed}
+                renderRow={this.renderRow}
+              />
+            ) : (
+              <SimpleAddressesList
+                rows={walletAddresses}
+                showUsed={showUsed}
+                renderRow={this.renderRow}
+              />
+            )}
           </div>
 
         </BorderedBox>
