@@ -164,7 +164,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::getWallets called');
     try {
       const response: AdaWallets = await getWallets(this.config);
-      Logger.debug(`AdaApi::getWallets success: ${stringifyData(response)}`);
+      Logger.debug('AdaApi::getWallets success', { wallets: response });
       return response.map(data => _createWalletFromServerData(data));
     } catch (error) {
       Logger.error(`AdaApi::getWallets error: ${stringifyData(error)}`);
@@ -177,7 +177,7 @@ export default class AdaApi {
     const { walletId } = request;
     try {
       const accounts: Accounts = await getAccounts(this.config, { walletId });
-      Logger.debug(`AdaApi::getAddresses success: ${stringifyData(accounts)}`);
+      Logger.debug('AdaApi::getAddresses success', { accounts });
 
       if (!accounts || !accounts.length) {
         return new Promise(resolve => resolve({ accountIndex: null, addresses: [] }));
@@ -239,7 +239,7 @@ export default class AdaApi {
 
       const transactions = txnHistory.map(txn => _createTransactionFromServerData(txn));
       const total = transactions.length;
-      Logger.debug(`AdaApi::searchHistory success: ${stringifyData(txnHistory)}`);
+      Logger.debug('AdaApi::searchHistory success', { txnHistory });
       return new Promise(resolve => resolve({ transactions, total }));
     } catch (error) {
       Logger.error(`AdaApi::searchHistory error: ${stringifyData(error)}`);
@@ -261,7 +261,7 @@ export default class AdaApi {
         spendingPassword,
       };
       const wallet: AdaWallet = await createWallet(this.config, { walletInitData });
-      Logger.debug('AdaApi::createWallet success');
+      Logger.debug('AdaApi::createWallet success', { ...wallet });
       return _createWalletFromServerData(wallet);
     } catch (error) {
       Logger.error(`AdaApi::createWallet error: ${stringifyData(error)}`);
@@ -274,7 +274,7 @@ export default class AdaApi {
     try {
       const { walletId } = request;
       const response = await deleteWallet(this.config, { walletId });
-      Logger.debug(`AdaApi::deleteWallet success: ${stringifyData(response)}`);
+      Logger.debug('AdaApi::deleteWallet success', { response });
       return true;
     } catch (error) {
       Logger.error(`AdaApi::deleteWallet error: ${stringifyData(error)}`);
@@ -304,7 +304,7 @@ export default class AdaApi {
         spendingPassword,
       };
       const response: Transaction = await createTransaction(this.config, { data });
-      Logger.debug(`AdaApi::createTransaction success: ${stringifyData(response)}`);
+      Logger.debug('AdaApi::createTransaction success', { ...response });
       return _createTransactionFromServerData(response);
     } catch (error) {
       Logger.debug(`AdaApi::createTransaction error: ${stringifyData(error)}`);
@@ -345,7 +345,7 @@ export default class AdaApi {
         groupingPolicy: 'OptimizeForSecurity',
       };
       const response: TransactionFee = await getTransactionFee(this.config, { data });
-      Logger.debug(`AdaApi::calculateTransactionFee success: ${stringifyData(response)}`);
+      Logger.debug('AdaApi::calculateTransactionFee success', { ...response });
       return _createTransactionFeeFromServerData(response);
     } catch (error) {
       Logger.debug(`AdaApi::calculateTransactionFee error: ${stringifyData(error)}`);
