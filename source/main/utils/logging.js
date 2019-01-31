@@ -1,9 +1,20 @@
 // @flow
 import log from 'electron-log';
+import { environment } from '../environment';
+import { formatMessage } from '../../common/utils/logging';
 
-const prefixContext = (str: string) => '[main] ' + str;
+log.transports.console = formatMessage;
+log.transports.file = formatMessage;
 
-const logToLevel = (level) => (message: string) => log[level](prefixContext(message));
+const appName = 'daedalus';
+const { network } = environment;
+const electronProcess = 'ipcMain';
+
+const formatContext = (level: string): string => `[${appName}.*${network}*:${level}:${electronProcess}]`;
+
+const logToLevel = (level: string) => (message: string) => (
+  log[level](formatContext(level), message)
+);
 
 export const Logger = {
   debug: logToLevel('debug'),

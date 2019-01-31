@@ -2,14 +2,15 @@
 const log = global.electronLog;
 const environment = global.environment;
 
-const { appName } = log;
+const appName = 'daedalus';
 const { network } = environment;
+const electronProcess = 'ipcRenderer';
 
-const prefixContext = (level: string, message: string): string => (
-  `[${appName}.*${network}*:${level}:ipcRenderer] ${message}`
+const formatContext = (level: string): string => `[${appName}.*${network}*:${level}:${electronProcess}]`;
+
+const logToLevel = (level: string) => (message: string) => (
+  log[level](formatContext(level), message)
 );
-
-const logToLevel = (level) => (message: string) => log[level](prefixContext(level, message));
 
 export const Logger = {
   debug: logToLevel('debug'),
