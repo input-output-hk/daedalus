@@ -71,7 +71,7 @@ type Props = {
   onCopyAddress: Function,
   isSidebarExpanded: boolean,
   walletHasPassword: boolean,
-  isRenderingAsVirtualList: boolean,
+  isRenderingAsVirtualList?: boolean,
   isSubmitting: boolean,
   error?: ?LocalizableError,
 };
@@ -205,72 +205,74 @@ export default class WalletReceive extends Component<Props, State> {
     return (
       <div className={styles.component}>
 
-        <BorderedBox>
-
-          <div className={styles.qrCodeAndInstructions}>
-            <div className={styles.qrCode}>
-              <QRCode
-                value={walletAddress}
-                bgColor={qrCodeBackgroundColor}
-                fgColor={qrCodeForegroundColor}
-                size={152}
-              />
-            </div>
-
-            <div className={styles.instructions}>
-              <div className={walletAddressClasses}>
-                {walletAddress}
-                <CopyToClipboard
-                  text={walletAddress}
-                  onCopy={onCopyAddress.bind(this, walletAddress)}
-                >
-                  <SVGInline svg={iconCopy} className={styles.copyIconBig} />
-                </CopyToClipboard>
-              </div>
-
-              <div className={styles.hashLabel}>
-                {intl.formatMessage(messages.walletAddressLabel)}
-              </div>
-
-              <div className={styles.instructionsText}>
-                {intl.formatMessage(messages.walletReceiveInstructions)}
-              </div>
-
-              {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
-
-              {generateAddressForm}
-
-            </div>
-          </div>
-
-          <div className={styles.generatedAddresses}>
-            <h2>
-              {intl.formatMessage(messages.generatedAddressesSectionTitle)}
-
-              <div className={styles.hideUsed}>
-                <TinySwitch
-                  label={intl.formatMessage(messages.showUsedLabel)}
-                  onChange={this.toggleUsedAddresses}
-                  checked={showUsed}
+        <BorderedBox
+          fullHeight={isRenderingAsVirtualList}
+        >
+          <div className={styles.container}>
+            <div className={styles.qrCodeAndInstructions}>
+              <div className={styles.qrCode}>
+                <QRCode
+                  value={walletAddress}
+                  bgColor={qrCodeBackgroundColor}
+                  fgColor={qrCodeForegroundColor}
+                  size={152}
                 />
               </div>
-            </h2>
 
-            {isRenderingAsVirtualList ? (
-              <VirtualAddressesList
-                rows={walletAddresses}
-                showUsed={showUsed}
-                renderRow={this.renderRow}
-              />
-            ) : (
-              <SimpleAddressesList
-                rows={walletAddresses}
-                showUsed={showUsed}
-                renderRow={this.renderRow}
-              />
-            )}
+              <div className={styles.instructions}>
+                <div className={walletAddressClasses}>
+                  {walletAddress}
+                  <CopyToClipboard
+                    text={walletAddress}
+                    onCopy={onCopyAddress.bind(this, walletAddress)}
+                  >
+                    <SVGInline svg={iconCopy} className={styles.copyIconBig} />
+                  </CopyToClipboard>
+                </div>
+
+                <div className={styles.hashLabel}>
+                  {intl.formatMessage(messages.walletAddressLabel)}
+                </div>
+
+                <div className={styles.instructionsText}>
+                  {intl.formatMessage(messages.walletReceiveInstructions)}
+                </div>
+
+                {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
+
+                {generateAddressForm}
+
+              </div>
+            </div>
+
+            <div className={styles.generatedAddresses}>
+              <h2>
+                {intl.formatMessage(messages.generatedAddressesSectionTitle)}
+
+                <div className={styles.hideUsed}>
+                  <TinySwitch
+                    label={intl.formatMessage(messages.showUsedLabel)}
+                    onChange={this.toggleUsedAddresses}
+                    checked={showUsed}
+                  />
+                </div>
+              </h2>
+
+              {isRenderingAsVirtualList ? (
+                <VirtualAddressesList
+                  rows={walletAddresses}
+                  showUsed={showUsed}
+                  renderRow={this.renderRow}
+                />
+              ) : (
+                <SimpleAddressesList
+                  rows={walletAddresses}
+                  showUsed={showUsed}
+                  renderRow={this.renderRow}
+                />
+              )}
+            </div>
           </div>
-
         </BorderedBox>
 
       </div>

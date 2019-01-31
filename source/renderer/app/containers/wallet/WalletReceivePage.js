@@ -113,6 +113,7 @@ export default class WalletReceivePage extends Component<Props, State> {
           walletHasPassword={wallet.hasPassword}
           isSubmitting={addresses.createAddressRequest.isExecuting}
           error={addresses.error}
+          isRenderingAsVirtualList
         />
 
         <NotificationMessage

@@ -30,6 +30,7 @@
   flex-direction: row;
   margin: 10px 0 24px;
   position: relative;
+  width: 100%;
 
   .qrCode {
     align-items: flex-start;
@@ -144,15 +145,25 @@
   }
 }
 
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 .generatedAddresses {
   color: var(--theme-bordered-box-text-color);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   font-family: var(--font-regular);
   font-size: 16px;
   line-height: 22px;
-  padding-bottom: 10px;
+  width: 100%;
 
   h2 {
     font-family: var(--font-medium);
+    padding-bottom: 10px;
 
     button {
       color: var(--theme-label-button-color);
