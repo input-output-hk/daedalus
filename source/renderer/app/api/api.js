@@ -311,7 +311,10 @@ export default class AdaApi {
       if (error.message === 'OutputIsRedeem') {
         throw new NotAllowedToSendMoneyToRedeemAddressError();
       }
-      if (error.message === 'NotEnoughMoney') {
+      if (
+        error.message === 'NotEnoughMoney' ||
+        error.message === 'UtxoNotEnoughFragmented'
+      ) {
         throw new NotEnoughMoneyToSendError();
       }
       if (error.message === 'CannotCreateAddress') {
@@ -349,7 +352,10 @@ export default class AdaApi {
       return _createTransactionFeeFromServerData(response);
     } catch (error) {
       Logger.debug(`AdaApi::calculateTransactionFee error: ${stringifyData(error)}`);
-      if (error.message === 'NotEnoughMoney') {
+      if (
+        error.message === 'NotEnoughMoney' ||
+        error.message === 'UtxoNotEnoughFragmented'
+      ) {
         const errorMessage = get(error, 'diagnostic.details.msg', '');
         if (errorMessage.includes('Not enough coins to cover fee')) {
           // Amount + fees exceeds walletBalance:
