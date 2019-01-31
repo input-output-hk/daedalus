@@ -32,6 +32,13 @@ export default class WalletSummaryPage extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  handleShowMoreTransaction = (walletId: string) => {
+    this.props.actions.router.goToRoute.trigger({
+      route: ROUTES.WALLETS.PAGE,
+      params: { id: walletId, page: 'transactions' },
+    });
+  };
+
   render() {
     const { intl } = this.context;
     const { app, wallets, transactions } = this.props.stores;
@@ -67,6 +74,7 @@ export default class WalletSummaryPage extends Component<Props> {
           network={network}
           onOpenExternalLink={openExternalLink}
           onShowMoreTransactions={this.handleShowMoreTransaction}
+          totalAvailable={totalAvailable}
         />
       );
     } else if (!hasAny) {
@@ -76,8 +84,7 @@ export default class WalletSummaryPage extends Component<Props> {
     return (
       <VerticalFlexContainer>
         <WalletSummary
-          walletName={wallet.name}
-          amount={wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
+          wallet={wallet}
           numberOfTransactions={totalAvailable}
           pendingAmount={unconfirmedAmount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
@@ -87,11 +94,4 @@ export default class WalletSummaryPage extends Component<Props> {
       </VerticalFlexContainer>
     );
   }
-
-  handleShowMoreTransaction = (walletId: string) => {
-    this.props.actions.router.goToRoute.trigger({
-      route: ROUTES.WALLETS.PAGE,
-      params: { id: walletId, page: 'transactions' },
-    });
-  };
 }

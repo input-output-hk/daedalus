@@ -3,11 +3,12 @@ import { observable, computed, action, extendObservable, runInAction } from 'mob
 import BigNumber from 'bignumber.js';
 import { find } from 'lodash';
 import Store from './lib/Store';
-import CachedRequest from './lib/LocalizedCachedRequest';
+import Request from './lib/LocalizedRequest';
 import { WalletTransaction, transactionTypes } from '../domains/WalletTransaction';
 import type { GetTransactionsResponse } from '../api/transactions/types';
 import type { UnconfirmedAmount } from '../types/unconfirmedAmountType';
 import { isValidAmountInLovelaces } from '../utils/validations';
+import { TX_UNCONFIRMED_THRESHOLD } from '../config/numbersConfig';
 
 export type TransactionSearchOptionsStruct = {
   searchTerm: string,
@@ -30,11 +31,13 @@ export default class TransactionsStore extends Store {
 
   @observable transactionsRequests: Array<{
     walletId: string,
-    recentRequest: CachedRequest<GetTransactionsResponse>,
-    allRequest: CachedRequest<GetTransactionsResponse>
+    recentRequest: Request<GetTransactionsResponse>,
+    allRequest: Request<GetTransactionsResponse>
   }> = [];
 
   @observable _searchOptionsForWallets = {};
+
+  @observable unconfirmedAmount: UnconfirmedAmount = this._getEmptyUnconfirmedAmount();
 
   setup() {
     // const actions = this.actions.transactions;
@@ -45,29 +48,17 @@ export default class TransactionsStore extends Store {
     ]);
   }
 
-  @action _updateSearchTerm = ({ searchTerm }: { searchTerm: string }) => {
-    if (this.searchOptions != null) {
-      this.searchOptions.searchTerm = searchTerm;
-    }
-  };
-
-  @action _increaseSearchLimit = () => {
-    if (this.searchOptions != null) {
-      this.searchOptions.searchLimit += this.SEARCH_LIMIT_INCREASE;
-    }
-  };
-
-  @computed get recentTransactionsRequest(): CachedRequest<GetTransactionsResponse> {
+  @computed get recentTransactionsRequest(): Request<GetTransactionsResponse> {
     const wallet = this.stores.wallets.active;
     // TODO: Do not return new request here
-    if (!wallet) return new CachedRequest(this.api.ada.getTransactions);
+    if (!wallet) return new Request(this.api.ada.getTransactions);
     return this._getTransactionsRecentRequest(wallet.id);
   }
 
-  @computed get searchRequest(): CachedRequest<GetTransactionsResponse> {
+  @computed get searchRequest(): Request<GetTransactionsResponse> {
     const wallet = this.stores.wallets.active;
     // TODO: Do not return new request here
-    if (!wallet) return new CachedRequest(this.api.ada.getTransactions);
+    if (!wallet) return new Request(this.api.ada.getTransactions);
     return this._getTransactionsAllRequest(wallet.id);
   }
 
@@ -94,7 +85,7 @@ export default class TransactionsStore extends Store {
     const wallet = this.stores.wallets.active;
     if (!wallet) return [];
     const result = this._getTransactionsRecentRequest(wallet.id).result;
-    return result ? result.transactions.slice(0, this.RECENT_TRANSACTIONS_LIMIT) : [];
+    return result ? result.transactions : [];
   }
 
   @computed get hasAnyFiltered(): boolean {
@@ -108,14 +99,14 @@ export default class TransactionsStore extends Store {
     const wallet = this.stores.wallets.active;
     if (!wallet) return false;
     const result = this._getTransactionsRecentRequest(wallet.id).result;
-    return result ? result.transactions.length > 0 : false;
+    return result ? result.total > 0 : false;
   }
 
   @computed get totalAvailable(): number {
     const wallet = this.stores.wallets.active;
     if (!wallet) return 0;
     const result = this._getTransactionsAllRequest(wallet.id).result;
-    return result ? result.transactions.length : 0;
+    return result ? result.total : 0;
   }
 
   @computed get totalFilteredAvailable(): number {
@@ -125,42 +116,12 @@ export default class TransactionsStore extends Store {
     return result ? result.transactions.length : 0;
   }
 
-  @computed get unconfirmedAmount(): UnconfirmedAmount {
-    const unconfirmedAmount = {
-      total: new BigNumber(0),
-      incoming: new BigNumber(0),
-      outgoing: new BigNumber(0),
-    };
-    const wallet = this.stores.wallets.active;
-    if (!wallet) return unconfirmedAmount;
-    const result = this._getTransactionsAllRequest(wallet.id).result;
-    if (!result || !result.transactions) return unconfirmedAmount;
-
-    for (const transaction of result.transactions) {
-      // TODO: move this magic constant (required numberOfConfirmations) to config!
-      if (transaction.numberOfConfirmations <= 6) {
-        unconfirmedAmount.total = unconfirmedAmount.total.plus(transaction.amount.absoluteValue());
-        if (transaction.type === transactionTypes.EXPEND) {
-          unconfirmedAmount.outgoing = unconfirmedAmount.outgoing.plus(
-            transaction.amount.absoluteValue()
-          );
-        }
-        if (transaction.type === transactionTypes.INCOME) {
-          unconfirmedAmount.incoming = unconfirmedAmount.incoming.plus(
-            transaction.amount.absoluteValue()
-          );
-        }
-      }
-    }
-    return unconfirmedAmount;
-  }
 
   @action _refreshTransactionData = () => {
     if (this.stores.networkStatus.isConnected) {
       const allWallets = this.stores.wallets.all;
       for (const wallet of allWallets) {
         const recentRequest = this._getTransactionsRecentRequest(wallet.id);
-        recentRequest.invalidate({ immediately: false });
         recentRequest.execute({
           walletId: wallet.id,
           limit: this.RECENT_TRANSACTIONS_LIMIT,
@@ -168,7 +129,6 @@ export default class TransactionsStore extends Store {
           searchTerm: '',
         });
         const allRequest = this._getTransactionsAllRequest(wallet.id);
-        allRequest.invalidate({ immediately: false });
         allRequest.execute({
           walletId: wallet.id,
           limit: this.INITIAL_SEARCH_LIMIT,
@@ -200,20 +160,76 @@ export default class TransactionsStore extends Store {
     Promise.resolve(isValidAmountInLovelaces(amountInLovelaces))
   );
 
-  _getTransactionsRecentRequest = (walletId: string): CachedRequest<GetTransactionsResponse> => {
-    const foundRequest = find(this.transactionsRequests, { walletId });
-    if (foundRequest && foundRequest.recentRequest) return foundRequest.recentRequest;
-    return new CachedRequest(this.api.ada.getTransactions);
+  // ======================= PRIVATE ========================== //
+
+  @action _updateSearchTerm = ({ searchTerm }: { searchTerm: string }) => {
+    if (this.searchOptions != null) {
+      this.searchOptions.searchTerm = searchTerm;
+    }
   };
 
-  _getTransactionsAllRequest = (walletId: string): CachedRequest<GetTransactionsResponse> => {
+  _getEmptyUnconfirmedAmount(): UnconfirmedAmount {
+    return {
+      total: new BigNumber(0),
+      incoming: new BigNumber(0),
+      outgoing: new BigNumber(0),
+    };
+  }
+
+  _setUnconfirmedAmount(amount: UnconfirmedAmount) {
+    Object.assign(this.unconfirmedAmount, amount);
+  }
+
+  _resetUnconfirmedAmount() {
+    this._setUnconfirmedAmount(this._getEmptyUnconfirmedAmount());
+  }
+
+  _getTransactionsRecentRequest = (walletId: string): Request<GetTransactionsResponse> => {
+    const foundRequest = find(this.transactionsRequests, { walletId });
+    if (foundRequest && foundRequest.recentRequest) return foundRequest.recentRequest;
+    return new Request(this.api.ada.getTransactions);
+  };
+
+  _getTransactionsAllRequest = (walletId: string): Request<GetTransactionsResponse> => {
     const foundRequest = find(this.transactionsRequests, { walletId });
     if (foundRequest && foundRequest.allRequest) return foundRequest.allRequest;
-    return new CachedRequest(this.api.ada.getTransactions);
+    return new Request(this.api.ada.getTransactions);
   };
 
   // ======================= REACTIONS ========================== //
 
+  /**
+   * Reaction that recomputes unconfirmed amounts for the active wallet
+   * and then updates the observable struct with the new props.
+   * @private
+   */
+  @action _calculateUnconfirmedAmount() {
+    // Reset when no active wallet
+    const wallet = this.stores.wallets.active;
+    if (!wallet) return this._resetUnconfirmedAmount();
+    // Reset when no transactions
+    const result = this._getTransactionsAllRequest(wallet.id).result;
+    if (!result || !result.transactions) return this._resetUnconfirmedAmount();
+
+    // We have some results, lets compute and update
+    const unconfirmedAmount = this._getEmptyUnconfirmedAmount();
+    for (const transaction of result.transactions) {
+      if (transaction.numberOfConfirmations <= TX_UNCONFIRMED_THRESHOLD) {
+        unconfirmedAmount.total = unconfirmedAmount.total.plus(transaction.amount.absoluteValue());
+        if (transaction.type === transactionTypes.EXPEND) {
+          unconfirmedAmount.outgoing = unconfirmedAmount.outgoing.plus(
+            transaction.amount.absoluteValue()
+          );
+        }
+        if (transaction.type === transactionTypes.INCOME) {
+          unconfirmedAmount.incoming = unconfirmedAmount.incoming.plus(
+            transaction.amount.absoluteValue()
+          );
+        }
+      }
+    }
+    this._setUnconfirmedAmount(unconfirmedAmount);
+  }
   /**
    * Reaction that makes sure that we have some default (empty)
    * search options for the active wallet.

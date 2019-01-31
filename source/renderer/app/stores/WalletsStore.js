@@ -245,14 +245,6 @@ export default class WalletsStore extends Store {
     });
   };
 
-  @action _setActiveWallet = ({ walletId }: { walletId: string }) => {
-    if (this.hasAnyWallets) {
-      this.active = this.all.find(wallet => wallet.id === walletId);
-    }
-  };
-
-  @action _unsetActiveWallet = () => { this.active = null; };
-
   goToWalletRoute(walletId: string) {
     const route = this.getWalletRoute(walletId);
     this.actions.router.goToRoute.trigger({ route });
@@ -421,8 +413,19 @@ export default class WalletsStore extends Store {
     if (this.hasAnyWallets) {
       const activeWalletId = this.active ? this.active.id : null;
       const activeWalletChange = activeWalletId !== walletId;
-      if (activeWalletChange) this.stores.addresses.lastGeneratedAddress = null;
-      this.active = this.all.find(wallet => wallet.id === walletId);
+      if (activeWalletChange) {
+        this.stores.addresses.lastGeneratedAddress = null;
+        const newActiveWallet = this.all.find(wallet => wallet.id === walletId);
+        if (this.active) {
+          if (newActiveWallet) {
+            this.active.update(newActiveWallet);
+          } else {
+            this.active = null;
+          }
+        } else {
+          this.active = newActiveWallet;
+        }
+      }
     }
   };
 
