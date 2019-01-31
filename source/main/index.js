@@ -3,6 +3,7 @@ import os from 'os';
 import { app, BrowserWindow, shell } from 'electron';
 import { client } from 'electron-connect';
 import { includes } from 'lodash';
+import moment from 'moment';
 import { Logger } from './utils/logging';
 import { setupLogging, updateUserSystemInfoLog } from './utils/setupLogging';
 import { getNumberOfEpochsConsolidated } from './utils/getNumberOfEpochsConsolidated';
@@ -27,7 +28,10 @@ import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types
 let mainWindow: BrowserWindow;
 let cardanoNode: ?CardanoNode;
 
-const { isDev, isWatchMode, buildLabel: build, network } = environment;
+const {
+  isDev, isWatchMode, buildLabel, network, current,
+  version: daedalusVersion, buildNumber: cardanoVersion,
+} = environment;
 
 const safeExit = async () => {
   if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
@@ -49,23 +53,33 @@ const safeExit = async () => {
 const onAppReady = async () => {
   setupLogging();
 
-  const startTime = new Date().toString();
+  const cpu = os.cpus();
+  const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
   const platform = os.platform();
   const platformVersion = os.release();
-  const CPU = JSON.stringify(os.cpus(), null, 2);
-  const RAM = JSON.stringify(os.totalmem(), null, 2);
-  const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
+  const ram = JSON.stringify(os.totalmem(), null, 2);
+  const startTimeStr = new Date().toString();
+  const startTime = `${moment(startTimeStr).format('YYYY-MM-DDTHHmmss.0SSS')}Z`;
   const systemStart = parseInt(launcherConfig.configuration.systemStart, 10);
 
   updateUserSystemInfoLog({
-    startTime, build, platform, platformVersion, CPU, RAM, isInSafeMode
+    cardanoVersion,
+    cpu,
+    current,
+    daedalusVersion,
+    isInSafeMode,
+    network,
+    platform,
+    platformVersion,
+    ram,
+    startTime,
   });
 
-  Logger.info(`========== Daedalus is starting at ${startTime} ==========`);
+  Logger.info(`========== Daedalus is starting at ${startTimeStr} ==========`);
 
-  Logger.debug(`!!! ${build} is running on ${platform} version ${platformVersion}
-            with CPU: ${CPU} with
-            ${RAM} total RAM !!!`);
+  Logger.debug(`!!! ${buildLabel} is running on ${platform} version ${platformVersion}
+            with CPU: ${JSON.stringify(cpu, null, 2)} with
+            ${ram} total RAM !!!`);
 
   ensureXDGDataIsSet();
   await installChromeExtensions(isDev);

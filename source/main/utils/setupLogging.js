@@ -43,16 +43,40 @@ export const setupLogging = () => {
 };
 
 type Props = {
-  startTime: string,
-  build: string,
+  cardanoVersion: string,
+  cpu: Array<Object>,
+  current: string,
+  daedalusVersion: string,
+  isInSafeMode: string,
+  network: string,
   platform: string,
   platformVersion: string,
-  CPU: string,
-  RAM: string,
-  isInSafeMode: boolean,
+  ram: string,
+  startTime: string,
 };
 
-export const updateUserSystemInfoLog = (props: Props) => fs.writeFileSync(
-  path.join(pubLogsFolderPath, 'System-info.json'),
-  JSON.stringify(props)
-);
+export const updateUserSystemInfoLog = (props: Props) => {
+  const { current, ...data } = props;
+  const { network, platform, platformVersion, daedalusVersion, startTime: at } = data;
+  const env = `${network}:${platform}:${platformVersion}:${daedalusVersion}`;
+  const output = {
+    at,
+    env,
+    ns: [
+      'daedalus',
+      `*${current}*`,
+    ],
+    data,
+    app: [
+      'daedalus'
+    ],
+    msg: '',
+    sev: '',
+    thread: '',
+  };
+
+  fs.writeFileSync(
+    path.join(pubLogsFolderPath, 'System-info.json'),
+    JSON.stringify(output)
+  );
+};
