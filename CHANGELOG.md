@@ -36,6 +36,7 @@ Changelog
 
 ### Chores
 
+- Added support for newly introduced `UtxoNotEnoughFragmented` API error message ([PR 1297](https://github.com/input-output-hk/daedalus/pull/1297))
 - Changed the behavior of "Network status" from screen to dialog ([PR 1286](https://github.com/input-output-hk/daedalus/pull/1286))
 - Updated the list of contributors on the "About" screen ([PR 1282](https://github.com/input-output-hk/daedalus/pull/1282))
 - Added more logging for API errors ([PR 1278](https://github.com/input-output-hk/daedalus/pull/1278)
