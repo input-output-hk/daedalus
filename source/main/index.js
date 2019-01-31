@@ -3,8 +3,9 @@ import os from 'os';
 import { app, BrowserWindow, shell } from 'electron';
 import { client } from 'electron-connect';
 import { includes } from 'lodash';
+import moment from 'moment';
 import { Logger } from './utils/logging';
-import { setupLogging } from './utils/setupLogging';
+import { setupLogging, updateUserSystemInfoLog } from './utils/setupLogging';
 import { getNumberOfEpochsConsolidated } from './utils/getNumberOfEpochsConsolidated';
 import { handleDiskSpace } from './utils/handleDiskSpace';
 import { createMainWindow } from './windows/main';
@@ -27,7 +28,10 @@ import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types
 let mainWindow: BrowserWindow;
 let cardanoNode: ?CardanoNode;
 
-const { isDev, isWatchMode, buildLabel, network } = environment;
+const {
+  isDev, isWatchMode, buildLabel, network, current,
+  version: daedalusVersion, buildNumber: cardanoVersion,
+} = environment;
 
 const safeExit = async () => {
   if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
@@ -49,17 +53,36 @@ const safeExit = async () => {
 const onAppReady = async () => {
   setupLogging();
 
-  Logger.info(`========== Daedalus is starting at ${new Date().toString()} ==========`);
+  const cpu = os.cpus();
+  const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
+  const platform = os.platform();
+  const platformVersion = os.release();
+  const ram = JSON.stringify(os.totalmem(), null, 2);
+  const startTimeStr = new Date().toString();
+  const startTime = `${moment(startTimeStr).format('YYYY-MM-DDTHHmmss.0SSS')}Z`;
+  const systemStart = parseInt(launcherConfig.configuration.systemStart, 10);
 
-  Logger.debug(`!!! ${buildLabel} is running on ${os.platform()} version ${os.release()}
-            with CPU: ${JSON.stringify(os.cpus(), null, 2)} with
-            ${JSON.stringify(os.totalmem(), null, 2)} total RAM !!!`);
+  updateUserSystemInfoLog({
+    cardanoVersion,
+    cpu,
+    current,
+    daedalusVersion,
+    isInSafeMode,
+    network,
+    platform,
+    platformVersion,
+    ram,
+    startTime,
+  });
+
+  Logger.info(`========== Daedalus is starting at ${startTimeStr} ==========`);
+
+  Logger.debug(`!!! ${buildLabel} is running on ${platform} version ${platformVersion}
+            with CPU: ${JSON.stringify(cpu, null, 2)} with
+            ${ram} total RAM !!!`);
 
   ensureXDGDataIsSet();
   await installChromeExtensions(isDev);
-
-  // Detect safe mode
-  const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
 
   // Detect locale
   let locale = getLocale(network);
