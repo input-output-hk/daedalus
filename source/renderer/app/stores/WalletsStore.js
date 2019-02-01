@@ -224,6 +224,13 @@ export default class WalletsStore extends Store {
 
   // ACTIONS
 
+  @action refreshActiveWallet = () => {
+    if (this.hasAnyWallets && this.active) {
+      const activeWalletId = this.active.id;
+      this.active = this.all.find(wallet => wallet.id === activeWalletId);
+    }
+  };
+
   @action refreshWalletsData = async () => {
     if (!this.stores.networkStatus.isConnected) return;
     const result = await this.walletsRequest.execute().promise;

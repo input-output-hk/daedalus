@@ -811,7 +811,7 @@ const _createTransactionFromServerData = action(
       amount: new BigNumber(direction === 'outgoing' ? (amount * -1) : amount).dividedBy(LOVELACES_PER_ADA),
       date: utcStringToDate(creationTime),
       description: '',
-      numberOfConfirmations: Math.min(confirmations || 0, MAX_TRANSACTION_CONFIRMATIONS + 1),
+      numberOfConfirmations: Math.min(confirmations, MAX_TRANSACTION_CONFIRMATIONS + 1),
       addresses: {
         from: inputs.map(({ address }) => address),
         to: outputs.map(({ address }) => address),
