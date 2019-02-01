@@ -142,22 +142,6 @@ export default class Transaction extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  shouldComponentUpdate(nextProps: Props) {
-    const { assuranceLevel, data, isExpanded } = this.props;
-    const { numberOfConfirmations } = data;
-    const {
-      assuranceLevel: nextAssuranceLevel,
-      data: nextData,
-      isExpanded: nextIsExpanded
-    } = nextProps;
-    const { numberOfConfirmations: nextNumberOfConfirmations } = nextData;
-    return (
-      (nextIsExpanded !== isExpanded) ||
-      (nextAssuranceLevel !== assuranceLevel) ||
-      (nextIsExpanded && nextNumberOfConfirmations !== numberOfConfirmations)
-    );
-  }
-
   toggleDetails() {
     const { onDetailsToggled } = this.props;
     if (onDetailsToggled) onDetailsToggled();
