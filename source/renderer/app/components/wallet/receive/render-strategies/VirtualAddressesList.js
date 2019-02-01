@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { AutoSizer, List } from 'react-virtualized';
-import type { Addresses } from '../../../../api/addresses/types';
+import type { Addresses, Address } from '../../../../api/addresses/types';
 import styles from './VirtualAddressesList.scss';
 
 type Props = {
@@ -11,23 +11,226 @@ type Props = {
   showUsed: boolean,
 };
 
+type RowHeight = number;
+type RowLine = number;
+type Breakpoint = number;
+type IndividualLine = number;
+
+
+/**
+ *
+ * There are 2 breakpoints (2 and 4) where the
+ * rows height need to be individually calculated,
+ * as the addresses may have different line numbers.
+ * Otherwise, the heights can be safely calculated
+ * at once, which has much less cost.
+ *
+ * Considering the width of the
+ * `.ReactVirtualized__Grid__innerScrollContainer` element:
+ *
+ * | Breakpoint| Width            | Lines  | Calculation |
+ * |-----------|------------------|--------|-------------|
+ * | 1         | < 599            | 3      | general     |
+ * | 2         | > 600 && < 699   | 2 or 3 | individual  |
+ * | 3         | > 700 && < 1099  | 2      | general     |
+ * | 4         | < 1100 && > 1101 | 1 or 2 | individual  |
+ * | 5         | > 1200           | 1      | general     |
+ *
+ */
+
+const BREAKPOINT_2 = 600;
+const BREAKPOINT_3 = 700;
+const BREAKPOINT_4 = 1100;
+const BREAKPOINT_5 = 1200;
+
+const BREAKPOINT_WITH_GENERAL_CALCULATION = 'general';
+const BREAKPOINT_WITH_INDIVIDUAL_CALCULATION = 'individual';
+
 const ADDRESS_LINE_HEIGHT = 30;
-const ADDRESS_TWO_LINES_BREAKPOINT = 1198;
-const ADDRESS_THREE_LINES_BREAKPOINT = 668;
+const ADDRESS_LINE_PADDING = 10;
+
+const INDIVIDUAL_CALCULATION_WAIT_TIMEOUT = 50;
+
+const ADDRESS_TWO_LINES_HEIGHT_BREAKPOINT = 25;
+const ADDRESS_THREE_LINES_HEIGHT_BREAKPOINT = 50;
 
 @observer
 export class VirtualAddressesList extends Component<Props> {
 
-  rowHeight: number = 0;
+  list: List;
+  rowHeights: RowHeight[] = [];
+  rowLines: RowLine[] = [];
+  rowHeight: number = 0; // ERASE
+  individualCalculationTimeout: ?TimeoutID = null;
+  breakpoint: Breakpoint = 0;
+  lines: number = 0;
+  individualLines: IndividualLine[] = [];
 
-  updateRowHeight = (width: number) => {
-    let lines = 1;
-    let padding = 10;
-    if (width <= ADDRESS_TWO_LINES_BREAKPOINT) lines = 2;
-    if (width <= ADDRESS_THREE_LINES_BREAKPOINT) lines = 3;
-    if (lines > 1) padding = 0;
-    this.rowHeight = (ADDRESS_LINE_HEIGHT * lines) + padding;
+  /**
+   * Calculate the height of the addressess generically,
+   * based on the container width
+   */
+  calculateGeneralRowHeights = () => {
+    const { rows } = this.props;
+    const { lines } = this;
+    const height = this.getHeightFromNumberOfLines(lines);
+    [...Array(rows.length)]
+      .forEach((x, index: number) => {
+        this.rowHeights[index] = height;
+        this.list.recomputeRowHeights(index);
+      });
   }
+
+  /**
+   * Calculate the height of the addressess individually,
+   * based on their DOM element height
+   */
+  calculateIndividualRowHeights = () => {
+    // If the page just loaded, trigger another update
+    // for when the list is rendered
+    if (this.lines === 0) {
+      this.updateLines();
+      setTimeout(this.calculateIndividualRowHeights, 100);
+    }
+    this.props.rows.forEach(this.calculateRowHeight);
+  }
+
+  /**
+   * Calculate the height of the given row
+   * based on its DOM element height
+   * @param row
+   * @param index
+   */
+  calculateRowHeight = (row: Address, index: number) => {
+
+    const { id } = row;
+    const rowElement = this.getAddressRowElementById(id);
+    let rowHeight = ADDRESS_LINE_HEIGHT;
+    if (rowElement instanceof HTMLElement) rowHeight = rowElement.offsetHeight;
+    const rowLines = this.getRowLinesFromHeight(rowHeight);
+
+    // It will only update the DOM element if it actually changed its height
+    if (rowLines === this.individualLines[index] && this.lines !== 0) return;
+
+    const height = this.getHeightFromNumberOfLines(rowLines);
+    this.rowHeights[index] = height;
+    this.individualLines[index] = rowLines;
+    this.list.recomputeRowHeights(index);
+  }
+
+  /**
+   * Gets the breakpoint based on the container width
+   * @param width
+   * @returns {number}
+   */
+  getBreakpointFromWidth = (width: number) => {
+    if (width >= BREAKPOINT_5) return 5;
+    if (width >= BREAKPOINT_4) return 4;
+    if (width >= BREAKPOINT_3) return 3;
+    if (width >= BREAKPOINT_2) return 2;
+    return 1;
+  }
+
+  /**
+   * Updates the current number of lines for the addresses
+   */
+  updateLines = () => {
+    const { breakpoint } = this;
+    this.lines = this.getLinesFromBreakpoint(breakpoint);
+    this.props.rows.forEach((x, i) => this.individualLines[i] = this.lines);
+  }
+
+  /**
+   * Gets the breakpoint calculation type
+   * @param breakpoint
+   * @returns {string}
+   */
+  getBreakpointCalculationType = (breakpoint: Breakpoint) => {
+    if (breakpoint === 2 || breakpoint === 4) return BREAKPOINT_WITH_INDIVIDUAL_CALCULATION;
+    return BREAKPOINT_WITH_GENERAL_CALCULATION;
+  }
+
+  /**
+   * Gets the number of lines of the given breakpoint
+   * @param breakpoint
+   * @returns {number}
+   */
+  getLinesFromBreakpoint = (breakpoint: Breakpoint) => {
+    if (breakpoint === 1) return 3;
+    if (breakpoint === 3) return 2;
+    if (breakpoint === 5) return 1;
+    return 0;
+  }
+
+  /**
+   * Gets the number of lines based on the row's height
+   * @param height
+   * @returns {number}
+   */
+  getRowLinesFromHeight = (height: number) => {
+    if (height > ADDRESS_THREE_LINES_HEIGHT_BREAKPOINT) return 3;
+    if (height > ADDRESS_TWO_LINES_HEIGHT_BREAKPOINT) return 2;
+    return 1;
+  }
+
+  /**
+   * Calculates the row's height based on the number of lines
+   * @param lines
+   * @returns {number}
+   */
+  getHeightFromNumberOfLines = (lines: number) => {
+    const padding = lines === 1 ? ADDRESS_LINE_PADDING : 0;
+    return (ADDRESS_LINE_HEIGHT * lines) + padding;
+  }
+
+  /**
+   * Decides if the addresses heights need to be updated
+   * and which type of calculation, generic or individual
+   */
+  onResize = ({ width }: { width: number }) => {
+    const newBreakpoint = this.getBreakpointFromWidth(width);
+    const breakpointType = this.getBreakpointCalculationType(newBreakpoint);
+    let didChangBreakpoint = false;
+
+    if (newBreakpoint !== this.breakpoint) {
+      this.breakpoint = newBreakpoint;
+      didChangBreakpoint = true;
+    }
+
+    /**
+     * The breakpoint requires individual calculation,
+     * since the addresses height may vary
+     *
+     * The timeout avoids unecessary DOM manupulation
+     * while the window is still being resized
+     */
+    if (breakpointType === BREAKPOINT_WITH_INDIVIDUAL_CALCULATION) {
+      this.cancelIndividualCalculationTimeout();
+      this.individualCalculationTimeout = setTimeout(
+        this.calculateIndividualRowHeights,
+        INDIVIDUAL_CALCULATION_WAIT_TIMEOUT
+      );
+
+    /**
+     * The new breakpoint allows for generic calculation
+     * based on the container width
+     */
+    } else if (didChangBreakpoint) {
+      this.updateLines();
+      this.calculateGeneralRowHeights();
+    }
+
+  }
+
+  cancelIndividualCalculationTimeout = () => {
+    if (this.individualCalculationTimeout) {
+      clearTimeout(this.individualCalculationTimeout);
+    }
+  }
+
+  getAddressRowElementById = (id: string) => (
+    document.getElementById(`address-${id}`)
+  );
 
   rowRenderer = ({
     index, // Index of row
@@ -51,24 +254,21 @@ export class VirtualAddressesList extends Component<Props> {
 
   render() {
     const { rows } = this.props;
-
+    if (!rows.length) return null;
     return (
       <div className={styles.component}>
-        <AutoSizer onResize={({ width }) => this.updateRowHeight(width)}>
-          {({ width, height }) => {
-            this.updateRowHeight(width);
-            return (
-              <List
-                className={styles.list}
-                width={width}
-                height={height}
-                rowCount={rows.length}
-                rowHeight={this.rowHeight}
-                rowRenderer={this.rowRenderer}
-              />
-            );
-          }
-        }
+        <AutoSizer onResize={this.onResize}>
+          {({ width, height }) => (
+            <List
+              className={styles.list}
+              ref={(list) => this.list = list}
+              width={width}
+              height={height}
+              rowCount={rows.length}
+              rowHeight={({ index }) => this.rowHeights[index]}
+              rowRenderer={this.rowRenderer}
+            />
+          )}
         </AutoSizer>
       </div>
     );

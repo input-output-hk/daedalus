@@ -26,7 +26,12 @@ export class Address extends Component<Props> {
     ]);
     return (
       <div className={addressClasses}>
-        <div className={styles.addressId}>{address.id}</div>
+        <div
+          className={styles.addressId}
+          id={`address-${address.id}`}
+        >
+          {address.id}
+        </div>
         <div className={styles.addressActions}>
           <CopyToClipboard
             text={address.id}

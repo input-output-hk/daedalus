@@ -109,7 +109,9 @@ export class VirtualTransactionList extends Component<Props> {
    * @returns {number | null}
    */
   measureTxContentHeight = (tx: WalletTransaction): ?number => {
+    console.log('tx', tx);
     const txRow = this.getTxRowElementById(tx.id);
+    console.log('txRow', txRow);
     if (txRow) {
       const txElement = txRow.firstChild;
       if (txElement instanceof HTMLElement) {
@@ -146,6 +148,7 @@ export class VirtualTransactionList extends Component<Props> {
    * @param tx
    */
   updateHeightOfTxRow = (tx: WalletTransaction) => {
+    console.log('tx', tx);
     const { list, rowHeights } = this;
     if (!list) return;
     const txIndex = this.findIndexForTx(tx);
@@ -187,11 +190,13 @@ export class VirtualTransactionList extends Component<Props> {
    * @param width
    */
   onResize = ({ width }: { width: number }) => {
+    console.log('width', width);
     if (!this.areTxAddressesBreaking && width < TX_ADDRESSES_START_BREAKING_AT_WIDTH) {
       this.areTxAddressesBreaking = true;
     } else if (this.areTxAddressesBreaking && width > TX_ADDRESSES_START_BREAKING_AT_WIDTH) {
       this.areTxAddressesBreaking = false;
     }
+    console.log('this.areTxAddressesBreaking', this.areTxAddressesBreaking);
     this.props.getExpandedTransactions().map(this.updateHeightOfTxRow);
   };
 
