@@ -18,6 +18,7 @@ Changelog
 - Improved the UX of inline editing fields (like wallet renaming) ([PR 1231](https://github.com/input-output-hk/daedalus/pull/1231))
 - Added a BESTPRACTICES.md document containing rules and recommendations for writing better JavaScript and CSS ([PR 1233](https://github.com/input-output-hk/daedalus/pull/1233))
 - Refactored environment setup and disabled Electron Node integration for the render process ([PR 1099](https://github.com/input-output-hk/daedalus/pull/1099/commits))
+- Implemented Daedalus Windows installer/uninstaller multi-language support ([PR 1287](https://github.com/input-output-hk/daedalus/pull/1287))
 
 ### Fixes
 
