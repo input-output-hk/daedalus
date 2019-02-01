@@ -242,6 +242,7 @@ export default class AdaApi {
       let transactions = txnHistory.map(txn => _createTransactionFromServerData(txn));
       if (loadedTransactions.length) {
         transactions = unionBy(transactions, loadedTransactions, 'id');
+        if (!shouldLoadAll) transactions.splice(limit);
       }
       const total = transactions.length;
       Logger.debug(`AdaApi::searchHistory success: ${stringifyData(txnHistory)}`);
