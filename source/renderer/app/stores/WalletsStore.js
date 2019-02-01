@@ -397,15 +397,7 @@ export default class WalletsStore extends Store {
       if (hasActiveWalletBeenChanged) {
         // Active wallet has been replaced or removed
         this.stores.addresses.lastGeneratedAddress = null;
-        if (this.active) {
-          if (newActiveWallet) {
-            this.active.update(newActiveWallet);
-          } else {
-            this.active = null;
-          }
-        } else {
-          this.active = newActiveWallet;
-        }
+        this.active = newActiveWallet || null;
       } else if (hasActiveWalletBeenUpdated) {
         // Active wallet has been updated
         if (this.active && newActiveWallet) this.active.update(newActiveWallet);
