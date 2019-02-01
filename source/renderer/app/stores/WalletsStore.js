@@ -271,8 +271,8 @@ export default class WalletsStore extends Store {
   };
 
   _pollRefresh = async () => {
-    const { isSynced, isSystemTimeCorrect } = this.stores.networkStatus;
-    return isSynced && isSystemTimeCorrect && await this.refreshWalletsData();
+    const { isSynced} = this.stores.networkStatus;
+    return isSynced && await this.refreshWalletsData();
   };
 
   _updateActiveWalletOnRouteChanges = () => {
