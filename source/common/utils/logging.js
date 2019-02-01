@@ -1,6 +1,5 @@
 // @flow
 import { isEmpty } from 'lodash';
-import { environment } from '../../main/environment';
 import type { MessageContext } from '../types/logging.types';
 
 export const stringifyData = (data: any) => JSON.stringify(data, null, 2);
@@ -18,10 +17,9 @@ export const formatMessage = (message: Object) => {
   // message data
   const date = message.date.toISOString();
   const [year, time] = date.split('T');
-  const [context, msg, data] = message.data;
-
-  // environment data
-  const { network, os, platformVersion, version } = environment;
+  const [context, messageData] = message.data;
+  const { message: msg, data, environmentData } = messageData;
+  const { network, os, platformVersion, version } = environmentData;
 
   let messageBody = {
     at: date,
