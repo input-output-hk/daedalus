@@ -11,17 +11,23 @@ type Props = {
   showUsed: boolean,
 };
 
+const ADDRESS_LINE_HEIGHT = 30;
+const ADDRESS_TWO_LINES_BREAKPOINT = 1198;
+const ADDRESS_THREE_LINES_BREAKPOINT = 668;
+
 @observer
 export class VirtualAddressesList extends Component<Props> {
 
-  /**
-   * Since the transaction addresses are pretty long, they break into the next line on smaller
-   * window sizes and the height of expanded tx rows in the list must be adjusted accordingly.
-   * @param width
-   */
-  onResize = ({ width }: { width: number }) => {
-    console.log('width', width);
-  };
+  rowHeight: number = 0;
+
+  updateRowHeight = (width: number) => {
+    let lines = 1;
+    let padding = 10;
+    if (width <= ADDRESS_TWO_LINES_BREAKPOINT) lines = 2;
+    if (width <= ADDRESS_THREE_LINES_BREAKPOINT) lines = 3;
+    if (lines > 1) padding = 0;
+    this.rowHeight = (ADDRESS_LINE_HEIGHT * lines) + padding;
+  }
 
   rowRenderer = ({
     index, // Index of row
@@ -29,10 +35,8 @@ export class VirtualAddressesList extends Component<Props> {
     style // Style object to be applied to row (to position it);
   }: { key: string, index: number, style: string }) => {
     const { rows, renderRow, showUsed } = this.props;
-    console.log('showUsed', showUsed);
     const address = rows[index];
     const isAddressVisible = !address.used || showUsed;
-    console.log('isAddressVisible', isAddressVisible);
     if (!isAddressVisible) return null;
     return (
       <div
@@ -50,17 +54,21 @@ export class VirtualAddressesList extends Component<Props> {
 
     return (
       <div className={styles.component}>
-        <AutoSizer onResize={this.onResize}>
-          {({ width, height }) => (
-            <List
-              className={styles.list}
-              width={width}
-              height={height}
-              rowCount={rows.length}
-              rowHeight={68}
-              rowRenderer={this.rowRenderer}
-            />
-          )}
+        <AutoSizer onResize={({ width }) => this.updateRowHeight(width)}>
+          {({ width, height }) => {
+            this.updateRowHeight(width);
+            return (
+              <List
+                className={styles.list}
+                width={width}
+                height={height}
+                rowCount={rows.length}
+                rowHeight={this.rowHeight}
+                rowRenderer={this.rowRenderer}
+              />
+            );
+          }
+        }
         </AutoSizer>
       </div>
     );
