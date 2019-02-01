@@ -59,7 +59,7 @@ const onAppReady = async () => {
   const platformVersion = os.release();
   const ram = JSON.stringify(os.totalmem(), null, 2);
   const startTimeStr = new Date().toString();
-  const startTime = `${moment(startTimeStr).format('YYYY-MM-DDTHHmmss.0SSS')}Z`;
+  const startTime = `${moment.utc().format('YYYY-MM-DDTHHmmss.0SSS')}Z`;
 
   updateUserSystemInfoLog({
     cardanoVersion,
