@@ -79,7 +79,7 @@ export default class WalletSettingsStore extends Store {
       result[walletIndex] = wallet;
     });
     this.updateWalletRequest.reset();
-    this.stores.wallets.refreshActiveWallet();
+    this.stores.wallets.updateActiveWallet(wallet);
   };
 
   @action _exportToFile = async (params: WalletExportToFileParams) => {

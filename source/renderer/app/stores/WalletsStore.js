@@ -224,11 +224,8 @@ export default class WalletsStore extends Store {
 
   // ACTIONS
 
-  @action refreshActiveWallet = () => {
-    if (this.hasAnyWallets && this.active) {
-      const activeWalletId = this.active.id;
-      this.active = this.all.find(wallet => wallet.id === activeWalletId);
-    }
+  @action updateActiveWallet = (wallet: Wallet) => {
+    if (this.active) this.active.update(wallet);
   };
 
   @action refreshWalletsData = async () => {
