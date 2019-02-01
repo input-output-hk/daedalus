@@ -2,13 +2,12 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { AutoSizer, List } from 'react-virtualized';
-import type { Addresses, Address } from '../../../../api/addresses/types';
+import type { Addresses, Address } from '../../../api/addresses/types';
 import styles from './VirtualAddressesList.scss';
 
 type Props = {
   rows: Addresses,
   renderRow: Function,
-  showUsed: boolean,
 };
 
 type RowHeight = number;
@@ -65,6 +64,7 @@ export class VirtualAddressesList extends Component<Props> {
   breakpoint: Breakpoint = 0;
   lines: number = 0;
   individualLines: IndividualLine[] = [];
+  width: number = 0;
 
   /**
    * Calculate the height of the addressess generically,
@@ -188,6 +188,7 @@ export class VirtualAddressesList extends Component<Props> {
    * and which type of calculation, generic or individual
    */
   onResize = ({ width }: { width: number }) => {
+    this.width = width;
     const newBreakpoint = this.getBreakpointFromWidth(width);
     const breakpointType = this.getBreakpointCalculationType(newBreakpoint);
     let didChangBreakpoint = false;
@@ -237,10 +238,8 @@ export class VirtualAddressesList extends Component<Props> {
     key, // Unique key within array of rendered rows
     style // Style object to be applied to row (to position it);
   }: { key: string, index: number, style: string }) => {
-    const { rows, renderRow, showUsed } = this.props;
+    const { rows, renderRow } = this.props;
     const address = rows[index];
-    const isAddressVisible = !address.used || showUsed;
-    if (!isAddressVisible) return null;
     return (
       <div
         key={key}
@@ -251,6 +250,9 @@ export class VirtualAddressesList extends Component<Props> {
       </div>
     );
   }
+
+  getRowHeights = ({ index }: { index: number }) => this.rowHeights[index] ||
+    this.getHeightFromNumberOfLines(this.lines);
 
   render() {
     const { rows } = this.props;
@@ -265,7 +267,7 @@ export class VirtualAddressesList extends Component<Props> {
               width={width}
               height={height}
               rowCount={rows.length}
-              rowHeight={({ index }) => this.rowHeights[index]}
+              rowHeight={this.getRowHeights}
               rowRenderer={this.rowRenderer}
             />
           )}

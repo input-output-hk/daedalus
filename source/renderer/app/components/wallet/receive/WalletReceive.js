@@ -18,8 +18,7 @@ import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import type { Addresses, Address as AddressType } from '../../../api/addresses/types';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
-import { SimpleAddressesList } from './render-strategies/SimpleAddressesList';
-import { VirtualAddressesList } from './render-strategies/VirtualAddressesList';
+import { VirtualAddressesList } from './VirtualAddressesList';
 import styles from './WalletReceive.scss';
 import { Address } from './Address';
 
@@ -71,7 +70,6 @@ type Props = {
   onCopyAddress: Function,
   isSidebarExpanded: boolean,
   walletHasPassword: boolean,
-  isRenderingAsVirtualList?: boolean,
   isSubmitting: boolean,
   error?: ?LocalizableError,
 };
@@ -144,6 +142,9 @@ export default class WalletReceive extends Component<Props, State> {
     this.passwordField && this.passwordField.focus();
   };
 
+  getFilteredAddresses = (walletAddresses: Addresses): Addresses => walletAddresses
+    .filter((address: AddressType) => (!address.used || this.state.showUsed));
+
   render() {
     const { form } = this;
     const {
@@ -151,7 +152,6 @@ export default class WalletReceive extends Component<Props, State> {
       onCopyAddress, isSidebarExpanded,
       walletHasPassword, isSubmitting,
       error, isWalletAddressUsed,
-      isRenderingAsVirtualList,
     } = this.props;
     const { intl } = this.context;
     const { showUsed } = this.state;
@@ -206,7 +206,7 @@ export default class WalletReceive extends Component<Props, State> {
       <div className={styles.component}>
 
         <BorderedBox
-          fullHeight={isRenderingAsVirtualList}
+          fullHeight
         >
           <div className={styles.container}>
             <div className={styles.qrCodeAndInstructions}>
@@ -258,19 +258,10 @@ export default class WalletReceive extends Component<Props, State> {
                 </div>
               </h2>
 
-              {isRenderingAsVirtualList ? (
-                <VirtualAddressesList
-                  rows={walletAddresses}
-                  showUsed={showUsed}
-                  renderRow={this.renderRow}
-                />
-              ) : (
-                <SimpleAddressesList
-                  rows={walletAddresses}
-                  showUsed={showUsed}
-                  renderRow={this.renderRow}
-                />
-              )}
+              <VirtualAddressesList
+                rows={this.getFilteredAddresses(walletAddresses)}
+                renderRow={this.renderRow}
+              />
             </div>
           </div>
         </BorderedBox>
