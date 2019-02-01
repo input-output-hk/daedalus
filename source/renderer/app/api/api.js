@@ -1,7 +1,8 @@
 // @flow
-import { split, get } from 'lodash';
+import { split, get, unionBy } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
+import moment from 'moment';
 
 // domains
 import Wallet from '../domains/Wallet';
@@ -61,7 +62,8 @@ import {
 import {
   LOVELACES_PER_ADA,
   MAX_TRANSACTIONS_PER_PAGE,
-  MAX_TRANSACTION_CONFIRMATIONS
+  MAX_TRANSACTION_CONFIRMATIONS,
+  TX_AGE_POLLING_THRESHOLD
 } from '../config/numbersConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
@@ -197,7 +199,7 @@ export default class AdaApi {
 
   getTransactions = async (request: GetTransactionsRequest): Promise<GetTransactionsResponse> => {
     Logger.debug(`AdaApi::searchHistory called: ${stringifyData(request)}`);
-    const { walletId, skip, limit } = request;
+    const { walletId, skip, limit, isFirstLoad, loadedTransactions } = request;
     const accounts: Accounts = await getAccounts(this.config, { walletId });
 
     if (!accounts.length || !accounts[0].index) {
@@ -210,12 +212,14 @@ export default class AdaApi {
       perPage = MAX_TRANSACTIONS_PER_PAGE;
     }
 
+    const tenMinutesAgo = moment.utc(Date.now() - TX_AGE_POLLING_THRESHOLD).format('YYYY-MM-DDTHH:mm:ss');
     const params = {
       wallet_id: walletId,
       account_index: accounts[0].index,
       page: skip === 0 ? 1 : skip + 1,
       per_page: perPage,
       sort_by: 'DES[created_at]',
+      created_at: !isFirstLoad ? `GT[${tenMinutesAgo}]` : '',
     };
     const pagesToBeLoaded = Math.ceil(limit / params.per_page);
 
@@ -224,12 +228,10 @@ export default class AdaApi {
       const { meta, data: txnHistory } = response;
       const { totalPages } = meta.pagination;
       const hasMultiplePages = (totalPages > 1 && (shouldLoadAll || limit > perPage));
-
       if (hasMultiplePages) {
         let page = 2;
         const hasNextPage = () => page < totalPages + 1;
         const shouldLoadNextPage = () => shouldLoadAll || page <= pagesToBeLoaded;
-
         for (page; (hasNextPage() && shouldLoadNextPage()); page++) {
           const { data: pageHistory } =
             await getTransactionHistory(this.config, Object.assign(params, { page }));
@@ -237,8 +239,10 @@ export default class AdaApi {
         }
         if (!shouldLoadAll) txnHistory.splice(limit);
       }
-
-      const transactions = txnHistory.map(txn => _createTransactionFromServerData(txn));
+      let transactions = txnHistory.map(txn => _createTransactionFromServerData(txn));
+      if (loadedTransactions.length) {
+        transactions = unionBy(transactions, loadedTransactions, 'id');
+      }
       const total = transactions.length;
       Logger.debug(`AdaApi::searchHistory success: ${stringifyData(txnHistory)}`);
       return new Promise(resolve => resolve({ transactions, total }));

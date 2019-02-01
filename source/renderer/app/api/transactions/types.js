@@ -44,6 +44,8 @@ export type GetTransactionsRequest = {
   searchTerm: string,
   skip: number,
   limit: number,
+  isFirstLoad: boolean,
+  loadedTransactions: Array<Transaction>,
 };
 
 export type TransactionRequest = {

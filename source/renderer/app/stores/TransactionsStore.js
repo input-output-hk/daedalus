@@ -1,7 +1,7 @@
 // @flow
 import { observable, computed, action, extendObservable, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
-import { find } from 'lodash';
+import { find, get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { WalletTransaction, transactionTypes } from '../domains/WalletTransaction';
@@ -127,6 +127,8 @@ export default class TransactionsStore extends Store {
           limit: this.RECENT_TRANSACTIONS_LIMIT,
           skip: 0,
           searchTerm: '',
+          isFirstLoad: !recentRequest.wasExecuted,
+          loadedTransactions: get(recentRequest, 'result.transactions', []),
         });
         const allRequest = this._getTransactionsAllRequest(wallet.id);
         allRequest.execute({
@@ -134,6 +136,8 @@ export default class TransactionsStore extends Store {
           limit: this.INITIAL_SEARCH_LIMIT,
           skip: 0,
           searchTerm: '',
+          isFirstLoad: !allRequest.wasExecuted,
+          loadedTransactions: get(allRequest, 'result.transactions', []),
         });
       }
     }
