@@ -214,6 +214,11 @@ export default class Transaction extends Component<Props> {
       isExpanded ? styles.detailsExpanded : styles.detailsClosed
     ]);
 
+    const assuranceLevelRowStyles = classNames([
+      styles.row,
+      styles.retainHeight
+    ]);
+
     const arrowStyles = classNames([
       styles.arrow,
       isExpanded ? styles.arrowExpanded : null
@@ -317,7 +322,7 @@ export default class Transaction extends Component<Props> {
                 </span>
               ))}
 
-              <div className={styles.row}>
+              <div className={assuranceLevelRowStyles}>
                 <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
                 {!isRestoreActive && (
                   transactionState === transactionStates.OK ||
