@@ -172,6 +172,9 @@ html, body, :global(#root), :global(#root) > [data-reactroot] {
     border: 7px solid transparent;
     border-radius: 12px;
     background-clip: content-box;
+    &:vertical {
+      min-height: 30px;
+    }
   }
 }
 
