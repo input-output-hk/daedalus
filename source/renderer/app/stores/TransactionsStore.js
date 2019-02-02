@@ -121,6 +121,7 @@ export default class TransactionsStore extends Store {
     if (this.stores.networkStatus.isConnected) {
       const allWallets = this.stores.wallets.all;
       for (const wallet of allWallets) {
+        const isRestoreActive = get(wallet, 'syncState.tag', '') === 'restoring';
         const recentRequest = this._getTransactionsRecentRequest(wallet.id);
         recentRequest.execute({
           walletId: wallet.id,
@@ -128,6 +129,7 @@ export default class TransactionsStore extends Store {
           skip: 0,
           searchTerm: '',
           isFirstLoad: !recentRequest.wasExecuted,
+          isRestoreActive,
           loadedTransactions: get(recentRequest, 'result.transactions', []),
         });
         const allRequest = this._getTransactionsAllRequest(wallet.id);
@@ -137,6 +139,7 @@ export default class TransactionsStore extends Store {
           skip: 0,
           searchTerm: '',
           isFirstLoad: !allRequest.wasExecuted,
+          isRestoreActive,
           loadedTransactions: get(allRequest, 'result.transactions', []),
         });
       }

@@ -199,7 +199,11 @@ export default class AdaApi {
 
   getTransactions = async (request: GetTransactionsRequest): Promise<GetTransactionsResponse> => {
     Logger.debug(`AdaApi::searchHistory called: ${stringifyData(request)}`);
-    const { walletId, skip, limit, isFirstLoad, loadedTransactions } = request;
+    const {
+      walletId, skip, limit,
+      isFirstLoad, isRestoreActive,
+      loadedTransactions,
+    } = request;
     const accounts: Accounts = await getAccounts(this.config, { walletId });
 
     if (!accounts.length || !accounts[0].index) {
@@ -212,40 +216,64 @@ export default class AdaApi {
       perPage = MAX_TRANSACTIONS_PER_PAGE;
     }
 
-    const tenMinutesAgo = moment.utc(Date.now() - TX_AGE_POLLING_THRESHOLD).format('YYYY-MM-DDTHH:mm:ss');
     const params = {
       wallet_id: walletId,
       account_index: accounts[0].index,
       page: skip === 0 ? 1 : skip + 1,
       per_page: perPage,
       sort_by: 'DES[created_at]',
-      created_at: !isFirstLoad ? `GT[${tenMinutesAgo}]` : '',
+      created_at: '',
     };
+
+    if (isRestoreActive) {
+      if (loadedTransactions.length) {
+        const latestLoadedTransactionDate = loadedTransactions[0].date;
+        const latestLoadedTransactionDateString =
+          moment.utc(latestLoadedTransactionDate).format('YYYY-MM-DDTHH:mm:ss');
+        // During restoration we need to fetch only transactions newer than the latest loaded one
+        Object.assign(params, { created_at: `LTE[${latestLoadedTransactionDateString}]` });
+      }
+    } else if (!isFirstLoad) {
+      const tenMinutesAgo =
+        moment.utc(Date.now() - TX_AGE_POLLING_THRESHOLD).format('YYYY-MM-DDTHH:mm:ss');
+      // Since we load all transactions in a first load, later on we only care about fresh ones
+      Object.assign(params, { created_at: `GT[${tenMinutesAgo}]` });
+    }
+
     const pagesToBeLoaded = Math.ceil(limit / params.per_page);
 
     try {
       const response: Transactions = await getTransactionHistory(this.config, params);
-      const { meta, data: txnHistory } = response;
+      const { meta, data: txHistory } = response;
       const { totalPages } = meta.pagination;
+
+      // Load additional pages of transactions
       const hasMultiplePages = (totalPages > 1 && (shouldLoadAll || limit > perPage));
       if (hasMultiplePages) {
         let page = 2;
-        const hasNextPage = () => page < totalPages + 1;
+        const hasNextPage = () => (page < totalPages + 1);
         const shouldLoadNextPage = () => shouldLoadAll || page <= pagesToBeLoaded;
         for (page; (hasNextPage() && shouldLoadNextPage()); page++) {
           const { data: pageHistory } =
             await getTransactionHistory(this.config, Object.assign(params, { page }));
-          txnHistory.push(...pageHistory);
+          txHistory.push(...pageHistory);
         }
-        if (!shouldLoadAll) txnHistory.splice(limit);
       }
-      let transactions = txnHistory.map(txn => _createTransactionFromServerData(txn));
-      if (loadedTransactions.length) {
-        transactions = unionBy(transactions, loadedTransactions, 'id');
-        if (!shouldLoadAll) transactions.splice(limit);
-      }
+
+      let transactions = txHistory.map(tx => _createTransactionFromServerData(tx));
+
+      // Merge newly loaded and previously loaded transactions
+      // - unionBy also serves the purpose of removing transaction duplicates
+      //   which may occur as a side-effect of transaction request pagination
+      //   as multi-page requests are not executed at the exact same time!
+      transactions = unionBy(transactions, loadedTransactions, 'id');
+
+      // Enforce the limit in case we are not loading all transactions
+      if (!shouldLoadAll) transactions.splice(limit);
+
       const total = transactions.length;
-      Logger.debug(`AdaApi::searchHistory success: ${stringifyData(txnHistory)}`);
+
+      Logger.debug(`AdaApi::searchHistory success: ${stringifyData(txHistory)}`);
       return new Promise(resolve => resolve({ transactions, total }));
     } catch (error) {
       Logger.error(`AdaApi::searchHistory error: ${stringifyData(error)}`);
