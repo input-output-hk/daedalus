@@ -231,13 +231,13 @@ export default class AdaApi {
         const latestLoadedTransactionDateString =
           moment.utc(latestLoadedTransactionDate).format('YYYY-MM-DDTHH:mm:ss');
         // During restoration we need to fetch only transactions newer than the latest loaded one
-        Object.assign(params, { created_at: `LTE[${latestLoadedTransactionDateString}]` });
+        Object.assign(params, { created_at: `GTE[${latestLoadedTransactionDateString}]` });
       }
     } else if (!isFirstLoad) {
       const tenMinutesAgo =
         moment.utc(Date.now() - TX_AGE_POLLING_THRESHOLD).format('YYYY-MM-DDTHH:mm:ss');
       // Since we load all transactions in a first load, later on we only care about fresh ones
-      Object.assign(params, { created_at: `GT[${tenMinutesAgo}]` });
+      Object.assign(params, { created_at: `GTE[${tenMinutesAgo}]` });
     }
 
     const pagesToBeLoaded = Math.ceil(limit / params.per_page);
