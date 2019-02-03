@@ -27,6 +27,7 @@ export default class WalletsStore extends Store {
   /* eslint-disable max-len */
   @observable active: ?Wallet = null;
   @observable isRestoreActive: boolean = false;
+  @observable restoringWalletId: ?string = null;
   @observable walletsRequest: Request<Array<Wallet>> = new Request(this.api.ada.getWallets);
   @observable importFromFileRequest: Request<Wallet> = new Request(this.api.ada.importWalletFromFile);
   @observable createWalletRequest: Request<Wallet> = new Request(this.api.ada.createWallet);
@@ -299,10 +300,17 @@ export default class WalletsStore extends Store {
     if (this.stores.networkStatus.isConnected) {
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
+      let restoredWalletId = null; // id of a wallet which has just been restored
       runInAction('refresh active wallet', () => {
         if (this.active) {
           this._setActiveWallet({ walletId: this.active.id });
         }
+      });
+      runInAction('refresh active wallet restore', () => {
+        const restoringWallet = find(result, ['syncState.tag', 'restoring']);
+        const restoringWalletId = get(restoringWallet, 'id', null);
+        restoredWalletId = restoringWalletId === null && this.restoringWalletId || null;
+        this._setIsRestoreActive(restoringWalletId);
       });
       runInAction('refresh address data', () => {
         const walletIds = result.map((wallet: Wallet) => wallet.id);
@@ -319,17 +327,14 @@ export default class WalletsStore extends Store {
           recentRequest: this.stores.transactions._getTransactionsRecentRequest(walletId),
           allRequest: this.stores.transactions._getTransactionsAllRequest(walletId),
         }));
-        this.stores.transactions._refreshTransactionData();
-      });
-      runInAction('refresh active wallet restore', () => {
-        const restoringWallet = typeof find(result, ['syncState.tag', 'restoring']) !== 'undefined';
-        this._setIsRestoreActive(restoringWallet);
+        this.stores.transactions._refreshTransactionData(restoredWalletId);
       });
     }
   };
 
-  @action _setIsRestoreActive = (active: boolean) => {
-    this.isRestoreActive = active;
+  @action _setIsRestoreActive = (restoringWalletId: ?string) => {
+    this.isRestoreActive = restoringWalletId !== null;
+    this.restoringWalletId = restoringWalletId;
   };
 
   @action _restoreWallet = async (params: {

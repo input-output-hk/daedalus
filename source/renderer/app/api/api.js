@@ -180,7 +180,11 @@ export default class AdaApi {
     const { walletId } = request;
     try {
       const accounts: Accounts = await getAccounts(this.config, { walletId });
-      Logger.debug(`AdaApi::getAddresses success: ${stringifyData(accounts)}`);
+
+      const responseStats = accounts.map(account => (
+        Object.assign({}, account, { addresses: account.addresses.length })
+      ));
+      Logger.debug(`AdaApi::getAddresses success: ${stringifyData(responseStats)}`);
 
       if (!accounts || !accounts.length) {
         return new Promise(resolve => resolve({ accountIndex: null, addresses: [] }));
@@ -198,10 +202,15 @@ export default class AdaApi {
   };
 
   getTransactions = async (request: GetTransactionsRequest): Promise<GetTransactionsResponse> => {
-    Logger.debug(`AdaApi::searchHistory called: ${stringifyData(request)}`);
+    const requestStats = Object.assign({}, request, {
+      cachedTransactions: request.cachedTransactions.length,
+    });
+    Logger.debug(`AdaApi::searchHistory called: ${stringifyData(requestStats)}`);
     const {
       walletId, skip, limit,
-      isFirstLoad, isRestoreActive,
+      isFirstLoad, // during first load we fetch all wallet's transactions
+      isRestoreActive, // during restoration we fetch only missing transactions
+      isRestoreCompleted, // once restoration is done we fetch potentially missing transactions
       cachedTransactions,
     } = request;
     const accounts: Accounts = await getAccounts(this.config, { walletId });
@@ -225,7 +234,7 @@ export default class AdaApi {
       created_at: '',
     };
 
-    const shouldLoadOnlyFresh = !isFirstLoad && !isRestoreActive;
+    const shouldLoadOnlyFresh = !isFirstLoad && !isRestoreActive && !isRestoreCompleted;
     if (shouldLoadOnlyFresh) {
       const tenMinutesAgo =
         moment.utc(Date.now() - TX_AGE_POLLING_THRESHOLD).format('YYYY-MM-DDTHH:mm:ss');
@@ -249,7 +258,7 @@ export default class AdaApi {
         let page = 2;
         const hasNextPage = () => {
           const hasMorePages = (page < totalPages + 1);
-          if (isRestoreActive && hasMorePages) {
+          if ((isRestoreActive || isRestoreCompleted) && hasMorePages) {
             const loadedTransactions = unionBy(transactions, cachedTransactions, 'id');
             const hasMoreTransactions = (totalTransactions - loadedTransactions.length) > 0;
             return hasMoreTransactions;
@@ -275,7 +284,17 @@ export default class AdaApi {
 
       const total = transactions.length;
 
-      Logger.debug(`AdaApi::searchHistory success: ${total} transactions loaded`);
+      const responseStats = {
+        apiRequested: limit || 'all',
+        apiReturned: totalTransactions,
+        apiPagesTotal: totalPages,
+        apiPagesRequested: params.page,
+        daedalusCached: cachedTransactions.length,
+        daedalusLoaded: total - cachedTransactions.length,
+        daedalusTotal: total,
+      };
+      // eslint-disable-next-line max-len
+      Logger.debug(`AdaApi::searchHistory success: ${total} transactions loaded ${stringifyData(responseStats)}`);
       return new Promise(resolve => resolve({ transactions, total }));
     } catch (error) {
       Logger.error(`AdaApi::searchHistory error: ${stringifyData(error)}`);
