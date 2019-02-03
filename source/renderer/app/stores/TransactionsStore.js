@@ -130,7 +130,7 @@ export default class TransactionsStore extends Store {
           searchTerm: '',
           isFirstLoad: !recentRequest.wasExecuted,
           isRestoreActive,
-          loadedTransactions: get(recentRequest, 'result.transactions', []),
+          cachedTransactions: get(recentRequest, 'result.transactions', []),
         });
         const allRequest = this._getTransactionsAllRequest(wallet.id);
         allRequest.execute({
@@ -140,7 +140,7 @@ export default class TransactionsStore extends Store {
           searchTerm: '',
           isFirstLoad: !allRequest.wasExecuted,
           isRestoreActive,
-          loadedTransactions: get(allRequest, 'result.transactions', []),
+          cachedTransactions: get(allRequest, 'result.transactions', []),
         });
       }
     }

@@ -202,7 +202,7 @@ export default class AdaApi {
     const {
       walletId, skip, limit,
       isFirstLoad, isRestoreActive,
-      loadedTransactions,
+      cachedTransactions,
     } = request;
     const accounts: Accounts = await getAccounts(this.config, { walletId });
 
@@ -225,15 +225,8 @@ export default class AdaApi {
       created_at: '',
     };
 
-    if (isRestoreActive) {
-      if (loadedTransactions.length) {
-        const latestLoadedTransactionDate = loadedTransactions[0].date;
-        const latestLoadedTransactionDateString =
-          moment.utc(latestLoadedTransactionDate).format('YYYY-MM-DDTHH:mm:ss');
-        // During restoration we need to fetch only transactions newer than the latest loaded one
-        Object.assign(params, { created_at: `GTE[${latestLoadedTransactionDateString}]` });
-      }
-    } else if (!isFirstLoad) {
+    const shouldLoadOnlyFresh = !isRestoreActive && !isFirstLoad;
+    if (shouldLoadOnlyFresh) {
       const tenMinutesAgo =
         moment.utc(Date.now() - TX_AGE_POLLING_THRESHOLD).format('YYYY-MM-DDTHH:mm:ss');
       // Since we load all transactions in a first load, later on we only care about fresh ones
@@ -243,37 +236,46 @@ export default class AdaApi {
     const pagesToBeLoaded = Math.ceil(limit / params.per_page);
 
     try {
+      // Load first page of transactions
       const response: Transactions = await getTransactionHistory(this.config, params);
       const { meta, data: txHistory } = response;
-      const { totalPages } = meta.pagination;
+      const { totalPages, totalEntries: totalTransactions } = meta.pagination;
+
+      let transactions = txHistory.map(tx => _createTransactionFromServerData(tx));
 
       // Load additional pages of transactions
       const hasMultiplePages = (totalPages > 1 && (shouldLoadAll || limit > perPage));
       if (hasMultiplePages) {
         let page = 2;
-        const hasNextPage = () => (page < totalPages + 1);
+        const hasNextPage = () => {
+          const hasMorePages = (page < totalPages + 1);
+          if (isRestoreActive && hasMorePages) {
+            const loadedTransactions = unionBy(transactions, cachedTransactions, 'id');
+            const hasMoreTransactions = (totalTransactions - loadedTransactions) > 0;
+            return hasMoreTransactions;
+          }
+          return hasMorePages;
+        };
         const shouldLoadNextPage = () => shouldLoadAll || page <= pagesToBeLoaded;
         for (page; (hasNextPage() && shouldLoadNextPage()); page++) {
           const { data: pageHistory } =
             await getTransactionHistory(this.config, Object.assign(params, { page }));
-          txHistory.push(...pageHistory);
+          transactions.push(...pageHistory.map(tx => _createTransactionFromServerData(tx)));
         }
       }
-
-      let transactions = txHistory.map(tx => _createTransactionFromServerData(tx));
 
       // Merge newly loaded and previously loaded transactions
       // - unionBy also serves the purpose of removing transaction duplicates
       //   which may occur as a side-effect of transaction request pagination
       //   as multi-page requests are not executed at the exact same time!
-      transactions = unionBy(transactions, loadedTransactions, 'id');
+      transactions = unionBy(transactions, cachedTransactions, 'id');
 
       // Enforce the limit in case we are not loading all transactions
       if (!shouldLoadAll) transactions.splice(limit);
 
       const total = transactions.length;
 
-      Logger.debug(`AdaApi::searchHistory success: ${stringifyData(txHistory)}`);
+      Logger.debug(`AdaApi::searchHistory success: ${total} transactions loaded`);
       return new Promise(resolve => resolve({ transactions, total }));
     } catch (error) {
       Logger.error(`AdaApi::searchHistory error: ${stringifyData(error)}`);

@@ -46,7 +46,7 @@ export type GetTransactionsRequest = {
   limit: number,
   isFirstLoad: boolean,
   isRestoreActive: boolean,
-  loadedTransactions: Array<WalletTransaction>,
+  cachedTransactions: Array<WalletTransaction>,
 };
 
 export type TransactionRequest = {
