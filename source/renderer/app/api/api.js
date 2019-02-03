@@ -225,7 +225,7 @@ export default class AdaApi {
       created_at: '',
     };
 
-    const shouldLoadOnlyFresh = !isRestoreActive && !isFirstLoad;
+    const shouldLoadOnlyFresh = !isFirstLoad && !isRestoreActive;
     if (shouldLoadOnlyFresh) {
       const tenMinutesAgo =
         moment.utc(Date.now() - TX_AGE_POLLING_THRESHOLD).format('YYYY-MM-DDTHH:mm:ss');
@@ -251,7 +251,7 @@ export default class AdaApi {
           const hasMorePages = (page < totalPages + 1);
           if (isRestoreActive && hasMorePages) {
             const loadedTransactions = unionBy(transactions, cachedTransactions, 'id');
-            const hasMoreTransactions = (totalTransactions - loadedTransactions) > 0;
+            const hasMoreTransactions = (totalTransactions - loadedTransactions.length) > 0;
             return hasMoreTransactions;
           }
           return hasMorePages;

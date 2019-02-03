@@ -116,7 +116,6 @@ export default class TransactionsStore extends Store {
     return result ? result.transactions.length : 0;
   }
 
-
   @action _refreshTransactionData = () => {
     if (this.stores.networkStatus.isConnected) {
       const allWallets = this.stores.wallets.all;
