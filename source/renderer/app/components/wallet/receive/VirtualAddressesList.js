@@ -78,7 +78,7 @@ export class VirtualAddressesList extends Component<Props> {
       this.rowHeights[index] = height;
       this.list.recomputeRowHeights(index);
     });
-  }
+  };
 
   /**
    * Calculate the height of the addressess individually,
@@ -92,7 +92,7 @@ export class VirtualAddressesList extends Component<Props> {
       setTimeout(this.calculateIndividualRowHeights, 100);
     }
     this.props.rows.forEach(this.calculateRowHeight);
-  }
+  };
 
   /**
    * Calculate the height of the given row
@@ -101,21 +101,21 @@ export class VirtualAddressesList extends Component<Props> {
    * @param index
    */
   calculateRowHeight = (row: Address, index: number) => {
-
     const { id } = row;
     const rowElement = this.getAddressRowElementById(id);
     let rowHeight = ADDRESS_LINE_HEIGHT;
     if (rowElement instanceof HTMLElement) rowHeight = rowElement.offsetHeight;
     const rowLines = this.getRowLinesFromHeight(rowHeight);
 
-    // It will only update the DOM element if it actually changed its height
-    if (rowLines === this.individualNumberOfLines[index] && this.genericNumberOfLines !== 0) return;
+    if ( // It will only update the DOM element if it actually changed its height
+      rowLines === this.individualNumberOfLines[index] &&
+      this.genericNumberOfLines !== 0
+    ) return;
 
-    const height = this.getHeightFromNumberOfLines(rowLines);
-    this.rowHeights[index] = height;
+    this.rowHeights[index] = this.getHeightFromNumberOfLines(rowLines);
     this.individualNumberOfLines[index] = rowLines;
     this.list.recomputeRowHeights(index);
-  }
+  };
 
   /**
    * Gets the breakpoint based on the container width
@@ -128,7 +128,7 @@ export class VirtualAddressesList extends Component<Props> {
     if (width >= BREAKPOINT_3) return 3;
     if (width >= BREAKPOINT_2) return 2;
     return 1;
-  }
+  };
 
   /**
    * Updates the current number of lines for the addresses
@@ -137,7 +137,7 @@ export class VirtualAddressesList extends Component<Props> {
     const { currentBreakpoint } = this;
     this.genericNumberOfLines = this.getLinesFromBreakpoint(currentBreakpoint);
     this.props.rows.forEach((x, i) => this.individualNumberOfLines[i] = this.genericNumberOfLines);
-  }
+  };
 
   /**
    * Gets the breakpoint calculation type
@@ -147,7 +147,7 @@ export class VirtualAddressesList extends Component<Props> {
   getBreakpointCalculationType = (breakpoint: Breakpoint) => {
     if (breakpoint === 2 || breakpoint === 4) return BREAKPOINT_WITH_INDIVIDUAL_CALCULATION;
     return BREAKPOINT_WITH_GENERAL_CALCULATION;
-  }
+  };
 
   /**
    * Gets the number of lines of the given breakpoint
@@ -159,7 +159,7 @@ export class VirtualAddressesList extends Component<Props> {
     if (breakpoint === 3) return 2;
     if (breakpoint === 5) return 1;
     return 0;
-  }
+  };
 
   /**
    * Gets the number of lines based on the row's height
@@ -170,7 +170,7 @@ export class VirtualAddressesList extends Component<Props> {
     if (height > ADDRESS_HEIGHT_BREAKPOINT_THREE_LINES) return 3;
     if (height > ADDRESS_HEIGHT_BREAKPOINT_TWO_LINES) return 2;
     return 1;
-  }
+  };
 
   /**
    * Calculates the row's height based on the number of lines
@@ -189,11 +189,11 @@ export class VirtualAddressesList extends Component<Props> {
     this.width = width;
     const newBreakpoint = this.getBreakpointFromWidth(width);
     const breakpointType = this.getBreakpointCalculationType(newBreakpoint);
-    let didChangBreakpoint = false;
+    let didChangeBreakpoint = false;
 
     if (newBreakpoint !== this.currentBreakpoint) {
       this.currentBreakpoint = newBreakpoint;
-      didChangBreakpoint = true;
+      didChangeBreakpoint = true;
     }
 
     /**
@@ -210,16 +210,16 @@ export class VirtualAddressesList extends Component<Props> {
         INDIVIDUAL_CALCULATION_WAIT_TIMEOUT
       );
 
-    /**
-     * The new breakpoint allows for generic calculation
-     * based on the container width
-     */
-    } else if (didChangBreakpoint) {
+      /**
+       * The new breakpoint allows for generic calculation
+       * based on the container width
+       */
+    } else if (didChangeBreakpoint) {
       this.updateLines();
       this.calculateGeneralRowHeights();
     }
+  };
 
-  }
   /**
    * Updates width and triggers re-calculation of breakpoints after a debounced resize.
    */
@@ -231,7 +231,7 @@ export class VirtualAddressesList extends Component<Props> {
     if (this.individualCalculationTimeout) {
       clearTimeout(this.individualCalculationTimeout);
     }
-  }
+  };
 
   getAddressRowElementById = (id: string) => (
     document.getElementById(`address-${id}`)
@@ -253,10 +253,11 @@ export class VirtualAddressesList extends Component<Props> {
         {renderRow(address, index)}
       </div>
     );
-  }
+  };
 
-  getRowHeights = ({ index }: { index: number }) => this.rowHeights[index] ||
-    this.getHeightFromNumberOfLines(this.genericNumberOfLines);
+  getRowHeights = ({ index }: { index: number }) => (
+    this.rowHeights[index] || this.getHeightFromNumberOfLines(this.genericNumberOfLines)
+  );
 
   render() {
     const { rows } = this.props;
