@@ -14,6 +14,7 @@ import {
   TxnAssuranceLevelOptions,
   WalletTransaction,
 } from '../../../domains/WalletTransaction';
+import { MAX_TRANSACTION_CONFIRMATIONS } from '../../../config/numbersConfig';
 import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';
 import { getNetworkExplorerUrl } from '../../../utils/network';
@@ -135,11 +136,7 @@ type Props = {
   onOpenExternalLink: ?Function,
 };
 
-type State = {
-  isExpanded: boolean,
-};
-
-export default class Transaction extends Component<Props, State> {
+export default class Transaction extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -158,6 +155,12 @@ export default class Transaction extends Component<Props, State> {
       onOpenExternalLink(link);
     }
   }
+
+  displayNumberOfConfirmations = (confirmations: number) => {
+    let text = Math.min(confirmations, MAX_TRANSACTION_CONFIRMATIONS).toLocaleString();
+    if (confirmations > MAX_TRANSACTION_CONFIRMATIONS) text += '+';
+    return text;
+  };
 
   render() {
     const {
@@ -193,6 +196,11 @@ export default class Transaction extends Component<Props, State> {
       styles.details,
       canOpenExplorer ? styles.clickable : null,
       isExpanded ? styles.detailsExpanded : styles.detailsClosed
+    ]);
+
+    const assuranceLevelRowStyles = classNames([
+      styles.row,
+      styles.retainHeight
     ]);
 
     const arrowStyles = classNames([
@@ -298,7 +306,7 @@ export default class Transaction extends Component<Props, State> {
                 </span>
               ))}
 
-              <div className={styles.row}>
+              <div className={assuranceLevelRowStyles}>
                 <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
                 {!isRestoreActive && (
                   transactionState === transactionStates.OK ||
@@ -307,7 +315,7 @@ export default class Transaction extends Component<Props, State> {
                   <span>
                     {transactionState === transactionStates.OK &&
                       <span className={styles.assuranceLevel}>{status}.&nbsp;</span>}
-                    {data.numberOfConfirmations.toLocaleString()}&nbsp;
+                    {this.displayNumberOfConfirmations(data.numberOfConfirmations)}&nbsp;
                     {intl.formatMessage(messages.confirmations)}.
                   </span>
                   ) : null}

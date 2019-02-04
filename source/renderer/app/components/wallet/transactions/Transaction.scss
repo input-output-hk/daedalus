@@ -174,15 +174,24 @@
 .details {
   height: auto;
   cursor: default;
+
+  .row {
+    &.retainHeight {
+      min-height: 40px;
+    }
+  }
+
   * + h2,
   * + .row {
     margin-top: 20px;
   }
+
   h2 {
     font-family: var(--font-medium);
     font-size: 16px;
     margin-bottom: 8px;
   }
+
   span {
     font-family: var(--font-light);
     font-size: 14px;

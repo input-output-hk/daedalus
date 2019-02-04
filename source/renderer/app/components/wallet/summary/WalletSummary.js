@@ -9,6 +9,7 @@ import BorderedBox from '../../widgets/BorderedBox';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import type { UnconfirmedAmount } from '../../../types/unconfirmedAmountType';
 import styles from './WalletSummary.scss';
+import Wallet from '../../../domains/Wallet';
 
 const messages = defineMessages({
   pendingOutgoingConfirmationLabel: {
@@ -29,8 +30,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  walletName: string,
-  amount: string,
+  wallet: Wallet,
   numberOfTransactions: number,
   pendingAmount: UnconfirmedAmount,
   isLoadingTransactions: boolean,
@@ -46,8 +46,7 @@ export default class WalletSummary extends Component<Props> {
 
   render() {
     const {
-      walletName,
-      amount,
+      wallet,
       pendingAmount,
       numberOfTransactions,
       isLoadingTransactions,
@@ -57,9 +56,9 @@ export default class WalletSummary extends Component<Props> {
     return (
       <div className={styles.component}>
         <BorderedBox>
-          <div className={styles.walletName}>{walletName}</div>
+          <div className={styles.walletName}>{wallet.name}</div>
           <div className={styles.walletAmount}>
-            {amount}
+            {wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
             <SVGInline svg={adaSymbolBig} className={styles.currencySymbolBig} />
           </div>
 

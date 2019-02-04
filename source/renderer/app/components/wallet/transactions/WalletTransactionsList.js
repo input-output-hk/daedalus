@@ -52,6 +52,7 @@ type Props = {
   onShowMoreTransactions?: Function,
   onOpenExternalLink?: Function,
   showMoreTransactionsButton?: boolean,
+  totalAvailable: number,
   transactions: Array<WalletTransaction>,
   walletId: string,
 };
@@ -214,6 +215,7 @@ export default class WalletTransactionsList extends Component<Props> {
       isRenderingAsVirtualList,
       isRestoreActive,
       showMoreTransactionsButton,
+      totalAvailable,
       transactions,
       walletId,
     } = this.props;
@@ -275,6 +277,7 @@ export default class WalletTransactionsList extends Component<Props> {
             ref={(list) => this.virtualList = list}
             renderRow={this.renderItem}
             rows={rows}
+            totalRows={totalAvailable}
           />
         ) : (
           <SimpleTransactionList

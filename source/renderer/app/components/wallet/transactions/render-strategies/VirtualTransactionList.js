@@ -210,6 +210,9 @@ export class VirtualTransactionList extends Component<Props> {
       </div>
     );
 
+    // Prevent List rendering if we have no rows to render
+    if (!rows.length) return false;
+
     return (
       <div className={styles.component}>
         <AutoSizer onResize={this.onResize}>
