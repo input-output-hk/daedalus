@@ -59,11 +59,10 @@ export class VirtualAddressesList extends Component<Props> {
   list: List;
   rowHeights: RowHeight[] = [];
   rowLines: RowLine[] = [];
-  rowHeight: number = 0; // ERASE
   individualCalculationTimeout: ?TimeoutID = null;
-  breakpoint: Breakpoint = 0;
-  lines: number = 0;
-  individualLines: IndividualLine[] = [];
+  currentBreakpoint: Breakpoint = 0;
+  genericNumberOfLines: number = 0;
+  individualNumberOfLines: IndividualLine[] = [];
   width: number = 0;
 
   /**
@@ -72,8 +71,8 @@ export class VirtualAddressesList extends Component<Props> {
    */
   calculateGeneralRowHeights = () => {
     const { rows } = this.props;
-    const { lines } = this;
-    const height = this.getHeightFromNumberOfLines(lines);
+    const { genericNumberOfLines } = this;
+    const height = this.getHeightFromNumberOfLines(genericNumberOfLines);
     rows.forEach((row: Address, index: number) => {
       this.rowHeights[index] = height;
       this.list.recomputeRowHeights(index);
@@ -87,7 +86,7 @@ export class VirtualAddressesList extends Component<Props> {
   calculateIndividualRowHeights = () => {
     // If the page just loaded, trigger another update
     // for when the list is rendered
-    if (this.lines === 0) {
+    if (this.genericNumberOfLines === 0) {
       this.updateLines();
       setTimeout(this.calculateIndividualRowHeights, 100);
     }
@@ -109,11 +108,11 @@ export class VirtualAddressesList extends Component<Props> {
     const rowLines = this.getRowLinesFromHeight(rowHeight);
 
     // It will only update the DOM element if it actually changed its height
-    if (rowLines === this.individualLines[index] && this.lines !== 0) return;
+    if (rowLines === this.individualNumberOfLines[index] && this.genericNumberOfLines !== 0) return;
 
     const height = this.getHeightFromNumberOfLines(rowLines);
     this.rowHeights[index] = height;
-    this.individualLines[index] = rowLines;
+    this.individualNumberOfLines[index] = rowLines;
     this.list.recomputeRowHeights(index);
   }
 
@@ -134,9 +133,9 @@ export class VirtualAddressesList extends Component<Props> {
    * Updates the current number of lines for the addresses
    */
   updateLines = () => {
-    const { breakpoint } = this;
-    this.lines = this.getLinesFromBreakpoint(breakpoint);
-    this.props.rows.forEach((x, i) => this.individualLines[i] = this.lines);
+    const { currentBreakpoint } = this;
+    this.genericNumberOfLines = this.getLinesFromBreakpoint(currentBreakpoint);
+    this.props.rows.forEach((x, i) => this.individualNumberOfLines[i] = this.genericNumberOfLines);
   }
 
   /**
@@ -191,8 +190,8 @@ export class VirtualAddressesList extends Component<Props> {
     const breakpointType = this.getBreakpointCalculationType(newBreakpoint);
     let didChangBreakpoint = false;
 
-    if (newBreakpoint !== this.breakpoint) {
-      this.breakpoint = newBreakpoint;
+    if (newBreakpoint !== this.currentBreakpoint) {
+      this.currentBreakpoint = newBreakpoint;
       didChangBreakpoint = true;
     }
 
@@ -250,7 +249,7 @@ export class VirtualAddressesList extends Component<Props> {
   }
 
   getRowHeights = ({ index }: { index: number }) => this.rowHeights[index] ||
-    this.getHeightFromNumberOfLines(this.lines);
+    this.getHeightFromNumberOfLines(this.genericNumberOfLines);
 
   render() {
     const { rows } = this.props;
