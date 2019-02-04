@@ -74,11 +74,10 @@ export class VirtualAddressesList extends Component<Props> {
     const { rows } = this.props;
     const { lines } = this;
     const height = this.getHeightFromNumberOfLines(lines);
-    [...Array(rows.length)]
-      .forEach((x, index: number) => {
-        this.rowHeights[index] = height;
-        this.list.recomputeRowHeights(index);
-      });
+    rows.forEach((row: Address, index: number) => {
+      this.rowHeights[index] = height;
+      this.list.recomputeRowHeights(index);
+    });
   }
 
   /**
