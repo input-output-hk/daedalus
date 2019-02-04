@@ -39,10 +39,9 @@ export class VirtualAddressesList extends Component<Props> {
   };
 
   /**
-   * Decides if the addresses heights need to be updated
+   * Decides if the addresses height need to be updated
    */
   onResize = ({ width }: { width: number }) => {
-  // onResize = (width: number) => {
     const lines = this.getLinesFromWidth(width);
     if (lines !== this.lines) {
       this.lines = lines;
