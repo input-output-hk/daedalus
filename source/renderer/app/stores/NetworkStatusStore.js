@@ -15,6 +15,7 @@ import {
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
 import { Logger } from '../utils/logging';
 import { getCurrentEpoch } from '../utils/network';
+import { stringifyError } from '../../../common/utils/logging';
 import {
   cardanoStateChangeChannel,
   tlsConfigChannel,
@@ -166,10 +167,10 @@ export default class NetworkStatusStore extends Store {
 
   async restartNode() {
     try {
-      Logger.info('NetwortStatusStore: Requesting a restart of cardano-node.');
+      Logger.info('NetwortStatusStore: Requesting a restart of cardano-node');
       await restartCardanoNodeChannel.send();
     } catch (error) {
-      Logger.info(`NetwortStatusStore: Restart of cardano-node failed with: "${error}"`);
+      Logger.error('NetwortStatusStore: Restart of cardano-node failed', { error: `${stringifyError(error)}` });
     }
   }
 
@@ -204,7 +205,7 @@ export default class NetworkStatusStore extends Store {
       Logger.info('NetworkStatusStore: Updating node status');
       await cardanoStatusChannel.send(this._extractNodeStatus(this));
     } catch (error) {
-      Logger.error(`NetworkStatusStore: Error while updating node status: ${error}`);
+      Logger.error('NetworkStatusStore: Error while updating node status', { error: `${stringifyError(error)}` });
     }
   };
 
@@ -413,20 +414,20 @@ export default class NetworkStatusStore extends Store {
           // If initial local block height isn't set, mark the first
           // result as the 'starting' height for the sync progress
           this.initialLocalHeight = localBlockchainHeight;
-          Logger.debug('Initial local block height: ' + JSON.stringify(localBlockchainHeight));
+          Logger.debug('Initial local block height', { localBlockchainHeight });
         }
 
         // Update the local block height on each request
         const lastLocalBlockHeight = this.localBlockHeight;
         this.localBlockHeight = localBlockchainHeight;
-        Logger.debug('Local blockchain height: ' + localBlockchainHeight);
+        Logger.debug('Local blockchain height', { localBlockchainHeight });
 
         // Update the network block height on each request
         const hasStartedReceivingBlocks = blockchainHeight > 0;
         const lastNetworkBlockHeight = this.networkBlockHeight;
         this.networkBlockHeight = blockchainHeight;
         if (hasStartedReceivingBlocks) {
-          Logger.debug('Network blockchain height: ' + blockchainHeight);
+          Logger.debug('Network blockchain height', { blockchainHeight });
         }
 
         // Check if the local block height has ceased to change
@@ -490,8 +491,8 @@ export default class NetworkStatusStore extends Store {
           const initialLocalHeight = this.initialLocalHeight || 0;
           const blocksSyncedSinceStart = this.localBlockHeight - initialLocalHeight;
           const totalUnsyncedBlocksAtStart = this.networkBlockHeight - initialLocalHeight;
-          Logger.debug('Total unsynced blocks at node start: ' + totalUnsyncedBlocksAtStart);
-          Logger.debug('Blocks synced since node start: ' + blocksSyncedSinceStart);
+          Logger.debug('Total unsynced blocks at node start', { totalUnsyncedBlocksAtStart });
+          Logger.debug('Blocks synced since node start', { blocksSyncedSinceStart });
         }
       });
 
