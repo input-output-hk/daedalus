@@ -2,6 +2,10 @@
   height: 100%;
   width: 100%;
 
+  &.withLoadingSpinner {
+    height: calc(100% - 74px);
+  }
+
   :global(.ReactVirtualized__Grid__innerScrollContainer) {
     overflow: visible !important;
   }

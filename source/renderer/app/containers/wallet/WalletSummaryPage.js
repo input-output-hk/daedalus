@@ -1,8 +1,9 @@
 // @flow
 import React, { Component } from 'react';
-import { get } from 'lodash';
+import { get, take } from 'lodash';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import { MAX_TRANSACTIONS_ON_SUMMARY_PAGE } from '../../config/numbersConfig';
 import WalletTransactionsList from '../../components/wallet/transactions/WalletTransactionsList';
 import WalletSummary from '../../components/wallet/summary/WalletSummary';
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
@@ -62,14 +63,14 @@ export default class WalletSummaryPage extends Component<Props> {
       walletTransactions = (
         <WalletTransactionsList
           key={`WalletTransactionsList_${wallet.id}`}
-          transactions={recent}
+          transactions={take(recent, MAX_TRANSACTIONS_ON_SUMMARY_PAGE)}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
           hasMoreToLoad={false}
           assuranceMode={wallet.assuranceMode}
           walletId={wallet.id}
           isRestoreActive={isRestoreActive}
           formattedWalletAmount={formattedWalletAmount}
-          showMoreTransactionsButton={totalAvailable > 5}
+          showMoreTransactionsButton={recent.length > MAX_TRANSACTIONS_ON_SUMMARY_PAGE}
           network={network}
           onOpenExternalLink={openExternalLink}
           onShowMoreTransactions={this.handleShowMoreTransaction}

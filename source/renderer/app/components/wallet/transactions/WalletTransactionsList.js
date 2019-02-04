@@ -278,6 +278,7 @@ export default class WalletTransactionsList extends Component<Props> {
             renderRow={this.renderItem}
             rows={rows}
             totalRows={totalAvailable}
+            isLoadingSpinnerShown={loadingSpinner !== null}
           />
         ) : (
           <SimpleTransactionList
