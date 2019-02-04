@@ -202,6 +202,7 @@ export default class AdaApi {
   };
 
   getTransactions = async (request: GetTransactionsRequest): Promise<GetTransactionsResponse> => {
+    const requestTimestamp = moment();
     const requestStats = Object.assign({}, request, {
       cachedTransactions: request.cachedTransactions.length,
     });
@@ -286,12 +287,14 @@ export default class AdaApi {
 
       const responseStats = {
         apiRequested: limit || 'all',
+        apiFiltered: shouldLoadOnlyFresh ? 'fresh' : '',
         apiReturned: totalTransactions,
         apiPagesTotal: totalPages,
         apiPagesRequested: params.page,
         daedalusCached: cachedTransactions.length,
         daedalusLoaded: total - cachedTransactions.length,
         daedalusTotal: total,
+        requestDurationInMs: moment.duration(moment().diff(requestTimestamp)).as('milliseconds'),
       };
       // eslint-disable-next-line max-len
       Logger.debug(`AdaApi::searchHistory success: ${total} transactions loaded ${stringifyData(responseStats)}`);
