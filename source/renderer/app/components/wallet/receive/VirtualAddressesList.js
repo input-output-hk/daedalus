@@ -50,8 +50,8 @@ const ADDRESS_LINE_PADDING = 21;
 
 const INDIVIDUAL_CALCULATION_WAIT_TIMEOUT = 50;
 
-const ADDRESS_TWO_LINES_HEIGHT_BREAKPOINT = 25;
-const ADDRESS_THREE_LINES_HEIGHT_BREAKPOINT = 50;
+const ADDRESS_HEIGHT_BREAKPOINT_TWO_LINES = 25;
+const ADDRESS_HEIGHT_BREAKPOINT_THREE_LINES = 50;
 
 @observer
 export class VirtualAddressesList extends Component<Props> {
@@ -166,8 +166,8 @@ export class VirtualAddressesList extends Component<Props> {
    * @returns {number}
    */
   getRowLinesFromHeight = (height: number) => {
-    if (height > ADDRESS_THREE_LINES_HEIGHT_BREAKPOINT) return 3;
-    if (height > ADDRESS_TWO_LINES_HEIGHT_BREAKPOINT) return 2;
+    if (height > ADDRESS_HEIGHT_BREAKPOINT_THREE_LINES) return 3;
+    if (height > ADDRESS_HEIGHT_BREAKPOINT_TWO_LINES) return 2;
     return 1;
   }
 
