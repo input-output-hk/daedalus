@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
+import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import { AutoSizer, List } from 'react-virtualized';
 import { WalletTransaction } from '../../../../domains/WalletTransaction';
@@ -13,6 +14,7 @@ type Props = {
   getExpandedTransactions: () => WalletTransaction[],
   renderRow: (Row) => Node,
   rows: Row[],
+  isLoadingSpinnerShown?: boolean,
 };
 
 type RowHeight = number;
@@ -29,7 +31,7 @@ const TX_REMEASURE_THRESHOLD = 100;
 export class VirtualTransactionList extends Component<Props> {
 
   static defaultProps = {
-    onOpenExternalLink: () => {},
+    isLoadingSpinnerShown: false,
   };
 
   list: List;
@@ -196,7 +198,11 @@ export class VirtualTransactionList extends Component<Props> {
   };
 
   render() {
-    const { rows } = this.props;
+    const { rows, isLoadingSpinnerShown } = this.props;
+
+    // Prevent List rendering if we have no rows to render
+    if (!rows.length) return false;
+
     this.rowHeights = this.calculateRowHeights(rows);
 
     // Renders a single row within the virtual list
@@ -210,11 +216,13 @@ export class VirtualTransactionList extends Component<Props> {
       </div>
     );
 
-    // Prevent List rendering if we have no rows to render
-    if (!rows.length) return false;
+    const componentStyles = classNames([
+      styles.component,
+      isLoadingSpinnerShown ? styles.withLoadingSpinner : null,
+    ]);
 
     return (
-      <div className={styles.component}>
+      <div className={componentStyles}>
         <AutoSizer onResize={this.onResize}>
           {({ width, height }) => (
             <List
