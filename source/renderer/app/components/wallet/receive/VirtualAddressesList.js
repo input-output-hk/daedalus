@@ -27,13 +27,13 @@ type IndividualLine = number;
  * Considering the width of the
  * `.ReactVirtualized__Grid__innerScrollContainer` element:
  *
- * | Breakpoint| Width            | Lines  | Calculation |
- * |-----------|------------------|--------|-------------|
- * | 1         | < 599            | 3      | general     |
- * | 2         | > 600 && < 699   | 2 or 3 | individual  |
- * | 3         | > 700 && < 1099  | 2      | general     |
- * | 4         | < 1100 && > 1101 | 1 or 2 | individual  |
- * | 5         | > 1200           | 1      | general     |
+ * | Breakpoint| Width             | Lines  | Calculation |
+ * |-----------|-------------------|--------|-------------|
+ * | 1         |            < 600  | 3      | general     |
+ * | 2         | >= 600  && < 700  | 2 or 3 | individual  |
+ * | 3         | >= 700  && < 1100 | 2      | general     |
+ * | 4         | >= 1100 && > 1200 | 1 or 2 | individual  |
+ * | 5         | >= 1200           | 1      | general     |
  *
  */
 
