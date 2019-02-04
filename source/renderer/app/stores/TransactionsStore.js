@@ -116,13 +116,18 @@ export default class TransactionsStore extends Store {
     return result ? result.transactions.length : 0;
   }
 
-  @action _refreshTransactionData = (restoredWalletId: ?string) => {
+  @action _refreshTransactionData = async (restoredWalletId: ?string) => {
     if (this.stores.networkStatus.isConnected) {
       const allWallets = this.stores.wallets.all;
       for (const wallet of allWallets) {
         const isRestoreActive = get(wallet, 'syncState.tag', '') === 'restoring';
         const isRestoreCompleted = restoredWalletId === wallet.id;
         const recentRequest = this._getTransactionsRecentRequest(wallet.id);
+        if (isRestoreCompleted && recentRequest.isExecuting) {
+          // We need to make sure to run recentRequest if the restoration has just completed
+          // as otherwise some transactions could be lost!
+          await recentRequest;
+        }
         recentRequest.execute({
           walletId: wallet.id,
           limit: this.RECENT_TRANSACTIONS_LIMIT,
@@ -134,6 +139,11 @@ export default class TransactionsStore extends Store {
           cachedTransactions: get(recentRequest, 'result.transactions', []),
         });
         const allRequest = this._getTransactionsAllRequest(wallet.id);
+        if (isRestoreCompleted && allRequest.isExecuting) {
+          // We need to make sure to run allRequest if the restoration has just completed
+          // as otherwise some transactions could be lost!
+          await allRequest;
+        }
         allRequest.execute({
           walletId: wallet.id,
           limit: this.INITIAL_SEARCH_LIMIT,
