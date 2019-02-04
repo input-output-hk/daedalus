@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import { debounce } from 'lodash';
 import { observer } from 'mobx-react';
 import { AutoSizer, List } from 'react-virtualized';
 import type { Addresses, Address } from '../../../api/addresses/types';
@@ -184,7 +185,7 @@ export class VirtualAddressesList extends Component<Props> {
    * Decides if the addresses heights need to be updated
    * and which type of calculation, generic or individual
    */
-  onResize = ({ width }: { width: number }) => {
+  updateWidth = (width: number) => {
     this.width = width;
     const newBreakpoint = this.getBreakpointFromWidth(width);
     const breakpointType = this.getBreakpointCalculationType(newBreakpoint);
@@ -219,6 +220,12 @@ export class VirtualAddressesList extends Component<Props> {
     }
 
   }
+  /**
+   * Updates width and triggers re-calculation of breakpoints after a debounced resize.
+   */
+  onResize = debounce(({ width }: { width: number }) => {
+    this.updateWidth(width);
+  }, 200, { leading: true, trailing: true });
 
   cancelIndividualCalculationTimeout = () => {
     if (this.individualCalculationTimeout) {
