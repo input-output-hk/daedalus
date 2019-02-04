@@ -45,8 +45,8 @@ const BREAKPOINT_5 = 1200;
 const BREAKPOINT_WITH_GENERAL_CALCULATION = 'general';
 const BREAKPOINT_WITH_INDIVIDUAL_CALCULATION = 'individual';
 
-const ADDRESS_LINE_HEIGHT = 33;
-const ADDRESS_LINE_PADDING = 10;
+const ADDRESS_LINE_HEIGHT = 22;
+const ADDRESS_LINE_PADDING = 21;
 
 const INDIVIDUAL_CALCULATION_WAIT_TIMEOUT = 50;
 
@@ -177,10 +177,9 @@ export class VirtualAddressesList extends Component<Props> {
    * @param lines
    * @returns {number}
    */
-  getHeightFromNumberOfLines = (lines: number) => {
-    const padding = lines === 1 ? ADDRESS_LINE_PADDING : 0;
-    return (ADDRESS_LINE_HEIGHT * lines) + padding;
-  }
+  getHeightFromNumberOfLines = (lines: number) => (
+    (ADDRESS_LINE_HEIGHT * lines) + ADDRESS_LINE_PADDING
+  );
 
   /**
    * Decides if the addresses heights need to be updated
