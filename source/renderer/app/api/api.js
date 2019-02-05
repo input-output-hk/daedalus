@@ -267,6 +267,17 @@ export default class AdaApi {
           return hasMorePages;
         };
         const shouldLoadNextPage = () => shouldLoadAll || page <= pagesToBeLoaded;
+
+        if (isRestoreActive || isRestoreCompleted) {
+          const latestLoadedTransactionDate = transactions[0].date;
+          const latestLoadedTransactionDateString =
+            moment.utc(latestLoadedTransactionDate).format('YYYY-MM-DDTHH:mm:ss');
+          // During restoration we need to fetch only transactions older than the latest loaded one
+          // as this ensures that both totalPages and totalEntries remain unchanged throught out
+          // subsequent page loads (as in the meantime new transactions can be discovered)
+          Object.assign(params, { created_at: `LTE[${latestLoadedTransactionDateString}]` });
+        }
+
         for (page; (hasNextPage() && shouldLoadNextPage()); page++) {
           const { data: pageHistory } =
             await getTransactionHistory(this.config, Object.assign(params, { page }));
