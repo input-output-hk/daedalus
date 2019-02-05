@@ -4,7 +4,7 @@ Changelog
 ## vNext
 
 ### Features
-
+- Structured the Daedalus logs in the same format as the Cardano logs, which follows the structured logging specification ([PR 1299](https://github.com/input-output-hk/daedalus/pull/1299))
 - Implemented a "System-info.json" file, containing the system specification of the machine user is running Daedalus ([PR 1292](https://github.com/input-output-hk/daedalus/pull/1292))
 - Implemented a block-consolidation status screen ([PR 1275](https://github.com/input-output-hk/daedalus/pull/1275), [PR 1294](https://github.com/input-output-hk/daedalus/pull/1294))
 - Implemented translations for the application menu ([PR 1262](https://github.com/input-output-hk/daedalus/pull/1262), [PR 1296](https://github.com/input-output-hk/daedalus/pull/1296))
