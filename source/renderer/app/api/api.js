@@ -232,7 +232,9 @@ export default class AdaApi {
       page: skip === 0 ? 1 : skip + 1,
       per_page: perPage,
       sort_by: 'DES[created_at]',
-      created_at: '',
+      created_at: `LTE[${moment.utc().format('YYYY-MM-DDTHH:mm:ss')}]`,
+      // ^^ By setting created_at filter to current time we make sure
+      // all subsequent multi-pages requests load the same set of transactions
     };
 
     const shouldLoadOnlyFresh = !isFirstLoad && !isRestoreActive && !isRestoreCompleted;
