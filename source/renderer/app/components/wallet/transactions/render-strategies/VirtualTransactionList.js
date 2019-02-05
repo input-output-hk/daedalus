@@ -10,7 +10,7 @@ import styles from './VirtualTransactionList.scss';
 import { TransactionInfo } from '../types';
 
 type Props = {
-  ixTxExpanded: (WalletTransaction) => boolean,
+  isTxExpanded: (WalletTransaction) => boolean,
   getExpandedTransactions: () => WalletTransaction[],
   renderRow: (Row) => Node,
   rows: Row[],
@@ -77,7 +77,7 @@ export class VirtualTransactionList extends Component<Props> {
     const txAddresses = addresses.from.length + addresses.to.length;
     const txAddressesHeight = (txAddresses * txSingleAddressHeight);
     return txAddressesHeight + txIdHeight + TX_BASE_HEIGHT;
-  }
+  };
 
   /**
    * Gets an Info contracted row height
@@ -89,7 +89,7 @@ export class VirtualTransactionList extends Component<Props> {
     const row = this.props.rows[txIndex];
     const headerSpacing = row.isLastInGroup ? TX_LAST_IN_GROUP_MARGIN : 0;
     return TX_ROW_HEIGHT + headerSpacing;
-  }
+  };
 
   /**
    * Gets an Info row height
@@ -97,7 +97,7 @@ export class VirtualTransactionList extends Component<Props> {
    * @returns {number[]}
    */
   calculateInfoRowHeight = (tx: WalletTransaction) => {
-    const isExpanded = this.props.ixTxExpanded(tx);
+    const isExpanded = this.props.isTxExpanded(tx);
     return isExpanded
       ? this.calculateHeightOfTxExpandedRow(tx)
       : this.calculateHeightOfTxContractedRow(tx);
@@ -127,7 +127,6 @@ export class VirtualTransactionList extends Component<Props> {
    * @param width
    */
   onResize = ({ width }: { width: number }) => {
-
     // First load, calculates all the rows heights
     if (!this.rowHeights.length) {
       this.updateAddressesAndIdLines(width);
@@ -144,7 +143,7 @@ export class VirtualTransactionList extends Component<Props> {
   updateAddressesAndIdLines = (width: number) => {
     this.txAddressesLines = (width >= TX_ADDRESSES_START_BREAKING_AT_WIDTH) ? 1 : 2;
     this.txIdLines = (width >= TX_ID_START_BREAKING_AT_WIDTH) ? 1 : 2;
-  }
+  };
 
   rowRenderer = ({
     key, // Unique key within array of rows
@@ -187,4 +186,5 @@ export class VirtualTransactionList extends Component<Props> {
       </div>
     );
   }
+
 }
