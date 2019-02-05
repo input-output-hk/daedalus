@@ -273,7 +273,7 @@ export default class WalletTransactionsList extends Component<Props> {
         {isRenderingAsVirtualList ? (
           <VirtualTransactionList
             getExpandedTransactions={() => this.expandedTransactions}
-            ixTxExpanded={this.isTxExpanded}
+            isTxExpanded={this.isTxExpanded}
             ref={(list) => this.virtualList = list}
             renderRow={this.renderItem}
             rows={rows}
