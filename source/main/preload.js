@@ -8,7 +8,6 @@ import {
 import _electronLog from 'electron-log';
 import ElectronStore from 'electron-store';
 import { environment } from './environment';
-import { formatMessage } from '../common/utils/logging';
 
 const _process = process;
 const _electronStore = new ElectronStore();
@@ -24,10 +23,6 @@ process.once('loaded', () => {
       info: (...args) => _electronLog.info(...args),
       error: (...args) => _electronLog.error(...args),
       warn: (...args) => _electronLog.warn(...args),
-      transports: {
-        console: (...args) => formatMessage(...args),
-        file: (...args) => formatMessage(...args),
-      },
     },
     electronStore: {
       get: (...args) => _electronStore.get(...args),
