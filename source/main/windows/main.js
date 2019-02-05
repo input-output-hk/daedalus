@@ -74,7 +74,6 @@ export const createMainWindow = (isInSafeMode) => {
     Menu.buildFromTemplate(contextMenuOptions).popup(window);
   });
 
-
   window.webContents.on('did-frame-finish-load', () => {
     if (isDev) {
       window.webContents.openDevTools();
