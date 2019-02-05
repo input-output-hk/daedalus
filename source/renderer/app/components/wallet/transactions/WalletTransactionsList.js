@@ -148,7 +148,7 @@ export default class WalletTransactionsList extends Component<Props> {
       this.registerTxAsExpanded(tx);
     }
     if (this.virtualList) {
-      this.virtualList.updateHeightOfTxRow(tx);
+      this.virtualList.updateInfoRowHeight(tx);
     } else if (this.simpleList) {
       this.simpleList.forceUpdate();
     }

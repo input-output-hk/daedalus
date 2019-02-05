@@ -198,12 +198,15 @@
     user-select: text;
     word-break: break-all;
 
+    &.address, &.transactionId {
+      font-family: var(--font-mono);
+      letter-spacing: -.4px;
+      opacity: 0.8;
+    }
+
     &.address {
       display: block;
-      font-family: var(--font-mono);
-      letter-spacing: -.5px;
       line-height: 19px;
-      opacity: 0.7;
     }
   }
 

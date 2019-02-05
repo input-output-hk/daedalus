@@ -141,8 +141,13 @@ button {
 }
 
 @font-face {
-  font-family: 'NotoMono-Medium';
-  src: url("../assets/fonts/NotoMono-Regular.ttf") format("truetype");
+  font-family: 'SFMono-Light';
+  src: url("../assets/fonts/SFMono-Light.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: 'SFMonoCJKjp-Light';
+  src: url("../assets/fonts/SFMono-Light.otf") format("truetype");
 }
 
 // ============ BASE ===========
