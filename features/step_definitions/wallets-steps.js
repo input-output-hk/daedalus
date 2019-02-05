@@ -460,7 +460,7 @@ Then(/^the balance of "([^"]*)" wallet should be:$/, { timeout: 60000 }, async f
 Then(/^I should see newly generated address as active address on the wallet receive screen$/, async function () {
   return this.client.waitUntil(async () => {
     const activeAddress = await this.client.getText('.WalletReceive_hash');
-    const generatedAddress = await this.client.getText('.generatedAddress-1 .WalletReceive_addressId');
+    const generatedAddress = await this.client.getText('.generatedAddress-1 .Address_addressId');
     return generatedAddress === activeAddress;
   });
 });
