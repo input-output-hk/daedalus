@@ -17,6 +17,7 @@ export type Environment = {
   buildNumber: string,
   buildLabel: string,
   platform: string,
+  platformVersion: string,
   os: string,
   installerVersion: string,
   version: string,
