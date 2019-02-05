@@ -10,7 +10,7 @@ type Props = {
   renderRow: Function,
 };
 
-const BREAKPOINT_1_LINES = 1172;
+const BREAKPOINT_1_LINE = 1172;
 const BREAKPOINT_2_LINES = 673;
 
 const ADDRESS_LINE_HEIGHT = 22;
@@ -33,7 +33,7 @@ export class VirtualAddressesList extends Component<Props> {
    * @returns {number}
    */
   getLinesFromWidth = (width: number) => {
-    if (width >= BREAKPOINT_1_LINES) return 1;
+    if (width >= BREAKPOINT_1_LINE) return 1;
     if (width >= BREAKPOINT_2_LINES) return 2;
     return 3;
   };

@@ -3,10 +3,11 @@
   display: flex;
   padding: 10.5px 0;
   word-break: break-all;
-  font-family: var(--font-mono);
 
   .addressId {
     flex-grow: 1;
+    font-family: var(--font-mono);
+    letter-spacing: -.5px;
     margin-right: 32.5px;
     user-select: text;
   }
