@@ -7,7 +7,7 @@ import { AutoSizer, List } from 'react-virtualized';
 import { WalletTransaction } from '../../../../domains/WalletTransaction';
 import type { Row } from '../types';
 import styles from './VirtualTransactionList.scss';
-import { TransactionInfo } from '../types';
+import { TransactionInfo, TransactionsGroup } from '../types';
 
 type Props = {
   ixTxExpanded: (WalletTransaction) => boolean,
@@ -53,14 +53,16 @@ export class VirtualTransactionList extends Component<Props> {
 
   /**
    * Gets an Info row height and updates the list value
-   * @param tx
+   * @param row
    * @returns {number[]}
    */
   updateInfoRowHeight = (tx: WalletTransaction) => {
     const { list, rowHeights } = this;
     if (!list) return;
     const txIndex = this.findIndexForTx(tx);
-    const txRowHeight = this.calculateInfoRowHeight(tx);
+    const row = this.props.rows[txIndex];
+    if (row instanceof TransactionsGroup) return;
+    const txRowHeight = this.calculateInfoRowHeight(row);
     rowHeights[txIndex] = txRowHeight;
     list.recomputeRowHeights(txIndex);
   };
@@ -84,9 +86,7 @@ export class VirtualTransactionList extends Component<Props> {
    * @param tx
    * @returns {number[]}
    */
-  calculateHeightOfTxContractedRow = (tx: WalletTransaction) => {
-    const txIndex = this.findIndexForTx(tx);
-    const row = this.props.rows[txIndex];
+  calculateHeightOfTxContractedRow = (row: Row) => {
     const headerSpacing = row.isLastInGroup ? TX_LAST_IN_GROUP_MARGIN : 0;
     return TX_ROW_HEIGHT + headerSpacing;
   }
@@ -96,11 +96,11 @@ export class VirtualTransactionList extends Component<Props> {
    * @param tx
    * @returns {number[]}
    */
-  calculateInfoRowHeight = (tx: WalletTransaction) => {
-    const isExpanded = this.props.ixTxExpanded(tx);
+  calculateInfoRowHeight = (row: TransactionInfo) => {
+    const isExpanded = this.props.ixTxExpanded(row.tx);
     return isExpanded
-      ? this.calculateHeightOfTxExpandedRow(tx)
-      : this.calculateHeightOfTxContractedRow(tx);
+      ? this.calculateHeightOfTxExpandedRow(row.tx)
+      : this.calculateHeightOfTxContractedRow(row);
   };
 
   /**
@@ -110,7 +110,7 @@ export class VirtualTransactionList extends Component<Props> {
    */
   calculateRowHeight = (row: Row) => (
     (row instanceof TransactionInfo)
-      ? this.calculateInfoRowHeight(row.tx)
+      ? this.calculateHeightOfTxContractedRow(row)
       : GROUP_DATE_HEIGHT
   );
 
@@ -131,7 +131,8 @@ export class VirtualTransactionList extends Component<Props> {
     // First load, calculates all the rows heights
     if (!this.rowHeights.length) {
       this.updateAddressesAndIdLines(width);
-      return this.rowHeights = this.calculateRowHeights(this.props.rows);
+      this.rowHeights = this.calculateRowHeights(this.props.rows);
+      return false;
     }
     // Subsequently resizes, updates the expanded rows heights
     const { txAddressesLines, txIdLines } = this;
