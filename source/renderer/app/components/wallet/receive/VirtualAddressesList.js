@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import { throttle } from 'lodash';
 import { observer } from 'mobx-react';
 import { AutoSizer, List } from 'react-virtualized';
 import type { Addresses } from '../../../api/addresses/types';
@@ -8,6 +9,10 @@ import styles from './VirtualAddressesList.scss';
 type Props = {
   rows: Addresses,
   renderRow: Function,
+};
+
+type State = {
+  height: number,
 };
 
 /**
@@ -25,14 +30,19 @@ const ADDRESS_LINE_HEIGHT = 22;
 const ADDRESS_LINE_PADDING = 21;
 
 @observer
-export class VirtualAddressesList extends Component<Props> {
+export class VirtualAddressesList extends Component<Props, State> {
 
   list: List;
   lines: number = 0;
-  height: number = ADDRESS_LINE_HEIGHT;
+
+  state = {
+    height: ADDRESS_LINE_HEIGHT,
+  };
 
   calculateRowsHeight = (lines: number) => {
-    this.height = (ADDRESS_LINE_HEIGHT * lines) + ADDRESS_LINE_PADDING;
+    this.setState({
+      height: (ADDRESS_LINE_HEIGHT * lines) + ADDRESS_LINE_PADDING,
+    });
   };
 
   /**
@@ -80,7 +90,7 @@ export class VirtualAddressesList extends Component<Props> {
     if (!rows.length) return null;
     return (
       <div className={styles.component}>
-        <AutoSizer onResize={this.onResize}>
+        <AutoSizer onResize={throttle(this.onResize, 100)}>
           {({ width, height }) => (
             <List
               className={styles.list}
@@ -88,7 +98,7 @@ export class VirtualAddressesList extends Component<Props> {
               width={width}
               height={height}
               rowCount={rows.length}
-              rowHeight={this.height}
+              rowHeight={this.state.height}
               rowRenderer={this.rowRenderer}
             />
           )}
