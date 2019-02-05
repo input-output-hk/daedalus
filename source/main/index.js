@@ -3,7 +3,6 @@ import os from 'os';
 import { app, BrowserWindow, shell } from 'electron';
 import { client } from 'electron-connect';
 import { includes } from 'lodash';
-import moment from 'moment';
 import { Logger } from './utils/logging';
 import { setupLogging, updateUserSystemInfoLog } from './utils/setupLogging';
 import { getNumberOfEpochsConsolidated } from './utils/getNumberOfEpochsConsolidated';
@@ -29,7 +28,7 @@ let mainWindow: BrowserWindow;
 let cardanoNode: ?CardanoNode;
 
 const {
-  isDev, isWatchMode, buildLabel, network, current,
+  isDev, isWatchMode, network, current, os: osName,
   version: daedalusVersion, buildNumber: cardanoVersion,
 } = environment;
 
@@ -55,31 +54,27 @@ const onAppReady = async () => {
 
   const cpu = os.cpus();
   const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
-  const platform = os.platform();
   const platformVersion = os.release();
   const ram = JSON.stringify(os.totalmem(), null, 2);
-  const startTimeStr = new Date().toString();
-  const startTime = `${moment(startTimeStr).format('YYYY-MM-DDTHHmmss.0SSS')}Z`;
+  const startTime = new Date().toISOString();
   const systemStart = parseInt(launcherConfig.configuration.systemStart, 10);
 
-  updateUserSystemInfoLog({
+  const systemInfo = updateUserSystemInfoLog({
     cardanoVersion,
     cpu,
     current,
     daedalusVersion,
     isInSafeMode,
     network,
-    platform,
+    osName,
     platformVersion,
     ram,
     startTime,
   });
 
-  Logger.info(`========== Daedalus is starting at ${startTimeStr} ==========`);
+  Logger.info(`========== Daedalus is starting at ${startTime} ==========`);
 
-  Logger.debug(`!!! ${buildLabel} is running on ${platform} version ${platformVersion}
-            with CPU: ${JSON.stringify(cpu, null, 2)} with
-            ${ram} total RAM !!!`);
+  Logger.debug('Updating System-info.json file', { ...systemInfo.data });
 
   ensureXDGDataIsSet();
   await installChromeExtensions(isDev);
