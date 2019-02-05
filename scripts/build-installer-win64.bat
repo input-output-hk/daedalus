@@ -1,5 +1,5 @@
 rem DEPENDENCIES:
-rem   1. Node.js ('npm' binary in PATH)
+rem   1. Node.js ('yarn' binary in PATH)
 rem   2. 7zip    ('7z'  binary in PATH)
 rem
 rem   installer dev mode:  set SKIP_TOOLS/SKIP_NODE/SKIP_CARDANO_FETCH/SKIP_STACK/SKIP_LIBS/SKIP_TO_FRONTEND/SKIP_TO_INSTALLER
@@ -52,8 +52,8 @@ del /f curl.exe curl-ca-bundle.crt libcurl.dll
 @echo ### Installing Node dependencies
 @echo ###
 @echo ##############################################################################
-call npm install
-@if %errorlevel% neq 0 (@echo FAILED: npm install
+call yarn install
+@if %errorlevel% neq 0 (@echo FAILED: yarn install
     exit /b 1)
 :after_node
 
