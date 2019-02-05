@@ -15,6 +15,7 @@ type Props = {
   renderRow: (Row) => Node,
   rows: Row[],
   isLoadingSpinnerShown?: boolean,
+  isSyncingSpinnerShown?: boolean,
 };
 
 type RowHeight = number;
@@ -32,6 +33,7 @@ export class VirtualTransactionList extends Component<Props> {
 
   static defaultProps = {
     isLoadingSpinnerShown: false,
+    isSyncingSpinnerShown: false,
   };
 
   list: List;
@@ -198,7 +200,7 @@ export class VirtualTransactionList extends Component<Props> {
   };
 
   render() {
-    const { rows, isLoadingSpinnerShown } = this.props;
+    const { rows, isLoadingSpinnerShown, isSyncingSpinnerShown } = this.props;
 
     // Prevent List rendering if we have no rows to render
     if (!rows.length) return false;
@@ -219,6 +221,7 @@ export class VirtualTransactionList extends Component<Props> {
     const componentStyles = classNames([
       styles.component,
       isLoadingSpinnerShown ? styles.withLoadingSpinner : null,
+      isSyncingSpinnerShown ? styles.withSyncingSpinner : null,
     ]);
 
     return (

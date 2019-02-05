@@ -6,6 +6,14 @@
     height: calc(100% - 74px);
   }
 
+  &.withSyncingSpinner {
+    height: calc(100% - 116px);
+  }
+
+  &.withLoadingSpinner.withSyncingSpinner {
+    height: calc(100% - 190px);
+  }
+
   :global(.ReactVirtualized__Grid__innerScrollContainer) {
     overflow: visible !important;
   }
