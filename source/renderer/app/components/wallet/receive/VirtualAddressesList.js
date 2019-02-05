@@ -100,6 +100,7 @@ export class VirtualAddressesList extends Component<Props, State> {
               rowCount={rows.length}
               rowHeight={this.state.height}
               rowRenderer={this.rowRenderer}
+              style={{ overflowY: 'scroll' }}
             />
           )}
         </AutoSizer>

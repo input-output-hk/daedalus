@@ -241,14 +241,12 @@ export default class WalletReceive extends Component<Props, State> {
                 {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
 
                 {generateAddressForm}
-
               </div>
             </div>
 
             <div className={styles.generatedAddresses}>
               <h2>
                 {intl.formatMessage(messages.generatedAddressesSectionTitle)}
-
                 <div className={styles.hideUsed}>
                   <TinySwitch
                     label={intl.formatMessage(messages.showUsedLabel)}

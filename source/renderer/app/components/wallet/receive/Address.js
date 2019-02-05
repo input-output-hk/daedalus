@@ -12,7 +12,7 @@ type Props = {
   address: AddressType,
   onCopyAddress: Function,
   copyAddressLabel: Function,
-  index: number
+  index: number,
 };
 
 @observer
