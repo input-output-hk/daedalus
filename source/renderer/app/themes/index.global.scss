@@ -178,6 +178,7 @@ html, body, :global(#root), :global(#root) > [data-reactroot] {
     border-radius: 12px;
     background-clip: content-box;
     &:vertical {
+      // This ensures that the scroll bar never shrinks too much
       min-height: 30px;
     }
   }
