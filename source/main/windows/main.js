@@ -48,17 +48,6 @@ export const createMainWindow = (isInSafeMode) => {
     window.close();
   });
 
-  if (isDev) {
-    window.webContents.openDevTools();
-    // Focus the main window after dev tools opened
-    window.webContents.on('devtools-opened', () => {
-      window.focus();
-      setImmediate(() => {
-        window.focus();
-      });
-    });
-  }
-
   window.loadURL(`file://${__dirname}/../renderer/index.html`);
   window.on('page-title-updated', event => { event.preventDefault(); });
 
@@ -83,6 +72,19 @@ export const createMainWindow = (isInSafeMode) => {
     }
 
     Menu.buildFromTemplate(contextMenuOptions).popup(window);
+  });
+
+  window.webContents.on('did-frame-finish-load', () => {
+    if (isDev) {
+      window.webContents.openDevTools();
+      // Focus the main window after dev tools opened
+      window.webContents.on('devtools-opened', () => {
+        window.focus();
+        setImmediate(() => {
+          window.focus();
+        });
+      });
+    }
   });
 
   window.webContents.on('did-finish-load', () => {
