@@ -10,8 +10,16 @@ type Props = {
   renderRow: Function,
 };
 
-const BREAKPOINT_1_LINE = 1172;
-const BREAKPOINT_2_LINES = 673;
+/**
+ *
+ * The breakpoints define the number of lines
+ * based on the width of the following element:
+ *
+ * `.ReactVirtualized__Grid__innerScrollContainer`
+ *
+ */
+const BREAKPOINT_1_LINE = 1108;
+const BREAKPOINT_2_LINES = 635;
 
 const ADDRESS_LINE_HEIGHT = 22;
 const ADDRESS_LINE_PADDING = 21;
