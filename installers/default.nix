@@ -51,5 +51,4 @@ let
   };
 
 
-in
-  justStaticExecutables (haskellPackages.daedalus-installer)
+in haskellPackages
