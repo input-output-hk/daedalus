@@ -140,6 +140,11 @@ button {
   src: url("../assets/fonts/Montserrat-Medium.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: 'NotoMono-Medium';
+  src: url("../assets/fonts/NotoMono-Regular.ttf") format("truetype");
+}
+
 // ============ BASE ===========
 
 html, body, :global(#root), :global(#root) > [data-reactroot] {

@@ -200,7 +200,10 @@
 
     &.address {
       display: block;
+      font-family: var(--font-mono);
+      letter-spacing: -.5px;
       line-height: 19px;
+      opacity: 0.7;
     }
   }
 
