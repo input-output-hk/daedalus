@@ -59,8 +59,7 @@ const onAppReady = async () => {
   const platformVersion = os.release();
   const ram = JSON.stringify(os.totalmem(), null, 2);
   const startTimeStr = new Date().toString();
-  const startTime = `${moment(startTimeStr).format('YYYY-MM-DDTHHmmss.0SSS')}Z`;
-  const systemStart = parseInt(launcherConfig.configuration.systemStart, 10);
+  const startTime = `${moment.utc().format('YYYY-MM-DDTHHmmss.0SSS')}Z`;
 
   updateUserSystemInfoLog({
     cardanoVersion,
@@ -84,7 +83,10 @@ const onAppReady = async () => {
   ensureXDGDataIsSet();
   await installChromeExtensions(isDev);
 
-  mainWindow = createMainWindow(isInSafeMode);
+  // Detect locale
+  let locale = getLocale(network);
+
+  mainWindow = createMainWindow(isInSafeMode, locale);
 
   const onCheckDiskSpace = ({ isNotEnoughDiskSpace }: CheckDiskSpaceResponse) => {
     // Daedalus is not managing cardano-node in `frontendOnlyMode`
@@ -126,6 +128,8 @@ const onAppReady = async () => {
     client.create(mainWindow);
   }
 
+  // systemStart refers to the Cardano Demo cluster start time!
+  const systemStart = parseInt(launcherConfig.configuration.systemStart, 10);
   getSystemStartTimeChannel.onRequest(() => Promise.resolve(systemStart));
 
   getNumberOfEpochsConsolidated();
@@ -136,13 +140,13 @@ const onAppReady = async () => {
     await safeExit();
   });
 
-  let locale = getLocale(network);
   buildAppMenus(mainWindow, cardanoNode, isInSafeMode, locale);
 
   await rebuildApplicationMenu.onReceive(() => (
     new Promise(resolve => {
       locale = getLocale(network);
       buildAppMenus(mainWindow, cardanoNode, isInSafeMode, locale);
+      mainWindow.updateTitle(locale);
       resolve();
     })
   ));

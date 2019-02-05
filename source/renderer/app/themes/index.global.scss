@@ -1,3 +1,5 @@
+@import '~react-virtualized/styles.css';
+
 // ============ RESET ===========
 // http://meyerweb.com/eric/tools/css/reset
 
@@ -138,6 +140,16 @@ button {
   src: url("../assets/fonts/Montserrat-Medium.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: 'SFMono-Light';
+  src: url("../assets/fonts/SFMono-Light.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: 'SFMonoCJKjp-Light';
+  src: url("../assets/fonts/SFMono-Light.otf") format("opentype");
+}
+
 // ============ BASE ===========
 
 html, body, :global(#root), :global(#root) > [data-reactroot] {
@@ -170,6 +182,10 @@ html, body, :global(#root), :global(#root) > [data-reactroot] {
     border: 7px solid transparent;
     border-radius: 12px;
     background-clip: content-box;
+    &:vertical {
+      // This ensures that the scroll bar never shrinks too much
+      min-height: 30px;
+    }
   }
 }
 

@@ -1,6 +1,6 @@
 {
   "menu.daedalus": "Daedalus",
-  "menu.daedalus.about": "About",
+  "menu.daedalus.about": "About Daedalus",
   "menu.daedalus.adaRedemption": "Ada Redemption",
   "menu.daedalus.gpuSafeMode": "GPU Safe Mode",
   "menu.daedalus.networkStatus": "Network Status",
@@ -18,5 +18,6 @@
   "menu.view.reload": "Reload",
   "menu.view.toggleFullScreen": "Toggle Full Screen",
   "menu.view.toggleMaximumWindowSize": "Toggle Maximum Window Size",
-  "menu.view.toggleDeveloperTools": "Toggle Developer Tools"
+  "menu.view.toggleDeveloperTools": "Toggle Developer Tools",
+  "window.title.gpuSafeMode": "[GPU Safe Mode]"
 }
