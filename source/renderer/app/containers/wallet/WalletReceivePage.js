@@ -96,19 +96,6 @@ export default class WalletReceivePage extends Component<Props, State> {
 
     return (
       <Fragment>
-        <NotificationMessage
-          icon={successIcon}
-          show={uiNotifications.isOpen(notification.id)}
-          onClose={() => {
-            actions.notifications.closeActiveNotification.trigger({
-              id: notification.id
-            });
-          }}
-          clickToClose
-          hasCloseButton
-        >
-          {notification.message}
-        </NotificationMessage>
         <VerticalFlexContainer>
           <WalletReceive
             walletAddress={walletAddress}
@@ -128,6 +115,20 @@ export default class WalletReceivePage extends Component<Props, State> {
             error={addresses.error}
           />
         </VerticalFlexContainer>
+
+        <NotificationMessage
+          icon={successIcon}
+          show={uiNotifications.isOpen(notification.id)}
+          onClose={() => {
+            actions.notifications.closeActiveNotification.trigger({
+              id: notification.id
+            });
+          }}
+          clickToClose
+          hasCloseButton
+        >
+          {notification.message}
+        </NotificationMessage>
       </Fragment>
     );
   }
