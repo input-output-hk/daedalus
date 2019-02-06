@@ -77,11 +77,6 @@ export default class WalletReceivePage extends Component<Props, State> {
     const isWalletAddressUsed = addresses.active ? addresses.active.used : false;
     const walletAddresses = addresses.all.slice().reverse();
 
-    const overrideStyle = {
-      top: 50,
-      zIndex: 1,
-    };
-
     const notification = {
       id: `${wallet.id}-copyNotification`,
       duration: ADDRESS_COPY_NOTIFICATION_DURATION,
@@ -109,7 +104,6 @@ export default class WalletReceivePage extends Component<Props, State> {
               id: notification.id
             });
           }}
-          overrideStyle={overrideStyle}
           clickToClose
           hasCloseButton
         >
