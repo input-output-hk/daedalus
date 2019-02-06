@@ -10,7 +10,7 @@ import type { RedeemAdaParams } from '../transactions/requests/redeemAda';
 import type { RedeemPaperVendedAdaParams } from '../transactions/requests/redeemPaperVendedAda';
 import type { NodeQueryParams } from '../nodes/requests/getNodeInfo';
 import type { NodeInfo, GetNetworkStatusResponse } from '../nodes/types';
-import { stringifyData, stringifyError } from '../../../../common/utils/logging';
+import { stringifyError } from '../../../../common/utils/logging';
 
 // ========== LOGGING =========
 
