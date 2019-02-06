@@ -19,12 +19,12 @@ export default () => {
     });
 
     output.on('close', () => {
-      Logger.debug('COMPRESS_LOGS.SUCCESS');
+      Logger.debug('COMPRESS_LOGS.SUCCESS', { outputPath });
       return sender.send(COMPRESS_LOGS.SUCCESS, outputPath);
     });
 
     archive.on('error', (err) => {
-      Logger.error('COMPRESS_LOGS.ERROR: ' + stringifyError(err));
+      Logger.error('COMPRESS_LOGS.ERROR', { error: `${stringifyError(err)}` });
       return sender.send(COMPRESS_LOGS.ERROR, err);
     });
 
@@ -39,7 +39,7 @@ export default () => {
 
     archive.finalize((err) => {
       if (err) {
-        Logger.error('COMPRESS_LOGS.ERROR: ' + stringifyError(err));
+        Logger.error('COMPRESS_LOGS.ERROR', { error: `${stringifyError(err)}` });
         return sender.send(COMPRESS_LOGS.ERROR, err);
       }
     });
