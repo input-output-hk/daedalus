@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { defineMessages, FormattedHTMLMessage } from 'react-intl';
 import { observer, inject } from 'mobx-react';
 import { ellipsis } from '../../utils/strings';
@@ -77,6 +77,11 @@ export default class WalletReceivePage extends Component<Props, State> {
     const isWalletAddressUsed = addresses.active ? addresses.active.used : false;
     const walletAddresses = addresses.all.slice().reverse();
 
+    const overrideStyle = {
+      top: 50,
+      zIndex: 1,
+    };
+
     const notification = {
       id: `${wallet.id}-copyNotification`,
       duration: ADDRESS_COPY_NOTIFICATION_DURATION,
@@ -95,26 +100,7 @@ export default class WalletReceivePage extends Component<Props, State> {
     };
 
     return (
-      <VerticalFlexContainer>
-
-        <WalletReceive
-          walletAddress={walletAddress}
-          isWalletAddressUsed={isWalletAddressUsed}
-          walletAddresses={walletAddresses}
-          onGenerateAddress={this.handleGenerateAddress}
-          onCopyAddress={(address) => {
-            this.setState({ copiedAddress: address });
-            actions.notifications.open.trigger({
-              id: notification.id,
-              duration: notification.duration,
-            });
-          }}
-          isSidebarExpanded={sidebar.isShowingSubMenus}
-          walletHasPassword={wallet.hasPassword}
-          isSubmitting={addresses.createAddressRequest.isExecuting}
-          error={addresses.error}
-        />
-
+      <Fragment>
         <NotificationMessage
           icon={successIcon}
           show={uiNotifications.isOpen(notification.id)}
@@ -123,13 +109,32 @@ export default class WalletReceivePage extends Component<Props, State> {
               id: notification.id
             });
           }}
+          overrideStyle={overrideStyle}
           clickToClose
           hasCloseButton
         >
           {notification.message}
         </NotificationMessage>
-
-      </VerticalFlexContainer>
+        <VerticalFlexContainer>
+          <WalletReceive
+            walletAddress={walletAddress}
+            isWalletAddressUsed={isWalletAddressUsed}
+            walletAddresses={walletAddresses}
+            onGenerateAddress={this.handleGenerateAddress}
+            onCopyAddress={(address) => {
+              this.setState({ copiedAddress: address });
+              actions.notifications.open.trigger({
+                id: notification.id,
+                duration: notification.duration,
+              });
+            }}
+            isSidebarExpanded={sidebar.isShowingSubMenus}
+            walletHasPassword={wallet.hasPassword}
+            isSubmitting={addresses.createAddressRequest.isExecuting}
+            error={addresses.error}
+          />
+        </VerticalFlexContainer>
+      </Fragment>
     );
   }
 }

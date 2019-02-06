@@ -13,12 +13,15 @@ type Props = {
   clickToClose?: boolean,
   hasCloseButton?: boolean,
   onClose?: Function,
+  overrideStyle?: {},
 };
 
 export default class NotificationMessage extends Component<Props> {
 
   render() {
-    const { icon, show, children, clickToClose, hasCloseButton, onClose } = this.props;
+    const {
+      icon, show, children, clickToClose, hasCloseButton, onClose, overrideStyle
+    } = this.props;
 
     const notificationMessageStyles = classNames([
       styles.component,
@@ -26,12 +29,17 @@ export default class NotificationMessage extends Component<Props> {
       clickToClose ? styles.clickToClose : null,
     ]);
 
+    const style = {
+      ...overrideStyle
+    };
+
     return (
       <div
         className={notificationMessageStyles}
         onClick={() => clickToClose && onClose && onClose()}
         role="link"
         aria-hidden
+        style={style}
       >
 
         {icon && <SVGInline svg={icon} className={styles.icon} />}
