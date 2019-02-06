@@ -23,7 +23,7 @@ export default (api: AdaApi) => {
     request: RedeemAdaParams
   ): Promise<any> => new Promise((resolve) => {
     try {
-      Logger.debug('AdaApi::redeemAda (PATCHED) called: ' + stringifyData(request));
+      Logger.debug('AdaApi::redeemAda (PATCHED) called', { request });
       const { redemptionCode } = request;
       const isValidRedemptionCode = api.isValidRedemptionKey(redemptionCode);
       if (!isValidRedemptionCode) {
@@ -33,7 +33,7 @@ export default (api: AdaApi) => {
       Logger.debug('AdaApi::redeemAda (PATCHED) success');
       resolve({ amount: new BigNumber(1000) });
     } catch (error) {
-      Logger.debug('AdaApi::redeemAda (PATCHED) error: ' + stringifyError(error));
+      Logger.debug('AdaApi::redeemAda (PATCHED) error', { error: `${stringifyError(error)}` });
       throw new RedeemAdaError();
     }
   });
@@ -42,7 +42,7 @@ export default (api: AdaApi) => {
     request: RedeemPaperVendedAdaParams
   ): Promise<any> => new Promise((resolve) => {
     try {
-      Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) called: ' + stringifyData(request));
+      Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) called', { request });
       const { redemptionCode, mnemonics } = request;
       const isValidKey = api.isValidPaperVendRedemptionKey(redemptionCode);
       const isValidMnemonic = api.isValidRedemptionMnemonic(mnemonics.join(' '));
@@ -54,7 +54,7 @@ export default (api: AdaApi) => {
       Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) success');
       resolve({ amount: new BigNumber(1000) });
     } catch (error) {
-      Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) error: ' + stringifyError(error));
+      Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) error', { error: `${stringifyError(error)}` });
       throw new RedeemAdaError();
     }
   });
@@ -69,7 +69,7 @@ export default (api: AdaApi) => {
     Logger.debug('AdaApi::getNetworkStatus (PATCHED) called');
     try {
       const status: NodeInfo = await getNodeInfo(api.config, queryParams);
-      Logger.debug('AdaApi::getNetworkStatus (PATCHED) success: ' + stringifyData(status));
+      Logger.debug('AdaApi::getNetworkStatus (PATCHED) success', { status });
 
       const {
         blockchainHeight,
@@ -87,7 +87,7 @@ export default (api: AdaApi) => {
         localTimeDifference: LOCAL_TIME_DIFFERENCE,
       };
     } catch (error) {
-      Logger.error('AdaApi::getNetworkStatus (PATCHED) error: ' + stringifyError(error));
+      Logger.error('AdaApi::getNetworkStatus (PATCHED) error', { error: `${stringifyError(error)}` });
       throw new GenericApiError();
     }
   };
