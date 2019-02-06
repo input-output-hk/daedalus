@@ -54,7 +54,9 @@ writeUninstallerNSIS (Version fullVersion) installerConfig = do
           [ "LangString UninstallName ${LANG_ENGLISH} \"Uninstaller\""
           , "LangString UninstallName ${LANG_JAPANESE} \"アンインストーラー\""
           ]
-        name "$InstallDir $$(UninstallName) $Version"
+        -- TODO, the nsis library doesnt support translation vars
+        -- name "$InstallDir $(UninstallName) $Version"
+        unsafeInjectGlobal $ unpack ( "Name \"" <> (installDirectory installerConfig) <> " $(UninstallName) " <> (fullVersion) <> "\"")
         outFile . str . encodeString $ tempDir </> "tempinstaller.exe"
         unsafeInjectGlobal "Unicode true"
         unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
@@ -166,7 +168,8 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                 createDirectory "$APPDATA\\$InstallDir\\Logs"
                 createDirectory "$APPDATA\\$InstallDir\\Logs\\pub"
                 onError (delete [] "$APPDATA\\$InstallDir\\launcher.lock") $
-                    abort "$InstallDir $$(AlreadyRunning)"
+                    --abort "$InstallDir $(AlreadyRunning)"
+                    unsafeInject $ unpack $ "Abort \"" <> (installDirectory installerConfig) <> "$(AlreadyRunning)\""
                 iff_ (fileExists "$APPDATA\\$InstallDir\\Wallet-1.0\\open\\*.*") $
                     rmdir [] "$APPDATA\\$InstallDir\\Wallet-1.0\\open"
                 file [] "cardano-node.exe"
@@ -227,6 +230,8 @@ packageFrontend cluster installerConfig = do
 -- | The contract of `main` is not to produce unsigned installer binaries.
 main :: Options -> IO ()
 main opts@Options{..}  = do
+    IO.hSetEncoding IO.stderr IO.utf8
+    IO.hSetEncoding IO.stdout IO.utf8
     generateOSClusterConfigs "./dhall" "." opts
     cp (fromText "launcher-config.yaml") (fromText "../launcher-config.yaml")
 
