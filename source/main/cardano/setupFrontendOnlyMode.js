@@ -48,7 +48,7 @@ export const setupFrontendOnlyMode = (mainWindow: BrowserWindow) => {
   });
 
   cardanoTlsConfigChannel.onRequest(() => {
-    Logger.info('ipcMain: Received request from renderer for tls config', { ...tlsConfig });
+    Logger.info('ipcMain: Received request from renderer for tls config');
     return Promise.resolve(tlsConfig);
   });
 

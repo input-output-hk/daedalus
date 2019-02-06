@@ -104,7 +104,7 @@ export const setupCardanoNodeMode = (
   });
 
   cardanoTlsConfigChannel.onRequest(() => {
-    Logger.info('ipcMain: Received request from renderer for tls config', { ...cardanoNode.tlsConfig });
+    Logger.info('ipcMain: Received request from renderer for tls config');
     return Promise.resolve(cardanoNode.tlsConfig);
   });
 

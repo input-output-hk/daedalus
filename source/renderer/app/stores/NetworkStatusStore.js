@@ -249,7 +249,7 @@ export default class NetworkStatusStore extends Store {
 
   _updateTlsConfig = (config: ?TlsConfig): Promise<void> => {
     if (config == null || isEqual(config, this._tlsConfig)) return Promise.resolve();
-    Logger.info('NetworkStatusStore: received tls config from main process', { ...config });
+    Logger.info('NetworkStatusStore: received tls config from main process');
     this.api.ada.setRequestConfig(config);
     this._tlsConfig = config;
     return Promise.resolve();
