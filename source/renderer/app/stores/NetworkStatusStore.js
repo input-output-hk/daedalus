@@ -220,7 +220,7 @@ export default class NetworkStatusStore extends Store {
   }
 
   _requestCardanoState = async () => {
-    Logger.info('NetworkStatusStore: requesting node state.');
+    Logger.info('NetworkStatusStore: requesting node state');
     const state = await cardanoStateChangeChannel.request();
     Logger.info(`NetworkStatusStore: handling node state <${state}>`, { state });
     await this._handleCardanoNodeStateChange(state);
@@ -239,7 +239,7 @@ export default class NetworkStatusStore extends Store {
 
   _requestTlsConfig = async () => {
     try {
-      Logger.info('NetworkStatusStore: requesting tls config from main process.');
+      Logger.info('NetworkStatusStore: requesting tls config from main process');
       const tlsConfig = await tlsConfigChannel.request();
       await this._updateTlsConfig(tlsConfig);
     } catch (error) {
