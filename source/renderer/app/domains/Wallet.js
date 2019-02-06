@@ -1,5 +1,6 @@
 // @flow
-import { observable, computed } from 'mobx';
+import { pick } from 'lodash';
+import { observable, computed, action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import type {
   WalletAssuranceLevel,
@@ -31,6 +32,16 @@ const WalletAssuranceModes: { NORMAL: WalletAssuranceMode, STRICT: WalletAssuran
   }
 };
 
+export type WalletProps = {
+  id: string,
+  name: string,
+  amount: BigNumber,
+  assurance: WalletAssuranceLevel,
+  hasPassword: boolean,
+  passwordUpdateDate: ?Date,
+  syncState?: WalletSyncState,
+};
+
 export default class Wallet {
 
   id: string = '';
@@ -41,16 +52,14 @@ export default class Wallet {
   @observable passwordUpdateDate: ?Date;
   @observable syncState: ?WalletSyncState;
 
-  constructor(data: {
-    id: string,
-    name: string,
-    amount: BigNumber,
-    assurance: WalletAssuranceLevel,
-    hasPassword: boolean,
-    passwordUpdateDate: ?Date,
-    syncState?: WalletSyncState,
-  }) {
+  constructor(data: WalletProps) {
     Object.assign(this, data);
+  }
+
+  @action update(other: Wallet) {
+    Object.assign(this, pick(other, [
+      'id', 'name', 'amount', 'assurance', 'hasPassword', 'passwordUpdateDate', 'syncState'
+    ]));
   }
 
   @computed get hasFunds(): boolean {

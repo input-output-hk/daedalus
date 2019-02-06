@@ -169,6 +169,7 @@ export default {
   '--font-bold': 'NotoSans-Bold, NotoSansCJKjp-Bold',
   '--font-heavy': 'NotoSans-ExtraBold, NotoSansCJKjp-Black',
   '--font-black': 'NotoSans-Black, NotoSansCJKjp-Black',
+  '--font-mono': 'SFMono-Light',
 
   '--theme-input-hint-font': 'NotoSans-Regular, NotoSansCJKjp-Regular',
 

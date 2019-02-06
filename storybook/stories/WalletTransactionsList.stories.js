@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react';
 import moment from 'moment';
 import BigNumber from 'bignumber.js';
 import StoryDecorator from './support/StoryDecorator';
-import { generateTransaction } from './support/utils';
+import { generateMultipleTransactions, generateTransaction } from './support/utils';
 import WalletTransactionsList from '../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
 import {
   transactionStates,
@@ -37,6 +37,7 @@ storiesOf('WalletTransactionsList', module)
       assuranceMode={{ low: 1, medium: 2 }}
       walletId="test-wallet"
       formattedWalletAmount={formattedWalletAmount}
+      totalAvailable={5}
     />
   ))
 
@@ -59,5 +60,20 @@ storiesOf('WalletTransactionsList', module)
       assuranceMode={{ low: 1, medium: 2 }}
       walletId="test-wallet"
       formattedWalletAmount={formattedWalletAmount}
+      totalAvailable={3}
+    />
+  ))
+
+  .add('rendering many transactions', () => (
+    <WalletTransactionsList
+      isRenderingAsVirtualList
+      isRestoreActive={false}
+      transactions={generateMultipleTransactions(500)}
+      isLoadingTransactions={false}
+      hasMoreToLoad={false}
+      assuranceMode={{ low: 1, medium: 2 }}
+      walletId="test-wallet"
+      formattedWalletAmount={formattedWalletAmount}
+      totalAvailable={500}
     />
   ));

@@ -9,6 +9,7 @@ export type GetTxnHistoryParams = {
   page: number,
   per_page: number,
   sort_by: string,
+  created_at: string,
 };
 
 const requestOptions = {

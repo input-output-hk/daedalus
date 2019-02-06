@@ -12,13 +12,13 @@ When('I click the ShowUsed switch', async function () {
   await waitAndClick(this.client, '.SimpleSwitch_switch');
 });
 
-Then('I should see {int} used addresses', { timeout: 40000 }, async function (numberOfAddresses) {
-  const addressesFound = await getVisibleElementsCountForSelector(this.client, '.WalletReceive_usedWalletAddress', '.WalletReceive_usedWalletAddress', 40000);
+Then('I should see {int} used addresses', { timeout: 60000 }, async function (numberOfAddresses) {
+  const addressesFound = await getVisibleElementsCountForSelector(this.client, '.Address_usedWalletAddress', '.Address_usedWalletAddress', 60000);
   expect(addressesFound).to.equal(numberOfAddresses);
 });
 
 Then('I should see {int} addresses', async function (numberOfAddresses) {
-  const addressesFound = await getVisibleElementsCountForSelector(this.client, '.WalletReceive_walletAddress');
+  const addressesFound = await getVisibleElementsCountForSelector(this.client, '.Address_component');
   expect(addressesFound).to.equal(numberOfAddresses);
 });
 
@@ -26,7 +26,7 @@ Then('I should see the following addresses:', async function (table) {
   const expectedAdresses = table.hashes();
   let addresses;
   await this.client.waitUntil(async () => {
-    addresses = await this.client.getAttribute('.WalletReceive_walletAddress', 'class');
+    addresses = await this.client.getAttribute('.Address_component', 'class');
     return addresses.length === expectedAdresses.length;
   });
   addresses.forEach((address, index) => expect(address).to.include(expectedAdresses[index].ClassName));

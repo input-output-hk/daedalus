@@ -97,7 +97,7 @@ export const winLinuxMenu = (
         accelerator: 'F11',
         click() { window.setFullScreen(!window.isFullScreen()); }
       } : {
-        label: translation('view.toggleMaximumScreenSize'),
+        label: translation('view.toggleMaximumWindowSize'),
         accelerator: 'F11',
         click() {
           if (window.isMaximized()) {

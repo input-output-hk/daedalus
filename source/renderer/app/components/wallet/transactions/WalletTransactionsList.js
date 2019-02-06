@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -11,7 +12,11 @@ import Transaction from './Transaction';
 import { WalletTransaction } from '../../../domains/WalletTransaction';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { DEVELOPMENT } from '../../../../../common/types/environment.types';
+import { VirtualTransactionList } from './render-strategies/VirtualTransactionList';
+import { TransactionInfo, TransactionsGroup } from './types';
 import type { WalletAssuranceMode } from '../../../api/wallets/types';
+import type { Row } from './types';
+import { SimpleTransactionList } from './render-strategies/SimpleTransactionList';
 
 const messages = defineMessages({
   today: {
@@ -36,23 +41,23 @@ const messages = defineMessages({
   },
 });
 
-const dateFormat = 'YYYY-MM-DD';
-
 type Props = {
-  transactions: Array<WalletTransaction>,
+  assuranceMode: WalletAssuranceMode,
+  formattedWalletAmount: Function,
+  hasMoreToLoad: boolean,
   isLoadingTransactions: boolean,
   isRestoreActive: boolean,
-  hasMoreToLoad: boolean,
-  assuranceMode: WalletAssuranceMode,
-  walletId: string,
-  formattedWalletAmount: Function,
+  isRenderingAsVirtualList: boolean,
   network: string,
-  showMoreTransactionsButton?: boolean,
   onShowMoreTransactions?: Function,
   onOpenExternalLink?: Function,
+  showMoreTransactionsButton?: boolean,
+  totalAvailable: number,
+  transactions: Array<WalletTransaction>,
+  walletId: string,
 };
 
-type TransactionsGroup = { date: moment.Moment, transactions: Array<WalletTransaction>};
+const DATE_FORMAT = 'YYYY-MM-DD';
 
 @observer
 export default class WalletTransactionsList extends Component<Props> {
@@ -62,11 +67,18 @@ export default class WalletTransactionsList extends Component<Props> {
   };
 
   static defaultProps = {
+    isRenderingAsVirtualList: false,
     network: DEVELOPMENT,
     showMoreTransactionsButton: false,
     onShowMoreTransactions: () => {},
     onOpenExternalLink: () => {},
   };
+
+  expandedTransactions: WalletTransaction[] = [];
+  virtualList: ?VirtualTransactionList;
+  simpleList: ?SimpleTransactionList;
+  loadingSpinner: ?LoadingSpinner;
+  localizedDateFormat: 'MM/DD/YYYY';
 
   componentWillMount() {
     this.localizedDateFormat = moment.localeData().longDateFormat('L');
@@ -75,17 +87,15 @@ export default class WalletTransactionsList extends Component<Props> {
     // Japanese - YYYY/MM/DD
   }
 
-  list: HTMLElement;
-  loadingSpinner: ?LoadingSpinner;
-  localizedDateFormat: 'MM/DD/YYYY';
-
   groupTransactionsByDay(transactions: Array<WalletTransaction>): Array<TransactionsGroup> {
     const groups: Array<TransactionsGroup> = [];
     for (const transaction of transactions) {
       const date = moment(transaction.date);
-      let group = groups.find((g) => g.date.format(dateFormat) === date.format(dateFormat));
+      let group = groups.find((g) => (
+        g.date.format(DATE_FORMAT) === date.format(DATE_FORMAT)
+      ));
       if (!group) {
-        group = { date, transactions: [] };
+        group = new TransactionsGroup({ date, transactions: [] });
         groups.push(group);
       }
       group.transactions.push(transaction);
@@ -107,28 +117,110 @@ export default class WalletTransactionsList extends Component<Props> {
 
   localizedDate(date: string) {
     const { intl } = this.context;
-    const today = moment().format(dateFormat);
+    // TODAY
+    const today = moment().format(DATE_FORMAT);
     if (date === today) return intl.formatMessage(messages.today);
-    const yesterday = moment().subtract(1, 'days').format(dateFormat);
+    // YESTERDAY
+    const yesterday = moment().subtract(1, 'days').format(DATE_FORMAT);
     if (date === yesterday) return intl.formatMessage(messages.yesterday);
+    // PAST DATE
     return moment(date).format(this.localizedDateFormat);
   }
 
+  isTxExpanded = (tx: WalletTransaction) => (
+    !!this.expandedTransactions.find(t => t.id === tx.id)
+  );
+
+  registerTxAsExpanded = (tx: WalletTransaction) => {
+    this.expandedTransactions = this.expandedTransactions.concat([tx]);
+  };
+
+  removeTxFromExpanded = (tx: WalletTransaction) => {
+    this.expandedTransactions = this.expandedTransactions.filter(
+      (t) => t.id !== tx.id
+    );
+  };
+
+  toggleTransactionExpandedState = (tx: WalletTransaction) => {
+    if (this.isTxExpanded(tx)) {
+      this.removeTxFromExpanded(tx);
+    } else {
+      this.registerTxAsExpanded(tx);
+    }
+    if (this.virtualList) {
+      this.virtualList.updateInfoRowHeight(tx);
+    } else if (this.simpleList) {
+      this.simpleList.forceUpdate();
+    }
+  };
+
+  onShowMoreTransactions = (walletId: string) => {
+    if (this.props.onShowMoreTransactions) {
+      this.props.onShowMoreTransactions(walletId);
+    }
+  };
+
+  renderGroup = (data: TransactionsGroup): Node => (
+    <div className={styles.groupDate}>
+      {this.localizedDate(data.date)}
+    </div>
+  );
+
+  renderTransaction = (data: TransactionInfo): Node => {
+    const {
+      assuranceMode,
+      formattedWalletAmount,
+      isRestoreActive,
+      network,
+      onOpenExternalLink,
+    } = this.props;
+    const { isFirstInGroup, isLastInGroup, tx } = data;
+    const txClasses = classnames([
+      styles.transaction,
+      isFirstInGroup ? styles.firstInGroup : null,
+      isLastInGroup ? styles.lastInGroup : null,
+    ]);
+    return (
+      <div id={`tx-${tx.id}`} className={txClasses}>
+        <Transaction
+          assuranceLevel={tx.getAssuranceLevelForMode(assuranceMode)}
+          data={tx}
+          formattedWalletAmount={formattedWalletAmount}
+          isExpanded={this.isTxExpanded(tx)}
+          isLastInList={isLastInGroup}
+          isRestoreActive={isRestoreActive}
+          network={network}
+          onDetailsToggled={() => this.toggleTransactionExpandedState(tx)}
+          onOpenExternalLink={onOpenExternalLink}
+          state={tx.state}
+        />
+      </div>
+    );
+  };
+
+  renderItem = (row: Row) => {
+    if (row instanceof TransactionsGroup) {
+      return this.renderGroup(row);
+    }
+    if (row instanceof TransactionInfo) {
+      return this.renderTransaction(row);
+    }
+    return null;
+  };
+
   render() {
     const {
-      transactions,
-      isLoadingTransactions,
       hasMoreToLoad,
-      assuranceMode,
-      walletId,
-      formattedWalletAmount,
-      onOpenExternalLink,
-      showMoreTransactionsButton,
+      isLoadingTransactions,
+      isRenderingAsVirtualList,
       isRestoreActive,
+      showMoreTransactionsButton,
+      totalAvailable,
+      transactions,
+      walletId,
     } = this.props;
 
     const { intl } = this.context;
-
     const transactionsGroups = this.groupTransactionsByDay(transactions);
 
     const loadingSpinner = (isLoadingTransactions || hasMoreToLoad) && !isRestoreActive ? (
@@ -149,49 +241,56 @@ export default class WalletTransactionsList extends Component<Props> {
       styles.showMoreTransactionsButton,
     ]);
 
+    // Generate flat list with dates in-between
+    const rows: Row[] = [];
+    transactionsGroups.forEach((group) => {
+      // First push the group into the list
+      rows.push(group);
+      // Followed by all transactions the tx in the group
+      group.transactions.forEach((transaction, transactionIndex) => {
+        const isFirstInGroup = (transactionIndex === 0);
+        const isLastInGroup = (group.transactions.length === (transactionIndex + 1));
+        rows.push(new TransactionInfo({
+          tx: transaction,
+          isLastInGroup,
+          isFirstInGroup
+        }));
+      });
+    });
+
+    const showMoreTxButton = (
+      <Button
+        className={buttonClasses}
+        label={intl.formatMessage(messages.showMoreTransactionsButtonLabel)}
+        onClick={this.onShowMoreTransactions.bind(this, walletId)}
+        skin={ButtonSkin}
+      />
+    );
+
     return (
       <div className={styles.component}>
         {syncingTransactionsSpinner}
-
-        {transactionsGroups.map((group, groupIndex) => (
-          <div className={styles.group} key={walletId + '-' + groupIndex}>
-            <div className={styles.groupDate}>{this.localizedDate(group.date)}</div>
-            <div className={styles.list}>
-              {group.transactions.map((transaction, transactionIndex) => (
-                <div key={`${walletId}-${transaction.id}-${transaction.type}`}>
-                  <Transaction
-                    data={transaction}
-                    isRestoreActive={isRestoreActive}
-                    isLastInList={transactionIndex === group.transactions.length - 1}
-                    network={this.props.network}
-                    state={transaction.state}
-                    assuranceLevel={transaction.getAssuranceLevelForMode(assuranceMode)}
-                    formattedWalletAmount={formattedWalletAmount}
-                    onOpenExternalLink={onOpenExternalLink}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-
-        {loadingSpinner}
-
-        {showMoreTransactionsButton && (
-          <Button
-            className={buttonClasses}
-            label={intl.formatMessage(messages.showMoreTransactionsButtonLabel)}
-            onClick={this.onShowMoreTransactions.bind(this, walletId)}
-            skin={ButtonSkin}
+        {isRenderingAsVirtualList ? (
+          <VirtualTransactionList
+            getExpandedTransactions={() => this.expandedTransactions}
+            isTxExpanded={this.isTxExpanded}
+            ref={(list) => this.virtualList = list}
+            renderRow={this.renderItem}
+            rows={rows}
+            totalRows={totalAvailable}
+            isLoadingSpinnerShown={loadingSpinner !== null}
+            isSyncingSpinnerShown={isRestoreActive}
+          />
+        ) : (
+          <SimpleTransactionList
+            ref={(list) => this.simpleList = list}
+            renderRow={this.renderItem}
+            rows={rows}
           />
         )}
+        {showMoreTransactionsButton ? showMoreTxButton : null}
+        {loadingSpinner}
       </div>
     );
   }
-
-  onShowMoreTransactions = (walletId: string) => {
-    if (this.props.onShowMoreTransactions) {
-      this.props.onShowMoreTransactions(walletId);
-    }
-  };
 }

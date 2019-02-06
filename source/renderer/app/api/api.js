@@ -1,7 +1,8 @@
 // @flow
-import { split, get } from 'lodash';
+import { split, get, unionBy } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
+import moment from 'moment';
 
 // domains
 import Wallet from '../domains/Wallet';
@@ -60,7 +61,9 @@ import {
 // config constants
 import {
   LOVELACES_PER_ADA,
-  MAX_TRANSACTIONS_PER_PAGE
+  MAX_TRANSACTIONS_PER_PAGE,
+  MAX_TRANSACTION_CONFIRMATIONS,
+  TX_AGE_POLLING_THRESHOLD
 } from '../config/numbersConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
@@ -177,7 +180,11 @@ export default class AdaApi {
     const { walletId } = request;
     try {
       const accounts: Accounts = await getAccounts(this.config, { walletId });
-      Logger.debug('AdaApi::getAddresses success', { accounts });
+
+      const response = accounts.map(account => (
+        Object.assign({}, account, { addresses: account.addresses.length })
+      ));
+      Logger.debug('AdaApi::getAddresses success', { response });
 
       if (!accounts || !accounts.length) {
         return new Promise(resolve => resolve({ accountIndex: null, addresses: [] }));
@@ -195,8 +202,18 @@ export default class AdaApi {
   };
 
   getTransactions = async (request: GetTransactionsRequest): Promise<GetTransactionsResponse> => {
-    Logger.debug('AdaApi::searchHistory called', { parameters: request });
-    const { walletId, skip, limit } = request;
+    const requestTimestamp = moment();
+    const requestStats = Object.assign({}, request, {
+      cachedTransactions: request.cachedTransactions.length,
+    });
+    Logger.debug('AdaApi::searchHistory called', { parameters: requestStats });
+    const {
+      walletId, skip, limit,
+      isFirstLoad, // during first load we fetch all wallet's transactions
+      isRestoreActive, // during restoration we fetch only missing transactions
+      isRestoreCompleted, // once restoration is done we fetch potentially missing transactions
+      cachedTransactions,
+    } = request;
     const accounts: Accounts = await getAccounts(this.config, { walletId });
 
     if (!accounts.length || !accounts[0].index) {
@@ -215,31 +232,84 @@ export default class AdaApi {
       page: skip === 0 ? 1 : skip + 1,
       per_page: perPage,
       sort_by: 'DES[created_at]',
+      created_at: `LTE[${moment.utc().format('YYYY-MM-DDTHH:mm:ss')}]`,
+      // ^^ By setting created_at filter to current time we make sure
+      // all subsequent multi-pages requests load the same set of transactions
     };
+
+    const shouldLoadOnlyFresh = !isFirstLoad && !isRestoreActive && !isRestoreCompleted;
+    if (shouldLoadOnlyFresh) {
+      const tenMinutesAgo =
+        moment.utc(Date.now() - TX_AGE_POLLING_THRESHOLD).format('YYYY-MM-DDTHH:mm:ss');
+      // Since we load all transactions in a first load, later on we only care about fresh ones
+      Object.assign(params, { created_at: `GTE[${tenMinutesAgo}]` });
+    }
+
     const pagesToBeLoaded = Math.ceil(limit / params.per_page);
 
     try {
+      // Load first page of transactions
       const response: Transactions = await getTransactionHistory(this.config, params);
-      const { meta, data: txnHistory } = response;
-      const { totalPages } = meta.pagination;
-      const hasMultiplePages = (totalPages > 1 && (shouldLoadAll || limit > perPage));
+      const { meta, data: txHistory } = response;
+      const { totalPages, totalEntries: totalTransactions } = meta.pagination;
 
+      let transactions = txHistory.map(tx => _createTransactionFromServerData(tx));
+
+      // Load additional pages of transactions
+      const hasMultiplePages = (totalPages > 1 && (shouldLoadAll || limit > perPage));
       if (hasMultiplePages) {
         let page = 2;
-        const hasNextPage = () => page < totalPages + 1;
+        const hasNextPage = () => {
+          const hasMorePages = (page < totalPages + 1);
+          if ((isRestoreActive || isRestoreCompleted) && hasMorePages) {
+            const loadedTransactions = unionBy(transactions, cachedTransactions, 'id');
+            const hasMoreTransactions = (totalTransactions - loadedTransactions.length) > 0;
+            return hasMoreTransactions;
+          }
+          return hasMorePages;
+        };
         const shouldLoadNextPage = () => shouldLoadAll || page <= pagesToBeLoaded;
+
+        if (isRestoreActive || isRestoreCompleted) {
+          const latestLoadedTransactionDate = transactions[0].date;
+          const latestLoadedTransactionDateString =
+            moment.utc(latestLoadedTransactionDate).format('YYYY-MM-DDTHH:mm:ss');
+          // During restoration we need to fetch only transactions older than the latest loaded one
+          // as this ensures that both totalPages and totalEntries remain unchanged throught out
+          // subsequent page loads (as in the meantime new transactions can be discovered)
+          Object.assign(params, { created_at: `LTE[${latestLoadedTransactionDateString}]` });
+        }
 
         for (page; (hasNextPage() && shouldLoadNextPage()); page++) {
           const { data: pageHistory } =
             await getTransactionHistory(this.config, Object.assign(params, { page }));
-          txnHistory.push(...pageHistory);
+          transactions.push(...pageHistory.map(tx => _createTransactionFromServerData(tx)));
         }
-        if (!shouldLoadAll) txnHistory.splice(limit);
       }
 
-      const transactions = txnHistory.map(txn => _createTransactionFromServerData(txn));
+      // Merge newly loaded and previously loaded transactions
+      // - unionBy also serves the purpose of removing transaction duplicates
+      //   which may occur as a side-effect of transaction request pagination
+      //   as multi-page requests are not executed at the exact same time!
+      transactions = unionBy(transactions, cachedTransactions, 'id');
+
+      // Enforce the limit in case we are not loading all transactions
+      if (!shouldLoadAll) transactions.splice(limit);
+
       const total = transactions.length;
-      Logger.debug('AdaApi::searchHistory success', { txnHistory });
+
+      const responseStats = {
+        apiRequested: limit || 'all',
+        apiFiltered: shouldLoadOnlyFresh ? 'fresh' : '',
+        apiReturned: totalTransactions,
+        apiPagesTotal: totalPages,
+        apiPagesRequested: params.page,
+        daedalusCached: cachedTransactions.length,
+        daedalusLoaded: total - cachedTransactions.length,
+        daedalusTotal: total,
+        requestDurationInMs: moment.duration(moment().diff(requestTimestamp)).as('milliseconds'),
+      };
+      Logger.debug(`AdaApi::searchHistory success: ${total} transactions loaded`, { ...responseStats });
       return new Promise(resolve => resolve({ transactions, total }));
     } catch (error) {
       Logger.error('AdaApi::searchHistory error', { error: `${stringifyError(error)}` });
@@ -810,7 +880,7 @@ const _createTransactionFromServerData = action(
       amount: new BigNumber(direction === 'outgoing' ? (amount * -1) : amount).dividedBy(LOVELACES_PER_ADA),
       date: utcStringToDate(creationTime),
       description: '',
-      numberOfConfirmations: confirmations,
+      numberOfConfirmations: Math.min(confirmations, MAX_TRANSACTION_CONFIRMATIONS + 1),
       addresses: {
         from: inputs.map(({ address }) => address),
         to: outputs.map(({ address }) => address),

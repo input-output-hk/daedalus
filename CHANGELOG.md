@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 - Structured the Daedalus logs in the same format as the Cardano logs, which follows the structured logging specification ([PR 1299](https://github.com/input-output-hk/daedalus/pull/1299))
+- Improve performance of rendering huge lists of transactions and addresses ([PR 1276](https://github.com/input-output-hk/daedalus/pull/1276))
 - Implemented a "System-info.json" file, containing the system specification of the machine user is running Daedalus ([PR 1292](https://github.com/input-output-hk/daedalus/pull/1292))
 - Implemented a block-consolidation status screen ([PR 1275](https://github.com/input-output-hk/daedalus/pull/1275), [PR 1294](https://github.com/input-output-hk/daedalus/pull/1294))
 - Implemented translations for the application menu ([PR 1262](https://github.com/input-output-hk/daedalus/pull/1262), [PR 1296](https://github.com/input-output-hk/daedalus/pull/1296))
@@ -20,6 +21,7 @@ Changelog
 
 ### Fixes
 
+- Fixed Dev-Tools initialization in development mode ([PR 1302](https://github.com/input-output-hk/daedalus/pull/1302))
 - Fixed text selection issues (disabled drag and drop of selected text and enabled unselect option) ([PR 1289](https://github.com/input-output-hk/daedalus/pull/1289))
 - Disabled the default behavior of the context menu following a right click for non-input elements ([PR 1281](https://github.com/input-output-hk/daedalus/pull/1281))
 - Decoupled initial setup of language locale and terms of use from loading and syncing screens ([PR 1279](https://github.com/input-output-hk/daedalus/pull/1279), [PR 1284](https://github.com/input-output-hk/daedalus/pull/1284))

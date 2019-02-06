@@ -10,15 +10,17 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
-import { submitOnEnter } from '../../utils/form';
-import BorderedBox from '../widgets/BorderedBox';
-import TinySwitch from '../widgets/forms/TinySwitch';
-import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
-import type { Addresses } from '../../api/addresses/types';
-import globalMessages from '../../i18n/global-messages';
-import LocalizableError from '../../i18n/LocalizableError';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+import { submitOnEnter } from '../../../utils/form';
+import BorderedBox from '../../widgets/BorderedBox';
+import TinySwitch from '../../widgets/forms/TinySwitch';
+import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
+import type { Addresses, Address as AddressType } from '../../../api/addresses/types';
+import globalMessages from '../../../i18n/global-messages';
+import LocalizableError from '../../../i18n/LocalizableError';
+import { VirtualAddressesList } from './VirtualAddressesList';
 import styles from './WalletReceive.scss';
+import { Address } from './Address';
 
 const messages = defineMessages({
   walletAddressLabel: {
@@ -116,6 +118,15 @@ export default class WalletReceive extends Component<Props, State> {
     },
   });
 
+  renderRow = (address: AddressType, index: number) => (
+    <Address
+      index={index}
+      address={address}
+      onCopyAddress={this.props.onCopyAddress}
+      copyAddressLabel={this.context.intl.formatMessage(messages.copyAddressLabel)}
+    />
+  );
+
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
@@ -130,6 +141,9 @@ export default class WalletReceive extends Component<Props, State> {
 
     this.passwordField && this.passwordField.focus();
   };
+
+  getFilteredAddresses = (walletAddresses: Addresses): Addresses => walletAddresses
+    .filter((address: AddressType) => (!address.used || this.state.showUsed));
 
   render() {
     const { form } = this;
@@ -191,87 +205,63 @@ export default class WalletReceive extends Component<Props, State> {
     return (
       <div className={styles.component}>
 
-        <BorderedBox>
-
-          <div className={styles.qrCodeAndInstructions}>
-            <div className={styles.qrCode}>
-              <QRCode
-                value={walletAddress}
-                bgColor={qrCodeBackgroundColor}
-                fgColor={qrCodeForegroundColor}
-                size={152}
-              />
-            </div>
-
-            <div className={styles.instructions}>
-              <div className={walletAddressClasses}>
-                {walletAddress}
-                <CopyToClipboard
-                  text={walletAddress}
-                  onCopy={onCopyAddress.bind(this, walletAddress)}
-                >
-                  <SVGInline svg={iconCopy} className={styles.copyIconBig} />
-                </CopyToClipboard>
-              </div>
-
-              <div className={styles.hashLabel}>
-                {intl.formatMessage(messages.walletAddressLabel)}
-              </div>
-
-              <div className={styles.instructionsText}>
-                {intl.formatMessage(messages.walletReceiveInstructions)}
-              </div>
-
-              {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
-
-              {generateAddressForm}
-
-            </div>
-          </div>
-
-          <div className={styles.generatedAddresses}>
-            <h2>
-              {intl.formatMessage(messages.generatedAddressesSectionTitle)}
-
-              <div className={styles.hideUsed}>
-                <TinySwitch
-                  label={intl.formatMessage(messages.showUsedLabel)}
-                  onChange={this.toggleUsedAddresses}
-                  checked={showUsed}
+        <BorderedBox
+          fullHeight
+        >
+          <div className={styles.container}>
+            <div className={styles.qrCodeAndInstructions}>
+              <div className={styles.qrCode}>
+                <QRCode
+                  value={walletAddress}
+                  bgColor={qrCodeBackgroundColor}
+                  fgColor={qrCodeForegroundColor}
+                  size={152}
                 />
               </div>
-            </h2>
 
-            {walletAddresses.map((address, index) => {
-              const isAddressVisible = !address.used || showUsed;
-              if (!isAddressVisible) return null;
-
-              const addressClasses = classnames([
-                'generatedAddress-' + (index + 1),
-                styles.walletAddress,
-                address.used ? styles.usedWalletAddress : null,
-              ]);
-              return (
-                <div key={index} className={addressClasses}>
-                  <div className={styles.addressId}>{address.id}</div>
-                  <div className={styles.addressActions}>
-                    <CopyToClipboard
-                      text={address.id}
-                      onCopy={onCopyAddress.bind(this, address.id)}
-                    >
-                      <span className={styles.copyAddress}>
-                        <SVGInline svg={iconCopy} className={styles.copyIcon} />
-                        <span className={styles.copyAddressLabel}>
-                          {intl.formatMessage(messages.copyAddressLabel)}
-                        </span>
-                      </span>
-                    </CopyToClipboard>
-                  </div>
+              <div className={styles.instructions}>
+                <div className={walletAddressClasses}>
+                  {walletAddress}
+                  <CopyToClipboard
+                    text={walletAddress}
+                    onCopy={onCopyAddress.bind(this, walletAddress)}
+                  >
+                    <SVGInline svg={iconCopy} className={styles.copyIconBig} />
+                  </CopyToClipboard>
                 </div>
-              );
-            })}
-          </div>
 
+                <div className={styles.hashLabel}>
+                  {intl.formatMessage(messages.walletAddressLabel)}
+                </div>
+
+                <div className={styles.instructionsText}>
+                  {intl.formatMessage(messages.walletReceiveInstructions)}
+                </div>
+
+                {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
+
+                {generateAddressForm}
+              </div>
+            </div>
+
+            <div className={styles.generatedAddresses}>
+              <h2>
+                {intl.formatMessage(messages.generatedAddressesSectionTitle)}
+                <div className={styles.hideUsed}>
+                  <TinySwitch
+                    label={intl.formatMessage(messages.showUsedLabel)}
+                    onChange={this.toggleUsedAddresses}
+                    checked={showUsed}
+                  />
+                </div>
+              </h2>
+
+              <VirtualAddressesList
+                rows={this.getFilteredAddresses(walletAddresses)}
+                renderRow={this.renderRow}
+              />
+            </div>
+          </div>
         </BorderedBox>
 
       </div>

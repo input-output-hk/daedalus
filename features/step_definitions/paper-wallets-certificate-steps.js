@@ -160,7 +160,7 @@ When(/^I toggle "Spending password" switch on the restore wallet with certificat
 });
 
 Then(/^I should see that address was used$/, async function () {
-  const addressSelector = '.WalletReceive_usedWalletAddress .WalletReceive_addressId';
+  const addressSelector = '.Address_usedWalletAddress .Address_addressId';
   await this.client.waitForVisible(addressSelector);
   const usedAddress = await this.client.getText(addressSelector);
   expect(usedAddress).to.equal(this.certificateWalletAddress);
