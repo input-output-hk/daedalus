@@ -5,7 +5,7 @@ import { Logger } from './logging';
 import { stringifyError } from '../../common/utils/logging';
 
 unhandled({
-  logger: (error: any) => Logger.error(`unhandledException::renderer: ${stringifyError(error)}`),
+  logger: (error: any) => Logger.error('unhandledException::renderer', { error: `${stringifyError(error)}` }),
   showDialog: false
 });
 
@@ -21,7 +21,7 @@ export default class RendererErrorHandler {
   }
 
   onError(errorType: string, error: any) {
-    Logger.error(`RendererError::${errorType}: ${stringifyError(error)}`);
+    Logger.error(`RendererError::${errorType}`, { error: `${stringifyError(error)}` });
 
     if (this.count < this.maxReloads) {
       this.count++;
