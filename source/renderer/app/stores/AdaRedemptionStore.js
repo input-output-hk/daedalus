@@ -164,7 +164,7 @@ export default class AdaRedemptionStore extends Store {
     if (this.redemptionType === ADA_REDEMPTION_TYPES.PAPER_VENDED) return;
     if (this.certificate == null) throw new Error('Certificate File is required for parsing.');
     const path = this.certificate.path; // eslint-disable-line
-    Logger.debug('Parsing ADA Redemption code from certificate', { path });
+    Logger.debug('AdaRedemptionStore: Parsing ADA Redemption code from certificate', { path });
     let decryptionKey = null;
     if ((
       this.redemptionType === ADA_REDEMPTION_TYPES.REGULAR ||
@@ -190,7 +190,7 @@ export default class AdaRedemptionStore extends Store {
   }
 
   _onCodeParsed = action((event, code) => {
-    Logger.debug('Redemption code parsed from certificate', { code });
+    Logger.debug('AdaRedemptionStore: Redemption code parsed from certificate', { code });
     this.redemptionCode = code;
   });
 
@@ -268,7 +268,7 @@ export default class AdaRedemptionStore extends Store {
     walletId: string,
     amount: number,
   }) => {
-    Logger.debug('ADA successfully redeemed for wallet', { walletId });
+    Logger.debug('AdaRedemptionStore: ADA successfully redeemed for wallet', { walletId });
     this.stores.wallets.goToWalletRoute(walletId);
     this.amountRedeemed = amount;
     this.showAdaRedemptionSuccessMessage = true;
