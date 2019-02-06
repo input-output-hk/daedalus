@@ -40,7 +40,7 @@ const safeExit = async () => {
   }
   if (cardanoNode.state === CardanoNodeStates.STOPPING) return;
   try {
-    const pid = cardanoNode.pid || null;
+    const pid = cardanoNode.pid || 'null';
     Logger.info(`Daedalus:safeExit: stopping cardano-node with PID: ${pid}`, { pid });
     await cardanoNode.stop();
     Logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });
