@@ -20,6 +20,7 @@ import { buildAppMenus } from './utils/buildAppMenus';
 import { getLocale } from './utils/getLocale';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
+import { stringifyError } from '../common/utils/logging';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
 
@@ -34,17 +35,18 @@ const {
 
 const safeExit = async () => {
   if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
-    Logger.info('Daedalus:safeExit: exiting Daedalus with code 0.');
+    Logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });
     return safeExitWithCode(0);
   }
   if (cardanoNode.state === CardanoNodeStates.STOPPING) return;
   try {
-    Logger.info(`Daedalus:safeExit: stopping cardano-node with PID ${cardanoNode.pid || 'null'}`);
+    const pid = cardanoNode.pid || null;
+    Logger.info(`Daedalus:safeExit: stopping cardano-node with PID: ${pid}`, { pid });
     await cardanoNode.stop();
-    Logger.info('Daedalus:safeExit: exiting Daedalus with code 0.');
+    Logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });
     safeExitWithCode(0);
-  } catch (stopError) {
-    Logger.info(`Daedalus:safeExit: cardano-node did not exit correctly: ${stopError}`);
+  } catch (error) {
+    Logger.error('Daedalus:safeExit: cardano-node did not exit correctly', { error: `${stringifyError(error)}` });
     safeExitWithCode(0);
   }
 };
@@ -75,7 +77,7 @@ const onAppReady = async () => {
 
   Logger.info(`========== Daedalus is starting at ${startTime} ==========`);
 
-  Logger.debug('Updating System-info.json file', { ...systemInfo.data });
+  Logger.info('Updating System-info.json file', { ...systemInfo.data });
 
   ensureXDGDataIsSet();
   await installChromeExtensions(isDev);
@@ -152,7 +154,7 @@ const onAppReady = async () => {
     contents.on('new-window', (event, url) => {
       // Prevent creation of new BrowserWindows via links / window.open
       event.preventDefault();
-      Logger.info(`Prevented creation of new browser window with url ${url}`);
+      Logger.info('Prevented creation of new browser window', { url });
       // Open these links with the default browser
       shell.openExternal(url);
     });
