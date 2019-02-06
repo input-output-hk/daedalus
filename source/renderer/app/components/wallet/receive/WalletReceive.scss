@@ -3,6 +3,7 @@
 
 .component {
   flex: 1;
+  min-height: 442px;
   overflow-x: hidden;
   overflow-y: overlay;
   padding: 20px;
@@ -52,7 +53,7 @@
 
     .hash {
       font-size: 19px;
-      font-family: var(--font-medium);
+      font-family: var(--font-mono);
       line-height: 23px;
       margin-bottom: 6px;
       user-select: text;
