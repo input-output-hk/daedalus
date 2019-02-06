@@ -219,10 +219,10 @@ export class CardanoNode {
     const nodeCanBeStarted = await this._canBeStarted();
 
     if (!nodeCanBeStarted) {
-      return Promise.reject('CardanoNode: Cannot be started.');
+      return Promise.reject('CardanoNode: Cannot be started');
     }
     if (this._isUnrecoverable(config) && !isForced) {
-      return Promise.reject('CardanoNode: Too many startup retries.');
+      return Promise.reject('CardanoNode: Too many startup retries');
     }
     // Setup
     const { _log } = this;
@@ -253,7 +253,7 @@ export class CardanoNode {
           _log.info(`CardanoNode#start: cardano-node child process spawned with PID ${node.pid}`, { pid: node.pid });
           resolve();
         } catch (_) {
-          reject('CardanoNode#start: Error while spawning cardano-node.');
+          reject('CardanoNode#start: Error while spawning cardano-node');
         }
       });
     });
@@ -269,10 +269,10 @@ export class CardanoNode {
   async stop(): Promise<void> {
     const { _node, _log, _config } = this;
     if (await this._isDead()) {
-      _log.info('CardanoNode#stop: process is not running anymore.');
+      _log.info('CardanoNode#stop: process is not running anymore');
       return Promise.resolve();
     }
-    _log.info('CardanoNode#stop: disconnecting from cardano-node process.');
+    _log.info('CardanoNode#stop: disconnecting from cardano-node process');
     try {
       if (_node) _node.disconnect();
       this._changeToState(CardanoNodeStates.STOPPING);
@@ -300,11 +300,11 @@ export class CardanoNode {
     const { _node, _log } = this;
     return new Promise(async (resolve, reject) => {
       if (await this._isDead()) {
-        _log.info('CardanoNode#kill: process is already dead.');
+        _log.info('CardanoNode#kill: process is already dead');
         return Promise.resolve();
       }
       try {
-        _log.info('CardanoNode#kill: killing cardano-node process.');
+        _log.info('CardanoNode#kill: killing cardano-node process');
         if (_node) _node.kill();
         await this._waitForCardanoToExitOrKillIt();
         await this._storeProcessStates();
@@ -312,7 +312,7 @@ export class CardanoNode {
         this._reset();
         resolve();
       } catch (_) {
-        _log.info('CardanoNode#kill: could not kill cardano-node.');
+        _log.info('CardanoNode#kill: could not kill cardano-node');
         await this._storeProcessStates();
         this._reset();
         reject('Could not kill cardano-node.');
@@ -369,7 +369,7 @@ export class CardanoNode {
       ), _config.updateTimeout);
       await this._waitForNodeProcessToExit(_config.updateTimeout);
     } catch (error) {
-      _log.info('CardanoNode: did not apply update as expected. Killing it.');
+      _log.info('CardanoNode: did not apply update as expected, killing it...');
       return this.kill();
     }
   }
@@ -433,7 +433,7 @@ export class CardanoNode {
    */
   _handleCardanoNodeMessage = (msg: CardanoNodeIpcMessage) => {
     if (msg == null) return;
-    this._log.info('CardanoNode: received message', { msg: `${JSON.stringify(msg)}` });
+    this._log.info('CardanoNode: received message', { msg });
     if (msg.ReplyPort != null) this._handleCardanoReplyPortMessage(msg.ReplyPort);
     if (msg.FInjects != null) this._handleCardanoFaultInjectionResponse(msg.FInjects);
   };
@@ -472,7 +472,7 @@ export class CardanoNode {
    * @private
    */
   _handleCardanoFaultInjectionResponse = (response: FaultInjectionIpcResponse) => {
-    this._log.info('CardanoNode: the following injected faults are active', { injectedFaults: `${JSON.stringify(response)}` });
+    this._log.info('CardanoNode: the following injected faults are active', { injectedFaults: response });
     this._injectedFaults = response;
   };
 
@@ -630,7 +630,7 @@ export class CardanoNode {
     const { _config } = this;
     try {
       if (!environment.isWindows) {
-        this._log.info('CardanoNode: using "process.kill(pid)" to kill it');
+        this._log.info(`CardanoNode: using "process.kill(${pid})" to kill it`, { pid });
         process.kill(pid);
       } else {
         // https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/taskkill
