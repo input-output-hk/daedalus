@@ -392,6 +392,9 @@ export default class AdaApi {
       if (error.message === 'CannotCreateAddress') {
         throw new IncorrectSpendingPasswordError();
       }
+      if (error.message === 'TooBigTransaction') {
+        throw new TooBigTransactionError();
+      }
       throw new GenericApiError();
     }
   };
