@@ -252,7 +252,7 @@ export default class AdaRedemptionStore extends Store {
         accountIndex,
         spendingPassword,
         redemptionCode: shieldedRedemptionKey,
-        mnemonics: this.passPhrase && this.passPhrase.split(' ')
+        mnemonic: this.passPhrase && this.passPhrase.split(' ')
       });
       this._reset();
       this.actions.adaRedemption.adaSuccessfullyRedeemed.trigger({

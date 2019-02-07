@@ -42,9 +42,9 @@ export default (api: AdaApi) => {
   ): Promise<any> => new Promise((resolve) => {
     try {
       Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) called', { request });
-      const { redemptionCode, mnemonics } = request;
+      const { redemptionCode, mnemonic } = request;
       const isValidKey = api.isValidPaperVendRedemptionKey(redemptionCode);
-      const isValidMnemonic = api.isValidRedemptionMnemonic(mnemonics.join(' '));
+      const isValidMnemonic = api.isValidRedemptionMnemonic(mnemonic.join(' '));
       if (!isValidKey) Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) failed: not a valid redemption key!');
       if (!isValidMnemonic) Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) failed: not a valid mnemonic!');
       if (!isValidKey || !isValidMnemonic) {
