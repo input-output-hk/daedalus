@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { defineMessages, FormattedHTMLMessage } from 'react-intl';
 import { observer, inject } from 'mobx-react';
 import { ellipsis } from '../../utils/strings';
@@ -95,25 +95,26 @@ export default class WalletReceivePage extends Component<Props, State> {
     };
 
     return (
-      <VerticalFlexContainer>
-
-        <WalletReceive
-          walletAddress={walletAddress}
-          isWalletAddressUsed={isWalletAddressUsed}
-          walletAddresses={walletAddresses}
-          onGenerateAddress={this.handleGenerateAddress}
-          onCopyAddress={(address) => {
-            this.setState({ copiedAddress: address });
-            actions.notifications.open.trigger({
-              id: notification.id,
-              duration: notification.duration,
-            });
-          }}
-          isSidebarExpanded={sidebar.isShowingSubMenus}
-          walletHasPassword={wallet.hasPassword}
-          isSubmitting={addresses.createAddressRequest.isExecuting}
-          error={addresses.error}
-        />
+      <Fragment>
+        <VerticalFlexContainer>
+          <WalletReceive
+            walletAddress={walletAddress}
+            isWalletAddressUsed={isWalletAddressUsed}
+            walletAddresses={walletAddresses}
+            onGenerateAddress={this.handleGenerateAddress}
+            onCopyAddress={(address) => {
+              this.setState({ copiedAddress: address });
+              actions.notifications.open.trigger({
+                id: notification.id,
+                duration: notification.duration,
+              });
+            }}
+            isSidebarExpanded={sidebar.isShowingSubMenus}
+            walletHasPassword={wallet.hasPassword}
+            isSubmitting={addresses.createAddressRequest.isExecuting}
+            error={addresses.error}
+          />
+        </VerticalFlexContainer>
 
         <NotificationMessage
           icon={successIcon}
@@ -128,8 +129,7 @@ export default class WalletReceivePage extends Component<Props, State> {
         >
           {notification.message}
         </NotificationMessage>
-
-      </VerticalFlexContainer>
+      </Fragment>
     );
   }
 }

@@ -18,7 +18,10 @@ type Props = {
 export default class NotificationMessage extends Component<Props> {
 
   render() {
-    const { icon, show, children, clickToClose, hasCloseButton, onClose } = this.props;
+    const {
+      icon, show, children, clickToClose,
+      hasCloseButton, onClose,
+    } = this.props;
 
     const notificationMessageStyles = classNames([
       styles.component,
