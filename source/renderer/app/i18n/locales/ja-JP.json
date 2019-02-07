@@ -14,6 +14,7 @@
   "api.errors.NotEnoughMoneyToSendError": "トランザクションを行うための金額が不足しております。",
   "api.errors.RedeemAdaError": "ADAを正常に還元できませんでした。",
   "api.errors.ReportRequestError": "サポート送信時に問題が発生しました。",
+  "api.errors.TooBigTransactionError": "!!!Too many input addresses need to be selected. Try sending a smaller amount.",
   "api.errors.WalletAlreadyImportedError": "インポートしようとしているウォレットは既に存在します",
   "api.errors.WalletAlreadyRestoredError": "復元しようとしているウォレットは既に存在します",
   "api.errors.WalletFileImportError": "ウォレットをインポートできませんでした。有効なファイルを指定していることを確認してください",

@@ -187,6 +187,20 @@
           "column": 39,
           "line": 40
         }
+      },
+      {
+        "defaultMessage": "!!!Too many input addresses need to be selected. Try sending a smaller amount.",
+        "description": "\"Too many input addresses need to be selected. Try sending a smaller amount.\" error message.",
+        "end": {
+          "column": 3,
+          "line": 49
+        },
+        "file": "source/renderer/app/api/transactions/errors.js",
+        "id": "api.errors.TooBigTransactionError",
+        "start": {
+          "column": 26,
+          "line": 45
+        }
       }
     ],
     "path": "source/renderer/app/api/transactions/errors.json"

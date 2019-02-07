@@ -42,6 +42,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Cannot calculate fees while there are pending transactions.',
     description: '"Cannot calculate fees while there are pending transactions." error message'
   },
+  tooBigTransactionError: {
+    id: 'api.errors.TooBigTransactionError',
+    defaultMessage: '!!!Too many input addresses need to be selected. Try sending a smaller amount.',
+    description: '"Too many input addresses need to be selected. Try sending a smaller amount." error message.'
+  }
 });
 
 export class NotAllowedToSendMoneyToSameAddressError extends LocalizableError {
@@ -112,6 +117,15 @@ export class CanNotCalculateTransactionFeesError extends LocalizableError {
     super({
       id: messages.canNotCalculateTransactionFeesError.id,
       defaultMessage: messages.canNotCalculateTransactionFeesError.defaultMessage,
+    });
+  }
+}
+
+export class TooBigTransactionError extends LocalizableError {
+  constructor() {
+    super({
+      id: messages.tooBigTransactionError.id,
+      defaultMessage: messages.tooBigTransactionError.defaultMessage,
     });
   }
 }

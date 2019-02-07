@@ -145,7 +145,8 @@ import {
   NotEnoughFundsForTransactionFeesError,
   NotEnoughFundsForTransactionError,
   NotEnoughMoneyToSendError,
-  RedeemAdaError
+  RedeemAdaError,
+  TooBigTransactionError,
 } from './transactions/errors';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
 import { stringifyData, stringifyError } from '../../../common/utils/logging';
@@ -455,6 +456,9 @@ export default class AdaApi {
           // = show "Not enough Ada. Try sending a smaller amount."
           throw new NotEnoughFundsForTransactionError();
         }
+      }
+      if (error.message === 'TooBigTransaction') {
+        throw new TooBigTransactionError();
       }
       throw new GenericApiError();
     }
