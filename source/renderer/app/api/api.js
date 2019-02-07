@@ -57,6 +57,7 @@ import {
   generateAccountMnemonics,
   generateAdditionalMnemonics
 } from './utils/mnemonics';
+import { stringifyError, filterLogData } from '../../../common/utils/logging';
 
 // config constants
 import {
@@ -148,7 +149,6 @@ import {
   RedeemAdaError
 } from './transactions/errors';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
-import { stringifyError } from '../../../common/utils/logging';
 
 export default class AdaApi {
 
@@ -176,7 +176,7 @@ export default class AdaApi {
   };
 
   getAddresses = async (request: GetAddressesRequest): Promise<GetAddressesResponse> => {
-    Logger.debug('AdaApi::getAddresses called', { parameters: request });
+    Logger.debug('AdaApi::getAddresses called', { parameters: filterLogData(request) });
     const { walletId } = request;
     try {
       const accounts: Accounts = await getAccounts(this.config, { walletId });
@@ -318,7 +318,7 @@ export default class AdaApi {
   };
 
   createWallet = async (request: CreateWalletRequest): Promise<Wallet> => {
-    Logger.debug('AdaApi::createWallet called', { parameters: request });
+    Logger.debug('AdaApi::createWallet called', { parameters: filterLogData(request) });
     const { name, mnemonic, spendingPassword: passwordString } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     const assuranceLevel = 'normal';
@@ -340,7 +340,7 @@ export default class AdaApi {
   };
 
   deleteWallet = async (request: DeleteWalletRequest): Promise<boolean> => {
-    Logger.debug('AdaApi::deleteWallet called', { parameters: request });
+    Logger.debug('AdaApi::deleteWallet called', { parameters: filterLogData(request) });
     try {
       const { walletId } = request;
       const response = await deleteWallet(this.config, { walletId });
@@ -355,7 +355,7 @@ export default class AdaApi {
   createTransaction = async (
     request: TransactionRequest
   ): Promise<WalletTransaction> => {
-    Logger.debug('AdaApi::createTransaction called', { parameters: request });
+    Logger.debug('AdaApi::createTransaction called', { parameters: filterLogData(request) });
     const { accountIndex, walletId, address, amount, spendingPassword: passwordString } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     try {
@@ -397,7 +397,7 @@ export default class AdaApi {
   calculateTransactionFee = async (
     request: TransactionRequest
   ): Promise<BigNumber> => {
-    Logger.debug('AdaApi::calculateTransactionFee called', { parameters: request });
+    Logger.debug('AdaApi::calculateTransactionFee called', { parameters: filterLogData(request) });
     const {
       accountIndex,
       walletId, walletBalance,
@@ -460,7 +460,7 @@ export default class AdaApi {
   };
 
   createAddress = async (request: CreateAddressRequest): Promise<Address> => {
-    Logger.debug('AdaApi::createAddress called', { parameters: request });
+    Logger.debug('AdaApi::createAddress called', { parameters: filterLogData(request) });
     const { accountIndex, walletId, spendingPassword: passwordString } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     try {
@@ -540,7 +540,7 @@ export default class AdaApi {
   getWalletCertificateRecoveryPhrase(
     request: GetWalletCertificateRecoveryPhraseRequest
   ): Promise<Array<string>> {
-    Logger.debug('AdaApi::getWalletCertificateRecoveryPhrase called', { parameters: request });
+    Logger.debug('AdaApi::getWalletCertificateRecoveryPhrase called', { parameters: filterLogData(request) });
     const { passphrase, input: scrambledInput } = request;
     try {
       const response: Promise<Array<string>> = new Promise(
@@ -557,7 +557,7 @@ export default class AdaApi {
   getWalletRecoveryPhraseFromCertificate(
     request: GetWalletRecoveryPhraseFromCertificateRequest
   ): Promise<Array<string>> {
-    Logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate called', { parameters: request });
+    Logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate called', { parameters: filterLogData(request) });
     const { passphrase, scrambledInput } = request;
     try {
       const response = unscrambleMnemonics({ passphrase, scrambledInput });
@@ -570,7 +570,7 @@ export default class AdaApi {
   }
 
   restoreWallet = async (request: RestoreWalletRequest): Promise<Wallet> => {
-    Logger.debug('AdaApi::restoreWallet called', { parameters: request });
+    Logger.debug('AdaApi::restoreWallet called', { parameters: filterLogData(request) });
     const { recoveryPhrase, walletName, spendingPassword: passwordString } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     const assuranceLevel = 'normal';
@@ -603,7 +603,7 @@ export default class AdaApi {
   importWalletFromKey = async (
     request: ImportWalletFromKeyRequest
   ): Promise<Wallet> => {
-    Logger.debug('AdaApi::importWalletFromKey called', { parameters: request });
+    Logger.debug('AdaApi::importWalletFromKey called', { parameters: filterLogData(request) });
     const { filePath, spendingPassword: passwordString } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     try {
@@ -624,7 +624,7 @@ export default class AdaApi {
   importWalletFromFile = async (
     request: ImportWalletFromFileRequest
   ): Promise<Wallet> => {
-    Logger.debug('AdaApi::importWalletFromFile called', { parameters: request });
+    Logger.debug('AdaApi::importWalletFromFile called', { parameters: filterLogData(request) });
     const { filePath, spendingPassword: passwordString } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     const isKeyFile = filePath.split('.').pop().toLowerCase() === 'key';
@@ -648,7 +648,7 @@ export default class AdaApi {
   redeemAda = async (
     request: RedeemAdaParams
   ): Promise<WalletTransaction> => {
-    Logger.debug('AdaApi::redeemAda called', { parameters: request });
+    Logger.debug('AdaApi::redeemAda called', { parameters: filterLogData(request) });
     const { spendingPassword: passwordString } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     try {
@@ -669,7 +669,7 @@ export default class AdaApi {
   redeemPaperVendedAda = async (
     request: RedeemPaperVendedAdaParams
   ): Promise<WalletTransaction> => {
-    Logger.debug('AdaApi::redeemAdaPaperVend called', { parameters: request });
+    Logger.debug('AdaApi::redeemAdaPaperVend called', { parameters: filterLogData(request) });
     const { spendingPassword: passwordString } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     try {
@@ -727,7 +727,7 @@ export default class AdaApi {
   };
 
   updateWallet = async (request: UpdateWalletRequest): Promise<Wallet> => {
-    Logger.debug('AdaApi::updateWallet called', { parameters: request });
+    Logger.debug('AdaApi::updateWallet called', { parameters: filterLogData(request) });
     const { walletId, assuranceLevel, name } = request;
     try {
       const wallet: AdaWallet = await updateWallet(
@@ -744,7 +744,7 @@ export default class AdaApi {
   updateSpendingPassword = async (
     request: UpdateSpendingPasswordRequest
   ): Promise<boolean> => {
-    Logger.debug('AdaApi::updateSpendingPassword called', { parameters: request });
+    Logger.debug('AdaApi::updateSpendingPassword called', { parameters: filterLogData(request) });
     const { walletId, oldPassword, newPassword } = request;
     try {
       await changeSpendingPassword(this.config, { walletId, oldPassword, newPassword });
@@ -764,7 +764,7 @@ export default class AdaApi {
     request: ExportWalletToFileRequest
   ): Promise<[]> => {
     const { walletId, filePath } = request;
-    Logger.debug('AdaApi::exportWalletToFile called', { parameters: request });
+    Logger.debug('AdaApi::exportWalletToFile called', { parameters: filterLogData(request) });
     try {
       const response: Promise<[]> = await exportWalletAsJSON(
         this.config, { walletId, filePath }

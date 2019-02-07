@@ -1,25 +1,30 @@
 // @flow
-import { isEmpty } from 'lodash';
+import { pickBy } from 'lodash';
 import type {
   FormatMessageContextParams,
   ConstructMessageBodyParams,
-  MessageBody
+  MessageBody,
+  ElectronLoggerMessage,
 } from '../types/logging.types';
 
-const DEFAULT_MESSAGE_BODY: MessageBody = {
-  at: '',
-  env: '',
-  ns: [
-    'daedalus',
-  ],
+const DEFAULT_MESSAGE_BODY = {
+  ns: ['daedalus'],
   data: {},
-  app: [
-    'daedalus'
-  ],
-  msg: '',
-  pid: '',
-  sev: '',
-  thread: ''
+  app: ['daedalus'],
+};
+
+const stringifyMessageBody = (messageBody: MessageBody): string => {
+  const isProd = process.env.NODE_ENV === 'production';
+  const spacing = isProd ? 0 : 2;
+  return JSON.stringify(messageBody, null, spacing);
+};
+
+export const filterLogData = (data: Object): Object => {
+  const sensitiveData = ['spendingPassword', 'oldPassword', 'newPassword', 'mnemonic', 'recoveryPhrase', 'passphrase'];
+  return pickBy(data, (value, key) => {
+    if (sensitiveData.includes(key)) { return false; }
+    return true;
+  });
 };
 
 export const stringifyData = (data: any) => JSON.stringify(data, null, 2);
@@ -39,23 +44,17 @@ export const formatMessageTime = (date: Date): string => {
 };
 
 export const constructMessageBody = (bodyData: ConstructMessageBodyParams): MessageBody => {
-  const { data = {} } = bodyData;
-  let messageBody = { ...bodyData, data };
-
-  if (typeof data === 'object' && !isEmpty(data)) {
-    messageBody = { ...messageBody, data };
+  let messageBody = { ...DEFAULT_MESSAGE_BODY, ...bodyData };
+  if (typeof messageBody.data === 'string') {
+    messageBody = { ...messageBody, data: { response: messageBody.data } };
   }
-
-  if (typeof data === 'string' && data !== ' ') {
-    messageBody = { ...messageBody, data: { response: data } };
-  }
-
-  return { ...DEFAULT_MESSAGE_BODY, ...messageBody };
+  const { at, env, ns, data, app, msg, pid, sev, thread } = messageBody;
+  return { at, env, ns, data, app, msg, pid, sev, thread };
 };
 
-export const formatMessage = (message: Object): string => {
-  const at = message.date.toISOString();
-  const [context, messageData] = message.data;
+export const formatMessage = (loggerMessage: ElectronLoggerMessage): string => {
+  const at = loggerMessage.date.toISOString();
+  const [context, messageData] = loggerMessage.data;
   const { message: msg, data = {}, environmentData } = messageData;
   const { network, os, platformVersion, version } = environmentData;
 
@@ -69,10 +68,13 @@ export const formatMessage = (message: Object): string => {
     ],
     data,
     msg,
+    pid: '',
+    sev: '',
+    thread: '',
   };
 
-  const messageTime: string = formatMessageTime(message.date);
+  const messageTime: string = formatMessageTime(loggerMessage.date);
   const messageBody: MessageBody = constructMessageBody(messageBodyParams);
 
-  return `${context} ${messageTime} ${stringifyData(messageBody)}`;
+  return `${context} ${messageTime} ${stringifyMessageBody(messageBody)}`;
 };

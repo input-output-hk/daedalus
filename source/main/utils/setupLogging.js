@@ -6,13 +6,17 @@ import ensureDirectoryExists from './ensureDirectoryExists';
 import { pubLogsFolderPath, appLogsFolderPath, APP_NAME } from '../config';
 import { constructMessageBody, formatMessage, stringifyData } from '../../common/utils/logging';
 import { isFileNameWithTimestamp } from '../../common/utils/files';
-import type { ConstructMessageBodyParams, MessageBody } from '../../common/types/logging.types';
+import type {
+  ConstructMessageBodyParams,
+  MessageBody,
+  LogSystemInfoParams
+} from '../../common/types/logging.types';
 
 const isTest = process.env.NODE_ENV === 'test';
 const isDev = process.env.NODE_ENV === 'development';
 
 export const setupLogging = () => {
-  const logFilePath = path.join(pubLogsFolderPath, APP_NAME + '.log');
+  const logFilePath = path.join(pubLogsFolderPath, APP_NAME + '.json');
   ensureDirectoryExists(pubLogsFolderPath);
   log.transports.console.level = isTest ? 'error' : 'info';
   log.transports.rendererConsole.level = isDev ? 'info' : 'error';
@@ -33,12 +37,13 @@ export const setupLogging = () => {
     const date = message.date.toISOString();
     const [year, time] = date.split('T');
     const [context, messageData] = message.data;
-    // construct a minimal message body for rendererConsole
-    const { msg, data } = constructMessageBody({
-      msg: messageData.message,
-      data: messageData.data
-    });
-    return `${context} [${year} ${time.slice(0, -1)} UTC] ${stringifyData({ msg, data })}`;
+    const { message: msg, data = {} } = messageData;
+    // log minimal message body in the renderer console
+    let messageBody = { msg, data };
+    if (typeof data === 'string') {
+      messageBody = { ...messageBody, data: { response: data } };
+    }
+    return `${context} [${year} ${time.slice(0, -1)} UTC] ${stringifyData(messageBody)}`;
   };
 
   // Removes existing compressed logs
@@ -56,20 +61,7 @@ export const setupLogging = () => {
   });
 };
 
-type Props = {
-  cardanoVersion: string,
-  cpu: Array<Object>,
-  current: string,
-  daedalusVersion: string,
-  isInSafeMode: string,
-  network: string,
-  osName: string,
-  platformVersion: string,
-  ram: string,
-  startTime: string,
-};
-
-export const updateUserSystemInfoLog = (props: Props): MessageBody => {
+export const logSystemInfo = (props: LogSystemInfoParams): MessageBody => {
   const { current, ...data } = props;
   const { network, osName, platformVersion, daedalusVersion, startTime: at } = data;
   const env = `${network}:${osName}:${platformVersion}:${daedalusVersion}`;
@@ -82,6 +74,10 @@ export const updateUserSystemInfoLog = (props: Props): MessageBody => {
       `*${current}*`,
     ],
     data,
+    msg: 'Updating System-info.json file',
+    pid: '',
+    sev: '',
+    thread: '',
   };
   const messageBody: MessageBody = constructMessageBody(messageBodyParams);
   fs.writeFileSync(

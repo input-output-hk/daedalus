@@ -4,7 +4,7 @@ import { app, BrowserWindow, shell } from 'electron';
 import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { Logger } from './utils/logging';
-import { setupLogging, updateUserSystemInfoLog } from './utils/setupLogging';
+import { setupLogging, logSystemInfo } from './utils/setupLogging';
 import { getNumberOfEpochsConsolidated } from './utils/getNumberOfEpochsConsolidated';
 import { handleDiskSpace } from './utils/handleDiskSpace';
 import { createMainWindow } from './windows/main';
@@ -62,7 +62,7 @@ const onAppReady = async () => {
   // systemStart refers to the Cardano Demo cluster start time!
   const systemStart = parseInt(launcherConfig.configuration.systemStart, 10);
 
-  const systemInfo = updateUserSystemInfoLog({
+  const systemInfo = logSystemInfo({
     cardanoVersion,
     cpu,
     current,
