@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented an extra explanation line in the Create Paper Wallet Certificate dialog ([PR 1309](https://github.com/input-output-hk/daedalus/pull/1309))
 - Improve performance of rendering huge lists of transactions and addresses ([PR 1276](https://github.com/input-output-hk/daedalus/pull/1276), [PR 1303](https://github.com/input-output-hk/daedalus/pull/1303), [PR 1305](https://github.com/input-output-hk/daedalus/pull/1305), ([PR 1306](https://github.com/input-output-hk/daedalus/pull/1306)))
 - Implemented a "System-info.json" file, containing the system specification of the machine user is running Daedalus ([PR 1292](https://github.com/input-output-hk/daedalus/pull/1292))
 - Implemented a block-consolidation status screen ([PR 1275](https://github.com/input-output-hk/daedalus/pull/1275), [PR 1294](https://github.com/input-output-hk/daedalus/pull/1294))

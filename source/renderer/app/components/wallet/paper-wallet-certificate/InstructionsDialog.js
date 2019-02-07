@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
@@ -22,8 +22,13 @@ const messages = defineMessages({
   },
   subtitle: {
     id: 'paper.wallet.create.certificate.instructions.dialog.subtitle',
-    defaultMessage: '!!!Create a paper wallet certificate for offline storage of funds.',
+    defaultMessage: '!!!Create a paper wallet certificate to store funds offline.',
     description: 'Subtitle for the "Paper wallet create certificate instructions dialog".'
+  },
+  subtitle2: {
+    id: 'paper.wallet.create.certificate.instructions.dialog.subtitle2',
+    defaultMessage: '!!!The paper wallet certificate will not be associated with any of your existing wallets. A new, empty wallet will be created.',
+    description: 'subtitle2 for the "Paper wallet create certificate instructions dialog".'
   },
   instructionsListLabel: {
     id: 'paper.wallet.create.certificate.instructions.dialog.instructionsList.label',
@@ -34,7 +39,7 @@ const messages = defineMessages({
     id: 'paper.wallet.create.certificate.instructions.dialog.instructionsList.definition1',
     defaultMessage: `!!!Your printed certificate will include your paper wallet recovery phrase
       of {paperWalletRecoveryPhraseWordCount} words. Note that your paper wallet recovery phrase is
-      different to the {walletRecoveryPhraseWordCount}-words recovery phrases used to restore your
+      different to the {walletRecoveryPhraseWordCount}-word recovery phrases used to restore your
       regular Daedalus wallet.`,
     description: 'Wallet certificate create instructions dialog definition 1.',
   },
@@ -146,6 +151,7 @@ export default class InstructionsDialog extends Component<Props> {
 
         <div className={styles.instructionsContentWrapper}>
           <p className={styles.subtitle}>{intl.formatMessage(messages.subtitle)}</p>
+          <p className={styles.subtitle2}>{intl.formatMessage(messages.subtitle2)}</p>
           <div className={styles.instructionsList}>
 
             <p className={styles.instructionsListLabel}>
