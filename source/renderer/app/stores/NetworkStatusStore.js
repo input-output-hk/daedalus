@@ -15,7 +15,6 @@ import {
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
 import { Logger } from '../utils/logging';
 import { getCurrentEpoch } from '../utils/network';
-import { stringifyError } from '../../../common/utils/logging';
 import {
   cardanoStateChangeChannel,
   tlsConfigChannel,
@@ -170,7 +169,7 @@ export default class NetworkStatusStore extends Store {
       Logger.info('NetwortStatusStore: Requesting a restart of cardano-node');
       await restartCardanoNodeChannel.send();
     } catch (error) {
-      Logger.error('NetwortStatusStore: Restart of cardano-node failed', { error: `${stringifyError(error)}` });
+      Logger.error('NetwortStatusStore: Restart of cardano-node failed', { error });
     }
   }
 
@@ -205,7 +204,7 @@ export default class NetworkStatusStore extends Store {
       Logger.info('NetworkStatusStore: Updating node status');
       await cardanoStatusChannel.send(this._extractNodeStatus(this));
     } catch (error) {
-      Logger.error('NetworkStatusStore: Error while updating node status', { error: `${stringifyError(error)}` });
+      Logger.error('NetworkStatusStore: Error while updating node status', { error });
     }
   };
 
@@ -233,7 +232,7 @@ export default class NetworkStatusStore extends Store {
       Logger.info('NetworkStatusStore: received cached node status', { status });
       if (status) runInAction('assigning node status', () => Object.assign(this, status));
     } catch (error) {
-      Logger.error('NetworkStatusStore: error while requesting node state', { error: `${stringifyError(error)}` });
+      Logger.error('NetworkStatusStore: error while requesting node state', { error });
     }
   };
 
@@ -243,7 +242,7 @@ export default class NetworkStatusStore extends Store {
       const tlsConfig = await tlsConfigChannel.request();
       await this._updateTlsConfig(tlsConfig);
     } catch (error) {
-      Logger.error('NetworkStatusStore: error while requesting tls config', { error: `${stringifyError(error)}` });
+      Logger.error('NetworkStatusStore: error while requesting tls config', { error });
     }
   };
 

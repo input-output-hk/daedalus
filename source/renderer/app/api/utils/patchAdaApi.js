@@ -10,7 +10,6 @@ import type { RedeemAdaParams } from '../transactions/requests/redeemAda';
 import type { RedeemPaperVendedAdaParams } from '../transactions/requests/redeemPaperVendedAda';
 import type { NodeQueryParams } from '../nodes/requests/getNodeInfo';
 import type { NodeInfo, GetNetworkStatusResponse } from '../nodes/types';
-import { stringifyError } from '../../../../common/utils/logging';
 
 // ========== LOGGING =========
 
@@ -33,7 +32,7 @@ export default (api: AdaApi) => {
       Logger.debug('AdaApi::redeemAda (PATCHED) success');
       resolve({ amount: new BigNumber(1000) });
     } catch (error) {
-      Logger.debug('AdaApi::redeemAda (PATCHED) error', { error: `${stringifyError(error)}` });
+      Logger.error('AdaApi::redeemAda (PATCHED) error', { error });
       throw new RedeemAdaError();
     }
   });
@@ -54,7 +53,7 @@ export default (api: AdaApi) => {
       Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) success');
       resolve({ amount: new BigNumber(1000) });
     } catch (error) {
-      Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) error', { error: `${stringifyError(error)}` });
+      Logger.error('AdaApi::redeemPaperVendedAda (PATCHED) error', { error });
       throw new RedeemAdaError();
     }
   });
@@ -87,7 +86,7 @@ export default (api: AdaApi) => {
         localTimeDifference: LOCAL_TIME_DIFFERENCE,
       };
     } catch (error) {
-      Logger.error('AdaApi::getNetworkStatus (PATCHED) error', { error: `${stringifyError(error)}` });
+      Logger.error('AdaApi::getNetworkStatus (PATCHED) error', { error });
       throw new GenericApiError();
     }
   };

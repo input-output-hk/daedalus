@@ -11,7 +11,6 @@ import {
   NODE_STARTUP_TIMEOUT, NODE_UPDATE_TIMEOUT
 } from '../config';
 import { Logger } from '../utils/logging';
-import { stringifyError } from '../../common/utils/logging';
 import type { LauncherConfig } from '../config';
 import type {
   CardanoNodeState,
@@ -48,7 +47,7 @@ const restartCardanoNode = async (node: CardanoNode) => {
   try {
     await node.restart();
   } catch (error) {
-    Logger.error('Could not restart CardanoNode', { error: `${stringifyError(error)}` });
+    Logger.error('Could not restart CardanoNode', { error });
   }
 };
 

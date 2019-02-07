@@ -2,10 +2,9 @@
 import { BrowserWindow } from 'electron';
 import unhandled from 'electron-unhandled';
 import { Logger } from './logging';
-import { stringifyError } from '../../common/utils/logging';
 
 unhandled({
-  logger: (error: any) => Logger.error('unhandledException::renderer', { error: `${stringifyError(error)}` }),
+  logger: (error: any) => Logger.error('unhandledException::renderer', { error }),
   showDialog: false
 });
 
@@ -21,7 +20,7 @@ export default class RendererErrorHandler {
   }
 
   onError(errorType: string, error: any) {
-    Logger.error(`RendererError::${errorType}`, { error: `${stringifyError(error)}` });
+    Logger.error(`RendererError::${errorType}`, { error });
 
     if (this.count < this.maxReloads) {
       this.count++;

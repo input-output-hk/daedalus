@@ -4,7 +4,6 @@ import type { ChildProcess, spawn, exec } from 'child_process';
 import type { WriteStream } from 'fs';
 import { toInteger } from 'lodash';
 import { environment } from '../environment';
-import { stringifyError } from '../../common/utils/logging';
 import { deriveProcessNames, deriveStorageKeys, promisedCondition } from './utils';
 import { getProcess } from '../utils/processes';
 import type {
@@ -281,7 +280,7 @@ export class CardanoNode {
       this._reset();
       return Promise.resolve();
     } catch (error) {
-      _log.error('CardanoNode#stop: cardano-node did not stop correctly', { error: `${stringifyError(error)}` });
+      _log.error('CardanoNode#stop: cardano-node did not stop correctly', { error });
       try {
         await this.kill();
       } catch (killError) {
@@ -339,7 +338,7 @@ export class CardanoNode {
       await this._waitForCardanoToExitOrKillIt();
       await this.start(_config, isForced);
     } catch (error) {
-      _log.error('CardanoNode#restart: Could not restart cardano-node', { error: `${stringifyError(error)}` });
+      _log.error('CardanoNode#restart: Could not restart cardano-node', { error });
       this._changeToState(CardanoNodeStates.ERRORED);
       return Promise.reject(error);
     }
@@ -478,7 +477,7 @@ export class CardanoNode {
 
   _handleCardanoNodeError = async (error: Error) => {
     const { _log } = this;
-    _log.error('CardanoNode: error', { error: `${stringifyError(error)}` });
+    _log.error('CardanoNode: error', { error });
     this._changeToState(CardanoNodeStates.ERRORED);
     this._transitionListeners.onError(error);
     await this.restart();
@@ -586,7 +585,7 @@ export class CardanoNode {
       } catch (error) {
         _log.error(
           `CardanoNode: could not kill ${name} process (PID: ${pid})`,
-          { name, pid, error: `${stringifyError(error)}` }
+          { name, pid, error }
         );
         return Promise.reject();
       }
@@ -620,7 +619,7 @@ export class CardanoNode {
       _log.debug(`CardanoNode: previous ${processName} process found`, { processName, previousProcess });
       return true;
     } catch (error) {
-      _log.error('CardanoNode: _isProcessRunning error', { error: `${stringifyError(error)}` });
+      _log.error('CardanoNode: _isProcessRunning error', { error });
       return false;
     }
   };
@@ -647,7 +646,7 @@ export class CardanoNode {
     } catch (error) {
       this._log.error(
         `CardanoNode: _killProcessWithName returned an error attempting to kill ${name} process (PID: ${pid})`,
-        { processName: name, pid, error: `${stringifyError(error)}` }
+        { processName: name, pid, error }
       );
       return Promise.reject(error);
     }
@@ -671,7 +670,7 @@ export class CardanoNode {
         this._log.info(`CardanoNode: ${identifier} stored successfuly`);
         resolve();
       } catch (error) {
-        this._log.error(`CardanoNode: failed to store ${identifier}`, { error: `${stringifyError(error)}` });
+        this._log.error(`CardanoNode: failed to store ${identifier}`, { error });
         reject(error);
       }
     })
@@ -692,7 +691,7 @@ export class CardanoNode {
         this._log.info(`CardanoNode: get ${identifier} success`, { [`${identifier}`]: data });
         resolve(toInteger(data));
       } catch (error) {
-        this._log.error(`CardanoNode: get ${identifier} failed`, { error: `${stringifyError(error)}` });
+        this._log.error(`CardanoNode: get ${identifier} failed`, { error });
         reject(error);
       }
     })

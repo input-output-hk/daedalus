@@ -7,7 +7,6 @@ import { get } from 'lodash';
 import { appLogsFolderPath, pubLogsFolderPath } from '../config';
 import { Logger } from '../utils/logging';
 import { COMPRESS_LOGS } from '../../common/ipc-api';
-import { stringifyError } from '../../common/utils/logging';
 
 export default () => {
   ipcMain.on(COMPRESS_LOGS.REQUEST, (event, logs, compressedFileName) => {
@@ -23,9 +22,9 @@ export default () => {
       return sender.send(COMPRESS_LOGS.SUCCESS, outputPath);
     });
 
-    archive.on('error', (err) => {
-      Logger.error('COMPRESS_LOGS.ERROR', { error: `${stringifyError(err)}` });
-      return sender.send(COMPRESS_LOGS.ERROR, err);
+    archive.on('error', (error) => {
+      Logger.error('COMPRESS_LOGS.ERROR', { error });
+      return sender.send(COMPRESS_LOGS.ERROR, error);
     });
 
     Logger.debug('COMPRESS_LOGS.START');
@@ -37,10 +36,10 @@ export default () => {
       archive.append(stream, { name: logFiles[i] });
     }
 
-    archive.finalize((err) => {
-      if (err) {
-        Logger.error('COMPRESS_LOGS.ERROR', { error: `${stringifyError(err)}` });
-        return sender.send(COMPRESS_LOGS.ERROR, err);
+    archive.finalize((error) => {
+      if (error) {
+        Logger.error('COMPRESS_LOGS.ERROR', { error });
+        return sender.send(COMPRESS_LOGS.ERROR, error);
       }
     });
 

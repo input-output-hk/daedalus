@@ -20,7 +20,6 @@ import { buildAppMenus } from './utils/buildAppMenus';
 import { getLocale } from './utils/getLocale';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
-import { stringifyError } from '../common/utils/logging';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
 
@@ -46,7 +45,7 @@ const safeExit = async () => {
     Logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });
     safeExitWithCode(0);
   } catch (error) {
-    Logger.error('Daedalus:safeExit: cardano-node did not exit correctly', { error: `${stringifyError(error)}` });
+    Logger.error('Daedalus:safeExit: cardano-node did not exit correctly', { error });
     safeExitWithCode(0);
   }
 };

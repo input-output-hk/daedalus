@@ -2,7 +2,6 @@
 import psList from 'ps-list';
 import { isObject } from 'lodash';
 import { Logger } from './logging';
-import { stringifyError } from '../../common/utils/logging';
 
 export type Process = {
   pid: number,
@@ -48,7 +47,7 @@ export const getProcess = async (processId: number, processName: string): Promis
       return previousProcess;
     }
   } catch (error) {
-    Logger.error('getProcess error', { error: `${stringifyError(error)}` });
+    Logger.error('getProcess error', { error });
     return null;
   }
 };
