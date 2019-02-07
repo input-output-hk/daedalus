@@ -190,7 +190,7 @@ export default class AdaRedemptionStore extends Store {
   }
 
   _onCodeParsed = action((event, code) => {
-    Logger.debug('AdaRedemptionStore: Redemption code parsed from certificate', { code });
+    Logger.debug('AdaRedemptionStore: Redemption code parsed from certificate');
     this.redemptionCode = code;
   });
 

@@ -514,7 +514,7 @@ export default class AdaApi {
       const response: Promise<Array<string>> = new Promise(
         (resolve) => resolve(generateAccountMnemonics())
       );
-      Logger.debug('AdaApi::getWalletRecoveryPhrase success', { response });
+      Logger.debug('AdaApi::getWalletRecoveryPhrase success');
       return response;
     } catch (error) {
       Logger.error('AdaApi::getWalletRecoveryPhrase error', { error });
@@ -529,7 +529,7 @@ export default class AdaApi {
       const response: Promise<Array<string>> = new Promise(
         (resolve) => resolve(generateAdditionalMnemonics())
       );
-      Logger.debug('AdaApi::getWalletCertificateAdditionalMnemonics success', { response });
+      Logger.debug('AdaApi::getWalletCertificateAdditionalMnemonics success');
       return response;
     } catch (error) {
       Logger.error('AdaApi::getWalletCertificateAdditionalMnemonics error', { error });
@@ -540,13 +540,13 @@ export default class AdaApi {
   getWalletCertificateRecoveryPhrase(
     request: GetWalletCertificateRecoveryPhraseRequest
   ): Promise<Array<string>> {
-    Logger.debug('AdaApi::getWalletCertificateRecoveryPhrase called', { parameters: filterLogData(request) });
+    Logger.debug('AdaApi::getWalletCertificateRecoveryPhrase called');
     const { passphrase, input: scrambledInput } = request;
     try {
       const response: Promise<Array<string>> = new Promise(
         (resolve) => resolve(scrambleMnemonics({ passphrase, scrambledInput }))
       );
-      Logger.debug('AdaApi::getWalletCertificateRecoveryPhrase success', { response });
+      Logger.debug('AdaApi::getWalletCertificateRecoveryPhrase success');
       return response;
     } catch (error) {
       Logger.error('AdaApi::getWalletCertificateRecoveryPhrase error', { error });
@@ -557,11 +557,11 @@ export default class AdaApi {
   getWalletRecoveryPhraseFromCertificate(
     request: GetWalletRecoveryPhraseFromCertificateRequest
   ): Promise<Array<string>> {
-    Logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate called', { parameters: filterLogData(request) });
+    Logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate called');
     const { passphrase, scrambledInput } = request;
     try {
       const response = unscrambleMnemonics({ passphrase, scrambledInput });
-      Logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate success', { response });
+      Logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate success');
       return Promise.resolve(response);
     } catch (error) {
       Logger.error('AdaApi::getWalletRecoveryPhraseFromCertificate error', { error });

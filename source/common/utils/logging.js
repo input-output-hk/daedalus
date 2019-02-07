@@ -20,7 +20,10 @@ const stringifyMessageBody = (messageBody: MessageBody): string => {
 };
 
 export const filterLogData = (data: Object): Object => {
-  const sensitiveData = ['spendingPassword', 'oldPassword', 'newPassword', 'mnemonic', 'recoveryPhrase', 'passphrase'];
+  const sensitiveData = [
+    'spendingPassword', 'oldPassword', 'newPassword',
+    'mnemonic', 'recoveryPhrase', 'passphrase', 'password',
+  ];
   return pickBy(data, (value, key) => {
     if (sensitiveData.includes(key)) { return false; }
     return true;
