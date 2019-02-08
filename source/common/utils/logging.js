@@ -58,6 +58,7 @@ export const constructMessageBody = (bodyData: ConstructMessageBodyParams): Mess
 export const formatMessage = (loggerMessage: ElectronLoggerMessage): string => {
   const at = loggerMessage.date.toISOString();
   const [context, messageData] = loggerMessage.data;
+  const { level } = loggerMessage;
   const { message: msg, data = {}, environmentData } = messageData;
   const { network, os, platformVersion, version } = environmentData;
 
@@ -72,12 +73,12 @@ export const formatMessage = (loggerMessage: ElectronLoggerMessage): string => {
     data,
     msg,
     pid: '',
-    sev: '',
+    sev: level,
     thread: '',
   };
 
   const messageTime: string = formatMessageTime(loggerMessage.date);
   const messageBody: MessageBody = constructMessageBody(messageBodyParams);
 
-  return `${context} ${messageTime} ${stringifyMessageBody(messageBody)}`;
+  return `${context} ${messageTime}\n${stringifyMessageBody(messageBody)}`;
 };

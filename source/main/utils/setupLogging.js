@@ -43,7 +43,7 @@ export const setupLogging = () => {
     if (typeof data === 'string') {
       messageBody = { ...messageBody, data: { response: data } };
     }
-    return `${context} [${year} ${time.slice(0, -1)} UTC] ${stringifyData(messageBody)}`;
+    return `${context} [${year} ${time.slice(0, -1)} UTC]\n${stringifyData(messageBody)}`;
   };
 
   // Removes existing compressed logs
@@ -76,7 +76,7 @@ export const logSystemInfo = (props: LogSystemInfoParams): MessageBody => {
     data,
     msg: 'Updating System-info.json file',
     pid: '',
-    sev: '',
+    sev: 'info',
     thread: '',
   };
   const messageBody: MessageBody = constructMessageBody(messageBodyParams);
