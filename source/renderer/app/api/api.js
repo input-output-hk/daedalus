@@ -309,7 +309,7 @@ export default class AdaApi {
         daedalusTotal: total,
         requestDurationInMs: moment.duration(moment().diff(requestTimestamp)).as('milliseconds'),
       };
-      Logger.debug(`AdaApi::searchHistory success: ${total} transactions loaded`, { ...responseStats });
+      Logger.debug(`AdaApi::searchHistory success: ${total} transactions loaded`, { responseStats });
       return new Promise(resolve => resolve({ transactions, total }));
     } catch (error) {
       Logger.error('AdaApi::searchHistory error', { error });
@@ -331,7 +331,7 @@ export default class AdaApi {
         spendingPassword,
       };
       const wallet: AdaWallet = await createWallet(this.config, { walletInitData });
-      Logger.debug('AdaApi::createWallet success', { ...wallet });
+      Logger.debug('AdaApi::createWallet success', { wallet });
       return _createWalletFromServerData(wallet);
     } catch (error) {
       Logger.error('AdaApi::createWallet error', { error });
@@ -374,7 +374,7 @@ export default class AdaApi {
         spendingPassword,
       };
       const response: Transaction = await createTransaction(this.config, { data });
-      Logger.debug('AdaApi::createTransaction success', { ...response });
+      Logger.debug('AdaApi::createTransaction success', { transaction: response });
       return _createTransactionFromServerData(response);
     } catch (error) {
       Logger.error('AdaApi::createTransaction error', { error });
@@ -418,7 +418,7 @@ export default class AdaApi {
         groupingPolicy: 'OptimizeForSecurity',
       };
       const response: TransactionFee = await getTransactionFee(this.config, { data });
-      Logger.debug('AdaApi::calculateTransactionFee success', { ...response });
+      Logger.debug('AdaApi::calculateTransactionFee success', { transactionFee: response });
       return _createTransactionFeeFromServerData(response);
     } catch (error) {
       Logger.error('AdaApi::calculateTransactionFee error', { error });
@@ -655,7 +655,7 @@ export default class AdaApi {
       const transaction: Transaction = await redeemAda(
         this.config, { ...request, spendingPassword }
       );
-      Logger.debug('AdaApi::redeemAda success', { ...transaction });
+      Logger.debug('AdaApi::redeemAda success', { transaction });
       return _createTransactionFromServerData(transaction);
     } catch (error) {
       Logger.error('AdaApi::redeemAda error', { error });
@@ -676,7 +676,7 @@ export default class AdaApi {
       const transaction: Transaction = await redeemPaperVendedAda(
         this.config, { ...request, spendingPassword }
       );
-      Logger.debug('AdaApi::redeemAdaPaperVend success', { ...transaction });
+      Logger.debug('AdaApi::redeemAdaPaperVend success', { transaction });
       return _createTransactionFromServerData(transaction);
     } catch (error) {
       Logger.error('AdaApi::redeemAdaPaperVend error', { error });
@@ -692,7 +692,7 @@ export default class AdaApi {
     try {
       const nodeUpdate = await getNextNodeUpdate(this.config);
       if (nodeUpdate && nodeUpdate.version) {
-        Logger.debug('AdaApi::nextUpdate success', { ...nodeUpdate });
+        Logger.debug('AdaApi::nextUpdate success', { nodeUpdate });
         return nodeUpdate;
       }
       Logger.debug('AdaApi::nextUpdate success: No Update Available');
@@ -733,7 +733,7 @@ export default class AdaApi {
       const wallet: AdaWallet = await updateWallet(
         this.config, { walletId, assuranceLevel, name }
       );
-      Logger.debug('AdaApi::updateWallet success', { ...wallet });
+      Logger.debug('AdaApi::updateWallet success', { wallet });
       return _createWalletFromServerData(wallet);
     } catch (error) {
       Logger.error('AdaApi::updateWallet error', { error });
@@ -797,7 +797,7 @@ export default class AdaApi {
     Logger.debug(`${loggerText} called`);
     try {
       const status: NodeInfo = await getNodeInfo(this.config, queryParams);
-      Logger.debug(`${loggerText} success`, { ...status });
+      Logger.debug(`${loggerText} success`, { status });
 
       const {
         blockchainHeight,
