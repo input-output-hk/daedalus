@@ -47,7 +47,7 @@ export const getProcess = async (processId: number, processName: string): Promis
       return previousProcess;
     }
   } catch (error) {
-    Logger.error('getProcess error: ' + JSON.stringify(error, null, 2));
+    Logger.error('getProcess error', { error });
     return null;
   }
 };

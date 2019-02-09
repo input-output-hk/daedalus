@@ -3,9 +3,8 @@ import os from 'os';
 import { app, BrowserWindow, shell } from 'electron';
 import { client } from 'electron-connect';
 import { includes } from 'lodash';
-import moment from 'moment';
 import { Logger } from './utils/logging';
-import { setupLogging, updateUserSystemInfoLog } from './utils/setupLogging';
+import { setupLogging, logSystemInfo } from './utils/setupLogging';
 import { getNumberOfEpochsConsolidated } from './utils/getNumberOfEpochsConsolidated';
 import { handleDiskSpace } from './utils/handleDiskSpace';
 import { createMainWindow } from './windows/main';
@@ -29,23 +28,24 @@ let mainWindow: BrowserWindow;
 let cardanoNode: ?CardanoNode;
 
 const {
-  isDev, isWatchMode, buildLabel, network, current,
+  isDev, isWatchMode, network, current, os: osName,
   version: daedalusVersion, buildNumber: cardanoVersion,
 } = environment;
 
 const safeExit = async () => {
   if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
-    Logger.info('Daedalus:safeExit: exiting Daedalus with code 0.');
+    Logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });
     return safeExitWithCode(0);
   }
   if (cardanoNode.state === CardanoNodeStates.STOPPING) return;
   try {
-    Logger.info(`Daedalus:safeExit: stopping cardano-node with PID ${cardanoNode.pid || 'null'}`);
+    const pid = cardanoNode.pid || 'null';
+    Logger.info(`Daedalus:safeExit: stopping cardano-node with PID: ${pid}`, { pid });
     await cardanoNode.stop();
-    Logger.info('Daedalus:safeExit: exiting Daedalus with code 0.');
+    Logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });
     safeExitWithCode(0);
-  } catch (stopError) {
-    Logger.info(`Daedalus:safeExit: cardano-node did not exit correctly: ${stopError}`);
+  } catch (error) {
+    Logger.error('Daedalus:safeExit: cardano-node did not exit correctly', { error });
     safeExitWithCode(0);
   }
 };
@@ -55,30 +55,28 @@ const onAppReady = async () => {
 
   const cpu = os.cpus();
   const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
-  const platform = os.platform();
   const platformVersion = os.release();
   const ram = JSON.stringify(os.totalmem(), null, 2);
-  const startTimeStr = new Date().toString();
-  const startTime = `${moment.utc().format('YYYY-MM-DDTHHmmss.0SSS')}Z`;
+  const startTime = new Date().toISOString();
+  // systemStart refers to the Cardano Demo cluster start time!
+  const systemStart = parseInt(launcherConfig.configuration.systemStart, 10);
 
-  updateUserSystemInfoLog({
+  const systemInfo = logSystemInfo({
     cardanoVersion,
     cpu,
     current,
     daedalusVersion,
     isInSafeMode,
     network,
-    platform,
+    osName,
     platformVersion,
     ram,
     startTime,
   });
 
-  Logger.info(`========== Daedalus is starting at ${startTimeStr} ==========`);
+  Logger.info(`========== Daedalus is starting at ${startTime} ==========`);
 
-  Logger.debug(`!!! ${buildLabel} is running on ${platform} version ${platformVersion}
-            with CPU: ${JSON.stringify(cpu, null, 2)} with
-            ${ram} total RAM !!!`);
+  Logger.info('Updating System-info.json file', { ...systemInfo.data });
 
   ensureXDGDataIsSet();
   await installChromeExtensions(isDev);
@@ -128,8 +126,6 @@ const onAppReady = async () => {
     client.create(mainWindow);
   }
 
-  // systemStart refers to the Cardano Demo cluster start time!
-  const systemStart = parseInt(launcherConfig.configuration.systemStart, 10);
   getSystemStartTimeChannel.onRequest(() => Promise.resolve(systemStart));
 
   getNumberOfEpochsConsolidated();
@@ -157,7 +153,7 @@ const onAppReady = async () => {
     contents.on('new-window', (event, url) => {
       // Prevent creation of new BrowserWindows via links / window.open
       event.preventDefault();
-      Logger.info(`Prevented creation of new browser window with url ${url}`);
+      Logger.info('Prevented creation of new browser window', { url });
       // Open these links with the default browser
       shell.openExternal(url);
     });
