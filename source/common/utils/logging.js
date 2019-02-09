@@ -13,8 +13,9 @@ const DEFAULT_MESSAGE_BODY = {
   app: ['daedalus'],
 };
 
+const isProd = process.env.NODE_ENV === 'production';
+
 const stringifyMessageBody = (messageBody: MessageBody): string => {
-  const isProd = process.env.NODE_ENV === 'production';
   const spacing = isProd ? 0 : 2;
   return JSON.stringify(messageBody, null, spacing);
 };
@@ -43,7 +44,7 @@ export const formatContext = (context: FormatMessageContextParams): string => {
 
 export const formatMessageTime = (date: Date): string => {
   const [year, time] = date.toISOString().split('T');
-  return `[${year} ${time.slice(0, -1)} UTC]`;
+  return `[${year}T${time.slice(0, -1)}Z]`;
 };
 
 export const constructMessageBody = (bodyData: ConstructMessageBodyParams): MessageBody => {
@@ -77,8 +78,10 @@ export const formatMessage = (loggerMessage: ElectronLoggerMessage): string => {
     thread: '',
   };
 
-  const messageTime: string = formatMessageTime(loggerMessage.date);
   const messageBody: MessageBody = constructMessageBody(messageBodyParams);
 
-  return `${context} ${messageTime}\n${stringifyMessageBody(messageBody)}`;
+  if (isProd) return stringifyMessageBody(messageBody);
+
+  const messageTime: string = formatMessageTime(loggerMessage.date);
+  return `${messageTime} ${context} ${stringifyMessageBody(messageBody)}`;
 };

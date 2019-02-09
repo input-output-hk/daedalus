@@ -43,7 +43,7 @@ export const setupLogging = () => {
     if (typeof data === 'string') {
       messageBody = { ...messageBody, data: { response: data } };
     }
-    return `${context} [${year} ${time.slice(0, -1)} UTC]\n${stringifyData(messageBody)}`;
+    return `[${year}T${time.slice(0, -1)}Z] ${context} ${stringifyData(messageBody)}`;
   };
 
   // Removes existing compressed logs
