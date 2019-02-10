@@ -10,7 +10,6 @@ import type { RedeemAdaParams } from '../transactions/requests/redeemAda';
 import type { RedeemPaperVendedAdaParams } from '../transactions/requests/redeemPaperVendedAda';
 import type { NodeQueryParams } from '../nodes/requests/getNodeInfo';
 import type { NodeInfo, GetNetworkStatusResponse } from '../nodes/types';
-import { stringifyData, stringifyError } from '../../../../common/utils/logging';
 
 // ========== LOGGING =========
 
@@ -23,7 +22,7 @@ export default (api: AdaApi) => {
     request: RedeemAdaParams
   ): Promise<any> => new Promise((resolve) => {
     try {
-      Logger.debug('AdaApi::redeemAda (PATCHED) called: ' + stringifyData(request));
+      Logger.debug('AdaApi::redeemAda (PATCHED) called', { request });
       const { redemptionCode } = request;
       const isValidRedemptionCode = api.isValidRedemptionKey(redemptionCode);
       if (!isValidRedemptionCode) {
@@ -33,7 +32,7 @@ export default (api: AdaApi) => {
       Logger.debug('AdaApi::redeemAda (PATCHED) success');
       resolve({ amount: new BigNumber(1000) });
     } catch (error) {
-      Logger.debug('AdaApi::redeemAda (PATCHED) error: ' + stringifyError(error));
+      Logger.error('AdaApi::redeemAda (PATCHED) error', { error });
       throw new RedeemAdaError();
     }
   });
@@ -42,10 +41,10 @@ export default (api: AdaApi) => {
     request: RedeemPaperVendedAdaParams
   ): Promise<any> => new Promise((resolve) => {
     try {
-      Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) called: ' + stringifyData(request));
-      const { redemptionCode, mnemonics } = request;
+      Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) called', { request });
+      const { redemptionCode, mnemonic } = request;
       const isValidKey = api.isValidPaperVendRedemptionKey(redemptionCode);
-      const isValidMnemonic = api.isValidRedemptionMnemonic(mnemonics.join(' '));
+      const isValidMnemonic = api.isValidRedemptionMnemonic(mnemonic.join(' '));
       if (!isValidKey) Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) failed: not a valid redemption key!');
       if (!isValidMnemonic) Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) failed: not a valid mnemonic!');
       if (!isValidKey || !isValidMnemonic) {
@@ -54,7 +53,7 @@ export default (api: AdaApi) => {
       Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) success');
       resolve({ amount: new BigNumber(1000) });
     } catch (error) {
-      Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) error: ' + stringifyError(error));
+      Logger.error('AdaApi::redeemPaperVendedAda (PATCHED) error', { error });
       throw new RedeemAdaError();
     }
   });
@@ -69,7 +68,7 @@ export default (api: AdaApi) => {
     Logger.debug('AdaApi::getNetworkStatus (PATCHED) called');
     try {
       const status: NodeInfo = await getNodeInfo(api.config, queryParams);
-      Logger.debug('AdaApi::getNetworkStatus (PATCHED) success: ' + stringifyData(status));
+      Logger.debug('AdaApi::getNetworkStatus (PATCHED) success', { status });
 
       const {
         blockchainHeight,
@@ -87,7 +86,7 @@ export default (api: AdaApi) => {
         localTimeDifference: LOCAL_TIME_DIFFERENCE,
       };
     } catch (error) {
-      Logger.error('AdaApi::getNetworkStatus (PATCHED) error: ' + stringifyError(error));
+      Logger.error('AdaApi::getNetworkStatus (PATCHED) error', { error });
       throw new GenericApiError();
     }
   };

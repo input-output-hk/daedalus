@@ -2672,7 +2672,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Create a paper wallet certificate for offline storage of funds.",
+        "defaultMessage": "!!!Create a paper wallet certificate to store funds offline.",
         "description": "Subtitle for the \"Paper wallet create certificate instructions dialog\".",
         "end": {
           "column": 3,
@@ -2686,31 +2686,45 @@
         }
       },
       {
-        "defaultMessage": "!!!Instructions",
-        "description": "Instructions list label for the \"Paper wallet create certificate instructions dialog\".",
+        "defaultMessage": "!!!The paper wallet certificate will not be associated with any of your existing wallets. A new, empty wallet will be created.",
+        "description": "subtitle2 for the \"Paper wallet create certificate instructions dialog\".",
         "end": {
           "column": 3,
           "line": 32
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
-        "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.label",
+        "id": "paper.wallet.create.certificate.instructions.dialog.subtitle2",
         "start": {
-          "column": 25,
+          "column": 13,
           "line": 28
         }
       },
       {
-        "defaultMessage": "!!!Your printed certificate will include your paper wallet recovery phrase\n      of {paperWalletRecoveryPhraseWordCount} words. Note that your paper wallet recovery phrase is\n      different to the {walletRecoveryPhraseWordCount}-words recovery phrases used to restore your\n      regular Daedalus wallet.",
+        "defaultMessage": "!!!Instructions",
+        "description": "Instructions list label for the \"Paper wallet create certificate instructions dialog\".",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
+        "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.label",
+        "start": {
+          "column": 25,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Your printed certificate will include your paper wallet recovery phrase\n      of {paperWalletRecoveryPhraseWordCount} words. Note that your paper wallet recovery phrase is\n      different to the {walletRecoveryPhraseWordCount}-word recovery phrases used to restore your\n      regular Daedalus wallet.",
         "description": "Wallet certificate create instructions dialog definition 1.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 45
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition1",
         "start": {
           "column": 31,
-          "line": 33
+          "line": 38
         }
       },
       {
@@ -2718,13 +2732,13 @@
         "description": "Wallet certificate create instructions dialog definition 2.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 52
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition2",
         "start": {
           "column": 31,
-          "line": 41
+          "line": 46
         }
       },
       {
@@ -2732,13 +2746,13 @@
         "description": "Wallet certificate create instructions dialog definition 3.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 57
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition3",
         "start": {
           "column": 31,
-          "line": 48
+          "line": 53
         }
       },
       {
@@ -2746,13 +2760,13 @@
         "description": "Wallet certificate create instructions dialog definition 4.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 63
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition4",
         "start": {
           "column": 31,
-          "line": 53
+          "line": 58
         }
       },
       {
@@ -2760,13 +2774,13 @@
         "description": "Wallet certificate create instructions dialog definition 5.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 68
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition5",
         "start": {
           "column": 31,
-          "line": 59
+          "line": 64
         }
       },
       {
@@ -2774,13 +2788,13 @@
         "description": "Wallet certificate create instructions dialog - printing instructions.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 75
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.printingInstructions",
         "start": {
           "column": 24,
-          "line": 64
+          "line": 69
         }
       },
       {
@@ -2788,13 +2802,13 @@
         "description": "Wallet certificate create instructions dialog \"Cardano Explorer\" label",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 80
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.cardanoExplorer",
         "start": {
           "column": 19,
-          "line": 71
+          "line": 76
         }
       },
       {
@@ -2802,13 +2816,13 @@
         "description": "\"Wallet certificate create instructions dialog\" print button label.",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 85
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.button.printLabel",
         "start": {
           "column": 20,
-          "line": 76
+          "line": 81
         }
       }
     ],

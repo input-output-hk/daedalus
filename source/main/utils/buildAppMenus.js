@@ -43,14 +43,14 @@ export const buildAppMenus = async (
   const restartInSafeMode = async () => {
     Logger.info('Restarting in SafeMode...');
     if (cardanoNode) await cardanoNode.stop();
-    Logger.info('Exiting Daedalus with code 21.');
+    Logger.info('Exiting Daedalus with code 21', { code: 21 });
     safeExitWithCode(21);
   };
 
   const restartWithoutSafeMode = async () => {
     Logger.info('Restarting without SafeMode...');
     if (cardanoNode) await cardanoNode.stop();
-    Logger.info('Exiting Daedalus with code 22.');
+    Logger.info('Exiting Daedalus with code 22', { code: 22 });
     safeExitWithCode(22);
   };
 

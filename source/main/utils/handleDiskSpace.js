@@ -3,7 +3,6 @@ import { BrowserWindow } from 'electron';
 import checkDiskSpace from 'check-disk-space';
 import prettysize from 'prettysize';
 import { getDiskSpaceStatusChannel } from '../ipc/get-disk-space-status';
-import { stringifyData } from '../../common/utils/logging';
 import { environment } from '../environment';
 import { Logger } from './logging';
 import {
@@ -62,7 +61,7 @@ export const handleDiskSpace = (
       diskSpaceMissing: prettysize(diskSpaceMissing),
       diskSpaceRecommended: prettysize(diskSpaceRecommended),
     };
-    if (isNotEnoughDiskSpace) Logger.info(stringifyData(response));
+    if (isNotEnoughDiskSpace) Logger.info('Not enough disk space', { response });
     if (typeof onCheckDiskSpace === 'function') onCheckDiskSpace(response);
     getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
     return response;
