@@ -1,6 +1,7 @@
 { installationSlug ? "nix-install", installedPackages
 , postInstall ? null, nix-bundle, preInstall ? null
 , cluster
+, rawapp
 , pkgs }:
 let
   installerBundle = nix-bundle.nix-bootstrap {
@@ -68,6 +69,12 @@ let
 
     exec .${nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -p TERM -- /nix/var/nix/profiles/profile/bin/enter-phase2
   '';
+  fontconf = pkgs.writeText "fonts.conf" ''
+    <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+    <fontconfig>
+    <dir>${rawapp}</dir>
+    </fontconfig>
+  '';
   enter2 = pkgs.writeScriptBin "enter-phase2" ''
     #!${pkgs.stdenv.shell}
 
@@ -79,6 +86,8 @@ let
     export PATH=/bin
     ln -svf ${pkgs.iana-etc}/etc/protocols /etc/protocols
     ln -svf ${pkgs.iana-etc}/etc/services /etc/services
+    mkdir -pv /etc/fonts
+    ln -svf ${fontconf} /etc/fonts/fonts.conf
     mkdir -pv /etc/ssl/certs
     ln -svf ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt /etc/ssl/certs/ca-certificates.crt
     ln -svf ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt /etc/ssl/certs/ca-bundle.crt

@@ -117,7 +117,7 @@ buildIcons cluster = do
   procs "iconutil" ["--convert", "icns", "--output", "icons/electron.icns"
                    , iconset] mempty
 
--- | Builds the electron app with "npm package" and returns its
+-- | Builds the electron app with "yarn package" and returns its
 -- component root path.
 -- NB: If webpack scripts are changed then this function may need to
 -- be updated.
@@ -136,10 +136,10 @@ npmPackage :: DarwinConfig -> Shell ()
 npmPackage DarwinConfig{..} = do
   mktree "release"
   echo "~~~ Installing nodejs dependencies..."
-  procs "npm" ["install"] empty
+  procs "yarn" ["install"] empty
   echo "~~~ Running electron packager script..."
   export "NODE_ENV" "production"
-  procs "npm" ["run", "package", "--", "--name", dcAppName ] empty
+  procs "yarn" ["run", "package", "--", "--name", dcAppName ] empty
   size <- inproc "du" ["-sh", "release"] empty
   printf ("Size of Electron app is " % l % "\n") size
 

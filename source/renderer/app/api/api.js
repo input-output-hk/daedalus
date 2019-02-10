@@ -1,7 +1,8 @@
 // @flow
-import { split, get } from 'lodash';
+import { split, get, unionBy } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
+import moment from 'moment';
 
 // domains
 import Wallet from '../domains/Wallet';
@@ -56,11 +57,14 @@ import {
   generateAccountMnemonics,
   generateAdditionalMnemonics
 } from './utils/mnemonics';
+import { filterLogData } from '../../../common/utils/logging';
 
 // config constants
 import {
   LOVELACES_PER_ADA,
-  MAX_TRANSACTIONS_PER_PAGE
+  MAX_TRANSACTIONS_PER_PAGE,
+  MAX_TRANSACTION_CONFIRMATIONS,
+  TX_AGE_POLLING_THRESHOLD
 } from '../config/numbersConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
@@ -145,7 +149,6 @@ import {
   RedeemAdaError
 } from './transactions/errors';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
-import { stringifyData, stringifyError } from '../../../common/utils/logging';
 
 export default class AdaApi {
 
@@ -164,20 +167,24 @@ export default class AdaApi {
     Logger.debug('AdaApi::getWallets called');
     try {
       const response: AdaWallets = await getWallets(this.config);
-      Logger.debug('AdaApi::getWallets success: ' + stringifyData(response));
+      Logger.debug('AdaApi::getWallets success', { wallets: response });
       return response.map(data => _createWalletFromServerData(data));
     } catch (error) {
-      Logger.error('AdaApi::getWallets error: ' + stringifyError(error));
+      Logger.error('AdaApi::getWallets error', { error });
       throw new GenericApiError();
     }
   };
 
   getAddresses = async (request: GetAddressesRequest): Promise<GetAddressesResponse> => {
-    Logger.debug('AdaApi::getAddresses called: ' + stringifyData(request));
+    Logger.debug('AdaApi::getAddresses called', { parameters: filterLogData(request) });
     const { walletId } = request;
     try {
       const accounts: Accounts = await getAccounts(this.config, { walletId });
-      Logger.debug('AdaApi::getAddresses success: ' + stringifyData(accounts));
+
+      const response = accounts.map(account => (
+        Object.assign({}, account, { addresses: account.addresses.length })
+      ));
+      Logger.debug('AdaApi::getAddresses success', { response });
 
       if (!accounts || !accounts.length) {
         return new Promise(resolve => resolve({ accountIndex: null, addresses: [] }));
@@ -189,14 +196,24 @@ export default class AdaApi {
 
       return new Promise(resolve => resolve({ accountIndex, addresses }));
     } catch (error) {
-      Logger.error('AdaApi::getAddresses error: ' + stringifyError(error));
+      Logger.error('AdaApi::getAddresses error', { error });
       throw new GenericApiError();
     }
   };
 
   getTransactions = async (request: GetTransactionsRequest): Promise<GetTransactionsResponse> => {
-    Logger.debug('AdaApi::searchHistory called: ' + stringifyData(request));
-    const { walletId, skip, limit } = request;
+    const requestTimestamp = moment();
+    const requestStats = Object.assign({}, request, {
+      cachedTransactions: request.cachedTransactions.length,
+    });
+    Logger.debug('AdaApi::searchHistory called', { parameters: requestStats });
+    const {
+      walletId, skip, limit,
+      isFirstLoad, // during first load we fetch all wallet's transactions
+      isRestoreActive, // during restoration we fetch only missing transactions
+      isRestoreCompleted, // once restoration is done we fetch potentially missing transactions
+      cachedTransactions,
+    } = request;
     const accounts: Accounts = await getAccounts(this.config, { walletId });
 
     if (!accounts.length || !accounts[0].index) {
@@ -215,40 +232,93 @@ export default class AdaApi {
       page: skip === 0 ? 1 : skip + 1,
       per_page: perPage,
       sort_by: 'DES[created_at]',
+      created_at: `LTE[${moment.utc().format('YYYY-MM-DDTHH:mm:ss')}]`,
+      // ^^ By setting created_at filter to current time we make sure
+      // all subsequent multi-pages requests load the same set of transactions
     };
+
+    const shouldLoadOnlyFresh = !isFirstLoad && !isRestoreActive && !isRestoreCompleted;
+    if (shouldLoadOnlyFresh) {
+      const tenMinutesAgo =
+        moment.utc(Date.now() - TX_AGE_POLLING_THRESHOLD).format('YYYY-MM-DDTHH:mm:ss');
+      // Since we load all transactions in a first load, later on we only care about fresh ones
+      Object.assign(params, { created_at: `GTE[${tenMinutesAgo}]` });
+    }
+
     const pagesToBeLoaded = Math.ceil(limit / params.per_page);
 
     try {
+      // Load first page of transactions
       const response: Transactions = await getTransactionHistory(this.config, params);
-      const { meta, data: txnHistory } = response;
-      const { totalPages } = meta.pagination;
-      const hasMultiplePages = (totalPages > 1 && (shouldLoadAll || limit > perPage));
+      const { meta, data: txHistory } = response;
+      const { totalPages, totalEntries: totalTransactions } = meta.pagination;
 
+      let transactions = txHistory.map(tx => _createTransactionFromServerData(tx));
+
+      // Load additional pages of transactions
+      const hasMultiplePages = (totalPages > 1 && (shouldLoadAll || limit > perPage));
       if (hasMultiplePages) {
         let page = 2;
-        const hasNextPage = () => page < totalPages + 1;
+        const hasNextPage = () => {
+          const hasMorePages = (page < totalPages + 1);
+          if ((isRestoreActive || isRestoreCompleted) && hasMorePages) {
+            const loadedTransactions = unionBy(transactions, cachedTransactions, 'id');
+            const hasMoreTransactions = (totalTransactions - loadedTransactions.length) > 0;
+            return hasMoreTransactions;
+          }
+          return hasMorePages;
+        };
         const shouldLoadNextPage = () => shouldLoadAll || page <= pagesToBeLoaded;
+
+        if (isRestoreActive || isRestoreCompleted) {
+          const latestLoadedTransactionDate = transactions[0].date;
+          const latestLoadedTransactionDateString =
+            moment.utc(latestLoadedTransactionDate).format('YYYY-MM-DDTHH:mm:ss');
+          // During restoration we need to fetch only transactions older than the latest loaded one
+          // as this ensures that both totalPages and totalEntries remain unchanged throught out
+          // subsequent page loads (as in the meantime new transactions can be discovered)
+          Object.assign(params, { created_at: `LTE[${latestLoadedTransactionDateString}]` });
+        }
 
         for (page; (hasNextPage() && shouldLoadNextPage()); page++) {
           const { data: pageHistory } =
             await getTransactionHistory(this.config, Object.assign(params, { page }));
-          txnHistory.push(...pageHistory);
+          transactions.push(...pageHistory.map(tx => _createTransactionFromServerData(tx)));
         }
-        if (!shouldLoadAll) txnHistory.splice(limit);
       }
 
-      const transactions = txnHistory.map(txn => _createTransactionFromServerData(txn));
+      // Merge newly loaded and previously loaded transactions
+      // - unionBy also serves the purpose of removing transaction duplicates
+      //   which may occur as a side-effect of transaction request pagination
+      //   as multi-page requests are not executed at the exact same time!
+      transactions = unionBy(transactions, cachedTransactions, 'id');
+
+      // Enforce the limit in case we are not loading all transactions
+      if (!shouldLoadAll) transactions.splice(limit);
+
       const total = transactions.length;
-      Logger.debug('AdaApi::searchHistory success: ' + stringifyData(txnHistory));
+
+      const responseStats = {
+        apiRequested: limit || 'all',
+        apiFiltered: shouldLoadOnlyFresh ? 'fresh' : '',
+        apiReturned: totalTransactions,
+        apiPagesTotal: totalPages,
+        apiPagesRequested: params.page,
+        daedalusCached: cachedTransactions.length,
+        daedalusLoaded: total - cachedTransactions.length,
+        daedalusTotal: total,
+        requestDurationInMs: moment.duration(moment().diff(requestTimestamp)).as('milliseconds'),
+      };
+      Logger.debug(`AdaApi::searchHistory success: ${total} transactions loaded`, { responseStats });
       return new Promise(resolve => resolve({ transactions, total }));
     } catch (error) {
-      Logger.error('AdaApi::searchHistory error: ' + stringifyError(error));
+      Logger.error('AdaApi::searchHistory error', { error });
       throw new GenericApiError();
     }
   };
 
   createWallet = async (request: CreateWalletRequest): Promise<Wallet> => {
-    Logger.debug('AdaApi::createWallet called');
+    Logger.debug('AdaApi::createWallet called', { parameters: filterLogData(request) });
     const { name, mnemonic, spendingPassword: passwordString } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     const assuranceLevel = 'normal';
@@ -261,23 +331,23 @@ export default class AdaApi {
         spendingPassword,
       };
       const wallet: AdaWallet = await createWallet(this.config, { walletInitData });
-      Logger.debug('AdaApi::createWallet success');
+      Logger.debug('AdaApi::createWallet success', { wallet });
       return _createWalletFromServerData(wallet);
     } catch (error) {
-      Logger.error('AdaApi::createWallet error: ' + stringifyError(error));
+      Logger.error('AdaApi::createWallet error', { error });
       throw new GenericApiError();
     }
   };
 
   deleteWallet = async (request: DeleteWalletRequest): Promise<boolean> => {
-    Logger.debug('AdaApi::deleteWallet called: ' + stringifyData(request));
+    Logger.debug('AdaApi::deleteWallet called', { parameters: filterLogData(request) });
     try {
       const { walletId } = request;
       const response = await deleteWallet(this.config, { walletId });
-      Logger.debug('AdaApi::deleteWallet success: ' + stringifyData(response));
+      Logger.debug('AdaApi::deleteWallet success', { response });
       return true;
     } catch (error) {
-      Logger.error('AdaApi::deleteWallet error: ' + stringifyError(error));
+      Logger.error('AdaApi::deleteWallet error', { error });
       throw new GenericApiError();
     }
   };
@@ -285,7 +355,7 @@ export default class AdaApi {
   createTransaction = async (
     request: TransactionRequest
   ): Promise<WalletTransaction> => {
-    Logger.debug('AdaApi::createTransaction called');
+    Logger.debug('AdaApi::createTransaction called', { parameters: filterLogData(request) });
     const { accountIndex, walletId, address, amount, spendingPassword: passwordString } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     try {
@@ -304,14 +374,17 @@ export default class AdaApi {
         spendingPassword,
       };
       const response: Transaction = await createTransaction(this.config, { data });
-      Logger.debug('AdaApi::createTransaction success: ' + stringifyData(response));
+      Logger.debug('AdaApi::createTransaction success', { transaction: response });
       return _createTransactionFromServerData(response);
     } catch (error) {
-      Logger.debug('AdaApi::createTransaction error: ' + stringifyError(error));
+      Logger.error('AdaApi::createTransaction error', { error });
       if (error.message === 'OutputIsRedeem') {
         throw new NotAllowedToSendMoneyToRedeemAddressError();
       }
-      if (error.message === 'NotEnoughMoney') {
+      if (
+        error.message === 'NotEnoughMoney' ||
+        error.message === 'UtxoNotEnoughFragmented'
+      ) {
         throw new NotEnoughMoneyToSendError();
       }
       if (error.message === 'CannotCreateAddress') {
@@ -324,14 +397,12 @@ export default class AdaApi {
   calculateTransactionFee = async (
     request: TransactionRequest
   ): Promise<BigNumber> => {
-    Logger.debug('AdaApi::calculateTransactionFee called');
+    Logger.debug('AdaApi::calculateTransactionFee called', { parameters: filterLogData(request) });
     const {
       accountIndex,
       walletId, walletBalance,
       address, amount,
-      spendingPassword: passwordString,
     } = request;
-    const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     try {
       const data = {
         source: {
@@ -345,14 +416,16 @@ export default class AdaApi {
           },
         ],
         groupingPolicy: 'OptimizeForSecurity',
-        spendingPassword,
       };
       const response: TransactionFee = await getTransactionFee(this.config, { data });
-      Logger.debug('AdaApi::calculateTransactionFee success: ' + stringifyData(response));
+      Logger.debug('AdaApi::calculateTransactionFee success', { transactionFee: response });
       return _createTransactionFeeFromServerData(response);
     } catch (error) {
-      Logger.debug('AdaApi::calculateTransactionFee error: ' + stringifyError(error));
-      if (error.message === 'NotEnoughMoney') {
+      Logger.error('AdaApi::calculateTransactionFee error', { error });
+      if (
+        error.message === 'NotEnoughMoney' ||
+        error.message === 'UtxoNotEnoughFragmented'
+      ) {
         const errorMessage = get(error, 'diagnostic.details.msg', '');
         if (errorMessage.includes('Not enough coins to cover fee')) {
           // Amount + fees exceeds walletBalance:
@@ -387,17 +460,17 @@ export default class AdaApi {
   };
 
   createAddress = async (request: CreateAddressRequest): Promise<Address> => {
-    Logger.debug('AdaApi::createAddress called');
+    Logger.debug('AdaApi::createAddress called', { parameters: filterLogData(request) });
     const { accountIndex, walletId, spendingPassword: passwordString } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     try {
       const address: Address = await createAddress(
         this.config, { spendingPassword, accountIndex, walletId }
       );
-      Logger.debug('AdaApi::createAddress success: ' + stringifyData(address));
+      Logger.debug('AdaApi::createAddress success', { address });
       return _createAddressFromServerData(address);
     } catch (error) {
-      Logger.debug('AdaApi::createAddress error: ' + stringifyError(error));
+      Logger.error('AdaApi::createAddress error', { error });
       if (error.message === 'CannotCreateAddress') {
         throw new IncorrectSpendingPasswordError();
       }
@@ -406,13 +479,13 @@ export default class AdaApi {
   };
 
   async isValidAddress(address: string): Promise<boolean> {
-    Logger.debug('AdaApi::isValidAdaAddress called');
+    Logger.debug('AdaApi::isValidAdaAddress called', { parameters: { address } });
     try {
       const response: Address = await getAddress(this.config, { address });
-      Logger.debug(`AdaApi::isValidAdaAddress success: ${stringifyData(response)}`);
+      Logger.debug('AdaApi::isValidAdaAddress success', { response });
       return true;
     } catch (error) {
-      Logger.debug(`AdaApi::isValidAdaAddress error: ${stringifyError(error)}`);
+      Logger.error('AdaApi::isValidAdaAddress error', { error });
       return false;
     }
   }
@@ -444,7 +517,7 @@ export default class AdaApi {
       Logger.debug('AdaApi::getWalletRecoveryPhrase success');
       return response;
     } catch (error) {
-      Logger.error('AdaApi::getWalletRecoveryPhrase error: ' + stringifyError(error));
+      Logger.error('AdaApi::getWalletRecoveryPhrase error', { error });
       throw new GenericApiError();
     }
   }
@@ -459,7 +532,7 @@ export default class AdaApi {
       Logger.debug('AdaApi::getWalletCertificateAdditionalMnemonics success');
       return response;
     } catch (error) {
-      Logger.error('AdaApi::getWalletCertificateAdditionalMnemonics error: ' + stringifyError(error));
+      Logger.error('AdaApi::getWalletCertificateAdditionalMnemonics error', { error });
       throw new GenericApiError();
     }
   }
@@ -476,7 +549,7 @@ export default class AdaApi {
       Logger.debug('AdaApi::getWalletCertificateRecoveryPhrase success');
       return response;
     } catch (error) {
-      Logger.error('AdaApi::getWalletCertificateRecoveryPhrase error: ' + stringifyError(error));
+      Logger.error('AdaApi::getWalletCertificateRecoveryPhrase error', { error });
       throw new GenericApiError();
     }
   }
@@ -491,13 +564,13 @@ export default class AdaApi {
       Logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate success');
       return Promise.resolve(response);
     } catch (error) {
-      Logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate error: ' + stringifyError(error));
+      Logger.error('AdaApi::getWalletRecoveryPhraseFromCertificate error', { error });
       return Promise.reject(new InvalidMnemonicError());
     }
   }
 
   restoreWallet = async (request: RestoreWalletRequest): Promise<Wallet> => {
-    Logger.debug('AdaApi::restoreWallet called');
+    Logger.debug('AdaApi::restoreWallet called', { parameters: filterLogData(request) });
     const { recoveryPhrase, walletName, spendingPassword: passwordString } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     const assuranceLevel = 'normal';
@@ -508,13 +581,12 @@ export default class AdaApi {
       name: walletName,
       spendingPassword
     };
-
     try {
       const wallet: AdaWallet = await restoreWallet(this.config, { walletInitData });
-      Logger.debug('AdaApi::restoreWallet success');
+      Logger.debug('AdaApi::restoreWallet success', { wallet });
       return _createWalletFromServerData(wallet);
     } catch (error) {
-      Logger.debug('AdaApi::restoreWallet error: ' + stringifyError(error));
+      Logger.error('AdaApi::restoreWallet error', { error });
       if (error.message === 'WalletAlreadyExists') {
         throw new WalletAlreadyRestoredError();
       }
@@ -531,17 +603,17 @@ export default class AdaApi {
   importWalletFromKey = async (
     request: ImportWalletFromKeyRequest
   ): Promise<Wallet> => {
-    Logger.debug('AdaApi::importWalletFromKey called');
+    Logger.debug('AdaApi::importWalletFromKey called', { parameters: filterLogData(request) });
     const { filePath, spendingPassword: passwordString } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     try {
       const importedWallet: AdaWallet = await importWalletAsKey(
         this.config, { filePath, spendingPassword }
       );
-      Logger.debug('AdaApi::importWalletFromKey success');
+      Logger.debug('AdaApi::importWalletFromKey success', { importedWallet });
       return _createWalletFromServerData(importedWallet);
     } catch (error) {
-      Logger.debug('AdaApi::importWalletFromKey error: ' + stringifyError(error));
+      Logger.error('AdaApi::importWalletFromKey error', { error });
       if (error.message === 'WalletAlreadyExists') {
         throw new WalletAlreadyImportedError();
       }
@@ -552,7 +624,7 @@ export default class AdaApi {
   importWalletFromFile = async (
     request: ImportWalletFromFileRequest
   ): Promise<Wallet> => {
-    Logger.debug('AdaApi::importWalletFromFile called');
+    Logger.debug('AdaApi::importWalletFromFile called', { parameters: filterLogData(request) });
     const { filePath, spendingPassword: passwordString } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     const isKeyFile = filePath.split('.').pop().toLowerCase() === 'key';
@@ -562,10 +634,10 @@ export default class AdaApi {
       ) : (
         await importWalletAsJSON(this.config, filePath)
       );
-      Logger.debug('AdaApi::importWalletFromFile success');
+      Logger.debug('AdaApi::importWalletFromFile success', { importedWallet });
       return _createWalletFromServerData(importedWallet);
     } catch (error) {
-      Logger.debug('AdaApi::importWalletFromFile error: ' + stringifyError(error));
+      Logger.error('AdaApi::importWalletFromFile error', { error });
       if (error.message === 'WalletAlreadyExists') {
         throw new WalletAlreadyImportedError();
       }
@@ -576,17 +648,17 @@ export default class AdaApi {
   redeemAda = async (
     request: RedeemAdaParams
   ): Promise<WalletTransaction> => {
-    Logger.debug('AdaApi::redeemAda called');
+    Logger.debug('AdaApi::redeemAda called', { parameters: filterLogData(request) });
     const { spendingPassword: passwordString } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     try {
       const transaction: Transaction = await redeemAda(
         this.config, { ...request, spendingPassword }
       );
-      Logger.debug('AdaApi::redeemAda success');
+      Logger.debug('AdaApi::redeemAda success', { transaction });
       return _createTransactionFromServerData(transaction);
     } catch (error) {
-      Logger.debug('AdaApi::redeemAda error: ' + stringifyError(error));
+      Logger.error('AdaApi::redeemAda error', { error });
       if (error.message === 'CannotCreateAddress') {
         throw new IncorrectSpendingPasswordError();
       }
@@ -597,17 +669,17 @@ export default class AdaApi {
   redeemPaperVendedAda = async (
     request: RedeemPaperVendedAdaParams
   ): Promise<WalletTransaction> => {
-    Logger.debug('AdaApi::redeemAdaPaperVend called');
+    Logger.debug('AdaApi::redeemAdaPaperVend called', { parameters: filterLogData(request) });
     const { spendingPassword: passwordString } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     try {
       const transaction: Transaction = await redeemPaperVendedAda(
         this.config, { ...request, spendingPassword }
       );
-      Logger.debug('AdaApi::redeemAdaPaperVend success');
+      Logger.debug('AdaApi::redeemAdaPaperVend success', { transaction });
       return _createTransactionFromServerData(transaction);
     } catch (error) {
-      Logger.debug('AdaApi::redeemAdaPaperVend error: ' + stringifyError(error));
+      Logger.error('AdaApi::redeemAdaPaperVend error', { error });
       if (error.message === 'CannotCreateAddress') {
         throw new IncorrectSpendingPasswordError();
       }
@@ -620,12 +692,12 @@ export default class AdaApi {
     try {
       const nodeUpdate = await getNextNodeUpdate(this.config);
       if (nodeUpdate && nodeUpdate.version) {
-        Logger.debug('AdaApi::nextUpdate success: ' + stringifyData(nodeUpdate));
+        Logger.debug('AdaApi::nextUpdate success', { nodeUpdate });
         return nodeUpdate;
       }
       Logger.debug('AdaApi::nextUpdate success: No Update Available');
     } catch (error) {
-      Logger.error('AdaApi::nextUpdate error: ' + stringifyError(error));
+      Logger.error('AdaApi::nextUpdate error', { error });
       throw new GenericApiError();
     }
     return null;
@@ -635,9 +707,9 @@ export default class AdaApi {
     Logger.debug('AdaApi::postponeUpdate called');
     try {
       const response: Promise<any> = await postponeNodeUpdate(this.config);
-      Logger.debug('AdaApi::postponeUpdate success: ' + stringifyData(response));
+      Logger.debug('AdaApi::postponeUpdate success', { response });
     } catch (error) {
-      Logger.error('AdaApi::postponeUpdate error: ' + stringifyError(error));
+      Logger.error('AdaApi::postponeUpdate error', { error });
       throw new GenericApiError();
     }
   };
@@ -647,24 +719,24 @@ export default class AdaApi {
     try {
       await awaitUpdateChannel.send();
       const response: Promise<any> = await applyNodeUpdate(this.config);
-      Logger.debug('AdaApi::applyUpdate success: ' + stringifyData(response));
+      Logger.debug('AdaApi::applyUpdate success', { response });
     } catch (error) {
-      Logger.error('AdaApi::applyUpdate error: ' + stringifyError(error));
+      Logger.error('AdaApi::applyUpdate error', { error });
       throw new GenericApiError();
     }
   };
 
   updateWallet = async (request: UpdateWalletRequest): Promise<Wallet> => {
-    Logger.debug('AdaApi::updateWallet called: ' + stringifyData(request));
+    Logger.debug('AdaApi::updateWallet called', { parameters: filterLogData(request) });
     const { walletId, assuranceLevel, name } = request;
     try {
       const wallet: AdaWallet = await updateWallet(
         this.config, { walletId, assuranceLevel, name }
       );
-      Logger.debug('AdaApi::updateWallet success: ' + stringifyData(wallet));
+      Logger.debug('AdaApi::updateWallet success', { wallet });
       return _createWalletFromServerData(wallet);
     } catch (error) {
-      Logger.error('AdaApi::updateWallet error: ' + stringifyError(error));
+      Logger.error('AdaApi::updateWallet error', { error });
       throw new GenericApiError();
     }
   };
@@ -672,14 +744,14 @@ export default class AdaApi {
   updateSpendingPassword = async (
     request: UpdateSpendingPasswordRequest
   ): Promise<boolean> => {
-    Logger.debug('AdaApi::updateSpendingPassword called');
+    Logger.debug('AdaApi::updateSpendingPassword called', { parameters: filterLogData(request) });
     const { walletId, oldPassword, newPassword } = request;
     try {
       await changeSpendingPassword(this.config, { walletId, oldPassword, newPassword });
       Logger.debug('AdaApi::updateSpendingPassword success');
       return true;
     } catch (error) {
-      Logger.debug('AdaApi::updateSpendingPassword error: ' + stringifyError(error));
+      Logger.error('AdaApi::updateSpendingPassword error', { error });
       const errorMessage = get(error, 'diagnostic.msg', '');
       if (errorMessage.includes('UpdateWalletPasswordOldPasswordMismatch')) {
         throw new IncorrectSpendingPasswordError();
@@ -692,15 +764,15 @@ export default class AdaApi {
     request: ExportWalletToFileRequest
   ): Promise<[]> => {
     const { walletId, filePath } = request;
-    Logger.debug('AdaApi::exportWalletToFile called');
+    Logger.debug('AdaApi::exportWalletToFile called', { parameters: filterLogData(request) });
     try {
       const response: Promise<[]> = await exportWalletAsJSON(
         this.config, { walletId, filePath }
       );
-      Logger.debug('AdaApi::exportWalletToFile success: ' + stringifyData(response));
+      Logger.debug('AdaApi::exportWalletToFile success', { response });
       return response;
     } catch (error) {
-      Logger.error('AdaApi::exportWalletToFile error: ' + stringifyError(error));
+      Logger.error('AdaApi::exportWalletToFile error', { error });
       throw new GenericApiError();
     }
   };
@@ -709,10 +781,10 @@ export default class AdaApi {
     Logger.debug('AdaApi::testReset called');
     try {
       const response: Promise<void> = await resetWalletState(this.config);
-      Logger.debug('AdaApi::testReset success: ' + stringifyData(response));
+      Logger.debug('AdaApi::testReset success');
       return response;
     } catch (error) {
-      Logger.error('AdaApi::testReset error: ' + stringifyError(error));
+      Logger.error('AdaApi::testReset error', { error });
       throw new GenericApiError();
     }
   };
@@ -725,7 +797,7 @@ export default class AdaApi {
     Logger.debug(`${loggerText} called`);
     try {
       const status: NodeInfo = await getNodeInfo(this.config, queryParams);
-      Logger.debug(`${loggerText} success: ${stringifyData(status)}`);
+      Logger.debug(`${loggerText} success`, { status });
 
       const {
         blockchainHeight,
@@ -744,7 +816,7 @@ export default class AdaApi {
         localTimeDifference: get(localTimeInformation, 'differenceFromNtpServer.quantity', null),
       };
     } catch (error) {
-      Logger.error(`${loggerText} error: ${stringifyError(error)}`);
+      Logger.error(`${loggerText} error`, { error });
       throw new GenericApiError(error);
     }
   };
@@ -808,7 +880,7 @@ const _createTransactionFromServerData = action(
       amount: new BigNumber(direction === 'outgoing' ? (amount * -1) : amount).dividedBy(LOVELACES_PER_ADA),
       date: utcStringToDate(creationTime),
       description: '',
-      numberOfConfirmations: confirmations,
+      numberOfConfirmations: Math.min(confirmations, MAX_TRANSACTION_CONFIRMATIONS + 1),
       addresses: {
         from: inputs.map(({ address }) => address),
         to: outputs.map(({ address }) => address),

@@ -38,7 +38,7 @@ export default () => {
         fs.writeFileSync(pdfPath, decryptedFile);
         isTemporaryDecryptedPdf = true;
       } catch (error) {
-        Logger.warn(`Error while parsing redemption code: ${error}`);
+        Logger.error('Error while parsing redemption code', { error });
         sender.send(PARSE_REDEMPTION_CODE.ERROR, error.message);
       }
     } else {
