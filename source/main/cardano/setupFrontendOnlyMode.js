@@ -33,33 +33,33 @@ export const setupFrontendOnlyMode = (mainWindow: BrowserWindow) => {
   };
 
   cardanoStatusChannel.onRequest(() => {
-    Logger.info('ipcMain: Received request from renderer for cardano status.');
+    Logger.info('ipcMain: Received request from renderer for cardano status');
     return Promise.resolve(null);
   });
 
   cardanoStatusChannel.onReceive((status: CardanoStatus) => {
-    Logger.info('ipcMain: Received request from renderer to cache cardano status.');
+    Logger.info('ipcMain: Received request from renderer to cache cardano status', { status });
     return Promise.resolve(status);
   });
 
   cardanoStateChangeChannel.onRequest(() => {
-    Logger.info('ipcMain: Received request from renderer for node state.');
+    Logger.info('ipcMain: Received request from renderer for node state', { state: CardanoNodeStates.RUNNING });
     return Promise.resolve(CardanoNodeStates.RUNNING);
   });
 
   cardanoTlsConfigChannel.onRequest(() => {
-    Logger.info('ipcMain: Received request from renderer for tls config.');
+    Logger.info('ipcMain: Received request from renderer for tls config');
     return Promise.resolve(tlsConfig);
   });
 
   cardanoAwaitUpdateChannel.onReceive(() => {
-    Logger.info('ipcMain: Received request from renderer to await update.');
+    Logger.info('ipcMain: Received request from renderer to await update');
     safeExitWithCode(20);
     return Promise.resolve();
   });
 
   cardanoRestartChannel.onReceive(() => {
-    Logger.info('ipcMain: Received request from renderer to restart node.');
+    Logger.info('ipcMain: Received request from renderer to restart node');
     cardanoStateChangeChannel.send(CardanoNodeStates.STARTING, mainWindow);
     setTimeout(() => {
       if (!mainWindow.isDestroyed()) {
@@ -70,7 +70,7 @@ export const setupFrontendOnlyMode = (mainWindow: BrowserWindow) => {
   });
 
   cardanoFaultInjectionChannel.onReceive((fault) => {
-    Logger.info(`ipcMain: Received request to inject a fault into cardano node: ${String(fault)}`);
+    Logger.info('ipcMain: Received request to inject a fault into cardano node', { fault });
     return Promise.reject(fault);
   });
 
