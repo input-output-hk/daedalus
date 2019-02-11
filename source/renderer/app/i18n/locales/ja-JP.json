@@ -15,6 +15,8 @@
   "api.errors.RedeemAdaError": "ADAを正常に還元できませんでした。",
   "api.errors.ReportRequestError": "サポート送信時に問題が発生しました。",
   "api.errors.TooBigTransactionError": "!!!Too many input addresses need to be selected. Try sending a smaller amount.",
+  "api.errors.TooBigTransactionErrorLinkLabel": "!!!Learn more.",
+  "api.errors.TooBigTransactionErrorLinkURL": "https://iohk.zendesk.com/hc/ja/articles/360017733353",
   "api.errors.WalletAlreadyImportedError": "インポートしようとしているウォレットは既に存在します",
   "api.errors.WalletAlreadyRestoredError": "復元しようとしているウォレットは既に存在します",
   "api.errors.WalletFileImportError": "ウォレットをインポートできませんでした。有効なファイルを指定していることを確認してください",
