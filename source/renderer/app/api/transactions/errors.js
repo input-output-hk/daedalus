@@ -9,8 +9,8 @@ const messages = defineMessages({
   },
   notAllowedToSendMoneyToRedeemAddressError: {
     id: 'api.errors.NotAllowedToSendMoneyToRedeemAddressError',
-    defaultMessage: '!!!It is not allowed to send money to Ada redemption address.',
-    description: '"It is not allowed to send money to Ada redemption address." error message.'
+    defaultMessage: '!!!It is not allowed to send money to ada  redemption address.',
+    description: '"It is not allowed to send money to ada  redemption address." error message.'
   },
   notEnoughMoneyToSendError: {
     id: 'api.errors.NotEnoughMoneyToSendError',
@@ -29,13 +29,13 @@ const messages = defineMessages({
   },
   notEnoughFundsForTransactionFeesError: {
     id: 'api.errors.NotEnoughFundsForTransactionFeesError',
-    defaultMessage: '!!!Not enough Ada for fees. Try sending a smaller amount.',
-    description: '"Not enough Ada for fees. Try sending a smaller amount." error message'
+    defaultMessage: '!!!Not enough ada  for fees. Try sending a smaller amount.',
+    description: '"Not enough ada  for fees. Try sending a smaller amount." error message'
   },
   notEnoughFundsForTransactionError: {
     id: 'api.errors.NotEnoughFundsForTransactionError',
-    defaultMessage: '!!!Not enough Ada. Try sending a smaller amount.',
-    description: '"Not enough Ada. Try sending a smaller amount." error message'
+    defaultMessage: '!!!Not enough ada . Try sending a smaller amount.',
+    description: '"Not enough ada . Try sending a smaller amount." error message'
   },
   canNotCalculateTransactionFeesError: {
     id: 'api.errors.CanNotCalculateTransactionFeesError',
