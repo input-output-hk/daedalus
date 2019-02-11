@@ -148,7 +148,7 @@ export default class WalletTransactionsList extends Component<Props> {
       this.registerTxAsExpanded(tx);
     }
     if (this.virtualList) {
-      this.virtualList.updateHeightOfTxRow(tx);
+      this.virtualList.updateInfoRowHeight(tx);
     } else if (this.simpleList) {
       this.simpleList.forceUpdate();
     }
@@ -175,10 +175,11 @@ export default class WalletTransactionsList extends Component<Props> {
       onOpenExternalLink,
     } = this.props;
     const { isFirstInGroup, isLastInGroup, tx } = data;
+    const isExpanded = this.isTxExpanded(tx);
     const txClasses = classnames([
       styles.transaction,
       isFirstInGroup ? styles.firstInGroup : null,
-      isLastInGroup ? styles.lastInGroup : null,
+      isLastInGroup ? styles[`lastInGroup${isExpanded ? 'Expanded' : 'Contracted'}`] : null,
     ]);
     return (
       <div id={`tx-${tx.id}`} className={txClasses}>
