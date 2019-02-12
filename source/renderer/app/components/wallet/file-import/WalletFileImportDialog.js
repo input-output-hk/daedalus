@@ -3,9 +3,9 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
-// import { Input } from 'react-polymorph/lib/components/Input';
+import { Input } from 'react-polymorph/lib/components/Input';
 // import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
-// import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 // import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
 // import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -61,8 +61,13 @@ const messages = defineMessages({
   },
   spendingPasswordLabel: {
     id: 'wallet.file.import.dialog.spendingPasswordLabel',
-    defaultMessage: '!!!Wallet password',
-    description: 'Label for the "Wallet password" input in the wallet file import dialog.',
+    defaultMessage: '!!!Spending password',
+    description: 'Label for the "Spending password" input in the wallet file import dialog.',
+  },
+  spendingPasswordPlaceholder: {
+    id: 'wallet.file.import.dialog.spendingPasswordPlaceholder',
+    defaultMessage: '!!!Enter Spending password to unlock the file',
+    description: 'Placeholder for the "Spending password" input in the wallet file import dialog.',
   },
   repeatPasswordLabel: {
     id: 'wallet.file.import.dialog.repeatPasswordLabel',
@@ -85,6 +90,7 @@ type Props = {
 
 type State = {
   createPassword: boolean,
+  importedFileHasPassword: boolean,
 };
 
 @observer
@@ -92,6 +98,7 @@ export default class WalletFileImportDialog extends Component<Props, State> {
 
   state = {
     createPassword: false,
+    importedFileHasPassword: false
   };
 
   static contextTypes = {
@@ -124,14 +131,14 @@ export default class WalletFileImportDialog extends Component<Props, State> {
       spendingPassword: {
         type: 'password',
         label: this.context.intl.formatMessage(messages.spendingPasswordLabel),
-        placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
+        placeholder: this.context.intl.formatMessage(messages.spendingPasswordPlaceholder),
         value: '',
-        validators: [({ field, form }) => {
-          if (!this.state.createPassword) return [true];
-          const repeatPasswordField = form.$('repeatPassword');
-          if (repeatPasswordField.value.length > 0) {
-            repeatPasswordField.validate({ showErrors: true });
-          }
+        validators: [({ field }) => {
+          if (!this.state.importedFileHasPassword) return [true];
+          // const repeatPasswordField = form.$('repeatPassword');
+          // if (repeatPasswordField.value.length > 0) {
+          //   repeatPasswordField.validate({ showErrors: true });
+          // }
           return [
             isValidSpendingPassword(field.value),
             this.context.intl.formatMessage(globalMessages.invalidSpendingPassword)
@@ -164,11 +171,11 @@ export default class WalletFileImportDialog extends Component<Props, State> {
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
-        const { createPassword } = this.state;
+        const { importedFileHasPassword } = this.state;
         const { walletFile, spendingPassword, walletName } = form.values();
         const walletData = {
           filePath: walletFile.path,
-          spendingPassword: createPassword ? spendingPassword : null,
+          spendingPassword: importedFileHasPassword ? spendingPassword : null,
           walletName: (walletName.length > 0) ? walletName : null,
         };
         this.props.onSubmit(walletData);
@@ -181,7 +188,7 @@ export default class WalletFileImportDialog extends Component<Props, State> {
     const { intl } = this.context;
     const { form } = this;
     const { isSubmitting, error, onClose } = this.props;
-    // const { createPassword } = this.state;
+    const { importedFileHasPassword } = this.state;
 
     const walletFile = form.$('walletFile');
     const dialogClasses = classnames([
@@ -189,10 +196,10 @@ export default class WalletFileImportDialog extends Component<Props, State> {
       'WalletFileImportDialog',
     ]);
 
-    // const spendingPasswordFieldsClasses = classnames([
-    //   styles.spendingPasswordFields,
-    //   createPassword ? styles.show : null,
-    // ]);
+    const spendingPasswordFieldsClasses = classnames([
+      styles.spendingPasswordFields,
+      importedFileHasPassword ? styles.show : null,
+    ]);
 
     const actions = [
       {
@@ -205,7 +212,7 @@ export default class WalletFileImportDialog extends Component<Props, State> {
     ];
 
     // const walletNameField = form.$('walletName');
-    // const spendingPasswordField = form.$('spendingPassword');
+    const spendingPasswordField = form.$('spendingPassword');
     // const repeatedPasswordField = form.$('repeatPassword');
 
     return (
@@ -223,13 +230,16 @@ export default class WalletFileImportDialog extends Component<Props, State> {
             {...walletFile.bind()}
             selectedFile={walletFile.value}
             onFileSelected={(file) => {
+              this.setState({
+                importedFileHasPassword: file.name.indexOf('.key.lock') > -1
+              });
               // "set(value)" is an unbound method and thus must be explicitly called
               walletFile.set(file);
             }}
           />
         </div>
 
-        {/* TODO: re-enable when wallet-name and wallet-password
+        {/* TODO: re-enable when wallet-name
             support is added to the API endpoint
 
           <Input
@@ -253,13 +263,17 @@ export default class WalletFileImportDialog extends Component<Props, State> {
               />
             </div>
 
-            <div className={spendingPasswordFieldsClasses}>
-              <Input
-                className="spendingPassword"
-                {...spendingPasswordField.bind()}
-                error={spendingPasswordField.error}
-                skin={InputSkin}
-              />
+        */}
+
+        <div className={styles.spendingPassword}>
+          <div className={spendingPasswordFieldsClasses}>
+            <Input
+              className="spendingPassword"
+              {...spendingPasswordField.bind()}
+              error={spendingPasswordField.error}
+              skin={InputSkin}
+            />
+            {/*
               <Input
                 className="repeatedPassword"
                 {...repeatedPasswordField.bind()}
@@ -269,9 +283,9 @@ export default class WalletFileImportDialog extends Component<Props, State> {
               <p className={styles.passwordInstructions}>
                 {intl.formatMessage(globalMessages.passwordInstructions)}
               </p>
-            </div>
+            */}
           </div>
-        */}
+        </div>
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 

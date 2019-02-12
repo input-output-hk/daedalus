@@ -2330,8 +2330,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Wallet password",
-        "description": "Label for the \"Wallet password\" input in the wallet file import dialog.",
+        "defaultMessage": "!!!Spending password",
+        "description": "Label for the \"Spending password\" input in the wallet file import dialog.",
         "end": {
           "column": 3,
           "line": 66
@@ -2344,17 +2344,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Repeat password",
-        "description": "Label for the \"Repeat password\" input in the wallet file import dialog.",
+        "defaultMessage": "!!!Enter Spending password to unlock the file",
+        "description": "Placeholder for the \"Spending password\" input in the wallet file import dialog.",
         "end": {
           "column": 3,
           "line": 71
         },
         "file": "source/renderer/app/components/wallet/file-import/WalletFileImportDialog.js",
+        "id": "wallet.file.import.dialog.spendingPasswordPlaceholder",
+        "start": {
+          "column": 31,
+          "line": 67
+        }
+      },
+      {
+        "defaultMessage": "!!!Repeat password",
+        "description": "Label for the \"Repeat password\" input in the wallet file import dialog.",
+        "end": {
+          "column": 3,
+          "line": 76
+        },
+        "file": "source/renderer/app/components/wallet/file-import/WalletFileImportDialog.js",
         "id": "wallet.file.import.dialog.repeatPasswordLabel",
         "start": {
           "column": 23,
-          "line": 67
+          "line": 72
         }
       },
       {
@@ -2362,13 +2376,13 @@
         "description": "Placeholder for the \"Password\" inputs in the wallet file import dialog.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 81
         },
         "file": "source/renderer/app/components/wallet/file-import/WalletFileImportDialog.js",
         "id": "wallet.file.import.dialog.passwordFieldPlaceholder",
         "start": {
           "column": 28,
-          "line": 72
+          "line": 77
         }
       }
     ],

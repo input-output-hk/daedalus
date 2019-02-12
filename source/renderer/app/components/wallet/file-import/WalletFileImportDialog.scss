@@ -47,8 +47,7 @@
     }
 
     & > div {
-      margin-top: 30px;
-      width: 275px;
+      width: 100%;
     }
 
     @include place-form-field-error-below-input;
