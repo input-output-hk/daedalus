@@ -9,6 +9,8 @@ import type { Row } from '../types';
 import styles from './VirtualTransactionList.scss';
 import { TransactionInfo, TransactionsGroup } from '../types';
 
+const { isWindows, isLinux } = global.environment;
+
 type Props = {
   isTxExpanded: (WalletTransaction) => boolean,
   getExpandedTransactions: () => WalletTransaction[],
@@ -21,13 +23,29 @@ type Props = {
 type RowHeight = number;
 
 const GROUP_DATE_HEIGHT = 26;
-const TX_ROW_HEIGHT = 86;
-const TX_LAST_IN_GROUP_MARGIN = 20;
-const TX_ADDRESSES_START_BREAKING_AT_WIDTH = 948;
-const TX_ID_START_BREAKING_AT_WIDTH = 632;
-const TX_LINE_HEIGHT_FOR_ADDRESS = 19;
+const TX_CONTRACTED_ROW_HEIGHT = 86;
+const TX_EXPANDED_ROW_BASE_HEIGHT = 285;
 const TX_LINE_HEIGHT_FOR_ID = 16;
-const TX_BASE_HEIGHT = 285;
+const TX_LINE_HEIGHT_FOR_ADDRESS = 19;
+const TX_LAST_IN_GROUP_MARGIN = 20;
+
+const TX_ADDRESSES_START_BREAKING_AT_WIDTH_MACOS = 985;
+const TX_ADDRESSES_START_BREAKING_AT_WIDTH_WINDOWS = 1067;
+const TX_ADDRESSES_START_BREAKING_AT_WIDTH_LINUX = 1107;
+const TX_ID_START_BREAKING_AT_WIDTH_MACOS = 655;
+const TX_ID_START_BREAKING_AT_WIDTH_WINDOWS = 655;
+const TX_ID_START_BREAKING_AT_WIDTH_LINUX = 677;
+
+let txAddressesStartBreakingAtWidth = TX_ADDRESSES_START_BREAKING_AT_WIDTH_MACOS;
+let txIdStartBreakingAtWidth = TX_ID_START_BREAKING_AT_WIDTH_MACOS;
+if (isWindows) {
+  txAddressesStartBreakingAtWidth = TX_ADDRESSES_START_BREAKING_AT_WIDTH_WINDOWS;
+  txIdStartBreakingAtWidth = TX_ID_START_BREAKING_AT_WIDTH_WINDOWS;
+}
+if (isLinux) {
+  txAddressesStartBreakingAtWidth = TX_ADDRESSES_START_BREAKING_AT_WIDTH_LINUX;
+  txIdStartBreakingAtWidth = TX_ID_START_BREAKING_AT_WIDTH_LINUX;
+}
 
 @observer
 export class VirtualTransactionList extends Component<Props> {
@@ -78,7 +96,7 @@ export class VirtualTransactionList extends Component<Props> {
     const { addresses } = tx;
     const txAddresses = addresses.from.length + addresses.to.length;
     const txAddressesHeight = (txAddresses * txSingleAddressHeight);
-    return txAddressesHeight + txIdHeight + TX_BASE_HEIGHT;
+    return txAddressesHeight + txIdHeight + TX_EXPANDED_ROW_BASE_HEIGHT;
   };
 
   /**
@@ -88,7 +106,7 @@ export class VirtualTransactionList extends Component<Props> {
    */
   calculateHeightOfTxContractedRow = (row: Row) => {
     const headerSpacing = row.isLastInGroup ? TX_LAST_IN_GROUP_MARGIN : 0;
-    return TX_ROW_HEIGHT + headerSpacing;
+    return TX_CONTRACTED_ROW_HEIGHT + headerSpacing;
   };
 
   /**
@@ -143,8 +161,8 @@ export class VirtualTransactionList extends Component<Props> {
   };
 
   updateAddressesAndIdLines = (width: number) => {
-    this.txAddressesLines = (width >= TX_ADDRESSES_START_BREAKING_AT_WIDTH) ? 1 : 2;
-    this.txIdLines = (width >= TX_ID_START_BREAKING_AT_WIDTH) ? 1 : 2;
+    this.txAddressesLines = (width >= txAddressesStartBreakingAtWidth) ? 1 : 2;
+    this.txIdLines = (width >= txIdStartBreakingAtWidth) ? 1 : 2;
   };
 
   rowRenderer = ({
@@ -179,7 +197,7 @@ export class VirtualTransactionList extends Component<Props> {
               width={width}
               height={height}
               rowCount={rows.length}
-              rowHeight={({ index }) => this.rowHeights[index] || TX_ROW_HEIGHT}
+              rowHeight={({ index }) => this.rowHeights[index] || TX_CONTRACTED_ROW_HEIGHT}
               rowRenderer={this.rowRenderer}
               style={{ overflowY: 'scroll' }}
             />
