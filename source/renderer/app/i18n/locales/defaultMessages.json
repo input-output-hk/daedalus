@@ -91,8 +91,8 @@
         }
       },
       {
-        "defaultMessage": "!!!It is not allowed to send money to Ada redemption address.",
-        "description": "\"It is not allowed to send money to Ada redemption address.\" error message.",
+        "defaultMessage": "!!!It is not allowed to send money to ada redemption address.",
+        "description": "\"It is not allowed to send money to ada redemption address.\" error message.",
         "end": {
           "column": 3,
           "line": 14
@@ -147,8 +147,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Not enough Ada for fees. Try sending a smaller amount.",
-        "description": "\"Not enough Ada for fees. Try sending a smaller amount.\" error message",
+        "defaultMessage": "!!!Not enough ada for fees. Try sending a smaller amount.",
+        "description": "\"Not enough ada for fees. Try sending a smaller amount.\" error message",
         "end": {
           "column": 3,
           "line": 34
@@ -161,8 +161,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Not enough Ada. Try sending a smaller amount.",
-        "description": "\"Not enough Ada. Try sending a smaller amount.\" error message",
+        "defaultMessage": "!!!Not enough ada . Try sending a smaller amount.",
+        "description": "\"Not enough ada . Try sending a smaller amount.\" error message",
         "end": {
           "column": 3,
           "line": 39
@@ -1614,11 +1614,11 @@
         }
       },
       {
-        "defaultMessage": "!!!<p>To redeem your Ada, upload your certificate or copy and paste your redemption code from the certificate.\nBelow is an example of a redemption key. Your key will look similar:</p>\n<p><strong>B_GQOAffMBeRIn6vh1hJmeOT3ViS_TmaT4XAHAfDVH0=</strong></p>\n<p>If you upload a PDF file with your certificate, a redemption code will be automatically extracted.</p>\n<p>If you upload an <strong>encrypted certificate</strong>, you will need to provide a <strong>{adaRedemptionPassphraseLength} word mnemonic\npassphrase</strong> to decrypt your certificate and your redemption code will be automatically extracted.</p>",
-        "description": "Detailed instructions for redeeming Ada from the regular vending",
+        "defaultMessage": "!!!<p>To redeem your ada, upload your certificate or copy and paste your redemption code from the certificate. Below is an example of a redemption key. Your key will look similar:</p><p><strong>B_GQOAffMBeRIn6vh1hJmeOT3ViS_TmaT4XAHAfDVH0=</strong></p><p>If you upload a PDF file with your certificate, a redemption code will be automatically extracted.</p><p>If you upload an <strong>encrypted certificate</strong>, you will need to provide a <strong>{adaRedemptionPassphraseLength} word mnemonic passphrase</strong> to decrypt your certificate and your redemption code will be automatically extracted.</p>",
+        "description": "Detailed instructions for redeeming ada from the regular vending",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.instructions.regular",
@@ -1628,59 +1628,59 @@
         }
       },
       {
-        "defaultMessage": "!!!<p>To redeem your Ada, upload your certificate or copy and paste your redemption code from the certificate.\nBelow is an example of a redemption key. Your key will look similar:</p><p><strong>B_GQOAffMBeRIn6vh1hJmeOT3ViS_TmaT4XAHAfDVH0=</strong></p>\n<p>If you upload a PDF file with your certificate, the redemption code will be automatically extracted.</p>\n<p>If you upload an <strong>encrypted certificate</strong>, you will need to provide <strong>your email address, Ada passcode and Ada amount</strong>\nto decrypt your certificate and your redemption code will be automatically extracted.</p>",
-        "description": "Detailed instructions for redeeming Ada from the force vending",
+        "defaultMessage": "!!!<p>To redeem your ada, upload your certificate or copy and paste your redemption code from the certificate. Below is an example of a redemption key. Your key will look similar:</p><p><strong>B_GQOAffMBeRIn6vh1hJmeOT3ViS_TmaT4XAHAfDVH0=</strong></p><p>If you upload a PDF file with your certificate, the redemption code will be automatically extracted.</p><p>If you upload an <strong>encrypted certificate</strong>, you will need to provide <strong>your email address, ada passcode and ada amount<strong> to decrypt your certificate and your redemption code will be automatically extracted.</p>",
+        "description": "Detailed instructions for redeeming ada from the force vending",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.instructions.forceVended",
         "start": {
           "column": 27,
-          "line": 47
+          "line": 42
         }
       },
       {
-        "defaultMessage": "!!!<p>To redeem your Ada using the regularly vended certificate from the recovery service, please upload your encrypted certificate and enter a {adaRedemptionPassphraseLength}-word mnemonic passphrase.</p>\n  >After you upload your <strong>encrypted certificate</strong> and enter your <strong>{adaRedemptionPassphraseLength}-word mnemonic passphrase</strong>, your redemption key will be automatically extracted and you will be able to redeem your Ada to the selected wallet.</p>",
-        "description": "Detailed instructions for redeeming Ada from the regular vending via Recovery service",
+        "defaultMessage": "!!!<p>To redeem your ada using the regularly vended certificate from the recovery service, please upload your encrypted certificate and enter a {adaRedemptionPassphraseLength}-word mnemonic passphrase.</p><p>After you upload your <strong>encrypted certificate</strong> and enter your <strong>{adaRedemptionPassphraseLength}-word mnemonic passphrase</strong>, your redemption key will be automatically extracted and you will be able to redeem your ada to the selected wallet.</p>",
+        "description": "Detailed instructions for redeeming ada from the regular vending via Recovery service",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.instructions.recoveryRegular",
         "start": {
           "column": 31,
-          "line": 56
+          "line": 47
         }
       },
       {
-        "defaultMessage": "!!!<p>To redeem your Ada using the force vended certificate from the recovery service, please upload your encrypted certificate and enter the decryption key. Your decryption key should look like this:</p>\n  ><strong>qXQWDxI3JrlFRtC4SeQjeGzLbVXWBomYPbNO1Vfm1T4=</strong></p>\n  >After you upload your <strong>encrypted certificate</strong> and enter your <strong>decryption key</strong>, your redemption key will be automatically extracted and you will be able to redeem your Ada to the selected wallet.</p>",
-        "description": "Detailed instructions for redeeming Ada from the force vending via Recovery service",
+        "defaultMessage": "!!!<p>To redeem your ada using the force vended certificate from the recovery service, please upload your encrypted certificate and enter the decryption key. Your decryption key should look like this:</p><p><strong>qXQWDxI3JrlFRtC4SeQjeGzLbVXWBomYPbNO1Vfm1T4=</strong></p><p>After you upload your <strong>encrypted certificate</strong> and enter your <strong>decryption key</strong>, your redemption key will be automatically extracted and you will be able to redeem your ada to the selected wallet.</p>",
+        "description": "Detailed instructions for redeeming ada from the force vending via Recovery service",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 56
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.instructions.recoveryForceVended",
         "start": {
           "column": 35,
-          "line": 62
+          "line": 52
         }
       },
       {
-        "defaultMessage": "!!!<p>To redeem your Ada, enter your shielded vending key from the certificate, choose a wallet\nwhere Ada should be redeemed and enter {adaRedemptionPassphraseLength} word mnemonic passphrase.</p>",
-        "description": "Detailed instructions for redeeming Ada from the paper vending",
+        "defaultMessage": "!!!<p>To redeem your ada, enter your shielded vending key from the certificate, choose a wallet where ada should be redeemed and enter {adaRedemptionPassphraseLength} word mnemonic passphrase.</p>",
+        "description": "Detailed instructions for redeeming ada from the paper vending",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 61
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.instructions.paperVended",
         "start": {
           "column": 27,
-          "line": 69
+          "line": 57
         }
       },
       {
@@ -1688,13 +1688,13 @@
         "description": "Label for the certificate file upload",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 66
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.certificateLabel",
         "start": {
           "column": 20,
-          "line": 75
+          "line": 62
         }
       },
       {
@@ -1702,41 +1702,41 @@
         "description": "Hint for the certificate file upload",
         "end": {
           "column": 3,
-          "line": 84
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.certificateHint",
         "start": {
           "column": 19,
-          "line": 80
+          "line": 67
         }
       },
       {
         "defaultMessage": "!!!Choose Wallet",
-        "description": "Label for the wallet select field on Ada redemption form",
+        "description": "Label for the wallet select field on ada redemption form",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 76
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.walletSelectLabel",
         "start": {
           "column": 21,
-          "line": 85
+          "line": 72
         }
       },
       {
-        "defaultMessage": "!!!Passphrase to Decrypt the Ada Voucher Certificate",
-        "description": "Label for the passphrase to decrypt Ada voucher certificate input",
+        "defaultMessage": "!!!Passphrase to Decrypt the ada Voucher Certificate",
+        "description": "Label for the passphrase to decrypt ada voucher certificate input",
         "end": {
           "column": 3,
-          "line": 94
+          "line": 81
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.passphraseLabel",
         "start": {
           "column": 19,
-          "line": 90
+          "line": 77
         }
       },
       {
@@ -1744,13 +1744,13 @@
         "description": "Hint for the mnemonic passphrase input",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 86
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.passphraseHint",
         "start": {
           "column": 18,
-          "line": 95
+          "line": 82
         }
       },
       {
@@ -1758,13 +1758,13 @@
         "description": "\"No results\" message for the passphrase input search results.",
         "end": {
           "column": 3,
-          "line": 104
+          "line": 91
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.passphrase.input.noResults",
         "start": {
           "column": 23,
-          "line": 100
+          "line": 87
         }
       },
       {
@@ -1772,13 +1772,13 @@
         "description": "Label for ada redemption key input",
         "end": {
           "column": 3,
-          "line": 109
+          "line": 96
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.redemptionKeyLabel",
         "start": {
           "column": 22,
-          "line": 105
+          "line": 92
         }
       },
       {
@@ -1786,13 +1786,13 @@
         "description": "Label for shielded redemption key input",
         "end": {
           "column": 3,
-          "line": 114
+          "line": 101
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.shieldedRedemptionKeyLabel",
         "start": {
           "column": 30,
-          "line": 110
+          "line": 97
         }
       },
       {
@@ -1800,13 +1800,13 @@
         "description": "Label for decryption key input",
         "end": {
           "column": 3,
-          "line": 119
+          "line": 106
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.decryptionKeyLabel",
         "start": {
           "column": 22,
-          "line": 115
+          "line": 102
         }
       },
       {
@@ -1814,13 +1814,13 @@
         "description": "Error \"Invalid redemption key\" for ada redemption code input",
         "end": {
           "column": 3,
-          "line": 124
+          "line": 111
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.redemptionCodeError",
         "start": {
           "column": 22,
-          "line": 120
+          "line": 107
         }
       },
       {
@@ -1828,13 +1828,13 @@
         "description": "Error \"Invalid shielded vending key\" for ada redemption code input",
         "end": {
           "column": 3,
-          "line": 129
+          "line": 116
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.shieldedRedemptionCodeError",
         "start": {
           "column": 30,
-          "line": 125
+          "line": 112
         }
       },
       {
@@ -1842,13 +1842,13 @@
         "description": "Hint for ada redemption key input",
         "end": {
           "column": 3,
-          "line": 134
+          "line": 121
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.redemptionCodeHint",
         "start": {
           "column": 21,
-          "line": 130
+          "line": 117
         }
       },
       {
@@ -1856,13 +1856,13 @@
         "description": "Hint for ada redemption key input shown on Recovery tabs",
         "end": {
           "column": 3,
-          "line": 139
+          "line": 126
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.recoveryRedemptionKeyHint",
         "start": {
           "column": 29,
-          "line": 135
+          "line": 122
         }
       },
       {
@@ -1870,13 +1870,13 @@
         "description": "Hint for shielded vending key input",
         "end": {
           "column": 3,
-          "line": 144
+          "line": 131
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.shieldedRedemptionKeyHint",
         "start": {
           "column": 29,
-          "line": 140
+          "line": 127
         }
       },
       {
@@ -1884,27 +1884,27 @@
         "description": "Hint for decryption key input",
         "end": {
           "column": 3,
-          "line": 149
+          "line": 136
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.decryptionKeyHint",
         "start": {
           "column": 21,
-          "line": 145
+          "line": 132
         }
       },
       {
         "defaultMessage": "!!!Redeem your money",
-        "description": "Label for the \"Ada redemption\" dialog submit button.",
+        "description": "Label for the \"Redeem your money\" dialog submit button.",
         "end": {
           "column": 3,
-          "line": 154
+          "line": 141
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.submitLabel",
         "start": {
           "column": 15,
-          "line": 150
+          "line": 137
         }
       },
       {
@@ -1912,13 +1912,13 @@
         "description": "Label for the email input field.",
         "end": {
           "column": 3,
-          "line": 159
+          "line": 146
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.emailLabel",
         "start": {
           "column": 14,
-          "line": 155
+          "line": 142
         }
       },
       {
@@ -1926,13 +1926,13 @@
         "description": "Hint for the email input field.",
         "end": {
           "column": 3,
-          "line": 164
+          "line": 151
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.emailHint",
         "start": {
           "column": 13,
-          "line": 160
+          "line": 147
         }
       },
       {
@@ -1940,27 +1940,27 @@
         "description": "Label for the ada passcode input field.",
         "end": {
           "column": 3,
-          "line": 169
+          "line": 156
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.adaPasscodeLabel",
         "start": {
           "column": 20,
-          "line": 165
+          "line": 152
         }
       },
       {
-        "defaultMessage": "!!!Enter your Ada passcode",
-        "description": "Hint for the Ada passcode input field.",
+        "defaultMessage": "!!!Enter your ada passcode",
+        "description": "Hint for the ada passcode input field.",
         "end": {
           "column": 3,
-          "line": 174
+          "line": 161
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.adaPasscodeHint",
         "start": {
           "column": 19,
-          "line": 170
+          "line": 157
         }
       },
       {
@@ -1968,27 +1968,27 @@
         "description": "Label for the ada amount input field.",
         "end": {
           "column": 3,
-          "line": 179
+          "line": 166
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.adaAmountLabel",
         "start": {
           "column": 18,
-          "line": 175
+          "line": 162
         }
       },
       {
-        "defaultMessage": "!!!Enter your Ada amount",
-        "description": "Hint for the Ada amount input field.",
+        "defaultMessage": "!!!Enter your ada amount",
+        "description": "Hint for the ada amount input field.",
         "end": {
           "column": 3,
-          "line": 184
+          "line": 171
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.adaAmountHint",
         "start": {
           "column": 17,
-          "line": 180
+          "line": 167
         }
       },
       {
@@ -1996,13 +1996,13 @@
         "description": "Placeholder for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 189
+          "line": 176
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 185
+          "line": 172
         }
       },
       {
@@ -2010,13 +2010,13 @@
         "description": "Label for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 194
+          "line": 181
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 190
+          "line": 177
         }
       }
     ],
@@ -5267,7 +5267,7 @@
         }
       },
       {
-        "defaultMessage": "!!!The ADA redemption code could not be parsed from the given document.",
+        "defaultMessage": "!!!The ada redemption code could not be parsed from the given document.",
         "description": "Error message shown when invalid Ada redemption certificate was uploaded.",
         "end": {
           "column": 3,
@@ -5281,7 +5281,7 @@
         }
       },
       {
-        "defaultMessage": "!!!The ADA redemption code could not be parsed, please check your passphrase.",
+        "defaultMessage": "!!!The ada redemption code could not be parsed, please check your passphrase.",
         "description": "Error message shown when invalid Ada redemption encrypted certificate was uploaded.",
         "end": {
           "column": 3,
