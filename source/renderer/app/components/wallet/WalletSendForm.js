@@ -21,7 +21,7 @@ import WalletSendConfirmationDialog from './WalletSendConfirmationDialog';
 import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
 import { formattedAmountToBigNumber, formattedAmountToNaturalUnits, formattedAmountToLovelace } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
-import { FormattedHTMLMessageWithLink } from '../../utils/FormattedHTMLMessageWithLink';
+import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
 
 export const messages = defineMessages({
   titleLabel: {

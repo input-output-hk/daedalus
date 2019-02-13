@@ -13,7 +13,7 @@ import LocalizableError from '../../i18n/LocalizableError';
 import styles from './WalletSendConfirmationDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
-import { FormattedHTMLMessageWithLink } from '../../utils/FormattedHTMLMessageWithLink';
+import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
 
 export const messages = defineMessages({
   dialogTitle: {
