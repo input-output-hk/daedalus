@@ -8,8 +8,7 @@ import { WalletTransaction } from '../../../../domains/WalletTransaction';
 import type { Row } from '../types';
 import styles from './VirtualTransactionList.scss';
 import { TransactionInfo, TransactionsGroup } from '../types';
-
-const { isWindows, isLinux } = global.environment;
+import { length, values } from '../../../../utils/object';
 
 type Props = {
   isTxExpanded: (WalletTransaction) => boolean,
@@ -18,6 +17,7 @@ type Props = {
   rows: Row[],
   isLoadingSpinnerShown?: boolean,
   isSyncingSpinnerShown?: boolean,
+  expandedTxs: Object,
 };
 
 type RowHeight = number;
@@ -25,27 +25,7 @@ type RowHeight = number;
 const GROUP_DATE_HEIGHT = 26;
 const TX_CONTRACTED_ROW_HEIGHT = 86;
 const TX_EXPANDED_ROW_BASE_HEIGHT = 285;
-const TX_LINE_HEIGHT_FOR_ID = 16;
-const TX_LINE_HEIGHT_FOR_ADDRESS = 19;
 const TX_LAST_IN_GROUP_MARGIN = 20;
-
-const TX_ADDRESSES_START_BREAKING_AT_WIDTH_MACOS = 985;
-const TX_ADDRESSES_START_BREAKING_AT_WIDTH_WINDOWS = 1067;
-const TX_ADDRESSES_START_BREAKING_AT_WIDTH_LINUX = 1107;
-const TX_ID_START_BREAKING_AT_WIDTH_MACOS = 655;
-const TX_ID_START_BREAKING_AT_WIDTH_WINDOWS = 655;
-const TX_ID_START_BREAKING_AT_WIDTH_LINUX = 677;
-
-let txAddressesStartBreakingAtWidth = TX_ADDRESSES_START_BREAKING_AT_WIDTH_MACOS;
-let txIdStartBreakingAtWidth = TX_ID_START_BREAKING_AT_WIDTH_MACOS;
-if (isWindows) {
-  txAddressesStartBreakingAtWidth = TX_ADDRESSES_START_BREAKING_AT_WIDTH_WINDOWS;
-  txIdStartBreakingAtWidth = TX_ID_START_BREAKING_AT_WIDTH_WINDOWS;
-}
-if (isLinux) {
-  txAddressesStartBreakingAtWidth = TX_ADDRESSES_START_BREAKING_AT_WIDTH_LINUX;
-  txIdStartBreakingAtWidth = TX_ID_START_BREAKING_AT_WIDTH_LINUX;
-}
 
 @observer
 export class VirtualTransactionList extends Component<Props> {
@@ -57,8 +37,8 @@ export class VirtualTransactionList extends Component<Props> {
 
   list: List;
   rowHeights: RowHeight[] = [];
-  txAddressesLines: number = 0;
-  txIdLines: number = 0;
+  txAddressHeight: number = 0;
+  txIdHeight: number = 0;
 
   /**
    * Returns the row index of a given tx.
@@ -91,8 +71,12 @@ export class VirtualTransactionList extends Component<Props> {
    * @returns {number[]}
    */
   calculateHeightOfTxExpandedRow = (tx: WalletTransaction) => {
-    const txSingleAddressHeight = TX_LINE_HEIGHT_FOR_ADDRESS * this.txAddressesLines;
-    const txIdHeight = TX_LINE_HEIGHT_FOR_ID * this.txIdLines;
+    console.log('this.txAddressHeight', this.txAddressHeight);
+    if (!this.txAddressHeight) {
+      this.updateAddressesAndIdHeights();
+    }
+    const txSingleAddressHeight = this.txAddressHeight;
+    const txIdHeight = this.txIdHeight;
     const { addresses } = tx;
     const txAddresses = addresses.from.length + addresses.to.length;
     const txAddressesHeight = (txAddresses * txSingleAddressHeight);
@@ -115,7 +99,7 @@ export class VirtualTransactionList extends Component<Props> {
    * @returns {number[]}
    */
   calculateInfoRowHeight = (row: TransactionInfo) => {
-    const isExpanded = this.props.isTxExpanded(row.tx);
+    const isExpanded = !!this.props.expandedTxs[row.tx.id];
     return isExpanded
       ? this.calculateHeightOfTxExpandedRow(row.tx)
       : this.calculateHeightOfTxContractedRow(row);
@@ -139,30 +123,46 @@ export class VirtualTransactionList extends Component<Props> {
    */
   calculateRowHeights = (rows: Row[]): RowHeight[] => rows.map(this.calculateRowHeight);
 
+
+  /**
+   * Calculates the number of lines of the addresses and id
+   * from the first expanded tx
+   * @param width
+   */
+  updateAddressesAndIdHeights = () => {
+    let txAddressHeight = this.txAddressHeight;
+    let txIdHeight = this.txAddressHeight;
+    const firstTxAddress = document.querySelector('.Transaction_address');
+    console.log('firstTxAddress', firstTxAddress);
+    const firstTxId = document.querySelector('.Transaction_transactionId');
+    if (firstTxAddress instanceof HTMLElement && firstTxId instanceof HTMLElement) {
+      txAddressHeight = firstTxAddress.offsetHeight;
+      txIdHeight = firstTxId.offsetHeight;
+    }
+    this.txAddressHeight = txAddressHeight;
+    this.txIdHeight = txIdHeight;
+  };
+
   /**
    * Since the transaction addresses are pretty long, they break into the next line on smaller
    * window sizes and the height of expanded tx rows in the list must be adjusted accordingly.
    * @param width
    */
-  onResize = ({ width }: { width: number }) => {
+  onResize = () => {
+    const { rows, expandedTxs } = this.props;
 
     // First load, calculates all the rows heights
     if (!this.rowHeights.length) {
-      this.updateAddressesAndIdLines(width);
-      this.rowHeights = this.calculateRowHeights(this.props.rows);
+      this.rowHeights = this.calculateRowHeights(rows);
       return false;
     }
-    // Subsequently resizes, updates the expanded rows heights
-    const { txAddressesLines, txIdLines } = this;
-    this.updateAddressesAndIdLines(width);
-    if (txAddressesLines !== this.txAddressesLines || txIdLines !== this.txIdLines) {
-      this.props.getExpandedTransactions().map(this.updateInfoRowHeight);
+    // Subsequently resizes, updates the expanded rows heights if there is any expanded one
+    const { txAddressHeight, txIdHeight } = this;
+    if (!length(expandedTxs)) return false;
+    this.updateAddressesAndIdHeights();
+    if (txAddressHeight !== this.txAddressHeight || txIdHeight !== this.txIdHeight) {
+      values(expandedTxs).map(this.updateInfoRowHeight);
     }
-  };
-
-  updateAddressesAndIdLines = (width: number) => {
-    this.txAddressesLines = (width >= txAddressesStartBreakingAtWidth) ? 1 : 2;
-    this.txIdLines = (width >= txIdStartBreakingAtWidth) ? 1 : 2;
   };
 
   rowRenderer = ({

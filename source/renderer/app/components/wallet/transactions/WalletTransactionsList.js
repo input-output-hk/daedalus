@@ -7,6 +7,7 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
+import { set, omit } from 'lodash';
 import styles from './WalletTransactionsList.scss';
 import Transaction from './Transaction';
 import { WalletTransaction } from '../../../domains/WalletTransaction';
@@ -57,10 +58,14 @@ type Props = {
   walletId: string,
 };
 
+type State = {
+  expandedTxs: Object,
+};
+
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 @observer
-export default class WalletTransactionsList extends Component<Props> {
+export default class WalletTransactionsList extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -72,6 +77,10 @@ export default class WalletTransactionsList extends Component<Props> {
     showMoreTransactionsButton: false,
     onShowMoreTransactions: () => {},
     onOpenExternalLink: () => {},
+  };
+
+  state = {
+    expandedTxs: {},
   };
 
   expandedTransactions: WalletTransaction[] = [];
@@ -133,12 +142,23 @@ export default class WalletTransactionsList extends Component<Props> {
 
   registerTxAsExpanded = (tx: WalletTransaction) => {
     this.expandedTransactions = this.expandedTransactions.concat([tx]);
+    this.setState({
+      expandedTxs: {
+        ...this.state.expandedTxs,
+        ...set({}, tx.id, tx)
+      }
+    });
   };
 
   removeTxFromExpanded = (tx: WalletTransaction) => {
     this.expandedTransactions = this.expandedTransactions.filter(
       (t) => t.id !== tx.id
     );
+    this.setState({
+      expandedTxs: {
+        ...omit(this.state.expandedTxs, tx.id)
+      }
+    });
   };
 
   toggleTransactionExpandedState = (tx: WalletTransaction) => {
@@ -221,6 +241,8 @@ export default class WalletTransactionsList extends Component<Props> {
       walletId,
     } = this.props;
 
+    const { expandedTxs } = this.state;
+
     const { intl } = this.context;
     const transactionsGroups = this.groupTransactionsByDay(transactions);
 
@@ -281,6 +303,7 @@ export default class WalletTransactionsList extends Component<Props> {
             totalRows={totalAvailable}
             isLoadingSpinnerShown={loadingSpinner !== null}
             isSyncingSpinnerShown={isRestoreActive}
+            expandedTxs={expandedTxs}
           />
         ) : (
           <SimpleTransactionList
