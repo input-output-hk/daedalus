@@ -4,7 +4,7 @@ import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import { AutoSizer, List } from 'react-virtualized';
-import { debounce } from 'lodash';
+import { throttle, debounce } from 'lodash';
 import { WalletTransaction } from '../../../../domains/WalletTransaction';
 import type { Row } from '../types';
 import styles from './VirtualTransactionList.scss';
@@ -24,6 +24,8 @@ const GROUP_DATE_HEIGHT = 26;
 const TX_CONTRACTED_ROW_HEIGHT = 86;
 const TX_EXPANDED_ROW_BASE_HEIGHT = 285;
 const TX_LAST_IN_GROUP_MARGIN = 20;
+const TX_ADDRESS_SELECTOR = '.Transaction_address';
+const TX_ID_SELECTOR = '.Transaction_transactionId';
 
 @observer
 export class VirtualTransactionList extends Component<Props> {
@@ -108,14 +110,13 @@ export class VirtualTransactionList extends Component<Props> {
    */
   calculateRowHeights = (rows: Row[]): RowHeight[] => rows.map(this.calculateRowHeight);
 
-
   /**
    * Calculates the number of lines of the addresses and id from the first expanded tx
    */
   updateAddressesAndIdHeights = (): void => {
     console.log('updateAddressesAndIdHeights');
-    const firstTxAddress = document.querySelector('.Transaction_address');
-    const firstTxId = document.querySelector('.Transaction_transactionId');
+    const firstTxAddress = document.querySelector(TX_ADDRESS_SELECTOR);
+    const firstTxId = document.querySelector(TX_ID_SELECTOR);
     if (firstTxAddress instanceof HTMLElement && firstTxId instanceof HTMLElement) {
       this.txAddressHeight = firstTxAddress.offsetHeight;
       this.txIdHeight = firstTxId.offsetHeight;
@@ -170,7 +171,7 @@ export class VirtualTransactionList extends Component<Props> {
 
     return (
       <div className={componentStyles}>
-        <AutoSizer onResize={this.onResize}>
+        <AutoSizer onResize={throttle(this.onResize, 50)}>
           {({ width, height }) => (
             <List
               className={styles.list}
