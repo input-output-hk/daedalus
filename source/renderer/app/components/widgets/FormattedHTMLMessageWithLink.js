@@ -1,7 +1,7 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import { intlShape } from 'react-intl';
-import type { ReactIntlMessageShape } from '../i18n/types';
+import type { ReactIntlMessageShape } from '../../i18n/types';
 
 type ReactIntlMessageShapeWithLink = {
   ...ReactIntlMessageShape,
