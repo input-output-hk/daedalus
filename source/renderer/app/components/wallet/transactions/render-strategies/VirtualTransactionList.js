@@ -69,8 +69,8 @@ export class VirtualTransactionList extends Component<Props> {
     const txSingleAddressHeight = this.txAddressHeight;
     const txIdHeight = this.txIdHeight;
     const { addresses } = tx;
-    const txAddresses = addresses.from.length + addresses.to.length;
-    const txAddressesHeight = (txAddresses * txSingleAddressHeight);
+    const txAddressesCount = addresses.from.length + addresses.to.length;
+    const txAddressesHeight = (txAddressesCount * txSingleAddressHeight);
     return txAddressesHeight + txIdHeight + TX_EXPANDED_ROW_BASE_HEIGHT;
   };
 
@@ -101,16 +101,12 @@ export class VirtualTransactionList extends Component<Props> {
    * Calculates the number of lines of the addresses and id from the first expanded tx
    */
   updateAddressesAndIdHeights = (): void => {
-    let txAddressHeight = this.txAddressHeight;
-    let txIdHeight = this.txAddressHeight;
     const firstTxAddress = document.querySelector('.Transaction_address');
     const firstTxId = document.querySelector('.Transaction_transactionId');
     if (firstTxAddress instanceof HTMLElement && firstTxId instanceof HTMLElement) {
-      txAddressHeight = firstTxAddress.offsetHeight;
-      txIdHeight = firstTxId.offsetHeight;
+      this.txAddressHeight = firstTxAddress.offsetHeight;
+      this.txIdHeight = firstTxId.offsetHeight;
     }
-    this.txAddressHeight = txAddressHeight;
-    this.txIdHeight = txIdHeight;
   };
 
   /**
