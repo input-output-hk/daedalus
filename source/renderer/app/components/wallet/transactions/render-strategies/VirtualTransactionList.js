@@ -4,6 +4,7 @@ import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import { AutoSizer, List } from 'react-virtualized';
+import { debounce } from 'lodash';
 import { WalletTransaction } from '../../../../domains/WalletTransaction';
 import type { Row } from '../types';
 import styles from './VirtualTransactionList.scss';
@@ -45,19 +46,27 @@ export class VirtualTransactionList extends Component<Props> {
   );
 
   /**
+   * Recomputes virtual row heights only once per tick (debounced)
+   */
+  recomputeVirtualRowHeights = debounce((startIndex: number = 0): void => {
+    const { list } = this;
+    if (!list) return;
+    list.recomputeRowHeights(startIndex);
+  });
+
+  /**
    * Updates and recomputes row height
    */
   updateInfoRowHeight = (tx: WalletTransaction, isExpanded: boolean): void => {
     console.log('updateInfoRowHeight', tx, isExpanded);
-    const { list, rowHeights } = this;
-    if (!list) return;
+    const { rowHeights } = this;
     const txIndex = this.findIndexForTx(tx);
     const row = this.props.rows[txIndex];
     if (row instanceof TransactionsGroup) return;
     rowHeights[txIndex] = isExpanded
       ? this.calculateHeightOfTxExpandedRow(row.tx)
       : this.calculateHeightOfTxContractedRow(row);
-    list.recomputeRowHeights(txIndex);
+    this.recomputeVirtualRowHeights(0);
   };
 
   /**
