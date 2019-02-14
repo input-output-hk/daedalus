@@ -39,37 +39,30 @@ export class VirtualTransactionList extends Component<Props> {
 
   /**
    * Returns the row index of a given tx.
-   * @param tx
-   * @returns {number}
    */
   findIndexForTx = (tx: WalletTransaction): number => (
     this.props.rows.findIndex(r => (r instanceof TransactionInfo) && r.tx.id === tx.id)
   );
 
   /**
-   * Gets an Info row height and updates the list value
-   * @param row
-   * @returns {number[]}
+   * Updates and recomputes row height
    */
-  updateInfoRowHeight = (tx: WalletTransaction, isExpanded: boolean) => {
+  updateInfoRowHeight = (tx: WalletTransaction, isExpanded: boolean): void => {
     const { list, rowHeights } = this;
     if (!list) return;
     const txIndex = this.findIndexForTx(tx);
     const row = this.props.rows[txIndex];
     if (row instanceof TransactionsGroup) return;
-    const txRowHeight = isExpanded
+    rowHeights[txIndex] = isExpanded
       ? this.calculateHeightOfTxExpandedRow(row.tx)
       : this.calculateHeightOfTxContractedRow(row);
-    rowHeights[txIndex] = txRowHeight;
     list.recomputeRowHeights(txIndex);
   };
 
   /**
    * Gets an Info expanded row height
-   * @param tx
-   * @returns {number[]}
    */
-  calculateHeightOfTxExpandedRow = (tx: WalletTransaction) => {
+  calculateHeightOfTxExpandedRow = (tx: WalletTransaction): number => {
     if (!this.txAddressHeight) {
       this.updateAddressesAndIdHeights();
     }
@@ -83,20 +76,16 @@ export class VirtualTransactionList extends Component<Props> {
 
   /**
    * Gets an Info contracted row height
-   * @param tx
-   * @returns {number[]}
    */
-  calculateHeightOfTxContractedRow = (row: Row) => {
+  calculateHeightOfTxContractedRow = (row: Row): number => {
     const headerSpacing = row.isLastInGroup ? TX_LAST_IN_GROUP_MARGIN : 0;
     return TX_CONTRACTED_ROW_HEIGHT + headerSpacing;
   };
 
   /**
    * Gets a row height based on its type
-   * @param rows
-   * @returns {number[]}
    */
-  calculateRowHeight = (row: Row) => (
+  calculateRowHeight = (row: Row): number => (
     (row instanceof TransactionInfo)
       ? this.calculateHeightOfTxContractedRow(row)
       : GROUP_DATE_HEIGHT
@@ -104,18 +93,14 @@ export class VirtualTransactionList extends Component<Props> {
 
   /**
    * Maps over all rows and returns array of calculated heights.
-   * @param rows
-   * @returns {number[]}
    */
   calculateRowHeights = (rows: Row[]): RowHeight[] => rows.map(this.calculateRowHeight);
 
 
   /**
-   * Calculates the number of lines of the addresses and id
-   * from the first expanded tx
-   * @param width
+   * Calculates the number of lines of the addresses and id from the first expanded tx
    */
-  updateAddressesAndIdHeights = () => {
+  updateAddressesAndIdHeights = (): void => {
     let txAddressHeight = this.txAddressHeight;
     let txIdHeight = this.txAddressHeight;
     const firstTxAddress = document.querySelector('.Transaction_address');
@@ -131,20 +116,19 @@ export class VirtualTransactionList extends Component<Props> {
   /**
    * Since the transaction addresses are pretty long, they break into the next line on smaller
    * window sizes and the height of expanded tx rows in the list must be adjusted accordingly.
-   * @param width
    */
-  onResize = () => {
+  onResize = (): void => {
     const { rows, getExpandedTransactions } = this.props;
     const expandedTransactions = getExpandedTransactions();
 
     // First load, calculates all the rows heights
     if (!this.rowHeights.length) {
       this.rowHeights = this.calculateRowHeights(rows);
-      return false;
+      return;
     }
     // Subsequently resizes, updates the expanded rows heights if there is any expanded one
     const { txAddressHeight, txIdHeight } = this;
-    if (!expandedTransactions.length) return false;
+    if (!expandedTransactions.length) return;
     this.updateAddressesAndIdHeights();
     if (txAddressHeight !== this.txAddressHeight || txIdHeight !== this.txIdHeight) {
       expandedTransactions.map(tx => this.updateInfoRowHeight(tx, true));
