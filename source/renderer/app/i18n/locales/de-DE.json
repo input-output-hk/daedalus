@@ -317,7 +317,6 @@
   "wallet.send.confirmationDialog.submit": "!!!Send",
   "wallet.send.confirmationDialog.title": "!!!Confirm transaction",
   "wallet.send.confirmationDialog.totalLabel": "!!!Total",
-  "wallet.send.form.amount.equalsAda": "!!!equals {amount} ADA",
   "wallet.send.form.amount.label": "Betrag",
   "wallet.send.form.description.hint": "Hier können sie optional eine Beschreibung hinzufügen.",
   "wallet.send.form.description.label": "Beschreibung",

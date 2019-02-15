@@ -49,11 +49,6 @@ export const messages = defineMessages({
     defaultMessage: '!!!Amount',
     description: 'Label for the "Amount" number input in the wallet send form.'
   },
-  equalsAdaHint: {
-    id: 'wallet.send.form.amount.equalsAda',
-    defaultMessage: '!!!equals {amount} ADA',
-    description: 'Convertion hint for the "Amount" number input in the wallet send form.'
-  },
   descriptionLabel: {
     id: 'wallet.send.form.description.label',
     defaultMessage: '!!!Description',

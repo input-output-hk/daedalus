@@ -317,7 +317,6 @@
   "wallet.send.confirmationDialog.submit": "Send",
   "wallet.send.confirmationDialog.title": "Confirm transaction",
   "wallet.send.confirmationDialog.totalLabel": "Total",
-  "wallet.send.form.amount.equalsAda": "equals {amount} ada",
   "wallet.send.form.amount.label": "Amount",
   "wallet.send.form.description.hint": "You can type a message here, if you want.",
   "wallet.send.form.description.label": "Description",

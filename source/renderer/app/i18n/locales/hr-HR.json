@@ -317,7 +317,6 @@
   "wallet.send.confirmationDialog.submit": "!!!Send",
   "wallet.send.confirmationDialog.title": "!!!Confirm transaction",
   "wallet.send.confirmationDialog.totalLabel": "!!!Total",
-  "wallet.send.form.amount.equalsAda": "!!!equals {amount} ADA",
   "wallet.send.form.amount.label": "Iznos",
   "wallet.send.form.description.hint": "Unesite poruku primatelju ukoliko to želite.",
   "wallet.send.form.description.label": "Opis",
