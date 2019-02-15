@@ -60,7 +60,6 @@ export class VirtualTransactionList extends Component<Props> {
    * Updates and recomputes row height
    */
   updateInfoRowHeight = (tx: WalletTransaction, isExpanded: boolean): void => {
-    console.log('updateInfoRowHeight', tx, isExpanded);
     const { rowHeights } = this;
     const txIndex = this.findIndexForTx(tx);
     const row = this.props.rows[txIndex];
@@ -75,7 +74,6 @@ export class VirtualTransactionList extends Component<Props> {
    * Gets an Info expanded row height
    */
   calculateHeightOfTxExpandedRow = (tx: WalletTransaction): number => {
-    console.log('calculateHeightOfTxExpandedRow', tx);
     if (!this.txAddressHeight) {
       this.updateAddressesAndIdHeights();
     }
@@ -91,7 +89,6 @@ export class VirtualTransactionList extends Component<Props> {
    * Gets an Info contracted row height
    */
   calculateHeightOfTxContractedRow = (row: Row): number => {
-    console.log('calculateHeightOfTxContractedRow', row);
     const headerSpacing = row.isLastInGroup ? TX_LAST_IN_GROUP_MARGIN : 0;
     return TX_CONTRACTED_ROW_HEIGHT + headerSpacing;
   };
@@ -114,7 +111,6 @@ export class VirtualTransactionList extends Component<Props> {
    * Calculates the number of lines of the addresses and id from the first expanded tx
    */
   updateAddressesAndIdHeights = (): void => {
-    console.log('updateAddressesAndIdHeights');
     const firstTxAddress = document.querySelector(TX_ADDRESS_SELECTOR);
     const firstTxId = document.querySelector(TX_ID_SELECTOR);
     if (firstTxAddress instanceof HTMLElement && firstTxId instanceof HTMLElement) {
@@ -128,7 +124,6 @@ export class VirtualTransactionList extends Component<Props> {
    * window sizes and the height of expanded tx rows in the list must be adjusted accordingly.
    */
   onResize = (): void => {
-    console.log('onResize');
     const { rows, getExpandedTransactions } = this.props;
     const expandedTransactions = getExpandedTransactions();
 
@@ -140,7 +135,6 @@ export class VirtualTransactionList extends Component<Props> {
     // Subsequently resizes, updates the expanded rows heights if there is any expanded one
     const { txAddressHeight, txIdHeight } = this;
     if (!expandedTransactions.length) return;
-    console.log('!expandedTransactions.length', !expandedTransactions.length);
     this.updateAddressesAndIdHeights();
     if (txAddressHeight !== this.txAddressHeight || txIdHeight !== this.txIdHeight) {
       expandedTransactions.map(tx => this.updateInfoRowHeight(tx, true));
