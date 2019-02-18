@@ -9,6 +9,7 @@ import { WalletTransaction } from '../../../../domains/WalletTransaction';
 import type { Row } from '../types';
 import styles from './VirtualTransactionList.scss';
 import { TransactionInfo, TransactionsGroup } from '../types';
+import waitForExist from '../../../../utils/waitForExist';
 
 type Props = {
   getExpandedTransactions: () => Array<any>,
@@ -23,9 +24,11 @@ type RowHeight = number;
 const GROUP_DATE_HEIGHT = 26;
 const TX_CONTRACTED_ROW_HEIGHT = 86;
 const TX_EXPANDED_ROW_BASE_HEIGHT = 285;
+const TX_EXPANDED_ROW_BASE_PADDING = 10;
 const TX_LAST_IN_GROUP_MARGIN = 20;
 const TX_ADDRESS_SELECTOR = '.Transaction_address';
 const TX_ID_SELECTOR = '.Transaction_transactionId';
+const TX_SELECTOR = '.Transaction_expanded';
 
 @observer
 export class VirtualTransactionList extends Component<Props> {
@@ -39,6 +42,8 @@ export class VirtualTransactionList extends Component<Props> {
   rowHeights: RowHeight[] = [];
   txAddressHeight: number = 0;
   txIdHeight: number = 0;
+  txExpandedRowBaseHeight: number = TX_EXPANDED_ROW_BASE_HEIGHT;
+  baseHeightWasCalculated: boolean = false;
 
   /**
    * Returns the row index of a given tx.
@@ -79,10 +84,11 @@ export class VirtualTransactionList extends Component<Props> {
     }
     const txSingleAddressHeight = this.txAddressHeight;
     const txIdHeight = this.txIdHeight;
+    const txExpandedRowBaseHeight = this.txExpandedRowBaseHeight;
     const { addresses } = tx;
     const txAddressesCount = addresses.from.length + addresses.to.length;
     const txAddressesHeight = (txAddressesCount * txSingleAddressHeight);
-    return txAddressesHeight + txIdHeight + TX_EXPANDED_ROW_BASE_HEIGHT;
+    return txAddressesHeight + txIdHeight + txExpandedRowBaseHeight;
   };
 
   /**
@@ -107,15 +113,25 @@ export class VirtualTransactionList extends Component<Props> {
    */
   calculateRowHeights = (rows: Row[]): RowHeight[] => rows.map(this.calculateRowHeight);
 
+  getBaseHeight = async () => {
+    const firstExpandedTx = await waitForExist(TX_SELECTOR);
+    const firstTxHeight = firstExpandedTx.offsetHeight;
+    const numberOfAddresses = firstExpandedTx.querySelectorAll(TX_ADDRESS_SELECTOR).length;
+    this.baseHeightWasCalculated = true;
+    return firstTxHeight + TX_EXPANDED_ROW_BASE_PADDING -
+      (this.txAddressHeight * numberOfAddresses) - this.txIdHeight;
+  };
+
   /**
    * Calculates the number of lines of the addresses and id from the first expanded tx
    */
-  updateAddressesAndIdHeights = (): void => {
+  updateAddressesAndIdHeights = async (): Promise<void> => {
     const firstTxAddress = document.querySelector(TX_ADDRESS_SELECTOR);
     const firstTxId = document.querySelector(TX_ID_SELECTOR);
     if (firstTxAddress instanceof HTMLElement && firstTxId instanceof HTMLElement) {
       this.txAddressHeight = firstTxAddress.offsetHeight;
       this.txIdHeight = firstTxId.offsetHeight;
+      if (!this.baseHeightWasCalculated) this.txExpandedRowBaseHeight = await this.getBaseHeight();
     }
   };
 

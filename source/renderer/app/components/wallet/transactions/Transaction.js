@@ -183,7 +183,8 @@ export default class Transaction extends Component<Props> {
 
     const componentStyles = classNames([
       styles.component,
-      isFailedTransaction ? styles.failed : null
+      isFailedTransaction ? styles.failed : null,
+      isExpanded ? 'Transaction_expanded' : null,
     ]);
 
     const contentStyles = classNames([
