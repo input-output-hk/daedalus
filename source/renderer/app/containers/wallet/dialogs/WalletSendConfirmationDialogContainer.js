@@ -14,6 +14,7 @@ type Props = {
   transactionFee: ?string,
   amountToNaturalUnits: (amountWithFractions: string) => string,
   currencyUnit: string,
+  onExternalLinkClick: Function,
 };
 
 @inject('actions', 'stores') @observer
@@ -27,8 +28,8 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
 
   render() {
     const {
-      actions, amount, receiver, totalAmount,
-      transactionFee, amountToNaturalUnits, currencyUnit
+      actions, amount, receiver, totalAmount, onExternalLinkClick,
+      transactionFee, amountToNaturalUnits, currencyUnit,
     } = this.props;
     const { wallets } = this.props.stores;
     const { sendMoneyRequest, active: activeWallet } = wallets;
@@ -51,6 +52,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
         }}
         error={sendMoneyRequest.error}
         currencyUnit={currencyUnit}
+        onExternalLinkClick={onExternalLinkClick}
       />
     );
   }
