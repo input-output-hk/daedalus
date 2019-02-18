@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { throttle, debounce } from 'lodash';
+import { throttle } from 'lodash';
 import { observer } from 'mobx-react';
 import { AutoSizer, List } from 'react-virtualized';
 import type { Addresses } from '../../../api/addresses/types';
