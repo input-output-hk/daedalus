@@ -22,10 +22,7 @@ let
   makeJobs = cluster: with daedalusPkgs { inherit cluster; }; {
     daedalus.x86_64-linux = daedalus;
     installer.x86_64-linux = wrappedBundle newBundle pkgs cluster daedalus-bridge.version;
-    installer.x86_64-windows = (import ./devops-970.nix { inherit cluster; }).installer;
-    devops-970 = {
-      inherit (import ./devops-970.nix { inherit cluster; }) installer nsisFiles uninstaller;
-    };
+    installer.x86_64-windows = (import ./. { inherit cluster; }).installer;
   };
   wrappedBundle = newBundle: pkgs: cluster: cardanoVersion: let
     backend = "cardano-sl-${cardanoVersion}";

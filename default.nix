@@ -7,11 +7,29 @@ in
 , cluster ? "mainnet"
 , version ? "versionNotSet"
 , buildNum ? null
+, dummyInstaller ? false
+, signingKeys ? null
+, fudgeConfig ? null
 }:
 
 let
+  # TODO, nsis cant cross-compile with the nixpkgs daedalus currently uses
+  nsisNixPkgs = import (pkgs.fetchFromGitHub {
+    owner = "nixos";
+    repo = "nixpkgs";
+    rev = "be445a9074f";
+    sha256 = "15dc7gdspimavcwyw9nif4s59v79gk18rwsafylffs9m1ld2dxwa";
+  }) {};
   installPath = ".daedalus";
+  lib = pkgs.lib;
   cardanoSL = localLib.cardanoSL { inherit system config; };
+  cardanoJSON = builtins.fromJSON (builtins.readFile ./cardano-sl-src.json);
+  cardanoSrc = pkgs.fetchFromGitHub {
+    owner = "input-output-hk";
+    repo = "cardano-sl";
+    rev = cardanoJSON.rev;
+    sha256 = cardanoJSON.sha256;
+  };
   cleanSourceFilter = with pkgs.stdenv;
     name: type: let baseName = baseNameOf (toString name); in ! (
       # Filter out .git repo
@@ -37,14 +55,148 @@ let
   packages = self: {
     inherit cluster pkgs version;
     inherit (cardanoSL) daedalus-bridge;
-    # TODO, use this cross-compiled fastlist when we no longer build windows installers on windows
+
+    # a cross-compiled fastlist for the ps-list package
     fastlist = pkgs.pkgsCross.mingwW64.callPackage ./fastlist.nix {};
+
+    dlls = pkgs.fetchurl {
+      url = "https://s3.eu-central-1.amazonaws.com/daedalus-ci-binaries/DLLs.zip";
+      sha256 = "0p6nrf8sg2wgcaf3b1qkbb98bz2dimb7lnshsa93xnmia9m2vsxa";
+    };
+
+    # the native makensis binary, with cross-compiled windows stubs
+    nsis = nsisNixPkgs.callPackage ./nsis.nix {};
+
+    # TODO, put the cross bridge into cardano's default.nix
+    crossCompiledCardano = (import (cardanoSrc + "/release.nix") { cardano = { outPath = cardanoSrc; rev = cardanoJSON.rev; }; }).daedalus-mingw32-pkg;
+    unsignedUnpackedCardano = pkgs.runCommand "daedalus-bridge" { buildInputs = [ pkgs.unzip ]; } ''
+      mkdir $out
+      cd $out
+      unzip ${self.crossCompiledCardano}/CardanoSL.zip
+    '';
+    unpackedCardano = if dummyInstaller then self.dummyUnpacked else (if signingKeys != null then self.signedCardano else self.unsignedUnpackedCardano);
+    signFile = file: let
+      signingScript = pkgs.writeScript "signing-script" ''
+        #!${pkgs.stdenv.shell}
+
+        exec 3>&1
+        exec 1>&2
+
+        export PATH=${pkgs.mono}/bin:$PATH
+        PASS=hunter2
+
+        DIR=$(realpath $(mktemp -d))
+        cd $DIR
+        cp ${file} .
+        FILE=$(basename ${file})
+        chmod +w $FILE
+
+        # if stdout is a tty, then mono 5.8 will barf over the terminfo files being too new
+        # mono 5.16 supports them, but isnt in our current nixpkgs
+        # for more info, refer to `mcs/class/corlib/System/TermInfoReader.cs` and `ReadHeader`
+        echo $PASS | signcode -spc ${toString signingKeys.spc} -v ${toString signingKeys.pvk} -a sha1 -$ commercial -n "TODO description" -i http://iohk.io -t http://timestamp.verisign.com/scripts/timstamp.dll -tr 10 $FILE | cat
+        storePath=$(nix-store --add-fixed sha256 $FILE)
+        rm -rf $DIR
+        echo $storePath >&3
+      '';
+      # requires --allow-unsafe-native-code-during-evaluation
+      res = builtins.exec [ signingScript ];
+    in res;
+    signedCardano = pkgs.runCommand "signed-daedalus-bridge" {} ''
+      cp -r ${self.unpackedCardano} $out
+      chmod -R +w $out
+      cd $out
+      rm *.exe
+      cp ${self.signFile "${self.unpackedCardano}/cardano-launcher.exe"} cardano-launcher.exe
+      cp ${self.signFile "${self.unpackedCardano}/cardano-node.exe"} cardano-node.exe
+      cp ${self.signFile "${self.unpackedCardano}/cardano-x509-certificates.exe"} cardano-x509-certificates.exe
+      cp ${self.signFile "${self.unpackedCardano}/wallet-extractor.exe"} wallet-extractor.exe
+    '';
+    dummyUnpacked = pkgs.runCommand "dummy-unpacked-cardano" {} ''
+      mkdir $out
+      cd $out
+      touch cardano-launcher.exe cardano-node.exe cardano-x509-certificates.exe log-config-prod.yaml configuration.yaml mainnet-genesis.json
+    '';
+
+    nsisFiles = pkgs.runCommand "nsis-files" { buildInputs = [ self.daedalus-installer pkgs.glibcLocales ]; } ''
+      mkdir installers
+      cp -vir ${./package.json} package.json
+      cp -vir ${./installers/dhall} installers/dhall
+      cd installers
+
+      export LANG=en_US.UTF-8
+      make-installer --os win64 -o $out --cluster ${cluster} buildkite-cross
+
+      mkdir $out
+      cp daedalus.nsi uninstaller.nsi launcher-config.yaml wallet-topology.yaml $out/
+    '';
+
+    unsignedUninstaller = pkgs.runCommand "uninstaller" { buildInputs = [ self.nsis pkgs.winePackages.minimal ]; } ''
+      mkdir home
+      export HOME=$(realpath home)
+
+      ln -sv ${./installers/nsis_plugins} nsis_plugins
+      cp ${self.nsisFiles}/uninstaller.nsi .
+
+      makensis uninstaller.nsi -V4
+
+      wine tempinstaller.exe /S
+      mkdir $out
+      mv -v $HOME/.wine/drive_c/uninstall.exe $out/uninstall.exe
+    '';
+    signedUninstaller = pkgs.runCommand "uninstaller-signed" {} ''
+      mkdir $out
+      cp ${self.signFile "${self.unsignedUninstaller}/uninstall.exe"} $out/uninstall.exe
+    '';
+    uninstaller = if (signingKeys != null) then self.signedUninstaller else self.unsignedUninstaller;
+
+    installer = pkgs.runCommand "win64-installer-${cluster}" { buildInputs = [ self.daedalus-installer self.nsis pkgs.unzip self.configMutator pkgs.jq self.yaml2json ]; } ''
+      mkdir home
+      export HOME=$(realpath home)
+
+      mkdir -p $out/{nix-support,cfg-files}
+      mkdir installers
+      cp ${./cardano-sl-src.json} cardano-sl-src.json
+      cp -vir ${./installers/dhall} installers/dhall
+      cp -vir ${./installers/icons} installers/icons
+      cp -vir ${./package.json} package.json
+      chmod -R +w installers
+      cd installers
+      mkdir -pv ../release/win32-x64/
+      ${if dummyInstaller then "mkdir -pv ../release/win32-x64/Daedalus-win32-x64/resources/app/dist/main/" else "cp -r ${self.rawapp-win64} ../release/win32-x64/Daedalus-win32-x64"}
+      chmod -R +w ../release/win32-x64/Daedalus-win32-x64
+      cp -v ${self.fastlist}/bin/fastlist.exe ../release/win32-x64/Daedalus-win32-x64/resources/app/dist/main/fastlist.exe
+      ln -s ${./installers/nsis_plugins} nsis_plugins
+
+      mkdir dlls
+      pushd dlls
+      ${if dummyInstaller then "touch foo" else "unzip ${self.dlls}"}
+      popd
+      cp -v ${self.unpackedCardano}/* .
+      cp ${self.uninstaller}/uninstall.exe ../uninstall.exe
+      cp -v ${self.nsisFiles}/{daedalus.nsi,wallet-topology.yaml,launcher-config.yaml} .
+      chmod -R +w .
+      ${lib.optionalString (fudgeConfig != null) ''
+        set -x
+        KEY=$(yaml2json launcher-config.yaml | jq .configuration.key -r)
+        config-mutator configuration.yaml ''${KEY} ${toString fudgeConfig.applicationVersion} > temp
+        mv temp configuration.yaml
+        set +x
+      ''}
+
+      makensis daedalus.nsi -V4
+
+      cp daedalus-*-cardano-sl-*-windows.exe $out/
+      cp *.yaml $out/cfg-files/
+      echo file installer $out/*.exe > $out/nix-support/hydra-build-products
+    '';
+
     ## TODO: move to installers/nix
     hsDaedalusPkgs = import ./installers {
       inherit (cardanoSL) daedalus-bridge;
       inherit localLib system;
     };
-    daedalus-installer = self.hsDaedalusPkgs.daedalus-installer;
+    daedalus-installer = pkgs.haskell.lib.justStaticExecutables self.hsDaedalusPkgs.daedalus-installer;
     daedalus = self.callPackage ./installers/nix/linux.nix {};
     configMutator = pkgs.runCommand "configMutator" { buildInputs = [ ghcWithCardano ]; } ''
       cp ${./ConfigMutator.hs} ConfigMutator.hs
