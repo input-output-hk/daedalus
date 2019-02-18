@@ -56,10 +56,12 @@ export default class WalletSummary extends Component<Props> {
       isRestoreActive,
     } = this.props;
     const { intl } = this.context;
+    const isLoadingAllTransactions = numberOfRecentTransactions && !numberOfTransactions;
     const numberOfTransactionsStyles = classnames([
       styles.numberOfTransactions,
-      !numberOfTransactions ? styles.isLoadingNumberOfTransactions : null
+      isLoadingAllTransactions ? styles.isLoadingNumberOfTransactions : null
     ]);
+
     return (
       <div className={styles.component}>
         <BorderedBox>
