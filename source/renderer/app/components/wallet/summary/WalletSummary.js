@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
+import classnames from 'classnames';
 import adaSymbolBig from '../../../assets/images/ada-symbol-big-dark.inline.svg';
 import adaSymbolSmallest from '../../../assets/images/ada-symbol-smallest-dark.inline.svg';
 import BorderedBox from '../../widgets/BorderedBox';
@@ -31,7 +32,8 @@ const messages = defineMessages({
 
 type Props = {
   wallet: Wallet,
-  numberOfTransactions: number,
+  numberOfRecentTransactions: number,
+  numberOfTransactions?: number,
   pendingAmount: UnconfirmedAmount,
   isLoadingTransactions: boolean,
   isRestoreActive: boolean,
@@ -48,11 +50,18 @@ export default class WalletSummary extends Component<Props> {
     const {
       wallet,
       pendingAmount,
+      numberOfRecentTransactions,
       numberOfTransactions,
       isLoadingTransactions,
       isRestoreActive,
     } = this.props;
     const { intl } = this.context;
+    const isLoadingAllTransactions = numberOfRecentTransactions && !numberOfTransactions;
+    const numberOfTransactionsStyles = classnames([
+      styles.numberOfTransactions,
+      isLoadingAllTransactions ? styles.isLoadingNumberOfTransactions : null
+    ]);
+
     return (
       <div className={styles.component}>
         <BorderedBox>
@@ -82,8 +91,9 @@ export default class WalletSummary extends Component<Props> {
           ) : null}
 
           {!isLoadingTransactions ? (
-            <div className={styles.numberOfTransactions}>
-              {intl.formatMessage(messages.transactionsLabel)}: {numberOfTransactions}
+            <div className={numberOfTransactionsStyles}>
+              {intl.formatMessage(messages.transactionsLabel)}:&nbsp;
+              {numberOfTransactions || numberOfRecentTransactions}
             </div>
           ) : null}
         </BorderedBox>

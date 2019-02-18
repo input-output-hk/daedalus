@@ -1,3 +1,5 @@
+@import "../../../themes/mixins/animations";
+
 %smallText {
   height: 19px;
   font-family: var(--font-regular);
@@ -65,4 +67,7 @@
 
 .numberOfTransactions {
   @extend %smallText;
+  &.isLoadingNumberOfTransactions {
+    @include animated-ellipsis($width: 16px);
+  }
 }
