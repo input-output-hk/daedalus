@@ -115,7 +115,7 @@ export class VirtualTransactionList extends Component<Props> {
 
   getBaseHeight = async () => {
     const firstExpandedTx = await waitForExist(TX_SELECTOR);
-    const firstTxHeight = firstExpandedTx.clientHeight;
+    const firstTxHeight = firstExpandedTx.offsetHeight;
     const numberOfAddresses = firstExpandedTx.querySelectorAll(TX_ADDRESS_SELECTOR).length;
     this.baseHeightWasCalculated = true;
     return firstTxHeight + TX_EXPANDED_ROW_BASE_PADDING -
@@ -129,9 +129,12 @@ export class VirtualTransactionList extends Component<Props> {
     const firstTxAddress = document.querySelector(TX_ADDRESS_SELECTOR);
     const firstTxId = document.querySelector(TX_ID_SELECTOR);
     if (firstTxAddress instanceof HTMLElement && firstTxId instanceof HTMLElement) {
-      this.txAddressHeight = firstTxAddress.clientHeight;
-      this.txIdHeight = firstTxId.clientHeight;
+      this.txAddressHeight = firstTxAddress.offsetHeight;
+      console.log('this.txAddressHeight', this.txAddressHeight);
+      this.txIdHeight = firstTxId.offsetHeight;
+      console.log('this.txIdHeight', this.txIdHeight);
       if (!this.baseHeightWasCalculated) this.txExpandedRowBaseHeight = await this.getBaseHeight();
+      console.log('this.txExpandedRowBaseHeight', this.txExpandedRowBaseHeight);
     }
   };
 
