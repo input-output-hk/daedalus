@@ -1,11 +1,7 @@
 // @flow
 import ExtendableError from 'es6-error';
 
-type ReactIntlMessageShape = {
-  id: string,
-  defaultMessage: string,
-  values?: Object
-};
+import type { ReactIntlMessageShape } from './types';
 
 export default class LocalizableError extends ExtendableError {
   constructor({ id, defaultMessage, values = {} }: ReactIntlMessageShape) {
