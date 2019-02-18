@@ -85,7 +85,7 @@ export default class WalletSummaryPage extends Component<Props> {
       <VerticalFlexContainer>
         <WalletSummary
           wallet={wallet}
-          recentTransactionsLength={recent.length}
+          numberOfRecentTransactions={recent.length}
           numberOfTransactions={totalAvailable}
           pendingAmount={unconfirmedAmount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}

@@ -26,7 +26,7 @@ storiesOf('WalletSummary', module)
           outgoing: new BigNumber(2),
         }}
         numberOfTransactions={20303585}
-        recentTransactionsLength={50}
+        numberOfRecentTransactions={50}
         isLoadingTransactions={false}
         isRestoreActive={false}
       />

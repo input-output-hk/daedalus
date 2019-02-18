@@ -32,7 +32,7 @@ const messages = defineMessages({
 
 type Props = {
   wallet: Wallet,
-  recentTransactionsLength: number,
+  numberOfRecentTransactions: number,
   numberOfTransactions?: number,
   pendingAmount: UnconfirmedAmount,
   isLoadingTransactions: boolean,
@@ -50,7 +50,7 @@ export default class WalletSummary extends Component<Props> {
     const {
       wallet,
       pendingAmount,
-      recentTransactionsLength,
+      numberOfRecentTransactions,
       numberOfTransactions,
       isLoadingTransactions,
       isRestoreActive,
@@ -91,7 +91,7 @@ export default class WalletSummary extends Component<Props> {
           {!isLoadingTransactions ? (
             <div className={numberOfTransactionsStyles}>
               {intl.formatMessage(messages.transactionsLabel)}:&nbsp;
-              {numberOfTransactions || recentTransactionsLength}
+              {numberOfTransactions || numberOfRecentTransactions}
             </div>
           ) : null}
         </BorderedBox>
