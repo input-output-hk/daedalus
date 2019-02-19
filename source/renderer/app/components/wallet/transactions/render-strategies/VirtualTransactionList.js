@@ -44,18 +44,30 @@ export class VirtualTransactionList extends Component<Props> {
       this.setState(({
         debounce: !this.state.debounce
       }));
+      console.log(`Debounce ${this.state.debounce}`);
     };
     window.toggleThrottle = () => {
       this.setState(({
         throttle: !this.state.throttle
       }));
+      console.log(`Throttle ${this.state.throttle}`);
     };
+    window.toggleLog = () => {
+      this.setState(({
+        log: !this.state.log
+      }));
+      console.log(`Log ${this.state.log}`);
+    };
+    window.debounce = this.state.debounce;
+    window.throttle = this.state.throttle;
+    window.log = this.state.log;
 
   }
 
   state = {
-    debounce: true,
-    throttle: true,
+    debounce: false,
+    throttle: false,
+    log: false,
   };
 
   list: List;
@@ -156,11 +168,11 @@ export class VirtualTransactionList extends Component<Props> {
     const firstTxId = document.querySelector(TX_ID_SELECTOR);
     if (firstTxAddress instanceof HTMLElement && firstTxId instanceof HTMLElement) {
       this.txAddressHeight = firstTxAddress.offsetHeight;
-      console.log('this.txAddressHeight', this.txAddressHeight);
+      this.log('this.txAddressHeight', this.txAddressHeight);
       this.txIdHeight = firstTxId.offsetHeight;
-      console.log('this.txIdHeight', this.txIdHeight);
+      this.log('this.txIdHeight', this.txIdHeight);
       if (!this.baseHeightWasCalculated) this.txExpandedRowBaseHeight = await this.getBaseHeight();
-      console.log('this.txExpandedRowBaseHeight', this.txExpandedRowBaseHeight);
+      this.log('this.txExpandedRowBaseHeight', this.txExpandedRowBaseHeight);
     }
   };
 
@@ -195,6 +207,10 @@ export class VirtualTransactionList extends Component<Props> {
       {this.props.renderRow(this.props.rows[index])}
     </div>
   );
+
+  log(...msg) {
+    this.state.log ? console.log(...msg) : null;
+  }
 
   render() {
     const { rows, isLoadingSpinnerShown, isSyncingSpinnerShown } = this.props;
