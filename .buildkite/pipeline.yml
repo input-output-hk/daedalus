@@ -15,6 +15,10 @@ steps:
     command: 'scripts/build-installer-nix.sh $BUILDKITE_BUILD_NUMBER'
     agents:
       system: x86_64-linux
+  - label: 'daedalus-x86_64-windows-nix'
+    command: 'scripts/build-cross-windows.sh $BUILDKITE_BUILD_NUMBER'
+    agents:
+      system: x86_64-linux
 
   - label: 'release.nix'
     command: 'ci/check-hydra.sh'

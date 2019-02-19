@@ -103,14 +103,14 @@ let
       res = builtins.exec [ signingScript ];
     in res;
     signedCardano = pkgs.runCommand "signed-daedalus-bridge" {} ''
-      cp -r ${self.unpackedCardano} $out
+      cp -r ${self.unsignedUnpackedCardano} $out
       chmod -R +w $out
       cd $out
       rm *.exe
-      cp ${self.signFile "${self.unpackedCardano}/cardano-launcher.exe"} cardano-launcher.exe
-      cp ${self.signFile "${self.unpackedCardano}/cardano-node.exe"} cardano-node.exe
-      cp ${self.signFile "${self.unpackedCardano}/cardano-x509-certificates.exe"} cardano-x509-certificates.exe
-      cp ${self.signFile "${self.unpackedCardano}/wallet-extractor.exe"} wallet-extractor.exe
+      cp ${self.signFile "${self.unsignedUnpackedCardano}/cardano-launcher.exe"} cardano-launcher.exe
+      cp ${self.signFile "${self.unsignedUnpackedCardano}/cardano-node.exe"} cardano-node.exe
+      cp ${self.signFile "${self.unsignedUnpackedCardano}/cardano-x509-certificates.exe"} cardano-x509-certificates.exe
+      cp ${self.signFile "${self.unsignedUnpackedCardano}/wallet-extractor.exe"} wallet-extractor.exe
     '';
     dummyUnpacked = pkgs.runCommand "dummy-unpacked-cardano" {} ''
       mkdir $out
@@ -150,7 +150,7 @@ let
     '';
     uninstaller = if (signingKeys != null) then self.signedUninstaller else self.unsignedUninstaller;
 
-    installer = pkgs.runCommand "win64-installer-${cluster}" { buildInputs = [ self.daedalus-installer self.nsis pkgs.unzip self.configMutator pkgs.jq self.yaml2json ]; } ''
+    windows-installer = pkgs.runCommand "win64-installer-${cluster}" { buildInputs = [ self.daedalus-installer self.nsis pkgs.unzip self.configMutator pkgs.jq self.yaml2json ]; } ''
       mkdir home
       export HOME=$(realpath home)
 
