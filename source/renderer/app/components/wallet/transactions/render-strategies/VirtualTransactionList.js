@@ -4,7 +4,6 @@ import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import { AutoSizer, List } from 'react-virtualized';
-import { throttle, debounce } from 'lodash';
 import { WalletTransaction } from '../../../../domains/WalletTransaction';
 import type { Row } from '../types';
 import styles from './VirtualTransactionList.scss';
@@ -53,13 +52,13 @@ export class VirtualTransactionList extends Component<Props> {
   );
 
   /**
-   * Recomputes virtual row heights only once per tick (debounced)
+   * Recomputes virtual row heights
    */
-  recomputeVirtualRowHeights = debounce((startIndex: number = 0): void => {
+  recomputeVirtualRowHeights = (startIndex: number = 0): void => {
     const { list } = this;
     if (!list) return;
     list.recomputeRowHeights(startIndex);
-  });
+  };
 
   /**
    * Updates and recomputes row height
@@ -184,7 +183,7 @@ export class VirtualTransactionList extends Component<Props> {
 
     return (
       <div className={componentStyles}>
-        <AutoSizer onResize={throttle(this.onResize, 50)}>
+        <AutoSizer onResize={this.onResize}>
           {({ width, height }) => (
             <List
               className={styles.list}
