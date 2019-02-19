@@ -4,6 +4,7 @@ import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import { AutoSizer, List } from 'react-virtualized';
+import { throttle, debounce } from 'lodash';
 import { WalletTransaction } from '../../../../domains/WalletTransaction';
 import type { Row } from '../types';
 import styles from './VirtualTransactionList.scss';
@@ -37,6 +38,26 @@ export class VirtualTransactionList extends Component<Props> {
     isSyncingSpinnerShown: false,
   };
 
+  constructor(props: Props) {
+    super(props);
+    window.toggleDebounce = () => {
+      this.setState(({
+        debounce: !this.state.debounce
+      }));
+    };
+    window.toggleThrottle = () => {
+      this.setState(({
+        throttle: !this.state.throttle
+      }));
+    };
+
+  }
+
+  state = {
+    debounce: true,
+    throttle: true,
+  };
+
   list: List;
   rowHeights: RowHeight[] = [];
   txAddressHeight: number = 0;
@@ -52,13 +73,19 @@ export class VirtualTransactionList extends Component<Props> {
   );
 
   /**
-   * Recomputes virtual row heights
+   * Recomputes virtual row heights only once per tick (debounced)
    */
-  recomputeVirtualRowHeights = (startIndex: number = 0): void => {
-    const { list } = this;
-    if (!list) return;
-    list.recomputeRowHeights(startIndex);
-  };
+  recomputeVirtualRowHeights = this.state.debounce
+    ? debounce((startIndex: number = 0): void => {
+      const { list } = this;
+      if (!list) return;
+      list.recomputeRowHeights(startIndex);
+    })
+    : (startIndex: number = 0) => {
+      const { list } = this;
+      if (!list) return;
+      list.recomputeRowHeights(startIndex);
+    };
 
   /**
    * Updates and recomputes row height
@@ -183,7 +210,11 @@ export class VirtualTransactionList extends Component<Props> {
 
     return (
       <div className={componentStyles}>
-        <AutoSizer onResize={this.onResize}>
+        <AutoSizer onResize={this.state.throttle
+          ? throttle(this.onResize, 50)
+          : this.onResize
+        }
+        >
           {({ width, height }) => (
             <List
               className={styles.list}
