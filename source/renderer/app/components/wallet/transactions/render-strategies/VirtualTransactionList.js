@@ -231,14 +231,14 @@ export class VirtualTransactionList extends Component<Props> {
 
     return (
       <div className={componentStyles}>
-        <AutoSizer onResize={throttle(this.onResize, 100, { trailing: true })}>
+        <AutoSizer onResize={throttle(this.onResize, 100, { leading: true, trailing: true })}>
           {({ width, height }) => (
             <List
               className={styles.list}
               ref={(list) => this.list = list}
               width={width}
               height={height}
-              onRowsRendered={throttle(this.onRowsRendered, 100, { trailing: true })}
+              onRowsRendered={throttle(this.onRowsRendered, 100, { leading: true, trailing: true })}
               rowCount={rows.length}
               rowHeight={({ index }) => this.rowHeights[index] || TX_CONTRACTED_ROW_HEIGHT}
               rowRenderer={this.rowRenderer}
