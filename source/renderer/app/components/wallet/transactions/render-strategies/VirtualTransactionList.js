@@ -95,7 +95,11 @@ export class VirtualTransactionList extends Component<Props> {
   /**
    * Updates and recomputes row height
    */
-  updateTxRowHeight = (tx: WalletTransaction, isExpanded: boolean): void => {
+  updateTxRowHeight = (
+    tx: WalletTransaction,
+    isExpanded: boolean,
+    wasToggled: boolean // Is "true" when transaction is manually expanded/collapsed
+  ): void => {
     const { rowHeights } = this;
     const txIndex = this.findIndexForTx(tx);
     const row = this.props.rows[txIndex];
@@ -104,6 +108,19 @@ export class VirtualTransactionList extends Component<Props> {
       ? this.estimateHeightOfTxExpandedRow(row, tx)
       : this.estimateHeightOfTxContractedRow(row);
     this.recomputeVirtualRowHeights();
+
+    // In case transaction has just been manually expanded we need to schedule
+    // another row height calculation if the transaction still isn't fully
+    // expanded in the moment of the initial execution of this method
+    if (isExpanded && wasToggled) {
+      const isFullyExpanded = this.checkIfTxContentIsFullyExpanded(tx);
+      if (isFullyExpanded) {
+        const estimatedHeight = rowHeights[txIndex];
+        this.correctExpandedTxHeightEstimationErrors(tx, estimatedHeight);
+      } else {
+        setTimeout(this.updateTxRowHeight, 1, tx, true, true);
+      }
+    }
   };
 
   /**
@@ -141,6 +158,17 @@ export class VirtualTransactionList extends Component<Props> {
   };
 
   /**
+   * Checks if rendered tx content DOM element has been fully expanded.
+   */
+  checkIfTxContentIsFullyExpanded = (tx: WalletTransaction): boolean => {
+    const txRow = this.getTxRowElementById(tx.id);
+    const txElement = txRow && txRow.firstChild;
+    const isFullyExpanded = txElement instanceof HTMLElement &&
+      txElement.classList.contains('Transaction_expanded');
+    return isFullyExpanded;
+  };
+
+  /**
    * Corrects potential estimation errors that can happen due to various reasons.
    */
   correctExpandedTxHeightEstimationErrors = (tx: WalletTransaction, estimatedHeight: number) => {
@@ -162,7 +190,7 @@ export class VirtualTransactionList extends Component<Props> {
 
   updateVisibleExpandedTxRowHeights = () => {
     this.visibleExpandedTx.forEach(tx => {
-      this.updateTxRowHeight(tx, true);
+      this.updateTxRowHeight(tx, true, false);
       const estimatedHeight = this.rowHeights[this.findIndexForTx(tx)];
       this.correctExpandedTxHeightEstimationErrors(tx, estimatedHeight);
     });
@@ -181,12 +209,9 @@ export class VirtualTransactionList extends Component<Props> {
 
     // Subsequently resizes, updates the expanded rows heights if there is any expanded one
     const expandedTransactions = this.props.getExpandedTransactions();
-    const { txAddressHeight, txIdHeight } = this;
     if (!expandedTransactions.length) return;
     this.updateAddressesAndIdHeights();
-    if (txAddressHeight !== this.txAddressHeight || txIdHeight !== this.txIdHeight) {
-      this.updateVisibleExpandedTxRowHeights();
-    }
+    this.updateVisibleExpandedTxRowHeights();
   };
 
   /**
