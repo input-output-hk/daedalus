@@ -24,6 +24,7 @@ const GROUP_DATE_HEIGHT = 26;
 const TX_CONTRACTED_ROW_HEIGHT = 86;
 const TX_EXPANDED_ROW_BASE_HEIGHT = 260 + 16;
 const TX_LAST_IN_GROUP_MARGIN = 20;
+const TX_BOTTOM_BORDER_MARGIN = 1;
 const TX_ADDRESS_SELECTOR = '.Transaction_address';
 const TX_ID_SELECTOR = '.Transaction_transactionId';
 
@@ -149,8 +150,8 @@ export class VirtualTransactionList extends Component<Props> {
     const txIndex = this.findIndexForTx(tx);
     const txInfo = rows[txIndex];
     if (txInfo instanceof TransactionInfo) {
-      const optionalMargin = txInfo.isLastInGroup ? TX_LAST_IN_GROUP_MARGIN : 1;
-      const requiredHeight = txContentHeight + optionalMargin;
+      const margin = txInfo.isLastInGroup ? TX_LAST_IN_GROUP_MARGIN : TX_BOTTOM_BORDER_MARGIN;
+      const requiredHeight = txContentHeight + margin;
       const estimationError = Math.abs(estimatedHeight - requiredHeight);
       if (estimationError > 1) {
         this.rowHeights[txIndex] = requiredHeight;
