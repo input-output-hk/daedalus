@@ -67,7 +67,7 @@ export class VirtualTransactionList extends Component<Props> {
   state = {
     debounce: false,
     throttle: false,
-    log: false,
+    log: false
   };
 
   list: List;
