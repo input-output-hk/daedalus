@@ -4,6 +4,7 @@ import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import { AutoSizer, List } from 'react-virtualized';
+import { throttle } from 'lodash';
 import { WalletTransaction } from '../../../../domains/WalletTransaction';
 import type { Row } from '../types';
 import styles from './VirtualTransactionList.scss';
@@ -39,6 +40,7 @@ export class VirtualTransactionList extends Component<Props> {
   list: List;
   rowHeights: RowHeight[] = [];
   areTxAddressesBreaking = false;
+  visibleExpandedTx: Array<WalletTransaction>;
 
   /**
    * Best effort to pre-calculate the height that a row will need.
@@ -196,7 +198,24 @@ export class VirtualTransactionList extends Component<Props> {
     } else if (this.areTxAddressesBreaking && width > TX_ADDRESSES_START_BREAKING_AT_WIDTH) {
       this.areTxAddressesBreaking = false;
     }
-    this.props.getExpandedTransactions().map(this.updateHeightOfTxRow);
+    if (!this.visibleExpandedTx) return;
+    this.visibleExpandedTx.map(this.updateHeightOfTxRow);
+  };
+
+  /**
+   * Callback that gets invoked when virtual rows are rendered.
+   * Used to update the array of visible expanded transactions and remeasure their height.
+   */
+  onRowsRendered = ({ overscanStartIndex, overscanStopIndex }: {
+    overscanStartIndex: number,
+    overscanStopIndex: number,
+  }) => {
+    const expandedRows = this.props.getExpandedTransactions();
+    this.visibleExpandedTx = expandedRows.filter((tx) => {
+      const index = this.findIndexForTx(tx);
+      return index >= overscanStartIndex && index <= overscanStopIndex;
+    });
+    this.visibleExpandedTx.map(this.updateHeightOfTxRow);
   };
 
   render() {
@@ -226,13 +245,14 @@ export class VirtualTransactionList extends Component<Props> {
 
     return (
       <div className={componentStyles}>
-        <AutoSizer onResize={this.onResize}>
+        <AutoSizer onResize={throttle(this.onResize, 100)}>
           {({ width, height }) => (
             <List
               className={styles.list}
               ref={(list) => this.list = list}
               width={width}
               height={height}
+              onRowsRendered={throttle(this.onRowsRendered, 100)}
               rowCount={rows.length}
               rowHeight={({ index }) => this.rowHeights[index]}
               rowRenderer={rowRenderer}
