@@ -179,11 +179,10 @@ export default class WalletTransactionsList extends Component<Props> {
       onOpenExternalLink,
     } = this.props;
     const { isFirstInGroup, isLastInGroup, tx } = data;
-    const isExpanded = this.isTxExpanded(tx);
     const txClasses = classnames([
       styles.transaction,
       isFirstInGroup ? styles.firstInGroup : null,
-      isLastInGroup ? styles[`lastInGroup${isExpanded ? 'Expanded' : 'Contracted'}`] : null,
+      isLastInGroup ? styles.lastInGroup : null,
     ]);
     return (
       <div id={`tx-${tx.id}`} className={txClasses}>

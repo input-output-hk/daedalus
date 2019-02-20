@@ -54,17 +54,8 @@
     // Round corners on bottom border
     border-bottom-width: 1px;
     border-radius: 0 0 4px 4px;
-    margin-bottom: 20px;
-  }
-
-  &.lastInGroupExpanded {
-    @extend .lastInGroup;
-    height: calc(100% - 10px);
-  }
-
-  &.lastInGroupContracted {
-    @extend .lastInGroup;
     height: calc(100% - 20px);
+    margin-bottom: 20px;
   }
 
   &.firstInGroup.lastInGroup {
