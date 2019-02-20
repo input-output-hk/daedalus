@@ -173,7 +173,7 @@ let
       ${if dummyInstaller then "touch foo" else "unzip ${self.dlls}"}
       popd
       cp -v ${self.unpackedCardano}/* .
-      cp ${self.uninstaller}/uninstall.exe ../uninstall.exe
+      cp ${self.unsignedUninstaller}/uninstall.exe ../uninstall.exe
       cp -v ${self.nsisFiles}/{daedalus.nsi,wallet-topology.yaml,launcher-config.yaml} .
       chmod -R +w .
       ${lib.optionalString (fudgeConfig != null) ''
