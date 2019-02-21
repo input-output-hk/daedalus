@@ -123,9 +123,10 @@ let
       cp -vir ${./package.json} package.json
       cp -vir ${./installers/dhall} installers/dhall
       cd installers
+      cp -vi ${self.unpackedCardano}/version version
 
       export LANG=en_US.UTF-8
-      make-installer --os win64 -o $out --cluster ${cluster} buildkite-cross
+      make-installer --os win64 -o $out --cluster ${cluster} ${lib.optionalString (buildNum != null) "--build-job ${buildNum}"} buildkite-cross
 
       mkdir $out
       cp daedalus.nsi uninstaller.nsi launcher-config.yaml wallet-topology.yaml $out/
@@ -186,7 +187,7 @@ let
 
       makensis daedalus.nsi -V4
 
-      cp daedalus-*-cardano-sl-*-windows.exe $out/
+      cp daedalus-*-cardano-sl-*-windows*.exe $out/
       cp *.yaml $out/cfg-files/
       echo file installer $out/*.exe > $out/nix-support/hydra-build-products
     '';

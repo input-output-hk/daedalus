@@ -13,6 +13,8 @@ import           System.Environment (getEnv)
 import           Data.List.Split (splitOn)
 import           Data.Maybe                          (fromJust)
 import           System.Directory
+import qualified Data.Text.IO as T
+import qualified Data.Text as T
 
 import           Types
 import           Config
@@ -39,7 +41,7 @@ main = do
         genSignedInstaller (oOS options') options'
     BuildkiteCrossWin -> do
       fullVersion <- getDaedalusVersion "../package.json"
-      let ver = "TODO"
+      ver <- T.strip <$> T.readFile "version"
       let fullName = packageFileName Win64 (oCluster options') fullVersion (oBackend options') ver (oBuildJob options')
       installerConfig <- getInstallerConfig "./dhall" Win64 (oCluster options')
       WindowsInstaller.writeInstallerNSIS fullName fullVersion installerConfig (oCluster options')
