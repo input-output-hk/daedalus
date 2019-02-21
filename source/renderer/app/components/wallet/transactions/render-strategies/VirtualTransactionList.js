@@ -36,6 +36,16 @@ export class VirtualTransactionList extends Component<Props> {
     isSyncingSpinnerShown: false,
   };
 
+  componentWillReceiveProps(nextProps: Props) {
+    // Recompute all row heights in case the number of rows has changed
+    const prevNumberOfRows = this.props.rows.length;
+    const nextNumberOfRows = nextProps.rows.length;
+    if (prevNumberOfRows && prevNumberOfRows !== nextNumberOfRows) {
+      this.rowHeights = this.estimateRowHeights(nextProps.rows);
+      this.recomputeVirtualRowHeights();
+    }
+  }
+
   list: List;
   rowHeights: RowHeight[] = [];
   txAddressHeight: number = 0;
