@@ -75,6 +75,8 @@ async function startPack() {
           pack(plat, arch, log(plat, arch));
         });
       });
+    } else if (argv.win64) {
+      pack("win32", "x64", log("win32", "x64"));
     } else {
       // build for current platform only
       pack(os.platform(), os.arch(), log(os.platform(), os.arch()));
