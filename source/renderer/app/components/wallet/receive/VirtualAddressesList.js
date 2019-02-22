@@ -28,43 +28,58 @@ const BREAKPOINT_2_LINES = 635;
 
 const ADDRESS_LINE_HEIGHT = 22;
 const ADDRESS_LINE_PADDING = 21;
+const ADDRESS_SELECTOR = '.Address_component';
 
 @observer
 export class VirtualAddressesList extends Component<Props, State> {
 
   list: List;
-  lines: number = 0;
+  listWidth: number = 0;
+  addressHeight: number = 0;
 
-  state = {
-    height: ADDRESS_LINE_HEIGHT,
-  };
-
-  calculateRowsHeight = (lines: number) => {
-    this.setState({
-      height: (ADDRESS_LINE_HEIGHT * lines) + ADDRESS_LINE_PADDING,
-    });
-  };
+  /**
+   * Estimate the address height based on number of lines
+   */
+  estimateAddressHeight = (lines: number): number => (
+    (ADDRESS_LINE_HEIGHT * lines) + ADDRESS_LINE_PADDING
+  );
 
   /**
    * Gets the number of lines based on the container width
-   * @param width
-   * @returns {number}
    */
-  getLinesFromWidth = (width: number) => {
+  getLinesFromWidth = (width: number): number => {
     if (width >= BREAKPOINT_1_LINE) return 1;
     if (width >= BREAKPOINT_2_LINES) return 2;
     return 3;
   };
 
   /**
-   * Decides if the addresses height need to be updated
+   * Virtual row heights only once per tick (debounced)
    */
-  onResize = ({ width }: { width: number }) => {
-    const lines = this.getLinesFromWidth(width);
-    if (lines !== this.lines) {
-      this.lines = lines;
-      this.calculateRowsHeight(lines);
+  updateRowHeights = (): void => {
+    const { list, addressHeight } = this;
+    if (!list) return;
+    const firstAddress = document.querySelector(ADDRESS_SELECTOR);
+    if (firstAddress instanceof HTMLElement) {
+      this.addressHeight = firstAddress.offsetHeight;
+    } else {
+      // DOM is not ready yet, so use an estimated height
+      this.addressHeight = this.estimateAddressHeight(this.getLinesFromWidth(this.listWidth));
+      // Since we could only estimate the address heights, re-try
+      // the update and hope that DOM is rendered then (for exact measurements)
+      setTimeout(this.updateRowHeights, 100);
     }
+    if (addressHeight !== this.addressHeight) {
+      list.recomputeRowHeights(0);
+    }
+  };
+
+  /**
+   * Update row height and recompute virtual rows.
+   */
+  onResize = ({ width }: { width: number }): void => {
+    this.listWidth = width;
+    this.updateRowHeights();
   };
 
   rowRenderer = ({
@@ -98,7 +113,7 @@ export class VirtualAddressesList extends Component<Props, State> {
               width={width}
               height={height}
               rowCount={rows.length}
-              rowHeight={this.state.height}
+              rowHeight={() => this.addressHeight}
               rowRenderer={this.rowRenderer}
               style={{ overflowY: 'scroll' }}
             />
