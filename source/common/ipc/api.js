@@ -28,12 +28,17 @@ export const COMPRESS_LOGS_CHANNEL = 'compress-logs';
 export const DOWNLOAD_LOGS_CHANNEL = 'download-logs';
 export const GET_GPU_STATUS_CHANNEL = 'get-gpu-status';
 
-export const GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL = 'GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL';
-export const GO_TO_NETWORK_STATUS_SCREEN_CHANNEL = 'GO_TO_NETWORK_STATUS_SCREEN_CHANNEL';
-export const OPEN_ABOUT_DIALOG_CHANNEL = 'OPEN_ABOUT_DIALOG_CHANNEL';
-export const TOGGLE_ABOUT_DIALOG_CHANNEL = 'TOGGLE_ABOUT_DIALOG_CHANNEL';
-export const TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL = 'TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL';
-export const TOGGLE_BLOCK_CONSOLIDATION_SCREEN_CHANNEL = 'TOGGLE_BLOCK_CONSOLIDATION_STATUS';
+/**
+ * Channel for showing ui parts specified via constants
+ */
+export const SHOW_UI_PART_CHANNEL = 'SHOW_UI_PART_CHANNEL';
+export type ShowUiPartRequest = string;
+
+/**
+ * Channel for toggling ui parts specified via constants
+ */
+export const TOGGLE_UI_PART_CHANNEL = 'TOGGLE_UI_PART_CHANNEL';
+export type ToggleUiPartRequest = string;
 
 /**
  * Channel for checking the disk space available
