@@ -1,8 +1,9 @@
-@import '../../themes/mixins/loading-spinner';
-@import '../../themes/mixins/error-message';
+@import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/error-message';
 
 .component {
   flex: 1;
+  min-height: 509px;
   overflow-x: hidden;
   overflow-y: overlay;
   padding: 20px;
@@ -12,28 +13,13 @@
   }
 }
 
-.copyIconBig,
-.copyIcon {
-  cursor: pointer;
-  object-fit: contain;
-}
-
 .copyIconBig {
+  cursor: pointer;
   margin-left: 6px;
+  object-fit: contain;
   & > svg {
     height: 14.5px;
     width: 11.5px;
-    path {
-      fill: var(--theme-icon-copy-address-color);
-    }
-  }
-}
-
-.copyIcon {
-  margin-left: 4px;
-  & > svg {
-    height: 12px;
-    width: 10px;
     path {
       fill: var(--theme-icon-copy-address-color);
     }
@@ -45,6 +31,7 @@
   flex-direction: row;
   margin: 10px 0 24px;
   position: relative;
+  width: 100%;
 
   .qrCode {
     align-items: flex-start;
@@ -66,10 +53,10 @@
 
     .hash {
       font-size: 19px;
-      font-family: var(--font-medium);
+      font-family: var(--font-mono);
       line-height: 23px;
       margin-bottom: 6px;
-      user-select: auto;
+      user-select: text;
       word-break: break-all;
     }
 
@@ -95,7 +82,7 @@
       white-space: nowrap;
       width: 100%;
       &.spinning {
-        @include loading-spinner("../../assets/images/spinner-light.svg");
+        @include loading-spinner("../../../assets/images/spinner-light.svg");
       }
     }
 
@@ -103,7 +90,7 @@
       max-width: 310px;
       width: calc(50% - 10px);
       &.spinning {
-        @include loading-spinner("../../assets/images/spinner-light.svg");
+        @include loading-spinner("../../../assets/images/spinner-light.svg");
       }
     }
 
@@ -159,15 +146,25 @@
   }
 }
 
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 .generatedAddresses {
   color: var(--theme-bordered-box-text-color);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   font-family: var(--font-regular);
   font-size: 16px;
   line-height: 22px;
-  padding-bottom: 10px;
+  width: 100%;
 
   h2 {
     font-family: var(--font-medium);
+    padding-bottom: 10px;
 
     button {
       color: var(--theme-label-button-color);
@@ -187,49 +184,6 @@
       float: right;
       height: 20px;
       text-align: right;
-    }
-  }
-
-  .walletAddress {
-    box-sizing: border-box;
-    display: flex;
-    padding: 10.5px 0;
-    word-break: break-all;
-
-    & + .walletAddress {
-      border-top: 1px solid var(--theme-separation-border-color);
-    }
-
-    .addressId {
-      flex-grow: 1;
-      margin-right: 32.5px;
-      user-select: auto;
-    }
-
-    .addressActions {
-      .copyAddress {
-        cursor: pointer;
-        display: flex;
-        white-space: nowrap;
-
-        .copyAddressLabel {
-          color: var(--theme-label-button-color);
-          font-size: 14px;
-          margin-left: 6px;
-          opacity: 0.5;
-        }
-      }
-    }
-  }
-
-  .usedWalletAddress {
-    .addressId,
-    .addressActions .copyAddress .copyIcon {
-      opacity: 0.4;
-    }
-
-    .addressActions .copyAddress .copyAddressLabel {
-      opacity: 0.2;
     }
   }
 }

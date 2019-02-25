@@ -54,4 +54,18 @@ process.once('loaded', () => {
   global.eval = () => {
     throw new Error('This app does not support window.eval().');
   };
+
+  // Prevent context-menu for elements which don't support copy&paste options
+  if (_process.env.NODE_ENV === 'production') {
+    // elements that can be copied using the context menu (right click),
+    // must have a css property of user-select: 'text' or be an input element
+    global.document.addEventListener('contextmenu', event => {
+      const targetIsSelectable = getComputedStyle(event.target).userSelect === 'text';
+      const targetIsInput = event.target.nodeName === 'INPUT';
+
+      if (targetIsSelectable || targetIsInput) { return true; }
+
+      event.preventDefault();
+    }, false);
+  }
 });

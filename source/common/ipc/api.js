@@ -12,6 +12,7 @@ import type {
 } from '../types/cardano-node.types';
 import type { AdaRedemptionCode, AdaRedemptionDecryptionKey } from '../types/ada-redemption.types';
 import type { RedemptionTypeChoices } from '../../renderer/app/types/redemptionTypes';
+import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -20,6 +21,26 @@ import type { RedemptionTypeChoices } from '../../renderer/app/types/redemptionT
  * Complex types are referenced from common/types to keep this api readable.
  * ==================================================================
  */
+
+// TODO: refactor to typed ipc channels
+export const GET_LOGS_CHANNEL = 'get-logs';
+export const COMPRESS_LOGS_CHANNEL = 'compress-logs';
+export const DOWNLOAD_LOGS_CHANNEL = 'download-logs';
+export const GET_GPU_STATUS_CHANNEL = 'get-gpu-status';
+
+export const GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL = 'GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL';
+export const GO_TO_NETWORK_STATUS_SCREEN_CHANNEL = 'GO_TO_NETWORK_STATUS_SCREEN_CHANNEL';
+export const OPEN_ABOUT_DIALOG_CHANNEL = 'OPEN_ABOUT_DIALOG_CHANNEL';
+export const TOGGLE_ABOUT_DIALOG_CHANNEL = 'TOGGLE_ABOUT_DIALOG_CHANNEL';
+export const TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL = 'TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL';
+export const TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL = 'TOGGLE_BLOCK_CONSOLIDATION_STATUS';
+
+/**
+ * Channel for checking the disk space available
+ */
+export const GetDiskSpaceStatusChannelName = 'GetDiskSpaceStatusChannel';
+export type GetDiskSpaceStatusRendererRequest = number | any;
+export type GetDiskSpaceStatusMainResponse = CheckDiskSpaceResponse;
 
 /**
  * Channel for loading a base64 encoded asset from within the `source/renderer` folder
@@ -46,6 +67,23 @@ export type SubmitBugReportRequest = {
 export type SubmitBugReportRequestResponse = void;
 
 /**
+ * Channel to rebuild the electron application menu after the language setting changes
+ */
+export const RebuildApplicationMenu = 'RebuildApplicationMenu';
+
+/**
+ * Channel to get the number of epochs consolidated
+ */
+export const GetNumberOfEpochsConsolidatedChannel = 'GetNumberOfEpochsConsolidatedChannel';
+export type GetNumberOfEpochsConsolidatedChannelResponse = number;
+
+/**
+ * Channel to get the system start time
+ */
+export const GetSystemStartTimeChannel = 'GetSystemStartTimeChannel';
+export type GetSystemStartTimeResponse = number;
+
+/**
  * Channel where renderer can ask the main process to parse the redemption
  * code from a given certificate, providing the file path, decryption key
  * and type of redemption that is required.
@@ -58,23 +96,12 @@ export type ParseRedemptionCodeRequest = {
 };
 export type ParseRedemptionCodeResponse = AdaRedemptionCode;
 
-// TODO: refactor to typed ipc channels
-export const GET_LOGS_CHANNEL = 'get-logs';
-export const COMPRESS_LOGS_CHANNEL = 'compress-logs';
-export const DOWNLOAD_LOGS_CHANNEL = 'download-logs';
-export const GET_GPU_STATUS_CHANNEL = 'get-gpu-status';
-
 /**
  * Channel to generate and save a paper wallet certificate
  */
 export const GENERATE_PAPER_WALLET_CHANNEL = 'GENERATE_PAPER_WALLET_CHANNEL';
 export type GeneratePaperWalletRequest = GeneratePaperWalletParams;
 export type GeneratePaperWalletResponse = void;
-
-export const GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL = 'GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL';
-export const GO_TO_NETWORK_STATUS_SCREEN_CHANNEL = 'GO_TO_NETWORK_STATUS_SCREEN_CHANNEL';
-
-export const OPEN_ABOUT_DIALOG_CHANNEL = 'OPEN_ABOUT_DIALOG_CHANNEL';
 
 /**
  * ====================== CARDANO IPC CHANNELS ======================

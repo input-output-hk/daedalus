@@ -14,6 +14,7 @@ import {
   TxnAssuranceLevelOptions,
   WalletTransaction,
 } from '../../../domains/WalletTransaction';
+import { MAX_TRANSACTION_CONFIRMATIONS } from '../../../config/numbersConfig';
 import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';
 import { getNetworkExplorerUrl } from '../../../utils/network';
@@ -126,29 +127,24 @@ type Props = {
   data: WalletTransaction,
   state: TransactionState,
   assuranceLevel: string,
+  isExpanded: boolean,
   isRestoreActive: boolean,
   isLastInList: boolean,
   formattedWalletAmount: Function,
   network: string,
+  onDetailsToggled: ?Function,
   onOpenExternalLink: ?Function,
 };
 
-type State = {
-  isExpanded: boolean,
-};
-
-export default class Transaction extends Component<Props, State> {
+export default class Transaction extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
-  state = {
-    isExpanded: false
-  };
-
   toggleDetails() {
-    this.setState({ isExpanded: !this.state.isExpanded });
+    const { onDetailsToggled } = this.props;
+    if (onDetailsToggled) onDetailsToggled();
   }
 
   handleOpenExplorer(type: string, param: string, e: Event) {
@@ -160,13 +156,19 @@ export default class Transaction extends Component<Props, State> {
     }
   }
 
+  displayNumberOfConfirmations = (confirmations: number) => {
+    let text = Math.min(confirmations, MAX_TRANSACTION_CONFIRMATIONS).toLocaleString();
+    if (confirmations > MAX_TRANSACTION_CONFIRMATIONS) text += '+';
+    return text;
+  };
+
   render() {
     const {
       data, isLastInList, state, assuranceLevel,
       formattedWalletAmount, onOpenExternalLink,
       isRestoreActive,
+      isExpanded,
     } = this.props;
-    const { isExpanded } = this.state;
     const { intl } = this.context;
 
     const canOpenExplorer = onOpenExternalLink;
@@ -181,7 +183,8 @@ export default class Transaction extends Component<Props, State> {
 
     const componentStyles = classNames([
       styles.component,
-      isFailedTransaction ? styles.failed : null
+      isFailedTransaction ? styles.failed : null,
+      isExpanded ? 'Transaction_expanded' : null,
     ]);
 
     const contentStyles = classNames([
@@ -194,6 +197,11 @@ export default class Transaction extends Component<Props, State> {
       styles.details,
       canOpenExplorer ? styles.clickable : null,
       isExpanded ? styles.detailsExpanded : styles.detailsClosed
+    ]);
+
+    const assuranceLevelRowStyles = classNames([
+      styles.row,
+      styles.retainHeight
     ]);
 
     const arrowStyles = classNames([
@@ -299,7 +307,7 @@ export default class Transaction extends Component<Props, State> {
                 </span>
               ))}
 
-              <div className={styles.row}>
+              <div className={assuranceLevelRowStyles}>
                 <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
                 {!isRestoreActive && (
                   transactionState === transactionStates.OK ||
@@ -308,7 +316,7 @@ export default class Transaction extends Component<Props, State> {
                   <span>
                     {transactionState === transactionStates.OK &&
                       <span className={styles.assuranceLevel}>{status}.&nbsp;</span>}
-                    {data.numberOfConfirmations.toLocaleString()}&nbsp;
+                    {this.displayNumberOfConfirmations(data.numberOfConfirmations)}&nbsp;
                     {intl.formatMessage(messages.confirmations)}.
                   </span>
                   ) : null}

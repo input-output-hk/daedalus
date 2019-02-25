@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from 'react';
-import { includes } from 'lodash';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -8,6 +7,7 @@ import classNames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import SystemTimeErrorOverlay from './SystemTimeErrorOverlay';
+import NoDiskSpaceOverlay from './NoDiskSpaceOverlay';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import linkNewWindow from '../../assets/images/link-ic.inline.svg';
@@ -106,6 +106,12 @@ type Props = {
   hasBeenConnected: boolean,
   isConnected: boolean,
   isSynced: boolean,
+  isNodeStopping: boolean,
+  isNodeStopped: boolean,
+  isNotEnoughDiskSpace: boolean,
+  diskSpaceRequired: string,
+  diskSpaceMissing: string,
+  diskSpaceRecommended: string,
   syncPercentage: number,
   loadingDataForNextScreenMessage: ReactIntlMessage,
   hasLoadedCurrentLocale: boolean,
@@ -135,17 +141,19 @@ export default class Loading extends Component<Props, State> {
   };
 
   componentDidMount() {
+    if (this.props.isNotEnoughDiskSpace) return;
     this._defensivelyStartTimers(this.props.isConnected, this.props.isSynced);
   }
 
   componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.isNotEnoughDiskSpace) return;
     this._defensivelyStartTimers(nextProps.isConnected, nextProps.isSynced);
   }
 
   componentDidUpdate() {
-    const canResetSyncing = this._syncingTimerShouldStop(this.props.isSynced);
-    const canResetConnecting = this._connectingTimerShouldStop(this.props.isConnected);
-
+    const { isConnected, isSynced, isNotEnoughDiskSpace } = this.props;
+    const canResetSyncing = this._syncingTimerShouldStop(isSynced, isNotEnoughDiskSpace);
+    const canResetConnecting = this._connectingTimerShouldStop(isConnected, isNotEnoughDiskSpace);
     if (canResetSyncing) { this._resetSyncingTime(); }
     if (canResetConnecting) { this._resetConnectingTime(); }
   }
@@ -163,18 +171,21 @@ export default class Loading extends Component<Props, State> {
     isConnected && !isSynced && syncingInterval === null
   );
 
-  _syncingTimerShouldStop = (isSynced: boolean): boolean => (
-    isSynced && syncingInterval !== null
+  _syncingTimerShouldStop = (
+    isSynced: boolean, isNotEnoughDiskSpace: boolean
+  ): boolean => (
+    (isNotEnoughDiskSpace || isSynced) && syncingInterval !== null
   );
 
-  _connectingTimerShouldStop = (isConnected: boolean): boolean => (
-    isConnected && connectingInterval !== null
+  _connectingTimerShouldStop = (
+    isConnected: boolean, isNotEnoughDiskSpace: boolean
+  ): boolean => (
+    (isNotEnoughDiskSpace || isConnected) && connectingInterval !== null
   );
 
   _defensivelyStartTimers = (isConnected: boolean, isSynced: boolean) => {
     const needConnectingTimer = this._connectingTimerShouldStart(isConnected);
     const needSyncingTimer = this._syncingTimerShouldStart(isConnected, isSynced);
-
     if (needConnectingTimer) {
       connectingInterval = setInterval(this._incrementConnectingTime, 1000);
     } else if (needSyncingTimer) {
@@ -250,10 +261,15 @@ export default class Loading extends Component<Props, State> {
   _renderLoadingScreen = () => {
     const { intl } = this.context;
     const {
-      cardanoNodeState,
       isConnected,
       isSystemTimeCorrect,
       isSynced,
+      isNodeStopping,
+      isNodeStopped,
+      isNotEnoughDiskSpace,
+      diskSpaceRequired,
+      diskSpaceMissing,
+      diskSpaceRecommended,
       localTimeDifference,
       currentLocale,
       onExternalLinkClick,
@@ -264,7 +280,17 @@ export default class Loading extends Component<Props, State> {
       loadingDataForNextScreenMessage
     } = this.props;
 
-    if (!isSystemTimeCorrect) {
+    if (isNotEnoughDiskSpace) {
+      return (
+        <NoDiskSpaceOverlay
+          diskSpaceRequired={diskSpaceRequired}
+          diskSpaceMissing={diskSpaceMissing}
+          diskSpaceRecommended={diskSpaceRecommended}
+        />
+      );
+    }
+
+    if (!isSystemTimeCorrect && !isNodeStopping && !isNodeStopped) {
       return (
         <SystemTimeErrorOverlay
           localTimeDifference={localTimeDifference}
@@ -276,17 +302,11 @@ export default class Loading extends Component<Props, State> {
         />
       );
     }
+
     if (!isConnected) {
-      const finalCardanoNodeStates = [
-        CardanoNodeStates.STOPPED,
-        CardanoNodeStates.UPDATED,
-        CardanoNodeStates.CRASHED,
-        CardanoNodeStates.ERRORED,
-        CardanoNodeStates.UNRECOVERABLE
-      ];
       const headlineClasses = classNames([
         styles.headline,
-        includes(finalCardanoNodeStates, cardanoNodeState) ? styles.withoutAnimation : null,
+        isNodeStopped ? styles.withoutAnimation : null,
       ]);
       return (
         <div className={styles.connecting}>
@@ -296,6 +316,7 @@ export default class Loading extends Component<Props, State> {
         </div>
       );
     }
+
     if (!isSynced) {
       return (
         <div className={styles.syncing}>

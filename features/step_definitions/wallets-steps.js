@@ -295,8 +295,9 @@ When(/^I click on recovery phrase mnemonics in correct order$/, async function (
   for (let i = 0; i < this.recoveryPhrase.length; i++) {
     const text = this.recoveryPhrase[i];
     const selector = 'MnemonicWord_root';
+    const disabledSelector = 'MnemonicWord_disabled';
     await this.waitAndClick(
-      `//button[contains(@class,'${selector}') and contains(text(), '${text}')]`
+      `//button[contains(@class,'${selector}') and not(contains(@class, '${disabledSelector}')) and contains(text(), '${text}')]`
     );
   }
 });
@@ -459,7 +460,7 @@ Then(/^the balance of "([^"]*)" wallet should be:$/, { timeout: 60000 }, async f
 Then(/^I should see newly generated address as active address on the wallet receive screen$/, async function () {
   return this.client.waitUntil(async () => {
     const activeAddress = await this.client.getText('.WalletReceive_hash');
-    const generatedAddress = await this.client.getText('.generatedAddress-1 .WalletReceive_addressId');
+    const generatedAddress = await this.client.getText('.generatedAddress-1 .Address_addressId');
     return generatedAddress === activeAddress;
   });
 });

@@ -13,7 +13,7 @@ import startCase from 'lodash/startCase';
 import StoryLayout from './support/StoryLayout';
 import StoryProvider from './support/StoryProvider';
 import StoryDecorator from './support/StoryDecorator';
-import { generateTransaction, generateAddress, promise } from './support/utils';
+import { generateWallet, generateTransaction, generateAddress, promise } from './support/utils';
 import { formattedWalletAmount } from '../../source/renderer/app/utils/formatters';
 import { transactionTypes } from '../../source/renderer/app/domains/WalletTransaction';
 import WalletWithNavigation from '../../source/renderer/app/components/wallet/layouts/WalletWithNavigation';
@@ -21,7 +21,7 @@ import WalletWithNavigation from '../../source/renderer/app/components/wallet/la
 // Screens
 import WalletSummary from '../../source/renderer/app/components/wallet/summary/WalletSummary';
 import WalletSendForm from '../../source/renderer/app/components/wallet/WalletSendForm';
-import WalletReceive from '../../source/renderer/app/components/wallet/WalletReceive';
+import WalletReceive from '../../source/renderer/app/components/wallet/receive/WalletReceive';
 import WalletTransactionsList from '../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
 import WalletSettings from '../../source/renderer/app/components/wallet/WalletSettings';
 import { WalletAssuranceModeOptions } from '../../source/renderer/app/domains/Wallet';
@@ -70,14 +70,14 @@ storiesOf('WalletScreens', module)
 
   .add('Summary', () => (
     <WalletSummary
-      walletName={text('Wallet Name', 'Wallet name')}
-      amount={text('Amount', '45119903750165.23')}
+      wallet={generateWallet('Wallet name', '45119903750165')}
       pendingAmount={{
         incoming: new BigNumber(number('Incoming', 1)),
         outgoing: new BigNumber(number('Outgoing', 2)),
         total: new BigNumber(3)
       }}
       numberOfTransactions={number('Number of transactions', 20303585)}
+      numberOfRecentTransactions={50}
       isLoadingTransactions={boolean('isLoadingTransactions', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
     />
@@ -139,6 +139,7 @@ storiesOf('WalletScreens', module)
       assuranceMode={{ low: 1, medium: 2 }}
       walletId="test-wallet"
       formattedWalletAmount={formattedWalletAmount}
+      totalAvailable={number('Transactions Sent', 1) + number('Transactions Received', 1)}
     />
   ))
 

@@ -23,12 +23,12 @@ export default defineMessages({
   },
   invalidAdaRedemptionCertificate: {
     id: 'global.errors.AdaRedemptionCertificateParseError',
-    defaultMessage: '!!!The ADA redemption code could not be parsed from the given document.',
+    defaultMessage: '!!!The ada redemption code could not be parsed from the given document.',
     description: 'Error message shown when invalid Ada redemption certificate was uploaded.',
   },
   invalidAdaRedemptionEncryptedCertificate: {
     id: 'global.errors.AdaRedemptionEncryptedCertificateParseError',
-    defaultMessage: '!!!The ADA redemption code could not be parsed, please check your passphrase.',
+    defaultMessage: '!!!The ada redemption code could not be parsed, please check your passphrase.',
     description: 'Error message shown when invalid Ada redemption encrypted certificate was uploaded.',
   },
   invalidWalletName: {
@@ -118,8 +118,8 @@ export default defineMessages({
   },
   unitAda: {
     id: 'global.unit.ada',
-    defaultMessage: '!!!Ada',
-    description: 'Name for "Ada" unit.'
+    defaultMessage: '!!!ADA',
+    description: 'Name for "ADA" unit.'
   },
   recoveryPhraseDialogTitle: {
     id: 'wallet.backup.recovery.phrase.dialog.title',

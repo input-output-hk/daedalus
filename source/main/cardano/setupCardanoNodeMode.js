@@ -47,7 +47,7 @@ const restartCardanoNode = async (node: CardanoNode) => {
   try {
     await node.restart();
   } catch (error) {
-    Logger.info(`Could not restart CardanoNode: ${error}`);
+    Logger.error('Could not restart CardanoNode', { error });
   }
 };
 
@@ -77,7 +77,7 @@ export const setupCardanoNodeMode = (
     onUpdated: () => {},
     onCrashed: (code) => {
       const restartTimeout = cardanoNode.startupTries > 0 ? 30000 : 0;
-      Logger.info(`CardanoNode crashed with code ${code}. Restarting in ${restartTimeout}ms …`);
+      Logger.info(`CardanoNode crashed with code ${code}. Restarting in ${restartTimeout}ms …`, { code, restartTimeout });
       setTimeout(() => restartCardanoNode(cardanoNode), restartTimeout);
     },
     onError: () => {},
@@ -87,28 +87,28 @@ export const setupCardanoNodeMode = (
   startCardanoNode(cardanoNode, launcherConfig);
 
   getCachedCardanoStatusChannel.onRequest(() => {
-    Logger.info('ipcMain: Received request from renderer for cardano status.');
+    Logger.info('ipcMain: Received request from renderer for cardano status', { status: cardanoNode.status });
     return Promise.resolve(cardanoNode.status);
   });
 
   setCachedCardanoStatusChannel.onReceive((status: ?CardanoStatus) => {
-    Logger.info('ipcMain: Received request from renderer to cache cardano status.');
+    Logger.info('ipcMain: Received request from renderer to cache cardano status', { status });
     cardanoNode.saveStatus(status);
-    return Promise.resolve();
+    return Promise.resolve(status);
   });
 
   cardanoStateChangeChannel.onRequest(() => {
-    Logger.info('ipcMain: Received request from renderer for node state.');
+    Logger.info('ipcMain: Received request from renderer for node state', { state: cardanoNode.state });
     return Promise.resolve(cardanoNode.state);
   });
 
   cardanoTlsConfigChannel.onRequest(() => {
-    Logger.info('ipcMain: Received request from renderer for tls config.');
+    Logger.info('ipcMain: Received request from renderer for tls config');
     return Promise.resolve(cardanoNode.tlsConfig);
   });
 
   cardanoAwaitUpdateChannel.onReceive(() => {
-    Logger.info('ipcMain: Received request from renderer to await update.');
+    Logger.info('ipcMain: Received request from renderer to await update');
     setTimeout(async () => {
       await cardanoNode.expectNodeUpdate();
       Logger.info('CardanoNode applied an update. Exiting Daedalus with code 20.');
@@ -118,12 +118,12 @@ export const setupCardanoNodeMode = (
   });
 
   cardanoRestartChannel.onReceive(() => {
-    Logger.info('ipcMain: Received request from renderer to restart node.');
+    Logger.info('ipcMain: Received request from renderer to restart node');
     return cardanoNode.restart(true); // forced restart
   });
 
   cardanoFaultInjectionChannel.onReceive((fault) => {
-    Logger.info(`ipcMain: Received request to inject a fault into cardano node: ${String(fault)}`);
+    Logger.info('ipcMain: Received request to inject a fault into cardano node', { fault });
     return cardanoNode.setFault(fault);
   });
 

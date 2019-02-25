@@ -2,28 +2,33 @@
 import type { App, BrowserWindow } from 'electron';
 import { compact } from 'lodash';
 import type { MenuActions } from './MenuActions.types';
+import { getTranslation } from '../utils/getTranslation';
 import { environment } from '../environment';
+
+const id = 'menu';
 
 export const winLinuxMenu = (
   app: App,
   window: BrowserWindow,
   actions: MenuActions,
-  isInSafeMode: boolean
+  isInSafeMode: boolean,
+  translations: {},
+  translation: Function = getTranslation(translations, id)
 ) => (
   [{
-    label: 'Daedalus',
+    label: translation('daedalus'),
     submenu: compact([{
-      label: 'About',
+      label: translation('daedalus.about'),
       click() {
         actions.openAbout();
       }
     }, {
-      label: 'Ada redemption',
+      label: translation('daedalus.adaRedemption'),
       click() {
         actions.goToAdaRedemption();
       }
     }, {
-      label: 'GPU safe mode',
+      label: translation('daedalus.gpuSafeMode'),
       type: 'checkbox',
       checked: isInSafeMode,
       click() {
@@ -32,61 +37,67 @@ export const winLinuxMenu = (
           actions.restartInSafeMode();
       },
     }, {
-      label: 'Network status',
-      accelerator: 'Ctrl+S',
+      label: translation('daedalus.blockConsolidationStatus'),
+      accelerator: 'Ctrl+B',
       click() {
-        actions.goToNetworkStatus();
+        actions.goBlockConsolidationStatus();
       },
     }, {
-      label: 'Close',
+      label: translation('daedalus.networkStatus'),
+      accelerator: 'Ctrl+S',
+      click() {
+        actions.openNetworkStatus();
+      },
+    }, {
+      label: translation('daedalus.close'),
       accelerator: 'Ctrl+W',
       click() {
         app.quit();
       }
     }])
   }, {
-    label: 'Edit',
+    label: translation('edit'),
     submenu: [{
-      label: 'Undo',
+      label: translation('edit.undo'),
       accelerator: 'Ctrl+Z',
       role: 'undo'
     }, {
-      label: 'Redo',
+      label: translation('edit.redo'),
       accelerator: 'Shift+Ctrl+Z',
       role: 'redo'
     }, {
       type: 'separator'
     }, {
-      label: 'Cut',
+      label: translation('edit.cut'),
       accelerator: 'Ctrl+X',
       role: 'cut'
     }, {
-      label: 'Copy',
+      label: translation('edit.copy'),
       accelerator: 'Ctrl+C',
       role: 'copy'
     }, {
-      label: 'Paste',
+      label: translation('edit.paste'),
       accelerator: 'Ctrl+V',
       role: 'paste'
     }, {
-      label: 'Select All',
+      label: translation('edit.selectAll'),
       accelerator: 'Ctrl+A',
       role: 'selectall'
     }]
   }, {
-    label: 'View',
+    label: translation('view'),
     submenu: [
       {
-        label: 'Reload',
+        label: translation('view.reload'),
         accelerator: 'Ctrl+R',
         click() { window.webContents.reload(); }
       },
       environment.isWindows ? {
-        label: 'Toggle Full Screen',
+        label: translation('view.toggleFullScreen'),
         accelerator: 'F11',
         click() { window.setFullScreen(!window.isFullScreen()); }
       } : {
-        label: 'Toggle Maximum Window Size',
+        label: translation('view.toggleMaximumWindowSize'),
         accelerator: 'F11',
         click() {
           if (window.isMaximized()) {
@@ -97,7 +108,7 @@ export const winLinuxMenu = (
         }
       },
       {
-        label: 'Toggle Developer Tools',
+        label: translation('view.toggleDeveloperTools'),
         accelerator: 'Alt+Ctrl+I',
         click() { window.toggleDevTools(); }
       }

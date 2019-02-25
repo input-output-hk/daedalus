@@ -13,6 +13,7 @@
       }
     }
 
+
     .syncingTransactionsText {
       color: var(--theme-transactions-list-group-date-color);
       font-family: var(--font-regular);
@@ -28,6 +29,12 @@
 .receiverInput {
   position: relative;
   margin-bottom: 20px;
+
+  :global {
+    .SimpleFormField_error a {
+      color: var(--rp-formfield-error-text-color, rgba(222, 50, 38, 0.5));
+    }
+  }
 }
 
 .adaLabel {

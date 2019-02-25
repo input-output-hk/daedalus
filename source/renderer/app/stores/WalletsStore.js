@@ -1,6 +1,6 @@
 // @flow
 import { observable, action, computed, runInAction, flow } from 'mobx';
-import { get, chunk, find } from 'lodash';
+import { get, chunk, find, isEqual } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
@@ -27,6 +27,7 @@ export default class WalletsStore extends Store {
   /* eslint-disable max-len */
   @observable active: ?Wallet = null;
   @observable isRestoreActive: boolean = false;
+  @observable restoringWalletId: ?string = null;
   @observable walletsRequest: Request<Array<Wallet>> = new Request(this.api.ada.getWallets);
   @observable importFromFileRequest: Request<Wallet> = new Request(this.api.ada.importWalletFromFile);
   @observable createWalletRequest: Request<Wallet> = new Request(this.api.ada.createWallet);
@@ -224,35 +225,6 @@ export default class WalletsStore extends Store {
 
   // ACTIONS
 
-  @action refreshWalletsData = async () => {
-    if (!this.stores.networkStatus.isConnected) return;
-    const result = await this.walletsRequest.execute().promise;
-    if (!result) return;
-    runInAction('refresh active wallet', () => {
-      if (this.active) {
-        this._setActiveWallet({ walletId: this.active.id });
-      }
-    });
-    const transactions = this.stores.transactions;
-    runInAction('refresh transaction data', () => {
-      const walletIds = result.map((wallet: Wallet) => wallet.id);
-      transactions.transactionsRequests = walletIds.map(walletId => ({
-        walletId,
-        recentRequest: transactions._getTransactionsRecentRequest(walletId),
-        allRequest: transactions._getTransactionsAllRequest(walletId),
-      }));
-      transactions._refreshTransactionData();
-    });
-  };
-
-  @action _setActiveWallet = ({ walletId }: { walletId: string }) => {
-    if (this.hasAnyWallets) {
-      this.active = this.all.find(wallet => wallet.id === walletId);
-    }
-  };
-
-  @action _unsetActiveWallet = () => { this.active = null; };
-
   goToWalletRoute(walletId: string) {
     const route = this.getWalletRoute(walletId);
     this.actions.router.goToRoute.trigger({ route });
@@ -275,8 +247,8 @@ export default class WalletsStore extends Store {
   };
 
   _pollRefresh = async () => {
-    const { isSynced, isSystemTimeCorrect } = this.stores.networkStatus;
-    return isSynced && isSystemTimeCorrect && await this.refreshWalletsData();
+    const { isSynced } = this.stores.networkStatus;
+    return isSynced && await this.refreshWalletsData();
   };
 
   _updateActiveWalletOnRouteChanges = () => {
@@ -328,10 +300,17 @@ export default class WalletsStore extends Store {
     if (this.stores.networkStatus.isConnected) {
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
+      let restoredWalletId = null; // id of a wallet which has just been restored
       runInAction('refresh active wallet', () => {
         if (this.active) {
           this._setActiveWallet({ walletId: this.active.id });
         }
+      });
+      runInAction('refresh active wallet restore', () => {
+        const restoringWallet = find(result, ['syncState.tag', 'restoring']);
+        const restoringWalletId = get(restoringWallet, 'id', null);
+        restoredWalletId = restoringWalletId === null && this.restoringWalletId || null;
+        this._setIsRestoreActive(restoringWalletId);
       });
       runInAction('refresh address data', () => {
         const walletIds = result.map((wallet: Wallet) => wallet.id);
@@ -348,17 +327,14 @@ export default class WalletsStore extends Store {
           recentRequest: this.stores.transactions._getTransactionsRecentRequest(walletId),
           allRequest: this.stores.transactions._getTransactionsAllRequest(walletId),
         }));
-        this.stores.transactions._refreshTransactionData();
-      });
-      runInAction('refresh active wallet restore', () => {
-        const restoringWallet = typeof find(result, ['syncState.tag', 'restoring']) !== 'undefined';
-        this._setIsRestoreActive(restoringWallet);
+        this.stores.transactions._refreshTransactionData(restoredWalletId);
       });
     }
   };
 
-  @action _setIsRestoreActive = (active: boolean) => {
-    this.isRestoreActive = active;
+  @action _setIsRestoreActive = (restoringWalletId: ?string) => {
+    this.isRestoreActive = restoringWalletId !== null;
+    this.restoringWalletId = restoringWalletId;
   };
 
   @action _restoreWallet = async (params: {
@@ -420,9 +396,17 @@ export default class WalletsStore extends Store {
   @action _setActiveWallet = ({ walletId }: { walletId: string }) => {
     if (this.hasAnyWallets) {
       const activeWalletId = this.active ? this.active.id : null;
-      const activeWalletChange = activeWalletId !== walletId;
-      if (activeWalletChange) this.stores.addresses.lastGeneratedAddress = null;
-      this.active = this.all.find(wallet => wallet.id === walletId);
+      const newActiveWallet = this.all.find(wallet => wallet.id === walletId);
+      const hasActiveWalletBeenChanged = activeWalletId !== walletId;
+      const hasActiveWalletBeenUpdated = !isEqual(this.active, newActiveWallet);
+      if (hasActiveWalletBeenChanged) {
+        // Active wallet has been replaced or removed
+        this.stores.addresses.lastGeneratedAddress = null;
+        this.active = newActiveWallet || null;
+      } else if (hasActiveWalletBeenUpdated) {
+        // Active wallet has been updated
+        if (this.active && newActiveWallet) this.active.update(newActiveWallet);
+      }
     }
   };
 
@@ -538,8 +522,7 @@ export default class WalletsStore extends Store {
   ) => {
     const locale = this.stores.profile.currentLocale;
     const intl = i18nContext(locale);
-    const isMainnet = this.environment.isMainnet;
-    const buildLabel = this.environment.buildLabel;
+    const { isMainnet, buildLabel } = this.environment;
     try {
       await downloadPaperWalletCertificate({
         address,

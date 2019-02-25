@@ -1,7 +1,7 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
 import moment from 'moment';
-import { isEqual } from 'lodash';
+import { isEqual, includes } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
@@ -10,9 +10,11 @@ import {
   NETWORK_STATUS_REQUEST_TIMEOUT,
   NETWORK_STATUS_POLL_INTERVAL,
   NTP_FORCE_CHECK_POLL_INTERVAL,
+  NTP_IGNORE_CHECKS_GRACE_PERIOD,
 } from '../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
 import { Logger } from '../utils/logging';
+import { getCurrentEpoch } from '../utils/network';
 import {
   cardanoStateChangeChannel,
   cardanoTlsConfigChannel,
@@ -20,6 +22,9 @@ import {
   cardanoStatusChannel,
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
+import { getNumberOfEpochsConsolidatedChannel } from '../ipc/getNumberOfEpochsConsolidatedChannel';
+import { getSystemStartTimeChannel } from '../ipc/getSystemStartTime.ipc';
+import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
 import type {
   CardanoNodeState,
@@ -27,6 +32,10 @@ import type {
   TlsConfig
 } from '../../../common/types/cardano-node.types';
 import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
+import type { GetNumberOfEpochsConsolidatedChannelResponse } from '../../../common/ipc/api';
+import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
+
+const { isDevelopment } = global.environment;
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
@@ -34,6 +43,20 @@ const NETWORK_STATUS = {
   SYNCING: 1,
   RUNNING: 2,
 };
+
+const NODE_STOPPING_STATES = [
+  CardanoNodeStates.EXITING,
+  CardanoNodeStates.STOPPING,
+  CardanoNodeStates.UPDATING,
+];
+
+const NODE_STOPPED_STATES = [
+  CardanoNodeStates.CRASHED,
+  CardanoNodeStates.ERRORED,
+  CardanoNodeStates.STOPPED,
+  CardanoNodeStates.UPDATED,
+  CardanoNodeStates.UNRECOVERABLE,
+];
 // END CONSTANTS ----------------------------
 
 export default class NetworkStatusStore extends Store {
@@ -53,13 +76,18 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeSubscribed = false; // Is 'true' in case node is subscribed to the network
   @observable isNodeSyncing = false; // Is 'true' in case we are receiving blocks and not stalling
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
+  @observable systemStartTime: number = 0;
   @observable isNodeInSync = false; // 'true' if syncing & local/network blocks diff within limit
+  @observable isNodeStopping = false; // 'true' if node is in `NODE_STOPPING_STATES` states
+  @observable isNodeStopped = false // 'true' if node is in `NODE_STOPPED_STATES` states
 
   @observable hasBeenConnected = false;
   @observable syncProgress = null;
   @observable initialLocalHeight = null;
   @observable localBlockHeight = 0;
   @observable networkBlockHeight = 0;
+  @observable epochsConsolidated: number = 0;
+  @observable currentEpoch: number = 0;
   @observable latestLocalBlockTimestamp = 0; // milliseconds
   @observable latestNetworkBlockTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
@@ -71,9 +99,19 @@ export default class NetworkStatusStore extends Store {
     this.api.ada.getNetworkStatus
   );
 
+  @observable isNotEnoughDiskSpace: boolean = false;
+  @observable diskSpaceRequired: string = '';
+  @observable diskSpaceMissing: string = '';
+  @observable diskSpaceRecommended: string = '';
+
   // DEFINE STORE METHODS
   setup() {
+    const actions = this.actions.networkStatus;
+    actions.getEpochsData.listen(this._getEpochsData);
     // ========== IPC CHANNELS =========== //
+
+    // Request node state
+    this._requestCardanoState();
 
     // Request cached node status for fast bootstrapping of frontend
     this._requestCardanoStatus();
@@ -85,30 +123,53 @@ export default class NetworkStatusStore extends Store {
     // Passively receive state changes of the cardano-node
     cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
 
+    // Get cluster start time (only needed for demo cluster)
+    if (isDevelopment) this._getSystemStartTime();
+
     // ========== MOBX REACTIONS =========== //
 
     this.registerReactions([
+      this._updateNetworkStatusWhenConnected,
       this._updateNetworkStatusWhenDisconnected,
       this._updateNodeStatus,
     ]);
 
-    // Setup network status polling interval
+    // Setup polling intervals
+    this._setNetworkStatusPollingInterval();
+    this._setForceCheckTimeDifferencePollingInterval();
+
+    // Ignore system time checks for the first 30 seconds:
+    this.ignoreSystemTimeChecks();
+    setTimeout(
+      () => this.ignoreSystemTimeChecks(false),
+      NTP_IGNORE_CHECKS_GRACE_PERIOD
+    );
+
+    // Setup disk space checks
+    getDiskSpaceStatusChannel.onReceive(this._onCheckDiskSpace);
+    this._checkDiskSpace();
+  }
+
+  // Setup network status polling interval
+  _setNetworkStatusPollingInterval = () => {
     this._networkStatusPollingInterval = setInterval(
       this._updateNetworkStatus, NETWORK_STATUS_POLL_INTERVAL
     );
+  };
 
-    // Forced time difference check polling interval
+  // Setup forced time difference check polling interval
+  _setForceCheckTimeDifferencePollingInterval = () => {
     this._forceCheckTimeDifferencePollingInterval = setInterval(
       this.forceCheckLocalTimeDifference, NTP_FORCE_CHECK_POLL_INTERVAL
     );
-  }
+  };
 
   async restartNode() {
     try {
-      Logger.info('NetwortStatusStore: Requesting a restart of cardano-node.');
+      Logger.info('NetwortStatusStore: Requesting a restart of cardano-node');
       await restartCardanoNodeChannel.send();
     } catch (error) {
-      Logger.info(`NetwortStatusStore: Restart of cardano-node failed with: "${error}"`);
+      Logger.error('NetwortStatusStore: Restart of cardano-node failed', { error });
     }
   }
 
@@ -130,13 +191,20 @@ export default class NetworkStatusStore extends Store {
     if (!this.isConnected) this._updateNetworkStatus();
   };
 
+  _updateNetworkStatusWhenConnected = () => {
+    if (this.isConnected) {
+      Logger.info('NetworkStatusStore: Connected, forcing NTP check now...');
+      this._updateNetworkStatus({ force_ntp_check: true });
+    }
+  };
+
   _updateNodeStatus = async () => {
     if (!this.isConnected) return;
     try {
       Logger.info('NetworkStatusStore: Updating node status');
       await cardanoStatusChannel.send(this._extractNodeStatus(this));
     } catch (error) {
-      Logger.error(`NetworkStatusStore: Error while updating node status: ${error}`);
+      Logger.error('NetworkStatusStore: Error while updating node status', { error });
     }
   };
 
@@ -146,32 +214,41 @@ export default class NetworkStatusStore extends Store {
     return Date.now() - this._startTime;
   }
 
+  _checkDiskSpace(diskSpaceRequired?: number) {
+    getDiskSpaceStatusChannel.send(diskSpaceRequired);
+  }
+
+  _requestCardanoState = async () => {
+    Logger.info('NetworkStatusStore: requesting node state');
+    const state = await cardanoStateChangeChannel.request();
+    Logger.info(`NetworkStatusStore: handling node state <${state}>`, { state });
+    await this._handleCardanoNodeStateChange(state);
+  };
+
   _requestCardanoStatus = async () => {
     try {
-      Logger.info('NetworkStatusStore: requesting node status.');
-      const state = await cardanoStateChangeChannel.request();
-      await this._handleCardanoNodeStateChange(state);
+      Logger.info('NetworkStatusStore: requesting node status');
       const status = await cardanoStatusChannel.request();
-      Logger.info(`NetworkStatusStore: received cached node status: ${JSON.stringify(status)}`);
+      Logger.info('NetworkStatusStore: received cached node status', { status });
       if (status) runInAction('assigning node status', () => Object.assign(this, status));
     } catch (error) {
-      Logger.info(`NetworkStatusStore: error while requesting node state ${error}`);
+      Logger.error('NetworkStatusStore: error while requesting node state', { error });
     }
   };
 
   _requestTlsConfig = async () => {
     try {
-      Logger.info('NetworkStatusStore: requesting tls config from main process.');
       const tlsConfig = await cardanoTlsConfigChannel.request();
+      Logger.info('NetworkStatusStore: requesting tls config from main process');
       await this._updateTlsConfig(tlsConfig);
     } catch (error) {
-      Logger.info(`NetworkStatusStore: error while requesting tls config ${error}.`);
+      Logger.error('NetworkStatusStore: error while requesting tls config', { error });
     }
   };
 
   _updateTlsConfig = (config: ?TlsConfig): Promise<void> => {
     if (config == null || isEqual(config, this._tlsConfig)) return Promise.resolve();
-    Logger.info('NetworkStatusStore: received tls config from main process.');
+    Logger.info('NetworkStatusStore: received tls config from main process');
     this.api.ada.setRequestConfig(config);
     this._tlsConfig = config;
     return Promise.resolve();
@@ -179,7 +256,7 @@ export default class NetworkStatusStore extends Store {
 
   _handleCardanoNodeStateChange = async (state: CardanoNodeState) => {
     if (state === this.cardanoNodeState) return Promise.resolve();
-    Logger.info(`NetworkStatusStore: handling cardano-node state <${state}>`);
+    Logger.info(`NetworkStatusStore: handling cardano-node state <${state}>`, { state });
     const wasConnected = this.isConnected;
     switch (state) {
       case CardanoNodeStates.STARTING: break;
@@ -192,7 +269,11 @@ export default class NetworkStatusStore extends Store {
         break;
       default: this._setDisconnected(wasConnected);
     }
-    runInAction('setting cardanoNodeState', () => this.cardanoNodeState = state);
+    runInAction('setting cardanoNodeState', () => {
+      this.cardanoNodeState = state;
+      this.isNodeStopping = includes(NODE_STOPPING_STATES, state);
+      this.isNodeStopped = includes(NODE_STOPPED_STATES, state);
+    });
     return Promise.resolve();
   };
 
@@ -214,7 +295,32 @@ export default class NetworkStatusStore extends Store {
     };
   };
 
+  _getSystemStartTime = async () => {
+    this._onReceiveSystemStartTime(
+      await getSystemStartTimeChannel.request()
+    );
+  };
+
+  _getEpochsData = async () => {
+    this._onReceiveEpochsData(
+      await getNumberOfEpochsConsolidatedChannel.request(),
+      getCurrentEpoch(this.systemStartTime)
+    );
+  };
+
   // DEFINE ACTIONS
+
+  @action _onReceiveSystemStartTime = (systemStartTime: number) => {
+    this.systemStartTime = systemStartTime;
+  };
+
+  @action _onReceiveEpochsData = (
+    epochsConsolidated: GetNumberOfEpochsConsolidatedChannelResponse,
+    currentEpoch: number
+  ) => {
+    this.epochsConsolidated = epochsConsolidated;
+    this.currentEpoch = currentEpoch;
+  };
 
   @action _updateNetworkStatus = async (queryParams?: NodeQueryParams) => {
     // In case we haven't received TLS config we shouldn't trigger any API calls
@@ -257,7 +363,7 @@ export default class NetworkStatusStore extends Store {
       // In case we no longer have TLS config we ignore all API call responses
       // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
       if (!this._tlsConfig) {
-        Logger.debug('Ignoring NetworkStatusRequest result during Cardano shutdown sequence...');
+        Logger.debug('NetworkStatusStore: Ignoring NetworkStatusRequest result during Cardano shutdown sequence...');
         return;
       }
 
@@ -307,20 +413,20 @@ export default class NetworkStatusStore extends Store {
           // If initial local block height isn't set, mark the first
           // result as the 'starting' height for the sync progress
           this.initialLocalHeight = localBlockchainHeight;
-          Logger.debug('Initial local block height: ' + JSON.stringify(localBlockchainHeight));
+          Logger.debug('NetworkStatusStore: Initial local block height', { localBlockchainHeight });
         }
 
         // Update the local block height on each request
         const lastLocalBlockHeight = this.localBlockHeight;
         this.localBlockHeight = localBlockchainHeight;
-        Logger.debug('Local blockchain height: ' + localBlockchainHeight);
+        Logger.debug('NetworkStatusStore: Local blockchain height', { localBlockchainHeight });
 
         // Update the network block height on each request
         const hasStartedReceivingBlocks = blockchainHeight > 0;
         const lastNetworkBlockHeight = this.networkBlockHeight;
         this.networkBlockHeight = blockchainHeight;
         if (hasStartedReceivingBlocks) {
-          Logger.debug('Network blockchain height: ' + blockchainHeight);
+          Logger.debug('NetworkStatusStore: Network blockchain height', { blockchainHeight });
         }
 
         // Check if the local block height has ceased to change
@@ -384,8 +490,8 @@ export default class NetworkStatusStore extends Store {
           const initialLocalHeight = this.initialLocalHeight || 0;
           const blocksSyncedSinceStart = this.localBlockHeight - initialLocalHeight;
           const totalUnsyncedBlocksAtStart = this.networkBlockHeight - initialLocalHeight;
-          Logger.debug('Total unsynced blocks at node start: ' + totalUnsyncedBlocksAtStart);
-          Logger.debug('Blocks synced since node start: ' + blocksSyncedSinceStart);
+          Logger.debug('NetworkStatusStore: Total unsynced blocks at node start', { totalUnsyncedBlocksAtStart });
+          Logger.debug('NetworkStatusStore: Blocks synced since node start', { blocksSyncedSinceStart });
         }
       });
 
@@ -401,9 +507,9 @@ export default class NetworkStatusStore extends Store {
           if (!this.hasBeenConnected) {
             runInAction('update hasBeenConnected', () => this.hasBeenConnected = true);
           }
-          Logger.debug('Connection Lost. Reconnecting...');
+          Logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
         } else if (this.hasBeenConnected) {
-          Logger.debug('Connection Restored');
+          Logger.debug('NetworkStatusStore: Connection Restored');
         }
       }
     } catch (error) {
@@ -421,16 +527,50 @@ export default class NetworkStatusStore extends Store {
       if (!this.hasBeenConnected) {
         runInAction('update hasBeenConnected', () => this.hasBeenConnected = true);
       }
-      Logger.debug('Connection Lost. Reconnecting...');
+      Logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
     }
   };
 
-  @action ignoreSystemTimeChecks = () => {
-    this.isSystemTimeIgnored = true;
+  @action ignoreSystemTimeChecks = (flag: boolean = true) => {
+    this.isSystemTimeIgnored = flag;
   };
 
   forceCheckLocalTimeDifference = () => {
-    this._updateNetworkStatus({ force_ntp_check: true });
+    if (this.isConnected) this._updateNetworkStatus({ force_ntp_check: true });
+  };
+
+  @action _onCheckDiskSpace = (
+    {
+      isNotEnoughDiskSpace,
+      diskSpaceRequired,
+      diskSpaceMissing,
+      diskSpaceRecommended,
+    }: CheckDiskSpaceResponse
+  ): Promise<void> => {
+    this.isNotEnoughDiskSpace = isNotEnoughDiskSpace;
+    this.diskSpaceRequired = diskSpaceRequired;
+    this.diskSpaceMissing = diskSpaceMissing;
+    this.diskSpaceRecommended = diskSpaceRecommended;
+
+    if (this.isNotEnoughDiskSpace) {
+      if (this._networkStatusPollingInterval) {
+        clearInterval(this._networkStatusPollingInterval);
+        this._networkStatusPollingInterval = null;
+      }
+      if (this._forceCheckTimeDifferencePollingInterval) {
+        clearInterval(this._forceCheckTimeDifferencePollingInterval);
+        this._forceCheckTimeDifferencePollingInterval = null;
+      }
+    } else {
+      if (!this._networkStatusPollingInterval) {
+        this._setNetworkStatusPollingInterval();
+      }
+      if (!this._forceCheckTimeDifferencePollingInterval) {
+        this._setForceCheckTimeDifferencePollingInterval();
+      }
+    }
+
+    return Promise.resolve();
   };
 
   // DEFINE COMPUTED VALUES

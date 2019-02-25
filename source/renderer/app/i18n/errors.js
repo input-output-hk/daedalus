@@ -13,7 +13,7 @@ export class AdaRedemptionCertificateParseError extends LocalizableError {
   constructor() {
     super({
       id: 'global.errors.AdaRedemptionCertificateParseError',
-      defaultMessage: '!!!The ADA redemption code could not be parsed from the given document.',
+      defaultMessage: '!!!The ada redemption code could not be parsed from the given document.',
     });
   }
 }
@@ -22,7 +22,7 @@ export class AdaRedemptionEncryptedCertificateParseError extends LocalizableErro
   constructor() {
     super({
       id: 'global.errors.AdaRedemptionEncryptedCertificateParseError',
-      defaultMessage: '!!!The ADA redemption code could not be parsed, please check your passphrase.',
+      defaultMessage: '!!!The ada redemption code could not be parsed, please check your passphrase.',
     });
   }
 }

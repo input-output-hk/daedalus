@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -20,6 +21,7 @@ import WalletSendConfirmationDialog from './WalletSendConfirmationDialog';
 import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
 import { formattedAmountToBigNumber, formattedAmountToNaturalUnits, formattedAmountToLovelace } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
+import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
 
 export const messages = defineMessages({
   titleLabel: {
@@ -46,11 +48,6 @@ export const messages = defineMessages({
     id: 'wallet.send.form.amount.label',
     defaultMessage: '!!!Amount',
     description: 'Label for the "Amount" number input in the wallet send form.'
-  },
-  equalsAdaHint: {
-    id: 'wallet.send.form.amount.equalsAda',
-    defaultMessage: '!!!equals {amount} ADA',
-    description: 'Convertion hint for the "Amount" number input in the wallet send form.'
   },
   descriptionLabel: {
     id: 'wallet.send.form.description.label',
@@ -100,13 +97,14 @@ type Props = {
   addressValidator: Function,
   openDialogAction: Function,
   isDialogOpen: Function,
+  onExternalLinkClick?: Function,
   isRestoreActive: boolean,
 };
 
 type State = {
   isTransactionFeeCalculated: boolean,
   transactionFee: BigNumber,
-  transactionFeeError: ?string,
+  transactionFeeError: ?string | ?Node,
 };
 
 @observer
@@ -216,7 +214,7 @@ export default class WalletSendForm extends Component<Props, State> {
     const { intl } = this.context;
     const {
       currencyUnit, currencyMaxIntegerDigits, currencyMaxFractionalDigits,
-      isDialogOpen, isRestoreActive,
+      isDialogOpen, isRestoreActive, onExternalLinkClick
     } = this.props;
     const { isTransactionFeeCalculated, transactionFee, transactionFeeError } = this.state;
     const amountField = form.$('amount');
@@ -305,6 +303,7 @@ export default class WalletSendForm extends Component<Props, State> {
             transactionFee={fees}
             amountToNaturalUnits={formattedAmountToNaturalUnits}
             currencyUnit={currencyUnit}
+            onExternalLinkClick={onExternalLinkClick}
           />
         ) : null}
 
@@ -335,12 +334,21 @@ export default class WalletSendForm extends Component<Props, State> {
         });
       }
     } catch (error) {
+      const errorHasLink = !!error.values.linkLabel;
+      const transactionFeeError = errorHasLink
+        ? (
+          <FormattedHTMLMessageWithLink
+            message={error}
+            onExternalLinkClick={this.props.onExternalLinkClick}
+          />
+        )
+        : this.context.intl.formatMessage(error);
       if (this._isMounted) {
         this._isCalculatingFee = false;
         this.setState({
           isTransactionFeeCalculated: false,
           transactionFee: new BigNumber(0),
-          transactionFeeError: this.context.intl.formatMessage(error),
+          transactionFeeError,
         });
       }
     }

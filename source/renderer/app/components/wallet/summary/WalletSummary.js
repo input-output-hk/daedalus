@@ -3,12 +3,14 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
+import classnames from 'classnames';
 import adaSymbolBig from '../../../assets/images/ada-symbol-big-dark.inline.svg';
 import adaSymbolSmallest from '../../../assets/images/ada-symbol-smallest-dark.inline.svg';
 import BorderedBox from '../../widgets/BorderedBox';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import type { UnconfirmedAmount } from '../../../types/unconfirmedAmountType';
 import styles from './WalletSummary.scss';
+import Wallet from '../../../domains/Wallet';
 
 const messages = defineMessages({
   pendingOutgoingConfirmationLabel: {
@@ -29,9 +31,9 @@ const messages = defineMessages({
 });
 
 type Props = {
-  walletName: string,
-  amount: string,
-  numberOfTransactions: number,
+  wallet: Wallet,
+  numberOfRecentTransactions: number,
+  numberOfTransactions?: number,
   pendingAmount: UnconfirmedAmount,
   isLoadingTransactions: boolean,
   isRestoreActive: boolean,
@@ -46,20 +48,26 @@ export default class WalletSummary extends Component<Props> {
 
   render() {
     const {
-      walletName,
-      amount,
+      wallet,
       pendingAmount,
+      numberOfRecentTransactions,
       numberOfTransactions,
       isLoadingTransactions,
       isRestoreActive,
     } = this.props;
     const { intl } = this.context;
+    const isLoadingAllTransactions = numberOfRecentTransactions && !numberOfTransactions;
+    const numberOfTransactionsStyles = classnames([
+      styles.numberOfTransactions,
+      isLoadingAllTransactions ? styles.isLoadingNumberOfTransactions : null
+    ]);
+
     return (
       <div className={styles.component}>
         <BorderedBox>
-          <div className={styles.walletName}>{walletName}</div>
+          <div className={styles.walletName}>{wallet.name}</div>
           <div className={styles.walletAmount}>
-            {amount}
+            {wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
             <SVGInline svg={adaSymbolBig} className={styles.currencySymbolBig} />
           </div>
 
@@ -83,8 +91,9 @@ export default class WalletSummary extends Component<Props> {
           ) : null}
 
           {!isLoadingTransactions ? (
-            <div className={styles.numberOfTransactions}>
-              {intl.formatMessage(messages.transactionsLabel)}: {numberOfTransactions}
+            <div className={numberOfTransactionsStyles}>
+              {intl.formatMessage(messages.transactionsLabel)}:&nbsp;
+              {numberOfTransactions || numberOfRecentTransactions}
             </div>
           ) : null}
         </BorderedBox>

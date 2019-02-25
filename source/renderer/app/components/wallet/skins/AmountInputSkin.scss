@@ -9,7 +9,7 @@
   color: var(--theme-input-right-floating-text-color);
   font-family: var(--font-light);
   font-size: 14px;
-  user-select: auto;
+  user-select: text;
 }
 
 .total {
@@ -20,5 +20,5 @@
   font-family: var(--font-light);
   font-size: 16px;
   text-transform: uppercase;
-  user-select: auto;
+  user-select: text;
 }

@@ -169,6 +169,7 @@ export default {
   '--font-bold': 'NotoSans-Bold, NotoSansCJKjp-Bold',
   '--font-heavy': 'NotoSans-ExtraBold, NotoSansCJKjp-Black',
   '--font-black': 'NotoSans-Black, NotoSansCJKjp-Black',
+  '--font-mono': 'SFMono-Light',
 
   '--theme-input-hint-font': 'NotoSans-Regular, NotoSansCJKjp-Regular',
 
@@ -281,7 +282,7 @@ export default {
   '--theme-node-update-deny-button-background-color-active': 'rgba(30, 48, 74, 0.3)',
   '--theme-node-update-button-text-color': '#fafbfc',
 
-  '--theme-notification-message-background-color': 'rgba(36, 61, 98, 0.8)',
+  '--theme-notification-message-background-color': 'rgba(36, 61, 98, 0.88)',
   '--theme-notification-message-text-color': '#fafbfc',
 
   '--theme-receive-qr-code-background-color': 'transparent',
@@ -425,6 +426,10 @@ export default {
 
   '--theme-loading-background-color': '#fafbfc',
 
+  '--theme-loading-no-disk-space-background-color': 'rgba(171, 23, 0, 0.94)',
+  '--theme-loading-no-disk-space-text-color': '#fafbfc',
+  '--theme-loading-no-disk-space-attention-icon-color': '#fafbfc',
+
   '--theme-mnemonic-background-color': '#e6e9ee',
   '--theme-mnemonic-background-color-hover': '#eaecf1',
 
@@ -447,4 +452,15 @@ export default {
 
   '--theme-progress-bar-background-color': 'rgba(255, 255, 255, 0.3)',
   '--theme-progress-bar-foreground-color': 'rgba(255, 255, 255, 0.7)',
+
+  '--theme-block-consolidation-background-color': '#ebeff2',
+  '--theme-block-consolidation-container-background-color': '#fafbfc',
+  '--theme-block-consolidation-title-text-color': '#5e6066',
+  '--theme-block-consolidation-text-color': 'rgba(94, 96, 102, 0.7)',
+  '--theme-block-consolidation-text-link-color': '#296fd0',
+  '--theme-block-consolidation-indicator-container-background-color': '#ebeff2',
+  '--theme-block-consolidation-stripe-dark-1-background-color': '#1d3e65',
+  '--theme-block-consolidation-stripe-dark-2-background-color': '#3e5b7f',
+  '--theme-block-consolidation-stripe-light-1-background-color': '#8497ac',
+  '--theme-block-consolidation-stripe-light-2-background-color': '#95a5b9',
 };

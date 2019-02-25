@@ -24,12 +24,14 @@ const REPORT_URL = process.env.REPORT_URL || STAGING_REPORT_URL;
 const isDev = CURRENT_NODE_ENV === DEVELOPMENT;
 const isTest = CURRENT_NODE_ENV === TEST;
 const isProduction = CURRENT_NODE_ENV === PRODUCTION;
-const isMainnet = CURRENT_NODE_ENV === MAINNET;
-const isStaging = CURRENT_NODE_ENV === STAGING;
-const isTestnet = CURRENT_NODE_ENV === TESTNET;
+const isMainnet = NETWORK === MAINNET;
+const isStaging = NETWORK === STAGING;
+const isTestnet = NETWORK === TESTNET;
+const isDevelopment = NETWORK === DEVELOPMENT;
 const isWatchMode = process.env.IS_WATCH_MODE;
 const API_VERSION = process.env.API_VERSION || 'dev';
 const PLATFORM = os.platform();
+const PLATFORM_VERSION = os.release();
 const OS = OS_NAMES[PLATFORM] || PLATFORM;
 const BUILD = process.env.BUILD_NUMBER || 'dev';
 const BUILD_NUMBER = uniq([API_VERSION, BUILD]).join('.');
@@ -58,11 +60,13 @@ export const environment: Environment = Object.assign({}, {
   isMainnet,
   isStaging,
   isTestnet,
+  isDevelopment,
   isWatchMode,
   build: BUILD,
   buildNumber: BUILD_NUMBER,
   buildLabel: BUILD_LABEL,
   platform: PLATFORM,
+  platformVersion: PLATFORM_VERSION,
   os: OS,
   installerVersion: INSTALLER_VERSION,
   version,

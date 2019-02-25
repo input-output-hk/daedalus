@@ -4,6 +4,8 @@ import type { ChildProcess, spawn, exec } from 'child_process';
 import type { WriteStream } from 'fs';
 import { toInteger } from 'lodash';
 import { environment } from '../environment';
+import { deriveProcessNames, deriveStorageKeys, promisedCondition } from './utils';
+import { getProcess } from '../utils/processes';
 import type {
   CardanoNodeState,
   CardanoStatus,
@@ -13,13 +15,11 @@ import type {
   TlsConfig
 } from '../../common/types/cardano-node.types';
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
-import { deriveProcessNames, deriveStorageKeys, promisedCondition } from './utils';
-import { getProcess } from '../utils/processes';
 
 type Logger = {
-  debug: (string) => void,
-  info: (string) => void,
-  error: (string) => void,
+  debug: (string, ?Object) => void,
+  info: (string, ?Object) => void,
+  error: (string, ?Object) => void,
 };
 
 type Actions = {
@@ -218,10 +218,10 @@ export class CardanoNode {
     const nodeCanBeStarted = await this._canBeStarted();
 
     if (!nodeCanBeStarted) {
-      return Promise.reject('CardanoNode: Cannot be started.');
+      return Promise.reject('CardanoNode: Cannot be started');
     }
     if (this._isUnrecoverable(config) && !isForced) {
-      return Promise.reject('CardanoNode: Too many startup retries.');
+      return Promise.reject('CardanoNode: Too many startup retries');
     }
     // Setup
     const { _log } = this;
@@ -231,15 +231,14 @@ export class CardanoNode {
 
     this._startupTries++;
     this._changeToState(CardanoNodeStates.STARTING);
-    _log.info(`CardanoNode#start: trying to start cardano-node for the ${this._startupTries}. time.`);
+    _log.info(`CardanoNode#start: trying to start cardano-node for the ${this._startupTries} time`, { startupTries: this._startupTries });
 
     return new Promise((resolve, reject) => {
       const logFile = createWriteStream(config.logFilePath, { flags: 'a' });
       logFile.on('open', async () => {
         this._cardanoLogFile = logFile;
         // Spawning cardano-node
-        const jsonArgs = JSON.stringify(nodeArgs);
-        _log.debug(`from path: ${nodePath} with args: ${jsonArgs}.`);
+        _log.debug('CardanoNode path with args', { path: nodePath, args: nodeArgs });
         const node = this._spawnNode(nodePath, nodeArgs, logFile);
         this._node = node;
         try {
@@ -250,10 +249,10 @@ export class CardanoNode {
           node.on('error', this._handleCardanoNodeError);
           // Request cardano-node to reply with port
           node.send({ QueryPort: [] });
-          _log.info(`CardanoNode#start: cardano-node child process spawned with PID ${node.pid}`);
+          _log.info(`CardanoNode#start: cardano-node child process spawned with PID ${node.pid}`, { pid: node.pid });
           resolve();
         } catch (_) {
-          reject('CardanoNode#start: Error while spawning cardano-node.');
+          reject('CardanoNode#start: Error while spawning cardano-node');
         }
       });
     });
@@ -269,10 +268,10 @@ export class CardanoNode {
   async stop(): Promise<void> {
     const { _node, _log, _config } = this;
     if (await this._isDead()) {
-      _log.info('CardanoNode#stop: process is not running anymore.');
+      _log.info('CardanoNode#stop: process is not running anymore');
       return Promise.resolve();
     }
-    _log.info('CardanoNode#stop: disconnecting from cardano-node process.');
+    _log.info('CardanoNode#stop: disconnecting from cardano-node process');
     try {
       if (_node) _node.disconnect();
       this._changeToState(CardanoNodeStates.STOPPING);
@@ -281,7 +280,7 @@ export class CardanoNode {
       this._reset();
       return Promise.resolve();
     } catch (error) {
-      _log.info(`CardanoNode#stop: cardano-node did not stop correctly: ${error}`);
+      _log.error('CardanoNode#stop: cardano-node did not stop correctly', { error });
       try {
         await this.kill();
       } catch (killError) {
@@ -300,18 +299,19 @@ export class CardanoNode {
     const { _node, _log } = this;
     return new Promise(async (resolve, reject) => {
       if (await this._isDead()) {
-        _log.info('CardanoNode#kill: process is already dead.');
+        _log.info('CardanoNode#kill: process is already dead');
         return Promise.resolve();
       }
       try {
-        _log.info('CardanoNode#kill: killing cardano-node process.');
+        _log.info('CardanoNode#kill: killing cardano-node process');
         if (_node) _node.kill();
         await this._waitForCardanoToExitOrKillIt();
         await this._storeProcessStates();
+        this._changeToState(CardanoNodeStates.STOPPED);
         this._reset();
         resolve();
       } catch (_) {
-        _log.info('CardanoNode#kill: could not kill cardano-node.');
+        _log.info('CardanoNode#kill: could not kill cardano-node');
         await this._storeProcessStates();
         this._reset();
         reject('Could not kill cardano-node.');
@@ -331,14 +331,14 @@ export class CardanoNode {
     try {
       // Stop cardano nicely if it is still awake
       if (await this._isConnected()) {
-        _log.info('CardanoNode#restart: stopping current node.');
+        _log.info('CardanoNode#restart: stopping current node');
         await this.stop();
       }
-      _log.info(`CardanoNode#restart: restarting node with previous config (isForced: ${isForced.toString()}).`);
+      _log.info('CardanoNode#restart: restarting node with previous config', { isForced });
       await this._waitForCardanoToExitOrKillIt();
       await this.start(_config, isForced);
     } catch (error) {
-      _log.info(`CardanoNode#restart: Could not restart cardano-node "${error}"`);
+      _log.error('CardanoNode#restart: Could not restart cardano-node', { error });
       this._changeToState(CardanoNodeStates.ERRORED);
       return Promise.reject(error);
     }
@@ -361,14 +361,14 @@ export class CardanoNode {
   async expectNodeUpdate(): Promise<void> {
     const { _log, _config } = this;
     this._changeToState(CardanoNodeStates.UPDATING);
-    _log.info('CardanoNode: waiting for node to apply update.');
+    _log.info('CardanoNode: waiting for node to apply update');
     try {
       await promisedCondition(() => (
         this._state === CardanoNodeStates.UPDATED
       ), _config.updateTimeout);
       await this._waitForNodeProcessToExit(_config.updateTimeout);
     } catch (error) {
-      _log.info('CardanoNode: did not apply update as expected. Killing it.');
+      _log.info('CardanoNode: did not apply update as expected, killing it...');
       return this.kill();
     }
   }
@@ -432,7 +432,7 @@ export class CardanoNode {
    */
   _handleCardanoNodeMessage = (msg: CardanoNodeIpcMessage) => {
     if (msg == null) return;
-    this._log.info(`CardanoNode: received message: ${JSON.stringify(msg)}`);
+    this._log.info('CardanoNode: received message', { msg });
     if (msg.ReplyPort != null) this._handleCardanoReplyPortMessage(msg.ReplyPort);
     if (msg.FInjects != null) this._handleCardanoFaultInjectionResponse(msg.FInjects);
   };
@@ -471,13 +471,13 @@ export class CardanoNode {
    * @private
    */
   _handleCardanoFaultInjectionResponse = (response: FaultInjectionIpcResponse) => {
-    this._log.info(`CardanoNode: the following faults are active\n${JSON.stringify(response)}`);
+    this._log.info('CardanoNode: the following injected faults are active', { injectedFaults: response });
     this._injectedFaults = response;
   };
 
   _handleCardanoNodeError = async (error: Error) => {
     const { _log } = this;
-    _log.info(`CardanoNode: error: ${error.toString()}`);
+    _log.error('CardanoNode: error', { error });
     this._changeToState(CardanoNodeStates.ERRORED);
     this._transitionListeners.onError(error);
     await this.restart();
@@ -485,7 +485,7 @@ export class CardanoNode {
 
   _handleCardanoNodeExit = async (code: number, signal: string) => {
     const { _log, _config, _node } = this;
-    _log.info(`CardanoNode: says it exited with [${code}, ${signal}]`);
+    _log.info('CardanoNode exited', { code, signal });
     // We don't know yet what happened but we can be sure cardano-node is exiting
     if (this._state === CardanoNodeStates.RUNNING) {
       this._changeToState(CardanoNodeStates.EXITING);
@@ -494,14 +494,17 @@ export class CardanoNode {
       // Before proceeding with exit procedures, wait until the node is really dead.
       await this._waitForNodeProcessToExit(_config.shutdownTimeout);
     } catch (_) {
-      _log.error(`CardanoNode: sent exit code ${code} but was still running after ${_config.shutdownTimeout}ms. Killing it now.`);
+      _log.error(
+        `CardanoNode: sent exit code ${code} but was still running after ${_config.shutdownTimeout}ms. Killing it now.`,
+        { code, shutdownTimeout: _config.shutdownTimeout }
+      );
       try {
         if (_node) await this._ensureProcessIsNotRunning(_node.pid, CARDANO_PROCESS_NAME);
       } catch (e) {
-        _log.info('CardanoNode: did not exit correctly.');
+        _log.info('CardanoNode: did not exit correctly');
       }
     }
-    _log.info(`CardanoNode: process really exited with [${code}, ${signal}]}`);
+    _log.info('CardanoNode: process really exited', { code, signal });
     // Handle various exit scenarios
     if (this._state === CardanoNodeStates.STOPPING) {
       this._changeToState(CardanoNodeStates.STOPPED);
@@ -523,7 +526,7 @@ export class CardanoNode {
 
   _changeToState(state: CardanoNodeState, ...args: Array<any>) {
     const { _log, _transitionListeners } = this;
-    _log.info(`CardanoNode: transitions to <${state}>`);
+    _log.info(`CardanoNode: transitions to <${state}>`, { state });
     this._state = state;
     this._actions.broadcastStateChange(state);
     switch (state) {
@@ -573,18 +576,21 @@ export class CardanoNode {
 
   _ensureProcessIsNotRunning = async (pid: number, name: string) => {
     const { _log } = this;
-    _log.info(`CardanoNode: checking if ${name} process (PID: ${pid}) is still running`);
+    _log.info(`CardanoNode: checking if ${name} process (PID: ${pid}) is still running`, { name, pid });
     if (await this._isProcessRunning(pid, name)) {
-      _log.info(`CardanoNode: killing ${name} process (PID: ${pid})`);
+      _log.info(`CardanoNode: killing ${name} process (PID: ${pid})`, { name, pid });
       try {
         await this._killProcessWithName(pid, name);
         return Promise.resolve();
       } catch (error) {
-        _log.info(`CardanoNode: could not kill ${name} process (PID: ${pid})`);
+        _log.error(
+          `CardanoNode: could not kill ${name} process (PID: ${pid})`,
+          { name, pid, error }
+        );
         return Promise.reject();
       }
     }
-    this._log.info(`No ${name} process (PID: ${pid}) is running.`);
+    this._log.info(`No ${name} process (PID: ${pid}) is running`, { name, pid });
   };
 
   _ensureCurrentCardanoNodeIsNotRunning = async (): Promise<void> => {
@@ -596,8 +602,8 @@ export class CardanoNode {
 
   _ensurePreviousCardanoNodeIsNotRunning = async (): Promise<void> => {
     const { _log } = this;
-    _log.info('CardanoNode: checking if previous cardano-node process is still running');
     const previousPID: ?number = await this._retrieveData(PREVIOUS_CARDANO_PID);
+    _log.info('CardanoNode: checking if previous cardano-node process is still running', { previousPID });
     if (previousPID == null) { return Promise.resolve(); }
     return await this._ensureProcessIsNotRunning(previousPID, CARDANO_PROCESS_NAME);
   };
@@ -607,12 +613,13 @@ export class CardanoNode {
     try {
       const previousProcess = await getProcess(previousPID, processName);
       if (!previousProcess) {
-        _log.debug(`CardanoNode: No previous ${processName} process is running anymore.`);
+        _log.debug(`CardanoNode: No previous ${processName} process is running anymore`, { processName });
         return false;
       }
-      _log.debug(`CardanoNode: previous ${processName} process found: ${JSON.stringify(previousProcess)}`);
+      _log.debug(`CardanoNode: previous ${processName} process found`, { processName, previousProcess });
       return true;
     } catch (error) {
+      _log.error('CardanoNode: _isProcessRunning error', { error });
       return false;
     }
   };
@@ -622,24 +629,24 @@ export class CardanoNode {
     const { _config } = this;
     try {
       if (!environment.isWindows) {
-        this._log.info('CardanoNode: using "process.kill(pid)" to kill.');
+        this._log.info(`CardanoNode: using "process.kill(${pid})" to kill it`, { pid });
         process.kill(pid);
       } else {
         // https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/taskkill
         const windowsKillCmd = `taskkill /pid ${pid} /t /f`;
-        this._log.info(`CardanoNode (Windows): using "${windowsKillCmd}" to kill.`);
+        this._log.info('CardanoNode (Windows): using kill command to kill it', { windowsKillCmd });
         this._actions.exec(windowsKillCmd);
       }
       await promisedCondition(async () => (
         (await this._isProcessRunning(pid, name)) === false
       ), _config.killTimeout);
 
-      this._log.info(`CardanoNode: successfuly killed ${name} process (PID: ${pid})`);
+      this._log.info(`CardanoNode: successfuly killed ${name} process (PID: ${pid})`, { name, pid });
       return Promise.resolve();
     } catch (error) {
-      this._log.info(
-        `CardanoNode: _killProcessWithName returned an error attempting to kill ${name}
-        process (PID: ${pid}). Error: ${JSON.stringify(error)}`
+      this._log.error(
+        `CardanoNode: _killProcessWithName returned an error attempting to kill ${name} process (PID: ${pid})`,
+        { processName: name, pid, error }
       );
       return Promise.reject(error);
     }
@@ -649,7 +656,7 @@ export class CardanoNode {
     const { _log } = this;
     if (this._node != null) {
       const { pid } = this._node;
-      _log.info(`CardanoNode: storing last cardano-node PID: ${pid}`);
+      _log.info('CardanoNode: storing last cardano-node PID', { pid });
       await this._storeData(PREVIOUS_CARDANO_PID, pid);
     }
   }
@@ -663,7 +670,7 @@ export class CardanoNode {
         this._log.info(`CardanoNode: ${identifier} stored successfuly`);
         resolve();
       } catch (error) {
-        this._log.info(`CardanoNode: failed to store ${identifier}. Error: ${JSON.stringify(error)}`);
+        this._log.error(`CardanoNode: failed to store ${identifier}`, { error });
         reject(error);
       }
     })
@@ -681,10 +688,10 @@ export class CardanoNode {
           resolve(null);
         }
 
-        this._log.info(`CardanoNode: get ${identifier} success: ${JSON.stringify(data)}`);
+        this._log.info(`CardanoNode: get ${identifier} success`, { [`${identifier}`]: data });
         resolve(toInteger(data));
       } catch (error) {
-        this._log.info(`CardanoNode: get ${identifier} failed. Error: ${JSON.stringify(error)}`);
+        this._log.error(`CardanoNode: get ${identifier} failed`, { error });
         reject(error);
       }
     })

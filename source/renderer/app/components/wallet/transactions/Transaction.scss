@@ -27,9 +27,8 @@
 .arrow {
   bottom: 10px;
   display: none;
-  float: left;
   margin-left: -70px;
-  margin-top: -20px;
+  margin-top: -17px;
   opacity: .1;
   position: sticky;
   text-align: center;
@@ -84,7 +83,7 @@
   font-size: 16px;
   letter-spacing: 1px;
   margin-left: auto;
-  user-select: auto;
+  user-select: text;
 }
 
 .pendingLabel, .failedLabel, .low, .medium, .high {
@@ -175,20 +174,35 @@
 .details {
   height: auto;
   cursor: default;
+
+  .row {
+    &.retainHeight {
+      min-height: 40px;
+    }
+  }
+
   * + h2,
   * + .row {
     margin-top: 20px;
   }
+
   h2 {
     font-family: var(--font-medium);
     font-size: 16px;
     margin-bottom: 8px;
   }
+
   span {
     font-family: var(--font-light);
     font-size: 14px;
-    user-select: auto;
+    user-select: text;
     word-break: break-all;
+
+    &.address, &.transactionId {
+      font-family: var(--font-mono);
+      letter-spacing: -.4px;
+      opacity: 0.8;
+    }
 
     &.address {
       display: block;

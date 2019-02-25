@@ -15,7 +15,7 @@ in
 let
   daedalusPkgs = import ./. { inherit cluster system; };
   hostPkgs = import pkgs.path { config = {}; overlays = []; };
-  yaml2json = hostPkgs.haskell.lib.disableCabalFlag hostPkgs.haskellPackages.yaml "no-exe";
+  yaml2json = pkgs.haskell.lib.disableCabalFlag pkgs.haskellPackages.yaml "no-exe";
   yarn = pkgs.yarn.override { inherit nodejs; };
   nodejs = pkgs.nodejs-8_x;
   launcher-json = hostPkgs.runCommand "read-launcher-config.json" { buildInputs = [ yaml2json ]; } "yaml2json ${daedalusPkgs.daedalus.cfg}/etc/launcher-config.yaml > $out";
@@ -79,7 +79,8 @@ let
     ] ++ (localLib.optionals autoStartBackend [
       daedalusPkgs.daedalus-bridge
     ]) ++ (localLib.optionals (pkgs.stdenv.hostPlatform.system != "x86_64-darwin") [
-      daedalusPkgs.electron_3_0_13
+      daedalusPkgs.electron3
+      winePackages.minimal
     ])
     );
   buildShell = pkgs.stdenv.mkDerivation {
@@ -155,7 +156,7 @@ let
       }
       yarn install
       ${pkgs.lib.optionalString (pkgs.stdenv.hostPlatform.system != "x86_64-darwin") ''
-        ln -svf ${daedalusPkgs.electron_3_0_13}/bin/electron         ./node_modules/electron/dist/electron
+        ln -svf ${daedalusPkgs.electron3}/bin/electron ./node_modules/electron/dist/electron
         ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
       ''}
       ${localLib.optionalString (! autoStartBackend) ''

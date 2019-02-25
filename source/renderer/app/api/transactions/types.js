@@ -44,6 +44,10 @@ export type GetTransactionsRequest = {
   searchTerm: string,
   skip: number,
   limit: number,
+  isFirstLoad: boolean,
+  isRestoreActive: boolean,
+  isRestoreCompleted: boolean,
+  cachedTransactions: Array<WalletTransaction>,
 };
 
 export type TransactionRequest = {

@@ -10,7 +10,6 @@ import type {
   SubmitBugReportRequest
 } from '../../common/ipc/api';
 import { Logger } from '../utils/logging';
-import { stringifyData } from '../../common/utils/logging';
 
 export const reportRequestChannel: (
   // IpcChannel<Incoming, Outgoing>
@@ -22,7 +21,7 @@ export const reportRequestChannel: (
 export const handleReportRequests = () => {
   reportRequestChannel.onReceive((request: SubmitBugReportRequest) => (
     new Promise((resolve, reject) => {
-      Logger.info(`reportRequestChannel::onReceive ${stringifyData(request)}`);
+      Logger.info('reportRequestChannel::onReceive', { request });
       const { httpOptions, requestPayload } = request;
       const options = Object.assign({}, httpOptions);
       const payload = Object.assign({}, requestPayload);
@@ -39,7 +38,7 @@ export const handleReportRequests = () => {
 
       options.headers = formData.getHeaders();
 
-      Logger.info(`Sending report request with options: ${stringifyData(options)}`);
+      Logger.info('Sending report request with options', { options });
       const httpRequest = http.request(options);
       httpRequest.on('response', (response) => {
         if (response.statusCode !== 200) {
