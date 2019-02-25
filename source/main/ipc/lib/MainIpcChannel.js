@@ -17,7 +17,7 @@ export class MainIpcChannel<Incoming, Outgoing> extends IpcChannel<Incoming, Out
   async request(
     message: Outgoing, sender: IpcSender, receiver: IpcReceiver = ipcMain
   ): Promise<Incoming> {
-    return super.request(sender, receiver);
+    return super.request(message, sender, receiver);
   }
 
   onReceive(
