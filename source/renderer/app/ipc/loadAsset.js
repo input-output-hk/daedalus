@@ -7,5 +7,6 @@ import type {
 } from '../../../common/ipc/api';
 
 // IpcChannel<Incoming, Outgoing>
-type LoadAssetChannel = RendererIpcChannel<LoadAssetMainResponse, LoadAssetRendererRequest>
-export const loadAssetChannel: LoadAssetChannel = new RendererIpcChannel(LOAD_ASSET_CHANNEL);
+export const loadAssetChannel: (
+  RendererIpcChannel<LoadAssetMainResponse, LoadAssetRendererRequest>
+) = new RendererIpcChannel(LOAD_ASSET_CHANNEL);

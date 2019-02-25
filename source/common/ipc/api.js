@@ -33,12 +33,12 @@ export const GO_TO_NETWORK_STATUS_SCREEN_CHANNEL = 'GO_TO_NETWORK_STATUS_SCREEN_
 export const OPEN_ABOUT_DIALOG_CHANNEL = 'OPEN_ABOUT_DIALOG_CHANNEL';
 export const TOGGLE_ABOUT_DIALOG_CHANNEL = 'TOGGLE_ABOUT_DIALOG_CHANNEL';
 export const TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL = 'TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL';
-export const TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL = 'TOGGLE_BLOCK_CONSOLIDATION_STATUS';
+export const TOGGLE_BLOCK_CONSOLIDATION_SCREEN_CHANNEL = 'TOGGLE_BLOCK_CONSOLIDATION_STATUS';
 
 /**
  * Channel for checking the disk space available
  */
-export const GetDiskSpaceStatusChannelName = 'GetDiskSpaceStatusChannel';
+export const GET_DISK_SPACE_STATUS_CHANNEL = 'GetDiskSpaceStatusChannel';
 export type GetDiskSpaceStatusRendererRequest = number | any;
 export type GetDiskSpaceStatusMainResponse = CheckDiskSpaceResponse;
 
@@ -69,18 +69,18 @@ export type SubmitBugReportRequestResponse = void;
 /**
  * Channel to rebuild the electron application menu after the language setting changes
  */
-export const RebuildApplicationMenu = 'RebuildApplicationMenu';
+export const REBUILD_APP_MENU_CHANNEL = 'REBUILD_APP_MENU_CHANNEL';
 
 /**
  * Channel to get the number of epochs consolidated
  */
-export const GetNumberOfEpochsConsolidatedChannel = 'GetNumberOfEpochsConsolidatedChannel';
-export type GetNumberOfEpochsConsolidatedChannelResponse = number;
+export const GET_CONSOLIDATED_EPOCHS_COUNT_CHANNEL = 'GET_CONSOLIDATED_EPOCHS_COUNT_CHANNEL';
+export type GetConsolidatedEpochsCountResponse = number;
 
 /**
  * Channel to get the system start time
  */
-export const GetSystemStartTimeChannel = 'GetSystemStartTimeChannel';
+export const GET_SYSTEM_START_TIME_CHANNEL = 'GET_SYSTEM_START_TIME_CHANNEL';
 export type GetSystemStartTimeResponse = number;
 
 /**

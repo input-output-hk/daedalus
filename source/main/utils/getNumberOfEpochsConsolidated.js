@@ -3,11 +3,11 @@ import fs from 'fs';
 import path from 'path';
 import { nodeDbPath } from '../config';
 import { getNumberOfEpochsConsolidatedChannel } from '../ipc/getNumberOfEpochsConsolidated.ipc';
-import type { GetNumberOfEpochsConsolidatedChannelResponse } from '../../common/ipc/api';
+import type { GetConsolidatedEpochsCountResponse } from '../../common/ipc/api';
 
 export const getNumberOfEpochsConsolidated = () => {
   getNumberOfEpochsConsolidatedChannel
-    .onRequest((): Promise<GetNumberOfEpochsConsolidatedChannelResponse> => {
+    .onRequest((): Promise<GetConsolidatedEpochsCountResponse> => {
       const epochsPath = path.join(nodeDbPath, 'epochs');
       let latestConsolidatedEpoch = 0;
       if (fs.existsSync(epochsPath)) {
