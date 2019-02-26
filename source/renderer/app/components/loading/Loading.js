@@ -100,6 +100,7 @@ type State = {
 };
 
 type Props = {
+  currencyIcon: string,
   apiIcon: string,
   cardanoNodeState: ?CardanoNodeState,
   hasBeenConnected: boolean,
@@ -342,6 +343,7 @@ export default class Loading extends Component<Props, State> {
     const { intl } = this.context;
     const {
       cardanoNodeState,
+      currencyIcon,
       apiIcon,
       isConnected,
       isSynced,
@@ -377,6 +379,7 @@ export default class Loading extends Component<Props, State> {
     ]);
 
     const daedalusLoadingLogo = daedalusLogo;
+    const currencyLoadingLogo = currencyIcon;
     const apiLoadingLogo = apiIcon;
 
     const canReportConnectingIssue = (
@@ -426,9 +429,7 @@ export default class Loading extends Component<Props, State> {
           </div>
         )}
         <div className={styles.logos}>
-          <p className={currencyLogoStyles}>
-            &#8371;
-          </p>
+          <SVGInline svg={currencyLoadingLogo} className={currencyLogoStyles} />
           <SVGInline svg={daedalusLoadingLogo} className={daedalusLogoStyles} />
           <SVGInline svg={apiLoadingLogo} className={apiLogoStyles} />
         </div>
