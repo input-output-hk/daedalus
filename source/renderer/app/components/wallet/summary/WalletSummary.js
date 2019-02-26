@@ -2,10 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
-import adaSymbolBig from '../../../assets/images/ada-symbol-big-dark.inline.svg';
-import adaSymbolSmallest from '../../../assets/images/ada-symbol-smallest-dark.inline.svg';
 import BorderedBox from '../../widgets/BorderedBox';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import type { UnconfirmedAmount } from '../../../types/unconfirmedAmountType';
@@ -67,8 +64,7 @@ export default class WalletSummary extends Component<Props> {
         <BorderedBox>
           <div className={styles.walletName}>{wallet.name}</div>
           <div className={styles.walletAmount}>
-            {wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
-            <SVGInline svg={adaSymbolBig} className={styles.currencySymbolBig} />
+            {wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)} &#8371;
           </div>
 
           {!isRestoreActive ? (
@@ -77,14 +73,14 @@ export default class WalletSummary extends Component<Props> {
                 <div className={styles.pendingConfirmation}>
                   {`${intl.formatMessage(messages.pendingIncomingConfirmationLabel)}`}
                   : {pendingAmount.incoming.toFormat(DECIMAL_PLACES_IN_ADA)}
-                  <SVGInline svg={adaSymbolSmallest} className={styles.currencySymbolSmallest} />
+                  &#8371;
                 </div>
               )}
               {pendingAmount.outgoing.greaterThan(0) && (
                 <div className={styles.pendingConfirmation}>
                   {`${intl.formatMessage(messages.pendingOutgoingConfirmationLabel)}`}
                   : {pendingAmount.outgoing.toFormat(DECIMAL_PLACES_IN_ADA)}
-                  <SVGInline svg={adaSymbolSmallest} className={styles.currencySymbolSmallest} />
+                  &#8371;
                 </div>
               )}
             </div>
