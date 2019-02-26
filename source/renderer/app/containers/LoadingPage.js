@@ -4,7 +4,6 @@ import { inject, observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import CenteredLayout from '../components/layout/CenteredLayout';
 import Loading from '../components/loading/Loading';
-import adaLogo from '../assets/images/ada-logo.inline.svg';
 import cardanoLogo from '../assets/images/cardano-logo.inline.svg';
 import type { InjectedProps } from '../types/injectedPropsType';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
@@ -63,7 +62,6 @@ export default class LoadingPage extends Component<InjectedProps> {
     return (
       <CenteredLayout>
         <Loading
-          currencyIcon={adaLogo}
           apiIcon={cardanoLogo}
           cardanoNodeState={cardanoNodeState}
           isConnected={isConnected}
