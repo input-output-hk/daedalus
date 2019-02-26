@@ -6,7 +6,6 @@ import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
 import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon.js';
-import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
 import {
   transactionStates,
@@ -211,7 +210,6 @@ export default class Transaction extends Component<Props> {
 
     const status = intl.formatMessage(assuranceLevelTranslations[assuranceLevel]);
     const currency = intl.formatMessage(globalMessages.currency);
-    const symbol = adaSymbol;
 
     const transactionStateTag = () => {
       if (isRestoreActive) return;
@@ -253,7 +251,7 @@ export default class Transaction extends Component<Props> {
                   // hide currency (we are showing symbol instead)
                   formattedWalletAmount(data.amount, false)
                 }
-                <SVGInline svg={symbol} className={styles.currencySymbol} />
+                &nbsp;&#8371;
               </div>
             </div>
 
