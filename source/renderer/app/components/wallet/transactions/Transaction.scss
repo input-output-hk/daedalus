@@ -239,3 +239,16 @@
 .conversionRate {
   margin-left: 76px;
 }
+
+.currencySymbol {
+  display: inline-block;
+  margin-bottom: -1px;
+  margin-left: 4px;
+  & > svg {
+    width: 12px;
+    height: 12px;
+    & > g > g {
+      stroke: var(--theme-icon-transactions-ada-symbol-color);
+    }
+  }
+}
