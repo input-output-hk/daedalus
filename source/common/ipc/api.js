@@ -96,7 +96,7 @@ export type GetSystemStartTimeResponse = number;
 export const PARSE_REDEMPTION_CODE_CHANNEL = 'PARSE_REDEMPTION_CODE_CHANNEL';
 export type ParseRedemptionCodeRequest = {
   certificateFilePath: string,
-  decryptionKey: AdaRedemptionDecryptionKey,
+  decryptionKey: ?AdaRedemptionDecryptionKey,
   redemptionType: RedemptionTypeChoices
 };
 export type ParseRedemptionCodeResponse = AdaRedemptionCode;

@@ -6,7 +6,6 @@ import Request from './lib/LocalizedRequest';
 import { WalletTransaction } from '../domains/WalletTransaction';
 import { Logger } from '../utils/logging';
 import { matchRoute } from '../utils/routing';
-import { PARSE_REDEMPTION_CODE } from '../../../common/ipc-api';
 import { parseRedemptionCodeChannel } from '../ipc/parse-redemption-code';
 import {
   InvalidMnemonicError,
@@ -20,9 +19,7 @@ import { ADA_REDEMPTION_TYPES } from '../types/redemptionTypes';
 import type { RedemptionTypeChoices } from '../types/redemptionTypes';
 import type { RedeemAdaParams } from '../api/transactions/requests/redeemAda';
 import type { RedeemPaperVendedAdaParams } from '../api/transactions/requests/redeemPaperVendedAda';
-
-// TODO: refactor all parts that rely on this to ipc channels!
-const { ipcRenderer } = global;
+import type { AdaRedemptionDecryptionKey } from '../../../common/types/ada-redemption.types';
 
 export default class AdaRedemptionStore extends Store {
 
@@ -34,7 +31,7 @@ export default class AdaRedemptionStore extends Store {
   @observable email: ?string = null;
   @observable adaPasscode: ?string = null;
   @observable adaAmount: ?string = null;
-  @observable decryptionKey: ?string = null;
+  @observable decryptionKey: ?AdaRedemptionDecryptionKey = null;
   @observable redemptionCode: string = '';
   @observable walletId: ?string = null;
   @observable error: ?LocalizableError = null;
@@ -62,19 +59,9 @@ export default class AdaRedemptionStore extends Store {
     actions.removeCertificate.listen(this._onRemoveCertificate);
     actions.acceptRedemptionDisclaimer.listen(this._onAcceptRedemptionDisclaimer);
 
-    // TODO: refactor to ipc channels
-    ipcRenderer.on(PARSE_REDEMPTION_CODE.SUCCESS, this._onCodeParsed);
-    ipcRenderer.on(PARSE_REDEMPTION_CODE.ERROR, this._onParseError);
     this.registerReactions([
       this._resetRedemptionFormValuesOnAdaRedemptionPageLoad,
     ]);
-  }
-
-  teardown() {
-    super.teardown();
-    // TODO: refactor to ipc channel
-    ipcRenderer.removeAllListeners(PARSE_REDEMPTION_CODE.SUCCESS);
-    ipcRenderer.removeAllListeners(PARSE_REDEMPTION_CODE.ERROR);
   }
 
   isValidRedemptionKey = (redemptionKey: string) => (
@@ -147,7 +134,15 @@ export default class AdaRedemptionStore extends Store {
     this._parseCodeFromCertificate();
   });
 
-  _parseCodeFromCertificate() {
+  _setRedemptionParsingError = action((error: LocalizableError) => {
+    this.error = error;
+    this.redemptionCode = '';
+    this.passPhrase = null;
+    this.decryptionKey = null;
+  });
+
+  async _parseCodeFromCertificate() {
+    // GUARDS
     if (
       this.redemptionType === ADA_REDEMPTION_TYPES.REGULAR ||
       this.redemptionType === ADA_REDEMPTION_TYPES.RECOVERY_REGULAR
@@ -164,6 +159,8 @@ export default class AdaRedemptionStore extends Store {
     }
     if (this.redemptionType === ADA_REDEMPTION_TYPES.PAPER_VENDED) return;
     if (this.certificate == null) throw new Error('Certificate File is required for parsing.');
+
+    // PREPARATION
     const path = this.certificate.path; // eslint-disable-line
     Logger.debug('AdaRedemptionStore: Parsing ADA Redemption code from certificate', { path });
     let decryptionKey = null;
@@ -186,35 +183,27 @@ export default class AdaRedemptionStore extends Store {
     ) {
       decryptionKey = this.decryptionKey;
     }
-    // TODO: refactor to ipc channel
-    parseRedemptionCodeChannel.send({
-      certificateFilePath: path,
-      redemptionType: this.redemptionType,
-      decryptionKey,
-    });
-    ipcRenderer.send(PARSE_REDEMPTION_CODE.REQUEST, path, decryptionKey, this.redemptionType);
-  }
-
-  _onCodeParsed = action((event, code) => {
-    Logger.debug('AdaRedemptionStore: Redemption code parsed from certificate');
-    this.redemptionCode = code;
-  });
-
-  _onParseError = action((event, error) => {
-    const errorMessage = isString(error) ? error : error.message;
-    if (errorMessage.includes('Invalid mnemonic')) {
-      this.error = new InvalidMnemonicError();
-    } else if (this.redemptionType === ADA_REDEMPTION_TYPES.REGULAR) {
-      if (this.isCertificateEncrypted) {
-        this.error = new AdaRedemptionEncryptedCertificateParseError();
-      } else {
-        this.error = new AdaRedemptionCertificateParseError();
+    // PARSING
+    try {
+      const redemptionCode = await parseRedemptionCodeChannel.request({
+        certificateFilePath: path,
+        redemptionType: this.redemptionType,
+        decryptionKey,
+      });
+      this._setRedemptionCode({ redemptionCode });
+    } catch (e) {
+      const errorMessage = isString(e) ? e : e.message;
+      let error = new AdaRedemptionCertificateParseError();
+      if (errorMessage.includes('Invalid mnemonic')) {
+        error = new InvalidMnemonicError();
+      } else if (this.redemptionType === ADA_REDEMPTION_TYPES.REGULAR) {
+        if (this.isCertificateEncrypted) {
+          error = new AdaRedemptionEncryptedCertificateParseError();
+        }
       }
+      this._setRedemptionParsingError(error);
     }
-    this.redemptionCode = '';
-    this.passPhrase = null;
-    this.decryptionKey = null;
-  });
+  }
 
   _redeemAda = async ({ walletId, spendingPassword }: {
     walletId: string,

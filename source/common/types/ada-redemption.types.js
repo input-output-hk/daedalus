@@ -2,7 +2,7 @@
 
 type Passphrase = string;
 type DecryptionKey = string;
-type ForceVendingDecryptionKey = [string, string, string];
+type ForceVendingDecryptionKey = [?string, ?string, ?string];
 
 export type AdaRedemptionDecryptionKey = (
   Passphrase |
