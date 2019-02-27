@@ -51,20 +51,23 @@ writeUninstallerNSIS (Version fullVersion) installerConfig = do
     IO.writeFile "uninstaller.nsi" $ nsis $ do
         _ <- constantStr "Version" (str $ unpack fullVersion)
         _ <- constantStr "InstallDir" (str $ unpack $ installDirectory installerConfig)
-        mapM_ unsafeInjectGlobal
-          [ "LangString UninstallName ${LANG_ENGLISH} \"Uninstaller\""
-          , "LangString UninstallName ${LANG_JAPANESE} \"アンインストーラー\""
-          ]
-        -- TODO, the nsis library doesnt support translation vars
-        -- name "$InstallDir $(UninstallName) $Version"
-        unsafeInjectGlobal $ unpack ( "Name \"" <> (installDirectory installerConfig) <> " $(UninstallName) " <> (fullVersion) <> "\"")
-        outFile . str . encodeString $ tempDir </> "tempinstaller.exe"
         unsafeInjectGlobal "Unicode true"
-        unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
-        unsafeInjectGlobal "SetCompress off"
 
         loadLanguage "English"
         loadLanguage "Japanese"
+
+        --mapM_ unsafeInjectGlobal
+        --  [ "LangString UninstallName ${LANG_ENGLISH} \"Uninstaller\""
+        --  , "LangString UninstallName ${LANG_JAPANESE} \"アンインストーラー\""
+        --  ]
+
+        name "$InstallDir Uninstaller $Version"
+        -- TODO, the nsis library doesnt support translation vars
+        -- name "$InstallDir $(UninstallName) $Version"
+        --unsafeInjectGlobal $ unpack ( "Name \"" <> (installDirectory installerConfig) <> " $(UninstallName) " <> (fullVersion) <> "\"")
+        outFile . str . encodeString $ tempDir </> "tempinstaller.exe"
+        unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
+        unsafeInjectGlobal "SetCompress off"
 
         _ <- section "" [Required] $ do
             unsafeInject . T.unpack $ format ("WriteUninstaller \""%fp%"\"") ("c:\\uninstall.exe")
