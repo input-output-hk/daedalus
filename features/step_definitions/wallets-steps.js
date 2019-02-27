@@ -434,14 +434,14 @@ Then(/^the latest transaction should show:$/, async function (table) {
   await this.client.waitForVisible('.Transaction_title');
   let transactionTitles = await this.client.getText('.Transaction_title');
   transactionTitles = [].concat(transactionTitles);
-  const expectedTransactionTitle = await this.intl(expectedData.title, { currency: 'ADA' });
+  const expectedTransactionTitle = await this.intl(expectedData.title, { currency: 'Ada' });
   expect(expectedTransactionTitle).to.equal(transactionTitles[0]);
   let transactionAmounts = await this.client.getText('.Transaction_amount');
   transactionAmounts = [].concat(transactionAmounts);
   // Transaction amount includes transaction fees so we need to
   // substract them in order to get a match with expectedData.amountWithoutFees.
   // NOTE: we use "add()" as this is outgoing transaction and amount is a negative value!
-  const transactionAmount = new BigNumber(transactionAmounts[0]);
+  const transactionAmount = new BigNumber(transactionAmounts[0].split(' ').shift());
   const transactionAmountWithoutFees = transactionAmount.add(this.fees).toFormat(DECIMAL_PLACES_IN_ADA);
   expect(expectedData.amountWithoutFees).to.equal(transactionAmountWithoutFees);
 });
@@ -453,7 +453,7 @@ Then(/^the balance of "([^"]*)" wallet should be:$/, { timeout: 60000 }, async f
   const receiverWallet = getWalletByName.call(this, walletName);
   return this.client.waitUntil(async () => {
     const receiverWalletBalance = await this.client.getText(`.SidebarWalletsMenu_wallets .Wallet_${receiverWallet.id} .SidebarWalletMenuItem_info`);
-    return receiverWalletBalance === `${expectedData.balance} ADA`;
+    return receiverWalletBalance === `${expectedData.balance} ₳`;
   }, 60000);
 });
 
