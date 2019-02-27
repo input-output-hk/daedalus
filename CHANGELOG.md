@@ -14,7 +14,7 @@ Changelog
 - Implemented translations for the application menu ([PR 1262](https://github.com/input-output-hk/daedalus/pull/1262), [PR 1296](https://github.com/input-output-hk/daedalus/pull/1296))
 - Implemented a success message for logs download ([PR 1228](https://github.com/input-output-hk/daedalus/pull/1228))
 - Implemented a better handling for "No disk space" error ([PR 1157](https://github.com/input-output-hk/daedalus/pull/1157))
-- Improved the NTP check logic ([PR 1258](https://github.com/input-output-hk/daedalus/pull/1258))
+- Improved the NTP check logic ([PR 1258](https://github.com/input-output-hk/daedalus/pull/1258), [PR 1319](https://github.com/input-output-hk/daedalus/pull/1319))
 - Added support for "frontend-only" mode ([PR 1241](https://github.com/input-output-hk/daedalus/pull/1241), [PR 1260](https://github.com/input-output-hk/daedalus/pull/1260))
 - Improved the lock-file UX by replacing "Daedalus is already running" dialog with focusing of the already running Daedalus instance ([PR 1229](https://github.com/input-output-hk/daedalus/pull/1229))
 - Replaced in-app support request with links to support page ([PR 1199](https://github.com/input-output-hk/daedalus/pull/1199))
