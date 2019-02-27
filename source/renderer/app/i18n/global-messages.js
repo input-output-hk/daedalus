@@ -148,7 +148,7 @@ export default defineMessages({
   },
   currency: {
     id: 'environment.currency.ada',
-    defaultMessage: '!!!Ada',
+    defaultMessage: '!!!ADA',
     description: 'Name for "Ada" unit.'
   },
   apiName: {

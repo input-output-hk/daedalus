@@ -8,7 +8,7 @@ export const formattedWalletAmount = (
 ) => {
   let formattedAmount = amount.toFormat(DECIMAL_PLACES_IN_ADA);
 
-  if (withCurrency) formattedAmount += ' ADA';
+  if (withCurrency) formattedAmount += ' ₳';
 
   return formattedAmount.toString();
 };
