@@ -1,11 +1,16 @@
 Changelog
 =========
 
-## 0.13.0
+## vNext
 
 ### Features
 
 - Replaced ada symbol images with unicode character ([PR 1317](https://github.com/input-output-hk/daedalus/pull/1317))
+
+## 0.13.0
+
+### Features
+
 - Implemented a handle for the 'transaction is too big' transaction error ([PR 1308](https://github.com/input-output-hk/daedalus/pull/1308))
 - Structured the Daedalus logs in the same format as the Cardano logs, which follows the structured logging specification ([PR 1299](https://github.com/input-output-hk/daedalus/pull/1299))
 - Implemented an extra explanation line in the Create Paper Wallet Certificate dialog ([PR 1309](https://github.com/input-output-hk/daedalus/pull/1309))
