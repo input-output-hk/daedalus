@@ -5,7 +5,6 @@ import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import adaSymbolBig from '../../../assets/images/ada-symbol-big-dark.inline.svg';
-import adaSymbolSmallest from '../../../assets/images/ada-symbol-smallest-dark.inline.svg';
 import BorderedBox from '../../widgets/BorderedBox';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import type { UnconfirmedAmount } from '../../../types/unconfirmedAmountType';
@@ -77,16 +76,17 @@ export default class WalletSummary extends Component<Props> {
                 <div className={styles.pendingConfirmation}>
                   {`${intl.formatMessage(messages.pendingIncomingConfirmationLabel)}`}
                   : {pendingAmount.incoming.toFormat(DECIMAL_PLACES_IN_ADA)}
-                  <SVGInline svg={adaSymbolSmallest} className={styles.currencySymbolSmallest} />
+                  &nbsp;&#8371;
                 </div>
               )}
               {pendingAmount.outgoing.greaterThan(0) && (
                 <div className={styles.pendingConfirmation}>
                   {`${intl.formatMessage(messages.pendingOutgoingConfirmationLabel)}`}
                   : {pendingAmount.outgoing.toFormat(DECIMAL_PLACES_IN_ADA)}
-                  <SVGInline svg={adaSymbolSmallest} className={styles.currencySymbolSmallest} />
+                  &nbsp;&#8371;
                 </div>
               )}
+
             </div>
           ) : null}
 
