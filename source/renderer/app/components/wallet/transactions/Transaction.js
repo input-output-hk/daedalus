@@ -251,7 +251,7 @@ export default class Transaction extends Component<Props> {
                   // hide currency (we are showing symbol instead)
                   formattedWalletAmount(data.amount, false)
                 }
-                &nbsp;&#8371;
+                <span>&nbsp;&#8371;</span>
               </div>
             </div>
 

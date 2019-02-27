@@ -38,6 +38,10 @@
   .amount {
     font-family: var(--font-medium);
     font-size: 28px;
+
+    span {
+      font-family: var(--font-light);
+    }
   }
 
   .confirmButton {

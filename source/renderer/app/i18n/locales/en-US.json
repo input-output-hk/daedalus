@@ -38,7 +38,7 @@
   "cardano.node.update.notification.titleWithVersion": "Daedalus and Cardano node update #{version} is available.",
   "cardano.node.update.notification.titleWithoutVersion": "Daedalus and Cardano node update is available",
   "environment.apiName.cardano": "Cardano",
-  "environment.currency.ada": "ADA",
+  "environment.currency.ada": "Ada",
   "global.assuranceLevel.normal": "Normal",
   "global.assuranceLevel.strict": "Strict",
   "global.dialog.button.continue": "Continue",

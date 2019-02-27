@@ -38,7 +38,7 @@
   "cardano.node.update.notification.titleWithVersion": "!!!Cardano-Core update v{version} is available",
   "cardano.node.update.notification.titleWithoutVersion": "!!!Cardano-Core update is available",
   "environment.apiName.cardano": "!!!Cardano",
-  "environment.currency.ada": "ADA",
+  "environment.currency.ada": "Ada",
   "global.assuranceLevel.normal": "!!!Normal",
   "global.assuranceLevel.strict": "!!!Strict",
   "global.dialog.button.continue": "!!!Continue",
