@@ -83,7 +83,10 @@ export default (api: AdaApi) => {
         syncProgress: syncProgress.quantity,
         blockchainHeight: get(blockchainHeight, 'quantity', 0),
         localBlockchainHeight: localBlockchainHeight.quantity,
-        localTimeDifference: LOCAL_TIME_DIFFERENCE,
+        localTimeInformation: {
+          status: 'available',
+          difference: LOCAL_TIME_DIFFERENCE,
+        },
       };
     } catch (error) {
       Logger.error('AdaApi::getNetworkStatus (PATCHED) error', { error });

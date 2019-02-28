@@ -9,7 +9,6 @@ import {
   MAX_ALLOWED_STALL_DURATION,
   NETWORK_STATUS_REQUEST_TIMEOUT,
   NETWORK_STATUS_POLL_INTERVAL,
-  NTP_FORCE_CHECK_POLL_INTERVAL,
   NTP_IGNORE_CHECKS_GRACE_PERIOD,
 } from '../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
@@ -66,7 +65,6 @@ export default class NetworkStatusStore extends Store {
   _tlsConfig: ?TlsConfig = null;
   _networkStatus = NETWORK_STATUS.CONNECTING;
   _networkStatusPollingInterval: ?IntervalID = null;
-  _forceCheckTimeDifferencePollingInterval: ?IntervalID = null;
 
   // Initialize store observables
 
@@ -134,11 +132,10 @@ export default class NetworkStatusStore extends Store {
       this._updateNodeStatus,
     ]);
 
-    // Setup polling intervals
+    // Setup polling interval
     this._setNetworkStatusPollingInterval();
-    this._setForceCheckTimeDifferencePollingInterval();
 
-    // Ignore system time checks for the first 30 seconds:
+    // Ignore system time checks for the first 35 seconds:
     this.ignoreSystemTimeChecks();
     setTimeout(
       () => this.ignoreSystemTimeChecks(false),
@@ -157,13 +154,6 @@ export default class NetworkStatusStore extends Store {
     );
   };
 
-  // Setup forced time difference check polling interval
-  _setForceCheckTimeDifferencePollingInterval = () => {
-    this._forceCheckTimeDifferencePollingInterval = setInterval(
-      this.forceCheckLocalTimeDifference, NTP_FORCE_CHECK_POLL_INTERVAL
-    );
-  };
-
   async restartNode() {
     try {
       Logger.info('NetwortStatusStore: Requesting a restart of cardano-node');
@@ -179,9 +169,6 @@ export default class NetworkStatusStore extends Store {
     // Teardown polling intervals
     if (this._networkStatusPollingInterval) {
       clearInterval(this._networkStatusPollingInterval);
-    }
-    if (this._forceCheckTimeDifferencePollingInterval) {
-      clearInterval(this._forceCheckTimeDifferencePollingInterval);
     }
   }
 
@@ -353,12 +340,11 @@ export default class NetworkStatusStore extends Store {
     const wasConnected = this.isConnected;
 
     try {
-      let networkStatus: GetNetworkStatusResponse;
-      if (isForcedTimeDifferenceCheck) {
-        networkStatus = await this.forceCheckTimeDifferenceRequest.execute(queryParams).promise;
-      } else {
-        networkStatus = await this.getNetworkStatusRequest.execute().promise;
-      }
+      const networkStatus: GetNetworkStatusResponse = isForcedTimeDifferenceCheck ? (
+        await this.forceCheckTimeDifferenceRequest.execute(queryParams).promise
+      ) : (
+        await this.getNetworkStatusRequest.execute().promise
+      );
 
       // In case we no longer have TLS config we ignore all API call responses
       // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
@@ -372,7 +358,7 @@ export default class NetworkStatusStore extends Store {
         syncProgress,
         blockchainHeight,
         localBlockchainHeight,
-        localTimeDifference,
+        localTimeInformation,
       } = networkStatus;
 
       // We got response which means node is responding
@@ -388,11 +374,14 @@ export default class NetworkStatusStore extends Store {
 
       // System time is correct if local time difference is below allowed threshold
       runInAction('update localTimeDifference and isNodeTimeCorrect', () => {
-        this.localTimeDifference = localTimeDifference;
-        this.isNodeTimeCorrect = (
-          this.localTimeDifference !== null && // If we receive 'null' it means NTP check failed
-          this.localTimeDifference <= ALLOWED_TIME_DIFFERENCE
-        );
+        // Update localTimeDifference only in case NTP check status is not still pending
+        if (localTimeInformation.status !== 'pending') {
+          this.localTimeDifference = localTimeInformation.difference;
+          this.isNodeTimeCorrect = (
+            this.localTimeDifference != null && // If we receive 'null' it means NTP check failed
+            this.localTimeDifference <= ALLOWED_TIME_DIFFERENCE
+          );
+        }
       });
 
       if (this._networkStatus === NETWORK_STATUS.CONNECTING && this.isNodeSubscribed) {
@@ -557,17 +546,8 @@ export default class NetworkStatusStore extends Store {
         clearInterval(this._networkStatusPollingInterval);
         this._networkStatusPollingInterval = null;
       }
-      if (this._forceCheckTimeDifferencePollingInterval) {
-        clearInterval(this._forceCheckTimeDifferencePollingInterval);
-        this._forceCheckTimeDifferencePollingInterval = null;
-      }
-    } else {
-      if (!this._networkStatusPollingInterval) {
-        this._setNetworkStatusPollingInterval();
-      }
-      if (!this._forceCheckTimeDifferencePollingInterval) {
-        this._setForceCheckTimeDifferencePollingInterval();
-      }
+    } else if (!this._networkStatusPollingInterval) {
+      this._setNetworkStatusPollingInterval();
     }
 
     return Promise.resolve();
