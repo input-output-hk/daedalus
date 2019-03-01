@@ -161,25 +161,16 @@ $adaLogoWidth: 43px;
   position: absolute;
   text-align: center;
   width: 100%;
-}
 
-.statusIcon {
-  display: flex;
-  margin-right: 12px;
-  &:last-child {
-    margin-right: 0;
-  }
-  svg {
-    height: 24px;
-  }
-}
-.statusIconActive {
-  svg {
-    fill: green;
-  }
-}
-.statusIconInactive {
-  svg {
-    fill: red;
+  span {
+    display: flex;
+    margin-right: 12px;
+    &:last-child {
+      margin-right: 0;
+    }
+    svg {
+      height: 24px;
+    }
+
   }
 }

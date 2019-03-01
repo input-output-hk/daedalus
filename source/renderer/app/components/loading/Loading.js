@@ -124,16 +124,13 @@ type Props = {
   localTimeDifference: ?number,
   isSystemTimeCorrect: boolean,
   isCheckingSystemTime: boolean,
-  isNodeSubscribed: boolean,
-  isNodeSyncing: boolean,
-  isNodeInSync: boolean,
-  isNodeTimeCorrect: boolean,
   currentLocale: string,
   onExternalLinkClick: Function,
   onReportIssueClick: Function,
   onCheckTheTimeAgain: Function,
   onContinueWithoutClockSyncCheck: Function,
   onDownloadLogs: Function,
+  getIconWithColor: Function,
 };
 
 @observer
@@ -360,10 +357,7 @@ export default class Loading extends Component<Props, State> {
       hasLoadedCurrentTheme,
       onReportIssueClick,
       onDownloadLogs,
-      isNodeSubscribed,
-      isNodeSyncing,
-      isNodeInSync,
-      isNodeTimeCorrect,
+      getIconWithColor,
     } = this.props;
 
     const { connectingTime, syncingTime } = this.state;
@@ -411,30 +405,6 @@ export default class Loading extends Component<Props, State> {
       styles.reportIssueButton,
     ]);
 
-    const isNodeResponding = false;
-    const isNodeRunning = true;
-
-    const isNodeRespondingStyles = classNames([
-      styles.statusIcon,
-      isNodeResponding ? styles.statusIconActive : styles.statusIconInactive
-    ]);
-    const isNodeRunningStyles = classNames([
-      styles.statusIcon,
-      isNodeRunning ? styles.statusIconActive : styles.statusIconInactive
-    ]);
-    const isNodeSubscribedStyles = classNames([
-      styles.statusIcon,
-      isNodeSubscribed ? styles.statusIconActive : styles.statusIconInactive
-    ]);
-    const isNodeSyncingStyles = classNames([
-      styles.statusIcon,
-      isNodeSyncing ? styles.statusIconActive : styles.statusIconInactive
-    ]);
-    const isNodeTimeCorrectStyles = classNames([
-      styles.statusIcon,
-      isNodeTimeCorrect ? styles.statusIconActive : styles.statusIconInactive
-    ]);
-
     return (
       <div className={componentStyles}>
         {showReportIssue && (
@@ -472,11 +442,21 @@ export default class Loading extends Component<Props, State> {
         </div>
         {hasLoadedCurrentLocale ? this._renderLoadingScreen() : null}
         <div className={styles.statusIcons}>
-          <SVGInline svg={isNodeRespondingIcon} className={isNodeRespondingStyles} />
-          <SVGInline svg={isNodeRunningIcon} className={isNodeRunningStyles} />
-          <SVGInline svg={isNodeSubscribedIcon} className={isNodeSubscribedStyles} />
-          <SVGInline svg={isNodeSyncingIcon} className={isNodeSyncingStyles} />
-          <SVGInline svg={isNodeTimeCorrectIcon} className={isNodeTimeCorrectStyles} />
+          <SVGInline
+            svg={getIconWithColor(isNodeRespondingIcon, 'isNodeResponding')}
+          />
+          <SVGInline
+            svg={getIconWithColor(isNodeRunningIcon, 'cardanoNodeState')}
+          />
+          <SVGInline
+            svg={getIconWithColor(isNodeSubscribedIcon, 'isNodeSubscribed')}
+          />
+          <SVGInline
+            svg={getIconWithColor(isNodeSyncingIcon, 'isNodeSyncing')}
+          />
+          <SVGInline
+            svg={getIconWithColor(isNodeTimeCorrectIcon, 'isNodeTimeCorrect')}
+          />
         </div>
       </div>
     );
