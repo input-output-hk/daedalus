@@ -10,6 +10,11 @@ import SystemTimeErrorOverlay from './SystemTimeErrorOverlay';
 import NoDiskSpaceOverlay from './NoDiskSpaceOverlay';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
+import isNodeRespondingIcon from '../../assets/images/is-node-responding-icon.inline.svg';
+import isNodeRunningIcon from '../../assets/images/is-node-running-icon.inline.svg';
+import isNodeSubscribedIcon from '../../assets/images/is-node-subscribed-icon.inline.svg';
+import isNodeSyncingIcon from '../../assets/images/is-node-syncing-icon.inline.svg';
+import isNodeTimeCorrectIcon from '../../assets/images/is-node-time-correct-icon.inline.svg';
 import linkNewWindow from '../../assets/images/link-ic.inline.svg';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './Loading.scss';
@@ -119,6 +124,10 @@ type Props = {
   localTimeDifference: ?number,
   isSystemTimeCorrect: boolean,
   isCheckingSystemTime: boolean,
+  isNodeSubscribed: boolean,
+  isNodeSyncing: boolean,
+  isNodeInSync: boolean,
+  isNodeTimeCorrect: boolean,
   currentLocale: string,
   onExternalLinkClick: Function,
   onReportIssueClick: Function,
@@ -351,6 +360,10 @@ export default class Loading extends Component<Props, State> {
       hasLoadedCurrentTheme,
       onReportIssueClick,
       onDownloadLogs,
+      isNodeSubscribed,
+      isNodeSyncing,
+      isNodeInSync,
+      isNodeTimeCorrect,
     } = this.props;
 
     const { connectingTime, syncingTime } = this.state;
@@ -398,6 +411,30 @@ export default class Loading extends Component<Props, State> {
       styles.reportIssueButton,
     ]);
 
+    const isNodeResponding = false;
+    const isNodeRunning = true;
+
+    const isNodeRespondingStyles = classNames([
+      styles.statusIcon,
+      isNodeResponding ? styles.statusIconActive : styles.statusIconInactive
+    ]);
+    const isNodeRunningStyles = classNames([
+      styles.statusIcon,
+      isNodeRunning ? styles.statusIconActive : styles.statusIconInactive
+    ]);
+    const isNodeSubscribedStyles = classNames([
+      styles.statusIcon,
+      isNodeSubscribed ? styles.statusIconActive : styles.statusIconInactive
+    ]);
+    const isNodeSyncingStyles = classNames([
+      styles.statusIcon,
+      isNodeSyncing ? styles.statusIconActive : styles.statusIconInactive
+    ]);
+    const isNodeTimeCorrectStyles = classNames([
+      styles.statusIcon,
+      isNodeTimeCorrect ? styles.statusIconActive : styles.statusIconInactive
+    ]);
+
     return (
       <div className={componentStyles}>
         {showReportIssue && (
@@ -434,6 +471,13 @@ export default class Loading extends Component<Props, State> {
           <SVGInline svg={apiLoadingLogo} className={apiLogoStyles} />
         </div>
         {hasLoadedCurrentLocale ? this._renderLoadingScreen() : null}
+        <div className={styles.statusIcons}>
+          <SVGInline svg={isNodeRespondingIcon} className={isNodeRespondingStyles} />
+          <SVGInline svg={isNodeRunningIcon} className={isNodeRunningStyles} />
+          <SVGInline svg={isNodeSubscribedIcon} className={isNodeSubscribedStyles} />
+          <SVGInline svg={isNodeSyncingIcon} className={isNodeSyncingStyles} />
+          <SVGInline svg={isNodeTimeCorrectIcon} className={isNodeTimeCorrectStyles} />
+        </div>
       </div>
     );
   }

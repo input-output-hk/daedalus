@@ -152,3 +152,34 @@ $adaLogoWidth: 43px;
 .component, .headline, .logo {
   -webkit-backface-visibility: hidden;
 }
+
+.statusIcons {
+  bottom: 20px;
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+}
+
+.statusIcon {
+  display: flex;
+  margin-right: 12px;
+  &:last-child {
+    margin-right: 0;
+  }
+  svg {
+    height: 24px;
+  }
+}
+.statusIconActive {
+  svg {
+    fill: green;
+  }
+}
+.statusIconInactive {
+  svg {
+    fill: red;
+  }
+}

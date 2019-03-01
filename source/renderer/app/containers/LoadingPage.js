@@ -53,13 +53,18 @@ export default class LoadingPage extends Component<InjectedProps> {
   render() {
     const { stores } = this.props;
     const {
-      cardanoNodeState, isConnected, isSynced, syncPercentage, hasBeenConnected,
+      // Node state
+      cardanoNodeState, isNodeResponding, isNodeSubscribed,
+      isNodeSyncing, isNodeInSync, isNodeTimeCorrect,
+      // Application state
+      isConnected, isSynced, syncPercentage, hasBeenConnected,
       localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
       forceCheckLocalTimeDifference, ignoreSystemTimeChecks, isNodeStopping, isNodeStopped,
       isNotEnoughDiskSpace, diskSpaceRequired, diskSpaceMissing, diskSpaceRecommended,
     } = stores.networkStatus;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
     const { id, message } = this.notification;
+
     return (
       <CenteredLayout>
         <Loading
@@ -84,6 +89,11 @@ export default class LoadingPage extends Component<InjectedProps> {
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           currentLocale={currentLocale}
           onExternalLinkClick={stores.app.openExternalLink}
+          isNodeResponding={isNodeResponding}
+          isNodeSubscribed={isNodeSubscribed}
+          isNodeSyncing={isNodeSyncing}
+          isNodeInSync={isNodeInSync}
+          isNodeTimeCorrect={isNodeTimeCorrect}
           onReportIssueClick={this.handleReportIssueClick}
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
           onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
