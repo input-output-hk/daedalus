@@ -25,7 +25,7 @@ import           Prelude ((!!))
 import qualified System.IO as IO
 import           Filesystem.Path (FilePath, (</>))
 import           Filesystem.Path.CurrentOS (encodeString, fromText)
-import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, shells, testfile, stdout, input, export, sed, strict, format, printf, fp, w, s, (%), need, writeTextFile, die, cp, rm, view, ls)
+import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, shells, testfile, stdout, input, export, sed, strict, format, printf, fp, w, s, (%), need, writeTextFile, die, cp, rm)
 import           Turtle.Pattern (text, plus, noneOf, star, dot)
 import           AppVeyor
 import qualified Codec.Archive.Zip    as Zip
@@ -188,7 +188,7 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                 file [] "*genesis*.json"
                 file [] "launcher-config.yaml"
                 file [Recursive] "dlls\\"
-                file [Recursive] "..\\release\\win32-x64\\Daedalus-win32-x64\\"
+                file [Recursive] "..\\release\\win32-x64\\$InstallDir-win32-x64\\"
 
                 mapM_ unsafeInject
                     [ "liteFirewall::AddRule \"$INSTDIR\\cardano-node.exe\" \"Cardano Node\""
@@ -228,12 +228,17 @@ lshow = T.unpack . lshowText
 
 packageFrontend :: Cluster -> InstallerConfig -> IO ()
 packageFrontend cluster installerConfig = do
-    let icon = format ("installers/icons/"%s%"/"%s) (lshowText cluster) (lshowText cluster)
+    let
+      icon = format ("installers/icons/"%s%"/"%s) (lshowText cluster) (lshowText cluster)
+      installDir :: Text
+      installDir = installDirectory installerConfig
+      releaseDir :: Text
+      releaseDir = "../release/win32-x64/" <> (installDirectory installerConfig) <> "-win32-x64"
     export "NODE_ENV" "production"
+    rewritePackageJson "../package.json" installDir
+    echo "running NPM"
     shells ("npm run package -- --icon " <> icon) empty
-    rewritePackageJson "../release/win32-x64/Daedalus-win32-x64/resources/app/package.json" (installDirectory installerConfig)
-    view (ls "../release/win32-x64/Daedalus-win32-x64/resources/app/dist")
-    cp "../node_modules/ps-list/fastlist.exe" "../release/win32-x64/Daedalus-win32-x64/resources/app/dist/main/fastlist.exe"
+    cp "../node_modules/ps-list/fastlist.exe" $ fromString $ unpack $ releaseDir <> "/resources/app/dist/main/fastlist.exe"
 
 -- | The contract of `main` is not to produce unsigned installer binaries.
 main :: Options -> IO ()
@@ -274,7 +279,7 @@ main opts@Options{..}  = do
     putStr rawnsi
     IO.hFlush IO.stdout
 
-    windowsRemoveDirectoryRecursive "../release/win32-x64/Daedalus-win32-x64/resources/app/installers/.stack-work"
+    windowsRemoveDirectoryRecursive $ unpack $ "../release/win32-x64/" <> (installDirectory installerConfig) <> "-win32-x64/resources/app/installers/.stack-work"
 
     echo "Generating NSIS installer"
     procs "C:\\Program Files (x86)\\NSIS\\makensis" ["daedalus.nsi", "-V4"] mempty
