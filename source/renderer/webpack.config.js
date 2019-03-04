@@ -8,6 +8,7 @@ const reportUrl = yamljs.parseFile('launcher-config.yaml').reportServer;
 
 // Process env flags from buildkite and appveyor
 const isTestEnv = process.env.NODE_ENV === 'test';
+const isCi = process.env.CI && process.env.CI !== '';
 
 module.exports = {
   mode: 'development',
@@ -30,11 +31,12 @@ module.exports = {
         test: /\.jsx?$/,
         include: /source/,
         exclude: /source\/main/,
-        use: [
+        use: (isCi ? [] : [
           'cache-loader',
           'thread-loader',
+        ]).concat([
           'babel-loader'
-        ],
+        ]),
       },
       {
         test: /\.scss/,

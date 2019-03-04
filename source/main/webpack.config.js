@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const yamljs = require('yamljs');
 
 const reportUrl = yamljs.parseFile('launcher-config.yaml').reportServer;
+const isCi = process.env.CI && process.env.CI !== '';
 
 module.exports = {
   mode: 'development',
@@ -38,10 +39,11 @@ module.exports = {
         test: /\.jsx?$/,
         include: /source/,
         exclude: /source\/renderer/,
-        use: [
+        use: (isCi ? [] : [
           'cache-loader',
+        ]).concat([
           'babel-loader'
-        ],
+        ]),
       },
       {
         test: /(pdfkit|linebreak|fontkit|unicode|brotli|png-js).*\.js$/,
