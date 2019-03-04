@@ -12,7 +12,7 @@ export const getGPUStatusChannel: (
 ) = new MainIpcChannel(GET_GPU_STATUS_CHANNEL);
 
 export default () => {
-  getGPUStatusChannel.onRequest(() => {
-    return Promise.resolve(app.getGPUFeatureStatus());
-  });
+  getGPUStatusChannel.onRequest(() => (
+    Promise.resolve(app.getGPUFeatureStatus())
+  ));
 };

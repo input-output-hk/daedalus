@@ -14,8 +14,8 @@ export const compressLogsChannel: (
 ) = new MainIpcChannel(COMPRESS_LOGS_CHANNEL);
 
 export default () => {
-  compressLogsChannel.onRequest(({ logs, compressedFileName }) => {
-    return new Promise((resolve, reject) => {
+  compressLogsChannel.onRequest(({ logs, compressedFileName }) => (
+    new Promise((resolve, reject) => {
       const outputPath = path.join(appLogsFolderPath, compressedFileName);
       const output = fs.createWriteStream(outputPath);
       const archive = archiver('zip', {
@@ -49,6 +49,6 @@ export default () => {
       });
 
       archive.pipe(output);
-    });
-  });
+    })
+  ));
 };

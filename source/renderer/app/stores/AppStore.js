@@ -1,17 +1,16 @@
 // @flow
 import { observable, computed, action } from 'mobx';
+
 import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
-import type { GpuStatus } from '../types/gpuStatus';
+import { DIALOGS, SCREENS } from '../../../common/ipc/constants';
 import { openExternalUrlChannel } from '../ipc/open-external-url';
 import { toggleUiPartChannel, showUiPartChannel } from '../ipc/control-ui-parts';
-import { DIALOGS, SCREENS } from '../../../common/ipc/constants';
 import { getGPUStatusChannel } from '../ipc/get-gpu-status.ipc';
 
-// TODO: refactor all parts that rely on this to ipc channels!
-const { ipcRenderer } = global;
+import type { GpuStatus } from '../types/gpuStatus';
 
 export default class AppStore extends Store {
 
