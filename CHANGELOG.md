@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Replaced ada symbol images with unicode character ([PR 1317](https://github.com/input-output-hk/daedalus/pull/1317))
+
 ## 0.13.0
 
 ### Features
