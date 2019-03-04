@@ -36,10 +36,10 @@ import           Util
 
 
 
-daedalusShortcut :: [Attrib]
-daedalusShortcut =
+daedalusShortcut :: Text -> [Attrib]
+daedalusShortcut installDir =
         [ Target "$INSTDIR\\cardano-launcher.exe"
-        , IconFile "$INSTDIR\\Daedalus.exe"
+        , IconFile $ fromString $ unpack $ "$INSTDIR\\" <> installDir <> ".exe"
         , StartOptions "SW_SHOWMINIMIZED"
         , IconIndex 0
         ]
@@ -196,7 +196,7 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                     , "DetailPrint \"liteFirewall::AddRule: $0\""
                     ]
 
-                createShortcut "$DESKTOP\\$InstallDir.lnk" daedalusShortcut
+                createShortcut "$DESKTOP\\$InstallDir.lnk" (daedalusShortcut $ installDirectory installerConfig)
 
                 -- Uninstaller
                 let
@@ -220,7 +220,7 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                 createDirectory "$SMPROGRAMS/$InstallDir"
                 createShortcut "$SMPROGRAMS/$InstallDir/Uninstall $InstallDir.lnk"
                     [Target "$INSTDIR/uninstall.exe", IconFile "$INSTDIR/uninstall.exe", IconIndex 0]
-                createShortcut "$SMPROGRAMS/$InstallDir/$InstallDir.lnk" daedalusShortcut
+                createShortcut "$SMPROGRAMS/$InstallDir/$InstallDir.lnk" (daedalusShortcut $ installDirectory installerConfig)
         return ()
 
 lshow :: Show a => a -> String
