@@ -14,6 +14,7 @@ import type { AdaRedemptionCode, AdaRedemptionDecryptionKey } from '../types/ada
 import type { RedemptionTypeChoices } from '../../renderer/app/types/redemptionTypes';
 import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
 import type { LogFiles } from '../../renderer/app/types/LogTypes';
+import type { GpuStatus } from '../../renderer/app/types/gpuStatus';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -41,8 +42,9 @@ export type DownloadLogsRequest = {
 };
 export type DownloadLogsResponse = void;
 
-// TODO: refactor to typed ipc channels
-export const GET_GPU_STATUS_CHANNEL = 'get-gpu-status';
+export const GET_GPU_STATUS_CHANNEL = 'GET_GPU_STATUS_CHANNEL';
+export type GetGPUStatusRequest = void;
+export type GetGPUStatusResponse = GpuStatus;
 
 /**
  * Channel for showing ui parts specified via constants

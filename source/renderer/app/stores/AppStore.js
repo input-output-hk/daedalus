@@ -3,12 +3,12 @@ import { observable, computed, action } from 'mobx';
 import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
-import { GET_GPU_STATUS } from '../../../common/ipc-api';
 import { ROUTES } from '../routes-config';
 import type { GpuStatus } from '../types/gpuStatus';
 import { openExternalUrlChannel } from '../ipc/open-external-url';
 import { toggleUiPartChannel, showUiPartChannel } from '../ipc/control-ui-parts';
 import { DIALOGS, SCREENS } from '../../../common/ipc/constants';
+import { getGPUStatusChannel } from '../ipc/get-gpu-status.ipc';
 
 // TODO: refactor all parts that rely on this to ipc channels!
 const { ipcRenderer } = global;
@@ -35,18 +35,6 @@ export default class AppStore extends Store {
 
     toggleUiPartChannel.onReceive(this.toggleUiPart);
     showUiPartChannel.onReceive(this.showUiPart);
-
-    /* eslint-disable max-len */
-    // TODO: refactor to ipc channels
-    ipcRenderer.on(GET_GPU_STATUS.SUCCESS, this._onGetGpuStatusSuccess);
-    /* eslint-disable max-len */
-  }
-
-  teardown() {
-    /* eslint-disable max-len */
-    // TODO: refactor to ipc channels
-    ipcRenderer.removeListener(GET_GPU_STATUS.SUCCESS, this._onGetGpuStatusSuccess);
-    /* eslint-disable max-len */
   }
 
   @computed get currentRoute(): string {
@@ -95,14 +83,9 @@ export default class AppStore extends Store {
 
   // ===================== PRIVATE ======================= //
 
-  _getGpuStatus = () => {
-    // TODO: refactor to ipc channel
-    ipcRenderer.send(GET_GPU_STATUS.REQUEST);
+  _getGpuStatus = async () => {
+    this.gpuStatus = await getGPUStatusChannel.request();
   };
-
-  _onGetGpuStatusSuccess = action((event, status) => {
-    this.gpuStatus = status;
-  });
 
   _updateRouteLocation = (options: { route: string, params?: ?Object }) => {
     const routePath = buildRoute(options.route, options.params);
