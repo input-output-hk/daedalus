@@ -30,9 +30,9 @@ export const handleReportRequests = () => {
       formData.append('payload', JSON.stringify(payload));
 
       // prepare file stream (attachment)
-      if (payload.compressedLogsFile) {
-        const stream = fs.createReadStream(payload.compressedLogsFile);
-        const fileName = extractFileNameFromPath(payload.compressedLogsFile);
+      if (payload.compressedLogsFilePath) {
+        const stream = fs.createReadStream(payload.compressedLogsFilePath);
+        const fileName = extractFileNameFromPath(payload.compressedLogsFilePath);
         formData.append(fileName, stream);
       }
 

@@ -13,6 +13,7 @@ import type {
 import type { AdaRedemptionCode, AdaRedemptionDecryptionKey } from '../types/ada-redemption.types';
 import type { RedemptionTypeChoices } from '../../renderer/app/types/redemptionTypes';
 import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
+import type { LogFiles } from '../../renderer/app/types/LogTypes';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -22,10 +23,25 @@ import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
  * ==================================================================
  */
 
+export const GET_LOGS_CHANNEL = 'GET_LOGS_CHANNEL';
+export type GetLogsRequest = void;
+export type GetLogsResponse = LogFiles;
+
+export const COMPRESS_LOGS_CHANNEL = 'COMPRESS_LOGS_CHANNEL';
+export type CompressLogsRequest = {
+  logs: LogFiles,
+  compressedFileName: string,
+};
+export type CompressLogsResponse = string;
+
+export const DOWNLOAD_LOGS_CHANNEL = 'DOWNLOAD_LOGS_CHANNEL';
+export type DownloadLogsRequest = {
+  compressedLogsFilePath: string,
+  destinationPath: string,
+};
+export type DownloadLogsResponse = void;
+
 // TODO: refactor to typed ipc channels
-export const GET_LOGS_CHANNEL = 'get-logs';
-export const COMPRESS_LOGS_CHANNEL = 'compress-logs';
-export const DOWNLOAD_LOGS_CHANNEL = 'download-logs';
 export const GET_GPU_STATUS_CHANNEL = 'get-gpu-status';
 
 /**
