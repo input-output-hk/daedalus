@@ -10,7 +10,8 @@ import {
   CARDANO_STATE_CHANNEL,
   GET_CACHED_CARDANO_STATUS_CHANNEL,
   CARDANO_TLS_CONFIG_CHANNEL,
-  CARDANO_AWAIT_UPDATE_CHANNEL
+  CARDANO_AWAIT_UPDATE_CHANNEL,
+  SET_CACHED_CARDANO_STATUS_CHANNEL
 } from '../../../common/ipc/api';
 import type {
   CardanoTlsConfigResponse, CardanoTlsConfigRequest
@@ -38,6 +39,10 @@ export const cardanoFaultInjectionChannel: RendererIpcChannel<void, FaultInjecti
   new RendererIpcChannel(CARDANO_FAULT_INJECTION_CHANNEL)
 );
 
-export const cardanoStatusChannel: RendererIpcChannel<?CardanoStatus, ?CardanoStatus> = (
+export const getCachedCardanoStatusChannel: RendererIpcChannel<?CardanoStatus, ?CardanoStatus> = (
   new RendererIpcChannel(GET_CACHED_CARDANO_STATUS_CHANNEL)
+);
+
+export const setCachedCardanoStatusChannel: RendererIpcChannel<?CardanoStatus, ?CardanoStatus> = (
+  new RendererIpcChannel(SET_CACHED_CARDANO_STATUS_CHANNEL)
 );

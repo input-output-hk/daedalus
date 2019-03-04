@@ -19,7 +19,8 @@ import {
   cardanoStateChangeChannel,
   cardanoTlsConfigChannel,
   restartCardanoNodeChannel,
-  cardanoStatusChannel,
+  getCachedCardanoStatusChannel,
+  setCachedCardanoStatusChannel,
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import { getNumberOfEpochsConsolidatedChannel } from '../ipc/getNumberOfEpochsConsolidatedChannel';
@@ -202,7 +203,7 @@ export default class NetworkStatusStore extends Store {
     if (!this.isConnected) return;
     try {
       Logger.info('NetworkStatusStore: Updating node status');
-      await cardanoStatusChannel.send(this._extractNodeStatus(this));
+      await setCachedCardanoStatusChannel.send(this._extractNodeStatus(this));
     } catch (error) {
       Logger.error('NetworkStatusStore: Error while updating node status', { error });
     }
@@ -228,7 +229,7 @@ export default class NetworkStatusStore extends Store {
   _requestCardanoStatus = async () => {
     try {
       Logger.info('NetworkStatusStore: requesting node status');
-      const status = await cardanoStatusChannel.request();
+      const status = await getCachedCardanoStatusChannel.request();
       Logger.info('NetworkStatusStore: received cached node status', { status });
       if (status) runInAction('assigning node status', () => Object.assign(this, status));
     } catch (error) {

@@ -94,7 +94,7 @@ export const setupCardanoNodeMode = (
   setCachedCardanoStatusChannel.onReceive((status: ?CardanoStatus) => {
     Logger.info('ipcMain: Received request from renderer to cache cardano status', { status });
     cardanoNode.saveStatus(status);
-    return Promise.resolve(status);
+    return Promise.resolve();
   });
 
   cardanoStateChangeChannel.onRequest(() => {
