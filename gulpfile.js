@@ -73,7 +73,7 @@ const buildRendererWatch = () => (
   )
 );
 
-gulp.task('clear:cache', shell.task('rimraf ./node_modules/.cache'));
+gulp.task('clear:cache', shell.task('rimraf ./node_modules/.cache && rimraf .cache-loader'));
 
 gulp.task('clean:dist', shell.task('rimraf ./dist'));
 
