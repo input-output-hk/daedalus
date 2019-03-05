@@ -839,6 +839,7 @@ export default class AdaApi {
   getLocalTimeDifference: Function;
   setLocalTimeDifference: Function;
   setNextUpdate: Function;
+  setSubscriptionStatus: Function;
 
 }
 
