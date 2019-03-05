@@ -16,6 +16,8 @@ import type { NodeInfo, GetNetworkStatusResponse } from '../nodes/types';
 let LOCAL_TIME_DIFFERENCE = 0;
 let NEXT_ADA_UPDATE = null;
 let SUBSCRIPTION_STATUS = null;
+let LOCAL_BLOCK_HEIGHT = null;
+let NETWORK_BLOCK_HEIGHT = null;
 
 export default (api: AdaApi) => {
   // Since we cannot test ada redemption in dev mode, just resolve the requests
@@ -82,8 +84,8 @@ export default (api: AdaApi) => {
       return {
         subscriptionStatus: SUBSCRIPTION_STATUS || subscriptionStatus,
         syncProgress: syncProgress.quantity,
-        blockchainHeight: get(blockchainHeight, 'quantity', 0),
-        localBlockchainHeight: localBlockchainHeight.quantity,
+        blockchainHeight: NETWORK_BLOCK_HEIGHT || get(blockchainHeight, 'quantity', 0),
+        localBlockchainHeight: LOCAL_BLOCK_HEIGHT || localBlockchainHeight.quantity,
         localTimeInformation: {
           status: 'available',
           difference: LOCAL_TIME_DIFFERENCE,
@@ -107,7 +109,15 @@ export default (api: AdaApi) => {
     NEXT_ADA_UPDATE = nextUpdate;
   };
 
-  api.setSubscriptionStatus = async (subscriptionStatus) => {
+  api.setSubscriptionStatus = async (subscriptionStatus: Object) => {
     SUBSCRIPTION_STATUS = subscriptionStatus;
+  };
+
+  api.setLocalBlockHeight = async (height: number) => {
+    LOCAL_BLOCK_HEIGHT = height;
+  };
+
+  api.setNetworkBlockHeight = async (height: number) => {
+    NETWORK_BLOCK_HEIGHT = height;
   };
 };

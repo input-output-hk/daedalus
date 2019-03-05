@@ -840,6 +840,8 @@ export default class AdaApi {
   setLocalTimeDifference: Function;
   setNextUpdate: Function;
   setSubscriptionStatus: Function;
+  setLocalBlockHeight: Function;
+  setNetworkBlockHeight: Function;
 
 }
 
