@@ -7,6 +7,10 @@ Changelog
 
 - Replaced ada symbol images with unicode character ([PR 1317](https://github.com/input-output-hk/daedalus/pull/1317))
 
+### Chores
+
+- Improved the internal IPC communication ([PR 1332](https://github.com/input-output-hk/daedalus/pull/1332))
+
 ## 0.13.0
 
 ### Features
