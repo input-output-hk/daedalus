@@ -14,7 +14,7 @@ const messages = defineMessages({
   supportRequestLinkUrl: {
     id: 'settings.support.reportProblem.linkUrl',
     defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/requests/new/',
-    description: '"Support request" link URL in the "Report a problem" section on the support settings page.',
+    description: '"submit a support request" link URL in the "Report a problem" section on the support settings page.',
   },
   downloadLogsSuccess: {
     id: 'settings.support.reportProblem.downloadLogsSuccessMessage',
