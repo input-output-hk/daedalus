@@ -1,6 +1,9 @@
 // @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
+// import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
+// import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+// import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import classNames from 'classnames';
 import styles from './StatusIcons.scss';
 import isNodeRunningIcon from '../../assets/images/is-node-running-icon.inline.svg';
@@ -48,6 +51,15 @@ export default class StatusIcon extends Component<Props> {
 
     return (
       <div className={styles.component}>
+        {/*
+          <Tooltip
+            themeId={IDENTIFIERS.TOOLTIP}
+            skin={TooltipSkin}
+            tip="Description of the child element"
+          >
+            hover over me
+          </Tooltip>
+        */}
         <SVGInline svg={isNodeRunningIcon} className={this.getClassName(isNodeRunning)} />
         <SVGInline svg={isNodeRespondingIcon} className={this.getClassName(isNodeResponding)} />
         <SVGInline svg={isNodeSubscribedIcon} className={this.getClassName(isNodeSubscribed)} />
