@@ -1,6 +1,16 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Replaced ada symbol images with unicode character ([PR 1317](https://github.com/input-output-hk/daedalus/pull/1317))
+
+### Chores
+
+- Improved Webpack 4 build performance ([PR 1320](https://github.com/input-output-hk/daedalus/pull/1320))
+
 ## 0.13.0
 
 ### Features
