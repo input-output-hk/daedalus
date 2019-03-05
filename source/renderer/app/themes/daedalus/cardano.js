@@ -431,6 +431,11 @@ export default {
   '--theme-loading-no-disk-space-text-color': '#fafbfc',
   '--theme-loading-no-disk-space-attention-icon-color': '#fafbfc',
 
+  '--theme-loading-status-icons-on-color': '#2dc06c',
+  '--theme-loading-status-icons-off-color': '#ea4c5b',
+  '--theme-loading-status-icons-unloaded-loading-color': '#fafbfc',
+  '--theme-loading-status-icons-unloaded-syncing-color': '#5e6066',
+
   '--theme-mnemonic-background-color': '#f0f3f5',
   '--theme-mnemonic-background-color-hover': '#f3f5f7',
 

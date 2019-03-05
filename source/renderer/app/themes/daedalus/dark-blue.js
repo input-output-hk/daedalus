@@ -430,6 +430,11 @@ export default {
   '--theme-loading-no-disk-space-text-color': '#fafbfc',
   '--theme-loading-no-disk-space-attention-icon-color': '#fafbfc',
 
+  '--theme-loading-status-icons-on-color': '#2dc06c',
+  '--theme-loading-status-icons-off-color': '#ea4c5b',
+  '--theme-loading-status-icons-unloaded-loading-color': '#fafbfc',
+  '--theme-loading-status-icons-unloaded-syncing-color': '#fafbfc',
+
   '--theme-mnemonic-background-color': 'rgba(83, 99, 112, 0.3)',
   '--theme-mnemonic-background-color-hover': 'rgba(102, 122, 138, 0.3)',
 

@@ -120,6 +120,7 @@ type Props = {
   localTimeDifference: ?number,
   isSystemTimeCorrect: boolean,
   isCheckingSystemTime: boolean,
+  isNodeResponding: boolean,
   isNodeSubscribed: boolean,
   isNodeSyncing: boolean,
   isNodeInSync: boolean,
@@ -356,6 +357,7 @@ export default class Loading extends Component<Props, State> {
       hasLoadedCurrentTheme,
       onReportIssueClick,
       onDownloadLogs,
+      isNodeResponding,
       isNodeSubscribed,
       isNodeSyncing,
       isNodeInSync,
@@ -446,6 +448,7 @@ export default class Loading extends Component<Props, State> {
 
         <StatusIcons
           isNodeRunning={cardanoNodeState === CardanoNodeStates.RUNNING}
+          isNodeResponding={isNodeResponding}
           isNodeSubscribed={isNodeSubscribed}
           isNodeSyncing={isNodeSyncing}
           isNodeInSync={isNodeInSync}

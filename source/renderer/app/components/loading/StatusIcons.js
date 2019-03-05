@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
+import classNames from 'classnames';
 import styles from './StatusIcons.scss';
 import isNodeRunningIcon from '../../assets/images/is-node-running-icon.inline.svg';
 import isNodeRespondingIcon from '../../assets/images/is-node-responding-icon.inline.svg';
@@ -9,11 +10,11 @@ import isNodeSyncingIcon from '../../assets/images/is-node-syncing-icon.inline.s
 import isNodeTimeCorrectIcon from '../../assets/images/is-node-time-correct-icon.inline.svg';
 
 type Props = {
-  isNodeRunning: boolean,
-  isNodeSubscribed: boolean,
-  isNodeSyncing: boolean,
-  isNodeInSync: boolean,
-  isNodeTimeCorrect: boolean,
+  isNodeRunning?: boolean,
+  isNodeResponding?: boolean,
+  isNodeSubscribed?: boolean,
+  isNodeSyncing?: boolean,
+  isNodeTimeCorrect?: boolean,
 };
 
 export default class StatusIcon extends Component<Props> {
@@ -24,11 +25,25 @@ export default class StatusIcon extends Component<Props> {
     undefined: 'unloaded'
   };
 
-  getClassName = (param: boolean) => styles[`icon-${this.statusClassNames[param]}`];
+  getClassName = (param?: boolean) => {
+    const { isNodeRunning, isNodeSyncing } = this.props;
+    // If {!isNodeRunning} it displays the icons without opacity
+    // Whether {isNodeSyncing} it displays the icons for syncing or loading screen
+    let status = this.statusClassNames[param];
+    if (!isNodeRunning) status = 'unknown';
+    return classNames([
+      styles[`icon-${status}`],
+      isNodeSyncing ? styles.syncing : styles.loading
+    ]);
+  };
 
   render() {
     const {
-      isNodeRunning, isNodeResponding, isNodeSubscribed, isNodeSyncing, isNodeTimeCorrect
+      isNodeRunning,
+      isNodeResponding,
+      isNodeSubscribed,
+      isNodeSyncing,
+      isNodeTimeCorrect
     } = this.props;
 
     return (
@@ -36,8 +51,8 @@ export default class StatusIcon extends Component<Props> {
         <SVGInline svg={isNodeRunningIcon} className={this.getClassName(isNodeRunning)} />
         <SVGInline svg={isNodeRespondingIcon} className={this.getClassName(isNodeResponding)} />
         <SVGInline svg={isNodeSubscribedIcon} className={this.getClassName(isNodeSubscribed)} />
-        <SVGInline svg={isNodeSyncingIcon} className={this.getClassName(isNodeSyncing)} />
         <SVGInline svg={isNodeTimeCorrectIcon} className={this.getClassName(isNodeTimeCorrect)} />
+        <SVGInline svg={isNodeSyncingIcon} className={this.getClassName(isNodeSyncing)} />
       </div>
     );
   }

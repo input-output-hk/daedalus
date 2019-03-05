@@ -26,9 +26,19 @@
 .icon-off path:nth-of-type(2) {
   fill: var(--theme-loading-status-icons-off-color);
 }
-.icon-unloaded {
-  opacity: .3;
-  path:nth-of-type(2) {
-    fill: var(--theme-loading-status-icons-unloaded-color);
+.icon-unloaded, .icon-unknown {
+  &.syncing {
+    path:nth-of-type(2) {
+      fill: var(--theme-loading-status-icons-unloaded-syncing-color);
+    }
+  }
+  &.loading {
+    path:nth-of-type(2) {
+      fill: var(--theme-loading-status-icons-unloaded-loading-color);
+    }
   }
 }
+.icon-unknown {
+  opacity: .3;
+}
+
