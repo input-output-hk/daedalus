@@ -2,7 +2,7 @@
 import type {
   BugReportRequestHttpOptions,
   BugReportRequestPayload
-} from '../types/report-request.types';
+} from '../types/bug-report-request.types';
 import type { GeneratePaperWalletParams } from '../types/paper-wallet-request.types';
 import type {
   CardanoNodeState,

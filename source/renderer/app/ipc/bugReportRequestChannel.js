@@ -6,7 +6,7 @@ import type {
 } from '../../../common/ipc/api';
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
 
-export const reportRequestChannel: (
+export const bugReportRequestChannel: (
   // IpcChannel<Incoming, Outgoing>
   RendererIpcChannel<SubmitBugReportRequestResponse, SubmitBugReportRequest>
 ) = (

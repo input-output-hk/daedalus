@@ -6,7 +6,7 @@ import getLogsApi from './get-logs';
 import resizeWindowApi from './resize-window';
 import loadAsset from './load-asset';
 import getGpuStatus from './get-gpu-status';
-import { handleReportRequests } from './reportRequestChannel';
+import { handleBugReportRequests } from './bugReportRequestChannel';
 import { handlePaperWalletRequests } from './generatePaperWalletChannel';
 import { openExternalUrlChannel } from './open-external-url';
 import { setupParseRedemptionCodeHandler } from './parse-redemption-code';
@@ -18,7 +18,7 @@ export default (window: BrowserWindow) => {
   resizeWindowApi(window);
   loadAsset();
   getGpuStatus();
-  handleReportRequests();
+  handleBugReportRequests();
   handlePaperWalletRequests();
   openExternalUrlChannel;
   setupParseRedemptionCodeHandler();
