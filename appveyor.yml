@@ -7,7 +7,7 @@ environment:
   AWS_SECRET_ACCESS_KEY:
     secure: DbpP02aDGoC3Tdsi3+ONm8ov0nuXzEF/Yi453SBKj38qjROzvPXo6qW44bYiKBf4
   CERT_PASS:
-    secure: Y3pbyZBSORhsefMiSFBBm2nuhHQ2Hmmfppm3E+Fr7U+EXYrXwdCNl8wLwfCCMK2k
+    secure: K+PY2zF/5qeJnnKhcCZaqLnVZuAXvuxCXosnzHdtje1C+BMLfAbCJZVt2wTMEyJT
   GITHUB_OAUTH_TOKEN:
     secure: prH84TwXLO2CGaiwmipj05AAndcR7bDDxTv9hL8adIpr2bNjrV7pN15JKVmsxISc
   # Avoid long paths on Windows
@@ -20,7 +20,7 @@ cache:
 
 install:
   - ps: Install-Product node $env:nodejs_version x64
-  - IF NOT DEFINED APPVEYOR_PULL_REQUEST_NUMBER aws s3 cp --region eu-central-1 s3://iohk-private-2/iohk-windows-certificate-5.p12 C:/iohk-windows-certificate.p12
+  - IF NOT DEFINED APPVEYOR_PULL_REQUEST_NUMBER aws s3 cp --region eu-central-1 s3://iohk-private-2/iohk-windows-certificate-4.p12 C:/iohk-windows-certificate.p12
 
 test_script:
   - scripts\build-installer-win64.bat %APPVEYOR_BUILD_VERSION%
