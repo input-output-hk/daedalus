@@ -189,8 +189,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Amount too big due to wallet fragmentation.",
-        "description": "\"Amount too big due to wallet fragmentation\" error message.",
+        "defaultMessage": "!!!Transaction too big due to too many inputs.",
+        "description": "\"Transaction too big due to too many inputs.\" error message.",
         "end": {
           "column": 3,
           "line": 49
@@ -204,7 +204,7 @@
       },
       {
         "defaultMessage": "!!!Learn more.",
-        "description": "\"Amount too big due to wallet fragmentation\" error link label.",
+        "description": "\"Transaction too big due to too many inputs.\" error link label.",
         "end": {
           "column": 3,
           "line": 54
@@ -218,7 +218,7 @@
       },
       {
         "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360017733353",
-        "description": "\"Amount too big due to wallet fragmentation\" error link URL.",
+        "description": "\"Transaction too big due to too many inputs.\" error link URL.",
         "end": {
           "column": 3,
           "line": 59
@@ -1033,7 +1033,7 @@
         }
       },
       {
-        "defaultMessage": "!!!If the FAQ does not solve the issue you are experiencing, please use our {supportRequestLink} feature.",
+        "defaultMessage": "!!!If you are still experiencing an issue, please submit a support request.",
         "description": "Content for the \"Reporting a problem\" section on the support settings page.",
         "end": {
           "column": 3,
@@ -1047,8 +1047,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Support request",
-        "description": "\"Support request\" link in the \"Report a problem\" section on the support settings page.",
+        "defaultMessage": "!!!submit a support request",
+        "description": "\"submit a support request\" link in the \"Report a problem\" section on the support settings page.",
         "end": {
           "column": 3,
           "line": 38
@@ -1075,7 +1075,7 @@
         }
       },
       {
-        "defaultMessage": "!!!If you want to inspect logs, you can {downloadLogsLink}. Logs do not contain sensitive information, and it would be helpful to attach them to problem reports to help the team investigate the issue you are experiencing. Logs can be attached automatically when using the bug reporting feature.",
+        "defaultMessage": "!!!Please download your logs here and attach the downloaded file when submitting a support ticket to help the support team investigate the issue. Logs do not contain sensitive information.",
         "description": "Content for the \"Logs\" section on the support settings page.",
         "end": {
           "column": 3,
@@ -1089,8 +1089,8 @@
         }
       },
       {
-        "defaultMessage": "!!!download them here",
-        "description": "\"download them here\" link in the Logs section on the support settings page",
+        "defaultMessage": "!!!download your logs here",
+        "description": "\"download your logs here\" link in the Logs section on the support settings page",
         "end": {
           "column": 3,
           "line": 53
@@ -5094,7 +5094,7 @@
     "descriptors": [
       {
         "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/requests/new/",
-        "description": "\"Support request\" link URL in the \"Report a problem\" section on the support settings page.",
+        "description": "\"submit a support request\" link URL in the \"Report a problem\" section on the support settings page.",
         "end": {
           "column": 3,
           "line": 18

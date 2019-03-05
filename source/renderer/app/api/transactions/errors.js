@@ -44,20 +44,19 @@ const messages = defineMessages({
   },
   tooBigTransactionError: {
     id: 'api.errors.TooBigTransactionError',
-    defaultMessage: '!!!Amount too big due to wallet fragmentation.',
-    description: '"Amount too big due to wallet fragmentation" error message.'
+    defaultMessage: '!!!Transaction too big due to too many inputs.',
+    description: '"Transaction too big due to too many inputs." error message.'
   },
   tooBigTransactionErrorLinkLabel: {
     id: 'api.errors.TooBigTransactionErrorLinkLabel',
     defaultMessage: '!!!Learn more.',
-    description: '"Amount too big due to wallet fragmentation" error link label.'
+    description: '"Transaction too big due to too many inputs." error link label.'
   },
   tooBigTransactionErrorLinkURL: {
     id: 'api.errors.TooBigTransactionErrorLinkURL',
     defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/articles/360017733353',
-    description: '"Amount too big due to wallet fragmentation" error link URL.'
+    description: '"Transaction too big due to too many inputs." error link URL.'
   },
-
 });
 
 export class NotAllowedToSendMoneyToSameAddressError extends LocalizableError {

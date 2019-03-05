@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Implemented a handle for the 'transaction is too big' transaction error ([PR 1308](https://github.com/input-output-hk/daedalus/pull/1308))
+- Implemented a handle for the 'transaction is too big' transaction error ([PR 1308](https://github.com/input-output-hk/daedalus/pull/1308), [PR 1331](https://github.com/input-output-hk/daedalus/pull/1331))
 - Structured the Daedalus logs in the same format as the Cardano logs, which follows the structured logging specification ([PR 1299](https://github.com/input-output-hk/daedalus/pull/1299))
 - Implemented an extra explanation line in the Create Paper Wallet Certificate dialog ([PR 1309](https://github.com/input-output-hk/daedalus/pull/1309))
 - Improve performance of rendering huge lists of transactions and addresses ([PR 1276](https://github.com/input-output-hk/daedalus/pull/1276), [PR 1303](https://github.com/input-output-hk/daedalus/pull/1303), [PR 1305](https://github.com/input-output-hk/daedalus/pull/1305), [PR 1306](https://github.com/input-output-hk/daedalus/pull/1306), [PR 1312](https://github.com/input-output-hk/daedalus/pull/1312), [PR 1313](https://github.com/input-output-hk/daedalus/pull/1313))
@@ -17,7 +17,7 @@ Changelog
 - Improved the NTP check logic ([PR 1258](https://github.com/input-output-hk/daedalus/pull/1258), [PR 1319](https://github.com/input-output-hk/daedalus/pull/1319))
 - Added support for "frontend-only" mode ([PR 1241](https://github.com/input-output-hk/daedalus/pull/1241), [PR 1260](https://github.com/input-output-hk/daedalus/pull/1260))
 - Improved the lock-file UX by replacing "Daedalus is already running" dialog with focusing of the already running Daedalus instance ([PR 1229](https://github.com/input-output-hk/daedalus/pull/1229))
-- Replaced in-app support request with links to support page ([PR 1199](https://github.com/input-output-hk/daedalus/pull/1199))
+- Replaced in-app support request with links to support page ([PR 1199](https://github.com/input-output-hk/daedalus/pull/1199), [PR 1331](https://github.com/input-output-hk/daedalus/pull/1331))
 - Improved the UX of inline editing fields (like wallet renaming) ([PR 1231](https://github.com/input-output-hk/daedalus/pull/1231))
 - Added a BESTPRACTICES.md document containing rules and recommendations for writing better JavaScript and CSS ([PR 1233](https://github.com/input-output-hk/daedalus/pull/1233))
 - Refactored environment setup and disabled Electron Node integration for the render process ([PR 1099](https://github.com/input-output-hk/daedalus/pull/1099/commits))
