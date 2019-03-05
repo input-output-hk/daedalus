@@ -1,4 +1,6 @@
 // @flow
+export type LocalTimeInformationStatus = 'unavailable' | 'pending' | 'available';
+
 export type NodeInfo = {
   syncProgress: {
     quantity: number,
@@ -13,7 +15,8 @@ export type NodeInfo = {
     unit: ?'blocks'
   },
   localTimeInformation: {
-    differenceFromNtpServer: ?{
+    status: LocalTimeInformationStatus,
+    localTimeDifference?: {
       quantity: number,
       unit: ?'microseconds'
     }
@@ -41,5 +44,9 @@ export type GetNetworkStatusResponse = {
   subscriptionStatus: Object,
   syncProgress: number,
   blockchainHeight: number,
-  localBlockchainHeight: number
+  localBlockchainHeight: number,
+  localTimeInformation: {
+    status: LocalTimeInformationStatus,
+    difference: ?number
+  }
 };
