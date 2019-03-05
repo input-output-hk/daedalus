@@ -53,7 +53,11 @@ export default class LoadingPage extends Component<InjectedProps> {
   render() {
     const { stores } = this.props;
     const {
-      cardanoNodeState, isConnected, isSynced, syncPercentage, hasBeenConnected,
+      // Node state
+      cardanoNodeState, isNodeResponding, isNodeSubscribed,
+      isNodeSyncing, isNodeInSync, isNodeTimeCorrect,
+      // Application state
+      isConnected, isSynced, syncPercentage, hasBeenConnected,
       localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
       forceCheckLocalTimeDifference, ignoreSystemTimeChecks, isNodeStopping, isNodeStopped,
       isNotEnoughDiskSpace, diskSpaceRequired, diskSpaceMissing, diskSpaceRecommended,
@@ -85,11 +89,15 @@ export default class LoadingPage extends Component<InjectedProps> {
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           currentLocale={currentLocale}
           onExternalLinkClick={stores.app.openExternalLink}
+          isNodeResponding={isNodeResponding}
+          isNodeSubscribed={isNodeSubscribed}
+          isNodeSyncing={isNodeSyncing}
+          isNodeInSync={isNodeInSync}
+          isNodeTimeCorrect={isNodeTimeCorrect}
           onReportIssueClick={this.handleReportIssueClick}
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
           onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
           onDownloadLogs={this.handleDownloadLogs}
-          getIconWithColor={this.handleIconWithColor}
         />
         <NotificationMessage
           icon={successIcon}
@@ -147,32 +155,5 @@ export default class LoadingPage extends Component<InjectedProps> {
     if (destination) {
       profile.downloadLogs.trigger({ fileName, destination, fresh: true });
     }
-  };
-
-  handleIconWithColor = (icon: string, variable: string) => {
-
-    const { networkStatus } = this.props.stores;
-    const variableStatus = networkStatus[variable];
-
-    const colorVariables = {
-      true: 'green',
-      running: 'green',
-      stopping: 'red',
-      starting: 'red',
-      false: 'red',
-      undefined: 'white',
-    };
-
-    const color = colorVariables[variableStatus] || 'gray';
-
-    // isNodeResponding
-    // isNodeRunning
-    // isNodeSubscribed
-    // isNodeSyncing
-    // isNodeTimeCorrect
-
-    return icon
-      .replace(/STROKE/g, color)
-      .replace(/FILL/g, color);
   };
 }

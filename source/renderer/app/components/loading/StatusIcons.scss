@@ -1,0 +1,34 @@
+
+.component {
+  bottom: 20px;
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+
+  span {
+    display: flex;
+    margin-right: 12px;
+    &:last-child {
+      margin-right: 0;
+    }
+    svg {
+      height: 24px;
+    }
+  }
+}
+
+.icon-on path:nth-of-type(2) {
+  fill: var(--theme-loading-status-icons-on-color);
+}
+.icon-off path:nth-of-type(2) {
+  fill: var(--theme-loading-status-icons-off-color);
+}
+.icon-unloaded {
+  opacity: .3;
+  path:nth-of-type(2) {
+    fill: var(--theme-loading-status-icons-unloaded-color);
+  }
+}

@@ -8,13 +8,9 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import SystemTimeErrorOverlay from './SystemTimeErrorOverlay';
 import NoDiskSpaceOverlay from './NoDiskSpaceOverlay';
+import StatusIcons from './StatusIcons';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
-import isNodeRespondingIcon from '../../assets/images/is-node-responding-icon.inline.svg';
-import isNodeRunningIcon from '../../assets/images/is-node-running-icon.inline.svg';
-import isNodeSubscribedIcon from '../../assets/images/is-node-subscribed-icon.inline.svg';
-import isNodeSyncingIcon from '../../assets/images/is-node-syncing-icon.inline.svg';
-import isNodeTimeCorrectIcon from '../../assets/images/is-node-time-correct-icon.inline.svg';
 import linkNewWindow from '../../assets/images/link-ic.inline.svg';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './Loading.scss';
@@ -124,13 +120,16 @@ type Props = {
   localTimeDifference: ?number,
   isSystemTimeCorrect: boolean,
   isCheckingSystemTime: boolean,
+  isNodeSubscribed: boolean,
+  isNodeSyncing: boolean,
+  isNodeInSync: boolean,
+  isNodeTimeCorrect: boolean,
   currentLocale: string,
   onExternalLinkClick: Function,
   onReportIssueClick: Function,
   onCheckTheTimeAgain: Function,
   onContinueWithoutClockSyncCheck: Function,
   onDownloadLogs: Function,
-  getIconWithColor: Function,
 };
 
 @observer
@@ -357,7 +356,10 @@ export default class Loading extends Component<Props, State> {
       hasLoadedCurrentTheme,
       onReportIssueClick,
       onDownloadLogs,
-      getIconWithColor,
+      isNodeSubscribed,
+      isNodeSyncing,
+      isNodeInSync,
+      isNodeTimeCorrect,
     } = this.props;
 
     const { connectingTime, syncingTime } = this.state;
@@ -441,23 +443,15 @@ export default class Loading extends Component<Props, State> {
           <SVGInline svg={apiLoadingLogo} className={apiLogoStyles} />
         </div>
         {hasLoadedCurrentLocale ? this._renderLoadingScreen() : null}
-        <div className={styles.statusIcons}>
-          <SVGInline
-            svg={getIconWithColor(isNodeRespondingIcon, 'isNodeResponding')}
-          />
-          <SVGInline
-            svg={getIconWithColor(isNodeRunningIcon, 'cardanoNodeState')}
-          />
-          <SVGInline
-            svg={getIconWithColor(isNodeSubscribedIcon, 'isNodeSubscribed')}
-          />
-          <SVGInline
-            svg={getIconWithColor(isNodeSyncingIcon, 'isNodeSyncing')}
-          />
-          <SVGInline
-            svg={getIconWithColor(isNodeTimeCorrectIcon, 'isNodeTimeCorrect')}
-          />
-        </div>
+
+        <StatusIcons
+          isNodeRunning={cardanoNodeState === CardanoNodeStates.RUNNING}
+          isNodeSubscribed={isNodeSubscribed}
+          isNodeSyncing={isNodeSyncing}
+          isNodeInSync={isNodeInSync}
+          isNodeTimeCorrect={isNodeTimeCorrect}
+        />
+
       </div>
     );
   }
