@@ -1,6 +1,8 @@
 import { Then, When } from 'cucumber';
 import { waitUntilTextInSelector } from '../support/helpers/shared-helpers';
 
+const REPORT_ISSUE_TEXT_H1 = '.Loading_reportIssueText';
+
 When(/^I set the node subscription status to subscribing$/, async function () {
   await this.client.executeAsync((subscriptionStatus, done) => {
     daedalus.api.ada.setSubscriptionStatus(subscriptionStatus)
@@ -9,13 +11,9 @@ When(/^I set the node subscription status to subscribing$/, async function () {
   }, {});
 });
 
-Then(/^I should see the loading screen with report connecting issue text "([^"]*)"$/, async function (message) {
+Then(/^I should wait 5 seconds and see the trouble connecting notification displaying "([^"]*)"$/, async function (text) {
   await waitUntilTextInSelector(this.client, {
-    selector: '.Loading_reportIssueText',
-    text: message
+    selector: REPORT_ISSUE_TEXT_H1,
+    text
   });
 });
-
-// When(/^I set isConnected to false$/, () => {
-//   daedalus.stores.networkStatus.isConnected = false;
-// });
