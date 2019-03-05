@@ -820,7 +820,10 @@ export default class AdaApi {
         syncProgress: syncProgress.quantity,
         blockchainHeight: get(blockchainHeight, 'quantity', 0),
         localBlockchainHeight: localBlockchainHeight.quantity,
-        localTimeDifference: get(localTimeInformation, 'differenceFromNtpServer.quantity', null),
+        localTimeInformation: {
+          status: localTimeInformation.status,
+          difference: get(localTimeInformation, 'localTimeDifference.quantity', null),
+        },
       };
     } catch (error) {
       Logger.error(`${loggerText} error`, { error });
