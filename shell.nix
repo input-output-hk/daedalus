@@ -15,7 +15,7 @@ in
 let
   daedalusPkgs = import ./. { inherit cluster system; };
   hostPkgs = import pkgs.path { config = {}; overlays = []; };
-  yaml2json = hostPkgs.haskell.lib.disableCabalFlag hostPkgs.haskellPackages.yaml "no-exe";
+  yaml2json = pkgs.haskell.lib.disableCabalFlag pkgs.haskellPackages.yaml "no-exe";
   yarn = pkgs.yarn.override { inherit nodejs; };
   nodejs = pkgs.nodejs-8_x;
   launcher-json = hostPkgs.runCommand "read-launcher-config.json" { buildInputs = [ yaml2json ]; } "yaml2json ${daedalusPkgs.daedalus.cfg}/etc/launcher-config.yaml > $out";
@@ -80,6 +80,7 @@ let
       daedalusPkgs.daedalus-bridge
     ]) ++ (localLib.optionals (pkgs.stdenv.hostPlatform.system != "x86_64-darwin") [
       daedalusPkgs.electron3
+      winePackages.minimal
     ])
     );
   buildShell = pkgs.stdenv.mkDerivation {

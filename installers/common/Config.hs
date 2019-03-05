@@ -84,6 +84,7 @@ data Command
     }
   | GenInstaller
   | Appveyor
+  | BuildkiteCrossWin
   deriving (Eq, Show)
 
 data Options = Options
@@ -109,6 +110,7 @@ commandParser = (fromMaybe GenInstaller <$>) . optional $
   , ("installer",  "Build an installer",
       pure GenInstaller)
   , ("appveyor",   "do an appveroy build", pure Appveyor)
+  , ("buildkite-cross", "cross-compile windows from linux", pure BuildkiteCrossWin)
   ]
 
 optionsParser :: OS -> Parser Options

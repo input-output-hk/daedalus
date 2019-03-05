@@ -4,14 +4,14 @@ import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import { AutoSizer, List } from 'react-virtualized';
+import { throttle, debounce } from 'lodash';
 import { WalletTransaction } from '../../../../domains/WalletTransaction';
 import type { Row } from '../types';
 import styles from './VirtualTransactionList.scss';
 import { TransactionInfo, TransactionsGroup } from '../types';
 
 type Props = {
-  isTxExpanded: (WalletTransaction) => boolean,
-  getExpandedTransactions: () => WalletTransaction[],
+  getExpandedTransactions: () => Array<any>,
   renderRow: (Row) => Node,
   rows: Row[],
   isLoadingSpinnerShown?: boolean,
@@ -21,12 +21,12 @@ type Props = {
 type RowHeight = number;
 
 const GROUP_DATE_HEIGHT = 26;
-const TX_ROW_HEIGHT = 86;
-const TX_ROW_HEIGHT_EXPANDED = 294;
+const TX_CONTRACTED_ROW_HEIGHT = 86;
+const TX_EXPANDED_ROW_BASE_HEIGHT = 260 + 16;
 const TX_LAST_IN_GROUP_MARGIN = 20;
-const TX_BASE_HEIGHT_PER_ADDRESS = 19;
-const TX_ADDRESSES_START_BREAKING_AT_WIDTH = 1000;
-const TX_REMEASURE_THRESHOLD = 100;
+const TX_BOTTOM_BORDER_MARGIN = 1;
+const TX_ADDRESS_SELECTOR = '.Transaction_address';
+const TX_ID_SELECTOR = '.Transaction_transactionId';
 
 @observer
 export class VirtualTransactionList extends Component<Props> {
@@ -36,187 +36,227 @@ export class VirtualTransactionList extends Component<Props> {
     isSyncingSpinnerShown: false,
   };
 
+  componentWillReceiveProps(nextProps: Props) {
+    // Recompute all row heights in case the number of rows has changed
+    const prevNumberOfRows = this.props.rows.length;
+    const nextNumberOfRows = nextProps.rows.length;
+    if (prevNumberOfRows && prevNumberOfRows !== nextNumberOfRows) {
+      this.rowHeights = this.estimateRowHeights(nextProps.rows);
+      this.recomputeVirtualRowHeights();
+    }
+  }
+
   list: List;
   rowHeights: RowHeight[] = [];
-  areTxAddressesBreaking = false;
-
-  /**
-   * Best effort to pre-calculate the height that a row will need.
-   * This should be used anytime the row is not yet rendered on screen
-   * but the list needs to allocate space for it in advance.
-   *
-   * This will never be 100% correct for expanded transaction rows
-   * due to the way address can break at random window sizes.
-   *
-   * @param rowIndex
-   * @returns {number}
-   */
-  calculateRowHeight = (rowIndex: number) => {
-    const { rows } = this.props;
-    const row = rows[rowIndex];
-    if (row instanceof TransactionsGroup) {
-      return GROUP_DATE_HEIGHT;
-    }
-    if (row instanceof TransactionInfo) {
-      const tx = row.tx;
-      // Calculate the height of a transaction row:
-      const { addresses } = tx;
-      const isExpanded = this.props.isTxExpanded(tx);
-      // Add spacing for the next date header to the last transaction in a group
-      const headerSpacing = row.isLastInGroup ? TX_LAST_IN_GROUP_MARGIN : 0;
-
-      if (isExpanded) {
-        const totalAddresses = addresses.from.length + addresses.to.length;
-        // Since address can break at random window sizes it's not possible
-        // to be calculate this more fine grained than just calculating the
-        // largest height possible for all addresses.
-        const heightPerAddressFactor = this.areTxAddressesBreaking ? 2 : 1;
-        const totalAddressesHeight = (
-          heightPerAddressFactor * totalAddresses * TX_BASE_HEIGHT_PER_ADDRESS
-        );
-        // Extra height for addresses when expanded
-        const heightForAddresses = isExpanded ? totalAddressesHeight : 0;
-
-        return TX_ROW_HEIGHT_EXPANDED + heightForAddresses + headerSpacing;
-      }
-
-      // Not expanded:
-      return TX_ROW_HEIGHT + headerSpacing;
-    }
-    return 0;
-  };
-
-  /**
-   * Maps over all rows and returns array of calculated heights.
-   * @param rows
-   * @returns {number[]}
-   */
-  calculateRowHeights = (rows: Row[]): RowHeight[] => (
-    rows.map((tx, index) => this.calculateRowHeight(index))
-  );
-
-  /**
-   * Updates the row at index with calculated height.
-   * @param index
-   */
-  recalcRowHeightForIndex = (index: number) => {
-    this.rowHeights[index] = this.calculateRowHeight(index);
-  };
-
-  getTxRowElementById = (id: string) => (
-    document.getElementById(`tx-${id}`)
-  );
-
-  /**
-   * Measures the exact height of a rendered tx content DOM element.
-   * @param tx
-   * @returns {number | null}
-   */
-  measureTxContentHeight = (tx: WalletTransaction): ?number => {
-    const txRow = this.getTxRowElementById(tx.id);
-    if (txRow) {
-      const txElement = txRow.firstChild;
-      if (txElement instanceof HTMLElement) {
-        return txElement.offsetHeight + 1;
-      }
-    }
-    return null;
-  };
-
-  /**
-   * Measures the exact height of a rendered tx row DOM element.
-   * @param tx
-   * @returns {*}
-   */
-  measureTxRowHeight = (tx: WalletTransaction): ?number => {
-    const txRow = this.getTxRowElementById(tx.id);
-    if (txRow) {
-      return txRow.offsetHeight;
-    }
-    return null;
-  };
+  txAddressHeight: number = 0;
+  txIdHeight: number = 0;
+  visibleExpandedTx: Array<WalletTransaction>;
 
   /**
    * Returns the row index of a given tx.
-   * @param tx
-   * @returns {number}
    */
   findIndexForTx = (tx: WalletTransaction): number => (
     this.props.rows.findIndex(r => (r instanceof TransactionInfo) && r.tx.id === tx.id)
   );
 
   /**
-   * Ensures that the height of a transaction row is correct under all circumstances.
-   * @param tx
+   * Recomputes virtual row heights only once per tick (debounced)
    */
-  updateHeightOfTxRow = (tx: WalletTransaction) => {
-    const { list, rowHeights } = this;
+  recomputeVirtualRowHeights = debounce((startIndex: number = 0): void => {
+    const { list } = this;
     if (!list) return;
+    list.recomputeRowHeights(startIndex);
+  });
+
+  /**
+   * Calculates the number of lines of the addresses and id from the first expanded tx
+   */
+  updateAddressesAndIdHeights = (): void => {
+    const firstTxAddress = document.querySelector(TX_ADDRESS_SELECTOR);
+    const firstTxId = document.querySelector(TX_ID_SELECTOR);
+    if (firstTxAddress instanceof HTMLElement && firstTxId instanceof HTMLElement) {
+      this.txAddressHeight = firstTxAddress.offsetHeight;
+      this.txIdHeight = firstTxId.offsetHeight;
+    }
+  };
+
+  /**
+   * Gets an Info expanded row height
+   */
+  estimateHeightOfTxExpandedRow = (row: Row, tx: WalletTransaction): number => {
+    if (!this.txAddressHeight) this.updateAddressesAndIdHeights();
+    const txSingleAddressHeight = this.txAddressHeight;
+    const txIdHeight = this.txIdHeight;
+    const { addresses } = tx;
+    const txAddressesCount = addresses.from.length + addresses.to.length;
+    const txAddressesHeight = txAddressesCount * txSingleAddressHeight;
+    const txBottomMargin = row.isLastInGroup ? TX_LAST_IN_GROUP_MARGIN : 1;
+    return TX_EXPANDED_ROW_BASE_HEIGHT + txAddressesHeight + txIdHeight + txBottomMargin;
+  };
+
+  /**
+   * Gets an Info contracted row height
+   */
+  estimateHeightOfTxContractedRow = (row: Row): number => {
+    const txBottomMargin = row.isLastInGroup ? TX_LAST_IN_GROUP_MARGIN : 0;
+    return TX_CONTRACTED_ROW_HEIGHT + txBottomMargin;
+  };
+
+  /**
+   * Updates and recomputes row height
+   */
+  updateTxRowHeight = (
+    tx: WalletTransaction,
+    isExpanded: boolean,
+    wasToggled: boolean // Is "true" when transaction is manually expanded/collapsed
+  ): void => {
+    const { rowHeights } = this;
     const txIndex = this.findIndexForTx(tx);
-    const estimatedHeight = this.calculateRowHeight(txIndex);
-    const measuredTxContentHeight = this.measureTxContentHeight(tx);
-    const measuredTxRowHeight = this.measureTxRowHeight(tx);
+    const row = this.props.rows[txIndex];
+    if (row instanceof TransactionsGroup) return;
+    rowHeights[txIndex] = isExpanded
+      ? this.estimateHeightOfTxExpandedRow(row, tx)
+      : this.estimateHeightOfTxContractedRow(row);
+    this.recomputeVirtualRowHeights();
 
-    if (!measuredTxContentHeight || !measuredTxRowHeight) return;
-
-    const estimationDelta = Math.abs(estimatedHeight - measuredTxContentHeight);
-    // Estimate is far off from measurement -> tx has been toggled (big height change)
-    const hasTxBeenToggled = estimationDelta > TX_REMEASURE_THRESHOLD;
-
-    if (hasTxBeenToggled) {
-      rowHeights[txIndex] = estimatedHeight;
-      list.recomputeRowHeights(txIndex);
-      // Trigger another update for when the toggled state is rendered
-      setTimeout(() => this.updateHeightOfTxRow(tx), 50);
-    } else {
-      // We are close enough to the estimate, do fine adjustment only
-      const measureDelta = Math.abs(measuredTxRowHeight - measuredTxContentHeight);
-      if (measureDelta > 0) {
-        // The tx row height is either larger or smaller than necessary
-        const { rows } = this.props;
-        const txInfo = rows[txIndex];
-        if (txInfo instanceof TransactionInfo) {
-          // Update tx row with exact height
-          const headerSpacing = txInfo.isLastInGroup ? TX_LAST_IN_GROUP_MARGIN : 0;
-          rowHeights[txIndex] = measuredTxContentHeight + headerSpacing;
-          list.recomputeRowHeights(txIndex);
-        }
+    // In case transaction has just been manually expanded we need to schedule
+    // another row height calculation if the transaction still isn't fully
+    // expanded in the moment of the initial execution of this method
+    if (isExpanded && wasToggled) {
+      const isFullyExpanded = this.checkIfTxContentIsFullyExpanded(tx);
+      if (isFullyExpanded) {
+        const estimatedHeight = rowHeights[txIndex];
+        this.correctExpandedTxHeightEstimationErrors(tx, estimatedHeight);
+      } else {
+        setTimeout(this.updateTxRowHeight, 1, tx, true, true);
       }
     }
   };
 
   /**
+   * Gets a row height based on its type
+   */
+  estimateRowHeight = (row: Row): number => (
+    (row instanceof TransactionInfo)
+      ? this.estimateHeightOfTxContractedRow(row)
+      : GROUP_DATE_HEIGHT
+  );
+
+  /**
+   * Maps over all rows and returns array of calculated heights.
+   */
+  estimateRowHeights = (rows: Row[]): RowHeight[] => rows.map(this.estimateRowHeight);
+
+  /**
+   * Returns the DOM element for given transaction id
+   */
+  getTxRowElementById = (id: string) => (
+    document.getElementById(`tx-${id}`)
+  );
+
+  /**
+   * Measures the exact height of a rendered tx content DOM element.
+   */
+  measureTxContentHeight = (tx: WalletTransaction): ?number => {
+    const txRow = this.getTxRowElementById(tx.id);
+    if (txRow) {
+      const txElement = txRow.firstChild;
+      const style = window.getComputedStyle(txElement, null);
+      return parseInt(style.getPropertyValue('height'), 10);
+    }
+    return null;
+  };
+
+  /**
+   * Checks if rendered tx content DOM element has been fully expanded.
+   */
+  checkIfTxContentIsFullyExpanded = (tx: WalletTransaction): boolean => {
+    const txRow = this.getTxRowElementById(tx.id);
+    const txElement = txRow && txRow.firstChild;
+    const isFullyExpanded = txElement instanceof HTMLElement &&
+      txElement.classList.contains('Transaction_expanded');
+    return isFullyExpanded;
+  };
+
+  /**
+   * Corrects potential estimation errors that can happen due to various reasons.
+   */
+  correctExpandedTxHeightEstimationErrors = (tx: WalletTransaction, estimatedHeight: number) => {
+    const txContentHeight = this.measureTxContentHeight(tx);
+    if (!txContentHeight) return;
+    const { rows } = this.props;
+    const txIndex = this.findIndexForTx(tx);
+    const txInfo = rows[txIndex];
+    if (txInfo instanceof TransactionInfo) {
+      const margin = txInfo.isLastInGroup ? TX_LAST_IN_GROUP_MARGIN : TX_BOTTOM_BORDER_MARGIN;
+      const requiredHeight = txContentHeight + margin;
+      const estimationError = Math.abs(estimatedHeight - requiredHeight);
+      if (estimationError > 1) {
+        this.rowHeights[txIndex] = requiredHeight;
+        this.recomputeVirtualRowHeights();
+      }
+    }
+  };
+
+  updateVisibleExpandedTxRowHeights = () => {
+    this.visibleExpandedTx.forEach(tx => {
+      this.updateTxRowHeight(tx, true, false);
+      const estimatedHeight = this.rowHeights[this.findIndexForTx(tx)];
+      this.correctExpandedTxHeightEstimationErrors(tx, estimatedHeight);
+    });
+  };
+
+  /**
    * Since the transaction addresses are pretty long, they break into the next line on smaller
    * window sizes and the height of expanded tx rows in the list must be adjusted accordingly.
-   * @param width
    */
-  onResize = ({ width }: { width: number }) => {
-    if (!this.areTxAddressesBreaking && width < TX_ADDRESSES_START_BREAKING_AT_WIDTH) {
-      this.areTxAddressesBreaking = true;
-    } else if (this.areTxAddressesBreaking && width > TX_ADDRESSES_START_BREAKING_AT_WIDTH) {
-      this.areTxAddressesBreaking = false;
+  onResize = (): void => {
+    // First load, calculates all the rows heights
+    if (!this.rowHeights.length) {
+      this.rowHeights = this.estimateRowHeights(this.props.rows);
+      return;
     }
-    this.props.getExpandedTransactions().map(this.updateHeightOfTxRow);
+
+    // Subsequently resizes, updates the expanded rows heights if there is any expanded one
+    const expandedTransactions = this.props.getExpandedTransactions();
+    if (!expandedTransactions.length) return;
+    this.updateAddressesAndIdHeights();
+    this.updateVisibleExpandedTxRowHeights();
   };
+
+  /**
+   * Callback that gets invoked when virtual rows are rendered.
+   * Used to update the array of visible expanded transactions and remeasure their height.
+   */
+  onRowsRendered = ({ overscanStartIndex, overscanStopIndex }: {
+    overscanStartIndex: number,
+    overscanStopIndex: number,
+  }) => {
+    const expandedRows = this.props.getExpandedTransactions();
+    this.visibleExpandedTx = expandedRows.filter((tx) => {
+      const index = this.findIndexForTx(tx);
+      return index >= overscanStartIndex && index <= overscanStopIndex;
+    });
+    this.updateVisibleExpandedTxRowHeights();
+  };
+
+  rowRenderer = ({
+    key, // Unique key within array of rows
+    index, // Index of row within collection
+    style // Style object to be applied to row (to position it)
+  }: { key: string, index: number, style: string }) => (
+    <div key={key} style={style} className={styles.row}>
+      {this.props.renderRow(this.props.rows[index])}
+    </div>
+  );
+
+  // =============== REACT LIFECYCLE ================= //
 
   render() {
     const { rows, isLoadingSpinnerShown, isSyncingSpinnerShown } = this.props;
 
     // Prevent List rendering if we have no rows to render
     if (!rows.length) return false;
-
-    this.rowHeights = this.calculateRowHeights(rows);
-
-    // Renders a single row within the virtual list
-    const rowRenderer = ({
-      key, // Unique key within array of rows
-      index, // Index of row within collection
-      style // Style object to be applied to row (to position it)
-    }: { key: string, index: number, style: string }) => (
-      <div key={key} style={style} className={styles.row}>
-        {this.props.renderRow(rows[index])}
-      </div>
-    );
 
     const componentStyles = classNames([
       styles.component,
@@ -226,16 +266,17 @@ export class VirtualTransactionList extends Component<Props> {
 
     return (
       <div className={componentStyles}>
-        <AutoSizer onResize={this.onResize}>
+        <AutoSizer onResize={throttle(this.onResize, 100, { leading: true, trailing: true })}>
           {({ width, height }) => (
             <List
               className={styles.list}
               ref={(list) => this.list = list}
               width={width}
               height={height}
+              onRowsRendered={throttle(this.onRowsRendered, 100, { leading: true, trailing: true })}
               rowCount={rows.length}
-              rowHeight={({ index }) => this.rowHeights[index]}
-              rowRenderer={rowRenderer}
+              rowHeight={({ index }) => this.rowHeights[index] || TX_CONTRACTED_ROW_HEIGHT}
+              rowRenderer={this.rowRenderer}
               style={{ overflowY: 'scroll' }}
             />
           )}
@@ -243,5 +284,4 @@ export class VirtualTransactionList extends Component<Props> {
       </div>
     );
   }
-
 }

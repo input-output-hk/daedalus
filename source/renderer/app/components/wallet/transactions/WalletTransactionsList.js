@@ -7,6 +7,7 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
+import { set, omit, has } from 'lodash';
 import styles from './WalletTransactionsList.scss';
 import Transaction from './Transaction';
 import { WalletTransaction } from '../../../domains/WalletTransaction';
@@ -52,7 +53,6 @@ type Props = {
   onShowMoreTransactions?: Function,
   onOpenExternalLink?: Function,
   showMoreTransactionsButton?: boolean,
-  totalAvailable: number,
   transactions: Array<WalletTransaction>,
   walletId: string,
 };
@@ -74,7 +74,7 @@ export default class WalletTransactionsList extends Component<Props> {
     onOpenExternalLink: () => {},
   };
 
-  expandedTransactions: WalletTransaction[] = [];
+  expandedTransactions: { string: string } = {};
   virtualList: ?VirtualTransactionList;
   simpleList: ?SimpleTransactionList;
   loadingSpinner: ?LoadingSpinner;
@@ -127,28 +127,30 @@ export default class WalletTransactionsList extends Component<Props> {
     return moment(date).format(this.localizedDateFormat);
   }
 
-  isTxExpanded = (tx: WalletTransaction) => (
-    !!this.expandedTransactions.find(t => t.id === tx.id)
-  );
+  isTxExpanded = (tx: WalletTransaction) => has(this.expandedTransactions, tx.id);
 
   registerTxAsExpanded = (tx: WalletTransaction) => {
-    this.expandedTransactions = this.expandedTransactions.concat([tx]);
+    this.expandedTransactions = {
+      ...this.expandedTransactions,
+      ...set({}, tx.id, tx)
+    };
   };
 
   removeTxFromExpanded = (tx: WalletTransaction) => {
-    this.expandedTransactions = this.expandedTransactions.filter(
-      (t) => t.id !== tx.id
-    );
+    this.expandedTransactions = {
+      ...omit(this.expandedTransactions, tx.id)
+    };
   };
 
   toggleTransactionExpandedState = (tx: WalletTransaction) => {
-    if (this.isTxExpanded(tx)) {
+    const isExpanded = this.isTxExpanded(tx);
+    if (isExpanded) {
       this.removeTxFromExpanded(tx);
     } else {
       this.registerTxAsExpanded(tx);
     }
     if (this.virtualList) {
-      this.virtualList.updateHeightOfTxRow(tx);
+      this.virtualList.updateTxRowHeight(tx, !isExpanded, true);
     } else if (this.simpleList) {
       this.simpleList.forceUpdate();
     }
@@ -159,6 +161,8 @@ export default class WalletTransactionsList extends Component<Props> {
       this.props.onShowMoreTransactions(walletId);
     }
   };
+
+  getExpandedTransactions = (): Array<any> => Object.values(this.expandedTransactions);
 
   renderGroup = (data: TransactionsGroup): Node => (
     <div className={styles.groupDate}>
@@ -215,7 +219,6 @@ export default class WalletTransactionsList extends Component<Props> {
       isRenderingAsVirtualList,
       isRestoreActive,
       showMoreTransactionsButton,
-      totalAvailable,
       transactions,
       walletId,
     } = this.props;
@@ -272,12 +275,10 @@ export default class WalletTransactionsList extends Component<Props> {
         {syncingTransactionsSpinner}
         {isRenderingAsVirtualList ? (
           <VirtualTransactionList
-            getExpandedTransactions={() => this.expandedTransactions}
-            isTxExpanded={this.isTxExpanded}
+            getExpandedTransactions={this.getExpandedTransactions}
             ref={(list) => this.virtualList = list}
             renderRow={this.renderItem}
             rows={rows}
-            totalRows={totalAvailable}
             isLoadingSpinnerShown={loadingSpinner !== null}
             isSyncingSpinnerShown={isRestoreActive}
           />
