@@ -16,9 +16,10 @@ import { Logger } from '../utils/logging';
 import { getCurrentEpoch } from '../utils/network';
 import {
   cardanoStateChangeChannel,
-  tlsConfigChannel,
+  cardanoTlsConfigChannel,
   restartCardanoNodeChannel,
-  cardanoStatusChannel,
+  getCachedCardanoStatusChannel,
+  setCachedCardanoStatusChannel,
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import { getNumberOfEpochsConsolidatedChannel } from '../ipc/getNumberOfEpochsConsolidatedChannel';
@@ -31,7 +32,7 @@ import type {
   TlsConfig
 } from '../../../common/types/cardano-node.types';
 import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
-import type { GetNumberOfEpochsConsolidatedChannelResponse } from '../../../common/ipc/api';
+import type { GetConsolidatedEpochsCountResponse } from '../../../common/ipc/api';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 
 const { isDevelopment } = global.environment;
@@ -116,7 +117,7 @@ export default class NetworkStatusStore extends Store {
 
     // Passively receive broadcasted tls config changes (which can happen without requesting it)
     // E.g if the cardano-node restarted for some reason
-    tlsConfigChannel.onReceive(this._updateTlsConfig);
+    cardanoTlsConfigChannel.onReceive(this._updateTlsConfig);
 
     // Passively receive state changes of the cardano-node
     cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
@@ -189,7 +190,7 @@ export default class NetworkStatusStore extends Store {
     if (!this.isConnected) return;
     try {
       Logger.info('NetworkStatusStore: Updating node status');
-      await cardanoStatusChannel.send(this._extractNodeStatus(this));
+      await setCachedCardanoStatusChannel.send(this._extractNodeStatus(this));
     } catch (error) {
       Logger.error('NetworkStatusStore: Error while updating node status', { error });
     }
@@ -215,7 +216,7 @@ export default class NetworkStatusStore extends Store {
   _requestCardanoStatus = async () => {
     try {
       Logger.info('NetworkStatusStore: requesting node status');
-      const status = await cardanoStatusChannel.request();
+      const status = await getCachedCardanoStatusChannel.request();
       Logger.info('NetworkStatusStore: received cached node status', { status });
       if (status) runInAction('assigning node status', () => Object.assign(this, status));
     } catch (error) {
@@ -225,8 +226,8 @@ export default class NetworkStatusStore extends Store {
 
   _requestTlsConfig = async () => {
     try {
+      const tlsConfig = await cardanoTlsConfigChannel.request();
       Logger.info('NetworkStatusStore: requesting tls config from main process');
-      const tlsConfig = await tlsConfigChannel.request();
       await this._updateTlsConfig(tlsConfig);
     } catch (error) {
       Logger.error('NetworkStatusStore: error while requesting tls config', { error });
@@ -302,7 +303,7 @@ export default class NetworkStatusStore extends Store {
   };
 
   @action _onReceiveEpochsData = (
-    epochsConsolidated: GetNumberOfEpochsConsolidatedChannelResponse,
+    epochsConsolidated: GetConsolidatedEpochsCountResponse,
     currentEpoch: number
   ) => {
     this.epochsConsolidated = epochsConsolidated;

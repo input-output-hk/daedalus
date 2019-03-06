@@ -4,24 +4,24 @@ import FormData from 'form-data/lib/form_data';
 import fs from 'fs';
 import { extractFileNameFromPath } from '../../common/utils/files';
 import { MainIpcChannel } from './lib/MainIpcChannel';
-import { ReportRequestChannelName } from '../../common/ipc/api';
+import { SUBMIT_BUG_REPORT_REQUEST_CHANNEL } from '../../common/ipc/api';
 import type {
-  ReportRequestMainResponse,
-  ReportRequestRendererRequest
+  SubmitBugReportRequestResponse,
+  SubmitBugReportRequest
 } from '../../common/ipc/api';
 import { Logger } from '../utils/logging';
 
-export const reportRequestChannel: (
+export const bugReportRequestChannel: (
   // IpcChannel<Incoming, Outgoing>
-  MainIpcChannel<ReportRequestRendererRequest, ReportRequestMainResponse>
+  MainIpcChannel<SubmitBugReportRequest, SubmitBugReportRequestResponse>
 ) = (
-  new MainIpcChannel(ReportRequestChannelName)
+  new MainIpcChannel(SUBMIT_BUG_REPORT_REQUEST_CHANNEL)
 );
 
-export const handleReportRequests = () => {
-  reportRequestChannel.onReceive((request: ReportRequestRendererRequest) => (
+export const handleBugReportRequests = () => {
+  bugReportRequestChannel.onReceive((request: SubmitBugReportRequest) => (
     new Promise((resolve, reject) => {
-      Logger.info('reportRequestChannel::onReceive', { request });
+      Logger.info('bugReportRequestChannel::onReceive', { request });
       const { httpOptions, requestPayload } = request;
       const options = Object.assign({}, httpOptions);
       const payload = Object.assign({}, requestPayload);
@@ -30,15 +30,15 @@ export const handleReportRequests = () => {
       formData.append('payload', JSON.stringify(payload));
 
       // prepare file stream (attachment)
-      if (payload.compressedLogsFile) {
-        const stream = fs.createReadStream(payload.compressedLogsFile);
-        const fileName = extractFileNameFromPath(payload.compressedLogsFile);
+      if (payload.compressedLogsFilePath) {
+        const stream = fs.createReadStream(payload.compressedLogsFilePath);
+        const fileName = extractFileNameFromPath(payload.compressedLogsFilePath);
         formData.append(fileName, stream);
       }
 
       options.headers = formData.getHeaders();
 
-      Logger.info('Sending report request with options', { options });
+      Logger.info('Sending bug report request with options', { options });
       const httpRequest = http.request(options);
       httpRequest.on('response', (response) => {
         if (response.statusCode !== 200) {

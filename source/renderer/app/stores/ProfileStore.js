@@ -1,5 +1,5 @@
 // @flow
-import { action, observable, computed, toJS } from 'mobx';
+import { action, observable, computed, toJS, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment/moment';
 import { includes } from 'lodash';
@@ -7,12 +7,12 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { THEMES } from '../themes/index';
 import { ROUTES } from '../routes-config';
-import { GET_LOGS, DOWNLOAD_LOGS, COMPRESS_LOGS } from '../../../common/ipc-api';
 import LocalizableError from '../i18n/LocalizableError';
 import globalMessages from '../i18n/global-messages';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
 import type { LogFiles, CompressedLogStatus } from '../types/LogTypes';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
+import { compressLogsChannel, downloadLogsChannel, getLogsChannel } from '../ipc/logs.ipc';
 
 // TODO: refactor all parts that rely on this to ipc channels!
 const { ipcRenderer } = global;
@@ -48,7 +48,7 @@ export default class SettingsStore extends Store {
   @observable setThemeRequest: Request<string> = new Request(this.api.localStorage.setUserTheme);
   @observable error: ?LocalizableError = null;
   @observable logFiles: LogFiles = {};
-  @observable compressedLogsFile: ?string = null;
+  @observable compressedLogsFilePath: ?string = null;
   @observable compressedLogsStatus: CompressedLogStatus = {};
   @observable isSubmittingBugReport: boolean = false;
   /* eslint-enable max-len */
@@ -63,12 +63,6 @@ export default class SettingsStore extends Store {
     this.actions.profile.downloadLogs.listen(this._downloadLogs);
     this.actions.app.initAppEnvironment.listen(() => {});
 
-    // TODO: refactor to ipc channels
-    ipcRenderer.on(GET_LOGS.SUCCESS, this._onGetLogsSuccess);
-    ipcRenderer.on(DOWNLOAD_LOGS.SUCCESS, this._onDownloadLogsSuccess);
-    ipcRenderer.on(COMPRESS_LOGS.SUCCESS, this._onCompressLogsSuccess);
-    ipcRenderer.on(COMPRESS_LOGS.ERROR, this._onCompressLogsError);
-
     this.registerReactions([
       this._setBigNumberFormat,
       this._updateMomentJsLocaleAfterLocaleChange,
@@ -81,15 +75,6 @@ export default class SettingsStore extends Store {
     ]);
     this._getTermsOfUseAcceptance();
     this._getDataLayerMigrationAcceptance();
-  }
-
-  teardown() {
-    super.teardown();
-    // TODO: refactor to ipc channels
-    ipcRenderer.removeAllListeners(GET_LOGS.SUCCESS);
-    ipcRenderer.removeAllListeners(DOWNLOAD_LOGS.SUCCESS);
-    ipcRenderer.removeAllListeners(COMPRESS_LOGS.SUCCESS);
-    ipcRenderer.removeAllListeners(COMPRESS_LOGS.ERROR);
   }
 
   _setBigNumberFormat = () => {
@@ -267,70 +252,75 @@ export default class SettingsStore extends Store {
     ipcRenderer.send('reload-about-window');
   };
 
-  _getLogs = () => {
-    // TODO: refactor to ipc channels
-    ipcRenderer.send(GET_LOGS.REQUEST);
+  _setLogFiles = action((files: LogFiles) => {
+    this.logFiles = files;
+  });
+
+  _getLogs = async () => {
+    const { isDownloading } = this.compressedLogsStatus;
+    const logs = await getLogsChannel.request();
+    this._setLogFiles(logs);
+    if (isDownloading || this.isSubmittingBugReport) {
+      this._compressLogs({ logs });
+    }
   };
 
-  _onGetLogsSuccess = action((event, files) => {
-    this.logFiles = files;
-    const { isDownloading } = this.compressedLogsStatus;
-    if (isDownloading || this.isSubmittingBugReport) {
-      this._compressLogs({ logs: files });
+  _compressLogs = action(async ({ logs }) => {
+    const { fileName = generateFileNameWithTimestamp() } = this.compressedLogsStatus;
+    try {
+      const outputPath = await compressLogsChannel.request({
+        logs: toJS(logs),
+        compressedFileName: fileName,
+      });
+      runInAction('ProfileStore::_compressLogs:success', () => {
+        this.compressedLogsFilePath = outputPath;
+        const { isDownloading, destination } = this.compressedLogsStatus;
+        if (isDownloading) {
+          this._downloadLogs({ destination, fileName });
+        }
+      });
+    } catch (error) {
+      runInAction('ProfileStore::_compressLogs:error', () => {
+        this.isSubmittingBugReport = false;
+        this.error = new WalletSupportRequestLogsCompressError();
+      });
     }
   });
 
-  _getLogsAndCompress = action(() => {
+  _getLogsAndCompress = action(async () => {
     this.compressedLogsStatus = {
       fileName: generateFileNameWithTimestamp(),
     };
     this.isSubmittingBugReport = true;
-    this._getLogs();
+    await this._getLogs();
   });
 
-  _compressLogs = action(({ logs }) => {
-    const { fileName = generateFileNameWithTimestamp() } = this.compressedLogsStatus;
-
-    // TODO: refactor to ipc channels
-    ipcRenderer.send(COMPRESS_LOGS.REQUEST, toJS(logs), fileName);
-  });
-
-  _onCompressLogsSuccess = action((event, file) => {
-    this.compressedLogsFile = file;
-    const { isDownloading, destination, fileName } = this.compressedLogsStatus;
-    if (isDownloading) {
-      this._downloadLogs({ destination, fileName });
-    }
-  });
-
-  _onCompressLogsError = action(() => {
-    this.isSubmittingBugReport = false;
-    this.error = new WalletSupportRequestLogsCompressError();
-  });
-
-  _downloadLogs = action(({ fileName, destination, fresh }) => {
+  _downloadLogs = action(async ({ fileName, destination, fresh }) => {
     this.compressedLogsStatus = {
       isDownloading: true,
       destination,
       fileName,
     };
-    if (this.compressedLogsFile && fresh !== true) {
+    if (this.compressedLogsFilePath && fresh !== true) {
       // logs already compressed, trigger the download
-      // TODO: refactor to ipc channel
-      ipcRenderer.send(DOWNLOAD_LOGS.REQUEST, this.compressedLogsFile, destination);
+      try {
+        await downloadLogsChannel.request({
+          compressedLogsFilePath: this.compressedLogsFilePath,
+          destinationPath: destination,
+        });
+        this._reset();
+      } catch (error) {
+        throw error;
+      }
     } else {
       // start process: getLogs -> compressLogs -> downloadLogs (again)
       this._getLogs();
     }
   });
 
-  _onDownloadLogsSuccess = () => {
-    this._reset();
-  };
-
   @action _reset = () => {
     this.error = null;
-    this.compressedLogsFile = null;
+    this.compressedLogsFilePath = null;
     this.compressedLogsStatus = {};
     this.isSubmittingBugReport = false;
   };
