@@ -5,18 +5,21 @@ import { MainIpcChannel } from './lib/MainIpcChannel';
 import { LOAD_ASSET_CHANNEL } from '../../common/ipc/api';
 import type {
   LoadAssetRendererRequest,
-  LoadAssetMainResponse
+  LoadAssetMainResponse,
 } from '../../common/ipc/api';
 
-const loadAssetChannel: (
-  MainIpcChannel<LoadAssetRendererRequest, LoadAssetMainResponse>
-) = (new MainIpcChannel(LOAD_ASSET_CHANNEL));
+const loadAssetChannel: MainIpcChannel<
+  LoadAssetRendererRequest,
+  LoadAssetMainResponse
+> = new MainIpcChannel(LOAD_ASSET_CHANNEL);
 
 export default () => {
   loadAssetChannel.onRequest((request: LoadAssetRendererRequest) => {
     const asset = path.resolve(__dirname, `../renderer/${request.fileName}`);
-    return new Promise((resolve, reject) => (
-      fs.readFile(asset, 'base64', (error, data) => { error ? reject(error) : resolve(data); })
-    ));
+    return new Promise((resolve, reject) =>
+      fs.readFile(asset, 'base64', (error, data) => {
+        error ? reject(error) : resolve(data);
+      })
+    );
   });
 };

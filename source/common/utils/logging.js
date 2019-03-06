@@ -22,20 +22,26 @@ const stringifyMessageBody = (messageBody: MessageBody): string => {
 
 export const filterLogData = (data: Object): Object => {
   const sensitiveData = [
-    'spendingPassword', 'oldPassword', 'newPassword',
-    'mnemonic', 'recoveryPhrase', 'passphrase', 'password',
+    'spendingPassword',
+    'oldPassword',
+    'newPassword',
+    'mnemonic',
+    'recoveryPhrase',
+    'passphrase',
+    'password',
   ];
   return pickBy(data, (value, key) => {
-    if (sensitiveData.includes(key)) { return false; }
+    if (sensitiveData.includes(key)) {
+      return false;
+    }
     return true;
   });
 };
 
 export const stringifyData = (data: any) => JSON.stringify(data, null, 2);
 
-export const stringifyError = (error: any) => (
-  JSON.stringify(error, Object.getOwnPropertyNames(error), 2)
-);
+export const stringifyError = (error: any) =>
+  JSON.stringify(error, Object.getOwnPropertyNames(error), 2);
 
 export const formatContext = (context: FormatMessageContextParams): string => {
   const { appName, electronProcess, level, network } = context;
@@ -47,7 +53,9 @@ export const formatMessageTime = (date: Date): string => {
   return `[${year}T${time.slice(0, -1)}Z]`;
 };
 
-export const constructMessageBody = (bodyData: ConstructMessageBodyParams): MessageBody => {
+export const constructMessageBody = (
+  bodyData: ConstructMessageBodyParams
+): MessageBody => {
   let messageBody = { ...DEFAULT_MESSAGE_BODY, ...bodyData };
   if (typeof messageBody.data === 'string') {
     messageBody = { ...messageBody, data: { response: messageBody.data } };
@@ -66,11 +74,7 @@ export const formatMessage = (loggerMessage: ElectronLoggerMessage): string => {
   const messageBodyParams: ConstructMessageBodyParams = {
     at,
     env: `${network}:${os}:${platformVersion}`,
-    ns: [
-      'daedalus',
-      `v${version}`,
-      `*${network}*`,
-    ],
+    ns: ['daedalus', `v${version}`, `*${network}*`],
     data,
     msg,
     pid: '',

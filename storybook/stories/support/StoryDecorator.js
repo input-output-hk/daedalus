@@ -17,7 +17,6 @@ type Props = {
 
 @observer
 export default class StoryDecorator extends Component<Props> {
-
   static defaultProps = {
     propsForChildren: {},
   };
@@ -27,11 +26,18 @@ export default class StoryDecorator extends Component<Props> {
     return (
       <Fragment>
         <ThemeManager variables={theme} />
-        <IntlProvider {...{ locale: 'en-US', key: 'en-US', messages: translations['en-US'] }}>
+        <IntlProvider
+          {...{
+            locale: 'en-US',
+            key: 'en-US',
+            messages: translations['en-US'],
+          }}
+        >
           <ThemeProvider theme={daedalusTheme} themeOverrides={themeOverrides}>
             <Fragment>
-              {Children.map(children, (child) => {
-                const childProps = child.type === 'div' ? {} : { propsForChildren };
+              {Children.map(children, child => {
+                const childProps =
+                  child.type === 'div' ? {} : { propsForChildren };
                 return React.cloneElement(child, childProps);
               })}
             </Fragment>
@@ -40,5 +46,4 @@ export default class StoryDecorator extends Component<Props> {
       </Fragment>
     );
   }
-
 }

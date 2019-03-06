@@ -7,21 +7,24 @@ import { Logger } from './logging';
 import { safeExitWithCode } from './safeExitWithCode';
 import { CardanoNode } from '../cardano/CardanoNode';
 import { DIALOGS, SCREENS } from '../../common/ipc/constants';
-import { toggleUiPartChannel, showUiPartChannel } from '../ipc/control-ui-parts';
+import {
+  toggleUiPartChannel,
+  showUiPartChannel,
+} from '../ipc/control-ui-parts';
 
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
   cardanoNode: ?CardanoNode,
   isInSafeMode: boolean,
-  locale: string,
+  locale: string
 ) => {
-
   const openAbout = () => {
     if (mainWindow) toggleUiPartChannel.send(DIALOGS.ABOUT, mainWindow);
   };
 
   const openNetworkStatus = () => {
-    if (mainWindow) toggleUiPartChannel.send(DIALOGS.NETWORK_STATUS, mainWindow);
+    if (mainWindow)
+      toggleUiPartChannel.send(DIALOGS.NETWORK_STATUS, mainWindow);
   };
 
   const goToAdaRedemption = () => {
@@ -29,7 +32,8 @@ export const buildAppMenus = async (
   };
 
   const goBlockConsolidationStatus = () => {
-    if (mainWindow) toggleUiPartChannel.send(SCREENS.BLOCK_CONSOLIDATION, mainWindow);
+    if (mainWindow)
+      toggleUiPartChannel.send(SCREENS.BLOCK_CONSOLIDATION, mainWindow);
   };
 
   const restartInSafeMode = async () => {
@@ -85,5 +89,4 @@ export const buildAppMenus = async (
       globalShortcut.unregister('CommandOrControl+H');
     });
   }
-
 };

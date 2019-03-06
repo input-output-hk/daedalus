@@ -10,5 +10,5 @@ export type GeneratePaperWalletParams = {
     recoveryPhraseLabel: string,
     infoTitle: string,
     infoAuthor: string,
-  }
+  },
 };

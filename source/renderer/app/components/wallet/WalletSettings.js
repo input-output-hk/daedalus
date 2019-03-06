@@ -26,7 +26,8 @@ export const messages = defineMessages({
   assuranceLevelLabel: {
     id: 'wallet.settings.assurance',
     defaultMessage: '!!!Transaction assurance security level',
-    description: 'Label for the "Transaction assurance security level" dropdown.',
+    description:
+      'Label for the "Transaction assurance security level" dropdown.',
   },
   passwordLabel: {
     id: 'wallet.settings.password',
@@ -40,8 +41,8 @@ export const messages = defineMessages({
   },
   passwordNotSet: {
     id: 'wallet.settings.passwordNotSet',
-    defaultMessage: '!!!You still don\'t have password',
-    description: 'You still don\'t have password set message.',
+    defaultMessage: "!!!You still don't have password",
+    description: "You still don't have password set message.",
   },
   exportButtonLabel: {
     id: 'wallet.settings.exportWalletButtonLabel',
@@ -76,13 +77,12 @@ type Props = {
 
 @observer
 export default class WalletSettings extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   static defaultProps = {
-    showExportLink: false
+    showExportLink: false,
   };
 
   componentWillUnmount() {
@@ -93,15 +93,24 @@ export default class WalletSettings extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      assuranceLevels, walletAssurance,
-      walletName, isSpendingPasswordSet,
-      spendingPasswordUpdateDate, error,
-      openDialogAction, isDialogOpen,
-      onFieldValueChange, onStartEditing,
-      onStopEditing, onCancelEditing,
-      nameValidator, activeField,
-      isSubmitting, isInvalid,
-      lastUpdatedField, showExportLink,
+      assuranceLevels,
+      walletAssurance,
+      walletName,
+      isSpendingPasswordSet,
+      spendingPasswordUpdateDate,
+      error,
+      openDialogAction,
+      isDialogOpen,
+      onFieldValueChange,
+      onStartEditing,
+      onStopEditing,
+      onCancelEditing,
+      nameValidator,
+      activeField,
+      isSubmitting,
+      isInvalid,
+      lastUpdatedField,
+      showExportLink,
       changeSpendingPasswordDialog,
       deleteWalletDialogContainer,
       exportWalletDialogContainer,
@@ -112,17 +121,15 @@ export default class WalletSettings extends Component<Props> {
       label: intl.formatMessage(assurance.label),
     }));
 
-    const passwordMessage = isSpendingPasswordSet ? (
-      intl.formatMessage(messages.passwordLastUpdated, {
-        lastUpdated: moment(spendingPasswordUpdateDate).fromNow(),
-      })
-    ) : intl.formatMessage(messages.passwordNotSet);
+    const passwordMessage = isSpendingPasswordSet
+      ? intl.formatMessage(messages.passwordLastUpdated, {
+          lastUpdated: moment(spendingPasswordUpdateDate).fromNow(),
+        })
+      : intl.formatMessage(messages.passwordNotSet);
 
     return (
       <div className={styles.component}>
-
         <BorderedBox>
-
           <InlineEditingInput
             className="walletName"
             inputFieldLabel={intl.formatMessage(messages.name)}
@@ -131,10 +138,14 @@ export default class WalletSettings extends Component<Props> {
             onStartEditing={() => onStartEditing('name')}
             onStopEditing={onStopEditing}
             onCancelEditing={onCancelEditing}
-            onSubmit={(value) => onFieldValueChange('name', value)}
+            onSubmit={value => onFieldValueChange('name', value)}
             isValid={nameValidator}
-            validationErrorMessage={intl.formatMessage(globalMessages.invalidWalletName)}
-            successfullyUpdated={!isSubmitting && lastUpdatedField === 'name' && !isInvalid}
+            validationErrorMessage={intl.formatMessage(
+              globalMessages.invalidWalletName
+            )}
+            successfullyUpdated={
+              !isSubmitting && lastUpdatedField === 'name' && !isInvalid
+            }
           />
 
           <InlineEditingDropdown
@@ -145,17 +156,21 @@ export default class WalletSettings extends Component<Props> {
             isActive={activeField === 'assurance'}
             onStartEditing={() => onStartEditing('assurance')}
             onStopEditing={onStopEditing}
-            onSubmit={(value) => onFieldValueChange('assurance', value)}
-            successfullyUpdated={!isSubmitting && lastUpdatedField === 'assurance'}
+            onSubmit={value => onFieldValueChange('assurance', value)}
+            successfullyUpdated={
+              !isSubmitting && lastUpdatedField === 'assurance'
+            }
           />
 
           <ReadOnlyInput
             label={intl.formatMessage(messages.passwordLabel)}
             value={passwordMessage}
             isSet={isSpendingPasswordSet}
-            onClick={() => openDialogAction({
-              dialog: ChangeSpendingPasswordDialog,
-            })}
+            onClick={() =>
+              openDialogAction({
+                dialog: ChangeSpendingPasswordDialog,
+              })
+            }
           />
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
@@ -164,37 +179,40 @@ export default class WalletSettings extends Component<Props> {
             {showExportLink ? (
               <button
                 className={styles.exportLink}
-                onClick={() => openDialogAction({
-                  dialog: ExportWalletToFileDialog
-                })}
+                onClick={() =>
+                  openDialogAction({
+                    dialog: ExportWalletToFileDialog,
+                  })
+                }
               >
                 {intl.formatMessage(messages.exportButtonLabel)}
               </button>
-            ) : false}
+            ) : (
+              false
+            )}
 
             <DeleteWalletButton
-              onClick={() => openDialogAction({
-                dialog: DeleteWalletConfirmationDialog,
-              })}
+              onClick={() =>
+                openDialogAction({
+                  dialog: DeleteWalletConfirmationDialog,
+                })
+              }
             />
           </div>
-
         </BorderedBox>
 
-        {isDialogOpen(ChangeSpendingPasswordDialog) ? (
-          changeSpendingPasswordDialog
-        ) : false}
+        {isDialogOpen(ChangeSpendingPasswordDialog)
+          ? changeSpendingPasswordDialog
+          : false}
 
-        {isDialogOpen(DeleteWalletConfirmationDialog) ? (
-          deleteWalletDialogContainer
-        ) : false}
+        {isDialogOpen(DeleteWalletConfirmationDialog)
+          ? deleteWalletDialogContainer
+          : false}
 
-        {isDialogOpen(ExportWalletToFileDialog) ? (
-          exportWalletDialogContainer
-        ) : false}
-
+        {isDialogOpen(ExportWalletToFileDialog)
+          ? exportWalletDialogContainer
+          : false}
       </div>
     );
   }
-
 }

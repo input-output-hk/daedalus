@@ -19,8 +19,13 @@ type Props = {
 export default class SidebarWalletMenuItem extends Component<Props> {
   render() {
     const {
-      title, info, active, className,
-      onClick, isRestoreActive, restoreProgress,
+      title,
+      info,
+      active,
+      className,
+      onClick,
+      isRestoreActive,
+      restoreProgress,
     } = this.props;
 
     const componentStyles = classNames([
@@ -34,12 +39,9 @@ export default class SidebarWalletMenuItem extends Component<Props> {
         <span className={styles.meta}>
           <span className={styles.title}>{title}</span>
           <span className={styles.info}>{info}</span>
-          {isRestoreActive ? (
-            <ProgressBar progress={restoreProgress} />
-          ) : null}
+          {isRestoreActive ? <ProgressBar progress={restoreProgress} /> : null}
         </span>
       </button>
     );
   }
-
 }

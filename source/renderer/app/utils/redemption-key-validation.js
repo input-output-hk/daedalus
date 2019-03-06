@@ -3,7 +3,9 @@ import bs58 from 'bs58';
 
 // Convert base64url into base64
 function toRfc4648(str: string) {
-  return str.replace(new RegExp('_', 'g'), '/').replace(new RegExp('-', 'g'), '+');
+  return str
+    .replace(new RegExp('_', 'g'), '/')
+    .replace(new RegExp('-', 'g'), '+');
 }
 
 // Checks is input string valid base64 or base64url
@@ -24,7 +26,7 @@ function isValidBase64Url(code: string) {
 
 // Implements: "Valid redemption key should be base64 and base64url decodable,
 // it should end with '=' and it should be 44 chars long."
-export const isValidRedemptionKey = (code: string) => (
+export const isValidRedemptionKey = (code: string) =>
   // Return true if:
   //  * its base64 or base64url decodable - ada vending state mess
   //  * ends with '=' - base64 padds string with optional '=' or two '=' signs.
@@ -36,8 +38,7 @@ export const isValidRedemptionKey = (code: string) => (
   //      > base64url.toBuffer("qL8R4QIcQ_ZsRqOAbeRfcZhilN_MksRtDaEAAAArM-A").length
   //          32
   //  Later example above is 32 byte long but its not valid ada redemption key because ada redemption key ends with '=' (lib used in above example is https://www.npmjs.com/package/base64url)
-  isValidBase64Url(code) && code.endsWith('=') && code.length === 44
-);
+  isValidBase64Url(code) && code.endsWith('=') && code.length === 44;
 
 // Implements: "Valid paper vend redemption key should be base58 decodable 32 byte stream."
 export const isValidPaperVendRedemptionKey = (code: string) => {

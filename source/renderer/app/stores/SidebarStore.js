@@ -8,7 +8,6 @@ import { formattedWalletAmount } from '../utils/formatters';
 import type { SidebarWalletType } from '../types/sidebarTypes';
 
 export default class SidebarStore extends Store {
-
   CATEGORIES = sidebarConfig.CATEGORIES;
 
   @observable activeSidebarCategory: string = this.CATEGORIES[0].route;
@@ -21,9 +20,7 @@ export default class SidebarStore extends Store {
     actions.activateSidebarCategory.listen(this._onActivateSidebarCategory);
     actions.walletSelected.listen(this._onWalletSelected);
 
-    this.registerReactions([
-      this._syncSidebarRouteWithRouter,
-    ]);
+    this.registerReactions([this._syncSidebarRouteWithRouter]);
   }
 
   @computed get wallets(): Array<SidebarWalletType> {
@@ -33,12 +30,16 @@ export default class SidebarStore extends Store {
       title: w.name,
       info: formattedWalletAmount(w.amount),
       isConnected: networkStatus.isConnected,
-      isRestoreActive: get(w, 'syncState.tag') === WalletSyncStateTags.RESTORING,
+      isRestoreActive:
+        get(w, 'syncState.tag') === WalletSyncStateTags.RESTORING,
       restoreProgress: get(w, 'syncState.data.percentage.quantity', 0),
     }));
   }
 
-  @action _onActivateSidebarCategory = (params: { category: string, showSubMenu?: boolean }) => {
+  @action _onActivateSidebarCategory = (params: {
+    category: string,
+    showSubMenu?: boolean,
+  }) => {
     const { category, showSubMenu } = params;
     if (category !== this.activeSidebarCategory) {
       this.activeSidebarCategory = category;
@@ -78,10 +79,10 @@ export default class SidebarStore extends Store {
 
   _syncSidebarRouteWithRouter = () => {
     const route = this.stores.app.currentRoute;
-    this.CATEGORIES.forEach((category) => {
+    this.CATEGORIES.forEach(category => {
       // If the current route starts with the root of the category
-      if (route.indexOf(category.route) === 0) this._setActivateSidebarCategory(category.route);
+      if (route.indexOf(category.route) === 0)
+        this._setActivateSidebarCategory(category.route);
     });
   };
-
 }

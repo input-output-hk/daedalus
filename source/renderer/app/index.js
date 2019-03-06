@@ -50,9 +50,12 @@ const initializeDaedalus = () => {
 
   const rootElement = document.getElementById('root');
   if (!rootElement) throw new Error('No #root element found.');
-  render(<App stores={stores} actions={actions} history={history} />, rootElement);
+  render(
+    <App stores={stores} actions={actions} history={history} />,
+    rootElement
+  );
 };
 
 window.addEventListener('load', initializeDaedalus);
-window.addEventListener('dragover', (event) => event.preventDefault());
-window.addEventListener('drop', (event) => event.preventDefault());
+window.addEventListener('dragover', event => event.preventDefault());
+window.addEventListener('drop', event => event.preventDefault());

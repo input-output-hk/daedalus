@@ -9,12 +9,7 @@ import AdaRedemptionChoices from '../../source/renderer/app/components/wallet/ad
 import { ADA_REDEMPTION_TYPES } from '../../source/renderer/app/types/redemptionTypes';
 
 storiesOf('AdaRedemptionForm', module)
-
-  .addDecorator((story) => (
-    <StoryDecorator>
-      {story()}
-    </StoryDecorator>
-  ))
+  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 

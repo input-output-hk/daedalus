@@ -9,10 +9,9 @@ export type DeleteWalletParams = {
 export const deleteWallet = (
   config: RequestConfig,
   { walletId }: DeleteWalletParams
-): Promise<*> => (
+): Promise<*> =>
   request({
     method: 'DELETE',
     path: `/api/v1/wallets/${walletId}`,
     ...config,
-  })
-);
+  });

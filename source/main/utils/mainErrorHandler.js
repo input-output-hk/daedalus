@@ -9,7 +9,7 @@ export default (onError?: Function) => {
 
   unhandled({
     logger: (error: any) => Logger.error('unhandledException::main', { error }),
-    showDialog: false
+    showDialog: false,
   });
 
   process.on('uncaughtException', (error: any) => {
@@ -19,6 +19,11 @@ export default (onError?: Function) => {
   });
 
   app.on('gpu-process-crashed', (event: any, killed: boolean) => {
-    Logger.error(`uncaughtException::gpu-process-crashed: ${killed ? 'killed' : 'not-killed'}`, { error: event });
+    Logger.error(
+      `uncaughtException::gpu-process-crashed: ${
+        killed ? 'killed' : 'not-killed'
+      }`,
+      { error: event }
+    );
   });
 };

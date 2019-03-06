@@ -23,7 +23,7 @@ export type Environment = {
   version: string,
   isWindows: boolean,
   isMacOS: boolean,
-  isLinux: boolean
+  isLinux: boolean,
 };
 // constants
 export const PRODUCTION = 'production';
@@ -32,7 +32,8 @@ export const TEST = 'test';
 export const MAINNET = 'mainnet';
 export const STAGING = 'staging';
 export const TESTNET = 'testnet';
-export const STAGING_REPORT_URL = 'http://staging-report-server.awstest.iohkdev.io:8080/';
+export const STAGING_REPORT_URL =
+  'http://staging-report-server.awstest.iohkdev.io:8080/';
 export const MAC_OS = 'darwin';
 export const WINDOWS = 'win32';
 export const LINUX = 'linux';

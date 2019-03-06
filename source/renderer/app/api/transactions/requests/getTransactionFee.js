@@ -7,10 +7,13 @@ import { request } from '../../utils/request';
 export const getTransactionFee = (
   config: RequestConfig,
   { data }: TransactionParams
-): Promise<TransactionFee> => (
-  request({
-    method: 'POST',
-    path: '/api/v1/transactions/fees',
-    ...config,
-  }, {}, data)
-);
+): Promise<TransactionFee> =>
+  request(
+    {
+      method: 'POST',
+      path: '/api/v1/transactions/fees',
+      ...config,
+    },
+    {},
+    data
+  );
