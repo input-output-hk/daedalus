@@ -9,6 +9,7 @@ Changelog
 
 ### Chores
 
+- Improved the internal IPC communication ([PR 1332](https://github.com/input-output-hk/daedalus/pull/1332))
 - Improved Webpack 4 build performance ([PR 1320](https://github.com/input-output-hk/daedalus/pull/1320))
 
 ## 0.13.0

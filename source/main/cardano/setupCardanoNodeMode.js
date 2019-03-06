@@ -20,8 +20,8 @@ import type {
 import {
   cardanoAwaitUpdateChannel, cardanoFaultInjectionChannel, cardanoRestartChannel,
   cardanoStateChangeChannel,
-  cardanoStatusChannel,
-  cardanoTlsConfigChannel
+  getCachedCardanoStatusChannel,
+  cardanoTlsConfigChannel, setCachedCardanoStatusChannel
 } from '../ipc/cardano.ipc';
 import { safeExitWithCode } from '../utils/safeExitWithCode';
 
@@ -86,15 +86,15 @@ export const setupCardanoNodeMode = (
 
   startCardanoNode(cardanoNode, launcherConfig);
 
-  cardanoStatusChannel.onRequest(() => {
+  getCachedCardanoStatusChannel.onRequest(() => {
     Logger.info('ipcMain: Received request from renderer for cardano status', { status: cardanoNode.status });
     return Promise.resolve(cardanoNode.status);
   });
 
-  cardanoStatusChannel.onReceive((status: CardanoStatus) => {
+  setCachedCardanoStatusChannel.onReceive((status: ?CardanoStatus) => {
     Logger.info('ipcMain: Received request from renderer to cache cardano status', { status });
     cardanoNode.saveStatus(status);
-    return Promise.resolve(cardanoNode.status);
+    return Promise.resolve();
   });
 
   cardanoStateChangeChannel.onRequest(() => {
