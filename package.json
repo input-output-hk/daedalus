@@ -182,7 +182,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "pretty-quick --staged --pattern ./**/*.{js,scss,json}",
-      "pre-push": "yarn lint && yarn flow:test && yarn prettier"
+      "pre-push": "yarn lint && yarn flow:test && yarn prettier && yarn manage:translations"
     }
   }
 }
