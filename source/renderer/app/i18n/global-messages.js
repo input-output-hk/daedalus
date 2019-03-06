@@ -118,7 +118,7 @@ export default defineMessages({
   },
   unitAda: {
     id: 'global.unit.ada',
-    defaultMessage: '!!!\u20B3',
+    defaultMessage: '!!!ADA',
     description: 'Name for "ADA" unit.'
   },
   recoveryPhraseDialogTitle: {
