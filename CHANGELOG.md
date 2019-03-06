@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Replaced ada symbol images with unicode character ([PR 1317](https://github.com/input-output-hk/daedalus/pull/1317))
+- Renamed Ada to its lowercase ada version ([PR 1317](https://github.com/input-output-hk/daedalus/pull/1317), [PR 1336](https://github.com/input-output-hk/daedalus/pull/1336))
 
 ### Chores
 
