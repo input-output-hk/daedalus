@@ -11,7 +11,7 @@ When(/^I set the node subscription status to subscribing$/, async function () {
   }, {});
 });
 
-Then(/^I should wait 5 seconds and see the trouble connecting notification displaying "([^"]*)"$/, async function (text) {
+Then(/^I should see the report issue notification displaying "([^"]*)"$/, async function (text) {
   await waitUntilTextInSelector(this.client, {
     selector: REPORT_ISSUE_TEXT_H1,
     text
