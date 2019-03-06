@@ -10,6 +10,7 @@ export const ROUTES = {
     TERMS_OF_USE: '/profile/terms-of-use',
     DATA_LAYER_MIGRATION: '/profile/data-layer-migration',
   },
+  WALLET_IMPORTER: '/wallet-importer',
   WALLETS: {
     ROOT: '/wallets',
     ADD: '/wallets/add',

@@ -7,7 +7,8 @@ import {
   TOGGLE_ABOUT_DIALOG_CHANNEL,
   TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL,
   TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL,
-  GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL
+  GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL,
+  GO_TO_WALLET_IMPORTER_SCREEN_CHANNEL,
 } from '../../../common/ipc/api';
 import { GET_GPU_STATUS } from '../../../common/ipc-api';
 import { ROUTES } from '../routes-config';
@@ -43,6 +44,7 @@ export default class AppStore extends Store {
     ipcRenderer.on(TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL, this._toggleNetworkStatusDialog);
     ipcRenderer.on(TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL, this._toggleBlockConsolidationStatusScreen);
     ipcRenderer.on(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
+    ipcRenderer.on(GO_TO_WALLET_IMPORTER_SCREEN_CHANNEL, this._goToWalletImporterScreen);
     ipcRenderer.on(GET_GPU_STATUS.SUCCESS, this._onGetGpuStatusSuccess);
     /* eslint-disable max-len */
   }
@@ -54,6 +56,7 @@ export default class AppStore extends Store {
     ipcRenderer.removeListener(TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL, this._toggleNetworkStatusDialog);
     ipcRenderer.removeListener(TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL, this._toggleBlockConsolidationStatusScreen);
     ipcRenderer.removeListener(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
+    ipcRenderer.removeListener(GO_TO_WALLET_IMPORTER_SCREEN_CHANNEL, this._goToWalletImporterScreen);
     ipcRenderer.removeListener(GET_GPU_STATUS.SUCCESS, this._onGetGpuStatusSuccess);
     /* eslint-disable max-len */
   }
@@ -119,6 +122,14 @@ export default class AppStore extends Store {
     }
   };
 
+  @action _goToWalletImporterScreen = () => {
+    const { isConnected, isSynced } = this.stores.networkStatus;
+    const { hasLoadedWallets } = this.stores.wallets;
+    if (isConnected && isSynced && hasLoadedWallets && !this.isSetupPage) {
+      this.actions.router.goToRoute.trigger({ route: ROUTES.WALLET_IMPORTER });
+    }
+  };
+
   @action _toggleBlockConsolidationStatusScreen = () => {
     const route = this.isBlockConsolidationStatusPage
       ? this.previousRoute
@@ -135,6 +146,10 @@ export default class AppStore extends Store {
       this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION ||
       this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE
     );
+  }
+
+  @computed get isWalletImporterPage(): boolean {
+    return this.currentRoute === ROUTES.WALLET_IMPORTER;
   }
 
 }

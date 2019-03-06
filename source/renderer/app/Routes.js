@@ -23,6 +23,7 @@ import WalletSendPage from './containers/wallet/WalletSendPage';
 import WalletReceivePage from './containers/wallet/WalletReceivePage';
 import WalletTransactionsPage from './containers/wallet/WalletTransactionsPage';
 import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
+import WalletImporterPage from './containers/wallet/WalletImporterPage';
 // import StakingPage from './containers/staking/StakingPage';
 
 export const Routes = (
@@ -34,6 +35,7 @@ export const Routes = (
     {/* <Route path={ROUTES.STAKING} component={StakingPage} /> */}
     <Route path={ROUTES.ADA_REDEMPTION} component={AdaRedemptionPage} />
     <Route path={ROUTES.BLOCK_CONSOLIDATION_STATUS} component={BlockConsolidationStatusPage} />
+    <Route path={ROUTES.WALLET_IMPORTER} component={WalletImporterPage} />
     <Route path={ROUTES.WALLETS.ADD} component={WalletAddPage} />
     <Route path={ROUTES.WALLETS.ROOT} component={Wallet}>
       <Route path={ROUTES.WALLETS.SUMMARY} component={WalletSummaryPage} />

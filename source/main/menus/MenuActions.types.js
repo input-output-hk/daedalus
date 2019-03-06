@@ -6,4 +6,5 @@ export type MenuActions = {
   restartInSafeMode: Function,
   restartWithoutSafeMode: Function,
   goBlockConsolidationStatus: Function,
+  openWalletImporter: Function,
 };

@@ -49,6 +49,12 @@ export const winLinuxMenu = (
         actions.openNetworkStatus();
       },
     }, {
+      label: translation('daedalus.walletImporter'),
+      accelerator: 'Ctrl+I',
+      click() {
+        actions.openWalletImporter();
+      },
+    }, {
       label: translation('daedalus.close'),
       accelerator: 'Ctrl+W',
       click() {

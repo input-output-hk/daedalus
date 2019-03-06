@@ -48,6 +48,12 @@ export const osxMenu = (
         actions.openNetworkStatus();
       },
     }, {
+      label: translation('daedalus.walletImporter'),
+      accelerator: 'Command+I',
+      click() {
+        actions.openWalletImporter();
+      },
+    }, {
       label: translation('daedalus.quit'),
       accelerator: 'Command+Q',
       click() {

@@ -10,7 +10,8 @@ import {
   TOGGLE_ABOUT_DIALOG_CHANNEL,
   TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL,
   GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL,
-  TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL
+  TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL,
+  GO_TO_WALLET_IMPORTER_SCREEN_CHANNEL
 } from '../../common/ipc/api';
 
 export const buildAppMenus = async (
@@ -19,7 +20,6 @@ export const buildAppMenus = async (
   isInSafeMode: boolean,
   locale: string,
 ) => {
-
   const openAbout = () => {
     if (mainWindow) mainWindow.webContents.send(TOGGLE_ABOUT_DIALOG_CHANNEL);
   };
@@ -38,6 +38,10 @@ export const buildAppMenus = async (
         TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL
       );
     }
+  };
+
+  const openWalletImporter = () => {
+    if (mainWindow) mainWindow.webContents.send(GO_TO_WALLET_IMPORTER_SCREEN_CHANNEL);
   };
 
   const restartInSafeMode = async () => {
@@ -63,6 +67,7 @@ export const buildAppMenus = async (
     restartInSafeMode,
     restartWithoutSafeMode,
     goBlockConsolidationStatus,
+    openWalletImporter,
   };
 
   // Build app menus

@@ -5,6 +5,7 @@
   "menu.daedalus.gpuSafeMode": "GPU Safe Mode",
   "menu.daedalus.networkStatus": "Network Status",
   "menu.daedalus.blockConsolidationStatus": "Block Consolidation Status",
+  "menu.daedalus.walletImporter": "Wallet Importer",
   "menu.daedalus.quit": "Quit",
   "menu.daedalus.close": "Close",
   "menu.edit": "Edit",

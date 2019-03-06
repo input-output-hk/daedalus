@@ -1,0 +1,40 @@
+@import '../../themes/mixins/error-message';
+
+.component {
+  background-color: var(--theme-main-body-background-color);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-regular);
+  height: 100%;
+  padding: 20px;
+
+  :global {
+    .SimpleFormField_label {
+      color: var(--theme-input-label-color);
+    }
+  }
+}
+
+.headline {
+  text-align: center;
+  text-transform: uppercase;
+  font-family: var(--font-medium);
+  font-size: 18px;
+  margin-bottom: 2rem;
+  margin-top: 10px;
+  color: var(--theme-ada-redemption-headline-color);
+}
+
+.instructions {
+  margin-bottom: 25px;
+  font-family: var(--font-regular);
+  font-size: 16px;
+  line-height: 1.38;
+  color: var(--theme-ada-redemption-instructions-color);
+  strong {
+    font-family: var(--font-bold);
+  }
+  p {
+    margin-bottom: 10px;
+  }
+}
