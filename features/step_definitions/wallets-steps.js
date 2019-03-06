@@ -441,7 +441,7 @@ Then(/^the latest transaction should show:$/, async function (table) {
   // Transaction amount includes transaction fees so we need to
   // substract them in order to get a match with expectedData.amountWithoutFees.
   // NOTE: we use "add()" as this is outgoing transaction and amount is a negative value!
-  const transactionAmount = new BigNumber(transactionAmounts[0].split(' ').shift());
+  const transactionAmount = new BigNumber(transactionAmounts[0]);
   const transactionAmountWithoutFees = transactionAmount.add(this.fees).toFormat(DECIMAL_PLACES_IN_ADA);
   expect(expectedData.amountWithoutFees).to.equal(transactionAmountWithoutFees);
 });
@@ -453,7 +453,7 @@ Then(/^the balance of "([^"]*)" wallet should be:$/, { timeout: 60000 }, async f
   const receiverWallet = getWalletByName.call(this, walletName);
   return this.client.waitUntil(async () => {
     const receiverWalletBalance = await this.client.getText(`.SidebarWalletsMenu_wallets .Wallet_${receiverWallet.id} .SidebarWalletMenuItem_info`);
-    return receiverWalletBalance === `${expectedData.balance} ₳`;
+    return receiverWalletBalance === `${expectedData.balance} ADA`;
   }, 60000);
 });
 
