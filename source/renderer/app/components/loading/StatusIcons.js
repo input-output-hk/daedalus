@@ -11,9 +11,10 @@ import isNodeRespondingIcon from '../../assets/images/is-node-responding-icon.in
 import isNodeSubscribedIcon from '../../assets/images/is-node-subscribed-icon.inline.svg';
 import isNodeTimeCorrectIcon from '../../assets/images/is-node-time-correct-icon.inline.svg';
 import isNodeSyncingIcon from '../../assets/images/is-node-syncing-icon.inline.svg';
+import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
 
 type Props = {
-  nodeState: string,
+  nodeState: ?CardanoNodeState,
   isNodeResponding?: boolean,
   isNodeSubscribed?: boolean,
   isNodeTimeCorrect?: boolean,
@@ -44,9 +45,10 @@ const PARAM_PRETTY_NAME: Object = {
 };
 
 export default class StatusIcon extends Component<Props> {
+
   getTip = (paramName: string) => {
     const paramValue: boolean = this.props[paramName];
-    let status = paramValue ? ' is ' : ' is not ';
+    let status = paramValue ? 'is' : 'is not';
     let paramPrettyName = PARAM_PRETTY_NAME[paramName];
     if (paramName === 'nodeState') {
       status = 'is';
@@ -62,12 +64,12 @@ export default class StatusIcon extends Component<Props> {
   };
 
   getClassName = (paramName: string) => {
-    const { nodeState, isNodeSyncing } = this.props;
-    const paramValue = this.props[paramName];
-    // If {!isNodeRunning} it displays the icons without opacity
+    // If node is not running, it displays the icons with opacity
     // Whether {isNodeSyncing} it displays the icons for syncing or loading screen
+    const { isNodeSyncing } = this.props;
+    const paramValue = this.props[paramName];
     let status = STATUS_CLASSNAMES[paramValue];
-    if (paramName !== 'nodeState' && nodeState !== CardanoNodeStates.RUNNING) {
+    if (this.isDisabled(paramName)) {
       status = 'unknown';
     }
     return classNames([
@@ -76,11 +78,34 @@ export default class StatusIcon extends Component<Props> {
     ]);
   };
 
-  getIconWithToolTip = (icon: string, param: string) => (
-    <Tooltip skin={TooltipSkin} tip={this.getTip(param)}>
-      <SVGInline svg={icon} className={this.getClassName(param)} />
-    </Tooltip>
+  getTooltipClassname = (paramName: string) => {
+    const paramValue = this.props[paramName];
+    if (typeof paramValue === 'undefined') {
+      return 'tooltipEllipsis';
+    }
+    if (this.isDisabled(paramName)) {
+      return 'tooltipDisabled';
+    }
+  }
+
+  isDisabled = (paramName: string) => (
+    paramName !== 'nodeState' && this.props.nodeState !== CardanoNodeStates.RUNNING
   );
+
+  getIconWithToolTip = (icon: string, paramName: string) => {
+    if (this.isDisabled(paramName)) {
+      return (<SVGInline svg={icon} className={this.getClassName(paramName)} />);
+    }
+    return (
+      <Tooltip
+        skin={TooltipSkin}
+        tip={this.getTip(paramName)}
+        className={this.getTooltipClassname(paramName)}
+      >
+        <SVGInline svg={icon} className={this.getClassName(paramName)} />
+      </Tooltip>
+    );
+  }
 
   render() {
     return (

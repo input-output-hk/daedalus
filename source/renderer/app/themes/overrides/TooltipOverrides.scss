@@ -1,5 +1,21 @@
+@import "../../themes/mixins/animations";
+
 .root {
   b {
     font-weight: bold;
+  }
+}
+
+:global {
+  .tooltipEllipsis .SimpleBubble_bubble {
+    padding-right: 20px;
+    @include animated-ellipsis($width: 16px);
+  }
+  .tooltipDisabled {
+    &:hover {
+      .SimpleBubble_bubble {
+        display: none !important;
+      }
+    }
   }
 }

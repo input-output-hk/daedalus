@@ -55,7 +55,7 @@ export default class LoadingPage extends Component<InjectedProps> {
     const {
       // Node state
       cardanoNodeState, isNodeResponding, isNodeSubscribed,
-      isNodeSyncing, isNodeInSync, isNodeTimeCorrect,
+      isNodeSyncing, isNodeTimeCorrect,
       // Application state
       isConnected, isSynced, syncPercentage, hasBeenConnected,
       localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
@@ -92,7 +92,6 @@ export default class LoadingPage extends Component<InjectedProps> {
           isNodeResponding={isNodeResponding}
           isNodeSubscribed={isNodeSubscribed}
           isNodeSyncing={isNodeSyncing}
-          isNodeInSync={isNodeInSync}
           isNodeTimeCorrect={isNodeTimeCorrect}
           onReportIssueClick={this.handleReportIssueClick}
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}

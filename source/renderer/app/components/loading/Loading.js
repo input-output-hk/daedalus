@@ -25,75 +25,72 @@ const messages = defineMessages({
   starting: {
     id: 'loading.screen.startingCardanoMessage',
     defaultMessage: '!!!Starting Cardano node',
-    description: 'Message "Starting Cardano node" on the loading screen.',
+    description: 'Message "Starting Cardano node" on the loading screen.'
   },
   stopping: {
     id: 'loading.screen.stoppingCardanoMessage',
     defaultMessage: '!!!Stopping Cardano node',
-    description: 'Message "Stopping Cardano node" on the loading screen.',
+    description: 'Message "Stopping Cardano node" on the loading screen.'
   },
   stopped: {
     id: 'loading.screen.stoppedCardanoMessage',
     defaultMessage: '!!!Cardano node stopped',
-    description: 'Message "Cardano node stopped" on the loading screen.',
+    description: 'Message "Cardano node stopped" on the loading screen.'
   },
   updating: {
     id: 'loading.screen.updatingCardanoMessage',
     defaultMessage: '!!!Updating Cardano node',
-    description: 'Message "Updating Cardano node" on the loading screen.',
+    description: 'Message "Updating Cardano node" on the loading screen.'
   },
   updated: {
     id: 'loading.screen.updatedCardanoMessage',
     defaultMessage: '!!!Cardano node updated',
-    description: 'Message "Cardano node updated" on the loading screen.',
+    description: 'Message "Cardano node updated" on the loading screen.'
   },
   crashed: {
     id: 'loading.screen.crashedCardanoMessage',
     defaultMessage: '!!!Cardano node crashed',
-    description: 'Message "Cardano node crashed" on the loading screen.',
+    description: 'Message "Cardano node crashed" on the loading screen.'
   },
   unrecoverable: {
     id: 'loading.screen.unrecoverableCardanoMessage',
-    defaultMessage:
-      '!!!Unable to start Cardano node. Please submit a support request.',
-    description:
-      'Message "Unable to start Cardano node. Please submit a support request." on the loading screen.',
+    defaultMessage: '!!!Unable to start Cardano node. Please submit a support request.',
+    description: 'Message "Unable to start Cardano node. Please submit a support request." on the loading screen.'
   },
   connecting: {
     id: 'loading.screen.connectingToNetworkMessage',
     defaultMessage: '!!!Connecting to network',
-    description: 'Message "Connecting to network" on the loading screen.',
+    description: 'Message "Connecting to network" on the loading screen.'
   },
   reconnecting: {
     id: 'loading.screen.reconnectingToNetworkMessage',
     defaultMessage: '!!!Network connection lost - reconnecting',
-    description:
-      'Message "Network connection lost - reconnecting" on the loading screen.',
+    description: 'Message "Network connection lost - reconnecting" on the loading screen.'
   },
   syncing: {
     id: 'loading.screen.syncingBlocksMessage',
     defaultMessage: '!!!Syncing blocks',
-    description: 'Message "Syncing blocks" on the loading screen.',
+    description: 'Message "Syncing blocks" on the loading screen.'
   },
   reportConnectingIssueText: {
     id: 'loading.screen.reportIssue.connecting.text',
     defaultMessage: '!!!Having trouble connecting to network?',
-    description: 'Report connecting issue text on the loading screen.',
+    description: 'Report connecting issue text on the loading screen.'
   },
   reportSyncingIssueText: {
     id: 'loading.screen.reportIssue.syncing.text',
     defaultMessage: '!!!Having trouble syncing?',
-    description: 'Report syncing issue text on the loading screen.',
+    description: 'Report syncing issue text on the loading screen.'
   },
   reportIssueButtonLabel: {
     id: 'loading.screen.reportIssue.buttonLabel',
     defaultMessage: '!!!Open support ticket',
-    description: 'Open support ticket button label on the loading.',
+    description: 'Open support ticket button label on the loading.'
   },
   reportIssueDownloadLogsLinkLabel: {
     id: 'loading.screen.reportIssue.downloadLogsLinkLabel',
     defaultMessage: '!!!Download logs',
-    description: 'Download logs button label on the loading.',
+    description: 'Download logs button label on the loading.'
   },
 });
 
@@ -126,7 +123,6 @@ type Props = {
   isNodeResponding: boolean,
   isNodeSubscribed: boolean,
   isNodeSyncing: boolean,
-  isNodeInSync: boolean,
   isNodeTimeCorrect: boolean,
   currentLocale: string,
   onExternalLinkClick: Function,
@@ -138,6 +134,7 @@ type Props = {
 
 @observer
 export default class Loading extends Component<Props, State> {
+
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -160,20 +157,10 @@ export default class Loading extends Component<Props, State> {
 
   componentDidUpdate() {
     const { isConnected, isSynced, isNotEnoughDiskSpace } = this.props;
-    const canResetSyncing = this._syncingTimerShouldStop(
-      isSynced,
-      isNotEnoughDiskSpace
-    );
-    const canResetConnecting = this._connectingTimerShouldStop(
-      isConnected,
-      isNotEnoughDiskSpace
-    );
-    if (canResetSyncing) {
-      this._resetSyncingTime();
-    }
-    if (canResetConnecting) {
-      this._resetConnectingTime();
-    }
+    const canResetSyncing = this._syncingTimerShouldStop(isSynced, isNotEnoughDiskSpace);
+    const canResetConnecting = this._connectingTimerShouldStop(isConnected, isNotEnoughDiskSpace);
+    if (canResetSyncing) { this._resetSyncingTime(); }
+    if (canResetConnecting) { this._resetConnectingTime(); }
   }
 
   componentWillUnmount() {
@@ -181,31 +168,29 @@ export default class Loading extends Component<Props, State> {
     this._resetSyncingTime();
   }
 
-  _connectingTimerShouldStart = (isConnected: boolean): boolean =>
-    !isConnected && connectingInterval === null;
+  _connectingTimerShouldStart = (isConnected: boolean): boolean => (
+    !isConnected && connectingInterval === null
+  );
 
-  _syncingTimerShouldStart = (
-    isConnected: boolean,
-    isSynced: boolean
-  ): boolean => isConnected && !isSynced && syncingInterval === null;
+  _syncingTimerShouldStart = (isConnected: boolean, isSynced: boolean): boolean => (
+    isConnected && !isSynced && syncingInterval === null
+  );
 
   _syncingTimerShouldStop = (
-    isSynced: boolean,
-    isNotEnoughDiskSpace: boolean
-  ): boolean => (isNotEnoughDiskSpace || isSynced) && syncingInterval !== null;
+    isSynced: boolean, isNotEnoughDiskSpace: boolean
+  ): boolean => (
+    (isNotEnoughDiskSpace || isSynced) && syncingInterval !== null
+  );
 
   _connectingTimerShouldStop = (
-    isConnected: boolean,
-    isNotEnoughDiskSpace: boolean
-  ): boolean =>
-    (isNotEnoughDiskSpace || isConnected) && connectingInterval !== null;
+    isConnected: boolean, isNotEnoughDiskSpace: boolean
+  ): boolean => (
+    (isNotEnoughDiskSpace || isConnected) && connectingInterval !== null
+  );
 
   _defensivelyStartTimers = (isConnected: boolean, isSynced: boolean) => {
     const needConnectingTimer = this._connectingTimerShouldStart(isConnected);
-    const needSyncingTimer = this._syncingTimerShouldStart(
-      isConnected,
-      isSynced
-    );
+    const needSyncingTimer = this._syncingTimerShouldStart(isConnected, isSynced);
     if (needConnectingTimer) {
       connectingInterval = setInterval(this._incrementConnectingTime, 1000);
     } else if (needSyncingTimer) {
@@ -272,11 +257,8 @@ export default class Loading extends Component<Props, State> {
       case CardanoNodeStates.UNRECOVERABLE:
         connectingMessage = messages.unrecoverable;
         break;
-      default:
-        // also covers CardanoNodeStates.RUNNING state
-        connectingMessage = hasBeenConnected
-          ? messages.reconnecting
-          : messages.connecting;
+      default: // also covers CardanoNodeStates.RUNNING state
+        connectingMessage = hasBeenConnected ? messages.reconnecting : messages.connecting;
     }
     return connectingMessage;
   };
@@ -300,7 +282,7 @@ export default class Loading extends Component<Props, State> {
       onContinueWithoutClockSyncCheck,
       isCheckingSystemTime,
       syncPercentage,
-      loadingDataForNextScreenMessage,
+      loadingDataForNextScreenMessage
     } = this.props;
 
     if (isNotEnoughDiskSpace) {
@@ -377,7 +359,6 @@ export default class Loading extends Component<Props, State> {
       isNodeResponding,
       isNodeSubscribed,
       isNodeSyncing,
-      isNodeInSync,
       isNodeTimeCorrect,
     } = this.props;
 
@@ -410,36 +391,40 @@ export default class Loading extends Component<Props, State> {
     const currencyLoadingLogo = currencyIcon;
     const apiLoadingLogo = apiIcon;
 
-    const canReportConnectingIssue =
-      !isConnected &&
-      (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
-        cardanoNodeState === CardanoNodeStates.UNRECOVERABLE);
-    const canReportSyncingIssue =
-      isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER;
+    const canReportConnectingIssue = (
+      !isConnected && (
+        connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
+        cardanoNodeState === CardanoNodeStates.UNRECOVERABLE
+      )
+    );
+    const canReportSyncingIssue = (
+      isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER
+    );
     const showReportIssue = canReportConnectingIssue || canReportSyncingIssue;
 
-    const buttonClasses = classNames(['primary', styles.reportIssueButton]);
+    const buttonClasses = classNames([
+      'primary',
+      styles.reportIssueButton,
+    ]);
 
     return (
       <div className={componentStyles}>
         {showReportIssue && (
           <div className={styles.reportIssue}>
             <h1 className={styles.reportIssueText}>
-              {!isConnected
-                ? intl.formatMessage(messages.reportConnectingIssueText)
-                : intl.formatMessage(messages.reportSyncingIssueText)}
+              {!isConnected ?
+                intl.formatMessage(messages.reportConnectingIssueText) :
+                intl.formatMessage(messages.reportSyncingIssueText)
+              }
             </h1>
             <Button
               className={buttonClasses}
-              label={
+              label={(
                 <p>
-                  <SVGInline
-                    svg={linkNewWindow}
-                    className={styles.linkNewWindow}
-                  />
+                  <SVGInline svg={linkNewWindow} className={styles.linkNewWindow} />
                   {intl.formatMessage(messages.reportIssueButtonLabel)}
                 </p>
-              }
+              )}
               onClick={onReportIssueClick}
               skin={ButtonSkin}
             />
@@ -464,9 +449,11 @@ export default class Loading extends Component<Props, State> {
           isNodeResponding={isNodeResponding}
           isNodeSubscribed={isNodeSubscribed}
           isNodeTimeCorrect={isNodeTimeCorrect}
-          isNodeSyncing={undefined}
+          isNodeSyncing={isNodeSyncing}
         />
+
       </div>
     );
   }
+
 }

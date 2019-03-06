@@ -32,7 +32,6 @@ export default class Root extends Component<Props> {
     // for all the screens except of the "Network status" screen.
     const isNodeInStoppingSequence = isNodeStopping || isNodeStopped;
 
-      return <LoadingPage stores={stores} actions={actions} />;
     // Just render any page that doesn't require wallets to be loaded or node to be connected
     if (
       (isPageThatDoesntNeedWallets && !isNodeInStoppingSequence) ||
