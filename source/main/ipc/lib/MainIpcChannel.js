@@ -14,8 +14,10 @@ export class MainIpcChannel<Incoming, Outgoing> extends IpcChannel<Incoming, Out
     return super.send(message, sender, receiver);
   }
 
-  async request(sender: IpcSender, receiver: IpcReceiver = ipcMain): Promise<Incoming> {
-    return super.request(sender, receiver);
+  async request(
+    message: Outgoing, sender: IpcSender, receiver: IpcReceiver = ipcMain
+  ): Promise<Incoming> {
+    return super.request(message, sender, receiver);
   }
 
   onReceive(
@@ -25,7 +27,9 @@ export class MainIpcChannel<Incoming, Outgoing> extends IpcChannel<Incoming, Out
     super.onReceive(handler, receiver);
   }
 
-  onRequest(handler: () => Promise<Outgoing>, receiver: IpcReceiver = ipcMain): void {
+  onRequest(
+    handler: (Incoming) => Promise<Outgoing>, receiver: IpcReceiver = ipcMain
+  ): void {
     super.onRequest(handler, receiver);
   }
 
