@@ -151,7 +151,14 @@ let
     '';
     uninstaller = if (signingKeys != null) then self.signedUninstaller else self.unsignedUninstaller;
 
-    windows-installer = pkgs.runCommand "win64-installer-${cluster}" { buildInputs = [ self.daedalus-installer self.nsis pkgs.unzip self.configMutator pkgs.jq self.yaml2json ]; } ''
+    windows-installer = let
+      mapping = {
+        mainnet = "Daedalus";
+        staging = "Daedalus Staging";
+        testnet = "Daedalus Testnet";
+      };
+      installDir = mapping.${cluster};
+    in pkgs.runCommand "win64-installer-${cluster}" { buildInputs = [ self.daedalus-installer self.nsis pkgs.unzip self.configMutator pkgs.jq self.yaml2json ]; } ''
       mkdir home
       export HOME=$(realpath home)
 
@@ -164,9 +171,9 @@ let
       chmod -R +w installers
       cd installers
       mkdir -pv ../release/win32-x64/
-      ${if dummyInstaller then "mkdir -pv ../release/win32-x64/Daedalus-win32-x64/resources/app/dist/main/" else "cp -r ${self.rawapp-win64} ../release/win32-x64/Daedalus-win32-x64"}
-      chmod -R +w ../release/win32-x64/Daedalus-win32-x64
-      cp -v ${self.fastlist}/bin/fastlist.exe ../release/win32-x64/Daedalus-win32-x64/resources/app/dist/main/fastlist.exe
+      ${if dummyInstaller then ''mkdir -pv "../release/win32-x64/${installDir}-win32-x64/resources/app/dist/main/"'' else ''cp -r ${self.rawapp-win64} "../release/win32-x64/${installDir}-win32-x64"''}
+      chmod -R +w "../release/win32-x64/${installDir}-win32-x64"
+      cp -v ${self.fastlist}/bin/fastlist.exe "../release/win32-x64/${installDir}-win32-x64/resources/app/dist/main/fastlist.exe"
       ln -s ${./installers/nsis_plugins} nsis_plugins
 
       mkdir dlls
