@@ -23,6 +23,7 @@
     "cucumber:watch:debug": "KEEP_APP_AFTER_TESTS=true npm run cucumber -- --tags @watch",
     "lint": "eslint --format=node_modules/eslint-formatter-pretty source features storybook *.js",
     "flow:test": "flow; test $? -eq 0 -o $? -eq 2",
+    "prettier": "./node_modules/.bin/prettier -c --ignore-path .eslintignore ./**/*.{js,scss,json}",
     "manage:translations": "gulp purge:translations && gulp clear:cache && gulp build && node ./translations/translation-runner.js",
     "storybook": "start-storybook -p 6006 -c storybook",
     "clear:cache": "gulp clear:cache",
@@ -88,6 +89,7 @@
     "gulp-shell": "0.6.5",
     "hash.js": "1.1.7",
     "html-loader": "0.5.5",
+    "husky": "1.3.1",
     "json-loader": "0.5.7",
     "markdown-loader": "4.0.0",
     "mini-css-extract-plugin": "0.5.0",
@@ -99,6 +101,8 @@
     "postcss": "7.0.7",
     "postcss-modules": "1.4.1",
     "postcss-modules-values": "2.0.0",
+    "prettier": "^1.16.4",
+    "pretty-quick": "1.10.0",
     "prettysize": "1.1.0",
     "raw-loader": "1.0.0",
     "react-intl-translations-manager": "5.0.3",
@@ -174,5 +178,11 @@
   "devEngines": {
     "node": ">=8.9.4",
     "yarn": "1.10.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged",
+      "pre-push": "yarn lint && yarn flow:test && yarn prettier"
+    }
   }
 }
