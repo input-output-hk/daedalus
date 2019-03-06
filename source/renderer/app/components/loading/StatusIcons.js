@@ -54,12 +54,9 @@ export default class StatusIcon extends Component<Props> {
       status = 'is';
       paramPrettyName = paramValue;
     }
-    let nodePrettyName = paramName !== 'isNodeTimeCorrect'
-      ? `Node ${status} `
-      : `Node time ${status} `;
-    if (typeof paramValue === 'undefined') {
-      nodePrettyName = 'Checking if node is ';
-    }
+    let nodePrettyName = `Node ${status} `;
+    if (paramName === 'isNodeTimeCorrect') nodePrettyName = `Node time ${status} `;
+    if (typeof paramValue === 'undefined') nodePrettyName = 'Checking if node is ';
     return [nodePrettyName, <b key="param">{paramPrettyName}</b>];
   };
 
