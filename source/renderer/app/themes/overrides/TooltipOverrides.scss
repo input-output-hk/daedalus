@@ -1,5 +1,8 @@
 @import "../../themes/mixins/animations";
 
+$tooltip-bg-color: red !important;
+$bubble-bg-color: red !important;
+
 .root {
   b {
     font-weight: bold;
