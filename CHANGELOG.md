@@ -11,6 +11,7 @@ Changelog
 
 - Improved the internal IPC communication ([PR 1332](https://github.com/input-output-hk/daedalus/pull/1332))
 - Improved Webpack 4 build performance ([PR 1320](https://github.com/input-output-hk/daedalus/pull/1320))
+- Introduced automated code formatting with prettier ([PR 1335](https://github.com/input-output-hk/daedalus/pull/1335))
 
 ## 0.13.0
 
