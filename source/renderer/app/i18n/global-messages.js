@@ -133,7 +133,7 @@ export default defineMessages({
   unitAda: {
     id: 'global.unit.ada',
     defaultMessage: '!!!ADA',
-    description: 'Name for "ADA" unit.'
+    description: 'Name for "ADA" unit.',
   },
   recoveryPhraseDialogTitle: {
     id: 'wallet.backup.recovery.phrase.dialog.title',

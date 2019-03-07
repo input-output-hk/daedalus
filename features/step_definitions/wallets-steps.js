@@ -588,9 +588,7 @@ Then(/^the latest transaction should show:$/, async function(table) {
   // Transaction amount includes transaction fees so we need to
   // substract them in order to get a match with expectedData.amountWithoutFees.
   // NOTE: we use "add()" as this is outgoing transaction and amount is a negative value!
-  const transactionAmount = new BigNumber(
-    transactionAmounts[0]
-  );
+  const transactionAmount = new BigNumber(transactionAmounts[0]);
   const transactionAmountWithoutFees = transactionAmount
     .add(this.fees)
     .toFormat(DECIMAL_PLACES_IN_ADA);

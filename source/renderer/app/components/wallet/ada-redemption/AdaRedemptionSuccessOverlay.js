@@ -45,9 +45,7 @@ export default class AdaRedemptionSuccessOverlay extends Component<Props> {
           <h1 className={styles.headline}>
             {intl.formatMessage(messages.headline)}
           </h1>
-          <div className={styles.amount}>
-            {amount} ADA
-          </div>
+          <div className={styles.amount}>{amount} ADA</div>
           <Button
             className={styles.confirmButton}
             label={intl.formatMessage(messages.confirmButton)}

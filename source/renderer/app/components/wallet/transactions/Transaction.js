@@ -258,9 +258,8 @@ export default class Transaction extends Component<Props> {
                   : intl.formatMessage(messages.received, { currency })}
               </div>
               <div className={styles.amount}>
-                {
-                  // hide currency (we are showing symbol instead)
-                  formattedWalletAmount(data.amount, false)}
+                {// hide currency (we are showing symbol instead)
+                formattedWalletAmount(data.amount, false)}
                 <SVGInline svg={symbol} className={styles.currencySymbol} />
               </div>
             </div>
