@@ -33,11 +33,13 @@ const messages = defineMessages({
   showMoreTransactionsButtonLabel: {
     id: 'wallet.summary.page.showMoreTransactionsButtonLabel',
     defaultMessage: '!!!Show more transactions',
-    description: 'Label for the "Show more transactions" button on the wallet summary page.',
+    description:
+      'Label for the "Show more transactions" button on the wallet summary page.',
   },
   syncingTransactionsMessage: {
     id: 'wallet.summary.page.syncingTransactionsMessage',
-    defaultMessage: '!!!Your transaction history for this wallet is being synced with the blockchain.',
+    defaultMessage:
+      '!!!Your transaction history for this wallet is being synced with the blockchain.',
     description: 'Syncing transactions message on async wallet restore.',
   },
 });
@@ -61,7 +63,6 @@ const DATE_FORMAT = 'YYYY-MM-DD';
 
 @observer
 export default class WalletTransactionsList extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -87,29 +88,34 @@ export default class WalletTransactionsList extends Component<Props> {
     // Japanese - YYYY/MM/DD
   }
 
-  groupTransactionsByDay(transactions: Array<WalletTransaction>): Array<TransactionsGroup> {
+  groupTransactionsByDay(
+    transactions: Array<WalletTransaction>
+  ): Array<TransactionsGroup> {
     const groups: Array<TransactionsGroup> = [];
     for (const transaction of transactions) {
       const date = moment(transaction.date);
-      let group = groups.find((g) => (
-        g.date.format(DATE_FORMAT) === date.format(DATE_FORMAT)
-      ));
+      let group = groups.find(
+        g => g.date.format(DATE_FORMAT) === date.format(DATE_FORMAT)
+      );
       if (!group) {
         group = new TransactionsGroup({ date, transactions: [] });
         groups.push(group);
       }
       group.transactions.push(transaction);
     }
-    return groups.sort((a: TransactionsGroup, b: TransactionsGroup) => (
-      b.date.valueOf() - a.date.valueOf()
-    ));
+    return groups.sort(
+      (a: TransactionsGroup, b: TransactionsGroup) =>
+        b.date.valueOf() - a.date.valueOf()
+    );
   }
 
   isSpinnerVisible() {
     const spinner = this.loadingSpinner;
     if (spinner == null || spinner.root == null) return false;
     const spinnerRect = spinner.root.getBoundingClientRect();
-    const clientHeight = document.documentElement ? document.documentElement.clientHeight : 0;
+    const clientHeight = document.documentElement
+      ? document.documentElement.clientHeight
+      : 0;
     const windowHeight = window.innerHeight;
     const viewHeight = Math.max(clientHeight, windowHeight);
     return !(spinnerRect.bottom < 0 || spinnerRect.top - viewHeight >= 0);
@@ -121,24 +127,27 @@ export default class WalletTransactionsList extends Component<Props> {
     const today = moment().format(DATE_FORMAT);
     if (date === today) return intl.formatMessage(messages.today);
     // YESTERDAY
-    const yesterday = moment().subtract(1, 'days').format(DATE_FORMAT);
+    const yesterday = moment()
+      .subtract(1, 'days')
+      .format(DATE_FORMAT);
     if (date === yesterday) return intl.formatMessage(messages.yesterday);
     // PAST DATE
     return moment(date).format(this.localizedDateFormat);
   }
 
-  isTxExpanded = (tx: WalletTransaction) => has(this.expandedTransactions, tx.id);
+  isTxExpanded = (tx: WalletTransaction) =>
+    has(this.expandedTransactions, tx.id);
 
   registerTxAsExpanded = (tx: WalletTransaction) => {
     this.expandedTransactions = {
       ...this.expandedTransactions,
-      ...set({}, tx.id, tx)
+      ...set({}, tx.id, tx),
     };
   };
 
   removeTxFromExpanded = (tx: WalletTransaction) => {
     this.expandedTransactions = {
-      ...omit(this.expandedTransactions, tx.id)
+      ...omit(this.expandedTransactions, tx.id),
     };
   };
 
@@ -162,12 +171,11 @@ export default class WalletTransactionsList extends Component<Props> {
     }
   };
 
-  getExpandedTransactions = (): Array<any> => Object.values(this.expandedTransactions);
+  getExpandedTransactions = (): Array<any> =>
+    Object.values(this.expandedTransactions);
 
   renderGroup = (data: TransactionsGroup): Node => (
-    <div className={styles.groupDate}>
-      {this.localizedDate(data.date)}
-    </div>
+    <div className={styles.groupDate}>{this.localizedDate(data.date)}</div>
   );
 
   renderTransaction = (data: TransactionInfo): Node => {
@@ -226,9 +234,14 @@ export default class WalletTransactionsList extends Component<Props> {
     const { intl } = this.context;
     const transactionsGroups = this.groupTransactionsByDay(transactions);
 
-    const loadingSpinner = (isLoadingTransactions || hasMoreToLoad) && !isRestoreActive ? (
-      <LoadingSpinner ref={(component) => { this.loadingSpinner = component; }} />
-    ) : null;
+    const loadingSpinner =
+      (isLoadingTransactions || hasMoreToLoad) && !isRestoreActive ? (
+        <LoadingSpinner
+          ref={component => {
+            this.loadingSpinner = component;
+          }}
+        />
+      ) : null;
 
     const syncingTransactionsSpinner = isRestoreActive ? (
       <div className={styles.syncingTransactionsWrapper}>
@@ -246,18 +259,21 @@ export default class WalletTransactionsList extends Component<Props> {
 
     // Generate flat list with dates in-between
     const rows: Row[] = [];
-    transactionsGroups.forEach((group) => {
+    transactionsGroups.forEach(group => {
       // First push the group into the list
       rows.push(group);
       // Followed by all transactions the tx in the group
       group.transactions.forEach((transaction, transactionIndex) => {
-        const isFirstInGroup = (transactionIndex === 0);
-        const isLastInGroup = (group.transactions.length === (transactionIndex + 1));
-        rows.push(new TransactionInfo({
-          tx: transaction,
-          isLastInGroup,
-          isFirstInGroup
-        }));
+        const isFirstInGroup = transactionIndex === 0;
+        const isLastInGroup =
+          group.transactions.length === transactionIndex + 1;
+        rows.push(
+          new TransactionInfo({
+            tx: transaction,
+            isLastInGroup,
+            isFirstInGroup,
+          })
+        );
       });
     });
 
@@ -276,7 +292,7 @@ export default class WalletTransactionsList extends Component<Props> {
         {isRenderingAsVirtualList ? (
           <VirtualTransactionList
             getExpandedTransactions={this.getExpandedTransactions}
-            ref={(list) => this.virtualList = list}
+            ref={list => (this.virtualList = list)}
             renderRow={this.renderItem}
             rows={rows}
             isLoadingSpinnerShown={loadingSpinner !== null}
@@ -284,7 +300,7 @@ export default class WalletTransactionsList extends Component<Props> {
           />
         ) : (
           <SimpleTransactionList
-            ref={(list) => this.simpleList = list}
+            ref={list => (this.simpleList = list)}
             renderRow={this.renderItem}
             rows={rows}
           />

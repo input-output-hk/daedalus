@@ -14,12 +14,12 @@ const messages = defineMessages({
   headline: {
     id: 'wallet.redeem.success.overlay.headline',
     defaultMessage: '!!!You have successfully redeemed',
-    description: 'Headline for the ada redemption success overlay.'
+    description: 'Headline for the ada redemption success overlay.',
   },
   confirmButton: {
     id: 'wallet.redeem.success.overlay.confirmButton',
     defaultMessage: '!!!Great',
-    description: 'Confirm button text'
+    description: 'Confirm button text',
   },
 });
 
@@ -30,9 +30,8 @@ type Props = {
 
 @observer
 export default class AdaRedemptionSuccessOverlay extends Component<Props> {
-
   static contextTypes = {
-    intl: intlShape.isRequired
+    intl: intlShape.isRequired,
   };
 
   render() {
@@ -43,8 +42,12 @@ export default class AdaRedemptionSuccessOverlay extends Component<Props> {
       <div className={styles.component}>
         <SVGInline svg={successIcon} className={styles.icon} />
         <div className={styles.text}>
-          <h1 className={styles.headline}>{intl.formatMessage(messages.headline)}</h1>
-          <div className={styles.amount}>{amount} <span>&#8371;</span></div>
+          <h1 className={styles.headline}>
+            {intl.formatMessage(messages.headline)}
+          </h1>
+          <div className={styles.amount}>
+            {amount} <span>&#8371;</span>
+          </div>
           <Button
             className={styles.confirmButton}
             label={intl.formatMessage(messages.confirmButton)}
@@ -56,5 +59,4 @@ export default class AdaRedemptionSuccessOverlay extends Component<Props> {
       </div>
     );
   }
-
 }

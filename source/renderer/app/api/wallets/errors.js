@@ -5,17 +5,21 @@ const messages = defineMessages({
   walletAlreadyRestoredError: {
     id: 'api.errors.WalletAlreadyRestoredError',
     defaultMessage: '!!!Wallet you are trying to restore already exists.',
-    description: '"Wallet you are trying to restore already exists." error message.'
+    description:
+      '"Wallet you are trying to restore already exists." error message.',
   },
   walletAlreadyImportedError: {
     id: 'api.errors.WalletAlreadyImportedError',
     defaultMessage: '!!!Wallet you are trying to import already exists.',
-    description: '"Wallet you are trying to import already exists." error message.'
+    description:
+      '"Wallet you are trying to import already exists." error message.',
   },
   walletFileImportError: {
     id: 'api.errors.WalletFileImportError',
-    defaultMessage: '!!!Wallet could not be imported, please make sure you are providing a correct file.',
-    description: '"Wallet could not be imported, please make sure you are providing a correct file." error message.'
+    defaultMessage:
+      '!!!Wallet could not be imported, please make sure you are providing a correct file.',
+    description:
+      '"Wallet could not be imported, please make sure you are providing a correct file." error message.',
   },
 });
 

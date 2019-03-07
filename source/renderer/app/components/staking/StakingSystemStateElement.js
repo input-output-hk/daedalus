@@ -18,5 +18,4 @@ export default class StakingSystemState extends Component<Props> {
       </div>
     );
   }
-
 }

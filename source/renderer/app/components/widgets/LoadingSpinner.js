@@ -11,7 +11,6 @@ type Props = {
 };
 
 export default class LoadingSpinner extends Component<Props> {
-
   static defaultProps = {
     big: false,
   };
@@ -28,7 +27,12 @@ export default class LoadingSpinner extends Component<Props> {
     ]);
 
     return (
-      <div className={componentClasses} ref={(div) => { this.root = div; }}>
+      <div
+        className={componentClasses}
+        ref={div => {
+          this.root = div;
+        }}
+      >
         <SVGInline svg={icon} className={styles.icon} />
       </div>
     );

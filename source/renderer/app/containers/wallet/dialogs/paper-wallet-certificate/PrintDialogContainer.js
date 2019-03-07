@@ -6,9 +6,15 @@ import type { InjectedDialogContainerProps } from '../../../../types/injectedPro
 
 type Props = InjectedDialogContainerProps;
 
-@inject('actions') @observer
+@inject('actions')
+@observer
 export default class PrintDialogContainer extends Component<Props> {
-  static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
+  static defaultProps = {
+    actions: null,
+    stores: null,
+    children: null,
+    onClose: () => {},
+  };
 
   onContinue = () => {
     this.props.actions.wallets.updateCertificateStep.trigger();
@@ -16,10 +22,7 @@ export default class PrintDialogContainer extends Component<Props> {
 
   render() {
     return (
-      <PrintDialog
-        onContinue={this.onContinue}
-        onClose={this.props.onClose}
-      />
+      <PrintDialog onContinue={this.onContinue} onClose={this.props.onClose} />
     );
   }
 }

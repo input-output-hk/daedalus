@@ -6,19 +6,27 @@ import type {
   TxnAssuranceLevel,
   TransactionState,
   TrasactionAddresses,
-  TransactionType
+  TransactionType,
 } from '../api/transactions/types';
 
 export const transactionStates: {
-  PENDING: TransactionState, FAILED: TransactionState, OK: TransactionState,
+  PENDING: TransactionState,
+  FAILED: TransactionState,
+  OK: TransactionState,
 } = {
-  PENDING: 'pending', FAILED: 'failed', OK: 'ok',
+  PENDING: 'pending',
+  FAILED: 'failed',
+  OK: 'ok',
 };
 
 export const TxnAssuranceLevelOptions: {
-  LOW: TxnAssuranceLevel, MEDIUM: TxnAssuranceLevel, HIGH: TxnAssuranceLevel,
+  LOW: TxnAssuranceLevel,
+  MEDIUM: TxnAssuranceLevel,
+  HIGH: TxnAssuranceLevel,
 } = {
-  LOW: 'low', MEDIUM: 'medium', HIGH: 'high',
+  LOW: 'low',
+  MEDIUM: 'medium',
+  HIGH: 'high',
 };
 
 export const transactionTypes: {
@@ -34,7 +42,6 @@ export const transactionTypes: {
 };
 
 export class WalletTransaction {
-
   @observable id: string = '';
   @observable type: TransactionType;
   @observable title: string = '';
@@ -68,5 +75,4 @@ export class WalletTransaction {
     }
     return TxnAssuranceLevelOptions.HIGH;
   }
-
 }

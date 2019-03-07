@@ -2,7 +2,6 @@
 import { observable } from 'mobx';
 
 export default class Profile {
-
   @observable name: string;
   @observable email: string;
   @observable phoneNumber: string;
@@ -16,9 +15,8 @@ export default class Profile {
     phoneNumber: string,
     passwordHash: string,
     passwordUpdateDate: Date,
-    languageLocale: string
+    languageLocale: string,
   }) {
     Object.assign(this, data);
   }
-
 }

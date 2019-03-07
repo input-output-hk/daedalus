@@ -8,7 +8,7 @@ export class TransactionsGroup {
 
   constructor(props: {
     date: moment.Moment,
-    transactions: WalletTransaction[]
+    transactions: WalletTransaction[],
   }) {
     Object.assign(this, props);
   }
@@ -20,9 +20,9 @@ export class TransactionInfo {
   isFirstInGroup: boolean;
 
   constructor(props: {
-    tx: WalletTransaction;
-    isLastInGroup: boolean;
-    isFirstInGroup: boolean;
+    tx: WalletTransaction,
+    isLastInGroup: boolean,
+    isFirstInGroup: boolean,
   }) {
     Object.assign(this, props);
   }

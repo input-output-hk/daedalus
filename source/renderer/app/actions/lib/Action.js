@@ -10,7 +10,6 @@ export type Listener<P> = (params: P) => any;
  * Action class with typed params
  */
 export default class Action<Params> {
-
   /**
    * Array of all defined actions in the system
    * @type {[Action]}

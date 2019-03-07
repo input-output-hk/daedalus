@@ -12,11 +12,8 @@ import BlockConsolidationStatus from '../../source/renderer/app/components/statu
 const currentEpoch = 95;
 
 storiesOf('BlockConsolidationStatus', module)
-
   .addDecorator((story, context) => (
-    <StoryDecorator>
-      {withKnobs(story, context)}
-    </StoryDecorator>
+    <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
   ))
 
   // ====== Stories ======
@@ -24,9 +21,19 @@ storiesOf('BlockConsolidationStatus', module)
   .add('Default', () => (
     <BlockConsolidationStatus
       onExternalLinkClick={() => {}}
-      epochsConsolidated={number('Epochs Consolidated', 57, { range: true, min: 0, max: currentEpoch - 2, step: 1, })}
+      epochsConsolidated={number('Epochs Consolidated', 57, {
+        range: true,
+        min: 0,
+        max: currentEpoch - 2,
+        step: 1,
+      })}
       currentEpoch={currentEpoch}
-      epochsSynced={number('Epochs Synced', 80, { range: true, min: 0, max: 100, step: 1, })}
+      epochsSynced={number('Epochs Synced', 80, {
+        range: true,
+        min: 0,
+        max: 100,
+        step: 1,
+      })}
       onClose={() => {}}
     />
   ));

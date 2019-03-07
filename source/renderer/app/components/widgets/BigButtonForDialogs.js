@@ -14,13 +14,19 @@ type Props = {
 };
 
 export default class BigButtonForDialogs extends Component<Props> {
-
   render() {
-    const { label, description, icon, onClick, isDisabled = false, className } = this.props;
+    const {
+      label,
+      description,
+      icon,
+      onClick,
+      isDisabled = false,
+      className,
+    } = this.props;
     const componentClasses = classnames([
       className,
       styles.component,
-      isDisabled ? styles.disabled : null
+      isDisabled ? styles.disabled : null,
     ]);
     return (
       <button

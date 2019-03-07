@@ -25,5 +25,5 @@ export type BugReportRequestPayload = {
     email: string,
     subject: string,
     problem: string,
-  }
+  },
 };

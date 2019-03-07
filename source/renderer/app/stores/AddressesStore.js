@@ -5,20 +5,25 @@ import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
 import Request from './lib/LocalizedRequest';
 import LocalizableError from '../i18n/LocalizableError';
-import type { Address, Addresses, GetAddressesResponse } from '../api/addresses/types';
+import type {
+  Address,
+  Addresses,
+  GetAddressesResponse,
+} from '../api/addresses/types';
 
 export default class AddressesStore extends Store {
-
   @observable lastGeneratedAddress: ?Address = null;
   @observable addressesRequests: Array<{
     walletId: string,
-    allRequest: CachedRequest<GetAddressesResponse>
+    allRequest: CachedRequest<GetAddressesResponse>,
   }> = [];
   @observable error: ?LocalizableError = null;
 
   // REQUESTS
   /* eslint-disable max-len */
-  @observable createAddressRequest: Request<Address> = new Request(this.api.ada.createAddress);
+  @observable createAddressRequest: Request<Address> = new Request(
+    this.api.ada.createAddress
+  );
   /* eslint-disable max-len */
 
   setup() {
@@ -27,13 +32,18 @@ export default class AddressesStore extends Store {
     actions.resetErrors.listen(this._resetErrors);
   }
 
-  _createAddress = async (params: { walletId: string, spendingPassword: ?string }) => {
+  _createAddress = async (params: {
+    walletId: string,
+    spendingPassword: ?string,
+  }) => {
     try {
       const { walletId, spendingPassword } = params;
       const accountIndex = await this.getAccountIndexByWalletId(walletId);
 
       const address: ?Address = await this.createAddressRequest.execute({
-        accountIndex, spendingPassword, walletId
+        accountIndex,
+        spendingPassword,
+        walletId,
       }).promise;
 
       if (address != null) {
@@ -44,7 +54,9 @@ export default class AddressesStore extends Store {
         });
       }
     } catch (error) {
-      runInAction('set error', () => { this.error = error; });
+      runInAction('set error', () => {
+        this.error = error;
+      });
     }
   };
 
@@ -102,10 +114,11 @@ export default class AddressesStore extends Store {
     return result ? result.addresses : [];
   };
 
-  _getAddressesAllRequest = (walletId: string): CachedRequest<GetAddressesResponse> => {
+  _getAddressesAllRequest = (
+    walletId: string
+  ): CachedRequest<GetAddressesResponse> => {
     const foundRequest = find(this.addressesRequests, { walletId });
     if (foundRequest && foundRequest.allRequest) return foundRequest.allRequest;
     return new CachedRequest(this.api.ada.getAddresses);
   };
-
 }

@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
@@ -13,18 +13,19 @@ const messages = defineMessages({
   change: {
     id: 'inline.editing.input.change.label',
     defaultMessage: '!!!change',
-    description: 'Label "change" on inline editing inputs in inactive state.'
+    description: 'Label "change" on inline editing inputs in inactive state.',
   },
   cancel: {
     id: 'inline.editing.input.cancel.label',
     defaultMessage: '!!!cancel',
-    description: 'Label "cancel" on inline editing inputs in inactive state.'
+    description: 'Label "cancel" on inline editing inputs in inactive state.',
   },
   changesSaved: {
     id: 'inline.editing.input.changesSaved',
     defaultMessage: '!!!Your changes have been saved',
-    description: 'Message "Your changes have been saved" for inline editing (eg. on Profile Settings page).'
-  }
+    description:
+      'Message "Your changes have been saved" for inline editing (eg. on Profile Settings page).',
+  },
 });
 
 type Props = {
@@ -47,7 +48,6 @@ type State = {
 
 @observer
 export default class InlineEditingInput extends Component<Props, State> {
-
   state = {
     isActive: false,
   };
@@ -56,28 +56,31 @@ export default class InlineEditingInput extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
-  validator = new ReactToolboxMobxForm({
-    fields: {
-      inputField: {
-        value: this.props.inputFieldValue,
-        validators: [({ field }) => (
-          [
-            this.props.isValid(field.value),
-            this.props.validationErrorMessage
-          ]
-        )],
-      }
-    }
-  }, {
-    options: {
-      validateOnChange: true,
-      validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
+  validator = new ReactToolboxMobxForm(
+    {
+      fields: {
+        inputField: {
+          value: this.props.inputFieldValue,
+          validators: [
+            ({ field }) => [
+              this.props.isValid(field.value),
+              this.props.validationErrorMessage,
+            ],
+          ],
+        },
+      },
     },
-  });
+    {
+      options: {
+        validateOnChange: true,
+        validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
+      },
+    }
+  );
 
   submit = () => {
     this.validator.submit({
-      onSuccess: (form) => {
+      onSuccess: form => {
         const { inputField } = form.values();
         if (inputField !== this.props.inputFieldValue) {
           this.props.onSubmit(inputField);
@@ -86,15 +89,17 @@ export default class InlineEditingInput extends Component<Props, State> {
           this.props.onCancelEditing();
         }
         this.setState({ isActive: false });
-      }
+      },
     });
   };
 
   handleInputKeyDown = (event: KeyboardEvent) => {
-    if (event.which === 13) { // ENTER key
+    if (event.which === 13) {
+      // ENTER key
       this.onBlur();
     }
-    if (event.which === 27) { // ESCAPE key
+    if (event.which === 27) {
+      // ESCAPE key
       this.onCancel();
     }
   };
@@ -132,7 +137,7 @@ export default class InlineEditingInput extends Component<Props, State> {
       inputFieldLabel,
       isActive,
       inputFieldValue,
-      successfullyUpdated
+      successfullyUpdated,
     } = this.props;
     const { intl } = this.context;
     const inputField = validator.$('inputField');
@@ -143,7 +148,7 @@ export default class InlineEditingInput extends Component<Props, State> {
     ]);
     const inputStyles = classnames([
       successfullyUpdated ? 'input_animateSuccess' : null,
-      isActive ? null : 'input_cursorPointer'
+      isActive ? null : 'input_cursorPointer',
     ]);
 
     return (
@@ -166,15 +171,14 @@ export default class InlineEditingInput extends Component<Props, State> {
           onKeyDown={event => this.handleInputKeyDown(event)}
           error={isActive ? inputField.error : null}
           disabled={!isActive}
-          ref={(input) => { this.inputField = input; }}
+          ref={input => {
+            this.inputField = input;
+          }}
           skin={InputSkin}
         />
 
         {isActive && (
-          <button
-            className={styles.button}
-            onMouseDown={this.onCancel}
-          >
+          <button className={styles.button} onMouseDown={this.onCancel}>
             {intl.formatMessage(messages.cancel)}
           </button>
         )}
@@ -184,9 +188,7 @@ export default class InlineEditingInput extends Component<Props, State> {
             {intl.formatMessage(messages.changesSaved)}
           </div>
         )}
-
       </div>
     );
   }
-
 }
