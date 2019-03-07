@@ -82,10 +82,7 @@ export default class WalletSummary extends Component<Props> {
                     messages.pendingIncomingConfirmationLabel
                   )}`}
                   : {pendingAmount.incoming.toFormat(DECIMAL_PLACES_IN_ADA)}
-                  <SVGInline
-                    svg={adaSymbolSmallest}
-                    className={styles.currencySymbolSmallest}
-                  />
+                  <SVGInline svg={adaSymbolSmallest} className={styles.currencySymbolSmallest} />
                 </div>
               )}
               {pendingAmount.outgoing.greaterThan(0) && (
@@ -94,10 +91,7 @@ export default class WalletSummary extends Component<Props> {
                     messages.pendingOutgoingConfirmationLabel
                   )}`}
                   : {pendingAmount.outgoing.toFormat(DECIMAL_PLACES_IN_ADA)}
-                  <SVGInline
-                    svg={adaSymbolSmallest}
-                    className={styles.currencySymbolSmallest}
-                  />
+                  <SVGInline svg={adaSymbolSmallest} className={styles.currencySymbolSmallest} />
                 </div>
               )}
             </div>

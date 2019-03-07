@@ -42,9 +42,7 @@ export default class AdaRedemptionSuccessOverlay extends Component<Props> {
       <div className={styles.component}>
         <SVGInline svg={successIcon} className={styles.icon} />
         <div className={styles.text}>
-          <h1 className={styles.headline}>
-            {intl.formatMessage(messages.headline)}
-          </h1>
+          <h1 className={styles.headline}>{intl.formatMessage(messages.headline)}</h1>
           <div className={styles.amount}>{amount} ADA</div>
           <Button
             className={styles.confirmButton}
