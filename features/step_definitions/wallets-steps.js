@@ -589,7 +589,7 @@ Then(/^the latest transaction should show:$/, async function(table) {
   // substract them in order to get a match with expectedData.amountWithoutFees.
   // NOTE: we use "add()" as this is outgoing transaction and amount is a negative value!
   const transactionAmount = new BigNumber(
-    transactionAmounts[0].split(' ').shift()
+    transactionAmounts[0]
   );
   const transactionAmountWithoutFees = transactionAmount
     .add(this.fees)
@@ -611,7 +611,7 @@ Then(
           receiverWallet.id
         } .SidebarWalletMenuItem_info`
       );
-      return receiverWalletBalance === `${expectedData.balance} ₳`;
+      return receiverWalletBalance === `${expectedData.balance} ADA`;
     }, 60000);
   }
 );
