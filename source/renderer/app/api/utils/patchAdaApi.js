@@ -8,8 +8,8 @@ import { Logger } from '../../utils/logging';
 import { RedeemAdaError } from '../transactions/errors';
 import type { RedeemAdaParams } from '../transactions/requests/redeemAda';
 import type { RedeemPaperVendedAdaParams } from '../transactions/requests/redeemPaperVendedAda';
-import type { NodeQueryParams } from '../nodes/requests/getNodeInfo';
-import type { NodeInfo, GetNetworkStatusResponse } from '../nodes/types';
+import type { NodeInfoQueryParams } from '../nodes/requests/getNodeInfo';
+import type { NodeInfoResponse, GetNetworkStatusResponse } from '../nodes/types';
 
 // ========== LOGGING =========
 
@@ -63,11 +63,11 @@ export default (api: AdaApi) => {
   );
 
   api.getNetworkStatus = async (
-    queryParams?: NodeQueryParams
+    queryInfoParams?: NodeInfoQueryParams
   ): Promise<GetNetworkStatusResponse> => {
     Logger.debug('AdaApi::getNetworkStatus (PATCHED) called');
     try {
-      const status: NodeInfo = await getNodeInfo(api.config, queryParams);
+      const status: NodeInfoResponse = await getNodeInfo(api.config, queryInfoParams);
       Logger.debug('AdaApi::getNetworkStatus (PATCHED) success', { status });
 
       const {

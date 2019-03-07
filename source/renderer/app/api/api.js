@@ -19,8 +19,10 @@ import { createAddress } from './addresses/requests/createAddress';
 // Nodes requests
 import { applyNodeUpdate } from './nodes/requests/applyNodeUpdate';
 import { getNodeInfo } from './nodes/requests/getNodeInfo';
+import { getNodeSettings } from './nodes/requests/getNodeSettings';
 import { getNextNodeUpdate } from './nodes/requests/getNextNodeUpdate';
 import { postponeNodeUpdate } from './nodes/requests/postponeNodeUpdate';
+
 
 // Transactions requests
 import { getTransactionFee } from './transactions/requests/getTransactionFee';
@@ -90,11 +92,12 @@ import type {
 
 // Nodes Types
 import type {
-  NodeInfo,
+  NodeInfoResponse,
+  NodeSettingsResponse,
   NodeSoftware,
   GetNetworkStatusResponse
 } from './nodes/types';
-import type { NodeQueryParams } from './nodes/requests/getNodeInfo';
+import type { NodeInfoQueryParams } from './nodes/requests/getNodeInfo';
 
 // Transactions Types
 import type { RedeemAdaParams } from './transactions/requests/redeemAda';
@@ -797,14 +800,17 @@ export default class AdaApi {
   };
 
   getNetworkStatus = async (
-    queryParams?: NodeQueryParams
+    queryInfoParams?: NodeInfoQueryParams
   ): Promise<GetNetworkStatusResponse> => {
-    const isForceNTPCheck = !!queryParams;
-    const loggerText = `AdaApi::getNetworkStatus${isForceNTPCheck ? ' (FORCE-NTP-CHECK)' : ''}`;
+    const isForceNTPCheck = !!queryInfoParams;
+    const loggerText = `AdaApi::getNetworkStatusInfo${isForceNTPCheck ? ' (FORCE-NTP-CHECK)' : ''}`;
     Logger.debug(`${loggerText} called`);
     try {
-      const status: NodeInfo = await getNodeInfo(this.config, queryParams);
-      Logger.debug(`${loggerText} success`, { status });
+      const nodeInfo: NodeInfoResponse = await getNodeInfo(this.config, queryInfoParams);
+      const nodeSettings: NodeSettingsResponse = await getNodeSettings(this.config);
+      console.log('settings', nodeSettings);
+      Logger.debug(`${loggerText} success`, { nodeInfo });
+      Logger.debug('AdaApi::getNetworkStatusSettings success', { nodeSettings });
 
       const {
         blockchainHeight,
@@ -812,7 +818,11 @@ export default class AdaApi {
         syncProgress,
         localBlockchainHeight,
         localTimeInformation,
-      } = status;
+      } = nodeInfo;
+
+      const {
+        slotId
+      } = nodeSettings;
 
       // extract relevant data before sending to NetworkStatusStore
       return {
@@ -824,6 +834,7 @@ export default class AdaApi {
           status: localTimeInformation.status,
           difference: get(localTimeInformation, 'localTimeDifference.quantity', null),
         },
+        slotId,
       };
     } catch (error) {
       Logger.error(`${loggerText} error`, { error });

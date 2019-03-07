@@ -31,7 +31,7 @@ import type {
   CardanoStatus,
   TlsConfig
 } from '../../../common/types/cardano-node.types';
-import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
+import type { NodeInfoQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { GetConsolidatedEpochsCountResponse } from '../../../common/ipc/api';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 
@@ -310,11 +310,11 @@ export default class NetworkStatusStore extends Store {
     this.currentEpoch = currentEpoch;
   };
 
-  @action _updateNetworkStatus = async (queryParams?: NodeQueryParams) => {
+  @action _updateNetworkStatus = async (queryInfoParams?: NodeInfoQueryParams) => {
     // In case we haven't received TLS config we shouldn't trigger any API calls
     if (!this._tlsConfig) return;
 
-    const isForcedTimeDifferenceCheck = !!queryParams;
+    const isForcedTimeDifferenceCheck = !!queryInfoParams;
 
     // Prevent network status requests in case there is an already executing
     // forced time difference check unless we are trying to run another
@@ -342,10 +342,11 @@ export default class NetworkStatusStore extends Store {
 
     try {
       const networkStatus: GetNetworkStatusResponse = isForcedTimeDifferenceCheck ? (
-        await this.forceCheckTimeDifferenceRequest.execute(queryParams).promise
+        await this.forceCheckTimeDifferenceRequest.execute(queryInfoParams).promise
       ) : (
         await this.getNetworkStatusRequest.execute().promise
       );
+      console.log('networkStatus', networkStatus);
 
       // In case we no longer have TLS config we ignore all API call responses
       // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
