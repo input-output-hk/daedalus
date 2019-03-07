@@ -4,10 +4,10 @@ import path from 'path';
 import PDFDocument from 'pdfkit';
 import qr from 'qr-image';
 import { MainIpcChannel } from './lib/MainIpcChannel';
-import { GeneratePaperWalletChannelName } from '../../common/ipc/api';
+import { GENERATE_PAPER_WALLET_CHANNEL } from '../../common/ipc/api';
 import type {
-  GeneratePaperWalletMainResponse,
-  GeneratePaperWalletRendererRequest
+  GeneratePaperWalletResponse,
+  GeneratePaperWalletRequest
 } from '../../common/ipc/api';
 import paperWalletFontPath from '../../common/assets/pdf/paper-wallet-certificate-font.ttf';
 import paperWalletPage1Path from '../../common/assets/pdf/paper-wallet-certificate-page-1.png';
@@ -18,13 +18,13 @@ import paperWalletCertificateBgPath from '../../common/assets/pdf/paper-wallet-c
 
 export const generatePaperWalletChannel: (
   // IpcChannel<Incoming, Outgoing>
-  MainIpcChannel<GeneratePaperWalletRendererRequest, GeneratePaperWalletMainResponse>
+  MainIpcChannel<GeneratePaperWalletRequest, GeneratePaperWalletResponse>
 ) = (
-  new MainIpcChannel(GeneratePaperWalletChannelName)
+  new MainIpcChannel(GENERATE_PAPER_WALLET_CHANNEL)
 );
 
 export const handlePaperWalletRequests = () => {
-  generatePaperWalletChannel.onReceive((request: GeneratePaperWalletRendererRequest) => (
+  generatePaperWalletChannel.onReceive((request: GeneratePaperWalletRequest) => (
     new Promise((resolve, reject) => {
       // Prepare params
       const { address, mnemonics, buildLabel, filePath, isMainnet, messages } = request;

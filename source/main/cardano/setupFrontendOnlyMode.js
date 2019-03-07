@@ -6,8 +6,9 @@ import {
   cardanoFaultInjectionChannel,
   cardanoRestartChannel,
   cardanoStateChangeChannel,
-  cardanoStatusChannel,
-  cardanoTlsConfigChannel
+  getCachedCardanoStatusChannel,
+  cardanoTlsConfigChannel,
+  setCachedCardanoStatusChannel
 } from '../ipc/cardano.ipc';
 import { Logger } from '../utils/logging';
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
@@ -32,14 +33,14 @@ export const setupFrontendOnlyMode = (mainWindow: BrowserWindow) => {
     port: cardanoPort,
   };
 
-  cardanoStatusChannel.onRequest(() => {
+  getCachedCardanoStatusChannel.onRequest(() => {
     Logger.info('ipcMain: Received request from renderer for cardano status');
     return Promise.resolve(null);
   });
 
-  cardanoStatusChannel.onReceive((status: CardanoStatus) => {
+  setCachedCardanoStatusChannel.onReceive((status: ?CardanoStatus) => {
     Logger.info('ipcMain: Received request from renderer to cache cardano status', { status });
-    return Promise.resolve(status);
+    return Promise.resolve();
   });
 
   cardanoStateChangeChannel.onRequest(() => {
