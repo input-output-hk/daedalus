@@ -59,7 +59,9 @@
       height: 10px;
       width: 9px;
       & > g > g {
-        stroke: var(--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color);
+        stroke: var(
+          --theme-icon-ada-summary-wallet-pending-confirmation-symbol-color
+        );
       }
     }
   }

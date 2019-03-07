@@ -589,28 +589,43 @@ Then(/^the latest transaction should show:$/, async function(table) {
   // substract them in order to get a match with expectedData.amountWithoutFees.
   // NOTE: we use "add()" as this is outgoing transaction and amount is a negative value!
   const transactionAmount = new BigNumber(transactionAmounts[0]);
-  const transactionAmountWithoutFees = transactionAmount.add(this.fees).toFormat(DECIMAL_PLACES_IN_ADA);
+  const transactionAmountWithoutFees = transactionAmount
+    .add(this.fees)
+    .toFormat(DECIMAL_PLACES_IN_ADA);
   expect(expectedData.amountWithoutFees).to.equal(transactionAmountWithoutFees);
 });
 
 // Extended timeout is used for this step as it takes more than DEFAULT_TIMEOUT
 // for the receiver wallet's balance to be updated on the backend after creating transactions
-Then(/^the balance of "([^"]*)" wallet should be:$/, { timeout: 60000 }, async function (walletName, table) {
-  const expectedData = table.hashes()[0];
-  const receiverWallet = getWalletByName.call(this, walletName);
-  return this.client.waitUntil(async () => {
-    const receiverWalletBalance = await this.client.getText(`.SidebarWalletsMenu_wallets .Wallet_${receiverWallet.id} .SidebarWalletMenuItem_info`);
-    return receiverWalletBalance === `${expectedData.balance} ADA`;
-  }, 60000);
-});
+Then(
+  /^the balance of "([^"]*)" wallet should be:$/,
+  { timeout: 60000 },
+  async function(walletName, table) {
+    const expectedData = table.hashes()[0];
+    const receiverWallet = getWalletByName.call(this, walletName);
+    return this.client.waitUntil(async () => {
+      const receiverWalletBalance = await this.client.getText(
+        `.SidebarWalletsMenu_wallets .Wallet_${
+          receiverWallet.id
+        } .SidebarWalletMenuItem_info`
+      );
+      return receiverWalletBalance === `${expectedData.balance} ADA`;
+    }, 60000);
+  }
+);
 
-Then(/^I should see newly generated address as active address on the wallet receive screen$/, async function () {
-  return this.client.waitUntil(async () => {
-    const activeAddress = await this.client.getText('.WalletReceive_hash');
-    const generatedAddress = await this.client.getText('.generatedAddress-1 .Address_addressId');
-    return generatedAddress === activeAddress;
-  });
-});
+Then(
+  /^I should see newly generated address as active address on the wallet receive screen$/,
+  async function() {
+    return this.client.waitUntil(async () => {
+      const activeAddress = await this.client.getText('.WalletReceive_hash');
+      const generatedAddress = await this.client.getText(
+        '.generatedAddress-1 .Address_addressId'
+      );
+      return generatedAddress === activeAddress;
+    });
+  }
+);
 
 Then(/^I should see the wallets in the following order:$/, async function(
   table
