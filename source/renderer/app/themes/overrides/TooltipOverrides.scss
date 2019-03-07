@@ -21,6 +21,7 @@ $bubble-bg-color: red !important;
     }
   }
   .bubble {
+    opacity: .9;
     > div {
       background-color: var(--theme-loading-status-icons-tooltip-color) !important;
       transform: translateX(-45%);
