@@ -4,21 +4,37 @@ $tooltip-bg-color: red !important;
 $bubble-bg-color: red !important;
 
 .root {
-  b {
-    font-weight: bold;
+  display: flex;
+  margin-right: 12px;
+  &:last-child {
+    margin-right: 0;
   }
-}
-
-:global {
-  .tooltipEllipsis .SimpleBubble_bubble {
-    padding-right: 20px;
-    @include animated-ellipsis($width: 16px);
+  &.disabled:hover {
+    .bubble {
+      display: none;
+    }
   }
-  .tooltipDisabled {
-    &:hover {
-      .SimpleBubble_bubble {
-        display: none !important;
+  &.ellipsis {
+    .bubble > div {
+      padding-right: 20px;
+      @include animated-ellipsis($width: 16px);
+    }
+  }
+  .bubble {
+    > div {
+      background-color: var(--theme-loading-status-icons-tooltip-color) !important;
+      transform: translateX(-45%);
+      margin-left: 10px;
+      border-radius: 5px;
+      padding-bottom: 7px;
+    }
+    span {
+      &:before, &:after {
+        border-top-color: var(--theme-loading-status-icons-tooltip-color) !important;
       }
     }
+  }
+  b {
+    font-weight: bold;
   }
 }

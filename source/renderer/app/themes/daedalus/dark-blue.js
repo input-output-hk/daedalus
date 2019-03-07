@@ -434,7 +434,7 @@ export default {
   '--theme-loading-status-icons-off-color': '#ea4c5b',
   '--theme-loading-status-icons-unloaded-loading-color': '#fafbfc',
   '--theme-loading-status-icons-unloaded-syncing-color': '#fafbfc',
-  '--theme-loading-status-icons-tooltip-color': '#062148',
+  '--theme-loading-status-icons-tooltip-color': 'rgba(83, 99, 112, .9)',
 
   '--theme-mnemonic-background-color': 'rgba(83, 99, 112, 0.3)',
   '--theme-mnemonic-background-color-hover': 'rgba(102, 122, 138, 0.3)',

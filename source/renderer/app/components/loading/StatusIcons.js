@@ -5,6 +5,7 @@ import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import classNames from 'classnames';
 import styles from './StatusIcons.scss';
+import tooltipStyles from '../../themes/overrides/TooltipOverrides.scss';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import nodeStateIcon from '../../assets/images/node-state-icon.inline.svg';
 import isNodeRespondingIcon from '../../assets/images/is-node-responding-icon.inline.svg';
@@ -70,6 +71,7 @@ export default class StatusIcon extends Component<Props> {
       status = 'unknown';
     }
     return classNames([
+      styles.icon,
       styles[`icon-${status}`],
       isNodeSyncing ? styles.syncing : styles.loading,
     ]);
@@ -77,32 +79,26 @@ export default class StatusIcon extends Component<Props> {
 
   getTooltipClassname = (paramName: string) => {
     const paramValue = this.props[paramName];
-    if (typeof paramValue === 'undefined') {
-      return 'tooltipEllipsis';
-    }
-    if (this.isDisabled(paramName)) {
-      return 'tooltipDisabled';
-    }
+    return classNames([
+      styles.tooltip,
+      typeof paramValue === 'undefined' ? tooltipStyles.ellipsis : null,
+      this.isDisabled(paramName) ? tooltipStyles.disabled : null,
+    ]);
   }
 
   isDisabled = (paramName: string) => (
     paramName !== 'nodeState' && this.props.nodeState !== CardanoNodeStates.RUNNING
   );
 
-  getIconWithToolTip = (icon: string, paramName: string) => {
-    if (this.isDisabled(paramName)) {
-      return (<SVGInline svg={icon} className={this.getClassName(paramName)} />);
-    }
-    return (
-      <Tooltip
-        skin={TooltipSkin}
-        tip={this.getTip(paramName)}
-        className={this.getTooltipClassname(paramName)}
-      >
-        <SVGInline svg={icon} className={this.getClassName(paramName)} />
-      </Tooltip>
-    );
-  }
+  getIconWithToolTip = (icon: string, paramName: string) => (
+    <Tooltip
+      skin={TooltipSkin}
+      tip={this.getTip(paramName)}
+      className={this.getTooltipClassname(paramName)}
+    >
+      <SVGInline svg={icon} className={this.getClassName(paramName)} />
+    </Tooltip>
+  );
 
   render() {
     return (
