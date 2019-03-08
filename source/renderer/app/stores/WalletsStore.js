@@ -29,7 +29,7 @@ export default class WalletsStore extends Store {
   @observable isRestoreActive: boolean = false;
   @observable restoringWalletId: ?string = null;
   @observable walletsRequest: Request<Array<Wallet>> = new Request(this.api.ada.getWallets);
-  @observable importFromFileRequest: Request<Wallet> = new Request(this.api.ada.importWalletFromFile);
+  @observable importFromKeyRequest: Request<Wallet> = new Request(this.api.ada.importWalletFromKey);
   @observable createWalletRequest: Request<Wallet> = new Request(this.api.ada.createWallet);
   @observable getWalletAddressesRequest: Request<any> = new Request(this.api.ada.getAddresses);
   @observable deleteWalletRequest: Request<boolean> = new Request(this.api.ada.deleteWallet);
@@ -290,9 +290,6 @@ export default class WalletsStore extends Store {
     mnemonic: string,
   ) => this.api.ada.isValidCertificateMnemonic(mnemonic);
 
-  // TODO - call endpoint to check if private key is valid
-  isValidPrivateKey = () => { return true; }; // eslint-disable-line
-
   @action refreshWalletsData = async () => {
     // Prevent wallets data refresh if polling is blocked
     if (this._pollingBlocked) return;
@@ -381,14 +378,14 @@ export default class WalletsStore extends Store {
   };
 
   @action _importWalletFromFile = async (params: WalletImportFromFileParams) => {
-    const { filePath, walletName, spendingPassword } = params;
-    const importedWallet = await this.importFromFileRequest.execute({
-      filePath, walletName, spendingPassword,
+    const { filePath, spendingPassword } = params;
+    const importedWallet = await this.importFromKeyRequest.execute({
+      filePath, spendingPassword,
     }).promise;
     if (!importedWallet) throw new Error('Imported wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(importedWallet);
     this.actions.dialogs.closeActiveDialog.trigger();
-    this.importFromFileRequest.reset();
+    this.importFromKeyRequest.reset();
     this.goToWalletRoute(importedWallet.id);
     this.refreshWalletsData();
   };

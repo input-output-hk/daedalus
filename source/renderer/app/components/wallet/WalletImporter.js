@@ -179,8 +179,8 @@ export default class WalletImporter extends Component<Props, State> {
       const x = [];
       for (let idx = 0; idx < wallets.length; idx++) {
         const wallet = wallets[idx];
-        const fileName = `wallet-${idx}.key`;
         const { password, balance } = wallet;
+        const fileName = `wallet-${idx}.key${password !== '' ? '.locked' : ''}`;
         x.push(
           <div className={styles.walletRow}>
             <Input

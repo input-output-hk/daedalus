@@ -1,6 +1,5 @@
 @import '../../../themes/mixins/loading-spinner';
 @import '../../../themes/mixins/error-message';
-@import '../../../themes/mixins/place-form-field-error-below-input';
 
 .component {
   :global {
@@ -10,59 +9,11 @@
   }
 }
 
-.spendingPassword {
-  .spendingPasswordSwitch {
-    border-top: 1px solid var(--theme-separation-border-color);
-    margin-top: 30px;
-    padding-top: 20px;
-
-    & > .passwordLabel {
-      color: var(--theme-wallet-password-switch-label-color);
-      font-family: var(--font-semibold);
-      font-size: 16px;
-      line-height: 1.38;
-      margin-bottom: 10px;
-    }
-
-    :global {
-      .SimpleSwitch_root {
-        margin-bottom: 0;
-      }
-    }
-  }
-
-  .spendingPasswordFields {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    transition: all 400ms ease;
-
-    &.show {
-      max-height: 250px;
-      opacity: 1;
-      overflow: visible;
-    }
-
-    & > div {
-      width: 100%;
-    }
-
-    @include place-form-field-error-below-input;
-
-    .passwordInstructions {
-      color: var(--theme-instructions-text-color);
-      font-family: var(--font-light);
-      line-height: 1.38;
-      margin-top: 16px;
-      opacity: 0.5;
-    }
-  }
+.fileUpload {
+  margin-bottom: 20px;
 }
 
-.fileUpload {
+.spendingPassword {
   margin-bottom: 20px;
 }
 
