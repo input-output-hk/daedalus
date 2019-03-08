@@ -119,8 +119,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Your ADA could not be redeemed correctly.",
-        "description": "\"Your ADA could not be redeemed correctly.\" error message.",
+        "defaultMessage": "!!!Your ADA could not be redeemed correctly. Please check your Redemption key.",
+        "description": "\"Your ADA could not be redeemed correctly. Please check your Redemption key.\" error message.",
         "end": {
           "column": 3,
           "line": 24
@@ -133,8 +133,8 @@
         }
       },
       {
-        "defaultMessage": "!!!The redemption address was already used.",
-        "description": "\"The redemption address was already used.\" error message.",
+        "defaultMessage": "!!!Your ADA could not be redeemed correctly. The redemption key was already used.",
+        "description": "\"Your ADA could not be redeemed correctly. The redemption key was already used.\" error message.",
         "end": {
           "column": 3,
           "line": 29
@@ -4277,13 +4277,13 @@
         "description": "Headline of the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.headline",
         "start": {
           "column": 12,
-          "line": 22
+          "line": 20
         }
       },
       {
@@ -4291,13 +4291,13 @@
         "description": "Detailed instructions for importing wallets.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.instructions",
         "start": {
           "column": 16,
-          "line": 27
+          "line": 25
         }
       },
       {
@@ -4305,13 +4305,13 @@
         "description": "Label \"Secrets key file\" on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 34
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.keyFileLabel",
         "start": {
           "column": 16,
-          "line": 32
+          "line": 30
         }
       },
       {
@@ -4319,13 +4319,13 @@
         "description": "Hint for the secrets key file upload field on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 39
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.keyFileHint",
         "start": {
           "column": 15,
-          "line": 37
+          "line": 35
         }
       },
       {
@@ -4333,13 +4333,13 @@
         "description": "Label \"Passwords list\" on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 44
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.passwordsListLabel",
         "start": {
           "column": 22,
-          "line": 42
+          "line": 40
         }
       },
       {
@@ -4347,13 +4347,13 @@
         "description": "Hint for the passwords list field on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.passwordsListHint",
         "start": {
           "column": 21,
-          "line": 47
+          "line": 45
         }
       },
       {
@@ -4361,13 +4361,13 @@
         "description": "Label for the \"Wallet password\" input in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 54
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.restore.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 52
+          "line": 50
         }
       },
       {
@@ -4375,13 +4375,13 @@
         "description": "Placeholder for the \"Password\" inputs in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 59
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.restore.dialog.passwordFieldPlaceholder",
         "start": {
           "column": 28,
-          "line": 57
+          "line": 55
         }
       }
     ],

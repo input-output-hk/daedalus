@@ -19,13 +19,13 @@ const messages = defineMessages({
   },
   redeemAdaError: {
     id: 'api.errors.RedeemAdaError',
-    defaultMessage: '!!!Your ADA could not be redeemed correctly.',
-    description: '"Your ADA could not be redeemed correctly." error message.'
+    defaultMessage: '!!!Your ADA could not be redeemed correctly. Please check your Redemption key.',
+    description: '"Your ADA could not be redeemed correctly. Please check your Redemption key." error message.'
   },
   redemptionAddressAlreadyUsed: {
     id: 'api.errors.RedemptionAddressAlreadyUsed',
-    defaultMessage: '!!!The redemption address was already used.',
-    description: '"The redemption address was already used." error message.'
+    defaultMessage: '!!!Your ADA could not be redeemed correctly. The redemption key was already used.',
+    description: '"Your ADA could not be redeemed correctly. The redemption key was already used." error message.'
   },
   allFundsAlreadyAtReceiverAddressError: {
     id: 'api.errors.AllFundsAlreadyAtReceiverAddressError',
