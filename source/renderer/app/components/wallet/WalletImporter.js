@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import { Input } from 'react-polymorph/lib/components/Input';
 import { TextArea } from 'react-polymorph/lib/components/TextArea';
 import { TextAreaSkin } from 'react-polymorph/lib/skins/simple/TextAreaSkin';
 import BorderedBox from '../widgets/BorderedBox';
@@ -9,6 +10,13 @@ import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import FileUploadWidget from '../widgets/forms/FileUploadWidget';
 import styles from './WalletImporter.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
+import { submitOnEnter } from '../../utils/form';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { encryptPassphrase } from '../../api/utils';
+import { scryptSync } from 'crypto';
+import scrypt from 'scryptsy';
+
+import cbor from 'cbor';
 
 export const messages = defineMessages({
   headline: {
@@ -41,6 +49,16 @@ export const messages = defineMessages({
     defaultMessage: '!!!Enter your potential wallet passwords line by line',
     description: 'Hint for the passwords list field on the wallet importer page.'
   },
+  spendingPasswordLabel: {
+    id: 'wallet.restore.dialog.spendingPasswordLabel',
+    defaultMessage: '!!!Enter password',
+    description: 'Label for the "Wallet password" input in the wallet restore dialog.',
+  },
+  passwordFieldPlaceholder: {
+    id: 'wallet.restore.dialog.passwordFieldPlaceholder',
+    defaultMessage: '!!!Password',
+    description: 'Placeholder for the "Password" inputs in the wallet restore dialog.',
+  },
 });
 
 type Props = {};
@@ -64,6 +82,18 @@ export default class WalletImporter extends Component<Props> {
         placeholder: this.context.intl.formatMessage(messages.passwordsListHint),
         value: '',
       },
+      walletHashes: {
+        value: [],
+      },
+      confirmedPasswordHashes: {
+        value: [],
+      },
+      spendingPassword: {
+        type: 'password',
+        label: this.context.intl.formatMessage(messages.spendingPasswordLabel),
+        placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
+        value: '',
+      },
     },
   }, {
     options: {
@@ -72,11 +102,86 @@ export default class WalletImporter extends Component<Props> {
     },
   });
 
+  submit() {
+    const { form } = this;
+    const walletHashesField = form.$('walletHashes');
+    const spendingPasswordField = form.$('spendingPassword');
+    console.log(spendingPasswordField.value);
+    this.testPassword(spendingPasswordField.value);
+  }
+
+  checkPassword(passphraseHash, passhash) {
+    var bits = passphraseHash.split("|");
+    var logN = parseInt(bits[0]);
+    var r = parseInt(bits[1]);
+    var p = parseInt(bits[2]);
+    var salt = Buffer.from(bits[3],"base64");
+    var realhash = Buffer.from(bits[4],"base64");
+
+    // from nodejs native crypto (which is missing in renderer proc)
+    // var hash2 = scryptSync(cbor.encode(passhash), salt, 32, { N: 2 ** logN, r: r, p: p });
+    // try the scryptsy from npm (works, but worse performance)
+    var hash2 = scrypt(cbor.encode(passhash), salt, 2 ** logN, r, p, 32);
+    return realhash.equals(hash2);
+  }
+
+  testPassword(password) {
+    const { form } = this;
+    const walletHashesField = form.$('walletHashes');
+    const confirmedPasswordHashesField = form.$('confirmedPasswordHashes');
+
+    var testpasshash = null;
+    if (password == "") testpasshash = Buffer.from([]);
+    else testpasshash = Buffer.from(encryptPassphrase(password),"hex");
+
+    for (var idx=0; idx < walletHashesField.value.length; idx++) {
+      var match = this.checkPassword(walletHashesField.value[idx].pwhash, testpasshash);
+      if (match) {
+        console.log("wallet idx",idx,"has password", password);
+        var oldhashes = confirmedPasswordHashesField.value;
+        oldhashes[idx] = testpasshash.toString("hex");
+        confirmedPasswordHashesField.set(oldhashes);
+      }
+    }
+  }
+  extractKey(idx) {
+    const { form } = this;
+    const walletHashesField = form.$('walletHashes');
+    const input = walletHashesField.value[idx];
+    // the WalletUserSecret
+    var wus = [];
+    wus[0] = input.raw;
+    wus[1] = "extracted key#" + idx;
+    wus[2] = []; // accounts
+    wus[3] = []; // addresses
+    // the UserSecret
+    var newSecrets = cbor.encode([ [], [], [], [ wus ] ]);
+    return newSecrets;
+  }
+
   render() {
     const { intl } = this.context;
     const { form } = this;
     const keyFileField = form.$('keyFile');
     const passwordsField = form.$('passwords');
+    const walletHashesField = form.$('walletHashes');
+    const spendingPasswordField = form.$('spendingPassword');
+    const confirmedPasswordHashesField = form.$('confirmedPasswordHashes');
+
+    function generateWalletList() {
+      const knownHashes = confirmedPasswordHashesField.value;
+      var x = <div>null dom element</div>;
+      for (var idx=0; idx < knownHashes.length; idx++) {
+        x += <div>wallet#{idx}</div>;
+        if (knownHashes[idx] == null) {
+          console.log("wallet#"+idx+" has unknown pw");
+        } else {
+          console.log("wallet#"+idx+" has pw hash "+knownHashes[idx]);
+          console.log(this.extractKey(idx));
+        }
+      }
+      return x;
+    }
 
     return (
       <div className={styles.component}>
@@ -87,6 +192,7 @@ export default class WalletImporter extends Component<Props> {
 
           <div className={styles.instructions}>
             <p>{intl.formatMessage(messages.instructions)}</p>
+            <b>{keyFileField.value.path}</b>
           </div>
 
           <div className={styles.fileUpload}>
@@ -97,19 +203,43 @@ export default class WalletImporter extends Component<Props> {
               onFileSelected={(file) => {
                 // "set(value)" is an unbound method and thus must be explicitly called
                 keyFileField.set(file);
+                // from https://react-dropzone.netlify.com/
+                const reader = new FileReader();
+                reader.onabort = () => console.log('file reading was aborted');
+                reader.onerror = () => console.log('file reading has failed');
+                reader.onload = () => {
+                  const binaryStr = Buffer.from(reader.result);
+                  var decodedSecrets = cbor.decode(binaryStr);
+                  var keys = decodedSecrets[2];
+                  var walletHashes = [];
+                  var pwhashes = [];
+                  for (var x=0; x < keys.length; x++) {
+                    walletHashes[x] = { raw: keys[x], pwhash: keys[x][1].toString("ascii") };
+                    pwhashes[x] = null;
+                  };
+                  walletHashesField.set(walletHashes);
+                  confirmedPasswordHashesField.set(pwhashes);
+                  this.testPassword("");
+                }
+                reader.readAsArrayBuffer(file);
               }}
             />
           </div>
 
+          {walletHashesField.value != [] ? (
+            generateWalletList.apply(this)
+          ) : (
+            <div></div>
+          )}
+
           {keyFileField.value ? (
             <div>
-              <TextArea
-                {...passwordsField.bind()}
-                className="passwordsList"
-                autoResize={false}
-                error={passwordsField.error}
-                rows={5}
-                skin={TextAreaSkin}
+              <Input
+                className="spendingPassword"
+                onKeyPress={submitOnEnter.bind(this, this.submit.bind(this))}
+                {...spendingPasswordField.bind()}
+                error={spendingPasswordField.error}
+                skin={InputSkin}
               />
             </div>
           ) : (
