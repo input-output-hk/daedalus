@@ -154,16 +154,14 @@ export default class NetworkStatusStore extends Store {
     );
   };
 
-  restartNode = async () => {
+  async restartNode() {
     try {
       Logger.info('NetwortStatusStore: Requesting a restart of cardano-node');
       await restartCardanoNodeChannel.send();
-      // Make sure all wallets data is fully reloaded after the Node is restarted
-      this.stores.wallets.resetWalletsData();
     } catch (error) {
       Logger.error('NetwortStatusStore: Restart of cardano-node failed', { error });
     }
-  };
+  }
 
   teardown() {
     super.teardown();
@@ -500,6 +498,8 @@ export default class NetworkStatusStore extends Store {
           }
           Logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
         } else if (this.hasBeenConnected) {
+          // Make sure all wallets data is fully reloaded after the connection is re-established
+          this.stores.wallets.resetWalletsData();
           Logger.debug('NetworkStatusStore: Connection Restored');
         }
       }
