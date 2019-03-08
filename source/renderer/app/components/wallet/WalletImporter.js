@@ -164,7 +164,6 @@ export default class WalletImporter extends Component<Props, State> {
   }
 
   writeKeyFile = (fileName: string, wallet: Object) => {
-    console.log('writeKeyFile');
     const { extractKey } = this;
     ipcRenderer.send(WRITE_KEY_FILE.REQUEST, fileName, extractKey(wallet));
   }
@@ -190,7 +189,6 @@ export default class WalletImporter extends Component<Props, State> {
               skin={InputSkin}
               readOnly
               onClick={() => {
-                console.log('onClick');
                 writeKeyFile(fileName, wallet);
               }}
             />
@@ -208,7 +206,6 @@ export default class WalletImporter extends Component<Props, State> {
           console.log('wallet#' + idx + ' has unknown pw');
         } else {
           console.log('wallet#' + idx + ' has pw ' + password);
-          console.log(this.extractKey(wallet));
         }
       }
       return x;
