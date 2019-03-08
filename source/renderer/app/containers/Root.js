@@ -24,7 +24,7 @@ export default class Root extends Component<Props> {
 
     const isPageThatDoesntNeedWallets = (
       isBlockConsolidationStatusPage ||
-      (hasLoadedWallets && (isAdaRedemptionPage || isWalletImporterPage))
+      (isSynced && hasLoadedWallets && (isAdaRedemptionPage || isWalletImporterPage))
     );
 
     // In case node is in stopping sequence we must show the "Connecting" screen
