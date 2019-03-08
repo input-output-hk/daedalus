@@ -240,6 +240,7 @@
   "wallet.importer.keyFileLabel": "!!!Secrets key file",
   "wallet.importer.passwordsListHint": "!!!Enter your potential wallet passwords line by line",
   "wallet.importer.passwordsListLabel": "!!!Passwords list",
+  "wallet.importer.submitLabel": "!!!Analyse passwords",
   "wallet.navigation.receive": "anfordern",
   "wallet.navigation.send": "senden",
   "wallet.navigation.settings": "!!!Settings",

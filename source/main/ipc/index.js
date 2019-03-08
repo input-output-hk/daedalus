@@ -1,5 +1,6 @@
 // @flow
 import type { BrowserWindow } from 'electron';
+import writeKeyFileApi from './write-key-file';
 import compressLogsApi from './compress-logs';
 import downloadLogsApi from './download-logs';
 import getLogsApi from './get-logs';
@@ -12,6 +13,7 @@ import { handlePaperWalletRequests } from './generatePaperWalletChannel';
 import { openExternalUrlChannel } from './open-external-url';
 
 export default (window: BrowserWindow) => {
+  writeKeyFileApi();
   compressLogsApi();
   downloadLogsApi();
   getLogsApi();

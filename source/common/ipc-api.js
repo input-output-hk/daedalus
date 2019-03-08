@@ -33,3 +33,10 @@ export const GET_GPU_STATUS = {
   SUCCESS: `${GET_GPU_STATUS_CHANNEL}-success`,
   ERROR: `${GET_GPU_STATUS_CHANNEL}-error`,
 };
+
+const WRITE_KEY_FILE_CHANNEL = 'write-key-file';
+export const WRITE_KEY_FILE = {
+  REQUEST: WRITE_KEY_FILE_CHANNEL,
+  SUCCESS: `${WRITE_KEY_FILE_CHANNEL}-success`,
+  ERROR: `${WRITE_KEY_FILE_CHANNEL}-error`,
+};

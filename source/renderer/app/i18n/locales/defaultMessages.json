@@ -4277,27 +4277,27 @@
         "description": "Headline of the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 28
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.headline",
         "start": {
           "column": 12,
-          "line": 20
+          "line": 24
         }
       },
       {
-        "defaultMessage": "!!!In order to import wallets select a folder which contains wallet key files.",
+        "defaultMessage": "!!!In order to import wallets select a secrets key file.",
         "description": "Detailed instructions for importing wallets.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 33
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.instructions",
         "start": {
           "column": 16,
-          "line": 25
+          "line": 29
         }
       },
       {
@@ -4305,13 +4305,13 @@
         "description": "Label \"Secrets key file\" on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 38
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.keyFileLabel",
         "start": {
           "column": 16,
-          "line": 30
+          "line": 34
         }
       },
       {
@@ -4319,13 +4319,13 @@
         "description": "Hint for the secrets key file upload field on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.keyFileHint",
         "start": {
           "column": 15,
-          "line": 35
+          "line": 39
         }
       },
       {
@@ -4333,13 +4333,13 @@
         "description": "Label \"Passwords list\" on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.passwordsListLabel",
         "start": {
           "column": 22,
-          "line": 40
+          "line": 44
         }
       },
       {
@@ -4347,41 +4347,27 @@
         "description": "Hint for the passwords list field on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 53
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.passwordsListHint",
         "start": {
           "column": 21,
-          "line": 45
+          "line": 49
         }
       },
       {
-        "defaultMessage": "!!!Enter password",
-        "description": "Label for the \"Wallet password\" input in the wallet restore dialog.",
+        "defaultMessage": "!!!Analyse passwords",
+        "description": "Label for the \"Analyse passwords\" submit button on the wallet importer page.",
         "end": {
           "column": 3,
+          "line": 58
+        },
+        "file": "source/renderer/app/components/wallet/WalletImporter.js",
+        "id": "wallet.importer.submitLabel",
+        "start": {
+          "column": 15,
           "line": 54
-        },
-        "file": "source/renderer/app/components/wallet/WalletImporter.js",
-        "id": "wallet.restore.dialog.spendingPasswordLabel",
-        "start": {
-          "column": 25,
-          "line": 50
-        }
-      },
-      {
-        "defaultMessage": "!!!Password",
-        "description": "Placeholder for the \"Password\" inputs in the wallet restore dialog.",
-        "end": {
-          "column": 3,
-          "line": 59
-        },
-        "file": "source/renderer/app/components/wallet/WalletImporter.js",
-        "id": "wallet.restore.dialog.passwordFieldPlaceholder",
-        "start": {
-          "column": 28,
-          "line": 55
         }
       }
     ],
