@@ -4285,6 +4285,132 @@
           "column": 15,
           "line": 57
         }
+      },
+      {
+        "defaultMessage": "!!!Extracting wallets",
+        "description": "Notification shown during wallet extraction on the wallet importer page.",
+        "end": {
+          "column": 3,
+          "line": 66
+        },
+        "file": "source/renderer/app/components/wallet/WalletImporter.js",
+        "id": "wallet.importer.extractingWalletsNotification",
+        "start": {
+          "column": 33,
+          "line": 62
+        }
+      },
+      {
+        "defaultMessage": "!!!No wallets found in the selected secrets key file.",
+        "description": "Notification shown if no wallets are extracted on the wallet importer page.",
+        "end": {
+          "column": 3,
+          "line": 71
+        },
+        "file": "source/renderer/app/components/wallet/WalletImporter.js",
+        "id": "wallet.importer.noWalletsFoundNotification",
+        "start": {
+          "column": 30,
+          "line": 67
+        }
+      },
+      {
+        "defaultMessage": "!!!Wallet file",
+        "description": "Label \"Wallet file\" on the wallet importer page.",
+        "end": {
+          "column": 3,
+          "line": 76
+        },
+        "file": "source/renderer/app/components/wallet/WalletImporter.js",
+        "id": "wallet.importer.walletFileLabel",
+        "start": {
+          "column": 19,
+          "line": 72
+        }
+      },
+      {
+        "defaultMessage": "!!!Password",
+        "description": "Label \"Password\" on the wallet importer page.",
+        "end": {
+          "column": 3,
+          "line": 81
+        },
+        "file": "source/renderer/app/components/wallet/WalletImporter.js",
+        "id": "wallet.importer.walletPasswordLabel",
+        "start": {
+          "column": 23,
+          "line": 77
+        }
+      },
+      {
+        "defaultMessage": "!!!Balance",
+        "description": "Label \"Balance\" on the wallet importer page.",
+        "end": {
+          "column": 3,
+          "line": 86
+        },
+        "file": "source/renderer/app/components/wallet/WalletImporter.js",
+        "id": "wallet.importer.walletBalanceLabel",
+        "start": {
+          "column": 22,
+          "line": 82
+        }
+      },
+      {
+        "defaultMessage": "!!!no password",
+        "description": "Hint for the wallet password field on the wallet importer page.",
+        "end": {
+          "column": 3,
+          "line": 91
+        },
+        "file": "source/renderer/app/components/wallet/WalletImporter.js",
+        "id": "wallet.importer.noPasswordHint",
+        "start": {
+          "column": 18,
+          "line": 87
+        }
+      },
+      {
+        "defaultMessage": "!!!unknown password",
+        "description": "Hint for the wallet password field on the wallet importer page.",
+        "end": {
+          "column": 3,
+          "line": 96
+        },
+        "file": "source/renderer/app/components/wallet/WalletImporter.js",
+        "id": "wallet.importer.unknownPasswordHint",
+        "start": {
+          "column": 23,
+          "line": 92
+        }
+      },
+      {
+        "defaultMessage": "!!!unknown balance",
+        "description": "Hint for the wallet balance field on the wallet importer page.",
+        "end": {
+          "column": 3,
+          "line": 101
+        },
+        "file": "source/renderer/app/components/wallet/WalletImporter.js",
+        "id": "wallet.importer.unknownBalanceHint",
+        "start": {
+          "column": 22,
+          "line": 97
+        }
+      },
+      {
+        "defaultMessage": "!!!Import",
+        "description": "Label for the wallet \"Import\" button on the wallet importer page.",
+        "end": {
+          "column": 3,
+          "line": 106
+        },
+        "file": "source/renderer/app/components/wallet/WalletImporter.js",
+        "id": "wallet.importer.importLabel",
+        "start": {
+          "column": 15,
+          "line": 102
+        }
       }
     ],
     "path": "source/renderer/app/components/wallet/WalletImporter.json"

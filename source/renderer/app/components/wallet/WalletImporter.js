@@ -59,6 +59,51 @@ export const messages = defineMessages({
     defaultMessage: '!!!Analyse passwords',
     description: 'Label for the "Analyse passwords" submit button on the wallet importer page.'
   },
+  extractingWalletsNotification: {
+    id: 'wallet.importer.extractingWalletsNotification',
+    defaultMessage: '!!!Extracting wallets',
+    description: 'Notification shown during wallet extraction on the wallet importer page.'
+  },
+  noWalletsFoundNotification: {
+    id: 'wallet.importer.noWalletsFoundNotification',
+    defaultMessage: '!!!No wallets found in the selected secrets key file.',
+    description: 'Notification shown if no wallets are extracted on the wallet importer page.'
+  },
+  walletFileLabel: {
+    id: 'wallet.importer.walletFileLabel',
+    defaultMessage: '!!!Wallet file',
+    description: 'Label "Wallet file" on the wallet importer page.'
+  },
+  walletPasswordLabel: {
+    id: 'wallet.importer.walletPasswordLabel',
+    defaultMessage: '!!!Password',
+    description: 'Label "Password" on the wallet importer page.'
+  },
+  walletBalanceLabel: {
+    id: 'wallet.importer.walletBalanceLabel',
+    defaultMessage: '!!!Balance',
+    description: 'Label "Balance" on the wallet importer page.'
+  },
+  noPasswordHint: {
+    id: 'wallet.importer.noPasswordHint',
+    defaultMessage: '!!!no password',
+    description: 'Hint for the wallet password field on the wallet importer page.'
+  },
+  unknownPasswordHint: {
+    id: 'wallet.importer.unknownPasswordHint',
+    defaultMessage: '!!!unknown password',
+    description: 'Hint for the wallet password field on the wallet importer page.'
+  },
+  unknownBalanceHint: {
+    id: 'wallet.importer.unknownBalanceHint',
+    defaultMessage: '!!!unknown balance',
+    description: 'Hint for the wallet balance field on the wallet importer page.'
+  },
+  importLabel: {
+    id: 'wallet.importer.importLabel',
+    defaultMessage: '!!!Import',
+    description: 'Label for the wallet "Import" button on the wallet importer page.'
+  },
 });
 
 type Props = {};
@@ -185,29 +230,29 @@ export default class WalletImporter extends Component<Props, State> {
         walletList.push(
           <div className={styles.walletRow}>
             <Input
-              label={!index ? 'Wallet file' : null}
+              label={!index ? intl.formatMessage(messages.walletFileLabel) : null}
               value={fileName}
               onClick={() => { downloadKeyFile(fileName, wallet); }}
               skin={InputSkin}
               readOnly
             />
             <Input
-              label={!index ? 'Password' : null}
-              placeholder="unknown password"
-              value={password === '' ? 'no password' : password}
+              label={!index ? intl.formatMessage(messages.walletPasswordLabel) : null}
+              placeholder={intl.formatMessage(messages.unknownPasswordHint)}
+              value={password === '' ? intl.formatMessage(messages.noPasswordHint) : password}
               skin={InputSkin}
               readOnly
             />
             <Input
-              label={!index ? 'Balance' : null}
-              placeholder="unknown balance"
+              label={!index ? intl.formatMessage(messages.walletBalanceLabel) : null}
+              placeholder={intl.formatMessage(messages.unknownBalanceHint)}
               value={balance}
               skin={InputSkin}
               readOnly
             />
             <Button
               className={styles.importButton}
-              label="Import"
+              label={intl.formatMessage(messages.importLabel)}
               skin={ButtonSkin}
               disabled
             />
@@ -280,7 +325,7 @@ export default class WalletImporter extends Component<Props, State> {
             <div className={styles.extractingWalletsWrapper}>
               <LoadingSpinner big />
               <p className={styles.extractingWalletsText}>
-                Extracting wallets
+                {intl.formatMessage(messages.extractingWalletsNotification)}
               </p>
             </div>
           ) : null}
@@ -288,7 +333,7 @@ export default class WalletImporter extends Component<Props, State> {
           {hasExtractedWallets && !wallets.length ? (
             <div className={styles.extractingWalletsWrapper}>
               <p className={styles.extractingWalletsText}>
-                No wallets found in the selected secrets key file.
+                {intl.formatMessage(messages.noWalletsFoundNotification)}
               </p>
             </div>
           ) : null}
