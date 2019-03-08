@@ -18,7 +18,7 @@ import LoadingSpinner from '../widgets/LoadingSpinner';
 import styles from './WalletImporter.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { encryptPassphrase } from '../../api/utils';
-import { WRITE_KEY_FILE } from '../../../../common/ipc-api';
+import { DOWNLOAD_KEY_FILE } from '../../../../common/ipc-api';
 // import { scryptSync } from 'crypto';
 
 const { ipcRenderer } = global;
@@ -66,7 +66,12 @@ type Props = {};
 type State = {
   isExtractingWallets: boolean,
   isSubmitting: boolean,
-  wallets: Array<{ raw: Array<Buffer>, passwordHash: string, password: ?string, balance: ?number }>,
+  wallets: Array<{
+    raw: Array<Buffer>,
+    passwordHash: string,
+    password: ?string,
+    balance: ?number,
+  }>,
 };
 
 @observer
@@ -108,10 +113,7 @@ export default class WalletImporter extends Component<Props, State> {
     this.setState({ isSubmitting: true });
     setTimeout(() => {
       const passwords = passwordsField.value.split('\n');
-      console.log(passwords);
-      passwords.forEach((password) => {
-        this.testPassword(password);
-      });
+      passwords.forEach((password) => { this.testPassword(password); });
       this.setState({ isSubmitting: false });
     }, 100);
   };
@@ -133,21 +135,13 @@ export default class WalletImporter extends Component<Props, State> {
 
   testPassword(password: string) {
     const { wallets } = this.state;
-
-    let testpasshash = null;
-    if (password === '') {
-      testpasshash = Buffer.from([]);
-    } else {
-      testpasshash = Buffer.from(encryptPassphrase(password), 'hex');
-    }
-
-    for (let idx = 0; idx < wallets.length; idx++) {
-      if (this.checkPassword(wallets[idx].passwordHash, testpasshash)) {
-        console.log('wallet idx', idx, 'has password', password);
-        wallets[idx].password = password;
+    const testPasswordHash = password === '' ?
+      Buffer.from([]) : Buffer.from(encryptPassphrase(password), 'hex');
+    wallets.forEach((wallet) => {
+      if (this.checkPassword(wallet.passwordHash, testPasswordHash)) {
+        wallet.password = password;
       }
-    }
-
+    });
     this.setState({ wallets });
   }
 
@@ -155,7 +149,7 @@ export default class WalletImporter extends Component<Props, State> {
     // the WalletUserSecret
     const wus = [];
     wus[0] = wallet.raw;
-    wus[1] = 'extracted key';
+    wus[1] = 'Imported Wallet';
     wus[2] = []; // accounts
     wus[3] = []; // addresses
     // the UserSecret
@@ -163,53 +157,65 @@ export default class WalletImporter extends Component<Props, State> {
     return newSecrets;
   }
 
-  writeKeyFile = (fileName: string, wallet: Object) => {
-    const { extractKey } = this;
-    ipcRenderer.send(WRITE_KEY_FILE.REQUEST, fileName, extractKey(wallet));
-  }
+  downloadKeyFile = (fileName: string, wallet: Object) => {
+    const filePath = global.dialog.showSaveDialog({
+      defaultPath: fileName,
+    });
+    if (filePath) {
+      const { extractKey } = this;
+      const fileContent = extractKey(wallet);
+      ipcRenderer.send(DOWNLOAD_KEY_FILE.REQUEST, fileName, fileContent, filePath);
+    }
+  };
 
   render() {
     const { intl } = this.context;
     const { isSubmitting, isExtractingWallets, wallets } = this.state;
-    const { form, submit, writeKeyFile } = this;
+    const { form, submit, downloadKeyFile } = this;
     const keyFileField = form.$('keyFile');
     const passwordsField = form.$('passwords');
 
-    function generateWalletList() {
-      const x = [];
-      for (let idx = 0; idx < wallets.length; idx++) {
-        const wallet = wallets[idx];
+    const hasExtractedWallets = keyFileField.value && !isExtractingWallets;
+
+    const generateWalletList = () => {
+      const walletList = [];
+      wallets.forEach((wallet, index) => {
         const { password, balance } = wallet;
-        const fileName = `wallet-${idx}.key${password !== '' ? '.locked' : ''}`;
-        x.push(
+        const fileName = `wallet-${index + 1}.key${password !== '' ? '.locked' : ''}`;
+        walletList.push(
           <div className={styles.walletRow}>
             <Input
-              label={!idx ? 'Wallet file' : null}
+              label={!index ? 'Wallet file' : null}
               value={fileName}
+              onClick={() => { downloadKeyFile(fileName, wallet); }}
               skin={InputSkin}
               readOnly
-              onClick={() => {
-                writeKeyFile(fileName, wallet);
-              }}
             />
-            <Input label={!idx ? 'Password' : null} value={password === '' ? 'no password' : password} placeholder="unknown password" skin={InputSkin} readOnly />
-            <Input label={!idx ? 'Balance' : null} value={balance} placeholder="unknown balance" skin={InputSkin} readOnly />
+            <Input
+              label={!index ? 'Password' : null}
+              placeholder="unknown password"
+              value={password === '' ? 'no password' : password}
+              skin={InputSkin}
+              readOnly
+            />
+            <Input
+              label={!index ? 'Balance' : null}
+              placeholder="unknown balance"
+              value={balance}
+              skin={InputSkin}
+              readOnly
+            />
             <Button
               className={styles.importButton}
               label="Import"
-              disabled
               skin={ButtonSkin}
+              disabled
             />
           </div>
         );
-        if (password == null) {
-          console.log('wallet#' + idx + ' has unknown pw');
-        } else {
-          console.log('wallet#' + idx + ' has pw ' + password);
-        }
-      }
-      return x;
-    }
+      });
+      return walletList;
+    };
 
     const submitButtonClasses = classnames([
       'primary',
@@ -221,7 +227,9 @@ export default class WalletImporter extends Component<Props, State> {
 
         <BorderedBox>
 
-          <h2 className={styles.headline}>{intl.formatMessage(messages.headline)}</h2>
+          <h2 className={styles.headline}>
+            {intl.formatMessage(messages.headline)}
+          </h2>
 
           <div className={styles.instructions}>
             <p>{intl.formatMessage(messages.instructions)}</p>
@@ -248,9 +256,14 @@ export default class WalletImporter extends Component<Props, State> {
                   const decodedSecrets = cbor.decode(binaryStr);
                   const keys = decodedSecrets[2];
                   const walletHashes = [];
-                  for (let x = 0; x < keys.length; x++) {
-                    walletHashes.push({ raw: keys[x], passwordHash: keys[x][1].toString('ascii'), password: null, balance: null });
-                  }
+                  keys.forEach((key) => {
+                    walletHashes.push({
+                      raw: key,
+                      passwordHash: key[1].toString('ascii'),
+                      password: null,
+                      balance: null,
+                    });
+                  });
                   this.setState({
                     isExtractingWallets: false,
                     wallets: walletHashes,
@@ -258,9 +271,7 @@ export default class WalletImporter extends Component<Props, State> {
                   this.testPassword('');
                 };
 
-                setTimeout(() => {
-                  reader.readAsArrayBuffer(file);
-                }, 100);
+                setTimeout(() => { reader.readAsArrayBuffer(file); }, 100);
               }}
             />
           </div>
@@ -274,10 +285,18 @@ export default class WalletImporter extends Component<Props, State> {
             </div>
           ) : null}
 
-          {keyFileField.value && wallets.length ? (
+          {hasExtractedWallets && !wallets.length ? (
+            <div className={styles.extractingWalletsWrapper}>
+              <p className={styles.extractingWalletsText}>
+                No wallets found in the selected secrets key file.
+              </p>
+            </div>
+          ) : null}
+
+          {hasExtractedWallets && wallets.length ? (
             <div>
               <div className={styles.walletRows}>
-                {generateWalletList.apply(this)}
+                {generateWalletList()}
               </div>
 
               <TextArea
@@ -293,10 +312,6 @@ export default class WalletImporter extends Component<Props, State> {
                 skin={ButtonSkin}
               />
             </div>
-          ) : null}
-
-          {keyFileField.value && !wallets.length && !isExtractingWallets ? (
-            <div>No wallets found in the secrets key file.</div>
           ) : null}
 
         </BorderedBox>
