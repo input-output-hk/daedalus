@@ -166,6 +166,7 @@
   "settings.support.logs.title": "Logs",
   "settings.support.reportProblem.content": "If you are still experiencing an issue, please {supportRequestLink}.",
   "settings.support.reportProblem.downloadLogsSuccessMessage": "Logs successfully downloaded",
+  "settings.support.reportProblem.downloadLogsProgressMessage": "Preparing logs for download...",
   "settings.support.reportProblem.link": "submit a support request",
   "settings.support.reportProblem.linkUrl": "https://iohk.zendesk.com/hc/en-us/requests/new/",
   "settings.support.reportProblem.title": "Reporting a problem",

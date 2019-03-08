@@ -21,16 +21,32 @@ const messages = defineMessages({
     defaultMessage: '!!!Logs successfully downloaded',
     description: 'Success message for download logs.',
   },
+  downloadLogsProgress: {
+    id: 'settings.support.reportProblem.downloadLogsProgressMessage',
+    defaultMessage: '!!!Preparing logs for download...',
+    description: 'Progress message for download logs.',
+  },
 });
 
+type State = {
+  currentNotification?: string,
+};
+
+const PROGRESS_NOTIFICATION_ID = 'settings-page-download-logs-progress';
+const SUCCESS_NOTIFICATION_ID = 'settings-page-download-logs-success';
+
 @inject('stores', 'actions') @observer
-export default class SupportSettingsPage extends Component<InjectedProps> {
+export default class SupportSettingsPage extends Component<InjectedProps, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   static defaultProps = { actions: null, stores: null };
+
+  state = {
+    currentNotification: PROGRESS_NOTIFICATION_ID,
+  }
 
   constructor(props: any, context: any) {
     super(props);
@@ -53,15 +69,21 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
     this.props.stores.app.openExternalLink(supportUrl);
   };
 
-  openNotification = () => {
+  openNotification = async (id: string) => {
+    console.log('openNotification', id);
+    await this.setState({
+      currentNotification: id
+    });
+    const { duration } = this.notification;
     const { notifications } = this.props.actions;
-    const { id, duration } = this.notification;
+    console.log('duration', duration);
     notifications.open.trigger({ id, duration });
   };
 
   registerOnDownloadLogsNotification = () => {
     const { profile } = this.props.actions;
-    profile.downloadLogs.listen(this.openNotification);
+    // this.closeNotification(PROGRESS_NOTIFICATION_ID);
+    // profile.downloadLogs.listen(this.openNotification(SUCCESS_NOTIFICATION_ID));
   };
 
   handleDownloadLogs = () => {
@@ -72,27 +94,42 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
       defaultPath: fileName,
     });
     if (destination) {
+      this.openNotification(PROGRESS_NOTIFICATION_ID);
       profile.downloadLogs.trigger({ fileName, destination, fresh: true });
     }
   };
 
   get notification() {
+    return this[this.state.currentNotification];
+  }
+
+  get [PROGRESS_NOTIFICATION_ID]() {
     const { intl } = this.context;
     return {
-      id: 'settings-page-download-logs-success',
-      duration: DOWNLOAD_LOGS_SUCCESS_DURATION,
-      message: intl.formatMessage(messages.downloadLogsSuccess),
+      id: PROGRESS_NOTIFICATION_ID,
+      message: intl.formatMessage(messages.downloadLogsProgress),
+      // icon: successIcon,
     };
   }
 
-  closeNotification = () => {
-    const { id } = this.notification;
-    this.props.actions.notifications.closeActiveNotification.trigger({ id });
+  get [SUCCESS_NOTIFICATION_ID]() {
+    const { intl } = this.context;
+    return {
+      id: SUCCESS_NOTIFICATION_ID,
+      duration: DOWNLOAD_LOGS_SUCCESS_DURATION,
+      message: intl.formatMessage(messages.downloadLogsSuccess),
+      hasCloseButton: true,
+      icon: successIcon,
+    };
   }
+
+  closeNotification = (id) => (
+    this.props.actions.notifications.closeActiveNotification.trigger({ id })
+  );
 
   render() {
     const { stores } = this.props;
-    const { id, message } = this.notification;
+    const { id, message, hasCloseButton, icon } = this.notification;
     return (
       <Fragment>
         <SupportSettings
@@ -101,11 +138,11 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
           onDownloadLogs={this.handleDownloadLogs}
         />
         <NotificationMessage
-          icon={successIcon}
+          icon={icon}
           show={stores.uiNotifications.isOpen(id)}
+          hasCloseButton={hasCloseButton}
           onClose={this.closeNotification}
           clickToClose
-          hasCloseButton
         >
           {message}
         </NotificationMessage>
