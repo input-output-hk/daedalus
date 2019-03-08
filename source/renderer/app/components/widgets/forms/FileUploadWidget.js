@@ -12,17 +12,26 @@ type Props = {
   onFileSelected: Function,
   selectedFile: File,
   acceptedFileTypes: string,
+  showSelectedFilePath?: boolean,
 };
 
 @observer
 export default class FileUploadWidget extends Component<Props> {
+
+  static defaultProps = {
+    showSelectedFilePath: false,
+  };
 
   onDrop = (files: [File]) => {
     this.props.onFileSelected(files[0]);
   };
 
   render() {
-    const { label, placeholder, acceptedFileTypes, selectedFile } = this.props;
+    const {
+      label, placeholder, acceptedFileTypes,
+      selectedFile, showSelectedFilePath,
+    } = this.props;
+
     return (
       <div className={styles.component}>
         <div className={styles.label}>{label}</div>
@@ -33,7 +42,9 @@ export default class FileUploadWidget extends Component<Props> {
           accept={acceptedFileTypes}
         >
           {selectedFile ? (
-            <div className={styles.fileName}>{selectedFile.name}</div>
+            <div className={styles.fileName}>
+              {showSelectedFilePath ? selectedFile.path : selectedFile.name}
+            </div>
           ) : (
             <div className={styles.placeholder}>{placeholder}</div>
           )}

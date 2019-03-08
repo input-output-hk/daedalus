@@ -2,19 +2,23 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import classnames from 'classnames';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { TextArea } from 'react-polymorph/lib/components/TextArea';
+import { TextAreaSkin } from 'react-polymorph/lib/skins/simple/TextAreaSkin';
 import cbor from 'cbor';
 import scrypt from 'scryptsy';
 import BorderedBox from '../widgets/BorderedBox';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import FileUploadWidget from '../widgets/forms/FileUploadWidget';
+import LoadingSpinner from '../widgets/LoadingSpinner';
 import styles from './WalletImporter.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
-import { submitOnEnter } from '../../utils/form';
 import { encryptPassphrase } from '../../api/utils';
 // import { scryptSync } from 'crypto';
-
 
 export const messages = defineMessages({
   headline: {
@@ -24,7 +28,7 @@ export const messages = defineMessages({
   },
   instructions: {
     id: 'wallet.importer.instructions',
-    defaultMessage: '!!!In order to import wallets select a folder which contains wallet key files.',
+    defaultMessage: '!!!In order to import wallets select a secrets key file.',
     description: 'Detailed instructions for importing wallets.',
   },
   keyFileLabel: {
@@ -47,25 +51,32 @@ export const messages = defineMessages({
     defaultMessage: '!!!Enter your potential wallet passwords line by line',
     description: 'Hint for the passwords list field on the wallet importer page.'
   },
-  spendingPasswordLabel: {
-    id: 'wallet.restore.dialog.spendingPasswordLabel',
-    defaultMessage: '!!!Enter password',
-    description: 'Label for the "Wallet password" input in the wallet restore dialog.',
-  },
-  passwordFieldPlaceholder: {
-    id: 'wallet.restore.dialog.passwordFieldPlaceholder',
-    defaultMessage: '!!!Password',
-    description: 'Placeholder for the "Password" inputs in the wallet restore dialog.',
+  submitLabel: {
+    id: 'wallet.importer.submitLabel',
+    defaultMessage: '!!!Analyse passwords',
+    description: 'Label for the "Analyse passwords" submit button on the wallet importer page.'
   },
 });
 
 type Props = {};
 
+type State = {
+  isExtractingWallets: boolean,
+  isSubmitting: boolean,
+  // wallets: Array<{ index: number, passwordHash: string }>,
+};
+
 @observer
-export default class WalletImporter extends Component<Props> {
+export default class WalletImporter extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  state = {
+    isExtractingWallets: false,
+    isSubmitting: false,
+    // wallets: [],
   };
 
   form = new ReactToolboxMobxForm({
@@ -86,12 +97,6 @@ export default class WalletImporter extends Component<Props> {
       confirmedPasswordHashes: {
         value: [],
       },
-      spendingPassword: {
-        type: 'password',
-        label: this.context.intl.formatMessage(messages.spendingPasswordLabel),
-        placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
-        value: '',
-      },
     },
   }, {
     options: {
@@ -100,14 +105,17 @@ export default class WalletImporter extends Component<Props> {
     },
   });
 
-  submit() {
+  submit = () => {
     const { form } = this;
-    const spendingPasswordField = form.$('spendingPassword');
-    console.log(spendingPasswordField.value);
-    this.testPassword(spendingPasswordField.value);
-  }
+    const passwordsField = form.$('passwords');
+    console.log(passwordsField.value);
+    this.setState({ isSubmitting: true });
+    setTimeout(() => {
+      this.testPassword(passwordsField.value);
+    }, 100);
+  };
 
-  checkPassword(passphraseHash, passhash) {
+  checkPassword(passphraseHash: string, passhash: Buffer) {
     const bits = passphraseHash.split('|');
     const logN = parseInt(bits[0], 10);
     const r = parseInt(bits[1], 10);
@@ -122,7 +130,7 @@ export default class WalletImporter extends Component<Props> {
     return realhash.equals(hash2);
   }
 
-  testPassword(password) {
+  testPassword(password: string) {
     const { form } = this;
     const walletHashesField = form.$('walletHashes');
     const confirmedPasswordHashesField = form.$('confirmedPasswordHashes');
@@ -139,8 +147,11 @@ export default class WalletImporter extends Component<Props> {
         confirmedPasswordHashesField.set(oldhashes);
       }
     }
+
+    this.setState({ isSubmitting: false });
   }
-  extractKey(idx) {
+
+  extractKey(idx: number) {
     const { form } = this;
     const walletHashesField = form.$('walletHashes');
     const input = walletHashesField.value[idx];
@@ -157,17 +168,31 @@ export default class WalletImporter extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { form } = this;
+    const { isSubmitting, isExtractingWallets } = this.state;
+    const { form, submit } = this;
     const keyFileField = form.$('keyFile');
+    const passwordsField = form.$('passwords');
+
     const walletHashesField = form.$('walletHashes');
-    const spendingPasswordField = form.$('spendingPassword');
     const confirmedPasswordHashesField = form.$('confirmedPasswordHashes');
 
     function generateWalletList() {
       const knownHashes = confirmedPasswordHashesField.value;
-      let x = <div>null dom element</div>;
+      const x = [];
       for (let idx = 0; idx < knownHashes.length; idx++) {
-        x += <div>wallet#{idx}</div>;
+        x.push(
+          <div className={styles.walletRow}>
+            <Input label={!idx ? 'Wallet file' : null} value={`wallet-${idx}.key`} skin={InputSkin} readOnly />
+            <Input label={!idx ? 'Password' : null} placeholder="unknown password" skin={InputSkin} readOnly />
+            <Input label={!idx ? 'Balance' : null} placeholder="unknown balance" skin={InputSkin} readOnly />
+            <Button
+              className={styles.importButton}
+              label="Import"
+              disabled
+              skin={ButtonSkin}
+            />
+          </div>
+        );
         if (knownHashes[idx] == null) {
           console.log('wallet#' + idx + ' has unknown pw');
         } else {
@@ -178,26 +203,34 @@ export default class WalletImporter extends Component<Props> {
       return x;
     }
 
+    const submitButtonClasses = classnames([
+      'primary',
+      isSubmitting ? styles.submitButtonSpinning : styles.submitButton,
+    ]);
+
     return (
       <div className={styles.component}>
 
         <BorderedBox>
 
-          <h1 className={styles.headline}>{intl.formatMessage(messages.headline)}</h1>
+          <h2 className={styles.headline}>{intl.formatMessage(messages.headline)}</h2>
 
           <div className={styles.instructions}>
             <p>{intl.formatMessage(messages.instructions)}</p>
-            <b>{keyFileField.value.path}</b>
           </div>
 
           <div className={styles.fileUpload}>
             <FileUploadWidget
               {...keyFileField.bind()}
               selectedFile={keyFileField.value}
+              showSelectedFilePath
               acceptedFileTypes=".key"
               onFileSelected={(file) => {
                 // "set(value)" is an unbound method and thus must be explicitly called
                 keyFileField.set(file);
+
+                this.setState({ isExtractingWallets: true });
+
                 // from https://react-dropzone.netlify.com/
                 const reader = new FileReader();
                 reader.onabort = () => console.log('file reading was aborted');
@@ -215,31 +248,45 @@ export default class WalletImporter extends Component<Props> {
                   walletHashesField.set(walletHashes);
                   confirmedPasswordHashesField.set(pwhashes);
                   this.testPassword('');
+                  this.setState({ isExtractingWallets: false });
                 };
-                reader.readAsArrayBuffer(file);
+
+                setTimeout(() => {
+                  reader.readAsArrayBuffer(file);
+                }, 100);
               }}
             />
           </div>
 
-          {walletHashesField.value !== [] ? (
-            generateWalletList.apply(this)
-          ) : (
-            <div />
-          )}
+          {isExtractingWallets ? (
+            <div className={styles.extractingWalletsWrapper}>
+              <LoadingSpinner big />
+              <p className={styles.extractingWalletsText}>
+                Extracting wallets
+              </p>
+            </div>
+          ) : null}
 
-          {keyFileField.value ? (
+          {keyFileField.value && walletHashesField.value.length ? (
             <div>
-              <Input
-                className="spendingPassword"
-                onKeyPress={submitOnEnter.bind(this, this.submit.bind(this))}
-                {...spendingPasswordField.bind()}
-                error={spendingPasswordField.error}
-                skin={InputSkin}
+              <div className={styles.walletRows}>
+                {generateWalletList.apply(this)}
+              </div>
+
+              <TextArea
+                {...passwordsField.bind()}
+                rows={5}
+                skin={TextAreaSkin}
+              />
+
+              <Button
+                className={submitButtonClasses}
+                label={intl.formatMessage(messages.submitLabel)}
+                onClick={submit}
+                skin={ButtonSkin}
               />
             </div>
-          ) : (
-            <div>PLEASE SELECT A KEY FILE TO START</div>
-          )}
+          ) : null}
 
         </BorderedBox>
 
