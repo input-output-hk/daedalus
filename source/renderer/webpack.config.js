@@ -2,9 +2,6 @@ const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const AutoDllPlugin = require('autodll-webpack-plugin');
-const yamljs = require('yamljs');
-
-const reportUrl = yamljs.parseFile('launcher-config.yaml').reportServer;
 
 // Process env flags from buildkite and appveyor
 const isTestEnv = process.env.NODE_ENV === 'test';
@@ -91,29 +88,15 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: 'styles.css',
     }),
-    new webpack.DefinePlugin(
-      Object.assign(
-        {
-          'process.env.API_VERSION': JSON.stringify(
-            process.env.API_VERSION || 'dev'
-          ),
-          'process.env.NETWORK': JSON.stringify(
-            process.env.NETWORK || 'development'
-          ),
-          'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
-          'process.env.BUILD_NUMBER': JSON.stringify(
-            process.env.BUILD_NUMBER || 'dev'
-          ),
-          'process.env.REPORT_URL': JSON.stringify(reportUrl),
-        },
-        process.env.NODE_ENV === 'production'
-          ? {
-              // Only bake in NODE_ENV value for production builds.
-              'process.env.NODE_ENV': '"production"',
-            }
-          : {}
-      )
-    ),
+    new webpack.DefinePlugin(Object.assign({
+      'process.env.API_VERSION': JSON.stringify(process.env.API_VERSION || 'dev'),
+      'process.env.NETWORK': JSON.stringify(process.env.NETWORK || 'development'),
+      'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
+      'process.env.BUILD_NUMBER': JSON.stringify(process.env.BUILD_NUMBER || 'dev'),
+    }, process.env.NODE_ENV === 'production' ? {
+      // Only bake in NODE_ENV value for production builds.
+      'process.env.NODE_ENV': '"production"',
+    } : {})),
     new AutoDllPlugin({
       filename: 'vendor.dll.js',
       context: path.join(__dirname, '..'),
