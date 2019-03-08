@@ -13,7 +13,6 @@ import {
 } from '../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
 import { Logger } from '../utils/logging';
-import { getCurrentEpoch } from '../utils/network';
 import {
   cardanoStateChangeChannel,
   cardanoTlsConfigChannel,
@@ -292,7 +291,6 @@ export default class NetworkStatusStore extends Store {
   _getEpochsData = async () => {
     this._onReceiveEpochsData(
       await getNumberOfEpochsConsolidatedChannel.request(),
-      getCurrentEpoch(this.systemStartTime)
     );
   };
 
@@ -304,10 +302,8 @@ export default class NetworkStatusStore extends Store {
 
   @action _onReceiveEpochsData = (
     epochsConsolidated: GetConsolidatedEpochsCountResponse,
-    currentEpoch: number
   ) => {
     this.epochsConsolidated = epochsConsolidated;
-    this.currentEpoch = currentEpoch;
   };
 
   @action _updateNetworkStatus = async (queryInfoParams?: NodeInfoQueryParams) => {
@@ -346,7 +342,6 @@ export default class NetworkStatusStore extends Store {
       ) : (
         await this.getNetworkStatusRequest.execute().promise
       );
-      console.log('networkStatus', networkStatus);
 
       // In case we no longer have TLS config we ignore all API call responses
       // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
@@ -358,6 +353,7 @@ export default class NetworkStatusStore extends Store {
       const {
         subscriptionStatus,
         syncProgress,
+        slotId,
         blockchainHeight,
         localBlockchainHeight,
         localTimeInformation,
@@ -397,6 +393,11 @@ export default class NetworkStatusStore extends Store {
       // Update sync progress
       runInAction('update syncProgress', () => {
         this.syncProgress = syncProgress;
+      });
+
+      // Update sync progress
+      runInAction('update currentEpoch', () => {
+        this.currentEpoch = slotId.epoch;
       });
 
       runInAction('update block heights', () => {

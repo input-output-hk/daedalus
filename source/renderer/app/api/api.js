@@ -23,7 +23,6 @@ import { getNodeSettings } from './nodes/requests/getNodeSettings';
 import { getNextNodeUpdate } from './nodes/requests/getNextNodeUpdate';
 import { postponeNodeUpdate } from './nodes/requests/postponeNodeUpdate';
 
-
 // Transactions requests
 import { getTransactionFee } from './transactions/requests/getTransactionFee';
 import { getTransactionHistory } from './transactions/requests/getTransactionHistory';
@@ -808,7 +807,6 @@ export default class AdaApi {
     try {
       const nodeInfo: NodeInfoResponse = await getNodeInfo(this.config, queryInfoParams);
       const nodeSettings: NodeSettingsResponse = await getNodeSettings(this.config);
-      console.log('settings', nodeSettings);
       Logger.debug(`${loggerText} success`, { nodeInfo });
       Logger.debug('AdaApi::getNetworkStatusSettings success', { nodeSettings });
 

@@ -85,13 +85,6 @@ const getEpochData = (developmentStartTime: number) => {
   };
 };
 
-export const getCurrentEpoch = (developmentStartTime: number) => {
-  const { startTime, epochLengthBase, slotDuration } = getEpochData(developmentStartTime);
-  const currentTimeInUTC = Math.floor(Date.now() / 1000);
-  const numberOfSlots = epochLengthBase * slotDuration * 10;
-  return Math.floor((currentTimeInUTC - startTime) / numberOfSlots);
-};
-
 export const getSupportUrl = async (baseUrl: string, locale: string) => {
   const network = NETWORK === 'development' ? 'staging' : NETWORK;
   const info = {
