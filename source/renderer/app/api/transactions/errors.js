@@ -22,6 +22,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Your ADA could not be redeemed correctly.',
     description: '"Your ADA could not be redeemed correctly." error message.'
   },
+  redemptionAddressAlreadyUsed: {
+    id: 'api.errors.RedemptionAddressAlreadyUsed',
+    defaultMessage: '!!!The redemption address was already used.',
+    description: '"The redemption address was already used." error message.'
+  },
   allFundsAlreadyAtReceiverAddressError: {
     id: 'api.errors.AllFundsAlreadyAtReceiverAddressError',
     defaultMessage: '!!!All your funds are already at the address you are trying send money to.',
@@ -91,6 +96,15 @@ export class RedeemAdaError extends LocalizableError {
     super({
       id: messages.redeemAdaError.id,
       defaultMessage: messages.redeemAdaError.defaultMessage,
+    });
+  }
+}
+
+export class RedemptionAddressAlreadyUsed extends LocalizableError {
+  constructor() {
+    super({
+      id: messages.redemptionAddressAlreadyUsed.id,
+      defaultMessage: messages.redemptionAddressAlreadyUsed.defaultMessage,
     });
   }
 }

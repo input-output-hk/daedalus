@@ -147,6 +147,7 @@ import {
   NotEnoughFundsForTransactionError,
   NotEnoughMoneyToSendError,
   RedeemAdaError,
+  RedemptionAddressAlreadyUsed,
   TooBigTransactionError,
 } from './transactions/errors';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
@@ -666,6 +667,9 @@ export default class AdaApi {
       return _createTransactionFromServerData(transaction);
     } catch (error) {
       Logger.error('AdaApi::redeemAda error', { error });
+      if (error.message === 'TxRedemptionDepleted') {
+        throw new RedemptionAddressAlreadyUsed();
+      }
       if (error.message === 'CannotCreateAddress') {
         throw new IncorrectSpendingPasswordError();
       }
@@ -687,6 +691,9 @@ export default class AdaApi {
       return _createTransactionFromServerData(transaction);
     } catch (error) {
       Logger.error('AdaApi::redeemAdaPaperVend error', { error });
+      if (error.message === 'TxRedemptionDepleted') {
+        throw new RedemptionAddressAlreadyUsed();
+      }
       if (error.message === 'CannotCreateAddress') {
         throw new IncorrectSpendingPasswordError();
       }
