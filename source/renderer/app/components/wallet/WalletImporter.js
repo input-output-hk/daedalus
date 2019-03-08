@@ -3,20 +3,18 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
-import { TextArea } from 'react-polymorph/lib/components/TextArea';
-import { TextAreaSkin } from 'react-polymorph/lib/skins/simple/TextAreaSkin';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import cbor from 'cbor';
+import scrypt from 'scryptsy';
 import BorderedBox from '../widgets/BorderedBox';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import FileUploadWidget from '../widgets/forms/FileUploadWidget';
 import styles from './WalletImporter.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { encryptPassphrase } from '../../api/utils';
-import { scryptSync } from 'crypto';
-import scrypt from 'scryptsy';
+// import { scryptSync } from 'crypto';
 
-import cbor from 'cbor';
 
 export const messages = defineMessages({
   headline: {
@@ -104,24 +102,23 @@ export default class WalletImporter extends Component<Props> {
 
   submit() {
     const { form } = this;
-    const walletHashesField = form.$('walletHashes');
     const spendingPasswordField = form.$('spendingPassword');
     console.log(spendingPasswordField.value);
     this.testPassword(spendingPasswordField.value);
   }
 
   checkPassword(passphraseHash, passhash) {
-    var bits = passphraseHash.split("|");
-    var logN = parseInt(bits[0]);
-    var r = parseInt(bits[1]);
-    var p = parseInt(bits[2]);
-    var salt = Buffer.from(bits[3],"base64");
-    var realhash = Buffer.from(bits[4],"base64");
+    const bits = passphraseHash.split('|');
+    const logN = parseInt(bits[0], 10);
+    const r = parseInt(bits[1], 10);
+    const p = parseInt(bits[2], 10);
+    const salt = Buffer.from(bits[3], 'base64');
+    const realhash = Buffer.from(bits[4], 'base64');
 
     // from nodejs native crypto (which is missing in renderer proc)
     // var hash2 = scryptSync(cbor.encode(passhash), salt, 32, { N: 2 ** logN, r: r, p: p });
     // try the scryptsy from npm (works, but worse performance)
-    var hash2 = scrypt(cbor.encode(passhash), salt, 2 ** logN, r, p, 32);
+    const hash2 = scrypt(cbor.encode(passhash), salt, 2 ** logN, r, p, 32);
     return realhash.equals(hash2);
   }
 
@@ -130,16 +127,15 @@ export default class WalletImporter extends Component<Props> {
     const walletHashesField = form.$('walletHashes');
     const confirmedPasswordHashesField = form.$('confirmedPasswordHashes');
 
-    var testpasshash = null;
-    if (password == "") testpasshash = Buffer.from([]);
-    else testpasshash = Buffer.from(encryptPassphrase(password),"hex");
+    let testpasshash = null;
+    if (password === '') testpasshash = Buffer.from([]);
+    else testpasshash = Buffer.from(encryptPassphrase(password), 'hex');
 
-    for (var idx=0; idx < walletHashesField.value.length; idx++) {
-      var match = this.checkPassword(walletHashesField.value[idx].pwhash, testpasshash);
-      if (match) {
-        console.log("wallet idx",idx,"has password", password);
-        var oldhashes = confirmedPasswordHashesField.value;
-        oldhashes[idx] = testpasshash.toString("hex");
+    for (let idx = 0; idx < walletHashesField.value.length; idx++) {
+      if (this.checkPassword(walletHashesField.value[idx].pwhash, testpasshash)) {
+        console.log('wallet idx', idx, 'has password', password);
+        const oldhashes = confirmedPasswordHashesField.value;
+        oldhashes[idx] = testpasshash.toString('hex');
         confirmedPasswordHashesField.set(oldhashes);
       }
     }
@@ -149,13 +145,13 @@ export default class WalletImporter extends Component<Props> {
     const walletHashesField = form.$('walletHashes');
     const input = walletHashesField.value[idx];
     // the WalletUserSecret
-    var wus = [];
+    const wus = [];
     wus[0] = input.raw;
-    wus[1] = "extracted key#" + idx;
+    wus[1] = 'extracted key#' + idx;
     wus[2] = []; // accounts
     wus[3] = []; // addresses
     // the UserSecret
-    var newSecrets = cbor.encode([ [], [], [], [ wus ] ]);
+    const newSecrets = cbor.encode([[], [], [], [wus]]);
     return newSecrets;
   }
 
@@ -163,20 +159,19 @@ export default class WalletImporter extends Component<Props> {
     const { intl } = this.context;
     const { form } = this;
     const keyFileField = form.$('keyFile');
-    const passwordsField = form.$('passwords');
     const walletHashesField = form.$('walletHashes');
     const spendingPasswordField = form.$('spendingPassword');
     const confirmedPasswordHashesField = form.$('confirmedPasswordHashes');
 
     function generateWalletList() {
       const knownHashes = confirmedPasswordHashesField.value;
-      var x = <div>null dom element</div>;
-      for (var idx=0; idx < knownHashes.length; idx++) {
+      let x = <div>null dom element</div>;
+      for (let idx = 0; idx < knownHashes.length; idx++) {
         x += <div>wallet#{idx}</div>;
         if (knownHashes[idx] == null) {
-          console.log("wallet#"+idx+" has unknown pw");
+          console.log('wallet#' + idx + ' has unknown pw');
         } else {
-          console.log("wallet#"+idx+" has pw hash "+knownHashes[idx]);
+          console.log('wallet#' + idx + ' has pw hash ' + knownHashes[idx]);
           console.log(this.extractKey(idx));
         }
       }
@@ -209,27 +204,27 @@ export default class WalletImporter extends Component<Props> {
                 reader.onerror = () => console.log('file reading has failed');
                 reader.onload = () => {
                   const binaryStr = Buffer.from(reader.result);
-                  var decodedSecrets = cbor.decode(binaryStr);
-                  var keys = decodedSecrets[2];
-                  var walletHashes = [];
-                  var pwhashes = [];
-                  for (var x=0; x < keys.length; x++) {
-                    walletHashes[x] = { raw: keys[x], pwhash: keys[x][1].toString("ascii") };
+                  const decodedSecrets = cbor.decode(binaryStr);
+                  const keys = decodedSecrets[2];
+                  const walletHashes = [];
+                  const pwhashes = [];
+                  for (let x = 0; x < keys.length; x++) {
+                    walletHashes[x] = { raw: keys[x], pwhash: keys[x][1].toString('ascii') };
                     pwhashes[x] = null;
-                  };
+                  }
                   walletHashesField.set(walletHashes);
                   confirmedPasswordHashesField.set(pwhashes);
-                  this.testPassword("");
-                }
+                  this.testPassword('');
+                };
                 reader.readAsArrayBuffer(file);
               }}
             />
           </div>
 
-          {walletHashesField.value != [] ? (
+          {walletHashesField.value !== [] ? (
             generateWalletList.apply(this)
           ) : (
-            <div></div>
+            <div />
           )}
 
           {keyFileField.value ? (
