@@ -119,8 +119,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Your ADA could not be redeemed correctly.",
-        "description": "\"Your ADA could not be redeemed correctly.\" error message.",
+        "defaultMessage": "!!!Your ada could not be redeemed correctly. Please check your redemption key.",
+        "description": "\"Your ada could not be redeemed correctly. Please check your redemption key.\" error message.",
         "end": {
           "column": 3,
           "line": 24
@@ -133,17 +133,31 @@
         }
       },
       {
-        "defaultMessage": "!!!All your funds are already at the address you are trying send money to.",
-        "description": "\"All your funds are already at the address you are trying send money to.\" error message.",
+        "defaultMessage": "!!!Your ada could not be redeemed correctly. The redemption key was already used.",
+        "description": "\"Your ada could not be redeemed correctly. The redemption key was already used.\" error message.",
         "end": {
           "column": 3,
           "line": 29
         },
         "file": "source/renderer/app/api/transactions/errors.js",
+        "id": "api.errors.RedemptionAddressAlreadyUsed",
+        "start": {
+          "column": 32,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!All your funds are already at the address you are trying send money to.",
+        "description": "\"All your funds are already at the address you are trying send money to.\" error message.",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/api/transactions/errors.js",
         "id": "api.errors.AllFundsAlreadyAtReceiverAddressError",
         "start": {
           "column": 41,
-          "line": 25
+          "line": 30
         }
       },
       {
@@ -151,13 +165,13 @@
         "description": "\"Not enough ada for fees. Try sending a smaller amount.\" error message",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 39
         },
         "file": "source/renderer/app/api/transactions/errors.js",
         "id": "api.errors.NotEnoughFundsForTransactionFeesError",
         "start": {
           "column": 41,
-          "line": 30
+          "line": 35
         }
       },
       {
@@ -165,13 +179,13 @@
         "description": "\"Not enough ada . Try sending a smaller amount.\" error message",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 44
         },
         "file": "source/renderer/app/api/transactions/errors.js",
         "id": "api.errors.NotEnoughFundsForTransactionError",
         "start": {
           "column": 37,
-          "line": 35
+          "line": 40
         }
       },
       {
@@ -179,13 +193,13 @@
         "description": "\"Cannot calculate fees while there are pending transactions.\" error message",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 49
         },
         "file": "source/renderer/app/api/transactions/errors.js",
         "id": "api.errors.CanNotCalculateTransactionFeesError",
         "start": {
           "column": 39,
-          "line": 40
+          "line": 45
         }
       },
       {
@@ -193,13 +207,13 @@
         "description": "\"Transaction too big due to too many inputs.\" error message.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 54
         },
         "file": "source/renderer/app/api/transactions/errors.js",
         "id": "api.errors.TooBigTransactionError",
         "start": {
           "column": 26,
-          "line": 45
+          "line": 50
         }
       },
       {
@@ -207,13 +221,13 @@
         "description": "\"Transaction too big due to too many inputs.\" error link label.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 59
         },
         "file": "source/renderer/app/api/transactions/errors.js",
         "id": "api.errors.TooBigTransactionErrorLinkLabel",
         "start": {
           "column": 35,
-          "line": 50
+          "line": 55
         }
       },
       {
@@ -221,13 +235,13 @@
         "description": "\"Transaction too big due to too many inputs.\" error link URL.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 64
         },
         "file": "source/renderer/app/api/transactions/errors.js",
         "id": "api.errors.TooBigTransactionErrorLinkURL",
         "start": {
           "column": 33,
-          "line": 55
+          "line": 60
         }
       }
     ],
@@ -4255,6 +4269,123 @@
       }
     ],
     "path": "source/renderer/app/components/wallet/WalletCreateDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Wallet importer",
+        "description": "Headline of the wallet importer page.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/wallet/WalletImporter.js",
+        "id": "wallet.importer.headline",
+        "start": {
+          "column": 12,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!In order to import wallets select a folder which contains wallet key files.",
+        "description": "Detailed instructions for importing wallets.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/wallet/WalletImporter.js",
+        "id": "wallet.importer.instructions",
+        "start": {
+          "column": 16,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Secrets key file",
+        "description": "Label \"Secrets key file\" on the wallet importer page.",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/wallet/WalletImporter.js",
+        "id": "wallet.importer.keyFileLabel",
+        "start": {
+          "column": 16,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Drop your \"secret.key\" file here or click to choose",
+        "description": "Hint for the secrets key file upload field on the wallet importer page.",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/wallet/WalletImporter.js",
+        "id": "wallet.importer.keyFileHint",
+        "start": {
+          "column": 15,
+          "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!Passwords list",
+        "description": "Label \"Passwords list\" on the wallet importer page.",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/wallet/WalletImporter.js",
+        "id": "wallet.importer.passwordsListLabel",
+        "start": {
+          "column": 22,
+          "line": 40
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter your potential wallet passwords line by line",
+        "description": "Hint for the passwords list field on the wallet importer page.",
+        "end": {
+          "column": 3,
+          "line": 49
+        },
+        "file": "source/renderer/app/components/wallet/WalletImporter.js",
+        "id": "wallet.importer.passwordsListHint",
+        "start": {
+          "column": 21,
+          "line": 45
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter password",
+        "description": "Label for the \"Wallet password\" input in the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 54
+        },
+        "file": "source/renderer/app/components/wallet/WalletImporter.js",
+        "id": "wallet.restore.dialog.spendingPasswordLabel",
+        "start": {
+          "column": 25,
+          "line": 50
+        }
+      },
+      {
+        "defaultMessage": "!!!Password",
+        "description": "Placeholder for the \"Password\" inputs in the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 59
+        },
+        "file": "source/renderer/app/components/wallet/WalletImporter.js",
+        "id": "wallet.restore.dialog.passwordFieldPlaceholder",
+        "start": {
+          "column": 28,
+          "line": 55
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/WalletImporter.json"
   },
   {
     "descriptors": [
