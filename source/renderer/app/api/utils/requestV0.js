@@ -2,7 +2,8 @@
 import https from 'https';
 import { size, has, get, omit } from 'lodash';
 import querystring from 'querystring';
-import { encryptPassphrase, getContentLength } from '.';
+import { getContentLength } from '.';
+import { encryptPassphrase } from '../../../../common/crypto/encrypt';
 
 export type RequestOptions = {
   hostname: string,

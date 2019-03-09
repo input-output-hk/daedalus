@@ -17,8 +17,35 @@ export default class WalletImporterPage extends Component<Props> {
     props.stores.sidebar._resetActivateSidebarCategory();
   }
 
+  handleSecretKeyFileSelection = (secretKeyFilePath: string) => {
+    this.props.actions.walletImporter.extractWallets.trigger({ secretKeyFilePath });
+  };
+
+  handleMatchPasswords = (passwords: Array<string>) => {
+    this.props.actions.walletImporter.matchPasswords.trigger({ passwords });
+  };
+
   render() {
-    return <Layout><WalletImporter /></Layout>;
+    const { stores } = this.props;
+    const {
+      isMatchingPasswords,
+      isExtractingWallets,
+      hasExtractedWallets,
+      extractedWallets,
+    } = stores.walletImporter;
+
+    return (
+      <Layout>
+        <WalletImporter
+          isMatchingPasswords={isMatchingPasswords}
+          isExtractingWallets={isExtractingWallets}
+          hasExtractedWallets={hasExtractedWallets}
+          extractedWallets={extractedWallets}
+          onSecretKeyFileSelect={this.handleSecretKeyFileSelection}
+          onMatchPasswords={this.handleMatchPasswords}
+        />
+      </Layout>
+    );
   }
 
 }

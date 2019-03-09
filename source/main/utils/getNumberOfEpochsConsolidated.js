@@ -2,7 +2,7 @@
 import fs from 'fs';
 import path from 'path';
 import { nodeDbPath } from '../config';
-import { getNumberOfEpochsConsolidatedChannel } from '../ipc/getNumberOfEpochsConsolidated.ipc';
+import { getNumberOfEpochsConsolidatedChannel } from '../ipc/getNumberOfEpochsConsolidated';
 import type { GetNumberOfEpochsConsolidatedChannelResponse } from '../../common/ipc/api';
 
 export const getNumberOfEpochsConsolidated = () => {

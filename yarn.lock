@@ -2514,7 +2514,7 @@ caseless@~0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
 
-cbor@^4.1.5:
+cbor@4.1.5:
   version "4.1.5"
   resolved "https://registry.yarnpkg.com/cbor/-/cbor-4.1.5.tgz#c8ef3702b2f8710bde1425903c0c16a50419d369"
   dependencies:
@@ -8999,9 +8999,9 @@ schema-utils@^1.0.0:
     ajv-errors "^1.0.0"
     ajv-keywords "^3.1.0"
 
-scryptsy@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/scryptsy/-/scryptsy-2.0.0.tgz#262c36f0231cfa7654e2363fa394cd2dec66f378"
+scrypt-async@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/scrypt-async/-/scrypt-async-2.0.1.tgz#4318dae48a8b7cc3b8fe05f75f4164a7d973d25d"
 
 scss-tokenizer@^0.2.3:
   version "0.2.3"

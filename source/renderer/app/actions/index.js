@@ -12,6 +12,7 @@ import SidebarActions from './sidebar-actions';
 import TransactionsActions from './transactions-actions';
 import WalletsActions from './wallets-actions';
 import WalletBackupActions from './wallet-backup-actions';
+import WalletImporterActions from './wallet-importer-actions';
 import WalletSettingsActions from './wallet-settings-actions';
 import WindowActions from './window-actions';
 
@@ -29,6 +30,7 @@ export type ActionsMap = {
   transactions: TransactionsActions,
   wallets: WalletsActions,
   walletBackup: WalletBackupActions,
+  walletImporter: WalletImporterActions,
   walletSettings: WalletSettingsActions,
   window: WindowActions,
 };
@@ -47,6 +49,7 @@ const actionsMap: ActionsMap = {
   transactions: new TransactionsActions(),
   wallets: new WalletsActions(),
   walletBackup: new WalletBackupActions(),
+  walletImporter: new WalletImporterActions(),
   walletSettings: new WalletSettingsActions(),
   window: new WindowActions(),
 };

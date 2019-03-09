@@ -9,7 +9,7 @@ import { getNumberOfEpochsConsolidated } from './utils/getNumberOfEpochsConsolid
 import { handleDiskSpace } from './utils/handleDiskSpace';
 import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
-import { getSystemStartTimeChannel } from './ipc/getSystemStartTime.ipc';
+import { getSystemStartTimeChannel } from './ipc/getSystemStartTime';
 import { environment } from './environment';
 import mainErrorHandler from './utils/mainErrorHandler';
 import { launcherConfig, frontendOnlyMode } from './config';

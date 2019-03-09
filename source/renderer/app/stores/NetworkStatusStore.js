@@ -22,7 +22,7 @@ import {
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import { getNumberOfEpochsConsolidatedChannel } from '../ipc/getNumberOfEpochsConsolidatedChannel';
-import { getSystemStartTimeChannel } from '../ipc/getSystemStartTime.ipc';
+import { getSystemStartTimeChannel } from '../ipc/getSystemStartTime';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
 import type {

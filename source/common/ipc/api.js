@@ -10,6 +10,7 @@ import type {
 } from '../types/report-request.types';
 import type { GeneratePaperWalletParams } from '../types/paper-wallet-request.types';
 import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
+import type { ExtractedWallets } from '../types/wallet-importer.types';
 
 /**
  * Channel for loading an base64 encoded asset from within the `source/renderer` folder
@@ -17,6 +18,7 @@ import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
 export const LoadAssetChannelName = 'LoadAssetChannel';
 export type LoadAssetRendererRequest = { fileName: string };
 export type LoadAssetMainResponse = string;
+
 /**
  * Channel for opening a url in the default browser
  */
@@ -64,6 +66,23 @@ export type GetNumberOfEpochsConsolidatedChannelResponse = number;
  */
 export const GetSystemStartTimeChannel = 'GetSystemStartTimeChannel';
 export type GetSystemStartTimeResponse = number;
+
+/**
+ * Channel for extracting wallets from secret.key file
+ */
+export const ExtractWalletsChannelName = 'ExtractWalletsChannel';
+export type ExtractWalletsRendererRequest = { secretKeyFilePath: string };
+export type ExtractWalletsMainResponse = ExtractedWallets;
+
+/**
+ * Channel for matching extracted wallets passwords
+ */
+export const MatchWalletsPasswordsChannelName = 'MatchWalletsPasswordsChannel';
+export type MatchWalletsPasswordsRendererRequest = {
+  wallets: ExtractedWallets,
+  passwords: Array<string>,
+};
+export type MatchWalletsPasswordsMainResponse = ExtractedWallets;
 
 // CardanoNode ipc channels
 // TODO: refactor to improved structure above

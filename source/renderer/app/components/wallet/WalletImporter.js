@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import { uniq } from 'lodash';
 import classnames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
@@ -10,16 +11,14 @@ import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { TextArea } from 'react-polymorph/lib/components/TextArea';
 import { TextAreaSkin } from 'react-polymorph/lib/skins/simple/TextAreaSkin';
 import cbor from 'cbor';
-import scrypt from 'scryptsy';
 import BorderedBox from '../widgets/BorderedBox';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import FileUploadWidget from '../widgets/forms/FileUploadWidget';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import styles from './WalletImporter.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
-import { encryptPassphrase } from '../../api/utils';
 import { DOWNLOAD_KEY_FILE } from '../../../../common/ipc-api';
-// import { scryptSync } from 'crypto';
+import type { ExtractedWallets } from '../../../../common/types/wallet-importer.types';
 
 const { ipcRenderer } = global;
 
@@ -106,30 +105,20 @@ export const messages = defineMessages({
   },
 });
 
-type Props = {};
-
-type State = {
+type Props = {
+  isMatchingPasswords: boolean,
   isExtractingWallets: boolean,
-  isSubmitting: boolean,
-  wallets: Array<{
-    raw: Array<Buffer>,
-    passwordHash: string,
-    password: ?string,
-    balance: ?number,
-  }>,
+  hasExtractedWallets: boolean,
+  extractedWallets: ExtractedWallets,
+  onSecretKeyFileSelect: Function,
+  onMatchPasswords: Function,
 };
 
 @observer
-export default class WalletImporter extends Component<Props, State> {
+export default class WalletImporter extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
-  };
-
-  state = {
-    isExtractingWallets: false,
-    isSubmitting: false,
-    wallets: [],
   };
 
   form = new ReactToolboxMobxForm({
@@ -155,40 +144,9 @@ export default class WalletImporter extends Component<Props, State> {
   submit = () => {
     const { form } = this;
     const passwordsField = form.$('passwords');
-    this.setState({ isSubmitting: true });
-    setTimeout(() => {
-      const passwords = passwordsField.value.split('\n');
-      passwords.forEach((password) => { this.testPassword(password); });
-      this.setState({ isSubmitting: false });
-    }, 100);
+    const passwords = uniq(passwordsField.value.split('\n'));
+    this.props.onMatchPasswords(passwords);
   };
-
-  checkPassword(passphraseHash: string, passhash: Buffer) {
-    const bits = passphraseHash.split('|');
-    const logN = parseInt(bits[0], 10);
-    const r = parseInt(bits[1], 10);
-    const p = parseInt(bits[2], 10);
-    const salt = Buffer.from(bits[3], 'base64');
-    const realhash = Buffer.from(bits[4], 'base64');
-
-    // from nodejs native crypto (which is missing in renderer proc)
-    // var hash2 = scryptSync(cbor.encode(passhash), salt, 32, { N: 2 ** logN, r: r, p: p });
-    // try the scryptsy from npm (works, but worse performance)
-    const hash2 = scrypt(cbor.encode(passhash), salt, 2 ** logN, r, p, 32);
-    return realhash.equals(hash2);
-  }
-
-  testPassword(password: string) {
-    const { wallets } = this.state;
-    const testPasswordHash = password === '' ?
-      Buffer.from([]) : Buffer.from(encryptPassphrase(password), 'hex');
-    wallets.forEach((wallet) => {
-      if (this.checkPassword(wallet.passwordHash, testPasswordHash)) {
-        wallet.password = password;
-      }
-    });
-    this.setState({ wallets });
-  }
 
   extractKey(wallet: Object) {
     // the WalletUserSecret
@@ -215,12 +173,17 @@ export default class WalletImporter extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { isSubmitting, isExtractingWallets, wallets } = this.state;
+    const {
+      isMatchingPasswords,
+      isExtractingWallets,
+      hasExtractedWallets,
+      extractedWallets: wallets,
+      onSecretKeyFileSelect,
+    } = this.props;
     const { form, submit, downloadKeyFile } = this;
+
     const keyFileField = form.$('keyFile');
     const passwordsField = form.$('passwords');
-
-    const hasExtractedWallets = keyFileField.value && !isExtractingWallets;
 
     const generateWalletList = () => {
       const walletList = [];
@@ -264,7 +227,7 @@ export default class WalletImporter extends Component<Props, State> {
 
     const submitButtonClasses = classnames([
       'primary',
-      isSubmitting ? styles.submitButtonSpinning : styles.submitButton,
+      isMatchingPasswords ? styles.submitButtonSpinning : styles.submitButton,
     ]);
 
     return (
@@ -289,34 +252,7 @@ export default class WalletImporter extends Component<Props, State> {
               onFileSelected={(file) => {
                 // "set(value)" is an unbound method and thus must be explicitly called
                 keyFileField.set(file);
-
-                this.setState({ isExtractingWallets: true });
-
-                // from https://react-dropzone.netlify.com/
-                const reader = new FileReader();
-                reader.onabort = () => console.log('file reading was aborted');
-                reader.onerror = () => console.log('file reading has failed');
-                reader.onload = () => {
-                  const binaryStr = Buffer.from(reader.result);
-                  const decodedSecrets = cbor.decode(binaryStr);
-                  const keys = decodedSecrets[2];
-                  const walletHashes = [];
-                  keys.forEach((key) => {
-                    walletHashes.push({
-                      raw: key,
-                      passwordHash: key[1].toString('ascii'),
-                      password: null,
-                      balance: null,
-                    });
-                  });
-                  this.setState({
-                    isExtractingWallets: false,
-                    wallets: walletHashes,
-                  });
-                  this.testPassword('');
-                };
-
-                setTimeout(() => { reader.readAsArrayBuffer(file); }, 100);
+                onSecretKeyFileSelect(file.path);
               }}
             />
           </div>

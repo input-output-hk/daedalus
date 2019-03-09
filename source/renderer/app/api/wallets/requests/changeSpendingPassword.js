@@ -1,7 +1,7 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
 import type { AdaWallet } from '../types';
-import { encryptPassphrase } from '../../utils';
+import { encryptPassphrase } from '../../../../../common/crypto/encrypt';
 import { request } from '../../utils/request';
 
 export type ChangeSpendingPasswordParams = {
