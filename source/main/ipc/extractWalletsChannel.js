@@ -5,7 +5,7 @@ import { MainIpcChannel } from './lib/MainIpcChannel';
 import { ExtractWalletsChannelName } from '../../common/ipc/api';
 import type {
   ExtractWalletsRendererRequest,
-  ExtractWalletsMainResponse
+  ExtractWalletsMainResponse,
 } from '../../common/ipc/api';
 
 export const extractWalletsChannel: (

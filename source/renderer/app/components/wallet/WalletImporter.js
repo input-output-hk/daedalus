@@ -10,17 +10,15 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { TextArea } from 'react-polymorph/lib/components/TextArea';
 import { TextAreaSkin } from 'react-polymorph/lib/skins/simple/TextAreaSkin';
-import cbor from 'cbor';
 import BorderedBox from '../widgets/BorderedBox';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import FileUploadWidget from '../widgets/forms/FileUploadWidget';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import styles from './WalletImporter.scss';
-import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
-import { DOWNLOAD_KEY_FILE } from '../../../../common/ipc-api';
-import type { ExtractedWallets } from '../../../../common/types/wallet-importer.types';
-
-const { ipcRenderer } = global;
+import type {
+  ExtractedWallet,
+  ExtractedWallets,
+} from '../../../../common/types/wallet-importer.types';
 
 export const messages = defineMessages({
   headline: {
@@ -111,6 +109,7 @@ type Props = {
   hasExtractedWallets: boolean,
   extractedWallets: ExtractedWallets,
   onSecretKeyFileSelect: Function,
+  onDownloadKeyFile: Function,
   onMatchPasswords: Function,
 };
 
@@ -134,11 +133,6 @@ export default class WalletImporter extends Component<Props> {
         value: '',
       },
     },
-  }, {
-    options: {
-      validateOnChange: true,
-      validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
-    },
   });
 
   submit = () => {
@@ -148,27 +142,9 @@ export default class WalletImporter extends Component<Props> {
     this.props.onMatchPasswords(passwords);
   };
 
-  extractKey(wallet: Object) {
-    // the WalletUserSecret
-    const wus = [];
-    wus[0] = wallet.raw;
-    wus[1] = 'Imported Wallet';
-    wus[2] = []; // accounts
-    wus[3] = []; // addresses
-    // the UserSecret
-    const newSecrets = cbor.encode([[], [], [], [wus]]);
-    return newSecrets;
-  }
-
-  downloadKeyFile = (fileName: string, wallet: Object) => {
-    const filePath = global.dialog.showSaveDialog({
-      defaultPath: fileName,
-    });
-    if (filePath) {
-      const { extractKey } = this;
-      const fileContent = extractKey(wallet);
-      ipcRenderer.send(DOWNLOAD_KEY_FILE.REQUEST, fileName, fileContent, filePath);
-    }
+  downloadKeyFile = (fileName: string, wallet: ExtractedWallet) => {
+    const filePath = global.dialog.showSaveDialog({ defaultPath: fileName });
+    if (filePath) this.props.onDownloadKeyFile(wallet, filePath);
   };
 
   render() {

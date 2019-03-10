@@ -6,7 +6,7 @@ import { MainIpcChannel } from './lib/MainIpcChannel';
 import { MatchWalletsPasswordsChannelName } from '../../common/ipc/api';
 import type {
   MatchWalletsPasswordsRendererRequest,
-  MatchWalletsPasswordsMainResponse
+  MatchWalletsPasswordsMainResponse,
 } from '../../common/ipc/api';
 
 export const matchWalletsPasswordsChannel: (
@@ -34,7 +34,6 @@ export const handleMatchWalletsPasswordsRequests = () => {
   matchWalletsPasswordsChannel.onReceive((request: MatchWalletsPasswordsRendererRequest) => (
     new Promise((resolve) => {
       const { wallets, passwords } = request;
-
       wallets.forEach((wallet) => {
         if (wallet.password == null) {
           passwords.forEach(async (testPassword) => {
@@ -47,7 +46,6 @@ export const handleMatchWalletsPasswordsRequests = () => {
           });
         }
       });
-
       resolve(wallets);
     })
   ));

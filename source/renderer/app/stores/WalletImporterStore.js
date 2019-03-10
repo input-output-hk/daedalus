@@ -2,8 +2,12 @@
 import { observable, action, runInAction, toJS } from 'mobx';
 import Store from './lib/Store';
 import { extractWalletsChannel } from '../ipc/extractWalletsChannel';
+import { downloadKeyFileChannel } from '../ipc/downloadKeyFileChannel';
 import { matchWalletsPasswordsChannel } from '../ipc/matchWalletsPasswordsChannel';
-import type { ExtractedWallets } from '../../../common/types/wallet-importer.types';
+import type {
+  ExtractedWallet,
+  ExtractedWallets,
+} from '../../../common/types/wallet-importer.types';
 
 export default class WalletImporterStore extends Store {
 
@@ -16,6 +20,7 @@ export default class WalletImporterStore extends Store {
     const a = this.actions.walletImporter;
     a.extractWallets.listen(this._extractWallets);
     a.matchPasswords.listen(this._matchPasswords);
+    a.downloadKeyFile.listen(this._downloadKeyFile);
     this.actions.app.initAppEnvironment.listen(() => {});
   }
 
@@ -54,6 +59,11 @@ export default class WalletImporterStore extends Store {
       this.extractedWallets = wallets;
       this.isMatchingPasswords = false;
     });
+  };
+
+  @action _downloadKeyFile = (params: { wallet: ExtractedWallet, filePath: string }) => {
+    const { wallet, filePath } = params;
+    downloadKeyFileChannel.send({ wallet: toJS(wallet), filePath });
   };
 
   @action _resetExtractedWalletsData = () => {
