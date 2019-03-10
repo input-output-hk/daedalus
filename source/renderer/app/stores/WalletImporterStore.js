@@ -67,16 +67,16 @@ export default class WalletImporterStore extends Store {
     });
   };
 
-  @action _extractBalances = () => {
+  @action _extractBalances = async () => {
     // Pause polling in order to avoid fetching data for extracted wallets
     this.stores.wallets._pausePolling();
 
-    const walletsWithBalances = [];
-    this.extractedWallets.forEach(async (wallet) => {
+    const wallets = toJS(this.extractedWallets);
+    const walletsWithBalances = await Promise.all(wallets.map(async (wallet) => {
       const { password, balance } = wallet;
       if (password != null && balance == null) {
         // Temporarily save key file to the disk
-        const keyFilePath = await downloadKeyFileChannel.send({ wallet: toJS(wallet) });
+        const keyFilePath = await downloadKeyFileChannel.send({ wallet });
 
         // Import temporary key file and extract wallet's balance
         const importedWallet = await this.importFromKeyRequest.execute({
@@ -87,16 +87,17 @@ export default class WalletImporterStore extends Store {
 
         // Save wallet balance
         wallet.balance = formattedWalletAmount(importedWallet.amount, true);
-        walletsWithBalances.push(wallet);
+        console.debug(keyFilePath, wallet.index, wallet.balance);
 
         // Delete the imported wallet to cancel restoration
         await this.deleteWalletRequest.execute({ walletId: importedWallet.id });
-      } else {
-        walletsWithBalances.push(wallet);
       }
-    });
+      return wallet;
+    }));
 
-    this.extractedWallets = walletsWithBalances;
+    runInAction('update wallet balances', () => {
+      this.extractedWallets = walletsWithBalances;
+    });
 
     // Resume polling
     this.stores.wallets._resumePolling();

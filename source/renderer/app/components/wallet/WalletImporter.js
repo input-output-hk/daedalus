@@ -161,13 +161,12 @@ export default class WalletImporter extends Component<Props> {
     const keyFileField = form.$('keyFile');
     const passwordsField = form.$('passwords');
 
-    const generateWalletList = () => {
-      const walletList = [];
-      wallets.forEach((wallet) => {
+    const generateWalletList = () => (
+      wallets.map((wallet) => {
         const { index, password, balance } = wallet;
         const fileName = `wallet-${index}.key${password !== '' ? '.locked' : ''}`;
-        walletList.push(
-          <div className={styles.walletRow}>
+        return (
+          <div key={index} className={styles.walletRow}>
             <Input
               label={index === 1 ? intl.formatMessage(messages.walletFileLabel) : null}
               value={fileName}
@@ -197,9 +196,8 @@ export default class WalletImporter extends Component<Props> {
             />
           </div>
         );
-      });
-      return walletList;
-    };
+      })
+    );
 
     const submitButtonClasses = classnames([
       'primary',

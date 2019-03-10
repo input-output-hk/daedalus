@@ -38,7 +38,7 @@ export default class WalletImporterPage extends Component<Props> {
       hasExtractedWallets,
       extractedWallets,
     } = stores.walletImporter;
-    console.debug(extractedWallets);
+
     return (
       <Layout>
         <WalletImporter
