@@ -110,6 +110,7 @@ type Props = {
   extractedWallets: ExtractedWallets,
   onSecretKeyFileSelect: Function,
   onDownloadKeyFile: Function,
+  onImportKeyFile: Function,
   onMatchPasswords: Function,
 };
 
@@ -155,6 +156,7 @@ export default class WalletImporter extends Component<Props> {
       hasExtractedWallets,
       extractedWallets: wallets,
       onSecretKeyFileSelect,
+      onImportKeyFile,
     } = this.props;
     const { form, submit, downloadKeyFile } = this;
 
@@ -191,8 +193,9 @@ export default class WalletImporter extends Component<Props> {
             <Button
               className={styles.importButton}
               label={intl.formatMessage(messages.importLabel)}
+              onClick={() => { onImportKeyFile(wallet); }}
               skin={ButtonSkin}
-              disabled
+              disabled={password == null}
             />
           </div>
         );

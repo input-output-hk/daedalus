@@ -27,6 +27,7 @@ export default class WalletImporterStore extends Store {
     a.extractWallets.listen(this._extractWallets);
     a.matchPasswords.listen(this._matchPasswords);
     a.downloadKeyFile.listen(this._downloadKeyFile);
+    a.importKeyFile.listen(this._importKeyFile);
     this.actions.app.initAppEnvironment.listen(() => {});
   }
 
@@ -41,6 +42,7 @@ export default class WalletImporterStore extends Store {
     const { secretKeyFilePath } = params;
     let wallets = await extractWalletsChannel.send({ secretKeyFilePath });
     wallets = await matchWalletsPasswordsChannel.send({ wallets, passwords: [''] });
+    wallets = await this._extractBalances(wallets);
 
     runInAction('finish wallet extraction process', () => {
       this.extractedWallets = wallets;
@@ -57,9 +59,10 @@ export default class WalletImporterStore extends Store {
     // Start the password matching process
     this.isMatchingPasswords = true;
 
-    const wallets = await matchWalletsPasswordsChannel.send({
+    let wallets = await matchWalletsPasswordsChannel.send({
       wallets: toJS(this.extractedWallets), passwords
     });
+    wallets = await this._extractBalances(wallets);
 
     runInAction('finish wallet password matching process', () => {
       this.extractedWallets = wallets;
@@ -67,11 +70,10 @@ export default class WalletImporterStore extends Store {
     });
   };
 
-  @action _extractBalances = async () => {
+  @action _extractBalances = async (wallets: ExtractedWallets) => {
     // Pause polling in order to avoid fetching data for extracted wallets
     this.stores.wallets._pausePolling();
 
-    const wallets = toJS(this.extractedWallets);
     const walletsWithBalances = await Promise.all(wallets.map(async (wallet) => {
       const { password, balance } = wallet;
       if (password != null && balance == null) {
@@ -87,20 +89,27 @@ export default class WalletImporterStore extends Store {
 
         // Save wallet balance
         wallet.balance = formattedWalletAmount(importedWallet.amount, true);
-        console.debug(keyFilePath, wallet.index, wallet.balance);
 
         // Delete the imported wallet to cancel restoration
         await this.deleteWalletRequest.execute({ walletId: importedWallet.id });
+
+        // TODO: delete temporary key file!
       }
       return wallet;
     }));
 
-    runInAction('update wallet balances', () => {
-      this.extractedWallets = walletsWithBalances;
-    });
-
     // Resume polling
     this.stores.wallets._resumePolling();
+
+    return walletsWithBalances;
+  };
+
+  @action _importKeyFile = async (params: { wallet: ExtractedWallet }) => {
+    const { wallet } = params;
+    const filePath = await downloadKeyFileChannel.send({ wallet: toJS(wallet) });
+    const spendingPassword = wallet.password;
+    await this.stores.wallets._importWalletFromFile({ filePath, spendingPassword });
+    // TODO: delete imported key file!
   };
 
   @action _downloadKeyFile = (params: { wallet: ExtractedWallet, filePath: string }) => {
