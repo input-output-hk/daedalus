@@ -17,21 +17,19 @@ export const matchWalletsPasswordsChannel: (
 );
 
 export const handleMatchWalletsPasswordsRequests = () => {
-  const checkPassword = (passphraseHash: string, passhash: Buffer) => {
-    const bits = passphraseHash.split('|');
-    const logN = parseInt(bits[0], 10);
-    const r = parseInt(bits[1], 10);
-    const p = parseInt(bits[2], 10);
-    const salt = Buffer.from(bits[3], 'base64');
-    const realhash = Buffer.from(bits[4], 'base64');
-
-    let hash2;
-    scrypt(cbor.encode(passhash), salt, {
-      N: 2 ** logN, r, p, dkLen: 32, encoding: 'binary',
-    }, (key) => { hash2 = key; });
-
-    return realhash.equals(hash2);
-  };
+  const checkPassword = (passwordHash: string, testPasswordHash: Buffer) => (
+    new Promise((resolve) => {
+      const bits = passwordHash.split('|');
+      const logN = parseInt(bits[0], 10);
+      const r = parseInt(bits[1], 10);
+      const p = parseInt(bits[2], 10);
+      const salt = Buffer.from(bits[3], 'base64');
+      const realHash = Buffer.from(bits[4], 'base64');
+      scrypt(cbor.encode(testPasswordHash), salt, {
+        N: 2 ** logN, r, p, dkLen: 32, encoding: 'binary',
+      }, (testHash) => { resolve(realHash.equals(testHash)); });
+    })
+  );
 
   matchWalletsPasswordsChannel.onReceive((request: MatchWalletsPasswordsRendererRequest) => (
     new Promise((resolve) => {
@@ -39,13 +37,12 @@ export const handleMatchWalletsPasswordsRequests = () => {
 
       wallets.forEach((wallet) => {
         if (wallet.password == null) {
-          passwords.forEach((testPassword) => {
+          passwords.forEach(async (testPassword) => {
             if (wallet.password == null) {
               const testPasswordHash = testPassword === '' ?
                 Buffer.from([]) : Buffer.from(encryptPassphrase(testPassword), 'hex');
-              if (checkPassword(wallet.passwordHash, testPasswordHash)) {
-                wallet.password = testPassword;
-              }
+              const isPasswordMatching = await checkPassword(wallet.passwordHash, testPasswordHash);
+              if (isPasswordMatching) wallet.password = testPassword;
             }
           });
         }
