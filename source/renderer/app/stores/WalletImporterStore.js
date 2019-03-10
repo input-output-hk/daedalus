@@ -1,9 +1,12 @@
 // @flow
 import { observable, action, runInAction, toJS } from 'mobx';
 import Store from './lib/Store';
+import Request from './lib/LocalizedRequest';
+import Wallet from '../domains/Wallet';
 import { extractWalletsChannel } from '../ipc/extractWalletsChannel';
 import { downloadKeyFileChannel } from '../ipc/downloadKeyFileChannel';
 import { matchWalletsPasswordsChannel } from '../ipc/matchWalletsPasswordsChannel';
+import { formattedWalletAmount } from '../utils/formatters';
 import type {
   ExtractedWallet,
   ExtractedWallets,
@@ -15,6 +18,9 @@ export default class WalletImporterStore extends Store {
   @observable isExtractingWallets = false;
   @observable hasExtractedWallets = false;
   @observable extractedWallets: ExtractedWallets = [];
+
+  @observable importFromKeyRequest: Request<Wallet> = new Request(this.api.ada.importWalletFromKey);
+  @observable deleteWalletRequest: Request<boolean> = new Request(this.api.ada.deleteWallet);
 
   setup() {
     const a = this.actions.walletImporter;
@@ -59,6 +65,41 @@ export default class WalletImporterStore extends Store {
       this.extractedWallets = wallets;
       this.isMatchingPasswords = false;
     });
+  };
+
+  @action _extractBalances = () => {
+    // Pause polling in order to avoid fetching data for extracted wallets
+    this.stores.wallets._pausePolling();
+
+    const walletsWithBalances = [];
+    this.extractedWallets.forEach(async (wallet) => {
+      const { password, balance } = wallet;
+      if (password != null && balance == null) {
+        // Temporarily save key file to the disk
+        const keyFilePath = await downloadKeyFileChannel.send({ wallet: toJS(wallet) });
+
+        // Import temporary key file and extract wallet's balance
+        const importedWallet = await this.importFromKeyRequest.execute({
+          filePath: keyFilePath,
+          spendingPassword: password,
+        }).promise;
+        if (!importedWallet) throw new Error('Imported wallet was not received correctly');
+
+        // Save wallet balance
+        wallet.balance = formattedWalletAmount(importedWallet.amount, true);
+        walletsWithBalances.push(wallet);
+
+        // Delete the imported wallet to cancel restoration
+        await this.deleteWalletRequest.execute({ walletId: importedWallet.id });
+      } else {
+        walletsWithBalances.push(wallet);
+      }
+    });
+
+    this.extractedWallets = walletsWithBalances;
+
+    // Resume polling
+    this.stores.wallets._resumePolling();
   };
 
   @action _downloadKeyFile = (params: { wallet: ExtractedWallet, filePath: string }) => {

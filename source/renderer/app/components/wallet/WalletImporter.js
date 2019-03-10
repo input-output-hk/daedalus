@@ -163,27 +163,27 @@ export default class WalletImporter extends Component<Props> {
 
     const generateWalletList = () => {
       const walletList = [];
-      wallets.forEach((wallet, index) => {
-        const { password, balance } = wallet;
-        const fileName = `wallet-${index + 1}.key${password !== '' ? '.locked' : ''}`;
+      wallets.forEach((wallet) => {
+        const { index, password, balance } = wallet;
+        const fileName = `wallet-${index}.key${password !== '' ? '.locked' : ''}`;
         walletList.push(
           <div className={styles.walletRow}>
             <Input
-              label={!index ? intl.formatMessage(messages.walletFileLabel) : null}
+              label={index === 1 ? intl.formatMessage(messages.walletFileLabel) : null}
               value={fileName}
               onClick={() => { downloadKeyFile(fileName, wallet); }}
               skin={InputSkin}
               readOnly
             />
             <Input
-              label={!index ? intl.formatMessage(messages.walletPasswordLabel) : null}
+              label={index === 1 ? intl.formatMessage(messages.walletPasswordLabel) : null}
               placeholder={intl.formatMessage(messages.unknownPasswordHint)}
               value={password === '' ? intl.formatMessage(messages.noPasswordHint) : password}
               skin={InputSkin}
               readOnly
             />
             <Input
-              label={!index ? intl.formatMessage(messages.walletBalanceLabel) : null}
+              label={index === 1 ? intl.formatMessage(messages.walletBalanceLabel) : null}
               placeholder={intl.formatMessage(messages.unknownBalanceHint)}
               value={balance}
               skin={InputSkin}

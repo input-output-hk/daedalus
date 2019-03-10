@@ -83,9 +83,9 @@ export type ExtractWalletsMainResponse = ExtractedWallets;
 export const DownloadKeyFileChannelName = 'DownloadKeyFileChannel';
 export type DownloadKeyFileRendererRequest = {
   wallet: ExtractedWallet,
-  filePath: string,
+  filePath?: string,
 };
-export type DownloadKeyFileMainResponse = void;
+export type DownloadKeyFileMainResponse = string;
 
 /**
  * Channel for matching extracted wallets passwords

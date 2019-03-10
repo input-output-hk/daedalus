@@ -25,8 +25,9 @@ export const handleExtractWalletsRequests = () => {
         const decodedSecrets = cbor.decode(binaryString);
         const keys = decodedSecrets[2];
         const wallets = [];
-        keys.forEach((key) => {
+        keys.forEach((key, index) => {
           wallets.push({
+            index: index + 1,
             raw: key,
             passwordHash: key[1].toString('ascii'),
             password: null,

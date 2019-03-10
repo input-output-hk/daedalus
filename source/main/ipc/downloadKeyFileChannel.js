@@ -1,6 +1,8 @@
 // @flow
 import fs from 'fs';
 import cbor from 'cbor';
+import path from 'path';
+import { appFolderPath } from '../config';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { DownloadKeyFileChannelName } from '../../common/ipc/api';
 import type {
@@ -18,21 +20,22 @@ export const downloadKeyFileChannel: (
 
 export const handleDownloadKeyFileRequests = () => {
   const extractKey = (wallet: ExtractedWallet) => {
-    const wus = []; // the WalletUserSecret
+    const wus = []; // WalletUserSecret
     wus[0] = wallet.raw;
     wus[1] = 'Imported Wallet';
-    wus[2] = []; // accounts
-    wus[3] = []; // addresses
+    wus[2] = []; // Accounts
+    wus[3] = []; // Addresses
     const newSecrets = cbor.encode([[], [], [], [wus]]);
-    return newSecrets; // the UserSecret
+    return newSecrets; // UserSecret
   };
 
   downloadKeyFileChannel.onReceive((request: DownloadKeyFileRendererRequest) => (
     new Promise((resolve, reject) => {
-      const { wallet, filePath } = request;
+      const { wallet } = request;
       const fileContent = extractKey(wallet);
+      const filePath = request.filePath || path.join(appFolderPath, `wallet-${wallet.index}.key`);
       const output = fs.createWriteStream(filePath);
-      output.on('close', () => resolve());
+      output.on('close', () => resolve(filePath));
       output.on('error', (error) => reject(error));
       output.write(fileContent);
       output.close();
