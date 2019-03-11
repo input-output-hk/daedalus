@@ -4,7 +4,6 @@ export type Environment = {
   apiVersion: string,
   mobxDevTools: boolean | string,
   current: string,
-  reportUrl: string,
   isDev: boolean,
   isTest: boolean,
   isProduction: boolean,
@@ -32,7 +31,6 @@ export const TEST = 'test';
 export const MAINNET = 'mainnet';
 export const STAGING = 'staging';
 export const TESTNET = 'testnet';
-export const STAGING_REPORT_URL = 'http://staging-report-server.awstest.iohkdev.io:8080/';
 export const MAC_OS = 'darwin';
 export const WINDOWS = 'win32';
 export const LINUX = 'linux';
