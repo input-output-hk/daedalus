@@ -25,9 +25,10 @@ export default class Root extends Component<Props> {
       isNotEnoughDiskSpace,
     } = networkStatus;
 
-    const isPageThatDoesntNeedWallets =
+    const isPageThatDoesntNeedWallets = (
       isBlockConsolidationStatusPage ||
-      (isAdaRedemptionPage && hasLoadedWallets);
+      (isAdaRedemptionPage && hasLoadedWallets && isSynced)
+    );
 
     // In case node is in stopping sequence we must show the "Connecting" screen
     // with the "Stopping Cardano node..." and "Cardano node stopped" messages
@@ -44,7 +45,7 @@ export default class Root extends Component<Props> {
 
     if (
       !isSynced ||
-      !wallets.hasLoadedWallets ||
+      !hasLoadedWallets ||
       !isSystemTimeCorrect ||
       isNotEnoughDiskSpace
     ) {
