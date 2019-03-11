@@ -91,6 +91,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Download logs',
     description: 'Download logs button label on the loading.'
   },
+  tlsCertificateNotValidError: {
+    id: 'loading.screen.errors.tlsCertificateNotValidPleaseRestartError',
+    defaultMessage: '!!!TLS certificate is not valid, please restart Daedalus.',
+    description: 'The TLS cert is not valid and Daedalus should be restarted'
+  },
 });
 
 type State = {
@@ -109,6 +114,7 @@ type Props = {
   isNodeStopping: boolean,
   isNodeStopped: boolean,
   isNotEnoughDiskSpace: boolean,
+  isTlsCertInvalid: boolean,
   diskSpaceRequired: string,
   diskSpaceMissing: string,
   diskSpaceRecommended: string,
@@ -225,8 +231,9 @@ export default class Loading extends Component<Props, State> {
   };
 
   _getConnectingMessage = () => {
-    const { cardanoNodeState, hasBeenConnected } = this.props;
+    const { cardanoNodeState, hasBeenConnected, isTlsCertInvalid } = this.props;
     let connectingMessage;
+    if (isTlsCertInvalid) return messages.tlsCertificateNotValidError;
     switch (cardanoNodeState) {
       case null:
       case CardanoNodeStates.STARTING:

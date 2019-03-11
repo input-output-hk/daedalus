@@ -54,7 +54,7 @@ export default class LoadingPage extends Component<InjectedProps> {
     const { stores } = this.props;
     const {
       cardanoNodeState, isConnected, isSynced, syncPercentage, hasBeenConnected,
-      localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
+      localTimeDifference, isSystemTimeCorrect, isTlsCertInvalid, forceCheckTimeDifferenceRequest,
       forceCheckLocalTimeDifference, ignoreSystemTimeChecks, isNodeStopping, isNodeStopped,
       isNotEnoughDiskSpace, diskSpaceRequired, diskSpaceMissing, diskSpaceRecommended,
     } = stores.networkStatus;
@@ -71,6 +71,7 @@ export default class LoadingPage extends Component<InjectedProps> {
           isNodeStopping={isNodeStopping}
           isNodeStopped={isNodeStopped}
           isNotEnoughDiskSpace={isNotEnoughDiskSpace}
+          isTlsCertInvalid={isTlsCertInvalid}
           diskSpaceRequired={diskSpaceRequired}
           diskSpaceMissing={diskSpaceMissing}
           diskSpaceRecommended={diskSpaceRecommended}

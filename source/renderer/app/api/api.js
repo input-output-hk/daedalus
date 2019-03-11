@@ -150,6 +150,7 @@ import {
   TooBigTransactionError,
 } from './transactions/errors';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
+import { TlsCertificateNotValidError } from './nodes/errors';
 
 export default class AdaApi {
 
@@ -827,6 +828,9 @@ export default class AdaApi {
       };
     } catch (error) {
       Logger.error(`${loggerText} error`, { error });
+      if (error.code === TlsCertificateNotValidError.API_ERROR) {
+        throw new TlsCertificateNotValidError();
+      }
       throw new GenericApiError(error);
     }
   };
