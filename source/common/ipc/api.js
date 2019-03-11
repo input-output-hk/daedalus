@@ -80,12 +80,12 @@ export type ExtractWalletsMainResponse = ExtractedWallets;
 /**
  * Channel for downloading wallet key file
  */
-export const DownloadKeyFileChannelName = 'DownloadKeyFileChannel';
-export type DownloadKeyFileRendererRequest = {
+export const GenerateKeyFileChannelName = 'GenerateKeyFileChannel';
+export type GenerateKeyFileRendererRequest = {
   wallet: ExtractedWallet,
   filePath?: string,
 };
-export type DownloadKeyFileMainResponse = string;
+export type GenerateKeyFileMainResponse = string;
 
 /**
  * Channel for matching extracted wallets passwords

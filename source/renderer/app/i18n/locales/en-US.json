@@ -235,7 +235,7 @@
   "wallet.importer.keyFileHint": "Drop your \"secret.key\" file here or click to choose",
   "wallet.importer.keyFileLabel": "Secrets key file",
   "wallet.importer.noPasswordHint": "no password",
-  "wallet.importer.noWalletsFoundNotification": "No wallets found in the selected secrets key file.",
+  "wallet.importer.noWalletsFoundNotification": "No wallets found in the provided secrets key file.",
   "wallet.importer.passwordsListHint": "Enter your potential wallet passwords line by line",
   "wallet.importer.passwordsListLabel": "Passwords list",
   "wallet.importer.submitLabel": "Analyse passwords",

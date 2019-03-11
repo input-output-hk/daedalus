@@ -63,7 +63,7 @@ export const messages = defineMessages({
   },
   noWalletsFoundNotification: {
     id: 'wallet.importer.noWalletsFoundNotification',
-    defaultMessage: '!!!No wallets found in the selected secrets key file.',
+    defaultMessage: '!!!No wallets found in the provided secrets key file.',
     description: 'Notification shown if no wallets are extracted on the wallet importer page.'
   },
   walletFileLabel: {

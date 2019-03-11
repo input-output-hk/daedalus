@@ -6,21 +6,21 @@ import rimraf from 'rimraf';
 import ensureDirectoryExists from '../utils/ensureDirectoryExists';
 import { appFolderPath } from '../config';
 import { MainIpcChannel } from './lib/MainIpcChannel';
-import { DownloadKeyFileChannelName } from '../../common/ipc/api';
+import { GenerateKeyFileChannelName } from '../../common/ipc/api';
 import type {
-  DownloadKeyFileRendererRequest,
-  DownloadKeyFileMainResponse,
+  GenerateKeyFileRendererRequest,
+  GenerateKeyFileMainResponse,
 } from '../../common/ipc/api';
 import type { ExtractedWallet } from '../../common/types/wallet-importer.types';
 
-export const downloadKeyFileChannel: (
+export const generateKeyFileChannel: (
   // IpcChannel<Incoming, Outgoing>
-  MainIpcChannel<DownloadKeyFileRendererRequest, DownloadKeyFileMainResponse>
+  MainIpcChannel<GenerateKeyFileRendererRequest, GenerateKeyFileMainResponse>
 ) = (
-  new MainIpcChannel(DownloadKeyFileChannelName)
+  new MainIpcChannel(GenerateKeyFileChannelName)
 );
 
-export const handleDownloadKeyFileRequests = () => {
+export const handleGenerateKeyFileRequests = () => {
   const tempKeysFolder = path.join(appFolderPath, 'temp-keys');
   ensureDirectoryExists(tempKeysFolder);
 
@@ -34,13 +34,13 @@ export const handleDownloadKeyFileRequests = () => {
     return newSecrets; // UserSecret
   };
 
-  downloadKeyFileChannel.onReceive((request: DownloadKeyFileRendererRequest) => (
+  generateKeyFileChannel.onReceive((request: GenerateKeyFileRendererRequest) => (
     new Promise((resolve, reject) => {
       const { wallet } = request;
       const fileContent = extractKey(wallet);
       const filePath = request.filePath || path.join(tempKeysFolder, `wallet-${wallet.index}.key`);
       if (filePath !== request.filePath) {
-        rimraf.sync(tempKeysFolder);
+        rimraf.sync(filePath); // Make sure to delete the file if it already exists!
         ensureDirectoryExists(tempKeysFolder);
       }
       const output = fs.createWriteStream(filePath);

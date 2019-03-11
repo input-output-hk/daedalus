@@ -4,7 +4,7 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
 import { extractWalletsChannel } from '../ipc/extractWalletsChannel';
-import { downloadKeyFileChannel } from '../ipc/downloadKeyFileChannel';
+import { generateKeyFileChannel } from '../ipc/generateKeyFileChannel';
 import { matchWalletsPasswordsChannel } from '../ipc/matchWalletsPasswordsChannel';
 import { formattedWalletAmount } from '../utils/formatters';
 import type {
@@ -75,11 +75,11 @@ export default class WalletImporterStore extends Store {
     this.stores.wallets._pausePolling();
     const walletsWithBalances = [];
 
-    for (const wallet of wallets) {
+    for (const wallet of toJS(wallets)) {
       const { password, balance } = wallet;
       if (password != null && balance == null) {
         // Temporarily save key file to the disk
-        const keyFilePath = await downloadKeyFileChannel.send({ wallet });
+        const keyFilePath = await generateKeyFileChannel.send({ wallet });
 
         // Import temporary key file and extract wallet's balance
         const importedWallet = await this.importFromKeyRequest.execute({
@@ -107,7 +107,7 @@ export default class WalletImporterStore extends Store {
 
   @action _importKeyFile = async (params: { wallet: ExtractedWallet }) => {
     const { wallet } = params;
-    const filePath = await downloadKeyFileChannel.send({ wallet: toJS(wallet) });
+    const filePath = await generateKeyFileChannel.send({ wallet: toJS(wallet) });
     const spendingPassword = wallet.password;
     await this.stores.wallets._importWalletFromFile({ filePath, spendingPassword });
     // TODO: delete imported key file!
@@ -115,7 +115,7 @@ export default class WalletImporterStore extends Store {
 
   @action _downloadKeyFile = (params: { wallet: ExtractedWallet, filePath: string }) => {
     const { wallet, filePath } = params;
-    downloadKeyFileChannel.send({ wallet: toJS(wallet), filePath });
+    generateKeyFileChannel.send({ wallet: toJS(wallet), filePath });
   };
 
   @action _resetExtractedWalletsData = () => {

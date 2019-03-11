@@ -8,7 +8,7 @@ import resizeWindowApi from './resize-window';
 import loadAsset from './load-asset';
 import getGpuStatus from './get-gpu-status';
 import { handleExtractWalletsRequests } from './extractWalletsChannel';
-import { handleDownloadKeyFileRequests } from './downloadKeyFileChannel';
+import { handleGenerateKeyFileRequests } from './generateKeyFileChannel';
 import { handleMatchWalletsPasswordsRequests } from './matchWalletsPasswordsChannel';
 import { handleReportRequests } from './reportRequestChannel';
 import { handlePaperWalletRequests } from './generatePaperWalletChannel';
@@ -23,7 +23,7 @@ export default (window: BrowserWindow) => {
   loadAsset();
   getGpuStatus();
   handleExtractWalletsRequests();
-  handleDownloadKeyFileRequests();
+  handleGenerateKeyFileRequests();
   handleMatchWalletsPasswordsRequests();
   handleReportRequests();
   handlePaperWalletRequests();
