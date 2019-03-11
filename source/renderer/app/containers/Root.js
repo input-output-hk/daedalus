@@ -42,7 +42,7 @@ export default class Root extends Component<Props> {
 
     if (
       !isSynced ||
-      !wallets.hasLoadedWallets ||
+      !hasLoadedWallets ||
       !isSystemTimeCorrect ||
       isNotEnoughDiskSpace
     ) {
