@@ -78,7 +78,7 @@ export type ExtractWalletsRendererRequest = { secretKeyFilePath: string };
 export type ExtractWalletsMainResponse = ExtractedWallets;
 
 /**
- * Channel for downloading wallet key file
+ * Channel for generating wallet key file
  */
 export const GenerateKeyFileChannelName = 'GenerateKeyFileChannel';
 export type GenerateKeyFileRendererRequest = {
@@ -86,6 +86,13 @@ export type GenerateKeyFileRendererRequest = {
   filePath?: string,
 };
 export type GenerateKeyFileMainResponse = string;
+
+/**
+ * Channel for deleting wallet key file
+ */
+export const DeleteKeyFileChannelName = 'DeleteKeyFileChannel';
+export type DeleteKeyFileRendererRequest = { filePath: string };
+export type DeleteKeyFileMainResponse = void;
 
 /**
  * Channel for matching extracted wallets passwords

@@ -3,6 +3,7 @@ import { observable, action, runInAction, toJS } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
+import { deleteKeyFileChannel } from '../ipc/deleteKeyFileChannel';
 import { extractWalletsChannel } from '../ipc/extractWalletsChannel';
 import { generateKeyFileChannel } from '../ipc/generateKeyFileChannel';
 import { matchWalletsPasswordsChannel } from '../ipc/matchWalletsPasswordsChannel';
@@ -76,25 +77,25 @@ export default class WalletImporterStore extends Store {
     const walletsWithBalances = [];
 
     for (const wallet of toJS(wallets)) {
-      const { password, balance } = wallet;
-      if (password != null && balance == null) {
+      const { password: spendingPassword, balance } = wallet;
+      if (spendingPassword != null && balance == null) {
         // Temporarily save key file to the disk
-        const keyFilePath = await generateKeyFileChannel.send({ wallet });
+        const filePath = await generateKeyFileChannel.send({ wallet });
 
         // Import temporary key file and extract wallet's balance
-        const importedWallet = await this.importFromKeyRequest.execute({
-          filePath: keyFilePath,
-          spendingPassword: password,
-        }).promise;
+        const importedWallet =
+          await this.importFromKeyRequest.execute({ filePath, spendingPassword }).promise;
         if (!importedWallet) throw new Error('Imported wallet was not received correctly');
 
         // Save wallet balance
-        wallet.balance = formattedWalletAmount(importedWallet.amount, true);
+        const { amount, id: walletId } = importedWallet;
+        wallet.balance = formattedWalletAmount(amount, true);
 
         // Delete the imported wallet to cancel restoration
-        await this.deleteWalletRequest.execute({ walletId: importedWallet.id });
+        await this.deleteWalletRequest.execute({ walletId });
 
-        // TODO: delete temporary key file!
+        // Delete the temporary key file!
+        await deleteKeyFileChannel.send({ filePath });
       }
       walletsWithBalances.push(wallet);
     }
@@ -110,7 +111,9 @@ export default class WalletImporterStore extends Store {
     const filePath = await generateKeyFileChannel.send({ wallet: toJS(wallet) });
     const spendingPassword = wallet.password;
     await this.stores.wallets._importWalletFromFile({ filePath, spendingPassword });
-    // TODO: delete imported key file!
+
+    // Delete the temporary key file!
+    await deleteKeyFileChannel.send({ filePath });
   };
 
   @action _downloadKeyFile = (params: { wallet: ExtractedWallet, filePath: string }) => {

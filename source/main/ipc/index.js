@@ -7,6 +7,7 @@ import parseRedemptionCodeApi from './parse-redemption-code-from-pdf';
 import resizeWindowApi from './resize-window';
 import loadAsset from './load-asset';
 import getGpuStatus from './get-gpu-status';
+import { handleDeleteKeyFileRequests } from './deleteKeyFileChannel';
 import { handleExtractWalletsRequests } from './extractWalletsChannel';
 import { handleGenerateKeyFileRequests } from './generateKeyFileChannel';
 import { handleMatchWalletsPasswordsRequests } from './matchWalletsPasswordsChannel';
@@ -22,6 +23,7 @@ export default (window: BrowserWindow) => {
   resizeWindowApi(window);
   loadAsset();
   getGpuStatus();
+  handleDeleteKeyFileRequests();
   handleExtractWalletsRequests();
   handleGenerateKeyFileRequests();
   handleMatchWalletsPasswordsRequests();
