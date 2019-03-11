@@ -192,6 +192,8 @@ export default class WalletImporter extends Component<Props> {
             <div
               className={styles.walletKeyFile}
               onClick={() => { downloadKeyFile(fileName, wallet); }}
+              role="link"
+              aria-hidden
             >
               <Input
                 label={index === 1 ? intl.formatMessage(messages.walletFileLabel) : null}

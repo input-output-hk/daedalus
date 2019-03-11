@@ -18,21 +18,23 @@
 
 .headline {
   font-family: var(--font-medium);
-  font-size: 18px;
-  margin-bottom: 2rem;
+  font-size: 16px;
+  margin-bottom: 14px;
   margin-top: 10px;
   color: var(--theme-ada-redemption-headline-color);
 }
 
 .instructions {
-  margin-bottom: 25px;
-  font-family: var(--font-regular);
+  color: var(--theme-ada-redemption-instructions-color);
+  font-family: var(--font-light);
   font-size: 16px;
   line-height: 1.38;
-  color: var(--theme-ada-redemption-instructions-color);
+  margin-bottom: 20px;
+
   strong {
     font-family: var(--font-bold);
   }
+
   p {
     margin-bottom: 10px;
   }

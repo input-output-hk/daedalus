@@ -1,8 +1,10 @@
 // @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
+import { get } from 'lodash';
 import Layout from '../MainLayout';
 import WalletImporter from '../../components/wallet/WalletImporter';
+import RestoreNotification from '../../components/notifications/RestoreNotification';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import type { ExtractedWallet } from '../../../../common/types/wallet-importer.types';
 
@@ -40,7 +42,7 @@ export default class WalletImporterPage extends Component<Props> {
 
   render() {
     const { stores } = this.props;
-    const { wallets, walletImporter } = stores;
+    const { wallets, walletImporter, profile } = stores;
     const {
       keyFile,
       isMatchingPasswords,
@@ -51,10 +53,24 @@ export default class WalletImporterPage extends Component<Props> {
     const {
       isRestoreActive,
       restoringWalletId,
+      getWalletById,
     } = wallets;
+    const { currentLocale } = profile;
+
+    const restoringWallet = restoringWalletId ? getWalletById(restoringWalletId) : null;
+    const restoreProgress = get(restoringWallet, 'syncState.data.percentage.quantity', 0);
+    const restoreETA = get(restoringWallet, 'syncState.data.estimatedCompletionTime.quantity', 0);
 
     return (
       <Layout>
+        {isRestoreActive && restoringWallet ? (
+          <RestoreNotification
+            currentLocale={currentLocale}
+            restoreProgress={restoreProgress}
+            restoreETA={restoreETA}
+          />
+        ) : null}
+
         <WalletImporter
           keyFile={keyFile}
           isMatchingPasswords={isMatchingPasswords}
