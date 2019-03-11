@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Implemented "In progress" download logs notification ([PR 1341](https://github.com/input-output-hk/daedalus/pull/1341))
+
 ### Chores
 
 - Replaced "Ada" with "ada" ([PR 1317](https://github.com/input-output-hk/daedalus/pull/1317), [PR 1336](https://github.com/input-output-hk/daedalus/pull/1336))
@@ -13,7 +17,6 @@ Changelog
 
 ### Features
 
-- Implemented "In progress" download logs notification ([PR 1341](https://github.com/input-output-hk/daedalus/pull/1341))
 - New validation message for transactions which are to big in data size ([PR 1308](https://github.com/input-output-hk/daedalus/pull/1308), [PR 1331](https://github.com/input-output-hk/daedalus/pull/1331))
 - Structured logging for Daedalus in JSON format, matching the structured logging format used in Cardano SL ([PR 1299](https://github.com/input-output-hk/daedalus/pull/1299))
 - Additional instructions for paper wallet certificate creation ([PR 1309](https://github.com/input-output-hk/daedalus/pull/1309))
