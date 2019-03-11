@@ -332,6 +332,12 @@ export default class WalletsStore extends Store {
     }
   };
 
+  @action resetWalletsData = () => {
+    this.walletsRequest.reset();
+    this.stores.addresses.addressesRequests = [];
+    this.stores.transactions.transactionsRequests = [];
+  };
+
   @action _setIsRestoreActive = (restoringWalletId: ?string) => {
     this.isRestoreActive = restoringWalletId !== null;
     this.restoringWalletId = restoringWalletId;
