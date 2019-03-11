@@ -101,6 +101,11 @@ export const messages = defineMessages({
     defaultMessage: '!!!Import',
     description: 'Label for the wallet "Import" button on the wallet importer page.'
   },
+  openWalletLabel: {
+    id: 'wallet.importer.openLabel',
+    defaultMessage: '!!!Open',
+    description: 'Label for the wallet "Open" button on the wallet importer page.'
+  },
 });
 
 type Props = {
@@ -113,6 +118,7 @@ type Props = {
   onDownloadKeyFile: Function,
   onImportKeyFile: Function,
   onMatchPasswords: Function,
+  onOpenWallet: Function,
 };
 
 @observer
@@ -159,6 +165,7 @@ export default class WalletImporter extends Component<Props> {
       extractedWallets: wallets,
       onSecretKeyFileSelect,
       onImportKeyFile,
+      onOpenWallet,
     } = this.props;
     const { form, submit, downloadKeyFile } = this;
 
@@ -167,7 +174,7 @@ export default class WalletImporter extends Component<Props> {
 
     const generateWalletList = () => (
       wallets.map((wallet) => {
-        const { index, password, balance } = wallet;
+        const { id, index, password, balance, imported } = wallet;
         const fileName = `wallet-${index}.key${password !== '' ? '.locked' : ''}`;
         return (
           <div key={index} className={styles.walletRow}>
@@ -192,13 +199,22 @@ export default class WalletImporter extends Component<Props> {
               skin={InputSkin}
               readOnly
             />
-            <Button
-              className={styles.importButton}
-              label={intl.formatMessage(messages.importLabel)}
-              onClick={() => { onImportKeyFile(wallet); }}
-              skin={ButtonSkin}
-              disabled={password == null}
-            />
+            {imported && id ? (
+              <Button
+                className={styles.importButton}
+                label={intl.formatMessage(messages.openWalletLabel)}
+                onClick={() => { onOpenWallet(id); }}
+                skin={ButtonSkin}
+              />
+            ) : (
+              <Button
+                className={styles.importButton}
+                label={intl.formatMessage(messages.importLabel)}
+                onClick={() => { onImportKeyFile(wallet); }}
+                skin={ButtonSkin}
+                disabled={password == null}
+              />
+            )}
           </div>
         );
       })

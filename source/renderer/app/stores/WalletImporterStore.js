@@ -85,17 +85,30 @@ export default class WalletImporterStore extends Store {
         // Temporarily save key file to the disk
         const filePath = await generateKeyFileChannel.send({ wallet });
 
-        // Import temporary key file and extract wallet's balance
-        const importedWallet =
-          await this.importFromKeyRequest.execute({ filePath, spendingPassword }).promise;
-        if (!importedWallet) throw new Error('Imported wallet was not received correctly');
+        let importedWallet;
+        try {
+          // Import temporary key file and extract wallet's balance
+          importedWallet =
+            await this.importFromKeyRequest.execute({ filePath, spendingPassword }).promise;
+        } catch (error) {
+          const { message, diagnostic } = error.values;
+          if (message === 'WalletAlreadyExists') {
+            importedWallet = this.stores.wallets.getWalletById(diagnostic.walletId);
+            wallet.imported = true; // Wallet is already imported
+          }
+        }
 
-        // Save wallet balance
-        const { amount, id: walletId } = importedWallet;
-        wallet.balance = formattedWalletAmount(amount, true);
+        if (importedWallet) {
+          // Save wallet balance
+          const { amount, id: walletId } = importedWallet;
+          wallet.id = walletId;
+          wallet.balance = formattedWalletAmount(amount, true);
 
-        // Delete the imported wallet to cancel restoration
-        await this.deleteWalletRequest.execute({ walletId });
+          if (!wallet.imported) {
+            // Delete the imported wallet to cancel restoration
+            await this.deleteWalletRequest.execute({ walletId });
+          }
+        }
 
         // Delete the temporary key file!
         await deleteKeyFileChannel.send({ filePath });

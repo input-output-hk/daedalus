@@ -1,3 +1,4 @@
+// @flow
 import { defineMessages } from 'react-intl';
 import LocalizableError from '../../i18n/LocalizableError';
 
@@ -29,19 +30,21 @@ export class WalletAlreadyRestoredError extends LocalizableError {
 }
 
 export class WalletAlreadyImportedError extends LocalizableError {
-  constructor() {
+  constructor(values?: Object = {}) {
     super({
       id: messages.walletAlreadyImportedError.id,
       defaultMessage: messages.walletAlreadyImportedError.defaultMessage,
+      values,
     });
   }
 }
 
 export class WalletFileImportError extends LocalizableError {
-  constructor() {
+  constructor(values?: Object = {}) {
     super({
       id: messages.walletFileImportError.id,
       defaultMessage: messages.walletFileImportError.defaultMessage,
+      values,
     });
   }
 }

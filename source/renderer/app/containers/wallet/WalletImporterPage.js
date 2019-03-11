@@ -34,6 +34,10 @@ export default class WalletImporterPage extends Component<Props> {
     this.props.actions.walletImporter.importKeyFile.trigger({ wallet });
   };
 
+  handleOpenWallet = (walletId: string) => {
+    this.props.stores.wallets.goToWalletRoute(walletId);
+  };
+
   render() {
     const { stores } = this.props;
     const {
@@ -56,6 +60,7 @@ export default class WalletImporterPage extends Component<Props> {
           onDownloadKeyFile={this.handleDownloadKeyFile}
           onImportKeyFile={this.handleImportKeyFile}
           onMatchPasswords={this.handleMatchPasswords}
+          onOpenWallet={this.handleOpenWallet}
         />
       </Layout>
     );

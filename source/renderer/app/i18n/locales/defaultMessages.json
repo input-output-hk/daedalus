@@ -81,13 +81,13 @@
         "description": "\"It's not allowed to send money to the same address you are sending from.\" error message.",
         "end": {
           "column": 3,
-          "line": 9
+          "line": 10
         },
         "file": "source/renderer/app/api/transactions/errors.js",
         "id": "api.errors.NotAllowedToSendMoneyToSameAddressError",
         "start": {
           "column": 43,
-          "line": 5
+          "line": 6
         }
       },
       {
@@ -95,13 +95,13 @@
         "description": "\"It is not allowed to send money to ada redemption address.\" error message.",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 15
         },
         "file": "source/renderer/app/api/transactions/errors.js",
         "id": "api.errors.NotAllowedToSendMoneyToRedeemAddressError",
         "start": {
           "column": 45,
-          "line": 10
+          "line": 11
         }
       },
       {
@@ -109,13 +109,13 @@
         "description": "\"Not enough money to make this transaction.\" error message.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "source/renderer/app/api/transactions/errors.js",
         "id": "api.errors.NotEnoughMoneyToSendError",
         "start": {
           "column": 29,
-          "line": 15
+          "line": 16
         }
       },
       {
@@ -123,13 +123,13 @@
         "description": "\"Your ada could not be redeemed. Please check your redemption key.\" error message.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/api/transactions/errors.js",
         "id": "api.errors.RedeemAdaError",
         "start": {
           "column": 18,
-          "line": 20
+          "line": 21
         }
       },
       {
@@ -137,13 +137,13 @@
         "description": "\"Your ada could not be redeemed. The redemption key was already used.\" error message.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/api/transactions/errors.js",
         "id": "api.errors.RedemptionAddressAlreadyUsed",
         "start": {
           "column": 32,
-          "line": 25
+          "line": 26
         }
       },
       {
@@ -151,13 +151,13 @@
         "description": "\"All your funds are already at the address you are trying send money to.\" error message.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "source/renderer/app/api/transactions/errors.js",
         "id": "api.errors.AllFundsAlreadyAtReceiverAddressError",
         "start": {
           "column": 41,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -165,13 +165,13 @@
         "description": "\"Not enough ada for fees. Try sending a smaller amount.\" error message",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/api/transactions/errors.js",
         "id": "api.errors.NotEnoughFundsForTransactionFeesError",
         "start": {
           "column": 41,
-          "line": 35
+          "line": 36
         }
       },
       {
@@ -179,13 +179,13 @@
         "description": "\"Not enough ada . Try sending a smaller amount.\" error message",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/api/transactions/errors.js",
         "id": "api.errors.NotEnoughFundsForTransactionError",
         "start": {
           "column": 37,
-          "line": 40
+          "line": 41
         }
       },
       {
@@ -193,13 +193,13 @@
         "description": "\"Cannot calculate fees while there are pending transactions.\" error message",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 50
         },
         "file": "source/renderer/app/api/transactions/errors.js",
         "id": "api.errors.CanNotCalculateTransactionFeesError",
         "start": {
           "column": 39,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -207,13 +207,13 @@
         "description": "\"Transaction too big due to too many inputs.\" error message.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/api/transactions/errors.js",
         "id": "api.errors.TooBigTransactionError",
         "start": {
           "column": 26,
-          "line": 50
+          "line": 51
         }
       },
       {
@@ -221,13 +221,13 @@
         "description": "\"Transaction too big due to too many inputs.\" error link label.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 60
         },
         "file": "source/renderer/app/api/transactions/errors.js",
         "id": "api.errors.TooBigTransactionErrorLinkLabel",
         "start": {
           "column": 35,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -235,13 +235,13 @@
         "description": "\"Transaction too big due to too many inputs.\" error link URL.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 65
         },
         "file": "source/renderer/app/api/transactions/errors.js",
         "id": "api.errors.TooBigTransactionErrorLinkURL",
         "start": {
           "column": 33,
-          "line": 60
+          "line": 61
         }
       }
     ],
@@ -254,13 +254,13 @@
         "description": "\"Wallet you are trying to restore already exists.\" error message.",
         "end": {
           "column": 3,
-          "line": 9
+          "line": 10
         },
         "file": "source/renderer/app/api/wallets/errors.js",
         "id": "api.errors.WalletAlreadyRestoredError",
         "start": {
           "column": 30,
-          "line": 5
+          "line": 6
         }
       },
       {
@@ -268,13 +268,13 @@
         "description": "\"Wallet you are trying to import already exists.\" error message.",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 15
         },
         "file": "source/renderer/app/api/wallets/errors.js",
         "id": "api.errors.WalletAlreadyImportedError",
         "start": {
           "column": 30,
-          "line": 10
+          "line": 11
         }
       },
       {
@@ -282,13 +282,13 @@
         "description": "\"Wallet could not be imported, please make sure you are providing a correct file.\" error message.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "source/renderer/app/api/wallets/errors.js",
         "id": "api.errors.WalletFileImportError",
         "start": {
           "column": 25,
-          "line": 15
+          "line": 16
         }
       }
     ],
@@ -4410,6 +4410,20 @@
         "start": {
           "column": 15,
           "line": 99
+        }
+      },
+      {
+        "defaultMessage": "!!!Open",
+        "description": "Label for the wallet \"Open\" button on the wallet importer page.",
+        "end": {
+          "column": 3,
+          "line": 108
+        },
+        "file": "source/renderer/app/components/wallet/WalletImporter.js",
+        "id": "wallet.importer.openLabel",
+        "start": {
+          "column": 19,
+          "line": 104
         }
       }
     ],

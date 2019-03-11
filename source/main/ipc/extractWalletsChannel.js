@@ -32,6 +32,8 @@ export const handleExtractWalletsRequests = () => {
             passwordHash: key[1].toString('ascii'),
             password: null,
             balance: null,
+            imported: false,
+            id: null,
           });
         });
 

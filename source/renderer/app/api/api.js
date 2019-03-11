@@ -624,9 +624,9 @@ export default class AdaApi {
     } catch (error) {
       Logger.error('AdaApi::importWalletFromKey error', { error });
       if (error.message === 'WalletAlreadyExists') {
-        throw new WalletAlreadyImportedError();
+        throw new WalletAlreadyImportedError(error);
       }
-      throw new WalletFileImportError();
+      throw new WalletFileImportError(error);
     }
   };
 
