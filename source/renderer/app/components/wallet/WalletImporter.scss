@@ -17,11 +17,11 @@
 }
 
 .headline {
-  font-family: var(--font-medium);
+  color: var(--theme-ada-redemption-headline-color);
+  font-family: var(--font-semibold);
   font-size: 16px;
   margin-bottom: 14px;
   margin-top: 10px;
-  color: var(--theme-ada-redemption-headline-color);
 }
 
 .instructions {
