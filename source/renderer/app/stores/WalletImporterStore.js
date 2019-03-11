@@ -15,6 +15,7 @@ import type {
 
 export default class WalletImporterStore extends Store {
 
+  @observable keyFile: ?File = null;
   @observable isMatchingPasswords = false;
   @observable isExtractingWallets = false;
   @observable hasExtractedWallets = false;
@@ -32,15 +33,17 @@ export default class WalletImporterStore extends Store {
     this.actions.app.initAppEnvironment.listen(() => {});
   }
 
-  @action _extractWallets = async (params: { secretKeyFilePath: string }) => {
+  @action _extractWallets = async (params: { keyFile: File }) => {
     // Purge any existing extracted wallets data
     this._resetExtractedWalletsData();
 
+    const { keyFile } = params;
     runInAction('start wallet extraction process', () => {
+      this.keyFile = keyFile;
       this.isExtractingWallets = true;
     });
 
-    const { secretKeyFilePath } = params;
+    const { path: secretKeyFilePath } = keyFile;
     let wallets = await extractWalletsChannel.send({ secretKeyFilePath });
     wallets = await matchWalletsPasswordsChannel.send({ wallets, passwords: [''] });
     wallets = await this._extractBalances(wallets);
@@ -122,6 +125,7 @@ export default class WalletImporterStore extends Store {
   };
 
   @action _resetExtractedWalletsData = () => {
+    this.keyFile = null;
     this.isMatchingPasswords = false;
     this.isExtractingWallets = false;
     this.hasExtractedWallets = false;

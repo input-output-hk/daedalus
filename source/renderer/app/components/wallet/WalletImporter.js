@@ -104,6 +104,7 @@ export const messages = defineMessages({
 });
 
 type Props = {
+  keyFile: ?File,
   isMatchingPasswords: boolean,
   isExtractingWallets: boolean,
   hasExtractedWallets: boolean,
@@ -126,6 +127,7 @@ export default class WalletImporter extends Component<Props> {
       keyFile: {
         label: this.context.intl.formatMessage(messages.keyFileLabel),
         placeholder: this.context.intl.formatMessage(messages.keyFileHint),
+        value: this.props.keyFile,
         type: 'file',
       },
       passwords: {
@@ -229,7 +231,7 @@ export default class WalletImporter extends Component<Props> {
               onFileSelected={(file) => {
                 // "set(value)" is an unbound method and thus must be explicitly called
                 keyFileField.set(file);
-                onSecretKeyFileSelect(file.path);
+                onSecretKeyFileSelect(file);
               }}
             />
           </div>
