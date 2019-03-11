@@ -5,8 +5,8 @@ Changelog
 
 ### Features
 
-- Replaced ada symbol images with unicode character ([PR 1317](https://github.com/input-output-hk/daedalus/pull/1317))
 - Improved error messages for connecting screen ([PR 1344](https://github.com/input-output-hk/daedalus/pull/1344))
+- Replaced ada symbol images with unicode character ([PR 1317](https://github.com/input-output-hk/daedalus/pull/1317))
 
 ### Chores
 

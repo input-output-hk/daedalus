@@ -77,25 +77,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!TLS certificate is not valid",
-        "description": "Error message warning that the TLS cert is not valid",
-        "end": {
-          "column": 3,
-          "line": 10
-        },
-        "file": "source/renderer/app/api/nodes/errors.js",
-        "id": "api.nodes.errors.TlsCertificateNotValidError",
-        "start": {
-          "column": 31,
-          "line": 6
-        }
-      }
-    ],
-    "path": "source/renderer/app/api/nodes/errors.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!It's not allowed to send money to the same address you are sending from. Make sure you have enough addresses with money in this account or send to a different address.",
         "description": "\"It's not allowed to send money to the same address you are sending from.\" error message.",
         "end": {
