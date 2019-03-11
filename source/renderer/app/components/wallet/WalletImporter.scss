@@ -60,10 +60,16 @@
     margin-top: 10px;
   }
 
-  .importButton {
+  .importButton,
+  .importButtonSpinning {
     height: 48px;
     min-width: 130px;
     width: auto;
+  }
+
+  .importButtonSpinning {
+    box-shadow: none !important;
+    @include loading-spinner("../../assets/images/spinner-light.svg");
   }
 }
 

@@ -40,13 +40,18 @@ export default class WalletImporterPage extends Component<Props> {
 
   render() {
     const { stores } = this.props;
+    const { wallets, walletImporter } = stores;
     const {
       keyFile,
       isMatchingPasswords,
       isExtractingWallets,
       hasExtractedWallets,
       extractedWallets,
-    } = stores.walletImporter;
+    } = walletImporter;
+    const {
+      isRestoreActive,
+      restoringWalletId,
+    } = wallets;
 
     return (
       <Layout>
@@ -61,6 +66,8 @@ export default class WalletImporterPage extends Component<Props> {
           onImportKeyFile={this.handleImportKeyFile}
           onMatchPasswords={this.handleMatchPasswords}
           onOpenWallet={this.handleOpenWallet}
+          isRestoreActive={isRestoreActive}
+          restoringWalletId={restoringWalletId}
         />
       </Layout>
     );

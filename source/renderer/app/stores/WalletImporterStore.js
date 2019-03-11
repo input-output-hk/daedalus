@@ -1,4 +1,5 @@
 // @flow
+import { findIndex } from 'lodash';
 import { observable, action, runInAction, toJS } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -126,7 +127,21 @@ export default class WalletImporterStore extends Store {
     const { wallet } = params;
     const filePath = await generateKeyFileChannel.send({ wallet: toJS(wallet) });
     const spendingPassword = wallet.password;
-    await this.stores.wallets._importWalletFromFile({ filePath, spendingPassword });
+    const importedWallet = await this.importFromKeyRequest.execute({
+      filePath, spendingPassword,
+    }).promise;
+    if (!importedWallet) throw new Error('Imported wallet was not received correctly');
+    await this.stores.wallets._patchWalletRequestWithNewWallet(importedWallet);
+    this.stores.wallets.refreshWalletsData();
+
+    runInAction('mark wallet as imported', () => {
+      if (wallet.id) {
+        const wallets = toJS(this.extractedWallets);
+        const wIndex = findIndex(wallets, { id: wallet.id });
+        wallets[wIndex].imported = true;
+        this.extractedWallets = wallets;
+      }
+    });
 
     // Delete the temporary key file!
     await deleteKeyFileChannel.send({ filePath });

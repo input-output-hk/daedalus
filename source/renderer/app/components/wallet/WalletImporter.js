@@ -110,6 +110,8 @@ export const messages = defineMessages({
 
 type Props = {
   keyFile: ?File,
+  isRestoreActive: boolean,
+  restoringWalletId: ?string,
   isMatchingPasswords: boolean,
   isExtractingWallets: boolean,
   hasExtractedWallets: boolean,
@@ -159,6 +161,8 @@ export default class WalletImporter extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
+      isRestoreActive,
+      restoringWalletId,
       isMatchingPasswords,
       isExtractingWallets,
       hasExtractedWallets,
@@ -176,6 +180,11 @@ export default class WalletImporter extends Component<Props> {
       wallets.map((wallet) => {
         const { id, index, password, balance, imported } = wallet;
         const fileName = `wallet-${index}.key${password !== '' ? '.locked' : ''}`;
+        const isImporting = id && id === restoringWalletId;
+        const importButtonClasses = classnames([
+          'primary',
+          isImporting ? styles.importButtonSpinning : styles.importButton,
+        ]);
         return (
           <div key={index} className={styles.walletRow}>
             <Input
@@ -208,11 +217,11 @@ export default class WalletImporter extends Component<Props> {
               />
             ) : (
               <Button
-                className={styles.importButton}
+                className={importButtonClasses}
                 label={intl.formatMessage(messages.importLabel)}
                 onClick={() => { onImportKeyFile(wallet); }}
                 skin={ButtonSkin}
-                disabled={password == null}
+                disabled={password == null || isRestoreActive}
               />
             )}
           </div>
@@ -286,6 +295,7 @@ export default class WalletImporter extends Component<Props> {
                 label={intl.formatMessage(messages.submitLabel)}
                 onClick={submit}
                 skin={ButtonSkin}
+                disabled={isMatchingPasswords}
               />
             </div>
           ) : null}
