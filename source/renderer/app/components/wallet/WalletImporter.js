@@ -208,7 +208,7 @@ export default class WalletImporter extends Component<Props> {
               skin={InputSkin}
               readOnly
             />
-            {imported && id ? (
+            {imported && id && !isImporting ? (
               <Button
                 className={styles.importButton}
                 label={intl.formatMessage(messages.openWalletLabel)}
