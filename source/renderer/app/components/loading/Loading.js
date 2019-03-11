@@ -274,6 +274,7 @@ export default class Loading extends Component<Props, State> {
       isNodeStopping,
       isNodeStopped,
       isNotEnoughDiskSpace,
+      isTlsCertInvalid,
       diskSpaceRequired,
       diskSpaceMissing,
       diskSpaceRecommended,
@@ -313,7 +314,7 @@ export default class Loading extends Component<Props, State> {
     if (!isConnected) {
       const headlineClasses = classNames([
         styles.headline,
-        isNodeStopped ? styles.withoutAnimation : null,
+        isNodeStopped || isTlsCertInvalid ? styles.withoutAnimation : null,
       ]);
       return (
         <div className={styles.connecting}>
