@@ -119,8 +119,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Your ada could not be redeemed correctly. Please check your redemption key.",
-        "description": "\"Your ada could not be redeemed correctly. Please check your redemption key.\" error message.",
+        "defaultMessage": "!!!Your ada could not be redeemed. Please check your redemption key.",
+        "description": "\"Your ada could not be redeemed. Please check your redemption key.\" error message.",
         "end": {
           "column": 3,
           "line": 24
@@ -133,8 +133,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Your ada could not be redeemed correctly. The redemption key was already used.",
-        "description": "\"Your ada could not be redeemed correctly. The redemption key was already used.\" error message.",
+        "defaultMessage": "!!!Your ada could not be redeemed. The redemption key was already used.",
+        "description": "\"Your ada could not be redeemed. The redemption key was already used.\" error message.",
         "end": {
           "column": 3,
           "line": 29
