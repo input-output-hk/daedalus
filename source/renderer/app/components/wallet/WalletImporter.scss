@@ -7,6 +7,7 @@
   flex-direction: column;
   font-family: var(--font-regular);
   height: 100%;
+  overflow: overlay;
   padding: 20px;
 
   :global {
@@ -68,6 +69,10 @@
     input,
     .downloadIcon {
       cursor: pointer;
+    }
+
+    input {
+      padding-right: 45px;
     }
 
     .downloadIcon {
