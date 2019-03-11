@@ -4193,13 +4193,13 @@
         "description": "Headline of the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.headline",
         "start": {
           "column": 12,
-          "line": 24
+          "line": 26
         }
       },
       {
@@ -4207,13 +4207,13 @@
         "description": "Detailed instructions for importing wallets.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 35
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.instructions",
         "start": {
           "column": 16,
-          "line": 29
+          "line": 31
         }
       },
       {
@@ -4221,13 +4221,13 @@
         "description": "Label \"Secrets key file\" on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 40
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.keyFileLabel",
         "start": {
           "column": 16,
-          "line": 34
+          "line": 36
         }
       },
       {
@@ -4235,13 +4235,13 @@
         "description": "Hint for the secrets key file upload field on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 45
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.keyFileHint",
         "start": {
           "column": 15,
-          "line": 39
+          "line": 41
         }
       },
       {
@@ -4249,27 +4249,27 @@
         "description": "Label \"Passwords list\" on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 50
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.passwordsListLabel",
         "start": {
           "column": 22,
-          "line": 44
+          "line": 46
         }
       },
       {
-        "defaultMessage": "!!!Enter your potential wallet passwords line by line",
+        "defaultMessage": "!!!Enter up to 20 potential wallet passwords line by line",
         "description": "Hint for the passwords list field on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 55
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.passwordsListHint",
         "start": {
           "column": 21,
-          "line": 49
+          "line": 51
         }
       },
       {
@@ -4277,13 +4277,13 @@
         "description": "Label for the \"Analyse passwords\" submit button on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 60
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.submitLabel",
         "start": {
           "column": 15,
-          "line": 54
+          "line": 56
         }
       },
       {
@@ -4291,13 +4291,13 @@
         "description": "Notification shown during wallet extraction on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.extractingWalletsNotification",
         "start": {
           "column": 33,
-          "line": 59
+          "line": 61
         }
       },
       {
@@ -4305,13 +4305,13 @@
         "description": "Notification shown if no wallets are extracted on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 70
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.noWalletsFoundNotification",
         "start": {
           "column": 30,
-          "line": 64
+          "line": 66
         }
       },
       {
@@ -4319,13 +4319,13 @@
         "description": "Label \"Wallet file\" on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 75
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.walletFileLabel",
         "start": {
           "column": 19,
-          "line": 69
+          "line": 71
         }
       },
       {
@@ -4333,13 +4333,13 @@
         "description": "Label \"Password\" on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 80
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.walletPasswordLabel",
         "start": {
           "column": 23,
-          "line": 74
+          "line": 76
         }
       },
       {
@@ -4347,27 +4347,27 @@
         "description": "Label \"Balance\" on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 85
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.walletBalanceLabel",
         "start": {
           "column": 22,
-          "line": 79
+          "line": 81
         }
       },
       {
-        "defaultMessage": "!!!no password",
+        "defaultMessage": "!!!No password",
         "description": "Hint for the wallet password field on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 90
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.noPasswordHint",
         "start": {
           "column": 18,
-          "line": 84
+          "line": 86
         }
       },
       {
@@ -4375,13 +4375,13 @@
         "description": "Hint for the wallet password field on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 95
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.unknownPasswordHint",
         "start": {
           "column": 23,
-          "line": 89
+          "line": 91
         }
       },
       {
@@ -4389,13 +4389,13 @@
         "description": "Hint for the wallet balance field on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 98
+          "line": 100
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.unknownBalanceHint",
         "start": {
           "column": 22,
-          "line": 94
+          "line": 96
         }
       },
       {
@@ -4403,13 +4403,13 @@
         "description": "Label for the wallet \"Import\" button on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 103
+          "line": 105
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.importLabel",
         "start": {
           "column": 15,
-          "line": 99
+          "line": 101
         }
       },
       {
@@ -4417,13 +4417,13 @@
         "description": "Label for the wallet \"Open\" button on the wallet importer page.",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 110
         },
         "file": "source/renderer/app/components/wallet/WalletImporter.js",
         "id": "wallet.importer.openLabel",
         "start": {
           "column": 19,
-          "line": 104
+          "line": 106
         }
       }
     ],

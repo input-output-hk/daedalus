@@ -60,6 +60,36 @@
     margin-top: 10px;
   }
 
+  .walletKeyFile {
+    position: relative;
+
+    input,
+    .downloadIcon {
+      cursor: pointer;
+    }
+
+    .downloadIcon {
+      bottom: 11px;
+      height: 22.5px;
+      opacity: 0.5;
+      position: absolute;
+      right: 13px;
+      width: 22.5px;
+
+      & > svg {
+        display: block;
+        width: 22.5px;
+        path {
+          stroke: var(--theme-icon-file-upload-color);
+        }
+      }
+    }
+
+    &:hover .downloadIcon {
+      opacity: 1;
+    }
+  }
+
   .importButton,
   .importButtonSpinning {
     height: 48px;
@@ -95,8 +125,7 @@
 .submitButton,
 .submitButtonSpinning {
   display: block !important;
-  margin-top: 30px;
-  width: 100% !important;
+  margin: 30px auto 0;
 }
 
 .submitButtonSpinning {

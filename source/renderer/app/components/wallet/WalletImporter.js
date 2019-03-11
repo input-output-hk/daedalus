@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { uniq } from 'lodash';
 import classnames from 'classnames';
+import SVGInline from 'react-svg-inline';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Input } from 'react-polymorph/lib/components/Input';
@@ -14,6 +15,7 @@ import BorderedBox from '../widgets/BorderedBox';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import FileUploadWidget from '../widgets/forms/FileUploadWidget';
 import LoadingSpinner from '../widgets/LoadingSpinner';
+import downloadIcon from '../../assets/images/download-ic.inline.svg';
 import styles from './WalletImporter.scss';
 import type {
   ExtractedWallet,
@@ -48,7 +50,7 @@ export const messages = defineMessages({
   },
   passwordsListHint: {
     id: 'wallet.importer.passwordsListHint',
-    defaultMessage: '!!!Enter your potential wallet passwords line by line',
+    defaultMessage: '!!!Enter up to 20 potential wallet passwords line by line',
     description: 'Hint for the passwords list field on the wallet importer page.'
   },
   submitLabel: {
@@ -83,7 +85,7 @@ export const messages = defineMessages({
   },
   noPasswordHint: {
     id: 'wallet.importer.noPasswordHint',
-    defaultMessage: '!!!no password',
+    defaultMessage: '!!!No password',
     description: 'Hint for the wallet password field on the wallet importer page.'
   },
   unknownPasswordHint: {
@@ -187,17 +189,26 @@ export default class WalletImporter extends Component<Props> {
         ]);
         return (
           <div key={index} className={styles.walletRow}>
-            <Input
-              label={index === 1 ? intl.formatMessage(messages.walletFileLabel) : null}
-              value={fileName}
+            <div
+              className={styles.walletKeyFile}
               onClick={() => { downloadKeyFile(fileName, wallet); }}
-              skin={InputSkin}
-              readOnly
-            />
+            >
+              <Input
+                label={index === 1 ? intl.formatMessage(messages.walletFileLabel) : null}
+                value={fileName}
+                skin={InputSkin}
+                readOnly
+              />
+              <SVGInline svg={downloadIcon} className={styles.downloadIcon} />
+            </div>
             <Input
               label={index === 1 ? intl.formatMessage(messages.walletPasswordLabel) : null}
-              placeholder={intl.formatMessage(messages.unknownPasswordHint)}
-              value={password === '' ? intl.formatMessage(messages.noPasswordHint) : password}
+              placeholder={
+                password === '' ?
+                  intl.formatMessage(messages.noPasswordHint) :
+                  intl.formatMessage(messages.unknownPasswordHint)
+              }
+              value={password}
               skin={InputSkin}
               readOnly
             />
