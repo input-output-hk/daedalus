@@ -73,8 +73,9 @@ export default class WalletImporterStore extends Store {
   @action _extractBalances = async (wallets: ExtractedWallets) => {
     // Pause polling in order to avoid fetching data for extracted wallets
     this.stores.wallets._pausePolling();
+    const walletsWithBalances = [];
 
-    const walletsWithBalances = await Promise.all(wallets.map(async (wallet) => {
+    for (const wallet of wallets) {
       const { password, balance } = wallet;
       if (password != null && balance == null) {
         // Temporarily save key file to the disk
@@ -95,8 +96,8 @@ export default class WalletImporterStore extends Store {
 
         // TODO: delete temporary key file!
       }
-      return wallet;
-    }));
+      walletsWithBalances.push(wallet);
+    }
 
     // Resume polling
     this.stores.wallets._resumePolling();
