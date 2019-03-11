@@ -87,6 +87,7 @@ export default class WalletSummary extends Component<Props> {
                   <SVGInline svg={adaSymbolSmallest} className={styles.currencySymbolSmallest} />
                 </div>
               )}
+
             </div>
           ) : null}
 

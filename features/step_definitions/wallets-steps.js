@@ -434,7 +434,7 @@ Then(/^the latest transaction should show:$/, async function (table) {
   await this.client.waitForVisible('.Transaction_title');
   let transactionTitles = await this.client.getText('.Transaction_title');
   transactionTitles = [].concat(transactionTitles);
-  const expectedTransactionTitle = await this.intl(expectedData.title, { currency: 'ADA' });
+  const expectedTransactionTitle = await this.intl(expectedData.title, { currency: 'Ada' });
   expect(expectedTransactionTitle).to.equal(transactionTitles[0]);
   let transactionAmounts = await this.client.getText('.Transaction_amount');
   transactionAmounts = [].concat(transactionAmounts);

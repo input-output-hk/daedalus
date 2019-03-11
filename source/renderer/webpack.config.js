@@ -2,20 +2,10 @@ const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const AutoDllPlugin = require('autodll-webpack-plugin');
-const yamljs = require('yamljs');
-
-// TODO: enable again when hard-source is fixed
-// https://github.com/mzgoddard/hard-source-webpack-plugin/issues/443
-
-// const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
-// const lodash = require('lodash');
-// const isCi = process.env.CI && process.env.CI !== '';
-
-let reportUrl = '';
-reportUrl = yamljs.parseFile('launcher-config.yaml').reportServer;
 
 // Process env flags from buildkite and appveyor
 const isTestEnv = process.env.NODE_ENV === 'test';
+const isCi = process.env.CI && process.env.CI !== '';
 
 module.exports = {
   mode: 'development',
@@ -38,9 +28,12 @@ module.exports = {
         test: /\.jsx?$/,
         include: /source/,
         exclude: /source\/main/,
-        use: {
-          loader: 'babel-loader',
-        },
+        use: (isCi ? [] : [
+          'cache-loader',
+          'thread-loader',
+        ]).concat([
+          'babel-loader'
+        ]),
       },
       {
         test: /\.scss/,
@@ -103,7 +96,6 @@ module.exports = {
       'process.env.NETWORK': JSON.stringify(process.env.NETWORK || 'development'),
       'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
       'process.env.BUILD_NUMBER': JSON.stringify(process.env.BUILD_NUMBER || 'dev'),
-      'process.env.REPORT_URL': JSON.stringify(reportUrl)
     }, process.env.NODE_ENV === 'production' ? {
       // Only bake in NODE_ENV value for production builds.
       'process.env.NODE_ENV': '"production"',
@@ -144,20 +136,5 @@ module.exports = {
         ]
       }
     }),
-    // TODO: enable again when hard-source is fixed
-    // https://github.com/mzgoddard/hard-source-webpack-plugin/issues/443
-
-    // Dont use caching for CI builds!
-    // !isCi && (
-    //   new HardSourceWebpackPlugin({
-    //     configHash: (webpackConfig) => (
-    //       // Remove the `watch` flag to avoid different caches for static and incremental builds
-    //       require('node-object-hash')({ sort: false }).hash(lodash.omit(webpackConfig, 'watch'))
-    //     ),
-    //     environmentPaths: {
-    //       files: ['.babelrc', 'yarn.lock'],
-    //     },
-    //   })
-    // )
   ].filter(Boolean)
 };

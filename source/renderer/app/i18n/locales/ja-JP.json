@@ -38,7 +38,7 @@
   "cardano.node.update.notification.titleWithVersion": "ダイダロス、カルダノノードの更新プログラム#{version}が入手可能です。",
   "cardano.node.update.notification.titleWithoutVersion": "ダイダロス、カルダノノードの更新プログラムが入手可能です。",
   "environment.apiName.cardano": "カルダノ",
-  "environment.currency.ada": "ADA",
+  "environment.currency.ada": "Ada",
   "global.assuranceLevel.normal": "普通",
   "global.assuranceLevel.strict": "厳重",
   "global.dialog.button.continue": "次",

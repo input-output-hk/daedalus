@@ -1,21 +1,16 @@
 // @flow
 import { observable, computed, action } from 'mobx';
+
 import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
-import {
-  TOGGLE_ABOUT_DIALOG_CHANNEL,
-  TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL,
-  TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL,
-  GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL
-} from '../../../common/ipc/api';
-import { GET_GPU_STATUS } from '../../../common/ipc-api';
 import { ROUTES } from '../routes-config';
-import type { GpuStatus } from '../types/gpuStatus';
+import { DIALOGS, SCREENS } from '../../../common/ipc/constants';
 import { openExternalUrlChannel } from '../ipc/open-external-url';
+import { toggleUiPartChannel, showUiPartChannel } from '../ipc/control-ui-parts';
+import { getGPUStatusChannel } from '../ipc/get-gpu-status.ipc';
 
-// TODO: refactor all parts that rely on this to ipc channels!
-const { ipcRenderer } = global;
+import type { GpuStatus } from '../types/gpuStatus';
 
 export default class AppStore extends Store {
 
@@ -37,25 +32,8 @@ export default class AppStore extends Store {
       this._toggleBlockConsolidationStatusScreen
     );
 
-    /* eslint-disable max-len */
-    // TODO: refactor to ipc channels
-    ipcRenderer.on(TOGGLE_ABOUT_DIALOG_CHANNEL, this._toggleAboutDialog);
-    ipcRenderer.on(TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL, this._toggleNetworkStatusDialog);
-    ipcRenderer.on(TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL, this._toggleBlockConsolidationStatusScreen);
-    ipcRenderer.on(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
-    ipcRenderer.on(GET_GPU_STATUS.SUCCESS, this._onGetGpuStatusSuccess);
-    /* eslint-disable max-len */
-  }
-
-  teardown() {
-    /* eslint-disable max-len */
-    // TODO: refactor to ipc channels
-    ipcRenderer.removeListener(TOGGLE_ABOUT_DIALOG_CHANNEL, this._toggleAboutDialog);
-    ipcRenderer.removeListener(TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL, this._toggleNetworkStatusDialog);
-    ipcRenderer.removeListener(TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL, this._toggleBlockConsolidationStatusScreen);
-    ipcRenderer.removeListener(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
-    ipcRenderer.removeListener(GET_GPU_STATUS.SUCCESS, this._onGetGpuStatusSuccess);
-    /* eslint-disable max-len */
+    toggleUiPartChannel.onReceive(this.toggleUiPart);
+    showUiPartChannel.onReceive(this.showUiPart);
   }
 
   @computed get currentRoute(): string {
@@ -67,14 +45,46 @@ export default class AppStore extends Store {
     openExternalUrlChannel.send(url);
   }
 
-  _getGpuStatus = () => {
-    // TODO: refactor to ipc channel
-    ipcRenderer.send(GET_GPU_STATUS.REQUEST);
+  /**
+   * Toggles the dialog specified by the constant string identifier.
+   */
+  toggleUiPart = (uiPart: string) => {
+    switch (uiPart) {
+      case DIALOGS.ABOUT: this._toggleAboutDialog(); break;
+      case DIALOGS.NETWORK_STATUS: this._toggleNetworkStatusDialog(); break;
+      case SCREENS.BLOCK_CONSOLIDATION: this._toggleBlockConsolidationStatusScreen(); break;
+      default:
+    }
+    return Promise.resolve();
   };
 
-  _onGetGpuStatusSuccess = action((event, status) => {
-    this.gpuStatus = status;
-  });
+  /**
+   * Shows the screen specified by the constant string identifier.
+   */
+  showUiPart = (uiPart: string) => {
+    switch (uiPart) {
+      case SCREENS.ADA_REDEMPTION: this._showAdaRedemptionScreen(); break;
+      default:
+    }
+    return Promise.resolve();
+  };
+
+  @computed get isBlockConsolidationStatusPage(): boolean {
+    return this.currentRoute === ROUTES.BLOCK_CONSOLIDATION_STATUS;
+  }
+
+  @computed get isSetupPage(): boolean {
+    return (
+      this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION ||
+      this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE
+    );
+  }
+
+  // ===================== PRIVATE ======================= //
+
+  _getGpuStatus = async () => {
+    this.gpuStatus = await getGPUStatusChannel.request();
+  };
 
   _updateRouteLocation = (options: { route: string, params?: ?Object }) => {
     const routePath = buildRoute(options.route, options.params);
@@ -85,7 +95,7 @@ export default class AppStore extends Store {
 
   @action _updatePreviousRoute = (currentRoute?: string) => {
     this.previousRoute = currentRoute || ROUTES.ROOT;
-  }
+  };
 
   @action _openAboutDialog = () => {
     this.isAboutDialogOpen = true;
@@ -111,7 +121,7 @@ export default class AppStore extends Store {
     this.isNetworkStatusDialogOpen = !this.isNetworkStatusDialogOpen;
   };
 
-  @action _goToAdaRedemptionScreen = () => {
+  @action _showAdaRedemptionScreen = () => {
     const { isConnected, isSynced } = this.stores.networkStatus;
     const { hasLoadedWallets } = this.stores.wallets;
     if (isConnected && isSynced && hasLoadedWallets && !this.isSetupPage) {
@@ -125,16 +135,4 @@ export default class AppStore extends Store {
       : ROUTES.BLOCK_CONSOLIDATION_STATUS;
     this._updateRouteLocation({ route });
   };
-
-  @computed get isBlockConsolidationStatusPage(): boolean {
-    return this.currentRoute === ROUTES.BLOCK_CONSOLIDATION_STATUS;
-  }
-
-  @computed get isSetupPage(): boolean {
-    return (
-      this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION ||
-      this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE
-    );
-  }
-
 }
