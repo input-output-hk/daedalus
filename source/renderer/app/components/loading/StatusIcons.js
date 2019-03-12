@@ -1,5 +1,7 @@
 // @flow
 import React, { Component } from 'react';
+import { defineMessages, intlShape } from 'react-intl';
+import { camelCase } from 'lodash';
 import SVGInline from 'react-svg-inline';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
@@ -13,6 +15,125 @@ import isNodeSubscribedIcon from '../../assets/images/is-node-subscribed-icon.in
 import isNodeTimeCorrectIcon from '../../assets/images/is-node-time-correct-icon.inline.svg';
 import isNodeSyncingIcon from '../../assets/images/is-node-syncing-icon.inline.svg';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
+
+const messages = defineMessages({
+  nodeIsRunning: {
+    id: 'status.icons.nodeIsRunning',
+    defaultMessage: 'Node is running!',
+    description: 'Message "Node is running" on the status icon tooltip',
+  },
+  nodeIsStarting: {
+    id: 'status.icons.nodeIsStarting',
+    defaultMessage: 'Node is starting!',
+    description: 'Message "Node is starting" on the status icon tooltip',
+  },
+  nodeIsExiting: {
+    id: 'status.icons.nodeIsExiting',
+    defaultMessage: 'Node is exiting!',
+    description: 'Message "Node is exiting" on the status icon tooltip',
+  },
+  nodeIsStopping: {
+    id: 'status.icons.nodeIsStopping',
+    defaultMessage: 'Node is stopping!',
+    description: 'Message "Node is stopping" on the status icon tooltip',
+  },
+  nodeHasStopped: {
+    id: 'status.icons.nodeHasStopped',
+    defaultMessage: 'Node has stopped!',
+    description: 'Message "Node has stopped" on the status icon tooltip',
+  },
+  nodeIsUpdating: {
+    id: 'status.icons.nodeIsUpdating',
+    defaultMessage: 'Node is updating!',
+    description: 'Message "Node is updating" on the status icon tooltip',
+  },
+  nodeHasBeenUpdated: {
+    id: 'status.icons.nodeHasBeenUpdated',
+    defaultMessage: 'Node has been updated!',
+    description: 'Message "Node has been updated" on the status icon tooltip',
+  },
+  nodeHasCrashed: {
+    id: 'status.icons.nodeHasCrashed',
+    defaultMessage: 'Node has crashed!',
+    description: 'Message "Node has crashed" on the status icon tooltip',
+  },
+  nodeHasErrored: {
+    id: 'status.icons.nodeHasErrored',
+    defaultMessage: 'Node has errored!',
+    description: 'Message "Node has errored" on the status icon tooltip',
+  },
+  nodeIsUnrecoverable: {
+    id: 'status.icons.nodeIsUnrecoverable',
+    defaultMessage: 'Node is unrecoverable!',
+    description: 'Message "Node is unrecoverable" on the status icon tooltip',
+  },
+  nodeIsResponding: {
+    id: 'status.icons.nodeIsResponding',
+    defaultMessage: 'Node is responding!',
+    description: 'Message "Node is responding" on the status icon tooltip',
+  },
+  nodeIsNotResponding: {
+    id: 'status.icons.nodeIsNotResponding',
+    defaultMessage: 'Node is not responding!',
+    description: 'Message "Node is not responding" on the status icon tooltip',
+  },
+  checkingIfNodeIsResponding: {
+    id: 'status.icons.checkingIfNodeIsResponding',
+    defaultMessage: 'Checking if Node is responding!',
+    description: 'Message "Checking if Node is responding" on the status icon tooltip',
+  },
+  nodeIsSubscribed: {
+    id: 'status.icons.nodeIsSubscribed',
+    defaultMessage: 'Node is subscribed!',
+    description: 'Message "Node is subscribed" on the status icon tooltip',
+  },
+  nodeIsNotSubscribed: {
+    id: 'status.icons.nodeIsNotSubscribed',
+    defaultMessage: 'Node is not subscribed!',
+    description: 'Message "Node is not subscribed" on the status icon tooltip',
+  },
+  checkYourInternetConnection: {
+    id: 'status.icons.checkYourInternetConnection',
+    defaultMessage: 'Check your Internet connection!',
+    description: 'Message "Check your Internet connection" on the status icon tooltip',
+  },
+  checkingIfNodeIsSubscribed: {
+    id: 'status.icons.checkingIfNodeIsSubscribed',
+    defaultMessage: 'Checking if Node is subscribed!',
+    description: 'Message "Checking if Node is subscribed" on the status icon tooltip',
+  },
+  nodeTimeIsCorrect: {
+    id: 'status.icons.nodeTimeIsCorrect',
+    defaultMessage: 'Node time is correct!',
+    description: 'Message "Node time is correct" on the status icon tooltip',
+  },
+  nodeTimeIsNotCorrect: {
+    id: 'status.icons.nodeTimeIsNotCorrect',
+    defaultMessage: 'Node time is not correct!',
+    description: 'Message "Node time is not correct" on the status icon tooltip',
+  },
+  checkingIfNodeTimeIsCorrect: {
+    id: 'status.icons.checkingIfNodeTimeIsCorrect',
+    defaultMessage: 'Checking if Node time is correct!',
+    description: 'Message "Checking if Node time is correct" on the status icon tooltip',
+  },
+  nodeIsSyncing: {
+    id: 'status.icons.nodeIsSyncing',
+    defaultMessage: 'Node is syncing!',
+    description: 'Message "Node is syncing" on the status icon tooltip',
+  },
+  nodeIsNotSyncing: {
+    id: 'status.icons.nodeIsNotSyncing',
+    defaultMessage: 'Node is not syncing!',
+    description: 'Message "Node is not syncing" on the status icon tooltip',
+  },
+  checkingIfNodeIsSyncing: {
+    id: 'status.icons.checkingIfNodeIsSyncing',
+    defaultMessage: 'Checking if Node is syncing!',
+    description: 'Message "Checking if Node is syncing" on the status icon tooltip',
+  },
+});
+
 
 type Props = {
   nodeState: ?CardanoNodeState,
@@ -39,27 +160,45 @@ const STATUS_CLASSNAMES: Object = {
 };
 
 const PARAM_PRETTY_NAME: Object = {
-  isNodeResponding: 'responding',
-  isNodeSubscribed: 'subscribed',
-  isNodeSyncing: 'syncing',
-  isNodeTimeCorrect: 'correct',
+  isNodeResponding: 'Responding',
+  isNodeSubscribed: 'Subscribed',
+  isNodeSyncing: 'Syncing',
+  isNodeTimeCorrect: 'Correct',
 };
 
 export default class StatusIcon extends Component<Props> {
 
-  getTip = (paramName: string) => {
-    const paramValue: boolean = this.props[paramName];
-    let status = paramValue ? 'is' : 'is not';
-    let paramPrettyName = PARAM_PRETTY_NAME[paramName];
-    if (paramName === 'nodeState') {
-      status = 'is';
-      paramPrettyName = paramValue;
-    }
-    let nodePrettyName = `Node ${status} `;
-    if (paramName === 'isNodeTimeCorrect') nodePrettyName = `Node time ${status} `;
-    if (typeof paramValue === 'undefined') nodePrettyName = 'Checking if node is ';
-    return [nodePrettyName, <b key="param">{paramPrettyName}</b>];
+  static contextTypes = {
+    intl: intlShape.isRequired,
   };
+
+  getNodeName = (paramName: string) => [
+    typeof this.props[paramName] === 'undefined' ? 'checkingIf' : '',
+    'node',
+    paramName === 'isNodeTimeCorrect' ? 'time' : '',
+  ];
+
+  getStatus = (paramName: string) => {
+    const paramValue: boolean = this.props[paramName];
+    let status = 'is';
+    if (paramValue === 'nodeState') {
+      status = 'is';
+    } else if (paramValue === false) {
+      status = false;
+    }
+    return status;
+  }
+
+  getParamPrettyName = (paramName: string) => {
+    const paramValue: boolean = this.props[paramName];
+    return PARAM_PRETTY_NAME[paramValue];
+  }
+
+  getMessage = (paramName: string) => camelCase([
+    this.getNodeName(paramName),
+    this.getStatus(paramName),
+    this.getParamPrettyName(paramName),
+  ]);
 
   getClassName = (paramName: string) => {
     // If node is not running, it displays the icons with opacity
@@ -93,7 +232,7 @@ export default class StatusIcon extends Component<Props> {
   getIconWithToolTip = (icon: string, paramName: string) => (
     <Tooltip
       skin={TooltipSkin}
-      tip={this.getTip(paramName)}
+      tip={this.context.intl.formatMessage(messages[this.getMessage(paramName)])}
       className={this.getTooltipClassname(paramName)}
     >
       <SVGInline svg={icon} className={this.getClassName(paramName)} />
