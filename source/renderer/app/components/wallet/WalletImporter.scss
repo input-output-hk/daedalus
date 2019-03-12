@@ -131,15 +131,19 @@
 
 .maskPasswords {
   position: relative;
+  z-index: 2;
   > div {
     position: absolute;
     right: 0;
   }
 }
 
-.passwordsField textarea {
-  max-height: 430px;
-  overflow: hidden;
+.passwordsField {
+  z-index: 1;
+  textarea {
+    max-height: 430px;
+    overflow: hidden;
+  }
 }
 
 .submitButton,
