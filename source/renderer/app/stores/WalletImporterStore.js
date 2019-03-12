@@ -72,6 +72,7 @@ export default class WalletImporterStore extends Store {
     runInAction('finish wallet password matching process', () => {
       this.extractedWallets = wallets;
       this.isMatchingPasswords = false;
+      this.actions.walletImporter.matchPasswordsEnd.trigger();
     });
   };
 

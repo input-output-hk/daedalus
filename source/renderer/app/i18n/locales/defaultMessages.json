@@ -5327,6 +5327,25 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!The password analysis is done",
+        "description": "\"The password analysis is done\" notification on the wallet importer page.",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "source/renderer/app/containers/wallet/WalletImporterPage.js",
+        "id": "wallet.importer.passwordAnalysisDone",
+        "start": {
+          "column": 24,
+          "line": 16
+        }
+      }
+    ],
+    "path": "source/renderer/app/containers/wallet/WalletImporterPage.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!You have successfully copied wallet address",
         "description": "Message for the wallet address copy success notification.",
         "end": {

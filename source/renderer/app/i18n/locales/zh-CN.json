@@ -238,6 +238,7 @@
   "wallet.importer.noPasswordHint": "!!!No password",
   "wallet.importer.noWalletsFoundNotification": "!!!No wallets found in the provided secrets key file.",
   "wallet.importer.openLabel": "!!!Open",
+  "wallet.importer.passwordAnalysisDone": "!!!The password analysis is done",
   "wallet.importer.passwordsListHint": "!!!Enter up to 20 potential wallet passwords line by line",
   "wallet.importer.passwordsListLabel": "!!!Passwords list",
   "wallet.importer.submitLabel": "!!!Analyse passwords",

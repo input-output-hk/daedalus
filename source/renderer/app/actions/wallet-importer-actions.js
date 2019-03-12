@@ -7,6 +7,7 @@ import type { ExtractedWallet } from '../../../common/types/wallet-importer.type
 export default class WalletImporterActions {
   extractWallets: Action<{ keyFile: File }> = new Action();
   matchPasswords: Action<{ passwords: Array<string> }> = new Action();
+  matchPasswordsEnd: Action<any> = new Action();
   downloadKeyFile: Action<{ wallet: ExtractedWallet, filePath: string }> = new Action();
   importKeyFile: Action<{ wallet: ExtractedWallet }> = new Action();
 }
