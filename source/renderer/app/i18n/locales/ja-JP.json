@@ -234,6 +234,7 @@
   "wallet.importer.instructions": "!!!In order to import wallets select a folder which contains wallet key files.",
   "wallet.importer.keyFileHint": "!!!Drop your \"secret.key\" file here or click to choose",
   "wallet.importer.keyFileLabel": "!!!Secrets key file",
+  "wallet.importer.maskPasswordsLabel": "!!!mask passwords",
   "wallet.importer.noPasswordHint": "!!!No password",
   "wallet.importer.noWalletsFoundNotification": "!!!No wallets found in the provided secrets key file.",
   "wallet.importer.openLabel": "!!!Open",

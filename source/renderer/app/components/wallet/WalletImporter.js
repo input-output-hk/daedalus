@@ -11,6 +11,7 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { TextArea } from 'react-polymorph/lib/components/TextArea';
 import { TextAreaSkin } from 'react-polymorph/lib/skins/simple/TextAreaSkin';
+import TinySwitch from '../widgets/forms/TinySwitch';
 import BorderedBox from '../widgets/BorderedBox';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import FileUploadWidget from '../widgets/forms/FileUploadWidget';
@@ -49,6 +50,11 @@ export const messages = defineMessages({
     id: 'wallet.importer.passwordsListLabel',
     defaultMessage: '!!!Passwords list',
     description: 'Label "Passwords list" on the wallet importer page.'
+  },
+  maskPasswordsLabel: {
+    id: 'wallet.importer.maskPasswordsLabel',
+    defaultMessage: '!!!mask passwords',
+    description: 'Label "mask passwords" on the wallet importer page.'
   },
   passwordsListHint: {
     id: 'wallet.importer.passwordsListHint',
@@ -343,13 +349,13 @@ export default class WalletImporter extends Component<Props, State> {
                 {generateWalletList()}
               </div>
 
-              <span
-                onClick={() => { this.toggleMaskPasswords(); }}
-                role="link"
-                aria-hidden
-              >
-                mask passwords
-              </span>
+              <div>
+                <TinySwitch
+                  label={intl.formatMessage(messages.maskPasswordsLabel)}
+                  onChange={this.toggleMaskPasswords}
+                  checked={maskPasswords}
+                />
+              </div>
 
               <TextArea
                 className={styles.passwordsField}
