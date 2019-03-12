@@ -16,7 +16,6 @@ import BorderedBox from '../widgets/BorderedBox';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import FileUploadWidget from '../widgets/forms/FileUploadWidget';
 import LoadingSpinner from '../widgets/LoadingSpinner';
-import downloadIcon from '../../assets/images/download-ic.inline.svg';
 import styles from './WalletImporter.scss';
 import type {
   ExtractedWallet,
@@ -242,9 +241,6 @@ export default class WalletImporter extends Component<Props, State> {
           <div key={index} className={styles.walletRow}>
             <div
               className={styles.walletKeyFile}
-              onClick={() => { downloadKeyFile(fileName, wallet); }}
-              role="link"
-              aria-hidden
             >
               <Input
                 label={index === 1 ? intl.formatMessage(messages.walletFileLabel) : null}
@@ -252,7 +248,6 @@ export default class WalletImporter extends Component<Props, State> {
                 skin={InputSkin}
                 readOnly
               />
-              <SVGInline svg={downloadIcon} className={styles.downloadIcon} />
             </div>
             <Input
               label={index === 1 ? intl.formatMessage(messages.walletPasswordLabel) : null}
