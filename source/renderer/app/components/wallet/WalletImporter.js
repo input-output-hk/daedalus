@@ -22,6 +22,8 @@ import type {
   ExtractedWallets,
 } from '../../../../common/types/wallet-importer.types';
 
+const MAXIMUM_PASSWORD_COUNT = 20;
+
 export const messages = defineMessages({
   headline: {
     id: 'wallet.importer.headline',
@@ -298,7 +300,21 @@ export default class WalletImporter extends Component<Props> {
               </div>
 
               <TextArea
+                className={styles.passwordsField}
                 {...passwordsField.bind()}
+                onKeyDown={(e) => {
+                  if (e.keyCode === 13) {
+                    const numberOfLines = passwordsField.value.split('\n').length;
+                    if (numberOfLines >= MAXIMUM_PASSWORD_COUNT) e.preventDefault();
+                  }
+                }}
+                onPaste={() => {
+                  setTimeout(() => {
+                    const contentByLine = passwordsField.value.split('\n');
+                    const truncatedContent = contentByLine.slice(0, MAXIMUM_PASSWORD_COUNT).join('\n');
+                    passwordsField.set(truncatedContent);
+                  });
+                }}
                 rows={5}
                 skin={TextAreaSkin}
               />
