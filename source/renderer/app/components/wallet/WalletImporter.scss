@@ -129,6 +129,11 @@
   }
 }
 
+.passwordsField textarea {
+  max-height: 430px;
+  overflow: hidden;
+}
+
 .submitButton,
 .submitButtonSpinning {
   display: block !important;

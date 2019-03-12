@@ -11,6 +11,7 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { TextArea } from 'react-polymorph/lib/components/TextArea';
 import { TextAreaSkin } from 'react-polymorph/lib/skins/simple/TextAreaSkin';
+import TinySwitch from '../widgets/forms/TinySwitch';
 import BorderedBox from '../widgets/BorderedBox';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import FileUploadWidget from '../widgets/forms/FileUploadWidget';
@@ -21,6 +22,8 @@ import type {
   ExtractedWallet,
   ExtractedWallets,
 } from '../../../../common/types/wallet-importer.types';
+
+const MAXIMUM_PASSWORD_COUNT = 20;
 
 export const messages = defineMessages({
   headline: {
@@ -47,6 +50,11 @@ export const messages = defineMessages({
     id: 'wallet.importer.passwordsListLabel',
     defaultMessage: '!!!Passwords list',
     description: 'Label "Passwords list" on the wallet importer page.'
+  },
+  maskPasswordsLabel: {
+    id: 'wallet.importer.maskPasswordsLabel',
+    defaultMessage: '!!!mask passwords',
+    description: 'Label "mask passwords" on the wallet importer page.'
   },
   passwordsListHint: {
     id: 'wallet.importer.passwordsListHint',
@@ -110,6 +118,10 @@ export const messages = defineMessages({
   },
 });
 
+type State = {
+  maskPasswords: boolean,
+};
+
 type Props = {
   keyFile: ?File,
   isRestoreActive: boolean,
@@ -126,10 +138,18 @@ type Props = {
 };
 
 @observer
-export default class WalletImporter extends Component<Props> {
+export default class WalletImporter extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  state = {
+    maskPasswords: true,
+  };
+
+  toggleMaskPasswork = () => {
+    this.setState({ maskPasswords: !this.state.maskPasswords });
   };
 
   form = new ReactToolboxMobxForm({
@@ -160,8 +180,15 @@ export default class WalletImporter extends Component<Props> {
     if (filePath) this.props.onDownloadKeyFile(wallet, filePath);
   };
 
+  getPasswordValue = (password?: ?string) => (
+    this.state.maskPasswords && password
+      ? [...Array(password.length)].map(() => '*').join('')
+      : password
+  );
+
   render() {
     const { intl } = this.context;
+    const { maskPasswords } = this.state;
     const {
       isRestoreActive,
       restoringWalletId,
@@ -181,6 +208,7 @@ export default class WalletImporter extends Component<Props> {
     const generateWalletList = () => (
       wallets.map((wallet) => {
         const { id, index, password, balance, imported } = wallet;
+        const passwordValue = this.getPasswordValue(password);
         const fileName = `wallet-${index}.key${password !== '' ? '.locked' : ''}`;
         const isImporting = id && id === restoringWalletId;
         const importButtonClasses = classnames([
@@ -210,7 +238,7 @@ export default class WalletImporter extends Component<Props> {
                   intl.formatMessage(messages.noPasswordHint) :
                   intl.formatMessage(messages.unknownPasswordHint)
               }
-              value={password}
+              value={passwordValue}
               skin={InputSkin}
               readOnly
             />
@@ -297,8 +325,30 @@ export default class WalletImporter extends Component<Props> {
                 {generateWalletList()}
               </div>
 
+              <div>
+                <TinySwitch
+                  label={intl.formatMessage(messages.maskPasswordsLabel)}
+                  onChange={this.toggleMaskPasswork}
+                  checked={maskPasswords}
+                />
+              </div>
+
               <TextArea
+                className={styles.passwordsField}
                 {...passwordsField.bind()}
+                onKeyDown={(e) => {
+                  if (e.keyCode === 13) {
+                    const numberOfLines = passwordsField.value.split('\n').length;
+                    if (numberOfLines >= MAXIMUM_PASSWORD_COUNT) e.preventDefault();
+                  }
+                }}
+                onPaste={() => {
+                  setTimeout(() => {
+                    const contentByLine = passwordsField.value.split('\n');
+                    const truncatedContent = contentByLine.slice(0, MAXIMUM_PASSWORD_COUNT).join('\n');
+                    passwordsField.set(truncatedContent);
+                  });
+                }}
                 rows={5}
                 skin={TextAreaSkin}
               />
