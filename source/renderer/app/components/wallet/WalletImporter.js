@@ -4,7 +4,6 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { uniq } from 'lodash';
 import classnames from 'classnames';
-import SVGInline from 'react-svg-inline';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Input } from 'react-polymorph/lib/components/Input';
@@ -223,7 +222,7 @@ export default class WalletImporter extends Component<Props, State> {
       onOpenWallet,
     } = this.props;
     const { maskPasswords } = this.state;
-    const { form, submit, downloadKeyFile } = this;
+    const { form, submit } = this;
 
     const keyFileField = form.$('keyFile');
     const passwordsField = form.$('passwords');
@@ -239,9 +238,7 @@ export default class WalletImporter extends Component<Props, State> {
         ]);
         return (
           <div key={index} className={styles.walletRow}>
-            <div
-              className={styles.walletKeyFile}
-            >
+            <div>
               <Input
                 label={index === 1 ? intl.formatMessage(messages.walletFileLabel) : null}
                 value={fileName}
