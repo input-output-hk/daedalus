@@ -9,8 +9,8 @@ const TRAILING_BY_2_EPOCH = '.BlockConsolidationStatus_indicatorEpochsBehind p';
 const MAXIMUM_EPOCH = '.BlockConsolidationStatus_fullEpoch';
 const SYNC_PROGRESS = '.BlockConsolidationStatus_indicatorEpochsSynced p span';
 
-When(/^I (open|close) the Block Consolidation Status Page$/, async function (state) {
-  return await this.client.execute(() => daedalus.actions.app.toggleBlockConsolidationStatusScreen.trigger());
+When(/^I toggle the Block Consolidation Status Page$/, async function () {
+  await this.client.execute(() => daedalus.actions.app.toggleBlockConsolidationStatusScreen.trigger());
 });
 
 Then(/^the Block Consolidation Status Page is (hidden|visible)/, async function (state) {
