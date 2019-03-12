@@ -61,8 +61,8 @@ export const messages = defineMessages({
   },
   submitLabel: {
     id: 'wallet.importer.submitLabel',
-    defaultMessage: '!!!Analyse passwords',
-    description: 'Label for the "Analyse passwords" submit button on the wallet importer page.'
+    defaultMessage: '!!!Match passwords',
+    description: 'Label for the "match passwords" submit button on the wallet importer page.'
   },
   extractingWalletsNotification: {
     id: 'wallet.importer.extractingWalletsNotification',

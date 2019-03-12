@@ -7,24 +7,19 @@ import Layout from '../MainLayout';
 import WalletImporter from '../../components/wallet/WalletImporter';
 import RestoreNotification from '../../components/notifications/RestoreNotification';
 import GenericNotification from '../../components/notifications/GenericNotification';
-import { WALLET_IMPORTER_PASSWORD_ANALYS_IS_DONE } from '../../config/timingConfig';
+import { WALLET_IMPORTER_PASSWORD_MATCHING_IS_DONE } from '../../config/timingConfig';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import type { ExtractedWallet } from '../../../../common/types/wallet-importer.types';
 
 const messages = defineMessages({
-  passwordAnalysisDone: {
-    id: 'wallet.importer.passwordAnalysisDone',
-    defaultMessage: '!!!The password analysis is done',
-    description: '"The password analysis is done" notification on the wallet importer page.',
-  },
-  walletKeyFileSuccessfullyDownloaded: {
-    id: 'wallet.importer.walletKeyFileSuccessfullyDownloaded',
-    defaultMessage: '!!!Wallet key file successfully downloaded',
-    description: '"Wallet key file successfully downloaded" notification on the wallet importer page.',
+  passwordMatchingIsDone: {
+    id: 'wallet.importer.passwordMatchingIsDone',
+    defaultMessage: '!!!The password matching is done',
+    description: '"The password matching is done" notification on the wallet importer page.',
   },
 });
 
-const WALLET_IMPORTER_PASSWORD_ANALYS_IS_DONE_ID = 'wallet-importer-passwordAnalysisDone';
+const WALLET_IMPORTER_PASSWORD_MATCHING_IS_DONE_ID = 'wallet-importer-password-matching-is-done';
 
 type Props = InjectedProps;
 
@@ -97,10 +92,10 @@ export default class WalletImporterPage extends Component<Props> {
         ) : null}
 
         <GenericNotification
-          id={WALLET_IMPORTER_PASSWORD_ANALYS_IS_DONE_ID}
-          message={intl.formatMessage(messages.passwordAnalysisDone)}
-          duration={WALLET_IMPORTER_PASSWORD_ANALYS_IS_DONE}
-          show={uiNotifications.isOpen(WALLET_IMPORTER_PASSWORD_ANALYS_IS_DONE_ID)}
+          id={WALLET_IMPORTER_PASSWORD_MATCHING_IS_DONE_ID}
+          message={intl.formatMessage(messages.passwordMatchingIsDone)}
+          duration={WALLET_IMPORTER_PASSWORD_MATCHING_IS_DONE}
+          show={uiNotifications.isOpen(WALLET_IMPORTER_PASSWORD_MATCHING_IS_DONE_ID)}
           actionToListen={walletImporterActions.matchPasswordsEnd}
           openNotification={notifications.open}
           closeNotification={notifications.closeActiveNotification}
