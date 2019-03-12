@@ -129,6 +129,14 @@
   }
 }
 
+.maskPasswords {
+  position: relative;
+  > div {
+    position: absolute;
+    right: 0;
+  }
+}
+
 .passwordsField textarea {
   max-height: 430px;
   overflow: hidden;

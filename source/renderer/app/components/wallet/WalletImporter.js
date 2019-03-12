@@ -349,7 +349,7 @@ export default class WalletImporter extends Component<Props, State> {
                 {generateWalletList()}
               </div>
 
-              <div>
+              <div className={styles.maskPasswords}>
                 <TinySwitch
                   label={intl.formatMessage(messages.maskPasswordsLabel)}
                   onChange={this.toggleMaskPasswords}
