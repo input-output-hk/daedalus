@@ -11,9 +11,9 @@ type Props = {
   message: string,
   duration: number,
   show: boolean,
-  actionToListen?: Action,
-  openNotification: Action,
-  closeNotification: Action,
+  actionToListen?: Action<any>,
+  openNotification: Action<any>,
+  closeNotification: Action<any>,
   icon?: string,
   hasCloseButton?: boolean
 };
@@ -26,7 +26,6 @@ export default class GenericNotification extends Component<Props> {
   };
 
   static defaultProps = {
-    icon: successIcon,
     hasCloseButton: true,
   };
 
@@ -42,7 +41,7 @@ export default class GenericNotification extends Component<Props> {
     this.closeNotification();
   }
 
-  registerNotificationListener = (actionToListen: Action) => {
+  registerNotificationListener = (actionToListen: Action<any>) => {
     actionToListen.listen(this.openNotification);
   };
 

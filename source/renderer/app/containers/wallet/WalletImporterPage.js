@@ -7,10 +7,7 @@ import Layout from '../MainLayout';
 import WalletImporter from '../../components/wallet/WalletImporter';
 import RestoreNotification from '../../components/notifications/RestoreNotification';
 import GenericNotification from '../../components/notifications/GenericNotification';
-import {
-  WALLET_IMPORTER_PASSWORD_ANALYS_IS_DONE,
-  WALLET_KEY_FILE_SUCCESSFULLY_DOWNLOADED
-} from '../../config/timingConfig';
+import { WALLET_IMPORTER_PASSWORD_ANALYS_IS_DONE } from '../../config/timingConfig';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import type { ExtractedWallet } from '../../../../common/types/wallet-importer.types';
 
@@ -28,7 +25,6 @@ const messages = defineMessages({
 });
 
 const WALLET_IMPORTER_PASSWORD_ANALYS_IS_DONE_ID = 'wallet-importer-passwordAnalysisDone';
-const WALLET_KEY_FILE_SUCCESSFULLY_DOWNLOADED_ID = 'wallet-key-file-successfully-downloaded';
 
 type Props = InjectedProps;
 
@@ -106,16 +102,6 @@ export default class WalletImporterPage extends Component<Props> {
           duration={WALLET_IMPORTER_PASSWORD_ANALYS_IS_DONE}
           show={uiNotifications.isOpen(WALLET_IMPORTER_PASSWORD_ANALYS_IS_DONE_ID)}
           actionToListen={walletImporterActions.matchPasswordsEnd}
-          openNotification={notifications.open}
-          closeNotification={notifications.closeActiveNotification}
-        />
-
-        <GenericNotification
-          id={WALLET_KEY_FILE_SUCCESSFULLY_DOWNLOADED_ID}
-          message={intl.formatMessage(messages.walletKeyFileSuccessfullyDownloaded)}
-          duration={WALLET_KEY_FILE_SUCCESSFULLY_DOWNLOADED}
-          show={uiNotifications.isOpen(WALLET_KEY_FILE_SUCCESSFULLY_DOWNLOADED_ID)}
-          actionToListen={walletImporterActions.downloadKeyFile}
           openNotification={notifications.open}
           closeNotification={notifications.closeActiveNotification}
         />

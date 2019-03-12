@@ -17,5 +17,4 @@ export const NETWORK_STATUS_POLL_INTERVAL = 2000; // 2 seconds | unit: milliseco
 export const NTP_IGNORE_CHECKS_GRACE_PERIOD = isTest ? 1000 : 35 * 1000; // 35 seconds | unit: milliseconds
 export const EPOCH_DATA_UPDATE_INTERVAL = 10 * 1000; // 10 seconds | unit: milliseconds
 export const WALLET_IMPORTER_PASSWORD_ANALYS_IS_DONE = 5; // unit: seconds
-export const WALLET_KEY_FILE_SUCCESSFULLY_DOWNLOADED = 5; // unit: seconds
 /* eslint-disable max-len */
