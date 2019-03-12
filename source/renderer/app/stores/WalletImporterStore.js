@@ -148,7 +148,7 @@ export default class WalletImporterStore extends Store {
 
   @action _revertWalletImport = (walletId: string) => {
     const wIndex = findIndex(this.extractedWallets, { id: walletId });
-    if (wIndex) {
+    if (wIndex >= 0) {
       const wallet = this.extractedWallets[wIndex];
       this.extractedWallets[wIndex] = { ...wallet, imported: false };
     }
