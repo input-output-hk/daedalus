@@ -127,11 +127,21 @@ type Props = {
   onOpenWallet: Function,
 };
 
+type State = {
+  maskPasswords: boolean,
+  unmaskedPasswords: string,
+};
+
 @observer
-export default class WalletImporter extends Component<Props> {
+export default class WalletImporter extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  state = {
+    maskPasswords: false,
+    unmaskedPasswords: '',
   };
 
   form = new ReactToolboxMobxForm({
@@ -153,13 +163,45 @@ export default class WalletImporter extends Component<Props> {
   submit = () => {
     const { form } = this;
     const passwordsField = form.$('passwords');
-    const passwords = uniq(passwordsField.value.split('\n'));
+    const { maskPasswords, unmaskedPasswords } = this.state;
+    const passwordsList = maskPasswords ? unmaskedPasswords : passwordsField.value;
+    const passwords = uniq(passwordsList.split('\n'));
     this.props.onMatchPasswords(passwords);
   };
 
   downloadKeyFile = (fileName: string, wallet: ExtractedWallet) => {
     const filePath = global.dialog.showSaveDialog({ defaultPath: fileName });
     if (filePath) this.props.onDownloadKeyFile(wallet, filePath);
+  };
+
+  toggleMaskPasswords = () => {
+    if (this.state.maskPasswords) {
+      // Passwords are masked - we need to unmask them
+      this.unmaskPasswords();
+    } else {
+      // Passwords are not masked - we need to mask them
+      const { form } = this;
+      const passwordsField = form.$('passwords');
+      const passwordsList = passwordsField.value;
+      const passwordsByLine = passwordsList.split('\n');
+      const maskedPasswordsByLine = passwordsByLine.map((line) => line.replace(/./g, '•'));
+      const maskedPasswordsList = maskedPasswordsByLine.join('\n');
+      passwordsField.set(maskedPasswordsList);
+      this.setState({
+        maskPasswords: true,
+        unmaskedPasswords: passwordsList,
+      });
+    }
+  };
+
+  unmaskPasswords = () => {
+    if (this.state.maskPasswords) {
+      // Passwords are masked - we need to unmask them
+      const { form } = this;
+      const passwordsField = form.$('passwords');
+      passwordsField.set(this.state.unmaskedPasswords);
+      this.setState({ maskPasswords: false });
+    }
   };
 
   render() {
@@ -175,6 +217,7 @@ export default class WalletImporter extends Component<Props> {
       onImportKeyFile,
       onOpenWallet,
     } = this.props;
+    const { maskPasswords } = this.state;
     const { form, submit, downloadKeyFile } = this;
 
     const keyFileField = form.$('keyFile');
@@ -214,6 +257,7 @@ export default class WalletImporter extends Component<Props> {
               }
               value={password}
               skin={InputSkin}
+              type={maskPasswords ? 'password' : 'text'}
               readOnly
             />
             <Input
@@ -299,9 +343,18 @@ export default class WalletImporter extends Component<Props> {
                 {generateWalletList()}
               </div>
 
+              <span
+                onClick={() => { this.toggleMaskPasswords(); }}
+                role="link"
+                aria-hidden
+              >
+                mask passwords
+              </span>
+
               <TextArea
                 className={styles.passwordsField}
                 {...passwordsField.bind()}
+                onClick={() => { this.unmaskPasswords(); }}
                 onKeyDown={(e) => {
                   if (e.keyCode === 13) {
                     const numberOfLines = passwordsField.value.split('\n').length;
@@ -317,6 +370,7 @@ export default class WalletImporter extends Component<Props> {
                 }}
                 rows={5}
                 skin={TextAreaSkin}
+                readOnly={maskPasswords}
               />
 
               <Button
