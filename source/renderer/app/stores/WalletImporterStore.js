@@ -136,10 +136,8 @@ export default class WalletImporterStore extends Store {
 
     runInAction('mark wallet as imported', () => {
       if (wallet.id) {
-        const wallets = toJS(this.extractedWallets);
-        const wIndex = findIndex(wallets, { id: wallet.id });
-        wallets[wIndex].imported = true;
-        this.extractedWallets = wallets;
+        const wIndex = findIndex(this.extractedWallets, { id: wallet.id });
+        this.extractedWallets[wIndex] = {...wallet, imported: true};
       }
     });
 
