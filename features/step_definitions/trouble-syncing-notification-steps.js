@@ -1,7 +1,7 @@
 import { When, Then } from 'cucumber';
 import { waitUntilTextInSelector } from '../support/helpers/shared-helpers';
 
-When(/^I purposely unsync the node from the network$/, async function () {
+When(/^I arbitrarily set the local block height to half the network block height$/, async function () {
   await this.client.executeAsync((done) => {
     daedalus.api.ada.setLocalBlockHeight(150)
       .then(() => daedalus.api.ada.setNetworkBlockHeight(300))
