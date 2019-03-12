@@ -247,6 +247,7 @@
   "wallet.importer.walletBalanceLabel": "Balance",
   "wallet.importer.walletFileLabel": "Wallet file",
   "wallet.importer.walletPasswordLabel": "Password",
+  "wallet.importer.walletKeyFileSuccessfullyDownloaded": "Wallet key file successfully downloaded",
   "wallet.navigation.receive": "Receive",
   "wallet.navigation.send": "Send",
   "wallet.navigation.settings": "Settings",
