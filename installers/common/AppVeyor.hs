@@ -43,7 +43,7 @@ theHydraJob = "daedalus-mingw32-pkg" :: Text
 -- | Gets CardanoSL.zip corresponding to the src json revision from Hydra
 downloadCardanoSLHydraBuildProduct :: CardanoSource -> IO L8.ByteString
 downloadCardanoSLHydraBuildProduct src@CardanoSource{..} = do
-  printf ("Fetching GitHub CI status for commit "%n%" of "%n%"/"%n%"\n") srcRev srcOwner srcRepo
+  printf ("Fetching GitHub CI (hydra) status for commit "%n%" of "%n%"/"%n%"\n") srcRev srcOwner srcRepo
   buildURL <- hydraURL theHydraJob src
   printf ("Build URL is "%s%"\n") (getUrl buildURL)
 
@@ -71,7 +71,7 @@ downloadCardanoSLOld srcJson = do
 -- | Gets CardanoSL.zip corresponding to the src json revision from AppVeyor CI
 downloadCardanoSLArtifact :: CardanoSource -> IO L8.ByteString
 downloadCardanoSLArtifact src@CardanoSource{..} = do
-  printf ("Fetching GitHub CI status for commit "%n%" of "%n%"/"%n%"\n") srcRev srcOwner srcRepo
+  printf ("Fetching GitHub CI (appveyor) status for commit "%n%" of "%n%"/"%n%"\n") srcRev srcOwner srcRepo
   buildURL <- appVeyorURL src
   printf ("Build URL is "%s%"\n") (getUrl buildURL)
   jobs <- appVeyorJobs buildURL
@@ -162,7 +162,9 @@ appVeyorURL src = fmap collect <$> statusFor' src >>= \case
   Right Nothing  -> throwM $ StatusMissingError src
   Left err       -> throwM $ GitHubStatusError src err
   where
+    collect :: Vector GH.Status -> Maybe URL
     collect = safeHead . mapMaybe statusTargetUrl . filter isAppVeyor . toList
+    isAppVeyor :: GH.Status -> Bool
     isAppVeyor st = statusContext st == Just "continuous-integration/appveyor/branch"
 
 statusFor' :: CardanoSource -> IO (Either GH.Error (Vector GH.Status))
