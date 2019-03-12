@@ -137,12 +137,20 @@ export default class WalletImporterStore extends Store {
     runInAction('mark wallet as imported', () => {
       if (wallet.id) {
         const wIndex = findIndex(this.extractedWallets, { id: wallet.id });
-        this.extractedWallets[wIndex] = {...wallet, imported: true};
+        this.extractedWallets[wIndex] = { ...wallet, imported: true };
       }
     });
 
     // Delete the temporary key file!
     await deleteKeyFileChannel.send({ filePath });
+  };
+
+  @action _revertWalletImport = (walletId: string) => {
+    const wIndex = findIndex(this.extractedWallets, { id: walletId });
+    if (wIndex) {
+      const wallet = this.extractedWallets[wIndex];
+      this.extractedWallets[wIndex] = { ...wallet, imported: false };
+    }
   };
 
   @action _downloadKeyFile = (params: { wallet: ExtractedWallet, filePath: string }) => {

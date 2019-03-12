@@ -114,10 +114,11 @@ export default class WalletsStore extends Store {
     // Pause polling in order to avoid fetching data for wallet we are about to delete
     this._pausePolling();
 
-    const walletToDelete = this.getWalletById(params.walletId);
+    const { walletId } = params;
+    const walletToDelete = this.getWalletById(walletId);
     if (!walletToDelete) return;
     const indexOfWalletToDelete = this.all.indexOf(walletToDelete);
-    await this.deleteWalletRequest.execute({ walletId: params.walletId });
+    await this.deleteWalletRequest.execute({ walletId });
     await this.walletsRequest.patch(result => {
       result.splice(indexOfWalletToDelete, 1);
     });
@@ -134,6 +135,7 @@ export default class WalletsStore extends Store {
     this._resumePolling();
     this.deleteWalletRequest.reset();
     this.refreshWalletsData();
+    this.stores.walletImporter._revertWalletImport(walletId);
   };
 
   _restore = async (params: {
