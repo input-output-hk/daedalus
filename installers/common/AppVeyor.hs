@@ -1,8 +1,14 @@
-{-# LANGUAGE NoImplicitPrelude, OverloadedStrings, LambdaCase, RecordWildCards, DeriveDataTypeable, DeriveGeneric #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveGeneric      #-}
+{-# LANGUAGE LambdaCase         #-}
+{-# LANGUAGE NoImplicitPrelude  #-}
+{-# LANGUAGE OverloadedStrings  #-}
+{-# LANGUAGE RecordWildCards    #-}
 
 module AppVeyor
   ( downloadCardanoSL
-  , downloadCardanoSLOld
+  , downloadCardanoSLS3Appveyor
+  , downloadCardanoSLHydraBuildProduct
   , AppVeyorError(..)
   , HydraBuild(..)
   , HydraBuildProduct(..)
@@ -10,29 +16,30 @@ module AppVeyor
   , findHydraBuildProductURL
   ) where
 
-import Universum hiding (get)
-import Data.Aeson
-import GitHub hiding (URL)
-import GitHub.Endpoints.Repos.Statuses
-import qualified GitHub as GH
-import qualified Data.ByteString.Char8 as S8
-import qualified Data.ByteString.Lazy.Char8 as L8
-import qualified Data.Text as T
-import qualified Data.Map as M
-import Data.Map (Map)
-import Data.Text (Text)
-import Network.URI
-import Data.Maybe (mapMaybe)
-import Network.Wreq
-import Data.Aeson.Lens
-import Lens.Micro
-import Turtle.Format (printf, (%), d, s, w, Format, makeFormat, format)
-import System.Environment (lookupEnv)
+import           Data.Aeson
+import           Data.Aeson.Lens
+import qualified Data.ByteString.Char8           as S8
+import qualified Data.ByteString.Lazy.Char8      as L8
+import           Data.Map                        (Map)
+import qualified Data.Map                        as M
+import           Data.Maybe                      (mapMaybe)
+import           Data.Text                       (Text)
+import qualified Data.Text                       as T
+import           GitHub                          hiding (URL)
+import qualified GitHub                          as GH
+import           GitHub.Endpoints.Repos.Statuses
+import           Lens.Micro
+import           Network.URI
+import           Network.Wreq
+import           System.Environment              (lookupEnv)
+import           Turtle.Format                   (Format, d, format, makeFormat,
+                                                  printf, s, w, (%))
+import           Universum                       hiding (get)
 
 downloadCardanoSL :: FilePath -> IO L8.ByteString
 downloadCardanoSL srcJson = do
   src <- getCardanoRev srcJson
-  downloadCardanoSLHydraBuildProduct src
+  downloadCardanoSLS3Appveyor src
 
 -- | Filename of the hydra build product which contains windows
 -- executables.
@@ -56,17 +63,16 @@ downloadCardanoSLHydraBuildProduct src@CardanoSource{..} = do
   printf ("Artifacts are: "%ss%"\n") (map bpName (M.elems bp))
   case findHydraBuildProductURL theBuildProduct buildURL bp of
     Just url -> downloadHydra url
-    Nothing -> throwM (MissingArtifactsError $ getUrl buildURL)
+    Nothing  -> throwM (MissingArtifactsError $ getUrl buildURL)
 
 -- | Old download method -- first try S3 then look for an AppVeyor
 -- build in the github status.
-downloadCardanoSLOld :: FilePath -> IO L8.ByteString
-downloadCardanoSLOld srcJson = do
-  src <- getCardanoRev srcJson
+downloadCardanoSLS3Appveyor :: CardanoSource -> IO L8.ByteString
+downloadCardanoSLS3Appveyor src@CardanoSource{..} = do
   maybeZip <- downloadCardanoSLS3 src
   case maybeZip of
     Just zip -> return zip
-    Nothing -> downloadCardanoSLArtifact src
+    Nothing  -> downloadCardanoSLArtifact src
 
 -- | Gets CardanoSL.zip corresponding to the src json revision from AppVeyor CI
 downloadCardanoSLArtifact :: CardanoSource -> IO L8.ByteString
@@ -177,7 +183,7 @@ authFromEnv = maybe noAuth (OAuth . S8.pack) <$> lookupEnv "GITHUB_OAUTH_TOKEN"
 data JobStatus = JobSuccess | JobFailed | JobRunning
                | JobUnknown Text deriving (Show, Eq, Generic)
 
-data Job = Job { jobId :: Text
+data Job = Job { jobId     :: Text
                , jobStatus :: JobStatus
                } deriving (Show, Eq, Generic)
 
@@ -197,15 +203,15 @@ instance ToJSON Job -- Only required for _JSON prism
 ----------------------------------------------------------------------------
 
 data HydraBuild = HydraBuild
-  { hydraBuildStatus :: Int
-  , hydraBuildProducts :: Map Text HydraBuildProduct
+  { hydraBuildStatus      :: Int
+  , hydraBuildProducts    :: Map Text HydraBuildProduct
   , hydraBuildJobsetEvals :: [Int]
   } deriving (Show, Eq, Generic)
 
 data HydraBuildProduct = HydraBuildProduct
-  { bpName :: Text
+  { bpName       :: Text
   , bpSHA256Hash :: Text
-  , bpStorePath :: Text
+  , bpStorePath  :: Text
   } deriving (Show, Eq, Generic)
 
 instance FromJSON HydraBuild where
@@ -286,7 +292,7 @@ instance FromJSON CardanoSource where
 instance FromJSON URI where
   parseJSON = withText "Absolute URI" $ \u -> case parseAbsoluteURI (T.unpack u) of
     Just uri -> pure uri
-    Nothing -> fail "Could not parse absolute URI"
+    Nothing  -> fail "Could not parse absolute URI"
 
 -- | Gets owner/repo from gitcom.com URL
 parseGitHubURL :: URI -> (Name Owner, Name Repo)
