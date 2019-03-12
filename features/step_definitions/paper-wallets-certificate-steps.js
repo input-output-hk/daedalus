@@ -68,9 +68,9 @@ When(/^I enter paper wallet recovery phrase$/, async function () {
   for (let i = 0; i < recoveryPhrase.length; i++) {
     const word = recoveryPhrase[i];
     await this.client.setValue('.AutocompleteOverrides_autocompleteWrapper input', word);
-    await this.client.waitForVisible(`//li[contains(text(), '${word}')]`);
-    await this.waitAndClick(`//li[contains(text(), '${word}')]`);
-    await this.client.waitForVisible(`//span[contains(text(), '${word}')]`);
+    await this.client.waitForVisible(`//li[text()="${word}"]`);
+    await this.waitAndClick(`//li[text()="${word}"]`);
+    await this.client.waitForVisible(`//span[text()="${word}"]`);
   }
 });
 
@@ -80,9 +80,9 @@ When(/^I enter wrong paper wallet recovery phrase:$/, async function (table) {
   for (let i = 0; i < recoveryPhrase.length; i++) {
     const word = recoveryPhrase[i];
     await this.client.setValue('.AutocompleteOverrides_autocompleteWrapper input', word);
-    await this.client.waitForVisible(`//li[contains(text(), '${word}')]`);
-    await this.waitAndClick(`//li[contains(text(), '${word}')]`);
-    await this.client.waitForVisible(`//span[contains(text(), '${word}')]`);
+    await this.client.waitForVisible(`//li[text()="${word}"]`);
+    await this.waitAndClick(`//li[text()="${word}"]`);
+    await this.client.waitForVisible(`//span[text()="${word}"]`);
   }
 });
 

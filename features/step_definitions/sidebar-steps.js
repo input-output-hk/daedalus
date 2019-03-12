@@ -43,7 +43,7 @@ When(/^I click on the add wallet button in the sidebar$/, function () {
 });
 
 When(/^I click on the "([^"]*)" wallet in the sidebar$/, function (walletName) {
-  return this.waitAndClick(`//*[contains(text(), "${walletName}") and @class="SidebarWalletMenuItem_title"]`);
+  return this.waitAndClick(`//*[text()="${walletName}" and @class="SidebarWalletMenuItem_title"]`);
 });
 
 Then(/^the sidebar submenu should be (hidden|visible)/, function (state) {

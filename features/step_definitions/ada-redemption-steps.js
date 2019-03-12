@@ -43,7 +43,7 @@ Then(/^I should(?: still)? be on the ada redemption screen$/, function () {
 });
 
 When(/^I click on ada redemption choices "([^"]*)" tab$/, function (tabText) {
-  return this.waitAndClick(`//div[@class="AdaRedemptionChoices_component"]/button[contains(text(), "${tabText}")]`);
+  return this.waitAndClick(`//div[@class="AdaRedemptionChoices_component"]/button[text()="${tabText}"]`);
 });
 
 When(/^I enter a valid "Regular" redemption key$/, function () {
@@ -64,9 +64,9 @@ When(/^I enter a valid "Regular" encrypted PDF certificate passphrase$/, async f
   for (let i = 0; i < passphrase.length; i++) {
     const word = passphrase[i];
     await this.client.setValue('.AdaRedemptionForm_component .pass-phrase input', word);
-    await this.client.waitForVisible(`//li[contains(text(), '${word}')]`);
-    await this.waitAndClick(`//li[contains(text(), '${word}')]`);
-    await this.client.waitForVisible(`//span[contains(text(), '${word}')]`);
+    await this.client.waitForVisible(`//li[text()="${word}"]`);
+    await this.waitAndClick(`//li[text()="${word}"]`);
+    await this.client.waitForVisible(`//span[text()="${word}"]`);
   }
 });
 
@@ -105,9 +105,9 @@ When(/^I enter a valid "Paper vended" shielded vending key passphrase$/, async f
   for (let i = 0; i < passphrase.length; i++) {
     const word = passphrase[i];
     await this.client.setValue('.AdaRedemptionForm_component .pass-phrase input', word);
-    await this.client.waitForVisible(`//li[contains(text(), '${word}')]`);
-    await this.waitAndClick(`//li[contains(text(), '${word}')]`);
-    await this.client.waitForVisible(`//span[contains(text(), '${word}')]`);
+    await this.client.waitForVisible(`//li[text()="${word}"]`);
+    await this.waitAndClick(`//li[text()="${word}"]`);
+    await this.client.waitForVisible(`//span[text()="${word}"]`);
   }
 });
 
