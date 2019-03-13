@@ -1,4 +1,4 @@
-@import "../../themes/mixins/animations";
+@import '../../themes/mixins/animations';
 
 $tooltip-bg-color: red !important;
 $bubble-bg-color: red !important;
@@ -21,17 +21,22 @@ $bubble-bg-color: red !important;
     }
   }
   .bubble {
-    opacity: .9;
+    opacity: 0.9;
     > div {
-      background-color: var(--theme-loading-status-icons-tooltip-color) !important;
+      background-color: var(
+        --theme-loading-status-icons-tooltip-color
+      ) !important;
       transform: translateX(-45%);
       margin-left: 10px;
       border-radius: 5px;
       padding-bottom: 7px;
     }
     span {
-      &:before, &:after {
-        border-top-color: var(--theme-loading-status-icons-tooltip-color) !important;
+      &:before,
+      &:after {
+        border-top-color: var(
+          --theme-loading-status-icons-tooltip-color
+        ) !important;
       }
     }
   }

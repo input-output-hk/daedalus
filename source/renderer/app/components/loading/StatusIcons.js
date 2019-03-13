@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, intlShape, FormattedHTMLMessage, FormattedMessage } from 'react-intl';
-import { camelCase } from 'lodash';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
@@ -80,7 +79,8 @@ const messages = defineMessages({
   checkingIfNodeIsResponding: {
     id: 'status.icons.checkingIfNodeIsResponding',
     defaultMessage: 'Checking if Node is responding!',
-    description: 'Message "Checking if Node is responding" on the status icon tooltip',
+    description:
+      'Message "Checking if Node is responding" on the status icon tooltip',
   },
   nodeIsSubscribed: {
     id: 'status.icons.nodeIsSubscribed',
@@ -95,12 +95,14 @@ const messages = defineMessages({
   checkYourInternetConnection: {
     id: 'status.icons.checkYourInternetConnection',
     defaultMessage: 'Check your Internet connection!',
-    description: 'Message "Check your Internet connection" on the status icon tooltip',
+    description:
+      'Message "Check your Internet connection" on the status icon tooltip',
   },
   checkingIfNodeIsSubscribed: {
     id: 'status.icons.checkingIfNodeIsSubscribed',
     defaultMessage: 'Checking if Node is subscribed!',
-    description: 'Message "Checking if Node is subscribed" on the status icon tooltip',
+    description:
+      'Message "Checking if Node is subscribed" on the status icon tooltip',
   },
   nodeTimeIsCorrect: {
     id: 'status.icons.nodeTimeIsCorrect',
@@ -110,12 +112,14 @@ const messages = defineMessages({
   nodeTimeIsNotCorrect: {
     id: 'status.icons.nodeTimeIsNotCorrect',
     defaultMessage: 'Node time is not correct!',
-    description: 'Message "Node time is not correct" on the status icon tooltip',
+    description:
+      'Message "Node time is not correct" on the status icon tooltip',
   },
   checkingIfNodeTimeIsCorrect: {
     id: 'status.icons.checkingIfNodeTimeIsCorrect',
     defaultMessage: 'Checking if Node time is correct!',
-    description: 'Message "Checking if Node time is correct" on the status icon tooltip',
+    description:
+      'Message "Checking if Node time is correct" on the status icon tooltip',
   },
   nodeIsSyncing: {
     id: 'status.icons.nodeIsSyncing',
@@ -130,7 +134,8 @@ const messages = defineMessages({
   checkingIfNodeIsSyncing: {
     id: 'status.icons.checkingIfNodeIsSyncing',
     defaultMessage: 'Checking if Node is syncing!',
-    description: 'Message "Checking if Node is syncing" on the status icon tooltip',
+    description:
+      'Message "Checking if Node is syncing" on the status icon tooltip',
   },
 });
 
@@ -186,7 +191,6 @@ const MESSAGES = {
 };
 
 export default class StatusIcon extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -195,12 +199,8 @@ export default class StatusIcon extends Component<Props> {
     let paramPrefix = paramName;
     if (paramName === 'nodeState' && paramValue) paramPrefix = '';
     const message = MESSAGES[`${paramPrefix}${String(paramValue)}`];
-    return message && (
-      <FormattedHTMLMessage
-        {...message}
-      />
-    );
-  }
+    return message && <FormattedHTMLMessage {...message} />;
+  };
 
   getClassName = (paramName: string) => {
     // If node is not running, it displays the icons with opacity
@@ -225,11 +225,11 @@ export default class StatusIcon extends Component<Props> {
       typeof paramValue === 'undefined' ? tooltipStyles.ellipsis : null,
       this.isDisabled(paramName) ? tooltipStyles.disabled : null,
     ]);
-  }
+  };
 
-  isDisabled = (paramName: string) => (
-    paramName !== 'nodeState' && this.props.nodeState !== CardanoNodeStates.RUNNING
-  );
+  isDisabled = (paramName: string) =>
+    paramName !== 'nodeState' &&
+    this.props.nodeState !== CardanoNodeStates.RUNNING;
 
   getIconWithToolTip = (icon: string, paramName: string) => (
     <Tooltip

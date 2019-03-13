@@ -1,4 +1,3 @@
-
 .component {
   bottom: 20px;
   display: flex;
@@ -13,7 +12,6 @@
       height: 24px;
     }
   }
-
 }
 
 .icon-on path:nth-of-type(2) {
@@ -22,7 +20,8 @@
 .icon-off path:nth-of-type(2) {
   fill: var(--theme-loading-status-icons-off-color);
 }
-.icon-unloaded, .icon-unknown {
+.icon-unloaded,
+.icon-unknown {
   &.syncing {
     path:nth-of-type(2) {
       fill: var(--theme-loading-status-icons-unloaded-syncing-color);
@@ -35,6 +34,5 @@
   }
 }
 .icon-unknown {
-  opacity: .3;
+  opacity: 0.3;
 }
-

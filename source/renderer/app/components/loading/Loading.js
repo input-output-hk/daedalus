@@ -464,7 +464,6 @@ export default class Loading extends Component<Props, State> {
           isNodeTimeCorrect={isNodeTimeCorrect}
           isNodeSyncing={isNodeSyncing}
         />
-
       </div>
     );
   }
