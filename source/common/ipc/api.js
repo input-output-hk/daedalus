@@ -10,10 +10,7 @@ import type {
 } from '../types/report-request.types';
 import type { GeneratePaperWalletParams } from '../types/paper-wallet-request.types';
 import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
-import type {
-  ExtractedWallet,
-  ExtractedWallets,
-} from '../types/wallet-importer.types';
+import type { ExtractedWallets } from '../types/wallet-importer.types';
 
 /**
  * Channel for loading an base64 encoded asset from within the `source/renderer` folder
@@ -76,23 +73,6 @@ export type GetSystemStartTimeResponse = number;
 export const ExtractWalletsChannelName = 'ExtractWalletsChannel';
 export type ExtractWalletsRendererRequest = { secretKeyFilePath: string };
 export type ExtractWalletsMainResponse = ExtractedWallets;
-
-/**
- * Channel for generating wallet key file
- */
-export const GenerateKeyFileChannelName = 'GenerateKeyFileChannel';
-export type GenerateKeyFileRendererRequest = {
-  wallet: ExtractedWallet,
-  filePath?: string,
-};
-export type GenerateKeyFileMainResponse = string;
-
-/**
- * Channel for deleting wallet key file
- */
-export const DeleteKeyFileChannelName = 'DeleteKeyFileChannel';
-export type DeleteKeyFileRendererRequest = { filePath: string };
-export type DeleteKeyFileMainResponse = void;
 
 /**
  * Channel for matching extracted wallets passwords

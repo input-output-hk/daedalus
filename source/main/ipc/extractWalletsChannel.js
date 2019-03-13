@@ -28,7 +28,7 @@ export const handleExtractWalletsRequests = () => {
         keys.forEach((key, index) => {
           wallets.push({
             index: index + 1,
-            raw: key,
+            encryptedSecretKey: cbor.encode(key).toString('hex'),
             passwordHash: key[1].toString('ascii'),
             password: null,
             balance: null,

@@ -3,14 +3,14 @@ import type { RequestConfig } from '../../common/types';
 import type { AdaWallet } from '../types';
 import { request } from '../../utils/request';
 
-export type ImportWalletAsKey = {
+export type ImportWalletFromKeyFile = {
   filePath: string,
   spendingPassword?: string,
 };
 
-export const importWalletAsKey = (
+export const importWalletFromKeyFile = (
   config: RequestConfig,
-  walletImportData: ImportWalletAsKey
+  walletImportData: ImportWalletFromKeyFile
 ): Promise<AdaWallet> => (
   request({
     method: 'POST',

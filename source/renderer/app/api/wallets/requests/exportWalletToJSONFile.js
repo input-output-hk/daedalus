@@ -2,14 +2,14 @@
 import type { RequestConfig } from '../../common/types';
 import { request } from '../../utils/requestV0';
 
-export type ExportWalletAsJSONParams = {
+export type ExportWalletToJSONFileParams = {
   walletId: string,
   filePath: string,
 };
 
-export const exportWalletAsJSON = (
+export const exportWalletToJSONFile = (
   config: RequestConfig,
-  { walletId, filePath }: ExportWalletAsJSONParams,
+  { walletId, filePath }: ExportWalletToJSONFileParams,
 ): Promise<[]> => (
   request({
     method: 'POST',

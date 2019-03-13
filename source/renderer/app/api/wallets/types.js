@@ -1,4 +1,6 @@
 // @flow
+import BigNumber from 'bignumber.js';
+
 export type AdaWallet = {
   createdAt: string,
   syncState: WalletSyncState,
@@ -36,6 +38,11 @@ export type WalletSyncState = {
   tag: SyncStateTag,
 };
 
+export type WalletBalance = {
+  balance: BigNumber,
+  walletId: string,
+};
+
 // req/res Wallet types
 export type CreateWalletRequest = {
   name: string,
@@ -64,8 +71,14 @@ export type UpdateWalletRequest = {
   assuranceLevel: WalletAssuranceLevel,
   name: string
 };
-export type ImportWalletFromKeyRequest = {
+
+export type ImportWalletFromKeyFileRequest = {
   filePath: string,
+  spendingPassword: ?string,
+};
+
+export type ImportWalletFromSecretKeyRequest = {
+  encryptedSecretKey: string,
   spendingPassword: ?string,
 };
 
@@ -89,4 +102,13 @@ export type GetWalletCertificateRecoveryPhraseRequest = {
 export type GetWalletRecoveryPhraseFromCertificateRequest = {
   passphrase: string,
   scrambledInput: string,
+};
+
+export type GetWalletBalanceRequest = {
+  encryptedSecretKey: string,
+};
+
+export type GetWalletBalanceResponse = {
+  balance: number,
+  walletId: string,
 };
