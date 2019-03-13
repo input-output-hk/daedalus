@@ -483,13 +483,13 @@
         "description": "The TLS cert is not valid and Daedalus should be restarted",
         "end": {
           "column": 3,
-          "line": 98
+          "line": 101
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.errors.tlsCertificateNotValidPleaseRestartError",
         "start": {
           "column": 31,
-          "line": 94
+          "line": 97
         }
       }
     ],
