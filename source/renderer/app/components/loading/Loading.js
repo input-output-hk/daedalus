@@ -278,7 +278,10 @@ export default class Loading extends Component<Props, State> {
           ? messages.reconnecting
           : messages.connecting;
     }
-    if (isTlsCertInvalid && connectingMessage !== messages.stopping) {
+    const isConnectingMessage =
+      connectingMessage === messages.connecting ||
+      connectingMessage === messages.reconnecting;
+    if (isTlsCertInvalid && isConnectingMessage) {
       return messages.tlsCertificateNotValidError;
     }
     return connectingMessage;
