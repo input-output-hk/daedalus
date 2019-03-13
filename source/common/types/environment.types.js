@@ -22,7 +22,7 @@ export type Environment = {
   version: string,
   isWindows: boolean,
   isMacOS: boolean,
-  isLinux: boolean
+  isLinux: boolean,
 };
 // constants
 export const PRODUCTION = 'production';

@@ -25,7 +25,8 @@ const messages = defineMessages({
   createDescription: {
     id: 'wallet.add.dialog.create.description',
     defaultMessage: '!!!Create a new wallet',
-    description: 'Description for the "Create" button on the wallet add dialog.',
+    description:
+      'Description for the "Create" button on the wallet add dialog.',
   },
   joinLabel: {
     id: 'wallet.add.dialog.join.label',
@@ -44,13 +45,16 @@ const messages = defineMessages({
   },
   restoreWithCertificateDescription: {
     id: 'wallet.add.dialog.restore.withCertificate.description',
-    defaultMessage: '!!!Restore using backup-recovery phrase or paper wallet certificate.',
-    description: 'Description for the "Restore" button with paper wallet certificate on the wallet add dialog.',
+    defaultMessage:
+      '!!!Restore using backup-recovery phrase or paper wallet certificate.',
+    description:
+      'Description for the "Restore" button with paper wallet certificate on the wallet add dialog.',
   },
   restoreWithoutCertificateDescription: {
     id: 'wallet.add.dialog.restore.withoutCertificate.description',
     defaultMessage: '!!!Restore wallet from backup',
-    description: 'Description for the "Restore" button without paper wallet certificate on the wallet add dialog.',
+    description:
+      'Description for the "Restore" button without paper wallet certificate on the wallet add dialog.',
   },
   importLabel: {
     id: 'wallet.add.dialog.import.label',
@@ -60,17 +64,22 @@ const messages = defineMessages({
   importDescription: {
     id: 'wallet.add.dialog.import.description',
     defaultMessage: '!!!Import wallet from a file',
-    description: 'Description for the "Import" button on the wallet add dialog.',
+    description:
+      'Description for the "Import" button on the wallet add dialog.',
   },
   restoreNotificationMessage: {
     id: 'wallet.add.dialog.restoreNotificationMessage',
-    defaultMessage: '!!!Wallet restoration is currently in progress. Until it completes, it is not possible to restore or import new wallets.',
-    description: 'Restore notification message shown during async wallet restore on the wallet add screen.',
+    defaultMessage:
+      '!!!Wallet restoration is currently in progress. Until it completes, it is not possible to restore or import new wallets.',
+    description:
+      'Restore notification message shown during async wallet restore on the wallet add screen.',
   },
   maxNumberOfWalletsNotificationMessage: {
     id: 'wallet.add.dialog.maxNumberOfWalletsNotificationMessage',
-    defaultMessage: '!!!You have reached the maximum of 50 wallets.<br>No more wallets can be added.',
-    description: '"Maximum number of wallets reached" notification message shown on the wallet add screen if user has 50 wallets.',
+    defaultMessage:
+      '!!!You have reached the maximum of 50 wallets.<br>No more wallets can be added.',
+    description:
+      '"Maximum number of wallets reached" notification message shown on the wallet add screen if user has 50 wallets.',
   },
 });
 
@@ -86,22 +95,25 @@ type Props = {
 
 @observer
 export default class WalletAdd extends Component<Props> {
-
   static contextTypes = {
-    intl: intlShape.isRequired
+    intl: intlShape.isRequired,
   };
 
   static defaultProps = {
     isMainnet: false,
-    isTestnet: false
+    isTestnet: false,
   };
 
   render() {
     const { intl } = this.context;
     const {
-      onCreate, onRestore, onImportFile,
-      isRestoreActive, isMaxNumberOfWalletsReached,
-      isMainnet, isTestnet
+      onCreate,
+      onRestore,
+      onImportFile,
+      isRestoreActive,
+      isMaxNumberOfWalletsReached,
+      isMainnet,
+      isTestnet,
     } = this.props;
 
     const componentClasses = classnames([styles.component, 'WalletAdd']);
@@ -139,7 +151,9 @@ export default class WalletAdd extends Component<Props> {
               onClick={onRestore}
               icon={restoreIcon}
               label={intl.formatMessage(messages.restoreLabel)}
-              description={intl.formatMessage(messages.restoreWithCertificateDescription)}
+              description={intl.formatMessage(
+                messages.restoreWithCertificateDescription
+              )}
               isDisabled={isMaxNumberOfWalletsReached || isRestoreActive}
             />
             <BigButtonForDialogs
@@ -168,5 +182,4 @@ export default class WalletAdd extends Component<Props> {
       </div>
     );
   }
-
 }

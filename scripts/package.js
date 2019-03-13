@@ -36,7 +36,7 @@ const DEFAULT_OPTS = {
     /^\/tls($|\/)/,
     /^\/translations($|\/)/,
     /^\/installers\/.*exe/,
-  ]
+  ],
 };
 
 const icon = argv.icon || argv.i || 'installers/icons/electron';
@@ -76,7 +76,7 @@ async function startPack() {
         });
       });
     } else if (argv.win64) {
-      pack("win32", "x64", log("win32", "x64"));
+      pack('win32', 'x64', log('win32', 'x64'));
     } else {
       // build for current platform only
       pack(os.platform(), os.arch(), log(os.platform(), os.arch()));
@@ -85,7 +85,6 @@ async function startPack() {
     console.error(error);
   }
 }
-
 
 /**
  * @desc
@@ -98,13 +97,15 @@ function pack(plat, arch, cb) {
   if (plat === 'darwin' && arch === 'ia32') return;
 
   const iconObj = {
-    icon: DEFAULT_OPTS.icon + (() => {
-      let extension = '.png';
-      if (plat === 'darwin') extension = '.iconset';
-      if (plat === 'win32') extension = '.ico';
+    icon:
+      DEFAULT_OPTS.icon +
+      (() => {
+        let extension = '.png';
+        if (plat === 'darwin') extension = '.iconset';
+        if (plat === 'win32') extension = '.ico';
 
-      return extension;
-    })()
+        return extension;
+      })(),
   };
 
   const opts = Object.assign({}, DEFAULT_OPTS, iconObj, {
@@ -112,12 +113,11 @@ function pack(plat, arch, cb) {
     arch,
     prune: false,
     'app-version': pkg.version || DEFAULT_OPTS.version,
-    out: `release/${plat}-${arch}`
+    out: `release/${plat}-${arch}`,
   });
 
   packager(opts, cb);
 }
-
 
 /**
  * @desc Log out success / error of building for given platform and architecture

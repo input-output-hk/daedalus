@@ -17,9 +17,9 @@ type Props = {
   onExternalLinkClick: Function,
 };
 
-@inject('actions', 'stores') @observer
+@inject('actions', 'stores')
+@observer
 export default class WalletSendConfirmationDialogContainer extends Component<Props> {
-
   static defaultProps = { actions: null, stores: null };
 
   handleWalletSendFormSubmit = (values: Object) => {
@@ -28,13 +28,20 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
 
   render() {
     const {
-      actions, amount, receiver, totalAmount, onExternalLinkClick,
-      transactionFee, amountToNaturalUnits, currencyUnit,
+      actions,
+      amount,
+      receiver,
+      totalAmount,
+      onExternalLinkClick,
+      transactionFee,
+      amountToNaturalUnits,
+      currencyUnit,
     } = this.props;
     const { wallets } = this.props.stores;
     const { sendMoneyRequest, active: activeWallet } = wallets;
 
-    if (!activeWallet) throw new Error('Active wallet required for WalletSendPage.');
+    if (!activeWallet)
+      throw new Error('Active wallet required for WalletSendPage.');
 
     return (
       <WalletSendConfirmationDialog
@@ -56,5 +63,4 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
       />
     );
   }
-
 }

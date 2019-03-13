@@ -7,10 +7,15 @@ import validWords from '../../../../../common/crypto/valid-words.en';
 
 type Props = InjectedDialogContainerProps;
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class WalletRestoreDialogContainer extends Component<Props> {
-
-  static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
+  static defaultProps = {
+    actions: null,
+    stores: null,
+    children: null,
+    onClose: () => {},
+  };
 
   onSubmit = (values: {
     recoveryPhrase: string,
@@ -39,13 +44,14 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
   render() {
     const { wallets } = this.props.stores;
     const {
-      restoreRequest, isValidMnemonic,
+      restoreRequest,
+      isValidMnemonic,
       getWalletRecoveryPhraseFromCertificateRequest,
     } = wallets;
 
-    const error = (
-      restoreRequest.error || getWalletRecoveryPhraseFromCertificateRequest.error
-    );
+    const error =
+      restoreRequest.error ||
+      getWalletRecoveryPhraseFromCertificateRequest.error;
 
     return (
       <WalletRestoreDialog
@@ -59,5 +65,4 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
       />
     );
   }
-
 }

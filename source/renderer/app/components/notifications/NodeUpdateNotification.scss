@@ -28,10 +28,14 @@
     background-color: var(--theme-node-update-accept-button-background-color);
 
     &:hover {
-      background-color: var(--theme-node-update-accept-button-background-color-hover) !important;
+      background-color: var(
+        --theme-node-update-accept-button-background-color-hover
+      ) !important;
     }
     &:active {
-      background-color: var(--theme-node-update-accept-button-background-color-active) !important;
+      background-color: var(
+        --theme-node-update-accept-button-background-color-active
+      ) !important;
     }
   }
 
@@ -40,10 +44,14 @@
     background-color: var(--theme-node-update-deny-button-background-color);
 
     &:hover {
-      background-color: var(--theme-node-update-deny-button-background-color-hover) !important;
+      background-color: var(
+        --theme-node-update-deny-button-background-color-hover
+      ) !important;
     }
     &:active {
-      background-color: var(--theme-node-update-deny-button-background-color-active) !important;
+      background-color: var(
+        --theme-node-update-deny-button-background-color-active
+      ) !important;
     }
   }
 }

@@ -24,8 +24,9 @@ export default class SettingsMenuItem extends Component<Props> {
     }
     const componentClasses = classNames([styles.component, state, className]);
     return (
-      <button className={componentClasses} onClick={onClick}>{label}</button>
+      <button className={componentClasses} onClick={onClick}>
+        {label}
+      </button>
     );
   }
-
 }

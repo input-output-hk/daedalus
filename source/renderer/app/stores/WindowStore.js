@@ -6,7 +6,6 @@ import Store from './lib/Store';
 const { ipcRenderer } = global;
 
 export default class WindowStore extends Store {
-
   _isTest: boolean = false;
 
   setup() {
@@ -28,8 +27,10 @@ export default class WindowStore extends Store {
 
   _resizeWindow = ({ width, height }: { width: number, height: number }) => {
     // TODO: refactor to ipc channel
-    ipcRenderer.send('resize-window', { width, height, animate: !this._isTest });
+    ipcRenderer.send('resize-window', {
+      width,
+      height,
+      animate: !this._isTest,
+    });
   };
-
-
 }

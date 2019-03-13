@@ -11,7 +11,8 @@ const messages = defineMessages({
   changesSaved: {
     id: 'inline.editing.dropdown.changesSaved',
     defaultMessage: '!!!Your changes have been saved',
-    description: 'Message "Your changes have been saved" for inline editing (eg. on Wallet Settings page).',
+    description:
+      'Message "Your changes have been saved" for inline editing (eg. on Wallet Settings page).',
   },
 });
 
@@ -19,7 +20,7 @@ type Props = {
   className?: string,
   isActive: boolean,
   label: string,
-  options: Array<{ value: (number | string), label: string }>,
+  options: Array<{ value: number | string, label: string }>,
   value: number | string,
   onSubmit: Function,
   onStartEditing: Function,
@@ -29,7 +30,6 @@ type Props = {
 
 @observer
 export default class InlineEditingDropdown extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -43,19 +43,19 @@ export default class InlineEditingDropdown extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      className, isActive, label, options,
-      value, successfullyUpdated,
-    } = this.props;
-    const componentClasses = classnames([
       className,
-      styles.component,
-    ]);
+      isActive,
+      label,
+      options,
+      value,
+      successfullyUpdated,
+    } = this.props;
+    const componentClasses = classnames([className, styles.component]);
     const dropdownStyles = classnames([
       successfullyUpdated ? 'dropdown_animateSuccess' : null,
     ]);
     return (
       <div className={componentClasses}>
-
         <Select
           className={dropdownStyles}
           label={label}
@@ -71,9 +71,7 @@ export default class InlineEditingDropdown extends Component<Props> {
             {intl.formatMessage(messages.changesSaved)}
           </div>
         )}
-
       </div>
     );
   }
-
 }

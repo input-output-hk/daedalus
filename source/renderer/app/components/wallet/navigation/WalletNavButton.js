@@ -15,17 +15,16 @@ type Props = {
 
 @observer
 export default class WalletNavButton extends Component<Props> {
-
   render() {
     const { isActive, icon, onClick, className } = this.props;
     const componentClasses = classnames([
       className,
       styles.component,
-      isActive ? styles.active : styles.normal
+      isActive ? styles.active : styles.normal,
     ]);
     const iconClasses = classnames([
       styles.icon,
-      isActive ? styles.activeIcon : styles.normalIcon
+      isActive ? styles.activeIcon : styles.normalIcon,
     ]);
     return (
       <button className={componentClasses} onClick={onClick}>

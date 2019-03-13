@@ -24,7 +24,7 @@ export type Transaction = {
 
 export type PaymentDistribution = {
   address: string,
-  amount: number
+  amount: number,
 };
 
 export type TxnAssuranceLevel = 'low' | 'medium' | 'high';

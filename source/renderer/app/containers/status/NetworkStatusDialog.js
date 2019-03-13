@@ -8,9 +8,9 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class NetworkStatusDialog extends Component<Props> {
-
   static defaultProps = { actions: null, stores: null };
 
   render() {
@@ -20,14 +20,29 @@ export default class NetworkStatusDialog extends Component<Props> {
     const { openExternalLink } = app;
     const {
       // Node state
-      cardanoNodeState, isNodeResponding, isNodeSubscribed,
-      isNodeSyncing, isNodeInSync, isNodeTimeCorrect,
+      cardanoNodeState,
+      isNodeResponding,
+      isNodeSubscribed,
+      isNodeSyncing,
+      isNodeInSync,
+      isNodeTimeCorrect,
       // Application state
-      isConnected, isSynced, syncPercentage, hasBeenConnected,
-      localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
-      forceCheckLocalTimeDifference, getNetworkStatusRequest,
-      localBlockHeight, networkBlockHeight, latestLocalBlockTimestamp, latestNetworkBlockTimestamp,
-      restartNode, isSystemTimeIgnored, environment,
+      isConnected,
+      isSynced,
+      syncPercentage,
+      hasBeenConnected,
+      localTimeDifference,
+      isSystemTimeCorrect,
+      forceCheckTimeDifferenceRequest,
+      forceCheckLocalTimeDifference,
+      getNetworkStatusRequest,
+      localBlockHeight,
+      networkBlockHeight,
+      latestLocalBlockTimestamp,
+      latestNetworkBlockTimestamp,
+      restartNode,
+      isSystemTimeIgnored,
+      environment,
     } = networkStatus;
 
     return (
@@ -61,7 +76,8 @@ export default class NetworkStatusDialog extends Component<Props> {
           latestLocalBlockTimestamp={latestLocalBlockTimestamp}
           latestNetworkBlockTimestamp={latestNetworkBlockTimestamp}
           nodeConnectionError={
-            getNetworkStatusRequest.error || forceCheckTimeDifferenceRequest.error
+            getNetworkStatusRequest.error ||
+            forceCheckTimeDifferenceRequest.error
           }
           localBlockHeight={localBlockHeight}
           networkBlockHeight={networkBlockHeight}
@@ -73,5 +89,4 @@ export default class NetworkStatusDialog extends Component<Props> {
       </ReactModal>
     );
   }
-
 }

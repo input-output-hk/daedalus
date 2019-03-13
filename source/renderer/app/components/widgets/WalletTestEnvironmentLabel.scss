@@ -10,9 +10,9 @@
   position: absolute;
   right: 0;
   &::before {
-    background: url("../../assets/images/top-bar/sticker.svg") 0 0 no-repeat;
+    background: url('../../assets/images/top-bar/sticker.svg') 0 0 no-repeat;
     background-size: auto 100%;
-    content: "";
+    content: '';
     height: 42px;
     position: absolute;
     right: 100%;

@@ -6,12 +6,7 @@ import StoryDecorator from './support/StoryDecorator';
 import ExportWalletToFileDialog from '../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
 
 storiesOf('ExportWalletToFileDialog', module)
-
-  .addDecorator((story) => (
-    <StoryDecorator>
-      {story()}
-    </StoryDecorator>
-  ))
+  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 

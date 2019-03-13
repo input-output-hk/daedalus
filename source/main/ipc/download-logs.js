@@ -7,12 +7,13 @@ import type {
 } from '../../common/ipc/api';
 import { DOWNLOAD_LOGS_CHANNEL } from '../../common/ipc/api';
 
-export const downloadLogsChannel: (
-  MainIpcChannel<DownloadLogsRequest, DownloadLogsResponse>
-) = new MainIpcChannel(DOWNLOAD_LOGS_CHANNEL);
+export const downloadLogsChannel: MainIpcChannel<
+  DownloadLogsRequest,
+  DownloadLogsResponse
+> = new MainIpcChannel(DOWNLOAD_LOGS_CHANNEL);
 
 export default () => {
-  downloadLogsChannel.onRequest((request) => {
+  downloadLogsChannel.onRequest(request => {
     const { compressedLogsFilePath, destinationPath } = request;
 
     if (!fs.existsSync(compressedLogsFilePath)) {

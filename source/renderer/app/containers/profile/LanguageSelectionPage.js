@@ -7,9 +7,9 @@ import LanguageSelectionForm from '../../components/profile/language-selection/L
 import { rebuildApplicationMenu } from '../../ipc/rebuild-application-menu';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class LanguageSelectionPage extends Component<InjectedProps> {
-
   static defaultProps = { actions: null, stores: null };
 
   onSubmit = async (values: { locale: string }) => {
@@ -19,13 +19,16 @@ export default class LanguageSelectionPage extends Component<InjectedProps> {
 
   render() {
     const { currentRoute } = this.props.stores.app;
-    const { setProfileLocaleRequest, LANGUAGE_OPTIONS } = this.props.stores.profile;
+    const {
+      setProfileLocaleRequest,
+      LANGUAGE_OPTIONS,
+    } = this.props.stores.profile;
     const isSubmitting = setProfileLocaleRequest.isExecuting;
-    const topbar = <TopBar currentRoute={currentRoute} showSubMenuToggle={false} />;
+    const topbar = (
+      <TopBar currentRoute={currentRoute} showSubMenuToggle={false} />
+    );
     return (
-      <TopBarLayout
-        topbar={topbar}
-      >
+      <TopBarLayout topbar={topbar}>
         <LanguageSelectionForm
           onSubmit={this.onSubmit}
           isSubmitting={isSubmitting}

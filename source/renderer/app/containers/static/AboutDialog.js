@@ -8,9 +8,9 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class AboutDialog extends Component<Props> {
-
   static defaultProps = { actions: null, stores: null };
 
   render() {
