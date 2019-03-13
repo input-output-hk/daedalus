@@ -80,19 +80,9 @@ export type ExtractWalletsMainResponse = ExtractedWallets;
 /**
  * Channel for generating wallet key file
  */
-export const GenerateKeyFileChannelName = 'GenerateKeyFileChannel';
-export type GenerateKeyFileRendererRequest = {
-  wallet: ExtractedWallet,
-  filePath?: string,
-};
-export type GenerateKeyFileMainResponse = string;
-
-/**
- * Channel for deleting wallet key file
- */
-export const DeleteKeyFileChannelName = 'DeleteKeyFileChannel';
-export type DeleteKeyFileRendererRequest = { filePath: string };
-export type DeleteKeyFileMainResponse = void;
+export const GenerateRawSecretChannelName = 'GenerateRawSecretChannel';
+export type GenerateRawSecretRendererRequest = { wallet: ExtractedWallet };
+export type GenerateRawSecretMainResponse = string;
 
 /**
  * Channel for matching extracted wallets passwords
