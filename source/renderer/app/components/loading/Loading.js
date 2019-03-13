@@ -233,7 +233,6 @@ export default class Loading extends Component<Props, State> {
   _getConnectingMessage = () => {
     const { cardanoNodeState, hasBeenConnected, isTlsCertInvalid } = this.props;
     let connectingMessage;
-    if (isTlsCertInvalid) return messages.tlsCertificateNotValidError;
     switch (cardanoNodeState) {
       case null:
       case CardanoNodeStates.STARTING:
@@ -261,6 +260,9 @@ export default class Loading extends Component<Props, State> {
         break;
       default: // also covers CardanoNodeStates.RUNNING state
         connectingMessage = hasBeenConnected ? messages.reconnecting : messages.connecting;
+    }
+    if (isTlsCertInvalid && connectingMessage !== messages.stopping) {
+      return messages.tlsCertificateNotValidError;
     }
     return connectingMessage;
   };
@@ -310,11 +312,12 @@ export default class Loading extends Component<Props, State> {
         />
       );
     }
+    const showEllipsis = isNodeStopped || (isTlsCertInvalid && !isNodeStopping);
 
     if (!isConnected) {
       const headlineClasses = classNames([
         styles.headline,
-        isNodeStopped || isTlsCertInvalid ? styles.withoutAnimation : null,
+        showEllipsis ? styles.withoutAnimation : null,
       ]);
       return (
         <div className={styles.connecting}>

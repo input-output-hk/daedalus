@@ -503,6 +503,7 @@ export default class NetworkStatusStore extends Store {
         } else if (this.hasBeenConnected) {
           Logger.debug('NetworkStatusStore: Connection Restored');
         }
+        this.isTlsCertInvalid = false;
       }
     } catch (error) {
       // Node is not responding, switch to disconnected state
