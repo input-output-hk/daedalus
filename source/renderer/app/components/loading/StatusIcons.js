@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage, FormattedMessage } from 'react-intl';
 import { camelCase } from 'lodash';
 import SVGInline from 'react-svg-inline';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
@@ -159,11 +159,17 @@ const STATUS_CLASSNAMES: Object = {
   undefined: 'unloaded',
 };
 
-const PARAM_PRETTY_NAME: Object = {
-  isNodeResponding: 'Responding',
-  isNodeSubscribed: 'Subscribed',
-  isNodeSyncing: 'Syncing',
-  isNodeTimeCorrect: 'Correct',
+const CARDANO_STATES = {
+  [CardanoNodeStates.STARTING]: 'is',
+  [CardanoNodeStates.RUNNING]: 'is',
+  [CardanoNodeStates.EXITING]: 'is',
+  [CardanoNodeStates.STOPPING]: 'is',
+  [CardanoNodeStates.STOPPED]: 'has',
+  [CardanoNodeStates.UPDATING]: 'is',
+  [CardanoNodeStates.UPDATED]: 'has been',
+  [CardanoNodeStates.CRASHED]: 'has',
+  [CardanoNodeStates.ERRORED]: 'has',
+  [CardanoNodeStates.UNRECOVERABLE]: 'has',
 };
 
 export default class StatusIcon extends Component<Props> {
@@ -181,24 +187,37 @@ export default class StatusIcon extends Component<Props> {
   getStatus = (paramName: string) => {
     const paramValue: boolean = this.props[paramName];
     let status = 'is';
-    if (paramValue === 'nodeState') {
-      status = 'is';
+    if (paramName === 'nodeState') {
+      status = CARDANO_STATES[paramValue];
     } else if (paramValue === false) {
-      status = false;
+      status = 'isNot';
     }
     return status;
-  }
+  };
 
-  getParamPrettyName = (paramName: string) => {
-    const paramValue: boolean = this.props[paramName];
-    return PARAM_PRETTY_NAME[paramValue];
-  }
+  getParamPrettyName = (paramName: string) => (
+    paramName === 'nodeState'
+      ? this.props[paramName] || CardanoNodeStates.STARTING
+      : paramName
+        .replace('isNodeTime', '')
+        .replace('isNode', '')
+  );
 
-  getMessage = (paramName: string) => camelCase([
+  getMessageParam = (paramName: string) => camelCase([
     this.getNodeName(paramName),
     this.getStatus(paramName),
     this.getParamPrettyName(paramName),
   ]);
+
+  getTip = (paramName: string) => {
+    const messageParam = this.getMessageParam(paramName);
+    const message = messages[messageParam];
+    return message && (
+      <FormattedHTMLMessage
+        {...message}
+      />
+    );
+  }
 
   getClassName = (paramName: string) => {
     // If node is not running, it displays the icons with opacity
@@ -232,7 +251,7 @@ export default class StatusIcon extends Component<Props> {
   getIconWithToolTip = (icon: string, paramName: string) => (
     <Tooltip
       skin={TooltipSkin}
-      tip={this.context.intl.formatMessage(messages[this.getMessage(paramName)])}
+      tip={this.getTip(paramName)}
       className={this.getTooltipClassname(paramName)}
     >
       <SVGInline svg={icon} className={this.getClassName(paramName)} />

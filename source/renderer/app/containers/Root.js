@@ -31,6 +31,7 @@ export default class Root extends Component<Props> {
     // with the "Stopping Cardano node..." and "Cardano node stopped" messages
     // for all the screens except of the "Network status" screen.
     const isNodeInStoppingSequence = isNodeStopping || isNodeStopped;
+      return <LoadingPage stores={stores} actions={actions} />;
 
     // Just render any page that doesn't require wallets to be loaded or node to be connected
     if (
