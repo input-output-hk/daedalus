@@ -501,6 +501,8 @@ export default class NetworkStatusStore extends Store {
           }
           Logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
         } else if (this.hasBeenConnected) {
+          // Make sure all wallets data is fully reloaded after the connection is re-established
+          this.stores.wallets.resetWalletsData();
           Logger.debug('NetworkStatusStore: Connection Restored');
         }
         this.isTlsCertInvalid = false;
