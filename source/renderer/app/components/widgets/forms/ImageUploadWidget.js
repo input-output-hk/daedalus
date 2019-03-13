@@ -8,22 +8,21 @@ export const messages = defineMessages({
   dropFileHere: {
     id: 'ImageUploadWidget.dropFileHint',
     defaultMessage: '!!!Drop file here',
-    description: 'Label "Drop file here" on the file upload widget.'
+    description: 'Label "Drop file here" on the file upload widget.',
   },
   orClickToUpload: {
     id: 'ImageUploadWidget.clickToUploadLabel',
     defaultMessage: '!!!or click to upload',
-    description: 'Label "or click to upload" on the file upload widget.'
+    description: 'Label "or click to upload" on the file upload widget.',
   },
 });
 
 type Props = {
-  label: string
+  label: string,
 };
 
 @observer
 export default class ImageUploadWidget extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -36,12 +35,15 @@ export default class ImageUploadWidget extends Component<Props> {
         <div className={styles.label}>{label}</div>
         <div className={styles.uploadBox}>
           <div className={styles.instructions}>
-            <div className={styles.title}>{intl.formatMessage(messages.dropFileHere)}</div>
-            <div className={styles.subtitle}>{intl.formatMessage(messages.orClickToUpload)}</div>
+            <div className={styles.title}>
+              {intl.formatMessage(messages.dropFileHere)}
+            </div>
+            <div className={styles.subtitle}>
+              {intl.formatMessage(messages.orClickToUpload)}
+            </div>
           </div>
         </div>
       </div>
     );
   }
-
 }

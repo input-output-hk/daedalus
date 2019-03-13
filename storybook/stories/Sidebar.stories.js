@@ -18,7 +18,7 @@ const SIDEBAR_CATEGORIES = [
     name: 'SETTINGS',
     route: '/settings',
     icon: settingsIcon,
-  }
+  },
 ];
 
 const sidebarMenus = observable({
@@ -32,21 +32,16 @@ const sidebarMenus = observable({
     actions: {
       onAddWallet: action('toggleAddWallet'),
       onWalletItemClick: (walletId: string) => {
-        runInAction(() => sidebarMenus.wallets.activeWalletId = walletId);
-      }
-    }
-  }
+        runInAction(() => (sidebarMenus.wallets.activeWalletId = walletId));
+      },
+    },
+  },
 });
 
 let emptyMenus;
 
 storiesOf('Sidebar', module)
-
-  .addDecorator((story) => (
-    <StoryDecorator>
-      {story()}
-    </StoryDecorator>
-  ))
+  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 

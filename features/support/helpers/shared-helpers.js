@@ -15,7 +15,7 @@ export const expectTextInSelector = async (client, { selector, text }) => {
   expect(textOnScreen[0]).to.equal(text);
 };
 
-export const waitUntilTextInSelector = async (client, { selector, text }) => (
+export const waitUntilTextInSelector = async (client, { selector, text }) =>
   await client.waitUntil(async () => {
     await client.waitForText(selector);
     let textOnScreen = await client.getText(selector);
@@ -23,16 +23,30 @@ export const waitUntilTextInSelector = async (client, { selector, text }) => (
     if (typeof textOnScreen === 'string') textOnScreen = [textOnScreen];
     // We only compare the first result
     return textOnScreen[0] === text;
-  })
-);
+  });
 
-export const getVisibleElementsForSelector = async (client, selectSelector, waitSelector = selectSelector, ...waitArgs) => {
+export const getVisibleElementsForSelector = async (
+  client,
+  selectSelector,
+  waitSelector = selectSelector,
+  ...waitArgs
+) => {
   await client.waitForVisible(waitSelector, ...waitArgs);
   return await client.elements(selectSelector);
 };
 
-export const getVisibleElementsCountForSelector = async (client, selectSelector, waitSelector = selectSelector, ...waitArgs) => {
-  const elements = await getVisibleElementsForSelector(client, selectSelector, waitSelector, ...waitArgs);
+export const getVisibleElementsCountForSelector = async (
+  client,
+  selectSelector,
+  waitSelector = selectSelector,
+  ...waitArgs
+) => {
+  const elements = await getVisibleElementsForSelector(
+    client,
+    selectSelector,
+    waitSelector,
+    ...waitArgs
+  );
   return elements.value ? elements.value.length : 0;
 };
 

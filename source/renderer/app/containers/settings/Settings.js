@@ -7,9 +7,9 @@ import Layout from '../MainLayout';
 import { buildRoute } from '../../utils/routing';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class Settings extends Component<InjectedContainerProps> {
-
   static defaultProps = { actions: null, stores: null };
 
   isActivePage = (route: string) => {
@@ -24,15 +24,13 @@ export default class Settings extends Component<InjectedContainerProps> {
     const { actions, children } = this.props;
     const menu = (
       <SettingsMenu
-        onItemClick={(route) => actions.router.goToRoute.trigger({ route })}
+        onItemClick={route => actions.router.goToRoute.trigger({ route })}
         isActiveItem={this.isActivePage}
       />
     );
     return (
       <Layout>
-        <SettingsLayout menu={menu}>
-          {children}
-        </SettingsLayout>
+        <SettingsLayout menu={menu}>{children}</SettingsLayout>
       </Layout>
     );
   }

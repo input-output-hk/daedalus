@@ -12,5 +12,5 @@ export type GpuStatus = {
   video_encode: string,
   vpx_decode: string,
   webgl: string,
-  webgl2: string
+  webgl2: string,
 };

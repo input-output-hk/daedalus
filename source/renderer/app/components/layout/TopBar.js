@@ -17,11 +17,8 @@ type Props = {
 
 @observer
 export default class TopBar extends Component<Props> {
-
   render() {
-    const {
-      onLeftIconClick, leftIcon, activeWallet, children,
-    } = this.props;
+    const { onLeftIconClick, leftIcon, activeWallet, children } = this.props;
 
     const topBarStyles = classNames([
       styles.topBar,
@@ -32,19 +29,14 @@ export default class TopBar extends Component<Props> {
       <div className={styles.walletInfo}>
         <div className={styles.walletName}>{activeWallet.name}</div>
         <div className={styles.walletAmount}>
-          {
-            // show currency and use long format
-            formattedWalletAmount(activeWallet.amount, true)
-          }
+          {// show currency and use long format
+          formattedWalletAmount(activeWallet.amount, true)}
         </div>
       </div>
     ) : null;
 
     const leftIconSVG = leftIcon && (
-      <SVGInline
-        svg={leftIcon}
-        className={styles.sidebarIcon}
-      />
+      <SVGInline svg={leftIcon} className={styles.sidebarIcon} />
     );
 
     return (
@@ -59,5 +51,4 @@ export default class TopBar extends Component<Props> {
       </header>
     );
   }
-
 }

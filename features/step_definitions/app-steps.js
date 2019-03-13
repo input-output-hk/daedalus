@@ -4,34 +4,39 @@ import { expect } from 'chai';
 import type { Daedalus } from '../support/global-types';
 import { waitUntilTextInSelector } from '../support/helpers/shared-helpers';
 import { waitForCardanoNodeToExit } from '../support/helpers/cardano-node-helpers';
-import { refreshClient, waitForDaedalusToExit } from '../support/helpers/app-helpers';
+import {
+  refreshClient,
+  waitForDaedalusToExit,
+} from '../support/helpers/app-helpers';
 
 declare var daedalus: Daedalus;
 
-Given(/^Daedalus is running$/, function () {
+Given(/^Daedalus is running$/, function() {
   expect(this.app.isRunning()).to.be.true;
 });
 
-When(/^I refresh the main window$/, async function () {
+When(/^I refresh the main window$/, async function() {
   await refreshClient(this.client);
 });
 
-When(/^I close the main window$/, async function () {
+When(/^I close the main window$/, async function() {
   await this.client.execute(() => daedalus.stores.window.closeWindow());
 });
 
-Then(/^Daedalus process is not running$/, async function () {
+Then(/^Daedalus process is not running$/, async function() {
   await waitForDaedalusToExit(this.client);
 });
 
-Then(/^Daedalus should quit$/, { timeout: 70000 }, async function () {
+Then(/^Daedalus should quit$/, { timeout: 70000 }, async function() {
   await waitForCardanoNodeToExit(this.client);
   await waitForDaedalusToExit(this.client);
 });
 
-Then(/^I should see the loading screen with "([^"]*)"$/, async function (message) {
+Then(/^I should see the loading screen with "([^"]*)"$/, async function(
+  message
+) {
   await waitUntilTextInSelector(this.client, {
     selector: '.Loading_connecting h1',
-    text: message
+    text: message,
   });
 });

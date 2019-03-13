@@ -12,7 +12,6 @@ type Props = {
 
 @observer
 export default class StakingSwitch extends Component<Props> {
-
   handleChange = () => {};
 
   render() {
@@ -29,5 +28,4 @@ export default class StakingSwitch extends Component<Props> {
       </div>
     );
   }
-
 }

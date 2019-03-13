@@ -1,7 +1,6 @@
 import MobxReactForm from 'mobx-react-form';
 
 export default class ReactToolboxMobxForm extends MobxReactForm {
-
   bindings() {
     return {
       ReactToolbox: {

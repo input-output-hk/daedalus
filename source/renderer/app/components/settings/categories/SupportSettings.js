@@ -13,13 +13,16 @@ const messages = defineMessages({
   },
   faqContent: {
     id: 'settings.support.faq.content',
-    defaultMessage: '!!!If you are experiencing issues, for guidance please see the {faqLink} article in the Support Portal.',
-    description: 'Content for the "Help and support" section on the support settings page.',
+    defaultMessage:
+      '!!!If you are experiencing issues, for guidance please see the {faqLink} article in the Support Portal.',
+    description:
+      'Content for the "Help and support" section on the support settings page.',
   },
   faqLink: {
     id: 'settings.support.faq.faqLink',
     defaultMessage: '!!!Known Issues',
-    description: '"Known Issues" link in the "Help and support" section on the support settings page',
+    description:
+      '"Known Issues" link in the "Help and support" section on the support settings page',
   },
   reportProblemTitle: {
     id: 'settings.support.reportProblem.title',
@@ -28,13 +31,16 @@ const messages = defineMessages({
   },
   reportProblemContent: {
     id: 'settings.support.reportProblem.content',
-    defaultMessage: '!!!If you are still experiencing an issue, please submit a support request.',
-    description: 'Content for the "Reporting a problem" section on the support settings page.',
+    defaultMessage:
+      '!!!If you are still experiencing an issue, please submit a support request.',
+    description:
+      'Content for the "Reporting a problem" section on the support settings page.',
   },
   supportRequestLink: {
     id: 'settings.support.reportProblem.link',
     defaultMessage: '!!!submit a support request',
-    description: '"submit a support request" link in the "Report a problem" section on the support settings page.',
+    description:
+      '"submit a support request" link in the "Report a problem" section on the support settings page.',
   },
   logsTitle: {
     id: 'settings.support.logs.title',
@@ -43,13 +49,15 @@ const messages = defineMessages({
   },
   logsContent: {
     id: 'settings.support.logs.content',
-    defaultMessage: '!!!Please download your logs here and attach the downloaded file when submitting a support ticket to help the support team investigate the issue. Logs do not contain sensitive information.',
+    defaultMessage:
+      '!!!Please download your logs here and attach the downloaded file when submitting a support ticket to help the support team investigate the issue. Logs do not contain sensitive information.',
     description: 'Content for the "Logs" section on the support settings page.',
   },
   downloadLogsLink: {
     id: 'settings.support.logs.downloadLogsLink',
     defaultMessage: '!!!download your logs here',
-    description: '"download your logs here" link in the Logs section on the support settings page',
+    description:
+      '"download your logs here" link in the Logs section on the support settings page',
   },
 });
 
@@ -61,13 +69,16 @@ type Props = {
 
 @observer
 export default class SupportSettings extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   render() {
-    const { onExternalLinkClick, onSupportRequestClick, onDownloadLogs } = this.props;
+    const {
+      onExternalLinkClick,
+      onSupportRequestClick,
+      onDownloadLogs,
+    } = this.props;
     const { intl } = this.context;
     const faqLinkUrl = intl.formatMessage(globalMessages.faqLinkUrl);
 
@@ -94,23 +105,30 @@ export default class SupportSettings extends Component<Props> {
 
     return (
       <div className={styles.component}>
-
         <h1>{intl.formatMessage(messages.faqTitle)}</h1>
 
-        <p><FormattedMessage {...messages.faqContent} values={{ faqLink }} /></p>
+        <p>
+          <FormattedMessage {...messages.faqContent} values={{ faqLink }} />
+        </p>
 
         <h1>{intl.formatMessage(messages.reportProblemTitle)}</h1>
 
         <p>
-          <FormattedMessage {...messages.reportProblemContent} values={{ supportRequestLink }} />
+          <FormattedMessage
+            {...messages.reportProblemContent}
+            values={{ supportRequestLink }}
+          />
         </p>
 
         <h1>{intl.formatMessage(messages.logsTitle)}</h1>
 
-        <p><FormattedMessage {...messages.logsContent} values={{ downloadLogsLink }} /></p>
-
+        <p>
+          <FormattedMessage
+            {...messages.logsContent}
+            values={{ downloadLogsLink }}
+          />
+        </p>
       </div>
     );
   }
-
 }

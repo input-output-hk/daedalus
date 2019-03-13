@@ -8,16 +8,27 @@ import Wallet, { WalletAssuranceModeOptions } from '../domains/Wallet';
 import type { WalletExportToFileParams } from '../actions/wallet-settings-actions';
 
 export default class WalletSettingsStore extends Store {
-
   WALLET_ASSURANCE_LEVEL_OPTIONS = [
-    { value: WalletAssuranceModeOptions.NORMAL, label: globalMessages.assuranceLevelNormal },
-    { value: WalletAssuranceModeOptions.STRICT, label: globalMessages.assuranceLevelStrict },
+    {
+      value: WalletAssuranceModeOptions.NORMAL,
+      label: globalMessages.assuranceLevelNormal,
+    },
+    {
+      value: WalletAssuranceModeOptions.STRICT,
+      label: globalMessages.assuranceLevelStrict,
+    },
   ];
 
   /* eslint-disable max-len */
-  @observable updateWalletRequest: Request<Wallet> = new Request(this.api.ada.updateWallet);
-  @observable updateSpendingPasswordRequest: Request<boolean> = new Request(this.api.ada.updateSpendingPassword);
-  @observable exportWalletToFileRequest: Request<Promise<[]>> = new Request(this.api.ada.exportWalletToFile);
+  @observable updateWalletRequest: Request<Wallet> = new Request(
+    this.api.ada.updateWallet
+  );
+  @observable updateSpendingPasswordRequest: Request<boolean> = new Request(
+    this.api.ada.updateSpendingPassword
+  );
+  @observable exportWalletToFileRequest: Request<Promise<[]>> = new Request(
+    this.api.ada.exportWalletToFile
+  );
   /* eslint-enable max-len */
 
   @observable walletFieldBeingEdited = null;
@@ -49,16 +60,32 @@ export default class WalletSettingsStore extends Store {
     this.walletFieldBeingEdited = null;
   };
 
-  @action _updateSpendingPassword = async ({ walletId, oldPassword, newPassword }: {
-    walletId: string, oldPassword: ?string, newPassword: ?string,
+  @action _updateSpendingPassword = async ({
+    walletId,
+    oldPassword,
+    newPassword,
+  }: {
+    walletId: string,
+    oldPassword: ?string,
+    newPassword: ?string,
   }) => {
-    await this.updateSpendingPasswordRequest.execute({ walletId, oldPassword, newPassword });
+    await this.updateSpendingPasswordRequest.execute({
+      walletId,
+      oldPassword,
+      newPassword,
+    });
     this.actions.dialogs.closeActiveDialog.trigger();
     this.updateSpendingPasswordRequest.reset();
     this.stores.wallets.refreshWalletsData();
   };
 
-  @action _updateWalletField = async ({ field, value }: { field: string, value: string }) => {
+  @action _updateWalletField = async ({
+    field,
+    value,
+  }: {
+    field: string,
+    value: string,
+  }) => {
     const activeWallet = this.stores.wallets.active;
     if (!activeWallet) return;
 
@@ -69,7 +96,7 @@ export default class WalletSettingsStore extends Store {
     const wallet = await this.updateWalletRequest.execute({
       walletId: walletData.walletId,
       name: walletData.name,
-      assuranceLevel: walletData.assurance
+      assuranceLevel: walletData.assurance,
     }).promise;
 
     if (!wallet) return;
@@ -84,8 +111,11 @@ export default class WalletSettingsStore extends Store {
 
   @action _exportToFile = async (params: WalletExportToFileParams) => {
     const { walletId, filePath, password } = params;
-    await this.exportWalletToFileRequest.execute({ walletId, filePath, password });
+    await this.exportWalletToFileRequest.execute({
+      walletId,
+      filePath,
+      password,
+    });
     this.actions.dialogs.closeActiveDialog.trigger();
-  }
-
+  };
 }

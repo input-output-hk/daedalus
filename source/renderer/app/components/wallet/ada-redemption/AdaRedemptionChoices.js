@@ -10,27 +10,27 @@ const messages = defineMessages({
   regularTabTitle: {
     id: 'wallet.redeem.choices.tab.title.regularVended',
     defaultMessage: '!!!Regular',
-    description: 'Tab title "Regular" on Ada redemption page.'
+    description: 'Tab title "Regular" on Ada redemption page.',
   },
   forceVendedTabTitle: {
     id: 'wallet.redeem.choices.tab.title.forceVended',
     defaultMessage: '!!!Force vended',
-    description: 'Tab title "Force vended" on Ada redemption page.'
+    description: 'Tab title "Force vended" on Ada redemption page.',
   },
   paperVendedTabTitle: {
     id: 'wallet.redeem.choices.tab.title.paperVended',
     defaultMessage: '!!!Paper vended',
-    description: 'Tab title "Paper vended" on Ada redemption page.'
+    description: 'Tab title "Paper vended" on Ada redemption page.',
   },
   recoveryRegularTabTitle: {
     id: 'wallet.redeem.choices.tab.title.recoveryRegular',
     defaultMessage: '!!!Recovery - regular',
-    description: 'Tab title "Recovery - regular" on Ada redemption page.'
+    description: 'Tab title "Recovery - regular" on Ada redemption page.',
   },
   recoveryForceVendedTabTitle: {
     id: 'wallet.redeem.choices.tab.title.recoveryForceVended',
     defaultMessage: '!!!Recovery - force vended',
-    description: 'Tab title "Recovery - force vended" on Ada redemption page.'
+    description: 'Tab title "Recovery - force vended" on Ada redemption page.',
   },
 });
 
@@ -41,7 +41,6 @@ type Props = {
 
 @observer
 export default class AdaRedemptionChoices extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -52,37 +51,58 @@ export default class AdaRedemptionChoices extends Component<Props> {
     return (
       <div className={styles.component}>
         <button
-          className={activeChoice === ADA_REDEMPTION_TYPES.REGULAR ? styles.activeButton : ''}
+          className={
+            activeChoice === ADA_REDEMPTION_TYPES.REGULAR
+              ? styles.activeButton
+              : ''
+          }
           onClick={() => onSelectChoice(ADA_REDEMPTION_TYPES.REGULAR)}
         >
           {intl.formatMessage(messages.regularTabTitle)}
         </button>
         <button
-          className={activeChoice === ADA_REDEMPTION_TYPES.FORCE_VENDED ? styles.activeButton : ''}
+          className={
+            activeChoice === ADA_REDEMPTION_TYPES.FORCE_VENDED
+              ? styles.activeButton
+              : ''
+          }
           onClick={() => onSelectChoice(ADA_REDEMPTION_TYPES.FORCE_VENDED)}
         >
           {intl.formatMessage(messages.forceVendedTabTitle)}
         </button>
         <button
-          className={activeChoice === ADA_REDEMPTION_TYPES.PAPER_VENDED ? styles.activeButton : ''}
+          className={
+            activeChoice === ADA_REDEMPTION_TYPES.PAPER_VENDED
+              ? styles.activeButton
+              : ''
+          }
           onClick={() => onSelectChoice(ADA_REDEMPTION_TYPES.PAPER_VENDED)}
         >
           {intl.formatMessage(messages.paperVendedTabTitle)}
         </button>
         <button
-          className={activeChoice === ADA_REDEMPTION_TYPES.RECOVERY_REGULAR ? styles.activeButton : ''}
+          className={
+            activeChoice === ADA_REDEMPTION_TYPES.RECOVERY_REGULAR
+              ? styles.activeButton
+              : ''
+          }
           onClick={() => onSelectChoice(ADA_REDEMPTION_TYPES.RECOVERY_REGULAR)}
         >
           {intl.formatMessage(messages.recoveryRegularTabTitle)}
         </button>
         <button
-          className={activeChoice === ADA_REDEMPTION_TYPES.RECOVERY_FORCE_VENDED ? styles.activeButton : ''}
-          onClick={() => onSelectChoice(ADA_REDEMPTION_TYPES.RECOVERY_FORCE_VENDED)}
+          className={
+            activeChoice === ADA_REDEMPTION_TYPES.RECOVERY_FORCE_VENDED
+              ? styles.activeButton
+              : ''
+          }
+          onClick={() =>
+            onSelectChoice(ADA_REDEMPTION_TYPES.RECOVERY_FORCE_VENDED)
+          }
         >
           {intl.formatMessage(messages.recoveryForceVendedTabTitle)}
         </button>
       </div>
     );
   }
-
 }

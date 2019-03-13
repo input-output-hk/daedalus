@@ -7,12 +7,7 @@ import { generateWallet } from './support/utils';
 import WalletSummary from '../../source/renderer/app/components/wallet/summary/WalletSummary';
 
 storiesOf('WalletSummary', module)
-
-  .addDecorator((story) => (
-    <StoryDecorator>
-      {story()}
-    </StoryDecorator>
-  ))
+  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 

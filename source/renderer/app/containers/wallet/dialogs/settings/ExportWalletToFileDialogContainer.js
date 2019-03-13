@@ -8,19 +8,26 @@ import type { InjectedDialogContainerProps } from '../../../../types/injectedPro
 
 type Props = InjectedDialogContainerProps;
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class ExportWalletToFileDialogContainer extends Component<Props> {
-
-  static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
+  static defaultProps = {
+    actions: null,
+    stores: null,
+    children: null,
+    onClose: () => {},
+  };
 
   onSubmit = (params: OnSubmitParams) => {
     // TODO: refactor this direct access to the dialog api
     const filePath = global.dialog.showSaveDialog({
       defaultPath: 'wallet-export.json',
-      filters: [{
-        name: 'wallet-export',
-        extensions: ['json'],
-      }],
+      filters: [
+        {
+          name: 'wallet-export',
+          extensions: ['json'],
+        },
+      ],
     });
     const { stores, actions } = this.props;
     const activeWallet = stores.wallets.active;
@@ -28,7 +35,7 @@ export default class ExportWalletToFileDialogContainer extends Component<Props> 
     actions.walletSettings.exportToFile.trigger({
       walletId: activeWallet.id,
       filePath,
-      ...params
+      ...params,
     });
   };
 
@@ -58,5 +65,4 @@ export default class ExportWalletToFileDialogContainer extends Component<Props> 
       />
     );
   }
-
 }

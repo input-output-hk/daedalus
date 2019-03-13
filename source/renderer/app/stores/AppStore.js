@@ -7,13 +7,15 @@ import { buildRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
 import { DIALOGS, SCREENS } from '../../../common/ipc/constants';
 import { openExternalUrlChannel } from '../ipc/open-external-url';
-import { toggleUiPartChannel, showUiPartChannel } from '../ipc/control-ui-parts';
+import {
+  toggleUiPartChannel,
+  showUiPartChannel,
+} from '../ipc/control-ui-parts';
 import { getGPUStatusChannel } from '../ipc/get-gpu-status.ipc';
 
 import type { GpuStatus } from '../types/gpuStatus';
 
 export default class AppStore extends Store {
-
   @observable error: ?LocalizableError = null;
   @observable isAboutDialogOpen = false;
   @observable isNetworkStatusDialogOpen = false;
@@ -25,8 +27,12 @@ export default class AppStore extends Store {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
     this.actions.app.openAboutDialog.listen(this._openAboutDialog);
     this.actions.app.closeAboutDialog.listen(this._closeAboutDialog);
-    this.actions.app.openNetworkStatusDialog.listen(this._openNetworkStatusDialog);
-    this.actions.app.closeNetworkStatusDialog.listen(this._closeNetworkStatusDialog);
+    this.actions.app.openNetworkStatusDialog.listen(
+      this._openNetworkStatusDialog
+    );
+    this.actions.app.closeNetworkStatusDialog.listen(
+      this._closeNetworkStatusDialog
+    );
     this.actions.app.getGpuStatus.listen(this._getGpuStatus);
     this.actions.app.toggleBlockConsolidationStatusScreen.listen(
       this._toggleBlockConsolidationStatusScreen
@@ -50,9 +56,15 @@ export default class AppStore extends Store {
    */
   toggleUiPart = (uiPart: string) => {
     switch (uiPart) {
-      case DIALOGS.ABOUT: this._toggleAboutDialog(); break;
-      case DIALOGS.NETWORK_STATUS: this._toggleNetworkStatusDialog(); break;
-      case SCREENS.BLOCK_CONSOLIDATION: this._toggleBlockConsolidationStatusScreen(); break;
+      case DIALOGS.ABOUT:
+        this._toggleAboutDialog();
+        break;
+      case DIALOGS.NETWORK_STATUS:
+        this._toggleNetworkStatusDialog();
+        break;
+      case SCREENS.BLOCK_CONSOLIDATION:
+        this._toggleBlockConsolidationStatusScreen();
+        break;
       default:
     }
     return Promise.resolve();
@@ -63,7 +75,9 @@ export default class AppStore extends Store {
    */
   showUiPart = (uiPart: string) => {
     switch (uiPart) {
-      case SCREENS.ADA_REDEMPTION: this._showAdaRedemptionScreen(); break;
+      case SCREENS.ADA_REDEMPTION:
+        this._showAdaRedemptionScreen();
+        break;
       default:
     }
     return Promise.resolve();

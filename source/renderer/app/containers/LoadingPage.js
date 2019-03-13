@@ -17,12 +17,12 @@ export const messages = defineMessages({
   loadingWalletData: {
     id: 'loading.screen.loadingWalletData',
     defaultMessage: '!!!Loading wallet data',
-    description: 'Message "Loading wallet data" on the loading screen.'
+    description: 'Message "Loading wallet data" on the loading screen.',
   },
   reportIssueButtonUrl: {
     id: 'loading.screen.reportIssue.reportIssueButtonUrl',
     defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/requests/new/',
-    description: 'Link to Open Support page'
+    description: 'Link to Open Support page',
   },
   downloadLogsSuccess: {
     id: 'loading.screen.reportIssue.downloadLogsSuccessMessage',
@@ -31,9 +31,9 @@ export const messages = defineMessages({
   },
 });
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class LoadingPage extends Component<InjectedProps> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -53,12 +53,28 @@ export default class LoadingPage extends Component<InjectedProps> {
   render() {
     const { stores } = this.props;
     const {
-      cardanoNodeState, isConnected, isSynced, syncPercentage, hasBeenConnected,
-      localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
-      forceCheckLocalTimeDifference, ignoreSystemTimeChecks, isNodeStopping, isNodeStopped,
-      isNotEnoughDiskSpace, diskSpaceRequired, diskSpaceMissing, diskSpaceRecommended,
+      cardanoNodeState,
+      isConnected,
+      isSynced,
+      syncPercentage,
+      hasBeenConnected,
+      localTimeDifference,
+      isSystemTimeCorrect,
+      forceCheckTimeDifferenceRequest,
+      forceCheckLocalTimeDifference,
+      ignoreSystemTimeChecks,
+      isNodeStopping,
+      isNodeStopped,
+      isNotEnoughDiskSpace,
+      diskSpaceRequired,
+      diskSpaceMissing,
+      diskSpaceRecommended,
     } = stores.networkStatus;
-    const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
+    const {
+      hasLoadedCurrentLocale,
+      hasLoadedCurrentTheme,
+      currentLocale,
+    } = stores.profile;
     const { id, message } = this.notification;
     return (
       <CenteredLayout>
@@ -119,7 +135,9 @@ export default class LoadingPage extends Component<InjectedProps> {
   handleReportIssueClick = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.persist();
     const { intl } = this.context;
-    const reportIssueButtonUrl = intl.formatMessage(messages.reportIssueButtonUrl);
+    const reportIssueButtonUrl = intl.formatMessage(
+      messages.reportIssueButtonUrl
+    );
     const locale = this.props.stores.profile.currentLocale;
     const supportUrl = await getSupportUrl(reportIssueButtonUrl, locale);
     this.props.stores.app.openExternalLink(supportUrl);

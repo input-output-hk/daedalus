@@ -7,9 +7,9 @@ import type { InjectedContainerProps } from '../types/injectedPropsType';
 
 type Props = InjectedContainerProps;
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class Root extends Component<Props> {
-
   render() {
     const { stores, actions, children } = this.props;
     const { networkStatus, profile, adaRedemption, app, wallets } = stores;
@@ -18,8 +18,11 @@ export default class Root extends Component<Props> {
     const { isAdaRedemptionPage } = adaRedemption;
     const { hasLoadedWallets } = wallets;
     const {
-      isSynced, isNodeStopping, isNodeStopped,
-      isSystemTimeCorrect, isNotEnoughDiskSpace,
+      isSynced,
+      isNodeStopping,
+      isNodeStopped,
+      isSystemTimeCorrect,
+      isNotEnoughDiskSpace,
     } = networkStatus;
 
     const isPageThatDoesntNeedWallets = (

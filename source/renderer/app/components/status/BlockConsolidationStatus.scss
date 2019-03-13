@@ -57,7 +57,6 @@
   }
 }
 
-
 .epochs {
   height: 149px;
   margin: 0 auto 60px;
@@ -74,7 +73,7 @@
     width: 118px;
 
     em {
-      font-size: 16px
+      font-size: 16px;
     }
 
     b {
@@ -98,7 +97,9 @@
 }
 
 .indicatorContainer {
-  background-color: var(--theme-block-consolidation-indicator-container-background-color);
+  background-color: var(
+    --theme-block-consolidation-indicator-container-background-color
+  );
   border-radius: 5px;
   height: 24px;
   margin: 0 auto;

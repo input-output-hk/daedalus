@@ -2,7 +2,7 @@
 export type Address = {
   id: string,
   used: boolean,
-  changeAddress: boolean
+  changeAddress: boolean,
 };
 
 export type Addresses = Array<Address>;

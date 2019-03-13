@@ -5,7 +5,7 @@ export type WalletExportToFileParams = {
   walletId: string,
   exportType: string,
   filePath: string,
-  password: ?string
+  password: ?string,
 };
 
 export default class WalletSettingsActions {
@@ -14,6 +14,10 @@ export default class WalletSettingsActions {
   stopEditingWalletField: Action<any> = new Action();
   updateWalletField: Action<{ field: string, value: string }> = new Action();
   // eslint-disable-next-line max-len
-  updateSpendingPassword: Action<{ walletId: string, oldPassword: ?string, newPassword: ?string }> = new Action();
+  updateSpendingPassword: Action<{
+    walletId: string,
+    oldPassword: ?string,
+    newPassword: ?string,
+  }> = new Action();
   exportToFile: Action<WalletExportToFileParams> = new Action();
 }

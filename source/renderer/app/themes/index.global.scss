@@ -3,19 +3,87 @@
 // ============ RESET ===========
 // http://meyerweb.com/eric/tools/css/reset
 
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
   margin: 0;
   padding: 0;
   border: 0;
@@ -24,21 +92,34 @@ time, mark, audio, video {
   vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section {
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
   display: block;
 }
 body {
   line-height: 1;
 }
-ol, ul {
+ol,
+ul {
   list-style: none;
 }
-blockquote, q {
+blockquote,
+q {
   quotes: none;
 }
-blockquote:before, blockquote:after,
-q:before, q:after {
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
   content: '';
   content: none;
 }
@@ -62,102 +143,105 @@ button {
 
 @font-face {
   font-family: 'NotoSans-ExtraLight';
-  src: url("../assets/fonts/NotoSans-ExtraLight.ttf") format("truetype");
+  src: url('../assets/fonts/NotoSans-ExtraLight.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'NotoSans-Thin';
-  src: url("../assets/fonts/NotoSans-Thin.ttf") format("truetype");
+  src: url('../assets/fonts/NotoSans-Thin.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'NotoSansCJKjp-Thin';
-  src: url("../assets/fonts/NotoSansCJKjp-Thin.otf") format("opentype");
+  src: url('../assets/fonts/NotoSansCJKjp-Thin.otf') format('opentype');
 }
 
 @font-face {
   font-family: 'NotoSans-Light';
-  src: url("../assets/fonts/NotoSans-Light.ttf") format("truetype");
+  src: url('../assets/fonts/NotoSans-Light.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'NotoSansCJKjp-Light';
-  src: url("../assets/fonts/NotoSansCJKjp-Light.otf") format("opentype");
+  src: url('../assets/fonts/NotoSansCJKjp-Light.otf') format('opentype');
 }
 
 @font-face {
   font-family: 'NotoSans-Regular';
-  src: url("../assets/fonts/NotoSans-Regular.ttf") format("truetype");
+  src: url('../assets/fonts/NotoSans-Regular.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'NotoSansCJKjp-Regular';
-  src: url("../assets/fonts/NotoSansCJKjp-Regular.otf") format("opentype");
+  src: url('../assets/fonts/NotoSansCJKjp-Regular.otf') format('opentype');
 }
 
 @font-face {
   font-family: 'NotoSans-Medium';
-  src: url("../assets/fonts/NotoSans-Medium.ttf") format("truetype");
+  src: url('../assets/fonts/NotoSans-Medium.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'NotoSansCJKjp-Medium';
-  src: url("../assets/fonts/NotoSansCJKjp-Medium.otf") format("opentype");
+  src: url('../assets/fonts/NotoSansCJKjp-Medium.otf') format('opentype');
 }
 
 @font-face {
   font-family: 'NotoSans-SemiBold';
-  src: url("../assets/fonts/NotoSans-SemiBold.ttf") format("truetype");
+  src: url('../assets/fonts/NotoSans-SemiBold.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'NotoSans-Bold';
-  src: url("../assets/fonts/NotoSans-Bold.ttf") format("truetype");
+  src: url('../assets/fonts/NotoSans-Bold.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'NotoSansCJKjp-Bold';
-  src: url("../assets/fonts/NotoSansCJKjp-Bold.otf") format("opentype");
+  src: url('../assets/fonts/NotoSansCJKjp-Bold.otf') format('opentype');
 }
 
 @font-face {
   font-family: 'NotoSans-ExtraBold';
-  src: url("../assets/fonts/NotoSans-ExtraBold.ttf") format("truetype");
+  src: url('../assets/fonts/NotoSans-ExtraBold.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'NotoSans-Black';
-  src: url("../assets/fonts/NotoSans-Black.ttf") format("truetype");
+  src: url('../assets/fonts/NotoSans-Black.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'NotoSansCJKjp-Black';
-  src: url("../assets/fonts/NotoSansCJKjp-Black.otf") format("opentype");
+  src: url('../assets/fonts/NotoSansCJKjp-Black.otf') format('opentype');
 }
 
 @font-face {
   font-family: 'Montserrat-Medium';
-  src: url("../assets/fonts/Montserrat-Medium.ttf") format("truetype");
+  src: url('../assets/fonts/Montserrat-Medium.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'SFMono-Light';
-  src: url("../assets/fonts/SFMono-Light.ttf") format("truetype");
+  src: url('../assets/fonts/SFMono-Light.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'SFMonoCJKjp-Light';
-  src: url("../assets/fonts/SFMono-Light.otf") format("opentype");
+  src: url('../assets/fonts/SFMono-Light.otf') format('opentype');
 }
 
 // ============ BASE ===========
 
-html, body, :global(#root), :global(#root) > [data-reactroot] {
+html,
+body,
+:global(#root),
+:global(#root) > [data-reactroot] {
   width: 100%;
   height: 100%;
   // Make the default font ugly so we immediately see when something
   // is not yet defined correctly in our UI
-  font-family: "Times New Roman", serif;
+  font-family: 'Times New Roman', serif;
   -webkit-font-smoothing: antialiased;
   user-select: none;
 }

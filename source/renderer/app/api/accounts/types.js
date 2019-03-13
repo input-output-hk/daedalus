@@ -6,7 +6,7 @@ export type Account = {
   addresses: Addresses,
   name: string,
   walletId: string,
-  index: number
+  index: number,
 };
 
 export type Accounts = Array<Account>;
