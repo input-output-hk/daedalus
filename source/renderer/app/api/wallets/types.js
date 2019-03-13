@@ -71,8 +71,14 @@ export type UpdateWalletRequest = {
   assuranceLevel: WalletAssuranceLevel,
   name: string
 };
+
 export type ImportWalletFromKeyRequest = {
   filePath: string,
+  spendingPassword: ?string,
+};
+
+export type ImportWalletFromRawSecretRequest = {
+  rawSecret: string,
   spendingPassword: ?string,
 };
 

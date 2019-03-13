@@ -24,7 +24,7 @@ export default class WalletImporterStore extends Store {
   @observable extractedWallets: ExtractedWallets = [];
 
   /* eslint-disable max-len */
-  @observable importFromKeyRequest: Request<Wallet> = new Request(this.api.ada.importWalletFromKey);
+  @observable importWalletFromRawSecretRequest: Request<Wallet> = new Request(this.api.ada.importWalletFromRawSecret);
   @observable getWalletBalanceRequest: Request<WalletBalance> = new Request(this.api.ada.getWalletBalance);
   /* eslint-disable max-len */
 
@@ -103,7 +103,7 @@ export default class WalletImporterStore extends Store {
     const { wallet } = params;
     const rawSecret = await generateRawSecretChannel.send({ wallet: toJS(wallet) });
     const spendingPassword = wallet.password;
-    const importedWallet = await this.importFromKeyRequest.execute({
+    const importedWallet = await this.importWalletFromRawSecretRequest.execute({
       rawSecret, spendingPassword,
     }).promise;
     if (!importedWallet) throw new Error('Imported wallet was not received correctly');

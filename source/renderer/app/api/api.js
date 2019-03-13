@@ -38,6 +38,7 @@ import { importWalletAsJSON } from './wallets/requests/importWalletAsJSON';
 import { getWallets } from './wallets/requests/getWallets';
 import { getWalletBalance } from './wallets/requests/getWalletBalance';
 import { importWalletAsKey } from './wallets/requests/importWalletAsKey';
+import { importWalletAsRawSecret } from './wallets/requests/importWalletAsRawSecret';
 import { createWallet } from './wallets/requests/createWallet';
 import { restoreWallet } from './wallets/requests/restoreWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
@@ -126,6 +127,7 @@ import type {
   GetWalletRecoveryPhraseFromCertificateRequest,
   ImportWalletFromKeyRequest,
   ImportWalletFromFileRequest,
+  ImportWalletFromRawSecretRequest,
   UpdateWalletRequest
 } from './wallets/types';
 
@@ -655,6 +657,27 @@ export default class AdaApi {
         throw new WalletAlreadyImportedError();
       }
       throw new WalletFileImportError();
+    }
+  };
+
+  importWalletFromRawSecret = async (
+    request: ImportWalletFromRawSecretRequest
+  ): Promise<Wallet> => {
+    Logger.debug('AdaApi::importWalletFromRawSecret called');
+    const { rawSecret, spendingPassword: passwordString } = request;
+    const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
+    try {
+      const importedWallet: AdaWallet = await importWalletAsRawSecret(
+        this.config, { rawSecret, spendingPassword }
+      );
+      Logger.debug('AdaApi::importWalletFromRawSecret success', { importedWallet });
+      return _createWalletFromServerData(importedWallet);
+    } catch (error) {
+      Logger.error('AdaApi::importWalletFromRawSecret error', { error });
+      if (error.message === 'WalletAlreadyExists') {
+        throw new WalletAlreadyImportedError(error);
+      }
+      throw new WalletFileImportError(error);
     }
   };
 
