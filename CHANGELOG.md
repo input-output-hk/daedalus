@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 0.13.1
+
+### Features
+
+- Wallet extractor/importer screen ([PR 1268](https://github.com/input-output-hk/daedalus/pull/1268))
+
 ## 0.13.0
 
 ### Features

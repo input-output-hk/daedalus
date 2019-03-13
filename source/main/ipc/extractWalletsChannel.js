@@ -20,7 +20,6 @@ export const handleExtractWalletsRequests = () => {
     new Promise((resolve, reject) => (
       fs.readFile(request.secretKeyFilePath, (error, data) => {
         if (error) reject(error);
-
         const binaryString = Buffer.from(data);
         const decodedSecrets = cbor.decode(binaryString);
         const keys = decodedSecrets[2];
@@ -36,7 +35,6 @@ export const handleExtractWalletsRequests = () => {
             id: null,
           });
         });
-
         resolve(wallets);
       })
     ))
