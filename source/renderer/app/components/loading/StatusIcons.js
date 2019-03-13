@@ -134,7 +134,6 @@ const messages = defineMessages({
   },
 });
 
-
 type Props = {
   nodeState: ?CardanoNodeState,
   isNodeResponding?: boolean,
@@ -159,17 +158,31 @@ const STATUS_CLASSNAMES: Object = {
   undefined: 'unloaded',
 };
 
-const CARDANO_STATES = {
-  [CardanoNodeStates.STARTING]: 'is',
-  [CardanoNodeStates.RUNNING]: 'is',
-  [CardanoNodeStates.EXITING]: 'is',
-  [CardanoNodeStates.STOPPING]: 'is',
-  [CardanoNodeStates.STOPPED]: 'has',
-  [CardanoNodeStates.UPDATING]: 'is',
-  [CardanoNodeStates.UPDATED]: 'has been',
-  [CardanoNodeStates.CRASHED]: 'has',
-  [CardanoNodeStates.ERRORED]: 'has',
-  [CardanoNodeStates.UNRECOVERABLE]: 'has',
+const MESSAGES = {
+  [CardanoNodeStates.STARTING]: messages.nodeIsRunning,
+  [CardanoNodeStates.RUNNING]: messages.nodeIsStarting,
+  [CardanoNodeStates.EXITING]: messages.nodeIsExiting,
+  [CardanoNodeStates.STOPPING]: messages.nodeIsStopping,
+  [CardanoNodeStates.STOPPED]: messages.nodeHasStopped,
+  [CardanoNodeStates.UPDATING]: messages.nodeIsUpdating,
+  [CardanoNodeStates.UPDATED]: messages.nodeHasBeenUpdated,
+  [CardanoNodeStates.CRASHED]: messages.nodeHasCrashed,
+  [CardanoNodeStates.ERRORED]: messages.nodeHasErrored,
+  [CardanoNodeStates.UNRECOVERABLE]: messages.nodeIsUnrecoverable,
+  nodeStatenull: messages.nodeIsStarting,
+  isNodeRespondingtrue: messages.nodeIsResponding,
+  isNodeRespondingfalse: messages.nodeIsNotResponding,
+  isNodeRespondingundefined: messages.checkingIfNodeIsResponding,
+  isNodeSubscribedtrue: messages.nodeIsSubscribed,
+  isNodeSubscribedfalse: messages.nodeIsNotSubscribed,
+  isNodeSubscribednull: messages.checkYourInternetConnection,
+  isNodeSubscribedundefined: messages.checkingIfNodeIsSubscribed,
+  isNodeTimeCorrecttrue: messages.nodeTimeIsCorrect,
+  isNodeTimeCorrectfalse: messages.nodeTimeIsNotCorrect,
+  isNodeTimeCorrectundefined: messages.checkingIfNodeTimeIsCorrect,
+  isNodeSyncingtrue: messages.nodeIsSyncing,
+  isNodeSyncingfalse: messages.nodeIsNotSyncing,
+  isNodeSyncingundefined: messages.checkingIfNodeIsSyncing,
 };
 
 export default class StatusIcon extends Component<Props> {
@@ -178,40 +191,10 @@ export default class StatusIcon extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  getNodeName = (paramName: string) => [
-    typeof this.props[paramName] === 'undefined' ? 'checkingIf' : '',
-    'node',
-    paramName === 'isNodeTimeCorrect' ? 'time' : '',
-  ];
-
-  getStatus = (paramName: string) => {
-    const paramValue: boolean = this.props[paramName];
-    let status = 'is';
-    if (paramName === 'nodeState') {
-      status = CARDANO_STATES[paramValue];
-    } else if (paramValue === false) {
-      status = 'isNot';
-    }
-    return status;
-  };
-
-  getParamPrettyName = (paramName: string) => (
-    paramName === 'nodeState'
-      ? this.props[paramName] || CardanoNodeStates.STARTING
-      : paramName
-        .replace('isNodeTime', '')
-        .replace('isNode', '')
-  );
-
-  getMessageParam = (paramName: string) => camelCase([
-    this.getNodeName(paramName),
-    this.getStatus(paramName),
-    this.getParamPrettyName(paramName),
-  ]);
-
-  getTip = (paramName: string) => {
-    const messageParam = this.getMessageParam(paramName);
-    const message = messages[messageParam];
+  getTip = (paramName: string, paramValue?: boolean) => {
+    let paramPrefix = paramName;
+    if (paramName === 'nodeState' && paramValue) paramPrefix = '';
+    const message = MESSAGES[`${paramPrefix}${String(paramValue)}`];
     return message && (
       <FormattedHTMLMessage
         {...message}
@@ -251,7 +234,7 @@ export default class StatusIcon extends Component<Props> {
   getIconWithToolTip = (icon: string, paramName: string) => (
     <Tooltip
       skin={TooltipSkin}
-      tip={this.getTip(paramName)}
+      tip={this.getTip(paramName, this.props[paramName])}
       className={this.getTooltipClassname(paramName)}
     >
       <SVGInline svg={icon} className={this.getClassName(paramName)} />
