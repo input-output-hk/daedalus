@@ -13,7 +13,6 @@ type Props = {
 
 @observer
 export default class WalletWithNavigation extends Component<Props> {
-
   render() {
     const { children, isActiveScreen, onWalletNavItemClick } = this.props;
     return (
@@ -24,9 +23,7 @@ export default class WalletWithNavigation extends Component<Props> {
             onNavItemClick={onWalletNavItemClick}
           />
         </div>
-        <div className={styles.page}>
-          {children}
-        </div>
+        <div className={styles.page}>{children}</div>
       </div>
     );
   }

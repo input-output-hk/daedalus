@@ -9,12 +9,8 @@ type Props = {
 
 @observer
 export default class WalletRecoveryPhraseMnemonic extends Component<Props> {
-
   render() {
     const { phrase } = this.props;
-    return (
-      <div className={styles.component}>{phrase}</div>
-    );
+    return <div className={styles.component}>{phrase}</div>;
   }
-
 }

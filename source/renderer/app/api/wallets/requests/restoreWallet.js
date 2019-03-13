@@ -7,10 +7,13 @@ import { request } from '../../utils/request';
 export const restoreWallet = (
   config: RequestConfig,
   { walletInitData }: { walletInitData: WalletInitData }
-): Promise<AdaWallet> => (
-  request({
-    method: 'POST',
-    path: '/api/v1/wallets',
-    ...config,
-  }, {}, walletInitData)
-);
+): Promise<AdaWallet> =>
+  request(
+    {
+      method: 'POST',
+      path: '/api/v1/wallets',
+      ...config,
+    },
+    {},
+    walletInitData
+  );

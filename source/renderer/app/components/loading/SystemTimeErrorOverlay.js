@@ -12,47 +12,54 @@ const messages = defineMessages({
   overlayTitle: {
     id: 'systemTime.error.overlayTitle',
     defaultMessage: '!!!Unable to sync - incorrect time',
-    description: 'Title of Sync error overlay'
+    description: 'Title of Sync error overlay',
   },
   overlayTextP1: {
     id: 'systemTime.error.overlayTextP1',
-    defaultMessage: '!!!Attention, Daedalus is unable to sync with the blockchain because the time on your machine is different from the global time. Your time is off by 2 hours 12 minutes 54 seconds.',
-    description: 'First paragraph of Sync error overlay'
+    defaultMessage:
+      '!!!Attention, Daedalus is unable to sync with the blockchain because the time on your machine is different from the global time. Your time is off by 2 hours 12 minutes 54 seconds.',
+    description: 'First paragraph of Sync error overlay',
   },
   overlayTextP2: {
     id: 'systemTime.error.overlayTextP2',
-    defaultMessage: '!!!To synchronise the time and fix the issue, please read our {supportPortalLink} article.',
-    description: 'Second paragraph of Sync error overlay'
+    defaultMessage:
+      '!!!To synchronise the time and fix the issue, please read our {supportPortalLink} article.',
+    description: 'Second paragraph of Sync error overlay',
   },
   ntpUnreachableTextP1: {
     id: 'systemTime.error.ntpUnreachableTextP1',
-    defaultMessage: '!!!Attention, Daedalus is unable to check if the clock on your computer is synchronized with global time because NTP (Network Time Protocol) servers are unreachable, possibly due to firewalls on your network.',
-    description: 'Text of Sync error overlay when NTP service is unreachable'
+    defaultMessage:
+      '!!!Attention, Daedalus is unable to check if the clock on your computer is synchronized with global time because NTP (Network Time Protocol) servers are unreachable, possibly due to firewalls on your network.',
+    description: 'Text of Sync error overlay when NTP service is unreachable',
   },
   ntpUnreachableTextP2: {
     id: 'systemTime.error.ntpUnreachableTextP2',
-    defaultMessage: '!!!If your computer clock is off by more than 15 seconds, Daedalus will be unable to connect to the network. If you have this issue, please read our Support Portal article to synchronize the time on your machine.',
-    description: 'Text of Sync error overlay when NTP service is unreachable'
+    defaultMessage:
+      '!!!If your computer clock is off by more than 15 seconds, Daedalus will be unable to connect to the network. If you have this issue, please read our Support Portal article to synchronize the time on your machine.',
+    description: 'Text of Sync error overlay when NTP service is unreachable',
   },
   supportPortalLink: {
     id: 'systemTime.error.supportPortalLink',
     defaultMessage: '!!!Support Portal',
-    description: '"Support Portal" link text'
+    description: '"Support Portal" link text',
   },
   supportPortalLinkUrl: {
     id: 'systemTime.error.supportPortalLinkUrl',
-    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/articles/360010230873',
-    description: 'Link to "Machine clock out of sync with Cardano network" support page'
+    defaultMessage:
+      '!!!https://iohk.zendesk.com/hc/en-us/articles/360010230873',
+    description:
+      'Link to "Machine clock out of sync with Cardano network" support page',
   },
   onCheckTheTimeAgainLink: {
     id: 'systemTime.error.onCheckTheTimeAgainLink',
     defaultMessage: '!!!Check the time again',
-    description: 'Text of Check the time again button'
+    description: 'Text of Check the time again button',
   },
   onContinueWithoutClockSyncCheckLink: {
     id: 'systemTime.error.onContinueWithoutClockSyncCheckLink',
     defaultMessage: '!!!Continue without clock synchronization checks',
-    description: 'Text of "Continue without clock synchronization checks" button'
+    description:
+      'Text of "Continue without clock synchronization checks" button',
   },
 });
 
@@ -67,7 +74,6 @@ type Props = {
 
 @observer
 export default class SystemTimeErrorOverlay extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -75,12 +81,17 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      localTimeDifference, currentLocale, isCheckingSystemTime,
-      onCheckTheTimeAgain, onContinueWithoutClockSyncCheck,
-      onExternalLinkClick
+      localTimeDifference,
+      currentLocale,
+      isCheckingSystemTime,
+      onCheckTheTimeAgain,
+      onContinueWithoutClockSyncCheck,
+      onExternalLinkClick,
     } = this.props;
 
-    const supportPortalLinkUrl = intl.formatMessage(messages.supportPortalLinkUrl);
+    const supportPortalLinkUrl = intl.formatMessage(
+      messages.supportPortalLinkUrl
+    );
     const supportPortalLink = (
       <a
         href={supportPortalLinkUrl}
@@ -118,7 +129,6 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
 
     return (
       <div className={styles.component}>
-
         <SVGInline svg={attentionIcon} className={styles.icon} />
 
         {isNTPServiceReachable ? (
@@ -169,9 +179,7 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
             </button>
           </div>
         )}
-
       </div>
     );
   }
-
 }

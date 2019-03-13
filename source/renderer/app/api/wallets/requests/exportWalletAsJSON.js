@@ -9,11 +9,14 @@ export type ExportWalletAsJSONParams = {
 
 export const exportWalletAsJSON = (
   config: RequestConfig,
-  { walletId, filePath }: ExportWalletAsJSONParams,
-): Promise<[]> => (
-  request({
-    method: 'POST',
-    path: `/api/backup/export/${walletId}`,
-    ...config,
-  }, {}, filePath)
-);
+  { walletId, filePath }: ExportWalletAsJSONParams
+): Promise<[]> =>
+  request(
+    {
+      method: 'POST',
+      path: `/api/backup/export/${walletId}`,
+      ...config,
+    },
+    {},
+    filePath
+  );

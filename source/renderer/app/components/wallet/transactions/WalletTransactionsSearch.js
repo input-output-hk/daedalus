@@ -10,7 +10,7 @@ const messages = defineMessages({
   searchHint: {
     id: 'wallet.transactions.search.hint',
     defaultMessage: '!!!Search transaction',
-    description: 'Hint in the transactions search box.'
+    description: 'Hint in the transactions search box.',
   },
 });
 
@@ -21,7 +21,6 @@ type Props = {
 
 @observer
 export default class WalletTransactionsSearch extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };

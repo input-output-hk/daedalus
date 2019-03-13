@@ -16,12 +16,7 @@ const LANGUAGES = [
 ];
 
 storiesOf('LanguageSelectionForm', module)
-
-  .addDecorator((story) => (
-    <StoryDecorator>
-      {story()}
-    </StoryDecorator>
-  ))
+  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 

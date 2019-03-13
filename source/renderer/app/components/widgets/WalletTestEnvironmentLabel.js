@@ -8,18 +8,18 @@ const messages = defineMessages({
   staging: {
     id: 'test.environment.stagingLabel',
     defaultMessage: '!!!Staging vx',
-    description: 'Label for staging network with version.'
+    description: 'Label for staging network with version.',
   },
   testnet: {
     id: 'test.environment.testnetLabel',
     defaultMessage: '!!!Testnet vx',
-    description: 'Label for testnet with version.'
+    description: 'Label for testnet with version.',
   },
   development: {
     id: 'test.environment.developmentLabel',
     defaultMessage: '!!!Development vx',
-    description: 'Label for development with version.'
-  }
+    description: 'Label for development with version.',
+  },
 });
 
 type Props = {
@@ -27,7 +27,6 @@ type Props = {
 };
 
 export default class WalletTestEnvironmentLabel extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -36,11 +35,6 @@ export default class WalletTestEnvironmentLabel extends Component<Props> {
     const { network } = this.props;
     const { intl } = this.context;
     const label = messages[network];
-    return (
-      <div className={styles.component}>
-        {intl.formatMessage(label)}
-      </div>
-    );
+    return <div className={styles.component}>{intl.formatMessage(label)}</div>;
   }
-
 }

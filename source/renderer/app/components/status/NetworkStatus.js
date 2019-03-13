@@ -6,8 +6,13 @@ import moment from 'moment';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import {
-  LineChart, YAxis, XAxis, Line,
-  CartesianGrid, Tooltip, Legend,
+  LineChart,
+  YAxis,
+  XAxis,
+  Line,
+  CartesianGrid,
+  Tooltip,
+  Legend,
   ResponsiveContainer,
 } from 'recharts';
 import {
@@ -65,7 +70,6 @@ type State = {
 
 @observer
 export default class NetworkStatus extends Component<Props, State> {
-
   constructor(props: Props) {
     super(props);
     let { localBlockHeight, networkBlockHeight } = props;
@@ -73,16 +77,56 @@ export default class NetworkStatus extends Component<Props, State> {
     networkBlockHeight = networkBlockHeight || null;
     this.state = {
       data: [
-        { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 20000).format('HH:mm:ss') },
-        { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 18000).format('HH:mm:ss') },
-        { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 16000).format('HH:mm:ss') },
-        { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 14000).format('HH:mm:ss') },
-        { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 12000).format('HH:mm:ss') },
-        { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 10000).format('HH:mm:ss') },
-        { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 8000).format('HH:mm:ss') },
-        { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 6000).format('HH:mm:ss') },
-        { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 4000).format('HH:mm:ss') },
-        { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 2000).format('HH:mm:ss') },
+        {
+          localBlockHeight,
+          networkBlockHeight,
+          time: moment(Date.now() - 20000).format('HH:mm:ss'),
+        },
+        {
+          localBlockHeight,
+          networkBlockHeight,
+          time: moment(Date.now() - 18000).format('HH:mm:ss'),
+        },
+        {
+          localBlockHeight,
+          networkBlockHeight,
+          time: moment(Date.now() - 16000).format('HH:mm:ss'),
+        },
+        {
+          localBlockHeight,
+          networkBlockHeight,
+          time: moment(Date.now() - 14000).format('HH:mm:ss'),
+        },
+        {
+          localBlockHeight,
+          networkBlockHeight,
+          time: moment(Date.now() - 12000).format('HH:mm:ss'),
+        },
+        {
+          localBlockHeight,
+          networkBlockHeight,
+          time: moment(Date.now() - 10000).format('HH:mm:ss'),
+        },
+        {
+          localBlockHeight,
+          networkBlockHeight,
+          time: moment(Date.now() - 8000).format('HH:mm:ss'),
+        },
+        {
+          localBlockHeight,
+          networkBlockHeight,
+          time: moment(Date.now() - 6000).format('HH:mm:ss'),
+        },
+        {
+          localBlockHeight,
+          networkBlockHeight,
+          time: moment(Date.now() - 4000).format('HH:mm:ss'),
+        },
+        {
+          localBlockHeight,
+          networkBlockHeight,
+          time: moment(Date.now() - 2000).format('HH:mm:ss'),
+        },
       ],
       isNodeRestarting: false,
     };
@@ -102,7 +146,7 @@ export default class NetworkStatus extends Component<Props, State> {
       CardanoNodeStates.UPDATED,
       CardanoNodeStates.CRASHED,
       CardanoNodeStates.ERRORED,
-      CardanoNodeStates.UNRECOVERABLE
+      CardanoNodeStates.UNRECOVERABLE,
     ];
     if (
       isNodeRestarting &&
@@ -119,12 +163,32 @@ export default class NetworkStatus extends Component<Props, State> {
 
   render() {
     const {
-      cardanoNodeState, isNodeResponding, isNodeSubscribed, isNodeSyncing, isNodeInSync,
-      isNodeTimeCorrect, isConnected, isSynced, syncPercentage, hasBeenConnected,
-      localTimeDifference, isSystemTimeCorrect, isForceCheckingNodeTime,
-      localBlockHeight, networkBlockHeight, latestLocalBlockTimestamp, latestNetworkBlockTimestamp,
-      onForceCheckLocalTimeDifference, onClose, nodeConnectionError, isSystemTimeIgnored,
-      onOpenExternalLink, isDev, isTestnet, isStaging, isMainnet,
+      cardanoNodeState,
+      isNodeResponding,
+      isNodeSubscribed,
+      isNodeSyncing,
+      isNodeInSync,
+      isNodeTimeCorrect,
+      isConnected,
+      isSynced,
+      syncPercentage,
+      hasBeenConnected,
+      localTimeDifference,
+      isSystemTimeCorrect,
+      isForceCheckingNodeTime,
+      localBlockHeight,
+      networkBlockHeight,
+      latestLocalBlockTimestamp,
+      latestNetworkBlockTimestamp,
+      onForceCheckLocalTimeDifference,
+      onClose,
+      nodeConnectionError,
+      isSystemTimeIgnored,
+      onOpenExternalLink,
+      isDev,
+      isTestnet,
+      isStaging,
+      isMainnet,
     } = this.props;
     const { data, isNodeRestarting } = this.state;
     const isNTPServiceReachable = !!localTimeDifference;
@@ -132,36 +196,50 @@ export default class NetworkStatus extends Component<Props, State> {
     const { message, code } = connectionError;
 
     const localTimeDifferenceClasses = classNames([
-      (
-        !isNTPServiceReachable ||
-        (localTimeDifference && (localTimeDifference > ALLOWED_TIME_DIFFERENCE))
-      ) ? styles.red : styles.green,
+      !isNTPServiceReachable ||
+      (localTimeDifference && localTimeDifference > ALLOWED_TIME_DIFFERENCE)
+        ? styles.red
+        : styles.green,
     ]);
 
     const remainingUnsyncedBlocks = networkBlockHeight - localBlockHeight;
     const remainingUnsyncedBlocksClasses = classNames([
-      (
-        remainingUnsyncedBlocks < 0 ||
-        remainingUnsyncedBlocks > UNSYNCED_BLOCKS_ALLOWED
-      ) ? styles.red : styles.green,
+      remainingUnsyncedBlocks < 0 ||
+      remainingUnsyncedBlocks > UNSYNCED_BLOCKS_ALLOWED
+        ? styles.red
+        : styles.green,
     ]);
 
-    const latestLocalBlockAge = moment(Date.now()).diff(moment(latestLocalBlockTimestamp));
-    const isLocalBlockHeightStalling = latestLocalBlockAge > MAX_ALLOWED_STALL_DURATION;
+    const latestLocalBlockAge = moment(Date.now()).diff(
+      moment(latestLocalBlockTimestamp)
+    );
+    const isLocalBlockHeightStalling =
+      latestLocalBlockAge > MAX_ALLOWED_STALL_DURATION;
     const latestLocalBlockAgeClasses = classNames([
-      latestLocalBlockTimestamp > 0 && !isLocalBlockHeightStalling ? styles.green : styles.red,
+      latestLocalBlockTimestamp > 0 && !isLocalBlockHeightStalling
+        ? styles.green
+        : styles.red,
     ]);
 
-    const latestNetworkBlockAge = moment(Date.now()).diff(moment(latestNetworkBlockTimestamp));
-    const isNetworkBlockHeightStalling = latestNetworkBlockAge > MAX_ALLOWED_STALL_DURATION;
+    const latestNetworkBlockAge = moment(Date.now()).diff(
+      moment(latestNetworkBlockTimestamp)
+    );
+    const isNetworkBlockHeightStalling =
+      latestNetworkBlockAge > MAX_ALLOWED_STALL_DURATION;
     const latestNetworkBlockAgeClasses = classNames([
-      latestNetworkBlockTimestamp > 0 && !isNetworkBlockHeightStalling ? styles.green : styles.red,
+      latestNetworkBlockTimestamp > 0 && !isNetworkBlockHeightStalling
+        ? styles.green
+        : styles.red,
     ]);
 
     // Cardano Node EKG server is not enabled for the Mainnet!
-    const cardanoNodeEkgLink = isMainnet ? false : getNetworkEkgUrl({
-      isDev, isStaging, isTestnet
-    });
+    const cardanoNodeEkgLink = isMainnet
+      ? false
+      : getNetworkEkgUrl({
+          isDev,
+          isStaging,
+          isTestnet,
+        });
 
     return (
       <div className={styles.component}>
@@ -182,9 +260,7 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>hasBeenConnected:</td>
-                <td>
-                  {hasBeenConnected ? 'YES' : 'NO'}
-                </td>
+                <td>{hasBeenConnected ? 'YES' : 'NO'}</td>
               </tr>
               <tr>
                 <td>isSynced:</td>
@@ -213,25 +289,28 @@ export default class NetworkStatus extends Component<Props, State> {
               <tr>
                 <td>latestLocalBlockAge:</td>
                 <td className={latestLocalBlockAgeClasses}>
-                  {latestLocalBlockTimestamp > 0 ? `${latestLocalBlockAge} ms` : '-'}
+                  {latestLocalBlockTimestamp > 0
+                    ? `${latestLocalBlockAge} ms`
+                    : '-'}
                 </td>
               </tr>
               <tr>
                 <td>latestNetworkBlockAge:</td>
                 <td className={latestNetworkBlockAgeClasses}>
-                  {latestNetworkBlockTimestamp > 0 ? `${latestNetworkBlockAge} ms` : '-'}
+                  {latestNetworkBlockTimestamp > 0
+                    ? `${latestNetworkBlockAge} ms`
+                    : '-'}
                 </td>
               </tr>
               <tr>
                 <td>localTimeDifference:</td>
                 <td>
                   <span className={localTimeDifferenceClasses}>
-                    {isNTPServiceReachable ? (
-                      `${localTimeDifference || 0} μs`
-                    ) : (
-                      'NTP service unreachable'
-                    )}
-                  </span> |&nbsp;
+                    {isNTPServiceReachable
+                      ? `${localTimeDifference || 0} μs`
+                      : 'NTP service unreachable'}
+                  </span>{' '}
+                  |&nbsp;
                   <button
                     onClick={() => onForceCheckLocalTimeDifference()}
                     disabled={isForceCheckingNodeTime || !isConnected}
@@ -254,9 +333,7 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>isForceCheckingNodeTime:</td>
-                <td>
-                  {isForceCheckingNodeTime ? 'YES' : 'NO'}
-                </td>
+                <td>{isForceCheckingNodeTime ? 'YES' : 'NO'}</td>
               </tr>
             </tbody>
           </table>
@@ -265,13 +342,16 @@ export default class NetworkStatus extends Component<Props, State> {
             <tbody>
               <tr>
                 <th colSpan={2}>
-                  CARDANO NODE STATUS<hr />
+                  CARDANO NODE STATUS
+                  <hr />
                 </th>
               </tr>
               <tr>
                 <td>cardanoNodeState:</td>
                 <td>
-                  {upperFirst(cardanoNodeState != null ? cardanoNodeState : 'unknown')}
+                  {upperFirst(
+                    cardanoNodeState != null ? cardanoNodeState : 'unknown'
+                  )}
                 </td>
               </tr>
               <tr>
@@ -330,9 +410,11 @@ export default class NetworkStatus extends Component<Props, State> {
               {!isConnected && nodeConnectionError ? (
                 <tr>
                   <td className={styles.topPadding} colSpan={2}>
-                    Connection error:<br />
+                    Connection error:
+                    <br />
                     <div className={styles.error}>
-                      message: {message || '-'}<br />
+                      message: {message || '-'}
+                      <br />
                       code: {code || '-'}
                     </div>
                   </td>
@@ -344,13 +426,12 @@ export default class NetworkStatus extends Component<Props, State> {
 
         <ResponsiveContainer width="100%" height="50%">
           <LineChart data={data}>
-            <XAxis
-              dataKey="time"
-              domain={['auto', 'auto']}
-              name="Time"
-            />
+            <XAxis dataKey="time" domain={['auto', 'auto']} name="Time" />
             <YAxis
-              domain={[dataMin => (Math.max(0, dataMin - 20)), dataMax => (dataMax + 20)]}
+              domain={[
+                dataMin => Math.max(0, dataMin - 20),
+                dataMax => dataMax + 20,
+              ]}
               orientation="right"
               type="number"
               width={100}
@@ -375,11 +456,8 @@ export default class NetworkStatus extends Component<Props, State> {
     this.props.onRestartNode();
   };
 
-  getClass = (isTrue: boolean) => (
-    classNames([
-      isTrue ? styles.green : styles.red,
-    ])
-  );
+  getClass = (isTrue: boolean) =>
+    classNames([isTrue ? styles.green : styles.red]);
 
   syncingTimer = () => {
     const { localBlockHeight, networkBlockHeight } = this.props;
@@ -398,5 +476,4 @@ export default class NetworkStatus extends Component<Props, State> {
       syncingInterval = null;
     }
   };
-
 }

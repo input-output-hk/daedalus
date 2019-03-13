@@ -15,9 +15,9 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
 
-@inject('actions', 'stores') @observer
+@inject('actions', 'stores')
+@observer
 export default class WalletAddPage extends Component<Props> {
-
   static defaultProps = { actions: null, stores: null };
 
   onClose = () => {
@@ -28,7 +28,9 @@ export default class WalletAddPage extends Component<Props> {
     const { actions, stores } = this.props;
     const { wallets, uiDialogs, app } = stores;
     const { isRestoreActive } = wallets;
-    const { environment: { isMainnet, isTestnet } } = app;
+    const {
+      environment: { isMainnet, isTestnet },
+    } = app;
 
     let content = null;
 
@@ -45,9 +47,15 @@ export default class WalletAddPage extends Component<Props> {
         <WalletAdd
           isMainnet={isMainnet}
           isTestnet={isTestnet}
-          onCreate={() => actions.dialogs.open.trigger({ dialog: WalletCreateDialog })}
-          onRestore={() => actions.dialogs.open.trigger({ dialog: WalletRestoreDialog })}
-          onImportFile={() => actions.dialogs.open.trigger({ dialog: WalletFileImportDialog })}
+          onCreate={() =>
+            actions.dialogs.open.trigger({ dialog: WalletCreateDialog })
+          }
+          onRestore={() =>
+            actions.dialogs.open.trigger({ dialog: WalletRestoreDialog })
+          }
+          onImportFile={() =>
+            actions.dialogs.open.trigger({ dialog: WalletFileImportDialog })
+          }
           isRestoreActive={isRestoreActive}
           isMaxNumberOfWalletsReached={wallets.hasMaxWallets}
         />
@@ -55,5 +63,4 @@ export default class WalletAddPage extends Component<Props> {
     }
     return <Layout>{content}</Layout>;
   }
-
 }

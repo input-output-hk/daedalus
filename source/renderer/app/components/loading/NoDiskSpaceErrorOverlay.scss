@@ -1,4 +1,4 @@
-@import "../../themes/mixins/animations";
+@import '../../themes/mixins/animations';
 
 .component {
   align-items: center;
@@ -35,7 +35,9 @@
     }
   }
 
-  h1, p, button {
+  h1,
+  p,
+  button {
     font-family: var(--font-regular);
   }
 

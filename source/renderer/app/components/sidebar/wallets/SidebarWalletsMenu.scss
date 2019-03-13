@@ -19,7 +19,9 @@
   width: $sidebar-width - $sidebar-minimized-category-width;
 
   &:hover {
-    background-color: var(--theme-sidebar-menu-add-button-background-color-hover);
+    background-color: var(
+      --theme-sidebar-menu-add-button-background-color-hover
+    );
   }
 
   .icon {
@@ -41,7 +43,8 @@
 
   &.active {
     cursor: default;
-    background-color: var(--theme-sidebar-menu-add-button-background-color-active);
+    background-color: var(
+      --theme-sidebar-menu-add-button-background-color-active
+    );
   }
 }
-
