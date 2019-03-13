@@ -16,10 +16,7 @@ import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import FileUploadWidget from '../widgets/forms/FileUploadWidget';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import styles from './WalletImporter.scss';
-import type {
-  ExtractedWallet,
-  ExtractedWallets,
-} from '../../../../common/types/wallet-importer.types';
+import type { ExtractedWallets } from '../../../../common/types/wallet-importer.types';
 
 const MAXIMUM_PASSWORD_COUNT = 20;
 
@@ -125,7 +122,6 @@ type Props = {
   hasExtractedWallets: boolean,
   extractedWallets: ExtractedWallets,
   onSecretKeyFileSelect: Function,
-  onDownloadKeyFile: Function,
   onImportKeyFile: Function,
   onMatchPasswords: Function,
   onOpenWallet: Function,
@@ -171,11 +167,6 @@ export default class WalletImporter extends Component<Props, State> {
     const passwordsList = maskPasswords ? unmaskedPasswords : passwordsField.value;
     const passwords = uniq(passwordsList.split('\n'));
     this.props.onMatchPasswords(passwords);
-  };
-
-  downloadKeyFile = (fileName: string, wallet: ExtractedWallet) => {
-    const filePath = global.dialog.showSaveDialog({ defaultPath: fileName });
-    if (filePath) this.props.onDownloadKeyFile(wallet, filePath);
   };
 
   toggleMaskPasswords = () => {
@@ -238,14 +229,12 @@ export default class WalletImporter extends Component<Props, State> {
         ]);
         return (
           <div key={index} className={styles.walletRow}>
-            <div>
-              <Input
-                label={index === 1 ? intl.formatMessage(messages.walletFileLabel) : null}
-                value={fileName}
-                skin={InputSkin}
-                readOnly
-              />
-            </div>
+            <Input
+              label={index === 1 ? intl.formatMessage(messages.walletFileLabel) : null}
+              value={fileName}
+              skin={InputSkin}
+              readOnly
+            />
             <Input
               label={index === 1 ? intl.formatMessage(messages.walletPasswordLabel) : null}
               placeholder={

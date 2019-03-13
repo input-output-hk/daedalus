@@ -29,7 +29,6 @@ export default class WalletImporterStore extends Store {
     const a = this.actions.walletImporter;
     a.extractWallets.listen(this._extractWallets);
     a.matchPasswords.listen(this._matchPasswords);
-    a.downloadKeyFile.listen(this._downloadKeyFile);
     a.importKeyFile.listen(this._importKeyFile);
     this.actions.app.initAppEnvironment.listen(() => {});
   }
@@ -152,11 +151,6 @@ export default class WalletImporterStore extends Store {
       const wallet = this.extractedWallets[wIndex];
       this.extractedWallets[wIndex] = { ...wallet, imported: false };
     }
-  };
-
-  @action _downloadKeyFile = (params: { wallet: ExtractedWallet, filePath: string }) => {
-    const { wallet, filePath } = params;
-    generateKeyFileChannel.send({ wallet: toJS(wallet), filePath });
   };
 
   @action _resetExtractedWalletsData = () => {
