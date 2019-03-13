@@ -83,6 +83,7 @@ export default class WalletImporterPage extends Component<Props> {
 
     return (
       <Layout>
+
         {isRestoreActive && restoringWallet ? (
           <RestoreNotification
             currentLocale={currentLocale}
@@ -93,13 +94,16 @@ export default class WalletImporterPage extends Component<Props> {
 
         <GenericNotification
           id={WALLET_IMPORTER_PASSWORD_MATCHING_IS_DONE_ID}
-          message={intl.formatMessage(messages.passwordMatchingIsDone)}
           duration={WALLET_IMPORTER_PASSWORD_MATCHING_IS_DONE}
           show={uiNotifications.isOpen(WALLET_IMPORTER_PASSWORD_MATCHING_IS_DONE_ID)}
           actionToListen={walletImporterActions.matchPasswordsEnd}
           openNotification={notifications.open}
           closeNotification={notifications.closeActiveNotification}
-        />
+          order={10}
+        >
+          { intl.formatMessage(messages.passwordMatchingIsDone) }
+        </GenericNotification>
+
 
         <WalletImporter
           keyFile={keyFile}

@@ -5,17 +5,16 @@ import { intlShape } from 'react-intl';
 import Action from '../../actions/lib/Action';
 import NotificationMessage from '../widgets/NotificationMessage';
 import successIcon from '../../assets/images/success-small.inline.svg';
+import type { Props as NotificationMessagePreps } from '../widgets/NotificationMessage';
 
 type Props = {
+  ...$Exact<NotificationMessagePreps>,
   id: string,
-  message: string,
+  icon?: string,
   duration: number,
-  show: boolean,
   actionToListen?: Action<any>,
   openNotification: Action<any>,
   closeNotification: Action<any>,
-  icon?: string,
-  hasCloseButton?: boolean
 };
 
 @observer
@@ -27,23 +26,20 @@ export default class GenericNotification extends Component<Props> {
 
   static defaultProps = {
     hasCloseButton: true,
+    icon: successIcon,
   };
 
   constructor(props: Props) {
     super(props);
     const { actionToListen } = this.props;
-    if (actionToListen) this.registerNotificationListener(actionToListen);
+    if (actionToListen && actionToListen.listen) actionToListen.listen(this.openNotification);
   }
 
   componentWillUnmount() {
     const { actionToListen } = this.props;
-    if (actionToListen) actionToListen.remove(this.openNotification);
+    if (actionToListen && actionToListen.remove) actionToListen.remove(this.openNotification);
     this.closeNotification();
   }
-
-  registerNotificationListener = (actionToListen: Action<any>) => {
-    actionToListen.listen(this.openNotification);
-  };
 
   openNotification = () => {
     const { openNotification, id, duration } = this.props;
@@ -56,17 +52,18 @@ export default class GenericNotification extends Component<Props> {
   }
 
   render() {
-    const { message, show, icon, hasCloseButton } = this.props;
+    const { children, show, icon, hasCloseButton, clickToClose, order } = this.props;
 
     return (
       <NotificationMessage
-        icon={icon || successIcon}
+        icon={icon}
         show={show}
         onClose={this.closeNotification}
         hasCloseButton={hasCloseButton}
-        clickToClose
+        clickToClose={clickToClose}
+        order={order}
       >
-        {message}
+        {children}
       </NotificationMessage>
     );
   }
