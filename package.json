@@ -23,8 +23,8 @@
     "cucumber:watch:debug": "KEEP_APP_AFTER_TESTS=true npm run cucumber -- --tags @watch",
     "lint": "eslint --format=node_modules/eslint-formatter-pretty source features storybook *.js",
     "flow:test": "flow; test $? -eq 0 -o $? -eq 2",
-    "prettier": "./node_modules/.bin/prettier --ignore-path .eslintignore \"./**/*.{js,scss,json}\"",
-    "prettier:check": "yarn prettier -c",
+    "prettier": "./node_modules/.bin/prettier \"**/*.*\"",
+    "prettier:check": "yarn prettier --check",
     "prettier:format": "yarn prettier --write --loglevel warn",
     "manage:translations": "gulp purge:translations && gulp clear:cache && gulp build && node ./translations/translation-runner.js",
     "storybook": "start-storybook -p 6006 -c storybook",
@@ -184,7 +184,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pretty-quick --staged --pattern \"./**/*.{js,scss,json}\"",
+      "pre-commit": "pretty-quick --staged",
       "pre-push": "yarn prettier:check && yarn lint && yarn flow:test && yarn manage:translations"
     }
   }
