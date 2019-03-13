@@ -29,7 +29,7 @@ export default class WalletsStore extends Store {
   @observable isRestoreActive: boolean = false;
   @observable restoringWalletId: ?string = null;
   @observable walletsRequest: Request<Array<Wallet>> = new Request(this.api.ada.getWallets);
-  @observable importFromKeyRequest: Request<Wallet> = new Request(this.api.ada.importWalletFromKey);
+  @observable importFromKeyRequest: Request<Wallet> = new Request(this.api.ada.importWalletFromKeyFile);
   @observable createWalletRequest: Request<Wallet> = new Request(this.api.ada.createWallet);
   @observable getWalletAddressesRequest: Request<any> = new Request(this.api.ada.getAddresses);
   @observable deleteWalletRequest: Request<boolean> = new Request(this.api.ada.deleteWallet);

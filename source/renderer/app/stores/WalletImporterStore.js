@@ -6,7 +6,6 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
 import { extractWalletsChannel } from '../ipc/extractWalletsChannel';
-import { generateRawSecretChannel } from '../ipc/generateRawSecretChannel';
 import { matchWalletsPasswordsChannel } from '../ipc/matchWalletsPasswordsChannel';
 import { formattedWalletAmount } from '../utils/formatters';
 import type { WalletBalance } from '../api/wallets/types';
@@ -24,8 +23,8 @@ export default class WalletImporterStore extends Store {
   @observable extractedWallets: ExtractedWallets = [];
 
   /* eslint-disable max-len */
-  @observable importWalletFromRawSecretRequest: Request<Wallet> = new Request(this.api.ada.importWalletFromRawSecret);
   @observable getWalletBalanceRequest: Request<WalletBalance> = new Request(this.api.ada.getWalletBalance);
+  @observable importWalletFromSecretKeyRequest: Request<Wallet> = new Request(this.api.ada.importWalletFromSecretKey);
   /* eslint-disable max-len */
 
   setup() {
@@ -80,13 +79,13 @@ export default class WalletImporterStore extends Store {
 
   @action _extractBalances = async (wallets: ExtractedWallets) => {
     const walletsWithBalances = [];
-    for (const wallet of toJS(wallets)) {
+    for (const wallet of wallets) {
       const { balance } = wallet;
       if (balance == null) {
-        const rawSecret = await generateRawSecretChannel.send({ wallet });
+        const { encryptedSecretKey } = wallet;
         try {
           const walletBalance =
-            await this.getWalletBalanceRequest.execute({ rawSecret }).promise;
+            await this.getWalletBalanceRequest.execute({ encryptedSecretKey }).promise;
           const { balance: amount, walletId } = walletBalance;
           const isImported = this.stores.wallets.getWalletById(walletId) != null;
           wallet.id = walletId;
@@ -101,10 +100,9 @@ export default class WalletImporterStore extends Store {
 
   @action _importKeyFile = async (params: { wallet: ExtractedWallet }) => {
     const { wallet } = params;
-    const rawSecret = await generateRawSecretChannel.send({ wallet: toJS(wallet) });
-    const spendingPassword = wallet.password;
-    const importedWallet = await this.importWalletFromRawSecretRequest.execute({
-      rawSecret, spendingPassword,
+    const { password: spendingPassword, encryptedSecretKey } = wallet;
+    const importedWallet = await this.importWalletFromSecretKeyRequest.execute({
+      encryptedSecretKey, spendingPassword,
     }).promise;
     if (!importedWallet) throw new Error('Imported wallet was not received correctly');
     await this.stores.wallets._patchWalletRequestWithNewWallet(importedWallet);

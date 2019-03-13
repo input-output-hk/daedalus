@@ -5,11 +5,11 @@ import { request } from '../../utils/request';
 
 export const getWalletBalance = (
   config: RequestConfig,
-  rawSecret: string, // EncryptedSecretKey (hex-encoded)
+  encryptedSecretKey: string, // EncryptedSecretKey (hex-encoded)
 ): Promise<GetWalletBalanceResponse> => (
   request({
     method: 'POST',
     path: '/api/internal/query-balance',
     ...config,
-  }, {}, rawSecret)
+  }, {}, encryptedSecretKey)
 );

@@ -72,13 +72,13 @@ export type UpdateWalletRequest = {
   name: string
 };
 
-export type ImportWalletFromKeyRequest = {
+export type ImportWalletFromKeyFileRequest = {
   filePath: string,
   spendingPassword: ?string,
 };
 
-export type ImportWalletFromRawSecretRequest = {
-  rawSecret: string,
+export type ImportWalletFromSecretKeyRequest = {
+  encryptedSecretKey: string,
   spendingPassword: ?string,
 };
 
@@ -105,7 +105,7 @@ export type GetWalletRecoveryPhraseFromCertificateRequest = {
 };
 
 export type GetWalletBalanceRequest = {
-  rawSecret: string,
+  encryptedSecretKey: string,
 };
 
 export type GetWalletBalanceResponse = {

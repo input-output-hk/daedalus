@@ -1,7 +1,7 @@
 // @flow
 export type ExtractedWallet = {
   index: number,
-  raw: Array<Buffer>,
+  encryptedSecretKey: string,
   passwordHash: string,
   password: ?string,
   balance: ?string,

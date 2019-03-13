@@ -33,12 +33,12 @@ import { redeemPaperVendedAda } from './transactions/requests/redeemPaperVendedA
 import { resetWalletState } from './wallets/requests/resetWalletState';
 import { changeSpendingPassword } from './wallets/requests/changeSpendingPassword';
 import { deleteWallet } from './wallets/requests/deleteWallet';
-import { exportWalletAsJSON } from './wallets/requests/exportWalletAsJSON';
-import { importWalletAsJSON } from './wallets/requests/importWalletAsJSON';
+import { exportWalletToJSONFile } from './wallets/requests/exportWalletToJSONFile';
+import { importWalletFromJSONFile } from './wallets/requests/importWalletFromJSONFile';
 import { getWallets } from './wallets/requests/getWallets';
 import { getWalletBalance } from './wallets/requests/getWalletBalance';
-import { importWalletAsKey } from './wallets/requests/importWalletAsKey';
-import { importWalletAsRawSecret } from './wallets/requests/importWalletAsRawSecret';
+import { importWalletFromKeyFile } from './wallets/requests/importWalletFromKeyFile';
+import { importWalletFromSecretKey } from './wallets/requests/importWalletFromSecretKey';
 import { createWallet } from './wallets/requests/createWallet';
 import { restoreWallet } from './wallets/requests/restoreWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
@@ -125,9 +125,9 @@ import type {
   GetWalletBalanceResponse,
   GetWalletCertificateRecoveryPhraseRequest,
   GetWalletRecoveryPhraseFromCertificateRequest,
-  ImportWalletFromKeyRequest,
+  ImportWalletFromKeyFileRequest,
   ImportWalletFromFileRequest,
-  ImportWalletFromRawSecretRequest,
+  ImportWalletFromSecretKeyRequest,
   UpdateWalletRequest
 } from './wallets/types';
 
@@ -615,20 +615,20 @@ export default class AdaApi {
     }
   };
 
-  importWalletFromKey = async (
-    request: ImportWalletFromKeyRequest
+  importWalletFromKeyFile = async (
+    request: ImportWalletFromKeyFileRequest
   ): Promise<Wallet> => {
-    Logger.debug('AdaApi::importWalletFromKey called', { parameters: filterLogData(request) });
+    Logger.debug('AdaApi::importWalletFromKeyFile called', { parameters: filterLogData(request) });
     const { filePath, spendingPassword: passwordString } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     try {
-      const importedWallet: AdaWallet = await importWalletAsKey(
+      const importedWallet: AdaWallet = await importWalletFromKeyFile(
         this.config, { filePath, spendingPassword }
       );
-      Logger.debug('AdaApi::importWalletFromKey success', { importedWallet });
+      Logger.debug('AdaApi::importWalletFromKeyFile success', { importedWallet });
       return _createWalletFromServerData(importedWallet);
     } catch (error) {
-      Logger.error('AdaApi::importWalletFromKey error', { error });
+      Logger.error('AdaApi::importWalletFromKeyFile error', { error });
       if (error.message === 'WalletAlreadyExists') {
         throw new WalletAlreadyImportedError(error);
       }
@@ -645,9 +645,9 @@ export default class AdaApi {
     const isKeyFile = filePath.split('.').pop().toLowerCase() === 'key';
     try {
       const importedWallet: AdaWallet = isKeyFile ? (
-        await importWalletAsKey(this.config, { filePath, spendingPassword })
+        await importWalletFromKeyFile(this.config, { filePath, spendingPassword })
       ) : (
-        await importWalletAsJSON(this.config, filePath)
+        await importWalletFromJSONFile(this.config, filePath)
       );
       Logger.debug('AdaApi::importWalletFromFile success', { importedWallet });
       return _createWalletFromServerData(importedWallet);
@@ -660,20 +660,20 @@ export default class AdaApi {
     }
   };
 
-  importWalletFromRawSecret = async (
-    request: ImportWalletFromRawSecretRequest
+  importWalletFromSecretKey = async (
+    request: ImportWalletFromSecretKeyRequest
   ): Promise<Wallet> => {
-    Logger.debug('AdaApi::importWalletFromRawSecret called');
-    const { rawSecret, spendingPassword: passwordString } = request;
+    Logger.debug('AdaApi::importWalletFromSecretKey called');
+    const { encryptedSecretKey, spendingPassword: passwordString } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     try {
-      const importedWallet: AdaWallet = await importWalletAsRawSecret(
-        this.config, { rawSecret, spendingPassword }
+      const importedWallet: AdaWallet = await importWalletFromSecretKey(
+        this.config, { rawSecret: encryptedSecretKey, spendingPassword }
       );
-      Logger.debug('AdaApi::importWalletFromRawSecret success', { importedWallet });
+      Logger.debug('AdaApi::importWalletFromSecretKey success', { importedWallet });
       return _createWalletFromServerData(importedWallet);
     } catch (error) {
-      Logger.error('AdaApi::importWalletFromRawSecret error', { error });
+      Logger.error('AdaApi::importWalletFromSecretKey error', { error });
       if (error.message === 'WalletAlreadyExists') {
         throw new WalletAlreadyImportedError(error);
       }
@@ -685,10 +685,10 @@ export default class AdaApi {
     request: GetWalletBalanceRequest
   ): Promise<WalletBalance> => {
     Logger.debug('AdaApi::getWalletBalance called');
-    const { rawSecret } = request;
+    const { encryptedSecretKey } = request;
     try {
       const walletBalance: GetWalletBalanceResponse =
-        await getWalletBalance(this.config, rawSecret);
+        await getWalletBalance(this.config, encryptedSecretKey);
       Logger.debug('AdaApi::getWalletBalance success', { walletBalance });
       const { balance, walletId } = walletBalance;
       return {
@@ -828,7 +828,7 @@ export default class AdaApi {
     const { walletId, filePath } = request;
     Logger.debug('AdaApi::exportWalletToFile called', { parameters: filterLogData(request) });
     try {
-      const response: Promise<[]> = await exportWalletAsJSON(
+      const response: Promise<[]> = await exportWalletToJSONFile(
         this.config, { walletId, filePath }
       );
       Logger.debug('AdaApi::exportWalletToFile success', { response });
