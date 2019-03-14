@@ -13,6 +13,8 @@ import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
 import type { LogFiles, CompressedLogStatus } from '../types/LogTypes';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import { compressLogsChannel, downloadLogsChannel, getLogsChannel } from '../ipc/logs.ipc';
+import { detectUserLocaleChannel } from '../ipc/detect-user-locale';
+import { DEFAULT_LOCALES } from '../../../common/types/environment.types';
 
 // TODO: refactor all parts that rely on this to ipc channels!
 const { ipcRenderer } = global;
@@ -28,6 +30,7 @@ export default class SettingsStore extends Store {
     // { value: 'hr-HR', label: globalMessages.languageCroatian },
   ];
 
+  @observable defaultLocale: string = DEFAULT_LOCALES.english;
   @observable bigNumberDecimalFormat = {
     decimalSeparator: '.',
     groupSeparator: ',',
@@ -73,6 +76,7 @@ export default class SettingsStore extends Store {
       this._redirectToMainUiAfterTermsAreAccepted,
       this._redirectToMainUiAfterDataLayerMigrationIsAccepted,
     ]);
+    this._getDefaultLocale();
     this._getTermsOfUseAcceptance();
     this._getDataLayerMigrationAcceptance();
   }
@@ -84,7 +88,7 @@ export default class SettingsStore extends Store {
   @computed get currentLocale(): string {
     const { result } = this.getProfileLocaleRequest.execute();
     if (this.isCurrentLocaleSet) return result;
-    return 'en-US'; // default
+    return this.defaultLocale;
   }
 
   @computed get hasLoadedCurrentLocale(): boolean {
@@ -155,6 +159,12 @@ export default class SettingsStore extends Store {
       includes(ROUTES.SETTINGS, currentRoute)
     );
   }
+
+  _getDefaultLocale = async () => {
+    this._onReceiveDefaultLocale(
+      await detectUserLocaleChannel.request()
+    );
+  };
 
   _updateLocale = async ({ locale }: { locale: string }) => {
     await this.setProfileLocaleRequest.execute(locale);
@@ -317,6 +327,10 @@ export default class SettingsStore extends Store {
       this._getLogs();
     }
   });
+
+  @action _onReceiveDefaultLocale = (defaultLocale: string) => {
+    this.defaultLocale = defaultLocale;
+  };
 
   @action _reset = () => {
     this.error = null;
