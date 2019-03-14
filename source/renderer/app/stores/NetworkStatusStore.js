@@ -94,6 +94,10 @@ export default class NetworkStatusStore extends Store {
     this.api.ada.getNetworkStatus
   );
   @observable
+  getCurrentEpochFallbackRequest: Request<GetNetworkStatusResponse> = new Request(
+    this.api.ada.getCurrentEpochFallback
+  );
+  @observable
   forceCheckTimeDifferenceRequest: Request<GetNetworkStatusResponse> = new Request(
     this.api.ada.getNetworkStatus
   );
@@ -424,7 +428,7 @@ export default class NetworkStatusStore extends Store {
 
       // Update sync progress
       runInAction('update currentEpoch', () => {
-        this.currentEpoch = slotId.epoch;
+        // this.currentEpoch = slotId.epoch;
       });
 
       runInAction('update block heights', () => {
@@ -550,6 +554,11 @@ export default class NetworkStatusStore extends Store {
       // Node is not responding, switch to disconnected state
       this._setDisconnected(wasConnected);
     }
+  };
+
+  @action _getCurrentEpochFallback = async () => {
+    const pages = await this.getCurrentEpochFallbackRequest.execute().promise;
+    console.log('pages store', pages);
   };
 
   @action _setDisconnected = (wasConnected: boolean) => {

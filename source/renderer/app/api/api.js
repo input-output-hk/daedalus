@@ -23,6 +23,7 @@ import { createAddress } from './addresses/requests/createAddress';
 import { applyNodeUpdate } from './nodes/requests/applyNodeUpdate';
 import { getNodeInfo } from './nodes/requests/getNodeInfo';
 import { getNodeSettings } from './nodes/requests/getNodeSettings';
+import { getCurrentEpoch } from './nodes/requests/getCurrentEpoch';
 import { getNextNodeUpdate } from './nodes/requests/getNextNodeUpdate';
 import { postponeNodeUpdate } from './nodes/requests/postponeNodeUpdate';
 
@@ -974,6 +975,16 @@ export default class AdaApi {
     } catch (error) {
       Logger.error(`${loggerText} error`, { error });
       throw new GenericApiError(error);
+    }
+  };
+
+  getCurrentEpochFallback = async () => {
+    try {
+      const pages = await getCurrentEpoch();
+      console.info('pages', pages);
+      return pages;
+    } catch (err) {
+      console.info('err', err);
     }
   };
 
