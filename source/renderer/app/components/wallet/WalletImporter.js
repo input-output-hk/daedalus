@@ -28,13 +28,13 @@ export const messages = defineMessages({
   },
   instructions: {
     id: 'wallet.importer.instructions',
-    defaultMessage: '!!!In order to import wallets select a secrets key file.',
+    defaultMessage: '!!!In order to import wallets, you need to obtain a \"secret.key\" file with your private keys from your previous Daedalus installation. Learn more.',
     description: 'Detailed instructions for importing wallets.',
   },
   keyFileLabel: {
     id: 'wallet.importer.keyFileLabel',
-    defaultMessage: '!!!Secrets key file',
-    description: 'Label "Secrets key file" on the wallet importer page.'
+    defaultMessage: '!!!File with private keys',
+    description: 'Label "File with private keys" on the wallet importer page.'
   },
   keyFileHint: {
     id: 'wallet.importer.keyFileHint',
@@ -68,13 +68,13 @@ export const messages = defineMessages({
   },
   noWalletsFoundNotification: {
     id: 'wallet.importer.noWalletsFoundNotification',
-    defaultMessage: '!!!No wallets found in the provided secrets key file.',
+    defaultMessage: '!!!No wallets found in the provided file.',
     description: 'Notification shown if no wallets are extracted on the wallet importer page.'
   },
   walletFileLabel: {
     id: 'wallet.importer.walletFileLabel',
-    defaultMessage: '!!!Wallet file',
-    description: 'Label "Wallet file" on the wallet importer page.'
+    defaultMessage: '!!!Wallet',
+    description: 'Label "Wallet" on the wallet importer page.'
   },
   walletPasswordLabel: {
     id: 'wallet.importer.walletPasswordLabel',
@@ -93,12 +93,12 @@ export const messages = defineMessages({
   },
   unknownPasswordHint: {
     id: 'wallet.importer.unknownPasswordHint',
-    defaultMessage: '!!!unknown password',
+    defaultMessage: '!!!Unknown password',
     description: 'Hint for the wallet password field on the wallet importer page.'
   },
   unknownBalanceHint: {
     id: 'wallet.importer.unknownBalanceHint',
-    defaultMessage: '!!!unknown balance',
+    defaultMessage: '!!!Unknown balance',
     description: 'Hint for the wallet balance field on the wallet importer page.'
   },
   importLabel: {

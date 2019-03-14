@@ -4203,7 +4203,7 @@
         }
       },
       {
-        "defaultMessage": "!!!In order to import wallets select a secrets key file.",
+        "defaultMessage": "!!!In order to import wallets, you need to obtain a \"secret.key\" file with your private keys from your previous Daedalus installation. Learn more.",
         "description": "Detailed instructions for importing wallets.",
         "end": {
           "column": 3,
@@ -4217,8 +4217,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Secrets key file",
-        "description": "Label \"Secrets key file\" on the wallet importer page.",
+        "defaultMessage": "!!!File with private keys",
+        "description": "Label \"File with private keys\" on the wallet importer page.",
         "end": {
           "column": 3,
           "line": 38
@@ -4315,7 +4315,7 @@
         }
       },
       {
-        "defaultMessage": "!!!No wallets found in the provided secrets key file.",
+        "defaultMessage": "!!!No wallets found in the provided file.",
         "description": "Notification shown if no wallets are extracted on the wallet importer page.",
         "end": {
           "column": 3,
@@ -4329,8 +4329,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Wallet file",
-        "description": "Label \"Wallet file\" on the wallet importer page.",
+        "defaultMessage": "!!!Wallet",
+        "description": "Label \"Wallet\" on the wallet importer page.",
         "end": {
           "column": 3,
           "line": 78
@@ -4385,7 +4385,7 @@
         }
       },
       {
-        "defaultMessage": "!!!unknown password",
+        "defaultMessage": "!!!Unknown password",
         "description": "Hint for the wallet password field on the wallet importer page.",
         "end": {
           "column": 3,
@@ -4399,7 +4399,7 @@
         }
       },
       {
-        "defaultMessage": "!!!unknown balance",
+        "defaultMessage": "!!!Unknown balance",
         "description": "Hint for the wallet balance field on the wallet importer page.",
         "end": {
           "column": 3,
@@ -5327,8 +5327,8 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!The password matching is done",
-        "description": "\"The password matching is done\" notification on the wallet importer page.",
+        "defaultMessage": "!!!Password matching completed",
+        "description": "\"Password matching completed\" notification on the wallet importer page.",
         "end": {
           "column": 3,
           "line": 19

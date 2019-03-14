@@ -14,8 +14,8 @@ import type { ExtractedWallet } from '../../../../common/types/wallet-importer.t
 const messages = defineMessages({
   passwordMatchingIsDone: {
     id: 'wallet.importer.passwordMatchingIsDone',
-    defaultMessage: '!!!The password matching is done',
-    description: '"The password matching is done" notification on the wallet importer page.',
+    defaultMessage: '!!!Password matching completed',
+    description: '"Password matching completed" notification on the wallet importer page.',
   },
 });
 
