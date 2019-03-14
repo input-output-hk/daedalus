@@ -2,16 +2,22 @@
 import { isString } from 'lodash';
 
 export type IpcSender = {
-  send: (channel: string, ...args: Array<any>) => void
+  send: (channel: string, ...args: Array<any>) => void,
 };
 
 export type IpcEvent = {
   sender: IpcSender,
-}
+};
 
 export type IpcReceiver = {
-  on: (channel: string, (event: IpcEvent, ...args: Array<any>) => Promise<any>) => void,
-  once: (channel: string, (event: IpcEvent, isOk: boolean, ...args: Array<any>) => void) => void
+  on: (
+    channel: string,
+    (event: IpcEvent, ...args: Array<any>) => Promise<any>
+  ) => void,
+  once: (
+    channel: string,
+    (event: IpcEvent, isOk: boolean, ...args: Array<any>) => void
+  ) => void,
 };
 
 /**
@@ -21,7 +27,6 @@ export type IpcReceiver = {
  * and response cycles.
  */
 export class IpcChannel<Incoming, Outgoing> {
-
   /**
    * Each ipc channel should be a singleton (based on the channelName)
    * Here we track the created instances.
@@ -65,17 +70,24 @@ export class IpcChannel<Incoming, Outgoing> {
    * same channel. It returns a promise which is resolved or rejected with the response
    * depending on the `isOk` flag set by the respondant.
    */
-  async send(message: Outgoing, sender: IpcSender, receiver: IpcReceiver): Promise<Incoming> {
+  async send(
+    message: Outgoing,
+    sender: IpcSender,
+    receiver: IpcReceiver
+  ): Promise<Incoming> {
     return new Promise((resolve, reject) => {
       sender.send(this._broadcastChannel, message);
       // Handle response to the sent request once
-      receiver.once(this._responseChannel, (event, isOk: boolean, response: Incoming) => {
-        if (isOk) {
-          resolve(response);
-        } else {
-          reject(response);
+      receiver.once(
+        this._responseChannel,
+        (event, isOk: boolean, response: Incoming) => {
+          if (isOk) {
+            resolve(response);
+          } else {
+            reject(response);
+          }
         }
-      });
+      );
     });
   }
 
@@ -83,17 +95,24 @@ export class IpcChannel<Incoming, Outgoing> {
    * Request a message from the other side.
    * Can be used to get the current state of some information.
    */
-  async request(message: Outgoing, sender: IpcSender, receiver: IpcReceiver): Promise<Incoming> {
+  async request(
+    message: Outgoing,
+    sender: IpcSender,
+    receiver: IpcReceiver
+  ): Promise<Incoming> {
     return new Promise((resolve, reject) => {
       sender.send(this._requestChannel, message);
       // Handle response to the sent request once
-      receiver.once(this._responseChannel, (event, isOk: boolean, response: Incoming) => {
-        if (isOk) {
-          resolve(response);
-        } else {
-          reject(response);
+      receiver.once(
+        this._responseChannel,
+        (event, isOk: boolean, response: Incoming) => {
+          if (isOk) {
+            resolve(response);
+          } else {
+            reject(response);
+          }
         }
-      });
+      );
     });
   }
 
@@ -102,28 +121,40 @@ export class IpcChannel<Incoming, Outgoing> {
    * This should be used to receive messages that are broadcasted by the other end of
    * the ipc channel and are not responses to requests sent by this party.
    */
-  onReceive(handler: (message: Incoming) => Promise<Outgoing>, receiver: IpcReceiver): void {
-    receiver.on(this._broadcastChannel, async (event: IpcEvent, message: Incoming) => {
-      try {
-        const response = await handler(message);
-        event.sender.send(this._responseChannel, true, response);
-      } catch (error) {
-        event.sender.send(this._responseChannel, false, error);
+  onReceive(
+    handler: (message: Incoming) => Promise<Outgoing>,
+    receiver: IpcReceiver
+  ): void {
+    receiver.on(
+      this._broadcastChannel,
+      async (event: IpcEvent, message: Incoming) => {
+        try {
+          const response = await handler(message);
+          event.sender.send(this._responseChannel, true, response);
+        } catch (error) {
+          event.sender.send(this._responseChannel, false, error);
+        }
       }
-    });
+    );
   }
 
   /**
    * Sets up a permanent handler for receiving request from the other side.
    */
-  onRequest(handler: (Incoming) => Promise<Outgoing>, receiver: IpcReceiver): void {
-    receiver.on(this._requestChannel, async (event: IpcEvent, message: Incoming) => {
-      try {
-        const response = await handler(message);
-        event.sender.send(this._responseChannel, true, response);
-      } catch (error) {
-        event.sender.send(this._responseChannel, false, error);
+  onRequest(
+    handler: Incoming => Promise<Outgoing>,
+    receiver: IpcReceiver
+  ): void {
+    receiver.on(
+      this._requestChannel,
+      async (event: IpcEvent, message: Incoming) => {
+        try {
+          const response = await handler(message);
+          event.sender.send(this._responseChannel, true, response);
+        } catch (error) {
+          event.sender.send(this._responseChannel, false, error);
+        }
       }
-    });
+    );
   }
 }

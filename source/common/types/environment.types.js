@@ -23,7 +23,6 @@ export type Environment = {
   isWindows: boolean,
   isMacOS: boolean,
   isLinux: boolean,
-  defaultLocale: string,
 };
 
 // constants

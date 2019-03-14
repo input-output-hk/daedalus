@@ -9,7 +9,8 @@ import StakingChartTooltip from '../../source/renderer/app/components/staking/St
 const generateRandomSlots = (count: number) => {
   const slots = [];
   for (let i = 0; i < count; i += 1) {
-    const numberOfTransactions = i < (count / 2) ? Math.floor(Math.random() * 50) : 0;
+    const numberOfTransactions =
+      i < count / 2 ? Math.floor(Math.random() * 50) : 0;
     slots.push({
       numberOfTransactions,
       slot: slots.length + 1,
@@ -18,19 +19,14 @@ const generateRandomSlots = (count: number) => {
       commitments: 'AA',
       mpcPhase: 'Shares',
       hash: 'ad9f37d14e189f5d792aaf524a6e0a13cdc5ba13b540f231638444687526231e',
-      time: new Date()
+      time: new Date(),
     });
   }
   return slots;
 };
 
 storiesOf('StakingChart', module)
-
-  .addDecorator((story) => (
-    <StoryDecorator>
-      {story()}
-    </StoryDecorator>
-  ))
+  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 
@@ -53,13 +49,7 @@ storiesOf('StakingChart', module)
     const options = observable({
       data: generateRandomSlots(30),
       ticks: [0, 10, 20, 30, 40, 50],
-      activeIndex: null
+      activeIndex: null,
     });
-    return (
-      <StakingChart
-        width={500}
-        height={150}
-        options={options}
-      />
-    );
+    return <StakingChart width={500} height={150} options={options} />;
   });

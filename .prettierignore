@@ -1,0 +1,23 @@
+# Let's start by ignoring everything
+/*
+
+# But not the following folders
+!source/
+!features/
+!storybook/
+
+# Now we ignore all files
+*.*
+
+# But not these file types
+!*.js
+!*.scss
+!*.json
+
+# Ignore any top-level json file except package.json
+/*.json
+!package.json
+
+# Ignore the following special folders and files
+source/renderer/app/i18n/locales/
+features/support/default-wallet.json

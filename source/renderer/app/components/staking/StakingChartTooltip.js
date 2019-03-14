@@ -12,32 +12,32 @@ const messages = defineMessages({
   slot: {
     id: 'staking.chart.tooltip.slot.label',
     defaultMessage: '!!!slot',
-    description: '"slot" label on staking chart tooltip.'
+    description: '"slot" label on staking chart tooltip.',
   },
   transactions: {
     id: 'staking.chart.tooltip.transactions.label',
     defaultMessage: '!!!transactions',
-    description: '"transactions" label on staking chart tooltip.'
+    description: '"transactions" label on staking chart tooltip.',
   },
   mpcPhase: {
     id: 'staking.chart.tooltip.mpc.phase.label',
     defaultMessage: '!!!MPC phase',
-    description: '"MPC phase" label on staking chart tooltip.'
+    description: '"MPC phase" label on staking chart tooltip.',
   },
   commitments: {
     id: 'staking.chart.tooltip.commitments.label',
     defaultMessage: '!!!commitments',
-    description: '"commitments" label on staking chart tooltip.'
+    description: '"commitments" label on staking chart tooltip.',
   },
   openings: {
     id: 'staking.chart.tooltip.openings.label',
     defaultMessage: '!!!openings',
-    description: '"openings" label on staking chart tooltip.'
+    description: '"openings" label on staking chart tooltip.',
   },
   shares: {
     id: 'staking.chart.tooltip.shares.label',
     defaultMessage: '!!!shares',
-    description: '"shares" label on staking chart tooltip.'
+    description: '"shares" label on staking chart tooltip.',
   },
 });
 
@@ -49,12 +49,11 @@ type Props = {
   mpcPhase: string,
   commitments: string,
   openings: string,
-  shares: string
+  shares: string,
 };
 
 @observer
 export default class StakingChartTooltip extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -69,11 +68,13 @@ export default class StakingChartTooltip extends Component<Props> {
       mpcPhase,
       commitments,
       openings,
-      shares
+      shares,
     } = this.props;
     return (
       <div className={styles.component}>
-        <div className={styles.slot}>{`#${slot}`} {intl.formatMessage(messages.slot)}</div>
+        <div className={styles.slot}>
+          {`#${slot}`} {intl.formatMessage(messages.slot)}
+        </div>
         <div className={styles.date}>{moment(time).format(dateFormat)}</div>
         <div className={styles.hash}>{hash}</div>
         <StakingChartTooltipItem
@@ -104,5 +105,4 @@ export default class StakingChartTooltip extends Component<Props> {
       </div>
     );
   }
-
 }

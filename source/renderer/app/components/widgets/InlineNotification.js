@@ -9,7 +9,6 @@ type Props = {
 };
 
 export default class InlineNotification extends Component<Props> {
-
   render() {
     const { show, children } = this.props;
 
@@ -18,10 +17,6 @@ export default class InlineNotification extends Component<Props> {
       show ? styles.show : null,
     ]);
 
-    return (
-      <div className={notificationMessageStyles}>
-        {children}
-      </div>
-    );
+    return <div className={notificationMessageStyles}>{children}</div>;
   }
 }

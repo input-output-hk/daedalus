@@ -24,10 +24,14 @@ export const prepareArgs = (config: LauncherConfig) => {
   if (config.nodeLogConfig) args.push('--log-config', config.nodeLogConfig);
   if (config.logsPrefix) args.push('--logs-prefix', config.logsPrefix);
   if (config.configuration) {
-    if (config.configuration.filePath) args.push('--configuration-file', config.configuration.filePath);
-    if (config.configuration.key) args.push('--configuration-key', config.configuration.key);
-    if (config.configuration.systemStart) args.push('--system-start', config.configuration.systemStart);
-    if (config.configuration.seed) args.push('--configuration-seed', config.configuration.seed);
+    if (config.configuration.filePath)
+      args.push('--configuration-file', config.configuration.filePath);
+    if (config.configuration.key)
+      args.push('--configuration-key', config.configuration.key);
+    if (config.configuration.systemStart)
+      args.push('--system-start', config.configuration.systemStart);
+    if (config.configuration.seed)
+      args.push('--configuration-seed', config.configuration.seed);
   }
   if (isDev) args.push('--wallet-doc-address', '127.0.0.1:8091');
   return args;

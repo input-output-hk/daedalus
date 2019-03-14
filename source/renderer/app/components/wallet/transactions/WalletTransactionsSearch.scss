@@ -1,23 +1,22 @@
-
 .component {
-
   margin: 20px;
 
   :global {
-
     .input_input {
       padding: 0;
     }
 
     .input_inputElement {
       border-radius: 4px;
-      background: url("../../../assets/images/search-ic.svg") no-repeat 20px center;
+      background: url('../../../assets/images/search-ic.svg') no-repeat 20px
+        center;
       background-size: 15px;
       padding: 16px 1rem 16px 52px;
       background-color: var(--theme-transactions-search-background-color);
       font-family: var(--font-regular);
       &:focus {
-        background: url("../../../assets/images/search-ic-dark.svg") no-repeat 20px center;
+        background: url('../../../assets/images/search-ic-dark.svg') no-repeat
+          20px center;
         background-size: 15px;
       }
     }

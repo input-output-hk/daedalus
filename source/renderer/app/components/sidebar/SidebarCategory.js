@@ -24,7 +24,7 @@ export default class SidebarCategory extends Component<Props> {
     ]);
 
     const iconStyles = classNames([
-      className === 'supportRequest' ? styles.supportRequestIcon : styles.icon
+      className === 'supportRequest' ? styles.supportRequestIcon : styles.icon,
     ]);
 
     return (

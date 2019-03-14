@@ -25,7 +25,7 @@ import SidebarLayout from '../../../source/renderer/app/components/layout/Sideba
 export type StoriesProps = {
   wallets: Array<Wallet>,
   activeWalletId: string,
-  setActiveWalletId: Function
+  setActiveWalletId: Function,
 };
 
 type Props = {
@@ -59,54 +59,57 @@ const sidebarCategories = [
   },
 ];
 
-
-@inject('stores', 'storiesProps') @observer
+@inject('stores', 'storiesProps')
+@observer
 export default class StoryLayout extends Component<Props> {
-
   static defaultProps = { stores: null, storiesProps: null };
 
   render() {
-
     const {
       activeSidebarCategory,
       storyName = '',
       storiesProps = {},
       stores,
-      children
+      children,
     } = this.props;
 
-    const {
-      wallets,
-      activeWalletId,
-      setActiveWalletId
-    } = storiesProps;
+    const { wallets, activeWalletId, setActiveWalletId } = storiesProps;
 
     const activeWallet: Wallet = wallets[parseInt(activeWalletId, 10)];
     const activeNavItem = storyName.split(' ')[0].toLowerCase();
     const sidebarMenus = this.getSidebarMenus(
-      this.getSidebarWallets(wallets), activeWalletId, setActiveWalletId
+      this.getSidebarWallets(wallets),
+      activeWalletId,
+      setActiveWalletId
     );
 
     return (
       <div
         style={{
-          height: '100vh'
+          height: '100vh',
         }}
       >
         <SidebarLayout
           sidebar={this.getSidebar(activeSidebarCategory, sidebarMenus)}
-          topbar={this.getTopbar(activeSidebarCategory, activeWallet, activeNavItem)}
+          topbar={this.getTopbar(
+            activeSidebarCategory,
+            activeWallet,
+            activeNavItem
+          )}
         >
-          { Children.map(children, (child) => React.cloneElement(child, { stores })) }
+          {Children.map(children, child =>
+            React.cloneElement(child, { stores })
+          )}
         </SidebarLayout>
       </div>
     );
   }
 
   @observable
-  isShowingSubMenus = this.props.activeSidebarCategory === '/wallets' && !!this.props.children;
+  isShowingSubMenus =
+    this.props.activeSidebarCategory === '/wallets' && !!this.props.children;
 
-  getSidebarWallets = (wallets: Array<Wallet>): Array<SidebarWalletType> => (
+  getSidebarWallets = (wallets: Array<Wallet>): Array<SidebarWalletType> =>
     wallets.map((wallet: Wallet) => ({
       id: wallet.id,
       title: wallet.name,
@@ -114,8 +117,7 @@ export default class StoryLayout extends Component<Props> {
       isConnected: true,
       isRestoreActive: false,
       restoreProgress: 0,
-    }))
-  );
+    }));
 
   getSidebarMenus = (
     items: Array<SidebarWalletType>,
@@ -127,15 +129,12 @@ export default class StoryLayout extends Component<Props> {
       activeWalletId,
       actions: {
         onAddWallet: action('toggleAddWallet'),
-        onWalletItemClick: setActiveWalletId
-      }
-    }
+        onWalletItemClick: setActiveWalletId,
+      },
+    },
   });
 
-  getSidebar = (
-    activeSidebarCategory: string,
-    sidebarMenus: SidebarMenus,
-  ) => (
+  getSidebar = (activeSidebarCategory: string, sidebarMenus: SidebarMenus) => (
     <Sidebar
       categories={sidebarCategories}
       activeSidebarCategory={activeSidebarCategory}
@@ -150,14 +149,22 @@ export default class StoryLayout extends Component<Props> {
     />
   );
 
-  getTopbar = (activeSidebarCategory: string, activeWallet: Wallet, activeNavItem: string) => (
+  getTopbar = (
+    activeSidebarCategory: string,
+    activeWallet: Wallet,
+    activeNavItem: string
+  ) => (
     <TopBar
       onToggleSidebar={() => {
-        runInAction(() => this.isShowingSubMenus = !this.isShowingSubMenus);
+        runInAction(() => (this.isShowingSubMenus = !this.isShowingSubMenus));
       }}
       formattedWalletAmount={formattedWalletAmount}
       currentRoute={`/wallets/${activeWallet.id}/${activeNavItem}`}
-      activeWallet={activeSidebarCategory === '/wallets' && activeNavItem !== 'empty' ? activeWallet : null}
+      activeWallet={
+        activeSidebarCategory === '/wallets' && activeNavItem !== 'empty'
+          ? activeWallet
+          : null
+      }
       showSubMenuToggle
       showSubMenus={this.isShowingSubMenus}
     >
@@ -171,5 +178,4 @@ export default class StoryLayout extends Component<Props> {
       />
     </TopBar>
   );
-
 }

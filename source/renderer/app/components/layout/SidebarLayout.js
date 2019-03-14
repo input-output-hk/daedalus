@@ -14,31 +14,27 @@ type Props = {
 
 @observer
 export default class SidebarLayout extends Component<Props> {
-
   static defaultProps = {
-    children: null
+    children: null,
   };
 
   render() {
     const {
-      children, sidebar, topbar,
-      notification, contentDialogs,
+      children,
+      sidebar,
+      topbar,
+      notification,
+      contentDialogs,
     } = this.props;
 
     return (
       <div className={styles.component}>
-        <div className={styles.sidebar}>
-          {sidebar}
-        </div>
+        <div className={styles.sidebar}>{sidebar}</div>
         <div className={styles.main}>
-          <div className={styles.topbar}>
-            {topbar}
-          </div>
+          <div className={styles.topbar}>{topbar}</div>
           {notification}
           <div className={styles.contentWrapper}>
-            <div className={styles.content}>
-              {children}
-            </div>
+            <div className={styles.content}>{children}</div>
             {contentDialogs}
           </div>
         </div>

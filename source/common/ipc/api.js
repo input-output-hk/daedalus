@@ -1,16 +1,19 @@
 // @flow
 import type {
   BugReportRequestHttpOptions,
-  BugReportRequestPayload
+  BugReportRequestPayload,
 } from '../types/bug-report-request.types';
 import type { GeneratePaperWalletParams } from '../types/paper-wallet-request.types';
 import type {
   CardanoNodeState,
   CardanoStatus,
   FaultInjectionIpcRequest,
-  TlsConfig
+  TlsConfig,
 } from '../types/cardano-node.types';
-import type { AdaRedemptionCode, AdaRedemptionDecryptionKey } from '../types/ada-redemption.types';
+import type {
+  AdaRedemptionCode,
+  AdaRedemptionDecryptionKey,
+} from '../types/ada-redemption.types';
 import type { RedemptionTypeChoices } from '../../renderer/app/types/redemptionTypes';
 import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
 import type { LogFiles } from '../../renderer/app/types/LogTypes';
@@ -82,11 +85,12 @@ export type OpenExternalUrlResponse = void;
 /**
  * Channel to send bug report requests
  */
-export const SUBMIT_BUG_REPORT_REQUEST_CHANNEL = 'SUBMIT_BUG_REPORT_REQUEST_CHANNEL';
+export const SUBMIT_BUG_REPORT_REQUEST_CHANNEL =
+  'SUBMIT_BUG_REPORT_REQUEST_CHANNEL';
 export type SubmitBugReportRequest = {
   httpOptions: BugReportRequestHttpOptions,
-  requestPayload?: BugReportRequestPayload
-}
+  requestPayload?: BugReportRequestPayload,
+};
 export type SubmitBugReportRequestResponse = void;
 
 /**
@@ -97,7 +101,8 @@ export const REBUILD_APP_MENU_CHANNEL = 'REBUILD_APP_MENU_CHANNEL';
 /**
  * Channel to get the number of epochs consolidated
  */
-export const GET_CONSOLIDATED_EPOCHS_COUNT_CHANNEL = 'GET_CONSOLIDATED_EPOCHS_COUNT_CHANNEL';
+export const GET_CONSOLIDATED_EPOCHS_COUNT_CHANNEL =
+  'GET_CONSOLIDATED_EPOCHS_COUNT_CHANNEL';
 export type GetConsolidatedEpochsCountResponse = number;
 
 /**
@@ -115,7 +120,7 @@ export const PARSE_REDEMPTION_CODE_CHANNEL = 'PARSE_REDEMPTION_CODE_CHANNEL';
 export type ParseRedemptionCodeRequest = {
   certificateFilePath: string,
   decryptionKey: ?AdaRedemptionDecryptionKey,
-  redemptionType: RedemptionTypeChoices
+  redemptionType: RedemptionTypeChoices,
 };
 export type ParseRedemptionCodeResponse = AdaRedemptionCode;
 
@@ -164,21 +169,24 @@ export type CardanoRestartResponse = void;
 /**
  * Channel where render process can toggle cardano-node fault injections
  */
-export const CARDANO_FAULT_INJECTION_CHANNEL = 'CARDANO_FAULT_INJECTION_CHANNEL';
+export const CARDANO_FAULT_INJECTION_CHANNEL =
+  'CARDANO_FAULT_INJECTION_CHANNEL';
 export type CardanoFaultInjectionRequest = FaultInjectionIpcRequest;
 export type CardanoFaultInjectionResponse = void;
 
 /**
  * Channel where renderer can ask for the last cached cardano-node status.
  */
-export const GET_CACHED_CARDANO_STATUS_CHANNEL = 'GET_CACHED_CARDANO_STATUS_CHANNEL';
+export const GET_CACHED_CARDANO_STATUS_CHANNEL =
+  'GET_CACHED_CARDANO_STATUS_CHANNEL';
 export type GetCachedCardanoStatusRequest = void;
 export type GetCachedCardanoStatusResponse = ?CardanoStatus;
 
 /**
  * Channel where renderer and main process can exchange cardano-node status info.
  */
-export const SET_CACHED_CARDANO_STATUS_CHANNEL = 'SET_CACHED_CARDANO_STATUS_CHANNEL';
+export const SET_CACHED_CARDANO_STATUS_CHANNEL =
+  'SET_CACHED_CARDANO_STATUS_CHANNEL';
 export type SetCachedCardanoStatusRequest = ?CardanoStatus;
 export type SetCachedCardanoStatusResponse = void;
 
