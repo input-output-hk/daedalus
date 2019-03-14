@@ -5,7 +5,7 @@
   "menu.daedalus.gpuSafeMode": "GPUセーフモード",
   "menu.daedalus.networkStatus": "ネットワークステータス",
   "menu.daedalus.blockConsolidationStatus": "ブロック統合状況",
-  "menu.daedalus.walletImporter": "Wallet Importer",
+  "menu.daedalus.walletImporter": "ウォレットインポーター",
   "menu.daedalus.quit": "終了",
   "menu.daedalus.close": "閉じる",
   "menu.edit": "編集",
