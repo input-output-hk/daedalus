@@ -181,3 +181,9 @@ export type GetCachedCardanoStatusResponse = ?CardanoStatus;
 export const SET_CACHED_CARDANO_STATUS_CHANNEL = 'SET_CACHED_CARDANO_STATUS_CHANNEL';
 export type SetCachedCardanoStatusRequest = ?CardanoStatus;
 export type SetCachedCardanoStatusResponse = void;
+
+/**
+ * Channel where renderer can ask main process for the result of electron's app.getLocale()
+ */
+export const DETECT_USER_LOCALE_CHANNEL = 'DETECT_USER_LOCALE_CHANNEL';
+export type DetectUserLocaleResponse = string;
