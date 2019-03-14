@@ -13,19 +13,6 @@ import {
   STAGING,
   TESTNET,
 } from '../../../common/types/environment.types';
-import {
-  START_TIME_MAINNET,
-  START_TIME_STAGING,
-  START_TIME_TESTNET,
-  SLOT_DURATION_MAINNET,
-  SLOT_DURATION_STAGING,
-  SLOT_DURATION_TESTNET,
-  SLOT_DURATION_DEVELOPMENT,
-  EPOCH_LENGTH_BASE_MAINNET,
-  EPOCH_LENGTH_BASE_STAGING,
-  EPOCH_LENGTH_BASE_TESTNET,
-  EPOCH_LENGTH_BASE_DEVELOPMENT,
-} from '../config/epochsConfig';
 
 const localesFillForm = {
   'en-US': 'English',
@@ -40,9 +27,6 @@ const {
   build,
   buildNumber,
   installerVersion,
-  isMainnet,
-  isStaging,
-  isTestnet,
 } = global.environment;
 
 export const getNetworkExplorerUrl = (network: string): string => {
@@ -77,35 +61,6 @@ export const getNetworkEkgUrl = (env: {
     ekgUrl = TESTNET_EKG_URL;
   }
   return ekgUrl;
-};
-
-const getEpochData = (developmentStartTime: number) => {
-  if (isMainnet) {
-    return {
-      startTime: START_TIME_MAINNET,
-      slotDuration: SLOT_DURATION_MAINNET,
-      epochLengthBase: EPOCH_LENGTH_BASE_MAINNET,
-    };
-  }
-  if (isStaging) {
-    return {
-      startTime: START_TIME_STAGING,
-      slotDuration: SLOT_DURATION_STAGING,
-      epochLengthBase: EPOCH_LENGTH_BASE_STAGING,
-    };
-  }
-  if (isTestnet) {
-    return {
-      startTime: START_TIME_TESTNET,
-      slotDuration: SLOT_DURATION_TESTNET,
-      epochLengthBase: EPOCH_LENGTH_BASE_TESTNET,
-    };
-  }
-  return {
-    startTime: developmentStartTime,
-    slotDuration: SLOT_DURATION_DEVELOPMENT,
-    epochLengthBase: EPOCH_LENGTH_BASE_DEVELOPMENT,
-  };
 };
 
 export const getSupportUrl = async (baseUrl: string, locale: string) => {

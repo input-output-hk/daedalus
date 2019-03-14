@@ -3,7 +3,6 @@ import { observable } from 'mobx';
 import Profile from './Profile';
 
 export default class User {
-
   @observable id: string;
   @observable profile: Profile;
 
@@ -11,5 +10,4 @@ export default class User {
     this.id = id;
     this.profile = profile;
   }
-
 }

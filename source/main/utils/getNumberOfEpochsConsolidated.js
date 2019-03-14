@@ -6,8 +6,8 @@ import { getNumberOfEpochsConsolidatedChannel } from '../ipc/getNumberOfEpochsCo
 import type { GetConsolidatedEpochsCountResponse } from '../../common/ipc/api';
 
 export const getNumberOfEpochsConsolidated = () => {
-  getNumberOfEpochsConsolidatedChannel
-    .onRequest((): Promise<GetConsolidatedEpochsCountResponse> => {
+  getNumberOfEpochsConsolidatedChannel.onRequest(
+    (): Promise<GetConsolidatedEpochsCountResponse> => {
       const epochsPath = path.join(nodeDbPath, 'epochs');
       let latestConsolidatedEpoch = 0;
       if (fs.existsSync(epochsPath)) {
@@ -15,8 +15,10 @@ export const getNumberOfEpochsConsolidated = () => {
           .readdirSync(epochsPath)
           .filter(file => file.indexOf('.epoch') > -1)
           .map(file => parseInt(file.split('.').shift(), 10));
-        if (epochfiles.length) latestConsolidatedEpoch = Math.max(...epochfiles);
+        if (epochfiles.length)
+          latestConsolidatedEpoch = Math.max(...epochfiles);
       }
       return Promise.resolve(latestConsolidatedEpoch);
-    });
+    }
+  );
 };

@@ -6,9 +6,9 @@ import type { InjectedProps } from '../../../../types/injectedPropsType';
 
 type Props = InjectedProps;
 
-@inject('actions', 'stores') @observer
+@inject('actions', 'stores')
+@observer
 export default class DeleteWalletDialogContainer extends Component<Props> {
-
   static defaultProps = { actions: null, stores: null };
 
   render() {
@@ -18,10 +18,15 @@ export default class DeleteWalletDialogContainer extends Component<Props> {
     const { updateDataForActiveDialog } = actions.dialogs;
     const activeWallet = wallets.active;
     const { deleteWalletRequest } = wallets;
-    const { environment: { isTest } } = app;
+    const {
+      environment: { isTest },
+    } = app;
 
     // Guard against potential null values
-    if (!activeWallet) throw new Error('Active wallet required for DeleteWalletDialogContainer.');
+    if (!activeWallet)
+      throw new Error(
+        'Active wallet required for DeleteWalletDialogContainer.'
+      );
 
     return (
       <DeleteWalletConfirmationDialog
@@ -30,9 +35,11 @@ export default class DeleteWalletDialogContainer extends Component<Props> {
         hasWalletFunds={activeWallet.hasFunds}
         countdownFn={uiDialogs.countdownSinceDialogOpened}
         isBackupNoticeAccepted={dialogData.isBackupNoticeAccepted}
-        onAcceptBackupNotice={() => updateDataForActiveDialog.trigger({
-          data: { isBackupNoticeAccepted: true }
-        })}
+        onAcceptBackupNotice={() =>
+          updateDataForActiveDialog.trigger({
+            data: { isBackupNoticeAccepted: true },
+          })
+        }
         onContinue={() => {
           actions.wallets.deleteWallet.trigger({ walletId: activeWallet.id });
         }}
@@ -41,12 +48,13 @@ export default class DeleteWalletDialogContainer extends Component<Props> {
           deleteWalletRequest.reset();
         }}
         confirmationValue={dialogData.confirmationValue}
-        onConfirmationValueChange={confirmationValue => updateDataForActiveDialog.trigger({
-          data: { confirmationValue }
-        })}
+        onConfirmationValueChange={confirmationValue =>
+          updateDataForActiveDialog.trigger({
+            data: { confirmationValue },
+          })
+        }
         isSubmitting={deleteWalletRequest.isExecuting}
       />
     );
   }
-
 }

@@ -16,13 +16,10 @@ export default class SettingsLayout extends Component<Props> {
     return (
       <div className={styles.component}>
         <div className={styles.settingsPaneWrapper}>
-          <div className={styles.settingsPane}>
-            {children}
-          </div>
+          <div className={styles.settingsPane}>{children}</div>
         </div>
         {menu}
       </div>
     );
   }
-
 }

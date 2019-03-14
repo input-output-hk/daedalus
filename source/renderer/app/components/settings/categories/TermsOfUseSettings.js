@@ -18,5 +18,4 @@ export default class TermsOfUseSettings extends Component<Props> {
       </div>
     );
   }
-
 }

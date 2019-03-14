@@ -28,16 +28,28 @@ import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
 export const Routes = (
   <Route path={ROUTES.ROOT} component={Root}>
     <IndexRedirect to={ROUTES.WALLETS.ROOT} />
-    <Route path={ROUTES.PROFILE.LANGUAGE_SELECTION} component={LanguageSelectionPage} />
+    <Route
+      path={ROUTES.PROFILE.LANGUAGE_SELECTION}
+      component={LanguageSelectionPage}
+    />
     <Route path={ROUTES.PROFILE.TERMS_OF_USE} component={TermsOfUsePage} />
-    <Route path={ROUTES.PROFILE.DATA_LAYER_MIGRATION} component={DataLayerMigrationPage} />
+    <Route
+      path={ROUTES.PROFILE.DATA_LAYER_MIGRATION}
+      component={DataLayerMigrationPage}
+    />
     {/* <Route path={ROUTES.STAKING} component={StakingPage} /> */}
     <Route path={ROUTES.ADA_REDEMPTION} component={AdaRedemptionPage} />
-    <Route path={ROUTES.BLOCK_CONSOLIDATION_STATUS} component={BlockConsolidationStatusPage} />
+    <Route
+      path={ROUTES.BLOCK_CONSOLIDATION_STATUS}
+      component={BlockConsolidationStatusPage}
+    />
     <Route path={ROUTES.WALLETS.ADD} component={WalletAddPage} />
     <Route path={ROUTES.WALLETS.ROOT} component={Wallet}>
       <Route path={ROUTES.WALLETS.SUMMARY} component={WalletSummaryPage} />
-      <Route path={ROUTES.WALLETS.TRANSACTIONS} component={WalletTransactionsPage} />
+      <Route
+        path={ROUTES.WALLETS.TRANSACTIONS}
+        component={WalletTransactionsPage}
+      />
       <Route path={ROUTES.WALLETS.SEND} component={WalletSendPage} />
       <Route path={ROUTES.WALLETS.RECEIVE} component={WalletReceivePage} />
       <Route path={ROUTES.WALLETS.SETTINGS} component={WalletSettingsPage} />

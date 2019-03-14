@@ -3,7 +3,6 @@ import { observable, action } from 'mobx';
 import Store from './lib/Store';
 
 export default class UiDialogsStore extends Store {
-
   @observable activeDialog: ?Function = null;
   @observable secondsSinceActiveDialogIsOpen: number = 0;
   @observable dataForActiveDialog: Object = {};
@@ -14,14 +13,15 @@ export default class UiDialogsStore extends Store {
     this.actions.dialogs.open.listen(this._onOpen);
     this.actions.dialogs.closeActiveDialog.listen(this._onClose);
     this.actions.dialogs.resetActiveDialog.listen(this._reset);
-    this.actions.dialogs.updateDataForActiveDialog.listen(this._onUpdateDataForActiveDialog);
+    this.actions.dialogs.updateDataForActiveDialog.listen(
+      this._onUpdateDataForActiveDialog
+    );
   }
 
   isOpen = (dialog: Function): boolean => this.activeDialog === dialog;
 
-  countdownSinceDialogOpened = (countDownTo: number) => (
-    Math.max(countDownTo - this.secondsSinceActiveDialogIsOpen, 0)
-  );
+  countdownSinceDialogOpened = (countDownTo: number) =>
+    Math.max(countDownTo - this.secondsSinceActiveDialogIsOpen, 0);
 
   @action _onOpen = ({ dialog }: { dialog: Function }) => {
     this._reset();
@@ -49,5 +49,4 @@ export default class UiDialogsStore extends Store {
     this.secondsSinceActiveDialogIsOpen = 0;
     this.dataForActiveDialog = {};
   };
-
 }

@@ -6,22 +6,29 @@ import type {
   WalletAssuranceLevel,
   WalletAssuranceMode,
   WalletSyncState,
-  SyncStateTag
+  SyncStateTag,
 } from '../api/wallets/types';
 
 export const WalletAssuranceModeOptions: {
-  NORMAL: WalletAssuranceLevel, STRICT: WalletAssuranceLevel,
+  NORMAL: WalletAssuranceLevel,
+  STRICT: WalletAssuranceLevel,
 } = {
-  NORMAL: 'normal', STRICT: 'strict',
+  NORMAL: 'normal',
+  STRICT: 'strict',
 };
 
 export const WalletSyncStateTags: {
-  RESTORING: SyncStateTag, SYNCED: SyncStateTag,
+  RESTORING: SyncStateTag,
+  SYNCED: SyncStateTag,
 } = {
-  RESTORING: 'restoring', SYNCED: 'synced',
+  RESTORING: 'restoring',
+  SYNCED: 'synced',
 };
 
-const WalletAssuranceModes: { NORMAL: WalletAssuranceMode, STRICT: WalletAssuranceMode } = {
+const WalletAssuranceModes: {
+  NORMAL: WalletAssuranceMode,
+  STRICT: WalletAssuranceMode,
+} = {
   NORMAL: {
     low: 3,
     medium: 9,
@@ -29,7 +36,7 @@ const WalletAssuranceModes: { NORMAL: WalletAssuranceMode, STRICT: WalletAssuran
   STRICT: {
     low: 5,
     medium: 15,
-  }
+  },
 };
 
 export type WalletProps = {
@@ -43,7 +50,6 @@ export type WalletProps = {
 };
 
 export default class Wallet {
-
   id: string = '';
   @observable name: string = '';
   @observable amount: BigNumber;
@@ -57,9 +63,18 @@ export default class Wallet {
   }
 
   @action update(other: Wallet) {
-    Object.assign(this, pick(other, [
-      'id', 'name', 'amount', 'assurance', 'hasPassword', 'passwordUpdateDate', 'syncState'
-    ]));
+    Object.assign(
+      this,
+      pick(other, [
+        'id',
+        'name',
+        'amount',
+        'assurance',
+        'hasPassword',
+        'passwordUpdateDate',
+        'syncState',
+      ])
+    );
   }
 
   @computed get hasFunds(): boolean {
@@ -68,10 +83,12 @@ export default class Wallet {
 
   @computed get assuranceMode(): WalletAssuranceMode {
     switch (this.assurance) {
-      case WalletAssuranceModeOptions.NORMAL: return WalletAssuranceModes.NORMAL;
-      case WalletAssuranceModeOptions.STRICT: return WalletAssuranceModes.STRICT;
-      default: return WalletAssuranceModes.NORMAL;
+      case WalletAssuranceModeOptions.NORMAL:
+        return WalletAssuranceModes.NORMAL;
+      case WalletAssuranceModeOptions.STRICT:
+        return WalletAssuranceModes.STRICT;
+      default:
+        return WalletAssuranceModes.NORMAL;
     }
   }
-
 }

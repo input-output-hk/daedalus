@@ -4,7 +4,9 @@
   cursor: pointer;
 
   &.failed {
-    .title, .amount, .details {
+    .title,
+    .amount,
+    .details {
       color: var(--theme-transactions-state-failed-text-color);
     }
     .currencySymbol {
@@ -29,7 +31,7 @@
   display: none;
   margin-left: -70px;
   margin-top: -17px;
-  opacity: .1;
+  opacity: 0.1;
   position: sticky;
   text-align: center;
   width: 74px;
@@ -42,12 +44,12 @@
     }
   }
   .component:hover & {
-    opacity: .2;
+    opacity: 0.2;
   }
   .content:hover & {
-    opacity: .1;
+    opacity: 0.1;
     &:hover {
-      opacity: .2;
+      opacity: 0.2;
     }
   }
 }
@@ -69,7 +71,8 @@
   width: 100%;
 }
 
-.title, .amount {
+.title,
+.amount {
   color: var(--theme-transactions-list-item-details-color);
   font-family: var(--font-semibold);
   font-size: 16px;
@@ -86,7 +89,11 @@
   user-select: text;
 }
 
-.pendingLabel, .failedLabel, .low, .medium, .high {
+.pendingLabel,
+.failedLabel,
+.low,
+.medium,
+.high {
   border-radius: 3px;
   color: var(--theme-transactions-priority-color);
   display: inline-block;
@@ -112,18 +119,17 @@
   }
 
   background-color: var(--theme-transactions-state-pending-background-color);
-  background-image:
-    linear-gradient(
-        -45deg,
-        var(--theme-transactions-state-pending-stripes-color) 25%,
-        transparent 25%,
-        transparent 50%,
-        var(--theme-transactions-state-pending-stripes-color) 50%,
-        var(--theme-transactions-state-pending-stripes-color) 75%,
-        transparent 75%,
-        transparent
-    );
-  background-size:50px 50px;
+  background-image: linear-gradient(
+    -45deg,
+    var(--theme-transactions-state-pending-stripes-color) 25%,
+    transparent 25%,
+    transparent 50%,
+    var(--theme-transactions-state-pending-stripes-color) 50%,
+    var(--theme-transactions-state-pending-stripes-color) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 50px 50px;
   animation: pending-label-animation 2s linear infinite;
   overflow: hidden;
 }
@@ -198,9 +204,10 @@
     user-select: text;
     word-break: break-all;
 
-    &.address, &.transactionId {
+    &.address,
+    &.transactionId {
       font-family: var(--font-mono);
-      letter-spacing: -.4px;
+      letter-spacing: -0.4px;
       opacity: 0.8;
     }
 

@@ -16,18 +16,18 @@ const messages = defineMessages({
   pendingOutgoingConfirmationLabel: {
     id: 'wallet.summary.page.pendingOutgoingConfirmationLabel',
     defaultMessage: '!!!Outgoing pending confirmation',
-    description: '"Outgoing pending confirmation" label on Wallet summary page'
+    description: '"Outgoing pending confirmation" label on Wallet summary page',
   },
   pendingIncomingConfirmationLabel: {
     id: 'wallet.summary.page.pendingIncomingConfirmationLabel',
     defaultMessage: '!!!Incoming pending confirmation',
-    description: '"Incoming pending confirmation" label on Wallet summary page'
+    description: '"Incoming pending confirmation" label on Wallet summary page',
   },
   transactionsLabel: {
     id: 'wallet.summary.page.transactionsLabel',
     defaultMessage: '!!!Number of transactions',
-    description: '"Number of transactions" label on Wallet summary page'
-  }
+    description: '"Number of transactions" label on Wallet summary page',
+  },
 });
 
 type Props = {
@@ -41,7 +41,6 @@ type Props = {
 
 @observer
 export default class WalletSummary extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -56,10 +55,11 @@ export default class WalletSummary extends Component<Props> {
       isRestoreActive,
     } = this.props;
     const { intl } = this.context;
-    const isLoadingAllTransactions = numberOfRecentTransactions && !numberOfTransactions;
+    const isLoadingAllTransactions =
+      numberOfRecentTransactions && !numberOfTransactions;
     const numberOfTransactionsStyles = classnames([
       styles.numberOfTransactions,
-      isLoadingAllTransactions ? styles.isLoadingNumberOfTransactions : null
+      isLoadingAllTransactions ? styles.isLoadingNumberOfTransactions : null,
     ]);
 
     return (
@@ -68,26 +68,38 @@ export default class WalletSummary extends Component<Props> {
           <div className={styles.walletName}>{wallet.name}</div>
           <div className={styles.walletAmount}>
             {wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
-            <SVGInline svg={adaSymbolBig} className={styles.currencySymbolBig} />
+            <SVGInline
+              svg={adaSymbolBig}
+              className={styles.currencySymbolBig}
+            />
           </div>
 
           {!isRestoreActive ? (
             <div>
               {pendingAmount.incoming.greaterThan(0) && (
                 <div className={styles.pendingConfirmation}>
-                  {`${intl.formatMessage(messages.pendingIncomingConfirmationLabel)}`}
+                  {`${intl.formatMessage(
+                    messages.pendingIncomingConfirmationLabel
+                  )}`}
                   : {pendingAmount.incoming.toFormat(DECIMAL_PLACES_IN_ADA)}
-                  <SVGInline svg={adaSymbolSmallest} className={styles.currencySymbolSmallest} />
+                  <SVGInline
+                    svg={adaSymbolSmallest}
+                    className={styles.currencySymbolSmallest}
+                  />
                 </div>
               )}
               {pendingAmount.outgoing.greaterThan(0) && (
                 <div className={styles.pendingConfirmation}>
-                  {`${intl.formatMessage(messages.pendingOutgoingConfirmationLabel)}`}
+                  {`${intl.formatMessage(
+                    messages.pendingOutgoingConfirmationLabel
+                  )}`}
                   : {pendingAmount.outgoing.toFormat(DECIMAL_PLACES_IN_ADA)}
-                  <SVGInline svg={adaSymbolSmallest} className={styles.currencySymbolSmallest} />
+                  <SVGInline
+                    svg={adaSymbolSmallest}
+                    className={styles.currencySymbolSmallest}
+                  />
                 </div>
               )}
-
             </div>
           ) : null}
 
@@ -101,5 +113,4 @@ export default class WalletSummary extends Component<Props> {
       </div>
     );
   }
-
 }

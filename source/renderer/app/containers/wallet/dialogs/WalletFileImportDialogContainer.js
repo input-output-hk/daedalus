@@ -6,12 +6,21 @@ import type { InjectedDialogContainerProps } from '../../../types/injectedPropsT
 
 type Props = InjectedDialogContainerProps;
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class WalletFileImportDialogContainer extends Component<Props> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+    children: null,
+    onClose: () => {},
+  };
 
-  static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
-
-  onSubmit = (values: { filePath: string, spendingPassword: ?string, walletName: ?string }) => {
+  onSubmit = (values: {
+    filePath: string,
+    spendingPassword: ?string,
+    walletName: ?string,
+  }) => {
     this.props.actions.wallets.importWalletFromFile.trigger(values);
   };
 

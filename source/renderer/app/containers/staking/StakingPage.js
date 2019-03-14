@@ -6,7 +6,6 @@ import Layout from '../MainLayout';
 
 @observer
 export default class StakingPage extends Component<any> {
-
   render() {
     return (
       <Layout>
@@ -16,5 +15,4 @@ export default class StakingPage extends Component<any> {
       </Layout>
     );
   }
-
 }

@@ -9,12 +9,11 @@ import type {
 
 // IpcChannel<Incoming, Outgoing>
 
-export const openExternalUrlChannel: (
-  MainIpcChannel<OpenExternalUrlRequest, OpenExternalUrlResponse>
-) = (
-  new MainIpcChannel(OPEN_EXTERNAL_URL_CHANNEL)
-);
+export const openExternalUrlChannel: MainIpcChannel<
+  OpenExternalUrlRequest,
+  OpenExternalUrlResponse
+> = new MainIpcChannel(OPEN_EXTERNAL_URL_CHANNEL);
 
-openExternalUrlChannel.onReceive((url: OpenExternalUrlRequest) => (
+openExternalUrlChannel.onReceive((url: OpenExternalUrlRequest) =>
   shell.openExternal(url) ? Promise.resolve() : Promise.reject()
-));
+);
