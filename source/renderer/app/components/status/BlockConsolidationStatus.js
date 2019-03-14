@@ -1,7 +1,8 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import classnames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './BlockConsolidationStatus.scss';
@@ -110,6 +111,21 @@ export default class BlockConsolidationStatus extends Component<Props> {
     const widthOfEpochsConsolidated =
       this.getWidthOfEpochsConsolidated(epochsConsolidated, currentEpoch);
 
+    const description2Styles = classnames([
+      styles.description,
+      !currentEpoch ? styles.descriptionNoCurrentEpoch : null
+    ]);
+
+    const epochsStyles = classnames([
+      styles.epochs,
+      !currentEpoch ? styles.epochsNoCurrentEpoch : null
+    ]);
+
+    const indicatorContainerStyles = classnames([
+      styles.indicatorContainer,
+      !currentEpoch ? styles.indicatorContainerNoCurrentEpochs : null
+    ]);
+
     return (
       <div className={styles.component}>
         <TopBar
@@ -123,7 +139,7 @@ export default class BlockConsolidationStatus extends Component<Props> {
             <p className={styles.description}>
               {formatMessage(messages.description1)}
             </p>
-            <p className={styles.description}>
+            <p className={description2Styles}>
               <FormattedHTMLMessage
                 {...messages.description2}
                 values={{
@@ -136,7 +152,7 @@ export default class BlockConsolidationStatus extends Component<Props> {
               {formatMessage(messages.description3)}
             </p>
 
-            <div className={styles.epochs}>
+            <div className={epochsStyles}>
               <p>
                 <FormattedHTMLMessage
                   {...messages.epochsConsolidatedOfTotal}
@@ -150,35 +166,41 @@ export default class BlockConsolidationStatus extends Component<Props> {
             </div>
 
             <div className={styles.indicator}>
-              <div className={styles.indicatorContainer}>
-                <p className={styles.zeroEpoch}>{formatMessage(messages.epoch)} 0</p>
-                <div className={styles.indicatorEpochsBehind}>
-                  <p>{formatMessage(messages.epoch)} {Math.max(currentEpoch - 2, 0)}</p>
-                </div>
-                <div
-                  className={styles.indicatorEpochsSynced}
-                  style={{ width: `${epochsSynced}%` }}
-                >
-                  <p style={this.getPositionOfEpochsSynced(epochsSynced)}>
-                    <FormattedHTMLMessage
-                      {...messages.synced}
-                      values={{ epochsSynced }}
-                    />
-                  </p>
-                </div>
-                <div className={styles.indicatorEpochsConsolidatedContainer}>
-                  <div
-                    className={styles.indicatorEpochsConsolidated}
-                    style={{ width: `${widthOfEpochsConsolidated}%` }}
-                  >
-                    <p style={this.getPositionOfEpochsConsolidated(widthOfEpochsConsolidated)}>
-                      {epochsConsolidated} {formatMessage(messages.epochsConsolidated)}
-                    </p>
-                  </div>
-                </div>
-                <p className={styles.fullEpoch}>
-                  {formatMessage(messages.epoch)} {currentEpoch}
-                </p>
+              <div className={indicatorContainerStyles}>
+                {
+                  (!!currentEpoch) && (
+                    <Fragment>
+                      <p className={styles.zeroEpoch}>{formatMessage(messages.epoch)} 0</p>
+                      <div className={styles.indicatorEpochsBehind}>
+                        <p>{formatMessage(messages.epoch)} {Math.max(currentEpoch - 2, 0)}</p>
+                      </div>
+                      <div
+                        className={styles.indicatorEpochsSynced}
+                        style={{ width: `${epochsSynced}%` }}
+                      >
+                        <p style={this.getPositionOfEpochsSynced(epochsSynced)}>
+                          <FormattedHTMLMessage
+                            {...messages.synced}
+                            values={{ epochsSynced }}
+                          />
+                        </p>
+                      </div>
+                      <div className={styles.indicatorEpochsConsolidatedContainer}>
+                        <div
+                          className={styles.indicatorEpochsConsolidated}
+                          style={{ width: `${widthOfEpochsConsolidated}%` }}
+                        >
+                          <p style={this.getPositionOfEpochsConsolidated(widthOfEpochsConsolidated)}>
+                            {epochsConsolidated} {formatMessage(messages.epochsConsolidated)}
+                          </p>
+                        </div>
+                      </div>
+                      <p className={styles.fullEpoch}>
+                        {formatMessage(messages.epoch)} {currentEpoch}
+                      </p>
+                    </Fragment>
+                  )
+                }
               </div>
             </div>
 
