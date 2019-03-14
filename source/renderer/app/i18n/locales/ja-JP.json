@@ -231,7 +231,7 @@
   "wallet.importer.extractingWalletsNotification": "ウォレットを復元しています",
   "wallet.importer.headline": "ウォレットインポーター",
   "wallet.importer.importLabel": "インポート",
-  "wallet.importer.instructions": "ウォレットをインポートするには、前回Daedalusをインストールした際に使用した秘密鍵を含む「secret.key」ファイルが必要です。詳細。",
+  "wallet.importer.instructions": "ウォレットをインポートするには、前回Daedalusをインストールした際に使用した秘密鍵を含む「secret.key」ファイルが必要です。",
   "wallet.importer.keyFileHint": "ここに「secret.key」ファイルをドロップするか、クリックして選択してください",
   "wallet.importer.keyFileLabel": "秘密鍵のファイル",
   "wallet.importer.maskPasswordsLabel": "パスワードを非表示",

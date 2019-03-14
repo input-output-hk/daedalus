@@ -28,7 +28,7 @@ export const messages = defineMessages({
   },
   instructions: {
     id: 'wallet.importer.instructions',
-    defaultMessage: '!!!In order to import wallets, you need to obtain a \"secret.key\" file with your private keys from your previous Daedalus installation. Learn more.',
+    defaultMessage: '!!!In order to import wallets, you need to obtain a \"secret.key\" file with your private keys from your previous Daedalus installation.',
     description: 'Detailed instructions for importing wallets.',
   },
   keyFileLabel: {
