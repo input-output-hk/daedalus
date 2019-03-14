@@ -17,10 +17,11 @@ import { setupCardano } from './cardano/setup';
 import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { buildAppMenus } from './utils/buildAppMenus';
-import { getLocale, getDefaultLocale } from './utils/getLocale';
+import { getLocale } from './utils/getLocale';
+import { detectSystemLocale } from './utils/detectSystemLocale';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
-import { detectUserLocaleChannel } from './ipc/detect-user-locale';
+import { detectSystemLocaleChannel } from './ipc/detect-system-locale';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
 
@@ -62,7 +63,7 @@ const onAppReady = async () => {
   // systemStart refers to the Cardano Demo cluster start time!
   const systemStart = parseInt(launcherConfig.configuration.systemStart, 10);
   // first checks for japanese locale, otherwise returns english
-  const defaultLocale = getDefaultLocale();
+  const systemLocale = detectSystemLocale();
 
   const systemInfo = logSystemInfo({
     cardanoVersion,
@@ -130,7 +131,7 @@ const onAppReady = async () => {
   }
 
   getSystemStartTimeChannel.onRequest(() => Promise.resolve(systemStart));
-  detectUserLocaleChannel.onRequest(() => Promise.resolve(defaultLocale));
+  detectSystemLocaleChannel.onRequest(() => Promise.resolve(systemLocale));
 
   getNumberOfEpochsConsolidated();
 

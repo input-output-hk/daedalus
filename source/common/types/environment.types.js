@@ -26,11 +26,6 @@ export type Environment = {
   defaultLocale: string,
 };
 
-export type DefaultLocales = {
-  english: string,
-  japanese: string
-};
-
 // constants
 export const PRODUCTION = 'production';
 export const DEVELOPMENT = 'development';
@@ -45,8 +40,4 @@ export const OS_NAMES = {
   [MAC_OS]: 'macOS',
   [WINDOWS]: 'Windows',
   [LINUX]: 'Linux',
-};
-export const DEFAULT_LOCALES: DefaultLocales = {
-  english: 'en-US',
-  japanese: 'ja-JP',
 };
