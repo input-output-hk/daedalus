@@ -9,11 +9,13 @@ export type NodeInfoQueryParams = {
 
 export const getNodeInfo = (
   config: RequestConfig,
-  queryInfoParams?: NodeInfoQueryParams,
-): Promise<NodeInfoResponse> => (
-  request({
-    method: 'GET',
-    path: '/api/v1/node-info',
-    ...config,
-  }, queryInfoParams)
-);
+  queryInfoParams?: NodeInfoQueryParams
+): Promise<NodeInfoResponse> =>
+  request(
+    {
+      method: 'GET',
+      path: '/api/v1/node-info',
+      ...config,
+    },
+    queryInfoParams
+  );

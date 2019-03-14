@@ -1,33 +1,36 @@
 // @flow
-export type LocalTimeInformationStatus = 'unavailable' | 'pending' | 'available';
+export type LocalTimeInformationStatus =
+  | 'unavailable'
+  | 'pending'
+  | 'available';
 
 export type NodeInfoResponse = {
   syncProgress: {
     quantity: number,
-    unit: 'percent'
+    unit: 'percent',
   },
   blockchainHeight: ?{
     quantity: number,
-    unit: ?'blocks'
+    unit: ?'blocks',
   },
   localBlockchainHeight: {
     quantity: number,
-    unit: ?'blocks'
+    unit: ?'blocks',
   },
   localTimeInformation: {
     status: LocalTimeInformationStatus,
     localTimeDifference?: {
       quantity: number,
-      unit: ?'microseconds'
-    }
+      unit: ?'microseconds',
+    },
   },
-  subscriptionStatus: Object
+  subscriptionStatus: Object,
 };
 
 export type NodeSettingsResponse = {
   slotDuration: {
     quantity: number,
-    unit: ?'milliseconds'
+    unit: ?'milliseconds',
   },
   softwareInfo: NodeSoftware,
   projectVersion: string,
@@ -40,7 +43,7 @@ export type NodeSettingsResponse = {
 
 export type NodeSoftware = {
   applicationName: string,
-  version: number
+  version: number,
 };
 
 // req/res Node Types
@@ -51,6 +54,6 @@ export type GetNetworkStatusResponse = {
   localBlockchainHeight: number,
   localTimeInformation: {
     status: LocalTimeInformationStatus,
-    difference: ?number
-  }
+    difference: ?number,
+  },
 };
