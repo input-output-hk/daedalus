@@ -155,7 +155,7 @@ makeComponentRoot Options{..} appRoot darwinConfig@DarwinConfig{..} = do
   case oBackend of
     Cardano bridge -> do
       -- Executables (from daedalus-bridge)
-      forM ["cardano-launcher", "cardano-node", "cardano-x509-certificates", "wallet-extractor"] $ \f ->
+      forM ["cardano-launcher", "cardano-node", "cardano-x509-certificates" ] $ \f ->
         cp (bridge </> "bin" </> f) (dir </> f)
 
       -- Config files (from daedalus-bridge)
@@ -175,7 +175,7 @@ makeComponentRoot Options{..} appRoot darwinConfig@DarwinConfig{..} = do
       procs "chmod" ["-R", "+w", tt dir] empty
 
       -- Rewrite libs paths and bundle them
-      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-node", dir </> "cardano-x509-certificates", dir </> "wallet-extractor"]
+      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-node", dir </> "cardano-x509-certificates" ]
 
     Mantis -> pure () -- DEVOPS-533
 
