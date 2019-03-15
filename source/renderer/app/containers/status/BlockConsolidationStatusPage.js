@@ -36,18 +36,14 @@ export default class BlockConsolidationStatusPage extends Component<InjectedProp
    * This method checks if the `currentEpoch` was returned by the API, which might fail sometimes
    * In this case, it calls `getCurrentEpochFallback`, which retrieves it from CardanoExplorer
    *
-   * The reason why this is not on `ComponentWillReceiveProps`,
-   * is that `ComponentWillReceiveProps` is not fired when reloading the app
+   * The reason why this is not on `componentWillReceiveProps`,
+   * is that `componentWillReceiveProps` is not fired when reloading the app
    *
    */
   handleCurrentEpoch = () => {
     if (this.currentEpochFallbackRequested) return false;
-    const {
-      epochsConsolidated,
-      syncProgress,
-      currentEpoch,
-    } = this.props.stores.networkStatus;
-    if ((epochsConsolidated || syncProgress) && !currentEpoch) {
+    const { syncProgress, currentEpoch } = this.props.stores.networkStatus;
+    if (syncProgress && !currentEpoch) {
       this.currentEpochFallbackRequested = true;
       this.props.actions.networkStatus.getCurrentEpochFallback.trigger();
     }
