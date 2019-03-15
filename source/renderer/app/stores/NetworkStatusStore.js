@@ -111,6 +111,7 @@ export default class NetworkStatusStore extends Store {
   setup() {
     const actions = this.actions.networkStatus;
     actions.getEpochsData.listen(this._getEpochsData);
+    actions.getCurrentEpochFallback.listen(this._getCurrentEpochFallback);
     // ========== IPC CHANNELS =========== //
 
     // Request node state
@@ -428,7 +429,7 @@ export default class NetworkStatusStore extends Store {
 
       // Update sync progress
       runInAction('update currentEpoch', () => {
-        // this.currentEpoch = slotId.epoch;
+        this.currentEpoch = slotId.epoch;
       });
 
       runInAction('update block heights', () => {
@@ -557,8 +558,11 @@ export default class NetworkStatusStore extends Store {
   };
 
   @action _getCurrentEpochFallback = async () => {
-    const pages = await this.getCurrentEpochFallbackRequest.execute().promise;
-    console.log('pages store', pages);
+    const currentEpoch = await this.getCurrentEpochFallbackRequest.execute()
+      .promise;
+    runInAction(() => {
+      this.currentEpoch = currentEpoch;
+    });
   };
 
   @action _setDisconnected = (wasConnected: boolean) => {

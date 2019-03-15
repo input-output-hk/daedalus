@@ -56,4 +56,7 @@ export type GetNetworkStatusResponse = {
     status: LocalTimeInformationStatus,
     difference: ?number,
   },
+  slotId: {
+    epoch: number,
+  },
 };

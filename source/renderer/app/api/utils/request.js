@@ -102,9 +102,7 @@ function typedRequest<Response>(
 
           const parsedBody = JSON.parse(body);
           const status = get(parsedBody, 'status', false);
-          if (options.host.indexOf('cardanoexplorer') > -1) {
-            resolve(parsedBody);
-          } else if (status) {
+          if (status) {
             if (status === 'success') {
               resolve(returnMeta ? parsedBody : parsedBody.data);
             } else if (status === 'error' || status === 'fail') {

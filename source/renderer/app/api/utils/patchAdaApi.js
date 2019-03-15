@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import { get } from 'lodash';
 import AdaApi from '../api';
 import { getNodeInfo } from '../nodes/requests/getNodeInfo';
+import { getNodeSettings } from '../nodes/requests/getNodeSettings';
 import { GenericApiError } from '../common/errors';
 import { Logger } from '../../utils/logging';
 import { RedeemAdaError } from '../transactions/errors';
@@ -11,6 +12,7 @@ import type { RedeemPaperVendedAdaParams } from '../transactions/requests/redeem
 import type { NodeInfoQueryParams } from '../nodes/requests/getNodeInfo';
 import type {
   NodeInfoResponse,
+  NodeSettingsResponse,
   GetNetworkStatusResponse,
 } from '../nodes/types';
 
@@ -81,18 +83,26 @@ export default (api: AdaApi) => {
   ): Promise<GetNetworkStatusResponse> => {
     Logger.debug('AdaApi::getNetworkStatus (PATCHED) called');
     try {
-      const status: NodeInfoResponse = await getNodeInfo(
+      const nodeInfo: NodeInfoResponse = await getNodeInfo(
         api.config,
         queryInfoParams
       );
-      Logger.debug('AdaApi::getNetworkStatus (PATCHED) success', { status });
+      Logger.debug('AdaApi::getNetworkStatus (PATCHED) success', { nodeInfo });
+      const nodeSettings: NodeSettingsResponse = await getNodeSettings(
+        api.config
+      );
+      Logger.debug('AdaApi::getNetworkStatusSettings success', {
+        nodeSettings,
+      });
 
       const {
         blockchainHeight,
         subscriptionStatus,
         syncProgress,
         localBlockchainHeight,
-      } = status;
+      } = nodeInfo;
+
+      const { slotId } = nodeSettings;
 
       // extract relevant data before sending to NetworkStatusStore
       return {
@@ -104,6 +114,7 @@ export default (api: AdaApi) => {
           status: 'available',
           difference: LOCAL_TIME_DIFFERENCE,
         },
+        slotId,
       };
     } catch (error) {
       Logger.error('AdaApi::getNetworkStatus (PATCHED) error', { error });

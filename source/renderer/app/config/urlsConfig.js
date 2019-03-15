@@ -8,3 +8,5 @@ export const TESTNET_EXPLORER_URL =
 export const DEVELOPMENT_EKG_URL = 'http://localhost:8083';
 export const STAGING_EKG_URL = 'http://localhost:8082';
 export const TESTNET_EKG_URL = 'http://localhost:8081';
+
+export const ALLOWED_EXTERNAL_HOSTNAMES = ['cardanoexplorer.com'];

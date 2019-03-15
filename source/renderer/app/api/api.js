@@ -938,10 +938,11 @@ export default class AdaApi {
         this.config,
         queryInfoParams
       );
+      Logger.debug(`${loggerText} success`, { nodeInfo });
+
       const nodeSettings: NodeSettingsResponse = await getNodeSettings(
         this.config
       );
-      Logger.debug(`${loggerText} success`, { nodeInfo });
       Logger.debug('AdaApi::getNetworkStatusSettings success', {
         nodeSettings,
       });
@@ -981,10 +982,11 @@ export default class AdaApi {
   getCurrentEpochFallback = async () => {
     try {
       const pages = await getCurrentEpoch();
-      console.info('pages', pages);
-      return pages;
-    } catch (err) {
-      console.info('err', err);
+      const currentEpoch = get(pages, 'Right[1][0].cbeEpoch');
+      return currentEpoch;
+    } catch (error) {
+      Logger.error('AdaApi::getCurrentEpoch error', { error });
+      throw new GenericApiError();
     }
   };
 

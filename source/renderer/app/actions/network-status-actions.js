@@ -6,4 +6,5 @@ import Action from './lib/Action';
 export default class NetworkStatusActions {
   isSyncedAndReady: Action<any> = new Action();
   getEpochsData: Action<any> = new Action();
+  getCurrentEpochFallback: Action<any> = new Action();
 }
