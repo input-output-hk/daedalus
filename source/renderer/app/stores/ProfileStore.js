@@ -184,9 +184,7 @@ export default class SettingsStore extends Store {
   }
 
   _getSystemLocale = async () => {
-    this._onReceiveSystemLocale(
-      await detectSystemLocaleChannel.request()
-    );
+    this._onReceiveSystemLocale(await detectSystemLocaleChannel.request());
   };
 
   _updateLocale = async ({ locale }: { locale: string }) => {
