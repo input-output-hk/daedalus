@@ -1,5 +1,6 @@
 // @flow
-import { size, has, get, omit } from 'lodash';
+import axios from 'axios';
+import { size, has, get, omit, isEmpty } from 'lodash';
 import querystring from 'querystring';
 import { encryptPassphrase, getContentLength } from '.';
 
@@ -17,6 +18,66 @@ export type RequestOptions = {
   },
 };
 
+const transformBodyData = (rawBodyParams): string => {
+  if (!rawBodyParams || isEmpty(rawBodyParams)) {
+    return '';
+  }
+  return JSON.stringify(rawBodyParams);
+};
+
+const transformQueryParams = (queryParams: ?Object): ?Object => {
+  if (queryParams && !isEmpty(queryParams) && has(queryParams, 'passphrase')) {
+    return { ...queryParams, passphrase: getEncryptedPassphrase(queryParams) };
+  }
+  return queryParams;
+};
+
+const getEncryptedPassphrase = (queryParams: ?Object): string => {
+  let queryString = '';
+  if (!queryParams || isEmpty(queryParams) || size(queryParams) <= 0) {
+    return queryString;
+  }
+  const unencryptedPassphrase = has(queryParams, 'passphrase') ? get(queryParams, 'passphrase') : queryString;
+  if (unencryptedPassphrase) {
+    // If passphrase is present it must be encrypted
+    const encryptedPassphrase = encryptPassphrase(unencryptedPassphrase);
+    queryString = `?passphrase=${encryptedPassphrase}`;
+  }
+  return queryString;
+};
+
+const typedAxiosRequest = async (
+  httpOptions: RequestOptions,
+  queryParams?: {},
+  rawBodyParams?: any,
+  requestOptions?: { returnMeta: boolean },
+) => {
+  const { hostname, method, path, port, ...restOptions } = httpOptions;
+  const requestBody = transformBodyData(rawBodyParams);
+  const requestBodyLength = getContentLength(requestBody);
+  const headers = {
+    'Content-Length': requestBodyLength,
+    'Content-Type': 'application/json; charset=utf-8',
+    Accept: 'application/json; charset=utf-8',
+  };
+  const params = transformQueryParams(queryParams);
+  const auth = { ...restOptions }; // contains key, cert, ca... where do they go?
+
+  const requestInstance = axios.create({
+    url: path,
+    method,
+    baseURL: `https://${hostname}:${port}`,
+    headers,
+    params,
+    data: requestBody,
+    responseType: 'json',
+    responseEncoding: 'utf8',
+  });
+
+  // begin response
+  const response = await requestInstance();
+};
+
 function typedRequest<Response>(
   httpOptions: RequestOptions,
   queryParams?: {},
@@ -24,6 +85,13 @@ function typedRequest<Response>(
   requestOptions?: { returnMeta: boolean },
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
+
+    console.log("**** --- HERE ARE THE typedRequest ARGUEMENTS -------------------------------------->");
+    console.log(`httpOptions: ${JSON.stringify(httpOptions, null, 0)}`);
+    console.log(`queryParams: ${JSON.stringify(queryParams, null, 2)}`);
+    console.log(`rawBodyParams: ${rawBodyParams}`);
+    console.log(`requestOptions: ${requestOptions}`);
+
     const options: RequestOptions = Object.assign({}, httpOptions);
     const { returnMeta } = Object.assign({}, requestOptions);
     let hasRequestBody = false;
