@@ -164,8 +164,8 @@ const STATUS_CLASSNAMES: Object = {
 };
 
 const MESSAGES = {
-  [CardanoNodeStates.STARTING]: messages.nodeIsRunning,
-  [CardanoNodeStates.RUNNING]: messages.nodeIsStarting,
+  [CardanoNodeStates.RUNNING]: messages.nodeIsRunning,
+  [CardanoNodeStates.STARTING]: messages.nodeIsStarting,
   [CardanoNodeStates.EXITING]: messages.nodeIsExiting,
   [CardanoNodeStates.STOPPING]: messages.nodeIsStopping,
   [CardanoNodeStates.STOPPED]: messages.nodeHasStopped,
