@@ -9,7 +9,6 @@ import { getNumberOfEpochsConsolidated } from './utils/getNumberOfEpochsConsolid
 import { handleDiskSpace } from './utils/handleDiskSpace';
 import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
-import { getSystemStartTimeChannel } from './ipc/getSystemStartTime.ipc';
 import { environment } from './environment';
 import mainErrorHandler from './utils/mainErrorHandler';
 import { launcherConfig, frontendOnlyMode } from './config';
@@ -67,8 +66,6 @@ const onAppReady = async () => {
   const platformVersion = os.release();
   const ram = JSON.stringify(os.totalmem(), null, 2);
   const startTime = new Date().toISOString();
-  // systemStart refers to the Cardano Demo cluster start time!
-  const systemStart = parseInt(launcherConfig.configuration.systemStart, 10);
 
   const systemInfo = logSystemInfo({
     cardanoVersion,
@@ -136,8 +133,6 @@ const onAppReady = async () => {
     // Connect to electron-connect server which restarts / reloads windows on file changes
     client.create(mainWindow);
   }
-
-  getSystemStartTimeChannel.onRequest(() => Promise.resolve(systemStart));
 
   getNumberOfEpochsConsolidated();
 

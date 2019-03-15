@@ -22,7 +22,6 @@ import {
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import { getNumberOfEpochsConsolidatedChannel } from '../ipc/getNumberOfEpochsConsolidatedChannel';
-import { getSystemStartTimeChannel } from '../ipc/getSystemStartTime.ipc';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
 import type {
@@ -33,8 +32,6 @@ import type {
 import type { NodeInfoQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { GetConsolidatedEpochsCountResponse } from '../../../common/ipc/api';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
-
-const { isDevelopment } = global.environment;
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
@@ -73,7 +70,6 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeSubscribed = false; // Is 'true' in case node is subscribed to the network
   @observable isNodeSyncing = false; // Is 'true' in case we are receiving blocks and not stalling
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
-  @observable systemStartTime: number = 0;
   @observable isNodeInSync = false; // 'true' if syncing & local/network blocks diff within limit
   @observable isNodeStopping = false; // 'true' if node is in `NODE_STOPPING_STATES` states
   @observable isNodeStopped = false; // 'true' if node is in `NODE_STOPPED_STATES` states
@@ -126,9 +122,6 @@ export default class NetworkStatusStore extends Store {
 
     // Passively receive state changes of the cardano-node
     cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
-
-    // Get cluster start time (only needed for demo cluster)
-    if (isDevelopment) this._getSystemStartTime();
 
     // ========== MOBX REACTIONS =========== //
 
@@ -311,10 +304,6 @@ export default class NetworkStatusStore extends Store {
     };
   };
 
-  _getSystemStartTime = async () => {
-    this._onReceiveSystemStartTime(await getSystemStartTimeChannel.request());
-  };
-
   _getEpochsData = async () => {
     this._onReceiveEpochsData(
       await getNumberOfEpochsConsolidatedChannel.request()
@@ -322,10 +311,6 @@ export default class NetworkStatusStore extends Store {
   };
 
   // DEFINE ACTIONS
-
-  @action _onReceiveSystemStartTime = (systemStartTime: number) => {
-    this.systemStartTime = systemStartTime;
-  };
 
   @action _onReceiveEpochsData = (
     epochsConsolidated: GetConsolidatedEpochsCountResponse

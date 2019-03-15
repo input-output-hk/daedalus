@@ -106,12 +106,6 @@ export const GET_CONSOLIDATED_EPOCHS_COUNT_CHANNEL =
 export type GetConsolidatedEpochsCountResponse = number;
 
 /**
- * Channel to get the system start time
- */
-export const GET_SYSTEM_START_TIME_CHANNEL = 'GET_SYSTEM_START_TIME_CHANNEL';
-export type GetSystemStartTimeResponse = number;
-
-/**
  * Channel where renderer can ask the main process to parse the redemption
  * code from a given certificate, providing the file path, decryption key
  * and type of redemption that is required.
