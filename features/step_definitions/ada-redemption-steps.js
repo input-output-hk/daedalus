@@ -138,33 +138,6 @@ When(
   }
 );
 
-When(
-  /^I enter a valid "Regular" encrypted PDF certificate passphrase$/,
-  async function() {
-    const passphrase = [
-      'uncle',
-      'bargain',
-      'pistol',
-      'obtain',
-      'amount',
-      'laugh',
-      'explain',
-      'type',
-      'learn',
-    ];
-    for (let i = 0; i < passphrase.length; i++) {
-      const word = passphrase[i];
-      await this.client.setValue(
-        '.AdaRedemptionForm_component .pass-phrase input',
-        word
-      );
-      await this.client.waitForVisible(`//li[contains(text(), '${word}')]`);
-      await this.waitAndClick(`//li[contains(text(), '${word}')]`);
-      await this.client.waitForVisible(`//span[contains(text(), '${word}')]`);
-    }
-  }
-);
-
 When(/^I enter a valid "Force vended" redemption key$/, function() {
   const redemptionKey = 'LtOD4vxIqfEUYheTiHprRmvmAXHvMJbulllqHhjAGHc=';
   return this.client.setValue(
@@ -251,71 +224,6 @@ When(
       await this.client.waitForVisible(`//li[text()="${word}"]`);
       await this.waitAndClick(`//li[text()="${word}"]`);
       await this.client.waitForVisible(`//span[text()="${word}"]`);
-    }
-  }
-);
-
-When(
-  /^I enter a valid "Force vended" encrypted PDF certificate email, passcode and amount$/,
-  async function() {
-    const email = 'nnmbsds@example.org';
-    const passcode = 'uilfeet';
-    const amount = '12345';
-    await this.client.setValue(
-      '.AdaRedemptionForm_component .email input',
-      email
-    );
-    await this.client.setValue(
-      '.AdaRedemptionForm_component .ada-passcode input',
-      passcode
-    );
-    await this.client.setValue(
-      '.AdaRedemptionForm_component .ada-amount input',
-      amount
-    );
-  }
-);
-
-When(
-  /^I enter a valid "Force vended" encrypted PDF certificate decryption key "([^"]*)"$/,
-  async function(decryptionKey) {
-    await this.client.setValue(
-      '.AdaRedemptionForm_component .decryption-key input',
-      decryptionKey
-    );
-  }
-);
-
-When(/^I enter a valid "Paper vended" shielded vending key$/, function() {
-  return this.client.setValue(
-    '.AdaRedemptionForm_component .shielded-redemption-key input',
-    '6ANn43jbzR7zZGnV3BYnna1myW5HajPgjiCPg4vpcayf'
-  );
-});
-
-When(
-  /^I enter a valid "Paper vended" shielded vending key passphrase$/,
-  async function() {
-    const passphrase = [
-      'fitness',
-      'engage',
-      'danger',
-      'escape',
-      'marriage',
-      'answer',
-      'coffee',
-      'develop',
-      'afraid',
-    ];
-    for (let i = 0; i < passphrase.length; i++) {
-      const word = passphrase[i];
-      await this.client.setValue(
-        '.AdaRedemptionForm_component .pass-phrase input',
-        word
-      );
-      await this.client.waitForVisible(`//li[contains(text(), '${word}')]`);
-      await this.waitAndClick(`//li[contains(text(), '${word}')]`);
-      await this.client.waitForVisible(`//span[contains(text(), '${word}')]`);
     }
   }
 );
