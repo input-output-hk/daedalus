@@ -976,6 +976,7 @@ export default class AdaApi {
       };
     } catch (error) {
       Logger.error(`${loggerText} error`, { error });
+      this.getCurrentEpochFallback();
       if (error.code === TlsCertificateNotValidError.API_ERROR) {
         throw new TlsCertificateNotValidError();
       }
