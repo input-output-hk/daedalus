@@ -1,6 +1,7 @@
 // @flow
 import os from 'os';
 import _https from 'https';
+import _http from 'http';
 import { ipcRenderer as _ipcRenderer, remote as _remote } from 'electron';
 import _electronLog from 'electron-log';
 import ElectronStore from 'electron-store';
@@ -29,6 +30,9 @@ process.once('loaded', () => {
     environment,
     https: {
       request: (...args) => _https.request(...args),
+    },
+    http: {
+      request: (...args) => _http.request(...args),
     },
     ipcRenderer: {
       on: (...args) => _ipcRenderer.on(...args),

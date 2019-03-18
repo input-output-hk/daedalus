@@ -41,6 +41,10 @@ export type NodeSettingsResponse = {
   },
 };
 
+export type CardanoExplorerResponse = {
+  Right: Array<number | Object>,
+};
+
 export type NodeSoftware = {
   applicationName: string,
   version: number,

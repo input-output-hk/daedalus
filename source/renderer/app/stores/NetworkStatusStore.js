@@ -374,8 +374,6 @@ export default class NetworkStatusStore extends Store {
         localTimeInformation,
       } = networkStatus;
 
-      console.log('STORE', syncProgress, slotId ? slotId.epoch : false);
-
       // We got response which means node is responding
       runInAction('update isNodeResponding', () => {
         this.isNodeResponding = true;

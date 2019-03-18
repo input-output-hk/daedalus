@@ -29,7 +29,7 @@ const {
   installerVersion,
 } = global.environment;
 
-export const getNetworkExplorerUrl = (network: string): string => {
+export const getNetworkExplorerUri = (network: string): string => {
   // sets default to mainnet in case env.NETWORK is undefined
   let explorerUrl = MAINNET_EXPLORER_URL;
   if (network === MAINNET) {
@@ -42,6 +42,12 @@ export const getNetworkExplorerUrl = (network: string): string => {
     explorerUrl = TESTNET_EXPLORER_URL;
   }
   return explorerUrl; // sets default to mainnet incase env.NETWORK is undefined
+};
+
+export const getNetworkExplorerUrl = (network: string): string => {
+  const protocol = network === MAINNET ? 'https://' : 'http://';
+  const uri = getNetworkExplorerUri(network);
+  return `${protocol}${uri}`;
 };
 
 export const getNetworkEkgUrl = (env: {

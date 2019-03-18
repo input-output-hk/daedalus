@@ -5,6 +5,8 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 import BlockConsolidationStatus from '../../components/status/BlockConsolidationStatus';
 import { EPOCH_DATA_UPDATE_INTERVAL } from '../../config/timingConfig';
 
+const { isDevelopment } = global.environment;
+
 @inject('stores', 'actions')
 @observer
 export default class BlockConsolidationStatusPage extends Component<InjectedProps> {
@@ -41,7 +43,7 @@ export default class BlockConsolidationStatusPage extends Component<InjectedProp
    *
    */
   handleCurrentEpoch = () => {
-    if (this.currentEpochFallbackRequested) return false;
+    if (this.currentEpochFallbackRequested || isDevelopment) return false;
     const { syncProgress, currentEpoch } = this.props.stores.networkStatus;
     if (syncProgress && !currentEpoch) {
       this.currentEpochFallbackRequested = true;

@@ -1,4 +1,5 @@
 // @flow
+import { omit } from 'lodash';
 import { ALLOWED_EXTERNAL_HOSTNAMES } from '../../config/urlsConfig';
 
 export type HttpOptions = {
@@ -6,6 +7,7 @@ export type HttpOptions = {
   method: string,
   path?: string,
   port?: number,
+  protocol?: string,
   headers?: {
     'Content-Type': string,
     'Content-Length': number,
@@ -17,10 +19,12 @@ export const externalRequest = (httpOptions: HttpOptions): Promise<any> => {
     if (!ALLOWED_EXTERNAL_HOSTNAMES.includes(httpOptions.hostname)) {
       return reject(new Error('Hostname not allowed'));
     }
+    const { protocol = 'https' } = httpOptions;
+    const options = omit(httpOptions, 'protocol');
+    const requestMethod = global[protocol].request;
+    const request = requestMethod(options);
 
-    const httpsRequest = global.https.request(httpOptions);
-
-    httpsRequest.on('response', response => {
+    request.on('response', response => {
       let body = '';
       response.on('data', chunk => {
         body += chunk;
@@ -31,7 +35,7 @@ export const externalRequest = (httpOptions: HttpOptions): Promise<any> => {
         return resolve(parsedBody);
       });
     });
-    httpsRequest.on('error', error => reject(error));
-    return httpsRequest.end();
+    request.on('error', error => reject(error));
+    return request.end();
   });
 };

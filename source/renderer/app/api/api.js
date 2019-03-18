@@ -981,8 +981,9 @@ export default class AdaApi {
 
   getCurrentEpochFallback = async () => {
     try {
-      const pages = await getCurrentEpoch();
-      const currentEpoch = get(pages, 'Right[1][0].cbeEpoch');
+      const cardanoExplorerApi = await getCurrentEpoch();
+      const currentEpochPath = 'Right[1][0].cbeEpoch';
+      const currentEpoch = get(cardanoExplorerApi, currentEpochPath);
       return currentEpoch;
     } catch (error) {
       Logger.error('AdaApi::getCurrentEpoch error', { error });
