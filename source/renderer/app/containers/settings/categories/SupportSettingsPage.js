@@ -14,7 +14,8 @@ const messages = defineMessages({
   supportRequestLinkUrl: {
     id: 'settings.support.reportProblem.linkUrl',
     defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/requests/new/',
-    description: '"submit a support request" link URL in the "Report a problem" section on the support settings page.',
+    description:
+      '"submit a support request" link URL in the "Report a problem" section on the support settings page.',
   },
   downloadLogsSuccess: {
     id: 'settings.support.reportProblem.downloadLogsSuccessMessage',
@@ -23,9 +24,9 @@ const messages = defineMessages({
   },
 });
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class SupportSettingsPage extends Component<InjectedProps> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -44,10 +45,14 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
     this.closeNotification();
   }
 
-  handleSupportRequestClick = async (event: SyntheticEvent<HTMLButtonElement>) => {
+  handleSupportRequestClick = async (
+    event: SyntheticEvent<HTMLButtonElement>
+  ) => {
     event.persist();
     const { intl } = this.context;
-    const supportRequestLinkUrl = intl.formatMessage(messages.supportRequestLinkUrl);
+    const supportRequestLinkUrl = intl.formatMessage(
+      messages.supportRequestLinkUrl
+    );
     const locale = this.props.stores.profile.currentLocale;
     const supportUrl = await getSupportUrl(supportRequestLinkUrl, locale);
     this.props.stores.app.openExternalLink(supportUrl);
@@ -88,7 +93,7 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
   closeNotification = () => {
     const { id } = this.notification;
     this.props.actions.notifications.closeActiveNotification.trigger({ id });
-  }
+  };
 
   render() {
     const { stores } = this.props;
@@ -112,5 +117,4 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
       </Fragment>
     );
   }
-
 }

@@ -18,18 +18,21 @@ const messages = defineMessages({
     defaultMessage: `!!!On the following screen, you will see a set of X random words. This is
     your wallet backup phrase. It can be entered in any version of Daedalus application in order
     to back up or restore your wallet’s funds and private key.`,
-    description: 'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.'
+    description:
+      'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.',
   },
   buttonLabelContinue: {
     id: 'wallet.backup.privacy.warning.dialog..button.labelContinue', // TODO: fix translation key path 'dialog..button'
     defaultMessage: '!!!Continue',
-    description: 'Label for button "Continue" on wallet backup dialog'
+    description: 'Label for button "Continue" on wallet backup dialog',
   },
   termNobodyWatching: {
     id: 'wallet.backup.privacy.warning.dialog.checkbox.label.nobodyWatching',
-    defaultMessage: '!!!Make sure nobody looks into your screen unless you want them to have access to your funds.',
-    description: 'Label for the checkbox on wallet backup dialog describing that nobody should be watching when recovery phrase is shown'
-  }
+    defaultMessage:
+      '!!!Make sure nobody looks into your screen unless you want them to have access to your funds.',
+    description:
+      'Label for the checkbox on wallet backup dialog describing that nobody should be watching when recovery phrase is shown',
+  },
 });
 
 type Props = {
@@ -43,7 +46,6 @@ type Props = {
 
 @observer
 export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -56,9 +58,10 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
       onAcceptPrivacyNotice,
       onCancelBackup,
       isPrivacyNoticeAccepted,
-      onContinue
+      onContinue,
     } = this.props;
-    const countdownDisplay = countdownRemaining > 0 ? ` (${countdownRemaining})` : '';
+    const countdownDisplay =
+      countdownRemaining > 0 ? ` (${countdownRemaining})` : '';
     const dialogClasses = classnames([
       styles.component,
       'WalletBackupPrivacyWarningDialog',
@@ -66,11 +69,12 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
 
     const actions = [
       {
-        label: intl.formatMessage(messages.buttonLabelContinue) + countdownDisplay,
+        label:
+          intl.formatMessage(messages.buttonLabelContinue) + countdownDisplay,
         onClick: onContinue,
         disabled: !canPhraseBeShown,
-        primary: true
-      }
+        primary: true,
+      },
     ];
 
     return (
@@ -83,9 +87,12 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
         closeButton={<DialogCloseButton onClose={onCancelBackup} />}
       >
         <WalletRecoveryInstructions
-          instructionsText={intl.formatMessage(messages.recoveryPhraseInstructions, {
-            walletRecoveryPhraseWordCount: WALLET_RECOVERY_PHRASE_WORD_COUNT,
-          })}
+          instructionsText={intl.formatMessage(
+            messages.recoveryPhraseInstructions,
+            {
+              walletRecoveryPhraseWordCount: WALLET_RECOVERY_PHRASE_WORD_COUNT,
+            }
+          )}
         />
         <div className={styles.checkbox}>
           <Checkbox
@@ -98,5 +105,4 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
       </Dialog>
     );
   }
-
 }

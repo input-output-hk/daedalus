@@ -1,24 +1,32 @@
 import path from 'path';
 import { Application } from 'spectron';
-import { BeforeAll, Before, After, AfterAll, setDefaultTimeout } from 'cucumber';
+import {
+  BeforeAll,
+  Before,
+  After,
+  AfterAll,
+  setDefaultTimeout,
+} from 'cucumber';
 import electronPath from 'electron';
 import { TEST } from '../../source/common/types/environment.types';
-import { generateScreenshotFilePath, getTestNameFromTestFile, saveScreenshot } from './helpers/screenshot';
+import {
+  generateScreenshotFilePath,
+  getTestNameFromTestFile,
+  saveScreenshot,
+} from './helpers/screenshot';
 import { refreshClient } from './helpers/app-helpers';
 
 const context = {};
 const DEFAULT_TIMEOUT = 20000;
 let scenariosCount = 0;
 
-const printMainProcessLogs = () => (
-  context.app.client.getMainProcessLogs()
-    .then((logs) => {
-      console.log('========= DAEDALUS LOGS =========');
-      logs.forEach((log) => console.log(log));
-      console.log('=================================');
-      return true;
-    })
-);
+const printMainProcessLogs = () =>
+  context.app.client.getMainProcessLogs().then(logs => {
+    console.log('========= DAEDALUS LOGS =========');
+    logs.forEach(log => console.log(log));
+    console.log('=================================');
+    return true;
+  });
 
 const startApp = async () => {
   const app = new Application({
@@ -48,7 +56,7 @@ BeforeAll({ timeout: 5 * 60 * 1000 }, async () => {
 });
 
 // Make the electron app accessible in each scenario context
-Before({ timeout: DEFAULT_TIMEOUT * 2 }, async function () {
+Before({ timeout: DEFAULT_TIMEOUT * 2 }, async function() {
   this.app = context.app;
   this.client = context.app.client;
   this.browserWindow = context.app.browserWindow;
@@ -63,13 +71,16 @@ Before({ timeout: DEFAULT_TIMEOUT * 2 }, async function () {
   // https://github.com/webdriverio/webdriverio/issues/974
 
   // Reset backend
-  await this.client.executeAsync((done) => {
+  await this.client.executeAsync(done => {
     const resetBackend = () => {
       if (daedalus.stores.networkStatus.isConnected) {
-        daedalus.api.ada.testReset()
+        daedalus.api.ada
+          .testReset()
           .then(daedalus.api.localStorage.reset)
           .then(done)
-          .catch((error) => { throw error; });
+          .catch(error => {
+            throw error;
+          });
       } else {
         setTimeout(resetBackend, 50);
       }
@@ -81,7 +92,7 @@ Before({ timeout: DEFAULT_TIMEOUT * 2 }, async function () {
   await refreshClient(this.client);
 
   // Ensure that frontend is synced and ready before test case
-  await this.client.executeAsync((done) => {
+  await this.client.executeAsync(done => {
     const waitUntilSyncedAndReady = () => {
       if (daedalus.stores.networkStatus.isSynced) {
         done();
@@ -96,12 +107,12 @@ Before({ timeout: DEFAULT_TIMEOUT * 2 }, async function () {
 // this ensures that the spectron instance of the app restarts
 // after the node update acceptance test shuts it down via 'kill-process'
 // eslint-disable-next-line prefer-arrow-callback
-After({ tags: '@restartApp' }, async function () {
+After({ tags: '@restartApp' }, async function() {
   context.app = await startApp();
 });
 
 // eslint-disable-next-line prefer-arrow-callback
-After(async function ({ sourceLocation, result }) {
+After(async function({ sourceLocation, result }) {
   scenariosCount++;
   if (result.status === 'failed') {
     const testName = getTestNameFromTestFile(sourceLocation.uri);
@@ -112,14 +123,16 @@ After(async function ({ sourceLocation, result }) {
 });
 
 // eslint-disable-next-line prefer-arrow-callback
-AfterAll(async function () {
+AfterAll(async function() {
   const allWindowsClosed = (await context.app.client.getWindowCount()) === 0;
   if (allWindowsClosed || !context.app.running) return;
   if (scenariosCount === 0) {
     await printMainProcessLogs();
   }
   if (process.env.KEEP_APP_AFTER_TESTS === 'true') {
-    console.log('Keeping the app running since KEEP_APP_AFTER_TESTS env var is true');
+    console.log(
+      'Keeping the app running since KEEP_APP_AFTER_TESTS env var is true'
+    );
     return;
   }
   return context.app.stop();

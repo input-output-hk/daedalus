@@ -14,22 +14,26 @@ const messages = defineMessages({
   disclaimerTitle: {
     id: 'wallet.redeem.disclaimerOverlay.title',
     defaultMessage: '!!!Daedalus Redemption Disclamer',
-    description: 'Title of "Redemption disclaimer" on Ada redemption page.'
+    description: 'Title of "Redemption disclaimer" on Ada redemption page.',
   },
   disclaimerText: {
     id: 'wallet.redeem.disclaimerOverlay.disclaimerText',
-    defaultMessage: '!!!ATTENTION: Redeeming on the Cardano Test-net will validate that your certificate or redemption key is correct and will allow you to redeem TEST-ADA for testing purposes only. KEEP your certificate or redemption key safe and secure. You will need to redeem again when Cardano SL launches the mainnet. TEST-ADA holds no value and cannot be exchanged.',
-    description: 'Disclaimer text for "Redemption disclaimer" on Ada redemption page.'
+    defaultMessage:
+      '!!!ATTENTION: Redeeming on the Cardano Test-net will validate that your certificate or redemption key is correct and will allow you to redeem TEST-ADA for testing purposes only. KEEP your certificate or redemption key safe and secure. You will need to redeem again when Cardano SL launches the mainnet. TEST-ADA holds no value and cannot be exchanged.',
+    description:
+      'Disclaimer text for "Redemption disclaimer" on Ada redemption page.',
   },
   checkboxLabel: {
     id: 'wallet.redeem.disclaimerOverlay.checkboxLabel',
     defaultMessage: '!!!I’ve understood the information above',
-    description: 'Label for "I’ve understood the information above" checkbox on Ada redemption page "Redemption disclaimer".'
+    description:
+      'Label for "I’ve understood the information above" checkbox on Ada redemption page "Redemption disclaimer".',
   },
   submitLabel: {
     id: 'wallet.redeem.disclaimerOverlay.submitLabel',
     defaultMessage: '!!!Continue',
-    description: 'Label for "Continue" button on Ada redemption page "Redemption disclaimer".'
+    description:
+      'Label for "Continue" button on Ada redemption page "Redemption disclaimer".',
   },
 });
 
@@ -43,7 +47,6 @@ type State = {
 
 @observer
 export default class AdaRedemptionDisclaimer extends Component<Props, State> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -63,7 +66,6 @@ export default class AdaRedemptionDisclaimer extends Component<Props, State> {
 
     return (
       <div className={styles.component}>
-
         <SVGInline svg={attentionIcon} className={styles.icon} />
 
         <h1>{intl.formatMessage(messages.disclaimerTitle)}</h1>
@@ -86,9 +88,7 @@ export default class AdaRedemptionDisclaimer extends Component<Props, State> {
           disabled={!isAccepted}
           skin={ButtonSkin}
         />
-
       </div>
     );
   }
-
 }

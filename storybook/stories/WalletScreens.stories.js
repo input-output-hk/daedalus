@@ -13,7 +13,12 @@ import startCase from 'lodash/startCase';
 import StoryLayout from './support/StoryLayout';
 import StoryProvider from './support/StoryProvider';
 import StoryDecorator from './support/StoryDecorator';
-import { generateWallet, generateTransaction, generateAddress, promise } from './support/utils';
+import {
+  generateWallet,
+  generateTransaction,
+  generateAddress,
+  promise,
+} from './support/utils';
 import { formattedWalletAmount } from '../../source/renderer/app/utils/formatters';
 import { transactionTypes } from '../../source/renderer/app/domains/WalletTransaction';
 import WalletWithNavigation from '../../source/renderer/app/components/wallet/layouts/WalletWithNavigation';
@@ -30,9 +35,7 @@ import DeleteWalletConfirmationDialog from '../../source/renderer/app/components
 import ExportWalletToFileDialog from '../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
 
 storiesOf('WalletScreens', module)
-
   .addDecorator((story, context) => {
-
     const storyWithKnobs = withKnobs(story, context);
 
     return (
@@ -42,18 +45,20 @@ storiesOf('WalletScreens', module)
             activeSidebarCategory="/wallets"
             storyName={context.story}
           >
-            {
-              context.story !== 'Empty'
-                ? (
-                  <WalletWithNavigation
-                    isActiveScreen={item => item === context.story.toLocaleLowerCase()}
-                    onWalletNavItemClick={linkTo('WalletScreens', item => startCase(item))}
-                  >
-                    {storyWithKnobs}
-                  </WalletWithNavigation>
-                )
-                : storyWithKnobs
-            }
+            {context.story !== 'Empty' ? (
+              <WalletWithNavigation
+                isActiveScreen={item =>
+                  item === context.story.toLocaleLowerCase()
+                }
+                onWalletNavItemClick={linkTo('WalletScreens', item =>
+                  startCase(item)
+                )}
+              >
+                {storyWithKnobs}
+              </WalletWithNavigation>
+            ) : (
+              storyWithKnobs
+            )}
           </StoryLayout>
         </StoryProvider>
       </StoryDecorator>
@@ -64,9 +69,7 @@ storiesOf('WalletScreens', module)
 
   .add('Empty', () => null)
 
-  .add('Wallet Navigation', () => (
-    <div>&nbsp;</div>
-  ))
+  .add('Wallet Navigation', () => <div>&nbsp;</div>)
 
   .add('Summary', () => (
     <WalletSummary
@@ -74,7 +77,7 @@ storiesOf('WalletScreens', module)
       pendingAmount={{
         incoming: new BigNumber(number('Incoming', 1)),
         outgoing: new BigNumber(number('Outgoing', 2)),
-        total: new BigNumber(3)
+        total: new BigNumber(3),
       }}
       numberOfTransactions={number('Number of transactions', 20303585)}
       numberOfRecentTransactions={50}
@@ -99,11 +102,18 @@ storiesOf('WalletScreens', module)
 
   .add('Receive', () => (
     <WalletReceive
-      walletAddress={text('Wallet address', '5628aab8ac98c963e4a2e8cfce5aa1cbd4384fe2f9a0f3c5f791bfb83a5e02ds')}
+      walletAddress={text(
+        'Wallet address',
+        '5628aab8ac98c963e4a2e8cfce5aa1cbd4384fe2f9a0f3c5f791bfb83a5e02ds'
+      )}
       isWalletAddressUsed={boolean('isWalletAddressUsed', false)}
       walletAddresses={[
-        ...Array.from(Array(number('Addresses', 1))).map(() => generateAddress()),
-        ...Array.from(Array(number('Addresses (used)', 1))).map(() => generateAddress(true)),
+        ...Array.from(Array(number('Addresses', 1))).map(() =>
+          generateAddress()
+        ),
+        ...Array.from(Array(number('Addresses (used)', 1))).map(() =>
+          generateAddress(true)
+        ),
       ]}
       onGenerateAddress={() => {}}
       onCopyAddress={() => {}}
@@ -115,31 +125,35 @@ storiesOf('WalletScreens', module)
 
   .add('Transactions', () => (
     <WalletTransactionsList
-      transactions={
-        [
-          ...Array.from(Array(number('Transactions Sent', 1))).map((x, i) => (
-            generateTransaction(
-              transactionTypes.EXPEND,
-              moment().subtract(i, 'days').toDate(),
-              new BigNumber(faker.random.number(5))
-            )
-          )),
-          ...Array.from(Array(number('Transactions Received', 1))).map((x, i) => (
-            generateTransaction(
-              transactionTypes.INCOME,
-              moment().subtract(i, 'days').toDate(),
-              new BigNumber(faker.random.number(5))
-            )
-          )),
-        ]
-      }
+      transactions={[
+        ...Array.from(Array(number('Transactions Sent', 1))).map((x, i) =>
+          generateTransaction(
+            transactionTypes.EXPEND,
+            moment()
+              .subtract(i, 'days')
+              .toDate(),
+            new BigNumber(faker.random.number(5))
+          )
+        ),
+        ...Array.from(Array(number('Transactions Received', 1))).map((x, i) =>
+          generateTransaction(
+            transactionTypes.INCOME,
+            moment()
+              .subtract(i, 'days')
+              .toDate(),
+            new BigNumber(faker.random.number(5))
+          )
+        ),
+      ]}
       isLoadingTransactions={boolean('isLoadingTransactions', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
       hasMoreToLoad={false}
       assuranceMode={{ low: 1, medium: 2 }}
       walletId="test-wallet"
       formattedWalletAmount={formattedWalletAmount}
-      totalAvailable={number('Transactions Sent', 1) + number('Transactions Received', 1)}
+      totalAvailable={
+        number('Transactions Sent', 1) + number('Transactions Received', 1)
+      }
     />
   ))
 
@@ -152,19 +166,19 @@ storiesOf('WalletScreens', module)
           label: {
             id: 'global.assuranceLevel.normal',
             defaultMessage: '!!!Normal',
-            description: ''
-          }
+            description: '',
+          },
         },
         {
           value: WalletAssuranceModeOptions.STRICT,
           label: {
             id: 'global.assuranceLevel.strict',
             defaultMessage: '!!!Strict',
-            description: ''
-          }
-        }
+            description: '',
+          },
+        },
       ]}
-      isDialogOpen={(dialog) => {
+      isDialogOpen={dialog => {
         if (dialog === ChangeSpendingPasswordDialog) {
           return boolean('Change Password - Show dialog', false);
         }
@@ -187,8 +201,10 @@ storiesOf('WalletScreens', module)
       openDialogAction={() => {}}
       walletAssurance={WalletAssuranceModeOptions.NORMAL}
       walletName={text('Wallet Name', 'Wallet Name')}
-      spendingPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
-      changeSpendingPasswordDialog={(
+      spendingPasswordUpdateDate={moment()
+        .subtract(1, 'month')
+        .toDate()}
+      changeSpendingPasswordDialog={
         <ChangeSpendingPasswordDialog
           currentPasswordValue="current"
           newPasswordValue="new"
@@ -196,15 +212,20 @@ storiesOf('WalletScreens', module)
           isSpendingPasswordSet={boolean('isSpendingPasswordSet', false)}
           onSave={action('Change Password - onSave')}
           onCancel={action('Change Password - onCancel')}
-          onPasswordSwitchToggle={action('Change Password - onPasswordSwitchToggle')}
+          onPasswordSwitchToggle={action(
+            'Change Password - onPasswordSwitchToggle'
+          )}
           onDataChange={action('Change Password - onDataChange')}
           isSubmitting={boolean('Change Password - isSubmitting', false)}
           error={null}
         />
-      )}
-      deleteWalletDialogContainer={(
+      }
+      deleteWalletDialogContainer={
         <DeleteWalletConfirmationDialog
-          walletName={text('DeleteWalletConfirmationDialog: Wallet Name', 'Wallet To Delete')}
+          walletName={text(
+            'DeleteWalletConfirmationDialog: Wallet Name',
+            'Wallet To Delete'
+          )}
           hasWalletFunds={boolean('hasWalletFunds', false)}
           countdownFn={() => number('Delete Wallet Countdown', 9)}
           isBackupNoticeAccepted={boolean('isBackupNoticeAccepted', false)}
@@ -212,11 +233,13 @@ storiesOf('WalletScreens', module)
           onContinue={action('Delete Wallet - onContinue')}
           onCancel={action('Delete Wallet - onCancel')}
           confirmationValue={text('Delete Wallet Confirmation Value')}
-          onConfirmationValueChange={action('Delete Wallet - onConfirmationValueChange')}
+          onConfirmationValueChange={action(
+            'Delete Wallet - onConfirmationValueChange'
+          )}
           isSubmitting={boolean('Delete Wallet - isSubmitting', false)}
         />
-      )}
-      exportWalletDialogContainer={(
+      }
+      exportWalletDialogContainer={
         <ExportWalletToFileDialog
           walletName={text('Wallet Name', 'Wallet Name')}
           hasSpendingPassword={boolean('isSpendingPasswordSet', false)}
@@ -224,6 +247,6 @@ storiesOf('WalletScreens', module)
           onSubmit={action('Export Wallet - onSubmit')}
           onClose={action('Export Wallet - onClose')}
         />
-      )}
+      }
     />
   ));

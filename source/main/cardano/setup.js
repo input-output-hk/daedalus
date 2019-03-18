@@ -14,7 +14,8 @@ import { setupCardanoNodeMode } from './setupCardanoNodeMode';
  * @param mainWindow
  */
 export const setupCardano = (
-  launcherConfig: LauncherConfig, mainWindow: BrowserWindow
+  launcherConfig: LauncherConfig,
+  mainWindow: BrowserWindow
 ): ?CardanoNode => {
   if (frontendOnlyMode) {
     return setupFrontendOnlyMode(mainWindow);

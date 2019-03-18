@@ -36,7 +36,6 @@ type Props = {
 
 @observer
 export default class SettingsMenu extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -77,5 +76,4 @@ export default class SettingsMenu extends Component<Props> {
       </div>
     );
   }
-
 }

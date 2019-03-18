@@ -16,7 +16,7 @@
   }
 }
 
-.component{
+.component {
   :global {
     .WalletRecoveryInstructions_component {
       text-align: center;
@@ -26,5 +26,5 @@
 
 .isSubmitting {
   box-shadow: none !important;
-  @include loading-spinner("../../../assets/images/spinner-light.svg");
+  @include loading-spinner('../../../assets/images/spinner-light.svg');
 }

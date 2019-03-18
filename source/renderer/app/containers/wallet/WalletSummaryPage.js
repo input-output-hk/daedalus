@@ -17,15 +17,16 @@ export const messages = defineMessages({
   noTransactions: {
     id: 'wallet.summary.no.transactions',
     defaultMessage: '!!!No recent transactions',
-    description: 'Message shown when wallet has no transactions on wallet summary page.'
+    description:
+      'Message shown when wallet has no transactions on wallet summary page.',
   },
 });
 
 type Props = InjectedProps;
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class WalletSummaryPage extends Component<Props> {
-
   static defaultProps = { actions: null, stores: null };
 
   static contextTypes = {
@@ -42,7 +43,10 @@ export default class WalletSummaryPage extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { app, wallets, transactions } = this.props.stores;
-    const { openExternalLink, environment: { network } } = app;
+    const {
+      openExternalLink,
+      environment: { network },
+    } = app;
     const {
       hasAny,
       totalAvailable,
@@ -52,14 +56,20 @@ export default class WalletSummaryPage extends Component<Props> {
     } = transactions;
     const wallet = wallets.active;
     // Guard against potential null values
-    if (!wallet) throw new Error('Active wallet required for WalletSummaryPage.');
+    if (!wallet)
+      throw new Error('Active wallet required for WalletSummaryPage.');
 
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
-    const isRestoreActive = get(wallet, 'syncState.tag') === WalletSyncStateTags.RESTORING;
+    const isRestoreActive =
+      get(wallet, 'syncState.tag') === WalletSyncStateTags.RESTORING;
 
-    if (recentTransactionsRequest.isExecutingFirstTime || hasAny || isRestoreActive) {
+    if (
+      recentTransactionsRequest.isExecutingFirstTime ||
+      hasAny ||
+      isRestoreActive
+    ) {
       walletTransactions = (
         <WalletTransactionsList
           key={`WalletTransactionsList_${wallet.id}`}
@@ -70,7 +80,9 @@ export default class WalletSummaryPage extends Component<Props> {
           walletId={wallet.id}
           isRestoreActive={isRestoreActive}
           formattedWalletAmount={formattedWalletAmount}
-          showMoreTransactionsButton={recent.length > MAX_TRANSACTIONS_ON_SUMMARY_PAGE}
+          showMoreTransactionsButton={
+            recent.length > MAX_TRANSACTIONS_ON_SUMMARY_PAGE
+          }
           network={network}
           onOpenExternalLink={openExternalLink}
           onShowMoreTransactions={this.handleShowMoreTransaction}

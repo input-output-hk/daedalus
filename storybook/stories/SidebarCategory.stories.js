@@ -7,8 +7,7 @@ import walletsIcon from '../../source/renderer/app/assets/images/sidebar/wallet-
 import StoryDecorator from './support/StoryDecorator';
 
 storiesOf('SidebarCategory', module)
-
-  .addDecorator((story) => (<StoryDecorator>{story()}</StoryDecorator>))
+  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 

@@ -23,7 +23,6 @@ type Props = {
 
 @observer
 export default class AdaCertificateUploadWidget extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -34,15 +33,22 @@ export default class AdaCertificateUploadWidget extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { label, acceptedFileTypes, isCertificateEncrypted,
-      isCertificateSelected, onRemoveCertificate, isCertificateInvalid
+    const {
+      label,
+      acceptedFileTypes,
+      isCertificateEncrypted,
+      isCertificateSelected,
+      onRemoveCertificate,
+      isCertificateInvalid,
     } = this.props;
 
     let certificateIcon;
     if (isCertificateEncrypted) {
       certificateIcon = certificateLockedIcon;
     } else {
-      certificateIcon = isCertificateInvalid ? certificateInvalidIcon : certificateNormalIcon;
+      certificateIcon = isCertificateInvalid
+        ? certificateInvalidIcon
+        : certificateNormalIcon;
     }
     return (
       <div>
@@ -50,10 +56,19 @@ export default class AdaCertificateUploadWidget extends Component<Props> {
         <div className={styles.uploadBox}>
           {isCertificateSelected ? (
             <div className={styles.certificateUploaded}>
-              <button className={styles.removeFileButton} onClick={onRemoveCertificate}>
-                <SVGInline svg={closeCrossIcon} className={styles.closeCrossIcon} />
+              <button
+                className={styles.removeFileButton}
+                onClick={onRemoveCertificate}
+              >
+                <SVGInline
+                  svg={closeCrossIcon}
+                  className={styles.closeCrossIcon}
+                />
               </button>
-              <SVGInline svg={certificateIcon} className={styles.certificateIcon} />
+              <SVGInline
+                svg={certificateIcon}
+                className={styles.certificateIcon}
+              />
             </div>
           ) : (
             <Dropzone
@@ -73,5 +88,4 @@ export default class AdaCertificateUploadWidget extends Component<Props> {
       </div>
     );
   }
-
 }
