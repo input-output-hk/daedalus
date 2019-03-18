@@ -72,6 +72,7 @@
   "inline.editing.input.changesSaved": "Your changes have been saved",
   "loading.screen.connectingToNetworkMessage": "Connecting to network",
   "loading.screen.crashedCardanoMessage": "Cardano node crashed",
+  "loading.screen.errors.tlsCertificateNotValidPleaseRestartError": "TLS certificate is not valid. Please restart Daedalus.",
   "loading.screen.loadingWalletData": "Loading wallet data",
   "loading.screen.reconnectingToNetworkMessage": "Network connection lost - reconnecting",
   "loading.screen.reportIssue.buttonLabel": "Open support ticket",
