@@ -157,6 +157,7 @@ import {
   TooBigTransactionError,
 } from './transactions/errors';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
+import { TlsCertificateNotValidError } from './nodes/errors';
 
 export default class AdaApi {
   config: RequestConfig;
@@ -929,7 +930,7 @@ export default class AdaApi {
     queryInfoParams?: NodeInfoQueryParams
   ): Promise<GetNetworkStatusResponse> => {
     const isForceNTPCheck = !!queryInfoParams;
-    const loggerText = `AdaApi::getNetworkStatusInfo${
+    const loggerText = `AdaApi::getNetworkStatus${
       isForceNTPCheck ? ' (FORCE-NTP-CHECK)' : ''
     }`;
     Logger.debug(`${loggerText} called`);
@@ -975,6 +976,9 @@ export default class AdaApi {
       };
     } catch (error) {
       Logger.error(`${loggerText} error`, { error });
+      if (error.code === TlsCertificateNotValidError.API_ERROR) {
+        throw new TlsCertificateNotValidError();
+      }
       throw new GenericApiError(error);
     }
   };

@@ -66,6 +66,7 @@ export default class LoadingPage extends Component<InjectedProps> {
       isNodeStopping,
       isNodeStopped,
       isNotEnoughDiskSpace,
+      isTlsCertInvalid,
       diskSpaceRequired,
       diskSpaceMissing,
       diskSpaceRecommended,
@@ -87,6 +88,7 @@ export default class LoadingPage extends Component<InjectedProps> {
           isNodeStopping={isNodeStopping}
           isNodeStopped={isNodeStopped}
           isNotEnoughDiskSpace={isNotEnoughDiskSpace}
+          isTlsCertInvalid={isTlsCertInvalid}
           diskSpaceRequired={diskSpaceRequired}
           diskSpaceMissing={diskSpaceMissing}
           diskSpaceRecommended={diskSpaceRecommended}

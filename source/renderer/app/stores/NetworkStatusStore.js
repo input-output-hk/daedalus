@@ -32,6 +32,7 @@ import type {
 import type { NodeInfoQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { GetConsolidatedEpochsCountResponse } from '../../../common/ipc/api';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
+import { TlsCertificateNotValidError } from '../api/nodes/errors';
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
@@ -102,6 +103,7 @@ export default class NetworkStatusStore extends Store {
   @observable diskSpaceRequired: string = '';
   @observable diskSpaceMissing: string = '';
   @observable diskSpaceRecommended: string = '';
+  @observable isTlsCertInvalid: boolean = false;
 
   // DEFINE STORE METHODS
   setup() {
@@ -531,10 +533,16 @@ export default class NetworkStatusStore extends Store {
           this.stores.wallets.resetWalletsData();
           Logger.debug('NetworkStatusStore: Connection Restored');
         }
+        this.isTlsCertInvalid = false;
       }
     } catch (error) {
       // Node is not responding, switch to disconnected state
       this._setDisconnected(wasConnected);
+      if (error instanceof TlsCertificateNotValidError) {
+        runInAction('set isTlsCertInvalid = true', () => {
+          this.isTlsCertInvalid = true;
+        });
+      }
     }
   };
 
