@@ -25,7 +25,6 @@ export default class GenericNotification extends Component<Props> {
   };
 
   static defaultProps = {
-    hasCloseButton: true,
     icon: successIcon,
   };
 

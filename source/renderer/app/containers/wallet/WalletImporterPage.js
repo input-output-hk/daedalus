@@ -96,6 +96,7 @@ export default class WalletImporterPage extends Component<Props> {
           openNotification={notifications.open}
           closeNotification={notifications.closeActiveNotification}
           order={10}
+          hasCloseButton
         >
           { intl.formatMessage(messages.passwordMatchingIsDone) }
         </GenericNotification>
