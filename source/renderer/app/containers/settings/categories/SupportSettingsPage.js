@@ -6,8 +6,7 @@ import SupportSettings from '../../../components/settings/categories/SupportSett
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import { generateFileNameWithTimestamp } from '../../../../../common/utils/files';
 import { getSupportUrl } from '../../../utils/network';
-import successIcon from '../../../assets/images/success-small.inline.svg';
-import NotificationMessage from '../../../components/widgets/NotificationMessage';
+import GenericNotification from '../../../components/notifications/GenericNotification';
 import { DOWNLOAD_LOGS_SUCCESS_DURATION } from '../../../config/timingConfig';
 
 const messages = defineMessages({
@@ -28,37 +27,17 @@ const messages = defineMessages({
   },
 });
 
-type State = {
-  currentNotification?: string,
-};
-
-const PROGRESS_NOTIFICATION_ID = 'settings-page-download-logs-progress';
-const SUCCESS_NOTIFICATION_ID = 'settings-page-download-logs-success';
+const DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID = 'settings-page-download-logs-progress';
+const DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID = 'settings-page-download-logs-success';
 
 @inject('stores', 'actions') @observer
-export default class SupportSettingsPage extends Component<InjectedProps, State> {
+export default class SupportSettingsPage extends Component<InjectedProps> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   static defaultProps = { actions: null, stores: null };
-
-  state = {
-    currentNotification: PROGRESS_NOTIFICATION_ID,
-  }
-
-  constructor(props: any, context: any) {
-    super(props);
-    this.context = context;
-    this.registerOnDownloadLogsNotification();
-  }
-
-  componentWillUnmount() {
-    const { profile } = this.props.actions;
-    profile.downloadLogs.remove(this.openNotification);
-    this.closeNotification();
-  }
 
   handleSupportRequestClick = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.persist();
@@ -69,23 +48,6 @@ export default class SupportSettingsPage extends Component<InjectedProps, State>
     this.props.stores.app.openExternalLink(supportUrl);
   };
 
-  openNotification = async (id: string) => {
-    console.log('openNotification', id);
-    await this.setState({
-      currentNotification: id
-    });
-    const { duration } = this.notification;
-    const { notifications } = this.props.actions;
-    console.log('duration', duration);
-    notifications.open.trigger({ id, duration });
-  };
-
-  registerOnDownloadLogsNotification = () => {
-    const { profile } = this.props.actions;
-    // this.closeNotification(PROGRESS_NOTIFICATION_ID);
-    // profile.downloadLogs.listen(this.openNotification(SUCCESS_NOTIFICATION_ID));
-  };
-
   handleDownloadLogs = () => {
     // TODO: refactor this direct access to the dialog api
     const fileName = generateFileNameWithTimestamp();
@@ -94,42 +56,16 @@ export default class SupportSettingsPage extends Component<InjectedProps, State>
       defaultPath: fileName,
     });
     if (destination) {
-      this.openNotification(PROGRESS_NOTIFICATION_ID);
       profile.downloadLogs.trigger({ fileName, destination, fresh: true });
     }
+
   };
 
-  get notification() {
-    return this[this.state.currentNotification];
-  }
-
-  get [PROGRESS_NOTIFICATION_ID]() {
-    const { intl } = this.context;
-    return {
-      id: PROGRESS_NOTIFICATION_ID,
-      message: intl.formatMessage(messages.downloadLogsProgress),
-      // icon: successIcon,
-    };
-  }
-
-  get [SUCCESS_NOTIFICATION_ID]() {
-    const { intl } = this.context;
-    return {
-      id: SUCCESS_NOTIFICATION_ID,
-      duration: DOWNLOAD_LOGS_SUCCESS_DURATION,
-      message: intl.formatMessage(messages.downloadLogsSuccess),
-      hasCloseButton: true,
-      icon: successIcon,
-    };
-  }
-
-  closeNotification = (id) => (
-    this.props.actions.notifications.closeActiveNotification.trigger({ id })
-  );
-
   render() {
-    const { stores } = this.props;
-    const { id, message, hasCloseButton, icon } = this.notification;
+    const { stores, actions } = this.props;
+    const { intl } = this.context;
+    // const { id, message, hasCloseButton, icon } = this.notification;
+
     return (
       <Fragment>
         <SupportSettings
@@ -137,15 +73,28 @@ export default class SupportSettingsPage extends Component<InjectedProps, State>
           onSupportRequestClick={this.handleSupportRequestClick}
           onDownloadLogs={this.handleDownloadLogs}
         />
-        <NotificationMessage
-          icon={icon}
-          show={stores.uiNotifications.isOpen(id)}
-          hasCloseButton={hasCloseButton}
-          onClose={this.closeNotification}
-          clickToClose
+        <GenericNotification
+          id={DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID}
+          show={stores.uiNotifications.isOpen(DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID)}
+          actionToListenAndOpen={actions.profile.downloadLogs}
+          actionToListenAndClose={actions.profile.downloadLogsSuccess}
+          openNotification={actions.notifications.open}
+          closeNotification={actions.notifications.closeActiveNotification}
         >
-          {message}
-        </NotificationMessage>
+          { intl.formatMessage(messages.downloadLogsProgress) }
+        </GenericNotification>
+        <GenericNotification
+          id={DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID}
+          duration={DOWNLOAD_LOGS_SUCCESS_DURATION}
+          show={stores.uiNotifications.isOpen(DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID)}
+          actionToListenAndOpen={actions.profile.downloadLogsSuccess}
+          openNotification={actions.notifications.open}
+          closeNotification={actions.notifications.closeActiveNotification}
+          hasCloseButton
+        >
+          { intl.formatMessage(messages.downloadLogsSuccess) }
+        </GenericNotification>
+
       </Fragment>
     );
   }

@@ -10,6 +10,7 @@ export default class ProfileActions {
   getLogsAndCompress: Action<any> = new Action();
   resetBugReportDialog: Action<any> = new Action();
   downloadLogs: Action<{ fileName: string, destination: string, fresh?: boolean }> = new Action();
+  downloadLogsSuccess: Action<any> = new Action();
   updateLocale: Action<{ locale: string }> = new Action();
   updateTheme: Action<{ theme: string }> = new Action();
 }

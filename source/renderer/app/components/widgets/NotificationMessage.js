@@ -6,21 +6,26 @@ import classNames from 'classnames';
 import styles from './NotificationMessage.scss';
 import closeCross from '../../assets/images/close-cross.inline.svg';
 
-type Props = {
+export type Props = {
   icon: string,
   show: boolean,
   children?: Node,
   clickToClose?: boolean,
   hasCloseButton?: boolean,
   onClose?: Function,
+  order?: 'auto' | number | 'initial' | 'inherit',
 };
 
 export default class NotificationMessage extends Component<Props> {
 
+  static defaultProps = {
+    order: 'auto',
+  };
+
   render() {
     const {
       icon, show, children, clickToClose,
-      hasCloseButton, onClose,
+      hasCloseButton, onClose, order
     } = this.props;
 
     const notificationMessageStyles = classNames([
@@ -35,6 +40,9 @@ export default class NotificationMessage extends Component<Props> {
         onClick={() => clickToClose && onClose && onClose()}
         role="link"
         aria-hidden
+        style={{
+          zIndex: order,
+        }}
       >
 
         {icon && <SVGInline svg={icon} className={styles.icon} />}
