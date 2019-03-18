@@ -477,6 +477,20 @@
           "column": 36,
           "line": 92
         }
+      },
+      {
+        "defaultMessage": "!!!TLS certificate is not valid, please restart Daedalus.",
+        "description": "The TLS cert is not valid and Daedalus should be restarted",
+        "end": {
+          "column": 3,
+          "line": 101
+        },
+        "file": "source/renderer/app/components/loading/Loading.js",
+        "id": "loading.screen.errors.tlsCertificateNotValidPleaseRestartError",
+        "start": {
+          "column": 31,
+          "line": 97
+        }
       }
     ],
     "path": "source/renderer/app/components/loading/Loading.json"
