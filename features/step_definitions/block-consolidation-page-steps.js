@@ -45,11 +45,13 @@ Then(
       done({ currentEpoch: daedalus.stores.networkStatus.currentEpoch })
     );
 
+    const currentEpochText = currentEpoch ? ` (${currentEpoch})` : '';
+    const previousEpochText = currentEpoch
+      ? ` (${Math.max(currentEpoch - 1, 0)})`
+      : '';
+
     expect(explanationText).to.equal(
-      `Blocks for the current epoch (${currentEpoch}) and the previous epoch (${Math.max(
-        currentEpoch - 1,
-        0
-      )}) are stored as one file per block. All previous epochs will be consolidated to two files per epoch.`
+      `Blocks for the current epoch${currentEpochText} and the previous epoch${previousEpochText} are stored as one file per block. All previous epochs will be consolidated to two files per epoch.`
     );
   }
 );
@@ -71,8 +73,10 @@ Then(
       })
     );
 
+    const currentEpochText = currentEpoch ? ` of ${currentEpoch}` : '';
+
     expect(consolidationStatus).to.equal(
-      `${epochsConsolidated} of ${currentEpoch}\nepochs consolidated`
+      `${epochsConsolidated}${currentEpochText}\nepochs consolidated`
     );
   }
 );
