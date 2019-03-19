@@ -12,6 +12,8 @@ const SELECTORS = {
   TRAILING_BY_2_EPOCH: '.BlockConsolidationStatus_indicatorEpochsBehind p',
   MAXIMUM_EPOCH: '.BlockConsolidationStatus_fullEpoch',
   SYNC_PROGRESS: '.BlockConsolidationStatus_indicatorEpochsSynced p span',
+  SYNC_PROGRESS_LOADING_STATE:
+    '.BlockConsolidationStatus_indicatorContainerNoCurrentEpochs',
 };
 
 When(/^I toggle the Block Consolidation Status Page$/, async function() {
@@ -32,8 +34,8 @@ Then(/^the Block Consolidation Status Page is (hidden|visible)/, async function(
 });
 
 Then(
-  /^the page accurately renders an explanation of how block consolidation works in file storage$/,
-  async function() {
+  /^the page (accurately|immediately) renders an explanation of how block consolidation works in file storage$/,
+  async function(action) {
     const [explanationText] = await getVisibleTextsForSelector(
       this.client,
       SELECTORS.BLOCK_CONSOLIDATION_EXPLANATION
@@ -45,10 +47,15 @@ Then(
       done({ currentEpoch: daedalus.stores.networkStatus.currentEpoch })
     );
 
-    const currentEpochText = currentEpoch ? ` (${currentEpoch})` : '';
-    const previousEpochText = currentEpoch
-      ? ` (${Math.max(currentEpoch - 1, 0)})`
-      : '';
+    let currentEpochText = '';
+    let previousEpochText = '';
+
+    if (action === 'accurately') {
+      currentEpochText = currentEpoch ? ` (${currentEpoch})` : '';
+      previousEpochText = currentEpoch
+        ? ` (${Math.max(currentEpoch - 1, 0)})`
+        : '';
+    }
 
     expect(explanationText).to.equal(
       `Blocks for the current epoch${currentEpochText} and the previous epoch${previousEpochText} are stored as one file per block. All previous epochs will be consolidated to two files per epoch.`
@@ -57,8 +64,8 @@ Then(
 );
 
 Then(
-  /^the page accurately renders epochs consolidated out of the total in the main blocks graphic$/,
-  async function() {
+  /^the page (accurately|immediately) renders epochs consolidated out of the total in the main blocks graphic$/,
+  async function(action) {
     const [consolidationStatus] = await getVisibleTextsForSelector(
       this.client,
       SELECTORS.EPOCHS_CONSOLIDATION_STATUS
@@ -73,7 +80,11 @@ Then(
       })
     );
 
-    const currentEpochText = currentEpoch ? ` of ${currentEpoch}` : '';
+    let currentEpochText = '';
+
+    if (action === 'accurately') {
+      currentEpochText = currentEpoch ? ` of ${currentEpoch}` : '';
+    }
 
     expect(consolidationStatus).to.equal(
       `${epochsConsolidated}${currentEpochText}\nepochs consolidated`
@@ -162,3 +173,25 @@ Then(
     expect(blocksSyncedText).to.equal(`${syncProgress}% blocks synced`);
   }
 );
+
+Then(
+  /^the page hides the node's sync progress as a percentage below the progress bar$/,
+  async function() {
+    return this.client.waitForVisible(SELECTORS.SYNC_PROGRESS, null, true);
+  }
+);
+
+Then(
+  /^the page immediately renders the progress bar in loading state$/,
+  async function() {
+    return this.client.waitForVisible(
+      SELECTORS.SYNC_PROGRESS_LOADING_STATE,
+      null,
+      true
+    );
+  }
+);
+
+When(/^the fallback function returns the current epoch$/, async function() {
+  return this.client.waitForVisible(SELECTORS.MAXIMUM_EPOCH);
+});
