@@ -131,7 +131,6 @@ When(
         '.AdaRedemptionForm_component .pass-phrase input',
         word
       );
-      await this.client.waitForVisible(`//li[text()="${word}"]`);
       await this.waitAndClick(`//li[text()="${word}"]`);
       await this.client.waitForVisible(`//span[text()="${word}"]`);
     }
@@ -221,7 +220,6 @@ When(
         '.AdaRedemptionForm_component .pass-phrase input',
         word
       );
-      await this.client.waitForVisible(`//li[text()="${word}"]`);
       await this.waitAndClick(`//li[text()="${word}"]`);
       await this.client.waitForVisible(`//span[text()="${word}"]`);
     }
