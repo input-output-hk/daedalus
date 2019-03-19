@@ -95,6 +95,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Download logs',
     description: 'Download logs button label on the loading.',
   },
+  tlsCertificateNotValidError: {
+    id: 'loading.screen.errors.tlsCertificateNotValidPleaseRestartError',
+    defaultMessage: '!!!TLS certificate is not valid, please restart Daedalus.',
+    description: 'The TLS cert is not valid and Daedalus should be restarted',
+  },
 });
 
 type State = {
@@ -113,6 +118,7 @@ type Props = {
   isNodeStopping: boolean,
   isNodeStopped: boolean,
   isNotEnoughDiskSpace: boolean,
+  isTlsCertInvalid: boolean,
   diskSpaceRequired: string,
   diskSpaceMissing: string,
   diskSpaceRecommended: string,
@@ -244,7 +250,7 @@ export default class Loading extends Component<Props, State> {
   };
 
   _getConnectingMessage = () => {
-    const { cardanoNodeState, hasBeenConnected } = this.props;
+    const { cardanoNodeState, hasBeenConnected, isTlsCertInvalid } = this.props;
     let connectingMessage;
     switch (cardanoNodeState) {
       case null:
@@ -277,6 +283,12 @@ export default class Loading extends Component<Props, State> {
           ? messages.reconnecting
           : messages.connecting;
     }
+    const isConnectingMessage =
+      connectingMessage === messages.connecting ||
+      connectingMessage === messages.reconnecting;
+    if (isTlsCertInvalid && isConnectingMessage) {
+      return messages.tlsCertificateNotValidError;
+    }
     return connectingMessage;
   };
 
@@ -289,6 +301,7 @@ export default class Loading extends Component<Props, State> {
       isNodeStopping,
       isNodeStopped,
       isNotEnoughDiskSpace,
+      isTlsCertInvalid,
       diskSpaceRequired,
       diskSpaceMissing,
       diskSpaceRecommended,
@@ -324,11 +337,12 @@ export default class Loading extends Component<Props, State> {
         />
       );
     }
+    const showEllipsis = isNodeStopped || (isTlsCertInvalid && !isNodeStopping);
 
     if (!isConnected) {
       const headlineClasses = classNames([
         styles.headline,
-        isNodeStopped ? styles.withoutAnimation : null,
+        showEllipsis ? styles.withoutAnimation : null,
       ]);
       return (
         <div className={styles.connecting}>
