@@ -22,8 +22,11 @@ let scenariosCount = 0;
 
 const printMainProcessLogs = () =>
   context.app.client.getMainProcessLogs().then(logs => {
+    // eslint-disable-next-line
     console.log('========= DAEDALUS LOGS =========');
+    // eslint-disable-next-line
     logs.forEach(log => console.log(log));
+    // eslint-disable-next-line
     console.log('=================================');
     return true;
   });
@@ -123,17 +126,18 @@ After(async function({ sourceLocation, result }) {
 });
 
 // eslint-disable-next-line prefer-arrow-callback
-AfterAll(async function() {
+AfterAll(async () => {
   const allWindowsClosed = (await context.app.client.getWindowCount()) === 0;
   if (allWindowsClosed || !context.app.running) return;
   if (scenariosCount === 0) {
     await printMainProcessLogs();
   }
   if (process.env.KEEP_APP_AFTER_TESTS === 'true') {
+    // eslint-disable-next-line
     console.log(
       'Keeping the app running since KEEP_APP_AFTER_TESTS env var is true'
     );
     return;
   }
-  return context.app.stop();
+  await context.app.stop();
 });

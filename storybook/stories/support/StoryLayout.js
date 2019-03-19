@@ -156,7 +156,9 @@ export default class StoryLayout extends Component<Props> {
   ) => (
     <TopBar
       onToggleSidebar={() => {
-        runInAction(() => (this.isShowingSubMenus = !this.isShowingSubMenus));
+        runInAction(() => {
+          this.isShowingSubMenus = !this.isShowingSubMenus;
+        });
       }}
       formattedWalletAmount={formattedWalletAmount}
       currentRoute={`/wallets/${activeWallet.id}/${activeNavItem}`}

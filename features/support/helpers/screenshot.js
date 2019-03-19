@@ -18,6 +18,7 @@ export const saveScreenshot = async (context, file) => {
     .capturePage()
     .then(imageBuffer => fs.writeFile(file, imageBuffer))
     .catch(err => {
+      // eslint-disable-next-line
       console.log(err);
     });
 };
