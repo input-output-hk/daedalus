@@ -1,5 +1,6 @@
 import { When, Then } from 'cucumber';
 import { expect } from 'chai';
+import { getVisibleTextsForSelector } from '../support/helpers/shared-helpers';
 
 const SELECTORS = {
   BLOCK_CONSOLIDATION_COMPONENT: '.BlockConsolidationStatus_component',
@@ -33,8 +34,8 @@ Then(/^the Block Consolidation Status Page is (hidden|visible)/, async function(
 Then(
   /^the page accurately renders an explanation of how block consolidation works in file storage$/,
   async function() {
-    await this.client.waitForText(SELECTORS.BLOCK_CONSOLIDATION_EXPLANATION);
-    const explanationText = await this.client.getText(
+    const [explanationText] = await getVisibleTextsForSelector(
+      this.client,
       SELECTORS.BLOCK_CONSOLIDATION_EXPLANATION
     );
 
@@ -56,8 +57,8 @@ Then(
 Then(
   /^the page accurately renders epochs consolidated out of the total in the main blocks graphic$/,
   async function() {
-    await this.client.waitForText(SELECTORS.EPOCHS_CONSOLIDATION_STATUS);
-    const consolidationStatus = await this.client.getText(
+    const [consolidationStatus] = await getVisibleTextsForSelector(
+      this.client,
       SELECTORS.EPOCHS_CONSOLIDATION_STATUS
     );
 
@@ -79,8 +80,8 @@ Then(
 Then(
   /^the page accurately renders epochs consolidated above the progress bar$/,
   async function() {
-    await this.client.waitForText(SELECTORS.EPOCHS_CONSOLIDATED);
-    const consolidationStatus = await this.client.getText(
+    const [consolidationStatus] = await getVisibleTextsForSelector(
+      this.client,
       SELECTORS.EPOCHS_CONSOLIDATED
     );
 
@@ -101,8 +102,8 @@ Then(
 Then(
   /^the page accurately renders the epoch trailing 2 behind the current epoch above the progress bar$/,
   async function() {
-    await this.client.waitForText(SELECTORS.TRAILING_BY_2_EPOCH);
-    const trailingEpochText = await this.client.getText(
+    const [trailingEpochText] = await getVisibleTextsForSelector(
+      this.client,
       SELECTORS.TRAILING_BY_2_EPOCH
     );
 
@@ -121,8 +122,10 @@ Then(
 Then(
   /^the page accurately renders the current epoch signifying the max end of the progress bar$/,
   async function() {
-    await this.client.waitForText(SELECTORS.MAXIMUM_EPOCH);
-    const currentEpochText = await this.client.getText(SELECTORS.MAXIMUM_EPOCH);
+    const [currentEpochText] = await getVisibleTextsForSelector(
+      this.client,
+      SELECTORS.MAXIMUM_EPOCH
+    );
 
     const {
       value: { currentEpoch },
@@ -137,8 +140,6 @@ Then(
 Then(
   /^the page accurately renders the node's sync progress as a percentage below the progress bar$/,
   async function() {
-    await this.client.waitForText(SELECTORS.SYNC_PROGRESS);
-
     const {
       value: { syncProgress },
     } = await this.client.executeAsync(done => {
@@ -150,7 +151,10 @@ Then(
         .catch(error => done(error));
     });
 
-    const blocksSyncedText = await this.client.getText(SELECTORS.SYNC_PROGRESS);
+    const [blocksSyncedText] = await getVisibleTextsForSelector(
+      this.client,
+      SELECTORS.SYNC_PROGRESS
+    );
     expect(blocksSyncedText).to.equal(`${syncProgress}% blocks synced`);
   }
 );
