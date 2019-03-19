@@ -26,7 +26,7 @@ export default class MnemonicInputWidget extends Component<Props> {
             <Input
               type="text"
               placeholder="Token"
-              key={index}
+              key={token.id}
               className={styles.input}
               value={token}
               onChange={value => onTokenChanged(index, value)}
