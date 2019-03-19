@@ -283,9 +283,9 @@ let
       cat /etc/resolv.conf > etc/resolv.conf
 
       if [ "x$DEBUG_SHELL" == x ]; then
-        exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -e -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -- /nix/var/nix/profiles/profile-${cluster}/bin/enter-phase2 daedalus
+        exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -e -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -p LANG -- /nix/var/nix/profiles/profile-${cluster}/bin/enter-phase2 daedalus
       else
-        exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -e -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -- /nix/var/nix/profiles/profile-${cluster}/bin/enter-phase2 bash
+        exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -e -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -p LANG -- /nix/var/nix/profiles/profile-${cluster}/bin/enter-phase2 bash
       fi
     '';
     postInstall = pkgs.writeScriptBin "post-install" ''
