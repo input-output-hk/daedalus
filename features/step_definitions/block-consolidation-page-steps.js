@@ -1,15 +1,17 @@
 import { When, Then } from 'cucumber';
 import { expect } from 'chai';
 
-const BLOCK_CONSOLIDATION_COMPONENT = '.BlockConsolidationStatus_component';
-const BLOCK_CONSOLIDATION_EXPLANATION =
-  '.BlockConsolidationStatus_content p:nth-child(3)';
-const EPOCHS_CONSOLIDATION_STATUS = '.BlockConsolidationStatus_epochs p span';
-const EPOCHS_CONSOLIDATED =
-  '.BlockConsolidationStatus_indicatorEpochsConsolidated p';
-const TRAILING_BY_2_EPOCH = '.BlockConsolidationStatus_indicatorEpochsBehind p';
-const MAXIMUM_EPOCH = '.BlockConsolidationStatus_fullEpoch';
-const SYNC_PROGRESS = '.BlockConsolidationStatus_indicatorEpochsSynced p span';
+const SELECTORS = {
+  BLOCK_CONSOLIDATION_COMPONENT: '.BlockConsolidationStatus_component',
+  BLOCK_CONSOLIDATION_EXPLANATION:
+    '.BlockConsolidationStatus_content p:nth-child(3)',
+  EPOCHS_CONSOLIDATION_STATUS: '.BlockConsolidationStatus_epochs p span',
+  EPOCHS_CONSOLIDATED:
+    '.BlockConsolidationStatus_indicatorEpochsConsolidated p',
+  TRAILING_BY_2_EPOCH: '.BlockConsolidationStatus_indicatorEpochsBehind p',
+  MAXIMUM_EPOCH: '.BlockConsolidationStatus_fullEpoch',
+  SYNC_PROGRESS: '.BlockConsolidationStatus_indicatorEpochsSynced p span',
+};
 
 When(/^I toggle the Block Consolidation Status Page$/, async function() {
   await this.client.execute(() =>
@@ -21,8 +23,8 @@ Then(/^the Block Consolidation Status Page is (hidden|visible)/, async function(
   state
 ) {
   const isVisible = state === 'visible';
-  return await this.client.waitForVisible(
-    BLOCK_CONSOLIDATION_COMPONENT,
+  await this.client.waitForVisible(
+    SELECTORS.BLOCK_CONSOLIDATION_COMPONENT,
     null,
     !isVisible
   );
@@ -31,9 +33,9 @@ Then(/^the Block Consolidation Status Page is (hidden|visible)/, async function(
 Then(
   /^the page accurately renders an explanation of how block consolidation works in file storage$/,
   async function() {
-    await this.client.waitForText(BLOCK_CONSOLIDATION_EXPLANATION);
+    await this.client.waitForText(SELECTORS.BLOCK_CONSOLIDATION_EXPLANATION);
     const explanationText = await this.client.getText(
-      BLOCK_CONSOLIDATION_EXPLANATION
+      SELECTORS.BLOCK_CONSOLIDATION_EXPLANATION
     );
 
     const {
@@ -54,9 +56,9 @@ Then(
 Then(
   /^the page accurately renders epochs consolidated out of the total in the main blocks graphic$/,
   async function() {
-    await this.client.waitForText(EPOCHS_CONSOLIDATION_STATUS);
+    await this.client.waitForText(SELECTORS.EPOCHS_CONSOLIDATION_STATUS);
     const consolidationStatus = await this.client.getText(
-      EPOCHS_CONSOLIDATION_STATUS
+      SELECTORS.EPOCHS_CONSOLIDATION_STATUS
     );
 
     const {
@@ -77,8 +79,10 @@ Then(
 Then(
   /^the page accurately renders epochs consolidated above the progress bar$/,
   async function() {
-    await this.client.waitForText(EPOCHS_CONSOLIDATED);
-    const consolidationStatus = await this.client.getText(EPOCHS_CONSOLIDATED);
+    await this.client.waitForText(SELECTORS.EPOCHS_CONSOLIDATED);
+    const consolidationStatus = await this.client.getText(
+      SELECTORS.EPOCHS_CONSOLIDATED
+    );
 
     const {
       value: { epochsConsolidated },
@@ -97,8 +101,10 @@ Then(
 Then(
   /^the page accurately renders the epoch trailing 2 behind the current epoch above the progress bar$/,
   async function() {
-    await this.client.waitForText(TRAILING_BY_2_EPOCH);
-    const trailingEpochText = await this.client.getText(TRAILING_BY_2_EPOCH);
+    await this.client.waitForText(SELECTORS.TRAILING_BY_2_EPOCH);
+    const trailingEpochText = await this.client.getText(
+      SELECTORS.TRAILING_BY_2_EPOCH
+    );
 
     const {
       value: { currentEpoch },
@@ -115,8 +121,8 @@ Then(
 Then(
   /^the page accurately renders the current epoch signifying the max end of the progress bar$/,
   async function() {
-    await this.client.waitForText(MAXIMUM_EPOCH);
-    const currentEpochText = await this.client.getText(MAXIMUM_EPOCH);
+    await this.client.waitForText(SELECTORS.MAXIMUM_EPOCH);
+    const currentEpochText = await this.client.getText(SELECTORS.MAXIMUM_EPOCH);
 
     const {
       value: { currentEpoch },
@@ -131,7 +137,7 @@ Then(
 Then(
   /^the page accurately renders the node's sync progress as a percentage below the progress bar$/,
   async function() {
-    await this.client.waitForText(SYNC_PROGRESS);
+    await this.client.waitForText(SELECTORS.SYNC_PROGRESS);
 
     const {
       value: { syncProgress },
@@ -144,7 +150,7 @@ Then(
         .catch(error => done(error));
     });
 
-    const blocksSyncedText = await this.client.getText(SYNC_PROGRESS);
+    const blocksSyncedText = await this.client.getText(SELECTORS.SYNC_PROGRESS);
     expect(blocksSyncedText).to.equal(`${syncProgress}% blocks synced`);
   }
 );
