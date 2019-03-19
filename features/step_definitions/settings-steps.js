@@ -14,12 +14,12 @@ Given(/^I am on the settings screen$/, async function() {
 Given(/^I should see the "([^"]*)" wallet password dialog$/, function(
   dialogType
 ) {
-  const selector = '.' + dialogType + 'PasswordDialog';
+  const selector = `.${dialogType}PasswordDialog`;
   return this.client.waitForVisible(selector);
 });
 
 When(/^I click on the "([^"]*)" password label$/, function(label) {
-  const selector = '.' + label + 'Label button';
+  const selector = `.${label}Label button`;
   return this.client.click(selector);
 });
 
@@ -127,7 +127,7 @@ Then(/^I should see new wallet name "([^"]*)"$/, async function(walletName) {
 });
 
 Then(/^I should see "([^"]*)" label in password field$/, function(label) {
-  const selector = '.' + label + 'Label';
+  const selector = `.${label}Label`;
   return this.client.waitForVisible(selector);
 });
 
