@@ -975,6 +975,9 @@ export default class AdaApi {
   getLocalTimeDifference: Function;
   setLocalTimeDifference: Function;
   setNextUpdate: Function;
+  setSubscriptionStatus: Function;
+  setLocalBlockHeight: Function;
+  setNetworkBlockHeight: Function;
 }
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========

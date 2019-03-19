@@ -82,7 +82,7 @@ Then(/^I should(?: still)? be on the ada redemption screen$/, function() {
 
 When(/^I click on ada redemption choices "([^"]*)" tab$/, function(tabText) {
   return this.waitAndClick(
-    `//div[@class="AdaRedemptionChoices_component"]/button[contains(text(), "${tabText}")]`
+    `//div[@class="AdaRedemptionChoices_component"]/button[text()="${tabText}"]`
   );
 });
 
@@ -131,9 +131,8 @@ When(
         '.AdaRedemptionForm_component .pass-phrase input',
         word
       );
-      await this.client.waitForVisible(`//li[contains(text(), '${word}')]`);
-      await this.waitAndClick(`//li[contains(text(), '${word}')]`);
-      await this.client.waitForVisible(`//span[contains(text(), '${word}')]`);
+      await this.waitAndClick(`//li[text()="${word}"]`);
+      await this.client.waitForVisible(`//span[text()="${word}"]`);
     }
   }
 );
@@ -221,9 +220,8 @@ When(
         '.AdaRedemptionForm_component .pass-phrase input',
         word
       );
-      await this.client.waitForVisible(`//li[contains(text(), '${word}')]`);
-      await this.waitAndClick(`//li[contains(text(), '${word}')]`);
-      await this.client.waitForVisible(`//span[contains(text(), '${word}')]`);
+      await this.waitAndClick(`//li[text()="${word}"]`);
+      await this.client.waitForVisible(`//span[text()="${word}"]`);
     }
   }
 );
