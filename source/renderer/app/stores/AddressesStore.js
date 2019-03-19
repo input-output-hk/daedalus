@@ -63,30 +63,30 @@ export default class AddressesStore extends Store {
   @computed get all(): Addresses {
     const wallet = this.stores.wallets.active;
     if (!wallet) return [];
-    const result = this._getAddressesAllRequest(wallet.id).result;
-    return result ? result.addresses : [];
+    const results = this._getAddressesAllRequest(wallet.id).result;
+    return results ? results.addresses : [];
   }
 
   @computed get hasAny(): boolean {
     const wallet = this.stores.wallets.active;
     if (!wallet) return false;
-    const result = this._getAddressesAllRequest(wallet.id).result;
-    return result ? result.addresses.length > 0 : false;
+    const results = this._getAddressesAllRequest(wallet.id).result;
+    return results ? results.addresses.length > 0 : false;
   }
 
   @computed get active(): ?Address {
     if (this.lastGeneratedAddress) return this.lastGeneratedAddress;
     const wallet = this.stores.wallets.active;
-    if (!wallet) return;
-    const result = this._getAddressesAllRequest(wallet.id).result;
-    return result ? result.addresses[result.addresses.length - 1] : null;
+    if (!wallet) return null;
+    const results = this._getAddressesAllRequest(wallet.id).result;
+    return results ? results.addresses[results.addresses.length - 1] : null;
   }
 
   @computed get totalAvailable(): number {
     const wallet = this.stores.wallets.active;
     if (!wallet) return 0;
-    const result = this._getAddressesAllRequest(wallet.id).result;
-    return result ? result.addresses.length : 0;
+    const results = this._getAddressesAllRequest(wallet.id).result;
+    return results ? results.addresses.length : 0;
   }
 
   @action _refreshAddresses = () => {

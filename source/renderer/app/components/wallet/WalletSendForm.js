@@ -159,6 +159,7 @@ export default class WalletSendForm extends Component<Props, State> {
     this.props.openDialogAction({
       dialog: WalletSendConfirmationDialog,
     });
+    return true;
   };
 
   isDisabled = () =>
@@ -174,7 +175,7 @@ export default class WalletSendForm extends Component<Props, State> {
           value: '',
           validators: [
             async ({ field, form }) => {
-              const value = field.value;
+              const { value } = field;
               if (value === '') {
                 this._resetTransactionFee();
                 return [
@@ -243,6 +244,8 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   );
 
+  submitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
+
   render() {
     const { form } = this;
     const { intl } = this.context;
@@ -297,7 +300,7 @@ export default class WalletSendForm extends Component<Props, State> {
                     receiverField.onChange(value || '');
                   }}
                   skin={InputSkin}
-                  onKeyPress={submitOnEnter.bind(this, this.handleOnSubmit)}
+                  onKeyPress={submitOnEnter}
                 />
               </div>
 
@@ -318,7 +321,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   fees={fees}
                   total={total}
                   skin={AmountInputSkin}
-                  onKeyPress={submitOnEnter.bind(this, this.handleOnSubmit)}
+                  onKeyPress={submitOnEnter}
                 />
               </div>
 
