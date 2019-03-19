@@ -159,6 +159,7 @@ export default class WalletSendForm extends Component<Props, State> {
     this.props.openDialogAction({
       dialog: WalletSendConfirmationDialog,
     });
+    return true;
   };
 
   isDisabled = () =>
