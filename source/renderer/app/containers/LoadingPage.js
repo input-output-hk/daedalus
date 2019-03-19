@@ -45,18 +45,6 @@ export default class LoadingPage extends Component<InjectedProps> {
     intl: intlShape.isRequired,
   };
 
-  constructor(props: any, context: any) {
-    super(props);
-    this.context = context;
-    this.registerOnDownloadLogsNotification();
-  }
-
-  componentWillUnmount() {
-    const { profile } = this.props.actions;
-    profile.downloadLogs.remove(this.openNotification);
-    this.closeNotification();
-  }
-
   render() {
     const { stores, actions } = this.props;
     const { intl } = this.context;
@@ -121,20 +109,6 @@ export default class LoadingPage extends Component<InjectedProps> {
     );
   }
 
-  get notification() {
-    const { intl } = this.context;
-    return {
-      id: 'loading-page-download-logs-success',
-      duration: DOWNLOAD_LOGS_SUCCESS_DURATION,
-      message: intl.formatMessage(messages.downloadLogsSuccess),
-    };
-  }
-
-  closeNotification = () => {
-    const { id } = this.notification;
-    this.props.actions.notifications.closeActiveNotification.trigger({ id });
-  };
-
   handleReportIssueClick = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.persist();
     const { intl } = this.context;
@@ -142,17 +116,6 @@ export default class LoadingPage extends Component<InjectedProps> {
     const locale = this.props.stores.profile.currentLocale;
     const supportUrl = await getSupportUrl(reportIssueButtonUrl, locale);
     this.props.stores.app.openExternalLink(supportUrl);
-  };
-
-  openNotification = () => {
-    const { notifications } = this.props.actions;
-    const { id, duration } = this.notification;
-    notifications.open.trigger({ id, duration });
-  };
-
-  registerOnDownloadLogsNotification = () => {
-    const { profile } = this.props.actions;
-    profile.downloadLogs.listen(this.openNotification);
   };
 
   handleDownloadLogs = () => {
