@@ -7,7 +7,7 @@ import {
 } from '../support/helpers/cardano-node-helpers';
 
 Given(/^cardano-node is running$/, async function() {
-  return await this.client.waitUntil(
+  return this.client.waitUntil(
     async () =>
       (await getCardanoNodeState(this.client)) === CardanoNodeStates.RUNNING
   );

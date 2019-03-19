@@ -67,7 +67,7 @@ export const buildRoute = (pattern, params) => {
         // - '/path/:param(/:another_param)'
         // - '/path(/:param/:another_param)'
         const paramRegex = new RegExp(
-          '(/|\\(|\\)|^):' + paramName + '(/|\\)|\\(|$)'
+          `(/|\\(|\\)|^):${paramName}(/|)|(|$)`
         );
         routePath = routePath.replace(paramRegex, (match, g1, g2) => {
           tokens[paramName] = encodeURIComponent(paramValue);
@@ -107,7 +107,7 @@ export const buildRoute = (pattern, params) => {
 export const getUrlParameterByName = (name, url) => {
   if (!url) url = window.location.href;
   name = name.replace(/[[\]]/g, '\\$&');
-  const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+  const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
   const results = regex.exec(url);
   if (!results) return null;
   if (!results[2]) return '';
