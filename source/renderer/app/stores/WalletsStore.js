@@ -607,6 +607,7 @@ export default class WalletsStore extends Store {
         this._updateCertificateStep();
       });
     } catch (error) {
+      // eslint-disable-next-line
       console.log(error);
       runInAction('handle failed certificate download', () => {
         // Reset progress

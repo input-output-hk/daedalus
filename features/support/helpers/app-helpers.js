@@ -8,7 +8,7 @@ export const waitForDaedalusToExit = async (
 ) => {
   const daedalusProcessName =
     process.platform === 'linux' ? 'electron' : 'Electron';
-  return await client.waitUntil(
+  return client.waitUntil(
     async () => (await getProcessesByName(daedalusProcessName)).length === 0,
     timeout
   );
