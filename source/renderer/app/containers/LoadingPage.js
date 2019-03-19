@@ -9,8 +9,7 @@ import cardanoLogo from '../assets/images/cardano-logo.inline.svg';
 import type { InjectedProps } from '../types/injectedPropsType';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import { getSupportUrl } from '../utils/network';
-import NotificationMessage from '../components/widgets/NotificationMessage';
-import successIcon from '../assets/images/success-small.inline.svg';
+import GenericNotification from '../components/notifications/GenericNotification';
 import { DOWNLOAD_LOGS_SUCCESS_DURATION } from '../config/timingConfig';
 
 export const messages = defineMessages({
@@ -29,7 +28,15 @@ export const messages = defineMessages({
     defaultMessage: '!!!Logs successfully downloaded',
     description: 'Success message for download logs.',
   },
+  downloadLogsProgress: {
+    id: 'loading.screen.reportIssue.downloadLogsProgressMessage',
+    defaultMessage: '!!!Preparing logs for download...',
+    description: 'Progress message for download logs.',
+  },
 });
+
+const DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID = 'loading-page-download-logs-progress';
+const DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID = 'loading-page-download-logs-success';
 
 @inject('stores', 'actions') @observer
 export default class LoadingPage extends Component<InjectedProps> {
@@ -51,7 +58,8 @@ export default class LoadingPage extends Component<InjectedProps> {
   }
 
   render() {
-    const { stores } = this.props;
+    const { stores, actions } = this.props;
+    const { intl } = this.context;
     const {
       cardanoNodeState, isConnected, isSynced, syncPercentage, hasBeenConnected,
       localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
@@ -59,7 +67,6 @@ export default class LoadingPage extends Component<InjectedProps> {
       isNotEnoughDiskSpace, diskSpaceRequired, diskSpaceMissing, diskSpaceRecommended,
     } = stores.networkStatus;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
-    const { id, message } = this.notification;
     return (
       <CenteredLayout>
         <Loading
@@ -89,15 +96,27 @@ export default class LoadingPage extends Component<InjectedProps> {
           onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
           onDownloadLogs={this.handleDownloadLogs}
         />
-        <NotificationMessage
-          icon={successIcon}
-          show={stores.uiNotifications.isOpen(id)}
-          onClose={this.closeNotification}
-          clickToClose
+        <GenericNotification
+          id={DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID}
+          show={stores.uiNotifications.isOpen(DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID)}
+          actionToListenAndOpen={actions.profile.downloadLogs}
+          actionToListenAndClose={actions.profile.downloadLogsSuccess}
+          openNotification={actions.notifications.open}
+          closeNotification={actions.notifications.closeActiveNotification}
+        >
+          { intl.formatMessage(messages.downloadLogsProgress) }
+        </GenericNotification>
+        <GenericNotification
+          id={DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID}
+          duration={DOWNLOAD_LOGS_SUCCESS_DURATION}
+          show={stores.uiNotifications.isOpen(DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID)}
+          actionToListenAndOpen={actions.profile.downloadLogsSuccess}
+          openNotification={actions.notifications.open}
+          closeNotification={actions.notifications.closeActiveNotification}
           hasCloseButton
         >
-          {message}
-        </NotificationMessage>
+          { intl.formatMessage(messages.downloadLogsSuccess) }
+        </GenericNotification>
       </CenteredLayout>
     );
   }
