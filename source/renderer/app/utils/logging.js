@@ -3,7 +3,7 @@ import { formatContext } from '../../../common/utils/logging';
 import type { FormatMessageContextParams } from '../../../common/types/logging.types';
 
 const log = global.electronLog;
-const environment = global.environment;
+const { environment } = global;
 
 const appName = 'daedalus';
 const electronProcess = 'ipcRenderer';
