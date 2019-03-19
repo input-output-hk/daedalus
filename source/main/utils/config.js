@@ -14,6 +14,7 @@ export const readLauncherConfig = (configPath: ?string): LauncherConfig => {
     if (process.env[b]) {
       return process.env[b];
     }
+    // eslint-disable-next-line
     console.log('readLauncherConfig: warning var undefined:', b);
     return '';
   });
