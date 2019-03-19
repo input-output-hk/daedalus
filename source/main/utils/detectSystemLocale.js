@@ -5,7 +5,8 @@ import { LOCALES } from '../../common/types/locales.types.js';
 
 export const detectSystemLocale = (): string => {
   const systemLocale = app.getLocale();
-  Logger.info('Detected system locale', { systemLocale });
+  const systemLang = process.env.LANG || 'unknown';
+  Logger.info('Detected system locale', { systemLocale, systemLang });
   if (systemLocale === 'ja') {
     return LOCALES.japanese;
   }
