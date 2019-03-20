@@ -22,8 +22,13 @@ export default class LanguageSelectionPage extends Component<InjectedProps> {
     const {
       setProfileLocaleRequest,
       LANGUAGE_OPTIONS,
+      systemLocale,
     } = this.props.stores.profile;
     const isSubmitting = setProfileLocaleRequest.isExecuting;
+    const preselectedIndex = LANGUAGE_OPTIONS.findIndex(
+      ({ value }) => value === systemLocale
+    );
+    const preselectedLanguage = LANGUAGE_OPTIONS[preselectedIndex].value;
     const topbar = (
       <TopBar currentRoute={currentRoute} showSubMenuToggle={false} />
     );
@@ -33,6 +38,7 @@ export default class LanguageSelectionPage extends Component<InjectedProps> {
           onSubmit={this.onSubmit}
           isSubmitting={isSubmitting}
           languages={LANGUAGE_OPTIONS}
+          preselectedLanguage={preselectedLanguage}
           error={setProfileLocaleRequest.error}
         />
       </TopBarLayout>

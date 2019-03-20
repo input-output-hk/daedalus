@@ -80,9 +80,9 @@ When(/^I enter paper wallet recovery phrase$/, async function() {
       '.AutocompleteOverrides_autocompleteWrapper input',
       word
     );
-    await this.client.waitForVisible(`//li[contains(text(), '${word}')]`);
-    await this.waitAndClick(`//li[contains(text(), '${word}')]`);
-    await this.client.waitForVisible(`//span[contains(text(), '${word}')]`);
+    await this.client.waitForVisible(`//li[text()="${word}"]`);
+    await this.waitAndClick(`//li[text()="${word}"]`);
+    await this.client.waitForVisible(`//span[text()="${word}"]`);
   }
 });
 
@@ -95,9 +95,9 @@ When(/^I enter wrong paper wallet recovery phrase:$/, async function(table) {
       '.AutocompleteOverrides_autocompleteWrapper input',
       word
     );
-    await this.client.waitForVisible(`//li[contains(text(), '${word}')]`);
-    await this.waitAndClick(`//li[contains(text(), '${word}')]`);
-    await this.client.waitForVisible(`//span[contains(text(), '${word}')]`);
+    await this.client.waitForVisible(`//li[text()="${word}"]`);
+    await this.waitAndClick(`//li[text()="${word}"]`);
+    await this.client.waitForVisible(`//span[text()="${word}"]`);
   }
 });
 

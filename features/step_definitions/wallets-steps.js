@@ -324,9 +324,9 @@ When(/^I enter recovery phrase in restore wallet dialog:$/, async function(
       '.AutocompleteOverrides_autocompleteWrapper input',
       word
     );
-    await this.client.waitForVisible(`//li[contains(text(), '${word}')]`);
-    await this.waitAndClick(`//li[contains(text(), '${word}')]`);
-    await this.client.waitForVisible(`//span[contains(text(), '${word}')]`);
+    await this.client.waitForVisible(`//li[text()="${word}"]`);
+    await this.waitAndClick(`//li[text()="${word}"]`);
+    await this.client.waitForVisible(`//span[text()="${word}"]`);
   }
 });
 
@@ -388,11 +388,11 @@ When(
   /^I click on recovery phrase mnemonics in correct order$/,
   async function() {
     for (let i = 0; i < this.recoveryPhrase.length; i++) {
-      const text = this.recoveryPhrase[i];
+      const word = this.recoveryPhrase[i];
       const selector = 'MnemonicWord_root';
       const disabledSelector = 'MnemonicWord_disabled';
       await this.waitAndClick(
-        `//button[contains(@class,'${selector}') and not(contains(@class, '${disabledSelector}')) and contains(text(), '${text}')]`
+        `//button[contains(@class,'${selector}') and not(contains(@class, '${disabledSelector}')) and text()="${word}"]`
       );
     }
   }

@@ -24,6 +24,7 @@ export type Environment = {
   isMacOS: boolean,
   isLinux: boolean,
 };
+
 // constants
 export const PRODUCTION = 'production';
 export const DEVELOPMENT = 'development';
