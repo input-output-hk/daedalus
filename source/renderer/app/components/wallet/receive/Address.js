@@ -32,6 +32,7 @@ export class Address extends Component<Props> {
         <div className={styles.addressActions}>
           <CopyToClipboard
             text={address.id}
+            // eslint-disable-next-line
             onCopy={onCopyAddress.bind(this, address.id)}
           >
             <span className={styles.copyAddress}>

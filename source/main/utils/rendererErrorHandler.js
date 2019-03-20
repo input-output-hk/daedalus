@@ -25,6 +25,7 @@ export default class RendererErrorHandler {
 
     if (this.count < this.maxReloads) {
       this.count++;
+      // eslint-disable-next-line
       this.createMainWindow && this.createMainWindow();
     } else {
       this.count = 0;

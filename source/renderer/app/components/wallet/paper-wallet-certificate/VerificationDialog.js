@@ -113,6 +113,12 @@ export default class VerificationDialog extends Component<Props, State> {
     isRecoveryPhraseValid: false,
   };
 
+  constructor(props: Props) {
+    super(props);
+    this.onRecoveringConfirmationChange = this.onRecoveringConfirmationChange.bind(this);
+    this.onStoringConfirmationChange = this.onStoringConfirmationChange.bind(this);
+  }
+
   recoveryPhraseAutocomplete: Autocomplete;
 
   form = new ReactToolboxMobxForm(
@@ -290,7 +296,7 @@ export default class VerificationDialog extends Component<Props, State> {
             <Checkbox
               className={storingUnderstandanceCheckboxClasses}
               label={intl.formatMessage(messages.storingUnderstandanceLabel)}
-              onChange={this.onStoringConfirmationChange.bind(this)}
+              onChange={this.onStoringConfirmationChange}
               checked={storingConfirmed}
               disabled={!isRecoveryPhraseValid}
               skin={CheckboxSkin}
@@ -299,7 +305,7 @@ export default class VerificationDialog extends Component<Props, State> {
             <Checkbox
               className={recoveringUnderstandanceCheckboxClasses}
               label={intl.formatMessage(messages.recoveringUnderstandanceLabel)}
-              onChange={this.onRecoveringConfirmationChange.bind(this)}
+              onChange={this.onRecoveringConfirmationChange}
               checked={recoveringConfirmed}
               disabled={!isRecoveryPhraseValid}
               skin={CheckboxSkin}
