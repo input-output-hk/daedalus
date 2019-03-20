@@ -5,7 +5,7 @@ import archiver from 'archiver';
 import path from 'path';
 import { get } from 'lodash';
 import { appLogsFolderPath, pubLogsFolderPath } from '../config';
-import { Logger, stringifyError } from '../../common/logging';
+import { Logger } from '../utils/logging';
 import { COMPRESS_LOGS } from '../../common/ipc-api';
 
 export default () => {
@@ -18,16 +18,16 @@ export default () => {
     });
 
     output.on('close', () => {
-      Logger.info('COMPRESS_LOGS.SUCCESS');
+      Logger.debug('COMPRESS_LOGS.SUCCESS', { outputPath });
       return sender.send(COMPRESS_LOGS.SUCCESS, outputPath);
     });
 
-    archive.on('error', (err) => {
-      Logger.error('COMPRESS_LOGS.ERROR: ' + stringifyError(err));
-      return sender.send(COMPRESS_LOGS.ERROR, err);
+    archive.on('error', (error) => {
+      Logger.error('COMPRESS_LOGS.ERROR', { error });
+      return sender.send(COMPRESS_LOGS.ERROR, error);
     });
 
-    Logger.info('COMPRESS_LOGS started');
+    Logger.debug('COMPRESS_LOGS.START');
 
     // compress files
     const logFiles = get(logs, ['files'], []);
@@ -36,10 +36,10 @@ export default () => {
       archive.append(stream, { name: logFiles[i] });
     }
 
-    archive.finalize((err) => {
-      if (err) {
-        Logger.error('COMPRESS_LOGS.ERROR: ' + stringifyError(err));
-        return sender.send(COMPRESS_LOGS.ERROR, err);
+    archive.finalize((error) => {
+      if (error) {
+        Logger.error('COMPRESS_LOGS.ERROR', { error });
+        return sender.send(COMPRESS_LOGS.ERROR, error);
       }
     });
 

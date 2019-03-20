@@ -2,16 +2,6 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
-        exclude: /(node_modules|bower_components)/,
-        use: [{
-          loader: 'babel-loader',
-          options: {
-            cacheDirectory: true,
-          }
-        }]
-      },
-      {
         test: /\.scss/,
         use: [
           {
@@ -27,6 +17,12 @@ module.exports = {
             }
           },
           { loader: 'sass-loader', options: { sourceMap: true } }
+        ],
+      },
+      {
+        test: /\.css/,
+        use: [
+          { loader: 'css-loader', options: { sourceMap: true } },
         ],
       },
       {

@@ -4,7 +4,6 @@
 
 /** Build file to package the app for release */
 
-require('babel-polyfill');
 const os = require('os');
 const packager = require('electron-packager');
 const del = require('del');
@@ -48,7 +47,6 @@ if (version) {
   DEFAULT_OPTS.version = version;
   startPack();
 } else {
-  // use the same version as the currently-installed electron-prebuilt
   exec('npm list electron --dev', (err, stdout) => {
     if (err) {
       DEFAULT_OPTS.version = '1.7.9';
@@ -77,6 +75,8 @@ async function startPack() {
           pack(plat, arch, log(plat, arch));
         });
       });
+    } else if (argv.win64) {
+      pack("win32", "x64", log("win32", "x64"));
     } else {
       // build for current platform only
       pack(os.platform(), os.arch(), log(os.platform(), os.arch()));

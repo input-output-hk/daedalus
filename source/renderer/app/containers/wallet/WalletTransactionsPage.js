@@ -41,9 +41,9 @@ export default class WalletTransactionsPage extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const actions = this.props.actions;
-    const { app, wallets, transactions } = this.props.stores;
-    const { openExternalLink } = app;
+    const { actions, stores } = this.props;
+    const { app, wallets } = stores;
+    const { openExternalLink, environment: { network } } = app;
     const activeWallet = wallets.active;
     const {
       searchOptions,
@@ -51,7 +51,8 @@ export default class WalletTransactionsPage extends Component<Props> {
       hasAny,
       totalAvailable,
       filtered,
-    } = transactions;
+      recent,
+    } = stores.transactions;
 
     // Guard against potential null values
     if (!searchOptions || !activeWallet) return null;
@@ -77,10 +78,14 @@ export default class WalletTransactionsPage extends Component<Props> {
     //   );
     // }
 
+    // Straight away show recent transactions if filtered ones are not loaded yet
+    const transactions = (recent.length && !filtered.length) ? recent : filtered;
+
     if (searchRequest.isExecutingFirstTime || hasAny || isRestoreActive) {
       walletTransactions = (
         <WalletTransactionsList
-          transactions={filtered}
+          network={network}
+          transactions={transactions}
           isLoadingTransactions={searchRequest.isExecutingFirstTime}
           isRestoreActive={isRestoreActive}
           hasMoreToLoad={hasMoreToLoad()}
@@ -89,6 +94,7 @@ export default class WalletTransactionsPage extends Component<Props> {
           walletId={activeWallet.id}
           formattedWalletAmount={formattedWalletAmount}
           onOpenExternalLink={openExternalLink}
+          isRenderingAsVirtualList
         />
       );
     } else if (wasSearched && !hasAny) {

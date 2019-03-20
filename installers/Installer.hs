@@ -5,19 +5,24 @@ import           Data.Text                           (pack)
 import           Universum
 import qualified System.Info                      as Sys
 import           Turtle                              (export)
+import qualified System.IO as IO
 
-import qualified MacInstaller                        (main)
-import qualified WindowsInstaller                    (main)
+import qualified MacInstaller
+import qualified WindowsInstaller
 import           System.Environment (getEnv)
 import           Data.List.Split (splitOn)
 import           Data.Maybe                          (fromJust)
 import           System.Directory
+import qualified Data.Text.IO as T
+import qualified Data.Text as T
 
 import           Types
 import           Config
 
 main :: IO ()
 main = do
+  IO.hSetEncoding IO.stderr IO.utf8
+  IO.hSetEncoding IO.stdout IO.utf8
   let os = case Sys.os of
              "linux"   -> Linux64
              "darwin"  -> Macos64
@@ -33,7 +38,15 @@ main = do
     CheckConfigs{..} ->
       checkAllConfigs          cfDhallRoot
     GenInstaller -> do
-        genSignedInstaller os options'
+        genSignedInstaller (oOS options') options'
+    BuildkiteCrossWin -> do
+      fullVersion <- getDaedalusVersion "../package.json"
+      ver <- T.strip <$> T.readFile "version"
+      let fullName = packageFileName Win64 (oCluster options') fullVersion (oBackend options') ver (oBuildJob options')
+      installerConfig <- getInstallerConfig "./dhall" Win64 (oCluster options')
+      WindowsInstaller.writeInstallerNSIS fullName fullVersion installerConfig (oCluster options')
+      WindowsInstaller.writeUninstallerNSIS fullVersion installerConfig
+      generateOSClusterConfigs "./dhall" "." options'
     Appveyor -> do
         buildNumber <- getEnv "APPVEYOR_BUILD_NUMBER"
         let

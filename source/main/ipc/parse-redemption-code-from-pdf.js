@@ -5,9 +5,9 @@ import fs from 'fs';
 import {
   decryptRegularVend, decryptForceVend,
   decryptRecoveryRegularVend, decryptRecoveryForceVend,
-} from '../../common/decrypt';
+} from '../../common/crypto/decrypt';
 import { PARSE_REDEMPTION_CODE } from '../../common/ipc-api';
-import { Logger } from '../../common/logging';
+import { Logger } from '../utils/logging';
 
 export default () => {
   ipcMain.on(PARSE_REDEMPTION_CODE.REQUEST, (event, filePath, decryptionKey, redemptionType) => {
@@ -38,7 +38,7 @@ export default () => {
         fs.writeFileSync(pdfPath, decryptedFile);
         isTemporaryDecryptedPdf = true;
       } catch (error) {
-        Logger.warn(`Error while parsing redemption code: ${error}`);
+        Logger.error('Error while parsing redemption code', { error });
         sender.send(PARSE_REDEMPTION_CODE.ERROR, error.message);
       }
     } else {

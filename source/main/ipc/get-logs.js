@@ -14,10 +14,14 @@ import {
 import { GET_LOGS } from '../../common/ipc-api';
 
 const isFileAllowed = (fileName: string) => includes(ALLOWED_LOGS, fileName);
-const isFileNodeLog = (fileName: string, nodeLogsIncluded: number) =>
-  ALLOWED_NODE_LOGS.test(fileName) && nodeLogsIncluded < MAX_NODE_LOGS_ALLOWED;
-const isFileLauncherLog = (fileName: string, nodeLogsIncluded: number) =>
-  ALLOWED_LAUNCHER_LOGS.test(fileName) && nodeLogsIncluded < MAX_LAUNCHER_LOGS_ALLOWED;
+
+const isFileNodeLog = (fileName: string, nodeLogsIncluded: number) => (
+  ALLOWED_NODE_LOGS.test(fileName) && nodeLogsIncluded < MAX_NODE_LOGS_ALLOWED
+);
+
+const isFileLauncherLog = (fileName: string, nodeLogsIncluded: number) => (
+  ALLOWED_LAUNCHER_LOGS.test(fileName) && nodeLogsIncluded < MAX_LAUNCHER_LOGS_ALLOWED
+);
 
 export default () => {
   ipcMain.on(GET_LOGS.REQUEST, (event) => {

@@ -1,10 +1,10 @@
 // @flow
-import { observable, action, computed, runInAction } from 'mobx';
-import { get, chunk, find } from 'lodash';
+import { observable, action, computed, runInAction, flow } from 'mobx';
+import { get, chunk, find, isEqual } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
-import WalletTransaction from '../domains/WalletTransaction';
+import { WalletTransaction } from '../domains/WalletTransaction';
 import { MAX_ADA_WALLETS_COUNT } from '../config/numbersConfig';
 import { i18nContext } from '../utils/i18nContext';
 import { mnemonicToSeedHex } from '../utils/crypto';
@@ -27,7 +27,7 @@ export default class WalletsStore extends Store {
   /* eslint-disable max-len */
   @observable active: ?Wallet = null;
   @observable isRestoreActive: boolean = false;
-  @observable lastDiscardedAntivirusRestorationSlowdownNotificationWalletId: ?string = null;
+  @observable restoringWalletId: ?string = null;
   @observable walletsRequest: Request<Array<Wallet>> = new Request(this.api.ada.getWallets);
   @observable importFromFileRequest: Request<Wallet> = new Request(this.api.ada.importWalletFromFile);
   @observable createWalletRequest: Request<Wallet> = new Request(this.api.ada.createWallet);
@@ -57,21 +57,16 @@ export default class WalletsStore extends Store {
     mnemonic: '',
     spendingPassword: null,
   };
-
   _pollingBlocked = false;
 
   setup() {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
 
-    this.actions.wallets.discardAntivirusRestorationSlowdownNotificationForActiveWallet.listen(
-      this._discardAntivirusNotificationForRestoration
-    );
-
     this.registerReactions([
       this._updateActiveWalletOnRouteChanges,
     ]);
 
-    const { router, walletBackup, wallets } = this.actions;
+    const { router, walletBackup, wallets, app } = this.actions;
     wallets.createWallet.listen(this._create);
     wallets.deleteWallet.listen(this._deleteWallet);
     wallets.sendMoney.listen(this._sendMoney);
@@ -85,6 +80,7 @@ export default class WalletsStore extends Store {
     wallets.finishCertificate.listen(this._finishCertificate);
     router.goToRoute.listen(this._onRouteChange);
     walletBackup.finishWalletBackup.listen(this._finishCreation);
+    app.initAppEnvironment.listen(() => {});
   }
 
   _create = async (params: {
@@ -219,11 +215,6 @@ export default class WalletsStore extends Store {
     return matchRoute(ROUTES.WALLETS.ROOT + '(/*rest)', currentRoute);
   }
 
-  @computed get hasDiscardedAntivirusRestorationSlowdownNotificationForActiveWallet(): boolean {
-    if (!this.active) return false;
-    return this.lastDiscardedAntivirusRestorationSlowdownNotificationWalletId === this.active.id;
-  }
-
   getWalletById = (id: string): (?Wallet) => this.all.find(w => w.id === id);
 
   getWalletByName = (name: string): (?Wallet) => this.all.find(w => w.name === name);
@@ -233,35 +224,6 @@ export default class WalletsStore extends Store {
   );
 
   // ACTIONS
-
-  @action refreshWalletsData = async () => {
-    if (!this.stores.networkStatus.isConnected) return;
-    const result = await this.walletsRequest.execute().promise;
-    if (!result) return;
-    runInAction('refresh active wallet', () => {
-      if (this.active) {
-        this._setActiveWallet({ walletId: this.active.id });
-      }
-    });
-    const transactions = this.stores.transactions;
-    runInAction('refresh transaction data', () => {
-      const walletIds = result.map((wallet: Wallet) => wallet.id);
-      transactions.transactionsRequests = walletIds.map(walletId => ({
-        walletId,
-        recentRequest: transactions._getTransactionsRecentRequest(walletId),
-        allRequest: transactions._getTransactionsAllRequest(walletId),
-      }));
-      transactions._refreshTransactionData();
-    });
-  };
-
-  @action _setActiveWallet = ({ walletId }: { walletId: string }) => {
-    if (this.hasAnyWallets) {
-      this.active = this.all.find(wallet => wallet.id === walletId);
-    }
-  };
-
-  @action _unsetActiveWallet = () => { this.active = null; };
 
   goToWalletRoute(walletId: string) {
     const route = this.getWalletRoute(walletId);
@@ -285,8 +247,8 @@ export default class WalletsStore extends Store {
   };
 
   _pollRefresh = async () => {
-    const { isSynced, isSystemTimeCorrect } = this.stores.networkStatus;
-    return isSynced && isSystemTimeCorrect && await this.refreshWalletsData();
+    const { isSynced } = this.stores.networkStatus;
+    return isSynced && await this.refreshWalletsData();
   };
 
   _updateActiveWalletOnRouteChanges = () => {
@@ -320,15 +282,6 @@ export default class WalletsStore extends Store {
     });
   };
 
-  @action _discardAntivirusNotificationForRestoration = () => {
-    if (!this.active) return;
-    this.lastDiscardedAntivirusRestorationSlowdownNotificationWalletId = this.active.id;
-  };
-
-  @action _resetAntivirusNotificationForActiveWallet = () => {
-    this.lastDiscardedAntivirusRestorationSlowdownNotificationWalletId = null;
-  }
-
   isValidAddress = (address: string) => this.api.ada.isValidAddress(address);
 
   isValidMnemonic = (mnemonic: string) => this.api.ada.isValidMnemonic(mnemonic);
@@ -347,10 +300,17 @@ export default class WalletsStore extends Store {
     if (this.stores.networkStatus.isConnected) {
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
+      let restoredWalletId = null; // id of a wallet which has just been restored
       runInAction('refresh active wallet', () => {
         if (this.active) {
           this._setActiveWallet({ walletId: this.active.id });
         }
+      });
+      runInAction('refresh active wallet restore', () => {
+        const restoringWallet = find(result, ['syncState.tag', 'restoring']);
+        const restoringWalletId = get(restoringWallet, 'id', null);
+        restoredWalletId = restoringWalletId === null && this.restoringWalletId || null;
+        this._setIsRestoreActive(restoringWalletId);
       });
       runInAction('refresh address data', () => {
         const walletIds = result.map((wallet: Wallet) => wallet.id);
@@ -367,17 +327,20 @@ export default class WalletsStore extends Store {
           recentRequest: this.stores.transactions._getTransactionsRecentRequest(walletId),
           allRequest: this.stores.transactions._getTransactionsAllRequest(walletId),
         }));
-        this.stores.transactions._refreshTransactionData();
-      });
-      runInAction('refresh active wallet restore', () => {
-        const restoringWallet = typeof find(result, ['syncState.tag', 'restoring']) !== 'undefined';
-        this._setIsRestoreActive(restoringWallet);
+        this.stores.transactions._refreshTransactionData(restoredWalletId);
       });
     }
   };
 
-  @action _setIsRestoreActive = (active: boolean) => {
-    this.isRestoreActive = active;
+  @action resetWalletsData = () => {
+    this.walletsRequest.reset();
+    this.stores.addresses.addressesRequests = [];
+    this.stores.transactions.transactionsRequests = [];
+  };
+
+  @action _setIsRestoreActive = (restoringWalletId: ?string) => {
+    this.isRestoreActive = restoringWalletId !== null;
+    this.restoringWalletId = restoringWalletId;
   };
 
   @action _restoreWallet = async (params: {
@@ -439,9 +402,17 @@ export default class WalletsStore extends Store {
   @action _setActiveWallet = ({ walletId }: { walletId: string }) => {
     if (this.hasAnyWallets) {
       const activeWalletId = this.active ? this.active.id : null;
-      const activeWalletChange = activeWalletId !== walletId;
-      if (activeWalletChange) this.stores.addresses.lastGeneratedAddress = null;
-      this.active = this.all.find(wallet => wallet.id === walletId);
+      const newActiveWallet = this.all.find(wallet => wallet.id === walletId);
+      const hasActiveWalletBeenChanged = activeWalletId !== walletId;
+      const hasActiveWalletBeenUpdated = !isEqual(this.active, newActiveWallet);
+      if (hasActiveWalletBeenChanged) {
+        // Active wallet has been replaced or removed
+        this.stores.addresses.lastGeneratedAddress = null;
+        this.active = newActiveWallet || null;
+      } else if (hasActiveWalletBeenUpdated) {
+        // Active wallet has been updated
+        if (this.active && newActiveWallet) this.active.update(newActiveWallet);
+      }
     }
   };
 
@@ -473,9 +444,17 @@ export default class WalletsStore extends Store {
     this._pollingBlocked = false;
   };
 
-  @action _generateCertificate = async (params: {
-    filePath: string,
-  }) => {
+  /**
+   * Generates a paper wallet certificate by creating a temporary wallet
+   * and extracting its data before deleting it. Saves the certificate
+   * as PDF to the user selected file location.
+   *
+   * Using mobx flows: https://mobx.js.org/best/actions.html#flows
+   * @private
+   */
+  _generateCertificate = flow(function *generateCertificate(
+    params: { filePath: string }
+  ): Generator<any, any, any> {
     try {
       // Pause polling in order not to show Paper wallet in the UI
       this._pausePolling();
@@ -484,12 +463,12 @@ export default class WalletsStore extends Store {
       this._updateCertificateCreationState(true);
 
       // Generate wallet recovery phrase
-      const recoveryPhrase: Array<string> = await (
+      const recoveryPhrase: Array<string> = yield (
         this.getWalletRecoveryPhraseRequest.execute().promise
       );
 
       // Generate 9-words (additional) mnemonic
-      const additionalMnemonicWords: Array<string> = await (
+      const additionalMnemonicWords: Array<string> = yield (
         this.getWalletCertificateAdditionalMnemonicsRequest.execute().promise
       );
       this.additionalMnemonicWords = additionalMnemonicWords.join(' ');
@@ -499,7 +478,7 @@ export default class WalletsStore extends Store {
       this.walletCertificatePassword = spendingPassword;
 
       // Generate paper wallet scrambled mnemonic
-      const walletCertificateRecoveryPhrase: Array<string> = await (
+      const walletCertificateRecoveryPhrase: Array<string> = yield (
         this.getWalletCertificateRecoveryPhraseRequest.execute({
           passphrase: spendingPassword,
           input: recoveryPhrase.join(' '),
@@ -512,17 +491,17 @@ export default class WalletsStore extends Store {
         name: 'Paper Wallet',
         mnemonic: recoveryPhrase.join(' '),
       };
-      const wallet = await this.createWalletRequest.execute(walletData).promise;
+      const wallet = yield this.createWalletRequest.execute(walletData).promise;
 
       // Get temporary wallet address
       let walletAddresses;
       if (wallet) {
-        walletAddresses = await this.getWalletAddressesRequest.execute({
+        walletAddresses = yield this.getWalletAddressesRequest.execute({
           walletId: wallet.id,
         }).promise;
 
         // delete temporary wallet
-        await this.deleteWalletRequest.execute({ walletId: wallet.id });
+        yield this.deleteWalletRequest.execute({ walletId: wallet.id });
       }
 
       // Set wallet certificate address
@@ -530,7 +509,7 @@ export default class WalletsStore extends Store {
       this.walletCertificateAddress = walletAddress;
 
       // download pdf certificate
-      await this._downloadCertificate(
+      yield this._downloadCertificate(
         walletAddress,
         walletCertificateRecoveryPhrase,
         params.filePath,
@@ -540,7 +519,7 @@ export default class WalletsStore extends Store {
     } finally {
       this._resumePolling();
     }
-  };
+  }).bind(this);
 
   _downloadCertificate = async (
     address: string,
@@ -549,12 +528,15 @@ export default class WalletsStore extends Store {
   ) => {
     const locale = this.stores.profile.currentLocale;
     const intl = i18nContext(locale);
+    const { isMainnet, buildLabel } = this.environment;
     try {
       await downloadPaperWalletCertificate({
         address,
         mnemonics: recoveryPhrase,
         intl,
-        filePath
+        filePath,
+        isMainnet,
+        buildLabel
       });
       runInAction('handle successful certificate download', () => {
         // Reset progress

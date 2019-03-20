@@ -67,7 +67,7 @@ When(/^I enter paper wallet recovery phrase$/, async function () {
   const recoveryPhrase = this.walletCertificateRecoveryPhrase.split(' ');
   for (let i = 0; i < recoveryPhrase.length; i++) {
     const word = recoveryPhrase[i];
-    await this.client.setValue('.SimpleAutocomplete_autocompleteWrapper input', word);
+    await this.client.setValue('.AutocompleteOverrides_autocompleteWrapper input', word);
     await this.client.waitForVisible(`//li[contains(text(), '${word}')]`);
     await this.waitAndClick(`//li[contains(text(), '${word}')]`);
     await this.client.waitForVisible(`//span[contains(text(), '${word}')]`);
@@ -79,7 +79,7 @@ When(/^I enter wrong paper wallet recovery phrase:$/, async function (table) {
   const recoveryPhrase = fields.recoveryPhrase.split(' ');
   for (let i = 0; i < recoveryPhrase.length; i++) {
     const word = recoveryPhrase[i];
-    await this.client.setValue('.SimpleAutocomplete_autocompleteWrapper input', word);
+    await this.client.setValue('.AutocompleteOverrides_autocompleteWrapper input', word);
     await this.client.waitForVisible(`//li[contains(text(), '${word}')]`);
     await this.waitAndClick(`//li[contains(text(), '${word}')]`);
     await this.client.waitForVisible(`//span[contains(text(), '${word}')]`);
@@ -160,7 +160,7 @@ When(/^I toggle "Spending password" switch on the restore wallet with certificat
 });
 
 Then(/^I should see that address was used$/, async function () {
-  const addressSelector = '.WalletReceive_usedWalletAddress .WalletReceive_addressId';
+  const addressSelector = '.Address_usedWalletAddress .Address_addressId';
   await this.client.waitForVisible(addressSelector);
   const usedAddress = await this.client.getText(addressSelector);
   expect(usedAddress).to.equal(this.certificateWalletAddress);

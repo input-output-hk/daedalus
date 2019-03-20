@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { generateFileNameWithTimestamp } from '../../../source/common/fileName';
+import { generateFileNameWithTimestamp } from '../../../source/common/utils/files';
 import ensureDirectoryExists from '../../../source/main/utils/ensureDirectoryExists';
 
 export const generateScreenshotFilePath = (testName) => {

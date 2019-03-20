@@ -1,11 +1,10 @@
 // @flow
 import BigNumber from 'bignumber.js';
-import WalletTransaction from '../../domains/WalletTransaction';
+import { WalletTransaction } from '../../domains/WalletTransaction';
 import type { ResponseBase } from '../common/types';
 
-export type Transactions = {
+export type Transactions = ResponseBase & {
   data: Array<Transaction>,
-  ...ResponseBase
 };
 
 export type Transaction = {
@@ -32,9 +31,8 @@ export type TxnAssuranceLevel = 'low' | 'medium' | 'high';
 
 export type TransactionState = 'pending' | 'failed' | 'ok';
 
-export type TransactionFee = {
+export type TransactionFee = ResponseBase & {
   estimatedAmount: number,
-  ...ResponseBase
 };
 
 export type TrasactionAddresses = { from: Array<string>, to: Array<string> };
@@ -46,6 +44,10 @@ export type GetTransactionsRequest = {
   searchTerm: string,
   skip: number,
   limit: number,
+  isFirstLoad: boolean,
+  isRestoreActive: boolean,
+  isRestoreCompleted: boolean,
+  cachedTransactions: Array<WalletTransaction>,
 };
 
 export type TransactionRequest = {

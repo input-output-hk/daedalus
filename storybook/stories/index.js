@@ -1,5 +1,6 @@
 // @flow
 import '../../source/renderer/app/themes/index.global.scss';
+import './support/environment';
 import './Sidebar.stories';
 import './SidebarCategory.stories';
 import './SidebarWalletsMenu.stories';
@@ -15,5 +16,5 @@ import './TopBar.stories';
 import './WalletTransactionsList.stories';
 import './ExportWalletToFileDialog.stories';
 import './PaperWallets.stories';
-import './AntivirusRestaurationSlowdownNotification.stories';
 import './WalletScreens.stories';
+import './BlockConsolidationStatus.stories';

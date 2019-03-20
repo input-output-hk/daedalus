@@ -1,0 +1,23 @@
+{
+  "menu.daedalus": "Daedalus",
+  "menu.daedalus.about": "このDaedalusについて",
+  "menu.daedalus.adaRedemption": "Adaの還元",
+  "menu.daedalus.gpuSafeMode": "GPUセーフモード",
+  "menu.daedalus.networkStatus": "ネットワークステータス",
+  "menu.daedalus.blockConsolidationStatus": "ブロック統合状況",
+  "menu.daedalus.quit": "終了",
+  "menu.daedalus.close": "閉じる",
+  "menu.edit": "編集",
+  "menu.edit.undo": "元に戻す",
+  "menu.edit.redo": "やり直し",
+  "menu.edit.cut": "カット",
+  "menu.edit.copy": "コピー",
+  "menu.edit.paste": "ペースト",
+  "menu.edit.selectAll": "すべて選択",
+  "menu.view": "見る",
+  "menu.view.reload": "リロード",
+  "menu.view.toggleFullScreen": "フルスクリーン切り替え",
+  "menu.view.toggleMaximumWindowSize": "最大ウインドウサイズ切り切り替え",
+  "menu.view.toggleDeveloperTools": "「開発者ツールの切り替え」",
+  "window.title.gpuSafeMode": "[GPUセーフモード]"
+}

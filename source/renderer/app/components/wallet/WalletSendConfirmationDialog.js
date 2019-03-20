@@ -13,6 +13,7 @@ import LocalizableError from '../../i18n/LocalizableError';
 import styles from './WalletSendConfirmationDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
+import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
 
 export const messages = defineMessages({
   dialogTitle: {
@@ -73,6 +74,7 @@ type Props = {
   onSubmit: Function,
   amountToNaturalUnits: (amountWithFractions: string) => string,
   onCancel: Function,
+  onExternalLinkClick: Function,
   isSubmitting: boolean,
   error: ?LocalizableError,
   currencyUnit: string,
@@ -138,7 +140,8 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
       transactionFee,
       isSubmitting,
       error,
-      currencyUnit
+      currencyUnit,
+      onExternalLinkClick
     } = this.props;
 
     const confirmButtonClasses = classnames([
@@ -149,7 +152,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
     const actions = [
       {
         label: intl.formatMessage(messages.backButtonLabel),
-        onClick: !isSubmitting && onCancel,
+        onClick: !isSubmitting ? onCancel : () => {},
       },
       {
         label: intl.formatMessage(messages.sendButtonLabel),
@@ -160,13 +163,26 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
       },
     ];
 
+    let errorElement = null;
+    if (error) {
+      const errorHasLink = !!error.values.linkLabel;
+      errorElement = errorHasLink
+        ? (
+          <FormattedHTMLMessageWithLink
+            message={error}
+            onExternalLinkClick={onExternalLinkClick}
+          />
+        )
+        : this.context.intl.formatMessage(error);
+    }
+
     return (
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}
         actions={actions}
         closeOnOverlayClick
         primaryButtonAutoFocus
-        onClose={!isSubmitting ? onCancel : null}
+        onClose={!isSubmitting ? onCancel : () => {}}
         className={styles.dialog}
         closeButton={<DialogCloseButton />}
       >
@@ -214,7 +230,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
           ) : null}
         </div>
 
-        {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
+        {errorElement ? <p className={styles.error}>{errorElement}</p> : null}
 
       </Dialog>
     );

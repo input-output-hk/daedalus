@@ -28,13 +28,13 @@ const messages = defineMessages({
   },
   reportProblemContent: {
     id: 'settings.support.reportProblem.content',
-    defaultMessage: '!!!If the FAQ does not solve the issue you are experiencing, please use our {supportRequestLink} feature.',
+    defaultMessage: '!!!If you are still experiencing an issue, please submit a support request.',
     description: 'Content for the "Reporting a problem" section on the support settings page.',
   },
   supportRequestLink: {
     id: 'settings.support.reportProblem.link',
-    defaultMessage: '!!!Support request',
-    description: '"Support request" link in the "Report a problem" section on the support settings page.',
+    defaultMessage: '!!!submit a support request',
+    description: '"submit a support request" link in the "Report a problem" section on the support settings page.',
   },
   logsTitle: {
     id: 'settings.support.logs.title',
@@ -43,13 +43,13 @@ const messages = defineMessages({
   },
   logsContent: {
     id: 'settings.support.logs.content',
-    defaultMessage: '!!!If you want to inspect logs, you can {downloadLogsLink}. Logs do not contain sensitive information, and it would be helpful to attach them to problem reports to help the team investigate the issue you are experiencing. Logs can be attached automatically when using the bug reporting feature.',
+    defaultMessage: '!!!Please download your logs here and attach the downloaded file when submitting a support ticket to help the support team investigate the issue. Logs do not contain sensitive information.',
     description: 'Content for the "Logs" section on the support settings page.',
   },
   downloadLogsLink: {
     id: 'settings.support.logs.downloadLogsLink',
-    defaultMessage: '!!!download them here',
-    description: '"download them here" link in the Logs section on the support settings page',
+    defaultMessage: '!!!download your logs here',
+    description: '"download your logs here" link in the Logs section on the support settings page',
   },
 });
 
@@ -69,11 +69,12 @@ export default class SupportSettings extends Component<Props> {
   render() {
     const { onExternalLinkClick, onSupportRequestClick, onDownloadLogs } = this.props;
     const { intl } = this.context;
+    const faqLinkUrl = intl.formatMessage(globalMessages.faqLinkUrl);
 
     const faqLink = (
       <a
-        href={intl.formatMessage(globalMessages.faqLinkUrl)}
-        onClick={event => onExternalLinkClick(event)}
+        href={faqLinkUrl}
+        onClick={event => onExternalLinkClick(faqLinkUrl, event)}
       >
         {intl.formatMessage(messages.faqLink)}
       </a>

@@ -1,66 +1,54 @@
-let
-  localLib = import ../lib.nix;
-in
 { system ? builtins.currentSystem
 , config ? {}
-, pkgs ? (import (localLib.fetchNixPkgs) { inherit system config; })
+, pkgs ? localLib.iohkNix.getPkgs { inherit system config; }
+
+# Disable running of tests for all local packages.
+, forceDontCheck ? false
+
+# Enable profiling for all haskell packages.
+# Profiling slows down performance by 50% so we don't enable it by default.
+, enableProfiling ? false
+
+# Enable separation of build/check derivations.
+, enableSplitCheck ? false
+
+# Keeps the debug information for all haskell packages.
+, enableDebugging ? false
+
+# Build (but don't run) benchmarks for all local packages.
+, enableBenchmarks ? false
+
+# Overrides all nix derivations to add build timing information in
+# their build output.
+, enablePhaseMetrics ? true
+
+# Overrides all nix derivations to add haddock hydra output.
+, enableHaddockHydra ? false
+
+# Disables optimization in the build for all local packages.
+, fasterBuild ? false
+, daedalus-bridge
+, localLib
 }:
 
 with pkgs;
 with haskell.lib;
 
 let
-  haskellPackages = haskell.packages.ghc822.override {
-    overrides = self: super: {
-      dhall-json = self.callPackage ./dhall-json.nix {};
-      dhall = doJailbreak (self.callPackage ./dhall-haskell.nix {});
-      github = self.callPackage ./github.nix {};
-    };
+  inherit daedalus-bridge;
+  addTestStubsOverlay = import ./overlays/add-test-stubs.nix {
+    inherit pkgs daedalus-bridge;
+  };
+  # We use GHC 8.2.2 because too many changes are needed to get to build with 8.4.3
+  haskellPackages = callPackage localLib.iohkNix.haskellPackages {
+    inherit forceDontCheck enableProfiling enablePhaseMetrics enableHaddockHydra
+      enableBenchmarks fasterBuild enableDebugging enableSplitCheck;
+    pkgsGenerated = haskell.packages.ghc822;
+    ghc = haskell.compiler.ghc822;
+    filter = localLib.isDaedalus;
+    requiredOverlay = ./overlays/required.nix;
+    customOverlays = [ addTestStubsOverlay ];
   };
 
-  inherit (import ../default.nix { inherit system config pkgs; }) daedalus-bridge;
 
-  addTestStubs = pkg: overrideCabal pkg (drv: {
-    testToolDepends = [
-      coreutils
-      (writeShellScriptBin "daedalus-bridge" "echo ${daedalus-bridge}")
-      (buildEnv {
-        name = "test-stubs";
-        paths = let
-          stub = prog: script: writeShellScriptBin prog ''
-            set -e
-            (>&2 echo $0 "$@")
-            ${script}
-          '';
-        in [
-          (stub "sudo" "exec $@")
-          (stub "npm" ''
-            mkdir -p dist release/darwin-x64/Daedalus-darwin-x64/Daedalus.app/Contents/MacOS
-            touch release/darwin-x64/Daedalus-darwin-x64/Daedalus.app/Contents/MacOS/Daedalus
-            touch dist/index.html
-          '')
-          (stub "iconutil" "exit 0")
-          (stub "pkgbuild" ''
-            touch "''${@: -1}"  # last argument on command line
-          '')
-          (stub "productbuild" ''
-            test -f $4
-            touch $5
-          '')
-          (stub "pkgutil" "exit 0")
-          (stub "security" "exit 0")
-          (stub "productsign" ''
-            set -x
-            cp "''${@: -2}"
-          '')
-          (stub "otool" "echo")
-          (stub "nix-store" "exit 0")
-          (stub "install_name_tool" "exit 0")
-        ];
-      })
-    ];
-  });
-
-in
-
-  justStaticExecutables (addTestStubs (haskellPackages.callPackage ./daedalus-installer.nix {}))
+in haskellPackages

@@ -24,12 +24,13 @@
     background-color: var(--theme-paper-wallet-create-certificate-dialog-explorer-link-background-color);
     border-radius: 2px;
     font-family: var(--font-regular);
+    letter-spacing: .5px;
     line-height: 1.38;
     margin: 10px 0 20px;
     min-height: 50px;
-    padding: 14px 20px;
+    padding: 14px 23px;
     text-align: center;
-    user-select: auto;
+    user-select: text;
     word-wrap: break-word;
 
     .link {

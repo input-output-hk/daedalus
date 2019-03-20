@@ -33,7 +33,7 @@ export const transactionTypes: {
   EXCHANGE: 'exchange',
 };
 
-export default class WalletTransaction {
+export class WalletTransaction {
 
   @observable id: string = '';
   @observable type: TransactionType;
@@ -62,7 +62,8 @@ export default class WalletTransaction {
   getAssuranceLevelForMode(mode: WalletAssuranceMode): TxnAssuranceLevel {
     if (this.numberOfConfirmations < mode.low) {
       return TxnAssuranceLevelOptions.LOW;
-    } else if (this.numberOfConfirmations < mode.medium) {
+    }
+    if (this.numberOfConfirmations < mode.medium) {
       return TxnAssuranceLevelOptions.MEDIUM;
     }
     return TxnAssuranceLevelOptions.HIGH;

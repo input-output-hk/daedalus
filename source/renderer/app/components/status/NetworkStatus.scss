@@ -1,13 +1,14 @@
 .component {
   align-items: center;
-  background: #202225;
-  height: 100%;
+  background: rgba(32, 34, 37, 0.94);
   display: flex;
   flex-direction: column;
   font-family: var(--font-medium);
   font-size: 14px;
-  line-height: 1.5;
+  height: 100%;
   justify-content: space-between;
+  line-height: 1.5;
+  overflow: hidden;
   padding: 30px;
   width: 100%;
 }

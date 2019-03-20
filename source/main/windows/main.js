@@ -1,23 +1,59 @@
+// @flow
 import path from 'path';
 import { app, BrowserWindow, ipcMain, Menu } from 'electron';
-import environment from '../../common/environment';
+import { environment } from '../environment';
 import ipcApi from '../ipc';
 import RendererErrorHandler from '../utils/rendererErrorHandler';
+import { getTranslation } from '../utils/getTranslation';
 import { launcherConfig } from '../config';
 
 const rendererErrorHandler = new RendererErrorHandler();
 
-export const createMainWindow = (isInSafeMode) => {
-  const windowOptions = {
+const { isDev, isTest, buildLabel, isLinux } = environment;
+
+const id = 'window';
+
+const getWindowTitle = (
+  isInSafeMode: boolean,
+  locale: string,
+): string => {
+  const translations = require(`../locales/${locale}`);
+  const translation = getTranslation(translations, id);
+  let title = buildLabel;
+  if (isInSafeMode) title += ` ${translation('title.gpuSafeMode')}`;
+  return title;
+};
+
+type WindowOptionsType = {
+  show: boolean,
+  width: number,
+  height: number,
+  webPreferences: {
+    nodeIntegration: boolean,
+    webviewTag: boolean,
+    enableRemoteModule: boolean,
+    preload: string,
+  },
+  icon?: string,
+};
+
+export const createMainWindow = (
+  isInSafeMode: boolean,
+  locale: string,
+) => {
+  const windowOptions: WindowOptionsType = {
     show: false,
     width: 1150,
     height: 870,
     webPreferences: {
+      nodeIntegration: isTest,
       webviewTag: false,
+      enableRemoteModule: isTest,
+      preload: path.join(__dirname, './preload.js')
     }
   };
 
-  if (process.platform === 'linux') {
+  if (isLinux) {
     windowOptions.icon = path.join(launcherConfig.statePath, 'icon.png');
   }
 
@@ -26,7 +62,7 @@ export const createMainWindow = (isInSafeMode) => {
 
   rendererErrorHandler.setup(window, createMainWindow);
 
-  window.setMinimumSize(900, 600);
+  window.setMinimumSize(905, 600);
 
   // Initialize our ipc api methods that can be called by the render processes
   ipcApi({ window });
@@ -37,23 +73,15 @@ export const createMainWindow = (isInSafeMode) => {
     window.setSize(width, height, animate);
   });
 
-  if (environment.isDev()) {
-    window.webContents.openDevTools();
-    // Focus the main window after dev tools opened
-    window.webContents.on('devtools-opened', () => {
-      window.focus();
-      setImmediate(() => {
-        window.focus();
-      });
-    });
-  }
+  // Provide render process with an api to close the main window
+  ipcMain.on('close-window', (event) => {
+    if (event.sender !== window.webContents) return;
+    window.close();
+  });
 
   window.loadURL(`file://${__dirname}/../renderer/index.html`);
   window.on('page-title-updated', event => { event.preventDefault(); });
-
-  let title = environment.getBuildLabel();
-  if (isInSafeMode) title += ' [GPU safe mode]';
-  window.setTitle(title);
+  window.setTitle(getWindowTitle(isInSafeMode, locale));
 
   window.webContents.on('context-menu', (e, props) => {
     const contextMenuOptions = [
@@ -61,7 +89,7 @@ export const createMainWindow = (isInSafeMode) => {
       { label: 'Paste', accelerator: 'CmdOrCtrl+V', role: 'paste' },
     ];
 
-    if (environment.isDev() || environment.isTest()) {
+    if (isDev || isTest) {
       const { x, y } = props;
       contextMenuOptions.push({
         label: 'Inspect element',
@@ -74,8 +102,21 @@ export const createMainWindow = (isInSafeMode) => {
     Menu.buildFromTemplate(contextMenuOptions).popup(window);
   });
 
+  window.webContents.on('did-frame-finish-load', () => {
+    if (isDev) {
+      window.webContents.openDevTools();
+      // Focus the main window after dev tools opened
+      window.webContents.on('devtools-opened', () => {
+        window.focus();
+        setImmediate(() => {
+          window.focus();
+        });
+      });
+    }
+  });
+
   window.webContents.on('did-finish-load', () => {
-    if (environment.isTest()) {
+    if (isTest) {
       window.showInactive(); // show without focusing the window
     } else {
       window.show(); // show also focuses the window
@@ -93,6 +134,10 @@ export const createMainWindow = (isInSafeMode) => {
   window.webContents.on('crashed', (err) => {
     rendererErrorHandler.onError('crashed', err);
   });
+
+  window.updateTitle = (locale: string) => {
+    window.setTitle(getWindowTitle(isInSafeMode, locale));
+  };
 
   return window;
 };

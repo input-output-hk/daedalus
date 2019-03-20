@@ -1,9 +1,10 @@
+// @flow
 import BigNumber from 'bignumber.js';
 import { get } from 'lodash';
 import AdaApi from '../api';
 import { getNodeInfo } from '../nodes/requests/getNodeInfo';
 import { GenericApiError } from '../common/errors';
-import { Logger, stringifyData, stringifyError } from '../../../../common/logging';
+import { Logger } from '../../utils/logging';
 import { RedeemAdaError } from '../transactions/errors';
 import type { RedeemAdaParams } from '../transactions/requests/redeemAda';
 import type { RedeemPaperVendedAdaParams } from '../transactions/requests/redeemPaperVendedAda';
@@ -17,9 +18,11 @@ let NEXT_ADA_UPDATE = null;
 
 export default (api: AdaApi) => {
   // Since we cannot test ada redemption in dev mode, just resolve the requests
-  api.redeemAda = (request: RedeemAdaParams) => new Promise((resolve) => {
+  api.redeemAda = (
+    request: RedeemAdaParams
+  ): Promise<any> => new Promise((resolve) => {
     try {
-      Logger.debug('AdaApi::redeemAda (PATCHED) called: ' + stringifyData(request));
+      Logger.debug('AdaApi::redeemAda (PATCHED) called', { request });
       const { redemptionCode } = request;
       const isValidRedemptionCode = api.isValidRedemptionKey(redemptionCode);
       if (!isValidRedemptionCode) {
@@ -29,17 +32,19 @@ export default (api: AdaApi) => {
       Logger.debug('AdaApi::redeemAda (PATCHED) success');
       resolve({ amount: new BigNumber(1000) });
     } catch (error) {
-      Logger.debug('AdaApi::redeemAda (PATCHED) error: ' + stringifyError(error));
+      Logger.error('AdaApi::redeemAda (PATCHED) error', { error });
       throw new RedeemAdaError();
     }
   });
 
-  api.redeemPaperVendedAda = (request: RedeemPaperVendedAdaParams) => new Promise((resolve) => {
+  api.redeemPaperVendedAda = (
+    request: RedeemPaperVendedAdaParams
+  ): Promise<any> => new Promise((resolve) => {
     try {
-      Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) called: ' + stringifyData(request));
-      const { redemptionCode, mnemonics } = request;
+      Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) called', { request });
+      const { redemptionCode, mnemonic } = request;
       const isValidKey = api.isValidPaperVendRedemptionKey(redemptionCode);
-      const isValidMnemonic = api.isValidRedemptionMnemonic(mnemonics.join(' '));
+      const isValidMnemonic = api.isValidRedemptionMnemonic(mnemonic.join(' '));
       if (!isValidKey) Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) failed: not a valid redemption key!');
       if (!isValidMnemonic) Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) failed: not a valid mnemonic!');
       if (!isValidKey || !isValidMnemonic) {
@@ -48,7 +53,7 @@ export default (api: AdaApi) => {
       Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) success');
       resolve({ amount: new BigNumber(1000) });
     } catch (error) {
-      Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) error: ' + stringifyError(error));
+      Logger.error('AdaApi::redeemPaperVendedAda (PATCHED) error', { error });
       throw new RedeemAdaError();
     }
   });
@@ -63,7 +68,7 @@ export default (api: AdaApi) => {
     Logger.debug('AdaApi::getNetworkStatus (PATCHED) called');
     try {
       const status: NodeInfo = await getNodeInfo(api.config, queryParams);
-      Logger.debug('AdaApi::getNetworkStatus (PATCHED) success: ' + stringifyData(status));
+      Logger.debug('AdaApi::getNetworkStatus (PATCHED) success', { status });
 
       const {
         blockchainHeight,
@@ -78,10 +83,13 @@ export default (api: AdaApi) => {
         syncProgress: syncProgress.quantity,
         blockchainHeight: get(blockchainHeight, 'quantity', 0),
         localBlockchainHeight: localBlockchainHeight.quantity,
-        localTimeDifference: LOCAL_TIME_DIFFERENCE,
+        localTimeInformation: {
+          status: 'available',
+          difference: LOCAL_TIME_DIFFERENCE,
+        },
       };
     } catch (error) {
-      Logger.error('AdaApi::getNetworkStatus (PATCHED) error: ' + stringifyError(error));
+      Logger.error('AdaApi::getNetworkStatus (PATCHED) error', { error });
       throw new GenericApiError();
     }
   };
