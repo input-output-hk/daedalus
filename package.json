@@ -14,7 +14,7 @@
     "test:debug": "NODE_ENV=test KEEP_APP_AFTER_TESTS=true gulp test",
     "test:watch:debug": "NODE_ENV=test IS_WATCH_MODE=true KEEP_APP_AFTER_TESTS=true gulp test:watch",
     "test:unit": "cross-env NODE_ENV=test cucumber-js source/tests/unit --require-module @babel/register -f node_modules/cucumber-pretty --format-options '{\"snippetInterface\": \"async-await\"}' --tags 'not @skip'",
-    "test:unit:watch": "yarn test:unit --tags @watch",
+    "test:unit:watch": "nodemon --watch source --exec yarn test:unit --tags @watch",
     "debug": "gulp debug",
     "package": "gulp build && cross-env NODE_ENV=production node -r @babel/register -r @babel/polyfill scripts/package.js",
     "package:all": "npm run package -- --all",
