@@ -84,11 +84,11 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
           show={stores.uiNotifications.isOpen(
             DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID
           )}
-          icon="spinner"
           actionToListenAndOpen={actions.profile.downloadLogs}
           actionToListenAndClose={actions.profile.downloadLogsSuccess}
           openNotification={actions.notifications.open}
           closeNotification={actions.notifications.closeActiveNotification}
+          icon="spinner"
           hasEllipsis
         >
           {intl.formatMessage(messages.downloadLogsProgress)}
@@ -99,11 +99,11 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
           show={stores.uiNotifications.isOpen(
             DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID
           )}
-          icon="success"
           actionToListenAndOpen={actions.profile.downloadLogsSuccess}
           actionToListenAndClose={actions.profile.downloadLogs}
           openNotification={actions.notifications.open}
           closeNotification={actions.notifications.closeActiveNotification}
+          icon="success"
           hasCloseButton
         >
           {intl.formatMessage(messages.downloadLogsSuccess)}
