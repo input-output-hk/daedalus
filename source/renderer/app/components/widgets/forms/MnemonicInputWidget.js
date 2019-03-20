@@ -15,7 +15,6 @@ type Props = {
 
 @observer
 export default class MnemonicInputWidget extends Component<Props> {
-
   render() {
     const { label, tokens, onTokenChanged, error } = this.props;
     return (
@@ -30,7 +29,7 @@ export default class MnemonicInputWidget extends Component<Props> {
               key={index}
               className={styles.input}
               value={token}
-              onChange={(value) => onTokenChanged(index, value)}
+              onChange={value => onTokenChanged(index, value)}
               skin={InputSkin}
             />
           ))}

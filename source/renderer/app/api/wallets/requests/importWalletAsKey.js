@@ -11,10 +11,13 @@ export type ImportWalletAsKey = {
 export const importWalletAsKey = (
   config: RequestConfig,
   walletImportData: ImportWalletAsKey
-): Promise<AdaWallet> => (
-  request({
-    method: 'POST',
-    path: '/api/internal/import-wallet',
-    ...config,
-  }, {}, walletImportData)
-);
+): Promise<AdaWallet> =>
+  request(
+    {
+      method: 'POST',
+      path: '/api/internal/import-wallet',
+      ...config,
+    },
+    {},
+    walletImportData
+  );

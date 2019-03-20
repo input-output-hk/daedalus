@@ -25,12 +25,14 @@ const messages = defineMessages({
   },
   aboutContentDaedalusMembers: {
     id: 'static.about.content.daedalus.members',
-    defaultMessage: '!!!Alexander Rukin, Charles Hoskinson, Clemens Helm, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Stefan Malzner, Tomislav Horaček',
+    defaultMessage:
+      '!!!Alexander Rukin, Charles Hoskinson, Clemens Helm, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Stefan Malzner, Tomislav Horaček',
     description: 'About page daedalus team members',
   },
   aboutContentCardanoMembers: {
     id: 'static.about.content.cardano.members',
-    defaultMessage: '!!!Alexander Sukhoverkhov, Alexander Vieth, Alexandre Rodrigues Baldé, Alfredo Di Napoli, Anastasiya Besman, Andrzej Rybczak, Ante Kegalj, Anton Belyy, Anupam Jain, Arseniy Seroka, Artyom Kazak, Carlos D\'Agostino, Charles Hoskinson, Dan Friedman, Denis Shevchenko, Dmitry Kovanikov, Dmitry Mukhutdinov, Dmitry Nikulin, Domen Kožar, Duncan Coutts, Edsko de Vries, Eileen Fitzgerald, George Agapov, Hiroto Shioi, Ilya Lubimov, Ilya Peresadin, Ivan Gromakovskii, Jake Mitchell, Jane Wild, Jens Krause, Jeremy Wood, Joel Mislov Kunst, Jonn Mostovoy, Konstantin Ivanov, Kristijan Šarić, Lars Brünjes, Laurie Wang, Lionel Miller, Michael Bishop, Mikhail Volkhov, Niklas Hambüchen, Peter Gaži, Philipp Kant, Serge Kosyrev, Vincent Hanquez',
+    defaultMessage:
+      "!!!Alexander Sukhoverkhov, Alexander Vieth, Alexandre Rodrigues Baldé, Alfredo Di Napoli, Anastasiya Besman, Andrzej Rybczak, Ante Kegalj, Anton Belyy, Anupam Jain, Arseniy Seroka, Artyom Kazak, Carlos D'Agostino, Charles Hoskinson, Dan Friedman, Denis Shevchenko, Dmitry Kovanikov, Dmitry Mukhutdinov, Dmitry Nikulin, Domen Kožar, Duncan Coutts, Edsko de Vries, Eileen Fitzgerald, George Agapov, Hiroto Shioi, Ilya Lubimov, Ilya Peresadin, Ivan Gromakovskii, Jake Mitchell, Jane Wild, Jens Krause, Jeremy Wood, Joel Mislov Kunst, Jonn Mostovoy, Konstantin Ivanov, Kristijan Šarić, Lars Brünjes, Laurie Wang, Lionel Miller, Michael Bishop, Mikhail Volkhov, Niklas Hambüchen, Peter Gaži, Philipp Kant, Serge Kosyrev, Vincent Hanquez",
     description: 'About page cardano team members',
   },
   aboutCopyright: {
@@ -55,11 +57,10 @@ type Props = {
   build: string,
   onOpenExternalLink: Function,
   os: string,
-  version: string
+  version: string,
 };
 
 export default class About extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -70,22 +71,20 @@ export default class About extends Component<Props> {
 
     const apiName = intl.formatMessage(globalMessages.apiName);
     const apiIcon = cardanoIcon;
-    const apiHeadline = intl.formatMessage(messages.aboutContentCardanoHeadline);
+    const apiHeadline = intl.formatMessage(
+      messages.aboutContentCardanoHeadline
+    );
     const apiMembers = intl.formatMessage(messages.aboutContentCardanoMembers);
 
     return (
       <div className={styles.container}>
-
         <div className={styles.headerWrapper}>
-
           <SVGInline svg={daedalusIcon} className={styles.daedalusIcon} />
 
           <div className={styles.daedalusTitleVersion}>
             <div className={styles.daedalusTitle}>
               {intl.formatMessage(messages.aboutTitle)}
-              <span className={styles.daedalusVersion}>
-                {version}
-              </span>
+              <span className={styles.daedalusVersion}>{version}</span>
             </div>
             <div className={styles.daedalusBuildInfo}>
               <FormattedHTMLMessage
@@ -107,9 +106,7 @@ export default class About extends Component<Props> {
 
           <h2>{apiHeadline}</h2>
 
-          <div className={styles.apiMembers}>
-            {apiMembers}
-          </div>
+          <div className={styles.apiMembers}>{apiMembers}</div>
         </div>
 
         <div className={styles.footerWrapper}>
@@ -124,7 +121,11 @@ export default class About extends Component<Props> {
           <div className={styles.copyright}>
             {intl.formatMessage(messages.aboutCopyright)}&nbsp;
             <span
-              onClick={() => onOpenExternalLink('https://github.com/input-output-hk/daedalus/blob/master/LICENSE')}
+              onClick={() =>
+                onOpenExternalLink(
+                  'https://github.com/input-output-hk/daedalus/blob/master/LICENSE'
+                )
+              }
               className={styles.link}
               role="link"
               aria-hidden
@@ -133,7 +134,6 @@ export default class About extends Component<Props> {
             </span>
           </div>
         </div>
-
       </div>
     );
   }

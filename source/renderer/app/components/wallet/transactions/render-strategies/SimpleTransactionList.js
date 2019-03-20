@@ -6,13 +6,12 @@ import type { Row } from '../types';
 import styles from './SimpleTransactionList.scss';
 
 type Props = {
-  renderRow: (Row) => Node,
+  renderRow: Row => Node,
   rows: Row[],
 };
 
 @observer
 export class SimpleTransactionList extends Component<Props> {
-
   static defaultProps = {
     onOpenExternalLink: () => {},
   };
@@ -22,9 +21,7 @@ export class SimpleTransactionList extends Component<Props> {
     return (
       <div className={styles.component}>
         {rows.map((row, index) => (
-          <div key={index}>
-            {renderRow(row)}
-          </div>
+          <div key={index}>{renderRow(row)}</div>
         ))}
       </div>
     );

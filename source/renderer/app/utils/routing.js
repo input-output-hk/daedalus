@@ -1,6 +1,7 @@
 import RouteParser from 'route-parser';
 
-export const matchRoute = (pattern, path) => new RouteParser(pattern).match(path);
+export const matchRoute = (pattern, path) =>
+  new RouteParser(pattern).match(path);
 
 /**
  * Build a route from a pattern like `/wallets/:id` to `/wallets/123`
@@ -16,7 +17,9 @@ export const matchRoute = (pattern, path) => new RouteParser(pattern).match(path
  */
 export const buildRoute = (pattern, params) => {
   function toArray(val) {
-    return Object.prototype.toString.call(val) !== '[object Array]' ? [val] : val;
+    return Object.prototype.toString.call(val) !== '[object Array]'
+      ? [val]
+      : val;
   }
   const reRepeatingSlashes = /\/+/g; // '/some//path'
   const reSplatParams = /\*{1,2}/g; // '/some/*/complex/**/path'
@@ -30,7 +33,7 @@ export const buildRoute = (pattern, params) => {
   const tokens = {};
 
   if (params) {
-    Object.keys(params).forEach((paramName) => {
+    Object.keys(params).forEach(paramName => {
       let paramValue = params[paramName];
 
       // special param name in RR, used for '*' and '**' placeholders
@@ -38,7 +41,7 @@ export const buildRoute = (pattern, params) => {
         // when there are multiple globs, RR defines 'splat' param as array.
         paramValue = toArray(paramValue);
         let i = 0;
-        routePath = routePath.replace(reSplatParams, (match) => {
+        routePath = routePath.replace(reSplatParams, match => {
           const val = paramValue[i++];
           if (val == null) {
             return '';
@@ -63,7 +66,9 @@ export const buildRoute = (pattern, params) => {
         // - '/path(/:param/):another_param'
         // - '/path/:param(/:another_param)'
         // - '/path(/:param/:another_param)'
-        const paramRegex = new RegExp('(/|\\(|\\)|^):' + paramName + '(/|\\)|\\(|$)');
+        const paramRegex = new RegExp(
+          '(/|\\(|\\)|^):' + paramName + '(/|\\)|\\(|$)'
+        );
         routePath = routePath.replace(paramRegex, (match, g1, g2) => {
           tokens[paramName] = encodeURIComponent(paramValue);
           return `${g1}<${paramName}>${g2}`;
@@ -72,19 +77,21 @@ export const buildRoute = (pattern, params) => {
     });
   }
 
-  return routePath
-  // Remove braces around resolved optional params (i.e. '/path/(value)')
-    .replace(reResolvedOptionalParams, '$1')
-    // Remove all sequences containing at least one unresolved optional param
-    .replace(reUnresolvedOptionalParams, '')
-    // After everything related to RR syntax is removed, insert actual values
-    .replace(reTokens, (match, token) => tokens[token])
-    // Remove repeating slashes
-    .replace(reRepeatingSlashes, '/')
-    // Always remove ending slash for consistency
-    .replace(/\/+$/, '')
-    // If there was a single slash only, keep it
-    .replace(/^$/, '/');
+  return (
+    routePath
+      // Remove braces around resolved optional params (i.e. '/path/(value)')
+      .replace(reResolvedOptionalParams, '$1')
+      // Remove all sequences containing at least one unresolved optional param
+      .replace(reUnresolvedOptionalParams, '')
+      // After everything related to RR syntax is removed, insert actual values
+      .replace(reTokens, (match, token) => tokens[token])
+      // Remove repeating slashes
+      .replace(reRepeatingSlashes, '/')
+      // Always remove ending slash for consistency
+      .replace(/\/+$/, '')
+      // If there was a single slash only, keep it
+      .replace(/^$/, '/')
+  );
 };
 
 /**

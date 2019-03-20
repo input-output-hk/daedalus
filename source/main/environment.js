@@ -11,16 +11,14 @@ import {
   OS_NAMES,
   PRODUCTION,
   STAGING,
-  STAGING_REPORT_URL,
   TEST,
   TESTNET,
-  WINDOWS
+  WINDOWS,
 } from '../common/types/environment.types';
 
 // environment variables
 const CURRENT_NODE_ENV = process.env.NODE_ENV || DEVELOPMENT;
 const NETWORK = process.env.NETWORK || DEVELOPMENT;
-const REPORT_URL = process.env.REPORT_URL || STAGING_REPORT_URL;
 const isDev = CURRENT_NODE_ENV === DEVELOPMENT;
 const isTest = CURRENT_NODE_ENV === TEST;
 const isProduction = CURRENT_NODE_ENV === PRODUCTION;
@@ -48,29 +46,32 @@ const isWindows = PLATFORM === WINDOWS;
 const isLinux = PLATFORM === LINUX;
 
 // compose environment
-export const environment: Environment = Object.assign({}, {
-  network: NETWORK,
-  apiVersion: API_VERSION,
-  mobxDevTools: MOBX_DEV_TOOLS,
-  current: CURRENT_NODE_ENV,
-  reportUrl: REPORT_URL,
-  isDev,
-  isTest,
-  isProduction,
-  isMainnet,
-  isStaging,
-  isTestnet,
-  isDevelopment,
-  isWatchMode,
-  build: BUILD,
-  buildNumber: BUILD_NUMBER,
-  buildLabel: BUILD_LABEL,
-  platform: PLATFORM,
-  platformVersion: PLATFORM_VERSION,
-  os: OS,
-  installerVersion: INSTALLER_VERSION,
-  version,
-  isWindows,
-  isMacOS,
-  isLinux
-}, process.env);
+export const environment: Environment = Object.assign(
+  {},
+  {
+    network: NETWORK,
+    apiVersion: API_VERSION,
+    mobxDevTools: MOBX_DEV_TOOLS,
+    current: CURRENT_NODE_ENV,
+    isDev,
+    isTest,
+    isProduction,
+    isMainnet,
+    isStaging,
+    isTestnet,
+    isDevelopment,
+    isWatchMode,
+    build: BUILD,
+    buildNumber: BUILD_NUMBER,
+    buildLabel: BUILD_LABEL,
+    platform: PLATFORM,
+    platformVersion: PLATFORM_VERSION,
+    os: OS,
+    installerVersion: INSTALLER_VERSION,
+    version,
+    isWindows,
+    isMacOS,
+    isLinux,
+  },
+  process.env
+);

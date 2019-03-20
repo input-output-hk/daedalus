@@ -14,7 +14,6 @@ type Props = {
 
 @observer
 export default class MnemonicWord extends Component<Props> {
-
   render() {
     const { word, index, isActive, onClick } = this.props;
     const handleClick = onClick.bind(null, { word, index });
@@ -30,5 +29,4 @@ export default class MnemonicWord extends Component<Props> {
       />
     );
   }
-
 }

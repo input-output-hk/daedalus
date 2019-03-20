@@ -8,7 +8,6 @@ type Params = {
 };
 
 export default class WalletAddress {
-
   @observable id: string = '';
   @observable used: boolean = false;
   @observable changeAddress: boolean = false;
@@ -16,5 +15,4 @@ export default class WalletAddress {
   constructor(data: Params) {
     Object.assign(this, data);
   }
-
 }

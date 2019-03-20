@@ -5,12 +5,11 @@ import styles from './StakingChartTooltipItem.scss';
 
 type Props = {
   value: string,
-  label: string
+  label: string,
 };
 
 @observer
 export default class StakingChartTooltipItem extends Component<Props> {
-
   render() {
     const { value, label } = this.props;
     return (
@@ -19,5 +18,4 @@ export default class StakingChartTooltipItem extends Component<Props> {
       </div>
     );
   }
-
 }

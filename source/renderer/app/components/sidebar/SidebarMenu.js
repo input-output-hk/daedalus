@@ -16,13 +16,8 @@ export default class SidebarMenu extends Component<Props> {
     const { children, visible } = this.props;
     const componentStyles = classNames([
       styles.component,
-      visible ? styles.visible : null
+      visible ? styles.visible : null,
     ]);
-    return (
-      <div className={componentStyles}>
-        {children}
-      </div>
-    );
+    return <div className={componentStyles}>{children}</div>;
   }
-
 }

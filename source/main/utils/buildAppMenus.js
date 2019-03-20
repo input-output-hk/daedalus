@@ -6,38 +6,34 @@ import { osxMenu } from '../menus/osx';
 import { Logger } from './logging';
 import { safeExitWithCode } from './safeExitWithCode';
 import { CardanoNode } from '../cardano/CardanoNode';
+import { DIALOGS, SCREENS } from '../../common/ipc/constants';
 import {
-  TOGGLE_ABOUT_DIALOG_CHANNEL,
-  TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL,
-  GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL,
-  TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL
-} from '../../common/ipc/api';
+  toggleUiPartChannel,
+  showUiPartChannel,
+} from '../ipc/control-ui-parts';
 
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
   cardanoNode: ?CardanoNode,
   isInSafeMode: boolean,
-  locale: string,
+  locale: string
 ) => {
-
   const openAbout = () => {
-    if (mainWindow) mainWindow.webContents.send(TOGGLE_ABOUT_DIALOG_CHANNEL);
+    if (mainWindow) toggleUiPartChannel.send(DIALOGS.ABOUT, mainWindow);
   };
 
   const openNetworkStatus = () => {
-    if (mainWindow) mainWindow.webContents.send(TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL);
+    if (mainWindow)
+      toggleUiPartChannel.send(DIALOGS.NETWORK_STATUS, mainWindow);
   };
 
   const goToAdaRedemption = () => {
-    if (mainWindow) mainWindow.webContents.send(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL);
+    if (mainWindow) showUiPartChannel.send(SCREENS.ADA_REDEMPTION, mainWindow);
   };
 
   const goBlockConsolidationStatus = () => {
-    if (mainWindow) {
-      mainWindow.webContents.send(
-        TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL
-      );
-    }
+    if (mainWindow)
+      toggleUiPartChannel.send(SCREENS.BLOCK_CONSOLIDATION, mainWindow);
   };
 
   const restartInSafeMode = async () => {
@@ -93,5 +89,4 @@ export const buildAppMenus = async (
       globalShortcut.unregister('CommandOrControl+H');
     });
   }
-
 };

@@ -6,12 +6,7 @@ import Staking from '../../source/renderer/app/components/staking/Staking';
 import StakingSwitch from '../../source/renderer/app/components/staking/StakingSwitch';
 
 storiesOf('Staking', module)
-
-  .addDecorator((story) => (
-    <StoryDecorator>
-      {story()}
-    </StoryDecorator>
-  ))
+  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 

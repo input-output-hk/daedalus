@@ -1,4 +1,4 @@
-@import "../../../themes/mixins/animations";
+@import '../../../themes/mixins/animations';
 
 %smallText {
   height: 19px;
@@ -26,7 +26,7 @@
 .walletAmount {
   font-family: var(--font-ultralight);
   font-size: 40px;
-  line-height: 1.0;
+  line-height: 1;
   color: var(--theme-bordered-box-text-color);
   margin-bottom: 11px;
   word-break: break-all;
@@ -59,7 +59,9 @@
       height: 10px;
       width: 9px;
       & > g > g {
-        stroke: var(--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color);
+        stroke: var(
+          --theme-icon-ada-summary-wallet-pending-confirmation-symbol-color
+        );
       }
     }
   }

@@ -44,25 +44,14 @@ const topBarProductionEnv = (
 );
 
 storiesOf('TopBar', module)
-
-  .addDecorator((story) => (
-    <StoryDecorator>
-      {story()}
-    </StoryDecorator>
-  ))
+  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 
   .add('Test Environment label', () => (
-    <SidebarLayout
-      topbar={topBarTestEnv}
-      sidebar={<noscript />}
-    />
+    <SidebarLayout topbar={topBarTestEnv} sidebar={<noscript />} />
   ))
 
   .add('Production Environment', () => (
-    <SidebarLayout
-      topbar={topBarProductionEnv}
-      sidebar={<noscript />}
-    />
+    <SidebarLayout topbar={topBarProductionEnv} sidebar={<noscript />} />
   ));

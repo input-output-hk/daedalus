@@ -1,5 +1,5 @@
 // @flow
-export type ReportRequestHttpOptions = {
+export type BugReportRequestHttpOptions = {
   hostname: ?string,
   method: string,
   path: string,
@@ -9,7 +9,7 @@ export type ReportRequestHttpOptions = {
   },
 };
 
-export type ReportRequestPayload = {
+export type BugReportRequestPayload = {
   product: string,
   frontendVersion: string,
   backendVersion: string,
@@ -25,5 +25,5 @@ export type ReportRequestPayload = {
     email: string,
     subject: string,
     problem: string,
-  }
+  },
 };

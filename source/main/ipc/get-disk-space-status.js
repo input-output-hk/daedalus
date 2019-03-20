@@ -1,6 +1,6 @@
 // @flow
 import { MainIpcChannel } from './lib/MainIpcChannel';
-import { GetDiskSpaceStatusChannelName } from '../../common/ipc/api';
+import { GET_DISK_SPACE_STATUS_CHANNEL } from '../../common/ipc/api';
 import type {
   GetDiskSpaceStatusRendererRequest,
   GetDiskSpaceStatusMainResponse,
@@ -8,8 +8,7 @@ import type {
 
 // IpcChannel<Incoming, Outgoing>
 
-export const getDiskSpaceStatusChannel: (
-  MainIpcChannel<GetDiskSpaceStatusRendererRequest, GetDiskSpaceStatusMainResponse>
-) = (
-  new MainIpcChannel(GetDiskSpaceStatusChannelName)
-);
+export const getDiskSpaceStatusChannel: MainIpcChannel<
+  GetDiskSpaceStatusRendererRequest,
+  GetDiskSpaceStatusMainResponse
+> = new MainIpcChannel(GET_DISK_SPACE_STATUS_CHANNEL);

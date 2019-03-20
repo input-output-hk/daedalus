@@ -8,20 +8,24 @@ import {
   NODE_KILL_TIMEOUT,
   NODE_SHUTDOWN_TIMEOUT,
   NODE_STARTUP_MAX_RETRIES,
-  NODE_STARTUP_TIMEOUT, NODE_UPDATE_TIMEOUT
+  NODE_STARTUP_TIMEOUT,
+  NODE_UPDATE_TIMEOUT,
 } from '../config';
 import { Logger } from '../utils/logging';
 import type { LauncherConfig } from '../config';
 import type {
   CardanoNodeState,
   CardanoStatus,
-  TlsConfig
+  TlsConfig,
 } from '../../common/types/cardano-node.types';
 import {
-  cardanoAwaitUpdateChannel, cardanoFaultInjectionChannel, cardanoRestartChannel,
+  cardanoAwaitUpdateChannel,
+  cardanoFaultInjectionChannel,
+  cardanoRestartChannel,
   cardanoStateChangeChannel,
-  cardanoStatusChannel,
-  cardanoTlsConfigChannel
+  getCachedCardanoStatusChannel,
+  cardanoTlsConfigChannel,
+  setCachedCardanoStatusChannel,
 } from '../ipc/cardano.ipc';
 import { safeExitWithCode } from '../utils/safeExitWithCode';
 
@@ -55,50 +59,66 @@ export const setupCardanoNodeMode = (
   launcherConfig: LauncherConfig,
   mainWindow: BrowserWindow
 ) => {
-  const cardanoNode = new CardanoNode(Logger, {
-    // Dependencies on node.js apis are passed as props to ease testing
-    spawn,
-    exec,
-    readFileSync,
-    createWriteStream,
-    broadcastTlsConfig: (config: ?TlsConfig) => {
-      if (!mainWindow.isDestroyed()) cardanoTlsConfigChannel.send(config, mainWindow);
+  const cardanoNode = new CardanoNode(
+    Logger,
+    {
+      // Dependencies on node.js apis are passed as props to ease testing
+      spawn,
+      exec,
+      readFileSync,
+      createWriteStream,
+      broadcastTlsConfig: (config: ?TlsConfig) => {
+        if (!mainWindow.isDestroyed())
+          cardanoTlsConfigChannel.send(config, mainWindow);
+      },
+      broadcastStateChange: (state: CardanoNodeState) => {
+        if (!mainWindow.isDestroyed())
+          cardanoStateChangeChannel.send(state, mainWindow);
+      },
     },
-    broadcastStateChange: (state: CardanoNodeState) => {
-      if (!mainWindow.isDestroyed()) cardanoStateChangeChannel.send(state, mainWindow);
-    },
-  }, {
-    // CardanoNode lifecycle hooks
-    onStarting: () => {},
-    onRunning: () => {},
-    onStopping: () => {},
-    onStopped: () => {},
-    onUpdating: () => {},
-    onUpdated: () => {},
-    onCrashed: (code) => {
-      const restartTimeout = cardanoNode.startupTries > 0 ? 30000 : 0;
-      Logger.info(`CardanoNode crashed with code ${code}. Restarting in ${restartTimeout}ms …`, { code, restartTimeout });
-      setTimeout(() => restartCardanoNode(cardanoNode), restartTimeout);
-    },
-    onError: () => {},
-    onUnrecoverable: () => {}
-  });
+    {
+      // CardanoNode lifecycle hooks
+      onStarting: () => {},
+      onRunning: () => {},
+      onStopping: () => {},
+      onStopped: () => {},
+      onUpdating: () => {},
+      onUpdated: () => {},
+      onCrashed: code => {
+        const restartTimeout = cardanoNode.startupTries > 0 ? 30000 : 0;
+        Logger.info(
+          `CardanoNode crashed with code ${code}. Restarting in ${restartTimeout}ms …`,
+          { code, restartTimeout }
+        );
+        setTimeout(() => restartCardanoNode(cardanoNode), restartTimeout);
+      },
+      onError: () => {},
+      onUnrecoverable: () => {},
+    }
+  );
 
   startCardanoNode(cardanoNode, launcherConfig);
 
-  cardanoStatusChannel.onRequest(() => {
-    Logger.info('ipcMain: Received request from renderer for cardano status', { status: cardanoNode.status });
+  getCachedCardanoStatusChannel.onRequest(() => {
+    Logger.info('ipcMain: Received request from renderer for cardano status', {
+      status: cardanoNode.status,
+    });
     return Promise.resolve(cardanoNode.status);
   });
 
-  cardanoStatusChannel.onReceive((status: CardanoStatus) => {
-    Logger.info('ipcMain: Received request from renderer to cache cardano status', { status });
+  setCachedCardanoStatusChannel.onReceive((status: ?CardanoStatus) => {
+    Logger.info(
+      'ipcMain: Received request from renderer to cache cardano status',
+      { status }
+    );
     cardanoNode.saveStatus(status);
-    return Promise.resolve(cardanoNode.status);
+    return Promise.resolve();
   });
 
   cardanoStateChangeChannel.onRequest(() => {
-    Logger.info('ipcMain: Received request from renderer for node state', { state: cardanoNode.state });
+    Logger.info('ipcMain: Received request from renderer for node state', {
+      state: cardanoNode.state,
+    });
     return Promise.resolve(cardanoNode.state);
   });
 
@@ -111,7 +131,9 @@ export const setupCardanoNodeMode = (
     Logger.info('ipcMain: Received request from renderer to await update');
     setTimeout(async () => {
       await cardanoNode.expectNodeUpdate();
-      Logger.info('CardanoNode applied an update. Exiting Daedalus with code 20.');
+      Logger.info(
+        'CardanoNode applied an update. Exiting Daedalus with code 20.'
+      );
       safeExitWithCode(20);
     });
     return Promise.resolve();
@@ -122,8 +144,11 @@ export const setupCardanoNodeMode = (
     return cardanoNode.restart(true); // forced restart
   });
 
-  cardanoFaultInjectionChannel.onReceive((fault) => {
-    Logger.info('ipcMain: Received request to inject a fault into cardano node', { fault });
+  cardanoFaultInjectionChannel.onReceive(fault => {
+    Logger.info(
+      'ipcMain: Received request to inject a fault into cardano node',
+      { fault }
+    );
     return cardanoNode.setFault(fault);
   });
 

@@ -7,27 +7,30 @@ const messages = defineMessages({
   genericApiError: {
     id: 'api.errors.GenericApiError',
     defaultMessage: '!!!An error occurred.',
-    description: 'Generic error message.'
+    description: 'Generic error message.',
   },
   incorrectSpendingPasswordError: {
     id: 'api.errors.IncorrectPasswordError',
     defaultMessage: '!!!Incorrect wallet password.',
-    description: '"Incorrect wallet password." error message.'
+    description: '"Incorrect wallet password." error message.',
   },
   reportRequestError: {
     id: 'api.errors.ReportRequestError',
     defaultMessage: '!!!There was a problem sending the support request.',
-    description: '"There was a problem sending the support request." error message'
+    description:
+      '"There was a problem sending the support request." error message',
   },
   apiMethodNotYetImplementedError: {
     id: 'api.errors.ApiMethodNotYetImplementedError',
     defaultMessage: '!!!This API method is not yet implemented.',
-    description: '"This API method is not yet implemented." error message.'
+    description: '"This API method is not yet implemented." error message.',
   },
   forbiddenMnemonicError: {
     id: 'api.errors.ForbiddenMnemonicError',
-    defaultMessage: '!!!Invalid recovery phrase. Submitted recovery phrase is one of the example recovery phrases from the documentation and should not be used for wallets holding funds.',
-    description: '"Forbidden Mnemonic: an example Mnemonic has been submitted." error message',
+    defaultMessage:
+      '!!!Invalid recovery phrase. Submitted recovery phrase is one of the example recovery phrases from the documentation and should not be used for wallets holding funds.',
+    description:
+      '"Forbidden Mnemonic: an example Mnemonic has been submitted." error message',
   },
 });
 
