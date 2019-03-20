@@ -43,10 +43,6 @@ export default class Settings extends Component<InjectedContainerProps> {
         isActiveItem={this.isActivePage}
       />
     );
-    return (
-      <div>
-        <WalletSettingsLayout menu={menu}>{children}</WalletSettingsLayout>
-      </div>
-    );
+    return <WalletSettingsLayout menu={menu}>{children}</WalletSettingsLayout>;
   }
 }
