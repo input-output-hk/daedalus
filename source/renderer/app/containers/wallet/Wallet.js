@@ -26,7 +26,10 @@ export default class Wallet extends Component<Props> {
       id: wallets.active.id,
       page,
     });
-    return app.currentRoute === screenRoute;
+    const currentRoute = app.currentRoute
+      .replace('/general', '')
+      .replace('/utxo', '');
+    return currentRoute === screenRoute;
   };
 
   handleWalletNavItemClick = (page: string) => {

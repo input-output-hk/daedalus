@@ -5,7 +5,6 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import LocalizableError from '../../i18n/LocalizableError';
-import BorderedBox from '../widgets/BorderedBox';
 import InlineEditingInput from '../widgets/forms/InlineEditingInput';
 import InlineEditingDropdown from '../widgets/forms/InlineEditingDropdown';
 import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
@@ -15,7 +14,7 @@ import ExportWalletToFileDialog from './settings/ExportWalletToFileDialog';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
 import ChangeSpendingPasswordDialog from './settings/ChangeSpendingPasswordDialog';
 import globalMessages from '../../i18n/global-messages';
-import styles from './WalletSettings.scss';
+import styles from './WalletGeneralSettings.scss';
 
 export const messages = defineMessages({
   name: {
@@ -76,7 +75,7 @@ type Props = {
 };
 
 @observer
-export default class WalletSettings extends Component<Props> {
+export default class WalletGeneralSettings extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -129,7 +128,7 @@ export default class WalletSettings extends Component<Props> {
 
     return (
       <div className={styles.component}>
-        <BorderedBox>
+        <div>
           <InlineEditingInput
             className="walletName"
             inputFieldLabel={intl.formatMessage(messages.name)}
@@ -199,7 +198,7 @@ export default class WalletSettings extends Component<Props> {
               }
             />
           </div>
-        </BorderedBox>
+        </div>
 
         {isDialogOpen(ChangeSpendingPasswordDialog)
           ? changeSpendingPasswordDialog

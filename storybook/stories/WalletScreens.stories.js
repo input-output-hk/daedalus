@@ -28,7 +28,7 @@ import WalletSummary from '../../source/renderer/app/components/wallet/summary/W
 import WalletSendForm from '../../source/renderer/app/components/wallet/WalletSendForm';
 import WalletReceive from '../../source/renderer/app/components/wallet/receive/WalletReceive';
 import WalletTransactionsList from '../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
-import WalletSettings from '../../source/renderer/app/components/wallet/WalletSettings';
+import WalletGeneralSettings from '../../source/renderer/app/components/wallet/WalletGeneralSettings';
 import { WalletAssuranceModeOptions } from '../../source/renderer/app/domains/Wallet';
 import ChangeSpendingPasswordDialog from '../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
 import DeleteWalletConfirmationDialog from '../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
@@ -158,7 +158,7 @@ storiesOf('WalletScreens', module)
   ))
 
   .add('Settings', () => (
-    <WalletSettings
+    <WalletGeneralSettings
       activeField={null}
       assuranceLevels={[
         {
