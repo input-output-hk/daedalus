@@ -4,8 +4,9 @@ import unhandled from 'electron-unhandled';
 import { Logger } from './logging';
 
 unhandled({
-  logger: (error: any) => Logger.error('unhandledException::renderer', { error }),
-  showDialog: false
+  logger: (error: any) =>
+    Logger.error('unhandledException::renderer', { error }),
+  showDialog: false,
 });
 
 export default class RendererErrorHandler {

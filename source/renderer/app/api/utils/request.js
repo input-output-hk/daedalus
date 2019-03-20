@@ -82,7 +82,7 @@ function typedRequest<Response>(
   httpOptions: RequestOptions,
   queryParams?: {},
   rawBodyParams?: any,
-  requestOptions?: { returnMeta: boolean },
+  requestOptions?: { returnMeta: boolean }
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
 
@@ -137,12 +137,12 @@ function typedRequest<Response>(
     if (hasRequestBody) {
       httpsRequest.write(requestBody);
     }
-    httpsRequest.on('response', (response) => {
+    httpsRequest.on('response', response => {
       let body = '';
       // Cardano-sl returns chunked requests, so we need to concat them
-      response.on('data', (chunk) => (body += chunk));
+      response.on('data', chunk => (body += chunk));
       // Reject errors
-      response.on('error', (error) => reject(error));
+      response.on('error', error => reject(error));
       // Resolve JSON results and handle backend errors
       response.on('end', () => {
         try {
@@ -189,7 +189,7 @@ function typedRequest<Response>(
         }
       });
     });
-    httpsRequest.on('error', (error) => reject(error));
+    httpsRequest.on('error', error => reject(error));
     httpsRequest.end();
   });
 }

@@ -18,10 +18,13 @@ export type TransactionParams = {
 export const createTransaction = (
   config: RequestConfig,
   { data }: TransactionParams
-): Promise<Transaction> => (
-  request({
-    method: 'POST',
-    path: '/api/v1/transactions',
-    ...config,
-  }, {}, data)
-);
+): Promise<Transaction> =>
+  request(
+    {
+      method: 'POST',
+      path: '/api/v1/transactions',
+      ...config,
+    },
+    {},
+    data
+  );

@@ -62,7 +62,7 @@ export type RestoreWalletRequest = {
 export type UpdateWalletRequest = {
   walletId: string,
   assuranceLevel: WalletAssuranceLevel,
-  name: string
+  name: string,
 };
 export type ImportWalletFromKeyRequest = {
   filePath: string,
@@ -78,7 +78,7 @@ export type ImportWalletFromFileRequest = {
 export type ExportWalletToFileRequest = {
   walletId: string,
   filePath: string,
-  password: ?string
+  password: ?string,
 };
 
 export type GetWalletCertificateRecoveryPhraseRequest = {

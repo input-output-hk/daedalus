@@ -6,18 +6,26 @@ import type { InjectedDialogContainerProps } from '../../../../types/injectedPro
 
 type Props = InjectedDialogContainerProps;
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class InstructionsDialogContainer extends Component<Props> {
-  static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
+  static defaultProps = {
+    actions: null,
+    stores: null,
+    children: null,
+    onClose: () => {},
+  };
 
   onPrint = () => {
     // TODO: refactor this direct access to the dialog api
     const filePath = global.dialog.showSaveDialog({
       defaultPath: 'paper-wallet-certificate.pdf',
-      filters: [{
-        name: 'paper-wallet-certificate',
-        extensions: ['pdf'],
-      }],
+      filters: [
+        {
+          name: 'paper-wallet-certificate',
+          extensions: ['pdf'],
+        },
+      ],
     });
 
     // if cancel button is clicked or path is empty
@@ -28,7 +36,10 @@ export default class InstructionsDialogContainer extends Component<Props> {
 
   render() {
     const { wallets, app } = this.props.stores;
-    const { openExternalLink, environment: { network } } = app;
+    const {
+      openExternalLink,
+      environment: { network },
+    } = app;
     return (
       <InstructionsDialog
         inProgress={wallets.generatingCertificateInProgress}

@@ -86,11 +86,11 @@
 
     .activeButton {
       color: var(--theme-choice-tabs-text-color-active);
-      border-bottom: 2px solid var(--theme-choice-tabs-bottom-border-color-active);
+      border-bottom: 2px solid
+        var(--theme-choice-tabs-bottom-border-color-active);
       cursor: default;
       opacity: 1;
     }
-
   }
 
   .error {
@@ -101,6 +101,6 @@
 
   .isSubmitting {
     box-shadow: none !important;
-    @include loading-spinner("../../assets/images/spinner-light.svg");
+    @include loading-spinner('../../assets/images/spinner-light.svg');
   }
 }

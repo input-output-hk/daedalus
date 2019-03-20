@@ -9,7 +9,7 @@ export type RequestConfig = {
 
 export type ResponseBase = {
   status: ResponseStatus,
-  meta: Pagination
+  meta: Pagination,
 };
 
 export type ResponseStatus = 'success' | 'fail' | 'error';
@@ -19,6 +19,6 @@ export type Pagination = {
     totalPages: number,
     page: number,
     perPage: number,
-    totalEntries: number
-  }
+    totalEntries: number,
+  },
 };

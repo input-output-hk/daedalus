@@ -4,9 +4,9 @@ import { inject, observer } from 'mobx-react';
 import DisplaySettings from '../../../components/settings/categories/DisplaySettings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class DisplaySettingsPage extends Component<InjectedProps> {
-
   static defaultProps = { actions: null, stores: null };
 
   selectTheme = (values: { theme: string }) => {
@@ -17,11 +17,7 @@ export default class DisplaySettingsPage extends Component<InjectedProps> {
     const { currentTheme } = this.props.stores.profile;
 
     return (
-      <DisplaySettings
-        theme={currentTheme}
-        selectTheme={this.selectTheme}
-      />
+      <DisplaySettings theme={currentTheme} selectTheme={this.selectTheme} />
     );
   }
-
 }

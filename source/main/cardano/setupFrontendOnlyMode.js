@@ -6,8 +6,9 @@ import {
   cardanoFaultInjectionChannel,
   cardanoRestartChannel,
   cardanoStateChangeChannel,
-  cardanoStatusChannel,
-  cardanoTlsConfigChannel
+  getCachedCardanoStatusChannel,
+  cardanoTlsConfigChannel,
+  setCachedCardanoStatusChannel,
 } from '../ipc/cardano.ipc';
 import { Logger } from '../utils/logging';
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
@@ -32,18 +33,23 @@ export const setupFrontendOnlyMode = (mainWindow: BrowserWindow) => {
     port: cardanoPort,
   };
 
-  cardanoStatusChannel.onRequest(() => {
+  getCachedCardanoStatusChannel.onRequest(() => {
     Logger.info('ipcMain: Received request from renderer for cardano status');
     return Promise.resolve(null);
   });
 
-  cardanoStatusChannel.onReceive((status: CardanoStatus) => {
-    Logger.info('ipcMain: Received request from renderer to cache cardano status', { status });
-    return Promise.resolve(status);
+  setCachedCardanoStatusChannel.onReceive((status: ?CardanoStatus) => {
+    Logger.info(
+      'ipcMain: Received request from renderer to cache cardano status',
+      { status }
+    );
+    return Promise.resolve();
   });
 
   cardanoStateChangeChannel.onRequest(() => {
-    Logger.info('ipcMain: Received request from renderer for node state', { state: CardanoNodeStates.RUNNING });
+    Logger.info('ipcMain: Received request from renderer for node state', {
+      state: CardanoNodeStates.RUNNING,
+    });
     return Promise.resolve(CardanoNodeStates.RUNNING);
   });
 
@@ -69,8 +75,11 @@ export const setupFrontendOnlyMode = (mainWindow: BrowserWindow) => {
     return Promise.resolve();
   });
 
-  cardanoFaultInjectionChannel.onReceive((fault) => {
-    Logger.info('ipcMain: Received request to inject a fault into cardano node', { fault });
+  cardanoFaultInjectionChannel.onReceive(fault => {
+    Logger.info(
+      'ipcMain: Received request to inject a fault into cardano node',
+      { fault }
+    );
     return Promise.reject(fault);
   });
 

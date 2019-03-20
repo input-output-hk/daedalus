@@ -26,10 +26,7 @@ export class Address extends Component<Props> {
     ]);
     return (
       <div className={addressClasses}>
-        <div
-          className={styles.addressId}
-          id={`address-${address.id}`}
-        >
+        <div className={styles.addressId} id={`address-${address.id}`}>
           {address.id}
         </div>
         <div className={styles.addressActions}>

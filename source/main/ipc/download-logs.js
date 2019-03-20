@@ -1,19 +1,28 @@
 // @flow
-import { ipcMain } from 'electron';
 import fs from 'fs';
-import { DOWNLOAD_LOGS } from '../../common/ipc-api';
+import { MainIpcChannel } from './lib/MainIpcChannel';
+import type {
+  DownloadLogsRequest,
+  DownloadLogsResponse,
+} from '../../common/ipc/api';
+import { DOWNLOAD_LOGS_CHANNEL } from '../../common/ipc/api';
+
+export const downloadLogsChannel: MainIpcChannel<
+  DownloadLogsRequest,
+  DownloadLogsResponse
+> = new MainIpcChannel(DOWNLOAD_LOGS_CHANNEL);
 
 export default () => {
-  ipcMain.on(DOWNLOAD_LOGS.REQUEST, (event, source, destination) => {
-    const sender = event.sender;
+  downloadLogsChannel.onRequest(request => {
+    const { compressedLogsFilePath, destinationPath } = request;
 
-    if (!fs.existsSync(source)) {
-      return sender.send(DOWNLOAD_LOGS.ERROR, { message: 'File does not exist' });
+    if (!fs.existsSync(compressedLogsFilePath)) {
+      return Promise.reject('File does not exist');
     }
 
-    const file = fs.readFileSync(source);
-    fs.writeFileSync(destination, file);
+    const file = fs.readFileSync(compressedLogsFilePath);
+    fs.writeFileSync(destinationPath, file);
 
-    return sender.send(DOWNLOAD_LOGS.SUCCESS, { source, destination });
+    return Promise.resolve();
   });
 };

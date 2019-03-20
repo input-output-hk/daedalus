@@ -1,5 +1,4 @@
 // @flow
-import { ipcMain } from 'electron';
 import { includes, sortBy } from 'lodash';
 import fs from 'fs';
 import path from 'path';
@@ -11,26 +10,32 @@ import {
   ALLOWED_LAUNCHER_LOGS,
   MAX_LAUNCHER_LOGS_ALLOWED,
 } from '../config';
-import { GET_LOGS } from '../../common/ipc-api';
+import { MainIpcChannel } from './lib/MainIpcChannel';
+import { GET_LOGS_CHANNEL } from '../../common/ipc/api';
+import type { GetLogsRequest, GetLogsResponse } from '../../common/ipc/api';
+import type { LogFiles } from '../../renderer/app/types/LogTypes';
+
+// IpcChannel<Incoming, Outgoing>
+
+export const getLogsChannel: MainIpcChannel<
+  GetLogsRequest,
+  GetLogsResponse
+> = new MainIpcChannel(GET_LOGS_CHANNEL);
 
 const isFileAllowed = (fileName: string) => includes(ALLOWED_LOGS, fileName);
 
-const isFileNodeLog = (fileName: string, nodeLogsIncluded: number) => (
-  ALLOWED_NODE_LOGS.test(fileName) && nodeLogsIncluded < MAX_NODE_LOGS_ALLOWED
-);
+const isFileNodeLog = (fileName: string, nodeLogsIncluded: number) =>
+  ALLOWED_NODE_LOGS.test(fileName) && nodeLogsIncluded < MAX_NODE_LOGS_ALLOWED;
 
-const isFileLauncherLog = (fileName: string, nodeLogsIncluded: number) => (
-  ALLOWED_LAUNCHER_LOGS.test(fileName) && nodeLogsIncluded < MAX_LAUNCHER_LOGS_ALLOWED
-);
+const isFileLauncherLog = (fileName: string, nodeLogsIncluded: number) =>
+  ALLOWED_LAUNCHER_LOGS.test(fileName) &&
+  nodeLogsIncluded < MAX_LAUNCHER_LOGS_ALLOWED;
 
 export default () => {
-  ipcMain.on(GET_LOGS.REQUEST, (event) => {
-    const sender = event.sender;
-
+  getLogsChannel.onRequest(() => {
     // check if pub folder exists and create array of log file names
-    const logFiles = [];
+    const logFiles: Array<string> = [];
     if (fs.existsSync(pubLogsFolderPath)) {
-
       const files = fs
         .readdirSync(pubLogsFolderPath)
         .sort()
@@ -55,15 +60,18 @@ export default () => {
       }
     }
 
-    const logs = {
+    const logs: LogFiles = {
       path: pubLogsFolderPath,
-      files: sortBy(logFiles, (log) => {
-        // custom file sorting which enforces correct ordering (like in ALLOWED_LOGS)
-        const nameSegments = log.split('.');
-        return nameSegments.shift() + nameSegments.join('').length;
-      }),
+      files: sortBy(
+        logFiles,
+        (log: string): string => {
+          // custom file sorting which enforces correct ordering (like in ALLOWED_LOGS)
+          const nameSegments = log.split('.');
+          return nameSegments.shift() + nameSegments.join('').length;
+        }
+      ),
     };
 
-    return sender.send(GET_LOGS.SUCCESS, logs);
+    return Promise.resolve(logs);
   });
 };

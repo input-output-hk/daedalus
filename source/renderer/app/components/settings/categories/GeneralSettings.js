@@ -14,7 +14,7 @@ const messages = defineMessages({
   languageSelectLabel: {
     id: 'settings.general.languageSelect.label',
     defaultMessage: '!!!Language',
-    description: 'Label for the language select.'
+    description: 'Label for the language select.',
   },
 });
 
@@ -28,7 +28,6 @@ type Props = {
 
 @observer
 export default class GeneralSettings extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -37,18 +36,21 @@ export default class GeneralSettings extends Component<Props> {
     this.props.onSelectLanguage({ locale: values });
   };
 
-  form = new ReactToolboxMobxForm({
-    fields: {
-      languageId: {
-        label: this.context.intl.formatMessage(messages.languageSelectLabel),
-        value: this.props.currentLocale,
-      }
-    }
-  }, {
-    options: {
-      validateOnChange: false,
+  form = new ReactToolboxMobxForm(
+    {
+      fields: {
+        languageId: {
+          label: this.context.intl.formatMessage(messages.languageSelectLabel),
+          value: this.props.currentLocale,
+        },
+      },
     },
-  });
+    {
+      options: {
+        validateOnChange: false,
+      },
+    }
+  );
 
   render() {
     const { languages, isSubmitting, error } = this.props;
@@ -57,7 +59,7 @@ export default class GeneralSettings extends Component<Props> {
     const languageId = form.$('languageId');
     const languageOptions = languages.map(language => ({
       value: language.value,
-      label: intl.formatMessage(language.label)
+      label: intl.formatMessage(language.label),
     }));
     const componentClassNames = classNames([styles.component, 'general']);
     const languageSelectClassNames = classNames([
@@ -66,7 +68,6 @@ export default class GeneralSettings extends Component<Props> {
     ]);
     return (
       <div className={componentClassNames}>
-
         <Select
           className={languageSelectClassNames}
           options={languageOptions}
@@ -76,9 +77,7 @@ export default class GeneralSettings extends Component<Props> {
         />
 
         {error && <p className={styles.error}>{error}</p>}
-
       </div>
     );
   }
-
 }

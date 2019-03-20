@@ -9,12 +9,7 @@ import WalletRestoreDialog from '../../source/renderer/app/components/wallet/Wal
 import WalletFileImportDialog from '../../source/renderer/app/components/wallet/file-import/WalletFileImportDialog';
 
 storiesOf('AddWallet', module)
-
-  .addDecorator((story) => (
-    <StoryDecorator>
-      {story()}
-    </StoryDecorator>
-  ))
+  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 

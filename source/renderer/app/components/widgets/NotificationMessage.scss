@@ -21,7 +21,7 @@
   cursor: pointer;
   &:hover {
     .closeButton {
-      opacity: .8;
+      opacity: 0.8;
     }
   }
 }
@@ -51,9 +51,9 @@
   position: absolute;
   right: 20px;
   top: 25.5px;
-  opacity: .5;
+  opacity: 0.5;
   &:hover {
-    opacity: .8;
+    opacity: 0.8;
   }
 
   svg {

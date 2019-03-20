@@ -7,9 +7,9 @@ import type { InjectedContainerProps } from '../types/injectedPropsType';
 
 type Props = InjectedContainerProps;
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class Root extends Component<Props> {
-
   render() {
     const { stores, actions, children } = this.props;
     const { networkStatus, profile, adaRedemption, app, wallets } = stores;
@@ -18,14 +18,16 @@ export default class Root extends Component<Props> {
     const { isAdaRedemptionPage } = adaRedemption;
     const { hasLoadedWallets } = wallets;
     const {
-      isSynced, isNodeStopping, isNodeStopped,
-      isSystemTimeCorrect, isNotEnoughDiskSpace,
+      isSynced,
+      isNodeStopping,
+      isNodeStopped,
+      isSystemTimeCorrect,
+      isNotEnoughDiskSpace,
     } = networkStatus;
 
-    const isPageThatDoesntNeedWallets = (
+    const isPageThatDoesntNeedWallets =
       isBlockConsolidationStatusPage ||
-      (isAdaRedemptionPage && hasLoadedWallets && isSynced)
-    );
+      (isAdaRedemptionPage && hasLoadedWallets && isSynced);
 
     // In case node is in stopping sequence we must show the "Connecting" screen
     // with the "Stopping Cardano node..." and "Cardano node stopped" messages

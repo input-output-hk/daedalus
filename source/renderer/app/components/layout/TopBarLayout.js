@@ -12,18 +12,13 @@ type Props = {
 
 @observer
 export default class TopBarLayout extends Component<Props> {
-
   render() {
     const { children, topbar, notification } = this.props;
     return (
       <div className={styles.component}>
-        <div className={styles.topbar}>
-          {topbar}
-        </div>
+        <div className={styles.topbar}>{topbar}</div>
         {notification}
-        <div className={styles.content}>
-          {children}
-        </div>
+        <div className={styles.content}>{children}</div>
       </div>
     );
   }

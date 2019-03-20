@@ -38,7 +38,9 @@ export default class App extends Component<{
         <ThemeManager variables={themeVars} />
         <Provider stores={stores} actions={actions}>
           <ThemeProvider theme={daedalusTheme} themeOverrides={themeOverrides}>
-            <IntlProvider {...{ locale, key: locale, messages: translations[locale] }}>
+            <IntlProvider
+              {...{ locale, key: locale, messages: translations[locale] }}
+            >
               <Fragment>
                 <Router history={history} routes={Routes} />
                 {mobxDevTools}

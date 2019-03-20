@@ -15,13 +15,16 @@ const messages = defineMessages({
     id: 'wallet.backup.recovery.phrase.display.dialog.backup.instructions',
     defaultMessage: `!!!Please, make sure you have carefully written down your recovery phrase somewhere safe.
     You will need this phrase later for next use and recover. Phrase is case sensitive.`,
-    description: 'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.'
+    description:
+      'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.',
   },
   buttonLabelIHaveWrittenItDown: {
-    id: 'wallet.backup.recovery.phrase.display.dialog.button.label.iHaveWrittenItDown',
+    id:
+      'wallet.backup.recovery.phrase.display.dialog.button.label.iHaveWrittenItDown',
     defaultMessage: '!!!Yes, I’ve written it down',
-    description: 'Label for button "Yes, I’ve written it down" on wallet backup dialog'
-  }
+    description:
+      'Label for button "Yes, I’ve written it down" on wallet backup dialog',
+  },
 });
 
 type Props = {
@@ -32,18 +35,13 @@ type Props = {
 
 @observer
 export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   render() {
     const { intl } = this.context;
-    const {
-      recoveryPhrase,
-      onStartWalletBackup,
-      onCancelBackup,
-    } = this.props;
+    const { recoveryPhrase, onStartWalletBackup, onCancelBackup } = this.props;
     const dialogClasses = classnames([
       styles.component,
       'WalletRecoveryPhraseDisplayDialog',
@@ -53,8 +51,8 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> 
       {
         label: intl.formatMessage(messages.buttonLabelIHaveWrittenItDown),
         onClick: onStartWalletBackup,
-        primary: true
-      }
+        primary: true,
+      },
     ];
 
     return (
@@ -67,11 +65,12 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> 
         closeButton={<DialogCloseButton onClose={onCancelBackup} />}
       >
         <WalletRecoveryInstructions
-          instructionsText={<FormattedHTMLMessage {...messages.backupInstructions} />}
+          instructionsText={
+            <FormattedHTMLMessage {...messages.backupInstructions} />
+          }
         />
         <WalletRecoveryPhraseMnemonic phrase={recoveryPhrase} />
       </Dialog>
     );
   }
-
 }

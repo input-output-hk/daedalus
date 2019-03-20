@@ -10,7 +10,8 @@ const messages = defineMessages({
   blocksSynced: {
     id: 'cardano.node.sync.status.blocksSynced',
     defaultMessage: '!!!Blocks synced {percentage}%',
-    description: 'Label for the blocks synced info overlay on node sync status icon.'
+    description:
+      'Label for the blocks synced info overlay on node sync status icon.',
   },
 });
 
@@ -23,9 +24,8 @@ type Props = {
 };
 
 export default class NodeSyncStatusIcon extends Component<Props> {
-
   static contextTypes = {
-    intl: intlShape.isRequired
+    intl: intlShape.isRequired,
   };
 
   render() {
@@ -42,7 +42,9 @@ export default class NodeSyncStatusIcon extends Component<Props> {
       <div className={componentClasses}>
         <img className={styles.icon} src={statusIcon} role="presentation" />
         <div className={styles.info}>
-          {intl.formatMessage(messages.blocksSynced, { percentage: syncPercentage.toFixed(0) })}
+          {intl.formatMessage(messages.blocksSynced, {
+            percentage: syncPercentage.toFixed(0),
+          })}
         </div>
       </div>
     );

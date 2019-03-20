@@ -12,10 +12,13 @@ export type CreateAddressParams = {
 export const createAddress = (
   config: RequestConfig,
   { spendingPassword, accountIndex, walletId }: CreateAddressParams
-): Promise<Address> => (
-  request({
-    method: 'POST',
-    path: '/api/v1/addresses',
-    ...config,
-  }, {}, { spendingPassword, accountIndex, walletId })
-);
+): Promise<Address> =>
+  request(
+    {
+      method: 'POST',
+      path: '/api/v1/addresses',
+      ...config,
+    },
+    {},
+    { spendingPassword, accountIndex, walletId }
+  );
