@@ -11,35 +11,13 @@ type Props = InjectedProps;
 export default class WalletSettingsPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
-  render() {
-    const allStakes = 0;
-    const boundType = 'Log10';
-    const histogram = {
-      '10': 0,
-      '100': 0,
-      '1000': 0,
-      '10000': 0,
-      '100000': 0,
-      '1000000': 0,
-      '10000000': 0,
-      '100000000': 0,
-      '1000000000': 0,
-      '10000000000': 0,
-      '100000000000': 0,
-      '1000000000000': 0,
-      '10000000000000': 0,
-      '100000000000000': 0,
-      '1000000000000000': 0,
-      '10000000000000000': 0,
-      '45000000000000000': 0,
-    };
+  constructor(props: any) {
+    super(props);
+    this.props.actions.walletSettings.getWalletUtxos.trigger();
+  }
 
-    return (
-      <WalletUtxoSettings
-        allStakes={allStakes}
-        boundType={boundType}
-        histogram={histogram}
-      />
-    );
+  render() {
+    const { walletUtxos } = this.props.stores.walletSettings;
+    return <WalletUtxoSettings walletUtxos={walletUtxos} />;
   }
 }

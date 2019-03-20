@@ -19,7 +19,7 @@ type Props = InjectedContainerProps;
 export default class Wallet extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
-  constructor(props) {
+  constructor(props: any) {
     super(props);
 
     this.isSettingsPage = this.getIsSettingsPage;
@@ -43,7 +43,6 @@ export default class Wallet extends Component<Props> {
   handleWalletNavItemClick = (page: string) => {
     const { wallets } = this.props.stores;
     if (!wallets.active) return;
-    this.currentTab = page;
     this.props.actions.router.goToRoute.trigger({
       route: ROUTES.WALLETS.PAGE,
       params: { id: wallets.active.id, page },

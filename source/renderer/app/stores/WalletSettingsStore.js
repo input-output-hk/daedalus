@@ -1,11 +1,12 @@
 // @flow
-import { observable, action } from 'mobx';
+import { observable, action, runInAction } from 'mobx';
 import { findIndex } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import globalMessages from '../i18n/global-messages';
 import Wallet, { WalletAssuranceModeOptions } from '../domains/Wallet';
 import type { WalletExportToFileParams } from '../actions/wallet-settings-actions';
+import type { WalletUtxos } from '../api/wallets/types';
 
 export default class WalletSettingsStore extends Store {
   WALLET_ASSURANCE_LEVEL_OPTIONS = [
@@ -29,10 +30,15 @@ export default class WalletSettingsStore extends Store {
   @observable exportWalletToFileRequest: Request<Promise<[]>> = new Request(
     this.api.ada.exportWalletToFile
   );
+  @observable getWalletUtxosRequest: Request<WalletUtxos> = new Request(
+    this.api.ada.getWalletUtxos
+  );
+
   /* eslint-enable max-len */
 
   @observable walletFieldBeingEdited = null;
   @observable lastUpdatedWalletField = null;
+  @observable walletUtxos: ?WalletUtxos = null;
 
   setup() {
     const a = this.actions.walletSettings;
@@ -42,6 +48,7 @@ export default class WalletSettingsStore extends Store {
     a.updateWalletField.listen(this._updateWalletField);
     a.updateSpendingPassword.listen(this._updateSpendingPassword);
     a.exportToFile.listen(this._exportToFile);
+    a.getWalletUtxos.listen(this._getWalletUtxos);
   }
 
   @action _startEditingWalletField = ({ field }: { field: string }) => {
@@ -117,5 +124,16 @@ export default class WalletSettingsStore extends Store {
       password,
     });
     this.actions.dialogs.closeActiveDialog.trigger();
+  };
+
+  @action _getWalletUtxos = async () => {
+    this.walletUtxos = null;
+    const activeWallet = this.stores.wallets.active;
+    if (!activeWallet) return;
+    const { id: walletId } = activeWallet;
+    const walletUtxos = await this.getWalletUtxosRequest.execute({ walletId });
+    runInAction(() => {
+      this.walletUtxos = walletUtxos;
+    });
   };
 }

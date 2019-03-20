@@ -36,6 +36,30 @@ export type WalletSyncState = {
   tag: SyncStateTag,
 };
 
+export type WalletUtxos = {
+  allStakes: number,
+  boundType: string,
+  histogram: {
+    '10': number,
+    '100': number,
+    '1000': number,
+    '10000': number,
+    '100000': number,
+    '1000000': number,
+    '10000000': number,
+    '100000000': number,
+    '1000000000': number,
+    '10000000000': number,
+    '100000000000': number,
+    '1000000000000': number,
+    '10000000000000': number,
+    '100000000000000': number,
+    '1000000000000000': number,
+    '10000000000000000': number,
+    '45000000000000000': number,
+  },
+};
+
 // req/res Wallet types
 export type CreateWalletRequest = {
   name: string,
@@ -50,6 +74,10 @@ export type UpdateSpendingPasswordRequest = {
 };
 
 export type DeleteWalletRequest = {
+  walletId: string,
+};
+
+export type GetWalletUtxosRequest = {
   walletId: string,
 };
 

@@ -20,4 +20,5 @@ export default class WalletSettingsActions {
     newPassword: ?string,
   }> = new Action();
   exportToFile: Action<WalletExportToFileParams> = new Action();
+  getWalletUtxos: Action<any> = new Action();
 }

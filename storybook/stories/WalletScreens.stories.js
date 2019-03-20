@@ -53,6 +53,9 @@ storiesOf('WalletScreens', module)
                 onWalletNavItemClick={linkTo('WalletScreens', item =>
                   startCase(item)
                 )}
+                isSettingsPage={
+                  context.story.toLocaleLowerCase() === 'settings'
+                }
               >
                 {storyWithKnobs}
               </WalletWithNavigation>

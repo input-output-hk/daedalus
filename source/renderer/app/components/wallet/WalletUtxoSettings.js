@@ -3,13 +3,12 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './WalletUtxoSettings.scss';
+import type { WalletUtxos } from '../../api/wallets/types';
 
 export const messages = defineMessages({});
 
 type Props = {
-  allStakes: number,
-  histogram: Object,
-  boundType: string,
+  walletUtxos: ?WalletUtxos,
 };
 
 @observer
@@ -19,7 +18,11 @@ export default class WalletUtxoSettings extends Component<Props> {
   };
 
   render() {
-    const { allStakes, histogram, boundType } = this.props;
+    const { walletUtxos } = this.props;
+
+    if (!walletUtxos) return <div className={styles.component}>Loading...</div>;
+
+    const { allStakes, histogram, boundType } = walletUtxos;
     return (
       <div className={styles.component}>
         <pre>
