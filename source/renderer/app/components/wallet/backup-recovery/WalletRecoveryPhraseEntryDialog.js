@@ -148,7 +148,7 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
 
               return (
                 <MnemonicWord
-                  key={index}
+                  key={word.id}
                   word={word}
                   index={index}
                   isActive={isActive != null ? isActive : false}

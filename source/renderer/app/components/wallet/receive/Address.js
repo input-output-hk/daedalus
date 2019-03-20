@@ -20,7 +20,7 @@ export class Address extends Component<Props> {
   render() {
     const { address, onCopyAddress, copyAddressLabel, index } = this.props;
     const addressClasses = classnames([
-      'generatedAddress-' + (index + 1),
+      `generatedAddress-${index + 1}`,
       styles.component,
       address.used ? styles.usedWalletAddress : null,
     ]);

@@ -301,7 +301,7 @@ export default class AdaRedemptionForm extends Component<Props> {
           validators: ({ field }) => {
             if (this.props.redemptionType !== ADA_REDEMPTION_TYPES.PAPER_VENDED)
               return [true];
-            const value = field.value;
+            const { value } = field;
             if (value === '')
               return [
                 false,

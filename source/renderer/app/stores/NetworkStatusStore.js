@@ -277,7 +277,7 @@ export default class NetworkStatusStore extends Store {
       case CardanoNodeStates.STOPPING:
       case CardanoNodeStates.EXITING:
       case CardanoNodeStates.UPDATING:
-        runInAction('reset _tlsConfig', () => (this._tlsConfig = null));
+        runInAction('reset _tlsConfig', () => {this._tlsConfig = null});
         this._setDisconnected(wasConnected);
         break;
       default:
@@ -534,7 +534,7 @@ export default class NetworkStatusStore extends Store {
           if (!this.hasBeenConnected) {
             runInAction(
               'update hasBeenConnected',
-              () => (this.hasBeenConnected = true)
+              () => {this.hasBeenConnected = true}
             );
           }
           Logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
@@ -565,7 +565,7 @@ export default class NetworkStatusStore extends Store {
       if (!this.hasBeenConnected) {
         runInAction(
           'update hasBeenConnected',
-          () => (this.hasBeenConnected = true)
+          () => {this.hasBeenConnected = true}
         );
       }
       Logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');

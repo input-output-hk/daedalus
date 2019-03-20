@@ -311,14 +311,14 @@ export default class VerificationDialog extends Component<Props, State> {
   }
 
   onStoringConfirmationChange = () => {
-    this.setState({
-      storingConfirmed: !this.state.storingConfirmed,
-    });
+    this.setState(
+      prevState => ({storingConfirmed: !prevState.storingConfirmed})
+    );
   };
 
   onRecoveringConfirmationChange = () => {
-    this.setState({
-      recoveringConfirmed: !this.state.recoveringConfirmed,
-    });
+    this.setState(
+      prevState => ({recoveringConfirmed: !prevState.recoveringConfirmed})
+    );
   };
 }

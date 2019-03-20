@@ -45,7 +45,7 @@ export default class Request<Result, Error> {
 
     // Issue api call & save it as promise that is handled to update the results of the operation
     this.promise = new Promise((resolve, reject) => {
-      if (!this._method) reject('Request method not defined');
+      if (!this._method) reject(new Error('Request method not defined'));
       this._method(...callArgs)
         .then(result => {
           setTimeout(

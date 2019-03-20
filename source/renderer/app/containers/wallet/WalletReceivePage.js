@@ -68,7 +68,7 @@ export default class WalletReceivePage extends Component<Props, State> {
 
   render() {
     const { copiedAddress } = this.state;
-    const actions = this.props.actions;
+    const { actions } = this.props;
     const { sidebar, uiNotifications, wallets, addresses } = this.props.stores;
     const wallet = wallets.active;
 

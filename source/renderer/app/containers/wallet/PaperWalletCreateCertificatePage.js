@@ -117,7 +117,7 @@ export default class PaperWalletCreateCertificatePage extends Component<
   };
 
   onBack = () => {
-    const prevStep = this.state.currentStep ? this.state.currentStep - 1 : 0;
+    const prevStep =  this.state.currentStep ? this.state.currentStep - 1 : 0;
     const prevDialog = this.CREATE_CERTIFICATE_DIALOGS[prevStep];
     this.setState({ currentStep: prevStep });
     this.switchDialog(prevDialog);
