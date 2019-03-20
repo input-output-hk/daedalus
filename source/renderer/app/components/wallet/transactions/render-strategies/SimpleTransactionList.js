@@ -20,8 +20,9 @@ export class SimpleTransactionList extends Component<Props> {
     const { rows, renderRow } = this.props;
     return (
       <div className={styles.component}>
-        {rows.map((row) => (
-          <div key={row.id}>{renderRow(row)}</div>
+        {rows.map((row, index) => (
+          // eslint-disable-next-line
+          <div key={index}>{renderRow(row)}</div>
         ))}
       </div>
     );
