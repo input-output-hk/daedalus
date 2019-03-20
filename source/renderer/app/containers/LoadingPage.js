@@ -52,6 +52,10 @@ export default class LoadingPage extends Component<InjectedProps> {
     const { intl } = this.context;
     const {
       cardanoNodeState,
+      isNodeResponding,
+      isNodeSubscribed,
+      isNodeSyncing,
+      isNodeTimeCorrect,
       isConnected,
       isSynced,
       syncPercentage,
@@ -99,6 +103,10 @@ export default class LoadingPage extends Component<InjectedProps> {
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           currentLocale={currentLocale}
           onExternalLinkClick={stores.app.openExternalLink}
+          isNodeResponding={isNodeResponding}
+          isNodeSubscribed={isNodeSubscribed}
+          isNodeSyncing={isNodeSyncing}
+          isNodeTimeCorrect={isNodeTimeCorrect}
           onReportIssueClick={this.handleReportIssueClick}
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
           onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
