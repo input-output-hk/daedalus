@@ -352,6 +352,8 @@
   "wallet.settings.exportToFile.dialog.introduction": "!!!You are exporting <strong>{walletName}</strong> to a file.",
   "wallet.settings.exportToFile.dialog.submit.label": "!!!Export",
   "wallet.settings.exportWalletButtonLabel": "!!!Export wallet",
+  "wallet.settings.menu.general.link.label": "!!!General",
+  "wallet.settings.menu.utxo.link.label": "!!!Wallet UTxO distribution",
   "wallet.settings.name.label": "!!!Name",
   "wallet.settings.password": "!!!Password",
   "wallet.settings.passwordLastUpdated": "!!!Last updated",

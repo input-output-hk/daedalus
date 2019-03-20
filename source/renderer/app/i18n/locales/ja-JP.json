@@ -352,6 +352,8 @@
   "wallet.settings.exportToFile.dialog.introduction": "<strong>{walletName}</strong>をファイルにエクスポートします",
   "wallet.settings.exportToFile.dialog.submit.label": "エクスポート",
   "wallet.settings.exportWalletButtonLabel": "ウォレットのエクスポート",
+  "wallet.settings.menu.general.link.label": "!!!General",
+  "wallet.settings.menu.utxo.link.label": "!!!Wallet UTxO distribution",
   "wallet.settings.name.label": "ウォレット名",
   "wallet.settings.password": "パスワード",
   "wallet.settings.passwordLastUpdated": "最終更新 {lastUpdated}",

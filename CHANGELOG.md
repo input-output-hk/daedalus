@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented the wallet UTxO statistics screen ([PR 1353](https://github.com/input-output-hk/daedalus/pull/1353))
 - Implemented detection for system locale on Daedalus start when user hasn't yet selected language preference so that locale defaults to Japanese if system locale is Japan/Japanese, otherwise defaults to English ([PR 1348](https://github.com/input-output-hk/daedalus/pull/1348))
 
 ### Chores
@@ -21,7 +22,6 @@ Changelog
 
 ### Features
 
-- Implemented the wallet UTxO statistics screen
 - New validation message for transactions which are to big in data size ([PR 1308](https://github.com/input-output-hk/daedalus/pull/1308), [PR 1331](https://github.com/input-output-hk/daedalus/pull/1331))
 - Structured logging for Daedalus in JSON format, matching the structured logging format used in Cardano SL ([PR 1299](https://github.com/input-output-hk/daedalus/pull/1299))
 - Additional instructions for paper wallet certificate creation ([PR 1309](https://github.com/input-output-hk/daedalus/pull/1309))

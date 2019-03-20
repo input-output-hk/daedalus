@@ -2433,6 +2433,39 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!General",
+        "description": "Label for the \"General\" link in the settings menu.",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/wallet/menu/WalletSettingsMenu.js",
+        "id": "wallet.settings.menu.general.link.label",
+        "start": {
+          "column": 11,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!Wallet UTxO distribution",
+        "description": "Label for the \"Support\" link in the settings menu.",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/wallet/menu/WalletSettingsMenu.js",
+        "id": "wallet.settings.menu.utxo.link.label",
+        "start": {
+          "column": 8,
+          "line": 15
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/menu/WalletSettingsMenu.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Summary",
         "description": "Label for the \"Summary\" nav button in the wallet navigation.",
         "end": {
@@ -4259,6 +4292,95 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Name",
+        "description": "Label for the \"Name\" text input on the wallet settings page.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/wallet/WalletGeneralSettings.js",
+        "id": "wallet.settings.name.label",
+        "start": {
+          "column": 8,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Transaction assurance security level",
+        "description": "Label for the \"Transaction assurance security level\" dropdown.",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/wallet/WalletGeneralSettings.js",
+        "id": "wallet.settings.assurance",
+        "start": {
+          "column": 23,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Password",
+        "description": "Label for the \"Password\" field.",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/wallet/WalletGeneralSettings.js",
+        "id": "wallet.settings.password",
+        "start": {
+          "column": 17,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!Last updated",
+        "description": "Last updated X time ago message.",
+        "end": {
+          "column": 3,
+          "line": 40
+        },
+        "file": "source/renderer/app/components/wallet/WalletGeneralSettings.js",
+        "id": "wallet.settings.passwordLastUpdated",
+        "start": {
+          "column": 23,
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!You still don't have password",
+        "description": "You still don't have password set message.",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "source/renderer/app/components/wallet/WalletGeneralSettings.js",
+        "id": "wallet.settings.passwordNotSet",
+        "start": {
+          "column": 18,
+          "line": 41
+        }
+      },
+      {
+        "defaultMessage": "!!!Export wallet",
+        "description": "Label for the export button on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 50
+        },
+        "file": "source/renderer/app/components/wallet/WalletGeneralSettings.js",
+        "id": "wallet.settings.exportWalletButtonLabel",
+        "start": {
+          "column": 21,
+          "line": 46
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/WalletGeneralSettings.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Restore a wallet",
         "description": "Label \"Restore wallet\" on the wallet restore dialog.",
         "end": {
@@ -4802,95 +4924,6 @@
       }
     ],
     "path": "source/renderer/app/components/wallet/WalletSendForm.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Name",
-        "description": "Label for the \"Name\" text input on the wallet settings page.",
-        "end": {
-          "column": 3,
-          "line": 25
-        },
-        "file": "source/renderer/app/components/wallet/WalletSettings.js",
-        "id": "wallet.settings.name.label",
-        "start": {
-          "column": 8,
-          "line": 21
-        }
-      },
-      {
-        "defaultMessage": "!!!Transaction assurance security level",
-        "description": "Label for the \"Transaction assurance security level\" dropdown.",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/components/wallet/WalletSettings.js",
-        "id": "wallet.settings.assurance",
-        "start": {
-          "column": 23,
-          "line": 26
-        }
-      },
-      {
-        "defaultMessage": "!!!Password",
-        "description": "Label for the \"Password\" field.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/components/wallet/WalletSettings.js",
-        "id": "wallet.settings.password",
-        "start": {
-          "column": 17,
-          "line": 32
-        }
-      },
-      {
-        "defaultMessage": "!!!Last updated",
-        "description": "Last updated X time ago message.",
-        "end": {
-          "column": 3,
-          "line": 41
-        },
-        "file": "source/renderer/app/components/wallet/WalletSettings.js",
-        "id": "wallet.settings.passwordLastUpdated",
-        "start": {
-          "column": 23,
-          "line": 37
-        }
-      },
-      {
-        "defaultMessage": "!!!You still don't have password",
-        "description": "You still don't have password set message.",
-        "end": {
-          "column": 3,
-          "line": 46
-        },
-        "file": "source/renderer/app/components/wallet/WalletSettings.js",
-        "id": "wallet.settings.passwordNotSet",
-        "start": {
-          "column": 18,
-          "line": 42
-        }
-      },
-      {
-        "defaultMessage": "!!!Export wallet",
-        "description": "Label for the export button on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 51
-        },
-        "file": "source/renderer/app/components/wallet/WalletSettings.js",
-        "id": "wallet.settings.exportWalletButtonLabel",
-        "start": {
-          "column": 21,
-          "line": 47
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/WalletSettings.json"
   },
   {
     "descriptors": [
