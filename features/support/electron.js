@@ -139,5 +139,5 @@ AfterAll(async () => {
     );
     return;
   }
-  await context.app.stop();
+  return context.app.stop();
 });

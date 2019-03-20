@@ -663,7 +663,10 @@ export class CardanoNode {
     if (_node == null) {
       return Promise.resolve();
     }
-    return this._ensureProcessIsNotRunning(_node.pid, CARDANO_PROCESS_NAME);
+    return this._ensureProcessIsNotRunning(
+      _node.pid,
+      CARDANO_PROCESS_NAME
+    );
   };
 
   _ensurePreviousCardanoNodeIsNotRunning = async (): Promise<void> => {
@@ -676,7 +679,10 @@ export class CardanoNode {
     if (previousPID == null) {
       return Promise.resolve();
     }
-    return this._ensureProcessIsNotRunning(previousPID, CARDANO_PROCESS_NAME);
+    return this._ensureProcessIsNotRunning(
+      previousPID,
+      CARDANO_PROCESS_NAME
+    );
   };
 
   _isProcessRunning = async (
