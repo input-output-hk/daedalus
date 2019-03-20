@@ -13,7 +13,8 @@ const messages = defineMessages({
   themeLabel: {
     id: 'settings.display.themeLabel',
     defaultMessage: '!!!Theme',
-    description: 'Label for the "Theme" selection on the display settings page.',
+    description:
+      'Label for the "Theme" selection on the display settings page.',
   },
   themeLightBlue: {
     id: 'settings.display.themeNames.lightBlue',
@@ -39,7 +40,6 @@ type Props = {
 
 @observer
 export default class DisplaySettings extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -65,18 +65,20 @@ export default class DisplaySettings extends Component<Props> {
 
     return (
       <div className={styles.component}>
-
         <div className={styles.label}>
           {intl.formatMessage(messages.themeLabel)}
         </div>
 
         <div className={styles.themesWrapper}>
-
           <button
             className={themeLightBlueClasses}
             onClick={selectTheme.bind(this, { theme: THEMES.LIGHT_BLUE })}
           >
-            <img src={themeLightBluePreview} role="presentation" draggable="false" />
+            <img
+              src={themeLightBluePreview}
+              role="presentation"
+              draggable="false"
+            />
             <span>{intl.formatMessage(messages.themeLightBlue)}</span>
           </button>
 
@@ -84,7 +86,11 @@ export default class DisplaySettings extends Component<Props> {
             className={themeCardanoClasses}
             onClick={selectTheme.bind(this, { theme: THEMES.CARDANO })}
           >
-            <img src={themeCardanoPreview} role="presentation" draggable="false" />
+            <img
+              src={themeCardanoPreview}
+              role="presentation"
+              draggable="false"
+            />
             <span>{intl.formatMessage(messages.themeCardano)}</span>
           </button>
 
@@ -92,14 +98,15 @@ export default class DisplaySettings extends Component<Props> {
             className={themeDarkBlueClasses}
             onClick={selectTheme.bind(this, { theme: THEMES.DARK_BLUE })}
           >
-            <img src={themeDarkBluePreview} role="presentation" draggable="false" />
+            <img
+              src={themeDarkBluePreview}
+              role="presentation"
+              draggable="false"
+            />
             <span>{intl.formatMessage(messages.themeDarkBlue)}</span>
           </button>
-
         </div>
-
       </div>
     );
   }
-
 }

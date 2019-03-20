@@ -5,9 +5,9 @@ import GeneralSettings from '../../../components/settings/categories/GeneralSett
 import { rebuildApplicationMenu } from '../../../ipc/rebuild-application-menu.js';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class GeneralSettingsPage extends Component<InjectedProps> {
-
   static defaultProps = { actions: null, stores: null };
 
   onSelectLanguage = async (values: { locale: string }) => {
@@ -16,7 +16,11 @@ export default class GeneralSettingsPage extends Component<InjectedProps> {
   };
 
   render() {
-    const { setProfileLocaleRequest, LANGUAGE_OPTIONS, currentLocale } = this.props.stores.profile;
+    const {
+      setProfileLocaleRequest,
+      LANGUAGE_OPTIONS,
+      currentLocale,
+    } = this.props.stores.profile;
     const isSubmitting = setProfileLocaleRequest.isExecuting;
     return (
       <GeneralSettings
@@ -28,5 +32,4 @@ export default class GeneralSettingsPage extends Component<InjectedProps> {
       />
     );
   }
-
 }

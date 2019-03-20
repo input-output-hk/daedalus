@@ -34,11 +34,10 @@ type State = {
 
 @observer
 export default class StakingChart extends Component<Props, State> {
-
   state = {
     isHovered: false,
     hoveredBarData: null,
-    tooltipPos: null
+    tooltipPos: null,
   };
 
   onMouseMove(event: MouseEvent) {
@@ -46,8 +45,8 @@ export default class StakingChart extends Component<Props, State> {
       this.setState({
         tooltipPos: {
           left: event.pageX + 10,
-          top: event.pageY
-        }
+          top: event.pageY,
+        },
       });
     }
   }
@@ -60,7 +59,11 @@ export default class StakingChart extends Component<Props, State> {
     let tooltip = null;
     // TODO: find better way to represent the data records that are behind the reference line
     // for now this is the easiest way to ignore zero-bars in the chart
-    if (isHovered && hoveredBarData && hoveredBarData.numberOfTransactions > 0) {
+    if (
+      isHovered &&
+      hoveredBarData &&
+      hoveredBarData.numberOfTransactions > 0
+    ) {
       tooltip = (
         <div className={styles.toolTip} style={tooltipPos}>
           <StakingChartTooltip {...hoveredBarData} />
@@ -69,7 +72,10 @@ export default class StakingChart extends Component<Props, State> {
     }
 
     return (
-      <div className={styles.component} onMouseMove={this.onMouseMove.bind(this)}>
+      <div
+        className={styles.component}
+        onMouseMove={this.onMouseMove.bind(this)}
+      >
         <BarChart
           width={width}
           height={height}
@@ -78,10 +84,7 @@ export default class StakingChart extends Component<Props, State> {
           barCategoryGap={2}
           barGap={2}
         >
-          <XAxis
-            hide
-            dataKey="slot"
-          />
+          <XAxis hide dataKey="slot" />
           <YAxis
             axisLine={false}
             tickLine={false}
@@ -89,40 +92,34 @@ export default class StakingChart extends Component<Props, State> {
             ticks={ticks.slice()}
             domain={['dataMin', 'dataMax + 10']}
           />
-          <CustomReferenceLine
-            x={refLineSlot}
-            stroke="#5e6066"
-          />
+          <CustomReferenceLine x={refLineSlot} stroke="#5e6066" />
           <Bar
             dataKey="numberOfTransactions"
-            onMouseEnter={(barData) => this.setState({ isHovered: true, hoveredBarData: barData })}
-            onMouseLeave={() => this.setState({ isHovered: false, hoveredBarData: null })}
+            onMouseEnter={barData =>
+              this.setState({ isHovered: true, hoveredBarData: barData })
+            }
+            onMouseLeave={() =>
+              this.setState({ isHovered: false, hoveredBarData: null })
+            }
             minPointSize={2}
             isAnimationActive={false}
           >
-            {
-              data.slice().map((entry, index) => {
-                let fillColor = '#c2cad4';
-                let cursor = 'pointer';
-                if (index === activeIndex) fillColor = '#445b7c';
-                if (entry.numberOfTransactions === 0) {
-                  fillColor = '#e7eaee';
-                  cursor = 'default';
-                }
-                return (
-                  <Cell
-                    cursor={cursor}
-                    fill={fillColor}
-                    key={`cell-${index}`}
-                  />
-                );
-              })
-            }
+            {data.slice().map((entry, index) => {
+              let fillColor = '#c2cad4';
+              let cursor = 'pointer';
+              if (index === activeIndex) fillColor = '#445b7c';
+              if (entry.numberOfTransactions === 0) {
+                fillColor = '#e7eaee';
+                cursor = 'default';
+              }
+              return (
+                <Cell cursor={cursor} fill={fillColor} key={`cell-${index}`} />
+              );
+            })}
           </Bar>
         </BarChart>
         {tooltip}
       </div>
     );
   }
-
 }

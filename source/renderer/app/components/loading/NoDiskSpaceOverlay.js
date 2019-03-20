@@ -9,13 +9,14 @@ import styles from './NoDiskSpaceErrorOverlay.scss';
 const messages = defineMessages({
   overlayContent: {
     id: 'noDiskSpace.error.overlayContent',
-    defaultMessage: '!!!<b>Daedalus requires at least {diskSpaceRequired} of hard drive space to operate. Your computer is missing {diskSpaceMissing} of available space. Please delete some files to increase available hard drive space to continue using Daedalus. </b><br /><br />It is recommended to have at least 15% of hard drive space available ({diskSpaceRecommended} in your case) for normal and stable operation of the operating system and installed programs. We strongly recommend that you free up at least that amount of space from your hard drive.',
-    description: 'Content of No disk space overlay'
+    defaultMessage:
+      '!!!<b>Daedalus requires at least {diskSpaceRequired} of hard drive space to operate. Your computer is missing {diskSpaceMissing} of available space. Please delete some files to increase available hard drive space to continue using Daedalus. </b><br /><br />It is recommended to have at least 15% of hard drive space available ({diskSpaceRecommended} in your case) for normal and stable operation of the operating system and installed programs. We strongly recommend that you free up at least that amount of space from your hard drive.',
+    description: 'Content of No disk space overlay',
   },
   overlayTitle: {
     id: 'noDiskSpace.error.overlayTitle',
     defaultMessage: '!!!Daedalus requires more hard drive space',
-    description: 'Title of No disk space overlay'
+    description: 'Title of No disk space overlay',
   },
 });
 
@@ -27,14 +28,17 @@ type Props = {
 
 @observer
 export default class NoDiskSpaceErrorOverlay extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   render() {
     const { intl } = this.context;
-    const { diskSpaceRequired, diskSpaceMissing, diskSpaceRecommended } = this.props;
+    const {
+      diskSpaceRequired,
+      diskSpaceMissing,
+      diskSpaceRecommended,
+    } = this.props;
 
     return (
       <div className={styles.component}>
@@ -44,12 +48,15 @@ export default class NoDiskSpaceErrorOverlay extends Component<Props> {
           <p>
             <FormattedHTMLMessage
               {...messages.overlayContent}
-              values={{ diskSpaceRequired, diskSpaceMissing, diskSpaceRecommended }}
+              values={{
+                diskSpaceRequired,
+                diskSpaceMissing,
+                diskSpaceRecommended,
+              }}
             />
           </p>
         </div>
       </div>
     );
   }
-
 }

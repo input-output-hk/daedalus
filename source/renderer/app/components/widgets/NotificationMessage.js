@@ -17,15 +17,19 @@ export type Props = {
 };
 
 export default class NotificationMessage extends Component<Props> {
-
   static defaultProps = {
     order: 'auto',
   };
 
   render() {
     const {
-      icon, show, children, clickToClose,
-      hasCloseButton, onClose, order
+      icon,
+      show,
+      children,
+      clickToClose,
+      hasCloseButton,
+      onClose,
+      order,
     } = this.props;
 
     const notificationMessageStyles = classNames([
@@ -44,21 +48,19 @@ export default class NotificationMessage extends Component<Props> {
           zIndex: order,
         }}
       >
-
         {icon && <SVGInline svg={icon} className={styles.icon} />}
 
-        <div className={styles.message}>
-          {children}
-        </div>
+        <div className={styles.message}>{children}</div>
 
         {hasCloseButton && (
-          <button className={styles.closeButton} onClick={() => onClose && onClose()}>
+          <button
+            className={styles.closeButton}
+            onClick={() => onClose && onClose()}
+          >
             <SVGInline svg={closeCross} />
           </button>
         )}
-
       </div>
     );
   }
-
 }

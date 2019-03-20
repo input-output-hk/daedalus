@@ -13,7 +13,8 @@ const messages = defineMessages({
   supportRequestLinkUrl: {
     id: 'settings.support.reportProblem.linkUrl',
     defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/requests/new/',
-    description: '"submit a support request" link URL in the "Report a problem" section on the support settings page.',
+    description:
+      '"submit a support request" link URL in the "Report a problem" section on the support settings page.',
   },
   downloadLogsSuccess: {
     id: 'settings.support.reportProblem.downloadLogsSuccessMessage',
@@ -27,22 +28,28 @@ const messages = defineMessages({
   },
 });
 
-const DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID = 'settings-page-download-logs-progress';
-const DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID = 'settings-page-download-logs-success';
+const DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID =
+  'settings-page-download-logs-progress';
+const DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID =
+  'settings-page-download-logs-success';
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class SupportSettingsPage extends Component<InjectedProps> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   static defaultProps = { actions: null, stores: null };
 
-  handleSupportRequestClick = async (event: SyntheticEvent<HTMLButtonElement>) => {
+  handleSupportRequestClick = async (
+    event: SyntheticEvent<HTMLButtonElement>
+  ) => {
     event.persist();
     const { intl } = this.context;
-    const supportRequestLinkUrl = intl.formatMessage(messages.supportRequestLinkUrl);
+    const supportRequestLinkUrl = intl.formatMessage(
+      messages.supportRequestLinkUrl
+    );
     const locale = this.props.stores.profile.currentLocale;
     const supportUrl = await getSupportUrl(supportRequestLinkUrl, locale);
     this.props.stores.app.openExternalLink(supportUrl);
@@ -58,7 +65,6 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
     if (destination) {
       profile.downloadLogs.trigger({ fileName, destination, fresh: true });
     }
-
   };
 
   render() {
@@ -75,28 +81,30 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
         />
         <GenericNotification
           id={DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID}
-          show={stores.uiNotifications.isOpen(DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID)}
+          show={stores.uiNotifications.isOpen(
+            DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID
+          )}
           actionToListenAndOpen={actions.profile.downloadLogs}
           actionToListenAndClose={actions.profile.downloadLogsSuccess}
           openNotification={actions.notifications.open}
           closeNotification={actions.notifications.closeActiveNotification}
         >
-          { intl.formatMessage(messages.downloadLogsProgress) }
+          {intl.formatMessage(messages.downloadLogsProgress)}
         </GenericNotification>
         <GenericNotification
           id={DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID}
           duration={DOWNLOAD_LOGS_SUCCESS_DURATION}
-          show={stores.uiNotifications.isOpen(DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID)}
+          show={stores.uiNotifications.isOpen(
+            DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID
+          )}
           actionToListenAndOpen={actions.profile.downloadLogsSuccess}
           openNotification={actions.notifications.open}
           closeNotification={actions.notifications.closeActiveNotification}
           hasCloseButton
         >
-          { intl.formatMessage(messages.downloadLogsSuccess) }
+          {intl.formatMessage(messages.downloadLogsSuccess)}
         </GenericNotification>
-
       </Fragment>
     );
   }
-
 }

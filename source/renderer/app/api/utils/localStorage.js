@@ -25,109 +25,123 @@ export default class LocalStorageApi {
     };
   }
 
-  getUserLocale = (): Promise<string> => new Promise((resolve, reject) => {
-    try {
-      const locale = store.get(this.storageKeys.USER_LOCALE);
-      if (!locale) return resolve('');
-      resolve(locale);
-    } catch (error) {
-      return reject(error);
-    }
-  });
+  getUserLocale = (): Promise<string> =>
+    new Promise((resolve, reject) => {
+      try {
+        const locale = store.get(this.storageKeys.USER_LOCALE);
+        if (!locale) return resolve('');
+        resolve(locale);
+      } catch (error) {
+        return reject(error);
+      }
+    });
 
-  setUserLocale = (locale: string): Promise<void> => new Promise((resolve, reject) => {
-    try {
-      store.set(this.storageKeys.USER_LOCALE, locale);
-      resolve();
-    } catch (error) {
-      return reject(error);
-    }
-  });
+  setUserLocale = (locale: string): Promise<void> =>
+    new Promise((resolve, reject) => {
+      try {
+        store.set(this.storageKeys.USER_LOCALE, locale);
+        resolve();
+      } catch (error) {
+        return reject(error);
+      }
+    });
 
-  unsetUserLocale = (): Promise<void> => new Promise((resolve) => {
-    try {
-      store.delete(this.storageKeys.USER_LOCALE);
-      resolve();
-    } catch (error) {} // eslint-disable-line
-  });
+  unsetUserLocale = (): Promise<void> =>
+    new Promise(resolve => {
+      try {
+        store.delete(this.storageKeys.USER_LOCALE);
+        resolve();
+      } catch (error) {} // eslint-disable-line
+    });
 
-  getTermsOfUseAcceptance = (): Promise<boolean> => new Promise((resolve, reject) => {
-    try {
-      const accepted = store.get(this.storageKeys.TERMS_OF_USE_ACCEPTANCE);
-      if (!accepted) return resolve(false);
-      resolve(accepted);
-    } catch (error) {
-      return reject(error);
-    }
-  });
+  getTermsOfUseAcceptance = (): Promise<boolean> =>
+    new Promise((resolve, reject) => {
+      try {
+        const accepted = store.get(this.storageKeys.TERMS_OF_USE_ACCEPTANCE);
+        if (!accepted) return resolve(false);
+        resolve(accepted);
+      } catch (error) {
+        return reject(error);
+      }
+    });
 
-  setTermsOfUseAcceptance = (): Promise<void> => new Promise((resolve, reject) => {
-    try {
-      store.set(this.storageKeys.TERMS_OF_USE_ACCEPTANCE, true);
-      resolve();
-    } catch (error) {
-      return reject(error);
-    }
-  });
+  setTermsOfUseAcceptance = (): Promise<void> =>
+    new Promise((resolve, reject) => {
+      try {
+        store.set(this.storageKeys.TERMS_OF_USE_ACCEPTANCE, true);
+        resolve();
+      } catch (error) {
+        return reject(error);
+      }
+    });
 
-  unsetTermsOfUseAcceptance = (): Promise<void> => new Promise((resolve) => {
-    try {
-      store.delete(this.storageKeys.TERMS_OF_USE_ACCEPTANCE);
-      resolve();
-    } catch (error) {} // eslint-disable-line
-  });
+  unsetTermsOfUseAcceptance = (): Promise<void> =>
+    new Promise(resolve => {
+      try {
+        store.delete(this.storageKeys.TERMS_OF_USE_ACCEPTANCE);
+        resolve();
+      } catch (error) {} // eslint-disable-line
+    });
 
-  getUserTheme = (): Promise<string> => new Promise((resolve, reject) => {
-    try {
-      const theme = store.get(this.storageKeys.THEME);
-      if (!theme) return resolve('');
-      resolve(theme);
-    } catch (error) {
-      return reject(error);
-    }
-  });
+  getUserTheme = (): Promise<string> =>
+    new Promise((resolve, reject) => {
+      try {
+        const theme = store.get(this.storageKeys.THEME);
+        if (!theme) return resolve('');
+        resolve(theme);
+      } catch (error) {
+        return reject(error);
+      }
+    });
 
-  setUserTheme = (theme: string): Promise<void> => new Promise((resolve, reject) => {
-    try {
-      store.set(this.storageKeys.THEME, theme);
-      resolve();
-    } catch (error) {
-      return reject(error);
-    }
-  });
+  setUserTheme = (theme: string): Promise<void> =>
+    new Promise((resolve, reject) => {
+      try {
+        store.set(this.storageKeys.THEME, theme);
+        resolve();
+      } catch (error) {
+        return reject(error);
+      }
+    });
 
-  unsetUserTheme = (): Promise<void> => new Promise((resolve) => {
-    try {
-      store.delete(this.storageKeys.THEME);
-      resolve();
-    } catch (error) {} // eslint-disable-line
-  });
+  unsetUserTheme = (): Promise<void> =>
+    new Promise(resolve => {
+      try {
+        store.delete(this.storageKeys.THEME);
+        resolve();
+      } catch (error) {} // eslint-disable-line
+    });
 
-  getDataLayerMigrationAcceptance = (): Promise<boolean> => new Promise((resolve, reject) => {
-    try {
-      const accepted = store.get(this.storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE);
-      if (!accepted) return resolve(false);
-      resolve(true);
-    } catch (error) {
-      return reject(error);
-    }
-  });
+  getDataLayerMigrationAcceptance = (): Promise<boolean> =>
+    new Promise((resolve, reject) => {
+      try {
+        const accepted = store.get(
+          this.storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE
+        );
+        if (!accepted) return resolve(false);
+        resolve(true);
+      } catch (error) {
+        return reject(error);
+      }
+    });
 
-  setDataLayerMigrationAcceptance = (): Promise<void> => new Promise((resolve, reject) => {
-    try {
-      store.set(this.storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE, true);
-      resolve();
-    } catch (error) {
-      return reject(error);
-    }
-  });
+  setDataLayerMigrationAcceptance = (): Promise<void> =>
+    new Promise((resolve, reject) => {
+      try {
+        store.set(this.storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE, true);
+        resolve();
+      } catch (error) {
+        return reject(error);
+      }
+    });
 
-  unsetDataLayerMigrationAcceptance = (): Promise<void> => new Promise((resolve) => {
-    try {
-      store.delete(this.storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE);
-      resolve();
-    } catch (error) {} // eslint-disable-line
-  });
+  unsetDataLayerMigrationAcceptance = (): Promise<void> =>
+    new Promise(resolve => {
+      try {
+        store.delete(this.storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE);
+        resolve();
+      } catch (error) {} // eslint-disable-line
+    });
 
   reset = async () => {
     await this.unsetUserLocale();
@@ -135,5 +149,4 @@ export default class LocalStorageApi {
     await this.unsetUserTheme();
     await this.unsetDataLayerMigrationAcceptance();
   };
-
 }

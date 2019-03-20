@@ -10,7 +10,7 @@ import {
 } from '../../common/crypto/decrypt';
 import type {
   ParseRedemptionCodeRequest,
-  ParseRedemptionCodeResponse
+  ParseRedemptionCodeResponse,
 } from '../../common/ipc/api';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { PARSE_REDEMPTION_CODE_CHANNEL } from '../../common/ipc/api';
@@ -22,17 +22,22 @@ import { ERRORS } from '../../common/ipc/constants';
 const cleanupTemporaryPDF = (pdfPath, isTemporaryDecryptedPdf) => {
   // Remove the temporary, decrypted PDF from disk
   if (pdfPath && isTemporaryDecryptedPdf) {
-    try { fs.unlinkSync(pdfPath); } catch (e) {} // eslint-disable-line
+    try {
+      fs.unlinkSync(pdfPath);
+    } catch (e) {} // eslint-disable-line
   }
 };
 
 // CHANNEL
-const parseRedemptionCodeChannel: (
-  MainIpcChannel<ParseRedemptionCodeRequest, ParseRedemptionCodeResponse>
-) = new MainIpcChannel(PARSE_REDEMPTION_CODE_CHANNEL);
+const parseRedemptionCodeChannel: MainIpcChannel<
+  ParseRedemptionCodeRequest,
+  ParseRedemptionCodeResponse
+> = new MainIpcChannel(PARSE_REDEMPTION_CODE_CHANNEL);
 
 // REQUEST HANDLER
-const parseRedemptionCodeHandler = async (request: ParseRedemptionCodeRequest) => {
+const parseRedemptionCodeHandler = async (
+  request: ParseRedemptionCodeRequest
+) => {
   Logger.debug('parseRedemptionCodeHandler', request);
   const { certificateFilePath, decryptionKey, redemptionType } = request;
   let pdfPath = null;
@@ -48,12 +53,19 @@ const parseRedemptionCodeHandler = async (request: ParseRedemptionCodeRequest) =
           decryptedFile = decryptForceVend(decryptionKey, encryptedFile);
           break;
         case 'recoveryRegular':
-          decryptedFile = decryptRecoveryRegularVend(decryptionKey, encryptedFile);
+          decryptedFile = decryptRecoveryRegularVend(
+            decryptionKey,
+            encryptedFile
+          );
           break;
         case 'recoveryForceVended':
-          decryptedFile = decryptRecoveryForceVend(decryptionKey, encryptedFile);
+          decryptedFile = decryptRecoveryForceVend(
+            decryptionKey,
+            encryptedFile
+          );
           break;
-        default: // regular
+        default:
+          // regular
           decryptedFile = decryptRegularVend(decryptionKey, encryptedFile);
       }
       // Write it to disk temporarily (so pdf extract can work with it)
@@ -76,8 +88,8 @@ const parseRedemptionCodeHandler = async (request: ParseRedemptionCodeRequest) =
         try {
           const redemptionKeyLabel = data.pages[0].content[9].str;
           if (
-            redemptionKeyLabel !== 'REDEMPTION KEY'
-            && redemptionKeyLabel !== '—————— REDEMPTION KEY ——————'
+            redemptionKeyLabel !== 'REDEMPTION KEY' &&
+            redemptionKeyLabel !== '—————— REDEMPTION KEY ——————'
           ) {
             Logger.error('Incalid redemption certificate', request);
             reject(ERRORS.INVALID_REDEMPTION_CERTIFICATE_ERROR);

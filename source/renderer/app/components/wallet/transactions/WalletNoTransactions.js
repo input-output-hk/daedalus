@@ -9,7 +9,6 @@ type Props = {
 
 @observer
 export default class WalletNoTransactions extends Component<Props> {
-
   render() {
     return (
       <div className={styles.component}>

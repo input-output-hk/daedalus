@@ -1,6 +1,10 @@
 // @flow
 export type RedemptionTypeChoices =
-  'regular' | 'forceVended' | 'paperVended' | 'recoveryRegular' | 'recoveryForceVended';
+  | 'regular'
+  | 'forceVended'
+  | 'paperVended'
+  | 'recoveryRegular'
+  | 'recoveryForceVended';
 
 export const ADA_REDEMPTION_TYPES = {
   REGULAR: 'regular',

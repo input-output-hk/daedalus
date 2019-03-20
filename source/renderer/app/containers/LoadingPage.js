@@ -16,12 +16,12 @@ export const messages = defineMessages({
   loadingWalletData: {
     id: 'loading.screen.loadingWalletData',
     defaultMessage: '!!!Loading wallet data',
-    description: 'Message "Loading wallet data" on the loading screen.'
+    description: 'Message "Loading wallet data" on the loading screen.',
   },
   reportIssueButtonUrl: {
     id: 'loading.screen.reportIssue.reportIssueButtonUrl',
     defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/requests/new/',
-    description: 'Link to Open Support page'
+    description: 'Link to Open Support page',
   },
   downloadLogsSuccess: {
     id: 'loading.screen.reportIssue.downloadLogsSuccessMessage',
@@ -35,12 +35,14 @@ export const messages = defineMessages({
   },
 });
 
-const DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID = 'loading-page-download-logs-progress';
-const DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID = 'loading-page-download-logs-success';
+const DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID =
+  'loading-page-download-logs-progress';
+const DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID =
+  'loading-page-download-logs-success';
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class LoadingPage extends Component<InjectedProps> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -49,12 +51,29 @@ export default class LoadingPage extends Component<InjectedProps> {
     const { stores, actions } = this.props;
     const { intl } = this.context;
     const {
-      cardanoNodeState, isConnected, isSynced, syncPercentage, hasBeenConnected,
-      localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
-      forceCheckLocalTimeDifference, ignoreSystemTimeChecks, isNodeStopping, isNodeStopped,
-      isNotEnoughDiskSpace, diskSpaceRequired, diskSpaceMissing, diskSpaceRecommended,
+      cardanoNodeState,
+      isConnected,
+      isSynced,
+      syncPercentage,
+      hasBeenConnected,
+      localTimeDifference,
+      isSystemTimeCorrect,
+      forceCheckTimeDifferenceRequest,
+      forceCheckLocalTimeDifference,
+      ignoreSystemTimeChecks,
+      isNodeStopping,
+      isNodeStopped,
+      isNotEnoughDiskSpace,
+      isTlsCertInvalid,
+      diskSpaceRequired,
+      diskSpaceMissing,
+      diskSpaceRecommended,
     } = stores.networkStatus;
-    const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
+    const {
+      hasLoadedCurrentLocale,
+      hasLoadedCurrentTheme,
+      currentLocale,
+    } = stores.profile;
     return (
       <CenteredLayout>
         <Loading
@@ -66,6 +85,7 @@ export default class LoadingPage extends Component<InjectedProps> {
           isNodeStopping={isNodeStopping}
           isNodeStopped={isNodeStopped}
           isNotEnoughDiskSpace={isNotEnoughDiskSpace}
+          isTlsCertInvalid={isTlsCertInvalid}
           diskSpaceRequired={diskSpaceRequired}
           diskSpaceMissing={diskSpaceMissing}
           diskSpaceRecommended={diskSpaceRecommended}
@@ -86,24 +106,28 @@ export default class LoadingPage extends Component<InjectedProps> {
         />
         <GenericNotification
           id={DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID}
-          show={stores.uiNotifications.isOpen(DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID)}
+          show={stores.uiNotifications.isOpen(
+            DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID
+          )}
           actionToListenAndOpen={actions.profile.downloadLogs}
           actionToListenAndClose={actions.profile.downloadLogsSuccess}
           openNotification={actions.notifications.open}
           closeNotification={actions.notifications.closeActiveNotification}
         >
-          { intl.formatMessage(messages.downloadLogsProgress) }
+          {intl.formatMessage(messages.downloadLogsProgress)}
         </GenericNotification>
         <GenericNotification
           id={DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID}
           duration={DOWNLOAD_LOGS_SUCCESS_DURATION}
-          show={stores.uiNotifications.isOpen(DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID)}
+          show={stores.uiNotifications.isOpen(
+            DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID
+          )}
           actionToListenAndOpen={actions.profile.downloadLogsSuccess}
           openNotification={actions.notifications.open}
           closeNotification={actions.notifications.closeActiveNotification}
           hasCloseButton
         >
-          { intl.formatMessage(messages.downloadLogsSuccess) }
+          {intl.formatMessage(messages.downloadLogsSuccess)}
         </GenericNotification>
       </CenteredLayout>
     );
@@ -112,7 +136,9 @@ export default class LoadingPage extends Component<InjectedProps> {
   handleReportIssueClick = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.persist();
     const { intl } = this.context;
-    const reportIssueButtonUrl = intl.formatMessage(messages.reportIssueButtonUrl);
+    const reportIssueButtonUrl = intl.formatMessage(
+      messages.reportIssueButtonUrl
+    );
     const locale = this.props.stores.profile.currentLocale;
     const supportUrl = await getSupportUrl(reportIssueButtonUrl, locale);
     this.props.stores.app.openExternalLink(supportUrl);

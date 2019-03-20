@@ -12,13 +12,16 @@ import globalMessages from '../i18n/global-messages';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
 import type { LogFiles, CompressedLogStatus } from '../types/LogTypes';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
-import { compressLogsChannel, downloadLogsChannel, getLogsChannel } from '../ipc/logs.ipc';
+import {
+  compressLogsChannel,
+  downloadLogsChannel,
+  getLogsChannel,
+} from '../ipc/logs.ipc';
 
 // TODO: refactor all parts that rely on this to ipc channels!
 const { ipcRenderer } = global;
 
 export default class SettingsStore extends Store {
-
   LANGUAGE_OPTIONS = [
     { value: 'en-US', label: globalMessages.languageEnglish },
     { value: 'ja-JP', label: globalMessages.languageJapanese },
@@ -34,18 +37,36 @@ export default class SettingsStore extends Store {
     groupSize: 3,
     secondaryGroupSize: 0,
     fractionGroupSeparator: ' ',
-    fractionGroupSize: 0
+    fractionGroupSize: 0,
   };
 
   /* eslint-disable max-len */
-  @observable getProfileLocaleRequest: Request<string> = new Request(this.api.localStorage.getUserLocale);
-  @observable setProfileLocaleRequest: Request<string> = new Request(this.api.localStorage.setUserLocale);
-  @observable getTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.localStorage.getTermsOfUseAcceptance);
-  @observable setTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.localStorage.setTermsOfUseAcceptance);
-  @observable getDataLayerMigrationAcceptanceRequest: Request<string> = new Request(this.api.localStorage.getDataLayerMigrationAcceptance);
-  @observable setDataLayerMigrationAcceptanceRequest: Request<string> = new Request(this.api.localStorage.setDataLayerMigrationAcceptance);
-  @observable getThemeRequest: Request<string> = new Request(this.api.localStorage.getUserTheme);
-  @observable setThemeRequest: Request<string> = new Request(this.api.localStorage.setUserTheme);
+  @observable getProfileLocaleRequest: Request<string> = new Request(
+    this.api.localStorage.getUserLocale
+  );
+  @observable setProfileLocaleRequest: Request<string> = new Request(
+    this.api.localStorage.setUserLocale
+  );
+  @observable getTermsOfUseAcceptanceRequest: Request<string> = new Request(
+    this.api.localStorage.getTermsOfUseAcceptance
+  );
+  @observable setTermsOfUseAcceptanceRequest: Request<string> = new Request(
+    this.api.localStorage.setTermsOfUseAcceptance
+  );
+  @observable
+  getDataLayerMigrationAcceptanceRequest: Request<string> = new Request(
+    this.api.localStorage.getDataLayerMigrationAcceptance
+  );
+  @observable
+  setDataLayerMigrationAcceptanceRequest: Request<string> = new Request(
+    this.api.localStorage.setDataLayerMigrationAcceptance
+  );
+  @observable getThemeRequest: Request<string> = new Request(
+    this.api.localStorage.getUserTheme
+  );
+  @observable setThemeRequest: Request<string> = new Request(
+    this.api.localStorage.setUserTheme
+  );
   @observable error: ?LocalizableError = null;
   @observable logFiles: LogFiles = {};
   @observable compressedLogsFilePath: ?string = null;
@@ -56,7 +77,9 @@ export default class SettingsStore extends Store {
   setup() {
     this.actions.profile.updateLocale.listen(this._updateLocale);
     this.actions.profile.acceptTermsOfUse.listen(this._acceptTermsOfUse);
-    this.actions.profile.acceptDataLayerMigration.listen(this._acceptDataLayerMigration);
+    this.actions.profile.acceptDataLayerMigration.listen(
+      this._acceptDataLayerMigration
+    );
     this.actions.profile.updateTheme.listen(this._updateTheme);
     this.actions.profile.getLogs.listen(this._getLogs);
     this.actions.profile.getLogsAndCompress.listen(this._getLogsAndCompress);
@@ -109,21 +132,21 @@ export default class SettingsStore extends Store {
 
   @computed get isCurrentThemeSet(): boolean {
     return (
-      this.getThemeRequest.result !== null &&
-      this.getThemeRequest.result !== ''
+      this.getThemeRequest.result !== null && this.getThemeRequest.result !== ''
     );
   }
 
   @computed get hasLoadedCurrentTheme(): boolean {
     return (
-      this.getThemeRequest.wasExecuted &&
-      this.getThemeRequest.result !== null
+      this.getThemeRequest.wasExecuted && this.getThemeRequest.result !== null
     );
   }
 
   @computed get termsOfUse(): string {
     const network = this.environment.isMainnet ? 'mainnet' : 'other';
-    return require(`../i18n/locales/terms-of-use/${network}/${this.currentLocale}.md`);
+    return require(`../i18n/locales/terms-of-use/${network}/${
+      this.currentLocale
+    }.md`);
   }
 
   @computed get hasLoadedTermsOfUseAcceptance(): boolean {
@@ -190,23 +213,30 @@ export default class SettingsStore extends Store {
 
   _redirectToLanguageSelectionIfNoLocaleSet = () => {
     if (this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) {
-      this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.LANGUAGE_SELECTION });
+      this.actions.router.goToRoute.trigger({
+        route: ROUTES.PROFILE.LANGUAGE_SELECTION,
+      });
     }
   };
 
   _redirectToTermsOfUseScreenIfTermsNotAccepted = () => {
-    const termsOfUseNotAccepted = this.hasLoadedTermsOfUseAcceptance && !this.areTermsOfUseAccepted;
+    const termsOfUseNotAccepted =
+      this.hasLoadedTermsOfUseAcceptance && !this.areTermsOfUseAccepted;
     if (this.isCurrentLocaleSet && termsOfUseNotAccepted) {
-      this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.TERMS_OF_USE });
+      this.actions.router.goToRoute.trigger({
+        route: ROUTES.PROFILE.TERMS_OF_USE,
+      });
     }
   };
 
-  _isOnTermsOfUsePage = () => this.stores.app.currentRoute === ROUTES.PROFILE.TERMS_OF_USE;
+  _isOnTermsOfUsePage = () =>
+    this.stores.app.currentRoute === ROUTES.PROFILE.TERMS_OF_USE;
 
   _redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted = () => {
     const { isConnected } = this.stores.networkStatus;
     const dataLayerMigrationNotAccepted =
-      this.hasLoadedDataLayerMigrationAcceptance && !this.isDataLayerMigrationAccepted;
+      this.hasLoadedDataLayerMigrationAcceptance &&
+      !this.isDataLayerMigrationAccepted;
     if (
       isConnected &&
       this.isCurrentLocaleSet &&
@@ -220,7 +250,9 @@ export default class SettingsStore extends Store {
         // in order to prevent future data migration checks
         this._acceptDataLayerMigration();
       } else {
-        this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.DATA_LAYER_MIGRATION });
+        this.actions.router.goToRoute.trigger({
+          route: ROUTES.PROFILE.DATA_LAYER_MIGRATION,
+        });
       }
     }
   };
@@ -232,14 +264,16 @@ export default class SettingsStore extends Store {
   };
 
   _redirectToMainUiAfterDataLayerMigrationIsAccepted = () => {
-    if (this.isDataLayerMigrationAccepted && this._isOnDataLayerMigrationPage()) {
+    if (
+      this.isDataLayerMigrationAccepted &&
+      this._isOnDataLayerMigrationPage()
+    ) {
       this._redirectToRoot();
     }
   };
 
-  _isOnDataLayerMigrationPage = () => (
-    this.stores.app.currentRoute === ROUTES.PROFILE.DATA_LAYER_MIGRATION
-  );
+  _isOnDataLayerMigrationPage = () =>
+    this.stores.app.currentRoute === ROUTES.PROFILE.DATA_LAYER_MIGRATION;
 
   _redirectToRoot = () => {
     this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
@@ -266,7 +300,9 @@ export default class SettingsStore extends Store {
   };
 
   _compressLogs = action(async ({ logs }) => {
-    const { fileName = generateFileNameWithTimestamp() } = this.compressedLogsStatus;
+    const {
+      fileName = generateFileNameWithTimestamp(),
+    } = this.compressedLogsStatus;
     try {
       const outputPath = await compressLogsChannel.request({
         logs: toJS(logs),
@@ -325,5 +361,4 @@ export default class SettingsStore extends Store {
     this.compressedLogsStatus = {};
     this.isSubmittingBugReport = false;
   };
-
 }

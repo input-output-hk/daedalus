@@ -7,22 +7,26 @@ import { ADDRESS_COPY_NOTIFICATION_SMALL_DURATION } from '../../../../config/tim
 
 type Props = InjectedDialogContainerProps;
 
-@inject('stores') @observer
+@inject('stores')
+@observer
 export default class CompletionDialogContainer extends Component<Props> {
-
   static defaultProps = {
     actions: null,
     stores: null,
     children: null,
-    onClose: () => {}
+    onClose: () => {},
   };
 
   render() {
     const { app, wallets } = this.props.stores;
-    const { environment: { network } } = app;
+    const {
+      environment: { network },
+    } = app;
     const { walletCertificateAddress } = wallets;
     if (!walletCertificateAddress) {
-      throw new Error('Prop "walletCertificateAddress" is required but was null.');
+      throw new Error(
+        'Prop "walletCertificateAddress" is required but was null.'
+      );
     }
 
     return (
@@ -30,7 +34,9 @@ export default class CompletionDialogContainer extends Component<Props> {
         walletCertificateAddress={walletCertificateAddress}
         onClose={this.props.onClose}
         onOpenExternalLink={this.props.stores.app.openExternalLink}
-        copyAddressNotificationDuration={ADDRESS_COPY_NOTIFICATION_SMALL_DURATION}
+        copyAddressNotificationDuration={
+          ADDRESS_COPY_NOTIFICATION_SMALL_DURATION
+        }
         network={network}
       />
     );

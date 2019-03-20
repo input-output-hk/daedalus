@@ -13,7 +13,9 @@
     &:active {
       cursor: pointer;
       &:hover {
-        background-color: var(--theme-mnemonic-background-color-hover) !important;
+        background-color: var(
+          --theme-mnemonic-background-color-hover
+        ) !important;
       }
     }
   }

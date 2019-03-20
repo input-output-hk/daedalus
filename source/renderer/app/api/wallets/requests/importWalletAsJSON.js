@@ -5,11 +5,14 @@ import { request } from '../../utils/requestV0';
 
 export const importWalletAsJSON = (
   config: RequestConfig,
-  filePath: string,
-): Promise<AdaWallet> => (
-  request({
-    method: 'POST',
-    path: '/api/backup/import',
-    ...config,
-  }, {}, filePath)
-);
+  filePath: string
+): Promise<AdaWallet> =>
+  request(
+    {
+      method: 'POST',
+      path: '/api/backup/import',
+      ...config,
+    },
+    {},
+    filePath
+  );

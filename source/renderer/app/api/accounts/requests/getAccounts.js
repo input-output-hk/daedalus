@@ -10,10 +10,9 @@ export type GetAccountsParams = {
 export const getAccounts = (
   config: RequestConfig,
   { walletId }: GetAccountsParams
-): Promise<Accounts> => (
+): Promise<Accounts> =>
   request({
     method: 'GET',
     path: `/api/v1/wallets/${walletId}/accounts`,
     ...config,
-  })
-);
+  });

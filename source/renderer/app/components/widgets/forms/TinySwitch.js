@@ -12,9 +12,7 @@ type Props = {
 };
 
 export default class TinySwitch extends Component<Props> {
-
   render() {
-
     return (
       <Checkbox
         className={styles.component}
@@ -26,5 +24,4 @@ export default class TinySwitch extends Component<Props> {
       />
     );
   }
-
 }

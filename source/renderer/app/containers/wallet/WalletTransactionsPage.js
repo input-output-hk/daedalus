@@ -15,20 +15,21 @@ export const messages = defineMessages({
   noTransactions: {
     id: 'wallet.transactions.no.transactions',
     defaultMessage: '!!!No transactions',
-    description: 'Message shown when wallet has no transactions yet.'
+    description: 'Message shown when wallet has no transactions yet.',
   },
   noTransactionsFound: {
     id: 'wallet.transactions.no.transactions.found',
     defaultMessage: '!!!No transactions found',
-    description: 'Message shown when wallet transaction search returns zero results.'
-  }
+    description:
+      'Message shown when wallet transaction search returns zero results.',
+  },
 });
 
 type Props = InjectedProps;
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class WalletTransactionsPage extends Component<Props> {
-
   static defaultProps = { actions: null, stores: null };
 
   static contextTypes = {
@@ -43,7 +44,10 @@ export default class WalletTransactionsPage extends Component<Props> {
     const { intl } = this.context;
     const { actions, stores } = this.props;
     const { app, wallets } = stores;
-    const { openExternalLink, environment: { network } } = app;
+    const {
+      openExternalLink,
+      environment: { network },
+    } = app;
     const activeWallet = wallets.active;
     const {
       searchOptions,
@@ -62,10 +66,14 @@ export default class WalletTransactionsPage extends Component<Props> {
     let walletTransactions = null;
     // let transactionSearch = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
-    const noTransactionsFoundLabel = intl.formatMessage(messages.noTransactionsFound);
-    const hasMoreToLoad = () => searchLimit !== null && totalAvailable > searchLimit;
+    const noTransactionsFoundLabel = intl.formatMessage(
+      messages.noTransactionsFound
+    );
+    const hasMoreToLoad = () =>
+      searchLimit !== null && totalAvailable > searchLimit;
 
-    const isRestoreActive = get(activeWallet, 'syncState.tag') === WalletSyncStateTags.RESTORING;
+    const isRestoreActive =
+      get(activeWallet, 'syncState.tag') === WalletSyncStateTags.RESTORING;
 
     // if (wasSearched || hasAny) {
     //   transactionSearch = (
@@ -79,7 +87,7 @@ export default class WalletTransactionsPage extends Component<Props> {
     // }
 
     // Straight away show recent transactions if filtered ones are not loaded yet
-    const transactions = (recent.length && !filtered.length) ? recent : filtered;
+    const transactions = recent.length && !filtered.length ? recent : filtered;
 
     if (searchRequest.isExecutingFirstTime || hasAny || isRestoreActive) {
       walletTransactions = (
@@ -98,7 +106,9 @@ export default class WalletTransactionsPage extends Component<Props> {
         />
       );
     } else if (wasSearched && !hasAny) {
-      walletTransactions = <WalletNoTransactions label={noTransactionsFoundLabel} />;
+      walletTransactions = (
+        <WalletNoTransactions label={noTransactionsFoundLabel} />
+      );
     } else if (!hasAny) {
       walletTransactions = <WalletNoTransactions label={noTransactionsLabel} />;
     }
@@ -110,5 +120,4 @@ export default class WalletTransactionsPage extends Component<Props> {
       </VerticalFlexContainer>
     );
   }
-
 }

@@ -6,10 +6,8 @@ import type {
   OpenExternalUrlRequest,
 } from '../../../common/ipc/api';
 
-
-export const openExternalUrlChannel: (
-  // IpcChannel<Incoming, Outgoing>
-  RendererIpcChannel<OpenExternalUrlResponse, OpenExternalUrlRequest>
-) = (
-  new RendererIpcChannel(OPEN_EXTERNAL_URL_CHANNEL)
-);
+export const openExternalUrlChannel: // IpcChannel<Incoming, Outgoing>
+RendererIpcChannel<
+  OpenExternalUrlResponse,
+  OpenExternalUrlRequest
+> = new RendererIpcChannel(OPEN_EXTERNAL_URL_CHANNEL);
