@@ -1,0 +1,38 @@
+.component {
+  bottom: 20px;
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+
+  .icon {
+    svg {
+      height: 24px;
+    }
+  }
+}
+
+.icon-on path:nth-of-type(2) {
+  fill: var(--theme-loading-status-icons-on-color);
+}
+.icon-off path:nth-of-type(2) {
+  fill: var(--theme-loading-status-icons-off-color);
+}
+.icon-unloaded,
+.icon-unknown {
+  &.syncing {
+    path:nth-of-type(2) {
+      fill: var(--theme-loading-status-icons-unloaded-syncing-color);
+    }
+  }
+  &.loading {
+    path:nth-of-type(2) {
+      fill: var(--theme-loading-status-icons-unloaded-loading-color);
+    }
+  }
+}
+.icon-unknown {
+  opacity: 0.3;
+}
