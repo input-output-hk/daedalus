@@ -20,7 +20,7 @@ const isTest = process.env.NODE_ENV === 'test';
 const isDev = process.env.NODE_ENV === 'development';
 
 export const setupLogging = () => {
-  const logFilePath = path.join(pubLogsFolderPath, APP_NAME + '.json');
+  const logFilePath = path.join(pubLogsFolderPath, `${APP_NAME}.json`);
   ensureDirectoryExists(pubLogsFolderPath);
   log.transports.console.level = isTest ? 'error' : 'info';
   log.transports.rendererConsole.level = isDev ? 'info' : 'error';
@@ -60,6 +60,7 @@ export const setupLogging = () => {
       try {
         fs.unlinkSync(logFile);
       } catch (error) {
+        // eslint-disable-next-line
         console.error(
           `Compressed log file "${logFile}" deletion failed: ${error}`
         );

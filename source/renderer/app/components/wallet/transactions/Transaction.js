@@ -284,11 +284,11 @@ export default class Transaction extends Component<Props> {
           >
             <div>
               <h2>{intl.formatMessage(messages.fromAddresses)}</h2>
-              {data.addresses.from.map((address, addressIndex) => (
+              {data.addresses.from.map((address) => (
                 <span
                   role="presentation"
                   aria-hidden
-                  key={`${data.id}-from-${address}-${addressIndex}`}
+                  key={`${data.id}-from-${address}-${address.id}`}
                   className={styles.address}
                   onClick={this.handleOpenExplorer.bind(
                     this,
@@ -300,11 +300,11 @@ export default class Transaction extends Component<Props> {
                 </span>
               ))}
               <h2>{intl.formatMessage(messages.toAddresses)}</h2>
-              {data.addresses.to.map((address, addressIndex) => (
+              {data.addresses.to.map((address) => (
                 <span
                   role="presentation"
                   aria-hidden
-                  key={`${data.id}-to-${address}-${addressIndex}`}
+                  key={`${data.id}-to-${address}-${address.id}`}
                   className={styles.address}
                   onClick={this.handleOpenExplorer.bind(
                     this,

@@ -16,7 +16,7 @@ export const expectTextInSelector = async (client, { selector, text }) => {
 };
 
 export const waitUntilTextInSelector = async (client, { selector, text }) =>
-  client.waitUntil(async () => {
+  await client.waitUntil(async () => {
     await client.waitForText(selector);
     let textOnScreen = await client.getText(selector);
     // The selector could exist multiple times in the DOM
@@ -32,7 +32,7 @@ export const getVisibleElementsForSelector = async (
   ...waitArgs
 ) => {
   await client.waitForVisible(waitSelector, ...waitArgs);
-  return client.elements(selectSelector);
+  return await client.elements(selectSelector);
 };
 
 export const getVisibleElementsCountForSelector = async (

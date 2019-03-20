@@ -83,11 +83,11 @@ export default class Sidebar extends Component<Props> {
     return (
       <div className={sidebarStyles}>
         <div className={styles.minimized}>
-          {categories.map((category, index) => {
+          {categories.map((category) => {
             const categoryClassName = kebabCase(category.name);
             return (
               <SidebarCategory
-                key={index}
+                key={category.id}
                 className={categoryClassName}
                 icon={category.icon}
                 active={activeSidebarCategory === category.route}
