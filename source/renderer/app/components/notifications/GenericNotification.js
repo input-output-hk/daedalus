@@ -20,7 +20,6 @@ type Props = {
 
 @observer
 export default class GenericNotification extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -59,10 +58,17 @@ export default class GenericNotification extends Component<Props> {
   closeNotification = () => {
     const { id, closeNotification } = this.props;
     closeNotification.trigger({ id });
-  }
+  };
 
   render() {
-    const { children, show, icon, hasCloseButton, clickToClose, order } = this.props;
+    const {
+      children,
+      show,
+      icon,
+      hasCloseButton,
+      clickToClose,
+      order,
+    } = this.props;
 
     return (
       <NotificationMessage
@@ -77,5 +83,4 @@ export default class GenericNotification extends Component<Props> {
       </NotificationMessage>
     );
   }
-
 }
