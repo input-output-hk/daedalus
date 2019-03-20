@@ -171,14 +171,14 @@ export default class PrintDialog extends Component<Props, State> {
   }
 
   onConfirmCorrectPrinting = () => {
-    this.setState({ isPrintedCorrectly: !this.state.isPrintedCorrectly });
+    this.setState(prevState => ({isPrintedCorrectly: !prevState.isPrintedCorrectly}));
   };
 
   onConfirmReadable = () => {
-    this.setState({ isReadable: !this.state.isReadable });
+    this.setState(prevState => ({isReadable: !prevState.isReadable}));
   };
 
   onConfirmScannable = () => {
-    this.setState({ isScannable: !this.state.isScannable });
+    this.setState(prevState => ({isScannable: !prevState.isScannable}));
   };
 }

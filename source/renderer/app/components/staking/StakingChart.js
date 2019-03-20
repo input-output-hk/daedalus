@@ -104,16 +104,16 @@ export default class StakingChart extends Component<Props, State> {
             minPointSize={2}
             isAnimationActive={false}
           >
-            {data.slice().map((entry, index) => {
+            {data.slice().map((entry) => {
               let fillColor = '#c2cad4';
               let cursor = 'pointer';
-              if (index === activeIndex) fillColor = '#445b7c';
+              if (entry.id === activeIndex) fillColor = '#445b7c';
               if (entry.numberOfTransactions === 0) {
                 fillColor = '#e7eaee';
                 cursor = 'default';
               }
               return (
-                <Cell cursor={cursor} fill={fillColor} key={`cell-${index}`} />
+                <Cell cursor={cursor} fill={fillColor} key={`cell-${entry.id}`} />
               );
             })}
           </Bar>

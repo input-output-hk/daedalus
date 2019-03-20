@@ -230,14 +230,14 @@ export default class Loading extends Component<Props, State> {
   };
 
   _incrementConnectingTime = () => {
-    this.setState({ connectingTime: this.state.connectingTime + 1 });
+    this.setState(prevState => ({connectingTime: prevState.connectingTime + 1}));
   };
 
   _incrementSyncingTime = () => {
     const syncPercentage = this.props.syncPercentage.toFixed(2);
     if (syncPercentage === this.state.syncPercentage) {
       // syncPercentage not increased, increase syncing time
-      this.setState({ syncingTime: this.state.syncingTime + 1 });
+      this.setState(prevState => ({syncingTime: prevState.syncingTime + 1}));
     } else {
       // reset syncingTime and set new max percentage
       this.setState({ syncingTime: 0, syncPercentage });
