@@ -18,7 +18,11 @@ export default () => {
     const asset = path.resolve(__dirname, `../renderer/${request.fileName}`);
     return new Promise((resolve, reject) =>
       fs.readFile(asset, 'base64', (error, data) => {
-        error ? reject(error) : resolve(data);
+        if (error) {
+          reject(error);
+        } else {
+          resolve(data);
+        }
       })
     );
   });

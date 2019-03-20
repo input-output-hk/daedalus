@@ -124,6 +124,7 @@ export default class InlineEditingInput extends Component<Props, State> {
 
   componentDidUpdate() {
     if (this.props.isActive) {
+      // eslint-disable-next-line
       this.inputField && this.inputField.focus();
     }
   }

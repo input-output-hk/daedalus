@@ -82,6 +82,13 @@ export default class PrintDialog extends Component<Props, State> {
     isScannable: false,
   };
 
+  constructor(props: Props) {
+    super(props);
+    this.onConfirmReadable = this.onConfirmReadable.bind(this);
+    this.onConfirmScannable = this.onConfirmScannable.bind(this);
+    this.onConfirmCorrectPrinting = this.onConfirmCorrectPrinting.bind(this);
+  }
+
   render() {
     const { intl } = this.context;
     const { onContinue, onClose } = this.props;
@@ -139,7 +146,7 @@ export default class PrintDialog extends Component<Props, State> {
               label={intl.formatMessage(
                 messages.certificatePrintedConfirmationLabel
               )}
-              onChange={this.onConfirmCorrectPrinting.bind(this)}
+              onChange={this.onConfirmCorrectPrinting}
               checked={isPrintedCorrectly}
               skin={CheckboxSkin}
             />
@@ -152,7 +159,7 @@ export default class PrintDialog extends Component<Props, State> {
                   paperWalletPrintedWordsCount: PAPER_WALLET_PRINTED_WORDS_COUNT,
                 }
               )}
-              onChange={this.onConfirmReadable.bind(this)}
+              onChange={this.onConfirmReadable}
               checked={isReadable}
               skin={CheckboxSkin}
             />
@@ -160,7 +167,7 @@ export default class PrintDialog extends Component<Props, State> {
             <Checkbox
               className={qrScannableCheckboxClasses}
               label={intl.formatMessage(messages.qrScannableConfirmationLabel)}
-              onChange={this.onConfirmScannable.bind(this)}
+              onChange={this.onConfirmScannable}
               checked={isScannable}
               skin={CheckboxSkin}
             />

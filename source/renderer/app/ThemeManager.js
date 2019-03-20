@@ -3,6 +3,7 @@ import { map } from 'lodash';
 
 export default class ThemeManager extends Component {
   componentDidMount() {
+    // eslint-disable-next-line
     this.updateCSSVariables(this.props.variables);
   }
 
@@ -18,6 +19,7 @@ export default class ThemeManager extends Component {
     });
   }
   render() {
+    // eslint-disable-next-line
     return <Fragment>{this.props.children}</Fragment>;
   }
 }

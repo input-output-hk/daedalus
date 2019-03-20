@@ -147,6 +147,8 @@ export default class WalletReceive extends Component<Props, State> {
     />
   );
 
+  submitOnEnter = submitOnEnter.bind(this, this.submit);
+
   submit = () => {
     this.form.submit({
       onSuccess: form => {
@@ -159,6 +161,7 @@ export default class WalletReceive extends Component<Props, State> {
       onError: () => {},
     });
 
+    // eslint-disable-next-line
     this.passwordField && this.passwordField.focus();
   };
 
@@ -211,7 +214,7 @@ export default class WalletReceive extends Component<Props, State> {
             }}
             error={passwordField.error}
             skin={InputSkin}
-            onKeyPress={submitOnEnter.bind(this, this.submit)}
+            onKeyPress={this.submitOnEnter}
           />
         )}
 
@@ -255,6 +258,7 @@ export default class WalletReceive extends Component<Props, State> {
                   {walletAddress}
                   <CopyToClipboard
                     text={walletAddress}
+                    // eslint-disable-next-line
                     onCopy={onCopyAddress.bind(this, walletAddress)}
                   >
                     <SVGInline svg={iconCopy} className={styles.copyIconBig} />

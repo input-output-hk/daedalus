@@ -63,6 +63,11 @@ export default class SecuringPasswordDialog extends Component<Props, State> {
     securePasswordConfirmed: false,
   };
 
+  constructor(props: Props) {
+    super(props);
+    this.onSecurePasswordConfirmationChange = this.onSecurePasswordConfirmationChange.bind(this);
+  }
+
   render() {
     const { intl } = this.context;
     const { securePasswordConfirmed } = this.state;
@@ -114,7 +119,7 @@ export default class SecuringPasswordDialog extends Component<Props, State> {
               label={intl.formatMessage(messages.securingPasswordConfirmation, {
                 paperWalletWrittenWordsCount: PAPER_WALLET_WRITTEN_WORDS_COUNT,
               })}
-              onChange={this.onSecurePasswordConfirmationChange.bind(this)}
+              onChange={this.onSecurePasswordConfirmationChange}
               checked={securePasswordConfirmed}
               skin={CheckboxSkin}
             />

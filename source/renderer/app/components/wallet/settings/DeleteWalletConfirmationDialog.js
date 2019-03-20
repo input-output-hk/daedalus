@@ -143,6 +143,7 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
             className={styles.confirmationInput}
             label={intl.formatMessage(messages.enterRecoveryWordLabel)}
             value={confirmationValue}
+            // eslint-disable-next-line
             onKeyPress={submitOnEnter.bind(this, handleSubmit)}
             onChange={onConfirmationValueChange}
             skin={InputSkin}
