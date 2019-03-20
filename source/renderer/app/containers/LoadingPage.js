@@ -134,6 +134,7 @@ export default class LoadingPage extends Component<InjectedProps> {
           )}
           icon="success"
           actionToListenAndOpen={actions.profile.downloadLogsSuccess}
+          actionToListenAndClose={actions.profile.downloadLogs}
           openNotification={actions.notifications.open}
           closeNotification={actions.notifications.closeActiveNotification}
           hasCloseButton
