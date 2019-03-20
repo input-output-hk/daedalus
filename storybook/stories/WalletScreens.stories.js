@@ -188,7 +188,6 @@ storiesOf('WalletScreens', module)
         if (dialog === ExportWalletToFileDialog) {
           return boolean('Export Wallet - Show dialog', false);
         }
-        return false;
       }}
       isInvalid={false}
       isSubmitting={false}
