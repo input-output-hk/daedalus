@@ -5102,7 +5102,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Preparing logs for download...",
+        "defaultMessage": "!!!Preparing logs for download",
         "description": "Progress message for download logs.",
         "end": {
           "column": 3,
@@ -5149,7 +5149,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Preparing logs for download...",
+        "defaultMessage": "!!!Preparing logs for download",
         "description": "Progress message for download logs.",
         "end": {
           "column": 3,

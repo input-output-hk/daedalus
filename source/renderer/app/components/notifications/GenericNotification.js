@@ -2,30 +2,44 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { intlShape } from 'react-intl';
+import classNames from 'classnames';
 import Action from '../../actions/lib/Action';
 import NotificationMessage from '../widgets/NotificationMessage';
 import successIcon from '../../assets/images/success-small.inline.svg';
-import type { Props as NotificationMessagePreps } from '../widgets/NotificationMessage';
+import spinnerIcon from '../../assets/images/spinner-dark.inline.svg';
+import type { Props as NotificationMessageProps } from '../widgets/NotificationMessage';
+import styles from './GenericNotification.scss';
+
+/**
+ *
+ * Extra props from NotificationMessageProps.js:
+ *
+ * {
+ *   show: boolean,
+ *   children?: Node,
+ *   clickToClose?: boolean,
+ *   hasCloseButton?: boolean,
+ *   order?: 'auto' | number | 'initial' | 'inherit',
+ * }
+ */
 
 type Props = {
-  ...$Exact<NotificationMessagePreps>,
+  ...$Exact<NotificationMessageProps>,
   id: string,
-  icon?: string,
+  icon?: 'success' | 'spinner' | string,
+  iconStyle?: Object,
   duration?: number,
   actionToListenAndOpen?: Action<any>,
   actionToListenAndClose?: Action<any>,
   openNotification: Action<any>,
   closeNotification: Action<any>,
+  hasEllipsis?: boolean,
 };
 
 @observer
 export default class GenericNotification extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
-  };
-
-  static defaultProps = {
-    icon: successIcon,
   };
 
   constructor(props: Props) {
@@ -64,22 +78,32 @@ export default class GenericNotification extends Component<Props> {
     const {
       children,
       show,
-      icon,
       hasCloseButton,
       clickToClose,
       order,
+      hasEllipsis,
     } = this.props;
+
+    let { icon, iconStyle } = this.props;
+    if (icon === 'success') icon = successIcon;
+    if (icon === 'spinner') {
+      icon = spinnerIcon;
+      iconStyle = styles.spinnerIcon;
+    }
+
+    const childrenStyles = classNames([hasEllipsis ? styles.ellipsis : null]);
 
     return (
       <NotificationMessage
         icon={icon}
+        iconStyle={iconStyle}
         show={show}
         onClose={this.closeNotification}
         hasCloseButton={hasCloseButton}
         clickToClose={clickToClose}
         order={order}
       >
-        {children}
+        <div className={childrenStyles}>{children}</div>
       </NotificationMessage>
     );
   }

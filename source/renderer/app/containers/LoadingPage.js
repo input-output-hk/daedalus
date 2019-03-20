@@ -30,7 +30,7 @@ export const messages = defineMessages({
   },
   downloadLogsProgress: {
     id: 'loading.screen.reportIssue.downloadLogsProgressMessage',
-    defaultMessage: '!!!Preparing logs for download...',
+    defaultMessage: '!!!Preparing logs for download',
     description: 'Progress message for download logs.',
   },
 });
@@ -109,10 +109,12 @@ export default class LoadingPage extends Component<InjectedProps> {
           show={stores.uiNotifications.isOpen(
             DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID
           )}
+          icon="spinner"
           actionToListenAndOpen={actions.profile.downloadLogs}
           actionToListenAndClose={actions.profile.downloadLogsSuccess}
           openNotification={actions.notifications.open}
           closeNotification={actions.notifications.closeActiveNotification}
+          hasEllipsis
         >
           {intl.formatMessage(messages.downloadLogsProgress)}
         </GenericNotification>
@@ -122,6 +124,7 @@ export default class LoadingPage extends Component<InjectedProps> {
           show={stores.uiNotifications.isOpen(
             DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID
           )}
+          icon="success"
           actionToListenAndOpen={actions.profile.downloadLogsSuccess}
           openNotification={actions.notifications.open}
           closeNotification={actions.notifications.closeActiveNotification}
