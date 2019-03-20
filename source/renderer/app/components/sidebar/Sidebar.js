@@ -83,11 +83,12 @@ export default class Sidebar extends Component<Props> {
     return (
       <div className={sidebarStyles}>
         <div className={styles.minimized}>
-          {categories.map((category) => {
+          {categories.map((category, index) => {
             const categoryClassName = kebabCase(category.name);
             return (
               <SidebarCategory
-                key={category.id}
+                // eslint-disable-next-line
+                key={index}
                 className={categoryClassName}
                 icon={category.icon}
                 active={activeSidebarCategory === category.route}

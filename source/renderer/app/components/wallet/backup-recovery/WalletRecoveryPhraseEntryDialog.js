@@ -148,7 +148,8 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
 
               return (
                 <MnemonicWord
-                  key={word.id}
+                  // eslint-disable-next-line
+                  key={index}
                   word={word}
                   index={index}
                   isActive={isActive != null ? isActive : false}
