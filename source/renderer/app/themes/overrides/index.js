@@ -4,8 +4,9 @@ import ButtonOverrides from './ButtonOverrides.scss';
 import ModalOverrides from './ModalOverrides.scss';
 import SwitchOverrides from './SwitchOverrides.scss';
 import SelectOverrides from './SelectOverrides.scss';
+import TooltipOverrides from './TooltipOverrides.scss';
 
-const { AUTOCOMPLETE, BUTTON, MODAL, SWITCH, SELECT } = IDENTIFIERS;
+const { AUTOCOMPLETE, BUTTON, MODAL, SWITCH, SELECT, TOOLTIP } = IDENTIFIERS;
 
 export const themeOverrides = {
   [AUTOCOMPLETE]: AutocompleteOverrides,
@@ -13,4 +14,5 @@ export const themeOverrides = {
   [MODAL]: ModalOverrides,
   [SWITCH]: SwitchOverrides,
   [SELECT]: SelectOverrides,
+  [TOOLTIP]: TooltipOverrides,
 };
