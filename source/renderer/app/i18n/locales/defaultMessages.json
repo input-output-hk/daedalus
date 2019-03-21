@@ -1005,7 +1005,7 @@
         }
       },
       {
-        "defaultMessage": "!!!If you are experiencing issues, for guidance please see the {faqLink} article in the Support Portal.",
+        "defaultMessage": "!!!If you are experiencing a problem, please look for guidance using the list of {faqLink} on the support pages. If you can’t find a solution, please submit a support ticket.",
         "description": "Content for the \"Help and support\" section on the support settings page.",
         "end": {
           "column": 3,
@@ -1033,73 +1033,45 @@
         }
       },
       {
-        "defaultMessage": "!!!Reporting a problem",
-        "description": "Title \"Reporting a problem\" on the support settings page.",
+        "defaultMessage": "!!!Steps for creating a support request:",
+        "description": "Title \"Steps for creating a support request\" on the support settings page.",
         "end": {
           "column": 3,
           "line": 28
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
-        "id": "settings.support.reportProblem.title",
+        "id": "settings.support.steps.title",
         "start": {
-          "column": 22,
+          "column": 14,
           "line": 24
         }
       },
       {
-        "defaultMessage": "!!!If you are still experiencing an issue, please submit a support request.",
-        "description": "Content for the \"Reporting a problem\" section on the support settings page.",
+        "defaultMessage": "!!!Download the logs",
+        "description": "Title \"Download the logs\" on the support settings page.",
         "end": {
           "column": 3,
           "line": 33
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
-        "id": "settings.support.reportProblem.content",
+        "id": "settings.support.steps.downloadLogs.title",
         "start": {
-          "column": 24,
+          "column": 26,
           "line": 29
         }
       },
       {
-        "defaultMessage": "!!!submit a support request",
-        "description": "\"submit a support request\" link in the \"Report a problem\" section on the support settings page.",
+        "defaultMessage": "!!!Please {downloadLogsLink} and attach the downloaded file when submitting a support request to help the support team investigate the issue. Logs do not contain sensitive information.",
+        "description": "Description of \"Download the logs\" on the support settings page.",
         "end": {
           "column": 3,
           "line": 38
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
-        "id": "settings.support.reportProblem.link",
+        "id": "settings.support.steps.downloadLogs.description",
         "start": {
-          "column": 22,
+          "column": 32,
           "line": 34
-        }
-      },
-      {
-        "defaultMessage": "!!!Logs",
-        "description": "Title \"Logs\" on the support settings page.",
-        "end": {
-          "column": 3,
-          "line": 43
-        },
-        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
-        "id": "settings.support.logs.title",
-        "start": {
-          "column": 13,
-          "line": 39
-        }
-      },
-      {
-        "defaultMessage": "!!!Please download your logs here and attach the downloaded file when submitting a support ticket to help the support team investigate the issue. Logs do not contain sensitive information.",
-        "description": "Content for the \"Logs\" section on the support settings page.",
-        "end": {
-          "column": 3,
-          "line": 48
-        },
-        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
-        "id": "settings.support.logs.content",
-        "start": {
-          "column": 15,
-          "line": 44
         }
       },
       {
@@ -1107,13 +1079,55 @@
         "description": "\"download your logs here\" link in the Logs section on the support settings page",
         "end": {
           "column": 3,
+          "line": 43
+        },
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
+        "id": "settings.support.steps.downloadLogs.link",
+        "start": {
+          "column": 25,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!Report a problem",
+        "description": "Title \"Report a problem\" on the support settings page.",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
+        "id": "settings.support.steps.reportProblem.title",
+        "start": {
+          "column": 27,
+          "line": 44
+        }
+      },
+      {
+        "defaultMessage": "!!!Please {downloadLogsLink} and attach the downloaded file when submitting a support request to help the support team investigate the issue. Logs do not contain sensitive information.",
+        "description": "Description of \"Download the logs\" on the support settings page.",
+        "end": {
+          "column": 3,
           "line": 53
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
-        "id": "settings.support.logs.downloadLogsLink",
+        "id": "settings.support.steps.reportProblem.description",
         "start": {
-          "column": 20,
+          "column": 33,
           "line": 49
+        }
+      },
+      {
+        "defaultMessage": "!!!download your logs here",
+        "description": "\"download your logs here\" link in the Logs section on the support settings page",
+        "end": {
+          "column": 3,
+          "line": 58
+        },
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
+        "id": "settings.support.steps.reportProblem.link",
+        "start": {
+          "column": 26,
+          "line": 54
         }
       }
     ],

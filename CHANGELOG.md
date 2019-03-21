@@ -1,11 +1,19 @@
 Changelog
 =========
 
-## 0.13.1
+## 0.13.2
+
 
 ### Features
 
 - Wallet extractor/importer screen ([PR 1268](https://github.com/input-output-hk/daedalus/pull/1268))
+
+## 0.13.1
+
+### Fixes
+
+- Improve text on the Support screen ([PR 1361](https://github.com/input-output-hk/daedalus/pull/1361))
+- Fixed Daedalus log file rotation ([PR 1358](https://github.com/input-output-hk/daedalus/pull/1358))
 
 ## 0.13.0
 
