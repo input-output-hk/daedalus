@@ -18,33 +18,33 @@ import styles from './WalletGeneralSettings.scss';
 
 export const messages = defineMessages({
   name: {
-    id: 'wallet.settings.name.label',
+    id: 'wallet.settings.general.name.label',
     defaultMessage: '!!!Name',
     description: 'Label for the "Name" text input on the wallet settings page.',
   },
   assuranceLevelLabel: {
-    id: 'wallet.settings.assurance',
+    id: 'wallet.settings.general.assurance',
     defaultMessage: '!!!Transaction assurance security level',
     description:
       'Label for the "Transaction assurance security level" dropdown.',
   },
   passwordLabel: {
-    id: 'wallet.settings.password',
+    id: 'wallet.settings.general.password',
     defaultMessage: '!!!Password',
     description: 'Label for the "Password" field.',
   },
   passwordLastUpdated: {
-    id: 'wallet.settings.passwordLastUpdated',
+    id: 'wallet.settings.general.passwordLastUpdated',
     defaultMessage: '!!!Last updated',
     description: 'Last updated X time ago message.',
   },
   passwordNotSet: {
-    id: 'wallet.settings.passwordNotSet',
+    id: 'wallet.settings.general.passwordNotSet',
     defaultMessage: "!!!You still don't have password",
     description: "You still don't have password set message.",
   },
   exportButtonLabel: {
-    id: 'wallet.settings.exportWalletButtonLabel',
+    id: 'wallet.settings.general.exportWalletButtonLabel',
     defaultMessage: '!!!Export wallet',
     description: 'Label for the export button on wallet settings.',
   },

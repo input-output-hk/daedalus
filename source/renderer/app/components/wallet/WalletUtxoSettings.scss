@@ -1,3 +1,26 @@
 .component {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-regular);
+  height: 100%;
   min-height: 455px;
+  padding: 30px;
+
+  h1 {
+    margin-bottom: 14px;
+    font-size: 16px;
+    line-height: 1.38;
+  }
+
+  p {
+    font-size: 16px;
+    line-height: 22px;
+    color: rgba(94, 96, 102, 0.7);
+    font-family: var(--font-light);
+  }
+
+  b {
+    font-family: var(--font-regular);
+    color: #5e6066;
+  }
 }

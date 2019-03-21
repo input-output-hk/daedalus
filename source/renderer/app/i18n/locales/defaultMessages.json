@@ -4626,7 +4626,7 @@
           "line": 24
         },
         "file": "source/renderer/app/components/wallet/WalletGeneralSettings.js",
-        "id": "wallet.settings.name.label",
+        "id": "wallet.settings.general.name.label",
         "start": {
           "column": 8,
           "line": 20
@@ -4640,7 +4640,7 @@
           "line": 30
         },
         "file": "source/renderer/app/components/wallet/WalletGeneralSettings.js",
-        "id": "wallet.settings.assurance",
+        "id": "wallet.settings.general.assurance",
         "start": {
           "column": 23,
           "line": 25
@@ -4654,7 +4654,7 @@
           "line": 35
         },
         "file": "source/renderer/app/components/wallet/WalletGeneralSettings.js",
-        "id": "wallet.settings.password",
+        "id": "wallet.settings.general.password",
         "start": {
           "column": 17,
           "line": 31
@@ -4668,7 +4668,7 @@
           "line": 40
         },
         "file": "source/renderer/app/components/wallet/WalletGeneralSettings.js",
-        "id": "wallet.settings.passwordLastUpdated",
+        "id": "wallet.settings.general.passwordLastUpdated",
         "start": {
           "column": 23,
           "line": 36
@@ -4682,7 +4682,7 @@
           "line": 45
         },
         "file": "source/renderer/app/components/wallet/WalletGeneralSettings.js",
-        "id": "wallet.settings.passwordNotSet",
+        "id": "wallet.settings.general.passwordNotSet",
         "start": {
           "column": 18,
           "line": 41
@@ -4696,7 +4696,7 @@
           "line": 50
         },
         "file": "source/renderer/app/components/wallet/WalletGeneralSettings.js",
-        "id": "wallet.settings.exportWalletButtonLabel",
+        "id": "wallet.settings.general.exportWalletButtonLabel",
         "start": {
           "column": 21,
           "line": 46

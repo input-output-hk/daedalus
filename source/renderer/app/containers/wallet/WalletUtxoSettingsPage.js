@@ -17,7 +17,11 @@ export default class WalletSettingsPage extends Component<Props> {
   }
 
   render() {
-    const { walletUtxos } = this.props.stores.walletSettings;
-    return <WalletUtxoSettings walletUtxos={walletUtxos} />;
+    const { wallets, walletSettings } = this.props.stores;
+    const { walletUtxos } = walletSettings;
+    const { active: wallet } = wallets;
+    if (!wallet)
+      throw new Error('Active wallet required for WalletSummaryPage.');
+    return <WalletUtxoSettings walletUtxos={walletUtxos} wallet={wallet} />;
   }
 }
