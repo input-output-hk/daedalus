@@ -437,6 +437,7 @@ export default {
 
   '--theme-support-settings-text-color': '#e9f4fe',
   '--theme-support-settings-link-color': '#20b56b',
+  '--theme-support-settings-item-color': 'rgba(233, 244, 254, 0.5)',
 
   '--theme-terms-of-use-text-color': '#e9f4fe',
 

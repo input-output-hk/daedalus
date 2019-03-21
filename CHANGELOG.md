@@ -3,6 +3,10 @@ Changelog
 
 ## 0.13.1
 
+### Fixes
+
+- Improve text on the Support screen ([PR 1361](https://github.com/input-output-hk/daedalus/pull/1361))
+
 ## 0.13.0
 
 ### Features
