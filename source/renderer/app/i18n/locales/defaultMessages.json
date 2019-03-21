@@ -5255,6 +5255,39 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Wallet UTxO distribution",
+        "description": "Title for the \"Wallet Utxos\" screen.",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "source/renderer/app/components/wallet/WalletUtxoSettings.js",
+        "id": "wallet.settings.utxos.title",
+        "start": {
+          "column": 9,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!This wallet contains <b>{amount} ADA</b> on <b>{utxos} UTxOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTxOs with different amounts of ada.",
+        "description": "Description for the \"Wallet Utxos\" screen.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/wallet/WalletUtxoSettings.js",
+        "id": "wallet.settings.utxos.description",
+        "start": {
+          "column": 15,
+          "line": 27
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/WalletUtxoSettings.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Drop file here",
         "description": "Label \"Drop file here\" on the file upload widget.",
         "end": {

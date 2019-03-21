@@ -2,20 +2,21 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import {
+  BarChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Bar,
+  ResponsiveContainer,
+} from 'recharts';
 import styles from './WalletUtxoSettings.scss';
+import chartStyles from './WalletUtxoSettingsStyles.js';
 import type { WalletUtxos } from '../../api/wallets/types';
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import Wallet from '../../domains/Wallet';
-// import {
-//   LineChart,
-//   YAxis,
-//   XAxis,
-//   Line,
-//   CartesianGrid,
-//   Tooltip,
-//   Legend,
-//   ResponsiveContainer,
-// } from 'recharts';
+import { formattedPrettyAmount } from '../../utils/formatters';
 
 export const messages = defineMessages({
   title: {
@@ -42,15 +43,23 @@ export default class WalletUtxoSettings extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  get data() {
+    const { histogram } = this.props.walletUtxos || { histogram: {} };
+
+    return Object.entries(histogram)
+      .sort()
+      .map<any>(([amount, utxos]) => ({
+        amount: formattedPrettyAmount(amount),
+        utxos,
+      }));
+  }
+
   render() {
     const { intl } = this.context;
-    const { walletUtxos, wallet } = this.props;
+    const { wallet } = this.props;
     const amount = wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA);
     const utxos = 21;
 
-    if (!walletUtxos) return <div className={styles.component}>Loading...</div>;
-
-    // const { allStakes, histogram, boundType } = walletUtxos;
     return (
       <div className={styles.component}>
         <h1>{intl.formatMessage(messages.title)}</h1>
@@ -62,9 +71,26 @@ export default class WalletUtxoSettings extends Component<Props> {
           />
         </p>
 
-        {/* <pre>
-          {JSON.stringify({ allStakes, histogram, boundType }, null, 2)}
-        </pre> */}
+        <ResponsiveContainer width="100%" height={280}>
+          <BarChart width="100%" height={280} data={this.data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              dataKey="amount"
+              interval={0}
+              axisLine={false}
+              tickLine={false}
+              tick={chartStyles.xAxis}
+            />
+            <YAxis
+              dataKey="utxos"
+              axisLine={false}
+              tickLine={false}
+              tick={chartStyles.yAxis}
+            />
+            <Tooltip />
+            <Bar dataKey="utxos" fill="#445b7c" />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     );
   }

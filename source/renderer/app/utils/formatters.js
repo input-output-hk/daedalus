@@ -34,3 +34,17 @@ export const formattedAmountWithoutTrailingZeros = (amount: string): string =>
 
 export const formattedAmountToLovelace = (amount: string): number =>
   parseInt(formattedAmountToBigNumber(amount).times(LOVELACES_PER_ADA), 10);
+
+export const formattedPrettyAmount = (amount: BigNumber) => {
+  let ada = amount / LOVELACES_PER_ADA;
+  if (ada === 1000) ada = '1K';
+  if (ada === 10000) ada = '10K';
+  if (ada === 100000) ada = '100K';
+  if (ada === 1000000) ada = '1M';
+  if (ada === 10000000) ada = '10M';
+  if (ada === 100000000) ada = '100M';
+  if (ada === 1000000000) ada = '1B';
+  if (ada === 10000000000) ada = '10B';
+  if (ada === 45000000000) ada = '45B';
+  return ada;
+};
