@@ -6,7 +6,10 @@ Given('I use the spending password {string}', function(password) {
   this.context.spendingPassword = password;
 });
 
-Then('the spending password validation is {bool}', function(result) {
-  const isValid = isValidSpendingPassword(this.context.spendingPassword);
-  expect(isValid).to.equal(result);
+Then('the spending password validation should fail', function() {
+  expect(isValidSpendingPassword(this.context.spendingPassword)).to.be.false;
+});
+
+Then('the spending password validation should succeed', function() {
+  expect(isValidSpendingPassword(this.context.spendingPassword)).to.be.true;
 });
