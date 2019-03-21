@@ -6,6 +6,7 @@ Changelog
 ### Fixes
 
 - Improve text on the Support screen ([PR 1361](https://github.com/input-output-hk/daedalus/pull/1361))
+- Fixed Daedalus log file rotation ([PR 1358](https://github.com/input-output-hk/daedalus/pull/1358))
 
 ## 0.13.0
 
