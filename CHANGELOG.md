@@ -5,7 +5,7 @@ Changelog
 
 ### Fixes
 
-- Fixed Daedalus log file rotation ([PR 1355](https://github.com/input-output-hk/daedalus/pull/1355))
+- Fixed Daedalus log file rotation ([PR 1358](https://github.com/input-output-hk/daedalus/pull/1358))
 
 ## 0.13.0
 
