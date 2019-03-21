@@ -1,13 +1,15 @@
-Feature: is valid spending password
+Feature: Spending password validation
 
-  - should contain at least one digit: (?=.*\d)
-  - should contain at least one lower case: (?=.*[а-я])
-  - should contain at least one upper case: (?=.*[А-Я])
-  - should contain at least 7 characters long: .{7,}
+  - should contain at least one digit
+  - should contain at least one lower case
+  - should contain at least one upper case
+  - should contain at least 7 characters long
+  - should allow passwords in caseless languages like Kanji
+  - should enforce the case rules in mixed language passwords
 
   Scenario Outline:
-    Given I use the password "<PASSWORD>"
-    Then the password validation should be <EXPECTED_RESULT>
+    Given I use the spending password "<PASSWORD>"
+    Then the spending password validation is <EXPECTED_RESULT>
 
     Examples:
       | PASSWORD       | EXPECTED_RESULT |
