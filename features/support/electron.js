@@ -128,7 +128,7 @@ After(async function({ sourceLocation, result }) {
 });
 
 // eslint-disable-next-line prefer-arrow-callback
-AfterAll(async () => {
+AfterAll(async function() {
   const allWindowsClosed = (await context.app.client.getWindowCount()) === 0;
   if (allWindowsClosed || !context.app.running) return;
   if (scenariosCount === 0) {

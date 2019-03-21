@@ -12,8 +12,7 @@ import {
 declare var daedalus: Daedalus;
 
 Given(/^Daedalus is running$/, function() {
-  const appIsRunning = this.app.isRunning();
-  expect(appIsRunning).to.be.true();
+  expect(this.app.isRunning()).to.equal(true);
 });
 
 When(/^I refresh the main window$/, async function() {
