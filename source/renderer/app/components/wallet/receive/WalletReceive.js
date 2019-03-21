@@ -100,7 +100,7 @@ export default class WalletReceive extends Component<Props, State> {
   passwordField: Input;
 
   toggleUsedAddresses = () => {
-    this.setState(prevState => ({showUsed: !prevState.showUsed}));
+    this.setState(prevState => ({ showUsed: !prevState.showUsed }));
   };
 
   form = new ReactToolboxMobxForm(

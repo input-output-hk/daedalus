@@ -183,7 +183,10 @@ export class VirtualTransactionList extends Component<Props> {
   checkIfTxContentIsFullyExpanded = (tx: WalletTransaction): boolean => {
     const txRow = this.getTxRowElementById(tx.id);
     const txElement = txRow && txRow.firstChild;
-    return ((txElement instanceof HTMLElement) && (txElement.classList.contains('Transaction_expanded')));
+    return (
+      txElement instanceof HTMLElement &&
+      txElement.classList.contains('Transaction_expanded')
+    );
   };
 
   /**
@@ -295,7 +298,9 @@ export class VirtualTransactionList extends Component<Props> {
           {({ width, height }) => (
             <List
               className={styles.list}
-              ref={list => {this.list = list}}
+              ref={list => {
+                this.list = list;
+              }}
               width={width}
               height={height}
               onRowsRendered={throttle(this.onRowsRendered, 100, {

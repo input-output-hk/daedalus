@@ -55,7 +55,9 @@ export default class TermsOfUseForm extends Component<Props, State> {
   toggleAcceptance = this.toggleAcceptance.bind(this);
 
   toggleAcceptance() {
-    this.setState(prevState => ({areTermsOfUseAccepted: !prevState.areTermsOfUseAccepted}));
+    this.setState(prevState => ({
+      areTermsOfUseAccepted: !prevState.areTermsOfUseAccepted,
+    }));
   }
 
   submit = () => {

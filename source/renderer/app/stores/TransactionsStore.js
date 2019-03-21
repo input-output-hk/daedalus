@@ -251,7 +251,8 @@ export default class TransactionsStore extends Store {
     if (!wallet) return this._resetUnconfirmedAmount();
     // Reset when no transactions
     const results = this._getTransactionsAllRequest(wallet.id).result;
-    if (!results || !results.transactions) return this._resetUnconfirmedAmount();
+    if (!results || !results.transactions)
+      return this._resetUnconfirmedAmount();
 
     // We have some results, lets compute and update
     const unconfirmedAmount = this._getEmptyUnconfirmedAmount();
