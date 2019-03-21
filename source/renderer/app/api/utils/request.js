@@ -88,22 +88,22 @@ export const axiosRequest = async (
   rawBodyParams?: any,
   requestOptions?: { returnMeta: boolean }
 ): Promise<*> => {
-  console.log(
-    '**** --- ARGUEMENTS START -------------------------------------->'
-  );
-  console.log(
-    `httpsConfig: ${JSON.stringify(
-      omit(httpsConfig, 'ca', 'cert', 'key'),
-      null,
-      2
-    )}`
-  );
-  console.log(`queryParams: ${JSON.stringify(queryParams, null, 2)}`);
-  console.log(`rawBodyParams: ${JSON.stringify(rawBodyParams, null, 2)}`);
-  console.log(`requestOptions: ${JSON.stringify(requestOptions, null, 2)}`);
-  console.log(
-    '**** --- ARGUEMENTS END -------------------------------------->'
-  );
+  // console.log(
+  //   '**** --- ARGUEMENTS START -------------------------------------->'
+  // );
+  // console.log(
+  //   `httpsConfig: ${JSON.stringify(
+  //     omit(httpsConfig, 'ca', 'cert', 'key'),
+  //     null,
+  //     2
+  //   )}`
+  // );
+  // console.log(`queryParams: ${JSON.stringify(queryParams, null, 2)}`);
+  // console.log(`rawBodyParams: ${JSON.stringify(rawBodyParams, null, 2)}`);
+  // console.log(`requestOptions: ${JSON.stringify(requestOptions, null, 2)}`);
+  // console.log(
+  //   '**** --- ARGUEMENTS END -------------------------------------->'
+  // );
 
   const { headers, hostname, method, path, port, ca, cert, key } = httpsConfig;
 
@@ -125,19 +125,18 @@ export const axiosRequest = async (
     data: requestBody,
     httpsAgent: requestAgent,
   });
-  debugger;
+
   // begin response handling
   return new Promise(async (resolve, reject) => {
     try {
       const response = await sendRequest();
-      debugger;
+
       if (response.data) {
         const { data } = response;
-        debugger;
+
         resolve(data);
       }
     } catch (error) {
-      debugger;
       reject(error);
     }
   });
@@ -150,21 +149,21 @@ function typedRequest<Response>(
   requestOptions?: { returnMeta: boolean }
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
-    const httpsOptions = JSON.stringify(
-      omit(httpOptions, 'ca', 'cert', 'key'),
-      null,
-      2
-    );
-    console.log(
-      '**** --- HERE ARE THE ARGUEMENTS -------------------------------------->'
-    );
-    console.log(`httpOptions: ${httpsOptions}`);
-    console.log(`queryParams: ${JSON.stringify(queryParams, null, 2)}`);
-    console.log(`rawBodyParams: ${rawBodyParams}`);
-    console.log(`requestOptions: ${requestOptions}`);
-    console.log(
-      '**** --- ARGUEMENTS END -------------------------------------->'
-    );
+    // const httpsOptions = JSON.stringify(
+    //   omit(httpOptions, 'ca', 'cert', 'key'),
+    //   null,
+    //   2
+    // );
+    // console.log(
+    //   '**** --- HERE ARE THE ARGUEMENTS -------------------------------------->'
+    // );
+    // console.log(`httpOptions: ${httpsOptions}`);
+    // console.log(`queryParams: ${JSON.stringify(queryParams, null, 2)}`);
+    // console.log(`rawBodyParams: ${rawBodyParams}`);
+    // console.log(`requestOptions: ${requestOptions}`);
+    // console.log(
+    //   '**** --- ARGUEMENTS END -------------------------------------->'
+    // );
     const options: HTTPSConfig = Object.assign({}, httpOptions);
     const { returnMeta } = Object.assign({}, requestOptions);
     let hasRequestBody = false;
@@ -207,7 +206,7 @@ function typedRequest<Response>(
     }
 
     const httpsRequest = global.https.request(options);
-    debugger;
+
     if (hasRequestBody) {
       httpsRequest.write(requestBody);
     }
