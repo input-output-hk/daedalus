@@ -10,6 +10,8 @@ import type { Row } from '../types';
 import styles from './VirtualTransactionList.scss';
 import { TransactionInfo, TransactionsGroup } from '../types';
 
+/* eslint-disable react/no-unused-prop-types */
+
 type Props = {
   getExpandedTransactions: () => Array<any>,
   renderRow: Row => Node,

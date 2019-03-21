@@ -67,7 +67,7 @@ process.once('loaded', () => {
           return true;
         }
 
-        event.preventDefault();
+        return event.preventDefault();
       },
       false
     );
