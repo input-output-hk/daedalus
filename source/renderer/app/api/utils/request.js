@@ -4,7 +4,7 @@ import { size, has, get, omit, isEmpty } from 'lodash';
 import querystring from 'querystring';
 import { encryptPassphrase, getContentLength } from '.';
 
-export type RequestOptions = {
+export type HTTPSConfig = {
   hostname: string,
   method: string,
   path: string,
@@ -12,20 +12,33 @@ export type RequestOptions = {
   ca: Uint8Array,
   cert: Uint8Array,
   key: Uint8Array,
-  headers?: {
-    'Content-Type': string,
-    'Content-Length': number,
-  },
+  headers?: RequestHeaders,
 };
 
-const transformBodyData = (rawBodyParams): string => {
+export type RequestHeaders = {
+  'Content-Type': string,
+  'Content-Length': number,
+};
+
+export type RequestCredentials = {
+  ca: Uint8Array,
+  cert: Uint8Array,
+  key: Uint8Array,
+};
+
+export type RequestBaseURL = {
+  hostname: string,
+  port: number,
+};
+
+const getBodyData = (rawBodyParams): string => {
   if (!rawBodyParams || isEmpty(rawBodyParams)) {
     return '';
   }
   return JSON.stringify(rawBodyParams);
 };
 
-const transformQueryParams = (queryParams: ?Object): ?Object => {
+const getQueryParams = (queryParams: ?Object): ?Object => {
   if (queryParams && !isEmpty(queryParams) && has(queryParams, 'passphrase')) {
     return { ...queryParams, passphrase: getEncryptedPassphrase(queryParams) };
   }
@@ -37,7 +50,9 @@ const getEncryptedPassphrase = (queryParams: ?Object): string => {
   if (!queryParams || isEmpty(queryParams) || size(queryParams) <= 0) {
     return queryString;
   }
-  const unencryptedPassphrase = has(queryParams, 'passphrase') ? get(queryParams, 'passphrase') : queryString;
+  const unencryptedPassphrase = has(queryParams, 'passphrase')
+    ? get(queryParams, 'passphrase')
+    : queryString;
   if (unencryptedPassphrase) {
     // If passphrase is present it must be encrypted
     const encryptedPassphrase = encryptPassphrase(unencryptedPassphrase);
@@ -46,53 +61,111 @@ const getEncryptedPassphrase = (queryParams: ?Object): string => {
   return queryString;
 };
 
-const typedAxiosRequest = async (
-  httpOptions: RequestOptions,
-  queryParams?: {},
-  rawBodyParams?: any,
-  requestOptions?: { returnMeta: boolean },
-) => {
-  const { hostname, method, path, port, ...restOptions } = httpOptions;
-  const requestBody = transformBodyData(rawBodyParams);
-  const requestBodyLength = getContentLength(requestBody);
-  const headers = {
-    'Content-Length': requestBodyLength,
+const getHeaders = (
+  headers?: RequestHeaders,
+  requestBodyLength: ?number
+): Object => {
+  const baseHeaders = {
+    'Content-Length': requestBodyLength || '',
     'Content-Type': 'application/json; charset=utf-8',
     Accept: 'application/json; charset=utf-8',
   };
-  const params = transformQueryParams(queryParams);
-  const auth = { ...restOptions }; // contains key, cert, ca... where do they go?
+  if (!headers || isEmpty(headers)) {
+    return baseHeaders;
+  }
+  return { ...baseHeaders, ...headers };
+};
 
-  const requestInstance = axios.create({
-    url: path,
-    method,
-    baseURL: `https://${hostname}:${port}`,
-    headers,
-    params,
-    data: requestBody,
+const getHttpsAgent = (credentials: RequestCredentials) =>
+  global.https.Agent({ ...credentials });
+
+const getBaseURL = (base: RequestBaseURL): string =>
+  `https://${base.hostname}:${base.port}`;
+
+export const axiosRequest = async (
+  httpsConfig: HTTPSConfig,
+  queryParams?: {},
+  rawBodyParams?: any,
+  requestOptions?: { returnMeta: boolean }
+): Promise<*> => {
+  console.log(
+    '**** --- ARGUEMENTS START -------------------------------------->'
+  );
+  console.log(
+    `httpsConfig: ${JSON.stringify(
+      omit(httpsConfig, 'ca', 'cert', 'key'),
+      null,
+      2
+    )}`
+  );
+  console.log(`queryParams: ${JSON.stringify(queryParams, null, 2)}`);
+  console.log(`rawBodyParams: ${JSON.stringify(rawBodyParams, null, 2)}`);
+  console.log(`requestOptions: ${JSON.stringify(requestOptions, null, 2)}`);
+  console.log(
+    '**** --- ARGUEMENTS END -------------------------------------->'
+  );
+
+  const { headers, hostname, method, path, port, ca, cert, key } = httpsConfig;
+
+  const requestBaseURL = getBaseURL({ hostname, port });
+  const requestBody = getBodyData(rawBodyParams);
+  const requestBodyLength = getContentLength(requestBody);
+  const requestHeaders = getHeaders(headers, requestBodyLength);
+  const requestParams = getQueryParams(queryParams);
+  const requestAgent = getHttpsAgent({ ca, cert, key });
+
+  const sendRequest = axios.create({
     responseType: 'json',
     responseEncoding: 'utf8',
+    method,
+    url: path,
+    baseURL: requestBaseURL,
+    headers: requestHeaders,
+    params: requestParams,
+    data: requestBody,
+    httpsAgent: requestAgent,
   });
-
-  // begin response
-  const response = await requestInstance();
+  debugger;
+  // begin response handling
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await sendRequest();
+      debugger;
+      if (response.data) {
+        const { data } = response;
+        debugger;
+        resolve(data);
+      }
+    } catch (error) {
+      debugger;
+      reject(error);
+    }
+  });
 };
 
 function typedRequest<Response>(
-  httpOptions: RequestOptions,
+  httpOptions: HTTPSConfig,
   queryParams?: {},
   rawBodyParams?: any,
   requestOptions?: { returnMeta: boolean }
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
-
-    console.log("**** --- HERE ARE THE typedRequest ARGUEMENTS -------------------------------------->");
-    console.log(`httpOptions: ${JSON.stringify(httpOptions, null, 0)}`);
+    const httpsOptions = JSON.stringify(
+      omit(httpOptions, 'ca', 'cert', 'key'),
+      null,
+      2
+    );
+    console.log(
+      '**** --- HERE ARE THE ARGUEMENTS -------------------------------------->'
+    );
+    console.log(`httpOptions: ${httpsOptions}`);
     console.log(`queryParams: ${JSON.stringify(queryParams, null, 2)}`);
     console.log(`rawBodyParams: ${rawBodyParams}`);
     console.log(`requestOptions: ${requestOptions}`);
-
-    const options: RequestOptions = Object.assign({}, httpOptions);
+    console.log(
+      '**** --- ARGUEMENTS END -------------------------------------->'
+    );
+    const options: HTTPSConfig = Object.assign({}, httpOptions);
     const { returnMeta } = Object.assign({}, requestOptions);
     let hasRequestBody = false;
     let requestBody = '';
@@ -134,6 +207,7 @@ function typedRequest<Response>(
     }
 
     const httpsRequest = global.https.request(options);
+    debugger;
     if (hasRequestBody) {
       httpsRequest.write(requestBody);
     }

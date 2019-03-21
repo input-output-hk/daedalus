@@ -29,6 +29,7 @@ process.once('loaded', () => {
     environment,
     https: {
       request: (...args) => _https.request(...args),
+      Agent: (...args) => new _https.Agent(...args),
     },
     ipcRenderer: {
       on: (...args) => _ipcRenderer.on(...args),
