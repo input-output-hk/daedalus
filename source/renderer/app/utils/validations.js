@@ -8,12 +8,17 @@ export const isValidWalletName = (walletName: string) => {
   return nameLength >= 3 && nameLength <= 40;
 };
 
-// Languages like Japanese do not have the concept of letter case
-// so this function checks for such characters (or digits)
+/**
+ * Checks if a character is either a caseless letter or a digit
+ * (Languages like Japanese do not have the concept of letter case)
+ */
 const isDigitOrCaselessChar = (char: string) =>
-  /\p{Decimal_Number}/u.test(char) ||
+  /^\p{Decimal_Number}$/u.test(char) ||
   (char === char.toUpperCase() && char === char.toLowerCase());
 
+/**
+ * Test if a whole password is in caseless letters (or digits)
+ */
 const isPasswordInCaselessLanguage = (password: string) =>
   every(password.split(''), isDigitOrCaselessChar);
 
@@ -27,20 +32,27 @@ export const isValidSpendingPassword = (password: string): boolean => {
   // Validation rules (uses unicode categories for checks):
   // https://github.com/tc39/proposal-regexp-unicode-property-escapes
 
-  // - should contain at least 7 characters long: .{7,}
+  // Should contain at least 7 characters long
   if (password.length < 7) return false;
-  // - must not contain white spaces
+
+  // Must not contain white spaces
   if (/\p{White_Space}/u.test(password)) return false;
-  // - should contain at least one digit: (?=.*\d)
+
+  // Should contain at least one digit
   if (!/\p{Decimal_Number}/u.test(password)) return false;
-  // - should contain at least one lower case: (?=.*[а-я])
+
+  // Should contain at least one lower case
   if (!/\p{Lowercase}/u.test(password)) {
+    // Should allow passwords in caseless languages like Kanji
     return isPasswordInCaselessLanguage(password);
   }
-  // - should contain at least one upper case: (?=.*[А-Я])
+
+  // Should contain at least one upper case
   if (!/\p{Uppercase}/u.test(password)) {
+    // Should allow passwords in caseless languages like Kanji
     return isPasswordInCaselessLanguage(password);
   }
+
   return true;
 };
 
