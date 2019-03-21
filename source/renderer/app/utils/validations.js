@@ -24,15 +24,14 @@ const isPasswordInCaselessLanguage = (password: string) =>
 
 /**
  * Unicode compatible validation rules for spending password.
- * Enforces case sensitive validation for languages that have
- * that concept but allows case-insensitiv validation for langs
- * like Kanji that do not use that concept.
+ * Enforces case sensitive validation for languages that have that concept
+ * but allows case-insensitiv validation for langs like Kanji
  */
 export const isValidSpendingPassword = (password: string): boolean => {
   // Validation rules (uses unicode categories for checks):
   // https://github.com/tc39/proposal-regexp-unicode-property-escapes
 
-  // Should contain at least 7 characters long
+  // Should contain at least 7 characters
   if (password.length < 7) return false;
 
   // Must not contain white spaces
@@ -43,13 +42,13 @@ export const isValidSpendingPassword = (password: string): boolean => {
 
   // Should contain at least one lower case
   if (!/\p{Lowercase}/u.test(password)) {
-    // Should allow passwords in caseless languages like Kanji
+    // Should still allow passwords in caseless languages like Kanji
     return isPasswordInCaselessLanguage(password);
   }
 
   // Should contain at least one upper case
   if (!/\p{Uppercase}/u.test(password)) {
-    // Should allow passwords in caseless languages like Kanji
+    // Should still allow passwords in caseless languages like Kanji
     return isPasswordInCaselessLanguage(password);
   }
 
