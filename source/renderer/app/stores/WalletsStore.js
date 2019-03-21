@@ -14,6 +14,8 @@ import { ROUTES } from '../routes-config';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 
+/* eslint-disable consistent-return */
+
 /**
  * The base wallet store that contains the shared logic
  * dealing with wallets / accounts.

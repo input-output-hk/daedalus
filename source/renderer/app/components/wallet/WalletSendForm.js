@@ -27,6 +27,8 @@ import {
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
 
+/* eslint-disable consistent-return */
+
 export const messages = defineMessages({
   titleLabel: {
     id: 'wallet.send.form.title.label',

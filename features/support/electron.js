@@ -16,6 +16,8 @@ import {
 } from './helpers/screenshot';
 import { refreshClient } from './helpers/app-helpers';
 
+/* eslint-disable consistent-return */
+
 const context = {};
 const DEFAULT_TIMEOUT = 20000;
 let scenariosCount = 0;

@@ -20,6 +20,8 @@ import type {
 } from '../../common/types/cardano-node.types';
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 
+/* eslint-disable consistent-return */
+
 type Logger = {
   debug: (string, ?Object) => void,
   info: (string, ?Object) => void,

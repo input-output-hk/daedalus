@@ -19,6 +19,8 @@ import type { UnconfirmedAmount } from '../types/unconfirmedAmountType';
 import { isValidAmountInLovelaces } from '../utils/validations';
 import { TX_UNCONFIRMED_THRESHOLD } from '../config/numbersConfig';
 
+/* eslint-disable consistent-return */
+
 export type TransactionSearchOptionsStruct = {
   searchTerm: string,
   searchLimit: number,

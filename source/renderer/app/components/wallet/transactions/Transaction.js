@@ -19,6 +19,8 @@ import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';
 import { getNetworkExplorerUrl } from '../../../utils/network';
 
+/* eslint-disable consistent-return */
+
 const messages = defineMessages({
   card: {
     id: 'wallet.transaction.type.card',
