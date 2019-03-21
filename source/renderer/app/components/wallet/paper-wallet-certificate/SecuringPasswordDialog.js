@@ -63,12 +63,15 @@ export default class SecuringPasswordDialog extends Component<Props, State> {
     securePasswordConfirmed: false,
   };
 
-  constructor(props: Props) {
-    super(props);
-    this.onSecurePasswordConfirmationChange = this.onSecurePasswordConfirmationChange.bind(
-      this
-    );
-  }
+  onSecurePasswordConfirmationChange = () => {
+    this.setState(prevState => ({
+      securePasswordConfirmed: !prevState.securePasswordConfirmed,
+    }));
+  };
+
+  onSecurePasswordConfirmationChange = this.onSecurePasswordConfirmationChange.bind(
+    this
+  );
 
   render() {
     const { intl } = this.context;
@@ -130,10 +133,4 @@ export default class SecuringPasswordDialog extends Component<Props, State> {
       </Dialog>
     );
   }
-
-  onSecurePasswordConfirmationChange = () => {
-    this.setState(prevState => ({
-      securePasswordConfirmed: !prevState.securePasswordConfirmed,
-    }));
-  };
 }

@@ -82,12 +82,25 @@ export default class PrintDialog extends Component<Props, State> {
     isScannable: false,
   };
 
-  constructor(props: Props) {
-    super(props);
-    this.onConfirmReadable = this.onConfirmReadable.bind(this);
-    this.onConfirmScannable = this.onConfirmScannable.bind(this);
-    this.onConfirmCorrectPrinting = this.onConfirmCorrectPrinting.bind(this);
-  }
+  onConfirmCorrectPrinting = () => {
+    this.setState(prevState => ({
+      isPrintedCorrectly: !prevState.isPrintedCorrectly,
+    }));
+  };
+
+  onConfirmReadable = () => {
+    this.setState(prevState => ({ isReadable: !prevState.isReadable }));
+  };
+
+  onConfirmScannable = () => {
+    this.setState(prevState => ({ isScannable: !prevState.isScannable }));
+  };
+
+  onConfirmReadable = this.onConfirmReadable.bind(this);
+
+  onConfirmScannable = this.onConfirmScannable.bind(this);
+
+  onConfirmCorrectPrinting = this.onConfirmCorrectPrinting.bind(this);
 
   render() {
     const { intl } = this.context;
@@ -176,18 +189,4 @@ export default class PrintDialog extends Component<Props, State> {
       </Dialog>
     );
   }
-
-  onConfirmCorrectPrinting = () => {
-    this.setState(prevState => ({
-      isPrintedCorrectly: !prevState.isPrintedCorrectly,
-    }));
-  };
-
-  onConfirmReadable = () => {
-    this.setState(prevState => ({ isReadable: !prevState.isReadable }));
-  };
-
-  onConfirmScannable = () => {
-    this.setState(prevState => ({ isScannable: !prevState.isScannable }));
-  };
 }
