@@ -113,15 +113,23 @@ export default class VerificationDialog extends Component<Props, State> {
     isRecoveryPhraseValid: false,
   };
 
-  constructor(props: Props) {
-    super(props);
-    this.onRecoveringConfirmationChange = this.onRecoveringConfirmationChange.bind(
-      this
-    );
-    this.onStoringConfirmationChange = this.onStoringConfirmationChange.bind(
-      this
-    );
-  }
+  onStoringConfirmationChange = () => {
+    this.setState(prevState => ({
+      storingConfirmed: !prevState.storingConfirmed,
+    }));
+  };
+
+  onRecoveringConfirmationChange = () => {
+    this.setState(prevState => ({
+      recoveringConfirmed: !prevState.recoveringConfirmed,
+    }));
+  };
+
+  onRecoveringConfirmationChange = this.onRecoveringConfirmationChange.bind(
+    this
+  );
+
+  onStoringConfirmationChange = this.onStoringConfirmationChange.bind(this);
 
   recoveryPhraseAutocomplete: Autocomplete;
 
@@ -319,16 +327,4 @@ export default class VerificationDialog extends Component<Props, State> {
       </Dialog>
     );
   }
-
-  onStoringConfirmationChange = () => {
-    this.setState(prevState => ({
-      storingConfirmed: !prevState.storingConfirmed,
-    }));
-  };
-
-  onRecoveringConfirmationChange = () => {
-    this.setState(prevState => ({
-      recoveringConfirmed: !prevState.recoveringConfirmed,
-    }));
-  };
 }
