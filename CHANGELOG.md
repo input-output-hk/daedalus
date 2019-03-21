@@ -17,6 +17,7 @@ Changelog
 - Improved Webpack 4 build performance ([PR 1320](https://github.com/input-output-hk/daedalus/pull/1320))
 - Introduced automated code formatting with prettier ([PR 1335](https://github.com/input-output-hk/daedalus/pull/1335))
 - Improved error messages for connecting screen ([PR 1344](https://github.com/input-output-hk/daedalus/pull/1344))
+- Fixed all lint warnings across all components ([PR 1352](https://github.com/input-output-hk/daedalus/pull/1352))
 
 ## 0.13.0
 
