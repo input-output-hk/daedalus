@@ -14,23 +14,32 @@ const isDigitOrCaselessChar = (char: string) =>
   /\p{Decimal_Number}/u.test(char) ||
   (char === char.toUpperCase() && char === char.toLowerCase());
 
-export const isValidSpendingPassword = (spendingPassword: string) => {
+const isPasswordInCaselessLanguage = (password: string) =>
+  every(password.split(''), isDigitOrCaselessChar);
+
+/**
+ * Unicode compatible validation rules for spending password.
+ * Enforces case sensitive validation for languages that have
+ * that concept but allows case-insensitiv validation for langs
+ * like Kanji that do not use that concept.
+ */
+export const isValidSpendingPassword = (password: string): boolean => {
   // Validation rules (uses unicode categories for checks):
   // https://github.com/tc39/proposal-regexp-unicode-property-escapes
 
   // - should contain at least 7 characters long: .{7,}
-  if (spendingPassword.length < 7) return false;
+  if (password.length < 7) return false;
   // - must not contain white spaces
-  if (/\p{White_Space}/u.test(spendingPassword)) return false;
+  if (/\p{White_Space}/u.test(password)) return false;
   // - should contain at least one digit: (?=.*\d)
-  if (!/\p{Decimal_Number}/u.test(spendingPassword)) return false;
+  if (!/\p{Decimal_Number}/u.test(password)) return false;
   // - should contain at least one lower case: (?=.*[а-я])
-  if (!/\p{Lowercase}/u.test(spendingPassword)) {
-    return every(spendingPassword.split(''), isDigitOrCaselessChar);
+  if (!/\p{Lowercase}/u.test(password)) {
+    return isPasswordInCaselessLanguage(password);
   }
   // - should contain at least one upper case: (?=.*[А-Я])
-  if (!/\p{Uppercase}/u.test(spendingPassword)) {
-    return every(spendingPassword.split(''), isDigitOrCaselessChar);
+  if (!/\p{Uppercase}/u.test(password)) {
+    return isPasswordInCaselessLanguage(password);
   }
   return true;
 };

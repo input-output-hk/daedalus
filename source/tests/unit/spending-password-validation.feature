@@ -13,10 +13,15 @@ Feature: is valid spending password
       | PASSWORD       | EXPECTED_RESULT |
       | Correct1       | true            |
       | 学年別漢字配当表1| true            |
+      | Mix学年別漢字配1 | true            |
       | Привет1        | true            |
+      | mixПривет1     | true            |
       | 2Short         | false           |
       | S p a c 3 s    | false           |
       | ONLY8UPPERCASE | false           |
       | only8lowercase | false           |
       | 学年別漢字配当表 | false           |
+      | mix学年別漢字配  | false           |
       | Привет!        | false           |
+      | привет1        | false           |
+      | mixпривет1     | false           |
