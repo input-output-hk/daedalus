@@ -5259,27 +5259,27 @@
         "description": "Title for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 23
         },
         "file": "source/renderer/app/components/wallet/WalletUtxoSettings.js",
         "id": "wallet.settings.utxos.title",
         "start": {
           "column": 9,
-          "line": 22
+          "line": 19
         }
       },
       {
-        "defaultMessage": "!!!This wallet contains <b>{amount} ADA</b> on <b>{utxos} UTxOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTxOs with different amounts of ada.",
+        "defaultMessage": "!!!This wallet contains <b>{walletAmount} ADA</b> on <b>{walletUtxosAmount} UTxOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTxOs with different amounts of ada.",
         "description": "Description for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/WalletUtxoSettings.js",
         "id": "wallet.settings.utxos.description",
         "start": {
           "column": 15,
-          "line": 27
+          "line": 24
         }
       }
     ],

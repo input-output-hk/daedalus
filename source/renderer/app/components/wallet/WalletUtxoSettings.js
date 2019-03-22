@@ -11,12 +11,9 @@ import {
   Bar,
   ResponsiveContainer,
 } from 'recharts';
+import BigNumber from 'bignumber.js';
 import styles from './WalletUtxoSettings.scss';
 import chartStyles from './WalletUtxoSettingsStyles.js';
-import type { WalletUtxos } from '../../api/wallets/types';
-import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
-import Wallet from '../../domains/Wallet';
-import { formattedPrettyAmount } from '../../utils/formatters';
 
 export const messages = defineMessages({
   title: {
@@ -27,14 +24,15 @@ export const messages = defineMessages({
   description: {
     id: 'wallet.settings.utxos.description',
     defaultMessage:
-      '!!!This wallet contains <b>{amount} ADA</b> on <b>{utxos} UTxOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTxOs with different amounts of ada.',
+      '!!!This wallet contains <b>{walletAmount} ADA</b> on <b>{walletUtxosAmount} UTxOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTxOs with different amounts of ada.',
     description: 'Description for the "Wallet Utxos" screen.',
   },
 });
 
 type Props = {
-  walletUtxos: ?WalletUtxos,
-  wallet: Wallet,
+  walletAmount: BigNumber,
+  walletUtxosAmount: number,
+  chartData: Array<any>,
 };
 
 @observer
@@ -43,22 +41,9 @@ export default class WalletUtxoSettings extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  get data() {
-    const { histogram } = this.props.walletUtxos || { histogram: {} };
-
-    return Object.entries(histogram)
-      .sort()
-      .map<any>(([amount, utxos]) => ({
-        amount: formattedPrettyAmount(amount),
-        utxos,
-      }));
-  }
-
   render() {
     const { intl } = this.context;
-    const { wallet } = this.props;
-    const amount = wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA);
-    const utxos = 21;
+    const { walletAmount, walletUtxosAmount, chartData } = this.props;
 
     return (
       <div className={styles.component}>
@@ -67,28 +52,28 @@ export default class WalletUtxoSettings extends Component<Props> {
         <p>
           <FormattedHTMLMessage
             {...messages.description}
-            values={{ amount, utxos }}
+            values={{ walletAmount, walletUtxosAmount }}
           />
         </p>
 
         <ResponsiveContainer width="100%" height={280}>
-          <BarChart width="100%" height={280} data={this.data}>
+          <BarChart width="100%" height={280} data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
-              dataKey="amount"
+              dataKey="walletAmount"
               interval={0}
               axisLine={false}
               tickLine={false}
               tick={chartStyles.xAxis}
             />
             <YAxis
-              dataKey="utxos"
+              dataKey="walletUtxosAmount"
               axisLine={false}
               tickLine={false}
               tick={chartStyles.yAxis}
             />
             <Tooltip />
-            <Bar dataKey="utxos" fill="#445b7c" />
+            <Bar dataKey="walletUtxosAmount" fill="#445b7c" />
           </BarChart>
         </ResponsiveContainer>
       </div>
