@@ -1,10 +1,7 @@
 // @flow
 import os from 'os';
 import _https from 'https';
-import {
-  ipcRenderer as _ipcRenderer,
-  remote as _remote
-} from 'electron';
+import { ipcRenderer as _ipcRenderer, remote as _remote } from 'electron';
 import _electronLog from 'electron-log';
 import ElectronStore from 'electron-store';
 import { environment } from './environment';
@@ -32,6 +29,7 @@ process.once('loaded', () => {
     environment,
     https: {
       request: (...args) => _https.request(...args),
+      Agent: (...args) => new _https.Agent(...args),
     },
     ipcRenderer: {
       on: (...args) => _ipcRenderer.on(...args),
@@ -59,13 +57,20 @@ process.once('loaded', () => {
   if (_process.env.NODE_ENV === 'production') {
     // elements that can be copied using the context menu (right click),
     // must have a css property of user-select: 'text' or be an input element
-    global.document.addEventListener('contextmenu', event => {
-      const targetIsSelectable = getComputedStyle(event.target).userSelect === 'text';
-      const targetIsInput = event.target.nodeName === 'INPUT';
+    global.document.addEventListener(
+      'contextmenu',
+      event => {
+        const targetIsSelectable =
+          getComputedStyle(event.target).userSelect === 'text';
+        const targetIsInput = event.target.nodeName === 'INPUT';
 
-      if (targetIsSelectable || targetIsInput) { return true; }
+        if (targetIsSelectable || targetIsInput) {
+          return true;
+        }
 
-      event.preventDefault();
-    }, false);
+        event.preventDefault();
+      },
+      false
+    );
   }
 });
