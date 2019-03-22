@@ -20,7 +20,7 @@ const isTest = process.env.NODE_ENV === 'test';
 const isDev = process.env.NODE_ENV === 'development';
 
 export const setupLogging = () => {
-  const logFilePath = path.join(pubLogsFolderPath, APP_NAME + '.json');
+  const logFilePath = path.join(pubLogsFolderPath, APP_NAME + '.json.log');
   ensureDirectoryExists(pubLogsFolderPath);
   log.transports.console.level = isTest ? 'error' : 'info';
   log.transports.rendererConsole.level = isDev ? 'info' : 'error';
