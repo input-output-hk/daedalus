@@ -21,7 +21,7 @@ export class SimpleTransactionList extends Component<Props> {
     return (
       <div className={styles.component}>
         {rows.map((row, index) => (
-          // eslint-disable-next-line
+          // eslint-disable-next-line react/jsx-no-bind
           <div key={index}>{renderRow(row)}</div>
         ))}
       </div>

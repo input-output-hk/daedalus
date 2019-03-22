@@ -24,7 +24,7 @@ export default class MnemonicWord extends Component<Props> {
         themeOverrides={styles}
         disabled={!isActive}
         label={word}
-        // eslint-disable-next-line
+        // eslint-disable-next-line react/jsx-no-bind
         onClick={handleClick}
         skin={ButtonSkin}
       />

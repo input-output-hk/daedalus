@@ -60,7 +60,7 @@ export const setupLogging = () => {
       try {
         fs.unlinkSync(logFile);
       } catch (error) {
-        // eslint-disable-next-line
+        // eslint-disable-next-line no-console
         console.error(
           `Compressed log file "${logFile}" deletion failed: ${error}`
         );

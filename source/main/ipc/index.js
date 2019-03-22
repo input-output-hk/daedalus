@@ -20,7 +20,7 @@ export default (window: BrowserWindow) => {
   getGpuStatus();
   handleBugReportRequests();
   handlePaperWalletRequests();
-  // eslint-disable-next-line
+  // eslint-disable-next-line no-unused-expressions
   openExternalUrlChannel;
   setupParseRedemptionCodeHandler();
 };

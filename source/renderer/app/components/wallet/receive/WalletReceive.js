@@ -161,7 +161,7 @@ export default class WalletReceive extends Component<Props, State> {
       onError: () => {},
     });
 
-    // eslint-disable-next-line
+    // eslint-disable-next-line no-unused-expressions
     this.passwordField && this.passwordField.focus();
   };
 
@@ -258,7 +258,7 @@ export default class WalletReceive extends Component<Props, State> {
                   {walletAddress}
                   <CopyToClipboard
                     text={walletAddress}
-                    // eslint-disable-next-line
+                    // eslint-disable-next-line react/jsx-no-bind
                     onCopy={onCopyAddress.bind(this, walletAddress)}
                   >
                     <SVGInline svg={iconCopy} className={styles.copyIconBig} />

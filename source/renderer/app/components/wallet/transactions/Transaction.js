@@ -290,7 +290,7 @@ export default class Transaction extends Component<Props> {
                 <span
                   role="presentation"
                   aria-hidden
-                  // eslint-disable-next-line
+                  // eslint-disable-next-line react/no-array-index-key
                   key={`${data.id}-from-${address}-${addressIndex}`}
                   className={styles.address}
                   onClick={this.handleOpenExplorer.bind(
@@ -307,7 +307,7 @@ export default class Transaction extends Component<Props> {
                 <span
                   role="presentation"
                   aria-hidden
-                  // eslint-disable-next-line
+                  // eslint-disable-next-line react/no-array-index-key
                   key={`${data.id}-to-${address}-${addressIndex}`}
                   className={styles.address}
                   onClick={this.handleOpenExplorer.bind(

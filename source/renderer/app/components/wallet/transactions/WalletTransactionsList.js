@@ -281,7 +281,7 @@ export default class WalletTransactionsList extends Component<Props> {
       <Button
         className={buttonClasses}
         label={intl.formatMessage(messages.showMoreTransactionsButtonLabel)}
-        // eslint-disable-next-line
+        // eslint-disable-next-line react/jsx-no-bind
         onClick={this.onShowMoreTransactions.bind(this, walletId)}
         skin={ButtonSkin}
       />
