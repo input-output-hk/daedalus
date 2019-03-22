@@ -391,6 +391,7 @@ export default class Loading extends Component<Props, State> {
       isNodeSubscribed,
       isNodeSyncing,
       isNodeTimeCorrect,
+      isCheckingSystemTime,
     } = this.props;
 
     const { connectingTime, syncingTime } = this.state;
@@ -431,6 +432,10 @@ export default class Loading extends Component<Props, State> {
     const showReportIssue = canReportConnectingIssue || canReportSyncingIssue;
 
     const buttonClasses = classNames(['primary', styles.reportIssueButton]);
+
+    let isNodeTimeCorrectAndNotChecking;
+    if (!isCheckingSystemTime)
+      isNodeTimeCorrectAndNotChecking = isNodeTimeCorrect;
 
     return (
       <div className={componentStyles}>
@@ -475,7 +480,7 @@ export default class Loading extends Component<Props, State> {
           nodeState={cardanoNodeState}
           isNodeResponding={isNodeResponding}
           isNodeSubscribed={isNodeSubscribed}
-          isNodeTimeCorrect={isNodeTimeCorrect}
+          isNodeTimeCorrect={isNodeTimeCorrectAndNotChecking}
           isNodeSyncing={isNodeSyncing}
         />
       </div>
