@@ -123,6 +123,7 @@ export default class LoadingPage extends Component<InjectedProps> {
           closeNotification={actions.notifications.closeActiveNotification}
           icon="spinner"
           hasEllipsis
+          hasCloseButton
         >
           {intl.formatMessage(messages.downloadLogsProgress)}
         </GenericNotification>
