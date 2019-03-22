@@ -455,6 +455,7 @@ export default {
 
   '--theme-support-settings-text-color': '#5e6066',
   '--theme-support-settings-link-color': '#2572cc',
+  '--theme-support-settings-item-color': 'rgba(94, 96, 102, 0.5)',
 
   '--theme-terms-of-use-text-color': '#5e6066',
 
