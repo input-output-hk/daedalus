@@ -19,17 +19,18 @@ const messages = defineMessages({
   headline: {
     id: 'wallet.settings.exportToFile.dialog.headline',
     defaultMessage: '!!!Export Wallet',
-    description: 'headline for "export wallet to file" dialog.'
+    description: 'headline for "export wallet to file" dialog.',
   },
   introduction: {
     id: 'wallet.settings.exportToFile.dialog.introduction',
-    defaultMessage: '!!!You are exporting <strong>{walletName}</strong> to a file.',
-    description: 'headline for "export wallet to file" dialog.'
+    defaultMessage:
+      '!!!You are exporting <strong>{walletName}</strong> to a file.',
+    description: 'headline for "export wallet to file" dialog.',
   },
   exportButtonLabel: {
     id: 'wallet.settings.exportToFile.dialog.submit.label',
     defaultMessage: '!!!Export',
-    description: 'Label for export wallet to file submit button.'
+    description: 'Label for export wallet to file submit button.',
   },
   // TODO: re-enable when we have full/readOnly exports
   // fullTabTitle: {
@@ -60,7 +61,7 @@ type Props = {
   walletName: string,
   hasSpendingPassword: boolean,
   isSubmitting: boolean,
-  onSubmit: (OnSubmitParams) => void,
+  onSubmit: OnSubmitParams => void,
   onClose: () => void,
   error?: ?LocalizableError,
 };
@@ -71,7 +72,6 @@ type State = {
 
 @observer
 export default class ExportWalletToFileDialog extends Component<Props, State> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -87,31 +87,45 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
   //   this.setState({ exportType });
   // }
 
-  form = new ReactToolboxMobxForm({
-    fields: {
-      spendingPassword: {
-        type: 'password',
-        label: this.context.intl.formatMessage(globalMessages.spendingPasswordLabel),
-        placeholder: this.context.intl.formatMessage(globalMessages.spendingPasswordPlaceholder),
-        value: '',
-        validators: [({ field }) => {
-          if (this.props.hasSpendingPassword && field.value === '') {
-            return [false, this.context.intl.formatMessage(globalMessages.fieldIsRequired)];
-          }
-          return [true];
-        }],
+  form = new ReactToolboxMobxForm(
+    {
+      fields: {
+        spendingPassword: {
+          type: 'password',
+          label: this.context.intl.formatMessage(
+            globalMessages.spendingPasswordLabel
+          ),
+          placeholder: this.context.intl.formatMessage(
+            globalMessages.spendingPasswordPlaceholder
+          ),
+          value: '',
+          validators: [
+            ({ field }) => {
+              if (this.props.hasSpendingPassword && field.value === '') {
+                return [
+                  false,
+                  this.context.intl.formatMessage(
+                    globalMessages.fieldIsRequired
+                  ),
+                ];
+              }
+              return [true];
+            },
+          ],
+        },
+      },
+    },
+    {
+      options: {
+        validateOnChange: true,
+        validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
-  }, {
-    options: {
-      validateOnChange: true,
-      validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
-    },
-  });
+  );
 
   submit = () => {
     this.form.submit({
-      onSuccess: (form) => {
+      onSuccess: form => {
         const { hasSpendingPassword } = this.props;
         const { spendingPassword } = form.values();
         const formData = {
@@ -127,15 +141,14 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
     const { form } = this;
     const { intl } = this.context;
     const {
-      onClose, walletName,
+      onClose,
+      walletName,
       hasSpendingPassword,
-      isSubmitting, error,
+      isSubmitting,
+      error,
     } = this.props;
     // const { exportType } = this.state;
-    const dialogClasses = classnames([
-      styles.component,
-      'WalletExportDialog',
-    ]);
+    const dialogClasses = classnames([styles.component, 'WalletExportDialog']);
 
     const actions = [
       {
@@ -143,7 +156,7 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
         label: intl.formatMessage(messages.exportButtonLabel),
         primary: true,
         onClick: this.submit,
-      }
+      },
     ];
 
     const spendingPasswordField = form.$('spendingPassword');
@@ -195,9 +208,7 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
         ) : null}
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
-
       </Dialog>
     );
   }
-
 }

@@ -13,11 +13,12 @@ if (!isStartedByLauncher) {
   const dialogTitle = 'Daedalus improperly started!';
   let dialogMessage;
   if (isProd) {
-    dialogMessage = isWindows ?
-      'Please start Daedalus using the icon in the Windows start menu or using Daedalus icon on your desktop.' :
-      'Daedalus was launched without needed configuration. Please start Daedalus using the shortcut provided by the installer.';
+    dialogMessage = isWindows
+      ? 'Please start Daedalus using the icon in the Windows start menu or using Daedalus icon on your desktop.'
+      : 'Daedalus was launched without needed configuration. Please start Daedalus using the shortcut provided by the installer.';
   } else {
-    dialogMessage = 'Daedalus should be started using nix-shell. Find more details here: https://github.com/input-output-hk/daedalus/blob/develop/README.md';
+    dialogMessage =
+      'Daedalus should be started using nix-shell. Find more details here: https://github.com/input-output-hk/daedalus/blob/develop/README.md';
   }
   try {
     // app may not be available at this moment so we need to use try-catch
@@ -48,11 +49,13 @@ export type LauncherConfig = {
     key: string,
     systemStart: string,
     seed: string,
-  }
+  },
 };
 
 export const APP_NAME = 'Daedalus';
-export const launcherConfig: LauncherConfig = readLauncherConfig(LAUNCHER_CONFIG);
+export const launcherConfig: LauncherConfig = readLauncherConfig(
+  LAUNCHER_CONFIG
+);
 export const appLogsFolderPath = launcherConfig.logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
 export const appFolderPath = launcherConfig.workingDir;
@@ -81,6 +84,8 @@ export const DISK_SPACE_REQUIRED = 2 * 1073741274; // 2 GB | unit: bytes
 export const DISK_SPACE_REQUIRED_MARGIN_PERCENTAGE = 10; // 10% of the available disk space
 export const DISK_SPACE_CHECK_LONG_INTERVAL = 10 * 60 * 1000; // 10 minutes | unit: milliseconds
 export const DISK_SPACE_CHECK_MEDIUM_INTERVAL = 60 * 1000; // 1 minute | unit: milliseconds
-export const DISK_SPACE_CHECK_SHORT_INTERVAL = environment.isTest ? 2000 : 10 * 1000; // 10 seconds | unit: milliseconds
+export const DISK_SPACE_CHECK_SHORT_INTERVAL = environment.isTest
+  ? 2000
+  : 10 * 1000; // 10 seconds | unit: milliseconds
 export const DISK_SPACE_RECOMMENDED_PERCENTAGE = 15; // 15% of the total disk space
 /* eslint-disable max-len */

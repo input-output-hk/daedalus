@@ -25,7 +25,7 @@ in
   , nodeLogConfig       = "\${DAEDALUS_INSTALL_DIRECTORY}\\log-config-prod.yaml"
   , nodeLogPath         = [] : Optional Text
 
-  , walletPath          = "\${DAEDALUS_DIR}\\Daedalus.exe"
+  , walletPath          = "\${DAEDALUS_DIR}\\${installDir}.exe"
   , walletLogging       = True
   , frontendOnlyMode    = True
 

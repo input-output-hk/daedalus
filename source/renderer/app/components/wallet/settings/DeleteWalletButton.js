@@ -16,7 +16,6 @@ type Props = {
 };
 
 export default class DeleteWalletButton extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };

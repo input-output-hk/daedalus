@@ -1,4 +1,4 @@
-@import "../../themes/mixins/animations";
+@import '../../themes/mixins/animations';
 
 .component {
   align-items: center;
@@ -15,6 +15,7 @@
   right: 0;
   text-align: center;
   top: 0;
+  z-index: 1;
 
   .icon {
     margin-bottom: 36px;
@@ -34,7 +35,9 @@
     }
   }
 
-  h1, p, button {
+  h1,
+  p,
+  button {
     font-family: var(--font-regular);
   }
 
@@ -72,5 +75,4 @@
       @include animated-ellipsis($width: 16px);
     }
   }
-
 }

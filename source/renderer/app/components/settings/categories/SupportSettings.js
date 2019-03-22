@@ -13,18 +13,22 @@ const messages = defineMessages({
   },
   faqContent: {
     id: 'settings.support.faq.content',
-    defaultMessage: '!!!If you are experiencing a problem, please look for guidance using the list of {faqLink} on the support pages. If you can’t find a solution, please submit a support ticket.',
-    description: 'Content for the "Help and support" section on the support settings page.',
+    defaultMessage:
+      '!!!If you are experiencing a problem, please look for guidance using the list of {faqLink} on the support pages. If you can’t find a solution, please submit a support ticket.',
+    description:
+      'Content for the "Help and support" section on the support settings page.',
   },
   faqLink: {
     id: 'settings.support.faq.faqLink',
     defaultMessage: '!!!Known Issues',
-    description: '"Known Issues" link in the "Help and support" section on the support settings page',
+    description:
+      '"Known Issues" link in the "Help and support" section on the support settings page',
   },
   stepsTitle: {
     id: 'settings.support.steps.title',
     defaultMessage: '!!!Steps for creating a support request:',
-    description: 'Title "Steps for creating a support request" on the support settings page.',
+    description:
+      'Title "Steps for creating a support request" on the support settings page.',
   },
   stepsDownloadLogsTitle: {
     id: 'settings.support.steps.downloadLogs.title',
@@ -33,13 +37,16 @@ const messages = defineMessages({
   },
   stepsDownloadLogsDescription: {
     id: 'settings.support.steps.downloadLogs.description',
-    defaultMessage: '!!!Please {downloadLogsLink} and attach the downloaded file when submitting a support request to help the support team investigate the issue. Logs do not contain sensitive information.',
-    description: 'Description of "Download the logs" on the support settings page.',
+    defaultMessage:
+      '!!!Please {downloadLogsLink} and attach the downloaded file when submitting a support request to help the support team investigate the issue. Logs do not contain sensitive information.',
+    description:
+      'Description of "Download the logs" on the support settings page.',
   },
   stepsDownloadLogsLink: {
     id: 'settings.support.steps.downloadLogs.link',
     defaultMessage: '!!!download your logs here',
-    description: '"download your logs here" link in the Logs section on the support settings page',
+    description:
+      '"download your logs here" link in the Logs section on the support settings page',
   },
   stepsReportProblemTitle: {
     id: 'settings.support.steps.reportProblem.title',
@@ -48,13 +55,16 @@ const messages = defineMessages({
   },
   stepsReportProblemDescription: {
     id: 'settings.support.steps.reportProblem.description',
-    defaultMessage: '!!!Please {downloadLogsLink} and attach the downloaded file when submitting a support request to help the support team investigate the issue. Logs do not contain sensitive information.',
-    description: 'Description of "Download the logs" on the support settings page.',
+    defaultMessage:
+      '!!!Please {downloadLogsLink} and attach the downloaded file when submitting a support request to help the support team investigate the issue. Logs do not contain sensitive information.',
+    description:
+      'Description of "Download the logs" on the support settings page.',
   },
   stepsReportProblemLink: {
     id: 'settings.support.steps.reportProblem.link',
     defaultMessage: '!!!download your logs here',
-    description: '"download your logs here" link in the Logs section on the support settings page',
+    description:
+      '"download your logs here" link in the Logs section on the support settings page',
   },
 });
 
@@ -66,13 +76,16 @@ type Props = {
 
 @observer
 export default class SupportSettings extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   render() {
-    const { onExternalLinkClick, onSupportRequestClick, onDownloadLogs } = this.props;
+    const {
+      onExternalLinkClick,
+      onSupportRequestClick,
+      onDownloadLogs,
+    } = this.props;
     const { intl } = this.context;
     const faqLinkUrl = intl.formatMessage(globalMessages.faqLinkUrl);
 
@@ -99,12 +112,13 @@ export default class SupportSettings extends Component<Props> {
 
     return (
       <div className={styles.component}>
-
         {/* Help and Support */}
 
         <h1>{intl.formatMessage(messages.faqTitle)}</h1>
 
-        <p><FormattedMessage {...messages.faqContent} values={{ faqLink }} /></p>
+        <p>
+          <FormattedMessage {...messages.faqContent} values={{ faqLink }} />
+        </p>
 
         {/* Steps for creating a support request: */}
 
@@ -130,9 +144,7 @@ export default class SupportSettings extends Component<Props> {
             </p>
           </li>
         </ol>
-
       </div>
     );
   }
-
 }

@@ -1,11 +1,10 @@
 // @flow
 import { ApiMethodNotYetImplementedError } from '../common/errors';
 
-export const notYetImplemented = async () => (
+export const notYetImplemented = async () =>
   new Promise((resolve, reject) => {
     reject(new ApiMethodNotYetImplementedError());
-  })
-);
+  });
 
 // helper code for testing async APIs
 export const testAsync = async (apiMethod: Function) => {

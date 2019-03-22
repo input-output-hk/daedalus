@@ -17,20 +17,16 @@ type Props = {
 
 @observer
 export default class ReadOnlyInput extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   render() {
-    const {
-      label,
-      value,
-      isSet,
-      onClick,
-    } = this.props;
+    const { label, value, isSet, onClick } = this.props;
     const { intl } = this.context;
-    const buttonLabel = intl.formatMessage(globalMessages[isSet ? 'change' : 'create']);
+    const buttonLabel = intl.formatMessage(
+      globalMessages[isSet ? 'change' : 'create']
+    );
 
     const mainClasses = classnames([
       styles.component,
@@ -39,7 +35,6 @@ export default class ReadOnlyInput extends Component<Props> {
 
     return (
       <div className={mainClasses}>
-
         <Input
           themeOverrides={styles}
           type="text"
@@ -49,15 +44,10 @@ export default class ReadOnlyInput extends Component<Props> {
           skin={InputSkin}
         />
 
-        <button
-          className={styles.button}
-          onClick={onClick}
-        >
+        <button className={styles.button} onClick={onClick}>
           {buttonLabel}
         </button>
-
       </div>
     );
   }
-
 }

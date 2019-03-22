@@ -8,16 +8,19 @@ export type RedeemPaperVendedAdaParams = {
   mnemonic: Array<string>,
   spendingPassword?: string,
   walletId: string,
-  accountIndex: number
+  accountIndex: number,
 };
 
 export const redeemPaperVendedAda = (
   config: RequestConfig,
   redemptionParams: RedeemPaperVendedAdaParams
-): Promise<Transaction> => (
-  request({
-    method: 'POST',
-    path: '/api/v1/transactions/certificates',
-    ...config
-  }, {}, redemptionParams)
-);
+): Promise<Transaction> =>
+  request(
+    {
+      method: 'POST',
+      path: '/api/v1/transactions/certificates',
+      ...config,
+    },
+    {},
+    redemptionParams
+  );

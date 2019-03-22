@@ -18,9 +18,10 @@ export const isValidSpendingPassword = (spendingPassword: string) => {
 };
 
 // eslint-disable-next-line max-len
-export const isValidRepeatPassword = (spendingPassword: string, repeatPassword: string) => (
-  spendingPassword === repeatPassword
-);
+export const isValidRepeatPassword = (
+  spendingPassword: string,
+  repeatPassword: string
+) => spendingPassword === repeatPassword;
 
 export const isNotEmptyString = (value: string) => value !== '';
 

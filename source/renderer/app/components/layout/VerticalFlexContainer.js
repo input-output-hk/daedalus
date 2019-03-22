@@ -12,10 +12,6 @@ type Props = {
 export default class VerticalFlexContainer extends Component<Props> {
   render() {
     const { children } = this.props;
-    return (
-      <div className={styles.component}>
-        {children}
-      </div>
-    );
+    return <div className={styles.component}>{children}</div>;
   }
 }

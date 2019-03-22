@@ -18,8 +18,10 @@ import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { buildAppMenus } from './utils/buildAppMenus';
 import { getLocale } from './utils/getLocale';
+import { detectSystemLocale } from './utils/detectSystemLocale';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
+import { detectSystemLocaleChannel } from './ipc/detect-system-locale';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
 
@@ -28,8 +30,13 @@ let mainWindow: BrowserWindow;
 let cardanoNode: ?CardanoNode;
 
 const {
-  isDev, isWatchMode, network, current, os: osName,
-  version: daedalusVersion, buildNumber: cardanoVersion,
+  isDev,
+  isWatchMode,
+  network,
+  current,
+  os: osName,
+  version: daedalusVersion,
+  buildNumber: cardanoVersion,
 } = environment;
 
 const safeExit = async () => {
@@ -40,12 +47,16 @@ const safeExit = async () => {
   if (cardanoNode.state === CardanoNodeStates.STOPPING) return;
   try {
     const pid = cardanoNode.pid || 'null';
-    Logger.info(`Daedalus:safeExit: stopping cardano-node with PID: ${pid}`, { pid });
+    Logger.info(`Daedalus:safeExit: stopping cardano-node with PID: ${pid}`, {
+      pid,
+    });
     await cardanoNode.stop();
     Logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });
     safeExitWithCode(0);
   } catch (error) {
-    Logger.error('Daedalus:safeExit: cardano-node did not exit correctly', { error });
+    Logger.error('Daedalus:safeExit: cardano-node did not exit correctly', {
+      error,
+    });
     safeExitWithCode(0);
   }
 };
@@ -60,6 +71,8 @@ const onAppReady = async () => {
   const startTime = new Date().toISOString();
   // systemStart refers to the Cardano Demo cluster start time!
   const systemStart = parseInt(launcherConfig.configuration.systemStart, 10);
+  // first checks for japanese locale, otherwise returns english
+  const systemLocale = detectSystemLocale();
 
   const systemInfo = logSystemInfo({
     cardanoVersion,
@@ -86,7 +99,9 @@ const onAppReady = async () => {
 
   mainWindow = createMainWindow(isInSafeMode, locale);
 
-  const onCheckDiskSpace = ({ isNotEnoughDiskSpace }: CheckDiskSpaceResponse) => {
+  const onCheckDiskSpace = ({
+    isNotEnoughDiskSpace,
+  }: CheckDiskSpaceResponse) => {
     // Daedalus is not managing cardano-node in `frontendOnlyMode`
     // so we don't have a way to stop it in case there is not enough disk space
     if (frontendOnlyMode) return;
@@ -127,25 +142,29 @@ const onAppReady = async () => {
   }
 
   getSystemStartTimeChannel.onRequest(() => Promise.resolve(systemStart));
+  detectSystemLocaleChannel.onRequest(() => Promise.resolve(systemLocale));
 
   getNumberOfEpochsConsolidated();
 
-  mainWindow.on('close', async (event) => {
-    Logger.info('mainWindow received <close> event. Safe exiting Daedalus now.');
+  mainWindow.on('close', async event => {
+    Logger.info(
+      'mainWindow received <close> event. Safe exiting Daedalus now.'
+    );
     event.preventDefault();
     await safeExit();
   });
 
   buildAppMenus(mainWindow, cardanoNode, isInSafeMode, locale);
 
-  await rebuildApplicationMenu.onReceive(() => (
-    new Promise(resolve => {
-      locale = getLocale(network);
-      buildAppMenus(mainWindow, cardanoNode, isInSafeMode, locale);
-      mainWindow.updateTitle(locale);
-      resolve();
-    })
-  ));
+  await rebuildApplicationMenu.onReceive(
+    () =>
+      new Promise(resolve => {
+        locale = getLocale(network);
+        buildAppMenus(mainWindow, cardanoNode, isInSafeMode, locale);
+        mainWindow.updateTitle(locale);
+        resolve();
+      })
+  );
 
   // Security feature: Prevent creation of new browser windows
   // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows
@@ -160,7 +179,7 @@ const onAppReady = async () => {
   });
 
   // Wait for controlled cardano-node shutdown before quitting the app
-  app.on('before-quit', async (event) => {
+  app.on('before-quit', async event => {
     Logger.info('app received <before-quit> event. Safe exiting Daedalus now.');
     event.preventDefault(); // prevent Daedalus from quitting immediately
     await safeExit();

@@ -19,10 +19,14 @@ const requestOptions = {
 export const getTransactionHistory = (
   config: RequestConfig,
   { ...requestParams }: GetTxnHistoryParams
-): Promise<Transactions> => (
-  request({
-    method: 'GET',
-    path: '/api/v1/transactions',
-    ...config,
-  }, requestParams, null, requestOptions)
-);
+): Promise<Transactions> =>
+  request(
+    {
+      method: 'GET',
+      path: '/api/v1/transactions',
+      ...config,
+    },
+    requestParams,
+    null,
+    requestOptions
+  );

@@ -1,12 +1,17 @@
 // @flow
 import { IpcChannel } from '../../../../common/ipc/lib/IpcChannel';
-import type { IpcReceiver, IpcSender } from '../../../../common/ipc/lib/IpcChannel';
+import type {
+  IpcReceiver,
+  IpcSender,
+} from '../../../../common/ipc/lib/IpcChannel';
 
 /**
  * Subclass of IpcChannel that uses ipcRenderer to send and receive messages.
  */
-export class RendererIpcChannel<Incoming, Outgoing> extends IpcChannel<Incoming, Outgoing> {
-
+export class RendererIpcChannel<Incoming, Outgoing> extends IpcChannel<
+  Incoming,
+  Outgoing
+> {
   async send(
     message: Outgoing,
     sender: IpcSender = global.ipcRenderer,
@@ -16,10 +21,11 @@ export class RendererIpcChannel<Incoming, Outgoing> extends IpcChannel<Incoming,
   }
 
   async request(
+    message: Outgoing,
     sender: IpcSender = global.ipcRenderer,
     receiver: IpcReceiver = global.ipcRenderer
   ): Promise<Incoming> {
-    return super.request(sender, receiver);
+    return super.request(message, sender, receiver);
   }
 
   onReceive(
@@ -30,10 +36,9 @@ export class RendererIpcChannel<Incoming, Outgoing> extends IpcChannel<Incoming,
   }
 
   onRequest(
-    handler: () => Promise<Outgoing>,
+    handler: Incoming => Promise<Outgoing>,
     receiver: IpcReceiver = global.ipcRenderer
   ): void {
     super.onRequest(handler, receiver);
   }
-
 }

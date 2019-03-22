@@ -7,11 +7,10 @@ import styles from './DialogCloseButton.scss';
 type Props = {
   onClose?: Function,
   icon?: string,
-  disabled?: boolean
+  disabled?: boolean,
 };
 
 export default class DialogCloseButton extends Component<Props> {
-
   render() {
     const { onClose, icon, disabled } = this.props;
     return (

@@ -18,28 +18,32 @@ const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.settings.delete.dialog.title',
     defaultMessage: '!!!Delete Wallet',
-    description: 'Title for the "Delete wallet" dialog.'
+    description: 'Title for the "Delete wallet" dialog.',
   },
   confirmButtonLabel: {
     id: 'wallet.settings.delete.dialog.confirmButtonLabel',
     defaultMessage: '!!!Delete',
-    description: 'Label for the "Delete (x)" button in the delete wallet dialog.',
+    description:
+      'Label for the "Delete (x)" button in the delete wallet dialog.',
   },
   wantToDeleteWalletQuestion: {
     id: 'wallet.settings.delete.dialog.wantToDeleteWalletQuestion',
-    defaultMessage: '!!!Do you really want to delete <strong>{walletName}</strong> wallet?',
+    defaultMessage:
+      '!!!Do you really want to delete <strong>{walletName}</strong> wallet?',
     description: 'Question if the user really wants to delete the wallet.',
   },
   confirmBackupNotice: {
     id: 'wallet.settings.delete.dialog.confirmBackupNotice',
-    defaultMessage: '!!!Make sure you have access to backup before continuing. Otherwise, you will lose all your funds connected to this wallet.',
-    description: 'Notice to confirm if the user has made a backup of his wallet',
+    defaultMessage:
+      '!!!Make sure you have access to backup before continuing. Otherwise, you will lose all your funds connected to this wallet.',
+    description:
+      'Notice to confirm if the user has made a backup of his wallet',
   },
   enterRecoveryWordLabel: {
     id: 'wallet.settings.delete.dialog.enterRecoveryWordLabel',
     defaultMessage: '!!!Enter the name of the wallet to confirm deletion:',
     description: 'Instruction for recovery word on delete wallet dialog',
-  }
+  },
 });
 
 type Props = {
@@ -52,16 +56,15 @@ type Props = {
   onCancel: Function,
   onConfirmationValueChange: Function,
   isSubmitting: boolean,
-  isTest: boolean
+  isTest: boolean,
 };
 
 @observer
 export default class DeleteWalletConfirmationDialog extends Component<Props> {
-
   static defaultProps = {
     isBackupNoticeAccepted: false,
     confirmationValue: '',
-    isTest: false
+    isTest: false,
   };
 
   static contextTypes = {
@@ -80,21 +83,25 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
       confirmationValue,
       onConfirmationValueChange,
       isSubmitting,
-      isTest
+      isTest,
     } = this.props;
 
-    const countdownRemaining = countdownFn(isTest ? 0 : DELETE_WALLET_COUNTDOWN);
-    const countdownDisplay = countdownRemaining > 0 ? ` (${countdownRemaining})` : '';
+    const countdownRemaining = countdownFn(
+      isTest ? 0 : DELETE_WALLET_COUNTDOWN
+    );
+    const countdownDisplay =
+      countdownRemaining > 0 ? ` (${countdownRemaining})` : '';
     const isCountdownFinished = countdownRemaining <= 0;
     const isWalletNameConfirmationCorrect = confirmationValue === walletName;
-    const isDisabled = (
-      !isCountdownFinished || !isBackupNoticeAccepted || !isWalletNameConfirmationCorrect
-    );
+    const isDisabled =
+      !isCountdownFinished ||
+      !isBackupNoticeAccepted ||
+      !isWalletNameConfirmationCorrect;
     const handleSubmit = () => !isDisabled && onContinue();
 
     const buttonClasses = classnames([
       'attention',
-      isSubmitting ? styles.isSubmitting : null
+      isSubmitting ? styles.isSubmitting : null,
     ]);
 
     const actions = [
@@ -104,7 +111,8 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
       },
       {
         className: buttonClasses,
-        label: intl.formatMessage(messages.confirmButtonLabel) + countdownDisplay,
+        label:
+          intl.formatMessage(messages.confirmButtonLabel) + countdownDisplay,
         onClick: onContinue,
         disabled: isDisabled,
         primary: true,
@@ -143,5 +151,4 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
       </Dialog>
     );
   }
-
 }
