@@ -58,7 +58,11 @@ export default class WalletUtxoSettings extends Component<Props> {
 
         <ResponsiveContainer width="100%" height={280}>
           <BarChart width="100%" height={280} data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid
+              horizontal={false}
+              vertical={false}
+              fill={chartStyles.cartesianGridBackground.fill}
+            />
             <XAxis
               dataKey="walletAmount"
               interval={0}
@@ -73,7 +77,7 @@ export default class WalletUtxoSettings extends Component<Props> {
               tick={chartStyles.yAxis}
             />
             <Tooltip />
-            <Bar dataKey="walletUtxosAmount" fill="#445b7c" />
+            <Bar dataKey="walletUtxosAmount" fill={chartStyles.bar.fill} />
           </BarChart>
         </ResponsiveContainer>
       </div>

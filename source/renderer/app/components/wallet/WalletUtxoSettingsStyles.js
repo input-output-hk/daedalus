@@ -1,4 +1,7 @@
 export default {
+  bar: {
+    fill: '#445b7c',
+  },
   xAxis: {
     angle: 90,
     fontSize: 10,
@@ -13,5 +16,8 @@ export default {
     stroke: '#c2cad4',
     textAnchor: 'end',
     fontFamily: 'NotoSans-Regular, NotoSansCJKjp-Regular',
+  },
+  cartesianGridBackground: {
+    fill: 'rgba(68, 91, 124, 0.06)',
   },
 };
