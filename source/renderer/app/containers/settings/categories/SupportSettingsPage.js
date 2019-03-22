@@ -1,13 +1,11 @@
 // @flow
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import SupportSettings from '../../../components/settings/categories/SupportSettings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import { generateFileNameWithTimestamp } from '../../../../../common/utils/files';
 import { getSupportUrl } from '../../../utils/network';
-import GenericNotification from '../../../components/notifications/GenericNotification';
-import { DOWNLOAD_LOGS_SUCCESS_DURATION } from '../../../config/timingConfig';
 
 const messages = defineMessages({
   supportRequestLinkUrl: {
@@ -16,31 +14,36 @@ const messages = defineMessages({
     description:
       '"submit a support request" link URL in the "Report a problem" section on the support settings page.',
   },
-  downloadLogsSuccess: {
-    id: 'settings.support.reportProblem.downloadLogsSuccessMessage',
-    defaultMessage: '!!!Logs successfully downloaded',
-    description: 'Success message for download logs.',
-  },
-  downloadLogsProgress: {
-    id: 'settings.support.reportProblem.downloadLogsProgressMessage',
-    defaultMessage: '!!!Preparing logs for download',
-    description: 'Progress message for download logs.',
-  },
 });
 
-const DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID =
-  'settings-page-download-logs-progress';
-const DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID =
-  'settings-page-download-logs-success';
+type State = {
+  disableDownloadLogs: boolean,
+};
 
 @inject('stores', 'actions')
 @observer
-export default class SupportSettingsPage extends Component<InjectedProps> {
+export default class SupportSettingsPage extends Component<
+  InjectedProps,
+  State
+> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   static defaultProps = { actions: null, stores: null };
+
+  constructor(props) {
+    super(props);
+    const { profile } = this.props.actions;
+    profile.downloadLogs.listen(() => this.toggleDisableDownloadLogs(true));
+    profile.downloadLogsSuccess.listen(() =>
+      this.toggleDisableDownloadLogs(false)
+    );
+  }
+
+  state = {
+    disableDownloadLogs: false,
+  };
 
   handleSupportRequestClick = async (
     event: SyntheticEvent<HTMLButtonElement>
@@ -67,48 +70,20 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
     }
   };
 
+  toggleDisableDownloadLogs = (disableDownloadLogs: boolean) => {
+    this.setState({ disableDownloadLogs });
+  };
+
   render() {
-    const { stores, actions } = this.props;
-    const { intl } = this.context;
-    // const { id, message, hasCloseButton, icon } = this.notification;
+    const { stores } = this.props;
 
     return (
-      <Fragment>
-        <SupportSettings
-          onExternalLinkClick={stores.app.openExternalLink}
-          onSupportRequestClick={this.handleSupportRequestClick}
-          onDownloadLogs={this.handleDownloadLogs}
-        />
-        <GenericNotification
-          id={DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID}
-          show={stores.uiNotifications.isOpen(
-            DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID
-          )}
-          actionToListenAndOpen={actions.profile.downloadLogs}
-          actionToListenAndClose={actions.profile.downloadLogsSuccess}
-          openNotification={actions.notifications.open}
-          closeNotification={actions.notifications.closeActiveNotification}
-          icon="spinner"
-          hasEllipsis
-        >
-          {intl.formatMessage(messages.downloadLogsProgress)}
-        </GenericNotification>
-        <GenericNotification
-          id={DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID}
-          duration={DOWNLOAD_LOGS_SUCCESS_DURATION}
-          show={stores.uiNotifications.isOpen(
-            DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID
-          )}
-          actionToListenAndOpen={actions.profile.downloadLogsSuccess}
-          actionToListenAndClose={actions.profile.downloadLogs}
-          openNotification={actions.notifications.open}
-          closeNotification={actions.notifications.closeActiveNotification}
-          icon="success"
-          hasCloseButton
-        >
-          {intl.formatMessage(messages.downloadLogsSuccess)}
-        </GenericNotification>
-      </Fragment>
+      <SupportSettings
+        onExternalLinkClick={stores.app.openExternalLink}
+        onSupportRequestClick={this.handleSupportRequestClick}
+        onDownloadLogs={this.handleDownloadLogs}
+        disableDownloadLogs={this.state.disableDownloadLogs}
+      />
     );
   }
 }
