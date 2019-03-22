@@ -1,9 +1,10 @@
 // @flow
-import { size, has, get, omit } from 'lodash';
+import axios from 'axios';
+import { size, has, get, omit, isEmpty } from 'lodash';
 import querystring from 'querystring';
 import { encryptPassphrase, getContentLength } from '.';
 
-export type RequestOptions = {
+export type HTTPSConfig = {
   hostname: string,
   method: string,
   path: string,
@@ -11,20 +12,160 @@ export type RequestOptions = {
   ca: Uint8Array,
   cert: Uint8Array,
   key: Uint8Array,
-  headers?: {
-    'Content-Type': string,
-    'Content-Length': number,
-  },
+  headers?: RequestHeaders,
 };
 
-function typedRequest<Response>(
-  httpOptions: RequestOptions,
+export type RequestHeaders = {
+  'Content-Type': string,
+  'Content-Length': number,
+};
+
+export type RequestCredentials = {
+  ca: Uint8Array,
+  cert: Uint8Array,
+  key: Uint8Array,
+};
+
+export type RequestBaseURL = {
+  hostname: string,
+  port: number,
+};
+
+const getBodyData = (rawBodyParams): string => {
+  if (!rawBodyParams || isEmpty(rawBodyParams)) {
+    return '';
+  }
+  return JSON.stringify(rawBodyParams);
+};
+
+const getQueryParams = (queryParams: ?Object): ?Object => {
+  if (queryParams && !isEmpty(queryParams) && has(queryParams, 'passphrase')) {
+    return { ...queryParams, passphrase: getEncryptedPassphrase(queryParams) };
+  }
+  return queryParams;
+};
+
+const getEncryptedPassphrase = (queryParams: ?Object): string => {
+  let queryString = '';
+  if (!queryParams || isEmpty(queryParams) || size(queryParams) <= 0) {
+    return queryString;
+  }
+  const unencryptedPassphrase = has(queryParams, 'passphrase')
+    ? get(queryParams, 'passphrase')
+    : queryString;
+  if (unencryptedPassphrase) {
+    // If passphrase is present it must be encrypted
+    const encryptedPassphrase = encryptPassphrase(unencryptedPassphrase);
+    queryString = `?passphrase=${encryptedPassphrase}`;
+  }
+  return queryString;
+};
+
+const getHeaders = (
+  headers?: RequestHeaders,
+  requestBodyLength: ?number
+): Object => {
+  const baseHeaders = {
+    'Content-Length': requestBodyLength || '',
+    'Content-Type': 'application/json; charset=utf-8',
+    Accept: 'application/json; charset=utf-8',
+  };
+  if (!headers || isEmpty(headers)) {
+    return baseHeaders;
+  }
+  return { ...baseHeaders, ...headers };
+};
+
+const getHttpsAgent = (credentials: RequestCredentials) =>
+  global.https.Agent({ ...credentials });
+
+const getBaseURL = (base: RequestBaseURL): string =>
+  `https://${base.hostname}:${base.port}`;
+
+export const axiosRequest = async (
+  httpsConfig: HTTPSConfig,
   queryParams?: {},
   rawBodyParams?: any,
   requestOptions?: { returnMeta: boolean },
+): Promise<*> => {
+  // console.log(
+  //   '**** --- ARGUEMENTS START -------------------------------------->'
+  // );
+  // console.log(
+  //   `httpsConfig: ${JSON.stringify(
+  //     omit(httpsConfig, 'ca', 'cert', 'key'),
+  //     null,
+  //     2
+  //   )}`
+  // );
+  // console.log(`queryParams: ${JSON.stringify(queryParams, null, 2)}`);
+  // console.log(`rawBodyParams: ${JSON.stringify(rawBodyParams, null, 2)}`);
+  // console.log(`requestOptions: ${JSON.stringify(requestOptions, null, 2)}`);
+  // console.log(
+  //   '**** --- ARGUEMENTS END -------------------------------------->'
+  // );
+
+  const { headers, hostname, method, path, port, ca, cert, key } = httpsConfig;
+
+  const requestBaseURL = getBaseURL({ hostname, port });
+  const requestBody = getBodyData(rawBodyParams);
+  const requestBodyLength = getContentLength(requestBody);
+  const requestHeaders = getHeaders(headers, requestBodyLength);
+  const requestParams = getQueryParams(queryParams);
+  const requestAgent = getHttpsAgent({ ca, cert, key });
+
+  const sendRequest = axios.create({
+    responseType: 'json',
+    responseEncoding: 'utf8',
+    method,
+    url: path,
+    baseURL: requestBaseURL,
+    headers: requestHeaders,
+    params: requestParams,
+    data: requestBody,
+    httpsAgent: requestAgent,
+  });
+
+  // begin response handling
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await sendRequest();
+    
+      if (response.data) {
+        const { data } = response;
+      
+        resolve(data);
+      }
+    } catch (error) {
+    
+      reject(error);
+    }
+  });
+};
+
+function typedRequest<Response>(
+  httpOptions: HTTPSConfig,
+  queryParams?: {},
+  rawBodyParams?: any,
+  requestOptions?: { returnMeta: boolean }
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
-    const options: RequestOptions = Object.assign({}, httpOptions);
+    // const httpsOptions = JSON.stringify(
+    //   omit(httpOptions, 'ca', 'cert', 'key'),
+    //   null,
+    //   2
+    // );
+    // console.log(
+    //   '**** --- HERE ARE THE ARGUEMENTS -------------------------------------->'
+    // );
+    // console.log(`httpOptions: ${httpsOptions}`);
+    // console.log(`queryParams: ${JSON.stringify(queryParams, null, 2)}`);
+    // console.log(`rawBodyParams: ${rawBodyParams}`);
+    // console.log(`requestOptions: ${requestOptions}`);
+    // console.log(
+    //   '**** --- ARGUEMENTS END -------------------------------------->'
+    // );
+    const options: HTTPSConfig = Object.assign({}, httpOptions);
     const { returnMeta } = Object.assign({}, requestOptions);
     let hasRequestBody = false;
     let requestBody = '';
@@ -66,15 +207,16 @@ function typedRequest<Response>(
     }
 
     const httpsRequest = global.https.request(options);
+
     if (hasRequestBody) {
       httpsRequest.write(requestBody);
     }
-    httpsRequest.on('response', (response) => {
+    httpsRequest.on('response', response => {
       let body = '';
       // Cardano-sl returns chunked requests, so we need to concat them
-      response.on('data', (chunk) => (body += chunk));
+      response.on('data', chunk => (body += chunk));
       // Reject errors
-      response.on('error', (error) => reject(error));
+      response.on('error', error => reject(error));
       // Resolve JSON results and handle backend errors
       response.on('end', () => {
         try {
@@ -121,7 +263,7 @@ function typedRequest<Response>(
         }
       });
     });
-    httpsRequest.on('error', (error) => reject(error));
+    httpsRequest.on('error', error => reject(error));
     httpsRequest.end();
   });
 }
