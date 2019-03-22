@@ -5452,27 +5452,32 @@
         "description": "\"submit a support request\" link URL in the \"Report a problem\" section on the support settings page.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 16
         },
         "file": "source/renderer/app/containers/settings/categories/SupportSettingsPage.js",
         "id": "settings.support.reportProblem.linkUrl",
         "start": {
           "column": 25,
-          "line": 13
+          "line": 11
         }
-      },
+      }
+    ],
+    "path": "source/renderer/app/containers/settings/categories/SupportSettingsPage.json"
+  },
+  {
+    "descriptors": [
       {
         "defaultMessage": "!!!Logs successfully downloaded",
         "description": "Success message for download logs.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 18
         },
-        "file": "source/renderer/app/containers/settings/categories/SupportSettingsPage.js",
+        "file": "source/renderer/app/containers/settings/Settings.js",
         "id": "settings.support.reportProblem.downloadLogsSuccessMessage",
         "start": {
           "column": 23,
-          "line": 19
+          "line": 14
         }
       },
       {
@@ -5480,17 +5485,17 @@
         "description": "Progress message for download logs.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 23
         },
-        "file": "source/renderer/app/containers/settings/categories/SupportSettingsPage.js",
+        "file": "source/renderer/app/containers/settings/Settings.js",
         "id": "settings.support.reportProblem.downloadLogsProgressMessage",
         "start": {
           "column": 24,
-          "line": 24
+          "line": 19
         }
       }
     ],
-    "path": "source/renderer/app/containers/settings/categories/SupportSettingsPage.json"
+    "path": "source/renderer/app/containers/settings/Settings.json"
   },
   {
     "descriptors": [
