@@ -153,6 +153,7 @@ export default class WalletSendForm extends Component<Props, State> {
   componentWillUnmount() {
     this._isMounted = false;
   }
+
   submitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
 
   handleOnSubmit = () => {
