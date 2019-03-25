@@ -4,7 +4,7 @@ import { observer, inject } from 'mobx-react';
 import WalletUtxoSettings from '../../components/wallet/WalletUtxoSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
-import { formattedPrettyAmount } from '../../utils/formatters';
+import { formattedUtxosPrettyAmount } from '../../utils/formatters';
 import type { Histogram } from '../../api/wallets/types';
 
 type Props = InjectedProps;
@@ -23,7 +23,7 @@ export default class WalletSettingsPage extends Component<Props> {
     Object.entries(histogram)
       .sort()
       .map<any>(([walletAmount, walletUtxosAmount]) => ({
-        walletAmount: formattedPrettyAmount(walletAmount),
+        walletAmount: formattedUtxosPrettyAmount(walletAmount),
         walletUtxosAmount,
       }));
 
