@@ -56,6 +56,7 @@ export default ({ story }: { story: string }) => (
         if (dialog === ExportWalletToFileDialog) {
           return boolean('Export Wallet - Show dialog', false);
         }
+        return false;
       }}
       isInvalid={false}
       isSubmitting={false}

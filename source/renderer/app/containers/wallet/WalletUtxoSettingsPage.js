@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletUtxoSettings from '../../components/wallet/WalletUtxoSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import { formattedUtxosPrettyAmount } from '../../utils/formatters';
 import type { Histogram } from '../../api/wallets/types';
 
@@ -41,15 +40,14 @@ export default class WalletSettingsPage extends Component<Props> {
     const { wallets, walletSettings } = this.props.stores;
     const { walletUtxos } = walletSettings;
     const { histogram } = walletUtxos || { histogram: {} };
-    const { active: wallet } = wallets;
-    if (!wallet)
+    const { active: activeWallet } = wallets;
+    if (!activeWallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
     const chartData = this.getChartData(histogram);
     const walletUtxosAmount = this.getWalletUtxosAmount(histogram);
-    const walletAmount = wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA);
     return (
       <WalletUtxoSettings
-        walletAmount={walletAmount}
+        activeWallet={activeWallet}
         walletUtxosAmount={walletUtxosAmount}
         chartData={chartData}
       />

@@ -11,7 +11,8 @@ import {
   Bar,
   ResponsiveContainer,
 } from 'recharts';
-import BigNumber from 'bignumber.js';
+import Wallet from '../../domains/Wallet.js';
+import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import styles from './WalletUtxoSettings.scss';
 import chartStyles from './WalletUtxoSettingsStyles.js';
 
@@ -30,7 +31,7 @@ export const messages = defineMessages({
 });
 
 type Props = {
-  walletAmount: BigNumber,
+  activeWallet: Wallet,
   walletUtxosAmount: number,
   chartData: Array<any>,
 };
@@ -43,8 +44,8 @@ export default class WalletUtxoSettings extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { walletAmount, walletUtxosAmount, chartData } = this.props;
-
+    const { activeWallet, walletUtxosAmount, chartData } = this.props;
+    const walletAmount = activeWallet.amount.toFormat(DECIMAL_PLACES_IN_ADA);
     return (
       <div className={styles.component}>
         <h1>{intl.formatMessage(messages.title)}</h1>
