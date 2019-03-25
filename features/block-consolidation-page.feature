@@ -15,6 +15,8 @@ Feature: Display Block Consolidation Page
     When I toggle the Block Consolidation Status Page
     Then the Block Consolidation Status Page is hidden
 
+  # TODO: Daedalus doesn't handle ignored api calls atm
+  @skip @restartApp
   Scenario: Fetch current epoch from Cardano Explorer and ensure epoch consolidation data is rendered correctly
     When I inject fault named "FInjIgnoreAPI"
     And I toggle the Block Consolidation Status Page
