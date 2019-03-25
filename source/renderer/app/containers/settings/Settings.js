@@ -7,6 +7,7 @@ import SettingsMenu from '../../components/settings/menu/SettingsMenu';
 import Layout from '../MainLayout';
 import { buildRoute } from '../../utils/routing';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
+import GenericNotificationContainer from '../notifications/GenericNotificationContainer';
 import GenericNotification from '../../components/notifications/GenericNotification';
 import { DOWNLOAD_LOGS_SUCCESS_DURATION } from '../../config/timingConfig';
 
@@ -57,36 +58,34 @@ export default class Settings extends Component<InjectedContainerProps> {
     return (
       <Layout>
         <SettingsLayout menu={menu}>{children}</SettingsLayout>
-        <GenericNotification
-          id={DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID}
-          show={stores.uiNotifications.isOpen(
-            DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID
-          )}
-          actionToListenAndOpen={actions.profile.downloadLogs}
-          actionToListenAndClose={actions.profile.downloadLogsSuccess}
-          openNotification={actions.notifications.open}
-          closeNotification={actions.notifications.closeActiveNotification}
-          icon="spinner"
-          hasEllipsis
-          hasCloseButton
-        >
-          {intl.formatMessage(messages.downloadLogsProgress)}
-        </GenericNotification>
-        <GenericNotification
-          id={DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID}
-          duration={DOWNLOAD_LOGS_SUCCESS_DURATION}
-          show={stores.uiNotifications.isOpen(
-            DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID
-          )}
-          actionToListenAndOpen={actions.profile.downloadLogsSuccess}
-          actionToListenAndClose={actions.profile.downloadLogs}
-          openNotification={actions.notifications.open}
-          closeNotification={actions.notifications.closeActiveNotification}
-          icon="success"
-          hasCloseButton
-        >
-          {intl.formatMessage(messages.downloadLogsSuccess)}
-        </GenericNotification>
+        <GenericNotificationContainer>
+          <GenericNotification
+            id={DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID}
+            show={stores.uiNotifications.isOpen(
+              DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID
+            )}
+            actionToListenAndOpen={actions.profile.downloadLogs}
+            actionToListenAndClose={actions.profile.downloadLogsSuccess}
+            icon="spinner"
+            hasEllipsis
+            hasCloseButton
+          >
+            {intl.formatMessage(messages.downloadLogsProgress)}
+          </GenericNotification>
+          <GenericNotification
+            id={DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID}
+            duration={DOWNLOAD_LOGS_SUCCESS_DURATION}
+            show={stores.uiNotifications.isOpen(
+              DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID
+            )}
+            actionToListenAndOpen={actions.profile.downloadLogsSuccess}
+            actionToListenAndClose={actions.profile.downloadLogs}
+            icon="success"
+            hasCloseButton
+          >
+            {intl.formatMessage(messages.downloadLogsSuccess)}
+          </GenericNotification>
+        </GenericNotificationContainer>
       </Layout>
     );
   }

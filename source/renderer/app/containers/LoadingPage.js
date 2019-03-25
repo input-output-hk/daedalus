@@ -9,6 +9,7 @@ import cardanoLogo from '../assets/images/cardano-logo.inline.svg';
 import type { InjectedProps } from '../types/injectedPropsType';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import { getSupportUrl } from '../utils/network';
+import GenericNotificationContainer from './notifications/GenericNotificationContainer';
 import GenericNotification from '../components/notifications/GenericNotification';
 import { DOWNLOAD_LOGS_SUCCESS_DURATION } from '../config/timingConfig';
 
@@ -129,36 +130,34 @@ export default class LoadingPage extends Component<InjectedProps, State> {
           onDownloadLogs={this.handleDownloadLogs}
           disableDownloadLogs={this.state.disableDownloadLogs}
         />
-        <GenericNotification
-          id={DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID}
-          show={stores.uiNotifications.isOpen(
-            DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID
-          )}
-          actionToListenAndOpen={actions.profile.downloadLogs}
-          actionToListenAndClose={actions.profile.downloadLogsSuccess}
-          openNotification={actions.notifications.open}
-          closeNotification={actions.notifications.closeActiveNotification}
-          icon="spinner"
-          hasEllipsis
-          hasCloseButton
-        >
-          {intl.formatMessage(messages.downloadLogsProgress)}
-        </GenericNotification>
-        <GenericNotification
-          id={DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID}
-          duration={DOWNLOAD_LOGS_SUCCESS_DURATION}
-          show={stores.uiNotifications.isOpen(
-            DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID
-          )}
-          actionToListenAndOpen={actions.profile.downloadLogsSuccess}
-          actionToListenAndClose={actions.profile.downloadLogs}
-          openNotification={actions.notifications.open}
-          closeNotification={actions.notifications.closeActiveNotification}
-          icon="success"
-          hasCloseButton
-        >
-          {intl.formatMessage(messages.downloadLogsSuccess)}
-        </GenericNotification>
+        <GenericNotificationContainer>
+          <GenericNotification
+            id={DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID}
+            show={stores.uiNotifications.isOpen(
+              DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID
+            )}
+            actionToListenAndOpen={actions.profile.downloadLogs}
+            actionToListenAndClose={actions.profile.downloadLogsSuccess}
+            icon="spinner"
+            hasEllipsis
+            hasCloseButton
+          >
+            {intl.formatMessage(messages.downloadLogsProgress)}
+          </GenericNotification>
+          <GenericNotification
+            id={DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID}
+            duration={DOWNLOAD_LOGS_SUCCESS_DURATION}
+            show={stores.uiNotifications.isOpen(
+              DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID
+            )}
+            actionToListenAndOpen={actions.profile.downloadLogsSuccess}
+            actionToListenAndClose={actions.profile.downloadLogs}
+            icon="success"
+            hasCloseButton
+          >
+            {intl.formatMessage(messages.downloadLogsSuccess)}
+          </GenericNotification>
+        </GenericNotificationContainer>
       </CenteredLayout>
     );
   }

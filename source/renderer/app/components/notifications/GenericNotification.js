@@ -10,19 +10,6 @@ import spinnerIcon from '../../assets/images/spinner-dark.inline.svg';
 import type { Props as NotificationMessageProps } from '../widgets/NotificationMessage';
 import styles from './GenericNotification.scss';
 
-/**
- *
- * Extra props from NotificationMessageProps.js:
- *
- * {
- *   show: boolean,
- *   children?: Node,
- *   clickToClose?: boolean,
- *   hasCloseButton?: boolean,
- *   order?: 'auto' | number | 'initial' | 'inherit',
- * }
- */
-
 type Props = {
   ...$Exact<NotificationMessageProps>,
   id: string,
@@ -31,9 +18,31 @@ type Props = {
   duration?: number,
   actionToListenAndOpen?: Action<any>,
   actionToListenAndClose?: Action<any>,
-  openNotification: Action<any>,
-  closeNotification: Action<any>,
   hasEllipsis?: boolean,
+
+  /**
+   *
+   * Extra props from NotificationMessageProps.js:
+   *
+   * {
+   *   show: boolean,
+   *   children?: Node,
+   *   clickToClose?: boolean,
+   *   hasCloseButton?: boolean,
+   *   order?: 'auto' | number | 'initial' | 'inherit',
+   * }
+   */
+
+  /**
+   * Extra props provided by <GenericNotificationContainer />
+   *
+   * {
+   *   openNotification: Action<any>,
+   *   closeNotification: Action<any>,
+   * }
+   */
+  openNotification?: Action<any>,
+  closeNotification?: Action<any>,
 };
 
 @observer
@@ -66,12 +75,12 @@ export default class GenericNotification extends Component<Props> {
 
   openNotification = () => {
     const { openNotification, id, duration } = this.props;
-    openNotification.trigger({ id, duration });
+    if (openNotification) openNotification.trigger({ id, duration });
   };
 
   closeNotification = () => {
     const { id, closeNotification } = this.props;
-    closeNotification.trigger({ id });
+    if (closeNotification) closeNotification.trigger({ id });
   };
 
   render() {
