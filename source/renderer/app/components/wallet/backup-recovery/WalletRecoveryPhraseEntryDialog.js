@@ -148,6 +148,7 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
 
               return (
                 <MnemonicWord
+                  // eslint-disable-next-line react/no-array-index-key
                   key={index}
                   word={word}
                   index={index}

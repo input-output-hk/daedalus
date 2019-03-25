@@ -1,5 +1,5 @@
 // @flow
-import { observable, computed, action } from 'mobx';
+import { observable, computed, action, runInAction } from 'mobx';
 
 import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
@@ -97,7 +97,10 @@ export default class AppStore extends Store {
   // ===================== PRIVATE ======================= //
 
   _getGpuStatus = async () => {
-    this.gpuStatus = await getGPUStatusChannel.request();
+    const gpuStatus = await getGPUStatusChannel.request();
+    runInAction('get gpu status', () => {
+      this.gpuStatus = gpuStatus;
+    });
   };
 
   _updateRouteLocation = (options: { route: string, params?: ?Object }) => {

@@ -32,7 +32,9 @@ const sidebarMenus = observable({
     actions: {
       onAddWallet: action('toggleAddWallet'),
       onWalletItemClick: (walletId: string) => {
-        runInAction(() => (sidebarMenus.wallets.activeWalletId = walletId));
+        runInAction(() => {
+          sidebarMenus.wallets.activeWalletId = walletId;
+        });
       },
     },
   },

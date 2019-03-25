@@ -17,7 +17,7 @@ export default () => {
     const { compressedLogsFilePath, destinationPath } = request;
 
     if (!fs.existsSync(compressedLogsFilePath)) {
-      return Promise.reject('File does not exist');
+      return Promise.reject(new Error('File does not exist'));
     }
 
     const file = fs.readFileSync(compressedLogsFilePath);

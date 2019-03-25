@@ -17,6 +17,8 @@ import { PARSE_REDEMPTION_CODE_CHANNEL } from '../../common/ipc/api';
 import { Logger } from '../utils/logging';
 import { ERRORS } from '../../common/ipc/constants';
 
+/* eslint-disable consistent-return */
+
 // HELPERS
 
 const cleanupTemporaryPDF = (pdfPath, isTemporaryDecryptedPdf) => {

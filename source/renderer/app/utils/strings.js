@@ -13,5 +13,5 @@ export const ellipsis = (
     minCharsEnd && shouldHaveEndStr()
       ? str.substr(str.length - minCharsEnd)
       : '';
-  return initStr + '\u2026' + endStr;
+  return `${initStr}\u2026${endStr}`;
 };

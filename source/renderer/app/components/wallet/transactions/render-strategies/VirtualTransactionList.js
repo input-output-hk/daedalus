@@ -10,6 +10,8 @@ import type { Row } from '../types';
 import styles from './VirtualTransactionList.scss';
 import { TransactionInfo, TransactionsGroup } from '../types';
 
+/* eslint-disable react/no-unused-prop-types */
+
 type Props = {
   getExpandedTransactions: () => Array<any>,
   renderRow: Row => Node,
@@ -91,7 +93,7 @@ export class VirtualTransactionList extends Component<Props> {
   estimateHeightOfTxExpandedRow = (row: Row, tx: WalletTransaction): number => {
     if (!this.txAddressHeight) this.updateAddressesAndIdHeights();
     const txSingleAddressHeight = this.txAddressHeight;
-    const txIdHeight = this.txIdHeight;
+    const txIdHeightValue = this.txIdHeight;
     const { addresses } = tx;
     const txAddressesCount = addresses.from.length + addresses.to.length;
     const txAddressesHeight = txAddressesCount * txSingleAddressHeight;
@@ -99,7 +101,7 @@ export class VirtualTransactionList extends Component<Props> {
     return (
       TX_EXPANDED_ROW_BASE_HEIGHT +
       txAddressesHeight +
-      txIdHeight +
+      txIdHeightValue +
       txBottomMargin
     );
   };
@@ -181,10 +183,10 @@ export class VirtualTransactionList extends Component<Props> {
   checkIfTxContentIsFullyExpanded = (tx: WalletTransaction): boolean => {
     const txRow = this.getTxRowElementById(tx.id);
     const txElement = txRow && txRow.firstChild;
-    const isFullyExpanded =
+    return (
       txElement instanceof HTMLElement &&
-      txElement.classList.contains('Transaction_expanded');
-    return isFullyExpanded;
+      txElement.classList.contains('Transaction_expanded')
+    );
   };
 
   /**
@@ -296,7 +298,9 @@ export class VirtualTransactionList extends Component<Props> {
           {({ width, height }) => (
             <List
               className={styles.list}
-              ref={list => (this.list = list)}
+              ref={list => {
+                this.list = list;
+              }}
               width={width}
               height={height}
               onRowsRendered={throttle(this.onRowsRendered, 100, {

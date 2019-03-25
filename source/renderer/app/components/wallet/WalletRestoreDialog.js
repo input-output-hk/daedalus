@@ -277,6 +277,8 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     this.setState({ createPassword: value });
   };
 
+  submitOnEnter = submitOnEnter.bind(this, this.submit);
+
   submit = () => {
     this.form.submit({
       onSuccess: form => {
@@ -384,7 +386,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
         <Input
           className={walletNameFieldClasses}
-          onKeyPress={submitOnEnter.bind(this, this.submit)}
+          onKeyPress={this.submitOnEnter}
           {...walletNameField.bind()}
           error={walletNameField.error}
           skin={InputSkin}
@@ -436,14 +438,14 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           <div className={spendingPasswordFieldsClasses}>
             <Input
               className="spendingPassword"
-              onKeyPress={submitOnEnter.bind(this, this.submit)}
+              onKeyPress={this.submitOnEnter}
               {...spendingPasswordField.bind()}
               error={spendingPasswordField.error}
               skin={InputSkin}
             />
             <Input
               className="repeatedPassword"
-              onKeyPress={submitOnEnter.bind(this, this.submit)}
+              onKeyPress={this.submitOnEnter}
               {...repeatedPasswordField.bind()}
               error={repeatedPasswordField.error}
               skin={InputSkin}

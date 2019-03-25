@@ -87,6 +87,7 @@ export default class Sidebar extends Component<Props> {
             const categoryClassName = kebabCase(category.name);
             return (
               <SidebarCategory
+                // eslint-disable-next-line react/no-array-index-key
                 key={index}
                 className={categoryClassName}
                 icon={category.icon}
