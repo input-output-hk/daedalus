@@ -7,7 +7,7 @@ export default {
     fontSize: 10,
     fontWeight: 100,
     stroke: '#c2cad4',
-    textAnchor: 'begin',
+    textAnchor: 'start',
     fontFamily: 'NotoSans-Regular, NotoSansCJKjp-Regular',
   },
   yAxis: {

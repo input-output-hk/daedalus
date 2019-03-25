@@ -3,7 +3,6 @@ import React from 'react';
 import { number } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import BigNumber from 'bignumber.js';
-import { WALLETS } from './support/StoryProvider';
 
 // Screens
 import WalletSettingsLayout from '../../source/renderer/app/components/wallet/WalletSettingsLayout';
@@ -22,17 +21,16 @@ export default ({ story }: { story: string }) => (
     }
   >
     <WalletUtxoSettings
-      activeWallet={{
-        ...WALLETS[0],
-        amount: new BigNumber(
+      walletAmount={
+        new BigNumber(
           number('Amount', 66.998, {
             range: true,
             step: 1,
             min: 0,
             max: 9999,
           })
-        ),
-      }}
+        )
+      }
       walletUtxosAmount={number('UTxOs', 100, {
         range: true,
         step: 1,

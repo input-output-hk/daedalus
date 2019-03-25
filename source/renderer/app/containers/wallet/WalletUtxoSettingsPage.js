@@ -47,7 +47,7 @@ export default class WalletSettingsPage extends Component<Props> {
     const walletUtxosAmount = this.getWalletUtxosAmount(histogram);
     return (
       <WalletUtxoSettings
-        activeWallet={activeWallet}
+        walletAmount={activeWallet.amount}
         walletUtxosAmount={walletUtxosAmount}
         chartData={chartData}
       />

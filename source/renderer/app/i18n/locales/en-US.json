@@ -382,7 +382,7 @@
   "wallet.settings.general.passwordNotSet": "You still don't have password",
   "wallet.settings.menu.general.link.label": "General",
   "wallet.settings.menu.utxo.link.label": "Wallet UTxO distribution",
-  "wallet.settings.utxos.description": "This wallet contains <b>{walletAmount} ADA</b> on <b>{walletUtxosAmount} UTxOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTxOs with different amounts of ada.",
+  "wallet.settings.utxos.description": "This wallet contains <b>{formattedWalletAmount} ADA</b> on <b>{walletUtxosAmount} UTxOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTxOs with different amounts of ada.",
   "wallet.settings.utxos.title": "Wallet UTxO distribution",
   "wallet.statusMessages.activeRestore": "Wallet restoration is in progress",
   "wallet.summary.no.transactions": "No recent transactions",

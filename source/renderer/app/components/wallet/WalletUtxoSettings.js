@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import {
   BarChart,
@@ -11,7 +12,6 @@ import {
   Bar,
   ResponsiveContainer,
 } from 'recharts';
-import Wallet from '../../domains/Wallet.js';
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import styles from './WalletUtxoSettings.scss';
 import chartStyles from './WalletUtxoSettingsStyles.js';
@@ -25,13 +25,13 @@ export const messages = defineMessages({
   description: {
     id: 'wallet.settings.utxos.description',
     defaultMessage:
-      '!!!This wallet contains <b>{walletAmount} ADA</b> on <b>{walletUtxosAmount} UTxOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTxOs with different amounts of ada.',
+      '!!!This wallet contains <b>{formattedWalletAmount} ADA</b> on <b>{walletUtxosAmount} UTxOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTxOs with different amounts of ada.',
     description: 'Description for the "Wallet Utxos" screen.',
   },
 });
 
 type Props = {
-  activeWallet: Wallet,
+  walletAmount: BigNumber,
   walletUtxosAmount: number,
   chartData: Array<any>,
 };
@@ -44,8 +44,8 @@ export default class WalletUtxoSettings extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { activeWallet, walletUtxosAmount, chartData } = this.props;
-    const walletAmount = activeWallet.amount.toFormat(DECIMAL_PLACES_IN_ADA);
+    const { walletAmount, walletUtxosAmount, chartData } = this.props;
+    const formattedWalletAmount = walletAmount.toFormat(DECIMAL_PLACES_IN_ADA);
     return (
       <div className={styles.component}>
         <h1>{intl.formatMessage(messages.title)}</h1>
@@ -53,12 +53,12 @@ export default class WalletUtxoSettings extends Component<Props> {
         <p>
           <FormattedHTMLMessage
             {...messages.description}
-            values={{ walletAmount, walletUtxosAmount }}
+            values={{ formattedWalletAmount, walletUtxosAmount }}
           />
         </p>
 
         <ResponsiveContainer width="100%" height={280}>
-          <BarChart width="100%" height={280} data={chartData}>
+          <BarChart height={280} data={chartData}>
             <CartesianGrid
               horizontal={false}
               vertical={false}
