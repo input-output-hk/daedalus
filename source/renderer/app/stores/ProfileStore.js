@@ -12,6 +12,8 @@ import globalMessages from '../i18n/global-messages';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
 import type { LogFiles, CompressedLogStatus } from '../types/LogTypes';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
+import { detectSystemLocaleChannel } from '../ipc/detect-system-locale';
+import { LOCALES } from '../../../common/types/locales.types';
 import {
   compressLogsChannel,
   downloadLogsChannel,
@@ -31,6 +33,7 @@ export default class SettingsStore extends Store {
     // { value: 'hr-HR', label: globalMessages.languageCroatian },
   ];
 
+  @observable systemLocale: string = LOCALES.english;
   @observable bigNumberDecimalFormat = {
     decimalSeparator: '.',
     groupSeparator: ',',
@@ -96,6 +99,7 @@ export default class SettingsStore extends Store {
       this._redirectToMainUiAfterTermsAreAccepted,
       this._redirectToMainUiAfterDataLayerMigrationIsAccepted,
     ]);
+    this._getSystemLocale();
     this._getTermsOfUseAcceptance();
     this._getDataLayerMigrationAcceptance();
   }
@@ -107,7 +111,7 @@ export default class SettingsStore extends Store {
   @computed get currentLocale(): string {
     const { result } = this.getProfileLocaleRequest.execute();
     if (this.isCurrentLocaleSet) return result;
-    return 'en-US'; // default
+    return this.systemLocale;
   }
 
   @computed get hasLoadedCurrentLocale(): boolean {
@@ -178,6 +182,10 @@ export default class SettingsStore extends Store {
       includes(ROUTES.SETTINGS, currentRoute)
     );
   }
+
+  _getSystemLocale = async () => {
+    this._onReceiveSystemLocale(await detectSystemLocaleChannel.request());
+  };
 
   _updateLocale = async ({ locale }: { locale: string }) => {
     await this.setProfileLocaleRequest.execute(locale);
@@ -337,6 +345,7 @@ export default class SettingsStore extends Store {
       destination,
       fileName,
     };
+
     if (this.compressedLogsFilePath && fresh !== true) {
       // logs already compressed, trigger the download
       try {
@@ -353,6 +362,10 @@ export default class SettingsStore extends Store {
       this._getLogs();
     }
   });
+
+  @action _onReceiveSystemLocale = (systemLocale: string) => {
+    this.systemLocale = systemLocale;
+  };
 
   @action _reset = () => {
     this.error = null;

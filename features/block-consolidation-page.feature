@@ -15,7 +15,7 @@ Feature: Display Block Consolidation Page
     When I toggle the Block Consolidation Status Page
     Then the Block Consolidation Status Page is hidden
 
-  Scenario: Open/close the Block Consolidation Page and ensure epoch consolidation data is rendered correctly
+  Scenario: Fetch current epoch from Cardano Explorer and ensure epoch consolidation data is rendered correctly
     When I inject fault named "FInjIgnoreAPI"
     And I toggle the Block Consolidation Status Page
     Then the Block Consolidation Status Page is visible

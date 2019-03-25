@@ -117,6 +117,7 @@ export default class PaperWalletCreateCertificatePage extends Component<
   };
 
   onBack = () => {
+    // eslint-disable-next-line react/no-access-state-in-setstate
     const prevStep = this.state.currentStep ? this.state.currentStep - 1 : 0;
     const prevDialog = this.CREATE_CERTIFICATE_DIALOGS[prevStep];
     this.setState({ currentStep: prevStep });

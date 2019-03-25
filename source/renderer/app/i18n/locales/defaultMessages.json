@@ -287,13 +287,13 @@
         "description": "Message \"Starting Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.startingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -301,13 +301,13 @@
         "description": "Message \"Stopping Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.stoppingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -315,13 +315,13 @@
         "description": "Message \"Cardano node stopped\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.stoppedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 34
+          "line": 35
         }
       },
       {
@@ -329,13 +329,13 @@
         "description": "Message \"Updating Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.updatingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -343,13 +343,13 @@
         "description": "Message \"Cardano node updated\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.updatedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 44
+          "line": 45
         }
       },
       {
@@ -357,13 +357,13 @@
         "description": "Message \"Cardano node crashed\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 54
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.crashedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -371,13 +371,13 @@
         "description": "Message \"Unable to start Cardano node. Please submit a support request.\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 61
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.unrecoverableCardanoMessage",
         "start": {
           "column": 17,
-          "line": 54
+          "line": 55
         }
       },
       {
@@ -385,13 +385,13 @@
         "description": "Message \"Connecting to network\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 66
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.connectingToNetworkMessage",
         "start": {
           "column": 14,
-          "line": 61
+          "line": 62
         }
       },
       {
@@ -399,13 +399,13 @@
         "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 72
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reconnectingToNetworkMessage",
         "start": {
           "column": 16,
-          "line": 66
+          "line": 67
         }
       },
       {
@@ -413,13 +413,13 @@
         "description": "Message \"Syncing blocks\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 77
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.syncingBlocksMessage",
         "start": {
           "column": 11,
-          "line": 72
+          "line": 73
         }
       },
       {
@@ -427,13 +427,13 @@
         "description": "Report connecting issue text on the loading screen.",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 82
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.connecting.text",
         "start": {
           "column": 29,
-          "line": 77
+          "line": 78
         }
       },
       {
@@ -441,13 +441,13 @@
         "description": "Report syncing issue text on the loading screen.",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 87
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.syncing.text",
         "start": {
           "column": 26,
-          "line": 82
+          "line": 83
         }
       },
       {
@@ -455,13 +455,13 @@
         "description": "Open support ticket button label on the loading.",
         "end": {
           "column": 3,
-          "line": 91
+          "line": 92
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.buttonLabel",
         "start": {
           "column": 26,
-          "line": 87
+          "line": 88
         }
       },
       {
@@ -469,13 +469,13 @@
         "description": "Download logs button label on the loading.",
         "end": {
           "column": 3,
-          "line": 96
+          "line": 97
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.downloadLogsLinkLabel",
         "start": {
           "column": 36,
-          "line": 92
+          "line": 93
         }
       },
       {
@@ -483,13 +483,13 @@
         "description": "The TLS cert is not valid and Daedalus should be restarted",
         "end": {
           "column": 3,
-          "line": 101
+          "line": 102
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.errors.tlsCertificateNotValidPleaseRestartError",
         "start": {
           "column": 31,
-          "line": 97
+          "line": 98
         }
       }
     ],
@@ -527,6 +527,333 @@
       }
     ],
     "path": "source/renderer/app/components/loading/NoDiskSpaceOverlay.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Node is running!",
+        "description": "Message \"Node is running\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.nodeIsRunning",
+        "start": {
+          "column": 17,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!Node is starting!",
+        "description": "Message \"Node is starting\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.nodeIsStarting",
+        "start": {
+          "column": 18,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Node is exiting!",
+        "description": "Message \"Node is exiting\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.nodeIsExiting",
+        "start": {
+          "column": 17,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!Node is stopping!",
+        "description": "Message \"Node is stopping\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.nodeIsStopping",
+        "start": {
+          "column": 18,
+          "line": 34
+        }
+      },
+      {
+        "defaultMessage": "!!!Node has stopped!",
+        "description": "Message \"Node has stopped\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 43
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.nodeHasStopped",
+        "start": {
+          "column": 18,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!Node is updating!",
+        "description": "Message \"Node is updating\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.nodeIsUpdating",
+        "start": {
+          "column": 18,
+          "line": 44
+        }
+      },
+      {
+        "defaultMessage": "!!!Node has been updated!",
+        "description": "Message \"Node has been updated\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 53
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.nodeHasBeenUpdated",
+        "start": {
+          "column": 22,
+          "line": 49
+        }
+      },
+      {
+        "defaultMessage": "!!!Node has crashed!",
+        "description": "Message \"Node has crashed\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 58
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.nodeHasCrashed",
+        "start": {
+          "column": 18,
+          "line": 54
+        }
+      },
+      {
+        "defaultMessage": "!!!Node has errored!",
+        "description": "Message \"Node has errored\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 63
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.nodeHasErrored",
+        "start": {
+          "column": 18,
+          "line": 59
+        }
+      },
+      {
+        "defaultMessage": "!!!Node is unrecoverable!",
+        "description": "Message \"Node is unrecoverable\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 68
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.nodeIsUnrecoverable",
+        "start": {
+          "column": 23,
+          "line": 64
+        }
+      },
+      {
+        "defaultMessage": "!!!Check your Internet connection!",
+        "description": "Message \"Check your Internet connection\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 74
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.checkYourInternetConnection",
+        "start": {
+          "column": 31,
+          "line": 69
+        }
+      },
+      {
+        "defaultMessage": "!!!Node is responding!",
+        "description": "Message \"Node is responding\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 79
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.isNodeRespondingOn",
+        "start": {
+          "column": 22,
+          "line": 75
+        }
+      },
+      {
+        "defaultMessage": "!!!Node is not responding!",
+        "description": "Message \"Node is not responding\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 84
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.isNodeRespondingOff",
+        "start": {
+          "column": 23,
+          "line": 80
+        }
+      },
+      {
+        "defaultMessage": "!!!Checking if Node is responding!",
+        "description": "Message \"Checking if Node is responding\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 90
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.isNodeRespondingLoading",
+        "start": {
+          "column": 27,
+          "line": 85
+        }
+      },
+      {
+        "defaultMessage": "!!!Node is subscribed!",
+        "description": "Message \"Node is subscribed\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 95
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.isNodeSubscribedOn",
+        "start": {
+          "column": 22,
+          "line": 91
+        }
+      },
+      {
+        "defaultMessage": "!!!Node is not subscribed!",
+        "description": "Message \"Node is not subscribed\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 100
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.isNodeSubscribedOff",
+        "start": {
+          "column": 23,
+          "line": 96
+        }
+      },
+      {
+        "defaultMessage": "!!!Checking if Node is subscribed!",
+        "description": "Message \"Checking if Node is subscribed\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 106
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.isNodeSubscribedLoading",
+        "start": {
+          "column": 27,
+          "line": 101
+        }
+      },
+      {
+        "defaultMessage": "!!!Node time is correct!",
+        "description": "Message \"Node time is correct\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 111
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.isNodeTimeCorrectOn",
+        "start": {
+          "column": 23,
+          "line": 107
+        }
+      },
+      {
+        "defaultMessage": "!!!Node time is not correct!",
+        "description": "Message \"Node time is not correct\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 117
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.isNodeTimeCorrectOff",
+        "start": {
+          "column": 24,
+          "line": 112
+        }
+      },
+      {
+        "defaultMessage": "!!!Checking if Node time is correct!",
+        "description": "Message \"Checking if Node time is correct\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 123
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.isNodeTimeCorrectLoading",
+        "start": {
+          "column": 28,
+          "line": 118
+        }
+      },
+      {
+        "defaultMessage": "!!!Node is syncing!",
+        "description": "Message \"Node is syncing\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 128
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.isNodeSyncingOn",
+        "start": {
+          "column": 19,
+          "line": 124
+        }
+      },
+      {
+        "defaultMessage": "!!!Node is not syncing!",
+        "description": "Message \"Node is not syncing\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 133
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.isNodeSyncingOff",
+        "start": {
+          "column": 20,
+          "line": 129
+        }
+      },
+      {
+        "defaultMessage": "!!!Checking if Node is syncing!",
+        "description": "Message \"Checking if Node is syncing\" on the status icon tooltip",
+        "end": {
+          "column": 3,
+          "line": 139
+        },
+        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "id": "status.icons.isNodeSyncingLoading",
+        "start": {
+          "column": 24,
+          "line": 134
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/loading/StatusIcons.json"
   },
   {
     "descriptors": [
@@ -1005,7 +1332,7 @@
         }
       },
       {
-        "defaultMessage": "!!!If you are experiencing issues, for guidance please see the {faqLink} article in the Support Portal.",
+        "defaultMessage": "!!!If you are experiencing a problem, please look for guidance using the list of {faqLink} on the support pages. If you can’t find a solution, please submit a support ticket.",
         "description": "Content for the \"Help and support\" section on the support settings page.",
         "end": {
           "column": 3,
@@ -1033,73 +1360,45 @@
         }
       },
       {
-        "defaultMessage": "!!!Reporting a problem",
-        "description": "Title \"Reporting a problem\" on the support settings page.",
+        "defaultMessage": "!!!Steps for creating a support request:",
+        "description": "Title \"Steps for creating a support request\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
-        "id": "settings.support.reportProblem.title",
+        "id": "settings.support.steps.title",
         "start": {
-          "column": 22,
+          "column": 14,
           "line": 27
         }
       },
       {
-        "defaultMessage": "!!!If you are still experiencing an issue, please submit a support request.",
-        "description": "Content for the \"Reporting a problem\" section on the support settings page.",
+        "defaultMessage": "!!!Download the logs",
+        "description": "Title \"Download the logs\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 37
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
-        "id": "settings.support.reportProblem.content",
+        "id": "settings.support.steps.downloadLogs.title",
         "start": {
-          "column": 24,
-          "line": 32
+          "column": 26,
+          "line": 33
         }
       },
       {
-        "defaultMessage": "!!!submit a support request",
-        "description": "\"submit a support request\" link in the \"Report a problem\" section on the support settings page.",
+        "defaultMessage": "!!!Please {downloadLogsLink} and attach the downloaded file when submitting a support request to help the support team investigate the issue. Logs do not contain sensitive information.",
+        "description": "Description of \"Download the logs\" on the support settings page.",
         "end": {
           "column": 3,
           "line": 44
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
-        "id": "settings.support.reportProblem.link",
+        "id": "settings.support.steps.downloadLogs.description",
         "start": {
-          "column": 22,
-          "line": 39
-        }
-      },
-      {
-        "defaultMessage": "!!!Logs",
-        "description": "Title \"Logs\" on the support settings page.",
-        "end": {
-          "column": 3,
-          "line": 49
-        },
-        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
-        "id": "settings.support.logs.title",
-        "start": {
-          "column": 13,
-          "line": 45
-        }
-      },
-      {
-        "defaultMessage": "!!!Please download your logs here and attach the downloaded file when submitting a support ticket to help the support team investigate the issue. Logs do not contain sensitive information.",
-        "description": "Content for the \"Logs\" section on the support settings page.",
-        "end": {
-          "column": 3,
-          "line": 55
-        },
-        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
-        "id": "settings.support.logs.content",
-        "start": {
-          "column": 15,
-          "line": 50
+          "column": 32,
+          "line": 38
         }
       },
       {
@@ -1107,13 +1406,55 @@
         "description": "\"download your logs here\" link in the Logs section on the support settings page",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 50
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
-        "id": "settings.support.logs.downloadLogsLink",
+        "id": "settings.support.steps.downloadLogs.link",
         "start": {
-          "column": 20,
+          "column": 25,
+          "line": 45
+        }
+      },
+      {
+        "defaultMessage": "!!!Report a problem",
+        "description": "Title \"Report a problem\" on the support settings page.",
+        "end": {
+          "column": 3,
+          "line": 55
+        },
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
+        "id": "settings.support.steps.reportProblem.title",
+        "start": {
+          "column": 27,
+          "line": 51
+        }
+      },
+      {
+        "defaultMessage": "!!!Please {downloadLogsLink} and attach the downloaded file when submitting a support request to help the support team investigate the issue. Logs do not contain sensitive information.",
+        "description": "Description of \"Download the logs\" on the support settings page.",
+        "end": {
+          "column": 3,
+          "line": 62
+        },
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
+        "id": "settings.support.steps.reportProblem.description",
+        "start": {
+          "column": 33,
           "line": 56
+        }
+      },
+      {
+        "defaultMessage": "!!!download your logs here",
+        "description": "\"download your logs here\" link in the Logs section on the support settings page",
+        "end": {
+          "column": 3,
+          "line": 68
+        },
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
+        "id": "settings.support.steps.reportProblem.link",
+        "start": {
+          "column": 26,
+          "line": 63
         }
       }
     ],
@@ -3627,13 +3968,13 @@
         "description": "Transaction type shown for credit card payments.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.card",
         "start": {
           "column": 8,
-          "line": 23
+          "line": 25
         }
       },
       {
@@ -3641,13 +3982,13 @@
         "description": "Transaction type shown for {currency} transactions.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 34
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type",
         "start": {
           "column": 8,
-          "line": 28
+          "line": 30
         }
       },
       {
@@ -3655,13 +3996,13 @@
         "description": "Transaction type shown for money exchanges between currencies.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 40
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.exchange",
         "start": {
           "column": 12,
-          "line": 33
+          "line": 35
         }
       },
       {
@@ -3669,13 +4010,13 @@
         "description": "Transaction assurance level.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 45
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel",
         "start": {
           "column": 18,
-          "line": 39
+          "line": 41
         }
       },
       {
@@ -3683,13 +4024,13 @@
         "description": "Transaction confirmations.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 50
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.confirmations",
         "start": {
           "column": 17,
-          "line": 44
+          "line": 46
         }
       },
       {
@@ -3697,13 +4038,13 @@
         "description": "Transaction ID.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 55
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionId",
         "start": {
           "column": 17,
-          "line": 49
+          "line": 51
         }
       },
       {
@@ -3711,13 +4052,13 @@
         "description": "Conversion rate.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 60
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.conversion.rate",
         "start": {
           "column": 18,
-          "line": 54
+          "line": 56
         }
       },
       {
@@ -3725,13 +4066,13 @@
         "description": "Label \"{currency} sent\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.sent",
         "start": {
           "column": 8,
-          "line": 59
+          "line": 61
         }
       },
       {
@@ -3739,13 +4080,13 @@
         "description": "Label \"{currency} received\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 70
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.received",
         "start": {
           "column": 12,
-          "line": 64
+          "line": 66
         }
       },
       {
@@ -3753,13 +4094,13 @@
         "description": "From address",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 75
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.from",
         "start": {
           "column": 15,
-          "line": 69
+          "line": 71
         }
       },
       {
@@ -3767,13 +4108,13 @@
         "description": "From addresses",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 80
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.from",
         "start": {
           "column": 17,
-          "line": 74
+          "line": 76
         }
       },
       {
@@ -3781,13 +4122,13 @@
         "description": "To address",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 85
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.to",
         "start": {
           "column": 13,
-          "line": 79
+          "line": 81
         }
       },
       {
@@ -3795,13 +4136,13 @@
         "description": "To addresses",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 90
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.to",
         "start": {
           "column": 15,
-          "line": 84
+          "line": 86
         }
       },
       {
@@ -3809,13 +4150,13 @@
         "description": "Transaction amount.",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 95
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionAmount",
         "start": {
           "column": 21,
-          "line": 89
+          "line": 91
         }
       },
       {
@@ -3823,13 +4164,13 @@
         "description": "Transaction assurance level \"low\".",
         "end": {
           "column": 3,
-          "line": 101
+          "line": 103
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.low",
         "start": {
           "column": 34,
-          "line": 97
+          "line": 99
         }
       },
       {
@@ -3837,13 +4178,13 @@
         "description": "Transaction assurance level \"medium\".",
         "end": {
           "column": 3,
-          "line": 106
+          "line": 108
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.medium",
         "start": {
           "column": 37,
-          "line": 102
+          "line": 104
         }
       },
       {
@@ -3851,13 +4192,13 @@
         "description": "Transaction assurance level \"high\".",
         "end": {
           "column": 3,
-          "line": 111
+          "line": 113
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.high",
         "start": {
           "column": 35,
-          "line": 107
+          "line": 109
         }
       },
       {
@@ -3865,13 +4206,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 119
+          "line": 121
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 115
+          "line": 117
         }
       },
       {
@@ -3879,13 +4220,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 124
+          "line": 126
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.failed",
         "start": {
           "column": 30,
-          "line": 120
+          "line": 122
         }
       }
     ],
@@ -4637,13 +4978,13 @@
         "description": "Label for the \"Title\" text input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 37
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.title.label",
         "start": {
           "column": 14,
-          "line": 31
+          "line": 33
         }
       },
       {
@@ -4651,13 +4992,13 @@
         "description": "Hint inside the \"Receiver\" text input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.title.hint",
         "start": {
           "column": 13,
-          "line": 36
+          "line": 38
         }
       },
       {
@@ -4665,13 +5006,13 @@
         "description": "Label for the \"Receiver\" text input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.receiver.label",
         "start": {
           "column": 17,
-          "line": 42
+          "line": 44
         }
       },
       {
@@ -4679,13 +5020,13 @@
         "description": "Hint inside the \"Receiver\" text input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 54
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.receiver.hint",
         "start": {
           "column": 16,
-          "line": 47
+          "line": 49
         }
       },
       {
@@ -4693,13 +5034,13 @@
         "description": "Label for the \"Amount\" number input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 59
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.amount.label",
         "start": {
           "column": 15,
-          "line": 53
+          "line": 55
         }
       },
       {
@@ -4707,13 +5048,13 @@
         "description": "Label for the \"description\" text area in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.description.label",
         "start": {
           "column": 20,
-          "line": 58
+          "line": 60
         }
       },
       {
@@ -4721,13 +5062,13 @@
         "description": "Hint in the \"description\" text area in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 70
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.description.hint",
         "start": {
           "column": 19,
-          "line": 64
+          "line": 66
         }
       },
       {
@@ -4735,13 +5076,13 @@
         "description": "Label for the next button on the wallet send form.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 75
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.next",
         "start": {
           "column": 19,
-          "line": 69
+          "line": 71
         }
       },
       {
@@ -4749,13 +5090,13 @@
         "description": "Error message shown when invalid address was entered.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 80
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.errors.invalidAddress",
         "start": {
           "column": 18,
-          "line": 74
+          "line": 76
         }
       },
       {
@@ -4763,13 +5104,13 @@
         "description": "Error message shown when invalid amount was entered.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 85
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.errors.invalidAmount",
         "start": {
           "column": 17,
-          "line": 79
+          "line": 81
         }
       },
       {
@@ -4777,13 +5118,13 @@
         "description": "Error message shown when invalid transaction title was entered.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 91
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.errors.invalidTitle",
         "start": {
           "column": 16,
-          "line": 84
+          "line": 86
         }
       },
       {
@@ -4791,13 +5132,13 @@
         "description": "Syncing transactions message shown during async wallet restore in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 96
+          "line": 98
         },
         "file": "source/renderer/app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.syncingTransactionsMessage",
         "start": {
           "column": 30,
-          "line": 90
+          "line": 92
         }
       }
     ],

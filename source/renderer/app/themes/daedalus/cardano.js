@@ -443,6 +443,12 @@ export default {
   '--theme-loading-no-disk-space-text-color': '#fafbfc',
   '--theme-loading-no-disk-space-attention-icon-color': '#fafbfc',
 
+  '--theme-loading-status-icons-on-color': '#2dc06c',
+  '--theme-loading-status-icons-off-color': '#ea4c5b',
+  '--theme-loading-status-icons-unloaded-loading-color': '#fafbfc',
+  '--theme-loading-status-icons-unloaded-syncing-color': '#5e6066',
+  '--theme-loading-status-icons-tooltip-color': '#5E6066',
+
   '--theme-mnemonic-background-color': '#f0f3f5',
   '--theme-mnemonic-background-color-hover': '#f3f5f7',
 
@@ -450,6 +456,7 @@ export default {
 
   '--theme-support-settings-text-color': '#5e6066',
   '--theme-support-settings-link-color': '#1cac63',
+  '--theme-support-settings-item-color': 'rgba(94, 96, 102, 0.5)',
 
   '--theme-terms-of-use-text-color': '#5e6066',
 

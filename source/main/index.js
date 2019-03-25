@@ -17,10 +17,14 @@ import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { buildAppMenus } from './utils/buildAppMenus';
 import { getLocale } from './utils/getLocale';
+import { detectSystemLocale } from './utils/detectSystemLocale';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
+import { detectSystemLocaleChannel } from './ipc/detect-system-locale';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
+
+/* eslint-disable consistent-return */
 
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
@@ -66,6 +70,8 @@ const onAppReady = async () => {
   const platformVersion = os.release();
   const ram = JSON.stringify(os.totalmem(), null, 2);
   const startTime = new Date().toISOString();
+  // first checks for japanese locale, otherwise returns english
+  const systemLocale = detectSystemLocale();
 
   const systemInfo = logSystemInfo({
     cardanoVersion,
@@ -133,6 +139,8 @@ const onAppReady = async () => {
     // Connect to electron-connect server which restarts / reloads windows on file changes
     client.create(mainWindow);
   }
+
+  detectSystemLocaleChannel.onRequest(() => Promise.resolve(systemLocale));
 
   getNumberOfEpochsConsolidated();
 

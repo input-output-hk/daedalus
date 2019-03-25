@@ -8,6 +8,7 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import SystemTimeErrorOverlay from './SystemTimeErrorOverlay';
 import NoDiskSpaceOverlay from './NoDiskSpaceOverlay';
+import StatusIcons from './StatusIcons';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import linkNewWindow from '../../assets/images/link-ic.inline.svg';
@@ -128,6 +129,10 @@ type Props = {
   localTimeDifference: ?number,
   isSystemTimeCorrect: boolean,
   isCheckingSystemTime: boolean,
+  isNodeResponding: boolean,
+  isNodeSubscribed: boolean,
+  isNodeSyncing: boolean,
+  isNodeTimeCorrect: boolean,
   currentLocale: string,
   onExternalLinkClick: Function,
   onReportIssueClick: Function,
@@ -230,14 +235,16 @@ export default class Loading extends Component<Props, State> {
   };
 
   _incrementConnectingTime = () => {
-    this.setState({ connectingTime: this.state.connectingTime + 1 });
+    this.setState(prevState => ({
+      connectingTime: prevState.connectingTime + 1,
+    }));
   };
 
   _incrementSyncingTime = () => {
     const syncPercentage = this.props.syncPercentage.toFixed(2);
     if (syncPercentage === this.state.syncPercentage) {
       // syncPercentage not increased, increase syncing time
-      this.setState({ syncingTime: this.state.syncingTime + 1 });
+      this.setState(prevState => ({ syncingTime: prevState.syncingTime + 1 }));
     } else {
       // reset syncingTime and set new max percentage
       this.setState({ syncingTime: 0, syncPercentage });
@@ -382,6 +389,10 @@ export default class Loading extends Component<Props, State> {
       hasLoadedCurrentTheme,
       onReportIssueClick,
       onDownloadLogs,
+      isNodeResponding,
+      isNodeSubscribed,
+      isNodeSyncing,
+      isNodeTimeCorrect,
     } = this.props;
 
     const { connectingTime, syncingTime } = this.state;
@@ -461,6 +472,14 @@ export default class Loading extends Component<Props, State> {
           <SVGInline svg={apiLoadingLogo} className={apiLogoStyles} />
         </div>
         {hasLoadedCurrentLocale ? this._renderLoadingScreen() : null}
+
+        <StatusIcons
+          nodeState={cardanoNodeState}
+          isNodeResponding={isNodeResponding}
+          isNodeSubscribed={isNodeSubscribed}
+          isNodeTimeCorrect={isNodeTimeCorrect}
+          isNodeSyncing={isNodeSyncing}
+        />
       </div>
     );
   }

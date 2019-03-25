@@ -29,6 +29,7 @@ type Props = {
   languages: Array<{ value: string, label: ReactIntlMessage }>,
   onSubmit: Function,
   isSubmitting: boolean,
+  preselectedLanguage: string,
   error?: ?LocalizableError,
 };
 
@@ -57,7 +58,7 @@ export default class LanguageSelectionForm extends Component<Props> {
       fields: {
         languageId: {
           label: this.context.intl.formatMessage(messages.languageSelectLabel),
-          value: this.props.languages[0].value,
+          value: this.props.preselectedLanguage,
         },
       },
     },

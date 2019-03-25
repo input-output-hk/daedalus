@@ -54,6 +54,10 @@ export default class LoadingPage extends Component<InjectedProps> {
     const { stores } = this.props;
     const {
       cardanoNodeState,
+      isNodeResponding,
+      isNodeSubscribed,
+      isNodeSyncing,
+      isNodeTimeCorrect,
       isConnected,
       isSynced,
       syncPercentage,
@@ -77,6 +81,7 @@ export default class LoadingPage extends Component<InjectedProps> {
       currentLocale,
     } = stores.profile;
     const { id, message } = this.notification;
+
     return (
       <CenteredLayout>
         <Loading
@@ -102,6 +107,10 @@ export default class LoadingPage extends Component<InjectedProps> {
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           currentLocale={currentLocale}
           onExternalLinkClick={stores.app.openExternalLink}
+          isNodeResponding={isNodeResponding}
+          isNodeSubscribed={isNodeSubscribed}
+          isNodeSyncing={isNodeSyncing}
+          isNodeTimeCorrect={isNodeTimeCorrect}
           onReportIssueClick={this.handleReportIssueClick}
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
           onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
