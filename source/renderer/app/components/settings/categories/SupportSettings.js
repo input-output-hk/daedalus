@@ -101,13 +101,13 @@ export default class SupportSettings extends Component<Props> {
     );
 
     const stepsDownloadLogsLink = (
-      <button onClick={onDownloadLogs}>
+      <button onClick={onDownloadLogs} disabled={disableDownloadLogs}>
         {intl.formatMessage(messages.stepsDownloadLogsLink)}
       </button>
     );
 
     const reportProblemLink = (
-      <button onClick={onSupportRequestClick} disabled={disableDownloadLogs}>
+      <button onClick={onSupportRequestClick}>
         {intl.formatMessage(messages.stepsReportProblemLink)}
       </button>
     );

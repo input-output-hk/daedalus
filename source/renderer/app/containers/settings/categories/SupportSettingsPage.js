@@ -32,10 +32,9 @@ export default class SupportSettingsPage extends Component<
 
   static defaultProps = { actions: null, stores: null };
 
-  constructor(props) {
+  constructor(props: InjectedProps) {
     super(props);
     const { profile } = this.props.actions;
-    profile.downloadLogs.listen(() => this.toggleDisableDownloadLogs(true));
     profile.downloadLogsSuccess.listen(() =>
       this.toggleDisableDownloadLogs(false)
     );
@@ -66,6 +65,7 @@ export default class SupportSettingsPage extends Component<
       defaultPath: fileName,
     });
     if (destination) {
+      this.toggleDisableDownloadLogs(true);
       profile.downloadLogs.trigger({ fileName, destination, fresh: true });
     }
   };

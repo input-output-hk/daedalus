@@ -139,6 +139,7 @@ type Props = {
   onCheckTheTimeAgain: Function,
   onContinueWithoutClockSyncCheck: Function,
   onDownloadLogs: Function,
+  disableDownloadLogs: boolean,
 };
 
 @observer
@@ -387,6 +388,7 @@ export default class Loading extends Component<Props, State> {
       hasLoadedCurrentTheme,
       onReportIssueClick,
       onDownloadLogs,
+      disableDownloadLogs,
       isNodeResponding,
       isNodeSubscribed,
       isNodeSyncing,
@@ -459,6 +461,7 @@ export default class Loading extends Component<Props, State> {
             <button
               className={downloadLogsButtonStyles}
               onClick={onDownloadLogs}
+              disabled={disableDownloadLogs}
             >
               {intl.formatMessage(messages.reportIssueDownloadLogsLinkLabel)}
             </button>

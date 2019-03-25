@@ -35,6 +35,10 @@ export const messages = defineMessages({
   },
 });
 
+type State = {
+  disableDownloadLogs: boolean,
+};
+
 const DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID =
   'loading-page-download-logs-progress';
 const DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID =
@@ -42,9 +46,21 @@ const DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID =
 
 @inject('stores', 'actions')
 @observer
-export default class LoadingPage extends Component<InjectedProps> {
+export default class LoadingPage extends Component<InjectedProps, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  constructor(props: InjectedProps) {
+    super(props);
+    const { profile } = this.props.actions;
+    profile.downloadLogsSuccess.listen(() =>
+      this.toggleDisableDownloadLogs(false)
+    );
+  }
+
+  state = {
+    disableDownloadLogs: false,
   };
 
   render() {
@@ -111,6 +127,7 @@ export default class LoadingPage extends Component<InjectedProps> {
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
           onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
           onDownloadLogs={this.handleDownloadLogs}
+          disableDownloadLogs={this.state.disableDownloadLogs}
         />
         <GenericNotification
           id={DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID}
@@ -164,7 +181,12 @@ export default class LoadingPage extends Component<InjectedProps> {
       defaultPath: fileName,
     });
     if (destination) {
+      this.toggleDisableDownloadLogs(true);
       profile.downloadLogs.trigger({ fileName, destination, fresh: true });
     }
+  };
+
+  toggleDisableDownloadLogs = (disableDownloadLogs: boolean) => {
+    this.setState({ disableDownloadLogs });
   };
 }
