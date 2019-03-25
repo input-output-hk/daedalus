@@ -24,11 +24,11 @@ let scenariosCount = 0;
 
 const printMainProcessLogs = () =>
   context.app.client.getMainProcessLogs().then(logs => {
-    // eslint-disable-next-line
+    // eslint-disable-next-line no-console
     console.log('========= DAEDALUS LOGS =========');
-    // eslint-disable-next-line
+    // eslint-disable-next-line no-console
     logs.forEach(log => console.log(log));
-    // eslint-disable-next-line
+    // eslint-disable-next-line no-console
     console.log('=================================');
     return true;
   });
