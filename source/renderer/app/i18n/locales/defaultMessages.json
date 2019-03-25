@@ -5405,13 +5405,13 @@
         "description": "Message \"Loading wallet data\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "source/renderer/app/containers/LoadingPage.js",
         "id": "loading.screen.loadingWalletData",
         "start": {
           "column": 21,
-          "line": 16
+          "line": 17
         }
       },
       {
@@ -5419,13 +5419,13 @@
         "description": "Link to Open Support page",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "source/renderer/app/containers/LoadingPage.js",
         "id": "loading.screen.reportIssue.reportIssueButtonUrl",
         "start": {
           "column": 24,
-          "line": 21
+          "line": 22
         }
       },
       {
@@ -5433,13 +5433,13 @@
         "description": "Success message for download logs.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 31
         },
         "file": "source/renderer/app/containers/LoadingPage.js",
         "id": "loading.screen.reportIssue.downloadLogsSuccessMessage",
         "start": {
           "column": 23,
-          "line": 26
+          "line": 27
         }
       },
       {
@@ -5447,13 +5447,13 @@
         "description": "Progress message for download logs.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "source/renderer/app/containers/LoadingPage.js",
         "id": "loading.screen.reportIssue.downloadLogsProgressMessage",
         "start": {
           "column": 24,
-          "line": 31
+          "line": 32
         }
       }
     ],
@@ -5485,13 +5485,13 @@
         "description": "Success message for download logs.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/containers/settings/Settings.js",
         "id": "settings.support.reportProblem.downloadLogsSuccessMessage",
         "start": {
           "column": 23,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -5499,13 +5499,13 @@
         "description": "Progress message for download logs.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/containers/settings/Settings.js",
         "id": "settings.support.reportProblem.downloadLogsProgressMessage",
         "start": {
           "column": 24,
-          "line": 19
+          "line": 20
         }
       }
     ],
