@@ -61,7 +61,9 @@ export default class StoryProvider extends Component<Props> {
   }
 
   setActiveWalletId = (walletId: string) =>
-    runInAction(() => (this.activeWalletId = walletId));
+    runInAction(() => {
+      this.activeWalletId = walletId;
+    });
 
   render() {
     return (

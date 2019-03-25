@@ -47,7 +47,7 @@ process.once('loaded', () => {
     global.spectronRequire = __non_webpack_require__; // eslint-disable-line
   }
   // ESLint will warn about any use of eval(), even this one
-  // eslint-disable-next-line
+  // eslint-disable-next-line no-eval
   global.eval = () => {
     throw new Error('This app does not support window.eval().');
   };
@@ -67,7 +67,7 @@ process.once('loaded', () => {
           return true;
         }
 
-        event.preventDefault();
+        return event.preventDefault();
       },
       false
     );

@@ -31,7 +31,7 @@ export default class App extends Component<{
     const { isAboutDialogOpen, isNetworkStatusDialogOpen } = app;
     const locale = stores.profile.currentLocale;
     const mobxDevTools = global.environment.mobxDevTools ? <DevTools /> : null;
-    const currentTheme = stores.profile.currentTheme;
+    const { currentTheme } = stores.profile;
     const themeVars = require(`./themes/daedalus/${currentTheme}.js`).default;
     return (
       <Fragment>

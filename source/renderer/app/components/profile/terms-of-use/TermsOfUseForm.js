@@ -52,8 +52,12 @@ export default class TermsOfUseForm extends Component<Props, State> {
     areTermsOfUseAccepted: false,
   };
 
+  toggleAcceptance = this.toggleAcceptance.bind(this);
+
   toggleAcceptance() {
-    this.setState({ areTermsOfUseAccepted: !this.state.areTermsOfUseAccepted });
+    this.setState(prevState => ({
+      areTermsOfUseAccepted: !prevState.areTermsOfUseAccepted,
+    }));
   }
 
   submit = () => {
@@ -77,7 +81,7 @@ export default class TermsOfUseForm extends Component<Props, State> {
           <div className={styles.checkbox}>
             <Checkbox
               label={intl.formatMessage(messages.checkboxLabel)}
-              onChange={this.toggleAcceptance.bind(this)}
+              onChange={this.toggleAcceptance}
               checked={areTermsOfUseAccepted}
               skin={CheckboxSkin}
             />

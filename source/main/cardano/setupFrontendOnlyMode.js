@@ -26,9 +26,9 @@ export const setupFrontendOnlyMode = (mainWindow: BrowserWindow) => {
   const cardanoHost = CARDANO_HOST || 'localhost';
   const cardanoPort = parseInt(CARDANO_PORT, 10) || 8090;
   const tlsConfig = {
-    ca: readFileSync(cardanoTlsPath + '/client/ca.crt'),
-    key: readFileSync(cardanoTlsPath + '/client/client.key'),
-    cert: readFileSync(cardanoTlsPath + '/client/client.pem'),
+    ca: readFileSync(`${cardanoTlsPath}/client/ca.crt`),
+    key: readFileSync(`${cardanoTlsPath}/client/client.key`),
+    cert: readFileSync(`${cardanoTlsPath}/client/client.pem`),
     hostname: cardanoHost,
     port: cardanoPort,
   };

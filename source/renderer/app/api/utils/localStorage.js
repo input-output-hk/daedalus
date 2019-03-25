@@ -1,4 +1,7 @@
 // @flow
+
+/* eslint-disable consistent-return */
+
 const store = global.electronStore;
 
 type StorageKeys = {

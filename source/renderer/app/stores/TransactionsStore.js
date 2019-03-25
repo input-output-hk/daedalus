@@ -19,6 +19,8 @@ import type { UnconfirmedAmount } from '../types/unconfirmedAmountType';
 import { isValidAmountInLovelaces } from '../utils/validations';
 import { TX_UNCONFIRMED_THRESHOLD } from '../config/numbersConfig';
 
+/* eslint-disable consistent-return */
+
 export type TransactionSearchOptionsStruct = {
   searchTerm: string,
   searchLimit: number,
@@ -92,36 +94,36 @@ export default class TransactionsStore extends Store {
   @computed get recent(): Array<WalletTransaction> {
     const wallet = this.stores.wallets.active;
     if (!wallet) return [];
-    const result = this._getTransactionsRecentRequest(wallet.id).result;
-    return result ? result.transactions : [];
+    const results = this._getTransactionsRecentRequest(wallet.id).result;
+    return results ? results.transactions : [];
   }
 
   @computed get hasAnyFiltered(): boolean {
     const wallet = this.stores.wallets.active;
     if (!wallet) return false;
-    const result = this._getTransactionsAllRequest(wallet.id).result;
-    return result ? result.transactions.length > 0 : false;
+    const results = this._getTransactionsAllRequest(wallet.id).result;
+    return results ? results.transactions.length > 0 : false;
   }
 
   @computed get hasAny(): boolean {
     const wallet = this.stores.wallets.active;
     if (!wallet) return false;
-    const result = this._getTransactionsRecentRequest(wallet.id).result;
-    return result ? result.total > 0 : false;
+    const results = this._getTransactionsRecentRequest(wallet.id).result;
+    return results ? results.total > 0 : false;
   }
 
   @computed get totalAvailable(): number {
     const wallet = this.stores.wallets.active;
     if (!wallet) return 0;
-    const result = this._getTransactionsAllRequest(wallet.id).result;
-    return result ? result.total : 0;
+    const results = this._getTransactionsAllRequest(wallet.id).result;
+    return results ? results.total : 0;
   }
 
   @computed get totalFilteredAvailable(): number {
     const wallet = this.stores.wallets.active;
     if (!wallet) return 0;
-    const result = this._getTransactionsAllRequest(wallet.id).result;
-    return result ? result.transactions.length : 0;
+    const results = this._getTransactionsAllRequest(wallet.id).result;
+    return results ? results.transactions.length : 0;
   }
 
   @action _refreshTransactionData = async (restoredWalletId: ?string) => {
@@ -248,12 +250,13 @@ export default class TransactionsStore extends Store {
     const wallet = this.stores.wallets.active;
     if (!wallet) return this._resetUnconfirmedAmount();
     // Reset when no transactions
-    const result = this._getTransactionsAllRequest(wallet.id).result;
-    if (!result || !result.transactions) return this._resetUnconfirmedAmount();
+    const results = this._getTransactionsAllRequest(wallet.id).result;
+    if (!results || !results.transactions)
+      return this._resetUnconfirmedAmount();
 
     // We have some results, lets compute and update
     const unconfirmedAmount = this._getEmptyUnconfirmedAmount();
-    for (const transaction of result.transactions) {
+    for (const transaction of results.transactions) {
       if (transaction.numberOfConfirmations <= TX_UNCONFIRMED_THRESHOLD) {
         unconfirmedAmount.total = unconfirmedAmount.total.plus(
           transaction.amount.absoluteValue()
