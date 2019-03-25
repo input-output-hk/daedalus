@@ -21,7 +21,7 @@ export default {
     return translation.value;
   },
   setActiveLanguage: async (client, { language } = {}) =>
-    await client.execute(locale => {
+    client.execute(locale => {
       daedalus.actions.profile.updateLocale.trigger({ locale });
     }, language || DEFAULT_LANGUAGE),
 };

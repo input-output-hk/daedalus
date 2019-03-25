@@ -19,6 +19,8 @@ import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';
 import { getNetworkExplorerUrl } from '../../../utils/network';
 
+/* eslint-disable consistent-return */
+
 const messages = defineMessages({
   card: {
     id: 'wallet.transaction.type.card',
@@ -288,6 +290,7 @@ export default class Transaction extends Component<Props> {
                 <span
                   role="presentation"
                   aria-hidden
+                  // eslint-disable-next-line react/no-array-index-key
                   key={`${data.id}-from-${address}-${addressIndex}`}
                   className={styles.address}
                   onClick={this.handleOpenExplorer.bind(
@@ -304,6 +307,7 @@ export default class Transaction extends Component<Props> {
                 <span
                   role="presentation"
                   aria-hidden
+                  // eslint-disable-next-line react/no-array-index-key
                   key={`${data.id}-to-${address}-${addressIndex}`}
                   className={styles.address}
                   onClick={this.handleOpenExplorer.bind(

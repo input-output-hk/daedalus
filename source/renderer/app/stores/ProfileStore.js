@@ -345,6 +345,7 @@ export default class SettingsStore extends Store {
       destination,
       fileName,
     };
+
     if (this.compressedLogsFilePath && fresh !== true) {
       // logs already compressed, trigger the download
       try {

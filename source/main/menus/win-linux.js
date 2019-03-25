@@ -35,9 +35,11 @@ export const winLinuxMenu = (
         type: 'checkbox',
         checked: isInSafeMode,
         click() {
-          isInSafeMode
-            ? actions.restartWithoutSafeMode()
-            : actions.restartInSafeMode();
+          if (isInSafeMode) {
+            actions.restartWithoutSafeMode();
+          } else {
+            actions.restartInSafeMode();
+          }
         },
       },
       {
