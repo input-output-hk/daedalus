@@ -231,7 +231,7 @@ export default class AdaRedemptionStore extends Store {
     walletId: string,
     spendingPassword: ?string,
   }) => {
-    runInAction(() => {
+    runInAction('redeem ada', () => {
       this.walletId = walletId;
     });
 
@@ -271,7 +271,7 @@ export default class AdaRedemptionStore extends Store {
     shieldedRedemptionKey: string,
     spendingPassword: ?string,
   }) => {
-    runInAction(() => {
+    runInAction('redeem paper vended ada', () => {
       this.walletId = walletId;
     });
 

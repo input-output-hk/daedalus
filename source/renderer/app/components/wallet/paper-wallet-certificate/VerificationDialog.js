@@ -125,9 +125,7 @@ export default class VerificationDialog extends Component<Props, State> {
     }));
   };
 
-  onRecoveringConfirmationChange = this.onRecoveringConfirmation.bind(
-    this
-  );
+  onRecoveringConfirmationChange = this.onRecoveringConfirmation.bind(this);
 
   onStoringConfirmationChange = this.onStoringConfirmation.bind(this);
 
