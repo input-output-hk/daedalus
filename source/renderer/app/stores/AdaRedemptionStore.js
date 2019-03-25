@@ -122,7 +122,9 @@ export default class AdaRedemptionStore extends Store {
 
   _setRedemptionCode = action(
     ({ redemptionCode }: { redemptionCode: string }) => {
-      this.redemptionCode = redemptionCode;
+      runInAction('set redemption parsing code', () => {
+        this.redemptionCode = redemptionCode;
+      });
     }
   );
 
@@ -147,10 +149,12 @@ export default class AdaRedemptionStore extends Store {
   });
 
   _setRedemptionParsingError = action((error: LocalizableError) => {
-    this.error = error;
-    this.redemptionCode = '';
-    this.passPhrase = null;
-    this.decryptionKey = null;
+    runInAction('set redemption parsing error', () => {
+      this.error = error;
+      this.redemptionCode = '';
+      this.passPhrase = null;
+      this.decryptionKey = null;
+    });
   });
 
   async _parseCodeFromCertificate() {
@@ -231,7 +235,7 @@ export default class AdaRedemptionStore extends Store {
     walletId: string,
     spendingPassword: ?string,
   }) => {
-    runInAction(() => (this.walletId = walletId));
+    runInAction('redeem ada', () => (this.walletId = walletId));
 
     const accountIndex = await this.stores.addresses.getAccountIndexByWalletId(
       walletId
@@ -267,7 +271,7 @@ export default class AdaRedemptionStore extends Store {
     shieldedRedemptionKey: string,
     spendingPassword: ?string,
   }) => {
-    runInAction(() => (this.walletId = walletId));
+    runInAction('redeem paper vended ada', () => (this.walletId = walletId));
 
     const accountIndex = await this.stores.addresses.getAccountIndexByWalletId(
       walletId

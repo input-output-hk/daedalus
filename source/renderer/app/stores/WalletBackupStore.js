@@ -1,5 +1,5 @@
 // @flow
-import { observable, action, computed } from 'mobx';
+import { observable, action, computed, runInAction } from 'mobx';
 import Store from './lib/Store';
 import WalletBackupDialog from '../components/wallet/WalletBackupDialog';
 import { WALLET_BACKUP_STEPS } from '../types/walletBackupTypes';
@@ -135,6 +135,8 @@ export default class WalletBackupStore extends Store {
   };
 
   @action _finishWalletBackup = async () => {
-    this.inProgress = false;
+    runInAction('finish wallet backup', () => {
+      this.inProgress = false;
+    });
   };
 }
