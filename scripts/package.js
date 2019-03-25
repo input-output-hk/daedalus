@@ -59,6 +59,7 @@ if (version) {
 
 /** @desc Build, clear previous releases and pack new versions */
 async function startPack() {
+  // eslint-disable-next-line no-console
   console.log('start pack...');
 
   try {
@@ -126,8 +127,9 @@ function pack(plat, arch, cb) {
  * @return {Function}
  */
 function log(plat, arch) {
-  return (err, filepath) => {
+  return (err) => {
     if (err) return console.error(err);
+    // eslint-disable-next-line no-console
     console.log(`${plat}-${arch} finished!`);
   };
 }

@@ -197,6 +197,8 @@ export default class ChangeSpendingPasswordDialog extends Component<
     }
   );
 
+  submitOnEnter = submitOnEnter.bind(this, this.submit);
+
   submit = () => {
     this.form.submit({
       onSuccess: form => {
@@ -303,7 +305,7 @@ export default class ChangeSpendingPasswordDialog extends Component<
               className="currentPassword"
               label={currentPasswordField.label}
               value={currentPasswordValue}
-              onKeyPress={submitOnEnter.bind(this, this.submit)}
+              onKeyPress={this.submitOnEnter}
               onChange={value =>
                 this.handleDataChange('currentPasswordValue', value)
               }
@@ -320,7 +322,7 @@ export default class ChangeSpendingPasswordDialog extends Component<
             className={newPasswordClasses}
             label={newPasswordField.label}
             value={newPasswordValue}
-            onKeyPress={submitOnEnter.bind(this, this.submit)}
+            onKeyPress={this.submitOnEnter}
             onChange={value => this.handleDataChange('newPasswordValue', value)}
             {...newPasswordField.bind()}
             error={newPasswordField.error}
@@ -332,7 +334,7 @@ export default class ChangeSpendingPasswordDialog extends Component<
             className="repeatedPassword"
             label={repeatedPasswordField.label}
             value={repeatedPasswordValue}
-            onKeyPress={submitOnEnter.bind(this, this.submit)}
+            onKeyPress={this.submitOnEnter}
             onChange={value =>
               this.handleDataChange('repeatedPasswordValue', value)
             }

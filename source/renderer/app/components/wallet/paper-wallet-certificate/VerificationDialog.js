@@ -113,6 +113,22 @@ export default class VerificationDialog extends Component<Props, State> {
     isRecoveryPhraseValid: false,
   };
 
+  onStoringConfirmation = () => {
+    this.setState(prevState => ({
+      storingConfirmed: !prevState.storingConfirmed,
+    }));
+  };
+
+  onRecoveringConfirmation = () => {
+    this.setState(prevState => ({
+      recoveringConfirmed: !prevState.recoveringConfirmed,
+    }));
+  };
+
+  onRecoveringConfirmationChange = this.onRecoveringConfirmation.bind(this);
+
+  onStoringConfirmationChange = this.onStoringConfirmation.bind(this);
+
   recoveryPhraseAutocomplete: Autocomplete;
 
   form = new ReactToolboxMobxForm(
@@ -290,7 +306,7 @@ export default class VerificationDialog extends Component<Props, State> {
             <Checkbox
               className={storingUnderstandanceCheckboxClasses}
               label={intl.formatMessage(messages.storingUnderstandanceLabel)}
-              onChange={this.onStoringConfirmationChange.bind(this)}
+              onChange={this.onStoringConfirmationChange}
               checked={storingConfirmed}
               disabled={!isRecoveryPhraseValid}
               skin={CheckboxSkin}
@@ -299,7 +315,7 @@ export default class VerificationDialog extends Component<Props, State> {
             <Checkbox
               className={recoveringUnderstandanceCheckboxClasses}
               label={intl.formatMessage(messages.recoveringUnderstandanceLabel)}
-              onChange={this.onRecoveringConfirmationChange.bind(this)}
+              onChange={this.onRecoveringConfirmationChange}
               checked={recoveringConfirmed}
               disabled={!isRecoveryPhraseValid}
               skin={CheckboxSkin}
@@ -309,16 +325,4 @@ export default class VerificationDialog extends Component<Props, State> {
       </Dialog>
     );
   }
-
-  onStoringConfirmationChange = () => {
-    this.setState({
-      storingConfirmed: !this.state.storingConfirmed,
-    });
-  };
-
-  onRecoveringConfirmationChange = () => {
-    this.setState({
-      recoveringConfirmed: !this.state.recoveringConfirmed,
-    });
-  };
 }

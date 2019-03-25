@@ -134,7 +134,7 @@ export default class WalletBackupStore extends Store {
     this._clearEnteredRecoveryPhrase();
   };
 
-  @action _finishWalletBackup = async () => {
+  @action _finishWalletBackup = () => {
     this.inProgress = false;
   };
 }

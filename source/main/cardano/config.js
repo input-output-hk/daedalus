@@ -5,7 +5,7 @@ const isDev = process.env.NODE_ENV === 'development';
 
 export const ensureXDGDataIsSet = () => {
   if (process.env.HOME && process.env.XDG_DATA_HOME === undefined) {
-    process.env.XDG_DATA_HOME = process.env.HOME + '/.local/share/';
+    process.env.XDG_DATA_HOME = `${process.env.HOME}/.local/share/`;
   }
 };
 
