@@ -122,9 +122,7 @@ export default class AdaRedemptionStore extends Store {
 
   _setRedemptionCode = action(
     ({ redemptionCode }: { redemptionCode: string }) => {
-      runInAction('set redemption parsing code', () => {
-        this.redemptionCode = redemptionCode;
-      });
+      this.redemptionCode = redemptionCode;
     }
   );
 
@@ -149,12 +147,10 @@ export default class AdaRedemptionStore extends Store {
   });
 
   _setRedemptionParsingError = action((error: LocalizableError) => {
-    runInAction('set redemption parsing error', () => {
-      this.error = error;
-      this.redemptionCode = '';
-      this.passPhrase = null;
-      this.decryptionKey = null;
-    });
+    this.error = error;
+    this.redemptionCode = '';
+    this.passPhrase = null;
+    this.decryptionKey = null;
   });
 
   async _parseCodeFromCertificate() {

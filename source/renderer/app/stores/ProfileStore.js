@@ -295,9 +295,7 @@ export default class SettingsStore extends Store {
   };
 
   _setLogFiles = action((files: LogFiles) => {
-    runInAction('reset', () => {
-      this.logFiles = files;
-    });
+    this.logFiles = files;
   });
 
   _getLogs = async () => {
@@ -334,23 +332,19 @@ export default class SettingsStore extends Store {
   });
 
   _getLogsAndCompress = action(async () => {
-    runInAction('reset', () => {
-      this.compressedLogsStatus = {
-        fileName: generateFileNameWithTimestamp(),
-      };
-      this.isSubmittingBugReport = true;
-    });
+    this.compressedLogsStatus = {
+      fileName: generateFileNameWithTimestamp(),
+    };
+    this.isSubmittingBugReport = true;
     await this._getLogs();
   });
 
   _downloadLogs = action(async ({ fileName, destination, fresh }) => {
-    runInAction('reset', () => {
-      this.compressedLogsStatus = {
+    this.compressedLogsStatus = {
         isDownloading: true,
         destination,
         fileName,
-      };
-    });
+    };
 
     if (this.compressedLogsFilePath && fresh !== true) {
       // logs already compressed, trigger the download
@@ -370,17 +364,13 @@ export default class SettingsStore extends Store {
   });
 
   @action _onReceiveSystemLocale = (systemLocale: string) => {
-    runInAction('on receive system locale', () => {
-      this.systemLocale = systemLocale;
-    });
+    this.systemLocale = systemLocale;
   };
 
   @action _reset = () => {
-    runInAction('reset', () => {
-      this.error = null;
-      this.compressedLogsFilePath = null;
-      this.compressedLogsStatus = {};
-      this.isSubmittingBugReport = false;
-    });
+    this.error = null;
+    this.compressedLogsFilePath = null;
+    this.compressedLogsStatus = {};
+    this.isSubmittingBugReport = false;
   };
 }
