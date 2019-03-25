@@ -34,6 +34,8 @@ import ChangeSpendingPasswordDialog from '../../source/renderer/app/components/w
 import DeleteWalletConfirmationDialog from '../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
 import ExportWalletToFileDialog from '../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
 
+/* eslint-disable consistent-return */
+
 storiesOf('WalletScreens', module)
   .addDecorator((story, context) => {
     const storyWithKnobs = withKnobs(story, context);

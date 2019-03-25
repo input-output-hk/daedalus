@@ -60,9 +60,9 @@ export class IpcChannel<Incoming, Outgoing> {
     if (existingChannel) return existingChannel;
     IpcChannel._instances[channelName] = this;
 
-    this._broadcastChannel = channelName + '-broadcast';
-    this._requestChannel = channelName + '-request';
-    this._responseChannel = channelName + '-response';
+    this._broadcastChannel = `${channelName}-broadcast`;
+    this._requestChannel = `${channelName}-request`;
+    this._responseChannel = `${channelName}-response`;
   }
 
   /**

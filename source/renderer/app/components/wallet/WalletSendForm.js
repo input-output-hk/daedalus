@@ -27,6 +27,8 @@ import {
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
 
+/* eslint-disable consistent-return */
+
 export const messages = defineMessages({
   titleLabel: {
     id: 'wallet.send.form.title.label',
@@ -152,6 +154,8 @@ export default class WalletSendForm extends Component<Props, State> {
     this._isMounted = false;
   }
 
+  submitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
+
   handleOnSubmit = () => {
     if (this.isDisabled()) {
       return false;
@@ -174,7 +178,7 @@ export default class WalletSendForm extends Component<Props, State> {
           value: '',
           validators: [
             async ({ field, form }) => {
-              const value = field.value;
+              const { value } = field;
               if (value === '') {
                 this._resetTransactionFee();
                 return [
@@ -297,7 +301,7 @@ export default class WalletSendForm extends Component<Props, State> {
                     receiverField.onChange(value || '');
                   }}
                   skin={InputSkin}
-                  onKeyPress={submitOnEnter.bind(this, this.handleOnSubmit)}
+                  onKeyPress={this.submitOnEnter}
                 />
               </div>
 
@@ -318,7 +322,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   fees={fees}
                   total={total}
                   skin={AmountInputSkin}
-                  onKeyPress={submitOnEnter.bind(this, this.handleOnSubmit)}
+                  onKeyPress={this.submitOnEnter}
                 />
               </div>
 

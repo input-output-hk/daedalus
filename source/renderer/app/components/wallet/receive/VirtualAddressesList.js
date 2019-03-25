@@ -6,6 +6,8 @@ import { AutoSizer, List } from 'react-virtualized';
 import type { Addresses } from '../../../api/addresses/types';
 import styles from './VirtualAddressesList.scss';
 
+/* eslint-disable react/no-unused-prop-types */
+
 type Props = {
   rows: Addresses,
   renderRow: Function,
@@ -87,8 +89,8 @@ export class VirtualAddressesList extends Component<Props, State> {
     key, // Unique key within array of rendered rows
     style, // Style object to be applied to row (to position it);
   }: {
-    key: string,
     index: number,
+    key: string,
     style: string,
   }) => {
     const { rows, renderRow } = this.props;
@@ -109,7 +111,9 @@ export class VirtualAddressesList extends Component<Props, State> {
           {({ width, height }) => (
             <List
               className={styles.list}
-              ref={list => (this.list = list)}
+              ref={list => {
+                this.list = list;
+              }}
               width={width}
               height={height}
               rowCount={rows.length}

@@ -7,7 +7,7 @@ import validWords from './valid-words.en';
 const iv = Buffer.alloc(16); // it's iv = 0 simply
 
 function decryptWithAES(aesKey, bytes) {
-  // eslint-disable-next-line
+  // eslint-disable-next-line new-cap
   return new aesjs.ModeOfOperation.ctr(aesKey, new aesjs.Counter(iv)).decrypt(
     bytes
   );
@@ -34,7 +34,7 @@ const hexChar = [
 
 const hexToBytes = s => {
   const arr = [];
-  // eslint-disable-next-line
+  // eslint-disable-next-line no-self-compare
   if (s.length & (1 === 1)) {
     throw new Error(`Wrong hex: ${s}`);
   }

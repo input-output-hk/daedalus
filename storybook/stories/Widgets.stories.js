@@ -65,7 +65,9 @@ storiesOf('Widgets', module)
       <MnemonicInputWidget
         label="Your Passphrase"
         tokens={tokens}
-        onTokenChanged={(index, token) => (tokens[index] = token)}
+        onTokenChanged={(index, token) => {
+          tokens[index] = token;
+        }}
       />
     );
   })
