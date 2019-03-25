@@ -341,9 +341,9 @@ export default class SettingsStore extends Store {
 
   _downloadLogs = action(async ({ fileName, destination, fresh }) => {
     this.compressedLogsStatus = {
-        isDownloading: true,
-        destination,
-        fileName,
+      isDownloading: true,
+      destination,
+      fileName,
     };
 
     if (this.compressedLogsFilePath && fresh !== true) {
