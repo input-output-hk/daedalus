@@ -32,7 +32,7 @@ import type {
   TlsConfig,
 } from '../../../common/types/cardano-node.types';
 import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
-import type { GetConsolidatedEpochsCountResponse } from '../../../common/ipc/api';
+import type { GetConsolidatedEpochsCountMainResponse } from '../../../common/ipc/api';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
 
@@ -329,7 +329,7 @@ export default class NetworkStatusStore extends Store {
   };
 
   @action _onReceiveEpochsData = (
-    epochsConsolidated: GetConsolidatedEpochsCountResponse,
+    epochsConsolidated: GetConsolidatedEpochsCountMainResponse,
     currentEpoch: number
   ) => {
     this.epochsConsolidated = epochsConsolidated;

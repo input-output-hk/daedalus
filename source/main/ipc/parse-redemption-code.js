@@ -9,8 +9,8 @@ import {
   decryptRecoveryForceVend,
 } from '../../common/crypto/decrypt';
 import type {
-  ParseRedemptionCodeRequest,
-  ParseRedemptionCodeResponse,
+  ParseRedemptionCodeRendererRequest,
+  ParseRedemptionCodeMainResponse,
 } from '../../common/ipc/api';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { PARSE_REDEMPTION_CODE_CHANNEL } from '../../common/ipc/api';
@@ -32,13 +32,13 @@ const cleanupTemporaryPDF = (pdfPath, isTemporaryDecryptedPdf) => {
 
 // CHANNEL
 const parseRedemptionCodeChannel: MainIpcChannel<
-  ParseRedemptionCodeRequest,
-  ParseRedemptionCodeResponse
+  ParseRedemptionCodeRendererRequest,
+  ParseRedemptionCodeMainResponse
 > = new MainIpcChannel(PARSE_REDEMPTION_CODE_CHANNEL);
 
 // REQUEST HANDLER
 const parseRedemptionCodeHandler = async (
-  request: ParseRedemptionCodeRequest
+  request: ParseRedemptionCodeRendererRequest
 ) => {
   Logger.debug('parseRedemptionCodeHandler', request);
   const { certificateFilePath, decryptionKey, redemptionType } = request;

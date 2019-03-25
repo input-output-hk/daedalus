@@ -1,8 +1,10 @@
 // @flow
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import type {
-  ShowUiPartRequest,
-  ToggleUiPartRequest,
+  ShowUiPartMainRequest,
+  ShowUiPartRendererResponse,
+  ToggleUiPartMainRequest,
+  ToggleUiPartRendererResponse,
 } from '../../common/ipc/api';
 import {
   SHOW_UI_PART_CHANNEL,
@@ -10,11 +12,11 @@ import {
 } from '../../common/ipc/api';
 
 export const showUiPartChannel: MainIpcChannel<
-  void,
-  ShowUiPartRequest
+  ShowUiPartRendererResponse,
+  ShowUiPartMainRequest
 > = new MainIpcChannel(SHOW_UI_PART_CHANNEL);
 
 export const toggleUiPartChannel: MainIpcChannel<
-  void,
-  ToggleUiPartRequest
+  ToggleUiPartRendererResponse,
+  ToggleUiPartMainRequest
 > = new MainIpcChannel(TOGGLE_UI_PART_CHANNEL);
