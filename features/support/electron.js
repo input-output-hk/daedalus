@@ -135,7 +135,7 @@ AfterAll(async function() {
     await printMainProcessLogs();
   }
   if (process.env.KEEP_APP_AFTER_TESTS === 'true') {
-    // eslint-disable-next-line
+    // eslint-disable-next-line no-console
     console.log(
       'Keeping the app running since KEEP_APP_AFTER_TESTS env var is true'
     );
