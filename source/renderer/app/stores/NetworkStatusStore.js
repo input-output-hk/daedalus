@@ -277,7 +277,9 @@ export default class NetworkStatusStore extends Store {
       case CardanoNodeStates.STOPPING:
       case CardanoNodeStates.EXITING:
       case CardanoNodeStates.UPDATING:
-        runInAction('reset _tlsConfig', () => (this._tlsConfig = null));
+        runInAction('reset _tlsConfig', () => {
+          this._tlsConfig = null;
+        });
         this._setDisconnected(wasConnected);
         break;
       default:
@@ -414,7 +416,9 @@ export default class NetworkStatusStore extends Store {
         this.isNodeSubscribed
       ) {
         // We are connected for the first time, move on to syncing stage
-        this._networkStatus = NETWORK_STATUS.SYNCING;
+        runInAction('update _networkStatus', () => {
+          this._networkStatus = NETWORK_STATUS.SYNCING;
+        });
         Logger.info(
           `========== Connected after ${this._getStartupTimeDelta()} milliseconds ==========`
         );
@@ -522,7 +526,9 @@ export default class NetworkStatusStore extends Store {
 
       if (this._networkStatus === NETWORK_STATUS.SYNCING && this.isNodeInSync) {
         // We are synced for the first time, move on to running stage
-        this._networkStatus = NETWORK_STATUS.RUNNING;
+        runInAction('update _networkStatus', () => {
+          this._networkStatus = NETWORK_STATUS.RUNNING;
+        });
         this.actions.networkStatus.isSyncedAndReady.trigger();
         Logger.info(
           `========== Synced after ${this._getStartupTimeDelta()} milliseconds ==========`
@@ -532,10 +538,9 @@ export default class NetworkStatusStore extends Store {
       if (wasConnected !== this.isConnected) {
         if (!this.isConnected) {
           if (!this.hasBeenConnected) {
-            runInAction(
-              'update hasBeenConnected',
-              () => (this.hasBeenConnected = true)
-            );
+            runInAction('update hasBeenConnected', () => {
+              this.hasBeenConnected = true;
+            });
           }
           Logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
         } else if (this.hasBeenConnected) {
@@ -543,7 +548,11 @@ export default class NetworkStatusStore extends Store {
           this.stores.wallets.resetWalletsData();
           Logger.debug('NetworkStatusStore: Connection Restored');
         }
-        this.isTlsCertInvalid = false;
+        if (this.isTlsCertInvalid) {
+          runInAction('set isTlsCertInvalid = false', () => {
+            this.isTlsCertInvalid = false;
+          });
+        }
       }
     } catch (error) {
       // Node is not responding, switch to disconnected state
@@ -563,10 +572,9 @@ export default class NetworkStatusStore extends Store {
     this.isNodeInSync = false;
     if (wasConnected) {
       if (!this.hasBeenConnected) {
-        runInAction(
-          'update hasBeenConnected',
-          () => (this.hasBeenConnected = true)
-        );
+        runInAction('update hasBeenConnected', () => {
+          this.hasBeenConnected = true;
+        });
       }
       Logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
     }

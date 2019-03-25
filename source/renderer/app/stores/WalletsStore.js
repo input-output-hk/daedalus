@@ -14,6 +14,8 @@ import { ROUTES } from '../routes-config';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 
+/* eslint-disable consistent-return */
+
 /**
  * The base wallet store that contains the shared logic
  * dealing with wallets / accounts.
@@ -249,7 +251,7 @@ export default class WalletsStore extends Store {
 
   @computed get isWalletRoute(): boolean {
     const { currentRoute } = this.stores.app;
-    return matchRoute(ROUTES.WALLETS.ROOT + '(/*rest)', currentRoute);
+    return matchRoute(`${ROUTES.WALLETS.ROOT}(/*rest)`, currentRoute);
   }
 
   getWalletById = (id: string): ?Wallet => this.all.find(w => w.id === id);
@@ -270,7 +272,7 @@ export default class WalletsStore extends Store {
   // =================== PRIVATE API ==================== //
 
   @computed get _canRedirectToWallet(): boolean {
-    const currentRoute = this.stores.app.currentRoute;
+    const { currentRoute } = this.stores.app;
     const isRootRoute = matchRoute(ROUTES.WALLETS.ROOT, currentRoute);
     const isAddWalletRoute = matchRoute(ROUTES.WALLETS.ADD, currentRoute);
     return isRootRoute || isAddWalletRoute;
@@ -285,11 +287,11 @@ export default class WalletsStore extends Store {
 
   _pollRefresh = async () => {
     const { isSynced } = this.stores.networkStatus;
-    return isSynced && (await this.refreshWalletsData());
+    return isSynced && this.refreshWalletsData();
   };
 
   _updateActiveWalletOnRouteChanges = () => {
-    const currentRoute = this.stores.app.currentRoute;
+    const { currentRoute } = this.stores.app;
     const hasAnyWalletLoaded = this.hasAnyLoaded;
     const isWalletAddPage = matchRoute(ROUTES.WALLETS.ADD, currentRoute);
     runInAction('WalletsStore::_updateActiveWalletOnRouteChanges', () => {
@@ -607,6 +609,7 @@ export default class WalletsStore extends Store {
         this._updateCertificateStep();
       });
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.log(error);
       runInAction('handle failed certificate download', () => {
         // Reset progress

@@ -16,14 +16,19 @@ import {
 } from './helpers/screenshot';
 import { refreshClient } from './helpers/app-helpers';
 
+/* eslint-disable consistent-return */
+
 const context = {};
 const DEFAULT_TIMEOUT = 20000;
 let scenariosCount = 0;
 
 const printMainProcessLogs = () =>
   context.app.client.getMainProcessLogs().then(logs => {
+    // eslint-disable-next-line no-console
     console.log('========= DAEDALUS LOGS =========');
+    // eslint-disable-next-line no-console
     logs.forEach(log => console.log(log));
+    // eslint-disable-next-line no-console
     console.log('=================================');
     return true;
   });
@@ -130,6 +135,7 @@ AfterAll(async function() {
     await printMainProcessLogs();
   }
   if (process.env.KEEP_APP_AFTER_TESTS === 'true') {
+    // eslint-disable-next-line no-console
     console.log(
       'Keeping the app running since KEEP_APP_AFTER_TESTS env var is true'
     );

@@ -3,6 +3,8 @@ import psList from 'ps-list';
 import { isObject } from 'lodash';
 import { Logger } from './logging';
 
+/* eslint-disable consistent-return */
+
 export type Process = {
   pid: number,
   name: string,

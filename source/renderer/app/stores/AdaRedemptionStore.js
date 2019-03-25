@@ -182,32 +182,32 @@ export default class AdaRedemptionStore extends Store {
       'AdaRedemptionStore: Parsing ADA Redemption code from certificate',
       { path }
     );
-    let decryptionKey = null;
+    let decryptionKeyValue = null;
     if (
       (this.redemptionType === ADA_REDEMPTION_TYPES.REGULAR ||
         this.redemptionType === ADA_REDEMPTION_TYPES.RECOVERY_REGULAR) &&
       this.isCertificateEncrypted
     ) {
-      decryptionKey = this.passPhrase;
+      decryptionKeyValue = this.passPhrase;
     }
     if (
       this.redemptionType === ADA_REDEMPTION_TYPES.FORCE_VENDED &&
       this.isCertificateEncrypted
     ) {
-      decryptionKey = [this.email, this.adaPasscode, this.adaAmount];
+      decryptionKeyValue = [this.email, this.adaPasscode, this.adaAmount];
     }
     if (
       this.redemptionType === ADA_REDEMPTION_TYPES.RECOVERY_FORCE_VENDED &&
       this.isCertificateEncrypted
     ) {
-      decryptionKey = this.decryptionKey;
+      decryptionKeyValue = this.decryptionKey;
     }
     // PARSING
     try {
       const redemptionCode = await parseRedemptionCodeChannel.request({
         certificateFilePath: path,
         redemptionType: this.redemptionType,
-        decryptionKey,
+        decryptionKey: decryptionKeyValue,
       });
       this._setRedemptionCode({ redemptionCode });
     } catch (e) {
@@ -231,7 +231,9 @@ export default class AdaRedemptionStore extends Store {
     walletId: string,
     spendingPassword: ?string,
   }) => {
-    runInAction(() => (this.walletId = walletId));
+    runInAction(() => {
+      this.walletId = walletId;
+    });
 
     const accountIndex = await this.stores.addresses.getAccountIndexByWalletId(
       walletId
@@ -254,7 +256,9 @@ export default class AdaRedemptionStore extends Store {
         amount: transaction.amount.toFormat(DECIMAL_PLACES_IN_ADA),
       });
     } catch (error) {
-      runInAction(() => (this.error = error));
+      runInAction(() => {
+        this.error = error;
+      });
     }
   };
 
@@ -267,7 +271,9 @@ export default class AdaRedemptionStore extends Store {
     shieldedRedemptionKey: string,
     spendingPassword: ?string,
   }) => {
-    runInAction(() => (this.walletId = walletId));
+    runInAction(() => {
+      this.walletId = walletId;
+    });
 
     const accountIndex = await this.stores.addresses.getAccountIndexByWalletId(
       walletId
@@ -291,7 +297,9 @@ export default class AdaRedemptionStore extends Store {
         amount: transaction.amount.toFormat(DECIMAL_PLACES_IN_ADA),
       });
     } catch (error) {
-      runInAction(() => (this.error = error));
+      runInAction(() => {
+        this.error = error;
+      });
     }
   };
 

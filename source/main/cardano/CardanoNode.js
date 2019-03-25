@@ -20,6 +20,8 @@ import type {
 } from '../../common/types/cardano-node.types';
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 
+/* eslint-disable consistent-return */
+
 type Logger = {
   debug: (string, ?Object) => void,
   info: (string, ?Object) => void,
@@ -225,10 +227,10 @@ export class CardanoNode {
     const nodeCanBeStarted = await this._canBeStarted();
 
     if (!nodeCanBeStarted) {
-      return Promise.reject('CardanoNode: Cannot be started');
+      return Promise.reject(new Error('CardanoNode: Cannot be started'));
     }
     if (this._isUnrecoverable(config) && !isForced) {
-      return Promise.reject('CardanoNode: Too many startup retries');
+      return Promise.reject(new Error('CardanoNode: Too many startup retries'));
     }
     // Setup
     const { _log } = this;
@@ -272,7 +274,9 @@ export class CardanoNode {
           );
           resolve();
         } catch (_) {
-          reject('CardanoNode#start: Error while spawning cardano-node');
+          reject(
+            new Error('CardanoNode#start: Error while spawning cardano-node')
+          );
         }
       });
     });
@@ -336,7 +340,7 @@ export class CardanoNode {
         _log.info('CardanoNode#kill: could not kill cardano-node');
         await this._storeProcessStates();
         this._reset();
-        reject('Could not kill cardano-node.');
+        reject(new Error('Could not kill cardano-node.'));
       }
     });
   }
@@ -422,7 +426,7 @@ export class CardanoNode {
       });
     } catch (error) {
       return Promise.reject(
-        `cardano-node did not inject the fault "${fault}" correctly.`
+        new Error(`cardano-node did not inject the fault "${fault}" correctly.`)
       );
     }
   };
@@ -480,9 +484,9 @@ export class CardanoNode {
     const { _actions } = this;
     const { tlsPath } = this._config;
     this._tlsConfig = {
-      ca: _actions.readFileSync(tlsPath + '/client/ca.crt'),
-      key: _actions.readFileSync(tlsPath + '/client/client.key'),
-      cert: _actions.readFileSync(tlsPath + '/client/client.pem'),
+      ca: _actions.readFileSync(`${tlsPath}/client/ca.crt`),
+      key: _actions.readFileSync(`${tlsPath}/client/client.key`),
+      cert: _actions.readFileSync(`${tlsPath}/client/client.pem`),
       hostname: 'localhost',
       port,
     };
@@ -603,7 +607,7 @@ export class CardanoNode {
    * @returns {boolean}
    */
   _isDead = async (): Promise<boolean> =>
-    !this._isConnected() && (await this._isNodeProcessNotRunningAnymore());
+    !this._isConnected() && this._isNodeProcessNotRunningAnymore();
 
   /**
    * Checks if current cardano-node child_process is "awake" (created, connected, stateful)
@@ -661,10 +665,7 @@ export class CardanoNode {
     if (_node == null) {
       return Promise.resolve();
     }
-    return await this._ensureProcessIsNotRunning(
-      _node.pid,
-      CARDANO_PROCESS_NAME
-    );
+    return this._ensureProcessIsNotRunning(_node.pid, CARDANO_PROCESS_NAME);
   };
 
   _ensurePreviousCardanoNodeIsNotRunning = async (): Promise<void> => {
@@ -677,10 +678,7 @@ export class CardanoNode {
     if (previousPID == null) {
       return Promise.resolve();
     }
-    return await this._ensureProcessIsNotRunning(
-      previousPID,
-      CARDANO_PROCESS_NAME
-    );
+    return this._ensureProcessIsNotRunning(previousPID, CARDANO_PROCESS_NAME);
   };
 
   _isProcessRunning = async (
@@ -793,13 +791,13 @@ export class CardanoNode {
 
   _isNodeProcessStillRunning = async (): Promise<boolean> =>
     this._node != null &&
-    (await this._isProcessRunning(this._node.pid, CARDANO_PROCESS_NAME));
+    this._isProcessRunning(this._node.pid, CARDANO_PROCESS_NAME);
 
   _isNodeProcessNotRunningAnymore = async () =>
     (await this._isNodeProcessStillRunning()) === false;
 
   _waitForNodeProcessToExit = async (timeout: number) =>
-    await promisedCondition(this._isNodeProcessNotRunningAnymore, timeout);
+    promisedCondition(this._isNodeProcessNotRunningAnymore, timeout);
 
   _waitForCardanoToExitOrKillIt = async () => {
     const { _config } = this;

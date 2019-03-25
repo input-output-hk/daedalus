@@ -9,6 +9,7 @@ export const notYetImplemented = async () =>
 // helper code for testing async APIs
 export const testAsync = async (apiMethod: Function) => {
   const result = await apiMethod();
+  // eslint-disable-next-line no-console
   console.log(`testAsync result: ${result}`);
   return result;
 };
@@ -16,6 +17,7 @@ export const testAsync = async (apiMethod: Function) => {
 // helper code for testing sync APIs
 export const testSync = (apiMethod: Function) => {
   const result = apiMethod();
+  // eslint-disable-next-line no-console
   console.log(`testSync result: ${result}`);
   return result;
 };

@@ -11,6 +11,8 @@ import type {
 } from '../../common/ipc/api';
 import { Logger } from '../utils/logging';
 
+/* eslint-disable consistent-return */
+
 export const bugReportRequestChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
   SubmitBugReportRequest,

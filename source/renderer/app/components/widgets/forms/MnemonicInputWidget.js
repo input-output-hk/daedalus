@@ -26,6 +26,7 @@ export default class MnemonicInputWidget extends Component<Props> {
             <Input
               type="text"
               placeholder="Token"
+              // eslint-disable-next-line react/no-array-index-key
               key={index}
               className={styles.input}
               value={token}

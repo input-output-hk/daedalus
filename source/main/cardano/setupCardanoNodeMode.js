@@ -32,7 +32,7 @@ import { safeExitWithCode } from '../utils/safeExitWithCode';
 const startCardanoNode = (node: CardanoNode, launcherConfig: Object) => {
   const { nodePath, tlsPath, logsPrefix } = launcherConfig;
   const nodeArgs = prepareArgs(launcherConfig);
-  const logFilePath = logsPrefix + '/cardano-node.log';
+  const logFilePath = `${logsPrefix}/cardano-node.log`;
   const config = {
     nodePath,
     logFilePath,

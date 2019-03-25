@@ -77,7 +77,7 @@ export const importWalletWithFunds = async (
   client,
   { keyFilePath, password }
 ) =>
-  await client.executeAsync(
+  client.executeAsync(
     (filePath, spendingPassword, done) => {
       daedalus.api.ada
         .importWalletFromKey({ filePath, spendingPassword })
