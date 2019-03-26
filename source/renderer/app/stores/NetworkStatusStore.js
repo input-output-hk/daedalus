@@ -419,7 +419,7 @@ export default class NetworkStatusStore extends Store {
       });
 
       // Update current epoch
-      if (slotId && slotId.epoch) {
+      if (slotId.epoch) {
         runInAction('current epoch', () => {
           this.currentEpoch = slotId.epoch;
         });
