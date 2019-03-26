@@ -2,6 +2,8 @@
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import Dialog from '../widgets/Dialog';
+import DialogCloseButton from '../widgets/DialogCloseButton';
 import globalMessages from '../../i18n/global-messages';
 import styles from './About.scss';
 import daedalusIcon from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
@@ -58,6 +60,7 @@ type Props = {
   onOpenExternalLink: Function,
   os: string,
   version: string,
+  onClose: Function,
 };
 
 export default class About extends Component<Props> {
@@ -67,7 +70,7 @@ export default class About extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { apiVersion, build, onOpenExternalLink, os, version } = this.props;
+    const { apiVersion, build, onOpenExternalLink, os, version, onClose } = this.props;
 
     const apiName = intl.formatMessage(globalMessages.apiName);
     const apiIcon = cardanoIcon;
@@ -77,64 +80,69 @@ export default class About extends Component<Props> {
     const apiMembers = intl.formatMessage(messages.aboutContentCardanoMembers);
 
     return (
-      <div className={styles.container}>
-        <div className={styles.headerWrapper}>
-          <SVGInline svg={daedalusIcon} className={styles.daedalusIcon} />
+      <Dialog
+        onClose={onClose}
+        closeButton={<DialogCloseButton />}
+      >
+        <div className={styles.container}>
+          <div className={styles.headerWrapper}>
+            <SVGInline svg={daedalusIcon} className={styles.daedalusIcon} />
 
-          <div className={styles.daedalusTitleVersion}>
-            <div className={styles.daedalusTitle}>
-              {intl.formatMessage(messages.aboutTitle)}
-              <span className={styles.daedalusVersion}>{version}</span>
+            <div className={styles.daedalusTitleVersion}>
+              <div className={styles.daedalusTitle}>
+                {intl.formatMessage(messages.aboutTitle)}
+                <span className={styles.daedalusVersion}>{version}</span>
+              </div>
+              <div className={styles.daedalusBuildInfo}>
+                <FormattedHTMLMessage
+                  {...messages.aboutBuildInfo}
+                  values={{ platform: os, build, apiName, apiVersion }}
+                />
+              </div>
             </div>
-            <div className={styles.daedalusBuildInfo}>
-              <FormattedHTMLMessage
-                {...messages.aboutBuildInfo}
-                values={{ platform: os, build, apiName, apiVersion }}
-              />
-            </div>
+
+            <SVGInline svg={apiIcon} className={styles.apiIcon} />
           </div>
 
-          <SVGInline svg={apiIcon} className={styles.apiIcon} />
-        </div>
+          <div className={styles.contentText}>
+            <h2>{intl.formatMessage(messages.aboutContentDaedalusHeadline)}</h2>
 
-        <div className={styles.contentText}>
-          <h2>{intl.formatMessage(messages.aboutContentDaedalusHeadline)}</h2>
+            <div className={styles.contentDaedalus}>
+              {intl.formatMessage(messages.aboutContentDaedalusMembers)}
+            </div>
 
-          <div className={styles.contentDaedalus}>
-            {intl.formatMessage(messages.aboutContentDaedalusMembers)}
+            <h2>{apiHeadline}</h2>
+
+            <div className={styles.apiMembers}>{apiMembers}</div>
           </div>
 
-          <h2>{apiHeadline}</h2>
-
-          <div className={styles.apiMembers}>{apiMembers}</div>
-        </div>
-
-        <div className={styles.footerWrapper}>
-          <span
-            onClick={() => onOpenExternalLink('https://daedaluswallet.io')}
-            className={styles.link}
-            role="link"
-            aria-hidden
-          >
-            http://daedaluswallet.io
-          </span>
-          <div className={styles.copyright}>
-            {intl.formatMessage(messages.aboutCopyright)}&nbsp;
+          <div className={styles.footerWrapper}>
             <span
-              onClick={() =>
-                onOpenExternalLink(
-                  'https://github.com/input-output-hk/daedalus/blob/master/LICENSE'
-                )
-              }
+              onClick={() => onOpenExternalLink('https://daedaluswallet.io')}
               className={styles.link}
               role="link"
               aria-hidden
             >
-              {intl.formatMessage(messages.licenseLink)}
+              http://daedaluswallet.io
             </span>
+            <div className={styles.copyright}>
+              {intl.formatMessage(messages.aboutCopyright)}&nbsp;
+              <span
+                onClick={() =>
+                  onOpenExternalLink(
+                    'https://github.com/input-output-hk/daedalus/blob/master/LICENSE'
+                  )
+                }
+                className={styles.link}
+                role="link"
+                aria-hidden
+              >
+                {intl.formatMessage(messages.licenseLink)}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
+      </Dialog>
     );
   }
 }
