@@ -1,6 +1,6 @@
 export default {
   bar: {
-    fill: '#445b7c',
+    fill: 'rgba(68, 91, 124, 0.5)',
   },
   xAxis: {
     angle: 90,
@@ -20,4 +20,21 @@ export default {
   cartesianGridBackground: {
     fill: 'rgba(68, 91, 124, 0.06)',
   },
+  tooltip: {
+    // cursor: false,
+    itemStyle: {
+      background: 'red',
+    },
+    wrapperStyle: {
+      background: 'green',
+    },
+    contentStyle: {
+      background: 'orange',
+    },
+    labelStyle: {
+      background: 'pink',
+    },
+  },
 };
+
+// #445b7c

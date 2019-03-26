@@ -36,6 +36,11 @@ type Props = {
   chartData: Array<any>,
 };
 
+const Cursor = ({ payload }) => {
+  console.log('payload', payload[0].payload);
+  return <div>HEY!</div>;
+};
+
 @observer
 export default class WalletUtxoSettings extends Component<Props> {
   static contextTypes = {
@@ -77,7 +82,7 @@ export default class WalletUtxoSettings extends Component<Props> {
               tickLine={false}
               tick={chartStyles.yAxis}
             />
-            <Tooltip />
+            <Tooltip {...chartStyles.tooltip} cursor={<Cursor />} />
             <Bar dataKey="walletUtxosAmount" fill={chartStyles.bar.fill} />
           </BarChart>
         </ResponsiveContainer>
