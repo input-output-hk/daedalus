@@ -24,14 +24,14 @@ export default class AboutDialog extends Component<Props> {
     const { closeAboutDialog } = actions.app;
 
     return (
-        <About
-          apiVersion={apiVersion}
-          build={build}
-          onOpenExternalLink={openExternalLink}
-          os={os}
-          version={version}
-          onClose={closeAboutDialog.trigger}
-        />
+      <About
+        apiVersion={apiVersion}
+        build={build}
+        onOpenExternalLink={openExternalLink}
+        os={os}
+        version={version}
+        onClose={closeAboutDialog.trigger}
+      />
     );
   }
 }

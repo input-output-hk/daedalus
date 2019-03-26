@@ -70,7 +70,14 @@ export default class About extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { apiVersion, build, onOpenExternalLink, os, version, onClose } = this.props;
+    const {
+      apiVersion,
+      build,
+      onOpenExternalLink,
+      os,
+      version,
+      onClose,
+    } = this.props;
 
     const apiName = intl.formatMessage(globalMessages.apiName);
     const apiIcon = cardanoIcon;
@@ -80,10 +87,7 @@ export default class About extends Component<Props> {
     const apiMembers = intl.formatMessage(messages.aboutContentCardanoMembers);
 
     return (
-      <Dialog
-        onClose={onClose}
-        closeButton={<DialogCloseButton />}
-      >
+      <Dialog onClose={onClose} closeButton={<DialogCloseButton />}>
         <div className={styles.container}>
           <div className={styles.headerWrapper}>
             <SVGInline svg={daedalusIcon} className={styles.daedalusIcon} />
