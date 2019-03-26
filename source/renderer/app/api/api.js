@@ -97,7 +97,7 @@ import type { RequestConfig } from './common/types';
 // Nodes Types
 import type {
   NodeInfoResponse,
-  NodeSettingsResponse,
+  // NodeSettingsResponse,
   NodeSoftware,
   GetNetworkStatusResponse,
 } from './nodes/types';

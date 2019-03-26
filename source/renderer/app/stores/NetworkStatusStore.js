@@ -419,13 +419,13 @@ export default class NetworkStatusStore extends Store {
       });
 
       // Update current epoch
-      // if (slotId.epoch) {
-      //   runInAction('current epoch', () => {
-      //     this.currentEpoch = slotId.epoch;
-      //   });
-      // } else {
-      //   this._getCurrentEpochFallback();
-      // }
+      if (slotId && slotId.epoch) {
+        runInAction('current epoch', () => {
+          this.currentEpoch = slotId.epoch;
+        });
+      } else {
+        this._getCurrentEpochFallback();
+      }
 
       runInAction('update block heights', () => {
         if (this.initialLocalHeight === null) {
@@ -565,13 +565,13 @@ export default class NetworkStatusStore extends Store {
   };
 
   @action _getCurrentEpochFallback = async () => {
-    // if (this.currentEpochFallbackRequested) return;
-    // this.currentEpochFallbackRequested = true;
-    // const currentEpoch = await this.getCurrentEpochFallbackRequest.execute()
-    //   .promise;
-    // runInAction(() => {
-    //   this.currentEpoch = currentEpoch;
-    // });
+    if (this.currentEpochFallbackRequested) return;
+    this.currentEpochFallbackRequested = true;
+    const currentEpoch = await this.getCurrentEpochFallbackRequest.execute()
+      .promise;
+    runInAction(() => {
+      this.currentEpoch = currentEpoch;
+    });
   };
 
   @action _setDisconnected = (wasConnected: boolean) => {
