@@ -1786,30 +1786,30 @@
         }
       },
       {
-        "defaultMessage": "!!!Support",
-        "description": "Support Button on \"Block consolidation status\" page.",
+        "defaultMessage": "!!!Learn more.",
+        "description": "Learn more Button on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
           "line": 67
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
-        "id": "blockConsolidationStatus.supportButton",
+        "id": "blockConsolidationStatus.learnMoreButton",
         "start": {
-          "column": 17,
+          "column": 19,
           "line": 63
         }
       },
       {
         "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360016060314",
-        "description": "URL of Support Button on \"Block consolidation status\" page.",
+        "description": "URL of Learn more Button on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 74
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
-        "id": "blockConsolidationStatus.supportButtonURL",
+        "id": "blockConsolidationStatus.learnMoreButtonURL",
         "start": {
-          "column": 20,
+          "column": 22,
           "line": 68
         }
       }

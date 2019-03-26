@@ -60,16 +60,17 @@ const messages = defineMessages({
     defaultMessage: '!!!{epochsSynced}% blocks synced',
     description: 'synced on "Block consolidation status" page.',
   },
-  supportButton: {
-    id: 'blockConsolidationStatus.supportButton',
-    defaultMessage: '!!!Support',
-    description: 'Support Button on "Block consolidation status" page.',
+  learnMoreButton: {
+    id: 'blockConsolidationStatus.learnMoreButton',
+    defaultMessage: '!!!Learn more.',
+    description: 'Learn more Button on "Block consolidation status" page.',
   },
-  supportButtonURL: {
-    id: 'blockConsolidationStatus.supportButtonURL',
+  learnMoreButtonURL: {
+    id: 'blockConsolidationStatus.learnMoreButtonURL',
     defaultMessage:
       '!!!https://iohk.zendesk.com/hc/en-us/articles/360016060314',
-    description: 'URL of Support Button on "Block consolidation status" page.',
+    description:
+      'URL of Learn more Button on "Block consolidation status" page.',
   },
 });
 
@@ -221,9 +222,9 @@ export default class BlockConsolidationStatus extends Component<Props> {
             </div>
 
             <Button
-              label={formatMessage(messages.supportButton)}
+              label={formatMessage(messages.learnMoreButton)}
               onClick={() =>
-                onExternalLinkClick(formatMessage(messages.supportButtonURL))
+                onExternalLinkClick(formatMessage(messages.learnMoreButtonURL))
               }
               skin={ButtonSkin}
             />
