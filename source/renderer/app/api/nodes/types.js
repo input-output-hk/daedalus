@@ -64,3 +64,18 @@ export type GetNetworkStatusResponse = {
     epoch: number,
   },
 };
+export type GetNetworkStatusNodeInfoResponse = {
+  subscriptionStatus: Object,
+  syncProgress: number,
+  blockchainHeight: number,
+  localBlockchainHeight: number,
+  localTimeInformation: {
+    status: LocalTimeInformationStatus,
+    difference: ?number,
+  },
+};
+export type GetNetworkStatusNodeSettingsResponse = {
+  slotId: {
+    epoch: number,
+  },
+};

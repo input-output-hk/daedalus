@@ -100,6 +100,8 @@ import type {
   NodeSettingsResponse,
   NodeSoftware,
   GetNetworkStatusResponse,
+  GetNetworkStatusNodeInfoResponse,
+  GetNetworkStatusNodeSettingsResponse,
 } from './nodes/types';
 import type { NodeInfoQueryParams } from './nodes/requests/getNodeInfo';
 
@@ -926,11 +928,11 @@ export default class AdaApi {
     }
   };
 
-  getNetworkStatus = async (
+  getNodeInfo = async (
     queryInfoParams?: NodeInfoQueryParams
-  ): Promise<GetNetworkStatusResponse> => {
+  ): Promise<GetNetworkStatusNodeInfoResponse> => {
     const isForceNTPCheck = !!queryInfoParams;
-    const loggerText = `AdaApi::getNetworkStatus${
+    const loggerText = `AdaApi::getNodeInfo${
       isForceNTPCheck ? ' (FORCE-NTP-CHECK)' : ''
     }`;
     Logger.debug(`${loggerText} called`);
@@ -941,13 +943,6 @@ export default class AdaApi {
       );
       Logger.debug(`${loggerText} success`, { nodeInfo });
 
-      const nodeSettings: NodeSettingsResponse = await getNodeSettings(
-        this.config
-      );
-      Logger.debug('AdaApi::getNetworkStatusSettings success', {
-        nodeSettings,
-      });
-
       const {
         blockchainHeight,
         subscriptionStatus,
@@ -955,8 +950,6 @@ export default class AdaApi {
         localBlockchainHeight,
         localTimeInformation,
       } = nodeInfo;
-
-      const { slotId } = nodeSettings;
 
       // extract relevant data before sending to NetworkStatusStore
       return {
@@ -972,7 +965,6 @@ export default class AdaApi {
             null
           ),
         },
-        slotId,
       };
     } catch (error) {
       Logger.error(`${loggerText} error`, { error });
@@ -981,6 +973,59 @@ export default class AdaApi {
       }
       throw new GenericApiError(error);
     }
+  };
+
+  getNodeSettings = async (): Promise<GetNetworkStatusNodeSettingsResponse> => {
+    const loggerText = 'AdaApi::getNodeSetting';
+    Logger.debug(`${loggerText} called`);
+    try {
+      const nodeSettings: NodeSettingsResponse = await getNodeSettings(
+        this.config
+      );
+      Logger.debug('AdaApi::getNetworkStatusSettings success', {
+        nodeSettings,
+      });
+      const { slotId } = nodeSettings;
+
+      // extract relevant data before sending to NetworkStatusStore
+      return { slotId };
+    } catch (error) {
+      Logger.error(`${loggerText} error`, { error });
+      if (error.code === TlsCertificateNotValidError.API_ERROR) {
+        throw new TlsCertificateNotValidError();
+      }
+      throw new GenericApiError(error);
+    }
+  };
+
+  getNetworkStatus = async (
+    queryInfoParams?: NodeInfoQueryParams
+  ): Promise<GetNetworkStatusResponse> => {
+    const isForceNTPCheck = !!queryInfoParams;
+    const loggerText = `AdaApi::getNetworkStatus${
+      isForceNTPCheck ? ' (FORCE-NTP-CHECK)' : ''
+    }`;
+    let networkStatus = {};
+    Logger.debug(`${loggerText} called`);
+    try {
+      const nodeInfo = await this.getNodeInfo(queryInfoParams);
+      networkStatus = {
+        ...networkStatus,
+        ...nodeInfo,
+      };
+    } catch (error) {
+      Logger.error(`${loggerText} error`, { error });
+    }
+    try {
+      const nodeSettings = await this.getNodeSettings();
+      networkStatus = {
+        ...networkStatus,
+        ...nodeSettings,
+      };
+    } catch (error) {
+      Logger.error(`${loggerText} error`, { error });
+    }
+    return networkStatus;
   };
 
   getCurrentEpochFallback = async () => {
