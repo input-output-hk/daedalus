@@ -22,7 +22,7 @@ import { createAddress } from './addresses/requests/createAddress';
 // Nodes requests
 import { applyNodeUpdate } from './nodes/requests/applyNodeUpdate';
 import { getNodeInfo } from './nodes/requests/getNodeInfo';
-import { getNodeSettings } from './nodes/requests/getNodeSettings';
+// import { getNodeSettings } from './nodes/requests/getNodeSettings';
 import { getCurrentEpoch } from './nodes/requests/getCurrentEpoch';
 import { getNextNodeUpdate } from './nodes/requests/getNextNodeUpdate';
 import { postponeNodeUpdate } from './nodes/requests/postponeNodeUpdate';
@@ -941,12 +941,12 @@ export default class AdaApi {
       );
       Logger.debug(`${loggerText} success`, { nodeInfo });
 
-      const nodeSettings: NodeSettingsResponse = await getNodeSettings(
-        this.config
-      );
-      Logger.debug('AdaApi::getNetworkStatusSettings success', {
-        nodeSettings,
-      });
+      // const nodeSettings: NodeSettingsResponse = await getNodeSettings(
+      //   this.config
+      // );
+      // Logger.debug('AdaApi::getNetworkStatusSettings success', {
+      //   nodeSettings,
+      // });
 
       const {
         blockchainHeight,
@@ -956,7 +956,7 @@ export default class AdaApi {
         localTimeInformation,
       } = nodeInfo;
 
-      const { slotId } = nodeSettings;
+      // const { slotId } = nodeSettings;
 
       // extract relevant data before sending to NetworkStatusStore
       return {
@@ -972,7 +972,7 @@ export default class AdaApi {
             null
           ),
         },
-        slotId,
+        // slotId,
       };
     } catch (error) {
       Logger.error(`${loggerText} error`, { error });
