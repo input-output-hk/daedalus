@@ -2,7 +2,10 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import BigNumber from 'bignumber.js';
+import { get } from 'lodash';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+// import { formattedUtxosPrettyAmount } from '../../utils/formatters';
+import millify from 'millify';
 import {
   BarChart,
   CartesianGrid,
@@ -28,6 +31,16 @@ export const messages = defineMessages({
       '!!!This wallet contains <b>{formattedWalletAmount} ADA</b> on <b>{walletUtxosAmount} UTxOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTxOs with different amounts of ada.',
     description: 'Description for the "Wallet Utxos" screen.',
   },
+  labelX: {
+    id: 'wallet.settings.utxos.labelX',
+    defaultMessage: '!!!amount',
+    description: 'Label X for the "Wallet Utxos" screen.',
+  },
+  labelY: {
+    id: 'wallet.settings.utxos.labelY',
+    defaultMessage: '!!!Nº UTxO',
+    description: 'Label Y for the "Wallet Utxos" screen.',
+  },
 });
 
 type Props = {
@@ -36,15 +49,34 @@ type Props = {
   chartData: Array<any>,
 };
 
-const Cursor = ({ payload }) => {
-  console.log('payload', payload[0].payload);
-  return <div>HEY!</div>;
-};
-
 @observer
 export default class WalletUtxoSettings extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  getPrettyAmount = (amount: number) =>
+    amount >= 1000 ? millify(parseInt(amount, 10)) : amount;
+
+  getTooltipContent = props => {
+    const { walletAmount, walletUtxosAmount } = get(
+      props,
+      'payload[0].payload',
+      {}
+    );
+    const previousWalletAmount =
+      walletAmount === 45000000000 ? 10000000000 : walletAmount / 10;
+    const prettyWalletAmount = this.getPrettyAmount(walletAmount);
+    const prettyPreviousWalletAmount = this.getPrettyAmount(
+      previousWalletAmount
+    );
+
+    return (
+      <p>
+        {walletUtxosAmount} UTxOs containing <br />
+        between {prettyPreviousWalletAmount} and {prettyWalletAmount} ADA
+      </p>
+    );
   };
 
   render() {
@@ -63,7 +95,7 @@ export default class WalletUtxoSettings extends Component<Props> {
         </p>
 
         <ResponsiveContainer width="100%" height={280}>
-          <BarChart height={280} data={chartData}>
+          <BarChart data={chartData}>
             <CartesianGrid
               horizontal={false}
               vertical={false}
@@ -74,15 +106,28 @@ export default class WalletUtxoSettings extends Component<Props> {
               interval={0}
               axisLine={false}
               tickLine={false}
-              tick={chartStyles.xAxis}
+              tick={chartStyles.xAxis.tick}
+              tickFormatter={this.getPrettyAmount}
+              label={{
+                ...chartStyles.xAxis.label,
+                value: intl.formatMessage(messages.labelX),
+              }}
+              y={0}
             />
             <YAxis
               dataKey="walletUtxosAmount"
               axisLine={false}
               tickLine={false}
-              tick={chartStyles.yAxis}
+              tick={chartStyles.yAxis.tick}
+              label={{
+                ...chartStyles.yAxis.label,
+                value: intl.formatMessage(messages.labelY),
+              }}
             />
-            <Tooltip {...chartStyles.tooltip} cursor={<Cursor />} />
+            <Tooltip
+              {...chartStyles.tooltip}
+              content={this.getTooltipContent}
+            />
             <Bar dataKey="walletUtxosAmount" fill={chartStyles.bar.fill} />
           </BarChart>
         </ResponsiveContainer>

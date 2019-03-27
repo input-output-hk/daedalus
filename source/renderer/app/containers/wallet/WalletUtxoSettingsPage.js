@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletUtxoSettings from '../../components/wallet/WalletUtxoSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import { formattedUtxosPrettyAmount } from '../../utils/formatters';
 import type { Histogram } from '../../api/wallets/types';
+import { LOVELACES_PER_ADA } from '../../config/numbersConfig';
 
 type Props = InjectedProps;
 
@@ -22,9 +22,13 @@ export default class WalletSettingsPage extends Component<Props> {
     Object.entries(histogram)
       .sort()
       .map<any>(([walletAmount, walletUtxosAmount]) => ({
-        walletAmount: formattedUtxosPrettyAmount(walletAmount),
+        walletAmount: walletAmount / LOVELACES_PER_ADA,
         walletUtxosAmount,
-      }));
+      }))
+      .filter(
+        ({ walletAmount, walletUtxosAmount }) =>
+          walletAmount < 1000000 || walletUtxosAmount > 0
+      );
 
   getWalletUtxosAmount = (histogram: Histogram): number => {
     const histogramArr = Object.values(histogram);
