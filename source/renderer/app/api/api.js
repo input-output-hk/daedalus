@@ -1021,7 +1021,7 @@ export default class AdaApi {
     } catch (error) {
       Logger.error(`${loggerText} error`, { error });
     }
-    await this.wait(5000);
+    await this.wait(100);
     try {
       const nodeInfo = await this.getNodeInfo(queryInfoParams);
       networkStatus = {
