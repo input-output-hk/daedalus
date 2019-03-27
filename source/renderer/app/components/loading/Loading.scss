@@ -44,6 +44,12 @@
       line-height: 1.36;
       margin-bottom: 20px;
       opacity: 0.8;
+      &:disabled {
+        color: var(--rp-button-bg-color-disabled);
+        text-decoration: none;
+        cursor: default;
+        border-bottom: none;
+      }
     }
     .downloadLogsButtonConnecting {
       border-bottom: 1px solid

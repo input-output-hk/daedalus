@@ -353,6 +353,7 @@ export default class SettingsStore extends Store {
           compressedLogsFilePath: this.compressedLogsFilePath,
           destinationPath: destination,
         });
+        this.actions.profile.downloadLogsSuccess.trigger();
         this._reset();
       } catch (error) {
         throw error;
