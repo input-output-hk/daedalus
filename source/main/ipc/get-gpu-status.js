@@ -2,14 +2,14 @@
 import { app } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import type {
-  GetGPUStatusRequest,
-  GetGPUStatusResponse,
+  GetGPUStatusRendererRequest,
+  GetGPUStatusMainResponse,
 } from '../../common/ipc/api';
 import { GET_GPU_STATUS_CHANNEL } from '../../common/ipc/api';
 
 export const getGPUStatusChannel: MainIpcChannel<
-  GetGPUStatusRequest,
-  GetGPUStatusResponse
+  GetGPUStatusRendererRequest,
+  GetGPUStatusMainResponse
 > = new MainIpcChannel(GET_GPU_STATUS_CHANNEL);
 
 export default () => {

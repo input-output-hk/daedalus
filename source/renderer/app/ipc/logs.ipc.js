@@ -1,12 +1,12 @@
 // @flow
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
 import type {
-  CompressLogsRequest,
-  CompressLogsResponse,
-  DownloadLogsRequest,
-  DownloadLogsResponse,
-  GetLogsRequest,
-  GetLogsResponse,
+  CompressLogsRendererRequest,
+  CompressLogsMainResponse,
+  DownloadLogsRendererRequest,
+  DownloadLogsMainResponse,
+  GetLogsRendererRequest,
+  GetLogsMainResponse,
 } from '../../../common/ipc/api';
 import {
   COMPRESS_LOGS_CHANNEL,
@@ -17,16 +17,16 @@ import {
 // IpcChannel<Incoming, Outgoing>
 
 export const getLogsChannel: RendererIpcChannel<
-  GetLogsResponse,
-  GetLogsRequest
+  GetLogsMainResponse,
+  GetLogsRendererRequest
 > = new RendererIpcChannel(GET_LOGS_CHANNEL);
 
 export const compressLogsChannel: RendererIpcChannel<
-  CompressLogsResponse,
-  CompressLogsRequest
+  CompressLogsMainResponse,
+  CompressLogsRendererRequest
 > = new RendererIpcChannel(COMPRESS_LOGS_CHANNEL);
 
 export const downloadLogsChannel: RendererIpcChannel<
-  DownloadLogsResponse,
-  DownloadLogsRequest
+  DownloadLogsMainResponse,
+  DownloadLogsRendererRequest
 > = new RendererIpcChannel(DOWNLOAD_LOGS_CHANNEL);

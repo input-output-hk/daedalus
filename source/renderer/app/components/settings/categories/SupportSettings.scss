@@ -47,6 +47,11 @@
 
   button {
     cursor: pointer;
+    &:disabled {
+      color: var(--rp-button-bg-color-disabled);
+      text-decoration: none;
+      cursor: default;
+    }
   }
 
   p {
