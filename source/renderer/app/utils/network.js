@@ -12,6 +12,7 @@ import {
   MAINNET,
   STAGING,
   TESTNET,
+  DEVELOPMENT,
 } from '../../../common/types/environment.types';
 
 const localesFillForm = {
@@ -45,7 +46,8 @@ export const getNetworkExplorerUri = (network: string): string => {
 };
 
 export const getNetworkExplorerUrl = (network: string): string => {
-  const protocol = network === MAINNET ? 'https://' : 'http://';
+  const protocol =
+    network === MAINNET || network === DEVELOPMENT ? 'https://' : 'http://';
   const uri = getNetworkExplorerUri(network);
   return `${protocol}${uri}`;
 };

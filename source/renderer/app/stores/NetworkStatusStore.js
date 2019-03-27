@@ -255,9 +255,7 @@ export default class NetworkStatusStore extends Store {
       return Promise.resolve();
     Logger.info('NetworkStatusStore: received tls config from main process');
     this.api.ada.setRequestConfig(config);
-    runInAction('update _tlsConfig', () => {
-      this._tlsConfig = config;
-    });
+    this._tlsConfig = config;
     return Promise.resolve();
   };
 
@@ -276,9 +274,7 @@ export default class NetworkStatusStore extends Store {
       case CardanoNodeStates.STOPPING:
       case CardanoNodeStates.EXITING:
       case CardanoNodeStates.UPDATING:
-        runInAction('reset _tlsConfig', () => {
-          this._tlsConfig = null;
-        });
+        this._tlsConfig = null;
         this._setDisconnected(wasConnected);
         break;
       default:
@@ -407,9 +403,7 @@ export default class NetworkStatusStore extends Store {
         this.isNodeSubscribed
       ) {
         // We are connected for the first time, move on to syncing stage
-        runInAction('update _networkStatus', () => {
-          this._networkStatus = NETWORK_STATUS.SYNCING;
-        });
+        this._networkStatus = NETWORK_STATUS.SYNCING;
         Logger.info(
           `========== Connected after ${this._getStartupTimeDelta()} milliseconds ==========`
         );
@@ -526,9 +520,7 @@ export default class NetworkStatusStore extends Store {
 
       if (this._networkStatus === NETWORK_STATUS.SYNCING && this.isNodeInSync) {
         // We are synced for the first time, move on to running stage
-        runInAction('update _networkStatus', () => {
-          this._networkStatus = NETWORK_STATUS.RUNNING;
-        });
+        this._networkStatus = NETWORK_STATUS.RUNNING;
         this.actions.networkStatus.isSyncedAndReady.trigger();
         Logger.info(
           `========== Synced after ${this._getStartupTimeDelta()} milliseconds ==========`
