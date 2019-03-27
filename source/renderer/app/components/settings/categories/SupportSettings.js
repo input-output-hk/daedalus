@@ -72,6 +72,7 @@ type Props = {
   onExternalLinkClick: Function,
   onSupportRequestClick: Function,
   onDownloadLogs: Function,
+  disableDownloadLogs: boolean,
 };
 
 @observer
@@ -85,6 +86,7 @@ export default class SupportSettings extends Component<Props> {
       onExternalLinkClick,
       onSupportRequestClick,
       onDownloadLogs,
+      disableDownloadLogs,
     } = this.props;
     const { intl } = this.context;
     const faqLinkUrl = intl.formatMessage(globalMessages.faqLinkUrl);
@@ -99,7 +101,7 @@ export default class SupportSettings extends Component<Props> {
     );
 
     const stepsDownloadLogsLink = (
-      <button onClick={onDownloadLogs}>
+      <button onClick={onDownloadLogs} disabled={disableDownloadLogs}>
         {intl.formatMessage(messages.stepsDownloadLogsLink)}
       </button>
     );
