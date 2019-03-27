@@ -997,6 +997,12 @@ export default class AdaApi {
     }
   };
 
+  wait = async (ms: number) => {
+    return new Promise(resolve => {
+      setTimeout(resolve, ms);
+    });
+  };
+
   getNetworkStatus = async (
     queryInfoParams?: NodeInfoQueryParams
   ): Promise<GetNetworkStatusResponse> => {
@@ -1015,6 +1021,7 @@ export default class AdaApi {
     } catch (error) {
       Logger.error(`${loggerText} error`, { error });
     }
+    await this.wait(5000);
     try {
       const nodeInfo = await this.getNodeInfo(queryInfoParams);
       networkStatus = {
