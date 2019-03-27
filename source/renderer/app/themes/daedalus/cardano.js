@@ -400,15 +400,19 @@ export default {
   '--theme-icon-connecting-logo-color': '#fafbfc',
   '--theme-icon-transaction-type-color': '#fafbfc',
 
-  '--theme-about-window-background-color': '#fafbfc',
-  '--theme-about-window-header-bottom-border-color': '#dfe4e8',
-  '--theme-about-window-daedalus-icon-color': '#5e6066',
-  '--theme-about-window-cardano-icon-color': '#5e6066',
-  '--theme-about-window-title-varsion-color': '#5e6066',
-  '--theme-about-window-title-stroke-color': '#5e6066',
-  '--theme-about-window-content-text-color': '#5e6066',
-  '--theme-about-window-content-bottom-border-color': '#dfe4e8',
-  '--theme-about-window-copyright-color': '#5e6066',
+  '--theme-about-window-background-color': 'rgba(36, 62, 98, 0.96)',
+  '--theme-about-window-header-bottom-border-color': 'rgba(233, 244, 254, 0.3)',
+  '--theme-about-window-daedalus-icon-color': '#e9f4fe',
+  '--theme-about-window-cardano-icon-color': '#e9f4fe',
+  '--theme-about-window-title-varsion-color': '#e9f4fe',
+  '--theme-about-window-title-stroke-color': '#e9f4fe',
+  '--theme-about-window-content-h2-color': '#fafbfc',
+  '--theme-about-window-content-link-color': '#fafbfc',
+  '--theme-about-window-content-text-color': 'rgba(250,251,252,0.7)',
+  '--theme-about-window-content-bottom-border-color':
+    'rgba(233, 244, 254, 0.3)',
+  '--theme-about-window-copyright-color': 'rgba(250,251,252,0.7)',
+  '--theme-about-window-icon-close-button-color': '#fff',
 
   '--theme-backup-mnemonic-background-color': 'rgba(68, 91, 124, 0.05)',
 

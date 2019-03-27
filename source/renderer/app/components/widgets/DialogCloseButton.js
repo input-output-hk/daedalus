@@ -8,15 +8,21 @@ type Props = {
   onClose?: Function,
   icon?: string,
   disabled?: boolean,
+  className?: string,
 };
 
 export default class DialogCloseButton extends Component<Props> {
   render() {
-    const { onClose, icon, disabled } = this.props;
+    const { onClose, icon, disabled, className } = this.props;
+    const buttonClass = !className ? '' : className;
     return (
       <button
         onClick={onClose != null ? onClose : () => {}}
-        className={!disabled ? styles.component : styles.disabled}
+        className={
+          !disabled
+            ? styles.component + buttonClass
+            : styles.disabled + buttonClass
+        }
         tabIndex={-1}
       >
         <SVGInline svg={icon || closeCross} />

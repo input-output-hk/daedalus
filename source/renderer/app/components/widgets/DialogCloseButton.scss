@@ -3,11 +3,37 @@
   top: 7px;
   right: 0;
   cursor: pointer;
+
   svg {
     width: 11px;
     height: 11px;
+
     polygon {
       fill: var(--theme-icon-close-button-color);
+    }
+  }
+
+  &About_closeButton {
+    cursor: pointer;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -40px;
+    margin-right: -70px;
+    position: initial;
+
+    span {
+      padding: 10px 11px 9px;
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    svg {
+      width: 12px;
+      height: 12px;
+
+      polygon {
+        fill: var(--theme-about-window-icon-close-button-color);
+      }
     }
   }
 }

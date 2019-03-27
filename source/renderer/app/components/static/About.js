@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import Dialog from '../widgets/Dialog';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import globalMessages from '../../i18n/global-messages';
 import styles from './About.scss';
@@ -87,66 +86,65 @@ export default class About extends Component<Props> {
     const apiMembers = intl.formatMessage(messages.aboutContentCardanoMembers);
 
     return (
-      <Dialog onClose={onClose} closeButton={<DialogCloseButton />}>
-        <div className={styles.container}>
-          <div className={styles.headerWrapper}>
-            <SVGInline svg={daedalusIcon} className={styles.daedalusIcon} />
+      <div className={styles.container}>
+        <DialogCloseButton className={styles.closeButton} onClose={onClose} />
+        <div className={styles.headerWrapper}>
+          <SVGInline svg={daedalusIcon} className={styles.daedalusIcon} />
 
-            <div className={styles.daedalusTitleVersion}>
-              <div className={styles.daedalusTitle}>
-                {intl.formatMessage(messages.aboutTitle)}
-                <span className={styles.daedalusVersion}>{version}</span>
-              </div>
-              <div className={styles.daedalusBuildInfo}>
-                <FormattedHTMLMessage
-                  {...messages.aboutBuildInfo}
-                  values={{ platform: os, build, apiName, apiVersion }}
-                />
-              </div>
+          <div className={styles.daedalusTitleVersion}>
+            <div className={styles.daedalusTitle}>
+              {intl.formatMessage(messages.aboutTitle)}
+              <span className={styles.daedalusVersion}>{version}</span>
             </div>
-
-            <SVGInline svg={apiIcon} className={styles.apiIcon} />
+            <div className={styles.daedalusBuildInfo}>
+              <FormattedHTMLMessage
+                {...messages.aboutBuildInfo}
+                values={{ platform: os, build, apiName, apiVersion }}
+              />
+            </div>
           </div>
 
-          <div className={styles.contentText}>
-            <h2>{intl.formatMessage(messages.aboutContentDaedalusHeadline)}</h2>
+          <SVGInline svg={apiIcon} className={styles.apiIcon} />
+        </div>
 
-            <div className={styles.contentDaedalus}>
-              {intl.formatMessage(messages.aboutContentDaedalusMembers)}
-            </div>
+        <div className={styles.contentText}>
+          <h2>{intl.formatMessage(messages.aboutContentDaedalusHeadline)}</h2>
 
-            <h2>{apiHeadline}</h2>
-
-            <div className={styles.apiMembers}>{apiMembers}</div>
+          <div className={styles.contentDaedalus}>
+            {intl.formatMessage(messages.aboutContentDaedalusMembers)}
           </div>
 
-          <div className={styles.footerWrapper}>
+          <h2>{apiHeadline}</h2>
+
+          <div className={styles.apiMembers}>{apiMembers}</div>
+        </div>
+
+        <div className={styles.footerWrapper}>
+          <span
+            onClick={() => onOpenExternalLink('https://daedaluswallet.io')}
+            className={styles.link}
+            role="link"
+            aria-hidden
+          >
+            http://daedaluswallet.io
+          </span>
+          <div className={styles.copyright}>
+            {intl.formatMessage(messages.aboutCopyright)}&nbsp;
             <span
-              onClick={() => onOpenExternalLink('https://daedaluswallet.io')}
+              onClick={() =>
+                onOpenExternalLink(
+                  'https://github.com/input-output-hk/daedalus/blob/master/LICENSE'
+                )
+              }
               className={styles.link}
               role="link"
               aria-hidden
             >
-              http://daedaluswallet.io
+              {intl.formatMessage(messages.licenseLink)}
             </span>
-            <div className={styles.copyright}>
-              {intl.formatMessage(messages.aboutCopyright)}&nbsp;
-              <span
-                onClick={() =>
-                  onOpenExternalLink(
-                    'https://github.com/input-output-hk/daedalus/blob/master/LICENSE'
-                  )
-                }
-                className={styles.link}
-                role="link"
-                aria-hidden
-              >
-                {intl.formatMessage(messages.licenseLink)}
-              </span>
-            </div>
           </div>
         </div>
-      </Dialog>
+      </div>
     );
   }
 }
