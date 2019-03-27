@@ -5441,6 +5441,20 @@
           "column": 23,
           "line": 27
         }
+      },
+      {
+        "defaultMessage": "!!!Preparing logs for download",
+        "description": "Progress message for download logs.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/containers/LoadingPage.js",
+        "id": "loading.screen.reportIssue.downloadLogsProgressMessage",
+        "start": {
+          "column": 24,
+          "line": 32
+        }
       }
     ],
     "path": "source/renderer/app/containers/LoadingPage.json"
@@ -5452,31 +5466,50 @@
         "description": "\"submit a support request\" link URL in the \"Report a problem\" section on the support settings page.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 16
         },
         "file": "source/renderer/app/containers/settings/categories/SupportSettingsPage.js",
         "id": "settings.support.reportProblem.linkUrl",
         "start": {
           "column": 25,
-          "line": 14
+          "line": 11
         }
-      },
+      }
+    ],
+    "path": "source/renderer/app/containers/settings/categories/SupportSettingsPage.json"
+  },
+  {
+    "descriptors": [
       {
         "defaultMessage": "!!!Logs successfully downloaded",
         "description": "Success message for download logs.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 19
         },
-        "file": "source/renderer/app/containers/settings/categories/SupportSettingsPage.js",
+        "file": "source/renderer/app/containers/settings/Settings.js",
         "id": "settings.support.reportProblem.downloadLogsSuccessMessage",
         "start": {
           "column": 23,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Preparing logs for download",
+        "description": "Progress message for download logs.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/containers/settings/Settings.js",
+        "id": "settings.support.reportProblem.downloadLogsProgressMessage",
+        "start": {
+          "column": 24,
           "line": 20
         }
       }
     ],
-    "path": "source/renderer/app/containers/settings/categories/SupportSettingsPage.json"
+    "path": "source/renderer/app/containers/settings/Settings.json"
   },
   {
     "descriptors": [

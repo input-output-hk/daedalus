@@ -139,6 +139,7 @@ type Props = {
   onCheckTheTimeAgain: Function,
   onContinueWithoutClockSyncCheck: Function,
   onDownloadLogs: Function,
+  disableDownloadLogs: boolean,
 };
 
 @observer
@@ -389,10 +390,12 @@ export default class Loading extends Component<Props, State> {
       hasLoadedCurrentTheme,
       onReportIssueClick,
       onDownloadLogs,
+      disableDownloadLogs,
       isNodeResponding,
       isNodeSubscribed,
       isNodeSyncing,
       isNodeTimeCorrect,
+      isCheckingSystemTime,
     } = this.props;
 
     const { connectingTime, syncingTime } = this.state;
@@ -434,6 +437,10 @@ export default class Loading extends Component<Props, State> {
 
     const buttonClasses = classNames(['primary', styles.reportIssueButton]);
 
+    const isNodeTimeCheckedAndCorrect = isCheckingSystemTime
+      ? undefined
+      : isNodeTimeCorrect;
+
     return (
       <div className={componentStyles}>
         {showReportIssue && (
@@ -461,6 +468,7 @@ export default class Loading extends Component<Props, State> {
             <button
               className={downloadLogsButtonStyles}
               onClick={onDownloadLogs}
+              disabled={disableDownloadLogs}
             >
               {intl.formatMessage(messages.reportIssueDownloadLogsLinkLabel)}
             </button>
@@ -477,7 +485,7 @@ export default class Loading extends Component<Props, State> {
           nodeState={cardanoNodeState}
           isNodeResponding={isNodeResponding}
           isNodeSubscribed={isNodeSubscribed}
-          isNodeTimeCorrect={isNodeTimeCorrect}
+          isNodeTimeCorrect={isNodeTimeCheckedAndCorrect}
           isNodeSyncing={isNodeSyncing}
         />
       </div>
