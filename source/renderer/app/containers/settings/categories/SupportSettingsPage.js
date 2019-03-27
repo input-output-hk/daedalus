@@ -1,14 +1,11 @@
 // @flow
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import SupportSettings from '../../../components/settings/categories/SupportSettings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import { generateFileNameWithTimestamp } from '../../../../../common/utils/files';
 import { getSupportUrl } from '../../../utils/network';
-import successIcon from '../../../assets/images/success-small.inline.svg';
-import NotificationMessage from '../../../components/widgets/NotificationMessage';
-import { DOWNLOAD_LOGS_SUCCESS_DURATION } from '../../../config/timingConfig';
 
 const messages = defineMessages({
   supportRequestLinkUrl: {
@@ -17,33 +14,35 @@ const messages = defineMessages({
     description:
       '"submit a support request" link URL in the "Report a problem" section on the support settings page.',
   },
-  downloadLogsSuccess: {
-    id: 'settings.support.reportProblem.downloadLogsSuccessMessage',
-    defaultMessage: '!!!Logs successfully downloaded',
-    description: 'Success message for download logs.',
-  },
 });
+
+type State = {
+  disableDownloadLogs: boolean,
+};
 
 @inject('stores', 'actions')
 @observer
-export default class SupportSettingsPage extends Component<InjectedProps> {
+export default class SupportSettingsPage extends Component<
+  InjectedProps,
+  State
+> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   static defaultProps = { actions: null, stores: null };
 
-  constructor(props: any, context: any) {
+  constructor(props: InjectedProps) {
     super(props);
-    this.context = context;
-    this.registerOnDownloadLogsNotification();
+    const { profile } = this.props.actions;
+    profile.downloadLogsSuccess.listen(() =>
+      this.toggleDisableDownloadLogs(false)
+    );
   }
 
-  componentWillUnmount() {
-    const { profile } = this.props.actions;
-    profile.downloadLogs.remove(this.openNotification);
-    this.closeNotification();
-  }
+  state = {
+    disableDownloadLogs: false,
+  };
 
   handleSupportRequestClick = async (
     event: SyntheticEvent<HTMLButtonElement>
@@ -58,17 +57,6 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
     this.props.stores.app.openExternalLink(supportUrl);
   };
 
-  openNotification = () => {
-    const { notifications } = this.props.actions;
-    const { id, duration } = this.notification;
-    notifications.open.trigger({ id, duration });
-  };
-
-  registerOnDownloadLogsNotification = () => {
-    const { profile } = this.props.actions;
-    profile.downloadLogs.listen(this.openNotification);
-  };
-
   handleDownloadLogs = () => {
     // TODO: refactor this direct access to the dialog api
     const fileName = generateFileNameWithTimestamp();
@@ -77,44 +65,25 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
       defaultPath: fileName,
     });
     if (destination) {
+      this.toggleDisableDownloadLogs(true);
       profile.downloadLogs.trigger({ fileName, destination, fresh: true });
     }
   };
 
-  get notification() {
-    const { intl } = this.context;
-    return {
-      id: 'settings-page-download-logs-success',
-      duration: DOWNLOAD_LOGS_SUCCESS_DURATION,
-      message: intl.formatMessage(messages.downloadLogsSuccess),
-    };
-  }
-
-  closeNotification = () => {
-    const { id } = this.notification;
-    this.props.actions.notifications.closeActiveNotification.trigger({ id });
+  toggleDisableDownloadLogs = (disableDownloadLogs: boolean) => {
+    this.setState({ disableDownloadLogs });
   };
 
   render() {
     const { stores } = this.props;
-    const { id, message } = this.notification;
+
     return (
-      <Fragment>
-        <SupportSettings
-          onExternalLinkClick={stores.app.openExternalLink}
-          onSupportRequestClick={this.handleSupportRequestClick}
-          onDownloadLogs={this.handleDownloadLogs}
-        />
-        <NotificationMessage
-          icon={successIcon}
-          show={stores.uiNotifications.isOpen(id)}
-          onClose={this.closeNotification}
-          clickToClose
-          hasCloseButton
-        >
-          {message}
-        </NotificationMessage>
-      </Fragment>
+      <SupportSettings
+        onExternalLinkClick={stores.app.openExternalLink}
+        onSupportRequestClick={this.handleSupportRequestClick}
+        onDownloadLogs={this.handleDownloadLogs}
+        disableDownloadLogs={this.state.disableDownloadLogs}
+      />
     );
   }
 }
