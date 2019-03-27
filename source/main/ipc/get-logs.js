@@ -12,14 +12,17 @@ import {
 } from '../config';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { GET_LOGS_CHANNEL } from '../../common/ipc/api';
-import type { GetLogsRequest, GetLogsResponse } from '../../common/ipc/api';
+import type {
+  GetLogsRendererRequest,
+  GetLogsMainResponse,
+} from '../../common/ipc/api';
 import type { LogFiles } from '../../renderer/app/types/LogTypes';
 
 // IpcChannel<Incoming, Outgoing>
 
 export const getLogsChannel: MainIpcChannel<
-  GetLogsRequest,
-  GetLogsResponse
+  GetLogsRendererRequest,
+  GetLogsMainResponse
 > = new MainIpcChannel(GET_LOGS_CHANNEL);
 
 const isFileAllowed = (fileName: string) => includes(ALLOWED_LOGS, fileName);

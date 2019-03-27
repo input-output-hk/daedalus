@@ -6,8 +6,8 @@ import { extractFileNameFromPath } from '../../common/utils/files';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { SUBMIT_BUG_REPORT_REQUEST_CHANNEL } from '../../common/ipc/api';
 import type {
-  SubmitBugReportRequestResponse,
-  SubmitBugReportRequest,
+  SubmitBugReportRequestMainResponse,
+  SubmitBugReportRendererRequest,
 } from '../../common/ipc/api';
 import { Logger } from '../utils/logging';
 
@@ -15,13 +15,13 @@ import { Logger } from '../utils/logging';
 
 export const bugReportRequestChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
-  SubmitBugReportRequest,
-  SubmitBugReportRequestResponse
+  SubmitBugReportRendererRequest,
+  SubmitBugReportRequestMainResponse
 > = new MainIpcChannel(SUBMIT_BUG_REPORT_REQUEST_CHANNEL);
 
 export const handleBugReportRequests = () => {
   bugReportRequestChannel.onReceive(
-    (request: SubmitBugReportRequest) =>
+    (request: SubmitBugReportRendererRequest) =>
       new Promise((resolve, reject) => {
         Logger.info('bugReportRequestChannel::onReceive', { request });
         const { httpOptions, requestPayload } = request;

@@ -10,55 +10,55 @@ import {
   SET_CACHED_CARDANO_STATUS_CHANNEL,
 } from '../../common/ipc/api';
 import type {
-  CardanoAwaitUpdateResponse,
-  CardanoAwaitUpdateRequest,
-  CardanoFaultInjectionResponse,
-  CardanoFaultInjectionRequest,
-  CardanoRestartResponse,
-  CardanoRestartRequest,
-  CardanoStateResponse,
-  CardanoStateRequest,
-  CardanoTlsConfigResponse,
-  CardanoTlsConfigRequest,
-  GetCachedCardanoStatusRequest,
-  GetCachedCardanoStatusResponse,
-  SetCachedCardanoStatusRequest,
-  SetCachedCardanoStatusResponse,
+  CardanoAwaitUpdateMainResponse,
+  CardanoAwaitUpdateRendererRequest,
+  CardanoFaultInjectionMainResponse,
+  CardanoFaultInjectionRendererRequest,
+  CardanoRestartMainResponse,
+  CardanoRestartRendererRequest,
+  CardanoStateRendererResponse,
+  CardanoStateRendererRequest,
+  CardanoTlsConfigMainResponse,
+  CardanoTlsConfigRendererRequest,
+  GetCachedCardanoStatusRendererRequest,
+  GetCachedCardanoStatusMainResponse,
+  SetCachedCardanoStatusRendererRequest,
+  SetCachedCardanoStatusMainResponse,
 } from '../../common/ipc/api';
 
 // IpcChannel<Incoming, Outgoing>
 
 export const cardanoRestartChannel: MainIpcChannel<
-  CardanoRestartRequest,
-  CardanoRestartResponse
+  CardanoRestartRendererRequest,
+  CardanoRestartMainResponse
 > = new MainIpcChannel(CARDANO_RESTART_CHANNEL);
 
 export const cardanoTlsConfigChannel: MainIpcChannel<
-  CardanoTlsConfigRequest,
-  CardanoTlsConfigResponse
+  CardanoTlsConfigRendererRequest,
+  CardanoTlsConfigMainResponse
 > = new MainIpcChannel(CARDANO_TLS_CONFIG_CHANNEL);
 
 export const cardanoAwaitUpdateChannel: MainIpcChannel<
-  CardanoAwaitUpdateRequest,
-  CardanoAwaitUpdateResponse
+  CardanoAwaitUpdateRendererRequest,
+  CardanoAwaitUpdateMainResponse
 > = new MainIpcChannel(CARDANO_AWAIT_UPDATE_CHANNEL);
 
 export const cardanoStateChangeChannel: MainIpcChannel<
-  CardanoStateRequest,
-  CardanoStateResponse
+  CardanoStateRendererRequest,
+  CardanoStateRendererResponse
 > = new MainIpcChannel(CARDANO_STATE_CHANNEL);
 
 export const cardanoFaultInjectionChannel: MainIpcChannel<
-  CardanoFaultInjectionRequest,
-  CardanoFaultInjectionResponse
+  CardanoFaultInjectionRendererRequest,
+  CardanoFaultInjectionMainResponse
 > = new MainIpcChannel(CARDANO_FAULT_INJECTION_CHANNEL);
 
 export const getCachedCardanoStatusChannel: MainIpcChannel<
-  GetCachedCardanoStatusRequest,
-  GetCachedCardanoStatusResponse
+  GetCachedCardanoStatusRendererRequest,
+  GetCachedCardanoStatusMainResponse
 > = new MainIpcChannel(GET_CACHED_CARDANO_STATUS_CHANNEL);
 
 export const setCachedCardanoStatusChannel: MainIpcChannel<
-  SetCachedCardanoStatusRequest,
-  SetCachedCardanoStatusResponse
+  SetCachedCardanoStatusRendererRequest,
+  SetCachedCardanoStatusMainResponse
 > = new MainIpcChannel(SET_CACHED_CARDANO_STATUS_CHANNEL);
