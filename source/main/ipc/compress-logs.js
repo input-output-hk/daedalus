@@ -8,13 +8,13 @@ import { Logger } from '../utils/logging';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { COMPRESS_LOGS_CHANNEL } from '../../common/ipc/api';
 import type {
-  CompressLogsRequest,
-  CompressLogsResponse,
+  CompressLogsRendererRequest,
+  CompressLogsMainResponse,
 } from '../../common/ipc/api';
 
 export const compressLogsChannel: MainIpcChannel<
-  CompressLogsRequest,
-  CompressLogsResponse
+  CompressLogsRendererRequest,
+  CompressLogsMainResponse
 > = new MainIpcChannel(COMPRESS_LOGS_CHANNEL);
 
 export default () => {

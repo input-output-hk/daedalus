@@ -2,14 +2,14 @@
 import fs from 'fs';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import type {
-  DownloadLogsRequest,
-  DownloadLogsResponse,
+  DownloadLogsRendererRequest,
+  DownloadLogsMainResponse,
 } from '../../common/ipc/api';
 import { DOWNLOAD_LOGS_CHANNEL } from '../../common/ipc/api';
 
 export const downloadLogsChannel: MainIpcChannel<
-  DownloadLogsRequest,
-  DownloadLogsResponse
+  DownloadLogsRendererRequest,
+  DownloadLogsMainResponse
 > = new MainIpcChannel(DOWNLOAD_LOGS_CHANNEL);
 
 export default () => {
