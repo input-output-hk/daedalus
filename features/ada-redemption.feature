@@ -1,3 +1,4 @@
+@ui
 Feature: Ada Redemption
 
   Background:

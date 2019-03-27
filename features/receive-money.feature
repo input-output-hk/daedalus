@@ -1,3 +1,4 @@
+@ui
 Feature: Receive money
 
   Background:

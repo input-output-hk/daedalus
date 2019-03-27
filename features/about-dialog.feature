@@ -1,3 +1,4 @@
+@ui
 Feature: About Dialog
 
   Background:

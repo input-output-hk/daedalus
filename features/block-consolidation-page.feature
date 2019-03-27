@@ -1,8 +1,9 @@
+@ui
 Feature: Display Block Consolidation Page
 
   Background:
     Given I have completed the basic setup
-  
+
   Scenario: Open/close the Block Consolidation Page and ensure epoch consolidation data is rendered correctly
     When I toggle the Block Consolidation Status Page
     Then the Block Consolidation Status Page is visible

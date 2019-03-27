@@ -1,3 +1,4 @@
+@ui
 Feature: Navigate Wallet Tabs
 
   Background:

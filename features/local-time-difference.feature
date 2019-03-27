@@ -1,3 +1,4 @@
+@ui
 Feature: Local Time Difference
 
   Scenario: Wrong local time

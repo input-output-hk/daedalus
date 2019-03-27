@@ -1,3 +1,4 @@
+@ui
 Feature: Data Layer Migration
 
   Background:
