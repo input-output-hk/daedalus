@@ -1,3 +1,4 @@
+@ui
 Feature: Display wallet transactions
 
   The wallet summary screen displays the five most recent transactions,

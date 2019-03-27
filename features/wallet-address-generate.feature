@@ -1,3 +1,4 @@
+@ui
 Feature: Generate Wallet Address
 
   Background:

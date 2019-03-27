@@ -1,3 +1,4 @@
+@ui
 Feature: Wallet Settings
 
   Background:

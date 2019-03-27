@@ -1,3 +1,4 @@
+@ui
 Feature: Send Money to Receiver
 
   Background:

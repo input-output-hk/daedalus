@@ -6,7 +6,7 @@ logs
 node_modules
 translations
 tests
-features/support/default-wallet.json
+features/support/ui/documents/*
 mainnet-genesis-dryrun-with-stakeholders.json
 source/renderer/app/i18n/locales
 nodemon.json

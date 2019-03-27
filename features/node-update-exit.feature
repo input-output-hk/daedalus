@@ -1,3 +1,4 @@
+@ui
 Feature: Node Update Exit
 
   Background:

@@ -1,3 +1,4 @@
+@ui
 Feature: Trouble Syncing Notification
 
   Background:

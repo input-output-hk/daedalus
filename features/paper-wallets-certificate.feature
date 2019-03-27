@@ -1,3 +1,4 @@
+@ui
 Feature: Paper Wallets Certificate generation
 
   Background:

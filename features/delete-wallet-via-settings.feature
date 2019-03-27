@@ -1,3 +1,4 @@
+@ui
 Feature: Delete Wallet via Settings
 
   Background:

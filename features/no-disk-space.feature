@@ -1,3 +1,4 @@
+@ui
 Feature: No Disk Space Overlay
 
   Background:

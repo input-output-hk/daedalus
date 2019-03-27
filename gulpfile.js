@@ -124,23 +124,20 @@ gulp.task(
   )
 );
 
-gulp.task('cucumber', shell.task('npm run cucumber --'));
+gulp.task('test:ui', shell.task('yarn test:ui'));
 
-gulp.task(
-  'cucumber:watch',
-  shell.task('nodemon --exec npm run cucumber:watch')
-);
+gulp.task('test:ui:watch', shell.task('nodemon --exec yarn test:ui:watch'));
 
-gulp.task('test', gulp.series('build', 'cucumber'));
+gulp.task('build:test:ui', gulp.series('build', 'test:ui'));
 
-gulp.task('test:watch', gulp.series('build:watch', 'cucumber:watch'));
+gulp.task('build:test:ui:watch', gulp.series('build:watch', 'test:ui:watch'));
 
 gulp.task(
   'purge:translations',
   shell.task('rimraf ./translations/messages/source')
 );
 
-gulp.task('electron:inspector', shell.task('npm run electron:inspector'));
+gulp.task('electron:inspector', shell.task('yarn electron:inspector'));
 
 gulp.task(
   'start',

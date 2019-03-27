@@ -1,3 +1,4 @@
+@ui
 Feature: Switching Between Wallets
 
   Background:

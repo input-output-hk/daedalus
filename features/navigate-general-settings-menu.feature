@@ -1,3 +1,4 @@
+@ui
 Feature: General Settings
 
   Background:

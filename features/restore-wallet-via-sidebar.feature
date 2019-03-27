@@ -1,3 +1,4 @@
+@ui
 Feature: Add Wallet via Sidebar
 
   Background:

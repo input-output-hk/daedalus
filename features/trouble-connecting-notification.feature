@@ -1,3 +1,4 @@
+@ui
 Feature: Trouble Connecting Notification
 
   Background:
