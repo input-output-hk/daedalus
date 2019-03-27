@@ -18,6 +18,7 @@ Feature: Spending password validation
       | Mix学年別漢字配1 |
       | Привет1        |
       | mixПривет1     |
+      | !№;%:?()_+1Mm  |
 
   Scenario Outline: Invalid spending passwords
     Given I use the spending password "<PASSWORD>"
@@ -34,3 +35,5 @@ Feature: Spending password validation
       | Привет!        |
       | привет1        |
       | mixпривет1     |
+      | 123456!        |
+      | !№;%:?*()_+1   |
