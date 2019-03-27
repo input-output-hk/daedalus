@@ -61,8 +61,8 @@ const messages = defineMessages({
   },
   supportButton: {
     id: 'blockConsolidationStatus.supportButton',
-    defaultMessage: '!!!Support',
-    description: 'Support Button on "Block consolidation status" page.',
+    defaultMessage: '!!!Learn more',
+    description: 'Learn more button on the "Block consolidation status" page.',
   },
   supportButtonURL: {
     id: 'blockConsolidationStatus.supportButtonURL',
