@@ -255,12 +255,8 @@ export default class NetworkStatusStore extends Store {
       return Promise.resolve();
     Logger.info('NetworkStatusStore: received tls config from main process');
     this.api.ada.setRequestConfig(config);
-    return new Promise(resolve => {
-      setTimeout(() => {
-        this._tlsConfig = config;
-        resolve();
-      }, 1000);
-    });
+    this._tlsConfig = config;
+    return Promise.resolve();
   };
 
   _handleCardanoNodeStateChange = async (state: CardanoNodeState) => {

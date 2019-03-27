@@ -8,6 +8,6 @@ export const getNodeSettings = (
 ): Promise<NodeSettingsResponse> =>
   request({
     method: 'GET',
-    path: '/api/v1/node-settings',
+    path: '/api/v1/node-settings-BROKEN',
     ...config,
   });
