@@ -15,15 +15,15 @@ import {
   SET_CACHED_CARDANO_STATUS_CHANNEL,
 } from '../../../common/ipc/api';
 import type {
-  CardanoTlsConfigResponse,
-  CardanoTlsConfigRequest,
+  CardanoTlsConfigMainResponse,
+  CardanoTlsConfigRendererRequest,
 } from '../../../common/ipc/api';
 
 // IpcChannel<Incoming, Outgoing>
 
 export const cardanoTlsConfigChannel: RendererIpcChannel<
-  CardanoTlsConfigResponse,
-  CardanoTlsConfigRequest
+  CardanoTlsConfigMainResponse,
+  CardanoTlsConfigRendererRequest
 > = new RendererIpcChannel(CARDANO_TLS_CONFIG_CHANNEL);
 
 export const restartCardanoNodeChannel: RendererIpcChannel<

@@ -6,8 +6,8 @@ import qr from 'qr-image';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { GENERATE_PAPER_WALLET_CHANNEL } from '../../common/ipc/api';
 import type {
-  GeneratePaperWalletResponse,
-  GeneratePaperWalletRequest,
+  GeneratePaperWalletMainResponse,
+  GeneratePaperWalletRendererRequest,
 } from '../../common/ipc/api';
 import paperWalletFontPath from '../../common/assets/pdf/paper-wallet-certificate-font.ttf';
 import paperWalletPage1Path from '../../common/assets/pdf/paper-wallet-certificate-page-1.png';
@@ -18,13 +18,13 @@ import paperWalletCertificateBgPath from '../../common/assets/pdf/paper-wallet-c
 
 export const generatePaperWalletChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
-  GeneratePaperWalletRequest,
-  GeneratePaperWalletResponse
+  GeneratePaperWalletRendererRequest,
+  GeneratePaperWalletMainResponse
 > = new MainIpcChannel(GENERATE_PAPER_WALLET_CHANNEL);
 
 export const handlePaperWalletRequests = () => {
   generatePaperWalletChannel.onReceive(
-    (request: GeneratePaperWalletRequest) =>
+    (request: GeneratePaperWalletRendererRequest) =>
       new Promise((resolve, reject) => {
         // Prepare params
         const {
