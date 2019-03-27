@@ -1007,19 +1007,19 @@ export default class AdaApi {
     let networkStatus = {};
     Logger.debug(`${loggerText} called`);
     try {
-      const nodeInfo = await this.getNodeInfo(queryInfoParams);
+      const nodeSettings = await this.getNodeSettings();
       networkStatus = {
         ...networkStatus,
-        ...nodeInfo,
+        ...nodeSettings,
       };
     } catch (error) {
       Logger.error(`${loggerText} error`, { error });
     }
     try {
-      const nodeSettings = await this.getNodeSettings();
+      const nodeInfo = await this.getNodeInfo(queryInfoParams);
       networkStatus = {
         ...networkStatus,
-        ...nodeSettings,
+        ...nodeInfo,
       };
     } catch (error) {
       Logger.error(`${loggerText} error`, { error });
