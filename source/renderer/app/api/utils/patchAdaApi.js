@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js';
 import { get } from 'lodash';
 import AdaApi from '../api';
 import { getNodeInfo } from '../nodes/requests/getNodeInfo';
-import { getNodeSettings } from '../nodes/requests/getNodeSettings';
 import { GenericApiError } from '../common/errors';
 import { Logger } from '../../utils/logging';
 import { RedeemAdaError } from '../transactions/errors';
@@ -12,8 +11,7 @@ import type { RedeemPaperVendedAdaParams } from '../transactions/requests/redeem
 import type { NodeInfoQueryParams } from '../nodes/requests/getNodeInfo';
 import type {
   NodeInfoResponse,
-  NodeSettingsResponse,
-  GetNetworkStatusResponse,
+  GetNetworkStatusNodeInfoResponse,
 } from '../nodes/types';
 
 // ========== LOGGING =========
@@ -83,7 +81,7 @@ export default (api: AdaApi) => {
 
   api.getNetworkStatus = async (
     queryInfoParams?: NodeInfoQueryParams
-  ): Promise<GetNetworkStatusResponse> => {
+  ): Promise<GetNetworkStatusNodeInfoResponse> => {
     Logger.debug('AdaApi::getNetworkStatus (PATCHED) called');
     try {
       const nodeInfo: NodeInfoResponse = await getNodeInfo(
@@ -91,12 +89,6 @@ export default (api: AdaApi) => {
         queryInfoParams
       );
       Logger.debug('AdaApi::getNetworkStatus (PATCHED) success', { nodeInfo });
-      const nodeSettings: NodeSettingsResponse = await getNodeSettings(
-        api.config
-      );
-      Logger.debug('AdaApi::getNetworkStatusSettings success', {
-        nodeSettings,
-      });
 
       const {
         blockchainHeight,
@@ -104,8 +96,6 @@ export default (api: AdaApi) => {
         syncProgress,
         localBlockchainHeight,
       } = nodeInfo;
-
-      const { slotId } = nodeSettings;
 
       // extract relevant data before sending to NetworkStatusStore
       return {
@@ -119,7 +109,6 @@ export default (api: AdaApi) => {
           status: 'available',
           difference: LOCAL_TIME_DIFFERENCE,
         },
-        slotId,
       };
     } catch (error) {
       Logger.error('AdaApi::getNetworkStatus (PATCHED) error', { error });

@@ -51,7 +51,8 @@ export type NodeSoftware = {
 };
 
 // req/res Node Types
-export type GetNetworkStatusResponse = {
+
+export type GetNetworkStatusNodeInfoResponse = {
   subscriptionStatus: Object,
   syncProgress: number,
   blockchainHeight: number,
@@ -60,7 +61,15 @@ export type GetNetworkStatusResponse = {
     status: LocalTimeInformationStatus,
     difference: ?number,
   },
-  slotId: {
+};
+
+export type GetNetworkStatusNodeSettingsResponse = {
+  slotId?: {
     epoch: number,
   },
+};
+
+export type GetNetworkStatusResponse = {
+  ...$Exact<GetNetworkStatusNodeInfoResponse>,
+  ...$Exact<GetNetworkStatusNodeSettingsResponse>,
 };

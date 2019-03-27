@@ -1016,15 +1016,15 @@ export default class AdaApi {
     } catch (error) {
       Logger.error(`${loggerText} error`, { error });
     }
-    // try {
-    //   const nodeSettings = await this.getNodeSettings();
-    //   networkStatus = {
-    //     ...networkStatus,
-    //     ...nodeSettings,
-    //   };
-    // } catch (error) {
-    //   Logger.error(`${loggerText} error`, { error });
-    // }
+    try {
+      const nodeSettings = await this.getNodeSettings();
+      networkStatus = {
+        ...networkStatus,
+        ...nodeSettings,
+      };
+    } catch (error) {
+      Logger.error(`${loggerText} error`, { error });
+    }
     return networkStatus;
   };
 
