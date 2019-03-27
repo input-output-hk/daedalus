@@ -238,10 +238,10 @@ export default class NetworkStatusStore extends Store {
 
   _requestTlsConfig = async () => {
     try {
-      const tlsConfig = await cardanoTlsConfigChannel.request();
       Logger.info(
         'NetworkStatusStore: requesting tls config from main process'
       );
+      const tlsConfig = await cardanoTlsConfigChannel.request();
       await this._updateTlsConfig(tlsConfig);
     } catch (error) {
       Logger.error('NetworkStatusStore: error while requesting tls config', {
@@ -255,7 +255,9 @@ export default class NetworkStatusStore extends Store {
       return Promise.resolve();
     Logger.info('NetworkStatusStore: received tls config from main process');
     this.api.ada.setRequestConfig(config);
-    this._tlsConfig = config;
+    runInAction('update _tlsConfig', () => {
+      this._tlsConfig = config;
+    });
     return Promise.resolve();
   };
 

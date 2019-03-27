@@ -976,13 +976,12 @@ export default class AdaApi {
   };
 
   getNodeSettings = async (): Promise<GetNetworkStatusNodeSettingsResponse> => {
-    const loggerText = 'AdaApi::getNodeSetting';
-    Logger.debug(`${loggerText} called`);
+    Logger.debug('AdaApi::getNodeSettings called');
     try {
       const nodeSettings: NodeSettingsResponse = await getNodeSettings(
         this.config
       );
-      Logger.debug('AdaApi::getNetworkStatusSettings success', {
+      Logger.debug('AdaApi::getNodeSettings success', {
         nodeSettings,
       });
       const { slotId } = nodeSettings;
@@ -990,7 +989,7 @@ export default class AdaApi {
       // extract relevant data before sending to NetworkStatusStore
       return { slotId };
     } catch (error) {
-      Logger.error(`${loggerText} error`, { error });
+      Logger.error('AdaApi::getNodeSettings error', { error });
       if (error.code === TlsCertificateNotValidError.API_ERROR) {
         throw new TlsCertificateNotValidError();
       }
