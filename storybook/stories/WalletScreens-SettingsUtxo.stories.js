@@ -3,6 +3,7 @@ import React from 'react';
 import { number } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import BigNumber from 'bignumber.js';
+import millify from 'millify';
 
 // Screens
 import WalletSettingsLayout from '../../source/renderer/app/components/wallet/settings/WalletSettingsLayout';
@@ -21,6 +22,9 @@ export default ({ story }: { story: string }) => (
     }
   >
     <WalletUtxoSettings
+      getPrettyAmount={(amount: number) =>
+        amount >= 1000 ? millify(parseInt(amount, 10)) : amount
+      }
       walletAmount={
         new BigNumber(
           number('Amount', 66.998, {

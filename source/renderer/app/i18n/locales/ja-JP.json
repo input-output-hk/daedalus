@@ -385,6 +385,8 @@
   "wallet.settings.menu.general.link.label": "!!!General",
   "wallet.settings.menu.utxo.link.label": "!!!Wallet UTxO distribution",
   "wallet.settings.utxos.description": "!!!This wallet contains <b>{amount} ADA</b> on <b>{utxos} UTxOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTxOs with different amounts of ada.",
+  "wallet.settings.utxos.labelX": "!!!amount",
+  "wallet.settings.utxos.labelY": "!!!Nº UTxO",
   "wallet.settings.utxos.title": "!!!Wallet UTxO distribution",
   "wallet.statusMessages.activeRestore": "ウォレットを復元中",
   "wallet.summary.no.transactions": "最近のトランザクションはありません",

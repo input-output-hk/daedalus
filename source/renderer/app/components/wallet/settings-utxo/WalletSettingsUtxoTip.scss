@@ -1,0 +1,14 @@
+.component {
+  text {
+    font-size: 10px;
+    font-weight: 100;
+    stroke: #c2cad4;
+    font-family: var(--font-regular);
+  }
+}
+
+.vertical {
+  text {
+    transform: rotate(90deg);
+  }
+}

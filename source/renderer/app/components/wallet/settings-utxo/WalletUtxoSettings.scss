@@ -13,7 +13,7 @@
     margin-bottom: 14px;
   }
 
-  p {
+  > p {
     color: rgba(94, 96, 102, 0.7);
     font-family: var(--font-light);
     font-size: 16px;
@@ -21,7 +21,7 @@
     margin-bottom: 20px;
   }
 
-  b {
+  > b {
     color: #5e6066;
     font-family: var(--font-regular);
   }
@@ -36,20 +36,16 @@
 }
 
 .bar {
-  fill: rgba(68, 91, 124, 0.5);
-}
-
-.yAxisTick {
-  text {
-    font-size: 10px;
-    font-weight: 100;
-    stroke: #c2cad4;
-    font-family: var(--font-regular);
+  path {
+    fill: rgba(68, 91, 124, 0.5);
+    transition: fill 0.25s;
+    &:hover {
+      fill: #445b7c;
+    }
   }
 }
 
 .yAxisLabel {
-  // transform: translate(0, -20px);
   text,
   tspan {
     fill: rgba(194, 202, 212, 0.6);
@@ -59,18 +55,7 @@
   }
 }
 
-.xAxisTick {
-  text {
-    font-size: 10px;
-    font-weight: 100;
-    stroke: #c2cad4;
-    font-family: var(--font-regular);
-    transform: rotate(90deg);
-  }
-}
-
 .xAxisLabel {
-  // transform: rotate(90deg) translatex(17px);
   transform: rotate(90deg);
   transform-origin: right bottom;
   text,

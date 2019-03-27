@@ -2774,39 +2774,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!General",
-        "description": "Label for the \"General\" link in the settings menu.",
-        "end": {
-          "column": 3,
-          "line": 14
-        },
-        "file": "source/renderer/app/components/wallet/menu/WalletSettingsMenu.js",
-        "id": "wallet.settings.menu.general.link.label",
-        "start": {
-          "column": 11,
-          "line": 10
-        }
-      },
-      {
-        "defaultMessage": "!!!Wallet UTxO distribution",
-        "description": "Label for the \"Support\" link in the settings menu.",
-        "end": {
-          "column": 3,
-          "line": 19
-        },
-        "file": "source/renderer/app/components/wallet/menu/WalletSettingsMenu.js",
-        "id": "wallet.settings.menu.utxo.link.label",
-        "start": {
-          "column": 8,
-          "line": 15
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/menu/WalletSettingsMenu.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Summary",
         "description": "Label for the \"Summary\" nav button in the wallet navigation.",
         "end": {
@@ -3637,7 +3604,7 @@
           "column": 3,
           "line": 30
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings-general/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.title.setPassword",
         "start": {
           "column": 26,
@@ -3651,7 +3618,7 @@
           "column": 3,
           "line": 36
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings-general/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.title.changePassword",
         "start": {
           "column": 29,
@@ -3665,7 +3632,7 @@
           "column": 3,
           "line": 42
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings-general/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
@@ -3679,7 +3646,7 @@
           "column": 3,
           "line": 48
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings-general/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.currentPasswordLabel",
         "start": {
           "column": 24,
@@ -3693,7 +3660,7 @@
           "column": 3,
           "line": 54
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings-general/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.newPasswordLabel",
         "start": {
           "column": 20,
@@ -3707,7 +3674,7 @@
           "column": 3,
           "line": 60
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings-general/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.repeatPasswordLabel",
         "start": {
           "column": 23,
@@ -3721,7 +3688,7 @@
           "column": 3,
           "line": 66
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings-general/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.currentPasswordFieldPlaceholder",
         "start": {
           "column": 35,
@@ -3735,7 +3702,7 @@
           "column": 3,
           "line": 72
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings-general/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.newPasswordFieldPlaceholder",
         "start": {
           "column": 31,
@@ -3749,7 +3716,7 @@
           "column": 3,
           "line": 78
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings-general/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.repeatPasswordFieldPlaceholder",
         "start": {
           "column": 34,
@@ -3763,7 +3730,7 @@
           "column": 3,
           "line": 84
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings-general/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.passwordSwitchLabel",
         "start": {
           "column": 23,
@@ -3777,7 +3744,7 @@
           "column": 3,
           "line": 90
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.js",
+        "file": "source/renderer/app/components/wallet/settings-general/ChangeSpendingPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.passwordSwitchPlaceholder",
         "start": {
           "column": 29,
@@ -3785,7 +3752,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog.json"
+    "path": "source/renderer/app/components/wallet/settings-general/ChangeSpendingPasswordDialog.json"
   },
   {
     "descriptors": [
@@ -3796,7 +3763,7 @@
           "column": 3,
           "line": 11
         },
-        "file": "source/renderer/app/components/wallet/settings/DeleteWalletButton.js",
+        "file": "source/renderer/app/components/wallet/settings-general/DeleteWalletButton.js",
         "id": "wallet.settings.deleteWalletButtonLabel",
         "start": {
           "column": 9,
@@ -3804,7 +3771,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/settings/DeleteWalletButton.json"
+    "path": "source/renderer/app/components/wallet/settings-general/DeleteWalletButton.json"
   },
   {
     "descriptors": [
@@ -3815,7 +3782,7 @@
           "column": 3,
           "line": 22
         },
-        "file": "source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
+        "file": "source/renderer/app/components/wallet/settings-general/DeleteWalletConfirmationDialog.js",
         "id": "wallet.settings.delete.dialog.title",
         "start": {
           "column": 15,
@@ -3829,7 +3796,7 @@
           "column": 3,
           "line": 28
         },
-        "file": "source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
+        "file": "source/renderer/app/components/wallet/settings-general/DeleteWalletConfirmationDialog.js",
         "id": "wallet.settings.delete.dialog.confirmButtonLabel",
         "start": {
           "column": 22,
@@ -3843,7 +3810,7 @@
           "column": 3,
           "line": 34
         },
-        "file": "source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
+        "file": "source/renderer/app/components/wallet/settings-general/DeleteWalletConfirmationDialog.js",
         "id": "wallet.settings.delete.dialog.wantToDeleteWalletQuestion",
         "start": {
           "column": 30,
@@ -3857,7 +3824,7 @@
           "column": 3,
           "line": 41
         },
-        "file": "source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
+        "file": "source/renderer/app/components/wallet/settings-general/DeleteWalletConfirmationDialog.js",
         "id": "wallet.settings.delete.dialog.confirmBackupNotice",
         "start": {
           "column": 23,
@@ -3871,7 +3838,7 @@
           "column": 3,
           "line": 46
         },
-        "file": "source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
+        "file": "source/renderer/app/components/wallet/settings-general/DeleteWalletConfirmationDialog.js",
         "id": "wallet.settings.delete.dialog.enterRecoveryWordLabel",
         "start": {
           "column": 26,
@@ -3879,7 +3846,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog.json"
+    "path": "source/renderer/app/components/wallet/settings-general/DeleteWalletConfirmationDialog.json"
   },
   {
     "descriptors": [
@@ -3890,7 +3857,7 @@
           "column": 3,
           "line": 23
         },
-        "file": "source/renderer/app/components/wallet/settings/ExportWalletToFileDialog.js",
+        "file": "source/renderer/app/components/wallet/settings-general/ExportWalletToFileDialog.js",
         "id": "wallet.settings.exportToFile.dialog.headline",
         "start": {
           "column": 12,
@@ -3904,7 +3871,7 @@
           "column": 3,
           "line": 29
         },
-        "file": "source/renderer/app/components/wallet/settings/ExportWalletToFileDialog.js",
+        "file": "source/renderer/app/components/wallet/settings-general/ExportWalletToFileDialog.js",
         "id": "wallet.settings.exportToFile.dialog.introduction",
         "start": {
           "column": 16,
@@ -3918,7 +3885,7 @@
           "column": 3,
           "line": 34
         },
-        "file": "source/renderer/app/components/wallet/settings/ExportWalletToFileDialog.js",
+        "file": "source/renderer/app/components/wallet/settings-general/ExportWalletToFileDialog.js",
         "id": "wallet.settings.exportToFile.dialog.submit.label",
         "start": {
           "column": 21,
@@ -3926,7 +3893,190 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/settings/ExportWalletToFileDialog.json"
+    "path": "source/renderer/app/components/wallet/settings-general/ExportWalletToFileDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Name",
+        "description": "Label for the \"Name\" text input on the wallet settings page.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/wallet/settings-general/WalletGeneralSettings.js",
+        "id": "wallet.settings.general.name.label",
+        "start": {
+          "column": 8,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Transaction assurance security level",
+        "description": "Label for the \"Transaction assurance security level\" dropdown.",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/wallet/settings-general/WalletGeneralSettings.js",
+        "id": "wallet.settings.general.assurance",
+        "start": {
+          "column": 23,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Password",
+        "description": "Label for the \"Password\" field.",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/wallet/settings-general/WalletGeneralSettings.js",
+        "id": "wallet.settings.general.password",
+        "start": {
+          "column": 17,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!Last updated",
+        "description": "Last updated X time ago message.",
+        "end": {
+          "column": 3,
+          "line": 40
+        },
+        "file": "source/renderer/app/components/wallet/settings-general/WalletGeneralSettings.js",
+        "id": "wallet.settings.general.passwordLastUpdated",
+        "start": {
+          "column": 23,
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!You still don't have password",
+        "description": "You still don't have password set message.",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "source/renderer/app/components/wallet/settings-general/WalletGeneralSettings.js",
+        "id": "wallet.settings.general.passwordNotSet",
+        "start": {
+          "column": 18,
+          "line": 41
+        }
+      },
+      {
+        "defaultMessage": "!!!Export wallet",
+        "description": "Label for the export button on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 50
+        },
+        "file": "source/renderer/app/components/wallet/settings-general/WalletGeneralSettings.js",
+        "id": "wallet.settings.general.exportWalletButtonLabel",
+        "start": {
+          "column": 21,
+          "line": 46
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/settings-general/WalletGeneralSettings.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Wallet UTxO distribution",
+        "description": "Title for the \"Wallet Utxos\" screen.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/wallet/settings-utxo/WalletUtxoSettings.js",
+        "id": "wallet.settings.utxos.title",
+        "start": {
+          "column": 9,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!This wallet contains <b>{formattedWalletAmount} ADA</b> on <b>{walletUtxosAmount} UTxOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTxOs with different amounts of ada.",
+        "description": "Description for the \"Wallet Utxos\" screen.",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/wallet/settings-utxo/WalletUtxoSettings.js",
+        "id": "wallet.settings.utxos.description",
+        "start": {
+          "column": 15,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!amount",
+        "description": "Label X for the \"Wallet Utxos\" screen.",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/wallet/settings-utxo/WalletUtxoSettings.js",
+        "id": "wallet.settings.utxos.labelX",
+        "start": {
+          "column": 10,
+          "line": 34
+        }
+      },
+      {
+        "defaultMessage": "!!!Nº UTxO",
+        "description": "Label Y for the \"Wallet Utxos\" screen.",
+        "end": {
+          "column": 3,
+          "line": 43
+        },
+        "file": "source/renderer/app/components/wallet/settings-utxo/WalletUtxoSettings.js",
+        "id": "wallet.settings.utxos.labelY",
+        "start": {
+          "column": 10,
+          "line": 39
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/settings-utxo/WalletUtxoSettings.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!General",
+        "description": "Label for the \"General\" link in the settings menu.",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettingsMenu.js",
+        "id": "wallet.settings.menu.general.link.label",
+        "start": {
+          "column": 11,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!Wallet UTxO distribution",
+        "description": "Label for the \"Support\" link in the settings menu.",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettingsMenu.js",
+        "id": "wallet.settings.menu.utxo.link.label",
+        "start": {
+          "column": 8,
+          "line": 15
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/settings/WalletSettingsMenu.json"
   },
   {
     "descriptors": [
@@ -4633,95 +4783,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Name",
-        "description": "Label for the \"Name\" text input on the wallet settings page.",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/components/wallet/WalletGeneralSettings.js",
-        "id": "wallet.settings.general.name.label",
-        "start": {
-          "column": 8,
-          "line": 20
-        }
-      },
-      {
-        "defaultMessage": "!!!Transaction assurance security level",
-        "description": "Label for the \"Transaction assurance security level\" dropdown.",
-        "end": {
-          "column": 3,
-          "line": 30
-        },
-        "file": "source/renderer/app/components/wallet/WalletGeneralSettings.js",
-        "id": "wallet.settings.general.assurance",
-        "start": {
-          "column": 23,
-          "line": 25
-        }
-      },
-      {
-        "defaultMessage": "!!!Password",
-        "description": "Label for the \"Password\" field.",
-        "end": {
-          "column": 3,
-          "line": 35
-        },
-        "file": "source/renderer/app/components/wallet/WalletGeneralSettings.js",
-        "id": "wallet.settings.general.password",
-        "start": {
-          "column": 17,
-          "line": 31
-        }
-      },
-      {
-        "defaultMessage": "!!!Last updated",
-        "description": "Last updated X time ago message.",
-        "end": {
-          "column": 3,
-          "line": 40
-        },
-        "file": "source/renderer/app/components/wallet/WalletGeneralSettings.js",
-        "id": "wallet.settings.general.passwordLastUpdated",
-        "start": {
-          "column": 23,
-          "line": 36
-        }
-      },
-      {
-        "defaultMessage": "!!!You still don't have password",
-        "description": "You still don't have password set message.",
-        "end": {
-          "column": 3,
-          "line": 45
-        },
-        "file": "source/renderer/app/components/wallet/WalletGeneralSettings.js",
-        "id": "wallet.settings.general.passwordNotSet",
-        "start": {
-          "column": 18,
-          "line": 41
-        }
-      },
-      {
-        "defaultMessage": "!!!Export wallet",
-        "description": "Label for the export button on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 50
-        },
-        "file": "source/renderer/app/components/wallet/WalletGeneralSettings.js",
-        "id": "wallet.settings.general.exportWalletButtonLabel",
-        "start": {
-          "column": 21,
-          "line": 46
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/WalletGeneralSettings.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Restore a wallet",
         "description": "Label \"Restore wallet\" on the wallet restore dialog.",
         "end": {
@@ -5265,39 +5326,6 @@
       }
     ],
     "path": "source/renderer/app/components/wallet/WalletSendForm.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Wallet UTxO distribution",
-        "description": "Title for the \"Wallet Utxos\" screen.",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/components/wallet/WalletUtxoSettings.js",
-        "id": "wallet.settings.utxos.title",
-        "start": {
-          "column": 9,
-          "line": 20
-        }
-      },
-      {
-        "defaultMessage": "!!!This wallet contains <b>{walletAmount} ADA</b> on <b>{walletUtxosAmount} UTxOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTxOs with different amounts of ada.",
-        "description": "Description for the \"Wallet Utxos\" screen.",
-        "end": {
-          "column": 3,
-          "line": 30
-        },
-        "file": "source/renderer/app/components/wallet/WalletUtxoSettings.js",
-        "id": "wallet.settings.utxos.description",
-        "start": {
-          "column": 15,
-          "line": 25
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/WalletUtxoSettings.json"
   },
   {
     "descriptors": [

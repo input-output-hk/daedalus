@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import millify from 'millify';
 import WalletUtxoSettings from '../../components/wallet/settings-utxo/WalletUtxoSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import type { Histogram } from '../../api/wallets/types';
@@ -40,6 +41,9 @@ export default class WalletSettingsPage extends Component<Props> {
     return parseInt(walletUtxosAmount, 10);
   };
 
+  getPrettyAmount = (amount: number) =>
+    amount >= 1000 ? millify(parseInt(amount, 10)) : amount;
+
   render() {
     const { wallets, walletSettings } = this.props.stores;
     const { walletUtxos } = walletSettings;
@@ -54,6 +58,7 @@ export default class WalletSettingsPage extends Component<Props> {
         walletAmount={activeWallet.amount}
         walletUtxosAmount={walletUtxosAmount}
         chartData={chartData}
+        getPrettyAmount={this.getPrettyAmount}
       />
     );
   }

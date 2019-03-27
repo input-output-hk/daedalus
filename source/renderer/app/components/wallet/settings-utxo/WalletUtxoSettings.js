@@ -2,10 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import BigNumber from 'bignumber.js';
-import { get } from 'lodash';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-// import { formattedUtxosPrettyAmount } from '../../utils/formatters';
-import millify from 'millify';
 import {
   BarChart,
   CartesianGrid,
@@ -16,6 +13,9 @@ import {
   Bar,
   ResponsiveContainer,
 } from 'recharts';
+import Tip from './WalletSettingsUtxoTip';
+import CustomTooltip from './WalletSettingsUtxoTooltip';
+import Cursor from './WalletSettingsUtxoCursor';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './WalletUtxoSettings.scss';
 
@@ -47,24 +47,7 @@ type Props = {
   walletAmount: BigNumber,
   walletUtxosAmount: number,
   chartData: Array<any>,
-};
-
-type TickDefaultProps = {
-  x: number,
-  y: number,
-  payload: {
-    value: number,
-  },
-};
-
-type TickCustomProps = {
-  className: string,
-  prettify?: boolean,
-  textAnchor: 'start' | 'end',
-};
-
-type TooltipProps = {
-  payload: Array<{ payload: any }>,
+  getPrettyAmount: Function,
 };
 
 @observer
@@ -72,41 +55,6 @@ export default class WalletUtxoSettings extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  getPrettyAmount = (amount: number) =>
-    amount >= 1000 ? millify(parseInt(amount, 10)) : amount;
-
-  getTooltipContent = (props: TooltipProps) => {
-    const { walletAmount, walletUtxosAmount } = get(
-      props,
-      'payload[0].payload',
-      {}
-    );
-    const previousWalletAmount =
-      walletAmount === 45000000000 ? 10000000000 : walletAmount / 10;
-    const prettyWalletAmount = this.getPrettyAmount(walletAmount);
-    const prettyPreviousWalletAmount = this.getPrettyAmount(
-      previousWalletAmount
-    );
-
-    return (
-      <p>
-        {walletUtxosAmount} UTxOs containing <br />
-        between {prettyPreviousWalletAmount} and {prettyWalletAmount} ADA
-      </p>
-    );
-  };
-
-  getTick = (
-    { x, y, payload: { value } }: TickDefaultProps,
-    { className, prettify, textAnchor }: TickCustomProps
-  ) => (
-    <g transform={`translate(${x},${y})`} className={className}>
-      <text textAnchor={textAnchor}>
-        {prettify ? this.getPrettyAmount(value) : value}
-      </text>
-    </g>
-  );
 
   render() {
     const { intl } = this.context;
@@ -127,7 +75,7 @@ export default class WalletUtxoSettings extends Component<Props> {
           height={280}
           className={styles.responsiveContainer}
         >
-          <BarChart data={chartData}>
+          <BarChart data={chartData} barGap={30} barCategoryGap={4}>
             <CartesianGrid
               horizontal={false}
               vertical={false}
@@ -138,13 +86,12 @@ export default class WalletUtxoSettings extends Component<Props> {
               interval={0}
               axisLine={false}
               tickLine={false}
-              tickFormatter={this.getPrettyAmount}
-              tick={props =>
-                this.getTick(props, {
-                  className: styles.xAxisTick,
-                  textAnchor: 'start',
-                  prettify: true,
-                })
+              tick={
+                <Tip
+                  textAnchor="start"
+                  getPrettyAmount={this.props.getPrettyAmount}
+                  vertical
+                />
               }
               className={styles.xAxis}
               y={0}
@@ -160,12 +107,9 @@ export default class WalletUtxoSettings extends Component<Props> {
               dataKey="walletUtxosAmount"
               axisLine={false}
               tickLine={false}
-              tick={props =>
-                this.getTick(props, {
-                  className: styles.yAxisTick,
-                  textAnchor: 'end',
-                })
-              }
+              allowDecimals={false}
+              domain={[0, 'dataMax']}
+              tick={<Tip textAnchor="end" />}
             >
               <Label
                 value={intl.formatMessage(messages.labelY)}
@@ -174,7 +118,13 @@ export default class WalletUtxoSettings extends Component<Props> {
                 className={styles.yAxisLabel}
               />
             </YAxis>
-            <Tooltip content={this.getTooltipContent} />
+            <Tooltip
+              cursor1={false}
+              cursor={<Cursor />}
+              content={
+                <CustomTooltip getPrettyAmount={this.props.getPrettyAmount} />
+              }
+            />
             <Bar dataKey="walletUtxosAmount" className={styles.bar} />
           </BarChart>
         </ResponsiveContainer>
