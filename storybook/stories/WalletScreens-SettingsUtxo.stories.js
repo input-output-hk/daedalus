@@ -5,9 +5,9 @@ import { linkTo } from '@storybook/addon-links';
 import BigNumber from 'bignumber.js';
 
 // Screens
-import WalletSettingsLayout from '../../source/renderer/app/components/wallet/WalletSettingsLayout';
-import WalletUtxoSettings from '../../source/renderer/app/components/wallet/WalletUtxoSettings';
-import WalletSettingsMenu from '../../source/renderer/app/components/wallet/menu/WalletSettingsMenu';
+import WalletSettingsLayout from '../../source/renderer/app/components/wallet/settings/WalletSettingsLayout';
+import WalletSettingsMenu from '../../source/renderer/app/components/wallet/settings/WalletSettingsMenu';
+import WalletUtxoSettings from '../../source/renderer/app/components/wallet/settings-utxo/WalletUtxoSettings';
 
 /* eslint-disable react/display-name  */
 

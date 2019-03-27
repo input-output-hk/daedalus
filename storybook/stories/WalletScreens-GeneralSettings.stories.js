@@ -6,14 +6,14 @@ import { linkTo } from '@storybook/addon-links';
 import moment from 'moment';
 
 // Screens
-import WalletSettingsLayout from '../../source/renderer/app/components/wallet/WalletSettingsLayout';
-import WalletGeneralSettings from '../../source/renderer/app/components/wallet/WalletGeneralSettings';
-import WalletSettingsMenu from '../../source/renderer/app/components/wallet/menu/WalletSettingsMenu';
+import WalletSettingsLayout from '../../source/renderer/app/components/wallet/settings/WalletSettingsLayout';
+import WalletSettingsMenu from '../../source/renderer/app/components/wallet/settings/WalletSettingsMenu';
+import WalletGeneralSettings from '../../source/renderer/app/components/wallet/settings-general/WalletGeneralSettings';
 
 import { WalletAssuranceModeOptions } from '../../source/renderer/app/domains/Wallet';
-import ChangeSpendingPasswordDialog from '../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
-import DeleteWalletConfirmationDialog from '../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
-import ExportWalletToFileDialog from '../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
+import ChangeSpendingPasswordDialog from '../../source/renderer/app/components/wallet/settings-general/ChangeSpendingPasswordDialog';
+import DeleteWalletConfirmationDialog from '../../source/renderer/app/components/wallet/settings-general/DeleteWalletConfirmationDialog';
+import ExportWalletToFileDialog from '../../source/renderer/app/components/wallet/settings-general/ExportWalletToFileDialog';
 
 /* eslint-disable react/display-name  */
 

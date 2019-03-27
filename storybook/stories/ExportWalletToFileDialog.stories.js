@@ -3,7 +3,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import StoryDecorator from './support/StoryDecorator';
-import ExportWalletToFileDialog from '../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
+import ExportWalletToFileDialog from '../../source/renderer/app/components/wallet/settings-general/ExportWalletToFileDialog';
 
 storiesOf('ExportWalletToFileDialog', module)
   .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)

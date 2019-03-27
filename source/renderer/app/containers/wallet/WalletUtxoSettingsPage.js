@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import WalletUtxoSettings from '../../components/wallet/WalletUtxoSettings';
+import WalletUtxoSettings from '../../components/wallet/settings-utxo/WalletUtxoSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import type { Histogram } from '../../api/wallets/types';
 import { LOVELACES_PER_ADA } from '../../config/numbersConfig';
@@ -22,7 +22,7 @@ export default class WalletSettingsPage extends Component<Props> {
     Object.entries(histogram)
       .sort()
       .map<any>(([walletAmount, walletUtxosAmount]) => ({
-        walletAmount: parseInt(walletAmount, 100) / LOVELACES_PER_ADA,
+        walletAmount: parseInt(walletAmount, 10) / LOVELACES_PER_ADA,
         walletUtxosAmount,
       }))
       .filter(

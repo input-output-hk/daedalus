@@ -16,7 +16,7 @@ import {
   Bar,
   ResponsiveContainer,
 } from 'recharts';
-import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
+import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './WalletUtxoSettings.scss';
 
 export const messages = defineMessages({

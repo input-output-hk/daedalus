@@ -1,8 +1,8 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import WalletSettingsLayout from '../../components/wallet/WalletSettingsLayout';
-import WalletSettingsMenu from '../../components/wallet/menu/WalletSettingsMenu';
+import WalletSettingsLayout from '../../components/wallet/settings/WalletSettingsLayout';
+import WalletSettingsMenu from '../../components/wallet/settings/WalletSettingsMenu';
 import { buildRoute } from '../../utils/routing';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 

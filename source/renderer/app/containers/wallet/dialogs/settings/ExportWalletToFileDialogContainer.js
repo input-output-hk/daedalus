@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 // import { remote } from 'electron';
-import ExportWalletToFileDialog from '../../../../components/wallet/settings/ExportWalletToFileDialog';
-import type { OnSubmitParams } from '../../../../components/wallet/settings/ExportWalletToFileDialog';
+import ExportWalletToFileDialog from '../../../../components/wallet/settings-general/ExportWalletToFileDialog';
+import type { OnSubmitParams } from '../../../../components/wallet/settings-general/ExportWalletToFileDialog';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
 
 type Props = InjectedDialogContainerProps;

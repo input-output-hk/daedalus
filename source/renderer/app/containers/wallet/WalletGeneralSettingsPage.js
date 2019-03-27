@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import WalletGeneralSettings from '../../components/wallet/WalletGeneralSettings';
+import WalletGeneralSettings from '../../components/wallet/settings-general/WalletGeneralSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { isValidWalletName } from '../../utils/validations';
 import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
