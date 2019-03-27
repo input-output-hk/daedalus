@@ -22,7 +22,7 @@ export default class WalletSettingsPage extends Component<Props> {
     Object.entries(histogram)
       .sort()
       .map<any>(([walletAmount, walletUtxosAmount]) => ({
-        walletAmount: walletAmount / LOVELACES_PER_ADA,
+        walletAmount: parseInt(walletAmount, 100) / LOVELACES_PER_ADA,
         walletUtxosAmount,
       }))
       .filter(

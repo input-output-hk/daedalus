@@ -26,3 +26,59 @@
     font-family: var(--font-regular);
   }
 }
+
+// CHARTS STYLES
+
+.responsiveContainer {
+  > div > svg {
+    padding: 15px 15px 15px 0;
+  }
+}
+
+.bar {
+  fill: rgba(68, 91, 124, 0.5);
+}
+
+.yAxisTick {
+  text {
+    font-size: 10px;
+    font-weight: 100;
+    stroke: #c2cad4;
+    font-family: var(--font-regular);
+  }
+}
+
+.yAxisLabel {
+  // transform: translate(0, -20px);
+  text,
+  tspan {
+    fill: rgba(194, 202, 212, 0.6);
+    font-family: var(--font-regular);
+    font-size: 10px;
+    line-height: 1.3;
+  }
+}
+
+.xAxisTick {
+  text {
+    font-size: 10px;
+    font-weight: 100;
+    stroke: #c2cad4;
+    font-family: var(--font-regular);
+    transform: rotate(90deg);
+  }
+}
+
+.xAxisLabel {
+  // transform: rotate(90deg) translatex(17px);
+  transform: rotate(90deg);
+  transform-origin: right bottom;
+  text,
+  tspan {
+    fill: rgba(194, 202, 212, 0.6);
+    font-family: var(--font-regular);
+    font-size: 10px;
+    line-height: 1.3;
+    transform: rotate(90deg);
+  }
+}
