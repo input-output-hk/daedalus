@@ -19,7 +19,6 @@ export default class BlockConsolidationStore extends Store {
   // Initialize store observables
   @observable epochsConsolidated: number = 0; // Got from the IPC channel
   @observable currentEpoch: number = 0; // Got from the API (or from cardanoexplorer when the API fails)
-  // @observable currentEpochFallbackRequested: boolean = false;
 
   @observable
   getNodeSettingsRequest: Request<GetNodeSettingsResponse> = new Request(
