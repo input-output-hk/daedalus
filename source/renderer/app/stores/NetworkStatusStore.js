@@ -21,7 +21,6 @@ import {
   setCachedCardanoStatusChannel,
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
-import { getNumberOfEpochsConsolidatedChannel } from '../ipc/getNumberOfEpochsConsolidatedChannel';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
 import type {
@@ -30,7 +29,6 @@ import type {
   TlsConfig,
 } from '../../../common/types/cardano-node.types';
 import type { NodeInfoQueryParams } from '../api/nodes/requests/getNodeInfo';
-import type { GetConsolidatedEpochsCountMainResponse } from '../../../common/ipc/api';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
 
@@ -80,8 +78,6 @@ export default class NetworkStatusStore extends Store {
   @observable initialLocalHeight = null;
   @observable localBlockHeight = 0;
   @observable networkBlockHeight = 0;
-  @observable epochsConsolidated: number = 0;
-  @observable currentEpoch: number = 0;
   @observable latestLocalBlockTimestamp = 0; // milliseconds
   @observable latestNetworkBlockTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
@@ -89,10 +85,6 @@ export default class NetworkStatusStore extends Store {
   @observable
   getNetworkStatusRequest: Request<GetNetworkStatusResponse> = new Request(
     this.api.ada.getNetworkStatus
-  );
-  @observable
-  getCurrentEpochFallbackRequest: Request<GetNetworkStatusResponse> = new Request(
-    this.api.ada.getCurrentEpochFallback
   );
   @observable
   forceCheckTimeDifferenceRequest: Request<GetNetworkStatusResponse> = new Request(
@@ -104,12 +96,9 @@ export default class NetworkStatusStore extends Store {
   @observable diskSpaceMissing: string = '';
   @observable diskSpaceRecommended: string = '';
   @observable isTlsCertInvalid: boolean = false;
-  @observable currentEpochFallbackRequested: boolean = false;
 
   // DEFINE STORE METHODS
   setup() {
-    const actions = this.actions.networkStatus;
-    actions.getEpochsData.listen(this._getEpochsData);
     // ========== IPC CHANNELS =========== //
 
     // Request node state
@@ -306,19 +295,7 @@ export default class NetworkStatusStore extends Store {
     };
   };
 
-  _getEpochsData = async () => {
-    this._onReceiveEpochsData(
-      await getNumberOfEpochsConsolidatedChannel.request()
-    );
-  };
-
   // DEFINE ACTIONS
-
-  @action _onReceiveEpochsData = (
-    epochsConsolidated: GetConsolidatedEpochsCountMainResponse
-  ) => {
-    this.epochsConsolidated = epochsConsolidated;
-  };
 
   @action _updateNetworkStatus = async (
     queryInfoParams?: NodeInfoQueryParams
@@ -370,7 +347,6 @@ export default class NetworkStatusStore extends Store {
       const {
         subscriptionStatus,
         syncProgress,
-        slotId,
         blockchainHeight,
         localBlockchainHeight,
         localTimeInformation,
@@ -413,15 +389,6 @@ export default class NetworkStatusStore extends Store {
       runInAction('update syncProgress', () => {
         this.syncProgress = syncProgress;
       });
-
-      // Update current epoch
-      if (slotId && slotId.epoch) {
-        runInAction('current epoch', () => {
-          this.currentEpoch = slotId.epoch;
-        });
-      } else {
-        this._getCurrentEpochFallback();
-      }
 
       runInAction('update block heights', () => {
         if (this.initialLocalHeight === null) {
@@ -548,7 +515,6 @@ export default class NetworkStatusStore extends Store {
       }
     } catch (error) {
       // Node is not responding, switch to disconnected state
-      this._getCurrentEpochFallback();
       this._setDisconnected(wasConnected);
       if (error instanceof TlsCertificateNotValidError) {
         runInAction('set isTlsCertInvalid = true', () => {
@@ -556,16 +522,6 @@ export default class NetworkStatusStore extends Store {
         });
       }
     }
-  };
-
-  @action _getCurrentEpochFallback = async () => {
-    if (this.currentEpochFallbackRequested) return;
-    this.currentEpochFallbackRequested = true;
-    const currentEpoch = await this.getCurrentEpochFallbackRequest.execute()
-      .promise;
-    runInAction(() => {
-      this.currentEpoch = currentEpoch;
-    });
   };
 
   @action _setDisconnected = (wasConnected: boolean) => {

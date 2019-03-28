@@ -11,7 +11,7 @@ import type { RedeemPaperVendedAdaParams } from '../transactions/requests/redeem
 import type { NodeInfoQueryParams } from '../nodes/requests/getNodeInfo';
 import type {
   NodeInfoResponse,
-  GetNetworkStatusNodeInfoResponse,
+  GetNetworkStatusResponse,
 } from '../nodes/types';
 
 // ========== LOGGING =========
@@ -81,7 +81,7 @@ export default (api: AdaApi) => {
 
   api.getNetworkStatus = async (
     queryInfoParams?: NodeInfoQueryParams
-  ): Promise<GetNetworkStatusNodeInfoResponse> => {
+  ): Promise<GetNetworkStatusResponse> => {
     Logger.debug('AdaApi::getNetworkStatus (PATCHED) called');
     try {
       const nodeInfo: NodeInfoResponse = await getNodeInfo(

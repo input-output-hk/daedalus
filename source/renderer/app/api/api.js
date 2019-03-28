@@ -100,8 +100,8 @@ import type {
   NodeSettingsResponse,
   NodeSoftware,
   GetNetworkStatusResponse,
-  GetNetworkStatusNodeInfoResponse,
-  GetNetworkStatusNodeSettingsResponse,
+  GetNodeSettingsResponse,
+  GetCurrentEpochFallbackResponse,
 } from './nodes/types';
 import type { NodeInfoQueryParams } from './nodes/requests/getNodeInfo';
 
@@ -928,11 +928,11 @@ export default class AdaApi {
     }
   };
 
-  getNodeInfo = async (
+  getNetworkStatus = async (
     queryInfoParams?: NodeInfoQueryParams
-  ): Promise<GetNetworkStatusNodeInfoResponse> => {
+  ): Promise<GetNetworkStatusResponse> => {
     const isForceNTPCheck = !!queryInfoParams;
-    const loggerText = `AdaApi::getNodeInfo${
+    const loggerText = `AdaApi::getNetworkStatus${
       isForceNTPCheck ? ' (FORCE-NTP-CHECK)' : ''
     }`;
     Logger.debug(`${loggerText} called`);
@@ -975,7 +975,7 @@ export default class AdaApi {
     }
   };
 
-  getNodeSettings = async (): Promise<GetNetworkStatusNodeSettingsResponse> => {
+  getNodeSettings = async (): Promise<GetNodeSettingsResponse> => {
     Logger.debug('AdaApi::getNodeSettings called');
     try {
       const nodeSettings: NodeSettingsResponse = await getNodeSettings(
@@ -985,8 +985,6 @@ export default class AdaApi {
         nodeSettings,
       });
       const { slotId } = nodeSettings;
-
-      // extract relevant data before sending to NetworkStatusStore
       return { slotId };
     } catch (error) {
       Logger.error('AdaApi::getNodeSettings error', { error });
@@ -997,51 +995,15 @@ export default class AdaApi {
     }
   };
 
-  wait = async (ms: number) => {
-    return new Promise(resolve => {
-      setTimeout(resolve, ms);
-    });
-  };
-
-  getNetworkStatus = async (
-    queryInfoParams?: NodeInfoQueryParams
-  ): Promise<GetNetworkStatusResponse> => {
-    const isForceNTPCheck = !!queryInfoParams;
-    const loggerText = `AdaApi::getNetworkStatus${
-      isForceNTPCheck ? ' (FORCE-NTP-CHECK)' : ''
-    }`;
-    let networkStatus = {};
-    Logger.debug(`${loggerText} called`);
+  getCurrentEpochFallback = async (): Promise<GetCurrentEpochFallbackResponse> => {
     try {
-      const nodeSettings = await this.getNodeSettings();
-      networkStatus = {
-        ...networkStatus,
-        ...nodeSettings,
-      };
-    } catch (error) {
-      Logger.error(`${loggerText} error`, { error });
-    }
-    await this.wait(10);
-    try {
-      const nodeInfo = await this.getNodeInfo(queryInfoParams);
-      networkStatus = {
-        ...networkStatus,
-        ...nodeInfo,
-      };
-    } catch (error) {
-      Logger.error(`${loggerText} error`, { error });
-    }
-    return networkStatus;
-  };
-
-  getCurrentEpochFallback = async () => {
-    try {
+      Logger.debug('AdaApi::getCurrentEpochFallback called');
       const cardanoExplorerApi = await getCurrentEpoch();
       const currentEpochPath = 'Right[1][0].cbeEpoch';
       const currentEpoch = get(cardanoExplorerApi, currentEpochPath);
-      return currentEpoch;
+      return { currentEpoch };
     } catch (error) {
-      Logger.error('AdaApi::getCurrentEpoch error', { error });
+      Logger.error('AdaApi::getCurrentEpochFallback error', { error });
       throw new GenericApiError();
     }
   };
