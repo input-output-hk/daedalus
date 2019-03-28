@@ -245,6 +245,7 @@ export default class NetworkStatusStore extends Store {
     Logger.info('NetworkStatusStore: received tls config from main process');
     this.api.ada.setRequestConfig(config);
     this._tlsConfig = config;
+    this.actions.networkStatus.tlsConfigIsReady.trigger();
     return Promise.resolve();
   };
 

@@ -57,8 +57,10 @@ export default class BlockConsolidationStore extends Store {
     );
   };
 
-  _stopBlockConsolidationDataFetch = () => {
-    if (this.pollingIpcInterval) clearInterval(this.pollingIpcInterval);
+  _stopBlockConsolidationDataFetch = (options: { apiOnly: boolean } = {}) => {
+    const { apiOnly } = options;
+    if (this.pollingIpcInterval && !apiOnly)
+      clearInterval(this.pollingIpcInterval);
     if (this.pollingApiInterval) clearInterval(this.pollingApiInterval);
   };
 
@@ -84,6 +86,13 @@ export default class BlockConsolidationStore extends Store {
   };
 
   @action _getBlockConsolidationApiData = async () => {
+    if (!this.stores.networkStatus._tlsConfig) {
+      this._stopBlockConsolidationDataFetch({ apiOnly: true });
+      this.actions.networkStatus.tlsConfigIsReady.listen(
+        this._startBlockConsolidationDataFetch
+      );
+      return false;
+    }
     try {
       Logger.debug(
         'BlockConsolidationStore: _getBlockConsolidationApiData called'
@@ -102,7 +111,7 @@ export default class BlockConsolidationStore extends Store {
             error: 'API did not return `slotId`',
           }
         );
-        this._getCurrentEpochFallback();
+        return this._getCurrentEpochFallback();
       }
     } catch (error) {
       Logger.error(
@@ -111,12 +120,12 @@ export default class BlockConsolidationStore extends Store {
           error,
         }
       );
-      this._getCurrentEpochFallback();
+      return this._getCurrentEpochFallback();
     }
   };
 
   @action _getCurrentEpochFallback = async () => {
-    if (this.pollingApiInterval) clearInterval(this.pollingApiInterval);
+    this._stopBlockConsolidationDataFetch({ apiOnly: true });
     if (this.currentEpoch) return;
 
     try {
