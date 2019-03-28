@@ -405,13 +405,12 @@ export default {
   '--theme-about-window-cardano-icon-color': '#e9f4fe',
   '--theme-about-window-title-varsion-color': '#e9f4fe',
   '--theme-about-window-title-stroke-color': '#e9f4fe',
-  '--theme-about-window-content-h2-color': '#fafbfc',
-  '--theme-about-window-content-link-color': '#fafbfc',
+  '--theme-about-window-content-color': '#fafbfc',
   '--theme-about-window-content-text-color': 'rgba(250,251,252,0.7)',
   '--theme-about-window-content-bottom-border-color':
     'rgba(233, 244, 254, 0.3)',
-  '--theme-about-window-copyright-color': 'rgba(250,251,252,0.7)',
   '--theme-about-window-icon-close-button-color': '#fff',
+  '--theme-about-window-icon-close-hover-background': 'rgba(0, 0, 0, 0.2)',
 
   '--theme-backup-mnemonic-background-color': 'rgba(68, 91, 124, 0.05)',
 

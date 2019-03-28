@@ -19,7 +19,7 @@
 
       &:hover {
         border-radius: 50%;
-        background-color: rgba(0, 0, 0, 0.2);
+        background-color: var(--theme-about-window-icon-close-hover-background);
       }
     }
 
@@ -43,6 +43,7 @@
     .daedalusIcon {
       svg {
         height: 58px;
+        margin-top: 14px;
         width: 74px;
 
         path {
@@ -92,7 +93,7 @@
 
     .apiIcon {
       margin-left: 10px;
-      margin-top: 40px;
+      margin-top: 45px;
 
       svg {
         height: 25px;
@@ -117,7 +118,7 @@
     padding-bottom: 20px;
 
     h2 {
-      color: var(--theme-about-window-content-h2-color);
+      color: var(--theme-about-window-content-color);
       font-family: var(--font-semibold);
       margin-bottom: 3px;
     }
@@ -132,20 +133,39 @@
 
     .link,
     .copyright {
-      color: var(--theme-about-window-copyright-color);
+      color: var(--theme-about-window-content-text-color);
       font-family: var(--font-regular);
       font-size: 14px;
       line-height: 1.43;
     }
 
     .link {
-      color: var(--theme-about-window-content-link-color);
+      color: var(--theme-about-window-content-color);
       cursor: pointer;
       text-decoration: underline;
     }
 
     .copyright {
       margin-top: 6px;
+    }
+  }
+
+  @media (max-width: 950px), (max-height: 678px) {
+    max-height: 400px;
+    overflow-y: auto;
+
+    .headerWrapper {
+      padding-bottom: 50px;
+
+      .daedalusIcon {
+        svg {
+          margin-top: -22px;
+        }
+      }
+
+      .apiIcon {
+        margin-top: 10px;
+      }
     }
   }
 }
