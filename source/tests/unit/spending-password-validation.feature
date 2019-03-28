@@ -12,13 +12,16 @@ Feature: Spending password validation
     Then the spending password validation should succeed
 
     Examples:
-      | PASSWORD       |
-      | Correct1       |
-      | 学年別漢字配当表1 |
-      | Mix学年別漢字配1 |
-      | Привет1        |
-      | mixПривет1     |
-      | !№;%:?()_+1Mm  |
+      | PASSWORD           |
+      | Correct1           |
+      | 学年別漢字配当表1     |
+      | 正确的马电池钉1      |
+      | 正确的马电池钉1!     |
+      | Mix学年別漢字配1     |
+      | Привет1            |
+      | mixПривет1         |
+      | !№;%:?()_+1Mm      |
+      | Mysuperpassword1!  |
 
   Scenario Outline: Invalid spending passwords
     Given I use the spending password "<PASSWORD>"
@@ -30,7 +33,7 @@ Feature: Spending password validation
       | S p a c 3 s    |
       | ONLY8UPPERCASE |
       | only8lowercase |
-      | 学年別漢字配当表 |
+      | 学年別漢字配当表  |
       | mix学年別漢字配  |
       | Привет!        |
       | привет1        |
