@@ -2,16 +2,16 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 50px 80px 50px;
+  padding: 50px 80px;
   user-select: text;
 
   .closeButton {
     cursor: pointer;
     display: flex;
     justify-content: flex-end;
-    top: 15px;
-    right: 15px;
     position: absolute;
+    right: 15px;
+    top: 15px;
 
     span {
       height: 44px;
