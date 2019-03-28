@@ -35,5 +35,6 @@ Feature: Spending password validation
       | Привет!        |
       | привет1        |
       | mixпривет1     |
+      | 1234567        |
       | 123456!        |
       | !№;%:?*()_+1   |
