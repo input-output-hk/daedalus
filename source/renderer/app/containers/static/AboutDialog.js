@@ -26,8 +26,6 @@ export default class AboutDialog extends Component<Props> {
     return (
       <ReactModal
         isOpen
-        closeOnOverlayClick
-        onRequestClose={this.props.actions.app.closeAboutDialog.trigger}
         className={styles.dialog}
         overlayClassName={styles.overlay}
         ariaHideApp={false}

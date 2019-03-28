@@ -1,7 +1,6 @@
 .dialog {
-  box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25);
-  max-width: 920px;
-  min-width: 700px;
+  margin: auto 0;
+  max-width: 980px;
   overflow: hidden;
 
   &:focus {
@@ -10,8 +9,7 @@
 }
 
 .overlay {
-  align-items: center;
-  background-color: var(--theme-modal-overlay-background-color);
+  background-color: var(--theme-about-window-background-color);
   bottom: 0;
   display: flex;
   justify-content: center;
