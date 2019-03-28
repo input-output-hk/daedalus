@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import { get } from 'lodash';
 import AdaApi from '../api';
 import { getNodeInfo } from '../nodes/requests/getNodeInfo';
+import { getNodeSettings } from '../nodes/requests/getNodeSettings';
 import { GenericApiError } from '../common/errors';
 import { Logger } from '../../utils/logging';
 import { RedeemAdaError } from '../transactions/errors';
@@ -12,6 +13,8 @@ import type { NodeInfoQueryParams } from '../nodes/requests/getNodeInfo';
 import type {
   NodeInfoResponse,
   GetNetworkStatusResponse,
+  NodeSettingsResponse,
+  GetNodeSettingsResponse,
 } from '../nodes/types';
 
 // ========== LOGGING =========
@@ -115,6 +118,32 @@ export default (api: AdaApi) => {
       throw new GenericApiError();
     }
   };
+
+  api.getNodeSettings = async (): Promise<GetNodeSettingsResponse> => {
+    Logger.debug('AdaApi::getNodeSettings (PATCHED) called');
+    try {
+      const nodeSettings: NodeSettingsResponse = await getNodeSettings(
+        api.config
+      );
+      if (api.setFaultyNodeSettingsApi) {
+        const error = new Error('getNodeSettings forced error');
+        Logger.error('AdaApi::getNodeSettings (PATCHED) forced error', {
+          error,
+        });
+        throw new GenericApiError(error);
+      }
+      Logger.debug('AdaApi::getNodeSettings (PATCHED) success', {
+        nodeSettings,
+      });
+      const { slotId } = nodeSettings;
+      return { slotId };
+    } catch (error) {
+      Logger.error('AdaApi::getNodeSettings (PATCHED) error', { error });
+      throw new GenericApiError(error);
+    }
+  };
+
+  api.setFaultyNodeSettingsApi = false;
 
   api.setLocalTimeDifference = async timeDifference => {
     LOCAL_TIME_DIFFERENCE = timeDifference;

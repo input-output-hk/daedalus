@@ -15,10 +15,8 @@ Feature: Display Block Consolidation Page
     When I toggle the Block Consolidation Status Page
     Then the Block Consolidation Status Page is hidden
 
-  # TODO: Daedalus doesn't handle ignored api calls atm
-  @skip @restartApp
   Scenario: Fetch current epoch from Cardano Explorer and ensure epoch consolidation data is rendered correctly
-    When I inject fault named "FInjIgnoreAPI"
+    When I set the Node Settings Api Request falty
     And I toggle the Block Consolidation Status Page
     Then the Block Consolidation Status Page is visible
     And the page immediately renders an explanation of how block consolidation works in file storage

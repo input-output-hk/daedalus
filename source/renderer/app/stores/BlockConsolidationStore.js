@@ -101,24 +101,19 @@ export default class BlockConsolidationStore extends Store {
         .promise;
       const { slotId } = nodeSettings;
       if (slotId && slotId.epoch) {
-        runInAction('current epoch', () => {
+        return runInAction('current epoch', () => {
           this.currentEpoch = slotId.epoch;
         });
-      } else {
-        Logger.error(
-          'BlockConsolidationStore: _getBlockConsolidationApiData failed',
-          {
-            error: 'API did not return `slotId`',
-          }
-        );
-        return this._getCurrentEpochFallback();
       }
+      Logger.error(
+        'BlockConsolidationStore: _getBlockConsolidationApiData failed',
+        { error: 'API did not return `slotId`' }
+      );
+      return this._getCurrentEpochFallback();
     } catch (error) {
       Logger.error(
         'BlockConsolidationStore: _getBlockConsolidationApiData failed',
-        {
-          error,
-        }
+        { error }
       );
       return this._getCurrentEpochFallback();
     }

@@ -1019,6 +1019,7 @@ export default class AdaApi {
   setSubscriptionStatus: Function;
   setLocalBlockHeight: Function;
   setNetworkBlockHeight: Function;
+  setFaultyNodeSettingsApi: boolean;
 }
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========

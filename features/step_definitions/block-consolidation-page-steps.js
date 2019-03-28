@@ -44,7 +44,7 @@ Then(
     const {
       value: { currentEpoch },
     } = await this.client.executeAsync(done =>
-      done({ currentEpoch: daedalus.stores.networkStatus.currentEpoch })
+      done({ currentEpoch: daedalus.stores.blockConsolidation.currentEpoch })
     );
 
     let currentEpochText = '';
@@ -75,8 +75,9 @@ Then(
       value: { epochsConsolidated, currentEpoch },
     } = await this.client.executeAsync(done =>
       done({
-        epochsConsolidated: daedalus.stores.networkStatus.epochsConsolidated,
-        currentEpoch: daedalus.stores.networkStatus.currentEpoch,
+        epochsConsolidated:
+          daedalus.stores.blockConsolidation.epochsConsolidated,
+        currentEpoch: daedalus.stores.blockConsolidation.currentEpoch,
       })
     );
 
@@ -104,7 +105,8 @@ Then(
       value: { epochsConsolidated },
     } = await this.client.executeAsync(done =>
       done({
-        epochsConsolidated: daedalus.stores.networkStatus.epochsConsolidated,
+        epochsConsolidated:
+          daedalus.stores.blockConsolidation.epochsConsolidated,
       })
     );
 
@@ -125,7 +127,7 @@ Then(
     const {
       value: { currentEpoch },
     } = await this.client.executeAsync(done =>
-      done({ currentEpoch: daedalus.stores.networkStatus.currentEpoch })
+      done({ currentEpoch: daedalus.stores.blockConsolidation.currentEpoch })
     );
 
     expect(trailingEpochText).to.equal(
@@ -145,7 +147,7 @@ Then(
     const {
       value: { currentEpoch },
     } = await this.client.executeAsync(done =>
-      done({ currentEpoch: daedalus.stores.networkStatus.currentEpoch })
+      done({ currentEpoch: daedalus.stores.blockConsolidation.currentEpoch })
     );
 
     expect(currentEpochText).to.equal(`epoch ${currentEpoch}`);
@@ -194,4 +196,10 @@ Then(
 
 When(/^the fallback function returns the current epoch$/, async function() {
   return this.client.waitForVisible(SELECTORS.MAXIMUM_EPOCH);
+});
+
+When(/^I set the Node Settings Api Request falty$/, function() {
+  return this.client.execute(() => {
+    daedalus.api.setFaultyNodeSettingsApi = true;
+  });
 });
