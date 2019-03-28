@@ -20,8 +20,8 @@ export default class DialogCloseButton extends Component<Props> {
         onClick={onClose != null ? onClose : () => {}}
         className={
           !disabled
-            ? styles.component + buttonClass
-            : styles.disabled + buttonClass
+            ? `${styles.component} ${buttonClass}`
+            : `${styles.disabled} ${buttonClass}`
         }
         tabIndex={-1}
       >

@@ -5,9 +5,33 @@
   padding: 50px 80px 50px;
   user-select: text;
 
-  .DialogCloseButton_component.closeButton,
-  .DialogCloseButton_disabled.closeButton {
-    position: relative;
+  .closeButton {
+    cursor: pointer;
+    display: flex;
+    justify-content: flex-end;
+    top: 15px;
+    right: 15px;
+    position: absolute;
+
+    span {
+      height: 44px;
+      width: 44px;
+
+      &:hover {
+        border-radius: 50%;
+        background-color: rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    svg {
+      height: 12px;
+      margin-top: 16px;
+      width: 12px;
+
+      polygon {
+        fill: var(--theme-about-window-icon-close-button-color);
+      }
+    }
   }
 
   .headerWrapper {
@@ -20,6 +44,7 @@
       svg {
         height: 58px;
         width: 74px;
+
         path {
           fill: var(--theme-about-window-daedalus-icon-color);
         }
@@ -66,12 +91,13 @@
     }
 
     .apiIcon {
-      margin-left: 20px;
+      margin-left: 10px;
       margin-top: 40px;
 
       svg {
         height: 25px;
         width: 25px;
+
         path {
           fill: var(--theme-about-window-cardano-icon-color);
         }

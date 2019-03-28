@@ -12,30 +12,6 @@
       fill: var(--theme-icon-close-button-color);
     }
   }
-
-  &About_closeButton {
-    cursor: pointer;
-    display: flex;
-    justify-content: flex-end;
-    top: 15px;
-    right: 15px;
-    position: absolute;
-
-    span {
-      padding: 10px 11px 9px;
-      border-radius: 50%;
-      background-color: rgba(0, 0, 0, 0.2);
-    }
-
-    svg {
-      width: 12px;
-      height: 12px;
-
-      polygon {
-        fill: var(--theme-about-window-icon-close-button-color);
-      }
-    }
-  }
 }
 
 .disabled {
