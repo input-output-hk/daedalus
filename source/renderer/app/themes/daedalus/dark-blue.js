@@ -414,6 +414,14 @@ export default {
     'rgba(233, 244, 254, 0.3)',
   '--theme-about-window-copyright-color': '#e9f4fe',
 
+  '--theme-network-window-background-color': 'rgba(36, 62, 98, 0.96)',
+  '--theme-network-window-text-color': '#fafbfc',
+  '--theme-network-window-icon-close-hover-background': 'rgba(0, 0, 0, 0.2)',
+  '--theme-network-window-red-color': '#f06e05',
+  '--theme-network-window-green-color': '#05f079',
+  '--theme-network-window-white-color': '#fff',
+  '--theme-network-window-border-color': 'rgba(255, 255, 255, 0.25)',
+
   '--theme-backup-mnemonic-background-color': 'rgba(233, 244, 254, 0.05)',
 
   '--theme-block-generation-info-color': '#5e6066',
