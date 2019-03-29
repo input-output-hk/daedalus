@@ -1,6 +1,5 @@
 // @flow
 import { observable, action, runInAction } from 'mobx';
-
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
@@ -17,8 +16,8 @@ import type {
 
 export default class BlockConsolidationStore extends Store {
   // Initialize store observables
-  @observable epochsConsolidated: number = 0; // Got from the IPC channel
-  @observable currentEpoch: number = 0; // Got from the API (or from cardanoexplorer when the API fails)
+  @observable epochsConsolidated: number = 0; // Received from the IPC channel
+  @observable currentEpoch: number = 0; // Received from the API (or from cardanoexplorer when the API fails)
 
   @observable
   getNodeSettingsRequest: Request<GetNodeSettingsResponse> = new Request(
