@@ -13,11 +13,11 @@ import {
   Bar,
   ResponsiveContainer,
 } from 'recharts';
-import Tip from './WalletSettingsUtxoTip';
+import Tick from './WalletSettingsUtxoTick';
 import CustomTooltip from './WalletSettingsUtxoTooltip';
-import Cursor from './WalletSettingsUtxoCursor';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './WalletUtxoSettings.scss';
+import type { TickProps } from './WalletSettingsUtxoTick';
 
 export const messages = defineMessages({
   title: {
@@ -86,13 +86,14 @@ export default class WalletUtxoSettings extends Component<Props> {
               interval={0}
               axisLine={false}
               tickLine={false}
-              tick={
-                <Tip
+              tick={(props: TickProps) => (
+                <Tick
+                  {...props}
                   textAnchor="start"
                   getPrettyAmount={this.props.getPrettyAmount}
                   vertical
                 />
-              }
+              )}
               className={styles.xAxis}
               y={0}
             >
@@ -109,7 +110,7 @@ export default class WalletUtxoSettings extends Component<Props> {
               tickLine={false}
               allowDecimals={false}
               domain={[0, 'dataMax']}
-              tick={<Tip textAnchor="end" />}
+              tick={(props: TickProps) => <Tick {...props} textAnchor="end" />}
             >
               <Label
                 value={intl.formatMessage(messages.labelY)}
@@ -120,7 +121,6 @@ export default class WalletUtxoSettings extends Component<Props> {
             </YAxis>
             <Tooltip
               cursor1={false}
-              cursor={<Cursor />}
               content={
                 <CustomTooltip getPrettyAmount={this.props.getPrettyAmount} />
               }

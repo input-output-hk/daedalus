@@ -2,9 +2,9 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import styles from './WalletSettingsUtxoTip.scss';
+import styles from './WalletSettingsUtxoTick.scss';
 
-type Props = {
+export type TickProps = {
   x: number,
   y: number,
   payload: {
@@ -12,11 +12,11 @@ type Props = {
   },
   textAnchor: 'start' | 'end',
   getPrettyAmount?: Function,
-  vertical: boolean,
+  vertical?: boolean,
 };
 
 @observer
-export default class WalletSettingsUtxoTip extends Component<Props> {
+export default class WalletSettingsUtxoTick extends Component<TickProps> {
   render() {
     const {
       x,

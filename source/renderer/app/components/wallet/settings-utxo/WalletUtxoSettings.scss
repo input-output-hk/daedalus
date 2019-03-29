@@ -56,7 +56,7 @@
 }
 
 .xAxisLabel {
-  transform: rotate(90deg);
+  transform: rotate(90deg) translate(36px, 16px);
   transform-origin: right bottom;
   text,
   tspan {

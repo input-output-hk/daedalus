@@ -5,7 +5,7 @@ import { get } from 'lodash';
 import styles from './WalletSettingsUtxoTooltip.scss';
 
 type Props = {
-  payload: Array<{
+  payload?: Array<{
     payload: {
       walletAmount: number,
       walletUtxosAmount: number,
@@ -16,12 +16,14 @@ type Props = {
 
 @observer
 export default class WalletSettingsUtxoTooltip extends Component<Props> {
-  getPreviousAmount = (walletAmount: number) =>
-    walletAmount === 45000000000 ? 10000000000 : walletAmount / 10;
+  getPreviousAmount = (walletAmount: number) => {
+    if (walletAmount === 45000000000) return 10000000000;
+    if (walletAmount === 0.00001) return null;
+    return walletAmount / 10;
+  };
 
   render() {
     const { getPrettyAmount, payload } = this.props;
-    // console.log('this.props', this.props);
     const { walletAmount, walletUtxosAmount } = get(payload, '[0].payload', {});
     const previousWalletAmount = this.getPreviousAmount(walletAmount);
     const prettyWalletAmount = getPrettyAmount(walletAmount);
@@ -30,7 +32,11 @@ export default class WalletSettingsUtxoTooltip extends Component<Props> {
       <div className={styles.component}>
         <p>
           <b>{walletUtxosAmount}</b> UTxOs containing <br />
-          between <b>{prettyPreviousWalletAmount}</b> and{' '}
+          {!!previousWalletAmount && (
+            <span>
+              between <b>${prettyPreviousWalletAmount}</b> and{' '}
+            </span>
+          )}
           <b>{prettyWalletAmount}</b> ADA
         </p>
       </div>
