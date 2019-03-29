@@ -183,7 +183,7 @@ export default class BlockConsolidationStatus extends Component<Props> {
                         {Math.max(currentEpoch - 2, 0)}
                       </p>
                     </div>
-                    {epochsSynced && (
+                    {!!epochsSynced && (
                       <div
                         className={styles.indicatorEpochsSynced}
                         style={{ width: `${epochsSynced}%` }}
