@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // @flow
 export type ThemeColors = {
   primary: {
