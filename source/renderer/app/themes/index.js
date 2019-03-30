@@ -109,9 +109,11 @@ export type ReactPolymorphTheme = {
   textarea: {},
 };
 
-export type DaedalusComponentsTheme = {};
-
-export type DaedalusTheme = {};
+export type CreateThemeParams = {
+  colors: ThemeColors,
+  fonts: ThemeFonts,
+  config: Object,
+};
 
 export const THEMES = {
   CARDANO: 'cardano',
@@ -120,11 +122,23 @@ export const THEMES = {
 };
 
 export const createTheme = ({
-  colors: ThemeColors,
-  fonts: ThemeFonts,
-  config: Object,
-}): Object => {
+  colors,
+  fonts,
+  config,
+}: CreateThemeParams): Object => {
   const { primary, secondary, active, disabled, error, hover, focus } = colors;
+  const {
+    ultralight,
+    thin,
+    light,
+    regular,
+    medium,
+    semibold,
+    bold,
+    heavy,
+    black,
+    fallback,
+  } = fonts;
   // TODO: Use colors and fonts to create all css vars using color or font
   // then compose that object with the "config" parameter to create a full theme
 };
