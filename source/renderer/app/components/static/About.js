@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import DialogCloseButton from '../widgets/DialogCloseButton';
 import globalMessages from '../../i18n/global-messages';
 import styles from './About.scss';
 import daedalusIcon from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
@@ -58,6 +59,7 @@ type Props = {
   onOpenExternalLink: Function,
   os: string,
   version: string,
+  onClose: Function,
 };
 
 export default class About extends Component<Props> {
@@ -67,7 +69,14 @@ export default class About extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { apiVersion, build, onOpenExternalLink, os, version } = this.props;
+    const {
+      apiVersion,
+      build,
+      onOpenExternalLink,
+      os,
+      version,
+      onClose,
+    } = this.props;
 
     const apiName = intl.formatMessage(globalMessages.apiName);
     const apiIcon = cardanoIcon;
@@ -78,6 +87,7 @@ export default class About extends Component<Props> {
 
     return (
       <div className={styles.container}>
+        <DialogCloseButton className={styles.closeButton} onClose={onClose} />
         <div className={styles.headerWrapper}>
           <SVGInline svg={daedalusIcon} className={styles.daedalusIcon} />
 
