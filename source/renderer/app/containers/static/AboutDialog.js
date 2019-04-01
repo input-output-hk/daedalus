@@ -21,12 +21,15 @@ export default class AboutDialog extends Component<Props> {
   render() {
     const { app } = this.props.stores;
     const { openExternalLink, environment } = app;
+    const { actions } = this.props;
+    const { closeAboutDialog } = actions.app;
     const { apiVersion, build, os, version } = environment;
 
     return (
       <ReactModal
         isOpen
-        onRequestClose={this.props.actions.app.closeAboutDialog.trigger}
+        onRequestClose={closeAboutDialog.trigger}
+        shouldCloseOnOverlayClick={false}
         className={styles.dialog}
         overlayClassName={styles.overlay}
         ariaHideApp={false}
@@ -37,7 +40,7 @@ export default class AboutDialog extends Component<Props> {
           onOpenExternalLink={openExternalLink}
           os={os}
           version={version}
-          onClose={this.props.actions.app.closeAboutDialog.trigger}
+          onClose={closeAboutDialog.trigger}
         />
       </ReactModal>
     );
