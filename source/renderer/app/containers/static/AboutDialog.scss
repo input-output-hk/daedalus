@@ -18,4 +18,8 @@
   right: 0;
   top: 0;
   z-index: 9999;
+
+  @media (max-width: 950px), (max-height: 678px) {
+    overflow-y: auto;
+  }
 }

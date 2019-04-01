@@ -149,23 +149,4 @@
       margin-top: 6px;
     }
   }
-
-  @media (max-width: 950px), (max-height: 678px) {
-    max-height: 400px;
-    overflow-y: auto;
-
-    .headerWrapper {
-      padding-bottom: 50px;
-
-      .daedalusIcon {
-        svg {
-          margin-top: -22px;
-        }
-      }
-
-      .apiIcon {
-        margin-top: 10px;
-      }
-    }
-  }
 }
