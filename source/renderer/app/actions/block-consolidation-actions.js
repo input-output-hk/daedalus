@@ -4,6 +4,6 @@ import Action from './lib/Action';
 // ======= NETWORK STATUS ACTIONS =======
 
 export default class BlockConsolidationActions {
-  startBlockConsolidationDataFetch: Action<any> = new Action();
-  stopBlockConsolidationDataFetch: Action<any> = new Action();
+  startBlockConsolidationDataPolling: Action<any> = new Action();
+  stopBlockConsolidationDataPolling: Action<any> = new Action();
 }

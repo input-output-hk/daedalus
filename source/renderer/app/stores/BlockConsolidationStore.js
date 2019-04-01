@@ -33,18 +33,18 @@ export default class BlockConsolidationStore extends Store {
 
   setup() {
     const actions = this.actions.blockConsolidation;
-    actions.stopBlockConsolidationDataFetch.listen(
-      this._stopBlockConsolidationDataFetch
+    actions.stopBlockConsolidationDataPolling.listen(
+      this._stopBlockConsolidationDataPolling
     );
-    actions.startBlockConsolidationDataFetch.listen(
-      this._startBlockConsolidationDataFetch
+    actions.startBlockConsolidationDataPolling.listen(
+      this._startBlockConsolidationDataPolling
     );
   }
 
-  _startBlockConsolidationDataFetch = () => {
+  _startBlockConsolidationDataPolling = () => {
     this._getBlockConsolidationIpcData();
     this._getBlockConsolidationApiData();
-    this._stopBlockConsolidationDataFetch();
+    this._stopBlockConsolidationDataPolling();
 
     this.pollingIpcInterval = setInterval(
       this._getBlockConsolidationIpcData,
@@ -56,7 +56,7 @@ export default class BlockConsolidationStore extends Store {
     );
   };
 
-  _stopBlockConsolidationDataFetch = (options: { apiOnly: boolean } = {}) => {
+  _stopBlockConsolidationDataPolling = (options: { apiOnly: boolean } = {}) => {
     const { apiOnly } = options;
     if (this.pollingIpcInterval && !apiOnly)
       clearInterval(this.pollingIpcInterval);
@@ -86,9 +86,9 @@ export default class BlockConsolidationStore extends Store {
 
   @action _getBlockConsolidationApiData = async () => {
     if (!this.stores.networkStatus._tlsConfig) {
-      this._stopBlockConsolidationDataFetch({ apiOnly: true });
+      this._stopBlockConsolidationDataPolling({ apiOnly: true });
       this.actions.networkStatus.tlsConfigIsReady.listen(
-        this._startBlockConsolidationDataFetch
+        this._startBlockConsolidationDataPolling
       );
       return false;
     }
@@ -106,7 +106,7 @@ export default class BlockConsolidationStore extends Store {
       }
       Logger.error(
         'BlockConsolidationStore: _getBlockConsolidationApiData failed',
-        { error: 'API did not return `slotId`' }
+        { error: 'API did not return "slotId"' }
       );
       return this._getCurrentEpochFallback();
     } catch (error) {
@@ -119,9 +119,8 @@ export default class BlockConsolidationStore extends Store {
   };
 
   @action _getCurrentEpochFallback = async () => {
-    this._stopBlockConsolidationDataFetch({ apiOnly: true });
+    this._stopBlockConsolidationDataPolling({ apiOnly: true });
     if (this.currentEpoch) return;
-
     try {
       Logger.debug('BlockConsolidationStore: _getCurrentEpochFallback called');
       const {

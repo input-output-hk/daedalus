@@ -16,7 +16,7 @@ Feature: Display Block Consolidation Page
     Then the Block Consolidation Status Page is hidden
 
   Scenario: Fetch current epoch from Cardano Explorer and ensure epoch consolidation data is rendered correctly
-    When I set the Node Settings Api Request falty
+    When I set the Node Setting Api Request to return faulty response
     And I toggle the Block Consolidation Status Page
     Then the Block Consolidation Status Page is visible
     And the page immediately renders an explanation of how block consolidation works in file storage

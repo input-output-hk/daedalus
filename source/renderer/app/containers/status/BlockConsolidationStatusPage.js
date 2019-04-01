@@ -8,11 +8,11 @@ import BlockConsolidationStatus from '../../components/status/BlockConsolidation
 @observer
 export default class BlockConsolidationStatusPage extends Component<InjectedProps> {
   componentWillMount() {
-    this.props.actions.blockConsolidation.startBlockConsolidationDataFetch.trigger();
+    this.props.actions.blockConsolidation.startBlockConsolidationDataPolling.trigger();
   }
 
   componeneWillUnmount() {
-    this.props.actions.blockConsolidation.stopBlockConsolidationDataFetch.trigger();
+    this.props.actions.blockConsolidation.stopBlockConsolidationDataPolling.trigger();
   }
 
   handleClose = () => {

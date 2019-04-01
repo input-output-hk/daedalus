@@ -198,8 +198,11 @@ When(/^the fallback function returns the current epoch$/, async function() {
   return this.client.waitForVisible(SELECTORS.MAXIMUM_EPOCH);
 });
 
-When(/^I set the Node Settings Api Request falty$/, function() {
-  return this.client.execute(() => {
-    daedalus.api.setFaultyNodeSettingsApi = true;
-  });
-});
+When(
+  /^I set the Node Setting Api Request to return faulty response$/,
+  function() {
+    return this.client.execute(() => {
+      daedalus.api.setFaultyNodeSettingsApi = true;
+    });
+  }
+);
