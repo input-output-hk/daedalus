@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Fixes
+
+- Fixed link position in Japanese version of the Support page for downloading logs ([PR 1372](https://github.com/input-output-hk/daedalus/pull/1372))
+
 ### Features
 
 - Implemented "In progress" download logs notification ([PR 1341](https://github.com/input-output-hk/daedalus/pull/1341))
