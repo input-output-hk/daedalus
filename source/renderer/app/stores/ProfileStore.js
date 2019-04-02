@@ -175,12 +175,14 @@ export default class SettingsStore extends Store {
     return this.getDataLayerMigrationAcceptanceRequest.result === true;
   }
 
+  @computed get isProfilePage(): boolean {
+    const { currentRoute } = this.stores.app;
+    return includes(ROUTES.PROFILE, currentRoute);
+  }
+
   @computed get isSettingsPage(): boolean {
     const { currentRoute } = this.stores.app;
-    return (
-      includes(ROUTES.PROFILE, currentRoute) ||
-      includes(ROUTES.SETTINGS, currentRoute)
-    );
+    return includes(ROUTES.SETTINGS, currentRoute);
   }
 
   _getSystemLocale = async () => {

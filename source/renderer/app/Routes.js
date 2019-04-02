@@ -54,12 +54,15 @@ export const Routes = (
       <Route path={ROUTES.WALLETS.RECEIVE} component={WalletReceivePage} />
       <Route path={ROUTES.WALLETS.SETTINGS} component={WalletSettingsPage} />
     </Route>
-    <Route path="/settings" component={Settings}>
-      <IndexRedirect to="general" />
-      <Route path="general" component={GeneralSettingsPage} />
-      <Route path="terms-of-use" component={TermsOfUseSettingsPage} />
-      <Route path="support" component={SupportSettingsPage} />
-      <Route path="display" component={DisplaySettingsPage} />
+    <Route path={ROUTES.SETTINGS.ROOT} component={Settings}>
+      <IndexRedirect to={ROUTES.SETTINGS.GENERAL} />
+      <Route path={ROUTES.SETTINGS.GENERAL} component={GeneralSettingsPage} />
+      <Route
+        path={ROUTES.SETTINGS.TERMS_OF_USE}
+        component={TermsOfUseSettingsPage}
+      />
+      <Route path={ROUTES.SETTINGS.SUPPORT} component={SupportSettingsPage} />
+      <Route path={ROUTES.SETTINGS.DISPLAY} component={DisplaySettingsPage} />
     </Route>
     <Route
       path={ROUTES.PAPER_WALLET_CREATE_CERTIFICATE}

@@ -1547,13 +1547,13 @@
         "description": "About \"title\"",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 16
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.title",
         "start": {
           "column": 14,
-          "line": 11
+          "line": 12
         }
       },
       {
@@ -1561,13 +1561,13 @@
         "description": "About page daedalus team headline",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.daedalus.headline",
         "start": {
           "column": 32,
-          "line": 16
+          "line": 17
         }
       },
       {
@@ -1575,13 +1575,13 @@
         "description": "About page cardano team headline",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.cardano.headline",
         "start": {
           "column": 31,
-          "line": 21
+          "line": 22
         }
       },
       {
@@ -1589,13 +1589,13 @@
         "description": "About page daedalus team members",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.daedalus.members",
         "start": {
           "column": 31,
-          "line": 26
+          "line": 27
         }
       },
       {
@@ -1603,13 +1603,13 @@
         "description": "About page cardano team members",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.cardano.members",
         "start": {
           "column": 30,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -1617,13 +1617,13 @@
         "description": "About \"copyright\"",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.copyright",
         "start": {
           "column": 18,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -1631,13 +1631,13 @@
         "description": "About page license name",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 48
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.license",
         "start": {
           "column": 15,
-          "line": 43
+          "line": 44
         }
       },
       {
@@ -1645,13 +1645,13 @@
         "description": "About page build information",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 53
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.buildInfo",
         "start": {
           "column": 18,
-          "line": 48
+          "line": 49
         }
       }
     ],
