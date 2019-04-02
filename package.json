@@ -11,7 +11,7 @@
     "dev": "IS_WATCH_MODE=true gulp dev",
     "test": "NODE_ENV=test yarn test:unit && gulp build:test:ui",
     "test:unit": "cross-env NODE_ENV=test cucumber-js --require 'features/tests/unit/**/*.js' --require-module @babel/register -f node_modules/cucumber-pretty --format-options '{\"snippetInterface\": \"async-await\"}' --tags '@unit and not @skip'",
-    "test:unit:watch": "nodemon --watch source --exec yarn test:unit --tags '@unit and @watch'",
+    "test:unit:watch": "nodemon --watch source --watch features --exec yarn test:unit --tags '@unit and @watch'",
     "test:ui": "cross-env NODE_ENV=test cucumber-js --require 'features/tests/ui/**/*.js' --require-module @babel/register -f node_modules/cucumber-pretty --format-options '{\"snippetInterface\": \"async-await\"}' --tags '@ui and not @skip'",
     "test:ui:fast": "yarn test:ui --tags 'not @slow'",
     "test:ui:watch": "NODE_ENV=test IS_WATCH_MODE=true gulp test:ui:watch --tags @watch",
