@@ -12,7 +12,8 @@ Changelog
 ### Fixes
 
 - Fixed password validation rules for all languages ([PR 1354](https://github.com/input-output-hk/daedalus/pull/1354))
-- Fixed link position in Japanese version of the Support page for downloading logs ([PR 1372](https://github.com/input-output-hk/daedalus/pull/1372))
+- Fixed the routing logic which allowed the display of "Settings" screens before the wallet data is fully loaded ([PR 1373](https://github.com/input-output-hk/daedalus/pull/1373))
+- Fixed the "download logs" link position in Japanese version of the "Support" screen ([PR 1372](https://github.com/input-output-hk/daedalus/pull/1372))
 
 ### Chores
 
