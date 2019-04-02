@@ -1,7 +1,12 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import {
+  defineMessages,
+  intlShape,
+  FormattedHTMLMessage,
+  FormattedMessage,
+} from 'react-intl';
 import classnames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
@@ -24,7 +29,7 @@ const messages = defineMessages({
   description2: {
     id: 'blockConsolidationStatus.description2',
     defaultMessage:
-      '!!!Blocks for the current epoch <b>({currentEpoch})</b> and the previous epoch <b>({currentEpochBehind})</b> are stored as one file per block. All previous epochs will be consolidated to two files per epoch.',
+      '!!!Blocks for the current epoch ({currentEpoch}) and the previous epoch ({currentEpochBehind}) are stored as one file per block. All previous epochs will be consolidated to two files per epoch.',
     description: 'Description 2 of "Block consolidation status" page.',
   },
   description3: {
@@ -36,7 +41,7 @@ const messages = defineMessages({
   epochsConsolidatedOfTotal: {
     id: 'blockConsolidationStatus.epochsConsolidatedOfTotal',
     defaultMessage:
-      '!!!<b>{consolidated}</b> <em>of</em> <b>{downloaded}</b> epochs consolidated',
+      '!!!{epochsConsolidated} <em>of</em> {currentEpoch} epochs consolidated',
     description:
       'Epochs Consolidated Of Total on "Block consolidation status" page.',
   },
@@ -134,6 +139,10 @@ export default class BlockConsolidationStatus extends Component<Props> {
       !currentEpoch ? styles.indicatorContainerNoCurrentEpochs : null,
     ]);
 
+    const currentEpochValue = currentEpoch > 0 ? <b>({currentEpoch})</b> : '';
+    const currentEpochBehindValue =
+      currentEpoch > 0 ? <b>({Math.max(currentEpoch - 1, 0)})</b> : '';
+
     return (
       <div className={styles.component}>
         <TopBar onLeftIconClick={onClose} leftIcon={backArrow} />
@@ -145,11 +154,11 @@ export default class BlockConsolidationStatus extends Component<Props> {
               {formatMessage(messages.description1)}
             </p>
             <p className={description2Styles}>
-              <FormattedHTMLMessage
+              <FormattedMessage
                 {...messages.description2}
                 values={{
-                  currentEpoch,
-                  currentEpochBehind: Math.max(currentEpoch - 1, 0),
+                  currentEpoch: currentEpochValue,
+                  currentEpochBehind: currentEpochBehindValue,
                 }}
               />
             </p>
@@ -162,8 +171,8 @@ export default class BlockConsolidationStatus extends Component<Props> {
                 <FormattedHTMLMessage
                   {...messages.epochsConsolidatedOfTotal}
                   values={{
-                    consolidated: epochsConsolidated,
-                    downloaded: currentEpoch,
+                    epochsConsolidated,
+                    currentEpoch,
                   }}
                 />
               </p>
@@ -189,7 +198,7 @@ export default class BlockConsolidationStatus extends Component<Props> {
                         style={{ width: `${epochsSynced}%` }}
                       >
                         <p style={this.getPositionOfEpochsSynced(epochsSynced)}>
-                          <FormattedHTMLMessage
+                          <FormattedMessage
                             {...messages.synced}
                             values={{ epochsSynced }}
                           />
