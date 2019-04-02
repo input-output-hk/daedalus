@@ -3,9 +3,11 @@
   top: 7px;
   right: 0;
   cursor: pointer;
+
   svg {
     width: 11px;
     height: 11px;
+
     polygon {
       fill: var(--theme-icon-close-button-color);
     }
