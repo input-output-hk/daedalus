@@ -10,8 +10,14 @@ Changelog
 - Implemented status icons on the "Loading" screens ([PR 1325](https://github.com/input-output-hk/daedalus/pull/1325), [PR 1365](https://github.com/input-output-hk/daedalus/pull/1365))
 - Implemented detection for system locale on Daedalus start when user hasn't yet selected language preference so that locale defaults to Japanese if system locale is Japan/Japanese, otherwise defaults to English ([PR 1348](https://github.com/input-output-hk/daedalus/pull/1348))
 
+### Fixes
+
+- Fixed the routing logic which allowed the display of "Settings" screens before the wallet data is fully loaded ([PR 1373](https://github.com/input-output-hk/daedalus/pull/1373))
+- Fixed the "download logs" link position in Japanese version of the "Support" screen ([PR 1372](https://github.com/input-output-hk/daedalus/pull/1372))
+
 ### Chores
 
+- Implemented new About Us dialog design with a close button ([PR 1369](https://github.com/input-output-hk/daedalus/pull/1369)
 - Refactored store async functions to use mobx runInAction calls ([PR 1367](https://github.com/input-output-hk/daedalus/pull/1367)
 - Improved acceptance test coverage for the Loading screen, Block Consolidation screen, and fixed a bug common to multiple other tests which use the mnemonic word selector to identify and click mnemonics ([PR 1318](https://github.com/input-output-hk/daedalus/pull/1318))
 - Implemented `prettier` formatting tool and set up automation for basic maintainance tasks ([PR 1335](https://github.com/input-output-hk/daedalus/pull/1335), [PR 1347](https://github.com/input-output-hk/daedalus/pull/1347), [PR 1352](https://github.com/input-output-hk/daedalus/pull/1352))
