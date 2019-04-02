@@ -3987,17 +3987,36 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!<b>{walletUtxosAmount}</b> UTxOs containing <br /> <span> between <b>{prettyPreviousWalletAmount}</b> and </span> <b>{prettyWalletAmount}</b> ADA",
+        "description": "Tooltip for the \"Wallet Utxos\" screen.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/wallet/settings-utxo/WalletSettingsUtxoTooltip.js",
+        "id": "wallet.settings.utxos.tooltip",
+        "start": {
+          "column": 11,
+          "line": 10
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/settings-utxo/WalletSettingsUtxoTooltip.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Wallet UTxO distribution",
         "description": "Title for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/settings-utxo/WalletUtxoSettings.js",
         "id": "wallet.settings.utxos.title",
         "start": {
           "column": 9,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -4005,13 +4024,27 @@
         "description": "Description for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "source/renderer/app/components/wallet/settings-utxo/WalletUtxoSettings.js",
         "id": "wallet.settings.utxos.description",
         "start": {
           "column": 15,
-          "line": 29
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!This wallet is empty so it does not contain any UTxOs (unspent transaction outputs).",
+        "description": "Empty wallet description for the \"Wallet Utxos\" screen.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/components/wallet/settings-utxo/WalletUtxoSettings.js",
+        "id": "wallet.settings.utxos.emptyWallet",
+        "start": {
+          "column": 15,
+          "line": 36
         }
       },
       {
@@ -4019,13 +4052,13 @@
         "description": "Label X for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/settings-utxo/WalletUtxoSettings.js",
         "id": "wallet.settings.utxos.labelX",
         "start": {
           "column": 10,
-          "line": 35
+          "line": 42
         }
       },
       {
@@ -4033,13 +4066,13 @@
         "description": "Label Y for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/settings-utxo/WalletUtxoSettings.js",
         "id": "wallet.settings.utxos.labelY",
         "start": {
           "column": 10,
-          "line": 40
+          "line": 47
         }
       }
     ],

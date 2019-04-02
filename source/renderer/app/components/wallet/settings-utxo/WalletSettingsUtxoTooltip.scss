@@ -4,6 +4,12 @@
   background-color: #5e6066;
   border-radius: 4px;
 
+  &.noPreviousWalletAmount {
+    em {
+      display: none;
+    }
+  }
+
   p {
     font-family: var(--font-regular);
     font-size: 12px;
