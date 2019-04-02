@@ -10,8 +10,6 @@
     "start:dev": "NODE_ENV=development gulp start",
     "dev": "IS_WATCH_MODE=true gulp dev",
     "test": "NODE_ENV=test yarn test:unit && gulp build:test:ui",
-    "test:watch": "yarn test:unit:watch && gulp build:test:ui:watch",
-    "test:watch:debug": "NODE_ENV=test IS_WATCH_MODE=true KEEP_APP_AFTER_TESTS=true gulp build:test:ui:watch",
     "test:unit": "cross-env NODE_ENV=test cucumber-js --require 'features/tests/unit/**/*.js' --require-module @babel/register -f node_modules/cucumber-pretty --format-options '{\"snippetInterface\": \"async-await\"}' --tags '@unit and not @skip'",
     "test:unit:watch": "nodemon --watch source --exec yarn test:unit --tags '@unit and @watch'",
     "test:ui": "cross-env NODE_ENV=test cucumber-js --require 'features/tests/ui/**/*.js' --require-module @babel/register -f node_modules/cucumber-pretty --format-options '{\"snippetInterface\": \"async-await\"}' --tags '@ui and not @skip'",
