@@ -26,7 +26,7 @@
   "blockConsolidationStatus.epoch": "エポック",
   "blockConsolidationStatus.epochs": "エポック",
   "blockConsolidationStatus.epochsConsolidated": "のエポックが統合済み",
-  "blockConsolidationStatus.epochsConsolidatedOfTotal": "<b>{consolidated}</b>/<b>{downloaded}</b><br />のエポックが統合済み",
+  "blockConsolidationStatus.epochsConsolidatedOfTotal": "<b>{epochsConsolidated}</b><em>/</em><b>{currentEpoch}</b><br />のエポックが統合済み",
   "blockConsolidationStatus.learnMoreButton": "詳しく見る",
   "blockConsolidationStatus.learnMoreButtonURL": "https://iohk.zendesk.com/hc/ja/articles/360016060314",
   "blockConsolidationStatus.synced": "ブロックの {epochsSynced}% が同期済み",

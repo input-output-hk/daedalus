@@ -1664,13 +1664,13 @@
         "description": "Title of \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 23
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.title",
         "start": {
           "column": 9,
-          "line": 14
+          "line": 19
         }
       },
       {
@@ -1678,27 +1678,27 @@
         "description": "Description 1 of \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 28
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.description1",
         "start": {
           "column": 16,
-          "line": 19
+          "line": 24
         }
       },
       {
-        "defaultMessage": "!!!Blocks for the current epoch <b>({currentEpoch})</b> and the previous epoch <b>({currentEpochBehind})</b> are stored as one file per block. All previous epochs will be consolidated to two files per epoch.",
+        "defaultMessage": "!!!Blocks for the current epoch ({currentEpoch}) and the previous epoch ({currentEpochBehind}) are stored as one file per block. All previous epochs will be consolidated to two files per epoch.",
         "description": "Description 2 of \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 34
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.description2",
         "start": {
           "column": 16,
-          "line": 24
+          "line": 29
         }
       },
       {
@@ -1706,27 +1706,27 @@
         "description": "Description 3 of \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 40
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.description3",
         "start": {
           "column": 16,
-          "line": 30
+          "line": 35
         }
       },
       {
-        "defaultMessage": "!!!<b>{consolidated}</b> <em>of</em> <b>{downloaded}</b> epochs consolidated",
+        "defaultMessage": "!!!<b>{epochsConsolidated}</b> <em>of</em> <b>{currentEpoch}</b><br />epochs consolidated",
         "description": "Epochs Consolidated Of Total on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 47
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.epochsConsolidatedOfTotal",
         "start": {
           "column": 29,
-          "line": 36
+          "line": 41
         }
       },
       {
@@ -1734,13 +1734,13 @@
         "description": "Singular Epoch on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 52
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.epoch",
         "start": {
           "column": 9,
-          "line": 43
+          "line": 48
         }
       },
       {
@@ -1748,13 +1748,13 @@
         "description": "Plural Epochs on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 57
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.epochs",
         "start": {
           "column": 10,
-          "line": 48
+          "line": 53
         }
       },
       {
@@ -1762,13 +1762,13 @@
         "description": "Epochs consolidated on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 62
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.epochsConsolidated",
         "start": {
           "column": 22,
-          "line": 53
+          "line": 58
         }
       },
       {
@@ -1776,13 +1776,13 @@
         "description": "synced on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 67
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.synced",
         "start": {
           "column": 10,
-          "line": 58
+          "line": 63
         }
       },
       {
@@ -1790,13 +1790,13 @@
         "description": "Learn more Button on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 72
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.learnMoreButton",
         "start": {
           "column": 19,
-          "line": 63
+          "line": 68
         }
       },
       {
@@ -1804,13 +1804,13 @@
         "description": "URL of Learn more Button on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 79
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.learnMoreButtonURL",
         "start": {
           "column": 22,
-          "line": 68
+          "line": 73
         }
       }
     ],

@@ -41,7 +41,7 @@ const messages = defineMessages({
   epochsConsolidatedOfTotal: {
     id: 'blockConsolidationStatus.epochsConsolidatedOfTotal',
     defaultMessage:
-      '!!!{epochsConsolidated} <em>of</em> {currentEpoch} epochs consolidated',
+      '!!!<b>{epochsConsolidated}</b> <em>of</em> <b>{currentEpoch}</b><br />epochs consolidated',
     description:
       'Epochs Consolidated Of Total on "Block consolidation status" page.',
   },

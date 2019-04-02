@@ -1,10 +1,7 @@
 // import React from 'react';
 import { When, Then } from 'cucumber';
 import { expect } from 'chai';
-import {
-  getVisibleTextsForSelector,
-  waitUntilTextInSelector,
-} from '../support/helpers/shared-helpers';
+import { getVisibleTextsForSelector } from '../support/helpers/shared-helpers';
 import i18n from '../support/helpers/i18n-helpers';
 
 const SELECTORS = {
@@ -178,24 +175,30 @@ Then(
 );
 
 Then(
-  /^the page accurately renders the node's sync progress as a percentage below the progress bar$/,
-  async function() {
+  /^the page accurately renders the node's sync progress as a percentage below the progress bar:$/,
+  async function(data) {
     const {
-      value: { syncProgress },
+      value: { epochsSynced },
     } = await this.client.executeAsync(done => {
       daedalus.stores.networkStatus
         ._updateNetworkStatus()
         .then(() =>
-          done({ syncProgress: daedalus.stores.networkStatus.syncProgress })
+          done({ epochsSynced: daedalus.stores.networkStatus.syncProgress })
         )
         .catch(error => done(error));
     });
+    const [expectedTextData] = data.hashes();
+    const expectedText = await i18n.formatMessage(this.client, {
+      id: expectedTextData.message,
+      values: { epochsSynced },
+    });
 
-    const [blocksSyncedText] = await getVisibleTextsForSelector(
+    const [renderedText] = await getVisibleTextsForSelector(
       this.client,
       SELECTORS.SYNC_PROGRESS
     );
-    expect(blocksSyncedText).to.equal(`${syncProgress}% blocks synced`);
+
+    expect(renderedText).to.equal(expectedText);
   }
 );
 
