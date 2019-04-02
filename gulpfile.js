@@ -124,13 +124,14 @@ gulp.task(
   )
 );
 
-gulp.task('test:ui', shell.task('yarn test:ui'));
+gulp.task(
+  'test:ui:dev:watch',
+  shell.task(
+    'nodemon --watch dist --watch features --exec "yarn test:ui --tags \'@ui and @dev\'"'
+  )
+);
 
-gulp.task('test:ui:watch', shell.task('nodemon --exec yarn test:ui:watch'));
-
-gulp.task('build:test:ui', gulp.series('build', 'test:ui'));
-
-gulp.task('build:test:ui:watch', gulp.series('build:watch', 'test:ui:watch'));
+gulp.task('test:ui:dev', gulp.series('build:watch', 'test:ui:dev:watch'));
 
 gulp.task(
   'purge:translations',
