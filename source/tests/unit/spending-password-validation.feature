@@ -22,6 +22,8 @@ Feature: Spending password validation
       | mixПривет1         |
       | !№;%:?()_+1Mm      |
       | Mysuperpassword1!  |
+      | 正确的马电池钉1>     |
+      | 正1$%+#_>          |
 
   Scenario Outline: Invalid spending passwords
     Given I use the spending password "<PASSWORD>"

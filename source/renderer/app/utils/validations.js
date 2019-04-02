@@ -32,15 +32,16 @@ export const containsUpperCaseLetter = (s: string) =>
   /\p{Uppercase_Letter}/u.test(s);
 
 /**
- * Checks if a string contains a punctuation like !&%.
- */
-export const containsPunctuation = (s: string) => /\p{Punctuation}/u.test(s);
-
-/**
  * Checks if a string contains a unicase letter
  * (E.g: Languages like Kanji do not have the concept of letter case)
  */
 export const containsUnicaseLetter = (s: string) => /\p{Other_Letter}/u.test(s);
+
+/**
+ * Checks if a string doesn't change after uppper and lower casing it
+ */
+export const isCaselessString = (s: string) =>
+  s.toLowerCase() === s && s.toUpperCase() === s;
 
 /**
  * Test if a whole string is in unicase letters (or digits)
@@ -49,13 +50,7 @@ export const isUnicaseString = (password: string) =>
   // We require at least one unicase letter
   containsUnicaseLetter(password) &&
   // Every char has to belong to the support caseless categories
-  every(
-    password.split(''),
-    char =>
-      containsUnicaseLetter(char) ||
-      containsPunctuation(char) ||
-      containsDecimalNumber(char)
-  );
+  every(password.split(''), char => isCaselessString(char));
 
 /**
  * Unicode compatible validation rules for spending password.
