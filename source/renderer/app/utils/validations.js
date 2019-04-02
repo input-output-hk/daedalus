@@ -9,17 +9,53 @@ export const isValidWalletName = (walletName: string) => {
 };
 
 /**
- * Checks if a character is either a caseless letter or a digit
- * (Languages like Japanese do not have the concept of letter case)
+ * Checks if a string contains unicode white space
  */
-const isDigitOrCaselessChar = (char: string) =>
-  /^\p{Decimal_Number}|\p{Other_Letter}$/u.test(char);
+export const containsWhitespace = (s: string) => /\p{White_Space}/u.test(s);
 
 /**
- * Test if a whole password is in caseless letters (or digits)
+ * Checks if a string contains a decimal number
  */
-const isPasswordInCaselessLanguage = (password: string) =>
-  every(password.split(''), isDigitOrCaselessChar);
+export const containsDecimalNumber = (s: string) =>
+  /\p{Decimal_Number}/u.test(s);
+
+/**
+ * Checks if a string contains a lower case letter
+ */
+export const containsLowerCaseLetter = (s: string) =>
+  /\p{Lowercase_Letter}/u.test(s);
+
+/**
+ * Checks if a string contains a upper case letter
+ */
+export const containsUpperCaseLetter = (s: string) =>
+  /\p{Uppercase_Letter}/u.test(s);
+
+/**
+ * Checks if a string contains a punctuation like !&%.
+ */
+export const containsPunctuation = (s: string) => /\p{Punctuation}/u.test(s);
+
+/**
+ * Checks if a string contains a unicase letter
+ * (E.g: Languages like Kanji do not have the concept of letter case)
+ */
+export const containsUnicaseLetter = (s: string) => /\p{Other_Letter}/u.test(s);
+
+/**
+ * Test if a whole string is in unicase letters (or digits)
+ */
+export const isUnicaseString = (password: string) =>
+  // We require at least one unicase letter
+  containsUnicaseLetter(password) &&
+  // Every char has to belong to the support caseless categories
+  every(
+    password.split(''),
+    char =>
+      containsUnicaseLetter(char) ||
+      containsPunctuation(char) ||
+      containsDecimalNumber(char)
+  );
 
 /**
  * Unicode compatible validation rules for spending password.
@@ -34,23 +70,21 @@ export const isValidSpendingPassword = (password: string): boolean => {
   if (password.length < 7) return false;
 
   // Must not contain white spaces
-  if (/\p{White_Space}/u.test(password)) return false;
+  if (containsWhitespace(password)) return false;
 
   // Should contain at least one digit
-  if (!/\p{Decimal_Number}/u.test(password)) return false;
+  if (!containsDecimalNumber(password)) return false;
 
   // Should contain at least one lower case
-  if (!/\p{Lowercase_Letter}/u.test(password)) {
-    // Should still allow passwords in caseless languages like Kanji
-    return isPasswordInCaselessLanguage(password);
+  if (!containsLowerCaseLetter(password)) {
+    // But allow passwords in unicase languages like Kanji
+    return isUnicaseString(password);
   }
-
   // Should contain at least one upper case
-  if (!/\p{Uppercase_Letter}/u.test(password)) {
-    // Should still allow passwords in caseless languages like Kanji
-    return isPasswordInCaselessLanguage(password);
+  if (!containsUpperCaseLetter(password)) {
+    // But allow passwords in unicase languages like Kanji
+    return isUnicaseString(password);
   }
-
   return true;
 };
 
