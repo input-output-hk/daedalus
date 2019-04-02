@@ -3991,13 +3991,13 @@
         "description": "Title for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "source/renderer/app/components/wallet/settings-utxo/WalletUtxoSettings.js",
         "id": "wallet.settings.utxos.title",
         "start": {
           "column": 9,
-          "line": 22
+          "line": 23
         }
       },
       {
@@ -4005,13 +4005,13 @@
         "description": "Description for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/wallet/settings-utxo/WalletUtxoSettings.js",
         "id": "wallet.settings.utxos.description",
         "start": {
           "column": 15,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -4019,13 +4019,13 @@
         "description": "Label X for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/wallet/settings-utxo/WalletUtxoSettings.js",
         "id": "wallet.settings.utxos.labelX",
         "start": {
           "column": 10,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -4033,13 +4033,13 @@
         "description": "Label Y for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/settings-utxo/WalletUtxoSettings.js",
         "id": "wallet.settings.utxos.labelY",
         "start": {
           "column": 10,
-          "line": 38
+          "line": 39
         }
       }
     ],

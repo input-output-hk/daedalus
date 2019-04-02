@@ -38,10 +38,6 @@
 .bar {
   path {
     fill: rgba(68, 91, 124, 0.5);
-    transition: fill 0.25s;
-    &:hover {
-      fill: #445b7c;
-    }
   }
 }
 
