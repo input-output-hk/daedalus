@@ -7,6 +7,10 @@
   min-height: 455px;
   padding: 30px;
 
+  &.isEmpty {
+    min-height: auto;
+  }
+
   h1 {
     font-size: 16px;
     line-height: 1.38;
