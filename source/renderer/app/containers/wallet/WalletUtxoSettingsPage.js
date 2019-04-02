@@ -1,11 +1,10 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import millify from 'millify';
 import WalletUtxoSettings from '../../components/wallet/settings-utxo/WalletUtxoSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import type { Histogram } from '../../api/wallets/types';
-import { LOVELACES_PER_ADA } from '../../config/numbersConfig';
+import { getChartData, getPrettyAmount } from '../../utils/utxoUtils';
 
 type Props = InjectedProps;
 
@@ -19,18 +18,6 @@ export default class WalletSettingsPage extends Component<Props> {
     this.props.actions.walletSettings.getWalletUtxos.trigger();
   }
 
-  getChartData = (histogram: Histogram): Array<any> =>
-    Object.entries(histogram)
-      .sort()
-      .map<any>(([walletAmount, walletUtxosAmount]) => ({
-        walletAmount: parseInt(walletAmount, 10) / LOVELACES_PER_ADA,
-        walletUtxosAmount,
-      }))
-      .filter(
-        ({ walletAmount, walletUtxosAmount }) =>
-          walletAmount < 1000000 || walletUtxosAmount > 0
-      );
-
   getWalletUtxosAmount = (histogram: Histogram): number => {
     const histogramArr = Object.values(histogram);
     const walletUtxosAmount = histogramArr.length
@@ -41,9 +28,6 @@ export default class WalletSettingsPage extends Component<Props> {
     return parseInt(walletUtxosAmount, 10);
   };
 
-  getPrettyAmount = (amount: number) =>
-    amount >= 1000 ? millify(parseInt(amount, 10)) : amount;
-
   render() {
     const { wallets, walletSettings } = this.props.stores;
     const { walletUtxos } = walletSettings;
@@ -51,14 +35,14 @@ export default class WalletSettingsPage extends Component<Props> {
     const { active: activeWallet } = wallets;
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
-    const chartData = this.getChartData(histogram);
+    const chartData = getChartData(histogram);
     const walletUtxosAmount = this.getWalletUtxosAmount(histogram);
     return (
       <WalletUtxoSettings
         walletAmount={activeWallet.amount}
         walletUtxosAmount={walletUtxosAmount}
         chartData={chartData}
-        getPrettyAmount={this.getPrettyAmount}
+        getPrettyAmount={getPrettyAmount}
       />
     );
   }

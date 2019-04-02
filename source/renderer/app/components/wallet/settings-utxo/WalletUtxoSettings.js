@@ -49,7 +49,6 @@ type Props = {
   walletUtxosAmount: number,
   chartData: Array<any>,
   getPrettyAmount: Function,
-  isAnimationActive?: boolean,
 };
 
 @observer
@@ -60,12 +59,7 @@ export default class WalletUtxoSettings extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const {
-      walletAmount,
-      walletUtxosAmount,
-      chartData,
-      isAnimationActive,
-    } = this.props;
+    const { walletAmount, walletUtxosAmount, chartData } = this.props;
     const formattedWalletAmount = walletAmount.toFormat(DECIMAL_PLACES_IN_ADA);
     return (
       <div className={styles.component}>
@@ -127,9 +121,8 @@ export default class WalletUtxoSettings extends Component<Props> {
               />
             </YAxis>
             <Tooltip
-              cursor1={false}
               cursor={<Cursor />}
-              isAnimationActive={isAnimationActive}
+              isAnimationActive={false}
               content={
                 <CustomTooltip getPrettyAmount={this.props.getPrettyAmount} />
               }

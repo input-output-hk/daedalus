@@ -3,12 +3,23 @@ import React from 'react';
 import { number } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import BigNumber from 'bignumber.js';
-import millify from 'millify';
 
 // Screens
 import WalletSettingsLayout from '../../source/renderer/app/components/wallet/settings/WalletSettingsLayout';
 import WalletSettingsMenu from '../../source/renderer/app/components/wallet/settings/WalletSettingsMenu';
 import WalletUtxoSettings from '../../source/renderer/app/components/wallet/settings-utxo/WalletUtxoSettings';
+
+import {
+  getChartData,
+  getPrettyAmount,
+} from '../../source/renderer/app/utils/utxoUtils';
+
+const cfg = {
+  range: true,
+  step: 1,
+  min: 0,
+  max: 20,
+};
 
 /* eslint-disable react/display-name  */
 
@@ -22,9 +33,7 @@ export default ({ story }: { story: string }) => (
     }
   >
     <WalletUtxoSettings
-      getPrettyAmount={(amount: number) =>
-        amount >= 1000 ? millify(parseInt(amount, 10)) : amount
-      }
+      getPrettyAmount={getPrettyAmount}
       walletAmount={
         new BigNumber(
           number('Amount', 66.998, {
@@ -41,161 +50,25 @@ export default ({ story }: { story: string }) => (
         min: 0,
         max: 1000,
       })}
-      chartData={[
-        {
-          walletAmount: 0.00001,
-          walletUtxosAmount: number('walletUtxosAmount 0.00001', 0, {
-            range: true,
-            step: 1,
-            min: 0,
-            max: 1000,
-          }),
-        },
-        {
-          walletAmount: 0.0001,
-          walletUtxosAmount: number('walletUtxosAmount 0.0001', 0, {
-            range: true,
-            step: 1,
-            min: 0,
-            max: 1000,
-          }),
-        },
-        {
-          walletAmount: 0.001,
-          walletUtxosAmount: number('walletUtxosAmount 0.001', 0, {
-            range: true,
-            step: 1,
-            min: 0,
-            max: 1000,
-          }),
-        },
-        {
-          walletAmount: 0.01,
-          walletUtxosAmount: number('walletUtxosAmount 0.01', 0, {
-            range: true,
-            step: 1,
-            min: 0,
-            max: 1000,
-          }),
-        },
-        {
-          walletAmount: 0.1,
-          walletUtxosAmount: number('walletUtxosAmount 0.1', 0, {
-            range: true,
-            step: 1,
-            min: 0,
-            max: 1000,
-          }),
-        },
-        {
-          walletAmount: 1,
-          walletUtxosAmount: number('walletUtxosAmount 1', 0, {
-            range: true,
-            step: 1,
-            min: 0,
-            max: 1000,
-          }),
-        },
-        {
-          walletAmount: 10,
-          walletUtxosAmount: number('walletUtxosAmount 10', 0, {
-            range: true,
-            step: 1,
-            min: 0,
-            max: 1000,
-          }),
-        },
-        {
-          walletAmount: 100,
-          walletUtxosAmount: number('walletUtxosAmount 100', 0, {
-            range: true,
-            step: 1,
-            min: 0,
-            max: 1000,
-          }),
-        },
-        {
-          walletAmount: '1K',
-          walletUtxosAmount: number('walletUtxosAmount 1K', 0, {
-            range: true,
-            step: 1,
-            min: 0,
-            max: 1000,
-          }),
-        },
-        {
-          walletAmount: '10K',
-          walletUtxosAmount: number('walletUtxosAmount 10K', 0, {
-            range: true,
-            step: 1,
-            min: 0,
-            max: 1000,
-          }),
-        },
-        {
-          walletAmount: '100K',
-          walletUtxosAmount: number('walletUtxosAmount 100K', 0, {
-            range: true,
-            step: 1,
-            min: 0,
-            max: 1000,
-          }),
-        },
-        {
-          walletAmount: '1M',
-          walletUtxosAmount: number('walletUtxosAmount 1M', 0, {
-            range: true,
-            step: 1,
-            min: 0,
-            max: 1000,
-          }),
-        },
-        {
-          walletAmount: '10M',
-          walletUtxosAmount: number('walletUtxosAmount 10M', 0, {
-            range: true,
-            step: 1,
-            min: 0,
-            max: 1000,
-          }),
-        },
-        {
-          walletAmount: '100M',
-          walletUtxosAmount: number('walletUtxosAmount 100M', 0, {
-            range: true,
-            step: 1,
-            min: 0,
-            max: 1000,
-          }),
-        },
-        {
-          walletAmount: '1B',
-          walletUtxosAmount: number('walletUtxosAmount 1B', 0, {
-            range: true,
-            step: 1,
-            min: 0,
-            max: 1000,
-          }),
-        },
-        {
-          walletAmount: '10B',
-          walletUtxosAmount: number('walletUtxosAmount 10B', 0, {
-            range: true,
-            step: 1,
-            min: 0,
-            max: 1000,
-          }),
-        },
-        {
-          walletAmount: '45B',
-          walletUtxosAmount: number('walletUtxosAmount 45B', 0, {
-            range: true,
-            step: 1,
-            min: 0,
-            max: 1000,
-          }),
-        },
-      ]}
+      chartData={getChartData({
+        '10': number('1. 0.00001', 0, cfg),
+        '100': number('2. 0.0001', 2, cfg),
+        '1000': number('3. 0.001', 0, cfg),
+        '10000': number('4. 0.01', 1, cfg),
+        '100000': number('5. 0.1', 0, cfg),
+        '1000000': number('6. 1', 0, cfg),
+        '10000000': number('7. 10', 0, cfg),
+        '100000000': number('8. 100', 0, cfg),
+        '1000000000': number('9. 1000', 0, cfg),
+        '10000000000': number('10. 10K', 0, cfg),
+        '100000000000': number('11. 10K+ - 100K', 0, cfg),
+        '1000000000000': number('12. 10K+ - 1M', 0, cfg),
+        '10000000000000': number('13. 10K+ - 10M', 0, cfg),
+        '100000000000000': number('14. 10K+ - 100M', 0, cfg),
+        '1000000000000000': number('15. 10K+ - 1B', 0, cfg),
+        '10000000000000000': number('16. 10K+ - 10B', 0, cfg),
+        '45000000000000000': number('17. 10K+ - 45B', 0, cfg),
+      })}
     />
   </WalletSettingsLayout>
 );
