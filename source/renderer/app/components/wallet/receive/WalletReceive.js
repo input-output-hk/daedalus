@@ -147,8 +147,6 @@ export default class WalletReceive extends Component<Props, State> {
     />
   );
 
-  submitOnEnter = submitOnEnter.bind(this, this.submit);
-
   submit = () => {
     this.form.submit({
       onSuccess: form => {
@@ -164,6 +162,8 @@ export default class WalletReceive extends Component<Props, State> {
     // eslint-disable-next-line no-unused-expressions
     this.passwordField && this.passwordField.focus();
   };
+
+  handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
 
   getFilteredAddresses = (walletAddresses: Addresses): Addresses =>
     walletAddresses.filter(
@@ -214,7 +214,7 @@ export default class WalletReceive extends Component<Props, State> {
             }}
             error={passwordField.error}
             skin={InputSkin}
-            onKeyPress={this.submitOnEnter}
+            onKeyPress={this.handleSubmitOnEnter}
           />
         )}
 
