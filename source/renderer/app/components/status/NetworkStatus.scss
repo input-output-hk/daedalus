@@ -64,19 +64,23 @@
   }
 
   button {
-    color: var(--theme-network-window-white-color);
+    background: var(--theme-network-window-button-background);
+    border-radius: 4px;
+    color: var(--theme-network-window-button-color);
     cursor: pointer;
-    font-size: 14px;
+    font-size: 10px;
+    font-weight: 500;
+    height: 20px;
+    margin-right: 10px;
     line-height: 1.5;
+    padding: 0 8px;
+    padding-top: 2px;
     position: relative;
+    text-transform: uppercase;
 
-    &::after {
-      border-top: 1px solid var(--theme-network-window-white-color);
-      bottom: 1px;
-      content: '';
-      left: 0;
-      position: absolute;
-      right: 1px;
+    &.statusBtn {
+      float: right;
+      margin-right: 0;
     }
 
     &:disabled {
@@ -85,6 +89,35 @@
       &::after {
         display: none;
       }
+    }
+
+    &:hover {
+      color: var(--theme-network-window-white-color);
+    }
+  }
+
+  .realTimeStatusBtn {
+    background: var(--theme-network-window-transparent-color);
+    border-radius: initial;
+    color: var(--theme-network-window-white-color);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: initial;
+    height: initial;
+    line-height: 1.5;
+    margin-right: initial;
+    padding: initial;
+    position: relative;
+    text-transform: initial;
+    width: initial;
+
+    &::after {
+      border-top: 1px solid var(--theme-network-window-white-color);
+      bottom: 1px;
+      content: '';
+      left: 0;
+      position: absolute;
+      right: 1px;
     }
   }
 

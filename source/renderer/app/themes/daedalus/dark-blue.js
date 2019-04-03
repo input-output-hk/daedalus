@@ -422,7 +422,10 @@ export default {
   '--theme-network-window-red-color': '#f06e05',
   '--theme-network-window-green-color': '#05f079',
   '--theme-network-window-white-color': '#fff',
+  '--theme-network-window-transparent-color': 'transparent',
   '--theme-network-window-border-color': 'rgba(255, 255, 255, 0.25)',
+  '--theme-network-window-button-color': '#243e62',
+  '--theme-network-window-button-background': 'rgba(250, 251, 252, 0.4)',
 
   '--theme-backup-mnemonic-background-color': 'rgba(233, 244, 254, 0.05)',
 

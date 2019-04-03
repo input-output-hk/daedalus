@@ -301,18 +301,17 @@ export default class NetworkStatus extends Component<Props, State> {
               <tr>
                 <td>Local Time Difference:</td>
                 <td>
-                  <span className={localTimeDifferenceClasses}>
-                    {isNTPServiceReachable
-                      ? `${localTimeDifference || 0} μs`
-                      : 'NTP service unreachable'}
-                  </span>{' '}
-                  |&nbsp;
                   <button
                     onClick={() => onForceCheckLocalTimeDifference()}
                     disabled={isForceCheckingNodeTime || !isConnected}
                   >
                     {isForceCheckingNodeTime ? 'Checking...' : 'Check time'}
                   </button>
+                  <span className={localTimeDifferenceClasses}>
+                    {isNTPServiceReachable
+                      ? `${localTimeDifference || 0} μs`
+                      : 'NTP service unreachable'}
+                  </span>{' '}
                 </td>
               </tr>
               <tr>
@@ -334,6 +333,13 @@ export default class NetworkStatus extends Component<Props, State> {
               <tr>
                 <th colSpan={2}>
                   CARDANO NODE STATUS
+                  <button
+                    className={styles.statusBtn}
+                    onClick={() => this.restartNode()}
+                    disabled={isNodeRestarting}
+                  >
+                    {isNodeRestarting ? 'Restarting Cardano Node...' : 'Restart Cardano Node'}
+                  </button>
                   <hr />
                 </th>
               </tr>
@@ -375,22 +381,12 @@ export default class NetworkStatus extends Component<Props, State> {
                   {isNodeInSync ? 'YES' : 'NO'}
                 </td>
               </tr>
-              <tr>
-                <td className={styles.topPadding}>Cardano Node actions:</td>
-                <td className={styles.topPadding}>
-                  <button
-                    onClick={() => this.restartNode()}
-                    disabled={isNodeRestarting}
-                  >
-                    {isNodeRestarting ? 'Restarting...' : 'Restart'}
-                  </button>
-                </td>
-              </tr>
               {cardanoNodeEkgLink ? (
                 <tr>
                   <td>Cardano Node Diagnostics:</td>
                   <td>
                     <button
+                      className={styles.realTimeStatusBtn}
                       onClick={() => onOpenExternalLink(cardanoNodeEkgLink)}
                     >
                       Realtime statistics monitor
