@@ -81,7 +81,7 @@ export default (api: AdaApi) => {
   ): Promise<GetNetworkStatusResponse> => {
     Logger.debug('AdaApi::getNetworkStatus (PATCHED) called');
     try {
-      const status: NodeInfo = await getNodeInfo(api.config, queryParams);
+      const status: NodeInfo = await getNodeInfo(api.config);
       Logger.debug('AdaApi::getNetworkStatus (PATCHED) success', { status });
 
       const {
@@ -92,7 +92,7 @@ export default (api: AdaApi) => {
       } = status;
 
       // extract relevant data before sending to NetworkStatusStore
-      return {
+      const response = {
         subscriptionStatus: SUBSCRIPTION_STATUS || subscriptionStatus,
         syncProgress: syncProgress.quantity,
         blockchainHeight:
@@ -104,6 +104,17 @@ export default (api: AdaApi) => {
           difference: LOCAL_TIME_DIFFERENCE,
         },
       };
+
+      // Since in test environment we run multiple NTP force-checks
+      // we need to protect ourselves from getting punished by the NTP
+      // service which results in 30 second delay in NTP check response.
+      // In order to simulate NTP force-check we use 250ms timeout.
+      const isForcedTimeDifferenceCheck = !!queryParams;
+      return isForcedTimeDifferenceCheck
+        ? new Promise(resolve => {
+            setTimeout(() => resolve(response), 250);
+          })
+        : response;
     } catch (error) {
       Logger.error('AdaApi::getNetworkStatus (PATCHED) error', { error });
       throw new GenericApiError();
