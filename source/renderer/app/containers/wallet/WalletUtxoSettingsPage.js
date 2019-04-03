@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletUtxoSettings from '../../components/wallet/settings-utxo/WalletUtxoSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import type { Histogram } from '../../api/wallets/types';
 import {
   getUtxoChartData,
   getUtxoWalletPrettyAmount,
+  getWalletUtxosAmount,
 } from '../../utils/utxoUtils';
 
 type Props = InjectedProps;
@@ -21,16 +21,6 @@ export default class WalletSettingsPage extends Component<Props> {
     this.props.actions.walletSettings.getWalletUtxos.trigger();
   }
 
-  getWalletUtxosAmount = (histogram: Histogram): number => {
-    const histogramArr = Object.values(histogram);
-    const walletUtxosAmount = histogramArr.length
-      ? histogramArr.reduce(
-          (amount, value) => parseInt(amount, 10) + parseInt(value, 10)
-        )
-      : 0;
-    return parseInt(walletUtxosAmount, 10);
-  };
-
   render() {
     const { wallets, walletSettings } = this.props.stores;
     const { walletUtxos } = walletSettings;
@@ -39,7 +29,7 @@ export default class WalletSettingsPage extends Component<Props> {
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
     const chartData = getUtxoChartData(histogram);
-    const walletUtxosAmount = this.getWalletUtxosAmount(histogram);
+    const walletUtxosAmount = getWalletUtxosAmount(histogram);
     return (
       <WalletUtxoSettings
         walletAmount={activeWallet.amount}

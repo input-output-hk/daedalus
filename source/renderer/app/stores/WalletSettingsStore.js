@@ -1,5 +1,5 @@
 // @flow
-import { observable, action, runInAction } from 'mobx';
+import { observable, action } from 'mobx';
 import { findIndex } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -132,8 +132,10 @@ export default class WalletSettingsStore extends Store {
     if (!activeWallet) return;
     const { id: walletId } = activeWallet;
     const walletUtxos = await this.getWalletUtxosRequest.execute({ walletId });
-    runInAction(() => {
-      this.walletUtxos = walletUtxos;
-    });
+    this._updateWalletUtxos(walletUtxos);
+  };
+
+  @action _updateWalletUtxos = walletUtxos => {
+    this.walletUtxos = walletUtxos;
   };
 }

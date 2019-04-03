@@ -8,17 +8,18 @@ import {
 import {
   getUtxoChartData,
   getUtxoWalletPrettyAmount,
+  getWalletUtxosAmount,
 } from '../../../renderer/app/utils/utxoUtils';
+import { getHistogramFromTable } from '../support/utxo-helpers';
 
 Given('the `getUtxoChartData` function receives the following props:', function(
   data
 ) {
-  let histogram = {};
-  data.hashes().forEach(({ walletAmount, walletUtxosAmount }) => {
-    histogram[walletAmount] = walletUtxosAmount;
-  });
+  const histogram = getHistogramFromTable(data);
+  const utxoChartData = getUtxoChartData(histogram);
   this.context.histogram = histogram;
-  this.context.utxoChartData = getUtxoChartData(histogram);
+  this.context.utxoChartData = utxoChartData;
+  this.context.response = utxoChartData;
   this.context.sortedHistogram = Object.entries(histogram).sort();
 });
 
@@ -74,7 +75,9 @@ Then(
 
 function getUtxoChartDataReceivesAWalletAmount(walletAmount) {
   this.context.walletAmount = walletAmount;
-  this.context.walletPrettyAmount = getUtxoWalletPrettyAmount(walletAmount);
+  const walletPrettyAmount = getUtxoWalletPrettyAmount(walletAmount);
+  this.context.walletPrettyAmount = walletPrettyAmount;
+  this.context.response = walletPrettyAmount;
 }
 
 Given(
@@ -86,9 +89,12 @@ Given(
   getUtxoChartDataReceivesAWalletAmount
 );
 
-Then('the response should be a string', function() {
-  const responseType = typeof this.context.walletPrettyAmount;
-  expect(responseType).to.equal('string');
+Then('the response should have type {string}', function(type) {
+  const { response } = this.context;
+  if (type === 'array') {
+    return expect(Array.isArray(response)).to.be.true;
+  }
+  expect(typeof response).to.equal(type);
 });
 
 Then('amounts less than {int} should not be modified', function(amount) {
@@ -109,3 +115,16 @@ Then(
     }
   }
 );
+
+Given(
+  'the `getWalletUtxosAmount` function receives the following props:',
+  function(data) {
+    const histogram = getHistogramFromTable(data);
+    this.context.histogram = histogram;
+    this.context.response = getWalletUtxosAmount(histogram);
+  }
+);
+
+Then('the response should be the number {int}', function(response) {
+  expect(response).to.equal(this.context.response);
+});

@@ -41,3 +41,13 @@ export const getUtxoWalletPrettyAmount = (amount: number) => {
   if (amount === 100000) prettyAmount = '10K+';
   return prettyAmount;
 };
+
+export const getWalletUtxosAmount = (histogram: Histogram): number => {
+  const histogramArr = Object.values(histogram);
+  const walletUtxosAmount = histogramArr.length
+    ? histogramArr.reduce(
+        (amount, value) => parseInt(amount, 10) + parseInt(value, 10)
+      )
+    : 0;
+  return parseInt(walletUtxosAmount, 10);
+};
