@@ -4102,7 +4102,7 @@
           "line": 19
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettingsMenu.js",
-        "id": "wallet.settings.menu.utxo.link.label",
+        "id": "wallet.settings.menu.utxos.link.label",
         "start": {
           "column": 8,
           "line": 15
