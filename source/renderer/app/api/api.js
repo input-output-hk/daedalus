@@ -996,11 +996,14 @@ export default class AdaApi {
   };
 
   getCurrentEpochFallback = async (): Promise<GetCurrentEpochFallbackResponse> => {
+    Logger.debug('AdaApi::getCurrentEpochFallback called');
     try {
-      Logger.debug('AdaApi::getCurrentEpochFallback called');
       const cardanoExplorerApi = await getCurrentEpoch();
       const currentEpochPath = 'Right[1][0].cbeEpoch';
       const currentEpoch = get(cardanoExplorerApi, currentEpochPath);
+      Logger.debug('AdaApi::getCurrentEpochFallback success', {
+        currentEpoch,
+      });
       return { currentEpoch };
     } catch (error) {
       Logger.error('AdaApi::getCurrentEpochFallback error', { error });
