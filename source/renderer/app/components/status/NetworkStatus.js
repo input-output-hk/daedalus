@@ -194,8 +194,14 @@ export default class NetworkStatus extends Component<Props, State> {
     } = systemInfo;
 
     const {
-      isInSafeMode,
       daedalusVersion,
+      daedalusProcessID,
+      isInSafeMode,
+      cardanoVersion,
+      cardanoProcessID,
+      cardanoAPIPort,
+      cardanoNetwork,
+      daedalusStateDirectory,
     } = coreInfo;
 
     const { isNodeRestarting } = this.state;
@@ -292,7 +298,7 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>Daedalus Process ID:</td>
-                <td></td>
+                <td>{daedalusProcessID}</td>
               </tr>
               <tr>
                 <td>Daedalus is running in safe mode:</td>
@@ -300,23 +306,23 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>Cardano Version:</td>
-                <td></td>
+                <td>{cardanoVersion}</td>
               </tr>
               <tr>
                 <td>Cardano Process ID:</td>
-                <td></td>
+                <td>{cardanoProcessID}</td>
               </tr>
               <tr>
                 <td>Cardano API Port:</td>
-                <td></td>
+                <td>{cardanoAPIPort}</td>
               </tr>
               <tr>
                 <td>Cardano Network:</td>
-                <td></td>
+                <td>{cardanoNetwork}</td>
               </tr>
               <tr>
                 <td>Daedalus State Directory:</td>
-                <td></td>
+                <td>{daedalusStateDirectory}</td>
               </tr>
               {!isConnected && nodeConnectionError ? (
                 <tr>
