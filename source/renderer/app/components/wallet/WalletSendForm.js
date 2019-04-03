@@ -154,8 +154,6 @@ export default class WalletSendForm extends Component<Props, State> {
     this._isMounted = false;
   }
 
-  submitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
-
   handleOnSubmit = () => {
     if (this.isDisabled()) {
       return false;
@@ -164,6 +162,8 @@ export default class WalletSendForm extends Component<Props, State> {
       dialog: WalletSendConfirmationDialog,
     });
   };
+
+  handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
 
   isDisabled = () =>
     this._isCalculatingFee || !this.state.isTransactionFeeCalculated;
@@ -301,7 +301,7 @@ export default class WalletSendForm extends Component<Props, State> {
                     receiverField.onChange(value || '');
                   }}
                   skin={InputSkin}
-                  onKeyPress={this.submitOnEnter}
+                  onKeyPress={this.handleSubmitOnEnter}
                 />
               </div>
 
@@ -322,7 +322,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   fees={fees}
                   total={total}
                   skin={AmountInputSkin}
-                  onKeyPress={this.submitOnEnter}
+                  onKeyPress={this.handleSubmitOnEnter}
                 />
               </div>
 
