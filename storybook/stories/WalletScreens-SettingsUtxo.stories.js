@@ -10,8 +10,8 @@ import WalletSettingsMenu from '../../source/renderer/app/components/wallet/sett
 import WalletUtxoSettings from '../../source/renderer/app/components/wallet/settings-utxo/WalletUtxoSettings';
 
 import {
-  getChartData,
-  getPrettyAmount,
+  getUtxoChartData,
+  getUtxoWalletPrettyAmount,
 } from '../../source/renderer/app/utils/utxoUtils';
 
 const cfg = {
@@ -33,7 +33,7 @@ export default ({ story }: { story: string }) => (
     }
   >
     <WalletUtxoSettings
-      getPrettyAmount={getPrettyAmount}
+      getUtxoWalletPrettyAmount={getUtxoWalletPrettyAmount}
       walletAmount={
         new BigNumber(
           number('Amount', 66.998, {
@@ -50,7 +50,7 @@ export default ({ story }: { story: string }) => (
         min: 0,
         max: 1000,
       })}
-      chartData={getChartData({
+      chartData={getUtxoChartData({
         '10': number('1. 0.00001', 0, cfg),
         '100': number('2. 0.0001', 2, cfg),
         '1000': number('3. 0.001', 0, cfg),

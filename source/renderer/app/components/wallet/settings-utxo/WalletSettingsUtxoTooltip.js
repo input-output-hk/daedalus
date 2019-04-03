@@ -22,7 +22,7 @@ type Props = {
       walletUtxosAmount: number,
     },
   }>,
-  getPrettyAmount: Function,
+  getUtxoWalletPrettyAmount: Function,
 };
 
 @observer
@@ -38,11 +38,13 @@ export default class WalletSettingsUtxoTooltip extends Component<Props> {
   };
 
   render() {
-    const { getPrettyAmount, payload } = this.props;
+    const { getUtxoWalletPrettyAmount, payload } = this.props;
     const { walletAmount, walletUtxosAmount } = get(payload, '[0].payload', {});
     const previousWalletAmount = this.getPreviousAmount(walletAmount);
-    const prettyWalletAmount = getPrettyAmount(walletAmount);
-    const prettyPreviousWalletAmount = getPrettyAmount(previousWalletAmount);
+    const prettyWalletAmount = getUtxoWalletPrettyAmount(walletAmount);
+    const prettyPreviousWalletAmount = getUtxoWalletPrettyAmount(
+      previousWalletAmount
+    );
     const componentStyles = classnames([
       styles.component,
       !previousWalletAmount ? styles.noPreviousWalletAmount : null,

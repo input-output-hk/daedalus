@@ -55,7 +55,7 @@ type Props = {
   walletAmount: BigNumber,
   walletUtxosAmount: number,
   chartData: Array<any>,
-  getPrettyAmount: Function,
+  getUtxoWalletPrettyAmount: Function,
 };
 
 @observer
@@ -106,7 +106,9 @@ export default class WalletUtxoSettings extends Component<Props> {
                     <Tick
                       {...props}
                       textAnchor="start"
-                      getPrettyAmount={this.props.getPrettyAmount}
+                      getUtxoWalletPrettyAmount={
+                        this.props.getUtxoWalletPrettyAmount
+                      }
                       vertical
                     />
                   )}
@@ -142,7 +144,9 @@ export default class WalletUtxoSettings extends Component<Props> {
                   isAnimationActive={false}
                   content={
                     <CustomTooltip
-                      getPrettyAmount={this.props.getPrettyAmount}
+                      getUtxoWalletPrettyAmount={
+                        this.props.getUtxoWalletPrettyAmount
+                      }
                     />
                   }
                 />

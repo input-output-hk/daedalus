@@ -11,7 +11,7 @@ export type TickProps = {
     value: number,
   },
   textAnchor: 'start' | 'end',
-  getPrettyAmount?: Function,
+  getUtxoWalletPrettyAmount?: Function,
   vertical?: boolean,
 };
 
@@ -23,7 +23,7 @@ export default class WalletSettingsUtxoTick extends Component<TickProps> {
       y,
       payload: { value },
       vertical,
-      getPrettyAmount,
+      getUtxoWalletPrettyAmount,
       textAnchor,
     } = this.props;
     const componentStyles = classnames([
@@ -33,7 +33,7 @@ export default class WalletSettingsUtxoTick extends Component<TickProps> {
     return (
       <g transform={`translate(${x},${y})`} className={componentStyles}>
         <text textAnchor={textAnchor}>
-          {getPrettyAmount ? getPrettyAmount(value) : value}
+          {getUtxoWalletPrettyAmount ? getUtxoWalletPrettyAmount(value) : value}
         </text>
       </g>
     );

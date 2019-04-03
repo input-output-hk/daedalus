@@ -4,7 +4,10 @@ import { observer, inject } from 'mobx-react';
 import WalletUtxoSettings from '../../components/wallet/settings-utxo/WalletUtxoSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import type { Histogram } from '../../api/wallets/types';
-import { getChartData, getPrettyAmount } from '../../utils/utxoUtils';
+import {
+  getUtxoChartData,
+  getUtxoWalletPrettyAmount,
+} from '../../utils/utxoUtils';
 
 type Props = InjectedProps;
 
@@ -35,14 +38,14 @@ export default class WalletSettingsPage extends Component<Props> {
     const { active: activeWallet } = wallets;
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
-    const chartData = getChartData(histogram);
+    const chartData = getUtxoChartData(histogram);
     const walletUtxosAmount = this.getWalletUtxosAmount(histogram);
     return (
       <WalletUtxoSettings
         walletAmount={activeWallet.amount}
         walletUtxosAmount={walletUtxosAmount}
         chartData={chartData}
-        getPrettyAmount={getPrettyAmount}
+        getUtxoWalletPrettyAmount={getUtxoWalletPrettyAmount}
       />
     );
   }

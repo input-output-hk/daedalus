@@ -1,12 +1,19 @@
 // @flow
 import type { Histogram } from '../api/wallets/types';
-import { LOVELACES_PER_ADA } from '../config/numbersConfig';
+import { formattedLovelaceToAmount } from './formatters';
 
-export const getChartData = (histogram: Histogram) /* : Array<any> */ =>
+type UtxoChartData = Array<{
+  walletAmount: number,
+  walletUtxosAmount: number,
+}>;
+
+export const getUtxoChartData = (histogram: Histogram): UtxoChartData =>
   Object.entries(histogram)
     .sort()
     .reduce((data, [rawWalletAmount, walletUtxosAmount]) => {
-      const walletAmount = parseInt(rawWalletAmount, 10) / LOVELACES_PER_ADA;
+      const walletAmount = formattedLovelaceToAmount(
+        parseInt(rawWalletAmount, 10)
+      );
       if (walletAmount > 100000) {
         let lastItem: { walletAmount: number, walletUtxosAmount: any } =
           data[data.length - 1];
@@ -27,7 +34,7 @@ export const getChartData = (histogram: Histogram) /* : Array<any> */ =>
       return data;
     }, []);
 
-export const getPrettyAmount = (amount: number) => {
+export const getUtxoWalletPrettyAmount = (amount: number) => {
   let prettyAmount = String(amount);
   if (amount === 1000) prettyAmount = '1K';
   if (amount === 10000) prettyAmount = '10K';
