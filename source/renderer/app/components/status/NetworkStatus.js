@@ -6,16 +6,6 @@ import moment from 'moment';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import {
-  LineChart,
-  YAxis,
-  XAxis,
-  Line,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts';
-import {
   ALLOWED_TIME_DIFFERENCE,
   MAX_ALLOWED_STALL_DURATION,
 } from '../../config/timingConfig';
@@ -190,7 +180,7 @@ export default class NetworkStatus extends Component<Props, State> {
       isStaging,
       isMainnet,
     } = this.props;
-    const { data, isNodeRestarting } = this.state;
+    const { isNodeRestarting } = this.state;
     const isNTPServiceReachable = !!localTimeDifference;
     const connectionError = get(nodeConnectionError, 'values', '{}');
     const { message, code } = connectionError;
@@ -246,6 +236,12 @@ export default class NetworkStatus extends Component<Props, State> {
         <div className={styles.tables}>
           <table className={styles.table}>
             <tbody>
+
+            </tbody>
+          </table>
+
+          <table className={styles.table}>
+            <tbody>
               <tr>
                 <th colSpan={2}>
                   DAEDALUS STATUS
@@ -253,41 +249,41 @@ export default class NetworkStatus extends Component<Props, State> {
                 </th>
               </tr>
               <tr>
-                <td>isConnected:</td>
+                <td>Connected:</td>
                 <td className={this.getClass(isConnected)}>
                   {isConnected ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
-                <td>hasBeenConnected:</td>
+                <td>Has Been Connected:</td>
                 <td>{hasBeenConnected ? 'YES' : 'NO'}</td>
               </tr>
               <tr>
-                <td>isSynced:</td>
+                <td>Synced:</td>
                 <td className={this.getClass(isSynced)}>
                   {isSynced ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
-                <td>syncPercentage:</td>
+                <td>Sync Percentage:</td>
                 <td>{syncPercentage.toFixed(2)}%</td>
               </tr>
               <tr>
-                <td>localBlockHeight:</td>
-                <td>{localBlockHeight}</td>
-              </tr>
-              <tr>
-                <td>networkBlockHeight:</td>
+                <td>Network Block Height:</td>
                 <td>{networkBlockHeight}</td>
               </tr>
               <tr>
-                <td>remainingUnsyncedBlocks:</td>
+                <td>Local Block Height:</td>
+                <td>{localBlockHeight}</td>
+              </tr>
+              <tr>
+                <td>Remaining Unsynced Blocks:</td>
                 <td className={remainingUnsyncedBlocksClasses}>
                   {remainingUnsyncedBlocks >= 0 ? remainingUnsyncedBlocks : '-'}
                 </td>
               </tr>
               <tr>
-                <td>latestLocalBlockAge:</td>
+                <td>Latest Local Block Age:</td>
                 <td className={latestLocalBlockAgeClasses}>
                   {latestLocalBlockTimestamp > 0
                     ? `${latestLocalBlockAge} ms`
@@ -295,7 +291,7 @@ export default class NetworkStatus extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>latestNetworkBlockAge:</td>
+                <td>Latest Network Block Age:</td>
                 <td className={latestNetworkBlockAgeClasses}>
                   {latestNetworkBlockTimestamp > 0
                     ? `${latestNetworkBlockAge} ms`
@@ -303,7 +299,7 @@ export default class NetworkStatus extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>localTimeDifference:</td>
+                <td>Local Time Difference:</td>
                 <td>
                   <span className={localTimeDifferenceClasses}>
                     {isNTPServiceReachable
@@ -320,26 +316,21 @@ export default class NetworkStatus extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>isSystemTimeCorrect:</td>
+                <td>System Time Correct:</td>
                 <td className={this.getClass(isSystemTimeCorrect)}>
                   {isSystemTimeCorrect ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
-                <td>isSystemTimeIgnored:</td>
+                <td>System Time Ignored:</td>
                 <td className={this.getClass(!isSystemTimeIgnored)}>
                   {isSystemTimeIgnored ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
-                <td>isForceCheckingNodeTime:</td>
+                <td>Force Checking Node Time:</td>
                 <td>{isForceCheckingNodeTime ? 'YES' : 'NO'}</td>
               </tr>
-            </tbody>
-          </table>
-
-          <table className={styles.table}>
-            <tbody>
               <tr>
                 <th colSpan={2}>
                   CARDANO NODE STATUS
@@ -347,7 +338,7 @@ export default class NetworkStatus extends Component<Props, State> {
                 </th>
               </tr>
               <tr>
-                <td>cardanoNodeState:</td>
+                <td>Cardano Node State:</td>
                 <td>
                   {upperFirst(
                     cardanoNodeState != null ? cardanoNodeState : 'unknown'
@@ -355,31 +346,31 @@ export default class NetworkStatus extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>isNodeResponding:</td>
+                <td>Node Responding:</td>
                 <td className={this.getClass(isNodeResponding)}>
                   {isNodeResponding ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
-                <td>isNodeSubscribed:</td>
+                <td>Node Subscribed:</td>
                 <td className={this.getClass(isNodeSubscribed)}>
                   {isNodeSubscribed ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
-                <td>isNodeTimeCorrect:</td>
+                <td>Node Time Correct:</td>
                 <td className={this.getClass(isNodeTimeCorrect)}>
                   {isNodeTimeCorrect ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
-                <td>isNodeSyncing:</td>
+                <td>Node Syncing:</td>
                 <td className={this.getClass(isNodeSyncing)}>
                   {isNodeSyncing ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
-                <td>isNodeInSync:</td>
+                <td>Node In Sync:</td>
                 <td className={this.getClass(isNodeInSync)}>
                   {isNodeInSync ? 'YES' : 'NO'}
                 </td>
@@ -397,7 +388,7 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               {cardanoNodeEkgLink ? (
                 <tr>
-                  <td>Cardano Node diagnostics:</td>
+                  <td>Cardano Node Diagnostics:</td>
                   <td>
                     <button
                       onClick={() => onOpenExternalLink(cardanoNodeEkgLink)}
@@ -423,26 +414,6 @@ export default class NetworkStatus extends Component<Props, State> {
             </tbody>
           </table>
         </div>
-
-        <ResponsiveContainer width="100%" height="50%">
-          <LineChart data={data}>
-            <XAxis dataKey="time" domain={['auto', 'auto']} name="Time" />
-            <YAxis
-              domain={[
-                dataMin => Math.max(0, dataMin - 20),
-                dataMax => dataMax + 20,
-              ]}
-              orientation="right"
-              type="number"
-              width={100}
-            />
-            <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
-            <Tooltip />
-            <Legend wrapperStyle={{ color: '#fff' }} />
-            <Line type="linear" dataKey="localBlockHeight" stroke="#8884d8" />
-            <Line type="linear" dataKey="networkBlockHeight" stroke="#82ca9d" />
-          </LineChart>
-        </ResponsiveContainer>
 
         <button className={styles.closeButton} onClick={() => onClose()}>
           <SVGInline svg={closeCross} />
