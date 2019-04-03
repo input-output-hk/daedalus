@@ -53,6 +53,18 @@
       opacity: 1;
       text-align: right;
     }
+
+    &.platform {
+      display: -webkit-box;
+      float: right;
+      line-height: 16px;
+      max-height: 32px;
+      max-width: 400px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+    }
   }
 
   .red {

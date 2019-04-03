@@ -20,7 +20,8 @@ import type { CardanoNodeState } from '../../../../common/types/cardano-node.typ
 let syncingInterval = null;
 
 type Props = {
-  environment: environment,
+  systemInfo: Object,
+  coreInfo: Object,
   cardanoNodeState: ?CardanoNodeState,
   isDev: boolean,
   isMainnet: boolean,
@@ -154,6 +155,8 @@ export default class NetworkStatus extends Component<Props, State> {
 
   render() {
     const {
+      systemInfo,
+      coreInfo,
       cardanoNodeState,
       isNodeResponding,
       isNodeSubscribed,
@@ -180,13 +183,21 @@ export default class NetworkStatus extends Component<Props, State> {
       isTestnet,
       isStaging,
       isMainnet,
-      environment,
     } = this.props;
+
     const {
-      os,
+      platform,
       platformVersion,
-      version,
-    } = environment;
+      cpu,
+      ram,
+      availableDiskSpace
+    } = systemInfo;
+
+    const {
+      isInSafeMode,
+      daedalusVersion,
+    } = coreInfo;
+
     const { isNodeRestarting } = this.state;
     const isNTPServiceReachable = !!localTimeDifference;
     const connectionError = get(nodeConnectionError, 'values', '{}');
@@ -251,23 +262,23 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>Platform:</td>
-                <td>{os}</td>
+                <td>{platform}</td>
               </tr>
               <tr>
                 <td>Platform Version:</td>
-                <td>{isConnected ? 'YES' : 'NO'}</td>
+                <td className={styles.platform}>{platformVersion}</td>
               </tr>
               <tr>
                 <td>CPU:</td>
-                <td>{isConnected ? 'YES' : 'NO'}</td>
+                <td>{cpu}</td>
               </tr>
               <tr>
                 <td>RAM:</td>
-                <td>{isConnected ? 'YES' : 'NO'}</td>
+                <td>{ram}</td>
               </tr>
               <tr>
                 <td>Available disk space:</td>
-                <td>{isConnected ? 'YES' : 'NO'}</td>
+                <td>{availableDiskSpace}</td>
               </tr>
               <tr>
                 <th colSpan={2}>
@@ -277,35 +288,35 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>Daedalus Version:</td>
-                <td>{version}</td>
+                <td>{daedalusVersion}</td>
               </tr>
               <tr>
                 <td>Daedalus Process ID:</td>
-                <td>{isConnected ? 'YES' : 'NO'}</td>
+                <td></td>
               </tr>
               <tr>
                 <td>Daedalus is running in safe mode:</td>
-                <td>{isConnected ? 'YES' : 'NO'}</td>
+                <td>{isInSafeMode ? 'YES' : 'NO'}</td>
               </tr>
               <tr>
                 <td>Cardano Version:</td>
-                <td>{platformVersion}</td>
+                <td></td>
               </tr>
               <tr>
                 <td>Cardano Process ID:</td>
-                <td>{isConnected ? 'YES' : 'NO'}</td>
+                <td></td>
               </tr>
               <tr>
                 <td>Cardano API Port:</td>
-                <td>{isConnected ? 'YES' : 'NO'}</td>
+                <td></td>
               </tr>
               <tr>
                 <td>Cardano Network:</td>
-                <td>{isConnected ? 'YES' : 'NO'}</td>
+                <td></td>
               </tr>
               <tr>
                 <td>Daedalus State Directory:</td>
-                <td>{isConnected ? 'YES' : 'NO'}</td>
+                <td></td>
               </tr>
               {!isConnected && nodeConnectionError ? (
                 <tr>

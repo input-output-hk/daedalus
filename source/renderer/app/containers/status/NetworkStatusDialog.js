@@ -2,6 +2,8 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
+import os from 'os';
+import {includes} from 'lodash/collection';
 import NetworkStatus from '../../components/status/NetworkStatus';
 import styles from './NetworkStatusDialog.scss';
 import type { InjectedProps } from '../../types/injectedPropsType';
@@ -45,6 +47,19 @@ export default class NetworkStatusDialog extends Component<Props> {
       environment,
     } = networkStatus;
 
+    const systemInfo = {
+      platform: environment.os,
+      platformVersion: os.release(),
+      cpu: os.cpus(),
+      ram: JSON.stringify(os.totalmem(), null, 2),
+      availableDiskSpace: '',
+    };
+
+    const coreInfo = {
+      isInSafeMode: includes(process.argv.slice(1), '--safe-mode'),
+      daedalusVersion: environment.version,
+    };
+
     return (
       <ReactModal
         isOpen
@@ -55,7 +70,8 @@ export default class NetworkStatusDialog extends Component<Props> {
         ariaHideApp={false}
       >
         <NetworkStatus
-          environment={environment}
+          systemInfo={systemInfo}
+          coreInfo={coreInfo}
           cardanoNodeState={cardanoNodeState}
           isDev={environment.isDev}
           isMainnet={environment.isMainnet}
