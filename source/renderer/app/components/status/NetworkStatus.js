@@ -236,7 +236,109 @@ export default class NetworkStatus extends Component<Props, State> {
         <div className={styles.tables}>
           <table className={styles.table}>
             <tbody>
-
+              <tr>
+                <th colSpan={2}>
+                  SYSTEM INFO
+                  <hr />
+                </th>
+              </tr>
+              <tr>
+                <td>Platform:</td>
+                <td className={this.getClass(isConnected)}>
+                  {isConnected ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>Platform Version:</td>
+                <td className={this.getClass(isConnected)}>
+                  {isConnected ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>CPU:</td>
+                <td className={this.getClass(isConnected)}>
+                  {isConnected ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>RAM:</td>
+                <td className={this.getClass(isConnected)}>
+                  {isConnected ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>Available disk space:</td>
+                <td className={this.getClass(isConnected)}>
+                  {isConnected ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <th colSpan={2}>
+                  CORE INFO
+                  <hr />
+                </th>
+              </tr>
+              <tr>
+                <td>Daedalus Version:</td>
+                <td className={this.getClass(isConnected)}>
+                  {isConnected ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>Daedalus Process ID:</td>
+                <td className={this.getClass(isConnected)}>
+                  {isConnected ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>Daedalus is running in safe mode:</td>
+                <td className={this.getClass(isConnected)}>
+                  {isConnected ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>Cardano Version:</td>
+                <td className={this.getClass(isConnected)}>
+                  {isConnected ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>Cardano Process ID:</td>
+                <td className={this.getClass(isConnected)}>
+                  {isConnected ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>Cardano API Port:</td>
+                <td className={this.getClass(isConnected)}>
+                  {isConnected ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>Cardano Network:</td>
+                <td className={this.getClass(isConnected)}>
+                  {isConnected ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>Daedalus State Directory:</td>
+                <td className={this.getClass(isConnected)}>
+                  {isConnected ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              {!isConnected && nodeConnectionError ? (
+                <tr>
+                  <td className={styles.topPadding} colSpan={2}>
+                    CONNECTION ERROR
+                    <br />
+                    <div className={styles.error}>
+                      message: {message || '-'}
+                      <br />
+                      code: {code || '-'}
+                    </div>
+                  </td>
+                </tr>
+              ) : null}
             </tbody>
           </table>
 
@@ -338,7 +440,9 @@ export default class NetworkStatus extends Component<Props, State> {
                     onClick={() => this.restartNode()}
                     disabled={isNodeRestarting}
                   >
-                    {isNodeRestarting ? 'Restarting Cardano Node...' : 'Restart Cardano Node'}
+                    {isNodeRestarting
+                      ? 'Restarting Cardano Node...'
+                      : 'Restart Cardano Node'}
                   </button>
                   <hr />
                 </th>
@@ -391,19 +495,6 @@ export default class NetworkStatus extends Component<Props, State> {
                     >
                       Realtime statistics monitor
                     </button>
-                  </td>
-                </tr>
-              ) : null}
-              {!isConnected && nodeConnectionError ? (
-                <tr>
-                  <td className={styles.topPadding} colSpan={2}>
-                    Connection error:
-                    <br />
-                    <div className={styles.error}>
-                      message: {message || '-'}
-                      <br />
-                      code: {code || '-'}
-                    </div>
                   </td>
                 </tr>
               ) : null}
