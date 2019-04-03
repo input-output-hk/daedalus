@@ -118,7 +118,7 @@ export default (api: AdaApi) => {
       // we need to protect ourselves from getting punished by the NTP
       // service which results in 30 second delay in NTP check response.
       // In order to simulate NTP force-check we use 250ms timeout.
-      const isForcedTimeDifferenceCheck = !!queryParams;
+      const isForcedTimeDifferenceCheck = !!queryInfoParams;
       return isForcedTimeDifferenceCheck
         ? new Promise(resolve => {
             setTimeout(() => resolve(response), 250);
