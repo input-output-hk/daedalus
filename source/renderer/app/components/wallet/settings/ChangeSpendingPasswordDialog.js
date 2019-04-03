@@ -136,17 +136,6 @@ export default class ChangeSpendingPasswordDialog extends Component<
             messages.currentPasswordFieldPlaceholder
           ),
           value: '',
-          validators: [
-            ({ field }) => {
-              if (!this.props.isSpendingPasswordSet) return [true];
-              return [
-                isValidSpendingPassword(field.value),
-                this.context.intl.formatMessage(
-                  globalMessages.invalidSpendingPassword
-                ),
-              ];
-            },
-          ],
         },
         spendingPassword: {
           type: 'password',
