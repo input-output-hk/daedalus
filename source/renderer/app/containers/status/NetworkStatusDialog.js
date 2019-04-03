@@ -55,6 +55,7 @@ export default class NetworkStatusDialog extends Component<Props> {
         ariaHideApp={false}
       >
         <NetworkStatus
+          environment={environment}
           cardanoNodeState={cardanoNodeState}
           isDev={environment.isDev}
           isMainnet={environment.isMainnet}

@@ -20,6 +20,7 @@ import type { CardanoNodeState } from '../../../../common/types/cardano-node.typ
 let syncingInterval = null;
 
 type Props = {
+  environment: environment,
   cardanoNodeState: ?CardanoNodeState,
   isDev: boolean,
   isMainnet: boolean,
@@ -179,7 +180,13 @@ export default class NetworkStatus extends Component<Props, State> {
       isTestnet,
       isStaging,
       isMainnet,
+      environment,
     } = this.props;
+    const {
+      os,
+      platformVersion,
+      version,
+    } = environment;
     const { isNodeRestarting } = this.state;
     const isNTPServiceReachable = !!localTimeDifference;
     const connectionError = get(nodeConnectionError, 'values', '{}');
@@ -244,33 +251,23 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>Platform:</td>
-                <td className={this.getClass(isConnected)}>
-                  {isConnected ? 'YES' : 'NO'}
-                </td>
+                <td>{os}</td>
               </tr>
               <tr>
                 <td>Platform Version:</td>
-                <td className={this.getClass(isConnected)}>
-                  {isConnected ? 'YES' : 'NO'}
-                </td>
+                <td>{isConnected ? 'YES' : 'NO'}</td>
               </tr>
               <tr>
                 <td>CPU:</td>
-                <td className={this.getClass(isConnected)}>
-                  {isConnected ? 'YES' : 'NO'}
-                </td>
+                <td>{isConnected ? 'YES' : 'NO'}</td>
               </tr>
               <tr>
                 <td>RAM:</td>
-                <td className={this.getClass(isConnected)}>
-                  {isConnected ? 'YES' : 'NO'}
-                </td>
+                <td>{isConnected ? 'YES' : 'NO'}</td>
               </tr>
               <tr>
                 <td>Available disk space:</td>
-                <td className={this.getClass(isConnected)}>
-                  {isConnected ? 'YES' : 'NO'}
-                </td>
+                <td>{isConnected ? 'YES' : 'NO'}</td>
               </tr>
               <tr>
                 <th colSpan={2}>
@@ -280,51 +277,35 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>Daedalus Version:</td>
-                <td className={this.getClass(isConnected)}>
-                  {isConnected ? 'YES' : 'NO'}
-                </td>
+                <td>{version}</td>
               </tr>
               <tr>
                 <td>Daedalus Process ID:</td>
-                <td className={this.getClass(isConnected)}>
-                  {isConnected ? 'YES' : 'NO'}
-                </td>
+                <td>{isConnected ? 'YES' : 'NO'}</td>
               </tr>
               <tr>
                 <td>Daedalus is running in safe mode:</td>
-                <td className={this.getClass(isConnected)}>
-                  {isConnected ? 'YES' : 'NO'}
-                </td>
+                <td>{isConnected ? 'YES' : 'NO'}</td>
               </tr>
               <tr>
                 <td>Cardano Version:</td>
-                <td className={this.getClass(isConnected)}>
-                  {isConnected ? 'YES' : 'NO'}
-                </td>
+                <td>{platformVersion}</td>
               </tr>
               <tr>
                 <td>Cardano Process ID:</td>
-                <td className={this.getClass(isConnected)}>
-                  {isConnected ? 'YES' : 'NO'}
-                </td>
+                <td>{isConnected ? 'YES' : 'NO'}</td>
               </tr>
               <tr>
                 <td>Cardano API Port:</td>
-                <td className={this.getClass(isConnected)}>
-                  {isConnected ? 'YES' : 'NO'}
-                </td>
+                <td>{isConnected ? 'YES' : 'NO'}</td>
               </tr>
               <tr>
                 <td>Cardano Network:</td>
-                <td className={this.getClass(isConnected)}>
-                  {isConnected ? 'YES' : 'NO'}
-                </td>
+                <td>{isConnected ? 'YES' : 'NO'}</td>
               </tr>
               <tr>
                 <td>Daedalus State Directory:</td>
-                <td className={this.getClass(isConnected)}>
-                  {isConnected ? 'YES' : 'NO'}
-                </td>
+                <td>{isConnected ? 'YES' : 'NO'}</td>
               </tr>
               {!isConnected && nodeConnectionError ? (
                 <tr>
