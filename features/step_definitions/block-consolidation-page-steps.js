@@ -1,4 +1,3 @@
-// import React from 'react';
 import { When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { getVisibleTextsForSelector } from '../support/helpers/shared-helpers';
