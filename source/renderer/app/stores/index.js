@@ -4,6 +4,7 @@ import type Store from './lib/Store';
 import AdaRedemptionStore from './AdaRedemptionStore';
 import AddressesStore from './AddressesStore';
 import AppStore from './AppStore';
+import BlockConsolidationStore from './BlockConsolidationStore';
 import NetworkStatusStore from './NetworkStatusStore';
 import NodeUpdateStore from './NodeUpdateStore';
 import ProfileStore from './ProfileStore';
@@ -19,6 +20,7 @@ import WindowStore from './WindowStore';
 export const storeClasses = {
   adaRedemption: AdaRedemptionStore,
   addresses: AddressesStore,
+  blockConsolidation: BlockConsolidationStore,
   app: AppStore,
   networkStatus: NetworkStatusStore,
   nodeUpdate: NodeUpdateStore,
@@ -37,6 +39,7 @@ export type StoresMap = {
   adaRedemption: AdaRedemptionStore,
   addresses: AddressesStore,
   app: AppStore,
+  blockConsolidation: BlockConsolidationStore,
   networkStatus: NetworkStatusStore,
   nodeUpdate: NodeUpdateStore,
   profile: ProfileStore,
@@ -81,6 +84,7 @@ export default action(
       adaRedemption: createStoreInstanceOf(AdaRedemptionStore),
       addresses: createStoreInstanceOf(AddressesStore),
       app: createStoreInstanceOf(AppStore),
+      blockConsolidation: createStoreInstanceOf(BlockConsolidationStore),
       networkStatus: createStoreInstanceOf(NetworkStatusStore),
       nodeUpdate: createStoreInstanceOf(NodeUpdateStore),
       profile: createStoreInstanceOf(ProfileStore),

@@ -13,7 +13,6 @@ import {
 } from '../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
 import { Logger } from '../utils/logging';
-import { getCurrentEpoch } from '../utils/network';
 import {
   cardanoStateChangeChannel,
   cardanoTlsConfigChannel,
@@ -22,8 +21,6 @@ import {
   setCachedCardanoStatusChannel,
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
-import { getNumberOfEpochsConsolidatedChannel } from '../ipc/getNumberOfEpochsConsolidatedChannel';
-import { getSystemStartTimeChannel } from '../ipc/getSystemStartTime.ipc';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
 import type {
@@ -31,12 +28,9 @@ import type {
   CardanoStatus,
   TlsConfig,
 } from '../../../common/types/cardano-node.types';
-import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
-import type { GetConsolidatedEpochsCountMainResponse } from '../../../common/ipc/api';
+import type { NodeInfoQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
-
-const { isDevelopment } = global.environment;
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
@@ -75,7 +69,6 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeSubscribed = false; // Is 'true' in case node is subscribed to the network
   @observable isNodeSyncing = false; // Is 'true' in case we are receiving blocks and not stalling
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
-  @observable systemStartTime: number = 0;
   @observable isNodeInSync = false; // 'true' if syncing & local/network blocks diff within limit
   @observable isNodeStopping = false; // 'true' if node is in `NODE_STOPPING_STATES` states
   @observable isNodeStopped = false; // 'true' if node is in `NODE_STOPPED_STATES` states
@@ -85,8 +78,6 @@ export default class NetworkStatusStore extends Store {
   @observable initialLocalHeight = null;
   @observable localBlockHeight = 0;
   @observable networkBlockHeight = 0;
-  @observable epochsConsolidated: number = 0;
-  @observable currentEpoch: number = 0;
   @observable latestLocalBlockTimestamp = 0; // milliseconds
   @observable latestNetworkBlockTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
@@ -108,8 +99,6 @@ export default class NetworkStatusStore extends Store {
 
   // DEFINE STORE METHODS
   setup() {
-    const actions = this.actions.networkStatus;
-    actions.getEpochsData.listen(this._getEpochsData);
     // ========== IPC CHANNELS =========== //
 
     // Request node state
@@ -124,9 +113,6 @@ export default class NetworkStatusStore extends Store {
 
     // Passively receive state changes of the cardano-node
     cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
-
-    // Get cluster start time (only needed for demo cluster)
-    if (isDevelopment) this._getSystemStartTime();
 
     // ========== MOBX REACTIONS =========== //
 
@@ -241,10 +227,10 @@ export default class NetworkStatusStore extends Store {
 
   _requestTlsConfig = async () => {
     try {
-      const tlsConfig = await cardanoTlsConfigChannel.request();
       Logger.info(
         'NetworkStatusStore: requesting tls config from main process'
       );
+      const tlsConfig = await cardanoTlsConfigChannel.request();
       await this._updateTlsConfig(tlsConfig);
     } catch (error) {
       Logger.error('NetworkStatusStore: error while requesting tls config', {
@@ -259,6 +245,7 @@ export default class NetworkStatusStore extends Store {
     Logger.info('NetworkStatusStore: received tls config from main process');
     this.api.ada.setRequestConfig(config);
     this._tlsConfig = config;
+    this.actions.networkStatus.tlsConfigIsReady.trigger();
     return Promise.resolve();
   };
 
@@ -277,9 +264,7 @@ export default class NetworkStatusStore extends Store {
       case CardanoNodeStates.STOPPING:
       case CardanoNodeStates.EXITING:
       case CardanoNodeStates.UPDATING:
-        runInAction('reset _tlsConfig', () => {
-          this._tlsConfig = null;
-        });
+        this._tlsConfig = null;
         this._setDisconnected(wasConnected);
         break;
       default:
@@ -311,36 +296,15 @@ export default class NetworkStatusStore extends Store {
     };
   };
 
-  _getSystemStartTime = async () => {
-    this._onReceiveSystemStartTime(await getSystemStartTimeChannel.request());
-  };
-
-  _getEpochsData = async () => {
-    this._onReceiveEpochsData(
-      await getNumberOfEpochsConsolidatedChannel.request(),
-      getCurrentEpoch(this.systemStartTime)
-    );
-  };
-
   // DEFINE ACTIONS
 
-  @action _onReceiveSystemStartTime = (systemStartTime: number) => {
-    this.systemStartTime = systemStartTime;
-  };
-
-  @action _onReceiveEpochsData = (
-    epochsConsolidated: GetConsolidatedEpochsCountMainResponse,
-    currentEpoch: number
+  @action _updateNetworkStatus = async (
+    queryInfoParams?: NodeInfoQueryParams
   ) => {
-    this.epochsConsolidated = epochsConsolidated;
-    this.currentEpoch = currentEpoch;
-  };
-
-  @action _updateNetworkStatus = async (queryParams?: NodeQueryParams) => {
     // In case we haven't received TLS config we shouldn't trigger any API calls
     if (!this._tlsConfig) return;
 
-    const isForcedTimeDifferenceCheck = !!queryParams;
+    const isForcedTimeDifferenceCheck = !!queryInfoParams;
 
     // Prevent network status requests in case there is an already executing
     // forced time difference check unless we are trying to run another
@@ -368,7 +332,7 @@ export default class NetworkStatusStore extends Store {
 
     try {
       const networkStatus: GetNetworkStatusResponse = isForcedTimeDifferenceCheck
-        ? await this.forceCheckTimeDifferenceRequest.execute(queryParams)
+        ? await this.forceCheckTimeDifferenceRequest.execute(queryInfoParams)
             .promise
         : await this.getNetworkStatusRequest.execute().promise;
 
@@ -416,9 +380,7 @@ export default class NetworkStatusStore extends Store {
         this.isNodeSubscribed
       ) {
         // We are connected for the first time, move on to syncing stage
-        runInAction('update _networkStatus', () => {
-          this._networkStatus = NETWORK_STATUS.SYNCING;
-        });
+        this._networkStatus = NETWORK_STATUS.SYNCING;
         Logger.info(
           `========== Connected after ${this._getStartupTimeDelta()} milliseconds ==========`
         );
@@ -526,9 +488,7 @@ export default class NetworkStatusStore extends Store {
 
       if (this._networkStatus === NETWORK_STATUS.SYNCING && this.isNodeInSync) {
         // We are synced for the first time, move on to running stage
-        runInAction('update _networkStatus', () => {
-          this._networkStatus = NETWORK_STATUS.RUNNING;
-        });
+        this._networkStatus = NETWORK_STATUS.RUNNING;
         this.actions.networkStatus.isSyncedAndReady.trigger();
         Logger.info(
           `========== Synced after ${this._getStartupTimeDelta()} milliseconds ==========`

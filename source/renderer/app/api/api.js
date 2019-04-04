@@ -22,6 +22,8 @@ import { createAddress } from './addresses/requests/createAddress';
 // Nodes requests
 import { applyNodeUpdate } from './nodes/requests/applyNodeUpdate';
 import { getNodeInfo } from './nodes/requests/getNodeInfo';
+import { getNodeSettings } from './nodes/requests/getNodeSettings';
+import { getCurrentEpoch } from './nodes/requests/getCurrentEpoch';
 import { getNextNodeUpdate } from './nodes/requests/getNextNodeUpdate';
 import { postponeNodeUpdate } from './nodes/requests/postponeNodeUpdate';
 
@@ -95,11 +97,14 @@ import type { RequestConfig } from './common/types';
 
 // Nodes Types
 import type {
-  NodeInfo,
+  NodeInfoResponse,
+  NodeSettingsResponse,
   NodeSoftware,
   GetNetworkStatusResponse,
+  GetNodeSettingsResponse,
+  GetCurrentEpochFallbackResponse,
 } from './nodes/types';
-import type { NodeQueryParams } from './nodes/requests/getNodeInfo';
+import type { NodeInfoQueryParams } from './nodes/requests/getNodeInfo';
 
 // Transactions Types
 import type { RedeemAdaParams } from './transactions/requests/redeemAda';
@@ -946,16 +951,19 @@ export default class AdaApi {
   };
 
   getNetworkStatus = async (
-    queryParams?: NodeQueryParams
+    queryInfoParams?: NodeInfoQueryParams
   ): Promise<GetNetworkStatusResponse> => {
-    const isForceNTPCheck = !!queryParams;
+    const isForceNTPCheck = !!queryInfoParams;
     const loggerText = `AdaApi::getNetworkStatus${
       isForceNTPCheck ? ' (FORCE-NTP-CHECK)' : ''
     }`;
     Logger.debug(`${loggerText} called`);
     try {
-      const status: NodeInfo = await getNodeInfo(this.config, queryParams);
-      Logger.debug(`${loggerText} success`, { status });
+      const nodeInfo: NodeInfoResponse = await getNodeInfo(
+        this.config,
+        queryInfoParams
+      );
+      Logger.debug(`${loggerText} success`, { nodeInfo });
 
       const {
         blockchainHeight,
@@ -963,7 +971,7 @@ export default class AdaApi {
         syncProgress,
         localBlockchainHeight,
         localTimeInformation,
-      } = status;
+      } = nodeInfo;
 
       // extract relevant data before sending to NetworkStatusStore
       return {
@@ -989,6 +997,42 @@ export default class AdaApi {
     }
   };
 
+  getNodeSettings = async (): Promise<GetNodeSettingsResponse> => {
+    Logger.debug('AdaApi::getNodeSettings called');
+    try {
+      const nodeSettings: NodeSettingsResponse = await getNodeSettings(
+        this.config
+      );
+      Logger.debug('AdaApi::getNodeSettings success', {
+        nodeSettings,
+      });
+      const { slotId } = nodeSettings;
+      return { slotId };
+    } catch (error) {
+      Logger.error('AdaApi::getNodeSettings error', { error });
+      if (error.code === TlsCertificateNotValidError.API_ERROR) {
+        throw new TlsCertificateNotValidError();
+      }
+      throw new GenericApiError(error);
+    }
+  };
+
+  getCurrentEpochFallback = async (): Promise<GetCurrentEpochFallbackResponse> => {
+    Logger.debug('AdaApi::getCurrentEpochFallback called');
+    try {
+      const cardanoExplorerApi = await getCurrentEpoch();
+      const currentEpochPath = 'Right[1][0].cbeEpoch';
+      const currentEpoch = get(cardanoExplorerApi, currentEpochPath);
+      Logger.debug('AdaApi::getCurrentEpochFallback success', {
+        currentEpoch,
+      });
+      return { currentEpoch };
+    } catch (error) {
+      Logger.error('AdaApi::getCurrentEpochFallback error', { error });
+      throw new GenericApiError();
+    }
+  };
+
   setCardanoNodeFault = async (fault: FaultInjectionIpcRequest) => {
     await cardanoFaultInjectionChannel.send(fault);
   };
@@ -1000,6 +1044,7 @@ export default class AdaApi {
   setSubscriptionStatus: Function;
   setLocalBlockHeight: Function;
   setNetworkBlockHeight: Function;
+  setFaultyNodeSettingsApi: boolean;
 }
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========

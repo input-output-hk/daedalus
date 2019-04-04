@@ -4,7 +4,7 @@ export type LocalTimeInformationStatus =
   | 'pending'
   | 'available';
 
-export type NodeInfo = {
+export type NodeInfoResponse = {
   syncProgress: {
     quantity: number,
     unit: 'percent',
@@ -27,7 +27,7 @@ export type NodeInfo = {
   subscriptionStatus: Object,
 };
 
-export type NodeSettings = {
+export type NodeSettingsResponse = {
   slotDuration: {
     quantity: number,
     unit: ?'milliseconds',
@@ -35,6 +35,14 @@ export type NodeSettings = {
   softwareInfo: NodeSoftware,
   projectVersion: string,
   gitRevision: string,
+  slotId: {
+    slot: number,
+    epoch: number,
+  },
+};
+
+export type CardanoExplorerResponse = {
+  Right: Array<number | Object>,
 };
 
 export type NodeSoftware = {
@@ -43,6 +51,7 @@ export type NodeSoftware = {
 };
 
 // req/res Node Types
+
 export type GetNetworkStatusResponse = {
   subscriptionStatus: Object,
   syncProgress: number,
@@ -52,4 +61,14 @@ export type GetNetworkStatusResponse = {
     status: LocalTimeInformationStatus,
     difference: ?number,
   },
+};
+
+export type GetNodeSettingsResponse = {
+  slotId?: {
+    epoch: number,
+  },
+};
+
+export type GetCurrentEpochFallbackResponse = {
+  currentEpoch: number,
 };
