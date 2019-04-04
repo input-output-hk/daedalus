@@ -128,7 +128,7 @@ export default class WalletUtxoSettings extends Component<Props> {
                 >
                   <Label
                     value={intl.formatMessage(messages.labelY)}
-                    offset={-20}
+                    offset={0}
                     position="insideTopLeft"
                     className={styles.yAxisLabel}
                   />
