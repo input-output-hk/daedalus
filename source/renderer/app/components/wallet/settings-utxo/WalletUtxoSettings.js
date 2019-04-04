@@ -94,6 +94,8 @@ export default class WalletUtxoSettings extends Component<Props> {
                 <CartesianGrid
                   horizontal={false}
                   vertical={false}
+                  y={-10}
+                  height={255}
                   fill="rgba(68, 91, 124, 0.06)"
                 />
                 <XAxis
