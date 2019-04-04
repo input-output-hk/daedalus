@@ -19,6 +19,8 @@ Changelog
 
 - Implemented new About Us dialog design with a close button ([PR 1369](https://github.com/input-output-hk/daedalus/pull/1369)
 - Refactored store async functions to use mobx runInAction calls ([PR 1367](https://github.com/input-output-hk/daedalus/pull/1367)
+- Refactored the consolidation status screen epoch calculation ([PR 1339](https://github.com/input-output-hk/daedalus/pull/1339))
+- Removed the `REPORT_URL` env variable ([PR 1338](https://github.com/input-output-hk/daedalus/pull/1338))
 - Improved acceptance test coverage for the Loading screen, Block Consolidation screen, and fixed a bug common to multiple other tests which use the mnemonic word selector to identify and click mnemonics ([PR 1318](https://github.com/input-output-hk/daedalus/pull/1318))
 - Implemented `prettier` formatting tool and set up automation for basic maintainance tasks ([PR 1335](https://github.com/input-output-hk/daedalus/pull/1335), [PR 1347](https://github.com/input-output-hk/daedalus/pull/1347), [PR 1352](https://github.com/input-output-hk/daedalus/pull/1352), [PR 1375](https://github.com/input-output-hk/daedalus/pull/1375))
 - Replaced "Ada" with "ada" ([PR 1317](https://github.com/input-output-hk/daedalus/pull/1317), [PR 1336](https://github.com/input-output-hk/daedalus/pull/1336))
@@ -57,7 +59,6 @@ Changelog
 
 ### Fixes
 
-- Removed the `REPORT_URL` env variable ([PR 1338](https://github.com/input-output-hk/daedalus/pull/1338))
 - Fixed "Daedalus" state directory on "Staging" and "Testnet" builds ([PR 1316](https://github.com/input-output-hk/daedalus/pull/1316))
 - Fixed Dev-Tools initialization in development mode ([PR 1302](https://github.com/input-output-hk/daedalus/pull/1302))
 - Fixed text selection issues (disabled drag and drop of selected text and enabled unselect option) ([PR 1289](https://github.com/input-output-hk/daedalus/pull/1289))
