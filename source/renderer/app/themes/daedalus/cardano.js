@@ -1,3 +1,55 @@
+/* eslint-disable no-unused-vars */
+// @flow
+import type { ThemeColors, ThemeFonts } from '../types';
+
+export const CARDANO_THEME: {
+  colors: ThemeColors,
+  fonts: ThemeFonts,
+} = {
+  colors: {
+    error: {
+      dark: '#d34452',
+      light: '#ec5d6b',
+      regular: '#ea4c5b',
+      ultralight: '#fac8ce',
+    },
+    primary: {
+      active: '#ebeef0',
+      background: '#fafbfc',
+      border: '#c6cdd6',
+      disabled: 'rgba(94, 96, 102, 0.05)',
+      focus: '#5e6066',
+      hover: '#f3f5f7',
+      outline: '#e1e4e6',
+      placeholder: 'rgba(94, 96, 102, 0.5)',
+      text: '#5e6066',
+    },
+    secondary: {
+      active: '#239554',
+      background: '#2cbb69',
+      border: '#c6cdd6',
+      disabled: '#5e6066',
+      focus: '#5e6066',
+      hover: '#56c887',
+      outline: '#35de7e',
+      placeholder: 'rgba(94, 96, 102, 0.5)',
+      text: '#fafbfc',
+    },
+  },
+  fonts: {
+    black: 'NotoSans-Black, NotoSansCJKjp-Black',
+    bold: 'NotoSans-Bold, NotoSansCJKjp-Bold',
+    heavy: 'NotoSans-ExtraBold, NotoSansCJKjp-Black',
+    light: 'NotoSans-Light, NotoSansCJKjp-Light',
+    medium: 'NotoSans-Medium, NotoSansCJKjp-Medium',
+    mono: 'SFMono-Light',
+    regular: 'NotoSans-Regular, NotoSansCJKjp-Regular',
+    semibold: 'NotoSans-SemiBold, NotoSansCJKjp-Medium',
+    thin: 'NotoSans-Thin, NotoSansCJKjp-Thin',
+    ultralight: 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
+  },
+};
+
 //  ==== react-polymorph: theme config === //
 
 // AUTOCOMPLETE

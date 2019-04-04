@@ -1,3 +1,55 @@
+/* eslint-disable no-unused-vars */
+// @flow
+import type { ThemeColors, ThemeFonts } from '../types';
+
+const DARK_BLUE_THEME: {
+  colors: ThemeColors,
+  fonts: ThemeFonts,
+} = {
+  colors: {
+    error: {
+      dark: '#d34452',
+      light: '#ec5d6b',
+      regular: '#ea4c5b',
+      ultralight: '#fac8ce',
+    },
+    primary: {
+      active: '#495863',
+      background: '#263345',
+      border: 'rgba(102, 122, 138, 0.3)',
+      disabled: 'rgba(233, 244, 254, 0.5)',
+      focus: '#667a8a',
+      hover: '#667a8a',
+      outline: 'rgba(102,122,138, 0.3)',
+      placeholder: '#8793a1',
+      text: '#e9f4fe',
+    },
+    secondary: {
+      active: '#495863',
+      background: '#536370',
+      border: 'rgba(250, 251, 252, .3)',
+      disabled: 'rgba(135, 147, 161, 0.1)',
+      focus: '#667a8a',
+      hover: '#667a8a',
+      outline: 'rgba(250, 251, 252, .3)',
+      placeholder: '#e9f4fe',
+      text: '#fafbfc',
+    },
+  },
+  fonts: {
+    black: 'NotoSans-Black, NotoSansCJKjp-Black',
+    bold: 'NotoSans-Bold, NotoSansCJKjp-Bold',
+    heavy: 'NotoSans-ExtraBold, NotoSansCJKjp-Black',
+    light: 'NotoSans-Light, NotoSansCJKjp-Light',
+    medium: 'NotoSans-Medium, NotoSansCJKjp-Medium',
+    mono: 'SFMono-Light',
+    regular: 'NotoSans-Regular, NotoSansCJKjp-Regular',
+    semibold: 'NotoSans-SemiBold, NotoSansCJKjp-Medium',
+    thin: 'NotoSans-Thin, NotoSansCJKjp-Thin',
+    ultralight: 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
+  },
+};
+
 //  ==== react-polymorph: theme config === //
 
 // AUTOCOMPLETE
