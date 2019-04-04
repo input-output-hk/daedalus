@@ -1,22 +1,25 @@
 // @flow
+import { last } from 'lodash';
 import type { Histogram } from '../api/wallets/types';
 import { formattedLovelaceToAmount } from './formatters';
 
-type UtxoChartData = Array<{
-  walletAmount: number,
+type UtxoChartItem = {
+  walletRawAmount: number,
+  walletAmount: string,
   walletUtxosAmount: number,
-}>;
+};
+
+type UtxoChartData = Array<UtxoChartItem>;
 
 export const getUtxoChartData = (histogram: Histogram): UtxoChartData =>
   Object.entries(histogram)
     .sort()
-    .reduce((data, [rawWalletAmount, walletUtxosAmount]) => {
+    .reduce((data, [lovelaceWalletAmount, walletUtxosAmount]) => {
       const walletAmount = formattedLovelaceToAmount(
-        parseInt(rawWalletAmount, 10)
+        parseInt(lovelaceWalletAmount, 10)
       );
       if (walletAmount > 100000) {
-        let lastItem: { walletAmount: number, walletUtxosAmount: any } =
-          data[data.length - 1];
+        let lastItem: UtxoChartItem = last(data);
         const { walletUtxosAmount: lastWalletUtxosAmount } = lastItem;
         lastItem = {
           ...lastItem,
@@ -27,8 +30,9 @@ export const getUtxoChartData = (histogram: Histogram): UtxoChartData =>
         data[data.length - 1] = lastItem;
       } else {
         data.push({
-          walletAmount,
-          walletUtxosAmount,
+          walletRawAmount: walletAmount,
+          walletAmount: getUtxoWalletPrettyAmount(walletAmount),
+          walletUtxosAmount: parseInt(walletUtxosAmount, 10),
         });
       }
       return data;
@@ -42,7 +46,7 @@ export const getUtxoWalletPrettyAmount = (amount: number) => {
   return prettyAmount;
 };
 
-export const getWalletUtxosAmount = (histogram: Histogram): number => {
+export const getWalletUtxosTotalAmount = (histogram: Histogram): number => {
   const histogramArr = Object.values(histogram);
   const walletUtxosAmount = histogramArr.length
     ? histogramArr.reduce(

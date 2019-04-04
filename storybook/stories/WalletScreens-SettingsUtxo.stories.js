@@ -9,10 +9,7 @@ import WalletSettingsLayout from '../../source/renderer/app/components/wallet/se
 import WalletSettingsMenu from '../../source/renderer/app/components/wallet/settings/WalletSettingsMenu';
 import WalletUtxoSettings from '../../source/renderer/app/components/wallet/settings-utxo/WalletUtxoSettings';
 
-import {
-  getUtxoChartData,
-  getUtxoWalletPrettyAmount,
-} from '../../source/renderer/app/utils/utxoUtils';
+import { getUtxoChartData } from '../../source/renderer/app/utils/utxoUtils';
 
 const cfg = {
   range: true,
@@ -33,7 +30,6 @@ export default ({ story }: { story: string }) => (
     }
   >
     <WalletUtxoSettings
-      getUtxoWalletPrettyAmount={getUtxoWalletPrettyAmount}
       walletAmount={
         new BigNumber(
           number('Amount', 66.998, {

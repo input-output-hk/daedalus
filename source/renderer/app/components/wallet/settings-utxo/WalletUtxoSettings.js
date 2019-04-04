@@ -55,7 +55,6 @@ type Props = {
   walletAmount: BigNumber,
   walletUtxosAmount: number,
   chartData: Array<any>,
-  getUtxoWalletPrettyAmount: Function,
 };
 
 @observer
@@ -103,14 +102,7 @@ export default class WalletUtxoSettings extends Component<Props> {
                   axisLine={false}
                   tickLine={false}
                   tick={(props: TickProps) => (
-                    <Tick
-                      {...props}
-                      textAnchor="start"
-                      getUtxoWalletPrettyAmount={
-                        this.props.getUtxoWalletPrettyAmount
-                      }
-                      vertical
-                    />
+                    <Tick {...props} textAnchor="start" vertical />
                   )}
                   className={styles.xAxis}
                   y={0}
@@ -142,13 +134,7 @@ export default class WalletUtxoSettings extends Component<Props> {
                 <Tooltip
                   cursor={<Cursor />}
                   isAnimationActive={false}
-                  content={
-                    <CustomTooltip
-                      getUtxoWalletPrettyAmount={
-                        this.props.getUtxoWalletPrettyAmount
-                      }
-                    />
-                  }
+                  content={<CustomTooltip />}
                 />
                 <Bar dataKey="walletUtxosAmount" className={styles.bar} />
               </BarChart>

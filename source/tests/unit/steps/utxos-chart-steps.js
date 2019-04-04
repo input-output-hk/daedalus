@@ -8,7 +8,7 @@ import {
 import {
   getUtxoChartData,
   getUtxoWalletPrettyAmount,
-  getWalletUtxosAmount,
+  getWalletUtxosTotalAmount,
 } from '../../../renderer/app/utils/utxoUtils';
 import { getHistogramFromTable } from '../support/utxo-helpers';
 
@@ -32,7 +32,7 @@ Then('the wallet amounts should be sorted sorted ascending', function() {
 });
 
 Then(
-  'the wallet amounts should be formatted from lovelace values into wallet amount',
+  'the wallet amounts should be formatted into human-readable text',
   function() {
     const { utxoChartData, sortedHistogram } = this.context;
     const isFormatted = utxoChartData.every(
@@ -45,7 +45,7 @@ Then(
 
 Then('there should be no wallet amounts greater than 100K', function() {
   return this.context.utxoChartData.every(
-    ({ walletAmount }) => walletAmount <= 100000
+    ({ walletRawAmount }) => walletRawAmount <= 100000
   );
 });
 
@@ -66,7 +66,7 @@ Then(
     );
     const {
       walletUtxosAmount: calculatedAggregatedUtxosAmount,
-    } = utxoChartData.find(({ walletAmount }) => walletAmount === 100000);
+    } = utxoChartData.find(({ walletRawAmount }) => walletRawAmount === 100000);
     expect(expectedAggregatedUtxosAmount).to.equal(
       calculatedAggregatedUtxosAmount
     );
@@ -74,9 +74,9 @@ Then(
 );
 
 function getUtxoChartDataReceivesAWalletAmount(walletAmount) {
-  this.context.walletAmount = walletAmount;
+  this.context.walletRawAmount = walletAmount;
   const walletPrettyAmount = getUtxoWalletPrettyAmount(walletAmount);
-  this.context.walletPrettyAmount = walletPrettyAmount;
+  this.context.walletAmount = walletPrettyAmount;
   this.context.response = walletPrettyAmount;
 }
 
@@ -97,31 +97,31 @@ Then('the response should have type {string}', function(type) {
   expect(typeof response).to.equal(type);
 });
 
-Then('amounts less than {int} should not be modified', function(amount) {
-  const { walletAmount, walletPrettyAmount } = this.context;
-  if (walletAmount < amount) {
-    expect(walletPrettyAmount).to.equal(String(walletAmount));
-    expect(/[a-zA-Z]/.test(walletPrettyAmount)).to.be.false;
+Then('wallet amounts less than {int} should not be modified', function(amount) {
+  const { walletAmount, walletRawAmount } = this.context;
+  if (walletRawAmount < amount) {
+    expect(walletAmount).to.equal(String(walletRawAmount));
+    expect(/[a-zA-Z]/.test(walletAmount)).to.be.false;
   }
 });
 
 Then(
-  'amounts equal or greater than {int} should be formatted to human-readable format',
+  'wallet amounts equal or greater than {int} should be formatted into human-readable text',
   function(amount) {
-    const { walletAmount, walletPrettyAmount } = this.context;
-    if (walletAmount >= amount) {
-      expect(walletPrettyAmount).to.not.equal(String(walletAmount));
-      expect(/[a-zA-Z]/.test(walletPrettyAmount)).to.be.true;
+    const { walletAmount, walletRawAmount } = this.context;
+    if (walletRawAmount >= amount) {
+      expect(walletAmount).to.not.equal(String(walletRawAmount));
+      expect(/[a-zA-Z]/.test(walletAmount)).to.be.true;
     }
   }
 );
 
 Given(
-  'the `getWalletUtxosAmount` function receives the following props:',
+  'the `getWalletUtxosTotalAmount` function receives the following props:',
   function(data) {
     const histogram = getHistogramFromTable(data);
     this.context.histogram = histogram;
-    this.context.response = getWalletUtxosAmount(histogram);
+    this.context.response = getWalletUtxosTotalAmount(histogram);
   }
 );
 

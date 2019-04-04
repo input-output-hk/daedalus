@@ -2,7 +2,7 @@ import { Then } from 'cucumber';
 import { expect } from 'chai';
 import { BigNumber } from 'bignumber.js';
 import { getVisibleTextsForSelector } from '../support/helpers/shared-helpers';
-import { getWalletUtxosAmount } from '../../source/renderer/app/utils/utxoUtils';
+import { getWalletUtxosTotalAmount } from '../../source/renderer/app/utils/utxoUtils';
 import { formattedWalletAmount } from '../../source/renderer/app/utils/formatters';
 
 const component = '.WalletUtxoSettings_component';
@@ -57,7 +57,7 @@ Then(
     );
     const expextedWalletAmount = formattedWalletAmount(activeWalletAmount);
 
-    const expectedWalletUtxosAmount = getWalletUtxosAmount(histogram);
+    const expectedWalletUtxosAmount = getWalletUtxosTotalAmount(histogram);
 
     expect(expextedWalletAmount).to.equal(renderedWalletAmount);
     expect(expectedWalletUtxosAmount).to.equal(

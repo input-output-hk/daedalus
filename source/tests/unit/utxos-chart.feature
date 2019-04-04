@@ -1,4 +1,3 @@
-@watch
 Feature: UTXOs chart data
 
   Scenario: The histogram data is sent to the `getUtxoChartData` function
@@ -22,16 +21,15 @@ Feature: UTXOs chart data
       | 10000000000000000 | 1                 |
       | 45000000000000000 | 1                 |
     Then the response should have type "array"
-    And the wallet amounts should be sorted sorted ascending
-    And the wallet amounts should be formatted from lovelace values into wallet amount
+    And wallet amounts equal or greater than 1000 should be formatted into human-readable text
     And there should be no wallet amounts greater than 100K
     And the wallet UTXO amounts for wallet amounts greater than 1000000 should be aggregated
 
   Scenario Outline: A wallet amount is sent to the `getUtxoWalletPrettyAmount` function
     Given the `getUtxoWalletPrettyAmount` function receives the following <AMOUNT>
     Then the response should have type "string"
-    And amounts less than 1000 should not be modified
-    And amounts equal or greater than 1000 should be formatted to human-readable format
+    And wallet amounts less than 1000 should not be modified
+    And wallet amounts equal or greater than 1000 should be formatted into human-readable text
 
     Examples:
       | AMOUNT |
@@ -46,8 +44,8 @@ Feature: UTXOs chart data
       | 10000  |
       | 100000 |
 
-  Scenario: The histogram data is sent to the `getWalletUtxosAmount` function
-    Given the `getWalletUtxosAmount` function receives the following props:
+  Scenario: The histogram data is sent to the `getWalletUtxosTotalAmount` function
+    Given the `getWalletUtxosTotalAmount` function receives the following props:
       | walletAmount      | walletUtxosAmount |
       | 10                | 0                 |
       | 100               | 0                 |

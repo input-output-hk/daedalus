@@ -5,8 +5,7 @@ import WalletUtxoSettings from '../../components/wallet/settings-utxo/WalletUtxo
 import type { InjectedProps } from '../../types/injectedPropsType';
 import {
   getUtxoChartData,
-  getUtxoWalletPrettyAmount,
-  getWalletUtxosAmount,
+  getWalletUtxosTotalAmount,
 } from '../../utils/utxoUtils';
 
 type Props = InjectedProps;
@@ -29,13 +28,12 @@ export default class WalletSettingsPage extends Component<Props> {
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
     const chartData = getUtxoChartData(histogram);
-    const walletUtxosAmount = getWalletUtxosAmount(histogram);
+    const walletUtxosAmount = getWalletUtxosTotalAmount(histogram);
     return (
       <WalletUtxoSettings
         walletAmount={activeWallet.amount}
         walletUtxosAmount={walletUtxosAmount}
         chartData={chartData}
-        getUtxoWalletPrettyAmount={getUtxoWalletPrettyAmount}
       />
     );
   }

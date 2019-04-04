@@ -5,24 +5,24 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { get } from 'lodash';
 import styles from './WalletSettingsUtxoTooltip.scss';
+import { PRETTY_WALLET_AMOUNTS } from '../../../config/utxoConfig';
 
 export const messages = defineMessages({
   tooltip: {
     id: 'wallet.settings.utxos.tooltip',
     defaultMessage:
-      '!!!<b>{walletUtxosAmount}</b> UTxOs containing <br /> <span> between <b>{prettyPreviousWalletAmount}</b> and </span> <b>{prettyWalletAmount}</b> ADA',
+      '!!!<b>{walletUtxosAmount}</b> UTxOs containing <br /> <span> between <b>{previousWalletAmount}</b> and </span> <b>{walletAmount}</b> ADA',
     description: 'Tooltip for the "Wallet Utxos" screen.',
   },
 });
 
 type Props = {
+  label?: string,
   payload?: Array<{
     payload: {
-      walletAmount: number,
       walletUtxosAmount: number,
     },
   }>,
-  getUtxoWalletPrettyAmount: Function,
 };
 
 @observer
@@ -31,20 +31,17 @@ export default class WalletSettingsUtxoTooltip extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  getPreviousAmount = (walletAmount: number) => {
-    if (walletAmount === 45000000000) return 10000000000;
-    if (walletAmount === 0.00001) return null;
-    return walletAmount / 10;
+  getPreviousAmount = (walletAmount: string) => {
+    const walletAmountIndex = PRETTY_WALLET_AMOUNTS.findIndex(
+      wa => wa === walletAmount
+    );
+    return PRETTY_WALLET_AMOUNTS[walletAmountIndex - 1];
   };
 
   render() {
-    const { getUtxoWalletPrettyAmount, payload } = this.props;
-    const { walletAmount, walletUtxosAmount } = get(payload, '[0].payload', {});
+    const { label: walletAmount = '', payload } = this.props;
+    const { walletUtxosAmount } = get(payload, '[0].payload', {});
     const previousWalletAmount = this.getPreviousAmount(walletAmount);
-    const prettyWalletAmount = getUtxoWalletPrettyAmount(walletAmount);
-    const prettyPreviousWalletAmount = getUtxoWalletPrettyAmount(
-      previousWalletAmount
-    );
     const componentStyles = classnames([
       styles.component,
       !previousWalletAmount ? styles.noPreviousWalletAmount : null,
@@ -57,8 +54,8 @@ export default class WalletSettingsUtxoTooltip extends Component<Props> {
             {...messages.tooltip}
             values={{
               walletUtxosAmount,
-              prettyPreviousWalletAmount,
-              prettyWalletAmount,
+              previousWalletAmount,
+              walletAmount,
             }}
           />
         </p>

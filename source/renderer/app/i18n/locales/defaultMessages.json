@@ -3987,17 +3987,17 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!<b>{walletUtxosAmount}</b> UTxOs containing <br /> <span> between <b>{prettyPreviousWalletAmount}</b> and </span> <b>{prettyWalletAmount}</b> ADA",
+        "defaultMessage": "!!!<b>{walletUtxosAmount}</b> UTxOs containing <br /> <span> between <b>{previousWalletAmount}</b> and </span> <b>{walletAmount}</b> ADA",
         "description": "Tooltip for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 16
         },
         "file": "source/renderer/app/components/wallet/settings-utxo/WalletSettingsUtxoTooltip.js",
         "id": "wallet.settings.utxos.tooltip",
         "start": {
           "column": 11,
-          "line": 10
+          "line": 11
         }
       }
     ],
