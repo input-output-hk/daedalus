@@ -177,8 +177,6 @@ export default class WalletCreateDialog extends Component<Props, State> {
     }
   );
 
-  submitOnEnter = submitOnEnter.bind(this, this.submit);
-
   submit = () => {
     this.form.submit({
       onSuccess: form => {
@@ -196,6 +194,8 @@ export default class WalletCreateDialog extends Component<Props, State> {
       },
     });
   };
+
+  handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
 
   handlePasswordSwitchToggle = (value: boolean) => {
     this.setState({ createPassword: value });
@@ -236,7 +236,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
       >
         <Input
           className="walletName"
-          onKeyPress={this.submitOnEnter}
+          onKeyPress={this.handleSubmitOnEnter}
           ref={input => {
             this.walletNameInput = input;
           }}
@@ -262,14 +262,14 @@ export default class WalletCreateDialog extends Component<Props, State> {
           <div className={spendingPasswordFieldsClasses}>
             <Input
               className="spendingPassword"
-              onKeyPress={this.submitOnEnter}
+              onKeyPress={this.handleSubmitOnEnter}
               {...spendingPasswordField.bind()}
               error={spendingPasswordField.error}
               skin={InputSkin}
             />
             <Input
               className="repeatedPassword"
-              onKeyPress={this.submitOnEnter}
+              onKeyPress={this.handleSubmitOnEnter}
               {...repeatedPasswordField.bind()}
               error={repeatedPasswordField.error}
               skin={InputSkin}

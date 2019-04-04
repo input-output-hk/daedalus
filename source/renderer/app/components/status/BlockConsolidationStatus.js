@@ -1,7 +1,13 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import {
+  defineMessages,
+  intlShape,
+  FormattedHTMLMessage,
+  FormattedMessage,
+} from 'react-intl';
+import classnames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './BlockConsolidationStatus.scss';
@@ -23,7 +29,7 @@ const messages = defineMessages({
   description2: {
     id: 'blockConsolidationStatus.description2',
     defaultMessage:
-      '!!!Blocks for the current epoch <b>({currentEpoch})</b> and the previous epoch <b>({currentEpochBehind})</b> are stored as one file per block. All previous epochs will be consolidated to two files per epoch.',
+      '!!!Blocks for the current epoch ({currentEpoch}) and the previous epoch ({currentEpochBehind}) are stored as one file per block. All previous epochs will be consolidated to two files per epoch.',
     description: 'Description 2 of "Block consolidation status" page.',
   },
   description3: {
@@ -35,7 +41,7 @@ const messages = defineMessages({
   epochsConsolidatedOfTotal: {
     id: 'blockConsolidationStatus.epochsConsolidatedOfTotal',
     defaultMessage:
-      '!!!<b>{consolidated}</b> <em>of</em> <b>{downloaded}</b> epochs consolidated',
+      '!!!<b>{epochsConsolidated}</b> <em>of</em> <b>{currentEpoch}</b><br />epochs consolidated',
     description:
       'Epochs Consolidated Of Total on "Block consolidation status" page.',
   },
@@ -59,16 +65,17 @@ const messages = defineMessages({
     defaultMessage: '!!!{epochsSynced}% blocks synced',
     description: 'synced on "Block consolidation status" page.',
   },
-  supportButton: {
-    id: 'blockConsolidationStatus.supportButton',
-    defaultMessage: '!!!Support',
-    description: 'Support Button on "Block consolidation status" page.',
+  learnMoreButton: {
+    id: 'blockConsolidationStatus.learnMoreButton',
+    defaultMessage: '!!!Learn more.',
+    description: 'Learn more Button on "Block consolidation status" page.',
   },
-  supportButtonURL: {
-    id: 'blockConsolidationStatus.supportButtonURL',
+  learnMoreButtonURL: {
+    id: 'blockConsolidationStatus.learnMoreButtonURL',
     defaultMessage:
       '!!!https://iohk.zendesk.com/hc/en-us/articles/360016060314',
-    description: 'URL of Support Button on "Block consolidation status" page.',
+    description:
+      'URL of Learn more Button on "Block consolidation status" page.',
   },
 });
 
@@ -117,6 +124,25 @@ export default class BlockConsolidationStatus extends Component<Props> {
       currentEpoch
     );
 
+    const description2Styles = classnames([
+      styles.description,
+      !currentEpoch ? styles.descriptionNoCurrentEpoch : null,
+    ]);
+
+    const epochsStyles = classnames([
+      styles.epochs,
+      !currentEpoch ? styles.epochsNoCurrentEpoch : null,
+    ]);
+
+    const indicatorContainerStyles = classnames([
+      styles.indicatorContainer,
+      !currentEpoch ? styles.indicatorContainerNoCurrentEpochs : null,
+    ]);
+
+    const currentEpochValue = currentEpoch > 0 ? <b>({currentEpoch})</b> : '';
+    const currentEpochBehindValue =
+      currentEpoch > 0 ? <b>({Math.max(currentEpoch - 1, 0)})</b> : '';
+
     return (
       <div className={styles.component}>
         <TopBar onLeftIconClick={onClose} leftIcon={backArrow} />
@@ -127,12 +153,12 @@ export default class BlockConsolidationStatus extends Component<Props> {
             <p className={styles.description}>
               {formatMessage(messages.description1)}
             </p>
-            <p className={styles.description}>
-              <FormattedHTMLMessage
+            <p className={description2Styles}>
+              <FormattedMessage
                 {...messages.description2}
                 values={{
-                  currentEpoch,
-                  currentEpochBehind: Math.max(currentEpoch - 1, 0),
+                  currentEpoch: currentEpochValue,
+                  currentEpochBehind: currentEpochBehindValue,
                 }}
               />
             </p>
@@ -140,13 +166,13 @@ export default class BlockConsolidationStatus extends Component<Props> {
               {formatMessage(messages.description3)}
             </p>
 
-            <div className={styles.epochs}>
+            <div className={epochsStyles}>
               <p>
                 <FormattedHTMLMessage
                   {...messages.epochsConsolidatedOfTotal}
                   values={{
-                    consolidated: epochsConsolidated,
-                    downloaded: currentEpoch,
+                    epochsConsolidated,
+                    currentEpoch,
                   }}
                 />
               </p>
@@ -154,52 +180,60 @@ export default class BlockConsolidationStatus extends Component<Props> {
             </div>
 
             <div className={styles.indicator}>
-              <div className={styles.indicatorContainer}>
-                <p className={styles.zeroEpoch}>
-                  {formatMessage(messages.epoch)} 0
-                </p>
-                <div className={styles.indicatorEpochsBehind}>
-                  <p>
-                    {formatMessage(messages.epoch)}{' '}
-                    {Math.max(currentEpoch - 2, 0)}
-                  </p>
-                </div>
-                <div
-                  className={styles.indicatorEpochsSynced}
-                  style={{ width: `${epochsSynced}%` }}
-                >
-                  <p style={this.getPositionOfEpochsSynced(epochsSynced)}>
-                    <FormattedHTMLMessage
-                      {...messages.synced}
-                      values={{ epochsSynced }}
-                    />
-                  </p>
-                </div>
-                <div className={styles.indicatorEpochsConsolidatedContainer}>
-                  <div
-                    className={styles.indicatorEpochsConsolidated}
-                    style={{ width: `${widthOfEpochsConsolidated}%` }}
-                  >
-                    <p
-                      style={this.getPositionOfEpochsConsolidated(
-                        widthOfEpochsConsolidated
-                      )}
-                    >
-                      {epochsConsolidated}{' '}
-                      {formatMessage(messages.epochsConsolidated)}
+              <div className={indicatorContainerStyles}>
+                {!!currentEpoch && (
+                  <Fragment>
+                    <p className={styles.zeroEpoch}>
+                      {formatMessage(messages.epoch)} 0
                     </p>
-                  </div>
-                </div>
-                <p className={styles.fullEpoch}>
-                  {formatMessage(messages.epoch)} {currentEpoch}
-                </p>
+                    <div className={styles.indicatorEpochsBehind}>
+                      <p>
+                        {formatMessage(messages.epoch)}{' '}
+                        {Math.max(currentEpoch - 2, 0)}
+                      </p>
+                    </div>
+                    {!!epochsSynced && (
+                      <div
+                        className={styles.indicatorEpochsSynced}
+                        style={{ width: `${epochsSynced}%` }}
+                      >
+                        <p style={this.getPositionOfEpochsSynced(epochsSynced)}>
+                          <FormattedMessage
+                            {...messages.synced}
+                            values={{ epochsSynced }}
+                          />
+                        </p>
+                      </div>
+                    )}
+                    <div
+                      className={styles.indicatorEpochsConsolidatedContainer}
+                    >
+                      <div
+                        className={styles.indicatorEpochsConsolidated}
+                        style={{ width: `${widthOfEpochsConsolidated}%` }}
+                      >
+                        <p
+                          style={this.getPositionOfEpochsConsolidated(
+                            widthOfEpochsConsolidated
+                          )}
+                        >
+                          {epochsConsolidated}{' '}
+                          {formatMessage(messages.epochsConsolidated)}
+                        </p>
+                      </div>
+                    </div>
+                    <p className={styles.fullEpoch}>
+                      {formatMessage(messages.epoch)} {currentEpoch}
+                    </p>
+                  </Fragment>
+                )}
               </div>
             </div>
 
             <Button
-              label={formatMessage(messages.supportButton)}
+              label={formatMessage(messages.learnMoreButton)}
               onClick={() =>
-                onExternalLinkClick(formatMessage(messages.supportButtonURL))
+                onExternalLinkClick(formatMessage(messages.learnMoreButtonURL))
               }
               skin={ButtonSkin}
             />
