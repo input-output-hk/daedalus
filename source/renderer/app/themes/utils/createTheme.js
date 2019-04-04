@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable no-unused-vars */
 import type { ThemeColors, ThemeFonts, CreateThemeParams } from '../types';
 
 const createReactPolymorphTheme = ({
