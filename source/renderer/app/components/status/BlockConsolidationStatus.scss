@@ -17,7 +17,7 @@
 }
 
 .content {
-  background-color: var(--theme-block-consolidation-container-background-color);
+  // background-color: var(--theme-block-consolidation-container-background-color);
   border-radius: 4px;
   font-family: var(--font-regular);
   margin: 20px;
@@ -35,12 +35,6 @@
     color: var(--theme-block-consolidation-text-color);
     font-size: 16px;
   }
-
-  a {
-    border-bottom: 1px solid var(--theme-block-consolidation-text-link-color);
-    color: var(--theme-block-consolidation-text-link-color);
-    text-decoration: none;
-  }
 }
 .description {
   line-height: 1.38;
@@ -49,6 +43,7 @@
 
   b {
     font-family: var(--font-medium);
+    color: var(--theme-block-consolidation-text-highlight-color);
   }
 
   &:last-of-type {
@@ -68,7 +63,7 @@
   width: 620px;
 
   p {
-    color: white;
+    color: var(--theme-block-consolidation-epochs-text-color);
     font-size: 14px;
     line-height: 1.29;
     position: absolute;
@@ -103,6 +98,7 @@
 
   p {
     font-size: 14px;
+    color: var(--theme-block-consolidation-indicator-text-color);
   }
 }
 
@@ -208,6 +204,36 @@
     position: absolute;
     top: 0;
     white-space: nowrap;
+  }
+}
+
+.closeButton {
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-end;
+  position: fixed;
+  right: 15px;
+  top: 15px;
+  z-index: 1;
+
+  span {
+    height: 44px;
+    width: 44px;
+
+    &:hover {
+      border-radius: 50%;
+      background-color: var(--theme-about-window-icon-close-hover-background);
+    }
+  }
+
+  svg {
+    height: 12px;
+    margin-top: 16px;
+    width: 12px;
+
+    polygon {
+      fill: var(--theme-about-window-icon-close-button-color);
+    }
   }
 }
 
