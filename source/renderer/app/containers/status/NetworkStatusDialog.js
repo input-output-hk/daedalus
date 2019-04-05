@@ -45,7 +45,8 @@ export default class NetworkStatusDialog extends Component<Props> {
       restartNode,
       isSystemTimeIgnored,
       environment,
-      diskSpaceAvailable
+      diskSpaceAvailable,
+      _tlsConfig,
     } = networkStatus;
 
     const systemInfo = {
@@ -62,7 +63,7 @@ export default class NetworkStatusDialog extends Component<Props> {
       isInSafeMode: includes(process.argv.slice(1), '--safe-mode'),
       cardanoVersion: environment.buildNumber,
       cardanoProcessID: '',
-      cardanoAPIPort: '',
+      cardanoAPIPort: _tlsConfig.port,
       cardanoNetwork: environment.network,
       daedalusStateDirectory: '',
     };

@@ -57,13 +57,13 @@ const NODE_STOPPED_STATES = [
 export default class NetworkStatusStore extends Store {
   // Initialize store properties
   _startTime = Date.now();
-  _tlsConfig: ?TlsConfig = null;
   _networkStatus = NETWORK_STATUS.CONNECTING;
   _networkStatusPollingInterval: ?IntervalID = null;
 
   // Initialize store observables
 
   // Internal Node states
+  @observable _tlsConfig: ?TlsConfig = null;
   @observable cardanoNodeState: ?CardanoNodeState = null;
   @observable isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
   @observable isNodeSubscribed = false; // Is 'true' in case node is subscribed to the network
@@ -245,7 +245,9 @@ export default class NetworkStatusStore extends Store {
       return Promise.resolve();
     Logger.info('NetworkStatusStore: received tls config from main process');
     this.api.ada.setRequestConfig(config);
-    this._tlsConfig = config;
+    runInAction('updating _tlsConfig', () => {
+      this._tlsConfig = config;
+    });
     this.actions.networkStatus.tlsConfigIsReady.trigger();
     return Promise.resolve();
   };
@@ -265,7 +267,9 @@ export default class NetworkStatusStore extends Store {
       case CardanoNodeStates.STOPPING:
       case CardanoNodeStates.EXITING:
       case CardanoNodeStates.UPDATING:
-        this._tlsConfig = null;
+        runInAction('updating _tlsConfig', () => {
+          this._tlsConfig = null;
+        });
         this._setDisconnected(wasConnected);
         break;
       default:
