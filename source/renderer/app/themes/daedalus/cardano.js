@@ -210,32 +210,20 @@ const rpCardanoTheme = {
 };
 
 //  ==== Theme: Cardano === //
-export default {
+export const CARDANO_DAEDALUS_CONFIG = {
   ...rpCardanoTheme,
-  '--preferred-font': '"Times New Roman", serif',
 
-  '--font-ultralight': 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
-  '--font-thin': 'NotoSans-Thin, NotoSansCJKjp-Thin',
-  '--font-light': 'NotoSans-Light, NotoSansCJKjp-Light',
-  '--font-regular': 'NotoSans-Regular, NotoSansCJKjp-Regular',
-  '--font-medium': 'NotoSans-Medium, NotoSansCJKjp-Medium',
-  '--font-semibold': 'NotoSans-SemiBold, NotoSansCJKjp-Medium',
-  '--font-bold': 'NotoSans-Bold, NotoSansCJKjp-Bold',
-  '--font-heavy': 'NotoSans-ExtraBold, NotoSansCJKjp-Black',
-  '--font-black': 'NotoSans-Black, NotoSansCJKjp-Black',
-  '--font-mono': 'SFMono-Light',
+  '--theme-input-hint-font': 'NotoSans-Regular, NotoSansCJKjp-Regular', // moved to createTheme fonts
 
-  '--theme-input-hint-font': 'NotoSans-Regular, NotoSansCJKjp-Regular',
+  '--theme-scrollbar-thumb-background': '#c8ccce', // config
 
-  '--theme-scrollbar-thumb-background': '#c8ccce',
-
-  '--theme-ada-redemption-headline-color': '#5e6066',
-  '--theme-ada-redemption-instructions-color': '#5e6066',
+  '--theme-ada-redemption-headline-color': '#5e6066', // primary.text
+  '--theme-ada-redemption-instructions-color': '#5e6066', // primary.text
   '--theme-ada-redemption-success-overlay-background-color':
-    'rgba(44, 187, 105, 0.88)',
-  '--theme-ada-redemption-success-overlay-border-color': '#fafbfc',
-  '--theme-ada-redemption-success-overlay-message-color': '#fafbfc',
-  '--theme-ada-redemption-success-overlay-button-text-color': '#fafbfc',
+    'rgba(44, 187, 105, 0.88)', // config
+  '--theme-ada-redemption-success-overlay-border-color': '#fafbfc', // secondary.text
+  '--theme-ada-redemption-success-overlay-message-color': '#fafbfc', // secondary.text
+  '--theme-ada-redemption-success-overlay-button-text-color': '#fafbfc', // secondary.text
   '--theme-ada-redemption-success-overlay-button-text-color-hover': '#2cbb69',
   '--theme-ada-redemption-success-overlay-button-background-color-hover':
     '#fafbfc',
@@ -300,6 +288,7 @@ export default {
   '--theme-dialog-big-button-label-color': '#5e6066',
   '--theme-dialog-big-button-description-color': '#5e6066',
   '--theme-dialog-title-color': '#5e6066',
+  '--theme-dialog-text-color': '#5e6066',
 
   '--theme-input-border-color': '#c6cdd6',
   '--theme-input-label-color': '#5e6066',
@@ -389,8 +378,6 @@ export default {
   '--theme-staking-font-color-accent': '#5e6066',
   '--theme-staking-font-color-regular': '#5e6066',
 
-  '--theme-switch-label-color': '#5e6066',
-
   '--theme-system-error-overlay-attention-icon-color': '#fafbfc',
   '--theme-system-error-overlay-background-color': 'rgba(171, 23, 0, 0.94)',
   '--theme-system-error-overlay-text-color': '#fafbfc',
@@ -467,8 +454,6 @@ export default {
 
   '--theme-backup-mnemonic-background-color': 'rgba(68, 91, 124, 0.05)',
 
-  '--theme-block-generation-info-color': '#5e6066',
-
   '--theme-report-issue-button-background-color': '#2cbb69',
   '--theme-report-issue-button-background-color-hover': '#56c887',
   '--theme-report-issue-button-background-color-active': '#239554',
@@ -488,8 +473,6 @@ export default {
 
   '--theme-color-error': '#ea4c5b',
 
-  '--theme-instructions-text-color': '#5e6066',
-
   '--theme-label-button-color': '#5e6066',
 
   '--theme-loading-background-color': '#fafbfc',
@@ -507,21 +490,17 @@ export default {
   '--theme-mnemonic-background-color': '#f0f3f5',
   '--theme-mnemonic-background-color-hover': '#f3f5f7',
 
-  '--theme-separation-border-color': '#dfe4e8',
+  '--theme-dialog-border-color': '#dfe4e8',
 
   '--theme-support-settings-text-color': '#5e6066',
   '--theme-support-settings-link-color': '#1cac63',
   '--theme-support-settings-item-color': 'rgba(94, 96, 102, 0.5)',
-
-  '--theme-terms-of-use-text-color': '#5e6066',
 
   '--theme-data-migration-layer-background-color': '#243E62',
   '--theme-data-migration-layer-box-shadow-color': 'rgba(0, 0, 0, 0.25)',
   '--theme-data-migration-layer-button-background-color-hover': '#fafbfc',
   '--theme-data-migration-layer-text-color': '#fafbfc',
   '--theme-data-migration-layer-text-opacity-color': 'rgba(250, 251, 252, 0.5)',
-
-  '--theme-wallet-password-switch-label-color': '#5e6066',
 
   '--theme-loading-spinner-color': '#5e6066',
 
