@@ -17,6 +17,7 @@ export type Environment = {
   buildLabel: string,
   platform: string,
   platformVersion: string,
+  processID: string,
   os: string,
   cpu: string,
   ram: string,

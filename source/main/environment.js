@@ -28,6 +28,7 @@ const isTestnet = NETWORK === TESTNET;
 const isDevelopment = NETWORK === DEVELOPMENT;
 const isWatchMode = process.env.IS_WATCH_MODE;
 const API_VERSION = process.env.API_VERSION || 'dev';
+const processID = process.pid;
 const PLATFORM = os.platform();
 const PLATFORM_VERSION = os.release();
 const OS = OS_NAMES[PLATFORM] || PLATFORM;
@@ -68,6 +69,7 @@ export const environment: Environment = Object.assign(
     buildLabel: BUILD_LABEL,
     platform: PLATFORM,
     platformVersion: PLATFORM_VERSION,
+    processID,
     os: OS,
     cpu,
     ram,
