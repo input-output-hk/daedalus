@@ -11,7 +11,7 @@ export const messages = defineMessages({
   tooltip: {
     id: 'wallet.settings.utxos.tooltip',
     defaultMessage:
-      '!!!<b>{walletUtxosAmount}</b> UTxOs containing <br /> <span> between <b>{previousWalletAmount}</b> and </span> <b>{walletAmount}</b> ADA',
+      '!!!<b>{walletUtxosAmount}</b> UTXOs containing <br /> <span> between <b>{previousWalletAmount}</b> and </span> <b>{walletAmount}</b> ADA',
     description: 'Tooltip for the "Wallet Utxos" screen.',
   },
 });

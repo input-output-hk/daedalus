@@ -24,19 +24,19 @@ import type { TickProps } from './WalletSettingsUtxoTick';
 export const messages = defineMessages({
   title: {
     id: 'wallet.settings.utxos.title',
-    defaultMessage: '!!!Wallet UTxO distribution',
+    defaultMessage: '!!!Wallet UTXO distribution',
     description: 'Title for the "Wallet Utxos" screen.',
   },
   description: {
     id: 'wallet.settings.utxos.description',
     defaultMessage:
-      '!!!This wallet contains <b>{formattedWalletAmount} ADA</b> on <b>{walletUtxosAmount} UTxOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTxOs with different amounts of ada.',
+      '!!!This wallet contains <b>{formattedWalletAmount} ADA</b> on <b>{walletUtxosAmount} UTXOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTXOs with different amounts of ada.',
     description: 'Description for the "Wallet Utxos" screen.',
   },
   emptyWallet: {
     id: 'wallet.settings.utxos.emptyWallet',
     defaultMessage:
-      '!!!This wallet is empty so it does not contain any UTxOs (unspent transaction outputs).',
+      '!!!This wallet is empty so it does not contain any UTXOs (unspent transaction outputs).',
     description: 'Empty wallet description for the "Wallet Utxos" screen.',
   },
   labelX: {
@@ -46,7 +46,7 @@ export const messages = defineMessages({
   },
   labelY: {
     id: 'wallet.settings.utxos.labelY',
-    defaultMessage: '!!!Nº UTxO',
+    defaultMessage: '!!!Nº UTXO',
     description: 'Label Y for the "Wallet Utxos" screen.',
   },
 });

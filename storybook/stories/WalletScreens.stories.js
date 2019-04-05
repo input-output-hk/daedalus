@@ -50,7 +50,7 @@ storiesOf('WalletScreens', module)
                   item ===
                   context.story
                     .replace('Settings - General', 'Settings')
-                    .replace('Settings - Wallet UTxO distribution', 'Settings')
+                    .replace('Settings - Wallet UTXO distribution', 'Settings')
                     .toLocaleLowerCase()
                 }
                 onWalletNavItemClick={linkTo('WalletScreens', item =>
@@ -164,4 +164,4 @@ storiesOf('WalletScreens', module)
   ))
 
   .add('Settings - General', WalletScreensGeneralSettings)
-  .add('Settings - Wallet UTxO distribution', WalletScreensSettingsUtxo);
+  .add('Settings - Wallet UTXO distribution', WalletScreensSettingsUtxo);

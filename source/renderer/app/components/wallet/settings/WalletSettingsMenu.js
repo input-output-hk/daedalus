@@ -14,7 +14,7 @@ const messages = defineMessages({
   },
   utxo: {
     id: 'wallet.settings.menu.utxos.link.label',
-    defaultMessage: '!!!Wallet UTxO distribution',
+    defaultMessage: '!!!Wallet UTXO distribution',
     description: 'Label for the "Support" link in the settings menu.',
   },
 });

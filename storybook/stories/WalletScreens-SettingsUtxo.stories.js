@@ -40,7 +40,7 @@ export default ({ story }: { story: string }) => (
           })
         )
       }
-      walletUtxosAmount={number('UTxOs', 100, {
+      walletUtxosAmount={number('UTXOs', 100, {
         range: true,
         step: 1,
         min: 0,
