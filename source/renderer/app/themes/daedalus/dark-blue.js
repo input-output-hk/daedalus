@@ -209,6 +209,51 @@ const rpDarkBlueTheme = {
   ...rpTextArea,
 };
 
+const TEMPLATE = {
+  // moved to createTheme
+  reactPolymorph: {
+    ...rpDarkBlueTheme,
+  },
+  scrollbar: {},
+  adaRedemption: {},
+  borderedBox: {},
+  buttonPrimary: {},
+  buttonFlat: {},
+  buttonAttention: {},
+  buttonDisclaimer: {},
+  tabs: {},
+  dialog: {},
+  input: {},
+  body: {},
+  modal: {},
+  navItem: {},
+  nodeUpdate: {},
+  notification: {},
+  receiveQRCode: {},
+  sendConfirmation: {},
+  paperWallet: {},
+  settings: {},
+  sidebar: {},
+  staking: {},
+  systemError: {},
+  testEnvironment: {},
+  topBar: {},
+  transactions: {},
+  uploader: {},
+  icon: {},
+  aboutWindow: {},
+  mnemonic: {},
+  reportIssue: {},
+  connecting: {},
+  syncing: {},
+  loading: {},
+  dataMigration: {},
+  support: {},
+  progressBar: {},
+  blockConsolidation: {},
+  errors: {},
+};
+
 //  ==== Theme: Dark blue === //
 export const DARK_BLUE_DAEDALUS_CONFIG = {
   ...rpDarkBlueTheme,
