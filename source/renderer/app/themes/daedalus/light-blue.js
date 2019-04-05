@@ -214,20 +214,6 @@ export const LIGHT_BLUE_DAEDALUS_CONFIG = {
   reactPolymorph: {
     ...rpLightBlueTheme,
   },
-  // moved to createTheme
-  fonts: {
-    '--preferred-font': '"Times New Roman", serif', // not used anywhere
-    '--font-ultralight': 'NotoSans-ExtraLight, NotoSansCJKjp-Thin', // moved to createTheme fonts
-    '--font-thin': 'NotoSans-Thin, NotoSansCJKjp-Thin', // moved to createTheme fonts
-    '--font-light': 'NotoSans-Light, NotoSansCJKjp-Light', // moved to createTheme fonts
-    '--font-regular': 'NotoSans-Regular, NotoSansCJKjp-Regular', // moved to createTheme fonts
-    '--font-medium': 'NotoSans-Medium, NotoSansCJKjp-Medium', // moved to createTheme fonts
-    '--font-semibold': 'NotoSans-SemiBold, NotoSansCJKjp-Medium', // moved to createTheme fonts
-    '--font-bold': 'NotoSans-Bold, NotoSansCJKjp-Bold', // moved to createTheme fonts
-    '--font-heavy': 'NotoSans-ExtraBold, NotoSansCJKjp-Black', // moved to createTheme fonts
-    '--font-black': 'NotoSans-Black, NotoSansCJKjp-Black', // moved to createTheme fonts
-    '--font-mono': 'SFMono-Light', // moved to createTheme fonts
-  },
   scrollbar: {
     '--theme-scrollbar-thumb-background': '#c8ccce',
   },
