@@ -142,7 +142,37 @@ const createDaedalusTheme = ({
 
   // create all daedalus css vars
   return {
-    // components' css vars go here
+    fonts: {
+      '--font-ultralight': `${fonts.ultralight}`,
+      '--font-thin': `${fonts.thin}`,
+      '--font-light': `${fonts.light}`,
+      '--font-regular': `${fonts.regular}`,
+      '--font-medium': `${fonts.medium}`,
+      '--font-semibold': `${fonts.semibold}`,
+      '--font-bold': `${fonts.bold}`,
+      '--font-heavy': `${fonts.heavy}`,
+      '--font-black': `${fonts.black}`,
+      '--font-mono': `${fonts.mono}`,
+    },
+    adaRedemption: {
+      '--theme-ada-redemption-headline-color': `${primary.text}`,
+      '--theme-ada-redemption-instructions-color': `${primary.text}`,
+      '--theme-ada-redemption-success-overlay-border-color': `${
+        secondary.text
+      }`,
+      '--theme-ada-redemption-success-overlay-message-color': `${
+        secondary.text
+      }`,
+      '--theme-ada-redemption-success-overlay-button-text-color': `${
+        secondary.text
+      }`,
+      '--theme-ada-redemption-success-overlay-button-text-color-hover': `${
+        secondary.background
+      }`,
+    },
+    input: {
+      '--theme-input-hint-font': `${fonts.regular}`,
+    },
   };
 };
 
