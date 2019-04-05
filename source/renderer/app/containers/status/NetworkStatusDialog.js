@@ -50,8 +50,8 @@ export default class NetworkStatusDialog extends Component<Props> {
     const systemInfo = {
       platform: environment.os,
       platformVersion: os.release(),
-      cpu: os.cpus() ? os.cpus().model : '',
-      ram: os.totalmem() ? JSON.stringify(os.totalmem(), null, 2): '',
+      cpu: environment.cpu[0].model,
+      ram: this.convertBytesToSize(environment.ram),
       availableDiskSpace: '',
     };
 
@@ -112,4 +112,12 @@ export default class NetworkStatusDialog extends Component<Props> {
       </ReactModal>
     );
   }
+
+  convertBytesToSize = (bytes) => {
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes === 0) return 'n/a';
+    const i = parseInt(Math.floor(Math.log(Math.abs(bytes)) / Math.log(1024)), 10);
+    if (i === 0) return `${bytes} ${sizes[i]})`;
+    return `${(bytes / (1024 ** i)).toFixed(1)} ${sizes[i]}`;
+  };
 }

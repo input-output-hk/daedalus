@@ -18,6 +18,8 @@ export type Environment = {
   platform: string,
   platformVersion: string,
   os: string,
+  cpu: string,
+  ram: string,
   installerVersion: string,
   version: string,
   isWindows: boolean,
