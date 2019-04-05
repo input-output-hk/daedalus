@@ -231,6 +231,7 @@ export default class BlockConsolidationStatus extends Component<Props> {
             </div>
 
             <Button
+              className={styles.learnMoreButton}
               label={formatMessage(messages.learnMoreButton)}
               onClick={() =>
                 onExternalLinkClick(formatMessage(messages.learnMoreButtonURL))
