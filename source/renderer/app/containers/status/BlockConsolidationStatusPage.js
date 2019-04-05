@@ -3,38 +3,27 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import BlockConsolidationStatus from '../../components/status/BlockConsolidationStatus';
-import { EPOCH_DATA_UPDATE_INTERVAL } from '../../config/timingConfig';
 
 @inject('stores', 'actions')
 @observer
 export default class BlockConsolidationStatusPage extends Component<InjectedProps> {
-  pollingInterval: ?IntervalID = null;
-
   componentWillMount() {
-    this.pollingInterval = setInterval(
-      this.getEpochData,
-      EPOCH_DATA_UPDATE_INTERVAL
-    );
-    this.getEpochData();
+    this.props.actions.blockConsolidation.startBlockConsolidationDataPolling.trigger();
   }
 
   componeneWillUnmount() {
-    if (this.pollingInterval) clearInterval(this.pollingInterval);
+    this.props.actions.blockConsolidation.stopBlockConsolidationDataPolling.trigger();
   }
-
-  getEpochData = () => {
-    this.props.actions.networkStatus.getEpochsData.trigger();
-  };
 
   handleClose = () => {
     this.props.actions.app.toggleBlockConsolidationStatusScreen.trigger();
   };
 
   render() {
-    const { app, networkStatus } = this.props.stores;
-    const { epochsConsolidated, syncProgress, currentEpoch } = networkStatus;
+    const { app, blockConsolidation, networkStatus } = this.props.stores;
     const { openExternalLink } = app;
-
+    const { epochsConsolidated, currentEpoch } = blockConsolidation;
+    const { syncProgress } = networkStatus;
     return (
       <BlockConsolidationStatus
         currentEpoch={currentEpoch}

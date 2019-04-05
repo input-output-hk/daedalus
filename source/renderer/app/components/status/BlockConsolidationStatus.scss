@@ -41,19 +41,23 @@
     color: var(--theme-block-consolidation-text-link-color);
     text-decoration: none;
   }
+}
+.description {
+  line-height: 1.38;
+  margin: 0 auto 8px;
+  max-width: 610px;
 
-  .description {
-    line-height: 1.38;
-    margin: 0 auto 8px;
-    max-width: 610px;
+  b {
+    font-family: var(--font-medium);
+  }
 
-    b {
-      font-family: var(--font-medium);
-    }
-
-    &:last-of-type {
-      margin-bottom: 40px;
-    }
+  &:last-of-type {
+    margin-bottom: 40px;
+  }
+}
+.descriptionNoCurrentEpoch {
+  b {
+    display: none;
   }
 }
 
@@ -86,6 +90,12 @@
     width: 100%;
   }
 }
+.epochsNoCurrentEpoch {
+  em,
+  b:nth-of-type(2) {
+    display: none;
+  }
+}
 
 .indicator {
   margin-bottom: 53px;
@@ -106,12 +116,22 @@
   position: relative;
   width: 600px;
 }
+.indicatorContainerNoCurrentEpochs {
+  background: repeating-linear-gradient(
+    -44.46deg,
+    var(--theme-block-consolidation-stripe-light-1-background-color),
+    var(--theme-block-consolidation-stripe-light-1-background-color) 10px,
+    var(--theme-block-consolidation-stripe-light-2-background-color) 10px,
+    var(--theme-block-consolidation-stripe-light-2-background-color) 20px
+  );
+  animation: indicatorContainerNoCurrentEpochs 0.5s linear infinite;
+}
 
 .indicatorEpochsSynced {
   background: repeating-linear-gradient(
     -63deg,
     var(--theme-block-consolidation-stripe-light-1-background-color),
-    var(--theme-block-consolidation-stripe-light-1-background-color) 10px,
+    var(--theme-block-consolidation-stripe-light-1-background-color) 20px,
     var(--theme-block-consolidation-stripe-light-2-background-color) 10px,
     var(--theme-block-consolidation-stripe-light-2-background-color) 20px
   );
@@ -188,5 +208,16 @@
     position: absolute;
     top: 0;
     white-space: nowrap;
+  }
+}
+
+:global {
+  @keyframes indicatorContainerNoCurrentEpochs {
+    0% {
+      background-position-x: 0;
+    }
+    100% {
+      background-position-x: 27px;
+    }
   }
 }
