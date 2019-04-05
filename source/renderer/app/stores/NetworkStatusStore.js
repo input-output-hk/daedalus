@@ -95,6 +95,7 @@ export default class NetworkStatusStore extends Store {
   @observable diskSpaceRequired: string = '';
   @observable diskSpaceMissing: string = '';
   @observable diskSpaceRecommended: string = '';
+  @observable diskSpaceAvailable: string = '';
   @observable isTlsCertInvalid: boolean = false;
 
   // DEFINE STORE METHODS
@@ -553,11 +554,13 @@ export default class NetworkStatusStore extends Store {
     diskSpaceRequired,
     diskSpaceMissing,
     diskSpaceRecommended,
+    diskSpaceAvailable,
   }: CheckDiskSpaceResponse): Promise<void> => {
     this.isNotEnoughDiskSpace = isNotEnoughDiskSpace;
     this.diskSpaceRequired = diskSpaceRequired;
     this.diskSpaceMissing = diskSpaceMissing;
     this.diskSpaceRecommended = diskSpaceRecommended;
+    this.diskSpaceAvailable = diskSpaceAvailable;
 
     if (this.isNotEnoughDiskSpace) {
       if (this._networkStatusPollingInterval) {

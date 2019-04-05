@@ -45,6 +45,7 @@ export default class NetworkStatusDialog extends Component<Props> {
       restartNode,
       isSystemTimeIgnored,
       environment,
+      diskSpaceAvailable
     } = networkStatus;
 
     const systemInfo = {
@@ -52,7 +53,7 @@ export default class NetworkStatusDialog extends Component<Props> {
       platformVersion: os.release(),
       cpu: environment.cpu[0].model,
       ram: this.convertBytesToSize(environment.ram),
-      availableDiskSpace: '',
+      availableDiskSpace: diskSpaceAvailable,
     };
 
     const coreInfo = {
