@@ -92,11 +92,12 @@ export default class WalletUtxoSettings extends Component<Props> {
             >
               <BarChart data={chartData} barGap={30} barCategoryGap={4}>
                 <CartesianGrid
+                  className={styles.cartesianGrid}
                   horizontal={false}
                   vertical={false}
                   y={-10}
                   height={255}
-                  fill="rgba(68, 91, 124, 0.06)"
+                  fill="transparent"
                 />
                 <XAxis
                   dataKey="walletAmount"

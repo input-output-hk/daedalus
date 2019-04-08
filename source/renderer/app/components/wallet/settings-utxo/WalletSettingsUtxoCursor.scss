@@ -1,5 +1,5 @@
 .component {
   path {
-    fill: rgba(68, 91, 124, 0.1);
+    fill: var(--theme-utxo-cursor-background-color);
   }
 }

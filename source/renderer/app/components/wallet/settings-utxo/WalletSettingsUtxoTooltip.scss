@@ -1,7 +1,7 @@
 .component {
   opacity: 0.9;
-  box-shadow: 0 1.5px 5px 0 rgba(0, 0, 0, 0.18);
-  background-color: #5e6066;
+  box-shadow: 0 1.5px 5px 0 var(--theme-utxo-tooltip-shadow-color);
+  background-color: var(--theme-utxo-tooltip-background-color);
   border-radius: 4px;
 
   &.noPreviousWalletAmount {
@@ -15,7 +15,7 @@
     font-size: 12px;
     line-height: 1.17;
     text-align: center;
-    color: #fafbfc;
+    color: var(--theme-utxo-tooltip-text-color);
     padding: 6px 12px;
 
     b {
