@@ -20,6 +20,16 @@ Make sure Daedalus is properly installed (see above).
 $ yarn test:unit
 ```
 
+## Unbound tests
+   
+Unbound tests run as long as you keep them running 
+(never end except if an error occurs).
+   
+Example:
+`yarn test:unit:unbound --tags @mnemonics` 
+generates and validates mnemonics as long as you keep it 
+running (the number of executions is updated in the terminal)
+
 # Run UI tests
 
 1. Make sure Daedalus is properly installed (see above).
