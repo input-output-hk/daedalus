@@ -147,7 +147,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
     });
   };
 
-  submitOnEnter = (event: {}) =>
+  handleSubmitOnEnter = (event: {}) =>
     this.form.$('spendingPassword').isValid &&
     submitOnEnter(this.submit, event);
 
@@ -263,7 +263,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
               {...spendingPasswordField.bind()}
               error={spendingPasswordField.error}
               skin={InputSkin}
-              onKeyPress={this.submitOnEnter}
+              onKeyPress={this.handleSubmitOnEnter}
               autoFocus
             />
           ) : null}

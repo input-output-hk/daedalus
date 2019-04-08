@@ -3,13 +3,19 @@ import BigNumber from 'bignumber.js';
 import { get } from 'lodash';
 import AdaApi from '../api';
 import { getNodeInfo } from '../nodes/requests/getNodeInfo';
+import { getNodeSettings } from '../nodes/requests/getNodeSettings';
 import { GenericApiError } from '../common/errors';
 import { Logger } from '../../utils/logging';
 import { RedeemAdaError } from '../transactions/errors';
 import type { RedeemAdaParams } from '../transactions/requests/redeemAda';
 import type { RedeemPaperVendedAdaParams } from '../transactions/requests/redeemPaperVendedAda';
-import type { NodeQueryParams } from '../nodes/requests/getNodeInfo';
-import type { NodeInfo, GetNetworkStatusResponse } from '../nodes/types';
+import type { NodeInfoQueryParams } from '../nodes/requests/getNodeInfo';
+import type {
+  NodeInfoResponse,
+  GetNetworkStatusResponse,
+  NodeSettingsResponse,
+  GetNodeSettingsResponse,
+} from '../nodes/types';
 
 // ========== LOGGING =========
 
@@ -77,19 +83,22 @@ export default (api: AdaApi) => {
     Promise.resolve(LOCAL_TIME_DIFFERENCE);
 
   api.getNetworkStatus = async (
-    queryParams?: NodeQueryParams
+    queryInfoParams?: NodeInfoQueryParams
   ): Promise<GetNetworkStatusResponse> => {
     Logger.debug('AdaApi::getNetworkStatus (PATCHED) called');
     try {
-      const status: NodeInfo = await getNodeInfo(api.config);
-      Logger.debug('AdaApi::getNetworkStatus (PATCHED) success', { status });
+      const nodeInfo: NodeInfoResponse = await getNodeInfo(
+        api.config,
+        queryInfoParams
+      );
+      Logger.debug('AdaApi::getNetworkStatus (PATCHED) success', { nodeInfo });
 
       const {
         blockchainHeight,
         subscriptionStatus,
         syncProgress,
         localBlockchainHeight,
-      } = status;
+      } = nodeInfo;
 
       // extract relevant data before sending to NetworkStatusStore
       const response = {
@@ -109,7 +118,7 @@ export default (api: AdaApi) => {
       // we need to protect ourselves from getting punished by the NTP
       // service which results in 30 second delay in NTP check response.
       // In order to simulate NTP force-check we use 250ms timeout.
-      const isForcedTimeDifferenceCheck = !!queryParams;
+      const isForcedTimeDifferenceCheck = !!queryInfoParams;
       return isForcedTimeDifferenceCheck
         ? new Promise(resolve => {
             setTimeout(() => resolve(response), 250);
@@ -120,6 +129,32 @@ export default (api: AdaApi) => {
       throw new GenericApiError();
     }
   };
+
+  api.getNodeSettings = async (): Promise<GetNodeSettingsResponse> => {
+    Logger.debug('AdaApi::getNodeSettings (PATCHED) called');
+    try {
+      const nodeSettings: NodeSettingsResponse = await getNodeSettings(
+        api.config
+      );
+      if (api.setFaultyNodeSettingsApi) {
+        const error = new Error('getNodeSettings forced error');
+        Logger.error('AdaApi::getNodeSettings (PATCHED) forced error', {
+          error,
+        });
+        throw new GenericApiError(error);
+      }
+      Logger.debug('AdaApi::getNodeSettings (PATCHED) success', {
+        nodeSettings,
+      });
+      const { slotId } = nodeSettings;
+      return { slotId };
+    } catch (error) {
+      Logger.error('AdaApi::getNodeSettings (PATCHED) error', { error });
+      throw new GenericApiError(error);
+    }
+  };
+
+  api.setFaultyNodeSettingsApi = false;
 
   api.setLocalTimeDifference = async timeDifference => {
     LOCAL_TIME_DIFFERENCE = timeDifference;

@@ -123,8 +123,6 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
     }
   );
 
-  submitOnEnter = submitOnEnter.bind(this, this.submit);
-
   submit = () => {
     this.form.submit({
       onSuccess: form => {
@@ -138,6 +136,8 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
       },
     });
   };
+
+  handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
 
   render() {
     const { form } = this;
@@ -205,7 +205,7 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
             {...spendingPasswordField.bind()}
             error={spendingPasswordField.error}
             skin={InputSkin}
-            onKeyPress={this.submitOnEnter}
+            onKeyPress={this.handleSubmitOnEnter}
           />
         ) : null}
 

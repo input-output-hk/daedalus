@@ -1,17 +1,20 @@
 import { When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { getVisibleTextsForSelector } from '../helpers/shared-helpers';
+import i18n from '../helpers/i18n-helpers';
 
 const SELECTORS = {
   BLOCK_CONSOLIDATION_COMPONENT: '.BlockConsolidationStatus_component',
   BLOCK_CONSOLIDATION_EXPLANATION:
     '.BlockConsolidationStatus_content p:nth-child(3)',
-  EPOCHS_CONSOLIDATION_STATUS: '.BlockConsolidationStatus_epochs p span',
+  EPOCHS_CONSOLIDATION_STATUS: '.BlockConsolidationStatus_epochs p span b',
   EPOCHS_CONSOLIDATED:
     '.BlockConsolidationStatus_indicatorEpochsConsolidated p',
   TRAILING_BY_2_EPOCH: '.BlockConsolidationStatus_indicatorEpochsBehind p',
   MAXIMUM_EPOCH: '.BlockConsolidationStatus_fullEpoch',
   SYNC_PROGRESS: '.BlockConsolidationStatus_indicatorEpochsSynced p span',
+  SYNC_PROGRESS_LOADING_STATE:
+    '.BlockConsolidationStatus_indicatorContainerNoCurrentEpochs',
 };
 
 When(/^I toggle the Block Consolidation Status Page$/, async function() {
@@ -32,129 +35,196 @@ Then(/^the Block Consolidation Status Page is (hidden|visible)/, async function(
 });
 
 Then(
-  /^the page accurately renders an explanation of how block consolidation works in file storage$/,
-  async function() {
-    const [explanationText] = await getVisibleTextsForSelector(
+  /^the page accurately renders the follow explanation of how block consolidation works in file storage:$/,
+  async function(data) {
+    const [consolidationText] = data.hashes();
+
+    let [renderedText] = await getVisibleTextsForSelector(
       this.client,
       SELECTORS.BLOCK_CONSOLIDATION_EXPLANATION
     );
 
     const {
-      value: { currentEpoch },
+      value: { currentEpochValue },
     } = await this.client.executeAsync(done =>
-      done({ currentEpoch: daedalus.stores.networkStatus.currentEpoch })
+      done({
+        currentEpochValue: daedalus.stores.blockConsolidation.currentEpoch,
+      })
     );
 
-    expect(explanationText).to.equal(
-      `Blocks for the current epoch (${currentEpoch}) and the previous epoch (${Math.max(
-        currentEpoch - 1,
-        0
-      )}) are stored as one file per block. All previous epochs will be consolidated to two files per epoch.`
-    );
+    let currentEpoch = '';
+    let currentEpochBehind = '';
+
+    if (currentEpochValue && currentEpochValue > 0) {
+      currentEpoch = `(${currentEpochValue})`;
+      currentEpochBehind = `(${Math.max(currentEpochValue - 1, 0)})`;
+    }
+
+    let expectedText = await i18n.formatMessage(this.client, {
+      id: consolidationText.message,
+      values: {
+        currentEpoch,
+        currentEpochBehind,
+      },
+    });
+
+    // Removes double spaces caused by missing currentEpoch
+    renderedText = renderedText.replace(/\s+/g, ' ');
+    expectedText = expectedText.replace(/\s+/g, ' ');
+    expect(renderedText).to.equal(expectedText);
   }
 );
 
 Then(
   /^the page accurately renders epochs consolidated out of the total in the main blocks graphic$/,
   async function() {
-    const [consolidationStatus] = await getVisibleTextsForSelector(
+    const [
+      renderedEpochsConsolidated,
+      renderedCurrentEpoch,
+    ] = await getVisibleTextsForSelector(
       this.client,
       SELECTORS.EPOCHS_CONSOLIDATION_STATUS
     );
 
     const {
-      value: { epochsConsolidated, currentEpoch },
+      value: { expectedEpochsConsolidated, expectedCurrentEpochValue },
     } = await this.client.executeAsync(done =>
       done({
-        epochsConsolidated: daedalus.stores.networkStatus.epochsConsolidated,
-        currentEpoch: daedalus.stores.networkStatus.currentEpoch,
+        expectedEpochsConsolidated:
+          daedalus.stores.blockConsolidation.epochsConsolidated,
+        expectedCurrentEpochValue:
+          daedalus.stores.blockConsolidation.currentEpoch,
       })
     );
 
-    expect(consolidationStatus).to.equal(
-      `${epochsConsolidated} of ${currentEpoch}\nepochs consolidated`
+    expect(parseInt(renderedEpochsConsolidated, 10)).to.equal(
+      expectedEpochsConsolidated
+    );
+    expect(parseInt(renderedCurrentEpoch, 10)).to.equal(
+      expectedCurrentEpochValue
     );
   }
 );
 
 Then(
-  /^the page accurately renders epochs consolidated above the progress bar$/,
-  async function() {
-    const [consolidationStatus] = await getVisibleTextsForSelector(
-      this.client,
-      SELECTORS.EPOCHS_CONSOLIDATED
-    );
-
+  /^the page accurately renders epochs consolidated above the progress bar:$/,
+  async function(data) {
     const {
       value: { epochsConsolidated },
     } = await this.client.executeAsync(done =>
       done({
-        epochsConsolidated: daedalus.stores.networkStatus.epochsConsolidated,
+        epochsConsolidated:
+          daedalus.stores.blockConsolidation.epochsConsolidated,
       })
     );
+    const [expectedTextData] = data.hashes();
+    const expectedTextMessage = await this.intl(expectedTextData.message);
+    const expectedText = `${epochsConsolidated} ${expectedTextMessage}`;
 
-    expect(consolidationStatus).to.equal(
-      `${epochsConsolidated} epochs consolidated`
+    const [renderedText] = await getVisibleTextsForSelector(
+      this.client,
+      SELECTORS.EPOCHS_CONSOLIDATED
     );
+
+    expect(renderedText).to.equal(expectedText);
   }
 );
 
 Then(
-  /^the page accurately renders the epoch trailing 2 behind the current epoch above the progress bar$/,
-  async function() {
-    const [trailingEpochText] = await getVisibleTextsForSelector(
+  /^the page accurately renders the epoch trailing 2 behind the current epoch above the progress bar:$/,
+  async function(data) {
+    const {
+      value: { currentEpoch },
+    } = await this.client.executeAsync(done =>
+      done({ currentEpoch: daedalus.stores.blockConsolidation.currentEpoch })
+    );
+    const epochBehind = Math.max(currentEpoch - 2, 0);
+    const [expectedTextData] = data.hashes();
+    const expectedTextMessage = await this.intl(expectedTextData.message);
+    const expectedText = `${expectedTextMessage} ${epochBehind}`;
+
+    const [renderedText] = await getVisibleTextsForSelector(
       this.client,
       SELECTORS.TRAILING_BY_2_EPOCH
     );
 
-    const {
-      value: { currentEpoch },
-    } = await this.client.executeAsync(done =>
-      done({ currentEpoch: daedalus.stores.networkStatus.currentEpoch })
-    );
-
-    expect(trailingEpochText).to.equal(
-      `epoch ${Math.max(currentEpoch - 2, 0)}`
-    );
+    expect(renderedText).to.equal(expectedText);
   }
 );
 
 Then(
-  /^the page accurately renders the current epoch signifying the max end of the progress bar$/,
-  async function() {
-    const [currentEpochText] = await getVisibleTextsForSelector(
+  /^the page accurately renders the current epoch signifying the max end of the progress bar:$/,
+  async function(data) {
+    const {
+      value: { currentEpoch },
+    } = await this.client.executeAsync(done =>
+      done({ currentEpoch: daedalus.stores.blockConsolidation.currentEpoch })
+    );
+    const [expectedTextData] = data.hashes();
+    const expectedTextMessage = await this.intl(expectedTextData.message);
+    const expectedText = `${expectedTextMessage} ${currentEpoch}`;
+
+    const [renderedText] = await getVisibleTextsForSelector(
       this.client,
       SELECTORS.MAXIMUM_EPOCH
     );
 
-    const {
-      value: { currentEpoch },
-    } = await this.client.executeAsync(done =>
-      done({ currentEpoch: daedalus.stores.networkStatus.currentEpoch })
-    );
-
-    expect(currentEpochText).to.equal(`epoch ${currentEpoch}`);
+    expect(renderedText).to.equal(expectedText);
   }
 );
 
 Then(
-  /^the page accurately renders the node's sync progress as a percentage below the progress bar$/,
-  async function() {
+  /^the page accurately renders the node's sync progress as a percentage below the progress bar:$/,
+  async function(data) {
     const {
-      value: { syncProgress },
+      value: { epochsSynced },
     } = await this.client.executeAsync(done => {
       daedalus.stores.networkStatus
         ._updateNetworkStatus()
         .then(() =>
-          done({ syncProgress: daedalus.stores.networkStatus.syncProgress })
+          done({ epochsSynced: daedalus.stores.networkStatus.syncProgress })
         )
         .catch(error => done(error));
     });
+    const [expectedTextData] = data.hashes();
+    const expectedText = await i18n.formatMessage(this.client, {
+      id: expectedTextData.message,
+      values: { epochsSynced },
+    });
 
-    const [blocksSyncedText] = await getVisibleTextsForSelector(
+    const [renderedText] = await getVisibleTextsForSelector(
       this.client,
       SELECTORS.SYNC_PROGRESS
     );
-    expect(blocksSyncedText).to.equal(`${syncProgress}% blocks synced`);
+
+    expect(renderedText).to.equal(expectedText);
+  }
+);
+
+Then(
+  /^the page hides the node's sync progress as a percentage below the progress bar$/,
+  async function() {
+    return this.client.waitForVisible(SELECTORS.SYNC_PROGRESS, null, true);
+  }
+);
+
+Then(/^the page renders the progress bar in loading state$/, async function() {
+  return this.client.waitForVisible(
+    SELECTORS.SYNC_PROGRESS_LOADING_STATE,
+    null,
+    true
+  );
+});
+
+When(/^the fallback function returns the current epoch$/, async function() {
+  return this.client.waitForVisible(SELECTORS.MAXIMUM_EPOCH);
+});
+
+When(
+  /^I set the Node Setting Api Request to return faulty response$/,
+  function() {
+    return this.client.execute(() => {
+      daedalus.api.setFaultyNodeSettingsApi = true;
+    });
   }
 );
