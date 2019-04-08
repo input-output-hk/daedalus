@@ -26,6 +26,8 @@ export type Environment = {
   isWindows: boolean,
   isMacOS: boolean,
   isLinux: boolean,
+  stateDirectoryPath: string,
+  cardanoProcessID: string,
 };
 
 // constants

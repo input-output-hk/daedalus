@@ -62,10 +62,10 @@ export default class NetworkStatusDialog extends Component<Props> {
       daedalusProcessID: environment.processID,
       isInSafeMode: includes(process.argv.slice(1), '--safe-mode'),
       cardanoVersion: environment.buildNumber,
-      cardanoProcessID: '',
+      cardanoProcessID: environment.cardanoProcessID,
       cardanoAPIPort: _tlsConfig.port,
       cardanoNetwork: environment.network,
-      daedalusStateDirectory: '',
+      daedalusStateDirectory: environment.stateDirectoryPath,
     };
 
     return (
