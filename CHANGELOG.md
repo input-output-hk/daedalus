@@ -17,6 +17,7 @@ Changelog
 
 ### Chores
 
+- Simplified the test setup ([PR 1378](https://github.com/input-output-hk/daedalus/pull/1378))
 - Updated PR template ([PR 1376](https://github.com/input-output-hk/daedalus/pull/1376))
 - Implemented new About Us dialog design with a close button ([PR 1369](https://github.com/input-output-hk/daedalus/pull/1369)
 - Refactored store async functions to use mobx runInAction calls ([PR 1367](https://github.com/input-output-hk/daedalus/pull/1367)
