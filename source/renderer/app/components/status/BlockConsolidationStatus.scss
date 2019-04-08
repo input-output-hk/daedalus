@@ -1,8 +1,8 @@
 .component {
   background-color: var(--theme-block-consolidation-background-color);
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
   overflow: hidden;
   position: relative;
   width: 100%;
@@ -14,14 +14,16 @@
 }
 
 .container {
+  display: flex;
+  flex-direction: column;
   flex: 1;
+  justify-content: center;
   overflow-x: hidden;
   overflow-y: overlay;
   position: relative;
 }
 
 .content {
-  // background-color: var(--theme-block-consolidation-container-background-color);
   border-radius: 4px;
   font-family: var(--font-regular);
   margin: 20px;
