@@ -7,6 +7,7 @@ import globalMessages from '../i18n/global-messages';
 import Wallet, { WalletAssuranceModeOptions } from '../domains/Wallet';
 import type { WalletExportToFileParams } from '../actions/wallet-settings-actions';
 import type { WalletUtxos } from '../api/wallets/types';
+import { WALLET_UTXO_API_REQUEST_INTERVAL } from '../config/timingConfig';
 
 export default class WalletSettingsStore extends Store {
   WALLET_ASSURANCE_LEVEL_OPTIONS = [
@@ -41,14 +42,33 @@ export default class WalletSettingsStore extends Store {
   @observable walletUtxos: ?WalletUtxos = null;
 
   setup() {
-    const a = this.actions.walletSettings;
-    a.startEditingWalletField.listen(this._startEditingWalletField);
-    a.stopEditingWalletField.listen(this._stopEditingWalletField);
-    a.cancelEditingWalletField.listen(this._cancelEditingWalletField);
-    a.updateWalletField.listen(this._updateWalletField);
-    a.updateSpendingPassword.listen(this._updateSpendingPassword);
-    a.exportToFile.listen(this._exportToFile);
-    a.getWalletUtxos.listen(this._getWalletUtxos);
+    const {
+      walletSettings: walletSettingsActions,
+      sidebar: sidebarActions,
+    } = this.actions;
+    walletSettingsActions.startEditingWalletField.listen(
+      this._startEditingWalletField
+    );
+    walletSettingsActions.stopEditingWalletField.listen(
+      this._stopEditingWalletField
+    );
+    walletSettingsActions.cancelEditingWalletField.listen(
+      this._cancelEditingWalletField
+    );
+    walletSettingsActions.updateWalletField.listen(this._updateWalletField);
+    walletSettingsActions.updateSpendingPassword.listen(
+      this._updateSpendingPassword
+    );
+    walletSettingsActions.exportToFile.listen(this._exportToFile);
+
+    walletSettingsActions.startWalletUtxoPolling.listen(
+      this._startWalletUtxoPolling
+    );
+    walletSettingsActions.stopWalletUtxoPolling.listen(
+      this._stopWalletUtxoPolling
+    );
+
+    sidebarActions.walletSelected.listen(this._onWalletSelected);
   }
 
   @action _startEditingWalletField = ({ field }: { field: string }) => {
@@ -126,8 +146,21 @@ export default class WalletSettingsStore extends Store {
     this.actions.dialogs.closeActiveDialog.trigger();
   };
 
-  @action _getWalletUtxos = async () => {
-    this.walletUtxos = null;
+  @action _startWalletUtxoPolling = () => {
+    this._getWalletUtxoApiData();
+    this._stopWalletUtxoPolling();
+
+    this.pollingApiInterval = setInterval(
+      this._getWalletUtxoApiData,
+      WALLET_UTXO_API_REQUEST_INTERVAL
+    );
+  };
+
+  @action _stopWalletUtxoPolling = () => {
+    if (this.pollingApiInterval) clearInterval(this.pollingApiInterval);
+  };
+
+  @action _getWalletUtxoApiData = async () => {
     const activeWallet = this.stores.wallets.active;
     if (!activeWallet) return;
     const { id: walletId } = activeWallet;
@@ -137,5 +170,9 @@ export default class WalletSettingsStore extends Store {
 
   @action _updateWalletUtxos = walletUtxos => {
     this.walletUtxos = walletUtxos;
+  };
+
+  @action _onWalletSelected = () => {
+    this._updateWalletUtxos(null);
   };
 }

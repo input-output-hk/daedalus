@@ -15,9 +15,12 @@ type Props = InjectedProps;
 export default class WalletSettingsPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
-  constructor(props: any) {
-    super(props);
-    this.props.actions.walletSettings.getWalletUtxos.trigger();
+  componentWillMount() {
+    this.props.actions.walletSettings.startWalletUtxoPolling.trigger();
+  }
+
+  componeneWillUnmount() {
+    this.props.actions.walletSettings.stopWalletUtxoPolling.trigger();
   }
 
   render() {
