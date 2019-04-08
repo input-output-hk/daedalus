@@ -41,6 +41,8 @@ export default class WalletSettingsStore extends Store {
   @observable lastUpdatedWalletField = null;
   @observable walletUtxos: ?WalletUtxos = null;
 
+  pollingApiInterval: ?IntervalID = null;
+
   setup() {
     const {
       walletSettings: walletSettingsActions,
