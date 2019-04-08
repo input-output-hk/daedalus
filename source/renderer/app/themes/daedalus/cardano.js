@@ -495,5 +495,7 @@ export default {
     'rgba(250, 251, 252, 0.3)',
   '--theme-block-consolidation-stripe-light-1-background-color': '#e0e5ea',
   '--theme-block-consolidation-stripe-light-2-background-color': '#fafbfc',
+  '--theme-block-consolidation-button-background-color': '#243e62',
+  '--theme-block-consolidation-button-background-color-hover': '#2f496e',
   '--theme-block-consolidation-button-border-color': '#fafbfc',
 };

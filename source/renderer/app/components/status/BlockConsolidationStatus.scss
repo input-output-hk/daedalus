@@ -9,7 +9,13 @@
   z-index: 20;
 
   .learnMoreButton {
+    background-color: var(--theme-block-consolidation-button-background-color);
     border: solid 1px var(--theme-block-consolidation-button-border-color);
+    &:not(.disabled):hover {
+      background-color: var(
+        --theme-block-consolidation-button-background-color-hover
+      );
+    }
   }
 }
 
