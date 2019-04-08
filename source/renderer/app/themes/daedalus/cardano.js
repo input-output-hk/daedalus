@@ -476,12 +476,12 @@ export default {
   '--theme-progress-bar-background-color': 'rgba(255, 255, 255, 0.3)',
   '--theme-progress-bar-foreground-color': 'rgba(255, 255, 255, 0.7)',
 
-  '--theme-block-consolidation-background-color': 'rgba(36, 62, 98, 0.96)',
+  '--theme-block-consolidation-background-color': 'rgba(32, 34, 37, 0.96)',
   '--theme-block-consolidation-container-background-color': '#fafbfc',
   '--theme-block-consolidation-title-text-color': '#fafbfc',
   '--theme-block-consolidation-text-color': 'rgba(250, 251, 252, 0.7)',
   '--theme-block-consolidation-text-highlight-color': '#fafbfc',
-  '--theme-block-consolidation-epochs-text-color': '#243e62',
+  '--theme-block-consolidation-epochs-text-color': '#202225',
   '--theme-block-consolidation-indicator-text-color': '#fafbfc',
   '--theme-block-consolidation-indicator-container-background-color':
     'rgba(0, 0, 0, 0.1)',
@@ -495,7 +495,7 @@ export default {
     'rgba(250, 251, 252, 0.3)',
   '--theme-block-consolidation-stripe-light-1-background-color': '#e0e5ea',
   '--theme-block-consolidation-stripe-light-2-background-color': '#fafbfc',
-  '--theme-block-consolidation-button-background-color': '#243e62',
-  '--theme-block-consolidation-button-background-color-hover': '#2f496e',
+  '--theme-block-consolidation-button-background-color': 'rgba(0, 0, 0, 0.1)',
+  '--theme-block-consolidation-button-background-color-hover': '#56c887',
   '--theme-block-consolidation-button-border-color': '#fafbfc',
 };
