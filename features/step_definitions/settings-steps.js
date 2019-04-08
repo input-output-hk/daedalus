@@ -76,27 +76,27 @@ When(/^I enter current wallet password:$/, async function(table) {
 
 When(/^I click on "name" input field$/, function() {
   return this.client.click(
-    '.WalletSettings_component .InlineEditingInput_component'
+    '.WalletGeneralSettings_component .InlineEditingInput_component'
   );
 });
 
 When(/^I enter new wallet name:$/, async function(table) {
   const fields = table.hashes()[0];
   await this.client.setValue(
-    '.WalletSettings_component .walletName input',
+    '.WalletGeneralSettings_component .walletName input',
     fields.name
   );
 });
 
 When(/^I click outside "name" input field$/, function() {
-  return this.client.click('.WalletSettings_component');
+  return this.client.click('.WalletGeneralSettings_component');
 });
 
 When(
   /^I open "Transaction assurance security level" selection dropdown$/,
   function() {
     return this.waitAndClick(
-      '.WalletSettings_component .walletAssuranceLevel input'
+      '.WalletGeneralSettings_component .walletAssuranceLevel input'
     );
   }
 );
