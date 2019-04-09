@@ -1,4 +1,4 @@
-@ui
+@e2e
 Feature: Select Language
 
   Scenario: User Selects Language

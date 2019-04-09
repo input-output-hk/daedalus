@@ -1,4 +1,4 @@
-@ui
+@e2e
 Feature: Send Money to Receiver
 
   Background:

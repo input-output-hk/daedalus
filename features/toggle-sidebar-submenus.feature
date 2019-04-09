@@ -1,4 +1,4 @@
-@ui
+@e2e
 Feature: Toggle Sidebar Submenus
 
   Background:

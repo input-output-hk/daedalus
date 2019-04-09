@@ -125,13 +125,13 @@ gulp.task(
 );
 
 gulp.task(
-  'test:ui:nodemon',
+  'test:e2e:nodemon',
   shell.task(
-    'nodemon --watch dist --watch features --exec "yarn test:ui --tags \'@ui and @watch\'"'
+    'nodemon --watch dist --watch features --exec "yarn test:e2e --tags \'@e2e and @watch\'"'
   )
 );
 
-gulp.task('test:ui:watch', gulp.series('build:watch', 'test:ui:nodemon'));
+gulp.task('test:e2e:watch', gulp.series('build:watch', 'test:e2e:nodemon'));
 
 gulp.task(
   'purge:translations',

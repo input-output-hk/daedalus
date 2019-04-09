@@ -1,4 +1,4 @@
-@ui
+@e2e
 Feature: Delete Wallet via Settings
 
   Background:

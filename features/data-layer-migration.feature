@@ -1,4 +1,4 @@
-@ui
+@e2e
 Feature: Data Layer Migration
 
   Background:

@@ -1,4 +1,4 @@
-@ui
+@e2e
 Feature: Wallet Odering
 
   Background:

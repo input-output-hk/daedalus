@@ -1,4 +1,4 @@
-@ui
+@e2e
 Feature: Trouble Syncing Notification
 
   Background:

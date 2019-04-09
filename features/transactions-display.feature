@@ -1,4 +1,4 @@
-@ui
+@e2e
 Feature: Display wallet transactions
 
   The wallet summary screen displays the five most recent transactions,

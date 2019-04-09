@@ -1,4 +1,4 @@
-@ui
+@e2e
 Feature: Accept "Terms of use"
 
   Background:
