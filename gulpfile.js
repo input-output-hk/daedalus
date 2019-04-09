@@ -124,23 +124,21 @@ gulp.task(
   )
 );
 
-gulp.task('cucumber', shell.task('npm run cucumber --'));
-
 gulp.task(
-  'cucumber:watch',
-  shell.task('nodemon --exec npm run cucumber:watch')
+  'test:e2e:nodemon',
+  shell.task(
+    'nodemon --watch dist --watch features --exec "yarn test:e2e --tags \'@e2e and @watch\'"'
+  )
 );
 
-gulp.task('test', gulp.series('build', 'cucumber'));
-
-gulp.task('test:watch', gulp.series('build:watch', 'cucumber:watch'));
+gulp.task('test:e2e:watch', gulp.series('build:watch', 'test:e2e:nodemon'));
 
 gulp.task(
   'purge:translations',
   shell.task('rimraf ./translations/messages/source')
 );
 
-gulp.task('electron:inspector', shell.task('npm run electron:inspector'));
+gulp.task('electron:inspector', shell.task('yarn electron:inspector'));
 
 gulp.task(
   'start',

@@ -20,4 +20,4 @@
 
 # Ignore the following special folders and files
 source/renderer/app/i18n/locales/
-features/support/default-wallet.json
+features/tests/e2e/documents/*
