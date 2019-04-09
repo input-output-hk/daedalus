@@ -141,4 +141,36 @@ export const winLinuxMenu = (
       },
     ],
   },
+  {
+    label: translation('helpSupport'),
+    submenu: compact([
+      {
+        label: translation('helpSupport.gpuSafeMode'),
+        type: 'checkbox',
+        checked: isInSafeMode,
+        click() {
+          if (isInSafeMode) {
+            actions.restartWithoutSafeMode();
+          } else {
+            actions.restartInSafeMode();
+          }
+        },
+      },
+      {
+        label: translation('helpSupport.downloadLogs'),
+        click() {
+        },
+      },
+      {
+        label: translation('helpSupport.supportRequest'),
+        click() {
+        },
+      },
+      {
+        label: translation('helpSupport.knownIssues'),
+        click() {
+        },
+      },
+    ]),
+  },
 ];
