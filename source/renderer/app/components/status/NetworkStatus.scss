@@ -12,7 +12,7 @@
   padding: 50px 30px;
   width: 100%;
 
-  @media (max-height: 740px) {
+  @media (max-height: 740px), (max-width: 1000px) {
     overflow-y: auto;
   }
 }
@@ -22,6 +22,10 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
+
+  @media (max-width: 1000px) {
+    flex-direction: column;
+  }
 }
 
 .table {
@@ -58,13 +62,25 @@
       text-align: right;
     }
 
-    &.platform,
-    &.stateDirectory {
+    &.platform {
       display: -webkit-box;
       float: right;
       line-height: 16px;
       max-height: 32px;
       max-width: 400px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+    }
+
+    &.stateDirectory {
+      display: -webkit-box;
+      float: right;
+      line-height: 16px;
+      margin-bottom: -5px;
+      max-height: 32px;
+      max-width: 300px;
       overflow: hidden;
       text-overflow: ellipsis;
       -webkit-line-clamp: 1;
@@ -149,6 +165,10 @@
     font-style: italic;
     line-height: 1.36;
     padding: 2px 0;
+  }
+
+  @media (max-width: 1000px) {
+    width: 100%;
   }
 }
 
