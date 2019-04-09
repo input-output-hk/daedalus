@@ -58,7 +58,8 @@
       text-align: right;
     }
 
-    &.platform {
+    &.platform,
+    &.stateDirectory {
       display: -webkit-box;
       float: right;
       line-height: 16px;

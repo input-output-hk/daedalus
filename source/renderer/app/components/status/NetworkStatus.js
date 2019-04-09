@@ -322,7 +322,7 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>Daedalus State Directory:</td>
-                <td>{daedalusStateDirectory}</td>
+                <td className={styles.stateDirectory}>{daedalusStateDirectory}</td>
               </tr>
               {!isConnected && nodeConnectionError ? (
                 <tr>
