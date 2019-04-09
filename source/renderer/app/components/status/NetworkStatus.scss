@@ -74,6 +74,10 @@
       -webkit-box-orient: vertical;
     }
 
+    &.safeMode {
+      width: 200px;
+    }
+
     &.stateDirectory {
       display: -webkit-box;
       float: right;

@@ -302,7 +302,7 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>Daedalus is running in safe mode:</td>
-                <td>{isInSafeMode ? 'YES' : 'NO'}</td>
+                <td className={styles.safeMode}>{isInSafeMode ? 'YES' : 'NO'}</td>
               </tr>
               <tr>
                 <td>Cardano Version:</td>
