@@ -1,9 +1,8 @@
 import { Then } from 'cucumber';
 import { expect } from 'chai';
 import { BigNumber } from 'bignumber.js';
-import { getVisibleTextsForSelector } from '../support/helpers/shared-helpers';
-import { getWalletUtxosTotalAmount } from '../../source/renderer/app/utils/utxoUtils';
-import { formattedWalletAmount } from '../../source/renderer/app/utils/formatters';
+import { getVisibleTextsForSelector } from '../helpers/shared-helpers';
+import { getWalletUtxosTotalAmount } from '../../../../source/renderer/app/utils/utxoUtils';
 
 const component = '.WalletUtxoSettings_component';
 
@@ -41,21 +40,14 @@ Then(
       selectors.walletUtxosAmount
     );
 
-    // TODO: Get the real active wallet amount
     const {
-      value: { /* activeWalletAmount, */ histogram },
+      value: { expextedWalletAmount, histogram },
     } = await this.client.executeAsync(done =>
       done({
-        // activeWalletAmount: daedalus.stores.wallets.active.amount,
+        expextedWalletAmount: daedalus.stores.wallets.activeValue,
         histogram: daedalus.stores.walletSettings.walletUtxos.histogram,
       })
     );
-
-    // const expextedWalletAmount = formattedWalletAmount(walletLovelaceAmount);
-    const activeWalletAmount = new BigNumber(
-      parseFloat(renderedWalletAmount.replace(/,/g, ''))
-    );
-    const expextedWalletAmount = formattedWalletAmount(activeWalletAmount);
 
     const expectedWalletUtxosAmount = getWalletUtxosTotalAmount(histogram);
 

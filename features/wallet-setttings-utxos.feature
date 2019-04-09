@@ -1,3 +1,4 @@
+@e2e @watch
 Feature: Wallet settings - UTXOs
 
   Background:

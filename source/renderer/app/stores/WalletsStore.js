@@ -1,6 +1,7 @@
 // @flow
 import { observable, action, computed, runInAction, flow } from 'mobx';
 import { get, chunk, find, isEqual } from 'lodash';
+import { BigNumber } from 'bignumber.js';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
@@ -13,6 +14,7 @@ import { buildRoute, matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
+import { formattedWalletAmount } from '../utils/formatters';
 
 /* eslint-disable consistent-return */
 
@@ -27,6 +29,7 @@ export default class WalletsStore extends Store {
   // REQUESTS
   /* eslint-disable max-len */
   @observable active: ?Wallet = null;
+  @observable activeValue: ?BigNumber = null;
   @observable isRestoreActive: boolean = false;
   @observable restoringWalletId: ?string = null;
   @observable walletsRequest: Request<Array<Wallet>> = new Request(
@@ -159,6 +162,7 @@ export default class WalletsStore extends Store {
         this.goToWalletRoute(nextWalletInList.id);
       } else {
         this.active = null;
+        this.activeValue = null;
       }
     });
     this._resumePolling();
@@ -467,6 +471,9 @@ export default class WalletsStore extends Store {
         // Active wallet has been replaced or removed
         this.stores.addresses.lastGeneratedAddress = null;
         this.active = newActiveWallet || null;
+        if (this.active) {
+          this.activeValue = formattedWalletAmount(this.active.amount);
+        }
       } else if (hasActiveWalletBeenUpdated) {
         // Active wallet has been updated
         if (this.active && newActiveWallet) this.active.update(newActiveWallet);
@@ -476,6 +483,7 @@ export default class WalletsStore extends Store {
 
   @action _unsetActiveWallet = () => {
     this.active = null;
+    this.activeValue = null;
     this.stores.addresses.lastGeneratedAddress = null;
   };
 
