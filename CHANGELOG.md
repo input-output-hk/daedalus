@@ -17,6 +17,7 @@ Changelog
 
 ### Chores
 
+- Created new submenu "Help and Support" & added under it "GPU Safe Mode", "Download Logs", "Support Request" and "Known Issues" ([PR 1382](https://github.com/input-output-hk/daedalus/pull/1382)) 
 - Added unit tests for mnemonic generation and validation ([PR 1379](https://github.com/input-output-hk/daedalus/pull/1379))
 - Simplified the test setup ([PR 1378](https://github.com/input-output-hk/daedalus/pull/1378))
 - Updated PR template ([PR 1376](https://github.com/input-output-hk/daedalus/pull/1376))
