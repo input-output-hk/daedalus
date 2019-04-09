@@ -65,6 +65,7 @@ export default class NetworkStatusStore extends Store {
   // Internal Node states
   @observable _tlsConfig: ?TlsConfig = null;
   @observable cardanoNodeState: ?CardanoNodeState = null;
+  @observable cardanoNodeID: number = 0;
   @observable isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
   @observable isNodeSubscribed = false; // Is 'true' in case node is subscribed to the network
   @observable isNodeSyncing = false; // Is 'true' in case we are receiving blocks and not stalling
@@ -218,7 +219,11 @@ export default class NetworkStatusStore extends Store {
         status,
       });
       if (status)
-        runInAction('assigning node status', () => Object.assign(this, status));
+        runInAction('assigning node status', () => {
+          const { cardanoNodeID } =  status;
+          this.cardanoNodeID = cardanoNodeID;
+          Object.assign(this, status);
+        });
     } catch (error) {
       Logger.error('NetworkStatusStore: error while requesting node state', {
         error,

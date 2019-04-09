@@ -3,7 +3,6 @@ import os from 'os';
 import { uniq, upperFirst } from 'lodash';
 import { version } from '../../package.json';
 import { stateDirectoryPath } from './config';
-// import cardanoProcessID from './index';
 import type { Environment } from '../common/types/environment.types';
 import {
   DEVELOPMENT,
@@ -81,7 +80,6 @@ export const environment: Environment = Object.assign(
     isMacOS,
     isLinux,
     stateDirectoryPath,
-    // cardanoProcessID,
   },
   process.env
 );

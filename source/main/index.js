@@ -30,7 +30,6 @@ import { version } from '../../package.json';
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
 let cardanoNode: ?CardanoNode;
-let cardanoProcessID;
 
 const CURRENT_NODE_ENV = process.env.NODE_ENV || DEVELOPMENT;
 const NETWORK = process.env.NETWORK || DEVELOPMENT;
@@ -157,8 +156,6 @@ const onAppReady = async () => {
     event.preventDefault();
     await safeExit();
   });
-
-  cardanoProcessID = cardanoNode.pid;
 
   buildAppMenus(mainWindow, cardanoNode, isInSafeMode, locale);
 
