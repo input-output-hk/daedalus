@@ -25,17 +25,17 @@ This PR CHANGES.
 - [ ] PR is updated to the most recent version of the target branch (and there are no conflicts)
 - [ ] PR has a good description that summarizes all changes and shows some screenshots or animated GIFs of important UI changes
 - [ ] CHANGELOG entry has been added to the top of the appropriate section (*Features*, *Fixes*, *Chores*) and is linked to the correct PR on GitHub
-- [ ] Automated tests: All acceptance  and unit tests are passing (`yarn run test` and `yarn run test:unit`)
-- [ ] Manual tests (minimum tests should cover newly added feature/fix): App works correctly in *development* build (`yarn run dev`)
-- [ ] Manual tests (minimum tests should cover newly added feature/fix): App works correctly in *production* build (`yarn run package` / CI builds)
-- [ ] There are no *flow* errors or warnings (`yarn run flow:test`)
-- [ ] There are no *lint* errors or warnings (`yarn run lint`)
-- [ ] There are no *prettier* errors or warnings (`yarn run prettier:check`)
-- [ ] There are no missing translations (running `yarn run manage:translations` produces no changes)
+- [ ] Automated tests: All acceptance and unit tests are passing (`yarn test`)
+- [ ] Manual tests (minimum tests should cover newly added feature/fix): App works correctly in *development* build (`yarn dev`)
+- [ ] Manual tests (minimum tests should cover newly added feature/fix): App works correctly in *production* build (`yarn package` / CI builds)
+- [ ] There are no *flow* errors or warnings (`yarn flow:test`)
+- [ ] There are no *lint* errors or warnings (`yarn lint`)
+- [ ] There are no *prettier* errors or warnings (`yarn prettier:check`)
+- [ ] There are no missing translations (running `yarn manage:translations` produces no changes)
 - [ ] Text changes are proofread and approved (Jane Wild / Amy Reeve)
 - [ ] Japanese text changes are proofread and approved (Junko Oda)
 - [ ] UI changes look good in all themes (Alexander Rukin)
-- [ ] Storybook works and no stories are broken (`yarn run storybook`)
+- [ ] Storybook works and no stories are broken (`yarn storybook`)
 - [ ] In case of dependency changes `yarn.lock` file is updated
 
 ### Code Quality

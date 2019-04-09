@@ -1,3 +1,4 @@
+@e2e
 Feature: Display Block Consolidation Page
 
   Background:

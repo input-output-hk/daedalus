@@ -1,3 +1,4 @@
+@e2e
 Feature: Node Update Notification
 
   Background:
