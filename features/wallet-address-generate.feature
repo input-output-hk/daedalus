@@ -1,3 +1,4 @@
+@e2e
 Feature: Generate Wallet Address
 
   Background:

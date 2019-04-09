@@ -1,3 +1,4 @@
+@e2e
 Feature: Trouble Connecting Notification
 
   Background:
