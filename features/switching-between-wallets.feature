@@ -1,3 +1,4 @@
+@e2e
 Feature: Switching Between Wallets
 
   Background:

@@ -1,3 +1,4 @@
+@e2e
 Feature: Add Wallet via Sidebar
 
   Background:

@@ -1,3 +1,4 @@
+@e2e
 Feature: Navigate Wallet Tabs
 
   Background:
