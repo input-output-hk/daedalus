@@ -30,7 +30,7 @@ Example:
 generates and validates mnemonics as long as you keep it 
 running (the number of executions is updated in the terminal)
 
-# Run UI tests
+# Run end-to-end tests
 
 1. Make sure Daedalus is properly installed (see above).
 2. Build and run the backend (Cardano SL) following the instructions from [Daedalus](https://github.com/input-output-hk/daedalus/blob/master/README.md#development---with-cardano-wallet) README file.
@@ -40,7 +40,7 @@ running (the number of executions is updated in the terminal)
 $ cd daedalus/
 $ yarn nix:dev XXX # XXX = cardano system startup time
 $ yarn build
-$ yarn test:ui
+$ yarn test:e2e
 ```
 
 # Run all tests
@@ -51,12 +51,12 @@ $ yarn test
 
 Once tests are complete you will get a summary of passed/failed tests in the Terminal window.
 
-## Keeping Daedalus Alive After UI Tests
+## Keeping Daedalus alive after end-to-end tests
 
 While working on the tests it's often useful to keep Daedalus alive after the tests have run 
 (e.g: to inspect the app state). You can pass a special environment var to tell the test script
 not to close the app:
 
 ````bash
-$ KEEP_APP_AFTER_TESTS=true yarn test
+$ KEEP_APP_AFTER_TESTS=true yarn test:e2e
 ````
