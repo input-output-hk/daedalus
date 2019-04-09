@@ -12,6 +12,8 @@
     background-color: var(--theme-block-consolidation-button-background-color);
     border: solid 1px var(--theme-block-consolidation-button-border-color);
     &:not(.disabled):hover {
+      border: none;
+      color: var(--theme-block-consolidation-button-text-color-hover);
       background-color: var(
         --theme-block-consolidation-button-background-color-hover
       );

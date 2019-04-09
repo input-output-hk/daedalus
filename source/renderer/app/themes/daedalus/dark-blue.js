@@ -499,6 +499,7 @@ export default {
   '--theme-block-consolidation-stripe-light-1-background-color': '#e0e5ea',
   '--theme-block-consolidation-stripe-light-2-background-color': '#fafbfc',
   '--theme-block-consolidation-button-background-color': 'rgba(0, 0, 0, 0.1)',
-  '--theme-block-consolidation-button-background-color-hover': '#667a8a',
+  '--theme-block-consolidation-button-background-color-hover': '#fafbfc',
+  '--theme-block-consolidation-button-text-color-hover': '#263345',
   '--theme-block-consolidation-button-border-color': '#fafbfc',
 };
