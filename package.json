@@ -12,6 +12,7 @@
     "test": "NODE_ENV=test yarn build && yarn test:unit && yarn test:ui",
     "test:unit": "yarn cucumber --require 'features/tests/unit/**/*.js' --tags '@unit and not @skip'",
     "test:unit:watch": "nodemon --watch source --watch features --exec \"yarn test:unit --tags '@unit and @watch'\"",
+    "test:unit:unbound": "yarn cucumber --require 'features/tests/unit/**/*.js' --tags '@unbound and not @skip'",
     "test:ui": "yarn cucumber --require 'features/tests/ui/**/*.js' --tags '@ui and not @skip'",
     "test:ui:watch": "gulp test:ui:watch",
     "cucumber": "cross-env NODE_ENV=test cucumber-js --require-module @babel/register -f node_modules/cucumber-pretty --format-options '{\"snippetInterface\": \"async-await\"}'",
