@@ -41,8 +41,11 @@
 // CHARTS STYLES
 
 .responsiveContainer {
+  margin: 30px 40px 10px 0;
+  width: auto !important;
+
   > div > svg {
-    padding: 15px 15px 15px 0;
+    overflow: visible;
   }
 }
 
@@ -53,18 +56,18 @@
 }
 
 .yAxisLabel {
-  transform: translate(10px, -21px);
   fill: var(--theme-utxo-text-color);
   font-family: var(--font-regular);
   font-size: 10px;
   line-height: 1.3;
+  transform: translate(10px, -31px);
 }
 
 .xAxisLabel {
   transform: rotate(90deg) translate(36px, 16px);
   transform-origin: right bottom;
-  text,
-  tspan {
+
+  > tspan {
     fill: var(--theme-utxo-text-color);
     font-family: var(--font-regular);
     font-size: 10px;

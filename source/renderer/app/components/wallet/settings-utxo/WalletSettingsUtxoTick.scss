@@ -1,14 +1,14 @@
 .component {
   text {
+    font-family: var(--font-regular);
     font-size: 10px;
     font-weight: 100;
     stroke: var(--theme-utxo-tick-text-color);
-    font-family: var(--font-regular);
   }
 }
 
 .vertical {
   text {
-    transform: rotate(90deg);
+    transform: rotate(90deg) translate(0, 4px);
   }
 }
