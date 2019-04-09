@@ -17,5 +17,5 @@ export const NETWORK_STATUS_POLL_INTERVAL = 2000; // 2 seconds | unit: milliseco
 export const NTP_IGNORE_CHECKS_GRACE_PERIOD = isTest ? 500 : 35 * 1000; // 35 seconds | unit: milliseconds
 export const BLOCK_CONSOLIDATION_IPC_REQUEST_INTERVAL = 10 * 1000; // 10 seconds | unit: milliseconds
 export const BLOCK_CONSOLIDATION_API_REQUEST_INTERVAL = 30 * 1000; // 30 seconds | unit: milliseconds
-export const WALLET_UTXO_API_REQUEST_INTERVAL = 10 * 1000; // 10 seconds | unit: milliseconds
+export const WALLET_UTXO_API_REQUEST_INTERVAL = 5 * 1000; // 5 seconds | unit: milliseconds
 /* eslint-disable max-len */
