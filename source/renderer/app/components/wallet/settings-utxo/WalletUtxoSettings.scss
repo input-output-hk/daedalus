@@ -33,7 +33,7 @@
 
   :global {
     .recharts-cartesian-grid-bg {
-      fill: var(--theme-utxo-backgroune-color);
+      fill: var(--theme-utxo-background-color);
     }
   }
 }
@@ -56,7 +56,7 @@
 }
 
 .yAxisLabel {
-  fill: var(--theme-utxo-text-color);
+  fill: var(--theme-utxo-label-text-color);
   font-family: var(--font-regular);
   font-size: 10px;
   line-height: 1.3;
@@ -68,7 +68,7 @@
   transform-origin: right bottom;
 
   > tspan {
-    fill: var(--theme-utxo-text-color);
+    fill: var(--theme-utxo-label-text-color);
     font-family: var(--font-regular);
     font-size: 10px;
     line-height: 1.3;
