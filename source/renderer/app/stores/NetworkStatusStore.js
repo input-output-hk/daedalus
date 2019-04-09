@@ -220,7 +220,7 @@ export default class NetworkStatusStore extends Store {
       });
       if (status)
         runInAction('assigning node status', () => {
-          const { cardanoNodeID } =  status;
+          const { cardanoNodeID } = status;
           this.cardanoNodeID = cardanoNodeID;
           Object.assign(this, status);
         });
@@ -295,6 +295,7 @@ export default class NetworkStatusStore extends Store {
       isNodeSyncing,
       isNodeInSync,
       hasBeenConnected,
+      cardanoNodeID,
     } = from;
 
     return {
@@ -303,6 +304,7 @@ export default class NetworkStatusStore extends Store {
       isNodeSyncing,
       isNodeInSync,
       hasBeenConnected,
+      cardanoNodeID,
     };
   };
 

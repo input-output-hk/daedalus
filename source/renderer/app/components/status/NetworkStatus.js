@@ -190,7 +190,7 @@ export default class NetworkStatus extends Component<Props, State> {
       platformVersion,
       cpu,
       ram,
-      availableDiskSpace
+      availableDiskSpace,
     } = systemInfo;
 
     const {

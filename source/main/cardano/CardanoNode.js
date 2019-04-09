@@ -185,7 +185,9 @@ export class CardanoNode {
    * @returns {CardanoStatus}
    */
   get status(): ?CardanoStatus {
-    return Object.assign({}, this._status, { cardanoNodeID: this._node.pid });
+    return Object.assign({}, this._status, {
+      cardanoNodeID: this._node ? this._node.pid : 0,
+    });
   }
 
   /**

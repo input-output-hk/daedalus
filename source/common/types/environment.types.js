@@ -20,7 +20,7 @@ export type Environment = {
   processID: string,
   os: string,
   cpu: string,
-  ram: string,
+  ram: number,
   installerVersion: string,
   version: string,
   isWindows: boolean,

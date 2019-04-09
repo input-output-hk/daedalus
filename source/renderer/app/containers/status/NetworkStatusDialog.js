@@ -53,7 +53,7 @@ export default class NetworkStatusDialog extends Component<Props> {
     const systemInfo = {
       platform: environment.os,
       platformVersion: os.release(),
-      cpu: environment.cpu[0].model,
+      cpu: Array.isArray(environment.cpu) ? environment.cpu[0].model : '',
       ram: this.convertBytesToSize(environment.ram),
       availableDiskSpace: diskSpaceAvailable,
     };
@@ -64,7 +64,7 @@ export default class NetworkStatusDialog extends Component<Props> {
       isInSafeMode: includes(process.argv.slice(1), '--safe-mode'),
       cardanoVersion: environment.buildNumber,
       cardanoProcessID: cardanoNodeID,
-      cardanoAPIPort: _tlsConfig.port,
+      cardanoAPIPort: _tlsConfig ? _tlsConfig.port : '',
       cardanoNetwork: environment.network,
       daedalusStateDirectory: environment.stateDirectoryPath,
     };
@@ -116,11 +116,14 @@ export default class NetworkStatusDialog extends Component<Props> {
     );
   }
 
-  convertBytesToSize = (bytes) => {
+  convertBytesToSize = (bytes: number): string => {
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
     if (bytes === 0) return 'n/a';
-    const i = parseInt(Math.floor(Math.log(Math.abs(bytes)) / Math.log(1024)), 10);
+    const i = parseInt(
+      Math.floor(Math.log(Math.abs(bytes)) / Math.log(1024)),
+      10
+    );
     if (i === 0) return `${bytes} ${sizes[i]})`;
-    return `${(bytes / (1024 ** i)).toFixed(1)} ${sizes[i]}`;
+    return `${(bytes / 1024 ** i).toFixed(1)} ${sizes[i]}`;
   };
 }
