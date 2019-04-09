@@ -209,7 +209,7 @@ const rpLightBlueTheme = {
 };
 
 //  ==== Theme: Light blue === //
-export const LIGHT_BLUE_DAEDALUS_CONFIG = {
+export const LIGHT_BLUE_THEME_CONFIG = {
   // moved to createTheme
   reactPolymorph: {
     ...rpLightBlueTheme,
