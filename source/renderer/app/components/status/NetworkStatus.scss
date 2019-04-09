@@ -11,6 +11,10 @@
   overflow: hidden;
   padding: 50px 30px;
   width: 100%;
+
+  @media (max-height: 740px) {
+    overflow-y: auto;
+  }
 }
 
 .tables {
