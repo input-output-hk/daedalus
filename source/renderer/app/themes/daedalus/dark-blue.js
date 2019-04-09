@@ -1,57 +1,7 @@
-/* eslint-disable no-unused-vars */
 // @flow
-import type { ThemeColors, ThemeFonts } from '../types';
-
-const DARK_BLUE_THEME: {
-  colors: ThemeColors,
-  fonts: ThemeFonts,
-} = {
-  colors: {
-    error: {
-      dark: '#d34452',
-      light: '#ec5d6b',
-      regular: '#ea4c5b',
-      ultralight: '#fac8ce',
-    },
-    primary: {
-      active: '#495863',
-      background: '#263345',
-      border: 'rgba(102, 122, 138, 0.3)',
-      disabled: 'rgba(233, 244, 254, 0.5)',
-      focus: '#667a8a',
-      hover: '#667a8a',
-      outline: 'rgba(102,122,138, 0.3)',
-      placeholder: '#8793a1',
-      text: '#e9f4fe',
-    },
-    secondary: {
-      active: '#495863',
-      background: '#536370',
-      border: 'rgba(250, 251, 252, .3)',
-      disabled: 'rgba(135, 147, 161, 0.1)',
-      focus: '#667a8a',
-      hover: '#667a8a',
-      outline: 'rgba(250, 251, 252, .3)',
-      placeholder: '#e9f4fe',
-      text: '#fafbfc',
-    },
-  },
-  fonts: {
-    black: 'NotoSans-Black, NotoSansCJKjp-Black',
-    bold: 'NotoSans-Bold, NotoSansCJKjp-Bold',
-    heavy: 'NotoSans-ExtraBold, NotoSansCJKjp-Black',
-    light: 'NotoSans-Light, NotoSansCJKjp-Light',
-    medium: 'NotoSans-Medium, NotoSansCJKjp-Medium',
-    mono: 'SFMono-Light',
-    regular: 'NotoSans-Regular, NotoSansCJKjp-Regular',
-    semibold: 'NotoSans-SemiBold, NotoSansCJKjp-Medium',
-    thin: 'NotoSans-Thin, NotoSansCJKjp-Thin',
-    ultralight: 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
-  },
-};
+import type { CreateThemeParams } from '../types';
 
 //  ==== react-polymorph: theme config === //
-
 // AUTOCOMPLETE
 const rpAutocomplete = {
   '--rp-autocomplete-bg-color': '#263345',
@@ -209,6 +159,7 @@ const rpDarkBlueTheme = {
   ...rpTextArea,
 };
 
+//  ==== Dark Blue Theme for Daedalus Components === //
 export const DARK_BLUE_THEME_CONFIG = {
   reactPolymorph: {
     ...rpDarkBlueTheme,
@@ -522,7 +473,6 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-loading-no-disk-space-background-color': 'rgba(171, 23, 0, 0.94)',
     '--theme-loading-no-disk-space-text-color': '#fafbfc',
     '--theme-loading-no-disk-space-attention-icon-color': '#fafbfc',
-
     '--theme-loading-status-icons-on-color': '#2dc06c',
     '--theme-loading-status-icons-off-color': '#ea4c5b',
     '--theme-loading-status-icons-unloaded-loading-color': '#fafbfc',
@@ -563,4 +513,50 @@ export const DARK_BLUE_THEME_CONFIG = {
   errors: {
     '--theme-color-error': '#ea4c5b',
   },
+};
+
+export const DARK_BLUE_THEME_PARAMS: CreateThemeParams = {
+  colors: {
+    error: {
+      dark: '#d34452',
+      light: '#ec5d6b',
+      regular: '#ea4c5b',
+      ultralight: '#fac8ce',
+    },
+    primary: {
+      active: '#495863',
+      background: '#263345',
+      border: 'rgba(102, 122, 138, 0.3)',
+      disabled: 'rgba(233, 244, 254, 0.5)',
+      focus: '#667a8a',
+      hover: '#667a8a',
+      outline: 'rgba(102,122,138, 0.3)',
+      placeholder: '#8793a1',
+      text: '#e9f4fe',
+    },
+    secondary: {
+      active: '#495863',
+      background: '#536370',
+      border: 'rgba(250, 251, 252, .3)',
+      disabled: 'rgba(135, 147, 161, 0.1)',
+      focus: '#667a8a',
+      hover: '#667a8a',
+      outline: 'rgba(250, 251, 252, .3)',
+      placeholder: '#e9f4fe',
+      text: '#fafbfc',
+    },
+  },
+  fonts: {
+    black: 'NotoSans-Black, NotoSansCJKjp-Black',
+    bold: 'NotoSans-Bold, NotoSansCJKjp-Bold',
+    heavy: 'NotoSans-ExtraBold, NotoSansCJKjp-Black',
+    light: 'NotoSans-Light, NotoSansCJKjp-Light',
+    medium: 'NotoSans-Medium, NotoSansCJKjp-Medium',
+    mono: 'SFMono-Light',
+    regular: 'NotoSans-Regular, NotoSansCJKjp-Regular',
+    semibold: 'NotoSans-SemiBold, NotoSansCJKjp-Medium',
+    thin: 'NotoSans-Thin, NotoSansCJKjp-Thin',
+    ultralight: 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
+  },
+  config: DARK_BLUE_THEME_CONFIG,
 };
