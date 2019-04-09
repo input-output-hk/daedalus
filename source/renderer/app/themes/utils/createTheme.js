@@ -1,18 +1,18 @@
 // @flow
-/* eslint-disable no-unused-vars */
+import { isEmpty } from 'lodash';
 import type { ThemeColors, ThemeFonts, CreateThemeParams } from '../types';
 
-const createReactPolymorphTheme = ({
-  colors,
-  fonts,
-}: {
+type CreateThemePartial = {
   colors: ThemeColors,
   fonts: ThemeFonts,
-}): Object => {
-  // deconstruct colors
+};
+
+const createReactPolymorphTheme = (themeParts: CreateThemePartial): Object => {
+  // deconstruct colors & fonts
+  const { colors, fonts } = themeParts;
   const { primary, secondary, error } = colors;
 
-  // create all react-polymorph css vars
+  // assign all react-polymorph CSS variables
   return {
     autocomplete: {
       '--rp-autocomplete-bg-color': `${primary.background}`,
@@ -130,17 +130,14 @@ const createReactPolymorphTheme = ({
   };
 };
 
-const createDaedalusTheme = ({
-  colors,
-  fonts,
-}: {
-  colors: ThemeColors,
-  fonts: ThemeFonts,
-}): Object => {
-  // deconstruct colors
+const createDaedalusComponentsTheme = (
+  themeParts: CreateThemePartial
+): Object => {
+  // deconstruct colors & fonts
+  const { colors, fonts } = themeParts;
   const { primary, secondary, error } = colors;
 
-  // create all daedalus css vars
+  // assign most Daedalus CSS variables
   return {
     fonts: {
       '--font-ultralight': `${fonts.ultralight}`,
@@ -173,17 +170,23 @@ const createDaedalusTheme = ({
     input: {
       '--theme-input-hint-font': `${fonts.regular}`,
     },
+    errors: {
+      '--theme-color-error': `${error.regular}`,
+    },
   };
 };
 
-export const createTheme = ({
-  colors,
-  fonts,
-  config,
-}: CreateThemeParams): Object => {
-  // create react-polymorph & daedalus themes
-  const rpTheme = createReactPolymorphTheme({ colors, fonts });
-  const daedalusTheme = createDaedalusTheme({ colors, fonts });
-
-  // TODO: Use colors and fonts to create all css vars for daedalus components
+export const createTheme = (fullThemeParts: CreateThemeParams): Object => {
+  const { colors, config, fonts } = fullThemeParts;
+  // create react-polymorph & daedalus theme, combine into a theme object
+  let daedalusTheme = {
+    ...createReactPolymorphTheme({ colors, fonts }),
+    ...createDaedalusComponentsTheme({ colors, fonts }),
+  };
+  // if user passed theme config, compose with theme object and return
+  if (config && !isEmpty(config)) {
+    daedalusTheme = { ...daedalusTheme, ...config };
+  }
+  // no theme config, return theme object
+  return daedalusTheme;
 };
