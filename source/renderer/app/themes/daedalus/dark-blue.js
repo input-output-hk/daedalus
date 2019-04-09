@@ -481,8 +481,8 @@ export default {
 
   '--theme-block-consolidation-background-color': '#ebeff2',
   '--theme-block-consolidation-container-background-color': '#fafbfc',
-  '--theme-block-consolidation-title-text-color': '#e9f4fe',
-  '--theme-block-consolidation-text-color': 'rgba(233, 244, 254, 0.7)',
+  '--theme-block-consolidation-title-text-color': '#5e6066',
+  '--theme-block-consolidation-text-color': 'rgba(94, 96, 102, 0.7)',
   '--theme-block-consolidation-text-link-color': '#296fd0',
   '--theme-block-consolidation-indicator-container-background-color': '#ebeff2',
   '--theme-block-consolidation-stripe-dark-1-background-color': '#1d3e65',
