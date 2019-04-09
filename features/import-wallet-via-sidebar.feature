@@ -1,3 +1,4 @@
+@e2e
 Feature: Import Wallet via Sidebar
 
   Background:

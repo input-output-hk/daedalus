@@ -1,3 +1,4 @@
+@e2e
 Feature: Navigate Sidebar Categories
 
   Background:

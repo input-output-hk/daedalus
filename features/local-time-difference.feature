@@ -1,3 +1,4 @@
+@e2e
 Feature: Local Time Difference
 
   Scenario: Wrong local time
