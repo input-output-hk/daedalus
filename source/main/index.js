@@ -2,13 +2,14 @@
 import os from 'os';
 import { app, BrowserWindow, shell } from 'electron';
 import { client } from 'electron-connect';
-import { includes, uniq } from 'lodash';
+import { includes } from 'lodash';
 import { Logger } from './utils/logging';
 import { setupLogging, logSystemInfo } from './utils/setupLogging';
 import { getNumberOfEpochsConsolidated } from './utils/getNumberOfEpochsConsolidated';
 import { handleDiskSpace } from './utils/handleDiskSpace';
 import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
+import { environment } from './environment';
 import mainErrorHandler from './utils/mainErrorHandler';
 import { launcherConfig, frontendOnlyMode } from './config';
 import { setupCardano } from './cardano/setup';
@@ -22,8 +23,6 @@ import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
 import { detectSystemLocaleChannel } from './ipc/detect-system-locale';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
-import { DEVELOPMENT, OS_NAMES } from '../common/types/environment.types';
-import { version } from '../../package.json';
 
 /* eslint-disable consistent-return */
 
@@ -31,19 +30,15 @@ import { version } from '../../package.json';
 let mainWindow: BrowserWindow;
 let cardanoNode: ?CardanoNode;
 
-const CURRENT_NODE_ENV = process.env.NODE_ENV || DEVELOPMENT;
-const NETWORK = process.env.NETWORK || DEVELOPMENT;
-const BUILD = process.env.BUILD_NUMBER || 'dev';
-const API_VERSION = process.env.API_VERSION || 'dev';
-const PLATFORM = os.platform();
-
-const isDev = CURRENT_NODE_ENV === DEVELOPMENT;
-const isWatchMode = process.env.IS_WATCH_MODE;
-const network = NETWORK;
-const current = CURRENT_NODE_ENV;
-const osName = OS_NAMES[PLATFORM] || PLATFORM;
-const daedalusVersion = version;
-const cardanoVersion = uniq([API_VERSION, BUILD]).join('.');
+const {
+  isDev,
+  isWatchMode,
+  network,
+  current,
+  os: osName,
+  version: daedalusVersion,
+  buildNumber: cardanoVersion,
+} = environment;
 
 const safeExit = async () => {
   if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
