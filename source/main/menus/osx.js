@@ -30,18 +30,6 @@ export const osxMenu = (
         },
       },
       {
-        label: translation('daedalus.gpuSafeMode'),
-        type: 'checkbox',
-        checked: isInSafeMode,
-        click() {
-          if (isInSafeMode) {
-            actions.restartWithoutSafeMode();
-          } else {
-            actions.restartInSafeMode();
-          }
-        },
-      },
-      {
         label: translation('daedalus.blockConsolidationStatus'),
         accelerator: 'Command+B',
         click() {
