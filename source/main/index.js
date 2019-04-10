@@ -86,7 +86,7 @@ const onAppReady = async () => {
     startTime,
   });
 
-  Logger.info(`========== Daedalus is starting at ${startTime} ==========`);
+  Logger.info(`Daedalus is starting at ${startTime}`, { startTime });
 
   Logger.info('Updating System-info.json file', { ...systemInfo.data });
 

@@ -381,9 +381,10 @@ export default class NetworkStatusStore extends Store {
       ) {
         // We are connected for the first time, move on to syncing stage
         this._networkStatus = NETWORK_STATUS.SYNCING;
-        Logger.info(
-          `========== Connected after ${this._getStartupTimeDelta()} milliseconds ==========`
-        );
+        const connectingTimeDelta = this._getStartupTimeDelta();
+        Logger.info(`Connected after ${connectingTimeDelta} milliseconds`, {
+          connectingTimeDelta,
+        });
       }
 
       // Update sync progress
@@ -490,9 +491,10 @@ export default class NetworkStatusStore extends Store {
         // We are synced for the first time, move on to running stage
         this._networkStatus = NETWORK_STATUS.RUNNING;
         this.actions.networkStatus.isSyncedAndReady.trigger();
-        Logger.info(
-          `========== Synced after ${this._getStartupTimeDelta()} milliseconds ==========`
-        );
+        const syncingTimeDelta = this._getStartupTimeDelta();
+        Logger.info(`Synced after ${syncingTimeDelta} milliseconds`, {
+          syncingTimeDelta,
+        });
       }
 
       if (wasConnected !== this.isConnected) {

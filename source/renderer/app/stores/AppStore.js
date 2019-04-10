@@ -83,7 +83,7 @@ export default class AppStore extends Store {
     return Promise.resolve();
   };
 
-  @computed get isBlockConsolidationStatusPage(): boolean {
+  @computed get isBlockConsolidationStatusDialog(): boolean {
     return this.currentRoute === ROUTES.BLOCK_CONSOLIDATION_STATUS;
   }
 
@@ -147,7 +147,7 @@ export default class AppStore extends Store {
   };
 
   @action _toggleBlockConsolidationStatusScreen = () => {
-    const route = this.isBlockConsolidationStatusPage
+    const route = this.isBlockConsolidationStatusDialog
       ? this.previousRoute
       : ROUTES.BLOCK_CONSOLIDATION_STATUS;
     this._updateRouteLocation({ route });
