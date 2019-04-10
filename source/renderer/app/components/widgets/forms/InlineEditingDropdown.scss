@@ -19,6 +19,9 @@
     width: 14px;
     margin-left: 6px;
     transform: translateY(1px);
+    path {
+      fill: var(--theme-input-icon-background-color);
+    }
   }
 
   .savingResultLabel {

@@ -263,6 +263,7 @@ export default {
   '--theme-input-disabled-background-color': 'rgba(135, 147, 161, 0.1)',
   '--theme-input-disabled-border-color': 'rgba(135, 147, 161, 0.1)',
   '--theme-input-focus-border-color': '#667a8a',
+  '--theme-input-icon-background-color': '#FFFFFF',
 
   '--theme-main-body-background-color': '#0b1926',
   '--theme-main-body-messages-color': '#e9f4fe',
