@@ -1,23 +1,37 @@
 .component {
   background-color: var(--theme-block-consolidation-background-color);
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
   overflow: hidden;
   position: relative;
   width: 100%;
   z-index: 20;
+
+  .learnMoreButton {
+    background-color: var(--theme-block-consolidation-button-background-color);
+    border: solid 1px var(--theme-block-consolidation-button-border-color);
+    &:not(.disabled):hover {
+      border: none;
+      color: var(--theme-block-consolidation-button-text-color-hover);
+      background-color: var(
+        --theme-block-consolidation-button-background-color-hover
+      );
+    }
+  }
 }
 
 .container {
+  display: flex;
+  flex-direction: column;
   flex: 1;
+  justify-content: center;
   overflow-x: hidden;
   overflow-y: overlay;
   position: relative;
 }
 
 .content {
-  background-color: var(--theme-block-consolidation-container-background-color);
   border-radius: 4px;
   font-family: var(--font-regular);
   margin: 20px;
@@ -35,12 +49,6 @@
     color: var(--theme-block-consolidation-text-color);
     font-size: 16px;
   }
-
-  a {
-    border-bottom: 1px solid var(--theme-block-consolidation-text-link-color);
-    color: var(--theme-block-consolidation-text-link-color);
-    text-decoration: none;
-  }
 }
 .description {
   line-height: 1.38;
@@ -49,6 +57,7 @@
 
   b {
     font-family: var(--font-medium);
+    color: var(--theme-block-consolidation-text-highlight-color);
   }
 
   &:last-of-type {
@@ -68,7 +77,7 @@
   width: 620px;
 
   p {
-    color: white;
+    color: var(--theme-block-consolidation-epochs-text-color);
     font-size: 14px;
     line-height: 1.29;
     position: absolute;
@@ -103,6 +112,7 @@
 
   p {
     font-size: 14px;
+    color: var(--theme-block-consolidation-indicator-text-color);
   }
 }
 
@@ -119,10 +129,10 @@
 .indicatorContainerNoCurrentEpochs {
   background: repeating-linear-gradient(
     -44.46deg,
-    var(--theme-block-consolidation-stripe-light-1-background-color),
-    var(--theme-block-consolidation-stripe-light-1-background-color) 10px,
-    var(--theme-block-consolidation-stripe-light-2-background-color) 10px,
-    var(--theme-block-consolidation-stripe-light-2-background-color) 20px
+    var(--theme-block-consolidation-stripe-dark-1-background-color),
+    var(--theme-block-consolidation-stripe-dark-1-background-color) 10px,
+    var(--theme-block-consolidation-stripe-dark-2-background-color) 10px,
+    var(--theme-block-consolidation-stripe-dark-2-background-color) 20px
   );
   animation: indicatorContainerNoCurrentEpochs 0.5s linear infinite;
 }
@@ -130,10 +140,10 @@
 .indicatorEpochsSynced {
   background: repeating-linear-gradient(
     -63deg,
-    var(--theme-block-consolidation-stripe-light-1-background-color),
-    var(--theme-block-consolidation-stripe-light-1-background-color) 20px,
-    var(--theme-block-consolidation-stripe-light-2-background-color) 10px,
-    var(--theme-block-consolidation-stripe-light-2-background-color) 20px
+    var(--theme-block-consolidation-stripe-dark-1-background-color),
+    var(--theme-block-consolidation-stripe-dark-1-background-color) 10px,
+    var(--theme-block-consolidation-stripe-dark-2-background-color) 10px,
+    var(--theme-block-consolidation-stripe-dark-2-background-color) 20px
   );
   border-radius: 5px;
   height: 24px;
@@ -156,10 +166,10 @@
 .indicatorEpochsConsolidated {
   background: repeating-linear-gradient(
     -63deg,
-    var(--theme-block-consolidation-stripe-dark-1-background-color),
-    var(--theme-block-consolidation-stripe-dark-1-background-color) 10px,
-    var(--theme-block-consolidation-stripe-dark-2-background-color) 10px,
-    var(--theme-block-consolidation-stripe-dark-2-background-color) 20px
+    var(--theme-block-consolidation-stripe-light-1-background-color),
+    var(--theme-block-consolidation-stripe-light-1-background-color) 10px,
+    var(--theme-block-consolidation-stripe-light-2-background-color) 10px,
+    var(--theme-block-consolidation-stripe-light-2-background-color) 20px
   );
   border-radius: 5px;
   height: 24px;
@@ -192,15 +202,17 @@
 }
 
 .indicatorEpochsBehind {
-  border-color: transparent transparent #445b7c transparent;
-  border-style: solid;
-  border-width: 0 0 47px 1px;
   bottom: 0;
-  height: 0;
+  height: 47px;
   position: absolute;
   right: 80px;
-  width: 0;
+  width: 1px;
   z-index: 1;
+  background: linear-gradient(
+    to top,
+    var(--theme-block-consolidation-indicator-epochs-behind-background-color-1),
+    var(--theme-block-consolidation-indicator-epochs-behind-background-color-2)
+  );
 
   p {
     left: 8px;
@@ -208,6 +220,36 @@
     position: absolute;
     top: 0;
     white-space: nowrap;
+  }
+}
+
+.closeButton {
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-end;
+  position: fixed;
+  right: 15px;
+  top: 15px;
+  z-index: 1;
+
+  span {
+    height: 44px;
+    width: 44px;
+
+    &:hover {
+      border-radius: 50%;
+      background-color: var(--theme-about-window-icon-close-hover-background);
+    }
+  }
+
+  svg {
+    height: 12px;
+    margin-top: 16px;
+    width: 12px;
+
+    polygon {
+      fill: var(--theme-about-window-icon-close-button-color);
+    }
   }
 }
 
