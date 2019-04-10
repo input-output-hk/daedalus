@@ -14,6 +14,13 @@
     }
   }
 
+  .questionMarkIcon {
+    height: 14px;
+    width: 14px;
+    margin-left: 6px;
+    transform: translateY(1px);
+  }
+
   .savingResultLabel {
     animation: animateSavingResultLabel 3s;
     color: var(--theme-input-right-floating-text-color);
@@ -23,6 +30,12 @@
     position: absolute;
     right: 0;
     text-align: right;
-    top: 0;
+    top: 5px;
+  }
+
+  :global {
+    .SimpleFormField_label {
+      display: flex;
+    }
   }
 }

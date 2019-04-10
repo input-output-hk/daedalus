@@ -3912,17 +3912,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Transaction assurance security level",
+        "defaultMessage": "!!!Security",
         "description": "Label for the \"Transaction assurance security level\" dropdown.",
         "end": {
           "column": 3,
           "line": 30
         },
         "file": "source/renderer/app/components/wallet/settings-general/WalletGeneralSettings.js",
-        "id": "wallet.settings.general.assurance",
+        "id": "wallet.settings.general.assuranceLabel",
         "start": {
           "column": 23,
           "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Transaction assurance security level",
+        "description": "Tooltip for the \"Transaction assurance security level\" dropdown.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/wallet/settings-general/WalletGeneralSettings.js",
+        "id": "wallet.settings.general.assuranceTooltip",
+        "start": {
+          "column": 25,
+          "line": 31
         }
       },
       {
@@ -3930,13 +3944,13 @@
         "description": "Label for the \"Password\" field.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/settings-general/WalletGeneralSettings.js",
         "id": "wallet.settings.general.password",
         "start": {
           "column": 17,
-          "line": 31
+          "line": 37
         }
       },
       {
@@ -3944,13 +3958,13 @@
         "description": "Last updated X time ago message.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/settings-general/WalletGeneralSettings.js",
         "id": "wallet.settings.general.passwordLastUpdated",
         "start": {
           "column": 23,
-          "line": 36
+          "line": 42
         }
       },
       {
@@ -3958,13 +3972,13 @@
         "description": "You still don't have password set message.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/settings-general/WalletGeneralSettings.js",
         "id": "wallet.settings.general.passwordNotSet",
         "start": {
           "column": 18,
-          "line": 41
+          "line": 47
         }
       },
       {
@@ -3972,13 +3986,13 @@
         "description": "Label for the export button on wallet settings.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 56
         },
         "file": "source/renderer/app/components/wallet/settings-general/WalletGeneralSettings.js",
         "id": "wallet.settings.general.exportWalletButtonLabel",
         "start": {
           "column": 21,
-          "line": 46
+          "line": 52
         }
       }
     ],
@@ -5400,13 +5414,13 @@
         "description": "Message \"Your changes have been saved\" for inline editing (eg. on Wallet Settings page).",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 22
         },
         "file": "source/renderer/app/components/widgets/forms/InlineEditingDropdown.js",
         "id": "inline.editing.dropdown.changesSaved",
         "start": {
           "column": 16,
-          "line": 11
+          "line": 17
         }
       }
     ],

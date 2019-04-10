@@ -17,7 +17,7 @@
   }
 
   .button {
-    bottom: 14px;
+    top: 0;
     color: var(--theme-label-button-color);
     cursor: pointer;
     font-family: var(--font-light);
@@ -25,7 +25,7 @@
     line-height: 1.38;
     opacity: 0.5;
     position: absolute;
-    right: 22px;
+    right: 0;
     text-transform: lowercase;
     &:hover {
       opacity: 1;

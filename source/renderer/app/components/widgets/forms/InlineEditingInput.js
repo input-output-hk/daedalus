@@ -184,7 +184,7 @@ export default class InlineEditingInput extends Component<Props, State> {
           </button>
         )}
 
-        {successfullyUpdated && (
+        {successfullyUpdated && !isActive && (
           <div className={styles.savingResultLabel}>
             {intl.formatMessage(messages.changesSaved)}
           </div>

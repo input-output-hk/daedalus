@@ -23,10 +23,16 @@ export const messages = defineMessages({
     description: 'Label for the "Name" text input on the wallet settings page.',
   },
   assuranceLevelLabel: {
-    id: 'wallet.settings.general.assurance',
-    defaultMessage: '!!!Transaction assurance security level',
+    id: 'wallet.settings.general.assuranceLabel',
+    defaultMessage: '!!!Security',
     description:
       'Label for the "Transaction assurance security level" dropdown.',
+  },
+  assuranceLevelTooltip: {
+    id: 'wallet.settings.general.assuranceTooltip',
+    defaultMessage: '!!!Transaction assurance security level',
+    description:
+      'Tooltip for the "Transaction assurance security level" dropdown.',
   },
   passwordLabel: {
     id: 'wallet.settings.general.password',
@@ -150,6 +156,7 @@ export default class WalletGeneralSettings extends Component<Props> {
           <InlineEditingDropdown
             className="walletAssuranceLevel"
             label={intl.formatMessage(messages.assuranceLevelLabel)}
+            tooltip={intl.formatMessage(messages.assuranceLevelTooltip)}
             options={assuranceLevelOptions}
             value={walletAssurance}
             isActive={activeField === 'assurance'}
