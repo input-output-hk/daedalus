@@ -479,14 +479,27 @@ export default {
   '--theme-progress-bar-background-color': 'rgba(233, 244, 254, 0.3)',
   '--theme-progress-bar-foreground-color': 'rgba(233, 244, 254, 0.7)',
 
-  '--theme-block-consolidation-background-color': '#ebeff2',
+  '--theme-block-consolidation-background-color': 'rgba(38, 51, 69, 0.96)',
   '--theme-block-consolidation-container-background-color': '#fafbfc',
-  '--theme-block-consolidation-title-text-color': '#5e6066',
-  '--theme-block-consolidation-text-color': 'rgba(94, 96, 102, 0.7)',
-  '--theme-block-consolidation-text-link-color': '#296fd0',
-  '--theme-block-consolidation-indicator-container-background-color': '#ebeff2',
-  '--theme-block-consolidation-stripe-dark-1-background-color': '#1d3e65',
-  '--theme-block-consolidation-stripe-dark-2-background-color': '#3e5b7f',
-  '--theme-block-consolidation-stripe-light-1-background-color': '#8497ac',
-  '--theme-block-consolidation-stripe-light-2-background-color': '#95a5b9',
+  '--theme-block-consolidation-title-text-color': '#fafbfc',
+  '--theme-block-consolidation-text-color': 'rgba(250, 251, 252, 0.7)',
+  '--theme-block-consolidation-text-highlight-color': '#fafbfc',
+  '--theme-block-consolidation-epochs-text-color': '#263345',
+  '--theme-block-consolidation-indicator-text-color': '#fafbfc',
+  '--theme-block-consolidation-indicator-container-background-color':
+    'rgba(0, 0, 0, 0.1)',
+  '--theme-block-consolidation-indicator-epochs-behind-background-color-1':
+    '#fafbfc',
+  '--theme-block-consolidation-indicator-epochs-behind-background-color-2':
+    'rgba(250, 251, 252, 0)',
+  '--theme-block-consolidation-stripe-dark-1-background-color':
+    'rgba(224, 229, 234, 0.3)',
+  '--theme-block-consolidation-stripe-dark-2-background-color':
+    'rgba(250, 251, 252, 0.3)',
+  '--theme-block-consolidation-stripe-light-1-background-color': '#e0e5ea',
+  '--theme-block-consolidation-stripe-light-2-background-color': '#fafbfc',
+  '--theme-block-consolidation-button-background-color': 'rgba(0, 0, 0, 0.1)',
+  '--theme-block-consolidation-button-background-color-hover': '#fafbfc',
+  '--theme-block-consolidation-button-text-color-hover': '#263345',
+  '--theme-block-consolidation-button-border-color': '#fafbfc',
 };
