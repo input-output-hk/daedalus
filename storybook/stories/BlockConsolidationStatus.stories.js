@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, number } from '@storybook/addon-knobs';
+import { withKnobs, number, boolean } from '@storybook/addon-knobs';
 
 // Assets and helpers
 import StoryDecorator from './support/StoryDecorator';
@@ -27,7 +27,6 @@ storiesOf('BlockConsolidationStatus', module)
         max: currentEpoch - 2,
         step: 1,
       })}
-      currentEpoch={currentEpoch}
       epochsSynced={number('Epochs Synced', 80, {
         range: true,
         min: 0,
@@ -35,5 +34,6 @@ storiesOf('BlockConsolidationStatus', module)
         step: 1,
       })}
       onClose={() => {}}
+      currentEpoch={boolean('Has `currentEpoch`', true) ? currentEpoch : 0}
     />
   ));
