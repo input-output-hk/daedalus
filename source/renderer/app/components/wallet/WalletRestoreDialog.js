@@ -11,7 +11,9 @@ import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import { defineMessages, intlShape } from 'react-intl';
-import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
+import ReactToolboxMobxForm, {
+  handleFormErrors,
+} from '../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import Dialog from '../widgets/Dialog';
 import {
@@ -294,7 +296,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
         onSubmit(walletData);
       },
-      onError: () => {},
+      onError: handleFormErrors,
     });
   };
 
