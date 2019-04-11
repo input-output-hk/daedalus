@@ -1,5 +1,6 @@
 // @flow
 import type { App, BrowserWindow } from 'electron';
+import { dialog } from 'electron';
 import { compact } from 'lodash';
 import type { MenuActions } from './MenuActions.types';
 import { getTranslation } from '../utils/getTranslation';
@@ -118,27 +119,30 @@ export const osxMenu = (
         type: 'checkbox',
         checked: isInSafeMode,
         click() {
-          if (isInSafeMode) {
-            actions.restartWithoutSafeMode();
-          } else {
-            actions.restartInSafeMode();
-          }
+          const gpuSafeModeDialogOptions = {
+            buttons: ['Yes', 'No'],
+            message: 'Do you want to restart the application in GPU Safe Mode?',
+          };
+          dialog.showMessageBox(window, gpuSafeModeDialogOptions, () => {
+            if (isInSafeMode) {
+              actions.restartWithoutSafeMode();
+            } else {
+              actions.restartInSafeMode();
+            }
+          });
         },
       },
       {
         label: translation('helpSupport.downloadLogs'),
-        click() {
-        },
+        click() {},
       },
       {
         label: translation('helpSupport.supportRequest'),
-        click() {
-        },
+        click() {},
       },
       {
         label: translation('helpSupport.knownIssues'),
-        click() {
-        },
+        click() {},
       },
     ]),
   },
