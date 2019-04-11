@@ -120,11 +120,18 @@ export const osxMenu = (
         checked: isInSafeMode,
         click(item) {
           const gpuSafeModeDialogOptions = {
-            buttons: [translation('helpSupport.gpuSafeModeDialogConfirm'), translation('helpSupport.gpuSafeModeDialogCancel')],
-            title: isInSafeMode ? translation('helpSupport.gpuSafeModeDialogTitle') : translation('helpSupport.nonGpuSafeModeDialogTitle'),
-            message: isInSafeMode ? translation('helpSupport.gpuSafeModeDialogMessage') : translation('helpSupport.nonGpuSafeModeDialogMessage'),
+            buttons: [
+              translation('helpSupport.gpuSafeModeDialogConfirm'),
+              translation('helpSupport.gpuSafeModeDialogCancel'),
+            ],
+            title: isInSafeMode
+              ? translation('helpSupport.gpuSafeModeDialogTitle')
+              : translation('helpSupport.nonGpuSafeModeDialogTitle'),
+            message: isInSafeMode
+              ? translation('helpSupport.gpuSafeModeDialogMessage')
+              : translation('helpSupport.nonGpuSafeModeDialogMessage'),
           };
-          dialog.showMessageBox(gpuSafeModeDialogOptions, (buttonId) => {
+          dialog.showMessageBox(gpuSafeModeDialogOptions, buttonId => {
             if (buttonId === 0) {
               if (isInSafeMode) {
                 actions.restartWithoutSafeMode();
