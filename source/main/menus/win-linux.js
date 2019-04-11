@@ -140,7 +140,8 @@ export const winLinuxMenu = (
         click() {
           const gpuSafeModeDialogOptions = {
             buttons: ['Yes', 'No'],
-            message: 'Do you want to restart the application in GPU Safe Mode?',
+            title: isInSafeMode ? translation('helpSupport.gpuSafeModeDialogTitle') : translation('helpSupport.nonGpuSafeModeDialogTitle'),
+            message: isInSafeMode ? translation('helpSupport.gpuSafeModeDialogMessage') : translation('helpSupport.nonGpuSafeModeDialogMessage'),
           };
           dialog.showMessageBox(window, gpuSafeModeDialogOptions, () => {
             if (isInSafeMode) {
