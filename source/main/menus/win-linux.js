@@ -143,11 +143,13 @@ export const winLinuxMenu = (
             title: isInSafeMode ? translation('helpSupport.gpuSafeModeDialogTitle') : translation('helpSupport.nonGpuSafeModeDialogTitle'),
             message: isInSafeMode ? translation('helpSupport.gpuSafeModeDialogMessage') : translation('helpSupport.nonGpuSafeModeDialogMessage'),
           };
-          dialog.showMessageBox(window, gpuSafeModeDialogOptions, () => {
-            if (isInSafeMode) {
-              actions.restartWithoutSafeMode();
-            } else {
-              actions.restartInSafeMode();
+          dialog.showMessageBox(window, gpuSafeModeDialogOptions, (buttonId) => {
+            if (buttonId === 0) {
+              if (isInSafeMode) {
+                actions.restartWithoutSafeMode();
+              } else {
+                actions.restartInSafeMode();
+              }
             }
           });
         },
