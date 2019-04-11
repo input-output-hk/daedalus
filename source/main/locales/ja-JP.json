@@ -19,6 +19,8 @@
   "menu.helpSupport.nonGpuSafeModeDialogTitle": "「GPUセーフモード」を設定しますか？",
   "menu.helpSupport.gpuSafeModeDialogMessage": "「GPUセーフモード」を解除します。ユーザーインターフェイスのレンダリングパフォーマンスが向上します。 \n \n「はい」をクリックしてDaedalusを再起動し、「GPUセーフモード」を解除してください。\n \n Daedalusを再起動した際にDaedalusユーザーインターフェイスの代わりにブランクスクリーンが表示される場合は、「GPUセーフモード」に戻してください。",
   "menu.helpSupport.nonGpuSafeModeDialogMessage": "「GPUセーフモード」を設定します。ユーザーインターフェイスのレンダリングパフォーマンスが低下します。 \n \nDaedalusユーザーインターフェイスの代わりにブランクスクリーンが表示される場合にのみ設定してください。Daedalusが通常通りに動作している場合は、「いいえ」をクリックしてください。その他の場合は「はい」をクリックしてDaedalusを再起動し、「GPUセーフモード」を設定してください。",
+  "menu.helpSupport.gpuSafeModeDialogConfirm": "はい",
+  "menu.helpSupport.gpuSafeModeDialogCancel": "いいえ",
   "menu.helpSupport.downloadLogs": "ログのダウンロード",
   "menu.helpSupport.supportRequest": "サポートリクエスト",
   "menu.helpSupport.knownIssues": "既知の問題",
