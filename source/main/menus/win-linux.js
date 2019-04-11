@@ -137,7 +137,7 @@ export const winLinuxMenu = (
         label: translation('helpSupport.gpuSafeMode'),
         type: 'checkbox',
         checked: isInSafeMode,
-        click() {
+        click(item) {
           const gpuSafeModeDialogOptions = {
             buttons: ['Yes', 'No'],
             title: isInSafeMode ? translation('helpSupport.gpuSafeModeDialogTitle') : translation('helpSupport.nonGpuSafeModeDialogTitle'),
@@ -150,6 +150,8 @@ export const winLinuxMenu = (
               } else {
                 actions.restartInSafeMode();
               }
+            } else {
+              item.checked = false;
             }
           });
         },
