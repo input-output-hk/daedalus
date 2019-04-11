@@ -17,8 +17,8 @@
   .questionMarkIcon {
     height: 14px;
     width: 14px;
-    margin-left: 6px;
-    transform: translateY(1px);
+    margin-left: 3px;
+    transform: translateY(2px);
     path {
       fill: var(--theme-input-icon-background-color);
     }
@@ -29,6 +29,7 @@
     color: var(--theme-input-right-floating-text-color);
     font-family: var(--font-light);
     font-size: 14px;
+    letter-spacing: -0.3px;
     opacity: 0;
     position: absolute;
     right: 0;

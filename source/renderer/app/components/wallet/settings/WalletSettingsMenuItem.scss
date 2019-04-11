@@ -4,10 +4,12 @@
   font-family: var(--font-regular);
   font-size: 16px;
   line-height: 1.38;
+  overflow: hidden;
   padding: 14px 20px;
   text-align: left;
-  width: 100%;
+  text-overflow: ellipsis;
   white-space: nowrap;
+  width: 100%;
 }
 
 .active {
