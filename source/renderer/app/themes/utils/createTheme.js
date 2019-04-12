@@ -202,6 +202,9 @@ const createDaedalusComponentsTheme = (
       '--theme-bordered-box-border': `1px solid ${}`,
       '--theme-bordered-box-text-color': `${}`,
     },
+    button: {
+      '--theme-label-button-color': `${}`,
+    },
     buttonAttention: {
       '--theme-button-attention-background-color': `${}`,
     },
@@ -210,16 +213,6 @@ const createDaedalusComponentsTheme = (
       '--theme-button-disclaimer-text-color-disabled': `${}`,
       '--theme-button-disclaimer-border-color': `${}`,
       '--theme-button-disclaimer-border-color-disabled': `${}`,
-    },
-    buttonPrimary: {
-      '--theme-button-primary-background-color': `${}`,
-      '--theme-button-primary-background-color-hover': `${}`,
-      '--theme-button-primary-background-color-active': `${}`,
-      '--theme-button-primary-background-color-disabled': `${}`,
-      '--theme-button-primary-text-color-disabled': `${}`,
-      '--theme-button-primary-text-color': `${}`,
-      '--theme-button-primary-outline-color': `${}`,
-      '--theme-label-button-color': `${}`,
     },
     connecting: {
       '--theme-connecting-background-color': `${}`,

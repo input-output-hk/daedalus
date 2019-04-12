@@ -192,15 +192,7 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-bordered-box-border': 'none',
     '--theme-bordered-box-text-color': '#e9f4fe',
   },
-  buttonPrimary: {
-    '--theme-button-primary-background-color': '#536370',
-    '--theme-button-primary-background-color-hover': '#667a8a',
-    '--theme-button-primary-background-color-active': '#495863',
-    '--theme-button-primary-background-color-disabled':
-      'rgba(83, 99, 112, 0.3)',
-    '--theme-button-primary-text-color-disabled': 'rgba(233, 244, 254, 0.5)',
-    '--theme-button-primary-text-color': '#e9f4fe',
-    '--theme-button-primary-outline-color': '#667a8a',
+  button: {
     '--theme-label-button-color': 'rgba(233, 244, 254, 0.5)',
   },
   buttonAttention: {
