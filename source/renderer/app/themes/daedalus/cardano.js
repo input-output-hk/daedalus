@@ -493,7 +493,6 @@ export const CARDANO_THEME_CONFIG = {
   },
   blockConsolidation: {
     '--theme-block-consolidation-background-color': 'rgba(32, 34, 37, 0.96)',
-    '--theme-block-consolidation-container-background-color': '#fafbfc',
     '--theme-block-consolidation-title-text-color': '#fafbfc',
     '--theme-block-consolidation-text-color': 'rgba(250, 251, 252, 0.7)',
     '--theme-block-consolidation-text-highlight-color': '#fafbfc',

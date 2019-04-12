@@ -176,7 +176,6 @@ const createDaedalusComponentsTheme = (
     },
     blockConsolidation: {
       '--theme-block-consolidation-background-color': `${}`,
-      '--theme-block-consolidation-container-background-color': `${}`,
       '--theme-block-consolidation-title-text-color': `${}`,
       '--theme-block-consolidation-text-color': `${}`,
       '--theme-block-consolidation-text-highlight-color': `${}`,
