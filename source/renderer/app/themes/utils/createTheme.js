@@ -172,7 +172,6 @@ const createDaedalusComponentsTheme = (
       '--theme-ada-redemption-disclaimer-checkbox-color-checked': `${}`,
       '--theme-ada-redemption-disclaimer-checkbox-color-after': `${}`,
       '--theme-ada-redemption-disclaimer-checkbox-label-color': `${}`,
-      '--theme-ada-redemption-disclaimer-button-border-color': `${}`,
       '--theme-ada-redemption-no-wallets-instructions-color': `${}`,
     },
     blockConsolidation: {

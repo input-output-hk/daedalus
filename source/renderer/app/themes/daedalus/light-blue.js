@@ -184,7 +184,6 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-ada-redemption-disclaimer-checkbox-color-checked': '#fafbfc',
     '--theme-ada-redemption-disclaimer-checkbox-color-after': '#ab1700',
     '--theme-ada-redemption-disclaimer-checkbox-label-color': '#fafbfc',
-    '--theme-ada-redemption-disclaimer-button-border-color': '#fafbfc',
     '--theme-ada-redemption-no-wallets-instructions-color': '#5e6066',
   },
   borderedBox: {

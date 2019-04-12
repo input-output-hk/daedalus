@@ -185,7 +185,6 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-ada-redemption-disclaimer-checkbox-color-checked': '#fafbfc',
     '--theme-ada-redemption-disclaimer-checkbox-color-after': '#ab1700',
     '--theme-ada-redemption-disclaimer-checkbox-label-color': '#fafbfc',
-    '--theme-ada-redemption-disclaimer-button-border-color': '#fafbfc',
     '--theme-ada-redemption-no-wallets-instructions-color': '#e9f4fe',
   },
   borderedBox: {
