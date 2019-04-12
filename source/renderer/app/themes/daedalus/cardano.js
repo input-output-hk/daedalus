@@ -203,15 +203,6 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-button-primary-outline-color': '#35de7e',
     '--theme-label-button-color': '#5e6066',
   },
-  buttonFlat: {
-    '--theme-button-flat-background-color': '#f0f3f5',
-    '--theme-button-flat-background-color-hover': '#f3f5f7',
-    '--theme-button-flat-background-color-active': '#ebeef0',
-    '--theme-button-flat-background-color-disabled': 'rgba(240, 243, 245, 0.3)',
-    '--theme-button-flat-text-color-disabled': '#5e6066',
-    '--theme-button-flat-text-color': '#5e6066',
-    '--theme-button-flat-outline-color': '#e1e4e6',
-  },
   buttonAttention: {
     '--theme-button-attention-background-color': '#ea4c5b',
   },

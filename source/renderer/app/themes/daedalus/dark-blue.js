@@ -203,15 +203,6 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-button-primary-outline-color': '#667a8a',
     '--theme-label-button-color': 'rgba(233, 244, 254, 0.5)',
   },
-  buttonFlat: {
-    '--theme-button-flat-background-color': 'rgba(83, 99, 112, 0.3)',
-    '--theme-button-flat-background-color-hover': 'rgba(102, 122, 138, 0.3)',
-    '--theme-button-flat-background-color-active': 'rgba(73, 88, 99, 0.3)',
-    '--theme-button-flat-background-color-disabled': 'rgba(83, 99, 112, 0.1)',
-    '--theme-button-flat-text-color-disabled': 'rgba(233, 244, 254, 0.3)',
-    '--theme-button-flat-text-color': '#e9f4fe',
-    '--theme-button-flat-outline-color': 'rgba(102,122,138, 0.3)',
-  },
   buttonAttention: {
     '--theme-button-attention-background-color': '#ea4c5b',
   },
