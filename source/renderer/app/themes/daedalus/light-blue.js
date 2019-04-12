@@ -212,13 +212,6 @@ export const LIGHT_BLUE_THEME_CONFIG = {
   },
   buttonAttention: {
     '--theme-button-attention-background-color': '#ea4c5b',
-    '--theme-button-attention-background-color-hover': '#ec5d6b',
-    '--theme-button-attention-background-color-active': '#d34452',
-    '--theme-button-attention-background-color-disabled':
-      'rgba(234, 76, 91, 0.3)',
-    '--theme-button-attention-text-color-disabled': '#fafbfc',
-    '--theme-button-attention-text-color': '#fafbfc',
-    '--theme-button-attention-outline-color': '#ff707e',
   },
   buttonDisclaimer: {
     '--theme-button-disclaimer-background-color': '#ab1700',

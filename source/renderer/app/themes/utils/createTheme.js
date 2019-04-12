@@ -204,12 +204,6 @@ const createDaedalusComponentsTheme = (
     },
     buttonAttention: {
       '--theme-button-attention-background-color': `${}`,
-      '--theme-button-attention-background-color-hover': `${}`,
-      '--theme-button-attention-background-color-active': `${}`,
-      '--theme-button-attention-background-color-disabled': `${}`,
-      '--theme-button-attention-text-color-disabled': `${}`,
-      '--theme-button-attention-text-color': `${}`,
-      '--theme-button-attention-outline-color': `${}`,
     },
     buttonDisclaimer: {
       '--theme-button-disclaimer-background-color': `${}`,
