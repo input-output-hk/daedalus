@@ -36,7 +36,6 @@ type Props = {
   isConnected: boolean,
   isSynced: boolean,
   syncPercentage: number,
-  hasBeenConnected: boolean,
   localTimeDifference: ?number,
   isSystemTimeIgnored: boolean,
   isSystemTimeCorrect: boolean,
@@ -166,7 +165,6 @@ export default class NetworkStatus extends Component<Props, State> {
       isConnected,
       isSynced,
       syncPercentage,
-      hasBeenConnected,
       localTimeDifference,
       isSystemTimeCorrect,
       isForceCheckingNodeTime,
@@ -268,23 +266,25 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>Platform:</td>
-                <td>{platform}</td>
+                <td title={platform}>{platform}</td>
               </tr>
               <tr>
                 <td>Platform Version:</td>
-                <td className={styles.platform}>{platformVersion}</td>
+                <td className={styles.platform} title={platformVersion}>
+                  {platformVersion}
+                </td>
               </tr>
               <tr>
                 <td>CPU:</td>
-                <td>{cpu}</td>
+                <td title={cpu}>{cpu}</td>
               </tr>
               <tr>
                 <td>RAM:</td>
-                <td>{ram}</td>
+                <td title={ram}>{ram}</td>
               </tr>
               <tr>
                 <td>Available disk space:</td>
-                <td>{availableDiskSpace}</td>
+                <td title={availableDiskSpace}>{availableDiskSpace}</td>
               </tr>
               <tr>
                 <th colSpan={2}>
@@ -294,42 +294,52 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>Daedalus Version:</td>
-                <td>{daedalusVersion}</td>
+                <td title={daedalusVersion}>{daedalusVersion}</td>
               </tr>
               <tr>
                 <td>Daedalus Process ID:</td>
-                <td>{daedalusProcessID}</td>
+                <td title={daedalusProcessID}>{daedalusProcessID}</td>
               </tr>
               <tr>
                 <td>Daedalus is running in safe mode:</td>
-                <td className={styles.safeMode}>{isInSafeMode ? 'YES' : 'NO'}</td>
+                <td
+                  className={styles.safeMode}
+                  title={isInSafeMode ? 'YES' : 'NO'}
+                >
+                  {isInSafeMode ? 'YES' : 'NO'}
+                </td>
               </tr>
               <tr>
                 <td>Cardano Version:</td>
-                <td>{cardanoVersion}</td>
+                <td title={cardanoVersion}>{cardanoVersion}</td>
               </tr>
               <tr>
                 <td>Cardano Process ID:</td>
-                <td>{cardanoProcessID}</td>
+                <td title={cardanoProcessID}>{cardanoProcessID}</td>
               </tr>
               <tr>
                 <td>Cardano API Port:</td>
-                <td>{cardanoAPIPort}</td>
+                <td title={cardanoAPIPort}>{cardanoAPIPort}</td>
               </tr>
               <tr>
                 <td>Cardano Network:</td>
-                <td>{cardanoNetwork}</td>
+                <td title={cardanoNetwork}>{cardanoNetwork}</td>
               </tr>
               <tr>
                 <td>Daedalus State Directory:</td>
-                <td className={styles.stateDirectory}>{daedalusStateDirectory}</td>
+                <td
+                  className={styles.stateDirectory}
+                  title={daedalusStateDirectory}
+                >
+                  {daedalusStateDirectory}
+                </td>
               </tr>
               {!isConnected && nodeConnectionError ? (
                 <tr>
                   <td className={styles.topPadding} colSpan={2}>
                     CONNECTION ERROR
                     <br />
-                    <div className={styles.error}>
+                    <div className={styles.error} title={message || '-'}>
                       message: {message || '-'}
                       <br />
                       code: {code || '-'}
@@ -350,41 +360,57 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>Connected:</td>
-                <td className={this.getClass(isConnected)}>
+                <td
+                  className={this.getClass(isConnected)}
+                  title={isConnected ? 'YES' : 'NO'}
+                >
                   {isConnected ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
-                <td>Has Been Connected:</td>
-                <td>{hasBeenConnected ? 'YES' : 'NO'}</td>
-              </tr>
-              <tr>
                 <td>Synced:</td>
-                <td className={this.getClass(isSynced)}>
+                <td
+                  className={this.getClass(isSynced)}
+                  title={isSynced ? 'YES' : 'NO'}
+                >
                   {isSynced ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
                 <td>Sync Percentage:</td>
-                <td>{syncPercentage.toFixed(2)}%</td>
+                <td title={`${syncPercentage.toFixed(2)}%`}>
+                  {syncPercentage.toFixed(2)}%
+                </td>
               </tr>
               <tr>
                 <td>Network Block Height:</td>
-                <td>{networkBlockHeight}</td>
+                <td title={networkBlockHeight}>{networkBlockHeight}</td>
               </tr>
               <tr>
                 <td>Local Block Height:</td>
-                <td>{localBlockHeight}</td>
+                <td title={localBlockHeight}>{localBlockHeight}</td>
               </tr>
               <tr>
                 <td>Remaining Unsynced Blocks:</td>
-                <td className={remainingUnsyncedBlocksClasses}>
+                <td
+                  className={remainingUnsyncedBlocksClasses}
+                  title={
+                    remainingUnsyncedBlocks >= 0 ? remainingUnsyncedBlocks : '-'
+                  }
+                >
                   {remainingUnsyncedBlocks >= 0 ? remainingUnsyncedBlocks : '-'}
                 </td>
               </tr>
               <tr>
                 <td>Latest Local Block Age:</td>
-                <td className={latestLocalBlockAgeClasses}>
+                <td
+                  className={latestLocalBlockAgeClasses}
+                  title={
+                    latestLocalBlockTimestamp > 0
+                      ? `${latestLocalBlockAge} ms`
+                      : '-'
+                  }
+                >
                   {latestLocalBlockTimestamp > 0
                     ? `${latestLocalBlockAge} ms`
                     : '-'}
@@ -392,7 +418,14 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>Latest Network Block Age:</td>
-                <td className={latestNetworkBlockAgeClasses}>
+                <td
+                  className={latestNetworkBlockAgeClasses}
+                  title={
+                    latestNetworkBlockTimestamp > 0
+                      ? `${latestNetworkBlockAge} ms`
+                      : '-'
+                  }
+                >
                   {latestNetworkBlockTimestamp > 0
                     ? `${latestNetworkBlockAge} ms`
                     : '-'}
@@ -407,7 +440,14 @@ export default class NetworkStatus extends Component<Props, State> {
                   >
                     {isForceCheckingNodeTime ? 'Checking...' : 'Check time'}
                   </button>
-                  <span className={localTimeDifferenceClasses}>
+                  <span
+                    className={localTimeDifferenceClasses}
+                    title={
+                      isNTPServiceReachable
+                        ? `${localTimeDifference || 0} μs`
+                        : 'NTP service unreachable'
+                    }
+                  >
                     {isNTPServiceReachable
                       ? `${localTimeDifference || 0} μs`
                       : 'NTP service unreachable'}
@@ -416,19 +456,27 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>System Time Correct:</td>
-                <td className={this.getClass(isSystemTimeCorrect)}>
+                <td
+                  className={this.getClass(isSystemTimeCorrect)}
+                  title={isSystemTimeCorrect ? 'YES' : 'NO'}
+                >
                   {isSystemTimeCorrect ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
                 <td>System Time Ignored:</td>
-                <td className={this.getClass(!isSystemTimeIgnored)}>
+                <td
+                  className={this.getClass(!isSystemTimeIgnored)}
+                  title={isSystemTimeIgnored ? 'YES' : 'NO'}
+                >
                   {isSystemTimeIgnored ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
-                <td>Force Checking Node Time:</td>
-                <td>{isForceCheckingNodeTime ? 'YES' : 'NO'}</td>
+                <td>Checking Node Time:</td>
+                <td title={isForceCheckingNodeTime ? 'YES' : 'NO'}>
+                  {isForceCheckingNodeTime ? 'YES' : 'NO'}
+                </td>
               </tr>
               <tr>
                 <th colSpan={2}>
@@ -445,44 +493,6 @@ export default class NetworkStatus extends Component<Props, State> {
                   <hr />
                 </th>
               </tr>
-              <tr>
-                <td>Cardano Node State:</td>
-                <td>
-                  {upperFirst(
-                    cardanoNodeState != null ? cardanoNodeState : 'unknown'
-                  )}
-                </td>
-              </tr>
-              <tr>
-                <td>Node Responding:</td>
-                <td className={this.getClass(isNodeResponding)}>
-                  {isNodeResponding ? 'YES' : 'NO'}
-                </td>
-              </tr>
-              <tr>
-                <td>Node Subscribed:</td>
-                <td className={this.getClass(isNodeSubscribed)}>
-                  {isNodeSubscribed ? 'YES' : 'NO'}
-                </td>
-              </tr>
-              <tr>
-                <td>Node Time Correct:</td>
-                <td className={this.getClass(isNodeTimeCorrect)}>
-                  {isNodeTimeCorrect ? 'YES' : 'NO'}
-                </td>
-              </tr>
-              <tr>
-                <td>Node Syncing:</td>
-                <td className={this.getClass(isNodeSyncing)}>
-                  {isNodeSyncing ? 'YES' : 'NO'}
-                </td>
-              </tr>
-              <tr>
-                <td>Node In Sync:</td>
-                <td className={this.getClass(isNodeInSync)}>
-                  {isNodeInSync ? 'YES' : 'NO'}
-                </td>
-              </tr>
               {cardanoNodeEkgLink ? (
                 <tr>
                   <td>Cardano Node Diagnostics:</td>
@@ -496,6 +506,63 @@ export default class NetworkStatus extends Component<Props, State> {
                   </td>
                 </tr>
               ) : null}
+              <tr>
+                <td>Cardano Node State:</td>
+                <td
+                  title={upperFirst(
+                    cardanoNodeState != null ? cardanoNodeState : 'unknown'
+                  )}
+                >
+                  {upperFirst(
+                    cardanoNodeState != null ? cardanoNodeState : 'unknown'
+                  )}
+                </td>
+              </tr>
+              <tr>
+                <td>Node Responding:</td>
+                <td
+                  className={this.getClass(isNodeResponding)}
+                  title={isNodeResponding ? 'YES' : 'NO'}
+                >
+                  {isNodeResponding ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>Node Subscribed:</td>
+                <td
+                  className={this.getClass(isNodeSubscribed)}
+                  title={isNodeSubscribed ? 'YES' : 'NO'}
+                >
+                  {isNodeSubscribed ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>Node Time Correct:</td>
+                <td
+                  className={this.getClass(isNodeTimeCorrect)}
+                  title={isNodeTimeCorrect ? 'YES' : 'NO'}
+                >
+                  {isNodeTimeCorrect ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>Node Syncing:</td>
+                <td
+                  className={this.getClass(isNodeSyncing)}
+                  title={isNodeSyncing ? 'YES' : 'NO'}
+                >
+                  {isNodeSyncing ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>Node In Sync:</td>
+                <td
+                  className={this.getClass(isNodeInSync)}
+                  title={isNodeInSync ? 'YES' : 'NO'}
+                >
+                  {isNodeInSync ? 'YES' : 'NO'}
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
