@@ -275,8 +275,6 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',
   },
   paperWallet: {
-    '--theme-paper-wallet-create-certificate-dialog-recovery-phrase-background-color':
-      'rgba(233, 244, 254, 0.05)',
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-color':
       '#e9f4fe',
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-background-color':

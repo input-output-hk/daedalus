@@ -276,8 +276,6 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',
   },
   paperWallet: {
-    '--theme-paper-wallet-create-certificate-dialog-recovery-phrase-background-color':
-      'rgba(68, 91, 124, 0.05)',
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-color':
       '#5e6066',
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-background-color':

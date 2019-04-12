@@ -332,7 +332,6 @@ const createDaedalusComponentsTheme = (
       '--theme-notification-message-text-color': `${}`,
     },
     paperWallet: {
-      '--theme-paper-wallet-create-certificate-dialog-recovery-phrase-background-color': `${}`,
       '--theme-paper-wallet-create-certificate-dialog-explorer-link-color': `${}`,
       '--theme-paper-wallet-create-certificate-dialog-explorer-link-background-color': `${}`,
     },
