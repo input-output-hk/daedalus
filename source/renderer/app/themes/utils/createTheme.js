@@ -207,12 +207,7 @@ const createDaedalusComponentsTheme = (
     },
     buttonDisclaimer: {
       '--theme-button-disclaimer-background-color': `${}`,
-      '--theme-button-disclaimer-background-color-hover': `${}`,
-      '--theme-button-disclaimer-background-color-active': `${}`,
-      '--theme-button-disclaimer-background-color-disabled': `${}`,
       '--theme-button-disclaimer-text-color-disabled': `${}`,
-      '--theme-button-disclaimer-text-color': `${}`,
-      '--theme-button-disclaimer-outline-color': `${}`,
       '--theme-button-disclaimer-border-color': `${}`,
       '--theme-button-disclaimer-border-color-disabled': `${}`,
     },

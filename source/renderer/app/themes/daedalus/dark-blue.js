@@ -217,13 +217,7 @@ export const DARK_BLUE_THEME_CONFIG = {
   },
   buttonDisclaimer: {
     '--theme-button-disclaimer-background-color': '#ab1700',
-    '--theme-button-disclaimer-background-color-hover': '#fafbfc',
-    '--theme-button-disclaimer-background-color-active': '#fafbfc',
-    '--theme-button-disclaimer-background-color-disabled':
-      'rgba(171, 23, 0, .3)',
     '--theme-button-disclaimer-text-color-disabled': 'rgba(250, 251, 252, .3)',
-    '--theme-button-disclaimer-text-color': '#fafbfc',
-    '--theme-button-disclaimer-outline-color': 'rgba(250, 251, 252, .3)',
     '--theme-button-disclaimer-border-color': '#fafbfc',
     '--theme-button-disclaimer-border-color-disabled':
       'rgba(250, 251, 252, .3)',
