@@ -21,17 +21,7 @@ export default class ReactToolboxMobxForm extends MobxReactForm {
   }
 }
 
-export const handleFormErrors = (form: ReactToolboxMobxForm) => {
-  try {
-    const [firstErrorInputName] = Object.entries(form.errors()).filter(
-      ([x, err]) => x && err !== null
-    )[0];
-    const [firstErrorInputDomElement] = document.getElementsByName(
-      firstErrorInputName
-    );
-    if (!firstErrorInputDomElement) return false;
-    return firstErrorInputDomElement.scrollIntoView({ behavior: 'smooth' });
-  } catch (e) {
-    throw e;
-  }
+export const handleFormErrors = () => {
+  const firstErrorLabel = document.querySelector('.SimpleFormField_error');
+  if (firstErrorLabel) firstErrorLabel.scrollIntoView({ behavior: 'smooth' });
 };
