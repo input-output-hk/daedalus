@@ -9,11 +9,12 @@
   justify-content: space-between;
   line-height: 1.5;
   overflow: hidden;
-  padding: 50px 30px;
+  padding: 50px 55px;
   width: 100%;
 
   @media (max-height: 740px), (max-width: 1000px) {
     overflow-y: auto;
+    padding-bottom: 550px;
   }
 }
 
@@ -25,6 +26,10 @@
 
   @media (max-width: 1000px) {
     flex-direction: column;
+  }
+
+  @media (max-height: 740px) {
+    padding-bottom: 200px;
   }
 }
 
@@ -63,32 +68,21 @@
     }
 
     &.platform {
-      display: -webkit-box;
-      float: right;
-      line-height: 16px;
-      max-height: 32px;
-      max-width: 400px;
+      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
+      max-width: 500px;
     }
 
-    &.safeMode {
-      width: 200px;
+    .safeMode {
+      max-width: 100px;
     }
 
     &.stateDirectory {
-      display: -webkit-box;
-      float: right;
-      line-height: 16px;
-      margin-bottom: -5px;
-      max-height: 32px;
-      max-width: 300px;
+      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
+      max-width: 300px;
     }
   }
 
@@ -193,6 +187,8 @@
 
   svg {
     height: 12px;
+    margin-left: -1px;
+    margin-top: 1px;
     width: 12px;
 
     polygon {
