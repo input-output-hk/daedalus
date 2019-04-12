@@ -11,6 +11,11 @@
     .SimpleFormField_label {
       color: var(--theme-input-label-color);
     }
+    .SimpleInput_disabled.ReadOnlyInput_disabled {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
   }
 }
 
