@@ -225,7 +225,7 @@ const messages = defineMessages({
     id: 'status.network.dialog.localTimeDifferenceCheckTime',
     defaultMessage: '!!!Check time',
     description: 'Check time',
-  }
+  },
 });
 
 type Props = {
@@ -653,7 +653,11 @@ export default class NetworkStatus extends Component<Props, State> {
                     onClick={() => onForceCheckLocalTimeDifference()}
                     disabled={isForceCheckingNodeTime || !isConnected}
                   >
-                    {isForceCheckingNodeTime ? intl.formatMessage(messages.localTimeDifferenceChecking) : intl.formatMessage(messages.localTimeDifferenceCheckTime)}
+                    {isForceCheckingNodeTime
+                      ? intl.formatMessage(messages.localTimeDifferenceChecking)
+                      : intl.formatMessage(
+                          messages.localTimeDifferenceCheckTime
+                        )}
                   </button>
                   <span
                     className={localTimeDifferenceClasses}
@@ -710,7 +714,9 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               {cardanoNodeEkgLink ? (
                 <tr>
-                  <td>{intl.formatMessage(messages.cardanoNodeDiagnostics)}:</td>
+                  <td>
+                    {intl.formatMessage(messages.cardanoNodeDiagnostics)}:
+                  </td>
                   <td>
                     <button
                       className={styles.realTimeStatusBtn}
