@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { get, includes, upperFirst } from 'lodash';
+import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
@@ -18,6 +19,214 @@ import styles from './NetworkStatus.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
 
 let syncingInterval = null;
+
+const messages = defineMessages({
+  systemInfo: {
+    id: 'status.network.dialog.system.info',
+    defaultMessage: '!!!SYSTEM INFO',
+    description: 'System info',
+  },
+  platform: {
+    id: 'status.network.dialog.platform',
+    defaultMessage: '!!!Platform',
+    description: 'Platform',
+  },
+  platformVersion: {
+    id: 'status.network.dialog.platform.version',
+    defaultMessage: '!!!Platform Version',
+    description: 'Platform Version',
+  },
+  cpu: {
+    id: 'status.network.dialog.cpu',
+    defaultMessage: '!!!CPU',
+    description: 'CPU',
+  },
+  ram: {
+    id: 'status.network.dialog.ram',
+    defaultMessage: '!!!RAM',
+    description: 'RAM',
+  },
+  availableDiskSpace: {
+    id: 'status.network.dialog.availableDiskSpace',
+    defaultMessage: '!!!Available disk space',
+    description: 'Available disk space',
+  },
+  coreInfo: {
+    id: 'status.network.dialog.coreInfo',
+    defaultMessage: '!!!CORE INFO',
+    description: 'CORE INFO',
+  },
+  daedalusVersion: {
+    id: 'status.network.dialog.daedalusVersion',
+    defaultMessage: '!!!Daedalus Version',
+    description: 'Daedalus Version',
+  },
+  daedalusProcessID: {
+    id: 'status.network.dialog.daedalusProcessID',
+    defaultMessage: '!!!Daedalus Process ID',
+    description: 'Daedalus Process ID',
+  },
+  safeMode: {
+    id: 'status.network.dialog.safeMode',
+    defaultMessage: '!!!Daedalus is running in safe mode',
+    description: 'Daedalus is running in safe mode',
+  },
+  cardanoVersion: {
+    id: 'status.network.dialog.cardanoVersion',
+    defaultMessage: '!!!Cardano Version',
+    description: 'Cardano Version',
+  },
+  cardanoProcessID: {
+    id: 'status.network.dialog.cardanoProcessID',
+    defaultMessage: '!!!Cardano Process ID',
+    description: 'Cardano Process ID',
+  },
+  cardanoApiPort: {
+    id: 'status.network.dialog.cardanoApiPort',
+    defaultMessage: '!!!Cardano API Port',
+    description: 'Cardano API Port',
+  },
+  cardanoNetwork: {
+    id: 'status.network.dialog.cardanoNetwork',
+    defaultMessage: '!!!Cardano Network',
+    description: 'Cardano Network',
+  },
+  stateDirectory: {
+    id: 'status.network.dialog.stateDirectory',
+    defaultMessage: '!!!Daedalus State Directory',
+    description: 'Daedalus State Directory',
+  },
+  connectionError: {
+    id: 'status.network.dialog.connectionError',
+    defaultMessage: '!!!CONNECTION ERROR',
+    description: 'CONNECTION ERROR',
+  },
+  daedalusStatus: {
+    id: 'status.network.dialog.daedalusStatus',
+    defaultMessage: '!!!DAEDALUS STATUS',
+    description: 'DAEDALUS STATUS',
+  },
+  connected: {
+    id: 'status.network.dialog.connected',
+    defaultMessage: '!!!Connected',
+    description: 'Connected',
+  },
+  synced: {
+    id: 'status.network.dialog.synced',
+    defaultMessage: '!!!Synced',
+    description: 'Synced',
+  },
+  syncPercentage: {
+    id: 'status.network.dialog.syncPercentage',
+    defaultMessage: '!!!Sync Percentage',
+    description: 'Sync Percentage',
+  },
+  networkBlockHeight: {
+    id: 'status.network.dialog.networkBlockHeight',
+    defaultMessage: '!!!Network Block Height',
+    description: 'Network Block Height',
+  },
+  localBlockHeight: {
+    id: 'status.network.dialog.localBlockHeight',
+    defaultMessage: '!!!Local Block Height',
+    description: 'Local Block Height',
+  },
+  remainingUnsyncedBlocks: {
+    id: 'status.network.dialog.remainingUnsyncedBlocks',
+    defaultMessage: '!!!Remaining Unsynced Blocks',
+    description: 'Remaining Unsynced Blocks',
+  },
+  latestLocalBlockAge: {
+    id: 'status.network.dialog.latestLocalBlockAge',
+    defaultMessage: '!!!Latest Local Block Age',
+    description: 'Latest Local Block Age',
+  },
+  latestNetworkBlockAge: {
+    id: 'status.network.dialog.latestNetworkBlockAge',
+    defaultMessage: '!!!Latest Network Block Age',
+    description: 'Latest Network Block Age',
+  },
+  localTimeDifference: {
+    id: 'status.network.dialog.localTimeDifference',
+    defaultMessage: '!!!Local Time Difference',
+    description: 'Local Time Difference',
+  },
+  systemTimeCorrect: {
+    id: 'status.network.dialog.systemTimeCorrect',
+    defaultMessage: '!!!System Time Correct',
+    description: 'System Time Correct',
+  },
+  systemTimeIgnored: {
+    id: 'status.network.dialog.systemTimeIgnored',
+    defaultMessage: '!!!System Time Ignored',
+    description: 'System Time Ignored',
+  },
+  checkingNodeTime: {
+    id: 'status.network.dialog.checkingNodeTime',
+    defaultMessage: '!!!Checking Node Time',
+    description: 'Checking Node Time',
+  },
+  cardanoNodeStatus: {
+    id: 'status.network.dialog.cardanoNodeStatus',
+    defaultMessage: '!!!CARDANO NODE STATUS',
+    description: 'CARDANO NODE STATUS',
+  },
+  cardanoNodeStatusRestarting: {
+    id: 'status.network.dialog.cardanoNodeStatusRestarting',
+    defaultMessage: '!!!Restarting Cardano Node...',
+    description: 'Restarting Cardano Node...',
+  },
+  cardanoNodeStatusRestart: {
+    id: 'status.network.dialog.cardanoNodeStatusRestart',
+    defaultMessage: '!!!Restart Cardano Node',
+    description: 'Restart Cardano Node',
+  },
+  cardanoNodeDiagnostics: {
+    id: 'status.network.dialog.cardanoNodeDiagnostics',
+    defaultMessage: '!!!Cardano Node Diagnostics',
+    description: 'Cardano Node Diagnostics',
+  },
+  realtimeStatisticsMonitor: {
+    id: 'status.network.dialog.realtimeStatisticsMonitor',
+    defaultMessage: '!!!Realtime statistics monitor',
+    description: 'Realtime statistics monitor',
+  },
+  cardanoNodeState: {
+    id: 'status.network.dialog.cardanoNodeState',
+    defaultMessage: '!!!Cardano Node State',
+    description: 'Cardano Node State',
+  },
+  cardanoNodeResponding: {
+    id: 'status.network.dialog.cardanoNodeResponding',
+    defaultMessage: '!!!Node Responding',
+    description: 'Node Responding',
+  },
+  cardanoNodeSubscribed: {
+    id: 'status.network.dialog.cardanoNodeSubscribed',
+    defaultMessage: '!!!Node Subscribed',
+    description: 'Node Subscribed',
+  },
+  cardanoNodeSyncing: {
+    id: 'status.network.dialog.cardanoNodeSyncing',
+    defaultMessage: '!!!Node Syncing',
+    description: 'Node Syncing',
+  },
+  cardanoNodeInSync: {
+    id: 'status.network.dialog.cardanoNodeInSync',
+    defaultMessage: '!!!Node In Sync',
+    description: 'Node In Sync',
+  },
+  localTimeDifferenceChecking: {
+    id: 'status.network.dialog.localTimeDifferenceChecking',
+    defaultMessage: '!!!Checking...',
+    description: 'Checking...',
+  },
+  localTimeDifferenceCheckTime: {
+    id: 'status.network.dialog.localTimeDifferenceCheckTime',
+    defaultMessage: '!!!Check time',
+    description: 'Check time',
+  }
+});
 
 type Props = {
   systemInfo: Object,
@@ -61,6 +270,10 @@ type State = {
 
 @observer
 export default class NetworkStatus extends Component<Props, State> {
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
+
   constructor(props: Props) {
     super(props);
     let { localBlockHeight, networkBlockHeight } = props;
@@ -153,6 +366,8 @@ export default class NetworkStatus extends Component<Props, State> {
   }
 
   render() {
+    const { intl } = this.context;
+
     const {
       systemInfo,
       coreInfo,
@@ -260,48 +475,48 @@ export default class NetworkStatus extends Component<Props, State> {
             <tbody>
               <tr>
                 <th colSpan={2}>
-                  SYSTEM INFO
+                  {intl.formatMessage(messages.systemInfo)}
                   <hr />
                 </th>
               </tr>
               <tr>
-                <td>Platform:</td>
+                <td>{intl.formatMessage(messages.platform)}:</td>
                 <td title={platform}>{platform}</td>
               </tr>
               <tr>
-                <td>Platform Version:</td>
+                <td>{intl.formatMessage(messages.platformVersion)}:</td>
                 <td className={styles.platform} title={platformVersion}>
                   {platformVersion}
                 </td>
               </tr>
               <tr>
-                <td>CPU:</td>
+                <td>{intl.formatMessage(messages.cpu)}:</td>
                 <td title={cpu}>{cpu}</td>
               </tr>
               <tr>
-                <td>RAM:</td>
+                <td>{intl.formatMessage(messages.ram)}:</td>
                 <td title={ram}>{ram}</td>
               </tr>
               <tr>
-                <td>Available disk space:</td>
+                <td>{intl.formatMessage(messages.availableDiskSpace)}:</td>
                 <td title={availableDiskSpace}>{availableDiskSpace}</td>
               </tr>
               <tr>
                 <th colSpan={2}>
-                  CORE INFO
+                  {intl.formatMessage(messages.coreInfo)}
                   <hr />
                 </th>
               </tr>
               <tr>
-                <td>Daedalus Version:</td>
+                <td>{intl.formatMessage(messages.daedalusVersion)}:</td>
                 <td title={daedalusVersion}>{daedalusVersion}</td>
               </tr>
               <tr>
-                <td>Daedalus Process ID:</td>
+                <td>{intl.formatMessage(messages.daedalusProcessID)}:</td>
                 <td title={daedalusProcessID}>{daedalusProcessID}</td>
               </tr>
               <tr>
-                <td>Daedalus is running in safe mode:</td>
+                <td>{intl.formatMessage(messages.safeMode)}:</td>
                 <td
                   className={styles.safeMode}
                   title={isInSafeMode ? 'YES' : 'NO'}
@@ -310,23 +525,23 @@ export default class NetworkStatus extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>Cardano Version:</td>
+                <td>{intl.formatMessage(messages.cardanoVersion)}:</td>
                 <td title={cardanoVersion}>{cardanoVersion}</td>
               </tr>
               <tr>
-                <td>Cardano Process ID:</td>
+                <td>{intl.formatMessage(messages.cardanoProcessID)}:</td>
                 <td title={cardanoProcessID}>{cardanoProcessID}</td>
               </tr>
               <tr>
-                <td>Cardano API Port:</td>
+                <td>{intl.formatMessage(messages.cardanoApiPort)}:</td>
                 <td title={cardanoAPIPort}>{cardanoAPIPort}</td>
               </tr>
               <tr>
-                <td>Cardano Network:</td>
+                <td>{intl.formatMessage(messages.cardanoNetwork)}:</td>
                 <td title={cardanoNetwork}>{cardanoNetwork}</td>
               </tr>
               <tr>
-                <td>Daedalus State Directory:</td>
+                <td>{intl.formatMessage(messages.stateDirectory)}:</td>
                 <td
                   className={styles.stateDirectory}
                   title={daedalusStateDirectory}
@@ -337,7 +552,7 @@ export default class NetworkStatus extends Component<Props, State> {
               {!isConnected && nodeConnectionError ? (
                 <tr>
                   <td className={styles.topPadding} colSpan={2}>
-                    CONNECTION ERROR
+                    {intl.formatMessage(messages.connectionError)}
                     <br />
                     <div className={styles.error} title={message || '-'}>
                       message: {message || '-'}
@@ -354,12 +569,12 @@ export default class NetworkStatus extends Component<Props, State> {
             <tbody>
               <tr>
                 <th colSpan={2}>
-                  DAEDALUS STATUS
+                  {intl.formatMessage(messages.daedalusStatus)}
                   <hr />
                 </th>
               </tr>
               <tr>
-                <td>Connected:</td>
+                <td>{intl.formatMessage(messages.connected)}:</td>
                 <td
                   className={this.getClass(isConnected)}
                   title={isConnected ? 'YES' : 'NO'}
@@ -368,7 +583,7 @@ export default class NetworkStatus extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>Synced:</td>
+                <td>{intl.formatMessage(messages.synced)}:</td>
                 <td
                   className={this.getClass(isSynced)}
                   title={isSynced ? 'YES' : 'NO'}
@@ -377,21 +592,21 @@ export default class NetworkStatus extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>Sync Percentage:</td>
+                <td>{intl.formatMessage(messages.syncPercentage)}:</td>
                 <td title={`${syncPercentage.toFixed(2)}%`}>
                   {syncPercentage.toFixed(2)}%
                 </td>
               </tr>
               <tr>
-                <td>Network Block Height:</td>
+                <td>{intl.formatMessage(messages.networkBlockHeight)}:</td>
                 <td title={networkBlockHeight}>{networkBlockHeight}</td>
               </tr>
               <tr>
-                <td>Local Block Height:</td>
+                <td>{intl.formatMessage(messages.localBlockHeight)}:</td>
                 <td title={localBlockHeight}>{localBlockHeight}</td>
               </tr>
               <tr>
-                <td>Remaining Unsynced Blocks:</td>
+                <td>{intl.formatMessage(messages.remainingUnsyncedBlocks)}:</td>
                 <td
                   className={remainingUnsyncedBlocksClasses}
                   title={
@@ -402,7 +617,7 @@ export default class NetworkStatus extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>Latest Local Block Age:</td>
+                <td>{intl.formatMessage(messages.latestLocalBlockAge)}:</td>
                 <td
                   className={latestLocalBlockAgeClasses}
                   title={
@@ -417,7 +632,7 @@ export default class NetworkStatus extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>Latest Network Block Age:</td>
+                <td>{intl.formatMessage(messages.latestNetworkBlockAge)}:</td>
                 <td
                   className={latestNetworkBlockAgeClasses}
                   title={
@@ -432,13 +647,13 @@ export default class NetworkStatus extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>Local Time Difference:</td>
+                <td>{intl.formatMessage(messages.localTimeDifference)}:</td>
                 <td>
                   <button
                     onClick={() => onForceCheckLocalTimeDifference()}
                     disabled={isForceCheckingNodeTime || !isConnected}
                   >
-                    {isForceCheckingNodeTime ? 'Checking...' : 'Check time'}
+                    {isForceCheckingNodeTime ? intl.formatMessage(messages.localTimeDifferenceChecking) : intl.formatMessage(messages.localTimeDifferenceCheckTime)}
                   </button>
                   <span
                     className={localTimeDifferenceClasses}
@@ -455,7 +670,7 @@ export default class NetworkStatus extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>System Time Correct:</td>
+                <td>{intl.formatMessage(messages.systemTimeCorrect)}:</td>
                 <td
                   className={this.getClass(isSystemTimeCorrect)}
                   title={isSystemTimeCorrect ? 'YES' : 'NO'}
@@ -464,7 +679,7 @@ export default class NetworkStatus extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>System Time Ignored:</td>
+                <td>{intl.formatMessage(messages.systemTimeIgnored)}:</td>
                 <td
                   className={this.getClass(!isSystemTimeIgnored)}
                   title={isSystemTimeIgnored ? 'YES' : 'NO'}
@@ -473,41 +688,41 @@ export default class NetworkStatus extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>Checking Node Time:</td>
+                <td>{intl.formatMessage(messages.checkingNodeTime)}:</td>
                 <td title={isForceCheckingNodeTime ? 'YES' : 'NO'}>
                   {isForceCheckingNodeTime ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
                 <th colSpan={2}>
-                  CARDANO NODE STATUS
+                  {intl.formatMessage(messages.cardanoNodeStatus)}
                   <button
                     className={styles.statusBtn}
                     onClick={() => this.restartNode()}
                     disabled={isNodeRestarting}
                   >
                     {isNodeRestarting
-                      ? 'Restarting Cardano Node...'
-                      : 'Restart Cardano Node'}
+                      ? intl.formatMessage(messages.cardanoNodeStatusRestarting)
+                      : intl.formatMessage(messages.cardanoNodeStatusRestart)}
                   </button>
                   <hr />
                 </th>
               </tr>
               {cardanoNodeEkgLink ? (
                 <tr>
-                  <td>Cardano Node Diagnostics:</td>
+                  <td>{intl.formatMessage(messages.cardanoNodeDiagnostics)}:</td>
                   <td>
                     <button
                       className={styles.realTimeStatusBtn}
                       onClick={() => onOpenExternalLink(cardanoNodeEkgLink)}
                     >
-                      Realtime statistics monitor
+                      {intl.formatMessage(messages.realtimeStatisticsMonitor)}
                     </button>
                   </td>
                 </tr>
               ) : null}
               <tr>
-                <td>Cardano Node State:</td>
+                <td>{intl.formatMessage(messages.cardanoNodeState)}:</td>
                 <td
                   title={upperFirst(
                     cardanoNodeState != null ? cardanoNodeState : 'unknown'
@@ -519,7 +734,7 @@ export default class NetworkStatus extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>Node Responding:</td>
+                <td>{intl.formatMessage(messages.cardanoNodeResponding)}:</td>
                 <td
                   className={this.getClass(isNodeResponding)}
                   title={isNodeResponding ? 'YES' : 'NO'}
@@ -528,7 +743,7 @@ export default class NetworkStatus extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>Node Subscribed:</td>
+                <td>{intl.formatMessage(messages.cardanoNodeSubscribed)}:</td>
                 <td
                   className={this.getClass(isNodeSubscribed)}
                   title={isNodeSubscribed ? 'YES' : 'NO'}
@@ -537,7 +752,7 @@ export default class NetworkStatus extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>Node Time Correct:</td>
+                <td>{intl.formatMessage(messages.cardanoNodeTimeCorrect)}:</td>
                 <td
                   className={this.getClass(isNodeTimeCorrect)}
                   title={isNodeTimeCorrect ? 'YES' : 'NO'}
@@ -546,7 +761,7 @@ export default class NetworkStatus extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>Node Syncing:</td>
+                <td>{intl.formatMessage(messages.cardanoNodeSyncing)}:</td>
                 <td
                   className={this.getClass(isNodeSyncing)}
                   title={isNodeSyncing ? 'YES' : 'NO'}
@@ -555,7 +770,7 @@ export default class NetworkStatus extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>Node In Sync:</td>
+                <td>{intl.formatMessage(messages.cardanoNodeInSync)}:</td>
                 <td
                   className={this.getClass(isNodeInSync)}
                   title={isNodeInSync ? 'YES' : 'NO'}
