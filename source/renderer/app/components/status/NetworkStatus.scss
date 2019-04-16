@@ -26,6 +26,11 @@
 
   @media (max-width: 1000px) {
     flex-direction: column;
+    padding-bottom: 700px !important;
+  }
+
+  @media (max-width: 900px) {
+    padding-bottom: 1200px;
   }
 
   @media (max-height: 740px) {
@@ -35,6 +40,11 @@
 
 .table {
   width: calc(50% - 15px);
+
+  tr {
+    display: flex;
+    justify-content: space-between;
+  }
 
   th {
     color: var(--theme-network-window-text-color);
@@ -46,6 +56,7 @@
     letter-spacing: 1px;
     padding-top: 30px;
     text-align: left;
+    width: 100%;
   }
 
   td {
@@ -72,6 +83,19 @@
       overflow: hidden;
       text-overflow: ellipsis;
       max-width: 500px;
+      width: 100%;
+
+      @media (max-width: 1400px) {
+        max-width: 400px;
+      }
+
+      @media (max-width: 1200px) {
+        max-width: 300px;
+      }
+
+      @media (max-width: 1000px) {
+        max-width: 85%;
+      }
     }
 
     .safeMode {
@@ -82,7 +106,20 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 300px;
+      max-width: 400px;
+      width: 100%;
+
+      @media (max-width: 1300px) {
+        max-width: 300px;
+      }
+
+      @media (max-width: 1100px) {
+        max-width: 250px;
+      }
+
+      @media (max-width: 1000px) {
+        max-width: 75%;
+      }
     }
   }
 
