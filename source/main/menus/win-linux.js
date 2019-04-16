@@ -143,6 +143,7 @@ export const winLinuxMenu = (
               translation('helpSupport.gpuSafeModeDialogConfirm'),
               translation('helpSupport.gpuSafeModeDialogCancel'),
             ],
+            type: 'warning',
             title: isInSafeMode
               ? translation('helpSupport.gpuSafeModeDialogTitle')
               : translation('helpSupport.nonGpuSafeModeDialogTitle'),
