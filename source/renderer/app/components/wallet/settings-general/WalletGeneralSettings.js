@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import moment from 'moment';
 import LocalizableError from '../../../i18n/LocalizableError';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
@@ -156,7 +156,9 @@ export default class WalletGeneralSettings extends Component<Props> {
           <InlineEditingDropdown
             className="walletAssuranceLevel"
             label={intl.formatMessage(messages.assuranceLevelLabel)}
-            tooltip={intl.formatMessage(messages.assuranceLevelTooltip)}
+            tooltip={
+              <FormattedHTMLMessage {...messages.assuranceLevelTooltip} />
+            }
             options={assuranceLevelOptions}
             value={walletAssurance}
             isActive={activeField === 'assurance'}

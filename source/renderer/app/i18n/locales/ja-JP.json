@@ -377,7 +377,7 @@
   "wallet.settings.exportToFile.dialog.introduction": "<strong>{walletName}</strong>をファイルにエクスポートします",
   "wallet.settings.exportToFile.dialog.submit.label": "エクスポート",
   "wallet.settings.general.assuranceLabel": "セキュリティ",
-  "wallet.settings.general.assuranceTooltip": "トランザクション保証のセキュリティレベル",
+  "wallet.settings.general.assuranceTooltip": "トランザクション保証の<br />セキュリティレベル",
   "wallet.settings.general.exportWalletButtonLabel": "ウォレットのエクスポート",
   "wallet.settings.general.name.label": "ウォレット名",
   "wallet.settings.general.password": "パスワード",
