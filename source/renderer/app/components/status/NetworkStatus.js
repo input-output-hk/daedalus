@@ -206,6 +206,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Node Subscribed',
     description: 'Node Subscribed',
   },
+  cardanoNodeTimeCorrect: {
+    id: 'status.network.dialog.cardanoNodeTimeCorrect',
+    defaultMessage: '!!!Node Time Correct',
+    description: 'Node Time Correct',
+  },
   cardanoNodeSyncing: {
     id: 'status.network.dialog.cardanoNodeSyncing',
     defaultMessage: '!!!Node Syncing',

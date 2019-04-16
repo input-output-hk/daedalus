@@ -199,6 +199,7 @@
   "status.network.dialog.stateDirectory": "Daedalus State Directory",
   "status.network.dialog.connectionError": "CONNECTION ERROR",
   "status.network.dialog.daedalusStatus": "DAEDALUS STATUS",
+  "status.network.dialog.connected": "Connected",
   "status.network.dialog.synced": "Synced",
   "status.network.dialog.syncPercentage": "Sync Percentage",
   "status.network.dialog.networkBlockHeight": "Network Block Height",
