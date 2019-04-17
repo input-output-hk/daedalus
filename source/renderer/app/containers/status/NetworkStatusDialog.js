@@ -60,7 +60,8 @@ export default class NetworkStatusDialog extends Component<Props> {
 
     const coreInfo = {
       daedalusVersion: environment.version,
-      daedalusProcessID: environment.processID,
+      daedalusProcessID: environment.rendererProcessID,
+      daedalusMainProcessID: environment.mainProcessID,
       isInSafeMode: includes(process.argv.slice(1), '--safe-mode'),
       cardanoVersion: environment.buildNumber,
       cardanoProcessID: cardanoNodeID,

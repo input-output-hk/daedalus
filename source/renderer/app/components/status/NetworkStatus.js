@@ -61,10 +61,15 @@ const messages = defineMessages({
     defaultMessage: '!!!Daedalus Version',
     description: 'Daedalus Version',
   },
+  daedalusMainProcessID: {
+    id: 'status.network.dialog.daedalusMainProcessID',
+    defaultMessage: '!!!Daedalus Main Process ID',
+    description: 'Daedalus Main Process ID',
+  },
   daedalusProcessID: {
     id: 'status.network.dialog.daedalusProcessID',
-    defaultMessage: '!!!Daedalus Process ID',
-    description: 'Daedalus Process ID',
+    defaultMessage: '!!!Daedalus Renderer Process ID',
+    description: 'Daedalus Renderer Process ID',
   },
   safeMode: {
     id: 'status.network.dialog.safeMode',
@@ -414,6 +419,7 @@ export default class NetworkStatus extends Component<Props, State> {
     const {
       daedalusVersion,
       daedalusProcessID,
+      daedalusMainProcessID,
       isInSafeMode,
       cardanoVersion,
       cardanoProcessID,
@@ -515,6 +521,10 @@ export default class NetworkStatus extends Component<Props, State> {
               <tr>
                 <td>{intl.formatMessage(messages.daedalusVersion)}:</td>
                 <td title={daedalusVersion}>{daedalusVersion}</td>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage(messages.daedalusMainProcessID)}:</td>
+                <td title={daedalusMainProcessID}>{daedalusMainProcessID}</td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.daedalusProcessID)}:</td>
