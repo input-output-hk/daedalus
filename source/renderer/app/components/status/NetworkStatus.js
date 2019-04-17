@@ -690,7 +690,7 @@ export default class NetworkStatus extends Component<Props, State> {
               <tr>
                 <td>{intl.formatMessage(messages.systemTimeIgnored)}:</td>
                 <td
-                  className={this.getClass(!isSystemTimeIgnored)}
+                  className={this.getClass(isSystemTimeIgnored)}
                   title={isSystemTimeIgnored ? 'YES' : 'NO'}
                 >
                   {isSystemTimeIgnored ? 'YES' : 'NO'}
@@ -698,7 +698,10 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.checkingNodeTime)}:</td>
-                <td title={isForceCheckingNodeTime ? 'YES' : 'NO'}>
+                <td
+                  className={this.getClass(isForceCheckingNodeTime)}
+                  title={isForceCheckingNodeTime ? 'YES' : 'NO'}
+                >
                   {isForceCheckingNodeTime ? 'YES' : 'NO'}
                 </td>
               </tr>
