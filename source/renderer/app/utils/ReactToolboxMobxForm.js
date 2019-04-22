@@ -47,6 +47,6 @@ export const handleFormErrors = async (
     firstErrorLabel.parentNode instanceof HTMLElement
   ) {
     const input = firstErrorLabel.parentNode.querySelector('input');
-    if (input) input.focus();
+    if (input) setTimeout(() => input.focus(), 500);
   }
 };
