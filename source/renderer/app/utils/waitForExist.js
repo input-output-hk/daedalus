@@ -26,7 +26,13 @@ export const waitForExist = (
       reject(new Error('Element(s) not found'));
     }, rejectTimeoutTime);
 
-    const doResolve = selection => {
+    const doResolveSingle = (selection: HTMLElement) => {
+      resolve(selection);
+      clearInterval(checkInterval);
+      clearTimeout(rejectTimeout);
+    };
+
+    const doResolveAll = (selection: NodeList<HTMLElement>) => {
       resolve(selection);
       clearInterval(checkInterval);
       clearTimeout(rejectTimeout);
@@ -34,12 +40,12 @@ export const waitForExist = (
 
     const checkAll = () => {
       const selection = context.querySelectorAll(selector);
-      if (selection.length) doResolve(selection);
+      if (selection.length) doResolveAll(selection);
     };
 
     const checkSingle = () => {
       const selection = context.querySelector(selector);
-      if (selection) doResolve(selection);
+      if (selection) doResolveSingle(selection);
     };
 
     const check = selectAll ? checkAll : checkSingle;

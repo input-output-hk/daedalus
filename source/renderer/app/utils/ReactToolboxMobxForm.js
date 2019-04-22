@@ -22,14 +22,31 @@ export default class ReactToolboxMobxForm extends MobxReactForm {
   }
 }
 
-export const handleFormErrors = async (querySelector: string) => {
-  try {
-    const firstErrorLabel = await waitForExist(querySelector);
+type HandleFormErrorsOptions = {
+  focusElement?: ?boolean,
+  asyncSelector?: ?boolean,
+};
+
+export const handleFormErrors = async (
+  querySelector: string,
+  options: HandleFormErrorsOptions = {}
+) => {
+  const { focusElement, asyncSelector } = options;
+
+  const firstErrorLabel = asyncSelector
+    ? await waitForExist(querySelector)
+    : document.querySelector(querySelector);
+
+  if (firstErrorLabel) {
     firstErrorLabel.scrollIntoView({ behavior: 'smooth' });
-    if (firstErrorLabel.nextSibling && firstErrorLabel.nextSibling.click) {
-      setTimeout(() => firstErrorLabel.nextSibling.click(), 500);
-    }
-  } catch (err) {
-    throw err;
+  }
+
+  if (
+    focusElement &&
+    firstErrorLabel &&
+    firstErrorLabel.parentNode instanceof HTMLElement
+  ) {
+    const input = firstErrorLabel.parentNode.querySelector('input');
+    if (input) input.focus();
   }
 };

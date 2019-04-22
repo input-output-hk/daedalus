@@ -178,7 +178,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
   componentWillReceiveProps(newProps: Props) {
     if (!this.props.error && newProps.error) {
-      handleFormErrors('.WalletRestoreDialog_error');
+      handleFormErrors('.WalletRestoreDialog_error', { asyncSelector: true });
     }
   }
 
@@ -302,7 +302,8 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
         onSubmit(walletData);
       },
-      onError: handleFormErrors.bind(this, '.SimpleFormField_error'),
+      onError: () =>
+        handleFormErrors('.SimpleFormField_error', { focusElement: true }),
     });
   };
 
