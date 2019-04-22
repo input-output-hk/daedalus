@@ -191,8 +191,8 @@ export default class WalletCreateDialog extends Component<Props, State> {
         };
         this.props.onSubmit(walletData);
       },
-      onError: form => {
-        handleFormErrors(form);
+      onError: () => {
+        handleFormErrors('.SimpleFormField_error');
         this.setState({ isSubmitting: false });
       },
     });

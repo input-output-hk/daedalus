@@ -1,5 +1,6 @@
 // @flow
 import MobxReactForm from 'mobx-react-form';
+import { waitForExist } from './waitForExist';
 
 export default class ReactToolboxMobxForm extends MobxReactForm {
   bindings() {
@@ -21,7 +22,14 @@ export default class ReactToolboxMobxForm extends MobxReactForm {
   }
 }
 
-export const handleFormErrors = () => {
-  const firstErrorLabel = document.querySelector('.SimpleFormField_error');
-  if (firstErrorLabel) firstErrorLabel.scrollIntoView({ behavior: 'smooth' });
+export const handleFormErrors = async (querySelector: string) => {
+  try {
+    const firstErrorLabel = await waitForExist(querySelector);
+    firstErrorLabel.scrollIntoView({ behavior: 'smooth' });
+    if (firstErrorLabel.nextSibling && firstErrorLabel.nextSibling.click) {
+      setTimeout(() => firstErrorLabel.nextSibling.click(), 500);
+    }
+  } catch (err) {
+    throw err;
+  }
 };

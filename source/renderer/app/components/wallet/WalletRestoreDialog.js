@@ -176,6 +176,12 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
   recoveryPhraseAutocomplete: Autocomplete;
 
+  componentWillReceiveProps(newProps: Props) {
+    if (!this.props.error && newProps.error) {
+      handleFormErrors('.WalletRestoreDialog_error');
+    }
+  }
+
   form = new ReactToolboxMobxForm(
     {
       fields: {
@@ -296,7 +302,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
         onSubmit(walletData);
       },
-      onError: handleFormErrors,
+      onError: handleFormErrors.bind(this, '.SimpleFormField_error'),
     });
   };
 
