@@ -2,17 +2,15 @@
 import { isEmpty } from 'lodash';
 import type { ThemeColors, ThemeFonts, CreateThemeParams } from '../types';
 
-type CreateThemePartial = {
+type PartialThemeParts = {
   colors: ThemeColors,
   fonts: ThemeFonts,
 };
 
-const createReactPolymorphTheme = (themeParts: CreateThemePartial): Object => {
-  // deconstruct colors & fonts
+// assigns values to all react-polymorph CSS variables & returns them
+const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
   const { colors, fonts } = themeParts;
   const { primary, secondary, error } = colors;
-
-  // assign all react-polymorph CSS variables
   return {
     autocomplete: {
       '--rp-autocomplete-bg-color': `${primary.background}`,
@@ -130,8 +128,9 @@ const createReactPolymorphTheme = (themeParts: CreateThemePartial): Object => {
   };
 };
 
+// assigns values to all Daedalus CSS variables & returns them
 const createDaedalusComponentsTheme = (
-  themeParts: CreateThemePartial
+  themeParts: PartialThemeParts
 ): Object => {
   const { colors, fonts } = themeParts;
   const { primary, secondary, error } = colors;
