@@ -747,8 +747,7 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoNodeSubscribed)}:</td>
-                <td
-                  className={this.getClass(isNodeSubscribed)}>
+                <td className={this.getClass(isNodeSubscribed)}>
                   {isNodeSubscribed ? 'YES' : 'NO'}
                 </td>
               </tr>
