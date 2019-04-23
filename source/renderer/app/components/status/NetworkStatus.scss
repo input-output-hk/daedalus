@@ -94,7 +94,7 @@
       }
 
       @media (max-width: 1000px) {
-        max-width: 85%;
+        max-width: 83%;
       }
     }
 
@@ -206,6 +206,10 @@
 
   @media (max-width: 1000px) {
     width: 100%;
+
+    &:first-child tr {
+      max-width: 775px;
+    }
   }
 }
 

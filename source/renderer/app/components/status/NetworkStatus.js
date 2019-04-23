@@ -614,7 +614,6 @@ export default class NetworkStatus extends Component<Props, State> {
               <tr>
                 <td>{intl.formatMessage(messages.remainingUnsyncedBlocks)}:</td>
                 <td
-                  className={remainingUnsyncedBlocksClasses}
                   title={
                     remainingUnsyncedBlocks > 0 ? remainingUnsyncedBlocks : '-'
                   }
