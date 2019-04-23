@@ -29,7 +29,7 @@ const isTestnet = NETWORK === TESTNET;
 const isDevelopment = NETWORK === DEVELOPMENT;
 const isWatchMode = process.env.IS_WATCH_MODE;
 const API_VERSION = process.env.API_VERSION || 'dev';
-const mainProcessID = '';
+const mainProcessID = process.ppid;
 const rendererProcessID = process.pid;
 const PLATFORM = os.platform();
 const PLATFORM_VERSION = os.release();
