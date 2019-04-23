@@ -131,6 +131,8 @@ export const osxMenu = (
             message: isInSafeMode
               ? translation('helpSupport.gpuSafeModeDialogMessage')
               : translation('helpSupport.nonGpuSafeModeDialogMessage'),
+            defaultId: 1,
+            cancelId: 1,
           };
           dialog.showMessageBox(window, gpuSafeModeDialogOptions, buttonId => {
             if (buttonId === 0) {

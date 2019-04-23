@@ -141,6 +141,7 @@ export const winLinuxMenu = (
           const gpuSafeModeDialogOptions = {
             buttons: [
               translation('helpSupport.gpuSafeModeDialogConfirm'),
+              translation('helpSupport.gpuSafeModeDialogNo'),
               translation('helpSupport.gpuSafeModeDialogCancel'),
             ],
             type: 'warning',
@@ -150,6 +151,8 @@ export const winLinuxMenu = (
             message: isInSafeMode
               ? translation('helpSupport.gpuSafeModeDialogMessage')
               : translation('helpSupport.nonGpuSafeModeDialogMessage'),
+            defaultId: 2,
+            cancelId: 2,
           };
           dialog.showMessageBox(window, gpuSafeModeDialogOptions, buttonId => {
             if (buttonId === 0) {
