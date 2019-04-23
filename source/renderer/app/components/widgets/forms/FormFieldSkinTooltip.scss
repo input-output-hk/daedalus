@@ -1,0 +1,22 @@
+.component {
+  &:hover {
+    .exclamationPointIcon {
+      opacity: 1;
+    }
+  }
+}
+
+.tooltip {
+  display: inline-block !important;
+}
+
+.exclamationPointIcon {
+  opacity: 0.3;
+
+  svg {
+    height: 14px;
+    width: 14px;
+    margin-left: 4px;
+    transform: translateY(2px);
+  }
+}

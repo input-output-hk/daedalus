@@ -145,9 +145,9 @@ export default class WalletGeneralSettings extends Component<Props> {
             onCancelEditing={onCancelEditing}
             onSubmit={value => onFieldValueChange('name', value)}
             isValid={nameValidator}
-            validationErrorMessage={intl.formatMessage(
-              globalMessages.invalidWalletName
-            )}
+            validationErrorMessage={
+              <FormattedHTMLMessage {...globalMessages.invalidWalletName} />
+            }
             successfullyUpdated={
               !isSubmitting && lastUpdatedField === 'name' && !isInvalid
             }

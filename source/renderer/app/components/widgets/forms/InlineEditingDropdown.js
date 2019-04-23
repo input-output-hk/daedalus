@@ -71,6 +71,7 @@ export default class InlineEditingDropdown extends Component<Props> {
           themeOverrides={tooltipStyles}
           tip={tooltip}
           key="tooltip"
+          className={styles.tooltip}
         >
           <SVGInline
             svg={questionMarkIcon}
