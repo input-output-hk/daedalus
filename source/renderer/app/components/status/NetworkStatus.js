@@ -532,10 +532,7 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.safeMode)}:</td>
-                <td
-                  className={styles.safeMode}
-                  title={isInSafeMode ? 'YES' : 'NO'}
-                >
+                <td className={styles.safeMode}>
                   {isInSafeMode ? 'YES' : 'NO'}
                 </td>
               </tr>
@@ -590,19 +587,13 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.connected)}:</td>
-                <td
-                  className={this.getClass(isConnected)}
-                  title={isConnected ? 'YES' : 'NO'}
-                >
+                <td className={this.getClass(isConnected)}>
                   {isConnected ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.synced)}:</td>
-                <td
-                  className={this.getClass(isSynced)}
-                  title={isSynced ? 'YES' : 'NO'}
-                >
+                <td className={this.getClass(isSynced)}>
                   {isSynced ? 'YES' : 'NO'}
                 </td>
               </tr>
@@ -625,10 +616,10 @@ export default class NetworkStatus extends Component<Props, State> {
                 <td
                   className={remainingUnsyncedBlocksClasses}
                   title={
-                    remainingUnsyncedBlocks >= 0 ? remainingUnsyncedBlocks : '-'
+                    remainingUnsyncedBlocks > 0 ? remainingUnsyncedBlocks : '-'
                   }
                 >
-                  {remainingUnsyncedBlocks >= 0 ? remainingUnsyncedBlocks : '-'}
+                  {remainingUnsyncedBlocks > 0 ? remainingUnsyncedBlocks : '-'}
                 </td>
               </tr>
               <tr>
@@ -690,28 +681,19 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.systemTimeCorrect)}:</td>
-                <td
-                  className={this.getClass(isSystemTimeCorrect)}
-                  title={isSystemTimeCorrect ? 'YES' : 'NO'}
-                >
+                <td className={this.getClass(isSystemTimeCorrect)}>
                   {isSystemTimeCorrect ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.systemTimeIgnored)}:</td>
-                <td
-                  className={this.getClass(isSystemTimeIgnored)}
-                  title={isSystemTimeIgnored ? 'YES' : 'NO'}
-                >
+                <td className={this.getClass(isSystemTimeIgnored)}>
                   {isSystemTimeIgnored ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.checkingNodeTime)}:</td>
-                <td
-                  className={this.getClass(isForceCheckingNodeTime)}
-                  title={isForceCheckingNodeTime ? 'YES' : 'NO'}
-                >
+                <td className={this.getClass(isForceCheckingNodeTime)}>
                   {isForceCheckingNodeTime ? 'YES' : 'NO'}
                 </td>
               </tr>
@@ -759,46 +741,32 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoNodeResponding)}:</td>
-                <td
-                  className={this.getClass(isNodeResponding)}
-                  title={isNodeResponding ? 'YES' : 'NO'}
-                >
+                <td className={this.getClass(isNodeResponding)}>
                   {isNodeResponding ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoNodeSubscribed)}:</td>
                 <td
-                  className={this.getClass(isNodeSubscribed)}
-                  title={isNodeSubscribed ? 'YES' : 'NO'}
-                >
+                  className={this.getClass(isNodeSubscribed)}>
                   {isNodeSubscribed ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoNodeTimeCorrect)}:</td>
-                <td
-                  className={this.getClass(isNodeTimeCorrect)}
-                  title={isNodeTimeCorrect ? 'YES' : 'NO'}
-                >
+                <td className={this.getClass(isNodeTimeCorrect)}>
                   {isNodeTimeCorrect ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoNodeSyncing)}:</td>
-                <td
-                  className={this.getClass(isNodeSyncing)}
-                  title={isNodeSyncing ? 'YES' : 'NO'}
-                >
+                <td className={this.getClass(isNodeSyncing)}>
                   {isNodeSyncing ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoNodeInSync)}:</td>
-                <td
-                  className={this.getClass(isNodeInSync)}
-                  title={isNodeInSync ? 'YES' : 'NO'}
-                >
+                <td className={this.getClass(isNodeInSync)}>
                   {isNodeInSync ? 'YES' : 'NO'}
                 </td>
               </tr>
