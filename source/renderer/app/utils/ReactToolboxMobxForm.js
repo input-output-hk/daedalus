@@ -24,18 +24,15 @@ export default class ReactToolboxMobxForm extends MobxReactForm {
 
 type HandleFormErrorsOptions = {
   focusElement?: ?boolean,
-  asyncSelector?: ?boolean,
 };
 
 export const handleFormErrors = async (
   querySelector: string,
   options: HandleFormErrorsOptions = {}
 ) => {
-  const { focusElement, asyncSelector } = options;
+  const { focusElement } = options;
 
-  const firstErrorLabel = asyncSelector
-    ? await waitForExist(querySelector)
-    : document.querySelector(querySelector);
+  const firstErrorLabel = await waitForExist(querySelector);
 
   if (firstErrorLabel) {
     firstErrorLabel.scrollIntoView({ behavior: 'smooth' });
@@ -46,7 +43,10 @@ export const handleFormErrors = async (
     firstErrorLabel &&
     firstErrorLabel.parentNode instanceof HTMLElement
   ) {
-    const input = firstErrorLabel.parentNode.querySelector('input');
-    if (input) setTimeout(() => input.focus(), 500);
+    const input = firstErrorLabel.parentNode.querySelector(
+      'div:not(.SimpleAutocomplete_selectedWords) > input'
+    );
+    if (input) return setTimeout(() => input.focus(), 500);
   }
+  return false;
 };
