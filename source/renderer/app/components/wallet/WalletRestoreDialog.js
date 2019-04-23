@@ -177,8 +177,8 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   recoveryPhraseAutocomplete: Autocomplete;
 
   componentWillReceiveProps(newProps: Props) {
-    if (!this.props.error && newProps.error) {
-      handleFormErrors('.WalletRestoreDialog_error', { asyncSelector: true });
+    if (newProps.error) {
+      handleFormErrors('.WalletRestoreDialog_error');
     }
   }
 
