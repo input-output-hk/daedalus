@@ -15,19 +15,24 @@
   }
 
   .tooltip {
-    opacity: 0.4;
     &:hover {
-      opacity: 0.8;
+      .questionMarkIcon {
+        opacity: 0.8;
+      }
     }
   }
 
   .questionMarkIcon {
     height: 14px;
-    width: 14px;
-    margin-left: 4px;
+    margin-left: 6px;
+    opacity: 0.4;
     transform: translateY(2px);
+    width: 14px;
     path {
       fill: var(--theme-input-icon-background-color);
+    }
+    @media (max-width: 950px) {
+      margin-left: 2px;
     }
   }
 
