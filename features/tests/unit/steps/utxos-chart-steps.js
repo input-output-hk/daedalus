@@ -1,16 +1,16 @@
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
-import { isValidSpendingPassword } from '../../../renderer/app/utils/validations';
+import { isValidSpendingPassword } from '../../../../source/renderer/app/utils/validations';
 import {
   formattedAmountToLovelace,
   formattedLovelaceToAmount,
-} from '../../../renderer/app/utils/formatters';
+} from '../../../../source/renderer/app/utils/formatters';
 import {
   getUtxoChartData,
   getUtxoWalletPrettyAmount,
   getWalletUtxosTotalAmount,
-} from '../../../renderer/app/utils/utxoUtils';
-import { getHistogramFromTable } from '../support/utxo-helpers';
+} from '../../../../source/renderer/app/utils/utxoUtils';
+import { getHistogramFromTable } from '../setup/utxo-helpers';
 
 Given('the `getUtxoChartData` function receives the following props:', function(
   data

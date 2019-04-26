@@ -1,3 +1,4 @@
+@unit
 Feature: UTXOs chart data
 
   Scenario: The histogram data is sent to the `getUtxoChartData` function
