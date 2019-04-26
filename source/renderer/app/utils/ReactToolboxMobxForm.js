@@ -1,4 +1,6 @@
+// @flow
 import MobxReactForm from 'mobx-react-form';
+import { waitForExist } from './waitForExist';
 
 export default class ReactToolboxMobxForm extends MobxReactForm {
   bindings() {
@@ -19,3 +21,32 @@ export default class ReactToolboxMobxForm extends MobxReactForm {
     };
   }
 }
+
+type HandleFormErrorsOptions = {
+  focusElement?: ?boolean,
+};
+
+export const handleFormErrors = async (
+  querySelector: string,
+  options: HandleFormErrorsOptions = {}
+) => {
+  const { focusElement } = options;
+
+  const firstErrorLabel = await waitForExist(querySelector);
+
+  if (firstErrorLabel) {
+    firstErrorLabel.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  if (
+    focusElement &&
+    firstErrorLabel &&
+    firstErrorLabel.parentNode instanceof HTMLElement
+  ) {
+    const input = firstErrorLabel.parentNode.querySelector(
+      'div:not(.SimpleAutocomplete_selectedWords) > input'
+    );
+    if (input) return setTimeout(() => input.focus(), 500);
+  }
+  return false;
+};
