@@ -4,12 +4,6 @@
   box-shadow: 0 1.5px 5px 0 var(--theme-utxo-tooltip-shadow-color);
   opacity: 0.9;
 
-  &.noPreviousWalletAmount {
-    em {
-      display: none;
-    }
-  }
-
   p {
     color: var(--theme-utxo-tooltip-text-color);
     font-family: var(--font-regular);

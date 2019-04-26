@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from 'react';
-import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { get } from 'lodash';
@@ -8,11 +7,23 @@ import styles from './WalletSettingsUtxoTooltip.scss';
 import { PRETTY_WALLET_AMOUNTS } from '../../../config/utxoConfig';
 
 export const messages = defineMessages({
+  tooltipFirst: {
+    id: 'wallet.settings.utxos.tooltipFirst',
+    defaultMessage:
+      '!!!<b>{walletUtxosAmount}</b> UTXOs containing <br /> <b>{walletAmount}</b> ADA',
+    description: 'Tooltip for the "Wallet Utxos - first bar" screen.',
+  },
   tooltip: {
     id: 'wallet.settings.utxos.tooltip',
     defaultMessage:
       '!!!<b>{walletUtxosAmount}</b> UTXOs containing <br /> <span> between <b>{previousWalletAmount}</b> and </span> <b>{walletAmount}</b> ADA',
     description: 'Tooltip for the "Wallet Utxos" screen.',
+  },
+  tooltipLast: {
+    id: 'wallet.settings.utxos.tooltipLast',
+    defaultMessage:
+      '!!!<b>{walletUtxosAmount}</b> UTXOs containing <br /> <b>{walletAmount}</b> or more ADA',
+    description: 'Tooltip for the "Wallet Utxos - last bar" screen.',
   },
 });
 
@@ -42,16 +53,16 @@ export default class WalletSettingsUtxoTooltip extends Component<Props> {
     const { label: walletAmount = '', payload } = this.props;
     const { walletUtxosAmount } = get(payload, '[0].payload', {});
     const previousWalletAmount = this.getPreviousAmount(walletAmount);
-    const componentStyles = classnames([
-      styles.component,
-      !previousWalletAmount ? styles.noPreviousWalletAmount : null,
-    ]);
+
+    let message = messages.tooltip;
+    if (!previousWalletAmount) message = messages.tooltipFirst;
+    if (walletAmount === '10K+') message = messages.tooltipLast;
 
     return (
-      <div className={componentStyles}>
+      <div className={styles.component}>
         <p>
           <FormattedHTMLMessage
-            {...messages.tooltip}
+            {...message}
             values={{
               walletUtxosAmount,
               previousWalletAmount,

@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
@@ -38,7 +39,7 @@ type Props = {
   onCancelEditing: Function,
   onSubmit: Function,
   isValid: Function,
-  validationErrorMessage: string,
+  validationErrorMessage: string | Node,
   successfullyUpdated: boolean,
 };
 

@@ -4001,17 +4001,45 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!<b>{walletUtxosAmount}</b> UTXOs containing <br /> <b>{walletAmount}</b> ADA",
+        "description": "Tooltip for the \"Wallet Utxos - first bar\" screen.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/wallet/settings-utxo/WalletSettingsUtxoTooltip.js",
+        "id": "wallet.settings.utxos.tooltipFirst",
+        "start": {
+          "column": 16,
+          "line": 10
+        }
+      },
+      {
         "defaultMessage": "!!!<b>{walletUtxosAmount}</b> UTXOs containing <br /> <span> between <b>{previousWalletAmount}</b> and </span> <b>{walletAmount}</b> ADA",
         "description": "Tooltip for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 21
         },
         "file": "source/renderer/app/components/wallet/settings-utxo/WalletSettingsUtxoTooltip.js",
         "id": "wallet.settings.utxos.tooltip",
         "start": {
           "column": 11,
-          "line": 11
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!<b>{walletUtxosAmount}</b> UTXOs containing <br /> <b>{walletAmount}</b> or more ADA",
+        "description": "Tooltip for the \"Wallet Utxos - last bar\" screen.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/wallet/settings-utxo/WalletSettingsUtxoTooltip.js",
+        "id": "wallet.settings.utxos.tooltipLast",
+        "start": {
+          "column": 15,
+          "line": 22
         }
       }
     ],
