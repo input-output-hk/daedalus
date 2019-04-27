@@ -22,7 +22,7 @@ export const messages = defineMessages({
   tooltipLast: {
     id: 'wallet.settings.utxos.tooltipLast',
     defaultMessage:
-      '!!!<b>{walletUtxosAmount}</b> UTXOs containing <br /> <b>{walletAmount}</b> or more ADA',
+      '!!!<b>{walletUtxosAmount}</b> UTXOs containing <br /> <b>{walletAmount}</b> ADA',
     description: 'Tooltip for the "Wallet Utxos - last bar" screen.',
   },
 });
