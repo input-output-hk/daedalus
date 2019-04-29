@@ -1,6 +1,7 @@
 @import '../../../themes/mixins/error-message';
 
 .component {
+  background-color: var(--theme-main-body-background-color);
   display: flex;
   flex-direction: column;
   font-family: var(--font-regular);
@@ -10,14 +11,6 @@
   :global {
     .SimpleFormField_label {
       color: var(--theme-input-label-color);
-    }
-    .SimpleInput_disabled.ReadOnlyInput_disabled {
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-    .SimpleFormField_error {
-      width: 100%;
     }
   }
 }

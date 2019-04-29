@@ -10,7 +10,9 @@
   &.isEmpty {
     min-height: auto;
   }
+}
 
+.container {
   h1 {
     color: var(--theme-utxo-title-text-color);
     font-size: 16px;

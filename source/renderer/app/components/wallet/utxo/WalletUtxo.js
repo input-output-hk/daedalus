@@ -14,6 +14,7 @@ import {
   Bar,
   ResponsiveContainer,
 } from 'recharts';
+import BorderedBox from '../../widgets/BorderedBox';
 import Tick from './WalletUtxoTick';
 import CustomTooltip from './WalletUtxoTooltip';
 import Cursor from './WalletUtxoCursor';
@@ -75,77 +76,81 @@ export default class WalletUtxo extends Component<Props> {
 
     return (
       <div className={componentStyles}>
-        <h1>{intl.formatMessage(messages.title)}</h1>
+        <BorderedBox>
+          <div className={styles.container}>
+            <h1>{intl.formatMessage(messages.title)}</h1>
 
-        {!isEmpty ? (
-          <Fragment>
-            <p>
-              <FormattedHTMLMessage
-                {...messages.description}
-                values={{ formattedWalletAmount, walletUtxosAmount }}
-              />
-            </p>
+            {!isEmpty ? (
+              <Fragment>
+                <p>
+                  <FormattedHTMLMessage
+                    {...messages.description}
+                    values={{ formattedWalletAmount, walletUtxosAmount }}
+                  />
+                </p>
 
-            <ResponsiveContainer
-              height={280}
-              className={styles.responsiveContainer}
-            >
-              <BarChart data={chartData} barGap={30} barCategoryGap={4}>
-                <CartesianGrid
-                  className={styles.cartesianGrid}
-                  horizontal={false}
-                  vertical={false}
-                  y={-10}
-                  height={255}
-                  fill="transparent"
-                />
-                <XAxis
-                  dataKey="walletAmount"
-                  interval={0}
-                  axisLine={false}
-                  tickLine={false}
-                  tick={(props: TickProps) => (
-                    <Tick {...props} textAnchor="start" vertical />
-                  )}
-                  className={styles.xAxis}
-                  y={0}
+                <ResponsiveContainer
+                  height={280}
+                  className={styles.responsiveContainer}
                 >
-                  <Label
-                    value={intl.formatMessage(messages.labelX)}
-                    offset={20}
-                    position="insideBottomRight"
-                    className={styles.xAxisLabel}
-                  />
-                </XAxis>
-                <YAxis
-                  dataKey="walletUtxosAmount"
-                  axisLine={false}
-                  tickLine={false}
-                  allowDecimals={false}
-                  domain={[0, 'dataMax']}
-                  tick={(props: TickProps) => (
-                    <Tick {...props} textAnchor="end" />
-                  )}
-                >
-                  <Label
-                    value={intl.formatMessage(messages.labelY)}
-                    offset={0}
-                    position="insideTopLeft"
-                    className={styles.yAxisLabel}
-                  />
-                </YAxis>
-                <Tooltip
-                  cursor={<Cursor />}
-                  isAnimationActive={false}
-                  content={<CustomTooltip />}
-                />
-                <Bar dataKey="walletUtxosAmount" className={styles.bar} />
-              </BarChart>
-            </ResponsiveContainer>
-          </Fragment>
-        ) : (
-          <p>{intl.formatMessage(messages.emptyWallet)}</p>
-        )}
+                  <BarChart data={chartData} barGap={30} barCategoryGap={4}>
+                    <CartesianGrid
+                      className={styles.cartesianGrid}
+                      horizontal={false}
+                      vertical={false}
+                      y={-10}
+                      height={255}
+                      fill="transparent"
+                    />
+                    <XAxis
+                      dataKey="walletAmount"
+                      interval={0}
+                      axisLine={false}
+                      tickLine={false}
+                      tick={(props: TickProps) => (
+                        <Tick {...props} textAnchor="start" vertical />
+                      )}
+                      className={styles.xAxis}
+                      y={0}
+                    >
+                      <Label
+                        value={intl.formatMessage(messages.labelX)}
+                        offset={20}
+                        position="insideBottomRight"
+                        className={styles.xAxisLabel}
+                      />
+                    </XAxis>
+                    <YAxis
+                      dataKey="walletUtxosAmount"
+                      axisLine={false}
+                      tickLine={false}
+                      allowDecimals={false}
+                      domain={[0, 'dataMax']}
+                      tick={(props: TickProps) => (
+                        <Tick {...props} textAnchor="end" />
+                      )}
+                    >
+                      <Label
+                        value={intl.formatMessage(messages.labelY)}
+                        offset={0}
+                        position="insideTopLeft"
+                        className={styles.yAxisLabel}
+                      />
+                    </YAxis>
+                    <Tooltip
+                      cursor={<Cursor />}
+                      isAnimationActive={false}
+                      content={<CustomTooltip />}
+                    />
+                    <Bar dataKey="walletUtxosAmount" className={styles.bar} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </Fragment>
+            ) : (
+              <p>{intl.formatMessage(messages.emptyWallet)}</p>
+            )}
+          </div>
+        </BorderedBox>
       </div>
     );
   }

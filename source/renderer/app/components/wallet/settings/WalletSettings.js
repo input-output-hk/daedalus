@@ -2,9 +2,10 @@
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import LocalizableError from '../../../i18n/LocalizableError';
+import BorderedBox from '../../widgets/BorderedBox';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
 import InlineEditingDropdown from '../../widgets/forms/InlineEditingDropdown';
 import ReadOnlyInput from '../../widgets/forms/ReadOnlyInput';
@@ -18,39 +19,33 @@ import styles from './WalletSettings.scss';
 
 export const messages = defineMessages({
   name: {
-    id: 'wallet.settings.general.name.label',
+    id: 'wallet.settings.name.label',
     defaultMessage: '!!!Name',
     description: 'Label for the "Name" text input on the wallet settings page.',
   },
   assuranceLevelLabel: {
-    id: 'wallet.settings.general.assuranceLabel',
-    defaultMessage: '!!!Security',
+    id: 'wallet.settings.assurance',
+    defaultMessage: '!!!Transaction assurance security level',
     description:
       'Label for the "Transaction assurance security level" dropdown.',
   },
-  assuranceLevelTooltip: {
-    id: 'wallet.settings.general.assuranceTooltip',
-    defaultMessage: '!!!Transaction assurance security level',
-    description:
-      'Tooltip for the "Transaction assurance security level" dropdown.',
-  },
   passwordLabel: {
-    id: 'wallet.settings.general.password',
+    id: 'wallet.settings.password',
     defaultMessage: '!!!Password',
     description: 'Label for the "Password" field.',
   },
   passwordLastUpdated: {
-    id: 'wallet.settings.general.passwordLastUpdated',
+    id: 'wallet.settings.passwordLastUpdated',
     defaultMessage: '!!!Last updated',
     description: 'Last updated X time ago message.',
   },
   passwordNotSet: {
-    id: 'wallet.settings.general.passwordNotSet',
+    id: 'wallet.settings.passwordNotSet',
     defaultMessage: "!!!You still don't have password",
     description: "You still don't have password set message.",
   },
   exportButtonLabel: {
-    id: 'wallet.settings.general.exportWalletButtonLabel',
+    id: 'wallet.settings.exportWalletButtonLabel',
     defaultMessage: '!!!Export wallet',
     description: 'Label for the export button on wallet settings.',
   },
@@ -134,7 +129,7 @@ export default class WalletSettings extends Component<Props> {
 
     return (
       <div className={styles.component}>
-        <div>
+        <BorderedBox>
           <InlineEditingInput
             className="walletName"
             inputFieldLabel={intl.formatMessage(messages.name)}
@@ -145,9 +140,9 @@ export default class WalletSettings extends Component<Props> {
             onCancelEditing={onCancelEditing}
             onSubmit={value => onFieldValueChange('name', value)}
             isValid={nameValidator}
-            validationErrorMessage={
-              <FormattedHTMLMessage {...globalMessages.invalidWalletName} />
-            }
+            validationErrorMessage={intl.formatMessage(
+              globalMessages.invalidWalletName
+            )}
             successfullyUpdated={
               !isSubmitting && lastUpdatedField === 'name' && !isInvalid
             }
@@ -156,9 +151,6 @@ export default class WalletSettings extends Component<Props> {
           <InlineEditingDropdown
             className="walletAssuranceLevel"
             label={intl.formatMessage(messages.assuranceLevelLabel)}
-            tooltip={
-              <FormattedHTMLMessage {...messages.assuranceLevelTooltip} />
-            }
             options={assuranceLevelOptions}
             value={walletAssurance}
             isActive={activeField === 'assurance'}
@@ -207,7 +199,7 @@ export default class WalletSettings extends Component<Props> {
               }
             />
           </div>
-        </div>
+        </BorderedBox>
 
         {isDialogOpen(ChangeSpendingPasswordDialog)
           ? changeSpendingPasswordDialog
