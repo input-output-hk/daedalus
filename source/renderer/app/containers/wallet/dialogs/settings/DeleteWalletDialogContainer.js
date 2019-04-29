@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import DeleteWalletConfirmationDialog from '../../../../components/wallet/settings-general/DeleteWalletConfirmationDialog';
+import DeleteWalletConfirmationDialog from '../../../../components/wallet/settings/DeleteWalletConfirmationDialog';
 import type { InjectedProps } from '../../../../types/injectedPropsType';
 
 type Props = InjectedProps;

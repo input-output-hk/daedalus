@@ -4,13 +4,13 @@ import { BigNumber } from 'bignumber.js';
 import { getVisibleTextsForSelector } from '../helpers/shared-helpers';
 import { getWalletUtxosTotalAmount } from '../../../../source/renderer/app/utils/utxoUtils';
 
-const component = '.WalletUtxoSettings_component';
+const component = '.WalletUtxo_component';
 
 const selectors = {
   component,
   title: `${component} > h1`,
   description: `${component} > p`,
-  chart: '.WalletUtxoSettings_responsiveContainer',
+  chart: '.WalletUtxo_responsiveContainer',
   walletAmount: `${component} > p b:nth-child(1)`,
   walletUtxosAmount: `${component} > p b:nth-child(2)`,
 };

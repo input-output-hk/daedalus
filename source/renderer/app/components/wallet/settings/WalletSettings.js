@@ -14,7 +14,7 @@ import ExportWalletToFileDialog from './ExportWalletToFileDialog';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
 import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
 import globalMessages from '../../../i18n/global-messages';
-import styles from './WalletGeneralSettings.scss';
+import styles from './WalletSettings.scss';
 
 export const messages = defineMessages({
   name: {
@@ -81,7 +81,7 @@ type Props = {
 };
 
 @observer
-export default class WalletGeneralSettings extends Component<Props> {
+export default class WalletSettings extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };

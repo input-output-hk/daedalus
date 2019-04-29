@@ -103,6 +103,15 @@ export default class WalletNavigation extends Component<Props> {
             onClick={() => onNavItemClick('settings')}
           />
         </div>
+
+        <div className={styles.navItem}>
+          <WalletNavButton
+            label="UTXO"
+            icon={settingsIcon}
+            isActive={isActiveNavItem('utxo')}
+            onClick={() => onNavItemClick('utxo')}
+          />
+        </div>
       </div>
     );
   }

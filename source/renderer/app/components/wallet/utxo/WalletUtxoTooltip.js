@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { get } from 'lodash';
-import styles from './WalletSettingsUtxoTooltip.scss';
+import styles from './WalletUtxoTooltip.scss';
 import { PRETTY_WALLET_AMOUNTS } from '../../../config/utxoConfig';
 
 export const messages = defineMessages({
@@ -37,7 +37,7 @@ type Props = {
 };
 
 @observer
-export default class WalletSettingsUtxoTooltip extends Component<Props> {
+export default class WalletUtxoTooltip extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };

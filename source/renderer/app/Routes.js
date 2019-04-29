@@ -22,9 +22,8 @@ import WalletSummaryPage from './containers/wallet/WalletSummaryPage';
 import WalletSendPage from './containers/wallet/WalletSendPage';
 import WalletReceivePage from './containers/wallet/WalletReceivePage';
 import WalletTransactionsPage from './containers/wallet/WalletTransactionsPage';
-import WalletSettings from './containers/wallet/WalletSettings';
-import WalletGeneralSettingsPage from './containers/wallet/WalletGeneralSettingsPage';
-import WalletUtxoSettingsPage from './containers/wallet/WalletUtxoSettingsPage';
+import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
+import WalletUtxoPage from './containers/wallet/WalletUtxoPage';
 // import StakingPage from './containers/staking/StakingPage';
 
 export const Routes = (
@@ -54,18 +53,8 @@ export const Routes = (
       />
       <Route path={ROUTES.WALLETS.SEND} component={WalletSendPage} />
       <Route path={ROUTES.WALLETS.RECEIVE} component={WalletReceivePage} />
-      <Route path={ROUTES.WALLETS.SETTINGS.ROOT} component={WalletSettings}>
-        <IndexRedirect to={ROUTES.WALLETS.SETTINGS.GENERAL} />
-        <Route
-          path={ROUTES.WALLETS.SETTINGS.GENERAL}
-          component={WalletGeneralSettingsPage}
-        />
-        <Route
-          path={ROUTES.WALLETS.SETTINGS.UTXO}
-          component={WalletUtxoSettingsPage}
-        />
-      </Route>
-      {/* <Route path={ROUTES.WALLETS.SETTINGS.ROOT} component={WalletSettings} /> */}
+      <Route path={ROUTES.WALLETS.SETTINGS} component={WalletSettingsPage} />
+      <Route path={ROUTES.WALLETS.UTXO} component={WalletUtxoPage} />
     </Route>
     <Route path={ROUTES.SETTINGS.ROOT} component={Settings}>
       <IndexRedirect to={ROUTES.SETTINGS.GENERAL} />

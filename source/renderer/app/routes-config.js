@@ -18,11 +18,8 @@ export const ROUTES = {
     TRANSACTIONS: '/wallets/:id/transactions',
     SEND: '/wallets/:id/send',
     RECEIVE: '/wallets/:id/receive',
-    SETTINGS: {
-      ROOT: '/wallets/:id/settings',
-      GENERAL: '/wallets/:id/settings/general',
-      UTXO: '/wallets/:id/settings/utxo',
-    },
+    SETTINGS: '/wallets/:id/settings',
+    UTXO: '/wallets/:id/utxo',
   },
   SETTINGS: {
     ROOT: '/settings',

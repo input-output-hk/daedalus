@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import WalletGeneralSettings from '../../components/wallet/settings-general/WalletGeneralSettings';
+import WalletSettings from '../../components/wallet/settings/WalletSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { isValidWalletName } from '../../utils/validations';
 import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
@@ -40,7 +40,7 @@ export default class WalletSettingsPage extends Component<Props> {
       throw new Error('Active wallet required for WalletSettingsPage.');
 
     return (
-      <WalletGeneralSettings
+      <WalletSettings
         assuranceLevels={WALLET_ASSURANCE_LEVEL_OPTIONS}
         walletAssurance={activeWallet.assurance}
         error={updateWalletRequest.error}

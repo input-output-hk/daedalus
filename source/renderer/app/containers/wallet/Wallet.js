@@ -19,14 +19,6 @@ type Props = InjectedContainerProps;
 export default class Wallet extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
-  constructor(props: any) {
-    super(props);
-
-    this.isSettingsPage = this.getIsSettingsPage;
-  }
-
-  isSettingsPage: boolean = false;
-
   isActiveScreen = (page: string) => {
     const { app, wallets } = this.props.stores;
     if (!wallets.active) return false;
@@ -47,12 +39,7 @@ export default class Wallet extends Component<Props> {
       route: ROUTES.WALLETS.PAGE,
       params: { id: wallets.active.id, page },
     });
-    this.isSettingsPage = this.getIsSettingsPage;
   };
-
-  get getIsSettingsPage() {
-    return this.props.stores.app.currentRoute.indexOf('/settings') > -1;
-  }
 
   render() {
     const { actions, stores } = this.props;
@@ -93,7 +80,6 @@ export default class Wallet extends Component<Props> {
         <WalletWithNavigation
           isActiveScreen={this.isActiveScreen}
           onWalletNavItemClick={this.handleWalletNavItemClick}
-          isSettingsPage={this.isSettingsPage}
         >
           {this.props.children}
         </WalletWithNavigation>

@@ -14,12 +14,12 @@ import {
   Bar,
   ResponsiveContainer,
 } from 'recharts';
-import Tick from './WalletSettingsUtxoTick';
-import CustomTooltip from './WalletSettingsUtxoTooltip';
-import Cursor from './WalletSettingsUtxoCursor';
+import Tick from './WalletUtxoTick';
+import CustomTooltip from './WalletUtxoTooltip';
+import Cursor from './WalletUtxoCursor';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
-import styles from './WalletUtxoSettings.scss';
-import type { TickProps } from './WalletSettingsUtxoTick';
+import styles from './WalletUtxo.scss';
+import type { TickProps } from './WalletUtxoTick';
 
 export const messages = defineMessages({
   title: {
@@ -58,7 +58,7 @@ type Props = {
 };
 
 @observer
-export default class WalletUtxoSettings extends Component<Props> {
+export default class WalletUtxo extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };

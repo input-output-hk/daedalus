@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import styles from './WalletSettingsUtxoCursor.scss';
+import styles from './WalletUtxoCursor.scss';
 
 type CursorProps = {
   x?: number,
@@ -13,7 +13,7 @@ const OFFSET_TOP = 20;
 const OFFSET_BOTTOM = 60;
 
 @observer
-export default class WalletSettingsUtxoCursor extends Component<CursorProps> {
+export default class WalletUtxoCursor extends Component<CursorProps> {
   render() {
     let { x, width, height } = this.props;
 

@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import WalletUtxoSettings from '../../components/wallet/settings-utxo/WalletUtxoSettings';
+import WalletUtxo from '../../components/wallet/utxo/WalletUtxo';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import {
   getUtxoChartData,
@@ -33,7 +33,7 @@ export default class WalletSettingsPage extends Component<Props> {
     const chartData = getUtxoChartData(histogram);
     const walletUtxosAmount = getWalletUtxosTotalAmount(histogram);
     return (
-      <WalletUtxoSettings
+      <WalletUtxo
         walletAmount={activeWallet.amount}
         walletUtxosAmount={walletUtxosAmount}
         chartData={chartData}

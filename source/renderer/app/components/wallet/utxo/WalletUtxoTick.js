@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import styles from './WalletSettingsUtxoTick.scss';
+import styles from './WalletUtxoTick.scss';
 
 export type TickProps = {
   x: number,
@@ -15,7 +15,7 @@ export type TickProps = {
 };
 
 @observer
-export default class WalletSettingsUtxoTick extends Component<TickProps> {
+export default class WalletUtxoTick extends Component<TickProps> {
   render() {
     const {
       x,
