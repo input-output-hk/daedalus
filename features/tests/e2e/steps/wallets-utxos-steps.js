@@ -4,15 +4,15 @@ import { BigNumber } from 'bignumber.js';
 import { getVisibleTextsForSelector } from '../helpers/shared-helpers';
 import { getWalletUtxosTotalAmount } from '../../../../source/renderer/app/utils/utxoUtils';
 
-const component = '.WalletUtxo_component';
+const container = '.WalletUtxo_container';
 
 const selectors = {
-  component,
-  title: `${component} > h1`,
-  description: `${component} > p`,
+  container,
+  title: `${container} > h1`,
+  description: `${container} > p`,
   chart: '.WalletUtxo_responsiveContainer',
-  walletAmount: `${component} > p b:nth-child(1)`,
-  walletUtxosAmount: `${component} > p b:nth-child(2)`,
+  walletAmount: `${container} > p b:nth-child(1)`,
+  walletUtxosAmount: `${container} > p b:nth-child(2)`,
 };
 
 Then('the {string} element renders the following text:', async function(

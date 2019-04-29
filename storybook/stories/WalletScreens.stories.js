@@ -48,16 +48,12 @@ storiesOf('WalletScreens', module)
                 isActiveScreen={item =>
                   item ===
                   context.story
-                    .replace('Settings - General', 'Settings')
-                    .replace('Settings - Wallet UTXO distribution', 'Settings')
+                    .replace('Wallet UTXO distribution', 'utxo')
                     .toLocaleLowerCase()
                 }
                 onWalletNavItemClick={linkTo('WalletScreens', item =>
-                  item === 'settings' ? 'Settings - General' : startCase(item)
+                  item === 'utxo' ? 'Wallet UTXO distribution' : startCase(item)
                 )}
-                isSettingsPage={
-                  context.story.toLocaleLowerCase() === 'settings'
-                }
               >
                 {storyWithKnobs}
               </WalletWithNavigation>
@@ -162,5 +158,5 @@ storiesOf('WalletScreens', module)
     />
   ))
 
-  .add('Settings - General', WalletScreensSettings)
-  .add('Settings - Wallet UTXO distribution', WalletScreensUtxo);
+  .add('Settings', WalletScreensSettings)
+  .add('Wallet UTXO distribution', WalletScreensUtxo);
