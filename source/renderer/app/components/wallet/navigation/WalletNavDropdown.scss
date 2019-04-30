@@ -1,0 +1,29 @@
+.component {
+  width: 100%;
+  height: 100%;
+
+  > div {
+    width: 100%;
+    height: 100%;
+  }
+
+  :global {
+    .SimpleOptions_options {
+      display: none;
+      margin-top: -20px;
+      &:hover {
+        display: block;
+      }
+    }
+    .WalletNavButton_component {
+      cursor: default;
+    }
+  }
+  &:hover {
+    :global {
+      .SimpleOptions_options {
+        display: block;
+      }
+    }
+  }
+}

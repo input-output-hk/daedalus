@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './WalletNavigation.scss';
 import WalletNavButton from './WalletNavButton';
+import WalletNavDropdown from './WalletNavDropdown';
 import summaryIcon from '../../../assets/images/wallet-nav/summary-ic.inline.svg';
 import sendIcon from '../../../assets/images/wallet-nav/send-ic.inline.svg';
 import receiveIcon from '../../../assets/images/wallet-nav/receive-ic.inline.svg';
@@ -37,6 +38,17 @@ const messages = defineMessages({
     defaultMessage: '!!!Settings',
     description:
       'Label for the "Settings" nav button in the wallet navigation.',
+  },
+  utxo: {
+    id: 'wallet.navigation.utxo',
+    defaultMessage: '!!!Wallet UTXO distribution',
+    description:
+      'Label for the "Wallet UTXO distribution" nav button in the wallet navigation.',
+  },
+  more: {
+    id: 'wallet.navigation.more',
+    defaultMessage: '!!!More',
+    description: 'Label for the "More" nav button in the wallet navigation.',
   },
 });
 
@@ -96,20 +108,21 @@ export default class WalletNavigation extends Component<Props> {
         </div>
 
         <div className={styles.navItem}>
-          <WalletNavButton
-            label={intl.formatMessage(messages.settings)}
+          <WalletNavDropdown
+            label={intl.formatMessage(messages.more)}
             icon={settingsIcon}
-            isActive={isActiveNavItem('settings')}
-            onClick={() => onNavItemClick('settings')}
-          />
-        </div>
-
-        <div className={styles.navItem}>
-          <WalletNavButton
-            label="UTXO"
-            icon={settingsIcon}
-            isActive={isActiveNavItem('utxo')}
-            onClick={() => onNavItemClick('utxo')}
+            isActive={isActiveNavItem('settings') || isActiveNavItem('utxo')}
+            onChange={item => onNavItemClick(item)}
+            options={[
+              {
+                label: intl.formatMessage(messages.settings),
+                value: 'settings',
+              },
+              {
+                label: intl.formatMessage(messages.utxo),
+                value: 'utxo',
+              },
+            ]}
           />
         </div>
       </div>
