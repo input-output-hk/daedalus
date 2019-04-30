@@ -122,6 +122,7 @@ export const osxMenu = (
           const gpuSafeModeDialogOptions = {
             buttons: [
               translation('helpSupport.gpuSafeModeDialogConfirm'),
+              translation('helpSupport.gpuSafeModeDialogNo'),
               translation('helpSupport.gpuSafeModeDialogCancel'),
             ],
             type: 'warning',
