@@ -5,6 +5,13 @@ import { dialog } from 'electron';
 import type { MenuActions } from './MenuActions.types';
 import { getTranslation } from '../utils/getTranslation';
 import { environment } from '../environment';
+import { openExternalUrlChannel } from '../ipc/open-external-url';
+import { getLocale } from '../utils/getLocale';
+
+const localesFillForm = {
+  'en-US': 'English',
+  'ja-JP': 'Japanese',
+};
 
 const id = 'menu';
 
@@ -173,11 +180,49 @@ export const winLinuxMenu = (
       },
       {
         label: translation('helpSupport.supportRequest'),
-        click() {},
+        click() {
+          const supportRequestLinkUrl =
+            'https://iohk.zendesk.com/hc/en-us/requests/new/';
+          const {
+            version,
+            apiVersion,
+            network,
+            build,
+            installerVersion,
+            os,
+            buildNumber,
+          } = environment;
+
+          const locale = getLocale(network);
+
+          const info = {
+            frontendVersion: version,
+            backendVersion: apiVersion,
+            network: network === 'development' ? 'staging' : network,
+            build,
+            installerVersion,
+            os,
+            locale,
+            product: `Daedalus wallet - ${network}`,
+            supportLanguage: localesFillForm[locale],
+            productVersion: `Daedalus ${version}+Cardano ${buildNumber}`,
+          };
+          const supportUrl = `${supportRequestLinkUrl}?${Object.entries(info)
+            .map(
+              ([key, val]: [string, any]) =>
+                `${encodeURIComponent(key)}=${encodeURIComponent(val)}`
+            )
+            .join('&')}`;
+          openExternalUrlChannel.send(supportUrl);
+        },
       },
       {
         label: translation('helpSupport.knownIssues'),
-        click() {},
+        click() {
+          const faqLink =
+            'https://iohk.zendesk.com/hc/en-us/articles/360011451693';
+          openExternalUrlChannel.send(faqLink);
+        },
       },
     ]),
   },
