@@ -1,7 +1,7 @@
 // @flow
 import fs from 'fs';
 import path from 'path';
-import log from 'electron-log';
+import log from 'electron-log-daedalus';
 import ensureDirectoryExists from './ensureDirectoryExists';
 import { pubLogsFolderPath, appLogsFolderPath, APP_NAME } from '../config';
 import {
@@ -20,7 +20,7 @@ const isTest = process.env.NODE_ENV === 'test';
 const isDev = process.env.NODE_ENV === 'development';
 
 export const setupLogging = () => {
-  const logFilePath = path.join(pubLogsFolderPath, `${APP_NAME}.json.log`);
+  const logFilePath = path.join(pubLogsFolderPath, `${APP_NAME}.json`);
   ensureDirectoryExists(pubLogsFolderPath);
   log.transports.console.level = isTest ? 'error' : 'info';
   log.transports.rendererConsole.level = isDev ? 'info' : 'error';
