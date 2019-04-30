@@ -32,7 +32,7 @@ export default class WalletNavDropdown extends Component<Props> {
               onClick={() => {}}
             />
           }
-          onChange={onChange}
+          onChange={({ value }) => onChange(value)}
           options={options}
           skin={SelectSkin}
           themeOverrides={selectStyles}
