@@ -1,14 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import type { Element, Ref } from 'react';
-
-// external libraries
-import classnames from 'classnames';
-
-// components
 import { Options } from 'react-polymorph/lib/components/Options';
-
-// skins
 import { OptionsSkin } from 'react-polymorph/lib/skins/simple/OptionsSkin';
 
 type Props = {
@@ -18,7 +11,6 @@ type Props = {
   handleChange: Function,
   handleInputClick: Function,
   inputRef: Ref<'input'>,
-  // isOpen: boolean,
   isOpeningUpward: boolean,
   label: string | Element<any>,
   onBlur: Function,
@@ -38,34 +30,17 @@ type Props = {
   value: string,
 };
 
-type State = {
-  isOpen: boolean,
-};
-
-export class SelectSkin extends Component<Props, State> {
-  state = {
-    isOpen: false,
-  };
-
+export class SelectSkin extends Component<Props> {
   render() {
     const selectedOption = this.props.getSelectedOption();
     const { theme, themeId, ...rest } = this.props;
 
     return (
-      <div
-        ref={this.props.rootRef}
-        className={classnames([
-          this.props.className,
-          theme[themeId].select,
-          this.state.isOpen ? theme[themeId].isOpen : null,
-          this.props.isOpeningUpward ? theme[themeId].openUpward : null,
-        ])}
-      >
+      <div ref={this.props.rootRef} className={theme[themeId].select}>
         {this.props.label}
         <Options
           skin={OptionsSkin}
           theme={theme}
-          isOpen
           optionsRef={this.props.optionsRef}
           options={this.props.options}
           isOpeningUpward={this.props.isOpeningUpward}
@@ -75,6 +50,7 @@ export class SelectSkin extends Component<Props, State> {
           noResults={!this.props.options.length}
           targetRef={this.props.inputRef}
           toggleOpen={this.props.toggleOpen}
+          isOpen
           {...rest}
         />
       </div>
