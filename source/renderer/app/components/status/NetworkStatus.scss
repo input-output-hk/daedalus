@@ -79,10 +79,10 @@
     }
 
     &.platform {
-      white-space: nowrap;
+      max-width: 500px;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 500px;
+      white-space: nowrap;
       width: 100%;
 
       @media (max-width: 1400px) {
@@ -103,10 +103,10 @@
     }
 
     &.stateDirectory {
-      white-space: nowrap;
+      max-width: 400px;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 400px;
+      white-space: nowrap;
       width: 100%;
 
       @media (max-width: 1300px) {
