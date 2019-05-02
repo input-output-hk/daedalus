@@ -246,6 +246,11 @@ const messages = defineMessages({
     defaultMessage: '!!!NO',
     description: 'NO',
   },
+  serviceUnreachable: {
+    id: 'status.network.dialog.serviceUnreachable',
+    defaultMessage: '!!!NTP Service unreachable',
+    description: 'NTP Service unreachable',
+  },
 });
 
 type Props = {
@@ -543,7 +548,9 @@ export default class NetworkStatus extends Component<Props, State> {
               <tr>
                 <td>{intl.formatMessage(messages.safeMode)}:</td>
                 <td className={styles.safeMode}>
-                  {isInSafeMode ? intl.formatMessage(messages.statusOn) : intl.formatMessage(messages.statusOff)}
+                  {isInSafeMode
+                    ? intl.formatMessage(messages.statusOn)
+                    : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
@@ -598,13 +605,17 @@ export default class NetworkStatus extends Component<Props, State> {
               <tr>
                 <td>{intl.formatMessage(messages.connected)}:</td>
                 <td className={this.getClass(isConnected)}>
-                  {isConnected ? intl.formatMessage(messages.statusOn) : intl.formatMessage(messages.statusOff)}
+                  {isConnected
+                    ? intl.formatMessage(messages.statusOn)
+                    : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.synced)}:</td>
                 <td className={this.getClass(isSynced)}>
-                  {isSynced ? intl.formatMessage(messages.statusOn) : intl.formatMessage(messages.statusOff)}
+                  {isSynced
+                    ? intl.formatMessage(messages.statusOn)
+                    : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
@@ -623,9 +634,7 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.remainingUnsyncedBlocks)}:</td>
-                <td
-                  className={remainingUnsyncedBlocksClasses}
-                >
+                <td className={remainingUnsyncedBlocksClasses}>
                   {remainingUnsyncedBlocks >= 0 ? remainingUnsyncedBlocks : '-'}
                 </td>
               </tr>
@@ -677,31 +686,37 @@ export default class NetworkStatus extends Component<Props, State> {
                     title={
                       isNTPServiceReachable
                         ? `${localTimeDifference || 0} μs`
-                        : 'NTP service unreachable'
+                        : intl.formatMessage(messages.serviceUnreachable)
                     }
                   >
                     {isNTPServiceReachable
                       ? `${localTimeDifference || 0} μs`
-                      : 'NTP service unreachable'}
+                      : intl.formatMessage(messages.serviceUnreachable)}
                   </span>{' '}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.systemTimeCorrect)}:</td>
                 <td className={this.getClass(isSystemTimeCorrect)}>
-                  {isSystemTimeCorrect ? intl.formatMessage(messages.statusOn) : intl.formatMessage(messages.statusOff)}
+                  {isSystemTimeCorrect
+                    ? intl.formatMessage(messages.statusOn)
+                    : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.systemTimeIgnored)}:</td>
                 <td className={this.getClass(!isSystemTimeIgnored)}>
-                  {isSystemTimeIgnored ? intl.formatMessage(messages.statusOn) : intl.formatMessage(messages.statusOff)}
+                  {isSystemTimeIgnored
+                    ? intl.formatMessage(messages.statusOn)
+                    : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.checkingNodeTime)}:</td>
                 <td>
-                  {isForceCheckingNodeTime ? intl.formatMessage(messages.statusOn) : intl.formatMessage(messages.statusOff)}
+                  {isForceCheckingNodeTime
+                    ? intl.formatMessage(messages.statusOn)
+                    : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
@@ -749,31 +764,41 @@ export default class NetworkStatus extends Component<Props, State> {
               <tr>
                 <td>{intl.formatMessage(messages.cardanoNodeResponding)}:</td>
                 <td className={this.getClass(isNodeResponding)}>
-                  {isNodeResponding ? intl.formatMessage(messages.statusOn) : intl.formatMessage(messages.statusOff)}
+                  {isNodeResponding
+                    ? intl.formatMessage(messages.statusOn)
+                    : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoNodeSubscribed)}:</td>
                 <td className={this.getClass(isNodeSubscribed)}>
-                  {isNodeSubscribed ? intl.formatMessage(messages.statusOn) : intl.formatMessage(messages.statusOff)}
+                  {isNodeSubscribed
+                    ? intl.formatMessage(messages.statusOn)
+                    : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoNodeTimeCorrect)}:</td>
                 <td className={this.getClass(isNodeTimeCorrect)}>
-                  {isNodeTimeCorrect ? intl.formatMessage(messages.statusOn) : intl.formatMessage(messages.statusOff)}
+                  {isNodeTimeCorrect
+                    ? intl.formatMessage(messages.statusOn)
+                    : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoNodeSyncing)}:</td>
                 <td className={this.getClass(isNodeSyncing)}>
-                  {isNodeSyncing ? intl.formatMessage(messages.statusOn) : intl.formatMessage(messages.statusOff)}
+                  {isNodeSyncing
+                    ? intl.formatMessage(messages.statusOn)
+                    : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoNodeInSync)}:</td>
                 <td className={this.getClass(isNodeInSync)}>
-                  {isNodeInSync ? intl.formatMessage(messages.statusOn) : intl.formatMessage(messages.statusOff)}
+                  {isNodeInSync
+                    ? intl.formatMessage(messages.statusOn)
+                    : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
             </tbody>

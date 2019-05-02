@@ -225,6 +225,7 @@
   "status.network.dialog.cardanoNodeInSync": "Node In Sync",
   "status.network.dialog.statusOn": "YES",
   "status.network.dialog.statusOff": "NO",
+  "status.network.dialog.serviceUnreachable": "NTP Service unreachable",
   "status.network.dialog.localTimeDifferenceChecking": "Checking...",
   "status.network.dialog.localTimeDifferenceCheckTime": "Check time",
   "status.icons.checkYourInternetConnection": "Check your <b>Internet connection</b>",

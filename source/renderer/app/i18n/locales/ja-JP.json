@@ -225,6 +225,7 @@
   "status.network.dialog.cardanoNodeInSync": "Node In Sync",
   "status.network.dialog.statusOn": "はい",
   "status.network.dialog.statusOff": "いいえ",
+  "status.network.dialog.serviceUnreachable": "NTP Service unreachable",
   "status.network.dialog.localTimeDifferenceChecking": "Checking...",
   "status.network.dialog.localTimeDifferenceCheckTime": "Check time",
   "status.icons.checkYourInternetConnection": "インターネット接続を確認してください。",
