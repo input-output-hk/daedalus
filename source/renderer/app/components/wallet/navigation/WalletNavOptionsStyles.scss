@@ -8,8 +8,10 @@
       height: 29px;
       padding: 0 12px;
       text-align: right;
-      &.selectedOption {
+      &.highlightedOption {
         background-color: var(--theme-nav-dropdown-item-background-color-hover);
+      }
+      &.selectedOption {
         display: block;
         font-weight: 600;
         &:after {
