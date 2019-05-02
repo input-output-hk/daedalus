@@ -1,5 +1,5 @@
 // @flow
-import log from 'electron-log';
+import log from 'electron-log-daedalus';
 import { environment } from '../environment';
 import { formatContext } from '../../common/utils/logging';
 import type { FormatMessageContextParams } from '../../common/types/logging.types';
