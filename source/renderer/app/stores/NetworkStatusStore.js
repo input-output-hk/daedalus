@@ -63,7 +63,7 @@ export default class NetworkStatusStore extends Store {
   // Initialize store observables
 
   // Internal Node states
-  @observable _tlsConfig: ?TlsConfig = null;
+  @observable tlsConfig: ?TlsConfig = null;
   @observable cardanoNodeState: ?CardanoNodeState = null;
   @observable cardanoNodeID: number = 0;
   @observable isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
@@ -246,12 +246,12 @@ export default class NetworkStatusStore extends Store {
   };
 
   _updateTlsConfig = (config: ?TlsConfig): Promise<void> => {
-    if (config == null || isEqual(config, this._tlsConfig))
+    if (config == null || isEqual(config, this.tlsConfig))
       return Promise.resolve();
     Logger.info('NetworkStatusStore: received tls config from main process');
     this.api.ada.setRequestConfig(config);
-    runInAction('updating _tlsConfig', () => {
-      this._tlsConfig = config;
+    runInAction('updating tlsConfig', () => {
+      this.tlsConfig = config;
     });
     this.actions.networkStatus.tlsConfigIsReady.trigger();
     return Promise.resolve();
@@ -272,8 +272,8 @@ export default class NetworkStatusStore extends Store {
       case CardanoNodeStates.STOPPING:
       case CardanoNodeStates.EXITING:
       case CardanoNodeStates.UPDATING:
-        runInAction('updating _tlsConfig', () => {
-          this._tlsConfig = null;
+        runInAction('updating tlsConfig', () => {
+          this.tlsConfig = null;
         });
         this._setDisconnected(wasConnected);
         break;
@@ -314,7 +314,7 @@ export default class NetworkStatusStore extends Store {
     queryInfoParams?: NodeInfoQueryParams
   ) => {
     // In case we haven't received TLS config we shouldn't trigger any API calls
-    if (!this._tlsConfig) return;
+    if (!this.tlsConfig) return;
 
     const isForcedTimeDifferenceCheck = !!queryInfoParams;
 
@@ -350,7 +350,7 @@ export default class NetworkStatusStore extends Store {
 
       // In case we no longer have TLS config we ignore all API call responses
       // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
-      if (!this._tlsConfig) {
+      if (!this.tlsConfig) {
         Logger.debug(
           'NetworkStatusStore: Ignoring NetworkStatusRequest result during Cardano shutdown sequence...'
         );
