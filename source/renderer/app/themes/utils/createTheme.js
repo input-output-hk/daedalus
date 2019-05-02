@@ -163,14 +163,26 @@ const createDaedalusComponentsTheme = (
       '--theme-ada-redemption-success-overlay-button-text-color-hover': `${
         secondary.background
       }`,
-      '--theme-ada-redemption-success-overlay-background-color': `${secondary.background}`,
-      '--theme-ada-redemption-success-overlay-button-background-color-hover': `${secondary.hover}`,
+      '--theme-ada-redemption-success-overlay-background-color': `${
+        secondary.background
+      }`,
+      '--theme-ada-redemption-success-overlay-button-background-color-hover': `${
+        secondary.hover
+      }`,
       '--theme-ada-redemption-disclaimer-background-color': `${error.regular}`,
       '--theme-ada-redemption-disclaimer-text-color': `${secondary.text}`,
-      '--theme-ada-redemption-disclaimer-checkbox-color-check': `${secondary.text}`,
-      '--theme-ada-redemption-disclaimer-checkbox-color-checked': `${secondary.text}`,
-      '--theme-ada-redemption-disclaimer-checkbox-color-after': `${error.regular}`,
-      '--theme-ada-redemption-disclaimer-checkbox-label-color': `${secondary.text}`,
+      '--theme-ada-redemption-disclaimer-checkbox-color-check': `${
+        secondary.text
+      }`,
+      '--theme-ada-redemption-disclaimer-checkbox-color-checked': `${
+        secondary.text
+      }`,
+      '--theme-ada-redemption-disclaimer-checkbox-color-after': `${
+        error.regular
+      }`,
+      '--theme-ada-redemption-disclaimer-checkbox-label-color': `${
+        secondary.text
+      }`,
       '--theme-ada-redemption-no-wallets-instructions-color': `${primary.text}`,
     },
     blockConsolidation: {
@@ -180,16 +192,36 @@ const createDaedalusComponentsTheme = (
       '--theme-block-consolidation-text-highlight-color': `${primary.text}`,
       '--theme-block-consolidation-epochs-text-color': `${primary.text}`,
       '--theme-block-consolidation-indicator-text-color': `${primary.text}`,
-      '--theme-block-consolidation-indicator-container-background-color': `${primary.background}`,
-      '--theme-block-consolidation-indicator-epochs-behind-background-color-1': `${secondary.background}`,
-      '--theme-block-consolidation-indicator-epochs-behind-background-color-2': `${secondary.active}`,
-      '--theme-block-consolidation-stripe-dark-1-background-color': `${primary.background}`,
-      '--theme-block-consolidation-stripe-dark-2-background-color': `${primary.hover}`,
-      '--theme-block-consolidation-stripe-light-1-background-color': `${secondary.background}`,
-      '--theme-block-consolidation-stripe-light-2-background-color': `${secondary.hover}`,
-      '--theme-block-consolidation-button-background-color': `${secondary.background}`,
-      '--theme-block-consolidation-button-background-color-hover': `${secondary.hover}`,
-      '--theme-block-consolidation-button-text-color-hover': `${secondary.text}`,
+      '--theme-block-consolidation-indicator-container-background-color': `${
+        primary.background
+      }`,
+      '--theme-block-consolidation-indicator-epochs-behind-background-color-1': `${
+        secondary.background
+      }`,
+      '--theme-block-consolidation-indicator-epochs-behind-background-color-2': `${
+        secondary.active
+      }`,
+      '--theme-block-consolidation-stripe-dark-1-background-color': `${
+        primary.background
+      }`,
+      '--theme-block-consolidation-stripe-dark-2-background-color': `${
+        primary.hover
+      }`,
+      '--theme-block-consolidation-stripe-light-1-background-color': `${
+        secondary.background
+      }`,
+      '--theme-block-consolidation-stripe-light-2-background-color': `${
+        secondary.hover
+      }`,
+      '--theme-block-consolidation-button-background-color': `${
+        secondary.background
+      }`,
+      '--theme-block-consolidation-button-background-color-hover': `${
+        secondary.hover
+      }`,
+      '--theme-block-consolidation-button-text-color-hover': `${
+        secondary.text
+      }`,
       '--theme-block-consolidation-button-border-color': `${secondary.border}`,
     },
     body: {
@@ -211,23 +243,31 @@ const createDaedalusComponentsTheme = (
       '--theme-button-disclaimer-background-color': `${error.dark}`,
       '--theme-button-disclaimer-text-color-disabled': `${secondary.text}`,
       '--theme-button-disclaimer-border-color': `${secondary.border}`,
-      '--theme-button-disclaimer-border-color-disabled': `${secondary.disabled}`,
+      '--theme-button-disclaimer-border-color-disabled': `${
+        secondary.disabled
+      }`,
     },
     connecting: {
       '--theme-connecting-background-color': `${primary.background}`,
       '--theme-connecting-text-color': `${primary.text}`,
     },
     dataMigration: {
-      '--theme-data-migration-layer-background-color': `${secondary.background}`,
+      '--theme-data-migration-layer-background-color': `${
+        secondary.background
+      }`,
       '--theme-data-migration-layer-box-shadow-color': `${secondary.border}`,
-      '--theme-data-migration-layer-button-background-color-hover': `${primary.background}`,
+      '--theme-data-migration-layer-button-background-color-hover': `${
+        primary.background
+      }`,
       '--theme-data-migration-layer-text-color': `${secondary.text}`,
       '--theme-data-migration-layer-text-opacity-color': `${secondary.text}`,
     },
     dialog: {
       '--theme-dialog-choice-tabs-text-color': `${primary.text}`,
       '--theme-dialog-choice-tabs-text-color-active': `${primary.text}`,
-      '--theme-dialog-choice-tabs-bottom-border-color-active': `${primary.active}`,
+      '--theme-dialog-choice-tabs-bottom-border-color-active': `${
+        primary.active
+      }`,
       '--theme-dialog-big-button-background-color': `${secondary.background}`,
       '--theme-dialog-big-button-border-color': `${secondary.border}`,
       '--theme-dialog-big-button-label-color': `${secondary.text}`,
@@ -263,7 +303,9 @@ const createDaedalusComponentsTheme = (
       '--theme-icon-ada-redemption-certificate-color': `${primary.text}`,
       '--theme-icon-ada-redemption-no-wallets': `${primary.text}`,
       '--theme-icon-ada-summary-wallet-amount-symbol-color': `${primary.text}`,
-      '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color': `${primary.text}`,
+      '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color': `${
+        primary.text
+      }`,
       '--theme-icon-add-wallet-dialog-big-button-color': `${primary.text}`,
       '--theme-icon-copy-address-color': `${primary.text}`,
       '--theme-icon-back-button-color': `${primary.text}`,
@@ -316,23 +358,43 @@ const createDaedalusComponentsTheme = (
       '--theme-node-update-background-color': `${primary.background}`,
       '--theme-node-update-title-color': `${primary.text}`,
       '--theme-node-update-message-color': `${primary.text}`,
-      '--theme-node-sync-info-message-background-color': `${primary.background}`,
+      '--theme-node-sync-info-message-background-color': `${
+        primary.background
+      }`,
       '--theme-node-sync-info-message-text-color': `${primary.text}`,
-      '--theme-node-update-accept-button-background-color': `${secondary.background}`,
-      '--theme-node-update-accept-button-background-color-hover': `${secondary.hover}`,
-      '--theme-node-update-accept-button-background-color-active': `${secondary.active}`,
-      '--theme-node-update-deny-button-background-color': `${secondary.background}`,
-      '--theme-node-update-deny-button-background-color-hover': `${secondary.hover}`,
-      '--theme-node-update-deny-button-background-color-active': `${secondary.active}`,
+      '--theme-node-update-accept-button-background-color': `${
+        secondary.background
+      }`,
+      '--theme-node-update-accept-button-background-color-hover': `${
+        secondary.hover
+      }`,
+      '--theme-node-update-accept-button-background-color-active': `${
+        secondary.active
+      }`,
+      '--theme-node-update-deny-button-background-color': `${
+        secondary.background
+      }`,
+      '--theme-node-update-deny-button-background-color-hover': `${
+        secondary.hover
+      }`,
+      '--theme-node-update-deny-button-background-color-active': `${
+        secondary.active
+      }`,
       '--theme-node-update-button-text-color': `${secondary.text}`,
     },
     notification: {
-      '--theme-notification-message-background-color': `${secondary.background}`,
+      '--theme-notification-message-background-color': `${
+        secondary.background
+      }`,
       '--theme-notification-message-text-color': `${secondary.text}`,
     },
     paperWallet: {
-      '--theme-paper-wallet-create-certificate-dialog-explorer-link-color': `${secondary.background}`,
-      '--theme-paper-wallet-create-certificate-dialog-explorer-link-background-color': `${secondary.text}`,
+      '--theme-paper-wallet-create-certificate-dialog-explorer-link-color': `${
+        secondary.background
+      }`,
+      '--theme-paper-wallet-create-certificate-dialog-explorer-link-background-color': `${
+        secondary.text
+      }`,
     },
     progressBar: {
       '--theme-progress-bar-background-color': `${primary.border}`,
@@ -344,14 +406,24 @@ const createDaedalusComponentsTheme = (
     },
     reportIssue: {
       '--theme-report-issue-button-background-color': `${secondary.background}`,
-      '--theme-report-issue-button-background-color-hover': `${secondary.hover}`,
-      '--theme-report-issue-button-background-color-active': `${secondary.active}`,
-      '--theme-report-issue-connecting-background-color': `${primary.background}`,
+      '--theme-report-issue-button-background-color-hover': `${
+        secondary.hover
+      }`,
+      '--theme-report-issue-button-background-color-active': `${
+        secondary.active
+      }`,
+      '--theme-report-issue-connecting-background-color': `${
+        primary.background
+      }`,
       '--theme-report-issue-connecting-text-color': `${primary.text}`,
       '--theme-report-issue-syncing-background-color': `${primary.background}`,
       '--theme-report-issue-syncing-text-color': `${primary.text}`,
-      '--theme-report-issue-syncing-download-logs-text-color': `${primary.text}`,
-      '--theme-report-issue-syncing-download-logs-text-color-connecting': `${primary.text}`,
+      '--theme-report-issue-syncing-download-logs-text-color': `${
+        primary.text
+      }`,
+      '--theme-report-issue-syncing-download-logs-text-color-connecting': `${
+        primary.text
+      }`,
     },
     scrollbar: {
       '--theme-scrollbar-thumb-background': `${primary.border}`,
@@ -369,7 +441,9 @@ const createDaedalusComponentsTheme = (
       '--theme-settings-menu-item-text-color-active': `${primary.active}`,
       '--theme-settings-menu-item-text-color-disabled': `${primary.disabled}`,
       '--theme-settings-menu-item-background-color-active': `${primary.hover}`,
-      '--theme-settings-menu-item-left-border-color-active': `${secondary.background}`,
+      '--theme-settings-menu-item-left-border-color-active': `${
+        secondary.background
+      }`,
       '--theme-settings-theme-select-title-color': `${primary.text}`,
     },
     sidebar: {
@@ -382,9 +456,15 @@ const createDaedalusComponentsTheme = (
       '--theme-sidebar-menu-item-background-color-active': `${primary.active}`,
       '--theme-sidebar-menu-item-wallet-name-color': `${primary.text}`,
       '--theme-sidebar-menu-item-wallet-info-color': `${primary.text}`,
-      '--theme-sidebar-menu-add-button-background-color': `${secondary.background}`,
-      '--theme-sidebar-menu-add-button-background-color-active': `${secondary.active}`,
-      '--theme-sidebar-menu-add-button-background-color-hover': `${secondary.hover}`,
+      '--theme-sidebar-menu-add-button-background-color': `${
+        secondary.background
+      }`,
+      '--theme-sidebar-menu-add-button-background-color-active': `${
+        secondary.active
+      }`,
+      '--theme-sidebar-menu-add-button-background-color-hover': `${
+        secondary.hover
+      }`,
       '--theme-sidebar-menu-add-button-text-color': `${secondary.text}`,
     },
     staking: {
@@ -428,10 +508,16 @@ const createDaedalusComponentsTheme = (
       '--theme-transactions-list-border-color': `${primary.border}`,
       '--theme-transactions-list-group-date-color': `${primary.text}`,
       '--theme-transactions-list-item-details-color': `${primary.text}`,
-      '--theme-transactions-state-failed-background-color': `${primary.disabled}`,
+      '--theme-transactions-state-failed-background-color': `${
+        primary.disabled
+      }`,
       '--theme-transactions-state-failed-text-color': `${primary.disabled}`,
-      '--theme-transactions-state-pending-background-color': `${primary.placeholder}`,
-      '--theme-transactions-state-pending-stripes-color': `${primary.placeholder}`,
+      '--theme-transactions-state-pending-background-color': `${
+        primary.placeholder
+      }`,
+      '--theme-transactions-state-pending-stripes-color': `${
+        primary.placeholder
+      }`,
       '--theme-transactions-priority-color': `${primary.background}`,
       '--theme-transactions-priority-low-background-color': `${error.dark}`,
       '--theme-transactions-priority-medium-background-color': '#e6aa00',
@@ -440,7 +526,9 @@ const createDaedalusComponentsTheme = (
       '--theme-transactions-icon-type-expend-background-color': '#84a2d2',
       '--theme-transactions-icon-type-income-background-color': '#2dc06c',
       '--theme-transactions-icon-type-exchange-background-color': '#10aca4',
-      '--theme-transactions-icon-type-failed-background-color': `${error.light}`,
+      '--theme-transactions-icon-type-failed-background-color': `${
+        error.light
+      }`,
       '--theme-transactions-arrow-stroke-color': `${primary.text}`,
     },
     uploader: {
@@ -461,6 +549,9 @@ export const createTheme = (fullThemeParts: CreateThemeParams): Object => {
   if (config && !isEmpty(config)) {
     daedalusTheme = { ...daedalusTheme, ...config };
   }
-  // no theme config, return theme object
-  return daedalusTheme;
+  // flatten daedalusTheme object for consumption by ThemeManager and return
+  return Object.values(daedalusTheme).reduce(
+    (theme, componentVars) => ({ ...theme, ...componentVars }),
+    {}
+  );
 };
