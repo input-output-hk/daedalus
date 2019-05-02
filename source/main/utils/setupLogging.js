@@ -20,8 +20,7 @@ const isTest = process.env.NODE_ENV === 'test';
 const isDev = process.env.NODE_ENV === 'development';
 
 export const setupLogging = () => {
-  const logFileName = `${APP_NAME}.json`.toLowerCase();
-  const logFilePath = path.join(pubLogsFolderPath, logFileName);
+  const logFilePath = path.join(pubLogsFolderPath, `${APP_NAME}.json`);
   ensureDirectoryExists(pubLogsFolderPath);
   log.transports.console.level = isTest ? 'error' : 'info';
   log.transports.rendererConsole.level = isDev ? 'info' : 'error';
@@ -57,13 +56,13 @@ export const setupLogging = () => {
   // Removes existing compressed logs
   fs.readdir(appLogsFolderPath, (err, files) => {
     files.filter(isFileNameWithTimestamp()).forEach(fileName => {
-      const logFile = path.join(appLogsFolderPath, fileName);
+      const filePath = path.join(appLogsFolderPath, fileName);
       try {
-        fs.unlinkSync(logFile);
+        fs.unlinkSync(filePath);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(
-          `Compressed log file "${logFile}" deletion failed: ${error}`
+          `Compressed log file "${filePath}" deletion failed: ${error}`
         );
       }
     });
@@ -85,15 +84,13 @@ export const logSystemInfo = (props: LogSystemInfoParams): MessageBody => {
     env,
     ns: ['daedalus', `v${daedalusVersion}`, `*${current}*`],
     data,
-    msg: 'Updating system-info.json file',
+    msg: 'Updating System-info.json file',
     pid: '',
     sev: 'info',
     thread: '',
   };
   const messageBody: MessageBody = constructMessageBody(messageBodyParams);
-  fs.writeFileSync(
-    path.join(pubLogsFolderPath, 'system-info.json'),
-    JSON.stringify(messageBody)
-  );
+  const systemInfoFilePath = path.join(pubLogsFolderPath, 'System-info.json');
+  fs.writeFileSync(systemInfoFilePath, JSON.stringify(messageBody));
   return messageBody;
 };
