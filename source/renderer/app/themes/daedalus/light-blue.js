@@ -275,6 +275,10 @@ export default {
   '--theme-nav-item-text-color': 'rgba(250,251,252, 0.6)',
   '--theme-nav-item-text-color-active': '#1d2e47',
 
+  '--theme-nav-dropdown-item-text-color': '#1d2e47',
+  '--theme-nav-dropdown-item-background-color': '#fafbfc',
+  '--theme-nav-dropdown-item-background-color-hover': '#f1f3f5',
+
   '--theme-node-update-background-color': '#ebeff2',
   '--theme-node-update-title-color': '#5e6066',
   '--theme-node-update-message-color': '#5e6066',

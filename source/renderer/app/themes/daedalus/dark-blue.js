@@ -276,6 +276,10 @@ export default {
   '--theme-nav-item-text-color': '#9ba6b3',
   '--theme-nav-item-text-color-active': '#e9f4fe',
 
+  '--theme-nav-dropdown-item-text-color': '#1d2e47',
+  '--theme-nav-dropdown-item-background-color': '#fafbfc',
+  '--theme-nav-dropdown-item-background-color-hover': '#f1f3f5',
+
   '--theme-node-update-background-color': '#536370',
   '--theme-node-update-title-color': '#e9f4fe',
   '--theme-node-update-message-color': '#e9f4fe',

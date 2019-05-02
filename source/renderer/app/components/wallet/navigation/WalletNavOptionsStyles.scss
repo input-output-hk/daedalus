@@ -1,0 +1,31 @@
+.options {
+  // margin-top: -24px;
+  // margin-left: -47px;
+  width: auto !important;
+
+  ul {
+    li {
+      background: var(--theme-nav-dropdown-item-background-color);
+      height: 29px;
+      font-size: 14px;
+      text-align: right;
+      color: var(--theme-nav-dropdown-item-text-color);
+      padding: 0 12px;
+      border-radius: 4px;
+      &.highlightedOption {
+        font-weight: 600;
+        background-color: var(--theme-nav-dropdown-item-background-color-hover);
+      }
+      span {
+        white-space: nowrap;
+        line-height: 29px;
+      }
+      &:first-child {
+        border-radius: 4px 4px 0 0;
+      }
+      &:last-child {
+        border-radius: 0 0 4px 4px;
+      }
+    }
+  }
+}

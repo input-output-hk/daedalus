@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import type { Element, Ref } from 'react';
 import { Options } from 'react-polymorph/lib/components/Options';
 import { OptionsSkin } from 'react-polymorph/lib/skins/simple/OptionsSkin';
+import optionsStyles from './WalletNavOptionsStyles.scss';
 
 type Props = {
   className: string,
@@ -41,6 +42,7 @@ export class SelectSkin extends Component<Props> {
         <Options
           skin={OptionsSkin}
           theme={theme}
+          themeOverrides={optionsStyles}
           optionsRef={this.props.optionsRef}
           options={this.props.options}
           isOpeningUpward={this.props.isOpeningUpward}
