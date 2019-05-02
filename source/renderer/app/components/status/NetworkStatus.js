@@ -614,11 +614,9 @@ export default class NetworkStatus extends Component<Props, State> {
               <tr>
                 <td>{intl.formatMessage(messages.remainingUnsyncedBlocks)}:</td>
                 <td
-                  title={
-                    remainingUnsyncedBlocks > 0 ? remainingUnsyncedBlocks : '-'
-                  }
+                  className={remainingUnsyncedBlocksClasses}
                 >
-                  {remainingUnsyncedBlocks > 0 ? remainingUnsyncedBlocks : '-'}
+                  {remainingUnsyncedBlocks >= 0 ? remainingUnsyncedBlocks : '-'}
                 </td>
               </tr>
               <tr>
@@ -626,7 +624,7 @@ export default class NetworkStatus extends Component<Props, State> {
                 <td
                   className={latestLocalBlockAgeClasses}
                   title={
-                    latestLocalBlockTimestamp > 0
+                    latestLocalBlockTimestamp >= 0
                       ? `${latestLocalBlockAge} ms`
                       : '-'
                   }
@@ -686,13 +684,13 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.systemTimeIgnored)}:</td>
-                <td className={this.getClass(isSystemTimeIgnored)}>
+                <td className={this.getClass(!isSystemTimeIgnored)}>
                   {isSystemTimeIgnored ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.checkingNodeTime)}:</td>
-                <td className={this.getClass(isForceCheckingNodeTime)}>
+                <td>
                   {isForceCheckingNodeTime ? 'YES' : 'NO'}
                 </td>
               </tr>
