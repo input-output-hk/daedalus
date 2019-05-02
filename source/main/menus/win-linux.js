@@ -1,11 +1,10 @@
 // @flow
-import type { App, BrowserWindow } from 'electron';
 import { compact } from 'lodash';
-import { dialog } from 'electron';
+import { dialog, shell } from 'electron';
+import type { App, BrowserWindow } from 'electron';
 import type { MenuActions } from './MenuActions.types';
 import { getTranslation } from '../utils/getTranslation';
 import { environment } from '../environment';
-import { openExternalUrlChannel } from '../ipc/open-external-url';
 import { getLocale } from '../utils/getLocale';
 
 const localesFillForm = {
@@ -182,7 +181,7 @@ export const winLinuxMenu = (
         label: translation('helpSupport.supportRequest'),
         click() {
           const supportRequestLinkUrl =
-            'https://iohk.zendesk.com/hc/en-us/requests/new/';
+            translation('helpSupport.supportRequestUrl');
           const {
             version,
             apiVersion,
@@ -213,15 +212,15 @@ export const winLinuxMenu = (
                 `${encodeURIComponent(key)}=${encodeURIComponent(val)}`
             )
             .join('&')}`;
-          openExternalUrlChannel.send(supportUrl);
+          shell.openExternal(supportUrl);
         },
       },
       {
         label: translation('helpSupport.knownIssues'),
         click() {
           const faqLink =
-            'https://iohk.zendesk.com/hc/en-us/articles/360011451693';
-          openExternalUrlChannel.send(faqLink);
+            translation('helpSupport.knownIssuesUrl');
+          shell.openExternal(faqLink);
         },
       },
     ]),
