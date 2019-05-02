@@ -11,6 +11,7 @@ import styles from './WalletNavDropdown.scss';
 
 type Props = {
   label: string,
+  activeItem: string,
   icon: string,
   isActive: boolean,
   options: Array<{ value: number | string, label: string }>,
@@ -20,7 +21,7 @@ type Props = {
 @observer
 export default class WalletNavDropdown extends Component<Props> {
   render() {
-    const { label, icon, isActive, onChange, options } = this.props;
+    const { label, icon, isActive, onChange, options, activeItem } = this.props;
     return (
       <div className={styles.component}>
         <Select
@@ -36,6 +37,7 @@ export default class WalletNavDropdown extends Component<Props> {
           options={options}
           skin={SelectSkin}
           themeOverrides={selectStyles}
+          value={activeItem}
         />
       </div>
     );

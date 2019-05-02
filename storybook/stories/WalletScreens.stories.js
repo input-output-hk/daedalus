@@ -36,6 +36,11 @@ storiesOf('WalletScreens', module)
   .addDecorator((story, context) => {
     const storyWithKnobs = withKnobs(story, context);
 
+    const getItemFromContext = () =>
+      context.story
+        .replace('Wallet UTXO distribution', 'utxo')
+        .toLocaleLowerCase();
+
     return (
       <StoryDecorator>
         <StoryProvider>
@@ -45,15 +50,11 @@ storiesOf('WalletScreens', module)
           >
             {context.story !== 'Empty' ? (
               <WalletWithNavigation
-                isActiveScreen={item =>
-                  item ===
-                  context.story
-                    .replace('Wallet UTXO distribution', 'utxo')
-                    .toLocaleLowerCase()
-                }
+                isActiveScreen={item => item === getItemFromContext()}
                 onWalletNavItemClick={linkTo('WalletScreens', item =>
                   item === 'utxo' ? 'Wallet UTXO distribution' : startCase(item)
                 )}
+                activeItem={getItemFromContext()}
               >
                 {storyWithKnobs}
               </WalletWithNavigation>

@@ -53,6 +53,7 @@ const messages = defineMessages({
 });
 
 type Props = {
+  activeItem: string,
   isActiveNavItem: Function,
   onNavItemClick: Function,
 };
@@ -64,7 +65,7 @@ export default class WalletNavigation extends Component<Props> {
   };
 
   render() {
-    const { isActiveNavItem, onNavItemClick } = this.props;
+    const { isActiveNavItem, onNavItemClick, activeItem } = this.props;
     const { intl } = this.context;
     return (
       <div className={styles.component}>
@@ -113,6 +114,7 @@ export default class WalletNavigation extends Component<Props> {
             icon={settingsIcon}
             isActive={isActiveNavItem('settings') || isActiveNavItem('utxo')}
             onChange={item => onNavItemClick(item)}
+            activeItem={activeItem}
             options={[
               {
                 label: intl.formatMessage(messages.settings),

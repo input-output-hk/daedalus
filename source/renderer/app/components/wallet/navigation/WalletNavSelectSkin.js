@@ -49,6 +49,7 @@ export class SelectSkin extends Component<Props> {
           onChange={this.props.handleChange}
           optionRenderer={this.props.optionRenderer}
           selectedOption={selectedOption}
+          value={selectedOption}
           noResults={!this.props.options.length}
           targetRef={this.props.inputRef}
           toggleOpen={this.props.toggleOpen}
