@@ -236,6 +236,16 @@ const messages = defineMessages({
     defaultMessage: '!!!Check time',
     description: 'Check time',
   },
+  statusOn: {
+    id: 'status.network.dialog.statusOn',
+    defaultMessage: '!!!YES',
+    description: 'YES',
+  },
+  statusOff: {
+    id: 'status.network.dialog.statusOff',
+    defaultMessage: '!!!NO',
+    description: 'NO',
+  },
 });
 
 type Props = {
@@ -533,7 +543,7 @@ export default class NetworkStatus extends Component<Props, State> {
               <tr>
                 <td>{intl.formatMessage(messages.safeMode)}:</td>
                 <td className={styles.safeMode}>
-                  {isInSafeMode ? 'YES' : 'NO'}
+                  {isInSafeMode ? intl.formatMessage(messages.statusOn) : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
@@ -588,13 +598,13 @@ export default class NetworkStatus extends Component<Props, State> {
               <tr>
                 <td>{intl.formatMessage(messages.connected)}:</td>
                 <td className={this.getClass(isConnected)}>
-                  {isConnected ? 'YES' : 'NO'}
+                  {isConnected ? intl.formatMessage(messages.statusOn) : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.synced)}:</td>
                 <td className={this.getClass(isSynced)}>
-                  {isSynced ? 'YES' : 'NO'}
+                  {isSynced ? intl.formatMessage(messages.statusOn) : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
@@ -679,19 +689,19 @@ export default class NetworkStatus extends Component<Props, State> {
               <tr>
                 <td>{intl.formatMessage(messages.systemTimeCorrect)}:</td>
                 <td className={this.getClass(isSystemTimeCorrect)}>
-                  {isSystemTimeCorrect ? 'YES' : 'NO'}
+                  {isSystemTimeCorrect ? intl.formatMessage(messages.statusOn) : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.systemTimeIgnored)}:</td>
                 <td className={this.getClass(!isSystemTimeIgnored)}>
-                  {isSystemTimeIgnored ? 'YES' : 'NO'}
+                  {isSystemTimeIgnored ? intl.formatMessage(messages.statusOn) : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.checkingNodeTime)}:</td>
                 <td>
-                  {isForceCheckingNodeTime ? 'YES' : 'NO'}
+                  {isForceCheckingNodeTime ? intl.formatMessage(messages.statusOn) : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
@@ -739,31 +749,31 @@ export default class NetworkStatus extends Component<Props, State> {
               <tr>
                 <td>{intl.formatMessage(messages.cardanoNodeResponding)}:</td>
                 <td className={this.getClass(isNodeResponding)}>
-                  {isNodeResponding ? 'YES' : 'NO'}
+                  {isNodeResponding ? intl.formatMessage(messages.statusOn) : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoNodeSubscribed)}:</td>
                 <td className={this.getClass(isNodeSubscribed)}>
-                  {isNodeSubscribed ? 'YES' : 'NO'}
+                  {isNodeSubscribed ? intl.formatMessage(messages.statusOn) : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoNodeTimeCorrect)}:</td>
                 <td className={this.getClass(isNodeTimeCorrect)}>
-                  {isNodeTimeCorrect ? 'YES' : 'NO'}
+                  {isNodeTimeCorrect ? intl.formatMessage(messages.statusOn) : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoNodeSyncing)}:</td>
                 <td className={this.getClass(isNodeSyncing)}>
-                  {isNodeSyncing ? 'YES' : 'NO'}
+                  {isNodeSyncing ? intl.formatMessage(messages.statusOn) : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoNodeInSync)}:</td>
                 <td className={this.getClass(isNodeInSync)}>
-                  {isNodeInSync ? 'YES' : 'NO'}
+                  {isNodeInSync ? intl.formatMessage(messages.statusOn) : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
             </tbody>
