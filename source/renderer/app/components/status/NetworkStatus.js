@@ -17,6 +17,8 @@ import LocalizableError from '../../i18n/LocalizableError';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './NetworkStatus.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
+import type { SystemInfo } from '../../types/systemInfoTypes';
+import type { CoreSystemInfo } from '../../types/coreSystemInfoTypes';
 
 let syncingInterval = null;
 
@@ -254,8 +256,8 @@ const messages = defineMessages({
 });
 
 type Props = {
-  systemInfo: Object,
-  coreInfo: Object,
+  systemInfo: SystemInfo,
+  coreInfo: CoreSystemInfo,
   cardanoNodeState: ?CardanoNodeState,
   isDev: boolean,
   isMainnet: boolean,
