@@ -1,4 +1,5 @@
 // @flow
+import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
 
 //  ==== react-polymorph: theme config === //
@@ -26,13 +27,14 @@ const rpBubble = {
 const rpButton = {
   '--rp-button-bg-color': '#536370',
   '--rp-button-bg-color-active': '#495863',
-  '--rp-button-bg-color-disabled': 'rgba(233, 244, 254, 0.5)',
+  '--rp-button-bg-color-disabled': 'rgba(83, 99, 112, 0.3)',
   '--rp-button-bg-color-hover': '#667a8a',
   '--rp-button-font-family': 'NotoSans-Medium, NotoSansCJKjp-Medium',
   '--rp-button-height': '50px',
   '--rp-button-line-height': '20px',
   '--rp-button-padding': '0',
   '--rp-button-text-color': '#e9f4fe',
+  '--rp-button-text-color-disabled': 'rgba(233, 244, 254, 0.5)',
   '--rp-button-text-transform': 'none',
   '--rp-button-width': '360px',
 };
@@ -528,3 +530,5 @@ export const DARK_BLUE_THEME_PARAMS: CreateThemeParams = {
   },
   config: DARK_BLUE_THEME_CONFIG,
 };
+
+export default createTheme(DARK_BLUE_THEME_PARAMS);

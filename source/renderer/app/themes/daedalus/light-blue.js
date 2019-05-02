@@ -1,4 +1,5 @@
 // @flow
+import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
 
 //  ==== react-polymorph: theme config === //
@@ -33,6 +34,7 @@ const rpButton = {
   '--rp-button-line-height': '20px',
   '--rp-button-padding': '0',
   '--rp-button-text-color': '#fafbfc',
+  '--rp-button-text-color-disabled': '#fafbfc',
   '--rp-button-text-transform': 'none',
   '--rp-button-width': '360px',
 };
@@ -522,3 +524,5 @@ export const LIGHT_BLUE_THEME_PARAMS: CreateThemeParams = {
   },
   config: LIGHT_BLUE_THEME_CONFIG,
 };
+
+export default createTheme(LIGHT_BLUE_THEME_PARAMS);
