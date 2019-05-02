@@ -88,7 +88,7 @@ const onAppReady = async () => {
 
   Logger.info(`Daedalus is starting at ${startTime}`, { startTime });
 
-  Logger.info('Updating System-info.json file', { ...systemInfo.data });
+  Logger.info('Updating system-info.json file', { ...systemInfo.data });
 
   ensureXDGDataIsSet();
   await installChromeExtensions(isDev);

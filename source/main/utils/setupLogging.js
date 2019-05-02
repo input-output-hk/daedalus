@@ -20,7 +20,8 @@ const isTest = process.env.NODE_ENV === 'test';
 const isDev = process.env.NODE_ENV === 'development';
 
 export const setupLogging = () => {
-  const logFilePath = path.join(pubLogsFolderPath, `${APP_NAME}.json`);
+  const logFileName = `${APP_NAME}.json`.toLowerCase();
+  const logFilePath = path.join(pubLogsFolderPath, logFileName);
   ensureDirectoryExists(pubLogsFolderPath);
   log.transports.console.level = isTest ? 'error' : 'info';
   log.transports.rendererConsole.level = isDev ? 'info' : 'error';
@@ -55,8 +56,8 @@ export const setupLogging = () => {
 
   // Removes existing compressed logs
   fs.readdir(appLogsFolderPath, (err, files) => {
-    files.filter(isFileNameWithTimestamp()).forEach(logFileName => {
-      const logFile = path.join(appLogsFolderPath, logFileName);
+    files.filter(isFileNameWithTimestamp()).forEach(fileName => {
+      const logFile = path.join(appLogsFolderPath, fileName);
       try {
         fs.unlinkSync(logFile);
       } catch (error) {
@@ -84,14 +85,14 @@ export const logSystemInfo = (props: LogSystemInfoParams): MessageBody => {
     env,
     ns: ['daedalus', `v${daedalusVersion}`, `*${current}*`],
     data,
-    msg: 'Updating System-info.json file',
+    msg: 'Updating system-info.json file',
     pid: '',
     sev: 'info',
     thread: '',
   };
   const messageBody: MessageBody = constructMessageBody(messageBodyParams);
   fs.writeFileSync(
-    path.join(pubLogsFolderPath, 'System-info.json'),
+    path.join(pubLogsFolderPath, 'system-info.json'),
     JSON.stringify(messageBody)
   );
   return messageBody;
