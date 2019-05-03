@@ -9,6 +9,9 @@
       padding: 0 12px;
       text-align: right;
       &.highlightedOption {
+        background-color: inherit;
+      }
+      &:hover {
         background-color: var(--theme-nav-dropdown-item-background-color-hover);
       }
       &.selectedOption {
