@@ -50,7 +50,7 @@
   "global.errors.invalidMnemonic": "無効なパスフレーズが入力されました、再度確認してください。",
   "global.errors.invalidRepeatPassword": "パスワードが一致しません",
   "global.errors.invalidSpendingPassword": "無効なパスワード",
-  "global.errors.invalidWalletName": "ウォレット名は3文字以上<br />40文字以内である必要があります",
+  "global.errors.invalidWalletName": "ウォレット名は3文字以上40文字以内である必要があります",
   "global.labels.cancel": "キャンセル",
   "global.labels.change": "変更",
   "global.labels.create": "作成",

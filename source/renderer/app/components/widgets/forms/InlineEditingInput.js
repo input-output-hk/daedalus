@@ -1,11 +1,10 @@
 // @flow
 import React, { Component } from 'react';
-import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
-import { InputSkinTooltip } from './InputSkinTooltip';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import styles from './InlineEditingInput.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
@@ -39,7 +38,7 @@ type Props = {
   onCancelEditing: Function,
   onSubmit: Function,
   isValid: Function,
-  validationErrorMessage: string | Node,
+  validationErrorMessage: string,
   successfullyUpdated: boolean,
 };
 
@@ -176,7 +175,7 @@ export default class InlineEditingInput extends Component<Props, State> {
           ref={input => {
             this.inputField = input;
           }}
-          skin={InputSkinTooltip}
+          skin={InputSkin}
         />
 
         {isActive && (
@@ -185,7 +184,7 @@ export default class InlineEditingInput extends Component<Props, State> {
           </button>
         )}
 
-        {successfullyUpdated && !isActive && (
+        {successfullyUpdated && (
           <div className={styles.savingResultLabel}>
             {intl.formatMessage(messages.changesSaved)}
           </div>

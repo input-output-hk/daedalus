@@ -50,7 +50,7 @@
   "global.errors.invalidMnemonic": "Invalid phrase entered, please check.",
   "global.errors.invalidRepeatPassword": "Doesn't match",
   "global.errors.invalidSpendingPassword": "Invalid password",
-  "global.errors.invalidWalletName": "Wallet name requires at least 3<br />and at most 40 letters.",
+  "global.errors.invalidWalletName": "Wallet name requires at least 3 and at most 40 letters.",
   "global.labels.cancel": "Cancel",
   "global.labels.change": "Change",
   "global.labels.create": "Create",
