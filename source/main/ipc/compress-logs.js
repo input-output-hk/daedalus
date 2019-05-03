@@ -45,8 +45,7 @@ export default () => {
           const stream = fs.readFileSync(
             path.join(pubLogsFolderPath, logFiles[i])
           );
-          const name = logFiles[i].replace('.log', '');
-          archive.append(stream, { name });
+          archive.append(stream, { name: logFiles[i] });
         }
 
         archive.finalize(error => {

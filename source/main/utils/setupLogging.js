@@ -1,7 +1,7 @@
 // @flow
 import fs from 'fs';
 import path from 'path';
-import log from 'electron-log';
+import log from 'electron-log-daedalus';
 import ensureDirectoryExists from './ensureDirectoryExists';
 import { pubLogsFolderPath, appLogsFolderPath, APP_NAME } from '../config';
 import {
@@ -20,7 +20,7 @@ const isTest = process.env.NODE_ENV === 'test';
 const isDev = process.env.NODE_ENV === 'development';
 
 export const setupLogging = () => {
-  const logFilePath = path.join(pubLogsFolderPath, `${APP_NAME}.json.log`);
+  const logFilePath = path.join(pubLogsFolderPath, `${APP_NAME}.json`);
   ensureDirectoryExists(pubLogsFolderPath);
   log.transports.console.level = isTest ? 'error' : 'info';
   log.transports.rendererConsole.level = isDev ? 'info' : 'error';
@@ -55,14 +55,14 @@ export const setupLogging = () => {
 
   // Removes existing compressed logs
   fs.readdir(appLogsFolderPath, (err, files) => {
-    files.filter(isFileNameWithTimestamp()).forEach(logFileName => {
-      const logFile = path.join(appLogsFolderPath, logFileName);
+    files.filter(isFileNameWithTimestamp()).forEach(fileName => {
+      const filePath = path.join(appLogsFolderPath, fileName);
       try {
-        fs.unlinkSync(logFile);
+        fs.unlinkSync(filePath);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(
-          `Compressed log file "${logFile}" deletion failed: ${error}`
+          `Compressed log file "${filePath}" deletion failed: ${error}`
         );
       }
     });
@@ -90,9 +90,7 @@ export const logSystemInfo = (props: LogSystemInfoParams): MessageBody => {
     thread: '',
   };
   const messageBody: MessageBody = constructMessageBody(messageBodyParams);
-  fs.writeFileSync(
-    path.join(pubLogsFolderPath, 'System-info.json'),
-    JSON.stringify(messageBody)
-  );
+  const systemInfoFilePath = path.join(pubLogsFolderPath, 'System-info.json');
+  fs.writeFileSync(systemInfoFilePath, JSON.stringify(messageBody));
   return messageBody;
 };
