@@ -133,7 +133,7 @@
     "check-disk-space": "1.5.0",
     "classnames": "2.2.6",
     "electron-debug": "2.0.0",
-    "electron-log": "2.2.17",
+    "electron-log-daedalus": "2.2.18",
     "electron-store": "2.0.0",
     "electron-unhandled": "2.1.0",
     "es6-error": "4.1.1",

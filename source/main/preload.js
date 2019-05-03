@@ -3,7 +3,7 @@ import os from 'os';
 import _https from 'https';
 import _http from 'http';
 import { ipcRenderer as _ipcRenderer, remote as _remote } from 'electron';
-import _electronLog from 'electron-log';
+import _electronLog from 'electron-log-daedalus';
 import ElectronStore from 'electron-store';
 import { environment } from './environment';
 
