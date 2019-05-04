@@ -161,6 +161,10 @@
       }
     }
 
+    &:disabled:hover {
+      color: var(--theme-network-window-button-color);
+    }
+
     &:hover {
       color: var(--theme-network-window-white-color);
     }
