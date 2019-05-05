@@ -526,4 +526,49 @@ export const CARDANO_THEME_PARAMS: CreateThemeParams = {
   config: CARDANO_THEME_CONFIG,
 };
 
-export default createTheme(CARDANO_THEME_PARAMS);
+export const TEST_THEME_PARAMS: CreateThemeParams = {
+  colors: {
+    error: {
+      dark: '#d34452',
+      light: '#ec5d6b',
+      regular: '#ea4c5b',
+      ultralight: '#fac8ce',
+    },
+    primary: {
+      active: '#ebeef0',
+      background: '#fafbfc',
+      border: '#c6cdd6',
+      disabled: 'rgba(94, 96, 102, 0.05)',
+      focus: '#5e6066',
+      hover: '#f3f5f7',
+      outline: '#e1e4e6',
+      placeholder: 'rgba(94, 96, 102, 0.5)',
+      text: '#5e6066',
+    },
+    secondary: {
+      active: '#ffb366',
+      background: '#ff8c1a',
+      border: '#8BBF9F',
+      disabled: '#ffebcc',
+      focus: '#ffb366',
+      hover: '#ffb366',
+      outline: '#8BBF9F',
+      placeholder: 'rgba(94, 96, 102, 0.5)',
+      text: '#fafbfc',
+    },
+  },
+  fonts: {
+    black: 'NotoSans-Black, NotoSansCJKjp-Black',
+    bold: 'NotoSans-Bold, NotoSansCJKjp-Bold',
+    heavy: 'NotoSans-ExtraBold, NotoSansCJKjp-Black',
+    light: 'NotoSans-Light, NotoSansCJKjp-Light',
+    medium: 'NotoSans-Medium, NotoSansCJKjp-Medium',
+    mono: 'SFMono-Light',
+    regular: 'NotoSans-Regular, NotoSansCJKjp-Regular',
+    semibold: 'NotoSans-SemiBold, NotoSansCJKjp-Medium',
+    thin: 'NotoSans-Thin, NotoSansCJKjp-Thin',
+    ultralight: 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
+  },
+};
+
+export default createTheme(TEST_THEME_PARAMS);
