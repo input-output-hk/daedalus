@@ -4,7 +4,10 @@ import moment from 'moment';
 export const generateFileNameWithTimestamp = (
   prefix: string = 'logs',
   fileType: string = 'zip'
-) => `${prefix}-${moment.utc().format('YYYY-MM-DDTHHmmss.0SSS')}Z.${fileType}`;
+) =>
+  `${prefix}-${moment.utc().format('YYYY-MM-DDTHHmmss.0SSS')}Z${
+    fileType ? '.' : ''
+  }${fileType}`;
 
 export const isFileNameWithTimestamp = (
   prefix: string = 'logs',

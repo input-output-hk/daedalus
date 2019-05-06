@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import InstructionsDialog from '../../../../components/wallet/paper-wallet-certificate/InstructionsDialog';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
+import { generateFileNameWithTimestamp } from '../../../../../../common/utils/files';
 
 type Props = InjectedDialogContainerProps;
 
@@ -18,11 +19,12 @@ export default class InstructionsDialogContainer extends Component<Props> {
 
   onPrint = () => {
     // TODO: refactor this direct access to the dialog api
+    const name = generateFileNameWithTimestamp('paper-wallet-certificate', '');
     const filePath = global.dialog.showSaveDialog({
-      defaultPath: 'paper-wallet-certificate.pdf',
+      defaultPath: `${name}.pdf`,
       filters: [
         {
-          name: 'paper-wallet-certificate',
+          name,
           extensions: ['pdf'],
         },
       ],
