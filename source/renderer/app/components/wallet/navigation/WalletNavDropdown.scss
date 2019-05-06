@@ -10,19 +10,20 @@
   :global {
     .SimpleOptions_options {
       left: auto !important;
-      right: 15px;
       position: absolute;
-      width: 200px !important;
+      right: 0;
       top: 45px !important;
+      width: 200px !important;
     }
     .WalletNavButton_component {
       cursor: default;
     }
     .SimpleBubble_root:not(.SimpleBubble_transparent) {
       .SimpleBubble_bubble {
-        border: none;
         border-radius: 3px;
+        border: none;
         box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.12);
+        right: 15px;
       }
       [data-bubble-arrow]:before,
       [data-bubble-arrow]:after {

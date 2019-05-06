@@ -17,6 +17,7 @@
       &.selectedOption {
         display: block;
         font-weight: 600;
+        cursor: default;
         &:after {
           display: none;
         }
