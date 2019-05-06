@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented timestamp on paper wallet PDF's ([PR 1385](https://github.com/input-output-hk/daedalus/pull/1385))
 - Implemented scroll error message into view ([PR 1383](https://github.com/input-output-hk/daedalus/pull/1383))
 - Implemented new Block-consolidation status design ([PR 1377](https://github.com/input-output-hk/daedalus/pull/1377))
 - Implemented "In progress" download logs notification ([PR 1341](https://github.com/input-output-hk/daedalus/pull/1341))
