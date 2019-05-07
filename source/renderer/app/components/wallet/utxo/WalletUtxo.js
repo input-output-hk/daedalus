@@ -58,11 +58,23 @@ type Props = {
   chartData: Array<any>,
 };
 
+type State = {
+  isHoveringChart: boolean,
+};
+
 @observer
-export default class WalletUtxo extends Component<Props> {
+export default class WalletUtxo extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
+  state = {
+    isHoveringChart: false,
+  };
+
+  shouldComponentUpdate() {
+    return !this.state.isHoveringChart;
+  }
 
   render() {
     const { intl } = this.context;
@@ -77,7 +89,11 @@ export default class WalletUtxo extends Component<Props> {
     return (
       <div className={componentStyles}>
         <BorderedBox>
-          <div className={styles.container}>
+          <div
+            className={styles.container}
+            onMouseEnter={() => this.setState({ isHoveringChart: true })}
+            onMouseLeave={() => this.setState({ isHoveringChart: false })}
+          >
             <h1>{intl.formatMessage(messages.title)}</h1>
 
             {!isEmpty ? (
