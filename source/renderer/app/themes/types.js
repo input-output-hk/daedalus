@@ -76,6 +76,12 @@ export type ThemeColors = {
   },
 };
 
+export type BackgroundShades = {
+  dark: string,
+  light: string,
+  regular: string,
+};
+
 export type ThemeFonts = {
   black: string,
   bold: string,
