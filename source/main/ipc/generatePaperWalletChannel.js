@@ -34,6 +34,7 @@ export const handlePaperWalletRequests = () => {
           filePath,
           isMainnet,
           messages,
+          timestamp,
         } = request;
 
         // Helpers
@@ -77,9 +78,13 @@ export const handlePaperWalletRequests = () => {
             isMainnet ? paperWalletPage1Path : paperWalletPage1PathTestnet
           );
 
+          doc.fillColor(textColor);
+
+          // Timestamp
+          doc.fontSize(8).text(timestamp, 117, 484);
+
           doc.image(page1Uri, 0, 0, { fit: [width, height] });
           doc.rotate(180, { origin: [width / 2, height / 2] });
-          doc.fillColor(textColor);
           doc.fontSize(10).text(messages.walletAddressLabel, 0, 160, {
             width: 595,
             align: 'center',

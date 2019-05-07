@@ -1,13 +1,25 @@
 // @flow
 import moment from 'moment';
 
-export const generateFileNameWithTimestamp = (
-  prefix: string = 'logs',
-  fileType: string = 'zip'
-) =>
-  `${prefix}-${moment.utc().format('YYYY-MM-DDTHHmmss.0SSS')}Z${
-    fileType ? '.' : ''
-  }${fileType}`;
+const defaultProps = {
+  prefix: 'logs',
+  fileType: 'zip',
+  timestamp: `${moment.utc().format('YYYY-MM-DDTHHmmss.0SSS')}Z`,
+};
+
+type Props = {
+  prefix?: string,
+  fileType?: string,
+  timestamp?: string,
+};
+
+export const generateFileNameWithTimestamp = (props: Props) => {
+  const { prefix, fileType, timestamp } = {
+    ...defaultProps,
+    ...props,
+  };
+  return `${prefix}-${timestamp}${fileType ? '.' : ''}${fileType}`;
+};
 
 export const isFileNameWithTimestamp = (
   prefix: string = 'logs',

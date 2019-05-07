@@ -514,6 +514,7 @@ export default class WalletsStore extends Store {
    */
   _generateCertificate = flow(function* generateCertificate(params: {
     filePath: string,
+    timestamp: string,
   }): Generator<any, any, any> {
     try {
       // Pause polling in order not to show Paper wallet in the UI
@@ -576,7 +577,8 @@ export default class WalletsStore extends Store {
       yield this._downloadCertificate(
         walletAddress,
         walletCertificateRecoveryPhrase,
-        params.filePath
+        params.filePath,
+        params.timestamp
       );
     } catch (error) {
       throw error;
@@ -588,7 +590,8 @@ export default class WalletsStore extends Store {
   _downloadCertificate = async (
     address: string,
     recoveryPhrase: Array<string>,
-    filePath: string
+    filePath: string,
+    timestamp: string
   ) => {
     const locale = this.stores.profile.currentLocale;
     const intl = i18nContext(locale);
@@ -601,6 +604,7 @@ export default class WalletsStore extends Store {
         filePath,
         isMainnet,
         buildLabel,
+        timestamp,
       });
       runInAction('handle successful certificate download', () => {
         // Reset progress
