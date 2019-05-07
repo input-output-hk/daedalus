@@ -205,6 +205,56 @@ const messages = defineMessages({
     defaultMessage: '!!!Cardano Node State',
     description: 'Cardano Node State',
   },
+  nodeHasBeenUpdated: {
+    id: 'status.network.dialog.nodeHasBeenUpdated',
+    defaultMessage: '!!!Updated',
+    description: 'Updated',
+  },
+  nodeHasCrashed: {
+    id: 'status.network.dialog.nodeHasCrashed',
+    defaultMessage: '!!!Crashed',
+    description: 'Crashed',
+  },
+  nodeHasErrored: {
+    id: 'status.network.dialog.nodeHasErrored',
+    defaultMessage: '!!!Errored',
+    description: 'Errored',
+  },
+  nodeHasStopped: {
+    id: 'status.network.dialog.nodeHasStopped',
+    defaultMessage: '!!!Stopped',
+    description: 'Stopped',
+  },
+  nodeIsExiting: {
+    id: 'status.network.dialog.nodeIsExiting',
+    defaultMessage: '!!!Exiting',
+    description: 'Exiting',
+  },
+  nodeIsRunning: {
+    id: 'status.network.dialog.nodeIsRunning',
+    defaultMessage: '!!!Running',
+    description: 'Running',
+  },
+  nodeIsStarting: {
+    id: 'status.network.dialog.nodeIsStarting',
+    defaultMessage: '!!!Starting',
+    description: 'Starting',
+  },
+  nodeIsStopping: {
+    id: 'status.network.dialog.nodeIsStopping',
+    defaultMessage: '!!!Stopping',
+    description: 'Stopping',
+  },
+  nodeIsUnrecoverable: {
+    id: 'status.network.dialog.nodeIsUnrecoverable',
+    defaultMessage: '!!!Unrecoverable',
+    description: 'Unrecoverable',
+  },
+  nodeIsUpdating: {
+    id: 'status.network.dialog.nodeIsUpdating',
+    defaultMessage: '!!!Updating',
+    description: 'Updating',
+  },
   cardanoNodeResponding: {
     id: 'status.network.dialog.cardanoNodeResponding',
     defaultMessage: '!!!Node Responding',
@@ -648,7 +698,10 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.syncPercentage)}:</td>
-                <Tooltip skin={TooltipSkin} tip={daedalusStateDirectory}>
+                <Tooltip
+                  skin={TooltipSkin}
+                  tip={`${syncPercentage.toFixed(2)}%`}
+                >
                   <td>{syncPercentage.toFixed(2)}%</td>
                 </Tooltip>
               </tr>
@@ -792,12 +845,20 @@ export default class NetworkStatus extends Component<Props, State> {
                 <Tooltip
                   skin={TooltipSkin}
                   tip={upperFirst(
-                    cardanoNodeState != null ? cardanoNodeState : 'unknown'
+                    cardanoNodeState != null
+                      ? intl.formatMessage(
+                          this.getLocalisationForCardanoNodeState()
+                        )
+                      : 'unknown'
                   )}
                 >
                   <td>
                     {upperFirst(
-                      cardanoNodeState != null ? cardanoNodeState : 'unknown'
+                      cardanoNodeState != null
+                        ? intl.formatMessage(
+                            this.getLocalisationForCardanoNodeState()
+                          )
+                        : 'unknown'
                     )}
                   </td>
                 </Tooltip>
@@ -852,6 +913,44 @@ export default class NetworkStatus extends Component<Props, State> {
       </div>
     );
   }
+
+  getLocalisationForCardanoNodeState = () => {
+    const { cardanoNodeState } = this.props;
+    let localisationKey;
+    switch (cardanoNodeState) {
+      case CardanoNodeStates.STARTING:
+        localisationKey = messages.nodeIsStarting;
+        break;
+      case CardanoNodeStates.EXITING:
+        localisationKey = messages.nodeIsExiting;
+        break;
+      case CardanoNodeStates.STOPPING:
+        localisationKey = messages.nodeIsStopping;
+        break;
+      case CardanoNodeStates.STOPPED:
+        localisationKey = messages.nodeHasStopped;
+        break;
+      case CardanoNodeStates.UPDATING:
+        localisationKey = messages.nodeIsUpdating;
+        break;
+      case CardanoNodeStates.UPDATED:
+        localisationKey = messages.nodeHasBeenUpdated;
+        break;
+      case CardanoNodeStates.CRASHED:
+        localisationKey = messages.nodeHasCrashed;
+        break;
+      case CardanoNodeStates.ERRORED:
+        localisationKey = messages.nodeHasErrored;
+        break;
+      case CardanoNodeStates.UNRECOVERABLE:
+        localisationKey = messages.nodeIsUnrecoverable;
+        break;
+      default:
+        localisationKey = messages.nodeIsRunning;
+        break;
+    }
+    return localisationKey;
+  };
 
   restartNode = () => {
     this.setState({ isNodeRestarting: true });
