@@ -44,6 +44,13 @@
   tr {
     display: flex;
     justify-content: space-between;
+
+    &.platformVersion {
+      @media (max-width: 1000px) {
+        display: flex;
+        justify-content: space-between;
+      }
+    }
   }
 
   th {
@@ -94,7 +101,7 @@
       }
 
       @media (max-width: 1000px) {
-        max-width: 83%;
+        max-width: 580px;
       }
     }
 
@@ -118,8 +125,20 @@
       }
 
       @media (max-width: 1000px) {
-        max-width: 75%;
+        max-width: 100%;
       }
+    }
+
+    &.localTimeDifferenceItem {
+      align-items: center;
+      display: flex;
+    }
+  }
+
+  span {
+    td {
+      opacity: 1;
+      text-align: right;
     }
   }
 
@@ -212,7 +231,7 @@
     width: 100%;
 
     &:first-child tr {
-      max-width: 775px;
+      max-width: inherit;
     }
   }
 }
