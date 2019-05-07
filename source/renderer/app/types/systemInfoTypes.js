@@ -3,6 +3,6 @@ export type SystemInfo = {
   platform: string,
   platformVersion: string,
   cpu: string,
-  ram: number,
+  ram: string,
   availableDiskSpace: string,
 };
