@@ -498,8 +498,7 @@ export default class NetworkStatus extends Component<Props, State> {
     } = coreInfo;
 
     const { isNodeRestarting } = this.state;
-    const isNTPServiceReachable =
-      localTimeDifference > 0 ? !!localTimeDifference : '0';
+    const isNTPServiceReachable = localTimeDifference != null;
     const connectionError = get(nodeConnectionError, 'values', '{}');
     const { message, code } = connectionError;
 
