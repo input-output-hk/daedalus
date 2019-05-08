@@ -1,6 +1,6 @@
 // @flow
 import os from 'os';
-import { uniq, upperFirst } from 'lodash';
+import { uniq, upperFirst, get } from 'lodash';
 import { version } from '../../package.json';
 import { stateDirectoryPath } from './config';
 import type { Environment } from '../common/types/environment.types';
@@ -29,7 +29,7 @@ const isTestnet = NETWORK === TESTNET;
 const isDevelopment = NETWORK === DEVELOPMENT;
 const isWatchMode = process.env.IS_WATCH_MODE;
 const API_VERSION = process.env.API_VERSION || 'dev';
-const mainProcessID = process.ppid;
+const mainProcessID = get(process, 'ppid', '-');
 const rendererProcessID = process.pid;
 const PLATFORM = os.platform();
 const PLATFORM_VERSION = os.release();

@@ -46,6 +46,14 @@
     justify-content: space-between;
 
     &.platformVersion {
+      span {
+        div > div {
+          left: 100px;
+          text-align: center;
+          white-space: initial;
+        }
+      }
+
       @media (max-width: 1000px) {
         display: flex;
         justify-content: space-between;
