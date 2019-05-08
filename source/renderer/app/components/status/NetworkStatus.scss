@@ -14,7 +14,7 @@
 
   @media (max-height: 740px), (max-width: 1000px) {
     overflow-y: auto;
-    padding-bottom: 550px;
+    padding-bottom: 530px;
   }
 }
 
@@ -22,11 +22,10 @@
   color: var(--theme-network-window-white-color);
   display: flex;
   justify-content: space-between;
-  width: 100%;
 
   @media (max-width: 1000px) {
     flex-direction: column;
-    padding-bottom: 750px !important;
+    padding-bottom: 700px !important;
   }
 
   @media (max-width: 900px) {
