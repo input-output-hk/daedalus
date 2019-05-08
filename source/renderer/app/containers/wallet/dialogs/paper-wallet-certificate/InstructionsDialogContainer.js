@@ -1,16 +1,28 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import InstructionsDialog from '../../../../components/wallet/paper-wallet-certificate/InstructionsDialog';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
 import { generateFileNameWithTimestamp } from '../../../../../../common/utils/files';
+
+const messages = defineMessages({
+  timestamp: {
+    id: 'paper.wallet.create.certificate.instructions.dialog.timestamp',
+    defaultMessage: '!!!MM.DD.YYYY - h:mm A',
+    description: 'Label for the "Today" label on the wallet summary page.',
+  },
+});
 
 type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
 @observer
 export default class InstructionsDialogContainer extends Component<Props> {
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
   static defaultProps = {
     actions: null,
     stores: null,
@@ -19,13 +31,27 @@ export default class InstructionsDialogContainer extends Component<Props> {
   };
 
   onPrint = () => {
-    // TODO: refactor this direct access to the dialog api
-    const timestamp = `${moment.utc().format('YYYY-MM-DDTHHmmss.0SSS')}Z`;
+    const { intl } = this.context;
+    const date = moment();
+    const locale = this.props.stores.profile.currentLocale;
+
+    moment.updateLocale(locale, {
+      longDateFormat: {
+        pdfTimestamp: intl.formatMessage(messages.timestamp),
+      },
+    });
+    const localizedDateFormat = moment()
+      .localeData()
+      .longDateFormat('pdfTimestamp');
+    const timestamp = moment(date).format(localizedDateFormat);
     const name = generateFileNameWithTimestamp({
       prefix: 'paper-wallet-certificate',
+      date,
       fileType: '',
-      timestamp,
+      isUTC: false,
     });
+
+    // TODO: refactor this direct access to the dialog api
     const filePath = global.dialog.showSaveDialog({
       defaultPath: `${name}.pdf`,
       filters: [

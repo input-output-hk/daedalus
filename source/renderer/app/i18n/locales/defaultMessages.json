@@ -5514,6 +5514,25 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!MM.DD.YYYY - h:mm A",
+        "description": "Label for the \"Today\" label on the wallet summary page.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/containers/wallet/dialogs/paper-wallet-certificate/InstructionsDialogContainer.js",
+        "id": "paper.wallet.create.certificate.instructions.dialog.timestamp",
+        "start": {
+          "column": 13,
+          "line": 11
+        }
+      }
+    ],
+    "path": "source/renderer/app/containers/wallet/dialogs/paper-wallet-certificate/InstructionsDialogContainer.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!You have successfully copied wallet address",
         "description": "Message for the wallet address copy success notification.",
         "end": {

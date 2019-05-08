@@ -81,7 +81,7 @@ export const handlePaperWalletRequests = () => {
           doc.fillColor(textColor);
 
           // Timestamp
-          doc.fontSize(8).text(timestamp, 117, 484);
+          doc.fontSize(8).text(timestamp, 119, 484);
 
           doc.image(page1Uri, 0, 0, { fit: [width, height] });
           doc.rotate(180, { origin: [width / 2, height / 2] });

@@ -4,21 +4,34 @@ import moment from 'moment';
 const defaultProps = {
   prefix: 'logs',
   fileType: 'zip',
-  timestamp: `${moment.utc().format('YYYY-MM-DDTHHmmss.0SSS')}Z`,
+  date: moment(),
+  isUTC: true,
 };
 
 type Props = {
   prefix?: string,
   fileType?: string,
-  timestamp?: string,
+  date?: moment,
+  isUTC?: boolean,
 };
 
-export const generateFileNameWithTimestamp = (props: Props) => {
-  const { prefix, fileType, timestamp } = {
+export const generateFileNameWithTimestamp = (props?: Props) => {
+  const { prefix, fileType, isUTC } = {
     ...defaultProps,
     ...props,
   };
-  return `${prefix}-${timestamp}${fileType ? '.' : ''}${fileType}`;
+  let { date } = {
+    ...defaultProps,
+    ...props,
+  };
+  let z = '';
+  if (isUTC === true) {
+    if (!Object.prototype.hasOwnProperty.call(props, 'date')) date = date.utc();
+    z = 'Z';
+  }
+  return `${prefix}-${`${date.format('YYYY-MM-DDTHHmmss.0SSS')}${z}`}${
+    fileType ? '.' : ''
+  }${fileType}`;
 };
 
 export const isFileNameWithTimestamp = (
