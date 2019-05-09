@@ -28,7 +28,7 @@ export type Environment = {
   isMacOS: boolean,
   isLinux: boolean,
   stateDirectoryPath: string,
-  isInSafeMode: string,
+  isInSafeMode: boolean,
 };
 
 // constants
