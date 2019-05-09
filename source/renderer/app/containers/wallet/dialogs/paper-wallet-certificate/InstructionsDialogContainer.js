@@ -10,8 +10,8 @@ import { generateFileNameWithTimestamp } from '../../../../../../common/utils/fi
 const messages = defineMessages({
   timestamp: {
     id: 'paper.wallet.create.certificate.instructions.dialog.timestamp',
-    defaultMessage: '!!!MM.DD.YYYY - h:mm A',
-    description: 'Label for the "Today" label on the wallet summary page.',
+    defaultMessage: '!!!MMMM D, YYYY - h:mm A',
+    description: 'Timestamp for the Paper Wallet PDF content.',
   },
 });
 

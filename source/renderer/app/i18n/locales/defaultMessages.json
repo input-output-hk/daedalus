@@ -5514,8 +5514,8 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!MM.DD.YYYY - h:mm A",
-        "description": "Label for the \"Today\" label on the wallet summary page.",
+        "defaultMessage": "!!!MMMM D, YYYY - h:mm A",
+        "description": "Timestamp for the Paper Wallet PDF content.",
         "end": {
           "column": 3,
           "line": 15
