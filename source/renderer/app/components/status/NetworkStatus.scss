@@ -22,6 +22,7 @@
   color: var(--theme-network-window-white-color);
   display: flex;
   justify-content: space-between;
+  width: 100%;
 
   @media (max-width: 1000px) {
     flex-direction: column;
