@@ -536,7 +536,7 @@ export const TEST_THEME_PARAMS: CreateThemeParams = {
     },
     primary: {
       active: '#ebeef0',
-      background: '#fafbfc',
+      background: '#efefef',
       border: '#c6cdd6',
       disabled: 'rgba(94, 96, 102, 0.05)',
       focus: '#5e6066',
@@ -546,7 +546,7 @@ export const TEST_THEME_PARAMS: CreateThemeParams = {
       text: '#5e6066',
     },
     secondary: {
-      active: '#ffb366',
+      active: '#e67300',
       background: '#ff8c1a',
       border: '#8BBF9F',
       disabled: '#ffebcc',
