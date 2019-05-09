@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
 import os from 'os';
-import { includes } from 'lodash/collection';
 import NetworkStatus from '../../components/status/NetworkStatus';
 import styles from './NetworkStatusDialog.scss';
 import type { InjectedProps } from '../../types/injectedPropsType';
