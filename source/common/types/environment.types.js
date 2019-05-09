@@ -28,7 +28,7 @@ export type Environment = {
   isMacOS: boolean,
   isLinux: boolean,
   stateDirectoryPath: string,
-  cardanoProcessID: string,
+  isInSafeMode: string,
 };
 
 // constants
