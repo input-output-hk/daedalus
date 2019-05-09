@@ -1,13 +1,18 @@
-// @flow
-import type { BackgroundShades } from '../types';
-
-export const createShades = (color: string): BackgroundShades => {
-  const light = pSBC(0.42, color, false, true);
-  const dark = pSBC(-0.3, color, false, true);
+export const createShades = color => {
+  const light = pSBC(0.2, color, false, true);
+  const lighter = pSBC(0.4, color, false, true);
+  const lightest = pSBC(0.6, color, false, true);
+  const dark = pSBC(-0.1, color, false, true);
+  const darker = pSBC(-0.2, color, false, true);
+  const darkest = pSBC(-0.3, color, false, true);
   return {
+    lightest: lightest || color,
+    lighter: lighter || color,
     light: light || color,
     regular: color,
     dark: dark || color,
+    darker: darker || color,
+    darkest: darkest || color,
   };
 };
 
