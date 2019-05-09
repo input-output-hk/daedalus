@@ -268,6 +268,7 @@ export default class NetworkStatusStore extends Store {
         break;
       case CardanoNodeStates.RUNNING:
         await this._requestTlsConfig();
+        await this._requestCardanoStatus();
         break;
       case CardanoNodeStates.STOPPING:
       case CardanoNodeStates.EXITING:
