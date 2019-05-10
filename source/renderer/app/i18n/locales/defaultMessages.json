@@ -2778,13 +2778,13 @@
         "description": "Label for the \"Summary\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.summary",
         "start": {
           "column": 11,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -2792,13 +2792,13 @@
         "description": "Label for the \"Send\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.send",
         "start": {
           "column": 8,
-          "line": 19
+          "line": 20
         }
       },
       {
@@ -2806,13 +2806,13 @@
         "description": "Label for the \"Receive\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.receive",
         "start": {
           "column": 11,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -2820,13 +2820,13 @@
         "description": "Label for the \"Transactions\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.transactions",
         "start": {
           "column": 16,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -2834,13 +2834,41 @@
         "description": "Label for the \"Settings\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.settings",
         "start": {
           "column": 12,
-          "line": 35
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!Wallet UTXO distribution",
+        "description": "Label for the \"Wallet UTXO distribution\" nav button in the wallet navigation.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
+        "id": "wallet.navigation.utxo",
+        "start": {
+          "column": 8,
+          "line": 42
+        }
+      },
+      {
+        "defaultMessage": "!!!More",
+        "description": "Label for the \"More\" nav button in the wallet navigation.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
+        "id": "wallet.navigation.more",
+        "start": {
+          "column": 8,
+          "line": 48
         }
       }
     ],
@@ -3898,6 +3926,95 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Name",
+        "description": "Label for the \"Name\" text input on the wallet settings page.",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.name.label",
+        "start": {
+          "column": 8,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!Transaction assurance security level",
+        "description": "Label for the \"Transaction assurance security level\" dropdown.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.assurance",
+        "start": {
+          "column": 23,
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!Password",
+        "description": "Label for the \"Password\" field.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.password",
+        "start": {
+          "column": 17,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Last updated",
+        "description": "Last updated X time ago message.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.passwordLastUpdated",
+        "start": {
+          "column": 23,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!You still don't have password",
+        "description": "You still don't have password set message.",
+        "end": {
+          "column": 3,
+          "line": 46
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.passwordNotSet",
+        "start": {
+          "column": 18,
+          "line": 42
+        }
+      },
+      {
+        "defaultMessage": "!!!Export wallet",
+        "description": "Label for the export button on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 51
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.exportWalletButtonLabel",
+        "start": {
+          "column": 21,
+          "line": 47
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/settings/WalletSettings.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!+ {amount} of fees",
         "description": "Label for the \"+ 12.042481 of fees\" message above amount input field.",
         "end": {
@@ -4292,6 +4409,128 @@
       }
     ],
     "path": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Wallet UTXO distribution",
+        "description": "Title for the \"Wallet Utxos\" screen.",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
+        "id": "wallet.settings.utxos.title",
+        "start": {
+          "column": 9,
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!This wallet contains <b>{formattedWalletAmount} ADA</b> on <b>{walletUtxosAmount} UTXOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTXOs with different amounts of ada.",
+        "description": "Description for the \"Wallet Utxos\" screen.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
+        "id": "wallet.settings.utxos.description",
+        "start": {
+          "column": 15,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!This wallet is empty so it does not contain any UTXOs (unspent transaction outputs).",
+        "description": "Empty wallet description for the \"Wallet Utxos\" screen.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
+        "id": "wallet.settings.utxos.emptyWallet",
+        "start": {
+          "column": 15,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!amount",
+        "description": "Label X for the \"Wallet Utxos\" screen.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
+        "id": "wallet.settings.utxos.labelX",
+        "start": {
+          "column": 10,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!Nº UTXO",
+        "description": "Label Y for the \"Wallet Utxos\" screen.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
+        "id": "wallet.settings.utxos.labelY",
+        "start": {
+          "column": 10,
+          "line": 48
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/utxo/WalletUtxo.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!<b>{walletUtxosAmount}</b> UTXOs containing <br /> <b>{walletAmount}</b> ADA",
+        "description": "Tooltip for the \"Wallet Utxos - first bar\" screen.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/wallet/utxo/WalletUtxoTooltip.js",
+        "id": "wallet.settings.utxos.tooltipFirst",
+        "start": {
+          "column": 16,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!<b>{walletUtxosAmount}</b> UTXOs containing <br /> <span> between <b>{previousWalletAmount}</b> and </span> <b>{walletAmount}</b> ADA",
+        "description": "Tooltip for the \"Wallet Utxos\" screen.",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/wallet/utxo/WalletUtxoTooltip.js",
+        "id": "wallet.settings.utxos.tooltip",
+        "start": {
+          "column": 11,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!<b>{walletUtxosAmount}</b> UTXOs containing <br /> <b>{walletAmount}</b> ADA",
+        "description": "Tooltip for the \"Wallet Utxos - last bar\" screen.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/wallet/utxo/WalletUtxoTooltip.js",
+        "id": "wallet.settings.utxos.tooltipLast",
+        "start": {
+          "column": 15,
+          "line": 22
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/utxo/WalletUtxoTooltip.json"
   },
   {
     "descriptors": [
@@ -5147,95 +5386,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Name",
-        "description": "Label for the \"Name\" text input on the wallet settings page.",
-        "end": {
-          "column": 3,
-          "line": 25
-        },
-        "file": "source/renderer/app/components/wallet/WalletSettings.js",
-        "id": "wallet.settings.name.label",
-        "start": {
-          "column": 8,
-          "line": 21
-        }
-      },
-      {
-        "defaultMessage": "!!!Transaction assurance security level",
-        "description": "Label for the \"Transaction assurance security level\" dropdown.",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/components/wallet/WalletSettings.js",
-        "id": "wallet.settings.assurance",
-        "start": {
-          "column": 23,
-          "line": 26
-        }
-      },
-      {
-        "defaultMessage": "!!!Password",
-        "description": "Label for the \"Password\" field.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/components/wallet/WalletSettings.js",
-        "id": "wallet.settings.password",
-        "start": {
-          "column": 17,
-          "line": 32
-        }
-      },
-      {
-        "defaultMessage": "!!!Last updated",
-        "description": "Last updated X time ago message.",
-        "end": {
-          "column": 3,
-          "line": 41
-        },
-        "file": "source/renderer/app/components/wallet/WalletSettings.js",
-        "id": "wallet.settings.passwordLastUpdated",
-        "start": {
-          "column": 23,
-          "line": 37
-        }
-      },
-      {
-        "defaultMessage": "!!!You still don't have password",
-        "description": "You still don't have password set message.",
-        "end": {
-          "column": 3,
-          "line": 46
-        },
-        "file": "source/renderer/app/components/wallet/WalletSettings.js",
-        "id": "wallet.settings.passwordNotSet",
-        "start": {
-          "column": 18,
-          "line": 42
-        }
-      },
-      {
-        "defaultMessage": "!!!Export wallet",
-        "description": "Label for the export button on wallet settings.",
-        "end": {
-          "column": 3,
-          "line": 51
-        },
-        "file": "source/renderer/app/components/wallet/WalletSettings.js",
-        "id": "wallet.settings.exportWalletButtonLabel",
-        "start": {
-          "column": 21,
-          "line": 47
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/WalletSettings.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Drop file here",
         "description": "Label \"Drop file here\" on the file upload widget.",
         "end": {
@@ -5273,13 +5423,13 @@
         "description": "Message \"Your changes have been saved\" for inline editing (eg. on Wallet Settings page).",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 22
         },
         "file": "source/renderer/app/components/widgets/forms/InlineEditingDropdown.js",
         "id": "inline.editing.dropdown.changesSaved",
         "start": {
           "column": 16,
-          "line": 11
+          "line": 17
         }
       }
     ],

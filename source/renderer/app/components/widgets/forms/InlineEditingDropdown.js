@@ -1,11 +1,17 @@
 // @flow
 import React, { Component } from 'react';
+import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
+import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import styles from './InlineEditingDropdown.scss';
+import tooltipStyles from './InlineEditingDropdown-tooltip.scss';
+import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
 
 const messages = defineMessages({
   changesSaved: {
@@ -20,6 +26,7 @@ type Props = {
   className?: string,
   isActive: boolean,
   label: string,
+  tooltip?: string | Node,
   options: Array<{ value: number | string, label: string }>,
   value: number | string,
   onSubmit: Function,
@@ -46,6 +53,7 @@ export default class InlineEditingDropdown extends Component<Props> {
       className,
       isActive,
       label,
+      tooltip,
       options,
       value,
       successfullyUpdated,
@@ -54,11 +62,30 @@ export default class InlineEditingDropdown extends Component<Props> {
     const dropdownStyles = classnames([
       successfullyUpdated ? 'dropdown_animateSuccess' : null,
     ]);
+
+    const labelText = [
+      label,
+      !!tooltip && (
+        <Tooltip
+          skin={TooltipSkin}
+          themeOverrides={tooltipStyles}
+          tip={tooltip}
+          key="tooltip"
+          className={styles.tooltip}
+        >
+          <SVGInline
+            svg={questionMarkIcon}
+            className={styles.questionMarkIcon}
+          />
+        </Tooltip>
+      ),
+    ];
+
     return (
       <div className={componentClasses}>
         <Select
           className={dropdownStyles}
-          label={label}
+          label={labelText}
           options={options}
           value={value}
           onChange={this.onChange}

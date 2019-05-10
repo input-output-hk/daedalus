@@ -1,0 +1,79 @@
+.component {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-regular);
+  height: 100%;
+  justify-content: space-between;
+  min-height: 455px;
+  padding: 30px;
+
+  &.isEmpty {
+    min-height: auto;
+  }
+}
+
+.container {
+  h1 {
+    color: var(--theme-utxo-title-text-color);
+    font-size: 16px;
+    line-height: 1.38;
+    margin-bottom: 14px;
+  }
+
+  > p {
+    color: var(--theme-utxo-title-description-color);
+    font-family: var(--font-light);
+    font-size: 16px;
+    line-height: 22px;
+    margin-bottom: 20px;
+
+    b {
+      color: var(--theme-utxo-title-text-color);
+      font-family: var(--font-regular);
+    }
+  }
+
+  :global {
+    .recharts-cartesian-grid-bg {
+      fill: var(--theme-utxo-background-color);
+    }
+  }
+}
+
+// CHARTS STYLES
+
+.responsiveContainer {
+  margin: 30px 0 10px -13px;
+  width: auto !important;
+
+  > div > svg {
+    overflow: visible;
+  }
+}
+
+.bar {
+  path {
+    fill: var(--theme-utxo-bar-color);
+  }
+}
+
+.yAxisLabel {
+  fill: var(--theme-utxo-label-text-color);
+  font-family: var(--font-regular);
+  font-size: 10px;
+  line-height: 1.3;
+  transform: translate(10px, -31px);
+}
+
+.xAxisLabel {
+  transform: rotate(90deg) translate(36px, 16px);
+  transform-origin: right bottom;
+
+  > tspan {
+    fill: var(--theme-utxo-label-text-color);
+    font-family: var(--font-regular);
+    font-size: 10px;
+    line-height: 1.3;
+    transform: rotate(90deg);
+  }
+}
