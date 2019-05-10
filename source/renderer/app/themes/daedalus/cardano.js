@@ -1,5 +1,6 @@
 // @flow
 import { createTheme } from '../utils/createTheme';
+import { pSBC } from '../utils/createShades';
 import type { CreateThemeParams } from '../types';
 
 //  ==== react-polymorph: theme config === //
@@ -568,6 +569,22 @@ export const TEST_THEME_PARAMS: CreateThemeParams = {
     semibold: 'NotoSans-SemiBold, NotoSansCJKjp-Medium',
     thin: 'NotoSans-Thin, NotoSansCJKjp-Thin',
     ultralight: 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
+  },
+  config: {
+    sidebar: {
+      '--theme-sidebar-menu-add-button-background-color-hover': `${pSBC(
+        -0.25,
+        '#ff8c1a',
+        false,
+        true
+      )}`,
+      '--theme-sidebar-menu-add-button-background-color-active': `${pSBC(
+        -0.25,
+        '#ff8c1a',
+        false,
+        true
+      )}`,
+    },
   },
 };
 
