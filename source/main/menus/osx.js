@@ -1,5 +1,5 @@
 // @flow
-import { compact} from 'lodash';
+import { compact } from 'lodash';
 import { dialog, shell } from 'electron';
 import type { App, BrowserWindow } from 'electron';
 import type { MenuActions } from './MenuActions.types';
@@ -15,12 +15,14 @@ const localesFillForm = {
 
 const id = 'menu';
 
-export const osxMenu = (app: App,
-                        window: BrowserWindow,
-                        actions: MenuActions,
-                        isInSafeMode: boolean,
-                        translations: {},
-                        translation: Function = getTranslation(translations, id)) => [
+export const osxMenu = (
+  app: App,
+  window: BrowserWindow,
+  actions: MenuActions,
+  isInSafeMode: boolean,
+  translations: {},
+  translation: Function = getTranslation(translations, id)
+) => [
   {
     label: translation('daedalus'),
     submenu: compact([
@@ -169,8 +171,9 @@ export const osxMenu = (app: App,
       {
         label: translation('helpSupport.supportRequest'),
         click() {
-          const supportRequestLinkUrl =
-            translation('helpSupport.supportRequestUrl');
+          const supportRequestLinkUrl = translation(
+            'helpSupport.supportRequestUrl'
+          );
           const {
             version,
             apiVersion,
@@ -207,8 +210,7 @@ export const osxMenu = (app: App,
       {
         label: translation('helpSupport.knownIssues'),
         click() {
-          const faqLink =
-            translation('helpSupport.knownIssuesUrl');
+          const faqLink = translation('helpSupport.knownIssuesUrl');
           shell.openExternal(faqLink);
         },
       },

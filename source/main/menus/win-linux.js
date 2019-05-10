@@ -189,8 +189,9 @@ export const winLinuxMenu = (
       {
         label: translation('helpSupport.supportRequest'),
         click() {
-          const supportRequestLinkUrl =
-            translation('helpSupport.supportRequestUrl');
+          const supportRequestLinkUrl = translation(
+            'helpSupport.supportRequestUrl'
+          );
           const {
             version,
             apiVersion,
@@ -227,8 +228,7 @@ export const winLinuxMenu = (
       {
         label: translation('helpSupport.knownIssues'),
         click() {
-          const faqLink =
-            translation('helpSupport.knownIssuesUrl');
+          const faqLink = translation('helpSupport.knownIssuesUrl');
           shell.openExternal(faqLink);
         },
       },
