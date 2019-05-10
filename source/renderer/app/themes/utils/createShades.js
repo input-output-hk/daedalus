@@ -16,7 +16,7 @@ export const createShades = color => {
   };
 };
 
-const pSBC = (p, c0, c1, l) => {
+export const pSBC = (p, c0, c1, l) => {
   let r,
     g,
     b,
