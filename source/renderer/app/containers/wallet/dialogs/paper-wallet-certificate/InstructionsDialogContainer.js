@@ -31,11 +31,14 @@ export default class InstructionsDialogContainer extends Component<Props> {
         ],
       });
     } catch (error) {
-      if (error && error.syscall && error.syscall === 'open') {
-        alert(
-          'Please, close the existing PDF file or save with a different name'
-        ); // eslint-disable-line
-      }
+      console.log('ERROR: -----');
+      console.log(error);
+
+      // if (error && error.syscall && error.syscall === 'open') {
+      alert(
+        'Please, close the existing PDF file or save with a different name'
+      ); // eslint-disable-line
+      // }
       return false;
     }
 
