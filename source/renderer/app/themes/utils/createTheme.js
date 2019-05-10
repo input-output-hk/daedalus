@@ -85,8 +85,8 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
       '--rp-modal-overlay-bg-color': 'rgba(0, 0, 0, 0.4)',
     },
     options: {
-      '--rp-option-bg-color': `${primary.background.regular}`,
-      '--rp-option-bg-color-highlighted': `${primary.hover}`,
+      '--rp-option-bg-color': `${primary.background.lightest}`,
+      '--rp-option-bg-color-highlighted': `${primary.background.regular}`,
       '--rp-option-border-color': `${primary.border}`,
       '--rp-option-checkmark-color': `${primary.text}`,
       '--rp-option-line-height': '22px',
@@ -281,7 +281,7 @@ const createDaedalusComponentsTheme = (
       '--theme-dialog-big-button-description-color': `${primary.text}`,
       '--theme-dialog-title-color': `${primary.text}`,
       '--theme-dialog-text-color': `${primary.text}`,
-      '--theme-dialog-border-color': `${primary.border}`,
+      '--theme-dialog-border-color': `${primary.background.regular}`,
     },
     errors: {
       '--theme-color-error': `${error.regular}`,
@@ -445,21 +445,23 @@ const createDaedalusComponentsTheme = (
       }`,
     },
     scrollbar: {
-      '--theme-scrollbar-thumb-background': `${primary.border}`,
+      '--theme-scrollbar-thumb-background': `${primary.background.darker}`,
     },
     sendConfirmation: {
       '--theme-send-confirmation-dialog-send-values-color': `${error.regular}`,
     },
     settings: {
       '--theme-settings-body-background-color': `${primary.background.regular}`,
-      '--theme-settings-pane-background-color': `${primary.background.regular}`,
+      '--theme-settings-pane-background-color': `${
+        primary.background.lightest
+      }`,
       '--theme-settings-pane-border': `1px solid ${primary.border}`,
       '--theme-settings-menu-box-background-color': `${
-        primary.background.regular
+        primary.background.lightest
       }`,
       '--theme-settings-menu-box-border': `1px solid ${primary.border}`,
       '--theme-settings-menu-item-text-color': `${primary.text}`,
-      '--theme-settings-menu-item-text-color-active': `${primary.active}`,
+      '--theme-settings-menu-item-text-color-active': `${primary.text}`,
       '--theme-settings-menu-item-text-color-disabled': `${primary.disabled}`,
       '--theme-settings-menu-item-background-color-active': `${primary.hover}`,
       '--theme-settings-menu-item-left-border-color-active': `${
@@ -486,13 +488,13 @@ const createDaedalusComponentsTheme = (
       '--theme-sidebar-menu-item-wallet-name-color': `${secondary.text}`,
       '--theme-sidebar-menu-item-wallet-info-color': `${secondary.text}`,
       '--theme-sidebar-menu-add-button-background-color': `${
-        secondary.background.darker
+        secondary.background.darkest
       }`,
       '--theme-sidebar-menu-add-button-background-color-active': `${
-        secondary.background.darkest
+        secondary.background.dark
       }`,
       '--theme-sidebar-menu-add-button-background-color-hover': `${
-        secondary.background.darkest
+        secondary.background.dark
       }`,
       '--theme-sidebar-menu-add-button-text-color': `${secondary.text}`,
     },
@@ -596,13 +598,19 @@ export const createTheme = (fullThemeParts: Object): Object => {
     ...createDaedalusComponentsTheme({ colors, fonts }),
   };
 
-  // if user passed theme config, compose with theme object and return
-  if (config && !isEmpty(config)) {
-    daedalusTheme = { ...daedalusTheme, ...config };
-  }
-  // flatten daedalusTheme object for consumption by ThemeManager and return
-  return Object.values(daedalusTheme).reduce(
+  // flatten daedalusTheme object for consumption by ThemeManager
+  daedalusTheme = Object.values(daedalusTheme).reduce(
     (theme, componentVars) => ({ ...theme, ...componentVars }),
     {}
   );
+
+  // if user passed theme config, compose its values with daedalusTheme object
+  if (config && !isEmpty(config)) {
+    daedalusTheme = Object.values(config).reduce(
+      (theme, componentVars) => ({ ...theme, ...componentVars }),
+      daedalusTheme
+    );
+  }
+  // returned flat theme object composed with config (if passed by user)
+  return daedalusTheme;
 };
