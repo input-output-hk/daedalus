@@ -6,6 +6,7 @@ import type { MenuActions } from './MenuActions.types';
 import { getTranslation } from '../utils/getTranslation';
 import { environment } from '../environment';
 import { getLocale } from '../utils/getLocale';
+import { generateFileNameWithTimestamp } from '../../common/utils/files';
 
 const localesFillForm = {
   'en-US': 'English',
@@ -175,7 +176,15 @@ export const winLinuxMenu = (
       },
       {
         label: translation('helpSupport.downloadLogs'),
-        click() {},
+        click() {
+          const fileName = generateFileNameWithTimestamp();
+          const destination = dialog.showSaveDialog({
+            defaultPath: fileName,
+          });
+          if (destination) {
+            // @todo
+          }
+        },
       },
       {
         label: translation('helpSupport.supportRequest'),

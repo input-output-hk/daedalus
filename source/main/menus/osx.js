@@ -1,11 +1,12 @@
 // @flow
-import { compact } from 'lodash';
+import { compact} from 'lodash';
 import { dialog, shell } from 'electron';
 import type { App, BrowserWindow } from 'electron';
 import type { MenuActions } from './MenuActions.types';
 import { getTranslation } from '../utils/getTranslation';
 import { environment } from '../environment';
 import { getLocale } from '../utils/getLocale';
+import { generateFileNameWithTimestamp } from '../../common/utils/files';
 
 const localesFillForm = {
   'en-US': 'English',
@@ -14,14 +15,12 @@ const localesFillForm = {
 
 const id = 'menu';
 
-export const osxMenu = (
-  app: App,
-  window: BrowserWindow,
-  actions: MenuActions,
-  isInSafeMode: boolean,
-  translations: {},
-  translation: Function = getTranslation(translations, id)
-) => [
+export const osxMenu = (app: App,
+                        window: BrowserWindow,
+                        actions: MenuActions,
+                        isInSafeMode: boolean,
+                        translations: {},
+                        translation: Function = getTranslation(translations, id)) => [
   {
     label: translation('daedalus'),
     submenu: compact([
@@ -157,7 +156,15 @@ export const osxMenu = (
       },
       {
         label: translation('helpSupport.downloadLogs'),
-        click() {},
+        click() {
+          const fileName = generateFileNameWithTimestamp();
+          const destination = dialog.showSaveDialog({
+            defaultPath: fileName,
+          });
+          if (destination) {
+            // @todo
+          }
+        },
       },
       {
         label: translation('helpSupport.supportRequest'),
