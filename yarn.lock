@@ -3858,9 +3858,9 @@ electron-unhandled@2.1.0:
     ensure-error "^1.0.0"
     lodash.debounce "^4.0.8"
 
-electron@^3.0.2:
-  version "3.1.9"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-3.1.9.tgz#036bfec3b0b57d60dca250caa0fb2390b8a06092"
+electron@3.0.14:
+  version "3.0.14"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-3.0.14.tgz#d54c51de3651c0fe48a6a6e9aef1ca98e5ea5796"
   dependencies:
     "@types/node" "^8.0.24"
     electron-download "^4.1.0"
