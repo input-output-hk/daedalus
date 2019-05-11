@@ -237,6 +237,9 @@ export const CARDANO_THEME_CONFIG = {
   },
   buttonAttention: {
     '--theme-button-attention-background-color': '#ea4c5b',
+    '--theme-button-attention-background-color-disabled':
+      'rgba(234, 76, 91, 0.3)',
+    '--theme-button-attention-text-color': '#fafbfc',
   },
   buttonDisclaimer: {
     '--theme-button-disclaimer-background-color': '#ab1700',
@@ -244,6 +247,25 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-button-disclaimer-border-color': '#fafbfc',
     '--theme-button-disclaimer-border-color-disabled':
       'rgba(250, 251, 252, .3)',
+  },
+  buttonFlat: {
+    '--theme-button-flat-background-color': '#f0f3f5',
+    '--theme-button-flat-background-color-hover': '#f3f5f7',
+    '--theme-button-flat-background-color-active': '#ebeef0',
+    '--theme-button-flat-background-color-disabled': 'rgba(240, 243, 245, 0.3)',
+    '--theme-button-flat-text-color-disabled': '#5e6066',
+    '--theme-button-flat-text-color': '#5e6066',
+    '--theme-button-flat-outline-color': '#e1e4e6',
+  },
+  buttonPrimary: {
+    '--theme-button-primary-background-color': '#2cbb69',
+    '--theme-button-primary-background-color-hover': '#56c887',
+    '--theme-button-primary-background-color-active': '#239554',
+    '--theme-button-primary-background-color-disabled':
+      'rgba(44, 187, 105, 0.3)',
+    '--theme-button-primary-text-color-disabled': '#fafbfc',
+    '--theme-button-primary-text-color': '#fafbfc',
+    '--theme-button-primary-outline-color': '#35de7e',
   },
   connecting: {
     '--theme-connecting-background-color': '#202225',
@@ -539,7 +561,7 @@ export const TEST_THEME_PARAMS: CreateThemeParams = {
       active: '#ebeef0',
       background: '#efefef',
       border: '#c6cdd6',
-      disabled: 'rgba(94, 96, 102, 0.05)',
+      disabled: 'rgba(94, 96, 102, 0.3)',
       focus: '#5e6066',
       hover: '#f3f5f7',
       outline: '#e1e4e6',

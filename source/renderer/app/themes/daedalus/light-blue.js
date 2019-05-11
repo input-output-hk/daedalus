@@ -235,6 +235,9 @@ export const LIGHT_BLUE_THEME_CONFIG = {
   },
   buttonAttention: {
     '--theme-button-attention-background-color': '#ea4c5b',
+    '--theme-button-attention-background-color-disabled':
+      'rgba(234, 76, 91, 0.3)',
+    '--theme-button-attention-text-color': '#fafbfc',
   },
   buttonDisclaimer: {
     '--theme-button-disclaimer-background-color': '#ab1700',
@@ -242,6 +245,24 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-button-disclaimer-border-color': '#fafbfc',
     '--theme-button-disclaimer-border-color-disabled':
       'rgba(250, 251, 252, .3)',
+  },
+  buttonFlat: {
+    '--theme-button-flat-background-color': '#f0f3f5',
+    '--theme-button-flat-background-color-hover': '#f3f5f7',
+    '--theme-button-flat-background-color-active': '#ebeef0',
+    '--theme-button-flat-background-color-disabled': 'rgba(240, 243, 245, 0.3)',
+    '--theme-button-flat-text-color-disabled': '#5e6066',
+    '--theme-button-flat-text-color': '#5e6066',
+    '--theme-button-flat-outline-color': '#e1e4e6',
+  },
+  buttonPrimary: {
+    '--theme-button-primary-background-color': '#243e62',
+    '--theme-button-primary-background-color-hover': '#2f496e',
+    '--theme-button-primary-background-color-active': '#1e304a',
+    '--theme-button-primary-background-color-disabled': 'rgba(36, 62, 98, 0.3)',
+    '--theme-button-primary-text-color-disabled': '#fafbfc',
+    '--theme-button-primary-text-color': '#fafbfc',
+    '--theme-button-primary-outline-color': '#4a7ec7',
   },
   connecting: {
     '--theme-connecting-background-color': '#1c3e65',
