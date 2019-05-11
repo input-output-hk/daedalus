@@ -1,0 +1,22 @@
+%contentBorderAndBackground {
+  border: solid 1px var(--theme-staking-content-border-color);
+  border-radius: 4px;
+  background-color: var(--theme-staking-content-background-color);
+}
+
+%baseTypography {
+  font-size: 16px;
+  line-height: 1.38;
+}
+
+%accentText {
+  @extend %baseTypography;
+  font-family: var(--font-semibold);
+  color: var(--theme-staking-font-color-accent);
+}
+
+%regularText {
+  @extend %baseTypography;
+  font-family: var(--font-regular);
+  color: var(--theme-staking-font-color-regular);
+}

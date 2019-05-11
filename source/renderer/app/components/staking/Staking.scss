@@ -2,20 +2,10 @@
 
 .component {
   height: 100%;
-  display: flex;
   padding: 20px;
   background-color: var(--theme-staking-background-color);
 }
 
-.leftSide {
-  flex: 1;
-  margin-right: 20px;
-
-  .mainContent {
-    @extend %contentBorderAndBackground;
-  }
-}
-
-.rightSide {
-  width: 240px;
+.mainContent {
+  @extend %contentBorderAndBackground;
 }

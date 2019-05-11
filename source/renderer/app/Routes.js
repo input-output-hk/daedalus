@@ -17,6 +17,7 @@ import TermsOfUsePage from './containers/profile/TermsOfUsePage';
 import DataLayerMigrationPage from './containers/profile/DataLayerMigrationPage';
 import DisplaySettingsPage from './containers/settings/categories/DisplaySettingsPage';
 import PaperWalletCreateCertificatePage from './containers/wallet/PaperWalletCreateCertificatePage';
+import CardanoDecentralisationNotificationPage from './containers/staking/CardanoDecentralisationNotificationPage';
 import Wallet from './containers/wallet/Wallet';
 import WalletSummaryPage from './containers/wallet/WalletSummaryPage';
 import WalletSendPage from './containers/wallet/WalletSendPage';
@@ -24,7 +25,6 @@ import WalletReceivePage from './containers/wallet/WalletReceivePage';
 import WalletTransactionsPage from './containers/wallet/WalletTransactionsPage';
 import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
 import WalletUtxoPage from './containers/wallet/WalletUtxoPage';
-// import StakingPage from './containers/staking/StakingPage';
 
 export const Routes = (
   <Route path={ROUTES.ROOT} component={Root}>
@@ -38,7 +38,6 @@ export const Routes = (
       path={ROUTES.PROFILE.DATA_LAYER_MIGRATION}
       component={DataLayerMigrationPage}
     />
-    {/* <Route path={ROUTES.STAKING} component={StakingPage} /> */}
     <Route path={ROUTES.ADA_REDEMPTION} component={AdaRedemptionPage} />
     <Route
       path={ROUTES.BLOCK_CONSOLIDATION_STATUS}
@@ -69,6 +68,10 @@ export const Routes = (
     <Route
       path={ROUTES.PAPER_WALLET_CREATE_CERTIFICATE}
       component={PaperWalletCreateCertificatePage}
+    />
+    <Route
+      path={ROUTES.CARDANO_DECENTRALISATION_NOTIFICATION}
+      component={CardanoDecentralisationNotificationPage}
     />
   </Route>
 );

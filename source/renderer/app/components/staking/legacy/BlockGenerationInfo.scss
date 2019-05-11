@@ -1,0 +1,28 @@
+@import './stakingConfig';
+
+.component {
+  margin: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--theme-separation-border-color);
+  text-align: center;
+}
+
+.heading {
+  @extend %accentText;
+  margin-bottom: 7px;
+}
+
+.timeLeft {
+  @extend %accentText;
+  margin-bottom: 7px;
+  font-size: 36px;
+}
+
+.info {
+  @extend %regularText;
+  margin-bottom: 7px;
+  span.link {
+    text-decoration: underline;
+    color: var(--theme-block-generation-info-color);
+  }
+}

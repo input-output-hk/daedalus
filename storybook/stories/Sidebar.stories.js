@@ -6,6 +6,7 @@ import { action } from '@storybook/addon-actions';
 import StoryDecorator from './support/StoryDecorator';
 import Sidebar from '../../source/renderer/app/components/sidebar/Sidebar';
 import walletsIcon from '../../source/renderer/app/assets/images/sidebar/wallet-ic.inline.svg';
+import decentralisationNotificationIcon from '../../source/renderer/app/assets/images/sidebar/decentralisation-ic.inline.svg';
 import settingsIcon from '../../source/renderer/app/assets/images/sidebar/settings-ic.inline.svg';
 
 const SIDEBAR_CATEGORIES = [
@@ -13,6 +14,11 @@ const SIDEBAR_CATEGORIES = [
     name: 'WALLETS',
     route: '/wallets',
     icon: walletsIcon,
+  },
+  {
+    name: 'CARDANO_DECENTRALISATION_NOTIFICATION',
+    route: '/cardano-decentralisation-notification',
+    icon: decentralisationNotificationIcon,
   },
   {
     name: 'SETTINGS',
@@ -44,7 +50,6 @@ let emptyMenus;
 
 storiesOf('Sidebar', module)
   .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
-
   // ====== Stories ======
 
   .add('no category', () => (
@@ -60,7 +65,6 @@ storiesOf('Sidebar', module)
       pathname="/"
     />
   ))
-
   .add('wallets category', () => (
     <Sidebar
       menus={emptyMenus}
@@ -74,7 +78,6 @@ storiesOf('Sidebar', module)
       pathname="/"
     />
   ))
-
   .add('wallets / sub', () => (
     <Sidebar
       categories={SIDEBAR_CATEGORIES}

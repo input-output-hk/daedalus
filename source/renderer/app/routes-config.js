@@ -5,6 +5,8 @@ export const ROUTES = {
   ADA_REDEMPTION: '/ada-redemption',
   BLOCK_CONSOLIDATION_STATUS: '/block-consolidation-status',
   PAPER_WALLET_CREATE_CERTIFICATE: '/paper-wallet/create-certificate',
+  CARDANO_DECENTRALISATION_NOTIFICATION:
+    '/cardano-decentralisation-notification',
   PROFILE: {
     LANGUAGE_SELECTION: '/profile/language-selection',
     TERMS_OF_USE: '/profile/terms-of-use',
