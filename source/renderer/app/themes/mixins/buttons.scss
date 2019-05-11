@@ -15,7 +15,20 @@
       color: var(
         --rp-button-text-color-disabled
       ); // remove after react-polymorph update
+      background: var(--theme-button-#{$type}-background-color-disabled);
     }
+
+    &:not([disabled]) {
+      background: var(--theme-button-#{$type}-background-color);
+      color: var(--theme-button-#{$type}-text-color);
+      &:hover {
+        background: var(--theme-button-#{$type}-background-color-hover);
+      }
+      &:active {
+        background: var(--theme-button-#{$type}-background-color-active);
+      }
+    }
+
     &:focus:not(:active):not(:hover) {
       box-shadow: inset 0 0 0 4px var(--theme-button-#{$type}-outline-color); // remove after react-polymorph update
     }
