@@ -51,35 +51,24 @@ export default class InstructionsDialogContainer extends Component<Props> {
       isUTC: false,
     });
 
-    try {
-      // TODO: refactor this direct access to the dialog api
-      const filePath = global.dialog.showSaveDialog({
-        defaultPath: `${name}.pdf`,
-        filters: [
-          {
-            name,
-            extensions: ['pdf'],
-          },
-        ],
-      });
+    // TODO: refactor this direct access to the dialog api
+    const filePath = global.dialog.showSaveDialog({
+      defaultPath: `${name}.pdf`,
+      filters: [
+        {
+          name,
+          extensions: ['pdf'],
+        },
+      ],
+    });
 
-      // if cancel button is clicked or path is empty
-      if (!filePath) return;
+    // if cancel button is clicked or path is empty
+    if (!filePath) return;
 
-      this.props.actions.wallets.generateCertificate.trigger({
-        filePath,
-        timestamp,
-      });
-    } catch (error) {
-      console.log('ERROR: -----------');
-      console.log(error);
-
-      alert(
-        'Please, close the existing PDF file or save with a different name'
-      );
-
-      return false;
-    }
+    this.props.actions.wallets.generateCertificate.trigger({
+      filePath,
+      timestamp,
+    });
   };
 
   render() {
@@ -91,6 +80,7 @@ export default class InstructionsDialogContainer extends Component<Props> {
     return (
       <InstructionsDialog
         inProgress={wallets.generatingCertificateInProgress}
+        error={wallets.generatingCertificateError}
         network={network}
         onPrint={this.onPrint}
         onClose={this.props.onClose}

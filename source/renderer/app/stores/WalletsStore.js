@@ -14,8 +14,9 @@ import { buildRoute, matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
+import type LocalizableError from '../i18n/LocalizableError';
 import { formattedWalletAmount } from '../utils/formatters';
-
+import { WalletPaperWalletOpenPdfError } from '../i18n/errors';
 /* eslint-disable consistent-return */
 
 /**
@@ -75,6 +76,7 @@ export default class WalletsStore extends Store {
   @observable walletCertificateAddress = null;
   @observable walletCertificateRecoveryPhrase = null;
   @observable generatingCertificateInProgress = false;
+  @observable generatingCertificateError: ?LocalizableError = null;
   @observable certificateStep = null;
   @observable certificateTemplate = null;
   @observable additionalMnemonicWords = null;
@@ -525,31 +527,25 @@ export default class WalletsStore extends Store {
     timestamp: string,
   }): Generator<any, any, any> {
     try {
-      console.log('1');
       // Pause polling in order not to show Paper wallet in the UI
       this._pausePolling();
 
-      console.log('2');
       // Set inProgress state to show spinner if is needed
       this._updateCertificateCreationState(true);
 
-      console.log('3');
       // Generate wallet recovery phrase
       const recoveryPhrase: Array<string> = yield this.getWalletRecoveryPhraseRequest.execute()
         .promise;
 
-      console.log('4');
       // Generate 9-words (additional) mnemonic
       const additionalMnemonicWords: Array<string> = yield this.getWalletCertificateAdditionalMnemonicsRequest.execute()
         .promise;
       this.additionalMnemonicWords = additionalMnemonicWords.join(' ');
 
-      console.log('5');
       // Generate spending password from 9-word mnemonic and save to store
       const spendingPassword = mnemonicToSeedHex(this.additionalMnemonicWords);
       this.walletCertificatePassword = spendingPassword;
 
-      console.log('6');
       // Generate paper wallet scrambled mnemonic
       const walletCertificateRecoveryPhrase: Array<string> = yield this.getWalletCertificateRecoveryPhraseRequest.execute(
         {
@@ -561,7 +557,6 @@ export default class WalletsStore extends Store {
         ' '
       );
 
-      console.log('7');
       // Create temporary wallet
       const walletData = {
         name: 'Paper Wallet',
@@ -569,7 +564,6 @@ export default class WalletsStore extends Store {
       };
       const wallet = yield this.createWalletRequest.execute(walletData).promise;
 
-      console.log('8');
       // Get temporary wallet address
       let walletAddresses;
       if (wallet) {
@@ -581,7 +575,6 @@ export default class WalletsStore extends Store {
         yield this.deleteWalletRequest.execute({ walletId: wallet.id });
       }
 
-      console.log('9');
       // Set wallet certificate address
       const walletAddress = get(
         walletAddresses,
@@ -590,7 +583,6 @@ export default class WalletsStore extends Store {
       );
       this.walletCertificateAddress = walletAddress;
 
-      console.log('10');
       // download pdf certificate
       yield this._downloadCertificate(
         walletAddress,
@@ -599,11 +591,8 @@ export default class WalletsStore extends Store {
         params.timestamp
       );
     } catch (error) {
-      console.log('generateCertificate error -----');
-      console.warn(error);
-      // throw error;
+      throw error;
     } finally {
-      console.log('resume');
       this._resumePolling();
     }
   }).bind(this);
@@ -634,11 +623,13 @@ export default class WalletsStore extends Store {
         this._updateCertificateStep();
       });
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
       runInAction('handle failed certificate download', () => {
         // Reset progress
         this._updateCertificateCreationState(false);
+        // User tries to replace a file that is open
+        if (error.syscall && error.syscall === 'open') {
+          this.generatingCertificateError = new WalletPaperWalletOpenPdfError();
+        }
       });
     }
   };

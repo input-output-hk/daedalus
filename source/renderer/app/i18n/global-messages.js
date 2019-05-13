@@ -55,6 +55,13 @@ export default defineMessages({
     description:
       "Error message shown when wallet password and repeat passwords don't match in create wallet dialog.",
   },
+  paperWalletOpenPdfError: {
+    id: 'global.errors.paperWalletOpenPdfError',
+    defaultMessage:
+      '!!!The file you are trying to replace is open. Please close it and try again.',
+    description:
+      'Error message shown when the file the user tries to replace is open.',
+  },
   passwordInstructions: {
     id: 'global.passwordInstructions',
     defaultMessage:
