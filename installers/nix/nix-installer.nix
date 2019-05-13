@@ -64,6 +64,7 @@ let
     mkdir -p etc
     cat /etc/hosts > etc/hosts
     cat /etc/nsswitch.conf > etc/nsswitch.conf
+    cat /etc/localtime > etc/localtime
     cat /etc/machine-id > etc/machine-id
     cat /etc/resolv.conf > etc/resolv.conf
 
