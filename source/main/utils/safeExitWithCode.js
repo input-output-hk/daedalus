@@ -1,6 +1,6 @@
 // @flow
 import { app } from 'electron';
-import log from 'electron-log';
+import log from 'electron-log-daedalus';
 
 export const safeExitWithCode = (exitCode: number) => {
   const { file } = log.transports;

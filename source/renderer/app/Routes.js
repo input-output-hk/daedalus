@@ -23,6 +23,7 @@ import WalletSendPage from './containers/wallet/WalletSendPage';
 import WalletReceivePage from './containers/wallet/WalletReceivePage';
 import WalletTransactionsPage from './containers/wallet/WalletTransactionsPage';
 import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
+import WalletUtxoPage from './containers/wallet/WalletUtxoPage';
 // import StakingPage from './containers/staking/StakingPage';
 
 export const Routes = (
@@ -53,6 +54,7 @@ export const Routes = (
       <Route path={ROUTES.WALLETS.SEND} component={WalletSendPage} />
       <Route path={ROUTES.WALLETS.RECEIVE} component={WalletReceivePage} />
       <Route path={ROUTES.WALLETS.SETTINGS} component={WalletSettingsPage} />
+      <Route path={ROUTES.WALLETS.UTXO} component={WalletUtxoPage} />
     </Route>
     <Route path={ROUTES.SETTINGS.ROOT} component={Settings}>
       <IndexRedirect to={ROUTES.SETTINGS.GENERAL} />

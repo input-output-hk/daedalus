@@ -1,14 +1,11 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
+import type { DeleteWalletRequest } from '../types';
 import { request } from '../../utils/request';
-
-export type DeleteWalletParams = {
-  walletId: string,
-};
 
 export const deleteWallet = (
   config: RequestConfig,
-  { walletId }: DeleteWalletParams
+  { walletId }: DeleteWalletRequest
 ): Promise<*> =>
   request({
     method: 'DELETE',

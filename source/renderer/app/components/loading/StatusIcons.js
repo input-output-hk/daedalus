@@ -6,7 +6,7 @@ import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import classNames from 'classnames';
 import styles from './StatusIcons.scss';
-import tooltipStyles from '../../themes/overrides/TooltipOverrides.scss';
+import tooltipStyles from './StatusIcons-tooltip.scss';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import nodeStateIcon from '../../assets/images/node-state-icon.inline.svg';
 import isNodeRespondingIcon from '../../assets/images/is-node-responding-icon.inline.svg';
@@ -220,8 +220,8 @@ export default class StatusIcon extends Component<Props> {
     const paramValue = this.props[paramName];
     return classNames([
       styles.tooltip,
-      typeof paramValue === 'undefined' ? tooltipStyles.ellipsis : null,
-      this.isDisabled(paramName) ? tooltipStyles.disabled : null,
+      typeof paramValue === 'undefined' ? styles.ellipsis : null,
+      this.isDisabled(paramName) ? styles.disabled : null,
     ]);
   };
 
@@ -232,6 +232,7 @@ export default class StatusIcon extends Component<Props> {
   getIconWithToolTip = (icon: string, paramName: string) => (
     <Tooltip
       skin={TooltipSkin}
+      themeOverrides={tooltipStyles}
       tip={this.getTip(paramName, this.props[paramName])}
       className={this.getTooltipClassname(paramName)}
     >
