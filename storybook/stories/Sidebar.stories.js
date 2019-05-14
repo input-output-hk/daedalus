@@ -72,7 +72,7 @@ storiesOf('Sidebar', module)
       pathname="/"
     />
   ))
-  .add('decentralisation category', () => (
+  .add('delegation category', () => (
     <Sidebar
       menus={emptyMenus}
       categories={CATEGORIES_FOR_STORYBOARD}

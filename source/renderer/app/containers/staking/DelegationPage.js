@@ -5,7 +5,7 @@ import Staking from '../../components/staking/Staking';
 import Layout from '../MainLayout';
 
 @observer
-export default class CardanoDecentralisationNotificationPage extends Component<any> {
+export default class DelegationPage extends Component<any> {
   render() {
     return (
       <Layout>

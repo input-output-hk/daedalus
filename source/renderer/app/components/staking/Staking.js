@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import BlockGenerationInfo from './BlockGenerationInfo';
+import DelegationInfo from './DelegationInfo';
 import styles from './Staking.scss';
 
 const messages = defineMessages({
@@ -41,7 +41,7 @@ export default class Staking extends Component<any> {
     return (
       <div className={styles.component}>
         <div className={styles.mainContent}>
-          <BlockGenerationInfo
+          <DelegationInfo
             heading={intl.formatMessage(messages.heading)}
             info={intl.formatMessage(messages.info)}
             timeLeftDesc={intl.formatMessage(messages.timeLeftDesc)}

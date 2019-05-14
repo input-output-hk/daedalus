@@ -102,8 +102,8 @@ export default class AppStore extends Store {
   }
 
   @computed
-  get isCardanoDecentralisationNotificationPage(): boolean {
-    return this.currentRoute === ROUTES.CARDANO_DECENTRALISATION_NOTIFICATION;
+  get isDelegationPage(): boolean {
+    return this.currentRoute === ROUTES.DELEGATION;
   }
 
   // ===================== PRIVATE ======================= //

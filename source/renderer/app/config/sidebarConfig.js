@@ -3,7 +3,7 @@ import { ROUTES } from '../routes-config';
 import walletsIcon from '../assets/images/sidebar/wallet-ic.inline.svg';
 import settingsIcon from '../assets/images/sidebar/settings-ic.inline.svg';
 import paperWalletCertificateIcon from '../assets/images/sidebar/paper-certificate-ic.inline.svg';
-import decentralisationNotificationIcon from '../assets/images/sidebar/decentralisation-ic.inline.svg';
+import delegationIcon from '../assets/images/sidebar/delegation-ic.inline.svg';
 
 export const CATEGORIES_BY_NAME = {
   WALLETS: {
@@ -16,10 +16,10 @@ export const CATEGORIES_BY_NAME = {
     route: ROUTES.PAPER_WALLET_CREATE_CERTIFICATE,
     icon: paperWalletCertificateIcon,
   },
-  CARDANO_DECENTRALISATION_NOTIFICATION: {
-    name: 'CARDANO_DECENTRALISATION_NOTIFICATION',
-    route: ROUTES.CARDANO_DECENTRALISATION_NOTIFICATION,
-    icon: decentralisationNotificationIcon,
+  DELEGATION: {
+    name: 'DELEGATION',
+    route: ROUTES.DELEGATION,
+    icon: delegationIcon,
   },
   SETTINGS: {
     name: 'SETTINGS',
@@ -36,7 +36,7 @@ export const CATEGORIES = [
 
 export const CATEGORIES_FOR_STORYBOARD = [
   CATEGORIES_BY_NAME.WALLETS,
-  CATEGORIES_BY_NAME.CARDANO_DECENTRALISATION_NOTIFICATION,
+  CATEGORIES_BY_NAME.DELEGATION,
   CATEGORIES_BY_NAME.SETTINGS,
 ];
 

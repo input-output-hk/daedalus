@@ -13,10 +13,7 @@ export default class Root extends Component<Props> {
   render() {
     const { stores, actions, children } = this.props;
     const { networkStatus, profile, adaRedemption, app, wallets } = stores;
-    const {
-      isBlockConsolidationStatusDialog,
-      isCardanoDecentralisationNotificationPage,
-    } = app;
+    const { isBlockConsolidationStatusDialog, isDelegationPage } = app;
     const { isProfilePage, isSettingsPage } = profile;
     const { isAdaRedemptionPage } = adaRedemption;
     const { hasLoadedWallets } = wallets;
@@ -30,7 +27,7 @@ export default class Root extends Component<Props> {
 
     const isPageThatDoesntNeedWallets =
       isBlockConsolidationStatusDialog ||
-      isCardanoDecentralisationNotificationPage ||
+      isDelegationPage ||
       ((isAdaRedemptionPage || isSettingsPage) && hasLoadedWallets && isSynced);
 
     // In case node is in stopping sequence we must show the "Connecting" screen

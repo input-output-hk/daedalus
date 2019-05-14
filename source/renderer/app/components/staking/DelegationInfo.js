@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import moment from 'moment';
-import styles from './BlockGenerationInfo.scss';
+import styles from './DelegationInfo.scss';
 
 type Props = {
   heading: string,
@@ -15,7 +15,7 @@ type Props = {
 };
 
 @observer
-export default class BlockGenerationInfo extends Component<Props> {
+export default class DelegationInfo extends Component<Props> {
   render() {
     const { heading, info, timeLeftDesc, timeLeft, buttonLabel } = this.props;
     const duration = moment.duration(timeLeft);
