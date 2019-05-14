@@ -5,27 +5,7 @@ import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import StoryDecorator from './support/StoryDecorator';
 import Sidebar from '../../source/renderer/app/components/sidebar/Sidebar';
-import walletsIcon from '../../source/renderer/app/assets/images/sidebar/wallet-ic.inline.svg';
-import decentralisationNotificationIcon from '../../source/renderer/app/assets/images/sidebar/decentralisation-ic.inline.svg';
-import settingsIcon from '../../source/renderer/app/assets/images/sidebar/settings-ic.inline.svg';
-
-const SIDEBAR_CATEGORIES = [
-  {
-    name: 'WALLETS',
-    route: '/wallets',
-    icon: walletsIcon,
-  },
-  {
-    name: 'CARDANO_DECENTRALISATION_NOTIFICATION',
-    route: '/cardano-decentralisation-notification',
-    icon: decentralisationNotificationIcon,
-  },
-  {
-    name: 'SETTINGS',
-    route: '/settings',
-    icon: settingsIcon,
-  },
-];
+import { CATEGORIES_FOR_STORYBOARD } from '../../source/renderer/app/config/sidebarConfig';
 
 const sidebarMenus = observable({
   wallets: {
@@ -55,7 +35,7 @@ storiesOf('Sidebar', module)
   .add('no category', () => (
     <Sidebar
       menus={emptyMenus}
-      categories={SIDEBAR_CATEGORIES}
+      categories={CATEGORIES_FOR_STORYBOARD}
       activeSidebarCategory=""
       onCategoryClicked={action('onCategoryClicked')}
       isDialogOpen={() => false}
@@ -68,8 +48,8 @@ storiesOf('Sidebar', module)
   .add('wallets category', () => (
     <Sidebar
       menus={emptyMenus}
-      categories={SIDEBAR_CATEGORIES}
-      activeSidebarCategory={SIDEBAR_CATEGORIES[0].route}
+      categories={CATEGORIES_FOR_STORYBOARD}
+      activeSidebarCategory={CATEGORIES_FOR_STORYBOARD[0].route}
       onCategoryClicked={action('onCategoryClicked')}
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}
@@ -80,11 +60,24 @@ storiesOf('Sidebar', module)
   ))
   .add('wallets / sub', () => (
     <Sidebar
-      categories={SIDEBAR_CATEGORIES}
-      activeSidebarCategory={SIDEBAR_CATEGORIES[0].route}
+      categories={CATEGORIES_FOR_STORYBOARD}
+      activeSidebarCategory={CATEGORIES_FOR_STORYBOARD[0].route}
       menus={sidebarMenus}
       onCategoryClicked={action('onCategoryClicked')}
       isShowingSubMenus
+      isDialogOpen={() => false}
+      onAddWallet={action('onAddWallet')}
+      openDialogAction={action('openDialog')}
+      onSubmitSupportRequest={() => {}}
+      pathname="/"
+    />
+  ))
+  .add('decentralisation category', () => (
+    <Sidebar
+      menus={emptyMenus}
+      categories={CATEGORIES_FOR_STORYBOARD}
+      activeSidebarCategory={CATEGORIES_FOR_STORYBOARD[1].route}
+      onCategoryClicked={action('onCategoryClicked')}
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}
       openDialogAction={action('openDialog')}
