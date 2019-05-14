@@ -625,18 +625,23 @@ export default class WalletsStore extends Store {
     } catch (error) {
       runInAction('handle failed certificate download', () => {
         // Reset progress
-        this._updateCertificateCreationState(false);
-        // User tries to replace a file that is open
-        if (error.syscall && error.syscall === 'open') {
-          this.generatingCertificateError = new WalletPaperWalletOpenPdfError();
-        }
+        this._updateCertificateCreationState(false, error);
       });
     }
   };
 
-  _updateCertificateCreationState = action((state: boolean) => {
-    this.generatingCertificateInProgress = state;
-  });
+  _updateCertificateCreationState = action(
+    (state: boolean, error?: ?Object) => {
+      this.generatingCertificateInProgress = state;
+      if (error) {
+        // if (error && error.syscall && error.syscall === 'open') {
+        // User tries to replace a file that is open
+        this.generatingCertificateError = new WalletPaperWalletOpenPdfError();
+      } else {
+        this.generatingCertificateError = null;
+      }
+    }
+  );
 
   @action _setCertificateTemplate = (params: { selectedTemplate: string }) => {
     this.certificateTemplate = params.selectedTemplate;
@@ -644,10 +649,12 @@ export default class WalletsStore extends Store {
   };
 
   @action _finishCertificate = () => {
+    this.generatingCertificateError = null;
     this._closeCertificateGeneration();
   };
 
   @action _updateCertificateStep = (isBack: boolean = false) => {
+    this.generatingCertificateError = null;
     const currrentCertificateStep = this.certificateStep || 0;
     this.certificateStep = isBack
       ? currrentCertificateStep - 1
@@ -660,6 +667,7 @@ export default class WalletsStore extends Store {
   };
 
   @action _resetCertificateData = () => {
+    this.generatingCertificateError = null;
     this.walletCertificatePassword = null;
     this.walletCertificateAddress = null;
     this.walletCertificateRecoveryPhrase = null;
