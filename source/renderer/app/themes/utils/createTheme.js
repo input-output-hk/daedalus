@@ -14,7 +14,7 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
   const { primary, secondary, error } = colors;
   return {
     autocomplete: {
-      '--rp-autocomplete-bg-color': `${primary.background.regular}`,
+      '--rp-autocomplete-bg-color': `${primary.background.lightest}`,
       '--rp-autocomplete-border': `1px solid ${primary.border}`,
       '--rp-autocomplete-border-color-opened': `${primary.focus}`,
       '--rp-autocomplete-input-text-color': `${primary.text}`,
@@ -42,9 +42,9 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
       '--rp-button-width': '360px',
     },
     checkbox: {
-      '--rp-checkbox-border': `1px solid ${secondary.border}`,
+      '--rp-checkbox-border': `1px solid ${secondary.background.regular}`,
       '--rp-checkbox-border-color-disabled': `${secondary.disabled}`,
-      '--rp-checkbox-check-bg-color': `${secondary.border}`,
+      '--rp-checkbox-check-bg-color': `${secondary.background.regular}`,
       '--rp-checkbox-label-text-color': `${primary.text}`,
       '--rp-checkbox-label-text-color-disabled': `${primary.disabled}`,
     },
@@ -80,7 +80,7 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
       '--rp-input-text-color-disabled': `${primary.placeholder}`,
     },
     modal: {
-      '--rp-modal-bg-color': `${primary.background.regular}`,
+      '--rp-modal-bg-color': `${primary.background.lightest}`,
       '--rp-modal-max-height': '90%',
       '--rp-modal-overlay-bg-color': 'rgba(0, 0, 0, 0.4)',
     },
@@ -243,6 +243,11 @@ const createDaedalusComponentsTheme = (
     },
     buttonAttention: {
       '--theme-button-attention-background-color': `${error.regular}`,
+      '--theme-button-attention-background-color-disabled': `${
+        error.ultralight
+      }`,
+      '--theme-button-attention-background-color-hover': `${error.light}`,
+      '--theme-button-attention-text-color': `${secondary.text}`,
     },
     buttonDisclaimer: {
       '--theme-button-disclaimer-background-color': `${error.dark}`,
@@ -251,6 +256,38 @@ const createDaedalusComponentsTheme = (
       '--theme-button-disclaimer-border-color-disabled': `${
         secondary.disabled
       }`,
+    },
+    buttonFlat: {
+      '--theme-button-flat-background-color': `${primary.background.regular}`,
+      '--theme-button-flat-background-color-hover': `${
+        primary.background.light
+      }`,
+      '--theme-button-flat-background-color-active': `${
+        primary.background.light
+      }`,
+      '--theme-button-flat-background-color-disabled': `${
+        primary.background.lighter
+      }`,
+      '--theme-button-flat-text-color-disabled': `${primary.text}`,
+      '--theme-button-flat-text-color': `${primary.text}`,
+      '--theme-button-flat-outline-color': `${primary.outline}`,
+    },
+    buttonPrimary: {
+      '--theme-button-primary-background-color': `${
+        secondary.background.regular
+      }`,
+      '--theme-button-primary-background-color-hover': `${
+        secondary.background.light
+      }`,
+      '--theme-button-primary-background-color-active': `${
+        secondary.background.light
+      }`,
+      '--theme-button-primary-background-color-disabled': `${
+        secondary.background.lightest
+      }`,
+      '--theme-button-primary-text-color-disabled': `${secondary.text}`,
+      '--theme-button-primary-text-color': `${secondary.text}`,
+      '--theme-button-primary-outline-color': `${secondary.background.light}`,
     },
     connecting: {
       '--theme-connecting-background-color': `${primary.background.regular}`,
@@ -281,7 +318,7 @@ const createDaedalusComponentsTheme = (
       '--theme-dialog-big-button-description-color': `${primary.text}`,
       '--theme-dialog-title-color': `${primary.text}`,
       '--theme-dialog-text-color': `${primary.text}`,
-      '--theme-dialog-border-color': `${primary.background.regular}`,
+      '--theme-dialog-border-color': `${primary.border}`,
     },
     errors: {
       '--theme-color-error': `${error.regular}`,
@@ -355,7 +392,7 @@ const createDaedalusComponentsTheme = (
       '--theme-mnemonic-background-color-hover': `${primary.hover}`,
       '--theme-backup-mnemonic-background-color': `${secondary.active}`,
     },
-    modal: {
+    modalz: {
       '--theme-modal-overlay-background-color': 'rgba(0, 0, 0, 0.4)',
     },
     navItem: {

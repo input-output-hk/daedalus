@@ -1,10 +1,10 @@
 export const createShades = color => {
-  const light = pSBC(0.2, color, false, true);
-  const lighter = pSBC(0.4, color, false, true);
-  const lightest = pSBC(0.6, color, false, true);
-  const dark = pSBC(-0.1, color, false, true);
-  const darker = pSBC(-0.2, color, false, true);
-  const darkest = pSBC(-0.3, color, false, true);
+  const light = pSBC(0.2, color, false, true); // 20% closer to white
+  const lighter = pSBC(0.4, color, false, true); // 40% closer to white
+  const lightest = pSBC(0.6, color, false, true); // 60% closer to white
+  const dark = pSBC(-0.1, color, false, true); // 10% closer to black
+  const darker = pSBC(-0.2, color, false, true); // 20% closer to black
+  const darkest = pSBC(-0.3, color, false, true); // 30% closer to black
   return {
     lightest: lightest || color,
     lighter: lighter || color,
