@@ -5,13 +5,14 @@ import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
-import { DIALOGS, SCREENS } from '../../../common/ipc/constants';
+import { DIALOGS, SCREENS, NOTIFICATIONS } from '../../../common/ipc/constants';
 import { openExternalUrlChannel } from '../ipc/open-external-url';
 import {
   toggleUiPartChannel,
   showUiPartChannel,
 } from '../ipc/control-ui-parts';
 import { getGPUStatusChannel } from '../ipc/get-gpu-status.ipc';
+import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 
 import type { GpuStatus } from '../types/gpuStatus';
 
@@ -19,6 +20,7 @@ export default class AppStore extends Store {
   @observable error: ?LocalizableError = null;
   @observable isAboutDialogOpen = false;
   @observable isNetworkStatusDialogOpen = false;
+  @observable isNotificationVisible = false;
   @observable gpuStatus: ?GpuStatus = null;
   @observable numberOfEpochsConsolidated: number = 0;
   @observable previousRoute: string = ROUTES.ROOT;
@@ -37,6 +39,8 @@ export default class AppStore extends Store {
     this.actions.app.toggleBlockConsolidationStatusScreen.listen(
       this._toggleBlockConsolidationStatusScreen
     );
+
+    this.actions.app.downloadLogs.listen(this._downloadLogs);
 
     toggleUiPartChannel.onReceive(this.toggleUiPart);
     showUiPartChannel.onReceive(this.showUiPart);
@@ -77,6 +81,9 @@ export default class AppStore extends Store {
     switch (uiPart) {
       case SCREENS.ADA_REDEMPTION:
         this._showAdaRedemptionScreen();
+        break;
+      case NOTIFICATIONS.DOWNLOAD_LOGS:
+        this._downloadLogs();
         break;
       default:
     }
@@ -151,5 +158,20 @@ export default class AppStore extends Store {
       ? this.previousRoute
       : ROUTES.BLOCK_CONSOLIDATION_STATUS;
     this._updateRouteLocation({ route });
+  };
+
+  @action _downloadLogs = () => {
+    const fileName = generateFileNameWithTimestamp();
+    const destination = global.dialog.showSaveDialog({
+      defaultPath: fileName,
+    });
+    if (destination) {
+      this.isNotificationVisible = true;
+      this.actions.profile.downloadLogs.trigger({
+        fileName,
+        destination,
+        fresh: true,
+      });
+    }
   };
 }

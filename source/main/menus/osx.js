@@ -7,6 +7,8 @@ import { getTranslation } from '../utils/getTranslation';
 import { environment } from '../environment';
 import { getLocale } from '../utils/getLocale';
 import { generateFileNameWithTimestamp } from '../../common/utils/files';
+import { showUiPartChannel } from '../ipc/control-ui-parts';
+import { NOTIFICATIONS } from '../../common/ipc/constants';
 
 const localesFillForm = {
   'en-US': 'English',
@@ -159,13 +161,7 @@ export const osxMenu = (
       {
         label: translation('helpSupport.downloadLogs'),
         click() {
-          const fileName = generateFileNameWithTimestamp();
-          const destination = dialog.showSaveDialog({
-            defaultPath: fileName,
-          });
-          if (destination) {
-            // @todo
-          }
+          showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
         },
       },
       {

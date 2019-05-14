@@ -58,16 +58,9 @@ export default class SupportSettingsPage extends Component<
   };
 
   handleDownloadLogs = () => {
-    // TODO: refactor this direct access to the dialog api
-    const fileName = generateFileNameWithTimestamp();
-    const { profile } = this.props.actions;
-    const destination = global.dialog.showSaveDialog({
-      defaultPath: fileName,
-    });
-    if (destination) {
-      this.toggleDisableDownloadLogs(true);
-      profile.downloadLogs.trigger({ fileName, destination, fresh: true });
-    }
+    const { app } = this.props.actions;
+    app.downloadLogs.trigger();
+    this.toggleDisableDownloadLogs(true);
   };
 
   toggleDisableDownloadLogs = (disableDownloadLogs: boolean) => {

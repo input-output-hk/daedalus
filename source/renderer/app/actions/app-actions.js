@@ -11,4 +11,5 @@ export default class AppActions {
   getGpuStatus: Action<any> = new Action();
   initAppEnvironment: Action<any> = new Action();
   toggleBlockConsolidationStatusScreen: Action<any> = new Action();
+  downloadLogs: Action<any> = new Action();
 }
