@@ -40,7 +40,7 @@ export default class Wallet extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { wallets, adaRedemption, profile } = stores;
+    const { wallets, adaRedemption, profile, app } = stores;
     const { showAdaRedemptionSuccessMessage, amountRedeemed } = adaRedemption;
     const { currentLocale } = profile;
 
@@ -77,6 +77,7 @@ export default class Wallet extends Component<Props> {
         <WalletWithNavigation
           isActiveScreen={this.isActiveScreen}
           onWalletNavItemClick={this.handleWalletNavItemClick}
+          activeItem={app.currentPage}
         >
           {this.props.children}
         </WalletWithNavigation>

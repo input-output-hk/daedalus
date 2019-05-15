@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented the wallet UTxO statistics screen ([PR 1353](https://github.com/input-output-hk/daedalus/pull/1353))
 - Implemented scroll error message into view ([PR 1383](https://github.com/input-output-hk/daedalus/pull/1383))
 - Implemented new Block-consolidation status design ([PR 1377](https://github.com/input-output-hk/daedalus/pull/1377))
 - Implemented "In progress" download logs notification ([PR 1341](https://github.com/input-output-hk/daedalus/pull/1341))
@@ -21,6 +22,7 @@ Changelog
 ### Chores
 
 - Implemented new Network Status dialog design ([PR 1370](https://github.com/input-output-hk/daedalus/pull/1370)
+- Setup storybook build script to deploy previews for the QA team to Netlify ([1391](https://github.com/input-output-hk/daedalus/pull/1391))
 - Added unit tests for mnemonic generation and validation ([PR 1379](https://github.com/input-output-hk/daedalus/pull/1379))
 - Simplified the test setup ([PR 1378](https://github.com/input-output-hk/daedalus/pull/1378))
 - Updated PR template ([PR 1376](https://github.com/input-output-hk/daedalus/pull/1376))

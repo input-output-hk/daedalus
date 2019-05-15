@@ -110,6 +110,7 @@ yarn2nix.mkYarnPackage {
       buildInputs = [ python ];
       postInstall = ''
         yarn --offline run build
+        rm build/config.gypi
       '';
     };
     flow-bin = {

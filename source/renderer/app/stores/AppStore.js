@@ -46,6 +46,10 @@ export default class AppStore extends Store {
     return this.stores.router.location.pathname;
   }
 
+  @computed get currentPage(): string {
+    return this.currentRoute.split('/').pop();
+  }
+
   openExternalLink(url: string, event?: MouseEvent): void {
     if (event) event.preventDefault();
     openExternalUrlChannel.send(url);

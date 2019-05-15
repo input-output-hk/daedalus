@@ -34,3 +34,8 @@ export const formattedAmountWithoutTrailingZeros = (amount: string): string =>
 
 export const formattedAmountToLovelace = (amount: string): number =>
   parseInt(formattedAmountToBigNumber(amount).times(LOVELACES_PER_ADA), 10);
+
+export const formattedLovelaceToAmount = (lovelace: number): number =>
+  formattedAmountToBigNumber(String(lovelace))
+    .dividedBy(LOVELACES_PER_ADA)
+    .toNumber();

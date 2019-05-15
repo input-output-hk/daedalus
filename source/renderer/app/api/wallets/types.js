@@ -36,6 +36,18 @@ export type WalletSyncState = {
   tag: SyncStateTag,
 };
 
+export type Histogram = {
+  [string]: number,
+};
+
+export type WalletUtxos = {
+  allStakes: number,
+  boundType: string,
+  histogram: {
+    [string]: number,
+  },
+};
+
 // req/res Wallet types
 export type CreateWalletRequest = {
   name: string,
@@ -50,6 +62,10 @@ export type UpdateSpendingPasswordRequest = {
 };
 
 export type DeleteWalletRequest = {
+  walletId: string,
+};
+
+export type GetWalletUtxosRequest = {
   walletId: string,
 };
 

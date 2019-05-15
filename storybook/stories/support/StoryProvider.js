@@ -12,7 +12,7 @@ type Props = {
   children: Node,
 };
 
-const WALLETS = [
+export const WALLETS = [
   {
     id: '0',
     name: 'No Password',
