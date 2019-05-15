@@ -97,7 +97,7 @@ export default class WalletsStore extends Store {
 
     this.registerReactions([this._updateActiveWalletOnRouteChanges]);
 
-    const { router, walletBackup, wallets, app } = this.actions;
+    const { router, walletBackup, wallets, app, networkStatus } = this.actions;
     wallets.createWallet.listen(this._create);
     wallets.deleteWallet.listen(this._deleteWallet);
     wallets.sendMoney.listen(this._sendMoney);
@@ -112,6 +112,7 @@ export default class WalletsStore extends Store {
     router.goToRoute.listen(this._onRouteChange);
     walletBackup.finishWalletBackup.listen(this._finishCreation);
     app.initAppEnvironment.listen(() => {});
+    networkStatus.restartNode.listen(this._updateGeneratingCertificateError);
   }
 
   _create = async (params: { name: string, spendingPassword: ?string }) => {
@@ -633,15 +634,18 @@ export default class WalletsStore extends Store {
   _updateCertificateCreationState = action(
     (state: boolean, error?: ?Object) => {
       this.generatingCertificateInProgress = state;
-      if (error) {
-        // if (error && error.syscall && error.syscall === 'open') {
-        // User tries to replace a file that is open
-        this.generatingCertificateError = new WalletPaperWalletOpenPdfError();
-      } else {
-        this.generatingCertificateError = null;
-      }
+      this._updateGeneratingCertificateError(error);
     }
   );
+
+  _updateGeneratingCertificateError = action((error?: ?Object) => {
+    if (error && error.syscall && error.syscall === 'open') {
+      // User tries to replace a file that is open
+      this.generatingCertificateError = new WalletPaperWalletOpenPdfError();
+    } else {
+      this.generatingCertificateError = null;
+    }
+  });
 
   @action _setCertificateTemplate = (params: { selectedTemplate: string }) => {
     this.certificateTemplate = params.selectedTemplate;
@@ -649,12 +653,12 @@ export default class WalletsStore extends Store {
   };
 
   @action _finishCertificate = () => {
-    this.generatingCertificateError = null;
+    this._updateGeneratingCertificateError();
     this._closeCertificateGeneration();
   };
 
   @action _updateCertificateStep = (isBack: boolean = false) => {
-    this.generatingCertificateError = null;
+    this._updateGeneratingCertificateError();
     const currrentCertificateStep = this.certificateStep || 0;
     this.certificateStep = isBack
       ? currrentCertificateStep - 1
@@ -667,12 +671,12 @@ export default class WalletsStore extends Store {
   };
 
   @action _resetCertificateData = () => {
-    this.generatingCertificateError = null;
     this.walletCertificatePassword = null;
     this.walletCertificateAddress = null;
     this.walletCertificateRecoveryPhrase = null;
     this.generatingCertificateInProgress = false;
     this.certificateTemplate = false;
     this.certificateStep = null;
+    this._updateGeneratingCertificateError();
   };
 }
