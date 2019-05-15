@@ -21,6 +21,7 @@ Changelog
 
 ### Chores
 
+- Setup storybook build script to deploy previews for the QA team to Netlify ([1391](https://github.com/input-output-hk/daedalus/pull/1391))
 - Added unit tests for mnemonic generation and validation ([PR 1379](https://github.com/input-output-hk/daedalus/pull/1379))
 - Simplified the test setup ([PR 1378](https://github.com/input-output-hk/daedalus/pull/1378))
 - Updated PR template ([PR 1376](https://github.com/input-output-hk/daedalus/pull/1376))
