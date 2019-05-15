@@ -1,6 +1,6 @@
 // @flow
 import os from 'os';
-import {uniq, upperFirst, get, includes} from 'lodash';
+import { uniq, upperFirst, get, includes } from 'lodash';
 import { version } from '../../package.json';
 import { stateDirectoryPath } from './config';
 import type { Environment } from '../common/types/environment.types';
