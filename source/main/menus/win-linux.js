@@ -6,7 +6,6 @@ import type { MenuActions } from './MenuActions.types';
 import { getTranslation } from '../utils/getTranslation';
 import { environment } from '../environment';
 import { getLocale } from '../utils/getLocale';
-import { generateFileNameWithTimestamp } from '../../common/utils/files';
 import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 

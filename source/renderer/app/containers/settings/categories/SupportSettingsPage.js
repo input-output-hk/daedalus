@@ -4,7 +4,6 @@ import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import SupportSettings from '../../../components/settings/categories/SupportSettings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
-import { generateFileNameWithTimestamp } from '../../../../../common/utils/files';
 import { getSupportUrl } from '../../../utils/network';
 
 const messages = defineMessages({
