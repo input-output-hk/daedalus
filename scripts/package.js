@@ -47,7 +47,7 @@ if (version) {
   DEFAULT_OPTS.version = version;
   startPack();
 } else {
-  exec('npm list electron --dev', (err, stdout) => {
+  exec('yarn list electron --dev', (err, stdout) => {
     if (err) {
       DEFAULT_OPTS.version = '1.7.9';
     } else {

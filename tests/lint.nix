@@ -4,7 +4,7 @@ runCommand "daedalus-lint-ci" { buildInputs = [ nodejs-8_x ]; } ''
   export NO_UPDATE_NOTIFIER=1
   ln -s ${rawapp.node_modules} node_modules
   cp -a ${source}/. .
-  npm run lint
+  yarn run lint
   EXIT_CODE=$?
   if [ $EXIT_CODE == 0 ]
   then
