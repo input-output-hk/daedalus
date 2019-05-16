@@ -26,7 +26,8 @@ export const generateFileNameWithTimestamp = (props?: Props) => {
   };
   let z = '';
   if (isUTC === true) {
-    if (!Object.prototype.hasOwnProperty.call(props, 'date')) date = date.utc();
+    if (!props || !Object.prototype.hasOwnProperty.call(props, 'date'))
+      date = date.utc();
     z = 'Z';
   }
   return `${prefix}-${`${date.format('YYYY-MM-DDTHHmmss.0SSS')}${z}`}${
