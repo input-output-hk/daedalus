@@ -1547,13 +1547,13 @@
         "description": "Headline for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 13
+          "line": 15
         },
-        "file": "source/renderer/app/components/staking/Delegation.js",
+        "file": "source/renderer/app/components/staking/DelegationInfo.js",
         "id": "paper.delegation.notification.heading",
         "start": {
           "column": 11,
-          "line": 9
+          "line": 11
         }
       },
       {
@@ -1561,13 +1561,13 @@
         "description": "Info for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 21
         },
-        "file": "source/renderer/app/components/staking/Delegation.js",
+        "file": "source/renderer/app/components/staking/DelegationInfo.js",
         "id": "paper.delegation.notification.info",
         "start": {
           "column": 8,
-          "line": 14
+          "line": 16
         }
       },
       {
@@ -1575,13 +1575,13 @@
         "description": "Description for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 26
         },
-        "file": "source/renderer/app/components/staking/Delegation.js",
+        "file": "source/renderer/app/components/staking/DelegationInfo.js",
         "id": "paper.delegation.notification.timeLeftDesc",
         "start": {
           "column": 16,
-          "line": 20
+          "line": 22
         }
       },
       {
@@ -1589,17 +1589,17 @@
         "description": "Button Label for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 31
         },
-        "file": "source/renderer/app/components/staking/Delegation.js",
+        "file": "source/renderer/app/components/staking/DelegationInfo.js",
         "id": "paper.delegation.notification.buttonLabel",
         "start": {
           "column": 15,
-          "line": 25
+          "line": 27
         }
       }
     ],
-    "path": "source/renderer/app/components/staking/Delegation.json"
+    "path": "source/renderer/app/components/staking/DelegationInfo.json"
   },
   {
     "descriptors": [

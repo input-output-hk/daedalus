@@ -31,10 +31,7 @@ const messages = defineMessages({
   },
 });
 
-type Props = {
-  currentLocale: String,
-  timeLeft: number,
-};
+type Props = { currentLocale: string, timeLeft?: number };
 
 @observer
 export default class DelegationInfo extends Component<Props> {

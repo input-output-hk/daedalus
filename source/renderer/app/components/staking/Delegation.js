@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import DelegationInfo from './DelegationInfo';
 import styles from './Delegation.scss';
 
-type Props = { currentLocale: string, timeLeft: number };
+type Props = { currentLocale: string, timeLeft?: number };
 
 @observer
 export default class Delegation extends Component<Props> {
