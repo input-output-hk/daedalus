@@ -23,7 +23,7 @@ import {
 // TODO: refactor all parts that rely on this to ipc channels!
 const { ipcRenderer } = global;
 
-export default class SettingsStore extends Store {
+export default class ProfileStore extends Store {
   LANGUAGE_OPTIONS = [
     { value: 'en-US', label: globalMessages.languageEnglish },
     { value: 'ja-JP', label: globalMessages.languageJapanese },
@@ -34,8 +34,7 @@ export default class SettingsStore extends Store {
   ];
 
   @observable systemLocale: string = LOCALES.english;
-  @observable
-  bigNumberDecimalFormat = {
+  @observable bigNumberDecimalFormat = {
     decimalSeparator: '.',
     groupSeparator: ',',
     groupSize: 3,
@@ -51,12 +50,10 @@ export default class SettingsStore extends Store {
   @observable setProfileLocaleRequest: Request<string> = new Request(
     this.api.localStorage.setUserLocale
   );
-  @observable
-  getTermsOfUseAcceptanceRequest: Request<string> = new Request(
+  @observable getTermsOfUseAcceptanceRequest: Request<string> = new Request(
     this.api.localStorage.getTermsOfUseAcceptance
   );
-  @observable
-  setTermsOfUseAcceptanceRequest: Request<string> = new Request(
+  @observable setTermsOfUseAcceptanceRequest: Request<string> = new Request(
     this.api.localStorage.setTermsOfUseAcceptance
   );
   @observable
@@ -111,92 +108,79 @@ export default class SettingsStore extends Store {
     BigNumber.config({ FORMAT: this.bigNumberDecimalFormat });
   };
 
-  @computed
-  get currentLocale(): string {
+  @computed get currentLocale(): string {
     const { result } = this.getProfileLocaleRequest.execute();
     if (this.isCurrentLocaleSet) return result;
     return this.systemLocale;
   }
 
-  @computed
-  get hasLoadedCurrentLocale(): boolean {
+  @computed get hasLoadedCurrentLocale(): boolean {
     return (
       this.getProfileLocaleRequest.wasExecuted &&
       this.getProfileLocaleRequest.result !== null
     );
   }
 
-  @computed
-  get isCurrentLocaleSet(): boolean {
+  @computed get isCurrentLocaleSet(): boolean {
     return (
       this.getProfileLocaleRequest.result !== null &&
       this.getProfileLocaleRequest.result !== ''
     );
   }
 
-  @computed
-  get currentTheme(): string {
+  @computed get currentTheme(): string {
     const { result } = this.getThemeRequest.execute();
     if (this.isCurrentThemeSet) return result;
     return this.environment.isMainnet ? THEMES.DARK_BLUE : THEMES.LIGHT_BLUE; // defaults
   }
 
-  @computed
-  get isCurrentThemeSet(): boolean {
+  @computed get isCurrentThemeSet(): boolean {
     return (
       this.getThemeRequest.result !== null && this.getThemeRequest.result !== ''
     );
   }
 
-  @computed
-  get hasLoadedCurrentTheme(): boolean {
+  @computed get hasLoadedCurrentTheme(): boolean {
     return (
       this.getThemeRequest.wasExecuted && this.getThemeRequest.result !== null
     );
   }
 
-  @computed
-  get termsOfUse(): string {
+  @computed get termsOfUse(): string {
     const network = this.environment.isMainnet ? 'mainnet' : 'other';
     return require(`../i18n/locales/terms-of-use/${network}/${
       this.currentLocale
     }.md`);
   }
 
-  @computed
-  get hasLoadedTermsOfUseAcceptance(): boolean {
+  @computed get hasLoadedTermsOfUseAcceptance(): boolean {
     return (
       this.getTermsOfUseAcceptanceRequest.wasExecuted &&
       this.getTermsOfUseAcceptanceRequest.result !== null
     );
   }
 
-  @computed
-  get areTermsOfUseAccepted(): boolean {
+  @computed get areTermsOfUseAccepted(): boolean {
     return this.getTermsOfUseAcceptanceRequest.result === true;
   }
 
-  @computed
-  get hasLoadedDataLayerMigrationAcceptance(): boolean {
+  @computed get hasLoadedDataLayerMigrationAcceptance(): boolean {
     return (
       this.getDataLayerMigrationAcceptanceRequest.wasExecuted &&
       this.getDataLayerMigrationAcceptanceRequest.result !== null
     );
   }
 
-  @computed
-  get isDataLayerMigrationAccepted(): boolean {
+  @computed get isDataLayerMigrationAccepted(): boolean {
     return this.getDataLayerMigrationAcceptanceRequest.result === true;
   }
 
-  @computed
-  get isProfilePage(): boolean {
+  @computed get isProfilePage(): boolean {
     const { currentRoute } = this.stores.app;
     return includes(ROUTES.PROFILE, currentRoute);
   }
 
-  @computed
-  get isSettingsPage(): boolean {
+  @computed get isSettingsPage(): boolean {
     const { currentRoute } = this.stores.app;
     return includes(ROUTES.SETTINGS, currentRoute);
   }
@@ -382,13 +366,11 @@ export default class SettingsStore extends Store {
     }
   });
 
-  @action
-  _onReceiveSystemLocale = (systemLocale: string) => {
+  @action _onReceiveSystemLocale = (systemLocale: string) => {
     this.systemLocale = systemLocale;
   };
 
-  @action
-  _reset = () => {
+  @action _reset = () => {
     this.error = null;
     this.compressedLogsFilePath = null;
     this.compressedLogsStatus = {};
