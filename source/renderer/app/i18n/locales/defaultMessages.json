@@ -1549,7 +1549,7 @@
           "column": 3,
           "line": 13
         },
-        "file": "source/renderer/app/components/staking/Staking.js",
+        "file": "source/renderer/app/components/staking/Delegation.js",
         "id": "paper.delegation.notification.heading",
         "start": {
           "column": 11,
@@ -1563,7 +1563,7 @@
           "column": 3,
           "line": 19
         },
-        "file": "source/renderer/app/components/staking/Staking.js",
+        "file": "source/renderer/app/components/staking/Delegation.js",
         "id": "paper.delegation.notification.info",
         "start": {
           "column": 8,
@@ -1577,7 +1577,7 @@
           "column": 3,
           "line": 24
         },
-        "file": "source/renderer/app/components/staking/Staking.js",
+        "file": "source/renderer/app/components/staking/Delegation.js",
         "id": "paper.delegation.notification.timeLeftDesc",
         "start": {
           "column": 16,
@@ -1591,7 +1591,7 @@
           "column": 3,
           "line": 29
         },
-        "file": "source/renderer/app/components/staking/Staking.js",
+        "file": "source/renderer/app/components/staking/Delegation.js",
         "id": "paper.delegation.notification.buttonLabel",
         "start": {
           "column": 15,
@@ -1599,7 +1599,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/staking/Staking.json"
+    "path": "source/renderer/app/components/staking/Delegation.json"
   },
   {
     "descriptors": [

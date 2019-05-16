@@ -1,16 +1,21 @@
 // @flow
 import React, { Component } from 'react';
-import { observer } from 'mobx-react';
-import Staking from '../../components/staking/Staking';
+import { observer, inject } from 'mobx-react';
+import type { InjectedProps } from '../types/injectedPropsType';
+import Delegation from '../../components/staking/Delegation';
 import Layout from '../MainLayout';
 
+@inject('stores')
 @observer
-export default class DelegationPage extends Component<any> {
+export default class DelegationPage extends Component<InjectedProps> {
   render() {
+    const { stores } = this.props;
+    const { currentLocale } = stores.profile;
+
     return (
       <Layout>
         <div style={{ height: '100%' }}>
-          <Staking />
+          <Delegation currentLocale={currentLocale} />
         </div>
       </Layout>
     );

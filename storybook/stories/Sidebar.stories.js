@@ -5,7 +5,13 @@ import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import StoryDecorator from './support/StoryDecorator';
 import Sidebar from '../../source/renderer/app/components/sidebar/Sidebar';
-import { CATEGORIES_FOR_STORYBOARD } from '../../source/renderer/app/config/sidebarConfig';
+import { CATEGORIES_BY_NAME } from '../../source/renderer/app/config/sidebarConfig';
+
+const CATEGORIES = [
+  CATEGORIES_BY_NAME.WALLETS,
+  CATEGORIES_BY_NAME.DELEGATION,
+  CATEGORIES_BY_NAME.SETTINGS,
+];
 
 const sidebarMenus = observable({
   wallets: {
@@ -35,7 +41,7 @@ storiesOf('Sidebar', module)
   .add('no category', () => (
     <Sidebar
       menus={emptyMenus}
-      categories={CATEGORIES_FOR_STORYBOARD}
+      categories={CATEGORIES}
       activeSidebarCategory=""
       onCategoryClicked={action('onCategoryClicked')}
       isDialogOpen={() => false}
@@ -48,8 +54,8 @@ storiesOf('Sidebar', module)
   .add('wallets category', () => (
     <Sidebar
       menus={emptyMenus}
-      categories={CATEGORIES_FOR_STORYBOARD}
-      activeSidebarCategory={CATEGORIES_FOR_STORYBOARD[0].route}
+      categories={CATEGORIES}
+      activeSidebarCategory={CATEGORIES[0].route}
       onCategoryClicked={action('onCategoryClicked')}
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}
@@ -60,8 +66,8 @@ storiesOf('Sidebar', module)
   ))
   .add('wallets / sub', () => (
     <Sidebar
-      categories={CATEGORIES_FOR_STORYBOARD}
-      activeSidebarCategory={CATEGORIES_FOR_STORYBOARD[0].route}
+      categories={CATEGORIES}
+      activeSidebarCategory={CATEGORIES[0].route}
       menus={sidebarMenus}
       onCategoryClicked={action('onCategoryClicked')}
       isShowingSubMenus
@@ -75,8 +81,8 @@ storiesOf('Sidebar', module)
   .add('delegation category', () => (
     <Sidebar
       menus={emptyMenus}
-      categories={CATEGORIES_FOR_STORYBOARD}
-      activeSidebarCategory={CATEGORIES_FOR_STORYBOARD[1].route}
+      categories={CATEGORIES}
+      activeSidebarCategory={CATEGORIES[1].route}
       onCategoryClicked={action('onCategoryClicked')}
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}

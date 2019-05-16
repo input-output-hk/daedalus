@@ -27,8 +27,9 @@ export default class Root extends Component<Props> {
 
     const isPageThatDoesntNeedWallets =
       isBlockConsolidationStatusDialog ||
-      isDelegationPage ||
-      ((isAdaRedemptionPage || isSettingsPage) && hasLoadedWallets && isSynced);
+      ((isAdaRedemptionPage || isDelegationPage || isSettingsPage) &&
+        hasLoadedWallets &&
+        isSynced);
 
     // In case node is in stopping sequence we must show the "Connecting" screen
     // with the "Stopping Cardano node..." and "Cardano node stopped" messages

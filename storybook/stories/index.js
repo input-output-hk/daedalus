@@ -4,6 +4,8 @@ import './support/environment';
 import './Sidebar.stories';
 import './SidebarCategory.stories';
 import './SidebarWalletsMenu.stories';
+// import './StakingChart.stories';
+// import './Staking.stories';
 import './Delegation.stories';
 import './Widgets.stories';
 import './AdaRedemptionDialog.stories';

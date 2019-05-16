@@ -42,8 +42,7 @@ export default class AppStore extends Store {
     showUiPartChannel.onReceive(this.showUiPart);
   }
 
-  @computed
-  get currentRoute(): string {
+  @computed get currentRoute(): string {
     return this.stores.router.location.pathname;
   }
 
@@ -88,21 +87,18 @@ export default class AppStore extends Store {
     return Promise.resolve();
   };
 
-  @computed
-  get isBlockConsolidationStatusDialog(): boolean {
+  @computed get isBlockConsolidationStatusDialog(): boolean {
     return this.currentRoute === ROUTES.BLOCK_CONSOLIDATION_STATUS;
   }
 
-  @computed
-  get isSetupPage(): boolean {
+  @computed get isSetupPage(): boolean {
     return (
       this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION ||
       this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE
     );
   }
 
-  @computed
-  get isDelegationPage(): boolean {
+  @computed get isDelegationPage(): boolean {
     return this.currentRoute === ROUTES.DELEGATION;
   }
 
@@ -122,43 +118,35 @@ export default class AppStore extends Store {
     this._updatePreviousRoute(currentRoute);
   };
 
-  @action
-  _updatePreviousRoute = (currentRoute?: string) => {
+  @action _updatePreviousRoute = (currentRoute?: string) => {
     this.previousRoute = currentRoute || ROUTES.ROOT;
   };
 
-  @action
-  _openAboutDialog = () => {
+  @action _openAboutDialog = () => {
     this.isAboutDialogOpen = true;
   };
 
-  @action
-  _closeAboutDialog = () => {
+  @action _closeAboutDialog = () => {
     this.isAboutDialogOpen = false;
   };
 
-  @action
-  _toggleAboutDialog = () => {
+  @action _toggleAboutDialog = () => {
     this.isAboutDialogOpen = !this.isAboutDialogOpen;
   };
 
-  @action
-  _openNetworkStatusDialog = () => {
+  @action _openNetworkStatusDialog = () => {
     this.isNetworkStatusDialogOpen = true;
   };
 
-  @action
-  _closeNetworkStatusDialog = () => {
+  @action _closeNetworkStatusDialog = () => {
     this.isNetworkStatusDialogOpen = false;
   };
 
-  @action
-  _toggleNetworkStatusDialog = () => {
+  @action _toggleNetworkStatusDialog = () => {
     this.isNetworkStatusDialogOpen = !this.isNetworkStatusDialogOpen;
   };
 
-  @action
-  _showAdaRedemptionScreen = () => {
+  @action _showAdaRedemptionScreen = () => {
     const { isConnected, isSynced } = this.stores.networkStatus;
     const { hasLoadedWallets } = this.stores.wallets;
     if (isConnected && isSynced && hasLoadedWallets && !this.isSetupPage) {
@@ -166,8 +154,7 @@ export default class AppStore extends Store {
     }
   };
 
-  @action
-  _toggleBlockConsolidationStatusScreen = () => {
+  @action _toggleBlockConsolidationStatusScreen = () => {
     const route = this.isBlockConsolidationStatusDialog
       ? this.previousRoute
       : ROUTES.BLOCK_CONSOLIDATION_STATUS;
