@@ -1,22 +1,22 @@
 // @flow
 import moment from 'moment';
 
-const defaultProps = {
+export const defaultProps = {
   prefix: 'logs',
-  fileType: 'zip',
+  extention: 'zip',
   date: moment(),
   isUTC: true,
 };
 
 type Props = {
   prefix?: string,
-  fileType?: string,
+  extention?: string,
   date?: moment,
   isUTC?: boolean,
 };
 
 export const generateFileNameWithTimestamp = (props?: Props) => {
-  const { prefix, fileType, isUTC } = {
+  const { prefix, extention, isUTC } = {
     ...defaultProps,
     ...props,
   };
@@ -31,17 +31,17 @@ export const generateFileNameWithTimestamp = (props?: Props) => {
     z = 'Z';
   }
   return `${prefix}-${`${date.format('YYYY-MM-DDTHHmmss.0SSS')}${z}`}${
-    fileType ? '.' : ''
-  }${fileType}`;
+    extention ? '.' : ''
+  }${extention}`;
 };
 
 export const isFileNameWithTimestamp = (
   prefix: string = 'logs',
-  fileType: string = 'zip'
+  extention: string = 'zip'
 ) => (fileName: string) =>
   fileName.match(
     RegExp(
-      `(${prefix}-)([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{6}.0[0-9]{3}Z)(.${fileType})`
+      `(${prefix}-)([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{6}.0[0-9]{3}Z)(.${extention})`
     )
   );
 

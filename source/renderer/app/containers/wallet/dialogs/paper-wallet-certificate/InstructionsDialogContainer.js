@@ -47,7 +47,7 @@ export default class InstructionsDialogContainer extends Component<Props> {
     const name = generateFileNameWithTimestamp({
       prefix: 'paper-wallet-certificate',
       date,
-      fileType: '',
+      extention: '',
       isUTC: false,
     });
 
