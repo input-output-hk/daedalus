@@ -4,6 +4,7 @@ import walletsIcon from '../assets/images/sidebar/wallet-ic.inline.svg';
 import settingsIcon from '../assets/images/sidebar/settings-ic.inline.svg';
 import paperWalletCertificateIcon from '../assets/images/sidebar/paper-certificate-ic.inline.svg';
 import delegationIcon from '../assets/images/sidebar/delegation-ic.inline.svg';
+import delegationProgressIcon from '../assets/images/sidebar/delegation-progress-ic.inline.svg';
 
 export const CATEGORIES_BY_NAME = {
   WALLETS: {
@@ -20,6 +21,11 @@ export const CATEGORIES_BY_NAME = {
     name: 'DELEGATION',
     route: ROUTES.DELEGATION,
     icon: delegationIcon,
+  },
+  DELEGATION_PROGRESS: {
+    name: 'DELEGATION_PROGRESS',
+    route: ROUTES.DELEGATION_PROGRESS,
+    icon: delegationProgressIcon,
   },
   SETTINGS: {
     name: 'SETTINGS',

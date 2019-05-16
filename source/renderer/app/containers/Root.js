@@ -13,7 +13,11 @@ export default class Root extends Component<Props> {
   render() {
     const { stores, actions, children } = this.props;
     const { networkStatus, profile, adaRedemption, app, wallets } = stores;
-    const { isBlockConsolidationStatusDialog, isDelegationPage } = app;
+    const {
+      isBlockConsolidationStatusDialog,
+      isDelegationPage,
+      isDelegationProgressPage,
+    } = app;
     const { isProfilePage, isSettingsPage } = profile;
     const { isAdaRedemptionPage } = adaRedemption;
     const { hasLoadedWallets } = wallets;
@@ -27,7 +31,10 @@ export default class Root extends Component<Props> {
 
     const isPageThatDoesntNeedWallets =
       isBlockConsolidationStatusDialog ||
-      ((isAdaRedemptionPage || isDelegationPage || isSettingsPage) &&
+      ((isAdaRedemptionPage ||
+        isDelegationPage ||
+        isDelegationProgressPage ||
+        isSettingsPage) &&
         hasLoadedWallets &&
         isSynced);
 

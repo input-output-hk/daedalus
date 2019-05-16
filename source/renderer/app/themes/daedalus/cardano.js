@@ -481,6 +481,11 @@ export default {
   '--theme-progress-bar-background-color': 'rgba(255, 255, 255, 0.3)',
   '--theme-progress-bar-foreground-color': 'rgba(255, 255, 255, 0.7)',
 
+  '--theme-block-delegation-progress-stripe-dark-1-background-color':
+    'rgba(36, 62, 98, 0.9)',
+  '--theme-block-delegation-progress-stripe-dark-2-background-color':
+    'rgba(68, 91, 124, 0.9)',
+
   '--theme-block-consolidation-background-color': 'rgba(32, 34, 37, 0.96)',
   '--theme-block-consolidation-container-background-color': '#fafbfc',
   '--theme-block-consolidation-title-text-color': '#fafbfc',

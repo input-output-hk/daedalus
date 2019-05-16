@@ -18,6 +18,7 @@ import DataLayerMigrationPage from './containers/profile/DataLayerMigrationPage'
 import DisplaySettingsPage from './containers/settings/categories/DisplaySettingsPage';
 import PaperWalletCreateCertificatePage from './containers/wallet/PaperWalletCreateCertificatePage';
 import DelegationPage from './containers/staking/DelegationPage';
+import DelegationProgressPage from './containers/staking/DelegationProgressPage';
 import Wallet from './containers/wallet/Wallet';
 import WalletSummaryPage from './containers/wallet/WalletSummaryPage';
 import WalletSendPage from './containers/wallet/WalletSendPage';
@@ -70,5 +71,9 @@ export const Routes = (
       component={PaperWalletCreateCertificatePage}
     />
     <Route path={ROUTES.DELEGATION} component={DelegationPage} />
+    <Route
+      path={ROUTES.DELEGATION_PROGRESS}
+      component={DelegationProgressPage}
+    />
   </Route>
 );

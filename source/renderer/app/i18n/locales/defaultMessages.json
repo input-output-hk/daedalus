@@ -1604,6 +1604,81 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Cardano is transitioning to a decentralized system",
+        "description": "Headline for the Decentralisation progress notification.",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/staking/DelegationProgressInfo.js",
+        "id": "paper.delegation.progress.notification.heading",
+        "start": {
+          "column": 11,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano is transitioning from a federated to a decentralized system. During this transition, some new blocks will be produced by nodes operated in a federated way and some by nodes run by ada stakeholders. All rewards will be distributed to ada stakeholders and none to operators of federated nodes.",
+        "description": "Info description for the Decentralisation progress notification.",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/staking/DelegationProgressInfo.js",
+        "id": "paper.delegation.progress.notification.infoDesc",
+        "start": {
+          "column": 12,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Currently,",
+        "description": "Percentage info start word for the Decentralisation progress notification.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/staking/DelegationProgressInfo.js",
+        "id": "paper.delegation.progress.notification.infoPercentageStart",
+        "start": {
+          "column": 23,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!of the system is decentralized and operated by stake pools.",
+        "description": "Percentage info description for the Decentralisation progress notification.",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/staking/DelegationProgressInfo.js",
+        "id": "paper.delegation.progress.notification.infoPercentageDesc",
+        "start": {
+          "column": 22,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Learn more",
+        "description": "Button Label for the Decentralisation progress notification.",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/staking/DelegationProgressInfo.js",
+        "id": "paper.delegation.progress.notification.buttonLabel",
+        "start": {
+          "column": 15,
+          "line": 35
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/DelegationProgressInfo.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Daedalus",
         "description": "About \"title\"",
         "end": {

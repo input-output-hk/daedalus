@@ -1,0 +1,54 @@
+@import './stakingConfig';
+
+.component {
+  margin: 20px auto;
+  text-align: center;
+  width: 800px;
+}
+
+.heading {
+  @extend %accentText;
+  font-size: 19px;
+  margin-bottom: 14px;
+}
+
+.info {
+  @extend %regularText;
+  color: #5e6066;
+  margin-bottom: 24px;
+}
+
+.progressBar {
+  width: 80%;
+  margin: 0 auto;
+  height: 24px;
+  border-radius: 5px;
+  margin-bottom: 24px;
+}
+
+.progressBarContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: var(--theme-staking-background-color);
+}
+
+.progress {
+  background: repeating-linear-gradient(
+    -63deg,
+    var(--theme-block-delegation-progress-stripe-dark-1-background-color),
+    var(--theme-block-delegation-progress-stripe-dark-1-background-color) 10px,
+    var(--theme-block-delegation-progress-stripe-dark-2-background-color) 10px,
+    var(--theme-block-delegation-progress-stripe-dark-2-background-color) 20px
+  );
+  border-radius: 5px;
+  height: 100%;
+}
+
+.progressLabel {
+  @extend %regularText;
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
+  color: #fff;
+}

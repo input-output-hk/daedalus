@@ -1,0 +1,11 @@
+@import './stakingConfig';
+
+.component {
+  height: 100%;
+  padding: 20px;
+  background-color: var(--theme-staking-background-color);
+}
+
+.mainContent {
+  @extend %contentBorderAndBackground;
+}
