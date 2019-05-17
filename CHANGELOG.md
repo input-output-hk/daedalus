@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented the navigation for the Staking pages ([PR 1395](https://github.com/input-output-hk/daedalus/pull/1395))
 - Implemented "Start of decentralisation notification" UI ([PR 1390](https://github.com/input-output-hk/daedalus/pull/1390))
 - Implemented the wallet UTxO statistics screen ([PR 1353](https://github.com/input-output-hk/daedalus/pull/1353))
 - Implemented scroll error message into view ([PR 1383](https://github.com/input-output-hk/daedalus/pull/1383))
