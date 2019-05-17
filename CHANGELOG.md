@@ -15,6 +15,7 @@ Changelog
 
 ### Fixes
 
+- Fixed EKG port collision while developing on Linux ([PR 1393](https://github.com/input-output-hk/daedalus/pull/1393))
 - Fixed file extension of Daedalus logs ([PR 1381](https://github.com/input-output-hk/daedalus/pull/1381), [PR 1384](https://github.com/input-output-hk/daedalus/pull/1384))
 - Fixed password validation rules for all languages ([PR 1354](https://github.com/input-output-hk/daedalus/pull/1354))
 - Fixed the routing logic which allowed the display of "Settings" screens before the wallet data is fully loaded ([PR 1373](https://github.com/input-output-hk/daedalus/pull/1373))
