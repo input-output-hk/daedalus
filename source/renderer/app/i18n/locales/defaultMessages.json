@@ -1543,6 +1543,67 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Cardano decentralization",
+        "description": "Headline for the Decentralisation notification.",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "source/renderer/app/components/staking/DelegationInfo.js",
+        "id": "paper.delegation.notification.heading",
+        "start": {
+          "column": 11,
+          "line": 12
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano will soon start its transition from a federated to a decentralized system. This will mark the start of stakeholders being able to earn rewards for participating in the running of the network. They will be able to participate directly in the process of staking or can delegate their stake to stake pools to earn rewards in ada.",
+        "description": "Info for the Decentralisation notification.",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/staking/DelegationInfo.js",
+        "id": "paper.delegation.notification.info",
+        "start": {
+          "column": 8,
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!Rewards begin in",
+        "description": "Description for the Decentralisation notification.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/staking/DelegationInfo.js",
+        "id": "paper.delegation.notification.timeLeftDesc",
+        "start": {
+          "column": 16,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Learn more",
+        "description": "Button Label for the Decentralisation notification.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/staking/DelegationInfo.js",
+        "id": "paper.delegation.notification.buttonLabel",
+        "start": {
+          "column": 15,
+          "line": 28
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/DelegationInfo.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Daedalus",
         "description": "About \"title\"",
         "end": {

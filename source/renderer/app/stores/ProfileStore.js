@@ -23,7 +23,7 @@ import {
 // TODO: refactor all parts that rely on this to ipc channels!
 const { ipcRenderer } = global;
 
-export default class SettingsStore extends Store {
+export default class ProfileStore extends Store {
   LANGUAGE_OPTIONS = [
     { value: 'en-US', label: globalMessages.languageEnglish },
     { value: 'ja-JP', label: globalMessages.languageJapanese },
