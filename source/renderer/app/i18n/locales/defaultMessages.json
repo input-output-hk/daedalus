@@ -1543,45 +1543,45 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Cardano decentralisation",
+        "defaultMessage": "!!!Cardano decentralization",
         "description": "Headline for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 16
         },
         "file": "source/renderer/app/components/staking/DelegationInfo.js",
         "id": "paper.delegation.notification.heading",
         "start": {
           "column": 11,
-          "line": 11
+          "line": 12
         }
       },
       {
-        "defaultMessage": "!!!Cardano will soon start its transition from a federated to a decentralized system.This will mark the beginning of the reward era in which stakeholders will be able to participate in the process of staking or can delegate their stake to stake pools to earn rewards in ada.",
+        "defaultMessage": "!!!Cardano will soon start its transition from a federated to a decentralized system. This will mark the start of stakeholders being able to earn rewards for participating in the running of the network. They will be able to participate directly in the process of staking or can delegate their stake to stake pools to earn rewards in ada.",
         "description": "Info for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "source/renderer/app/components/staking/DelegationInfo.js",
         "id": "paper.delegation.notification.info",
         "start": {
           "column": 8,
-          "line": 16
+          "line": 17
         }
       },
       {
-        "defaultMessage": "!!!Reward era begins in",
+        "defaultMessage": "!!!Rewards begin in",
         "description": "Description for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "source/renderer/app/components/staking/DelegationInfo.js",
         "id": "paper.delegation.notification.timeLeftDesc",
         "start": {
           "column": 16,
-          "line": 22
+          "line": 23
         }
       },
       {
@@ -1589,13 +1589,13 @@
         "description": "Button Label for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/staking/DelegationInfo.js",
         "id": "paper.delegation.notification.buttonLabel",
         "start": {
           "column": 15,
-          "line": 27
+          "line": 28
         }
       }
     ],

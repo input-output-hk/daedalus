@@ -5,17 +5,18 @@ Changelog
 
 ### Features
 
+- Implemented "Decentralisation progress" UI ([PR 1394](https://github.com/input-output-hk/daedalus/pull/1394))
+- Implemented "Start of decentralisation notification" UI ([PR 1390](https://github.com/input-output-hk/daedalus/pull/1390))
 - Implemented the wallet UTxO statistics screen ([PR 1353](https://github.com/input-output-hk/daedalus/pull/1353))
 - Implemented scroll error message into view ([PR 1383](https://github.com/input-output-hk/daedalus/pull/1383))
 - Implemented new Block-consolidation status design ([PR 1377](https://github.com/input-output-hk/daedalus/pull/1377))
 - Implemented "In progress" download logs notification ([PR 1341](https://github.com/input-output-hk/daedalus/pull/1341))
 - Implemented status icons on the "Loading" screens ([PR 1325](https://github.com/input-output-hk/daedalus/pull/1325), [PR 1365](https://github.com/input-output-hk/daedalus/pull/1365))
 - Implemented detection for system locale on Daedalus start when user hasn't yet selected language preference so that locale defaults to Japanese if system locale is Japan/Japanese, otherwise defaults to English ([PR 1348](https://github.com/input-output-hk/daedalus/pull/1348))
-- Implemented "Start of decentralisation notification" UI ([PR 1390](https://github.com/input-output-hk/daedalus/pull/1390))
-- Implemented "Decentralisation progress" UI ([PR 1394](https://github.com/input-output-hk/daedalus/pull/1394))
 
 ### Fixes
 
+- Fixed spending password being asked on Receive screen when clicking on "Copy address" link. ([PR 1392](https://github.com/input-output-hk/daedalus/pull/1392))
 - Fixed EKG port collision while developing on Linux ([PR 1393](https://github.com/input-output-hk/daedalus/pull/1393))
 - Fixed file extension of Daedalus logs ([PR 1381](https://github.com/input-output-hk/daedalus/pull/1381), [PR 1384](https://github.com/input-output-hk/daedalus/pull/1384))
 - Fixed password validation rules for all languages ([PR 1354](https://github.com/input-output-hk/daedalus/pull/1354))

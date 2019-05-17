@@ -5,23 +5,24 @@ import { defineMessages, intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import humanizeDuration from 'humanize-duration';
+import moment from 'moment';
 import styles from './DelegationInfo.scss';
 
 const messages = defineMessages({
   heading: {
     id: 'paper.delegation.notification.heading',
-    defaultMessage: '!!!Cardano decentralisation',
+    defaultMessage: '!!!Cardano decentralization',
     description: 'Headline for the Decentralisation notification.',
   },
   info: {
     id: 'paper.delegation.notification.info',
     defaultMessage:
-      '!!!Cardano will soon start its transition from a federated to a decentralized system.This will mark the beginning of the reward era in which stakeholders will be able to participate in the process of staking or can delegate their stake to stake pools to earn rewards in ada.',
+      '!!!Cardano will soon start its transition from a federated to a decentralized system. This will mark the start of stakeholders being able to earn rewards for participating in the running of the network. They will be able to participate directly in the process of staking or can delegate their stake to stake pools to earn rewards in ada.',
     description: 'Info for the Decentralisation notification.',
   },
   timeLeftDesc: {
     id: 'paper.delegation.notification.timeLeftDesc',
-    defaultMessage: '!!!Reward era begins in',
+    defaultMessage: '!!!Rewards begin in',
     description: 'Description for the Decentralisation notification.',
   },
   buttonLabel: {
@@ -31,20 +32,20 @@ const messages = defineMessages({
   },
 });
 
-type Props = { currentLocale: string, timeLeft?: number };
+type Props = { currentLocale: string, startDateTime: string };
 
 @observer
 export default class DelegationInfo extends Component<Props> {
-  static defaultProps = {
-    timeLeft: 0,
-  };
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   translateTimeLeft = () => {
-    const { currentLocale, timeLeft } = this.props;
+    const { currentLocale, startDateTime } = this.props;
+    const timeLeft = Math.max(
+      0,
+      moment(startDateTime).valueOf() - new Date().getTime()
+    );
 
     let humanizedDurationLanguage = null;
     switch (currentLocale) {
