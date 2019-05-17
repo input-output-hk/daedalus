@@ -7,13 +7,13 @@ import Navigation from '../../navigation/Navigation';
 const messages = defineMessages({
   delegation_center: {
     id: 'staking.navigation.delegation_center',
-    defaultMessage: '!!!Delegation',
+    defaultMessage: '!!!Delegation center',
     description:
       'Label for the "Delegation" nav button in the staking navigation.',
   },
   stake_pools: {
     id: 'staking.navigation.stake_pools',
-    defaultMessage: '!!!Stake',
+    defaultMessage: '!!!Stake pools',
     description: 'Label for the "Stake" nav button in the staking navigation.',
   },
   rewards: {
@@ -36,7 +36,6 @@ const messages = defineMessages({
 
 type Props = {
   activeItem: string,
-  isActiveNavItem: Function,
   onNavItemClick: Function,
 };
 
@@ -47,12 +46,11 @@ export default class StakingNavigation extends Component<Props> {
   };
 
   render() {
-    const { isActiveNavItem, onNavItemClick, activeItem } = this.props;
+    const { onNavItemClick, activeItem } = this.props;
     const { intl } = this.context;
     return (
       <Navigation
         activeItem={activeItem}
-        isActiveNavItem={isActiveNavItem}
         onNavItemClick={onNavItemClick}
         items={[
           {

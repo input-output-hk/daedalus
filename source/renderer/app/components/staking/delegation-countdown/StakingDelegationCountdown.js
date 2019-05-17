@@ -1,8 +1,8 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import DelegationInfo from './DelegationInfo';
-import styles from './Delegation.scss';
+import DelegationCountDownInfo from './DelegationCountDownInfo';
+import styles from './StakingDelegationCountdown.scss';
 
 type Props = { currentLocale: string, startDateTime: string };
 
@@ -14,7 +14,7 @@ export default class StakingDelegationCountdown extends Component<Props> {
     return (
       <div className={styles.component}>
         <div className={styles.mainContent}>
-          <DelegationInfo
+          <DelegationCountDownInfo
             currentLocale={currentLocale}
             startDateTime={startDateTime}
           />

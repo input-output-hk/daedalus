@@ -6,6 +6,7 @@ import NavButton from './NavButton';
 import NavDropdown from './NavDropdown';
 
 type NavButtonProps = {
+  type?: 'button',
   id: string,
   label: string,
   icon?: string,
@@ -13,6 +14,7 @@ type NavButtonProps = {
 
 type NavDropdownProps = {
   ...$Exact<NavButtonProps>,
+  type: 'dropdown',
   options: Array<{ value: number | string, label: string }>,
 };
 
@@ -20,11 +22,7 @@ type Props = {
   activeItem: string,
   isActiveNavItem?: Function,
   onNavItemClick: Function,
-  items: Array<{
-    type?: 'button' | 'dropdown',
-    id: string,
-    ...$Exact<NavButtonProps | NavDropdownProps>,
-  }>,
+  items: Array<NavButtonProps | NavDropdownProps>,
 };
 
 @observer
@@ -40,18 +38,20 @@ export default class Navigation extends Component<Props> {
     } = this.props;
     return (
       <div className={styles.component}>
-        {items.map(({ type, id, icon, label, options }) =>
-          type === 'dropdown' ? (
+        {items.map(({ id, icon, label, ...item }) =>
+          item.type === 'dropdown' ? (
             <NavDropdown
+              key={id}
               label={label}
               icon={icon}
               isActive={isActiveNavItem(id)}
-              onChange={item => onNavItemClick(item)}
+              onChange={i => onNavItemClick(i)}
               activeItem={activeItem}
-              options={options}
+              options={item.options}
             />
           ) : (
             <NavButton
+              key={id}
               className={id}
               label={label}
               icon={icon}

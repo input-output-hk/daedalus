@@ -99,7 +99,7 @@ export default class AppStore extends Store {
   }
 
   @computed get isDelegationPage(): boolean {
-    return this.currentRoute === ROUTES.DELEGATION;
+    return this.currentRoute === ROUTES.STAKING;
   }
 
   // ===================== PRIVATE ======================= //
@@ -112,17 +112,10 @@ export default class AppStore extends Store {
   };
 
   _updateRouteLocation = (options: { route: string, params?: ?Object }) => {
-    console.log('options', options);
     const routePath = buildRoute(options.route, options.params);
-    console.log('routePath', routePath);
     const currentRoute = this.stores.router.location.pathname;
-    console.log('currentRoute', currentRoute);
-    console.log('this.stores.router.push', this.stores.router.push);
-    console.log('this.stores.router', this.stores.router);
     if (currentRoute !== routePath) this.stores.router.push(routePath);
-    console.log('111');
     this._updatePreviousRoute(currentRoute);
-    console.log('222');
   };
 
   @action _updatePreviousRoute = (currentRoute?: string) => {

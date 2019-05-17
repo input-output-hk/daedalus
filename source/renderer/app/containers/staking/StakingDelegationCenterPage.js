@@ -12,6 +12,6 @@ export default class WalletSendPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    return <StakingDelegationCenter {...this.props} />;
+    return <StakingDelegationCenter name="StakingDelegationCenter" />;
   }
 }

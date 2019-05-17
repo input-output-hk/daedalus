@@ -8,6 +8,8 @@ import Layout from '../MainLayout';
 @inject('stores')
 @observer
 export default class StakingDelegationCountdownPage extends Component<InjectedProps> {
+  static defaultProps = { actions: null, stores: null };
+
   render() {
     const { stores } = this.props;
     const { profile, staking } = stores;

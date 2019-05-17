@@ -13,7 +13,7 @@ type Props = InjectedContainerProps;
 
 @inject('stores', 'actions')
 @observer
-export default class Wallet extends Component<Props> {
+export default class Staking extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   handleNavItemClick = (page: string) => {
@@ -34,7 +34,6 @@ export default class Wallet extends Component<Props> {
     return (
       <MainLayout>
         <StakingWithNavigation
-          isActiveScreen={this.isActiveScreen}
           onNavItemClick={this.handleNavItemClick}
           activeItem={app.currentPage}
         >

@@ -12,6 +12,6 @@ export default class StakingEpochsPagePage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    return <StakingEpochs {...this.props} />;
+    return <StakingEpochs name="StakingEpochs" />;
   }
 }
