@@ -505,12 +505,13 @@ export const CARDANO_THEME_CONFIG = {
 
 export const CARDANO_THEME_PARAMS: CreateThemeParams = {
   colors: {
-    error: {
-      dark: '#d34452',
-      light: '#ec5d6b',
-      regular: '#ea4c5b',
-      ultralight: '#fac8ce',
-    },
+    // error: {
+    //   dark: '#d34452',
+    //   light: '#ec5d6b',
+    //   regular: '#ea4c5b',
+    //   ultralight: '#fac8ce',
+    // },
+    error: '#ea4c5b',
     primary: {
       active: '#ebeef0',
       background: '#fafbfc',
@@ -553,12 +554,13 @@ const sidebarButtonShade = chroma.scale(['#ff8c1a', '#000']);
 
 export const TEST_THEME_PARAMS: CreateThemeParams = {
   colors: {
-    error: {
-      dark: '#d34452',
-      light: '#ec5d6b',
-      regular: '#ea4c5b',
-      ultralight: '#fac8ce',
-    },
+    // error: {
+    //   dark: '#d34452',
+    //   light: '#ec5d6b',
+    //   regular: '#ea4c5b',
+    //   ultralight: '#fac8ce',
+    // },
+    error: '#ea4c5b',
     primary: {
       active: '#ebeef0',
       background: '#efefef',

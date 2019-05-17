@@ -1,6 +1,6 @@
 // @flow
 import { isEmpty } from 'lodash';
-import { createShades } from './createShades';
+import { createBackgroundShades, createErrorShades } from './createShades';
 import type { ThemeColors, ThemeFonts, CreateThemeParams } from '../types';
 
 type PartialThemeParts = {
@@ -390,7 +390,9 @@ const createDaedalusComponentsTheme = (
     mnemonic: {
       '--theme-mnemonic-background-color': `${primary.background.regular}`,
       '--theme-mnemonic-background-color-hover': `${primary.hover}`,
-      '--theme-backup-mnemonic-background-color': `${secondary.active}`,
+      '--theme-backup-mnemonic-background-color': `${
+        primary.background.regular
+      }`,
     },
     modal: {
       '--theme-modal-overlay-background-color': 'rgba(0, 0, 0, 0.4)',
@@ -619,13 +621,14 @@ export const createTheme = (fullThemeParts: CreateThemeParams): Object => {
 
   const colors = {
     ...themeColors,
+    error: createErrorShades(themeColors.error),
     primary: {
       ...themeColors.primary,
-      background: createShades(themeColors.primary.background),
+      background: createBackgroundShades(themeColors.primary.background),
     },
     secondary: {
       ...themeColors.secondary,
-      background: createShades(themeColors.secondary.background),
+      background: createBackgroundShades(themeColors.secondary.background),
     },
   };
 

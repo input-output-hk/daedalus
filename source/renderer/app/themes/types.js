@@ -1,5 +1,6 @@
 // @flow
 export type BackgroundShades = Object;
+export type ErrorShades = Object;
 
 // export type BackgroundShades = {
 //   lightest: string,
@@ -11,6 +12,13 @@ export type BackgroundShades = Object;
 //   darkest: string,
 // };
 
+// export type ErrorShades = {
+//   ultralight: string,
+//   light: string,
+//   regular: string,
+//   dark: string,
+// };
+
 export type CreateThemeParams = {
   colors: ColorParams,
   fonts: ThemeFonts,
@@ -18,12 +26,13 @@ export type CreateThemeParams = {
 };
 
 export type ColorParams = {
-  error: {
-    dark: string,
-    light: string,
-    regular: string,
-    ultralight: string,
-  },
+  // error: {
+  //   dark: string,
+  //   light: string,
+  //   regular: string,
+  //   ultralight: string,
+  // },
+  error: string,
   primary: {
     active: string,
     background: string,
@@ -49,12 +58,7 @@ export type ColorParams = {
 };
 
 export type ThemeColors = {
-  error: {
-    dark: string,
-    light: string,
-    regular: string,
-    ultralight: string,
-  },
+  error: ErrorShades,
   primary: {
     active: string,
     background: BackgroundShades,

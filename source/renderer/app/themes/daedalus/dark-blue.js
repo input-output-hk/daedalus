@@ -509,12 +509,13 @@ export const DARK_BLUE_THEME_CONFIG = {
 
 export const DARK_BLUE_THEME_PARAMS: CreateThemeParams = {
   colors: {
-    error: {
-      dark: '#d34452',
-      light: '#ec5d6b',
-      regular: '#ea4c5b',
-      ultralight: '#fac8ce',
-    },
+    // error: {
+    //   dark: '#d34452',
+    //   light: '#ec5d6b',
+    //   regular: '#ea4c5b',
+    //   ultralight: '#fac8ce',
+    // },
+    error: '#ea4c5b',
     primary: {
       active: '#495863',
       background: '#263345',
