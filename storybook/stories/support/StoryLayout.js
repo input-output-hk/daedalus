@@ -6,13 +6,10 @@ import { observer, inject } from 'mobx-react';
 import { action } from '@storybook/addon-actions';
 
 // Assets and helpers
+import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarConfig';
 import { formattedWalletAmount } from '../../../source/renderer/app/utils/formatters';
 import NodeSyncStatusIcon from '../../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
 import Wallet from '../../../source/renderer/app/domains/Wallet.js';
-import walletsIcon from '../../../source/renderer/app/assets/images/sidebar/wallet-ic.inline.svg';
-import settingsIcon from '../../../source/renderer/app/assets/images/sidebar/settings-ic.inline.svg';
-import adaIcon from '../../../source/renderer/app/assets/images/sidebar/ada-redemption-ic.inline.svg';
-import paperCertificateIcon from '../../../source/renderer/app/assets/images/sidebar/paper-certificate-ic.inline.svg';
 import type { SidebarMenus } from '../../../source/renderer/app/components/sidebar/Sidebar';
 import type { SidebarWalletType } from '../../../source/renderer/app/types/sidebarTypes';
 // import type { Wallet } from '../../../source/renderer/app/domains/WalletTransaction';
@@ -37,26 +34,9 @@ type Props = {
 };
 
 const sidebarCategories = [
-  {
-    name: 'WALLETS',
-    route: '/wallets',
-    icon: walletsIcon,
-  },
-  {
-    name: 'ADA_REDEMPTION',
-    route: '/ada-redemption',
-    icon: adaIcon,
-  },
-  {
-    name: 'PAPER_WALLET',
-    route: '/paper-wallet-create-certificate',
-    icon: paperCertificateIcon,
-  },
-  {
-    name: 'SETTINGS',
-    route: '/settings',
-    icon: settingsIcon,
-  },
+  CATEGORIES_BY_NAME.WALLETS,
+  CATEGORIES_BY_NAME.DELEGATION,
+  CATEGORIES_BY_NAME.SETTINGS,
 ];
 
 @inject('stores', 'storiesProps')
