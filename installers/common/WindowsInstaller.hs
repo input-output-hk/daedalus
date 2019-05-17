@@ -237,7 +237,7 @@ packageFrontend cluster installerConfig = do
     export "NODE_ENV" "production"
     rewritePackageJson "../package.json" installDir
     echo "running yarn"
-    shells ("yarn run package -- --icon " <> icon) empty
+    shells ("yarn run package --icon " <> icon) empty
     cp "../node_modules/ps-list/fastlist.exe" $ fromString $ unpack $ releaseDir <> "/resources/app/dist/main/fastlist.exe"
 
 -- | The contract of `main` is not to produce unsigned installer binaries.
