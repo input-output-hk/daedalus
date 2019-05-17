@@ -1,7 +1,8 @@
 // @flow
 import chroma from 'chroma-js';
+import type { BackgroundShades } from '../types';
 
-export const createShades = (color: string) => {
+export const createShades = (color: string): BackgroundShades => {
   const lightShades = chroma.scale([color, '#fff']);
   const darkShades = chroma.scale([color, '#000']);
 

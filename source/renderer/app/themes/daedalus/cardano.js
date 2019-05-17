@@ -1,6 +1,6 @@
 // @flow
+import chroma from 'chroma-js';
 import { createTheme } from '../utils/createTheme';
-import { pSBC } from '../utils/createShades';
 import type { CreateThemeParams } from '../types';
 
 //  ==== react-polymorph: theme config === //
@@ -549,6 +549,8 @@ export const CARDANO_THEME_PARAMS: CreateThemeParams = {
   config: CARDANO_THEME_CONFIG,
 };
 
+const sidebarButtonShade = chroma.scale(['#ff8c1a', '#000']);
+
 export const TEST_THEME_PARAMS: CreateThemeParams = {
   colors: {
     error: {
@@ -594,17 +596,11 @@ export const TEST_THEME_PARAMS: CreateThemeParams = {
   },
   config: {
     sidebar: {
-      '--theme-sidebar-menu-add-button-background-color-hover': `${pSBC(
-        -0.25,
-        '#ff8c1a',
-        false,
-        true
+      '--theme-sidebar-menu-add-button-background-color-hover': `${sidebarButtonShade(
+        0.25
       )}`,
-      '--theme-sidebar-menu-add-button-background-color-active': `${pSBC(
-        -0.25,
-        '#ff8c1a',
-        false,
-        true
+      '--theme-sidebar-menu-add-button-background-color-active': `${sidebarButtonShade(
+        0.25
       )}`,
     },
   },
