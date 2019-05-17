@@ -614,7 +614,7 @@ const createDaedalusComponentsTheme = (
   };
 };
 
-export const createTheme = (fullThemeParts: Object): Object => {
+export const createTheme = (fullThemeParts: CreateThemeParams): Object => {
   const { colors: themeColors, config, fonts } = fullThemeParts;
 
   const colors = {
