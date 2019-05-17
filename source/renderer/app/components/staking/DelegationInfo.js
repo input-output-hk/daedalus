@@ -10,18 +10,18 @@ import styles from './DelegationInfo.scss';
 const messages = defineMessages({
   heading: {
     id: 'paper.delegation.notification.heading',
-    defaultMessage: '!!!Cardano decentralisation',
+    defaultMessage: '!!!Cardano decentralization',
     description: 'Headline for the Decentralisation notification.',
   },
   info: {
     id: 'paper.delegation.notification.info',
     defaultMessage:
-      '!!!Cardano will soon start its transition from a federated to a decentralized system.This will mark the beginning of the reward era in which stakeholders will be able to participate in the process of staking or can delegate their stake to stake pools to earn rewards in ada.',
+      '!!!Cardano will soon start its transition from a federated to a decentralized system. This will mark the start of stakeholders being able to earn rewards for participating in the running of the network. They will be able to participate directly in the process of staking or can delegate their stake to stake pools to earn rewards in ada.',
     description: 'Info for the Decentralisation notification.',
   },
   timeLeftDesc: {
     id: 'paper.delegation.notification.timeLeftDesc',
-    defaultMessage: '!!!Reward era begins in',
+    defaultMessage: '!!!Rewards begin in',
     description: 'Description for the Decentralisation notification.',
   },
   buttonLabel: {
