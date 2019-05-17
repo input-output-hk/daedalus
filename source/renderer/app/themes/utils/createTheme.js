@@ -13,7 +13,7 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
   const { colors, fonts } = themeParts;
   const { primary, secondary, error } = colors;
   return {
-    autocomplete: {
+    rpAutocomplete: {
       '--rp-autocomplete-bg-color': `${primary.background.lightest}`,
       '--rp-autocomplete-border': `1px solid ${primary.border}`,
       '--rp-autocomplete-border-color-opened': `${primary.focus}`,
@@ -23,12 +23,12 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
       '--rp-autocomplete-selected-word-text-color': `${secondary.text}`,
       '--rp-autocomplete-selected-words-font-family': `${fonts.regular}`,
     },
-    bubble: {
+    rpBubble: {
       '--rp-bubble-bg-color': `${primary.background.regular}`,
       '--rp-bubble-border-color': `${primary.border}`,
       '--rp-bubble-border-radius': '2px',
     },
-    button: {
+    rpButton: {
       '--rp-button-bg-color': `${secondary.background.regular}`,
       '--rp-button-bg-color-active': `${secondary.active}`,
       '--rp-button-bg-color-disabled': `${secondary.background.lightest}`,
@@ -41,31 +41,31 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
       '--rp-button-text-transform': 'none',
       '--rp-button-width': '360px',
     },
-    checkbox: {
+    rpCheckbox: {
       '--rp-checkbox-border': `1px solid ${secondary.background.regular}`,
       '--rp-checkbox-border-color-disabled': `${secondary.disabled}`,
       '--rp-checkbox-check-bg-color': `${secondary.background.regular}`,
       '--rp-checkbox-label-text-color': `${primary.text}`,
       '--rp-checkbox-label-text-color-disabled': `${primary.disabled}`,
     },
-    error: {
+    rpError: {
       '--rp-theme-color-error': `${error.regular}`,
     },
-    fonts: {
+    rpFonts: {
       '--rp-theme-font-thin': `${fonts.thin}`,
       '--rp-theme-font-light': `${fonts.light}`,
       '--rp-theme-font-medium': `${fonts.medium}`,
       '--rp-theme-font-regular': `${fonts.regular}`,
       '--rp-theme-font-bold': `${fonts.bold}`,
     },
-    formfield: {
+    rpFormfield: {
       '--rp-formfield-bg-color-disabled': 'none',
       '--rp-formfield-label-text-color': `${primary.text}`,
       '--rp-formfield-label-text-color-disabled': `${primary.text}`,
       '--rp-formfield-error-text-color': `${error.regular}`,
       '--rp-formfield-error-text-opacity': '0.75',
     },
-    input: {
+    rpInput: {
       '--rp-input-bg-color': `${primary.background.regular}`,
       '--rp-input-bg-color-disabled': `${primary.placeholder}`,
       '--rp-input-border-color': `${primary.border}`,
@@ -79,12 +79,12 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
       '--rp-input-text-color': `${primary.text}`,
       '--rp-input-text-color-disabled': `${primary.placeholder}`,
     },
-    modal: {
+    rpModal: {
       '--rp-modal-bg-color': `${primary.background.lightest}`,
       '--rp-modal-max-height': '90%',
       '--rp-modal-overlay-bg-color': 'rgba(0, 0, 0, 0.4)',
     },
-    options: {
+    rpOptions: {
       '--rp-option-bg-color': `${primary.background.lightest}`,
       '--rp-option-bg-color-highlighted': `${primary.background.regular}`,
       '--rp-option-border-color': `${primary.border}`,
@@ -94,7 +94,7 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
       '--rp-options-border-color': `${primary.border}`,
       '--rp-options-shadow': 'none',
     },
-    select: {
+    rpSelect: {
       '--rp-select-arrow-bg-color': `${primary.border}`,
       '--rp-select-arrow-bg-color-open': `${primary.active}`,
       '--rp-select-input-bg-color': `${primary.background.lightest}`,
@@ -102,7 +102,7 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
       '--rp-select-input-border-color-focus': `${primary.focus}`,
       '--rp-select-input-text-color': `${primary.text}`,
     },
-    switch: {
+    rpSwitch: {
       '--rp-switch-bg-color-off': `${secondary.border}`,
       '--rp-switch-bg-color-on': `${secondary.border}`,
       '--rp-switch-label-margin': '0 30px 0 0',
@@ -113,7 +113,7 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
       '--rp-switch-root-margin': '0 0 30px 0',
       '--rp-switch-thumb-bg-color': `${secondary.text}`,
     },
-    textarea: {
+    rpTextarea: {
       '--rp-textarea-bg-color': `${primary.background.regular}`,
       '--rp-textarea-bg-color-disabled': `${primary.placeholder}`,
       '--rp-textarea-border': `1px solid ${primary.border}`,
@@ -392,7 +392,7 @@ const createDaedalusComponentsTheme = (
       '--theme-mnemonic-background-color-hover': `${primary.hover}`,
       '--theme-backup-mnemonic-background-color': `${secondary.active}`,
     },
-    modalz: {
+    modal: {
       '--theme-modal-overlay-background-color': 'rgba(0, 0, 0, 0.4)',
     },
     navItem: {
