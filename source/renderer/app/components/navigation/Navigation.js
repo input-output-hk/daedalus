@@ -4,15 +4,11 @@ import { observer } from 'mobx-react';
 import styles from './Navigation.scss';
 import NavButton from './NavButton';
 import NavDropdown from './NavDropdown';
-// import summaryIcon from '../../../assets/images/-nav/summary-ic.inline.svg';
-
-// import type { NavButtonProps } from './NavButton';
-// import type { NavDropdownProps } from './NavDropdown';
 
 type NavButtonProps = {
   id: string,
   label: string,
-  icon: string,
+  icon?: string,
 };
 
 type NavDropdownProps = {

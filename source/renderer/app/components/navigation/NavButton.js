@@ -5,16 +5,16 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import styles from './NavButton.scss';
 
-export type NavButtonProps = {
+type Props = {
   label: string,
-  icon: string,
+  icon?: string,
   isActive: boolean,
   onClick: Function,
   className?: string,
 };
 
 @observer
-export default class NavButton extends Component<NavButtonProps> {
+export default class NavButton extends Component<Props> {
   render() {
     const { isActive, icon, onClick, className } = this.props;
     const componentClasses = classnames([
@@ -29,7 +29,7 @@ export default class NavButton extends Component<NavButtonProps> {
     return (
       <button className={componentClasses} onClick={onClick}>
         <div className={styles.container}>
-          <SVGInline svg={icon} className={iconClasses} />
+          {icon && <SVGInline svg={icon} className={iconClasses} />}
           <span className={styles.label}>{this.props.label}</span>
         </div>
       </button>

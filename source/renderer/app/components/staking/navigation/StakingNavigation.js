@@ -2,55 +2,35 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import styles from './StakingNavigation.scss';
-// import StakingNavButton from './StakingNavButton';
-// import StakingNavDropdown from './StakingNavDropdown';
-// import summaryIcon from '../../../assets/images/staking-nav/summary-ic.inline.svg';
-// import sendIcon from '../../../assets/images/staking-nav/send-ic.inline.svg';
-// import receiveIcon from '../../../assets/images/staking-nav/receive-ic.inline.svg';
-// import transactionsIcon from '../../../assets/images/staking-nav/transactions-ic.inline.svg';
-// import settingsIcon from '../../../assets/images/staking-nav/staking-settings-2-ic.inline.svg';
+import Navigation from '../../navigation/Navigation';
 
 const messages = defineMessages({
-  summary: {
-    id: 'staking.navigation.summary',
-    defaultMessage: '!!!Summary',
+  delegation_center: {
+    id: 'staking.navigation.delegation_center',
+    defaultMessage: '!!!Delegation',
     description:
-      'Label for the "Summary" nav button in the staking navigation.',
+      'Label for the "Delegation" nav button in the staking navigation.',
   },
-  send: {
-    id: 'staking.navigation.send',
-    defaultMessage: '!!!Send',
-    description: 'Label for the "Send" nav button in the staking navigation.',
+  stake_pools: {
+    id: 'staking.navigation.stake_pools',
+    defaultMessage: '!!!Stake',
+    description: 'Label for the "Stake" nav button in the staking navigation.',
   },
-  receive: {
-    id: 'staking.navigation.receive',
-    defaultMessage: '!!!Receive',
+  rewards: {
+    id: 'staking.navigation.rewards',
+    defaultMessage: '!!!Rewards',
     description:
-      'Label for the "Receive" nav button in the staking navigation.',
+      'Label for the "Rewards" nav button in the staking navigation.',
   },
-  transactions: {
-    id: 'staking.navigation.transactions',
-    defaultMessage: '!!!Transactions',
-    description:
-      'Label for the "Transactions" nav button in the staking navigation.',
+  epochs: {
+    id: 'staking.navigation.epochs',
+    defaultMessage: '!!!Epochs',
+    description: 'Label for the "Epochs" nav button in the staking navigation.',
   },
-  settings: {
-    id: 'staking.navigation.settings',
-    defaultMessage: '!!!Settings',
-    description:
-      'Label for the "Settings" nav button in the staking navigation.',
-  },
-  utxo: {
-    id: 'staking.navigation.utxo',
-    defaultMessage: '!!!Staking UTXO distribution',
-    description:
-      'Label for the "Staking UTXO distribution" nav button in the staking navigation.',
-  },
-  more: {
-    id: 'staking.navigation.more',
-    defaultMessage: '!!!More',
-    description: 'Label for the "More" nav button in the staking navigation.',
+  info: {
+    id: 'staking.navigation.info',
+    defaultMessage: '!!!Info',
+    description: 'Label for the "Info" nav button in the staking navigation.',
   },
 });
 
@@ -70,66 +50,33 @@ export default class StakingNavigation extends Component<Props> {
     const { isActiveNavItem, onNavItemClick, activeItem } = this.props;
     const { intl } = this.context;
     return (
-      <div className={styles.component}>
-        <div className={styles.navItem}>
-          <StakingNavButton
-            className="summary"
-            label={intl.formatMessage(messages.summary)}
-            icon={summaryIcon}
-            isActive={isActiveNavItem('summary')}
-            onClick={() => onNavItemClick('summary')}
-          />
-        </div>
-
-        <div className={styles.navItem}>
-          <StakingNavButton
-            className="send"
-            label={intl.formatMessage(messages.send)}
-            icon={sendIcon}
-            isActive={isActiveNavItem('send')}
-            onClick={() => onNavItemClick('send')}
-          />
-        </div>
-
-        <div className={styles.navItem}>
-          <StakingNavButton
-            className="receive"
-            label={intl.formatMessage(messages.receive)}
-            icon={receiveIcon}
-            isActive={isActiveNavItem('receive')}
-            onClick={() => onNavItemClick('receive')}
-          />
-        </div>
-
-        <div className={styles.navItem}>
-          <StakingNavButton
-            label={intl.formatMessage(messages.transactions)}
-            icon={transactionsIcon}
-            isActive={isActiveNavItem('transactions')}
-            onClick={() => onNavItemClick('transactions')}
-          />
-        </div>
-
-        <div className={styles.navItem}>
-          <StakingNavDropdown
-            label={intl.formatMessage(messages.more)}
-            icon={settingsIcon}
-            isActive={isActiveNavItem('settings') || isActiveNavItem('utxo')}
-            onChange={item => onNavItemClick(item)}
-            activeItem={activeItem}
-            options={[
-              {
-                label: intl.formatMessage(messages.settings),
-                value: 'settings',
-              },
-              {
-                label: intl.formatMessage(messages.utxo),
-                value: 'utxo',
-              },
-            ]}
-          />
-        </div>
-      </div>
+      <Navigation
+        activeItem={activeItem}
+        isActiveNavItem={isActiveNavItem}
+        onNavItemClick={onNavItemClick}
+        items={[
+          {
+            id: 'delegation-center',
+            label: intl.formatMessage(messages.delegation_center),
+          },
+          {
+            id: 'stake-pools',
+            label: intl.formatMessage(messages.stake_pools),
+          },
+          {
+            id: 'rewards',
+            label: intl.formatMessage(messages.rewards),
+          },
+          {
+            id: 'epochs',
+            label: intl.formatMessage(messages.epochs),
+          },
+          {
+            id: 'info',
+            label: intl.formatMessage(messages.info),
+          },
+        ]}
+      />
     );
   }
 }

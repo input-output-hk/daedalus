@@ -9,17 +9,17 @@ import selectStyles from './NavSelectStyles.scss';
 import NavButton from './NavButton';
 import styles from './NavDropdown.scss';
 
-export type NavDropdownProps = {
+type Props = {
   label: string,
   activeItem: string,
-  icon: string,
+  icon?: string,
   isActive: boolean,
   options: Array<{ value: number | string, label: string }>,
   onChange: Function,
 };
 
 @observer
-export default class NavDropdown extends Component<NavDropdownProps> {
+export default class NavDropdown extends Component<Props> {
   render() {
     const { label, icon, isActive, onChange, options, activeItem } = this.props;
     return (

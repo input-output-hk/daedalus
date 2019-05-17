@@ -7,7 +7,7 @@ import styles from './Delegation.scss';
 type Props = { currentLocale: string, startDateTime: string };
 
 @observer
-export default class Delegation extends Component<Props> {
+export default class StakingDelegationCountdown extends Component<Props> {
   render() {
     const { currentLocale, startDateTime } = this.props;
 
