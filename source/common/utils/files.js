@@ -4,7 +4,6 @@ import moment from 'moment';
 export const defaultProps = {
   prefix: 'logs',
   extention: 'zip',
-  date: moment(),
   isUTC: true,
 };
 
@@ -15,15 +14,12 @@ type Props = {
   isUTC?: boolean,
 };
 
-export const generateFileNameWithTimestamp = (props?: Props) => {
+export const generateFileNameWithTimestamp = (props?: Props = {}) => {
   const { prefix, extention, isUTC } = {
     ...defaultProps,
     ...props,
   };
-  let { date } = {
-    ...defaultProps,
-    ...props,
-  };
+  let date = props.date || moment();
   let z = '';
   if (isUTC === true) {
     if (!props || !Object.prototype.hasOwnProperty.call(props, 'date'))
