@@ -1,14 +1,18 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, number } from '@storybook/addon-knobs';
+import { withKnobs, date } from '@storybook/addon-knobs';
 import StoryLayout from './support/StoryLayout';
 import StoryProvider from './support/StoryProvider';
 import StoryDecorator from './support/StoryDecorator';
 import { CATEGORIES_BY_NAME } from '../../source/renderer/app/config/sidebarConfig';
 import Delegation from '../../source/renderer/app/components/staking/Delegation';
 
-const timeLeft = (78 * 60 + 10) * 60 * 1000;
+const defaultStartDateTime = new Date('Jun 01 2019');
+const startDateTimeKnob = (name, defaultValue) => {
+  const stringTimestamp = date(name, defaultValue);
+  return new Date(stringTimestamp).toISOString();
+};
 
 storiesOf('DelegationScreens', module)
   .addDecorator((story, context) => {
@@ -33,10 +37,10 @@ storiesOf('DelegationScreens', module)
     <div>
       <Delegation
         currentLocale="en-US"
-        timeLeft={number('Time Left (miliseconds)', timeLeft, {
-          min: 0,
-          step: 1000,
-        })}
+        startDateTime={startDateTimeKnob(
+          'Delegation Start DateTime',
+          defaultStartDateTime
+        )}
       />
     </div>
   ));

@@ -5,6 +5,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import humanizeDuration from 'humanize-duration';
+import moment from 'moment';
 import styles from './DelegationInfo.scss';
 
 const messages = defineMessages({
@@ -31,20 +32,20 @@ const messages = defineMessages({
   },
 });
 
-type Props = { currentLocale: string, timeLeft?: number };
+type Props = { currentLocale: string, startDateTime: string };
 
 @observer
 export default class DelegationInfo extends Component<Props> {
-  static defaultProps = {
-    timeLeft: 0,
-  };
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   translateTimeLeft = () => {
-    const { currentLocale, timeLeft } = this.props;
+    const { currentLocale, startDateTime } = this.props;
+    const timeLeft = Math.max(
+      0,
+      moment(startDateTime).valueOf() - new Date().getTime()
+    );
 
     let humanizedDurationLanguage = null;
     switch (currentLocale) {
