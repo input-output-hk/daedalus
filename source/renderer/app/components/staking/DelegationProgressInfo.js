@@ -10,32 +10,32 @@ const messages = defineMessages({
   heading: {
     id: 'paper.delegation.progress.notification.heading',
     defaultMessage: '!!!Cardano is transitioning to a decentralized system',
-    description: 'Headline for the Decentralisation progress notification.',
+    description: 'Headline for the Decentralization progress notification.',
   },
   infoDesc: {
     id: 'paper.delegation.progress.notification.infoDesc',
     defaultMessage:
       '!!!Cardano is transitioning from a federated to a decentralized system. During this transition, some new blocks will be produced by nodes operated in a federated way and some by nodes run by ada stakeholders. All rewards will be distributed to ada stakeholders and none to operators of federated nodes.',
     description:
-      'Info description for the Decentralisation progress notification.',
+      'Info description for the Decentralization progress notification.',
   },
   infoPercentageStart: {
     id: 'paper.delegation.progress.notification.infoPercentageStart',
     defaultMessage: '!!!Currently,',
     description:
-      'Percentage info start word for the Decentralisation progress notification.',
+      'Percentage info start word for the Decentralization progress notification.',
   },
   infoPercentageDesc: {
     id: 'paper.delegation.progress.notification.infoPercentageDesc',
     defaultMessage:
       '!!!of the system is decentralized and operated by stake pools.',
     description:
-      'Percentage info description for the Decentralisation progress notification.',
+      'Percentage info description for the Decentralization progress notification.',
   },
   buttonLabel: {
     id: 'paper.delegation.progress.notification.buttonLabel',
     defaultMessage: '!!!Learn more',
-    description: 'Button Label for the Decentralisation progress notification.',
+    description: 'Button Label for the Decentralization progress notification.',
   },
 });
 

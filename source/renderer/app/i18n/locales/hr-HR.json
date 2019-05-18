@@ -92,7 +92,7 @@
   "noDiskSpace.error.overlayContent": "!!!<b>There is not enough disk space left on your device.</b><br />Daedalus requires at least {diskSpaceRequired} to operate. Please free up some disk space to continue.",
   "noDiskSpace.error.overlayTitle": "!!!Not enough disk space",
   "paper.delegation.notification.buttonLabel": "!!!Learn more",
-  "paper.delegation.notification.heading": "!!!Cardano decentralisation",
+  "paper.delegation.notification.heading": "!!!Cardano decentralization",
   "paper.delegation.notification.info": "!!!Cardano will soon start its transition from a federated to a decentralized system.This will mark the beginning of the reward era in which stakeholders will be able to participate in the process of staking or can delegate their stake to stake pools to earn rewards in ada.",
   "paper.delegation.notification.timeLeftDesc": "!!!Reward era begins in",
   "paper.delegation.progress.notification.buttonLabel": "!!!Learn more",

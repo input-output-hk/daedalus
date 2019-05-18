@@ -1,9 +1,8 @@
 @import './stakingConfig';
 
 .component {
-  margin: 20px auto;
+  margin: 20px;
   text-align: center;
-  width: 800px;
 }
 
 .heading {
@@ -19,18 +18,18 @@
 }
 
 .progressBar {
-  width: 80%;
-  margin: 0 auto;
-  height: 24px;
   border-radius: 5px;
+  height: 24px;
+  margin: 0 auto;
   margin-bottom: 24px;
+  width: 80%;
 }
 
 .progressBarContainer {
+  background-color: var(--theme-staking-background-color);
+  height: 100%;
   position: relative;
   width: 100%;
-  height: 100%;
-  background-color: var(--theme-staking-background-color);
 }
 
 .progress {
@@ -47,8 +46,8 @@
 
 .progressLabel {
   @extend %regularText;
+  color: #fff;
   position: absolute;
   top: 50%;
   transform: translate(0, -50%);
-  color: #fff;
 }

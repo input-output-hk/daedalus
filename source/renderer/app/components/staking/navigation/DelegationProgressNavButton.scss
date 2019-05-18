@@ -1,0 +1,58 @@
+// ========= LAYOUT =========
+
+.component {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0 5px;
+  width: calc(100% - 30px);
+  height: 30px;
+  border-radius: 4px;
+}
+
+.label {
+  font-size: 14px;
+  font-family: var(--font-regular);
+  display: block;
+  line-height: 30px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ========= STATES =========
+
+.normal {
+  .container {
+    color: var(--theme-nav-item-text-color);
+  }
+
+  &:hover {
+    .container {
+      background-color: var(--theme-nav-item-background-color-hover);
+    }
+    cursor: pointer;
+  }
+}
+
+.active {
+  .container {
+    background-color: var(--theme-nav-item-background-color-active);
+    color: var(--theme-nav-item-text-color-active);
+  }
+
+  &:hover {
+    cursor: default;
+  }
+}

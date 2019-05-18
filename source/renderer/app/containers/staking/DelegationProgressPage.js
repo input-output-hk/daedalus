@@ -7,10 +7,11 @@ import Layout from '../MainLayout';
 @observer
 export default class DelegationProgressPage extends Component<any> {
   render() {
+    const percentage = 10; // TODO: Replace value with the one fetched from API
     return (
       <Layout>
         <div style={{ height: '100%' }}>
-          <DelegationProgress percentage={10} />
+          <DelegationProgress percentage={percentage} />
         </div>
       </Layout>
     );
