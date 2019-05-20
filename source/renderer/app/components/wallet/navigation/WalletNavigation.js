@@ -2,9 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import styles from './WalletNavigation.scss';
-import WalletNavButton from './WalletNavButton';
-import WalletNavDropdown from './WalletNavDropdown';
+import Navigation from '../../navigation/Navigation';
 import summaryIcon from '../../../assets/images/wallet-nav/summary-ic.inline.svg';
 import sendIcon from '../../../assets/images/wallet-nav/send-ic.inline.svg';
 import receiveIcon from '../../../assets/images/wallet-nav/receive-ic.inline.svg';
@@ -68,54 +66,37 @@ export default class WalletNavigation extends Component<Props> {
     const { isActiveNavItem, onNavItemClick, activeItem } = this.props;
     const { intl } = this.context;
     return (
-      <div className={styles.component}>
-        <div className={styles.navItem}>
-          <WalletNavButton
-            className="summary"
-            label={intl.formatMessage(messages.summary)}
-            icon={summaryIcon}
-            isActive={isActiveNavItem('summary')}
-            onClick={() => onNavItemClick('summary')}
-          />
-        </div>
-
-        <div className={styles.navItem}>
-          <WalletNavButton
-            className="send"
-            label={intl.formatMessage(messages.send)}
-            icon={sendIcon}
-            isActive={isActiveNavItem('send')}
-            onClick={() => onNavItemClick('send')}
-          />
-        </div>
-
-        <div className={styles.navItem}>
-          <WalletNavButton
-            className="receive"
-            label={intl.formatMessage(messages.receive)}
-            icon={receiveIcon}
-            isActive={isActiveNavItem('receive')}
-            onClick={() => onNavItemClick('receive')}
-          />
-        </div>
-
-        <div className={styles.navItem}>
-          <WalletNavButton
-            label={intl.formatMessage(messages.transactions)}
-            icon={transactionsIcon}
-            isActive={isActiveNavItem('transactions')}
-            onClick={() => onNavItemClick('transactions')}
-          />
-        </div>
-
-        <div className={styles.navItem}>
-          <WalletNavDropdown
-            label={intl.formatMessage(messages.more)}
-            icon={settingsIcon}
-            isActive={isActiveNavItem('settings') || isActiveNavItem('utxo')}
-            onChange={item => onNavItemClick(item)}
-            activeItem={activeItem}
-            options={[
+      <Navigation
+        activeItem={activeItem}
+        isActiveNavItem={isActiveNavItem}
+        onNavItemClick={onNavItemClick}
+        items={[
+          {
+            id: 'summary',
+            label: intl.formatMessage(messages.summary),
+            icon: summaryIcon,
+          },
+          {
+            id: 'send',
+            label: intl.formatMessage(messages.send),
+            icon: sendIcon,
+          },
+          {
+            id: 'receive',
+            label: intl.formatMessage(messages.receive),
+            icon: receiveIcon,
+          },
+          {
+            id: 'transactions',
+            label: intl.formatMessage(messages.transactions),
+            icon: transactionsIcon,
+          },
+          {
+            type: 'dropdown',
+            id: 'settings',
+            label: intl.formatMessage(messages.settings),
+            icon: settingsIcon,
+            options: [
               {
                 label: intl.formatMessage(messages.settings),
                 value: 'settings',
@@ -124,10 +105,10 @@ export default class WalletNavigation extends Component<Props> {
                 label: intl.formatMessage(messages.utxo),
                 value: 'utxo',
               },
-            ]}
-          />
-        </div>
-      </div>
+            ],
+          },
+        ]}
+      />
     );
   }
 }

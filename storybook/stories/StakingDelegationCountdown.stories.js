@@ -6,7 +6,7 @@ import StoryLayout from './support/StoryLayout';
 import StoryProvider from './support/StoryProvider';
 import StoryDecorator from './support/StoryDecorator';
 import { CATEGORIES_BY_NAME } from '../../source/renderer/app/config/sidebarConfig';
-import Delegation from '../../source/renderer/app/components/staking/Delegation';
+import StakingDelegationCountdown from '../../source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown';
 
 const defaultStartDateTime = new Date('Jun 01 2019');
 const startDateTimeKnob = (name, defaultValue) => {
@@ -22,7 +22,7 @@ storiesOf('DelegationScreens', module)
       <StoryDecorator>
         <StoryProvider>
           <StoryLayout
-            activeSidebarCategory={CATEGORIES_BY_NAME.DELEGATION.route}
+            activeSidebarCategory={CATEGORIES_BY_NAME.STAKING.route}
             storyName={context.story}
           >
             {storyWithKnobs}
@@ -35,7 +35,7 @@ storiesOf('DelegationScreens', module)
 
   .add('Start of decentralisation notification', () => (
     <div>
-      <Delegation
+      <StakingDelegationCountdown
         currentLocale="en-US"
         startDateTime={startDateTimeKnob(
           'Delegation Start DateTime',
