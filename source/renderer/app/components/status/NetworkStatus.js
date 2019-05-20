@@ -567,7 +567,11 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr className={styles.platformVersion}>
                 <td>{intl.formatMessage(messages.platformVersion)}:</td>
-                <Tooltip skin={TooltipSkin} tip={platformVersion}>
+                <Tooltip
+                  skin={TooltipSkin}
+                  tip={platformVersion}
+                  className={styles.platformTooltip}
+                >
                   <td className={styles.platform}>{platformVersion}</td>
                 </Tooltip>
               </tr>

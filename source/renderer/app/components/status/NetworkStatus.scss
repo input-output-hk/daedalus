@@ -250,6 +250,14 @@
   }
 }
 
+.platformTooltip {
+  > div {
+    > div {
+      width: 300px !important;
+    }
+  }
+}
+
 .closeButton {
   cursor: pointer;
   height: 44px;
