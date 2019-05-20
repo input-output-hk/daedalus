@@ -5,7 +5,6 @@ import _http from 'http';
 import { ipcRenderer as _ipcRenderer, remote as _remote } from 'electron';
 import _electronLog from 'electron-log-daedalus';
 import ElectronStore from 'electron-store';
-import { includes } from 'lodash';
 import { environment } from './environment';
 
 const _process = process;
@@ -45,8 +44,6 @@ process.once('loaded', () => {
     os: {
       platform: os.platform(),
     },
-    isInSafeMode: includes(process.argv.slice(1), '--safe-mode'),
-    argv: process.argv.slice(1),
   });
   // Expose require for Spectron!
   if (_process.env.NODE_ENV === 'test') {

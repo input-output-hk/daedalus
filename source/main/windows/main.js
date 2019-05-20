@@ -44,6 +44,7 @@ export const createMainWindow = (isInSafeMode: boolean, locale: string) => {
       webviewTag: false,
       enableRemoteModule: isTest,
       preload: path.join(__dirname, './preload.js'),
+      additionalArguments: isInSafeMode ? ['--safe-mode'] : [],
     },
   };
 
