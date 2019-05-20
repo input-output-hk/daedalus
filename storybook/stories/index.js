@@ -1,21 +1,31 @@
 // @flow
 import '../../source/renderer/app/themes/index.global.scss';
 import './support/environment';
-import './Sidebar.stories';
-import './SidebarCategory.stories';
-import './SidebarWalletsMenu.stories';
-// import './StakingChart.stories';
-// import './Staking.stories';
-import './Delegation.stories';
-import './Widgets.stories';
-import './AdaRedemptionDialog.stories';
-import './AddWallet.stories';
+
+// Wallets
+import './WalletScreens.stories';
 import './WalletSummary.stories';
-import './LanguageSelectionForm.stories';
+import './BlockConsolidationStatus.stories';
+import './AddWallet.stories';
 import './DeleteWalletConfirmationDialog.stories';
-import './TopBar.stories';
 import './WalletTransactionsList.stories';
 import './ExportWalletToFileDialog.stories';
 import './PaperWallets.stories';
-import './WalletScreens.stories';
-import './BlockConsolidationStatus.stories';
+
+// Staking
+import './Staking.stories';
+
+// Ada Redemption
+import './AdaRedemptionDialog.stories';
+
+// Settings
+import './LanguageSelectionForm.stories';
+
+// Navigation
+import './Sidebar.stories';
+import './SidebarCategory.stories';
+import './SidebarWalletsMenu.stories';
+import './TopBar.stories';
+
+// Widgets
+import './Widgets.stories';

@@ -12,12 +12,22 @@ type Props = InjectedContainerProps;
 export default class Root extends Component<Props> {
   render() {
     const { stores, actions, children } = this.props;
-    const { networkStatus, profile, adaRedemption, app, wallets } = stores;
+    // const { networkStatus, profile, adaRedemption, app, wallets } = stores;
+    // const {
+    //   isBlockConsolidationStatusDialog,
+    //   isDelegationPage,
+    //   isDelegationProgressPage,
+    // } = app;
     const {
-      isBlockConsolidationStatusDialog,
-      isDelegationPage,
-      isDelegationProgressPage,
-    } = app;
+      networkStatus,
+      profile,
+      adaRedemption,
+      wallets,
+      app,
+      staking,
+    } = stores;
+    const { isBlockConsolidationStatusDialog } = app;
+    const { isTakingPage } = staking;
     const { isProfilePage, isSettingsPage } = profile;
     const { isAdaRedemptionPage } = adaRedemption;
     const { hasLoadedWallets } = wallets;
@@ -31,10 +41,11 @@ export default class Root extends Component<Props> {
 
     const isPageThatDoesntNeedWallets =
       isBlockConsolidationStatusDialog ||
-      ((isAdaRedemptionPage ||
-        isDelegationPage ||
-        isDelegationProgressPage ||
-        isSettingsPage) &&
+      // ((isAdaRedemptionPage ||
+      //   isDelegationPage ||
+      //   isDelegationProgressPage ||
+      //   isSettingsPage) &&
+      ((isAdaRedemptionPage || isTakingPage || isSettingsPage) &&
         hasLoadedWallets &&
         isSynced);
 

@@ -6,36 +6,36 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import humanizeDuration from 'humanize-duration';
 import moment from 'moment';
-import styles from './DelegationInfo.scss';
+import styles from './DelegationCountDownInfo.scss';
 
 const messages = defineMessages({
   heading: {
     id: 'paper.delegation.notification.heading',
     defaultMessage: '!!!Cardano decentralization',
-    description: 'Headline for the Decentralization notification.',
+    description: 'Headline for the Decentralisation notification.',
   },
   info: {
     id: 'paper.delegation.notification.info',
     defaultMessage:
       '!!!Cardano will soon start its transition from a federated to a decentralized system. This will mark the start of stakeholders being able to earn rewards for participating in the running of the network. They will be able to participate directly in the process of staking or can delegate their stake to stake pools to earn rewards in ada.',
-    description: 'Info for the Decentralization notification.',
+    description: 'Info for the Decentralisation notification.',
   },
   timeLeftDesc: {
     id: 'paper.delegation.notification.timeLeftDesc',
     defaultMessage: '!!!Rewards begin in',
-    description: 'Description for the Decentralization notification.',
+    description: 'Description for the Decentralisation notification.',
   },
   buttonLabel: {
     id: 'paper.delegation.notification.buttonLabel',
     defaultMessage: '!!!Learn more',
-    description: 'Button Label for the Decentralization notification.',
+    description: 'Button Label for the Decentralisation notification.',
   },
 });
 
 type Props = { currentLocale: string, startDateTime: string };
 
 @observer
-export default class DelegationInfo extends Component<Props> {
+export default class DelegationCountDownInfo extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };

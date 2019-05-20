@@ -7,13 +7,7 @@ import StoryLayout from './support/StoryLayout';
 import StoryProvider from './support/StoryProvider';
 import StoryDecorator from './support/StoryDecorator';
 import { CATEGORIES_BY_NAME } from '../../source/renderer/app/config/sidebarConfig';
-
-// Helpers
-import DelegationProgressWithNavigation from '../../source/renderer/app/components/staking/layouts/DelegationProgressWithNavigation';
-
-// Screens
-import Delegation from '../../source/renderer/app/components/staking/Delegation';
-import DelegationProgress from '../../source/renderer/app/components/staking/DelegationProgress';
+import StakingDelegationCountdown from '../../source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown';
 
 const defaultPercentage = 10;
 const defaultStartDateTime = new Date('Jun 01 2019');
@@ -41,7 +35,7 @@ storiesOf('DelegationScreens', module)
       <StoryDecorator>
         <StoryProvider>
           <StoryLayout
-            activeSidebarCategory={activeSidebarCategory}
+            activeSidebarCategory={CATEGORIES_BY_NAME.STAKING.route}
             storyName={context.story}
           >
             {context.story === 'Decentralization Progress' ? (
@@ -64,22 +58,32 @@ storiesOf('DelegationScreens', module)
   })
   // ====== Stories ======
 
-  .add('Start of decentralization notification', () => (
-    <Delegation
-      currentLocale="en-US"
-      startDateTime={startDateTimeKnob(
-        'Delegation Start DateTime',
-        defaultStartDateTime
-      )}
-    />
-  ))
-  .add('Decentralization Progress', () => (
-    <DelegationProgress
-      percentage={number('Percentage', defaultPercentage, {
-        min: 0,
-        max: 100,
-        step: 1,
-        range: true,
-      })}
-    />
+  // .add('Start of decentralization notification', () => (
+  //   <Delegation
+  //     currentLocale="en-US"
+  //     startDateTime={startDateTimeKnob(
+  //       'Delegation Start DateTime',
+  //       defaultStartDateTime
+  //     )}
+  //   />
+  // ))
+  // .add('Decentralization Progress', () => (
+  //   <DelegationProgress
+  //     percentage={number('Percentage', defaultPercentage, {
+  //       min: 0,
+  //       max: 100,
+  //       step: 1,
+  //       range: true,
+  //     })}
+  //   />
+  .add('Start of decentralisation notification', () => (
+    <div>
+      <StakingDelegationCountdown
+        currentLocale="en-US"
+        startDateTime={startDateTimeKnob(
+          'Delegation Start DateTime',
+          defaultStartDateTime
+        )}
+      />
+    </div>
   ));

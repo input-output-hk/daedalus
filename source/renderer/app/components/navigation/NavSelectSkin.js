@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import type { Element, Ref } from 'react';
 import { Options } from 'react-polymorph/lib/components/Options';
 import { OptionsSkin } from 'react-polymorph/lib/skins/simple/OptionsSkin';
-import optionsStyles from './WalletNavOptionsStyles.scss';
+import optionsStyles from './NavOptionsStyles.scss';
 
 type Props = {
   className: string,

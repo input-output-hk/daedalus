@@ -1549,7 +1549,7 @@
           "column": 3,
           "line": 16
         },
-        "file": "source/renderer/app/components/staking/DelegationInfo.js",
+        "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountDownInfo.js",
         "id": "paper.delegation.notification.heading",
         "start": {
           "column": 11,
@@ -1563,7 +1563,7 @@
           "column": 3,
           "line": 22
         },
-        "file": "source/renderer/app/components/staking/DelegationInfo.js",
+        "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountDownInfo.js",
         "id": "paper.delegation.notification.info",
         "start": {
           "column": 8,
@@ -1577,7 +1577,7 @@
           "column": 3,
           "line": 27
         },
-        "file": "source/renderer/app/components/staking/DelegationInfo.js",
+        "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountDownInfo.js",
         "id": "paper.delegation.notification.timeLeftDesc",
         "start": {
           "column": 16,
@@ -1591,7 +1591,7 @@
           "column": 3,
           "line": 32
         },
-        "file": "source/renderer/app/components/staking/DelegationInfo.js",
+        "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountDownInfo.js",
         "id": "paper.delegation.notification.buttonLabel",
         "start": {
           "column": 15,
@@ -1599,7 +1599,82 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/staking/DelegationInfo.json"
+    "path": "source/renderer/app/components/staking/delegation-countdown/DelegationCountDownInfo.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Delegation center",
+        "description": "Label for the \"Delegation\" nav button in the staking navigation.",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "source/renderer/app/components/staking/navigation/StakingNavigation.js",
+        "id": "staking.navigation.delegation_center",
+        "start": {
+          "column": 21,
+          "line": 8
+        }
+      },
+      {
+        "defaultMessage": "!!!Stake pools",
+        "description": "Label for the \"Stake\" nav button in the staking navigation.",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "source/renderer/app/components/staking/navigation/StakingNavigation.js",
+        "id": "staking.navigation.stake_pools",
+        "start": {
+          "column": 15,
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!Rewards",
+        "description": "Label for the \"Rewards\" nav button in the staking navigation.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/staking/navigation/StakingNavigation.js",
+        "id": "staking.navigation.rewards",
+        "start": {
+          "column": 11,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!Epochs",
+        "description": "Label for the \"Epochs\" nav button in the staking navigation.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/staking/navigation/StakingNavigation.js",
+        "id": "staking.navigation.epochs",
+        "start": {
+          "column": 10,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Info",
+        "description": "Label for the \"Info\" nav button in the staking navigation.",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/staking/navigation/StakingNavigation.js",
+        "id": "staking.navigation.info",
+        "start": {
+          "column": 8,
+          "line": 30
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/navigation/StakingNavigation.json"
   },
   {
     "descriptors": [
@@ -2914,13 +2989,13 @@
         "description": "Label for the \"Summary\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 17
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.summary",
         "start": {
           "column": 11,
-          "line": 15
+          "line": 13
         }
       },
       {
@@ -2928,13 +3003,13 @@
         "description": "Label for the \"Send\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 22
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.send",
         "start": {
           "column": 8,
-          "line": 20
+          "line": 18
         }
       },
       {
@@ -2942,13 +3017,13 @@
         "description": "Label for the \"Receive\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 27
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.receive",
         "start": {
           "column": 11,
-          "line": 25
+          "line": 23
         }
       },
       {
@@ -2956,13 +3031,13 @@
         "description": "Label for the \"Transactions\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 33
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.transactions",
         "start": {
           "column": 16,
-          "line": 30
+          "line": 28
         }
       },
       {
@@ -2970,13 +3045,13 @@
         "description": "Label for the \"Settings\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 39
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.settings",
         "start": {
           "column": 12,
-          "line": 36
+          "line": 34
         }
       },
       {
@@ -2984,13 +3059,13 @@
         "description": "Label for the \"Wallet UTXO distribution\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 45
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.utxo",
         "start": {
           "column": 8,
-          "line": 42
+          "line": 40
         }
       },
       {
@@ -2998,13 +3073,13 @@
         "description": "Label for the \"More\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 50
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.more",
         "start": {
           "column": 8,
-          "line": 48
+          "line": 46
         }
       }
     ],

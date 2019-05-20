@@ -9,6 +9,7 @@ import NetworkStatusStore from './NetworkStatusStore';
 import NodeUpdateStore from './NodeUpdateStore';
 import ProfileStore from './ProfileStore';
 import SidebarStore from './SidebarStore';
+import StakingStore from './StakingStore';
 import TransactionsStore from './TransactionsStore';
 import UiDialogsStore from './UiDialogsStore';
 import UiNotificationsStore from './UiNotificationsStore';
@@ -26,6 +27,7 @@ export const storeClasses = {
   nodeUpdate: NodeUpdateStore,
   profile: ProfileStore,
   sidebar: SidebarStore,
+  staking: StakingStore,
   transactions: TransactionsStore,
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
@@ -45,6 +47,7 @@ export type StoresMap = {
   profile: ProfileStore,
   router: Object,
   sidebar: SidebarStore,
+  staking: StakingStore,
   transactions: TransactionsStore,
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
@@ -90,6 +93,7 @@ export default action(
       profile: createStoreInstanceOf(ProfileStore),
       router,
       sidebar: createStoreInstanceOf(SidebarStore),
+      staking: createStoreInstanceOf(StakingStore),
       transactions: createStoreInstanceOf(TransactionsStore),
       uiDialogs: createStoreInstanceOf(UiDialogsStore),
       uiNotifications: createStoreInstanceOf(UiNotificationsStore),
