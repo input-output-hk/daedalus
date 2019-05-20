@@ -6,6 +6,7 @@ import type { MenuActions } from './MenuActions.types';
 import { getTranslation } from '../utils/getTranslation';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { NOTIFICATIONS } from '../../common/ipc/constants';
+import type { SupportRequests } from '../../common/types/support-requests.types';
 
 const id = 'menu';
 
@@ -15,7 +16,7 @@ export const osxMenu = (
   actions: MenuActions,
   isInSafeMode: boolean,
   translations: {},
-  supportRequestData: any,
+  supportRequestData: SupportRequests,
   translation: Function = getTranslation(translations, id)
 ) => [
   {

@@ -7,6 +7,7 @@ import { getTranslation } from '../utils/getTranslation';
 import { environment } from '../environment';
 import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
+import type { SupportRequests } from '../../common/types/support-requests.types';
 
 const id = 'menu';
 
@@ -16,7 +17,7 @@ export const winLinuxMenu = (
   actions: MenuActions,
   isInSafeMode: boolean,
   translations: {},
-  supportRequestData: any,
+  supportRequestData: SupportRequests,
   translation: Function = getTranslation(translations, id)
 ) => [
   {
