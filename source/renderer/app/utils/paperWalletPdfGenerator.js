@@ -37,6 +37,7 @@ type Params = {
   intl: Object,
   isMainnet: boolean,
   buildLabel: string,
+  timestamp: string,
 };
 
 export const downloadPaperWalletCertificate = async ({
@@ -46,6 +47,7 @@ export const downloadPaperWalletCertificate = async ({
   intl,
   isMainnet,
   buildLabel,
+  timestamp,
 }: Params) => {
   await generatePaperWalletChannel.send({
     address,
@@ -53,6 +55,7 @@ export const downloadPaperWalletCertificate = async ({
     mnemonics,
     isMainnet,
     buildLabel,
+    timestamp,
     messages: {
       walletAddressLabel: intl.formatMessage(messages.walletAddressLabel),
       recoveryPhraseLabel: intl.formatMessage(messages.recoveryPhraseLabel),

@@ -3,9 +3,10 @@ import path from 'path';
 import { generateFileNameWithTimestamp } from '../../../../source/common/utils/files';
 import ensureDirectoryExists from '../../../../source/main/utils/ensureDirectoryExists';
 
-export const generateScreenshotFilePath = testName => {
-  const filePath = path.resolve(__dirname, '../screenshots', testName);
-  const fileName = generateFileNameWithTimestamp(testName, 'png');
+export const generateScreenshotFilePath = prefix => {
+  const filePath = path.resolve(__dirname, '../screenshots', prefix);
+  const extension = 'png';
+  const fileName = generateFileNameWithTimestamp({ prefix, extension });
   ensureDirectoryExists(filePath);
   return `${filePath}/${fileName}`;
 };
