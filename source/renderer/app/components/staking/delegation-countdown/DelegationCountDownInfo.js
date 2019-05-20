@@ -10,23 +10,23 @@ import styles from './DelegationCountDownInfo.scss';
 
 const messages = defineMessages({
   heading: {
-    id: 'paper.delegation.notification.heading',
+    id: 'staking.delegationCountDown.heading',
     defaultMessage: '!!!Cardano decentralization',
     description: 'Headline for the Decentralisation notification.',
   },
-  info: {
-    id: 'paper.delegation.notification.info',
+  description: {
+    id: 'staking.delegationCountDown.description',
     defaultMessage:
       '!!!Cardano will soon start its transition from a federated to a decentralized system. This will mark the start of stakeholders being able to earn rewards for participating in the running of the network. They will be able to participate directly in the process of staking or can delegate their stake to stake pools to earn rewards in ada.',
     description: 'Info for the Decentralisation notification.',
   },
   timeLeftDesc: {
-    id: 'paper.delegation.notification.timeLeftDesc',
+    id: 'staking.delegationCountDown.timeLeftDesc',
     defaultMessage: '!!!Rewards begin in',
     description: 'Description for the Decentralisation notification.',
   },
   buttonLabel: {
-    id: 'paper.delegation.notification.buttonLabel',
+    id: 'staking.delegationCountDown.buttonLabel',
     defaultMessage: '!!!Learn more',
     description: 'Button Label for the Decentralisation notification.',
   },
@@ -76,7 +76,7 @@ export default class DelegationCountDownInfo extends Component<Props> {
   render() {
     const { intl } = this.context;
     const heading = intl.formatMessage(messages.heading);
-    const info = intl.formatMessage(messages.info);
+    const description = intl.formatMessage(messages.description);
     const timeLeftDesc = intl.formatMessage(messages.timeLeftDesc);
     const buttonLabel = intl.formatMessage(messages.buttonLabel);
     const timeLeftString = this.translateTimeLeft();
@@ -84,7 +84,7 @@ export default class DelegationCountDownInfo extends Component<Props> {
     return (
       <div className={styles.component}>
         <div className={styles.heading}>{heading}</div>
-        <div className={styles.info}>{info}</div>
+        <div className={styles.description}>{description}</div>
         <div className={styles.timeLeftDesc}>{timeLeftDesc}</div>
         <div className={styles.timeLeft}>{timeLeftString}</div>
         <Button label={buttonLabel} skin={ButtonSkin} />

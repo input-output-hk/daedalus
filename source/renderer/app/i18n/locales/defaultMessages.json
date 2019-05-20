@@ -1544,13 +1544,13 @@
     "descriptors": [
       {
         "defaultMessage": "!!!Cardano decentralization",
-        "description": "Headline for the Decentralization notification.",
+        "description": "Headline for the Decentralisation notification.",
         "end": {
           "column": 3,
           "line": 16
         },
         "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountDownInfo.js",
-        "id": "paper.delegation.notification.heading",
+        "id": "staking.delegationCountDown.heading",
         "start": {
           "column": 11,
           "line": 12
@@ -1558,27 +1558,27 @@
       },
       {
         "defaultMessage": "!!!Cardano will soon start its transition from a federated to a decentralized system. This will mark the start of stakeholders being able to earn rewards for participating in the running of the network. They will be able to participate directly in the process of staking or can delegate their stake to stake pools to earn rewards in ada.",
-        "description": "Info for the Decentralization notification.",
+        "description": "Info for the Decentralisation notification.",
         "end": {
           "column": 3,
           "line": 22
         },
         "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountDownInfo.js",
-        "id": "paper.delegation.notification.info",
+        "id": "staking.delegationCountDown.description",
         "start": {
-          "column": 8,
+          "column": 15,
           "line": 17
         }
       },
       {
         "defaultMessage": "!!!Rewards begin in",
-        "description": "Description for the Decentralization notification.",
+        "description": "Description for the Decentralisation notification.",
         "end": {
           "column": 3,
           "line": 27
         },
         "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountDownInfo.js",
-        "id": "paper.delegation.notification.timeLeftDesc",
+        "id": "staking.delegationCountDown.timeLeftDesc",
         "start": {
           "column": 16,
           "line": 23
@@ -1586,13 +1586,13 @@
       },
       {
         "defaultMessage": "!!!Learn more",
-        "description": "Button Label for the Decentralization notification.",
+        "description": "Button Label for the Decentralisation notification.",
         "end": {
           "column": 3,
           "line": 32
         },
         "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountDownInfo.js",
-        "id": "paper.delegation.notification.buttonLabel",
+        "id": "staking.delegationCountDown.buttonLabel",
         "start": {
           "column": 15,
           "line": 28
@@ -1600,6 +1600,67 @@
       }
     ],
     "path": "source/renderer/app/components/staking/delegation-countdown/DelegationCountDownInfo.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Cardano is transitioning to a decentralized system",
+        "description": "Headline for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "id": "staking.info.heading",
+        "start": {
+          "column": 11,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano is transitioning from a federated to a decentralized system. During this transition, some new blocks will be produced by nodes operated in a federated way and some by nodes run by ada stakeholders. All rewards will be distributed to ada stakeholders and none to operators of federated nodes.",
+        "description": "Info description for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "id": "staking.info.description",
+        "start": {
+          "column": 15,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Currently, {percentage}% of the system is decentralized and operated by stake pools.",
+        "description": "Percentage info description for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "id": "staking.info.percentage",
+        "start": {
+          "column": 14,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!Learn more",
+        "description": "Button Label for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "id": "staking.info.buttonLabel",
+        "start": {
+          "column": 15,
+          "line": 29
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/info/StakingInfo.json"
   },
   {
     "descriptors": [
@@ -1675,81 +1736,6 @@
       }
     ],
     "path": "source/renderer/app/components/staking/navigation/StakingNavigation.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Cardano is transitioning to a decentralized system",
-        "description": "Headline for the Decentralization progress notification.",
-        "end": {
-          "column": 3,
-          "line": 14
-        },
-        "file": "source/renderer/app/components/staking/DelegationProgressInfo.js",
-        "id": "paper.delegation.progress.notification.heading",
-        "start": {
-          "column": 11,
-          "line": 10
-        }
-      },
-      {
-        "defaultMessage": "!!!Cardano is transitioning from a federated to a decentralized system. During this transition, some new blocks will be produced by nodes operated in a federated way and some by nodes run by ada stakeholders. All rewards will be distributed to ada stakeholders and none to operators of federated nodes.",
-        "description": "Info description for the Decentralization progress notification.",
-        "end": {
-          "column": 3,
-          "line": 21
-        },
-        "file": "source/renderer/app/components/staking/DelegationProgressInfo.js",
-        "id": "paper.delegation.progress.notification.infoDesc",
-        "start": {
-          "column": 12,
-          "line": 15
-        }
-      },
-      {
-        "defaultMessage": "!!!Currently,",
-        "description": "Percentage info start word for the Decentralization progress notification.",
-        "end": {
-          "column": 3,
-          "line": 27
-        },
-        "file": "source/renderer/app/components/staking/DelegationProgressInfo.js",
-        "id": "paper.delegation.progress.notification.infoPercentageStart",
-        "start": {
-          "column": 23,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!of the system is decentralized and operated by stake pools.",
-        "description": "Percentage info description for the Decentralization progress notification.",
-        "end": {
-          "column": 3,
-          "line": 34
-        },
-        "file": "source/renderer/app/components/staking/DelegationProgressInfo.js",
-        "id": "paper.delegation.progress.notification.infoPercentageDesc",
-        "start": {
-          "column": 22,
-          "line": 28
-        }
-      },
-      {
-        "defaultMessage": "!!!Learn more",
-        "description": "Button Label for the Decentralization progress notification.",
-        "end": {
-          "column": 3,
-          "line": 39
-        },
-        "file": "source/renderer/app/components/staking/DelegationProgressInfo.js",
-        "id": "paper.delegation.progress.notification.buttonLabel",
-        "start": {
-          "column": 15,
-          "line": 35
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/staking/DelegationProgressInfo.json"
   },
   {
     "descriptors": [
@@ -3284,13 +3270,13 @@
         "description": "Headline for the \"Paper wallet create certificate instructions dialog\".",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.headline",
         "start": {
           "column": 12,
-          "line": 19
+          "line": 20
         }
       },
       {
@@ -3298,13 +3284,13 @@
         "description": "Subtitle for the \"Paper wallet create certificate instructions dialog\".",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.subtitle",
         "start": {
           "column": 12,
-          "line": 25
+          "line": 26
         }
       },
       {
@@ -3312,13 +3298,13 @@
         "description": "subtitle2 for the \"Paper wallet create certificate instructions dialog\".",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.subtitle2",
         "start": {
           "column": 13,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -3326,13 +3312,13 @@
         "description": "Instructions list label for the \"Paper wallet create certificate instructions dialog\".",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.label",
         "start": {
           "column": 25,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -3340,13 +3326,13 @@
         "description": "Wallet certificate create instructions dialog definition 1.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition1",
         "start": {
           "column": 31,
-          "line": 46
+          "line": 47
         }
       },
       {
@@ -3354,13 +3340,13 @@
         "description": "Wallet certificate create instructions dialog definition 2.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 63
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition2",
         "start": {
           "column": 31,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -3368,13 +3354,13 @@
         "description": "Wallet certificate create instructions dialog definition 3.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 70
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition3",
         "start": {
           "column": 31,
-          "line": 63
+          "line": 64
         }
       },
       {
@@ -3382,13 +3368,13 @@
         "description": "Wallet certificate create instructions dialog definition 4.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 77
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition4",
         "start": {
           "column": 31,
-          "line": 70
+          "line": 71
         }
       },
       {
@@ -3396,13 +3382,13 @@
         "description": "Wallet certificate create instructions dialog definition 5.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 84
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition5",
         "start": {
           "column": 31,
-          "line": 77
+          "line": 78
         }
       },
       {
@@ -3410,13 +3396,13 @@
         "description": "Wallet certificate create instructions dialog - printing instructions.",
         "end": {
           "column": 3,
-          "line": 92
+          "line": 93
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.printingInstructions",
         "start": {
           "column": 24,
-          "line": 84
+          "line": 85
         }
       },
       {
@@ -3424,13 +3410,13 @@
         "description": "Wallet certificate create instructions dialog \"Cardano Explorer\" label",
         "end": {
           "column": 3,
-          "line": 98
+          "line": 99
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.cardanoExplorer",
         "start": {
           "column": 19,
-          "line": 93
+          "line": 94
         }
       },
       {
@@ -3438,13 +3424,13 @@
         "description": "\"Wallet certificate create instructions dialog\" print button label.",
         "end": {
           "column": 3,
-          "line": 104
+          "line": 105
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.button.printLabel",
         "start": {
           "column": 20,
-          "line": 99
+          "line": 100
         }
       }
     ],
@@ -4628,13 +4614,13 @@
         "description": "Title for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.title",
         "start": {
           "column": 9,
-          "line": 26
+          "line": 25
         }
       },
       {
@@ -4642,13 +4628,13 @@
         "description": "Description for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 35
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.description",
         "start": {
           "column": 15,
-          "line": 31
+          "line": 30
         }
       },
       {
@@ -4656,13 +4642,13 @@
         "description": "Empty wallet description for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.emptyWallet",
         "start": {
           "column": 15,
-          "line": 37
+          "line": 36
         }
       },
       {
@@ -4670,13 +4656,13 @@
         "description": "Label X for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.labelX",
         "start": {
           "column": 10,
-          "line": 43
+          "line": 42
         }
       },
       {
@@ -4684,13 +4670,13 @@
         "description": "Label Y for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.labelY",
         "start": {
           "column": 10,
-          "line": 48
+          "line": 47
         }
       }
     ],
@@ -6095,7 +6081,7 @@
         "description": "Error message shown when the file the user tries to replace is open.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 64
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.paperWalletOpenPdfError",
@@ -6109,13 +6095,13 @@
         "description": "Password instructions note.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 70
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.passwordInstructions",
         "start": {
           "column": 24,
-          "line": 64
+          "line": 65
         }
       },
       {
@@ -6123,13 +6109,13 @@
         "description": "The word \"cancel\" reused at several places (like cancel buttons)",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 76
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.cancel",
         "start": {
           "column": 10,
-          "line": 70
+          "line": 71
         }
       },
       {
@@ -6137,13 +6123,13 @@
         "description": "The word \"change\" reused at several places (like change buttons)",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 82
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.change",
         "start": {
           "column": 10,
-          "line": 76
+          "line": 77
         }
       },
       {
@@ -6151,13 +6137,13 @@
         "description": "The word \"create\" reused at several places (like create buttons)",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 88
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.create",
         "start": {
           "column": 10,
-          "line": 82
+          "line": 83
         }
       },
       {
@@ -6165,13 +6151,13 @@
         "description": "The word \"remove\" reused at several places (like remove buttons)",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 94
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.remove",
         "start": {
           "column": 10,
-          "line": 88
+          "line": 89
         }
       },
       {
@@ -6179,13 +6165,13 @@
         "description": "The word \"save\" reused at several places (like save buttons)",
         "end": {
           "column": 3,
-          "line": 98
+          "line": 99
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.save",
         "start": {
           "column": 8,
-          "line": 94
+          "line": 95
         }
       },
       {
@@ -6193,13 +6179,13 @@
         "description": "Language name for \"English\" language.",
         "end": {
           "column": 3,
-          "line": 103
+          "line": 104
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.english",
         "start": {
           "column": 19,
-          "line": 99
+          "line": 100
         }
       },
       {
@@ -6207,13 +6193,13 @@
         "description": "Language name for \"Japanese\" language.",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 109
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.japanese",
         "start": {
           "column": 20,
-          "line": 104
+          "line": 105
         }
       },
       {
@@ -6221,13 +6207,13 @@
         "description": "Language name for \"Chinese\" language.",
         "end": {
           "column": 3,
-          "line": 113
+          "line": 114
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.chinese",
         "start": {
           "column": 19,
-          "line": 109
+          "line": 110
         }
       },
       {
@@ -6235,13 +6221,13 @@
         "description": "Language name for \"Korean\" language.",
         "end": {
           "column": 3,
-          "line": 118
+          "line": 119
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.korean",
         "start": {
           "column": 18,
-          "line": 114
+          "line": 115
         }
       },
       {
@@ -6249,13 +6235,13 @@
         "description": "Language name for \"German\" language.",
         "end": {
           "column": 3,
-          "line": 123
+          "line": 124
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.german",
         "start": {
           "column": 18,
-          "line": 119
+          "line": 120
         }
       },
       {
@@ -6263,13 +6249,13 @@
         "description": "Language name for \"Croatian\" language.",
         "end": {
           "column": 3,
-          "line": 128
+          "line": 129
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.croatian",
         "start": {
           "column": 20,
-          "line": 124
+          "line": 125
         }
       },
       {
@@ -6277,13 +6263,13 @@
         "description": "Name for \"Normal\" transaction assurance security level.",
         "end": {
           "column": 3,
-          "line": 133
+          "line": 134
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.assuranceLevel.normal",
         "start": {
           "column": 24,
-          "line": 129
+          "line": 130
         }
       },
       {
@@ -6291,13 +6277,13 @@
         "description": "Name for \"Strict\" transaction assurance security level.",
         "end": {
           "column": 3,
-          "line": 138
+          "line": 139
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.assuranceLevel.strict",
         "start": {
           "column": 24,
-          "line": 134
+          "line": 135
         }
       },
       {
@@ -6305,13 +6291,13 @@
         "description": "Name for \"ADA\" unit.",
         "end": {
           "column": 3,
-          "line": 143
+          "line": 144
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.unit.ada",
         "start": {
           "column": 11,
-          "line": 139
+          "line": 140
         }
       },
       {
@@ -6319,13 +6305,13 @@
         "description": "Title for the \"Recovery Phrase\" dialog.",
         "end": {
           "column": 3,
-          "line": 148
+          "line": 149
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "wallet.backup.recovery.phrase.dialog.title",
         "start": {
           "column": 29,
-          "line": 144
+          "line": 145
         }
       },
       {
@@ -6333,13 +6319,13 @@
         "description": "Label for the \"Wallet password\" input in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 154
+          "line": 155
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 149
+          "line": 150
         }
       },
       {
@@ -6347,13 +6333,13 @@
         "description": "Placeholder for the \"Password\" inputs in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 160
+          "line": 161
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 155
+          "line": 156
         }
       },
       {
@@ -6361,13 +6347,13 @@
         "description": "Label \"Continue\" in dialogs.",
         "end": {
           "column": 3,
-          "line": 165
+          "line": 166
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.dialog.button.continue",
         "start": {
           "column": 29,
-          "line": 161
+          "line": 162
         }
       },
       {
@@ -6375,13 +6361,13 @@
         "description": "URL for the \"Known Issues\" link in the \"Help and support\" section on the support settings page",
         "end": {
           "column": 3,
-          "line": 172
+          "line": 173
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "settings.support.faq.faqLinkURL",
         "start": {
           "column": 14,
-          "line": 166
+          "line": 167
         }
       },
       {
@@ -6389,13 +6375,13 @@
         "description": "Name for \"Ada\" unit.",
         "end": {
           "column": 3,
-          "line": 177
+          "line": 178
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.currency.ada",
         "start": {
           "column": 12,
-          "line": 173
+          "line": 174
         }
       },
       {
@@ -6403,13 +6389,13 @@
         "description": "Name for \"Cardano\" client.",
         "end": {
           "column": 3,
-          "line": 182
+          "line": 183
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.apiName.cardano",
         "start": {
           "column": 11,
-          "line": 178
+          "line": 179
         }
       }
     ],

@@ -33,15 +33,15 @@ type Props = {
   stores?: ?{},
 };
 
-const CATEGORIES_WITH_DELEGATION = [
+const CATEGORIES_WITH_STAKING = [
   CATEGORIES_BY_NAME.WALLETS,
   CATEGORIES_BY_NAME.STAKING,
   CATEGORIES_BY_NAME.SETTINGS,
 ];
 
-const CATEGORIES_WITH_DELEGATION_PROGRESS = [
+const CATEGORIES_WITH_STAKING_COUNTDOWN = [
   CATEGORIES_BY_NAME.WALLETS,
-  CATEGORIES_BY_NAME.DELEGATION_PROGRESS,
+  CATEGORIES_BY_NAME.STAKING_COUNTDOWN,
   CATEGORIES_BY_NAME.SETTINGS,
 ];
 
@@ -130,9 +130,9 @@ export default class StoryLayout extends Component<Props> {
   ) => {
     let sidebarCategories = null;
     if (storyName === 'Decentralization Progress') {
-      sidebarCategories = CATEGORIES_WITH_DELEGATION_PROGRESS;
+      sidebarCategories = CATEGORIES_WITH_STAKING;
     } else {
-      sidebarCategories = CATEGORIES_WITH_DELEGATION;
+      sidebarCategories = CATEGORIES_WITH_STAKING_COUNTDOWN;
     }
 
     return (

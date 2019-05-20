@@ -1,4 +1,4 @@
-@import './stakingConfig';
+@import '../stakingConfig';
 
 .component {
   margin: 20px;
@@ -11,7 +11,7 @@
   margin-bottom: 14px;
 }
 
-.info {
+.description {
   @extend %regularText;
   color: #5e6066;
   margin-bottom: 24px;

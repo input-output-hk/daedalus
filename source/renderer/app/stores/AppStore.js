@@ -98,14 +98,6 @@ export default class AppStore extends Store {
     );
   }
 
-  @computed get isDelegationPage(): boolean {
-    return this.currentRoute === ROUTES.STAKING;
-  }
-
-  @computed get isDelegationProgressPage(): boolean {
-    return this.currentRoute === ROUTES.DELEGATION_PROGRESS;
-  }
-
   // ===================== PRIVATE ======================= //
 
   _getGpuStatus = async () => {

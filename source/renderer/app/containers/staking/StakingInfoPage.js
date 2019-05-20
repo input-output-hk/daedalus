@@ -12,6 +12,10 @@ export default class StakingInfoPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    return <StakingInfo name="StakingInfo" />;
+    return (
+      <StakingInfo
+        percentage={this.props.stores.staking.decentralisationProgress}
+      />
+    );
   }
 }

@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, date } from '@storybook/addon-knobs';
+import { withKnobs, date, number } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import StoryLayout from './support/StoryLayout';
 import StoryProvider from './support/StoryProvider';
@@ -17,6 +17,7 @@ import StakingRewards from '../../source/renderer/app/components/staking/rewards
 import StakingEpochs from '../../source/renderer/app/components/staking/epochs/StakingEpochs';
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
 
+const defaultPercentage = 10;
 const defaultStartDateTime = new Date('Jun 01 2019');
 const startDateTimeKnob = (name, defaultValue) => {
   const stringTimestamp = date(name, defaultValue);
@@ -97,6 +98,19 @@ storiesOf('Staking', module)
     id: 'epochs',
   })
 
-  .add(pageNames.info, () => <StakingInfo name={pageNames.info} />, {
-    id: 'info',
-  });
+  .add(
+    pageNames.info,
+    () => (
+      <StakingInfo
+        percentage={number('Percentage', defaultPercentage, {
+          min: 0,
+          max: 100,
+          step: 1,
+          range: true,
+        })}
+      />
+    ),
+    {
+      id: 'info',
+    }
+  );

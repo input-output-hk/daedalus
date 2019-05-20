@@ -25,6 +25,7 @@ import StakingEpochsPagePage from './containers/staking/StakingEpochsPage';
 import StakingInfoPage from './containers/staking/StakingInfoPage';
 import StakingRewardsPage from './containers/staking/StakingRewardsPage';
 import StakingStakePoolsPage from './containers/staking/StakingStakePoolsPage';
+import StakingDelegationCountdownPage from './containers/staking/StakingDelegationCountdownPage';
 import Wallet from './containers/wallet/Wallet';
 import WalletSummaryPage from './containers/wallet/WalletSummaryPage';
 import WalletSendPage from './containers/wallet/WalletSendPage';
@@ -76,11 +77,10 @@ export const Routes = (
       path={ROUTES.PAPER_WALLET_CREATE_CERTIFICATE}
       component={PaperWalletCreateCertificatePage}
     />
-    {/* <Route path={ROUTES.DELEGATION} component={DelegationPage} />
     <Route
-      path={ROUTES.DELEGATION_PROGRESS}
-      component={DelegationProgressPage}
-    /> */}
+      path={ROUTES.STAKING.DELEGATION_COUNTDOWN}
+      component={StakingDelegationCountdownPage}
+    />
     <Route path={ROUTES.STAKING.ROOT} component={Staking}>
       <IndexRedirect to={ROUTES.STAKING.DELEGATION_CENTER} />
       <Route

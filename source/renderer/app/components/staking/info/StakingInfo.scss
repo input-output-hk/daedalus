@@ -1,5 +1,60 @@
+@import '../stakingConfig';
+
 .component {
-  font-family: var(--font-regular);
+  background-color: var(--theme-staking-background-color);
+  height: 100%;
   margin: 20px;
   text-align: center;
+}
+
+.mainContent {
+  @extend %contentBorderAndBackground;
+  padding: 20px;
+}
+
+.heading {
+  @extend %accentText;
+  font-size: 19px;
+  margin-bottom: 14px;
+}
+
+.description {
+  @extend %regularText;
+  color: #5e6066;
+  margin-bottom: 24px;
+}
+
+.progressBar {
+  border-radius: 5px;
+  height: 24px;
+  margin: 0 auto;
+  margin-bottom: 24px;
+  width: 80%;
+}
+
+.progressBarContainer {
+  background-color: var(--theme-staking-background-color);
+  height: 100%;
+  position: relative;
+  width: 100%;
+}
+
+.progress {
+  background: repeating-linear-gradient(
+    -63deg,
+    var(--theme-block-delegation-progress-stripe-dark-1-background-color),
+    var(--theme-block-delegation-progress-stripe-dark-1-background-color) 10px,
+    var(--theme-block-delegation-progress-stripe-dark-2-background-color) 10px,
+    var(--theme-block-delegation-progress-stripe-dark-2-background-color) 20px
+  );
+  border-radius: 5px;
+  height: 100%;
+}
+
+.progressLabel {
+  @extend %regularText;
+  color: #fff;
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
 }
