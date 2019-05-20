@@ -55,3 +55,13 @@ export class WalletSupportRequestLogsCompressError extends LocalizableError {
     });
   }
 }
+
+export class WalletPaperWalletOpenPdfError extends LocalizableError {
+  constructor() {
+    super({
+      id: 'global.errors.paperWalletOpenPdfError',
+      defaultMessage:
+        '!!!The file you are trying to replace is open. Please close it and try again.',
+    });
+  }
+}

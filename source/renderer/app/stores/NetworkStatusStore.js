@@ -103,6 +103,8 @@ export default class NetworkStatusStore extends Store {
   setup() {
     // ========== IPC CHANNELS =========== //
 
+    this.actions.networkStatus.restartNode.listen(this._restartNode);
+
     // Request node state
     this._requestCardanoState();
 
@@ -147,7 +149,7 @@ export default class NetworkStatusStore extends Store {
     );
   };
 
-  async restartNode() {
+  @action async _restartNode() {
     try {
       Logger.info('NetwortStatusStore: Requesting a restart of cardano-node');
       await restartCardanoNodeChannel.send();
