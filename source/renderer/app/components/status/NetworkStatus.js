@@ -957,7 +957,7 @@ export default class NetworkStatus extends Component<Props, State> {
 
   restartNode = () => {
     this.setState({ isNodeRestarting: true });
-    this.props.onRestartNode();
+    this.props.onRestartNode.trigger();
   };
 
   getClass = (isTrue: boolean) =>
