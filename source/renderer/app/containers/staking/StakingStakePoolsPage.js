@@ -12,6 +12,8 @@ export default class StakingStakePoolsPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    return <StakingStakePools name="StakingStakePools" />;
+    return (
+      <StakingStakePools stakePoolsList={[]} stakePoolsDelegatingList={[]} />
+    );
   }
 }

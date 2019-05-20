@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented the Stake pool list ([PR 1397](https://github.com/input-output-hk/daedalus/pull/1397))
 - Implemented the navigation for the Staking pages ([PR 1395](https://github.com/input-output-hk/daedalus/pull/1395))
 - Implemented timestamp on paper wallet PDF's ([PR 1385](https://github.com/input-output-hk/daedalus/pull/1385))
 - Implemented "Start of decentralisation notification" UI ([PR 1390](https://github.com/input-output-hk/daedalus/pull/1390))

@@ -1679,6 +1679,53 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Search stake pools",
+        "description": "\"Delegating List Title\" for the Stake Pools page.",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakingStakePools.js",
+        "id": "staking.stakePools.searchInputPlaceholder",
+        "start": {
+          "column": 26,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!Staking pools your are delegating to",
+        "description": "\"delegatingListTitlee\" for the Stake Pools page.",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakingStakePools.js",
+        "id": "staking.stakePools.delegatingListTitle",
+        "start": {
+          "column": 23,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!Stake pools ({pools})",
+        "description": "\"listTitle\" for the Stake Pools page.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakingStakePools.js",
+        "id": "staking.stakePools.listTitle",
+        "start": {
+          "column": 13,
+          "line": 23
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/stake-pools/StakingStakePools.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Daedalus",
         "description": "About \"title\"",
         "end": {

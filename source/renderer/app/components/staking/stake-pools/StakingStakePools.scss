@@ -1,5 +1,66 @@
+@import '../stakingConfig';
+
 .component {
-  font-family: var(--font-regular);
+  @extend %regularText;
   margin: 20px;
   text-align: center;
+
+  h2 {
+    color: #5e6066;
+    line-height: 1.38;
+    opacity: 0.5;
+  }
+}
+
+.search {
+  margin-bottom: 26px;
+  position: relative;
+}
+
+.searchIcon {
+  left: 20px;
+  position: absolute;
+  top: 13.5px;
+  z-index: 1;
+  svg {
+    width: 15px;
+  }
+}
+
+.searchInput {
+  :global {
+    .SimpleInput_input {
+      padding-left: 50px;
+      border-radius: 4px;
+    }
+  }
+}
+
+.searchFilter {
+  display: block;
+  position: absolute;
+  right: 20px;
+  top: 13px;
+
+  li {
+    display: inline-block;
+    margin-left: 20px;
+  }
+
+  button {
+    color: #5e6066;
+    cursor: pointer;
+    font-size: 16px;
+    opacity: 0.3;
+  }
+
+  .searchFilterAtiveItem {
+    opacity: 1;
+  }
+}
+
+.stakePoolsDelegatingList {
+}
+
+.stakePoolsList {
 }
