@@ -15,7 +15,6 @@ import {
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
   cardanoNode: ?CardanoNode,
-  isInSafeMode: boolean,
   locale: string
 ) => {
   const openAbout = () => {
@@ -65,12 +64,12 @@ export const buildAppMenus = async (
   let menu;
   if (isMacOS) {
     menu = Menu.buildFromTemplate(
-      osxMenu(app, mainWindow, menuActions, isInSafeMode, translations)
+      osxMenu(app, mainWindow, menuActions, translations)
     );
     Menu.setApplicationMenu(menu);
   } else {
     menu = Menu.buildFromTemplate(
-      winLinuxMenu(app, mainWindow, menuActions, isInSafeMode, translations)
+      winLinuxMenu(app, mainWindow, menuActions, translations)
     );
     mainWindow.setMenu(menu);
   }
