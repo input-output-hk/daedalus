@@ -6,7 +6,7 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import humanizeDuration from 'humanize-duration';
 import moment from 'moment';
-import styles from './DelegationInfo.scss';
+import styles from './DelegationCountDownInfo.scss';
 
 const messages = defineMessages({
   heading: {
@@ -35,7 +35,7 @@ const messages = defineMessages({
 type Props = { currentLocale: string, startDateTime: string };
 
 @observer
-export default class DelegationInfo extends Component<Props> {
+export default class DelegationCountDownInfo extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };

@@ -17,7 +17,12 @@ import TermsOfUsePage from './containers/profile/TermsOfUsePage';
 import DataLayerMigrationPage from './containers/profile/DataLayerMigrationPage';
 import DisplaySettingsPage from './containers/settings/categories/DisplaySettingsPage';
 import PaperWalletCreateCertificatePage from './containers/wallet/PaperWalletCreateCertificatePage';
-import DelegationPage from './containers/staking/DelegationPage';
+import Staking from './containers/staking/Staking';
+import StakingDelegationCenterPage from './containers/staking/StakingDelegationCenterPage';
+import StakingEpochsPagePage from './containers/staking/StakingEpochsPage';
+import StakingInfoPage from './containers/staking/StakingInfoPage';
+import StakingRewardsPage from './containers/staking/StakingRewardsPage';
+import StakingStakePoolsPage from './containers/staking/StakingStakePoolsPage';
 import Wallet from './containers/wallet/Wallet';
 import WalletSummaryPage from './containers/wallet/WalletSummaryPage';
 import WalletSendPage from './containers/wallet/WalletSendPage';
@@ -69,6 +74,19 @@ export const Routes = (
       path={ROUTES.PAPER_WALLET_CREATE_CERTIFICATE}
       component={PaperWalletCreateCertificatePage}
     />
-    <Route path={ROUTES.DELEGATION} component={DelegationPage} />
+    <Route path={ROUTES.STAKING.ROOT} component={Staking}>
+      <IndexRedirect to={ROUTES.STAKING.DELEGATION_CENTER} />
+      <Route
+        path={ROUTES.STAKING.DELEGATION_CENTER}
+        component={StakingDelegationCenterPage}
+      />
+      <Route
+        path={ROUTES.STAKING.STAKE_POOLS}
+        component={StakingStakePoolsPage}
+      />
+      <Route path={ROUTES.STAKING.REWARDS} component={StakingRewardsPage} />
+      <Route path={ROUTES.STAKING.EPOCHS} component={StakingEpochsPagePage} />
+      <Route path={ROUTES.STAKING.INFO} component={StakingInfoPage} />
+    </Route>
   </Route>
 );
