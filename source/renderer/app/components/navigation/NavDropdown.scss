@@ -15,7 +15,7 @@
       top: 45px !important;
       width: 200px !important;
     }
-    .WalletNavButton_component {
+    .NavButton_component {
       cursor: default;
     }
     .SimpleBubble_root:not(.SimpleBubble_transparent) {
@@ -37,7 +37,7 @@
       .SimpleOptions_options {
         display: block;
       }
-      .WalletNavButton_normal .WalletNavButton_container {
+      .NavButton_normal .NavButton_container {
         background-color: var(--theme-nav-item-background-color-hover);
       }
     }

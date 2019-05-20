@@ -106,7 +106,7 @@ export default class AppStore extends Store {
   }
 
   @computed get isDelegationPage(): boolean {
-    return this.currentRoute === ROUTES.DELEGATION;
+    return this.currentRoute === ROUTES.STAKING;
   }
 
   // ===================== PRIVATE ======================= //
