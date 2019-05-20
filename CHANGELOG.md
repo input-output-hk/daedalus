@@ -6,7 +6,8 @@ Changelog
 ### Features
 
 - Implemented "Decentralization progress" UI ([PR 1394](https://github.com/input-output-hk/daedalus/pull/1394))
-- Implemented "Start of decentralization notification" UI ([PR 1390](https://github.com/input-output-hk/daedalus/pull/1390))
+- Implemented timestamp on paper wallet PDF's ([PR 1385](https://github.com/input-output-hk/daedalus/pull/1385))
+- Implemented "Start of decentralization" UI ([PR 1390](https://github.com/input-output-hk/daedalus/pull/1390))
 - Implemented the wallet UTxO statistics screen ([PR 1353](https://github.com/input-output-hk/daedalus/pull/1353))
 - Implemented scroll error message into view ([PR 1383](https://github.com/input-output-hk/daedalus/pull/1383))
 - Implemented new Block-consolidation status design ([PR 1377](https://github.com/input-output-hk/daedalus/pull/1377))
