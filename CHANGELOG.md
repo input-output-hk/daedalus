@@ -5,6 +5,8 @@ Changelog
 
 ### Features
 
+- Implemented timestamp on paper wallet PDF's ([PR 1385](https://github.com/input-output-hk/daedalus/pull/1385))
+- Implemented "Start of decentralisation notification" UI ([PR 1390](https://github.com/input-output-hk/daedalus/pull/1390))
 - Implemented the wallet UTxO statistics screen ([PR 1353](https://github.com/input-output-hk/daedalus/pull/1353))
 - Implemented scroll error message into view ([PR 1383](https://github.com/input-output-hk/daedalus/pull/1383))
 - Implemented new Block-consolidation status design ([PR 1377](https://github.com/input-output-hk/daedalus/pull/1377))
@@ -14,6 +16,8 @@ Changelog
 
 ### Fixes
 
+- Fixed spending password being asked on Receive screen when clicking on "Copy address" link. ([PR 1392](https://github.com/input-output-hk/daedalus/pull/1392))
+- Fixed EKG port collision while developing on Linux ([PR 1393](https://github.com/input-output-hk/daedalus/pull/1393))
 - Fixed file extension of Daedalus logs ([PR 1381](https://github.com/input-output-hk/daedalus/pull/1381), [PR 1384](https://github.com/input-output-hk/daedalus/pull/1384))
 - Fixed password validation rules for all languages ([PR 1354](https://github.com/input-output-hk/daedalus/pull/1354))
 - Fixed the routing logic which allowed the display of "Settings" screens before the wallet data is fully loaded ([PR 1373](https://github.com/input-output-hk/daedalus/pull/1373))

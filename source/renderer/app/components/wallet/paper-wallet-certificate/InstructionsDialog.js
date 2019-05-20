@@ -6,7 +6,9 @@ import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import { getNetworkExplorerUrl } from '../../../utils/network';
+import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './InstructionsDialog.scss';
+import { handleFormErrors } from '../../../utils/ReactToolboxMobxForm';
 import {
   PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT,
   PAPER_WALLET_WRITTEN_WORDS_COUNT,
@@ -109,6 +111,7 @@ type Props = {
   onClose: Function,
   onOpenExternalLink: Function,
   onPrint: Function,
+  error?: ?LocalizableError,
 };
 
 @observer
@@ -121,6 +124,12 @@ export default class InstructionsDialog extends Component<Props> {
     network: DEVELOPMENT,
   };
 
+  componentWillReceiveProps(newProps: Props) {
+    if (!this.props.error && newProps.error) {
+      handleFormErrors('.InstructionsDialog_error', { focusElement: true });
+    }
+  }
+
   render() {
     const { intl } = this.context;
     const {
@@ -129,6 +138,7 @@ export default class InstructionsDialog extends Component<Props> {
       inProgress,
       onOpenExternalLink,
       network,
+      error,
     } = this.props;
     const dialogClasses = classnames([styles.component, 'instructionsDialog']);
 
@@ -213,6 +223,8 @@ export default class InstructionsDialog extends Component<Props> {
           <p className={styles.printingInstructions}>
             <strong>{intl.formatMessage(messages.printingInstructions)}</strong>
           </p>
+
+          {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
         </div>
       </Dialog>
     );

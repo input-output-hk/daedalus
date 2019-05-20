@@ -16,6 +16,7 @@ export default class NetworkStatusDialog extends Component<Props> {
   render() {
     const { actions, stores } = this.props;
     const { closeNetworkStatusDialog } = actions.app;
+    const { restartNode } = actions.networkStatus;
     const { app, networkStatus } = stores;
     const { openExternalLink } = app;
     const {
@@ -40,7 +41,6 @@ export default class NetworkStatusDialog extends Component<Props> {
       networkBlockHeight,
       latestLocalBlockTimestamp,
       latestNetworkBlockTimestamp,
-      restartNode,
       isSystemTimeIgnored,
       environment,
     } = networkStatus;
