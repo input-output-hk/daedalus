@@ -12,9 +12,7 @@
 @mixin simpleButton($type) {
   .#{$type} {
     &[disabled] {
-      color: var(
-        --rp-button-text-color-disabled
-      ); // remove after react-polymorph update
+      color: var(--theme-button-#{$type}-text-color-disabled);
       background: var(--theme-button-#{$type}-background-color-disabled);
     }
 
