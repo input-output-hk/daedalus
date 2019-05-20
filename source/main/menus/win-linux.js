@@ -5,14 +5,8 @@ import type { App, BrowserWindow } from 'electron';
 import type { MenuActions } from './MenuActions.types';
 import { getTranslation } from '../utils/getTranslation';
 import { environment } from '../environment';
-import { getLocale } from '../utils/getLocale';
 import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
-
-const localesFillForm = {
-  'en-US': 'English',
-  'ja-JP': 'Japanese',
-};
 
 const id = 'menu';
 
@@ -22,6 +16,7 @@ export const winLinuxMenu = (
   actions: MenuActions,
   isInSafeMode: boolean,
   translations: {},
+  supportRequestData: any,
   translation: Function = getTranslation(translations, id)
 ) => [
   {
@@ -187,31 +182,9 @@ export const winLinuxMenu = (
           const supportRequestLinkUrl = translation(
             'helpSupport.supportRequestUrl'
           );
-          const {
-            version,
-            apiVersion,
-            network,
-            build,
-            installerVersion,
-            os,
-            buildNumber,
-          } = environment;
-
-          const locale = getLocale(network);
-
-          const info = {
-            frontendVersion: version,
-            backendVersion: apiVersion,
-            network: network === 'development' ? 'staging' : network,
-            build,
-            installerVersion,
-            os,
-            locale,
-            product: `Daedalus wallet - ${network}`,
-            supportLanguage: localesFillForm[locale],
-            productVersion: `Daedalus ${version}+Cardano ${buildNumber}`,
-          };
-          const supportUrl = `${supportRequestLinkUrl}?${Object.entries(info)
+          const supportUrl = `${supportRequestLinkUrl}?${Object.entries(
+            supportRequestData
+          )
             .map(
               ([key, val]: [string, any]) =>
                 `${encodeURIComponent(key)}=${encodeURIComponent(val)}`
