@@ -26,5 +26,7 @@ export const createErrorShades = (color: string): ErrorShades => {
     light: lightShades(0.2).hex(),
     regular: color,
     dark: darkShades(0.1).hex(),
+    darker: darkShades(0.2).hex(),
+    darkest: darkShades(0.3).hex(),
   };
 };
