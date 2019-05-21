@@ -51,7 +51,6 @@ if (version) {
     if (err) {
       DEFAULT_OPTS.version = '1.7.9';
     } else {
-      console.log(stdout)
       DEFAULT_OPTS.version = stdout.split('electron@')[1].replace(/\s/g, '').split('├')[0];
     }
     startPack();
