@@ -9,11 +9,11 @@ import { launcherConfig } from '../config';
 
 const rendererErrorHandler = new RendererErrorHandler();
 
-const { isDev, isTest, buildLabel, isLinux } = environment;
+const { isDev, isTest, buildLabel, isLinux, isInSafeMode } = environment;
 
 const id = 'window';
 
-const getWindowTitle = (isInSafeMode: boolean, locale: string): string => {
+const getWindowTitle = (locale: string): string => {
   const translations = require(`../locales/${locale}`);
   const translation = getTranslation(translations, id);
   let title = buildLabel;
@@ -34,7 +34,7 @@ type WindowOptionsType = {
   icon?: string,
 };
 
-export const createMainWindow = (isInSafeMode: boolean, locale: string) => {
+export const createMainWindow = (locale: string) => {
   const windowOptions: WindowOptionsType = {
     show: false,
     width: 1150,
@@ -44,6 +44,7 @@ export const createMainWindow = (isInSafeMode: boolean, locale: string) => {
       webviewTag: false,
       enableRemoteModule: isTest,
       preload: path.join(__dirname, './preload.js'),
+      additionalArguments: isInSafeMode ? ['--safe-mode'] : [],
     },
   };
 
@@ -77,7 +78,7 @@ export const createMainWindow = (isInSafeMode: boolean, locale: string) => {
   window.on('page-title-updated', event => {
     event.preventDefault();
   });
-  window.setTitle(getWindowTitle(isInSafeMode, locale));
+  window.setTitle(getWindowTitle(locale));
 
   window.webContents.on('context-menu', (e, props) => {
     const contextMenuOptions = [
@@ -132,7 +133,7 @@ export const createMainWindow = (isInSafeMode: boolean, locale: string) => {
   });
 
   window.updateTitle = (locale: string) => {
-    window.setTitle(getWindowTitle(isInSafeMode, locale));
+    window.setTitle(getWindowTitle(locale));
   };
 
   return window;

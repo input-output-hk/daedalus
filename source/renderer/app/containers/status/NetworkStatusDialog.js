@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
+import os from 'os';
 import NetworkStatus from '../../components/status/NetworkStatus';
 import styles from './NetworkStatusDialog.scss';
 import type { InjectedProps } from '../../types/injectedPropsType';
@@ -43,7 +44,30 @@ export default class NetworkStatusDialog extends Component<Props> {
       latestNetworkBlockTimestamp,
       isSystemTimeIgnored,
       environment,
+      diskSpaceAvailable,
+      tlsConfig,
+      cardanoNodeID,
     } = networkStatus;
+
+    const systemInfo = {
+      platform: environment.os,
+      platformVersion: os.release(),
+      cpu: Array.isArray(environment.cpu) ? environment.cpu[0].model : '',
+      ram: this.convertBytesToSize(environment.ram),
+      availableDiskSpace: diskSpaceAvailable,
+    };
+
+    const coreInfo = {
+      daedalusVersion: environment.version,
+      daedalusProcessID: environment.rendererProcessID,
+      daedalusMainProcessID: environment.mainProcessID,
+      isInSafeMode: environment.isInSafeMode,
+      cardanoVersion: environment.buildNumber,
+      cardanoProcessID: cardanoNodeID,
+      cardanoAPIPort: tlsConfig ? tlsConfig.port : 0,
+      cardanoNetwork: environment.network,
+      daedalusStateDirectory: environment.stateDirectoryPath,
+    };
 
     return (
       <ReactModal
@@ -55,6 +79,8 @@ export default class NetworkStatusDialog extends Component<Props> {
         ariaHideApp={false}
       >
         <NetworkStatus
+          systemInfo={systemInfo}
+          coreInfo={coreInfo}
           cardanoNodeState={cardanoNodeState}
           isDev={environment.isDev}
           isMainnet={environment.isMainnet}
@@ -89,4 +115,15 @@ export default class NetworkStatusDialog extends Component<Props> {
       </ReactModal>
     );
   }
+
+  convertBytesToSize = (bytes: number): string => {
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes === 0) return 'n/a';
+    const i = parseInt(
+      Math.floor(Math.log(Math.abs(bytes)) / Math.log(1024)),
+      10
+    );
+    if (i === 0) return `${bytes} ${sizes[i]})`;
+    return `${(bytes / 1024 ** i).toFixed(1)} ${sizes[i]}`;
+  };
 }

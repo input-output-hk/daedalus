@@ -2,7 +2,6 @@
 import os from 'os';
 import { app, BrowserWindow, shell } from 'electron';
 import { client } from 'electron-connect';
-import { includes } from 'lodash';
 import { Logger } from './utils/logging';
 import { setupLogging, logSystemInfo } from './utils/setupLogging';
 import { getNumberOfEpochsConsolidated } from './utils/getNumberOfEpochsConsolidated';
@@ -33,6 +32,7 @@ let cardanoNode: ?CardanoNode;
 const {
   isDev,
   isWatchMode,
+  isInSafeMode,
   network,
   current,
   os: osName,
@@ -66,7 +66,6 @@ const onAppReady = async () => {
   setupLogging();
 
   const cpu = os.cpus();
-  const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
   const platformVersion = os.release();
   const ram = JSON.stringify(os.totalmem(), null, 2);
   const startTime = new Date().toISOString();
@@ -96,7 +95,7 @@ const onAppReady = async () => {
   // Detect locale
   let locale = getLocale(network);
 
-  mainWindow = createMainWindow(isInSafeMode, locale);
+  mainWindow = createMainWindow(locale);
 
   const onCheckDiskSpace = ({
     isNotEnoughDiskSpace,
@@ -152,13 +151,13 @@ const onAppReady = async () => {
     await safeExit();
   });
 
-  buildAppMenus(mainWindow, cardanoNode, isInSafeMode, locale);
+  buildAppMenus(mainWindow, cardanoNode, locale);
 
   await rebuildApplicationMenu.onReceive(
     () =>
       new Promise(resolve => {
         locale = getLocale(network);
-        buildAppMenus(mainWindow, cardanoNode, isInSafeMode, locale);
+        buildAppMenus(mainWindow, cardanoNode, locale);
         mainWindow.updateTitle(locale);
         resolve();
       })
