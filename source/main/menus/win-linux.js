@@ -10,12 +10,12 @@ import { showUiPartChannel } from '../ipc/control-ui-parts';
 import type { SupportRequests } from '../../common/types/support-requests.types';
 
 const id = 'menu';
+const { isWindows, isInSafeMode } = environment;
 
 export const winLinuxMenu = (
   app: App,
   window: BrowserWindow,
   actions: MenuActions,
-  isInSafeMode: boolean,
   translations: {},
   supportRequestData: SupportRequests,
   translation: Function = getTranslation(translations, id)
@@ -106,7 +106,7 @@ export const winLinuxMenu = (
           window.webContents.reload();
         },
       },
-      environment.isWindows
+      isWindows
         ? {
             label: translation('view.toggleFullScreen'),
             accelerator: 'F11',

@@ -11,7 +11,7 @@ export type Process = {
   cmd: string,
   ppid?: number,
   cpu: number,
-  memore: number,
+  memory: number,
 };
 
 export const getProcessById = async (processId: number): Promise<Process> => {

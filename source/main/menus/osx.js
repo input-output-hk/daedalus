@@ -4,17 +4,18 @@ import { dialog, shell } from 'electron';
 import type { App, BrowserWindow } from 'electron';
 import type { MenuActions } from './MenuActions.types';
 import { getTranslation } from '../utils/getTranslation';
+import { environment } from '../environment';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { NOTIFICATIONS } from '../../common/ipc/constants';
 import type { SupportRequests } from '../../common/types/support-requests.types';
 
 const id = 'menu';
+const { isInSafeMode } = environment;
 
 export const osxMenu = (
   app: App,
   window: BrowserWindow,
   actions: MenuActions,
-  isInSafeMode: boolean,
   translations: {},
   supportRequestData: SupportRequests,
   translation: Function = getTranslation(translations, id)

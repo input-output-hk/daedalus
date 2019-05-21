@@ -21,7 +21,6 @@ const localesFillForm = {
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
   cardanoNode: ?CardanoNode,
-  isInSafeMode: boolean,
   locale: string
 ) => {
   const openAbout = () => {
@@ -97,14 +96,7 @@ export const buildAppMenus = async (
   let menu;
   if (isMacOS) {
     menu = Menu.buildFromTemplate(
-      osxMenu(
-        app,
-        mainWindow,
-        menuActions,
-        isInSafeMode,
-        translations,
-        supportRequestData
-      )
+      osxMenu(app, mainWindow, menuActions, translations, supportRequestData)
     );
     Menu.setApplicationMenu(menu);
   } else {
@@ -113,7 +105,6 @@ export const buildAppMenus = async (
         app,
         mainWindow,
         menuActions,
-        isInSafeMode,
         translations,
         supportRequestData
       )

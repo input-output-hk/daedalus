@@ -27,6 +27,7 @@ Changelog
 ### Chores
 
 - Created new submenu "Help and Support" & added under it "GPU Safe Mode", "Download Logs", "Support Request" and "Known Issues" ([PR 1382](https://github.com/input-output-hk/daedalus/pull/1382)) 
+- Implemented new Network Status dialog design ([PR 1370](https://github.com/input-output-hk/daedalus/pull/1370)
 - Setup storybook build script to deploy previews for the QA team to Netlify ([1391](https://github.com/input-output-hk/daedalus/pull/1391))
 - Added unit tests for mnemonic generation and validation ([PR 1379](https://github.com/input-output-hk/daedalus/pull/1379))
 - Simplified the test setup ([PR 1378](https://github.com/input-output-hk/daedalus/pull/1378))
