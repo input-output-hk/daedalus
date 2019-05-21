@@ -1,5 +1,6 @@
 // @flow
 import os from 'os';
+import path from 'path';
 import { app, BrowserWindow, shell } from 'electron';
 import { client } from 'electron-connect';
 import { Logger } from './utils/logging';
@@ -28,7 +29,6 @@ import { detectSystemLocaleChannel } from './ipc/detect-system-locale';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
 import { logUsedVersion } from './utils/logUsedVersion';
-import path from 'path';
 
 /* eslint-disable consistent-return */
 
