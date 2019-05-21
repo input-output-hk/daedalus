@@ -155,8 +155,9 @@ export const winLinuxMenu = (
             message: isInSafeMode
               ? translation('helpSupport.gpuSafeModeDialogMessage')
               : translation('helpSupport.nonGpuSafeModeDialogMessage'),
-            defaultId: 2,
+            defaultId: isWindows ? 1 : 2,
             cancelId: 2,
+            noLink: true,
           };
           dialog.showMessageBox(window, gpuSafeModeDialogOptions, buttonId => {
             if (buttonId === 0) {

@@ -17,7 +17,7 @@
   "menu.helpSupport.gpuSafeMode": "GPU Safe Mode",
   "menu.helpSupport.gpuSafeModeDialogTitle": "Turn off 'GPU safe mode'?",
   "menu.helpSupport.nonGpuSafeModeDialogTitle": "Turn on 'GPU safe mode'?",
-  "menu.helpSupport.gpuSafeModeDialogMessage": "Turn off 'GPU safe mode \n \nYou are about to disable 'GPU safe mode' which will improve the performance of user interface rendering. \n \nClick on 'Yes' to restart Daedalus with 'GPU safe mode' disabled. \n \n If you see a blank screen instead of Daedalus user interface after Daedalus restarts, please turn 'GPU safe mode' back on.",
+  "menu.helpSupport.gpuSafeModeDialogMessage": "Turn off 'GPU safe mode'? \n \nYou are about to disable 'GPU safe mode' which will improve the performance of user interface rendering. \n \nClick on 'Yes' to restart Daedalus with 'GPU safe mode' disabled. \n \n If you see a blank screen instead of Daedalus user interface after Daedalus restarts, please turn 'GPU safe mode' back on.",
   "menu.helpSupport.nonGpuSafeModeDialogMessage": "Turn on 'GPU safe mode'? \n \nYou are about to enable 'GPU safe mode' which will reduce the performance of user interface rendering. \n \nYou should enable this only if you are seeing a blank screen instead of Daedalus user interface. If Daedalus is working properly for you, please click the 'No'. Otherwise, click 'Yes' to restart Daedalus with 'GPU safe mode' enabled.",
   "menu.helpSupport.gpuSafeModeDialogConfirm": "Yes",
   "menu.helpSupport.gpuSafeModeDialogNo": "No",
