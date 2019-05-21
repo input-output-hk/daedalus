@@ -2,19 +2,12 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { get, includes, upperFirst } from 'lodash';
+import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import classNames from 'classnames';
+import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
+import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import SVGInline from 'react-svg-inline';
-import {
-  LineChart,
-  YAxis,
-  XAxis,
-  Line,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts';
 import {
   ALLOWED_TIME_DIFFERENCE,
   MAX_ALLOWED_STALL_DURATION,
@@ -26,10 +19,297 @@ import LocalizableError from '../../i18n/LocalizableError';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './NetworkStatus.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
+import type { SystemInfo } from '../../types/systemInfoTypes';
+import type { CoreSystemInfo } from '../../types/coreSystemInfoTypes';
 
 let syncingInterval = null;
 
+const messages = defineMessages({
+  systemInfo: {
+    id: 'status.network.dialog.system.info',
+    defaultMessage: '!!!SYSTEM INFO',
+    description: 'System info',
+  },
+  platform: {
+    id: 'status.network.dialog.platform',
+    defaultMessage: '!!!Platform',
+    description: 'Platform',
+  },
+  platformVersion: {
+    id: 'status.network.dialog.platform.version',
+    defaultMessage: '!!!Platform Version',
+    description: 'Platform Version',
+  },
+  cpu: {
+    id: 'status.network.dialog.cpu',
+    defaultMessage: '!!!CPU',
+    description: 'CPU',
+  },
+  ram: {
+    id: 'status.network.dialog.ram',
+    defaultMessage: '!!!RAM',
+    description: 'RAM',
+  },
+  availableDiskSpace: {
+    id: 'status.network.dialog.availableDiskSpace',
+    defaultMessage: '!!!Available disk space',
+    description: 'Available disk space',
+  },
+  coreInfo: {
+    id: 'status.network.dialog.coreInfo',
+    defaultMessage: '!!!CORE INFO',
+    description: 'CORE INFO',
+  },
+  daedalusVersion: {
+    id: 'status.network.dialog.daedalusVersion',
+    defaultMessage: '!!!Daedalus Version',
+    description: 'Daedalus Version',
+  },
+  daedalusMainProcessID: {
+    id: 'status.network.dialog.daedalusMainProcessID',
+    defaultMessage: '!!!Daedalus Main Process ID',
+    description: 'Daedalus Main Process ID',
+  },
+  daedalusProcessID: {
+    id: 'status.network.dialog.daedalusProcessID',
+    defaultMessage: '!!!Daedalus Renderer Process ID',
+    description: 'Daedalus Renderer Process ID',
+  },
+  safeMode: {
+    id: 'status.network.dialog.safeMode',
+    defaultMessage: '!!!Daedalus is running in safe mode',
+    description: 'Daedalus is running in safe mode',
+  },
+  cardanoVersion: {
+    id: 'status.network.dialog.cardanoVersion',
+    defaultMessage: '!!!Cardano Version',
+    description: 'Cardano Version',
+  },
+  cardanoProcessID: {
+    id: 'status.network.dialog.cardanoProcessID',
+    defaultMessage: '!!!Cardano Process ID',
+    description: 'Cardano Process ID',
+  },
+  cardanoApiPort: {
+    id: 'status.network.dialog.cardanoApiPort',
+    defaultMessage: '!!!Cardano API Port',
+    description: 'Cardano API Port',
+  },
+  cardanoNetwork: {
+    id: 'status.network.dialog.cardanoNetwork',
+    defaultMessage: '!!!Cardano Network',
+    description: 'Cardano Network',
+  },
+  stateDirectory: {
+    id: 'status.network.dialog.stateDirectory',
+    defaultMessage: '!!!Daedalus State Directory',
+    description: 'Daedalus State Directory',
+  },
+  connectionError: {
+    id: 'status.network.dialog.connectionError',
+    defaultMessage: '!!!CONNECTION ERROR',
+    description: 'CONNECTION ERROR',
+  },
+  daedalusStatus: {
+    id: 'status.network.dialog.daedalusStatus',
+    defaultMessage: '!!!DAEDALUS STATUS',
+    description: 'DAEDALUS STATUS',
+  },
+  connected: {
+    id: 'status.network.dialog.connected',
+    defaultMessage: '!!!Connected',
+    description: 'Connected',
+  },
+  synced: {
+    id: 'status.network.dialog.synced',
+    defaultMessage: '!!!Synced',
+    description: 'Synced',
+  },
+  syncPercentage: {
+    id: 'status.network.dialog.syncPercentage',
+    defaultMessage: '!!!Sync Percentage',
+    description: 'Sync Percentage',
+  },
+  networkBlockHeight: {
+    id: 'status.network.dialog.networkBlockHeight',
+    defaultMessage: '!!!Network Block Height',
+    description: 'Network Block Height',
+  },
+  localBlockHeight: {
+    id: 'status.network.dialog.localBlockHeight',
+    defaultMessage: '!!!Local Block Height',
+    description: 'Local Block Height',
+  },
+  remainingUnsyncedBlocks: {
+    id: 'status.network.dialog.remainingUnsyncedBlocks',
+    defaultMessage: '!!!Remaining Unsynced Blocks',
+    description: 'Remaining Unsynced Blocks',
+  },
+  latestLocalBlockAge: {
+    id: 'status.network.dialog.latestLocalBlockAge',
+    defaultMessage: '!!!Latest Local Block Age',
+    description: 'Latest Local Block Age',
+  },
+  latestNetworkBlockAge: {
+    id: 'status.network.dialog.latestNetworkBlockAge',
+    defaultMessage: '!!!Latest Network Block Age',
+    description: 'Latest Network Block Age',
+  },
+  localTimeDifference: {
+    id: 'status.network.dialog.localTimeDifference',
+    defaultMessage: '!!!Local Time Difference',
+    description: 'Local Time Difference',
+  },
+  systemTimeCorrect: {
+    id: 'status.network.dialog.systemTimeCorrect',
+    defaultMessage: '!!!System Time Correct',
+    description: 'System Time Correct',
+  },
+  systemTimeIgnored: {
+    id: 'status.network.dialog.systemTimeIgnored',
+    defaultMessage: '!!!System Time Ignored',
+    description: 'System Time Ignored',
+  },
+  checkingNodeTime: {
+    id: 'status.network.dialog.checkingNodeTime',
+    defaultMessage: '!!!Checking Node Time',
+    description: 'Checking Node Time',
+  },
+  cardanoNodeStatus: {
+    id: 'status.network.dialog.cardanoNodeStatus',
+    defaultMessage: '!!!CARDANO NODE STATUS',
+    description: 'CARDANO NODE STATUS',
+  },
+  cardanoNodeStatusRestarting: {
+    id: 'status.network.dialog.cardanoNodeStatusRestarting',
+    defaultMessage: '!!!Restarting Cardano Node...',
+    description: 'Restarting Cardano Node...',
+  },
+  cardanoNodeStatusRestart: {
+    id: 'status.network.dialog.cardanoNodeStatusRestart',
+    defaultMessage: '!!!Restart Cardano Node',
+    description: 'Restart Cardano Node',
+  },
+  cardanoNodeDiagnostics: {
+    id: 'status.network.dialog.cardanoNodeDiagnostics',
+    defaultMessage: '!!!Cardano Node Diagnostics',
+    description: 'Cardano Node Diagnostics',
+  },
+  realtimeStatisticsMonitor: {
+    id: 'status.network.dialog.realtimeStatisticsMonitor',
+    defaultMessage: '!!!Realtime statistics monitor',
+    description: 'Realtime statistics monitor',
+  },
+  cardanoNodeState: {
+    id: 'status.network.dialog.cardanoNodeState',
+    defaultMessage: '!!!Cardano Node State',
+    description: 'Cardano Node State',
+  },
+  nodeHasBeenUpdated: {
+    id: 'status.network.dialog.nodeHasBeenUpdated',
+    defaultMessage: '!!!Updated',
+    description: 'Updated',
+  },
+  nodeHasCrashed: {
+    id: 'status.network.dialog.nodeHasCrashed',
+    defaultMessage: '!!!Crashed',
+    description: 'Crashed',
+  },
+  nodeHasErrored: {
+    id: 'status.network.dialog.nodeHasErrored',
+    defaultMessage: '!!!Errored',
+    description: 'Errored',
+  },
+  nodeHasStopped: {
+    id: 'status.network.dialog.nodeHasStopped',
+    defaultMessage: '!!!Stopped',
+    description: 'Stopped',
+  },
+  nodeIsExiting: {
+    id: 'status.network.dialog.nodeIsExiting',
+    defaultMessage: '!!!Exiting',
+    description: 'Exiting',
+  },
+  nodeIsRunning: {
+    id: 'status.network.dialog.nodeIsRunning',
+    defaultMessage: '!!!Running',
+    description: 'Running',
+  },
+  nodeIsStarting: {
+    id: 'status.network.dialog.nodeIsStarting',
+    defaultMessage: '!!!Starting',
+    description: 'Starting',
+  },
+  nodeIsStopping: {
+    id: 'status.network.dialog.nodeIsStopping',
+    defaultMessage: '!!!Stopping',
+    description: 'Stopping',
+  },
+  nodeIsUnrecoverable: {
+    id: 'status.network.dialog.nodeIsUnrecoverable',
+    defaultMessage: '!!!Unrecoverable',
+    description: 'Unrecoverable',
+  },
+  nodeIsUpdating: {
+    id: 'status.network.dialog.nodeIsUpdating',
+    defaultMessage: '!!!Updating',
+    description: 'Updating',
+  },
+  cardanoNodeResponding: {
+    id: 'status.network.dialog.cardanoNodeResponding',
+    defaultMessage: '!!!Node Responding',
+    description: 'Node Responding',
+  },
+  cardanoNodeSubscribed: {
+    id: 'status.network.dialog.cardanoNodeSubscribed',
+    defaultMessage: '!!!Node Subscribed',
+    description: 'Node Subscribed',
+  },
+  cardanoNodeTimeCorrect: {
+    id: 'status.network.dialog.cardanoNodeTimeCorrect',
+    defaultMessage: '!!!Node Time Correct',
+    description: 'Node Time Correct',
+  },
+  cardanoNodeSyncing: {
+    id: 'status.network.dialog.cardanoNodeSyncing',
+    defaultMessage: '!!!Node Syncing',
+    description: 'Node Syncing',
+  },
+  cardanoNodeInSync: {
+    id: 'status.network.dialog.cardanoNodeInSync',
+    defaultMessage: '!!!Node In Sync',
+    description: 'Node In Sync',
+  },
+  localTimeDifferenceChecking: {
+    id: 'status.network.dialog.localTimeDifferenceChecking',
+    defaultMessage: '!!!Checking...',
+    description: 'Checking...',
+  },
+  localTimeDifferenceCheckTime: {
+    id: 'status.network.dialog.localTimeDifferenceCheckTime',
+    defaultMessage: '!!!Check time',
+    description: 'Check time',
+  },
+  statusOn: {
+    id: 'status.network.dialog.statusOn',
+    defaultMessage: '!!!YES',
+    description: 'YES',
+  },
+  statusOff: {
+    id: 'status.network.dialog.statusOff',
+    defaultMessage: '!!!NO',
+    description: 'NO',
+  },
+  serviceUnreachable: {
+    id: 'status.network.dialog.serviceUnreachable',
+    defaultMessage: '!!!NTP Service unreachable',
+    description: 'NTP Service unreachable',
+  },
+});
+
 type Props = {
+  systemInfo: SystemInfo,
+  coreInfo: CoreSystemInfo,
   cardanoNodeState: ?CardanoNodeState,
   isDev: boolean,
   isMainnet: boolean,
@@ -44,7 +324,6 @@ type Props = {
   isConnected: boolean,
   isSynced: boolean,
   syncPercentage: number,
-  hasBeenConnected: boolean,
   localTimeDifference: ?number,
   isSystemTimeIgnored: boolean,
   isSystemTimeCorrect: boolean,
@@ -70,6 +349,10 @@ type State = {
 
 @observer
 export default class NetworkStatus extends Component<Props, State> {
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
+
   constructor(props: Props) {
     super(props);
     let { localBlockHeight, networkBlockHeight } = props;
@@ -162,7 +445,11 @@ export default class NetworkStatus extends Component<Props, State> {
   }
 
   render() {
+    const { intl } = this.context;
+
     const {
+      systemInfo,
+      coreInfo,
       cardanoNodeState,
       isNodeResponding,
       isNodeSubscribed,
@@ -172,7 +459,6 @@ export default class NetworkStatus extends Component<Props, State> {
       isConnected,
       isSynced,
       syncPercentage,
-      hasBeenConnected,
       localTimeDifference,
       isSystemTimeCorrect,
       isForceCheckingNodeTime,
@@ -190,8 +476,29 @@ export default class NetworkStatus extends Component<Props, State> {
       isStaging,
       isMainnet,
     } = this.props;
-    const { data, isNodeRestarting } = this.state;
-    const isNTPServiceReachable = !!localTimeDifference;
+
+    const {
+      platform,
+      platformVersion,
+      cpu,
+      ram,
+      availableDiskSpace,
+    } = systemInfo;
+
+    const {
+      daedalusVersion,
+      daedalusProcessID,
+      daedalusMainProcessID,
+      isInSafeMode,
+      cardanoVersion,
+      cardanoProcessID,
+      cardanoAPIPort,
+      cardanoNetwork,
+      daedalusStateDirectory,
+    } = coreInfo;
+
+    const { isNodeRestarting } = this.state;
+    const isNTPServiceReachable = localTimeDifference != null;
     const connectionError = get(nodeConnectionError, 'values', '{}');
     const { message, code } = connectionError;
 
@@ -248,93 +555,123 @@ export default class NetworkStatus extends Component<Props, State> {
             <tbody>
               <tr>
                 <th colSpan={2}>
-                  DAEDALUS STATUS
+                  {intl.formatMessage(messages.systemInfo)}
                   <hr />
                 </th>
               </tr>
               <tr>
-                <td>isConnected:</td>
-                <td className={this.getClass(isConnected)}>
-                  {isConnected ? 'YES' : 'NO'}
+                <td>{intl.formatMessage(messages.platform)}:</td>
+                <Tooltip skin={TooltipSkin} tip={platform}>
+                  <td>{platform}</td>
+                </Tooltip>
+              </tr>
+              <tr className={styles.platformVersion}>
+                <td>{intl.formatMessage(messages.platformVersion)}:</td>
+                <Tooltip
+                  skin={TooltipSkin}
+                  tip={platformVersion}
+                  className={styles.platformTooltip}
+                >
+                  <td className={styles.platform}>{platformVersion}</td>
+                </Tooltip>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage(messages.cpu)}:</td>
+                <Tooltip skin={TooltipSkin} tip={cpu}>
+                  <td>{cpu}</td>
+                </Tooltip>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage(messages.ram)}:</td>
+                <Tooltip skin={TooltipSkin} tip={ram}>
+                  <td>{ram}</td>
+                </Tooltip>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage(messages.availableDiskSpace)}:</td>
+                <Tooltip skin={TooltipSkin} tip={availableDiskSpace}>
+                  <td>{availableDiskSpace}</td>
+                </Tooltip>
+              </tr>
+              <tr>
+                <th colSpan={2}>
+                  {intl.formatMessage(messages.coreInfo)}
+                  <hr />
+                </th>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage(messages.daedalusVersion)}:</td>
+                <Tooltip skin={TooltipSkin} tip={daedalusVersion}>
+                  <td>{daedalusVersion}</td>
+                </Tooltip>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage(messages.daedalusMainProcessID)}:</td>
+                <Tooltip skin={TooltipSkin} tip={daedalusMainProcessID}>
+                  <td>{daedalusMainProcessID}</td>
+                </Tooltip>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage(messages.daedalusProcessID)}:</td>
+                <Tooltip skin={TooltipSkin} tip={daedalusProcessID}>
+                  <td>{daedalusProcessID}</td>
+                </Tooltip>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage(messages.safeMode)}:</td>
+                <td className={styles.safeMode}>
+                  {isInSafeMode
+                    ? intl.formatMessage(messages.statusOn)
+                    : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
-                <td>hasBeenConnected:</td>
-                <td>{hasBeenConnected ? 'YES' : 'NO'}</td>
+                <td>{intl.formatMessage(messages.cardanoVersion)}:</td>
+                <Tooltip skin={TooltipSkin} tip={cardanoVersion}>
+                  <td>{cardanoVersion}</td>
+                </Tooltip>
               </tr>
               <tr>
-                <td>isSynced:</td>
-                <td className={this.getClass(isSynced)}>
-                  {isSynced ? 'YES' : 'NO'}
-                </td>
+                <td>{intl.formatMessage(messages.cardanoProcessID)}:</td>
+                <Tooltip skin={TooltipSkin} tip={cardanoProcessID}>
+                  <td>{cardanoProcessID}</td>
+                </Tooltip>
               </tr>
               <tr>
-                <td>syncPercentage:</td>
-                <td>{syncPercentage.toFixed(2)}%</td>
+                <td>{intl.formatMessage(messages.cardanoApiPort)}:</td>
+                <Tooltip skin={TooltipSkin} tip={cardanoAPIPort}>
+                  <td>{cardanoAPIPort}</td>
+                </Tooltip>
               </tr>
               <tr>
-                <td>localBlockHeight:</td>
-                <td>{localBlockHeight}</td>
+                <td>{intl.formatMessage(messages.cardanoNetwork)}:</td>
+                <Tooltip skin={TooltipSkin} tip={cardanoNetwork}>
+                  <td>{cardanoNetwork}</td>
+                </Tooltip>
               </tr>
               <tr>
-                <td>networkBlockHeight:</td>
-                <td>{networkBlockHeight}</td>
+                <td>{intl.formatMessage(messages.stateDirectory)}:</td>
+                <Tooltip skin={TooltipSkin} tip={daedalusStateDirectory}>
+                  <td className={styles.stateDirectory}>
+                    {daedalusStateDirectory}
+                  </td>
+                </Tooltip>
               </tr>
-              <tr>
-                <td>remainingUnsyncedBlocks:</td>
-                <td className={remainingUnsyncedBlocksClasses}>
-                  {remainingUnsyncedBlocks >= 0 ? remainingUnsyncedBlocks : '-'}
-                </td>
-              </tr>
-              <tr>
-                <td>latestLocalBlockAge:</td>
-                <td className={latestLocalBlockAgeClasses}>
-                  {latestLocalBlockTimestamp > 0
-                    ? `${latestLocalBlockAge} ms`
-                    : '-'}
-                </td>
-              </tr>
-              <tr>
-                <td>latestNetworkBlockAge:</td>
-                <td className={latestNetworkBlockAgeClasses}>
-                  {latestNetworkBlockTimestamp > 0
-                    ? `${latestNetworkBlockAge} ms`
-                    : '-'}
-                </td>
-              </tr>
-              <tr>
-                <td>localTimeDifference:</td>
-                <td>
-                  <span className={localTimeDifferenceClasses}>
-                    {isNTPServiceReachable
-                      ? `${localTimeDifference || 0} μs`
-                      : 'NTP service unreachable'}
-                  </span>{' '}
-                  |&nbsp;
-                  <button
-                    onClick={() => onForceCheckLocalTimeDifference()}
-                    disabled={isForceCheckingNodeTime || !isConnected}
-                  >
-                    {isForceCheckingNodeTime ? 'Checking...' : 'Check time'}
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td>isSystemTimeCorrect:</td>
-                <td className={this.getClass(isSystemTimeCorrect)}>
-                  {isSystemTimeCorrect ? 'YES' : 'NO'}
-                </td>
-              </tr>
-              <tr>
-                <td>isSystemTimeIgnored:</td>
-                <td className={this.getClass(!isSystemTimeIgnored)}>
-                  {isSystemTimeIgnored ? 'YES' : 'NO'}
-                </td>
-              </tr>
-              <tr>
-                <td>isForceCheckingNodeTime:</td>
-                <td>{isForceCheckingNodeTime ? 'YES' : 'NO'}</td>
-              </tr>
+              {!isConnected && nodeConnectionError ? (
+                <tr>
+                  <td className={styles.topPadding} colSpan={2}>
+                    {intl.formatMessage(messages.connectionError)}
+                    <br />
+                    <Tooltip skin={TooltipSkin} tip={message}>
+                      <div className={styles.error}>
+                        message: {message || '-'}
+                        <br />
+                        code: {code || '-'}
+                      </div>
+                    </Tooltip>
+                  </td>
+                </tr>
+              ) : null}
             </tbody>
           </table>
 
@@ -342,107 +679,236 @@ export default class NetworkStatus extends Component<Props, State> {
             <tbody>
               <tr>
                 <th colSpan={2}>
-                  CARDANO NODE STATUS
+                  {intl.formatMessage(messages.daedalusStatus)}
                   <hr />
                 </th>
               </tr>
               <tr>
-                <td>cardanoNodeState:</td>
-                <td>
-                  {upperFirst(
-                    cardanoNodeState != null ? cardanoNodeState : 'unknown'
-                  )}
+                <td>{intl.formatMessage(messages.connected)}:</td>
+                <td className={this.getClass(isConnected)}>
+                  {isConnected
+                    ? intl.formatMessage(messages.statusOn)
+                    : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
-                <td>isNodeResponding:</td>
-                <td className={this.getClass(isNodeResponding)}>
-                  {isNodeResponding ? 'YES' : 'NO'}
+                <td>{intl.formatMessage(messages.synced)}:</td>
+                <td className={this.getClass(isSynced)}>
+                  {isSynced
+                    ? intl.formatMessage(messages.statusOn)
+                    : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
-                <td>isNodeSubscribed:</td>
-                <td className={this.getClass(isNodeSubscribed)}>
-                  {isNodeSubscribed ? 'YES' : 'NO'}
+                <td>{intl.formatMessage(messages.syncPercentage)}:</td>
+                <Tooltip
+                  skin={TooltipSkin}
+                  tip={`${syncPercentage.toFixed(2)}%`}
+                >
+                  <td>{syncPercentage.toFixed(2)}%</td>
+                </Tooltip>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage(messages.networkBlockHeight)}:</td>
+                <Tooltip skin={TooltipSkin} tip={networkBlockHeight}>
+                  <td>{networkBlockHeight}</td>
+                </Tooltip>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage(messages.localBlockHeight)}:</td>
+                <Tooltip skin={TooltipSkin} tip={localBlockHeight}>
+                  <td>{localBlockHeight}</td>
+                </Tooltip>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage(messages.remainingUnsyncedBlocks)}:</td>
+                <td className={remainingUnsyncedBlocksClasses}>
+                  {remainingUnsyncedBlocks >= 0 ? remainingUnsyncedBlocks : '-'}
                 </td>
               </tr>
               <tr>
-                <td>isNodeTimeCorrect:</td>
-                <td className={this.getClass(isNodeTimeCorrect)}>
-                  {isNodeTimeCorrect ? 'YES' : 'NO'}
-                </td>
+                <td>{intl.formatMessage(messages.latestLocalBlockAge)}:</td>
+                <Tooltip
+                  skin={TooltipSkin}
+                  tip={
+                    latestLocalBlockTimestamp >= 0
+                      ? `${latestLocalBlockAge} ms`
+                      : '-'
+                  }
+                >
+                  <td className={latestLocalBlockAgeClasses}>
+                    {latestLocalBlockTimestamp > 0
+                      ? `${latestLocalBlockAge} ms`
+                      : '-'}
+                  </td>
+                </Tooltip>
               </tr>
               <tr>
-                <td>isNodeSyncing:</td>
-                <td className={this.getClass(isNodeSyncing)}>
-                  {isNodeSyncing ? 'YES' : 'NO'}
-                </td>
+                <td>{intl.formatMessage(messages.latestNetworkBlockAge)}:</td>
+                <Tooltip
+                  skin={TooltipSkin}
+                  tip={
+                    latestNetworkBlockTimestamp > 0
+                      ? `${latestNetworkBlockAge} ms`
+                      : '-'
+                  }
+                >
+                  <td className={latestNetworkBlockAgeClasses}>
+                    {latestNetworkBlockTimestamp > 0
+                      ? `${latestNetworkBlockAge} ms`
+                      : '-'}
+                  </td>
+                </Tooltip>
               </tr>
               <tr>
-                <td>isNodeInSync:</td>
-                <td className={this.getClass(isNodeInSync)}>
-                  {isNodeInSync ? 'YES' : 'NO'}
-                </td>
-              </tr>
-              <tr>
-                <td className={styles.topPadding}>Cardano Node actions:</td>
-                <td className={styles.topPadding}>
+                <td>{intl.formatMessage(messages.localTimeDifference)}:</td>
+                <td className={styles.localTimeDifferenceItem}>
                   <button
+                    onClick={() => onForceCheckLocalTimeDifference()}
+                    disabled={isForceCheckingNodeTime || !isConnected}
+                  >
+                    {isForceCheckingNodeTime
+                      ? intl.formatMessage(messages.localTimeDifferenceChecking)
+                      : intl.formatMessage(
+                          messages.localTimeDifferenceCheckTime
+                        )}
+                  </button>
+                  <Tooltip
+                    skin={TooltipSkin}
+                    tip={
+                      isNTPServiceReachable
+                        ? `${localTimeDifference || 0} μs`
+                        : intl.formatMessage(messages.serviceUnreachable)
+                    }
+                  >
+                    <span className={localTimeDifferenceClasses}>
+                      {isNTPServiceReachable
+                        ? `${localTimeDifference || 0} μs`
+                        : intl.formatMessage(messages.serviceUnreachable)}
+                    </span>
+                  </Tooltip>
+                </td>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage(messages.systemTimeCorrect)}:</td>
+                <td className={this.getClass(isSystemTimeCorrect)}>
+                  {isSystemTimeCorrect
+                    ? intl.formatMessage(messages.statusOn)
+                    : intl.formatMessage(messages.statusOff)}
+                </td>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage(messages.systemTimeIgnored)}:</td>
+                <td className={this.getClass(!isSystemTimeIgnored)}>
+                  {isSystemTimeIgnored
+                    ? intl.formatMessage(messages.statusOn)
+                    : intl.formatMessage(messages.statusOff)}
+                </td>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage(messages.checkingNodeTime)}:</td>
+                <td>
+                  {isForceCheckingNodeTime
+                    ? intl.formatMessage(messages.statusOn)
+                    : intl.formatMessage(messages.statusOff)}
+                </td>
+              </tr>
+              <tr>
+                <th colSpan={2}>
+                  {intl.formatMessage(messages.cardanoNodeStatus)}
+                  <button
+                    className={styles.statusBtn}
                     onClick={() => this.restartNode()}
                     disabled={isNodeRestarting}
                   >
-                    {isNodeRestarting ? 'Restarting...' : 'Restart'}
+                    {isNodeRestarting
+                      ? intl.formatMessage(messages.cardanoNodeStatusRestarting)
+                      : intl.formatMessage(messages.cardanoNodeStatusRestart)}
                   </button>
-                </td>
+                  <hr />
+                </th>
               </tr>
               {cardanoNodeEkgLink ? (
                 <tr>
-                  <td>Cardano Node diagnostics:</td>
+                  <td>
+                    {intl.formatMessage(messages.cardanoNodeDiagnostics)}:
+                  </td>
                   <td>
                     <button
+                      className={styles.realTimeStatusBtn}
                       onClick={() => onOpenExternalLink(cardanoNodeEkgLink)}
                     >
-                      Realtime statistics monitor
+                      {intl.formatMessage(messages.realtimeStatisticsMonitor)}
                     </button>
                   </td>
                 </tr>
               ) : null}
-              {!isConnected && nodeConnectionError ? (
-                <tr>
-                  <td className={styles.topPadding} colSpan={2}>
-                    Connection error:
-                    <br />
-                    <div className={styles.error}>
-                      message: {message || '-'}
-                      <br />
-                      code: {code || '-'}
-                    </div>
+              <tr>
+                <td>{intl.formatMessage(messages.cardanoNodeState)}:</td>
+                <Tooltip
+                  skin={TooltipSkin}
+                  tip={upperFirst(
+                    cardanoNodeState != null
+                      ? intl.formatMessage(
+                          this.getLocalisationForCardanoNodeState()
+                        )
+                      : 'unknown'
+                  )}
+                >
+                  <td>
+                    {upperFirst(
+                      cardanoNodeState != null
+                        ? intl.formatMessage(
+                            this.getLocalisationForCardanoNodeState()
+                          )
+                        : 'unknown'
+                    )}
                   </td>
-                </tr>
-              ) : null}
+                </Tooltip>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage(messages.cardanoNodeResponding)}:</td>
+                <td className={this.getClass(isNodeResponding)}>
+                  {isNodeResponding
+                    ? intl.formatMessage(messages.statusOn)
+                    : intl.formatMessage(messages.statusOff)}
+                </td>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage(messages.cardanoNodeSubscribed)}:</td>
+                <td className={this.getClass(isNodeSubscribed)}>
+                  {isNodeSubscribed
+                    ? intl.formatMessage(messages.statusOn)
+                    : intl.formatMessage(messages.statusOff)}
+                </td>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage(messages.cardanoNodeTimeCorrect)}:</td>
+                <td className={this.getClass(isNodeTimeCorrect)}>
+                  {isNodeTimeCorrect
+                    ? intl.formatMessage(messages.statusOn)
+                    : intl.formatMessage(messages.statusOff)}
+                </td>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage(messages.cardanoNodeSyncing)}:</td>
+                <td className={this.getClass(isNodeSyncing)}>
+                  {isNodeSyncing
+                    ? intl.formatMessage(messages.statusOn)
+                    : intl.formatMessage(messages.statusOff)}
+                </td>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage(messages.cardanoNodeInSync)}:</td>
+                <td className={this.getClass(isNodeInSync)}>
+                  {isNodeInSync
+                    ? intl.formatMessage(messages.statusOn)
+                    : intl.formatMessage(messages.statusOff)}
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
-
-        <ResponsiveContainer width="100%" height="50%">
-          <LineChart data={data}>
-            <XAxis dataKey="time" domain={['auto', 'auto']} name="Time" />
-            <YAxis
-              domain={[
-                dataMin => Math.max(0, dataMin - 20),
-                dataMax => dataMax + 20,
-              ]}
-              orientation="right"
-              type="number"
-              width={100}
-            />
-            <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
-            <Tooltip />
-            <Legend wrapperStyle={{ color: '#fff' }} />
-            <Line type="linear" dataKey="localBlockHeight" stroke="#8884d8" />
-            <Line type="linear" dataKey="networkBlockHeight" stroke="#82ca9d" />
-          </LineChart>
-        </ResponsiveContainer>
 
         <button className={styles.closeButton} onClick={() => onClose()}>
           <SVGInline svg={closeCross} />
@@ -450,6 +916,44 @@ export default class NetworkStatus extends Component<Props, State> {
       </div>
     );
   }
+
+  getLocalisationForCardanoNodeState = () => {
+    const { cardanoNodeState } = this.props;
+    let localisationKey;
+    switch (cardanoNodeState) {
+      case CardanoNodeStates.STARTING:
+        localisationKey = messages.nodeIsStarting;
+        break;
+      case CardanoNodeStates.EXITING:
+        localisationKey = messages.nodeIsExiting;
+        break;
+      case CardanoNodeStates.STOPPING:
+        localisationKey = messages.nodeIsStopping;
+        break;
+      case CardanoNodeStates.STOPPED:
+        localisationKey = messages.nodeHasStopped;
+        break;
+      case CardanoNodeStates.UPDATING:
+        localisationKey = messages.nodeIsUpdating;
+        break;
+      case CardanoNodeStates.UPDATED:
+        localisationKey = messages.nodeHasBeenUpdated;
+        break;
+      case CardanoNodeStates.CRASHED:
+        localisationKey = messages.nodeHasCrashed;
+        break;
+      case CardanoNodeStates.ERRORED:
+        localisationKey = messages.nodeHasErrored;
+        break;
+      case CardanoNodeStates.UNRECOVERABLE:
+        localisationKey = messages.nodeIsUnrecoverable;
+        break;
+      default:
+        localisationKey = messages.nodeIsRunning;
+        break;
+    }
+    return localisationKey;
+  };
 
   restartNode = () => {
     this.setState({ isNodeRestarting: true });
