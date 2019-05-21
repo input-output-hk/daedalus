@@ -3,14 +3,15 @@ import type { App, BrowserWindow } from 'electron';
 import { compact } from 'lodash';
 import type { MenuActions } from './MenuActions.types';
 import { getTranslation } from '../utils/getTranslation';
+import { environment } from '../environment';
 
 const id = 'menu';
+const { isInSafeMode } = environment;
 
 export const osxMenu = (
   app: App,
   window: BrowserWindow,
   actions: MenuActions,
-  isInSafeMode: boolean,
   translations: {},
   translation: Function = getTranslation(translations, id)
 ) => [

@@ -57,14 +57,15 @@ const NODE_STOPPED_STATES = [
 export default class NetworkStatusStore extends Store {
   // Initialize store properties
   _startTime = Date.now();
-  _tlsConfig: ?TlsConfig = null;
   _networkStatus = NETWORK_STATUS.CONNECTING;
   _networkStatusPollingInterval: ?IntervalID = null;
 
   // Initialize store observables
 
   // Internal Node states
+  @observable tlsConfig: ?TlsConfig = null;
   @observable cardanoNodeState: ?CardanoNodeState = null;
+  @observable cardanoNodeID: number = 0;
   @observable isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
   @observable isNodeSubscribed = false; // Is 'true' in case node is subscribed to the network
   @observable isNodeSyncing = false; // Is 'true' in case we are receiving blocks and not stalling
@@ -95,6 +96,7 @@ export default class NetworkStatusStore extends Store {
   @observable diskSpaceRequired: string = '';
   @observable diskSpaceMissing: string = '';
   @observable diskSpaceRecommended: string = '';
+  @observable diskSpaceAvailable: string = '';
   @observable isTlsCertInvalid: boolean = false;
 
   // DEFINE STORE METHODS
@@ -219,7 +221,11 @@ export default class NetworkStatusStore extends Store {
         status,
       });
       if (status)
-        runInAction('assigning node status', () => Object.assign(this, status));
+        runInAction('assigning node status', () => {
+          const { cardanoNodeID } = status;
+          this.cardanoNodeID = cardanoNodeID;
+          Object.assign(this, status);
+        });
     } catch (error) {
       Logger.error('NetworkStatusStore: error while requesting node state', {
         error,
@@ -242,11 +248,13 @@ export default class NetworkStatusStore extends Store {
   };
 
   _updateTlsConfig = (config: ?TlsConfig): Promise<void> => {
-    if (config == null || isEqual(config, this._tlsConfig))
+    if (config == null || isEqual(config, this.tlsConfig))
       return Promise.resolve();
     Logger.info('NetworkStatusStore: received tls config from main process');
     this.api.ada.setRequestConfig(config);
-    this._tlsConfig = config;
+    runInAction('updating tlsConfig', () => {
+      this.tlsConfig = config;
+    });
     this.actions.networkStatus.tlsConfigIsReady.trigger();
     return Promise.resolve();
   };
@@ -262,11 +270,14 @@ export default class NetworkStatusStore extends Store {
         break;
       case CardanoNodeStates.RUNNING:
         await this._requestTlsConfig();
+        await this._requestCardanoStatus();
         break;
       case CardanoNodeStates.STOPPING:
       case CardanoNodeStates.EXITING:
       case CardanoNodeStates.UPDATING:
-        this._tlsConfig = null;
+        runInAction('updating tlsConfig', () => {
+          this.tlsConfig = null;
+        });
         this._setDisconnected(wasConnected);
         break;
       default:
@@ -287,6 +298,7 @@ export default class NetworkStatusStore extends Store {
       isNodeSyncing,
       isNodeInSync,
       hasBeenConnected,
+      cardanoNodeID,
     } = from;
 
     return {
@@ -295,6 +307,7 @@ export default class NetworkStatusStore extends Store {
       isNodeSyncing,
       isNodeInSync,
       hasBeenConnected,
+      cardanoNodeID,
     };
   };
 
@@ -304,7 +317,7 @@ export default class NetworkStatusStore extends Store {
     queryInfoParams?: NodeInfoQueryParams
   ) => {
     // In case we haven't received TLS config we shouldn't trigger any API calls
-    if (!this._tlsConfig) return;
+    if (!this.tlsConfig) return;
 
     const isForcedTimeDifferenceCheck = !!queryInfoParams;
 
@@ -340,7 +353,7 @@ export default class NetworkStatusStore extends Store {
 
       // In case we no longer have TLS config we ignore all API call responses
       // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
-      if (!this._tlsConfig) {
+      if (!this.tlsConfig) {
         Logger.debug(
           'NetworkStatusStore: Ignoring NetworkStatusRequest result during Cardano shutdown sequence...'
         );
@@ -557,11 +570,13 @@ export default class NetworkStatusStore extends Store {
     diskSpaceRequired,
     diskSpaceMissing,
     diskSpaceRecommended,
+    diskSpaceAvailable,
   }: CheckDiskSpaceResponse): Promise<void> => {
     this.isNotEnoughDiskSpace = isNotEnoughDiskSpace;
     this.diskSpaceRequired = diskSpaceRequired;
     this.diskSpaceMissing = diskSpaceMissing;
     this.diskSpaceRecommended = diskSpaceRecommended;
+    this.diskSpaceAvailable = diskSpaceAvailable;
 
     if (this.isNotEnoughDiskSpace) {
       if (this._networkStatusPollingInterval) {
