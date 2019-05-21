@@ -98,6 +98,10 @@ export default class AppStore extends Store {
     );
   }
 
+  @computed get isDelegationPage(): boolean {
+    return this.currentRoute === ROUTES.STAKING;
+  }
+
   // ===================== PRIVATE ======================= //
 
   _getGpuStatus = async () => {

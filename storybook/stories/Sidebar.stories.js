@@ -5,20 +5,12 @@ import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import StoryDecorator from './support/StoryDecorator';
 import Sidebar from '../../source/renderer/app/components/sidebar/Sidebar';
-import walletsIcon from '../../source/renderer/app/assets/images/sidebar/wallet-ic.inline.svg';
-import settingsIcon from '../../source/renderer/app/assets/images/sidebar/settings-ic.inline.svg';
+import { CATEGORIES_BY_NAME } from '../../source/renderer/app/config/sidebarConfig';
 
-const SIDEBAR_CATEGORIES = [
-  {
-    name: 'WALLETS',
-    route: '/wallets',
-    icon: walletsIcon,
-  },
-  {
-    name: 'SETTINGS',
-    route: '/settings',
-    icon: settingsIcon,
-  },
+const CATEGORIES = [
+  CATEGORIES_BY_NAME.WALLETS,
+  CATEGORIES_BY_NAME.STAKING,
+  CATEGORIES_BY_NAME.SETTINGS,
 ];
 
 const sidebarMenus = observable({
@@ -44,13 +36,12 @@ let emptyMenus;
 
 storiesOf('Sidebar', module)
   .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
-
   // ====== Stories ======
 
   .add('no category', () => (
     <Sidebar
       menus={emptyMenus}
-      categories={SIDEBAR_CATEGORIES}
+      categories={CATEGORIES}
       activeSidebarCategory=""
       onCategoryClicked={action('onCategoryClicked')}
       isDialogOpen={() => false}
@@ -60,12 +51,11 @@ storiesOf('Sidebar', module)
       pathname="/"
     />
   ))
-
   .add('wallets category', () => (
     <Sidebar
       menus={emptyMenus}
-      categories={SIDEBAR_CATEGORIES}
-      activeSidebarCategory={SIDEBAR_CATEGORIES[0].route}
+      categories={CATEGORIES}
+      activeSidebarCategory={CATEGORIES[0].route}
       onCategoryClicked={action('onCategoryClicked')}
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}
@@ -74,14 +64,26 @@ storiesOf('Sidebar', module)
       pathname="/"
     />
   ))
-
   .add('wallets / sub', () => (
     <Sidebar
-      categories={SIDEBAR_CATEGORIES}
-      activeSidebarCategory={SIDEBAR_CATEGORIES[0].route}
+      categories={CATEGORIES}
+      activeSidebarCategory={CATEGORIES[0].route}
       menus={sidebarMenus}
       onCategoryClicked={action('onCategoryClicked')}
       isShowingSubMenus
+      isDialogOpen={() => false}
+      onAddWallet={action('onAddWallet')}
+      openDialogAction={action('openDialog')}
+      onSubmitSupportRequest={() => {}}
+      pathname="/"
+    />
+  ))
+  .add('delegation category', () => (
+    <Sidebar
+      menus={emptyMenus}
+      categories={CATEGORIES}
+      activeSidebarCategory={CATEGORIES[1].route}
+      onCategoryClicked={action('onCategoryClicked')}
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}
       openDialogAction={action('openDialog')}

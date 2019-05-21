@@ -1,6 +1,5 @@
 // @flow
 import React, { Component, Fragment } from 'react';
-import { observer } from 'mobx-react';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
@@ -62,7 +61,6 @@ type State = {
   isHoveringChart: boolean,
 };
 
-@observer
 export default class WalletUtxo extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,

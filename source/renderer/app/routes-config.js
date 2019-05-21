@@ -1,10 +1,19 @@
 // @flow
 export const ROUTES = {
   ROOT: '/',
-  STAKING: '/staking',
   ADA_REDEMPTION: '/ada-redemption',
   BLOCK_CONSOLIDATION_STATUS: '/block-consolidation-status',
   PAPER_WALLET_CREATE_CERTIFICATE: '/paper-wallet/create-certificate',
+  STAKING: {
+    ROOT: '/staking',
+    DELEGATION_COUNTDOWN: '/staking/delegation-countdown',
+    PAGE: '/staking/:page',
+    DELEGATION_CENTER: '/staking/delegation-center',
+    STAKE_POOLS: '/staking/stake-pools',
+    REWARDS: '/staking/rewards',
+    EPOCHS: '/staking/epochs',
+    INFO: '/staking/info',
+  },
   PROFILE: {
     LANGUAGE_SELECTION: '/profile/language-selection',
     TERMS_OF_USE: '/profile/terms-of-use',
