@@ -5,6 +5,7 @@ import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import StakePool from './StakePool';
 
 import searchIcon from '../../../assets/images/search.inline.svg';
 import styles from './StakingStakePools.scss';
@@ -48,12 +49,14 @@ export default class StakingStakePools extends Component<Props, State> {
     filter: 'all',
   };
 
+  searchInput: ?HTMLElement = null;
+
   getFilterItemClassName = (item: string) =>
     item === this.state.filter && styles.searchFilterAtiveItem;
 
   onFilterChange = (filter: string) => this.setState({ filter });
 
-  onSearch = () => {};
+  onSearch = (search: string) => this.setState({ search });
 
   render() {
     const { intl } = this.context;
@@ -65,7 +68,7 @@ export default class StakingStakePools extends Component<Props, State> {
           <SVGInline svg={searchIcon} className={styles.searchIcon} />
           <Input
             className={styles.searchInput}
-            onKeyPress={this.onSearch}
+            onChange={this.onSearch}
             ref={input => {
               this.searchInput = input;
             }}
@@ -105,7 +108,9 @@ export default class StakingStakePools extends Component<Props, State> {
         <h2>{intl.formatMessage(messages.delegatingListTitle)}</h2>
 
         <div className={styles.stakePoolsDelegatingList}>
-          <pre>{JSON.stringify(stakePoolsDelegatingList)}</pre>
+          {stakePoolsDelegatingList.map(stakePool => (
+            <StakePool key={stakePool.id} {...stakePool} />
+          ))}
         </div>
 
         <h2>
@@ -118,7 +123,9 @@ export default class StakingStakePools extends Component<Props, State> {
         </h2>
 
         <div className={styles.stakePoolsList}>
-          <pre>{JSON.stringify(stakePoolsList)}</pre>
+          {stakePoolsList.map(stakePool => (
+            <StakePool key={stakePool.id} {...stakePool} />
+          ))}
         </div>
       </div>
     );

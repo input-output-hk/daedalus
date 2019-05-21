@@ -12,8 +12,12 @@ export default class StakingStakePoolsPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
+    const { stakePools, delegatingStakePools } = this.props.stores.staking;
     return (
-      <StakingStakePools stakePoolsList={[]} stakePoolsDelegatingList={[]} />
+      <StakingStakePools
+        stakePoolsList={stakePools}
+        stakePoolsDelegatingList={delegatingStakePools}
+      />
     );
   }
 }

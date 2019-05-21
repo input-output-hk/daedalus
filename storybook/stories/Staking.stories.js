@@ -85,7 +85,9 @@ storiesOf('Staking', module)
 
   .add(
     pageNames['stake-pools'],
-    () => <StakingStakePools name={pageNames['stake-pools']} />,
+    () => (
+      <StakingStakePools stakePoolsList={[]} stakePoolsDelegatingList={[]} />
+    ),
     { id: 'stake-pools' }
   )
 

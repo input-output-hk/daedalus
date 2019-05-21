@@ -1,0 +1,55 @@
+.component {
+  background-color: #fafbfc;
+  border-bottom: 5px solid #1ccc5e !important;
+  border-radius: 4px;
+  border: solid 1px #c6cdd6;
+  cursor: pointer;
+  height: 71px;
+  margin: 5px;
+  padding: 8px;
+  position: relative;
+  width: 80px;
+}
+
+.id {
+  color: #5e6066;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  line-height: 1.57;
+  text-align: center;
+}
+
+.rank {
+  color: #22c860;
+  font-size: 20px;
+  font-weight: bold;
+  height: 22px;
+  line-height: 1.1;
+  text-align: center;
+  width: 40px;
+}
+
+.clock {
+  background: #ea4c5b;
+  width: 18px;
+  height: 18px;
+  position: absolute;
+  border-radius: 0 4px;
+  top: 0;
+  right: 0;
+}
+
+.clockIcon {
+  display: block;
+  margin: 0;
+  padding: 0;
+  line-height: 0px;
+  text-align: center;
+  padding-top: 1px;
+
+  svg {
+    width: 15px;
+    height: 15px;
+  }
+}
