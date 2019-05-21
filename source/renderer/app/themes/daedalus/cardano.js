@@ -501,6 +501,18 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-uploader-text-color': '#5e6066',
     '--theme-uploader-border-color': '#c6cdd6',
   },
+  utxo: {
+    '--theme-utxo-background-color': 'rgba(32, 34, 37, 0.05)',
+    '--theme-utxo-title-text-color': '#5e6066',
+    '--theme-utxo-title-description-color': 'rgba(94, 96, 102, 0.7)',
+    '--theme-utxo-bar-color': 'rgba(32, 34, 37, 0.5)',
+    '--theme-utxo-label-text-color': 'rgba(32, 34, 37, 0.2)',
+    '--theme-utxo-tick-text-color': 'rgba(32, 34, 37, 0.3)',
+    '--theme-utxo-cursor-background-color': 'rgba(32, 34, 37, 0.1)',
+    '--theme-utxo-tooltip-background-color': 'rgba(94, 96, 102, 0.9)',
+    '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
+    '--theme-utxo-tooltip-text-color': '#fafbfc',
+  },
 };
 
 export const CARDANO_THEME_PARAMS: CreateThemeParams = {

@@ -46,6 +46,10 @@ export default class AppStore extends Store {
     return this.stores.router.location.pathname;
   }
 
+  @computed get currentPage(): string {
+    return this.currentRoute.split('/').pop();
+  }
+
   openExternalLink(url: string, event?: MouseEvent): void {
     if (event) event.preventDefault();
     openExternalUrlChannel.send(url);
@@ -92,6 +96,10 @@ export default class AppStore extends Store {
       this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION ||
       this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE
     );
+  }
+
+  @computed get isDelegationPage(): boolean {
+    return this.currentRoute === ROUTES.STAKING;
   }
 
   // ===================== PRIVATE ======================= //

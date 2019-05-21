@@ -505,16 +505,22 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-uploader-text-color': '#e9f4fe',
     '--theme-uploader-border-color': 'rgba(102, 122, 138, 0.3)',
   },
+  utxo: {
+    '--theme-utxo-background-color': 'rgba(233, 244, 254, 0.05)',
+    '--theme-utxo-title-text-color': '#e9f4fe',
+    '--theme-utxo-title-description-color': 'rgba(233, 244, 254, 0.7)',
+    '--theme-utxo-bar-color': 'rgba(233, 244, 254, 0.5)',
+    '--theme-utxo-label-text-color': 'rgba(233, 244, 254, 0.3)',
+    '--theme-utxo-tick-text-color': 'rgba(233, 244, 254, 0.3)',
+    '--theme-utxo-cursor-background-color': 'rgba(233, 244, 254, 0.1)',
+    '--theme-utxo-tooltip-background-color': 'rgba(94, 96, 102, 0.9)',
+    '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
+    '--theme-utxo-tooltip-text-color': '#fafbfc',
+  },
 };
 
 export const DARK_BLUE_THEME_PARAMS: CreateThemeParams = {
   colors: {
-    // error: {
-    //   dark: '#d34452',
-    //   light: '#ec5d6b',
-    //   regular: '#ea4c5b',
-    //   ultralight: '#fac8ce',
-    // },
     error: '#ea4c5b',
     primary: {
       active: '#495863',

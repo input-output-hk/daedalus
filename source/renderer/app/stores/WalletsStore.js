@@ -1,6 +1,7 @@
 // @flow
 import { observable, action, computed, runInAction, flow } from 'mobx';
 import { get, chunk, find, isEqual } from 'lodash';
+import { BigNumber } from 'bignumber.js';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
@@ -13,7 +14,9 @@ import { buildRoute, matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
-
+import type LocalizableError from '../i18n/LocalizableError';
+import { formattedWalletAmount } from '../utils/formatters';
+import { WalletPaperWalletOpenPdfError } from '../i18n/errors';
 /* eslint-disable consistent-return */
 
 /**
@@ -27,6 +30,7 @@ export default class WalletsStore extends Store {
   // REQUESTS
   /* eslint-disable max-len */
   @observable active: ?Wallet = null;
+  @observable activeValue: ?BigNumber = null;
   @observable isRestoreActive: boolean = false;
   @observable restoringWalletId: ?string = null;
   @observable walletsRequest: Request<Array<Wallet>> = new Request(
@@ -72,6 +76,7 @@ export default class WalletsStore extends Store {
   @observable walletCertificateAddress = null;
   @observable walletCertificateRecoveryPhrase = null;
   @observable generatingCertificateInProgress = false;
+  @observable generatingCertificateError: ?LocalizableError = null;
   @observable certificateStep = null;
   @observable certificateTemplate = null;
   @observable additionalMnemonicWords = null;
@@ -92,7 +97,7 @@ export default class WalletsStore extends Store {
 
     this.registerReactions([this._updateActiveWalletOnRouteChanges]);
 
-    const { router, walletBackup, wallets, app } = this.actions;
+    const { router, walletBackup, wallets, app, networkStatus } = this.actions;
     wallets.createWallet.listen(this._create);
     wallets.deleteWallet.listen(this._deleteWallet);
     wallets.sendMoney.listen(this._sendMoney);
@@ -107,6 +112,7 @@ export default class WalletsStore extends Store {
     router.goToRoute.listen(this._onRouteChange);
     walletBackup.finishWalletBackup.listen(this._finishCreation);
     app.initAppEnvironment.listen(() => {});
+    networkStatus.restartNode.listen(this._updateGeneratingCertificateError);
   }
 
   _create = async (params: { name: string, spendingPassword: ?string }) => {
@@ -159,6 +165,7 @@ export default class WalletsStore extends Store {
         this.goToWalletRoute(nextWalletInList.id);
       } else {
         this.active = null;
+        this.activeValue = null;
       }
     });
     this._resumePolling();
@@ -467,6 +474,9 @@ export default class WalletsStore extends Store {
         // Active wallet has been replaced or removed
         this.stores.addresses.lastGeneratedAddress = null;
         this.active = newActiveWallet || null;
+        if (this.active) {
+          this.activeValue = formattedWalletAmount(this.active.amount);
+        }
       } else if (hasActiveWalletBeenUpdated) {
         // Active wallet has been updated
         if (this.active && newActiveWallet) this.active.update(newActiveWallet);
@@ -476,6 +486,7 @@ export default class WalletsStore extends Store {
 
   @action _unsetActiveWallet = () => {
     this.active = null;
+    this.activeValue = null;
     this.stores.addresses.lastGeneratedAddress = null;
   };
 
@@ -514,6 +525,7 @@ export default class WalletsStore extends Store {
    */
   _generateCertificate = flow(function* generateCertificate(params: {
     filePath: string,
+    timestamp: string,
   }): Generator<any, any, any> {
     try {
       // Pause polling in order not to show Paper wallet in the UI
@@ -576,7 +588,8 @@ export default class WalletsStore extends Store {
       yield this._downloadCertificate(
         walletAddress,
         walletCertificateRecoveryPhrase,
-        params.filePath
+        params.filePath,
+        params.timestamp
       );
     } catch (error) {
       throw error;
@@ -588,7 +601,8 @@ export default class WalletsStore extends Store {
   _downloadCertificate = async (
     address: string,
     recoveryPhrase: Array<string>,
-    filePath: string
+    filePath: string,
+    timestamp: string
   ) => {
     const locale = this.stores.profile.currentLocale;
     const intl = i18nContext(locale);
@@ -601,6 +615,7 @@ export default class WalletsStore extends Store {
         filePath,
         isMainnet,
         buildLabel,
+        timestamp,
       });
       runInAction('handle successful certificate download', () => {
         // Reset progress
@@ -609,17 +624,27 @@ export default class WalletsStore extends Store {
         this._updateCertificateStep();
       });
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
       runInAction('handle failed certificate download', () => {
         // Reset progress
-        this._updateCertificateCreationState(false);
+        this._updateCertificateCreationState(false, error);
       });
     }
   };
 
-  _updateCertificateCreationState = action((state: boolean) => {
-    this.generatingCertificateInProgress = state;
+  _updateCertificateCreationState = action(
+    (state: boolean, error?: ?Object) => {
+      this.generatingCertificateInProgress = state;
+      this._updateGeneratingCertificateError(error);
+    }
+  );
+
+  _updateGeneratingCertificateError = action((error?: ?Object) => {
+    if (error && error.syscall && error.syscall === 'open') {
+      // User tries to replace a file that is open
+      this.generatingCertificateError = new WalletPaperWalletOpenPdfError();
+    } else {
+      this.generatingCertificateError = null;
+    }
   });
 
   @action _setCertificateTemplate = (params: { selectedTemplate: string }) => {
@@ -628,10 +653,12 @@ export default class WalletsStore extends Store {
   };
 
   @action _finishCertificate = () => {
+    this._updateGeneratingCertificateError();
     this._closeCertificateGeneration();
   };
 
   @action _updateCertificateStep = (isBack: boolean = false) => {
+    this._updateGeneratingCertificateError();
     const currrentCertificateStep = this.certificateStep || 0;
     this.certificateStep = isBack
       ? currrentCertificateStep - 1
@@ -650,5 +677,6 @@ export default class WalletsStore extends Store {
     this.generatingCertificateInProgress = false;
     this.certificateTemplate = false;
     this.certificateStep = null;
+    this._updateGeneratingCertificateError();
   };
 }

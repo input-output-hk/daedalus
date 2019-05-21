@@ -14,15 +14,41 @@
     }
   }
 
+  .tooltip {
+    &:hover {
+      .questionMarkIcon {
+        opacity: 0.8;
+      }
+    }
+  }
+
+  .questionMarkIcon {
+    height: 14px;
+    margin-left: 6px;
+    opacity: 0.4;
+    transform: translateY(2px);
+    width: 14px;
+    path {
+      fill: var(--theme-input-icon-background-color);
+    }
+  }
+
   .savingResultLabel {
     animation: animateSavingResultLabel 3s;
     color: var(--theme-input-right-floating-text-color);
     font-family: var(--font-light);
     font-size: 14px;
+    letter-spacing: -0.5px;
     opacity: 0;
     position: absolute;
     right: 0;
     text-align: right;
-    top: 0;
+    top: 5px;
+  }
+
+  :global {
+    .SimpleFormField_label {
+      display: flex;
+    }
   }
 }

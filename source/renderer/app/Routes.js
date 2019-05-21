@@ -17,13 +17,19 @@ import TermsOfUsePage from './containers/profile/TermsOfUsePage';
 import DataLayerMigrationPage from './containers/profile/DataLayerMigrationPage';
 import DisplaySettingsPage from './containers/settings/categories/DisplaySettingsPage';
 import PaperWalletCreateCertificatePage from './containers/wallet/PaperWalletCreateCertificatePage';
+import Staking from './containers/staking/Staking';
+import StakingDelegationCenterPage from './containers/staking/StakingDelegationCenterPage';
+import StakingEpochsPagePage from './containers/staking/StakingEpochsPage';
+import StakingInfoPage from './containers/staking/StakingInfoPage';
+import StakingRewardsPage from './containers/staking/StakingRewardsPage';
+import StakingStakePoolsPage from './containers/staking/StakingStakePoolsPage';
 import Wallet from './containers/wallet/Wallet';
 import WalletSummaryPage from './containers/wallet/WalletSummaryPage';
 import WalletSendPage from './containers/wallet/WalletSendPage';
 import WalletReceivePage from './containers/wallet/WalletReceivePage';
 import WalletTransactionsPage from './containers/wallet/WalletTransactionsPage';
 import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
-// import StakingPage from './containers/staking/StakingPage';
+import WalletUtxoPage from './containers/wallet/WalletUtxoPage';
 
 export const Routes = (
   <Route path={ROUTES.ROOT} component={Root}>
@@ -37,7 +43,6 @@ export const Routes = (
       path={ROUTES.PROFILE.DATA_LAYER_MIGRATION}
       component={DataLayerMigrationPage}
     />
-    {/* <Route path={ROUTES.STAKING} component={StakingPage} /> */}
     <Route path={ROUTES.ADA_REDEMPTION} component={AdaRedemptionPage} />
     <Route
       path={ROUTES.BLOCK_CONSOLIDATION_STATUS}
@@ -53,6 +58,7 @@ export const Routes = (
       <Route path={ROUTES.WALLETS.SEND} component={WalletSendPage} />
       <Route path={ROUTES.WALLETS.RECEIVE} component={WalletReceivePage} />
       <Route path={ROUTES.WALLETS.SETTINGS} component={WalletSettingsPage} />
+      <Route path={ROUTES.WALLETS.UTXO} component={WalletUtxoPage} />
     </Route>
     <Route path={ROUTES.SETTINGS.ROOT} component={Settings}>
       <IndexRedirect to={ROUTES.SETTINGS.GENERAL} />
@@ -68,5 +74,19 @@ export const Routes = (
       path={ROUTES.PAPER_WALLET_CREATE_CERTIFICATE}
       component={PaperWalletCreateCertificatePage}
     />
+    <Route path={ROUTES.STAKING.ROOT} component={Staking}>
+      <IndexRedirect to={ROUTES.STAKING.DELEGATION_CENTER} />
+      <Route
+        path={ROUTES.STAKING.DELEGATION_CENTER}
+        component={StakingDelegationCenterPage}
+      />
+      <Route
+        path={ROUTES.STAKING.STAKE_POOLS}
+        component={StakingStakePoolsPage}
+      />
+      <Route path={ROUTES.STAKING.REWARDS} component={StakingRewardsPage} />
+      <Route path={ROUTES.STAKING.EPOCHS} component={StakingEpochsPagePage} />
+      <Route path={ROUTES.STAKING.INFO} component={StakingInfoPage} />
+    </Route>
   </Route>
 );

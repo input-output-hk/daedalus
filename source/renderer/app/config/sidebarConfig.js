@@ -3,6 +3,7 @@ import { ROUTES } from '../routes-config';
 import walletsIcon from '../assets/images/sidebar/wallet-ic.inline.svg';
 import settingsIcon from '../assets/images/sidebar/settings-ic.inline.svg';
 import paperWalletCertificateIcon from '../assets/images/sidebar/paper-certificate-ic.inline.svg';
+import stakingIcon from '../assets/images/sidebar/delegation-ic.inline.svg';
 
 export const CATEGORIES_BY_NAME = {
   WALLETS: {
@@ -14,6 +15,11 @@ export const CATEGORIES_BY_NAME = {
     name: 'PAPER_WALLET_CREATE_CERTIFICATE',
     route: ROUTES.PAPER_WALLET_CREATE_CERTIFICATE,
     icon: paperWalletCertificateIcon,
+  },
+  STAKING: {
+    name: 'STAKING',
+    route: ROUTES.STAKING.ROOT,
+    icon: stakingIcon,
   },
   SETTINGS: {
     name: 'SETTINGS',
