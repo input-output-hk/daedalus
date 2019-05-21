@@ -10,7 +10,12 @@ import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
 import { environment } from './environment';
 import mainErrorHandler from './utils/mainErrorHandler';
-import { launcherConfig, frontendOnlyMode } from './config';
+import {
+  launcherConfig,
+  frontendOnlyMode,
+  pubLogsFolderPath,
+  APP_NAME,
+} from './config';
 import { setupCardano } from './cardano/setup';
 import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
@@ -22,6 +27,8 @@ import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
 import { detectSystemLocaleChannel } from './ipc/detect-system-locale';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
+import { logUsedVersion } from './utils/logUsedVersion';
+import path from 'path';
 
 /* eslint-disable consistent-return */
 
@@ -64,6 +71,10 @@ const safeExit = async () => {
 
 const onAppReady = async () => {
   setupLogging();
+  logUsedVersion(
+    environment.version,
+    path.join(pubLogsFolderPath, `${APP_NAME}-versions.json`)
+  );
 
   const cpu = os.cpus();
   const platformVersion = os.release();
