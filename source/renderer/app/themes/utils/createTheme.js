@@ -140,19 +140,23 @@ const createDaedalusComponentsTheme = (
   const { primary, secondary, error } = colors;
   return {
     aboutWindow: {
-      '--theme-about-window-background-color': `${primary.background.regular}`,
-      '--theme-about-window-header-bottom-border-color': `${primary.border}`,
-      '--theme-about-window-daedalus-icon-color': `${primary.text}`,
-      '--theme-about-window-cardano-icon-color': `${primary.text}`,
-      '--theme-about-window-title-varsion-color': `${primary.text}`,
-      '--theme-about-window-title-stroke-color': `${primary.text}`,
-      '--theme-about-window-content-color': `${primary.background.regular}`,
-      '--theme-about-window-content-text-color': `${primary.text}`,
-      '--theme-about-window-content-bottom-border-color': `${primary.border}`,
-      '--theme-about-window-icon-close-button-color': `${
+      '--theme-about-window-background-color': `${chroma(
         secondary.background.regular
+      ).alpha(0.96)}`,
+      '--theme-about-window-header-bottom-border-color': `${secondary.border}`,
+      '--theme-about-window-daedalus-icon-color': `${secondary.text}`,
+      '--theme-about-window-cardano-icon-color': `${secondary.text}`,
+      '--theme-about-window-title-varsion-color': `${secondary.text}`,
+      '--theme-about-window-title-stroke-color': `${secondary.text}`,
+      '--theme-about-window-content-color': `${secondary.text}`,
+      '--theme-about-window-content-text-color': `${secondary.text}`,
+      '--theme-about-window-content-bottom-border-color': `${secondary.border}`,
+      '--theme-about-window-icon-close-button-color': `${
+        primary.background.lightest
       }`,
-      '--theme-about-window-icon-close-hover-background': `${secondary.hover}`,
+      '--theme-about-window-icon-close-hover-background': `${
+        secondary.background.dark
+      }`,
     },
     adaRedemption: {
       '--theme-ada-redemption-headline-color': `${primary.text}`,
@@ -197,21 +201,22 @@ const createDaedalusComponentsTheme = (
     },
     blockConsolidation: {
       '--theme-block-consolidation-background-color': `${
-        primary.background.regular
-      }`,
-      '--theme-block-consolidation-title-text-color': `${primary.text}`,
-      '--theme-block-consolidation-text-color': `${primary.text}`,
-      '--theme-block-consolidation-text-highlight-color': `${primary.text}`,
-      '--theme-block-consolidation-epochs-text-color': `${primary.text}`,
-      '--theme-block-consolidation-indicator-text-color': `${primary.text}`,
-      '--theme-block-consolidation-indicator-container-background-color': `${
-        primary.background.regular
-      }`,
-      '--theme-block-consolidation-indicator-epochs-behind-background-color-1': `${
         secondary.background.regular
       }`,
+      '--theme-block-consolidation-title-text-color': `${secondary.text}`,
+      '--theme-block-consolidation-text-color': `${secondary.text}`,
+      '--theme-block-consolidation-text-highlight-color': `${secondary.text}`,
+      '--theme-block-consolidation-epochs-text-color': `${
+        secondary.background.regular
+      }`,
+      '--theme-block-consolidation-indicator-text-color': `${secondary.text}`,
+      '--theme-block-consolidation-indicator-container-background-color':
+        'rgba(0, 0, 0, 0.1)',
+      '--theme-block-consolidation-indicator-epochs-behind-background-color-1': `${
+        primary.background.lightest
+      }`,
       '--theme-block-consolidation-indicator-epochs-behind-background-color-2': `${
-        secondary.active
+        secondary.background.regular
       }`,
       '--theme-block-consolidation-stripe-dark-1-background-color': `${
         primary.background.regular
@@ -220,22 +225,22 @@ const createDaedalusComponentsTheme = (
         primary.hover
       }`,
       '--theme-block-consolidation-stripe-light-1-background-color': `${
-        secondary.background.regular
+        secondary.background.lightest
       }`,
       '--theme-block-consolidation-stripe-light-2-background-color': `${
-        secondary.hover
+        primary.background.light
       }`,
       '--theme-block-consolidation-button-background-color': `${
-        secondary.background.regular
+        secondary.background.dark
       }`,
       '--theme-block-consolidation-button-background-color-hover': `${
-        secondary.hover
+        primary.background.lightest
       }`,
       '--theme-block-consolidation-button-text-color-hover': `${
-        secondary.text
+        secondary.background.regular
       }`,
       '--theme-block-consolidation-button-border-color': `${
-        secondary.background.regular
+        primary.background.lightest
       }`,
     },
     body: {
