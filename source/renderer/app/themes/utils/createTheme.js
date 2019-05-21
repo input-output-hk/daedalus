@@ -27,7 +27,7 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
       '--rp-autocomplete-selected-words-font-family': `${fonts.regular}`,
     },
     rpBubble: {
-      '--rp-bubble-bg-color': `${primary.background.regular}`,
+      '--rp-bubble-bg-color': `${primary.background.lightest}`,
       '--rp-bubble-border-color': `${primary.border}`,
       '--rp-bubble-border-radius': '2px',
     },
@@ -635,6 +635,28 @@ const createDaedalusComponentsTheme = (
     uploader: {
       '--theme-uploader-text-color': `${primary.text}`,
       '--theme-uploader-border-color': `${primary.border}`,
+    },
+    utxo: {
+      '--theme-utxo-background-color': `${chroma(
+        primary.background.regular
+      ).alpha(0.5)}`,
+      '--theme-utxo-title-text-color': `${primary.text}`,
+      '--theme-utxo-title-description-color': `${chroma(primary.text).alpha(
+        0.7
+      )}`,
+      '--theme-utxo-bar-color': `${chroma(secondary.background.dark).alpha(
+        0.5
+      )}`,
+      '--theme-utxo-label-text-color': `${chroma(primary.text).alpha(0.45)}`,
+      '--theme-utxo-tick-text-color': `${chroma(primary.text).alpha(0.45)}`,
+      '--theme-utxo-cursor-background-color': `${chroma(
+        secondary.background.lightest
+      ).alpha(0.2)}`,
+      '--theme-utxo-tooltip-background-color': `${chroma(
+        primary.background.darkest
+      )}`,
+      '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
+      '--theme-utxo-tooltip-text-color': `${secondary.text}`,
     },
   };
 };
