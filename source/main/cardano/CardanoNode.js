@@ -1,6 +1,7 @@
 // @flow
 import Store from 'electron-store';
-import type { ChildProcess, spawn, exec } from 'child_process';
+import { spawn, exec } from 'child_process';
+import type { ChildProcess } from 'child_process';
 import type { WriteStream } from 'fs';
 import { toInteger } from 'lodash';
 import { environment } from '../environment';
@@ -29,8 +30,8 @@ type Logger = {
 };
 
 type Actions = {
-  spawn: spawn,
-  exec: exec,
+  spawn: typeof spawn,
+  exec: typeof exec,
   readFileSync: (path: string) => Buffer,
   createWriteStream: (path: string, options?: Object) => WriteStream,
   broadcastTlsConfig: (config: ?TlsConfig) => void,
