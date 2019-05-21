@@ -283,6 +283,39 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Logs successfully downloaded",
+        "description": "Success message for download logs.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/App.js",
+        "id": "loading.screen.reportIssue.downloadLogsSuccessMessage",
+        "start": {
+          "column": 23,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Preparing logs for download",
+        "description": "Progress message for download logs.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/App.js",
+        "id": "loading.screen.reportIssue.downloadLogsProgressMessage",
+        "start": {
+          "column": 24,
+          "line": 28
+        }
+      }
+    ],
+    "path": "source/renderer/app/App.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Starting Cardano node",
         "description": "Message \"Starting Cardano node\" on the loading screen.",
         "end": {
@@ -1955,6 +1988,795 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!SYSTEM INFO",
+        "description": "System info",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.system.info",
+        "start": {
+          "column": 14,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Platform",
+        "description": "Platform",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.platform",
+        "start": {
+          "column": 12,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Platform Version",
+        "description": "Platform Version",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.platform.version",
+        "start": {
+          "column": 19,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!CPU",
+        "description": "CPU",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cpu",
+        "start": {
+          "column": 7,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!RAM",
+        "description": "RAM",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.ram",
+        "start": {
+          "column": 7,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Available disk space",
+        "description": "Available disk space",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.availableDiskSpace",
+        "start": {
+          "column": 22,
+          "line": 53
+        }
+      },
+      {
+        "defaultMessage": "!!!CORE INFO",
+        "description": "CORE INFO",
+        "end": {
+          "column": 3,
+          "line": 62
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.coreInfo",
+        "start": {
+          "column": 12,
+          "line": 58
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus Version",
+        "description": "Daedalus Version",
+        "end": {
+          "column": 3,
+          "line": 67
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.daedalusVersion",
+        "start": {
+          "column": 19,
+          "line": 63
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus Main Process ID",
+        "description": "Daedalus Main Process ID",
+        "end": {
+          "column": 3,
+          "line": 72
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.daedalusMainProcessID",
+        "start": {
+          "column": 25,
+          "line": 68
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus Renderer Process ID",
+        "description": "Daedalus Renderer Process ID",
+        "end": {
+          "column": 3,
+          "line": 77
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.daedalusProcessID",
+        "start": {
+          "column": 21,
+          "line": 73
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus is running in safe mode",
+        "description": "Daedalus is running in safe mode",
+        "end": {
+          "column": 3,
+          "line": 82
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.safeMode",
+        "start": {
+          "column": 12,
+          "line": 78
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano Version",
+        "description": "Cardano Version",
+        "end": {
+          "column": 3,
+          "line": 87
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoVersion",
+        "start": {
+          "column": 18,
+          "line": 83
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano Process ID",
+        "description": "Cardano Process ID",
+        "end": {
+          "column": 3,
+          "line": 92
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoProcessID",
+        "start": {
+          "column": 20,
+          "line": 88
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano API Port",
+        "description": "Cardano API Port",
+        "end": {
+          "column": 3,
+          "line": 97
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoApiPort",
+        "start": {
+          "column": 18,
+          "line": 93
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano Network",
+        "description": "Cardano Network",
+        "end": {
+          "column": 3,
+          "line": 102
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoNetwork",
+        "start": {
+          "column": 18,
+          "line": 98
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus State Directory",
+        "description": "Daedalus State Directory",
+        "end": {
+          "column": 3,
+          "line": 107
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.stateDirectory",
+        "start": {
+          "column": 18,
+          "line": 103
+        }
+      },
+      {
+        "defaultMessage": "!!!CONNECTION ERROR",
+        "description": "CONNECTION ERROR",
+        "end": {
+          "column": 3,
+          "line": 112
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.connectionError",
+        "start": {
+          "column": 19,
+          "line": 108
+        }
+      },
+      {
+        "defaultMessage": "!!!DAEDALUS STATUS",
+        "description": "DAEDALUS STATUS",
+        "end": {
+          "column": 3,
+          "line": 117
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.daedalusStatus",
+        "start": {
+          "column": 18,
+          "line": 113
+        }
+      },
+      {
+        "defaultMessage": "!!!Connected",
+        "description": "Connected",
+        "end": {
+          "column": 3,
+          "line": 122
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.connected",
+        "start": {
+          "column": 13,
+          "line": 118
+        }
+      },
+      {
+        "defaultMessage": "!!!Synced",
+        "description": "Synced",
+        "end": {
+          "column": 3,
+          "line": 127
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.synced",
+        "start": {
+          "column": 10,
+          "line": 123
+        }
+      },
+      {
+        "defaultMessage": "!!!Sync Percentage",
+        "description": "Sync Percentage",
+        "end": {
+          "column": 3,
+          "line": 132
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.syncPercentage",
+        "start": {
+          "column": 18,
+          "line": 128
+        }
+      },
+      {
+        "defaultMessage": "!!!Network Block Height",
+        "description": "Network Block Height",
+        "end": {
+          "column": 3,
+          "line": 137
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.networkBlockHeight",
+        "start": {
+          "column": 22,
+          "line": 133
+        }
+      },
+      {
+        "defaultMessage": "!!!Local Block Height",
+        "description": "Local Block Height",
+        "end": {
+          "column": 3,
+          "line": 142
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.localBlockHeight",
+        "start": {
+          "column": 20,
+          "line": 138
+        }
+      },
+      {
+        "defaultMessage": "!!!Remaining Unsynced Blocks",
+        "description": "Remaining Unsynced Blocks",
+        "end": {
+          "column": 3,
+          "line": 147
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.remainingUnsyncedBlocks",
+        "start": {
+          "column": 27,
+          "line": 143
+        }
+      },
+      {
+        "defaultMessage": "!!!Latest Local Block Age",
+        "description": "Latest Local Block Age",
+        "end": {
+          "column": 3,
+          "line": 152
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.latestLocalBlockAge",
+        "start": {
+          "column": 23,
+          "line": 148
+        }
+      },
+      {
+        "defaultMessage": "!!!Latest Network Block Age",
+        "description": "Latest Network Block Age",
+        "end": {
+          "column": 3,
+          "line": 157
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.latestNetworkBlockAge",
+        "start": {
+          "column": 25,
+          "line": 153
+        }
+      },
+      {
+        "defaultMessage": "!!!Local Time Difference",
+        "description": "Local Time Difference",
+        "end": {
+          "column": 3,
+          "line": 162
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.localTimeDifference",
+        "start": {
+          "column": 23,
+          "line": 158
+        }
+      },
+      {
+        "defaultMessage": "!!!System Time Correct",
+        "description": "System Time Correct",
+        "end": {
+          "column": 3,
+          "line": 167
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.systemTimeCorrect",
+        "start": {
+          "column": 21,
+          "line": 163
+        }
+      },
+      {
+        "defaultMessage": "!!!System Time Ignored",
+        "description": "System Time Ignored",
+        "end": {
+          "column": 3,
+          "line": 172
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.systemTimeIgnored",
+        "start": {
+          "column": 21,
+          "line": 168
+        }
+      },
+      {
+        "defaultMessage": "!!!Checking Node Time",
+        "description": "Checking Node Time",
+        "end": {
+          "column": 3,
+          "line": 177
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.checkingNodeTime",
+        "start": {
+          "column": 20,
+          "line": 173
+        }
+      },
+      {
+        "defaultMessage": "!!!CARDANO NODE STATUS",
+        "description": "CARDANO NODE STATUS",
+        "end": {
+          "column": 3,
+          "line": 182
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoNodeStatus",
+        "start": {
+          "column": 21,
+          "line": 178
+        }
+      },
+      {
+        "defaultMessage": "!!!Restarting Cardano Node...",
+        "description": "Restarting Cardano Node...",
+        "end": {
+          "column": 3,
+          "line": 187
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoNodeStatusRestarting",
+        "start": {
+          "column": 31,
+          "line": 183
+        }
+      },
+      {
+        "defaultMessage": "!!!Restart Cardano Node",
+        "description": "Restart Cardano Node",
+        "end": {
+          "column": 3,
+          "line": 192
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoNodeStatusRestart",
+        "start": {
+          "column": 28,
+          "line": 188
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano Node Diagnostics",
+        "description": "Cardano Node Diagnostics",
+        "end": {
+          "column": 3,
+          "line": 197
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoNodeDiagnostics",
+        "start": {
+          "column": 26,
+          "line": 193
+        }
+      },
+      {
+        "defaultMessage": "!!!Realtime statistics monitor",
+        "description": "Realtime statistics monitor",
+        "end": {
+          "column": 3,
+          "line": 202
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.realtimeStatisticsMonitor",
+        "start": {
+          "column": 29,
+          "line": 198
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano Node State",
+        "description": "Cardano Node State",
+        "end": {
+          "column": 3,
+          "line": 207
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoNodeState",
+        "start": {
+          "column": 20,
+          "line": 203
+        }
+      },
+      {
+        "defaultMessage": "!!!Updated",
+        "description": "Updated",
+        "end": {
+          "column": 3,
+          "line": 212
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.nodeHasBeenUpdated",
+        "start": {
+          "column": 22,
+          "line": 208
+        }
+      },
+      {
+        "defaultMessage": "!!!Crashed",
+        "description": "Crashed",
+        "end": {
+          "column": 3,
+          "line": 217
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.nodeHasCrashed",
+        "start": {
+          "column": 18,
+          "line": 213
+        }
+      },
+      {
+        "defaultMessage": "!!!Errored",
+        "description": "Errored",
+        "end": {
+          "column": 3,
+          "line": 222
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.nodeHasErrored",
+        "start": {
+          "column": 18,
+          "line": 218
+        }
+      },
+      {
+        "defaultMessage": "!!!Stopped",
+        "description": "Stopped",
+        "end": {
+          "column": 3,
+          "line": 227
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.nodeHasStopped",
+        "start": {
+          "column": 18,
+          "line": 223
+        }
+      },
+      {
+        "defaultMessage": "!!!Exiting",
+        "description": "Exiting",
+        "end": {
+          "column": 3,
+          "line": 232
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.nodeIsExiting",
+        "start": {
+          "column": 17,
+          "line": 228
+        }
+      },
+      {
+        "defaultMessage": "!!!Running",
+        "description": "Running",
+        "end": {
+          "column": 3,
+          "line": 237
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.nodeIsRunning",
+        "start": {
+          "column": 17,
+          "line": 233
+        }
+      },
+      {
+        "defaultMessage": "!!!Starting",
+        "description": "Starting",
+        "end": {
+          "column": 3,
+          "line": 242
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.nodeIsStarting",
+        "start": {
+          "column": 18,
+          "line": 238
+        }
+      },
+      {
+        "defaultMessage": "!!!Stopping",
+        "description": "Stopping",
+        "end": {
+          "column": 3,
+          "line": 247
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.nodeIsStopping",
+        "start": {
+          "column": 18,
+          "line": 243
+        }
+      },
+      {
+        "defaultMessage": "!!!Unrecoverable",
+        "description": "Unrecoverable",
+        "end": {
+          "column": 3,
+          "line": 252
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.nodeIsUnrecoverable",
+        "start": {
+          "column": 23,
+          "line": 248
+        }
+      },
+      {
+        "defaultMessage": "!!!Updating",
+        "description": "Updating",
+        "end": {
+          "column": 3,
+          "line": 257
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.nodeIsUpdating",
+        "start": {
+          "column": 18,
+          "line": 253
+        }
+      },
+      {
+        "defaultMessage": "!!!Node Responding",
+        "description": "Node Responding",
+        "end": {
+          "column": 3,
+          "line": 262
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoNodeResponding",
+        "start": {
+          "column": 25,
+          "line": 258
+        }
+      },
+      {
+        "defaultMessage": "!!!Node Subscribed",
+        "description": "Node Subscribed",
+        "end": {
+          "column": 3,
+          "line": 267
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoNodeSubscribed",
+        "start": {
+          "column": 25,
+          "line": 263
+        }
+      },
+      {
+        "defaultMessage": "!!!Node Time Correct",
+        "description": "Node Time Correct",
+        "end": {
+          "column": 3,
+          "line": 272
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoNodeTimeCorrect",
+        "start": {
+          "column": 26,
+          "line": 268
+        }
+      },
+      {
+        "defaultMessage": "!!!Node Syncing",
+        "description": "Node Syncing",
+        "end": {
+          "column": 3,
+          "line": 277
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoNodeSyncing",
+        "start": {
+          "column": 22,
+          "line": 273
+        }
+      },
+      {
+        "defaultMessage": "!!!Node In Sync",
+        "description": "Node In Sync",
+        "end": {
+          "column": 3,
+          "line": 282
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoNodeInSync",
+        "start": {
+          "column": 21,
+          "line": 278
+        }
+      },
+      {
+        "defaultMessage": "!!!Checking...",
+        "description": "Checking...",
+        "end": {
+          "column": 3,
+          "line": 287
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.localTimeDifferenceChecking",
+        "start": {
+          "column": 31,
+          "line": 283
+        }
+      },
+      {
+        "defaultMessage": "!!!Check time",
+        "description": "Check time",
+        "end": {
+          "column": 3,
+          "line": 292
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.localTimeDifferenceCheckTime",
+        "start": {
+          "column": 32,
+          "line": 288
+        }
+      },
+      {
+        "defaultMessage": "!!!YES",
+        "description": "YES",
+        "end": {
+          "column": 3,
+          "line": 297
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.statusOn",
+        "start": {
+          "column": 12,
+          "line": 293
+        }
+      },
+      {
+        "defaultMessage": "!!!NO",
+        "description": "NO",
+        "end": {
+          "column": 3,
+          "line": 302
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.statusOff",
+        "start": {
+          "column": 13,
+          "line": 298
+        }
+      },
+      {
+        "defaultMessage": "!!!NTP Service unreachable",
+        "description": "NTP Service unreachable",
+        "end": {
+          "column": 3,
+          "line": 307
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.serviceUnreachable",
+        "start": {
+          "column": 22,
+          "line": 303
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/status/NetworkStatus.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Regular",
         "description": "Tab title \"Regular\" on Ada redemption page.",
         "end": {
@@ -3209,13 +4031,13 @@
         "description": "Headline for the \"Paper wallet create certificate instructions dialog\".",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.headline",
         "start": {
           "column": 12,
-          "line": 19
+          "line": 20
         }
       },
       {
@@ -3223,13 +4045,13 @@
         "description": "Subtitle for the \"Paper wallet create certificate instructions dialog\".",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.subtitle",
         "start": {
           "column": 12,
-          "line": 25
+          "line": 26
         }
       },
       {
@@ -3237,13 +4059,13 @@
         "description": "subtitle2 for the \"Paper wallet create certificate instructions dialog\".",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.subtitle2",
         "start": {
           "column": 13,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -3251,13 +4073,13 @@
         "description": "Instructions list label for the \"Paper wallet create certificate instructions dialog\".",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.label",
         "start": {
           "column": 25,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -3265,13 +4087,13 @@
         "description": "Wallet certificate create instructions dialog definition 1.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition1",
         "start": {
           "column": 31,
-          "line": 46
+          "line": 47
         }
       },
       {
@@ -3279,13 +4101,13 @@
         "description": "Wallet certificate create instructions dialog definition 2.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 63
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition2",
         "start": {
           "column": 31,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -3293,13 +4115,13 @@
         "description": "Wallet certificate create instructions dialog definition 3.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 70
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition3",
         "start": {
           "column": 31,
-          "line": 63
+          "line": 64
         }
       },
       {
@@ -3307,13 +4129,13 @@
         "description": "Wallet certificate create instructions dialog definition 4.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 77
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition4",
         "start": {
           "column": 31,
-          "line": 70
+          "line": 71
         }
       },
       {
@@ -3321,13 +4143,13 @@
         "description": "Wallet certificate create instructions dialog definition 5.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 84
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition5",
         "start": {
           "column": 31,
-          "line": 77
+          "line": 78
         }
       },
       {
@@ -3335,13 +4157,13 @@
         "description": "Wallet certificate create instructions dialog - printing instructions.",
         "end": {
           "column": 3,
-          "line": 92
+          "line": 93
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.printingInstructions",
         "start": {
           "column": 24,
-          "line": 84
+          "line": 85
         }
       },
       {
@@ -3349,13 +4171,13 @@
         "description": "Wallet certificate create instructions dialog \"Cardano Explorer\" label",
         "end": {
           "column": 3,
-          "line": 98
+          "line": 99
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.cardanoExplorer",
         "start": {
           "column": 19,
-          "line": 93
+          "line": 94
         }
       },
       {
@@ -3363,13 +4185,13 @@
         "description": "\"Wallet certificate create instructions dialog\" print button label.",
         "end": {
           "column": 3,
-          "line": 104
+          "line": 105
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.button.printLabel",
         "start": {
           "column": 20,
-          "line": 99
+          "line": 100
         }
       }
     ],
@@ -4553,13 +5375,13 @@
         "description": "Title for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.title",
         "start": {
           "column": 9,
-          "line": 26
+          "line": 25
         }
       },
       {
@@ -4567,13 +5389,13 @@
         "description": "Description for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 35
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.description",
         "start": {
           "column": 15,
-          "line": 31
+          "line": 30
         }
       },
       {
@@ -4581,13 +5403,13 @@
         "description": "Empty wallet description for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.emptyWallet",
         "start": {
           "column": 15,
-          "line": 37
+          "line": 36
         }
       },
       {
@@ -4595,13 +5417,13 @@
         "description": "Label X for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.labelX",
         "start": {
           "column": 10,
-          "line": 43
+          "line": 42
         }
       },
       {
@@ -4609,13 +5431,13 @@
         "description": "Label Y for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.labelY",
         "start": {
           "column": 10,
-          "line": 48
+          "line": 47
         }
       }
     ],
@@ -5691,13 +6513,13 @@
         "description": "Message \"Loading wallet data\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 17
         },
         "file": "source/renderer/app/containers/LoadingPage.js",
         "id": "loading.screen.loadingWalletData",
         "start": {
           "column": 21,
-          "line": 17
+          "line": 13
         }
       },
       {
@@ -5705,41 +6527,13 @@
         "description": "Link to Open Support page",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 22
         },
         "file": "source/renderer/app/containers/LoadingPage.js",
         "id": "loading.screen.reportIssue.reportIssueButtonUrl",
         "start": {
           "column": 24,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!Logs successfully downloaded",
-        "description": "Success message for download logs.",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/containers/LoadingPage.js",
-        "id": "loading.screen.reportIssue.downloadLogsSuccessMessage",
-        "start": {
-          "column": 23,
-          "line": 27
-        }
-      },
-      {
-        "defaultMessage": "!!!Preparing logs for download",
-        "description": "Progress message for download logs.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/containers/LoadingPage.js",
-        "id": "loading.screen.reportIssue.downloadLogsProgressMessage",
-        "start": {
-          "column": 24,
-          "line": 32
+          "line": 18
         }
       }
     ],
@@ -5752,50 +6546,17 @@
         "description": "\"submit a support request\" link URL in the \"Report a problem\" section on the support settings page.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 15
         },
         "file": "source/renderer/app/containers/settings/categories/SupportSettingsPage.js",
         "id": "settings.support.reportProblem.linkUrl",
         "start": {
           "column": 25,
-          "line": 11
+          "line": 10
         }
       }
     ],
     "path": "source/renderer/app/containers/settings/categories/SupportSettingsPage.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Logs successfully downloaded",
-        "description": "Success message for download logs.",
-        "end": {
-          "column": 3,
-          "line": 19
-        },
-        "file": "source/renderer/app/containers/settings/Settings.js",
-        "id": "settings.support.reportProblem.downloadLogsSuccessMessage",
-        "start": {
-          "column": 23,
-          "line": 15
-        }
-      },
-      {
-        "defaultMessage": "!!!Preparing logs for download",
-        "description": "Progress message for download logs.",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/containers/settings/Settings.js",
-        "id": "settings.support.reportProblem.downloadLogsProgressMessage",
-        "start": {
-          "column": 24,
-          "line": 20
-        }
-      }
-    ],
-    "path": "source/renderer/app/containers/settings/Settings.json"
   },
   {
     "descriptors": [
@@ -6020,7 +6781,7 @@
         "description": "Error message shown when the file the user tries to replace is open.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 64
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.paperWalletOpenPdfError",
@@ -6034,13 +6795,13 @@
         "description": "Password instructions note.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 70
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.passwordInstructions",
         "start": {
           "column": 24,
-          "line": 64
+          "line": 65
         }
       },
       {
@@ -6048,13 +6809,13 @@
         "description": "The word \"cancel\" reused at several places (like cancel buttons)",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 76
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.cancel",
         "start": {
           "column": 10,
-          "line": 70
+          "line": 71
         }
       },
       {
@@ -6062,13 +6823,13 @@
         "description": "The word \"change\" reused at several places (like change buttons)",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 82
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.change",
         "start": {
           "column": 10,
-          "line": 76
+          "line": 77
         }
       },
       {
@@ -6076,13 +6837,13 @@
         "description": "The word \"create\" reused at several places (like create buttons)",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 88
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.create",
         "start": {
           "column": 10,
-          "line": 82
+          "line": 83
         }
       },
       {
@@ -6090,13 +6851,13 @@
         "description": "The word \"remove\" reused at several places (like remove buttons)",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 94
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.remove",
         "start": {
           "column": 10,
-          "line": 88
+          "line": 89
         }
       },
       {
@@ -6104,13 +6865,13 @@
         "description": "The word \"save\" reused at several places (like save buttons)",
         "end": {
           "column": 3,
-          "line": 98
+          "line": 99
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.save",
         "start": {
           "column": 8,
-          "line": 94
+          "line": 95
         }
       },
       {
@@ -6118,13 +6879,13 @@
         "description": "Language name for \"English\" language.",
         "end": {
           "column": 3,
-          "line": 103
+          "line": 104
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.english",
         "start": {
           "column": 19,
-          "line": 99
+          "line": 100
         }
       },
       {
@@ -6132,13 +6893,13 @@
         "description": "Language name for \"Japanese\" language.",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 109
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.japanese",
         "start": {
           "column": 20,
-          "line": 104
+          "line": 105
         }
       },
       {
@@ -6146,13 +6907,13 @@
         "description": "Language name for \"Chinese\" language.",
         "end": {
           "column": 3,
-          "line": 113
+          "line": 114
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.chinese",
         "start": {
           "column": 19,
-          "line": 109
+          "line": 110
         }
       },
       {
@@ -6160,13 +6921,13 @@
         "description": "Language name for \"Korean\" language.",
         "end": {
           "column": 3,
-          "line": 118
+          "line": 119
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.korean",
         "start": {
           "column": 18,
-          "line": 114
+          "line": 115
         }
       },
       {
@@ -6174,13 +6935,13 @@
         "description": "Language name for \"German\" language.",
         "end": {
           "column": 3,
-          "line": 123
+          "line": 124
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.german",
         "start": {
           "column": 18,
-          "line": 119
+          "line": 120
         }
       },
       {
@@ -6188,13 +6949,13 @@
         "description": "Language name for \"Croatian\" language.",
         "end": {
           "column": 3,
-          "line": 128
+          "line": 129
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.croatian",
         "start": {
           "column": 20,
-          "line": 124
+          "line": 125
         }
       },
       {
@@ -6202,13 +6963,13 @@
         "description": "Name for \"Normal\" transaction assurance security level.",
         "end": {
           "column": 3,
-          "line": 133
+          "line": 134
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.assuranceLevel.normal",
         "start": {
           "column": 24,
-          "line": 129
+          "line": 130
         }
       },
       {
@@ -6216,13 +6977,13 @@
         "description": "Name for \"Strict\" transaction assurance security level.",
         "end": {
           "column": 3,
-          "line": 138
+          "line": 139
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.assuranceLevel.strict",
         "start": {
           "column": 24,
-          "line": 134
+          "line": 135
         }
       },
       {
@@ -6230,13 +6991,13 @@
         "description": "Name for \"ADA\" unit.",
         "end": {
           "column": 3,
-          "line": 143
+          "line": 144
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.unit.ada",
         "start": {
           "column": 11,
-          "line": 139
+          "line": 140
         }
       },
       {
@@ -6244,13 +7005,13 @@
         "description": "Title for the \"Recovery Phrase\" dialog.",
         "end": {
           "column": 3,
-          "line": 148
+          "line": 149
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "wallet.backup.recovery.phrase.dialog.title",
         "start": {
           "column": 29,
-          "line": 144
+          "line": 145
         }
       },
       {
@@ -6258,13 +7019,13 @@
         "description": "Label for the \"Wallet password\" input in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 154
+          "line": 155
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 149
+          "line": 150
         }
       },
       {
@@ -6272,13 +7033,13 @@
         "description": "Placeholder for the \"Password\" inputs in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 160
+          "line": 161
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 155
+          "line": 156
         }
       },
       {
@@ -6286,13 +7047,13 @@
         "description": "Label \"Continue\" in dialogs.",
         "end": {
           "column": 3,
-          "line": 165
+          "line": 166
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.dialog.button.continue",
         "start": {
           "column": 29,
-          "line": 161
+          "line": 162
         }
       },
       {
@@ -6300,13 +7061,13 @@
         "description": "URL for the \"Known Issues\" link in the \"Help and support\" section on the support settings page",
         "end": {
           "column": 3,
-          "line": 172
+          "line": 173
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "settings.support.faq.faqLinkURL",
         "start": {
           "column": 14,
-          "line": 166
+          "line": 167
         }
       },
       {
@@ -6314,13 +7075,13 @@
         "description": "Name for \"Ada\" unit.",
         "end": {
           "column": 3,
-          "line": 177
+          "line": 178
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.currency.ada",
         "start": {
           "column": 12,
-          "line": 173
+          "line": 174
         }
       },
       {
@@ -6328,13 +7089,13 @@
         "description": "Name for \"Cardano\" client.",
         "end": {
           "column": 3,
-          "line": 182
+          "line": 183
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.apiName.cardano",
         "start": {
           "column": 11,
-          "line": 178
+          "line": 179
         }
       }
     ],
