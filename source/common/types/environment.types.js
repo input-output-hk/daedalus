@@ -17,12 +17,18 @@ export type Environment = {
   buildLabel: string,
   platform: string,
   platformVersion: string,
+  mainProcessID: string,
+  rendererProcessID: string,
   os: string,
+  cpu: string,
+  ram: number,
   installerVersion: string,
   version: string,
   isWindows: boolean,
   isMacOS: boolean,
   isLinux: boolean,
+  stateDirectoryPath: string,
+  isInSafeMode: boolean,
 };
 
 // constants

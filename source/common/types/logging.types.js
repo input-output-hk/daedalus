@@ -41,7 +41,7 @@ export type LogSystemInfoParams = {
   cpu: Array<Object>,
   current: string,
   daedalusVersion: string,
-  isInSafeMode: string,
+  isInSafeMode: boolean,
   network: string,
   osName: string,
   platformVersion: string,

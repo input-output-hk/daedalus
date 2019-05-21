@@ -6,12 +6,12 @@ import { getTranslation } from '../utils/getTranslation';
 import { environment } from '../environment';
 
 const id = 'menu';
+const { isWindows, isInSafeMode } = environment;
 
 export const winLinuxMenu = (
   app: App,
   window: BrowserWindow,
   actions: MenuActions,
-  isInSafeMode: boolean,
   translations: {},
   translation: Function = getTranslation(translations, id)
 ) => [
@@ -113,7 +113,7 @@ export const winLinuxMenu = (
           window.webContents.reload();
         },
       },
-      environment.isWindows
+      isWindows
         ? {
             label: translation('view.toggleFullScreen'),
             accelerator: 'F11',

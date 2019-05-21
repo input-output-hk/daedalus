@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented the navigation for the Staking pages ([PR 1395](https://github.com/input-output-hk/daedalus/pull/1395))
 - Implemented timestamp on paper wallet PDF's ([PR 1385](https://github.com/input-output-hk/daedalus/pull/1385))
 - Implemented "Start of decentralisation notification" UI ([PR 1390](https://github.com/input-output-hk/daedalus/pull/1390))
 - Implemented the wallet UTxO statistics screen ([PR 1353](https://github.com/input-output-hk/daedalus/pull/1353))
@@ -25,7 +26,8 @@ Changelog
 
 ### Chores
 
-- Updates our ui library react-polymorph to version 0.8.3 ([PR 1396](https://github.com/input-output-hk/daedalus/pull/1396))
+- Updates React-Polymorph to version 0.8.3 ([PR 1396](https://github.com/input-output-hk/daedalus/pull/1396))
+- Implemented new Network Status dialog design ([PR 1370](https://github.com/input-output-hk/daedalus/pull/1370))
 - Setup storybook build script to deploy previews for the QA team to Netlify ([1391](https://github.com/input-output-hk/daedalus/pull/1391))
 - Added unit tests for mnemonic generation and validation ([PR 1379](https://github.com/input-output-hk/daedalus/pull/1379))
 - Simplified the test setup ([PR 1378](https://github.com/input-output-hk/daedalus/pull/1378))
