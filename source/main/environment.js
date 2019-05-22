@@ -1,7 +1,8 @@
 // @flow
 import os from 'os';
-import { uniq, upperFirst } from 'lodash';
+import { uniq, upperFirst, get, includes } from 'lodash';
 import { version } from '../../package.json';
+import { stateDirectoryPath } from './config';
 import type { Environment } from '../common/types/environment.types';
 import {
   DEVELOPMENT,
@@ -28,9 +29,14 @@ const isTestnet = NETWORK === TESTNET;
 const isDevelopment = NETWORK === DEVELOPMENT;
 const isWatchMode = process.env.IS_WATCH_MODE;
 const API_VERSION = process.env.API_VERSION || 'dev';
+const mainProcessID = get(process, 'ppid', '-');
+const rendererProcessID = process.pid;
 const PLATFORM = os.platform();
 const PLATFORM_VERSION = os.release();
 const OS = OS_NAMES[PLATFORM] || PLATFORM;
+const cpu = os.cpus();
+const ram = os.totalmem();
+const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
 const BUILD = process.env.BUILD_NUMBER || 'dev';
 const BUILD_NUMBER = uniq([API_VERSION, BUILD]).join('.');
 const BUILD_LABEL = (() => {
@@ -66,12 +72,18 @@ export const environment: Environment = Object.assign(
     buildLabel: BUILD_LABEL,
     platform: PLATFORM,
     platformVersion: PLATFORM_VERSION,
+    mainProcessID,
+    rendererProcessID,
     os: OS,
+    cpu,
+    ram,
     installerVersion: INSTALLER_VERSION,
     version,
     isWindows,
     isMacOS,
     isLinux,
+    stateDirectoryPath,
+    isInSafeMode,
   },
   process.env
 );

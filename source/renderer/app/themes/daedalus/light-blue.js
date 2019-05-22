@@ -353,6 +353,18 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-nav-item-text-color': 'rgba(250,251,252, 0.6)',
     '--theme-nav-item-text-color-active': '#1d2e47',
   },
+  network: {
+    '--theme-network-window-background-color': 'rgba(36, 62, 98, 0.96)',
+    '--theme-network-window-text-color': '#fafbfc',
+    '--theme-network-window-icon-close-hover-background': 'rgba(0, 0, 0, 0.2)',
+    '--theme-network-window-red-color': '#f06e05',
+    '--theme-network-window-green-color': '#05f079',
+    '--theme-network-window-white-color': '#fff',
+    '--theme-network-window-transparent-color': 'transparent',
+    '--theme-network-window-border-color': 'rgba(255, 255, 255, 0.25)',
+    '--theme-network-window-button-color': '#243e62',
+    '--theme-network-window-button-background': 'rgba(250, 251, 252, 0.4)',
+  },
   nodeUpdate: {
     '--theme-node-update-background-color': '#ebeff2',
     '--theme-node-update-title-color': '#5e6066',
