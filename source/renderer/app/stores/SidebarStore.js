@@ -21,7 +21,27 @@ export default class SidebarStore extends Store {
     actions.walletSelected.listen(this._onWalletSelected);
 
     this.registerReactions([this._syncSidebarRouteWithRouter]);
+    // this.configureCategories();
   }
+
+  configureCategories = () => {
+    const { staking } = this.stores;
+    const { CATEGORIES_BY_NAME } = sidebarConfig;
+
+    if (staking.showCountDown) {
+      this.CATEGORIES.splice(
+        2,
+        0,
+        CATEGORIES_BY_NAME.STAKING_WITH_DELEGATION_COUNT_DOWN
+      );
+    } else {
+      this.CATEGORIES.splice(
+        2,
+        0,
+        CATEGORIES_BY_NAME.STAKING_WITHOUT_DELEGATION_COUNT_DOWN
+      );
+    }
+  };
 
   @computed get wallets(): Array<SidebarWalletType> {
     const { networkStatus, wallets } = this.stores;

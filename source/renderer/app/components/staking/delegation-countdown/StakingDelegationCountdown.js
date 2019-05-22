@@ -2,12 +2,12 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import DelegationCountDownInfo from './DelegationCountDownInfo';
-import styles from './StakingDelegationCountdown.scss';
+import styles from './StakingDelegationCountDown.scss';
 
 type Props = { currentLocale: string, startDateTime: string };
 
 @observer
-export default class StakingDelegationCountdown extends Component<Props> {
+export default class StakingDelegationCountDown extends Component<Props> {
   render() {
     const { currentLocale, startDateTime } = this.props;
 

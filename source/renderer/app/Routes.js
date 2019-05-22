@@ -17,15 +17,13 @@ import TermsOfUsePage from './containers/profile/TermsOfUsePage';
 import DataLayerMigrationPage from './containers/profile/DataLayerMigrationPage';
 import DisplaySettingsPage from './containers/settings/categories/DisplaySettingsPage';
 import PaperWalletCreateCertificatePage from './containers/wallet/PaperWalletCreateCertificatePage';
-// import DelegationPage from './containers/staking/DelegationPage';
-// import DelegationProgressPage from './containers/staking/DelegationProgressPage';
 import Staking from './containers/staking/Staking';
 import StakingDelegationCenterPage from './containers/staking/StakingDelegationCenterPage';
-import StakingEpochsPagePage from './containers/staking/StakingEpochsPage';
+import StakingEpochsPage from './containers/staking/StakingEpochsPage';
 import StakingInfoPage from './containers/staking/StakingInfoPage';
 import StakingRewardsPage from './containers/staking/StakingRewardsPage';
 import StakingStakePoolsPage from './containers/staking/StakingStakePoolsPage';
-import StakingDelegationCountdownPage from './containers/staking/StakingDelegationCountdownPage';
+import StakingDelegationCountDownPage from './containers/staking/StakingDelegationCountDownPage';
 import Wallet from './containers/wallet/Wallet';
 import WalletSummaryPage from './containers/wallet/WalletSummaryPage';
 import WalletSendPage from './containers/wallet/WalletSendPage';
@@ -77,12 +75,12 @@ export const Routes = (
       path={ROUTES.PAPER_WALLET_CREATE_CERTIFICATE}
       component={PaperWalletCreateCertificatePage}
     />
-    <Route
-      path={ROUTES.STAKING.DELEGATION_COUNTDOWN}
-      component={StakingDelegationCountdownPage}
-    />
     <Route path={ROUTES.STAKING.ROOT} component={Staking}>
-      <IndexRedirect to={ROUTES.STAKING.DELEGATION_CENTER} />
+      <IndexRedirect to={ROUTES.STAKING.DELEGATION_COUNTDOWN} />
+      <Route
+        path={ROUTES.STAKING.DELEGATION_COUNTDOWN}
+        component={StakingDelegationCountDownPage}
+      />
       <Route
         path={ROUTES.STAKING.DELEGATION_CENTER}
         component={StakingDelegationCenterPage}
@@ -92,7 +90,7 @@ export const Routes = (
         component={StakingStakePoolsPage}
       />
       <Route path={ROUTES.STAKING.REWARDS} component={StakingRewardsPage} />
-      <Route path={ROUTES.STAKING.EPOCHS} component={StakingEpochsPagePage} />
+      <Route path={ROUTES.STAKING.EPOCHS} component={StakingEpochsPage} />
       <Route path={ROUTES.STAKING.INFO} component={StakingInfoPage} />
     </Route>
   </Route>

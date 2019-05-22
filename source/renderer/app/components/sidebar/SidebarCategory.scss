@@ -113,6 +113,15 @@
   }
 }
 
+.decentralizationProgressIcon {
+  flex-shrink: 0;
+  & > svg {
+    width: 48px;
+    height: 48px;
+    margin-left: -12px;
+  }
+}
+
 .label {
   font-family: var(--font-regular);
   font-size: 18px;

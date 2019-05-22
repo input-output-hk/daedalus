@@ -1,28 +1,25 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import StakingDelegationCountDown from '../../components/staking/delegation-countdown/StakingDelegationCountDown';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import StakingDelegationCountdown from '../../components/staking/delegation-countdown/StakingDelegationCountdown';
-import Layout from '../MainLayout';
+
+type Props = InjectedProps;
 
 @inject('stores')
 @observer
-export default class StakingDelegationCountdownPage extends Component<InjectedProps> {
-  static defaultProps = { actions: null, stores: null };
+export default class StakingDelegationCountDownPage extends Component<Props> {
+  static defaultProps = { actions: null, stores: {} };
 
   render() {
     const { stores } = this.props;
-    const { profile, staking } = stores;
+    const { profile = {}, staking = {} } = stores;
 
     return (
-      <Layout>
-        <div style={{ height: '100%' }}>
-          <StakingDelegationCountdown
-            currentLocale={profile.currentLocale}
-            startDateTime={staking.startDateTime}
-          />
-        </div>
-      </Layout>
+      <StakingDelegationCountDown
+        currentLocale={profile.currentLocale}
+        startDateTime={staking.startDateTime}
+      />
     );
   }
 }

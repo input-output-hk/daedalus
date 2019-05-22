@@ -14,7 +14,7 @@ export default class StakingInfoPage extends Component<Props> {
   render() {
     return (
       <StakingInfo
-        percentage={this.props.stores.staking.decentralisationProgress}
+        percentage={this.props.stores.staking.decentralizationProgress}
       />
     );
   }

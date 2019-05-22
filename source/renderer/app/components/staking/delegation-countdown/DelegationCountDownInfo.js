@@ -5,7 +5,6 @@ import { defineMessages, intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import humanizeDuration from 'humanize-duration';
-import moment from 'moment';
 import styles from './DelegationCountDownInfo.scss';
 
 const messages = defineMessages({
@@ -44,7 +43,7 @@ export default class DelegationCountDownInfo extends Component<Props> {
     const { currentLocale, startDateTime } = this.props;
     const timeLeft = Math.max(
       0,
-      moment(startDateTime).valueOf() - new Date().getTime()
+      new Date(startDateTime).getTime() - new Date().getTime()
     );
 
     let humanizedDurationLanguage = null;

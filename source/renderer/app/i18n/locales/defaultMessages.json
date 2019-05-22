@@ -1547,13 +1547,13 @@
         "description": "Headline for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 15
         },
         "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountDownInfo.js",
         "id": "staking.delegationCountDown.heading",
         "start": {
           "column": 11,
-          "line": 12
+          "line": 11
         }
       },
       {
@@ -1561,13 +1561,13 @@
         "description": "Info for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 21
         },
         "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountDownInfo.js",
         "id": "staking.delegationCountDown.description",
         "start": {
           "column": 15,
-          "line": 17
+          "line": 16
         }
       },
       {
@@ -1575,13 +1575,13 @@
         "description": "Description for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 26
         },
         "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountDownInfo.js",
         "id": "staking.delegationCountDown.timeLeftDesc",
         "start": {
           "column": 16,
-          "line": 23
+          "line": 22
         }
       },
       {
@@ -1589,13 +1589,13 @@
         "description": "Button Label for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 31
         },
         "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountDownInfo.js",
         "id": "staking.delegationCountDown.buttonLabel",
         "start": {
           "column": 15,
-          "line": 28
+          "line": 27
         }
       }
     ],

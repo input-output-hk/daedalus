@@ -10,7 +10,7 @@ import StoryDecorator from './support/StoryDecorator';
 import { CATEGORIES_BY_NAME } from '../../source/renderer/app/config/sidebarConfig';
 
 import StakingWithNavigation from '../../source/renderer/app/components/staking/layouts/StakingWithNavigation';
-import StakingDelegationCountdown from '../../source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown';
+import StakingDelegationCountDown from '../../source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountDown';
 import StakingDelegationCenter from '../../source/renderer/app/components/staking/delegation-center/StakingDelegationCenter';
 import StakingStakePools from '../../source/renderer/app/components/staking/stake-pools/StakingStakePools';
 import StakingRewards from '../../source/renderer/app/components/staking/rewards/StakingRewards';
@@ -35,25 +35,33 @@ const pageNames = {
 storiesOf('Staking', module)
   .addDecorator((story, context) => {
     const storyWithKnobs = withKnobs(story, context);
-
     const getItemFromContext = () => context.parameters.id;
+    let activeSidebarCategory = null;
+
+    if (context.parameters.id === 'countdown') {
+      activeSidebarCategory =
+        CATEGORIES_BY_NAME.STAKING_WITH_DELEGATION_COUNT_DOWN.route;
+    } else {
+      activeSidebarCategory =
+        CATEGORIES_BY_NAME.STAKING_WITHOUT_DELEGATION_COUNT_DOWN.route;
+    }
 
     return (
       <StoryDecorator>
         <StoryProvider>
           <StoryLayout
-            activeSidebarCategory={CATEGORIES_BY_NAME.STAKING.route}
+            activeSidebarCategory={activeSidebarCategory}
             storyName={context.story}
           >
-            {context.parameters.id !== 'countdown' ? (
+            {context.parameters.id === 'countdown' ? (
+              storyWithKnobs
+            ) : (
               <StakingWithNavigation
                 activeItem={getItemFromContext()}
                 onNavItemClick={linkTo('Staking', item => pageNames[item])}
               >
                 {storyWithKnobs}
               </StakingWithNavigation>
-            ) : (
-              storyWithKnobs
             )}
           </StoryLayout>
         </StoryProvider>
@@ -63,13 +71,13 @@ storiesOf('Staking', module)
   // ====== Stories ======
 
   .add(
-    'Start of decentralisation notification',
+    'Decentralization Start Info',
     () => (
       <div>
-        <StakingDelegationCountdown
+        <StakingDelegationCountDown
           currentLocale="en-US"
           startDateTime={startDateTimeKnob(
-            'Delegation Start DateTime',
+            'Decentralization Start DateTime',
             defaultStartDateTime
           )}
         />
