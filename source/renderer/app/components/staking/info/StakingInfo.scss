@@ -53,8 +53,8 @@
   border-radius: 5px;
   height: 100%;
   position: relative;
-  z-index: 1000;
   overflow: hidden;
+  z-index: 1000;
 }
 
 .progressLabel {
@@ -68,7 +68,7 @@
 .progressBackLabel {
   @extend %regularText;
   position: absolute;
-  z-index: 500;
   top: 50%;
   transform: translate(-50%, -50%);
+  z-index: 500;
 }

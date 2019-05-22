@@ -10,7 +10,7 @@ import StoryDecorator from './support/StoryDecorator';
 import { CATEGORIES_BY_NAME } from '../../source/renderer/app/config/sidebarConfig';
 
 import StakingWithNavigation from '../../source/renderer/app/components/staking/layouts/StakingWithNavigation';
-import StakingDelegationCountDown from '../../source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountDown';
+import StakingDelegationCountDown from '../../source/renderer/app/components/staking/delegation-count-down/StakingDelegationCountDown';
 import StakingDelegationCenter from '../../source/renderer/app/components/staking/delegation-center/StakingDelegationCenter';
 import StakingStakePools from '../../source/renderer/app/components/staking/stake-pools/StakingStakePools';
 import StakingRewards from '../../source/renderer/app/components/staking/rewards/StakingRewards';
@@ -75,6 +75,7 @@ storiesOf('Staking', module)
     () => (
       <div>
         <StakingDelegationCountDown
+          actions={null}
           currentLocale="en-US"
           startDateTime={startDateTimeKnob(
             'Decentralization Start DateTime',

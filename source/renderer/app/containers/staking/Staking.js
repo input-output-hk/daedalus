@@ -13,31 +13,35 @@ type Props = InjectedContainerProps;
 @observer
 export default class Staking extends Component<Props> {
   componentDidMount() {
+    this.handleDelegationRoute();
+  }
+
+  handleDelegationRoute = () => {
     const {
       actions,
       stores: { app, staking },
     } = this.props;
 
     if (
-      staking.showCountDown &&
-      app.currentRoute !== ROUTES.STAKING.DELEGATION_COUNTDOWN
+      staking.showCountDown() &&
+      app.currentRoute !== ROUTES.STAKING.DELEGATION_COUNT_DOWN
     ) {
       return actions.router.goToRoute.trigger({
-        route: ROUTES.STAKING.DELEGATION_COUNTDOWN,
+        route: ROUTES.STAKING.DELEGATION_COUNT_DOWN,
       });
     }
 
     if (
-      !staking.showCountDown &&
-      app.currentRoute === ROUTES.STAKING.DELEGATION_COUNTDOWN
+      !staking.showCountDown() &&
+      app.currentRoute === ROUTES.STAKING.DELEGATION_COUNT_DOWN
     ) {
       return actions.router.goToRoute.trigger({
-        route: ROUTES.STAKING.DELEGATION_CENTER,
+        route: ROUTES.STAKING.INFO,
       });
     }
 
     return true;
-  }
+  };
 
   handleNavItemClick = (page: string) => {
     this.props.actions.router.goToRoute.trigger({
@@ -54,7 +58,7 @@ export default class Staking extends Component<Props> {
 
     return (
       <MainLayout>
-        {staking.showCountDown ? (
+        {staking.showCountDown() ? (
           children
         ) : (
           <StakingWithNavigation

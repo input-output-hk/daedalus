@@ -1,10 +1,10 @@
 // @flow
-import { computed } from 'mobx';
+import { computed, action } from 'mobx';
 import Store from './lib/Store';
 import { ROUTES } from '../routes-config';
 
 export default class StakingStore extends Store {
-  startDateTime: string = '2019-12-01T10:50:10.161Z';
+  startDateTime: string = '2019-05-26T23:00:51.161Z';
   decentralizationProgress: number = 10;
 
   @computed get currentRoute(): string {
@@ -15,7 +15,7 @@ export default class StakingStore extends Store {
     return this.currentRoute.indexOf(ROUTES.STAKING.ROOT) > -1;
   }
 
-  @computed get showCountDown(): boolean {
+  @action showCountDown(): boolean {
     return new Date(this.startDateTime).getTime() - new Date().getTime() > 0;
   }
 }

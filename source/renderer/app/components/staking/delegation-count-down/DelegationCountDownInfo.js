@@ -6,6 +6,7 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import humanizeDuration from 'humanize-duration';
 import styles from './DelegationCountDownInfo.scss';
+import { ROUTES } from '../../../routes-config';
 
 const messages = defineMessages({
   heading: {
@@ -31,7 +32,7 @@ const messages = defineMessages({
   },
 });
 
-type Props = { currentLocale: string, startDateTime: string };
+type Props = { actions: any, currentLocale: string, startDateTime: string };
 
 @observer
 export default class DelegationCountDownInfo extends Component<Props> {
@@ -39,12 +40,46 @@ export default class DelegationCountDownInfo extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  translateTimeLeft = () => {
-    const { currentLocale, startDateTime } = this.props;
+  timeoutHandler = null;
+  state = { timeLeft: null };
+
+  componentDidMount() {
+    this.updateTimeLeft();
+  }
+
+  updateTimeLeft = () => {
+    const { actions, startDateTime } = this.props;
     const timeLeft = Math.max(
       0,
       new Date(startDateTime).getTime() - new Date().getTime()
     );
+
+    this.setState({ timeLeft });
+
+    if (timeLeft === 0) {
+      if (actions) {
+        return actions.router.goToRoute.trigger({
+          route: ROUTES.STAKING.INFO,
+        });
+      }
+      return true;
+    }
+
+    this.timeoutHandler = setTimeout(() => this.updateTimeLeft(), 1000);
+    return true;
+  };
+
+  componentWillUnmount() {
+    clearTimeout(this.timeoutHandler);
+  }
+
+  translateTimeLeft = () => {
+    const { currentLocale } = this.props;
+    const { timeLeft } = this.state;
+
+    if (!timeLeft) {
+      return null;
+    }
 
     let humanizedDurationLanguage = null;
     switch (currentLocale) {

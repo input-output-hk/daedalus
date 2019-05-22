@@ -28,7 +28,7 @@ export default class SidebarStore extends Store {
     const { staking } = this.stores;
     const { CATEGORIES_BY_NAME } = sidebarConfig;
 
-    if (staking.showCountDown) {
+    if (staking.showCountDown()) {
       this.CATEGORIES.splice(
         2,
         0,
