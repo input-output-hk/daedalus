@@ -3,19 +3,19 @@ import moment from 'moment';
 
 export const defaultProps = {
   prefix: 'logs',
-  extention: 'zip',
+  extension: 'zip',
   isUTC: true,
 };
 
 type Props = {
   prefix?: string,
-  extention?: string,
+  extension?: string,
   date?: moment,
   isUTC?: boolean,
 };
 
 export const generateFileNameWithTimestamp = (props?: Props = {}) => {
-  const { prefix, extention, isUTC } = {
+  const { prefix, extension, isUTC } = {
     ...defaultProps,
     ...props,
   };
@@ -27,17 +27,17 @@ export const generateFileNameWithTimestamp = (props?: Props = {}) => {
     z = 'Z';
   }
   return `${prefix}-${`${date.format('YYYY-MM-DDTHHmmss.0SSS')}${z}`}${
-    extention ? '.' : ''
-  }${extention}`;
+    extension ? '.' : ''
+  }${extension}`;
 };
 
 export const isFileNameWithTimestamp = (
   prefix: string = 'logs',
-  extention: string = 'zip'
+  extension: string = 'zip'
 ) => (fileName: string) =>
   fileName.match(
     RegExp(
-      `(${prefix}-)([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{6}.0[0-9]{3}Z)(.${extention})`
+      `(${prefix}-)([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{6}.0[0-9]{3}Z)(.${extension})`
     )
   );
 

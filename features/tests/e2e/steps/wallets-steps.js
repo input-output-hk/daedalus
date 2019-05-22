@@ -186,7 +186,7 @@ When(
 );
 
 When(/^I click the wallet (.*) button$/, async function(buttonName) {
-  const buttonSelector = `.WalletNavButton_component.${buttonName}`;
+  const buttonSelector = `.NavButton_component.${buttonName}`;
   await this.client.waitForVisible(buttonSelector);
   await this.client.click(buttonSelector);
 });
@@ -540,7 +540,7 @@ Then(/^I should have newly created "([^"]*)" wallet loaded$/, async function(
 });
 
 Then(/^I should be on some wallet page$/, async function() {
-  return this.client.waitForVisible('.WalletNavigation_component');
+  return this.client.waitForVisible('.Navigation_component');
 });
 
 Then(/^I should be on the "([^"]*)" wallet "([^"]*)" screen$/, async function(

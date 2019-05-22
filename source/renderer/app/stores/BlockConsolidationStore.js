@@ -85,7 +85,7 @@ export default class BlockConsolidationStore extends Store {
   };
 
   @action _getBlockConsolidationApiData = async () => {
-    if (!this.stores.networkStatus._tlsConfig) {
+    if (!this.stores.networkStatus.tlsConfig) {
       this._stopBlockConsolidationDataPolling({ apiOnly: true });
       this.actions.networkStatus.tlsConfigIsReady.listen(
         this._startBlockConsolidationDataPolling
