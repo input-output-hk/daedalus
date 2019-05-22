@@ -1,7 +1,7 @@
 [
   {
     "rank": 1,
-    "id": "CADC",
+    "id": "CADX",
     "name": "cilostazol",
     "description": "Supportive verbal psychotherapy",
     "url": "http://umich.edu",
@@ -12,7 +12,7 @@
   },
   {
     "rank": 2,
-    "id": "BURL",
+    "id": "BURX",
     "name": "Methyldopa",
     "description": "Low forceps operation with episiotomy",
     "url": "http://adobe.com",
@@ -23,7 +23,7 @@
   },
   {
     "rank": 3,
-    "id": "NTL",
+    "id": "NTLX",
     "name": "Cepacol",
     "description": "Other skin graft to lip and mouth",
     "url": "http://infoseek.co.jp",
@@ -34,7 +34,7 @@
   },
   {
     "rank": 4,
-    "id": "APAM",
+    "id": "APAX",
     "name": "Olanzapine",
     "description": "Excision of lesion or tissue of gum",
     "url": "https://census.gov",
@@ -45,7 +45,7 @@
   },
   {
     "rank": 5,
-    "id": "ELON",
+    "id": "ELOX",
     "name": "Risperidone",
     "description": "Other orbitotomy",
     "url": "https://shutterfly.com",
@@ -56,7 +56,7 @@
   },
   {
     "rank": 6,
-    "id": "DVD",
+    "id": "DVDX",
     "name": "Tramadol Hydrochloride",
     "description": "Retrograde cystourethrogram",
     "url": "http://t-online.de",
@@ -67,7 +67,7 @@
   },
   {
     "rank": 7,
-    "id": "PFO",
+    "id": "PFOX",
     "name": "Levothyroxine Sodium",
     "description": "Revision of corrective procedure on heart",
     "url": "http://zimbio.com",
@@ -78,7 +78,7 @@
   },
   {
     "rank": 8,
-    "id": "SYT",
+    "id": "SYTX",
     "name": "Sinus and Cold D",
     "description": "Microscopic examination of specimen from unspecified site, toxicology",
     "url": "http://posterous.com",
@@ -89,7 +89,7 @@
   },
   {
     "rank": 9,
-    "id": "CHK",
+    "id": "CHKX",
     "name": "Cevimeline Hydrochloride",
     "description": "Injection of locally-acting therapeutic substance into trachea",
     "url": "http://eepurl.com",
@@ -100,7 +100,7 @@
   },
   {
     "rank": 10,
-    "id": "ASNA",
+    "id": "ASNX",
     "name": "Nadolol",
     "description": "Other bunionectomy",
     "url": "https://hud.gov",
@@ -111,7 +111,7 @@
   },
   {
     "rank": 11,
-    "id": "XOM",
+    "id": "XOMX",
     "name": "enema",
     "description": "Suture of laceration of trachea",
     "url": "https://miibeian.gov.cn",
@@ -122,7 +122,7 @@
   },
   {
     "rank": 12,
-    "id": "LMOS",
+    "id": "LMOX",
     "name": "Good Sense Antacid",
     "description": "Other surgical occlusion of vessels, upper limb vessels",
     "url": "https://mozilla.org",
@@ -133,7 +133,7 @@
   },
   {
     "rank": 13,
-    "id": "DFS^B",
+    "id": "DFSX",
     "name": "Clindamycin hydrochloride",
     "description": "Incision of vessel, upper limb vessels",
     "url": "https://example.com",
@@ -144,7 +144,7 @@
   },
   {
     "rank": 14,
-    "id": "WBS",
+    "id": "WBSX",
     "name": "Coppertone",
     "description": "Open pull-through resection of rectum",
     "url": "https://soundcloud.com",
@@ -155,7 +155,7 @@
   },
   {
     "rank": 15,
-    "id": "HWBK",
+    "id": "HWBX",
     "name": "Electrolyte Plus",
     "description": "Transfusion of previously collected autologous blood",
     "url": "http://diigo.com",
@@ -166,7 +166,7 @@
   },
   {
     "rank": 16,
-    "id": "LANDP",
+    "id": "LANX",
     "name": "Terrasil Itch, Rash and Pain Relief",
     "description": "Auxiliary liver transplant",
     "url": "https://themeforest.net",
@@ -177,7 +177,7 @@
   },
   {
     "rank": 17,
-    "id": "RAND",
+    "id": "RANX",
     "name": "Human Albumin Grifols",
     "description": "Radial keratotomy",
     "url": "http://eepurl.com",
@@ -188,7 +188,7 @@
   },
   {
     "rank": 18,
-    "id": "BAM",
+    "id": "BAMX",
     "name": "Diltiazem Hydrochloride",
     "description": "Laparoscopic resection of transverse colon",
     "url": "https://dell.com",
@@ -199,7 +199,7 @@
   },
   {
     "rank": 19,
-    "id": "DDBI",
+    "id": "DDBX",
     "name": "DEBLITANE",
     "description": "Reopening of recent laparotomy site",
     "url": "http://mail.ru",
@@ -210,7 +210,7 @@
   },
   {
     "rank": 20,
-    "id": "ASA",
+    "id": "ASAX",
     "name": "Lansoprazole",
     "description": "Enucleation of eyeball with other synchronous implant",
     "url": "https://google.pl",
@@ -221,7 +221,7 @@
   },
   {
     "rank": 21,
-    "id": "BCS",
+    "id": "BCSX",
     "name": "Medium Cuts and Scratches",
     "description": "Injection or infusion of other therapeutic or prophylactic substance",
     "url": "http://microsoft.com",
@@ -232,7 +232,7 @@
   },
   {
     "rank": 22,
-    "id": "ICL",
+    "id": "ICLX",
     "name": "Quetiapine Fumarate",
     "description": "Resurfacing hip, total, acetabulum and femoral head",
     "url": "http://uol.com.br",
@@ -243,7 +243,7 @@
   },
   {
     "rank": 23,
-    "id": "BCBP",
+    "id": "BCBX",
     "name": "Haloperidol",
     "description": "Ventricular shunt to urinary system",
     "url": "https://kickstarter.com",
@@ -254,7 +254,7 @@
   },
   {
     "rank": 24,
-    "id": "DRH",
+    "id": "DRHX",
     "name": "Ibuprofen",
     "description": "Other division of soft tissue",
     "url": "http://bbc.co.uk",
@@ -265,7 +265,7 @@
   },
   {
     "rank": 25,
-    "id": "W",
+    "id": "WXXX",
     "name": "ALTERNARIA TENUIS",
     "description": "Other diagnostic ultrasound",
     "url": "http://indiatimes.com",
@@ -276,7 +276,7 @@
   },
   {
     "rank": 26,
-    "id": "CARO",
+    "id": "CARX",
     "name": "Lamotrigine",
     "description": "Microscopic examination of specimen from operative wound, culture and sensitivity",
     "url": "http://storify.com",
@@ -287,7 +287,7 @@
   },
   {
     "rank": 27,
-    "id": "SEDG",
+    "id": "SEDX",
     "name": "Mirtazapine",
     "description": "Arthrotomy for removal of prosthesis without replacement, elbow",
     "url": "https://springer.com",
@@ -298,7 +298,7 @@
   },
   {
     "rank": 28,
-    "id": "ACRE",
+    "id": "ACRX",
     "name": "Nasal Four",
     "description": "Other vaginotomy",
     "url": "http://dot.gov",
@@ -309,7 +309,7 @@
   },
   {
     "rank": 29,
-    "id": "SXCP",
+    "id": "SXCX",
     "name": "Sugar Maple",
     "description": "Other transurethral prostatectomy",
     "url": "http://nsw.gov.au",
@@ -320,7 +320,7 @@
   },
   {
     "rank": 30,
-    "id": "ITIC",
+    "id": "ITIX",
     "name": "Chlordiazepoxide Hydrochloride and Clidinium Bromide",
     "description": "Other incision of perivesical tissue",
     "url": "http://weather.com",
@@ -331,7 +331,7 @@
   },
   {
     "rank": 31,
-    "id": "KST",
+    "id": "KSTX",
     "name": "ziprasidone hydrochloride",
     "description": "Exploration of pineal field",
     "url": "http://telegraph.co.uk",
@@ -342,7 +342,7 @@
   },
   {
     "rank": 32,
-    "id": "BWINB",
+    "id": "BWIX",
     "name": "Fosinopril Sodium and Hydrochlorothiazide",
     "description": "Coronary arteriography using a single catheter",
     "url": "https://umich.edu",
@@ -353,7 +353,7 @@
   },
   {
     "rank": 33,
-    "id": "FLL",
+    "id": "FLLX",
     "name": "Garnier Ultra Lift Deep Wrinkle Intensive Day",
     "description": "Fetal blood sampling and biopsy",
     "url": "http://ox.ac.uk",
@@ -364,7 +364,7 @@
   },
   {
     "rank": 34,
-    "id": "WRI",
+    "id": "WRIX",
     "name": "Povidone Iodine Scrub",
     "description": "Drug detoxification",
     "url": "https://pagesperso-orange.fr",
@@ -375,7 +375,7 @@
   },
   {
     "rank": 35,
-    "id": "MUR",
+    "id": "MURX",
     "name": "Neutrogena Ultimate Sport Sunblock",
     "description": "Repair of heart assist system",
     "url": "https://salon.com",
@@ -386,7 +386,7 @@
   },
   {
     "rank": 36,
-    "id": "FBMS",
+    "id": "FBMX",
     "name": "Wheat Stem Rust",
     "description": "Other partial ostectomy, patella",
     "url": "http://comsenz.com",
@@ -397,7 +397,7 @@
   },
   {
     "rank": 37,
-    "id": "GPT",
+    "id": "GPTX",
     "name": "Olanzapine",
     "description": "Re-entry operation (aorta)",
     "url": "https://artisteer.com",
@@ -408,7 +408,7 @@
   },
   {
     "rank": 38,
-    "id": "INVA",
+    "id": "INVX",
     "name": "Diazepam",
     "description": "Laparoscopic total abdominal hysterectomy",
     "url": "https://pcworld.com",
@@ -419,7 +419,7 @@
   },
   {
     "rank": 39,
-    "id": "BAC.WS.B",
+    "id": "BACX",
     "name": "Hand Sanitizer",
     "description": "Percutaneous hepatic cholangiogram",
     "url": "http://elpais.com",
@@ -430,7 +430,7 @@
   },
   {
     "rank": 40,
-    "id": "PDS",
+    "id": "PDSX",
     "name": "Monodox",
     "description": "Insertion of vaginal mold",
     "url": "https://opera.com",
@@ -441,7 +441,7 @@
   },
   {
     "rank": 41,
-    "id": "SRI",
+    "id": "SRIX",
     "name": "Panic Button",
     "description": "Bilateral inguinal hernia repair with graft or prosthesis, not otherwise specified",
     "url": "https://dot.gov",
@@ -452,7 +452,7 @@
   },
   {
     "rank": 42,
-    "id": "WNEB",
+    "id": "WNEX",
     "name": "Daytime Nighttime Non-Aspirin Cold Formula Multi-Symptom",
     "description": "Other cervical biopsy",
     "url": "http://mail.ru",
@@ -463,7 +463,7 @@
   },
   {
     "rank": 43,
-    "id": "EDGW",
+    "id": "EDGX",
     "name": "Hypopituitaryplex",
     "description": "Other operations on vulva",
     "url": "http://chronoengine.com",
@@ -485,7 +485,7 @@
   },
   {
     "rank": 45,
-    "id": "MCRB",
+    "id": "MCRX",
     "name": "Fenofibrate",
     "description": "Open robotic assisted procedure",
     "url": "http://domainmarket.com",
@@ -496,7 +496,7 @@
   },
   {
     "rank": 46,
-    "id": "SB^D",
+    "id": "SBDX",
     "name": "Metronidazole",
     "description": "Hip bearing surface, metal-on-polyethylene",
     "url": "http://google.com.br",
@@ -507,7 +507,7 @@
   },
   {
     "rank": 47,
-    "id": "EMCB",
+    "id": "EMCX",
     "name": "CABBAGE",
     "description": "Transplantation of spermatic cord",
     "url": "http://state.tx.us",
@@ -518,7 +518,7 @@
   },
   {
     "rank": 48,
-    "id": "ACSF",
+    "id": "ACSX",
     "name": "phendimetrazine tartrate",
     "description": "Open and other resection of transverse colon",
     "url": "http://auda.org.au",
@@ -529,7 +529,7 @@
   },
   {
     "rank": 49,
-    "id": "SBGL",
+    "id": "SBGX",
     "name": "SAPHRIS",
     "description": "Continuous invasive mechanical ventilation for 96 consecutive hours or more",
     "url": "https://topsy.com",
@@ -540,7 +540,7 @@
   },
   {
     "rank": 50,
-    "id": "BBN",
+    "id": "BBNX",
     "name": "PAROXETINE",
     "description": "Other diagnostic procedures on rectum, rectosigmoid and perirectal tissue",
     "url": "https://twitter.com",
@@ -551,7 +551,7 @@
   },
   {
     "rank": 51,
-    "id": "STLRW",
+    "id": "STLX",
     "name": "Esoterica",
     "description": "External version assisting delivery",
     "url": "http://foxnews.com",
@@ -562,7 +562,7 @@
   },
   {
     "rank": 52,
-    "id": "WHLRD",
+    "id": "WHLX",
     "name": "Cilostazol",
     "description": "Closed [endoscopic] biopsy of small intestine",
     "url": "https://tripod.com",
@@ -573,7 +573,7 @@
   },
   {
     "rank": 53,
-    "id": "MSB",
+    "id": "MSBX",
     "name": "Manefit Beauty Planner Lily Whitening Eye Patch",
     "description": "Radical subtotal pancreatectomy",
     "url": "http://usgs.gov",
@@ -584,7 +584,7 @@
   },
   {
     "rank": 54,
-    "id": "TSCO",
+    "id": "TSCX",
     "name": "Hemoban",
     "description": "Microscopic examination of specimen from liver, biliary tract, and pancreas, bacterial smear",
     "url": "https://ibm.com",
@@ -595,7 +595,7 @@
   },
   {
     "rank": 55,
-    "id": "TGI",
+    "id": "TGIX",
     "name": "BASIL",
     "description": "Other proctopexy",
     "url": "http://barnesandnoble.com",
@@ -606,7 +606,7 @@
   },
   {
     "rank": 56,
-    "id": "JAZZ",
+    "id": "JAZX",
     "name": "Natures Antibac Peppermint",
     "description": "Repair of diaphragmatic hernia with thoracic approach, not otherwise specified",
     "url": "https://theglobeandmail.com",
@@ -617,7 +617,7 @@
   },
   {
     "rank": 57,
-    "id": "TY",
+    "id": "TYXX",
     "name": "Hops",
     "description": "Injection of steroid",
     "url": "https://ning.com",
@@ -628,7 +628,7 @@
   },
   {
     "rank": 58,
-    "id": "CRNT",
+    "id": "CRNX",
     "name": "AMBROSIA TENUIFOLIA POLLEN",
     "description": "Microscopic examination of specimen from nervous system and of spinal fluid, culture",
     "url": "https://salon.com",
@@ -639,7 +639,7 @@
   },
   {
     "rank": 59,
-    "id": "AIW",
+    "id": "AIWX",
     "name": "Aunt Bees Five Flavors",
     "description": "Other partial ostectomy, unspecified site",
     "url": "http://ihg.com",
@@ -650,7 +650,7 @@
   },
   {
     "rank": 60,
-    "id": "SGC",
+    "id": "SGCX",
     "name": "Paricalcitol",
     "description": "Repair of brain",
     "url": "http://yandex.ru",
@@ -661,7 +661,7 @@
   },
   {
     "rank": 61,
-    "id": "OMCL",
+    "id": "OMCX",
     "name": "Non-Aspirin PM",
     "description": "Control of epistaxis by (transantral) ligation of the maxillary artery",
     "url": "http://latimes.com",
@@ -672,7 +672,7 @@
   },
   {
     "rank": 62,
-    "id": "GOLD",
+    "id": "GOLX",
     "name": "Molds - Trichophyton Mix",
     "description": "Aspiration curettage of uterus for termination of pregnancy",
     "url": "http://amazonaws.com",
@@ -683,7 +683,7 @@
   },
   {
     "rank": 63,
-    "id": "MPB",
+    "id": "MPBX",
     "name": "Levothyroxine Sodium",
     "description": "Probing of lacrimal punctum",
     "url": "http://gmpg.org",
@@ -694,7 +694,7 @@
   },
   {
     "rank": 64,
-    "id": "PRSS",
+    "id": "PRSX",
     "name": "TUSSI PRES PEDIATRIC",
     "description": "Internal fixation of bone without fracture reduction, patella",
     "url": "http://engadget.com",
@@ -705,7 +705,7 @@
   },
   {
     "rank": 65,
-    "id": "IHG",
+    "id": "IHGX",
     "name": "THE ORIGINAL NATURAL HERB COUGH DROPS",
     "description": "Intrathoracic esophagogastrostomy",
     "url": "https://opensource.org",
@@ -716,7 +716,7 @@
   },
   {
     "rank": 66,
-    "id": "W",
+    "id": "WXXX",
     "name": "ACETAMINOPHEN",
     "description": "Repair of postoperative wound dehiscence of cornea",
     "url": "https://ow.ly",
@@ -727,7 +727,7 @@
   },
   {
     "rank": 67,
-    "id": "ARH^C",
+    "id": "ARHX",
     "name": "Citalopram",
     "description": "Repair of retinal detachment with photocoagulation of unspecified type",
     "url": "https://shutterfly.com",
@@ -738,7 +738,7 @@
   },
   {
     "rank": 68,
-    "id": "TRMR",
+    "id": "TRMX",
     "name": "Rejuvenate 2000 PM Formula For Women",
     "description": "Probing of salivary duct",
     "url": "http://reverbnation.com",
@@ -760,7 +760,7 @@
   },
   {
     "rank": 70,
-    "id": "KMT",
+    "id": "KMTX",
     "name": "B4",
     "description": "Microscopic examination of specimen from upper gastrointestinal tract and of vomitus, parasitology",
     "url": "https://biglobe.ne.jp",
@@ -771,7 +771,7 @@
   },
   {
     "rank": 71,
-    "id": "CVE",
+    "id": "CVEX",
     "name": "SmartRx Natural Pain Relief Sleeve WRIST",
     "description": "Unspecified instrumental delivery",
     "url": "https://harvard.edu",
@@ -782,7 +782,7 @@
   },
   {
     "rank": 72,
-    "id": "GWB",
+    "id": "GWBX",
     "name": "PYRETHRUM",
     "description": "Other operations on stomach",
     "url": "https://amazonaws.com",
@@ -793,7 +793,7 @@
   },
   {
     "rank": 73,
-    "id": "NVGN",
+    "id": "NVGX",
     "name": "FOSAMAX",
     "description": "Gastric gavage",
     "url": "http://skyrock.com",
@@ -804,7 +804,7 @@
   },
   {
     "rank": 74,
-    "id": "AIQ",
+    "id": "AIQX",
     "name": "COLISTIMETHATE SODIUM",
     "description": "Limb lengthening procedures, other bones",
     "url": "https://hao123.com",
@@ -815,7 +815,7 @@
   },
   {
     "rank": 75,
-    "id": "AGC",
+    "id": "AGCX",
     "name": "ATOPALM MOISTURIZING MUSCLE RUB",
     "description": "Other partial resection of small intestine",
     "url": "https://wikispaces.com",
@@ -826,7 +826,7 @@
   },
   {
     "rank": 76,
-    "id": "ANIP",
+    "id": "ANIX",
     "name": "HYDROCODONE BITARTRATE AND ACETAMINOPHEN",
     "description": "Other diagnostic procedures on penis",
     "url": "http://slashdot.org",
@@ -837,7 +837,7 @@
   },
   {
     "rank": 77,
-    "id": "STLD",
+    "id": "STLX",
     "name": "Glimepiride",
     "description": "Suture of gastric ulcer site",
     "url": "http://mail.ru",
@@ -848,7 +848,7 @@
   },
   {
     "rank": 78,
-    "id": "MDXG",
+    "id": "MDXX",
     "name": "Aspergillus terreus",
     "description": "Vaccination against measles",
     "url": "https://diigo.com",
@@ -859,7 +859,7 @@
   },
   {
     "rank": 79,
-    "id": "EVLMC",
+    "id": "EVLX",
     "name": "Handsoap",
     "description": "Dental scaling, polishing, and debridement",
     "url": "https://naver.com",
@@ -881,7 +881,7 @@
   },
   {
     "rank": 81,
-    "id": "PRU",
+    "id": "PRUX",
     "name": "Hydroxyzine Hydrochloride",
     "description": "Refusion of other cervical spine, posterior column, posterior technique",
     "url": "https://cafepress.com",
@@ -892,7 +892,7 @@
   },
   {
     "rank": 82,
-    "id": "EOG",
+    "id": "EOGX",
     "name": "Caduet",
     "description": "Reduction of hemorrhoids",
     "url": "http://gov.uk",
@@ -903,7 +903,7 @@
   },
   {
     "rank": 83,
-    "id": "VDSI",
+    "id": "VDSX",
     "name": "INDUSTROTOX",
     "description": "Other artificial rupture of membranes",
     "url": "http://taobao.com",
@@ -914,7 +914,7 @@
   },
   {
     "rank": 84,
-    "id": "HASI",
+    "id": "HASX",
     "name": "Bartonella Remedy",
     "description": "Other destruction of chorioretinal lesion",
     "url": "https://deliciousdays.com",
@@ -925,7 +925,7 @@
   },
   {
     "rank": 85,
-    "id": "DRAM",
+    "id": "DRAX",
     "name": "Leader Stool Softener plus Stimulant Laxative",
     "description": "Arteriography using contrast material, unspecified site",
     "url": "http://icq.com",
@@ -936,7 +936,7 @@
   },
   {
     "rank": 86,
-    "id": "RGEN",
+    "id": "RGEX",
     "name": "Metronidazole",
     "description": "Replacement of tube or enterostomy device of large intestine",
     "url": "http://vk.com",
@@ -947,7 +947,7 @@
   },
   {
     "rank": 87,
-    "id": "KTP",
+    "id": "KTPX",
     "name": "CLE DE PEAU BEAUTE RADIANT FLUID FOUNDATION",
     "description": "Insertion of permanent pacemaker, initial or replacement, type of device not specified",
     "url": "http://altervista.org",
@@ -958,7 +958,7 @@
   },
   {
     "rank": 88,
-    "id": "SPH",
+    "id": "SPHX",
     "name": "Eve Lom Radiance Perfected Tinted Moisturiser Broad Spectrum SPF 15 Sunscreen",
     "description": "Removal of electronic bladder stimulator",
     "url": "http://newyorker.com",
@@ -969,7 +969,7 @@
   },
   {
     "rank": 89,
-    "id": "LL",
+    "id": "LLXX",
     "name": "ARTEMISIA TRIDENTATA POLLEN",
     "description": "Laparoscopic partial cholecystectomy",
     "url": "http://vistaprint.com",
@@ -980,7 +980,7 @@
   },
   {
     "rank": 90,
-    "id": "CL",
+    "id": "CLXX",
     "name": "ropinirole hydrochloride",
     "description": "Laparoscopic ablation of liver lesion or tissue",
     "url": "http://free.fr",
@@ -991,7 +991,7 @@
   },
   {
     "rank": 91,
-    "id": "AVIR",
+    "id": "AVIX",
     "name": "Lymph Detox",
     "description": "Percutaneous [endoscopic] gastrostomy [PEG]",
     "url": "http://amazon.co.uk",
@@ -1002,7 +1002,7 @@
   },
   {
     "rank": 92,
-    "id": "SB^D",
+    "id": "SBDX",
     "name": "Atovaquone and Proguanil Hydrochloride",
     "description": "Open reduction of fracture with internal fixation, unspecified site",
     "url": "http://is.gd",
@@ -1013,7 +1013,7 @@
   },
   {
     "rank": 93,
-    "id": "TVIA",
+    "id": "TVIX",
     "name": "TOMATO",
     "description": "Biopsy of spermatic cord, epididymis, or vas deferens",
     "url": "http://samsung.com",
@@ -1024,7 +1024,7 @@
   },
   {
     "rank": 94,
-    "id": "WMGIZ",
+    "id": "WMGX",
     "name": "Prednisone",
     "description": "Exteriorization of small intestine",
     "url": "https://cnet.com",
@@ -1035,7 +1035,7 @@
   },
   {
     "rank": 95,
-    "id": "DIN",
+    "id": "DINX",
     "name": "Lamotrigine",
     "description": "Other bilateral destruction or occlusion of fallopian tubes",
     "url": "http://studiopress.com",
@@ -1046,7 +1046,7 @@
   },
   {
     "rank": 96,
-    "id": "MIIIW",
+    "id": "MIIX",
     "name": "MAKESENSE",
     "description": "Open biopsy of small intestine",
     "url": "https://amazon.com",
@@ -1057,7 +1057,7 @@
   },
   {
     "rank": 97,
-    "id": "RHT",
+    "id": "RHTX",
     "name": "Quartz 30",
     "description": "Percutaneous ablation of liver lesion or tissue",
     "url": "https://apache.org",
@@ -1068,7 +1068,7 @@
   },
   {
     "rank": 98,
-    "id": "GLW",
+    "id": "GLWX",
     "name": "Trichophyton for Intradermal Skin Testing",
     "description": "Intrathoracic esophagoesophagostomy",
     "url": "http://europa.eu",
@@ -1079,7 +1079,7 @@
   },
   {
     "rank": 99,
-    "id": "NIHD",
+    "id": "NIHX",
     "name": "Gabapentin",
     "description": "Suture of muscle or fascia of hand",
     "url": "http://google.nl",
@@ -1090,7 +1090,7 @@
   },
   {
     "rank": 100,
-    "id": "TWNKW",
+    "id": "TWNX",
     "name": "UROGESIC BLUE",
     "description": "Body measurement",
     "url": "https://merriam-webster.com",
@@ -1101,7 +1101,7 @@
   },
   {
     "rank": 101,
-    "id": "AKER",
+    "id": "AKEX",
     "name": "POLYETHYLENE GLYCOL 3350",
     "description": "Repair of sympathetic nerve or ganglion",
     "url": "http://census.gov",
@@ -1112,7 +1112,7 @@
   },
   {
     "rank": 102,
-    "id": "ONDK",
+    "id": "ONDX",
     "name": "Telmisartan and Hydrochlorothiazide",
     "description": "Open reduction of mandibular fracture",
     "url": "https://free.fr",
@@ -1123,7 +1123,7 @@
   },
   {
     "rank": 103,
-    "id": "CLW",
+    "id": "CLWX",
     "name": "Levothyroxine Sodium",
     "description": "Hip bearing surface, metal-on-metal",
     "url": "https://barnesandnoble.com",
@@ -1134,7 +1134,7 @@
   },
   {
     "rank": 104,
-    "id": "BA",
+    "id": "BAXX",
     "name": "TAPAZOLE",
     "description": "Other graft of esophagus",
     "url": "http://macromedia.com",
@@ -1145,7 +1145,7 @@
   },
   {
     "rank": 105,
-    "id": "C^P",
+    "id": "CPXX",
     "name": "Fludeoxyglucose F18",
     "description": "Ligation of adrenal vessels",
     "url": "https://ustream.tv",
@@ -1156,7 +1156,7 @@
   },
   {
     "rank": 106,
-    "id": "MYD",
+    "id": "MYDX",
     "name": "Gillette Mach 3 Invisible",
     "description": "Repair of laceration of gallbladder",
     "url": "https://seesaa.net",
@@ -1167,7 +1167,7 @@
   },
   {
     "rank": 107,
-    "id": "QVCA",
+    "id": "QVCX",
     "name": "Minocycline Hydrochloride",
     "description": "Continuous invasive mechanical ventilation for 96 consecutive hours or more",
     "url": "http://surveymonkey.com",
@@ -1178,7 +1178,7 @@
   },
   {
     "rank": 108,
-    "id": "NKX",
+    "id": "NKXX",
     "name": "One Step Wipes",
     "description": "Other excision, fusion and repair of toes",
     "url": "https://theatlantic.com",
@@ -1189,7 +1189,7 @@
   },
   {
     "rank": 109,
-    "id": "CUK",
+    "id": "CUKX",
     "name": "Butalbital, Acetaminophen and Caffeine",
     "description": "Closed reduction of fracture without internal fixation, humerus",
     "url": "http://sciencedirect.com",
@@ -1200,7 +1200,7 @@
   },
   {
     "rank": 110,
-    "id": "JBN",
+    "id": "JBNX",
     "name": "Influenza A (H1N1) 2009 Monovalent Vaccine",
     "description": "Other muscle transposition",
     "url": "http://bluehost.com",
@@ -1211,7 +1211,7 @@
   },
   {
     "rank": 111,
-    "id": "AIV^A",
+    "id": "AIVX",
     "name": "Progesterone",
     "description": "Resection of vessel with anastomosis, aorta",
     "url": "https://bing.com",
@@ -1222,7 +1222,7 @@
   },
   {
     "rank": 112,
-    "id": "LAKE",
+    "id": "LAKX",
     "name": "VALACYCLOVIR",
     "description": "Lingual frenotomy",
     "url": "https://webs.com",
@@ -1233,7 +1233,7 @@
   },
   {
     "rank": 113,
-    "id": "OFC",
+    "id": "OFCX",
     "name": "Calcitriol",
     "description": "Computerized axial tomography of abdomen",
     "url": "https://buzzfeed.com",
@@ -1244,7 +1244,7 @@
   },
   {
     "rank": 114,
-    "id": "MLHR",
+    "id": "MLHX",
     "name": "Ammonium Lactate",
     "description": "Dilation of frontonasal duct",
     "url": "http://ustream.tv",
@@ -1255,7 +1255,7 @@
   },
   {
     "rank": 115,
-    "id": "FTXR",
+    "id": "FTXX",
     "name": "Antimicrobial Hand Sanitizer",
     "description": "Revision of operative wound of anterior segment, not elsewhere classified",
     "url": "http://alexa.com",
@@ -1266,7 +1266,7 @@
   },
   {
     "rank": 116,
-    "id": "MO",
+    "id": "MOXX",
     "name": "Melvita PROSUN High protection sunscreen Broad Spectrum SPF 50",
     "description": "Other and unspecified repair of endocardial cushion defect",
     "url": "http://psu.edu",
@@ -1277,7 +1277,7 @@
   },
   {
     "rank": 117,
-    "id": "BBRG",
+    "id": "BBRX",
     "name": "Tacrolimus",
     "description": "Microscopic examination of blood, other microscopic examination",
     "url": "http://webmd.com",
@@ -1288,7 +1288,7 @@
   },
   {
     "rank": 118,
-    "id": "RICK",
+    "id": "RICX",
     "name": "Oral Defense",
     "description": "Removal of prosthetic device from bile duct",
     "url": "http://sfgate.com",
@@ -1299,7 +1299,7 @@
   },
   {
     "rank": 119,
-    "id": "SLB",
+    "id": "SLBX",
     "name": "Guanfacine",
     "description": "Restoration of tooth by filling",
     "url": "https://lulu.com",
@@ -1310,7 +1310,7 @@
   },
   {
     "rank": 120,
-    "id": "GLA",
+    "id": "GLAX",
     "name": "Senna",
     "description": "Muscle transfer or transplantation",
     "url": "https://google.com.br",
@@ -1321,7 +1321,7 @@
   },
   {
     "rank": 121,
-    "id": "YRCW",
+    "id": "YRCX",
     "name": "SudoGest",
     "description": "Insertion of bone growth stimulator, tibia and fibula",
     "url": "http://tinyurl.com",
@@ -1332,7 +1332,7 @@
   },
   {
     "rank": 122,
-    "id": "CPTAG",
+    "id": "CPTX",
     "name": "GAS RELIEF",
     "description": "Insertion of indwelling urinary catheter",
     "url": "https://ameblo.jp",
@@ -1343,7 +1343,7 @@
   },
   {
     "rank": 123,
-    "id": "OBLN",
+    "id": "OBLX",
     "name": "Nicardipine Hydrochloride",
     "description": "Insertion of total spinal disc prosthesis, lumbosacral",
     "url": "https://mozilla.com",
@@ -1354,7 +1354,7 @@
   },
   {
     "rank": 124,
-    "id": "LRAD",
+    "id": "LRAX",
     "name": "risperidone",
     "description": "Regional lymph node excision",
     "url": "https://imgur.com",
@@ -1376,7 +1376,7 @@
   },
   {
     "rank": 126,
-    "id": "MGA",
+    "id": "MGAX",
     "name": "EXALGO",
     "description": "Other operations on vitreous",
     "url": "http://delicious.com",
@@ -1387,7 +1387,7 @@
   },
   {
     "rank": 127,
-    "id": "JFR",
+    "id": "JFRX",
     "name": "Constipation",
     "description": "Other incision of skin and subcutaneous tissue",
     "url": "http://shinystat.com",
@@ -1398,7 +1398,7 @@
   },
   {
     "rank": 128,
-    "id": "KMI^A",
+    "id": "KMIX",
     "name": "PROMACTA",
     "description": "Myringoplasty",
     "url": "https://ca.gov",
@@ -1409,7 +1409,7 @@
   },
   {
     "rank": 129,
-    "id": "CLDT",
+    "id": "CLDX",
     "name": "Labetalol hydrochloride",
     "description": "Other operations on pharynx",
     "url": "http://360.cn",
@@ -1420,7 +1420,7 @@
   },
   {
     "rank": 130,
-    "id": "MTU",
+    "id": "MTUX",
     "name": "Magnesium Sulfate",
     "description": "Microscopic examination of specimen from trachea, bronchus, pleura, lung, and other thoracic specimen, and of sputum, cell block and Papanicolaou smear",
     "url": "https://arizona.edu",
@@ -1431,7 +1431,7 @@
   },
   {
     "rank": 131,
-    "id": "PJT",
+    "id": "PJTX",
     "name": "Medrol",
     "description": "Proctoclysis",
     "url": "http://omniture.com",
@@ -1442,7 +1442,7 @@
   },
   {
     "rank": 132,
-    "id": "KW",
+    "id": "KWXX",
     "name": "ESIKA 3-IN-1 PRO MAKE UP FOUNDATION SPF 20 BASE DE MAQUILLAJE PARA ROSTRO 3-EN-1 PRO FPS 20",
     "description": "Intracarotid amobarbital test",
     "url": "http://blinklist.com",
@@ -1453,7 +1453,7 @@
   },
   {
     "rank": 133,
-    "id": "PFO",
+    "id": "PFOX",
     "name": "PROMACTA",
     "description": "Transpleural thoracoscopy",
     "url": "https://chron.com",
@@ -1464,7 +1464,7 @@
   },
   {
     "rank": 134,
-    "id": "DXCM",
+    "id": "DXCX",
     "name": "Glipizide",
     "description": "Incision of perirectal tissue",
     "url": "http://vinaora.com",
@@ -1475,7 +1475,7 @@
   },
   {
     "rank": 135,
-    "id": "CVX",
+    "id": "CVXX",
     "name": "LBEL EFFET PARFAIT Spots Reducing Effect Foundation SPF 18 - OBSCURE 8",
     "description": "Microscopic examination of specimen from liver, biliary tract, and pancreas, toxicology",
     "url": "https://bloglovin.com",
@@ -1486,7 +1486,7 @@
   },
   {
     "rank": 136,
-    "id": "JBT",
+    "id": "JBTX",
     "name": "Womens Mitchum Advanced Invisible Antiperspirant Deodorant",
     "description": "Angiocardiography, not otherwise specified",
     "url": "http://yellowpages.com",
@@ -1497,7 +1497,7 @@
   },
   {
     "rank": 137,
-    "id": "SB^B",
+    "id": "SBBX",
     "name": "Meijer kids SPF 50",
     "description": "Autologous bone marrow transplant with purging",
     "url": "https://theglobeandmail.com",
@@ -1508,7 +1508,7 @@
   },
   {
     "rank": 138,
-    "id": "BLCM",
+    "id": "BLCX",
     "name": "Acyclovir",
     "description": "Intravascular imaging of intrathoracic vessels",
     "url": "http://answers.com",
@@ -1519,7 +1519,7 @@
   },
   {
     "rank": 139,
-    "id": "EDD",
+    "id": "EDDX",
     "name": "Hydrogen Peroxide",
     "description": "Thoracoscopic segmental resection of lung",
     "url": "https://spotify.com",
@@ -1530,7 +1530,7 @@
   },
   {
     "rank": 140,
-    "id": "PGLC",
+    "id": "PGLX",
     "name": "RYE FOOD",
     "description": "Arthrotomy for removal of prosthesis without replacement, hand and finger",
     "url": "https://istockphoto.com",
@@ -1541,7 +1541,7 @@
   },
   {
     "rank": 141,
-    "id": "RLJ",
+    "id": "RLJX",
     "name": "Potassium Chloride in Lactated Ringers and Dextrose",
     "description": "Other gastroenterostomy without gastrectomy",
     "url": "http://cbsnews.com",
@@ -1552,7 +1552,7 @@
   },
   {
     "rank": 142,
-    "id": "HIIQ",
+    "id": "HIIX",
     "name": "nite time",
     "description": "Removal of intraocular foreign body from anterior segment of eye without use of magnet",
     "url": "http://hexun.com",
@@ -1563,7 +1563,7 @@
   },
   {
     "rank": 143,
-    "id": "BG",
+    "id": "BGXX",
     "name": "Coconut",
     "description": "Open reduction of fracture with internal fixation, tibia and fibula",
     "url": "https://vimeo.com",
@@ -1574,7 +1574,7 @@
   },
   {
     "rank": 144,
-    "id": "UBOH",
+    "id": "UBOX",
     "name": "Zolpidem Tartrate",
     "description": "Reanastomosis of urethra",
     "url": "https://typepad.com",
@@ -1585,7 +1585,7 @@
   },
   {
     "rank": 145,
-    "id": "IRM",
+    "id": "IRMX",
     "name": "Oxcarbazepine",
     "description": "Revision of lead [electrode]",
     "url": "https://tripod.com",
@@ -1596,7 +1596,7 @@
   },
   {
     "rank": 146,
-    "id": "OLED",
+    "id": "OLEX",
     "name": "The Natural Dentist",
     "description": "Arthrocentesis",
     "url": "https://tumblr.com",
@@ -1607,7 +1607,7 @@
   },
   {
     "rank": 147,
-    "id": "SBRA",
+    "id": "SBRX",
     "name": "Heparin Sodium",
     "description": "Procedure on two vessels",
     "url": "https://dot.gov",
@@ -1618,7 +1618,7 @@
   },
   {
     "rank": 148,
-    "id": "DMRC",
+    "id": "DMRX",
     "name": "Typhim Vi",
     "description": "Periarterial sympathectomy",
     "url": "http://skype.com",
@@ -1629,7 +1629,7 @@
   },
   {
     "rank": 149,
-    "id": "MTDR",
+    "id": "MTDX",
     "name": "Preferred Plus Severe Cold Cough and Flu",
     "description": "Revision of total knee replacement, tibial insert (liner)",
     "url": "http://blog.com",
@@ -1640,7 +1640,7 @@
   },
   {
     "rank": 150,
-    "id": "AMT",
+    "id": "AMTX",
     "name": "Head and Shoulders",
     "description": "Insertion of one vascular stent",
     "url": "https://usnews.com",
@@ -1651,7 +1651,7 @@
   },
   {
     "rank": 151,
-    "id": "ESND",
+    "id": "ESNX",
     "name": "IRBESARTAN",
     "description": "Disarticulation of shoulder",
     "url": "https://oaic.gov.au",
@@ -1662,7 +1662,7 @@
   },
   {
     "rank": 152,
-    "id": "FMI",
+    "id": "FMIX",
     "name": "Coppertone Sport Continuous",
     "description": "Repair of atrial septal defect with prosthesis, open technique",
     "url": "http://stanford.edu",
@@ -1673,7 +1673,7 @@
   },
   {
     "rank": 153,
-    "id": "WMC",
+    "id": "WMCX",
     "name": "Ibuprofen",
     "description": "Orthovoltage radiation",
     "url": "https://whitehouse.gov",
@@ -1684,7 +1684,7 @@
   },
   {
     "rank": 154,
-    "id": "GYB",
+    "id": "GYBX",
     "name": "Losartan Potassium and Hydrochlorothiazide",
     "description": "Osteoclasis, humerus",
     "url": "https://friendfeed.com",
@@ -1695,7 +1695,7 @@
   },
   {
     "rank": 155,
-    "id": "CNBKA",
+    "id": "CNBX",
     "name": "Irresistible Apple Scented Hand Sanitizer",
     "description": "Drainage of pancreatic cyst by catheter",
     "url": "https://trellian.com",
@@ -1706,7 +1706,7 @@
   },
   {
     "rank": 156,
-    "id": "TUTT",
+    "id": "TUTX",
     "name": "Birch",
     "description": "Adenoidectomy without tonsillectomy",
     "url": "http://dedecms.com",
@@ -1717,7 +1717,7 @@
   },
   {
     "rank": 157,
-    "id": "GCI",
+    "id": "GCIX",
     "name": "IMAGE ESSENTIALS",
     "description": "Closed reduction of malar and zygomatic fracture",
     "url": "http://geocities.com",
@@ -1728,7 +1728,7 @@
   },
   {
     "rank": 158,
-    "id": "BSTC",
+    "id": "BSTX",
     "name": "Diphenoxylate Hydrochloride and Atropine Sulfate",
     "description": "Fundus photography",
     "url": "http://amazon.co.uk",
@@ -1739,7 +1739,7 @@
   },
   {
     "rank": 159,
-    "id": "ELJ",
+    "id": "ELJX",
     "name": "Sleep Eezzz",
     "description": "Incision with removal of foreign body or device from skin and subcutaneous tissue",
     "url": "http://360.cn",
@@ -1750,7 +1750,7 @@
   },
   {
     "rank": 160,
-    "id": "E",
+    "id": "EXXX",
     "name": "Natazia",
     "description": "Other repair of bladder",
     "url": "https://hatena.ne.jp",
@@ -1761,7 +1761,7 @@
   },
   {
     "rank": 161,
-    "id": "GURE",
+    "id": "GURX",
     "name": "Oxygen",
     "description": "Total esophagectomy",
     "url": "http://ed.gov",
@@ -1772,7 +1772,7 @@
   },
   {
     "rank": 162,
-    "id": "WSTL",
+    "id": "WSTX",
     "name": "head congestion",
     "description": "Refusion of dorsal and dorsolumbar spine, anterior column, anterior technique",
     "url": "http://artisteer.com",
@@ -1783,7 +1783,7 @@
   },
   {
     "rank": 163,
-    "id": "NXEOU",
+    "id": "NXEX",
     "name": "TEPADINA",
     "description": "Open chest coronary artery angioplasty",
     "url": "http://dmoz.org",
@@ -1794,7 +1794,7 @@
   },
   {
     "rank": 164,
-    "id": "EMN",
+    "id": "EMNX",
     "name": "Dawnmist Deodorant",
     "description": "Myotomy of sigmoid colon",
     "url": "http://bing.com",
@@ -1805,7 +1805,7 @@
   },
   {
     "rank": 165,
-    "id": "ISTR",
+    "id": "ISTX",
     "name": "Minocycline Hydrochloride",
     "description": "Other (peripheral) vascular shunt or bypass",
     "url": "https://usa.gov",
@@ -1816,7 +1816,7 @@
   },
   {
     "rank": 166,
-    "id": "SLNO",
+    "id": "SLNX",
     "name": "Fluoxetine",
     "description": "Complete laryngectomy",
     "url": "https://amazon.co.jp",
@@ -1827,7 +1827,7 @@
   },
   {
     "rank": 167,
-    "id": "CARZ",
+    "id": "CARX",
     "name": "Obagi 360 HydraFactor Moisturizing Broad Spectrum SPF 30",
     "description": "Laparoscopic repair of inguinal hernia with graft or prosthesis, not otherwise specified",
     "url": "http://sogou.com",
@@ -1838,7 +1838,7 @@
   },
   {
     "rank": 168,
-    "id": "LAND",
+    "id": "LANX",
     "name": "Dendracin Neurodendraxcin",
     "description": "Closed [percutaneous] [needle] biopsy of cranial or peripheral nerve or ganglion",
     "url": "https://lulu.com",
@@ -1849,7 +1849,7 @@
   },
   {
     "rank": 169,
-    "id": "QQXT",
+    "id": "QQXX",
     "name": "Intervene Makeup SPF 15 Soft Wheat",
     "description": "Incision of penis",
     "url": "https://huffingtonpost.com",
@@ -1860,7 +1860,7 @@
   },
   {
     "rank": 170,
-    "id": "SERV",
+    "id": "SERX",
     "name": "Sumavel DosePro",
     "description": "Laparoscopy",
     "url": "https://archive.org",
@@ -1871,7 +1871,7 @@
   },
   {
     "rank": 171,
-    "id": "SWK",
+    "id": "SWKX",
     "name": "ATENOLOL",
     "description": "Laparoscopic incidental appendectomy",
     "url": "http://merriam-webster.com",
@@ -1882,7 +1882,7 @@
   },
   {
     "rank": 172,
-    "id": "CCBG",
+    "id": "CCBX",
     "name": "Lithium Carbonate",
     "description": "Suture of laceration of duodenum",
     "url": "http://mail.ru",
@@ -1893,7 +1893,7 @@
   },
   {
     "rank": 173,
-    "id": "SYY",
+    "id": "SYYX",
     "name": "Diphenhydramine",
     "description": "Other x-ray of abdomen",
     "url": "http://amazon.co.jp",
@@ -1904,7 +1904,7 @@
   },
   {
     "rank": 174,
-    "id": "CHH",
+    "id": "CHHX",
     "name": "Naproxen",
     "description": "Other incision of other bile duct",
     "url": "http://google.ru",
@@ -1915,7 +1915,7 @@
   },
   {
     "rank": 175,
-    "id": "UTL",
+    "id": "UTLX",
     "name": "Hog Epithelium",
     "description": "Revision of hip replacement, not otherwise specified",
     "url": "http://shinystat.com",
@@ -1926,7 +1926,7 @@
   },
   {
     "rank": 176,
-    "id": "FTA",
+    "id": "FTAX",
     "name": "Nortriptyline Hydrochloride",
     "description": "Open reduction of dislocation of elbow",
     "url": "http://rambler.ru",
@@ -1937,7 +1937,7 @@
   },
   {
     "rank": 177,
-    "id": "ECCA",
+    "id": "ECCX",
     "name": "HYDROCODONE BITARTRATE AND IBUPROFEN",
     "description": "Removal of intraocular foreign body from anterior segment of eye without use of magnet",
     "url": "http://merriam-webster.com",
@@ -1948,7 +1948,7 @@
   },
   {
     "rank": 178,
-    "id": "ACV",
+    "id": "ACVX",
     "name": "BOBBI BROWN SKIN FOUNDATION",
     "description": "Laparoscopic resection of transverse colon",
     "url": "https://opera.com",
@@ -1959,7 +1959,7 @@
   },
   {
     "rank": 179,
-    "id": "HXL",
+    "id": "HXLX",
     "name": "MISSHA SIGNATURE COMPLEXION COORDINATING BB",
     "description": "Thoracentesis",
     "url": "http://1688.com",
@@ -1970,7 +1970,7 @@
   },
   {
     "rank": 180,
-    "id": "NTES",
+    "id": "NTEX",
     "name": "Propranolol Hydrochloride",
     "description": "Microscopic examination of specimen from female genital tract, toxicology",
     "url": "https://bravesites.com",
@@ -1981,7 +1981,7 @@
   },
   {
     "rank": 181,
-    "id": "HEAR",
+    "id": "HEAX",
     "name": "Testosterone",
     "description": "Other open incisional hernia repair with graft or prosthesis",
     "url": "http://squidoo.com",
@@ -1992,7 +1992,7 @@
   },
   {
     "rank": 182,
-    "id": "MSTR",
+    "id": "MSTX",
     "name": "Treatment Set TS333400",
     "description": "Microscopic examination of specimen from upper gastrointestinal tract and of vomitus, cell block and Papanicolaou smear",
     "url": "http://mysql.com",
@@ -2003,7 +2003,7 @@
   },
   {
     "rank": 183,
-    "id": "PUB",
+    "id": "PUBX",
     "name": "Promethazine Hydrochloride",
     "description": "Lysis of intraluminal adhesions with incision into bladder",
     "url": "https://tamu.edu",
@@ -2014,7 +2014,7 @@
   },
   {
     "rank": 184,
-    "id": "SCHW",
+    "id": "SCHX",
     "name": "Australian Gold",
     "description": "Replacement of any type of pacemaker device with single-chamber device, rate responsive",
     "url": "https://goodreads.com",
@@ -2025,7 +2025,7 @@
   },
   {
     "rank": 185,
-    "id": "SVBI",
+    "id": "SVBX",
     "name": "Memory Boost",
     "description": "Culdoscopy",
     "url": "http://squarespace.com",
@@ -2036,7 +2036,7 @@
   },
   {
     "rank": 186,
-    "id": "AMAT",
+    "id": "AMAX",
     "name": "Amoxicillan and clavulanate potassium",
     "description": "Excision or destruction of intervertebral disc, unspecified",
     "url": "https://cnbc.com",
@@ -2047,7 +2047,7 @@
   },
   {
     "rank": 187,
-    "id": "HMNY",
+    "id": "HMNX",
     "name": "Salonpas pain relieving PATCH HOT",
     "description": "Percutaneous nephrostomy without fragmentation",
     "url": "https://marketwatch.com",
@@ -2058,7 +2058,7 @@
   },
   {
     "rank": 188,
-    "id": "BOOM",
+    "id": "BOOX",
     "name": "Salmon",
     "description": "Diagnostic imaging, not elsewhere classified",
     "url": "https://unesco.org",
@@ -2069,7 +2069,7 @@
   },
   {
     "rank": 189,
-    "id": "OVLY",
+    "id": "OVLX",
     "name": "Sunmark Sinus",
     "description": "Removal of vaginal or vulvar packing",
     "url": "http://bloomberg.com",
@@ -2080,7 +2080,7 @@
   },
   {
     "rank": 190,
-    "id": "CATO",
+    "id": "CATX",
     "name": "telmisartan and hydrochlorthiazide",
     "description": "Total excision of pituitary gland, unspecified approach",
     "url": "http://tamu.edu",
@@ -2091,7 +2091,7 @@
   },
   {
     "rank": 191,
-    "id": "BTT",
+    "id": "BTTX",
     "name": "Prenate Elite",
     "description": "Electrocochleography",
     "url": "http://devhub.com",
@@ -2102,7 +2102,7 @@
   },
   {
     "rank": 192,
-    "id": "AMG",
+    "id": "AMGX",
     "name": "Trazodone Hydrochloride",
     "description": "Other diagnostic procedures on tongue",
     "url": "https://state.gov",
@@ -2124,7 +2124,7 @@
   },
   {
     "rank": 194,
-    "id": "HFWA",
+    "id": "HFWX",
     "name": "MESNEX",
     "description": "Freeing of vessel",
     "url": "http://sciencedaily.com",
@@ -2135,7 +2135,7 @@
   },
   {
     "rank": 195,
-    "id": "SILC",
+    "id": "SILX",
     "name": "Hydroxyzine Hydrochloride",
     "description": "Microscopic examination of specimen from endocrine gland, not elsewhere classified, toxicology",
     "url": "http://example.com",
@@ -2146,7 +2146,7 @@
   },
   {
     "rank": 196,
-    "id": "KSS",
+    "id": "KSSX",
     "name": "Carbamazepine",
     "description": "Bronchoscopic bronchial thermoplasty, ablation of airway smooth muscle",
     "url": "https://businessinsider.com",
@@ -2157,7 +2157,7 @@
   },
   {
     "rank": 197,
-    "id": "ZTS",
+    "id": "ZTSX",
     "name": "Famotidine",
     "description": "Closed [needle] biopsy of tongue",
     "url": "http://1und1.de",
@@ -2168,7 +2168,7 @@
   },
   {
     "rank": 198,
-    "id": "HTD",
+    "id": "HTDX",
     "name": "Olanzapine",
     "description": "Implantation or replacement of intracranial neurostimulator lead(s)",
     "url": "https://ftc.gov",
@@ -2179,7 +2179,7 @@
   },
   {
     "rank": 199,
-    "id": "NXRT",
+    "id": "NXRX",
     "name": "Amlodipine Besylate",
     "description": "Other cranial puncture",
     "url": "http://wiley.com",
@@ -2190,7 +2190,7 @@
   },
   {
     "rank": 200,
-    "id": "BYM",
+    "id": "BYMX",
     "name": "Labetalol Hydrochloride",
     "description": "Open reduction of fracture without internal fixation, tarsals and metatarsals",
     "url": "https://jimdo.com",
@@ -2201,7 +2201,7 @@
   },
   {
     "rank": 201,
-    "id": "HLI",
+    "id": "HLIX",
     "name": "Sulphur Kit Refill",
     "description": "Lung volume reduction surgery",
     "url": "http://bizjournals.com",
@@ -2212,7 +2212,7 @@
   },
   {
     "rank": 202,
-    "id": "LION",
+    "id": "LIOX",
     "name": "Diazepam",
     "description": "Other nonoperative cardiac and vascular measurements",
     "url": "https://tumblr.com",
@@ -2223,7 +2223,7 @@
   },
   {
     "rank": 203,
-    "id": "CII",
+    "id": "CIIX",
     "name": "imiquimod",
     "description": "Upper eyelid rhytidectomy",
     "url": "https://feedburner.com",
@@ -2234,7 +2234,7 @@
   },
   {
     "rank": 204,
-    "id": "MHI",
+    "id": "MHIX",
     "name": "PLAVIX",
     "description": "Vaccination against tuberculosis",
     "url": "https://over-blog.com",
@@ -2245,7 +2245,7 @@
   },
   {
     "rank": 205,
-    "id": "PVTBP",
+    "id": "PVTX",
     "name": "Naproxen Sodium",
     "description": "Other operations on thorax",
     "url": "http://dion.ne.jp",
@@ -2256,7 +2256,7 @@
   },
   {
     "rank": 206,
-    "id": "COF",
+    "id": "COFX",
     "name": "Cefprozil",
     "description": "Other manipulation of lacrimal passage",
     "url": "https://devhub.com",
@@ -2267,7 +2267,7 @@
   },
   {
     "rank": 207,
-    "id": "ANDAU",
+    "id": "ANDX",
     "name": "Triple Antibiotic",
     "description": "Local excision of lesion or tissue of bone, radius and ulna",
     "url": "http://trellian.com",
@@ -2278,7 +2278,7 @@
   },
   {
     "rank": 208,
-    "id": "HUBB",
+    "id": "HUBX",
     "name": "Buspirone Hydrochloride",
     "description": "Incision of lid margin",
     "url": "http://bbc.co.uk",
@@ -2289,7 +2289,7 @@
   },
   {
     "rank": 209,
-    "id": "MGEE",
+    "id": "MGEX",
     "name": "Neutrogena Healthy Skin Enhancer",
     "description": "Microscopic examination of specimen from liver, biliary tract, and pancreas, culture",
     "url": "http://foxnews.com",
@@ -2300,7 +2300,7 @@
   },
   {
     "rank": 210,
-    "id": "BLX",
+    "id": "BLXX",
     "name": "Oxygen",
     "description": "Other incidental appendectomy",
     "url": "https://trellian.com",
@@ -2311,7 +2311,7 @@
   },
   {
     "rank": 211,
-    "id": "CIZN",
+    "id": "CIZX",
     "name": "Bfing Aversion",
     "description": "Incision of petrous pyramid air cells",
     "url": "http://digg.com",
@@ -2322,7 +2322,7 @@
   },
   {
     "rank": 212,
-    "id": "MFM",
+    "id": "MFMX",
     "name": "Ibuprofen",
     "description": "Operations on papillary muscle",
     "url": "https://imgur.com",
@@ -2333,7 +2333,7 @@
   },
   {
     "rank": 213,
-    "id": "PSL",
+    "id": "PSLX",
     "name": "Allergenic Extracts Standardized Mite",
     "description": "Laparoscopic gastroplasty",
     "url": "https://blogger.com",
@@ -2344,7 +2344,7 @@
   },
   {
     "rank": 214,
-    "id": "MAUI",
+    "id": "MAUX",
     "name": "Fluocinonide",
     "description": "Extracranial-intracranial (EC-IC) vascular bypass",
     "url": "https://ameblo.jp",
@@ -2355,7 +2355,7 @@
   },
   {
     "rank": 215,
-    "id": "SNHNI",
+    "id": "SNHX",
     "name": "Cetirizine Hydrochloride",
     "description": "Microscopic examination of specimen from upper gastrointestinal tract and of vomitus, cell block and Papanicolaou smear",
     "url": "https://techcrunch.com",
@@ -2366,7 +2366,7 @@
   },
   {
     "rank": 216,
-    "id": "BAP",
+    "id": "BAPX",
     "name": "IASO INTENSIVE CLEAR CONDITIONER",
     "description": "Irrigation of wound catheter",
     "url": "http://weather.com",
@@ -2377,7 +2377,7 @@
   },
   {
     "rank": 217,
-    "id": "KB",
+    "id": "KBXX",
     "name": "Proactiv",
     "description": "Laparoscopic liver biopsy",
     "url": "http://storify.com",
@@ -2388,7 +2388,7 @@
   },
   {
     "rank": 218,
-    "id": "IHD",
+    "id": "IHDX",
     "name": "Bedside-Care Perineal Wash",
     "description": "Other operations on vessels",
     "url": "https://senate.gov",
@@ -2399,7 +2399,7 @@
   },
   {
     "rank": 219,
-    "id": "VRTSP",
+    "id": "VRTX",
     "name": "SHISEIDO SHEER AND PERFECT COMPACT (REFILL)",
     "description": "Lingual frenotomy",
     "url": "https://discuz.net",
@@ -2410,7 +2410,7 @@
   },
   {
     "rank": 220,
-    "id": "FTXL",
+    "id": "FTXX",
     "name": "Stagesic",
     "description": "Wedge osteotomy, tarsals and metatarsals",
     "url": "http://google.co.uk",
@@ -2432,7 +2432,7 @@
   },
   {
     "rank": 222,
-    "id": "CNOB",
+    "id": "CNOX",
     "name": "Virostat",
     "description": "Closed reduction of dislocation of hand and finger",
     "url": "http://sina.com.cn",
@@ -2443,7 +2443,7 @@
   },
   {
     "rank": 223,
-    "id": "RIG",
+    "id": "RIGX",
     "name": "Ideal Flawless",
     "description": "Other partial ostectomy, carpals and metacarpals",
     "url": "http://google.es",
@@ -2454,7 +2454,7 @@
   },
   {
     "rank": 224,
-    "id": "FAF",
+    "id": "FAFX",
     "name": "Mucus Relief DM",
     "description": "Ligation of spermatic cord",
     "url": "https://elpais.com",
@@ -2465,7 +2465,7 @@
   },
   {
     "rank": 225,
-    "id": "ESGE",
+    "id": "ESGX",
     "name": "Ketamine Hydrochloride",
     "description": "Other incision of soft tissue of hand",
     "url": "https://mysql.com",
@@ -2476,7 +2476,7 @@
   },
   {
     "rank": 226,
-    "id": "TJX",
+    "id": "TJXX",
     "name": "Escitalopram Oxalate",
     "description": "Reconstruction of eyelid involving lid margin, full-thickness",
     "url": "http://oakley.com",
@@ -2487,7 +2487,7 @@
   },
   {
     "rank": 227,
-    "id": "SASR",
+    "id": "SASX",
     "name": "Alcohol Prep Pad",
     "description": "Application or administration of an adhesion barrier substance",
     "url": "http://amazonaws.com",
@@ -2498,7 +2498,7 @@
   },
   {
     "rank": 228,
-    "id": "RECN",
+    "id": "RECX",
     "name": "Propoxyphene Napsylate and Acetaminophen",
     "description": "Intracardiac echocardiography",
     "url": "http://devhub.com",
@@ -2509,7 +2509,7 @@
   },
   {
     "rank": 229,
-    "id": "GZT",
+    "id": "GZTX",
     "name": "ZUSKA",
     "description": "Ethmoidectomy",
     "url": "https://livejournal.com",
@@ -2520,7 +2520,7 @@
   },
   {
     "rank": 230,
-    "id": "BKMU",
+    "id": "BKMX",
     "name": "ACULAR",
     "description": "Laparoscopic removal of remaining ovary",
     "url": "https://dyndns.org",
@@ -2531,7 +2531,7 @@
   },
   {
     "rank": 231,
-    "id": "WRB^B",
+    "id": "WRBX",
     "name": "Nystatin",
     "description": "Closed [percutaneous] [needle] biopsy of prostate",
     "url": "https://howstuffworks.com",
@@ -2542,7 +2542,7 @@
   },
   {
     "rank": 232,
-    "id": "MATW",
+    "id": "MATX",
     "name": "Mirtazapine",
     "description": "Arthrotomy for removal of prosthesis without replacement, hand and finger",
     "url": "http://ow.ly",
@@ -2553,7 +2553,7 @@
   },
   {
     "rank": 233,
-    "id": "NJR",
+    "id": "NJRX",
     "name": "DAILY DEFENCE SUNSCREEN Broad Spectrum SPF30",
     "description": "Microscopic examination of specimen from upper gastrointestinal tract and of vomitus, toxicology",
     "url": "http://networkadvertising.org",
@@ -2564,7 +2564,7 @@
   },
   {
     "rank": 234,
-    "id": "FPT",
+    "id": "FPTX",
     "name": "Nicotine polacrilex",
     "description": "Replacement of other device for musculoskeletal immobilization",
     "url": "https://wsj.com",
@@ -2575,7 +2575,7 @@
   },
   {
     "rank": 235,
-    "id": "PNR",
+    "id": "PNRX",
     "name": "Alco Hand Sanitizer",
     "description": "Vaginal reconstruction with graft or prosthesis",
     "url": "https://cam.ac.uk",
@@ -2586,7 +2586,7 @@
   },
   {
     "rank": 236,
-    "id": "INSI",
+    "id": "INSX",
     "name": "Relpax",
     "description": "Other hand tendon transfer or transplantation",
     "url": "http://imageshack.us",
@@ -2597,7 +2597,7 @@
   },
   {
     "rank": 237,
-    "id": "STLRW",
+    "id": "STLX",
     "name": "Levofloxacin",
     "description": "Other rhinoplasty",
     "url": "http://house.gov",
@@ -2608,7 +2608,7 @@
   },
   {
     "rank": 238,
-    "id": "MASI",
+    "id": "MASX",
     "name": "Rocky Mountain Juniper",
     "description": "Control of epistaxis by anterior nasal packing",
     "url": "https://salon.com",
@@ -2619,7 +2619,7 @@
   },
   {
     "rank": 239,
-    "id": "SR",
+    "id": "SRXX",
     "name": "Alternaria alternata",
     "description": "Closed [endoscopic] biopsy of small intestine",
     "url": "http://slashdot.org",
@@ -2630,7 +2630,7 @@
   },
   {
     "rank": 240,
-    "id": "KAACW",
+    "id": "KAAX",
     "name": "venlafaxine hydrochloride",
     "description": "Other incision of bone without division, radius and ulna",
     "url": "http://google.es",
@@ -2641,7 +2641,7 @@
   },
   {
     "rank": 241,
-    "id": "IBKCO",
+    "id": "IBKX",
     "name": "Amitiza",
     "description": "Disarticulation of ankle",
     "url": "https://statcounter.com",
@@ -2652,7 +2652,7 @@
   },
   {
     "rank": 242,
-    "id": "STLRW",
+    "id": "STLX",
     "name": "Health Mart Nighttime Sleep Aid",
     "description": "Laparoscopic lysis of perivesical adhesions",
     "url": "https://smh.com.au",
@@ -2663,7 +2663,7 @@
   },
   {
     "rank": 243,
-    "id": "PNBK",
+    "id": "PNBX",
     "name": "Octreotide Acetate",
     "description": "Total hip replacement",
     "url": "https://mit.edu",
@@ -2674,7 +2674,7 @@
   },
   {
     "rank": 244,
-    "id": "WG",
+    "id": "WGXX",
     "name": "Tri Estrogen",
     "description": "Other interview and evaluation",
     "url": "https://dot.gov",
@@ -2685,7 +2685,7 @@
   },
   {
     "rank": 245,
-    "id": "AYA",
+    "id": "AYAX",
     "name": "Relax",
     "description": "Sphenoidectomy",
     "url": "http://china.com.cn",
@@ -2696,7 +2696,7 @@
   },
   {
     "rank": 246,
-    "id": "TXT",
+    "id": "TXTX",
     "name": "Ibuprofen",
     "description": "Removal of intraluminal foreign body from trachea and bronchus without incision",
     "url": "https://cam.ac.uk",
@@ -2707,7 +2707,7 @@
   },
   {
     "rank": 247,
-    "id": "ENS",
+    "id": "ENSX",
     "name": "leader acid control",
     "description": "Lumbar and lumbosacral fusion of the anterior column, posterior technique",
     "url": "http://nbcnews.com",
@@ -2718,7 +2718,7 @@
   },
   {
     "rank": 248,
-    "id": "SONC",
+    "id": "SONX",
     "name": "Shopko Original SPF 4 Lip Balm",
     "description": "Phlebography of femoral and other lower extremity veins using contrast material",
     "url": "http://mediafire.com",
@@ -2729,7 +2729,7 @@
   },
   {
     "rank": 249,
-    "id": "MXIM",
+    "id": "MXIX",
     "name": "ULTRESA",
     "description": "Radical prostatectomy",
     "url": "http://usgs.gov",
@@ -2740,7 +2740,7 @@
   },
   {
     "rank": 250,
-    "id": "OFG",
+    "id": "OFGX",
     "name": "CEPROTIN",
     "description": "Sequestrectomy, radius and ulna",
     "url": "http://a8.net",
@@ -2751,7 +2751,7 @@
   },
   {
     "rank": 251,
-    "id": "JPM^F",
+    "id": "JPMX",
     "name": "Prednisolone Acetate",
     "description": "Other dental x-ray",
     "url": "http://bing.com",
@@ -2762,7 +2762,7 @@
   },
   {
     "rank": 252,
-    "id": "JVA",
+    "id": "JVAX",
     "name": "Colcrys",
     "description": "Hypothermia (systemic) incidental to open heart surgery",
     "url": "http://biblegateway.com",
@@ -2773,7 +2773,7 @@
   },
   {
     "rank": 253,
-    "id": "WEC",
+    "id": "WECX",
     "name": "CD DiorSkin Forever Compact Flawless Perfection Fusion Wear Makeup SPF 25 - 040",
     "description": "Other revision of stapedectomy",
     "url": "http://squidoo.com",
@@ -2784,7 +2784,7 @@
   },
   {
     "rank": 254,
-    "id": "FWONK",
+    "id": "FWOX",
     "name": "Quack Grass",
     "description": "Complete parathyroidectomy",
     "url": "http://deviantart.com",
@@ -2795,7 +2795,7 @@
   },
   {
     "rank": 255,
-    "id": "SSNI",
+    "id": "SSNX",
     "name": "3M DuraPrep Surgical",
     "description": "Fiber-optic bronchoscopy",
     "url": "https://barnesandnoble.com",
@@ -2806,7 +2806,7 @@
   },
   {
     "rank": 256,
-    "id": "GFNCP",
+    "id": "GFNX",
     "name": "Glyburide",
     "description": "Iridencleisis and iridotasis",
     "url": "https://is.gd",
@@ -2817,7 +2817,7 @@
   },
   {
     "rank": 257,
-    "id": "IHD",
+    "id": "IHDX",
     "name": "LANOCREME HYDRATING",
     "description": "Injection of antibiotic",
     "url": "https://nasa.gov",
@@ -2828,7 +2828,7 @@
   },
   {
     "rank": 258,
-    "id": "JPC",
+    "id": "JPCX",
     "name": "Degree for Men Power",
     "description": "Upper eyelid rhytidectomy",
     "url": "https://angelfire.com",
@@ -2839,7 +2839,7 @@
   },
   {
     "rank": 259,
-    "id": "MPW",
+    "id": "MPWX",
     "name": "Acne Care",
     "description": "Implantation of cardiac resynchronization pacemaker without mention of defibrillation, total system [CRT-P]",
     "url": "http://behance.net",
@@ -2850,7 +2850,7 @@
   },
   {
     "rank": 260,
-    "id": "MCHI",
+    "id": "MCHX",
     "name": "Buspirone HCl",
     "description": "Hysterotomy to terminate pregnancy",
     "url": "http://dailymail.co.uk",
@@ -2861,7 +2861,7 @@
   },
   {
     "rank": 261,
-    "id": "C",
+    "id": "CXXX",
     "name": "Demser",
     "description": "Microscopic examination of specimen from kidney, ureter, perirenal and periureteral tissue, toxicology",
     "url": "http://1und1.de",
@@ -2872,7 +2872,7 @@
   },
   {
     "rank": 262,
-    "id": "DWAQ",
+    "id": "DWAX",
     "name": "Stila Hydrating Primer Oil-Free SPF 30",
     "description": "Percutaneous insertion of other extracranial artery stent(s)",
     "url": "https://eventbrite.com",
@@ -2883,7 +2883,7 @@
   },
   {
     "rank": 263,
-    "id": "SNR",
+    "id": "SNRX",
     "name": "J-TAN",
     "description": "Insertion or replacement of (cement) spacer",
     "url": "http://usnews.com",
@@ -2894,7 +2894,7 @@
   },
   {
     "rank": 264,
-    "id": "BPFHP",
+    "id": "BPFX",
     "name": "GenTeal",
     "description": "Limb lengthening procedures, femur",
     "url": "https://squidoo.com",
@@ -2905,7 +2905,7 @@
   },
   {
     "rank": 265,
-    "id": "INNL",
+    "id": "INNX",
     "name": "HAND AND NATURE SANITIZER",
     "description": "Other diagnostic procedures on intestine, site unspecified",
     "url": "http://addthis.com",
@@ -2916,7 +2916,7 @@
   },
   {
     "rank": 266,
-    "id": "JD",
+    "id": "JDXX",
     "name": "Tobramycin",
     "description": "Endovascular implantation of branching or fenestrated graft(s) in aorta",
     "url": "https://studiopress.com",
@@ -2927,7 +2927,7 @@
   },
   {
     "rank": 267,
-    "id": "YY",
+    "id": "YYXX",
     "name": "Levofloxacin",
     "description": "Electronystagmogram [ENG]",
     "url": "http://miibeian.gov.cn",
@@ -2938,7 +2938,7 @@
   },
   {
     "rank": 268,
-    "id": "USAC",
+    "id": "USAX",
     "name": "TABCIN",
     "description": "Local excision of other lesion or tissue of esophagus",
     "url": "https://sakura.ne.jp",
@@ -2949,7 +2949,7 @@
   },
   {
     "rank": 269,
-    "id": "BLK",
+    "id": "BLKX",
     "name": "Ciprofloxacin hydrochloride",
     "description": "Resection of vessel with replacement, upper limb vessels",
     "url": "https://google.com",
@@ -2960,7 +2960,7 @@
   },
   {
     "rank": 270,
-    "id": "EACQ",
+    "id": "EACX",
     "name": "Metoprolol Tartrate",
     "description": "Mechanical phacofragmentation and aspiration of cataract by posterior route",
     "url": "https://amazon.co.jp",
@@ -2971,7 +2971,7 @@
   },
   {
     "rank": 271,
-    "id": "EMKR",
+    "id": "EMKX",
     "name": "Flumazenil",
     "description": "Excision of lesion of thyroid",
     "url": "http://e-recht24.de",
@@ -2982,7 +2982,7 @@
   },
   {
     "rank": 272,
-    "id": "AMD",
+    "id": "AMDX",
     "name": "Plaquenil",
     "description": "Other orthognathic surgery on mandible",
     "url": "http://jugem.jp",
@@ -2993,7 +2993,7 @@
   },
   {
     "rank": 273,
-    "id": "EVH",
+    "id": "EVHX",
     "name": "Triple Potency HGH",
     "description": "Repair of entropion or ectropion by suture technique",
     "url": "http://miitbeian.gov.cn",
@@ -3004,7 +3004,7 @@
   },
   {
     "rank": 274,
-    "id": "FPT",
+    "id": "FPTX",
     "name": "Letrozole",
     "description": "Limb shortening procedures, unspecified site",
     "url": "http://marriott.com",
@@ -3015,7 +3015,7 @@
   },
   {
     "rank": 275,
-    "id": "HOS",
+    "id": "HOSX",
     "name": "SPF 20",
     "description": "Other therapeutic apheresis",
     "url": "https://webmd.com",
@@ -3026,7 +3026,7 @@
   },
   {
     "rank": 276,
-    "id": "SNBC",
+    "id": "SNBX",
     "name": "Oxcarbazepine",
     "description": "Other diagnostic procedures on uterus and supporting structures",
     "url": "https://hc360.com",
@@ -3037,7 +3037,7 @@
   },
   {
     "rank": 277,
-    "id": "FSFG",
+    "id": "FSFX",
     "name": "Vital Weight Loss HCG",
     "description": "Laparoscopic repair of umbilical hernia with graft or prosthesis",
     "url": "http://cocolog-nifty.com",
@@ -3048,7 +3048,7 @@
   },
   {
     "rank": 278,
-    "id": "ENIC",
+    "id": "ENIX",
     "name": "SAFEWAY",
     "description": "Other incision of vulva and perineum",
     "url": "https://craigslist.org",
@@ -3059,7 +3059,7 @@
   },
   {
     "rank": 279,
-    "id": "RH",
+    "id": "RHXX",
     "name": "Risperidone",
     "description": "Percutaneous pyelogram",
     "url": "https://about.com",
@@ -3070,7 +3070,7 @@
   },
   {
     "rank": 280,
-    "id": "AC",
+    "id": "ACXX",
     "name": "Molds, Rusts and Smuts, Rhizopus nigricans",
     "description": "Free skin graft, not otherwise specified",
     "url": "https://nbcnews.com",
@@ -3081,7 +3081,7 @@
   },
   {
     "rank": 281,
-    "id": "ALBO",
+    "id": "ALBX",
     "name": "Allopurinol",
     "description": "Irrigation of pancreatic tube",
     "url": "https://army.mil",
@@ -3092,7 +3092,7 @@
   },
   {
     "rank": 282,
-    "id": "TWNKW",
+    "id": "TWNX",
     "name": "Parathyreoidea Aurum Special Order",
     "description": "Microscopic examination of blood, parasitology",
     "url": "https://paypal.com",
@@ -3103,7 +3103,7 @@
   },
   {
     "rank": 283,
-    "id": "MIME",
+    "id": "MIMX",
     "name": "Head and Shoulders Conditioner",
     "description": "Bone graft, tibia and fibula",
     "url": "https://weibo.com",
@@ -3114,7 +3114,7 @@
   },
   {
     "rank": 284,
-    "id": "EXAS",
+    "id": "EXAX",
     "name": "Scallop",
     "description": "Open reduction of fracture without internal fixation, other specified bone",
     "url": "https://opensource.org",
@@ -3125,7 +3125,7 @@
   },
   {
     "rank": 285,
-    "id": "BLVD",
+    "id": "BLVX",
     "name": "Good Sense hemorrhoidal",
     "description": "Perineal prostatectomy",
     "url": "http://who.int",
@@ -3136,7 +3136,7 @@
   },
   {
     "rank": 286,
-    "id": "RDHL",
+    "id": "RDHX",
     "name": "FLUZONE",
     "description": "Other intracapsular extraction of lens",
     "url": "http://webeden.co.uk",
@@ -3158,7 +3158,7 @@
   },
   {
     "rank": 288,
-    "id": "RDNT",
+    "id": "RDNX",
     "name": "Divigel",
     "description": "Lumbar sympathectomy",
     "url": "http://google.com.hk",
@@ -3169,7 +3169,7 @@
   },
   {
     "rank": 289,
-    "id": "AGZD",
+    "id": "AGZX",
     "name": "Arthritis Relief",
     "description": "Electrolysis and other epilation of skin",
     "url": "https://1688.com",
@@ -3180,7 +3180,7 @@
   },
   {
     "rank": 290,
-    "id": "VEC",
+    "id": "VECX",
     "name": "TRANZGEL",
     "description": "Other proctopexy",
     "url": "http://myspace.com",
@@ -3191,7 +3191,7 @@
   },
   {
     "rank": 291,
-    "id": "JPT",
+    "id": "JPTX",
     "name": "Ibuprofen",
     "description": "Other orthodontic operation",
     "url": "http://pinterest.com",
@@ -3202,7 +3202,7 @@
   },
   {
     "rank": 292,
-    "id": "BCH",
+    "id": "BCHX",
     "name": "FLU",
     "description": "Bursotomy",
     "url": "https://marketwatch.com",
@@ -3213,7 +3213,7 @@
   },
   {
     "rank": 293,
-    "id": "OCC",
+    "id": "OCCX",
     "name": "Minoxidil",
     "description": "Marsupialization of lesion of liver",
     "url": "http://mlb.com",
@@ -3224,7 +3224,7 @@
   },
   {
     "rank": 294,
-    "id": "PTC",
+    "id": "PTCX",
     "name": "Ferrlecit",
     "description": "Laparoscopic supracervical hysterectomy [LSH]",
     "url": "http://bizjournals.com",
@@ -3235,7 +3235,7 @@
   },
   {
     "rank": 295,
-    "id": "IID",
+    "id": "IIDX",
     "name": "Cough",
     "description": "Closed endoscopic biopsy of ureter",
     "url": "https://facebook.com",
@@ -3246,7 +3246,7 @@
   },
   {
     "rank": 296,
-    "id": "FOGO",
+    "id": "FOGX",
     "name": "Betamethasone Dipropionate",
     "description": "Frontal sinusectomy",
     "url": "http://house.gov",
@@ -3257,7 +3257,7 @@
   },
   {
     "rank": 297,
-    "id": "UBFO",
+    "id": "UBFX",
     "name": "INVEGA SUSTENNA",
     "description": "Ultraviolet light therapy",
     "url": "http://newsvine.com",
@@ -3268,7 +3268,7 @@
   },
   {
     "rank": 298,
-    "id": "BAC^E",
+    "id": "BACX",
     "name": "Midazolam",
     "description": "Aspiration curettage of uterus for termination of pregnancy",
     "url": "http://weebly.com",
@@ -3279,7 +3279,7 @@
   },
   {
     "rank": 299,
-    "id": "LORL",
+    "id": "LORX",
     "name": "CVS Medicated Anti-Itch",
     "description": "Amputation through hand",
     "url": "http://bravesites.com",
@@ -3290,7 +3290,7 @@
   },
   {
     "rank": 300,
-    "id": "SWX",
+    "id": "SWXX",
     "name": "Mixed Vespid Hymenoptera Venom Multidose",
     "description": "Resurfacing hip, partial, femoral head",
     "url": "http://mac.com",

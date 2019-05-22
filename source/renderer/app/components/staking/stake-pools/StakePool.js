@@ -12,9 +12,6 @@ import type { StakePoolProps } from '../../../api/staking/types';
 
 @observer
 export default class StakePool extends Component<StakePoolProps> {
-  getComponentClassName = (performance: number) =>
-    classNames([styles.component, styles[`performance-${performance}`]]);
-
   render() {
     const {
       rank,
@@ -23,10 +20,13 @@ export default class StakePool extends Component<StakePoolProps> {
       retiring,
     } = this.props;
 
+    const getStyleWithColor = (style: string) =>
+      classNames([styles[style], styles[`performance-${performance}`]]);
+
     return (
-      <div className={this.getComponentClassName(performance)}>
+      <div className={getStyleWithColor('component')}>
         <div className={styles.id}>{id}</div>
-        <div className={styles.rank}>{rank}</div>
+        <div className={getStyleWithColor('rank')}>{rank}</div>
         {retiring && (
           <div className={styles.clock}>
             <SVGInline svg={clockIcon} className={styles.clockIcon} />

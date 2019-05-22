@@ -35,6 +35,13 @@
   font-size: 20px;
   font-weight: bold;
   text-align: center;
+
+  @for $i from 1 through 100 {
+    &.performance-#{$i} {
+      $color: adjust-hue(#1ccc5e, -($i + 20));
+      color: $color !important;
+    }
+  }
 }
 
 .clock {
