@@ -2,19 +2,9 @@
 import { computed } from 'mobx';
 import Store from './lib/Store';
 import { ROUTES } from '../routes-config';
+import type { StakePoolProps } from '../api/staking/types';
 
 import STAKE_POOLS from '../config/stakingStakePools.dummy.json';
-
-type StakePool = {
-  rank: number,
-  id: string,
-  name: string,
-  description: string,
-  url: string,
-  controlledStake: number,
-  profitMargin: number,
-  retiring?: string,
-};
 
 export default class StakingStore extends Store {
   showCountdown: boolean = false;
@@ -32,12 +22,12 @@ export default class StakingStore extends Store {
     return this.currentRoute.indexOf(ROUTES.STAKING.ROOT) > -1;
   }
 
-  @computed get stakePools(): Array<StakePool> {
+  @computed get stakePools(): Array<StakePoolProps> {
     // return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
     return STAKE_POOLS;
   }
 
-  @computed get delegatingStakePools(): Array<StakePool> {
+  @computed get delegatingStakePools(): Array<StakePoolProps> {
     // return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
     return [STAKE_POOLS[1], STAKE_POOLS[3], STAKE_POOLS[20], STAKE_POOLS[36]];
   }

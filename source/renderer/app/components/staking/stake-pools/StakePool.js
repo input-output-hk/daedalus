@@ -8,17 +8,7 @@ import clockIcon from '../../../assets/images/clock.inline.svg';
 
 import styles from './StakePool.scss';
 
-export type StakePoolProps = {
-  rank: number,
-  id: string,
-  // name: string,
-  // description: string,
-  // url: string,
-  // controlledStake: number,
-  // profitMargin: number,
-  performance: number,
-  retiring?: Date,
-};
+import type { StakePoolProps } from '../../../api/staking/types';
 
 @observer
 export default class StakePool extends Component<StakePoolProps> {

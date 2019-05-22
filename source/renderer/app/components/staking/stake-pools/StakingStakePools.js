@@ -6,6 +6,7 @@ import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import StakePool from './StakePool';
+import type { StakePoolProps } from '../../../api/staking/types';
 
 import searchIcon from '../../../assets/images/search.inline.svg';
 import styles from './StakingStakePools.scss';
@@ -29,8 +30,8 @@ const messages = defineMessages({
 });
 
 type Props = {
-  stakePoolsDelegatingList: Array<any>,
-  stakePoolsList: Array<any>,
+  stakePoolsDelegatingList: Array<StakePoolProps>,
+  stakePoolsList: Array<StakePoolProps>,
 };
 
 type State = {
