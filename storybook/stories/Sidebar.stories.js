@@ -97,7 +97,7 @@ storiesOf('Sidebar', module)
       pathname="/"
     />
   ))
-  .add('delegation-progress', () => (
+  .add('decentralization-progress', () => (
     <Sidebar
       menus={emptyMenus}
       categories={CATEGORIES_WITHOUT_DELEGATION_COUNT_DOWN}

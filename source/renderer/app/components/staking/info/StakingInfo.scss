@@ -42,13 +42,19 @@
 .progress {
   background: repeating-linear-gradient(
     -63deg,
-    var(--theme-block-delegation-progress-stripe-dark-1-background-color),
-    var(--theme-block-delegation-progress-stripe-dark-1-background-color) 10px,
-    var(--theme-block-delegation-progress-stripe-dark-2-background-color) 10px,
-    var(--theme-block-delegation-progress-stripe-dark-2-background-color) 20px
+    var(--theme-block-decentralization-progress-stripe-dark-1-background-color),
+    var(--theme-block-decentralization-progress-stripe-dark-1-background-color)
+      10px,
+    var(--theme-block-decentralization-progress-stripe-dark-2-background-color)
+      10px,
+    var(--theme-block-decentralization-progress-stripe-dark-2-background-color)
+      20px
   );
   border-radius: 5px;
   height: 100%;
+  position: relative;
+  z-index: 1000;
+  overflow: hidden;
 }
 
 .progressLabel {
@@ -56,5 +62,13 @@
   color: #fff;
   position: absolute;
   top: 50%;
-  transform: translate(0, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.progressBackLabel {
+  @extend %regularText;
+  position: absolute;
+  z-index: 500;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }

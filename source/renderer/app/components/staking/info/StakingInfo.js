@@ -50,8 +50,10 @@ export default class DelegationInfo extends Component<Props> {
     const { percentage } = this.props;
     const heading = intl.formatMessage(messages.heading);
     const description = intl.formatMessage(messages.description);
-    const progressLabelLeftPosition = Math.max(percentage / 2, 5);
     const buttonLabel = intl.formatMessage(messages.buttonLabel);
+    const progressLabelLeftPosition =
+      percentage / 2 >= 5 ? 50 : 500 / percentage;
+    const progressBackLabelLeftPosition = Math.max(percentage / 2, 5);
 
     return (
       <div className={styles.component}>
@@ -69,10 +71,17 @@ export default class DelegationInfo extends Component<Props> {
               <div
                 className={styles.progress}
                 style={{ width: `${percentage}%` }}
-              />
+              >
+                <div
+                  className={styles.progressLabel}
+                  style={{ left: `${progressLabelLeftPosition}%` }}
+                >
+                  {percentage}%
+                </div>
+              </div>
               <div
-                className={styles.progressLabel}
-                style={{ left: `calc(${progressLabelLeftPosition}% - 10px)` }}
+                className={styles.progressBackLabel}
+                style={{ left: `${progressBackLabelLeftPosition}%` }}
               >
                 {percentage}%
               </div>
