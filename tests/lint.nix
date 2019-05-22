@@ -16,7 +16,9 @@ let
     export NO_UPDATE_NOTIFIER=1
     ln -s ${rawapp.node_modules} node_modules
     cp -a ${source}/. .
-    yarn run lint
+    mkdir /tmp/yarn-cache
+    yarn --offline --cache-folder /tmp/yarn-cache run lint
+    rm -r /tmp/yarn-cache
     EXIT_CODE=$?
     if [ $EXIT_CODE == 0 ]
     then
