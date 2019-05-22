@@ -1,14 +1,23 @@
 .component {
   background-color: #fafbfc;
-  border-bottom: 5px solid #1ccc5e !important;
+  border-bottom: 5px solid #fc5f2b !important;
   border-radius: 4px;
   border: solid 1px #c6cdd6;
   cursor: pointer;
   height: 71px;
   margin: 5px;
-  padding: 8px;
+  // padding-top: 15px;
   position: relative;
   width: 80px;
+
+  $color: #1ccc5e;
+
+  @for $i from 1 through 100 {
+    &.performance-#{$i} {
+      $color: adjust-hue(#1ccc5e, -($i + 20));
+      border-bottom-color: $color !important;
+    }
+  }
 }
 
 .id {
@@ -16,7 +25,8 @@
   font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.5px;
-  line-height: 1.57;
+  line-height: 1;
+  margin: 12px 0 9px;
   text-align: center;
 }
 
@@ -24,10 +34,7 @@
   color: #22c860;
   font-size: 20px;
   font-weight: bold;
-  height: 22px;
-  line-height: 1.1;
   text-align: center;
-  width: 40px;
 }
 
 .clock {
