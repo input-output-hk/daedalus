@@ -70,6 +70,7 @@ export const handleDiskSpace = (
       diskSpaceRequired: prettysize(diskSpaceRequired),
       diskSpaceMissing: prettysize(diskSpaceMissing),
       diskSpaceRecommended: prettysize(diskSpaceRecommended),
+      diskSpaceAvailable: prettysize(diskSpaceAvailable),
     };
     if (isNotEnoughDiskSpace)
       Logger.info('Not enough disk space', { response });

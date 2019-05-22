@@ -9,20 +9,20 @@ import {
 const getDataFromFunction = props => {
   const filename = generateFileNameWithTimestamp(props);
   const prefix = filename.match(/^[^-]*[^ -]/i)[0];
-  const extention = filename.match(/\.[0-9a-z]+$/i)[0].replace('.', '');
-  const isUTC = !!filename.match(`Z.${extention}`);
+  const extension = filename.match(/\.[0-9a-z]+$/i)[0].replace('.', '');
+  const isUTC = !!filename.match(`Z.${extension}`);
   return {
     filename,
     prefix,
-    extention,
+    extension,
     isUTC,
   };
 };
 
 Given('I dont pass any props to the function', function() {
-  const { filename, extention, prefix, isUTC } = getDataFromFunction();
+  const { filename, extension, prefix, isUTC } = getDataFromFunction();
   this.context.filename = filename;
-  this.context.extention = extention;
+  this.context.extension = extension;
   this.context.prefix = prefix;
   this.context.isUTC = isUTC;
 });
@@ -32,11 +32,11 @@ Given('I pass the following props to the function:', function(data) {
   expectedProps = pickBy(expectedProps, identity);
   if (expectedProps.isUTC)
     expectedProps.isUTC = Boolean(expectedProps.isUTC === 'should');
-  const { filename, extention, prefix, isUTC } = getDataFromFunction(
+  const { filename, extension, prefix, isUTC } = getDataFromFunction(
     expectedProps
   );
   this.context.filename = filename;
-  this.context.extention = extention;
+  this.context.extension = extension;
   this.context.prefix = prefix;
   this.context.isUTC = isUTC;
 });
@@ -46,9 +46,9 @@ Then('the prefix should be {string}', function(prefix) {
   expect(this.context.prefix).to.equal(expectedPrefix);
 });
 
-Then('the extention should be {string}', function(extention) {
-  const expectedExtention = extention || defaultProps.extention;
-  expect(this.context.extention).to.equal(expectedExtention);
+Then('the extension should be {string}', function(extension) {
+  const expectedExtension = extension || defaultProps.extension;
+  expect(this.context.extension).to.equal(expectedExtension);
 });
 
 Then(/^the time (should|shouldn't) be converted into UTC/, function(state) {
