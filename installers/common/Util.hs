@@ -26,7 +26,7 @@ windowsRemoveDirectoryRecursive path = do
         removeFile path
 
 -- | Sets the many environment variables required for the
--- "npm package" build.
+-- "yarn package" build.
 -- When updating this, check that all variables are baked in with both
 -- webpack.config.js files.
 exportBuildVars :: Options -> InstallerConfig -> Text -> IO ()
