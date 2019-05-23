@@ -340,6 +340,12 @@ export default {
   '--theme-staking-content-border-color': '#c6cdd6',
   '--theme-staking-font-color-accent': '#5e6066',
   '--theme-staking-font-color-regular': '#5e6066',
+  '--theme-staking-font-color-light': 'rgba(94, 96, 102, 0.7)',
+  '--theme-staking-font-color-lighter': 'rgba(94, 96, 102, 0.5)',
+  '--theme-staking-table-head-background-color': '#f1f3f5',
+  '--theme-staking-table-border-color': '#c6cdd6',
+  '--theme-staking-link-color': 'rgba(41, 111, 208, 1)',
+  '--theme-staking-link-color-light': 'rgba(41, 111, 208, 0.5)',
 
   '--theme-switch-label-color': '#5e6066',
 

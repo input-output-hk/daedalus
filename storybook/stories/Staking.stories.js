@@ -13,9 +13,10 @@ import StakingWithNavigation from '../../source/renderer/app/components/staking/
 import StakingDelegationCountdown from '../../source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown';
 import StakingDelegationCenter from '../../source/renderer/app/components/staking/delegation-center/StakingDelegationCenter';
 import StakingStakePools from '../../source/renderer/app/components/staking/stake-pools/StakingStakePools';
-import StakingRewards from '../../source/renderer/app/components/staking/rewards/StakingRewards';
 import StakingEpochs from '../../source/renderer/app/components/staking/epochs/StakingEpochs';
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
+
+import StakingRewards from './Staking-Rewards.stories';
 
 const defaultStartDateTime = new Date('Jun 01 2019');
 const startDateTimeKnob = (name, defaultValue) => {
@@ -89,9 +90,7 @@ storiesOf('Staking', module)
     { id: 'stake-pools' }
   )
 
-  .add(pageNames.rewards, () => <StakingRewards name={pageNames.rewards} />, {
-    id: 'rewards',
-  })
+  .add(pageNames.rewards, StakingRewards)
 
   .add(pageNames.epochs, () => <StakingEpochs name={pageNames.epochs} />, {
     id: 'epochs',

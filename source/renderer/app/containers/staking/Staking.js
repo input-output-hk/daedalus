@@ -4,8 +4,6 @@ import { observer, inject } from 'mobx-react';
 import MainLayout from '../MainLayout';
 import StakingWithNavigation from '../../components/staking/layouts/StakingWithNavigation';
 import StakingDelegationCountdownPage from './StakingDelegationCountdownPage';
-
-// import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 

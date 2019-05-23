@@ -1,5 +1,122 @@
 .component {
-  font-family: var(--font-regular);
-  margin: 20px;
-  text-align: center;
+  padding: 20px 20px 0;
+
+  .headerWrapper {
+    display: flex;
+    margin: 0 20px 10px;
+    line-height: 1.38;
+
+    & > .title {
+      color: var(--theme-staking-font-color-lighter);
+      font-family: var(--font-regular);
+      font-size: 16px;
+      flex-grow: 1;
+    }
+
+    & > .actionLabel {
+      color: var(--theme-staking-font-color-light);
+      cursor: pointer;
+      font-family: var(--font-medium);
+      font-size: 14px;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .noRewardsLabel {
+    color: var(--theme-staking-font-color-lighter);
+    font-family: var(--font-regular);
+    font-size: 16px;
+    flex-grow: 1;
+    text-align: center;
+  }
+
+  .note {
+    color: var(--theme-staking-font-color-lighter);
+    font-family: var(--font-regular);
+    font-size: 14px;
+    line-height: 1.43;
+    margin: 10px 20px 0;
+    & > button {
+      color: var(--theme-staking-link-color-light);
+      cursor: pointer;
+      font-size: 14px;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .loadingSpinnerWrapper {
+    margin: auto;
+  }
+
+  table {
+    border-style: hidden;
+    width: 100%;
+
+    thead {
+      background-color: var(--theme-staking-table-head-background-color);
+    }
+
+    tr,
+    td,
+    th {
+      border: 1px solid var(--theme-staking-table-border-color);
+    }
+
+    th {
+      color: var(--theme-staking-font-color-regular);
+      font-family: var(--font-semibold);
+      font-size: 14px;
+      line-height: 1.14;
+      padding: 14px 20px;
+      text-align: left;
+
+      & > .sortIcon {
+        cursor: pointer;
+        margin-left: 6px;
+        & > svg {
+          width: 7px;
+          height: 7.5px;
+          & > path {
+            fill: var(--theme-staking-font-color-regular);
+          }
+        }
+        &.ascending {
+          & > svg {
+            transform: rotate(180deg);
+          }
+        }
+      }
+    }
+
+    td {
+      color: var(--theme-staking-font-color-regular);
+      font-family: var(--font-light);
+      font-size: 14px;
+      line-height: 1.3;
+      padding: 14px 20px;
+      text-align: left;
+      width: 25%;
+
+      p {
+        display: -webkit-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+
+        .stakePoolReference {
+          color: var(--theme-staking-link-color);
+          cursor: pointer;
+          font-family: var(--font-medium);
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
 }
