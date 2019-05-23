@@ -15,7 +15,7 @@ export default class StakingStore extends Store {
     return this.currentRoute.indexOf(ROUTES.STAKING.ROOT) > -1;
   }
 
-  @action showCountDown(): boolean {
+  @action showCountdown(): boolean {
     return new Date(this.startDateTime).getTime() - new Date().getTime() > 0;
   }
 }

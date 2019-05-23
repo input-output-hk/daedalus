@@ -23,17 +23,17 @@ export default class Staking extends Component<Props> {
     } = this.props;
 
     if (
-      staking.showCountDown() &&
-      app.currentRoute !== ROUTES.STAKING.DELEGATION_COUNT_DOWN
+      staking.showCountdown() &&
+      app.currentRoute !== ROUTES.STAKING.DELEGATION_COUNTDOWN
     ) {
       return actions.router.goToRoute.trigger({
-        route: ROUTES.STAKING.DELEGATION_COUNT_DOWN,
+        route: ROUTES.STAKING.DELEGATION_COUNTDOWN,
       });
     }
 
     if (
-      !staking.showCountDown() &&
-      app.currentRoute === ROUTES.STAKING.DELEGATION_COUNT_DOWN
+      !staking.showCountdown() &&
+      app.currentRoute === ROUTES.STAKING.DELEGATION_COUNTDOWN
     ) {
       return actions.router.goToRoute.trigger({
         route: ROUTES.STAKING.INFO,
@@ -58,7 +58,7 @@ export default class Staking extends Component<Props> {
 
     return (
       <MainLayout>
-        {staking.showCountDown() ? (
+        {staking.showCountdown() ? (
           children
         ) : (
           <StakingWithNavigation

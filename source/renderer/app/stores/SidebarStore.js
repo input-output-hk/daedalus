@@ -28,17 +28,17 @@ export default class SidebarStore extends Store {
     const { staking } = this.stores;
     const { CATEGORIES_BY_NAME } = sidebarConfig;
 
-    if (staking.showCountDown()) {
+    if (staking.showCountdown()) {
       this.CATEGORIES.splice(
         2,
         0,
-        CATEGORIES_BY_NAME.STAKING_WITH_DELEGATION_COUNT_DOWN
+        CATEGORIES_BY_NAME.STAKING_WITH_DELEGATION_COUNTDOWN
       );
     } else {
       this.CATEGORIES.splice(
         2,
         0,
-        CATEGORIES_BY_NAME.STAKING_WITHOUT_DELEGATION_COUNT_DOWN
+        CATEGORIES_BY_NAME.STAKING_WITHOUT_DELEGATION_COUNTDOWN
       );
     }
   };

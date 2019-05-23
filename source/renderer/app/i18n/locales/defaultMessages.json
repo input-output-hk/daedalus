@@ -1549,8 +1549,8 @@
           "column": 3,
           "line": 16
         },
-        "file": "source/renderer/app/components/staking/delegation-count-down/DelegationCountDownInfo.js",
-        "id": "staking.delegationCountDown.heading",
+        "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountdownInfo.js",
+        "id": "staking.delegationCountdown.heading",
         "start": {
           "column": 11,
           "line": 12
@@ -1563,8 +1563,8 @@
           "column": 3,
           "line": 22
         },
-        "file": "source/renderer/app/components/staking/delegation-count-down/DelegationCountDownInfo.js",
-        "id": "staking.delegationCountDown.description",
+        "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountdownInfo.js",
+        "id": "staking.delegationCountdown.description",
         "start": {
           "column": 15,
           "line": 17
@@ -1577,8 +1577,8 @@
           "column": 3,
           "line": 27
         },
-        "file": "source/renderer/app/components/staking/delegation-count-down/DelegationCountDownInfo.js",
-        "id": "staking.delegationCountDown.timeLeftDesc",
+        "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountdownInfo.js",
+        "id": "staking.delegationCountdown.timeLeftDesc",
         "start": {
           "column": 16,
           "line": 23
@@ -1591,15 +1591,15 @@
           "column": 3,
           "line": 32
         },
-        "file": "source/renderer/app/components/staking/delegation-count-down/DelegationCountDownInfo.js",
-        "id": "staking.delegationCountDown.buttonLabel",
+        "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountdownInfo.js",
+        "id": "staking.delegationCountdown.buttonLabel",
         "start": {
           "column": 15,
           "line": 28
         }
       }
     ],
-    "path": "source/renderer/app/components/staking/delegation-count-down/DelegationCountDownInfo.json"
+    "path": "source/renderer/app/components/staking/delegation-countdown/DelegationCountdownInfo.json"
   },
   {
     "descriptors": [

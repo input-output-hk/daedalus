@@ -6,7 +6,7 @@ export const ROUTES = {
   PAPER_WALLET_CREATE_CERTIFICATE: '/paper-wallet/create-certificate',
   STAKING: {
     ROOT: '/staking',
-    DELEGATION_COUNT_DOWN: '/staking/delegation-count-down',
+    DELEGATION_COUNTDOWN: '/staking/delegation-countdown',
     PAGE: '/staking/:page',
     DELEGATION_CENTER: '/staking/delegation-center',
     STAKE_POOLS: '/staking/stake-pools',

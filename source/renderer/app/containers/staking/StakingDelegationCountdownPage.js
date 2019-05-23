@@ -1,14 +1,14 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import StakingDelegationCountDown from '../../components/staking/delegation-count-down/StakingDelegationCountDown';
+import StakingDelegationCountdown from '../../components/staking/delegation-countdown/StakingDelegationCountdown';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class StakingDelegationCountDownPage extends Component<Props> {
+export default class StakingDelegationCountdownPage extends Component<Props> {
   static defaultProps = { actions: null, stores: {} };
 
   render() {
@@ -16,7 +16,7 @@ export default class StakingDelegationCountDownPage extends Component<Props> {
     const { profile = {}, staking = {} } = stores;
 
     return (
-      <StakingDelegationCountDown
+      <StakingDelegationCountdown
         actions={actions}
         currentLocale={profile.currentLocale}
         startDateTime={staking.startDateTime}

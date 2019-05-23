@@ -5,28 +5,28 @@ import { defineMessages, intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import humanizeDuration from 'humanize-duration';
-import styles from './DelegationCountDownInfo.scss';
+import styles from './DelegationCountdownInfo.scss';
 import { ROUTES } from '../../../routes-config';
 
 const messages = defineMessages({
   heading: {
-    id: 'staking.delegationCountDown.heading',
+    id: 'staking.delegationCountdown.heading',
     defaultMessage: '!!!Cardano decentralization',
     description: 'Headline for the Decentralisation notification.',
   },
   description: {
-    id: 'staking.delegationCountDown.description',
+    id: 'staking.delegationCountdown.description',
     defaultMessage:
       '!!!Cardano will soon start its transition from a federated to a decentralized system. This will mark the start of stakeholders being able to earn rewards for participating in the running of the network. They will be able to participate directly in the process of staking or can delegate their stake to stake pools to earn rewards in ada.',
     description: 'Info for the Decentralisation notification.',
   },
   timeLeftDesc: {
-    id: 'staking.delegationCountDown.timeLeftDesc',
+    id: 'staking.delegationCountdown.timeLeftDesc',
     defaultMessage: '!!!Rewards begin in',
     description: 'Description for the Decentralisation notification.',
   },
   buttonLabel: {
-    id: 'staking.delegationCountDown.buttonLabel',
+    id: 'staking.delegationCountdown.buttonLabel',
     defaultMessage: '!!!Learn more',
     description: 'Button Label for the Decentralisation notification.',
   },
@@ -35,7 +35,7 @@ const messages = defineMessages({
 type Props = { actions: any, currentLocale: string, startDateTime: string };
 
 @observer
-export default class DelegationCountDownInfo extends Component<Props> {
+export default class DelegationCountdownInfo extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
