@@ -7,4 +7,4 @@ req.keys().forEach(file => {
   translations[locale] = req(file);
 });
 
-module.exports = translations;
+export default translations;

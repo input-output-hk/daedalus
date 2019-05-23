@@ -9,9 +9,11 @@ Changelog
 - Implemented the navigation for the Staking pages ([PR 1395](https://github.com/input-output-hk/daedalus/pull/1395), [PR 1400](https://github.com/input-output-hk/daedalus/pull/1400))
 - Implemented timestamp on paper wallet PDF's ([PR 1385](https://github.com/input-output-hk/daedalus/pull/1385), [PR 1400](https://github.com/input-output-hk/daedalus/pull/1400))
 - Implemented "Start of decentralisation notification" UI ([PR 1390](https://github.com/input-output-hk/daedalus/pull/1390))
+- Implemented new Network Status dialog design ([PR 1370](https://github.com/input-output-hk/daedalus/pull/1370), [PR 1402](https://github.com/input-output-hk/daedalus/pull/1402))
 - Implemented the wallet UTxO statistics screen ([PR 1353](https://github.com/input-output-hk/daedalus/pull/1353))
 - Implemented scroll error message into view ([PR 1383](https://github.com/input-output-hk/daedalus/pull/1383))
 - Implemented new Block-consolidation status design ([PR 1377](https://github.com/input-output-hk/daedalus/pull/1377))
+- Implemented new About Us dialog design with a close button ([PR 1369](https://github.com/input-output-hk/daedalus/pull/1369))
 - Implemented "In progress" download logs notification ([PR 1341](https://github.com/input-output-hk/daedalus/pull/1341))
 - Implemented status icons on the "Loading" screens ([PR 1325](https://github.com/input-output-hk/daedalus/pull/1325), [PR 1365](https://github.com/input-output-hk/daedalus/pull/1365))
 - Implemented detection for system locale on Daedalus start when user hasn't yet selected language preference so that locale defaults to Japanese if system locale is Japan/Japanese, otherwise defaults to English ([PR 1348](https://github.com/input-output-hk/daedalus/pull/1348))
@@ -27,14 +29,12 @@ Changelog
 
 ### Chores
 
-- Removed legacy references to npm in favour of yarn ([PR 1399](https://github.com/input-output-hk/daedalus/pull/1399))
-- Implemented new Network Status dialog design ([PR 1370](https://github.com/input-output-hk/daedalus/pull/1370))
+- Removed legacy references to npm in favour of yarn ([PR 1399](https://github.com/input-output-hk/daedalus/pull/1399), [PR 1402](https://github.com/input-output-hk/daedalus/pull/1402))
 - Setup storybook build script to deploy previews for the QA team to Netlify ([1391](https://github.com/input-output-hk/daedalus/pull/1391))
 - Added unit tests for mnemonic generation and validation ([PR 1379](https://github.com/input-output-hk/daedalus/pull/1379))
 - Simplified the test setup ([PR 1378](https://github.com/input-output-hk/daedalus/pull/1378))
 - Updated PR template ([PR 1376](https://github.com/input-output-hk/daedalus/pull/1376))
-- Implemented new About Us dialog design with a close button ([PR 1369](https://github.com/input-output-hk/daedalus/pull/1369)
-- Refactored store async functions to use mobx runInAction calls ([PR 1367](https://github.com/input-output-hk/daedalus/pull/1367)
+- Refactored store async functions to use mobx runInAction calls ([PR 1367](https://github.com/input-output-hk/daedalus/pull/1367))
 - Refactored the consolidation status screen epoch calculation ([PR 1339](https://github.com/input-output-hk/daedalus/pull/1339))
 - Removed the `REPORT_URL` env variable ([PR 1338](https://github.com/input-output-hk/daedalus/pull/1338))
 - Improved acceptance test coverage for the Loading screen, Block Consolidation screen, and fixed a bug common to multiple other tests which use the mnemonic word selector to identify and click mnemonics ([PR 1318](https://github.com/input-output-hk/daedalus/pull/1318))
