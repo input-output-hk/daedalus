@@ -561,19 +561,11 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.platform)}:</td>
-                <Tooltip skin={TooltipSkin} tip={platform}>
-                  <td>{platform}</td>
-                </Tooltip>
+                <td>{platform}</td>
               </tr>
               <tr className={styles.platformVersion}>
                 <td>{intl.formatMessage(messages.platformVersion)}:</td>
-                <Tooltip
-                  skin={TooltipSkin}
-                  tip={platformVersion}
-                  className={styles.platformTooltip}
-                >
-                  <td className={styles.platform}>{platformVersion}</td>
-                </Tooltip>
+                <td className={styles.platform}>{platformVersion}</td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cpu)}:</td>
@@ -583,15 +575,11 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.ram)}:</td>
-                <Tooltip skin={TooltipSkin} tip={ram}>
-                  <td>{ram}</td>
-                </Tooltip>
+                <td>{ram}</td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.availableDiskSpace)}:</td>
-                <Tooltip skin={TooltipSkin} tip={availableDiskSpace}>
-                  <td>{availableDiskSpace}</td>
-                </Tooltip>
+                <td>{availableDiskSpace}</td>
               </tr>
               <tr>
                 <th colSpan={2}>
@@ -601,21 +589,15 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.daedalusVersion)}:</td>
-                <Tooltip skin={TooltipSkin} tip={daedalusVersion}>
-                  <td>{daedalusVersion}</td>
-                </Tooltip>
+                <td>{daedalusVersion}</td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.daedalusMainProcessID)}:</td>
-                <Tooltip skin={TooltipSkin} tip={daedalusMainProcessID}>
-                  <td>{daedalusMainProcessID}</td>
-                </Tooltip>
+                <td>{daedalusMainProcessID}</td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.daedalusProcessID)}:</td>
-                <Tooltip skin={TooltipSkin} tip={daedalusProcessID}>
-                  <td>{daedalusProcessID}</td>
-                </Tooltip>
+                <td>{daedalusProcessID}</td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.safeMode)}:</td>
@@ -627,27 +609,19 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoVersion)}:</td>
-                <Tooltip skin={TooltipSkin} tip={cardanoVersion}>
-                  <td>{cardanoVersion}</td>
-                </Tooltip>
+                <td>{cardanoVersion}</td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoProcessID)}:</td>
-                <Tooltip skin={TooltipSkin} tip={cardanoProcessID}>
-                  <td>{cardanoProcessID}</td>
-                </Tooltip>
+                <td>{cardanoProcessID}</td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoApiPort)}:</td>
-                <Tooltip skin={TooltipSkin} tip={cardanoAPIPort}>
-                  <td>{cardanoAPIPort}</td>
-                </Tooltip>
+                <td>{cardanoAPIPort}</td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoNetwork)}:</td>
-                <Tooltip skin={TooltipSkin} tip={cardanoNetwork}>
-                  <td>{cardanoNetwork}</td>
-                </Tooltip>
+                <td>{cardanoNetwork}</td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.stateDirectory)}:</td>
@@ -701,24 +675,15 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.syncPercentage)}:</td>
-                <Tooltip
-                  skin={TooltipSkin}
-                  tip={`${syncPercentage.toFixed(2)}%`}
-                >
-                  <td>{syncPercentage.toFixed(2)}%</td>
-                </Tooltip>
+                <td>{syncPercentage.toFixed(2)}%</td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.networkBlockHeight)}:</td>
-                <Tooltip skin={TooltipSkin} tip={networkBlockHeight}>
-                  <td>{networkBlockHeight}</td>
-                </Tooltip>
+                <td>{networkBlockHeight}</td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.localBlockHeight)}:</td>
-                <Tooltip skin={TooltipSkin} tip={localBlockHeight}>
-                  <td>{localBlockHeight}</td>
-                </Tooltip>
+                <td>{localBlockHeight}</td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.remainingUnsyncedBlocks)}:</td>
@@ -728,37 +693,19 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.latestLocalBlockAge)}:</td>
-                <Tooltip
-                  skin={TooltipSkin}
-                  tip={
-                    latestLocalBlockTimestamp >= 0
-                      ? `${latestLocalBlockAge} ms`
-                      : '-'
-                  }
-                >
-                  <td className={latestLocalBlockAgeClasses}>
-                    {latestLocalBlockTimestamp > 0
-                      ? `${latestLocalBlockAge} ms`
-                      : '-'}
-                  </td>
-                </Tooltip>
+                <td className={latestLocalBlockAgeClasses}>
+                  {latestLocalBlockTimestamp > 0
+                    ? `${latestLocalBlockAge} ms`
+                    : '-'}
+                </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.latestNetworkBlockAge)}:</td>
-                <Tooltip
-                  skin={TooltipSkin}
-                  tip={
-                    latestNetworkBlockTimestamp > 0
-                      ? `${latestNetworkBlockAge} ms`
-                      : '-'
-                  }
-                >
-                  <td className={latestNetworkBlockAgeClasses}>
-                    {latestNetworkBlockTimestamp > 0
-                      ? `${latestNetworkBlockAge} ms`
-                      : '-'}
-                  </td>
-                </Tooltip>
+                <td className={latestNetworkBlockAgeClasses}>
+                  {latestNetworkBlockTimestamp > 0
+                    ? `${latestNetworkBlockAge} ms`
+                    : '-'}
+                </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.localTimeDifference)}:</td>
@@ -773,20 +720,11 @@ export default class NetworkStatus extends Component<Props, State> {
                           messages.localTimeDifferenceCheckTime
                         )}
                   </button>
-                  <Tooltip
-                    skin={TooltipSkin}
-                    tip={
-                      isNTPServiceReachable
-                        ? `${localTimeDifference || 0} μs`
-                        : intl.formatMessage(messages.serviceUnreachable)
-                    }
-                  >
-                    <span className={localTimeDifferenceClasses}>
-                      {isNTPServiceReachable
-                        ? `${localTimeDifference || 0} μs`
-                        : intl.formatMessage(messages.serviceUnreachable)}
-                    </span>
-                  </Tooltip>
+                  <span className={localTimeDifferenceClasses}>
+                    {isNTPServiceReachable
+                      ? `${localTimeDifference || 0} μs`
+                      : intl.formatMessage(messages.serviceUnreachable)}
+                  </span>
                 </td>
               </tr>
               <tr>
@@ -845,26 +783,15 @@ export default class NetworkStatus extends Component<Props, State> {
               ) : null}
               <tr>
                 <td>{intl.formatMessage(messages.cardanoNodeState)}:</td>
-                <Tooltip
-                  skin={TooltipSkin}
-                  tip={upperFirst(
+                <td>
+                  {upperFirst(
                     cardanoNodeState != null
                       ? intl.formatMessage(
                           this.getLocalisationForCardanoNodeState()
                         )
                       : 'unknown'
                   )}
-                >
-                  <td>
-                    {upperFirst(
-                      cardanoNodeState != null
-                        ? intl.formatMessage(
-                            this.getLocalisationForCardanoNodeState()
-                          )
-                        : 'unknown'
-                    )}
-                  </td>
-                </Tooltip>
+                </td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoNodeResponding)}:</td>

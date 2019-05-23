@@ -140,6 +140,10 @@
     &.localTimeDifferenceItem {
       align-items: center;
       display: flex;
+
+      button {
+        padding-top: 0;
+      }
     }
   }
 
