@@ -18,6 +18,7 @@ import type { RedemptionTypeChoices } from '../../renderer/app/types/redemptionT
 import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
 import type { LogFiles } from '../../renderer/app/types/LogTypes';
 import type { GpuStatus } from '../../renderer/app/types/gpuStatus';
+import type { CheckStateDirectoryResponse } from '../types/stateDirectory.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -69,6 +70,13 @@ export type ToggleUiPartRendererResponse = void;
 export const GET_DISK_SPACE_STATUS_CHANNEL = 'GetDiskSpaceStatusChannel';
 export type GetDiskSpaceStatusRendererRequest = number | any;
 export type GetDiskSpaceStatusMainResponse = CheckDiskSpaceResponse;
+
+/**
+ * Channel for checking the state directory
+ */
+export const GET_STATE_DIRECTORY_CHANNEL = 'GetStateDirectoryChannel';
+export type GetStateDirectoryRendererRequest = string | any;
+export type GetStateDirectoryMainResponse = CheckStateDirectoryResponse;
 
 /**
  * Channel for loading a base64 encoded asset from within the `source/renderer` folder

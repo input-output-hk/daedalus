@@ -22,6 +22,7 @@ import {
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
+import { getStateDirectoryChannel } from '../ipc/getStateDirectoryChannel';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
 import type {
   CardanoNodeState,
@@ -31,6 +32,7 @@ import type {
 import type { NodeInfoQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
+import type { CheckStateDirectoryResponse } from '../../../common/types/stateDirectory.types';
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
@@ -98,6 +100,7 @@ export default class NetworkStatusStore extends Store {
   @observable diskSpaceRecommended: string = '';
   @observable diskSpaceAvailable: string = '';
   @observable isTlsCertInvalid: boolean = false;
+  @observable stateDirectory: string = '';
 
   // DEFINE STORE METHODS
   setup() {
@@ -139,6 +142,10 @@ export default class NetworkStatusStore extends Store {
     // Setup disk space checks
     getDiskSpaceStatusChannel.onReceive(this._onCheckDiskSpace);
     this._checkDiskSpace();
+
+    // Setup state directory checks
+    getStateDirectoryChannel.onReceive(this._setStateDirectory);
+    this._getStateDirectory();
   }
 
   // Setup network status polling interval
@@ -198,6 +205,10 @@ export default class NetworkStatusStore extends Store {
 
   _getStartupTimeDelta() {
     return Date.now() - this._startTime;
+  }
+
+  _getStateDirectory(stateDirectory?: number) {
+    getStateDirectoryChannel.send(stateDirectory);
   }
 
   _checkDiskSpace(diskSpaceRequired?: number) {
@@ -587,6 +598,13 @@ export default class NetworkStatusStore extends Store {
       this._setNetworkStatusPollingInterval();
     }
 
+    return Promise.resolve();
+  };
+
+  @action _setStateDirectory = ({
+    stateDirectory,
+  }: CheckStateDirectoryResponse): Promise<void> => {
+    this.stateDirectory = stateDirectory;
     return Promise.resolve();
   };
 

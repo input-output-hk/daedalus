@@ -10,7 +10,7 @@ import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
 import { environment } from './environment';
 import mainErrorHandler from './utils/mainErrorHandler';
-import { launcherConfig, frontendOnlyMode } from './config';
+import { launcherConfig, frontendOnlyMode, stateDirectoryPath } from './config';
 import { setupCardano } from './cardano/setup';
 import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
@@ -22,6 +22,7 @@ import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
 import { detectSystemLocaleChannel } from './ipc/detect-system-locale';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
+import { getStateDirectoryChannel } from './ipc/getStateDirectoryChannel';
 
 /* eslint-disable consistent-return */
 
@@ -143,6 +144,12 @@ const onAppReady = async () => {
 
   getNumberOfEpochsConsolidated();
 
+  getStateDirectoryChannel.onReceive(stateDirectory =>
+    sendStateDirectory(stateDirectory)
+  );
+
+  sendStateDirectory();
+
   mainWindow.on('close', async event => {
     Logger.info(
       'mainWindow received <close> event. Safe exiting Daedalus now.'
@@ -197,3 +204,11 @@ if (!isSingleInstance) {
   });
   app.on('ready', onAppReady);
 }
+
+const sendStateDirectory = async (stateDirectory?: string) => {
+  const response = {
+    stateDirectory: !stateDirectory ? stateDirectoryPath: stateDirectory,
+  };
+  getStateDirectoryChannel.send(response, mainWindow.webContents);
+  return response;
+};
