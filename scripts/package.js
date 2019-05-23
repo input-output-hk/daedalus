@@ -47,11 +47,11 @@ if (version) {
   DEFAULT_OPTS.version = version;
   startPack();
 } else {
-  exec('npm list electron --dev', (err, stdout) => {
+  exec('yarn list --pattern electron', (err, stdout) => {
     if (err) {
       DEFAULT_OPTS.version = '1.7.9';
     } else {
-      DEFAULT_OPTS.version = stdout.split('electron@')[1].replace(/\s/g, '');
+      DEFAULT_OPTS.version = stdout.split('electron@')[1].replace(/\s/g, '').split('├')[0];
     }
     startPack();
   });
