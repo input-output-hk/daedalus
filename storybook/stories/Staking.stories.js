@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, date, number, boolean, text } from '@storybook/addon-knobs';
+import { withKnobs, date, number } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import StoryLayout from './support/StoryLayout';
 import StoryProvider from './support/StoryProvider';
@@ -89,22 +89,15 @@ storiesOf('Staking', module)
     pageNames['stake-pools'],
     () => (
       <StakingStakePools
-        stakePoolsList={[
-          {
-            rank: number('Ranking', 1, 300),
-            id: text('ID', 'AAAA').substr(0, 4),
-            performance: number('Performance', 1, {
-              range: true,
-              min: 1,
-              max: 100,
-              step: 1,
-            }),
-            retiring: boolean('Retiring?', false)
-              ? date('Retiring date', new Date('Dec 01 2019'))
-              : null,
-          },
-          ...STAKE_POOLS,
-        ]}
+        stakePoolsList={STAKE_POOLS.slice(
+          0,
+          number('Pools', 100, {
+            range: true,
+            min: 37,
+            max: 300,
+            step: 1,
+          })
+        )}
         stakePoolsDelegatingList={[
           STAKE_POOLS[1],
           STAKE_POOLS[3],

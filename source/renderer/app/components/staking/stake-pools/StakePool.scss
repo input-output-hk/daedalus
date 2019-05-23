@@ -1,23 +1,13 @@
 .component {
   background-color: #fafbfc;
-  border-bottom: 5px solid #fc5f2b !important;
   border-radius: 4px;
-  border: solid 1px #c6cdd6;
+  border: solid 1px;
+  border-bottom: 5px solid;
   cursor: pointer;
   height: 71px;
   margin: 5px;
-  // padding-top: 15px;
   position: relative;
   width: 80px;
-
-  $color: #1ccc5e;
-
-  @for $i from 1 through 100 {
-    &.performance-#{$i} {
-      $color: adjust-hue(#1ccc5e, -($i + 20));
-      border-bottom-color: $color !important;
-    }
-  }
 }
 
 .id {
@@ -30,18 +20,10 @@
   text-align: center;
 }
 
-.rank {
-  color: #22c860;
+.index {
   font-size: 20px;
   font-weight: bold;
   text-align: center;
-
-  @for $i from 1 through 100 {
-    &.performance-#{$i} {
-      $color: adjust-hue(#1ccc5e, -($i + 20));
-      color: $color !important;
-    }
-  }
 }
 
 .clock {

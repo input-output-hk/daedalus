@@ -2,31 +2,46 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
-import classNames from 'classnames';
-
 import clockIcon from '../../../assets/images/clock.inline.svg';
-
 import styles from './StakePool.scss';
-
+import { getHSLColor } from '../../../utils/colors';
 import type { StakePoolProps } from '../../../api/staking/types';
 
+type Props = {
+  ...$Exact<StakePoolProps>,
+  ranking: number,
+};
+
 @observer
-export default class StakePool extends Component<StakePoolProps> {
+export default class StakePool extends Component<Props> {
+  get color() {
+    return getHSLColor(this.props.ranking);
+  }
+
   render() {
     const {
-      rank,
-      id /* name, description, url, controlledStake, profitMargin */,
-      performance,
+      index,
+      id,
+      /* name, description, url, controlledStake, profitMargin, performance */
       retiring,
     } = this.props;
 
-    const getStyleWithColor = (style: string) =>
-      classNames([styles[style], styles[`performance-${performance}`]]);
-
     return (
-      <div className={getStyleWithColor('component')}>
+      <div
+        className={styles.component}
+        style={{
+          borderBottomColor: this.color,
+        }}
+      >
         <div className={styles.id}>{id}</div>
-        <div className={getStyleWithColor('rank')}>{rank}</div>
+        <div
+          className={styles.index}
+          style={{
+            color: this.color,
+          }}
+        >
+          {index}
+        </div>
         {retiring && (
           <div className={styles.clock}>
             <SVGInline svg={clockIcon} className={styles.clockIcon} />
