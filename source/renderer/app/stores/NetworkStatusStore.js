@@ -32,7 +32,6 @@ import type {
 import type { NodeInfoQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
-import type { CheckStateDirectoryResponse } from '../../../common/types/stateDirectory.types';
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
@@ -143,8 +142,6 @@ export default class NetworkStatusStore extends Store {
     getDiskSpaceStatusChannel.onReceive(this._onCheckDiskSpace);
     this._checkDiskSpace();
 
-    // Setup state directory checks
-    getStateDirectoryChannel.onReceive(this._setStateDirectory);
     this._getStateDirectory();
   }
 
@@ -207,13 +204,13 @@ export default class NetworkStatusStore extends Store {
     return Date.now() - this._startTime;
   }
 
-  _getStateDirectory(stateDirectory?: number) {
-    getStateDirectoryChannel.send(stateDirectory);
-  }
-
   _checkDiskSpace(diskSpaceRequired?: number) {
     getDiskSpaceStatusChannel.send(diskSpaceRequired);
   }
+
+  _getStateDirectory = async () => {
+    this._onReceiveStateDirectory(await getStateDirectoryChannel.request());
+  };
 
   _requestCardanoState = async () => {
     Logger.info('NetworkStatusStore: requesting node state');
@@ -601,11 +598,8 @@ export default class NetworkStatusStore extends Store {
     return Promise.resolve();
   };
 
-  @action _setStateDirectory = ({
-    stateDirectory,
-  }: CheckStateDirectoryResponse): Promise<void> => {
+  @action _onReceiveStateDirectory = (stateDirectory: string) => {
     this.stateDirectory = stateDirectory;
-    return Promise.resolve();
   };
 
   // DEFINE COMPUTED VALUES

@@ -73,6 +73,8 @@ const onAppReady = async () => {
   // first checks for japanese locale, otherwise returns english
   const systemLocale = detectSystemLocale();
 
+  const stateDirectory = stateDirectoryPath;
+
   const systemInfo = logSystemInfo({
     cardanoVersion,
     cpu,
@@ -144,11 +146,7 @@ const onAppReady = async () => {
 
   getNumberOfEpochsConsolidated();
 
-  getStateDirectoryChannel.onReceive(stateDirectory =>
-    sendStateDirectory(stateDirectory)
-  );
-
-  sendStateDirectory();
+  getStateDirectoryChannel.onRequest(() => Promise.resolve(stateDirectory));
 
   mainWindow.on('close', async event => {
     Logger.info(
@@ -204,11 +202,3 @@ if (!isSingleInstance) {
   });
   app.on('ready', onAppReady);
 }
-
-const sendStateDirectory = async (stateDirectory?: string) => {
-  const response = {
-    stateDirectory: !stateDirectory ? stateDirectoryPath : stateDirectory,
-  };
-  getStateDirectoryChannel.send(response, mainWindow.webContents);
-  return response;
-};
