@@ -34,7 +34,7 @@ const messages = defineMessages({
 const TIME_LEFT_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;
 
 type Props = {
-  redirectToStakingInfo?: any,
+  redirectToStakingInfo?: Function,
   currentLocale: string,
   startDateTime: string,
 };
@@ -46,7 +46,7 @@ export default class DelegationCountdownInfo extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
-  intervalHandler = null;
+  intervalHandler: ?IntervalID = null;
   state = { timeLeft: 0 };
 
   componentDidMount() {

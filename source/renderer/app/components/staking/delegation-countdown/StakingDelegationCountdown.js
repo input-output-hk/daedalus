@@ -5,7 +5,7 @@ import DelegationCountdownInfo from './DelegationCountdownInfo';
 import styles from './StakingDelegationCountdown.scss';
 
 type Props = {
-  redirectToStakingInfo?: any,
+  redirectToStakingInfo?: Function,
   currentLocale: string,
   startDateTime: string,
 };
