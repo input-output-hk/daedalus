@@ -25,7 +25,6 @@
 }
 
 .progressBar {
-  border-radius: 5px;
   height: 24px;
   margin: 0 auto;
   margin-bottom: 24px;
@@ -34,12 +33,13 @@
 
 .progressBarContainer {
   background-color: var(--theme-staking-background-color);
+  border-radius: 5px;
   height: 100%;
-  position: relative;
   width: 100%;
 }
 
 .progress {
+  align-items: center;
   background: repeating-linear-gradient(
     -63deg,
     var(
@@ -59,24 +59,18 @@
       20px
   );
   border-radius: 5px;
+  display: flex;
   height: 100%;
-  overflow: hidden;
-  position: relative;
-  z-index: 1000;
+  justify-content: flex-end;
 }
 
 .progressLabel {
   @extend %regularText;
-  color: #fff;
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(calc(100% + 8px));
 }
 
-.progressBackLabel {
+.progressLabelWhite {
   @extend %regularText;
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 500;
+  color: #fff;
+  transform: translateX(-8px);
 }

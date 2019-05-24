@@ -34,9 +34,10 @@ const messages = defineMessages({
 });
 
 type Props = { percentage: number };
+type State = { progressLabelClassName: string };
 
 @observer
-export default class StakingInfo extends Component<Props> {
+export default class StakingInfo extends Component<Props, State> {
   static defaultProps = {
     percentage: 0,
   };
@@ -45,15 +46,45 @@ export default class StakingInfo extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  progressRef: any;
+
+  constructor(props: Props) {
+    super(props);
+
+    this.progressRef = React.createRef();
+    this.state = { progressLabelClassName: styles.progressLabelWhite };
+  }
+
+  componentDidMount() {
+    this.handleProgressLabelClassName();
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    const { percentage: prevPercentage } = prevProps;
+    const { percentage: currentPercentage } = this.props;
+
+    if (prevPercentage !== currentPercentage) {
+      this.handleProgressLabelClassName();
+    }
+  }
+
+  handleProgressLabelClassName = () => {
+    const { current: progressComponent } = this.progressRef;
+    const progressLabelClassName =
+      progressComponent.clientWidth >= 50
+        ? styles.progressLabelWhite
+        : styles.progressLabel;
+
+    this.setState({ progressLabelClassName });
+  };
+
   render() {
     const { intl } = this.context;
     const { percentage } = this.props;
+    const { progressLabelClassName } = this.state;
     const heading = intl.formatMessage(messages.heading);
     const description = intl.formatMessage(messages.description);
     const buttonLabel = intl.formatMessage(messages.buttonLabel);
-    const progressLabelLeftPosition =
-      percentage / 2 >= 5 ? 50 : 500 / percentage;
-    const progressBackLabelLeftPosition = Math.max(percentage / 2, 5);
 
     return (
       <div className={styles.component}>
@@ -70,20 +101,10 @@ export default class StakingInfo extends Component<Props> {
             <div className={styles.progressBarContainer}>
               <div
                 className={styles.progress}
+                ref={this.progressRef}
                 style={{ width: `${percentage}%` }}
               >
-                <div
-                  className={styles.progressLabel}
-                  style={{ left: `${progressLabelLeftPosition}%` }}
-                >
-                  {percentage}%
-                </div>
-              </div>
-              <div
-                className={styles.progressBackLabel}
-                style={{ left: `${progressBackLabelLeftPosition}%` }}
-              >
-                {percentage}%
+                <div className={progressLabelClassName}>{percentage}%</div>
               </div>
             </div>
           </div>
