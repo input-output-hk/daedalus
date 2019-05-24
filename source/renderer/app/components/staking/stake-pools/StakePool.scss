@@ -8,6 +8,12 @@
   margin: 5px;
   position: relative;
   width: 80px;
+
+  &:hover {
+    .tooltip {
+      display: block;
+    }
+  }
 }
 
 .id {
@@ -48,4 +54,8 @@
     width: 15px;
     height: 15px;
   }
+}
+
+.tooltip {
+  display: none;
 }

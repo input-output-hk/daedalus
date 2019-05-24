@@ -1,0 +1,81 @@
+@import '../stakingConfig';
+
+.component {
+  @extend %regularText;
+  margin: 20px;
+  background: white;
+  position: absolute;
+  z-index: 1;
+  top: -20px;
+  left: 50px;
+  padding: 20px;
+  border: 1px solid #c6cdd6;
+  border-radius: 5px;
+  box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25);
+  width: 250px;
+}
+
+.name {
+  font-size: 16px;
+  line-height: 1.38;
+  letter-spacing: 0.5px;
+  color: #5e6066;
+  margin-bottom: 3px;
+}
+
+.id {
+  opacity: 0.6;
+  font-size: 14px;
+  line-height: 1.36;
+  color: #5e6066;
+  margin-bottom: 3px;
+}
+
+.description {
+  font-size: 14px;
+  line-height: 1.36;
+  color: #5e6066;
+  margin-bottom: 4px;
+}
+
+.url {
+  font-size: 14px;
+  line-height: 1.36;
+  color: #296fd0;
+  margin-bottom: 18px;
+}
+
+.table {
+  @extend %regularText;
+  margin-bottom: 14px;
+  dt {
+    color: #5e6066;
+    display: inline-block;
+    font-family: SFUIText;
+    font-size: 14px;
+    line-height: 1.36;
+    opacity: 0.8;
+    width: 50%;
+  }
+  dd {
+    display: inline-block;
+    width: 50%;
+    text-align: right;
+  }
+  span {
+    background-color: rgba(28, 204, 93, 0.3);
+    border-radius: 3px;
+    color: #5e6066;
+    display: inline-block;
+    font-size: 8px;
+    font-weight: bold;
+    height: 16px;
+    line-height: 16px;
+    padding: 0 9px;
+  }
+}
+
+.delegateButton {
+  width: 100% !important;
+  background-color: #445b7c !important;
+}

@@ -5,8 +5,6 @@ import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import StakePool from './StakePool';
 import type { StakePoolProps } from '../../../api/staking/types';
 
@@ -34,6 +32,7 @@ const messages = defineMessages({
 type Props = {
   stakePoolsDelegatingList: Array<StakePoolProps>,
   stakePoolsList: Array<StakePoolProps>,
+  onOpenExternalLink: Function,
 };
 
 type State = {
@@ -70,28 +69,20 @@ export default class StakingStakePools extends Component<Props, State> {
     return pass;
   };
 
-  getTip = (stakePool: StakePoolProps) => (
-    <pre>{JSON.stringify(stakePool, null, 2)}</pre>
-  );
-
   getRanking = (index: number) =>
     (index * 100) / this.props.stakePoolsList.length;
 
   getList = () => {
     const fullList = this.props.stakePoolsList;
     const filtered = fullList
-      // .filter(this.stakePoolSearch)
-      .map<Tooltip>(stakePool => (
-        <Tooltip
+      .filter(this.stakePoolSearch)
+      .map<StakePool>(stakePool => (
+        <StakePool
+          {...stakePool}
           key={stakePool.id}
-          skin={TooltipSkin}
-          tip={this.getTip(stakePool)}
-        >
-          <StakePool
-            {...stakePool}
-            ranking={this.getRanking(stakePool.index)}
-          />
-        </Tooltip>
+          ranking={this.getRanking(stakePool.index)}
+          onOpenExternalLink={this.props.onOpenExternalLink}
+        />
       ));
     return filtered;
   };
@@ -147,16 +138,11 @@ export default class StakingStakePools extends Component<Props, State> {
 
         <div className={styles.stakePoolsDelegatingList}>
           {stakePoolsDelegatingList.map(stakePool => (
-            <Tooltip
+            <StakePool
+              {...stakePool}
               key={stakePool.id}
-              skin={TooltipSkin}
-              tip={this.getTip(stakePool)}
-            >
-              <StakePool
-                {...stakePool}
-                ranking={this.getRanking(stakePool.index)}
-              />
-            </Tooltip>
+              ranking={this.getRanking(stakePool.index)}
+            />
           ))}
         </div>
 

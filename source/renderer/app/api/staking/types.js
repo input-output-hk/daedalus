@@ -9,5 +9,5 @@ export type StakePoolProps = {
   controlledStake: number,
   profitMargin: number,
   performance: number,
-  retiring?: Date,
+  retirement?: Date,
 };

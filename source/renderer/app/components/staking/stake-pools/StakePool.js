@@ -6,10 +6,12 @@ import clockIcon from '../../../assets/images/clock.inline.svg';
 import styles from './StakePool.scss';
 import { getHSLColor } from '../../../utils/colors';
 import type { StakePoolProps } from '../../../api/staking/types';
+import StakePoolTooltip from './StakePoolTooltip';
 
 type Props = {
   ...$Exact<StakePoolProps>,
   ranking: number,
+  onOpenExternalLink: Function,
 };
 
 @observer
@@ -19,12 +21,7 @@ export default class StakePool extends Component<Props> {
   }
 
   render() {
-    const {
-      index,
-      id,
-      /* name, description, url, controlledStake, profitMargin, performance */
-      retiring,
-    } = this.props;
+    const { index, id, retirement } = this.props;
 
     return (
       <div
@@ -42,11 +39,12 @@ export default class StakePool extends Component<Props> {
         >
           {index}
         </div>
-        {retiring && (
+        {retirement && (
           <div className={styles.clock}>
             <SVGInline svg={clockIcon} className={styles.clockIcon} />
           </div>
         )}
+        <StakePoolTooltip {...this.props} className={styles.tooltip} />
       </div>
     );
   }

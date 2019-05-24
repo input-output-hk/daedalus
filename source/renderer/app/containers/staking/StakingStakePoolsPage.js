@@ -12,11 +12,13 @@ export default class StakingStakePoolsPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    const { stakePools, delegatingStakePools } = this.props.stores.staking;
+    const { staking, app } = this.props.stores;
+    const { stakePools, delegatingStakePools } = staking;
     return (
       <StakingStakePools
         stakePoolsList={stakePools}
         stakePoolsDelegatingList={delegatingStakePools}
+        onOpenExternalLink={app.openExternalLink}
       />
     );
   }
