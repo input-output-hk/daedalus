@@ -23,6 +23,8 @@ export const createErrorShades = (color: string): ErrorShades => {
 
   return {
     ultralight: lightShades(0.8).hex(),
+    lightest: lightShades(0.6).hex(),
+    lighter: lightShades(0.4).hex(),
     light: lightShades(0.2).hex(),
     regular: color,
     dark: darkShades(0.1).hex(),
