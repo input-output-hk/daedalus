@@ -42,12 +42,20 @@
 .progress {
   background: repeating-linear-gradient(
     -63deg,
-    var(--theme-block-decentralization-progress-stripe-dark-1-background-color),
-    var(--theme-block-decentralization-progress-stripe-dark-1-background-color)
+    var(
+      --theme-staking-decentralization-progress-stripe-dark-1-background-color
+    ),
+    var(
+        --theme-staking-decentralization-progress-stripe-dark-1-background-color
+      )
       10px,
-    var(--theme-block-decentralization-progress-stripe-dark-2-background-color)
+    var(
+        --theme-staking-decentralization-progress-stripe-dark-2-background-color
+      )
       10px,
-    var(--theme-block-decentralization-progress-stripe-dark-2-background-color)
+    var(
+        --theme-staking-decentralization-progress-stripe-dark-2-background-color
+      )
       20px
   );
   border-radius: 5px;

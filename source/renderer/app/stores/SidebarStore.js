@@ -14,11 +14,16 @@ export default class SidebarStore extends Store {
   @observable isShowingSubMenus: boolean = true;
 
   setup() {
-    const actions = this.actions.sidebar;
-    actions.showSubMenus.listen(this._showSubMenus);
-    actions.toggleSubMenus.listen(this._toggleSubMenus);
-    actions.activateSidebarCategory.listen(this._onActivateSidebarCategory);
-    actions.walletSelected.listen(this._onWalletSelected);
+    const { sidebar: sidebarActions, staking: stakingActions } = this.actions;
+
+    sidebarActions.showSubMenus.listen(this._showSubMenus);
+    sidebarActions.toggleSubMenus.listen(this._toggleSubMenus);
+    sidebarActions.activateSidebarCategory.listen(
+      this._onActivateSidebarCategory
+    );
+    sidebarActions.walletSelected.listen(this._onWalletSelected);
+
+    stakingActions.goToStakingInfo.listen(this.configureCategories);
 
     this.registerReactions([this._syncSidebarRouteWithRouter]);
     // this.configureCategories();
@@ -26,20 +31,15 @@ export default class SidebarStore extends Store {
 
   configureCategories = () => {
     const { staking } = this.stores;
-    const { CATEGORIES_BY_NAME } = sidebarConfig;
+    const {
+      CATEGORIES_WITH_DELEGATION_COUNTDOWN,
+      CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN,
+    } = sidebarConfig;
 
     if (staking.showCountdown()) {
-      this.CATEGORIES.splice(
-        2,
-        0,
-        CATEGORIES_BY_NAME.STAKING_WITH_DELEGATION_COUNTDOWN
-      );
+      this.CATEGORIES = CATEGORIES_WITH_DELEGATION_COUNTDOWN;
     } else {
-      this.CATEGORIES.splice(
-        2,
-        0,
-        CATEGORIES_BY_NAME.STAKING_WITHOUT_DELEGATION_COUNTDOWN
-      );
+      this.CATEGORIES = CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
     }
   };
 

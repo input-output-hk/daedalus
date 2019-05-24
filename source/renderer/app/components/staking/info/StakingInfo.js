@@ -36,7 +36,7 @@ const messages = defineMessages({
 type Props = { percentage: number };
 
 @observer
-export default class DelegationInfo extends Component<Props> {
+export default class StakingInfo extends Component<Props> {
   static defaultProps = {
     percentage: 0,
   };

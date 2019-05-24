@@ -6,7 +6,6 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import humanizeDuration from 'humanize-duration';
 import styles from './DelegationCountdownInfo.scss';
-import { ROUTES } from '../../../routes-config';
 
 const messages = defineMessages({
   heading: {
@@ -32,7 +31,13 @@ const messages = defineMessages({
   },
 });
 
-type Props = { actions: any, currentLocale: string, startDateTime: string };
+const TIME_LEFT_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;
+
+type Props = {
+  redirectToStakingInfo?: any,
+  currentLocale: string,
+  startDateTime: string,
+};
 type State = { timeLeft: number };
 
 @observer
@@ -45,11 +50,14 @@ export default class DelegationCountdownInfo extends Component<Props, State> {
   state = { timeLeft: 0 };
 
   componentDidMount() {
-    this.intervalHandler = setInterval(() => this.updateTimeLeft(), 1000);
+    this.intervalHandler = setInterval(
+      () => this.updateTimeLeft(),
+      TIME_LEFT_INTERVAL
+    );
   }
 
   updateTimeLeft = () => {
-    const { actions, startDateTime } = this.props;
+    const { redirectToStakingInfo, startDateTime } = this.props;
     const timeLeft = Math.max(
       0,
       new Date(startDateTime).getTime() - new Date().getTime()
@@ -57,10 +65,14 @@ export default class DelegationCountdownInfo extends Component<Props, State> {
 
     this.setState({ timeLeft });
 
-    if (timeLeft === 0 && actions) {
-      actions.router.goToRoute.trigger({
-        route: ROUTES.STAKING.INFO,
-      });
+    if (timeLeft === 0) {
+      if (this.intervalHandler) {
+        clearInterval(this.intervalHandler);
+      }
+
+      if (redirectToStakingInfo) {
+        redirectToStakingInfo();
+      }
     }
   };
 

@@ -13,11 +13,15 @@ export default class StakingDelegationCountdownPage extends Component<Props> {
 
   render() {
     const { stores, actions } = this.props;
-    const { profile = {}, staking = {} } = stores;
+    const { profile, staking } = stores;
+    const {
+      staking: { goToStakingInfo },
+    } = actions;
+    const redirectToStakingInfo = goToStakingInfo.trigger;
 
     return (
       <StakingDelegationCountdown
-        actions={actions}
+        redirectToStakingInfo={redirectToStakingInfo}
         currentLocale={profile.currentLocale}
         startDateTime={staking.startDateTime}
       />

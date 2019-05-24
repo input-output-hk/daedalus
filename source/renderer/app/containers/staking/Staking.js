@@ -19,22 +19,16 @@ export default class Staking extends Component<Props> {
   handleDelegationRoute = () => {
     const {
       actions,
-      stores: { app, staking },
+      stores: { staking },
     } = this.props;
 
-    if (
-      staking.showCountdown() &&
-      app.currentRoute !== ROUTES.STAKING.DELEGATION_COUNTDOWN
-    ) {
+    if (staking.showCountdown() && !staking.isStakingDelegationCountdown) {
       return actions.router.goToRoute.trigger({
         route: ROUTES.STAKING.DELEGATION_COUNTDOWN,
       });
     }
 
-    if (
-      !staking.showCountdown() &&
-      app.currentRoute === ROUTES.STAKING.DELEGATION_COUNTDOWN
-    ) {
+    if (!staking.showCountdown() && staking.isStakingDelegationCountdown) {
       return actions.router.goToRoute.trigger({
         route: ROUTES.STAKING.INFO,
       });

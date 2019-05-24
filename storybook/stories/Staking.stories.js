@@ -18,9 +18,10 @@ import StakingEpochs from '../../source/renderer/app/components/staking/epochs/S
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
 
 const defaultPercentage = 10;
-const defaultStartDateTime = new Date('Jun 01 2019');
+const defaultStartDateTime = new Date('2019-05-26');
 const startDateTimeKnob = (name, defaultValue) => {
   const stringTimestamp = date(name, defaultValue);
+
   return new Date(stringTimestamp).toISOString();
 };
 
@@ -75,7 +76,7 @@ storiesOf('Staking', module)
     () => (
       <div>
         <StakingDelegationCountdown
-          actions={null}
+          redirectToStakingInfo={linkTo('Staking', () => 'Info')}
           currentLocale="en-US"
           startDateTime={startDateTimeKnob(
             'Decentralization Start DateTime',
