@@ -22,7 +22,7 @@ import {
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
-import { getStateDirectoryChannel } from '../ipc/getStateDirectoryChannel';
+import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
 import type {
   CardanoNodeState,
@@ -99,7 +99,7 @@ export default class NetworkStatusStore extends Store {
   @observable diskSpaceRecommended: string = '';
   @observable diskSpaceAvailable: string = '';
   @observable isTlsCertInvalid: boolean = false;
-  @observable stateDirectory: string = '';
+  @observable stateDirectoryPath: string = '';
 
   // DEFINE STORE METHODS
   setup() {
@@ -142,7 +142,7 @@ export default class NetworkStatusStore extends Store {
     getDiskSpaceStatusChannel.onReceive(this._onCheckDiskSpace);
     this._checkDiskSpace();
 
-    this._getStateDirectory();
+    this._getStateDirectoryPath();
   }
 
   // Setup network status polling interval
@@ -208,8 +208,10 @@ export default class NetworkStatusStore extends Store {
     getDiskSpaceStatusChannel.send(diskSpaceRequired);
   }
 
-  _getStateDirectory = async () => {
-    this._onReceiveStateDirectory(await getStateDirectoryChannel.request());
+  _getStateDirectoryPath = async () => {
+    this._onReceiveStateDirectoryPath(
+      await getStateDirectoryPathChannel.request()
+    );
   };
 
   _requestCardanoState = async () => {
@@ -598,8 +600,8 @@ export default class NetworkStatusStore extends Store {
     return Promise.resolve();
   };
 
-  @action _onReceiveStateDirectory = (stateDirectory: string) => {
-    this.stateDirectory = stateDirectory;
+  @action _onReceiveStateDirectoryPath = (stateDirectoryPath: string) => {
+    this.stateDirectoryPath = stateDirectoryPath;
   };
 
   // DEFINE COMPUTED VALUES

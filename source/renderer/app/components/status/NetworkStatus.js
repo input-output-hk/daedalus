@@ -100,7 +100,7 @@ const messages = defineMessages({
     defaultMessage: '!!!Cardano Network',
     description: 'Cardano Network',
   },
-  stateDirectory: {
+  stateDirectoryPath: {
     id: 'status.network.dialog.stateDirectory',
     defaultMessage: '!!!Daedalus State Directory',
     description: 'Daedalus State Directory',
@@ -494,7 +494,7 @@ export default class NetworkStatus extends Component<Props, State> {
       cardanoProcessID,
       cardanoAPIPort,
       cardanoNetwork,
-      daedalusStateDirectory,
+      daedalusStateDirectoryPath,
     } = coreInfo;
 
     const { isNodeRestarting } = this.state;
@@ -624,10 +624,10 @@ export default class NetworkStatus extends Component<Props, State> {
                 <td>{cardanoNetwork}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.stateDirectory)}:</td>
-                <Tooltip skin={TooltipSkin} tip={daedalusStateDirectory}>
-                  <td className={styles.stateDirectory}>
-                    {daedalusStateDirectory}
+                <td>{intl.formatMessage(messages.stateDirectoryPath)}:</td>
+                <Tooltip skin={TooltipSkin} tip={daedalusStateDirectoryPath}>
+                  <td className={styles.stateDirectoryPath}>
+                    {daedalusStateDirectoryPath}
                   </td>
                 </Tooltip>
               </tr>

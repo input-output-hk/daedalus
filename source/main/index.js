@@ -20,9 +20,9 @@ import { detectSystemLocale } from './utils/detectSystemLocale';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
 import { detectSystemLocaleChannel } from './ipc/detect-system-locale';
+import { getStateDirectoryPathChannel } from './ipc/getStateDirectoryPathChannel';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
-import { getStateDirectoryChannel } from './ipc/getStateDirectoryChannel';
 
 /* eslint-disable consistent-return */
 
@@ -72,8 +72,6 @@ const onAppReady = async () => {
   const startTime = new Date().toISOString();
   // first checks for japanese locale, otherwise returns english
   const systemLocale = detectSystemLocale();
-
-  const stateDirectory = stateDirectoryPath;
 
   const systemInfo = logSystemInfo({
     cardanoVersion,
@@ -146,7 +144,9 @@ const onAppReady = async () => {
 
   getNumberOfEpochsConsolidated();
 
-  getStateDirectoryChannel.onRequest(() => Promise.resolve(stateDirectory));
+  getStateDirectoryPathChannel.onRequest(() =>
+    Promise.resolve(stateDirectoryPath)
+  );
 
   mainWindow.on('close', async event => {
     Logger.info(

@@ -71,11 +71,11 @@ export type GetDiskSpaceStatusRendererRequest = number | any;
 export type GetDiskSpaceStatusMainResponse = CheckDiskSpaceResponse;
 
 /**
- * Channel for checking the state directory
+ * Channel for checking the state directory path
  */
-export const GET_STATE_DIRECTORY_CHANNEL = 'GetStateDirectoryChannel';
-export type GetStateDirectoryRendererRequest = string | any;
-export type GetStateDirectoryMainResponse = any;
+export const GET_STATE_DIRECTORY_PATH_CHANNEL = 'GetStateDirectoryPathChannel';
+export type GetStateDirectoryPathRendererRequest = string | any;
+export type GetStateDirectoryPathMainResponse = any;
 
 /**
  * Channel for loading a base64 encoded asset from within the `source/renderer` folder
