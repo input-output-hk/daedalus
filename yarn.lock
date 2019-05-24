@@ -3669,17 +3669,17 @@ create-react-class@^15.5.1, create-react-class@^15.6.2:
 create-react-context@0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/create-react-context/-/create-react-context-0.2.2.tgz#9836542f9aaa22868cd7d4a6f82667df38019dca"
-  integrity sha512-KkpaLARMhsTsgp0d2NA/R94F/eDLbhXERdIq3LvX2biCAXcDvHYoOqHfWCHf1+OLj+HKBotLG3KqaOOf+C1C+A==
   dependencies:
     fbjs "^0.8.0"
     gud "^1.0.0"
+  integrity sha512-KkpaLARMhsTsgp0d2NA/R94F/eDLbhXERdIq3LvX2biCAXcDvHYoOqHfWCHf1+OLj+HKBotLG3KqaOOf+C1C+A==
 
 create-react-ref@0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/create-react-ref/-/create-react-ref-0.1.0.tgz#0aa42aae4e66d8b164207ac8c468c35ce7bbd8eb"
-  integrity sha512-w/DDeTaFSaDVtlfLs4q9FVFcFq1jPZ62dBUAV24OKXrobtDlnXeJ5EsnK+z98Kmh9Zyxv24Edc26z8f7APVUYg==
   dependencies:
     fbjs "^0.8.16"
+  integrity sha512-w/DDeTaFSaDVtlfLs4q9FVFcFq1jPZ62dBUAV24OKXrobtDlnXeJ5EsnK+z98Kmh9Zyxv24Edc26z8f7APVUYg==
 
 cross-env@5.2.0:
   version "5.2.0"
@@ -9172,11 +9172,11 @@ react-markdown@3.1.0:
 react-modal@3.1.12:
   version "3.1.12"
   resolved "https://registry.yarnpkg.com/react-modal/-/react-modal-3.1.12.tgz#e80ab4e553ce946a6c96faf85eb31e0f9bd07470"
-  integrity sha512-WuabHQDTkM5x9AQ9xRqfHrhrgVKnNhTFYOrIeZm5Eb8M/uLs0hrHsXP/BTCg7auuBZKectYmzPaG/ueJTG4zfA==
   dependencies:
     exenv "^1.2.0"
     prop-types "^15.5.10"
     warning "^3.0.0"
+  integrity sha512-WuabHQDTkM5x9AQ9xRqfHrhrgVKnNhTFYOrIeZm5Eb8M/uLs0hrHsXP/BTCg7auuBZKectYmzPaG/ueJTG4zfA==
 
 react-modal@^3.6.1:
   version "3.8.1"
@@ -9196,13 +9196,13 @@ react-number-format@3.0.3:
 react-polymorph@0.8.4:
   version "0.8.4"
   resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.8.4.tgz#8143ba1d33a2889d0e434645247b7bb44ff9677b"
-  integrity sha512-xoH4HWYVq4sZ7587CFHVMSXS48K9wUwthRD/6sZBS6Cx9fo5xjbB6BF6wUqMoUWanobwPS8laIOtDwFuAV+32g==
   dependencies:
     create-react-context "0.2.2"
     create-react-ref "0.1.0"
     filter-react-dom-props "0.0.2"
     postinstall-build "5.0.1"
     react-modal "3.1.12"
+  integrity sha512-xoH4HWYVq4sZ7587CFHVMSXS48K9wUwthRD/6sZBS6Cx9fo5xjbB6BF6wUqMoUWanobwPS8laIOtDwFuAV+32g==
 
 react-resize-detector@~2.3.0:
   version "2.3.0"
