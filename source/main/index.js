@@ -207,7 +207,7 @@ if (!isSingleInstance) {
 
 const sendStateDirectory = async (stateDirectory?: string) => {
   const response = {
-    stateDirectory: !stateDirectory ? stateDirectoryPath: stateDirectory,
+    stateDirectory: !stateDirectory ? stateDirectoryPath : stateDirectory,
   };
   getStateDirectoryChannel.send(response, mainWindow.webContents);
   return response;
