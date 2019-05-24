@@ -90,7 +90,7 @@ storiesOf('Staking', module)
     { id: 'stake-pools' }
   )
 
-  .add(pageNames.rewards, StakingRewards)
+  .add(pageNames.rewards, StakingRewards, { id: 'rewards' })
 
   .add(pageNames.epochs, () => <StakingEpochs name={pageNames.epochs} />, {
     id: 'epochs',
