@@ -236,13 +236,23 @@ export const DARK_BLUE_THEME_CONFIG = {
   },
   buttonAttention: {
     '--theme-button-attention-background-color': '#ea4c5b',
+    '--theme-button-attention-background-color-hover': '#ec5d6b',
+    '--theme-button-attention-background-color-active': '#d34452',
     '--theme-button-attention-background-color-disabled':
       'rgba(234, 76, 91, 0.3)',
+    '--theme-button-attention-text-color-disabled': '#fafbfc',
     '--theme-button-attention-text-color': '#fafbfc',
+    '--theme-button-attention-outline-color': '#ff707e',
   },
   buttonDisclaimer: {
     '--theme-button-disclaimer-background-color': '#ab1700',
+    '--theme-button-disclaimer-background-color-hover': '#fafbfc',
+    '--theme-button-disclaimer-background-color-active': '#fafbfc',
+    '--theme-button-disclaimer-background-color-disabled':
+      'rgba(171, 23, 0, .3)',
     '--theme-button-disclaimer-text-color-disabled': 'rgba(250, 251, 252, .3)',
+    '--theme-button-disclaimer-text-color': '#fafbfc',
+    '--theme-button-disclaimer-outline-color': 'rgba(250, 251, 252, .3)',
     '--theme-button-disclaimer-border-color': '#fafbfc',
     '--theme-button-disclaimer-border-color-disabled':
       'rgba(250, 251, 252, .3)',
@@ -365,8 +375,9 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-network-window-white-color': '#fff',
     '--theme-network-window-transparent-color': 'transparent',
     '--theme-network-window-border-color': 'rgba(255, 255, 255, 0.25)',
-    '--theme-network-window-button-color': '#243e62',
-    '--theme-network-window-button-background': 'rgba(250, 251, 252, 0.4)',
+    '--theme-network-window-button-text-color': '#243e62',
+    '--theme-network-window-button-background-color':
+      'rgba(250, 251, 252, 0.4)',
   },
   nodeUpdate: {
     '--theme-node-update-background-color': '#536370',
