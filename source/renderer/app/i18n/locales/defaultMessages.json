@@ -1549,7 +1549,7 @@
           "column": 3,
           "line": 15
         },
-        "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountdownInfo.js",
+        "file": "source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown.js",
         "id": "staking.delegationCountdown.heading",
         "start": {
           "column": 11,
@@ -1563,7 +1563,7 @@
           "column": 3,
           "line": 21
         },
-        "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountdownInfo.js",
+        "file": "source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown.js",
         "id": "staking.delegationCountdown.description",
         "start": {
           "column": 15,
@@ -1577,7 +1577,7 @@
           "column": 3,
           "line": 26
         },
-        "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountdownInfo.js",
+        "file": "source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown.js",
         "id": "staking.delegationCountdown.timeLeftDesc",
         "start": {
           "column": 16,
@@ -1591,7 +1591,7 @@
           "column": 3,
           "line": 31
         },
-        "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountdownInfo.js",
+        "file": "source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown.js",
         "id": "staking.delegationCountdown.buttonLabel",
         "start": {
           "column": 15,
@@ -1599,7 +1599,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/staking/delegation-countdown/DelegationCountdownInfo.json"
+    "path": "source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown.json"
   },
   {
     "descriptors": [

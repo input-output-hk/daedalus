@@ -8,4 +8,22 @@
 
 .mainContent {
   @extend %contentBorderAndBackground;
+  padding: 20px;
+  text-align: center;
+}
+
+.heading {
+  @extend %accentText;
+  font-size: 19px;
+  margin-bottom: 14px;
+}
+
+.description {
+  @extend %regularText;
+  color: #5e6066;
+  margin-bottom: 24px;
+}
+
+.timeLeftDesc {
+  @extend %accentText;
 }
