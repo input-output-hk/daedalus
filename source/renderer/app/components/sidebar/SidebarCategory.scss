@@ -8,6 +8,7 @@
   color: var(--theme-sidebar-category-text-color);
   display: flex;
   height: $sidebar-button-height;
+  justify-content: center;
   width: 100%;
 
   &:hover {
@@ -83,10 +84,10 @@
 
 .icon {
   flex-shrink: 0;
-  margin: 0 30px;
+
   & > svg {
-    width: 24px;
     height: 24px;
+    width: 24px;
 
     & > g > path {
       fill: var(--theme-icon-sidebar-color);
@@ -101,25 +102,29 @@
 .supportRequest {
   bottom: 0;
   position: absolute;
-  width: auto;
 }
 
 .supportRequestIcon {
   flex-shrink: 0;
-  margin: 0 30px;
+
   & > svg {
-    width: 24px;
     height: 24px;
+    width: 24px;
+  }
+}
+
+.decentralizationStartIcon {
+  & > svg {
+    height: 23px;
+    width: 33px;
   }
 }
 
 .decentralizationProgressIcon {
-  flex-shrink: 0;
   & > svg {
-    height: 42px;
-    margin-left: -10px;
+    height: 55px;
     margin-top: -4px;
-    width: 42px;
+    width: 56px;
   }
 }
 
