@@ -257,26 +257,29 @@ const createDaedalusComponentsTheme = (
     },
     buttonAttention: {
       '--theme-button-attention-background-color': `${error.regular}`,
+      '--theme-button-attention-background-color-hover': `${error.light}`,
+      '--theme-button-attention-background-color-active': `${error.dark}`,
       '--theme-button-attention-background-color-disabled': `${
         error.ultralight
       }`,
-      '--theme-button-attention-background-color-hover': `${error.light}`,
+
       '--theme-button-attention-text-color': `${secondary.text}`,
       '--theme-button-attention-text-color-disabled': `${secondary.text}`,
+      '--theme-button-attention-outline-color': `${error.lighter}`,
     },
     buttonDisclaimer: {
-      '--theme-button-disclaimer-background-color': `${error.dark}`,
-      '--theme-button-disclaimer-background-color-disabled': `${chroma(
-        error.dark
-      ).alpha(0.3)}`,
-      '--theme-button-disclaimer-text-color': `${secondary.text}`,
-      '--theme-button-disclaimer-text-color-disabled': `${secondary.text}`,
-      '--theme-button-disclaimer-border-color': `${
-        secondary.background.regular
-      }`,
-      '--theme-button-disclaimer-border-color-disabled': `${
-        secondary.disabled
-      }`,
+      '--theme-button-disclaimer-background-color': '#ab1700',
+      '--theme-button-disclaimer-background-color-hover': '#fafbfc',
+      '--theme-button-disclaimer-background-color-active': '#fafbfc',
+      '--theme-button-disclaimer-background-color-disabled':
+        'rgba(171, 23, 0, .3)',
+      '--theme-button-disclaimer-text-color-disabled':
+        'rgba(250, 251, 252, .3)',
+      '--theme-button-disclaimer-text-color': '#fafbfc',
+      '--theme-button-disclaimer-outline-color': 'rgba(250, 251, 252, .3)',
+      '--theme-button-disclaimer-border-color': '#fafbfc',
+      '--theme-button-disclaimer-border-color-disabled':
+        'rgba(250, 251, 252, .3)',
     },
     buttonFlat: {
       '--theme-button-flat-background-color': `${primary.background.light}`,
@@ -430,6 +433,26 @@ const createDaedalusComponentsTheme = (
       }`,
       '--theme-nav-item-text-color': `${secondary.text}`,
       '--theme-nav-item-text-color-active': `${primary.text}`,
+    },
+    network: {
+      '--theme-network-window-background-color': `${chroma(
+        secondary.background.regular
+      ).alpha(0.96)}`,
+      '--theme-network-window-text-color': `${secondary.text}`,
+      '--theme-network-window-icon-close-hover-background': `${
+        secondary.background.dark
+      }`,
+      '--theme-network-window-red-color': '#f06e05',
+      '--theme-network-window-green-color': '#05f079',
+      '--theme-network-window-white-color': `${secondary.text}`,
+      '--theme-network-window-transparent-color': 'transparent',
+      '--theme-network-window-border-color': `${chroma(secondary.text).alpha(
+        0.7
+      )}`,
+      '--theme-network-window-button-text-color': `${secondary.text}`,
+      '--theme-network-window-button-background-color': `${chroma(
+        secondary.background.lightest
+      ).alpha(0.4)}`,
     },
     nodeUpdate: {
       '--theme-node-update-background-color': `${primary.background.regular}`,
