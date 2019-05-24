@@ -33,18 +33,19 @@ const messages = defineMessages({
 });
 
 type Props = { actions: any, currentLocale: string, startDateTime: string };
+type State = { timeLeft: number };
 
 @observer
-export default class DelegationCountdownInfo extends Component<Props> {
+export default class DelegationCountdownInfo extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
-  timeoutHandler = null;
-  state = { timeLeft: null };
+  intervalHandler = null;
+  state = { timeLeft: 0 };
 
   componentDidMount() {
-    this.updateTimeLeft();
+    this.intervalHandler = setInterval(() => this.updateTimeLeft(), 1000);
   }
 
   updateTimeLeft = () => {
@@ -56,21 +57,17 @@ export default class DelegationCountdownInfo extends Component<Props> {
 
     this.setState({ timeLeft });
 
-    if (timeLeft === 0) {
-      if (actions) {
-        return actions.router.goToRoute.trigger({
-          route: ROUTES.STAKING.INFO,
-        });
-      }
-      return true;
+    if (timeLeft === 0 && actions) {
+      actions.router.goToRoute.trigger({
+        route: ROUTES.STAKING.INFO,
+      });
     }
-
-    this.timeoutHandler = setTimeout(() => this.updateTimeLeft(), 1000);
-    return true;
   };
 
   componentWillUnmount() {
-    clearTimeout(this.timeoutHandler);
+    if (this.intervalHandler) {
+      clearInterval(this.intervalHandler);
+    }
   }
 
   translateTimeLeft = () => {
