@@ -20,6 +20,7 @@
       font-size: 14px;
       &:hover {
         font-family: var(--font-semibold);
+        color: var(--theme-staking-font-color);
       }
     }
   }
@@ -39,12 +40,12 @@
     line-height: 1.43;
     margin: 10px 20px 0;
     & > button {
-      color: var(--theme-staking-link-color);
+      color: var(--theme-staking-link-color-light);
       cursor: pointer;
       font-size: 14px;
+      text-decoration: underline;
       &:hover {
-        text-decoration: underline;
-        text-underline-position: under;
+        color: var(--theme-staking-link-color);
       }
     }
   }
