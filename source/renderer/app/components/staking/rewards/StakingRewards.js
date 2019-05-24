@@ -68,6 +68,7 @@ type Props = {
 
 type State = {
   rewardsOrder: string,
+  rewardsSortBy: string,
 };
 
 @observer
@@ -84,11 +85,12 @@ export default class StakingRewards extends Component<Props, State> {
     super();
     this.state = {
       rewardsOrder: 'desc',
+      rewardsSortBy: 'date',
     };
   }
 
   render() {
-    const { rewardsOrder } = this.state;
+    const { rewardsOrder, rewardsSortBy } = this.state;
     const { rewards, isLoading, onLearnMoreClick } = this.props;
 
     const { intl } = this.context;
@@ -99,15 +101,29 @@ export default class StakingRewards extends Component<Props, State> {
     if (showRewards) {
       sortedRewards = orderBy(
         rewards,
-        ['date', 'pool'],
-        [rewardsOrder, 'desc']
+        rewardsSortBy === 'pool' ? 'pool.title' : rewardsSortBy,
+        rewardsOrder
       );
     }
 
-    const sortIconClasses = classNames([
-      styles.sortIcon,
-      rewardsOrder === 'asc' ? styles.ascending : null,
-    ]);
+    const availableTableHeaders = [
+      {
+        name: 'date',
+        title: intl.formatMessage(messages.tableHeaderDate),
+      },
+      {
+        name: 'pool',
+        title: intl.formatMessage(messages.tableHeaderPool),
+      },
+      {
+        name: 'wallet',
+        title: intl.formatMessage(messages.tableHeaderWallet),
+      },
+      {
+        name: 'amount',
+        title: intl.formatMessage(messages.tableHeaderAmount),
+      },
+    ];
 
     return (
       <div className={styles.component}>
@@ -133,21 +149,33 @@ export default class StakingRewards extends Component<Props, State> {
             <table>
               <thead>
                 <tr>
-                  <th>
-                    {intl.formatMessage(messages.tableHeaderDate)}
-                    <SVGInline
-                      svg={sortIcon}
-                      className={sortIconClasses}
-                      onClick={this.handleRewardsOrder}
-                    />
-                  </th>
-                  <th>{intl.formatMessage(messages.tableHeaderPool)}</th>
-                  <th>{intl.formatMessage(messages.tableHeaderWallet)}</th>
-                  <th>{intl.formatMessage(messages.tableHeaderAmount)}</th>
+                  {map(availableTableHeaders, tableHeader => {
+                    const isSorted = tableHeader.name === rewardsSortBy;
+                    const sortIconClasses = classNames([
+                      styles.sortIcon,
+                      isSorted ? styles.sorted : null,
+                      isSorted && rewardsOrder === 'asc'
+                        ? styles.ascending
+                        : null,
+                    ]);
+
+                    return (
+                      <th key={tableHeader.name}>
+                        {tableHeader.title}
+                        <SVGInline
+                          svg={sortIcon}
+                          className={sortIconClasses}
+                          onClick={() =>
+                            this.handleRewardsSort(tableHeader.name)
+                          }
+                        />
+                      </th>
+                    );
+                  })}
                 </tr>
               </thead>
               <tbody>
-                {map(sortedRewards, reward => {
+                {map(sortedRewards, (reward, key) => {
                   const rewardDate = get(reward, 'date', '');
                   const rewardPoolCategory = get(
                     reward,
@@ -158,7 +186,7 @@ export default class StakingRewards extends Component<Props, State> {
                   const rewardWallet = get(reward, 'wallet', '');
                   const rewardAmount = get(reward, 'amount', '');
                   return (
-                    <tr>
+                    <tr key={key}>
                       <td>{rewardDate}</td>
                       <td>
                         <p>
@@ -194,10 +222,20 @@ export default class StakingRewards extends Component<Props, State> {
     );
   }
 
-  handleRewardsOrder = () => {
-    const { rewardsOrder } = this.state;
-    const newRewardsOrder = rewardsOrder === 'asc' ? 'desc' : 'asc';
+  handleRewardsSort = (newSortBy: string) => {
+    const { rewardsOrder, rewardsSortBy } = this.state;
+    let newRewardsOrder;
+    if (rewardsSortBy === newSortBy) {
+      // on same sort change order
+      newRewardsOrder = rewardsOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+      // on new sort instance, order by initial value 'descending'
+      newRewardsOrder = 'desc';
+    }
 
-    this.setState({ rewardsOrder: newRewardsOrder });
+    this.setState({
+      rewardsSortBy: newSortBy,
+      rewardsOrder: newRewardsOrder,
+    });
   };
 }

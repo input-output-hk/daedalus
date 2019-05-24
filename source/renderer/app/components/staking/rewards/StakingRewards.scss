@@ -19,7 +19,7 @@
       font-family: var(--font-medium);
       font-size: 14px;
       &:hover {
-        text-decoration: underline;
+        font-family: var(--font-semibold);
       }
     }
   }
@@ -39,11 +39,12 @@
     line-height: 1.43;
     margin: 10px 20px 0;
     & > button {
-      color: var(--theme-staking-link-color-light);
+      color: var(--theme-staking-link-color);
       cursor: pointer;
       font-size: 14px;
       &:hover {
         text-decoration: underline;
+        text-underline-position: under;
       }
     }
   }
@@ -74,8 +75,16 @@
       padding: 14px 20px;
       text-align: left;
 
+      &:hover {
+        & > .sortIcon {
+          visibility: visible;
+          opacity: 0.5;
+        }
+      }
+
       & > .sortIcon {
         cursor: pointer;
+        visibility: hidden;
         margin-left: 6px;
         & > svg {
           width: 7px;
@@ -88,6 +97,10 @@
           & > svg {
             transform: rotate(180deg);
           }
+        }
+        &.sorted {
+          visibility: visible;
+          opacity: 1;
         }
       }
     }
