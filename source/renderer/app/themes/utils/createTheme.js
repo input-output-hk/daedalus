@@ -308,7 +308,7 @@ const createDaedalusComponentsTheme = (
       }`,
       '--theme-button-flat-text-color-disabled': `${primary.text}`,
       '--theme-button-flat-text-color': `${primary.text}`,
-      '--theme-button-flat-outline-color': `${primary.outline}`,
+      '--theme-button-flat-outline-color': `${primary.background.dark}`,
     },
     buttonPrimary: {
       '--theme-button-primary-background-color': `${
@@ -511,8 +511,12 @@ const createDaedalusComponentsTheme = (
       }`,
     },
     progressBar: {
-      '--theme-progress-bar-background-color': `${primary.border}`,
-      '--theme-progress-bar-foreground-color': `${primary.outline}`,
+      '--theme-progress-bar-background-color': `${chroma(
+        primary.background.light
+      ).alpha(0.3)}`,
+      '--theme-progress-bar-foreground-color': `${chroma(
+        primary.background.light
+      ).alpha(0.7)}`,
     },
     receiveQRCode: {
       '--theme-receive-qr-code-background-color': 'transparent',
@@ -649,14 +653,14 @@ const createDaedalusComponentsTheme = (
       '--theme-transactions-list-group-date-color': `${primary.text}`,
       '--theme-transactions-list-item-details-color': `${primary.text}`,
       '--theme-transactions-state-failed-background-color': `${
-        primary.background.regular
+        primary.background.dark
       }`,
       '--theme-transactions-state-failed-text-color': `${primary.text}`,
       '--theme-transactions-state-pending-background-color': `${
-        primary.background.regular
+        primary.background.dark
       }`,
       '--theme-transactions-state-pending-stripes-color': `${
-        primary.background.regular
+        primary.background.darker
       }`,
       '--theme-transactions-priority-color': `${primary.background.regular}`,
       '--theme-transactions-priority-low-background-color': `${error.dark}`,

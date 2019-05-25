@@ -35,14 +35,12 @@ export type ColorParams = {
     background: string,
     border: string,
     focus: string,
-    outline: string,
     text: string,
   },
   secondary: {
     background: string,
     border: string,
     focus: string,
-    outline: string,
     text: string,
   },
 };
@@ -53,14 +51,12 @@ export type ThemeColors = {
     background: BackgroundShades,
     border: string,
     focus: string,
-    outline: string,
     text: string,
   },
   secondary: {
     background: BackgroundShades,
     border: string,
     focus: string,
-    outline: string,
     text: string,
   },
 };
