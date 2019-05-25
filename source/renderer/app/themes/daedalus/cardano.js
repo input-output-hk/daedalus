@@ -304,6 +304,18 @@ export const CARDANO_THEME_CONFIG = {
   errors: {
     '--theme-color-error': '#ea4c5b',
   },
+  fonts: {
+    '--font-ultralight': 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
+    '--font-thin': 'NotoSans-Thin, NotoSansCJKjp-Thin',
+    '--font-light': 'NotoSans-Light, NotoSansCJKjp-Light',
+    '--font-regular': 'NotoSans-Regular, NotoSansCJKjp-Regular',
+    '--font-medium': 'NotoSans-Medium, NotoSansCJKjp-Medium',
+    '--font-semibold': 'NotoSans-SemiBold, NotoSansCJKjp-Medium',
+    '--font-bold': 'NotoSans-Bold, NotoSansCJKjp-Bold',
+    '--font-heavy': 'NotoSans-ExtraBold, NotoSansCJKjp-Black',
+    '--font-black': 'NotoSans-Black, NotoSansCJKjp-Black',
+    '--font-mono': 'SFMono-Light',
+  },
   icon: {
     '--theme-icon-nav-color': '#cecfd1',
     '--theme-icon-nav-color-active': '#5e6066',
@@ -539,42 +551,6 @@ export const CARDANO_THEME_CONFIG = {
 };
 
 export const CARDANO_THEME_PARAMS: CreateThemeParams = {
-  colors: {
-    error: '#ea4c5b',
-    primary: {
-      active: '#ebeef0',
-      background: '#fafbfc',
-      border: '#c6cdd6',
-      disabled: 'rgba(94, 96, 102, 0.05)',
-      focus: '#5e6066',
-      outline: '#e1e4e6',
-      placeholder: 'rgba(94, 96, 102, 0.5)',
-      text: '#5e6066',
-    },
-    secondary: {
-      active: '#239554',
-      background: '#2cbb69',
-      border: '#c6cdd6',
-      disabled: '#5e6066',
-      focus: '#5e6066',
-      hover: '#56c887',
-      outline: '#35de7e',
-      placeholder: 'rgba(94, 96, 102, 0.5)',
-      text: '#fafbfc',
-    },
-  },
-  fonts: {
-    black: 'NotoSans-Black, NotoSansCJKjp-Black',
-    bold: 'NotoSans-Bold, NotoSansCJKjp-Bold',
-    heavy: 'NotoSans-ExtraBold, NotoSansCJKjp-Black',
-    light: 'NotoSans-Light, NotoSansCJKjp-Light',
-    medium: 'NotoSans-Medium, NotoSansCJKjp-Medium',
-    mono: 'SFMono-Light',
-    regular: 'NotoSans-Regular, NotoSansCJKjp-Regular',
-    semibold: 'NotoSans-SemiBold, NotoSansCJKjp-Medium',
-    thin: 'NotoSans-Thin, NotoSansCJKjp-Thin',
-    ultralight: 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
-  },
   config: CARDANO_THEME_CONFIG,
 };
 

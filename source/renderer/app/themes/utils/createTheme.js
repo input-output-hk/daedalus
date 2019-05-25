@@ -151,6 +151,7 @@ const createDaedalusComponentsTheme = (
   themeParts: PartialThemeParts
 ): Object => {
   const { colors, fonts } = themeParts;
+
   const { primary, secondary, error } = colors;
   return {
     aboutWindow: {
@@ -569,7 +570,7 @@ const createDaedalusComponentsTheme = (
         primary.text
       ).alpha(0.5)}`,
       '--theme-settings-menu-item-background-color-active': `${
-        primary.background.dark
+        primary.background.regular
       }`,
       '--theme-settings-menu-item-left-border-color-active': `${
         secondary.background.regular
@@ -707,32 +708,55 @@ const createDaedalusComponentsTheme = (
 };
 
 export const createTheme = (fullThemeParts: CreateThemeParams): Object => {
-  const { colors: themeColors, config, fonts } = fullThemeParts;
+  const { colors: themeColors, config, fonts: themeFonts } = fullThemeParts;
 
-  const colors = {
-    ...themeColors,
-    error: createErrorShades(themeColors.error),
-    primary: {
-      ...themeColors.primary,
-      background: createBackgroundShades(themeColors.primary.background),
-    },
-    secondary: {
-      ...themeColors.secondary,
-      background: createBackgroundShades(themeColors.secondary.background),
-    },
-  };
+  let daedalusTheme = {};
+  let colors = {};
+  let fonts = themeFonts;
+
+  if (themeColors && !isEmpty(themeColors)) {
+    colors = {
+      ...themeColors,
+      error: createErrorShades(themeColors.error),
+      primary: {
+        ...themeColors.primary,
+        background: createBackgroundShades(themeColors.primary.background),
+      },
+      secondary: {
+        ...themeColors.secondary,
+        background: createBackgroundShades(themeColors.secondary.background),
+      },
+    };
+  }
+
+  if (!themeFonts || isEmpty(themeFonts)) {
+    fonts = {
+      black: 'NotoSans-Black, NotoSansCJKjp-Black',
+      bold: 'NotoSans-Bold, NotoSansCJKjp-Bold',
+      heavy: 'NotoSans-ExtraBold, NotoSansCJKjp-Black',
+      light: 'NotoSans-Light, NotoSansCJKjp-Light',
+      medium: 'NotoSans-Medium, NotoSansCJKjp-Medium',
+      mono: 'SFMono-Light',
+      regular: 'NotoSans-Regular, NotoSansCJKjp-Regular',
+      semibold: 'NotoSans-SemiBold, NotoSansCJKjp-Medium',
+      thin: 'NotoSans-Thin, NotoSansCJKjp-Thin',
+      ultralight: 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
+    };
+  }
 
   // create react-polymorph & daedalus theme, combine into a theme object
-  let daedalusTheme = {
-    ...createReactPolymorphTheme({ colors, fonts }),
-    ...createDaedalusComponentsTheme({ colors, fonts }),
-  };
+  if (colors && !isEmpty(colors) && fonts && !isEmpty(fonts)) {
+    daedalusTheme = {
+      ...createReactPolymorphTheme({ colors, fonts }),
+      ...createDaedalusComponentsTheme({ colors, fonts }),
+    };
 
-  // flatten daedalusTheme object for consumption by ThemeManager
-  daedalusTheme = Object.values(daedalusTheme).reduce(
-    (theme, componentVars) => ({ ...theme, ...componentVars }),
-    {}
-  );
+    // flatten daedalusTheme object for consumption by ThemeManager
+    daedalusTheme = Object.values(daedalusTheme).reduce(
+      (theme, componentVars) => ({ ...theme, ...componentVars }),
+      {}
+    );
+  }
 
   // if user passed theme config, compose its values with daedalusTheme object
   if (config && !isEmpty(config)) {
@@ -741,6 +765,7 @@ export const createTheme = (fullThemeParts: CreateThemeParams): Object => {
       daedalusTheme
     );
   }
+
   // returned flat theme object composed with config (if passed by user)
   return daedalusTheme;
 };

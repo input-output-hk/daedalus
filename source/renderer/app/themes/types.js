@@ -2,30 +2,9 @@
 export type BackgroundShades = Object;
 export type ErrorShades = Object;
 
-// export type BackgroundShades = {
-//   lightest: string,
-//   lighter: string,
-//   light: string,
-//   regular: string,
-//   dark: string,
-//   darker: string,
-//   darkest: string,
-// };
-
-// export type ErrorShades = {
-//   ultralight: string,
-//   lightest: string,
-//   lighter: string,
-//   light: string,
-//   regular: string,
-//   dark: string,
-//   darker: string,
-//   darkest: string,
-// };
-
 export type CreateThemeParams = {
-  colors: ColorParams,
-  fonts: ThemeFonts,
+  colors?: ColorParams,
+  fonts?: ThemeFonts,
   config?: Object,
 };
 

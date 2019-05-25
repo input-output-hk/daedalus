@@ -303,6 +303,18 @@ export const DARK_BLUE_THEME_CONFIG = {
   errors: {
     '--theme-color-error': '#ea4c5b',
   },
+  fonts: {
+    '--font-ultralight': 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
+    '--font-thin': 'NotoSans-Thin, NotoSansCJKjp-Thin',
+    '--font-light': 'NotoSans-Light, NotoSansCJKjp-Light',
+    '--font-regular': 'NotoSans-Regular, NotoSansCJKjp-Regular',
+    '--font-medium': 'NotoSans-Medium, NotoSansCJKjp-Medium',
+    '--font-semibold': 'NotoSans-SemiBold, NotoSansCJKjp-Medium',
+    '--font-bold': 'NotoSans-Bold, NotoSansCJKjp-Bold',
+    '--font-heavy': 'NotoSans-ExtraBold, NotoSansCJKjp-Black',
+    '--font-black': 'NotoSans-Black, NotoSansCJKjp-Black',
+    '--font-mono': 'SFMono-Light',
+  },
   icon: {
     '--theme-icon-nav-color': '#9ba6b3',
     '--theme-icon-nav-color-active': '#e9f4fe',
@@ -543,43 +555,6 @@ export const DARK_BLUE_THEME_CONFIG = {
 };
 
 export const DARK_BLUE_THEME_PARAMS: CreateThemeParams = {
-  colors: {
-    error: '#ea4c5b',
-    primary: {
-      active: '#495863',
-      background: '#263345',
-      border: 'rgba(102, 122, 138, 0.3)',
-      disabled: 'rgba(233, 244, 254, 0.5)',
-      focus: '#667a8a',
-      hover: '#667a8a',
-      outline: 'rgba(102,122,138, 0.3)',
-      placeholder: '#8793a1',
-      text: '#e9f4fe',
-    },
-    secondary: {
-      active: '#495863',
-      background: '#536370',
-      border: 'rgba(250, 251, 252, .3)',
-      disabled: 'rgba(135, 147, 161, 0.1)',
-      focus: '#667a8a',
-      hover: '#667a8a',
-      outline: 'rgba(250, 251, 252, .3)',
-      placeholder: '#e9f4fe',
-      text: '#fafbfc',
-    },
-  },
-  fonts: {
-    black: 'NotoSans-Black, NotoSansCJKjp-Black',
-    bold: 'NotoSans-Bold, NotoSansCJKjp-Bold',
-    heavy: 'NotoSans-ExtraBold, NotoSansCJKjp-Black',
-    light: 'NotoSans-Light, NotoSansCJKjp-Light',
-    medium: 'NotoSans-Medium, NotoSansCJKjp-Medium',
-    mono: 'SFMono-Light',
-    regular: 'NotoSans-Regular, NotoSansCJKjp-Regular',
-    semibold: 'NotoSans-SemiBold, NotoSansCJKjp-Medium',
-    thin: 'NotoSans-Thin, NotoSansCJKjp-Thin',
-    ultralight: 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
-  },
   config: DARK_BLUE_THEME_CONFIG,
 };
 
