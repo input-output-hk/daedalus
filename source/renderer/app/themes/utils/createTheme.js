@@ -49,7 +49,9 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
       '--rp-checkbox-border-color-disabled': `${secondary.disabled}`,
       '--rp-checkbox-check-bg-color': `${secondary.background.regular}`,
       '--rp-checkbox-label-text-color': `${primary.text}`,
-      '--rp-checkbox-label-text-color-disabled': `${primary.disabled}`,
+      '--rp-checkbox-label-text-color-disabled': `${chroma(primary.text).alpha(
+        0.3
+      )}`,
     },
     rpError: {
       '--rp-theme-color-error': `${error.regular}`,
@@ -547,7 +549,9 @@ const createDaedalusComponentsTheme = (
       '--theme-settings-menu-box-border': `1px solid ${primary.border}`,
       '--theme-settings-menu-item-text-color': `${primary.text}`,
       '--theme-settings-menu-item-text-color-active': `${primary.text}`,
-      '--theme-settings-menu-item-text-color-disabled': `${primary.disabled}`,
+      '--theme-settings-menu-item-text-color-disabled': `${chroma(
+        primary.text
+      ).alpha(0.5)}`,
       '--theme-settings-menu-item-background-color-active': `${primary.hover}`,
       '--theme-settings-menu-item-left-border-color-active': `${
         secondary.background.regular
@@ -631,9 +635,9 @@ const createDaedalusComponentsTheme = (
       '--theme-transactions-list-group-date-color': `${primary.text}`,
       '--theme-transactions-list-item-details-color': `${primary.text}`,
       '--theme-transactions-state-failed-background-color': `${
-        primary.disabled
+        primary.background.regular
       }`,
-      '--theme-transactions-state-failed-text-color': `${primary.disabled}`,
+      '--theme-transactions-state-failed-text-color': `${primary.text}`,
       '--theme-transactions-state-pending-background-color': `${
         primary.placeholder
       }`,
