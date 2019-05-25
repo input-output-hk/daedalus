@@ -181,7 +181,7 @@ const createDaedalusComponentsTheme = (
         secondary.background.regular
       }`,
       '--theme-ada-redemption-success-overlay-button-background-color-hover': `${
-        secondary.hover
+        secondary.background.light
       }`,
       '--theme-ada-redemption-disclaimer-background-color':
         'rgba(171, 23, 0, 0.94)',
@@ -470,7 +470,7 @@ const createDaedalusComponentsTheme = (
         secondary.background.regular
       }`,
       '--theme-node-update-accept-button-background-color-hover': `${
-        secondary.hover
+        secondary.background.light
       }`,
       '--theme-node-update-accept-button-background-color-active': `${
         secondary.background.darkest
@@ -479,7 +479,7 @@ const createDaedalusComponentsTheme = (
         secondary.background.regular
       }`,
       '--theme-node-update-deny-button-background-color-hover': `${
-        secondary.hover
+        secondary.background.light
       }`,
       '--theme-node-update-deny-button-background-color-active': `${
         secondary.background.darkest
@@ -513,7 +513,7 @@ const createDaedalusComponentsTheme = (
         secondary.background.regular
       }`,
       '--theme-report-issue-button-background-color-hover': `${
-        secondary.hover
+        secondary.background.light
       }`,
       '--theme-report-issue-button-background-color-active': `${
         secondary.background.darkest
