@@ -46,7 +46,9 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
     },
     rpCheckbox: {
       '--rp-checkbox-border': `1px solid ${secondary.background.regular}`,
-      '--rp-checkbox-border-color-disabled': `${secondary.disabled}`,
+      '--rp-checkbox-border-color-disabled': `${chroma(
+        secondary.background.regular
+      ).alpha(0.4)}`,
       '--rp-checkbox-check-bg-color': `${secondary.background.regular}`,
       '--rp-checkbox-label-text-color': `${primary.text}`,
       '--rp-checkbox-label-text-color-disabled': `${chroma(primary.text).alpha(

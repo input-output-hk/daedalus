@@ -598,7 +598,6 @@ export const TEST_THEME_PARAMS: CreateThemeParams = {
       active: '#e67300',
       background: '#ff8c1a',
       border: '#efefef',
-      disabled: '#ffebcc',
       focus: '#ffb366',
       hover: '#ffb366',
       outline: '#efefef',
