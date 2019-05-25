@@ -589,7 +589,6 @@ export const TEST_THEME_PARAMS: CreateThemeParams = {
       focus: '#5e6066',
       hover: '#f3f5f7',
       outline: '#e1e4e6',
-      placeholder: 'rgba(94, 96, 102, 0.5)',
       text: '#5e6066',
     },
     secondary: {

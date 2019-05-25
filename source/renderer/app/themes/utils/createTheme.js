@@ -19,7 +19,9 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
       '--rp-autocomplete-border': `1px solid ${primary.border}`,
       '--rp-autocomplete-border-color-opened': `${primary.focus}`,
       '--rp-autocomplete-input-text-color': `${primary.text}`,
-      '--rp-autocomplete-placeholder-color': `${primary.placeholder}`,
+      '--rp-autocomplete-placeholder-color': `${chroma(primary.text).alpha(
+        0.5
+      )}`,
       '--rp-autocomplete-selected-word-box-bg-color': `${
         secondary.background.light
       }`,
@@ -76,15 +78,19 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
       '--rp-input-bg-color': `${primary.background.lightest}`,
       '--rp-input-bg-color-disabled': `${primary.background.lighter}`,
       '--rp-input-border-color': `${primary.border}`,
-      '--rp-input-border-color-disabled': `${primary.placeholder}`,
+      '--rp-input-border-color-disabled': `${chroma(primary.border).alpha(
+        0.5
+      )}`,
       '--rp-input-border-color-errored': `${error.regular}`,
       '--rp-input-border-color-focus': `${primary.focus}`,
       '--rp-input-line-height': '22px',
       '--rp-input-padding': '12px 20px',
-      '--rp-input-placeholder-color': `${primary.placeholder}`,
-      '--rp-input-placeholder-color-disabled': `${primary.placeholder}`,
+      '--rp-input-placeholder-color': `${chroma(primary.text).alpha(0.5)}`,
+      '--rp-input-placeholder-color-disabled': `${chroma(primary.text).alpha(
+        0.5
+      )}`,
       '--rp-input-text-color': `${primary.text}`,
-      '--rp-input-text-color-disabled': `${primary.placeholder}`,
+      '--rp-input-text-color-disabled': `${chroma(primary.text).alpha(0.5)}`,
     },
     rpModal: {
       '--rp-modal-bg-color': `${primary.background.lightest}`,
@@ -122,14 +128,18 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
     },
     rpTextarea: {
       '--rp-textarea-bg-color': `${primary.background.regular}`,
-      '--rp-textarea-bg-color-disabled': `${primary.placeholder}`,
+      '--rp-textarea-bg-color-disabled': `${chroma(
+        primary.background.regular
+      ).alpha(0.5)}`,
       '--rp-textarea-border': `1px solid ${primary.border}`,
-      '--rp-textarea-border-color-disabled': `${primary.placeholder}`,
+      '--rp-textarea-border-color-disabled': `${chroma(primary.border).alpha(
+        0.5
+      )}`,
       '--rp-textarea-border-color-errored': `${error.regular}`,
       '--rp-textarea-border-color-focus': `${primary.focus}`,
       '--rp-textarea-border-radius': '2px',
       '--rp-textarea-line-height': '20px',
-      '--rp-textarea-placeholder-color': `${primary.placeholder}`,
+      '--rp-textarea-placeholder-color': `${chroma(primary.text).alpha(0.5)}`,
       '--rp-textarea-resize': 'none',
       '--rp-textarea-text-color': `${primary.text}`,
     },
@@ -257,7 +267,7 @@ const createDaedalusComponentsTheme = (
       '--theme-bordered-box-text-color': `${primary.text}`,
     },
     baton: {
-      '--theme-label-button-color': `${primary.placeholder}`,
+      '--theme-label-button-color': `${primary.text}`,
     },
     buttonAttention: {
       '--theme-button-attention-background-color': `${error.regular}`,
@@ -399,7 +409,7 @@ const createDaedalusComponentsTheme = (
       '--theme-input-right-floating-text-color': `${chroma(primary.text).alpha(
         0.5
       )}`,
-      '--theme-input-placeholder-color': `${primary.placeholder}`,
+      '--theme-input-placeholder-color': `${chroma(primary.text).alpha(0.5)}`,
       '--theme-input-remove-color-light': `${error.regular}`,
       '--theme-input-background-color': `${primary.background.lightest}`,
       '--theme-input-focus-border-color': `${primary.focus}`,
@@ -643,10 +653,10 @@ const createDaedalusComponentsTheme = (
       }`,
       '--theme-transactions-state-failed-text-color': `${primary.text}`,
       '--theme-transactions-state-pending-background-color': `${
-        primary.placeholder
+        primary.background.regular
       }`,
       '--theme-transactions-state-pending-stripes-color': `${
-        primary.placeholder
+        primary.background.regular
       }`,
       '--theme-transactions-priority-color': `${primary.background.regular}`,
       '--theme-transactions-priority-low-background-color': `${error.dark}`,

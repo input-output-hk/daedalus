@@ -36,7 +36,6 @@ export type ColorParams = {
     border: string,
     focus: string,
     outline: string,
-    placeholder: string,
     text: string,
   },
   secondary: {
@@ -56,7 +55,6 @@ export type ThemeColors = {
     border: string,
     focus: string,
     outline: string,
-    placeholder: string,
     text: string,
   },
   secondary: {
