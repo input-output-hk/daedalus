@@ -226,7 +226,7 @@ const createDaedalusComponentsTheme = (
         primary.background.regular
       }`,
       '--theme-block-consolidation-stripe-dark-2-background-color': `${
-        primary.hover
+        primary.background.dark
       }`,
       '--theme-block-consolidation-stripe-light-1-background-color': `${
         secondary.background.lightest
@@ -421,7 +421,7 @@ const createDaedalusComponentsTheme = (
     },
     mnemonic: {
       '--theme-mnemonic-background-color': `${primary.background.regular}`,
-      '--theme-mnemonic-background-color-hover': `${primary.hover}`,
+      '--theme-mnemonic-background-color-hover': `${primary.background.dark}`,
       '--theme-backup-mnemonic-background-color': `${primary.background.light}`,
     },
     modal: {
@@ -554,7 +554,9 @@ const createDaedalusComponentsTheme = (
       '--theme-settings-menu-item-text-color-disabled': `${chroma(
         primary.text
       ).alpha(0.5)}`,
-      '--theme-settings-menu-item-background-color-active': `${primary.hover}`,
+      '--theme-settings-menu-item-background-color-active': `${
+        primary.background.dark
+      }`,
       '--theme-settings-menu-item-left-border-color-active': `${
         secondary.background.regular
       }`,
