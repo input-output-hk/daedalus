@@ -41,7 +41,6 @@ export type ColorParams = {
     text: string,
   },
   secondary: {
-    active: string,
     background: string,
     border: string,
     focus: string,
@@ -64,7 +63,6 @@ export type ThemeColors = {
     text: string,
   },
   secondary: {
-    active: string,
     background: BackgroundShades,
     border: string,
     focus: string,

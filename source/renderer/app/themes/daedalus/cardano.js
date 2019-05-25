@@ -594,7 +594,6 @@ export const TEST_THEME_PARAMS: CreateThemeParams = {
       text: '#5e6066',
     },
     secondary: {
-      active: '#e67300',
       background: '#ff8c1a',
       border: '#efefef',
       focus: '#ffb366',

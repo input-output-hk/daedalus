@@ -33,7 +33,7 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
     },
     rpButton: {
       '--rp-button-bg-color': `${secondary.background.regular}`,
-      '--rp-button-bg-color-active': `${secondary.active}`,
+      '--rp-button-bg-color-active': `${secondary.background.darkest}`,
       '--rp-button-bg-color-disabled': `${secondary.background.lightest}`,
       '--rp-button-bg-color-hover': `${secondary.background.light}`,
       '--rp-button-font-family': `${fonts.medium}`,
@@ -262,7 +262,7 @@ const createDaedalusComponentsTheme = (
     buttonAttention: {
       '--theme-button-attention-background-color': `${error.regular}`,
       '--theme-button-attention-background-color-hover': `${error.light}`,
-      '--theme-button-attention-background-color-active': `${error.dark}`,
+      '--theme-button-attention-background-color-active': `${error.darkest}`,
       '--theme-button-attention-background-color-disabled': `${
         error.ultralight
       }`,
@@ -291,7 +291,7 @@ const createDaedalusComponentsTheme = (
         primary.background.lighter
       }`,
       '--theme-button-flat-background-color-active': `${
-        primary.background.lighter
+        primary.background.regular
       }`,
       '--theme-button-flat-background-color-disabled': `${
         primary.background.lighter
@@ -308,7 +308,7 @@ const createDaedalusComponentsTheme = (
         secondary.background.light
       }`,
       '--theme-button-primary-background-color-active': `${
-        secondary.background.light
+        secondary.background.darkest
       }`,
       '--theme-button-primary-background-color-disabled': `${
         secondary.background.lightest
@@ -473,7 +473,7 @@ const createDaedalusComponentsTheme = (
         secondary.hover
       }`,
       '--theme-node-update-accept-button-background-color-active': `${
-        secondary.active
+        secondary.background.darkest
       }`,
       '--theme-node-update-deny-button-background-color': `${
         secondary.background.regular
@@ -482,7 +482,7 @@ const createDaedalusComponentsTheme = (
         secondary.hover
       }`,
       '--theme-node-update-deny-button-background-color-active': `${
-        secondary.active
+        secondary.background.darkest
       }`,
       '--theme-node-update-button-text-color': `${secondary.text}`,
     },
@@ -516,7 +516,7 @@ const createDaedalusComponentsTheme = (
         secondary.hover
       }`,
       '--theme-report-issue-button-background-color-active': `${
-        secondary.active
+        secondary.background.darkest
       }`,
       '--theme-report-issue-connecting-background-color': `${
         primary.background.regular
