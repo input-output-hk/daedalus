@@ -585,7 +585,6 @@ export const TEST_THEME_PARAMS: CreateThemeParams = {
   colors: {
     error: '#ea4c5b',
     primary: {
-      active: '#ebeef0',
       background: '#efefef',
       border: '#c6cdd6',
       focus: '#5e6066',

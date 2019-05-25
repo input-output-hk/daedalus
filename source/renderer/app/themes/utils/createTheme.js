@@ -103,7 +103,7 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
     },
     rpSelect: {
       '--rp-select-arrow-bg-color': `${primary.border}`,
-      '--rp-select-arrow-bg-color-open': `${primary.active}`,
+      '--rp-select-arrow-bg-color-open': `${primary.focus}`,
       '--rp-select-input-bg-color': `${primary.background.lightest}`,
       '--rp-select-input-border-color': `${primary.border}`,
       '--rp-select-input-border-color-focus': `${primary.focus}`,
@@ -338,7 +338,7 @@ const createDaedalusComponentsTheme = (
       '--theme-dialog-choice-tabs-text-color': `${primary.text}`,
       '--theme-dialog-choice-tabs-text-color-active': `${primary.text}`,
       '--theme-dialog-choice-tabs-bottom-border-color-active': `${
-        primary.active
+        primary.focus
       }`,
       '--theme-dialog-big-button-background-color': `${
         primary.background.lightest

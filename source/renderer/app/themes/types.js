@@ -32,7 +32,6 @@ export type CreateThemeParams = {
 export type ColorParams = {
   error: string,
   primary: {
-    active: string,
     background: string,
     border: string,
     focus: string,
@@ -56,7 +55,6 @@ export type ColorParams = {
 export type ThemeColors = {
   error: ErrorShades,
   primary: {
-    active: string,
     background: BackgroundShades,
     border: string,
     focus: string,
