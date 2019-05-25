@@ -596,7 +596,6 @@ export const TEST_THEME_PARAMS: CreateThemeParams = {
       border: '#efefef',
       focus: '#ffb366',
       outline: '#efefef',
-      placeholder: 'rgba(94, 96, 102, 0.5)',
       text: '#fafbfc',
     },
   },
