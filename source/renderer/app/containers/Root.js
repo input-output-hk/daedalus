@@ -21,7 +21,7 @@ export default class Root extends Component<Props> {
       staking,
     } = stores;
     const { isBlockConsolidationStatusDialog } = app;
-    const { isTakingPage } = staking;
+    const { isStakingPage } = staking;
     const { isProfilePage, isSettingsPage } = profile;
     const { isAdaRedemptionPage } = adaRedemption;
     const { hasLoadedWallets } = wallets;
@@ -35,7 +35,7 @@ export default class Root extends Component<Props> {
 
     const isPageThatDoesntNeedWallets =
       isBlockConsolidationStatusDialog ||
-      ((isAdaRedemptionPage || isTakingPage || isSettingsPage) &&
+      ((isAdaRedemptionPage || isStakingPage || isSettingsPage) &&
         hasLoadedWallets &&
         isSynced);
 
