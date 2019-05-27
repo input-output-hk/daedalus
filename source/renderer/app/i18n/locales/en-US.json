@@ -186,7 +186,7 @@
   "staking.navigation.rewards": "Rewards",
   "staking.navigation.stake_pools": "Stake pools",
   "staking.rewards.exportButtonLabel": "Export CSV",
-  "staking.rewards.learnMore.ButtonLabel": "Learn more.",
+  "staking.rewards.learnMore.ButtonLabel": "Learn more",
   "staking.rewards.learnMore.linkUrl": "https://iohk.zendesk.com/hc/en-us",
   "staking.rewards.no.rewards": "No rewards",
   "staking.rewards.note": "Rewards from stake delegation are automatically collected into your reward account.",

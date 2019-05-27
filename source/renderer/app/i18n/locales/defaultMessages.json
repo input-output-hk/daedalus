@@ -1777,7 +1777,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Learn more.",
+        "defaultMessage": "!!!Learn more",
         "description": "Label for \"Learn more\" button on staking rewards page",
         "end": {
           "column": 3,

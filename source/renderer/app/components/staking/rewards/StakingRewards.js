@@ -49,7 +49,7 @@ const messages = defineMessages({
   },
   learnMoreButtonLabel: {
     id: 'staking.rewards.learnMore.ButtonLabel',
-    defaultMessage: '!!!Learn more.',
+    defaultMessage: '!!!Learn more',
     description: 'Label for "Learn more" button on staking rewards page',
   },
   note: {
@@ -160,15 +160,12 @@ export default class StakingRewards extends Component<Props, State> {
                     ]);
 
                     return (
-                      <th key={tableHeader.name}>
+                      <th
+                        key={tableHeader.name}
+                        onClick={() => this.handleRewardsSort(tableHeader.name)}
+                      >
                         {tableHeader.title}
-                        <SVGInline
-                          svg={sortIcon}
-                          className={sortIconClasses}
-                          onClick={() =>
-                            this.handleRewardsSort(tableHeader.name)
-                          }
-                        />
+                        <SVGInline svg={sortIcon} className={sortIconClasses} />
                       </th>
                     );
                   })}
@@ -217,6 +214,7 @@ export default class StakingRewards extends Component<Props, State> {
           <button onClick={onLearnMoreClick}>
             {intl.formatMessage(messages.learnMoreButtonLabel)}
           </button>
+          <span>.</span>
         </div>
       </div>
     );

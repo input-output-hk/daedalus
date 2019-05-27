@@ -19,7 +19,6 @@
       font-family: var(--font-medium);
       font-size: 14px;
       &:hover {
-        font-family: var(--font-semibold);
         color: var(--theme-staking-font-color);
       }
     }
@@ -56,6 +55,7 @@
 
   table {
     border-style: hidden;
+    user-select: text;
     width: 100%;
 
     thead {
@@ -70,6 +70,7 @@
 
     th {
       color: var(--theme-staking-font-color-regular);
+      cursor: pointer;
       font-family: var(--font-semibold);
       font-size: 14px;
       line-height: 1.14;
@@ -84,7 +85,6 @@
       }
 
       & > .sortIcon {
-        cursor: pointer;
         visibility: hidden;
         margin-left: 6px;
         & > svg {

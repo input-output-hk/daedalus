@@ -186,7 +186,7 @@
   "staking.navigation.rewards": "!!!Rewards",
   "staking.navigation.stake_pools": "!!!Stake pools",
   "staking.rewards.exportButtonLabel": "CSV形式でエキスポート",
-  "staking.rewards.learnMore.ButtonLabel": "詳細。",
+  "staking.rewards.learnMore.ButtonLabel": "詳細",
   "staking.rewards.learnMore.linkUrl": "https://iohk.zendesk.com/hc/ja",
   "staking.rewards.no.rewards": "報酬なし",
   "staking.rewards.note": "ステーク委任から得られた報酬は自動的に報酬アカウントに振り込まれます。",
