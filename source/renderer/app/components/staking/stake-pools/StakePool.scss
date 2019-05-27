@@ -9,11 +9,20 @@
   position: relative;
   width: 80px;
 
-  &:hover {
-    .tooltip {
-      display: block;
-    }
+  &:after {
+    display: block;
+    content: '';
+    width: 100%;
+    height: 10px;
+    position: absolute;
+    bottom: -5px;
+    border-radius: 5px;
+    border-bottom: 1px solid black;
   }
+}
+
+.isSelected {
+  box-shadow: 0 0 4px 2px rgba(0, 149, 255, 0.3);
 }
 
 .id {
@@ -54,8 +63,4 @@
     width: 15px;
     height: 15px;
   }
-}
-
-.tooltip {
-  display: none;
 }

@@ -38,6 +38,8 @@ type Props = {
 type State = {
   search: string,
   filter: string,
+  selectedList?: string,
+  selectedIndex?: number,
 };
 
 @observer
@@ -49,6 +51,8 @@ export default class StakingStakePools extends Component<Props, State> {
   state = {
     search: '',
     filter: 'all',
+    selectedList: null,
+    selectedIndex: null,
   };
 
   searchInput: ?HTMLElement = null;
@@ -72,6 +76,20 @@ export default class StakingStakePools extends Component<Props, State> {
   getRanking = (index: number) =>
     (index * 100) / this.props.stakePoolsList.length;
 
+  isSelected = (newSelectedList, newSelectedIndex) =>
+    newSelectedList === this.state.selectedList &&
+    newSelectedIndex === this.state.selectedIndex;
+
+  handleClick = (selectedList: string, selectedIndex: number) => {
+    if (
+      this.state.selectedList === selectedList &&
+      this.state.selectedIndex === selectedIndex
+    ) {
+      return this.setState({ selectedList: null, selectedIndex: null });
+    }
+    return this.setState({ selectedList, selectedIndex });
+  };
+
   getList = () => {
     const fullList = this.props.stakePoolsList;
     const filtered = fullList
@@ -82,6 +100,8 @@ export default class StakingStakePools extends Component<Props, State> {
           key={stakePool.id}
           ranking={this.getRanking(stakePool.index)}
           onOpenExternalLink={this.props.onOpenExternalLink}
+          isSelected={this.isSelected('selectedIndexList', stakePool.index)}
+          onClick={index => this.handleClick('selectedIndexList', index)}
         />
       ));
     return filtered;
@@ -90,6 +110,7 @@ export default class StakingStakePools extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const { stakePoolsList, stakePoolsDelegatingList } = this.props;
+    const { selectedIndexDelegatedList } = this.state;
 
     return (
       <div className={styles.component}>
@@ -142,6 +163,13 @@ export default class StakingStakePools extends Component<Props, State> {
               {...stakePool}
               key={stakePool.id}
               ranking={this.getRanking(stakePool.index)}
+              isSelected={this.isSelected(
+                'selectedIndexDelegatedList',
+                stakePool.index
+              )}
+              onClick={index =>
+                this.handleClick('selectedIndexDelegatedList', index)
+              }
             />
           ))}
         </div>

@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import classnames from 'classnames';
+import moment from 'moment';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './StakePoolTooltip.scss';
 import { getHSLColor } from '../../../utils/colors';
@@ -47,7 +48,7 @@ type Props = {
   ...$Exact<StakePoolProps>,
   ranking: number,
   onOpenExternalLink: Function,
-  className: string,
+  visible: boolean,
 };
 
 @observer
@@ -73,10 +74,13 @@ export default class StakePool extends Component<Props> {
       performance,
       retirement,
       onOpenExternalLink,
-      className,
+      visible,
     } = this.props;
 
-    const componentClassnames = classnames([styles.component, className]);
+    const componentClassnames = classnames([
+      styles.component,
+      visible ? styles.visible : null,
+    ]);
 
     return (
       <div className={componentClassnames}>
@@ -87,25 +91,49 @@ export default class StakePool extends Component<Props> {
         <dl className={styles.table}>
           <dt>{intl.formatMessage(messages.ranking)}:</dt>
           <dd className={styles.ranking}>
-            <span>{ranking}</span>
+            <span
+              style={{
+                background: getHSLColor(ranking),
+              }}
+            >
+              {parseFloat(ranking).toFixed(2)}
+            </span>
           </dd>
           <dt>{intl.formatMessage(messages.controlledStake)}:</dt>
           <dd className={styles.controlledStake}>
-            <span>{controlledStake}</span>
+            <span
+              style={{
+                background: getHSLColor(controlledStake),
+              }}
+            >
+              {controlledStake}%
+            </span>
           </dd>
           <dt>{intl.formatMessage(messages.profitMargin)}:</dt>
           <dd className={styles.profitMargin}>
-            <span>{profitMargin}</span>
+            <span
+              style={{
+                background: getHSLColor(profitMargin),
+              }}
+            >
+              {profitMargin}%
+            </span>
           </dd>
           <dt>{intl.formatMessage(messages.performance)}:</dt>
           <dd className={styles.performance}>
-            <span>{performance}</span>
+            <span
+              style={{
+                background: getHSLColor(performance),
+              }}
+            >
+              {performance}%
+            </span>
           </dd>
           {retirement && (
             <Fragment>
               <dt>{intl.formatMessage(messages.retirement)}:</dt>
               <dd className={styles.retirement}>
-                <span>{retirement}</span>
+                <span>{moment(retirement).fromNow(true)}</span>
               </dd>
             </Fragment>
           )}

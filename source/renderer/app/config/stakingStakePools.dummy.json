@@ -8,7 +8,7 @@
     "controlledStake": 45,
     "profitMargin": 40,
     "performance": 1,
-    "retiring": "2020-02-12T22:26:07Z"
+    "retirement": "2020-02-12T22:26:07Z"
   },
   {
     "index": 2,
@@ -19,7 +19,7 @@
     "controlledStake": 97,
     "profitMargin": 20,
     "performance": 1,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 3,
@@ -30,7 +30,7 @@
     "controlledStake": 9,
     "profitMargin": 6,
     "performance": 1,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 4,
@@ -41,7 +41,7 @@
     "controlledStake": 67,
     "profitMargin": 10,
     "performance": 1,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 5,
@@ -52,7 +52,7 @@
     "controlledStake": 86,
     "profitMargin": 47,
     "performance": 1,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 6,
@@ -63,7 +63,7 @@
     "controlledStake": 59,
     "profitMargin": 84,
     "performance": 1,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 7,
@@ -74,7 +74,7 @@
     "controlledStake": 24,
     "profitMargin": 75,
     "performance": 2,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 8,
@@ -85,7 +85,7 @@
     "controlledStake": 92,
     "profitMargin": 87,
     "performance": 2,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 9,
@@ -96,7 +96,7 @@
     "controlledStake": 40,
     "profitMargin": 66,
     "performance": 2,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 10,
@@ -107,7 +107,7 @@
     "controlledStake": 93,
     "profitMargin": 52,
     "performance": 2,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 11,
@@ -118,7 +118,7 @@
     "controlledStake": 1,
     "profitMargin": 77,
     "performance": 2,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 12,
@@ -129,7 +129,7 @@
     "controlledStake": 65,
     "profitMargin": 61,
     "performance": 3,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 13,
@@ -140,7 +140,7 @@
     "controlledStake": 62,
     "profitMargin": 33,
     "performance": 3,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 14,
@@ -151,7 +151,7 @@
     "controlledStake": 15,
     "profitMargin": 19,
     "performance": 3,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 15,
@@ -162,7 +162,7 @@
     "controlledStake": 24,
     "profitMargin": 30,
     "performance": 3,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 16,
@@ -173,7 +173,7 @@
     "controlledStake": 41,
     "profitMargin": 39,
     "performance": 3,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 17,
@@ -184,7 +184,7 @@
     "controlledStake": 7,
     "profitMargin": 26,
     "performance": 3,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 18,
@@ -195,7 +195,7 @@
     "controlledStake": 99,
     "profitMargin": 24,
     "performance": 4,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 19,
@@ -206,7 +206,7 @@
     "controlledStake": 50,
     "profitMargin": 26,
     "performance": 4,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 20,
@@ -217,7 +217,7 @@
     "controlledStake": 53,
     "profitMargin": 7,
     "performance": 4,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 21,
@@ -228,7 +228,7 @@
     "controlledStake": 51,
     "profitMargin": 14,
     "performance": 5,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 22,
@@ -239,7 +239,7 @@
     "controlledStake": 6,
     "profitMargin": 5,
     "performance": 5,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 23,
@@ -250,7 +250,7 @@
     "controlledStake": 77,
     "profitMargin": 48,
     "performance": 5,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 24,
@@ -261,7 +261,7 @@
     "controlledStake": 26,
     "profitMargin": 79,
     "performance": 5,
-    "retiring": "2020-02-08T19:08:35Z"
+    "retirement": "2020-02-08T19:08:35Z"
   },
   {
     "index": 25,
@@ -272,7 +272,7 @@
     "controlledStake": 47,
     "profitMargin": 98,
     "performance": 5,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 26,
@@ -283,7 +283,7 @@
     "controlledStake": 92,
     "profitMargin": 2,
     "performance": 5,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 27,
@@ -294,7 +294,7 @@
     "controlledStake": 39,
     "profitMargin": 41,
     "performance": 6,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 28,
@@ -305,7 +305,7 @@
     "controlledStake": 60,
     "profitMargin": 40,
     "performance": 6,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 29,
@@ -316,7 +316,7 @@
     "controlledStake": 93,
     "profitMargin": 90,
     "performance": 7,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 30,
@@ -327,7 +327,7 @@
     "controlledStake": 51,
     "profitMargin": 87,
     "performance": 7,
-    "retiring": "2019-12-05T04:28:51Z"
+    "retirement": "2019-12-05T04:28:51Z"
   },
   {
     "index": 31,
@@ -338,7 +338,7 @@
     "controlledStake": 87,
     "profitMargin": 32,
     "performance": 8,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 32,
@@ -349,7 +349,7 @@
     "controlledStake": 77,
     "profitMargin": 1,
     "performance": 8,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 33,
@@ -360,7 +360,7 @@
     "controlledStake": 24,
     "profitMargin": 77,
     "performance": 8,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 34,
@@ -371,7 +371,7 @@
     "controlledStake": 70,
     "profitMargin": 2,
     "performance": 8,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 35,
@@ -382,7 +382,7 @@
     "controlledStake": 64,
     "profitMargin": 74,
     "performance": 8,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 36,
@@ -393,7 +393,7 @@
     "controlledStake": 23,
     "profitMargin": 48,
     "performance": 9,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 37,
@@ -404,7 +404,7 @@
     "controlledStake": 32,
     "profitMargin": 53,
     "performance": 9,
-    "retiring": "2020-01-08T07:59:29Z"
+    "retirement": "2020-01-08T07:59:29Z"
   },
   {
     "index": 38,
@@ -415,7 +415,7 @@
     "controlledStake": 92,
     "profitMargin": 18,
     "performance": 10,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 39,
@@ -426,7 +426,7 @@
     "controlledStake": 62,
     "profitMargin": 40,
     "performance": 10,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 40,
@@ -437,7 +437,7 @@
     "controlledStake": 1,
     "profitMargin": 2,
     "performance": 10,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 41,
@@ -448,7 +448,7 @@
     "controlledStake": 8,
     "profitMargin": 65,
     "performance": 11,
-    "retiring": "2020-01-20T15:51:38Z"
+    "retirement": "2020-01-20T15:51:38Z"
   },
   {
     "index": 42,
@@ -459,7 +459,7 @@
     "controlledStake": 14,
     "profitMargin": 46,
     "performance": 12,
-    "retiring": "2020-01-11T17:48:51Z"
+    "retirement": "2020-01-11T17:48:51Z"
   },
   {
     "index": 43,
@@ -470,7 +470,7 @@
     "controlledStake": 61,
     "profitMargin": 81,
     "performance": 12,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 44,
@@ -481,7 +481,7 @@
     "controlledStake": 89,
     "profitMargin": 34,
     "performance": 12,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 45,
@@ -492,7 +492,7 @@
     "controlledStake": 53,
     "profitMargin": 49,
     "performance": 13,
-    "retiring": "2020-02-24T06:24:51Z"
+    "retirement": "2020-02-24T06:24:51Z"
   },
   {
     "index": 46,
@@ -503,7 +503,7 @@
     "controlledStake": 91,
     "profitMargin": 25,
     "performance": 13,
-    "retiring": "2020-01-18T20:05:16Z"
+    "retirement": "2020-01-18T20:05:16Z"
   },
   {
     "index": 47,
@@ -514,7 +514,7 @@
     "controlledStake": 96,
     "profitMargin": 88,
     "performance": 14,
-    "retiring": "2020-01-20T01:45:22Z"
+    "retirement": "2020-01-20T01:45:22Z"
   },
   {
     "index": 48,
@@ -525,7 +525,7 @@
     "controlledStake": 26,
     "profitMargin": 10,
     "performance": 14,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 49,
@@ -536,7 +536,7 @@
     "controlledStake": 65,
     "profitMargin": 48,
     "performance": 15,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 50,
@@ -547,7 +547,7 @@
     "controlledStake": 1,
     "profitMargin": 27,
     "performance": 15,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 51,
@@ -558,7 +558,7 @@
     "controlledStake": 97,
     "profitMargin": 56,
     "performance": 15,
-    "retiring": "2020-01-13T22:46:57Z"
+    "retirement": "2020-01-13T22:46:57Z"
   },
   {
     "index": 52,
@@ -569,7 +569,7 @@
     "controlledStake": 71,
     "profitMargin": 97,
     "performance": 16,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 53,
@@ -580,7 +580,7 @@
     "controlledStake": 76,
     "profitMargin": 75,
     "performance": 16,
-    "retiring": "2020-03-09T03:30:25Z"
+    "retirement": "2020-03-09T03:30:25Z"
   },
   {
     "index": 54,
@@ -591,7 +591,7 @@
     "controlledStake": 68,
     "profitMargin": 27,
     "performance": 16,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 55,
@@ -602,7 +602,7 @@
     "controlledStake": 36,
     "profitMargin": 8,
     "performance": 16,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 56,
@@ -613,7 +613,7 @@
     "controlledStake": 41,
     "profitMargin": 36,
     "performance": 17,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 57,
@@ -624,7 +624,7 @@
     "controlledStake": 70,
     "profitMargin": 46,
     "performance": 17,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 58,
@@ -635,7 +635,7 @@
     "controlledStake": 4,
     "profitMargin": 64,
     "performance": 17,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 59,
@@ -646,7 +646,7 @@
     "controlledStake": 76,
     "profitMargin": 67,
     "performance": 18,
-    "retiring": "2019-12-09T10:32:38Z"
+    "retirement": "2019-12-09T10:32:38Z"
   },
   {
     "index": 60,
@@ -657,7 +657,7 @@
     "controlledStake": 21,
     "profitMargin": 9,
     "performance": 19,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 61,
@@ -668,7 +668,7 @@
     "controlledStake": 22,
     "profitMargin": 81,
     "performance": 20,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 62,
@@ -679,7 +679,7 @@
     "controlledStake": 11,
     "profitMargin": 5,
     "performance": 20,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 63,
@@ -690,7 +690,7 @@
     "controlledStake": 68,
     "profitMargin": 64,
     "performance": 20,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 64,
@@ -701,7 +701,7 @@
     "controlledStake": 96,
     "profitMargin": 71,
     "performance": 21,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 65,
@@ -712,7 +712,7 @@
     "controlledStake": 40,
     "profitMargin": 16,
     "performance": 21,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 66,
@@ -723,7 +723,7 @@
     "controlledStake": 62,
     "profitMargin": 96,
     "performance": 22,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 67,
@@ -734,7 +734,7 @@
     "controlledStake": 88,
     "profitMargin": 95,
     "performance": 22,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 68,
@@ -745,7 +745,7 @@
     "controlledStake": 13,
     "profitMargin": 10,
     "performance": 22,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 69,
@@ -756,7 +756,7 @@
     "controlledStake": 67,
     "profitMargin": 75,
     "performance": 23,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 70,
@@ -767,7 +767,7 @@
     "controlledStake": 25,
     "profitMargin": 21,
     "performance": 23,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 71,
@@ -778,7 +778,7 @@
     "controlledStake": 13,
     "profitMargin": 77,
     "performance": 23,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 72,
@@ -789,7 +789,7 @@
     "controlledStake": 99,
     "profitMargin": 31,
     "performance": 23,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 73,
@@ -800,7 +800,7 @@
     "controlledStake": 45,
     "profitMargin": 63,
     "performance": 24,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 74,
@@ -811,7 +811,7 @@
     "controlledStake": 98,
     "profitMargin": 57,
     "performance": 24,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 75,
@@ -822,7 +822,7 @@
     "controlledStake": 45,
     "profitMargin": 32,
     "performance": 25,
-    "retiring": "2020-03-22T00:53:24Z"
+    "retirement": "2020-03-22T00:53:24Z"
   },
   {
     "index": 76,
@@ -833,7 +833,7 @@
     "controlledStake": 89,
     "profitMargin": 59,
     "performance": 26,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 77,
@@ -844,7 +844,7 @@
     "controlledStake": 86,
     "profitMargin": 100,
     "performance": 27,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 78,
@@ -855,7 +855,7 @@
     "controlledStake": 56,
     "profitMargin": 79,
     "performance": 27,
-    "retiring": "2020-01-23T00:13:53Z"
+    "retirement": "2020-01-23T00:13:53Z"
   },
   {
     "index": 79,
@@ -866,7 +866,7 @@
     "controlledStake": 85,
     "profitMargin": 84,
     "performance": 28,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 80,
@@ -877,7 +877,7 @@
     "controlledStake": 67,
     "profitMargin": 16,
     "performance": 28,
-    "retiring": "2020-02-19T20:00:38Z"
+    "retirement": "2020-02-19T20:00:38Z"
   },
   {
     "index": 81,
@@ -888,7 +888,7 @@
     "controlledStake": 12,
     "profitMargin": 78,
     "performance": 28,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 82,
@@ -899,7 +899,7 @@
     "controlledStake": 31,
     "profitMargin": 51,
     "performance": 28,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 83,
@@ -910,7 +910,7 @@
     "controlledStake": 7,
     "profitMargin": 96,
     "performance": 28,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 84,
@@ -921,7 +921,7 @@
     "controlledStake": 21,
     "profitMargin": 66,
     "performance": 28,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 85,
@@ -932,7 +932,7 @@
     "controlledStake": 96,
     "profitMargin": 26,
     "performance": 29,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 86,
@@ -943,7 +943,7 @@
     "controlledStake": 2,
     "profitMargin": 4,
     "performance": 29,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 87,
@@ -954,7 +954,7 @@
     "controlledStake": 83,
     "profitMargin": 13,
     "performance": 29,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 88,
@@ -965,7 +965,7 @@
     "controlledStake": 63,
     "profitMargin": 27,
     "performance": 29,
-    "retiring": "2020-02-17T07:14:53Z"
+    "retirement": "2020-02-17T07:14:53Z"
   },
   {
     "index": 89,
@@ -976,7 +976,7 @@
     "controlledStake": 81,
     "profitMargin": 79,
     "performance": 29,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 90,
@@ -987,7 +987,7 @@
     "controlledStake": 64,
     "profitMargin": 56,
     "performance": 29,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 91,
@@ -998,7 +998,7 @@
     "controlledStake": 72,
     "profitMargin": 8,
     "performance": 30,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 92,
@@ -1009,7 +1009,7 @@
     "controlledStake": 34,
     "profitMargin": 45,
     "performance": 30,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 93,
@@ -1020,7 +1020,7 @@
     "controlledStake": 2,
     "profitMargin": 36,
     "performance": 30,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 94,
@@ -1031,7 +1031,7 @@
     "controlledStake": 28,
     "profitMargin": 32,
     "performance": 30,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 95,
@@ -1042,7 +1042,7 @@
     "controlledStake": 55,
     "profitMargin": 77,
     "performance": 31,
-    "retiring": "2020-02-22T21:03:23Z"
+    "retirement": "2020-02-22T21:03:23Z"
   },
   {
     "index": 96,
@@ -1053,7 +1053,7 @@
     "controlledStake": 32,
     "profitMargin": 94,
     "performance": 31,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 97,
@@ -1064,7 +1064,7 @@
     "controlledStake": 41,
     "profitMargin": 3,
     "performance": 31,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 98,
@@ -1075,7 +1075,7 @@
     "controlledStake": 3,
     "profitMargin": 37,
     "performance": 32,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 99,
@@ -1086,7 +1086,7 @@
     "controlledStake": 80,
     "profitMargin": 5,
     "performance": 32,
-    "retiring": "2020-03-31T00:32:14Z"
+    "retirement": "2020-03-31T00:32:14Z"
   },
   {
     "index": 100,
@@ -1097,7 +1097,7 @@
     "controlledStake": 61,
     "profitMargin": 26,
     "performance": 32,
-    "retiring": "2019-12-01T15:13:10Z"
+    "retirement": "2019-12-01T15:13:10Z"
   },
   {
     "index": 101,
@@ -1108,7 +1108,7 @@
     "controlledStake": 87,
     "profitMargin": 72,
     "performance": 33,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 102,
@@ -1119,7 +1119,7 @@
     "controlledStake": 95,
     "profitMargin": 17,
     "performance": 33,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 103,
@@ -1130,7 +1130,7 @@
     "controlledStake": 92,
     "profitMargin": 93,
     "performance": 33,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 104,
@@ -1141,7 +1141,7 @@
     "controlledStake": 29,
     "profitMargin": 63,
     "performance": 34,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 105,
@@ -1152,7 +1152,7 @@
     "controlledStake": 100,
     "profitMargin": 7,
     "performance": 34,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 106,
@@ -1163,7 +1163,7 @@
     "controlledStake": 5,
     "profitMargin": 75,
     "performance": 34,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 107,
@@ -1174,7 +1174,7 @@
     "controlledStake": 89,
     "profitMargin": 53,
     "performance": 35,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 108,
@@ -1185,7 +1185,7 @@
     "controlledStake": 60,
     "profitMargin": 28,
     "performance": 37,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 109,
@@ -1196,7 +1196,7 @@
     "controlledStake": 87,
     "profitMargin": 4,
     "performance": 37,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 110,
@@ -1207,7 +1207,7 @@
     "controlledStake": 92,
     "profitMargin": 26,
     "performance": 38,
-    "retiring": "2020-03-25T09:37:28Z"
+    "retirement": "2020-03-25T09:37:28Z"
   },
   {
     "index": 111,
@@ -1218,7 +1218,7 @@
     "controlledStake": 10,
     "profitMargin": 97,
     "performance": 38,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 112,
@@ -1229,7 +1229,7 @@
     "controlledStake": 22,
     "profitMargin": 20,
     "performance": 38,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 113,
@@ -1240,7 +1240,7 @@
     "controlledStake": 69,
     "profitMargin": 53,
     "performance": 41,
-    "retiring": "2020-02-15T05:37:46Z"
+    "retirement": "2020-02-15T05:37:46Z"
   },
   {
     "index": 114,
@@ -1251,7 +1251,7 @@
     "controlledStake": 73,
     "profitMargin": 22,
     "performance": 41,
-    "retiring": "2020-03-15T15:04:40Z"
+    "retirement": "2020-03-15T15:04:40Z"
   },
   {
     "index": 115,
@@ -1262,7 +1262,7 @@
     "controlledStake": 41,
     "profitMargin": 56,
     "performance": 42,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 116,
@@ -1273,7 +1273,7 @@
     "controlledStake": 85,
     "profitMargin": 26,
     "performance": 42,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 117,
@@ -1284,7 +1284,7 @@
     "controlledStake": 70,
     "profitMargin": 76,
     "performance": 42,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 118,
@@ -1295,7 +1295,7 @@
     "controlledStake": 69,
     "profitMargin": 100,
     "performance": 42,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 119,
@@ -1306,7 +1306,7 @@
     "controlledStake": 67,
     "profitMargin": 19,
     "performance": 43,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 120,
@@ -1317,7 +1317,7 @@
     "controlledStake": 22,
     "profitMargin": 40,
     "performance": 44,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 121,
@@ -1328,7 +1328,7 @@
     "controlledStake": 87,
     "profitMargin": 25,
     "performance": 44,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 122,
@@ -1339,7 +1339,7 @@
     "controlledStake": 45,
     "profitMargin": 57,
     "performance": 45,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 123,
@@ -1350,7 +1350,7 @@
     "controlledStake": 35,
     "profitMargin": 79,
     "performance": 45,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 124,
@@ -1361,7 +1361,7 @@
     "controlledStake": 43,
     "profitMargin": 65,
     "performance": 46,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 125,
@@ -1372,7 +1372,7 @@
     "controlledStake": 79,
     "profitMargin": 54,
     "performance": 46,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 126,
@@ -1383,7 +1383,7 @@
     "controlledStake": 29,
     "profitMargin": 73,
     "performance": 46,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 127,
@@ -1394,7 +1394,7 @@
     "controlledStake": 63,
     "profitMargin": 64,
     "performance": 46,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 128,
@@ -1405,7 +1405,7 @@
     "controlledStake": 9,
     "profitMargin": 36,
     "performance": 46,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 129,
@@ -1416,7 +1416,7 @@
     "controlledStake": 67,
     "profitMargin": 68,
     "performance": 47,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 130,
@@ -1427,7 +1427,7 @@
     "controlledStake": 46,
     "profitMargin": 19,
     "performance": 48,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 131,
@@ -1438,7 +1438,7 @@
     "controlledStake": 55,
     "profitMargin": 73,
     "performance": 48,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 132,
@@ -1449,7 +1449,7 @@
     "controlledStake": 34,
     "profitMargin": 83,
     "performance": 48,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 133,
@@ -1460,7 +1460,7 @@
     "controlledStake": 10,
     "profitMargin": 54,
     "performance": 48,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 134,
@@ -1471,7 +1471,7 @@
     "controlledStake": 37,
     "profitMargin": 27,
     "performance": 49,
-    "retiring": "2020-01-21T12:59:40Z"
+    "retirement": "2020-01-21T12:59:40Z"
   },
   {
     "index": 135,
@@ -1482,7 +1482,7 @@
     "controlledStake": 93,
     "profitMargin": 68,
     "performance": 50,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 136,
@@ -1493,7 +1493,7 @@
     "controlledStake": 39,
     "profitMargin": 6,
     "performance": 50,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 137,
@@ -1504,7 +1504,7 @@
     "controlledStake": 4,
     "profitMargin": 87,
     "performance": 50,
-    "retiring": "2019-12-12T10:53:38Z"
+    "retirement": "2019-12-12T10:53:38Z"
   },
   {
     "index": 138,
@@ -1515,7 +1515,7 @@
     "controlledStake": 1,
     "profitMargin": 53,
     "performance": 50,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 139,
@@ -1526,7 +1526,7 @@
     "controlledStake": 91,
     "profitMargin": 35,
     "performance": 50,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 140,
@@ -1537,7 +1537,7 @@
     "controlledStake": 30,
     "profitMargin": 72,
     "performance": 50,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 141,
@@ -1548,7 +1548,7 @@
     "controlledStake": 1,
     "profitMargin": 39,
     "performance": 51,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 142,
@@ -1559,7 +1559,7 @@
     "controlledStake": 49,
     "profitMargin": 79,
     "performance": 51,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 143,
@@ -1570,7 +1570,7 @@
     "controlledStake": 22,
     "profitMargin": 33,
     "performance": 51,
-    "retiring": "2020-01-15T02:45:31Z"
+    "retirement": "2020-01-15T02:45:31Z"
   },
   {
     "index": 144,
@@ -1581,7 +1581,7 @@
     "controlledStake": 78,
     "profitMargin": 17,
     "performance": 52,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 145,
@@ -1592,7 +1592,7 @@
     "controlledStake": 98,
     "profitMargin": 31,
     "performance": 52,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 146,
@@ -1603,7 +1603,7 @@
     "controlledStake": 84,
     "profitMargin": 91,
     "performance": 52,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 147,
@@ -1614,7 +1614,7 @@
     "controlledStake": 85,
     "profitMargin": 35,
     "performance": 53,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 148,
@@ -1625,7 +1625,7 @@
     "controlledStake": 48,
     "profitMargin": 52,
     "performance": 53,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 149,
@@ -1636,7 +1636,7 @@
     "controlledStake": 44,
     "profitMargin": 94,
     "performance": 53,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 150,
@@ -1647,7 +1647,7 @@
     "controlledStake": 2,
     "profitMargin": 53,
     "performance": 53,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 151,
@@ -1658,7 +1658,7 @@
     "controlledStake": 93,
     "profitMargin": 49,
     "performance": 53,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 152,
@@ -1669,7 +1669,7 @@
     "controlledStake": 74,
     "profitMargin": 65,
     "performance": 54,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 153,
@@ -1680,7 +1680,7 @@
     "controlledStake": 34,
     "profitMargin": 9,
     "performance": 54,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 154,
@@ -1691,7 +1691,7 @@
     "controlledStake": 45,
     "profitMargin": 64,
     "performance": 54,
-    "retiring": "2020-02-03T09:11:47Z"
+    "retirement": "2020-02-03T09:11:47Z"
   },
   {
     "index": 155,
@@ -1702,7 +1702,7 @@
     "controlledStake": 49,
     "profitMargin": 43,
     "performance": 55,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 156,
@@ -1713,7 +1713,7 @@
     "controlledStake": 63,
     "profitMargin": 17,
     "performance": 55,
-    "retiring": "2019-12-30T05:10:04Z"
+    "retirement": "2019-12-30T05:10:04Z"
   },
   {
     "index": 157,
@@ -1724,7 +1724,7 @@
     "controlledStake": 27,
     "profitMargin": 27,
     "performance": 56,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 158,
@@ -1735,7 +1735,7 @@
     "controlledStake": 4,
     "profitMargin": 5,
     "performance": 56,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 159,
@@ -1746,7 +1746,7 @@
     "controlledStake": 97,
     "profitMargin": 33,
     "performance": 56,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 160,
@@ -1757,7 +1757,7 @@
     "controlledStake": 37,
     "profitMargin": 12,
     "performance": 57,
-    "retiring": "2020-02-11T18:17:13Z"
+    "retirement": "2020-02-11T18:17:13Z"
   },
   {
     "index": 161,
@@ -1768,7 +1768,7 @@
     "controlledStake": 40,
     "profitMargin": 75,
     "performance": 57,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 162,
@@ -1779,7 +1779,7 @@
     "controlledStake": 37,
     "profitMargin": 54,
     "performance": 57,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 163,
@@ -1790,7 +1790,7 @@
     "controlledStake": 3,
     "profitMargin": 57,
     "performance": 57,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 164,
@@ -1801,7 +1801,7 @@
     "controlledStake": 10,
     "profitMargin": 36,
     "performance": 58,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 165,
@@ -1812,7 +1812,7 @@
     "controlledStake": 46,
     "profitMargin": 80,
     "performance": 58,
-    "retiring": "2019-12-07T13:34:19Z"
+    "retirement": "2019-12-07T13:34:19Z"
   },
   {
     "index": 166,
@@ -1823,7 +1823,7 @@
     "controlledStake": 98,
     "profitMargin": 9,
     "performance": 58,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 167,
@@ -1834,7 +1834,7 @@
     "controlledStake": 79,
     "profitMargin": 66,
     "performance": 58,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 168,
@@ -1845,7 +1845,7 @@
     "controlledStake": 99,
     "profitMargin": 46,
     "performance": 58,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 169,
@@ -1856,7 +1856,7 @@
     "controlledStake": 71,
     "profitMargin": 19,
     "performance": 59,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 170,
@@ -1867,7 +1867,7 @@
     "controlledStake": 35,
     "profitMargin": 79,
     "performance": 59,
-    "retiring": "2020-01-06T14:07:47Z"
+    "retirement": "2020-01-06T14:07:47Z"
   },
   {
     "index": 171,
@@ -1878,7 +1878,7 @@
     "controlledStake": 86,
     "profitMargin": 25,
     "performance": 60,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 172,
@@ -1889,7 +1889,7 @@
     "controlledStake": 77,
     "profitMargin": 64,
     "performance": 60,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 173,
@@ -1900,7 +1900,7 @@
     "controlledStake": 74,
     "profitMargin": 14,
     "performance": 60,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 174,
@@ -1911,7 +1911,7 @@
     "controlledStake": 100,
     "profitMargin": 49,
     "performance": 61,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 175,
@@ -1922,7 +1922,7 @@
     "controlledStake": 89,
     "profitMargin": 91,
     "performance": 61,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 176,
@@ -1933,7 +1933,7 @@
     "controlledStake": 22,
     "profitMargin": 86,
     "performance": 61,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 177,
@@ -1944,7 +1944,7 @@
     "controlledStake": 16,
     "profitMargin": 16,
     "performance": 62,
-    "retiring": "2020-02-09T13:03:51Z"
+    "retirement": "2020-02-09T13:03:51Z"
   },
   {
     "index": 178,
@@ -1955,7 +1955,7 @@
     "controlledStake": 98,
     "profitMargin": 50,
     "performance": 62,
-    "retiring": "2020-01-07T21:11:44Z"
+    "retirement": "2020-01-07T21:11:44Z"
   },
   {
     "index": 179,
@@ -1966,7 +1966,7 @@
     "controlledStake": 59,
     "profitMargin": 23,
     "performance": 62,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 180,
@@ -1977,7 +1977,7 @@
     "controlledStake": 31,
     "profitMargin": 64,
     "performance": 62,
-    "retiring": "2020-03-23T08:58:04Z"
+    "retirement": "2020-03-23T08:58:04Z"
   },
   {
     "index": 181,
@@ -1988,7 +1988,7 @@
     "controlledStake": 46,
     "profitMargin": 33,
     "performance": 63,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 182,
@@ -1999,7 +1999,7 @@
     "controlledStake": 79,
     "profitMargin": 14,
     "performance": 63,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 183,
@@ -2010,7 +2010,7 @@
     "controlledStake": 53,
     "profitMargin": 66,
     "performance": 64,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 184,
@@ -2021,7 +2021,7 @@
     "controlledStake": 57,
     "profitMargin": 41,
     "performance": 64,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 185,
@@ -2032,7 +2032,7 @@
     "controlledStake": 3,
     "profitMargin": 88,
     "performance": 65,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 186,
@@ -2043,7 +2043,7 @@
     "controlledStake": 83,
     "profitMargin": 80,
     "performance": 66,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 187,
@@ -2054,7 +2054,7 @@
     "controlledStake": 90,
     "profitMargin": 84,
     "performance": 67,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 188,
@@ -2065,7 +2065,7 @@
     "controlledStake": 12,
     "profitMargin": 76,
     "performance": 67,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 189,
@@ -2076,7 +2076,7 @@
     "controlledStake": 34,
     "profitMargin": 11,
     "performance": 67,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 190,
@@ -2087,7 +2087,7 @@
     "controlledStake": 31,
     "profitMargin": 92,
     "performance": 68,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 191,
@@ -2098,7 +2098,7 @@
     "controlledStake": 98,
     "profitMargin": 10,
     "performance": 68,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 192,
@@ -2109,7 +2109,7 @@
     "controlledStake": 70,
     "profitMargin": 37,
     "performance": 68,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 193,
@@ -2120,7 +2120,7 @@
     "controlledStake": 2,
     "profitMargin": 86,
     "performance": 68,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 194,
@@ -2131,7 +2131,7 @@
     "controlledStake": 83,
     "profitMargin": 42,
     "performance": 69,
-    "retiring": "2020-03-15T06:35:14Z"
+    "retirement": "2020-03-15T06:35:14Z"
   },
   {
     "index": 195,
@@ -2142,7 +2142,7 @@
     "controlledStake": 57,
     "profitMargin": 9,
     "performance": 69,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 196,
@@ -2153,7 +2153,7 @@
     "controlledStake": 57,
     "profitMargin": 66,
     "performance": 69,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 197,
@@ -2164,7 +2164,7 @@
     "controlledStake": 75,
     "profitMargin": 44,
     "performance": 69,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 198,
@@ -2175,7 +2175,7 @@
     "controlledStake": 68,
     "profitMargin": 48,
     "performance": 70,
-    "retiring": "2020-02-12T06:32:48Z"
+    "retirement": "2020-02-12T06:32:48Z"
   },
   {
     "index": 199,
@@ -2186,7 +2186,7 @@
     "controlledStake": 86,
     "profitMargin": 68,
     "performance": 70,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 200,
@@ -2197,7 +2197,7 @@
     "controlledStake": 86,
     "profitMargin": 44,
     "performance": 70,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 201,
@@ -2208,7 +2208,7 @@
     "controlledStake": 6,
     "profitMargin": 63,
     "performance": 70,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 202,
@@ -2219,7 +2219,7 @@
     "controlledStake": 54,
     "profitMargin": 84,
     "performance": 70,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 203,
@@ -2230,7 +2230,7 @@
     "controlledStake": 1,
     "profitMargin": 21,
     "performance": 70,
-    "retiring": "2020-02-29T04:37:37Z"
+    "retirement": "2020-02-29T04:37:37Z"
   },
   {
     "index": 204,
@@ -2241,7 +2241,7 @@
     "controlledStake": 37,
     "profitMargin": 14,
     "performance": 71,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 205,
@@ -2252,7 +2252,7 @@
     "controlledStake": 42,
     "profitMargin": 45,
     "performance": 71,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 206,
@@ -2263,7 +2263,7 @@
     "controlledStake": 26,
     "profitMargin": 8,
     "performance": 71,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 207,
@@ -2274,7 +2274,7 @@
     "controlledStake": 26,
     "profitMargin": 31,
     "performance": 71,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 208,
@@ -2285,7 +2285,7 @@
     "controlledStake": 55,
     "profitMargin": 82,
     "performance": 71,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 209,
@@ -2296,7 +2296,7 @@
     "controlledStake": 28,
     "profitMargin": 5,
     "performance": 71,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 210,
@@ -2307,7 +2307,7 @@
     "controlledStake": 85,
     "profitMargin": 59,
     "performance": 72,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 211,
@@ -2318,7 +2318,7 @@
     "controlledStake": 7,
     "profitMargin": 47,
     "performance": 73,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 212,
@@ -2329,7 +2329,7 @@
     "controlledStake": 38,
     "profitMargin": 53,
     "performance": 73,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 213,
@@ -2340,7 +2340,7 @@
     "controlledStake": 25,
     "profitMargin": 91,
     "performance": 73,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 214,
@@ -2351,7 +2351,7 @@
     "controlledStake": 38,
     "profitMargin": 4,
     "performance": 73,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 215,
@@ -2362,7 +2362,7 @@
     "controlledStake": 12,
     "profitMargin": 46,
     "performance": 73,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 216,
@@ -2373,7 +2373,7 @@
     "controlledStake": 68,
     "profitMargin": 37,
     "performance": 74,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 217,
@@ -2384,7 +2384,7 @@
     "controlledStake": 50,
     "profitMargin": 24,
     "performance": 74,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 218,
@@ -2395,7 +2395,7 @@
     "controlledStake": 67,
     "profitMargin": 55,
     "performance": 74,
-    "retiring": "2019-12-05T06:23:56Z"
+    "retirement": "2019-12-05T06:23:56Z"
   },
   {
     "index": 219,
@@ -2406,7 +2406,7 @@
     "controlledStake": 62,
     "profitMargin": 72,
     "performance": 74,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 220,
@@ -2417,7 +2417,7 @@
     "controlledStake": 64,
     "profitMargin": 31,
     "performance": 74,
-    "retiring": "2020-01-14T00:15:37Z"
+    "retirement": "2020-01-14T00:15:37Z"
   },
   {
     "index": 221,
@@ -2428,7 +2428,7 @@
     "controlledStake": 27,
     "profitMargin": 76,
     "performance": 74,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 222,
@@ -2439,7 +2439,7 @@
     "controlledStake": 39,
     "profitMargin": 53,
     "performance": 74,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 223,
@@ -2450,7 +2450,7 @@
     "controlledStake": 92,
     "profitMargin": 71,
     "performance": 75,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 224,
@@ -2461,7 +2461,7 @@
     "controlledStake": 10,
     "profitMargin": 86,
     "performance": 75,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 225,
@@ -2472,7 +2472,7 @@
     "controlledStake": 25,
     "profitMargin": 61,
     "performance": 76,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 226,
@@ -2483,7 +2483,7 @@
     "controlledStake": 86,
     "profitMargin": 99,
     "performance": 76,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 227,
@@ -2494,7 +2494,7 @@
     "controlledStake": 60,
     "profitMargin": 60,
     "performance": 77,
-    "retiring": "2020-01-11T19:04:50Z"
+    "retirement": "2020-01-11T19:04:50Z"
   },
   {
     "index": 228,
@@ -2505,7 +2505,7 @@
     "controlledStake": 60,
     "profitMargin": 16,
     "performance": 77,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 229,
@@ -2516,7 +2516,7 @@
     "controlledStake": 51,
     "profitMargin": 58,
     "performance": 77,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 230,
@@ -2527,7 +2527,7 @@
     "controlledStake": 6,
     "profitMargin": 11,
     "performance": 77,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 231,
@@ -2538,7 +2538,7 @@
     "controlledStake": 80,
     "profitMargin": 8,
     "performance": 77,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 232,
@@ -2549,7 +2549,7 @@
     "controlledStake": 71,
     "profitMargin": 30,
     "performance": 78,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 233,
@@ -2560,7 +2560,7 @@
     "controlledStake": 73,
     "profitMargin": 92,
     "performance": 78,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 234,
@@ -2571,7 +2571,7 @@
     "controlledStake": 3,
     "profitMargin": 9,
     "performance": 78,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 235,
@@ -2582,7 +2582,7 @@
     "controlledStake": 64,
     "profitMargin": 10,
     "performance": 78,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 236,
@@ -2593,7 +2593,7 @@
     "controlledStake": 79,
     "profitMargin": 43,
     "performance": 78,
-    "retiring": "2020-02-20T09:26:33Z"
+    "retirement": "2020-02-20T09:26:33Z"
   },
   {
     "index": 237,
@@ -2604,7 +2604,7 @@
     "controlledStake": 7,
     "profitMargin": 41,
     "performance": 79,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 238,
@@ -2615,7 +2615,7 @@
     "controlledStake": 27,
     "profitMargin": 63,
     "performance": 79,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 239,
@@ -2626,7 +2626,7 @@
     "controlledStake": 42,
     "profitMargin": 31,
     "performance": 79,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 240,
@@ -2637,7 +2637,7 @@
     "controlledStake": 25,
     "profitMargin": 41,
     "performance": 79,
-    "retiring": "2020-02-13T01:33:25Z"
+    "retirement": "2020-02-13T01:33:25Z"
   },
   {
     "index": 241,
@@ -2648,7 +2648,7 @@
     "controlledStake": 87,
     "profitMargin": 16,
     "performance": 79,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 242,
@@ -2659,7 +2659,7 @@
     "controlledStake": 74,
     "profitMargin": 30,
     "performance": 80,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 243,
@@ -2670,7 +2670,7 @@
     "controlledStake": 15,
     "profitMargin": 26,
     "performance": 80,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 244,
@@ -2681,7 +2681,7 @@
     "controlledStake": 23,
     "profitMargin": 21,
     "performance": 80,
-    "retiring": "2019-12-10T12:26:58Z"
+    "retirement": "2019-12-10T12:26:58Z"
   },
   {
     "index": 245,
@@ -2692,7 +2692,7 @@
     "controlledStake": 20,
     "profitMargin": 87,
     "performance": 80,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 246,
@@ -2703,7 +2703,7 @@
     "controlledStake": 92,
     "profitMargin": 72,
     "performance": 81,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 247,
@@ -2714,7 +2714,7 @@
     "controlledStake": 16,
     "profitMargin": 93,
     "performance": 81,
-    "retiring": "2020-02-08T08:42:16Z"
+    "retirement": "2020-02-08T08:42:16Z"
   },
   {
     "index": 248,
@@ -2725,7 +2725,7 @@
     "controlledStake": 17,
     "profitMargin": 41,
     "performance": 82,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 249,
@@ -2736,7 +2736,7 @@
     "controlledStake": 43,
     "profitMargin": 93,
     "performance": 82,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 250,
@@ -2747,7 +2747,7 @@
     "controlledStake": 69,
     "profitMargin": 90,
     "performance": 82,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 251,
@@ -2758,7 +2758,7 @@
     "controlledStake": 17,
     "profitMargin": 59,
     "performance": 83,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 252,
@@ -2769,7 +2769,7 @@
     "controlledStake": 44,
     "profitMargin": 73,
     "performance": 83,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 253,
@@ -2780,7 +2780,7 @@
     "controlledStake": 8,
     "profitMargin": 22,
     "performance": 83,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 254,
@@ -2791,7 +2791,7 @@
     "controlledStake": 97,
     "profitMargin": 90,
     "performance": 83,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 255,
@@ -2802,7 +2802,7 @@
     "controlledStake": 97,
     "profitMargin": 80,
     "performance": 83,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 256,
@@ -2813,7 +2813,7 @@
     "controlledStake": 20,
     "profitMargin": 17,
     "performance": 84,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 257,
@@ -2824,7 +2824,7 @@
     "controlledStake": 50,
     "profitMargin": 43,
     "performance": 84,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 258,
@@ -2835,7 +2835,7 @@
     "controlledStake": 94,
     "profitMargin": 49,
     "performance": 85,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 259,
@@ -2846,7 +2846,7 @@
     "controlledStake": 9,
     "profitMargin": 42,
     "performance": 85,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 260,
@@ -2857,7 +2857,7 @@
     "controlledStake": 85,
     "profitMargin": 50,
     "performance": 85,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 261,
@@ -2868,7 +2868,7 @@
     "controlledStake": 49,
     "profitMargin": 41,
     "performance": 85,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 262,
@@ -2879,7 +2879,7 @@
     "controlledStake": 60,
     "profitMargin": 99,
     "performance": 85,
-    "retiring": "2019-12-15T08:56:08Z"
+    "retirement": "2019-12-15T08:56:08Z"
   },
   {
     "index": 263,
@@ -2890,7 +2890,7 @@
     "controlledStake": 79,
     "profitMargin": 64,
     "performance": 85,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 264,
@@ -2901,7 +2901,7 @@
     "controlledStake": 90,
     "profitMargin": 9,
     "performance": 86,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 265,
@@ -2912,7 +2912,7 @@
     "controlledStake": 90,
     "profitMargin": 38,
     "performance": 86,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 266,
@@ -2923,7 +2923,7 @@
     "controlledStake": 47,
     "profitMargin": 42,
     "performance": 86,
-    "retiring": "2020-01-23T01:07:27Z"
+    "retirement": "2020-01-23T01:07:27Z"
   },
   {
     "index": 267,
@@ -2934,7 +2934,7 @@
     "controlledStake": 37,
     "profitMargin": 88,
     "performance": 86,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 268,
@@ -2945,7 +2945,7 @@
     "controlledStake": 43,
     "profitMargin": 48,
     "performance": 87,
-    "retiring": "2019-12-03T05:55:28Z"
+    "retirement": "2019-12-03T05:55:28Z"
   },
   {
     "index": 269,
@@ -2956,7 +2956,7 @@
     "controlledStake": 24,
     "profitMargin": 84,
     "performance": 87,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 270,
@@ -2967,7 +2967,7 @@
     "controlledStake": 99,
     "profitMargin": 53,
     "performance": 88,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 271,
@@ -2978,7 +2978,7 @@
     "controlledStake": 32,
     "profitMargin": 13,
     "performance": 88,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 272,
@@ -2989,7 +2989,7 @@
     "controlledStake": 27,
     "profitMargin": 60,
     "performance": 88,
-    "retiring": "2019-12-13T04:44:10Z"
+    "retirement": "2019-12-13T04:44:10Z"
   },
   {
     "index": 273,
@@ -3000,7 +3000,7 @@
     "controlledStake": 39,
     "profitMargin": 11,
     "performance": 88,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 274,
@@ -3011,7 +3011,7 @@
     "controlledStake": 40,
     "profitMargin": 76,
     "performance": 89,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 275,
@@ -3022,7 +3022,7 @@
     "controlledStake": 28,
     "profitMargin": 14,
     "performance": 89,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 276,
@@ -3033,7 +3033,7 @@
     "controlledStake": 97,
     "profitMargin": 70,
     "performance": 89,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 277,
@@ -3044,7 +3044,7 @@
     "controlledStake": 12,
     "profitMargin": 92,
     "performance": 89,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 278,
@@ -3055,7 +3055,7 @@
     "controlledStake": 6,
     "profitMargin": 80,
     "performance": 91,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 279,
@@ -3066,7 +3066,7 @@
     "controlledStake": 36,
     "profitMargin": 2,
     "performance": 91,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 280,
@@ -3077,7 +3077,7 @@
     "controlledStake": 90,
     "profitMargin": 50,
     "performance": 91,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 281,
@@ -3088,7 +3088,7 @@
     "controlledStake": 56,
     "profitMargin": 85,
     "performance": 91,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 282,
@@ -3099,7 +3099,7 @@
     "controlledStake": 53,
     "profitMargin": 23,
     "performance": 92,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 283,
@@ -3110,7 +3110,7 @@
     "controlledStake": 37,
     "profitMargin": 61,
     "performance": 92,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 284,
@@ -3121,7 +3121,7 @@
     "controlledStake": 38,
     "profitMargin": 58,
     "performance": 93,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 285,
@@ -3132,7 +3132,7 @@
     "controlledStake": 60,
     "profitMargin": 41,
     "performance": 93,
-    "retiring": "2020-02-12T00:33:47Z"
+    "retirement": "2020-02-12T00:33:47Z"
   },
   {
     "index": 286,
@@ -3143,7 +3143,7 @@
     "controlledStake": 19,
     "profitMargin": 88,
     "performance": 93,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 287,
@@ -3154,7 +3154,7 @@
     "controlledStake": 16,
     "profitMargin": 42,
     "performance": 93,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 288,
@@ -3165,7 +3165,7 @@
     "controlledStake": 63,
     "profitMargin": 27,
     "performance": 93,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 289,
@@ -3176,7 +3176,7 @@
     "controlledStake": 90,
     "profitMargin": 25,
     "performance": 94,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 290,
@@ -3187,7 +3187,7 @@
     "controlledStake": 48,
     "profitMargin": 66,
     "performance": 95,
-    "retiring": "2019-12-21T17:53:13Z"
+    "retirement": "2019-12-21T17:53:13Z"
   },
   {
     "index": 291,
@@ -3198,7 +3198,7 @@
     "controlledStake": 27,
     "profitMargin": 12,
     "performance": 95,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 292,
@@ -3209,7 +3209,7 @@
     "controlledStake": 100,
     "profitMargin": 29,
     "performance": 96,
-    "retiring": "2020-02-05T07:43:41Z"
+    "retirement": "2020-02-05T07:43:41Z"
   },
   {
     "index": 293,
@@ -3220,7 +3220,7 @@
     "controlledStake": 9,
     "profitMargin": 48,
     "performance": 96,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 294,
@@ -3231,7 +3231,7 @@
     "controlledStake": 69,
     "profitMargin": 73,
     "performance": 96,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 295,
@@ -3242,7 +3242,7 @@
     "controlledStake": 52,
     "profitMargin": 10,
     "performance": 97,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 296,
@@ -3253,7 +3253,7 @@
     "controlledStake": 9,
     "profitMargin": 33,
     "performance": 97,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 297,
@@ -3264,7 +3264,7 @@
     "controlledStake": 85,
     "profitMargin": 9,
     "performance": 98,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 298,
@@ -3275,7 +3275,7 @@
     "controlledStake": 41,
     "profitMargin": 89,
     "performance": 99,
-    "retiring": null
+    "retirement": null
   },
   {
     "index": 299,
@@ -3286,7 +3286,7 @@
     "controlledStake": 90,
     "profitMargin": 8,
     "performance": 100,
-    "retiring": "2020-03-05T17:07:58Z"
+    "retirement": "2020-03-05T17:07:58Z"
   },
   {
     "index": 300,
@@ -3297,6 +3297,6 @@
     "controlledStake": 28,
     "profitMargin": 64,
     "performance": 100,
-    "retiring": null
+    "retirement": null
   }
 ]

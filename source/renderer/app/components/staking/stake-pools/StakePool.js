@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
+import classnames from 'classnames';
 import clockIcon from '../../../assets/images/clock.inline.svg';
 import styles from './StakePool.scss';
 import { getHSLColor } from '../../../utils/colors';
@@ -12,6 +13,8 @@ type Props = {
   ...$Exact<StakePoolProps>,
   ranking: number,
   onOpenExternalLink: Function,
+  onClick: Function,
+  isSelected: boolean,
 };
 
 @observer
@@ -21,14 +24,22 @@ export default class StakePool extends Component<Props> {
   }
 
   render() {
-    const { index, id, retirement } = this.props;
+    const { index, id, retirement, isSelected, onClick } = this.props;
+
+    const componentClassnames = classnames([
+      styles.component,
+      isSelected ? styles.isSelected : null,
+    ]);
 
     return (
       <div
-        className={styles.component}
+        className={componentClassnames}
         style={{
           borderBottomColor: this.color,
         }}
+        onClick={() => onClick(index)}
+        role="link"
+        aria-hidden
       >
         <div className={styles.id}>{id}</div>
         <div
@@ -44,7 +55,11 @@ export default class StakePool extends Component<Props> {
             <SVGInline svg={clockIcon} className={styles.clockIcon} />
           </div>
         )}
-        <StakePoolTooltip {...this.props} className={styles.tooltip} />
+        <StakePoolTooltip
+          {...this.props}
+          className={styles.tooltip}
+          visible={isSelected}
+        />
       </div>
     );
   }
