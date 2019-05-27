@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Added new submenu "Help and Support" & added under it "GPU Safe Mode", "Download Logs", "Support Request" and "Known Issues" ([PR 1382](https://github.com/input-output-hk/daedalus/pull/1382))
 - Implemented the navigation for the Staking pages ([PR 1395](https://github.com/input-output-hk/daedalus/pull/1395), [PR 1400](https://github.com/input-output-hk/daedalus/pull/1400))
 - Implemented timestamp on paper wallet PDF's ([PR 1385](https://github.com/input-output-hk/daedalus/pull/1385), [PR 1400](https://github.com/input-output-hk/daedalus/pull/1400))
 - Implemented "Start of decentralisation notification" UI ([PR 1390](https://github.com/input-output-hk/daedalus/pull/1390))
@@ -28,7 +29,6 @@ Changelog
 
 ### Chores
 
-- Created new submenu "Help and Support" & added under it "GPU Safe Mode", "Download Logs", "Support Request" and "Known Issues" ([PR 1382](https://github.com/input-output-hk/daedalus/pull/1382)) 
 - Removed legacy references to npm in favour of yarn ([PR 1399](https://github.com/input-output-hk/daedalus/pull/1399), [PR 1402](https://github.com/input-output-hk/daedalus/pull/1402))
 - Setup storybook build script to deploy previews for the QA team to Netlify ([1391](https://github.com/input-output-hk/daedalus/pull/1391))
 - Added unit tests for mnemonic generation and validation ([PR 1379](https://github.com/input-output-hk/daedalus/pull/1379))
