@@ -16,6 +16,7 @@ import {
   frontendOnlyMode,
   pubLogsFolderPath,
   APP_NAME,
+  stateDirectoryPath
 } from './config';
 import { setupCardano } from './cardano/setup';
 import { CardanoNode } from './cardano/CardanoNode';
@@ -26,6 +27,7 @@ import { detectSystemLocale } from './utils/detectSystemLocale';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
 import { detectSystemLocaleChannel } from './ipc/detect-system-locale';
+import { getStateDirectoryPathChannel } from './ipc/getStateDirectoryPathChannel';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
 import { logUsedVersion } from './utils/logUsedVersion';
@@ -153,6 +155,10 @@ const onAppReady = async () => {
   detectSystemLocaleChannel.onRequest(() => Promise.resolve(systemLocale));
 
   getNumberOfEpochsConsolidated();
+
+  getStateDirectoryPathChannel.onRequest(() =>
+    Promise.resolve(stateDirectoryPath)
+  );
 
   mainWindow.on('close', async event => {
     Logger.info(

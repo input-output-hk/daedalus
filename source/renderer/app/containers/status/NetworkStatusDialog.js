@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
-import os from 'os';
 import NetworkStatus from '../../components/status/NetworkStatus';
 import styles from './NetworkStatusDialog.scss';
 import type { InjectedProps } from '../../types/injectedPropsType';
@@ -47,11 +46,12 @@ export default class NetworkStatusDialog extends Component<Props> {
       diskSpaceAvailable,
       tlsConfig,
       cardanoNodeID,
+      stateDirectoryPath,
     } = networkStatus;
 
     const systemInfo = {
       platform: environment.os,
-      platformVersion: os.release(),
+      platformVersion: environment.platformVersion,
       cpu: Array.isArray(environment.cpu) ? environment.cpu[0].model : '',
       ram: this.convertBytesToSize(environment.ram),
       availableDiskSpace: diskSpaceAvailable,
@@ -66,7 +66,7 @@ export default class NetworkStatusDialog extends Component<Props> {
       cardanoProcessID: cardanoNodeID,
       cardanoAPIPort: tlsConfig ? tlsConfig.port : 0,
       cardanoNetwork: environment.network,
-      daedalusStateDirectory: environment.stateDirectoryPath,
+      daedalusStateDirectoryPath: stateDirectoryPath,
     };
 
     return (

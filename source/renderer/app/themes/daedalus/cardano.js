@@ -492,6 +492,11 @@ export default {
   '--theme-progress-bar-background-color': 'rgba(255, 255, 255, 0.3)',
   '--theme-progress-bar-foreground-color': 'rgba(255, 255, 255, 0.7)',
 
+  '--theme-staking-decentralization-progress-stripe-dark-1-background-color':
+    '#259c59',
+  '--theme-staking-decentralization-progress-stripe-dark-2-background-color':
+    '#2cbb69',
+
   '--theme-block-consolidation-background-color': 'rgba(32, 34, 37, 0.96)',
   '--theme-block-consolidation-container-background-color': '#fafbfc',
   '--theme-block-consolidation-title-text-color': '#fafbfc',

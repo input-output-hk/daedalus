@@ -1,0 +1,7 @@
+@import '../stakingConfig';
+
+.timeLeft {
+  @extend %accentText;
+  font-size: 36px;
+  margin-bottom: 30px;
+}
