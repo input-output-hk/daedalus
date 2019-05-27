@@ -8,5 +8,5 @@ export type CoreSystemInfo = {
   cardanoProcessID: number,
   cardanoAPIPort: number,
   cardanoNetwork: string,
-  daedalusStateDirectory: string,
+  daedalusStateDirectoryPath: string,
 };

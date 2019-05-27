@@ -1,5 +1,76 @@
+@import '../stakingConfig';
+
 .component {
-  font-family: var(--font-regular);
+  background-color: var(--theme-staking-background-color);
+  height: 100%;
   margin: 20px;
   text-align: center;
+}
+
+.mainContent {
+  @extend %contentBorderAndBackground;
+  padding: 20px;
+}
+
+.heading {
+  @extend %accentText;
+  font-size: 19px;
+  margin-bottom: 14px;
+}
+
+.description {
+  @extend %regularText;
+  color: #5e6066;
+  margin-bottom: 24px;
+}
+
+.progressBar {
+  height: 24px;
+  margin: 0 auto;
+  margin-bottom: 24px;
+  width: 80%;
+}
+
+.progressBarContainer {
+  background-color: var(--theme-staking-background-color);
+  border-radius: 5px;
+  height: 100%;
+  width: 100%;
+}
+
+.progress {
+  align-items: center;
+  background: repeating-linear-gradient(
+    -63deg,
+    var(
+      --theme-staking-decentralization-progress-stripe-dark-1-background-color
+    ),
+    var(
+        --theme-staking-decentralization-progress-stripe-dark-1-background-color
+      )
+      10px,
+    var(
+        --theme-staking-decentralization-progress-stripe-dark-2-background-color
+      )
+      10px,
+    var(
+        --theme-staking-decentralization-progress-stripe-dark-2-background-color
+      )
+      20px
+  );
+  border-radius: 5px;
+  display: flex;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.progressLabel {
+  @extend %regularText;
+  transform: translateX(calc(100% + 8px));
+}
+
+.progressLabelWhite {
+  @extend %regularText;
+  color: #fff;
+  transform: translateX(-8px);
 }
