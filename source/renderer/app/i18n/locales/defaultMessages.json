@@ -1547,13 +1547,13 @@
         "description": "Headline for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 15
         },
-        "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountDownInfo.js",
-        "id": "paper.delegation.notification.heading",
+        "file": "source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown.js",
+        "id": "staking.delegationCountdown.heading",
         "start": {
           "column": 11,
-          "line": 12
+          "line": 11
         }
       },
       {
@@ -1561,13 +1561,13 @@
         "description": "Info for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 21
         },
-        "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountDownInfo.js",
-        "id": "paper.delegation.notification.info",
+        "file": "source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown.js",
+        "id": "staking.delegationCountdown.description",
         "start": {
-          "column": 8,
-          "line": 17
+          "column": 15,
+          "line": 16
         }
       },
       {
@@ -1575,13 +1575,13 @@
         "description": "Description for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 26
         },
-        "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountDownInfo.js",
-        "id": "paper.delegation.notification.timeLeftDesc",
+        "file": "source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown.js",
+        "id": "staking.delegationCountdown.timeLeftDesc",
         "start": {
           "column": 16,
-          "line": 23
+          "line": 22
         }
       },
       {
@@ -1589,17 +1589,78 @@
         "description": "Button Label for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 31
         },
-        "file": "source/renderer/app/components/staking/delegation-countdown/DelegationCountDownInfo.js",
-        "id": "paper.delegation.notification.buttonLabel",
+        "file": "source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown.js",
+        "id": "staking.delegationCountdown.buttonLabel",
         "start": {
           "column": 15,
-          "line": 28
+          "line": 27
         }
       }
     ],
-    "path": "source/renderer/app/components/staking/delegation-countdown/DelegationCountDownInfo.json"
+    "path": "source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Cardano is transitioning to a decentralized system",
+        "description": "Headline for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "id": "staking.info.heading",
+        "start": {
+          "column": 11,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano is transitioning from a federated to a decentralized system. During this transition, some new blocks will be produced by nodes operated in a federated way and some by nodes run by ada stakeholders. All rewards will be distributed to ada stakeholders and none to operators of federated nodes.",
+        "description": "Info description for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "id": "staking.info.description",
+        "start": {
+          "column": 15,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Currently, {percentage}% of the system is decentralized and operated by stake pools.",
+        "description": "Percentage info description for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "id": "staking.info.percentage",
+        "start": {
+          "column": 14,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!Learn more",
+        "description": "Button Label for the Decentralization progress notification.",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/staking/info/StakingInfo.js",
+        "id": "staking.info.buttonLabel",
+        "start": {
+          "column": 15,
+          "line": 29
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/info/StakingInfo.json"
   },
   {
     "descriptors": [
@@ -2174,7 +2235,7 @@
         "file": "source/renderer/app/components/status/NetworkStatus.js",
         "id": "status.network.dialog.stateDirectory",
         "start": {
-          "column": 18,
+          "column": 22,
           "line": 103
         }
       },

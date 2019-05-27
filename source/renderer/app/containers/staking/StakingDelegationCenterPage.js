@@ -8,7 +8,7 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class WalletSendPage extends Component<Props> {
+export default class StakingDelegationCenterPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {

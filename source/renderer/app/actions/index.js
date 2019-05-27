@@ -10,6 +10,7 @@ import NotificationsActions from './notifications-actions';
 import ProfileActions from './profile-actions';
 import RouterActions from './router-actions';
 import SidebarActions from './sidebar-actions';
+import StakingActions from './staking-actions';
 import TransactionsActions from './transactions-actions';
 import WalletsActions from './wallets-actions';
 import WalletBackupActions from './wallet-backup-actions';
@@ -28,6 +29,7 @@ export type ActionsMap = {
   profile: ProfileActions,
   router: RouterActions,
   sidebar: SidebarActions,
+  staking: StakingActions,
   transactions: TransactionsActions,
   wallets: WalletsActions,
   walletBackup: WalletBackupActions,
@@ -47,6 +49,7 @@ const actionsMap: ActionsMap = {
   profile: new ProfileActions(),
   router: new RouterActions(),
   sidebar: new SidebarActions(),
+  staking: new StakingActions(),
   transactions: new TransactionsActions(),
   wallets: new WalletsActions(),
   walletBackup: new WalletBackupActions(),
