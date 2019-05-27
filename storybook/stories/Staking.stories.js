@@ -12,12 +12,11 @@ import { CATEGORIES_BY_NAME } from '../../source/renderer/app/config/sidebarConf
 import StakingWithNavigation from '../../source/renderer/app/components/staking/layouts/StakingWithNavigation';
 import StakingDelegationCountdown from '../../source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown';
 import StakingDelegationCenter from '../../source/renderer/app/components/staking/delegation-center/StakingDelegationCenter';
-import StakingStakePools from '../../source/renderer/app/components/staking/stake-pools/StakingStakePools';
 import StakingEpochs from '../../source/renderer/app/components/staking/epochs/StakingEpochs';
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
 
-import STAKE_POOLS from '../../source/renderer/app/config/stakingStakePools.dummy.json';
-import StakingRewards from './Staking-Rewards.stories';
+import { StakingStakePoolsStory } from './Staking-StakePools.js';
+import { StakingRewardsStory } from './Staking-Rewards.stories';
 
 const defaultPercentage = 10;
 const defaultStartDateTime = new Date('2019-09-26');
@@ -96,32 +95,9 @@ storiesOf('Staking', module)
     { id: 'delegation-center' }
   )
 
-  .add(
-    pageNames['stake-pools'],
-    () => (
-      <StakingStakePools
-        stakePoolsList={STAKE_POOLS.slice(
-          0,
-          number('Pools', 100, {
-            range: true,
-            min: 37,
-            max: 300,
-            step: 1,
-          })
-        )}
-        stakePoolsDelegatingList={[
-          STAKE_POOLS[1],
-          STAKE_POOLS[3],
-          STAKE_POOLS[20],
-          STAKE_POOLS[36],
-        ]}
-        onOpenExternalLink={() => {}}
-      />
-    ),
-    { id: 'stake-pools' }
-  )
+  .add(pageNames['stake-pools'], StakingStakePoolsStory, { id: 'stake-pools' })
 
-  .add(pageNames.rewards, StakingRewards, { id: 'rewards' })
+  .add(pageNames.rewards, StakingRewardsStory, { id: 'rewards' })
 
   .add(pageNames.epochs, () => <StakingEpochs name={pageNames.epochs} />, {
     id: 'epochs',
