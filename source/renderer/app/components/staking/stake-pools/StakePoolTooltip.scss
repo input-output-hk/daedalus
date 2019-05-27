@@ -3,15 +3,15 @@
 .component {
   @extend %regularText;
   margin: 20px;
-  background: white;
+  background: var(--theme-staking-stake-pool-tooltip-background-color);
   position: absolute;
   z-index: 1;
   top: -60px;
   left: 50px;
   padding: 20px;
-  border: 1px solid #c6cdd6;
+  border: 1px solid var(--theme-staking-stake-pool-tooltip-border-color);
   border-radius: 5px;
-  box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25);
+  box-shadow: 0 5px 20px 0 var(--theme-staking-stake-pool-tooltip-shadow-color);
   width: 250px;
   display: none;
 
@@ -30,7 +30,9 @@
   &:after {
     top: 64px;
     left: -20px;
-    border-right-color: #ffffff;
+    border-right-color: var(
+      --theme-staking-stake-pool-tooltip-background-color
+    );
     border-width: 10px;
   }
 
@@ -38,7 +40,7 @@
   &:before {
     top: 63px;
     left: -22px;
-    border-right-color: #c6cdd6;
+    border-right-color: var(--theme-staking-stake-pool-tooltip-border-color);
     border-width: 11px;
   }
 }
@@ -51,7 +53,7 @@
   font-size: 16px;
   line-height: 1.38;
   letter-spacing: 0.5px;
-  color: #5e6066;
+  color: var(--theme-staking-stake-pool-tooltip-text-color);
   margin-bottom: 3px;
 }
 
@@ -59,21 +61,21 @@
   opacity: 0.6;
   font-size: 14px;
   line-height: 1.36;
-  color: #5e6066;
+  color: var(--theme-staking-stake-pool-tooltip-text-color);
   margin-bottom: 3px;
 }
 
 .description {
   font-size: 14px;
   line-height: 1.36;
-  color: #5e6066;
+  color: var(--theme-staking-stake-pool-tooltip-text-color);
   margin-bottom: 4px;
 }
 
 .url {
   font-size: 14px;
   line-height: 1.36;
-  color: #296fd0;
+  color: var(--theme-staking-stake-pool-tooltip-link-color);
   margin-bottom: 18px;
 }
 
@@ -81,7 +83,7 @@
   @extend %regularText;
   margin-bottom: 14px;
   dt {
-    color: #5e6066;
+    color: var(--theme-staking-stake-pool-tooltip-table-title-color);
     display: inline-block;
     font-size: 14px;
     line-height: 1.36;
@@ -94,9 +96,8 @@
     text-align: right;
   }
   span {
-    background-color: rgba(28, 204, 93, 0.3);
     border-radius: 3px;
-    color: #5e6066;
+    color: var(--theme-staking-stake-pool-tooltip-table-param-color);
     display: inline-block;
     font-size: 8px;
     font-weight: bold;
@@ -108,11 +109,15 @@
 
 .retirement {
   span {
-    background: rgba(234, 76, 91, 0.3);
+    background: var(
+      --theme-staking-stake-pool-tooltip-table-param-retirement-background-color
+    );
   }
 }
 
 .delegateButton {
   width: 100% !important;
-  background-color: #445b7c !important;
+  background-color: var(
+    --theme-staking-stake-pool-tooltip-delegate-button-background-color
+  ) !important;
 }

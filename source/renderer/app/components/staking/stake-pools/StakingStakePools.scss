@@ -5,7 +5,7 @@
   margin: 20px;
 
   h2 {
-    color: #5e6066;
+    color: var(--theme-staking-stake-pools-title-color);
     line-height: 1.38;
     margin-bottom: 10px;
     opacity: 0.5;
@@ -49,7 +49,7 @@
   }
 
   button {
-    color: #5e6066;
+    color: var(--theme-staking-stake-pools-search-button-color);
     cursor: pointer;
     font-size: 16px;
     opacity: 0.3;
