@@ -115,6 +115,7 @@ storiesOf('Staking', module)
           STAKE_POOLS[20],
           STAKE_POOLS[36],
         ]}
+        onOpenExternalLink={() => {}}
       />
     ),
     { id: 'stake-pools' }

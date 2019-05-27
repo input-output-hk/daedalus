@@ -38,8 +38,8 @@ type Props = {
 type State = {
   search: string,
   filter: string,
-  selectedList?: string,
-  selectedIndex?: number,
+  selectedList?: ?string,
+  selectedIndex?: ?number,
 };
 
 @observer
@@ -64,19 +64,10 @@ export default class StakingStakePools extends Component<Props, State> {
 
   onSearch = (search: string) => this.setState({ search });
 
-  stakePoolSearch = ({ id, name, description }: StakePoolProps) => {
-    const { search } = this.state;
-    let pass = false;
-    if (id.match(new RegExp(search, 'i'))) pass = true;
-    if (name.match(new RegExp(search, 'i'))) pass = true;
-    if (description.match(new RegExp(search, 'i'))) pass = true;
-    return pass;
-  };
-
   getRanking = (index: number) =>
     (index * 100) / this.props.stakePoolsList.length;
 
-  isSelected = (newSelectedList, newSelectedIndex) =>
+  isSelected = (newSelectedList: string, newSelectedIndex: number) =>
     newSelectedList === this.state.selectedList &&
     newSelectedIndex === this.state.selectedIndex;
 
@@ -90,27 +81,13 @@ export default class StakingStakePools extends Component<Props, State> {
     return this.setState({ selectedList, selectedIndex });
   };
 
-  getList = () => {
-    const fullList = this.props.stakePoolsList;
-    const filtered = fullList
-      .filter(this.stakePoolSearch)
-      .map<StakePool>(stakePool => (
-        <StakePool
-          {...stakePool}
-          key={stakePool.id}
-          ranking={this.getRanking(stakePool.index)}
-          onOpenExternalLink={this.props.onOpenExternalLink}
-          isSelected={this.isSelected('selectedIndexList', stakePool.index)}
-          onClick={index => this.handleClick('selectedIndexList', index)}
-        />
-      ));
-    return filtered;
-  };
-
   render() {
     const { intl } = this.context;
-    const { stakePoolsList, stakePoolsDelegatingList } = this.props;
-    const { selectedIndexDelegatedList } = this.state;
+    const {
+      stakePoolsList,
+      stakePoolsDelegatingList,
+      onOpenExternalLink,
+    } = this.props;
 
     return (
       <div className={styles.component}>
@@ -170,6 +147,7 @@ export default class StakingStakePools extends Component<Props, State> {
               onClick={index =>
                 this.handleClick('selectedIndexDelegatedList', index)
               }
+              onOpenExternalLink={onOpenExternalLink}
             />
           ))}
         </div>
@@ -183,7 +161,18 @@ export default class StakingStakePools extends Component<Props, State> {
           />
         </h2>
 
-        <div className={styles.stakePoolsList}>{this.getList()}</div>
+        <div className={styles.stakePoolsList}>
+          {this.props.stakePoolsList.map(stakePool => (
+            <StakePool
+              {...stakePool}
+              key={stakePool.id}
+              ranking={this.getRanking(stakePool.index)}
+              onOpenExternalLink={onOpenExternalLink}
+              isSelected={this.isSelected('selectedIndexList', stakePool.index)}
+              onClick={index => this.handleClick('selectedIndexList', index)}
+            />
+          ))}
+        </div>
       </div>
     );
   }
