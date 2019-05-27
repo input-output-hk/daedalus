@@ -18,7 +18,7 @@ import StakingEpochs from '../../source/renderer/app/components/staking/epochs/S
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
 
 const defaultPercentage = 10;
-const defaultStartDateTime = new Date('2019-05-26');
+const defaultStartDateTime = new Date('2019-09-26');
 const startDateTimeKnob = (name, defaultValue) => {
   const stringTimestamp = date(name, defaultValue);
 

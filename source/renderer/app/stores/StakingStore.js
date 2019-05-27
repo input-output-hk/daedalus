@@ -4,7 +4,7 @@ import Store from './lib/Store';
 import { ROUTES } from '../routes-config';
 
 export default class StakingStore extends Store {
-  startDateTime: string = '2019-05-26T00:00:00.161Z';
+  startDateTime: string = '2019-09-26T00:00:00.161Z';
   decentralizationProgress: number = 10;
 
   setup() {
