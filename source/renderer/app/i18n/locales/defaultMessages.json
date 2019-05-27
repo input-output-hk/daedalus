@@ -2777,6 +2777,795 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!SYSTEM INFO",
+        "description": "System info",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.system.info",
+        "start": {
+          "column": 14,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Platform",
+        "description": "Platform",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.platform",
+        "start": {
+          "column": 12,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Platform Version",
+        "description": "Platform Version",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.platform.version",
+        "start": {
+          "column": 19,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!CPU",
+        "description": "CPU",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cpu",
+        "start": {
+          "column": 7,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!RAM",
+        "description": "RAM",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.ram",
+        "start": {
+          "column": 7,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Available disk space",
+        "description": "Available disk space",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.availableDiskSpace",
+        "start": {
+          "column": 22,
+          "line": 53
+        }
+      },
+      {
+        "defaultMessage": "!!!CORE INFO",
+        "description": "CORE INFO",
+        "end": {
+          "column": 3,
+          "line": 62
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.coreInfo",
+        "start": {
+          "column": 12,
+          "line": 58
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus Version",
+        "description": "Daedalus Version",
+        "end": {
+          "column": 3,
+          "line": 67
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.daedalusVersion",
+        "start": {
+          "column": 19,
+          "line": 63
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus Main Process ID",
+        "description": "Daedalus Main Process ID",
+        "end": {
+          "column": 3,
+          "line": 72
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.daedalusMainProcessID",
+        "start": {
+          "column": 25,
+          "line": 68
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus Renderer Process ID",
+        "description": "Daedalus Renderer Process ID",
+        "end": {
+          "column": 3,
+          "line": 77
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.daedalusProcessID",
+        "start": {
+          "column": 21,
+          "line": 73
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus is running in safe mode",
+        "description": "Daedalus is running in safe mode",
+        "end": {
+          "column": 3,
+          "line": 82
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.safeMode",
+        "start": {
+          "column": 12,
+          "line": 78
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano Version",
+        "description": "Cardano Version",
+        "end": {
+          "column": 3,
+          "line": 87
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoVersion",
+        "start": {
+          "column": 18,
+          "line": 83
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano Process ID",
+        "description": "Cardano Process ID",
+        "end": {
+          "column": 3,
+          "line": 92
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoProcessID",
+        "start": {
+          "column": 20,
+          "line": 88
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano API Port",
+        "description": "Cardano API Port",
+        "end": {
+          "column": 3,
+          "line": 97
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoApiPort",
+        "start": {
+          "column": 18,
+          "line": 93
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano Network",
+        "description": "Cardano Network",
+        "end": {
+          "column": 3,
+          "line": 102
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoNetwork",
+        "start": {
+          "column": 18,
+          "line": 98
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus State Directory",
+        "description": "Daedalus State Directory",
+        "end": {
+          "column": 3,
+          "line": 107
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.stateDirectory",
+        "start": {
+          "column": 18,
+          "line": 103
+        }
+      },
+      {
+        "defaultMessage": "!!!CONNECTION ERROR",
+        "description": "CONNECTION ERROR",
+        "end": {
+          "column": 3,
+          "line": 112
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.connectionError",
+        "start": {
+          "column": 19,
+          "line": 108
+        }
+      },
+      {
+        "defaultMessage": "!!!DAEDALUS STATUS",
+        "description": "DAEDALUS STATUS",
+        "end": {
+          "column": 3,
+          "line": 117
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.daedalusStatus",
+        "start": {
+          "column": 18,
+          "line": 113
+        }
+      },
+      {
+        "defaultMessage": "!!!Connected",
+        "description": "Connected",
+        "end": {
+          "column": 3,
+          "line": 122
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.connected",
+        "start": {
+          "column": 13,
+          "line": 118
+        }
+      },
+      {
+        "defaultMessage": "!!!Synced",
+        "description": "Synced",
+        "end": {
+          "column": 3,
+          "line": 127
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.synced",
+        "start": {
+          "column": 10,
+          "line": 123
+        }
+      },
+      {
+        "defaultMessage": "!!!Sync Percentage",
+        "description": "Sync Percentage",
+        "end": {
+          "column": 3,
+          "line": 132
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.syncPercentage",
+        "start": {
+          "column": 18,
+          "line": 128
+        }
+      },
+      {
+        "defaultMessage": "!!!Network Block Height",
+        "description": "Network Block Height",
+        "end": {
+          "column": 3,
+          "line": 137
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.networkBlockHeight",
+        "start": {
+          "column": 22,
+          "line": 133
+        }
+      },
+      {
+        "defaultMessage": "!!!Local Block Height",
+        "description": "Local Block Height",
+        "end": {
+          "column": 3,
+          "line": 142
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.localBlockHeight",
+        "start": {
+          "column": 20,
+          "line": 138
+        }
+      },
+      {
+        "defaultMessage": "!!!Remaining Unsynced Blocks",
+        "description": "Remaining Unsynced Blocks",
+        "end": {
+          "column": 3,
+          "line": 147
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.remainingUnsyncedBlocks",
+        "start": {
+          "column": 27,
+          "line": 143
+        }
+      },
+      {
+        "defaultMessage": "!!!Latest Local Block Age",
+        "description": "Latest Local Block Age",
+        "end": {
+          "column": 3,
+          "line": 152
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.latestLocalBlockAge",
+        "start": {
+          "column": 23,
+          "line": 148
+        }
+      },
+      {
+        "defaultMessage": "!!!Latest Network Block Age",
+        "description": "Latest Network Block Age",
+        "end": {
+          "column": 3,
+          "line": 157
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.latestNetworkBlockAge",
+        "start": {
+          "column": 25,
+          "line": 153
+        }
+      },
+      {
+        "defaultMessage": "!!!Local Time Difference",
+        "description": "Local Time Difference",
+        "end": {
+          "column": 3,
+          "line": 162
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.localTimeDifference",
+        "start": {
+          "column": 23,
+          "line": 158
+        }
+      },
+      {
+        "defaultMessage": "!!!System Time Correct",
+        "description": "System Time Correct",
+        "end": {
+          "column": 3,
+          "line": 167
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.systemTimeCorrect",
+        "start": {
+          "column": 21,
+          "line": 163
+        }
+      },
+      {
+        "defaultMessage": "!!!System Time Ignored",
+        "description": "System Time Ignored",
+        "end": {
+          "column": 3,
+          "line": 172
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.systemTimeIgnored",
+        "start": {
+          "column": 21,
+          "line": 168
+        }
+      },
+      {
+        "defaultMessage": "!!!Checking Node Time",
+        "description": "Checking Node Time",
+        "end": {
+          "column": 3,
+          "line": 177
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.checkingNodeTime",
+        "start": {
+          "column": 20,
+          "line": 173
+        }
+      },
+      {
+        "defaultMessage": "!!!CARDANO NODE STATUS",
+        "description": "CARDANO NODE STATUS",
+        "end": {
+          "column": 3,
+          "line": 182
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoNodeStatus",
+        "start": {
+          "column": 21,
+          "line": 178
+        }
+      },
+      {
+        "defaultMessage": "!!!Restarting Cardano Node...",
+        "description": "Restarting Cardano Node...",
+        "end": {
+          "column": 3,
+          "line": 187
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoNodeStatusRestarting",
+        "start": {
+          "column": 31,
+          "line": 183
+        }
+      },
+      {
+        "defaultMessage": "!!!Restart Cardano Node",
+        "description": "Restart Cardano Node",
+        "end": {
+          "column": 3,
+          "line": 192
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoNodeStatusRestart",
+        "start": {
+          "column": 28,
+          "line": 188
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano Node Diagnostics",
+        "description": "Cardano Node Diagnostics",
+        "end": {
+          "column": 3,
+          "line": 197
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoNodeDiagnostics",
+        "start": {
+          "column": 26,
+          "line": 193
+        }
+      },
+      {
+        "defaultMessage": "!!!Realtime statistics monitor",
+        "description": "Realtime statistics monitor",
+        "end": {
+          "column": 3,
+          "line": 202
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.realtimeStatisticsMonitor",
+        "start": {
+          "column": 29,
+          "line": 198
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano Node State",
+        "description": "Cardano Node State",
+        "end": {
+          "column": 3,
+          "line": 207
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoNodeState",
+        "start": {
+          "column": 20,
+          "line": 203
+        }
+      },
+      {
+        "defaultMessage": "!!!Updated",
+        "description": "Updated",
+        "end": {
+          "column": 3,
+          "line": 212
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.nodeHasBeenUpdated",
+        "start": {
+          "column": 22,
+          "line": 208
+        }
+      },
+      {
+        "defaultMessage": "!!!Crashed",
+        "description": "Crashed",
+        "end": {
+          "column": 3,
+          "line": 217
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.nodeHasCrashed",
+        "start": {
+          "column": 18,
+          "line": 213
+        }
+      },
+      {
+        "defaultMessage": "!!!Errored",
+        "description": "Errored",
+        "end": {
+          "column": 3,
+          "line": 222
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.nodeHasErrored",
+        "start": {
+          "column": 18,
+          "line": 218
+        }
+      },
+      {
+        "defaultMessage": "!!!Stopped",
+        "description": "Stopped",
+        "end": {
+          "column": 3,
+          "line": 227
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.nodeHasStopped",
+        "start": {
+          "column": 18,
+          "line": 223
+        }
+      },
+      {
+        "defaultMessage": "!!!Exiting",
+        "description": "Exiting",
+        "end": {
+          "column": 3,
+          "line": 232
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.nodeIsExiting",
+        "start": {
+          "column": 17,
+          "line": 228
+        }
+      },
+      {
+        "defaultMessage": "!!!Running",
+        "description": "Running",
+        "end": {
+          "column": 3,
+          "line": 237
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.nodeIsRunning",
+        "start": {
+          "column": 17,
+          "line": 233
+        }
+      },
+      {
+        "defaultMessage": "!!!Starting",
+        "description": "Starting",
+        "end": {
+          "column": 3,
+          "line": 242
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.nodeIsStarting",
+        "start": {
+          "column": 18,
+          "line": 238
+        }
+      },
+      {
+        "defaultMessage": "!!!Stopping",
+        "description": "Stopping",
+        "end": {
+          "column": 3,
+          "line": 247
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.nodeIsStopping",
+        "start": {
+          "column": 18,
+          "line": 243
+        }
+      },
+      {
+        "defaultMessage": "!!!Unrecoverable",
+        "description": "Unrecoverable",
+        "end": {
+          "column": 3,
+          "line": 252
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.nodeIsUnrecoverable",
+        "start": {
+          "column": 23,
+          "line": 248
+        }
+      },
+      {
+        "defaultMessage": "!!!Updating",
+        "description": "Updating",
+        "end": {
+          "column": 3,
+          "line": 257
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.nodeIsUpdating",
+        "start": {
+          "column": 18,
+          "line": 253
+        }
+      },
+      {
+        "defaultMessage": "!!!Node Responding",
+        "description": "Node Responding",
+        "end": {
+          "column": 3,
+          "line": 262
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoNodeResponding",
+        "start": {
+          "column": 25,
+          "line": 258
+        }
+      },
+      {
+        "defaultMessage": "!!!Node Subscribed",
+        "description": "Node Subscribed",
+        "end": {
+          "column": 3,
+          "line": 267
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoNodeSubscribed",
+        "start": {
+          "column": 25,
+          "line": 263
+        }
+      },
+      {
+        "defaultMessage": "!!!Node Time Correct",
+        "description": "Node Time Correct",
+        "end": {
+          "column": 3,
+          "line": 272
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoNodeTimeCorrect",
+        "start": {
+          "column": 26,
+          "line": 268
+        }
+      },
+      {
+        "defaultMessage": "!!!Node Syncing",
+        "description": "Node Syncing",
+        "end": {
+          "column": 3,
+          "line": 277
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoNodeSyncing",
+        "start": {
+          "column": 22,
+          "line": 273
+        }
+      },
+      {
+        "defaultMessage": "!!!Node In Sync",
+        "description": "Node In Sync",
+        "end": {
+          "column": 3,
+          "line": 282
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.cardanoNodeInSync",
+        "start": {
+          "column": 21,
+          "line": 278
+        }
+      },
+      {
+        "defaultMessage": "!!!Checking...",
+        "description": "Checking...",
+        "end": {
+          "column": 3,
+          "line": 287
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.localTimeDifferenceChecking",
+        "start": {
+          "column": 31,
+          "line": 283
+        }
+      },
+      {
+        "defaultMessage": "!!!Check time",
+        "description": "Check time",
+        "end": {
+          "column": 3,
+          "line": 292
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.localTimeDifferenceCheckTime",
+        "start": {
+          "column": 32,
+          "line": 288
+        }
+      },
+      {
+        "defaultMessage": "!!!YES",
+        "description": "YES",
+        "end": {
+          "column": 3,
+          "line": 297
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.statusOn",
+        "start": {
+          "column": 12,
+          "line": 293
+        }
+      },
+      {
+        "defaultMessage": "!!!NO",
+        "description": "NO",
+        "end": {
+          "column": 3,
+          "line": 302
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.statusOff",
+        "start": {
+          "column": 13,
+          "line": 298
+        }
+      },
+      {
+        "defaultMessage": "!!!NTP Service unreachable",
+        "description": "NTP Service unreachable",
+        "end": {
+          "column": 3,
+          "line": 307
+        },
+        "file": "source/renderer/app/components/status/NetworkStatus.js",
+        "id": "status.network.dialog.serviceUnreachable",
+        "start": {
+          "column": 22,
+          "line": 303
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/status/NetworkStatus.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Regular",
         "description": "Tab title \"Regular\" on Ada redemption page.",
         "end": {
