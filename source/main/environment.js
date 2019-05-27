@@ -2,7 +2,6 @@
 import os from 'os';
 import { uniq, upperFirst, get, includes } from 'lodash';
 import { version } from '../../package.json';
-// import { stateDirectoryPath } from './config';
 import type { Environment } from '../common/types/environment.types';
 import {
   DEVELOPMENT,
@@ -82,7 +81,6 @@ export const environment: Environment = Object.assign(
     isWindows,
     isMacOS,
     isLinux,
-    stateDirectoryPath: '',
     isInSafeMode,
   },
   process.env

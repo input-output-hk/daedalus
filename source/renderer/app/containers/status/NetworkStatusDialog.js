@@ -46,6 +46,7 @@ export default class NetworkStatusDialog extends Component<Props> {
       diskSpaceAvailable,
       tlsConfig,
       cardanoNodeID,
+      stateDirectoryPath,
     } = networkStatus;
 
     const systemInfo = {
@@ -65,7 +66,7 @@ export default class NetworkStatusDialog extends Component<Props> {
       cardanoProcessID: cardanoNodeID,
       cardanoAPIPort: tlsConfig ? tlsConfig.port : 0,
       cardanoNetwork: environment.network,
-      daedalusStateDirectory: environment.stateDirectoryPath,
+      daedalusStateDirectoryPath: stateDirectoryPath,
     };
 
     return (
