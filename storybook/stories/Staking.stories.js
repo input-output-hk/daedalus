@@ -13,9 +13,10 @@ import StakingWithNavigation from '../../source/renderer/app/components/staking/
 import StakingDelegationCountdown from '../../source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown';
 import StakingDelegationCenter from '../../source/renderer/app/components/staking/delegation-center/StakingDelegationCenter';
 import StakingStakePools from '../../source/renderer/app/components/staking/stake-pools/StakingStakePools';
-import StakingRewards from '../../source/renderer/app/components/staking/rewards/StakingRewards';
 import StakingEpochs from '../../source/renderer/app/components/staking/epochs/StakingEpochs';
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
+
+import StakingRewards from './Staking-Rewards.stories';
 
 const defaultPercentage = 10;
 const defaultStartDateTime = new Date('2019-09-26');
@@ -100,9 +101,7 @@ storiesOf('Staking', module)
     { id: 'stake-pools' }
   )
 
-  .add(pageNames.rewards, () => <StakingRewards name={pageNames.rewards} />, {
-    id: 'rewards',
-  })
+  .add(pageNames.rewards, StakingRewards, { id: 'rewards' })
 
   .add(pageNames.epochs, () => <StakingEpochs name={pageNames.epochs} />, {
     id: 'epochs',
