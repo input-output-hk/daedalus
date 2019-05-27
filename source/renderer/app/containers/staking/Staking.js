@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import MainLayout from '../MainLayout';
 import StakingWithNavigation from '../../components/staking/layouts/StakingWithNavigation';
-import StakingDelegationCountdownPage from './StakingDelegationCountdownPage';
 import { ROUTES } from '../../routes-config';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 
@@ -12,7 +11,30 @@ type Props = InjectedContainerProps;
 @inject('stores', 'actions')
 @observer
 export default class Staking extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
+  componentDidMount() {
+    this.handleDelegationRoute();
+  }
+
+  handleDelegationRoute = () => {
+    const {
+      actions,
+      stores: { staking },
+    } = this.props;
+
+    if (staking.showCountdown() && !staking.isStakingDelegationCountdown) {
+      return actions.router.goToRoute.trigger({
+        route: ROUTES.STAKING.DELEGATION_COUNTDOWN,
+      });
+    }
+
+    if (!staking.showCountdown() && staking.isStakingDelegationCountdown) {
+      return actions.router.goToRoute.trigger({
+        route: ROUTES.STAKING.INFO,
+      });
+    }
+
+    return true;
+  };
 
   handleNavItemClick = (page: string) => {
     this.props.actions.router.goToRoute.trigger({
@@ -22,21 +44,23 @@ export default class Staking extends Component<Props> {
   };
 
   render() {
-    const { stores } = this.props;
-    const { app, staking } = stores;
-
-    if (staking.showCountdown === true) {
-      return <StakingDelegationCountdownPage />;
-    }
+    const {
+      stores: { app, staking },
+      children,
+    } = this.props;
 
     return (
       <MainLayout>
-        <StakingWithNavigation
-          onNavItemClick={this.handleNavItemClick}
-          activeItem={app.currentPage}
-        >
-          {this.props.children}
-        </StakingWithNavigation>
+        {staking.showCountdown() ? (
+          children
+        ) : (
+          <StakingWithNavigation
+            onNavItemClick={this.handleNavItemClick}
+            activeItem={app.currentPage}
+          >
+            {children}
+          </StakingWithNavigation>
+        )}
       </MainLayout>
     );
   }
