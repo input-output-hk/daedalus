@@ -6,13 +6,13 @@ export const logUsedVersion = async (version: string, logFilePath: string) => {
   const currentVersionData = {
     version, // e.g. "0.13.2"
     date: new Date().toISOString(), // e.g. "2018-12-11T144501.0177"
-  }
+  };
 
   try {
     // Load existing file
     const rawContent = await fs.promises.readFile(logFilePath, 'utf8');
     usedVersions = JSON.parse(rawContent);
-    const alreadyLogged = usedVersions.some(item => item.version === version)
+    const alreadyLogged = usedVersions.some(item => item.version === version);
     // Add current version if it has not yet been saved
     if (!alreadyLogged) {
       usedVersions.push(currentVersionData);

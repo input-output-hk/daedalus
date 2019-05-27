@@ -16,7 +16,7 @@ import {
   frontendOnlyMode,
   pubLogsFolderPath,
   APP_NAME,
-  stateDirectoryPath
+  stateDirectoryPath,
 } from './config';
 import { setupCardano } from './cardano/setup';
 import { CardanoNode } from './cardano/CardanoNode';
