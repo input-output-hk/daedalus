@@ -1,8 +1,7 @@
 .component {
-  height: 100%;
-  display: flex;
   align-items: center;
-  justify-content: center;
+  display: flex;
+  flex: 1;
 }
 
 .notification {
@@ -17,8 +16,7 @@
 
 .buttonsContainer {
   max-width: 640px;
-  display: flex;
-  flex-direction: column;
+  margin: auto;
 }
 
 .firstRow {

@@ -19,6 +19,7 @@ Changelog
 
 ### Fixes
 
+- Fixed truncated "Add Wallet" screen while wallet is restored ([PR 1405](https://github.com/input-output-hk/daedalus/pull/1405))
 - Fixed spending password being asked on Receive screen when clicking on "Copy address" link. ([PR 1392](https://github.com/input-output-hk/daedalus/pull/1392))
 - Fixed EKG port collision while developing on Linux ([PR 1393](https://github.com/input-output-hk/daedalus/pull/1393))
 - Fixed file extension of Daedalus logs ([PR 1381](https://github.com/input-output-hk/daedalus/pull/1381), [PR 1384](https://github.com/input-output-hk/daedalus/pull/1384))
