@@ -2235,7 +2235,7 @@
         "file": "source/renderer/app/components/status/NetworkStatus.js",
         "id": "status.network.dialog.stateDirectory",
         "start": {
-          "column": 18,
+          "column": 22,
           "line": 103
         }
       },
