@@ -123,12 +123,7 @@
         -webkit-box-orient: vertical;
 
         .stakePoolReference {
-          color: var(--theme-staking-link-color);
-          cursor: pointer;
           font-family: var(--font-medium);
-          &:hover {
-            text-decoration: underline;
-          }
         }
       }
     }
