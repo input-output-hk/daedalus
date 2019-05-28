@@ -12,16 +12,19 @@ export const logUsedVersion = async (version: string, logFilePath: string) => {
     // Load existing file
     const rawContent = await fs.promises.readFile(logFilePath, 'utf8');
     usedVersions = JSON.parse(rawContent);
-    const alreadyLogged = usedVersions.some(item => item.version === version);
+    const versionsData = usedVersions && usedVersions.versions;
+    const alreadyLogged = versionsData.some(item => item.version === version);
     // Add current version if it has not yet been saved
     if (!alreadyLogged) {
-      usedVersions.push(currentVersionData);
+      versionsData.push(currentVersionData);
     }
   } catch (error) {
     // The file doesn't exist
     if (error.code === 'ENOENT') {
       // Start with this version
-      usedVersions = [currentVersionData];
+      usedVersions = {
+        versions: [currentVersionData],
+      };
     }
   }
   if (usedVersions) {
