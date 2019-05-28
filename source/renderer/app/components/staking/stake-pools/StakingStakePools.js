@@ -17,6 +17,21 @@ const messages = defineMessages({
     defaultMessage: '!!!Search stake pools',
     description: '"Delegating List Title" for the Stake Pools page.',
   },
+  filterAll: {
+    id: 'staking.stakePools.filterAll',
+    defaultMessage: '!!!All',
+    description: '"Filter All" for the Stake Pools page.',
+  },
+  filterNew: {
+    id: 'staking.stakePools.filterNew',
+    defaultMessage: '!!!New',
+    description: '"Filter New" for the Stake Pools page.',
+  },
+  filterCharity: {
+    id: 'staking.stakePools.filterCharity',
+    defaultMessage: '!!!Charity',
+    description: '"FilterChar ity" for the Stake Pools page.',
+  },
   delegatingListTitle: {
     id: 'staking.stakePools.delegatingListTitle',
     defaultMessage: '!!!Staking pools your are delegating to',
@@ -110,7 +125,7 @@ export default class StakingStakePools extends Component<Props, State> {
                 onClick={() => this.onFilterChange('all')}
                 className={this.getFilterItemClassName('all')}
               >
-                All
+                {intl.formatMessage(messages.filterAll)}
               </button>
             </li>
             <li>
@@ -118,7 +133,7 @@ export default class StakingStakePools extends Component<Props, State> {
                 onClick={() => this.onFilterChange('new')}
                 className={this.getFilterItemClassName('new')}
               >
-                New
+                {intl.formatMessage(messages.filterNew)}
               </button>
             </li>
             <li>
@@ -126,7 +141,7 @@ export default class StakingStakePools extends Component<Props, State> {
                 onClick={() => this.onFilterChange('charity')}
                 className={this.getFilterItemClassName('charity')}
               >
-                Charity
+                {intl.formatMessage(messages.filterCharity)}
               </button>
             </li>
           </ul>

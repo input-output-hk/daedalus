@@ -13,27 +13,27 @@ import type { StakePoolProps } from '../../../api/staking/types';
 const messages = defineMessages({
   ranking: {
     id: 'staking.stakePools.tooltip.ranking',
-    defaultMessage: '!!!Rank',
+    defaultMessage: '!!!Rank:',
     description: '"" for the Stake Pools Tooltip page.',
   },
   controlledStake: {
     id: 'staking.stakePools.tooltip.controlledStake',
-    defaultMessage: '!!!Controlled stake',
+    defaultMessage: '!!!Controlled stake:',
     description: '"Controlled stake" for the Stake Pools Tooltip page.',
   },
   profitMargin: {
     id: 'staking.stakePools.tooltip.profitMargin',
-    defaultMessage: '!!!Profit margin',
+    defaultMessage: '!!!Profit margin:',
     description: '"Profit margin" for the Stake Pools Tooltip page.',
   },
   performance: {
     id: 'staking.stakePools.tooltip.performance',
-    defaultMessage: '!!!Performance',
+    defaultMessage: '!!!Performance:',
     description: '"Performance" for the Stake Pools Tooltip page.',
   },
   retirement: {
     id: 'staking.stakePools.tooltip.retirement',
-    defaultMessage: '!!!Retirement',
+    defaultMessage: '!!!Retirement:',
     description: '"Retirement" for the Stake Pools Tooltip page.',
   },
   delegateButton: {
@@ -89,7 +89,7 @@ export default class StakePool extends Component<Props> {
         <div className={styles.description}>{description}</div>
         <div className={styles.url}>{url}</div>
         <dl className={styles.table}>
-          <dt>{intl.formatMessage(messages.ranking)}:</dt>
+          <dt>{intl.formatMessage(messages.ranking)}</dt>
           <dd className={styles.ranking}>
             <span
               style={{
@@ -99,7 +99,7 @@ export default class StakePool extends Component<Props> {
               {parseFloat(ranking).toFixed(2)}
             </span>
           </dd>
-          <dt>{intl.formatMessage(messages.controlledStake)}:</dt>
+          <dt>{intl.formatMessage(messages.controlledStake)}</dt>
           <dd className={styles.controlledStake}>
             <span
               style={{
@@ -109,7 +109,7 @@ export default class StakePool extends Component<Props> {
               {controlledStake}%
             </span>
           </dd>
-          <dt>{intl.formatMessage(messages.profitMargin)}:</dt>
+          <dt>{intl.formatMessage(messages.profitMargin)}</dt>
           <dd className={styles.profitMargin}>
             <span
               style={{
@@ -119,7 +119,7 @@ export default class StakePool extends Component<Props> {
               {profitMargin}%
             </span>
           </dd>
-          <dt>{intl.formatMessage(messages.performance)}:</dt>
+          <dt>{intl.formatMessage(messages.performance)}</dt>
           <dd className={styles.performance}>
             <span
               style={{
@@ -131,7 +131,7 @@ export default class StakePool extends Component<Props> {
           </dd>
           {retirement && (
             <Fragment>
-              <dt>{intl.formatMessage(messages.retirement)}:</dt>
+              <dt>{intl.formatMessage(messages.retirement)}</dt>
               <dd className={styles.retirement}>
                 <span>{moment(retirement).fromNow(true)}</span>
               </dd>
