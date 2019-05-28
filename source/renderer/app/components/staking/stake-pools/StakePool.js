@@ -34,9 +34,6 @@ export default class StakePool extends Component<Props> {
     return (
       <div
         className={componentClassnames}
-        style={{
-          borderBottomColor: this.color,
-        }}
         onClick={() => onClick(index)}
         role="link"
         aria-hidden
@@ -59,6 +56,12 @@ export default class StakePool extends Component<Props> {
           {...this.props}
           className={styles.tooltip}
           visible={isSelected}
+        />
+        <div
+          className={styles.colorBand}
+          style={{
+            background: this.color,
+          }}
         />
       </div>
     );
