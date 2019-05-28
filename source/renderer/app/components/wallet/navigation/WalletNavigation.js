@@ -94,7 +94,7 @@ export default class WalletNavigation extends Component<Props> {
           {
             type: 'dropdown',
             id: 'settings',
-            label: intl.formatMessage(messages.settings),
+            label: intl.formatMessage(messages.more),
             icon: settingsIcon,
             options: [
               {

@@ -479,6 +479,16 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-staking-content-border-color': '#c6cdd6',
     '--theme-staking-font-color-accent': '#5e6066',
     '--theme-staking-font-color-regular': '#5e6066',
+    '--theme-staking-font-color-light': 'rgba(94, 96, 102, 0.7)',
+    '--theme-staking-font-color-lighter': 'rgba(94, 96, 102, 0.5)',
+    '--theme-staking-table-head-background-color': '#f1f3f5',
+    '--theme-staking-table-border-color': '#c6cdd6',
+    '--theme-staking-link-color': 'rgba(41, 111, 208, 1)',
+    '--theme-staking-link-color-light': 'rgba(41, 111, 208, 0.5)',
+    '--theme-staking-decentralization-progress-stripe-dark-1-background-color':
+      '#34465e',
+    '--theme-staking-decentralization-progress-stripe-dark-2-background-color':
+      '#445b7c',
   },
   support: {
     '--theme-support-settings-text-color': '#5e6066',
