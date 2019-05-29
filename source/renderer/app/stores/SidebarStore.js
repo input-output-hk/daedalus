@@ -53,6 +53,7 @@ export default class SidebarStore extends Store {
       isRestoreActive:
         get(w, 'syncState.tag') === WalletSyncStateTags.RESTORING,
       restoreProgress: get(w, 'syncState.data.percentage.quantity', 0),
+      isLegacy: w.isLegacy,
     }));
   }
 

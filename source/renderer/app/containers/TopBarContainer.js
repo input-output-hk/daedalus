@@ -1,6 +1,8 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import LegacyNotification from '../components/notifications/LegacyNotification';
+import TopBarLayout from '../components/layout/TopBarLayout';
 import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
@@ -36,12 +38,15 @@ export default class TopBarContainer extends Component<Props> {
       ? menuIconOpened
       : menuIconClosed;
     const leftIcon = showSubMenuToggle ? leftIconSVG : null;
-
     const testnetLabel = !isMainnet ? (
       <WalletTestEnvironmentLabel network={network} />
     ) : null;
 
-    return (
+    const notification = (
+      <LegacyNotification onLearnMore={() => null} onMove={() => null} />
+    );
+
+    const topbar = (
       <TopBar
         leftIcon={leftIcon}
         onLeftIconClick={actions.sidebar.toggleSubMenus.trigger}
@@ -53,6 +58,12 @@ export default class TopBarContainer extends Component<Props> {
           isMainnet={isMainnet}
         />
       </TopBar>
+    );
+
+    return activeWallet && activeWallet.isLegacy ? (
+      <TopBarLayout notification={notification} topbar={topbar} />
+    ) : (
+      topbar
     );
   }
 }
