@@ -33,6 +33,7 @@
   position: relative;
   text-align: left;
   width: 100%;
+  position: relative;
 
   :global {
     .ProgressBar_component {
@@ -62,4 +63,10 @@
   font-size: 14px;
   letter-spacing: 1px;
   opacity: 0.7;
+}
+
+.legacyBadge {
+  position: absolute;
+  top: 0;
+  right: -20px;
 }

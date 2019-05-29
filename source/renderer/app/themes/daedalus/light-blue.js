@@ -294,6 +294,22 @@ export default {
     'rgba(30, 48, 74, 0.3)',
   '--theme-node-update-button-text-color': '#fafbfc',
 
+  '--theme-legacy-badge-background-color': '#ab1700',
+  '--theme-legacy-notification-background-color': '#ab2712',
+  '--theme-legacy-notification-learn-more-button-text-color': '#fafbfc',
+  '--theme-legacy-notification-learn-more-button-background-color':
+    'rgba(250, 251, 252, 0.2)',
+  '--theme-legacy-notification-learn-more-button-background-color-hover':
+    'rgba(250, 251, 252, 0.2)',
+  '--theme-legacy-notification-learn-more-button-background-color-active':
+    'rgba(250, 251, 252, 0.2)',
+  '--theme-legacy-notification-move-button-text-color': '#ab2712',
+  '--theme-legacy-notification-move-button-background-color': '#fafbfc',
+  '--theme-legacy-notification-move-button-background-color-hover': '#fafbfc',
+  '--theme-legacy-notification-move-button-background-color-active': '#fafbfc',
+  '--theme-legacy-notification-title-color': '#fafbfc',
+  '--theme-legacy-notification-description-color': '#fafbfc',
+
   '--theme-notification-message-background-color': 'rgba(36, 61, 98, 0.88)',
   '--theme-notification-message-text-color': '#fafbfc',
 

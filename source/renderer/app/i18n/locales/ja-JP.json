@@ -340,6 +340,7 @@
   "wallet.file.import.dialog.wallet.name.input.label": "ウォレット名",
   "wallet.file.import.dialog.walletFileHint": "クリックしてファイルを選択してください",
   "wallet.file.import.dialog.walletFileLabel": "ファイルをインポート",
+  "wallet.legacy.badge.label": "!!!Legacy",
   "wallet.navigation.more": "その他",
   "wallet.navigation.receive": "入金",
   "wallet.navigation.send": "送金",

@@ -4,6 +4,7 @@ import SVGInline from 'react-svg-inline';
 import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
+import LegacyBadge from '../notifications/LegacyBadge';
 import Wallet from '../../domains/Wallet';
 import styles from './TopBar.scss';
 import { formattedWalletAmount } from '../../utils/formatters';
@@ -26,13 +27,18 @@ export default class TopBar extends Component<Props> {
     ]);
 
     const topBarTitle = activeWallet ? (
-      <div className={styles.walletInfo}>
-        <div className={styles.walletName}>{activeWallet.name}</div>
-        <div className={styles.walletAmount}>
+      <span className={styles.walletInfo}>
+        <span className={styles.walletName}>{activeWallet.name}</span>
+        <span className={styles.walletAmount}>
           {// show currency and use long format
           formattedWalletAmount(activeWallet.amount, true)}
-        </div>
-      </div>
+        </span>
+        {activeWallet.isLegacy && (
+          <div className={styles.legacyBadge}>
+            <LegacyBadge />
+          </div>
+        )}
+      </span>
     ) : null;
 
     const leftIconSVG = leftIcon && (

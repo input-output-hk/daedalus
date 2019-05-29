@@ -61,6 +61,7 @@ export default class SidebarWalletsMenu extends Component<Props> {
               className={`Wallet_${wallet.id}`}
               isRestoreActive={wallet.isRestoreActive}
               restoreProgress={wallet.restoreProgress}
+              isLegacy={wallet.isLegacy}
             />
           ))}
         </div>

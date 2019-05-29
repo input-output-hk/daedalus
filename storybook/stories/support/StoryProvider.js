@@ -20,6 +20,7 @@ export const WALLETS = [
     assurance: WalletAssuranceModeOptions.NORMAL,
     hasPassword: false,
     passwordUpdateDate: new Date(),
+    isLegacy: true,
   },
   {
     id: '1',

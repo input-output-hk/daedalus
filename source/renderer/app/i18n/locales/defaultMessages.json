@@ -989,6 +989,25 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Legacy",
+        "description": "Label \"Legacy\" on the legacy badge.",
+        "end": {
+          "column": 3,
+          "line": 12
+        },
+        "file": "source/renderer/app/components/notifications/LegacyBadge.js",
+        "id": "wallet.legacy.badge.label",
+        "start": {
+          "column": 9,
+          "line": 8
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/notifications/LegacyBadge.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Update and restart",
         "description": "Label \"Update and restart\" on the Cardano node update notification.",
         "end": {
