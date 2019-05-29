@@ -91,10 +91,13 @@ export default class StakingStakePools extends Component<Props, State> {
       this.state.selectedList === selectedList &&
       this.state.selectedIndex === selectedIndex
     ) {
-      return this.setState({ selectedList: null, selectedIndex: null });
+      return this.handleClose();
     }
     return this.setState({ selectedList, selectedIndex });
   };
+
+  handleClose = () =>
+    this.setState({ selectedList: null, selectedIndex: null });
 
   render() {
     const { intl } = this.context;
@@ -159,6 +162,7 @@ export default class StakingStakePools extends Component<Props, State> {
                 'selectedIndexDelegatedList',
                 stakePool.index
               )}
+              onClose={this.handleClose}
               onClick={index =>
                 this.handleClick('selectedIndexDelegatedList', index)
               }
@@ -184,6 +188,7 @@ export default class StakingStakePools extends Component<Props, State> {
               ranking={this.getRanking(stakePool.index)}
               onOpenExternalLink={onOpenExternalLink}
               isSelected={this.isSelected('selectedIndexList', stakePool.index)}
+              onClose={this.handleClose}
               onClick={index => this.handleClick('selectedIndexList', index)}
             />
           ))}

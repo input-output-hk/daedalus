@@ -56,6 +56,21 @@
   letter-spacing: 0.5px;
   line-height: 1.38;
   margin-bottom: 3px;
+  padding-right: 25px;
+}
+
+.closeButton {
+  position: absolute;
+  top: 25px;
+  right: 20px;
+  cursor: pointer;
+  svg {
+    width: 11px;
+    height: 11px;
+    polygon {
+      fill: var(--theme-staking-stake-pool-tooltip-text-color);
+    }
+  }
 }
 
 .id {

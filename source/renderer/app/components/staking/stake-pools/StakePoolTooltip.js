@@ -5,10 +5,12 @@ import { defineMessages, intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import classnames from 'classnames';
 import moment from 'moment';
+import SVGInline from 'react-svg-inline';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './StakePoolTooltip.scss';
 import { getHSLColor } from '../../../utils/colors';
 import type { StakePoolProps } from '../../../api/staking/types';
+import closeCross from '../../../assets/images/close-cross.inline.svg';
 
 const messages = defineMessages({
   ranking: {
@@ -48,6 +50,7 @@ type Props = {
   ...$Exact<StakePoolProps>,
   ranking: number,
   onOpenExternalLink: Function,
+  onClick: Function,
   visible: boolean,
 };
 
@@ -75,6 +78,7 @@ export default class StakePool extends Component<Props> {
       retirement,
       onOpenExternalLink,
       visible,
+      onClick,
     } = this.props;
 
     const componentClassnames = classnames([
@@ -85,6 +89,9 @@ export default class StakePool extends Component<Props> {
     return (
       <div className={componentClassnames}>
         <h3 className={styles.name}>{name}</h3>
+        <button className={styles.closeButton} onClick={onClick}>
+          <SVGInline svg={closeCross} />
+        </button>
         <div className={styles.id}>{id}</div>
         <div className={styles.description}>{description}</div>
         <button className={styles.url} onClick={() => onOpenExternalLink(url)}>
