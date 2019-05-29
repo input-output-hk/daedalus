@@ -12,6 +12,10 @@
       http-equiv="Content-Security-Policy"
       content="
         default-src 'self';
+        connect-src 'self'
+                    https://s3-ap-northeast-1.amazonaws.com/update.cardano-testnet.iohk.io/
+                    https://s3-ap-northeast-1.amazonaws.com/update.cardano-mainnet.iohk.io/
+                    https://s3-ap-northeast-1.amazonaws.com/update.cardano-staging.iohk.io/; 
         script-src 'self' 'unsafe-eval' 'unsafe-inline';
         style-src 'self' 'unsafe-inline';
         img-src 'self' data:;

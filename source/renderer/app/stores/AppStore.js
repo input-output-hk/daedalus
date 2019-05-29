@@ -1,8 +1,10 @@
 // @flow
-import { observable, computed, action } from 'mobx';
+import { observable, computed, action, runInAction } from 'mobx';
+import { get } from 'lodash';
 import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
+import { getLatestVersionInfo } from '../../../common/utils/manualAppUpdate';
 import {
   TOGGLE_ABOUT_DIALOG_CHANNEL,
   TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL,
@@ -25,6 +27,8 @@ export default class AppStore extends Store {
   @observable gpuStatus: ?GpuStatus = null;
   @observable numberOfEpochsConsolidated: number = 0;
   @observable previousRoute: string = ROUTES.ROOT;
+  @observable availableAppVersion: ?string = null;
+  @observable isNewAppVersionAvailable: boolean = false;
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
@@ -36,6 +40,7 @@ export default class AppStore extends Store {
     this.actions.app.toggleBlockConsolidationStatusScreen.listen(
       this._toggleBlockConsolidationStatusScreen
     );
+    this.actions.app.getLatestAvailableAppVersion.listen(this._getLatestAvailableAppVersion);
 
     /* eslint-disable max-len */
     // TODO: refactor to ipc channels
@@ -83,9 +88,25 @@ export default class AppStore extends Store {
     this._updatePreviousRoute(currentRoute);
   };
 
+  @action _getLatestAvailableAppVersion = async () => {
+    const { version, isMainnet, platform, network } = this.environment;
+
+    // TODO - since just mainnet link is active CHECK just for mainnet network and change once other links are provided
+    if (isMainnet) {
+      const versionInfo = await getLatestVersionInfo(network);
+      const availableVersion = get(versionInfo, ['platforms', platform, 'version']);
+      const isNewAppVersionAvailable = availableVersion && availableVersion > version;
+
+      runInAction(() => {
+        this.isNewAppVersionAvailable = isNewAppVersionAvailable;
+        this.availableAppVersion = availableVersion;
+      });
+    }
+  }
+
   @action _updatePreviousRoute = (currentRoute?: string) => {
     this.previousRoute = currentRoute || ROUTES.ROOT;
-  }
+  };
 
   @action _openAboutDialog = () => {
     this.isAboutDialogOpen = true;
@@ -136,5 +157,4 @@ export default class AppStore extends Store {
       this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE
     );
   }
-
 }

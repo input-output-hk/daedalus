@@ -1,0 +1,85 @@
+.overlay {
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 9999;
+
+  .dialog {
+    margin: auto 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+
+    &:focus {
+      outline: none;
+    }
+    .content {
+      background-color: var(--theme-manual-update-overlay-background-color);
+      display: flex;
+      font-family: var(--font-regular);
+      flex-direction: column;
+      height: 100%;
+      justify-content: center;
+      text-align: center;
+
+      h1 {
+        color: var(--theme-manual-update-overlay-title-text-color);
+        font-size: 20px;
+        line-height: 1.2;
+      }
+      
+      .description {
+        margin: 16px auto;
+        p {
+          color: var(--theme-manual-update-overlay-text-color);
+          font-size: 16px;
+          line-height: 1.38;
+          margin-bottom: 14px;
+          max-width: 610px;
+          b {
+            font-family: var(--font-medium);
+            color: var(--theme-manual-update-overlay-text-highlight-color);
+          }
+        }
+      }
+
+      .actionButton {
+        background-color: var(--theme-manual-update-overlay-button-background-color);
+        border: solid 1px var(--theme-manual-update-overlay-button-border-color);
+        margin: 0 auto;
+        font-weight: 500;
+        line-height: 1.36;
+
+        .linkNewWindow {
+          display: inline-block;
+          width: 12px;
+          margin-left: 8px;
+          vertical-align: middle;
+          opacity: 0.7;
+        }
+     
+        &:not(.disabled):hover {
+          border: none;
+          color: var(--theme-manual-update-overlay-button-text-color-hover);
+          background-color: var(
+            --theme-manual-update-overlay-button-background-color-hover
+          );
+     
+          .linkNewWindow {
+            path {
+              fill: rgb(36, 62, 98);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 950px), (max-height: 678px) {
+    overflow-y: auto;
+  }
+}

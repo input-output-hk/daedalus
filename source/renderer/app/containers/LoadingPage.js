@@ -58,8 +58,11 @@ export default class LoadingPage extends Component<InjectedProps> {
       forceCheckLocalTimeDifference, ignoreSystemTimeChecks, isNodeStopping, isNodeStopped,
       isNotEnoughDiskSpace, diskSpaceRequired, diskSpaceMissing, diskSpaceRecommended,
     } = stores.networkStatus;
+    const { isNewAppVersionAvailable, availableAppVersion, environment } = stores.app;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
     const { id, message } = this.notification;
+    const { version } = environment;
+
     return (
       <CenteredLayout>
         <Loading
@@ -88,6 +91,11 @@ export default class LoadingPage extends Component<InjectedProps> {
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
           onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
           onDownloadLogs={this.handleDownloadLogs}
+          isNewAppVersionAvailable={isNewAppVersionAvailable}
+          currentAppVersion={version}
+          availableAppVersion={availableAppVersion}
+          onGetAvailableVersions={this.handleGetAvailableVersions}
+          onManualUpdateInstructionsLinkClick={this.handleManualUpdateInstructionsLinkClick}
         />
         <NotificationMessage
           icon={successIcon}
@@ -145,5 +153,14 @@ export default class LoadingPage extends Component<InjectedProps> {
     if (destination) {
       profile.downloadLogs.trigger({ fileName, destination, fresh: true });
     }
+  };
+
+  handleGetAvailableVersions = () => {
+    const { app } = this.props.actions;
+    app.getLatestAvailableAppVersion.trigger();
+  };
+
+  handleManualUpdateInstructionsLinkClick = (url: string) => {
+    this.props.stores.app.openExternalLink(url);
   };
 }

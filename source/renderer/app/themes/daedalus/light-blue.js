@@ -464,4 +464,14 @@ export default {
   '--theme-block-consolidation-stripe-dark-2-background-color': '#3e5b7f',
   '--theme-block-consolidation-stripe-light-1-background-color': '#8497ac',
   '--theme-block-consolidation-stripe-light-2-background-color': '#95a5b9',
+
+  '--theme-manual-update-overlay-background-color': 'rgba(36, 62, 98, 0.96)',
+  '--theme-manual-update-overlay-button-background-color': '#243e62',
+  '--theme-manual-update-overlay-button-background-color-hover': '#fafbfc',
+  '--theme-manual-update-overlay-button-border-color': '#fafbfc',
+  '--theme-manual-update-overlay-button-text-color-hover': '#243e62',
+  '--theme-manual-update-overlay-text-color': 'rgba(250, 251, 252, 0.7)',
+  '--theme-manual-update-overlay-text-highlight-color': '#fafbfc',
+  '--theme-manual-update-overlay-title-text-color': '#fafbfc',
+
 };

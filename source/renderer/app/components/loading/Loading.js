@@ -8,6 +8,7 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import SystemTimeErrorOverlay from './SystemTimeErrorOverlay';
 import NoDiskSpaceOverlay from './NoDiskSpaceOverlay';
+import ManualUpdateOverlay from './ManualUpdateOverlay';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import linkNewWindow from '../../assets/images/link-ic.inline.svg';
@@ -120,11 +121,16 @@ type Props = {
   isSystemTimeCorrect: boolean,
   isCheckingSystemTime: boolean,
   currentLocale: string,
+  availableAppVersion: ?string,
+  currentAppVersion: string,
+  isNewAppVersionAvailable: ?boolean,
   onExternalLinkClick: Function,
   onReportIssueClick: Function,
   onCheckTheTimeAgain: Function,
   onContinueWithoutClockSyncCheck: Function,
   onDownloadLogs: Function,
+  onGetAvailableVersions: Function,
+  onManualUpdateInstructionsLinkClick: Function,
 };
 
 @observer
@@ -140,6 +146,9 @@ export default class Loading extends Component<Props, State> {
     syncPercentage: '0',
   };
 
+  appLoadingStuck = false;
+  appLoadingStuckSet = false;
+
   componentDidMount() {
     if (this.props.isNotEnoughDiskSpace) return;
     this._defensivelyStartTimers(this.props.isConnected, this.props.isSynced);
@@ -151,11 +160,22 @@ export default class Loading extends Component<Props, State> {
   }
 
   componentDidUpdate() {
-    const { isConnected, isSynced, isNotEnoughDiskSpace } = this.props;
+    const { syncingTime, connectingTime } = this.state;
+    const { isConnected, isSynced, isNotEnoughDiskSpace, onGetAvailableVersions } = this.props;
     const canResetSyncing = this._syncingTimerShouldStop(isSynced, isNotEnoughDiskSpace);
     const canResetConnecting = this._connectingTimerShouldStop(isConnected, isNotEnoughDiskSpace);
     if (canResetSyncing) { this._resetSyncingTime(); }
     if (canResetConnecting) { this._resetConnectingTime(); }
+
+    this.appLoadingStuck = (
+      (!isConnected && connectingTime >= REPORT_ISSUE_TIME_TRIGGER) ||
+      (!isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER)
+    );
+    // If app stuck, check if newer version is available and set flag (state)
+    if (this.appLoadingStuck && !this.appLoadingStuckSet) {
+      onGetAvailableVersions();
+      this.appLoadingStuckSet = true;
+    }
   }
 
   componentWillUnmount() {
@@ -277,7 +297,7 @@ export default class Loading extends Component<Props, State> {
       onContinueWithoutClockSyncCheck,
       isCheckingSystemTime,
       syncPercentage,
-      loadingDataForNextScreenMessage
+      loadingDataForNextScreenMessage,
     } = this.props;
 
     if (isNotEnoughDiskSpace) {
@@ -351,6 +371,10 @@ export default class Loading extends Component<Props, State> {
       hasLoadedCurrentTheme,
       onReportIssueClick,
       onDownloadLogs,
+      isNewAppVersionAvailable,
+      currentAppVersion,
+      availableAppVersion,
+      onManualUpdateInstructionsLinkClick,
     } = this.props;
 
     const { connectingTime, syncingTime } = this.state;
@@ -398,6 +422,8 @@ export default class Loading extends Component<Props, State> {
       styles.reportIssueButton,
     ]);
 
+    const isManualUpdateRequired = isNewAppVersionAvailable && this.appLoadingStuck;
+
     return (
       <div className={componentStyles}>
         {showReportIssue && (
@@ -434,6 +460,13 @@ export default class Loading extends Component<Props, State> {
           <SVGInline svg={apiLoadingLogo} className={apiLogoStyles} />
         </div>
         {hasLoadedCurrentLocale ? this._renderLoadingScreen() : null}
+        {isManualUpdateRequired && (
+          <ManualUpdateOverlay
+            currentAppVersion={currentAppVersion}
+            availableAppVersion={availableAppVersion}
+            onExternalLinkClick={onManualUpdateInstructionsLinkClick}
+          />
+        )}
       </div>
     );
   }
