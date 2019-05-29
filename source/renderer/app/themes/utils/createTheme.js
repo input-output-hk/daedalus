@@ -609,7 +609,7 @@ const createDaedalusComponentsTheme = (
     staking: {
       '--theme-staking-background-color': `${primary.background.regular}`,
       '--theme-staking-content-background-color': `${
-        primary.background.regular
+        primary.background.lightest
       }`,
       '--theme-staking-content-border-color': `${primary.border}`,
       '--theme-staking-font-color-accent': `${primary.focus}`,
