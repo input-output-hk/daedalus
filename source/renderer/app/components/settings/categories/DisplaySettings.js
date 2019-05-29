@@ -31,6 +31,21 @@ const messages = defineMessages({
     defaultMessage: '!!!Dark blue',
     description: 'Name of the "Dark blue" theme on the display settings page.',
   },
+  themeOrange: {
+    id: 'settings.display.themeNames.orange',
+    defaultMessage: 'Orange',
+    description: 'Name of the "Orange" theme on the display settings page.',
+  },
+  themePurple: {
+    id: 'settings.display.themeNames.purple',
+    defaultMessage: 'Purple',
+    description: 'Name of the "Purple" theme on the display settings page.',
+  },
+  themeTurquoise: {
+    id: 'settings.display.themeNames.turquoise',
+    defaultMessage: 'Turquoise',
+    description: 'Name of the "Turquoise" theme on the display settings page.',
+  },
 });
 
 type Props = {
@@ -104,6 +119,48 @@ export default class DisplaySettings extends Component<Props> {
               draggable="false"
             />
             <span>{intl.formatMessage(messages.themeDarkBlue)}</span>
+          </button>
+
+          <button
+            className={themeDarkBlueClasses}
+            onClick={selectTheme.bind(this, { theme: THEMES.ORANGE })}
+          >
+            <div
+              style={{
+                backgroundColor: '#ff8c1a',
+                width: '100px',
+                height: '50px',
+              }}
+            />
+            <span>{intl.formatMessage(messages.themeOrange)}</span>
+          </button>
+
+          <button
+            className={themeDarkBlueClasses}
+            onClick={selectTheme.bind(this, { theme: THEMES.PURPLE })}
+          >
+            <div
+              style={{
+                backgroundColor: '#ccccff',
+                width: '100px',
+                height: '50px',
+              }}
+            />
+            <span>{intl.formatMessage(messages.themePurple)}</span>
+          </button>
+
+          <button
+            className={themeDarkBlueClasses}
+            onClick={selectTheme.bind(this, { theme: THEMES.TURQUOISE })}
+          >
+            <div
+              style={{
+                backgroundColor: '#006666',
+                width: '100px',
+                height: '50px',
+              }}
+            />
+            <span>{intl.formatMessage(messages.themeTurquoise)}</span>
           </button>
         </div>
       </div>
