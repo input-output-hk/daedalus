@@ -123,4 +123,6 @@
   background-color: var(
     --theme-staking-stake-pool-tooltip-delegate-button-background-color
   ) !important;
+  border: 1px solid
+    var(--theme-staking-stake-pool-tooltip-delegate-button-border-color) !important;
 }
