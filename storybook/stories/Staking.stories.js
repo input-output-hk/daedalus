@@ -42,10 +42,9 @@ storiesOf('Staking', module)
 
     if (context.parameters.id === 'countdown') {
       activeSidebarCategory =
-        CATEGORIES_BY_NAME.STAKING_WITH_DELEGATION_COUNTDOWN.route;
+        CATEGORIES_BY_NAME.STAKING_DELEGATION_COUNTDOWN.route;
     } else {
-      activeSidebarCategory =
-        CATEGORIES_BY_NAME.STAKING_WITHOUT_DELEGATION_COUNTDOWN.route;
+      activeSidebarCategory = CATEGORIES_BY_NAME.STAKING.route;
     }
 
     return (

@@ -12,7 +12,7 @@ export default class StakingStore extends Store {
 
   setup() {
     const { staking } = this.actions;
-    staking.goToStakingInfo.listen(this._goToStakingInfo);
+    staking.goToStakingPage.listen(this._goToStakingPage);
   }
 
   // =================== PUBLIC API ==================== //
@@ -45,9 +45,10 @@ export default class StakingStore extends Store {
     return new Date(this.startDateTime).getTime() - new Date().getTime() > 0;
   }
 
-  _goToStakingInfo = () => {
+  _goToStakingPage = () => {
+    console.log('_goToStakingPage');
     this.actions.router.goToRoute.trigger({
-      route: ROUTES.STAKING.INFO,
+      route: ROUTES.STAKING.ROOT,
     });
   };
 }
