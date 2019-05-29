@@ -87,7 +87,9 @@ export default class StakePool extends Component<Props> {
         <h3 className={styles.name}>{name}</h3>
         <div className={styles.id}>{id}</div>
         <div className={styles.description}>{description}</div>
-        <div className={styles.url}>{url}</div>
+        <button className={styles.url} onClick={() => onOpenExternalLink(url)}>
+          {url}
+        </button>
         <dl className={styles.table}>
           <dt>{intl.formatMessage(messages.ranking)}</dt>
           <dd className={styles.ranking}>
@@ -141,7 +143,7 @@ export default class StakePool extends Component<Props> {
         <Button
           className={styles.delegateButton}
           label={intl.formatMessage(messages.delegateButton)}
-          onClick={() => onOpenExternalLink(url)}
+          onClick={() => {}}
           skin={ButtonSkin}
         />
       </div>

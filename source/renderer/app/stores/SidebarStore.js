@@ -13,7 +13,7 @@ export default class SidebarStore extends Store {
   @observable isShowingSubMenus: boolean = true;
 
   setup() {
-    const { sidebar: sidebarActions, staking: stakingActions } = this.actions;
+    const { sidebar: sidebarActions } = this.actions;
 
     sidebarActions.showSubMenus.listen(this._showSubMenus);
     sidebarActions.toggleSubMenus.listen(this._toggleSubMenus);
@@ -21,8 +21,6 @@ export default class SidebarStore extends Store {
       this._onActivateSidebarCategory
     );
     sidebarActions.walletSelected.listen(this._onWalletSelected);
-
-    stakingActions.goToStakingPage.listen(this.configureCategories);
 
     this.registerReactions([this._syncSidebarRouteWithRouter]);
     this._configureCategories();

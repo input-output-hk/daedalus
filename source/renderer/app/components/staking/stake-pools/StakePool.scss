@@ -2,11 +2,15 @@
   background-color: var(--theme-staking-stake-pool-background-color);
   border-radius: 4px;
   border: solid 1px var(--theme-staking-stake-pool-border-color);
-  cursor: pointer;
   height: 71px;
   margin: 5px;
   position: relative;
   width: 80px;
+}
+
+.content {
+  height: 100%;
+  cursor: pointer;
 }
 
 .isSelected {

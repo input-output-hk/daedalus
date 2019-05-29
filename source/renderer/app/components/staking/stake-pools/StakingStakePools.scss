@@ -31,7 +31,8 @@
 .searchInput {
   :global {
     .SimpleInput_input {
-      padding: 0 175px 0 50px;
+      padding-left: 50px;
+      padding-right: 175px;
       border-radius: 4px;
     }
   }

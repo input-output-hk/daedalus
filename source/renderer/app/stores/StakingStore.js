@@ -46,7 +46,6 @@ export default class StakingStore extends Store {
   }
 
   _goToStakingPage = () => {
-    console.log('_goToStakingPage');
     this.actions.router.goToRoute.trigger({
       route: ROUTES.STAKING.ROOT,
     });

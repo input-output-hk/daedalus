@@ -32,36 +32,38 @@ export default class StakePool extends Component<Props> {
     ]);
 
     return (
-      <div
-        className={componentClassnames}
-        onClick={() => onClick(index)}
-        role="link"
-        aria-hidden
-      >
-        <div className={styles.id}>{id}</div>
+      <div className={componentClassnames}>
         <div
-          className={styles.index}
-          style={{
-            color: this.color,
-          }}
+          className={styles.content}
+          onClick={() => onClick(index)}
+          role="link"
+          aria-hidden
         >
-          {index}
-        </div>
-        {retirement && (
-          <div className={styles.clock}>
-            <SVGInline svg={clockIcon} className={styles.clockIcon} />
+          <div className={styles.id}>{id}</div>
+          <div
+            className={styles.index}
+            style={{
+              color: this.color,
+            }}
+          >
+            {index}
           </div>
-        )}
+          {retirement && (
+            <div className={styles.clock}>
+              <SVGInline svg={clockIcon} className={styles.clockIcon} />
+            </div>
+          )}
+          <div
+            className={styles.colorBand}
+            style={{
+              background: this.color,
+            }}
+          />
+        </div>
         <StakePoolTooltip
           {...this.props}
           className={styles.tooltip}
           visible={isSelected}
-        />
-        <div
-          className={styles.colorBand}
-          style={{
-            background: this.color,
-          }}
         />
       </div>
     );

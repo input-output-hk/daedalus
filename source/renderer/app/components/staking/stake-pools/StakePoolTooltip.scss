@@ -2,28 +2,29 @@
 
 .component {
   @extend %regularText;
-  margin: 20px;
   background: var(--theme-staking-stake-pool-tooltip-background-color);
-  position: absolute;
-  z-index: 1;
-  top: -60px;
-  left: 50px;
-  padding: 20px;
-  border: 1px solid var(--theme-staking-stake-pool-tooltip-border-color);
   border-radius: 5px;
+  border: 1px solid var(--theme-staking-stake-pool-tooltip-border-color);
   box-shadow: 0 5px 20px 0 var(--theme-staking-stake-pool-tooltip-shadow-color);
-  width: 250px;
   display: none;
+  left: 50px;
+  margin: 20px;
+  padding: 20px;
+  position: absolute;
+  top: -60px;
+  width: 250px;
+  user-select: text;
+  z-index: 1;
 
   &:before,
   &:after {
+    border-color: transparent;
+    border-style: solid;
     content: '';
     display: block;
+    height: 0;
     position: absolute;
     width: 0;
-    height: 0;
-    border-style: solid;
-    border-color: transparent;
   }
 
   /* triangle bg color */
@@ -50,33 +51,35 @@
 }
 
 .name {
-  font-size: 16px;
-  line-height: 1.38;
-  letter-spacing: 0.5px;
   color: var(--theme-staking-stake-pool-tooltip-text-color);
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  line-height: 1.38;
   margin-bottom: 3px;
 }
 
 .id {
-  opacity: 0.6;
+  color: var(--theme-staking-stake-pool-tooltip-text-color);
   font-size: 14px;
   line-height: 1.36;
-  color: var(--theme-staking-stake-pool-tooltip-text-color);
   margin-bottom: 3px;
+  opacity: 0.6;
 }
 
 .description {
+  color: var(--theme-staking-stake-pool-tooltip-text-color);
   font-size: 14px;
   line-height: 1.36;
-  color: var(--theme-staking-stake-pool-tooltip-text-color);
   margin-bottom: 4px;
 }
 
 .url {
+  color: var(--theme-staking-stake-pool-tooltip-link-color);
+  cursor: pointer;
   font-size: 14px;
   line-height: 1.36;
-  color: var(--theme-staking-stake-pool-tooltip-link-color);
   margin-bottom: 18px;
+  text-decoration: underline;
 }
 
 .table {
@@ -92,8 +95,8 @@
   }
   dd {
     display: inline-block;
-    width: 40%;
     text-align: right;
+    width: 40%;
   }
   span {
     border-radius: 3px;
