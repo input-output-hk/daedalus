@@ -598,12 +598,12 @@ const createDaedalusComponentsTheme = (
       '--theme-sidebar-menu-add-button-background-color': `${
         secondary.background.darkest
       }`,
-      '--theme-sidebar-menu-add-button-background-color-active': `${
-        secondary.background.dark
-      }`,
-      '--theme-sidebar-menu-add-button-background-color-hover': `${
-        secondary.background.dark
-      }`,
+      '--theme-sidebar-menu-add-button-background-color-active': `${chroma(
+        secondary.background.darkest
+      ).alpha(0.66)}`,
+      '--theme-sidebar-menu-add-button-background-color-hover': `${chroma(
+        secondary.background.darkest
+      ).alpha(0.66)}`,
       '--theme-sidebar-menu-add-button-text-color': `${secondary.text}`,
     },
     staking: {

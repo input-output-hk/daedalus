@@ -19,7 +19,6 @@ export type ColorParams = {
   secondary: {
     background: string,
     border: string,
-    focus: string,
     text: string,
   },
 };
@@ -35,7 +34,6 @@ export type ThemeColors = {
   secondary: {
     background: BackgroundShades,
     border: string,
-    focus: string,
     text: string,
   },
 };
