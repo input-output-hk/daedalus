@@ -1,5 +1,4 @@
 // @flow
-import chroma from 'chroma-js';
 import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
 
@@ -564,46 +563,4 @@ export const CARDANO_THEME_PARAMS: CreateThemeParams = {
   config: CARDANO_THEME_CONFIG,
 };
 
-const sidebarButtonShade = chroma.scale(['#ff8c1a', '#000']);
-
-export const TEST_THEME_PARAMS: CreateThemeParams = {
-  colors: {
-    error: '#ea4c5b',
-    primary: {
-      background: '#efefef',
-      border: '#c6cdd6',
-      focus: '#5e6066',
-      text: '#5e6066',
-    },
-    secondary: {
-      background: '#ff8c1a',
-      border: '#efefef',
-      focus: '#ffb366',
-      text: '#fafbfc',
-    },
-  },
-  fonts: {
-    black: 'NotoSans-Black, NotoSansCJKjp-Black',
-    bold: 'NotoSans-Bold, NotoSansCJKjp-Bold',
-    heavy: 'NotoSans-ExtraBold, NotoSansCJKjp-Black',
-    light: 'NotoSans-Light, NotoSansCJKjp-Light',
-    medium: 'NotoSans-Medium, NotoSansCJKjp-Medium',
-    mono: 'SFMono-Light',
-    regular: 'NotoSans-Regular, NotoSansCJKjp-Regular',
-    semibold: 'NotoSans-SemiBold, NotoSansCJKjp-Medium',
-    thin: 'NotoSans-Thin, NotoSansCJKjp-Thin',
-    ultralight: 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
-  },
-  config: {
-    sidebar: {
-      '--theme-sidebar-menu-add-button-background-color-hover': `${sidebarButtonShade(
-        0.25
-      )}`,
-      '--theme-sidebar-menu-add-button-background-color-active': `${sidebarButtonShade(
-        0.25
-      )}`,
-    },
-  },
-};
-
-export default createTheme(TEST_THEME_PARAMS);
+export default createTheme(CARDANO_THEME_PARAMS);
