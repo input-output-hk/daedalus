@@ -352,7 +352,7 @@ export default {
   '--theme-staking-stake-pools-search-button-color': '#e9f4fe',
   '--theme-staking-stake-pool-background-color': '#263345',
   '--theme-staking-stake-pool-border-color': 'transparent',
-  '--theme-staking-stake-pool-glow-color': 'transparent',
+  '--theme-staking-stake-pool-glow-color': '#7cfeb54c',
   '--theme-staking-stake-pool-id-color': '#e9f4fe',
   '--theme-staking-stake-pool-retirement-background-color': '#ea4c5b',
   '--theme-staking-stake-pool-tooltip-background-color': '#5e6066',

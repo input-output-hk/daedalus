@@ -122,6 +122,7 @@ export default class StakingStakePools extends Component<Props, State> {
             placeholder={intl.formatMessage(messages.searchInputPlaceholder)}
             skin={InputSkin}
             value={this.state.search}
+            maxLength={150}
             autoFocus
           />
           <ul className={styles.searchFilter}>
