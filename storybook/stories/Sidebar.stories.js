@@ -7,9 +7,15 @@ import StoryDecorator from './support/StoryDecorator';
 import Sidebar from '../../source/renderer/app/components/sidebar/Sidebar';
 import { CATEGORIES_BY_NAME } from '../../source/renderer/app/config/sidebarConfig';
 
-const CATEGORIES = [
+const CATEGORIES_WITH_DELEGATION_COUNTDOWN = [
   CATEGORIES_BY_NAME.WALLETS,
-  CATEGORIES_BY_NAME.STAKING,
+  CATEGORIES_BY_NAME.STAKING_WITH_DELEGATION_COUNTDOWN,
+  CATEGORIES_BY_NAME.SETTINGS,
+];
+
+const CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN = [
+  CATEGORIES_BY_NAME.WALLETS,
+  CATEGORIES_BY_NAME.STAKING_WITHOUT_DELEGATION_COUNTDOWN,
   CATEGORIES_BY_NAME.SETTINGS,
 ];
 
@@ -41,7 +47,7 @@ storiesOf('Sidebar', module)
   .add('no category', () => (
     <Sidebar
       menus={emptyMenus}
-      categories={CATEGORIES}
+      categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
       activeSidebarCategory=""
       onCategoryClicked={action('onCategoryClicked')}
       isDialogOpen={() => false}
@@ -54,8 +60,8 @@ storiesOf('Sidebar', module)
   .add('wallets category', () => (
     <Sidebar
       menus={emptyMenus}
-      categories={CATEGORIES}
-      activeSidebarCategory={CATEGORIES[0].route}
+      categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
+      activeSidebarCategory={CATEGORIES_WITH_DELEGATION_COUNTDOWN[0].route}
       onCategoryClicked={action('onCategoryClicked')}
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}
@@ -66,8 +72,8 @@ storiesOf('Sidebar', module)
   ))
   .add('wallets / sub', () => (
     <Sidebar
-      categories={CATEGORIES}
-      activeSidebarCategory={CATEGORIES[0].route}
+      categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
+      activeSidebarCategory={CATEGORIES_WITH_DELEGATION_COUNTDOWN[0].route}
       menus={sidebarMenus}
       onCategoryClicked={action('onCategoryClicked')}
       isShowingSubMenus
@@ -81,8 +87,21 @@ storiesOf('Sidebar', module)
   .add('delegation category', () => (
     <Sidebar
       menus={emptyMenus}
-      categories={CATEGORIES}
-      activeSidebarCategory={CATEGORIES[1].route}
+      categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
+      activeSidebarCategory={CATEGORIES_WITH_DELEGATION_COUNTDOWN[1].route}
+      onCategoryClicked={action('onCategoryClicked')}
+      isDialogOpen={() => false}
+      onAddWallet={action('onAddWallet')}
+      openDialogAction={action('openDialog')}
+      onSubmitSupportRequest={() => {}}
+      pathname="/"
+    />
+  ))
+  .add('decentralization-progress', () => (
+    <Sidebar
+      menus={emptyMenus}
+      categories={CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN}
+      activeSidebarCategory={CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN[1].route}
       onCategoryClicked={action('onCategoryClicked')}
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}
