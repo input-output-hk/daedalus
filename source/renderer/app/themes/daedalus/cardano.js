@@ -162,7 +162,7 @@ const rpCardanoTheme = {
 };
 
 //  ==== Cardano Theme for Daedalus Components === //
-export const CARDANO_THEME_CONFIG = {
+const CARDANO_THEME_CONFIG = {
   aboutWindow: {
     '--theme-about-window-background-color': 'rgba(36, 62, 98, 0.96)',
     '--theme-about-window-header-bottom-border-color':
@@ -559,7 +559,7 @@ export const CARDANO_THEME_CONFIG = {
   },
 };
 
-export const CARDANO_THEME_PARAMS: CreateThemeParams = {
+const CARDANO_THEME_PARAMS: CreateThemeParams = {
   config: CARDANO_THEME_CONFIG,
 };
 

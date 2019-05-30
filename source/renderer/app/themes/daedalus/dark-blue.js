@@ -162,7 +162,7 @@ const rpDarkBlueTheme = {
 };
 
 //  ==== Dark Blue Theme for Daedalus Components === //
-export const DARK_BLUE_THEME_CONFIG = {
+const DARK_BLUE_THEME_CONFIG = {
   aboutWindow: {
     '--theme-about-window-background-color': 'rgba(36, 62, 98, 0.96)',
     '--theme-about-window-header-bottom-border-color':
@@ -564,7 +564,7 @@ export const DARK_BLUE_THEME_CONFIG = {
   },
 };
 
-export const DARK_BLUE_THEME_PARAMS: CreateThemeParams = {
+const DARK_BLUE_THEME_PARAMS: CreateThemeParams = {
   config: DARK_BLUE_THEME_CONFIG,
 };
 
