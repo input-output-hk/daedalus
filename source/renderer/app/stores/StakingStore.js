@@ -29,7 +29,7 @@ export default class StakingStore extends Store {
 
   @computed get stakePools(): Array<StakePoolProps> {
     // return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
-    return STAKE_POOLS.slice(0, 23);
+    return STAKE_POOLS;
   }
 
   @computed get delegatingStakePools(): Array<StakePoolProps> {
