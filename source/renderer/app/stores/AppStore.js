@@ -89,10 +89,9 @@ export default class AppStore extends Store {
   };
 
   @action _getLatestAvailableAppVersion = async () => {
-    const { version, isMainnet, platform, network } = this.environment;
+    const { version, isMainnet, isTestnet, platform, network } = this.environment;
 
-    // TODO - since just mainnet link is active CHECK just for mainnet network and change once other links are provided
-    if (isMainnet) {
+    if (isMainnet || isTestnet) {
       const versionInfo = await getLatestVersionInfo(network);
       const availableVersion = get(versionInfo, ['platforms', platform, 'version']);
       const isNewAppVersionAvailable = availableVersion && availableVersion > version;
