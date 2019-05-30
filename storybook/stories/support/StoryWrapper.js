@@ -34,12 +34,14 @@ type Props = {
 type State = {
   themeName: string,
   localeName: string,
+  isMenuVisible: boolean,
 };
 
 export default class StoryWrapper extends Component<Props, State> {
   state = {
     themeName: localStorage.getItem('currentTheme') || themeNames[0],
     localeName: localStorage.getItem('currentLocale') || localeNames[0],
+    isMenuVisible: false,
   };
 
   setLocaleName = (localeName: string) => {
@@ -52,9 +54,12 @@ export default class StoryWrapper extends Component<Props, State> {
     localStorage.setItem('currentTheme', themeName);
   };
 
+  handleToggleVisibility = () =>
+    this.setState(({ isMenuVisible }) => ({ isMenuVisible: !isMenuVisible }));
+
   render() {
     const { children: Story } = this.props;
-    const { themeName, localeName } = this.state;
+    const { themeName, localeName, isMenuVisible } = this.state;
     const theme = themes[themeName];
     const locale = locales[localeName];
 
@@ -68,6 +73,8 @@ export default class StoryWrapper extends Component<Props, State> {
           setThemeName={this.setThemeName}
           currentLocale={localeName}
           currentTheme={themeName}
+          onToggleVisibility={this.handleToggleVisibility}
+          isVisible={isMenuVisible}
         />
 
         <IntlProvider

@@ -1,16 +1,33 @@
 .component {
-  padding: 10px;
-  background: #f2f2f2;
+  position: absolute;
+  width: 100%;
+  z-index: 9999;
+
+  &.visible {
+    .content {
+      display: block;
+    }
+    .minimizedButton {
+      opacity: 1;
+      &:before {
+        content: '\ff0d';
+      }
+    }
+  }
+
+  &.minized {
+    .content {
+      display: none;
+    }
+    .minimizedButton:before {
+      content: '\1f5d6';
+    }
+  }
 
   * {
     font-family: '.SFNSText-Regular', 'San Francisco', BlinkMacSystemFont,
       'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
       'Droid Sans', 'Helvetica Neue', 'Lucida Grande', 'Arial', sans-serif;
-  }
-
-  > div {
-    display: inline-block;
-    margin-right: 10px;
   }
 
   h2 {
@@ -20,7 +37,35 @@
     font-weight: bold;
     margin-right: 5px;
   }
-
+}
+.minimizedButton {
+  background: #e1e1e1;
+  border-radius: 50%;
+  cursor: pointer;
+  height: 20px;
+  line-height: 0;
+  opacity: 0.3;
+  padding: 0;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  width: 20px;
+  z-index: 9;
+  &:before {
+    display: block;
+  }
+  &:hover {
+    opacity: 1;
+  }
+}
+.content {
+  background: #f2f2f2;
+  box-shadow: 0 0 10px 5px black;
+  padding: 10px;
+}
+.menuSlot {
+  display: inline-block;
+  margin-right: 10px;
   button {
     font-size: 14px;
     margin-right: 5px;
@@ -29,8 +74,8 @@
     border-radius: 3px;
     cursor: pointer;
   }
-  .selected {
-    background-color: rgba(0, 0, 0, 0.07);
-    color: rgb(68, 68, 68);
-  }
+}
+.selected {
+  background-color: rgba(0, 0, 0, 0.07);
+  color: rgb(68, 68, 68);
 }
