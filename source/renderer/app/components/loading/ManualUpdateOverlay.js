@@ -36,11 +36,10 @@ const messages = defineMessages({
   },
   manualUpdateButtonUrl: {
     id: 'manualUpdateOverlay.button.url',
-    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us',
+    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/articles/360023850634',
     description: 'Follow instructions and manually update link on "Manual update" overlay',
   },
 });
-
 
 type Props = {
   availableAppVersion: ?string,

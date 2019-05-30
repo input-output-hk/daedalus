@@ -540,7 +540,7 @@
         }
       },
       {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us",
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360023850634",
         "description": "Follow instructions and manually update link on \"Manual update\" overlay",
         "end": {
           "column": 3,

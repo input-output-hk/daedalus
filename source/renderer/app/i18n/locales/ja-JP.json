@@ -88,7 +88,7 @@
   "loading.screen.updatedCardanoMessage": "カルダノ・ノードがアップデートされました",
   "loading.screen.updatingCardanoMessage": "カルダノ・ノードをアップデート中",
   "manualUpdateOverlay.button.label": "指示に従って手動で更新してください",
-  "manualUpdateOverlay.button.url": "https://iohk.zendesk.com/hc/ja",
+  "manualUpdateOverlay.button.url": "https://iohk.zendesk.com/hc/ja/articles/360023850634",
   "manualUpdateOverlay.description1": "ネットワークへの接続に不具合があり、Daedalusウォレットの最新バージョンが実行されていません。DaedalusがCardanoネットワークに接続されていない間、自動更新は実行できません。",
   "manualUpdateOverlay.description2": "ご使用のDaedalusはバージョン<b>{currentAppVersion}</b>です。現在<b>{availableAppVersion}</b>をご利用いただけます。手動で最新版に更新すると、接続の不具合を解消できる場合があります。",
   "manualUpdateOverlay.title": "ソフトウェアが更新できます",
