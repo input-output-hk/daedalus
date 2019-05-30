@@ -359,7 +359,7 @@ export default {
   '--theme-staking-stake-pool-tooltip-border-color': 'transparent',
   '--theme-staking-stake-pool-tooltip-shadow-color': 'rgba(0, 0, 0, 0.25)',
   '--theme-staking-stake-pool-tooltip-text-color': '#e9f4fe',
-  '--theme-staking-stake-pool-tooltip-link-color': '#4687e2',
+  '--theme-staking-stake-pool-tooltip-link-color': '#2ab467',
   '--theme-staking-stake-pool-tooltip-table-title-color': '#e9f4fe',
   '--theme-staking-stake-pool-tooltip-table-param-color': '#e9f4fe',
   '--theme-staking-stake-pool-tooltip-table-param-retirement-background-color':
