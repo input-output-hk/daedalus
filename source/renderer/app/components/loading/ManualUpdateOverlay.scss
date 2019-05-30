@@ -9,10 +9,10 @@
   z-index: 9999;
 
   .dialog {
+    height: 100%;
     margin: auto 0;
     overflow: hidden;
     width: 100%;
-    height: 100%;
 
     &:focus {
       outline: none;
@@ -20,8 +20,8 @@
     .content {
       background-color: var(--theme-manual-update-overlay-background-color);
       display: flex;
-      font-family: var(--font-regular);
       flex-direction: column;
+      font-family: var(--font-regular);
       height: 100%;
       justify-content: center;
       text-align: center;
@@ -41,8 +41,8 @@
           margin-bottom: 14px;
           max-width: 610px;
           b {
-            font-family: var(--font-medium);
             color: var(--theme-manual-update-overlay-text-highlight-color);
+            font-family: var(--font-medium);
           }
         }
       }
@@ -50,24 +50,24 @@
       .actionButton {
         background-color: var(--theme-manual-update-overlay-button-background-color);
         border: solid 1px var(--theme-manual-update-overlay-button-border-color);
-        margin: 0 auto;
         font-weight: 500;
         line-height: 1.36;
+        margin: 0 auto;
 
         .linkNewWindow {
           display: inline-block;
-          width: 12px;
           margin-left: 8px;
-          vertical-align: middle;
           opacity: 0.7;
+          vertical-align: middle;
+          width: 12px;
         }
      
         &:not(.disabled):hover {
-          border: none;
-          color: var(--theme-manual-update-overlay-button-text-color-hover);
           background-color: var(
             --theme-manual-update-overlay-button-background-color-hover
           );
+          border: none;
+          color: var(--theme-manual-update-overlay-button-text-color-hover);
      
           .linkNewWindow {
             path {
