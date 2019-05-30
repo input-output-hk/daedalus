@@ -365,7 +365,7 @@ export default {
   '--theme-staking-stake-pool-tooltip-table-param-retirement-background-color':
     'rgba(234, 76, 91, 0.3)',
   '--theme-staking-stake-pool-tooltip-delegate-button-background-color':
-    '#445b7c',
+    '#2cbb69',
   '--theme-staking-stake-pool-tooltip-delegate-button-hover-background-color':
     '#56c887',
   '--theme-staking-stake-pool-tooltip-delegate-button-active-background-color':
