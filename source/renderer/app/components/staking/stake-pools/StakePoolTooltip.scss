@@ -12,8 +12,8 @@
   padding: 20px;
   position: absolute;
   top: -60px;
-  width: 250px;
   user-select: text;
+  width: 250px;
   z-index: 1;
 
   &:before,
@@ -29,20 +29,20 @@
 
   /* triangle bg color */
   &:after {
-    top: 64px;
-    left: -20px;
     border-right-color: var(
       --theme-staking-stake-pool-tooltip-background-color
     );
     border-width: 10px;
+    left: -20px;
+    top: 64px;
   }
 
   /* triangle border */
   &:before {
-    top: 63px;
-    left: -22px;
     border-right-color: var(--theme-staking-stake-pool-tooltip-border-color);
     border-width: 11px;
+    left: -22px;
+    top: 63px;
   }
 }
 
@@ -60,10 +60,10 @@
 }
 
 .closeButton {
-  position: absolute;
-  top: 25px;
-  right: 20px;
   cursor: pointer;
+  position: absolute;
+  right: 20px;
+  top: 25px;
   svg {
     width: 11px;
     height: 11px;

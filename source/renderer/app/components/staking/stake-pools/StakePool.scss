@@ -35,21 +35,21 @@
 
 .clock {
   background: var(--theme-staking-stake-pool-retirement-background-color);
-  width: 18px;
+  border-radius: 0 4px;
   height: 18px;
   position: absolute;
-  border-radius: 0 4px;
-  top: 0;
   right: 0;
+  top: 0;
+  width: 18px;
 }
 
 .clockIcon {
   display: block;
-  margin: 0;
-  padding: 0;
   line-height: 0px;
-  text-align: center;
+  margin: 0;
   padding-top: 1px;
+  padding: 0;
+  text-align: center;
 
   svg {
     width: 15px;
@@ -58,10 +58,10 @@
 }
 
 .colorBand {
+  border-radius: 0 0 4px 4px;
+  bottom: 0px;
   display: block;
-  width: 100%;
   height: 5px;
   position: absolute;
-  bottom: 0px;
-  border-radius: 0 0 4px 4px;
+  width: 100%;
 }
