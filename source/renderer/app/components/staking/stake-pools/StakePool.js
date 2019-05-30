@@ -16,6 +16,7 @@ type Props = {
   onClick: Function,
   onClose: Function,
   isSelected: boolean,
+  currentTheme: string,
 };
 
 @observer
@@ -25,7 +26,15 @@ export default class StakePool extends Component<Props> {
   }
 
   render() {
-    const { index, id, retirement, isSelected, onClick, onClose } = this.props;
+    const {
+      index,
+      id,
+      retirement,
+      isSelected,
+      onClick,
+      onClose,
+      currentTheme,
+    } = this.props;
 
     const componentClassnames = classnames([
       styles.component,
@@ -66,6 +75,7 @@ export default class StakePool extends Component<Props> {
           className={styles.tooltip}
           visible={isSelected}
           onClick={onClose}
+          currentTheme={currentTheme}
         />
       </div>
     );

@@ -10,17 +10,34 @@ const RANKING_COLORS_RANGE = {
   lighness: [45, 58],
 };
 
-const getHSLParam = (ranking: number, param: string) =>
+const getHSLParam = (ranking: number, param: string, offset?: number) =>
   rangeMap(
     ranking,
     1,
     100,
     RANKING_COLORS_RANGE[param][0],
     RANKING_COLORS_RANGE[param][1]
-  );
+  ) + offset;
 
-export const getHSLColor = (ranking: number) =>
-  `hsl(${getHSLParam(ranking, 'hue')}, ${getHSLParam(
-    ranking,
-    'saturation'
-  )}%, ${getHSLParam(ranking, 'lighness')}%)`;
+type Options = {
+  hueOffset?: number,
+  saturationOffset?: number,
+  lighnessOffset?: number,
+};
+
+const defaultOptions = {
+  hueOffset: 0,
+  saturationOffset: 0,
+  lighnessOffset: 0,
+};
+
+export const getHSLColor = (ranking: number, options?: Options = {}) => {
+  const { hueOffset, saturationOffset, lighnessOffset } = {
+    ...defaultOptions,
+    ...options,
+  };
+  const hue = getHSLParam(ranking, 'hue', hueOffset);
+  const saturation = getHSLParam(ranking, 'saturation', saturationOffset);
+  const lighness = getHSLParam(ranking, 'lighness', lighnessOffset);
+  return `hsl(${hue}, ${saturation}%, ${lighness}%)`;
+};

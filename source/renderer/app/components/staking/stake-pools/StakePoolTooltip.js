@@ -52,6 +52,7 @@ type Props = {
   onOpenExternalLink: Function,
   onClick: Function,
   visible: boolean,
+  currentTheme: string,
 };
 
 @observer
@@ -79,12 +80,15 @@ export default class StakePool extends Component<Props> {
       onOpenExternalLink,
       visible,
       onClick,
+      currentTheme,
     } = this.props;
 
     const componentClassnames = classnames([
       styles.component,
       visible ? styles.visible : null,
     ]);
+
+    const lighnessOffset = currentTheme === 'dark-blue' ? -20 : 0;
 
     return (
       <div className={componentClassnames}>
@@ -102,7 +106,7 @@ export default class StakePool extends Component<Props> {
           <dd className={styles.ranking}>
             <span
               style={{
-                background: getHSLColor(ranking),
+                background: getHSLColor(ranking, { lighnessOffset }),
               }}
             >
               {parseFloat(ranking).toFixed(2)}
@@ -112,7 +116,7 @@ export default class StakePool extends Component<Props> {
           <dd className={styles.controlledStake}>
             <span
               style={{
-                background: getHSLColor(controlledStake),
+                background: getHSLColor(controlledStake, { lighnessOffset }),
               }}
             >
               {controlledStake}%
@@ -122,7 +126,7 @@ export default class StakePool extends Component<Props> {
           <dd className={styles.profitMargin}>
             <span
               style={{
-                background: getHSLColor(profitMargin),
+                background: getHSLColor(profitMargin, { lighnessOffset }),
               }}
             >
               {profitMargin}%
@@ -132,7 +136,7 @@ export default class StakePool extends Component<Props> {
           <dd className={styles.performance}>
             <span
               style={{
-                background: getHSLColor(performance),
+                background: getHSLColor(performance, { lighnessOffset }),
               }}
             >
               {performance}%

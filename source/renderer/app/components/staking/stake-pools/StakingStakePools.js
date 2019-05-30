@@ -48,6 +48,7 @@ type Props = {
   stakePoolsDelegatingList: Array<StakePoolProps>,
   stakePoolsList: Array<StakePoolProps>,
   onOpenExternalLink: Function,
+  currentTheme: string,
 };
 
 type State = {
@@ -105,6 +106,7 @@ export default class StakingStakePools extends Component<Props, State> {
       stakePoolsList,
       stakePoolsDelegatingList,
       onOpenExternalLink,
+      currentTheme,
     } = this.props;
 
     return (
@@ -167,6 +169,7 @@ export default class StakingStakePools extends Component<Props, State> {
                 this.handleClick('selectedIndexDelegatedList', index)
               }
               onOpenExternalLink={onOpenExternalLink}
+              currentTheme={currentTheme}
             />
           ))}
         </div>
@@ -190,6 +193,7 @@ export default class StakingStakePools extends Component<Props, State> {
               isSelected={this.isSelected('selectedIndexList', stakePool.index)}
               onClose={this.handleClose}
               onClick={index => this.handleClick('selectedIndexList', index)}
+              currentTheme={currentTheme}
             />
           ))}
         </div>
