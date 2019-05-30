@@ -55,7 +55,8 @@
       width: 100%;
       &:hover {
         background-color: var(
-          --theme-staking-stake-pool-tooltip-delegate-button-hover-background-color
+          --theme-staking-stake-pool-tooltip-delegate-button-hover-background-color,
+          --rp-button-bg-color-hover
         );
         color: var(
           --theme-staking-stake-pool-tooltip-delegate-button-inverse-color
@@ -105,7 +106,7 @@
   color: var(--theme-staking-stake-pool-tooltip-text-color);
   font-size: 14px;
   line-height: 1.36;
-  margin-bottom: 3px;
+  margin-bottom: 9px;
   opacity: 0.6;
 }
 

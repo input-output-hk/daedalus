@@ -29,6 +29,6 @@ export const StakingStakePoolsStory = () => (
       STAKE_POOLS[36],
     ]}
     onOpenExternalLink={() => {}}
-    currentTheme={radios('Theme', themes)}
+    currentTheme={radios('Theme (Only for tooltip colors)', themes)}
   />
 );

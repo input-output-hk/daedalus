@@ -365,6 +365,11 @@ export default {
     'rgba(234, 76, 91, 0.3)',
   '--theme-staking-stake-pool-tooltip-delegate-button-background-color':
     '#445b7c',
+  '--theme-staking-stake-pool-tooltip-delegate-button-hover-background-color':
+    '#2f496e',
+  '--theme-staking-stake-pool-tooltip-delegate-button-active-background-color':
+    '#1e304a',
+  '--theme-staking-stake-pool-tooltip-delegate-button-inverse-color': '#fafbfc',
   '--theme-staking-stake-pool-tooltip-delegate-button-border-color':
     'transparent',
 
