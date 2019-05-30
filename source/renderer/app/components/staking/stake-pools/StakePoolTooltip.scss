@@ -44,6 +44,34 @@
     left: -22px;
     top: 63px;
   }
+
+  :global {
+    button.SimpleButton_root {
+      background-color: var(
+        --theme-staking-stake-pool-tooltip-delegate-button-background-color
+      );
+      border: 1px solid
+        var(--theme-staking-stake-pool-tooltip-delegate-button-border-color);
+      width: 100%;
+      &:hover {
+        background-color: var(
+          --theme-staking-stake-pool-tooltip-delegate-button-hover-background-color
+        );
+        color: var(
+          --theme-staking-stake-pool-tooltip-delegate-button-inverse-color
+        );
+      }
+      &:active {
+        background-color: var(
+          --theme-staking-stake-pool-tooltip-delegate-button-active-background-color
+        );
+        color: var(
+          --theme-staking-stake-pool-tooltip-delegate-button-inverse-color
+        );
+        border: none;
+      }
+    }
+  }
 }
 
 .visible {
@@ -131,13 +159,4 @@
       --theme-staking-stake-pool-tooltip-table-param-retirement-background-color
     );
   }
-}
-
-.delegateButton {
-  background-color: var(
-    --theme-staking-stake-pool-tooltip-delegate-button-background-color
-  ) !important;
-  border: 1px solid
-    var(--theme-staking-stake-pool-tooltip-delegate-button-border-color) !important;
-  width: 100% !important;
 }

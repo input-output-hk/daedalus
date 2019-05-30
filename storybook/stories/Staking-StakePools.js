@@ -1,9 +1,15 @@
 // @flow
 import React from 'react';
-import { number } from '@storybook/addon-knobs';
+import { number, radios } from '@storybook/addon-knobs';
 
 import StakingStakePools from '../../source/renderer/app/components/staking/stake-pools/StakingStakePools';
 import STAKE_POOLS from '../../source/renderer/app/config/stakingStakePools.dummy.json';
+
+const themes = {
+  'Light Blue': 'light-blue',
+  Cardano: 'cardano',
+  'Dark Blue': 'dark-blue',
+};
 
 export const StakingStakePoolsStory = () => (
   <StakingStakePools
@@ -23,5 +29,6 @@ export const StakingStakePoolsStory = () => (
       STAKE_POOLS[36],
     ]}
     onOpenExternalLink={() => {}}
+    currentTheme={radios('Theme', themes)}
   />
 );
