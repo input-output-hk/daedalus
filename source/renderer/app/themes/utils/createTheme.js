@@ -12,48 +12,48 @@ type PartialThemeParts = {
 // assigns values to all react-polymorph CSS variables & returns them
 const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
   const { colors, fonts } = themeParts;
-  const { primary, secondary, error } = colors;
+  const { background, border, error, focus, text } = colors;
   return {
     rpAutocomplete: {
-      '--rp-autocomplete-bg-color': `${primary.background.lightest}`,
-      '--rp-autocomplete-border': `1px solid ${primary.border}`,
-      '--rp-autocomplete-border-color-opened': `${primary.focus}`,
-      '--rp-autocomplete-input-text-color': `${primary.text}`,
-      '--rp-autocomplete-placeholder-color': `${chroma(primary.text).alpha(
+      '--rp-autocomplete-bg-color': `${background.primary.lightest}`,
+      '--rp-autocomplete-border': `1px solid ${border}`,
+      '--rp-autocomplete-border-color-opened': `${focus}`,
+      '--rp-autocomplete-input-text-color': `${text.primary}`,
+      '--rp-autocomplete-placeholder-color': `${chroma(text.primary).alpha(
         0.5
       )}`,
       '--rp-autocomplete-selected-word-box-bg-color': `${
-        secondary.background.light
+        background.secondary.light
       }`,
-      '--rp-autocomplete-selected-word-text-color': `${secondary.text}`,
+      '--rp-autocomplete-selected-word-text-color': `${text.secondary}`,
       '--rp-autocomplete-selected-words-font-family': `${fonts.regular}`,
     },
     rpBubble: {
-      '--rp-bubble-bg-color': `${primary.background.lightest}`,
-      '--rp-bubble-border-color': `${primary.border}`,
+      '--rp-bubble-bg-color': `${background.primary.lightest}`,
+      '--rp-bubble-border-color': `${border}`,
       '--rp-bubble-border-radius': '2px',
     },
     rpButton: {
-      '--rp-button-bg-color': `${secondary.background.regular}`,
-      '--rp-button-bg-color-active': `${secondary.background.darkest}`,
-      '--rp-button-bg-color-disabled': `${secondary.background.lightest}`,
-      '--rp-button-bg-color-hover': `${secondary.background.light}`,
+      '--rp-button-bg-color': `${background.secondary.regular}`,
+      '--rp-button-bg-color-active': `${background.secondary.darkest}`,
+      '--rp-button-bg-color-disabled': `${background.secondary.lightest}`,
+      '--rp-button-bg-color-hover': `${background.secondary.light}`,
       '--rp-button-font-family': `${fonts.medium}`,
       '--rp-button-height': '50px',
       '--rp-button-line-height': '20px',
       '--rp-button-padding': '0',
-      '--rp-button-text-color': `${secondary.text}`,
+      '--rp-button-text-color': `${text.secondary}`,
       '--rp-button-text-transform': 'none',
       '--rp-button-width': '360px',
     },
     rpCheckbox: {
-      '--rp-checkbox-border': `1px solid ${secondary.background.regular}`,
+      '--rp-checkbox-border': `1px solid ${background.secondary.regular}`,
       '--rp-checkbox-border-color-disabled': `${chroma(
-        secondary.background.regular
+        background.secondary.regular
       ).alpha(0.4)}`,
-      '--rp-checkbox-check-bg-color': `${secondary.background.regular}`,
-      '--rp-checkbox-label-text-color': `${primary.text}`,
-      '--rp-checkbox-label-text-color-disabled': `${chroma(primary.text).alpha(
+      '--rp-checkbox-check-bg-color': `${background.secondary.regular}`,
+      '--rp-checkbox-label-text-color': `${text.primary}`,
+      '--rp-checkbox-label-text-color-disabled': `${chroma(text.primary).alpha(
         0.3
       )}`,
     },
@@ -69,79 +69,75 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
     },
     rpFormfield: {
       '--rp-formfield-bg-color-disabled': 'none',
-      '--rp-formfield-label-text-color': `${primary.text}`,
-      '--rp-formfield-label-text-color-disabled': `${primary.text}`,
+      '--rp-formfield-label-text-color': `${text.primary}`,
+      '--rp-formfield-label-text-color-disabled': `${text.primary}`,
       '--rp-formfield-error-text-color': `${error.regular}`,
       '--rp-formfield-error-text-opacity': '0.75',
     },
     rpInput: {
-      '--rp-input-bg-color': `${primary.background.lightest}`,
-      '--rp-input-bg-color-disabled': `${primary.background.lighter}`,
-      '--rp-input-border-color': `${primary.border}`,
-      '--rp-input-border-color-disabled': `${chroma(primary.border).alpha(
-        0.5
-      )}`,
+      '--rp-input-bg-color': `${background.primary.lightest}`,
+      '--rp-input-bg-color-disabled': `${background.primary.lighter}`,
+      '--rp-input-border-color': `${border}`,
+      '--rp-input-border-color-disabled': `${chroma(border).alpha(0.5)}`,
       '--rp-input-border-color-errored': `${error.regular}`,
-      '--rp-input-border-color-focus': `${primary.focus}`,
+      '--rp-input-border-color-focus': `${focus}`,
       '--rp-input-line-height': '22px',
       '--rp-input-padding': '12px 20px',
-      '--rp-input-placeholder-color': `${chroma(primary.text).alpha(0.5)}`,
-      '--rp-input-placeholder-color-disabled': `${chroma(primary.text).alpha(
+      '--rp-input-placeholder-color': `${chroma(text.primary).alpha(0.5)}`,
+      '--rp-input-placeholder-color-disabled': `${chroma(text.primary).alpha(
         0.5
       )}`,
-      '--rp-input-text-color': `${primary.text}`,
-      '--rp-input-text-color-disabled': `${chroma(primary.text).alpha(0.5)}`,
+      '--rp-input-text-color': `${text.primary}`,
+      '--rp-input-text-color-disabled': `${chroma(text.primary).alpha(0.5)}`,
     },
     rpModal: {
-      '--rp-modal-bg-color': `${primary.background.lightest}`,
+      '--rp-modal-bg-color': `${background.primary.lightest}`,
       '--rp-modal-max-height': '90%',
       '--rp-modal-overlay-bg-color': 'rgba(0, 0, 0, 0.4)',
     },
     rpOptions: {
-      '--rp-option-bg-color': `${primary.background.lightest}`,
-      '--rp-option-bg-color-highlighted': `${primary.background.regular}`,
-      '--rp-option-border-color': `${primary.border}`,
-      '--rp-option-checkmark-color': `${primary.text}`,
+      '--rp-option-bg-color': `${background.primary.lightest}`,
+      '--rp-option-bg-color-highlighted': `${background.primary.regular}`,
+      '--rp-option-border-color': `${border}`,
+      '--rp-option-checkmark-color': `${text.primary}`,
       '--rp-option-line-height': '22px',
-      '--rp-option-text-color': `${primary.text}`,
-      '--rp-options-border-color': `${primary.border}`,
+      '--rp-option-text-color': `${text.primary}`,
+      '--rp-options-border-color': `${border}`,
       '--rp-options-shadow': 'none',
     },
     rpSelect: {
-      '--rp-select-arrow-bg-color': `${primary.border}`,
-      '--rp-select-arrow-bg-color-open': `${primary.focus}`,
-      '--rp-select-input-bg-color': `${primary.background.lightest}`,
-      '--rp-select-input-border-color': `${primary.border}`,
-      '--rp-select-input-border-color-focus': `${primary.focus}`,
-      '--rp-select-input-text-color': `${primary.text}`,
+      '--rp-select-arrow-bg-color': `${border}`,
+      '--rp-select-arrow-bg-color-open': `${focus}`,
+      '--rp-select-input-bg-color': `${background.primary.lightest}`,
+      '--rp-select-input-border-color': `${border}`,
+      '--rp-select-input-border-color-focus': `${focus}`,
+      '--rp-select-input-text-color': `${text.primary}`,
     },
     rpSwitch: {
-      '--rp-switch-bg-color-off': `${secondary.background.regular}`,
-      '--rp-switch-bg-color-on': `${secondary.background.regular}`,
+      '--rp-switch-bg-color-off': `${background.secondary.regular}`,
+      '--rp-switch-bg-color-on': `${background.secondary.regular}`,
       '--rp-switch-label-margin': '0 30px 0 0',
       '--rp-switch-label-opacity': '0.5',
-      '--rp-switch-label-text-color': `${primary.text}`,
+      '--rp-switch-label-text-color': `${text.primary}`,
       '--rp-switch-label-width': '100%',
       '--rp-switch-opacity-off': '0.3',
       '--rp-switch-root-margin': '0 0 30px 0',
-      '--rp-switch-thumb-bg-color': `${secondary.text}`,
+      '--rp-switch-thumb-bg-color': `${text.secondary}`,
     },
     rpTextarea: {
-      '--rp-textarea-bg-color': `${primary.background.regular}`,
+      '--rp-textarea-bg-color': `${background.primary.regular}`,
       '--rp-textarea-bg-color-disabled': `${chroma(
-        primary.background.regular
+        background.primary.regular
       ).alpha(0.5)}`,
-      '--rp-textarea-border': `1px solid ${primary.border}`,
-      '--rp-textarea-border-color-disabled': `${chroma(primary.border).alpha(
-        0.5
-      )}`,
+      '--rp-textarea-border': `1px solid ${border}`,
+      '--rp-textarea-border-color-disabled': `${chroma(border).alpha(0.5)}`,
       '--rp-textarea-border-color-errored': `${error.regular}`,
-      '--rp-textarea-border-color-focus': `${primary.focus}`,
+      '--rp-textarea-border-color-focus': `${focus}`,
       '--rp-textarea-border-radius': '2px',
       '--rp-textarea-line-height': '20px',
-      '--rp-textarea-placeholder-color': `${chroma(primary.text).alpha(0.5)}`,
+      '--rp-textarea-placeholder-color': `${chroma(text.primary).alpha(0.5)}`,
       '--rp-textarea-resize': 'none',
-      '--rp-textarea-text-color': `${primary.text}`,
+      '--rp-textarea-text-color': `${text.primary}`,
     },
   };
 };
@@ -151,124 +147,127 @@ const createDaedalusComponentsTheme = (
   themeParts: PartialThemeParts
 ): Object => {
   const { colors, fonts } = themeParts;
-
-  const { primary, secondary, error } = colors;
+  const { background, border, error, focus, text } = colors;
   return {
     aboutWindow: {
       '--theme-about-window-background-color': `${chroma(
-        secondary.background.regular
+        background.secondary.regular
       ).alpha(0.96)}`,
-      '--theme-about-window-header-bottom-border-color': `${secondary.border}`,
-      '--theme-about-window-daedalus-icon-color': `${secondary.text}`,
-      '--theme-about-window-cardano-icon-color': `${secondary.text}`,
-      '--theme-about-window-title-varsion-color': `${secondary.text}`,
-      '--theme-about-window-title-stroke-color': `${secondary.text}`,
-      '--theme-about-window-content-color': `${secondary.text}`,
-      '--theme-about-window-content-text-color': `${secondary.text}`,
-      '--theme-about-window-content-bottom-border-color': `${secondary.border}`,
+      '--theme-about-window-header-bottom-border-color': `${chroma(
+        text.secondary
+      ).alpha(0.3)}`,
+      '--theme-about-window-daedalus-icon-color': `${text.secondary}`,
+      '--theme-about-window-cardano-icon-color': `${text.secondary}`,
+      '--theme-about-window-title-varsion-color': `${text.secondary}`,
+      '--theme-about-window-title-stroke-color': `${text.secondary}`,
+      '--theme-about-window-content-color': `${text.secondary}`,
+      '--theme-about-window-content-text-color': `${text.secondary}`,
+      '--theme-about-window-content-bottom-border-color': `${chroma(
+        text.secondary
+      ).alpha(0.3)}`,
       '--theme-about-window-icon-close-button-color': `${
-        primary.background.lightest
+        background.primary.lightest
       }`,
       '--theme-about-window-icon-close-hover-background': `${
-        secondary.background.dark
+        background.secondary.dark
       }`,
     },
     adaRedemption: {
-      '--theme-ada-redemption-headline-color': `${primary.text}`,
-      '--theme-ada-redemption-instructions-color': `${primary.text}`,
+      '--theme-ada-redemption-headline-color': `${text.primary}`,
+      '--theme-ada-redemption-instructions-color': `${text.primary}`,
       '--theme-ada-redemption-success-overlay-border-color': `${
-        secondary.text
+        text.secondary
       }`,
       '--theme-ada-redemption-success-overlay-message-color': `${
-        secondary.text
+        text.secondary
       }`,
       '--theme-ada-redemption-success-overlay-button-text-color': `${
-        secondary.text
+        text.secondary
       }`,
       '--theme-ada-redemption-success-overlay-button-text-color-hover': `${
-        secondary.background.regular
+        background.secondary.regular
       }`,
       '--theme-ada-redemption-success-overlay-background-color': `${
-        secondary.background.regular
+        background.secondary.regular
       }`,
       '--theme-ada-redemption-success-overlay-button-background-color-hover': `${
-        secondary.background.light
+        background.secondary.light
       }`,
       '--theme-ada-redemption-disclaimer-background-color':
         'rgba(171, 23, 0, 0.94)',
-      '--theme-ada-redemption-disclaimer-text-color': `${secondary.text}`,
+      '--theme-ada-redemption-disclaimer-text-color': `${text.secondary}`,
       '--theme-ada-redemption-disclaimer-checkbox-color-check': `${
-        primary.background.lightest
+        background.primary.lightest
       }`,
       '--theme-ada-redemption-disclaimer-checkbox-color-checked': `${
-        primary.background.lightest
+        background.primary.lightest
       }`,
       '--theme-ada-redemption-disclaimer-checkbox-color-after': `${
         error.regular
       }`,
       '--theme-ada-redemption-disclaimer-checkbox-label-color': `${
-        secondary.text
+        text.secondary
       }`,
-      '--theme-ada-redemption-no-wallets-instructions-color': `${primary.text}`,
+      '--theme-ada-redemption-no-wallets-instructions-color': `${text.primary}`,
       '--theme-ada-redemption-disclaimer-button-border-color': `${
-        primary.background.lightest
+        background.primary.lightest
       }`,
     },
     blockConsolidation: {
       '--theme-block-consolidation-background-color': `${
-        secondary.background.regular
+        background.secondary.regular
       }`,
-      '--theme-block-consolidation-title-text-color': `${secondary.text}`,
-      '--theme-block-consolidation-text-color': `${secondary.text}`,
-      '--theme-block-consolidation-text-highlight-color': `${secondary.text}`,
+      '--theme-block-consolidation-title-text-color': `${text.secondary}`,
+      '--theme-block-consolidation-text-color': `${text.secondary}`,
+      '--theme-block-consolidation-text-highlight-color': `${text.secondary}`,
       '--theme-block-consolidation-epochs-text-color': `${
-        secondary.background.regular
+        background.secondary.regular
       }`,
-      '--theme-block-consolidation-indicator-text-color': `${secondary.text}`,
+      '--theme-block-consolidation-indicator-text-color': `${text.secondary}`,
       '--theme-block-consolidation-indicator-container-background-color':
         'rgba(0, 0, 0, 0.1)',
       '--theme-block-consolidation-indicator-epochs-behind-background-color-1': `${
-        primary.background.lightest
+        background.primary.lightest
       }`,
       '--theme-block-consolidation-indicator-epochs-behind-background-color-2': `${
-        secondary.background.regular
+        background.secondary.regular
       }`,
       '--theme-block-consolidation-stripe-dark-1-background-color': `${
-        primary.background.regular
+        background.primary.regular
       }`,
       '--theme-block-consolidation-stripe-dark-2-background-color': `${
-        primary.background.dark
+        background.primary.dark
       }`,
       '--theme-block-consolidation-stripe-light-1-background-color': `${
-        secondary.background.lightest
+        background.secondary.lightest
       }`,
       '--theme-block-consolidation-stripe-light-2-background-color': `${
-        primary.background.light
+        background.primary.light
       }`,
       '--theme-block-consolidation-button-background-color': `${
-        secondary.background.dark
+        background.secondary.dark
       }`,
       '--theme-block-consolidation-button-background-color-hover': `${
-        primary.background.lightest
+        background.primary.lightest
       }`,
       '--theme-block-consolidation-button-text-color-hover': `${
-        secondary.background.regular
+        background.secondary.regular
       }`,
       '--theme-block-consolidation-button-border-color': `${
-        primary.background.lightest
+        background.primary.lightest
       }`,
     },
     body: {
-      '--theme-main-body-background-color': `${primary.background.regular}`,
-      '--theme-main-body-messages-color': `${primary.text}`,
+      '--theme-main-body-background-color': `${background.primary.regular}`,
+      '--theme-main-body-messages-color': `${text.primary}`,
     },
     borderedBox: {
-      '--theme-bordered-box-background-color': `${primary.background.lightest}`,
-      '--theme-bordered-box-border': `1px solid ${primary.border}`,
-      '--theme-bordered-box-text-color': `${primary.text}`,
+      '--theme-bordered-box-background-color': `${background.primary.lightest}`,
+      '--theme-bordered-box-border': `1px solid ${border}`,
+      '--theme-bordered-box-text-color': `${text.primary}`,
     },
     baton: {
-      '--theme-label-button-color': `${primary.text}`,
+      '--theme-label-button-color': `${text.primary}`,
     },
     buttonAttention: {
       '--theme-button-attention-background-color': `${error.regular}`,
@@ -278,8 +277,8 @@ const createDaedalusComponentsTheme = (
         error.ultralight
       }`,
 
-      '--theme-button-attention-text-color': `${secondary.text}`,
-      '--theme-button-attention-text-color-disabled': `${secondary.text}`,
+      '--theme-button-attention-text-color': `${text.secondary}`,
+      '--theme-button-attention-text-color-disabled': `${text.secondary}`,
       '--theme-button-attention-outline-color': `${error.lighter}`,
     },
     buttonDisclaimer: {
@@ -297,69 +296,67 @@ const createDaedalusComponentsTheme = (
         'rgba(250, 251, 252, .3)',
     },
     buttonFlat: {
-      '--theme-button-flat-background-color': `${primary.background.light}`,
+      '--theme-button-flat-background-color': `${background.primary.light}`,
       '--theme-button-flat-background-color-hover': `${
-        primary.background.lighter
+        background.primary.lighter
       }`,
       '--theme-button-flat-background-color-active': `${
-        primary.background.regular
+        background.primary.regular
       }`,
       '--theme-button-flat-background-color-disabled': `${
-        primary.background.lighter
+        background.primary.lighter
       }`,
-      '--theme-button-flat-text-color-disabled': `${primary.text}`,
-      '--theme-button-flat-text-color': `${primary.text}`,
-      '--theme-button-flat-outline-color': `${primary.background.dark}`,
+      '--theme-button-flat-text-color-disabled': `${text.primary}`,
+      '--theme-button-flat-text-color': `${text.primary}`,
+      '--theme-button-flat-outline-color': `${background.primary.dark}`,
     },
     buttonPrimary: {
       '--theme-button-primary-background-color': `${
-        secondary.background.regular
+        background.secondary.regular
       }`,
       '--theme-button-primary-background-color-hover': `${
-        secondary.background.light
+        background.secondary.light
       }`,
       '--theme-button-primary-background-color-active': `${
-        secondary.background.darkest
+        background.secondary.darkest
       }`,
       '--theme-button-primary-background-color-disabled': `${
-        secondary.background.lightest
+        background.secondary.lightest
       }`,
-      '--theme-button-primary-text-color-disabled': `${secondary.text}`,
-      '--theme-button-primary-text-color': `${secondary.text}`,
-      '--theme-button-primary-outline-color': `${secondary.background.light}`,
+      '--theme-button-primary-text-color-disabled': `${text.secondary}`,
+      '--theme-button-primary-text-color': `${text.secondary}`,
+      '--theme-button-primary-outline-color': `${background.secondary.light}`,
     },
     connecting: {
-      '--theme-connecting-background-color': `${primary.background.regular}`,
-      '--theme-connecting-text-color': `${primary.text}`,
+      '--theme-connecting-background-color': `${background.primary.regular}`,
+      '--theme-connecting-text-color': `${text.primary}`,
     },
     dataMigration: {
       '--theme-data-migration-layer-background-color': `${
-        secondary.background.regular
+        background.secondary.regular
       }`,
       '--theme-data-migration-layer-box-shadow-color': `${
-        secondary.background.regular
+        background.secondary.regular
       }`,
       '--theme-data-migration-layer-button-background-color-hover': `${
-        primary.background.regular
+        background.primary.regular
       }`,
-      '--theme-data-migration-layer-text-color': `${secondary.text}`,
-      '--theme-data-migration-layer-text-opacity-color': `${secondary.text}`,
+      '--theme-data-migration-layer-text-color': `${text.secondary}`,
+      '--theme-data-migration-layer-text-opacity-color': `${text.secondary}`,
     },
     dialog: {
-      '--theme-dialog-choice-tabs-text-color': `${primary.text}`,
-      '--theme-dialog-choice-tabs-text-color-active': `${primary.text}`,
-      '--theme-dialog-choice-tabs-bottom-border-color-active': `${
-        primary.focus
-      }`,
+      '--theme-dialog-choice-tabs-text-color': `${text.primary}`,
+      '--theme-dialog-choice-tabs-text-color-active': `${text.primary}`,
+      '--theme-dialog-choice-tabs-bottom-border-color-active': `${focus}`,
       '--theme-dialog-big-button-background-color': `${
-        primary.background.lightest
+        background.primary.lightest
       }`,
-      '--theme-dialog-big-button-border-color': `${primary.border}`,
-      '--theme-dialog-big-button-label-color': `${primary.text}`,
-      '--theme-dialog-big-button-description-color': `${primary.text}`,
-      '--theme-dialog-title-color': `${primary.text}`,
-      '--theme-dialog-text-color': `${primary.text}`,
-      '--theme-dialog-border-color': `${primary.border}`,
+      '--theme-dialog-big-button-border-color': `${border}`,
+      '--theme-dialog-big-button-label-color': `${text.primary}`,
+      '--theme-dialog-big-button-description-color': `${text.primary}`,
+      '--theme-dialog-title-color': `${text.primary}`,
+      '--theme-dialog-text-color': `${text.primary}`,
+      '--theme-dialog-border-color': `${border}`,
     },
     errors: {
       '--theme-color-error': `${error.regular}`,
@@ -377,146 +374,146 @@ const createDaedalusComponentsTheme = (
       '--font-mono': `${fonts.mono}`,
     },
     icon: {
-      '--theme-icon-nav-color': `${secondary.text}`,
-      '--theme-icon-nav-color-active': `${primary.text}`,
-      '--theme-icon-sidebar-color': `${primary.background.regular}`,
-      '--theme-icon-toggle-menu-color': `${primary.background.regular}`,
-      '--theme-icon-node-update-notification-arrow-color': `${primary.text}`,
-      '--theme-icon-add-wallet-from-sidebar-color': `${secondary.text}`,
-      '--theme-icon-ada-redemption-attention-color': `${secondary.text}`,
-      '--theme-icon-ada-redemption-success-color': `${primary.text}`,
-      '--theme-icon-ada-redemption-certificate-color': `${primary.text}`,
-      '--theme-icon-ada-redemption-no-wallets': `${primary.text}`,
-      '--theme-icon-ada-summary-wallet-amount-symbol-color': `${primary.text}`,
+      '--theme-icon-nav-color': `${text.secondary}`,
+      '--theme-icon-nav-color-active': `${text.primary}`,
+      '--theme-icon-sidebar-color': `${background.primary.regular}`,
+      '--theme-icon-toggle-menu-color': `${background.primary.regular}`,
+      '--theme-icon-node-update-notification-arrow-color': `${text.primary}`,
+      '--theme-icon-add-wallet-from-sidebar-color': `${text.secondary}`,
+      '--theme-icon-ada-redemption-attention-color': `${text.secondary}`,
+      '--theme-icon-ada-redemption-success-color': `${text.primary}`,
+      '--theme-icon-ada-redemption-certificate-color': `${text.primary}`,
+      '--theme-icon-ada-redemption-no-wallets': `${text.primary}`,
+      '--theme-icon-ada-summary-wallet-amount-symbol-color': `${text.primary}`,
       '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color': `${
-        primary.text
+        text.primary
       }`,
       '--theme-icon-add-wallet-dialog-big-button-color': `${
-        primary.background.darker
+        background.primary.darker
       }`,
-      '--theme-icon-copy-address-color': `${primary.text}`,
-      '--theme-icon-back-button-color': `${primary.text}`,
-      '--theme-icon-close-button-color': `${primary.text}`,
-      '--theme-icon-file-upload-color': `${primary.text}`,
-      '--theme-icon-transactions-ada-symbol-color': `${primary.text}`,
-      '--theme-icon-syncing-logo-color': `${primary.text}`,
-      '--theme-icon-connecting-logo-color': `${primary.text}`,
+      '--theme-icon-copy-address-color': `${text.primary}`,
+      '--theme-icon-back-button-color': `${text.primary}`,
+      '--theme-icon-close-button-color': `${text.primary}`,
+      '--theme-icon-file-upload-color': `${text.primary}`,
+      '--theme-icon-transactions-ada-symbol-color': `${text.primary}`,
+      '--theme-icon-syncing-logo-color': `${text.primary}`,
+      '--theme-icon-connecting-logo-color': `${text.primary}`,
       '--theme-icon-transaction-type-color': '#fafbfc',
     },
     input: {
-      '--theme-input-border-color': `${primary.border}`,
-      '--theme-input-label-color': `${primary.text}`,
-      '--theme-input-text-color': `${primary.text}`,
-      '--theme-input-right-floating-text-color': `${chroma(primary.text).alpha(
+      '--theme-input-border-color': `${border}`,
+      '--theme-input-label-color': `${text.primary}`,
+      '--theme-input-text-color': `${text.primary}`,
+      '--theme-input-right-floating-text-color': `${chroma(text.primary).alpha(
         0.5
       )}`,
-      '--theme-input-placeholder-color': `${chroma(primary.text).alpha(0.5)}`,
+      '--theme-input-placeholder-color': `${chroma(text.primary).alpha(0.5)}`,
       '--theme-input-remove-color-light': `${error.regular}`,
-      '--theme-input-background-color': `${primary.background.lightest}`,
-      '--theme-input-focus-border-color': `${primary.focus}`,
+      '--theme-input-background-color': `${background.primary.lightest}`,
+      '--theme-input-focus-border-color': `${focus}`,
       '--theme-input-hint-font': `${fonts.regular}`,
     },
     loading: {
-      '--theme-loading-background-color': `${primary.background.regular}`,
+      '--theme-loading-background-color': `${background.primary.regular}`,
       '--theme-loading-no-disk-space-background-color': `${
-        primary.background.regular
+        background.primary.regular
       }`,
-      '--theme-loading-no-disk-space-text-color': `${primary.text}`,
-      '--theme-loading-no-disk-space-attention-icon-color': `${primary.text}`,
+      '--theme-loading-no-disk-space-text-color': `${text.primary}`,
+      '--theme-loading-no-disk-space-attention-icon-color': `${text.primary}`,
       '--theme-loading-status-icons-on-color': '#2dc06c',
       '--theme-loading-status-icons-off-color': '#ea4c5b',
-      '--theme-loading-status-icons-unloaded-loading-color': `${primary.text}`,
-      '--theme-loading-status-icons-unloaded-syncing-color': `${primary.text}`,
-      '--theme-loading-status-icons-tooltip-color': `${primary.text}`,
-      '--theme-loading-spinner-color': `${primary.text}`,
+      '--theme-loading-status-icons-unloaded-loading-color': `${text.primary}`,
+      '--theme-loading-status-icons-unloaded-syncing-color': `${text.primary}`,
+      '--theme-loading-status-icons-tooltip-color': `${text.primary}`,
+      '--theme-loading-spinner-color': `${text.primary}`,
     },
     mnemonic: {
-      '--theme-mnemonic-background-color': `${primary.background.regular}`,
-      '--theme-mnemonic-background-color-hover': `${primary.background.dark}`,
-      '--theme-backup-mnemonic-background-color': `${primary.background.light}`,
+      '--theme-mnemonic-background-color': `${background.primary.regular}`,
+      '--theme-mnemonic-background-color-hover': `${background.primary.dark}`,
+      '--theme-backup-mnemonic-background-color': `${background.primary.light}`,
     },
     modal: {
       '--theme-modal-overlay-background-color': 'rgba(0, 0, 0, 0.4)',
     },
     navItem: {
-      '--theme-nav-item-background-color': `${secondary.background.darkest}`,
+      '--theme-nav-item-background-color': `${background.secondary.darkest}`,
       '--theme-nav-item-background-color-active': `${
-        primary.background.lightest
+        background.primary.lightest
       }`,
       '--theme-nav-item-background-color-hover': `${
-        secondary.background.darker
+        background.secondary.darker
       }`,
-      '--theme-nav-item-text-color': `${secondary.text}`,
-      '--theme-nav-item-text-color-active': `${primary.text}`,
+      '--theme-nav-item-text-color': `${text.secondary}`,
+      '--theme-nav-item-text-color-active': `${text.primary}`,
     },
     network: {
       '--theme-network-window-background-color': `${chroma(
-        secondary.background.regular
+        background.secondary.regular
       ).alpha(0.96)}`,
-      '--theme-network-window-text-color': `${secondary.text}`,
+      '--theme-network-window-text-color': `${text.secondary}`,
       '--theme-network-window-icon-close-hover-background': `${
-        secondary.background.dark
+        background.secondary.dark
       }`,
       '--theme-network-window-red-color': '#f06e05',
       '--theme-network-window-green-color': '#05f079',
-      '--theme-network-window-white-color': `${secondary.text}`,
+      '--theme-network-window-white-color': `${text.secondary}`,
       '--theme-network-window-transparent-color': 'transparent',
-      '--theme-network-window-border-color': `${chroma(secondary.text).alpha(
+      '--theme-network-window-border-color': `${chroma(text.secondary).alpha(
         0.7
       )}`,
-      '--theme-network-window-button-text-color': `${secondary.text}`,
+      '--theme-network-window-button-text-color': `${text.secondary}`,
       '--theme-network-window-button-background-color': `${chroma(
-        secondary.background.lightest
+        background.secondary.lightest
       ).alpha(0.4)}`,
     },
     nodeUpdate: {
-      '--theme-node-update-background-color': `${primary.background.regular}`,
-      '--theme-node-update-title-color': `${primary.text}`,
-      '--theme-node-update-message-color': `${primary.text}`,
+      '--theme-node-update-background-color': `${background.primary.regular}`,
+      '--theme-node-update-title-color': `${text.primary}`,
+      '--theme-node-update-message-color': `${text.primary}`,
       '--theme-node-sync-info-message-background-color': `${
-        primary.background.regular
+        background.primary.regular
       }`,
-      '--theme-node-sync-info-message-text-color': `${primary.text}`,
+      '--theme-node-sync-info-message-text-color': `${text.primary}`,
       '--theme-node-update-accept-button-background-color': `${
-        secondary.background.regular
+        background.secondary.regular
       }`,
       '--theme-node-update-accept-button-background-color-hover': `${
-        secondary.background.light
+        background.secondary.light
       }`,
       '--theme-node-update-accept-button-background-color-active': `${
-        secondary.background.darkest
+        background.secondary.darkest
       }`,
       '--theme-node-update-deny-button-background-color': `${
-        secondary.background.regular
+        background.secondary.regular
       }`,
       '--theme-node-update-deny-button-background-color-hover': `${
-        secondary.background.light
+        background.secondary.light
       }`,
       '--theme-node-update-deny-button-background-color-active': `${
-        secondary.background.darkest
+        background.secondary.darkest
       }`,
-      '--theme-node-update-button-text-color': `${secondary.text}`,
+      '--theme-node-update-button-text-color': `${text.secondary}`,
     },
     notification: {
       '--theme-notification-message-background-color': `${chroma(
-        secondary.background.regular
+        background.secondary.regular
       ).alpha(0.88)}`,
-      '--theme-notification-message-text-color': `${secondary.text}`,
+      '--theme-notification-message-text-color': `${text.secondary}`,
     },
     paperWallet: {
       '--theme-paper-wallet-create-certificate-dialog-explorer-link-color': `${
-        secondary.background.regular
+        background.secondary.regular
       }`,
       '--theme-paper-wallet-create-certificate-dialog-explorer-link-background-color': `${
-        secondary.text
+        text.secondary
       }`,
     },
     progressBar: {
       '--theme-progress-bar-background-color': `${chroma(
-        primary.background.light
+        background.primary.light
       ).alpha(0.3)}`,
       '--theme-progress-bar-foreground-color': `${chroma(
-        primary.background.light
+        background.primary.light
       ).alpha(0.7)}`,
     },
     receiveQRCode: {
@@ -525,166 +522,166 @@ const createDaedalusComponentsTheme = (
     },
     reportIssue: {
       '--theme-report-issue-button-background-color': `${
-        secondary.background.regular
+        background.secondary.regular
       }`,
       '--theme-report-issue-button-background-color-hover': `${
-        secondary.background.light
+        background.secondary.light
       }`,
       '--theme-report-issue-button-background-color-active': `${
-        secondary.background.darkest
+        background.secondary.darkest
       }`,
       '--theme-report-issue-connecting-background-color': `${
-        primary.background.regular
+        background.primary.regular
       }`,
-      '--theme-report-issue-connecting-text-color': `${primary.text}`,
+      '--theme-report-issue-connecting-text-color': `${text.primary}`,
       '--theme-report-issue-syncing-background-color': `${
-        primary.background.regular
+        background.primary.regular
       }`,
-      '--theme-report-issue-syncing-text-color': `${primary.text}`,
+      '--theme-report-issue-syncing-text-color': `${text.primary}`,
       '--theme-report-issue-syncing-download-logs-text-color': `${
-        primary.text
+        text.primary
       }`,
       '--theme-report-issue-syncing-download-logs-text-color-connecting': `${
-        primary.text
+        text.primary
       }`,
     },
     scrollbar: {
-      '--theme-scrollbar-thumb-background': `${primary.background.darker}`,
+      '--theme-scrollbar-thumb-background': `${background.primary.darker}`,
     },
     sendConfirmation: {
       '--theme-send-confirmation-dialog-send-values-color': `${error.regular}`,
     },
     settings: {
-      '--theme-settings-body-background-color': `${primary.background.regular}`,
+      '--theme-settings-body-background-color': `${background.primary.regular}`,
       '--theme-settings-pane-background-color': `${
-        primary.background.lightest
+        background.primary.lightest
       }`,
-      '--theme-settings-pane-border': `1px solid ${primary.border}`,
+      '--theme-settings-pane-border': `1px solid ${border}`,
       '--theme-settings-menu-box-background-color': `${
-        primary.background.lightest
+        background.primary.lightest
       }`,
-      '--theme-settings-menu-box-border': `1px solid ${primary.border}`,
-      '--theme-settings-menu-item-text-color': `${primary.text}`,
-      '--theme-settings-menu-item-text-color-active': `${primary.text}`,
+      '--theme-settings-menu-box-border': `1px solid ${border}`,
+      '--theme-settings-menu-item-text-color': `${text.primary}`,
+      '--theme-settings-menu-item-text-color-active': `${text.primary}`,
       '--theme-settings-menu-item-text-color-disabled': `${chroma(
-        primary.text
+        text.primary
       ).alpha(0.5)}`,
       '--theme-settings-menu-item-background-color-active': `${
-        primary.background.regular
+        background.primary.regular
       }`,
       '--theme-settings-menu-item-left-border-color-active': `${
-        secondary.background.regular
+        background.secondary.regular
       }`,
-      '--theme-settings-theme-select-title-color': `${primary.text}`,
+      '--theme-settings-theme-select-title-color': `${text.primary}`,
     },
     sidebar: {
-      '--theme-sidebar-background-color': `${secondary.background.regular}`,
+      '--theme-sidebar-background-color': `${background.secondary.regular}`,
       '--theme-sidebar-category-background-color-hover': `${
-        secondary.background.dark
+        background.secondary.dark
       }`,
       '--theme-sidebar-category-background-color-active': `${
-        secondary.background.darker
+        background.secondary.darker
       }`,
-      '--theme-sidebar-category-text-color': `${secondary.text}`,
-      '--theme-sidebar-menu-background-color': `${secondary.background.darker}`,
+      '--theme-sidebar-category-text-color': `${text.secondary}`,
+      '--theme-sidebar-menu-background-color': `${background.secondary.darker}`,
       '--theme-sidebar-menu-item-background-color-hover': `${
-        secondary.background.darkest
+        background.secondary.darkest
       }`,
       '--theme-sidebar-menu-item-background-color-active': `${
-        secondary.background.darkest
+        background.secondary.darkest
       }`, // rename to active wallet?
-      '--theme-sidebar-menu-item-wallet-name-color': `${secondary.text}`,
-      '--theme-sidebar-menu-item-wallet-info-color': `${secondary.text}`,
+      '--theme-sidebar-menu-item-wallet-name-color': `${text.secondary}`,
+      '--theme-sidebar-menu-item-wallet-info-color': `${text.secondary}`,
       '--theme-sidebar-menu-add-button-background-color': `${
-        secondary.background.darkest
+        background.secondary.darkest
       }`,
       '--theme-sidebar-menu-add-button-background-color-active': `${chroma(
-        secondary.background.darkest
+        background.secondary.darkest
       ).alpha(0.66)}`,
       '--theme-sidebar-menu-add-button-background-color-hover': `${chroma(
-        secondary.background.darkest
+        background.secondary.darkest
       ).alpha(0.66)}`,
-      '--theme-sidebar-menu-add-button-text-color': `${secondary.text}`,
+      '--theme-sidebar-menu-add-button-text-color': `${text.secondary}`,
     },
     staking: {
-      '--theme-staking-background-color': `${primary.background.regular}`,
+      '--theme-staking-background-color': `${background.primary.regular}`,
       '--theme-staking-content-background-color': `${
-        primary.background.lightest
+        background.primary.lightest
       }`,
-      '--theme-staking-content-border-color': `${primary.border}`,
-      '--theme-staking-font-color-accent': `${primary.focus}`,
-      '--theme-staking-font-color-regular': `${primary.text}`,
-      '--theme-staking-font-color-light': `${chroma(primary.text).alpha(0.7)}`,
-      '--theme-staking-font-color-lighter': `${chroma(primary.text).alpha(
+      '--theme-staking-content-border-color': `${border}`,
+      '--theme-staking-font-color-accent': `${focus}`,
+      '--theme-staking-font-color-regular': `${text.primary}`,
+      '--theme-staking-font-color-light': `${chroma(text.primary).alpha(0.7)}`,
+      '--theme-staking-font-color-lighter': `${chroma(text.primary).alpha(
         0.5
       )}`,
       '--theme-staking-table-head-background-color': `${
-        primary.background.regular
+        background.primary.regular
       }`,
-      '--theme-staking-table-border-color': `${primary.border}`,
-      '--theme-staking-link-color': `${secondary.background.regular}`,
-      '--theme-staking-link-color-light': `${secondary.background.light}`,
+      '--theme-staking-table-border-color': `${border}`,
+      '--theme-staking-link-color': `${background.secondary.regular}`,
+      '--theme-staking-link-color-light': `${background.secondary.light}`,
       '--theme-staking-decentralization-progress-stripe-dark-1-background-color': `${
-        secondary.background.dark
+        background.secondary.dark
       }`,
       '--theme-staking-decentralization-progress-stripe-dark-2-background-color': `${
-        secondary.background.regular
+        background.secondary.regular
       }`,
     },
     support: {
-      '--theme-support-settings-text-color': `${primary.text}`,
-      '--theme-support-settings-link-color': `${secondary.background.regular}`,
-      '--theme-support-settings-item-color': `${primary.text}`,
+      '--theme-support-settings-text-color': `${text.primary}`,
+      '--theme-support-settings-link-color': `${background.secondary.regular}`,
+      '--theme-support-settings-item-color': `${text.primary}`,
     },
     syncing: {
-      '--theme-syncing-background-color': `${primary.background.regular}`,
-      '--theme-syncing-text-color': `${primary.text}`,
+      '--theme-syncing-background-color': `${background.primary.regular}`,
+      '--theme-syncing-text-color': `${text.primary}`,
     },
     systemError: {
-      '--theme-system-error-overlay-attention-icon-color': `${secondary.text}`,
+      '--theme-system-error-overlay-attention-icon-color': `${text.secondary}`,
       '--theme-system-error-overlay-background-color': `${error.regular}`,
-      '--theme-system-error-overlay-text-color': `${secondary.text}`,
+      '--theme-system-error-overlay-text-color': `${text.secondary}`,
     },
     tabs: {
-      '--theme-choice-tabs-text-color': `${primary.text}`,
-      '--theme-choice-tabs-text-color-active': `${primary.text}`,
-      '--theme-choice-tabs-bottom-border-color-active': `${primary.text}`,
+      '--theme-choice-tabs-text-color': `${text.primary}`,
+      '--theme-choice-tabs-text-color-active': `${text.primary}`,
+      '--theme-choice-tabs-bottom-border-color-active': `${text.primary}`,
     },
     testEnvironment: {
       '--theme-test-environment-label-background-color': '#ab1700',
-      '--theme-test-environment-label-text-color': `${secondary.text}`,
+      '--theme-test-environment-label-text-color': `${text.secondary}`,
     },
     topBar: {
-      '--theme-topbar-background-color': `${secondary.background.darkest}`,
-      '--theme-topbar-wallet-name-color': `${secondary.text}`,
-      '--theme-topbar-wallet-info-color': `${secondary.text}`,
+      '--theme-topbar-background-color': `${background.secondary.darkest}`,
+      '--theme-topbar-wallet-name-color': `${text.secondary}`,
+      '--theme-topbar-wallet-info-color': `${text.secondary}`,
       '--theme-topbar-layout-body-background-color': `${
-        secondary.background.regular
+        background.secondary.regular
       }`,
     },
     transactions: {
       '--theme-transactions-list-background-color': `${
-        primary.background.lightest
+        background.primary.lightest
       }`,
-      '--theme-transactions-list-border-color': `${primary.border}`,
-      '--theme-transactions-list-group-date-color': `${primary.text}`,
-      '--theme-transactions-list-item-details-color': `${primary.text}`,
+      '--theme-transactions-list-border-color': `${border}`,
+      '--theme-transactions-list-group-date-color': `${text.primary}`,
+      '--theme-transactions-list-item-details-color': `${text.primary}`,
       '--theme-transactions-state-failed-background-color': `${
-        primary.background.dark
+        background.primary.dark
       }`,
-      '--theme-transactions-state-failed-text-color': `${primary.text}`,
+      '--theme-transactions-state-failed-text-color': `${text.primary}`,
       '--theme-transactions-state-pending-background-color': `${
-        primary.background.dark
+        background.primary.dark
       }`,
       '--theme-transactions-state-pending-stripes-color': `${
-        primary.background.darker
+        background.primary.darker
       }`,
-      '--theme-transactions-priority-color': `${primary.background.regular}`,
+      '--theme-transactions-priority-color': `${background.primary.regular}`,
       '--theme-transactions-priority-low-background-color': `${error.dark}`,
       '--theme-transactions-priority-medium-background-color': '#e6aa00',
       '--theme-transactions-priority-high-background-color': '#007600',
       '--theme-transactions-search-background-color': `${
-        primary.background.regular
+        background.primary.regular
       }`,
       '--theme-transactions-icon-type-expend-background-color': '#84a2d2',
       '--theme-transactions-icon-type-income-background-color': '#2dc06c',
@@ -692,33 +689,33 @@ const createDaedalusComponentsTheme = (
       '--theme-transactions-icon-type-failed-background-color': `${
         error.light
       }`,
-      '--theme-transactions-arrow-stroke-color': `${primary.text}`,
+      '--theme-transactions-arrow-stroke-color': `${text.primary}`,
     },
     uploader: {
-      '--theme-uploader-text-color': `${primary.text}`,
-      '--theme-uploader-border-color': `${primary.border}`,
+      '--theme-uploader-text-color': `${text.primary}`,
+      '--theme-uploader-border-color': `${border}`,
     },
     utxo: {
       '--theme-utxo-background-color': `${chroma(
-        primary.background.regular
+        background.primary.regular
       ).alpha(0.5)}`,
-      '--theme-utxo-title-text-color': `${primary.text}`,
-      '--theme-utxo-title-description-color': `${chroma(primary.text).alpha(
+      '--theme-utxo-title-text-color': `${text.primary}`,
+      '--theme-utxo-title-description-color': `${chroma(text.primary).alpha(
         0.7
       )}`,
-      '--theme-utxo-bar-color': `${chroma(secondary.background.dark).alpha(
+      '--theme-utxo-bar-color': `${chroma(background.secondary.dark).alpha(
         0.5
       )}`,
-      '--theme-utxo-label-text-color': `${chroma(primary.text).alpha(0.45)}`,
-      '--theme-utxo-tick-text-color': `${chroma(primary.text).alpha(0.45)}`,
+      '--theme-utxo-label-text-color': `${chroma(text.primary).alpha(0.45)}`,
+      '--theme-utxo-tick-text-color': `${chroma(text.primary).alpha(0.45)}`,
       '--theme-utxo-cursor-background-color': `${chroma(
-        secondary.background.lightest
+        background.secondary.lightest
       ).alpha(0.2)}`,
       '--theme-utxo-tooltip-background-color': `${chroma(
-        primary.background.darkest
+        background.primary.darkest
       )}`,
       '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
-      '--theme-utxo-tooltip-text-color': `${secondary.text}`,
+      '--theme-utxo-tooltip-text-color': `${text.secondary}`,
     },
   };
 };
@@ -734,13 +731,9 @@ export const createTheme = (fullThemeParts: CreateThemeParams): Object => {
     colors = {
       ...themeColors,
       error: createErrorShades(themeColors.error),
-      primary: {
-        ...themeColors.primary,
-        background: createBackgroundShades(themeColors.primary.background),
-      },
-      secondary: {
-        ...themeColors.secondary,
-        background: createBackgroundShades(themeColors.secondary.background),
+      background: {
+        primary: createBackgroundShades(themeColors.background.primary),
+        secondary: createBackgroundShades(themeColors.background.secondary),
       },
     };
   }

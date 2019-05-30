@@ -2,19 +2,18 @@
 import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
 
-export const TURQUOISE_THEME_PARAMS: CreateThemeParams = {
+const TURQUOISE_THEME_PARAMS: CreateThemeParams = {
   colors: {
     error: '#ea4c5b',
-    primary: {
-      background: '#efefef',
-      border: '#c6cdd6',
-      focus: '#5e6066',
-      text: '#5e6066',
+    border: '#c6cdd6',
+    focus: '#5e6066',
+    background: {
+      primary: '#efefef',
+      secondary: '#006666',
     },
-    secondary: {
-      background: '#006666',
-      border: '#efefef',
-      text: '#fafbfc',
+    text: {
+      primary: '#5e6066',
+      secondary: '#fafbfc',
     },
   },
 };

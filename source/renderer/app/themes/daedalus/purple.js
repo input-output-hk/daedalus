@@ -2,19 +2,18 @@
 import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
 
-export const PURPLE_THEME_PARAMS: CreateThemeParams = {
+const PURPLE_THEME_PARAMS: CreateThemeParams = {
   colors: {
     error: '#ea4c5b',
-    primary: {
-      background: '#ccccff',
-      border: '#b3b3ff',
-      focus: '#330066',
-      text: '#330066',
+    border: '#b3b3ff',
+    focus: '#330066',
+    background: {
+      primary: '#ccccff',
+      secondary: '#9966ff',
     },
-    secondary: {
-      background: '#9966ff',
-      border: '#aa80ff',
-      text: '#fafbfc',
+    text: {
+      primary: '#330066',
+      secondary: '#fafbfc',
     },
   },
 };

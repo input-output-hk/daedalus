@@ -9,32 +9,30 @@ export type CreateThemeParams = {
 };
 
 export type ColorParams = {
+  border: string,
   error: string,
-  primary: {
-    background: string,
-    border: string,
-    focus: string,
-    text: string,
+  focus: string,
+  background: {
+    primary: string,
+    secondary: string,
   },
-  secondary: {
-    background: string,
-    border: string,
-    text: string,
+  text: {
+    primary: string,
+    secondary: string,
   },
 };
 
 export type ThemeColors = {
+  border: string,
   error: ErrorShades,
-  primary: {
-    background: BackgroundShades,
-    border: string,
-    focus: string,
-    text: string,
+  focus: string,
+  background: {
+    primary: BackgroundShades,
+    secondary: BackgroundShades,
   },
-  secondary: {
-    background: BackgroundShades,
-    border: string,
-    text: string,
+  text: {
+    primary: string,
+    secondary: string,
   },
 };
 
