@@ -123,7 +123,8 @@ type Props = {
   currentLocale: string,
   availableAppVersion: ?string,
   currentAppVersion: string,
-  isNewAppVersionAvailable: ?boolean,
+  isNewAppVersionAvailable: boolean,
+  isNewAppVersionLoading: boolean,
   onExternalLinkClick: Function,
   onReportIssueClick: Function,
   onCheckTheTimeAgain: Function,
@@ -147,7 +148,6 @@ export default class Loading extends Component<Props, State> {
   };
 
   appLoadingStuck = false;
-  appLoadingStuckSet = false;
 
   componentDidMount() {
     if (this.props.isNotEnoughDiskSpace) return;
@@ -161,7 +161,10 @@ export default class Loading extends Component<Props, State> {
 
   componentDidUpdate() {
     const { syncingTime, connectingTime } = this.state;
-    const { isConnected, isSynced, isNotEnoughDiskSpace, onGetAvailableVersions } = this.props;
+    const {
+      isConnected, isSynced, isNotEnoughDiskSpace,
+      onGetAvailableVersions, isNewAppVersionLoading, availableAppVersion,
+    } = this.props;
     const canResetSyncing = this._syncingTimerShouldStop(isSynced, isNotEnoughDiskSpace);
     const canResetConnecting = this._connectingTimerShouldStop(isConnected, isNotEnoughDiskSpace);
     if (canResetSyncing) { this._resetSyncingTime(); }
@@ -172,9 +175,8 @@ export default class Loading extends Component<Props, State> {
       (!isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER)
     );
     // If app stuck, check if newer version is available and set flag (state)
-    if (this.appLoadingStuck && !this.appLoadingStuckSet) {
+    if (this.appLoadingStuck && !isNewAppVersionLoading && !availableAppVersion) {
       onGetAvailableVersions();
-      this.appLoadingStuckSet = true;
     }
   }
 
@@ -374,6 +376,7 @@ export default class Loading extends Component<Props, State> {
       isNewAppVersionAvailable,
       currentAppVersion,
       availableAppVersion,
+      isNewAppVersionLoading,
       onManualUpdateInstructionsLinkClick,
     } = this.props;
 
@@ -415,7 +418,11 @@ export default class Loading extends Component<Props, State> {
     const canReportSyncingIssue = (
       isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER
     );
-    const showReportIssue = canReportConnectingIssue || canReportSyncingIssue;
+
+    const showReportIssue = (
+      !isNewAppVersionAvailable && !isNewAppVersionLoading &&
+      (canReportConnectingIssue || canReportSyncingIssue)
+    );
 
     const buttonClasses = classNames([
       'primary',

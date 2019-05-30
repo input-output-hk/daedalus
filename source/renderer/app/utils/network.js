@@ -6,6 +6,9 @@ import {
   DEVELOPMENT_EKG_URL,
   STAGING_EKG_URL,
   TESTNET_EKG_URL,
+  MAINNET_LATEST_VERSION_INFO_URL,
+  STAGING_LATEST_VERSION_INFO_URL,
+  TESTNET_LATEST_VERSION_INFO_URL,
 } from '../config/urlsConfig';
 import serialize from './serialize';
 import { MAINNET, STAGING, TESTNET } from '../../../common/types/environment.types';
@@ -107,4 +110,13 @@ export const getSupportUrl = async (baseUrl: string, locale: string) => {
     productVersion: `Daedalus ${version}+Cardano ${buildNumber}`,
   };
   return `${baseUrl}?${serialize(info)}`;
+};
+
+export const getLatesVersionInfoUrl = (network: string): string => {
+  // sets default to mainnet in case env.NETWORK is undefined
+  let latestVersionInfoUrl = MAINNET_LATEST_VERSION_INFO_URL;
+  if (network === MAINNET) { latestVersionInfoUrl = MAINNET_LATEST_VERSION_INFO_URL; }
+  if (network === STAGING) { latestVersionInfoUrl = STAGING_LATEST_VERSION_INFO_URL; }
+  if (network === TESTNET) { latestVersionInfoUrl = TESTNET_LATEST_VERSION_INFO_URL; }
+  return latestVersionInfoUrl;
 };

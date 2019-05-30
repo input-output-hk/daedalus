@@ -4,7 +4,6 @@ import { get } from 'lodash';
 import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
-import { getLatestVersionInfo } from '../../../common/utils/manualAppUpdate';
 import {
   TOGGLE_ABOUT_DIALOG_CHANNEL,
   TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL,
@@ -29,6 +28,7 @@ export default class AppStore extends Store {
   @observable previousRoute: string = ROUTES.ROOT;
   @observable availableAppVersion: ?string = null;
   @observable isNewAppVersionAvailable: boolean = false;
+  @observable isNewAppVersionLoading: boolean = false;
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
@@ -89,14 +89,16 @@ export default class AppStore extends Store {
   };
 
   @action _getLatestAvailableAppVersion = async () => {
-    const { version, isMainnet, isTestnet, platform, network } = this.environment;
+    const { version, platform, isDevelopment } = this.environment;
 
-    if (isMainnet || isTestnet) {
-      const versionInfo = await getLatestVersionInfo(network);
-      const availableVersion = get(versionInfo, ['platforms', platform, 'version']);
+    if (!isDevelopment) {
+      this.isNewAppVersionLoading = true;
+      const versionInfo = await this.api.ada.getLatestAppVersionInfo();
+      const availableVersion = get(versionInfo, ['platforms', platform, 'version'], null);
       const isNewAppVersionAvailable = availableVersion && availableVersion > version;
 
       runInAction(() => {
+        this.isNewAppVersionLoading = false;
         this.isNewAppVersionAvailable = isNewAppVersionAvailable;
         this.availableAppVersion = availableVersion;
       });

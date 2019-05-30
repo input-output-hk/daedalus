@@ -41,6 +41,9 @@ import { createWallet } from './wallets/requests/createWallet';
 import { restoreWallet } from './wallets/requests/restoreWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
 
+// App requests
+import { getLatestAppVersionInfo } from './app/requests/getLatestAppVersionInfo';
+
 // utility functions
 import { awaitUpdateChannel, cardanoFaultInjectionChannel } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
@@ -123,6 +126,11 @@ import type {
   ImportWalletFromFileRequest,
   UpdateWalletRequest
 } from './wallets/types';
+
+// App types
+import type {
+  GetLatestAppVersionInfoResponse,
+} from './app/types';
 
 // Common errors
 import {
@@ -828,6 +836,20 @@ export default class AdaApi {
     } catch (error) {
       Logger.error(`${loggerText} error`, { error });
       throw new GenericApiError(error);
+    }
+  };
+
+  getLatestAppVersionInfo = async (): Promise<GetLatestAppVersionInfoResponse> => {
+    Logger.debug('AdaApi::getLatestAppVersionInfo called');
+    try {
+      const latestAppVersionInfo = await getLatestAppVersionInfo();
+      Logger.debug('AdaApi::getLatestAppVersionInfo success', {
+        latestAppVersionInfo,
+      });
+      return latestAppVersionInfo;
+    } catch (error) {
+      Logger.error('AdaApi::getLatestAppVersionInfo error', { error });
+      throw new GenericApiError();
     }
   };
 

@@ -58,7 +58,10 @@ export default class LoadingPage extends Component<InjectedProps> {
       forceCheckLocalTimeDifference, ignoreSystemTimeChecks, isNodeStopping, isNodeStopped,
       isNotEnoughDiskSpace, diskSpaceRequired, diskSpaceMissing, diskSpaceRecommended,
     } = stores.networkStatus;
-    const { isNewAppVersionAvailable, availableAppVersion, environment } = stores.app;
+    const {
+      isNewAppVersionLoading, isNewAppVersionAvailable,
+      availableAppVersion, environment,
+    } = stores.app;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
     const { id, message } = this.notification;
     const { version } = environment;
@@ -91,6 +94,7 @@ export default class LoadingPage extends Component<InjectedProps> {
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
           onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
           onDownloadLogs={this.handleDownloadLogs}
+          isNewAppVersionLoading={isNewAppVersionLoading}
           isNewAppVersionAvailable={isNewAppVersionAvailable}
           currentAppVersion={version}
           availableAppVersion={availableAppVersion}
