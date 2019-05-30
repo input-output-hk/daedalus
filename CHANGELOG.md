@@ -31,7 +31,7 @@ Changelog
 
 ### Chores
 
-- Updated React-Polymorph to version 0.8.4 ([PR 1396](https://github.com/input-output-hk/daedalus/pull/1396))
+- Updated React-Polymorph to version 0.8.5 ([PR 1396](https://github.com/input-output-hk/daedalus/pull/1396))
 - Removed legacy references to npm in favour of yarn ([PR 1399](https://github.com/input-output-hk/daedalus/pull/1399))
 - Setup storybook build script to deploy previews for the QA team to Netlify ([1391](https://github.com/input-output-hk/daedalus/pull/1391))
 - Added unit tests for mnemonic generation and validation ([PR 1379](https://github.com/input-output-hk/daedalus/pull/1379))
