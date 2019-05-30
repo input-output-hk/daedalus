@@ -67,12 +67,12 @@
   display: inline-block;
   margin-right: 10px;
   button {
+    border-radius: 3px;
+    color: rgba(0, 0, 0, 0.4);
+    cursor: pointer;
     font-size: 14px;
     margin-right: 5px;
-    color: rgba(0, 0, 0, 0.4);
     padding: 3px;
-    border-radius: 3px;
-    cursor: pointer;
   }
 }
 .selected {
