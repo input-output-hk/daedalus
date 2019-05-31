@@ -52,6 +52,8 @@
       );
       border: 1px solid
         var(--theme-staking-stake-pool-tooltip-delegate-button-border-color);
+      height: 33px;
+      user-select: none;
       width: 100%;
 
       &:hover {
