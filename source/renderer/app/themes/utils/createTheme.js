@@ -328,8 +328,8 @@ const createDaedalusComponentsTheme = (
       '--theme-button-primary-outline-color': `${background.secondary.light}`,
     },
     connecting: {
-      '--theme-connecting-background-color': `${background.primary.regular}`,
-      '--theme-connecting-text-color': `${text.primary}`,
+      '--theme-connecting-background-color': `${background.secondary.regular}`,
+      '--theme-connecting-text-color': `${text.secondary}`,
     },
     dataMigration: {
       '--theme-data-migration-layer-background-color': `${
@@ -397,7 +397,7 @@ const createDaedalusComponentsTheme = (
       '--theme-icon-file-upload-color': `${text.primary}`,
       '--theme-icon-transactions-ada-symbol-color': `${text.primary}`,
       '--theme-icon-syncing-logo-color': `${text.primary}`,
-      '--theme-icon-connecting-logo-color': `${text.primary}`,
+      '--theme-icon-connecting-logo-color': `${text.secondary}`,
       '--theme-icon-transaction-type-color': '#fafbfc',
     },
     input: {
