@@ -4,8 +4,6 @@ import { configure, action } from 'mobx';
 import { render } from 'react-dom';
 import { addLocaleData } from 'react-intl';
 import en from 'react-intl/locale-data/en';
-import de from 'react-intl/locale-data/de';
-import hr from 'react-intl/locale-data/hr';
 import ja from 'react-intl/locale-data/ja';
 import { RouterStore, syncHistoryWithStore } from 'mobx-react-router';
 import { hashHistory } from 'react-router';
@@ -24,7 +22,7 @@ configure({
 });
 
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
-addLocaleData([...en, ...de, ...hr, ...ja]);
+addLocaleData([...en, ...ja]);
 
 const { environment } = global;
 const { isTest, network } = environment;

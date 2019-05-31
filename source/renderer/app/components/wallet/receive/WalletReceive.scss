@@ -3,13 +3,16 @@
 
 .component {
   flex: 1;
-  min-height: 509px;
   overflow-x: hidden;
   overflow-y: overlay;
   padding: 20px;
   &::-webkit-scrollbar-button {
     height: 7px;
     display: block;
+  }
+  min-height: 500px;
+  @media (max-width: 1000px) {
+    min-height: 600px;
   }
 }
 
