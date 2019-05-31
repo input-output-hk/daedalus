@@ -68,9 +68,7 @@ const rewards = [
   },
 ];
 
-/* eslint-disable react/display-name  */
-
-export default () => (
+export const StakingRewardsStory = () => (
   <StakingRewards
     rewards={rewards}
     isLoading={false}

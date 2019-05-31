@@ -8,13 +8,12 @@ import { formattedWalletAmount } from '../utils/formatters';
 import type { SidebarWalletType } from '../types/sidebarTypes';
 
 export default class SidebarStore extends Store {
-  CATEGORIES = sidebarConfig.CATEGORIES;
-
+  @observable CATEGORIES: Array<any> = sidebarConfig.CATEGORIES;
   @observable activeSidebarCategory: string = this.CATEGORIES[0].route;
   @observable isShowingSubMenus: boolean = true;
 
   setup() {
-    const { sidebar: sidebarActions, staking: stakingActions } = this.actions;
+    const { sidebar: sidebarActions } = this.actions;
 
     sidebarActions.showSubMenus.listen(this._showSubMenus);
     sidebarActions.toggleSubMenus.listen(this._toggleSubMenus);
@@ -23,25 +22,9 @@ export default class SidebarStore extends Store {
     );
     sidebarActions.walletSelected.listen(this._onWalletSelected);
 
-    stakingActions.goToStakingInfo.listen(this.configureCategories);
-
     this.registerReactions([this._syncSidebarRouteWithRouter]);
-    // this.configureCategories();
+    this._configureCategories();
   }
-
-  configureCategories = () => {
-    const { staking } = this.stores;
-    const {
-      CATEGORIES_WITH_DELEGATION_COUNTDOWN,
-      CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN,
-    } = sidebarConfig;
-
-    if (staking.showCountdown()) {
-      this.CATEGORIES = CATEGORIES_WITH_DELEGATION_COUNTDOWN;
-    } else {
-      this.CATEGORIES = CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
-    }
-  };
 
   @computed get wallets(): Array<SidebarWalletType> {
     const { networkStatus, wallets } = this.stores;
@@ -56,6 +39,12 @@ export default class SidebarStore extends Store {
       isLegacy: w.isLegacy,
     }));
   }
+
+  @action _configureCategories = () => {
+    if (this.stores.networkStatus.environment.isDev) {
+      this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_STAKING;
+    }
+  };
 
   @action _onActivateSidebarCategory = (params: {
     category: string,
