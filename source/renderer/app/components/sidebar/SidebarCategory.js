@@ -26,9 +26,8 @@ export default class SidebarCategory extends Component<Props> {
     const iconStyles = classNames({
       [styles.supportRequestIcon]: className === 'supportRequest',
       [styles.decentralizationStartIcon]:
-        className === 'staking-with-delegation-countdown',
-      [styles.decentralizationProgressIcon]:
-        className === 'staking-without-delegation-countdown',
+        className === 'staking-delegation-countdown',
+      [styles.decentralizationProgressIcon]: className === 'staking',
       [styles.icon]: className !== 'supportRequest',
     });
 

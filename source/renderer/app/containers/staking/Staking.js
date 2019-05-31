@@ -11,30 +11,31 @@ type Props = InjectedContainerProps;
 @inject('stores', 'actions')
 @observer
 export default class Staking extends Component<Props> {
-  componentDidMount() {
-    this.handleDelegationRoute();
-  }
+  // TODO: Uncomment when the we need the countdown logic
+  // componentDidMount() {
+  //   this.handleDelegationRoute();
+  // }
 
-  handleDelegationRoute = () => {
-    const {
-      actions,
-      stores: { staking },
-    } = this.props;
+  // handleDelegationRoute = () => {
+  //   const {
+  //     actions,
+  //     stores: { staking },
+  //   } = this.props;
 
-    if (staking.showCountdown() && !staking.isStakingDelegationCountdown) {
-      return actions.router.goToRoute.trigger({
-        route: ROUTES.STAKING.DELEGATION_COUNTDOWN,
-      });
-    }
+  //   if (staking.showCountdown() && !staking.isStakingDelegationCountdown) {
+  //     return actions.router.goToRoute.trigger({
+  //       route: ROUTES.STAKING.DELEGATION_COUNTDOWN,
+  //     });
+  //   }
 
-    if (!staking.showCountdown() && staking.isStakingDelegationCountdown) {
-      return actions.router.goToRoute.trigger({
-        route: ROUTES.STAKING.INFO,
-      });
-    }
+  //   if (!staking.showCountdown() && staking.isStakingDelegationCountdown) {
+  //     return actions.router.goToRoute.trigger({
+  //       route: ROUTES.STAKING.INFO,
+  //     });
+  //   }
 
-    return true;
-  };
+  //   return true;
+  // };
 
   handleNavItemClick = (page: string) => {
     this.props.actions.router.goToRoute.trigger({
@@ -51,7 +52,7 @@ export default class Staking extends Component<Props> {
 
     return (
       <MainLayout>
-        {staking.showCountdown() ? (
+        {staking.isStakingDelegationCountdown ? (
           children
         ) : (
           <StakingWithNavigation
