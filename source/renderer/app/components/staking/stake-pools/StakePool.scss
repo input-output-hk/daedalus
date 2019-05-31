@@ -1,7 +1,7 @@
 .component {
   background-color: var(--theme-staking-stake-pool-background-color);
-  border-radius: 4px;
   border: solid 1px var(--theme-staking-stake-pool-border-color);
+  border-radius: 4px;
   display: flex;
   height: 71px;
   justify-content: center;
@@ -48,21 +48,20 @@
 
 .clockIcon {
   display: block;
-  line-height: 0px;
+  line-height: 0;
   margin: 0;
-  padding-top: 1px;
   padding: 0;
   text-align: center;
 
   svg {
-    width: 15px;
     height: 15px;
+    width: 15px;
   }
 }
 
 .colorBand {
   border-radius: 0 0 4px 4px;
-  bottom: 0px;
+  bottom: 0;
   display: block;
   height: 5px;
   left: 0;

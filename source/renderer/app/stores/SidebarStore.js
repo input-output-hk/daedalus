@@ -40,10 +40,7 @@ export default class SidebarStore extends Store {
   }
 
   @action _configureCategories = () => {
-    if (
-      this.stores.networkStatus.environment.isDev ||
-      this.stores.networkStatus.environment.isTestnet
-    ) {
+    if (this.stores.networkStatus.environment.isDev) {
       this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_STAKING;
     }
   };

@@ -53,6 +53,7 @@
       border: 1px solid
         var(--theme-staking-stake-pool-tooltip-delegate-button-border-color);
       width: 100%;
+
       &:hover {
         background-color: var(
           --theme-staking-stake-pool-tooltip-delegate-button-hover-background-color,
@@ -62,14 +63,15 @@
           --theme-staking-stake-pool-tooltip-delegate-button-inverse-color
         );
       }
+
       &:active {
         background-color: var(
           --theme-staking-stake-pool-tooltip-delegate-button-active-background-color
         );
+        border: none;
         color: var(
           --theme-staking-stake-pool-tooltip-delegate-button-inverse-color
         );
-        border: none;
       }
     }
   }
@@ -93,9 +95,11 @@
   position: absolute;
   right: 20px;
   top: 25px;
+
   svg {
-    width: 11px;
     height: 11px;
+    width: 11px;
+
     polygon {
       fill: var(--theme-staking-stake-pool-tooltip-text-color);
     }
@@ -129,6 +133,7 @@
 .table {
   @extend %regularText;
   margin-bottom: 14px;
+
   dt {
     color: var(--theme-staking-stake-pool-tooltip-table-title-color);
     display: inline-block;
@@ -137,11 +142,13 @@
     opacity: 0.8;
     width: 60%;
   }
+
   dd {
     display: inline-block;
     text-align: right;
     width: 40%;
   }
+
   span {
     border-radius: 3px;
     color: var(--theme-staking-stake-pool-tooltip-table-param-color);
