@@ -21,6 +21,7 @@ import { applyNodeUpdate } from './nodes/requests/applyNodeUpdate';
 import { getNodeInfo } from './nodes/requests/getNodeInfo';
 import { getNextNodeUpdate } from './nodes/requests/getNextNodeUpdate';
 import { postponeNodeUpdate } from './nodes/requests/postponeNodeUpdate';
+import { getLatestAppVersionInfo } from './nodes/requests/getLatestAppVersionInfo';
 
 // Transactions requests
 import { getTransactionFee } from './transactions/requests/getTransactionFee';
@@ -40,9 +41,6 @@ import { importWalletAsKey } from './wallets/requests/importWalletAsKey';
 import { createWallet } from './wallets/requests/createWallet';
 import { restoreWallet } from './wallets/requests/restoreWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
-
-// App requests
-import { getLatestAppVersionInfo } from './app/requests/getLatestAppVersionInfo';
 
 // utility functions
 import { awaitUpdateChannel, cardanoFaultInjectionChannel } from '../ipc/cardano.ipc';
@@ -95,7 +93,8 @@ import type {
 import type {
   NodeInfo,
   NodeSoftware,
-  GetNetworkStatusResponse
+  GetNetworkStatusResponse,
+  GetLatestAppVersionInfoResponse,
 } from './nodes/types';
 import type { NodeQueryParams } from './nodes/requests/getNodeInfo';
 
@@ -126,11 +125,6 @@ import type {
   ImportWalletFromFileRequest,
   UpdateWalletRequest
 } from './wallets/types';
-
-// App types
-import type {
-  GetLatestAppVersionInfoResponse,
-} from './app/types';
 
 // Common errors
 import {

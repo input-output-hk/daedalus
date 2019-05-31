@@ -1,5 +1,6 @@
 // @flow
 import { observable, action, runInAction } from 'mobx';
+import { get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import type { NodeSoftware } from '../api/nodes/types';
@@ -12,6 +13,9 @@ export default class NodeUpdateStore extends Store {
   @observable isNotificationExpanded = false;
   @observable isUpdateInstalled = false;
   @observable updateVersion = null;
+  @observable availableAppVersion: ?string = null;
+  @observable isNewAppVersionAvailable: boolean = false;
+  @observable isNewAppVersionLoading: boolean = false;
 
   // REQUESTS
   /* eslint-disable max-len */
@@ -25,6 +29,7 @@ export default class NodeUpdateStore extends Store {
     actions.acceptNodeUpdate.listen(this._acceptNodeUpdate);
     actions.postponeNodeUpdate.listen(this._postponeNodeUpdate);
     actions.toggleNodeUpdateNotificationExpanded.listen(this._toggleNotificationExpanded);
+    actions.getLatestAvailableAppVersion.listen(this._getLatestAvailableAppVersion);
     setInterval(this.refreshNextUpdate, NODE_UPDATE_POLL_INTERVAL);
   }
 
@@ -56,5 +61,22 @@ export default class NodeUpdateStore extends Store {
   @action _toggleNotificationExpanded = () => {
     this.isNotificationExpanded = !this.isNotificationExpanded;
   };
+
+  @action _getLatestAvailableAppVersion = async () => {
+    const { version, platform, isDevelopment } = this.environment;
+
+    if (!isDevelopment) {
+      this.isNewAppVersionLoading = true;
+      const versionInfo = await this.api.ada.getLatestAppVersionInfo();
+      const availableVersion = get(versionInfo, ['platforms', platform, 'version'], null);
+      const isNewAppVersionAvailable = availableVersion && availableVersion > version;
+
+      runInAction(() => {
+        this.isNewAppVersionLoading = false;
+        this.isNewAppVersionAvailable = isNewAppVersionAvailable;
+        this.availableAppVersion = availableVersion;
+      });
+    }
+  }
 
 }

@@ -58,13 +58,13 @@ export default class LoadingPage extends Component<InjectedProps> {
       forceCheckLocalTimeDifference, ignoreSystemTimeChecks, isNodeStopping, isNodeStopped,
       isNotEnoughDiskSpace, diskSpaceRequired, diskSpaceMissing, diskSpaceRecommended,
     } = stores.networkStatus;
-    const {
-      isNewAppVersionLoading, isNewAppVersionAvailable,
-      availableAppVersion, environment, openExternalLink,
-    } = stores.app;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
     const { id, message } = this.notification;
+    const { environment, openExternalLink } = stores.app;
     const { version } = environment;
+    const {
+      isNewAppVersionLoading, isNewAppVersionAvailable, availableAppVersion,
+    } = stores.nodeUpdate;
 
     return (
       <CenteredLayout>
@@ -89,7 +89,7 @@ export default class LoadingPage extends Component<InjectedProps> {
           hasLoadedCurrentLocale={hasLoadedCurrentLocale}
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           currentLocale={currentLocale}
-          onExternalLinkClick={stores.app.openExternalLink}
+          onExternalLinkClick={openExternalLink}
           onReportIssueClick={this.handleReportIssueClick}
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
           onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
@@ -99,7 +99,6 @@ export default class LoadingPage extends Component<InjectedProps> {
           currentAppVersion={version}
           availableAppVersion={availableAppVersion}
           onGetAvailableVersions={this.handleGetAvailableVersions}
-          onManualUpdateInstructionsLinkClick={openExternalLink}
         />
         <NotificationMessage
           icon={successIcon}
@@ -160,7 +159,7 @@ export default class LoadingPage extends Component<InjectedProps> {
   };
 
   handleGetAvailableVersions = () => {
-    const { app } = this.props.actions;
-    app.getLatestAvailableAppVersion.trigger();
+    const { nodeUpdate } = this.props.actions;
+    nodeUpdate.getLatestAvailableAppVersion.trigger();
   };
 }

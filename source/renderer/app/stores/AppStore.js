@@ -1,6 +1,5 @@
 // @flow
-import { observable, computed, action, runInAction } from 'mobx';
-import { get } from 'lodash';
+import { observable, computed, action } from 'mobx';
 import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
@@ -26,9 +25,6 @@ export default class AppStore extends Store {
   @observable gpuStatus: ?GpuStatus = null;
   @observable numberOfEpochsConsolidated: number = 0;
   @observable previousRoute: string = ROUTES.ROOT;
-  @observable availableAppVersion: ?string = null;
-  @observable isNewAppVersionAvailable: boolean = false;
-  @observable isNewAppVersionLoading: boolean = false;
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
@@ -40,7 +36,6 @@ export default class AppStore extends Store {
     this.actions.app.toggleBlockConsolidationStatusScreen.listen(
       this._toggleBlockConsolidationStatusScreen
     );
-    this.actions.app.getLatestAvailableAppVersion.listen(this._getLatestAvailableAppVersion);
 
     /* eslint-disable max-len */
     // TODO: refactor to ipc channels
@@ -87,23 +82,6 @@ export default class AppStore extends Store {
     if (currentRoute !== routePath) this.stores.router.push(routePath);
     this._updatePreviousRoute(currentRoute);
   };
-
-  @action _getLatestAvailableAppVersion = async () => {
-    const { version, platform, isDevelopment } = this.environment;
-
-    if (!isDevelopment) {
-      this.isNewAppVersionLoading = true;
-      const versionInfo = await this.api.ada.getLatestAppVersionInfo();
-      const availableVersion = get(versionInfo, ['platforms', platform, 'version'], null);
-      const isNewAppVersionAvailable = availableVersion && availableVersion > version;
-
-      runInAction(() => {
-        this.isNewAppVersionLoading = false;
-        this.isNewAppVersionAvailable = isNewAppVersionAvailable;
-        this.availableAppVersion = availableVersion;
-      });
-    }
-  }
 
   @action _updatePreviousRoute = (currentRoute?: string) => {
     this.previousRoute = currentRoute || ROUTES.ROOT;

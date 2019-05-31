@@ -131,7 +131,6 @@ type Props = {
   onContinueWithoutClockSyncCheck: Function,
   onDownloadLogs: Function,
   onGetAvailableVersions: Function,
-  onManualUpdateInstructionsLinkClick: Function,
 };
 
 @observer
@@ -377,7 +376,7 @@ export default class Loading extends Component<Props, State> {
       currentAppVersion,
       availableAppVersion,
       isNewAppVersionLoading,
-      onManualUpdateInstructionsLinkClick,
+      onExternalLinkClick,
     } = this.props;
 
     const { connectingTime, syncingTime } = this.state;
@@ -471,7 +470,7 @@ export default class Loading extends Component<Props, State> {
           <ManualUpdateOverlay
             currentAppVersion={currentAppVersion}
             availableAppVersion={availableAppVersion}
-            onExternalLinkClick={onManualUpdateInstructionsLinkClick}
+            onExternalLinkClick={onExternalLinkClick}
           />
         )}
       </div>
