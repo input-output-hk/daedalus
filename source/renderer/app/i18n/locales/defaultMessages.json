@@ -1292,48 +1292,6 @@
           "column": 17,
           "line": 29
         }
-      },
-      {
-        "defaultMessage": "Orange",
-        "description": "Name of the \"Orange\" theme on the display settings page.",
-        "end": {
-          "column": 3,
-          "line": 38
-        },
-        "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
-        "id": "settings.display.themeNames.orange",
-        "start": {
-          "column": 15,
-          "line": 34
-        }
-      },
-      {
-        "defaultMessage": "Purple",
-        "description": "Name of the \"Purple\" theme on the display settings page.",
-        "end": {
-          "column": 3,
-          "line": 43
-        },
-        "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
-        "id": "settings.display.themeNames.purple",
-        "start": {
-          "column": 15,
-          "line": 39
-        }
-      },
-      {
-        "defaultMessage": "Turquoise",
-        "description": "Name of the \"Turquoise\" theme on the display settings page.",
-        "end": {
-          "column": 3,
-          "line": 48
-        },
-        "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
-        "id": "settings.display.themeNames.turquoise",
-        "start": {
-          "column": 18,
-          "line": 44
-        }
       }
     ],
     "path": "source/renderer/app/components/settings/categories/DisplaySettings.json"
