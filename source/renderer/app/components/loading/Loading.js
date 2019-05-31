@@ -146,8 +146,6 @@ export default class Loading extends Component<Props, State> {
     syncPercentage: '0',
   };
 
-  appLoadingStuck = false;
-
   componentDidMount() {
     if (this.props.isNotEnoughDiskSpace) return;
     this._defensivelyStartTimers(this.props.isConnected, this.props.isSynced);
@@ -169,12 +167,12 @@ export default class Loading extends Component<Props, State> {
     if (canResetSyncing) { this._resetSyncingTime(); }
     if (canResetConnecting) { this._resetConnectingTime(); }
 
-    this.appLoadingStuck = (
+    const appLoadingStuck = (
       (!isConnected && connectingTime >= REPORT_ISSUE_TIME_TRIGGER) ||
       (!isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER)
     );
     // If app stuck, check if newer version is available and set flag (state)
-    if (this.appLoadingStuck && !isNewAppVersionLoading && !availableAppVersion) {
+    if (appLoadingStuck && !isNewAppVersionLoading && !availableAppVersion) {
       onGetAvailableVersions();
     }
   }
@@ -428,8 +426,6 @@ export default class Loading extends Component<Props, State> {
       styles.reportIssueButton,
     ]);
 
-    const isManualUpdateRequired = isNewAppVersionAvailable && this.appLoadingStuck;
-
     return (
       <div className={componentStyles}>
         {showReportIssue && (
@@ -466,7 +462,7 @@ export default class Loading extends Component<Props, State> {
           <SVGInline svg={apiLoadingLogo} className={apiLogoStyles} />
         </div>
         {hasLoadedCurrentLocale ? this._renderLoadingScreen() : null}
-        {isManualUpdateRequired && (
+        {isNewAppVersionAvailable && (
           <ManualUpdateOverlay
             currentAppVersion={currentAppVersion}
             availableAppVersion={availableAppVersion}
