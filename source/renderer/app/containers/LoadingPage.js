@@ -60,7 +60,7 @@ export default class LoadingPage extends Component<InjectedProps> {
     } = stores.networkStatus;
     const {
       isNewAppVersionLoading, isNewAppVersionAvailable,
-      availableAppVersion, environment,
+      availableAppVersion, environment, openExternalLink,
     } = stores.app;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
     const { id, message } = this.notification;
@@ -99,7 +99,7 @@ export default class LoadingPage extends Component<InjectedProps> {
           currentAppVersion={version}
           availableAppVersion={availableAppVersion}
           onGetAvailableVersions={this.handleGetAvailableVersions}
-          onManualUpdateInstructionsLinkClick={this.handleManualUpdateInstructionsLinkClick}
+          onManualUpdateInstructionsLinkClick={openExternalLink}
         />
         <NotificationMessage
           icon={successIcon}
@@ -162,9 +162,5 @@ export default class LoadingPage extends Component<InjectedProps> {
   handleGetAvailableVersions = () => {
     const { app } = this.props.actions;
     app.getLatestAvailableAppVersion.trigger();
-  };
-
-  handleManualUpdateInstructionsLinkClick = (url: string) => {
-    this.props.stores.app.openExternalLink(url);
   };
 }
