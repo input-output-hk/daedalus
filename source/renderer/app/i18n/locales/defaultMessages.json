@@ -1008,6 +1008,67 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Move funds from the legacy wallet",
+        "description": "Title \"Move funds from the legacy wallet\" on the legacy notification.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
+        "id": "wallet.legacy.notification.title",
+        "start": {
+          "column": 9,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!This is a legacy wallet which uses legacy addresses and does not support new features. Please move all of the ada from this legacy wallet to one of the wallets where new features are available. You can also create a brand new wallet for your ada in case you don’t want to move ada to one of your existing wallets. A sequence of screens will guide you through the process.",
+        "description": "Legacy notification description.",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
+        "id": "wallet.legacy.notification.description",
+        "start": {
+          "column": 15,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!Learn more",
+        "description": "Learn more action of legacy notification.",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
+        "id": "wallet.legacy.notification.actionLearnMore",
+        "start": {
+          "column": 19,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!Move all of the ada from this wallet",
+        "description": "Move all ada action of legacy notification.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
+        "id": "wallet.legacy.notification.actionMove",
+        "start": {
+          "column": 14,
+          "line": 27
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/notifications/LegacyNotification.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Update and restart",
         "description": "Label \"Update and restart\" on the Cardano node update notification.",
         "end": {
