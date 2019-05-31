@@ -22,9 +22,27 @@ const CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN = [
 const sidebarMenus = observable({
   wallets: {
     items: [
-      { id: '1', title: 'First', info: '100 ADA', isConnected: true },
-      { id: '2', title: 'Second', info: '200 ADA', isConnected: true },
-      { id: '3', title: 'Third', info: '300 ADA', isConnected: true },
+      {
+        id: '1',
+        title: 'First',
+        info: '100 ADA',
+        isConnected: true,
+        isLegacy: false,
+      },
+      {
+        id: '2',
+        title: 'Second',
+        info: '200 ADA',
+        isConnected: true,
+        isLegacy: false,
+      },
+      {
+        id: '3',
+        title: 'Third',
+        info: '300 ADA',
+        isConnected: true,
+        isLegacy: false,
+      },
     ],
     activeWalletId: '1',
     actions: {

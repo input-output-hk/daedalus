@@ -5,6 +5,7 @@ import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import LegacyBadge from '../notifications/LegacyBadge';
+import LegacyNotification from '../notifications/LegacyNotification';
 import Wallet from '../../domains/Wallet';
 import styles from './TopBar.scss';
 import { formattedWalletAmount } from '../../utils/formatters';
@@ -33,7 +34,7 @@ export default class TopBar extends Component<Props> {
           {// show currency and use long format
           formattedWalletAmount(activeWallet.amount, true)}
         </span>
-        {activeWallet.isLegacy && (
+        {activeWallet && activeWallet.isLegacy && (
           <div className={styles.legacyBadge}>
             <LegacyBadge />
           </div>
@@ -46,14 +47,19 @@ export default class TopBar extends Component<Props> {
     );
 
     return (
-      <header className={topBarStyles}>
-        {leftIcon && (
-          <button className={styles.leftIcon} onClick={onLeftIconClick}>
-            {leftIconSVG}
-          </button>
+      <header>
+        <div className={topBarStyles}>
+          {leftIcon && (
+            <button className={styles.leftIcon} onClick={onLeftIconClick}>
+              {leftIconSVG}
+            </button>
+          )}
+          <div className={styles.topBarTitle}>{topBarTitle}</div>
+          {children}
+        </div>
+        {activeWallet && activeWallet.isLegacy && (
+          <LegacyNotification onLearnMore={() => null} onMove={() => null} />
         )}
-        <div className={styles.topBarTitle}>{topBarTitle}</div>
-        {children}
       </header>
     );
   }

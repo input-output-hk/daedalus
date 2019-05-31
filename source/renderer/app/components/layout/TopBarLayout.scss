@@ -19,5 +19,5 @@ $topBarHeight: 84px;
 }
 
 .content {
-  height: auto;
+  height: calc(100% - #{$topBarHeight});
 }

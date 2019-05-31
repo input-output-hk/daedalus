@@ -22,8 +22,8 @@
   background-color: var(--theme-sidebar-menu-item-background-color-active);
 
   &:hover {
-    cursor: default;
     background-color: var(--theme-sidebar-menu-item-background-color-active);
+    cursor: default;
   }
 }
 
@@ -33,7 +33,6 @@
   position: relative;
   text-align: left;
   width: 100%;
-  position: relative;
 
   :global {
     .ProgressBar_component {
@@ -67,6 +66,6 @@
 
 .legacyBadge {
   position: absolute;
-  top: 0;
   right: -20px;
+  top: 0;
 }

@@ -14,10 +14,6 @@ import type { SidebarMenus } from '../../../source/renderer/app/components/sideb
 import type { SidebarWalletType } from '../../../source/renderer/app/types/sidebarTypes';
 // import type { Wallet } from '../../../source/renderer/app/domains/WalletTransaction';
 
-// Notification
-import TopBarLayout from '../../../source/renderer/app/components/layout/TopBarLayout';
-import LegacyNotification from '../../../source/renderer/app/components/notifications/LegacyNotification';
-
 // Empty screen elements
 import TopBar from '../../../source/renderer/app/components/layout/TopBar';
 import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
@@ -158,42 +154,31 @@ export default class StoryLayout extends Component<Props> {
     activeSidebarCategory: string,
     activeWallet: Wallet,
     activeNavItem: string
-  ) => {
-    const notification = (
-      <LegacyNotification onLearnMore={() => null} onMove={() => null} />
-    );
-    const topbar = (
-      <TopBar
-        onToggleSidebar={() => {
-          runInAction(() => {
-            this.isShowingSubMenus = !this.isShowingSubMenus;
-          });
+  ) => (
+    <TopBar
+      onToggleSidebar={() => {
+        runInAction(() => {
+          this.isShowingSubMenus = !this.isShowingSubMenus;
+        });
+      }}
+      formattedWalletAmount={formattedWalletAmount}
+      currentRoute={`/wallets/${activeWallet.id}/${activeNavItem}`}
+      activeWallet={
+        activeSidebarCategory === '/wallets' && activeNavItem !== 'empty'
+          ? activeWallet
+          : null
+      }
+      showSubMenuToggle
+      showSubMenus={this.isShowingSubMenus}
+    >
+      <NodeSyncStatusIcon
+        networkStatus={{
+          isSynced: true,
+          syncPercentage: 100,
         }}
-        formattedWalletAmount={formattedWalletAmount}
-        currentRoute={`/wallets/${activeWallet.id}/${activeNavItem}`}
-        activeWallet={
-          activeSidebarCategory === '/wallets' && activeNavItem !== 'empty'
-            ? activeWallet
-            : null
-        }
-        showSubMenuToggle
-        showSubMenus={this.isShowingSubMenus}
-      >
-        <NodeSyncStatusIcon
-          networkStatus={{
-            isSynced: true,
-            syncPercentage: 100,
-          }}
-          isProduction
-          isMainnet
-        />
-      </TopBar>
-    );
-
-    return activeWallet.isLegacy ? (
-      <TopBarLayout notification={notification} topbar={topbar} />
-    ) : (
-      topbar
-    );
-  };
+        isProduction
+        isMainnet
+      />
+    </TopBar>
+  );
 }
