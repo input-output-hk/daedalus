@@ -7,16 +7,12 @@ import clockIcon from '../../../assets/images/clock.inline.svg';
 import styles from './StakePool.scss';
 import { getHSLColor } from '../../../utils/colors';
 import type { StakePoolProps } from '../../../api/staking/types';
-import StakePoolTooltip from './StakePoolTooltip';
 
 type Props = {
-  ...$Exact<StakePoolProps>,
+  stakePool: StakePoolProps,
   ranking: number,
-  onOpenExternalLink: Function,
   onClick: Function,
-  onClose: Function,
   isSelected: boolean,
-  currentTheme: string,
 };
 
 @observer
@@ -26,15 +22,9 @@ export default class StakePool extends Component<Props> {
   }
 
   render() {
-    const {
-      index,
-      id,
-      retirement,
-      isSelected,
-      onClick,
-      onClose,
-      currentTheme,
-    } = this.props;
+    const { stakePool, isSelected, onClick } = this.props;
+
+    const { index, id, retirement } = stakePool;
 
     const componentClassnames = classnames([
       styles.component,
@@ -45,7 +35,7 @@ export default class StakePool extends Component<Props> {
       <div className={componentClassnames}>
         <div
           className={styles.content}
-          onClick={() => onClick(index)}
+          onClick={() => onClick(stakePool)}
           role="link"
           aria-hidden
         >
@@ -70,13 +60,6 @@ export default class StakePool extends Component<Props> {
             }}
           />
         </div>
-        <StakePoolTooltip
-          {...this.props}
-          className={styles.tooltip}
-          visible={isSelected}
-          onClick={onClose}
-          currentTheme={currentTheme}
-        />
       </div>
     );
   }

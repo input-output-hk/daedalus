@@ -47,11 +47,10 @@ const messages = defineMessages({
 });
 
 type Props = {
-  ...$Exact<StakePoolProps>,
+  stakePool: StakePoolProps,
   ranking: number,
   onOpenExternalLink: Function,
   onClick: Function,
-  visible: boolean,
   currentTheme: string,
 };
 
@@ -68,30 +67,28 @@ export default class StakePool extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      id,
-      name,
-      description,
-      url,
+      stakePool,
       ranking,
-      controlledStake,
-      profitMargin,
-      performance,
-      retirement,
       onOpenExternalLink,
-      visible,
       onClick,
       currentTheme,
     } = this.props;
 
-    const componentClassnames = classnames([
-      styles.component,
-      visible ? styles.visible : null,
-    ]);
+    const {
+      id,
+      name,
+      description,
+      url,
+      controlledStake,
+      profitMargin,
+      performance,
+      retirement,
+    } = stakePool;
 
     const lighnessOffset = currentTheme === 'dark-blue' ? -20 : 0;
 
     return (
-      <div className={componentClassnames}>
+      <div className={styles.component}>
         <h3 className={styles.name}>{name}</h3>
         <button className={styles.closeButton} onClick={onClick}>
           <SVGInline svg={closeCross} />

@@ -7,6 +7,8 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import StakePool from './StakePool';
 import type { StakePoolProps } from '../../../api/staking/types';
+import DynamicTooltip from '../../widgets/DynamicTooltip';
+import StakePoolTooltip from './StakePoolTooltip';
 
 import searchIcon from '../../../assets/images/search.inline.svg';
 import styles from './StakingStakePools.scss';
@@ -56,6 +58,7 @@ type State = {
   filter: string,
   selectedList?: ?string,
   selectedIndex?: ?number,
+  selectedPool: StakePoolProps | {},
 };
 
 @observer
@@ -69,6 +72,7 @@ export default class StakingStakePools extends Component<Props, State> {
     filter: 'all',
     selectedList: null,
     selectedIndex: null,
+    selectedPool: {},
   };
 
   searchInput: ?HTMLElement = null;
@@ -87,18 +91,23 @@ export default class StakingStakePools extends Component<Props, State> {
     newSelectedList === this.state.selectedList &&
     newSelectedIndex === this.state.selectedIndex;
 
-  handleClick = (selectedList: string, selectedIndex: number) => {
+  handleClick = (selectedList: string, selectedPool: StakePoolProps) => {
+    const { index: selectedIndex } = selectedPool;
     if (
       this.state.selectedList === selectedList &&
       this.state.selectedIndex === selectedIndex
     ) {
       return this.handleClose();
     }
-    return this.setState({ selectedList, selectedIndex });
+    return this.setState({ selectedList, selectedIndex, selectedPool });
   };
 
   handleClose = () =>
-    this.setState({ selectedList: null, selectedIndex: null });
+    this.setState({
+      selectedList: null,
+      selectedIndex: null,
+      selectedPool: {},
+    });
 
   render() {
     const { intl } = this.context;
@@ -108,6 +117,8 @@ export default class StakingStakePools extends Component<Props, State> {
       onOpenExternalLink,
       currentTheme,
     } = this.props;
+
+    const { selectedIndex, selectedPool } = this.state;
 
     return (
       <div className={styles.component}>
@@ -153,24 +164,31 @@ export default class StakingStakePools extends Component<Props, State> {
           </ul>
         </div>
 
+        <DynamicTooltip isVisible={!!selectedIndex}>
+          <StakePoolTooltip
+            stakePool={selectedPool}
+            className={styles.tooltip}
+            onClick={this.handleClose}
+            currentTheme={currentTheme}
+            onOpenExternalLink={onOpenExternalLink}
+          />
+        </DynamicTooltip>
+
         <h2>{intl.formatMessage(messages.delegatingListTitle)}</h2>
 
         <div className={styles.stakePoolsDelegatingList}>
           {stakePoolsDelegatingList.map(stakePool => (
             <StakePool
-              {...stakePool}
+              stakePool={stakePool}
               key={stakePool.id}
               ranking={this.getRanking(stakePool.index)}
               isSelected={this.isSelected(
                 'selectedIndexDelegatedList',
                 stakePool.index
               )}
-              onClose={this.handleClose}
-              onClick={index =>
-                this.handleClick('selectedIndexDelegatedList', index)
+              onClick={pool =>
+                this.handleClick('selectedIndexDelegatedList', pool)
               }
-              onOpenExternalLink={onOpenExternalLink}
-              currentTheme={currentTheme}
             />
           ))}
         </div>
@@ -187,14 +205,11 @@ export default class StakingStakePools extends Component<Props, State> {
         <div className={styles.stakePoolsList}>
           {this.props.stakePoolsList.map(stakePool => (
             <StakePool
-              {...stakePool}
+              stakePool={stakePool}
               key={stakePool.id}
               ranking={this.getRanking(stakePool.index)}
-              onOpenExternalLink={onOpenExternalLink}
               isSelected={this.isSelected('selectedIndexList', stakePool.index)}
-              onClose={this.handleClose}
-              onClick={index => this.handleClick('selectedIndexList', index)}
-              currentTheme={currentTheme}
+              onClick={pool => this.handleClick('selectedIndexList', pool)}
             />
           ))}
         </div>
