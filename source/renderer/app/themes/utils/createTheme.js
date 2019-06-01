@@ -435,6 +435,15 @@ const createDaedalusComponentsTheme = (
     modal: {
       '--theme-modal-overlay-background-color': 'rgba(0, 0, 0, 0.4)',
     },
+    navDropdown: {
+      '--theme-nav-dropdown-item-text-color': `${text.primary}`,
+      '--theme-nav-dropdown-item-background-color': `${
+        background.primary.lightest
+      }`,
+      '--theme-nav-dropdown-item-background-color-hover': `${chroma(
+        background.primary.regular
+      ).alpha(0.1)}`,
+    },
     navItem: {
       '--theme-nav-item-background-color': `${background.secondary.darkest}`,
       '--theme-nav-item-background-color-active': `${

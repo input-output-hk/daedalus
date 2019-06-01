@@ -370,6 +370,11 @@ const CARDANO_THEME_CONFIG = {
   modal: {
     '--theme-modal-overlay-background-color': 'rgba(0, 0, 0, 0.4)',
   },
+  navDropdown: {
+    '--theme-nav-dropdown-item-text-color': '#5e6066',
+    '--theme-nav-dropdown-item-background-color': '#fafbfc',
+    '--theme-nav-dropdown-item-background-color-hover': '#f1f3f5',
+  },
   navItem: {
     '--theme-nav-item-background-color': '#202225',
     '--theme-nav-item-background-color-hover': 'rgba(250, 251, 252, 0.1)',
