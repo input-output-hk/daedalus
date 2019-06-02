@@ -33,7 +33,13 @@ type Props = {
   stores?: ?{},
 };
 
-const sidebarCategories = [
+const CATEGORIES_COUNTDOWN = [
+  CATEGORIES_BY_NAME.WALLETS,
+  CATEGORIES_BY_NAME.STAKING_DELEGATION_COUNTDOWN,
+  CATEGORIES_BY_NAME.SETTINGS,
+];
+
+const CATEGORIES = [
   CATEGORIES_BY_NAME.WALLETS,
   CATEGORIES_BY_NAME.STAKING,
   CATEGORIES_BY_NAME.SETTINGS,
@@ -70,7 +76,11 @@ export default class StoryLayout extends Component<Props> {
         }}
       >
         <SidebarLayout
-          sidebar={this.getSidebar(activeSidebarCategory, sidebarMenus)}
+          sidebar={this.getSidebar(
+            storyName,
+            activeSidebarCategory,
+            sidebarMenus
+          )}
           topbar={this.getTopbar(
             activeSidebarCategory,
             activeWallet,
@@ -85,8 +95,7 @@ export default class StoryLayout extends Component<Props> {
     );
   }
 
-  @observable
-  isShowingSubMenus =
+  @observable isShowingSubMenus =
     this.props.activeSidebarCategory === '/wallets' && !!this.props.children;
 
   getSidebarWallets = (wallets: Array<Wallet>): Array<SidebarWalletType> =>
@@ -114,20 +123,31 @@ export default class StoryLayout extends Component<Props> {
     },
   });
 
-  getSidebar = (activeSidebarCategory: string, sidebarMenus: SidebarMenus) => (
-    <Sidebar
-      categories={sidebarCategories}
-      activeSidebarCategory={activeSidebarCategory}
-      menus={sidebarMenus}
-      isShowingSubMenus={this.isShowingSubMenus}
-      onCategoryClicked={action('onCategoryClicked')}
-      isDialogOpen={() => false}
-      onAddWallet={action('onAddWallet')}
-      openDialogAction={action('openDialog')}
-      onSubmitSupportRequest={() => {}}
-      pathname="/"
-    />
-  );
+  getSidebar = (
+    storyName: string,
+    activeSidebarCategory: string,
+    sidebarMenus: SidebarMenus
+  ) => {
+    const sidebarCategories =
+      storyName === 'Decentralization Start Info'
+        ? CATEGORIES_COUNTDOWN
+        : CATEGORIES;
+
+    return (
+      <Sidebar
+        categories={sidebarCategories}
+        activeSidebarCategory={activeSidebarCategory}
+        menus={sidebarMenus}
+        isShowingSubMenus={this.isShowingSubMenus}
+        onCategoryClicked={action('onCategoryClicked')}
+        isDialogOpen={() => false}
+        onAddWallet={action('onAddWallet')}
+        openDialogAction={action('openDialog')}
+        onSubmitSupportRequest={() => {}}
+        pathname="/"
+      />
+    );
+  };
 
   getTopbar = (
     activeSidebarCategory: string,

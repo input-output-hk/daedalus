@@ -8,19 +8,22 @@ import { formattedWalletAmount } from '../utils/formatters';
 import type { SidebarWalletType } from '../types/sidebarTypes';
 
 export default class SidebarStore extends Store {
-  CATEGORIES = sidebarConfig.CATEGORIES;
-
+  @observable CATEGORIES: Array<any> = sidebarConfig.CATEGORIES;
   @observable activeSidebarCategory: string = this.CATEGORIES[0].route;
   @observable isShowingSubMenus: boolean = true;
 
   setup() {
-    const actions = this.actions.sidebar;
-    actions.showSubMenus.listen(this._showSubMenus);
-    actions.toggleSubMenus.listen(this._toggleSubMenus);
-    actions.activateSidebarCategory.listen(this._onActivateSidebarCategory);
-    actions.walletSelected.listen(this._onWalletSelected);
+    const { sidebar: sidebarActions } = this.actions;
+
+    sidebarActions.showSubMenus.listen(this._showSubMenus);
+    sidebarActions.toggleSubMenus.listen(this._toggleSubMenus);
+    sidebarActions.activateSidebarCategory.listen(
+      this._onActivateSidebarCategory
+    );
+    sidebarActions.walletSelected.listen(this._onWalletSelected);
 
     this.registerReactions([this._syncSidebarRouteWithRouter]);
+    this._configureCategories();
   }
 
   @computed get wallets(): Array<SidebarWalletType> {
@@ -35,6 +38,12 @@ export default class SidebarStore extends Store {
       restoreProgress: get(w, 'syncState.data.percentage.quantity', 0),
     }));
   }
+
+  @action _configureCategories = () => {
+    if (this.stores.networkStatus.environment.isDev) {
+      this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_STAKING;
+    }
+  };
 
   @action _onActivateSidebarCategory = (params: {
     category: string,

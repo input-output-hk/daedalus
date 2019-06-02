@@ -6,10 +6,13 @@ Changelog
 ### Features
 
 - Added new submenu "Help and Support" & added under it "GPU Safe Mode", "Download Logs", "Support Request" and "Known Issues" ([PR 1382](https://github.com/input-output-hk/daedalus/pull/1382))
+- Implemented "Stake pool" UI ([PR 1397](https://github.com/input-output-hk/daedalus/pull/1397))
+- Implemented "Staking rewards" UI ([PR 1403](https://github.com/input-output-hk/daedalus/pull/1403))
+- Implemented "Decentralization progress" UI ([PR 1394](https://github.com/input-output-hk/daedalus/pull/1394))
 - Implemented the navigation for the Staking pages ([PR 1395](https://github.com/input-output-hk/daedalus/pull/1395), [PR 1400](https://github.com/input-output-hk/daedalus/pull/1400))
 - Implemented timestamp on paper wallet PDF's ([PR 1385](https://github.com/input-output-hk/daedalus/pull/1385), [PR 1400](https://github.com/input-output-hk/daedalus/pull/1400))
 - Implemented "Start of decentralisation notification" UI ([PR 1390](https://github.com/input-output-hk/daedalus/pull/1390))
-- Implemented new Network Status dialog design ([PR 1370](https://github.com/input-output-hk/daedalus/pull/1370), [PR 1402](https://github.com/input-output-hk/daedalus/pull/1402))
+- Implemented new Network Status dialog design ([PR 1370](https://github.com/input-output-hk/daedalus/pull/1370), [PR 1402](https://github.com/input-output-hk/daedalus/pull/1402), [PR 1404](https://github.com/input-output-hk/daedalus/pull/1404))
 - Implemented the wallet UTxO statistics screen ([PR 1353](https://github.com/input-output-hk/daedalus/pull/1353))
 - Implemented scroll error message into view ([PR 1383](https://github.com/input-output-hk/daedalus/pull/1383))
 - Implemented new Block-consolidation status design ([PR 1377](https://github.com/input-output-hk/daedalus/pull/1377))
@@ -20,6 +23,8 @@ Changelog
 
 ### Fixes
 
+- Fixed addresses not visible on Receive screen when Password is set for the wallet in minimized mode ([PR 1407](https://github.com/input-output-hk/daedalus/pull/1407))
+- Fixed truncated "Add Wallet" screen while wallet is restored ([PR 1405](https://github.com/input-output-hk/daedalus/pull/1405))
 - Fixed spending password being asked on Receive screen when clicking on "Copy address" link. ([PR 1392](https://github.com/input-output-hk/daedalus/pull/1392))
 - Fixed EKG port collision while developing on Linux ([PR 1393](https://github.com/input-output-hk/daedalus/pull/1393))
 - Fixed file extension of Daedalus logs ([PR 1381](https://github.com/input-output-hk/daedalus/pull/1381), [PR 1384](https://github.com/input-output-hk/daedalus/pull/1384))
@@ -29,6 +34,7 @@ Changelog
 
 ### Chores
 
+- Enabled theme and language selection in Storybook ([PR 1408](https://github.com/input-output-hk/daedalus/pull/1408))
 - Removed legacy references to npm in favour of yarn ([PR 1399](https://github.com/input-output-hk/daedalus/pull/1399), [PR 1402](https://github.com/input-output-hk/daedalus/pull/1402))
 - Setup storybook build script to deploy previews for the QA team to Netlify ([1391](https://github.com/input-output-hk/daedalus/pull/1391))
 - Added unit tests for mnemonic generation and validation ([PR 1379](https://github.com/input-output-hk/daedalus/pull/1379))

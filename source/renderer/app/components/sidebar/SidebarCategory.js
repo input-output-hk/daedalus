@@ -23,9 +23,13 @@ export default class SidebarCategory extends Component<Props> {
       styles[className] ? styles[className] : null,
     ]);
 
-    const iconStyles = classNames([
-      className === 'supportRequest' ? styles.supportRequestIcon : styles.icon,
-    ]);
+    const iconStyles = classNames({
+      [styles.supportRequestIcon]: className === 'supportRequest',
+      [styles.decentralizationStartIcon]:
+        className === 'staking-delegation-countdown',
+      [styles.decentralizationProgressIcon]: className === 'staking',
+      [styles.icon]: className !== 'supportRequest',
+    });
 
     return (
       <button className={componentStyles} onClick={onClick}>

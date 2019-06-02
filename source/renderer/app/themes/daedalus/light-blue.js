@@ -340,6 +340,38 @@ export default {
   '--theme-staking-content-border-color': '#c6cdd6',
   '--theme-staking-font-color-accent': '#5e6066',
   '--theme-staking-font-color-regular': '#5e6066',
+  '--theme-staking-font-color-light': 'rgba(94, 96, 102, 0.7)',
+  '--theme-staking-font-color-lighter': 'rgba(94, 96, 102, 0.5)',
+  '--theme-staking-table-head-background-color': '#f1f3f5',
+  '--theme-staking-table-border-color': '#c6cdd6',
+  '--theme-staking-link-color': 'rgba(41, 111, 208, 1)',
+  '--theme-staking-link-color-light': 'rgba(41, 111, 208, 0.5)',
+
+  '--theme-staking-stake-pools-title-color': '#5e6066',
+  '--theme-staking-stake-pools-search-button-color': '#5e6066',
+  '--theme-staking-stake-pool-background-color': '#fafbfc',
+  '--theme-staking-stake-pool-border-color': '#c6cdd6',
+  '--theme-staking-stake-pool-glow-color': 'rgba(0, 149, 255, 0.3)',
+  '--theme-staking-stake-pool-id-color': '#5e6066',
+  '--theme-staking-stake-pool-retirement-background-color': '#ea4c5b',
+  '--theme-staking-stake-pool-tooltip-background-color': '#FFFFFF',
+  '--theme-staking-stake-pool-tooltip-border-color': '#c6cdd6',
+  '--theme-staking-stake-pool-tooltip-shadow-color': 'rgba(0, 0, 0, 0.25)',
+  '--theme-staking-stake-pool-tooltip-text-color': '#5e6066',
+  '--theme-staking-stake-pool-tooltip-link-color': '#296fd0',
+  '--theme-staking-stake-pool-tooltip-table-title-color': '#5e6066',
+  '--theme-staking-stake-pool-tooltip-table-param-color': '#5e6066',
+  '--theme-staking-stake-pool-tooltip-table-param-retirement-background-color':
+    'rgba(234, 76, 91, 0.3)',
+  '--theme-staking-stake-pool-tooltip-delegate-button-background-color':
+    '#445b7c',
+  '--theme-staking-stake-pool-tooltip-delegate-button-hover-background-color':
+    '#2f496e',
+  '--theme-staking-stake-pool-tooltip-delegate-button-active-background-color':
+    '#1e304a',
+  '--theme-staking-stake-pool-tooltip-delegate-button-inverse-color': '#fafbfc',
+  '--theme-staking-stake-pool-tooltip-delegate-button-border-color':
+    'transparent',
 
   '--theme-switch-label-color': '#5e6066',
 
@@ -490,6 +522,11 @@ export default {
 
   '--theme-progress-bar-background-color': 'rgba(255, 255, 255, 0.3)',
   '--theme-progress-bar-foreground-color': 'rgba(255, 255, 255, 0.7)',
+
+  '--theme-staking-decentralization-progress-stripe-dark-1-background-color':
+    '#34465e',
+  '--theme-staking-decentralization-progress-stripe-dark-2-background-color':
+    '#445b7c',
 
   '--theme-block-consolidation-background-color': 'rgba(36, 62, 98, 0.96)',
   '--theme-block-consolidation-container-background-color': '#fafbfc',

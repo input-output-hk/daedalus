@@ -340,7 +340,38 @@ export default {
   '--theme-staking-content-background-color': '#263345',
   '--theme-staking-content-border-color': '#263345',
   '--theme-staking-font-color-accent': '#cecfd1',
-  '--theme-staking-font-color-regular': '#0b1926',
+  '--theme-staking-font-color-regular': 'rgba(233, 244, 254, 1)',
+  '--theme-staking-font-color-light': 'rgba(233, 244, 254, 0.7)',
+  '--theme-staking-font-color-lighter': 'rgba(233, 244, 254, 0.5)',
+  '--theme-staking-table-head-background-color': '#536370',
+  '--theme-staking-table-border-color': '#c6cdd6',
+  '--theme-staking-link-color': 'rgba(32, 181, 107, 1)',
+  '--theme-staking-link-color-light': 'rgba(32, 181, 107, 0.5)',
+
+  '--theme-staking-stake-pools-title-color': '#e9f4fe',
+  '--theme-staking-stake-pools-search-button-color': '#e9f4fe',
+  '--theme-staking-stake-pool-background-color': '#263345',
+  '--theme-staking-stake-pool-border-color': 'transparent',
+  '--theme-staking-stake-pool-glow-color': '#7cfeb54c',
+  '--theme-staking-stake-pool-id-color': '#e9f4fe',
+  '--theme-staking-stake-pool-retirement-background-color': '#ea4c5b',
+  '--theme-staking-stake-pool-tooltip-background-color': '#5e6066',
+  '--theme-staking-stake-pool-tooltip-border-color': 'transparent',
+  '--theme-staking-stake-pool-tooltip-shadow-color': 'rgba(0, 0, 0, 0.25)',
+  '--theme-staking-stake-pool-tooltip-text-color': '#e9f4fe',
+  '--theme-staking-stake-pool-tooltip-link-color': '#2ab467',
+  '--theme-staking-stake-pool-tooltip-table-title-color': '#e9f4fe',
+  '--theme-staking-stake-pool-tooltip-table-param-color': '#e9f4fe',
+  '--theme-staking-stake-pool-tooltip-table-param-retirement-background-color':
+    'rgba(234, 76, 91, 0.3)',
+  '--theme-staking-stake-pool-tooltip-delegate-button-background-color':
+    '#00000019',
+  '--theme-staking-stake-pool-tooltip-delegate-button-hover-background-color':
+    '#fafbfc',
+  '--theme-staking-stake-pool-tooltip-delegate-button-active-background-color':
+    '#fafbfccc',
+  '--theme-staking-stake-pool-tooltip-delegate-button-inverse-color': '#263345',
+  '--theme-staking-stake-pool-tooltip-delegate-button-border-color': '#fafbfc',
 
   '--theme-switch-label-color': '#e9f4fe',
 
@@ -494,6 +525,11 @@ export default {
 
   '--theme-progress-bar-background-color': 'rgba(233, 244, 254, 0.3)',
   '--theme-progress-bar-foreground-color': 'rgba(233, 244, 254, 0.7)',
+
+  '--theme-staking-decentralization-progress-stripe-dark-1-background-color':
+    '#3c4852',
+  '--theme-staking-decentralization-progress-stripe-dark-2-background-color':
+    '#536370',
 
   '--theme-block-consolidation-background-color': 'rgba(38, 51, 69, 0.96)',
   '--theme-block-consolidation-container-background-color': '#fafbfc',
