@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import { debounce } from 'lodash';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import StakePool from './StakePool';
@@ -56,6 +57,7 @@ type State = {
   filter: string,
   selectedList?: ?string,
   selectedIndex?: ?number,
+  poolsPerLine: number,
 };
 
 @observer
@@ -64,11 +66,39 @@ export default class StakingStakePools extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
+  constructor(props: Props) {
+    super(props);
+    window.onresize = debounce(this.updatePoolsPerLine, 200);
+  }
+
+  componentDidMount() {
+    this.updatePoolsPerLine();
+  }
+
   state = {
     search: '',
     filter: 'all',
     selectedList: null,
     selectedIndex: null,
+    poolsPerLine: 0,
+  };
+
+  updatePoolsPerLine = () => {
+    const POOL_WIDTH = 90;
+    const OFFSET_LEFT = 99;
+    const OFFSET_RIGHT = 40;
+    const containerWidth = window.innerWidth - (OFFSET_LEFT + OFFSET_RIGHT);
+    const poolsPerLine = parseInt(containerWidth / POOL_WIDTH, 10);
+    this.setState({ poolsPerLine });
+  };
+
+  getIsFlipHorizontal = (index: number) => {
+    const { poolsPerLine } = this.state;
+    return (
+      (index + 1) % poolsPerLine === 0 ||
+      (index + 2) % poolsPerLine === 0 ||
+      (index + 3) % poolsPerLine === 0
+    );
   };
 
   searchInput: ?HTMLElement = null;
@@ -156,7 +186,7 @@ export default class StakingStakePools extends Component<Props, State> {
         <h2>{intl.formatMessage(messages.delegatingListTitle)}</h2>
 
         <div className={styles.stakePoolsDelegatingList}>
-          {stakePoolsDelegatingList.map(stakePool => (
+          {stakePoolsDelegatingList.map((stakePool, index) => (
             <StakePool
               {...stakePool}
               key={stakePool.id}
@@ -166,12 +196,12 @@ export default class StakingStakePools extends Component<Props, State> {
                 stakePool.index
               )}
               onClose={this.handleClose}
-              onClick={index =>
-                this.handleClick('selectedIndexDelegatedList', index)
+              onClick={poolIndex =>
+                this.handleClick('selectedIndexDelegatedList', poolIndex)
               }
               onOpenExternalLink={onOpenExternalLink}
               currentTheme={currentTheme}
-              isTooltipFlipHorizontal={stakePool.id % 9 === 0}
+              isTooltipFlipHorizontal={this.getIsFlipHorizontal(index)}
             />
           ))}
         </div>
@@ -194,9 +224,11 @@ export default class StakingStakePools extends Component<Props, State> {
               onOpenExternalLink={onOpenExternalLink}
               isSelected={this.isSelected('selectedIndexList', stakePool.index)}
               onClose={this.handleClose}
-              onClick={index => this.handleClick('selectedIndexList', index)}
+              onClick={poolIndex =>
+                this.handleClick('selectedIndexList', poolIndex)
+              }
               currentTheme={currentTheme}
-              isTooltipFlipHorizontal={(index + 1) % 10 === 0}
+              isTooltipFlipHorizontal={this.getIsFlipHorizontal(index)}
             />
           ))}
         </div>
