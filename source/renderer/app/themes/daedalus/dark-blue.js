@@ -372,9 +372,9 @@ const DARK_BLUE_THEME_CONFIG = {
     '--theme-modal-overlay-background-color': 'rgba(0, 0, 0, 0.4)',
   },
   navDropdown: {
-    '--theme-nav-dropdown-item-text-color': '#1d2e47',
-    '--theme-nav-dropdown-item-background-color': '#fafbfc',
-    '--theme-nav-dropdown-item-background-color-hover': '#f1f3f5',
+    '--theme-nav-dropdown-item-text-color': '#e9f4fe',
+    '--theme-nav-dropdown-item-background-color': '#263345',
+    '--theme-nav-dropdown-item-background-color-hover': '#536370',
   },
   navItem: {
     '--theme-nav-item-background-color': '#263345',
