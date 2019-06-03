@@ -1964,13 +1964,13 @@
         "description": "\"Delegating List Title\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakingStakePools.js",
         "id": "staking.stakePools.searchInputPlaceholder",
         "start": {
           "column": 26,
-          "line": 15
+          "line": 16
         }
       },
       {
@@ -1978,13 +1978,13 @@
         "description": "\"Filter All\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakingStakePools.js",
         "id": "staking.stakePools.filterAll",
         "start": {
           "column": 13,
-          "line": 20
+          "line": 21
         }
       },
       {
@@ -1992,13 +1992,13 @@
         "description": "\"Filter New\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakingStakePools.js",
         "id": "staking.stakePools.filterNew",
         "start": {
           "column": 13,
-          "line": 25
+          "line": 26
         }
       },
       {
@@ -2006,13 +2006,13 @@
         "description": "\"FilterChar ity\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakingStakePools.js",
         "id": "staking.stakePools.filterCharity",
         "start": {
           "column": 17,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -2020,13 +2020,13 @@
         "description": "\"delegatingListTitlee\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakingStakePools.js",
         "id": "staking.stakePools.delegatingListTitle",
         "start": {
           "column": 23,
-          "line": 35
+          "line": 36
         }
       },
       {
@@ -2034,13 +2034,13 @@
         "description": "\"listTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakingStakePools.js",
         "id": "staking.stakePools.listTitle",
         "start": {
           "column": 13,
-          "line": 40
+          "line": 41
         }
       }
     ],
