@@ -63,15 +63,41 @@ export default class NodeUpdateStore extends Store {
   };
 
   @action _getLatestAvailableAppVersion = async () => {
-    const { version, platform, isDevelopment } = this.environment;
-
-    if (!isDevelopment) {
+    const { isDevelopment, isTest } = this.environment;
+    if (!isDevelopment || isTest) {
       this.isNewAppVersionLoading = true;
       const versionInfo = await this.api.ada.getLatestAppVersionInfo();
-      const availableVersion = get(versionInfo, ['platforms', platform, 'version'], null);
-      const isNewAppVersionAvailable = availableVersion && availableVersion > version;
+      if (versionInfo) this.setLatestAvailableAppVersion(versionInfo);
+    }
+  }
 
-      runInAction(() => {
+  setLatestAvailableAppVersion = (versionInfo) => {
+    const { version, platform } = this.environment;
+    const availableVersion = get(versionInfo, ['platforms', platform, 'version'], null);
+
+    let isNewAppVersionAvailable = false;
+    if (availableVersion) {
+      const chunkedAvailableVersion = availableVersion.split('.');
+      const chunkedCurrentVersion = version.split('.');
+
+      // Main version changed
+      const isMainVersionChanged = chunkedCurrentVersion[0] < chunkedAvailableVersion[0];
+      // Middle version changed
+      const isMiddleVersionChanged = (
+        chunkedCurrentVersion[0] === chunkedAvailableVersion[0] &&
+        chunkedCurrentVersion[1] < chunkedAvailableVersion[1]
+      );
+      // Minor version changed
+      const isMinorVersionChanged = (
+        chunkedCurrentVersion[0] === chunkedAvailableVersion[0] &&
+        chunkedCurrentVersion[1] === chunkedAvailableVersion[1] &&
+        chunkedCurrentVersion[2] < chunkedAvailableVersion[2]
+      );
+      isNewAppVersionAvailable = isMainVersionChanged || isMiddleVersionChanged || isMinorVersionChanged;
+    }
+
+    if (isNewAppVersionAvailable) {
+      runInAction('setLatestAvailableAppVersion', () => {
         this.isNewAppVersionLoading = false;
         this.isNewAppVersionAvailable = isNewAppVersionAvailable;
         this.availableAppVersion = availableVersion;
