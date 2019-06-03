@@ -68,7 +68,11 @@ export default class StakingStakePools extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    window.onresize = debounce(this.updatePoolsPerLine, 200);
+    window.addEventListener('resize', debounce(this.updatePoolsPerLine, 200));
+    window.addEventListener(
+      'resize',
+      debounce(this.handleClose, 200, { leading: true, trailing: false })
+    );
   }
 
   componentDidMount() {

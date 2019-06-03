@@ -51,7 +51,9 @@ export default class StakePool extends Component<Props> {
           role="link"
           aria-hidden
         >
-          <div className={styles.id}>{id}</div>
+          <div className={styles.id}>
+            {id} {isTooltipFlipHorizontal ? 'Y' : 'N'}
+          </div>
           <div
             className={styles.index}
             style={{
