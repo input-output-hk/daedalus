@@ -20,7 +20,7 @@ export const WALLETS = [
     assurance: WalletAssuranceModeOptions.NORMAL,
     hasPassword: false,
     passwordUpdateDate: new Date(),
-    isLegacy: true,
+    isLegacy: false,
   },
   {
     id: '1',
@@ -31,6 +31,16 @@ export const WALLETS = [
     passwordUpdateDate: moment()
       .subtract(1, 'month')
       .toDate(),
+    isLegacy: false,
+  },
+  {
+    id: '2',
+    name: 'Legacy',
+    amount: new BigNumber(55.555),
+    assurance: WalletAssuranceModeOptions.NORMAL,
+    hasPassword: false,
+    passwordUpdateDate: new Date(),
+    isLegacy: true,
   },
 ];
 

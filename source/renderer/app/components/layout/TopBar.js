@@ -35,9 +35,14 @@ export default class TopBar extends Component<Props> {
           formattedWalletAmount(activeWallet.amount, true)}
         </span>
         {activeWallet && activeWallet.isLegacy && (
-          <div className={styles.legacyBadge}>
-            <LegacyBadge />
-          </div>
+          <LegacyBadge
+            style={{
+              position: 'absolute',
+              right: 0,
+              top: 0,
+              transform: 'translate(100%, -40%)',
+            }}
+          />
         )}
       </span>
     ) : null;

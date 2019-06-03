@@ -20,8 +20,13 @@ export default class LegacyBadge extends Component<any> {
 
   render() {
     const { intl } = this.context;
+    const { ...rest } = this.props;
     const label = intl.formatMessage(messages.label);
 
-    return <div className={styles.component}>{label}</div>;
+    return (
+      <div className={styles.component} {...rest}>
+        {label}
+      </div>
+    );
   }
 }

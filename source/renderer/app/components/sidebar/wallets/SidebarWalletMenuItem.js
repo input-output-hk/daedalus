@@ -44,9 +44,13 @@ export default class SidebarWalletMenuItem extends Component<Props> {
           <span className={styles.info}>{info}</span>
           {isRestoreActive ? <ProgressBar progress={restoreProgress} /> : null}
           {isLegacy && (
-            <div className={styles.legacyBadge}>
-              <LegacyBadge />
-            </div>
+            <LegacyBadge
+              style={{
+                position: 'absolute',
+                right: -20,
+                top: 0,
+              }}
+            />
           )}
         </span>
       </button>
