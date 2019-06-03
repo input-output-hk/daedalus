@@ -53,6 +53,8 @@ type Props = {
   onClick: Function,
   visible: boolean,
   currentTheme: string,
+  isTooltipFlipHorizontal: boolean,
+  isTooltipFlipVertical: boolean,
 };
 
 @observer
@@ -81,18 +83,24 @@ export default class StakePool extends Component<Props> {
       visible,
       onClick,
       currentTheme,
+      isTooltipFlipHorizontal,
+      isTooltipFlipVertical,
     } = this.props;
 
     const componentClassnames = classnames([
       styles.component,
       visible ? styles.visible : null,
+      isTooltipFlipHorizontal ? styles.flipHorizontal : null,
+      isTooltipFlipVertical ? styles.flipVertical : null,
     ]);
 
     const lighnessOffset = currentTheme === 'dark-blue' ? -20 : 0;
 
     return (
       <div className={componentClassnames}>
-        <h3 className={styles.name}>{name}</h3>
+        <h3 className={styles.name}>
+          {name} {isTooltipFlipHorizontal ? 'flip' : ''}
+        </h3>
         <button className={styles.closeButton} onClick={onClick}>
           <SVGInline svg={closeCross} />
         </button>

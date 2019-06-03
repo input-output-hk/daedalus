@@ -17,6 +17,7 @@ type Props = {
   onClose: Function,
   isSelected: boolean,
   currentTheme: string,
+  isTooltipFlipHorizontal: boolean,
 };
 
 @observer
@@ -34,6 +35,8 @@ export default class StakePool extends Component<Props> {
       onClick,
       onClose,
       currentTheme,
+      isTooltipFlipHorizontal,
+      isTooltipFlipVertical,
     } = this.props;
 
     const componentClassnames = classnames([
@@ -49,7 +52,9 @@ export default class StakePool extends Component<Props> {
           role="link"
           aria-hidden
         >
-          <div className={styles.id}>{id}</div>
+          <div className={styles.id}>
+            {id} {isTooltipFlipHorizontal ? 'Y' : 'N'}
+          </div>
           <div
             className={styles.index}
             style={{
@@ -76,6 +81,8 @@ export default class StakePool extends Component<Props> {
           visible={isSelected}
           onClick={onClose}
           currentTheme={currentTheme}
+          isTooltipFlipHorizontal={isTooltipFlipHorizontal}
+          isTooltipFlipVertical={isTooltipFlipVertical}
         />
       </div>
     );

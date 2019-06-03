@@ -171,6 +171,7 @@ export default class StakingStakePools extends Component<Props, State> {
               }
               onOpenExternalLink={onOpenExternalLink}
               currentTheme={currentTheme}
+              isTooltipFlipHorizontal={stakePool.id % 9 === 0}
             />
           ))}
         </div>
@@ -185,7 +186,7 @@ export default class StakingStakePools extends Component<Props, State> {
         </h2>
 
         <div className={styles.stakePoolsList}>
-          {this.props.stakePoolsList.map(stakePool => (
+          {this.props.stakePoolsList.map((stakePool, index) => (
             <StakePool
               {...stakePool}
               key={stakePool.id}
@@ -195,6 +196,7 @@ export default class StakingStakePools extends Component<Props, State> {
               onClose={this.handleClose}
               onClick={index => this.handleClick('selectedIndexList', index)}
               currentTheme={currentTheme}
+              isTooltipFlipHorizontal={(index + 1) % 10 === 0}
             />
           ))}
         </div>

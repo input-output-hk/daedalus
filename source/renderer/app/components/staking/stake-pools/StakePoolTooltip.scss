@@ -45,6 +45,26 @@
     top: 63px;
   }
 
+  &.flipHorizontal {
+    left: auto;
+    right: 45px;
+
+    &:after {
+      border-right-color: transparent;
+      border-left-color: var(
+        --theme-staking-stake-pool-tooltip-background-color
+      );
+      left: auto;
+      right: -20px;
+    }
+    &:before {
+      border-right-color: transparent;
+      border-left-color: var(--theme-staking-stake-pool-tooltip-border-color);
+      left: auto;
+      right: -22px;
+    }
+  }
+
   :global {
     button.SimpleButton_root {
       background-color: var(
