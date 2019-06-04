@@ -42,7 +42,9 @@ export default class AppStore extends Store {
 
     this.actions.app.downloadLogs.listen(this._downloadLogs);
 
-    this.actions.app.toggleNotificationVisibility.listen(this._toggleNotification);
+    this.actions.app.toggleNotificationVisibility.listen(
+      this._toggleNotification
+    );
 
     toggleUiPartChannel.onReceive(this.toggleUiPart);
     showUiPartChannel.onReceive(this.showUiPart);
@@ -168,24 +170,27 @@ export default class AppStore extends Store {
 
   @action _downloadLogs = () => {
     const fileName = generateFileNameWithTimestamp();
-    global.dialog.showSaveDialog({
-      defaultPath: fileName,
-    }, (destination) => {
-      if (destination) {
-        this.actions.profile.downloadLogs.trigger({
-          fileName,
-          destination,
-          fresh: true,
-        });
-      } else {
-        this.actions.app.toggleNotificationVisibility.trigger();
-        this.actions.profile.downloadLogsSuccess.trigger();
+    global.dialog.showSaveDialog(
+      {
+        defaultPath: fileName,
+      },
+      destination => {
+        if (destination) {
+          this.actions.profile.downloadLogs.trigger({
+            fileName,
+            destination,
+            fresh: true,
+          });
+        } else {
+          this.actions.app.toggleNotificationVisibility.trigger();
+          this.actions.profile.downloadLogsSuccess.trigger();
+        }
       }
-    });
+    );
     this.isNotificationVisible = true;
   };
 
   @action _toggleNotification = () => {
     this.isNotificationVisible = !this.isNotificationVisible;
-  }
+  };
 }
