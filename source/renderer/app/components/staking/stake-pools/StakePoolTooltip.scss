@@ -65,6 +65,20 @@
     }
   }
 
+  &.flipVertical {
+    top: auto;
+    bottom: -60px;
+
+    &:after {
+      top: auto;
+      bottom: 64px;
+    }
+    &:before {
+      top: auto;
+      bottom: 63px;
+    }
+  }
+
   :global {
     button.SimpleButton_root {
       background-color: var(
@@ -109,7 +123,10 @@
   letter-spacing: 0.5px;
   line-height: 1.38;
   margin-bottom: 3px;
+  max-height: 44px;
+  overflow: hidden;
   padding-right: 25px;
+  text-overflow: ellipsis;
 }
 
 .closeButton {
@@ -141,6 +158,9 @@
   font-size: 14px;
   line-height: 1.36;
   margin-bottom: 4px;
+  max-height: 79px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .url {

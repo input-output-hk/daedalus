@@ -57,7 +57,15 @@ type State = {
   filter: string,
   selectedList?: ?string,
   selectedIndex?: ?number,
-  poolsPerLine: number,
+  flipHorizontal: boolean,
+  flipVertical: boolean,
+};
+
+const initialState = {
+  selectedList: null,
+  selectedIndex: null,
+  flipHorizontal: false,
+  flipVertical: false,
 };
 
 @observer
@@ -68,41 +76,20 @@ export default class StakingStakePools extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    window.addEventListener('resize', debounce(this.updatePoolsPerLine, 200));
     window.addEventListener(
       'resize',
       debounce(this.handleClose, 200, { leading: true, trailing: false })
     );
-  }
-
-  componentDidMount() {
-    this.updatePoolsPerLine();
+    window.addEventListener(
+      'scroll',
+      debounce(this.handleClose, 200, { leading: true, trailing: false })
+    );
   }
 
   state = {
     search: '',
     filter: 'all',
-    selectedList: null,
-    selectedIndex: null,
-    poolsPerLine: 0,
-  };
-
-  updatePoolsPerLine = () => {
-    const POOL_WIDTH = 90;
-    const OFFSET_LEFT = 99;
-    const OFFSET_RIGHT = 40;
-    const containerWidth = window.innerWidth - (OFFSET_LEFT + OFFSET_RIGHT);
-    const poolsPerLine = parseInt(containerWidth / POOL_WIDTH, 10);
-    this.setState({ poolsPerLine });
-  };
-
-  getIsFlipHorizontal = (index: number) => {
-    const { poolsPerLine } = this.state;
-    return (
-      (index + 1) % poolsPerLine === 0 ||
-      (index + 2) % poolsPerLine === 0 ||
-      (index + 3) % poolsPerLine === 0
-    );
+    ...initialState,
   };
 
   searchInput: ?HTMLElement = null;
@@ -121,18 +108,39 @@ export default class StakingStakePools extends Component<Props, State> {
     newSelectedList === this.state.selectedList &&
     newSelectedIndex === this.state.selectedIndex;
 
-  handleClick = (selectedList: string, selectedIndex: number) => {
+  handleClick = (
+    selectedList: string,
+    event: SyntheticMouseEvent<HTMLElement>,
+    selectedIndex: number
+  ) => {
     if (
       this.state.selectedList === selectedList &&
       this.state.selectedIndex === selectedIndex
     ) {
       return this.handleClose();
     }
-    return this.setState({ selectedList, selectedIndex });
+    event.persist();
+    if (event.target instanceof HTMLElement) {
+      const targetElement =
+        event.target.className === 'StakePool_content'
+          ? event.target
+          : event.target.parentNode;
+      if (targetElement instanceof HTMLElement) {
+        const { top, left } = targetElement.getBoundingClientRect();
+        const flipHorizontal = left > window.innerWidth - window.innerWidth / 2;
+        const flipVertical = top > window.innerHeight - window.innerHeight / 2;
+        return this.setState({
+          selectedList,
+          selectedIndex,
+          flipHorizontal,
+          flipVertical,
+        });
+      }
+    }
+    return false;
   };
 
-  handleClose = () =>
-    this.setState({ selectedList: null, selectedIndex: null });
+  handleClose = () => this.setState({ ...initialState });
 
   render() {
     const { intl } = this.context;
@@ -142,6 +150,8 @@ export default class StakingStakePools extends Component<Props, State> {
       onOpenExternalLink,
       currentTheme,
     } = this.props;
+
+    const { flipHorizontal, flipVertical } = this.state;
 
     return (
       <div className={styles.component}>
@@ -190,7 +200,7 @@ export default class StakingStakePools extends Component<Props, State> {
         <h2>{intl.formatMessage(messages.delegatingListTitle)}</h2>
 
         <div className={styles.stakePoolsDelegatingList}>
-          {stakePoolsDelegatingList.map((stakePool, index) => (
+          {stakePoolsDelegatingList.map(stakePool => (
             <StakePool
               {...stakePool}
               key={stakePool.id}
@@ -200,12 +210,13 @@ export default class StakingStakePools extends Component<Props, State> {
                 stakePool.index
               )}
               onClose={this.handleClose}
-              onClick={poolIndex =>
-                this.handleClick('selectedIndexDelegatedList', poolIndex)
+              onClick={(...params) =>
+                this.handleClick('selectedIndexDelegatedList', ...params)
               }
               onOpenExternalLink={onOpenExternalLink}
               currentTheme={currentTheme}
-              isTooltipFlipHorizontal={this.getIsFlipHorizontal(index)}
+              flipHorizontal={flipHorizontal}
+              flipVertical={flipVertical}
             />
           ))}
         </div>
@@ -220,7 +231,7 @@ export default class StakingStakePools extends Component<Props, State> {
         </h2>
 
         <div className={styles.stakePoolsList}>
-          {this.props.stakePoolsList.map((stakePool, index) => (
+          {this.props.stakePoolsList.map(stakePool => (
             <StakePool
               {...stakePool}
               key={stakePool.id}
@@ -228,11 +239,12 @@ export default class StakingStakePools extends Component<Props, State> {
               onOpenExternalLink={onOpenExternalLink}
               isSelected={this.isSelected('selectedIndexList', stakePool.index)}
               onClose={this.handleClose}
-              onClick={poolIndex =>
-                this.handleClick('selectedIndexList', poolIndex)
+              onClick={(...params) =>
+                this.handleClick('selectedIndexList', ...params)
               }
               currentTheme={currentTheme}
-              isTooltipFlipHorizontal={this.getIsFlipHorizontal(index)}
+              flipHorizontal={flipHorizontal}
+              flipVertical={flipVertical}
             />
           ))}
         </div>

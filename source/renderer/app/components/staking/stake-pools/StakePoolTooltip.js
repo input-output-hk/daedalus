@@ -53,7 +53,8 @@ type Props = {
   onClick: Function,
   visible: boolean,
   currentTheme: string,
-  isTooltipFlipHorizontal: boolean,
+  flipHorizontal: boolean,
+  flipVertical: boolean,
 };
 
 @observer
@@ -82,13 +83,15 @@ export default class StakePool extends Component<Props> {
       visible,
       onClick,
       currentTheme,
-      isTooltipFlipHorizontal,
+      flipHorizontal,
+      flipVertical,
     } = this.props;
 
     const componentClassnames = classnames([
       styles.component,
       visible ? styles.visible : null,
-      isTooltipFlipHorizontal ? styles.flipHorizontal : null,
+      flipHorizontal ? styles.flipHorizontal : null,
+      flipVertical ? styles.flipVertical : null,
     ]);
 
     const lighnessOffset = currentTheme === 'dark-blue' ? -20 : 0;
@@ -99,7 +102,9 @@ export default class StakePool extends Component<Props> {
         <button className={styles.closeButton} onClick={onClick}>
           <SVGInline svg={closeCross} />
         </button>
-        <div className={styles.id}>{id}</div>
+        <div className={styles.id}>
+          {id} {flipVertical ? 'Y' : 'N'}
+        </div>
         <div className={styles.description}>{description}</div>
         <button className={styles.url} onClick={() => onOpenExternalLink(url)}>
           {url}
