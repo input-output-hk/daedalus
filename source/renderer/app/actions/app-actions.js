@@ -12,4 +12,5 @@ export default class AppActions {
   initAppEnvironment: Action<any> = new Action();
   toggleBlockConsolidationStatusScreen: Action<any> = new Action();
   downloadLogs: Action<any> = new Action();
+  toggleNotificationVisibility: Action<any> = new Action();
 }
