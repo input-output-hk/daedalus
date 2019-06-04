@@ -3,7 +3,7 @@ Changelog
 
 ## 0.13.2
 
-### Features
+### Fixes
 
 - Implemented alternative update path for manual updates ([PR 1410](https://github.com/input-output-hk/daedalus/pull/1410))
 
