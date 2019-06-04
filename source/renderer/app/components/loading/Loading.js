@@ -167,12 +167,12 @@ export default class Loading extends Component<Props, State> {
     if (canResetSyncing) { this._resetSyncingTime(); }
     if (canResetConnecting) { this._resetConnectingTime(); }
 
-    const appLoadingStuck = (
+    const isAppLoadingStuck = (
       (!isConnected && connectingTime >= REPORT_ISSUE_TIME_TRIGGER) ||
-      (!isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER)
+      (isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER)
     );
-    // If app stuck, check if newer version is available and set flag (state)
-    if (appLoadingStuck && !isNewAppVersionLoading && !availableAppVersion) {
+    // If app loading is stuck, check if a newer version is available and set flag (state)
+    if (isAppLoadingStuck && !isNewAppVersionLoading && !availableAppVersion) {
       onGetAvailableVersions();
     }
   }

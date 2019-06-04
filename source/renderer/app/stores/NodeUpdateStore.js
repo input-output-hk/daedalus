@@ -69,9 +69,9 @@ export default class NodeUpdateStore extends Store {
       const versionInfo = await this.api.ada.getLatestAppVersionInfo();
       if (versionInfo) this.setLatestAvailableAppVersion(versionInfo);
     }
-  }
+  };
 
-  setLatestAvailableAppVersion = (versionInfo) => {
+  @action setLatestAvailableAppVersion = (versionInfo) => {
     const { version, platform } = this.environment;
     const availableVersion = get(versionInfo, ['platforms', platform, 'version'], null);
 
@@ -96,13 +96,11 @@ export default class NodeUpdateStore extends Store {
       isNewAppVersionAvailable = isMainVersionChanged || isMiddleVersionChanged || isMinorVersionChanged;
     }
 
+    this.isNewAppVersionLoading = false;
     if (isNewAppVersionAvailable) {
-      runInAction('setLatestAvailableAppVersion', () => {
-        this.isNewAppVersionLoading = false;
-        this.isNewAppVersionAvailable = isNewAppVersionAvailable;
-        this.availableAppVersion = availableVersion;
-      });
+      this.isNewAppVersionAvailable = true;
+      this.availableAppVersion = availableVersion;
     }
-  }
+  };
 
 }
