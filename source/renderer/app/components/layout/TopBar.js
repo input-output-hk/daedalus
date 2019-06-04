@@ -4,7 +4,7 @@ import SVGInline from 'react-svg-inline';
 import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
-import LegacyBadge from '../notifications/LegacyBadge';
+import LegacyBadge, { LEGACY_BADGE_MODES } from '../notifications/LegacyBadge';
 import LegacyNotification from '../notifications/LegacyNotification';
 import Wallet from '../../domains/Wallet';
 import styles from './TopBar.scss';
@@ -35,14 +35,7 @@ export default class TopBar extends Component<Props> {
           formattedWalletAmount(activeWallet.amount, true)}
         </span>
         {activeWallet && activeWallet.isLegacy && (
-          <LegacyBadge
-            style={{
-              position: 'absolute',
-              right: 0,
-              top: 0,
-              transform: 'translate(100%, -40%)',
-            }}
-          />
+          <LegacyBadge mode={LEGACY_BADGE_MODES.NATURAL} />
         )}
       </span>
     ) : null;

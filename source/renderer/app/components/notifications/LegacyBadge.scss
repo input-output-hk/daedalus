@@ -4,4 +4,16 @@
   color: var(--theme-legacy-notification-title-color);
   font-size: 10px;
   padding: 3px 6px;
+  position: absolute;
+}
+
+.floating {
+  right: -20px;
+  top: 0;
+}
+
+.natural {
+  right: 0;
+  top: 0;
+  transform: translate(100%, -40%);
 }

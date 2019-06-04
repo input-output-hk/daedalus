@@ -2,7 +2,9 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
-import LegacyBadge from '../../notifications/LegacyBadge';
+import LegacyBadge, {
+  LEGACY_BADGE_MODES,
+} from '../../notifications/LegacyBadge';
 import ProgressBar from '../../widgets/ProgressBar';
 import styles from './SidebarWalletMenuItem.scss';
 
@@ -43,15 +45,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
           <span className={styles.title}>{title}</span>
           <span className={styles.info}>{info}</span>
           {isRestoreActive ? <ProgressBar progress={restoreProgress} /> : null}
-          {isLegacy && (
-            <LegacyBadge
-              style={{
-                position: 'absolute',
-                right: -20,
-                top: 0,
-              }}
-            />
-          )}
+          {isLegacy && <LegacyBadge mode={LEGACY_BADGE_MODES.FLOATING} />}
         </span>
       </button>
     );
