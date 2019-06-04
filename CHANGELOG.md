@@ -33,8 +33,9 @@ Changelog
 
 ### Chores
 
+- Renamed Network Status to Daedalus Diagnostics ([PR 1408](https://github.com/input-output-hk/daedalus/pull/1408))
 - Enabled theme and language selection in Storybook ([PR 1408](https://github.com/input-output-hk/daedalus/pull/1408))
-- Removed legacy references to npm in favour of yarn ([PR 1399](https://github.com/input-output-hk/daedalus/pull/1399), [PR 1402](https://github.com/input-output-hk/daedalus/pull/1402))
+- Removed legacy references to npm in favour of yarn ([PR 1399](https://github.com/input-output-hk/daedalus/pull/1399), [PR 1413](https://github.com/input-output-hk/daedalus/pull/1413))
 - Setup storybook build script to deploy previews for the QA team to Netlify ([1391](https://github.com/input-output-hk/daedalus/pull/1391))
 - Added unit tests for mnemonic generation and validation ([PR 1379](https://github.com/input-output-hk/daedalus/pull/1379))
 - Simplified the test setup ([PR 1378](https://github.com/input-output-hk/daedalus/pull/1378))
