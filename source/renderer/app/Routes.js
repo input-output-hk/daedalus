@@ -76,7 +76,7 @@ export const Routes = (
       component={PaperWalletCreateCertificatePage}
     />
     <Route path={ROUTES.STAKING.ROOT} component={Staking}>
-      <IndexRedirect to={ROUTES.STAKING.DELEGATION_COUNTDOWN} />
+      <IndexRedirect to={ROUTES.STAKING.INFO} />
       <Route
         path={ROUTES.STAKING.DELEGATION_COUNTDOWN}
         component={StakingDelegationCountdownPage}
