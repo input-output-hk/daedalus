@@ -97,10 +97,8 @@ export default class NodeUpdateStore extends Store {
     }
 
     this.isNewAppVersionLoading = false;
-    if (isNewAppVersionAvailable) {
-      this.isNewAppVersionAvailable = true;
-      this.availableAppVersion = availableVersion;
-    }
+    this.isNewAppVersionAvailable = isNewAppVersionAvailable;
+    this.availableAppVersion = availableVersion;
   };
 
 }
