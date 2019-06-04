@@ -18,7 +18,7 @@ import type { GpuStatus } from '../types/gpuStatus';
 export default class AppStore extends Store {
   @observable error: ?LocalizableError = null;
   @observable isAboutDialogOpen = false;
-  @observable isNetworkStatusDialogOpen = false;
+  @observable isDaedalusDiagnosticsDialogOpen = false;
   @observable gpuStatus: ?GpuStatus = null;
   @observable numberOfEpochsConsolidated: number = 0;
   @observable previousRoute: string = ROUTES.ROOT;
@@ -27,11 +27,11 @@ export default class AppStore extends Store {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
     this.actions.app.openAboutDialog.listen(this._openAboutDialog);
     this.actions.app.closeAboutDialog.listen(this._closeAboutDialog);
-    this.actions.app.openNetworkStatusDialog.listen(
-      this._openNetworkStatusDialog
+    this.actions.app.openDaedalusDiagnosticsDialog.listen(
+      this._openDaedalusDiagnosticsDialog
     );
-    this.actions.app.closeNetworkStatusDialog.listen(
-      this._closeNetworkStatusDialog
+    this.actions.app.closeDaedalusDiagnosticsDialog.listen(
+      this._closeDaedalusDiagnosticsDialog
     );
     this.actions.app.getGpuStatus.listen(this._getGpuStatus);
     this.actions.app.toggleBlockConsolidationStatusScreen.listen(
@@ -64,7 +64,7 @@ export default class AppStore extends Store {
         this._toggleAboutDialog();
         break;
       case DIALOGS.NETWORK_STATUS:
-        this._toggleNetworkStatusDialog();
+        this._toggleDaedalusDiagnosticsDialog();
         break;
       case SCREENS.BLOCK_CONSOLIDATION:
         this._toggleBlockConsolidationStatusScreen();
@@ -130,20 +130,21 @@ export default class AppStore extends Store {
     this.isAboutDialogOpen = !this.isAboutDialogOpen;
   };
 
-  @action _openNetworkStatusDialog = () => {
-    this.isNetworkStatusDialogOpen = true;
+  @action _openDaedalusDiagnosticsDialog = () => {
+    this.isDaedalusDiagnosticsDialogOpen = true;
   };
 
-  @action _closeNetworkStatusDialog = () => {
-    this.isNetworkStatusDialogOpen = false;
+  @action _closeDaedalusDiagnosticsDialog = () => {
+    this.isDaedalusDiagnosticsDialogOpen = false;
   };
 
-  @action _toggleNetworkStatusDialog = () => {
-    this.isNetworkStatusDialogOpen = !this.isNetworkStatusDialogOpen;
+  @action _toggleDaedalusDiagnosticsDialog = () => {
+    this.isDaedalusDiagnosticsDialogOpen = !this
+      .isDaedalusDiagnosticsDialogOpen;
   };
 
   @action _showAdaRedemptionScreen = () => {
-    const { isConnected, isSynced } = this.stores.networkStatus;
+    const { isConnected, isSynced } = this.stores.daedalusDiagnostics;
     const { hasLoadedWallets } = this.stores.wallets;
     if (isConnected && isSynced && hasLoadedWallets && !this.isSetupPage) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.ADA_REDEMPTION });

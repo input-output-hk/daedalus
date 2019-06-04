@@ -23,7 +23,7 @@ import {
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
 import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
-import type { GetNetworkStatusResponse } from '../api/nodes/types';
+import type { GetDaedalusDiagnosticsResponse } from '../api/nodes/types';
 import type {
   CardanoNodeState,
   CardanoStatus,
@@ -55,11 +55,11 @@ const NODE_STOPPED_STATES = [
 ];
 // END CONSTANTS ----------------------------
 
-export default class NetworkStatusStore extends Store {
+export default class DaedalusDiagnosticsStore extends Store {
   // Initialize store properties
   _startTime = Date.now();
-  _networkStatus = NETWORK_STATUS.CONNECTING;
-  _networkStatusPollingInterval: ?IntervalID = null;
+  _daedalusDiagnostics = NETWORK_STATUS.CONNECTING;
+  _daedalusDiagnosticsPollingInterval: ?IntervalID = null;
 
   // Initialize store observables
 
@@ -85,12 +85,12 @@ export default class NetworkStatusStore extends Store {
   @observable localTimeDifference: ?number = 0; // microseconds
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
   @observable
-  getNetworkStatusRequest: Request<GetNetworkStatusResponse> = new Request(
-    this.api.ada.getNetworkStatus
+  getDaedalusDiagnosticsRequest: Request<GetDaedalusDiagnosticsResponse> = new Request(
+    this.api.ada.getDaedalusDiagnostics
   );
   @observable
-  forceCheckTimeDifferenceRequest: Request<GetNetworkStatusResponse> = new Request(
-    this.api.ada.getNetworkStatus
+  forceCheckTimeDifferenceRequest: Request<GetDaedalusDiagnosticsResponse> = new Request(
+    this.api.ada.getDaedalusDiagnostics
   );
 
   @observable isNotEnoughDiskSpace: boolean = false;
@@ -105,7 +105,7 @@ export default class NetworkStatusStore extends Store {
   setup() {
     // ========== IPC CHANNELS =========== //
 
-    this.actions.networkStatus.restartNode.listen(this._restartNode);
+    this.actions.daedalusDiagnostics.restartNode.listen(this._restartNode);
 
     // Request node state
     this._requestCardanoState();
@@ -123,13 +123,13 @@ export default class NetworkStatusStore extends Store {
     // ========== MOBX REACTIONS =========== //
 
     this.registerReactions([
-      this._updateNetworkStatusWhenConnected,
-      this._updateNetworkStatusWhenDisconnected,
+      this._updateDaedalusDiagnosticsWhenConnected,
+      this._updateDaedalusDiagnosticsWhenDisconnected,
       this._updateNodeStatus,
     ]);
 
     // Setup polling interval
-    this._setNetworkStatusPollingInterval();
+    this._setDaedalusDiagnosticsPollingInterval();
 
     // Ignore system time checks for the first 35 seconds:
     this.ignoreSystemTimeChecks();
@@ -146,19 +146,21 @@ export default class NetworkStatusStore extends Store {
   }
 
   // Setup network status polling interval
-  _setNetworkStatusPollingInterval = () => {
-    this._networkStatusPollingInterval = setInterval(
-      this._updateNetworkStatus,
+  _setDaedalusDiagnosticsPollingInterval = () => {
+    this._daedalusDiagnosticsPollingInterval = setInterval(
+      this._updateDaedalusDiagnostics,
       NETWORK_STATUS_POLL_INTERVAL
     );
   };
 
   @action async _restartNode() {
     try {
-      Logger.info('NetwortStatusStore: Requesting a restart of cardano-node');
+      Logger.info(
+        'DaedalusDiagnosticsStore: Requesting a restart of cardano-node'
+      );
       await restartCardanoNodeChannel.send();
     } catch (error) {
-      Logger.error('NetwortStatusStore: Restart of cardano-node failed', {
+      Logger.error('DaedalusDiagnosticsStore: Restart of cardano-node failed', {
         error,
       });
     }
@@ -168,33 +170,38 @@ export default class NetworkStatusStore extends Store {
     super.teardown();
 
     // Teardown polling intervals
-    if (this._networkStatusPollingInterval) {
-      clearInterval(this._networkStatusPollingInterval);
+    if (this._daedalusDiagnosticsPollingInterval) {
+      clearInterval(this._daedalusDiagnosticsPollingInterval);
     }
   }
 
   // ================= REACTIONS ==================
 
-  _updateNetworkStatusWhenDisconnected = () => {
-    if (!this.isConnected) this._updateNetworkStatus();
+  _updateDaedalusDiagnosticsWhenDisconnected = () => {
+    if (!this.isConnected) this._updateDaedalusDiagnostics();
   };
 
-  _updateNetworkStatusWhenConnected = () => {
+  _updateDaedalusDiagnosticsWhenConnected = () => {
     if (this.isConnected) {
-      Logger.info('NetworkStatusStore: Connected, forcing NTP check now...');
-      this._updateNetworkStatus({ force_ntp_check: true });
+      Logger.info(
+        'DaedalusDiagnosticsStore: Connected, forcing NTP check now...'
+      );
+      this._updateDaedalusDiagnostics({ force_ntp_check: true });
     }
   };
 
   _updateNodeStatus = async () => {
     if (!this.isConnected) return;
     try {
-      Logger.info('NetworkStatusStore: Updating node status');
+      Logger.info('DaedalusDiagnosticsStore: Updating node status');
       await setCachedCardanoStatusChannel.send(this._extractNodeStatus(this));
     } catch (error) {
-      Logger.error('NetworkStatusStore: Error while updating node status', {
-        error,
-      });
+      Logger.error(
+        'DaedalusDiagnosticsStore: Error while updating node status',
+        {
+          error,
+        }
+      );
     }
   };
 
@@ -215,9 +222,9 @@ export default class NetworkStatusStore extends Store {
   };
 
   _requestCardanoState = async () => {
-    Logger.info('NetworkStatusStore: requesting node state');
+    Logger.info('DaedalusDiagnosticsStore: requesting node state');
     const state = await cardanoStateChangeChannel.request();
-    Logger.info(`NetworkStatusStore: handling node state <${state}>`, {
+    Logger.info(`DaedalusDiagnosticsStore: handling node state <${state}>`, {
       state,
     });
     await this._handleCardanoNodeStateChange(state);
@@ -225,9 +232,9 @@ export default class NetworkStatusStore extends Store {
 
   _requestCardanoStatus = async () => {
     try {
-      Logger.info('NetworkStatusStore: requesting node status');
+      Logger.info('DaedalusDiagnosticsStore: requesting node status');
       const status = await getCachedCardanoStatusChannel.request();
-      Logger.info('NetworkStatusStore: received cached node status', {
+      Logger.info('DaedalusDiagnosticsStore: received cached node status', {
         status,
       });
       if (status)
@@ -237,43 +244,54 @@ export default class NetworkStatusStore extends Store {
           Object.assign(this, status);
         });
     } catch (error) {
-      Logger.error('NetworkStatusStore: error while requesting node state', {
-        error,
-      });
+      Logger.error(
+        'DaedalusDiagnosticsStore: error while requesting node state',
+        {
+          error,
+        }
+      );
     }
   };
 
   _requestTlsConfig = async () => {
     try {
       Logger.info(
-        'NetworkStatusStore: requesting tls config from main process'
+        'DaedalusDiagnosticsStore: requesting tls config from main process'
       );
       const tlsConfig = await cardanoTlsConfigChannel.request();
       await this._updateTlsConfig(tlsConfig);
     } catch (error) {
-      Logger.error('NetworkStatusStore: error while requesting tls config', {
-        error,
-      });
+      Logger.error(
+        'DaedalusDiagnosticsStore: error while requesting tls config',
+        {
+          error,
+        }
+      );
     }
   };
 
   _updateTlsConfig = (config: ?TlsConfig): Promise<void> => {
     if (config == null || isEqual(config, this.tlsConfig))
       return Promise.resolve();
-    Logger.info('NetworkStatusStore: received tls config from main process');
+    Logger.info(
+      'DaedalusDiagnosticsStore: received tls config from main process'
+    );
     this.api.ada.setRequestConfig(config);
     runInAction('updating tlsConfig', () => {
       this.tlsConfig = config;
     });
-    this.actions.networkStatus.tlsConfigIsReady.trigger();
+    this.actions.daedalusDiagnostics.tlsConfigIsReady.trigger();
     return Promise.resolve();
   };
 
   _handleCardanoNodeStateChange = async (state: CardanoNodeState) => {
     if (state === this.cardanoNodeState) return Promise.resolve();
-    Logger.info(`NetworkStatusStore: handling cardano-node state <${state}>`, {
-      state,
-    });
+    Logger.info(
+      `DaedalusDiagnosticsStore: handling cardano-node state <${state}>`,
+      {
+        state,
+      }
+    );
     const wasConnected = this.isConnected;
     switch (state) {
       case CardanoNodeStates.STARTING:
@@ -323,7 +341,7 @@ export default class NetworkStatusStore extends Store {
 
   // DEFINE ACTIONS
 
-  @action _updateNetworkStatus = async (
+  @action _updateDaedalusDiagnostics = async (
     queryInfoParams?: NodeInfoQueryParams
   ) => {
     // In case we haven't received TLS config we shouldn't trigger any API calls
@@ -356,16 +374,16 @@ export default class NetworkStatusStore extends Store {
     const wasConnected = this.isConnected;
 
     try {
-      const networkStatus: GetNetworkStatusResponse = isForcedTimeDifferenceCheck
+      const daedalusDiagnostics: GetDaedalusDiagnosticsResponse = isForcedTimeDifferenceCheck
         ? await this.forceCheckTimeDifferenceRequest.execute(queryInfoParams)
             .promise
-        : await this.getNetworkStatusRequest.execute().promise;
+        : await this.getDaedalusDiagnosticsRequest.execute().promise;
 
       // In case we no longer have TLS config we ignore all API call responses
       // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
       if (!this.tlsConfig) {
         Logger.debug(
-          'NetworkStatusStore: Ignoring NetworkStatusRequest result during Cardano shutdown sequence...'
+          'DaedalusDiagnosticsStore: Ignoring DaedalusDiagnosticsRequest result during Cardano shutdown sequence...'
         );
         return;
       }
@@ -376,7 +394,7 @@ export default class NetworkStatusStore extends Store {
         blockchainHeight,
         localBlockchainHeight,
         localTimeInformation,
-      } = networkStatus;
+      } = daedalusDiagnostics;
 
       // We got response which means node is responding
       runInAction('update isNodeResponding', () => {
@@ -401,11 +419,11 @@ export default class NetworkStatusStore extends Store {
       });
 
       if (
-        this._networkStatus === NETWORK_STATUS.CONNECTING &&
+        this._daedalusDiagnostics === NETWORK_STATUS.CONNECTING &&
         this.isNodeSubscribed
       ) {
         // We are connected for the first time, move on to syncing stage
-        this._networkStatus = NETWORK_STATUS.SYNCING;
+        this._daedalusDiagnostics = NETWORK_STATUS.SYNCING;
         const connectingTimeDelta = this._getStartupTimeDelta();
         Logger.info(`Connected after ${connectingTimeDelta} milliseconds`, {
           connectingTimeDelta,
@@ -422,7 +440,7 @@ export default class NetworkStatusStore extends Store {
           // If initial local block height isn't set, mark the first
           // result as the 'starting' height for the sync progress
           this.initialLocalHeight = localBlockchainHeight;
-          Logger.debug('NetworkStatusStore: Initial local block height', {
+          Logger.debug('DaedalusDiagnosticsStore: Initial local block height', {
             localBlockchainHeight,
           });
         }
@@ -430,7 +448,7 @@ export default class NetworkStatusStore extends Store {
         // Update the local block height on each request
         const lastLocalBlockHeight = this.localBlockHeight;
         this.localBlockHeight = localBlockchainHeight;
-        Logger.debug('NetworkStatusStore: Local blockchain height', {
+        Logger.debug('DaedalusDiagnosticsStore: Local blockchain height', {
           localBlockchainHeight,
         });
 
@@ -439,7 +457,7 @@ export default class NetworkStatusStore extends Store {
         const lastNetworkBlockHeight = this.networkBlockHeight;
         this.networkBlockHeight = blockchainHeight;
         if (hasStartedReceivingBlocks) {
-          Logger.debug('NetworkStatusStore: Network blockchain height', {
+          Logger.debug('DaedalusDiagnosticsStore: Network blockchain height', {
             blockchainHeight,
           });
         }
@@ -503,19 +521,25 @@ export default class NetworkStatusStore extends Store {
           const totalUnsyncedBlocksAtStart =
             this.networkBlockHeight - initialLocalHeight;
           Logger.debug(
-            'NetworkStatusStore: Total unsynced blocks at node start',
+            'DaedalusDiagnosticsStore: Total unsynced blocks at node start',
             { totalUnsyncedBlocksAtStart }
           );
-          Logger.debug('NetworkStatusStore: Blocks synced since node start', {
-            blocksSyncedSinceStart,
-          });
+          Logger.debug(
+            'DaedalusDiagnosticsStore: Blocks synced since node start',
+            {
+              blocksSyncedSinceStart,
+            }
+          );
         }
       });
 
-      if (this._networkStatus === NETWORK_STATUS.SYNCING && this.isNodeInSync) {
+      if (
+        this._daedalusDiagnostics === NETWORK_STATUS.SYNCING &&
+        this.isNodeInSync
+      ) {
         // We are synced for the first time, move on to running stage
-        this._networkStatus = NETWORK_STATUS.RUNNING;
-        this.actions.networkStatus.isSyncedAndReady.trigger();
+        this._daedalusDiagnostics = NETWORK_STATUS.RUNNING;
+        this.actions.daedalusDiagnostics.isSyncedAndReady.trigger();
         const syncingTimeDelta = this._getStartupTimeDelta();
         Logger.info(`Synced after ${syncingTimeDelta} milliseconds`, {
           syncingTimeDelta,
@@ -529,11 +553,13 @@ export default class NetworkStatusStore extends Store {
               this.hasBeenConnected = true;
             });
           }
-          Logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
+          Logger.debug(
+            'DaedalusDiagnosticsStore: Connection Lost. Reconnecting...'
+          );
         } else if (this.hasBeenConnected) {
           // Make sure all wallets data is fully reloaded after the connection is re-established
           this.stores.wallets.resetWalletsData();
-          Logger.debug('NetworkStatusStore: Connection Restored');
+          Logger.debug('DaedalusDiagnosticsStore: Connection Restored');
         }
         if (this.isTlsCertInvalid) {
           runInAction('set isTlsCertInvalid = false', () => {
@@ -563,7 +589,9 @@ export default class NetworkStatusStore extends Store {
           this.hasBeenConnected = true;
         });
       }
-      Logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
+      Logger.debug(
+        'DaedalusDiagnosticsStore: Connection Lost. Reconnecting...'
+      );
     }
   };
 
@@ -572,7 +600,8 @@ export default class NetworkStatusStore extends Store {
   };
 
   forceCheckLocalTimeDifference = () => {
-    if (this.isConnected) this._updateNetworkStatus({ force_ntp_check: true });
+    if (this.isConnected)
+      this._updateDaedalusDiagnostics({ force_ntp_check: true });
   };
 
   @action _onCheckDiskSpace = ({
@@ -589,12 +618,12 @@ export default class NetworkStatusStore extends Store {
     this.diskSpaceAvailable = diskSpaceAvailable;
 
     if (this.isNotEnoughDiskSpace) {
-      if (this._networkStatusPollingInterval) {
-        clearInterval(this._networkStatusPollingInterval);
-        this._networkStatusPollingInterval = null;
+      if (this._daedalusDiagnosticsPollingInterval) {
+        clearInterval(this._daedalusDiagnosticsPollingInterval);
+        this._daedalusDiagnosticsPollingInterval = null;
       }
-    } else if (!this._networkStatusPollingInterval) {
-      this._setNetworkStatusPollingInterval();
+    } else if (!this._daedalusDiagnosticsPollingInterval) {
+      this._setDaedalusDiagnosticsPollingInterval();
     }
 
     return Promise.resolve();

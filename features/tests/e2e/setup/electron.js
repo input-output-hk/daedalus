@@ -81,7 +81,7 @@ Before({ timeout: DEFAULT_TIMEOUT * 2 }, async function() {
   // Reset backend
   await this.client.executeAsync(done => {
     const resetBackend = () => {
-      if (daedalus.stores.networkStatus.isConnected) {
+      if (daedalus.stores.daedalusDiagnostics.isConnected) {
         daedalus.api.ada
           .testReset()
           .then(daedalus.api.localStorage.reset)
@@ -102,7 +102,7 @@ Before({ timeout: DEFAULT_TIMEOUT * 2 }, async function() {
   // Ensure that frontend is synced and ready before test case
   await this.client.executeAsync(done => {
     const waitUntilSyncedAndReady = () => {
-      if (daedalus.stores.networkStatus.isSynced) {
+      if (daedalus.stores.daedalusDiagnostics.isSynced) {
         done();
       } else {
         setTimeout(waitUntilSyncedAndReady, 50);

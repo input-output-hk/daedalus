@@ -97,7 +97,13 @@ export default class WalletsStore extends Store {
 
     this.registerReactions([this._updateActiveWalletOnRouteChanges]);
 
-    const { router, walletBackup, wallets, app, networkStatus } = this.actions;
+    const {
+      router,
+      walletBackup,
+      wallets,
+      app,
+      daedalusDiagnostics,
+    } = this.actions;
     wallets.createWallet.listen(this._create);
     wallets.deleteWallet.listen(this._deleteWallet);
     wallets.sendMoney.listen(this._sendMoney);
@@ -112,7 +118,9 @@ export default class WalletsStore extends Store {
     router.goToRoute.listen(this._onRouteChange);
     walletBackup.finishWalletBackup.listen(this._finishCreation);
     app.initAppEnvironment.listen(() => {});
-    networkStatus.restartNode.listen(this._updateGeneratingCertificateError);
+    daedalusDiagnostics.restartNode.listen(
+      this._updateGeneratingCertificateError
+    );
   }
 
   _create = async (params: { name: string, spendingPassword: ?string }) => {
@@ -293,7 +301,7 @@ export default class WalletsStore extends Store {
   };
 
   _pollRefresh = async () => {
-    const { isSynced } = this.stores.networkStatus;
+    const { isSynced } = this.stores.daedalusDiagnostics;
     return isSynced && this.refreshWalletsData();
   };
 
@@ -349,7 +357,7 @@ export default class WalletsStore extends Store {
     // Prevent wallets data refresh if polling is blocked
     if (this._pollingBlocked) return;
 
-    if (this.stores.networkStatus.isConnected) {
+    if (this.stores.daedalusDiagnostics.isConnected) {
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
       let restoredWalletId = null; // id of a wallet which has just been restored

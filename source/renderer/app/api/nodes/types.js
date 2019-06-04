@@ -52,7 +52,7 @@ export type NodeSoftware = {
 
 // req/res Node Types
 
-export type GetNetworkStatusResponse = {
+export type GetDaedalusDiagnosticsResponse = {
   subscriptionStatus: Object,
   syncProgress: number,
   blockchainHeight: number,

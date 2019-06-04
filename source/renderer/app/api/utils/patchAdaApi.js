@@ -12,7 +12,7 @@ import type { RedeemPaperVendedAdaParams } from '../transactions/requests/redeem
 import type { NodeInfoQueryParams } from '../nodes/requests/getNodeInfo';
 import type {
   NodeInfoResponse,
-  GetNetworkStatusResponse,
+  GetDaedalusDiagnosticsResponse,
   NodeSettingsResponse,
   GetNodeSettingsResponse,
 } from '../nodes/types';
@@ -82,16 +82,18 @@ export default (api: AdaApi) => {
   api.getLocalTimeDifference = async () =>
     Promise.resolve(LOCAL_TIME_DIFFERENCE);
 
-  api.getNetworkStatus = async (
+  api.getDaedalusDiagnostics = async (
     queryInfoParams?: NodeInfoQueryParams
-  ): Promise<GetNetworkStatusResponse> => {
-    Logger.debug('AdaApi::getNetworkStatus (PATCHED) called');
+  ): Promise<GetDaedalusDiagnosticsResponse> => {
+    Logger.debug('AdaApi::getDaedalusDiagnostics (PATCHED) called');
     try {
       const nodeInfo: NodeInfoResponse = await getNodeInfo(
         api.config,
         queryInfoParams
       );
-      Logger.debug('AdaApi::getNetworkStatus (PATCHED) success', { nodeInfo });
+      Logger.debug('AdaApi::getDaedalusDiagnostics (PATCHED) success', {
+        nodeInfo,
+      });
 
       const {
         blockchainHeight,
@@ -100,7 +102,7 @@ export default (api: AdaApi) => {
         localBlockchainHeight,
       } = nodeInfo;
 
-      // extract relevant data before sending to NetworkStatusStore
+      // extract relevant data before sending to DaedalusDiagnosticsStore
       const response = {
         subscriptionStatus: SUBSCRIPTION_STATUS || subscriptionStatus,
         syncProgress: syncProgress.quantity,
@@ -125,7 +127,7 @@ export default (api: AdaApi) => {
           })
         : response;
     } catch (error) {
-      Logger.error('AdaApi::getNetworkStatus (PATCHED) error', { error });
+      Logger.error('AdaApi::getDaedalusDiagnostics (PATCHED) error', { error });
       throw new GenericApiError();
     }
   };

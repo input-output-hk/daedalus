@@ -13,7 +13,7 @@ export default class Root extends Component<Props> {
   render() {
     const { stores, actions, children } = this.props;
     const {
-      networkStatus,
+      daedalusDiagnostics,
       profile,
       adaRedemption,
       wallets,
@@ -31,7 +31,7 @@ export default class Root extends Component<Props> {
       isNodeStopped,
       isSystemTimeCorrect,
       isNotEnoughDiskSpace,
-    } = networkStatus;
+    } = daedalusDiagnostics;
 
     const isPageThatDoesntNeedWallets =
       isBlockConsolidationStatusDialog ||

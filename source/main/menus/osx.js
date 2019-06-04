@@ -50,10 +50,10 @@ export const osxMenu = (
         },
       },
       {
-        label: translation('daedalus.networkStatus'),
+        label: translation('daedalus.daedalusDiagnostics'),
         accelerator: 'Command+S',
         click() {
-          actions.openNetworkStatus();
+          actions.openDaedalusDiagnostics();
         },
       },
       {

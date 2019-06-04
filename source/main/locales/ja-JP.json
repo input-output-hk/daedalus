@@ -3,7 +3,7 @@
   "menu.daedalus.about": "このDaedalusについて",
   "menu.daedalus.adaRedemption": "Adaの還元",
   "menu.daedalus.gpuSafeMode": "GPUセーフモード",
-  "menu.daedalus.networkStatus": "ネットワークステータス",
+  "menu.daedalus.daedalusDiagnostics": "ネットワークステータス",
   "menu.daedalus.blockConsolidationStatus": "ブロック統合状況",
   "menu.daedalus.quit": "終了",
   "menu.daedalus.close": "閉じる",

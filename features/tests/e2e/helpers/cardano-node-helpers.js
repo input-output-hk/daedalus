@@ -5,8 +5,9 @@ import { getProcessesByName } from '../../../../source/main/utils/processes';
 declare var daedalus: Daedalus;
 
 export const getCardanoNodeState = async (client: WebdriverClient) =>
-  (await client.execute(() => daedalus.stores.networkStatus.cardanoNodeState))
-    .value;
+  (await client.execute(
+    () => daedalus.stores.daedalusDiagnostics.cardanoNodeState
+  )).value;
 
 export const waitForCardanoNodeToExit = async (client: WebdriverClient) =>
   client.waitUntil(

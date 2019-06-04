@@ -17,7 +17,7 @@ Given(/^I set the required space to 1 KB$/, () => {
 
 When(/^I check the disk space$/, function() {
   this.client.execute(diskSpace => {
-    daedalus.stores.networkStatus._checkDiskSpace(diskSpace);
+    daedalus.stores.daedalusDiagnostics._checkDiskSpace(diskSpace);
   }, diskSpaceRequired);
 });
 

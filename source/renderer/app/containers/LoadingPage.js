@@ -89,7 +89,7 @@ export default class LoadingPage extends Component<InjectedProps, State> {
       diskSpaceRequired,
       diskSpaceMissing,
       diskSpaceRecommended,
-    } = stores.networkStatus;
+    } = stores.daedalusDiagnostics;
     const {
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
