@@ -6883,13 +6883,13 @@
         "description": "Message \"Loading wallet data\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 17
         },
         "file": "source/renderer/app/containers/LoadingPage.js",
         "id": "loading.screen.loadingWalletData",
         "start": {
           "column": 21,
-          "line": 17
+          "line": 13
         }
       },
       {
@@ -6897,41 +6897,13 @@
         "description": "Link to Open Support page",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 22
         },
         "file": "source/renderer/app/containers/LoadingPage.js",
         "id": "loading.screen.reportIssue.reportIssueButtonUrl",
         "start": {
           "column": 24,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!Logs successfully downloaded",
-        "description": "Success message for download logs.",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/containers/LoadingPage.js",
-        "id": "loading.screen.reportIssue.downloadLogsSuccessMessage",
-        "start": {
-          "column": 23,
-          "line": 27
-        }
-      },
-      {
-        "defaultMessage": "!!!Preparing logs for download",
-        "description": "Progress message for download logs.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/containers/LoadingPage.js",
-        "id": "loading.screen.reportIssue.downloadLogsProgressMessage",
-        "start": {
-          "column": 24,
-          "line": 32
+          "line": 18
         }
       }
     ],
@@ -6944,50 +6916,17 @@
         "description": "\"submit a support request\" link URL in the \"Report a problem\" section on the support settings page.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 15
         },
         "file": "source/renderer/app/containers/settings/categories/SupportSettingsPage.js",
         "id": "settings.support.reportProblem.linkUrl",
         "start": {
           "column": 25,
-          "line": 11
+          "line": 10
         }
       }
     ],
     "path": "source/renderer/app/containers/settings/categories/SupportSettingsPage.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Logs successfully downloaded",
-        "description": "Success message for download logs.",
-        "end": {
-          "column": 3,
-          "line": 19
-        },
-        "file": "source/renderer/app/containers/settings/Settings.js",
-        "id": "settings.support.reportProblem.downloadLogsSuccessMessage",
-        "start": {
-          "column": 23,
-          "line": 15
-        }
-      },
-      {
-        "defaultMessage": "!!!Preparing logs for download",
-        "description": "Progress message for download logs.",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/containers/settings/Settings.js",
-        "id": "settings.support.reportProblem.downloadLogsProgressMessage",
-        "start": {
-          "column": 24,
-          "line": 20
-        }
-      }
-    ],
-    "path": "source/renderer/app/containers/settings/Settings.json"
   },
   {
     "descriptors": [
