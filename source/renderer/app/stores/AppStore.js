@@ -85,7 +85,7 @@ export default class AppStore extends Store {
 
   @action _updatePreviousRoute = (currentRoute?: string) => {
     this.previousRoute = currentRoute || ROUTES.ROOT;
-  }
+  };
 
   @action _openAboutDialog = () => {
     this.isAboutDialogOpen = true;
@@ -136,5 +136,4 @@ export default class AppStore extends Store {
       this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE
     );
   }
-
 }

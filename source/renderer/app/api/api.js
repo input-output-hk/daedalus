@@ -21,6 +21,7 @@ import { applyNodeUpdate } from './nodes/requests/applyNodeUpdate';
 import { getNodeInfo } from './nodes/requests/getNodeInfo';
 import { getNextNodeUpdate } from './nodes/requests/getNextNodeUpdate';
 import { postponeNodeUpdate } from './nodes/requests/postponeNodeUpdate';
+import { getLatestAppVersionInfo } from './nodes/requests/getLatestAppVersionInfo';
 
 // Transactions requests
 import { getTransactionFee } from './transactions/requests/getTransactionFee';
@@ -92,7 +93,8 @@ import type {
 import type {
   NodeInfo,
   NodeSoftware,
-  GetNetworkStatusResponse
+  GetNetworkStatusResponse,
+  GetLatestAppVersionInfoResponse,
 } from './nodes/types';
 import type { NodeQueryParams } from './nodes/requests/getNodeInfo';
 
@@ -831,6 +833,20 @@ export default class AdaApi {
     }
   };
 
+  getLatestAppVersionInfo = async (): Promise<GetLatestAppVersionInfoResponse> => {
+    Logger.debug('AdaApi::getLatestAppVersionInfo called');
+    try {
+      const latestAppVersionInfo = await getLatestAppVersionInfo();
+      Logger.debug('AdaApi::getLatestAppVersionInfo success', {
+        latestAppVersionInfo,
+      });
+      return latestAppVersionInfo;
+    } catch (error) {
+      Logger.error('AdaApi::getLatestAppVersionInfo error', { error });
+      throw new GenericApiError();
+    }
+  };
+
   setCardanoNodeFault = async (fault: FaultInjectionIpcRequest) => {
     await cardanoFaultInjectionChannel.send(fault);
   };
@@ -839,6 +855,7 @@ export default class AdaApi {
   getLocalTimeDifference: Function;
   setLocalTimeDifference: Function;
   setNextUpdate: Function;
+  unsubscribeNode: Function;
 
 }
 

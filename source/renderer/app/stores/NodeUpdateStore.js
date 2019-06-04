@@ -1,5 +1,6 @@
 // @flow
 import { observable, action, runInAction } from 'mobx';
+import { get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import type { NodeSoftware } from '../api/nodes/types';
@@ -12,6 +13,9 @@ export default class NodeUpdateStore extends Store {
   @observable isNotificationExpanded = false;
   @observable isUpdateInstalled = false;
   @observable updateVersion = null;
+  @observable availableAppVersion: ?string = null;
+  @observable isNewAppVersionAvailable: boolean = false;
+  @observable isNewAppVersionLoading: boolean = false;
 
   // REQUESTS
   /* eslint-disable max-len */
@@ -25,6 +29,7 @@ export default class NodeUpdateStore extends Store {
     actions.acceptNodeUpdate.listen(this._acceptNodeUpdate);
     actions.postponeNodeUpdate.listen(this._postponeNodeUpdate);
     actions.toggleNodeUpdateNotificationExpanded.listen(this._toggleNotificationExpanded);
+    actions.getLatestAvailableAppVersion.listen(this._getLatestAvailableAppVersion);
     setInterval(this.refreshNextUpdate, NODE_UPDATE_POLL_INTERVAL);
   }
 
@@ -55,6 +60,45 @@ export default class NodeUpdateStore extends Store {
 
   @action _toggleNotificationExpanded = () => {
     this.isNotificationExpanded = !this.isNotificationExpanded;
+  };
+
+  @action _getLatestAvailableAppVersion = async () => {
+    const { isDevelopment, isTest } = this.environment;
+    if (!isDevelopment || isTest) {
+      this.isNewAppVersionLoading = true;
+      const versionInfo = await this.api.ada.getLatestAppVersionInfo();
+      if (versionInfo) this.setLatestAvailableAppVersion(versionInfo);
+    }
+  };
+
+  @action setLatestAvailableAppVersion = (versionInfo) => {
+    const { version, platform } = this.environment;
+    const availableVersion = get(versionInfo, ['platforms', platform, 'version'], null);
+
+    let isNewAppVersionAvailable = false;
+    if (availableVersion) {
+      const chunkedAvailableVersion = availableVersion.split('.');
+      const chunkedCurrentVersion = version.split('.');
+
+      // Main version changed
+      const isMainVersionChanged = chunkedCurrentVersion[0] < chunkedAvailableVersion[0];
+      // Middle version changed
+      const isMiddleVersionChanged = (
+        chunkedCurrentVersion[0] === chunkedAvailableVersion[0] &&
+        chunkedCurrentVersion[1] < chunkedAvailableVersion[1]
+      );
+      // Minor version changed
+      const isMinorVersionChanged = (
+        chunkedCurrentVersion[0] === chunkedAvailableVersion[0] &&
+        chunkedCurrentVersion[1] === chunkedAvailableVersion[1] &&
+        chunkedCurrentVersion[2] < chunkedAvailableVersion[2]
+      );
+      isNewAppVersionAvailable = isMainVersionChanged || isMiddleVersionChanged || isMinorVersionChanged;
+    }
+
+    this.isNewAppVersionLoading = false;
+    this.isNewAppVersionAvailable = isNewAppVersionAvailable;
+    this.availableAppVersion = availableVersion;
   };
 
 }

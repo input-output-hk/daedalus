@@ -60,6 +60,12 @@ export default class LoadingPage extends Component<InjectedProps> {
     } = stores.networkStatus;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
     const { id, message } = this.notification;
+    const { environment, openExternalLink } = stores.app;
+    const { version } = environment;
+    const {
+      isNewAppVersionLoading, isNewAppVersionAvailable, availableAppVersion,
+    } = stores.nodeUpdate;
+
     return (
       <CenteredLayout>
         <Loading
@@ -83,11 +89,16 @@ export default class LoadingPage extends Component<InjectedProps> {
           hasLoadedCurrentLocale={hasLoadedCurrentLocale}
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           currentLocale={currentLocale}
-          onExternalLinkClick={stores.app.openExternalLink}
+          onExternalLinkClick={openExternalLink}
           onReportIssueClick={this.handleReportIssueClick}
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
           onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
           onDownloadLogs={this.handleDownloadLogs}
+          isNewAppVersionLoading={isNewAppVersionLoading}
+          isNewAppVersionAvailable={isNewAppVersionAvailable}
+          currentAppVersion={version}
+          availableAppVersion={availableAppVersion}
+          onGetAvailableVersions={this.handleGetAvailableVersions}
         />
         <NotificationMessage
           icon={successIcon}
@@ -145,5 +156,10 @@ export default class LoadingPage extends Component<InjectedProps> {
     if (destination) {
       profile.downloadLogs.trigger({ fileName, destination, fresh: true });
     }
+  };
+
+  handleGetAvailableVersions = () => {
+    const { nodeUpdate } = this.props.actions;
+    nodeUpdate.getLatestAvailableAppVersion.trigger();
   };
 }

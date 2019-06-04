@@ -15,6 +15,7 @@ import type { NodeInfo, GetNetworkStatusResponse } from '../nodes/types';
 
 let LOCAL_TIME_DIFFERENCE = 0;
 let NEXT_ADA_UPDATE = null;
+let NODE_SUBSCRIPTION_STATUS = null;
 
 export default (api: AdaApi) => {
   // Since we cannot test ada redemption in dev mode, just resolve the requests
@@ -79,7 +80,7 @@ export default (api: AdaApi) => {
 
       // extract relevant data before sending to NetworkStatusStore
       return {
-        subscriptionStatus,
+        subscriptionStatus: NODE_SUBSCRIPTION_STATUS || subscriptionStatus,
         syncProgress: syncProgress.quantity,
         blockchainHeight: get(blockchainHeight, 'quantity', 0),
         localBlockchainHeight: localBlockchainHeight.quantity,
@@ -105,4 +106,22 @@ export default (api: AdaApi) => {
   api.setNextUpdate = async (nextUpdate) => {
     NEXT_ADA_UPDATE = nextUpdate;
   };
+
+  api.unsubscribeNode = async () => {
+    NODE_SUBSCRIPTION_STATUS = {};
+  };
+
+  api.getLatestAppVersionInfo = async () => ({
+    platforms: {
+      windows: {
+        version: '0.14.0',
+      },
+      darwin: {
+        version: '0.14.0',
+      },
+      linux: {
+        version: '0.14.0',
+      },
+    }
+  });
 };
