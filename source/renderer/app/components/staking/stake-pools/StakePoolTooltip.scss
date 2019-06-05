@@ -6,6 +6,7 @@
   border-radius: 5px;
   border: 1px solid var(--theme-staking-stake-pool-tooltip-border-color);
   box-shadow: 0 5px 20px 0 var(--theme-staking-stake-pool-tooltip-shadow-color);
+  display: none;
   left: 50px;
   margin: 20px;
   padding: 20px;
@@ -110,6 +111,10 @@
       }
     }
   }
+}
+
+.visible {
+  display: block;
 }
 
 .name {

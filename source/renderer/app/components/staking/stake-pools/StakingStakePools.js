@@ -8,8 +8,6 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import StakePool from './StakePool';
 import type { StakePoolProps } from '../../../api/staking/types';
-import DynamicTooltip from '../../widgets/DynamicTooltip';
-import StakePoolTooltip from './StakePoolTooltip';
 
 import searchIcon from '../../../assets/images/search.inline.svg';
 import styles from './StakingStakePools.scss';
@@ -199,22 +197,12 @@ export default class StakingStakePools extends Component<Props, State> {
           </ul>
         </div>
 
-        <DynamicTooltip isVisible={!!selectedIndex}>
-          <StakePoolTooltip
-            stakePool={selectedPool}
-            className={styles.tooltip}
-            onClick={this.handleClose}
-            currentTheme={currentTheme}
-            onOpenExternalLink={onOpenExternalLink}
-          />
-        </DynamicTooltip>
-
         <h2>{intl.formatMessage(messages.delegatingListTitle)}</h2>
 
         <div className={styles.stakePoolsDelegatingList}>
           {stakePoolsDelegatingList.map(stakePool => (
             <StakePool
-              stakePool={stakePool}
+              {...stakePool}
               key={stakePool.id}
               ranking={this.getRanking(stakePool.index)}
               isSelected={this.isSelected(
@@ -245,9 +233,10 @@ export default class StakingStakePools extends Component<Props, State> {
         <div className={styles.stakePoolsList}>
           {this.props.stakePoolsList.map(stakePool => (
             <StakePool
-              stakePool={stakePool}
+              {...stakePool}
               key={stakePool.id}
               ranking={this.getRanking(stakePool.index)}
+              onOpenExternalLink={onOpenExternalLink}
               isSelected={this.isSelected('selectedIndexList', stakePool.index)}
               onClose={this.handleClose}
               onClick={(...params) =>

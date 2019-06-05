@@ -7,11 +7,14 @@ import clockIcon from '../../../assets/images/clock.inline.svg';
 import styles from './StakePool.scss';
 import { getHSLColor } from '../../../utils/colors';
 import type { StakePoolProps } from '../../../api/staking/types';
+import StakePoolTooltip from './StakePoolTooltip';
 
 type Props = {
-  stakePool: StakePoolProps,
+  ...$Exact<StakePoolProps>,
   ranking: number,
+  onOpenExternalLink: Function,
   onClick: Function,
+  onClose: Function,
   isSelected: boolean,
   currentTheme: string,
   flipHorizontal: boolean,
