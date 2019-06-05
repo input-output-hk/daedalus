@@ -49,7 +49,7 @@ const messages = defineMessages({
 type Props = {
   stakePool: StakePoolProps,
   index: number,
-  visible: boolean,
+  isVisible: boolean,
   currentTheme: string,
   flipHorizontal: boolean,
   flipVertical: boolean,
@@ -63,6 +63,20 @@ export default class StakePool extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.isVisible) {
+      window.addEventListener('keydown', this.handleInputKeyDown);
+    } else {
+      window.removeEventListener('keydown', this.handleInputKeyDown);
+    }
+  }
+
+  handleInputKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      this.props.onClick();
+    }
+  };
+
   get color() {
     const { index } = this.props;
     return getHSLColor(index);
@@ -72,7 +86,7 @@ export default class StakePool extends Component<Props> {
     const { intl } = this.context;
     const {
       stakePool,
-      visible,
+      isVisible,
       currentTheme,
       flipHorizontal,
       flipVertical,
@@ -94,7 +108,7 @@ export default class StakePool extends Component<Props> {
 
     const componentClassnames = classnames([
       styles.component,
-      visible ? styles.visible : null,
+      isVisible ? styles.isVisible : null,
       flipHorizontal ? styles.flipHorizontal : null,
       flipVertical ? styles.flipVertical : null,
     ]);
@@ -113,9 +127,7 @@ export default class StakePool extends Component<Props> {
         <button className={styles.closeButton} onClick={onClick}>
           <SVGInline svg={closeCross} />
         </button>
-        <div className={styles.id}>
-          {id} {flipVertical ? 'Y' : 'N'}
-        </div>
+        <div className={styles.id}>{id}</div>
         <div className={styles.description}>{description}</div>
         <button className={styles.url} onClick={() => onOpenExternalLink(url)}>
           {url}

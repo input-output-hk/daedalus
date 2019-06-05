@@ -81,7 +81,7 @@ export default class StakePool extends Component<Props> {
           stakePool={stakePool}
           index={index}
           className={styles.tooltip}
-          visible={isSelected}
+          isVisible={isSelected}
           onClick={onClose}
           currentTheme={currentTheme}
           flipHorizontal={flipHorizontal}
