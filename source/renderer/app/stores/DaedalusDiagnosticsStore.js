@@ -7,8 +7,8 @@ import Request from './lib/LocalizedRequest';
 import {
   ALLOWED_TIME_DIFFERENCE,
   MAX_ALLOWED_STALL_DURATION,
-  NETWORK_STATUS_REQUEST_TIMEOUT,
-  NETWORK_STATUS_POLL_INTERVAL,
+  DAEDALUS_DIAGNOSTICS_REQUEST_TIMEOUT,
+  DAEDALUS_DIAGNOSTICS_POLL_INTERVAL,
   NTP_IGNORE_CHECKS_GRACE_PERIOD,
 } from '../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
@@ -34,7 +34,7 @@ import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
 
 // DEFINE CONSTANTS -------------------------
-const NETWORK_STATUS = {
+const DAEDALUS_DIAGNOSTICS = {
   CONNECTING: 0,
   SYNCING: 1,
   RUNNING: 2,
@@ -58,7 +58,7 @@ const NODE_STOPPED_STATES = [
 export default class DaedalusDiagnosticsStore extends Store {
   // Initialize store properties
   _startTime = Date.now();
-  _daedalusDiagnostics = NETWORK_STATUS.CONNECTING;
+  _daedalusDiagnostics = DAEDALUS_DIAGNOSTICS.CONNECTING;
   _daedalusDiagnosticsPollingInterval: ?IntervalID = null;
 
   // Initialize store observables
@@ -149,7 +149,7 @@ export default class DaedalusDiagnosticsStore extends Store {
   _setDaedalusDiagnosticsPollingInterval = () => {
     this._daedalusDiagnosticsPollingInterval = setInterval(
       this._updateDaedalusDiagnostics,
-      NETWORK_STATUS_POLL_INTERVAL
+      DAEDALUS_DIAGNOSTICS_POLL_INTERVAL
     );
   };
 
@@ -364,7 +364,8 @@ export default class DaedalusDiagnosticsStore extends Store {
       // Set latest block timestamps into the future as a guard
       // against system time changes - e.g. if system time was set into the past
       runInAction('update latest block timestamps', () => {
-        const futureTimestamp = Date.now() + NETWORK_STATUS_REQUEST_TIMEOUT;
+        const futureTimestamp =
+          Date.now() + DAEDALUS_DIAGNOSTICS_REQUEST_TIMEOUT;
         this.latestLocalBlockTimestamp = futureTimestamp;
         this.latestNetworkBlockTimestamp = futureTimestamp;
       });
@@ -419,11 +420,11 @@ export default class DaedalusDiagnosticsStore extends Store {
       });
 
       if (
-        this._daedalusDiagnostics === NETWORK_STATUS.CONNECTING &&
+        this._daedalusDiagnostics === DAEDALUS_DIAGNOSTICS.CONNECTING &&
         this.isNodeSubscribed
       ) {
         // We are connected for the first time, move on to syncing stage
-        this._daedalusDiagnostics = NETWORK_STATUS.SYNCING;
+        this._daedalusDiagnostics = DAEDALUS_DIAGNOSTICS.SYNCING;
         const connectingTimeDelta = this._getStartupTimeDelta();
         Logger.info(`Connected after ${connectingTimeDelta} milliseconds`, {
           connectingTimeDelta,
@@ -534,11 +535,11 @@ export default class DaedalusDiagnosticsStore extends Store {
       });
 
       if (
-        this._daedalusDiagnostics === NETWORK_STATUS.SYNCING &&
+        this._daedalusDiagnostics === DAEDALUS_DIAGNOSTICS.SYNCING &&
         this.isNodeInSync
       ) {
         // We are synced for the first time, move on to running stage
-        this._daedalusDiagnostics = NETWORK_STATUS.RUNNING;
+        this._daedalusDiagnostics = DAEDALUS_DIAGNOSTICS.RUNNING;
         this.actions.daedalusDiagnostics.isSyncedAndReady.trigger();
         const syncingTimeDelta = this._getStartupTimeDelta();
         Logger.info(`Synced after ${syncingTimeDelta} milliseconds`, {

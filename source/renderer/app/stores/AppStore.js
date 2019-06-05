@@ -63,7 +63,7 @@ export default class AppStore extends Store {
       case DIALOGS.ABOUT:
         this._toggleAboutDialog();
         break;
-      case DIALOGS.NETWORK_STATUS:
+      case DIALOGS.DAEDALUS_DIAGNOSTICS:
         this._toggleDaedalusDiagnosticsDialog();
         break;
       case SCREENS.BLOCK_CONSOLIDATION:

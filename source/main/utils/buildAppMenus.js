@@ -23,7 +23,7 @@ export const buildAppMenus = async (
 
   const openDaedalusDiagnostics = () => {
     if (mainWindow)
-      toggleUiPartChannel.send(DIALOGS.NETWORK_STATUS, mainWindow);
+      toggleUiPartChannel.send(DIALOGS.DAEDALUS_DIAGNOSTICS, mainWindow);
   };
 
   const goToAdaRedemption = () => {
