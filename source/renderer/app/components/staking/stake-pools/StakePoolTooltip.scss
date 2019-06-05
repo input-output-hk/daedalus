@@ -11,7 +11,7 @@
   margin: 20px;
   padding: 20px;
   position: absolute;
-  top: -60px;
+  top: -21px;
   user-select: text;
   width: 250px;
   z-index: 1;
@@ -34,7 +34,7 @@
     );
     border-width: 10px;
     left: -20px;
-    top: 64px;
+    top: 24px;
   }
 
   /* triangle border */
@@ -42,7 +42,7 @@
     border-right-color: var(--theme-staking-stake-pool-tooltip-border-color);
     border-width: 11px;
     left: -22px;
-    top: 63px;
+    top: 23px;
   }
 
   &.flipHorizontal {
@@ -67,15 +67,15 @@
 
   &.flipVertical {
     top: auto;
-    bottom: -60px;
+    bottom: -21px;
 
     &:after {
       top: auto;
-      bottom: 64px;
+      bottom: 21px;
     }
     &:before {
       top: auto;
-      bottom: 63px;
+      bottom: 20px;
     }
   }
 
