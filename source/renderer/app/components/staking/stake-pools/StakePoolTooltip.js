@@ -47,14 +47,14 @@ const messages = defineMessages({
 });
 
 type Props = {
-  ...$Exact<StakePoolProps>,
-  ranking: number,
-  onOpenExternalLink: Function,
-  onClick: Function,
+  stakePool: StakePoolProps,
+  index: number,
   visible: boolean,
   currentTheme: string,
   flipHorizontal: boolean,
   flipVertical: boolean,
+  onClick: Function,
+  onOpenExternalLink: Function,
 };
 
 @observer
@@ -64,11 +64,22 @@ export default class StakePool extends Component<Props> {
   };
 
   get color() {
-    return getHSLColor(this.props.ranking);
+    const { index } = this.props;
+    return getHSLColor(index);
   }
 
   render() {
     const { intl } = this.context;
+    const {
+      stakePool,
+      visible,
+      currentTheme,
+      flipHorizontal,
+      flipVertical,
+      onClick,
+      onOpenExternalLink,
+    } = this.props;
+
     const {
       id,
       name,
@@ -79,13 +90,7 @@ export default class StakePool extends Component<Props> {
       profitMargin,
       performance,
       retirement,
-      onOpenExternalLink,
-      visible,
-      onClick,
-      currentTheme,
-      flipHorizontal,
-      flipVertical,
-    } = this.props;
+    } = stakePool;
 
     const componentClassnames = classnames([
       styles.component,
@@ -98,6 +103,12 @@ export default class StakePool extends Component<Props> {
 
     return (
       <div className={componentClassnames}>
+        <div
+          className={styles.colorBand}
+          style={{
+            background: this.color,
+          }}
+        />
         <h3 className={styles.name}>{name}</h3>
         <button className={styles.closeButton} onClick={onClick}>
           <SVGInline svg={closeCross} />

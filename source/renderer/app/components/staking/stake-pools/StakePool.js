@@ -10,35 +10,38 @@ import type { StakePoolProps } from '../../../api/staking/types';
 import StakePoolTooltip from './StakePoolTooltip';
 
 type Props = {
-  ...$Exact<StakePoolProps>,
-  ranking: number,
-  onOpenExternalLink: Function,
-  onClick: Function,
-  onClose: Function,
+  stakePool: StakePoolProps,
+  index: number,
   isSelected: boolean,
   currentTheme: string,
   flipHorizontal: boolean,
   flipVertical: boolean,
+  onOpenExternalLink: Function,
+  onClick: Function,
+  onClose: Function,
 };
 
 @observer
 export default class StakePool extends Component<Props> {
   get color() {
-    return getHSLColor(this.props.ranking);
+    const { index } = this.props;
+    return getHSLColor(index);
   }
 
   render() {
     const {
+      stakePool,
       index,
-      id,
-      retirement,
       isSelected,
-      onClick,
-      onClose,
       currentTheme,
       flipHorizontal,
       flipVertical,
+      onClick,
+      onClose,
+      onOpenExternalLink,
     } = this.props;
+
+    const { ranking, id, retirement } = stakePool;
 
     const componentClassnames = classnames([
       styles.component,
@@ -49,18 +52,18 @@ export default class StakePool extends Component<Props> {
       <div className={componentClassnames}>
         <div
           className={styles.content}
-          onClick={(event: MouseEvent) => onClick(event, index)}
+          onClick={(event: MouseEvent) => onClick(event, ranking)}
           role="link"
           aria-hidden
         >
           <div className={styles.id}>{id}</div>
           <div
-            className={styles.index}
+            className={styles.ranking}
             style={{
               color: this.color,
             }}
           >
-            {index}
+            {ranking}
           </div>
           {retirement && (
             <div className={styles.clock}>
@@ -75,13 +78,15 @@ export default class StakePool extends Component<Props> {
           />
         </div>
         <StakePoolTooltip
-          {...this.props}
+          stakePool={stakePool}
+          index={index}
           className={styles.tooltip}
           visible={isSelected}
           onClick={onClose}
           currentTheme={currentTheme}
           flipHorizontal={flipHorizontal}
           flipVertical={flipVertical}
+          onOpenExternalLink={onOpenExternalLink}
         />
       </div>
     );

@@ -1,7 +1,7 @@
 // @flow
 
 export type StakePoolProps = {
-  index: number,
+  ranking: number,
   id: string,
   name: string,
   description: string,

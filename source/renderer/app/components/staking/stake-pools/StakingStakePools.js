@@ -101,8 +101,8 @@ export default class StakingStakePools extends Component<Props, State> {
 
   onSearch = (search: string) => this.setState({ search });
 
-  getRanking = (index: number) =>
-    (index * 100) / this.props.stakePoolsList.length;
+  getIndex = (ranking: number, listLength: number) =>
+    ((ranking - 1) * 100) / listLength;
 
   isSelected = (newSelectedList: string, newSelectedIndex: number) =>
     newSelectedList === this.state.selectedList &&
@@ -202,12 +202,11 @@ export default class StakingStakePools extends Component<Props, State> {
         <div className={styles.stakePoolsDelegatingList}>
           {stakePoolsDelegatingList.map(stakePool => (
             <StakePool
-              {...stakePool}
+              stakePool={stakePool}
               key={stakePool.id}
-              ranking={this.getRanking(stakePool.index)}
               isSelected={this.isSelected(
                 'selectedIndexDelegatedList',
-                stakePool.index
+                stakePool.ranking
               )}
               onClose={this.handleClose}
               onClick={(...params) =>
@@ -217,6 +216,7 @@ export default class StakingStakePools extends Component<Props, State> {
               currentTheme={currentTheme}
               flipHorizontal={flipHorizontal}
               flipVertical={flipVertical}
+              index={this.getIndex(stakePool.ranking, stakePoolsList.length)}
             />
           ))}
         </div>
@@ -231,13 +231,15 @@ export default class StakingStakePools extends Component<Props, State> {
         </h2>
 
         <div className={styles.stakePoolsList}>
-          {this.props.stakePoolsList.map(stakePool => (
+          {stakePoolsList.map(stakePool => (
             <StakePool
-              {...stakePool}
+              stakePool={stakePool}
               key={stakePool.id}
-              ranking={this.getRanking(stakePool.index)}
               onOpenExternalLink={onOpenExternalLink}
-              isSelected={this.isSelected('selectedIndexList', stakePool.index)}
+              isSelected={this.isSelected(
+                'selectedIndexList',
+                stakePool.ranking
+              )}
               onClose={this.handleClose}
               onClick={(...params) =>
                 this.handleClick('selectedIndexList', ...params)
@@ -245,6 +247,7 @@ export default class StakingStakePools extends Component<Props, State> {
               currentTheme={currentTheme}
               flipHorizontal={flipHorizontal}
               flipVertical={flipVertical}
+              index={this.getIndex(stakePool.ranking, stakePoolsList.length)}
             />
           ))}
         </div>

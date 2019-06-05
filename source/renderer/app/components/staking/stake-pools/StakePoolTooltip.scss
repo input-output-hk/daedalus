@@ -113,6 +113,16 @@
   }
 }
 
+.colorBand {
+  border-radius: 0 0 4px 4px;
+  top: 0;
+  display: block;
+  height: 5px;
+  left: 0;
+  position: absolute;
+  width: 100%;
+}
+
 .visible {
   display: block;
 }
