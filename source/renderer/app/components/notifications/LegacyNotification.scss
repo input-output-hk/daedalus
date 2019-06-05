@@ -4,6 +4,7 @@
   cursor: pointer;
   font-family: var(--font-medium);
   font-size: 14px;
+  font-weight: 500;
   height: 33px;
   line-height: 33px;
   margin-left: 10px;
@@ -66,6 +67,7 @@
   flex-grow: 1;
   font-family: var(--font-medium);
   font-size: 16px;
+  font-weight: 500;
   height: 22px;
   line-height: 1.38;
 }
@@ -74,6 +76,7 @@
   color: var(--theme-legacy-notification-description-color);
   font-family: var(--font-regular);
   font-size: 14px;
+  font-weight: 300;
   letter-spacing: 0.5px;
   line-height: 1.36;
   margin-top: 12px;
