@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import StakingDelegationCenter from '../../components/staking/delegation-center/StakingDelegationCenter';
+import DelegationSetupWizardContainer from './DelegationSetupWizardContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
@@ -12,6 +13,10 @@ export default class StakingDelegationCenterPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    return <StakingDelegationCenter name="StakingDelegationCenter" />;
+    return (
+      <StakingDelegationCenter name="StakingDelegationCenter">
+        <DelegationSetupWizardContainer />
+      </StakingDelegationCenter>
+    );
   }
 }

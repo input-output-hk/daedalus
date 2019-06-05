@@ -1,0 +1,57 @@
+@import '../../../themes/mixins/loading-spinner';
+
+.delegationStepsChooseWalletWrapper {
+  font-family: var(--font-regular);
+
+  :global {
+    .Dialog_title {
+      letter-spacing: 2px;
+    }
+  }
+
+  .content {
+    font-size: 16px;
+    line-height: 1.38;
+    text-align: left;
+
+    button {
+      color: #296fd0;
+      cursor: pointer;
+      font-size: 16px;
+      &:hover {
+        color: var(--theme-staking-link-color);
+      }
+    }
+
+    .description {
+      color: rgba(94, 96, 102, 0.8);
+    }
+
+    .stepsExplanation {
+      border-top: 1px solid #dfe4e8;
+      margin-top: 20px;
+      padding-top: 20px;
+      .label {
+        color: #5e6066;
+        font-family: var(--font-medium);
+        font-weight: 500;
+      }
+      ol,
+      li {
+        color: rgba(94, 96, 102, 0.8);
+        margin-top: 11px;
+        span {
+          color: #5e6066;
+          &.optional {
+            color: rgba(94, 96, 102, 0.5);
+          }
+        }
+      }
+    }
+  }
+
+  .isSubmitting {
+    box-shadow: none !important;
+    @include loading-spinner('../../../assets/images/spinner-light.svg');
+  }
+}

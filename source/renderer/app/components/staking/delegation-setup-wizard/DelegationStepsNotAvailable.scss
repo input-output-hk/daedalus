@@ -1,0 +1,43 @@
+@import '../../../themes/mixins/loading-spinner';
+
+.delegationStepsNotAvailableWrapper {
+  font-family: var(--font-regular);
+
+  :global {
+    .Dialog_title {
+      letter-spacing: 2px;
+    }
+  }
+
+  .content {
+    font-size: 16px;
+    line-height: 1.38;
+    text-align: center;
+
+    .icon {
+      display: inline-block;
+      height: 66px;
+      margin: 10px 0 28px;
+      svg {
+        height: 66px;
+        width: 66px;
+      }
+    }
+
+    .msgLabel {
+      color: #5e6066;
+      font-family: var(--font-medium);
+      font-weight: 500;
+      margin-bottom: 11px;
+    }
+
+    .description {
+      color: rgba(94, 96, 102, 0.8);
+      span {
+        color: #5e6066;
+        font-family: var(--font-medium);
+        font-weight: 500;
+      }
+    }
+  }
+}
