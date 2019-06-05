@@ -4,9 +4,7 @@ Given(/^I set wrong local time difference$/, async function() {
   await this.client.executeAsync((timeDifference, done) => {
     daedalus.api.ada
       .setLocalTimeDifference(timeDifference)
-      .then(() =>
-        daedalus.stores.daedalusDiagnostics._updateDaedalusDiagnostics()
-      )
+      .then(() => daedalus.stores.networkStatus._updateDaedalusDiagnostics())
       .then(done)
       .catch(error => done(error));
   }, 1511823600000);

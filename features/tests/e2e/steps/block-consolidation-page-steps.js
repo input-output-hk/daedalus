@@ -179,11 +179,11 @@ Then(
     const {
       value: { epochsSynced },
     } = await this.client.executeAsync(done => {
-      daedalus.stores.daedalusDiagnostics
+      daedalus.stores.networkStatus
         ._updateDaedalusDiagnostics()
         .then(() =>
           done({
-            epochsSynced: daedalus.stores.daedalusDiagnostics.syncProgress,
+            epochsSynced: daedalus.stores.networkStatus.syncProgress,
           })
         )
         .catch(error => done(error));

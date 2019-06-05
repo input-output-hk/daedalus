@@ -171,7 +171,7 @@ export default class StoryLayout extends Component<Props> {
       showSubMenus={this.isShowingSubMenus}
     >
       <NodeSyncStatusIcon
-        daedalusDiagnostics={{
+        networkStatus={{
           isSynced: true,
           syncPercentage: 100,
         }}

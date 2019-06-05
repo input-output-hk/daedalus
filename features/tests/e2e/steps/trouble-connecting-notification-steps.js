@@ -71,9 +71,7 @@ When(
       daedalus.api.ada
         .setNetworkBlockHeight(null)
         .then(() => daedalus.api.ada.setLocalBlockHeight(null))
-        .then(() =>
-          daedalus.stores.daedalusDiagnostics._updateDaedalusDiagnostics()
-        )
+        .then(() => daedalus.stores.networkStatus._updateDaedalusDiagnostics())
         .then(done)
         .catch(error => done(error));
     });

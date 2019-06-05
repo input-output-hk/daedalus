@@ -16,7 +16,7 @@ const topBarTestEnv = (
   >
     <WalletTestEnvironmentLabel network="testnet" />
     <NodeSyncStatusIcon
-      daedalusDiagnostics={{
+      networkStatus={{
         isSynced: true,
         syncPercentage: 100,
       }}
@@ -33,7 +33,7 @@ const topBarProductionEnv = (
     showSubMenuToggle={false}
   >
     <NodeSyncStatusIcon
-      daedalusDiagnostics={{
+      networkStatus={{
         isSynced: true,
         syncPercentage: 100,
       }}
