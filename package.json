@@ -189,7 +189,6 @@
     }
   },
   "resolutions": {
-    "**/**/marked": "^0.6.0",
-    "markdown-loader/**/marked": "0.5.0"
+    "**/**/marked": "^0.6.1"
   }
 }
