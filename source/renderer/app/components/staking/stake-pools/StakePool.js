@@ -13,6 +13,9 @@ type Props = {
   ranking: number,
   onClick: Function,
   isSelected: boolean,
+  currentTheme: string,
+  flipHorizontal: boolean,
+  flipVertical: boolean,
 };
 
 @observer
@@ -22,9 +25,17 @@ export default class StakePool extends Component<Props> {
   }
 
   render() {
-    const { stakePool, isSelected, onClick } = this.props;
-
-    const { index, id, retirement } = stakePool;
+    const {
+      index,
+      id,
+      retirement,
+      isSelected,
+      onClick,
+      onClose,
+      currentTheme,
+      flipHorizontal,
+      flipVertical,
+    } = this.props;
 
     const componentClassnames = classnames([
       styles.component,
@@ -35,7 +46,7 @@ export default class StakePool extends Component<Props> {
       <div className={componentClassnames}>
         <div
           className={styles.content}
-          onClick={() => onClick(stakePool)}
+          onClick={(event: MouseEvent) => onClick(event, index)}
           role="link"
           aria-hidden
         >
@@ -60,6 +71,15 @@ export default class StakePool extends Component<Props> {
             }}
           />
         </div>
+        <StakePoolTooltip
+          {...this.props}
+          className={styles.tooltip}
+          visible={isSelected}
+          onClick={onClose}
+          currentTheme={currentTheme}
+          flipHorizontal={flipHorizontal}
+          flipVertical={flipVertical}
+        />
       </div>
     );
   }

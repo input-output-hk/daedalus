@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import { debounce } from 'lodash';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import StakePool from './StakePool';
@@ -58,7 +59,15 @@ type State = {
   filter: string,
   selectedList?: ?string,
   selectedIndex?: ?number,
-  selectedPool: StakePoolProps | {},
+  flipHorizontal: boolean,
+  flipVertical: boolean,
+};
+
+const initialState = {
+  selectedList: null,
+  selectedIndex: null,
+  flipHorizontal: false,
+  flipVertical: false,
 };
 
 @observer
@@ -67,12 +76,22 @@ export default class StakingStakePools extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
+  constructor(props: Props) {
+    super(props);
+    window.addEventListener(
+      'resize',
+      debounce(this.handleClose, 200, { leading: true, trailing: false })
+    );
+    window.addEventListener(
+      'scroll',
+      debounce(this.handleClose, 200, { leading: true, trailing: false })
+    );
+  }
+
   state = {
     search: '',
     filter: 'all',
-    selectedList: null,
-    selectedIndex: null,
-    selectedPool: {},
+    ...initialState,
   };
 
   searchInput: ?HTMLElement = null;
@@ -91,23 +110,39 @@ export default class StakingStakePools extends Component<Props, State> {
     newSelectedList === this.state.selectedList &&
     newSelectedIndex === this.state.selectedIndex;
 
-  handleClick = (selectedList: string, selectedPool: StakePoolProps) => {
-    const { index: selectedIndex } = selectedPool;
+  handleClick = (
+    selectedList: string,
+    event: SyntheticMouseEvent<HTMLElement>,
+    selectedIndex: number
+  ) => {
     if (
       this.state.selectedList === selectedList &&
       this.state.selectedIndex === selectedIndex
     ) {
       return this.handleClose();
     }
-    return this.setState({ selectedList, selectedIndex, selectedPool });
+    event.persist();
+    if (event.target instanceof HTMLElement) {
+      const targetElement =
+        event.target.className === 'StakePool_content'
+          ? event.target
+          : event.target.parentNode;
+      if (targetElement instanceof HTMLElement) {
+        const { top, left } = targetElement.getBoundingClientRect();
+        const flipHorizontal = left > window.innerWidth - window.innerWidth / 2;
+        const flipVertical = top > window.innerHeight - window.innerHeight / 2;
+        return this.setState({
+          selectedList,
+          selectedIndex,
+          flipHorizontal,
+          flipVertical,
+        });
+      }
+    }
+    return false;
   };
 
-  handleClose = () =>
-    this.setState({
-      selectedList: null,
-      selectedIndex: null,
-      selectedPool: {},
-    });
+  handleClose = () => this.setState({ ...initialState });
 
   render() {
     const { intl } = this.context;
@@ -118,7 +153,7 @@ export default class StakingStakePools extends Component<Props, State> {
       currentTheme,
     } = this.props;
 
-    const { selectedIndex, selectedPool } = this.state;
+    const { flipHorizontal, flipVertical } = this.state;
 
     return (
       <div className={styles.component}>
@@ -186,9 +221,14 @@ export default class StakingStakePools extends Component<Props, State> {
                 'selectedIndexDelegatedList',
                 stakePool.index
               )}
-              onClick={pool =>
-                this.handleClick('selectedIndexDelegatedList', pool)
+              onClose={this.handleClose}
+              onClick={(...params) =>
+                this.handleClick('selectedIndexDelegatedList', ...params)
               }
+              onOpenExternalLink={onOpenExternalLink}
+              currentTheme={currentTheme}
+              flipHorizontal={flipHorizontal}
+              flipVertical={flipVertical}
             />
           ))}
         </div>
@@ -209,7 +249,13 @@ export default class StakingStakePools extends Component<Props, State> {
               key={stakePool.id}
               ranking={this.getRanking(stakePool.index)}
               isSelected={this.isSelected('selectedIndexList', stakePool.index)}
-              onClick={pool => this.handleClick('selectedIndexList', pool)}
+              onClose={this.handleClose}
+              onClick={(...params) =>
+                this.handleClick('selectedIndexList', ...params)
+              }
+              currentTheme={currentTheme}
+              flipHorizontal={flipHorizontal}
+              flipVertical={flipVertical}
             />
           ))}
         </div>

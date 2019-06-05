@@ -44,6 +44,40 @@
     top: 63px;
   }
 
+  &.flipHorizontal {
+    left: auto;
+    right: 45px;
+
+    &:after {
+      border-right-color: transparent;
+      border-left-color: var(
+        --theme-staking-stake-pool-tooltip-background-color
+      );
+      left: auto;
+      right: -20px;
+    }
+    &:before {
+      border-right-color: transparent;
+      border-left-color: var(--theme-staking-stake-pool-tooltip-border-color);
+      left: auto;
+      right: -22px;
+    }
+  }
+
+  &.flipVertical {
+    top: auto;
+    bottom: -60px;
+
+    &:after {
+      top: auto;
+      bottom: 64px;
+    }
+    &:before {
+      top: auto;
+      bottom: 63px;
+    }
+  }
+
   :global {
     button.SimpleButton_root {
       background-color: var(
@@ -84,7 +118,10 @@
   letter-spacing: 0.5px;
   line-height: 1.38;
   margin-bottom: 3px;
+  max-height: 44px;
+  overflow: hidden;
   padding-right: 25px;
+  text-overflow: ellipsis;
 }
 
 .closeButton {
@@ -116,6 +153,9 @@
   font-size: 14px;
   line-height: 1.36;
   margin-bottom: 4px;
+  max-height: 79px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .url {
