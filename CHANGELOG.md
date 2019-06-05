@@ -22,6 +22,7 @@ Changelog
 
 ### Fixes
 
+- Fixed "marked" dependency vulnerability warning ([PR 1414](https://github.com/input-output-hk/daedalus/pull/1414)
 - Fixed addresses not visible on Receive screen when Password is set for the wallet in minimized mode ([PR 1407](https://github.com/input-output-hk/daedalus/pull/1407))
 - Fixed truncated "Add Wallet" screen while wallet is restored ([PR 1405](https://github.com/input-output-hk/daedalus/pull/1405))
 - Fixed spending password being asked on Receive screen when clicking on "Copy address" link. ([PR 1392](https://github.com/input-output-hk/daedalus/pull/1392))
