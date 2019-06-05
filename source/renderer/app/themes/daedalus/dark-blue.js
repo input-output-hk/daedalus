@@ -301,13 +301,15 @@ export default {
   '--theme-legacy-notification-learn-more-button-background-color':
     'rgba(250, 251, 252, 0.2)',
   '--theme-legacy-notification-learn-more-button-background-color-hover':
-    'rgba(250, 251, 252, 0.2)',
+    'rgba(250, 251, 252, 0.3)',
   '--theme-legacy-notification-learn-more-button-background-color-active':
-    'rgba(250, 251, 252, 0.2)',
+    'rgba(250, 251, 252, 0.4)',
   '--theme-legacy-notification-move-button-text-color': '#ab2712',
   '--theme-legacy-notification-move-button-background-color': '#fafbfc',
-  '--theme-legacy-notification-move-button-background-color-hover': '#fafbfc',
-  '--theme-legacy-notification-move-button-background-color-active': '#fafbfc',
+  '--theme-legacy-notification-move-button-background-color-hover':
+    'rgba(250, 251, 252, 0.9)',
+  '--theme-legacy-notification-move-button-background-color-active':
+    'rgba(250, 251, 252, 0.8)',
   '--theme-legacy-notification-title-color': '#fafbfc',
   '--theme-legacy-notification-description-color': '#fafbfc',
 
