@@ -51,7 +51,7 @@ export const winLinuxMenu = (
       },
       {
         label: translation('daedalus.daedalusDiagnostics'),
-        accelerator: 'Ctrl+S',
+        accelerator: 'Ctrl+D',
         click() {
           actions.openDaedalusDiagnostics();
         },

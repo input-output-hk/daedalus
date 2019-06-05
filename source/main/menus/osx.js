@@ -51,7 +51,7 @@ export const osxMenu = (
       },
       {
         label: translation('daedalus.daedalusDiagnostics'),
-        accelerator: 'Command+S',
+        accelerator: 'Command+D',
         click() {
           actions.openDaedalusDiagnostics();
         },
