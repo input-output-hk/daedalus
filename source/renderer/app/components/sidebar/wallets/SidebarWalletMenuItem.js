@@ -36,6 +36,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
     const componentStyles = classNames([
       styles.component,
       active ? styles.active : null,
+      isLegacy ? styles.legacyItem : null,
       className,
     ]);
 

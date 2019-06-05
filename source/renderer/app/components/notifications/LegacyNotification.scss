@@ -4,13 +4,12 @@
   cursor: pointer;
   font-family: var(--font-medium);
   font-size: 14px;
-  height: 34px;
-  line-height: 34px;
+  height: 33px;
+  line-height: 33px;
   margin-left: 10px;
-  max-width: 300px;
-  padding: 0 30px;
   text-align: center;
   white-space: nowrap;
+  width: auto;
 }
 
 .component {
@@ -27,6 +26,7 @@
       --theme-legacy-notification-learn-more-button-background-color
     );
     color: var(--theme-legacy-notification-learn-more-button-text-color);
+    padding: 0 42px;
 
     &:hover {
       background-color: var(
@@ -46,6 +46,7 @@
       --theme-legacy-notification-move-button-background-color
     );
     color: var(--theme-legacy-notification-move-button-text-color);
+    padding: 0 20px;
 
     &:hover {
       background-color: var(

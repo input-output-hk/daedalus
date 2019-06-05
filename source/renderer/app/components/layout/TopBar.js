@@ -29,14 +29,16 @@ export default class TopBar extends Component<Props> {
 
     const topBarTitle = activeWallet ? (
       <span className={styles.walletInfo}>
-        <span className={styles.walletName}>{activeWallet.name}</span>
+        <span className={styles.walletName}>
+          {activeWallet.name}
+          {activeWallet.isLegacy && (
+            <LegacyBadge mode={LEGACY_BADGE_MODES.NATURAL} />
+          )}
+        </span>
         <span className={styles.walletAmount}>
           {// show currency and use long format
           formattedWalletAmount(activeWallet.amount, true)}
         </span>
-        {activeWallet && activeWallet.isLegacy && (
-          <LegacyBadge mode={LEGACY_BADGE_MODES.NATURAL} />
-        )}
       </span>
     ) : null;
 
