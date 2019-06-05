@@ -5,7 +5,7 @@ import AdaRedemptionStore from './AdaRedemptionStore';
 import AddressesStore from './AddressesStore';
 import AppStore from './AppStore';
 import BlockConsolidationStore from './BlockConsolidationStore';
-import DaedalusDiagnosticsStore from './DaedalusDiagnosticsStore';
+import NetworkStatusStore from './NetworkStatusStore';
 import NodeUpdateStore from './NodeUpdateStore';
 import ProfileStore from './ProfileStore';
 import SidebarStore from './SidebarStore';
@@ -23,7 +23,7 @@ export const storeClasses = {
   addresses: AddressesStore,
   blockConsolidation: BlockConsolidationStore,
   app: AppStore,
-  daedalusDiagnostics: DaedalusDiagnosticsStore,
+  networkStatus: NetworkStatusStore,
   nodeUpdate: NodeUpdateStore,
   profile: ProfileStore,
   sidebar: SidebarStore,
@@ -50,7 +50,7 @@ export type StoresMap = {
   transactions: TransactionsStore,
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
-  daedalusDiagnostics: DaedalusDiagnosticsStore,
+  networkStatus: NetworkStatusStore,
   wallets: WalletsStore,
   transactions: TransactionsStore,
   adaRedemption: AdaRedemptionStore,
@@ -87,7 +87,7 @@ export default action(
       addresses: createStoreInstanceOf(AddressesStore),
       app: createStoreInstanceOf(AppStore),
       blockConsolidation: createStoreInstanceOf(BlockConsolidationStore),
-      daedalusDiagnostics: createStoreInstanceOf(DaedalusDiagnosticsStore),
+      networkStatus: createStoreInstanceOf(NetworkStatusStore),
       nodeUpdate: createStoreInstanceOf(NodeUpdateStore),
       profile: createStoreInstanceOf(ProfileStore),
       router,

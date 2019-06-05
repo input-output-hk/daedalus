@@ -36,7 +36,7 @@ export default class NodeUpdateStore extends Store {
   }
 
   refreshNextUpdate = async () => {
-    if (this.stores.daedalusDiagnostics.isSynced) {
+    if (this.stores.networkStatus.isSynced) {
       await this.nextUpdateRequest.execute();
       const { result } = this.nextUpdateRequest;
       if (

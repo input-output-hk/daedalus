@@ -85,9 +85,9 @@ export default class BlockConsolidationStore extends Store {
   };
 
   @action _getBlockConsolidationApiData = async () => {
-    if (!this.stores.daedalusDiagnostics.tlsConfig) {
+    if (!this.stores.networkStatus.tlsConfig) {
       this._stopBlockConsolidationDataPolling({ apiOnly: true });
-      this.actions.daedalusDiagnostics.tlsConfigIsReady.listen(
+      this.actions.networkStatus.tlsConfigIsReady.listen(
         this._startBlockConsolidationDataPolling
       );
       return false;

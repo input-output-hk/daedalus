@@ -16,8 +16,8 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
   render() {
     const { actions, stores } = this.props;
     const { closeDaedalusDiagnosticsDialog } = actions.app;
-    const { restartNode } = actions.daedalusDiagnostics;
-    const { app, daedalusDiagnostics } = stores;
+    const { restartNode } = actions.networkStatus;
+    const { app, networkStatus } = stores;
     const { openExternalLink } = app;
     const {
       // Node state
@@ -47,7 +47,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       tlsConfig,
       cardanoNodeID,
       stateDirectoryPath,
-    } = daedalusDiagnostics;
+    } = networkStatus;
 
     const systemInfo = {
       platform: environment.os,

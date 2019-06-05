@@ -4,7 +4,7 @@ import AddressesActions from './addresses-actions';
 import AppActions from './app-actions';
 import BlockConsolidationActions from './block-consolidation-actions';
 import DialogsActions from './dialogs-actions';
-import DaedalusDiagnosticsActions from './daedalus-diagnostics-actions';
+import NetworkStatusActions from './network-status-actions';
 import NodeUpdateActions from './node-update-actions';
 import NotificationsActions from './notifications-actions';
 import ProfileActions from './profile-actions';
@@ -23,7 +23,7 @@ export type ActionsMap = {
   app: AppActions,
   blockConsolidation: BlockConsolidationActions,
   dialogs: DialogsActions,
-  daedalusDiagnostics: DaedalusDiagnosticsActions,
+  networkStatus: NetworkStatusActions,
   nodeUpdate: NodeUpdateActions,
   notifications: NotificationsActions,
   profile: ProfileActions,
@@ -43,7 +43,7 @@ const actionsMap: ActionsMap = {
   app: new AppActions(),
   blockConsolidation: new BlockConsolidationActions(),
   dialogs: new DialogsActions(),
-  daedalusDiagnostics: new DaedalusDiagnosticsActions(),
+  networkStatus: new NetworkStatusActions(),
   nodeUpdate: new NodeUpdateActions(),
   notifications: new NotificationsActions(),
   profile: new ProfileActions(),

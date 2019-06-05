@@ -102,7 +102,7 @@ export default (api: AdaApi) => {
         localBlockchainHeight,
       } = nodeInfo;
 
-      // extract relevant data before sending to DaedalusDiagnosticsStore
+      // extract relevant data before sending to NetworkStatusStore
       const response = {
         subscriptionStatus: SUBSCRIPTION_STATUS || subscriptionStatus,
         syncProgress: syncProgress.quantity,

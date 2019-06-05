@@ -90,7 +90,7 @@ export default class AddressesStore extends Store {
   }
 
   @action _refreshAddresses = () => {
-    if (this.stores.daedalusDiagnostics.isConnected) {
+    if (this.stores.networkStatus.isConnected) {
       const allWallets = this.stores.wallets.all;
       for (const wallet of allWallets) {
         const allRequest = this._getAddressesAllRequest(wallet.id);

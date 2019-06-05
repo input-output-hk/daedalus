@@ -973,7 +973,7 @@ export default class AdaApi {
         localTimeInformation,
       } = nodeInfo;
 
-      // extract relevant data before sending to DaedalusDiagnosticsStore
+      // extract relevant data before sending to NetworkStatusStore
       return {
         subscriptionStatus,
         syncProgress: syncProgress.quantity,

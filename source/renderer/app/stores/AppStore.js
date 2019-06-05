@@ -144,7 +144,7 @@ export default class AppStore extends Store {
   };
 
   @action _showAdaRedemptionScreen = () => {
-    const { isConnected, isSynced } = this.stores.daedalusDiagnostics;
+    const { isConnected, isSynced } = this.stores.networkStatus;
     const { hasLoadedWallets } = this.stores.wallets;
     if (isConnected && isSynced && hasLoadedWallets && !this.isSetupPage) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.ADA_REDEMPTION });

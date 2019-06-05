@@ -127,7 +127,7 @@ export default class TransactionsStore extends Store {
   }
 
   @action _refreshTransactionData = async (restoredWalletId: ?string) => {
-    if (this.stores.daedalusDiagnostics.isConnected) {
+    if (this.stores.networkStatus.isConnected) {
       const allWallets = this.stores.wallets.all;
       for (const wallet of allWallets) {
         const isRestoreActive =

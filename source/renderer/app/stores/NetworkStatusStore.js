@@ -55,7 +55,7 @@ const NODE_STOPPED_STATES = [
 ];
 // END CONSTANTS ----------------------------
 
-export default class DaedalusDiagnosticsStore extends Store {
+export default class NetworkStatusStore extends Store {
   // Initialize store properties
   _startTime = Date.now();
   _daedalusDiagnostics = DAEDALUS_DIAGNOSTICS.CONNECTING;
@@ -105,7 +105,7 @@ export default class DaedalusDiagnosticsStore extends Store {
   setup() {
     // ========== IPC CHANNELS =========== //
 
-    this.actions.daedalusDiagnostics.restartNode.listen(this._restartNode);
+    this.actions.networkStatus.restartNode.listen(this._restartNode);
 
     // Request node state
     this._requestCardanoState();
@@ -155,12 +155,10 @@ export default class DaedalusDiagnosticsStore extends Store {
 
   @action async _restartNode() {
     try {
-      Logger.info(
-        'DaedalusDiagnosticsStore: Requesting a restart of cardano-node'
-      );
+      Logger.info('NetworkStatusStore: Requesting a restart of cardano-node');
       await restartCardanoNodeChannel.send();
     } catch (error) {
-      Logger.error('DaedalusDiagnosticsStore: Restart of cardano-node failed', {
+      Logger.error('NetworkStatusStore: Restart of cardano-node failed', {
         error,
       });
     }
@@ -183,9 +181,7 @@ export default class DaedalusDiagnosticsStore extends Store {
 
   _updateDaedalusDiagnosticsWhenConnected = () => {
     if (this.isConnected) {
-      Logger.info(
-        'DaedalusDiagnosticsStore: Connected, forcing NTP check now...'
-      );
+      Logger.info('NetworkStatusStore: Connected, forcing NTP check now...');
       this._updateDaedalusDiagnostics({ force_ntp_check: true });
     }
   };
@@ -193,15 +189,12 @@ export default class DaedalusDiagnosticsStore extends Store {
   _updateNodeStatus = async () => {
     if (!this.isConnected) return;
     try {
-      Logger.info('DaedalusDiagnosticsStore: Updating node status');
+      Logger.info('NetworkStatusStore: Updating node status');
       await setCachedCardanoStatusChannel.send(this._extractNodeStatus(this));
     } catch (error) {
-      Logger.error(
-        'DaedalusDiagnosticsStore: Error while updating node status',
-        {
-          error,
-        }
-      );
+      Logger.error('NetworkStatusStore: Error while updating node status', {
+        error,
+      });
     }
   };
 
@@ -222,9 +215,9 @@ export default class DaedalusDiagnosticsStore extends Store {
   };
 
   _requestCardanoState = async () => {
-    Logger.info('DaedalusDiagnosticsStore: requesting node state');
+    Logger.info('NetworkStatusStore: requesting node state');
     const state = await cardanoStateChangeChannel.request();
-    Logger.info(`DaedalusDiagnosticsStore: handling node state <${state}>`, {
+    Logger.info(`NetworkStatusStore: handling node state <${state}>`, {
       state,
     });
     await this._handleCardanoNodeStateChange(state);
@@ -232,9 +225,9 @@ export default class DaedalusDiagnosticsStore extends Store {
 
   _requestCardanoStatus = async () => {
     try {
-      Logger.info('DaedalusDiagnosticsStore: requesting node status');
+      Logger.info('NetworkStatusStore: requesting node status');
       const status = await getCachedCardanoStatusChannel.request();
-      Logger.info('DaedalusDiagnosticsStore: received cached node status', {
+      Logger.info('NetworkStatusStore: received cached node status', {
         status,
       });
       if (status)
@@ -244,54 +237,43 @@ export default class DaedalusDiagnosticsStore extends Store {
           Object.assign(this, status);
         });
     } catch (error) {
-      Logger.error(
-        'DaedalusDiagnosticsStore: error while requesting node state',
-        {
-          error,
-        }
-      );
+      Logger.error('NetworkStatusStore: error while requesting node state', {
+        error,
+      });
     }
   };
 
   _requestTlsConfig = async () => {
     try {
       Logger.info(
-        'DaedalusDiagnosticsStore: requesting tls config from main process'
+        'NetworkStatusStore: requesting tls config from main process'
       );
       const tlsConfig = await cardanoTlsConfigChannel.request();
       await this._updateTlsConfig(tlsConfig);
     } catch (error) {
-      Logger.error(
-        'DaedalusDiagnosticsStore: error while requesting tls config',
-        {
-          error,
-        }
-      );
+      Logger.error('NetworkStatusStore: error while requesting tls config', {
+        error,
+      });
     }
   };
 
   _updateTlsConfig = (config: ?TlsConfig): Promise<void> => {
     if (config == null || isEqual(config, this.tlsConfig))
       return Promise.resolve();
-    Logger.info(
-      'DaedalusDiagnosticsStore: received tls config from main process'
-    );
+    Logger.info('NetworkStatusStore: received tls config from main process');
     this.api.ada.setRequestConfig(config);
     runInAction('updating tlsConfig', () => {
       this.tlsConfig = config;
     });
-    this.actions.daedalusDiagnostics.tlsConfigIsReady.trigger();
+    this.actions.networkStatus.tlsConfigIsReady.trigger();
     return Promise.resolve();
   };
 
   _handleCardanoNodeStateChange = async (state: CardanoNodeState) => {
     if (state === this.cardanoNodeState) return Promise.resolve();
-    Logger.info(
-      `DaedalusDiagnosticsStore: handling cardano-node state <${state}>`,
-      {
-        state,
-      }
-    );
+    Logger.info(`NetworkStatusStore: handling cardano-node state <${state}>`, {
+      state,
+    });
     const wasConnected = this.isConnected;
     switch (state) {
       case CardanoNodeStates.STARTING:
@@ -375,7 +357,7 @@ export default class DaedalusDiagnosticsStore extends Store {
     const wasConnected = this.isConnected;
 
     try {
-      const daedalusDiagnostics: GetDaedalusDiagnosticsResponse = isForcedTimeDifferenceCheck
+      const networkStatus: GetDaedalusDiagnosticsResponse = isForcedTimeDifferenceCheck
         ? await this.forceCheckTimeDifferenceRequest.execute(queryInfoParams)
             .promise
         : await this.getDaedalusDiagnosticsRequest.execute().promise;
@@ -384,7 +366,7 @@ export default class DaedalusDiagnosticsStore extends Store {
       // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
       if (!this.tlsConfig) {
         Logger.debug(
-          'DaedalusDiagnosticsStore: Ignoring DaedalusDiagnosticsRequest result during Cardano shutdown sequence...'
+          'NetworkStatusStore: Ignoring DaedalusDiagnosticsRequest result during Cardano shutdown sequence...'
         );
         return;
       }
@@ -395,7 +377,7 @@ export default class DaedalusDiagnosticsStore extends Store {
         blockchainHeight,
         localBlockchainHeight,
         localTimeInformation,
-      } = daedalusDiagnostics;
+      } = networkStatus;
 
       // We got response which means node is responding
       runInAction('update isNodeResponding', () => {
@@ -441,7 +423,7 @@ export default class DaedalusDiagnosticsStore extends Store {
           // If initial local block height isn't set, mark the first
           // result as the 'starting' height for the sync progress
           this.initialLocalHeight = localBlockchainHeight;
-          Logger.debug('DaedalusDiagnosticsStore: Initial local block height', {
+          Logger.debug('NetworkStatusStore: Initial local block height', {
             localBlockchainHeight,
           });
         }
@@ -449,7 +431,7 @@ export default class DaedalusDiagnosticsStore extends Store {
         // Update the local block height on each request
         const lastLocalBlockHeight = this.localBlockHeight;
         this.localBlockHeight = localBlockchainHeight;
-        Logger.debug('DaedalusDiagnosticsStore: Local blockchain height', {
+        Logger.debug('NetworkStatusStore: Local blockchain height', {
           localBlockchainHeight,
         });
 
@@ -458,7 +440,7 @@ export default class DaedalusDiagnosticsStore extends Store {
         const lastNetworkBlockHeight = this.networkBlockHeight;
         this.networkBlockHeight = blockchainHeight;
         if (hasStartedReceivingBlocks) {
-          Logger.debug('DaedalusDiagnosticsStore: Network blockchain height', {
+          Logger.debug('NetworkStatusStore: Network blockchain height', {
             blockchainHeight,
           });
         }
@@ -522,15 +504,12 @@ export default class DaedalusDiagnosticsStore extends Store {
           const totalUnsyncedBlocksAtStart =
             this.networkBlockHeight - initialLocalHeight;
           Logger.debug(
-            'DaedalusDiagnosticsStore: Total unsynced blocks at node start',
+            'NetworkStatusStore: Total unsynced blocks at node start',
             { totalUnsyncedBlocksAtStart }
           );
-          Logger.debug(
-            'DaedalusDiagnosticsStore: Blocks synced since node start',
-            {
-              blocksSyncedSinceStart,
-            }
-          );
+          Logger.debug('NetworkStatusStore: Blocks synced since node start', {
+            blocksSyncedSinceStart,
+          });
         }
       });
 
@@ -540,7 +519,7 @@ export default class DaedalusDiagnosticsStore extends Store {
       ) {
         // We are synced for the first time, move on to running stage
         this._daedalusDiagnostics = DAEDALUS_DIAGNOSTICS.RUNNING;
-        this.actions.daedalusDiagnostics.isSyncedAndReady.trigger();
+        this.actions.networkStatus.isSyncedAndReady.trigger();
         const syncingTimeDelta = this._getStartupTimeDelta();
         Logger.info(`Synced after ${syncingTimeDelta} milliseconds`, {
           syncingTimeDelta,
@@ -554,13 +533,11 @@ export default class DaedalusDiagnosticsStore extends Store {
               this.hasBeenConnected = true;
             });
           }
-          Logger.debug(
-            'DaedalusDiagnosticsStore: Connection Lost. Reconnecting...'
-          );
+          Logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
         } else if (this.hasBeenConnected) {
           // Make sure all wallets data is fully reloaded after the connection is re-established
           this.stores.wallets.resetWalletsData();
-          Logger.debug('DaedalusDiagnosticsStore: Connection Restored');
+          Logger.debug('NetworkStatusStore: Connection Restored');
         }
         if (this.isTlsCertInvalid) {
           runInAction('set isTlsCertInvalid = false', () => {
@@ -590,9 +567,7 @@ export default class DaedalusDiagnosticsStore extends Store {
           this.hasBeenConnected = true;
         });
       }
-      Logger.debug(
-        'DaedalusDiagnosticsStore: Connection Lost. Reconnecting...'
-      );
+      Logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
     }
   };
 

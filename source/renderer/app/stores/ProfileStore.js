@@ -243,7 +243,7 @@ export default class ProfileStore extends Store {
     this.stores.app.currentRoute === ROUTES.PROFILE.TERMS_OF_USE;
 
   _redirectToDataLayerMigrationScreenIfMigrationHasNotAccepted = () => {
-    const { isConnected } = this.stores.daedalusDiagnostics;
+    const { isConnected } = this.stores.networkStatus;
     const dataLayerMigrationNotAccepted =
       this.hasLoadedDataLayerMigrationAcceptance &&
       !this.isDataLayerMigrationAccepted;

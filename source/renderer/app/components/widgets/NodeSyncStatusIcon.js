@@ -16,7 +16,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  daedalusDiagnostics: {
+  networkStatus: {
     +isSynced: boolean,
     +syncPercentage: number,
   },
@@ -29,8 +29,8 @@ export default class NodeSyncStatusIcon extends Component<Props> {
   };
 
   render() {
-    const { daedalusDiagnostics, isMainnet } = this.props;
-    const { isSynced, syncPercentage } = daedalusDiagnostics;
+    const { networkStatus, isMainnet } = this.props;
+    const { isSynced, syncPercentage } = networkStatus;
     const { intl } = this.context;
     const statusIcon = isSynced ? syncedIcon : spinnerIcon;
     const componentClasses = classNames([

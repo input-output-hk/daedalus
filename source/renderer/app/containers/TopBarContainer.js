@@ -19,7 +19,7 @@ export default class TopBarContainer extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar, app, daedalusDiagnostics, wallets } = stores;
+    const { sidebar, app, networkStatus, wallets } = stores;
     const { active, isWalletRoute, hasAnyWallets } = wallets;
     const {
       currentRoute,
@@ -49,7 +49,7 @@ export default class TopBarContainer extends Component<Props> {
       >
         {testnetLabel}
         <NodeSyncStatusIcon
-          daedalusDiagnostics={daedalusDiagnostics}
+          networkStatus={networkStatus}
           isMainnet={isMainnet}
         />
       </TopBar>

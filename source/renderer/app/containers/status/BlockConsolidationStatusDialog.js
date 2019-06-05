@@ -22,10 +22,10 @@ export default class BlockConsolidationStatusDialog extends Component<InjectedPr
   };
 
   render() {
-    const { app, blockConsolidation, daedalusDiagnostics } = this.props.stores;
+    const { app, blockConsolidation, networkStatus } = this.props.stores;
     const { openExternalLink } = app;
     const { epochsConsolidated, currentEpoch } = blockConsolidation;
-    const { syncProgress } = daedalusDiagnostics;
+    const { syncProgress } = networkStatus;
     return (
       <ReactModal
         isOpen

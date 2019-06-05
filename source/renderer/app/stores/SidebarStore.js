@@ -27,12 +27,12 @@ export default class SidebarStore extends Store {
   }
 
   @computed get wallets(): Array<SidebarWalletType> {
-    const { daedalusDiagnostics, wallets } = this.stores;
+    const { networkStatus, wallets } = this.stores;
     return wallets.all.map(w => ({
       id: w.id,
       title: w.name,
       info: formattedWalletAmount(w.amount),
-      isConnected: daedalusDiagnostics.isConnected,
+      isConnected: networkStatus.isConnected,
       isRestoreActive:
         get(w, 'syncState.tag') === WalletSyncStateTags.RESTORING,
       restoreProgress: get(w, 'syncState.data.percentage.quantity', 0),
@@ -40,7 +40,7 @@ export default class SidebarStore extends Store {
   }
 
   @action _configureCategories = () => {
-    if (this.stores.daedalusDiagnostics.environment.isDev) {
+    if (this.stores.networkStatus.environment.isDev) {
       this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_STAKING;
     }
   };
