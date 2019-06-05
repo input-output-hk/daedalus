@@ -32,7 +32,16 @@ let
   pkgs = iohkNix.pkgs;
   lib = pkgs.lib;
   isDaedalus = name: false;
-
+  # TODO: Update once this branch is merged into input-output-hk/cardano-wallet
+  cardanoWalletSrc = import (pkgs.fetchFromGitHub {
+    owner = "jbgi";
+    repo = "cardano-wallet";
+    rev = "ad156cdf1587dadb9d8e1a3d8b8177780afcfca1";
+    sha256 = "1505c7qv7f3mffi6rvj81i6dz3zl6f9kx5109ar5gc1k2x5cry20";
+  }) {};
+  cardanoWallet = cardanoWalletSrc.cardano-wallet;
+  cardanoWalletLauncher = cardanoWalletSrc.cardano-wallet-launcher;
+  cardanoHttpBridge = cardanoWalletSrc.cardano-http-bridge;
 in lib // {
-  inherit iohkNix pkgs cardanoSL isDaedalus;
+  inherit iohkNix pkgs cardanoSL isDaedalus cardanoWallet cardanoWalletLauncher cardanoHttpBridge;
 }

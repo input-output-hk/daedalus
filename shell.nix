@@ -70,7 +70,12 @@ let
   '';
   # This has all the dependencies of daedalusShell, but no shellHook allowing hydra
   # to evaluate it.
-  daedalusShellBuildInputs = [ nodejs yarn ] ++ (with pkgs; [
+  daedalusShellBuildInputs = [
+      nodejs yarn
+      localLib.cardanoWallet
+      localLib.cardanoWalletLauncher
+      localLib.cardanoHttpBridge
+    ] ++ (with pkgs; [
       nix bash binutils coreutils curl gnutar
       git python27 curl jq
       nodePackages.node-gyp nodePackages.node-pre-gyp
@@ -112,6 +117,7 @@ let
       elif test "${systemStartString}" -lt $(date -d '12 hours ago' +%s)
       then warn "--arg systemStart is in 12 hours in the past, unless there is a cluster running with this systemStart cardano won't be able to connect to the demo cluster!"
       fi
+
       ${localLib.optionalString pkgs.stdenv.isLinux "export XDG_DATA_HOME=$HOME/.local/share"}
       cp -f ${daedalusPkgs.iconPath.${cluster}.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
       ln -svf $(type -P cardano-node)
