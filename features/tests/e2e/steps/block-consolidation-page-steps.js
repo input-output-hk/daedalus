@@ -182,7 +182,9 @@ Then(
       daedalus.stores.networkStatus
         ._updateNetworkStatus()
         .then(() =>
-          done({ epochsSynced: daedalus.stores.networkStatus.syncProgress })
+          done({
+            epochsSynced: daedalus.stores.networkStatus.syncProgress,
+          })
         )
         .catch(error => done(error));
     });

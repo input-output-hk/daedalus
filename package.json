@@ -188,5 +188,8 @@
       "pre-commit": "pretty-quick --staged",
       "pre-push": "yarn prettier:check && yarn lint && yarn flow:test && yarn manage:translations"
     }
+  },
+  "resolutions": {
+    "**/**/marked": "^0.6.1"
   }
 }

@@ -393,6 +393,10 @@ const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-network-window-button-text-color': '#243e62',
     '--theme-network-window-button-background-color':
       'rgba(250, 251, 252, 0.4)',
+    '--theme-network-window-button-background-color-hover':
+      'rgba(250, 251, 252, 0.6)',
+    '--theme-network-window-button-background-color-active':
+      'rgba(250, 251, 252, 0.8)',
   },
   nodeUpdate: {
     '--theme-node-update-background-color': '#ebeff2',
@@ -544,7 +548,6 @@ const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-staking-decentralization-progress-stripe-dark-2-background-color':
       '#445b7c',
   },
-
   support: {
     '--theme-support-settings-text-color': '#5e6066',
     '--theme-support-settings-link-color': '#2572cc',
