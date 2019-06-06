@@ -33,6 +33,7 @@ Changelog
 
 ### Chores
 
+- Updated React-Polymorph to version 0.8.6 ([PR 1396](https://github.com/input-output-hk/daedalus/pull/1396))
 - Added "createTheme" utility function for rapidly generating new themes for the UI ([PR 1371](https://github.com/input-output-hk/daedalus/pull/1371))
 - Enabled theme and language selection in Storybook ([PR 1408](https://github.com/input-output-hk/daedalus/pull/1408))
 - Removed legacy references to npm in favour of yarn ([PR 1399](https://github.com/input-output-hk/daedalus/pull/1399), [PR 1402](https://github.com/input-output-hk/daedalus/pull/1402))
