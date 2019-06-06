@@ -80,10 +80,6 @@ export default class StakingStakePools extends Component<Props, State> {
       'resize',
       debounce(this.handleClose, 200, { leading: true, trailing: false })
     );
-    window.addEventListener(
-      'scroll',
-      debounce(this.handleClose, 200, { leading: true, trailing: false })
-    );
   }
 
   state = {

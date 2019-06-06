@@ -64,11 +64,15 @@ export default class StakePool extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  tooltipClick: boolean = false;
+
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.isVisible) {
       window.addEventListener('keydown', this.handleInputKeyDown);
+      window.document.addEventListener('click', this.handleOutterClick);
     } else {
       window.removeEventListener('keydown', this.handleInputKeyDown);
+      window.document.removeEventListener('click', this.handleOutterClick);
     }
   }
 
@@ -76,6 +80,18 @@ export default class StakePool extends Component<Props> {
     if (event.key === 'Escape') {
       this.props.onClick();
     }
+  };
+
+  handleOutterClick = () => {
+    if (!this.tooltipClick) {
+      this.props.onClick();
+    } else {
+      this.tooltipClick = false;
+    }
+  };
+
+  handleInnerClick = () => {
+    this.tooltipClick = true;
   };
 
   get color() {
@@ -117,7 +133,12 @@ export default class StakePool extends Component<Props> {
     const lighnessOffset = currentTheme === 'dark-blue' ? -20 : 0;
 
     return (
-      <div className={componentClassnames}>
+      <div
+        className={componentClassnames}
+        onClick={this.handleInnerClick}
+        role="link"
+        aria-hidden
+      >
         <div
           className={styles.colorBand}
           style={{
