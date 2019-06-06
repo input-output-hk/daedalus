@@ -68,11 +68,11 @@ export default class StakePool extends Component<Props> {
 
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.isVisible) {
-      window.addEventListener('keydown', this.handleInputKeyDown);
       window.document.addEventListener('click', this.handleOutterClick);
+      window.addEventListener('keydown', this.handleInputKeyDown);
     } else {
-      window.removeEventListener('keydown', this.handleInputKeyDown);
       window.document.removeEventListener('click', this.handleOutterClick);
+      window.removeEventListener('keydown', this.handleInputKeyDown);
     }
   }
 
