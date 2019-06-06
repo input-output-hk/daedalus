@@ -12,7 +12,7 @@ import type { RedeemPaperVendedAdaParams } from '../transactions/requests/redeem
 import type { NodeInfoQueryParams } from '../nodes/requests/getNodeInfo';
 import type {
   NodeInfoResponse,
-  GetDaedalusDiagnosticsResponse,
+  GetNetworkStatusResponse,
   NodeSettingsResponse,
   GetNodeSettingsResponse,
 } from '../nodes/types';
@@ -82,16 +82,16 @@ export default (api: AdaApi) => {
   api.getLocalTimeDifference = async () =>
     Promise.resolve(LOCAL_TIME_DIFFERENCE);
 
-  api.getDaedalusDiagnostics = async (
+  api.getNetworkStatus = async (
     queryInfoParams?: NodeInfoQueryParams
-  ): Promise<GetDaedalusDiagnosticsResponse> => {
-    Logger.debug('AdaApi::getDaedalusDiagnostics (PATCHED) called');
+  ): Promise<GetNetworkStatusResponse> => {
+    Logger.debug('AdaApi::getNetworkStatus (PATCHED) called');
     try {
       const nodeInfo: NodeInfoResponse = await getNodeInfo(
         api.config,
         queryInfoParams
       );
-      Logger.debug('AdaApi::getDaedalusDiagnostics (PATCHED) success', {
+      Logger.debug('AdaApi::getNetworkStatus (PATCHED) success', {
         nodeInfo,
       });
 
@@ -127,7 +127,7 @@ export default (api: AdaApi) => {
           })
         : response;
     } catch (error) {
-      Logger.error('AdaApi::getDaedalusDiagnostics (PATCHED) error', { error });
+      Logger.error('AdaApi::getNetworkStatus (PATCHED) error', { error });
       throw new GenericApiError();
     }
   };

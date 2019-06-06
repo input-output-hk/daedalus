@@ -12,8 +12,8 @@ export const FORM_VALIDATION_DEBOUNCE_WAIT = 250; // unit: milliseconds
 export const NODE_UPDATE_POLL_INTERVAL = 5000; // unit: milliseconds
 export const ALLOWED_TIME_DIFFERENCE = 15 * 1000000; // 15 seconds | unit: microseconds
 export const MAX_ALLOWED_STALL_DURATION = isTest ? 15000 : 2 * 60 * 1000; // 2 minutes / 15 seconds (isTest = true) | unit: milliseconds
-export const DAEDALUS_DIAGNOSTICS_REQUEST_TIMEOUT = 30 * 1000; // 30 seconds | unit: milliseconds
-export const DAEDALUS_DIAGNOSTICS_POLL_INTERVAL = 2000; // 2 seconds | unit: milliseconds
+export const NETWORK_STATUS_REQUEST_TIMEOUT = 30 * 1000; // 30 seconds | unit: milliseconds
+export const NETWORK_STATUS_POLL_INTERVAL = 2000; // 2 seconds | unit: milliseconds
 export const NTP_IGNORE_CHECKS_GRACE_PERIOD = isTest ? 500 : 35 * 1000; // 35 seconds | unit: milliseconds
 export const BLOCK_CONSOLIDATION_IPC_REQUEST_INTERVAL = 10 * 1000; // 10 seconds | unit: milliseconds
 export const BLOCK_CONSOLIDATION_API_REQUEST_INTERVAL = 30 * 1000; // 30 seconds | unit: milliseconds

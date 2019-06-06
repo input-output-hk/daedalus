@@ -100,7 +100,7 @@ import type {
   NodeInfoResponse,
   NodeSettingsResponse,
   NodeSoftware,
-  GetDaedalusDiagnosticsResponse,
+  GetNetworkStatusResponse,
   GetNodeSettingsResponse,
   GetCurrentEpochFallbackResponse,
 } from './nodes/types';
@@ -950,11 +950,11 @@ export default class AdaApi {
     }
   };
 
-  getDaedalusDiagnostics = async (
+  getNetworkStatus = async (
     queryInfoParams?: NodeInfoQueryParams
-  ): Promise<GetDaedalusDiagnosticsResponse> => {
+  ): Promise<GetNetworkStatusResponse> => {
     const isForceNTPCheck = !!queryInfoParams;
-    const loggerText = `AdaApi::getDaedalusDiagnostics${
+    const loggerText = `AdaApi::getNetworkStatus${
       isForceNTPCheck ? ' (FORCE-NTP-CHECK)' : ''
     }`;
     Logger.debug(`${loggerText} called`);

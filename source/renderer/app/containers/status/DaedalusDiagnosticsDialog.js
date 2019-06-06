@@ -36,7 +36,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       isSystemTimeCorrect,
       forceCheckTimeDifferenceRequest,
       forceCheckLocalTimeDifference,
-      getDaedalusDiagnosticsRequest,
+      getNetworkStatusRequest,
       localBlockHeight,
       networkBlockHeight,
       latestLocalBlockTimestamp,
@@ -102,7 +102,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
           latestLocalBlockTimestamp={latestLocalBlockTimestamp}
           latestNetworkBlockTimestamp={latestNetworkBlockTimestamp}
           nodeConnectionError={
-            getDaedalusDiagnosticsRequest.error ||
+            getNetworkStatusRequest.error ||
             forceCheckTimeDifferenceRequest.error
           }
           localBlockHeight={localBlockHeight}

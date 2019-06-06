@@ -7,8 +7,8 @@ import Request from './lib/LocalizedRequest';
 import {
   ALLOWED_TIME_DIFFERENCE,
   MAX_ALLOWED_STALL_DURATION,
-  DAEDALUS_DIAGNOSTICS_REQUEST_TIMEOUT,
-  DAEDALUS_DIAGNOSTICS_POLL_INTERVAL,
+  NETWORK_STATUS_REQUEST_TIMEOUT,
+  NETWORK_STATUS_POLL_INTERVAL,
   NTP_IGNORE_CHECKS_GRACE_PERIOD,
 } from '../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
@@ -23,7 +23,7 @@ import {
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
 import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
-import type { GetDaedalusDiagnosticsResponse } from '../api/nodes/types';
+import type { GetNetworkStatusResponse } from '../api/nodes/types';
 import type {
   CardanoNodeState,
   CardanoStatus,
@@ -34,7 +34,7 @@ import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
 
 // DEFINE CONSTANTS -------------------------
-const DAEDALUS_DIAGNOSTICS = {
+const NETWORK_STATUS = {
   CONNECTING: 0,
   SYNCING: 1,
   RUNNING: 2,
@@ -58,8 +58,8 @@ const NODE_STOPPED_STATES = [
 export default class NetworkStatusStore extends Store {
   // Initialize store properties
   _startTime = Date.now();
-  _daedalusDiagnostics = DAEDALUS_DIAGNOSTICS.CONNECTING;
-  _daedalusDiagnosticsPollingInterval: ?IntervalID = null;
+  _networkStatus = NETWORK_STATUS.CONNECTING;
+  _networkStatusPollingInterval: ?IntervalID = null;
 
   // Initialize store observables
 
@@ -85,12 +85,12 @@ export default class NetworkStatusStore extends Store {
   @observable localTimeDifference: ?number = 0; // microseconds
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
   @observable
-  getDaedalusDiagnosticsRequest: Request<GetDaedalusDiagnosticsResponse> = new Request(
-    this.api.ada.getDaedalusDiagnostics
+  getNetworkStatusRequest: Request<GetNetworkStatusResponse> = new Request(
+    this.api.ada.getNetworkStatus
   );
   @observable
-  forceCheckTimeDifferenceRequest: Request<GetDaedalusDiagnosticsResponse> = new Request(
-    this.api.ada.getDaedalusDiagnostics
+  forceCheckTimeDifferenceRequest: Request<GetNetworkStatusResponse> = new Request(
+    this.api.ada.getNetworkStatus
   );
 
   @observable isNotEnoughDiskSpace: boolean = false;
@@ -123,13 +123,13 @@ export default class NetworkStatusStore extends Store {
     // ========== MOBX REACTIONS =========== //
 
     this.registerReactions([
-      this._updateDaedalusDiagnosticsWhenConnected,
-      this._updateDaedalusDiagnosticsWhenDisconnected,
+      this._updateNetworkStatusWhenConnected,
+      this._updateNetworkStatusWhenDisconnected,
       this._updateNodeStatus,
     ]);
 
     // Setup polling interval
-    this._setDaedalusDiagnosticsPollingInterval();
+    this._setNetworkStatusPollingInterval();
 
     // Ignore system time checks for the first 35 seconds:
     this.ignoreSystemTimeChecks();
@@ -146,10 +146,10 @@ export default class NetworkStatusStore extends Store {
   }
 
   // Setup network status polling interval
-  _setDaedalusDiagnosticsPollingInterval = () => {
-    this._daedalusDiagnosticsPollingInterval = setInterval(
-      this._updateDaedalusDiagnostics,
-      DAEDALUS_DIAGNOSTICS_POLL_INTERVAL
+  _setNetworkStatusPollingInterval = () => {
+    this._networkStatusPollingInterval = setInterval(
+      this._updateNetworkStatus,
+      NETWORK_STATUS_POLL_INTERVAL
     );
   };
 
@@ -168,21 +168,21 @@ export default class NetworkStatusStore extends Store {
     super.teardown();
 
     // Teardown polling intervals
-    if (this._daedalusDiagnosticsPollingInterval) {
-      clearInterval(this._daedalusDiagnosticsPollingInterval);
+    if (this._networkStatusPollingInterval) {
+      clearInterval(this._networkStatusPollingInterval);
     }
   }
 
   // ================= REACTIONS ==================
 
-  _updateDaedalusDiagnosticsWhenDisconnected = () => {
-    if (!this.isConnected) this._updateDaedalusDiagnostics();
+  _updateNetworkStatusWhenDisconnected = () => {
+    if (!this.isConnected) this._updateNetworkStatus();
   };
 
-  _updateDaedalusDiagnosticsWhenConnected = () => {
+  _updateNetworkStatusWhenConnected = () => {
     if (this.isConnected) {
       Logger.info('NetworkStatusStore: Connected, forcing NTP check now...');
-      this._updateDaedalusDiagnostics({ force_ntp_check: true });
+      this._updateNetworkStatus({ force_ntp_check: true });
     }
   };
 
@@ -323,7 +323,7 @@ export default class NetworkStatusStore extends Store {
 
   // DEFINE ACTIONS
 
-  @action _updateDaedalusDiagnostics = async (
+  @action _updateNetworkStatus = async (
     queryInfoParams?: NodeInfoQueryParams
   ) => {
     // In case we haven't received TLS config we shouldn't trigger any API calls
@@ -346,8 +346,7 @@ export default class NetworkStatusStore extends Store {
       // Set latest block timestamps into the future as a guard
       // against system time changes - e.g. if system time was set into the past
       runInAction('update latest block timestamps', () => {
-        const futureTimestamp =
-          Date.now() + DAEDALUS_DIAGNOSTICS_REQUEST_TIMEOUT;
+        const futureTimestamp = Date.now() + NETWORK_STATUS_REQUEST_TIMEOUT;
         this.latestLocalBlockTimestamp = futureTimestamp;
         this.latestNetworkBlockTimestamp = futureTimestamp;
       });
@@ -357,16 +356,16 @@ export default class NetworkStatusStore extends Store {
     const wasConnected = this.isConnected;
 
     try {
-      const networkStatus: GetDaedalusDiagnosticsResponse = isForcedTimeDifferenceCheck
+      const networkStatus: GetNetworkStatusResponse = isForcedTimeDifferenceCheck
         ? await this.forceCheckTimeDifferenceRequest.execute(queryInfoParams)
             .promise
-        : await this.getDaedalusDiagnosticsRequest.execute().promise;
+        : await this.getNetworkStatusRequest.execute().promise;
 
       // In case we no longer have TLS config we ignore all API call responses
       // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
       if (!this.tlsConfig) {
         Logger.debug(
-          'NetworkStatusStore: Ignoring DaedalusDiagnosticsRequest result during Cardano shutdown sequence...'
+          'NetworkStatusStore: Ignoring NetworkStatusRequest result during Cardano shutdown sequence...'
         );
         return;
       }
@@ -402,11 +401,11 @@ export default class NetworkStatusStore extends Store {
       });
 
       if (
-        this._daedalusDiagnostics === DAEDALUS_DIAGNOSTICS.CONNECTING &&
+        this._networkStatus === NETWORK_STATUS.CONNECTING &&
         this.isNodeSubscribed
       ) {
         // We are connected for the first time, move on to syncing stage
-        this._daedalusDiagnostics = DAEDALUS_DIAGNOSTICS.SYNCING;
+        this._networkStatus = NETWORK_STATUS.SYNCING;
         const connectingTimeDelta = this._getStartupTimeDelta();
         Logger.info(`Connected after ${connectingTimeDelta} milliseconds`, {
           connectingTimeDelta,
@@ -513,12 +512,9 @@ export default class NetworkStatusStore extends Store {
         }
       });
 
-      if (
-        this._daedalusDiagnostics === DAEDALUS_DIAGNOSTICS.SYNCING &&
-        this.isNodeInSync
-      ) {
+      if (this._networkStatus === NETWORK_STATUS.SYNCING && this.isNodeInSync) {
         // We are synced for the first time, move on to running stage
-        this._daedalusDiagnostics = DAEDALUS_DIAGNOSTICS.RUNNING;
+        this._networkStatus = NETWORK_STATUS.RUNNING;
         this.actions.networkStatus.isSyncedAndReady.trigger();
         const syncingTimeDelta = this._getStartupTimeDelta();
         Logger.info(`Synced after ${syncingTimeDelta} milliseconds`, {
@@ -576,8 +572,7 @@ export default class NetworkStatusStore extends Store {
   };
 
   forceCheckLocalTimeDifference = () => {
-    if (this.isConnected)
-      this._updateDaedalusDiagnostics({ force_ntp_check: true });
+    if (this.isConnected) this._updateNetworkStatus({ force_ntp_check: true });
   };
 
   @action _onCheckDiskSpace = ({
@@ -594,12 +589,12 @@ export default class NetworkStatusStore extends Store {
     this.diskSpaceAvailable = diskSpaceAvailable;
 
     if (this.isNotEnoughDiskSpace) {
-      if (this._daedalusDiagnosticsPollingInterval) {
-        clearInterval(this._daedalusDiagnosticsPollingInterval);
-        this._daedalusDiagnosticsPollingInterval = null;
+      if (this._networkStatusPollingInterval) {
+        clearInterval(this._networkStatusPollingInterval);
+        this._networkStatusPollingInterval = null;
       }
-    } else if (!this._daedalusDiagnosticsPollingInterval) {
-      this._setDaedalusDiagnosticsPollingInterval();
+    } else if (!this._networkStatusPollingInterval) {
+      this._setNetworkStatusPollingInterval();
     }
 
     return Promise.resolve();

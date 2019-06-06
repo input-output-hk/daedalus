@@ -180,7 +180,7 @@ Then(
       value: { epochsSynced },
     } = await this.client.executeAsync(done => {
       daedalus.stores.networkStatus
-        ._updateDaedalusDiagnostics()
+        ._updateNetworkStatus()
         .then(() =>
           done({
             epochsSynced: daedalus.stores.networkStatus.syncProgress,

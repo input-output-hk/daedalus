@@ -617,7 +617,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoApiPort)}:</td>
-                <td>{cardanoAPIPort}</td>
+                <td>{cardanoAPIPort || '-'}</td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoNetwork)}:</td>
