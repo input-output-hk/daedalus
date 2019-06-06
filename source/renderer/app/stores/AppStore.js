@@ -195,7 +195,9 @@ export default class AppStore extends Store {
     this.isDownloadNotificationVisible = true;
   };
 
-  @action _setDownloadNotification = (isDownloadNotificationVisible: boolean) => {
+  @action _setDownloadNotification = (
+    isDownloadNotificationVisible: boolean
+  ) => {
     this.isDownloadNotificationVisible = isDownloadNotificationVisible;
   };
 }
