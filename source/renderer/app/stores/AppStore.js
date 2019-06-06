@@ -20,7 +20,7 @@ export default class AppStore extends Store {
   @observable error: ?LocalizableError = null;
   @observable isAboutDialogOpen = false;
   @observable isNetworkStatusDialogOpen = false;
-  @observable isNotificationVisible = false;
+  @observable isDownloadNotificationVisible = false;
   @observable gpuStatus: ?GpuStatus = null;
   @observable numberOfEpochsConsolidated: number = 0;
   @observable previousRoute: string = ROUTES.ROOT;
@@ -42,8 +42,8 @@ export default class AppStore extends Store {
 
     this.actions.app.downloadLogs.listen(this._downloadLogs);
 
-    this.actions.app.toggleNotificationVisibility.listen(
-      this._toggleNotification
+    this.actions.app.setNotificationVisibility.listen(
+      this._setDownloadNotification
     );
 
     toggleUiPartChannel.onReceive(this.toggleUiPart);
@@ -169,6 +169,9 @@ export default class AppStore extends Store {
   };
 
   @action _downloadLogs = () => {
+    if (this.isDownloadNotificationVisible) {
+      return;
+    }
     const fileName = generateFileNameWithTimestamp();
     global.dialog.showSaveDialog(
       {
@@ -181,16 +184,13 @@ export default class AppStore extends Store {
             destination,
             fresh: true,
           });
-        } else {
-          this.actions.app.toggleNotificationVisibility.trigger();
-          this.actions.profile.downloadLogsSuccess.trigger();
         }
       }
     );
-    this.isNotificationVisible = true;
+    this.isDownloadNotificationVisible = true;
   };
 
-  @action _toggleNotification = () => {
-    this.isNotificationVisible = !this.isNotificationVisible;
+  @action _setDownloadNotification = (data: any) => {
+    this.isDownloadNotificationVisible = data.isDownloadNotificationVisible;
   };
 }

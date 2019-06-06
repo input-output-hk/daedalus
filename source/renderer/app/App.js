@@ -57,7 +57,6 @@ export default class App extends Component<{
     const {
       isAboutDialogOpen,
       isNetworkStatusDialogOpen,
-      isNotificationVisible,
     } = app;
     const locale = stores.profile.currentLocale;
     const intl = i18nContext(locale);
@@ -81,7 +80,7 @@ export default class App extends Component<{
                 {mobxDevTools}
                 {isNetworkStatusDialogOpen && <NetworkStatusDialog />}
                 {isAboutDialogOpen && <AboutDialog />}
-                {isNotificationVisible && (
+                {(
                   <GenericNotificationContainer>
                     <GenericNotification
                       id={DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID}

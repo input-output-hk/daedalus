@@ -15,10 +15,6 @@ const messages = defineMessages({
   },
 });
 
-type State = {
-  disableDownloadLogs: boolean,
-};
-
 @inject('stores', 'actions')
 @observer
 export default class SupportSettingsPage extends Component<
@@ -39,10 +35,6 @@ export default class SupportSettingsPage extends Component<
     );
   }
 
-  state = {
-    disableDownloadLogs: false,
-  };
-
   handleSupportRequestClick = async (
     event: SyntheticEvent<HTMLButtonElement>
   ) => {
@@ -62,8 +54,8 @@ export default class SupportSettingsPage extends Component<
     this.toggleDisableDownloadLogs(true);
   };
 
-  toggleDisableDownloadLogs = (disableDownloadLogs: boolean) => {
-    this.setState({ disableDownloadLogs });
+  toggleDisableDownloadLogs = (isDownloadNotificationVisible: boolean) => {
+    this.props.actions.app.setNotificationVisibility.trigger({ isDownloadNotificationVisible });
   };
 
   render() {
@@ -74,7 +66,7 @@ export default class SupportSettingsPage extends Component<
         onExternalLinkClick={stores.app.openExternalLink}
         onSupportRequestClick={this.handleSupportRequestClick}
         onDownloadLogs={this.handleDownloadLogs}
-        disableDownloadLogs={this.state.disableDownloadLogs}
+        disableDownloadLogs={this.props.stores.app.isDownloadNotificationVisible}
       />
     );
   }
