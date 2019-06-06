@@ -166,9 +166,8 @@ export const winLinuxMenu = (
               } else {
                 actions.restartInSafeMode();
               }
-            } else if (!isInSafeMode) {
-              item.checked = false;
             }
+            item.checked = isInSafeMode;
           });
         },
       },
