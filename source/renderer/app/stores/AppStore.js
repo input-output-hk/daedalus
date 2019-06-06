@@ -185,13 +185,17 @@ export default class AppStore extends Store {
             destination,
             fresh: true,
           });
+        } else {
+          this.actions.app.setNotificationVisibility.trigger(
+            !this.isDownloadNotificationVisible
+          );
         }
       }
     );
     this.isDownloadNotificationVisible = true;
   };
 
-  @action _setDownloadNotification = (data: any) => {
-    this.isDownloadNotificationVisible = data.isDownloadNotificationVisible;
+  @action _setDownloadNotification = (isDownloadNotificationVisible: boolean) => {
+    this.isDownloadNotificationVisible = isDownloadNotificationVisible;
   };
 }

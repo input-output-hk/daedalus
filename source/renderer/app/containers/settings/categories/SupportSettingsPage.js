@@ -52,9 +52,9 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
   };
 
   toggleDisableDownloadLogs = (isDownloadNotificationVisible: boolean) => {
-    this.props.actions.app.setNotificationVisibility.trigger({
-      isDownloadNotificationVisible,
-    });
+    this.props.actions.app.setNotificationVisibility.trigger(
+      isDownloadNotificationVisible
+    );
   };
 
   render() {
