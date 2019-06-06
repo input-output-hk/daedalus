@@ -14,12 +14,12 @@
     &[disabled] {
       background: var(--theme-button-#{$type}-background-color-disabled);
       color: var(--theme-button-#{$type}-text-color-disabled);
-      cursor: default !important;
       &:hover,
       &:active {
         background: var(--theme-button-#{$type}-background-color-disabled);
       }
     }
+
     &:not([disabled]) {
       background: var(--theme-button-#{$type}-background-color);
       color: var(--theme-button-#{$type}-text-color);
@@ -30,6 +30,7 @@
         background: var(--theme-button-#{$type}-background-color-active);
       }
     }
+
     &:focus:not(:active):not(:hover) {
       box-shadow: inset 0 0 0 4px var(--theme-button-#{$type}-outline-color);
     }
