@@ -993,13 +993,13 @@
         "description": "Label \"Legacy\" on the legacy badge.",
         "end": {
           "column": 3,
-          "line": 12
+          "line": 13
         },
         "file": "source/renderer/app/components/notifications/LegacyBadge.js",
         "id": "wallet.legacy.badge.label",
         "start": {
           "column": 9,
-          "line": 8
+          "line": 9
         }
       }
     ],
