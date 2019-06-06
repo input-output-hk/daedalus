@@ -486,7 +486,7 @@ const DARK_BLUE_THEME_CONFIG = {
     '--theme-staking-content-background-color': '#263345',
     '--theme-staking-content-border-color': '#263345',
     '--theme-staking-font-color-accent': '#cecfd1',
-    '--theme-staking-font-color-regular': 'rgba(233, 244, 254, 1)',
+    '--theme-staking-font-color-regular': '#cecfd1',
     '--theme-staking-font-color-light': 'rgba(233, 244, 254, 0.7)',
     '--theme-staking-font-color-lighter': 'rgba(233, 244, 254, 0.5)',
     '--theme-staking-table-head-background-color': '#536370',
