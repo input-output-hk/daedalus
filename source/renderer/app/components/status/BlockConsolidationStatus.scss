@@ -29,6 +29,10 @@
   overflow-x: hidden;
   overflow-y: overlay;
   position: relative;
+
+  @media (max-height: 650px) {
+    justify-content: start;
+  }
 }
 
 .content {
