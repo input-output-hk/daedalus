@@ -21,9 +21,9 @@ export const buildAppMenus = async (
     if (mainWindow) toggleUiPartChannel.send(DIALOGS.ABOUT, mainWindow);
   };
 
-  const openNetworkStatus = () => {
+  const openDaedalusDiagnostics = () => {
     if (mainWindow)
-      toggleUiPartChannel.send(DIALOGS.NETWORK_STATUS, mainWindow);
+      toggleUiPartChannel.send(DIALOGS.DAEDALUS_DIAGNOSTICS, mainWindow);
   };
 
   const goToAdaRedemption = () => {
@@ -53,7 +53,7 @@ export const buildAppMenus = async (
   const translations = require(`../locales/${locale}`);
   const menuActions = {
     openAbout,
-    openNetworkStatus,
+    openDaedalusDiagnostics,
     goToAdaRedemption,
     restartInSafeMode,
     restartWithoutSafeMode,

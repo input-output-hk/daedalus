@@ -17,7 +17,7 @@ import { getNetworkEkgUrl } from '../../utils/network';
 import closeCross from '../../assets/images/close-cross.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
-import styles from './NetworkStatus.scss';
+import styles from './DaedalusDiagnostics.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
 import type { SystemInfo } from '../../types/systemInfoTypes';
 import type { CoreSystemInfo } from '../../types/coreSystemInfoTypes';
@@ -26,282 +26,282 @@ let syncingInterval = null;
 
 const messages = defineMessages({
   systemInfo: {
-    id: 'status.network.dialog.system.info',
+    id: 'daedalus.diagnostics.dialog.system.info',
     defaultMessage: '!!!SYSTEM INFO',
     description: 'System info',
   },
   platform: {
-    id: 'status.network.dialog.platform',
+    id: 'daedalus.diagnostics.dialog.platform',
     defaultMessage: '!!!Platform',
     description: 'Platform',
   },
   platformVersion: {
-    id: 'status.network.dialog.platform.version',
+    id: 'daedalus.diagnostics.dialog.platform.version',
     defaultMessage: '!!!Platform Version',
     description: 'Platform Version',
   },
   cpu: {
-    id: 'status.network.dialog.cpu',
+    id: 'daedalus.diagnostics.dialog.cpu',
     defaultMessage: '!!!CPU',
     description: 'CPU',
   },
   ram: {
-    id: 'status.network.dialog.ram',
+    id: 'daedalus.diagnostics.dialog.ram',
     defaultMessage: '!!!RAM',
     description: 'RAM',
   },
   availableDiskSpace: {
-    id: 'status.network.dialog.availableDiskSpace',
+    id: 'daedalus.diagnostics.dialog.availableDiskSpace',
     defaultMessage: '!!!Available disk space',
     description: 'Available disk space',
   },
   coreInfo: {
-    id: 'status.network.dialog.coreInfo',
+    id: 'daedalus.diagnostics.dialog.coreInfo',
     defaultMessage: '!!!CORE INFO',
     description: 'CORE INFO',
   },
   daedalusVersion: {
-    id: 'status.network.dialog.daedalusVersion',
+    id: 'daedalus.diagnostics.dialog.daedalusVersion',
     defaultMessage: '!!!Daedalus Version',
     description: 'Daedalus Version',
   },
   daedalusMainProcessID: {
-    id: 'status.network.dialog.daedalusMainProcessID',
+    id: 'daedalus.diagnostics.dialog.daedalusMainProcessID',
     defaultMessage: '!!!Daedalus Main Process ID',
     description: 'Daedalus Main Process ID',
   },
   daedalusProcessID: {
-    id: 'status.network.dialog.daedalusProcessID',
+    id: 'daedalus.diagnostics.dialog.daedalusProcessID',
     defaultMessage: '!!!Daedalus Renderer Process ID',
     description: 'Daedalus Renderer Process ID',
   },
   safeMode: {
-    id: 'status.network.dialog.safeMode',
+    id: 'daedalus.diagnostics.dialog.safeMode',
     defaultMessage: '!!!Daedalus is running in safe mode',
     description: 'Daedalus is running in safe mode',
   },
   cardanoVersion: {
-    id: 'status.network.dialog.cardanoVersion',
+    id: 'daedalus.diagnostics.dialog.cardanoVersion',
     defaultMessage: '!!!Cardano Version',
     description: 'Cardano Version',
   },
   cardanoProcessID: {
-    id: 'status.network.dialog.cardanoProcessID',
+    id: 'daedalus.diagnostics.dialog.cardanoProcessID',
     defaultMessage: '!!!Cardano Process ID',
     description: 'Cardano Process ID',
   },
   cardanoApiPort: {
-    id: 'status.network.dialog.cardanoApiPort',
+    id: 'daedalus.diagnostics.dialog.cardanoApiPort',
     defaultMessage: '!!!Cardano API Port',
     description: 'Cardano API Port',
   },
   cardanoNetwork: {
-    id: 'status.network.dialog.cardanoNetwork',
+    id: 'daedalus.diagnostics.dialog.cardanoNetwork',
     defaultMessage: '!!!Cardano Network',
     description: 'Cardano Network',
   },
   stateDirectoryPath: {
-    id: 'status.network.dialog.stateDirectory',
+    id: 'daedalus.diagnostics.dialog.stateDirectory',
     defaultMessage: '!!!Daedalus State Directory',
     description: 'Daedalus State Directory',
   },
   connectionError: {
-    id: 'status.network.dialog.connectionError',
+    id: 'daedalus.diagnostics.dialog.connectionError',
     defaultMessage: '!!!CONNECTION ERROR',
     description: 'CONNECTION ERROR',
   },
   daedalusStatus: {
-    id: 'status.network.dialog.daedalusStatus',
+    id: 'daedalus.diagnostics.dialog.daedalusStatus',
     defaultMessage: '!!!DAEDALUS STATUS',
     description: 'DAEDALUS STATUS',
   },
   connected: {
-    id: 'status.network.dialog.connected',
+    id: 'daedalus.diagnostics.dialog.connected',
     defaultMessage: '!!!Connected',
     description: 'Connected',
   },
   synced: {
-    id: 'status.network.dialog.synced',
+    id: 'daedalus.diagnostics.dialog.synced',
     defaultMessage: '!!!Synced',
     description: 'Synced',
   },
   syncPercentage: {
-    id: 'status.network.dialog.syncPercentage',
+    id: 'daedalus.diagnostics.dialog.syncPercentage',
     defaultMessage: '!!!Sync Percentage',
     description: 'Sync Percentage',
   },
   networkBlockHeight: {
-    id: 'status.network.dialog.networkBlockHeight',
+    id: 'daedalus.diagnostics.dialog.networkBlockHeight',
     defaultMessage: '!!!Network Block Height',
     description: 'Network Block Height',
   },
   localBlockHeight: {
-    id: 'status.network.dialog.localBlockHeight',
+    id: 'daedalus.diagnostics.dialog.localBlockHeight',
     defaultMessage: '!!!Local Block Height',
     description: 'Local Block Height',
   },
   remainingUnsyncedBlocks: {
-    id: 'status.network.dialog.remainingUnsyncedBlocks',
+    id: 'daedalus.diagnostics.dialog.remainingUnsyncedBlocks',
     defaultMessage: '!!!Remaining Unsynced Blocks',
     description: 'Remaining Unsynced Blocks',
   },
   latestLocalBlockAge: {
-    id: 'status.network.dialog.latestLocalBlockAge',
+    id: 'daedalus.diagnostics.dialog.latestLocalBlockAge',
     defaultMessage: '!!!Latest Local Block Age',
     description: 'Latest Local Block Age',
   },
   latestNetworkBlockAge: {
-    id: 'status.network.dialog.latestNetworkBlockAge',
+    id: 'daedalus.diagnostics.dialog.latestNetworkBlockAge',
     defaultMessage: '!!!Latest Network Block Age',
     description: 'Latest Network Block Age',
   },
   localTimeDifference: {
-    id: 'status.network.dialog.localTimeDifference',
+    id: 'daedalus.diagnostics.dialog.localTimeDifference',
     defaultMessage: '!!!Local Time Difference',
     description: 'Local Time Difference',
   },
   systemTimeCorrect: {
-    id: 'status.network.dialog.systemTimeCorrect',
+    id: 'daedalus.diagnostics.dialog.systemTimeCorrect',
     defaultMessage: '!!!System Time Correct',
     description: 'System Time Correct',
   },
   systemTimeIgnored: {
-    id: 'status.network.dialog.systemTimeIgnored',
+    id: 'daedalus.diagnostics.dialog.systemTimeIgnored',
     defaultMessage: '!!!System Time Ignored',
     description: 'System Time Ignored',
   },
   checkingNodeTime: {
-    id: 'status.network.dialog.checkingNodeTime',
+    id: 'daedalus.diagnostics.dialog.checkingNodeTime',
     defaultMessage: '!!!Checking Node Time',
     description: 'Checking Node Time',
   },
   cardanoNodeStatus: {
-    id: 'status.network.dialog.cardanoNodeStatus',
+    id: 'daedalus.diagnostics.dialog.cardanoNodeStatus',
     defaultMessage: '!!!CARDANO NODE STATUS',
     description: 'CARDANO NODE STATUS',
   },
   cardanoNodeStatusRestarting: {
-    id: 'status.network.dialog.cardanoNodeStatusRestarting',
+    id: 'daedalus.diagnostics.dialog.cardanoNodeStatusRestarting',
     defaultMessage: '!!!Restarting Cardano Node...',
     description: 'Restarting Cardano Node...',
   },
   cardanoNodeStatusRestart: {
-    id: 'status.network.dialog.cardanoNodeStatusRestart',
+    id: 'daedalus.diagnostics.dialog.cardanoNodeStatusRestart',
     defaultMessage: '!!!Restart Cardano Node',
     description: 'Restart Cardano Node',
   },
   cardanoNodeDiagnostics: {
-    id: 'status.network.dialog.cardanoNodeDiagnostics',
+    id: 'daedalus.diagnostics.dialog.cardanoNodeDiagnostics',
     defaultMessage: '!!!Cardano Node Diagnostics',
     description: 'Cardano Node Diagnostics',
   },
   realtimeStatisticsMonitor: {
-    id: 'status.network.dialog.realtimeStatisticsMonitor',
+    id: 'daedalus.diagnostics.dialog.realtimeStatisticsMonitor',
     defaultMessage: '!!!Realtime statistics monitor',
     description: 'Realtime statistics monitor',
   },
   cardanoNodeState: {
-    id: 'status.network.dialog.cardanoNodeState',
+    id: 'daedalus.diagnostics.dialog.cardanoNodeState',
     defaultMessage: '!!!Cardano Node State',
     description: 'Cardano Node State',
   },
   nodeHasBeenUpdated: {
-    id: 'status.network.dialog.nodeHasBeenUpdated',
+    id: 'daedalus.diagnostics.dialog.nodeHasBeenUpdated',
     defaultMessage: '!!!Updated',
     description: 'Updated',
   },
   nodeHasCrashed: {
-    id: 'status.network.dialog.nodeHasCrashed',
+    id: 'daedalus.diagnostics.dialog.nodeHasCrashed',
     defaultMessage: '!!!Crashed',
     description: 'Crashed',
   },
   nodeHasErrored: {
-    id: 'status.network.dialog.nodeHasErrored',
+    id: 'daedalus.diagnostics.dialog.nodeHasErrored',
     defaultMessage: '!!!Errored',
     description: 'Errored',
   },
   nodeHasStopped: {
-    id: 'status.network.dialog.nodeHasStopped',
+    id: 'daedalus.diagnostics.dialog.nodeHasStopped',
     defaultMessage: '!!!Stopped',
     description: 'Stopped',
   },
   nodeIsExiting: {
-    id: 'status.network.dialog.nodeIsExiting',
+    id: 'daedalus.diagnostics.dialog.nodeIsExiting',
     defaultMessage: '!!!Exiting',
     description: 'Exiting',
   },
   nodeIsRunning: {
-    id: 'status.network.dialog.nodeIsRunning',
+    id: 'daedalus.diagnostics.dialog.nodeIsRunning',
     defaultMessage: '!!!Running',
     description: 'Running',
   },
   nodeIsStarting: {
-    id: 'status.network.dialog.nodeIsStarting',
+    id: 'daedalus.diagnostics.dialog.nodeIsStarting',
     defaultMessage: '!!!Starting',
     description: 'Starting',
   },
   nodeIsStopping: {
-    id: 'status.network.dialog.nodeIsStopping',
+    id: 'daedalus.diagnostics.dialog.nodeIsStopping',
     defaultMessage: '!!!Stopping',
     description: 'Stopping',
   },
   nodeIsUnrecoverable: {
-    id: 'status.network.dialog.nodeIsUnrecoverable',
+    id: 'daedalus.diagnostics.dialog.nodeIsUnrecoverable',
     defaultMessage: '!!!Unrecoverable',
     description: 'Unrecoverable',
   },
   nodeIsUpdating: {
-    id: 'status.network.dialog.nodeIsUpdating',
+    id: 'daedalus.diagnostics.dialog.nodeIsUpdating',
     defaultMessage: '!!!Updating',
     description: 'Updating',
   },
   cardanoNodeResponding: {
-    id: 'status.network.dialog.cardanoNodeResponding',
+    id: 'daedalus.diagnostics.dialog.cardanoNodeResponding',
     defaultMessage: '!!!Node Responding',
     description: 'Node Responding',
   },
   cardanoNodeSubscribed: {
-    id: 'status.network.dialog.cardanoNodeSubscribed',
+    id: 'daedalus.diagnostics.dialog.cardanoNodeSubscribed',
     defaultMessage: '!!!Node Subscribed',
     description: 'Node Subscribed',
   },
   cardanoNodeTimeCorrect: {
-    id: 'status.network.dialog.cardanoNodeTimeCorrect',
+    id: 'daedalus.diagnostics.dialog.cardanoNodeTimeCorrect',
     defaultMessage: '!!!Node Time Correct',
     description: 'Node Time Correct',
   },
   cardanoNodeSyncing: {
-    id: 'status.network.dialog.cardanoNodeSyncing',
+    id: 'daedalus.diagnostics.dialog.cardanoNodeSyncing',
     defaultMessage: '!!!Node Syncing',
     description: 'Node Syncing',
   },
   cardanoNodeInSync: {
-    id: 'status.network.dialog.cardanoNodeInSync',
+    id: 'daedalus.diagnostics.dialog.cardanoNodeInSync',
     defaultMessage: '!!!Node In Sync',
     description: 'Node In Sync',
   },
   localTimeDifferenceChecking: {
-    id: 'status.network.dialog.localTimeDifferenceChecking',
+    id: 'daedalus.diagnostics.dialog.localTimeDifferenceChecking',
     defaultMessage: '!!!Checking...',
     description: 'Checking...',
   },
   localTimeDifferenceCheckTime: {
-    id: 'status.network.dialog.localTimeDifferenceCheckTime',
+    id: 'daedalus.diagnostics.dialog.localTimeDifferenceCheckTime',
     defaultMessage: '!!!Check time',
     description: 'Check time',
   },
   statusOn: {
-    id: 'status.network.dialog.statusOn',
+    id: 'daedalus.diagnostics.dialog.statusOn',
     defaultMessage: '!!!YES',
     description: 'YES',
   },
   statusOff: {
-    id: 'status.network.dialog.statusOff',
+    id: 'daedalus.diagnostics.dialog.statusOff',
     defaultMessage: '!!!NO',
     description: 'NO',
   },
   serviceUnreachable: {
-    id: 'status.network.dialog.serviceUnreachable',
+    id: 'daedalus.diagnostics.dialog.serviceUnreachable',
     defaultMessage: '!!!NTP Service unreachable',
     description: 'NTP Service unreachable',
   },
@@ -348,7 +348,7 @@ type State = {
 };
 
 @observer
-export default class NetworkStatus extends Component<Props, State> {
+export default class DaedalusDiagnostics extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -617,7 +617,7 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoApiPort)}:</td>
-                <td>{cardanoAPIPort}</td>
+                <td>{cardanoAPIPort || '-'}</td>
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.cardanoNetwork)}:</td>

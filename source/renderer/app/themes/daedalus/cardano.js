@@ -165,7 +165,7 @@ const rpCardanoTheme = {
 //  ==== Cardano Theme for Daedalus Components === //
 const CARDANO_THEME_CONFIG = {
   aboutWindow: {
-    '--theme-about-window-background-color': 'rgba(36, 62, 98, 0.96)',
+    '--theme-about-window-background-color': 'rgba(32, 34, 37, 0.96)',
     '--theme-about-window-header-bottom-border-color':
       'rgba(233, 244, 254, 0.3)',
     '--theme-about-window-daedalus-icon-color': '#e9f4fe',
@@ -384,7 +384,7 @@ const CARDANO_THEME_CONFIG = {
     '--theme-nav-item-text-color-active': '#5e6066',
   },
   network: {
-    '--theme-network-window-background-color': 'rgba(36, 62, 98, 0.96)',
+    '--theme-network-window-background-color': 'rgba(32, 34, 37, 0.96)',
     '--theme-network-window-text-color': '#fafbfc',
     '--theme-network-window-icon-close-hover-background': 'rgba(0, 0, 0, 0.2)',
     '--theme-network-window-red-color': '#f06e05',
@@ -392,9 +392,13 @@ const CARDANO_THEME_CONFIG = {
     '--theme-network-window-white-color': '#fff',
     '--theme-network-window-transparent-color': 'transparent',
     '--theme-network-window-border-color': 'rgba(255, 255, 255, 0.25)',
-    '--theme-network-window-button-text-color': '#243e62',
+    '--theme-network-window-button-text-color': '#282c31',
     '--theme-network-window-button-background-color':
       'rgba(250, 251, 252, 0.4)',
+    '--theme-network-window-button-background-color-hover':
+      'rgba(250, 251, 252, 0.6)',
+    '--theme-network-window-button-background-color-active':
+      'rgba(250, 251, 252, 0.8)',
   },
   nodeUpdate: {
     '--theme-node-update-background-color': '#efefef',
