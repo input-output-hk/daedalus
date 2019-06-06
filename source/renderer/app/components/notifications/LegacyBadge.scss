@@ -10,7 +10,9 @@
 
 .floating {
   right: -58.5px;
-  top: 0;
+  top: -2px;
+  border-top-right-radius: none;
+  border-bottom-right-radius: none;
 }
 
 .natural {
