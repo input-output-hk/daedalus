@@ -54,10 +54,7 @@ export default class App extends Component<{
   render() {
     const { stores, actions, history } = this.props;
     const { app } = stores;
-    const {
-      isAboutDialogOpen,
-      isNetworkStatusDialogOpen,
-    } = app;
+    const { isAboutDialogOpen, isNetworkStatusDialogOpen } = app;
     const locale = stores.profile.currentLocale;
     const intl = i18nContext(locale);
     const mobxDevTools = global.environment.mobxDevTools ? <DevTools /> : null;
@@ -80,7 +77,7 @@ export default class App extends Component<{
                 {mobxDevTools}
                 {isNetworkStatusDialogOpen && <NetworkStatusDialog />}
                 {isAboutDialogOpen && <AboutDialog />}
-                {(
+                {
                   <GenericNotificationContainer>
                     <GenericNotification
                       id={DOWNLOAD_LOGS_PROGRESS_NOTIFICATION_ID}
@@ -115,7 +112,7 @@ export default class App extends Component<{
                       {intl.formatMessage(messages.downloadLogsSuccess)}
                     </GenericNotification>
                   </GenericNotificationContainer>
-                )}
+                }
               </Fragment>
             </IntlProvider>
           </ThemeProvider>
