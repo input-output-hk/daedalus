@@ -24,14 +24,6 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
 
   static defaultProps = { actions: null, stores: null };
 
-  constructor(props: InjectedProps) {
-    super(props);
-    const { profile } = this.props.actions;
-    profile.downloadLogsSuccess.listen(() =>
-      this.toggleDisableDownloadLogs(false)
-    );
-  }
-
   handleSupportRequestClick = async (
     event: SyntheticEvent<HTMLButtonElement>
   ) => {
@@ -48,13 +40,7 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
   handleDownloadLogs = () => {
     const { app } = this.props.actions;
     app.downloadLogs.trigger();
-    this.toggleDisableDownloadLogs(true);
-  };
-
-  toggleDisableDownloadLogs = (isDownloadNotificationVisible: boolean) => {
-    this.props.actions.app.setNotificationVisibility.trigger(
-      isDownloadNotificationVisible
-    );
+    this.props.actions.app.setNotificationVisibility.trigger(true);
   };
 
   render() {
