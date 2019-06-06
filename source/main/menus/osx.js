@@ -147,7 +147,7 @@ export const osxMenu = (
               } else {
                 actions.restartInSafeMode();
               }
-            } else {
+            } else if (!isInSafeMode) {
               item.checked = false;
             }
           });
