@@ -21,8 +21,8 @@ import WindowStore from './WindowStore';
 export const storeClasses = {
   adaRedemption: AdaRedemptionStore,
   addresses: AddressesStore,
-  blockConsolidation: BlockConsolidationStore,
   app: AppStore,
+  blockConsolidation: BlockConsolidationStore,
   networkStatus: NetworkStatusStore,
   nodeUpdate: NodeUpdateStore,
   profile: ProfileStore,
@@ -51,13 +51,8 @@ export type StoresMap = {
   transactions: TransactionsStore,
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
-  networkStatus: NetworkStatusStore,
   wallets: WalletsStore,
-  transactions: TransactionsStore,
-  adaRedemption: AdaRedemptionStore,
-  nodeUpdate: NodeUpdateStore,
   walletSettings: WalletSettingsStore,
-  addresses: AddressesStore,
   walletBackup: WalletBackupStore,
   window: WindowStore,
 };

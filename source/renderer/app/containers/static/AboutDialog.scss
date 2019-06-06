@@ -1,13 +1,3 @@
-.dialog {
-  margin: auto 0;
-  max-width: 980px;
-  overflow: hidden;
-
-  &:focus {
-    outline: none;
-  }
-}
-
 .overlay {
   background-color: var(--theme-about-window-background-color);
   bottom: 0;
@@ -20,6 +10,16 @@
   z-index: 9999;
 
   @media (max-width: 950px), (max-height: 678px) {
-    overflow-y: auto;
+    overflow-y: overlay;
+  }
+}
+
+.dialog {
+  margin: auto 0;
+  max-width: 980px;
+  overflow: hidden;
+
+  &:focus {
+    outline: none;
   }
 }

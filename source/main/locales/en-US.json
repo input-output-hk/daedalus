@@ -2,7 +2,7 @@
   "menu.daedalus": "Daedalus",
   "menu.daedalus.about": "About Daedalus",
   "menu.daedalus.adaRedemption": "Ada Redemption",
-  "menu.daedalus.networkStatus": "Network Status",
+  "menu.daedalus.daedalusDiagnostics": "Daedalus Diagnostics",
   "menu.daedalus.blockConsolidationStatus": "Block Consolidation Status",
   "menu.daedalus.quit": "Quit",
   "menu.daedalus.close": "Close",
