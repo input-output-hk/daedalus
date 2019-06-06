@@ -612,6 +612,52 @@ const createDaedalusComponentsTheme = (
       ).alpha(0.66)}`,
       '--theme-sidebar-menu-add-button-text-color': `${text.secondary}`,
     },
+    stakePools: {
+      '--theme-staking-stake-pools-title-color': `${text.primary}`,
+      '--theme-staking-stake-pools-search-button-color': `${text.primary}`,
+      '--theme-staking-stake-pool-background-color': `${
+        background.primary.lightest
+      }`,
+      '--theme-staking-stake-pool-border-color': `${border}`,
+      '--theme-staking-stake-pool-glow-color': `${
+        background.secondary.lightest
+      }`,
+      '--theme-staking-stake-pool-id-color': `${text.primary}`,
+      '--theme-staking-stake-pool-retirement-background-color': `${
+        error.regular
+      }`,
+      '--theme-staking-stake-pool-tooltip-background-color': `${chroma(
+        background.primary.lightest
+      ).alpha(0.97)}`,
+      '--theme-staking-stake-pool-tooltip-border-color': `${border}`,
+      '--theme-staking-stake-pool-tooltip-shadow-color': 'rgba(0, 0, 0, 0.25)',
+      '--theme-staking-stake-pool-tooltip-text-color': `${text.primary}`,
+      '--theme-staking-stake-pool-tooltip-link-color': `${
+        background.secondary.dark
+      }`,
+      '--theme-staking-stake-pool-tooltip-table-title-color': `${text.primary}`,
+      '--theme-staking-stake-pool-tooltip-table-param-color': `${text.primary}`,
+      '--theme-staking-stake-pool-tooltip-table-param-retirement-background-color': `${chroma(
+        error.regular
+      ).alpha(0.3)}`,
+      '--theme-staking-stake-pool-tooltip-delegate-button-background-color': `${
+        background.secondary.regular
+      }`,
+      '--theme-staking-stake-pool-tooltip-delegate-button-hover-background-color': `${
+        background.secondary.light
+      }`,
+      '--theme-staking-stake-pool-tooltip-delegate-button-active-background-color': `${
+        background.secondary.darkest
+      }`,
+      '--theme-staking-stake-pool-tooltip-delegate-button-text-color': `${
+        text.secondary
+      }`,
+      '--theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color': `${
+        text.secondary
+      }`,
+      '--theme-staking-stake-pool-tooltip-delegate-button-border-color':
+        'transparent',
+    },
     staking: {
       '--theme-staking-background-color': `${background.primary.regular}`,
       '--theme-staking-content-background-color': `${
