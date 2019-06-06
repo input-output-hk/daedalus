@@ -17,10 +17,7 @@ const messages = defineMessages({
 
 @inject('stores', 'actions')
 @observer
-export default class SupportSettingsPage extends Component<
-  InjectedProps,
-  State
-> {
+export default class SupportSettingsPage extends Component<InjectedProps> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -55,7 +52,9 @@ export default class SupportSettingsPage extends Component<
   };
 
   toggleDisableDownloadLogs = (isDownloadNotificationVisible: boolean) => {
-    this.props.actions.app.setNotificationVisibility.trigger({ isDownloadNotificationVisible });
+    this.props.actions.app.setNotificationVisibility.trigger({
+      isDownloadNotificationVisible,
+    });
   };
 
   render() {
@@ -66,7 +65,9 @@ export default class SupportSettingsPage extends Component<
         onExternalLinkClick={stores.app.openExternalLink}
         onSupportRequestClick={this.handleSupportRequestClick}
         onDownloadLogs={this.handleDownloadLogs}
-        disableDownloadLogs={this.props.stores.app.isDownloadNotificationVisible}
+        disableDownloadLogs={
+          this.props.stores.app.isDownloadNotificationVisible
+        }
       />
     );
   }
