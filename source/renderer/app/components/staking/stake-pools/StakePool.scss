@@ -2,6 +2,7 @@
   background-color: var(--theme-staking-stake-pool-background-color);
   border: solid 1px var(--theme-staking-stake-pool-border-color);
   border-radius: 4px;
+  box-sizing: unset;
   display: flex;
   height: 71px;
   justify-content: center;
@@ -38,7 +39,7 @@
 
 .clock {
   background: var(--theme-staking-stake-pool-retirement-background-color);
-  border-radius: 0 4px;
+  border-radius: 0 2px 0 4px;
   height: 18px;
   position: absolute;
   right: 0;

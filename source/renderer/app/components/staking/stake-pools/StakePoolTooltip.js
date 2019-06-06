@@ -2,6 +2,7 @@
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import chroma from 'chroma-js';
 import { Button } from 'react-polymorph/lib/components/Button';
 import classnames from 'classnames';
 import moment from 'moment';
@@ -137,7 +138,9 @@ export default class StakePool extends Component<Props> {
           <dd className={styles.ranking}>
             <span
               style={{
-                background: getHSLColor(ranking, { lighnessOffset }),
+                background: chroma(
+                  getHSLColor(ranking, { lighnessOffset })
+                ).alpha(0.3),
               }}
             >
               {parseFloat(ranking).toFixed(2)}
@@ -147,7 +150,9 @@ export default class StakePool extends Component<Props> {
           <dd className={styles.controlledStake}>
             <span
               style={{
-                background: getHSLColor(controlledStake, { lighnessOffset }),
+                background: chroma(
+                  getHSLColor(controlledStake, { lighnessOffset })
+                ).alpha(0.3),
               }}
             >
               {controlledStake}%
@@ -157,7 +162,9 @@ export default class StakePool extends Component<Props> {
           <dd className={styles.profitMargin}>
             <span
               style={{
-                background: getHSLColor(profitMargin, { lighnessOffset }),
+                background: chroma(
+                  getHSLColor(profitMargin, { lighnessOffset })
+                ).alpha(0.3),
               }}
             >
               {profitMargin}%
@@ -167,7 +174,9 @@ export default class StakePool extends Component<Props> {
           <dd className={styles.performance}>
             <span
               style={{
-                background: getHSLColor(performance, { lighnessOffset }),
+                background: chroma(
+                  getHSLColor(performance, { lighnessOffset })
+                ).alpha(0.3),
               }}
             >
               {performance}%
@@ -183,7 +192,6 @@ export default class StakePool extends Component<Props> {
           )}
         </dl>
         <Button
-          className={styles.delegateButton}
           label={intl.formatMessage(messages.delegateButton)}
           onClick={() => {}}
           skin={ButtonSkin}
