@@ -163,9 +163,9 @@
   }
 
   button {
-    background: var(--theme-network-window-button-background);
+    background: var(--theme-network-window-button-background-color);
     border-radius: 4px;
-    color: var(--theme-network-window-button-color);
+    color: var(--theme-network-window-button-text-color);
     cursor: pointer;
     font-size: 10px;
     font-weight: 500;
@@ -193,7 +193,7 @@
     }
 
     &:disabled:hover {
-      color: var(--theme-network-window-button-color);
+      color: var(--theme-network-window-button-text-color);
     }
 
     &:hover {
@@ -202,7 +202,7 @@
   }
 
   .realTimeStatusBtn {
-    background: var(--theme-network-window-transparent-color);
+    background: transparent;
     border-radius: initial;
     color: var(--theme-network-window-white-color);
     cursor: pointer;
