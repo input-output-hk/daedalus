@@ -227,14 +227,14 @@ export class CardanoNode {
     isForced: boolean = false
   ): Promise<void> => {
     // Guards
-    const nodeCanBeStarted = await this._canBeStarted();
+    // const nodeCanBeStarted = await this._canBeStarted();
 
-    if (!nodeCanBeStarted) {
-      return Promise.reject(new Error('CardanoNode: Cannot be started'));
-    }
-    if (this._isUnrecoverable(config) && !isForced) {
-      return Promise.reject(new Error('CardanoNode: Too many startup retries'));
-    }
+    // if (!nodeCanBeStarted) {
+    //   return Promise.reject(new Error('CardanoNode: Cannot be started'));
+    // }
+    // if (this._isUnrecoverable(config) && !isForced) {
+    //   return Promise.reject(new Error('CardanoNode: Too many startup retries'));
+    // }
     // Setup
     const { _log } = this;
     const { nodePath, nodeArgs, startupTimeout } = config;
@@ -259,7 +259,13 @@ export class CardanoNode {
           path: nodePath,
           args: nodeArgs,
         });
-        const node = this._spawnNode(nodePath, nodeArgs, logFile);
+        // TODO: Cleanup nodeArgs to only include those relevant to `cardano-wallet`
+        const relevantArgIndex = nodeArgs.indexOf('--network');
+        const relevantArgs = [
+          nodeArgs[relevantArgIndex],
+          nodeArgs[relevantArgIndex + 1],
+        ];
+        const node = this._spawnNode(nodePath, relevantArgs, logFile);
         this._node = node;
         try {
           await promisedCondition(() => node.connected, startupTimeout);
