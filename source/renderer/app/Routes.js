@@ -22,7 +22,7 @@ import StakingDelegationCenterPage from './containers/staking/StakingDelegationC
 import StakingEpochsPage from './containers/staking/StakingEpochsPage';
 import StakingInfoPage from './containers/staking/StakingInfoPage';
 import StakingRewardsPage from './containers/staking/StakingRewardsPage';
-import StakingStakePoolsPage from './containers/staking/StakingStakePoolsPage';
+import StakePoolsListPage from './containers/staking/StakePoolsListPage';
 import StakingDelegationCountdownPage from './containers/staking/StakingDelegationCountdownPage';
 import Wallet from './containers/wallet/Wallet';
 import WalletSummaryPage from './containers/wallet/WalletSummaryPage';
@@ -85,10 +85,7 @@ export const Routes = (
         path={ROUTES.STAKING.DELEGATION_CENTER}
         component={StakingDelegationCenterPage}
       />
-      <Route
-        path={ROUTES.STAKING.STAKE_POOLS}
-        component={StakingStakePoolsPage}
-      />
+      <Route path={ROUTES.STAKING.STAKE_POOLS} component={StakePoolsListPage} />
       <Route path={ROUTES.STAKING.REWARDS} component={StakingRewardsPage} />
       <Route path={ROUTES.STAKING.EPOCHS} component={StakingEpochsPage} />
       <Route path={ROUTES.STAKING.INFO} component={StakingInfoPage} />

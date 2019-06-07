@@ -10,7 +10,7 @@ import SVGInline from 'react-svg-inline';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './StakePoolTooltip.scss';
 import { getHSLColor } from '../../../utils/colors';
-import type { StakePoolProps } from '../../../api/staking/types';
+import type { StakePool } from '../../../api/staking/types';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 
 const messages = defineMessages({
@@ -48,7 +48,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  stakePool: StakePoolProps,
+  stakePool: StakePool,
   index: number,
   isVisible: boolean,
   currentTheme: string,
@@ -59,7 +59,7 @@ type Props = {
 };
 
 @observer
-export default class StakePool extends Component<Props> {
+export default class StakePoolTooltip extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };

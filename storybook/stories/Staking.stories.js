@@ -15,7 +15,7 @@ import StakingDelegationCenter from '../../source/renderer/app/components/stakin
 import StakingEpochs from '../../source/renderer/app/components/staking/epochs/StakingEpochs';
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
 
-import { StakingStakePoolsStory } from './Staking-StakePools.js';
+import { StakePoolsListStory } from './StakePoolsListStory.js';
 import { StakingRewardsStory } from './Staking-Rewards.stories';
 
 const defaultPercentage = 10;
@@ -94,7 +94,7 @@ storiesOf('Staking', module)
     { id: 'delegation-center' }
   )
 
-  .add(pageNames['stake-pools'], StakingStakePoolsStory, { id: 'stake-pools' })
+  .add(pageNames['stake-pools'], StakePoolsListStory, { id: 'stake-pools' })
 
   .add(pageNames.rewards, StakingRewardsStory, { id: 'rewards' })
 

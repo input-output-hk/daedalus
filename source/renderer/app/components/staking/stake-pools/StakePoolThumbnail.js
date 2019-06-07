@@ -4,13 +4,13 @@ import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import clockIcon from '../../../assets/images/clock.inline.svg';
-import styles from './StakePool.scss';
+import styles from './StakePoolThumbnail.scss';
 import { getHSLColor } from '../../../utils/colors';
-import type { StakePoolProps } from '../../../api/staking/types';
+import type { StakePool } from '../../../api/staking/types';
 import StakePoolTooltip from './StakePoolTooltip';
 
 type Props = {
-  stakePool: StakePoolProps,
+  stakePool: StakePool,
   index: number,
   isSelected: boolean,
   currentTheme: string,
@@ -22,7 +22,7 @@ type Props = {
 };
 
 @observer
-export default class StakePool extends Component<Props> {
+export default class StakePoolThumbnail extends Component<Props> {
   get color() {
     const { index } = this.props;
     return getHSLColor(index);

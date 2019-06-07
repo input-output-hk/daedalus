@@ -6,11 +6,11 @@ import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { debounce } from 'lodash';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import StakePool from './StakePool';
-import type { StakePoolProps } from '../../../api/staking/types';
+import StakePoolThumbnail from './StakePoolThumbnail';
+import type { StakePool } from '../../../api/staking/types';
 
 import searchIcon from '../../../assets/images/search.inline.svg';
-import styles from './StakingStakePools.scss';
+import styles from './StakePoolsList.scss';
 
 const messages = defineMessages({
   searchInputPlaceholder: {
@@ -46,8 +46,8 @@ const messages = defineMessages({
 });
 
 type Props = {
-  stakePoolsDelegatingList: Array<StakePoolProps>,
-  stakePoolsList: Array<StakePoolProps>,
+  stakePoolsDelegatingList: Array<StakePool>,
+  stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
   currentTheme: string,
 };
@@ -69,7 +69,7 @@ const initialState = {
 };
 
 @observer
-export default class StakingStakePools extends Component<Props, State> {
+export default class StakePoolsList extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -197,7 +197,7 @@ export default class StakingStakePools extends Component<Props, State> {
 
         <div className={styles.stakePoolsDelegatingList}>
           {stakePoolsDelegatingList.map(stakePool => (
-            <StakePool
+            <StakePoolThumbnail
               stakePool={stakePool}
               key={stakePool.id}
               isSelected={this.isSelected(
@@ -228,7 +228,7 @@ export default class StakingStakePools extends Component<Props, State> {
 
         <div className={styles.stakePoolsList}>
           {stakePoolsList.map(stakePool => (
-            <StakePool
+            <StakePoolThumbnail
               stakePool={stakePool}
               key={stakePool.id}
               onOpenExternalLink={onOpenExternalLink}
