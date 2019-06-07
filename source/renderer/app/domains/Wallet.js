@@ -47,6 +47,7 @@ export type WalletProps = {
   hasPassword: boolean,
   passwordUpdateDate: ?Date,
   syncState?: WalletSyncState,
+  isLegacy: boolean,
 };
 
 export default class Wallet {
@@ -57,6 +58,7 @@ export default class Wallet {
   @observable hasPassword: boolean;
   @observable passwordUpdateDate: ?Date;
   @observable syncState: ?WalletSyncState;
+  @observable isLegacy: boolean;
 
   constructor(data: WalletProps) {
     Object.assign(this, data);
@@ -73,6 +75,7 @@ export default class Wallet {
         'hasPassword',
         'passwordUpdateDate',
         'syncState',
+        'isLegacy',
       ])
     );
   }

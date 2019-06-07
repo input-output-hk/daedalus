@@ -420,6 +420,23 @@ const CARDANO_THEME_CONFIG = {
   notification: {
     '--theme-notification-message-background-color': 'rgba(44, 187, 105, 0.88)',
     '--theme-notification-message-text-color': '#fafbfc',
+    '--theme-legacy-badge-background-color': '#ab1700',
+    '--theme-legacy-notification-background-color': '#ab2712',
+    '--theme-legacy-notification-learn-more-button-text-color': '#fafbfc',
+    '--theme-legacy-notification-learn-more-button-background-color':
+      'rgba(250, 251, 252, 0.2)',
+    '--theme-legacy-notification-learn-more-button-background-color-hover':
+      'rgba(250, 251, 252, 0.3)',
+    '--theme-legacy-notification-learn-more-button-background-color-active':
+      'rgba(250, 251, 252, 0.4)',
+    '--theme-legacy-notification-move-button-text-color': '#ab2712',
+    '--theme-legacy-notification-move-button-background-color': '#fafbfc',
+    '--theme-legacy-notification-move-button-background-color-hover':
+      'rgba(250, 251, 252, 0.9)',
+    '--theme-legacy-notification-move-button-background-color-active':
+      'rgba(250, 251, 252, 0.8)',
+    '--theme-legacy-notification-title-color': '#fafbfc',
+    '--theme-legacy-notification-description-color': '#fafbfc',
   },
   paperWallet: {
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-color':

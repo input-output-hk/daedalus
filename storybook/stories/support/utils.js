@@ -34,6 +34,7 @@ export const generateWallet = (name: string, amount: string) =>
     hasPassword: false,
     passwordUpdateDate: new Date(),
     syncState: { data: null, tag: 'synced' },
+    isLegacy: false,
   });
 
 export const generateTransaction = (
