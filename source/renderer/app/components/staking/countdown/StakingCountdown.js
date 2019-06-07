@@ -5,7 +5,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import CountdownWidget from '../../widgets/CountdownWidget';
-import styles from './StakingDelegationCountdown.scss';
+import styles from './StakingCountdown.scss';
 
 const messages = defineMessages({
   heading: {
@@ -38,7 +38,7 @@ type Props = {
 };
 
 @observer
-export default class StakingDelegationCountdown extends Component<Props> {
+export default class StakingCountdown extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };

@@ -38,7 +38,7 @@ export default class StakingStore extends Store {
   }
   @computed
   get isStakingDelegationCountdown(): boolean {
-    return this.currentRoute === ROUTES.STAKING.DELEGATION_COUNTDOWN;
+    return this.currentRoute === ROUTES.STAKING.COUNTDOWN;
   }
 
   @action showCountdown(): boolean {
