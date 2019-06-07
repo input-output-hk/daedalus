@@ -12,11 +12,11 @@ import { CATEGORIES_BY_NAME } from '../../source/renderer/app/config/sidebarConf
 import StakingWithNavigation from '../../source/renderer/app/components/staking/layouts/StakingWithNavigation';
 import StakingDelegationCountdown from '../../source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown';
 import StakingDelegationCenter from '../../source/renderer/app/components/staking/delegation-center/StakingDelegationCenter';
-import StakingEpochs from '../../source/renderer/app/components/staking/epochs/StakingEpochs';
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
 
 import { StakingStakePoolsStory } from './Staking-StakePools.js';
 import { StakingRewardsStory } from './Staking-Rewards.stories';
+import { StakingEpochsStory } from './Staking-Epochs.stories';
 
 const defaultPercentage = 10;
 const defaultStartDateTime = new Date('2019-09-26');
@@ -98,9 +98,7 @@ storiesOf('Staking', module)
 
   .add(pageNames.rewards, StakingRewardsStory, { id: 'rewards' })
 
-  .add(pageNames.epochs, () => <StakingEpochs name={pageNames.epochs} />, {
-    id: 'epochs',
-  })
+  .add(pageNames.epochs, StakingEpochsStory, { id: 'epochs' })
 
   .add(
     pageNames.info,
