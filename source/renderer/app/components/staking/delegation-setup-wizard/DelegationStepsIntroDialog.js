@@ -1,9 +1,11 @@
 // @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
+import SVGInline from 'react-svg-inline';
 import styles from './DelegationStepsIntroDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
+import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 
 type Props = {
   onClose: Function,
@@ -118,6 +120,7 @@ export default class DelegationStepsIntroDialog extends Component<Props> {
           </p>
           <button className={styles.link} onClick={onLearnMoreClick}>
             {intl.formatMessage(messages.learnMoreButtonLabel)}
+            <SVGInline svg={externalLinkIcon} />
           </button>
           <div className={styles.stepsExplanation}>
             <p className={styles.label}>

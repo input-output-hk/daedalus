@@ -16,10 +16,17 @@
     text-align: left;
 
     .link {
+      border-bottom: 1px solid var(--theme-delegation-steps-intro-link-color);
       color: var(--theme-delegation-steps-intro-link-color);
       cursor: pointer;
       font-size: 16px;
-      text-decoration: underline;
+      svg {
+        margin-left: 2px;
+        width: 11px;
+        path {
+          fill: var(--theme-delegation-steps-intro-link-color);
+        }
+      }
     }
 
     .description {
