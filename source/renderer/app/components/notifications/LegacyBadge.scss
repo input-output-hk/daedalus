@@ -9,10 +9,10 @@
 }
 
 .floating {
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
   right: -58.5px;
   top: -2px;
-  border-top-right-radius: none;
-  border-bottom-right-radius: none;
 }
 
 .natural {
