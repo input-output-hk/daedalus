@@ -18,12 +18,12 @@ import DataLayerMigrationPage from './containers/profile/DataLayerMigrationPage'
 import DisplaySettingsPage from './containers/settings/categories/DisplaySettingsPage';
 import PaperWalletCreateCertificatePage from './containers/wallet/PaperWalletCreateCertificatePage';
 import Staking from './containers/staking/Staking';
-import StakingDelegationCenterPage from './containers/staking/StakingDelegationCenterPage';
+import DelegationCenterPage from './containers/staking/DelegationCenterPage';
 import StakingEpochsPage from './containers/staking/StakingEpochsPage';
 import StakingInfoPage from './containers/staking/StakingInfoPage';
 import StakingRewardsPage from './containers/staking/StakingRewardsPage';
-import StakingStakePoolsPage from './containers/staking/StakingStakePoolsPage';
-import StakingDelegationCountdownPage from './containers/staking/StakingDelegationCountdownPage';
+import StakePoolsListPage from './containers/staking/StakePoolsListPage';
+import StakingCountdownPage from './containers/staking/StakingCountdownPage';
 import Wallet from './containers/wallet/Wallet';
 import WalletSummaryPage from './containers/wallet/WalletSummaryPage';
 import WalletSendPage from './containers/wallet/WalletSendPage';
@@ -77,18 +77,12 @@ export const Routes = (
     />
     <Route path={ROUTES.STAKING.ROOT} component={Staking}>
       <IndexRedirect to={ROUTES.STAKING.INFO} />
-      <Route
-        path={ROUTES.STAKING.DELEGATION_COUNTDOWN}
-        component={StakingDelegationCountdownPage}
-      />
+      <Route path={ROUTES.STAKING.COUNTDOWN} component={StakingCountdownPage} />
       <Route
         path={ROUTES.STAKING.DELEGATION_CENTER}
-        component={StakingDelegationCenterPage}
+        component={DelegationCenterPage}
       />
-      <Route
-        path={ROUTES.STAKING.STAKE_POOLS}
-        component={StakingStakePoolsPage}
-      />
+      <Route path={ROUTES.STAKING.STAKE_POOLS} component={StakePoolsListPage} />
       <Route path={ROUTES.STAKING.REWARDS} component={StakingRewardsPage} />
       <Route path={ROUTES.STAKING.EPOCHS} component={StakingEpochsPage} />
       <Route path={ROUTES.STAKING.INFO} component={StakingInfoPage} />
