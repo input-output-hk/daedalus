@@ -1871,6 +1871,95 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Search stake pools",
+        "description": "\"Delegating List Title\" for the Stake Pools page.",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsList.js",
+        "id": "staking.stakePools.searchInputPlaceholder",
+        "start": {
+          "column": 26,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!All",
+        "description": "\"Filter All\" for the Stake Pools page.",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsList.js",
+        "id": "staking.stakePools.filterAll",
+        "start": {
+          "column": 13,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!New",
+        "description": "\"Filter New\" for the Stake Pools page.",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsList.js",
+        "id": "staking.stakePools.filterNew",
+        "start": {
+          "column": 13,
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!Charity",
+        "description": "\"FilterChar ity\" for the Stake Pools page.",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsList.js",
+        "id": "staking.stakePools.filterCharity",
+        "start": {
+          "column": 17,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!Stake pools you are currently delegating to",
+        "description": "\"delegatingListTitlee\" for the Stake Pools page.",
+        "end": {
+          "column": 3,
+          "line": 40
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsList.js",
+        "id": "staking.stakePools.delegatingListTitle",
+        "start": {
+          "column": 23,
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!Stake pools ({pools})",
+        "description": "\"listTitle\" for the Stake Pools page.",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsList.js",
+        "id": "staking.stakePools.listTitle",
+        "start": {
+          "column": 13,
+          "line": 41
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/stake-pools/StakePoolsList.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Rank:",
         "description": "\"\" for the Stake Pools Tooltip page.",
         "end": {
@@ -1956,95 +2045,6 @@
       }
     ],
     "path": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Search stake pools",
-        "description": "\"Delegating List Title\" for the Stake Pools page.",
-        "end": {
-          "column": 3,
-          "line": 20
-        },
-        "file": "source/renderer/app/components/staking/stake-pools/StakingStakePools.js",
-        "id": "staking.stakePools.searchInputPlaceholder",
-        "start": {
-          "column": 26,
-          "line": 16
-        }
-      },
-      {
-        "defaultMessage": "!!!All",
-        "description": "\"Filter All\" for the Stake Pools page.",
-        "end": {
-          "column": 3,
-          "line": 25
-        },
-        "file": "source/renderer/app/components/staking/stake-pools/StakingStakePools.js",
-        "id": "staking.stakePools.filterAll",
-        "start": {
-          "column": 13,
-          "line": 21
-        }
-      },
-      {
-        "defaultMessage": "!!!New",
-        "description": "\"Filter New\" for the Stake Pools page.",
-        "end": {
-          "column": 3,
-          "line": 30
-        },
-        "file": "source/renderer/app/components/staking/stake-pools/StakingStakePools.js",
-        "id": "staking.stakePools.filterNew",
-        "start": {
-          "column": 13,
-          "line": 26
-        }
-      },
-      {
-        "defaultMessage": "!!!Charity",
-        "description": "\"FilterChar ity\" for the Stake Pools page.",
-        "end": {
-          "column": 3,
-          "line": 35
-        },
-        "file": "source/renderer/app/components/staking/stake-pools/StakingStakePools.js",
-        "id": "staking.stakePools.filterCharity",
-        "start": {
-          "column": 17,
-          "line": 31
-        }
-      },
-      {
-        "defaultMessage": "!!!Stake pools you are currently delegating to",
-        "description": "\"delegatingListTitlee\" for the Stake Pools page.",
-        "end": {
-          "column": 3,
-          "line": 40
-        },
-        "file": "source/renderer/app/components/staking/stake-pools/StakingStakePools.js",
-        "id": "staking.stakePools.delegatingListTitle",
-        "start": {
-          "column": 23,
-          "line": 36
-        }
-      },
-      {
-        "defaultMessage": "!!!Stake pools ({pools})",
-        "description": "\"listTitle\" for the Stake Pools page.",
-        "end": {
-          "column": 3,
-          "line": 45
-        },
-        "file": "source/renderer/app/components/staking/stake-pools/StakingStakePools.js",
-        "id": "staking.stakePools.listTitle",
-        "start": {
-          "column": 13,
-          "line": 41
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/staking/stake-pools/StakingStakePools.json"
   },
   {
     "descriptors": [

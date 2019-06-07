@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import humanizeDuration from 'humanize-duration';
-import styles from './DelegationCountdownCounter.scss';
+import styles from './CountdownWidget.scss';
 
 const TIME_LEFT_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;
 
@@ -14,10 +14,7 @@ type Props = {
 type State = { timeLeft: number };
 
 @observer
-export default class DelegationCountdownCounter extends Component<
-  Props,
-  State
-> {
+export default class CountdownWidget extends Component<Props, State> {
   intervalHandler: ?IntervalID = null;
   state = { timeLeft: 0 };
 

@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import DelegationCountdownCounter from './DelegationCountdownCounter';
+import CountdownWidget from '../../widgets/CountdownWidget';
 import styles from './StakingDelegationCountdown.scss';
 
 const messages = defineMessages({
@@ -57,7 +57,7 @@ export default class StakingDelegationCountdown extends Component<Props> {
           <div className={styles.heading}>{heading}</div>
           <div className={styles.description}>{description}</div>
           <div className={styles.timeLeftDesc}>{timeLeftDesc}</div>
-          <DelegationCountdownCounter
+          <CountdownWidget
             redirectToStakingInfo={redirectToStakingInfo}
             currentLocale={currentLocale}
             startDateTime={startDateTime}
