@@ -3,6 +3,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, date, number } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
+import { action } from '@storybook/addon-actions';
 import StoryLayout from './support/StoryLayout';
 import StoryProvider from './support/StoryProvider';
 import StoryDecorator from './support/StoryDecorator';
@@ -14,6 +15,9 @@ import StakingDelegationCountdown from '../../source/renderer/app/components/sta
 import StakingDelegationCenter from '../../source/renderer/app/components/staking/delegation-center/StakingDelegationCenter';
 import StakingEpochs from '../../source/renderer/app/components/staking/epochs/StakingEpochs';
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
+import DelegationStepsIntroDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsIntroDialog';
+import DelegationStepsChooseWalletDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog';
+import DelegationStepsNotAvailableDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsNotAvailableDialog';
 
 import { StakingStakePoolsStory } from './Staking-StakePools.js';
 import { StakingRewardsStory } from './Staking-Rewards.stories';
@@ -117,4 +121,41 @@ storiesOf('Staking', module)
     {
       id: 'info',
     }
-  );
+  )
+
+  .add('DelegationStepsIntroDialog', () => (
+    <DelegationStepsIntroDialog
+      onClose={action('onClose')}
+      onContinue={action('onContinue')}
+      onLearnMoreClick={action('onLearnMoreClick')}
+    />
+  ))
+
+  .add('DelegationStepsChooseWalletDialog', () => (
+    <DelegationStepsChooseWalletDialog
+      onClose={action('onClose')}
+      onContinue={action('onContinue')}
+      onBack={action('onBack')}
+      wallets={[
+        {
+          value: '1.0001 ADA',
+          label: 'First Wallet',
+          isAcceptableSetupWallet: true,
+        },
+        {
+          value: '2 ADA',
+          label: 'Second Wallet',
+          isAcceptableSetupWallet: true,
+        },
+        {
+          value: '0.0001 ADA',
+          label: 'Third Wallet',
+          isAcceptableSetupWallet: false,
+        },
+      ]}
+    />
+  ))
+
+  .add('DelegationStepsNotAvailableDialog', () => (
+    <DelegationStepsNotAvailableDialog onClose={action('onClose')} />
+  ));

@@ -1,0 +1,76 @@
+.delegationStepsChooseWalletDialogWrapper {
+  font-family: var(--font-regular);
+
+  :global {
+    .Dialog_title {
+      letter-spacing: 2px;
+      margin-bottom: 0;
+    }
+  }
+
+  .stepIndicatorLabel {
+    color: var(--theme-delegation-steps-choose-wallet-steps-indicator-color);
+    font-family: var(--font-medium);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.83;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .content {
+    font-size: 16px;
+    line-height: 1.38;
+    text-align: left;
+
+    .description {
+      color: var(--theme-delegation-steps-choose-wallet-description-color);
+      span > span {
+        font-family: var(--font-medium);
+        color: var(
+          --theme-delegation-steps-choose-wallet-description-highlighted-color
+        );
+        font-weight: 500;
+      }
+    }
+
+    .walletSelect {
+      margin: 20px 0;
+    }
+
+    .errorMessage {
+      color: var(
+        --theme-delegation-steps-choose-wallet-error-message-light-color
+      );
+      font-size: 14px;
+      letter-spacing: normal;
+      margin-top: 10px;
+      span > span {
+        color: var(--theme-delegation-steps-choose-wallet-error-message-color);
+        font-family: var(--font-medium);
+        font-weight: 500;
+      }
+    }
+
+    .customOptionStyle {
+      color: var(
+        --theme-delegation-steps-choose-wallet-error-select-options-color
+      );
+
+      .optionLabel {
+        font-size: 14px;
+        line-height: 1.43;
+      }
+
+      .optionValue {
+        font-size: 12px;
+        line-height: 1.33;
+        opacity: 0.5;
+      }
+    }
+
+    .walletSelect {
+      margin-bottom: 0;
+    }
+  }
+}

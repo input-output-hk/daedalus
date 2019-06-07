@@ -10,11 +10,6 @@ type Props = {
 @observer
 export default class StakingDelegationCenter extends Component<Props> {
   render() {
-    return (
-      <div className={styles.component}>
-        {this.props.name}
-        {this.props.children}
-      </div>
-    );
+    return <div className={styles.component}>{this.props.name}</div>;
   }
 }
