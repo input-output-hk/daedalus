@@ -2,20 +2,20 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
-import NetworkStatus from '../../components/status/NetworkStatus';
-import styles from './NetworkStatusDialog.scss';
+import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
+import styles from './DaedalusDiagnosticsDialog.scss';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class NetworkStatusDialog extends Component<Props> {
+export default class DaedalusDiagnosticsDialog extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
     const { actions, stores } = this.props;
-    const { closeNetworkStatusDialog } = actions.app;
+    const { closeDaedalusDiagnosticsDialog } = actions.app;
     const { restartNode } = actions.networkStatus;
     const { app, networkStatus } = stores;
     const { openExternalLink } = app;
@@ -73,12 +73,12 @@ export default class NetworkStatusDialog extends Component<Props> {
       <ReactModal
         isOpen
         closeOnOverlayClick
-        onRequestClose={closeNetworkStatusDialog.trigger}
+        onRequestClose={closeDaedalusDiagnosticsDialog.trigger}
         className={styles.dialog}
         overlayClassName={styles.overlay}
         ariaHideApp={false}
       >
-        <NetworkStatus
+        <DaedalusDiagnostics
           systemInfo={systemInfo}
           coreInfo={coreInfo}
           cardanoNodeState={cardanoNodeState}
@@ -110,7 +110,7 @@ export default class NetworkStatusDialog extends Component<Props> {
           onForceCheckLocalTimeDifference={forceCheckLocalTimeDifference}
           onOpenExternalLink={openExternalLink}
           onRestartNode={restartNode}
-          onClose={closeNetworkStatusDialog.trigger}
+          onClose={closeDaedalusDiagnosticsDialog.trigger}
         />
       </ReactModal>
     );

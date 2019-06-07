@@ -91,7 +91,9 @@ export default (api: AdaApi) => {
         api.config,
         queryInfoParams
       );
-      Logger.debug('AdaApi::getNetworkStatus (PATCHED) success', { nodeInfo });
+      Logger.debug('AdaApi::getNetworkStatus (PATCHED) success', {
+        nodeInfo,
+      });
 
       const {
         blockchainHeight,

@@ -23,6 +23,8 @@ Changelog
 
 ### Fixes
 
+- Fixed the Block consolidation status screen not fully shown in minimized mode when the Japanese language is selected ([PR 1416](https://github.com/input-output-hk/daedalus/pull/1416))
+- Fixed "marked" dependency vulnerability warning ([PR 1414](https://github.com/input-output-hk/daedalus/pull/1414)
 - Fixed addresses not visible on Receive screen when Password is set for the wallet in minimized mode ([PR 1407](https://github.com/input-output-hk/daedalus/pull/1407))
 - Fixed truncated "Add Wallet" screen while wallet is restored ([PR 1405](https://github.com/input-output-hk/daedalus/pull/1405))
 - Fixed spending password being asked on Receive screen when clicking on "Copy address" link. ([PR 1392](https://github.com/input-output-hk/daedalus/pull/1392))
@@ -34,6 +36,9 @@ Changelog
 
 ### Chores
 
+- Renamed Network Status to Daedalus Diagnostics ([PR 1408](https://github.com/input-output-hk/daedalus/pull/1408))
+- Updated React-Polymorph to version 0.8.6 ([PR 1396](https://github.com/input-output-hk/daedalus/pull/1396))
+- Added "createTheme" utility function for rapidly generating new themes for the UI ([PR 1371](https://github.com/input-output-hk/daedalus/pull/1371))
 - Enabled theme and language selection in Storybook ([PR 1408](https://github.com/input-output-hk/daedalus/pull/1408))
 - Removed legacy references to npm in favour of yarn ([PR 1399](https://github.com/input-output-hk/daedalus/pull/1399), [PR 1402](https://github.com/input-output-hk/daedalus/pull/1402))
 - Setup storybook build script to deploy previews for the QA team to Netlify ([1391](https://github.com/input-output-hk/daedalus/pull/1391))

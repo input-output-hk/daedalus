@@ -50,10 +50,10 @@ export const winLinuxMenu = (
         },
       },
       {
-        label: translation('daedalus.networkStatus'),
-        accelerator: 'Ctrl+S',
+        label: translation('daedalus.daedalusDiagnostics'),
+        accelerator: 'Ctrl+D',
         click() {
-          actions.openNetworkStatus();
+          actions.openDaedalusDiagnostics();
         },
       },
       {

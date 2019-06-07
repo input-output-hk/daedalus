@@ -2,7 +2,7 @@
 @import '../../../themes/mixins/error-message';
 
 .instructionsContentWrapper {
-  color: var(--theme-instructions-text-color);
+  color: var(--theme-dialog-text-color);
   font-family: var(--font-light);
 
   .subtitle {
@@ -15,7 +15,7 @@
   }
 
   .instructionsList {
-    border-top: 1px solid var(--theme-separation-border-color);
+    border-top: 1px solid var(--theme-dialog-border-color);
     margin-top: 20px;
 
     .link,
@@ -48,7 +48,7 @@
   }
 
   .printingInstructions {
-    border-top: 1px solid var(--theme-separation-border-color);
+    border-top: 1px solid var(--theme-dialog-border-color);
     margin-top: 20px;
     padding-bottom: 0;
     padding-top: 20px;

@@ -155,10 +155,10 @@ export default class NetworkStatusStore extends Store {
 
   @action async _restartNode() {
     try {
-      Logger.info('NetwortStatusStore: Requesting a restart of cardano-node');
+      Logger.info('NetworkStatusStore: Requesting a restart of cardano-node');
       await restartCardanoNodeChannel.send();
     } catch (error) {
-      Logger.error('NetwortStatusStore: Restart of cardano-node failed', {
+      Logger.error('NetworkStatusStore: Restart of cardano-node failed', {
         error,
       });
     }

@@ -131,6 +131,7 @@
     "blakejs": "1.1.0",
     "bs58": "4.0.1",
     "check-disk-space": "1.5.0",
+    "chroma-js": "2.0.3",
     "classnames": "2.2.6",
     "electron": "3.0.14",
     "electron-debug": "2.0.0",
@@ -163,7 +164,7 @@
     "react-intl": "2.7.2",
     "react-markdown": "3.1.0",
     "react-number-format": "3.0.3",
-    "react-polymorph": "0.8.0",
+    "react-polymorph": "0.8.6",
     "react-router": "3.2.1",
     "react-svg-inline": "2.1.0",
     "react-virtualized": "9.21.0",
@@ -187,5 +188,8 @@
       "pre-commit": "pretty-quick --staged",
       "pre-push": "yarn prettier:check && yarn lint && yarn flow:test && yarn manage:translations"
     }
+  },
+  "resolutions": {
+    "**/**/marked": "^0.6.1"
   }
 }

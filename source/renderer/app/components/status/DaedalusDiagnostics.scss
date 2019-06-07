@@ -9,11 +9,11 @@
   justify-content: space-between;
   line-height: 1.5;
   overflow: hidden;
-  padding: 50px 55px;
+  padding: 50px 64px;
   width: 100%;
 
   @media (max-height: 740px), (max-width: 1000px) {
-    overflow-y: auto;
+    overflow-y: overlay;
     padding-bottom: 400px;
   }
 }
@@ -163,9 +163,9 @@
   }
 
   button {
-    background: var(--theme-network-window-button-background);
+    background: var(--theme-network-window-button-background-color);
     border-radius: 4px;
-    color: var(--theme-network-window-button-color);
+    color: var(--theme-network-window-button-text-color);
     cursor: pointer;
     font-size: 10px;
     font-weight: 500;
@@ -177,15 +177,9 @@
     position: relative;
     text-transform: uppercase;
 
-    &.statusBtn {
-      float: right;
-      margin-right: 0;
-      margin-top: -3px;
-      padding-top: 0;
-    }
-
     &:disabled {
       cursor: default;
+      opacity: 0.5;
 
       &::after {
         display: none;
@@ -193,36 +187,47 @@
     }
 
     &:disabled:hover {
-      color: var(--theme-network-window-button-color);
+      background: var(--theme-network-window-button-background-color);
     }
 
     &:hover {
-      color: var(--theme-network-window-white-color);
+      background: var(--theme-network-window-button-background-color-hover);
     }
-  }
 
-  .realTimeStatusBtn {
-    background: var(--theme-network-window-transparent-color);
-    border-radius: initial;
-    color: var(--theme-network-window-white-color);
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: initial;
-    height: initial;
-    line-height: 1.5;
-    margin-right: initial;
-    padding: initial;
-    position: relative;
-    text-transform: initial;
-    width: initial;
+    &:active {
+      background: var(--theme-network-window-button-background-color-active);
+    }
 
-    &::after {
-      border-top: 1px solid var(--theme-network-window-white-color);
-      bottom: 1px;
-      content: '';
-      left: 0;
-      position: absolute;
-      right: 1px;
+    &.statusBtn {
+      float: right;
+      margin-right: 0;
+      margin-top: -3px;
+      padding-top: 0;
+    }
+
+    &.realTimeStatusBtn {
+      background: transparent !important;
+      border-radius: initial;
+      color: var(--theme-network-window-white-color);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: initial;
+      height: initial;
+      line-height: 1.5;
+      margin-right: initial;
+      padding: initial;
+      position: relative;
+      text-transform: initial;
+      width: initial;
+
+      &::after {
+        border-top: 1px solid var(--theme-network-window-white-color);
+        bottom: 1px;
+        content: '';
+        left: 0;
+        position: absolute;
+        right: 1px;
+      }
     }
   }
 
@@ -254,20 +259,12 @@
   }
 }
 
-.platformTooltip {
-  > div {
-    > div {
-      width: 300px !important;
-    }
-  }
-}
-
 .closeButton {
   cursor: pointer;
   height: 44px;
   position: fixed;
-  right: 20px;
-  top: 20px;
+  right: 15px;
+  top: 15px;
   width: 44px;
 
   &:hover {

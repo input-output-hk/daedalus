@@ -5,7 +5,7 @@
   background: var(--theme-staking-stake-pool-tooltip-background-color);
   border-radius: 5px;
   border: 1px solid var(--theme-staking-stake-pool-tooltip-border-color);
-  box-shadow: 0 5px 20px 0 var(--theme-staking-stake-pool-tooltip-shadow-color);
+  box-shadow: 0 1.5px 5px 0 var(--theme-staking-stake-pool-tooltip-shadow-color);
   display: none;
   left: 50px;
   margin: 20px;
@@ -52,9 +52,11 @@
       );
       border: 1px solid
         var(--theme-staking-stake-pool-tooltip-delegate-button-border-color);
+      color: var(--theme-staking-stake-pool-tooltip-delegate-button-text-color);
       height: 33px;
       user-select: none;
       width: 100%;
+      border-radius: 2px;
 
       &:hover {
         background-color: var(
@@ -62,7 +64,7 @@
           --rp-button-bg-color-hover
         );
         color: var(
-          --theme-staking-stake-pool-tooltip-delegate-button-inverse-color
+          --theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color
         );
       }
 
@@ -72,7 +74,7 @@
         );
         border: none;
         color: var(
-          --theme-staking-stake-pool-tooltip-delegate-button-inverse-color
+          --theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color
         );
       }
     }
