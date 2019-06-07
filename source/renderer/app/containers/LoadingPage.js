@@ -22,27 +22,11 @@ export const messages = defineMessages({
   },
 });
 
-type State = {
-  disableDownloadLogs: boolean,
-};
-
 @inject('stores', 'actions')
 @observer
-export default class LoadingPage extends Component<InjectedProps, State> {
+export default class LoadingPage extends Component<InjectedProps> {
   static contextTypes = {
     intl: intlShape.isRequired,
-  };
-
-  constructor(props: InjectedProps) {
-    super(props);
-    const { profile } = this.props.actions;
-    profile.downloadLogsSuccess.listen(() =>
-      this.toggleDisableDownloadLogs(false)
-    );
-  }
-
-  state = {
-    disableDownloadLogs: false,
   };
 
   render() {
@@ -108,7 +92,7 @@ export default class LoadingPage extends Component<InjectedProps, State> {
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
           onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
           onDownloadLogs={this.handleDownloadLogs}
-          disableDownloadLogs={this.state.disableDownloadLogs}
+          disableDownloadLogs={stores.app.isDownloadNotificationVisible}
         />
       </CenteredLayout>
     );
@@ -128,10 +112,6 @@ export default class LoadingPage extends Component<InjectedProps, State> {
   handleDownloadLogs = () => {
     const { app } = this.props.actions;
     app.downloadLogs.trigger();
-    this.toggleDisableDownloadLogs(true);
-  };
-
-  toggleDisableDownloadLogs = (disableDownloadLogs: boolean) => {
-    this.setState({ disableDownloadLogs });
+    app.setNotificationVisibility.trigger(true);
   };
 }
