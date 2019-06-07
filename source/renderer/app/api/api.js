@@ -1070,6 +1070,7 @@ const _createWalletFromServerData = action(
       hasPassword: hasSpendingPassword,
       passwordUpdateDate: new Date(`${spendingPasswordLastUpdate}Z`),
       syncState,
+      isLegacy: false,
     });
   }
 );
