@@ -283,39 +283,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Logs successfully downloaded",
-        "description": "Success message for download logs.",
-        "end": {
-          "column": 3,
-          "line": 27
-        },
-        "file": "source/renderer/app/App.js",
-        "id": "loading.screen.reportIssue.downloadLogsSuccessMessage",
-        "start": {
-          "column": 23,
-          "line": 23
-        }
-      },
-      {
-        "defaultMessage": "!!!Preparing logs for download",
-        "description": "Progress message for download logs.",
-        "end": {
-          "column": 3,
-          "line": 32
-        },
-        "file": "source/renderer/app/App.js",
-        "id": "loading.screen.reportIssue.downloadLogsProgressMessage",
-        "start": {
-          "column": 24,
-          "line": 28
-        }
-      }
-    ],
-    "path": "source/renderer/app/App.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Starting Cardano node",
         "description": "Message \"Starting Cardano node\" on the loading screen.",
         "end": {
@@ -6908,6 +6875,39 @@
       }
     ],
     "path": "source/renderer/app/containers/LoadingPage.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Logs successfully downloaded",
+        "description": "Success message for download logs.",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/containers/notifications/GenericNotificationContainer.js",
+        "id": "loading.screen.reportIssue.downloadLogsSuccessMessage",
+        "start": {
+          "column": 23,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!Preparing logs for download",
+        "description": "Progress message for download logs.",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/containers/notifications/GenericNotificationContainer.js",
+        "id": "loading.screen.reportIssue.downloadLogsProgressMessage",
+        "start": {
+          "column": 24,
+          "line": 15
+        }
+      }
+    ],
+    "path": "source/renderer/app/containers/notifications/GenericNotificationContainer.json"
   },
   {
     "descriptors": [
