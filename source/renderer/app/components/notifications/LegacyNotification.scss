@@ -1,0 +1,88 @@
+%actionButton {
+  border-radius: 2px;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-family: var(--font-medium);
+  font-size: 14px;
+  font-weight: 500;
+  height: 33px;
+  line-height: 33px;
+  margin-left: 10px;
+  text-align: center;
+  white-space: nowrap;
+  width: auto;
+}
+
+.component {
+  background-color: var(--theme-legacy-notification-background-color);
+  box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25) inset;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  padding: 20px 40px;
+
+  .actionLearnMore {
+    @extend %actionButton;
+    background-color: var(
+      --theme-legacy-notification-learn-more-button-background-color
+    );
+    color: var(--theme-legacy-notification-learn-more-button-text-color);
+    padding: 0 42px;
+
+    &:hover {
+      background-color: var(
+        --theme-legacy-notification-learn-more-button-background-color-hover
+      ) !important;
+    }
+    &:active {
+      background-color: var(
+        --theme-legacy-notification-learn-more-button-background-color-active
+      ) !important;
+    }
+  }
+
+  .actionMove {
+    @extend %actionButton;
+    background-color: var(
+      --theme-legacy-notification-move-button-background-color
+    );
+    color: var(--theme-legacy-notification-move-button-text-color);
+    padding: 0 20px;
+
+    &:hover {
+      background-color: var(
+        --theme-legacy-notification-move-button-background-color-hover
+      ) !important;
+    }
+    &:active {
+      background-color: var(
+        --theme-legacy-notification-move-button-background-color-active
+      ) !important;
+    }
+  }
+}
+
+.title {
+  color: var(--theme-legacy-notification-title-color);
+  flex-grow: 1;
+  font-family: var(--font-medium);
+  font-size: 16px;
+  font-weight: 500;
+  height: 22px;
+  line-height: 1.38;
+}
+
+.description {
+  color: var(--theme-legacy-notification-description-color);
+  font-family: var(--font-light);
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  line-height: 1.36;
+  margin-top: 10px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 22px;
+}
