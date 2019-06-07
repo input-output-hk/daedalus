@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import type { InjectedContainerProps } from '../../types/injectedPropsType';
+import type { InjectedProps } from '../../types/injectedPropsType';
 import { DOWNLOAD_LOGS_SUCCESS_DURATION } from '../../config/timingConfig';
 import GenericNotification from '../../components/notifications/GenericNotification';
 
@@ -26,7 +26,7 @@ const DOWNLOAD_LOGS_SUCCESS_NOTIFICATION_ID =
 
 @inject('stores', 'actions')
 @observer
-export default class GenericNotificationContainer extends Component<InjectedContainerProps> {
+export default class GenericNotificationContainer extends Component<InjectedProps> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
