@@ -11,7 +11,7 @@ import { CATEGORIES_BY_NAME } from '../../source/renderer/app/config/sidebarConf
 
 import StakingWithNavigation from '../../source/renderer/app/components/staking/layouts/StakingWithNavigation';
 import StakingCountdown from '../../source/renderer/app/components/staking/countdown/StakingCountdown';
-import StakingDelegationCenter from '../../source/renderer/app/components/staking/delegation-center/StakingDelegationCenter';
+import DelegationCenter from '../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
 import StakingEpochs from '../../source/renderer/app/components/staking/epochs/StakingEpochs';
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
 
@@ -91,7 +91,7 @@ storiesOf('Staking', module)
 
   .add(
     pageNames['delegation-center'],
-    () => <StakingDelegationCenter name={pageNames['delegation-center']} />,
+    () => <DelegationCenter name={pageNames['delegation-center']} />,
     { id: 'delegation-center' }
   )
 

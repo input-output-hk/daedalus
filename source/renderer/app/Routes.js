@@ -18,7 +18,7 @@ import DataLayerMigrationPage from './containers/profile/DataLayerMigrationPage'
 import DisplaySettingsPage from './containers/settings/categories/DisplaySettingsPage';
 import PaperWalletCreateCertificatePage from './containers/wallet/PaperWalletCreateCertificatePage';
 import Staking from './containers/staking/Staking';
-import StakingDelegationCenterPage from './containers/staking/StakingDelegationCenterPage';
+import DelegationCenterPage from './containers/staking/DelegationCenterPage';
 import StakingEpochsPage from './containers/staking/StakingEpochsPage';
 import StakingInfoPage from './containers/staking/StakingInfoPage';
 import StakingRewardsPage from './containers/staking/StakingRewardsPage';
@@ -80,7 +80,7 @@ export const Routes = (
       <Route path={ROUTES.STAKING.COUNTDOWN} component={StakingCountdownPage} />
       <Route
         path={ROUTES.STAKING.DELEGATION_CENTER}
-        component={StakingDelegationCenterPage}
+        component={DelegationCenterPage}
       />
       <Route path={ROUTES.STAKING.STAKE_POOLS} component={StakePoolsListPage} />
       <Route path={ROUTES.STAKING.REWARDS} component={StakingRewardsPage} />
