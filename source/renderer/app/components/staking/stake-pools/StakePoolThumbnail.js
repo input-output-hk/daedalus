@@ -72,7 +72,7 @@ export const StakePoolThumbnail = observer((props: Props) => {
           stakePool={stakePool}
           index={index}
           className={styles.tooltip}
-          isVisible={isSelected}
+          isVisible
           onClick={onClose}
           currentTheme={currentTheme}
           flipHorizontal={flipHorizontal}

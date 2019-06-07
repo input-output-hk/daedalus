@@ -66,14 +66,14 @@ export default class StakePoolTooltip extends Component<Props> {
 
   tooltipClick: boolean = false;
 
-  componentWillReceiveProps(nextProps: Props) {
-    if (nextProps.isVisible) {
-      window.document.addEventListener('click', this.handleOutterClick);
-      window.addEventListener('keydown', this.handleInputKeyDown);
-    } else {
-      window.document.removeEventListener('click', this.handleOutterClick);
-      window.removeEventListener('keydown', this.handleInputKeyDown);
-    }
+  componentWillMount() {
+    window.document.addEventListener('click', this.handleOutterClick);
+    window.addEventListener('keydown', this.handleInputKeyDown);
+  }
+
+  componentWillUnmount() {
+    window.document.removeEventListener('click', this.handleOutterClick);
+    window.removeEventListener('keydown', this.handleInputKeyDown);
   }
 
   handleInputKeyDown = (event: KeyboardEvent) => {
