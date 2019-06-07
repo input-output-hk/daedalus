@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
@@ -17,66 +17,57 @@ type Props = {
   flipHorizontal: boolean,
   flipVertical: boolean,
   onOpenExternalLink: Function,
-  onClick: Function,
+  handleClick: Function,
   onClose: Function,
 };
 
-@observer
-export default class StakePoolThumbnail extends Component<Props> {
-  get color() {
-    const { index } = this.props;
-    return getHSLColor(index);
-  }
+export const StakePoolThumbnail = observer((props: Props) => {
+  const {
+    stakePool,
+    index,
+    isSelected,
+    currentTheme,
+    flipHorizontal,
+    flipVertical,
+    handleClick,
+    onClose,
+    onOpenExternalLink,
+  } = props;
 
-  render() {
-    const {
-      stakePool,
-      index,
-      isSelected,
-      currentTheme,
-      flipHorizontal,
-      flipVertical,
-      onClick,
-      onClose,
-      onOpenExternalLink,
-    } = this.props;
+  const color = getHSLColor(index);
 
-    const { ranking, id, retirement } = stakePool;
+  const { ranking, id, retirement } = stakePool;
 
-    const componentClassnames = classnames([
-      styles.component,
-      isSelected ? styles.isSelected : null,
-    ]);
+  const componentClassnames = classnames([
+    styles.component,
+    isSelected ? styles.isSelected : null,
+  ]);
 
-    return (
-      <div className={componentClassnames}>
-        <div
-          className={styles.content}
-          onClick={(event: MouseEvent) => onClick(event, ranking)}
-          role="link"
-          aria-hidden
-        >
-          <div className={styles.id}>{id}</div>
-          <div
-            className={styles.ranking}
-            style={{
-              color: this.color,
-            }}
-          >
-            {ranking}
-          </div>
-          {retirement && (
-            <div className={styles.clock}>
-              <SVGInline svg={clockIcon} className={styles.clockIcon} />
-            </div>
-          )}
-          <div
-            className={styles.colorBand}
-            style={{
-              background: this.color,
-            }}
-          />
+  return (
+    <div className={componentClassnames}>
+      <div
+        className={styles.content}
+        onClick={handleClick}
+        role="link"
+        aria-hidden
+      >
+        <div className={styles.id}>{id}</div>
+        <div className={styles.ranking} style={{ color }}>
+          {ranking}
         </div>
+        {retirement && (
+          <div className={styles.clock}>
+            <SVGInline svg={clockIcon} className={styles.clockIcon} />
+          </div>
+        )}
+        <div
+          className={styles.colorBand}
+          style={{
+            background: color,
+          }}
+        />
+      </div>
+      {isSelected && (
         <StakePoolTooltip
           stakePool={stakePool}
           index={index}
@@ -88,7 +79,7 @@ export default class StakePoolThumbnail extends Component<Props> {
           flipVertical={flipVertical}
           onOpenExternalLink={onOpenExternalLink}
         />
-      </div>
-    );
-  }
-}
+      )}
+    </div>
+  );
+});

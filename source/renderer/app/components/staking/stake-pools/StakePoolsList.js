@@ -6,7 +6,7 @@ import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { debounce } from 'lodash';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import StakePoolThumbnail from './StakePoolThumbnail';
+import { StakePoolThumbnail } from './StakePoolThumbnail';
 import type { StakePool } from '../../../api/staking/types';
 
 import searchIcon from '../../../assets/images/search.inline.svg';
@@ -91,7 +91,7 @@ export default class StakePoolsList extends Component<Props, State> {
   searchInput: ?HTMLElement = null;
 
   getFilterItemClassName = (item: string) =>
-    item === this.state.filter && styles.searchFilterAtiveItem;
+    item === this.state.filter && styles.searchFilterActiveItem;
 
   onFilterChange = (filter: string) => this.setState({ filter });
 
@@ -138,22 +138,100 @@ export default class StakePoolsList extends Component<Props, State> {
 
   handleClose = () => this.setState({ ...initialState });
 
-  render() {
-    const { intl } = this.context;
+  renderDelegatingList = () => {
+    const { flipHorizontal, flipVertical } = this.state;
     const {
-      stakePoolsList,
       stakePoolsDelegatingList,
+      stakePoolsList,
       onOpenExternalLink,
       currentTheme,
     } = this.props;
 
+    return (
+      <div className={styles.stakePoolsDelegatingList}>
+        {stakePoolsDelegatingList.map(stakePool => {
+          const index = this.getIndex(stakePool.ranking, stakePoolsList.length);
+          const isSelected = this.isSelected(
+            'selectedIndexDelegatedList',
+            stakePool.ranking
+          );
+
+          const handleThumbnailClick = (
+            event: SyntheticMouseEvent<HTMLElement>
+          ) =>
+            this.handleClick(
+              'selectedIndexDelegatedList',
+              event,
+              stakePool.ranking
+            );
+          return (
+            <StakePoolThumbnail
+              stakePool={stakePool}
+              key={stakePool.id}
+              isSelected={isSelected}
+              onClose={this.handleClose}
+              handleClick={handleThumbnailClick}
+              onOpenExternalLink={onOpenExternalLink}
+              currentTheme={currentTheme}
+              flipHorizontal={flipHorizontal}
+              flipVertical={flipVertical}
+              index={index}
+            />
+          );
+        })}
+      </div>
+    );
+  };
+
+  renderStakePoolThumbnails = () => {
     const { flipHorizontal, flipVertical } = this.state;
+    const { stakePoolsList, onOpenExternalLink, currentTheme } = this.props;
+
+    return (
+      <div className={styles.stakePoolsList}>
+        {stakePoolsList.map(stakePool => {
+          const index = this.getIndex(stakePool.ranking, stakePoolsList.length);
+          const isSelected = this.isSelected(
+            'selectedIndexList',
+            stakePool.ranking
+          );
+
+          const handleThumbnailClick = (
+            event: SyntheticMouseEvent<HTMLElement>
+          ) => this.handleClick('selectedIndexList', event, stakePool.ranking);
+          return (
+            <StakePoolThumbnail
+              stakePool={stakePool}
+              key={stakePool.id}
+              onOpenExternalLink={onOpenExternalLink}
+              isSelected={isSelected}
+              onClose={this.handleClose}
+              handleClick={handleThumbnailClick}
+              currentTheme={currentTheme}
+              flipHorizontal={flipHorizontal}
+              flipVertical={flipVertical}
+              index={index}
+            />
+          );
+        })}
+      </div>
+    );
+  };
+
+  render() {
+    const { intl } = this.context;
+    const { stakePoolsDelegatingList, stakePoolsList } = this.props;
+
+    const filterAll = this.onFilterChange.bind('all');
+    const filterNew = this.onFilterChange.bind('new');
+    const filterCharity = this.onFilterChange.bind('charity');
 
     return (
       <div className={styles.component}>
         <div className={styles.search}>
           <SVGInline svg={searchIcon} className={styles.searchIcon} />
           <Input
+            autoFocus
             className={styles.searchInput}
             onChange={this.onSearch}
             ref={input => {
@@ -163,12 +241,11 @@ export default class StakePoolsList extends Component<Props, State> {
             skin={InputSkin}
             value={this.state.search}
             maxLength={150}
-            autoFocus
           />
           <ul className={styles.searchFilter}>
             <li>
               <button
-                onClick={() => this.onFilterChange('all')}
+                onClick={filterAll}
                 className={this.getFilterItemClassName('all')}
               >
                 {intl.formatMessage(messages.filterAll)}
@@ -176,7 +253,7 @@ export default class StakePoolsList extends Component<Props, State> {
             </li>
             <li>
               <button
-                onClick={() => this.onFilterChange('new')}
+                onClick={filterNew}
                 className={this.getFilterItemClassName('new')}
               >
                 {intl.formatMessage(messages.filterNew)}
@@ -184,7 +261,7 @@ export default class StakePoolsList extends Component<Props, State> {
             </li>
             <li>
               <button
-                onClick={() => this.onFilterChange('charity')}
+                onClick={filterCharity}
                 className={this.getFilterItemClassName('charity')}
               >
                 {intl.formatMessage(messages.filterCharity)}
@@ -195,27 +272,7 @@ export default class StakePoolsList extends Component<Props, State> {
 
         <h2>{intl.formatMessage(messages.delegatingListTitle)}</h2>
 
-        <div className={styles.stakePoolsDelegatingList}>
-          {stakePoolsDelegatingList.map(stakePool => (
-            <StakePoolThumbnail
-              stakePool={stakePool}
-              key={stakePool.id}
-              isSelected={this.isSelected(
-                'selectedIndexDelegatedList',
-                stakePool.ranking
-              )}
-              onClose={this.handleClose}
-              onClick={(...params) =>
-                this.handleClick('selectedIndexDelegatedList', ...params)
-              }
-              onOpenExternalLink={onOpenExternalLink}
-              currentTheme={currentTheme}
-              flipHorizontal={flipHorizontal}
-              flipVertical={flipVertical}
-              index={this.getIndex(stakePool.ranking, stakePoolsList.length)}
-            />
-          ))}
-        </div>
+        {stakePoolsDelegatingList.length && this.renderDelegatingList()}
 
         <h2>
           <FormattedMessage
@@ -226,27 +283,7 @@ export default class StakePoolsList extends Component<Props, State> {
           />
         </h2>
 
-        <div className={styles.stakePoolsList}>
-          {stakePoolsList.map(stakePool => (
-            <StakePoolThumbnail
-              stakePool={stakePool}
-              key={stakePool.id}
-              onOpenExternalLink={onOpenExternalLink}
-              isSelected={this.isSelected(
-                'selectedIndexList',
-                stakePool.ranking
-              )}
-              onClose={this.handleClose}
-              onClick={(...params) =>
-                this.handleClick('selectedIndexList', ...params)
-              }
-              currentTheme={currentTheme}
-              flipHorizontal={flipHorizontal}
-              flipVertical={flipVertical}
-              index={this.getIndex(stakePool.ranking, stakePoolsList.length)}
-            />
-          ))}
-        </div>
+        {this.renderStakePoolThumbnails()}
       </div>
     );
   }
