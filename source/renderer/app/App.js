@@ -49,7 +49,7 @@ export default class App extends Component<{
                   <DaedalusDiagnosticsDialog />
                 )}
                 {isAboutDialogOpen && <AboutDialog />}
-                {<GenericNotificationContainer />}
+                <GenericNotificationContainer />
               </Fragment>
             </IntlProvider>
           </ThemeProvider>
