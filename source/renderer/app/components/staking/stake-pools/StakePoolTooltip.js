@@ -1,7 +1,7 @@
 // @flow
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import chroma from 'chroma-js';
 import { Button } from 'react-polymorph/lib/components/Button';
 import classnames from 'classnames';
@@ -36,7 +36,7 @@ const messages = defineMessages({
   },
   retirement: {
     id: 'staking.stakePools.tooltip.retirement',
-    defaultMessage: '!!!Retirement:',
+    defaultMessage: '!!!Retirement in {retirementFromNow}',
     description: '"Retirement" for the Stake Pools Tooltip page.',
   },
   delegateButton: {
@@ -131,6 +131,9 @@ export default class StakePoolTooltip extends Component<Props> {
     ]);
 
     const lighnessOffset = currentTheme === 'dark-blue' ? -20 : 0;
+    const retirementFromNow = retirement
+      ? moment(retirement).fromNow(true)
+      : '';
 
     return (
       <div
@@ -150,6 +153,14 @@ export default class StakePoolTooltip extends Component<Props> {
           <SVGInline svg={closeCross} />
         </button>
         <div className={styles.id}>{id}</div>
+        {retirement && (
+          <div className={styles.retirement}>
+            <FormattedMessage
+              {...messages.retirement}
+              values={{ retirementFromNow }}
+            />
+          </div>
+        )}
         <div className={styles.description}>{description}</div>
         <button className={styles.url} onClick={() => onOpenExternalLink(url)}>
           {url}
@@ -203,14 +214,6 @@ export default class StakePoolTooltip extends Component<Props> {
               {performance}%
             </span>
           </dd>
-          {retirement && (
-            <Fragment>
-              <dt>{intl.formatMessage(messages.retirement)}</dt>
-              <dd className={styles.retirement}>
-                <span>{moment(retirement).fromNow(true)}</span>
-              </dd>
-            </Fragment>
-          )}
         </dl>
         <Button
           label={intl.formatMessage(messages.delegateButton)}

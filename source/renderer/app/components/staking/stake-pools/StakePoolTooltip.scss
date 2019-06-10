@@ -159,10 +159,23 @@
 
 .id {
   color: var(--theme-staking-stake-pool-tooltip-text-color);
+  display: inline-block;
   font-size: 14px;
   line-height: 1.36;
   margin-bottom: 9px;
   opacity: 0.6;
+}
+
+.retirement {
+  background: var(
+    --theme-staking-stake-pool-tooltip-retirement-background-color
+  );
+  border-radius: 3px;
+  color: var(--theme-staking-stake-pool-tooltip-retirement-text-color);
+  display: inline-block;
+  font-size: 10px;
+  margin-left: 8px;
+  padding: 3px 9px;
 }
 
 .description {
@@ -212,13 +225,5 @@
     height: 16px;
     line-height: 16px;
     padding: 0 9px;
-  }
-}
-
-.retirement {
-  span {
-    background: var(
-      --theme-staking-stake-pool-tooltip-table-param-retirement-background-color
-    );
   }
 }
