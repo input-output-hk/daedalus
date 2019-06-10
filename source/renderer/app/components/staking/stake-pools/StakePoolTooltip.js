@@ -127,6 +127,7 @@ export default class StakePoolTooltip extends Component<Props> {
 
     const darken = currentTheme === 'dark-blue' ? 1 : 0;
     const alpha = currentTheme === 'dark-blue' ? 1 : 0.3;
+    const reverse = true;
     const retirementFromNow = retirement
       ? moment(retirement).fromNow(true)
       : '';
@@ -179,6 +180,7 @@ export default class StakePoolTooltip extends Component<Props> {
                 background: getColorFromRange(controlledStake, {
                   darken,
                   alpha,
+                  reverse,
                 }),
               }}
             >
@@ -189,7 +191,11 @@ export default class StakePoolTooltip extends Component<Props> {
           <dd className={styles.profitMargin}>
             <span
               style={{
-                background: getColorFromRange(profitMargin, { darken, alpha }),
+                background: getColorFromRange(profitMargin, {
+                  darken,
+                  alpha,
+                  reverse,
+                }),
               }}
             >
               {profitMargin}%
@@ -199,7 +205,11 @@ export default class StakePoolTooltip extends Component<Props> {
           <dd className={styles.performance}>
             <span
               style={{
-                background: getColorFromRange(performance, { darken, alpha }),
+                background: getColorFromRange(performance, {
+                  darken,
+                  alpha,
+                  reverse,
+                }),
               }}
             >
               {performance}%

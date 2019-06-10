@@ -5,9 +5,9 @@
     "name": "cilostazol",
     "description": "Supportive verbal psychotherapy",
     "url": "http://umich.edu",
-    "controlledStake": 45,
-    "profitMargin": 40,
-    "performance": 1,
+    "controlledStake": 90,
+    "profitMargin": 90,
+    "performance": 90,
     "retirement": "2019-06-10T22:26:07Z"
   },
   {
@@ -16,9 +16,9 @@
     "name": "Methyldopa",
     "description": "Low forceps operation with episiotomy",
     "url": "http://adobe.com",
-    "controlledStake": 97,
-    "profitMargin": 20,
-    "performance": 1,
+    "controlledStake": 2,
+    "profitMargin": 2,
+    "performance": 2,
     "retirement": null
   },
   {

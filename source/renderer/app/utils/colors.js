@@ -10,6 +10,7 @@ type RangeOptions = {
   darken?: number,
   brighten?: number,
   alpha?: number,
+  reverse?: boolean,
 };
 
 const defaultRangeOptions = {
@@ -18,13 +19,16 @@ const defaultRangeOptions = {
   darken: 0,
   brighten: 0,
   alpha: 1,
+  reverse: false,
 };
 
 export const getColorFromRange = (index: number, options?: RangeOptions) => {
-  const { colors, domain, darken, brighten, alpha } = {
+  const { colors, domain: originalDomain, darken, brighten, alpha, reverse } = {
     ...defaultRangeOptions,
     ...options,
   };
+  const domain = originalDomain.slice();
+  if (reverse) domain.reverse();
   const scale = chroma.scale(colors).domain(domain);
   return scale(index)
     .darken(darken)
