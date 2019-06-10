@@ -71,43 +71,45 @@ export default class StakePoolSearch extends Component<Props> {
 
     return (
       <div className={styles.component}>
-        <SVGInline svg={searchIcon} className={styles.searchIcon} />
-        <Input
-          autoFocus
-          className={styles.searchInput}
-          onChange={onSearch}
-          ref={input => registerSearchInput(input)}
-          placeholder={intl.formatMessage(messages.searchInputPlaceholder)}
-          skin={InputSkin}
-          value={search}
-          maxLength={150}
-        />
-        <ul className={styles.searchFilter}>
-          <li>
-            <button
-              onClick={filterAll}
-              className={this.getFilterItemClassName('all')}
-            >
-              {intl.formatMessage(messages.filterAll)}
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={filterNew}
-              className={this.getFilterItemClassName('new')}
-            >
-              {intl.formatMessage(messages.filterNew)}
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={filterCharity}
-              className={this.getFilterItemClassName('charity')}
-            >
-              {intl.formatMessage(messages.filterCharity)}
-            </button>
-          </li>
-        </ul>
+        <div className={styles.container}>
+          <SVGInline svg={searchIcon} className={styles.searchIcon} />
+          <Input
+            autoFocus
+            className={styles.searchInput}
+            onChange={onSearch}
+            ref={input => registerSearchInput(input)}
+            placeholder={intl.formatMessage(messages.searchInputPlaceholder)}
+            skin={InputSkin}
+            value={search}
+            maxLength={150}
+          />
+          <ul className={styles.searchFilter}>
+            <li>
+              <button
+                onClick={filterAll}
+                className={this.getFilterItemClassName('all')}
+              >
+                {intl.formatMessage(messages.filterAll)}
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={filterNew}
+                className={this.getFilterItemClassName('new')}
+              >
+                {intl.formatMessage(messages.filterNew)}
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={filterCharity}
+                className={this.getFilterItemClassName('charity')}
+              >
+                {intl.formatMessage(messages.filterCharity)}
+              </button>
+            </li>
+          </ul>
+        </div>
       </div>
     );
   }

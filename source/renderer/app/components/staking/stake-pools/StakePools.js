@@ -170,7 +170,6 @@ export default class StakePools extends Component<Props, State> {
           onClick={this.handleClick}
           getIndex={this.getIndex}
         />
-        <div className={styles.poolsListsContainer} />
       </div>
     );
   }

@@ -1,5 +1,14 @@
 .component {
+  background: var(--theme-main-body-background-color);
   margin-bottom: 26px;
+  padding: 20px 0;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+.container {
   position: relative;
 }
 
