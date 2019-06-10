@@ -17,7 +17,7 @@ type Props = {
   flipHorizontal: boolean,
   flipVertical: boolean,
   onOpenExternalLink: Function,
-  handleClick: Function,
+  onClick: Function,
   onClose: Function,
 };
 
@@ -29,7 +29,7 @@ export const StakePoolThumbnail = observer((props: Props) => {
     currentTheme,
     flipHorizontal,
     flipVertical,
-    handleClick,
+    onClick,
     onClose,
     onOpenExternalLink,
   } = props;
@@ -45,12 +45,7 @@ export const StakePoolThumbnail = observer((props: Props) => {
 
   return (
     <div className={componentClassnames}>
-      <div
-        className={styles.content}
-        onClick={handleClick}
-        role="link"
-        aria-hidden
-      >
+      <div className={styles.content} onClick={onClick} role="link" aria-hidden>
         <div className={styles.id}>{id}</div>
         <div className={styles.ranking} style={{ color }}>
           {ranking}
