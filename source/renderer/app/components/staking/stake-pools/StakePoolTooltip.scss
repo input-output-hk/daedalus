@@ -164,6 +164,7 @@
   line-height: 1.36;
   margin-bottom: 9px;
   opacity: 0.6;
+  vertical-align: middle;
 }
 
 .retirement {
@@ -174,8 +175,10 @@
   color: var(--theme-staking-stake-pool-tooltip-retirement-text-color);
   display: inline-block;
   font-size: 10px;
+  margin-bottom: 9px;
   margin-left: 8px;
   padding: 3px 9px;
+  vertical-align: middle;
 }
 
 .description {

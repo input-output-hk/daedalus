@@ -2,14 +2,13 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
-import chroma from 'chroma-js';
 import { Button } from 'react-polymorph/lib/components/Button';
 import classnames from 'classnames';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './StakePoolTooltip.scss';
-import { getHSLColor } from '../../../utils/colors';
+import { getColorFromRange } from '../../../utils/colors';
 import type { StakePool } from '../../../api/staking/types';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 
@@ -94,16 +93,12 @@ export default class StakePoolTooltip extends Component<Props> {
     this.tooltipClick = true;
   };
 
-  get color() {
-    const { index } = this.props;
-    return getHSLColor(index);
-  }
-
   render() {
     const { intl } = this.context;
     const {
       stakePool,
       isVisible,
+      index,
       currentTheme,
       flipHorizontal,
       flipVertical,
@@ -130,7 +125,8 @@ export default class StakePoolTooltip extends Component<Props> {
       flipVertical ? styles.flipVertical : null,
     ]);
 
-    const lighnessOffset = currentTheme === 'dark-blue' ? -20 : 0;
+    const darken = currentTheme === 'dark-blue' ? 1 : 0;
+    const alpha = currentTheme === 'dark-blue' ? 1 : 0.3;
     const retirementFromNow = retirement
       ? moment(retirement).fromNow(true)
       : '';
@@ -145,7 +141,7 @@ export default class StakePoolTooltip extends Component<Props> {
         <div
           className={styles.colorBand}
           style={{
-            background: this.color,
+            background: getColorFromRange(index),
           }}
         />
         <h3 className={styles.name}>{name}</h3>
@@ -170,9 +166,7 @@ export default class StakePoolTooltip extends Component<Props> {
           <dd className={styles.ranking}>
             <span
               style={{
-                background: chroma(
-                  getHSLColor(ranking, { lighnessOffset })
-                ).alpha(0.3),
+                background: getColorFromRange(ranking, { darken, alpha }),
               }}
             >
               {parseFloat(ranking).toFixed(2)}
@@ -182,9 +176,10 @@ export default class StakePoolTooltip extends Component<Props> {
           <dd className={styles.controlledStake}>
             <span
               style={{
-                background: chroma(
-                  getHSLColor(controlledStake, { lighnessOffset })
-                ).alpha(0.3),
+                background: getColorFromRange(controlledStake, {
+                  darken,
+                  alpha,
+                }),
               }}
             >
               {controlledStake}%
@@ -194,9 +189,7 @@ export default class StakePoolTooltip extends Component<Props> {
           <dd className={styles.profitMargin}>
             <span
               style={{
-                background: chroma(
-                  getHSLColor(profitMargin, { lighnessOffset })
-                ).alpha(0.3),
+                background: getColorFromRange(profitMargin, { darken, alpha }),
               }}
             >
               {profitMargin}%
@@ -206,9 +199,7 @@ export default class StakePoolTooltip extends Component<Props> {
           <dd className={styles.performance}>
             <span
               style={{
-                background: chroma(
-                  getHSLColor(performance, { lighnessOffset })
-                ).alpha(0.3),
+                background: getColorFromRange(performance, { darken, alpha }),
               }}
             >
               {performance}%

@@ -5,7 +5,7 @@ import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import clockIcon from '../../../assets/images/clock.inline.svg';
 import styles from './StakePoolThumbnail.scss';
-import { getHSLColor } from '../../../utils/colors';
+import { getColorFromRange } from '../../../utils/colors';
 import type { StakePool } from '../../../api/staking/types';
 import StakePoolTooltip from './StakePoolTooltip';
 
@@ -34,7 +34,7 @@ export const StakePoolThumbnail = observer((props: Props) => {
     onOpenExternalLink,
   } = props;
 
-  const color = getHSLColor(index);
+  const color = getColorFromRange(index);
 
   const { ranking, id, retirement } = stakePool;
 
