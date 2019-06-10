@@ -35,7 +35,7 @@ export const StakePoolsList = ({
       const isSelected = getIsSelected(listName, stakePool.ranking);
 
       const handleThumbnailClick = (event: SyntheticMouseEvent<HTMLElement>) =>
-        onClick('selectedIndexList', event, stakePool.ranking);
+        onClick(listName, event, stakePool.ranking);
 
       return (
         <StakePoolThumbnail
