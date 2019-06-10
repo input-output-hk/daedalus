@@ -48,7 +48,7 @@ type Props = {
   registerSearchInput: Function,
 };
 
-export default class StakePoolSearch extends Component<Props> {
+export class StakePoolsSearch extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -65,9 +65,9 @@ export default class StakePoolSearch extends Component<Props> {
       registerSearchInput,
     } = this.props;
 
-    const filterAll = onFilterChange.bind('all');
-    const filterNew = onFilterChange.bind('new');
-    const filterCharity = onFilterChange.bind('charity');
+    const filterAll = onFilterChange.bind(this, 'all');
+    const filterNew = onFilterChange.bind(this, 'new');
+    const filterCharity = onFilterChange.bind(this, 'charity');
 
     return (
       <div className={styles.component}>

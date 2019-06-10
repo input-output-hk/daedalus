@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { debounce } from 'lodash';
 import { StakePoolsList } from './StakePoolsList';
-import StakePoolsSearch from './StakePoolsSearch';
+import { StakePoolsSearch } from './StakePoolsSearch';
 import type { StakePool } from '../../../api/staking/types';
 import styles from './StakePools.scss';
 
