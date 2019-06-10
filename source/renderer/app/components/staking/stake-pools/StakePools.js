@@ -7,6 +7,7 @@ import { StakePoolsList } from './StakePoolsList';
 import { StakePoolsSearch } from './StakePoolsSearch';
 import type { StakePool } from '../../../api/staking/types';
 import styles from './StakePools.scss';
+import { rangeMap } from '../../../utils/rangeMap';
 
 const messages = defineMessages({
   delegatingListTitle: {
@@ -71,7 +72,7 @@ export default class StakePools extends Component<Props, State> {
   handleSearch = (search: string) => this.setState({ search });
 
   getIndex = (ranking: number) =>
-    ((ranking - 1) * 100) / this.props.stakePoolsList.length;
+    rangeMap(ranking, 1, this.props.stakePoolsList.length, 0, 99);
 
   getIsSelected = (list: string, index: number) =>
     list === this.state.selectedList && index === this.state.selectedIndex;

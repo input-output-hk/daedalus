@@ -169,7 +169,7 @@ export default class StakePoolTooltip extends Component<Props> {
                 background: getColorFromRange(ranking, { darken, alpha }),
               }}
             >
-              {parseFloat(ranking).toFixed(2)}
+              {ranking}
             </span>
           </dd>
           <dt>{intl.formatMessage(messages.controlledStake)}</dt>
