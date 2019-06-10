@@ -145,77 +145,82 @@ export default class StakePoolTooltip extends Component<Props> {
             background: getColorFromRange(index),
           }}
         />
-        <h3 className={styles.name}>{name}</h3>
-        <button className={styles.closeButton} onClick={onClick}>
-          <SVGInline svg={closeCross} />
-        </button>
-        <div className={styles.id}>{id}</div>
-        {retirement && (
-          <div className={styles.retirement}>
-            <FormattedMessage
-              {...messages.retirement}
-              values={{ retirementFromNow }}
-            />
-          </div>
-        )}
-        <div className={styles.description}>{description}</div>
-        <button className={styles.url} onClick={() => onOpenExternalLink(url)}>
-          {url}
-        </button>
-        <dl className={styles.table}>
-          <dt>{intl.formatMessage(messages.ranking)}</dt>
-          <dd className={styles.ranking}>
-            <span
-              style={{
-                background: getColorFromRange(ranking, { darken, alpha }),
-              }}
-            >
-              {ranking}
-            </span>
-          </dd>
-          <dt>{intl.formatMessage(messages.controlledStake)}</dt>
-          <dd className={styles.controlledStake}>
-            <span
-              style={{
-                background: getColorFromRange(controlledStake, {
-                  darken,
-                  alpha,
-                  reverse,
-                }),
-              }}
-            >
-              {controlledStake}%
-            </span>
-          </dd>
-          <dt>{intl.formatMessage(messages.profitMargin)}</dt>
-          <dd className={styles.profitMargin}>
-            <span
-              style={{
-                background: getColorFromRange(profitMargin, {
-                  darken,
-                  alpha,
-                  reverse,
-                }),
-              }}
-            >
-              {profitMargin}%
-            </span>
-          </dd>
-          <dt>{intl.formatMessage(messages.performance)}</dt>
-          <dd className={styles.performance}>
-            <span
-              style={{
-                background: getColorFromRange(performance, {
-                  darken,
-                  alpha,
-                  reverse,
-                }),
-              }}
-            >
-              {performance}%
-            </span>
-          </dd>
-        </dl>
+        <div className={styles.container}>
+          <h3 className={styles.name}>{name}</h3>
+          <button className={styles.closeButton} onClick={onClick}>
+            <SVGInline svg={closeCross} />
+          </button>
+          <div className={styles.id}>{id}</div>
+          {retirement && (
+            <div className={styles.retirement}>
+              <FormattedMessage
+                {...messages.retirement}
+                values={{ retirementFromNow }}
+              />
+            </div>
+          )}
+          <div className={styles.description}>{description}</div>
+          <button
+            className={styles.url}
+            onClick={() => onOpenExternalLink(url)}
+          >
+            {url}
+          </button>
+          <dl className={styles.table}>
+            <dt>{intl.formatMessage(messages.ranking)}</dt>
+            <dd className={styles.ranking}>
+              <span
+                style={{
+                  background: getColorFromRange(ranking, { darken, alpha }),
+                }}
+              >
+                {ranking}
+              </span>
+            </dd>
+            <dt>{intl.formatMessage(messages.controlledStake)}</dt>
+            <dd className={styles.controlledStake}>
+              <span
+                style={{
+                  background: getColorFromRange(controlledStake, {
+                    darken,
+                    alpha,
+                    reverse,
+                  }),
+                }}
+              >
+                {controlledStake}%
+              </span>
+            </dd>
+            <dt>{intl.formatMessage(messages.profitMargin)}</dt>
+            <dd className={styles.profitMargin}>
+              <span
+                style={{
+                  background: getColorFromRange(profitMargin, {
+                    darken,
+                    alpha,
+                    reverse,
+                  }),
+                }}
+              >
+                {profitMargin}%
+              </span>
+            </dd>
+            <dt>{intl.formatMessage(messages.performance)}</dt>
+            <dd className={styles.performance}>
+              <span
+                style={{
+                  background: getColorFromRange(performance, {
+                    darken,
+                    alpha,
+                    reverse,
+                  }),
+                }}
+              >
+                {performance}%
+              </span>
+            </dd>
+          </dl>
+        </div>
         <Button
           label={intl.formatMessage(messages.delegateButton)}
           onClick={() => {}}

@@ -9,7 +9,7 @@
   display: none;
   left: 50px;
   margin: 20px;
-  padding: 20px;
+  padding: 10px;
   position: absolute;
   top: -21px;
   user-select: text;
@@ -113,6 +113,10 @@
       }
     }
   }
+}
+
+.container {
+  padding: 10px 10px 0;
 }
 
 .colorBand {
