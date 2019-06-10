@@ -1604,6 +1604,109 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!current epoch",
+        "description": "Headline for the current epoch.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/staking/epochs/StakingEpochs.js",
+        "id": "staking.epochs.currentHeading",
+        "start": {
+          "column": 23,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!previous epoch",
+        "description": "Headline for the previous epoch.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/staking/epochs/StakingEpochs.js",
+        "id": "staking.epochs.previousHeading",
+        "start": {
+          "column": 24,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!No results",
+        "description": "\"No results\" results label on staking epochs page.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/staking/epochs/StakingEpochs.js",
+        "id": "staking.epochs.no.results",
+        "start": {
+          "column": 13,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Stake pool",
+        "description": "Table header \"Stake pool\" label on staking epochs page",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/staking/epochs/StakingEpochs.js",
+        "id": "staking.epochs.tableHeader.pool",
+        "start": {
+          "column": 19,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Slots elected",
+        "description": "Table header \"Slots elected\" label on staking epochs page",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/staking/epochs/StakingEpochs.js",
+        "id": "staking.epochs.tableHeader.slotsElected",
+        "start": {
+          "column": 27,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!Performance",
+        "description": "Table header \"Performance\" label on staking epochs page",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/staking/epochs/StakingEpochs.js",
+        "id": "staking.epochs.tableHeader.performance",
+        "start": {
+          "column": 26,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Shared rewards",
+        "description": "Table header \"Shared rewards\" label on staking epochs page",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "source/renderer/app/components/staking/epochs/StakingEpochs.js",
+        "id": "staking.epochs.tableHeader.sharedRewards",
+        "start": {
+          "column": 28,
+          "line": 53
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/epochs/StakingEpochs.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Cardano is transitioning to a decentralized system",
         "description": "Headline for the Decentralization progress notification.",
         "end": {

@@ -6,6 +6,7 @@ import SVGInline from 'react-svg-inline';
 import { get, map } from 'lodash';
 import classNames from 'classnames';
 import { Select } from 'react-polymorph/lib/components/Select';
+import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
@@ -327,6 +328,7 @@ export default class StakingEpochs extends Component<Props, State> {
             options={epochSelectOptions}
             value={selectedEpoch}
             onChange={this.onSelectedEpochChange}
+            skin={SelectSkin}
           />
         </div>
         <BorderedBox>
