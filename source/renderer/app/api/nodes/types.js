@@ -51,12 +51,16 @@ export type GetNetworkStatusResponse = {
   }
 };
 
+export type GetLatestAppVersionResponse = {
+  latestAppVersion: ?string,
+};
+
 export type Platform = {
-  signature: string,
   hash: string,
-  URL: string,
-  version: string,
   SHA256: string,
+  signature: string,
+  version: string,
+  URL: string,
 };
 
 export type Platforms = {
@@ -64,23 +68,23 @@ export type Platforms = {
 };
 
 export type DaedalusLatestVersionResponse = {
-  platforms: Platforms,
+  linux: string,
   linuxHash: string,
-  macosSignature: string,
-  win64: string,
+  linuxSHA256: string,
   linuxSignature: string,
   linuxURL: string,
-  macosSHA256: string,
-  win64Hash: string,
-  macosURL: string,
-  win64URL: string,
-  linuxSHA256: string,
-  release_notes: ?string,
   macos: string,
-  win64Signature: string,
-  linux: string,
   macosHash: string,
+  macosSHA256: string,
+  macosSignature: string,
+  macosURL: string,
+  platforms: Platforms,
+  release_notes: ?string,
+  win64: string,
+  win64Hash: string,
   win64SHA256: string,
+  win64Signature: string,
+  win64URL: string,
 };
 
-export type GetLatestAppVersionInfoResponse = DaedalusLatestVersionResponse;
+export type LatestAppVersionInfoResponse = DaedalusLatestVersionResponse;
