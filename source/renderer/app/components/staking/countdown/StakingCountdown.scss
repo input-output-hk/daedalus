@@ -1,0 +1,28 @@
+@import '../stakingConfig';
+
+.component {
+  background-color: var(--theme-staking-background-color);
+  height: 100%;
+  padding: 20px;
+}
+
+.mainContent {
+  @extend %contentBorderAndBackground;
+  padding: 20px;
+  text-align: center;
+}
+
+.heading {
+  @extend %accentText;
+  font-size: 19px;
+  margin-bottom: 14px;
+}
+
+.description {
+  @extend %regularText;
+  margin-bottom: 24px;
+}
+
+.timeLeftDesc {
+  @extend %accentText;
+}

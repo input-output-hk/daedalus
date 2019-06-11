@@ -17,7 +17,7 @@
   }
 
   .addressToLabelWrapper,
-  .amountFeesWrapper{
+  .amountFeesWrapper {
     margin-bottom: 20px;
   }
 
@@ -90,5 +90,5 @@
 
 .submitButtonSpinning {
   box-shadow: none !important;
-  @include loading-spinner("../../assets/images/spinner-light.svg");
+  @include loading-spinner('../../assets/images/spinner-light.svg');
 }

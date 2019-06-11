@@ -31,7 +31,6 @@ type Props = {
 };
 
 export default class Dialog extends Component<Props> {
-
   render() {
     const {
       title,
@@ -52,7 +51,6 @@ export default class Dialog extends Component<Props> {
         onClose={onClose}
         skin={ModalSkin}
       >
-
         <div className={classnames([styles.dialogWrapper, className])}>
           {title && (
             <div className={styles.title}>
@@ -60,11 +58,7 @@ export default class Dialog extends Component<Props> {
             </div>
           )}
 
-          {children && (
-            <div className={styles.content}>
-              {children}
-            </div>
-          )}
+          {children && <div className={styles.content}>{children}</div>}
 
           {actions && (
             <div className={styles.actions}>
@@ -90,7 +84,6 @@ export default class Dialog extends Component<Props> {
 
           {closeButton ? React.cloneElement(closeButton, { onClose }) : null}
           {backButton}
-
         </div>
       </Modal>
     );

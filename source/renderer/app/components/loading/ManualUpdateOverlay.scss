@@ -31,7 +31,7 @@
         font-size: 20px;
         line-height: 1.2;
       }
-      
+
       .description {
         margin: 16px auto;
         p {
@@ -48,7 +48,9 @@
       }
 
       .actionButton {
-        background-color: var(--theme-manual-update-overlay-button-background-color);
+        background-color: var(
+          --theme-manual-update-overlay-button-background-color
+        );
         border: solid 1px var(--theme-manual-update-overlay-button-border-color);
         font-weight: 500;
         line-height: 1.36;
@@ -61,14 +63,14 @@
           vertical-align: middle;
           width: 12px;
         }
-     
+
         &:not(.disabled):hover {
           background-color: var(
             --theme-manual-update-overlay-button-background-color-hover
           );
           border: none;
           color: var(--theme-manual-update-overlay-button-text-color-hover);
-     
+
           .linkNewWindow {
             path {
               fill: rgb(36, 62, 98);

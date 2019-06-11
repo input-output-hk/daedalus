@@ -1,0 +1,13 @@
+.component {
+  background-color: var(--theme-nav-item-background-color);
+  display: flex;
+  height: 100%;
+  justify-content: space-between;
+  padding: 0 5px;
+  width: 100%;
+}
+
+.navItem {
+  height: 100%;
+  width: percentage(1/5); // Update when adding new nav items!
+}

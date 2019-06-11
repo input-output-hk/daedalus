@@ -1,6 +1,7 @@
 // @flow
 import { observable, action, computed, runInAction, flow } from 'mobx';
 import { get, chunk, find, isEqual } from 'lodash';
+import { BigNumber } from 'bignumber.js';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
@@ -13,6 +14,10 @@ import { buildRoute, matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
+import type LocalizableError from '../i18n/LocalizableError';
+import { formattedWalletAmount } from '../utils/formatters';
+import { WalletPaperWalletOpenPdfError } from '../i18n/errors';
+/* eslint-disable consistent-return */
 
 /**
  * The base wallet store that contains the shared logic
@@ -20,39 +25,67 @@ import type { WalletImportFromFileParams } from '../actions/wallets-actions';
  */
 
 export default class WalletsStore extends Store {
-
   WALLET_REFRESH_INTERVAL = 5000;
 
   // REQUESTS
   /* eslint-disable max-len */
   @observable active: ?Wallet = null;
+  @observable activeValue: ?BigNumber = null;
   @observable isRestoreActive: boolean = false;
   @observable restoringWalletId: ?string = null;
-  @observable walletsRequest: Request<Array<Wallet>> = new Request(this.api.ada.getWallets);
-  @observable importFromFileRequest: Request<Wallet> = new Request(this.api.ada.importWalletFromFile);
-  @observable createWalletRequest: Request<Wallet> = new Request(this.api.ada.createWallet);
-  @observable getWalletAddressesRequest: Request<any> = new Request(this.api.ada.getAddresses);
-  @observable deleteWalletRequest: Request<boolean> = new Request(this.api.ada.deleteWallet);
-  @observable sendMoneyRequest: Request<WalletTransaction> = new Request(this.api.ada.createTransaction);
-  @observable getWalletRecoveryPhraseRequest: Request<Array<string>> = new Request(this.api.ada.getWalletRecoveryPhrase);
-  @observable getWalletCertificateAdditionalMnemonicsRequest: Request<Array<string>> = new Request(this.api.ada.getWalletCertificateAdditionalMnemonics);
-  @observable getWalletCertificateRecoveryPhraseRequest: Request<Array<string>> = new Request(this.api.ada.getWalletCertificateRecoveryPhrase);
-  @observable getWalletRecoveryPhraseFromCertificateRequest: Request<Array<string>> = new Request(this.api.ada.getWalletRecoveryPhraseFromCertificate);
-  @observable restoreRequest: Request<Wallet> = new Request(this.api.ada.restoreWallet);
+  @observable walletsRequest: Request<Array<Wallet>> = new Request(
+    this.api.ada.getWallets
+  );
+  @observable importFromFileRequest: Request<Wallet> = new Request(
+    this.api.ada.importWalletFromFile
+  );
+  @observable createWalletRequest: Request<Wallet> = new Request(
+    this.api.ada.createWallet
+  );
+  @observable getWalletAddressesRequest: Request<any> = new Request(
+    this.api.ada.getAddresses
+  );
+  @observable deleteWalletRequest: Request<boolean> = new Request(
+    this.api.ada.deleteWallet
+  );
+  @observable sendMoneyRequest: Request<WalletTransaction> = new Request(
+    this.api.ada.createTransaction
+  );
+  @observable getWalletRecoveryPhraseRequest: Request<
+    Array<string>
+  > = new Request(this.api.ada.getWalletRecoveryPhrase);
+  @observable getWalletCertificateAdditionalMnemonicsRequest: Request<
+    Array<string>
+  > = new Request(this.api.ada.getWalletCertificateAdditionalMnemonics);
+  @observable getWalletCertificateRecoveryPhraseRequest: Request<
+    Array<string>
+  > = new Request(this.api.ada.getWalletCertificateRecoveryPhrase);
+  @observable getWalletRecoveryPhraseFromCertificateRequest: Request<
+    Array<string>
+  > = new Request(this.api.ada.getWalletRecoveryPhraseFromCertificate);
+  @observable restoreRequest: Request<Wallet> = new Request(
+    this.api.ada.restoreWallet
+  );
   /* eslint-enable max-len */
 
   @observable walletExportType: walletExportTypeChoices = 'paperWallet';
-  @observable walletExportMnemonic = 'marine joke dry silk ticket thing sugar stereo aim';
+  @observable walletExportMnemonic =
+    'marine joke dry silk ticket thing sugar stereo aim';
   @observable createPaperWalletCertificateStep = 0;
   @observable walletCertificatePassword = null;
   @observable walletCertificateAddress = null;
   @observable walletCertificateRecoveryPhrase = null;
   @observable generatingCertificateInProgress = false;
+  @observable generatingCertificateError: ?LocalizableError = null;
   @observable certificateStep = null;
   @observable certificateTemplate = null;
   @observable additionalMnemonicWords = null;
 
-  _newWalletDetails: { name: string, mnemonic: string, spendingPassword: ?string } = {
+  _newWalletDetails: {
+    name: string,
+    mnemonic: string,
+    spendingPassword: ?string,
+  } = {
     name: '',
     mnemonic: '',
     spendingPassword: null,
@@ -62,11 +95,9 @@ export default class WalletsStore extends Store {
   setup() {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
 
-    this.registerReactions([
-      this._updateActiveWalletOnRouteChanges,
-    ]);
+    this.registerReactions([this._updateActiveWalletOnRouteChanges]);
 
-    const { router, walletBackup, wallets, app } = this.actions;
+    const { router, walletBackup, wallets, app, networkStatus } = this.actions;
     wallets.createWallet.listen(this._create);
     wallets.deleteWallet.listen(this._deleteWallet);
     wallets.sendMoney.listen(this._sendMoney);
@@ -81,19 +112,18 @@ export default class WalletsStore extends Store {
     router.goToRoute.listen(this._onRouteChange);
     walletBackup.finishWalletBackup.listen(this._finishCreation);
     app.initAppEnvironment.listen(() => {});
+    networkStatus.restartNode.listen(this._updateGeneratingCertificateError);
   }
 
-  _create = async (params: {
-    name: string,
-    spendingPassword: ?string,
-  }) => {
+  _create = async (params: { name: string, spendingPassword: ?string }) => {
     Object.assign(this._newWalletDetails, params);
     try {
-      const recoveryPhrase: ?Array<string> = await (
-        this.getWalletRecoveryPhraseRequest.execute().promise
-      );
+      const recoveryPhrase: ?Array<string> = await this.getWalletRecoveryPhraseRequest.execute()
+        .promise;
       if (recoveryPhrase != null) {
-        this.actions.walletBackup.initiateWalletBackup.trigger({ recoveryPhrase });
+        this.actions.walletBackup.initiateWalletBackup.trigger({
+          recoveryPhrase,
+        });
       }
     } catch (error) {
       throw error;
@@ -101,10 +131,16 @@ export default class WalletsStore extends Store {
   };
 
   _finishCreation = async () => {
-    this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(' ');
-    const wallet = await this.createWalletRequest.execute(this._newWalletDetails).promise;
+    this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(
+      ' '
+    );
+    const wallet = await this.createWalletRequest.execute(
+      this._newWalletDetails
+    ).promise;
     if (wallet) {
-      await this.walletsRequest.patch(result => { result.push(wallet); });
+      await this.walletsRequest.patch(result => {
+        result.push(wallet);
+      });
       this.actions.dialogs.closeActiveDialog.trigger();
       this.goToWalletRoute(wallet.id);
     }
@@ -129,6 +165,7 @@ export default class WalletsStore extends Store {
         this.goToWalletRoute(nextWalletInList.id);
       } else {
         this.active = null;
+        this.activeValue = null;
       }
     });
     this._resumePolling();
@@ -142,7 +179,8 @@ export default class WalletsStore extends Store {
     spendingPassword: ?string,
   }) => {
     const restoredWallet = await this.restoreRequest.execute(params).promise;
-    if (!restoredWallet) throw new Error('Restored wallet was not received correctly');
+    if (!restoredWallet)
+      throw new Error('Restored wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(restoredWallet);
     this.actions.dialogs.closeActiveDialog.trigger();
     this.restoreRequest.reset();
@@ -150,14 +188,20 @@ export default class WalletsStore extends Store {
     this.refreshWalletsData();
   };
 
-  _sendMoney = async ({ receiver, amount, password }: {
+  _sendMoney = async ({
+    receiver,
+    amount,
+    password,
+  }: {
     receiver: string,
     amount: string,
     password: ?string,
   }) => {
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
-    const accountIndex = await this.stores.addresses.getAccountIndexByWalletId(wallet.id);
+    const accountIndex = await this.stores.addresses.getAccountIndexByWalletId(
+      wallet.id
+    );
 
     await this.sendMoneyRequest.execute({
       address: receiver,
@@ -186,7 +230,9 @@ export default class WalletsStore extends Store {
 
   @computed get hasAnyWallets(): boolean {
     if (this.walletsRequest.result == null) return false;
-    return this.walletsRequest.wasExecuted && this.walletsRequest.result.length > 0;
+    return (
+      this.walletsRequest.wasExecuted && this.walletsRequest.result.length > 0
+    );
   }
 
   @computed get hasMaxWallets(): boolean {
@@ -212,16 +258,16 @@ export default class WalletsStore extends Store {
 
   @computed get isWalletRoute(): boolean {
     const { currentRoute } = this.stores.app;
-    return matchRoute(ROUTES.WALLETS.ROOT + '(/*rest)', currentRoute);
+    return matchRoute(`${ROUTES.WALLETS.ROOT}(/*rest)`, currentRoute);
   }
 
-  getWalletById = (id: string): (?Wallet) => this.all.find(w => w.id === id);
+  getWalletById = (id: string): ?Wallet => this.all.find(w => w.id === id);
 
-  getWalletByName = (name: string): (?Wallet) => this.all.find(w => w.name === name);
+  getWalletByName = (name: string): ?Wallet =>
+    this.all.find(w => w.name === name);
 
-  getWalletRoute = (walletId: string, page: string = 'summary'): string => (
-    buildRoute(ROUTES.WALLETS.PAGE, { id: walletId, page })
-  );
+  getWalletRoute = (walletId: string, page: string = 'summary'): string =>
+    buildRoute(ROUTES.WALLETS.PAGE, { id: walletId, page });
 
   // ACTIONS
 
@@ -233,7 +279,7 @@ export default class WalletsStore extends Store {
   // =================== PRIVATE API ==================== //
 
   @computed get _canRedirectToWallet(): boolean {
-    const currentRoute = this.stores.app.currentRoute;
+    const { currentRoute } = this.stores.app;
     const isRootRoute = matchRoute(ROUTES.WALLETS.ROOT, currentRoute);
     const isAddWalletRoute = matchRoute(ROUTES.WALLETS.ADD, currentRoute);
     return isRootRoute || isAddWalletRoute;
@@ -248,17 +294,21 @@ export default class WalletsStore extends Store {
 
   _pollRefresh = async () => {
     const { isSynced } = this.stores.networkStatus;
-    return isSynced && await this.refreshWalletsData();
+    return isSynced && this.refreshWalletsData();
   };
 
   _updateActiveWalletOnRouteChanges = () => {
-    const currentRoute = this.stores.app.currentRoute;
+    const { currentRoute } = this.stores.app;
     const hasAnyWalletLoaded = this.hasAnyLoaded;
     const isWalletAddPage = matchRoute(ROUTES.WALLETS.ADD, currentRoute);
     runInAction('WalletsStore::_updateActiveWalletOnRouteChanges', () => {
       // There are not wallets loaded (yet) -> unset active and return
-      if (isWalletAddPage || !hasAnyWalletLoaded) return this._unsetActiveWallet();
-      const match = matchRoute(`${ROUTES.WALLETS.ROOT}/:id(*page)`, currentRoute);
+      if (isWalletAddPage || !hasAnyWalletLoaded)
+        return this._unsetActiveWallet();
+      const match = matchRoute(
+        `${ROUTES.WALLETS.ROOT}/:id(*page)`,
+        currentRoute
+      );
       if (match) {
         // We have a route for a specific wallet -> lets try to find it
         const walletForCurrentRoute = this.all.find(w => w.id === match.id);
@@ -284,14 +334,16 @@ export default class WalletsStore extends Store {
 
   isValidAddress = (address: string) => this.api.ada.isValidAddress(address);
 
-  isValidMnemonic = (mnemonic: string) => this.api.ada.isValidMnemonic(mnemonic);
+  isValidMnemonic = (mnemonic: string) =>
+    this.api.ada.isValidMnemonic(mnemonic);
 
-  isValidCertificateMnemonic = (
-    mnemonic: string,
-  ) => this.api.ada.isValidCertificateMnemonic(mnemonic);
+  isValidCertificateMnemonic = (mnemonic: string) =>
+    this.api.ada.isValidCertificateMnemonic(mnemonic);
 
   // TODO - call endpoint to check if private key is valid
-  isValidPrivateKey = () => { return true; }; // eslint-disable-line
+  isValidPrivateKey = () => {
+    return true;
+  }; // eslint-disable-line
 
   @action refreshWalletsData = async () => {
     // Prevent wallets data refresh if polling is blocked
@@ -309,7 +361,8 @@ export default class WalletsStore extends Store {
       runInAction('refresh active wallet restore', () => {
         const restoringWallet = find(result, ['syncState.tag', 'restoring']);
         const restoringWalletId = get(restoringWallet, 'id', null);
-        restoredWalletId = restoringWalletId === null && this.restoringWalletId || null;
+        restoredWalletId =
+          (restoringWalletId === null && this.restoringWalletId) || null;
         this._setIsRestoreActive(restoringWalletId);
       });
       runInAction('refresh address data', () => {
@@ -322,11 +375,17 @@ export default class WalletsStore extends Store {
       });
       runInAction('refresh transaction data', () => {
         const walletIds = result.map((wallet: Wallet) => wallet.id);
-        this.stores.transactions.transactionsRequests = walletIds.map(walletId => ({
-          walletId,
-          recentRequest: this.stores.transactions._getTransactionsRecentRequest(walletId),
-          allRequest: this.stores.transactions._getTransactionsAllRequest(walletId),
-        }));
+        this.stores.transactions.transactionsRequests = walletIds.map(
+          walletId => ({
+            walletId,
+            recentRequest: this.stores.transactions._getTransactionsRecentRequest(
+              walletId
+            ),
+            allRequest: this.stores.transactions._getTransactionsAllRequest(
+              walletId
+            ),
+          })
+        );
         this.stores.transactions._refreshTransactionData(restoredWalletId);
       });
     }
@@ -367,18 +426,19 @@ export default class WalletsStore extends Store {
       const spendingPassword = mnemonicToSeedHex(certificatePassword.join(' '));
 
       // Unscramble 18-word wallet certificate mnemonic to 12-word mnemonic
-      const unscrambledRecoveryPhrase: Array<string> = await (
-        this.getWalletRecoveryPhraseFromCertificateRequest.execute({
+      const unscrambledRecoveryPhrase: Array<string> = await this.getWalletRecoveryPhraseFromCertificateRequest.execute(
+        {
           passphrase: spendingPassword,
           scrambledInput: scrambledInput.join(' '),
-        }).promise
-      );
+        }
+      ).promise;
       data.recoveryPhrase = unscrambledRecoveryPhrase.join(' ');
       this.getWalletRecoveryPhraseFromCertificateRequest.reset();
     }
 
     const restoredWallet = await this.restoreRequest.execute(data).promise;
-    if (!restoredWallet) throw new Error('Restored wallet was not received correctly');
+    if (!restoredWallet)
+      throw new Error('Restored wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(restoredWallet);
     this.actions.dialogs.closeActiveDialog.trigger();
     this.restoreRequest.reset();
@@ -386,12 +446,17 @@ export default class WalletsStore extends Store {
     this.refreshWalletsData();
   };
 
-  @action _importWalletFromFile = async (params: WalletImportFromFileParams) => {
+  @action _importWalletFromFile = async (
+    params: WalletImportFromFileParams
+  ) => {
     const { filePath, walletName, spendingPassword } = params;
     const importedWallet = await this.importFromFileRequest.execute({
-      filePath, walletName, spendingPassword,
+      filePath,
+      walletName,
+      spendingPassword,
     }).promise;
-    if (!importedWallet) throw new Error('Imported wallet was not received correctly');
+    if (!importedWallet)
+      throw new Error('Imported wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(importedWallet);
     this.actions.dialogs.closeActiveDialog.trigger();
     this.importFromFileRequest.reset();
@@ -409,6 +474,9 @@ export default class WalletsStore extends Store {
         // Active wallet has been replaced or removed
         this.stores.addresses.lastGeneratedAddress = null;
         this.active = newActiveWallet || null;
+        if (this.active) {
+          this.activeValue = formattedWalletAmount(this.active.amount);
+        }
       } else if (hasActiveWalletBeenUpdated) {
         // Active wallet has been updated
         if (this.active && newActiveWallet) this.active.update(newActiveWallet);
@@ -418,12 +486,15 @@ export default class WalletsStore extends Store {
 
   @action _unsetActiveWallet = () => {
     this.active = null;
+    this.activeValue = null;
     this.stores.addresses.lastGeneratedAddress = null;
   };
 
   @action _onRouteChange = (options: { route: string, params: ?Object }) => {
     // Reset the send request anytime we visit the send page (e.g: to remove any previous errors)
-    if (matchRoute(ROUTES.WALLETS.SEND, buildRoute(options.route, options.params))) {
+    if (
+      matchRoute(ROUTES.WALLETS.SEND, buildRoute(options.route, options.params))
+    ) {
       this.sendMoneyRequest.reset();
     }
   };
@@ -452,9 +523,10 @@ export default class WalletsStore extends Store {
    * Using mobx flows: https://mobx.js.org/best/actions.html#flows
    * @private
    */
-  _generateCertificate = flow(function *generateCertificate(
-    params: { filePath: string }
-  ): Generator<any, any, any> {
+  _generateCertificate = flow(function* generateCertificate(params: {
+    filePath: string,
+    timestamp: string,
+  }): Generator<any, any, any> {
     try {
       // Pause polling in order not to show Paper wallet in the UI
       this._pausePolling();
@@ -463,14 +535,12 @@ export default class WalletsStore extends Store {
       this._updateCertificateCreationState(true);
 
       // Generate wallet recovery phrase
-      const recoveryPhrase: Array<string> = yield (
-        this.getWalletRecoveryPhraseRequest.execute().promise
-      );
+      const recoveryPhrase: Array<string> = yield this.getWalletRecoveryPhraseRequest.execute()
+        .promise;
 
       // Generate 9-words (additional) mnemonic
-      const additionalMnemonicWords: Array<string> = yield (
-        this.getWalletCertificateAdditionalMnemonicsRequest.execute().promise
-      );
+      const additionalMnemonicWords: Array<string> = yield this.getWalletCertificateAdditionalMnemonicsRequest.execute()
+        .promise;
       this.additionalMnemonicWords = additionalMnemonicWords.join(' ');
 
       // Generate spending password from 9-word mnemonic and save to store
@@ -478,13 +548,15 @@ export default class WalletsStore extends Store {
       this.walletCertificatePassword = spendingPassword;
 
       // Generate paper wallet scrambled mnemonic
-      const walletCertificateRecoveryPhrase: Array<string> = yield (
-        this.getWalletCertificateRecoveryPhraseRequest.execute({
+      const walletCertificateRecoveryPhrase: Array<string> = yield this.getWalletCertificateRecoveryPhraseRequest.execute(
+        {
           passphrase: spendingPassword,
           input: recoveryPhrase.join(' '),
-        }).promise
+        }
+      ).promise;
+      this.walletCertificateRecoveryPhrase = walletCertificateRecoveryPhrase.join(
+        ' '
       );
-      this.walletCertificateRecoveryPhrase = walletCertificateRecoveryPhrase.join(' ');
 
       // Create temporary wallet
       const walletData = {
@@ -505,7 +577,11 @@ export default class WalletsStore extends Store {
       }
 
       // Set wallet certificate address
-      const walletAddress = get(walletAddresses, ['addresses', '0', 'id'], null);
+      const walletAddress = get(
+        walletAddresses,
+        ['addresses', '0', 'id'],
+        null
+      );
       this.walletCertificateAddress = walletAddress;
 
       // download pdf certificate
@@ -513,6 +589,7 @@ export default class WalletsStore extends Store {
         walletAddress,
         walletCertificateRecoveryPhrase,
         params.filePath,
+        params.timestamp
       );
     } catch (error) {
       throw error;
@@ -525,6 +602,7 @@ export default class WalletsStore extends Store {
     address: string,
     recoveryPhrase: Array<string>,
     filePath: string,
+    timestamp: string
   ) => {
     const locale = this.stores.profile.currentLocale;
     const intl = i18nContext(locale);
@@ -536,7 +614,8 @@ export default class WalletsStore extends Store {
         intl,
         filePath,
         isMainnet,
-        buildLabel
+        buildLabel,
+        timestamp,
       });
       runInAction('handle successful certificate download', () => {
         // Reset progress
@@ -545,32 +624,45 @@ export default class WalletsStore extends Store {
         this._updateCertificateStep();
       });
     } catch (error) {
-      console.log(error);
       runInAction('handle failed certificate download', () => {
         // Reset progress
-        this._updateCertificateCreationState(false);
+        this._updateCertificateCreationState(false, error);
       });
     }
   };
 
-  _updateCertificateCreationState = action((state: boolean) => {
-    this.generatingCertificateInProgress = state;
+  _updateCertificateCreationState = action(
+    (state: boolean, error?: ?Object) => {
+      this.generatingCertificateInProgress = state;
+      this._updateGeneratingCertificateError(error);
+    }
+  );
+
+  _updateGeneratingCertificateError = action((error?: ?Object) => {
+    if (error && error.syscall && error.syscall === 'open') {
+      // User tries to replace a file that is open
+      this.generatingCertificateError = new WalletPaperWalletOpenPdfError();
+    } else {
+      this.generatingCertificateError = null;
+    }
   });
 
-  @action _setCertificateTemplate = (params: {
-    selectedTemplate: string,
-  }) => {
+  @action _setCertificateTemplate = (params: { selectedTemplate: string }) => {
     this.certificateTemplate = params.selectedTemplate;
     this._updateCertificateStep();
   };
 
   @action _finishCertificate = () => {
+    this._updateGeneratingCertificateError();
     this._closeCertificateGeneration();
   };
 
   @action _updateCertificateStep = (isBack: boolean = false) => {
+    this._updateGeneratingCertificateError();
     const currrentCertificateStep = this.certificateStep || 0;
-    this.certificateStep = isBack ? currrentCertificateStep - 1 : currrentCertificateStep + 1;
+    this.certificateStep = isBack
+      ? currrentCertificateStep - 1
+      : currrentCertificateStep + 1;
   };
 
   @action _closeCertificateGeneration = () => {
@@ -585,6 +677,6 @@ export default class WalletsStore extends Store {
     this.generatingCertificateInProgress = false;
     this.certificateTemplate = false;
     this.certificateStep = null;
+    this._updateGeneratingCertificateError();
   };
-
 }

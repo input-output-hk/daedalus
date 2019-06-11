@@ -13,26 +13,18 @@ import joinSharedIcon from '../../source/renderer/app/assets/images/join-shared-
 import NotificationIcon from '../../source/renderer/app/assets/images/success-small.inline.svg';
 import TinySwitch from '../../source/renderer/app/components/widgets/forms/TinySwitch';
 
-
 storiesOf('Widgets', module)
-
-  .addDecorator((story) => {
+  .addDecorator(story => {
     const onChangeAction = action('onChange');
     const state = observable({
       checked: false,
       onChange: mobxAction((value, event) => {
         state.checked = value;
         onChangeAction(value, event);
-      })
+      }),
     });
 
-    return (
-      <StoryDecorator
-        propsForChildren={state}
-      >
-        {story()}
-      </StoryDecorator>
-    );
+    return <StoryDecorator propsForChildren={state}>{story()}</StoryDecorator>;
   })
 
   // ====== Stories ======
@@ -73,17 +65,16 @@ storiesOf('Widgets', module)
       <MnemonicInputWidget
         label="Your Passphrase"
         tokens={tokens}
-        onTokenChanged={(index, token) => tokens[index] = token}
+        onTokenChanged={(index, token) => {
+          tokens[index] = token;
+        }}
       />
     );
   })
 
   .add('NotificationMessage', () => (
     <div>
-      <NotificationMessage
-        icon={NotificationIcon}
-        show
-      >
+      <NotificationMessage icon={NotificationIcon} show>
         Address:
         <strong>1gGHFU9VsXV89kcJNzibNo8wJugxNtWsaqbjWaZEKzLtMGD</strong>
         copied to clipboard
@@ -91,12 +82,6 @@ storiesOf('Widgets', module)
     </div>
   ))
 
-  .add('TinySwitch', () => (
-    <TinySwitch />
-  ))
+  .add('TinySwitch', () => <TinySwitch />)
 
-  .add('TinySwitch - short label', () => (
-    <TinySwitch
-      label="My switch"
-    />
-  ));
+  .add('TinySwitch - short label', () => <TinySwitch label="My switch" />);

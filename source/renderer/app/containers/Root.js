@@ -7,25 +7,37 @@ import type { InjectedContainerProps } from '../types/injectedPropsType';
 
 type Props = InjectedContainerProps;
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class Root extends Component<Props> {
-
   render() {
     const { stores, actions, children } = this.props;
-    const { networkStatus, profile, adaRedemption, app, wallets } = stores;
-    const { isBlockConsolidationStatusPage } = app;
-    const { isSettingsPage } = profile;
+    const {
+      networkStatus,
+      profile,
+      adaRedemption,
+      wallets,
+      app,
+      staking,
+    } = stores;
+    const { isBlockConsolidationStatusDialog } = app;
+    const { isStakingPage } = staking;
+    const { isProfilePage, isSettingsPage } = profile;
     const { isAdaRedemptionPage } = adaRedemption;
     const { hasLoadedWallets } = wallets;
     const {
-      isSynced, isNodeStopping, isNodeStopped,
-      isSystemTimeCorrect, isNotEnoughDiskSpace,
+      isSynced,
+      isNodeStopping,
+      isNodeStopped,
+      isSystemTimeCorrect,
+      isNotEnoughDiskSpace,
     } = networkStatus;
 
-    const isPageThatDoesntNeedWallets = (
-      isBlockConsolidationStatusPage ||
-      (isAdaRedemptionPage && hasLoadedWallets && isSynced)
-    );
+    const isPageThatDoesntNeedWallets =
+      isBlockConsolidationStatusDialog ||
+      ((isAdaRedemptionPage || isStakingPage || isSettingsPage) &&
+        hasLoadedWallets &&
+        isSynced);
 
     // In case node is in stopping sequence we must show the "Connecting" screen
     // with the "Stopping Cardano node..." and "Cardano node stopped" messages
@@ -35,7 +47,7 @@ export default class Root extends Component<Props> {
     // Just render any page that doesn't require wallets to be loaded or node to be connected
     if (
       (isPageThatDoesntNeedWallets && !isNodeInStoppingSequence) ||
-      (isSettingsPage && (isNotEnoughDiskSpace || !isNodeInStoppingSequence))
+      (isProfilePage && (isNotEnoughDiskSpace || !isNodeInStoppingSequence))
     ) {
       return React.Children.only(children);
     }

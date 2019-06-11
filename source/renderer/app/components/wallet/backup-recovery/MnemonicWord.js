@@ -14,7 +14,6 @@ type Props = {
 
 @observer
 export default class MnemonicWord extends Component<Props> {
-
   render() {
     const { word, index, isActive, onClick } = this.props;
     const handleClick = onClick.bind(null, { word, index });
@@ -25,10 +24,10 @@ export default class MnemonicWord extends Component<Props> {
         themeOverrides={styles}
         disabled={!isActive}
         label={word}
+        // eslint-disable-next-line react/jsx-no-bind
         onClick={handleClick}
         skin={ButtonSkin}
       />
     );
   }
-
 }

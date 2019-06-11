@@ -151,7 +151,14 @@ let
     '';
     uninstaller = if (signingKeys != null) then self.signedUninstaller else self.unsignedUninstaller;
 
-    windows-installer = pkgs.runCommand "win64-installer-${cluster}" { buildInputs = [ self.daedalus-installer self.nsis pkgs.unzip self.configMutator pkgs.jq self.yaml2json ]; } ''
+    windows-installer = let
+      mapping = {
+        mainnet = "Daedalus";
+        staging = "Daedalus Staging";
+        testnet = "Daedalus Testnet";
+      };
+      installDir = mapping.${cluster};
+    in pkgs.runCommand "win64-installer-${cluster}" { buildInputs = [ self.daedalus-installer self.nsis pkgs.unzip self.configMutator pkgs.jq self.yaml2json ]; } ''
       mkdir home
       export HOME=$(realpath home)
 
@@ -164,9 +171,9 @@ let
       chmod -R +w installers
       cd installers
       mkdir -pv ../release/win32-x64/
-      ${if dummyInstaller then "mkdir -pv ../release/win32-x64/Daedalus-win32-x64/resources/app/dist/main/" else "cp -r ${self.rawapp-win64} ../release/win32-x64/Daedalus-win32-x64"}
-      chmod -R +w ../release/win32-x64/Daedalus-win32-x64
-      cp -v ${self.fastlist}/bin/fastlist.exe ../release/win32-x64/Daedalus-win32-x64/resources/app/dist/main/fastlist.exe
+      ${if dummyInstaller then ''mkdir -pv "../release/win32-x64/${installDir}-win32-x64/resources/app/dist/main/"'' else ''cp -r ${self.rawapp-win64} "../release/win32-x64/${installDir}-win32-x64"''}
+      chmod -R +w "../release/win32-x64/${installDir}-win32-x64"
+      cp -v ${self.fastlist}/bin/fastlist.exe "../release/win32-x64/${installDir}-win32-x64/resources/app/dist/main/fastlist.exe"
       ln -s ${./installers/nsis_plugins} nsis_plugins
 
       mkdir dlls
@@ -272,13 +279,14 @@ let
       mkdir -p etc
       cat /etc/hosts > etc/hosts
       cat /etc/nsswitch.conf > etc/nsswitch.conf
+      cat /etc/localtime > etc/localtime
       cat /etc/machine-id > etc/machine-id
       cat /etc/resolv.conf > etc/resolv.conf
 
       if [ "x$DEBUG_SHELL" == x ]; then
-        exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -e -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -- /nix/var/nix/profiles/profile-${cluster}/bin/enter-phase2 daedalus
+        exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -e -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -p LANG -p LANGUAGE -p LC_ALL -p LC_MESSAGES -- /nix/var/nix/profiles/profile-${cluster}/bin/enter-phase2 daedalus
       else
-        exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -e -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -- /nix/var/nix/profiles/profile-${cluster}/bin/enter-phase2 bash
+        exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -e -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -p LANG -p LANGUAGE -p LC_ALL -p LC_MESSAGES -- /nix/var/nix/profiles/profile-${cluster}/bin/enter-phase2 bash
       fi
     '';
     postInstall = pkgs.writeScriptBin "post-install" ''

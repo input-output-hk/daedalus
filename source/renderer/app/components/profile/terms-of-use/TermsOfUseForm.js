@@ -15,17 +15,19 @@ const messages = defineMessages({
   checkboxLabel: {
     id: 'profile.termsOfUse.checkboxLabel',
     defaultMessage: '!!!I agree with terms of use',
-    description: 'Label for the "I agree with terms of use" checkbox.'
+    description: 'Label for the "I agree with terms of use" checkbox.',
   },
   checkboxLabelWithDisclaimer: {
     id: 'profile.termsOfUse.checkboxLabelWithDisclaimer',
-    defaultMessage: '!!!I understand that the terms of use are only available in English and agree to the terms of use',
-    description: 'Label for the "I agree with terms of use" checkbox when terms of use are not translated.'
+    defaultMessage:
+      '!!!I understand that the terms of use are only available in English and agree to the terms of use',
+    description:
+      'Label for the "I agree with terms of use" checkbox when terms of use are not translated.',
   },
   submitLabel: {
     id: 'profile.termsOfUse.submitLabel',
     defaultMessage: '!!!Continue',
-    description: 'Label for the "Terms of use" form submit button.'
+    description: 'Label for the "Terms of use" form submit button.',
   },
 });
 
@@ -42,7 +44,6 @@ type State = {
 
 @observer
 export default class TermsOfUseForm extends Component<Props, State> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -51,9 +52,11 @@ export default class TermsOfUseForm extends Component<Props, State> {
     areTermsOfUseAccepted: false,
   };
 
-  toggleAcceptance() {
-    this.setState({ areTermsOfUseAccepted: !this.state.areTermsOfUseAccepted });
-  }
+  toggleAcceptance = () => {
+    this.setState(prevState => ({
+      areTermsOfUseAccepted: !prevState.areTermsOfUseAccepted,
+    }));
+  };
 
   submit = () => {
     this.props.onSubmit();
@@ -71,13 +74,12 @@ export default class TermsOfUseForm extends Component<Props, State> {
     return (
       <div className={styles.component}>
         <div className={styles.centeredBox}>
-
           <TermsOfUseText localizedTermsOfUse={localizedTermsOfUse} />
 
           <div className={styles.checkbox}>
             <Checkbox
               label={intl.formatMessage(messages.checkboxLabel)}
-              onChange={this.toggleAcceptance.bind(this)}
+              onChange={this.toggleAcceptance}
               checked={areTermsOfUseAccepted}
               skin={CheckboxSkin}
             />
@@ -92,10 +94,8 @@ export default class TermsOfUseForm extends Component<Props, State> {
             disabled={!areTermsOfUseAccepted}
             skin={ButtonSkin}
           />
-
         </div>
       </div>
     );
   }
-
 }

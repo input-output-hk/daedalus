@@ -5,5 +5,6 @@ import Action from './lib/Action';
 
 export default class NetworkStatusActions {
   isSyncedAndReady: Action<any> = new Action();
-  getEpochsData: Action<any> = new Action();
+  tlsConfigIsReady: Action<any> = new Action();
+  restartNode: Action<any> = new Action();
 }

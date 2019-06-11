@@ -4,9 +4,9 @@ import { inject, observer } from 'mobx-react';
 import ChangeSpendingPasswordDialog from '../../../../components/wallet/settings/ChangeSpendingPasswordDialog';
 import type { InjectedProps } from '../../../../types/injectedPropsType';
 
-@inject('actions', 'stores') @observer
+@inject('actions', 'stores')
+@observer
 export default class ChangeSpendingPasswordDialogContainer extends Component<InjectedProps> {
-
   static defaultProps = { actions: null, stores: null };
 
   render() {
@@ -17,7 +17,10 @@ export default class ChangeSpendingPasswordDialogContainer extends Component<Inj
     const activeWallet = wallets.active;
     const { updateSpendingPasswordRequest } = walletSettings;
 
-    if (!activeWallet) throw new Error('Active wallet required for ChangeSpendingPasswordDialogContainer.');
+    if (!activeWallet)
+      throw new Error(
+        'Active wallet required for ChangeSpendingPasswordDialogContainer.'
+      );
 
     return (
       <ChangeSpendingPasswordDialog
@@ -29,7 +32,9 @@ export default class ChangeSpendingPasswordDialogContainer extends Component<Inj
           const walletId = activeWallet.id;
           const { oldPassword, newPassword } = values;
           actions.walletSettings.updateSpendingPassword.trigger({
-            walletId, oldPassword, newPassword
+            walletId,
+            oldPassword,
+            newPassword,
           });
         }}
         onCancel={() => {
@@ -47,5 +52,4 @@ export default class ChangeSpendingPasswordDialogContainer extends Component<Inj
       />
     );
   }
-
 }

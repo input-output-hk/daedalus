@@ -6,6 +6,8 @@ import { AutoSizer, List } from 'react-virtualized';
 import type { Addresses } from '../../../api/addresses/types';
 import styles from './VirtualAddressesList.scss';
 
+/* eslint-disable react/no-unused-prop-types */
+
 type Props = {
   rows: Addresses,
   renderRow: Function,
@@ -32,7 +34,6 @@ const ADDRESS_SELECTOR = '.Address_component';
 
 @observer
 export class VirtualAddressesList extends Component<Props, State> {
-
   list: List;
   listWidth: number = 0;
   addressHeight: number = 0;
@@ -40,9 +41,8 @@ export class VirtualAddressesList extends Component<Props, State> {
   /**
    * Estimate the address height based on number of lines
    */
-  estimateAddressHeight = (lines: number): number => (
-    (ADDRESS_LINE_HEIGHT * lines) + ADDRESS_LINE_PADDING
-  );
+  estimateAddressHeight = (lines: number): number =>
+    ADDRESS_LINE_HEIGHT * lines + ADDRESS_LINE_PADDING;
 
   /**
    * Gets the number of lines based on the container width
@@ -64,7 +64,9 @@ export class VirtualAddressesList extends Component<Props, State> {
       this.addressHeight = firstAddress.offsetHeight;
     } else {
       // DOM is not ready yet, so use an estimated height
-      this.addressHeight = this.estimateAddressHeight(this.getLinesFromWidth(this.listWidth));
+      this.addressHeight = this.estimateAddressHeight(
+        this.getLinesFromWidth(this.listWidth)
+      );
       // Since we could only estimate the address heights, re-try
       // the update and hope that DOM is rendered then (for exact measurements)
       setTimeout(this.updateRowHeights, 100);
@@ -85,16 +87,16 @@ export class VirtualAddressesList extends Component<Props, State> {
   rowRenderer = ({
     index, // Index of row
     key, // Unique key within array of rendered rows
-    style // Style object to be applied to row (to position it);
-  }: { key: string, index: number, style: string }) => {
+    style, // Style object to be applied to row (to position it);
+  }: {
+    index: number,
+    key: string,
+    style: string,
+  }) => {
     const { rows, renderRow } = this.props;
     const address = rows[index];
     return (
-      <div
-        key={key}
-        style={style}
-        className={styles.address}
-      >
+      <div key={key} style={style} className={styles.address}>
         {renderRow(address, index)}
       </div>
     );
@@ -109,7 +111,9 @@ export class VirtualAddressesList extends Component<Props, State> {
           {({ width, height }) => (
             <List
               className={styles.list}
-              ref={(list) => this.list = list}
+              ref={list => {
+                this.list = list;
+              }}
               width={width}
               height={height}
               rowCount={rows.length}

@@ -9,7 +9,8 @@ export const messages = defineMessages({
   feesLabel: {
     id: 'wallet.amountInput.feesLabel',
     defaultMessage: '!!!+ {amount} of fees',
-    description: 'Label for the "+ 12.042481 of fees" message above amount input field.'
+    description:
+      'Label for the "+ 12.042481 of fees" message above amount input field.',
   },
 });
 
@@ -21,7 +22,6 @@ type Props = {
 };
 
 export default class AmountInputSkin extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -39,10 +39,10 @@ export default class AmountInputSkin extends Component<Props> {
           </span>
         )}
         <span className={styles.total}>
-          {total && !error && `= ${total} `}{currency}
+          {total && !error && `= ${total} `}
+          {currency}
         </span>
       </div>
     );
   }
-
 }

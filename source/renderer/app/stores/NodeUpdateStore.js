@@ -1,13 +1,14 @@
 // @flow
 import { observable, action, runInAction } from 'mobx';
-import { get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import type { NodeSoftware } from '../api/nodes/types';
+import type {
+  NodeSoftware,
+  GetLatestAppVersionResponse,
+} from '../api/nodes/types';
 import { NODE_UPDATE_POLL_INTERVAL } from '../config/timingConfig';
 
 export default class NodeUpdateStore extends Store {
-
   @observable isUpdateAvailable = false;
   @observable isUpdatePostponed = false;
   @observable isNotificationExpanded = false;
@@ -19,17 +20,31 @@ export default class NodeUpdateStore extends Store {
 
   // REQUESTS
   /* eslint-disable max-len */
-  @observable nextUpdateRequest: Request<NodeSoftware> = new Request(this.api.ada.nextUpdate);
-  @observable postponeUpdateRequest: Request<Promise<void>> = new Request(this.api.ada.postponeUpdate);
-  @observable applyUpdateRequest: Request<Promise<void>> = new Request(this.api.ada.applyUpdate);
+  @observable nextUpdateRequest: Request<NodeSoftware> = new Request(
+    this.api.ada.nextUpdate
+  );
+  @observable postponeUpdateRequest: Request<Promise<void>> = new Request(
+    this.api.ada.postponeUpdate
+  );
+  @observable applyUpdateRequest: Request<Promise<void>> = new Request(
+    this.api.ada.applyUpdate
+  );
+  @observable
+  getLatestAppVersionRequest: Request<GetLatestAppVersionResponse> = new Request(
+    this.api.ada.getLatestAppVersion
+  );
   /* eslint-disable max-len */
 
   setup() {
     const actions = this.actions.nodeUpdate;
     actions.acceptNodeUpdate.listen(this._acceptNodeUpdate);
     actions.postponeNodeUpdate.listen(this._postponeNodeUpdate);
-    actions.toggleNodeUpdateNotificationExpanded.listen(this._toggleNotificationExpanded);
-    actions.getLatestAvailableAppVersion.listen(this._getLatestAvailableAppVersion);
+    actions.toggleNodeUpdateNotificationExpanded.listen(
+      this._toggleNotificationExpanded
+    );
+    actions.getLatestAvailableAppVersion.listen(
+      this._getLatestAvailableAppVersion
+    );
     setInterval(this.refreshNextUpdate, NODE_UPDATE_POLL_INTERVAL);
   }
 
@@ -37,7 +52,12 @@ export default class NodeUpdateStore extends Store {
     if (this.stores.networkStatus.isSynced) {
       await this.nextUpdateRequest.execute();
       const { result } = this.nextUpdateRequest;
-      if (result && !this.isUpdateAvailable && !this.isUpdatePostponed && !this.isUpdateInstalled) {
+      if (
+        result &&
+        !this.isUpdateAvailable &&
+        !this.isUpdatePostponed &&
+        !this.isUpdateInstalled
+      ) {
         runInAction('refreshNextUpdate', () => {
           this.isUpdateAvailable = true;
           this.isNotificationExpanded = true;
@@ -63,42 +83,38 @@ export default class NodeUpdateStore extends Store {
   };
 
   @action _getLatestAvailableAppVersion = async () => {
-    const { isDevelopment, isTest } = this.environment;
-    if (!isDevelopment || isTest) {
-      this.isNewAppVersionLoading = true;
-      const versionInfo = await this.api.ada.getLatestAppVersionInfo();
-      if (versionInfo) this.setLatestAvailableAppVersion(versionInfo);
-    }
+    this.isNewAppVersionLoading = true;
+    const { latestAppVersion } = await this.getLatestAppVersionRequest.execute()
+      .promise;
+    this.setLatestAvailableAppVersion(latestAppVersion);
   };
 
-  @action setLatestAvailableAppVersion = (versionInfo) => {
-    const { version, platform } = this.environment;
-    const availableVersion = get(versionInfo, ['platforms', platform, 'version'], null);
-
+  @action setLatestAvailableAppVersion = (latestAppVersion: ?string) => {
     let isNewAppVersionAvailable = false;
-    if (availableVersion) {
-      const chunkedAvailableVersion = availableVersion.split('.');
-      const chunkedCurrentVersion = version.split('.');
+
+    if (latestAppVersion) {
+      const { version: currentVersion } = this.environment;
+      const chunkedCurrentVersion = currentVersion.split('.').map(Number);
+      const chunkedLatestVersion = latestAppVersion.split('.').map(Number);
 
       // Main version changed
-      const isMainVersionChanged = chunkedCurrentVersion[0] < chunkedAvailableVersion[0];
+      const isMainVersionChanged =
+        chunkedCurrentVersion[0] < chunkedLatestVersion[0];
       // Middle version changed
-      const isMiddleVersionChanged = (
-        chunkedCurrentVersion[0] === chunkedAvailableVersion[0] &&
-        chunkedCurrentVersion[1] < chunkedAvailableVersion[1]
-      );
+      const isMiddleVersionChanged =
+        chunkedCurrentVersion[0] === chunkedLatestVersion[0] &&
+        chunkedCurrentVersion[1] < chunkedLatestVersion[1];
       // Minor version changed
-      const isMinorVersionChanged = (
-        chunkedCurrentVersion[0] === chunkedAvailableVersion[0] &&
-        chunkedCurrentVersion[1] === chunkedAvailableVersion[1] &&
-        chunkedCurrentVersion[2] < chunkedAvailableVersion[2]
-      );
-      isNewAppVersionAvailable = isMainVersionChanged || isMiddleVersionChanged || isMinorVersionChanged;
+      const isMinorVersionChanged =
+        chunkedCurrentVersion[0] === chunkedLatestVersion[0] &&
+        chunkedCurrentVersion[1] === chunkedLatestVersion[1] &&
+        chunkedCurrentVersion[2] < chunkedLatestVersion[2];
+      isNewAppVersionAvailable =
+        isMainVersionChanged || isMiddleVersionChanged || isMinorVersionChanged;
     }
 
     this.isNewAppVersionLoading = false;
     this.isNewAppVersionAvailable = isNewAppVersionAvailable;
-    this.availableAppVersion = availableVersion;
+    this.availableAppVersion = latestAppVersion;
   };
-
 }

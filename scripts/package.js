@@ -36,7 +36,7 @@ const DEFAULT_OPTS = {
     /^\/tls($|\/)/,
     /^\/translations($|\/)/,
     /^\/installers\/.*exe/,
-  ]
+  ],
 };
 
 const icon = argv.icon || argv.i || 'installers/icons/electron';
@@ -47,11 +47,11 @@ if (version) {
   DEFAULT_OPTS.version = version;
   startPack();
 } else {
-  exec('npm list electron --dev', (err, stdout) => {
+  exec('yarn list --pattern electron', (err, stdout) => {
     if (err) {
       DEFAULT_OPTS.version = '1.7.9';
     } else {
-      DEFAULT_OPTS.version = stdout.split('electron@')[1].replace(/\s/g, '');
+      DEFAULT_OPTS.version = stdout.split('electron@')[1].replace(/\s/g, '').split('├')[0];
     }
     startPack();
   });
@@ -59,6 +59,7 @@ if (version) {
 
 /** @desc Build, clear previous releases and pack new versions */
 async function startPack() {
+  // eslint-disable-next-line no-console
   console.log('start pack...');
 
   try {
@@ -76,7 +77,7 @@ async function startPack() {
         });
       });
     } else if (argv.win64) {
-      pack("win32", "x64", log("win32", "x64"));
+      pack('win32', 'x64', log('win32', 'x64'));
     } else {
       // build for current platform only
       pack(os.platform(), os.arch(), log(os.platform(), os.arch()));
@@ -85,7 +86,6 @@ async function startPack() {
     console.error(error);
   }
 }
-
 
 /**
  * @desc
@@ -98,13 +98,15 @@ function pack(plat, arch, cb) {
   if (plat === 'darwin' && arch === 'ia32') return;
 
   const iconObj = {
-    icon: DEFAULT_OPTS.icon + (() => {
-      let extension = '.png';
-      if (plat === 'darwin') extension = '.iconset';
-      if (plat === 'win32') extension = '.ico';
+    icon:
+      DEFAULT_OPTS.icon +
+      (() => {
+        let extension = '.png';
+        if (plat === 'darwin') extension = '.iconset';
+        if (plat === 'win32') extension = '.ico';
 
-      return extension;
-    })()
+        return extension;
+      })(),
   };
 
   const opts = Object.assign({}, DEFAULT_OPTS, iconObj, {
@@ -112,12 +114,11 @@ function pack(plat, arch, cb) {
     arch,
     prune: false,
     'app-version': pkg.version || DEFAULT_OPTS.version,
-    out: `release/${plat}-${arch}`
+    out: `release/${plat}-${arch}`,
   });
 
   packager(opts, cb);
 }
-
 
 /**
  * @desc Log out success / error of building for given platform and architecture
@@ -126,8 +127,9 @@ function pack(plat, arch, cb) {
  * @return {Function}
  */
 function log(plat, arch) {
-  return (err, filepath) => {
+  return (err) => {
     if (err) return console.error(err);
+    // eslint-disable-next-line no-console
     console.log(`${plat}-${arch} finished!`);
   };
 }

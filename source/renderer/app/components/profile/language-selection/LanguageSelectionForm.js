@@ -16,12 +16,12 @@ const messages = defineMessages({
   languageSelectLabel: {
     id: 'profile.languageSelect.form.languageSelectLabel',
     defaultMessage: '!!!Select your language',
-    description: 'Label for the language select.'
+    description: 'Label for the language select.',
   },
   submitLabel: {
     id: 'profile.languageSelect.form.submitLabel',
     defaultMessage: '!!!Continue',
-    description: 'Label for the "Language select" form submit button.'
+    description: 'Label for the "Language select" form submit button.',
   },
 });
 
@@ -29,12 +29,12 @@ type Props = {
   languages: Array<{ value: string, label: ReactIntlMessage }>,
   onSubmit: Function,
   isSubmitting: boolean,
+  preselectedLanguage: string,
   error?: ?LocalizableError,
 };
 
 @observer
 export default class LanguageSelectionForm extends Component<Props> {
-
   static defaultProps = {
     error: null,
   };
@@ -45,26 +45,29 @@ export default class LanguageSelectionForm extends Component<Props> {
 
   submit = () => {
     this.form.submit({
-      onSuccess: (form) => {
+      onSuccess: form => {
         const { languageId } = form.values();
         this.props.onSubmit({ locale: languageId });
       },
-      onError: () => {}
+      onError: () => {},
     });
   };
 
-  form = new ReactToolboxMobxForm({
-    fields: {
-      languageId: {
-        label: this.context.intl.formatMessage(messages.languageSelectLabel),
-        value: this.props.languages[0].value,
-      }
-    }
-  }, {
-    options: {
-      validateOnChange: false,
+  form = new ReactToolboxMobxForm(
+    {
+      fields: {
+        languageId: {
+          label: this.context.intl.formatMessage(messages.languageSelectLabel),
+          value: this.props.preselectedLanguage,
+        },
+      },
     },
-  });
+    {
+      options: {
+        validateOnChange: false,
+      },
+    }
+  );
 
   render() {
     const { intl } = this.context;
@@ -73,12 +76,11 @@ export default class LanguageSelectionForm extends Component<Props> {
     const languageId = form.$('languageId');
     const languageOptions = languages.map(language => ({
       value: language.value,
-      label: intl.formatMessage(language.label)
+      label: intl.formatMessage(language.label),
     }));
     return (
       <div className={styles.component}>
         <div className={styles.centeredBox}>
-
           <Select
             className={styles.languageSelect}
             options={languageOptions}
@@ -89,19 +91,14 @@ export default class LanguageSelectionForm extends Component<Props> {
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
           <Button
-            className={classnames([
-              'primary',
-              styles.submitButton,
-            ])}
+            className={classnames(['primary', styles.submitButton])}
             label={intl.formatMessage(messages.submitLabel)}
             skin={ButtonSpinnerSkin}
             loading={isSubmitting}
             onClick={this.submit}
           />
-
         </div>
       </div>
     );
   }
-
 }

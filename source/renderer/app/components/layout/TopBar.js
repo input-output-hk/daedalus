@@ -4,6 +4,8 @@ import SVGInline from 'react-svg-inline';
 import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
+import LegacyBadge, { LEGACY_BADGE_MODES } from '../notifications/LegacyBadge';
+import LegacyNotification from '../notifications/LegacyNotification';
 import Wallet from '../../domains/Wallet';
 import styles from './TopBar.scss';
 import { formattedWalletAmount } from '../../utils/formatters';
@@ -17,11 +19,8 @@ type Props = {
 
 @observer
 export default class TopBar extends Component<Props> {
-
   render() {
-    const {
-      onLeftIconClick, leftIcon, activeWallet, children,
-    } = this.props;
+    const { onLeftIconClick, leftIcon, activeWallet, children } = this.props;
 
     const topBarStyles = classNames([
       styles.topBar,
@@ -29,35 +28,39 @@ export default class TopBar extends Component<Props> {
     ]);
 
     const topBarTitle = activeWallet ? (
-      <div className={styles.walletInfo}>
-        <div className={styles.walletName}>{activeWallet.name}</div>
-        <div className={styles.walletAmount}>
-          {
-            // show currency and use long format
-            formattedWalletAmount(activeWallet.amount, true)
-          }
-        </div>
-      </div>
+      <span className={styles.walletInfo}>
+        <span className={styles.walletName}>
+          {activeWallet.name}
+          {activeWallet.isLegacy && (
+            <LegacyBadge mode={LEGACY_BADGE_MODES.NATURAL} />
+          )}
+        </span>
+        <span className={styles.walletAmount}>
+          {// show currency and use long format
+          formattedWalletAmount(activeWallet.amount, true)}
+        </span>
+      </span>
     ) : null;
 
     const leftIconSVG = leftIcon && (
-      <SVGInline
-        svg={leftIcon}
-        className={styles.sidebarIcon}
-      />
+      <SVGInline svg={leftIcon} className={styles.sidebarIcon} />
     );
 
     return (
-      <header className={topBarStyles}>
-        {leftIcon && (
-          <button className={styles.leftIcon} onClick={onLeftIconClick}>
-            {leftIconSVG}
-          </button>
+      <header>
+        <div className={topBarStyles}>
+          {leftIcon && (
+            <button className={styles.leftIcon} onClick={onLeftIconClick}>
+              {leftIconSVG}
+            </button>
+          )}
+          <div className={styles.topBarTitle}>{topBarTitle}</div>
+          {children}
+        </div>
+        {activeWallet && activeWallet.isLegacy && (
+          <LegacyNotification onLearnMore={() => null} onMove={() => null} />
         )}
-        <div className={styles.topBarTitle}>{topBarTitle}</div>
-        {children}
       </header>
     );
   }
-
 }

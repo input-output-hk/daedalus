@@ -1,0 +1,77 @@
+@import '../stakingConfig';
+
+.component {
+  @extend %regularText;
+  margin: 20px;
+
+  h2 {
+    color: var(--theme-staking-stake-pools-title-color);
+    line-height: 1.38;
+    margin-bottom: 10px;
+    opacity: 0.5;
+    padding-left: 20px;
+  }
+}
+
+.search {
+  margin-bottom: 26px;
+  position: relative;
+}
+
+.searchIcon {
+  left: 20px;
+  position: absolute;
+  top: 13.5px;
+  z-index: 1;
+
+  svg {
+    width: 15px;
+  }
+}
+
+.searchInput {
+  input {
+    border-radius: 4px;
+    height: 50px;
+    padding-left: 50px;
+    padding-right: 175px;
+  }
+}
+
+.searchFilter {
+  display: block;
+  position: absolute;
+  right: 20px;
+  top: 13px;
+
+  li {
+    display: inline-block;
+    margin-left: 20px;
+  }
+
+  button {
+    color: var(--theme-staking-stake-pools-search-button-color);
+    cursor: pointer;
+    font-size: 16px;
+    opacity: 0.3;
+  }
+
+  .searchFilterActiveItem {
+    opacity: 1;
+  }
+}
+
+.poolList {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: 0 0 20px -5px;
+}
+
+.stakePoolsDelegatingList {
+  @extend .poolList;
+}
+
+.stakePoolsList {
+  @extend .poolList;
+}

@@ -4,7 +4,6 @@ export type Environment = {
   apiVersion: string,
   mobxDevTools: boolean | string,
   current: string,
-  reportUrl: string,
   isDev: boolean,
   isTest: boolean,
   isProduction: boolean,
@@ -18,13 +17,19 @@ export type Environment = {
   buildLabel: string,
   platform: string,
   platformVersion: string,
+  mainProcessID: string,
+  rendererProcessID: string,
   os: string,
+  cpu: string,
+  ram: number,
   installerVersion: string,
   version: string,
   isWindows: boolean,
   isMacOS: boolean,
-  isLinux: boolean
+  isLinux: boolean,
+  isInSafeMode: boolean,
 };
+
 // constants
 export const PRODUCTION = 'production';
 export const DEVELOPMENT = 'development';
@@ -32,7 +37,6 @@ export const TEST = 'test';
 export const MAINNET = 'mainnet';
 export const STAGING = 'staging';
 export const TESTNET = 'testnet';
-export const STAGING_REPORT_URL = 'http://staging-report-server.awstest.iohkdev.io:8080/';
 export const MAC_OS = 'darwin';
 export const WINDOWS = 'win32';
 export const LINUX = 'linux';

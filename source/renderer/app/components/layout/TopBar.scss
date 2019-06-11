@@ -8,21 +8,26 @@
   z-index: 100;
 
   &.withoutWallet {
-    background: var(--theme-topbar-background-color) url("../../assets/images/header-logo.svg") no-repeat center !important;
+    background: var(--theme-topbar-background-color)
+      url('../../assets/images/header-logo.svg') no-repeat center !important;
     background-size: 61px !important;
   }
 
   &.withWallet {
     .walletInfo {
+      align-items: center;
       color: var(--theme-topbar-wallet-info-color);
+      display: flex;
+      flex-direction: column;
       font-family: var(--font-regular);
       text-align: center;
       text-shadow: 0 2.5px 10px rgba(0, 0, 0, 0.25);
       user-select: text;
 
       .walletName {
-        font-size: 21px;
         color: var(--theme-topbar-wallet-name-color);
+        font-size: 21px;
+        position: relative;
       }
 
       .walletAmount {
@@ -56,8 +61,10 @@
   }
 
   .topBarTitle {
+    align-items: center;
+    display: flex;
     flex-grow: 1;
+    justify-content: center;
     margin-right: 24px;
   }
 }
-

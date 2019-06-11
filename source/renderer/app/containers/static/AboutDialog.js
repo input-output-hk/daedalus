@@ -4,25 +4,32 @@ import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
 import About from '../../components/static/About';
 import styles from './AboutDialog.scss';
-import type { InjectedProps } from '../../types/injectedPropsType';
+import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
 
-type Props = InjectedProps;
+type Props = InjectedDialogContainerProps;
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class AboutDialog extends Component<Props> {
-
-  static defaultProps = { actions: null, stores: null };
+  static defaultProps = {
+    actions: null,
+    stores: null,
+    children: null,
+    onClose: () => {},
+  };
 
   render() {
     const { app } = this.props.stores;
     const { openExternalLink, environment } = app;
+    const { actions } = this.props;
+    const { closeAboutDialog } = actions.app;
     const { apiVersion, build, os, version } = environment;
 
     return (
       <ReactModal
         isOpen
-        closeOnOverlayClick
-        onRequestClose={this.props.actions.app.closeAboutDialog.trigger}
+        onRequestClose={closeAboutDialog.trigger}
+        shouldCloseOnOverlayClick={false}
         className={styles.dialog}
         overlayClassName={styles.overlay}
         ariaHideApp={false}
@@ -33,6 +40,7 @@ export default class AboutDialog extends Component<Props> {
           onOpenExternalLink={openExternalLink}
           os={os}
           version={version}
+          onClose={closeAboutDialog.trigger}
         />
       </ReactModal>
     );

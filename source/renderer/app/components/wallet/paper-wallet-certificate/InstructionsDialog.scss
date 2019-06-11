@@ -1,7 +1,8 @@
 @import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/error-message';
 
 .instructionsContentWrapper {
-  color: var(--theme-instructions-text-color);
+  color: var(--theme-dialog-text-color);
   font-family: var(--font-light);
 
   .subtitle {
@@ -14,7 +15,7 @@
   }
 
   .instructionsList {
-    border-top: 1px solid var(--theme-separation-border-color);
+    border-top: 1px solid var(--theme-dialog-border-color);
     margin-top: 20px;
 
     .link,
@@ -40,12 +41,14 @@
     }
 
     a {
-      color: var(--theme-paper-wallet-create-certificate-dialog-explorer-link-color);
+      color: var(
+        --theme-paper-wallet-create-certificate-dialog-explorer-link-color
+      );
     }
   }
 
   .printingInstructions {
-    border-top: 1px solid var(--theme-separation-border-color);
+    border-top: 1px solid var(--theme-dialog-border-color);
     margin-top: 20px;
     padding-bottom: 0;
     padding-top: 20px;
@@ -57,7 +60,13 @@
   }
 }
 
+.error {
+  @include error-message;
+  margin-top: 20px;
+  text-align: center;
+}
+
 .submitButtonSpinning {
   box-shadow: none !important;
-  @include loading-spinner("../../../assets/images/spinner-light.svg");
+  @include loading-spinner('../../../assets/images/spinner-light.svg');
 }

@@ -7,37 +7,45 @@ export type TlsConfig = {
   key: Uint8Array,
 };
 
-export type NetworkNames = (
-  'mainnet' | 'staging' | 'testnet' | 'development' | string
-);
+export type NetworkNames =
+  | 'mainnet'
+  | 'staging'
+  | 'testnet'
+  | 'development'
+  | string;
 
-export type PlatformNames = (
-  'win32' | 'linux' | 'darwin' | string
-);
+export type PlatformNames = 'win32' | 'linux' | 'darwin' | string;
 
 export const NetworkNameOptions = {
   mainnet: 'mainnet',
   staging: 'staging',
   testnet: 'testnet',
-  development: 'development'
+  development: 'development',
 };
 
-export type CardanoNodeState = (
-  'stopped' | 'starting' | 'running' | 'stopping' | 'updating' |
-  'updated' | 'crashed' | 'errored' | 'exiting' | 'unrecoverable'
-);
+export type CardanoNodeState =
+  | 'stopped'
+  | 'starting'
+  | 'running'
+  | 'stopping'
+  | 'updating'
+  | 'updated'
+  | 'crashed'
+  | 'errored'
+  | 'exiting'
+  | 'unrecoverable';
 
 export const CardanoNodeStates: {
   STARTING: CardanoNodeState,
-  RUNNING: CardanoNodeState;
-  EXITING: CardanoNodeState;
-  STOPPING: CardanoNodeState;
-  STOPPED: CardanoNodeState;
-  UPDATING: CardanoNodeState;
-  UPDATED: CardanoNodeState;
-  CRASHED: CardanoNodeState;
-  ERRORED: CardanoNodeState;
-  UNRECOVERABLE: CardanoNodeState;
+  RUNNING: CardanoNodeState,
+  EXITING: CardanoNodeState,
+  STOPPING: CardanoNodeState,
+  STOPPED: CardanoNodeState,
+  UPDATING: CardanoNodeState,
+  UPDATED: CardanoNodeState,
+  CRASHED: CardanoNodeState,
+  ERRORED: CardanoNodeState,
+  UNRECOVERABLE: CardanoNodeState,
 } = {
   STARTING: 'starting',
   RUNNING: 'running',
@@ -51,24 +59,21 @@ export const CardanoNodeStates: {
   UNRECOVERABLE: 'unrecoverable',
 };
 
-export type CardanoPidOptions = (
-  'mainnet-PREVIOUS-CARDANO-PID' |
-  'staging-PREVIOUS-CARDANO-PID' |
-  'testnet-PREVIOUS-CARDANO-PID' |
-  'development-PREVIOUS-CARDANO-PID' |
-  string
-);
+export type CardanoPidOptions =
+  | 'mainnet-PREVIOUS-CARDANO-PID'
+  | 'staging-PREVIOUS-CARDANO-PID'
+  | 'testnet-PREVIOUS-CARDANO-PID'
+  | 'development-PREVIOUS-CARDANO-PID'
+  | string;
 
 export type CardanoNodeStorageKeys = {
-  PREVIOUS_CARDANO_PID: CardanoPidOptions
+  PREVIOUS_CARDANO_PID: CardanoPidOptions,
 };
 
-export type CardanoNodeProcessNames = (
-  'cardano-node' | 'cardano-node.exe'
-);
+export type CardanoNodeProcessNames = 'cardano-node' | 'cardano-node.exe';
 
 export type ProcessNames = {
-  CARDANO_PROCESS_NAME: CardanoNodeProcessNames
+  CARDANO_PROCESS_NAME: CardanoNodeProcessNames,
 };
 
 export const CardanoProcessNameOptions: {
@@ -78,25 +83,24 @@ export const CardanoProcessNameOptions: {
 } = {
   win32: 'cardano-node.exe',
   linux: 'cardano-node',
-  darwin: 'cardano-node'
+  darwin: 'cardano-node',
 };
 
 /**
  * Expected fault injection types that can be used to tell
  * cardano-node to behave faulty (useful for testing)
  */
-export type FaultInjection = (
-  'FInjIgnoreShutdown' |
-  'FInjIgnoreAPI' |
-  'FInjApplyUpdateNoExit' |
-  'FInjApplyUpdateWrongExitCode'
-);
+export type FaultInjection =
+  | 'FInjIgnoreShutdown'
+  | 'FInjIgnoreAPI'
+  | 'FInjApplyUpdateNoExit'
+  | 'FInjApplyUpdateWrongExitCode';
 
 export const FaultInjections: {
   IgnoreShutdown: FaultInjection,
   IgnoreApi: FaultInjection,
   ApplyUpdateNoExit: FaultInjection,
-  ApplyUpdateWrongExitCode: FaultInjection
+  ApplyUpdateWrongExitCode: FaultInjection,
 } = {
   IgnoreShutdown: 'FInjIgnoreShutdown',
   IgnoreApi: 'FInjIgnoreAPI',
@@ -113,4 +117,5 @@ export type CardanoStatus = {
   isNodeSyncing: boolean,
   isNodeInSync: boolean,
   hasBeenConnected: boolean,
+  cardanoNodeID: number,
 };

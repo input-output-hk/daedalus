@@ -6,9 +6,9 @@ import TopBarLayout from '../../components/layout/TopBarLayout';
 import TermsOfUseForm from '../../components/profile/terms-of-use/TermsOfUseForm';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class TermsOfUsePage extends Component<InjectedProps> {
-
   static defaultProps = { actions: null, stores: null };
 
   onSubmit = () => {
@@ -16,14 +16,17 @@ export default class TermsOfUsePage extends Component<InjectedProps> {
   };
 
   render() {
-    const { setTermsOfUseAcceptanceRequest, termsOfUse } = this.props.stores.profile;
+    const {
+      setTermsOfUseAcceptanceRequest,
+      termsOfUse,
+    } = this.props.stores.profile;
     const { currentRoute } = this.props.stores.app;
     const isSubmitting = setTermsOfUseAcceptanceRequest.isExecuting;
-    const topbar = <TopBar currentRoute={currentRoute} showSubMenuToggle={false} />;
+    const topbar = (
+      <TopBar currentRoute={currentRoute} showSubMenuToggle={false} />
+    );
     return (
-      <TopBarLayout
-        topbar={topbar}
-      >
+      <TopBarLayout topbar={topbar}>
         <TermsOfUseForm
           localizedTermsOfUse={termsOfUse}
           onSubmit={this.onSubmit}

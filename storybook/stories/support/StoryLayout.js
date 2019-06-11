@@ -6,13 +6,10 @@ import { observer, inject } from 'mobx-react';
 import { action } from '@storybook/addon-actions';
 
 // Assets and helpers
+import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarConfig';
 import { formattedWalletAmount } from '../../../source/renderer/app/utils/formatters';
 import NodeSyncStatusIcon from '../../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
 import Wallet from '../../../source/renderer/app/domains/Wallet.js';
-import walletsIcon from '../../../source/renderer/app/assets/images/sidebar/wallet-ic.inline.svg';
-import settingsIcon from '../../../source/renderer/app/assets/images/sidebar/settings-ic.inline.svg';
-import adaIcon from '../../../source/renderer/app/assets/images/sidebar/ada-redemption-ic.inline.svg';
-import paperCertificateIcon from '../../../source/renderer/app/assets/images/sidebar/paper-certificate-ic.inline.svg';
 import type { SidebarMenus } from '../../../source/renderer/app/components/sidebar/Sidebar';
 import type { SidebarWalletType } from '../../../source/renderer/app/types/sidebarTypes';
 // import type { Wallet } from '../../../source/renderer/app/domains/WalletTransaction';
@@ -25,7 +22,7 @@ import SidebarLayout from '../../../source/renderer/app/components/layout/Sideba
 export type StoriesProps = {
   wallets: Array<Wallet>,
   activeWalletId: string,
-  setActiveWalletId: Function
+  setActiveWalletId: Function,
 };
 
 type Props = {
@@ -36,77 +33,72 @@ type Props = {
   stores?: ?{},
 };
 
-const sidebarCategories = [
-  {
-    name: 'WALLETS',
-    route: '/wallets',
-    icon: walletsIcon,
-  },
-  {
-    name: 'ADA_REDEMPTION',
-    route: '/ada-redemption',
-    icon: adaIcon,
-  },
-  {
-    name: 'PAPER_WALLET',
-    route: '/paper-wallet-create-certificate',
-    icon: paperCertificateIcon,
-  },
-  {
-    name: 'SETTINGS',
-    route: '/settings',
-    icon: settingsIcon,
-  },
+const CATEGORIES_COUNTDOWN = [
+  CATEGORIES_BY_NAME.WALLETS,
+  CATEGORIES_BY_NAME.STAKING_DELEGATION_COUNTDOWN,
+  CATEGORIES_BY_NAME.SETTINGS,
 ];
 
+const CATEGORIES = [
+  CATEGORIES_BY_NAME.WALLETS,
+  CATEGORIES_BY_NAME.STAKING,
+  CATEGORIES_BY_NAME.SETTINGS,
+];
 
-@inject('stores', 'storiesProps') @observer
+@inject('stores', 'storiesProps')
+@observer
 export default class StoryLayout extends Component<Props> {
-
   static defaultProps = { stores: null, storiesProps: null };
 
   render() {
-
     const {
       activeSidebarCategory,
       storyName = '',
       storiesProps = {},
       stores,
-      children
+      children,
     } = this.props;
 
-    const {
-      wallets,
-      activeWalletId,
-      setActiveWalletId
-    } = storiesProps;
+    const { wallets, activeWalletId, setActiveWalletId } = storiesProps;
 
     const activeWallet: Wallet = wallets[parseInt(activeWalletId, 10)];
     const activeNavItem = storyName.split(' ')[0].toLowerCase();
     const sidebarMenus = this.getSidebarMenus(
-      this.getSidebarWallets(wallets), activeWalletId, setActiveWalletId
+      this.getSidebarWallets(wallets),
+      activeWalletId,
+      setActiveWalletId
     );
 
     return (
       <div
         style={{
-          height: '100vh'
+          height: '100vh',
         }}
       >
         <SidebarLayout
-          sidebar={this.getSidebar(activeSidebarCategory, sidebarMenus)}
-          topbar={this.getTopbar(activeSidebarCategory, activeWallet, activeNavItem)}
+          sidebar={this.getSidebar(
+            storyName,
+            activeSidebarCategory,
+            sidebarMenus
+          )}
+          topbar={this.getTopbar(
+            activeSidebarCategory,
+            activeWallet,
+            activeNavItem
+          )}
         >
-          { Children.map(children, (child) => React.cloneElement(child, { stores })) }
+          {Children.map(children, child =>
+            React.cloneElement(child, { stores })
+          )}
         </SidebarLayout>
       </div>
     );
   }
 
-  @observable
-  isShowingSubMenus = this.props.activeSidebarCategory === '/wallets' && !!this.props.children;
+  @observable isShowingSubMenus =
+    this.props.activeSidebarCategory === '/wallets' && !!this.props.children;
 
-  getSidebarWallets = (wallets: Array<Wallet>): Array<SidebarWalletType> => (
+  getSidebarWallets = (wallets: Array<Wallet>): Array<SidebarWalletType> =>
     wallets.map((wallet: Wallet) => ({
       id: wallet.id,
       title: wallet.name,
@@ -114,8 +106,8 @@ export default class StoryLayout extends Component<Props> {
       isConnected: true,
       isRestoreActive: false,
       restoreProgress: 0,
-    }))
-  );
+      isLegacy: wallet.isLegacy,
+    }));
 
   getSidebarMenus = (
     items: Array<SidebarWalletType>,
@@ -127,37 +119,55 @@ export default class StoryLayout extends Component<Props> {
       activeWalletId,
       actions: {
         onAddWallet: action('toggleAddWallet'),
-        onWalletItemClick: setActiveWalletId
-      }
-    }
+        onWalletItemClick: setActiveWalletId,
+      },
+    },
   });
 
   getSidebar = (
+    storyName: string,
     activeSidebarCategory: string,
-    sidebarMenus: SidebarMenus,
-  ) => (
-    <Sidebar
-      categories={sidebarCategories}
-      activeSidebarCategory={activeSidebarCategory}
-      menus={sidebarMenus}
-      isShowingSubMenus={this.isShowingSubMenus}
-      onCategoryClicked={action('onCategoryClicked')}
-      isDialogOpen={() => false}
-      onAddWallet={action('onAddWallet')}
-      openDialogAction={action('openDialog')}
-      onSubmitSupportRequest={() => {}}
-      pathname="/"
-    />
-  );
+    sidebarMenus: SidebarMenus
+  ) => {
+    const sidebarCategories =
+      storyName === 'Decentralization Start Info'
+        ? CATEGORIES_COUNTDOWN
+        : CATEGORIES;
 
-  getTopbar = (activeSidebarCategory: string, activeWallet: Wallet, activeNavItem: string) => (
+    return (
+      <Sidebar
+        categories={sidebarCategories}
+        activeSidebarCategory={activeSidebarCategory}
+        menus={sidebarMenus}
+        isShowingSubMenus={this.isShowingSubMenus}
+        onCategoryClicked={action('onCategoryClicked')}
+        isDialogOpen={() => false}
+        onAddWallet={action('onAddWallet')}
+        openDialogAction={action('openDialog')}
+        onSubmitSupportRequest={() => {}}
+        pathname="/"
+      />
+    );
+  };
+
+  getTopbar = (
+    activeSidebarCategory: string,
+    activeWallet: Wallet,
+    activeNavItem: string
+  ) => (
     <TopBar
       onToggleSidebar={() => {
-        runInAction(() => this.isShowingSubMenus = !this.isShowingSubMenus);
+        runInAction(() => {
+          this.isShowingSubMenus = !this.isShowingSubMenus;
+        });
       }}
       formattedWalletAmount={formattedWalletAmount}
       currentRoute={`/wallets/${activeWallet.id}/${activeNavItem}`}
-      activeWallet={activeSidebarCategory === '/wallets' && activeNavItem !== 'empty' ? activeWallet : null}
+      activeWallet={
+        activeSidebarCategory === '/wallets' && activeNavItem !== 'empty'
+          ? activeWallet
+          : null
+      }
       showSubMenuToggle
       showSubMenus={this.isShowingSubMenus}
     >
@@ -171,5 +181,4 @@ export default class StoryLayout extends Component<Props> {
       />
     </TopBar>
   );
-
 }

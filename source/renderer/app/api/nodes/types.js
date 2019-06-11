@@ -1,45 +1,57 @@
 // @flow
-export type LocalTimeInformationStatus = 'unavailable' | 'pending' | 'available';
+export type LocalTimeInformationStatus =
+  | 'unavailable'
+  | 'pending'
+  | 'available';
 
-export type NodeInfo = {
+export type NodeInfoResponse = {
   syncProgress: {
     quantity: number,
-    unit: 'percent'
+    unit: 'percent',
   },
   blockchainHeight: ?{
     quantity: number,
-    unit: ?'blocks'
+    unit: ?'blocks',
   },
   localBlockchainHeight: {
     quantity: number,
-    unit: ?'blocks'
+    unit: ?'blocks',
   },
   localTimeInformation: {
     status: LocalTimeInformationStatus,
     localTimeDifference?: {
       quantity: number,
-      unit: ?'microseconds'
-    }
+      unit: ?'microseconds',
+    },
   },
-  subscriptionStatus: Object
+  subscriptionStatus: Object,
 };
 
-export type NodeSettings = {
+export type NodeSettingsResponse = {
   slotDuration: {
     quantity: number,
-    unit: ?'milliseconds'
+    unit: ?'milliseconds',
   },
   softwareInfo: NodeSoftware,
   projectVersion: string,
-  gitRevision: string
+  gitRevision: string,
+  slotId: {
+    slot: number,
+    epoch: number,
+  },
+};
+
+export type CardanoExplorerResponse = {
+  Right: Array<number | Object>,
 };
 
 export type NodeSoftware = {
   applicationName: string,
-  version: number
+  version: number,
 };
 
 // req/res Node Types
+
 export type GetNetworkStatusResponse = {
   subscriptionStatus: Object,
   syncProgress: number,
@@ -47,16 +59,30 @@ export type GetNetworkStatusResponse = {
   localBlockchainHeight: number,
   localTimeInformation: {
     status: LocalTimeInformationStatus,
-    difference: ?number
-  }
+    difference: ?number,
+  },
+};
+
+export type GetNodeSettingsResponse = {
+  slotId?: {
+    epoch: number,
+  },
+};
+
+export type GetCurrentEpochFallbackResponse = {
+  currentEpoch: number,
+};
+
+export type GetLatestAppVersionResponse = {
+  latestAppVersion: ?string,
 };
 
 export type Platform = {
-  signature: string,
   hash: string,
-  URL: string,
-  version: string,
   SHA256: string,
+  signature: string,
+  version: string,
+  URL: string,
 };
 
 export type Platforms = {
@@ -83,4 +109,4 @@ export type DaedalusLatestVersionResponse = {
   win64SHA256: string,
 };
 
-export type GetLatestAppVersionInfoResponse = DaedalusLatestVersionResponse;
+export type LatestAppVersionInfoResponse = DaedalusLatestVersionResponse;

@@ -3,13 +3,16 @@
 
 .component {
   flex: 1;
-  min-height: 509px;
   overflow-x: hidden;
   overflow-y: overlay;
   padding: 20px;
   &::-webkit-scrollbar-button {
     height: 7px;
     display: block;
+  }
+  min-height: 500px;
+  @media (max-width: 1000px) {
+    min-height: 600px;
   }
 }
 
@@ -82,7 +85,7 @@
       white-space: nowrap;
       width: 100%;
       &.spinning {
-        @include loading-spinner("../../../assets/images/spinner-light.svg");
+        @include loading-spinner('../../../assets/images/spinner-light.svg');
       }
     }
 
@@ -90,7 +93,7 @@
       max-width: 310px;
       width: calc(50% - 10px);
       &.spinning {
-        @include loading-spinner("../../../assets/images/spinner-light.svg");
+        @include loading-spinner('../../../assets/images/spinner-light.svg');
       }
     }
 

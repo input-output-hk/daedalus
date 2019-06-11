@@ -1,7 +1,7 @@
 // @flow
 import { shell } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
-import { OpenExternalUrlChannelName } from '../../common/ipc/api';
+import { OPEN_EXTERNAL_URL_CHANNEL } from '../../common/ipc/api';
 import type {
   OpenExternalUrlMainResponse,
   OpenExternalUrlRendererRequest,
@@ -9,12 +9,11 @@ import type {
 
 // IpcChannel<Incoming, Outgoing>
 
-export const openExternalUrlChannel: (
-  MainIpcChannel<OpenExternalUrlRendererRequest, OpenExternalUrlMainResponse>
-) = (
-  new MainIpcChannel(OpenExternalUrlChannelName)
-);
+export const openExternalUrlChannel: MainIpcChannel<
+  OpenExternalUrlRendererRequest,
+  OpenExternalUrlMainResponse
+> = new MainIpcChannel(OPEN_EXTERNAL_URL_CHANNEL);
 
-openExternalUrlChannel.onReceive((url: OpenExternalUrlRendererRequest) => (
+openExternalUrlChannel.onReceive((url: OpenExternalUrlRendererRequest) =>
   shell.openExternal(url) ? Promise.resolve() : Promise.reject()
-));
+);

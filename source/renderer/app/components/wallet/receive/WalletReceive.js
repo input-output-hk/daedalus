@@ -15,7 +15,10 @@ import { submitOnEnter } from '../../../utils/form';
 import BorderedBox from '../../widgets/BorderedBox';
 import TinySwitch from '../../widgets/forms/TinySwitch';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
-import type { Addresses, Address as AddressType } from '../../../api/addresses/types';
+import type {
+  Addresses,
+  Address as AddressType,
+} from '../../../api/addresses/types';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { VirtualAddressesList } from './VirtualAddressesList';
@@ -30,28 +33,34 @@ const messages = defineMessages({
   },
   walletReceiveInstructions: {
     id: 'wallet.receive.page.walletReceiveInstructions',
-    defaultMessage: '!!!Share this wallet address to receive payments. To protect your privacy generate new addresses for receiving payments instead of reusing existing ones.',
-    description: 'Wallet receive payments instructions on the wallet "Receive page"',
+    defaultMessage:
+      '!!!Share this wallet address to receive payments. To protect your privacy generate new addresses for receiving payments instead of reusing existing ones.',
+    description:
+      'Wallet receive payments instructions on the wallet "Receive page"',
   },
   generateNewAddressButtonLabel: {
     id: 'wallet.receive.page.generateNewAddressButtonLabel',
     defaultMessage: '!!!Generate new address',
-    description: 'Label for "Generate new address" button on the wallet "Receive page"',
+    description:
+      'Label for "Generate new address" button on the wallet "Receive page"',
   },
   generatedAddressesSectionTitle: {
     id: 'wallet.receive.page.generatedAddressesSectionTitle',
     defaultMessage: '!!!Generated addresses',
-    description: '"Generated addresses" section title on the wallet "Receive page"',
+    description:
+      '"Generated addresses" section title on the wallet "Receive page"',
   },
   showUsedLabel: {
     id: 'wallet.receive.page.showUsedLabel',
     defaultMessage: '!!!show used',
-    description: 'Label for "show used" wallet addresses link on the wallet "Receive page"',
+    description:
+      'Label for "show used" wallet addresses link on the wallet "Receive page"',
   },
   spendingPasswordPlaceholder: {
     id: 'wallet.receive.page.spendingPasswordPlaceholder',
     defaultMessage: '!!!Password',
-    description: 'Placeholder for "spending password" on the wallet "Receive page"',
+    description:
+      'Placeholder for "spending password" on the wallet "Receive page"',
   },
   copyAddressLabel: {
     id: 'wallet.receive.page.copyAddressLabel',
@@ -80,7 +89,6 @@ type State = {
 
 @observer
 export default class WalletReceive extends Component<Props, State> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -92,66 +100,88 @@ export default class WalletReceive extends Component<Props, State> {
   passwordField: Input;
 
   toggleUsedAddresses = () => {
-    this.setState({ showUsed: !this.state.showUsed });
+    this.setState(prevState => ({ showUsed: !prevState.showUsed }));
   };
 
-  form = new ReactToolboxMobxForm({
-    fields: {
-      spendingPassword: {
-        type: 'password',
-        label: ' ',
-        placeholder: this.context.intl.formatMessage(messages.spendingPasswordPlaceholder),
-        value: '',
-        validators: [({ field }) => {
-          if (this.props.walletHasPassword && field.value === '') {
-            return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
-          }
-          return [true];
-        }],
+  form = new ReactToolboxMobxForm(
+    {
+      fields: {
+        spendingPassword: {
+          type: 'password',
+          label: ' ',
+          placeholder: this.context.intl.formatMessage(
+            messages.spendingPasswordPlaceholder
+          ),
+          value: '',
+          validators: [
+            ({ field }) => {
+              if (this.props.walletHasPassword && field.value === '') {
+                return [
+                  false,
+                  this.context.intl.formatMessage(messages.fieldIsRequired),
+                ];
+              }
+              return [true];
+            },
+          ],
+        },
       },
     },
-  }, {
-    options: {
-      validationDebounceWait: 0, // Disable debounce to avoid error state after clearing
-      validateOnChange: true,
-      showErrorsOnClear: false,
-    },
-  });
+    {
+      options: {
+        validationDebounceWait: 0, // Disable debounce to avoid error state after clearing
+        validateOnChange: true,
+        showErrorsOnBlur: false,
+        showErrorsOnClear: false,
+      },
+    }
+  );
 
   renderRow = (address: AddressType, index: number) => (
     <Address
       index={index}
       address={address}
       onCopyAddress={this.props.onCopyAddress}
-      copyAddressLabel={this.context.intl.formatMessage(messages.copyAddressLabel)}
+      copyAddressLabel={this.context.intl.formatMessage(
+        messages.copyAddressLabel
+      )}
     />
   );
 
   submit = () => {
     this.form.submit({
-      onSuccess: (form) => {
+      onSuccess: form => {
         const { walletHasPassword } = this.props;
         const { spendingPassword } = form.values();
         const password = walletHasPassword ? spendingPassword : null;
         this.props.onGenerateAddress(password);
         form.clear();
       },
-      onError: () => {}
+      onError: () => {},
     });
 
+    // eslint-disable-next-line no-unused-expressions
     this.passwordField && this.passwordField.focus();
   };
 
-  getFilteredAddresses = (walletAddresses: Addresses): Addresses => walletAddresses
-    .filter((address: AddressType) => (!address.used || this.state.showUsed));
+  handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
+
+  getFilteredAddresses = (walletAddresses: Addresses): Addresses =>
+    walletAddresses.filter(
+      (address: AddressType) => !address.used || this.state.showUsed
+    );
 
   render() {
     const { form } = this;
     const {
-      walletAddress, walletAddresses,
-      onCopyAddress, isSidebarExpanded,
-      walletHasPassword, isSubmitting,
-      error, isWalletAddressUsed,
+      walletAddress,
+      walletAddresses,
+      onCopyAddress,
+      isSidebarExpanded,
+      walletHasPassword,
+      isSubmitting,
+      error,
+      isWalletAddressUsed,
     } = this.props;
     const { intl } = this.context;
     const { showUsed } = this.state;
@@ -180,10 +210,12 @@ export default class WalletReceive extends Component<Props, State> {
           <Input
             className={styles.spendingPassword}
             {...passwordField.bind()}
-            ref={(input) => { this.passwordField = input; }}
+            ref={input => {
+              this.passwordField = input;
+            }}
             error={passwordField.error}
             skin={InputSkin}
-            onKeyPress={submitOnEnter.bind(this, this.submit)}
+            onKeyPress={this.handleSubmitOnEnter}
           />
         )}
 
@@ -197,17 +229,20 @@ export default class WalletReceive extends Component<Props, State> {
     );
 
     // Get QRCode color value from active theme's CSS variable
-    const qrCodeBackgroundColor = document.documentElement ?
-      document.documentElement.style.getPropertyValue('--theme-receive-qr-code-background-color') : 'transparent';
-    const qrCodeForegroundColor = document.documentElement ?
-      document.documentElement.style.getPropertyValue('--theme-receive-qr-code-foreground-color') : '#000';
+    const qrCodeBackgroundColor = document.documentElement
+      ? document.documentElement.style.getPropertyValue(
+          '--theme-receive-qr-code-background-color'
+        )
+      : 'transparent';
+    const qrCodeForegroundColor = document.documentElement
+      ? document.documentElement.style.getPropertyValue(
+          '--theme-receive-qr-code-foreground-color'
+        )
+      : '#000';
 
     return (
       <div className={styles.component}>
-
-        <BorderedBox
-          fullHeight
-        >
+        <BorderedBox fullHeight>
           <div className={styles.container}>
             <div className={styles.qrCodeAndInstructions}>
               <div className={styles.qrCode}>
@@ -224,6 +259,7 @@ export default class WalletReceive extends Component<Props, State> {
                   {walletAddress}
                   <CopyToClipboard
                     text={walletAddress}
+                    // eslint-disable-next-line react/jsx-no-bind
                     onCopy={onCopyAddress.bind(this, walletAddress)}
                   >
                     <SVGInline svg={iconCopy} className={styles.copyIconBig} />
@@ -238,7 +274,9 @@ export default class WalletReceive extends Component<Props, State> {
                   {intl.formatMessage(messages.walletReceiveInstructions)}
                 </div>
 
-                {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
+                {error ? (
+                  <p className={styles.error}>{intl.formatMessage(error)}</p>
+                ) : null}
 
                 {generateAddressForm}
               </div>
@@ -263,9 +301,7 @@ export default class WalletReceive extends Component<Props, State> {
             </div>
           </div>
         </BorderedBox>
-
       </div>
     );
   }
-
 }

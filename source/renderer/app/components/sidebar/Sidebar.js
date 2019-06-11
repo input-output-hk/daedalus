@@ -30,8 +30,8 @@ export type SidebarMenus = ?{
     activeWalletId: ?string,
     actions: {
       onWalletItemClick: Function,
-    }
-  }
+    },
+  },
 };
 
 export type SidebarCategories = Array<{
@@ -42,20 +42,24 @@ export type SidebarCategories = Array<{
 
 @observer
 export default class Sidebar extends Component<Props> {
-
   static defaultProps = {
     isShowingSubMenus: false,
   };
 
   render() {
     const {
-      menus, categories, activeSidebarCategory, pathname,
-      isShowingSubMenus, onAddWallet, onSubmitSupportRequest,
+      menus,
+      categories,
+      activeSidebarCategory,
+      pathname,
+      isShowingSubMenus,
+      onAddWallet,
+      onSubmitSupportRequest,
     } = this.props;
     let subMenu = null;
 
     const walletsCategory = find(categories, {
-      name: CATEGORIES_BY_NAME.WALLETS.name
+      name: CATEGORIES_BY_NAME.WALLETS.name,
     }).route;
 
     if (menus && activeSidebarCategory === walletsCategory) {
@@ -73,7 +77,7 @@ export default class Sidebar extends Component<Props> {
 
     const sidebarStyles = classNames([
       styles.component,
-      !isShowingSubMenus || subMenu == null ? styles.minimized : null
+      !isShowingSubMenus || subMenu == null ? styles.minimized : null,
     ]);
 
     return (
@@ -83,6 +87,7 @@ export default class Sidebar extends Component<Props> {
             const categoryClassName = kebabCase(category.name);
             return (
               <SidebarCategory
+                // eslint-disable-next-line react/no-array-index-key
                 key={index}
                 className={categoryClassName}
                 icon={category.icon}

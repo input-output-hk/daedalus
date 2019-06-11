@@ -12,26 +12,33 @@ import { ROUTES } from '../routes-config';
 
 type Props = InjectedProps;
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class TopBarContainer extends Component<Props> {
-
   static defaultProps = { actions: null, stores: null };
 
   render() {
     const { actions, stores } = this.props;
     const { sidebar, app, networkStatus, wallets } = stores;
     const { active, isWalletRoute, hasAnyWallets } = wallets;
-    const { currentRoute, environment: { isMainnet, network } } = app;
+    const {
+      currentRoute,
+      environment: { isMainnet, network },
+    } = app;
 
-    const walletRoutesMatch = matchRoute(`${ROUTES.WALLETS.ROOT}/:id(*page)`, currentRoute);
+    const walletRoutesMatch = matchRoute(
+      `${ROUTES.WALLETS.ROOT}/:id(*page)`,
+      currentRoute
+    );
     const showSubMenuToggle = isWalletRoute && hasAnyWallets;
     const activeWallet = walletRoutesMatch && active != null ? active : null;
-    const leftIconSVG = sidebar.isShowingSubMenus ? menuIconOpened : menuIconClosed;
+    const leftIconSVG = sidebar.isShowingSubMenus
+      ? menuIconOpened
+      : menuIconClosed;
     const leftIcon = showSubMenuToggle ? leftIconSVG : null;
-
-    const testnetLabel = (
-      !isMainnet ? <WalletTestEnvironmentLabel network={network} /> : null
-    );
+    const testnetLabel = !isMainnet ? (
+      <WalletTestEnvironmentLabel network={network} />
+    ) : null;
 
     return (
       <TopBar
@@ -47,5 +54,4 @@ export default class TopBarContainer extends Component<Props> {
       </TopBar>
     );
   }
-
 }

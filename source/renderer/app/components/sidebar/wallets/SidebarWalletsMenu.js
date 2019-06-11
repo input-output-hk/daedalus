@@ -29,15 +29,18 @@ type Props = {
 
 @observer
 export default class SidebarWalletsMenu extends Component<Props> {
-
   static contextTypes = {
-    intl: intlShape.isRequired
+    intl: intlShape.isRequired,
   };
 
   render() {
     const { intl } = this.context;
     const {
-      wallets, onAddWallet, isActiveWallet, onWalletItemClick, isAddWalletButtonActive
+      wallets,
+      onAddWallet,
+      isActiveWallet,
+      onWalletItemClick,
+      isAddWalletButtonActive,
     } = this.props;
 
     const addWalletButtonStyles = classNames([
@@ -48,7 +51,7 @@ export default class SidebarWalletsMenu extends Component<Props> {
     return (
       <SidebarSubMenu visible={this.props.visible}>
         <div className={styles.wallets}>
-          {wallets.map((wallet) => (
+          {wallets.map(wallet => (
             <SidebarWalletMenuItem
               title={wallet.title}
               info={wallet.info}
@@ -58,6 +61,7 @@ export default class SidebarWalletsMenu extends Component<Props> {
               className={`Wallet_${wallet.id}`}
               isRestoreActive={wallet.isRestoreActive}
               restoreProgress={wallet.restoreProgress}
+              isLegacy={wallet.isLegacy}
             />
           ))}
         </div>
@@ -68,5 +72,4 @@ export default class SidebarWalletsMenu extends Component<Props> {
       </SidebarSubMenu>
     );
   }
-
 }

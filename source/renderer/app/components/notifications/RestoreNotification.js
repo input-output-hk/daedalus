@@ -12,7 +12,8 @@ const messages = defineMessages({
   activeRestoreMessage: {
     id: 'wallet.statusMessages.activeRestore',
     defaultMessage: '!!!Wallet restore in progress',
-    description: 'Status message "Wallet restore in progress" shown while wallet is being restored.'
+    description:
+      'Status message "Wallet restore in progress" shown while wallet is being restored.',
   },
 });
 
@@ -24,7 +25,6 @@ type Props = {
 
 @observer
 export default class RestoreNotification extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -64,8 +64,8 @@ export default class RestoreNotification extends Component<Props> {
     return (
       <div className={restoreNotificationClasses}>
         <span className={styles.text}>
-          {intl.formatMessage(messages.activeRestoreMessage)}: {restoreProgress}%
-          ({estimatedCompletionTime})
+          {intl.formatMessage(messages.activeRestoreMessage)}: {restoreProgress}
+          % ({estimatedCompletionTime})
         </span>
         <SVGInline svg={spinnerIcon} className={styles.icon} />
       </div>

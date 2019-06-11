@@ -4,7 +4,8 @@ import { isEqual } from 'lodash/fp';
 import ExtendableError from 'es6-error';
 
 class NotExecutedYetError extends ExtendableError {
-  message = 'You have to call Request::execute before you can access it as promise';
+  message =
+    'You have to call Request::execute before you can access it as promise';
 }
 
 export type ApiCallType = {
@@ -13,7 +14,6 @@ export type ApiCallType = {
 };
 
 export default class Request<Result, Error> {
-
   @observable result: ?Result = null;
   @observable error: ?Error = null;
   @observable isExecuting: boolean = false;
@@ -36,40 +36,56 @@ export default class Request<Result, Error> {
 
     // This timeout is necessary to avoid warnings from mobx
     // regarding triggering actions as side-effect of getters
-    setTimeout(action('Request::execute (setting this.isExecuting)', () => {
-      this.isExecuting = true;
-    }), 0);
+    setTimeout(
+      action('Request::execute (setting this.isExecuting)', () => {
+        this.isExecuting = true;
+      }),
+      0
+    );
 
     // Issue api call & save it as promise that is handled to update the results of the operation
     this.promise = new Promise((resolve, reject) => {
-      if (!this._method) reject('Request method not defined');
+      if (!this._method)
+        reject(new ReferenceError('Request method not defined'));
       this._method(...callArgs)
-        .then((result) => {
-          setTimeout(action('Request::execute/then', () => {
-            if (this.result != null && isObservableArray(this.result) && Array.isArray(result)) {
-              // $FlowFixMe
-              this.result.replace(result);
-            } else {
-              this.result = result;
-            }
-            if (this._currentApiCall) this._currentApiCall.result = result;
-            this.isExecuting = false;
-            this.wasExecuted = true;
-            this._isWaitingForResponse = false;
-            resolve(result);
-          }), 1);
+        .then(result => {
+          setTimeout(
+            action('Request::execute/then', () => {
+              if (
+                this.result != null &&
+                isObservableArray(this.result) &&
+                Array.isArray(result)
+              ) {
+                // $FlowFixMe
+                this.result.replace(result);
+              } else {
+                this.result = result;
+              }
+              if (this._currentApiCall) this._currentApiCall.result = result;
+              this.isExecuting = false;
+              this.wasExecuted = true;
+              this._isWaitingForResponse = false;
+              resolve(result);
+            }),
+            1
+          );
           return result;
         })
-        .catch(action('Request::execute/catch', (error) => {
-          setTimeout(action(() => {
-            this.error = error;
-            this.isExecuting = false;
-            this.isError = true;
-            this.wasExecuted = true;
-            this._isWaitingForResponse = false;
-            reject(error);
-          }), 1);
-        }));
+        .catch(
+          action('Request::execute/catch', error => {
+            setTimeout(
+              action(() => {
+                this.error = error;
+                this.isExecuting = false;
+                this.isError = true;
+                this.wasExecuted = true;
+                this._isWaitingForResponse = false;
+                reject(error);
+              }),
+              1
+            );
+          })
+        );
     });
 
     this._isWaitingForResponse = true;
@@ -80,8 +96,8 @@ export default class Request<Result, Error> {
   isExecutingWithArgs(...args: Array<any>): boolean {
     return (
       this.isExecuting &&
-      (this._currentApiCall != null)
-      && isEqual(this._currentApiCall.args, args)
+      this._currentApiCall != null &&
+      isEqual(this._currentApiCall.args, args)
     );
   }
 
@@ -111,13 +127,16 @@ export default class Request<Result, Error> {
    * @returns {Promise}
    */
   patch(modify: Function): Promise<Request<Result, Error>> {
-    return new Promise((resolve) => {
-      setTimeout(action(() => {
-        const override = modify(this.result);
-        if (override !== undefined) this.result = override;
-        if (this._currentApiCall) this._currentApiCall.result = this.result;
-        resolve(this);
-      }), 0);
+    return new Promise(resolve => {
+      setTimeout(
+        action(() => {
+          const override = modify(this.result);
+          if (override !== undefined) this.result = override;
+          if (this._currentApiCall) this._currentApiCall.result = this.result;
+          resolve(this);
+        }),
+        0
+      );
     });
   }
 
@@ -131,5 +150,4 @@ export default class Request<Result, Error> {
     this._currentApiCall = null;
     return this;
   }
-
 }

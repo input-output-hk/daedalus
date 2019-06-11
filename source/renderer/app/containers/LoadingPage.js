@@ -7,64 +7,65 @@ import Loading from '../components/loading/Loading';
 import adaLogo from '../assets/images/ada-logo.inline.svg';
 import cardanoLogo from '../assets/images/cardano-logo.inline.svg';
 import type { InjectedProps } from '../types/injectedPropsType';
-import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import { getSupportUrl } from '../utils/network';
-import NotificationMessage from '../components/widgets/NotificationMessage';
-import successIcon from '../assets/images/success-small.inline.svg';
-import { DOWNLOAD_LOGS_SUCCESS_DURATION } from '../config/timingConfig';
 
 export const messages = defineMessages({
   loadingWalletData: {
     id: 'loading.screen.loadingWalletData',
     defaultMessage: '!!!Loading wallet data',
-    description: 'Message "Loading wallet data" on the loading screen.'
+    description: 'Message "Loading wallet data" on the loading screen.',
   },
   reportIssueButtonUrl: {
     id: 'loading.screen.reportIssue.reportIssueButtonUrl',
     defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/requests/new/',
-    description: 'Link to Open Support page'
-  },
-  downloadLogsSuccess: {
-    id: 'loading.screen.reportIssue.downloadLogsSuccessMessage',
-    defaultMessage: '!!!Logs successfully downloaded',
-    description: 'Success message for download logs.',
+    description: 'Link to Open Support page',
   },
 });
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class LoadingPage extends Component<InjectedProps> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
-  constructor(props: any, context: any) {
-    super(props);
-    this.context = context;
-    this.registerOnDownloadLogsNotification();
-  }
-
-  componentWillUnmount() {
-    const { profile } = this.props.actions;
-    profile.downloadLogs.remove(this.openNotification);
-    this.closeNotification();
-  }
-
   render() {
     const { stores } = this.props;
-    const {
-      cardanoNodeState, isConnected, isSynced, syncPercentage, hasBeenConnected,
-      localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
-      forceCheckLocalTimeDifference, ignoreSystemTimeChecks, isNodeStopping, isNodeStopped,
-      isNotEnoughDiskSpace, diskSpaceRequired, diskSpaceMissing, diskSpaceRecommended,
-    } = stores.networkStatus;
-    const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
-    const { id, message } = this.notification;
     const { environment, openExternalLink } = stores.app;
     const { version } = environment;
     const {
-      isNewAppVersionLoading, isNewAppVersionAvailable, availableAppVersion,
+      cardanoNodeState,
+      isNodeResponding,
+      isNodeSubscribed,
+      isNodeSyncing,
+      isNodeTimeCorrect,
+      isConnected,
+      isSynced,
+      syncPercentage,
+      hasBeenConnected,
+      localTimeDifference,
+      isSystemTimeCorrect,
+      forceCheckTimeDifferenceRequest,
+      forceCheckLocalTimeDifference,
+      ignoreSystemTimeChecks,
+      isNodeStopping,
+      isNodeStopped,
+      isNotEnoughDiskSpace,
+      isTlsCertInvalid,
+      diskSpaceRequired,
+      diskSpaceMissing,
+      diskSpaceRecommended,
+    } = stores.networkStatus;
+    const {
+      isNewAppVersionLoading,
+      isNewAppVersionAvailable,
+      availableAppVersion,
     } = stores.nodeUpdate;
+    const {
+      hasLoadedCurrentLocale,
+      hasLoadedCurrentTheme,
+      currentLocale,
+    } = stores.profile;
 
     return (
       <CenteredLayout>
@@ -72,17 +73,26 @@ export default class LoadingPage extends Component<InjectedProps> {
           currencyIcon={adaLogo}
           apiIcon={cardanoLogo}
           cardanoNodeState={cardanoNodeState}
+          currentAppVersion={version}
+          availableAppVersion={availableAppVersion}
           isConnected={isConnected}
           isSynced={isSynced}
+          isNodeResponding={isNodeResponding}
+          isNodeSubscribed={isNodeSubscribed}
+          isNodeSyncing={isNodeSyncing}
+          isNodeTimeCorrect={isNodeTimeCorrect}
           isNodeStopping={isNodeStopping}
           isNodeStopped={isNodeStopped}
           isNotEnoughDiskSpace={isNotEnoughDiskSpace}
+          isTlsCertInvalid={isTlsCertInvalid}
+          isNewAppVersionAvailable={isNewAppVersionAvailable}
+          isNewAppVersionLoading={isNewAppVersionLoading}
+          isSystemTimeCorrect={isSystemTimeCorrect}
+          isCheckingSystemTime={forceCheckTimeDifferenceRequest.isExecuting}
           diskSpaceRequired={diskSpaceRequired}
           diskSpaceMissing={diskSpaceMissing}
           diskSpaceRecommended={diskSpaceRecommended}
           localTimeDifference={localTimeDifference}
-          isSystemTimeCorrect={isSystemTimeCorrect}
-          isCheckingSystemTime={forceCheckTimeDifferenceRequest.isExecuting}
           syncPercentage={syncPercentage}
           loadingDataForNextScreenMessage={messages.loadingWalletData}
           hasBeenConnected={hasBeenConnected}
@@ -93,69 +103,29 @@ export default class LoadingPage extends Component<InjectedProps> {
           onReportIssueClick={this.handleReportIssueClick}
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
           onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
-          onDownloadLogs={this.handleDownloadLogs}
-          isNewAppVersionLoading={isNewAppVersionLoading}
-          isNewAppVersionAvailable={isNewAppVersionAvailable}
-          currentAppVersion={version}
-          availableAppVersion={availableAppVersion}
           onGetAvailableVersions={this.handleGetAvailableVersions}
+          onDownloadLogs={this.handleDownloadLogs}
+          disableDownloadLogs={stores.app.isDownloadNotificationVisible}
         />
-        <NotificationMessage
-          icon={successIcon}
-          show={stores.uiNotifications.isOpen(id)}
-          onClose={this.closeNotification}
-          clickToClose
-          hasCloseButton
-        >
-          {message}
-        </NotificationMessage>
       </CenteredLayout>
     );
   }
 
-  get notification() {
-    const { intl } = this.context;
-    return {
-      id: 'loading-page-download-logs-success',
-      duration: DOWNLOAD_LOGS_SUCCESS_DURATION,
-      message: intl.formatMessage(messages.downloadLogsSuccess),
-    };
-  }
-
-  closeNotification = () => {
-    const { id } = this.notification;
-    this.props.actions.notifications.closeActiveNotification.trigger({ id });
-  };
-
   handleReportIssueClick = async (event: SyntheticEvent<HTMLButtonElement>) => {
     event.persist();
     const { intl } = this.context;
-    const reportIssueButtonUrl = intl.formatMessage(messages.reportIssueButtonUrl);
+    const reportIssueButtonUrl = intl.formatMessage(
+      messages.reportIssueButtonUrl
+    );
     const locale = this.props.stores.profile.currentLocale;
     const supportUrl = await getSupportUrl(reportIssueButtonUrl, locale);
     this.props.stores.app.openExternalLink(supportUrl);
   };
 
-  openNotification = () => {
-    const { notifications } = this.props.actions;
-    const { id, duration } = this.notification;
-    notifications.open.trigger({ id, duration });
-  };
-
-  registerOnDownloadLogsNotification = () => {
-    const { profile } = this.props.actions;
-    profile.downloadLogs.listen(this.openNotification);
-  };
-
   handleDownloadLogs = () => {
-    const { profile } = this.props.actions;
-    const fileName = generateFileNameWithTimestamp();
-    const destination = global.dialog.showSaveDialog({
-      defaultPath: fileName,
-    });
-    if (destination) {
-      profile.downloadLogs.trigger({ fileName, destination, fresh: true });
-    }
+    const { app } = this.props.actions;
+    app.downloadLogs.trigger();
+    app.setNotificationVisibility.trigger(true);
   };
 
   handleGetAvailableVersions = () => {

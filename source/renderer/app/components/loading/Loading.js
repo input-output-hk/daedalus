@@ -9,6 +9,7 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import SystemTimeErrorOverlay from './SystemTimeErrorOverlay';
 import NoDiskSpaceOverlay from './NoDiskSpaceOverlay';
 import ManualUpdateOverlay from './ManualUpdateOverlay';
+import StatusIcons from './StatusIcons';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import linkNewWindow from '../../assets/images/link-ic.inline.svg';
@@ -25,72 +26,80 @@ const messages = defineMessages({
   starting: {
     id: 'loading.screen.startingCardanoMessage',
     defaultMessage: '!!!Starting Cardano node',
-    description: 'Message "Starting Cardano node" on the loading screen.'
+    description: 'Message "Starting Cardano node" on the loading screen.',
   },
   stopping: {
     id: 'loading.screen.stoppingCardanoMessage',
     defaultMessage: '!!!Stopping Cardano node',
-    description: 'Message "Stopping Cardano node" on the loading screen.'
+    description: 'Message "Stopping Cardano node" on the loading screen.',
   },
   stopped: {
     id: 'loading.screen.stoppedCardanoMessage',
     defaultMessage: '!!!Cardano node stopped',
-    description: 'Message "Cardano node stopped" on the loading screen.'
+    description: 'Message "Cardano node stopped" on the loading screen.',
   },
   updating: {
     id: 'loading.screen.updatingCardanoMessage',
     defaultMessage: '!!!Updating Cardano node',
-    description: 'Message "Updating Cardano node" on the loading screen.'
+    description: 'Message "Updating Cardano node" on the loading screen.',
   },
   updated: {
     id: 'loading.screen.updatedCardanoMessage',
     defaultMessage: '!!!Cardano node updated',
-    description: 'Message "Cardano node updated" on the loading screen.'
+    description: 'Message "Cardano node updated" on the loading screen.',
   },
   crashed: {
     id: 'loading.screen.crashedCardanoMessage',
     defaultMessage: '!!!Cardano node crashed',
-    description: 'Message "Cardano node crashed" on the loading screen.'
+    description: 'Message "Cardano node crashed" on the loading screen.',
   },
   unrecoverable: {
     id: 'loading.screen.unrecoverableCardanoMessage',
-    defaultMessage: '!!!Unable to start Cardano node. Please submit a support request.',
-    description: 'Message "Unable to start Cardano node. Please submit a support request." on the loading screen.'
+    defaultMessage:
+      '!!!Unable to start Cardano node. Please submit a support request.',
+    description:
+      'Message "Unable to start Cardano node. Please submit a support request." on the loading screen.',
   },
   connecting: {
     id: 'loading.screen.connectingToNetworkMessage',
     defaultMessage: '!!!Connecting to network',
-    description: 'Message "Connecting to network" on the loading screen.'
+    description: 'Message "Connecting to network" on the loading screen.',
   },
   reconnecting: {
     id: 'loading.screen.reconnectingToNetworkMessage',
     defaultMessage: '!!!Network connection lost - reconnecting',
-    description: 'Message "Network connection lost - reconnecting" on the loading screen.'
+    description:
+      'Message "Network connection lost - reconnecting" on the loading screen.',
   },
   syncing: {
     id: 'loading.screen.syncingBlocksMessage',
     defaultMessage: '!!!Syncing blocks',
-    description: 'Message "Syncing blocks" on the loading screen.'
+    description: 'Message "Syncing blocks" on the loading screen.',
   },
   reportConnectingIssueText: {
     id: 'loading.screen.reportIssue.connecting.text',
     defaultMessage: '!!!Having trouble connecting to network?',
-    description: 'Report connecting issue text on the loading screen.'
+    description: 'Report connecting issue text on the loading screen.',
   },
   reportSyncingIssueText: {
     id: 'loading.screen.reportIssue.syncing.text',
     defaultMessage: '!!!Having trouble syncing?',
-    description: 'Report syncing issue text on the loading screen.'
+    description: 'Report syncing issue text on the loading screen.',
   },
   reportIssueButtonLabel: {
     id: 'loading.screen.reportIssue.buttonLabel',
     defaultMessage: '!!!Open support ticket',
-    description: 'Open support ticket button label on the loading.'
+    description: 'Open support ticket button label on the loading.',
   },
   reportIssueDownloadLogsLinkLabel: {
     id: 'loading.screen.reportIssue.downloadLogsLinkLabel',
     defaultMessage: '!!!Download logs',
-    description: 'Download logs button label on the loading.'
+    description: 'Download logs button label on the loading.',
+  },
+  tlsCertificateNotValidError: {
+    id: 'loading.screen.errors.tlsCertificateNotValidPleaseRestartError',
+    defaultMessage: '!!!TLS certificate is not valid, please restart Daedalus.',
+    description: 'The TLS cert is not valid and Daedalus should be restarted',
   },
 });
 
@@ -110,6 +119,7 @@ type Props = {
   isNodeStopping: boolean,
   isNodeStopped: boolean,
   isNotEnoughDiskSpace: boolean,
+  isTlsCertInvalid: boolean,
   diskSpaceRequired: string,
   diskSpaceMissing: string,
   diskSpaceRecommended: string,
@@ -120,6 +130,10 @@ type Props = {
   localTimeDifference: ?number,
   isSystemTimeCorrect: boolean,
   isCheckingSystemTime: boolean,
+  isNodeResponding: boolean,
+  isNodeSubscribed: boolean,
+  isNodeSyncing: boolean,
+  isNodeTimeCorrect: boolean,
   currentLocale: string,
   availableAppVersion: ?string,
   currentAppVersion: string,
@@ -131,11 +145,11 @@ type Props = {
   onContinueWithoutClockSyncCheck: Function,
   onDownloadLogs: Function,
   onGetAvailableVersions: Function,
+  disableDownloadLogs: boolean,
 };
 
 @observer
 export default class Loading extends Component<Props, State> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -159,18 +173,30 @@ export default class Loading extends Component<Props, State> {
   componentDidUpdate() {
     const { syncingTime, connectingTime } = this.state;
     const {
-      isConnected, isSynced, isNotEnoughDiskSpace,
-      onGetAvailableVersions, isNewAppVersionLoading, availableAppVersion,
+      isConnected,
+      isSynced,
+      isNotEnoughDiskSpace,
+      onGetAvailableVersions,
+      isNewAppVersionLoading,
+      availableAppVersion,
     } = this.props;
-    const canResetSyncing = this._syncingTimerShouldStop(isSynced, isNotEnoughDiskSpace);
-    const canResetConnecting = this._connectingTimerShouldStop(isConnected, isNotEnoughDiskSpace);
-    if (canResetSyncing) { this._resetSyncingTime(); }
-    if (canResetConnecting) { this._resetConnectingTime(); }
-
-    const isAppLoadingStuck = (
-      (!isConnected && connectingTime >= REPORT_ISSUE_TIME_TRIGGER) ||
-      (isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER)
+    const canResetSyncing = this._syncingTimerShouldStop(
+      isSynced,
+      isNotEnoughDiskSpace
     );
+    const canResetConnecting = this._connectingTimerShouldStop(
+      isConnected,
+      isNotEnoughDiskSpace
+    );
+    if (canResetSyncing) {
+      this._resetSyncingTime();
+    }
+    if (canResetConnecting) {
+      this._resetConnectingTime();
+    }
+    const isAppLoadingStuck =
+      (!isConnected && connectingTime >= REPORT_ISSUE_TIME_TRIGGER) ||
+      (isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER);
     // If app loading is stuck, check if a newer version is available and set flag (state)
     if (isAppLoadingStuck && !isNewAppVersionLoading && !availableAppVersion) {
       onGetAvailableVersions();
@@ -182,29 +208,31 @@ export default class Loading extends Component<Props, State> {
     this._resetSyncingTime();
   }
 
-  _connectingTimerShouldStart = (isConnected: boolean): boolean => (
-    !isConnected && connectingInterval === null
-  );
+  _connectingTimerShouldStart = (isConnected: boolean): boolean =>
+    !isConnected && connectingInterval === null;
 
-  _syncingTimerShouldStart = (isConnected: boolean, isSynced: boolean): boolean => (
-    isConnected && !isSynced && syncingInterval === null
-  );
+  _syncingTimerShouldStart = (
+    isConnected: boolean,
+    isSynced: boolean
+  ): boolean => isConnected && !isSynced && syncingInterval === null;
 
   _syncingTimerShouldStop = (
-    isSynced: boolean, isNotEnoughDiskSpace: boolean
-  ): boolean => (
-    (isNotEnoughDiskSpace || isSynced) && syncingInterval !== null
-  );
+    isSynced: boolean,
+    isNotEnoughDiskSpace: boolean
+  ): boolean => (isNotEnoughDiskSpace || isSynced) && syncingInterval !== null;
 
   _connectingTimerShouldStop = (
-    isConnected: boolean, isNotEnoughDiskSpace: boolean
-  ): boolean => (
-    (isNotEnoughDiskSpace || isConnected) && connectingInterval !== null
-  );
+    isConnected: boolean,
+    isNotEnoughDiskSpace: boolean
+  ): boolean =>
+    (isNotEnoughDiskSpace || isConnected) && connectingInterval !== null;
 
   _defensivelyStartTimers = (isConnected: boolean, isSynced: boolean) => {
     const needConnectingTimer = this._connectingTimerShouldStart(isConnected);
-    const needSyncingTimer = this._syncingTimerShouldStart(isConnected, isSynced);
+    const needSyncingTimer = this._syncingTimerShouldStart(
+      isConnected,
+      isSynced
+    );
     if (needConnectingTimer) {
       connectingInterval = setInterval(this._incrementConnectingTime, 1000);
     } else if (needSyncingTimer) {
@@ -229,14 +257,16 @@ export default class Loading extends Component<Props, State> {
   };
 
   _incrementConnectingTime = () => {
-    this.setState({ connectingTime: this.state.connectingTime + 1 });
+    this.setState(prevState => ({
+      connectingTime: prevState.connectingTime + 1,
+    }));
   };
 
   _incrementSyncingTime = () => {
     const syncPercentage = this.props.syncPercentage.toFixed(2);
     if (syncPercentage === this.state.syncPercentage) {
       // syncPercentage not increased, increase syncing time
-      this.setState({ syncingTime: this.state.syncingTime + 1 });
+      this.setState(prevState => ({ syncingTime: prevState.syncingTime + 1 }));
     } else {
       // reset syncingTime and set new max percentage
       this.setState({ syncingTime: 0, syncPercentage });
@@ -244,7 +274,7 @@ export default class Loading extends Component<Props, State> {
   };
 
   _getConnectingMessage = () => {
-    const { cardanoNodeState, hasBeenConnected } = this.props;
+    const { cardanoNodeState, hasBeenConnected, isTlsCertInvalid } = this.props;
     let connectingMessage;
     switch (cardanoNodeState) {
       case null:
@@ -271,8 +301,17 @@ export default class Loading extends Component<Props, State> {
       case CardanoNodeStates.UNRECOVERABLE:
         connectingMessage = messages.unrecoverable;
         break;
-      default: // also covers CardanoNodeStates.RUNNING state
-        connectingMessage = hasBeenConnected ? messages.reconnecting : messages.connecting;
+      default:
+        // also covers CardanoNodeStates.RUNNING state
+        connectingMessage = hasBeenConnected
+          ? messages.reconnecting
+          : messages.connecting;
+    }
+    const isConnectingMessage =
+      connectingMessage === messages.connecting ||
+      connectingMessage === messages.reconnecting;
+    if (isTlsCertInvalid && isConnectingMessage) {
+      return messages.tlsCertificateNotValidError;
     }
     return connectingMessage;
   };
@@ -286,6 +325,7 @@ export default class Loading extends Component<Props, State> {
       isNodeStopping,
       isNodeStopped,
       isNotEnoughDiskSpace,
+      isTlsCertInvalid,
       diskSpaceRequired,
       diskSpaceMissing,
       diskSpaceRecommended,
@@ -321,11 +361,12 @@ export default class Loading extends Component<Props, State> {
         />
       );
     }
+    const showEllipsis = isNodeStopped || (isTlsCertInvalid && !isNodeStopping);
 
     if (!isConnected) {
       const headlineClasses = classNames([
         styles.headline,
-        isNodeStopped ? styles.withoutAnimation : null,
+        showEllipsis ? styles.withoutAnimation : null,
       ]);
       return (
         <div className={styles.connecting}>
@@ -370,6 +411,12 @@ export default class Loading extends Component<Props, State> {
       hasLoadedCurrentTheme,
       onReportIssueClick,
       onDownloadLogs,
+      disableDownloadLogs,
+      isNodeResponding,
+      isNodeSubscribed,
+      isNodeSyncing,
+      isNodeTimeCorrect,
+      isCheckingSystemTime,
       isNewAppVersionAvailable,
       currentAppVersion,
       availableAppVersion,
@@ -406,44 +453,43 @@ export default class Loading extends Component<Props, State> {
     const currencyLoadingLogo = currencyIcon;
     const apiLoadingLogo = apiIcon;
 
-    const canReportConnectingIssue = (
-      !isConnected && (
-        connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
-        cardanoNodeState === CardanoNodeStates.UNRECOVERABLE
-      )
-    );
-    const canReportSyncingIssue = (
-      isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER
-    );
+    const canReportConnectingIssue =
+      !isConnected &&
+      (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
+        cardanoNodeState === CardanoNodeStates.UNRECOVERABLE);
+    const canReportSyncingIssue =
+      isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER;
+    const showReportIssue =
+      !isNewAppVersionAvailable &&
+      !isNewAppVersionLoading &&
+      (canReportConnectingIssue || canReportSyncingIssue);
 
-    const showReportIssue = (
-      !isNewAppVersionAvailable && !isNewAppVersionLoading &&
-      (canReportConnectingIssue || canReportSyncingIssue)
-    );
+    const buttonClasses = classNames(['primary', styles.reportIssueButton]);
 
-    const buttonClasses = classNames([
-      'primary',
-      styles.reportIssueButton,
-    ]);
+    const isNodeTimeCheckedAndCorrect = isCheckingSystemTime
+      ? undefined
+      : isNodeTimeCorrect;
 
     return (
       <div className={componentStyles}>
         {showReportIssue && (
           <div className={styles.reportIssue}>
             <h1 className={styles.reportIssueText}>
-              {!isConnected ?
-                intl.formatMessage(messages.reportConnectingIssueText) :
-                intl.formatMessage(messages.reportSyncingIssueText)
-              }
+              {!isConnected
+                ? intl.formatMessage(messages.reportConnectingIssueText)
+                : intl.formatMessage(messages.reportSyncingIssueText)}
             </h1>
             <Button
               className={buttonClasses}
-              label={(
+              label={
                 <p>
-                  <SVGInline svg={linkNewWindow} className={styles.linkNewWindow} />
+                  <SVGInline
+                    svg={linkNewWindow}
+                    className={styles.linkNewWindow}
+                  />
                   {intl.formatMessage(messages.reportIssueButtonLabel)}
                 </p>
-              )}
+              }
               onClick={onReportIssueClick}
               skin={ButtonSkin}
             />
@@ -451,6 +497,7 @@ export default class Loading extends Component<Props, State> {
             <button
               className={downloadLogsButtonStyles}
               onClick={onDownloadLogs}
+              disabled={disableDownloadLogs}
             >
               {intl.formatMessage(messages.reportIssueDownloadLogsLinkLabel)}
             </button>
@@ -469,8 +516,14 @@ export default class Loading extends Component<Props, State> {
             onExternalLinkClick={onExternalLinkClick}
           />
         )}
+        <StatusIcons
+          nodeState={cardanoNodeState}
+          isNodeResponding={isNodeResponding}
+          isNodeSubscribed={isNodeSubscribed}
+          isNodeTimeCorrect={isNodeTimeCheckedAndCorrect}
+          isNodeSyncing={isNodeSyncing}
+        />
       </div>
     );
   }
-
 }

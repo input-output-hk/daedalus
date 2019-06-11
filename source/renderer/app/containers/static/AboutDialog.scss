@@ -1,17 +1,5 @@
-.dialog {
-  border-radius: 10px;
-  box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25);
-  max-width: 640px;
-  min-width: 500px;
-  overflow: hidden;
-  &:focus {
-    outline: none;
-  }
-}
-
 .overlay {
-  align-items: center;
-  background-color: var(--theme-modal-overlay-background-color);
+  background-color: var(--theme-about-window-background-color);
   bottom: 0;
   display: flex;
   justify-content: center;
@@ -20,4 +8,18 @@
   right: 0;
   top: 0;
   z-index: 9999;
+
+  @media (max-width: 950px), (max-height: 678px) {
+    overflow-y: overlay;
+  }
+}
+
+.dialog {
+  margin: auto 0;
+  max-width: 980px;
+  overflow: hidden;
+
+  &:focus {
+    outline: none;
+  }
 }

@@ -6,38 +6,39 @@ import { osxMenu } from '../menus/osx';
 import { Logger } from './logging';
 import { safeExitWithCode } from './safeExitWithCode';
 import { CardanoNode } from '../cardano/CardanoNode';
+import { DIALOGS, SCREENS } from '../../common/ipc/constants';
 import {
-  TOGGLE_ABOUT_DIALOG_CHANNEL,
-  TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL,
-  GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL,
-  TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL
-} from '../../common/ipc/api';
+  toggleUiPartChannel,
+  showUiPartChannel,
+} from '../ipc/control-ui-parts';
+import { getLocale } from './getLocale';
+
+const localesFillForm = {
+  'en-US': 'English',
+  'ja-JP': 'Japanese',
+};
 
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
   cardanoNode: ?CardanoNode,
-  isInSafeMode: boolean,
-  locale: string,
+  locale: string
 ) => {
-
   const openAbout = () => {
-    if (mainWindow) mainWindow.webContents.send(TOGGLE_ABOUT_DIALOG_CHANNEL);
+    if (mainWindow) toggleUiPartChannel.send(DIALOGS.ABOUT, mainWindow);
   };
 
-  const openNetworkStatus = () => {
-    if (mainWindow) mainWindow.webContents.send(TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL);
+  const openDaedalusDiagnostics = () => {
+    if (mainWindow)
+      toggleUiPartChannel.send(DIALOGS.DAEDALUS_DIAGNOSTICS, mainWindow);
   };
 
   const goToAdaRedemption = () => {
-    if (mainWindow) mainWindow.webContents.send(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL);
+    if (mainWindow) showUiPartChannel.send(SCREENS.ADA_REDEMPTION, mainWindow);
   };
 
   const goBlockConsolidationStatus = () => {
-    if (mainWindow) {
-      mainWindow.webContents.send(
-        TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL
-      );
-    }
+    if (mainWindow)
+      toggleUiPartChannel.send(SCREENS.BLOCK_CONSOLIDATION, mainWindow);
   };
 
   const restartInSafeMode = async () => {
@@ -54,11 +55,37 @@ export const buildAppMenus = async (
     safeExitWithCode(22);
   };
 
-  const { isMacOS } = environment;
+  const {
+    isMacOS,
+    version,
+    apiVersion,
+    network,
+    build,
+    installerVersion,
+    os,
+    buildNumber,
+  } = environment;
+
   const translations = require(`../locales/${locale}`);
+
+  const networkLocale = getLocale(network);
+
+  const supportRequestData = {
+    frontendVersion: version,
+    backendVersion: apiVersion,
+    network: network === 'development' ? 'staging' : network,
+    build,
+    installerVersion,
+    os,
+    networkLocale,
+    product: `Daedalus wallet - ${network}`,
+    supportLanguage: localesFillForm[networkLocale],
+    productVersion: `Daedalus ${version}+Cardano ${buildNumber}`,
+  };
+
   const menuActions = {
     openAbout,
-    openNetworkStatus,
+    openDaedalusDiagnostics,
     goToAdaRedemption,
     restartInSafeMode,
     restartWithoutSafeMode,
@@ -69,12 +96,18 @@ export const buildAppMenus = async (
   let menu;
   if (isMacOS) {
     menu = Menu.buildFromTemplate(
-      osxMenu(app, mainWindow, menuActions, isInSafeMode, translations)
+      osxMenu(app, mainWindow, menuActions, translations, supportRequestData)
     );
     Menu.setApplicationMenu(menu);
   } else {
     menu = Menu.buildFromTemplate(
-      winLinuxMenu(app, mainWindow, menuActions, isInSafeMode, translations)
+      winLinuxMenu(
+        app,
+        mainWindow,
+        menuActions,
+        translations,
+        supportRequestData
+      )
     );
     mainWindow.setMenu(menu);
   }
@@ -93,5 +126,4 @@ export const buildAppMenus = async (
       globalShortcut.unregister('CommandOrControl+H');
     });
   }
-
 };

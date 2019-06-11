@@ -1,5 +1,5 @@
 .completionContentWrapper {
-  color: var(--theme-instructions-text-color);
+  color: var(--theme-dialog-text-color);
   font-family: var(--font-light);
 
   p {
@@ -7,7 +7,7 @@
   }
 
   .linkInstructionsWrapper {
-    border-bottom: 1px solid var(--theme-separation-border-color);
+    border-bottom: 1px solid var(--theme-dialog-border-color);
     margin-top: 11px;
   }
 
@@ -21,10 +21,12 @@
   }
 
   .infoBox {
-    background-color: var(--theme-paper-wallet-create-certificate-dialog-explorer-link-background-color);
+    background-color: var(
+      --theme-paper-wallet-create-certificate-dialog-explorer-link-background-color
+    );
     border-radius: 2px;
     font-family: var(--font-regular);
-    letter-spacing: .5px;
+    letter-spacing: 0.5px;
     line-height: 1.38;
     margin: 10px 0 20px;
     min-height: 50px;
@@ -34,7 +36,9 @@
     word-wrap: break-word;
 
     .link {
-      color: var(--theme-paper-wallet-create-certificate-dialog-explorer-link-color);
+      color: var(
+        --theme-paper-wallet-create-certificate-dialog-explorer-link-color
+      );
       cursor: pointer;
       text-decoration: underline;
     }
@@ -77,5 +81,4 @@
       }
     }
   }
-
 }

@@ -6,16 +6,19 @@ import { request } from '../../utils/request';
 export type UpdateWalletParams = {
   walletId: string,
   assuranceLevel: WalletAssuranceLevel,
-  name: string
+  name: string,
 };
 
 export const updateWallet = (
   config: RequestConfig,
   { walletId, assuranceLevel, name }: UpdateWalletParams
-): Promise<AdaWallet> => (
-  request({
-    method: 'PUT',
-    path: `/api/v1/wallets/${walletId}`,
-    ...config,
-  }, {}, { assuranceLevel, name })
-);
+): Promise<AdaWallet> =>
+  request(
+    {
+      method: 'PUT',
+      path: `/api/v1/wallets/${walletId}`,
+      ...config,
+    },
+    {},
+    { assuranceLevel, name }
+  );

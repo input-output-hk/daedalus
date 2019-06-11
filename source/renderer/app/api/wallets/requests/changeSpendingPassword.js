@@ -14,11 +14,19 @@ export const changeSpendingPassword = (
   config: RequestConfig,
   { walletId, oldPassword, newPassword }: ChangeSpendingPasswordParams
 ): Promise<AdaWallet> => {
-  const encryptedOldPassphrase = oldPassword ? encryptPassphrase(oldPassword) : '';
-  const encryptedNewPassphrase = newPassword ? encryptPassphrase(newPassword) : '';
-  return request({
-    method: 'PUT',
-    path: `/api/v1/wallets/${walletId}/password`,
-    ...config,
-  }, {}, { old: encryptedOldPassphrase, new: encryptedNewPassphrase });
+  const encryptedOldPassphrase = oldPassword
+    ? encryptPassphrase(oldPassword)
+    : '';
+  const encryptedNewPassphrase = newPassword
+    ? encryptPassphrase(newPassword)
+    : '';
+  return request(
+    {
+      method: 'PUT',
+      path: `/api/v1/wallets/${walletId}/password`,
+      ...config,
+    },
+    {},
+    { old: encryptedOldPassphrase, new: encryptedNewPassphrase }
+  );
 };

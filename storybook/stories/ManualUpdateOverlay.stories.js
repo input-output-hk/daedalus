@@ -6,12 +6,7 @@ import StoryDecorator from './support/StoryDecorator';
 import ManualUpdateOverlay from '../../source/renderer/app/components/loading/ManualUpdateOverlay';
 
 storiesOf('ManualUpdateOverlay', module)
-
-  .addDecorator((story) => (
-    <StoryDecorator>
-      {story()}
-    </StoryDecorator>
-  ))
+  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 

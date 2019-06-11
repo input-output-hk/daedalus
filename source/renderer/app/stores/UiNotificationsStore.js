@@ -5,7 +5,6 @@ import Store from './lib/Store';
 import type { Notification } from '../types/notificationType';
 
 export default class UiNotificationsStore extends Store {
-
   @observable activeNotifications: {} = {};
 
   setup() {
@@ -19,7 +18,9 @@ export default class UiNotificationsStore extends Store {
     const notification = {
       id,
       duration: duration || null,
-      secondsTimerInterval: duration ? setInterval(this._updateSeconds, 1000, id) : null,
+      secondsTimerInterval: duration
+        ? setInterval(this._updateSeconds, 1000, id)
+        : null,
     };
 
     if (this.isOpen(id)) {
@@ -34,14 +35,15 @@ export default class UiNotificationsStore extends Store {
   @action _set = (notification: Notification) => {
     this.activeNotifications = {
       ...this.activeNotifications,
-      ...set({}, notification.id, notification)
+      ...set({}, notification.id, notification),
     };
   };
 
   @action _onClose = ({ id }: { id: string }) => {
     const notification = this.activeNotifications[id];
     if (notification) {
-      if (notification.secondsTimerInterval) clearInterval(notification.secondsTimerInterval);
+      if (notification.secondsTimerInterval)
+        clearInterval(notification.secondsTimerInterval);
       this.activeNotifications = omit(this.activeNotifications, id);
     }
   };
@@ -53,5 +55,4 @@ export default class UiNotificationsStore extends Store {
       if (notification.duration === 0) this._onClose({ id });
     }
   };
-
 }

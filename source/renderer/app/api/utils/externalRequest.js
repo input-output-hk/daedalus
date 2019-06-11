@@ -1,6 +1,6 @@
 // @flow
-import { omit, map } from 'lodash';
-import { ALLOWED_EXTERNAL_SOURCES } from '../../config/urlsConfig';
+import { omit } from 'lodash';
+import { ALLOWED_EXTERNAL_HOSTNAMES } from '../../config/urlsConfig';
 
 export type HttpOptions = {
   hostname: string,
@@ -14,17 +14,9 @@ export type HttpOptions = {
   },
 };
 
-export const externalRequest = (httpOptions: HttpOptions): Promise<any> => (
+export const externalRequest = (httpOptions: HttpOptions): Promise<any> =>
   new Promise((resolve, reject) => {
-    let isAllowed = false;
-    map(ALLOWED_EXTERNAL_SOURCES, (allowedSource) => {
-      const allowedHostname = allowedSource.split('/')[2];
-      if (allowedHostname === httpOptions.hostname) {
-        isAllowed = true;
-      }
-    });
-
-    if (!isAllowed) {
+    if (!ALLOWED_EXTERNAL_HOSTNAMES.includes(httpOptions.hostname)) {
       return reject(new Error('Hostname not allowed'));
     }
 
@@ -46,5 +38,4 @@ export const externalRequest = (httpOptions: HttpOptions): Promise<any> => (
     });
     request.on('error', error => reject(error));
     return request.end();
-  })
-);
+  });

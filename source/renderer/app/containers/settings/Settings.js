@@ -1,14 +1,19 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import { intlShape } from 'react-intl';
 import SettingsLayout from '../../components/settings/SettingsLayout';
 import SettingsMenu from '../../components/settings/menu/SettingsMenu';
 import Layout from '../MainLayout';
 import { buildRoute } from '../../utils/routing';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class Settings extends Component<InjectedContainerProps> {
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
 
   static defaultProps = { actions: null, stores: null };
 
@@ -24,15 +29,13 @@ export default class Settings extends Component<InjectedContainerProps> {
     const { actions, children } = this.props;
     const menu = (
       <SettingsMenu
-        onItemClick={(route) => actions.router.goToRoute.trigger({ route })}
+        onItemClick={route => actions.router.goToRoute.trigger({ route })}
         isActiveItem={this.isActivePage}
       />
     );
     return (
       <Layout>
-        <SettingsLayout menu={menu}>
-          {children}
-        </SettingsLayout>
+        <SettingsLayout menu={menu}>{children}</SettingsLayout>
       </Layout>
     );
   }

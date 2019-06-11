@@ -1,14 +1,25 @@
 // @flow
-import { observable, computed, action, extendObservable, runInAction } from 'mobx';
+import {
+  observable,
+  computed,
+  action,
+  extendObservable,
+  runInAction,
+} from 'mobx';
 import BigNumber from 'bignumber.js';
 import { find, get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import { WalletTransaction, transactionTypes } from '../domains/WalletTransaction';
+import {
+  WalletTransaction,
+  transactionTypes,
+} from '../domains/WalletTransaction';
 import type { GetTransactionsResponse } from '../api/transactions/types';
 import type { UnconfirmedAmount } from '../types/unconfirmedAmountType';
 import { isValidAmountInLovelaces } from '../utils/validations';
 import { TX_UNCONFIRMED_THRESHOLD } from '../config/numbersConfig';
+
+/* eslint-disable consistent-return */
 
 export type TransactionSearchOptionsStruct = {
   searchTerm: string,
@@ -23,7 +34,6 @@ type TransactionFeeRequest = {
 };
 
 export default class TransactionsStore extends Store {
-
   INITIAL_SEARCH_LIMIT = null; // 'null' value stands for 'load all'
   SEARCH_LIMIT_INCREASE = 500;
   SEARCH_SKIP = 0;
@@ -32,20 +42,19 @@ export default class TransactionsStore extends Store {
   @observable transactionsRequests: Array<{
     walletId: string,
     recentRequest: Request<GetTransactionsResponse>,
-    allRequest: Request<GetTransactionsResponse>
+    allRequest: Request<GetTransactionsResponse>,
   }> = [];
 
   @observable _searchOptionsForWallets = {};
 
-  @observable unconfirmedAmount: UnconfirmedAmount = this._getEmptyUnconfirmedAmount();
+  @observable
+  unconfirmedAmount: UnconfirmedAmount = this._getEmptyUnconfirmedAmount();
 
   setup() {
     // const actions = this.actions.transactions;
     // actions.filterTransactions.listen(this._updateSearchTerm);
     // actions.loadMoreTransactions.listen(this._increaseSearchLimit);
-    this.registerReactions([
-      this._ensureSearchOptionsForActiveWallet,
-    ]);
+    this.registerReactions([this._ensureSearchOptionsForActiveWallet]);
   }
 
   @computed get recentTransactionsRequest(): Request<GetTransactionsResponse> {
@@ -75,7 +84,8 @@ export default class TransactionsStore extends Store {
     const request = this._getTransactionsAllRequest(wallet.id);
     if (searchTerm && request.result && request.result.transactions) {
       return request.result.transactions.filter(
-        transaction => transaction.title.search(new RegExp(searchTerm, 'i')) !== -1
+        transaction =>
+          transaction.title.search(new RegExp(searchTerm, 'i')) !== -1
       );
     }
     return request.result ? request.result.transactions : [];
@@ -84,43 +94,44 @@ export default class TransactionsStore extends Store {
   @computed get recent(): Array<WalletTransaction> {
     const wallet = this.stores.wallets.active;
     if (!wallet) return [];
-    const result = this._getTransactionsRecentRequest(wallet.id).result;
-    return result ? result.transactions : [];
+    const results = this._getTransactionsRecentRequest(wallet.id).result;
+    return results ? results.transactions : [];
   }
 
   @computed get hasAnyFiltered(): boolean {
     const wallet = this.stores.wallets.active;
     if (!wallet) return false;
-    const result = this._getTransactionsAllRequest(wallet.id).result;
-    return result ? result.transactions.length > 0 : false;
+    const results = this._getTransactionsAllRequest(wallet.id).result;
+    return results ? results.transactions.length > 0 : false;
   }
 
   @computed get hasAny(): boolean {
     const wallet = this.stores.wallets.active;
     if (!wallet) return false;
-    const result = this._getTransactionsRecentRequest(wallet.id).result;
-    return result ? result.total > 0 : false;
+    const results = this._getTransactionsRecentRequest(wallet.id).result;
+    return results ? results.total > 0 : false;
   }
 
   @computed get totalAvailable(): number {
     const wallet = this.stores.wallets.active;
     if (!wallet) return 0;
-    const result = this._getTransactionsAllRequest(wallet.id).result;
-    return result ? result.total : 0;
+    const results = this._getTransactionsAllRequest(wallet.id).result;
+    return results ? results.total : 0;
   }
 
   @computed get totalFilteredAvailable(): number {
     const wallet = this.stores.wallets.active;
     if (!wallet) return 0;
-    const result = this._getTransactionsAllRequest(wallet.id).result;
-    return result ? result.transactions.length : 0;
+    const results = this._getTransactionsAllRequest(wallet.id).result;
+    return results ? results.transactions.length : 0;
   }
 
   @action _refreshTransactionData = async (restoredWalletId: ?string) => {
     if (this.stores.networkStatus.isConnected) {
       const allWallets = this.stores.wallets.all;
       for (const wallet of allWallets) {
-        const isRestoreActive = get(wallet, 'syncState.tag', '') === 'restoring';
+        const isRestoreActive =
+          get(wallet, 'syncState.tag', '') === 'restoring';
         const isRestoreCompleted = restoredWalletId === wallet.id;
         const recentRequest = this._getTransactionsRecentRequest(wallet.id);
         if (isRestoreCompleted && recentRequest.isExecuting) {
@@ -158,15 +169,23 @@ export default class TransactionsStore extends Store {
     }
   };
 
-  calculateTransactionFee = async (transactionFeeRequest: TransactionFeeRequest) => {
+  calculateTransactionFee = async (
+    transactionFeeRequest: TransactionFeeRequest
+  ) => {
     const { walletId } = transactionFeeRequest;
     const wallet = this.stores.wallets.getWalletById(walletId);
-    const accountIndex = await this.stores.addresses.getAccountIndexByWalletId(walletId);
+    const accountIndex = await this.stores.addresses.getAccountIndexByWalletId(
+      walletId
+    );
     if (!wallet) {
-      throw new Error('Active wallet required before calculating transaction fees.');
+      throw new Error(
+        'Active wallet required before calculating transaction fees.'
+      );
     }
     if (!accountIndex) {
-      throw new Error('Active account required before calculating transaction fees.');
+      throw new Error(
+        'Active account required before calculating transaction fees.'
+      );
     }
     return this.api.ada.calculateTransactionFee({
       ...transactionFeeRequest,
@@ -175,9 +194,8 @@ export default class TransactionsStore extends Store {
     });
   };
 
-  validateAmount = (amountInLovelaces: string): Promise<boolean> => (
-    Promise.resolve(isValidAmountInLovelaces(amountInLovelaces))
-  );
+  validateAmount = (amountInLovelaces: string): Promise<boolean> =>
+    Promise.resolve(isValidAmountInLovelaces(amountInLovelaces));
 
   // ======================= PRIVATE ========================== //
 
@@ -203,13 +221,18 @@ export default class TransactionsStore extends Store {
     this._setUnconfirmedAmount(this._getEmptyUnconfirmedAmount());
   }
 
-  _getTransactionsRecentRequest = (walletId: string): Request<GetTransactionsResponse> => {
+  _getTransactionsRecentRequest = (
+    walletId: string
+  ): Request<GetTransactionsResponse> => {
     const foundRequest = find(this.transactionsRequests, { walletId });
-    if (foundRequest && foundRequest.recentRequest) return foundRequest.recentRequest;
+    if (foundRequest && foundRequest.recentRequest)
+      return foundRequest.recentRequest;
     return new Request(this.api.ada.getTransactions);
   };
 
-  _getTransactionsAllRequest = (walletId: string): Request<GetTransactionsResponse> => {
+  _getTransactionsAllRequest = (
+    walletId: string
+  ): Request<GetTransactionsResponse> => {
     const foundRequest = find(this.transactionsRequests, { walletId });
     if (foundRequest && foundRequest.allRequest) return foundRequest.allRequest;
     return new Request(this.api.ada.getTransactions);
@@ -227,14 +250,17 @@ export default class TransactionsStore extends Store {
     const wallet = this.stores.wallets.active;
     if (!wallet) return this._resetUnconfirmedAmount();
     // Reset when no transactions
-    const result = this._getTransactionsAllRequest(wallet.id).result;
-    if (!result || !result.transactions) return this._resetUnconfirmedAmount();
+    const results = this._getTransactionsAllRequest(wallet.id).result;
+    if (!results || !results.transactions)
+      return this._resetUnconfirmedAmount();
 
     // We have some results, lets compute and update
     const unconfirmedAmount = this._getEmptyUnconfirmedAmount();
-    for (const transaction of result.transactions) {
+    for (const transaction of results.transactions) {
       if (transaction.numberOfConfirmations <= TX_UNCONFIRMED_THRESHOLD) {
-        unconfirmedAmount.total = unconfirmedAmount.total.plus(transaction.amount.absoluteValue());
+        unconfirmedAmount.total = unconfirmedAmount.total.plus(
+          transaction.amount.absoluteValue()
+        );
         if (transaction.type === transactionTypes.EXPEND) {
           unconfirmedAmount.outgoing = unconfirmedAmount.outgoing.plus(
             transaction.amount.absoluteValue()
@@ -265,11 +291,10 @@ export default class TransactionsStore extends Store {
           [wallet.id]: {
             searchTerm: '',
             searchLimit: this.INITIAL_SEARCH_LIMIT,
-            searchSkip: this.SEARCH_SKIP
-          }
+            searchSkip: this.SEARCH_SKIP,
+          },
         });
       });
     }
-  }
-
+  };
 }

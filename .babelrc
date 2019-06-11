@@ -9,6 +9,7 @@
     ["@babel/plugin-proposal-class-properties", { "loose": true }],
     ["@babel/plugin-proposal-object-rest-spread", {}],
     ["@babel/plugin-transform-runtime", {}],
+    ["@babel/plugin-proposal-unicode-property-regex", { "useUnicodeFlag": false }],
     ["react-intl", {
       "messagesDir": "./translations/messages/",
       "enforceDescriptions": false,
