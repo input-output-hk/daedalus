@@ -18,8 +18,8 @@ const nextAppVersion = [
 ].join('.');
 
 Given(/^There is a newer application version available$/, async function() {
-  await this.client.execute(nextAppVersion => {
-    daedalus.api.ada.setLatestAppVersion(nextAppVersion);
+  await this.client.execute(version => {
+    daedalus.api.ada.setLatestAppVersion(version);
   }, nextAppVersion);
 });
 

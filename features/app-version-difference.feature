@@ -10,4 +10,3 @@ Feature: Manual Software Update Overlay
     And Daedalus is stuck in connecting state
     And I should see the "Manual Update" overlay
     Then The overlay should accurately display the version info
-    Then I set the node subscription status to subscribed
