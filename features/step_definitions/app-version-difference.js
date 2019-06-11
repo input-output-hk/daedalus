@@ -52,17 +52,3 @@ Then(
     expect(renderedText).to.equal(expectedText);
   }
 );
-
-Then(
-  /^I set the node subscription status to (subscribing|subscribed)$/,
-  async function (state) {
-    const subscriptionState =
-      state === 'subscribed' ? { status: 'subscribed' } : {};
-    await this.client.executeAsync((subscriptionStatus, done) => {
-      daedalus.api.ada
-        .setSubscriptionStatus(subscriptionStatus)
-        .then(done)
-        .catch(error => done(error));
-    }, subscriptionState);
-  }
-);
