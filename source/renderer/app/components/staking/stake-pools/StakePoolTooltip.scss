@@ -13,7 +13,7 @@
   position: absolute;
   top: -21px;
   user-select: text;
-  width: 250px;
+  width: 240px;
   z-index: 1;
 
   &:before,
@@ -207,18 +207,29 @@
 .table {
   @extend %regularText;
   margin-bottom: 14px;
+  display: flex;
+  flex-wrap: wrap;
+
+  dt,
+  dd {
+    height: 16px;
+    margin-bottom: 9px;
+
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+  }
 
   dt {
     color: var(--theme-staking-stake-pool-tooltip-table-title-color);
-    display: inline-block;
     font-size: 14px;
-    line-height: 1.36;
+    line-height: 16px;
     opacity: 0.8;
     width: 60%;
   }
 
   dd {
-    display: inline-block;
+    line-height: 0;
     text-align: right;
     width: 40%;
   }

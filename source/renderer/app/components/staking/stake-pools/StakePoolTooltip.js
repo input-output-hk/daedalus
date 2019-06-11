@@ -126,7 +126,7 @@ export default class StakePoolTooltip extends Component<Props> {
     ]);
 
     const darken = currentTheme === 'dark-blue' ? 1 : 0;
-    const alpha = currentTheme === 'dark-blue' ? 1 : 0.3;
+    const alpha = 0.3;
     const reverse = true;
     const retirementFromNow = retirement
       ? moment(retirement).fromNow(true)
