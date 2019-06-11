@@ -1041,9 +1041,10 @@ export default class AdaApi {
   getLatestAppVersion = async (): Promise<GetLatestAppVersionResponse> => {
     Logger.debug('AdaApi::getLatestAppVersion called');
     try {
+      const { isWindows, platform } = global.environment;
       const latestAppVersionInfo: LatestAppVersionInfoResponse = await getLatestAppVersion();
       const latestAppVersionPath = `platforms.${
-        global.environment.platform
+        isWindows ? 'windows' : platform
       }.version`;
       const latestAppVersion = get(
         latestAppVersionInfo,

@@ -16,7 +16,6 @@ export default class NodeUpdateStore extends Store {
   @observable updateVersion = null;
   @observable availableAppVersion: ?string = null;
   @observable isNewAppVersionAvailable: boolean = false;
-  @observable isNewAppVersionLoading: boolean = false;
 
   // REQUESTS
   /* eslint-disable max-len */
@@ -83,7 +82,6 @@ export default class NodeUpdateStore extends Store {
   };
 
   @action _getLatestAvailableAppVersion = async () => {
-    this.isNewAppVersionLoading = true;
     const { latestAppVersion } = await this.getLatestAppVersionRequest.execute()
       .promise;
     this.setLatestAvailableAppVersion(latestAppVersion);
@@ -113,7 +111,6 @@ export default class NodeUpdateStore extends Store {
         isMainVersionChanged || isMiddleVersionChanged || isMinorVersionChanged;
     }
 
-    this.isNewAppVersionLoading = false;
     this.isNewAppVersionAvailable = isNewAppVersionAvailable;
     this.availableAppVersion = latestAppVersion;
   };

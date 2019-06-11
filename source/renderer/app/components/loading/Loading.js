@@ -139,6 +139,7 @@ type Props = {
   currentAppVersion: string,
   isNewAppVersionAvailable: boolean,
   isNewAppVersionLoading: boolean,
+  isNewAppVersionLoaded: boolean,
   onExternalLinkClick: Function,
   onReportIssueClick: Function,
   onCheckTheTimeAgain: Function,
@@ -178,7 +179,7 @@ export default class Loading extends Component<Props, State> {
       isNotEnoughDiskSpace,
       onGetAvailableVersions,
       isNewAppVersionLoading,
-      availableAppVersion,
+      isNewAppVersionLoaded,
     } = this.props;
     const canResetSyncing = this._syncingTimerShouldStop(
       isSynced,
@@ -198,7 +199,11 @@ export default class Loading extends Component<Props, State> {
       (!isConnected && connectingTime >= REPORT_ISSUE_TIME_TRIGGER) ||
       (isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER);
     // If app loading is stuck, check if a newer version is available and set flag (state)
-    if (isAppLoadingStuck && !isNewAppVersionLoading && !availableAppVersion) {
+    if (
+      isAppLoadingStuck &&
+      !isNewAppVersionLoaded &&
+      !isNewAppVersionLoading
+    ) {
       onGetAvailableVersions();
     }
   }
@@ -420,7 +425,7 @@ export default class Loading extends Component<Props, State> {
       isNewAppVersionAvailable,
       currentAppVersion,
       availableAppVersion,
-      isNewAppVersionLoading,
+      isNewAppVersionLoaded,
       onExternalLinkClick,
     } = this.props;
 
@@ -460,8 +465,8 @@ export default class Loading extends Component<Props, State> {
     const canReportSyncingIssue =
       isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER;
     const showReportIssue =
+      isNewAppVersionLoaded &&
       !isNewAppVersionAvailable &&
-      !isNewAppVersionLoading &&
       (canReportConnectingIssue || canReportSyncingIssue);
 
     const buttonClasses = classNames(['primary', styles.reportIssueButton]);
