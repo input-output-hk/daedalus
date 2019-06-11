@@ -412,6 +412,8 @@ export default class Loading extends Component<Props, State> {
       apiIcon,
       isConnected,
       isSynced,
+      isNodeStopping,
+      isNodeStopped,
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
       onReportIssueClick,
@@ -514,7 +516,7 @@ export default class Loading extends Component<Props, State> {
           <SVGInline svg={apiLoadingLogo} className={apiLogoStyles} />
         </div>
         {hasLoadedCurrentLocale ? this._renderLoadingScreen() : null}
-        {isNewAppVersionAvailable && (
+        {isNewAppVersionAvailable && !isNodeStopping && !isNodeStopped && (
           <ManualUpdateOverlay
             currentAppVersion={currentAppVersion}
             availableAppVersion={availableAppVersion}
