@@ -1688,13 +1688,13 @@
         "description": "Headline for the current epoch.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/staking/epochs/StakingEpochs.js",
         "id": "staking.epochs.currentHeading",
         "start": {
           "column": 23,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -1702,13 +1702,13 @@
         "description": "Headline for the previous epoch.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/staking/epochs/StakingEpochs.js",
         "id": "staking.epochs.previousHeading",
         "start": {
           "column": 24,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -1716,13 +1716,13 @@
         "description": "\"No results\" results label on staking epochs page.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/staking/epochs/StakingEpochs.js",
         "id": "staking.epochs.no.results",
         "start": {
           "column": 13,
-          "line": 34
+          "line": 35
         }
       },
       {
@@ -1730,13 +1730,13 @@
         "description": "Table header \"Stake pool\" label on staking epochs page",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/staking/epochs/StakingEpochs.js",
         "id": "staking.epochs.tableHeader.pool",
         "start": {
           "column": 19,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -1744,13 +1744,13 @@
         "description": "Table header \"Slots elected\" label on staking epochs page",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/staking/epochs/StakingEpochs.js",
         "id": "staking.epochs.tableHeader.slotsElected",
         "start": {
           "column": 27,
-          "line": 44
+          "line": 45
         }
       },
       {
@@ -1758,13 +1758,13 @@
         "description": "Table header \"Performance\" label on staking epochs page",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 54
         },
         "file": "source/renderer/app/components/staking/epochs/StakingEpochs.js",
         "id": "staking.epochs.tableHeader.performance",
         "start": {
           "column": 26,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -1772,13 +1772,13 @@
         "description": "Table header \"Shared rewards\" label on staking epochs page",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 59
         },
         "file": "source/renderer/app/components/staking/epochs/StakingEpochs.js",
         "id": "staking.epochs.tableHeader.sharedRewards",
         "start": {
           "column": 28,
-          "line": 54
+          "line": 55
         }
       },
       {
@@ -1786,13 +1786,13 @@
         "description": "\"slots\" text in table body on staking epochs page",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 64
         },
         "file": "source/renderer/app/components/staking/epochs/StakingEpochs.js",
         "id": "staking.epochs.tableBody.slots",
         "start": {
           "column": 18,
-          "line": 59
+          "line": 60
         }
       },
       {
@@ -1800,13 +1800,13 @@
         "description": "\"of\" text in table body on staking epochs page",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 69
         },
         "file": "source/renderer/app/components/staking/epochs/StakingEpochs.js",
         "id": "staking.epochs.tableBody.of",
         "start": {
           "column": 15,
-          "line": 64
+          "line": 65
         }
       },
       {
@@ -1814,13 +1814,13 @@
         "description": "\"Ada\" text in table body on staking epochs page",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 74
         },
         "file": "source/renderer/app/components/staking/epochs/StakingEpochs.js",
         "id": "environment.currency.ada",
         "start": {
           "column": 16,
-          "line": 69
+          "line": 70
         }
       }
     ],
