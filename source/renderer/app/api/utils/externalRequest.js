@@ -24,7 +24,7 @@ export const externalRequest = (httpOptions: HttpOptions): Promise<any> => (
     const options = omit(httpOptions, 'protocol');
     const requestMethod = global[protocol].request;
     const request = requestMethod(options);
-    console.debug('[externalRequest::start]', options, request);
+
     request.on('response', response => {
       let body = '';
       response.on('data', chunk => {
@@ -33,7 +33,6 @@ export const externalRequest = (httpOptions: HttpOptions): Promise<any> => (
       response.on('error', error => reject(error));
       response.on('end', () => {
         try {
-          console.debug('[externalRequest::end]', body);
           const parsedBody = JSON.parse(body);
           resolve(parsedBody);
         } catch (error) {
