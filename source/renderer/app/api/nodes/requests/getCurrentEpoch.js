@@ -3,8 +3,8 @@ import type { CardanoExplorerResponse } from '../types';
 import { externalRequest } from '../../utils/externalRequest';
 import { getNetworkExplorerUri } from '../../../utils/network';
 
-const { isStaging, isTestnet, NETWORK } = global.environment;
-const hostname = getNetworkExplorerUri(NETWORK);
+const { isStaging, isTestnet, network } = global.environment;
+const hostname = getNetworkExplorerUri(network);
 const protocol = isStaging || isTestnet ? 'http' : 'https';
 
 export const getCurrentEpoch = (): Promise<CardanoExplorerResponse> =>
