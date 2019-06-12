@@ -363,6 +363,17 @@ const CARDANO_THEME_CONFIG = {
     '--theme-loading-status-icons-tooltip-color': '#5E6066',
     '--theme-loading-spinner-color': '#5e6066',
   },
+  manualUpdate: {
+    '--theme-manual-update-overlay-background-color': 'rgba(32, 34, 37, 0.96)',
+    '--theme-manual-update-overlay-button-background-color':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-manual-update-overlay-button-background-color-hover': '#fafbfc',
+    '--theme-manual-update-overlay-button-border-color': '#fafbfc',
+    '--theme-manual-update-overlay-button-text-color-hover': '#202225',
+    '--theme-manual-update-overlay-text-color': 'rgba(250, 251, 252, 0.7)',
+    '--theme-manual-update-overlay-text-highlight-color': '#fafbfc',
+    '--theme-manual-update-overlay-title-text-color': '#fafbfc',
+  },
   mnemonic: {
     '--theme-backup-mnemonic-background-color': 'rgba(68, 91, 124, 0.05)',
     '--theme-mnemonic-background-color': '#f0f3f5',

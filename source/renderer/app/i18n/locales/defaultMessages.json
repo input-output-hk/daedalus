@@ -287,13 +287,13 @@
         "description": "Message \"Starting Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.startingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 25
+          "line": 26
         }
       },
       {
@@ -301,13 +301,13 @@
         "description": "Message \"Stopping Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.stoppingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -315,13 +315,13 @@
         "description": "Message \"Cardano node stopped\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.stoppedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 35
+          "line": 36
         }
       },
       {
@@ -329,13 +329,13 @@
         "description": "Message \"Updating Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.updatingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 40
+          "line": 41
         }
       },
       {
@@ -343,13 +343,13 @@
         "description": "Message \"Cardano node updated\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 50
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.updatedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -357,13 +357,13 @@
         "description": "Message \"Cardano node crashed\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.crashedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 50
+          "line": 51
         }
       },
       {
@@ -371,13 +371,13 @@
         "description": "Message \"Unable to start Cardano node. Please submit a support request.\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 62
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.unrecoverableCardanoMessage",
         "start": {
           "column": 17,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -385,13 +385,13 @@
         "description": "Message \"Connecting to network\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 67
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.connectingToNetworkMessage",
         "start": {
           "column": 14,
-          "line": 62
+          "line": 63
         }
       },
       {
@@ -399,13 +399,13 @@
         "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 73
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reconnectingToNetworkMessage",
         "start": {
           "column": 16,
-          "line": 67
+          "line": 68
         }
       },
       {
@@ -413,13 +413,13 @@
         "description": "Message \"Syncing blocks\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 78
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.syncingBlocksMessage",
         "start": {
           "column": 11,
-          "line": 73
+          "line": 74
         }
       },
       {
@@ -427,13 +427,13 @@
         "description": "Report connecting issue text on the loading screen.",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 83
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.connecting.text",
         "start": {
           "column": 29,
-          "line": 78
+          "line": 79
         }
       },
       {
@@ -441,13 +441,13 @@
         "description": "Report syncing issue text on the loading screen.",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 88
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.syncing.text",
         "start": {
           "column": 26,
-          "line": 83
+          "line": 84
         }
       },
       {
@@ -455,13 +455,13 @@
         "description": "Open support ticket button label on the loading.",
         "end": {
           "column": 3,
-          "line": 92
+          "line": 93
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.buttonLabel",
         "start": {
           "column": 26,
-          "line": 88
+          "line": 89
         }
       },
       {
@@ -469,13 +469,13 @@
         "description": "Download logs button label on the loading.",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 98
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.downloadLogsLinkLabel",
         "start": {
           "column": 36,
-          "line": 93
+          "line": 94
         }
       },
       {
@@ -483,17 +483,92 @@
         "description": "The TLS cert is not valid and Daedalus should be restarted",
         "end": {
           "column": 3,
-          "line": 102
+          "line": 103
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.errors.tlsCertificateNotValidPleaseRestartError",
         "start": {
           "column": 31,
-          "line": 98
+          "line": 99
         }
       }
     ],
     "path": "source/renderer/app/components/loading/Loading.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Software update is available",
+        "description": "Title for \"Manual update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/loading/ManualUpdateOverlay.js",
+        "id": "manualUpdateOverlay.title",
+        "start": {
+          "column": 9,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!You are experiencing network connection issues, and you are not running the latest Daedalus version. Automatic updates are unavailable while Daedalus is not connected to Cardano network.",
+        "description": "Description line 1 of \"Manual update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/loading/ManualUpdateOverlay.js",
+        "id": "manualUpdateOverlay.description1",
+        "start": {
+          "column": 20,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!You are currently running <b>{currentAppVersion}</b> version of Daedalus, and <b>{availableAppVersion}</b> version is available. Please manually update to that version since it may resolve your connecting issues.",
+        "description": "Description line 2 of \"Manual update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/loading/ManualUpdateOverlay.js",
+        "id": "manualUpdateOverlay.description2",
+        "start": {
+          "column": 20,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Follow instructions and manually update",
+        "description": "Label for \"Follow instructions and manually update\" action button on \"Manual update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/loading/ManualUpdateOverlay.js",
+        "id": "manualUpdateOverlay.button.label",
+        "start": {
+          "column": 21,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360023850634",
+        "description": "Follow instructions and manually update link on \"Manual update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/loading/ManualUpdateOverlay.js",
+        "id": "manualUpdateOverlay.button.url",
+        "start": {
+          "column": 25,
+          "line": 36
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/loading/ManualUpdateOverlay.json"
   },
   {
     "descriptors": [

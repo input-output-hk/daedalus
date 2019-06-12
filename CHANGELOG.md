@@ -57,6 +57,12 @@ Changelog
 - Improved Webpack 4 build performance ([PR 1320](https://github.com/input-output-hk/daedalus/pull/1320))
 - Improved error messages for connecting screen ([PR 1344](https://github.com/input-output-hk/daedalus/pull/1344))
 
+## 0.13.2
+
+### Fixes
+
+- Implemented alternative update path for manual updates ([PR 1410](https://github.com/input-output-hk/daedalus/pull/1410), [PR 1423](https://github.com/input-output-hk/daedalus/pull/1423))
+
 ## 0.13.1
 
 ### Fixes
