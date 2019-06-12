@@ -212,8 +212,8 @@
 
   dt,
   dd {
-    height: 16px;
-    margin-bottom: 9px;
+    height: 19px;
+    margin-bottom: 6px;
 
     &:last-of-type {
       margin-bottom: 0;
@@ -223,13 +223,14 @@
   dt {
     color: var(--theme-staking-stake-pool-tooltip-table-title-color);
     font-size: 14px;
-    line-height: 16px;
+    line-height: 1.36;
     opacity: 0.8;
     width: 60%;
   }
 
   dd {
     line-height: 0;
+    padding-top: 1px;
     text-align: right;
     width: 40%;
   }
