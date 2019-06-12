@@ -266,7 +266,7 @@ const createDaedalusComponentsTheme = (
       '--theme-bordered-box-border': `1px solid ${border}`,
       '--theme-bordered-box-text-color': `${text.primary}`,
     },
-    baton: {
+    button: {
       '--theme-label-button-color': `${text.primary}`,
     },
     buttonAttention: {
