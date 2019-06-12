@@ -682,6 +682,9 @@ const createDaedalusComponentsTheme = (
       '--theme-staking-progress-stripe-dark-2-background-color': `${
         background.secondary.regular
       }`,
+      '--theme-staking-table-body-highlighted-text-color': `${
+        background.secondary.dark
+      }`,
     },
     support: {
       '--theme-support-settings-text-color': `${text.primary}`,
