@@ -63,7 +63,10 @@ export default class LoadingPage extends Component<InjectedProps> {
     const { environment, openExternalLink } = stores.app;
     const { version } = environment;
     const {
-      isNewAppVersionLoading, isNewAppVersionAvailable, availableAppVersion,
+      isNewAppVersionAvailable,
+      isNewAppVersionLoading,
+      isNewAppVersionLoaded,
+      availableAppVersion,
     } = stores.nodeUpdate;
 
     return (
@@ -72,17 +75,22 @@ export default class LoadingPage extends Component<InjectedProps> {
           currencyIcon={adaLogo}
           apiIcon={cardanoLogo}
           cardanoNodeState={cardanoNodeState}
+          currentAppVersion={version}
+          availableAppVersion={availableAppVersion}
           isConnected={isConnected}
           isSynced={isSynced}
           isNodeStopping={isNodeStopping}
           isNodeStopped={isNodeStopped}
           isNotEnoughDiskSpace={isNotEnoughDiskSpace}
+          isNewAppVersionAvailable={isNewAppVersionAvailable}
+          isNewAppVersionLoading={isNewAppVersionLoading}
+          isNewAppVersionLoaded={isNewAppVersionLoaded}
+          isSystemTimeCorrect={isSystemTimeCorrect}
+          isCheckingSystemTime={forceCheckTimeDifferenceRequest.isExecuting}
           diskSpaceRequired={diskSpaceRequired}
           diskSpaceMissing={diskSpaceMissing}
           diskSpaceRecommended={diskSpaceRecommended}
           localTimeDifference={localTimeDifference}
-          isSystemTimeCorrect={isSystemTimeCorrect}
-          isCheckingSystemTime={forceCheckTimeDifferenceRequest.isExecuting}
           syncPercentage={syncPercentage}
           loadingDataForNextScreenMessage={messages.loadingWalletData}
           hasBeenConnected={hasBeenConnected}
@@ -93,12 +101,8 @@ export default class LoadingPage extends Component<InjectedProps> {
           onReportIssueClick={this.handleReportIssueClick}
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
           onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
-          onDownloadLogs={this.handleDownloadLogs}
-          isNewAppVersionLoading={isNewAppVersionLoading}
-          isNewAppVersionAvailable={isNewAppVersionAvailable}
-          currentAppVersion={version}
-          availableAppVersion={availableAppVersion}
           onGetAvailableVersions={this.handleGetAvailableVersions}
+          onDownloadLogs={this.handleDownloadLogs}
         />
         <NotificationMessage
           icon={successIcon}

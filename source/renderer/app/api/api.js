@@ -21,7 +21,7 @@ import { applyNodeUpdate } from './nodes/requests/applyNodeUpdate';
 import { getNodeInfo } from './nodes/requests/getNodeInfo';
 import { getNextNodeUpdate } from './nodes/requests/getNextNodeUpdate';
 import { postponeNodeUpdate } from './nodes/requests/postponeNodeUpdate';
-import { getLatestAppVersionInfo } from './nodes/requests/getLatestAppVersionInfo';
+import { getLatestAppVersion } from './nodes/requests/getLatestAppVersion';
 
 // Transactions requests
 import { getTransactionFee } from './transactions/requests/getTransactionFee';
@@ -91,10 +91,11 @@ import type {
 
 // Nodes Types
 import type {
+  LatestAppVersionInfoResponse,
   NodeInfo,
   NodeSoftware,
   GetNetworkStatusResponse,
-  GetLatestAppVersionInfoResponse,
+  GetLatestAppVersionResponse,
 } from './nodes/types';
 import type { NodeQueryParams } from './nodes/requests/getNodeInfo';
 
@@ -833,16 +834,26 @@ export default class AdaApi {
     }
   };
 
-  getLatestAppVersionInfo = async (): Promise<GetLatestAppVersionInfoResponse> => {
-    Logger.debug('AdaApi::getLatestAppVersionInfo called');
+  getLatestAppVersion = async (): Promise<GetLatestAppVersionResponse> => {
+    Logger.debug('AdaApi::getLatestAppVersion called');
     try {
-      const latestAppVersionInfo = await getLatestAppVersionInfo();
-      Logger.debug('AdaApi::getLatestAppVersionInfo success', {
+      const { isWindows, platform } = global.environment;
+      const latestAppVersionInfo: LatestAppVersionInfoResponse = await getLatestAppVersion();
+      const latestAppVersionPath = `platforms.${
+        isWindows ? 'windows' : platform
+      }.version`;
+      const latestAppVersion = get(
+        latestAppVersionInfo,
+        latestAppVersionPath,
+        null,
+      );
+      Logger.debug('AdaApi::getLatestAppVersion success', {
+        latestAppVersion,
         latestAppVersionInfo,
       });
-      return latestAppVersionInfo;
+      return { latestAppVersion };
     } catch (error) {
-      Logger.error('AdaApi::getLatestAppVersionInfo error', { error });
+      Logger.error('AdaApi::getLatestAppVersion error', { error });
       throw new GenericApiError();
     }
   };
@@ -855,7 +866,8 @@ export default class AdaApi {
   getLocalTimeDifference: Function;
   setLocalTimeDifference: Function;
   setNextUpdate: Function;
-  unsubscribeNode: Function;
+  setSubscriptionStatus: Function;
+  setLatestAppVersion: Function;
 
 }
 

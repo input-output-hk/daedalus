@@ -3,19 +3,26 @@ import BigNumber from 'bignumber.js';
 import { get } from 'lodash';
 import AdaApi from '../api';
 import { getNodeInfo } from '../nodes/requests/getNodeInfo';
+import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
 import { GenericApiError } from '../common/errors';
 import { Logger } from '../../utils/logging';
 import { RedeemAdaError } from '../transactions/errors';
 import type { RedeemAdaParams } from '../transactions/requests/redeemAda';
 import type { RedeemPaperVendedAdaParams } from '../transactions/requests/redeemPaperVendedAda';
 import type { NodeQueryParams } from '../nodes/requests/getNodeInfo';
-import type { NodeInfo, GetNetworkStatusResponse } from '../nodes/types';
+import type {
+  LatestAppVersionInfoResponse,
+  NodeInfo,
+  GetNetworkStatusResponse,
+  GetLatestAppVersionResponse,
+} from '../nodes/types';
 
 // ========== LOGGING =========
 
+let LATEST_APP_VERSION = null;
 let LOCAL_TIME_DIFFERENCE = 0;
 let NEXT_ADA_UPDATE = null;
-let NODE_SUBSCRIPTION_STATUS = null;
+let SUBSCRIPTION_STATUS = null;
 
 export default (api: AdaApi) => {
   // Since we cannot test ada redemption in dev mode, just resolve the requests
@@ -80,7 +87,7 @@ export default (api: AdaApi) => {
 
       // extract relevant data before sending to NetworkStatusStore
       return {
-        subscriptionStatus: NODE_SUBSCRIPTION_STATUS || subscriptionStatus,
+        subscriptionStatus: SUBSCRIPTION_STATUS || subscriptionStatus,
         syncProgress: syncProgress.quantity,
         blockchainHeight: get(blockchainHeight, 'quantity', 0),
         localBlockchainHeight: localBlockchainHeight.quantity,
@@ -107,21 +114,36 @@ export default (api: AdaApi) => {
     NEXT_ADA_UPDATE = nextUpdate;
   };
 
-  api.unsubscribeNode = async () => {
-    NODE_SUBSCRIPTION_STATUS = {};
+  api.getLatestAppVersion = async (): Promise<GetLatestAppVersionResponse> => {
+    Logger.debug('AdaApi::getLatestAppVersion (PATCHED) called');
+    try {
+      const { isWindows, platform } = global.environment;
+      const latestAppVersionInfo: LatestAppVersionInfoResponse = await getLatestAppVersion();
+      const latestAppVersionPath = `platforms.${
+        isWindows ? 'windows' : platform
+      }.version`;
+      const latestAppVersion = get(
+        latestAppVersionInfo,
+        latestAppVersionPath,
+        null
+      );
+      Logger.debug('AdaApi::getLatestAppVersion success', {
+        latestAppVersion,
+        latestAppVersionInfo,
+      });
+      return { latestAppVersion: LATEST_APP_VERSION || latestAppVersion };
+    } catch (error) {
+      Logger.error('AdaApi::getLatestAppVersion (PATCHED) error', { error });
+      throw new GenericApiError();
+    }
   };
 
-  api.getLatestAppVersionInfo = async () => ({
-    platforms: {
-      windows: {
-        version: '0.14.0',
-      },
-      darwin: {
-        version: '0.14.0',
-      },
-      linux: {
-        version: '0.14.0',
-      },
-    }
-  });
+  api.setLatestAppVersion = async (latestAppVersion: ?string) => {
+    LATEST_APP_VERSION = latestAppVersion;
+  };
+
+  api.setSubscriptionStatus = async (subscriptionStatus: ?Object) => {
+    SUBSCRIPTION_STATUS = subscriptionStatus;
+  };
+
 };
