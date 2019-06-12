@@ -11,6 +11,7 @@ import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
 import {
+  SELECTED_EPOCH_OPTIONS,
   getTableHeadersForCurrentEpoch,
   getTableHeadersForPreviousEpoch,
   noDataExisting,
@@ -91,6 +92,8 @@ type State = {
   previousEpochDataSortBy: string,
 };
 
+const { CURRENT_EPOCH, PREVIOUS_EPOCH } = SELECTED_EPOCH_OPTIONS;
+
 @observer
 export default class StakingEpochs extends Component<Props, State> {
   static contextTypes = {
@@ -104,7 +107,7 @@ export default class StakingEpochs extends Component<Props, State> {
   constructor() {
     super();
     this.state = {
-      selectedEpoch: 'currentEpoch',
+      selectedEpoch: CURRENT_EPOCH,
       currentEpochDataOrder: 'desc',
       previousEpochDataOrder: 'desc',
       currentEpochDataSortBy: 'pool',
@@ -124,7 +127,7 @@ export default class StakingEpochs extends Component<Props, State> {
     } = this.state;
     let newOrder;
 
-    if (selectedEpoch === 'currentEpoch') {
+    if (selectedEpoch === CURRENT_EPOCH) {
       if (currentEpochDataSortBy === newSortBy) {
         newOrder = currentEpochDataOrder === 'asc' ? 'desc' : 'asc';
       } else {
@@ -357,13 +360,13 @@ export default class StakingEpochs extends Component<Props, State> {
         label: `${currentEpochName} (${intl.formatMessage(
           messages.currentEpochHeading
         )})`,
-        value: 'currentEpoch',
+        value: CURRENT_EPOCH,
       },
       {
         label: `${previousEpochName} (${intl.formatMessage(
           messages.previousEpochHeading
         )})`,
-        value: 'previousEpoch',
+        value: PREVIOUS_EPOCH,
       },
     ];
     const duration = humanizeDurationToShort(currentEpochEndDateTime);
@@ -384,7 +387,7 @@ export default class StakingEpochs extends Component<Props, State> {
               skin={SelectSkin}
             />
           </div>
-          {selectedEpoch === 'currentEpoch' && (
+          {selectedEpoch === CURRENT_EPOCH && (
             <div>
               <div className={styles.currentEpochProgressBar}>
                 <div className={styles.progressBarContainer}>
@@ -405,7 +408,7 @@ export default class StakingEpochs extends Component<Props, State> {
               {this.renderCurrentEpochData()}
             </div>
           )}
-          {selectedEpoch === 'previousEpoch' && this.renderPreviousEpochData()}
+          {selectedEpoch === PREVIOUS_EPOCH && this.renderPreviousEpochData()}
           {isLoading && (
             <div className={styles.loadingSpinnerWrapper}>
               <LoadingSpinner />
