@@ -1,5 +1,5 @@
 // @flow
-import { observable, action, runInAction } from 'mobx';
+import { action, computed, observable, runInAction } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import type {
@@ -102,5 +102,17 @@ export default class NodeUpdateStore extends Store {
     this.isNewAppVersionAvailable = isNewAppVersionAvailable;
     this.availableAppVersion = latestAppVersion;
   };
+
+  @computed get isNewAppVersionLoading(): boolean {
+    return this.getLatestAppVersionRequest.isExecuting;
+  }
+
+  @computed get isNewAppVersionLoaded(): boolean {
+    return (
+      this.getLatestAppVersionRequest.wasExecuted &&
+      (this.getLatestAppVersionRequest.result !== null ||
+        this.getLatestAppVersionRequest.error)
+    );
+  }
 
 }

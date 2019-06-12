@@ -64,8 +64,9 @@ export default class LoadingPage extends Component<InjectedProps> {
     const { version } = environment;
     const {
       isNewAppVersionAvailable,
+      isNewAppVersionLoading,
+      isNewAppVersionLoaded,
       availableAppVersion,
-      getLatestAppVersionRequest,
     } = stores.nodeUpdate;
 
     return (
@@ -82,12 +83,8 @@ export default class LoadingPage extends Component<InjectedProps> {
           isNodeStopped={isNodeStopped}
           isNotEnoughDiskSpace={isNotEnoughDiskSpace}
           isNewAppVersionAvailable={isNewAppVersionAvailable}
-          isNewAppVersionLoading={getLatestAppVersionRequest.isExecuting}
-          isNewAppVersionLoaded={
-            getLatestAppVersionRequest.wasExecuted &&
-            (getLatestAppVersionRequest.result !== null ||
-              getLatestAppVersionRequest.error)
-          }
+          isNewAppVersionLoading={isNewAppVersionLoading}
+          isNewAppVersionLoaded={isNewAppVersionLoaded}
           isSystemTimeCorrect={isSystemTimeCorrect}
           isCheckingSystemTime={forceCheckTimeDifferenceRequest.isExecuting}
           diskSpaceRequired={diskSpaceRequired}
