@@ -58,8 +58,9 @@ export default class LoadingPage extends Component<InjectedProps> {
     } = stores.networkStatus;
     const {
       isNewAppVersionAvailable,
+      isNewAppVersionLoading,
+      isNewAppVersionLoaded,
       availableAppVersion,
-      getLatestAppVersionRequest,
     } = stores.nodeUpdate;
     const {
       hasLoadedCurrentLocale,
@@ -86,12 +87,8 @@ export default class LoadingPage extends Component<InjectedProps> {
           isNotEnoughDiskSpace={isNotEnoughDiskSpace}
           isTlsCertInvalid={isTlsCertInvalid}
           isNewAppVersionAvailable={isNewAppVersionAvailable}
-          isNewAppVersionLoading={getLatestAppVersionRequest.isExecuting}
-          isNewAppVersionLoaded={
-            getLatestAppVersionRequest.wasExecuted &&
-            (getLatestAppVersionRequest.result !== null ||
-              getLatestAppVersionRequest.error)
-          }
+          isNewAppVersionLoading={isNewAppVersionLoading}
+          isNewAppVersionLoaded={isNewAppVersionLoaded}
           isSystemTimeCorrect={isSystemTimeCorrect}
           isCheckingSystemTime={forceCheckTimeDifferenceRequest.isExecuting}
           diskSpaceRequired={diskSpaceRequired}
