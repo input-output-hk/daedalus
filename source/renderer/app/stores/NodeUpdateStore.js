@@ -111,7 +111,7 @@ export default class NodeUpdateStore extends Store {
     return (
       this.getLatestAppVersionRequest.wasExecuted &&
       (this.getLatestAppVersionRequest.result !== null ||
-        this.getLatestAppVersionRequest.error)
+        this.getLatestAppVersionRequest.error !== null)
     );
   }
 
