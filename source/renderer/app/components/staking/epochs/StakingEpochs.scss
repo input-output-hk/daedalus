@@ -1,3 +1,12 @@
+%progressLabelText {
+  font-family: var(--font-semibold);
+  font-size: 14px;
+  line-height: 24px;
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+}
+
 .component {
   padding: 20px 20px 0;
 
@@ -5,11 +14,21 @@
     align-items: center;
     display: flex;
     justify-content: center;
-    margin: 0 20px 10px;
+    margin: 0 20px 6px;
   }
 
   .epochSelector {
-    width: 265px;
+    width: 275px;
+
+    input {
+      border: 0;
+      font-family: var(--font-semibold);
+      font-size: 19px;
+      line-height: 1.37;
+      padding-left: 0;
+      padding-right: 0;
+      padding-top: 0;
+    }
   }
 
   .noResultsLabel {
@@ -22,6 +41,50 @@
 
   .loadingSpinnerWrapper {
     margin: auto;
+  }
+
+  .currentEpochProgressBar {
+    height: 24px;
+    margin-bottom: 31px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: -2px;
+  }
+
+  .progressBarContainer {
+    background-color: var(--theme-staking-background-color);
+    border-radius: 5px;
+    height: 100%;
+    position: relative;
+    width: 100%;
+  }
+
+  .progress {
+    background: repeating-linear-gradient(
+      -63deg,
+      var(--theme-staking-progress-stripe-dark-1-background-color),
+      var(--theme-staking-progress-stripe-dark-1-background-color) 10px,
+      var(--theme-staking-progress-stripe-dark-2-background-color) 10px,
+      var(--theme-staking-progress-stripe-dark-2-background-color) 20px
+    );
+    border-radius: 5px;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .overlapProgressLabel {
+    @extend %progressLabelText;
+    color: #fff;
+    transform: translateX(calc(-100% - 8px));
+    z-index: 1000;
+  }
+
+  .progressLabel {
+    @extend %progressLabelText;
+    color: var(--theme-staking-font-color-regular);
+    right: 8px;
+    z-index: 500;
   }
 
   table {
@@ -94,9 +157,18 @@
         text-overflow: ellipsis;
 
         .stakePoolReference {
-          font-family: var(--font-medium);
+          color: var(--theme-staking-table-body-highlighted-text-color);
+          font-family: var(--font-semibold);
         }
       }
+    }
+
+    .semiboldText {
+      font-family: var(--font-semibold);
+    }
+
+    .uppercaseText {
+      text-transform: uppercase;
     }
   }
 }

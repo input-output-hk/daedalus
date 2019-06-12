@@ -528,10 +528,9 @@ const CARDANO_THEME_CONFIG = {
     '--theme-staking-table-border-color': '#c6cdd6',
     '--theme-staking-link-color': 'rgba(28, 172, 99, 1)',
     '--theme-staking-link-color-light': 'rgba(28, 172, 99, 0.5)',
-    '--theme-staking-decentralization-progress-stripe-dark-1-background-color':
-      '#259c59',
-    '--theme-staking-decentralization-progress-stripe-dark-2-background-color':
-      '#2cbb69',
+    '--theme-staking-progress-stripe-dark-1-background-color': '#259c59',
+    '--theme-staking-progress-stripe-dark-2-background-color': '#2cbb69',
+    '--theme-staking-table-body-highlighted-text-color': '#26ab5f',
   },
   support: {
     '--theme-support-settings-text-color': '#5e6066',

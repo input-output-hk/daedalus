@@ -16,6 +16,7 @@ import {
   noDataExisting,
   hasDataExisting,
   sortData,
+  humanizeDurationToShort,
 } from './helpers.js';
 import styles from './StakingEpochs.scss';
 
@@ -55,11 +56,28 @@ const messages = defineMessages({
     defaultMessage: '!!!Shared rewards',
     description: 'Table header "Shared rewards" label on staking epochs page',
   },
+  tableBodySlots: {
+    id: 'staking.epochs.tableBody.slots',
+    defaultMessage: '!!!slots',
+    description: '"slots" text in table body on staking epochs page',
+  },
+  tableBodyOf: {
+    id: 'staking.epochs.tableBody.of',
+    defaultMessage: '!!!of',
+    description: '"of" text in table body on staking epochs page',
+  },
+  tableBodyAda: {
+    id: 'environment.currency.ada',
+    defaultMessage: '!!!Ada',
+    description: '"Ada" text in table body on staking epochs page',
+  },
 });
 
 type Props = {
   currentEpochName: string,
   currentEpochData: any,
+  currentEpochEndDateTime: string,
+  currentEpochProgress: number,
   previousEpochName: string,
   previousEpochData: any,
   isLoading: boolean,
@@ -139,99 +157,41 @@ export default class StakingEpochs extends Component<Props, State> {
     );
   };
 
-  renderData = (
+  renderDataTable = (
     selectedEpoch: string,
     tableHeaders: any,
-    sortedData: any,
+    tableBody: any,
     order: string,
     sortBy: string
-  ) => {
-    let tableBody = null;
-
-    if (selectedEpoch === 'currentEpoch') {
-      tableBody = (
-        <tbody>
-          {map(sortedData, (row, key) => {
-            const poolCategory = get(row, ['pool', 'category'], '');
-            const poolTitle = get(row, ['pool', 'title'], '');
-            const slotsElected = get(row, 'slotsElected', '');
-
-            return (
-              <tr key={key}>
-                <td>
-                  <p>
-                    <span className={styles.stakePoolReference}>
-                      [{poolCategory}]
-                    </span>{' '}
-                    {poolTitle}
-                  </p>
-                </td>
-                <td>{slotsElected}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      );
-    } else {
-      tableBody = (
-        <tbody>
-          {map(sortedData, (row, key) => {
-            const poolCategory = get(row, ['pool', 'category'], '');
-            const poolTitle = get(row, ['pool', 'title'], '');
-            const slotsElected = get(row, 'slotsElected', '');
-            const performance = get(row, 'performance', '');
-            const sharedRewards = get(row, 'sharedRewards', '');
+  ) => (
+    <table>
+      <thead>
+        <tr>
+          {map(tableHeaders, tableHeader => {
+            const isSorted = tableHeader.name === sortBy;
+            const sortIconClasses = classNames([
+              styles.sortIcon,
+              isSorted ? styles.sorted : null,
+              isSorted && order === 'asc' ? styles.ascending : null,
+            ]);
 
             return (
-              <tr key={key}>
-                <td>
-                  <p>
-                    <span className={styles.stakePoolReference}>
-                      [{poolCategory}]
-                    </span>{' '}
-                    {poolTitle}
-                  </p>
-                </td>
-                <td>{slotsElected}</td>
-                <td>{performance}</td>
-                <td>{sharedRewards}</td>
-              </tr>
+              <th
+                key={tableHeader.name}
+                onClick={() =>
+                  this.handleDataSort(selectedEpoch, tableHeader.name)
+                }
+              >
+                {tableHeader.title}
+                <SVGInline svg={sortIcon} className={sortIconClasses} />
+              </th>
             );
           })}
-        </tbody>
-      );
-    }
-
-    return (
-      <table>
-        <thead>
-          <tr>
-            {map(tableHeaders, tableHeader => {
-              const isSorted = tableHeader.name === sortBy;
-              const sortIconClasses = classNames([
-                styles.sortIcon,
-                isSorted ? styles.sorted : null,
-                isSorted && order === 'asc' ? styles.ascending : null,
-              ]);
-
-              return (
-                <th
-                  key={tableHeader.name}
-                  onClick={() =>
-                    this.handleDataSort(selectedEpoch, tableHeader.name)
-                  }
-                >
-                  {tableHeader.title}
-                  <SVGInline svg={sortIcon} className={sortIconClasses} />
-                </th>
-              );
-            })}
-          </tr>
-        </thead>
-        {tableBody}
-      </table>
-    );
-  };
+        </tr>
+      </thead>
+      {tableBody}
+    </table>
+  );
 
   renderCurrentEpochData = () => {
     const { currentEpochData, isLoading } = this.props;
@@ -258,10 +218,38 @@ export default class StakingEpochs extends Component<Props, State> {
       );
     }
 
-    return this.renderData(
+    const tableBody = (
+      <tbody>
+        {map(sortedData, (row, key) => {
+          const poolCategory = get(row, ['pool', 'category'], '');
+          const poolTitle = get(row, ['pool', 'title'], '');
+          const slotsElected = get(row, 'slotsElected', 0);
+
+          return (
+            <tr key={key}>
+              <td>
+                <p>
+                  <span className={styles.stakePoolReference}>
+                    [{poolCategory}]
+                  </span>{' '}
+                  {poolTitle}
+                </p>
+              </td>
+              <td>
+                <span
+                  className={styles.semiboldText}
+                >{`${slotsElected}%`}</span>
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    );
+
+    return this.renderDataTable(
       selectedEpoch,
       tableHeaders,
-      sortedData,
+      tableBody,
       currentEpochDataOrder,
       currentEpochDataSortBy
     );
@@ -292,17 +280,76 @@ export default class StakingEpochs extends Component<Props, State> {
       );
     }
 
-    return this.renderData(
+    const tableBody = (
+      <tbody>
+        {map(sortedData, (row, key) => {
+          const poolCategory = get(row, ['pool', 'category'], '');
+          const poolTitle = get(row, ['pool', 'title'], '');
+          const slotsElected = get(row, 'slotsElected', [0, 0]);
+          const performance = get(row, 'performance', [0, 0, 0]);
+          const sharedRewards = get(row, 'sharedRewards', [0, 0]);
+
+          return (
+            <tr key={key}>
+              <td>
+                <p>
+                  <span className={styles.stakePoolReference}>
+                    [{poolCategory}]
+                  </span>{' '}
+                  {poolTitle}
+                </p>
+              </td>
+              <td>
+                <span className={styles.semiboldText}>{slotsElected[0]}</span>
+                <span>{` ${intl.formatMessage(
+                  messages.tableBodySlots
+                )} - `}</span>
+                <span className={styles.semiboldText}>{`${
+                  slotsElected[1]
+                }%`}</span>
+              </td>
+              <td>
+                <span>{`${performance[0]} ${intl.formatMessage(
+                  messages.tableBodyOf
+                )} ${performance[1]} - `}</span>
+                <span className={styles.semiboldText}>{`${
+                  performance[2]
+                }%`}</span>
+              </td>
+              <td>
+                <span className={styles.semiboldText}>{sharedRewards[0]}</span>
+                <span className={styles.uppercaseText}>{` ${intl.formatMessage(
+                  messages.tableBodyAda
+                )} `}</span>
+                <span>{`${intl.formatMessage(messages.tableBodyOf)} `}</span>
+                <span className={styles.semiboldText}>{sharedRewards[1]}</span>
+                <span className={styles.uppercaseText}>{` ${intl.formatMessage(
+                  messages.tableBodyAda
+                )}`}</span>
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    );
+
+    return this.renderDataTable(
       selectedEpoch,
       tableHeaders,
-      sortedData,
+      tableBody,
       previousEpochDataOrder,
       previousEpochDataSortBy
     );
   };
 
   render() {
-    const { currentEpochName, previousEpochName, isLoading } = this.props;
+    const {
+      currentEpochName,
+      currentEpochEndDateTime,
+      currentEpochProgress,
+      previousEpochName,
+      isLoading,
+    } = this.props;
     const { selectedEpoch } = this.state;
     const { intl } = this.context;
     const epochSelectOptions = [
@@ -319,20 +366,45 @@ export default class StakingEpochs extends Component<Props, State> {
         value: 'previousEpoch',
       },
     ];
+    const duration = humanizeDurationToShort(currentEpochEndDateTime);
+
+    if (!currentEpochName) {
+      return null;
+    }
 
     return (
       <div className={styles.component}>
-        <div className={styles.headerWrapper}>
-          <Select
-            className={styles.epochSelector}
-            options={epochSelectOptions}
-            value={selectedEpoch}
-            onChange={this.onSelectedEpochChange}
-            skin={SelectSkin}
-          />
-        </div>
         <BorderedBox>
-          {selectedEpoch === 'currentEpoch' && this.renderCurrentEpochData()}
+          <div className={styles.headerWrapper}>
+            <Select
+              className={styles.epochSelector}
+              options={epochSelectOptions}
+              value={selectedEpoch}
+              onChange={this.onSelectedEpochChange}
+              skin={SelectSkin}
+            />
+          </div>
+          {selectedEpoch === 'currentEpoch' && (
+            <div>
+              <div className={styles.currentEpochProgressBar}>
+                <div className={styles.progressBarContainer}>
+                  <div
+                    className={styles.progress}
+                    style={{ width: `${currentEpochProgress}%` }}
+                  >
+                    <div
+                      className={styles.overlapProgressLabel}
+                      style={{ left: `${10000 / currentEpochProgress}%` }}
+                    >
+                      {duration}
+                    </div>
+                  </div>
+                  <div className={styles.progressLabel}>{duration}</div>
+                </div>
+              </div>
+              {this.renderCurrentEpochData()}
+            </div>
+          )}
           {selectedEpoch === 'previousEpoch' && this.renderPreviousEpochData()}
           {isLoading && (
             <div className={styles.loadingSpinnerWrapper}>

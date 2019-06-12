@@ -239,6 +239,8 @@
   "staking.epochs.currentHeading": "current epoch",
   "staking.epochs.no.results": "No results",
   "staking.epochs.previousHeading": "previous epoch",
+  "staking.epochs.tableBody.of": "of",
+  "staking.epochs.tableBody.slots": "slots",
   "staking.epochs.tableHeader.performance": "Performance",
   "staking.epochs.tableHeader.pool": "Stake pool",
   "staking.epochs.tableHeader.sharedRewards": "Shared rewards",

@@ -1,4 +1,5 @@
-import { orderBy } from 'lodash';
+import orderBy from 'lodash/orderBy';
+import humanizeDuration from 'humanize-duration';
 
 export const getTableHeadersForCurrentEpoch = (intl, messages) => [
   {
@@ -38,3 +39,25 @@ export const hasDataExisting = (isLoading, data) =>
 
 export const sortData = (data, order, sortBy) =>
   orderBy(data, sortBy === 'pool' ? 'pool.title' : sortBy, order);
+
+export const humanizeDurationToShort = dateTime =>
+  humanizeDuration
+    .humanizer({
+      language: 'shortEn',
+      languages: {
+        shortEn: {
+          y: () => 'y',
+          mo: () => 'mo',
+          w: () => 'w',
+          d: () => 'd',
+          h: () => 'h',
+          m: () => 'm',
+          s: () => 's',
+          ms: () => 'ms',
+        },
+      },
+    })(Math.max(0, new Date(dateTime).getTime() - new Date().getTime()), {
+      round: true,
+    })
+    .replace(/\s/g, '')
+    .replace(/,/g, ' ');

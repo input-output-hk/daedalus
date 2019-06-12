@@ -76,7 +76,6 @@ storiesOf('Staking', module)
     () => (
       <div>
         <StakingDelegationCountdown
-          redirectToStakingInfo={linkTo('Staking', () => 'Info')}
           currentLocale="en-US"
           startDateTime={startDateTimeKnob(
             'Decentralization Start DateTime',
