@@ -106,6 +106,7 @@ export default class StoryLayout extends Component<Props> {
       isConnected: true,
       isRestoreActive: false,
       restoreProgress: 0,
+      isLegacy: wallet.isLegacy,
     }));
 
   getSidebarMenus = (

@@ -10,7 +10,7 @@ import SVGInline from 'react-svg-inline';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './StakePoolTooltip.scss';
 import { getHSLColor } from '../../../utils/colors';
-import type { StakePoolProps } from '../../../api/staking/types';
+import type { StakePool } from '../../../api/staking/types';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 
 const messages = defineMessages({
@@ -48,26 +48,69 @@ const messages = defineMessages({
 });
 
 type Props = {
-  ...$Exact<StakePoolProps>,
-  ranking: number,
-  onOpenExternalLink: Function,
-  onClick: Function,
-  visible: boolean,
+  stakePool: StakePool,
+  index: number,
+  isVisible: boolean,
   currentTheme: string,
+  flipHorizontal: boolean,
+  flipVertical: boolean,
+  onClick: Function,
+  onOpenExternalLink: Function,
 };
 
 @observer
-export default class StakePool extends Component<Props> {
+export default class StakePoolTooltip extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
+  tooltipClick: boolean = false;
+
+  componentWillMount() {
+    window.document.addEventListener('click', this.handleOutterClick);
+    window.addEventListener('keydown', this.handleInputKeyDown);
+  }
+
+  componentWillUnmount() {
+    window.document.removeEventListener('click', this.handleOutterClick);
+    window.removeEventListener('keydown', this.handleInputKeyDown);
+  }
+
+  handleInputKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      this.props.onClick();
+    }
+  };
+
+  handleOutterClick = () => {
+    if (!this.tooltipClick) {
+      this.props.onClick();
+    } else {
+      this.tooltipClick = false;
+    }
+  };
+
+  handleInnerClick = () => {
+    this.tooltipClick = true;
+  };
+
   get color() {
-    return getHSLColor(this.props.ranking);
+    const { index } = this.props;
+    return getHSLColor(index);
   }
 
   render() {
     const { intl } = this.context;
+    const {
+      stakePool,
+      isVisible,
+      currentTheme,
+      flipHorizontal,
+      flipVertical,
+      onClick,
+      onOpenExternalLink,
+    } = this.props;
+
     const {
       id,
       name,
@@ -78,21 +121,30 @@ export default class StakePool extends Component<Props> {
       profitMargin,
       performance,
       retirement,
-      onOpenExternalLink,
-      visible,
-      onClick,
-      currentTheme,
-    } = this.props;
+    } = stakePool;
 
     const componentClassnames = classnames([
       styles.component,
-      visible ? styles.visible : null,
+      isVisible ? styles.isVisible : null,
+      flipHorizontal ? styles.flipHorizontal : null,
+      flipVertical ? styles.flipVertical : null,
     ]);
 
     const lighnessOffset = currentTheme === 'dark-blue' ? -20 : 0;
 
     return (
-      <div className={componentClassnames}>
+      <div
+        className={componentClassnames}
+        onClick={this.handleInnerClick}
+        role="link"
+        aria-hidden
+      >
+        <div
+          className={styles.colorBand}
+          style={{
+            background: this.color,
+          }}
+        />
         <h3 className={styles.name}>{name}</h3>
         <button className={styles.closeButton} onClick={onClick}>
           <SVGInline svg={closeCross} />

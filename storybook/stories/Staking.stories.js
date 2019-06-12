@@ -10,11 +10,11 @@ import StoryDecorator from './support/StoryDecorator';
 import { CATEGORIES_BY_NAME } from '../../source/renderer/app/config/sidebarConfig';
 
 import StakingWithNavigation from '../../source/renderer/app/components/staking/layouts/StakingWithNavigation';
-import StakingDelegationCountdown from '../../source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown';
-import StakingDelegationCenter from '../../source/renderer/app/components/staking/delegation-center/StakingDelegationCenter';
+import StakingCountdown from '../../source/renderer/app/components/staking/countdown/StakingCountdown';
+import DelegationCenter from '../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
 
-import { StakingStakePoolsStory } from './Staking-StakePools.js';
+import { StakePoolsListStory } from './StakePoolsListStory.js';
 import { StakingRewardsStory } from './Staking-Rewards.stories';
 import { StakingEpochsStory } from './Staking-Epochs.stories';
 
@@ -27,6 +27,7 @@ const startDateTimeKnob = (name, defaultValue) => {
 };
 
 const pageNames = {
+  countdown: 'Staking Countdown',
   'delegation-center': 'Delegation Center',
   'stake-pools': 'Stake Pools',
   rewards: 'Rewards',
@@ -72,10 +73,10 @@ storiesOf('Staking', module)
   // ====== Stories ======
 
   .add(
-    'Decentralization Start Info',
+    pageNames.countdown,
     () => (
       <div>
-        <StakingDelegationCountdown
+        <StakingCountdown
           currentLocale="en-US"
           startDateTime={startDateTimeKnob(
             'Decentralization Start DateTime',
@@ -89,11 +90,11 @@ storiesOf('Staking', module)
 
   .add(
     pageNames['delegation-center'],
-    () => <StakingDelegationCenter name={pageNames['delegation-center']} />,
+    () => <DelegationCenter name={pageNames['delegation-center']} />,
     { id: 'delegation-center' }
   )
 
-  .add(pageNames['stake-pools'], StakingStakePoolsStory, { id: 'stake-pools' })
+  .add(pageNames['stake-pools'], StakePoolsListStory, { id: 'stake-pools' })
 
   .add(pageNames.rewards, StakingRewardsStory, { id: 'rewards' })
 

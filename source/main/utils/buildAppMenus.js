@@ -11,6 +11,12 @@ import {
   toggleUiPartChannel,
   showUiPartChannel,
 } from '../ipc/control-ui-parts';
+import { getLocale } from './getLocale';
+
+const localesFillForm = {
+  'en-US': 'English',
+  'ja-JP': 'Japanese',
+};
 
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
@@ -49,8 +55,34 @@ export const buildAppMenus = async (
     safeExitWithCode(22);
   };
 
-  const { isMacOS } = environment;
+  const {
+    isMacOS,
+    version,
+    apiVersion,
+    network,
+    build,
+    installerVersion,
+    os,
+    buildNumber,
+  } = environment;
+
   const translations = require(`../locales/${locale}`);
+
+  const networkLocale = getLocale(network);
+
+  const supportRequestData = {
+    frontendVersion: version,
+    backendVersion: apiVersion,
+    network: network === 'development' ? 'staging' : network,
+    build,
+    installerVersion,
+    os,
+    networkLocale,
+    product: `Daedalus wallet - ${network}`,
+    supportLanguage: localesFillForm[networkLocale],
+    productVersion: `Daedalus ${version}+Cardano ${buildNumber}`,
+  };
+
   const menuActions = {
     openAbout,
     openDaedalusDiagnostics,
@@ -64,12 +96,18 @@ export const buildAppMenus = async (
   let menu;
   if (isMacOS) {
     menu = Menu.buildFromTemplate(
-      osxMenu(app, mainWindow, menuActions, translations)
+      osxMenu(app, mainWindow, menuActions, translations, supportRequestData)
     );
     Menu.setApplicationMenu(menu);
   } else {
     menu = Menu.buildFromTemplate(
-      winLinuxMenu(app, mainWindow, menuActions, translations)
+      winLinuxMenu(
+        app,
+        mainWindow,
+        menuActions,
+        translations,
+        supportRequestData
+      )
     );
     mainWindow.setMenu(menu);
   }

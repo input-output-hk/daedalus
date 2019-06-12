@@ -18,12 +18,16 @@
   }
 }
 
+.legacyItem {
+  padding-right: 58.5px;
+}
+
 .active {
   background-color: var(--theme-sidebar-menu-item-background-color-active);
 
   &:hover {
-    cursor: default;
     background-color: var(--theme-sidebar-menu-item-background-color-active);
+    cursor: default;
   }
 }
 

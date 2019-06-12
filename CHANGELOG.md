@@ -6,10 +6,12 @@ Changelog
 ### Features
 
 - Implemented "Current and Previous Epochs screen" UI ([PR 1418](https://github.com/input-output-hk/daedalus/pull/1418))
-- Implemented "Stake pool" UI ([PR 1397](https://github.com/input-output-hk/daedalus/pull/1397))
+- Added new application menu item "Help and Support" with "GPU Safe Mode", "Download Logs", "Support Request" and "Known Issues" options ([PR 1382](https://github.com/input-output-hk/daedalus/pull/1382))
+- Implemented "Legacy wallet notification" UI ([PR 1409](https://github.com/input-output-hk/daedalus/pull/1409))
+- Implemented "Stake pool" UI ([PR 1397](https://github.com/input-output-hk/daedalus/pull/1397), [PR 1412](https://github.com/input-output-hk/daedalus/pull/1412))
 - Implemented "Staking rewards" UI ([PR 1403](https://github.com/input-output-hk/daedalus/pull/1403))
 - Implemented "Decentralization progress" UI ([PR 1394](https://github.com/input-output-hk/daedalus/pull/1394))
-- Implemented the navigation for the Staking pages ([PR 1395](https://github.com/input-output-hk/daedalus/pull/1395), [PR 1400](https://github.com/input-output-hk/daedalus/pull/1400))
+- Implemented "Staking" screens navigation ([PR 1395](https://github.com/input-output-hk/daedalus/pull/1395), [PR 1400](https://github.com/input-output-hk/daedalus/pull/1400))
 - Implemented timestamp on paper wallet PDF's ([PR 1385](https://github.com/input-output-hk/daedalus/pull/1385), [PR 1400](https://github.com/input-output-hk/daedalus/pull/1400))
 - Implemented "Start of decentralisation notification" UI ([PR 1390](https://github.com/input-output-hk/daedalus/pull/1390))
 - Implemented new Network Status dialog design ([PR 1370](https://github.com/input-output-hk/daedalus/pull/1370), [PR 1402](https://github.com/input-output-hk/daedalus/pull/1402), [PR 1404](https://github.com/input-output-hk/daedalus/pull/1404))
@@ -23,6 +25,7 @@ Changelog
 
 ### Fixes
 
+- Fixed the Block consolidation status screen not fully shown in minimized mode when the Japanese language is selected ([PR 1416](https://github.com/input-output-hk/daedalus/pull/1416))
 - Fixed "marked" dependency vulnerability warning ([PR 1414](https://github.com/input-output-hk/daedalus/pull/1414)
 - Fixed addresses not visible on Receive screen when Password is set for the wallet in minimized mode ([PR 1407](https://github.com/input-output-hk/daedalus/pull/1407))
 - Fixed truncated "Add Wallet" screen while wallet is restored ([PR 1405](https://github.com/input-output-hk/daedalus/pull/1405))
