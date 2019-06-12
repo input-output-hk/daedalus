@@ -54,7 +54,6 @@ When(
   async function(state) {
     const subscriptionState =
       state === 'subscribed' ? { status: 'subscribed' } : {};
-
     await this.client.executeAsync((subscriptionStatus, done) => {
       daedalus.api.ada
         .setSubscriptionStatus(subscriptionStatus)

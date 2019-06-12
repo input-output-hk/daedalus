@@ -14,11 +14,12 @@ export type HttpOptions = {
   },
 };
 
-export const externalRequest = (httpOptions: HttpOptions): Promise<any> => {
-  return new Promise((resolve, reject) => {
+export const externalRequest = (httpOptions: HttpOptions): Promise<any> =>
+  new Promise((resolve, reject) => {
     if (!ALLOWED_EXTERNAL_HOSTNAMES.includes(httpOptions.hostname)) {
       return reject(new Error('Hostname not allowed'));
     }
+
     const { protocol = 'https' } = httpOptions;
     const options = omit(httpOptions, 'protocol');
     const requestMethod = global[protocol].request;
@@ -31,11 +32,15 @@ export const externalRequest = (httpOptions: HttpOptions): Promise<any> => {
       });
       response.on('error', error => reject(error));
       response.on('end', () => {
-        const parsedBody = JSON.parse(body);
-        return resolve(parsedBody);
+        try {
+          const parsedBody = JSON.parse(body);
+          resolve(parsedBody);
+        } catch (error) {
+          // Handle internal server errors (e.g. HTTP 500 - 'Something went wrong')
+          reject(new Error(error));
+        }
       });
     });
     request.on('error', error => reject(error));
     return request.end();
   });
-};
