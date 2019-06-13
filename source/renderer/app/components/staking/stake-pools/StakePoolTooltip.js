@@ -184,7 +184,6 @@ export default class StakePoolTooltip extends Component<Props> {
                   background: getColorFromRange(controlledStake, {
                     darken,
                     alpha,
-                    reverse,
                   }),
                 }}
               >
