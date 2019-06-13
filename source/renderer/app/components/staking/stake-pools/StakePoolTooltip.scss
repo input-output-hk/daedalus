@@ -206,9 +206,9 @@
 
 .table {
   @extend %regularText;
-  margin-bottom: 14px;
   display: flex;
   flex-wrap: wrap;
+  margin-bottom: 14px;
 
   dt,
   dd {
