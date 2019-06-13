@@ -1,10 +1,15 @@
 .component {
   background: var(--theme-main-body-background-color);
   padding: 20px 0 26px;
-  position: sticky;
-  top: 0;
   width: 100%;
-  z-index: 2;
+
+  /*
+   * This makes the Search component to be fixed.
+   * Removing this for now until we have a solution that won't take too much space.
+   */
+  // position: sticky;
+  // top: 0;
+  // z-index: 2;
 }
 
 .container {
