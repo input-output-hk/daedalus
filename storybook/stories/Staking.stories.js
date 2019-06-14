@@ -64,7 +64,7 @@ const locales = {
   Japanese: 'ja-JP',
 };
 // Delegation steps labels are translated outside components and we need to determine correct translations
-const locale = localStorage.getItem('currentLocale')
+const locale = localStorage.getItem('currentLocale') || 'English';
 const translationIndex = locales[locale];
 const DELEGATION_WIZARD_STEPS_LIST = [
   translations[translationIndex]["delegation.setup.steps.step.1.label"],
