@@ -1,14 +1,14 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import StakingStakePools from '../../components/staking/stake-pools/StakingStakePools';
+import StakePoolsList from '../../components/staking/stake-pools/StakePoolsList';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class StakingStakePoolsPage extends Component<Props> {
+export default class StakePoolsListPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
@@ -16,7 +16,7 @@ export default class StakingStakePoolsPage extends Component<Props> {
     const { currentTheme } = profile;
     const { stakePools, delegatingStakePools } = staking;
     return (
-      <StakingStakePools
+      <StakePoolsList
         stakePoolsList={stakePools}
         stakePoolsDelegatingList={delegatingStakePools}
         onOpenExternalLink={app.openExternalLink}

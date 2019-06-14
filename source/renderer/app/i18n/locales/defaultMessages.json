@@ -287,13 +287,13 @@
         "description": "Message \"Starting Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.startingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 25
+          "line": 26
         }
       },
       {
@@ -301,13 +301,13 @@
         "description": "Message \"Stopping Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.stoppingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -315,13 +315,13 @@
         "description": "Message \"Cardano node stopped\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.stoppedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 35
+          "line": 36
         }
       },
       {
@@ -329,13 +329,13 @@
         "description": "Message \"Updating Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.updatingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 40
+          "line": 41
         }
       },
       {
@@ -343,13 +343,13 @@
         "description": "Message \"Cardano node updated\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 50
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.updatedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -357,13 +357,13 @@
         "description": "Message \"Cardano node crashed\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.crashedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 50
+          "line": 51
         }
       },
       {
@@ -371,13 +371,13 @@
         "description": "Message \"Unable to start Cardano node. Please submit a support request.\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 62
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.unrecoverableCardanoMessage",
         "start": {
           "column": 17,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -385,13 +385,13 @@
         "description": "Message \"Connecting to network\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 67
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.connectingToNetworkMessage",
         "start": {
           "column": 14,
-          "line": 62
+          "line": 63
         }
       },
       {
@@ -399,13 +399,13 @@
         "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 73
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reconnectingToNetworkMessage",
         "start": {
           "column": 16,
-          "line": 67
+          "line": 68
         }
       },
       {
@@ -413,13 +413,13 @@
         "description": "Message \"Syncing blocks\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 78
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.syncingBlocksMessage",
         "start": {
           "column": 11,
-          "line": 73
+          "line": 74
         }
       },
       {
@@ -427,13 +427,13 @@
         "description": "Report connecting issue text on the loading screen.",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 83
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.connecting.text",
         "start": {
           "column": 29,
-          "line": 78
+          "line": 79
         }
       },
       {
@@ -441,13 +441,13 @@
         "description": "Report syncing issue text on the loading screen.",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 88
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.syncing.text",
         "start": {
           "column": 26,
-          "line": 83
+          "line": 84
         }
       },
       {
@@ -455,13 +455,13 @@
         "description": "Open support ticket button label on the loading.",
         "end": {
           "column": 3,
-          "line": 92
+          "line": 93
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.buttonLabel",
         "start": {
           "column": 26,
-          "line": 88
+          "line": 89
         }
       },
       {
@@ -469,13 +469,13 @@
         "description": "Download logs button label on the loading.",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 98
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.downloadLogsLinkLabel",
         "start": {
           "column": 36,
-          "line": 93
+          "line": 94
         }
       },
       {
@@ -483,17 +483,92 @@
         "description": "The TLS cert is not valid and Daedalus should be restarted",
         "end": {
           "column": 3,
-          "line": 102
+          "line": 103
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.errors.tlsCertificateNotValidPleaseRestartError",
         "start": {
           "column": 31,
-          "line": 98
+          "line": 99
         }
       }
     ],
     "path": "source/renderer/app/components/loading/Loading.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Software update is available",
+        "description": "Title for \"Manual update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/loading/ManualUpdateOverlay.js",
+        "id": "manualUpdateOverlay.title",
+        "start": {
+          "column": 9,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!You are experiencing network connection issues, and you are not running the latest Daedalus version. Automatic updates are unavailable while Daedalus is not connected to Cardano network.",
+        "description": "Description line 1 of \"Manual update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/loading/ManualUpdateOverlay.js",
+        "id": "manualUpdateOverlay.description1",
+        "start": {
+          "column": 20,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!You are currently running <b>{currentAppVersion}</b> version of Daedalus, and <b>{availableAppVersion}</b> version is available. Please manually update to that version since it may resolve your connecting issues.",
+        "description": "Description line 2 of \"Manual update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/loading/ManualUpdateOverlay.js",
+        "id": "manualUpdateOverlay.description2",
+        "start": {
+          "column": 20,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Follow instructions and manually update",
+        "description": "Label for \"Follow instructions and manually update\" action button on \"Manual update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/loading/ManualUpdateOverlay.js",
+        "id": "manualUpdateOverlay.button.label",
+        "start": {
+          "column": 21,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360023850634",
+        "description": "Follow instructions and manually update link on \"Manual update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/loading/ManualUpdateOverlay.js",
+        "id": "manualUpdateOverlay.button.url",
+        "start": {
+          "column": 25,
+          "line": 36
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/loading/ManualUpdateOverlay.json"
   },
   {
     "descriptors": [
@@ -985,6 +1060,86 @@
       }
     ],
     "path": "source/renderer/app/components/loading/SystemTimeErrorOverlay.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Legacy",
+        "description": "Label \"Legacy\" on the legacy badge.",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "source/renderer/app/components/notifications/LegacyBadge.js",
+        "id": "wallet.legacy.badge.label",
+        "start": {
+          "column": 9,
+          "line": 9
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/notifications/LegacyBadge.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Move funds from the legacy wallet",
+        "description": "Title \"Move funds from the legacy wallet\" on the legacy notification.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
+        "id": "wallet.legacy.notification.title",
+        "start": {
+          "column": 9,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!This is a legacy wallet which uses legacy addresses and does not support new features. Please move all of the ada from this legacy wallet to one of the wallets where new features are available. You can also create a brand new wallet for your ada in case you don’t want to move ada to one of your existing wallets. A sequence of screens will guide you through the process.",
+        "description": "Legacy notification description.",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
+        "id": "wallet.legacy.notification.description",
+        "start": {
+          "column": 15,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!Learn more",
+        "description": "Learn more action of legacy notification.",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
+        "id": "wallet.legacy.notification.actionLearnMore",
+        "start": {
+          "column": 19,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!Move all of the ada from this wallet",
+        "description": "Move all ada action of legacy notification.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
+        "id": "wallet.legacy.notification.actionMove",
+        "start": {
+          "column": 14,
+          "line": 27
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/notifications/LegacyNotification.json"
   },
   {
     "descriptors": [
@@ -1549,7 +1704,7 @@
           "column": 3,
           "line": 15
         },
-        "file": "source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown.js",
+        "file": "source/renderer/app/components/staking/countdown/StakingCountdown.js",
         "id": "staking.delegationCountdown.heading",
         "start": {
           "column": 11,
@@ -1563,7 +1718,7 @@
           "column": 3,
           "line": 21
         },
-        "file": "source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown.js",
+        "file": "source/renderer/app/components/staking/countdown/StakingCountdown.js",
         "id": "staking.delegationCountdown.description",
         "start": {
           "column": 15,
@@ -1577,7 +1732,7 @@
           "column": 3,
           "line": 26
         },
-        "file": "source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown.js",
+        "file": "source/renderer/app/components/staking/countdown/StakingCountdown.js",
         "id": "staking.delegationCountdown.timeLeftDesc",
         "start": {
           "column": 16,
@@ -1591,7 +1746,7 @@
           "column": 3,
           "line": 31
         },
-        "file": "source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown.js",
+        "file": "source/renderer/app/components/staking/countdown/StakingCountdown.js",
         "id": "staking.delegationCountdown.buttonLabel",
         "start": {
           "column": 15,
@@ -1599,7 +1754,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown.json"
+    "path": "source/renderer/app/components/staking/countdown/StakingCountdown.json"
   },
   {
     "descriptors": [
@@ -1871,6 +2026,95 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Search stake pools",
+        "description": "\"Delegating List Title\" for the Stake Pools page.",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsList.js",
+        "id": "staking.stakePools.searchInputPlaceholder",
+        "start": {
+          "column": 26,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!All",
+        "description": "\"Filter All\" for the Stake Pools page.",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsList.js",
+        "id": "staking.stakePools.filterAll",
+        "start": {
+          "column": 13,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!New",
+        "description": "\"Filter New\" for the Stake Pools page.",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsList.js",
+        "id": "staking.stakePools.filterNew",
+        "start": {
+          "column": 13,
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!Charity",
+        "description": "\"FilterChar ity\" for the Stake Pools page.",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsList.js",
+        "id": "staking.stakePools.filterCharity",
+        "start": {
+          "column": 17,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!Stake pools you are currently delegating to",
+        "description": "\"delegatingListTitlee\" for the Stake Pools page.",
+        "end": {
+          "column": 3,
+          "line": 40
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsList.js",
+        "id": "staking.stakePools.delegatingListTitle",
+        "start": {
+          "column": 23,
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!Stake pools ({pools})",
+        "description": "\"listTitle\" for the Stake Pools page.",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsList.js",
+        "id": "staking.stakePools.listTitle",
+        "start": {
+          "column": 13,
+          "line": 41
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/stake-pools/StakePoolsList.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Rank:",
         "description": "\"\" for the Stake Pools Tooltip page.",
         "end": {
@@ -1956,95 +2200,6 @@
       }
     ],
     "path": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Search stake pools",
-        "description": "\"Delegating List Title\" for the Stake Pools page.",
-        "end": {
-          "column": 3,
-          "line": 19
-        },
-        "file": "source/renderer/app/components/staking/stake-pools/StakingStakePools.js",
-        "id": "staking.stakePools.searchInputPlaceholder",
-        "start": {
-          "column": 26,
-          "line": 15
-        }
-      },
-      {
-        "defaultMessage": "!!!All",
-        "description": "\"Filter All\" for the Stake Pools page.",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/components/staking/stake-pools/StakingStakePools.js",
-        "id": "staking.stakePools.filterAll",
-        "start": {
-          "column": 13,
-          "line": 20
-        }
-      },
-      {
-        "defaultMessage": "!!!New",
-        "description": "\"Filter New\" for the Stake Pools page.",
-        "end": {
-          "column": 3,
-          "line": 29
-        },
-        "file": "source/renderer/app/components/staking/stake-pools/StakingStakePools.js",
-        "id": "staking.stakePools.filterNew",
-        "start": {
-          "column": 13,
-          "line": 25
-        }
-      },
-      {
-        "defaultMessage": "!!!Charity",
-        "description": "\"FilterChar ity\" for the Stake Pools page.",
-        "end": {
-          "column": 3,
-          "line": 34
-        },
-        "file": "source/renderer/app/components/staking/stake-pools/StakingStakePools.js",
-        "id": "staking.stakePools.filterCharity",
-        "start": {
-          "column": 17,
-          "line": 30
-        }
-      },
-      {
-        "defaultMessage": "!!!Stake pools you are currently delegating to",
-        "description": "\"delegatingListTitlee\" for the Stake Pools page.",
-        "end": {
-          "column": 3,
-          "line": 39
-        },
-        "file": "source/renderer/app/components/staking/stake-pools/StakingStakePools.js",
-        "id": "staking.stakePools.delegatingListTitle",
-        "start": {
-          "column": 23,
-          "line": 35
-        }
-      },
-      {
-        "defaultMessage": "!!!Stake pools ({pools})",
-        "description": "\"listTitle\" for the Stake Pools page.",
-        "end": {
-          "column": 3,
-          "line": 44
-        },
-        "file": "source/renderer/app/components/staking/stake-pools/StakingStakePools.js",
-        "id": "staking.stakePools.listTitle",
-        "start": {
-          "column": 13,
-          "line": 40
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/staking/stake-pools/StakingStakePools.json"
   },
   {
     "descriptors": [
@@ -6850,13 +7005,13 @@
         "description": "Message \"Loading wallet data\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 17
         },
         "file": "source/renderer/app/containers/LoadingPage.js",
         "id": "loading.screen.loadingWalletData",
         "start": {
           "column": 21,
-          "line": 17
+          "line": 13
         }
       },
       {
@@ -6864,41 +7019,13 @@
         "description": "Link to Open Support page",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 22
         },
         "file": "source/renderer/app/containers/LoadingPage.js",
         "id": "loading.screen.reportIssue.reportIssueButtonUrl",
         "start": {
           "column": 24,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!Logs successfully downloaded",
-        "description": "Success message for download logs.",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/containers/LoadingPage.js",
-        "id": "loading.screen.reportIssue.downloadLogsSuccessMessage",
-        "start": {
-          "column": 23,
-          "line": 27
-        }
-      },
-      {
-        "defaultMessage": "!!!Preparing logs for download",
-        "description": "Progress message for download logs.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/containers/LoadingPage.js",
-        "id": "loading.screen.reportIssue.downloadLogsProgressMessage",
-        "start": {
-          "column": 24,
-          "line": 32
+          "line": 18
         }
       }
     ],
@@ -6907,36 +7034,17 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/requests/new/",
-        "description": "\"submit a support request\" link URL in the \"Report a problem\" section on the support settings page.",
-        "end": {
-          "column": 3,
-          "line": 16
-        },
-        "file": "source/renderer/app/containers/settings/categories/SupportSettingsPage.js",
-        "id": "settings.support.reportProblem.linkUrl",
-        "start": {
-          "column": 25,
-          "line": 11
-        }
-      }
-    ],
-    "path": "source/renderer/app/containers/settings/categories/SupportSettingsPage.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Logs successfully downloaded",
         "description": "Success message for download logs.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 14
         },
-        "file": "source/renderer/app/containers/settings/Settings.js",
-        "id": "settings.support.reportProblem.downloadLogsSuccessMessage",
+        "file": "source/renderer/app/containers/notifications/GenericNotificationContainer.js",
+        "id": "loading.screen.reportIssue.downloadLogsSuccessMessage",
         "start": {
           "column": 23,
-          "line": 15
+          "line": 10
         }
       },
       {
@@ -6944,17 +7052,36 @@
         "description": "Progress message for download logs.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 19
         },
-        "file": "source/renderer/app/containers/settings/Settings.js",
-        "id": "settings.support.reportProblem.downloadLogsProgressMessage",
+        "file": "source/renderer/app/containers/notifications/GenericNotificationContainer.js",
+        "id": "loading.screen.reportIssue.downloadLogsProgressMessage",
         "start": {
           "column": 24,
-          "line": 20
+          "line": 15
         }
       }
     ],
-    "path": "source/renderer/app/containers/settings/Settings.json"
+    "path": "source/renderer/app/containers/notifications/GenericNotificationContainer.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/requests/new/",
+        "description": "\"submit a support request\" link URL in the \"Report a problem\" section on the support settings page.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/containers/settings/categories/SupportSettingsPage.js",
+        "id": "settings.support.reportProblem.linkUrl",
+        "start": {
+          "column": 25,
+          "line": 10
+        }
+      }
+    ],
+    "path": "source/renderer/app/containers/settings/categories/SupportSettingsPage.json"
   },
   {
     "descriptors": [

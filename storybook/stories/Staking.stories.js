@@ -11,15 +11,15 @@ import StoryDecorator from './support/StoryDecorator';
 import { CATEGORIES_BY_NAME } from '../../source/renderer/app/config/sidebarConfig';
 
 import StakingWithNavigation from '../../source/renderer/app/components/staking/layouts/StakingWithNavigation';
-import StakingDelegationCountdown from '../../source/renderer/app/components/staking/delegation-countdown/StakingDelegationCountdown';
-import StakingDelegationCenter from '../../source/renderer/app/components/staking/delegation-center/StakingDelegationCenter';
+import StakingCountdown from '../../source/renderer/app/components/staking/countdown/StakingCountdown';
+import DelegationCenter from '../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
 import StakingEpochs from '../../source/renderer/app/components/staking/epochs/StakingEpochs';
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
 import DelegationStepsIntroDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsIntroDialog';
 import DelegationStepsChooseWalletDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog';
 import DelegationStepsNotAvailableDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsNotAvailableDialog';
 
-import { StakingStakePoolsStory } from './Staking-StakePools.js';
+import { StakePoolsListStory } from './StakePoolsListStory.js';
 import { StakingRewardsStory } from './Staking-Rewards.stories';
 
 const defaultPercentage = 10;
@@ -31,6 +31,7 @@ const startDateTimeKnob = (name, defaultValue) => {
 };
 
 const pageNames = {
+  countdown: 'Staking Countdown',
   'delegation-center': 'Delegation Center',
   'stake-pools': 'Stake Pools',
   rewards: 'Rewards',
@@ -76,10 +77,10 @@ storiesOf('Staking', module)
   // ====== Stories ======
 
   .add(
-    'Decentralization Start Info',
+    pageNames.countdown,
     () => (
       <div>
-        <StakingDelegationCountdown
+        <StakingCountdown
           redirectToStakingInfo={linkTo('Staking', () => 'Info')}
           currentLocale="en-US"
           startDateTime={startDateTimeKnob(
@@ -94,11 +95,11 @@ storiesOf('Staking', module)
 
   .add(
     pageNames['delegation-center'],
-    () => <StakingDelegationCenter name={pageNames['delegation-center']} />,
+    () => <DelegationCenter name={pageNames['delegation-center']} />,
     { id: 'delegation-center' }
   )
 
-  .add(pageNames['stake-pools'], StakingStakePoolsStory, { id: 'stake-pools' })
+  .add(pageNames['stake-pools'], StakePoolsListStory, { id: 'stake-pools' })
 
   .add(pageNames.rewards, StakingRewardsStory, { id: 'rewards' })
 

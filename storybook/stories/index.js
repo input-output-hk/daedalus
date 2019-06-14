@@ -11,6 +11,7 @@ import './DeleteWalletConfirmationDialog.stories';
 import './WalletTransactionsList.stories';
 import './ExportWalletToFileDialog.stories';
 import './PaperWallets.stories';
+import './ManualUpdateOverlay.stories';
 
 // Staking
 import './Staking.stories';
