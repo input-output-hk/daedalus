@@ -62,27 +62,16 @@ export const humanizeDurationToShort = (currentLocale, dateTime) => {
       humanizedDurationLanguage = 'de';
       break;
     default:
-      humanizedDurationLanguage = 'shortEn';
+      humanizedDurationLanguage = 'en';
   }
 
-  return humanizeDuration
-    .humanizer({
-      languages: {
-        shortEn: {
-          y: () => 'y',
-          mo: () => 'mo',
-          w: () => 'w',
-          d: () => 'd',
-          h: () => 'h',
-          m: () => 'm',
-          s: () => 's',
-          ms: () => 'ms',
-        },
-      },
-    })(Math.max(0, new Date(dateTime).getTime() - new Date().getTime()), {
+  return humanizeDuration(
+    Math.max(0, new Date(dateTime).getTime() - new Date().getTime()),
+    {
       round: true,
       language: humanizedDurationLanguage,
-    })
+    }
+  )
     .replace(/\s/g, '')
     .replace(/,/g, ' ');
 };

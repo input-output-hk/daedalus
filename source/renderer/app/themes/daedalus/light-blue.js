@@ -542,7 +542,7 @@ const LIGHT_BLUE_THEME_CONFIG = {
       'transparent',
   },
   staking: {
-    '--theme-staking-background-color': '#ebeff2',
+    '--theme-staking-background-color': 'rgba(52, 70, 94, 0.1)',
     '--theme-staking-content-background-color': '#fafbfc',
     '--theme-staking-content-border-color': '#c6cdd6',
     '--theme-staking-font-color-accent': '#5e6066',

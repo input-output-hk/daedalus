@@ -546,7 +546,7 @@ const DARK_BLUE_THEME_CONFIG = {
       '#fafbfc',
   },
   staking: {
-    '--theme-staking-background-color': '#0b1926',
+    '--theme-staking-background-color': 'rgba(233, 244, 254, 0.1)',
     '--theme-staking-content-background-color': '#263345',
     '--theme-staking-content-border-color': '#263345',
     '--theme-staking-font-color-accent': '#cecfd1',

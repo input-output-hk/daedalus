@@ -18,7 +18,7 @@
   }
 
   .epochSelector {
-    width: 275px;
+    width: 280px;
 
     input {
       border: 0;
@@ -28,6 +28,12 @@
       padding-left: 0;
       padding-right: 0;
       padding-top: 0;
+    }
+
+    :global {
+      .SimpleOptions_options {
+        top: 220px !important;
+      }
     }
   }
 
