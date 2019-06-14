@@ -46,9 +46,16 @@ export default class App extends Component<{
               <Fragment>
                 <Router history={history} routes={Routes} />
                 {mobxDevTools}
-                {activeDialog === 'daedalusDiagnostics' && (<DaedalusDiagnosticsDialog />)}
-                {activeDialog === 'about' && (<AboutDialog />)}
-                {activeDialog === 'blockConsolidation' && (<BlockConsolidationStatusDialog />)}
+                {activeDialog === 'daedalusDiagnostics' && (
+                  <DaedalusDiagnosticsDialog />
+                )}
+                {activeDialog === 'about' && <AboutDialog />}
+                {activeDialog === 'blockConsolidation' && (
+                  <BlockConsolidationStatusDialog
+                    stores={stores}
+                    actions={actions}
+                  />
+                )}
                 <GenericNotificationContainer />
               </Fragment>
             </IntlProvider>

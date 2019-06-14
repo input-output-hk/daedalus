@@ -67,19 +67,26 @@ export default class AppStore extends Store {
   handleScreensToggle = (screenType: string) => {
     let currentDialog = '';
     switch (screenType) {
-        case DIALOGS.ABOUT:
-          currentDialog = this.activeDialog === 'about' ? '' : 'about';
-          break;
-        case DIALOGS.DAEDALUS_DIAGNOSTICS:
-          currentDialog = this.activeDialog === 'daedalusDiagnostics' ? '' : 'daedalusDiagnostics';
-          break;
-        case SCREENS.BLOCK_CONSOLIDATION:
-          currentDialog = this.activeDialog === 'blockConsolidation' ? '' : 'blockConsolidation';
-          break;
-        case SCREENS.ADA_REDEMPTION:
-          currentDialog = this.activeDialog === 'adaRedemption' ? '' : 'adaRedemption';
-          break;
-        default:
+      case DIALOGS.ABOUT:
+        currentDialog = this.activeDialog === 'about' ? '' : 'about';
+        break;
+      case DIALOGS.DAEDALUS_DIAGNOSTICS:
+        currentDialog =
+          this.activeDialog === 'daedalusDiagnostics'
+            ? ''
+            : 'daedalusDiagnostics';
+        break;
+      case SCREENS.BLOCK_CONSOLIDATION:
+        currentDialog =
+          this.activeDialog === 'blockConsolidation'
+            ? ''
+            : 'blockConsolidation';
+        break;
+      case SCREENS.ADA_REDEMPTION:
+        currentDialog =
+          this.activeDialog === 'adaRedemption' ? '' : 'adaRedemption';
+        break;
+      default:
     }
     this._updateActiveDialog(currentDialog);
     return Promise.resolve();
@@ -151,8 +158,8 @@ export default class AppStore extends Store {
     this.previousRoute = currentRoute || ROUTES.ROOT;
   };
 
-  @action _updateActiveDialog = (activeDialog?: string) => {
-    this.activeDialog = activeDialog;
+  @action _updateActiveDialog = (currentDialog: string) => {
+    this.activeDialog = currentDialog;
   };
 
   @action _showAdaRedemptionScreen = () => {
