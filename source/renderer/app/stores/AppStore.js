@@ -1,6 +1,5 @@
 // @flow
 import { observable, computed, action, runInAction } from 'mobx';
-
 import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
@@ -13,45 +12,33 @@ import {
 } from '../ipc/control-ui-parts';
 import { getGPUStatusChannel } from '../ipc/get-gpu-status.ipc';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
-
 import type { GpuStatus } from '../types/gpuStatus';
 
 export default class AppStore extends Store {
   @observable error: ?LocalizableError = null;
-  @observable isAboutDialogOpen = false;
-  @observable isDaedalusDiagnosticsDialogOpen = false;
   @observable isDownloadNotificationVisible = false;
   @observable gpuStatus: ?GpuStatus = null;
   @observable numberOfEpochsConsolidated: number = 0;
   @observable previousRoute: string = ROUTES.ROOT;
+  @observable activeDialog: string = '';
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
     this.actions.app.openAboutDialog.listen(() => {
-      this.handleScreensToggle(this._openAboutDialog, DIALOGS.ABOUT);
+      this.handleScreensToggle(DIALOGS.ABOUT);
     });
     this.actions.app.closeAboutDialog.listen(() => {
-      this.handleScreensToggle(this._closeAboutDialog, DIALOGS.ABOUT);
+      this.handleScreensToggle(DIALOGS.ABOUT);
     });
     this.actions.app.openDaedalusDiagnosticsDialog.listen(() => {
-      this.handleScreensToggle(
-        this._openDaedalusDiagnosticsDialog,
-        DIALOGS.DAEDALUS_DIAGNOSTICS
-      );
+      this.handleScreensToggle(DIALOGS.DAEDALUS_DIAGNOSTICS);
     });
     this.actions.app.closeDaedalusDiagnosticsDialog.listen(() => {
-      this.handleScreensToggle(
-        this._closeDaedalusDiagnosticsDialog,
-        DIALOGS.DAEDALUS_DIAGNOSTICS
-      );
+      this.handleScreensToggle(DIALOGS.DAEDALUS_DIAGNOSTICS);
     });
     this.actions.app.getGpuStatus.listen(this._getGpuStatus);
     this.actions.app.toggleBlockConsolidationStatusScreen.listen(() => {
-      this.handleScreensToggle(
-        this._toggleBlockConsolidationStatusScreen,
-        SCREENS.BLOCK_CONSOLIDATION,
-        false
-      );
+      this.handleScreensToggle(SCREENS.BLOCK_CONSOLIDATION);
     });
     this.actions.app.downloadLogs.listen(this._downloadLogs);
     this.actions.app.setNotificationVisibility.listen(
@@ -77,40 +64,24 @@ export default class AppStore extends Store {
   /**
    * Handles screen switching/toggling specified by the screenType string identifier.
    */
-  handleScreensToggle = (
-    screenAction: any,
-    screenType: string,
-    toggleScreen?: boolean
-  ) => {
-    if (this.isAboutDialogOpen) {
-      this._closeAboutDialog();
-    }
-    if (this.isDaedalusDiagnosticsDialogOpen) {
-      this._closeDaedalusDiagnosticsDialog();
-    }
-    if (!toggleScreen && screenType !== SCREENS.BLOCK_CONSOLIDATION && this.isBlockConsolidationStatusDialog) {
-      this._closeBlockConsolidationStatusScreen();
-    }
-    if (!toggleScreen && screenAction) {
-      screenAction();
-    }
-    if (toggleScreen) {
-      switch (screenType) {
+  handleScreensToggle = (screenType: string) => {
+    let currentDialog = '';
+    switch (screenType) {
         case DIALOGS.ABOUT:
-          this._toggleAboutDialog();
+          currentDialog = this.activeDialog === 'about' ? '' : 'about';
           break;
         case DIALOGS.DAEDALUS_DIAGNOSTICS:
-          this._toggleDaedalusDiagnosticsDialog();
+          currentDialog = this.activeDialog === 'daedalusDiagnostics' ? '' : 'daedalusDiagnostics';
           break;
         case SCREENS.BLOCK_CONSOLIDATION:
-          this._toggleBlockConsolidationStatusScreen();
+          currentDialog = this.activeDialog === 'blockConsolidation' ? '' : 'blockConsolidation';
           break;
         case SCREENS.ADA_REDEMPTION:
-          this._showAdaRedemptionScreen();
+          currentDialog = this.activeDialog === 'adaRedemption' ? '' : 'adaRedemption';
           break;
         default:
-      }
     }
+    this._updateActiveDialog(currentDialog);
     return Promise.resolve();
   };
 
@@ -120,21 +91,13 @@ export default class AppStore extends Store {
   toggleUiPart = (uiPart: string) => {
     switch (uiPart) {
       case DIALOGS.ABOUT:
-        this.handleScreensToggle(this._toggleAboutDialog, DIALOGS.ABOUT, true);
+        this.handleScreensToggle(DIALOGS.ABOUT);
         break;
       case DIALOGS.DAEDALUS_DIAGNOSTICS:
-        this.handleScreensToggle(
-          this._toggleDaedalusDiagnosticsDialog,
-          DIALOGS.DAEDALUS_DIAGNOSTICS,
-          true
-        );
+        this.handleScreensToggle(DIALOGS.DAEDALUS_DIAGNOSTICS);
         break;
       case SCREENS.BLOCK_CONSOLIDATION:
-        this.handleScreensToggle(
-          this._toggleBlockConsolidationStatusScreen,
-          SCREENS.BLOCK_CONSOLIDATION,
-          true
-        );
+        this.handleScreensToggle(SCREENS.BLOCK_CONSOLIDATION);
         break;
       default:
     }
@@ -147,11 +110,7 @@ export default class AppStore extends Store {
   showUiPart = (uiPart: string) => {
     switch (uiPart) {
       case SCREENS.ADA_REDEMPTION:
-        this.handleScreensToggle(
-          this._showAdaRedemptionScreen,
-          SCREENS.ADA_REDEMPTION,
-          true
-        );
+        this.handleScreensToggle(SCREENS.ADA_REDEMPTION);
         break;
       case NOTIFICATIONS.DOWNLOAD_LOGS:
         this._downloadLogs();
@@ -192,29 +151,8 @@ export default class AppStore extends Store {
     this.previousRoute = currentRoute || ROUTES.ROOT;
   };
 
-  @action _openAboutDialog = () => {
-    this.isAboutDialogOpen = true;
-  };
-
-  @action _closeAboutDialog = () => {
-    this.isAboutDialogOpen = false;
-  };
-
-  @action _toggleAboutDialog = () => {
-    this.isAboutDialogOpen = !this.isAboutDialogOpen;
-  };
-
-  @action _openDaedalusDiagnosticsDialog = () => {
-    this.isDaedalusDiagnosticsDialogOpen = true;
-  };
-
-  @action _closeDaedalusDiagnosticsDialog = () => {
-    this.isDaedalusDiagnosticsDialogOpen = false;
-  };
-
-  @action _toggleDaedalusDiagnosticsDialog = () => {
-    this.isDaedalusDiagnosticsDialogOpen = !this
-      .isDaedalusDiagnosticsDialogOpen;
+  @action _updateActiveDialog = (activeDialog?: string) => {
+    this.activeDialog = activeDialog;
   };
 
   @action _showAdaRedemptionScreen = () => {
@@ -229,11 +167,6 @@ export default class AppStore extends Store {
     const route = this.isBlockConsolidationStatusDialog
       ? this.previousRoute
       : ROUTES.BLOCK_CONSOLIDATION_STATUS;
-    this._updateRouteLocation({ route });
-  };
-
-  @action _closeBlockConsolidationStatusScreen = () => {
-    const route = this.previousRoute;
     this._updateRouteLocation({ route });
   };
 
