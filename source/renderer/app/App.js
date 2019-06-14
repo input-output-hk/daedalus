@@ -14,8 +14,8 @@ import type { ActionsMap } from './actions/index';
 import ThemeManager from './ThemeManager';
 import AboutDialog from './containers/static/AboutDialog';
 import DaedalusDiagnosticsDialog from './containers/status/DaedalusDiagnosticsDialog';
-import GenericNotificationContainer from './containers/notifications/GenericNotificationContainer';
 import BlockConsolidationStatusDialog from './containers/status/BlockConsolidationStatusDialog';
+import GenericNotificationContainer from './containers/notifications/GenericNotificationContainer';
 
 @observer
 export default class App extends Component<{

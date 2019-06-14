@@ -85,6 +85,7 @@ export default class AppStore extends Store {
       case SCREENS.ADA_REDEMPTION:
         currentDialog =
           this.activeDialog === 'adaRedemption' ? '' : 'adaRedemption';
+        this._toggleAdaRedemptionScreen();
         break;
       default:
     }
@@ -162,19 +163,16 @@ export default class AppStore extends Store {
     this.activeDialog = currentDialog;
   };
 
-  @action _showAdaRedemptionScreen = () => {
+  @action _toggleAdaRedemptionScreen = () => {
     const { isConnected, isSynced } = this.stores.networkStatus;
     const { hasLoadedWallets } = this.stores.wallets;
     if (isConnected && isSynced && hasLoadedWallets && !this.isSetupPage) {
-      this.actions.router.goToRoute.trigger({ route: ROUTES.ADA_REDEMPTION });
+      const route =
+        this.activeDialog === 'adaRedemption'
+          ? this.previousRoute
+          : ROUTES.ADA_REDEMPTION;
+      this._updateRouteLocation({ route });
     }
-  };
-
-  @action _toggleBlockConsolidationStatusScreen = () => {
-    const route = this.isBlockConsolidationStatusDialog
-      ? this.previousRoute
-      : ROUTES.BLOCK_CONSOLIDATION_STATUS;
-    this._updateRouteLocation({ route });
   };
 
   @action _downloadLogs = () => {
