@@ -45,10 +45,28 @@ export const hasDataExisting = (isLoading, data) =>
 export const sortData = (data, order, sortBy) =>
   orderBy(data, sortBy === 'pool' ? 'pool.title' : sortBy, order);
 
-export const humanizeDurationToShort = dateTime =>
-  humanizeDuration
+export const humanizeDurationToShort = (currentLocale, dateTime) => {
+  let humanizedDurationLanguage = null;
+
+  switch (currentLocale) {
+    case 'ja-JP':
+      humanizedDurationLanguage = 'ja';
+      break;
+    case 'zh-CN':
+      humanizedDurationLanguage = 'zh_CN';
+      break;
+    case 'ko-KR':
+      humanizedDurationLanguage = 'ko';
+      break;
+    case 'de-DE':
+      humanizedDurationLanguage = 'de';
+      break;
+    default:
+      humanizedDurationLanguage = 'shortEn';
+  }
+
+  return humanizeDuration
     .humanizer({
-      language: 'shortEn',
       languages: {
         shortEn: {
           y: () => 'y',
@@ -63,6 +81,8 @@ export const humanizeDurationToShort = dateTime =>
       },
     })(Math.max(0, new Date(dateTime).getTime() - new Date().getTime()), {
       round: true,
+      language: humanizedDurationLanguage,
     })
     .replace(/\s/g, '')
     .replace(/,/g, ' ');
+};
