@@ -17,26 +17,22 @@ const messages = defineMessages({
   delegationSetupStep1Label: {
     id: 'delegation.setup.steps.step.1.label',
     defaultMessage: '!!!Wallet',
-    description:
-      'Step 1 label text on delegation steps dialog.',
+    description: 'Step 1 label text on delegation steps dialog.',
   },
   delegationSetupStep2Label: {
     id: 'delegation.setup.steps.step.2.label',
     defaultMessage: '!!!Stake pool',
-    description:
-      'Step 2 label text on delegation steps dialog.',
+    description: 'Step 2 label text on delegation steps dialog.',
   },
   delegationSetupStep3Label: {
     id: 'delegation.setup.steps.step.3.label',
     defaultMessage: '!!!Delegation',
-    description:
-      'Step 3 label text on delegation steps dialog.',
+    description: 'Step 3 label text on delegation steps dialog.',
   },
   delegationSetupStep4Label: {
     id: 'delegation.setup.steps.step.4.label',
     defaultMessage: '!!!Activation',
-    description:
-      'Step 4 label text on delegation steps dialog.',
+    description: 'Step 4 label text on delegation steps dialog.',
   },
 });
 
