@@ -16,7 +16,7 @@ export default class StakingEpochsPage extends Component<Props> {
       <StakingEpochs
         currentEpochName=""
         currentEpochData={[]}
-        currentEpochEndDateTime="2019-12-31"
+        currentEpochEndDateTime="2019-12-31T00:00:00.161Z"
         currentEpochProgress={0}
         previousEpochName=""
         previousEpochData={[]}

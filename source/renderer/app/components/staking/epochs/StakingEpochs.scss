@@ -1,5 +1,5 @@
 %progressLabelText {
-  font-family: var(--font-semibold);
+  font-family: var(--font-medium);
   font-size: 14px;
   line-height: 24px;
   position: absolute;
@@ -22,7 +22,7 @@
 
     input {
       border: 0;
-      font-family: var(--font-semibold);
+      font-family: var(--font-medium);
       font-size: 19px;
       line-height: 1.37;
       padding-left: 0;
@@ -45,10 +45,7 @@
 
   .currentEpochProgressBar {
     height: 24px;
-    margin-bottom: 31px;
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-top: -2px;
+    margin: -2px 20px 31px;
   }
 
   .progressBarContainer {
@@ -158,13 +155,13 @@
 
         .stakePoolReference {
           color: var(--theme-staking-table-body-highlighted-text-color);
-          font-family: var(--font-semibold);
+          font-family: var(--font-medium);
         }
       }
     }
 
-    .semiboldText {
-      font-family: var(--font-semibold);
+    .mediumText {
+      font-family: var(--font-medium);
     }
 
     .uppercaseText {
