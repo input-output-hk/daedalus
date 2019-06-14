@@ -105,7 +105,7 @@ export default class DelegationStepsChooseWalletDialog extends Component<
     const actions = [
       {
         className: 'continueButton',
-        label: 'Continue',
+        label: intl.formatMessage(messages.continueButtonLabel),
         onClick: onContinue,
         primary: true,
         disabled: !selectedWalletAmount || walletChoiceError,

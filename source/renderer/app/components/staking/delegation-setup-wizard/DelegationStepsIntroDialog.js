@@ -64,7 +64,7 @@ const messages = defineMessages({
   },
   stepsExplanationOptionalLabel: {
     id: 'delegation.setup.intro.step.dialog.stepsExplanation.optionalLabel',
-    defaultMessage: '!!!optional',
+    defaultMessage: '!!!(optional)',
     description:
       'Steps explanation list item 4 "Optional" label on the delegation setup "intro" dialog.',
   },
@@ -144,9 +144,7 @@ export default class DelegationStepsIntroDialog extends Component<Props> {
                   <span>4. </span>
                   {intl.formatMessage(messages.stepsExplanationLabel4)}{' '}
                   <span className={styles.optionalLabel}>
-                    (
                     {intl.formatMessage(messages.stepsExplanationOptionalLabel)}
-                    )
                   </span>
                 </p>
               </li>

@@ -14,9 +14,31 @@ const messages = defineMessages({
     description:
       '"Learn more" link URL on the delegation setup "intro" dialog.',
   },
+  delegationSetupStep1Label: {
+    id: 'delegation.setup.steps.step.1.label',
+    defaultMessage: '!!!Wallet',
+    description:
+      'Step 1 label text on delegation steps dialog.',
+  },
+  delegationSetupStep2Label: {
+    id: 'delegation.setup.steps.step.2.label',
+    defaultMessage: '!!!Stake pool',
+    description:
+      'Step 2 label text on delegation steps dialog.',
+  },
+  delegationSetupStep3Label: {
+    id: 'delegation.setup.steps.step.3.label',
+    defaultMessage: '!!!Delegation',
+    description:
+      'Step 3 label text on delegation steps dialog.',
+  },
+  delegationSetupStep4Label: {
+    id: 'delegation.setup.steps.step.4.label',
+    defaultMessage: '!!!Activation',
+    description:
+      'Step 4 label text on delegation steps dialog.',
+  },
 });
-
-const STEPS_LIST = ['Wallet', 'Stake pool', 'Delegation', 'Activation'];
 
 type Props = InjectedContainerProps;
 
@@ -37,6 +59,13 @@ export default class DelegationSetupWizardDialogContainer extends Component<
   state = {
     activeStep: 0,
   };
+
+  STEPS_LIST = [
+    this.context.intl.formatMessage(messages.delegationSetupStep1Label),
+    this.context.intl.formatMessage(messages.delegationSetupStep2Label),
+    this.context.intl.formatMessage(messages.delegationSetupStep3Label),
+    this.context.intl.formatMessage(messages.delegationSetupStep4Label),
+  ];
 
   handleDialogClose = () => {
     this.props.actions.dialogs.closeActiveDialog.trigger();
@@ -90,7 +119,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     return (
       <DelegationSetupWizardDialog
         wallets={walletsData}
-        stepsList={STEPS_LIST}
+        stepsList={this.STEPS_LIST}
         activeStep={activeStep}
         isDisabled={activeStep === 1 && setupDisabled}
         onClose={this.handleDialogClose}

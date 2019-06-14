@@ -22,6 +22,8 @@ import DelegationStepsNotAvailableDialog from '../../source/renderer/app/compone
 import { StakePoolsListStory } from './StakePoolsListStory.js';
 import { StakingRewardsStory } from './Staking-Rewards.stories';
 
+import translations from '../../source/renderer/app/i18n/translations';
+
 const defaultPercentage = 10;
 const defaultStartDateTime = new Date('2019-09-26');
 const startDateTimeKnob = (name, defaultValue) => {
@@ -39,12 +41,6 @@ const pageNames = {
   info: 'Info',
 };
 
-const DELEGATION_WIZARD_STEPS_LIST = [
-  'Wallet',
-  'Stake pool',
-  'Delegation',
-  'Activation',
-];
 const WALLETS = [
   {
     value: '1.0001 ADA',
@@ -61,6 +57,20 @@ const WALLETS = [
     label: 'Third Wallet',
     isAcceptableSetupWallet: false,
   },
+];
+
+const locales = {
+  English: 'en-US',
+  Japanese: 'ja-JP',
+};
+// Delegation steps labels are translated outside components and we need to determine correct translations
+const locale = localStorage.getItem('currentLocale')
+const translationIndex = locales[locale];
+const DELEGATION_WIZARD_STEPS_LIST = [
+  translations[translationIndex]["delegation.setup.steps.step.1.label"],
+  translations[translationIndex]["delegation.setup.steps.step.2.label"],
+  translations[translationIndex]["delegation.setup.steps.step.3.label"],
+  translations[translationIndex]["delegation.setup.steps.step.4.label"],
 ];
 
 storiesOf('Staking', module)
