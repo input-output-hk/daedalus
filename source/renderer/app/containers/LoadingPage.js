@@ -31,6 +31,8 @@ export default class LoadingPage extends Component<InjectedProps> {
 
   render() {
     const { stores } = this.props;
+    const { environment, openExternalLink } = stores.app;
+    const { version } = environment;
     const {
       cardanoNodeState,
       isNodeResponding,
@@ -55,42 +57,55 @@ export default class LoadingPage extends Component<InjectedProps> {
       diskSpaceRecommended,
     } = stores.networkStatus;
     const {
+      isNewAppVersionAvailable,
+      isNewAppVersionLoading,
+      isNewAppVersionLoaded,
+      availableAppVersion,
+    } = stores.nodeUpdate;
+    const {
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
       currentLocale,
     } = stores.profile;
+
     return (
       <CenteredLayout>
         <Loading
           currencyIcon={adaLogo}
           apiIcon={cardanoLogo}
           cardanoNodeState={cardanoNodeState}
+          currentAppVersion={version}
+          availableAppVersion={availableAppVersion}
           isConnected={isConnected}
           isSynced={isSynced}
+          isNodeResponding={isNodeResponding}
+          isNodeSubscribed={isNodeSubscribed}
+          isNodeSyncing={isNodeSyncing}
+          isNodeTimeCorrect={isNodeTimeCorrect}
           isNodeStopping={isNodeStopping}
           isNodeStopped={isNodeStopped}
           isNotEnoughDiskSpace={isNotEnoughDiskSpace}
           isTlsCertInvalid={isTlsCertInvalid}
+          isNewAppVersionAvailable={isNewAppVersionAvailable}
+          isNewAppVersionLoading={isNewAppVersionLoading}
+          isNewAppVersionLoaded={isNewAppVersionLoaded}
+          isSystemTimeCorrect={isSystemTimeCorrect}
+          isCheckingSystemTime={forceCheckTimeDifferenceRequest.isExecuting}
           diskSpaceRequired={diskSpaceRequired}
           diskSpaceMissing={diskSpaceMissing}
           diskSpaceRecommended={diskSpaceRecommended}
           localTimeDifference={localTimeDifference}
-          isSystemTimeCorrect={isSystemTimeCorrect}
-          isCheckingSystemTime={forceCheckTimeDifferenceRequest.isExecuting}
           syncPercentage={syncPercentage}
           loadingDataForNextScreenMessage={messages.loadingWalletData}
           hasBeenConnected={hasBeenConnected}
           hasLoadedCurrentLocale={hasLoadedCurrentLocale}
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           currentLocale={currentLocale}
-          onExternalLinkClick={stores.app.openExternalLink}
-          isNodeResponding={isNodeResponding}
-          isNodeSubscribed={isNodeSubscribed}
-          isNodeSyncing={isNodeSyncing}
-          isNodeTimeCorrect={isNodeTimeCorrect}
+          onExternalLinkClick={openExternalLink}
           onReportIssueClick={this.handleReportIssueClick}
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
           onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
+          onGetAvailableVersions={this.handleGetAvailableVersions}
           onDownloadLogs={this.handleDownloadLogs}
           disableDownloadLogs={stores.app.isDownloadNotificationVisible}
         />
@@ -113,5 +128,10 @@ export default class LoadingPage extends Component<InjectedProps> {
     const { app } = this.props.actions;
     app.downloadLogs.trigger();
     app.setNotificationVisibility.trigger(true);
+  };
+
+  handleGetAvailableVersions = () => {
+    const { nodeUpdate } = this.props.actions;
+    nodeUpdate.getLatestAvailableAppVersion.trigger();
   };
 }

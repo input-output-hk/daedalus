@@ -119,6 +119,19 @@ After({ tags: '@restartApp' }, async function() {
   context.app = await startApp();
 });
 
+// this ensures that the reset-backend call successfully executes
+// after the app version difference test sets the app to disconnected state
+// eslint-disable-next-line prefer-arrow-callback
+After({ tags: '@reconnectApp' }, async function() {
+  await this.client.executeAsync(done => {
+    daedalus.api.ada
+      .setSubscriptionStatus(null)
+      .then(() => daedalus.stores.networkStatus._updateNetworkStatus())
+      .then(done)
+      .catch(error => done(error));
+  });
+});
+
 // eslint-disable-next-line prefer-arrow-callback
 After(async function({ sourceLocation, result }) {
   scenariosCount++;
