@@ -119,6 +119,19 @@ const rpSelect = {
   '--rp-select-input-placeholder-color': 'rgba(94, 96, 102, 0.5)',
 };
 
+// STEPPER
+const rpStepper = {
+  '--rp-stepper-bullet-background-color-disabled': '#fff',
+  '--rpstepper-bullet-height': '12px',
+  '--rpstepper-bullet-width': '12px',
+  '--rp-stepper-label-color': 'rgba(94, 96, 102, 1)',
+  '--rp-stepper-label-color-light': 'rgba(94, 96, 102, 0.3)',
+  '--rp-stepper-main-color': 'rgba(68, 91, 124, 1)',
+  '--rp-stepper-main-color-light': 'rgba(68, 91, 124, 0.1)',
+  '--rpstepper-stepper-step-label-bottom-margin': '6px',
+  '--rpstepper-steps-bar-top-position': '6px',
+};
+
 // SWITCH
 const rpSwitch = {
   '--rp-switch-bg-color-off': '#2cbb69',
@@ -159,6 +172,7 @@ const rpCardanoTheme = {
   ...rpModal,
   ...rpOptions,
   ...rpSelect,
+  ...rpStepper,
   ...rpSwitch,
   ...rpTextArea,
 };
@@ -289,6 +303,35 @@ const CARDANO_THEME_CONFIG = {
     '--theme-data-migration-layer-text-color': '#fafbfc',
     '--theme-data-migration-layer-text-opacity-color':
       'rgba(250, 251, 252, 0.5)',
+  },
+  delegationSetupWizard: {
+    '--theme-delegation-steps-choose-wallet-custom-value-color': '#5e6066',
+    '--theme-delegation-steps-choose-wallet-description-color':
+      'rgba(94, 96, 102, 0.8)',
+    '--theme-delegation-steps-choose-wallet-description-highlighted-color':
+      '#5e6066',
+    '--theme-delegation-steps-choose-wallet-error-message-color':
+      'rgba(234, 76, 91, 1)',
+    '--theme-delegation-steps-choose-wallet-error-message-light-color':
+      'rgba(234, 76, 91, 0.7)',
+    '--theme-delegation-steps-choose-wallet-error-select-options-color':
+      '#5e6066',
+    '--theme-delegation-steps-choose-wallet-steps-indicator-color': '#5e6066',
+    '--theme-delegation-steps-intro-content-text-color':
+      'rgba(94, 96, 102, 0.8)',
+    '--theme-delegation-steps-intro-divider-border-color': '#dfe4e8',
+    '--theme-delegation-steps-intro-link-color': 'rgba(28, 172, 99, 1)',
+    '--theme-delegation-steps-intro-list-label-color': '#5e6066',
+    '--theme-delegation-steps-intro-list-numbers-color': '#5e6066',
+    '--theme-delegation-steps-intro-list-optional-label-color':
+      'rgba(94, 96, 102, 0.5)',
+    '--theme-delegation-steps-not-available-description-text-color':
+      'rgba(94, 96, 102, 0.8)',
+    '--theme-delegation-steps-not-available-description-highlight-text-color':
+      '#5e6066',
+    '--theme-delegation-steps-not-available-icon-color': 'rgb(94, 96, 102)',
+    '--theme-delegation-steps-not-available-subtitle-text-color':
+      'rgba(94, 96, 102, 0.8)',
   },
   dialog: {
     '--theme-dialog-choice-tabs-text-color': '#5e6066',
@@ -626,34 +669,6 @@ const CARDANO_THEME_CONFIG = {
     '--theme-utxo-tooltip-background-color': 'rgba(94, 96, 102, 0.9)',
     '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-utxo-tooltip-text-color': '#fafbfc',
-  },
-  delegationSetupWizard: {
-    '--theme-delegation-steps-intro-content-text-color':
-      'rgba(94, 96, 102, 0.8)',
-    '--theme-delegation-steps-intro-divider-border-color': '#dfe4e8',
-    '--theme-delegation-steps-intro-link-color': 'rgba(28, 172, 99, 1)',
-    '--theme-delegation-steps-intro-list-label-color': '#5e6066',
-    '--theme-delegation-steps-intro-list-numbers-color': '#5e6066',
-    '--theme-delegation-steps-intro-list-optional-label-color':
-      'rgba(94, 96, 102, 0.5)',
-    '--theme-delegation-steps-not-available-description-text-color':
-      'rgba(94, 96, 102, 0.8)',
-    '--theme-delegation-steps-not-available-description-highlight-text-color':
-      '#5e6066',
-    '--theme-delegation-steps-not-available-icon-color': 'rgb(94, 96, 102)',
-    '--theme-delegation-steps-not-available-subtitle-text-color':
-      'rgba(94, 96, 102, 0.8)',
-    '--theme-delegation-steps-choose-wallet-description-color':
-      'rgba(94, 96, 102, 0.8)',
-    '--theme-delegation-steps-choose-wallet-description-highlighted-color':
-      '#5e6066',
-    '--theme-delegation-steps-choose-wallet-error-message-color':
-      'rgba(234, 76, 91, 1)',
-    '--theme-delegation-steps-choose-wallet-error-message-light-color':
-      'rgba(234, 76, 91, 0.7)',
-    '--theme-delegation-steps-choose-wallet-error-select-options-color':
-      '#5e6066',
-    '--theme-delegation-steps-choose-wallet-steps-indicator-color': '#5e6066',
   },
 };
 

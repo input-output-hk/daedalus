@@ -8,19 +8,25 @@
     }
   }
 
-  .stepIndicatorLabel {
-    color: var(--theme-delegation-steps-choose-wallet-steps-indicator-color);
-    font-family: var(--font-medium);
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 1.83;
-    margin-bottom: 20px;
-    text-align: center;
+  .delegationStepsIndicatorWrapper {
+    margin: auto;
+    width: 410px;
+
+    .stepIndicatorLabel {
+      color: var(--theme-delegation-steps-choose-wallet-steps-indicator-color);
+      font-family: var(--font-medium);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.83;
+      margin-bottom: 10px;
+      text-align: center;
+    }
   }
 
   .content {
     font-size: 16px;
     line-height: 1.38;
+    margin-top: 20px;
     text-align: left;
 
     .description {
@@ -69,8 +75,21 @@
       }
     }
 
-    .walletSelect {
-      margin-bottom: 0;
+    .customValueStyle {
+      color: var(--theme-delegation-steps-choose-wallet-custom-value-color);
+      padding: 7px 20px 0;
+      height: 100%;
+
+      .label {
+        font-size: 14px;
+        line-height: 1.43;
+      }
+
+      .value {
+        font-size: 12px;
+        line-height: 1.33;
+        opacity: 0.5;
+      }
     }
   }
 }

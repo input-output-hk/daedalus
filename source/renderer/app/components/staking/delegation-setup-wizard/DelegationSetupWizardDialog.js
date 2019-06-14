@@ -19,6 +19,7 @@ type Props = {
   onContinue: Function,
   onBack: Function,
   onLearnMoreClick: Function,
+  stepsList: Array<string>,
 };
 
 @observer
@@ -32,6 +33,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       activeStep,
       wallets,
       onLearnMoreClick,
+      stepsList,
     } = this.props;
 
     let content = null;
@@ -48,6 +50,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
     } else if (activeStep === 1) {
       content = (
         <DelegationStepsChooseWalletDialog
+          stepsList={stepsList}
           wallets={wallets}
           onClose={onClose}
           onContinue={onContinue}

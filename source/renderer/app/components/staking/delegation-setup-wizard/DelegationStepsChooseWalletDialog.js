@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
+import { Stepper } from 'react-polymorph/lib/components/Stepper';
+import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import styles from './DelegationStepsChooseWalletDialog.scss';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
@@ -67,6 +69,7 @@ type Props = {
   onContinue: Function,
   onBack: Function,
   wallets: Array<WalletData>,
+  stepsList: Array<string>,
 };
 
 type State = {
@@ -97,7 +100,7 @@ export default class DelegationStepsChooseWalletDialog extends Component<
   render() {
     const { intl } = this.context;
     const { walletChoiceError, selectedWalletAmount } = this.state;
-    const { wallets, onClose, onContinue, onBack } = this.props;
+    const { wallets, stepsList, onClose, onContinue, onBack } = this.props;
 
     const actions = [
       {
@@ -119,9 +122,17 @@ export default class DelegationStepsChooseWalletDialog extends Component<
         closeButton={<DialogCloseButton onClose={onClose} />}
         backButton={<DialogBackButton onBack={onBack} />}
       >
-        <p className={styles.stepIndicatorLabel}>
-          {intl.formatMessage(messages.stepIndicatorLabel)}
-        </p>
+        <div className={styles.delegationStepsIndicatorWrapper}>
+          <p className={styles.stepIndicatorLabel}>
+            {intl.formatMessage(messages.stepIndicatorLabel)}
+          </p>
+          <Stepper
+            steps={stepsList}
+            activeStep={2}
+            skin={StepperSkin}
+            labelDisabled
+          />
+        </div>
 
         <div className={styles.content}>
           <p className={styles.description}>
@@ -143,6 +154,12 @@ export default class DelegationStepsChooseWalletDialog extends Component<
                 </div>
               );
             }}
+            selectionRenderer={option => (
+              <div className={styles.customValueStyle}>
+                <div className={styles.label}>{option.label}</div>
+                <div className={styles.value}>{option.value}</div>
+              </div>
+            )}
             placeholder={intl.formatMessage(
               messages.selectWalletInputPlaceholder
             )}

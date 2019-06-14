@@ -16,6 +16,8 @@ const messages = defineMessages({
   },
 });
 
+const STEPS_LIST = ['Wallet', 'Stake pool', 'Delegation', 'Activation'];
+
 type Props = InjectedContainerProps;
 
 type State = {
@@ -88,6 +90,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     return (
       <DelegationSetupWizardDialog
         wallets={walletsData}
+        stepsList={STEPS_LIST}
         activeStep={activeStep}
         isDisabled={activeStep === 1 && setupDisabled}
         onClose={this.handleDialogClose}

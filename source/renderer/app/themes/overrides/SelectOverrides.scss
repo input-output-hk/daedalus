@@ -2,6 +2,13 @@
   &:after {
     bottom: 22.5px;
   }
+
+  :global {
+    .SimpleInput_customValueBlock {
+      height: 52px;
+      max-height: inherit;
+    }
+  }
 }
 
 .isOpen {

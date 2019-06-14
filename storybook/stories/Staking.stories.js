@@ -39,6 +39,30 @@ const pageNames = {
   info: 'Info',
 };
 
+const DELEGATION_WIZARD_STEPS_LIST = [
+  'Wallet',
+  'Stake pool',
+  'Delegation',
+  'Activation',
+];
+const WALLETS = [
+  {
+    value: '1.0001 ADA',
+    label: 'First Wallet',
+    isAcceptableSetupWallet: true,
+  },
+  {
+    value: '2 ADA',
+    label: 'Second Wallet',
+    isAcceptableSetupWallet: true,
+  },
+  {
+    value: '0.0001 ADA',
+    label: 'Third Wallet',
+    isAcceptableSetupWallet: false,
+  },
+];
+
 storiesOf('Staking', module)
   .addDecorator((story, context) => {
     const storyWithKnobs = withKnobs(story, context);
@@ -134,26 +158,11 @@ storiesOf('Staking', module)
 
   .add('DelegationStepsChooseWalletDialog', () => (
     <DelegationStepsChooseWalletDialog
+      stepsList={DELEGATION_WIZARD_STEPS_LIST}
       onClose={action('onClose')}
       onContinue={action('onContinue')}
       onBack={action('onBack')}
-      wallets={[
-        {
-          value: '1.0001 ADA',
-          label: 'First Wallet',
-          isAcceptableSetupWallet: true,
-        },
-        {
-          value: '2 ADA',
-          label: 'Second Wallet',
-          isAcceptableSetupWallet: true,
-        },
-        {
-          value: '0.0001 ADA',
-          label: 'Third Wallet',
-          isAcceptableSetupWallet: false,
-        },
-      ]}
+      wallets={WALLETS}
     />
   ))
 
