@@ -14,7 +14,7 @@ import StakingCountdown from '../../source/renderer/app/components/staking/count
 import DelegationCenter from '../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
 
-import { StakePoolsListStory } from './StakePoolsListStory.js';
+import { StakePoolsStory } from './StakePoolsStory.js';
 import { StakingRewardsStory } from './Staking-Rewards.stories';
 import { StakingEpochsStory } from './Staking-Epochs.stories';
 
@@ -94,7 +94,7 @@ storiesOf('Staking', module)
     { id: 'delegation-center' }
   )
 
-  .add(pageNames['stake-pools'], StakePoolsListStory, { id: 'stake-pools' })
+  .add(pageNames['stake-pools'], StakePoolsStory, { id: 'stake-pools' })
 
   .add(pageNames.rewards, StakingRewardsStory, { id: 'rewards' })
 
