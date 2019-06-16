@@ -574,8 +574,8 @@ const CARDANO_THEME_CONFIG = {
     '--theme-staking-stake-pool-tooltip-link-color': '#26ab5f',
     '--theme-staking-stake-pool-tooltip-table-title-color': '#5e6066',
     '--theme-staking-stake-pool-tooltip-table-param-color': '#5e6066',
-    '--theme-staking-stake-pool-tooltip-table-param-retirement-background-color':
-      'rgba(234, 76, 91, 0.3)',
+    '--theme-staking-stake-pool-tooltip-retirement-text-color': '#fafbfc',
+    '--theme-staking-stake-pool-tooltip-retirement-background-color': '#ea4c5b',
     '--theme-staking-stake-pool-tooltip-delegate-button-background-color':
       '#2cbb69',
     '--theme-staking-stake-pool-tooltip-delegate-button-hover-background-color':

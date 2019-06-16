@@ -9,11 +9,11 @@
   display: none;
   left: 50px;
   margin: 20px;
-  padding: 20px;
+  padding: 10px;
   position: absolute;
   top: -21px;
   user-select: text;
-  width: 250px;
+  width: 240px;
   z-index: 1;
 
   &:before,
@@ -115,6 +115,10 @@
   }
 }
 
+.container {
+  padding: 10px 10px 0;
+}
+
 .colorBand {
   border-radius: 4px 4px 0 0;
   top: 0;
@@ -148,8 +152,8 @@
   top: 25px;
 
   svg {
-    height: 11px;
-    width: 11px;
+    height: 8px;
+    width: 8px;
 
     polygon {
       fill: var(--theme-staking-stake-pool-tooltip-text-color);
@@ -159,10 +163,26 @@
 
 .id {
   color: var(--theme-staking-stake-pool-tooltip-text-color);
+  display: inline-block;
   font-size: 14px;
   line-height: 1.36;
   margin-bottom: 9px;
   opacity: 0.6;
+  vertical-align: middle;
+}
+
+.retirement {
+  background: var(
+    --theme-staking-stake-pool-tooltip-retirement-background-color
+  );
+  border-radius: 3px;
+  color: var(--theme-staking-stake-pool-tooltip-retirement-text-color);
+  display: inline-block;
+  font-size: 10px;
+  margin-bottom: 9px;
+  margin-left: 8px;
+  padding: 3px 9px;
+  vertical-align: middle;
 }
 
 .description {
@@ -186,11 +206,22 @@
 
 .table {
   @extend %regularText;
+  display: flex;
+  flex-wrap: wrap;
   margin-bottom: 14px;
+
+  dt,
+  dd {
+    height: 19px;
+    margin-bottom: 6px;
+
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+  }
 
   dt {
     color: var(--theme-staking-stake-pool-tooltip-table-title-color);
-    display: inline-block;
     font-size: 14px;
     line-height: 1.36;
     opacity: 0.8;
@@ -198,7 +229,8 @@
   }
 
   dd {
-    display: inline-block;
+    line-height: 0;
+    padding-top: 1px;
     text-align: right;
     width: 40%;
   }
@@ -212,13 +244,5 @@
     height: 16px;
     line-height: 16px;
     padding: 0 9px;
-  }
-}
-
-.retirement {
-  span {
-    background: var(
-      --theme-staking-stake-pool-tooltip-table-param-retirement-background-color
-    );
   }
 }

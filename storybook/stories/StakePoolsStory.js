@@ -2,7 +2,7 @@
 import React from 'react';
 import { number, radios } from '@storybook/addon-knobs';
 
-import StakePoolsList from '../../source/renderer/app/components/staking/stake-pools/StakePoolsList';
+import StakePools from '../../source/renderer/app/components/staking/stake-pools/StakePools';
 import STAKE_POOLS from '../../source/renderer/app/config/stakingStakePools.dummy.json';
 
 const themes = {
@@ -11,8 +11,8 @@ const themes = {
   'Dark Blue': 'dark-blue',
 };
 
-export const StakePoolsListStory = () => (
-  <StakePoolsList
+export const StakePoolsStory = () => (
+  <StakePools
     stakePoolsList={STAKE_POOLS.slice(
       0,
       number('Pools', 100, {
