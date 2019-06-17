@@ -15,67 +15,68 @@ type Props = {
 
 const messages = defineMessages({
   title: {
-    id: 'delegation.setup.steps.dialog.title',
+    id: 'staking.delegationSetup.steps.dialog.title',
     defaultMessage: '!!!Delegation Setup',
     description:
       'Title "Delegation Setup" on the delegation setup "intro" dialog.',
   },
   description: {
-    id: 'delegation.setup.intro.step.dialog.description',
+    id: 'staking.delegationSetup.intro.step.dialog.description',
     defaultMessage:
       '!!!Follow next sequence of screens to configure delegation for your wallet. During this process, you will need to deposit and pay transaction fees.',
     description: 'Description on the delegation setup "intro" dialog.',
   },
   learnMoreButtonLabel: {
-    id: 'delegation.setup.intro.step.dialog.learnMore.buttonLabel',
+    id: 'staking.delegationSetup.intro.step.dialog.learnMore.buttonLabel',
     defaultMessage: '!!!Learn more',
     description:
       '"Learn more" button label on the delegation setup "intro" dialog.',
   },
   stepsExplanationLabel: {
-    id: 'delegation.setup.intro.step.dialog.stepsExplanationLabel',
+    id: 'staking.delegationSetup.intro.step.dialog.stepsExplanationLabel',
     defaultMessage: '!!!You will need to complete the following steps:',
     description:
       'Steps explanation label on the delegation setup "intro" dialog.',
   },
   stepsExplanationLabel1: {
-    id: 'delegation.setup.intro.step.dialog.stepsExplanation.step1',
+    id: 'staking.delegationSetup.intro.step.dialog.stepsExplanation.step1',
     defaultMessage: '!!!Choose a wallet',
     description:
       'Steps explanation list item 1 label on the delegation setup "intro" dialog.',
   },
   stepsExplanationLabel2: {
-    id: 'delegation.setup.intro.step.dialog.stepsExplanation.step2',
+    id: 'staking.delegationSetup.intro.step.dialog.stepsExplanation.step2',
     defaultMessage: '!!!Choose a stake pool',
     description:
       'Steps explanation list item 2 label on the delegation setup "intro" dialog.',
   },
   stepsExplanationLabel3: {
-    id: 'delegation.setup.intro.step.dialog.stepsExplanation.step3',
+    id: 'staking.delegationSetup.intro.step.dialog.stepsExplanation.step3',
     defaultMessage: '!!!Confirm delegation',
     description:
       'Steps explanation list item 3 label on the delegation setup "intro" dialog.',
   },
   stepsExplanationLabel4: {
-    id: 'delegation.setup.intro.step.dialog.stepsExplanation.step4',
+    id: 'staking.delegationSetup.intro.step.dialog.stepsExplanation.step4',
     defaultMessage: '!!!Move all of the ada to a new address',
     description:
       'Steps explanation list item 4 label on the delegation setup "intro" dialog.',
   },
   stepsExplanationOptionalLabel: {
-    id: 'delegation.setup.intro.step.dialog.stepsExplanation.optionalLabel',
+    id:
+      'staking.delegationSetup.intro.step.dialog.stepsExplanation.optionalLabel',
     defaultMessage: '!!!(optional)',
     description:
       'Steps explanation list item 4 "Optional" label on the delegation setup "intro" dialog.',
   },
   cancelButtonLabel: {
-    id: 'delegation.setup.intro.step.dialog.cancelButtonLabel',
+    id: 'staking.delegationSetup.intro.step.dialog.cancelButtonLabel',
     defaultMessage: '!!!Cancel',
     description:
       'Label for close button on the delegation setup "intro" dialog.',
   },
   continueButtonLabel: {
-    id: 'delegation.setup.intro.step.dialog.continueButtonLabel',
+    id: 'staking.delegationSetup.intro.step.dialog.continueButtonLabel',
     defaultMessage: '!!!Continue',
     description:
       'Label for continue button on the delegation setup "intro" dialog.',
@@ -144,7 +145,9 @@ export default class DelegationStepsIntroDialog extends Component<Props> {
                   <span>4. </span>
                   {intl.formatMessage(messages.stepsExplanationLabel4)}{' '}
                   <span className={styles.optionalLabel}>
-                    {intl.formatMessage(messages.stepsExplanationOptionalLabel)}
+                    {`"${intl.formatMessage(
+                      messages.stepsExplanationOptionalLabel
+                    )}"`}
                   </span>
                 </p>
               </li>

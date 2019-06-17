@@ -9,28 +9,28 @@ import { formattedWalletAmount } from '../../../utils/formatters';
 
 const messages = defineMessages({
   learnMoreLinkUrl: {
-    id: 'delegation.setup.intro.step.dialog.learnMore.url',
+    id: 'staking.delegationSetup.intro.step.dialog.learnMore.url',
     defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/',
     description:
       '"Learn more" link URL on the delegation setup "intro" dialog.',
   },
   delegationSetupStep1Label: {
-    id: 'delegation.setup.steps.step.1.label',
+    id: 'staking.delegationSetup.steps.step.1.label',
     defaultMessage: '!!!Wallet',
     description: 'Step 1 label text on delegation steps dialog.',
   },
   delegationSetupStep2Label: {
-    id: 'delegation.setup.steps.step.2.label',
+    id: 'staking.delegationSetup.steps.step.2.label',
     defaultMessage: '!!!Stake pool',
     description: 'Step 2 label text on delegation steps dialog.',
   },
   delegationSetupStep3Label: {
-    id: 'delegation.setup.steps.step.3.label',
+    id: 'staking.delegationSetup.steps.step.3.label',
     defaultMessage: '!!!Delegation',
     description: 'Step 3 label text on delegation steps dialog.',
   },
   delegationSetupStep4Label: {
-    id: 'delegation.setup.steps.step.4.label',
+    id: 'staking.delegationSetup.steps.step.4.label',
     defaultMessage: '!!!Activation',
     description: 'Step 4 label text on delegation steps dialog.',
   },
@@ -41,6 +41,8 @@ type Props = InjectedContainerProps;
 type State = {
   activeStep: number,
 };
+
+const MIN_DELEGATION_FUNDS = 1;
 
 @inject('stores', 'actions')
 @observer
@@ -98,7 +100,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     let setupDisabled = true;
     const walletsData = map(wallets.all, wallet => {
       const value = formattedWalletAmount(wallet.amount);
-      const isAcceptableSetupWallet = parseFloat(value) > 1;
+      const isAcceptableSetupWallet = parseFloat(value) > MIN_DELEGATION_FUNDS;
 
       // Setup enabled if at least one wallet has more that 1 ADA
       if (isAcceptableSetupWallet) {
@@ -117,6 +119,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         wallets={walletsData}
         stepsList={this.STEPS_LIST}
         activeStep={activeStep}
+        minDelegationFunds={MIN_DELEGATION_FUNDS}
         isDisabled={activeStep === 1 && setupDisabled}
         onClose={this.handleDialogClose}
         onContinue={this.handleContinue}

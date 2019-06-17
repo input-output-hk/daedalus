@@ -20,6 +20,7 @@ type Props = {
   onBack: Function,
   onLearnMoreClick: Function,
   stepsList: Array<string>,
+  minDelegationFunds: number,
 };
 
 @observer
@@ -34,11 +35,17 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       wallets,
       onLearnMoreClick,
       stepsList,
+      minDelegationFunds,
     } = this.props;
 
     let content = null;
     if (isDisabled) {
-      content = <DelegationStepsNotAvailableDialog onClose={onClose} />;
+      content = (
+        <DelegationStepsNotAvailableDialog
+          minDelegationFunds={minDelegationFunds}
+          onClose={onClose}
+        />
+      );
     } else if (activeStep === 0) {
       content = (
         <DelegationStepsIntroDialog
@@ -52,6 +59,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
         <DelegationStepsChooseWalletDialog
           stepsList={stepsList}
           wallets={wallets}
+          minDelegationFunds={minDelegationFunds}
           onClose={onClose}
           onContinue={onContinue}
           onBack={onBack}

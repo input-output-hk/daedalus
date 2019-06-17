@@ -121,6 +121,8 @@ const rpSelect = {
 
 // STEPPER
 const rpStepper = {
+  '--rp-stepper-bullet-background-color-disabled': '#263345',
+  '--rp-stepper-bullet-border-color': 'rgba(233, 244, 254, 0.1)',
   '--rpstepper-bullet-height': '12px',
   '--rpstepper-bullet-width': '12px',
   '--rp-stepper-label-color': 'rgba(233, 244, 254, 1)',
@@ -128,8 +130,8 @@ const rpStepper = {
   '--rp-stepper-main-color': 'rgba(233, 244, 254, 1)',
   '--rp-stepper-main-color-light': 'rgba(233, 244, 254, 0.1)',
   '--rpstepper-stepper-step-label-bottom-margin': '6px',
+  '--rpstepper-steps-bar-color-disabled': 'rgba(233, 244, 254, 0.1)',
   '--rpstepper-steps-bar-top-position': '6px',
-  '--rp-stepper-bullet-background-color-disabled': '#263345',
 };
 
 // SWITCH
@@ -331,7 +333,7 @@ const DARK_BLUE_THEME_CONFIG = {
       '#e9f4fe',
     '--theme-delegation-steps-not-available-icon-color': 'rgb(155, 166, 179)',
     '--theme-delegation-steps-not-available-subtitle-text-color':
-      'rgba(233, 244, 254, 0.8)',
+      'rgba(233, 244, 254, 1)',
   },
   dialog: {
     '--theme-dialog-choice-tabs-text-color': '#e9f4fe',

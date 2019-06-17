@@ -1,6 +1,11 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import {
+  defineMessages,
+  intlShape,
+  FormattedHTMLMessage,
+  FormattedMessage,
+} from 'react-intl';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
@@ -12,46 +17,47 @@ import Dialog from '../../widgets/Dialog';
 
 const messages = defineMessages({
   title: {
-    id: 'delegation.setup.steps.dialog.title',
+    id: 'staking.delegationSetup.steps.dialog.title',
     defaultMessage: '!!!Delegation Setup',
     description:
       'Title "Delegation Setup" on the delegation setup "choose wallet" step dialog.',
   },
   description: {
-    id: 'delegation.setup.chooseWallet.step.dialog.description',
+    id: 'staking.delegationSetup.chooseWallet.step.dialog.description',
     defaultMessage:
-      '!!!Choose a wallet with funds you would like to delegate to a stake pool. Selected wallet needs to have a minimum of <span>1 ada</span>.',
+      '!!!Choose a wallet with funds you would like to delegate to a stake pool. Selected wallet needs to have a minimum of <span>{minDelegationFunds} ada</span>.',
     description:
       'Description on the delegation setup "choose wallet" step dialog.',
   },
   selectWalletInputLabel: {
-    id: 'delegation.setup.chooseWallet.step.dialog.selectWalletInputLabel',
+    id:
+      'staking.delegationSetup.chooseWallet.step.dialog.selectWalletInputLabel',
     defaultMessage: '!!!Wallet',
     description:
       'Label "Wallet" for select input on the delegation setup "choose wallet" step dialog.',
   },
   selectWalletInputPlaceholder: {
     id:
-      'delegation.setup.chooseWallet.step.dialog.selectWalletInputPlaceholder',
+      'staking.delegationSetup.chooseWallet.step.dialog.selectWalletInputPlaceholder',
     defaultMessage: '!!!Select Wallet',
     description:
       'Placeholder "Select Wallet" for select input on the delegation setup "choose wallet" step dialog.',
   },
   stepIndicatorLabel: {
-    id: 'delegation.setup.chooseWallet.step.dialog.stepIndicatorLabel',
-    defaultMessage: '!!!STEP 1 OF 4',
+    id: 'staking.delegationSetup.chooseWallet.step.dialog.stepIndicatorLabel',
+    defaultMessage: '!!!STEP {currentStep} OF {totalSteps}',
     description:
       'Step indicator labe on the delegation setup "choose wallet" step dialog.',
   },
   errorMessage: {
-    id: 'delegation.setup.chooseWallet.step.dialog.errorMessage',
+    id: 'staking.delegationSetup.chooseWallet.step.dialog.errorMessage',
     defaultMessage:
-      '!!!This wallet does not have enough ada for delegation setup. Please choose a wallet with a minimum of <span>1 ada</span> and click continue.',
+      '!!!This wallet does not have enough ada for delegation setup. Please choose a wallet with a minimum of <span>{minDelegationFunds} ada</span> and click continue.',
     description:
       'Error Label on the delegation setup "choose wallet" step dialog.',
   },
   continueButtonLabel: {
-    id: 'delegation.setup.chooseWallet.step.dialog.continueButtonLabel',
+    id: 'staking.delegationSetup.chooseWallet.step.dialog.continueButtonLabel',
     defaultMessage: '!!!Continue',
     description:
       'Label for continue button on the delegation setup "choose wallet" step dialog.',
@@ -70,6 +76,7 @@ type Props = {
   onBack: Function,
   wallets: Array<WalletData>,
   stepsList: Array<string>,
+  minDelegationFunds: number,
 };
 
 type State = {
@@ -100,7 +107,14 @@ export default class DelegationStepsChooseWalletDialog extends Component<
   render() {
     const { intl } = this.context;
     const { walletChoiceError, selectedWalletAmount } = this.state;
-    const { wallets, stepsList, onClose, onContinue, onBack } = this.props;
+    const {
+      wallets,
+      stepsList,
+      minDelegationFunds,
+      onClose,
+      onContinue,
+      onBack,
+    } = this.props;
 
     const actions = [
       {
@@ -124,7 +138,13 @@ export default class DelegationStepsChooseWalletDialog extends Component<
       >
         <div className={styles.delegationStepsIndicatorWrapper}>
           <p className={styles.stepIndicatorLabel}>
-            {intl.formatMessage(messages.stepIndicatorLabel)}
+            <FormattedMessage
+              {...messages.stepIndicatorLabel}
+              values={{
+                currentStep: 2,
+                totalSteps: stepsList.length,
+              }}
+            />
           </p>
           <Stepper
             steps={stepsList}
@@ -136,7 +156,10 @@ export default class DelegationStepsChooseWalletDialog extends Component<
 
         <div className={styles.content}>
           <p className={styles.description}>
-            <FormattedHTMLMessage {...messages.description} />
+            <FormattedHTMLMessage
+              {...messages.description}
+              values={{ minDelegationFunds }}
+            />
           </p>
           <Select
             className={styles.walletSelect}
@@ -168,7 +191,10 @@ export default class DelegationStepsChooseWalletDialog extends Component<
           />
           {walletChoiceError && (
             <p className={styles.errorMessage}>
-              <FormattedHTMLMessage {...messages.errorMessage} />
+              <FormattedHTMLMessage
+                {...messages.errorMessage}
+                values={{ minDelegationFunds }}
+              />
             </p>
           )}
         </div>

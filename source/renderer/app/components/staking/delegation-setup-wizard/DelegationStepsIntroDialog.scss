@@ -22,9 +22,10 @@
       font-size: 16px;
       svg {
         margin-left: 2px;
-        width: 11px;
-        path {
-          fill: var(--theme-delegation-steps-intro-link-color);
+        vertical-align: middle;
+        width: 12px;
+        g {
+          stroke: var(--theme-delegation-steps-intro-link-color);
         }
       }
     }
@@ -42,11 +43,15 @@
         font-family: var(--font-medium);
         font-weight: 500;
       }
+      ol {
+        margin-left: 14px;
+      }
       ol,
       li {
         margin-top: 11px;
         span {
           color: var(--theme-delegation-steps-intro-list-numbers-color);
+          margin-right: 14px;
           &.optionalLabel {
             color: var(
               --theme-delegation-steps-intro-list-optional-label-color

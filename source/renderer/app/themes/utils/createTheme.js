@@ -114,7 +114,12 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
       '--rp-select-input-text-color': `${text.primary}`,
     },
     rpStepper: {
-      '--rp-stepper-bullet-background-color-disabled': '#fff',
+      '--rp-stepper-bullet-background-color-disabled': `${
+        background.primary.lightest
+      }`,
+      '--rp-stepper-bullet-border-color': `${chroma(
+        background.secondary.regular
+      ).alpha(0.1)}`,
       '--rpstepper-bullet-height': '12px',
       '--rpstepper-bullet-width': '12px',
       '--rp-stepper-label-color': `${text.primary}`,
@@ -124,6 +129,9 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
         background.secondary.regular
       ).alpha(0.1)}`,
       '--rpstepper-stepper-step-label-bottom-margin': '6px',
+      '--rpstepper-steps-bar-color-disabled': `${chroma(
+        background.secondary.regular
+      ).alpha(0.1)}`,
       '--rpstepper-steps-bar-top-position': '6px',
     },
     rpSwitch: {
@@ -398,9 +406,8 @@ const createDaedalusComponentsTheme = (
         text.primary
       }`,
       '--theme-delegation-steps-not-available-icon-color': `${text.primary}`,
-      '--theme-delegation-steps-not-available-subtitle-text-color': `${chroma(
-        text.primary
-      ).alpha(0.8)}`,
+      '--theme-delegation-steps-not-available-subtitle-text-color':
+        text.primary,
     },
     dialog: {
       '--theme-dialog-choice-tabs-text-color': `${text.primary}`,

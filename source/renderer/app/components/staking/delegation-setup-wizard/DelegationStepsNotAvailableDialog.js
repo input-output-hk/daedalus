@@ -8,29 +8,30 @@ import Dialog from '../../widgets/Dialog';
 import attentionImage from '../../../assets/images/attention-dark.inline.svg';
 
 type Props = {
+  minDelegationFunds: number,
   onClose: Function,
 };
 
 const messages = defineMessages({
   title: {
-    id: 'delegation.setup.steps.dialog.title',
+    id: 'staking.delegationSetup.steps.dialog.title',
     defaultMessage: '!!!Delegation Setup',
     description:
       'Title "Delegation Setup" on the delegation setup not available dialog.',
   },
   subtitle: {
-    id: 'delegation.setup.notAvailable.dialog.subtitle',
+    id: 'staking.delegationSetup.notAvailable.dialog.subtitle',
     defaultMessage: '!!!Delegation not available',
     description: 'Subtitle on the delegation setup not available dialog.',
   },
   description: {
-    id: 'delegation.setup.notAvailable.dialog.description',
+    id: 'staking.delegationSetup.notAvailable.dialog.description',
     defaultMessage:
-      '!!!A wallet with at least <span>1 ada</span> is required for delegation setup. Please restore a wallet with ada, or create a new one and fund it with ada in order to access delegation features.',
+      '!!!A wallet with at least <span>{minDelegationFunds} ada</span> is required for delegation setup. Please restore a wallet with ada, or create a new one and fund it with ada in order to access delegation features.',
     description: 'Description on the delegation setup not available dialog.',
   },
   closeButtonLabel: {
-    id: 'delegation.setup.notAvailable.dialog.closeButtonLabel',
+    id: 'staking.delegationSetup.notAvailable.dialog.closeButtonLabel',
     defaultMessage: '!!!Close',
     description:
       'Label for close button on the delegation setup not available dialog.',
@@ -44,7 +45,7 @@ export default class DelegationStepsNotAvailableDialog extends Component<Props> 
 
   render() {
     const { intl } = this.context;
-    const { onClose } = this.props;
+    const { minDelegationFunds, onClose } = this.props;
 
     const actions = [
       {
@@ -70,7 +71,10 @@ export default class DelegationStepsNotAvailableDialog extends Component<Props> 
             {intl.formatMessage(messages.subtitle)}
           </p>
           <p className={styles.description}>
-            <FormattedHTMLMessage {...messages.description} />
+            <FormattedHTMLMessage
+              {...messages.description}
+              values={{ minDelegationFunds }}
+            />
           </p>
         </div>
       </Dialog>

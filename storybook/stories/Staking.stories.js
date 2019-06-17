@@ -67,10 +67,10 @@ const locales = {
 const locale = localStorage.getItem('currentLocale') || 'English';
 const translationIndex = locales[locale];
 const DELEGATION_WIZARD_STEPS_LIST = [
-  translations[translationIndex]['delegation.setup.steps.step.1.label'],
-  translations[translationIndex]['delegation.setup.steps.step.2.label'],
-  translations[translationIndex]['delegation.setup.steps.step.3.label'],
-  translations[translationIndex]['delegation.setup.steps.step.4.label'],
+  translations[translationIndex]['staking.delegationSetup.steps.step.1.label'],
+  translations[translationIndex]['staking.delegationSetup.steps.step.2.label'],
+  translations[translationIndex]['staking.delegationSetup.steps.step.3.label'],
+  translations[translationIndex]['staking.delegationSetup.steps.step.4.label'],
 ];
 
 storiesOf('Staking', module)
@@ -173,9 +173,13 @@ storiesOf('Staking', module)
       onContinue={action('onContinue')}
       onBack={action('onBack')}
       wallets={WALLETS}
+      minDelegationFunds={1}
     />
   ))
 
   .add('DelegationStepsNotAvailableDialog', () => (
-    <DelegationStepsNotAvailableDialog onClose={action('onClose')} />
+    <DelegationStepsNotAvailableDialog
+      minDelegationFunds={1}
+      onClose={action('onClose')}
+    />
   ));
