@@ -6,7 +6,6 @@ import { ROUTES } from './routes-config';
 // PAGES
 import Root from './containers/Root';
 import AdaRedemptionPage from './containers/wallet/AdaRedemptionPage';
-import BlockConsolidationStatusDialog from './containers/status/BlockConsolidationStatusDialog';
 import WalletAddPage from './containers/wallet/WalletAddPage';
 import LanguageSelectionPage from './containers/profile/LanguageSelectionPage';
 import Settings from './containers/settings/Settings';
@@ -45,10 +44,6 @@ export const Routes = (
       component={DataLayerMigrationPage}
     />
     <Route path={ROUTES.ADA_REDEMPTION} component={AdaRedemptionPage} />
-    <Route
-      path={ROUTES.BLOCK_CONSOLIDATION_STATUS}
-      component={BlockConsolidationStatusDialog}
-    />
     <Route path={ROUTES.WALLETS.ADD} component={WalletAddPage} />
     <Route path={ROUTES.WALLETS.ROOT} component={Wallet}>
       <Route path={ROUTES.WALLETS.SUMMARY} component={WalletSummaryPage} />
