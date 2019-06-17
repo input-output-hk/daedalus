@@ -6,7 +6,7 @@ import styles from './DaedalusMenu.scss';
 type Props = {
   localeNames: Array<string>,
   themeNames: Array<string>,
-  setLocaleName: Function,
+  setParam: Function,
   setThemeName: Function,
   onToggleVisibility: Function,
   currentLocale: string,
@@ -19,7 +19,7 @@ class DaedalusMenu extends Component<Props> {
     const {
       localeNames,
       themeNames,
-      setLocaleName,
+      setParam,
       setThemeName,
       currentLocale,
       currentTheme,
@@ -44,7 +44,7 @@ class DaedalusMenu extends Component<Props> {
             {localeNames.map(localeItem => (
               <button
                 key={localeItem}
-                onClick={() => setLocaleName(localeItem)}
+                onClick={() => setParam('localeName', localeItem)}
                 className={
                   currentLocale === localeItem ? styles.selected : null
                 }
@@ -58,7 +58,7 @@ class DaedalusMenu extends Component<Props> {
             {themeNames.map(themeItem => (
               <button
                 key={themeItem}
-                onClick={() => setThemeName(themeItem)}
+                onClick={() => setParam('themeName', themeItem)}
                 className={currentTheme === themeItem ? styles.selected : null}
               >
                 {themeItem}

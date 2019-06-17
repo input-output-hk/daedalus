@@ -1,15 +1,18 @@
 // @flow
 import React, { Component, Fragment } from 'react';
-import { keys } from 'lodash';
+import { keys, set } from 'lodash';
 import { IntlProvider, addLocaleData } from 'react-intl';
 import en from 'react-intl/locale-data/en';
 import ja from 'react-intl/locale-data/ja';
+
 import DaedalusMenu from './DaedalusMenu';
 import translations from '../../../source/renderer/app/i18n/translations';
 import ThemeManager from '../../../source/renderer/app/ThemeManager';
 import cardano from '../../../source/renderer/app/themes/daedalus/cardano.js';
 import darkBlue from '../../../source/renderer/app/themes/daedalus/dark-blue.js';
 import lightBlue from '../../../source/renderer/app/themes/daedalus/light-blue.js';
+
+/* eslint-disable no-restricted-globals */
 
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([...en, ...ja]);
@@ -38,20 +41,32 @@ type State = {
 };
 
 export default class StoryWrapper extends Component<Props, State> {
-  state = {
-    themeName: localStorage.getItem('currentTheme') || themeNames[0],
-    localeName: localStorage.getItem('currentLocale') || localeNames[0],
-    isMenuVisible: false,
-  };
+  constructor(props) {
+    super(props);
 
-  setLocaleName = (localeName: string) => {
-    this.setState({ localeName });
-    localStorage.setItem('currentLocale', localeName);
-  };
+    const themeName = this.params.get('themeName') || themeNames[0];
+    const localeName = this.params.get('localeName') || localeNames[0];
 
-  setThemeName = (themeName: string) => {
-    this.setState({ themeName });
-    localStorage.setItem('currentTheme', themeName);
+    this.state = {
+      themeName,
+      localeName,
+      isMenuVisible: false,
+    };
+  }
+
+  get params() {
+    return new URLSearchParams(parent.window.location.search);
+  }
+
+  setParam = (param: string, value: string) => {
+    this.setState(set({}, param, value));
+    const { params } = this;
+    params.set(param, value);
+    const { location } = parent.window;
+    const newurl = `${location.protocol}//${location.host}${
+      location.pathname
+    }?${params.toString()}`;
+    parent.window.history.pushState({ path: newurl }, '', newurl);
   };
 
   handleToggleVisibility = () =>
@@ -69,8 +84,7 @@ export default class StoryWrapper extends Component<Props, State> {
         <DaedalusMenu
           localeNames={localeNames}
           themeNames={themeNames}
-          setLocaleName={this.setLocaleName}
-          setThemeName={this.setThemeName}
+          setParam={this.setParam}
           currentLocale={localeName}
           currentTheme={themeName}
           onToggleVisibility={this.handleToggleVisibility}
