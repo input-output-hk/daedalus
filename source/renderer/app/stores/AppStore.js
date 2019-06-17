@@ -12,8 +12,9 @@ import {
 } from '../ipc/control-ui-parts';
 import { getGPUStatusChannel } from '../ipc/get-gpu-status.ipc';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
+import { APPLICATION_DIALOGS } from '../types/applicationDialogTypes';
 import type { GpuStatus } from '../types/gpuStatus';
-import type { ActiveScreenType } from '../types/activeScreenType';
+import type { ApplicationDialog } from '../types/applicationDialogTypes';
 
 export default class AppStore extends Store {
   @observable error: ?LocalizableError = null;
@@ -21,9 +22,7 @@ export default class AppStore extends Store {
   @observable gpuStatus: ?GpuStatus = null;
   @observable numberOfEpochsConsolidated: number = 0;
   @observable previousRoute: string = ROUTES.ROOT;
-  @observable activeScreen: ActiveScreenType = {
-    current: null,
-  };
+  @observable activeDialog: ApplicationDialog = null;
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
@@ -68,33 +67,33 @@ export default class AppStore extends Store {
    * Handles screen switching/toggling specified by the screenType string identifier.
    */
   handleScreensToggle = (screenType: string) => {
-    let currentScreen = null;
+    let currentDialog: ApplicationDialog = null;
     switch (screenType) {
       case DIALOGS.ABOUT:
-        currentScreen = this.activeScreen.current === 'about' ? null : 'about';
+        currentDialog = this.activeDialog === APPLICATION_DIALOGS.ABOUT ? null : APPLICATION_DIALOGS.ABOUT;
         break;
       case DIALOGS.DAEDALUS_DIAGNOSTICS:
-        currentScreen =
-          this.activeScreen.current === 'daedalusDiagnostics'
+        currentDialog =
+          this.activeDialog === APPLICATION_DIALOGS.DAEDALUS_DIAGNOSTICS
             ? null
-            : 'daedalusDiagnostics';
+            : APPLICATION_DIALOGS.DAEDALUS_DIAGNOSTICS;
         break;
       case SCREENS.BLOCK_CONSOLIDATION:
-        currentScreen =
-          this.activeScreen.current === 'blockConsolidation'
+        currentDialog =
+          this.activeDialog === APPLICATION_DIALOGS.BLOCK_CONSOLIDATION
             ? null
-            : 'blockConsolidation';
+            : APPLICATION_DIALOGS.BLOCK_CONSOLIDATION;
         break;
       case SCREENS.ADA_REDEMPTION:
-        currentScreen =
-          this.activeScreen.current === 'adaRedemption'
+        currentDialog =
+          this.activeDialog === APPLICATION_DIALOGS.ADA_REDEMPTION
             ? null
-            : 'adaRedemption';
+            : APPLICATION_DIALOGS.ADA_REDEMPTION;
         this._toggleAdaRedemptionScreen();
         break;
       default:
     }
-    this._updateActiveScreen(currentScreen);
+    this._updateActiveDialog(currentDialog);
     return Promise.resolve();
   };
 
@@ -164,8 +163,8 @@ export default class AppStore extends Store {
     this.previousRoute = currentRoute || ROUTES.ROOT;
   };
 
-  @action _updateActiveScreen = (currentScreen: string | null) => {
-    this.activeScreen.current = currentScreen;
+  @action _updateActiveDialog = (currentDialog: ApplicationDialog) => {
+    this.activeDialog = currentDialog;
   };
 
   @action _toggleAdaRedemptionScreen = () => {
@@ -173,7 +172,7 @@ export default class AppStore extends Store {
     const { hasLoadedWallets } = this.stores.wallets;
     if (isConnected && isSynced && hasLoadedWallets && !this.isSetupPage) {
       const route =
-        this.activeScreen.current === 'adaRedemption'
+        this.activeDialog === APPLICATION_DIALOGS.ADA_REDEMPTION
           ? this.previousRoute
           : ROUTES.ADA_REDEMPTION;
       this._updateRouteLocation({ route });

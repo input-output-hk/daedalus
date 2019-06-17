@@ -9,13 +9,14 @@ import { Routes } from './Routes';
 import { daedalusTheme } from './themes/daedalus';
 import { themeOverrides } from './themes/overrides/index.js';
 import translations from './i18n/translations';
-import type { StoresMap } from './stores/index';
-import type { ActionsMap } from './actions/index';
 import ThemeManager from './ThemeManager';
 import AboutDialog from './containers/static/AboutDialog';
 import DaedalusDiagnosticsDialog from './containers/status/DaedalusDiagnosticsDialog';
 import BlockConsolidationStatusDialog from './containers/status/BlockConsolidationStatusDialog';
 import GenericNotificationContainer from './containers/notifications/GenericNotificationContainer';
+import type { StoresMap } from './stores/index';
+import type { ActionsMap } from './actions/index';
+import type { APPLICATION_DIALOGS } from './types/applicationDialogTypes';
 
 @observer
 export default class App extends Component<{
@@ -30,7 +31,7 @@ export default class App extends Component<{
   render() {
     const { stores, actions, history } = this.props;
     const { app } = stores;
-    const { activeScreen } = app;
+    const { activeDialog } = app;
     const locale = stores.profile.currentLocale;
     const mobxDevTools = global.environment.mobxDevTools ? <DevTools /> : null;
     const { currentTheme } = stores.profile;
@@ -46,11 +47,11 @@ export default class App extends Component<{
               <Fragment>
                 <Router history={history} routes={Routes} />
                 {mobxDevTools}
-                {activeScreen.current === 'daedalusDiagnostics' && (
+                {activeDialog === APPLICATION_DIALOGS.DAEDALUS_DIAGNOSTICS && (
                   <DaedalusDiagnosticsDialog />
                 )}
-                {activeScreen.current === 'about' && <AboutDialog />}
-                {activeScreen.current === 'blockConsolidation' && (
+                {activeDialog === APPLICATION_DIALOGS.ABOUT && <AboutDialog />}
+                {activeDialog === APPLICATION_DIALOGS.BLOCK_CONSOLIDATION && (
                   <BlockConsolidationStatusDialog />
                 )}
                 <GenericNotificationContainer />
