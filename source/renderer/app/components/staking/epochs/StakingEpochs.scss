@@ -79,14 +79,14 @@
     @extend %progressLabelText;
     color: #fff;
     transform: translateX(calc(-100% - 8px));
-    z-index: 1000;
+    z-index: 98;
   }
 
   .progressLabel {
     @extend %progressLabelText;
     color: var(--theme-staking-font-color-regular);
     right: 8px;
-    z-index: 500;
+    z-index: 97;
   }
 
   table {
