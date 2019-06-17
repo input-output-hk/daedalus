@@ -92,7 +92,6 @@ configSpec = do
   describe "Config file generation" $ do
     it "Generates something" $ do
       dhallTest Win64 Staging Launcher "./dhall" $ \val -> do
-        val^.key "reportServer"._String `shouldSatisfy` (T.isInfixOf "iohkdev.io")
         val^.key "configuration".key "key"._String `shouldBe` "mainnet_dryrun_wallet_win64"
   describe "installer config generation" $ do
     it "gets the right mainnet port" $ do
