@@ -41,11 +41,20 @@ type State = {
 };
 
 export default class StoryWrapper extends Component<Props, State> {
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
-    const themeName = this.params.get('themeName') || themeNames[0];
-    const localeName = this.params.get('localeName') || localeNames[0];
+    const themeNameSession = sessionStorage.getItem('themeName');
+    const localeNameSession = sessionStorage.getItem('localeName');
+
+    const themeName =
+      themeNameSession || this.params.get('themeName') || themeNames[0];
+    const localeName =
+      localeNameSession || this.params.get('localeName') || localeNames[0];
+
+    if (themeNameSession) this.updateQueryParam('themeName', themeNameSession);
+    if (localeNameSession)
+      this.updateQueryParam('localeName', localeNameSession);
 
     this.state = {
       themeName,
@@ -60,13 +69,21 @@ export default class StoryWrapper extends Component<Props, State> {
 
   setParam = (param: string, value: string) => {
     this.setState(set({}, param, value));
-    const { params } = this;
-    params.set(param, value);
-    const { location } = parent.window;
-    const newurl = `${location.protocol}//${location.host}${
-      location.pathname
-    }?${params.toString()}`;
-    parent.window.history.pushState({ path: newurl }, '', newurl);
+    sessionStorage.setItem(param, value);
+    this.updateQueryParam(param, value);
+  };
+
+  updateQueryParam = (param: string, value: string) => {
+    // this `setTimeout` is necessary, as it's not possible to control Storybook native links
+    setTimeout(() => {
+      const { params } = this;
+      params.set(param, value);
+      const { location } = parent.window;
+      const newurl = `${location.protocol}//${location.host}${
+        location.pathname
+      }?${params.toString()}`;
+      parent.window.history.pushState({ path: newurl }, '', newurl);
+    }, 500);
   };
 
   handleToggleVisibility = () =>
