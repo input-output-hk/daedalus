@@ -6,6 +6,7 @@ import { map } from 'lodash';
 import DelegationSetupWizardDialog from '../../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import type { InjectedContainerProps } from '../../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../../utils/formatters';
+import { MIN_DELEGATION_FUNDS } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
   learnMoreLinkUrl: {
@@ -41,8 +42,6 @@ type Props = InjectedContainerProps;
 type State = {
   activeStep: number,
 };
-
-const MIN_DELEGATION_FUNDS = 1;
 
 @inject('stores', 'actions')
 @observer

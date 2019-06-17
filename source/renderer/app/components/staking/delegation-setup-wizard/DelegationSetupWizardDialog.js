@@ -38,33 +38,38 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       minDelegationFunds,
     } = this.props;
 
-    let content = null;
     if (isDisabled) {
-      content = (
+      return (
         <DelegationStepsNotAvailableDialog
           minDelegationFunds={minDelegationFunds}
           onClose={onClose}
         />
       );
-    } else if (activeStep === 0) {
-      content = (
-        <DelegationStepsIntroDialog
-          onLearnMoreClick={onLearnMoreClick}
-          onClose={onClose}
-          onContinue={onContinue}
-        />
-      );
-    } else if (activeStep === 1) {
-      content = (
-        <DelegationStepsChooseWalletDialog
-          stepsList={stepsList}
-          wallets={wallets}
-          minDelegationFunds={minDelegationFunds}
-          onClose={onClose}
-          onContinue={onContinue}
-          onBack={onBack}
-        />
-      );
+    }
+
+    let content = null;
+    switch (activeStep) {
+      case 1:
+        content = (
+          <DelegationStepsChooseWalletDialog
+            stepsList={stepsList}
+            wallets={wallets}
+            minDelegationFunds={minDelegationFunds}
+            onClose={onClose}
+            onContinue={onContinue}
+            onBack={onBack}
+          />
+        );
+        break;
+      default:
+        content = (
+          <DelegationStepsIntroDialog
+            onLearnMoreClick={onLearnMoreClick}
+            onClose={onClose}
+            onContinue={onContinue}
+          />
+        );
+        break;
     }
 
     return content;
