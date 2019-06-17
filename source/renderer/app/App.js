@@ -30,7 +30,7 @@ export default class App extends Component<{
   render() {
     const { stores, actions, history } = this.props;
     const { app } = stores;
-    const { activeDialog } = app;
+    const { activeScreen } = app;
     const locale = stores.profile.currentLocale;
     const mobxDevTools = global.environment.mobxDevTools ? <DevTools /> : null;
     const { currentTheme } = stores.profile;
@@ -46,11 +46,11 @@ export default class App extends Component<{
               <Fragment>
                 <Router history={history} routes={Routes} />
                 {mobxDevTools}
-                {activeDialog === 'daedalusDiagnostics' && (
+                {activeScreen.current === 'daedalusDiagnostics' && (
                   <DaedalusDiagnosticsDialog />
                 )}
-                {activeDialog === 'about' && <AboutDialog />}
-                {activeDialog === 'blockConsolidation' && (
+                {activeScreen.current === 'about' && (<AboutDialog />)}
+                {activeScreen.current === 'blockConsolidation' && (
                   <BlockConsolidationStatusDialog
                     stores={stores}
                     actions={actions}

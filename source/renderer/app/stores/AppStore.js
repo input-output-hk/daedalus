@@ -13,6 +13,7 @@ import {
 import { getGPUStatusChannel } from '../ipc/get-gpu-status.ipc';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import type { GpuStatus } from '../types/gpuStatus';
+import type { ActiveScreenType } from '../types/activeScreenType';
 
 export default class AppStore extends Store {
   @observable error: ?LocalizableError = null;
@@ -20,7 +21,9 @@ export default class AppStore extends Store {
   @observable gpuStatus: ?GpuStatus = null;
   @observable numberOfEpochsConsolidated: number = 0;
   @observable previousRoute: string = ROUTES.ROOT;
-  @observable activeDialog: string = '';
+  @observable activeScreen: ActiveScreenType = {
+    current: null,
+  };
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
@@ -65,31 +68,31 @@ export default class AppStore extends Store {
    * Handles screen switching/toggling specified by the screenType string identifier.
    */
   handleScreensToggle = (screenType: string) => {
-    let currentDialog = '';
+    let currentScreen = null;
     switch (screenType) {
       case DIALOGS.ABOUT:
-        currentDialog = this.activeDialog === 'about' ? '' : 'about';
+        currentScreen = this.activeScreen.current === 'about' ? null : 'about';
         break;
       case DIALOGS.DAEDALUS_DIAGNOSTICS:
-        currentDialog =
-          this.activeDialog === 'daedalusDiagnostics'
-            ? ''
+        currentScreen =
+          this.activeScreen.current === 'daedalusDiagnostics'
+            ? null
             : 'daedalusDiagnostics';
         break;
       case SCREENS.BLOCK_CONSOLIDATION:
-        currentDialog =
-          this.activeDialog === 'blockConsolidation'
-            ? ''
+        currentScreen =
+          this.activeScreen.current === 'blockConsolidation'
+            ? null
             : 'blockConsolidation';
         break;
       case SCREENS.ADA_REDEMPTION:
-        currentDialog =
-          this.activeDialog === 'adaRedemption' ? '' : 'adaRedemption';
+        currentScreen =
+          this.activeScreen.current === 'adaRedemption' ? null : 'adaRedemption';
         this._toggleAdaRedemptionScreen();
         break;
       default:
     }
-    this._updateActiveDialog(currentDialog);
+    this._updateActiveScreen(currentScreen);
     return Promise.resolve();
   };
 
@@ -159,8 +162,8 @@ export default class AppStore extends Store {
     this.previousRoute = currentRoute || ROUTES.ROOT;
   };
 
-  @action _updateActiveDialog = (currentDialog: string) => {
-    this.activeDialog = currentDialog;
+  @action _updateActiveScreen = (currentScreen: string | null) => {
+    this.activeScreen.current = currentScreen;
   };
 
   @action _toggleAdaRedemptionScreen = () => {
@@ -168,7 +171,7 @@ export default class AppStore extends Store {
     const { hasLoadedWallets } = this.stores.wallets;
     if (isConnected && isSynced && hasLoadedWallets && !this.isSetupPage) {
       const route =
-        this.activeDialog === 'adaRedemption'
+        this.activeScreen.current === 'adaRedemption'
           ? this.previousRoute
           : ROUTES.ADA_REDEMPTION;
       this._updateRouteLocation({ route });
