@@ -70,7 +70,10 @@ export default class AppStore extends Store {
     let currentDialog: ApplicationDialog = null;
     switch (screenType) {
       case DIALOGS.ABOUT:
-        currentDialog = this.activeDialog === APPLICATION_DIALOGS.ABOUT ? null : APPLICATION_DIALOGS.ABOUT;
+        currentDialog =
+          this.activeDialog === APPLICATION_DIALOGS.ABOUT
+            ? null
+            : APPLICATION_DIALOGS.ABOUT;
         break;
       case DIALOGS.DAEDALUS_DIAGNOSTICS:
         currentDialog =
@@ -131,10 +134,6 @@ export default class AppStore extends Store {
     }
     return Promise.resolve();
   };
-
-  @computed get isBlockConsolidationStatusDialog(): boolean {
-    return this.currentRoute === ROUTES.BLOCK_CONSOLIDATION_STATUS;
-  }
 
   @computed get isSetupPage(): boolean {
     return (
