@@ -36,6 +36,7 @@ type Props = {
 
 type State = {
   selectedEpoch: string,
+  duration: string,
 };
 
 const { CURRENT_EPOCH, PREVIOUS_EPOCH } = SELECTED_EPOCH_OPTIONS;
@@ -54,7 +55,17 @@ export default class StakingEpochs extends Component<Props, State> {
     super();
     this.state = {
       selectedEpoch: CURRENT_EPOCH,
+      duration: '',
     };
+  }
+
+  componentDidMount() {
+    const { intl } = this.context;
+    const { currentEpochEndDateTime } = this.props;
+
+    this.setState({
+      duration: humanizeDurationToShort(intl.locale, currentEpochEndDateTime),
+    });
   }
 
   onSelectedEpochChange = (selectedEpoch: string) =>
@@ -64,13 +75,12 @@ export default class StakingEpochs extends Component<Props, State> {
     const {
       currentEpochName,
       currentEpochData,
-      currentEpochEndDateTime,
       currentEpochProgress,
       previousEpochName,
       previousEpochData,
       isLoading,
     } = this.props;
-    const { selectedEpoch } = this.state;
+    const { selectedEpoch, duration } = this.state;
     const { intl } = this.context;
     const epochSelectOptions = [
       {
@@ -91,11 +101,6 @@ export default class StakingEpochs extends Component<Props, State> {
       return null;
     }
 
-    const duration = humanizeDurationToShort(
-      intl.locale,
-      currentEpochEndDateTime
-    );
-
     return (
       <div className={styles.component}>
         <BorderedBox>
@@ -106,6 +111,9 @@ export default class StakingEpochs extends Component<Props, State> {
               value={selectedEpoch}
               onChange={this.onSelectedEpochChange}
               skin={SelectSkin}
+              selectionRenderer={option => (
+                <div className={styles.customSelectValue}>{option.label}</div>
+              )}
             />
           </div>
           {selectedEpoch === CURRENT_EPOCH && (

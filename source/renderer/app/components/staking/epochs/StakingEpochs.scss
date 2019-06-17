@@ -18,23 +18,22 @@
   }
 
   .epochSelector {
-    width: 280px;
-
     input {
       border: 0;
-      font-family: var(--font-medium);
-      font-size: 19px;
-      line-height: 1.37;
-      padding-left: 0;
-      padding-right: 0;
-      padding-top: 0;
     }
-
     :global {
       .SimpleOptions_options {
-        top: 220px !important;
+        top: 230px !important;
       }
     }
+  }
+
+  .customSelectValue {
+    color: var(--rp-select-input-text-color, #5e6066);
+    font-family: var(--font-medium);
+    font-size: 19px;
+    margin-right: 25px;
+    padding: var(--rp-select-input-padding, 14px 20px);
   }
 
   .noResultsLabel {
