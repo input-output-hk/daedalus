@@ -49,7 +49,7 @@ export default class App extends Component<{
                 {activeScreen.current === 'daedalusDiagnostics' && (
                   <DaedalusDiagnosticsDialog />
                 )}
-                {activeScreen.current === 'about' && (<AboutDialog />)}
+                {activeScreen.current === 'about' && <AboutDialog />}
                 {activeScreen.current === 'blockConsolidation' && (
                   <BlockConsolidationStatusDialog
                     stores={stores}

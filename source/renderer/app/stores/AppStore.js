@@ -87,7 +87,9 @@ export default class AppStore extends Store {
         break;
       case SCREENS.ADA_REDEMPTION:
         currentScreen =
-          this.activeScreen.current === 'adaRedemption' ? null : 'adaRedemption';
+          this.activeScreen.current === 'adaRedemption'
+            ? null
+            : 'adaRedemption';
         this._toggleAdaRedemptionScreen();
         break;
       default:

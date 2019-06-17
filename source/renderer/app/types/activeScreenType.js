@@ -1,4 +1,4 @@
 // @flow
 export type ActiveScreenType = {
-  current: string | null;
+  current: string | null,
 };
