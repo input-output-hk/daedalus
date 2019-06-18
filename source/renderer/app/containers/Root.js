@@ -21,7 +21,7 @@ export default class Root extends Component<Props> {
       app,
       staking,
     } = stores;
-    const { isActiveDialog } = app;
+    const { isActiveDialog, _closeActiveDialog } = app;
     const { isStakingPage } = staking;
     const { isProfilePage, isSettingsPage } = profile;
     const { isAdaRedemptionPage } = adaRedemption;
@@ -47,7 +47,7 @@ export default class Root extends Component<Props> {
 
     // Just render any page that doesn't require wallets to be loaded or node to be connected
     if (
-      (isPageThatDoesntNeedWallets && !isNodeInStoppingSequence) ||
+      (isPageThatDoesntNeedWallets && !isNodeInStoppingSequence && isSynced) ||
       (isProfilePage && (isNotEnoughDiskSpace || !isNodeInStoppingSequence))
     ) {
       return React.Children.only(children);
@@ -57,8 +57,11 @@ export default class Root extends Component<Props> {
       !isSynced ||
       !hasLoadedWallets ||
       !isSystemTimeCorrect ||
-      isNotEnoughDiskSpace
+      isNotEnoughDiskSpace ||
+      isNodeInStoppingSequence &&
+      !isActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS)
     ) {
+      _closeActiveDialog();
       return <LoadingPage stores={stores} actions={actions} />;
     }
 
