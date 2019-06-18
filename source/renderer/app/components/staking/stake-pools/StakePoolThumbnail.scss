@@ -2,7 +2,6 @@
   background-color: var(--theme-staking-stake-pool-background-color);
   border: solid 1px var(--theme-staking-stake-pool-border-color);
   border-radius: 4px;
-  box-sizing: unset;
   display: flex;
   height: 71px;
   justify-content: center;
@@ -50,7 +49,7 @@
 .clockIcon {
   display: block;
   line-height: 0;
-  margin: 0;
+  margin: 1px 0 0;
   padding: 0;
   text-align: center;
 

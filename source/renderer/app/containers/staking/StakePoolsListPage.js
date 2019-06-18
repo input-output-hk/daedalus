@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import StakePoolsList from '../../components/staking/stake-pools/StakePoolsList';
+import StakePools from '../../components/staking/stake-pools/StakePools';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
@@ -16,7 +16,7 @@ export default class StakePoolsListPage extends Component<Props> {
     const { currentTheme } = profile;
     const { stakePools, delegatingStakePools } = staking;
     return (
-      <StakePoolsList
+      <StakePools
         stakePoolsList={stakePools}
         stakePoolsDelegatingList={delegatingStakePools}
         onOpenExternalLink={app.openExternalLink}

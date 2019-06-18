@@ -323,6 +323,16 @@ const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-loading-status-icons-tooltip-color': '#062148',
     '--theme-loading-spinner-color': '#5e6066',
   },
+  manualUpdate: {
+    '--theme-manual-update-overlay-background-color': 'rgba(36, 62, 98, 0.96)',
+    '--theme-manual-update-overlay-button-background-color': '#243e62',
+    '--theme-manual-update-overlay-button-background-color-hover': '#fafbfc',
+    '--theme-manual-update-overlay-button-border-color': '#fafbfc',
+    '--theme-manual-update-overlay-button-text-color-hover': '#243e62',
+    '--theme-manual-update-overlay-text-color': 'rgba(250, 251, 252, 0.7)',
+    '--theme-manual-update-overlay-text-highlight-color': '#fafbfc',
+    '--theme-manual-update-overlay-title-text-color': '#fafbfc',
+  },
   mnemonic: {
     '--theme-mnemonic-background-color': '#e6e9ee',
     '--theme-mnemonic-background-color-hover': '#eaecf1',
@@ -476,8 +486,8 @@ const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-staking-stake-pool-tooltip-link-color': '#296fd0',
     '--theme-staking-stake-pool-tooltip-table-title-color': '#5e6066',
     '--theme-staking-stake-pool-tooltip-table-param-color': '#5e6066',
-    '--theme-staking-stake-pool-tooltip-table-param-retirement-background-color':
-      'rgba(234, 76, 91, 0.3)',
+    '--theme-staking-stake-pool-tooltip-retirement-text-color': '#fafbfc',
+    '--theme-staking-stake-pool-tooltip-retirement-background-color': '#ea4c5b',
     '--theme-staking-stake-pool-tooltip-delegate-button-background-color':
       '#2f496e',
     '--theme-staking-stake-pool-tooltip-delegate-button-hover-background-color':

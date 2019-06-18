@@ -24,6 +24,7 @@ Changelog
 
 ### Fixes
 
+- Added fine adjustments to the Stake Pools screen. ([PR 1420](https://github.com/input-output-hk/daedalus/pull/1420))
 - Fixed the Block consolidation status screen not fully shown in minimized mode when the Japanese language is selected ([PR 1416](https://github.com/input-output-hk/daedalus/pull/1416))
 - Fixed "marked" dependency vulnerability warning ([PR 1414](https://github.com/input-output-hk/daedalus/pull/1414)
 - Fixed addresses not visible on Receive screen when Password is set for the wallet in minimized mode ([PR 1407](https://github.com/input-output-hk/daedalus/pull/1407))
@@ -37,6 +38,7 @@ Changelog
 
 ### Chores
 
+- Remove legacy references to report server ([PR 1425](https://github.com/input-output-hk/daedalus/pull/1425))
 - Renamed Network Status to Daedalus Diagnostics ([PR 1408](https://github.com/input-output-hk/daedalus/pull/1408))
 - Updated React-Polymorph to version 0.8.6 ([PR 1396](https://github.com/input-output-hk/daedalus/pull/1396))
 - Added "createTheme" utility function for rapidly generating new themes for the UI ([PR 1371](https://github.com/input-output-hk/daedalus/pull/1371))
@@ -55,6 +57,12 @@ Changelog
 - Improved the internal IPC communication ([PR 1332](https://github.com/input-output-hk/daedalus/pull/1332), [PR 1368](https://github.com/input-output-hk/daedalus/pull/1368))
 - Improved Webpack 4 build performance ([PR 1320](https://github.com/input-output-hk/daedalus/pull/1320))
 - Improved error messages for connecting screen ([PR 1344](https://github.com/input-output-hk/daedalus/pull/1344))
+
+## 0.13.2
+
+### Fixes
+
+- Implemented alternative update path for manual updates ([PR 1410](https://github.com/input-output-hk/daedalus/pull/1410), [PR 1423](https://github.com/input-output-hk/daedalus/pull/1423))
 
 ## 0.13.1
 

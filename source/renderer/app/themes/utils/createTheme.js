@@ -637,7 +637,8 @@ const createDaedalusComponentsTheme = (
       }`,
       '--theme-staking-stake-pool-tooltip-table-title-color': `${text.primary}`,
       '--theme-staking-stake-pool-tooltip-table-param-color': `${text.primary}`,
-      '--theme-staking-stake-pool-tooltip-table-param-retirement-background-color': `${chroma(
+      '--theme-staking-stake-pool-tooltip-retirement-text-color': '#fafbfc',
+      '--theme-staking-stake-pool-tooltip-retirement-background-color': `${chroma(
         error.regular
       ).alpha(0.3)}`,
       '--theme-staking-stake-pool-tooltip-delegate-button-background-color': `${
