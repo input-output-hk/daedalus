@@ -25,6 +25,14 @@
       .SimpleOptions_options {
         top: 230px !important;
       }
+
+      .SimpleOptions_options.SimpleOptions_firstOptionHighlighted:not(.SimpleOptions_openUpward)
+        [data-bubble-arrow]:after {
+        border-bottom-color: var(
+          --rp-bubble-arrow-bg-color,
+          #fafbfc
+        ) !important;
+      }
     }
   }
 

@@ -22,6 +22,7 @@ const rpBubble = {
   '--rp-bubble-bg-color': '#fafbfc',
   '--rp-bubble-border-color': 'rgba(32, 34, 37, 0.07)',
   '--rp-bubble-border-radius': '2px',
+  '--rp-bubble-arrow-bg-color': 'rgba(236, 237, 239, 1)',
 };
 
 // BUTTON
