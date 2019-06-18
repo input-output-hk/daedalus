@@ -44,6 +44,15 @@ export default class StoryWrapper extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
+    /**
+     *
+     * themeNameSession and localeNameSession:
+     *
+     * the sessionStorage variables are necessary
+     * because it's impossible to change the Storybook sidebar links behaviour
+     * so when click a sidebar link, the sessionStorage variable will take advantage
+     *
+     */
     const themeNameSession = sessionStorage.getItem('themeName');
     const localeNameSession = sessionStorage.getItem('localeName');
 
