@@ -11,7 +11,12 @@ import {
   TESTNET_LATEST_VERSION_INFO_URL,
 } from '../config/urlsConfig';
 import serialize from './serialize';
-import { MAINNET, STAGING, TESTNET } from '../../../common/types/environment.types';
+import {
+  MAINNET,
+  STAGING,
+  TESTNET,
+  DEVELOPMENT,
+} from '../../../common/types/environment.types';
 import {
   START_TIME_MAINNET,
   START_TIME_STAGING,
@@ -37,13 +42,26 @@ const {
   isMainnet, isStaging, isTestnet,
 } = global.environment;
 
-export const getNetworkExplorerUrl = (network: string): string => {
+export const getNetworkExplorerUri = (network: string): string => {
   // sets default to mainnet in case env.NETWORK is undefined
   let explorerUrl = MAINNET_EXPLORER_URL;
-  if (network === MAINNET) { explorerUrl = MAINNET_EXPLORER_URL; }
-  if (network === STAGING) { explorerUrl = STAGING_EXPLORER_URL; }
-  if (network === TESTNET) { explorerUrl = TESTNET_EXPLORER_URL; }
+  if (network === MAINNET) {
+    explorerUrl = MAINNET_EXPLORER_URL;
+  }
+  if (network === STAGING) {
+    explorerUrl = STAGING_EXPLORER_URL;
+  }
+  if (network === TESTNET) {
+    explorerUrl = TESTNET_EXPLORER_URL;
+  }
   return explorerUrl; // sets default to mainnet incase env.NETWORK is undefined
+};
+
+export const getNetworkExplorerUrl = (network: string): string => {
+  const protocol =
+    network === MAINNET || network === DEVELOPMENT ? 'https://' : 'http://';
+  const uri = getNetworkExplorerUri(network);
+  return `${protocol}${uri}`;
 };
 
 export const getNetworkEkgUrl = (env: {
@@ -112,7 +130,7 @@ export const getSupportUrl = async (baseUrl: string, locale: string) => {
   return `${baseUrl}?${serialize(info)}`;
 };
 
-export const getLatesVersionInfoUrl = (network: string): string => {
+export const getLatestVersionInfoUrl = (network: string): string => {
   // sets default to mainnet in case env.NETWORK is undefined
   let latestVersionInfoUrl = MAINNET_LATEST_VERSION_INFO_URL;
   if (network === MAINNET) { latestVersionInfoUrl = MAINNET_LATEST_VERSION_INFO_URL; }

@@ -125,6 +125,7 @@ type Props = {
   currentAppVersion: string,
   isNewAppVersionAvailable: boolean,
   isNewAppVersionLoading: boolean,
+  isNewAppVersionLoaded: boolean,
   onExternalLinkClick: Function,
   onReportIssueClick: Function,
   onCheckTheTimeAgain: Function,
@@ -159,8 +160,12 @@ export default class Loading extends Component<Props, State> {
   componentDidUpdate() {
     const { syncingTime, connectingTime } = this.state;
     const {
-      isConnected, isSynced, isNotEnoughDiskSpace,
-      onGetAvailableVersions, isNewAppVersionLoading, availableAppVersion,
+      isConnected,
+      isSynced,
+      isNotEnoughDiskSpace,
+      onGetAvailableVersions,
+      isNewAppVersionLoading,
+      isNewAppVersionLoaded,
     } = this.props;
     const canResetSyncing = this._syncingTimerShouldStop(isSynced, isNotEnoughDiskSpace);
     const canResetConnecting = this._connectingTimerShouldStop(isConnected, isNotEnoughDiskSpace);
@@ -172,7 +177,11 @@ export default class Loading extends Component<Props, State> {
       (isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER)
     );
     // If app loading is stuck, check if a newer version is available and set flag (state)
-    if (isAppLoadingStuck && !isNewAppVersionLoading && !availableAppVersion) {
+    if (
+      isAppLoadingStuck &&
+      !isNewAppVersionLoaded &&
+      !isNewAppVersionLoading
+    ) {
       onGetAvailableVersions();
     }
   }
@@ -366,6 +375,8 @@ export default class Loading extends Component<Props, State> {
       apiIcon,
       isConnected,
       isSynced,
+      isNodeStopping,
+      isNodeStopped,
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
       onReportIssueClick,
@@ -373,7 +384,7 @@ export default class Loading extends Component<Props, State> {
       isNewAppVersionAvailable,
       currentAppVersion,
       availableAppVersion,
-      isNewAppVersionLoading,
+      isNewAppVersionLoaded,
       onExternalLinkClick,
     } = this.props;
 
@@ -416,10 +427,10 @@ export default class Loading extends Component<Props, State> {
       isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER
     );
 
-    const showReportIssue = (
-      !isNewAppVersionAvailable && !isNewAppVersionLoading &&
-      (canReportConnectingIssue || canReportSyncingIssue)
-    );
+    const showReportIssue =
+      isNewAppVersionLoaded &&
+      !isNewAppVersionAvailable &&
+      (canReportConnectingIssue || canReportSyncingIssue);
 
     const buttonClasses = classNames([
       'primary',
@@ -462,7 +473,7 @@ export default class Loading extends Component<Props, State> {
           <SVGInline svg={apiLoadingLogo} className={apiLogoStyles} />
         </div>
         {hasLoadedCurrentLocale ? this._renderLoadingScreen() : null}
-        {isNewAppVersionAvailable && (
+        {isNewAppVersionAvailable && !isNodeStopping && !isNodeStopped && (
           <ManualUpdateOverlay
             currentAppVersion={currentAppVersion}
             availableAppVersion={availableAppVersion}
