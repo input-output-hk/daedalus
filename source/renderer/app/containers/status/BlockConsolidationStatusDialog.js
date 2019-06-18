@@ -2,13 +2,22 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
-import type { InjectedProps } from '../../types/injectedPropsType';
 import BlockConsolidationStatus from '../../components/status/BlockConsolidationStatus';
 import styles from './BlockConsolidationStatusDialog.scss';
+import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
+
+type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
 @observer
-export default class BlockConsolidationStatusDialog extends Component<InjectedProps> {
+export default class BlockConsolidationStatusDialog extends Component<Props> {
+  static defaultProps = {
+    actions: null,
+    stores: null,
+    children: null,
+    onClose: () => {},
+  };
+
   componentWillMount() {
     this.props.actions.blockConsolidation.startBlockConsolidationDataPolling.trigger();
   }
@@ -18,7 +27,7 @@ export default class BlockConsolidationStatusDialog extends Component<InjectedPr
   }
 
   handleClose = () => {
-    this.props.actions.app.toggleBlockConsolidationStatusScreen.trigger();
+    this.props.actions.app.closeBlockConsolidationStatusDialog.trigger();
   };
 
   render() {

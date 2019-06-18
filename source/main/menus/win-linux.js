@@ -26,27 +26,27 @@ export const winLinuxMenu = (
       {
         label: translation('daedalus.about'),
         click() {
-          actions.openAbout();
+          actions.openAboutDialog();
         },
       },
       {
         label: translation('daedalus.adaRedemption'),
         click() {
-          actions.goToAdaRedemption();
+          actions.openAdaRedemptionScreen();
         },
       },
       {
         label: translation('daedalus.blockConsolidationStatus'),
         accelerator: 'Ctrl+B',
         click() {
-          actions.goBlockConsolidationStatus();
+          actions.openBlockConsolidationStatusDialog();
         },
       },
       {
         label: translation('daedalus.daedalusDiagnostics'),
         accelerator: 'Ctrl+D',
         click() {
-          actions.openDaedalusDiagnostics();
+          actions.openDaedalusDiagnosticsDialog();
         },
       },
       {
