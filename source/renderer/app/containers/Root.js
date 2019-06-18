@@ -58,8 +58,8 @@ export default class Root extends Component<Props> {
       !hasLoadedWallets ||
       !isSystemTimeCorrect ||
       isNotEnoughDiskSpace ||
-      isNodeInStoppingSequence &&
-      !isActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS)
+      (isNodeInStoppingSequence &&
+        !isActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS))
     ) {
       _closeActiveDialog();
       return <LoadingPage stores={stores} actions={actions} />;
