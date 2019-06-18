@@ -22,6 +22,9 @@ import './AdaRedemptionDialog.stories';
 // Settings
 import './LanguageSelectionForm.stories';
 
+// Loading
+import './Loading.stories';
+
 // Navigation
 import './Sidebar.stories';
 import './SidebarCategory.stories';
