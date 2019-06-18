@@ -44,12 +44,12 @@
       margin-top: 20px;
       &.error {
         input {
-          border-color: #ea4c5b;
+          border-color: var(--theme-color-error);
         }
         :global {
           .SimpleSelect_selectInput {
             &:after {
-              background-color: #ea4c5b;
+              background-color: var(--theme-color-error);
             }
           }
         }
