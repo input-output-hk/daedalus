@@ -57,7 +57,7 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
         0.3
       )}`,
     },
-    rpError: {
+    rpColors: {
       '--rp-theme-color-error': `${error.regular}`,
     },
     rpFonts: {
@@ -124,7 +124,7 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
       '--rp-switch-root-margin': '0 0 30px 0',
       '--rp-switch-thumb-bg-color': `${text.secondary}`,
     },
-    rpTextarea: {
+    rpTextArea: {
       '--rp-textarea-bg-color': `${background.primary.regular}`,
       '--rp-textarea-bg-color-disabled': `${chroma(
         background.primary.regular
@@ -426,6 +426,27 @@ const createDaedalusComponentsTheme = (
       '--theme-loading-status-icons-unloaded-syncing-color': `${text.primary}`,
       '--theme-loading-status-icons-tooltip-color': `${text.primary}`,
       '--theme-loading-spinner-color': `${text.primary}`,
+    },
+    manualUpdate: {
+      '--theme-manual-update-overlay-background-color': `${chroma(
+        background.secondary.regular
+      ).alpha(0.96)}`,
+      '--theme-manual-update-overlay-button-background-color':
+        'rgba(0, 0, 0, 0.1)',
+      '--theme-manual-update-overlay-button-background-color-hover': `${
+        background.primary.lightest
+      }`,
+      '--theme-manual-update-overlay-button-border-color': `${
+        background.primary.lightest
+      }`,
+      '--theme-manual-update-overlay-button-text-color-hover': `${
+        background.secondary.regular
+      }`,
+      '--theme-manual-update-overlay-text-color': `${chroma(
+        text.secondary
+      ).alpha(0.7)}`,
+      '--theme-manual-update-overlay-text-highlight-color': `${text.secondary}`,
+      '--theme-manual-update-overlay-title-text-color': `${text.secondary}`,
     },
     mnemonic: {
       '--theme-mnemonic-background-color': `${background.primary.regular}`,
