@@ -1,14 +1,6 @@
 // @flow
 export type ApplicationDialog =
-  | 'about'
-  | 'adaRedemption'
-  | 'blockConsolidation'
-  | 'daedalusDiagnostics'
+  | 'ABOUT_DIALOG'
+  | 'BLOCK_CONSOLIDATION_DIALOG'
+  | 'DAEDALUS_DIAGNOSTICS_DIALOG'
   | null;
-
-export const APPLICATION_DIALOGS = {
-  ABOUT: 'about',
-  ADA_REDEMPTION: 'adaRedemption',
-  BLOCK_CONSOLIDATION: 'blockConsolidation',
-  DAEDALUS_DIAGNOSTICS: 'daedalusDiagnostics',
-};

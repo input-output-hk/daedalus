@@ -27,7 +27,7 @@ export default class BlockConsolidationStatusDialog extends Component<Props> {
   }
 
   handleClose = () => {
-    this.props.actions.app.toggleBlockConsolidationStatusScreen.trigger();
+    this.props.actions.app.closeBlockConsolidationStatusDialog.trigger();
   };
 
   render() {
