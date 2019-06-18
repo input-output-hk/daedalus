@@ -6,6 +6,7 @@ import {
   FormattedHTMLMessage,
   FormattedMessage,
 } from 'react-intl';
+import classNames from 'classnames';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
@@ -126,6 +127,11 @@ export default class DelegationStepsChooseWalletDialog extends Component<
       },
     ];
 
+    const walletSelectClasses = classNames([
+        styles.walletSelect,
+        walletChoiceError ? styles.error : null,
+      ]);
+
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -162,7 +168,7 @@ export default class DelegationStepsChooseWalletDialog extends Component<
             />
           </p>
           <Select
-            className={styles.walletSelect}
+            className={walletSelectClasses}
             label={intl.formatMessage(messages.selectWalletInputLabel)}
             options={wallets}
             optionRenderer={option => {

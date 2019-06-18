@@ -42,6 +42,18 @@
 
     .walletSelect {
       margin-top: 20px;
+      &.error {
+        input {
+          border-color: #ea4c5b;
+        }
+        :global {
+          .SimpleSelect_selectInput {
+            &:after {
+              background-color: #ea4c5b;
+            }
+          }
+        }
+      }
     }
 
     .errorMessage {
@@ -78,7 +90,7 @@
     .customValueStyle {
       color: var(--theme-delegation-steps-choose-wallet-custom-value-color);
       height: 100%;
-      padding: 7px 20px 0;
+      padding: 8px 20px 0;
 
       .label {
         font-size: 14px;

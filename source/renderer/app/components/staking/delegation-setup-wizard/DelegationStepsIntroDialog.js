@@ -145,9 +145,9 @@ export default class DelegationStepsIntroDialog extends Component<Props> {
                   <span>4. </span>
                   {intl.formatMessage(messages.stepsExplanationLabel4)}{' '}
                   <span className={styles.optionalLabel}>
-                    {`"${intl.formatMessage(
+                    {intl.formatMessage(
                       messages.stepsExplanationOptionalLabel
-                    )}"`}
+                    )}
                   </span>
                 </p>
               </li>

@@ -48,7 +48,6 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
     }
 
     let content = null;
-
     switch (activeStep) {
       case 1:
         content = (
