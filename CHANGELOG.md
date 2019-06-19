@@ -24,6 +24,7 @@ Changelog
 
 ### Fixes
 
+- Improved Stake pool tooltip positioning ([PR 1429](https://github.com/input-output-hk/daedalus/pull/1429))
 - Added fine adjustments to the Stake Pools screen. ([PR 1420](https://github.com/input-output-hk/daedalus/pull/1420))
 - Fixed the Block consolidation status screen not fully shown in minimized mode when the Japanese language is selected ([PR 1416](https://github.com/input-output-hk/daedalus/pull/1416))
 - Fixed "marked" dependency vulnerability warning ([PR 1414](https://github.com/input-output-hk/daedalus/pull/1414)
