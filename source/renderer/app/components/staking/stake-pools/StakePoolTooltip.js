@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import classnames from 'classnames';
+import { set } from 'lodash';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
@@ -51,8 +52,8 @@ type Props = {
   index: number,
   isVisible: boolean,
   currentTheme: string,
-  flipHorizontal: boolean,
-  flipVertical: boolean,
+  positionX: 'left' | 'leftMiddle' | 'rightMiddle' | 'right',
+  positionY: 'top' | 'bottom',
   onClick: Function,
   onOpenExternalLink: Function,
 };
@@ -93,6 +94,14 @@ export default class StakePoolTooltip extends Component<Props> {
     this.tooltipClick = true;
   };
 
+  getArrowActiveBorder = (index: number, positionY: string) => {
+    if (positionY !== 'topMiddle') return {};
+    return {
+      borderBottomColor: getColorFromRange(index),
+      borderTopColor: 'transparent',
+    };
+  };
+
   render() {
     const { intl } = this.context;
     const {
@@ -100,11 +109,14 @@ export default class StakePoolTooltip extends Component<Props> {
       isVisible,
       index,
       currentTheme,
-      flipHorizontal,
-      flipVertical,
       onClick,
       onOpenExternalLink,
+      positionX,
     } = this.props;
+
+    let { positionY } = this.props;
+
+    if (positionX.indexOf('Middle') > -1) positionY += 'Middle';
 
     const {
       id,
@@ -121,9 +133,15 @@ export default class StakePoolTooltip extends Component<Props> {
     const componentClassnames = classnames([
       styles.component,
       isVisible ? styles.isVisible : null,
-      flipHorizontal ? styles.flipHorizontal : null,
-      flipVertical ? styles.flipVertical : null,
     ]);
+
+    const arrowClassnames = classnames([
+      styles.arrow,
+      styles[`positionY${positionY}`],
+      styles[`positionX${positionX}`],
+    ]);
+
+    const arrowStyle = this.getArrowActiveBorder(index, positionY);
 
     const darken = currentTheme === 'dark-blue' ? 1 : 0;
     const alpha = 0.3;
@@ -145,6 +163,7 @@ export default class StakePoolTooltip extends Component<Props> {
             background: getColorFromRange(index),
           }}
         />
+        <div className={arrowClassnames} style={arrowStyle} />
         <div className={styles.container}>
           <h3 className={styles.name}>{name}</h3>
           <button className={styles.closeButton} onClick={onClick}>

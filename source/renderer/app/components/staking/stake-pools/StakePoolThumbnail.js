@@ -14,8 +14,8 @@ type Props = {
   index: number,
   isSelected: boolean,
   currentTheme: string,
-  flipHorizontal: boolean,
-  flipVertical: boolean,
+  positionX: string,
+  positionY: string,
   onOpenExternalLink: Function,
   onClick: Function,
   onClose: Function,
@@ -27,8 +27,8 @@ export const StakePoolThumbnail = observer((props: Props) => {
     index,
     isSelected,
     currentTheme,
-    flipHorizontal,
-    flipVertical,
+    positionX,
+    positionY,
     onClick,
     onClose,
     onOpenExternalLink,
@@ -70,8 +70,8 @@ export const StakePoolThumbnail = observer((props: Props) => {
           isVisible
           onClick={onClose}
           currentTheme={currentTheme}
-          flipHorizontal={flipHorizontal}
-          flipVertical={flipVertical}
+          positionX={positionX}
+          positionY={positionY}
           onOpenExternalLink={onOpenExternalLink}
         />
       )}

@@ -3,6 +3,7 @@ import React from 'react';
 import { number, radios } from '@storybook/addon-knobs';
 
 import StakePools from '../../source/renderer/app/components/staking/stake-pools/StakePools';
+import StakePoolTooltip from '../../source/renderer/app/components/staking/stake-pools/StakePoolTooltip';
 import STAKE_POOLS from '../../source/renderer/app/config/stakingStakePools.dummy.json';
 
 const themes = {
@@ -31,4 +32,36 @@ export const StakePoolsStory = () => (
     onOpenExternalLink={() => {}}
     currentTheme={radios('Theme (Only for tooltip colors)', themes)}
   />
+);
+
+const positionXOptions = {
+  left: 'left',
+  leftMiddle: 'leftMiddle',
+  rightMiddle: 'rightMiddle',
+  right: 'right',
+};
+
+const positionYOptions = {
+  top: 'top',
+  bottom: 'bottom',
+};
+
+export const StakePoolTooltipStory = () => (
+  <div
+    style={{
+      margin: 50,
+      position: 'relative',
+    }}
+  >
+    <StakePoolTooltip
+      stakePool={STAKE_POOLS[1]}
+      index={0}
+      isVisible
+      currentTheme={radios('Theme (Only for params colors)', themes)}
+      positionX={radios('positionX', positionXOptions, 'left')}
+      positionY={radios('positionY', positionYOptions, 'top')}
+      onClick={() => {}}
+      onOpenExternalLink={() => {}}
+    />
+  </div>
 );

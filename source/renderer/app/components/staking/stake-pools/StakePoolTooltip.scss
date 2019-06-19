@@ -16,69 +16,6 @@
   width: 240px;
   z-index: 1;
 
-  &:before,
-  &:after {
-    border-color: transparent;
-    border-style: solid;
-    content: '';
-    display: block;
-    height: 0;
-    position: absolute;
-    width: 0;
-  }
-
-  /* triangle bg color */
-  &:after {
-    border-right-color: var(
-      --theme-staking-stake-pool-tooltip-background-color
-    );
-    border-width: 10px;
-    left: -20px;
-    top: 24px;
-  }
-
-  /* triangle border */
-  &:before {
-    border-right-color: var(--theme-staking-stake-pool-tooltip-border-color);
-    border-width: 11px;
-    left: -22px;
-    top: 23px;
-  }
-
-  &.flipHorizontal {
-    left: auto;
-    right: 45px;
-
-    &:after {
-      border-right-color: transparent;
-      border-left-color: var(
-        --theme-staking-stake-pool-tooltip-background-color
-      );
-      left: auto;
-      right: -20px;
-    }
-    &:before {
-      border-right-color: transparent;
-      border-left-color: var(--theme-staking-stake-pool-tooltip-border-color);
-      left: auto;
-      right: -22px;
-    }
-  }
-
-  &.flipVertical {
-    top: auto;
-    bottom: -21px;
-
-    &:after {
-      top: auto;
-      bottom: 21px;
-    }
-    &:before {
-      top: auto;
-      bottom: 20px;
-    }
-  }
-
   :global {
     button.SimpleButton_root {
       background-color: var(
@@ -127,6 +64,89 @@
   left: 0;
   position: absolute;
   width: 100%;
+}
+
+.arrow {
+  width: 0px;
+  height: 0px;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 10px;
+  position: absolute;
+
+  &:before {
+    border-color: transparent;
+    border-style: solid;
+    border-width: 11px;
+    content: '';
+    display: block;
+    height: 0;
+    position: absolute;
+    width: 0;
+  }
+
+  &.positionXleft {
+    left: -20px;
+    border-right-color: var(
+      --theme-staking-stake-pool-tooltip-background-color
+    );
+    &:before {
+      border-right-color: var(--theme-staking-stake-pool-tooltip-border-color);
+      left: -22px;
+    }
+  }
+  &.positionXleftMiddle {
+    left: 20px;
+    border-top-color: var(--theme-staking-stake-pool-tooltip-background-color);
+    &:before {
+      border-top-color: var(--theme-staking-stake-pool-tooltip-border-color);
+      left: 21px;
+    }
+  }
+  &.positionXrightMiddle {
+    right: 20px;
+    border-top-color: var(--theme-staking-stake-pool-tooltip-background-color);
+    &:before {
+      border-top-color: var(--theme-staking-stake-pool-tooltip-border-color);
+      right: 21px;
+    }
+  }
+  &.positionXright {
+    border-left-color: var(--theme-staking-stake-pool-tooltip-background-color);
+    right: -20px;
+    &:before {
+      border-left-color: var(--theme-staking-stake-pool-tooltip-border-color);
+      right: -22px;
+    }
+  }
+  &.positionYtop {
+    top: 24px;
+    &:before {
+      top: 23px;
+    }
+  }
+  &.positionYtopMiddle {
+    border-bottom-color: var(
+      --theme-staking-stake-pool-tooltip-background-color
+    );
+    top: -20px;
+    &:before {
+      border-bottom-color: var(--theme-staking-stake-pool-tooltip-border-color);
+      top: -21px;
+    }
+  }
+  &.positionYbottom {
+    bottom: 21px;
+    &:before {
+      bottom: 20px;
+    }
+  }
+  &.positionYbottomMiddle {
+    bottom: -20px;
+    &:before {
+      bottom: -21px;
+    }
+  }
 }
 
 .isVisible {

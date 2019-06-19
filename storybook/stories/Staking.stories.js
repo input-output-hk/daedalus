@@ -15,7 +15,7 @@ import DelegationCenter from '../../source/renderer/app/components/staking/deleg
 import StakingEpochs from '../../source/renderer/app/components/staking/epochs/StakingEpochs';
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
 
-import { StakePoolsStory } from './StakePoolsStory.js';
+import { StakePoolsStory, StakePoolTooltipStory } from './StakePoolsStory.js';
 import { StakingRewardsStory } from './Staking-Rewards.stories';
 
 const defaultPercentage = 10;
@@ -30,6 +30,7 @@ const pageNames = {
   countdown: 'Staking Countdown',
   'delegation-center': 'Delegation Center',
   'stake-pools': 'Stake Pools',
+  'stake-pools-tooltip': 'Tooltip',
   rewards: 'Rewards',
   epochs: 'Epochs',
   info: 'Info',
@@ -41,7 +42,10 @@ storiesOf('Staking', module)
     const getItemFromContext = () => context.parameters.id;
     let activeSidebarCategory = null;
 
-    if (context.parameters.id === 'countdown') {
+    if (
+      context.parameters.id === 'countdown' ||
+      context.parameters.id === 'stake-pools-tooltip'
+    ) {
       activeSidebarCategory =
         CATEGORIES_BY_NAME.STAKING_DELEGATION_COUNTDOWN.route;
     } else {
@@ -96,6 +100,9 @@ storiesOf('Staking', module)
   )
 
   .add(pageNames['stake-pools'], StakePoolsStory, { id: 'stake-pools' })
+  .add(pageNames['stake-pools-tooltip'], StakePoolTooltipStory, {
+    id: 'stake-pools-tooltip',
+  })
 
   .add(pageNames.rewards, StakingRewardsStory, { id: 'rewards' })
 

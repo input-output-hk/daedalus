@@ -6,8 +6,8 @@ import { StakePoolThumbnail } from './StakePoolThumbnail';
 
 type Props = {
   listName: string,
-  flipHorizontal: boolean,
-  flipVertical: boolean,
+  positionX: string,
+  positionY: string,
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
   getIsSelected: Function,
@@ -19,8 +19,8 @@ type Props = {
 
 export const StakePoolsList = ({
   listName,
-  flipHorizontal,
-  flipVertical,
+  positionX,
+  positionY,
   stakePoolsList,
   onOpenExternalLink,
   currentTheme,
@@ -40,14 +40,14 @@ export const StakePoolsList = ({
       return (
         <StakePoolThumbnail
           stakePool={stakePool}
-          key={stakePool.id}
+          key={stakePool.id + index}
           onOpenExternalLink={onOpenExternalLink}
           isSelected={isSelected}
           onClose={onClose}
           onClick={handleThumbnailClick}
           currentTheme={currentTheme}
-          flipHorizontal={flipHorizontal}
-          flipVertical={flipVertical}
+          positionX={positionX}
+          positionY={positionY}
           index={index}
         />
       );

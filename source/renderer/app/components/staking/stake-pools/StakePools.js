@@ -45,6 +45,8 @@ const initialState = {
   flipVertical: false,
 };
 
+const TOOLTIP_DELTA = 20;
+
 @observer
 export default class StakePools extends Component<Props, State> {
   static contextTypes = {
@@ -88,6 +90,19 @@ export default class StakePools extends Component<Props, State> {
     ) {
       return this.handleClose();
     }
+    const { positionX, positionY } = this.getTooltipPosition(event);
+
+    if (!positionY || !positionX) return false;
+
+    return this.setState({
+      selectedList,
+      selectedIndex,
+      positionX,
+      positionY,
+    });
+  };
+
+  getTooltipPosition = (event: SyntheticMouseEvent<HTMLElement>) => {
     event.persist();
     if (event.target instanceof HTMLElement) {
       const targetElement =
@@ -96,14 +111,20 @@ export default class StakePools extends Component<Props, State> {
           : event.target.parentNode;
       if (targetElement instanceof HTMLElement) {
         const { top, left } = targetElement.getBoundingClientRect();
-        const flipHorizontal = left > window.innerWidth - window.innerWidth / 2;
-        const flipVertical = top > window.innerHeight - window.innerHeight / 2;
-        return this.setState({
-          selectedList,
-          selectedIndex,
-          flipHorizontal,
-          flipVertical,
-        });
+        const C = left;
+        const D = window.innerWidth - left;
+        let positionX;
+        if (C <= TOOLTIP_DELTA) positionX = 'left';
+        else if (left > window.innerWidth - window.innerWidth / 2)
+          positionX = 'rightMiddle';
+        else if (D <= TOOLTIP_DELTA) positionX = 'right';
+        else positionX = 'leftMiddle';
+        const positionY =
+          top > window.innerHeight - window.innerHeight / 2 ? 'bottom' : 'top';
+        return {
+          positionX,
+          positionY,
+        };
       }
     }
     return false;
@@ -119,7 +140,7 @@ export default class StakePools extends Component<Props, State> {
       onOpenExternalLink,
       currentTheme,
     } = this.props;
-    const { search, filter, flipHorizontal, flipVertical } = this.state;
+    const { search, filter, positionX, positionY } = this.state;
 
     return (
       <div className={styles.component}>
@@ -138,8 +159,8 @@ export default class StakePools extends Component<Props, State> {
         {stakePoolsDelegatingList.length && (
           <StakePoolsList
             listName="stakePoolsDelegatingList"
-            flipHorizontal={flipHorizontal}
-            flipVertical={flipVertical}
+            positionX={positionX}
+            positionY={positionY}
             stakePoolsList={stakePoolsDelegatingList}
             onOpenExternalLink={onOpenExternalLink}
             currentTheme={currentTheme}
@@ -161,8 +182,8 @@ export default class StakePools extends Component<Props, State> {
 
         <StakePoolsList
           listName="selectedIndexList"
-          flipHorizontal={flipHorizontal}
-          flipVertical={flipVertical}
+          positionX={positionX}
+          positionY={positionY}
           stakePoolsList={stakePoolsList}
           onOpenExternalLink={onOpenExternalLink}
           currentTheme={currentTheme}
