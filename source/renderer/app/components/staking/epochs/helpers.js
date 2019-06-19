@@ -42,8 +42,23 @@ export const noDataExisting = (isLoading, data) =>
 export const hasDataExisting = (isLoading, data) =>
   data && data.length > 0 && !isLoading;
 
-export const sortData = (data, order, sortBy) =>
-  orderBy(data, sortBy === 'pool' ? 'pool.title' : sortBy, order);
+export const sortData = (data, order, sortBy) => {
+  let realSortBy = '';
+
+  if (sortBy === 'pool') {
+    realSortBy = 'pool.title';
+  } else if (sortBy === 'slotsElected') {
+    realSortBy = 'slotsElected[0]';
+  } else if (sortBy === 'sharedRewards') {
+    realSortBy = 'sharedRewards[0]';
+  } else if (sortBy === 'performance') {
+    realSortBy = 'performance[2]';
+  } else {
+    realSortBy = sortBy;
+  }
+
+  return orderBy(data, realSortBy, order);
+};
 
 export const humanizeDurationToShort = (currentLocale, dateTime) => {
   let humanizedDurationLanguage = null;

@@ -98,7 +98,7 @@ export default class StakingEpochsCurrentEpochData extends Component<
         {map(sortedData, (row, key) => {
           const poolCategory = get(row, ['pool', 'category'], '');
           const poolTitle = get(row, ['pool', 'title'], '');
-          const slotsElected = get(row, 'slotsElected', 0);
+          const slotsElected = get(row, 'slotsElected', [0]);
 
           return (
             <tr key={key}>
@@ -111,7 +111,9 @@ export default class StakingEpochsCurrentEpochData extends Component<
                 </p>
               </td>
               <td>
-                <span className={styles.mediumText}>{`${slotsElected}%`}</span>
+                <span className={styles.mediumText}>{`${
+                  slotsElected[0]
+                }%`}</span>
               </td>
             </tr>
           );

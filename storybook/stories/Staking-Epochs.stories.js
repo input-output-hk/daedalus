@@ -13,42 +13,42 @@ const currentEpochData = [
       title: 'Help the USA Cats',
       category: 'CATS',
     },
-    slotsElected: 1,
+    slotsElected: [1],
   },
   {
     pool: {
       title: 'Cardano Foundation 1',
       category: 'CF1',
     },
-    slotsElected: 0.9,
+    slotsElected: [0.9],
   },
   {
     pool: {
       title: 'Blush Pool 1',
       category: 'BLS1',
     },
-    slotsElected: 0.78,
+    slotsElected: [0.78],
   },
   {
     pool: {
       title: 'Blush Pool 2',
       category: 'BLS2',
     },
-    slotsElected: 0.5,
+    slotsElected: [0.5],
   },
   {
     pool: {
       title: 'Micro Mining',
       category: 'MNG',
     },
-    slotsElected: 0.17,
+    slotsElected: [0.17],
   },
   {
     pool: {
       title: 'Saint-Petersburg Academy of Programming',
       category: 'SPBA',
     },
-    slotsElected: 0.08,
+    slotsElected: [0.08],
   },
 ];
 const currentEpochProgress = 15;
