@@ -147,14 +147,14 @@ export default class DelegationStepsChooseWalletDialog extends Component<
             <FormattedMessage
               {...messages.stepIndicatorLabel}
               values={{
-                currentStep: 2,
+                currentStep: 1,
                 totalSteps: stepsList.length,
               }}
             />
           </p>
           <Stepper
             steps={stepsList}
-            activeStep={2}
+            activeStep={1}
             skin={StepperSkin}
             labelDisabled
           />

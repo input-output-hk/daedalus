@@ -55,6 +55,7 @@ type Props = {
   flipVertical: boolean,
   onClick: Function,
   onOpenExternalLink: Function,
+  onSelect?: Function,
 };
 
 @observer
@@ -104,6 +105,7 @@ export default class StakePoolTooltip extends Component<Props> {
       flipVertical,
       onClick,
       onOpenExternalLink,
+      onSelect,
     } = this.props;
 
     const {
@@ -220,11 +222,13 @@ export default class StakePoolTooltip extends Component<Props> {
             </dd>
           </dl>
         </div>
-        <Button
-          label={intl.formatMessage(messages.delegateButton)}
-          onClick={() => {}}
-          skin={ButtonSkin}
-        />
+        {onSelect &&
+          <Button
+            label={intl.formatMessage(messages.delegateButton)}
+            onClick={onSelect}
+            skin={ButtonSkin}
+          />
+        }
       </div>
     );
   }

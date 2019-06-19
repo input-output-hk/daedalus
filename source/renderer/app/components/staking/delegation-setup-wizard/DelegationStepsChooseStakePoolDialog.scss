@@ -1,0 +1,111 @@
+.delegationStepsChooseStakePoolDialogWrapper {
+  font-family: var(--font-regular);
+
+  :global {
+    .Dialog_title {
+      letter-spacing: 2px;
+    }
+
+    .StakePoolTooltip_component {
+      &.StakePoolTooltip_isVisible {
+        opacity: 0.9;
+        background-color: #5e6066;
+        box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25);
+        &:before {
+          opacity: 0.9;
+          border-right-color: #5e6066;
+        }
+
+        &:after {
+          border-right-color: #5e6066;
+          opacity: 0.9;
+        }
+      } 
+      .StakePoolTooltip_container {
+        h3 {
+          color: #fafbfc;
+        }
+        .StakePoolTooltip_id {
+          color: #fafbfc; 
+        }
+        .StakePoolTooltip_description {
+          color: #fafbfc; 
+        }
+        .StakePoolTooltip_url {
+          color: #85b6f9; 
+        }
+        .StakePoolTooltip_table {
+          dt {
+            color: #fafbfc;    
+          }
+          dd {
+            span {
+              color: #fafbfc;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .delegationStepsIndicatorWrapper {
+    margin: auto;
+    width: 410px;
+
+    .stepIndicatorLabel {
+      color: var(--theme-delegation-steps-choose-wallet-steps-indicator-color);
+      font-family: var(--font-medium);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.83;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+  }
+
+  .content {
+    color: rgba(94, 96, 102, 0.8);
+    font-size: 16px;
+    line-height: 1.38;
+    text-align: left;
+
+    .description {
+      margin: 20px auto;
+    }
+
+    .delegatedStakePoolsWrapper {
+      display: flex;
+
+      .placeholderImage {
+        svg {
+          width: 116px;
+        }
+      }
+
+      .delegatedStakePoolsList {
+        margin-left: 20px;
+
+        .stakePoolsDelegatingListLabel {
+          color: #5e6066;
+          font-family: var(--font-medium);
+          font-size: 16px;
+          font-weight: 500;
+          line-height: 1.38;
+          margin-bottom: 10px;
+        }
+
+        :global {
+          .StakePoolsList_component {
+            margin: initial;
+            .StakePoolThumbnail_component {
+              margin: auto 20px 0;
+              margin-left: 0px;
+            }
+          }
+        }
+      }
+    }
+
+    .searchStakePoolsWrapper {}
+  }
+}

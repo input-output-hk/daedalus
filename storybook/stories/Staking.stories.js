@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, date, number } from '@storybook/addon-knobs';
+import { withKnobs, date, number, radios } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import { action } from '@storybook/addon-actions';
 import StoryLayout from './support/StoryLayout';
@@ -17,12 +17,14 @@ import StakingEpochs from '../../source/renderer/app/components/staking/epochs/S
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
 import DelegationStepsIntroDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsIntroDialog';
 import DelegationStepsChooseWalletDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog';
+import DelegationStepsChooseStakePoolDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog';
 import DelegationStepsNotAvailableDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsNotAvailableDialog';
 
 import { StakePoolsStory } from './StakePoolsStory.js';
 import { StakingRewardsStory } from './Staking-Rewards.stories';
 
 import translations from '../../source/renderer/app/i18n/translations';
+import STAKE_POOLS from '../../source/renderer/app/config/stakingStakePools.dummy.json';
 
 const defaultPercentage = 10;
 const defaultStartDateTime = new Date('2019-09-26');
@@ -58,6 +60,12 @@ const WALLETS = [
     isAcceptableSetupWallet: false,
   },
 ];
+
+const themes = {
+  'Light Blue': 'light-blue',
+  Cardano: 'cardano',
+  'Dark Blue': 'dark-blue',
+};
 
 const locales = {
   English: 'en-US',
@@ -174,6 +182,30 @@ storiesOf('Staking', module)
       onBack={action('onBack')}
       wallets={WALLETS}
       minDelegationFunds={1}
+    />
+  ))
+
+  .add('DelegationStepsChooseStakePoolDialog', () => (
+    <DelegationStepsChooseStakePoolDialog
+      stepsList={DELEGATION_WIZARD_STEPS_LIST}
+      stakePoolsList={STAKE_POOLS.slice(
+        0,
+        number('Pools', 100, {
+          range: true,
+          min: 37,
+          max: 300,
+          step: 1,
+        })
+      )}
+      stakePoolsDelegatingList={[
+        STAKE_POOLS[36],
+        STAKE_POOLS[3],
+      ]}
+      onOpenExternalLink={() => {}}
+      currentTheme={radios('Theme (Only for tooltip colors)', themes)}
+      onClose={action('onClose')}
+      onContinue={action('onContinue')}
+      onBack={action('onBack')}
     />
   ))
 

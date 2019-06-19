@@ -170,6 +170,7 @@ export default class StakePools extends Component<Props, State> {
           onClose={this.handleClose}
           onClick={this.handleClick}
           getIndex={this.getIndex}
+          onSelect={() => {}}
         />
       </div>
     );

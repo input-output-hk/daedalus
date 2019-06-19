@@ -12,9 +12,11 @@ type Props = {
   onOpenExternalLink: Function,
   getIsSelected: Function,
   onClose: Function,
-  onClick: Function,
+  onClick?: Function,
+  onHover?: Function,
   getIndex: Function,
   currentTheme: string,
+  onSelect?: Function,
 };
 
 export const StakePoolsList = ({
@@ -27,7 +29,9 @@ export const StakePoolsList = ({
   getIsSelected,
   onClose,
   onClick,
+  onHover,
   getIndex,
+  onSelect,
 }: Props) => (
   <div className={styles.component}>
     {stakePoolsList.map(stakePool => {
@@ -37,6 +41,9 @@ export const StakePoolsList = ({
       const handleThumbnailClick = (event: SyntheticMouseEvent<HTMLElement>) =>
         onClick(listName, event, stakePool.ranking);
 
+      const handleThumbnailHover = (event: SyntheticMouseEvent<HTMLElement>) =>
+        onHover(listName, event, stakePool.ranking);
+
       return (
         <StakePoolThumbnail
           stakePool={stakePool}
@@ -45,10 +52,12 @@ export const StakePoolsList = ({
           isSelected={isSelected}
           onClose={onClose}
           onClick={handleThumbnailClick}
+          onHover={onHover && handleThumbnailHover}
           currentTheme={currentTheme}
           flipHorizontal={flipHorizontal}
           flipVertical={flipVertical}
           index={index}
+          onSelect={onSelect}
         />
       );
     })}
