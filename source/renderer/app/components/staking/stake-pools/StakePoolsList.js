@@ -25,15 +25,19 @@ type Props = {
 
 type State = {
   selectedIndex?: ?number,
-  flipHorizontal: boolean,
-  flipVertical: boolean,
+  tooltipPosition: string,
+  tooltipOffset: number,
 };
 
 const initialState = {
   selectedIndex: null,
-  flipHorizontal: false,
-  flipVertical: false,
+  tooltipPosition: 'right',
+  tooltipOffset: 0,
 };
+
+const TOOLTIP_DELTA = 20;
+const TOOLTIP_WIDTH = 240;
+const TOOLTIP_MAX_HEIGHT = 337;
 
 @observer
 export class StakePoolsList extends Component<Props, State> {
@@ -69,6 +73,18 @@ export class StakePoolsList extends Component<Props, State> {
     if (this.state.selectedIndex === selectedIndex) {
       return this.handleClose();
     }
+    const { tooltipPosition, tooltipOffset } = this.calculateTooltipPosition(
+      event
+    );
+    if (!tooltipPosition || !tooltipOffset) return false;
+    return this.setState({
+      selectedIndex,
+      tooltipPosition,
+      tooltipOffset,
+    });
+  };
+
+  calculateTooltipPosition = (event: SyntheticMouseEvent<HTMLElement>) => {
     event.persist();
     if (event.target instanceof HTMLElement) {
       const targetElement =
@@ -77,16 +93,25 @@ export class StakePoolsList extends Component<Props, State> {
           : event.target.parentNode;
       if (targetElement instanceof HTMLElement) {
         const { top, left } = targetElement.getBoundingClientRect();
-        const flipHorizontal = left > window.innerWidth - window.innerWidth / 2;
-        const flipVertical = top > window.innerHeight - window.innerHeight / 2;
-        return this.setState({
-          selectedIndex,
-          flipHorizontal,
-          flipVertical,
-        });
+
+        let tooltipPosition = 'right';
+        if (top <= TOOLTIP_DELTA) tooltipPosition = 'bottom';
+        else if (top >= window.innerHeight - TOOLTIP_DELTA)
+          tooltipPosition = 'top';
+        else if (left > window.innerWidth - window.innerWidth / 2)
+          tooltipPosition = 'left';
+
+        const tooltipOffset = 0;
+
+        return {
+          tooltipPosition,
+          tooltipOffset,
+        };
+
+        // const tooltipPosition = left > window.innerWidth - window.innerWidth / 2;
+        // const tooltipOffset = top > window.innerHeight - window.innerHeight / 2;
       }
     }
-    return false;
   };
 
   handleClose = () => this.setState({ ...initialState });
@@ -99,7 +124,7 @@ export class StakePoolsList extends Component<Props, State> {
       isListActive,
     } = this.props;
 
-    const { flipHorizontal, flipVertical } = this.state;
+    const { tooltipPosition, tooltipOffset } = this.state;
 
     return (
       <div className={styles.component}>
@@ -116,8 +141,8 @@ export class StakePoolsList extends Component<Props, State> {
               onClose={this.handleClose}
               onClick={this.handleClick}
               currentTheme={currentTheme}
-              flipHorizontal={flipHorizontal}
-              flipVertical={flipVertical}
+              tooltipPosition={tooltipPosition}
+              tooltipOffset={tooltipOffset}
               index={index}
             />
           );

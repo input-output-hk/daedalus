@@ -14,7 +14,10 @@ import StakingCountdown from '../../source/renderer/app/components/staking/count
 import DelegationCenter from '../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
 
-import { StakePoolsStory, StakePoolTooltipStory } from './StakePoolsStory.js';
+import {
+  StakePoolsStory,
+  StakePoolTooltipStory,
+} from './Staking-StakePoolsStory.js';
 import { StakingRewardsStory } from './Staking-Rewards.stories';
 import { StakingEpochsStory } from './Staking-Epochs.stories';
 

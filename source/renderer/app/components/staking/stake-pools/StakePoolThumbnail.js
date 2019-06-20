@@ -14,8 +14,8 @@ type Props = {
   index: number,
   isSelected: boolean,
   currentTheme: string,
-  positionX: string,
-  positionY: string,
+  tooltipPosition: string,
+  tooltipOffset: number,
   onOpenExternalLink: Function,
   onClick: Function,
   onClose: Function,
@@ -27,8 +27,8 @@ export const StakePoolThumbnail = observer((props: Props) => {
     index,
     isSelected,
     currentTheme,
-    positionX,
-    positionY,
+    tooltipPosition,
+    tooltipOffset,
     onClick,
     onClose,
     onOpenExternalLink,
@@ -75,8 +75,8 @@ export const StakePoolThumbnail = observer((props: Props) => {
           isVisible
           onClick={onClose}
           currentTheme={currentTheme}
-          positionX={positionX}
-          positionY={positionY}
+          tooltipPosition={tooltipPosition}
+          tooltipOffset={tooltipOffset}
           onOpenExternalLink={onOpenExternalLink}
         />
       )}

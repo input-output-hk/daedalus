@@ -3,7 +3,7 @@ import React from 'react';
 import { number, radios } from '@storybook/addon-knobs';
 
 import StakePools from '../../source/renderer/app/components/staking/stake-pools/StakePools';
-import StakePoolTooltip from '../../source/renderer/app/components/staking/stake-pools/StakePoolTooltip';
+import { StakePoolThumbnail } from '../../source/renderer/app/components/staking/stake-pools/StakePoolThumbnail';
 import STAKE_POOLS from '../../source/renderer/app/config/stakingStakePools.dummy.json';
 
 const themes = {
@@ -34,16 +34,11 @@ export const StakePoolsStory = () => (
   />
 );
 
-const positionXOptions = {
-  left: 'left',
-  leftMiddle: 'leftMiddle',
-  rightMiddle: 'rightMiddle',
-  right: 'right',
-};
-
-const positionYOptions = {
+const tooltipPosition = {
   top: 'top',
+  right: 'right',
   bottom: 'bottom',
+  left: 'left',
 };
 
 export const StakePoolTooltipStory = () => (
@@ -53,14 +48,15 @@ export const StakePoolTooltipStory = () => (
       position: 'relative',
     }}
   >
-    <StakePoolTooltip
+    <StakePoolThumbnail
       stakePool={STAKE_POOLS[1]}
       index={0}
-      isVisible
+      isSelected
       currentTheme={radios('Theme (Only for params colors)', themes)}
-      positionX={radios('positionX', positionXOptions, 'left')}
-      positionY={radios('positionY', positionYOptions, 'top')}
+      tooltipPosition={radios('tooltipPosition', tooltipPosition, 'right')}
+      tooltipOffset={number('tooltipOffset')}
       onClick={() => {}}
+      onClose={() => {}}
       onOpenExternalLink={() => {}}
     />
   </div>

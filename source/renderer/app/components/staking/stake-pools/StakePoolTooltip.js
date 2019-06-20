@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import classnames from 'classnames';
-import { set } from 'lodash';
+import { set, capitalize } from 'lodash';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
@@ -52,8 +52,8 @@ type Props = {
   index: number,
   isVisible: boolean,
   currentTheme: string,
-  positionX: 'left' | 'leftMiddle' | 'rightMiddle' | 'right',
-  positionY: 'top' | 'bottom',
+  tooltipPosition: 'top' | 'right' | 'bottom' | 'left',
+  tooltipOffset: number,
   onClick: Function,
   onOpenExternalLink: Function,
 };
@@ -94,11 +94,22 @@ export default class StakePoolTooltip extends Component<Props> {
     this.tooltipClick = true;
   };
 
-  getArrowActiveBorder = (index: number, positionY: string) => {
-    if (positionY !== 'topMiddle') return {};
+  getArrowStyle = (index: number, tooltipPosition: string) => {
+    if (tooltipPosition === 'top')
+      return {
+        bottom: -20,
+      };
+    if (tooltipPosition === 'right')
+      return {
+        left: -20,
+      };
+    if (tooltipPosition === 'bottom')
+      return {
+        borderBottomColor: getColorFromRange(index),
+        top: -20,
+      };
     return {
-      borderBottomColor: getColorFromRange(index),
-      borderTopColor: 'transparent',
+      right: -20,
     };
   };
 
@@ -111,12 +122,13 @@ export default class StakePoolTooltip extends Component<Props> {
       currentTheme,
       onClick,
       onOpenExternalLink,
-      positionX,
+      tooltipPosition,
+      tooltipOffset,
     } = this.props;
 
-    let { positionY } = this.props;
+    // let { positionY } = this.props;
 
-    if (positionX.indexOf('Middle') > -1) positionY += 'Middle';
+    // if (positionX.indexOf('Middle') > -1) positionY += 'Middle';
 
     const {
       id,
@@ -137,11 +149,10 @@ export default class StakePoolTooltip extends Component<Props> {
 
     const arrowClassnames = classnames([
       styles.arrow,
-      styles[`positionY${positionY}`],
-      styles[`positionX${positionX}`],
+      styles[`tooltipPosition${capitalize(tooltipPosition)}`],
     ]);
 
-    const arrowStyle = this.getArrowActiveBorder(index, positionY);
+    const arrowStyle = this.getArrowStyle(index, tooltipPosition);
 
     const darken = currentTheme === 'dark-blue' ? 1 : 0;
     const alpha = 0.3;
