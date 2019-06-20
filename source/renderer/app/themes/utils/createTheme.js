@@ -677,11 +677,14 @@ const createDaedalusComponentsTheme = (
       '--theme-staking-table-border-color': `${border}`,
       '--theme-staking-link-color': `${background.secondary.regular}`,
       '--theme-staking-link-color-light': `${background.secondary.light}`,
-      '--theme-staking-decentralization-progress-stripe-dark-1-background-color': `${
+      '--theme-staking-progress-stripe-dark-1-background-color': `${
         background.secondary.dark
       }`,
-      '--theme-staking-decentralization-progress-stripe-dark-2-background-color': `${
+      '--theme-staking-progress-stripe-dark-2-background-color': `${
         background.secondary.regular
+      }`,
+      '--theme-staking-table-body-highlighted-text-color': `${
+        background.secondary.dark
       }`,
     },
     support: {
