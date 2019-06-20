@@ -45,7 +45,12 @@ export const StakePoolThumbnail = observer((props: Props) => {
 
   return (
     <div className={componentClassnames}>
-      <div className={styles.content} onClick={onClick} role="link" aria-hidden>
+      <div
+        className={styles.content}
+        onClick={event => onClick(event, ranking)}
+        role="link"
+        aria-hidden
+      >
         <div className={styles.id}>{id}</div>
         <div className={styles.ranking} style={{ color }}>
           {ranking}
