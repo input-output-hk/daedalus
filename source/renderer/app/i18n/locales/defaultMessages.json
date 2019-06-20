@@ -2218,13 +2218,13 @@
         "description": "\"delegatingListTitlee\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 15
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.delegatingListTitle",
         "start": {
           "column": 23,
-          "line": 13
+          "line": 11
         }
       },
       {
@@ -2232,13 +2232,13 @@
         "description": "\"listTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 20
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitle",
         "start": {
           "column": 13,
-          "line": 18
+          "line": 16
         }
       }
     ],
