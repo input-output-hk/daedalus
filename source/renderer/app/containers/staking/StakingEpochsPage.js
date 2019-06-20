@@ -12,6 +12,16 @@ export default class StakingEpochsPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    return <StakingEpochs name="StakingEpochs" />;
+    return (
+      <StakingEpochs
+        currentEpochName=""
+        currentEpochData={[]}
+        currentEpochEndDateTime="2019-12-31T00:00:00.161Z"
+        currentEpochProgress={0}
+        previousEpochName=""
+        previousEpochData={[]}
+        isLoading={false}
+      />
+    );
   }
 }
