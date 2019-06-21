@@ -47,7 +47,7 @@ export default class Root extends Component<Props> {
 
     // Just render any page that doesn't require wallets to be loaded or node to be connected
     if (
-      (isPageThatDoesntNeedWallets && !isNodeInStoppingSequence && isSynced) ||
+      (isPageThatDoesntNeedWallets && !isNodeInStoppingSequence) ||
       (isProfilePage && (isNotEnoughDiskSpace || !isNodeInStoppingSequence))
     ) {
       return React.Children.only(children);
@@ -58,10 +58,14 @@ export default class Root extends Component<Props> {
       !hasLoadedWallets ||
       !isSystemTimeCorrect ||
       isNotEnoughDiskSpace ||
-      (isNodeInStoppingSequence &&
-        !isActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS))
+      isNodeInStoppingSequence
     ) {
-      _closeActiveDialog();
+      if (
+        isNodeInStoppingSequence &&
+        !isActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS)
+      ) {
+        _closeActiveDialog();
+      }
       return <LoadingPage stores={stores} actions={actions} />;
     }
 
