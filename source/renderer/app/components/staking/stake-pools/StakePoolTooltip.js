@@ -56,6 +56,7 @@ type Props = {
   onClick: Function,
   onOpenExternalLink: Function,
   onSelect?: Function,
+  showWithSelectButton: boolean,
 };
 
 @observer
@@ -106,6 +107,7 @@ export default class StakePoolTooltip extends Component<Props> {
       onClick,
       onOpenExternalLink,
       onSelect,
+      showWithSelectButton,
     } = this.props;
 
     const {
@@ -222,7 +224,7 @@ export default class StakePoolTooltip extends Component<Props> {
             </dd>
           </dl>
         </div>
-        {onSelect &&
+        {(onSelect && showWithSelectButton) &&
           <Button
             label={intl.formatMessage(messages.delegateButton)}
             onClick={onSelect}

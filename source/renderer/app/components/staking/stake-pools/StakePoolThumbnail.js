@@ -20,7 +20,8 @@ type Props = {
   onClick?: Function,
   onHover?: Function,
   onClose: Function,
-  onSelect?: Function,
+  onSelect: Function,
+  showWithSelectButton: boolean,
 };
 
 export const StakePoolThumbnail = observer((props: Props) => {
@@ -36,6 +37,7 @@ export const StakePoolThumbnail = observer((props: Props) => {
     onClose,
     onOpenExternalLink,
     onSelect,
+    showWithSelectButton,
   } = props;
 
   const color = getColorFromRange(index);
@@ -84,6 +86,7 @@ export const StakePoolThumbnail = observer((props: Props) => {
           flipVertical={flipVertical}
           onOpenExternalLink={onOpenExternalLink}
           onSelect={onSelect}
+          showWithSelectButton={showWithSelectButton}
         />
       )}
     </div>

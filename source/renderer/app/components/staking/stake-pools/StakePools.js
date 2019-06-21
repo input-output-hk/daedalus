@@ -96,6 +96,7 @@ export default class StakePools extends Component<Props, State> {
 
         {stakePoolsDelegatingList.length && (
           <StakePoolsList
+            showWithSelectButton
             listName="stakePoolsDelegatingList"
             flipHorizontal={flipHorizontal}
             flipVertical={flipVertical}
@@ -117,6 +118,7 @@ export default class StakePools extends Component<Props, State> {
         </h2>
 
         <StakePoolsList
+          showWithSelectButton
           listName="selectedIndexList"
           flipHorizontal={flipHorizontal}
           flipVertical={flipVertical}
@@ -125,6 +127,7 @@ export default class StakePools extends Component<Props, State> {
           currentTheme={currentTheme}
           isListActive={selectedList === 'selectedIndexList'}
           setListActive={this.handleSetListActive}
+          onSelect={() => {}}
         />
       </div>
     );

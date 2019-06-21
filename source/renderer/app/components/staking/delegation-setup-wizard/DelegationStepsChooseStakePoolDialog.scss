@@ -20,7 +20,7 @@
           border-right-color: #5e6066;
           opacity: 0.9;
         }
-      } 
+      }
       .StakePoolTooltip_container {
         h3 {
           color: #fafbfc;
@@ -44,6 +44,9 @@
             }
           }
         }
+      }
+      .StakePoolTooltip_colorBand {
+        display: none;
       }
     }
   }

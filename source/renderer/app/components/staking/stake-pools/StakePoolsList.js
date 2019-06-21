@@ -12,6 +12,8 @@ type Props = {
   onOpenExternalLink: Function,
   currentTheme: string,
   onHover?: Function,
+  onSelect?: Function,
+  showWithSelectButton?: boolean,
   /**
    *
    * If the parent component has more than one <StakePoolsList />
@@ -40,6 +42,7 @@ const initialState = {
 export class StakePoolsList extends Component<Props, State> {
   static defaultProps = {
     isListActive: true,
+    showWithSelectButton: false,
   };
 
   constructor(props: Props) {
@@ -61,7 +64,7 @@ export class StakePoolsList extends Component<Props, State> {
 
   getIsSelected = (index: number) => index === this.state.selectedIndex;
 
-  handleClick = (
+  handleOpenThumbnail = (
     event: SyntheticMouseEvent<HTMLElement>,
     selectedIndex: number
   ) => {
@@ -99,6 +102,8 @@ export class StakePoolsList extends Component<Props, State> {
       currentTheme,
       isListActive,
       onHover,
+      onSelect,
+      showWithSelectButton,
     } = this.props;
 
     const { flipHorizontal, flipVertical } = this.state;
@@ -116,9 +121,10 @@ export class StakePoolsList extends Component<Props, State> {
               onOpenExternalLink={onOpenExternalLink}
               isSelected={isSelected}
               onClose={this.handleClose}
-              onClick={!onHover && this.handleClick}
-              onHover={onHover && this.handleClick}
-              onSelect={() => {}}
+              onClick={!onHover && this.handleOpenThumbnail}
+              onHover={onHover && this.handleOpenThumbnail}
+              onSelect={onSelect}
+              showWithSelectButton={showWithSelectButton}
               currentTheme={currentTheme}
               flipHorizontal={flipHorizontal}
               flipVertical={flipVertical}
