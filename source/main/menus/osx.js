@@ -26,27 +26,27 @@ export const osxMenu = (
       {
         label: translation('daedalus.about'),
         click() {
-          actions.openAbout();
+          actions.openAboutDialog();
         },
       },
       {
         label: translation('daedalus.adaRedemption'),
         click() {
-          actions.goToAdaRedemption();
+          actions.openAdaRedemptionScreen();
         },
       },
       {
         label: translation('daedalus.blockConsolidationStatus'),
         accelerator: 'Command+B',
         click() {
-          actions.goBlockConsolidationStatus();
+          actions.openBlockConsolidationStatusDialog();
         },
       },
       {
         label: translation('daedalus.daedalusDiagnostics'),
         accelerator: 'Command+D',
         click() {
-          actions.openDaedalusDiagnostics();
+          actions.openDaedalusDiagnosticsDialog();
         },
       },
       {

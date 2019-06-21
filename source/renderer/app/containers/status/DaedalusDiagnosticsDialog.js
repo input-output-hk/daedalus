@@ -4,14 +4,19 @@ import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
 import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
 import styles from './DaedalusDiagnosticsDialog.scss';
-import type { InjectedProps } from '../../types/injectedPropsType';
+import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
 
-type Props = InjectedProps;
+type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
 @observer
 export default class DaedalusDiagnosticsDialog extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
+  static defaultProps = {
+    actions: null,
+    stores: null,
+    children: null,
+    onClose: () => {},
+  };
 
   render() {
     const { actions, stores } = this.props;
