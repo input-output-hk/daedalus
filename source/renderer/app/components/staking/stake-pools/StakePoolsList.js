@@ -24,20 +24,12 @@ type Props = {
 };
 
 type State = {
-  selectedIndex?: ?number,
-  tooltipPosition: string,
-  tooltipOffset: number,
+  selectedPoolId?: ?number,
 };
 
 const initialState = {
-  selectedIndex: null,
-  tooltipPosition: 'right',
-  tooltipOffset: 0,
+  selectedPoolId: null,
 };
-
-const TOOLTIP_DELTA = 20;
-const TOOLTIP_WIDTH = 240;
-const TOOLTIP_MAX_HEIGHT = 337;
 
 @observer
 export class StakePoolsList extends Component<Props, State> {
@@ -62,76 +54,27 @@ export class StakePoolsList extends Component<Props, State> {
   getIndex = (ranking: number) =>
     rangeMap(ranking, 1, this.props.stakePoolsList.length, 0, 99);
 
-  getIsSelected = (index: number) => index === this.state.selectedIndex;
+  getIsSelected = (id: string) =>
+    this.props.isListActive !== false && id === this.state.selectedPoolId;
 
-  handleClick = (
-    event: SyntheticMouseEvent<HTMLElement>,
-    selectedIndex: number
-  ) => {
+  handleClick = (selectedPoolId: number) => {
     const { isListActive, setListActive, listName } = this.props;
     if (isListActive === false && setListActive) setListActive(listName);
-    if (this.state.selectedIndex === selectedIndex) {
-      return this.handleClose();
-    }
-    const { tooltipPosition, tooltipOffset } = this.calculateTooltipPosition(
-      event
-    );
-    if (!tooltipPosition || !tooltipOffset) return false;
     return this.setState({
-      selectedIndex,
-      tooltipPosition,
-      tooltipOffset,
+      selectedPoolId,
     });
-  };
-
-  calculateTooltipPosition = (event: SyntheticMouseEvent<HTMLElement>) => {
-    event.persist();
-    if (event.target instanceof HTMLElement) {
-      const targetElement =
-        event.target.className === 'StakePool_content'
-          ? event.target
-          : event.target.parentNode;
-      if (targetElement instanceof HTMLElement) {
-        const { top, left } = targetElement.getBoundingClientRect();
-
-        let tooltipPosition = 'right';
-        if (top <= TOOLTIP_DELTA) tooltipPosition = 'bottom';
-        else if (top >= window.innerHeight - TOOLTIP_DELTA)
-          tooltipPosition = 'top';
-        else if (left > window.innerWidth - window.innerWidth / 2)
-          tooltipPosition = 'left';
-
-        const tooltipOffset = 0;
-
-        return {
-          tooltipPosition,
-          tooltipOffset,
-        };
-
-        // const tooltipPosition = left > window.innerWidth - window.innerWidth / 2;
-        // const tooltipOffset = top > window.innerHeight - window.innerHeight / 2;
-      }
-    }
   };
 
   handleClose = () => this.setState({ ...initialState });
 
   render() {
-    const {
-      stakePoolsList,
-      onOpenExternalLink,
-      currentTheme,
-      isListActive,
-    } = this.props;
-
-    const { tooltipPosition, tooltipOffset } = this.state;
+    const { stakePoolsList, onOpenExternalLink, currentTheme } = this.props;
 
     return (
       <div className={styles.component}>
         {stakePoolsList.map(stakePool => {
           const index = this.getIndex(stakePool.ranking);
-          const isSelected =
-            this.getIsSelected(stakePool.ranking) && isListActive !== false;
+          const isSelected = this.getIsSelected(stakePool.id);
           return (
             <StakePoolThumbnail
               stakePool={stakePool}
@@ -141,8 +84,6 @@ export class StakePoolsList extends Component<Props, State> {
               onClose={this.handleClose}
               onClick={this.handleClick}
               currentTheme={currentTheme}
-              tooltipPosition={tooltipPosition}
-              tooltipOffset={tooltipOffset}
               index={index}
             />
           );

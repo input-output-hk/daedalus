@@ -9,7 +9,6 @@ import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './StakePoolTooltip.scss';
-import { getColorFromRange } from '../../../utils/colors';
 import type { StakePool } from '../../../api/staking/types';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 
@@ -49,20 +48,45 @@ const messages = defineMessages({
 
 type Props = {
   stakePool: StakePool,
-  index: number,
   isVisible: boolean,
   currentTheme: string,
-  tooltipPosition: 'top' | 'right' | 'bottom' | 'left',
-  tooltipOffset: number,
   onClick: Function,
   onOpenExternalLink: Function,
+  top: number,
+  left: number,
+  color: string,
 };
 
+type State = {
+  tooltipPosition: 'top' | 'right' | 'bottom' | 'left',
+  componentStyle: {},
+  arrowStyle: {},
+  colorBandStyle: {},
+};
+
+const TOOLTIP_DELTA = 20;
+const TOOLTIP_WIDTH = 240;
+const TOOLTIP_MAX_HEIGHT = 337;
+
 @observer
-export default class StakePoolTooltip extends Component<Props> {
+export default class StakePoolTooltip extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
+  state = {
+    componentStyle: {},
+    arrowStyle: {},
+    colorBandStyle: {},
+    tooltipPosition: 'right',
+  };
+
+  componentWillReceiveProps(nextProps) {
+    const { top, left } = nextProps;
+    const { top: currentTop, left: currentLeft } = this.props;
+    if (top !== currentTop || left !== currentLeft)
+      this.getTooltipPosition(top, left);
+  }
 
   tooltipClick: boolean = false;
 
@@ -94,7 +118,29 @@ export default class StakePoolTooltip extends Component<Props> {
     this.tooltipClick = true;
   };
 
-  getArrowStyle = (index: number, tooltipPosition: string) => {
+  getTooltipPosition = (top: number, left: number) => {
+    const { color } = this.props;
+    let tooltipPosition = 'right';
+    if (top <= TOOLTIP_DELTA) tooltipPosition = 'bottom';
+    else if (top >= window.innerHeight - TOOLTIP_DELTA) tooltipPosition = 'top';
+    else if (left > window.innerWidth - window.innerWidth / 2)
+      tooltipPosition = 'left';
+
+    const componentStyle = this.getComponenStyle(tooltipPosition, top, left);
+    const arrowStyle = this.getArrowStyle(tooltipPosition);
+    const colorBandStyle = {
+      background: color,
+    };
+
+    this.setState({
+      componentStyle,
+      arrowStyle,
+      colorBandStyle,
+      tooltipPosition,
+    });
+  };
+
+  getComponenStyle = (tooltipPosition: string, top: number, left: number) => {
     if (tooltipPosition === 'top')
       return {
         bottom: -20,
@@ -105,7 +151,26 @@ export default class StakePoolTooltip extends Component<Props> {
       };
     if (tooltipPosition === 'bottom')
       return {
-        borderBottomColor: getColorFromRange(index),
+        borderBottomColor: this.props.color,
+        top: -20,
+      };
+    return {
+      right: -20,
+    };
+  };
+
+  getArrowStyle = (tooltipPosition: string) => {
+    if (tooltipPosition === 'top')
+      return {
+        bottom: -20,
+      };
+    if (tooltipPosition === 'right')
+      return {
+        left: -20,
+      };
+    if (tooltipPosition === 'bottom')
+      return {
+        borderBottomColor: this.props.color,
         top: -20,
       };
     return {
@@ -118,22 +183,22 @@ export default class StakePoolTooltip extends Component<Props> {
     const {
       stakePool,
       isVisible,
-      index,
       currentTheme,
       onClick,
       onOpenExternalLink,
-      tooltipPosition,
-      tooltipOffset,
     } = this.props;
 
-    // let { positionY } = this.props;
-
-    // if (positionX.indexOf('Middle') > -1) positionY += 'Middle';
+    const {
+      componentStyle,
+      arrowStyle,
+      colorBandStyle,
+      tooltipPosition,
+    } = this.state;
 
     const {
-      id,
       name,
       description,
+      slug,
       url,
       ranking,
       controlledStake,
@@ -152,8 +217,6 @@ export default class StakePoolTooltip extends Component<Props> {
       styles[`tooltipPosition${capitalize(tooltipPosition)}`],
     ]);
 
-    const arrowStyle = this.getArrowStyle(index, tooltipPosition);
-
     const darken = currentTheme === 'dark-blue' ? 1 : 0;
     const alpha = 0.3;
     const reverse = true;
@@ -167,20 +230,16 @@ export default class StakePoolTooltip extends Component<Props> {
         onClick={this.handleInnerClick}
         role="link"
         aria-hidden
+        style={componentStyle}
       >
-        <div
-          className={styles.colorBand}
-          style={{
-            background: getColorFromRange(index),
-          }}
-        />
+        <div className={styles.colorBand} style={colorBandStyle} />
         <div className={arrowClassnames} style={arrowStyle} />
         <div className={styles.container}>
           <h3 className={styles.name}>{name}</h3>
           <button className={styles.closeButton} onClick={onClick}>
             <SVGInline svg={closeCross} />
           </button>
-          <div className={styles.id}>{id}</div>
+          <div className={styles.slug}>{slug}</div>
           {retirement && (
             <div className={styles.retirement}>
               <FormattedMessage
