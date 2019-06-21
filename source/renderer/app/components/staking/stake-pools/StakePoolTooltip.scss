@@ -69,13 +69,13 @@
   height: 0px;
   border-color: transparent;
   border-style: solid;
-  border-width: 10px;
+  border-width: 11px;
   position: absolute;
 
   &:before {
     border-color: transparent;
     border-style: solid;
-    border-width: 11px;
+    border-width: 10px;
     content: '';
     display: block;
     height: 0;
@@ -84,28 +84,35 @@
   }
 
   &.tooltipPositionTop {
-    border-top-color: var(--theme-staking-stake-pool-tooltip-background-color);
+    border-top-color: var(--theme-staking-stake-pool-tooltip-border-color);
     &:before {
-      border-top-color: var(--theme-staking-stake-pool-tooltip-border-color);
-      top: -1px;
+      border-top-color: var(
+        --theme-staking-stake-pool-tooltip-background-color
+      );
+      top: -11px;
+      left: -10px;
     }
   }
   &.tooltipPositionRight {
-    border-right-color: var(
-      --theme-staking-stake-pool-tooltip-background-color
-    );
-  }
-  &.tooltipPositionBottom {
+    border-right-color: var(--theme-staking-stake-pool-tooltip-border-color);
     &:before {
-      border-top-color: var(--theme-staking-stake-pool-tooltip-border-color);
-      bottom: -1px;
+      border-right-color: var(
+        --theme-staking-stake-pool-tooltip-background-color
+      );
+      right: -11px;
+      top: -10px;
     }
   }
+  &.tooltipPositionBottom {
+  }
   &.tooltipPositionLeft {
-    border-left-color: var(--theme-staking-stake-pool-tooltip-background-color);
+    border-left-color: var(--theme-staking-stake-pool-tooltip-border-color);
     &:before {
-      border-left-color: var(--theme-staking-stake-pool-tooltip-border-color);
-      left: -1px;
+      border-left-color: var(
+        --theme-staking-stake-pool-tooltip-background-color
+      );
+      left: -11px;
+      top: -10px;
     }
   }
 }

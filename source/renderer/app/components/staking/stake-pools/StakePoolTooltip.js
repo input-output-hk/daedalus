@@ -195,22 +195,22 @@ export default class StakePoolTooltip extends Component<Props, State> {
   ) => {
     if (tooltipPosition === 'top')
       return {
-        bottom: -20,
+        bottom: -22,
         left: -componentLeft,
       };
     if (tooltipPosition === 'right')
       return {
-        left: -20,
+        left: -22,
         top: -componentTop,
       };
     if (tooltipPosition === 'bottom')
       return {
         borderBottomColor: this.props.color,
         left: -componentLeft,
-        top: -20,
+        top: -22,
       };
     return {
-      right: -20,
+      right: -22,
       top: -componentTop,
     };
   };
