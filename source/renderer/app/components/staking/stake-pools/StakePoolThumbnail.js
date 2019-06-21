@@ -25,7 +25,7 @@ type State = {
 };
 
 @observer
-export class StakePoolsList extends Component<Props, State> {
+export class StakePoolThumbnail extends Component<Props, State> {
   state = {
     top: 0,
     left: 0,

@@ -4,13 +4,14 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import classnames from 'classnames';
-import { set, capitalize } from 'lodash';
+import { capitalize } from 'lodash';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './StakePoolTooltip.scss';
 import type { StakePool } from '../../../api/staking/types';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
+import { getColorFromRange } from '../../../utils/colors';
 
 const messages = defineMessages({
   ranking: {
