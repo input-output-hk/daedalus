@@ -42,7 +42,7 @@ storiesOf('Loading', module)
       isNodeStopping={boolean('isNodeStopping', false)}
       isNodeStopped={boolean('isNodeStopped', false)}
       isNotEnoughDiskSpace={boolean('isNotEnoughDiskSpace', false)}
-      isTlsCertInvalid={boolean('isTlsCertInvalid', true)}
+      isTlsCertInvalid={boolean('isTlsCertInvalid', false)}
       diskSpaceRequired={`${text('diskSpaceRequired (GB)', 4)} GB`}
       diskSpaceMissing={`${text('diskSpaceRequired (GB)', 1)} GB`}
       diskSpaceRecommended={`${text('diskSpaceRequired (GB)', 8)} GB`}
@@ -56,7 +56,7 @@ storiesOf('Loading', module)
       hasLoadedCurrentTheme={boolean('hasLoadedCurrentTheme', true)}
       localTimeDifference={number('localTimeDifference', 0)}
       isSystemTimeCorrect={boolean('isSystemTimeCorrect', true)}
-      isCheckingSystemTime={boolean('isCheckingSystemTime', true)}
+      isCheckingSystemTime={boolean('isCheckingSystemTime', false)}
       isNodeResponding={boolean('isNodeResponding', true)}
       isNodeSubscribed={boolean('isNodeSubscribed', true)}
       isNodeSyncing={boolean('isNodeSyncing', true)}
