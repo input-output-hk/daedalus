@@ -24,6 +24,9 @@ type State = {
   left: number,
 };
 
+const OFFSET_TOP = 135;
+const OFFSET_LEFT = 84;
+
 @observer
 export class StakePoolThumbnail extends Component<Props, State> {
   state = {
@@ -41,7 +44,9 @@ export class StakePoolThumbnail extends Component<Props, State> {
           ? event.target
           : event.target.parentNode;
       if (targetElement instanceof HTMLElement) {
-        const { top, left } = targetElement.getBoundingClientRect();
+        let { top, left } = targetElement.getBoundingClientRect();
+        top -= OFFSET_TOP;
+        left -= OFFSET_LEFT;
         this.setState({ top, left });
         onClick(stakePool.id);
       }

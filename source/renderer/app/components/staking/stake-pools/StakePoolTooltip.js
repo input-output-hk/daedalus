@@ -68,6 +68,8 @@ type State = {
 const TOOLTIP_DELTA = 20;
 const TOOLTIP_WIDTH = 240;
 const TOOLTIP_MAX_HEIGHT = 337;
+const OFFSET_TOP = 135;
+const THUMBNAIL_HEIGHT = 71;
 
 @observer
 export default class StakePoolTooltip extends Component<Props, State> {
@@ -82,11 +84,16 @@ export default class StakePoolTooltip extends Component<Props, State> {
     tooltipPosition: 'right',
   };
 
-  componentWillReceiveProps(nextProps) {
-    const { top, left } = nextProps;
-    const { top: currentTop, left: currentLeft } = this.props;
-    if (top !== currentTop || left !== currentLeft)
+  componentWillReceiveProps(nextProps: Props) {
+    const { isVisible: nextVisibility, top, left } = nextProps;
+    const { isVisible: currentVisibility } = this.props;
+    if (nextVisibility !== currentVisibility)
       this.getTooltipPosition(top, left);
+  }
+
+  componentDidMount() {
+    const { top, left } = this.props;
+    this.getTooltipPosition(top, left);
   }
 
   tooltipClick: boolean = false;
@@ -123,12 +130,27 @@ export default class StakePoolTooltip extends Component<Props, State> {
     const { color } = this.props;
     let tooltipPosition = 'right';
     if (top <= TOOLTIP_DELTA) tooltipPosition = 'bottom';
-    else if (top >= window.innerHeight - TOOLTIP_DELTA) tooltipPosition = 'top';
+    else if (
+      TOOLTIP_DELTA >=
+      window.innerHeight - (top + THUMBNAIL_HEIGHT + OFFSET_TOP)
+    )
+      tooltipPosition = 'top';
     else if (left > window.innerWidth - window.innerWidth / 2)
       tooltipPosition = 'left';
 
-    const componentStyle = this.getComponenStyle(tooltipPosition, top, left);
-    const arrowStyle = this.getArrowStyle(tooltipPosition);
+    const componentTop = -((TOOLTIP_MAX_HEIGHT * top) / window.innerHeight);
+    const componentLeft = -((TOOLTIP_WIDTH * left) / window.innerWidth);
+
+    const componentStyle = this.getComponenStyle(
+      tooltipPosition,
+      componentTop,
+      componentLeft
+    );
+    const arrowStyle = this.getArrowStyle(
+      tooltipPosition,
+      componentTop,
+      componentLeft
+    );
     const colorBandStyle = {
       background: color,
     };
@@ -142,40 +164,54 @@ export default class StakePoolTooltip extends Component<Props, State> {
   };
 
   getComponenStyle = (tooltipPosition: string, top: number, left: number) => {
-    if (tooltipPosition === 'top')
+    if (tooltipPosition === 'top') {
       return {
-        bottom: -20,
+        bottom: THUMBNAIL_HEIGHT - 12,
+        left,
       };
-    if (tooltipPosition === 'right')
+    }
+    if (tooltipPosition === 'right') {
       return {
-        left: -20,
+        left: 50,
+        top,
       };
-    if (tooltipPosition === 'bottom')
+    }
+    if (tooltipPosition === 'bottom') {
       return {
-        borderBottomColor: this.props.color,
-        top: -20,
+        left,
+        top: THUMBNAIL_HEIGHT - 12,
       };
+    }
     return {
-      right: -20,
+      right: 50,
+      top,
     };
   };
 
-  getArrowStyle = (tooltipPosition: string) => {
+  getArrowStyle = (
+    tooltipPosition: string,
+    componentTop: number,
+    componentLeft: number
+  ) => {
     if (tooltipPosition === 'top')
       return {
         bottom: -20,
+        left: -componentLeft,
       };
     if (tooltipPosition === 'right')
       return {
         left: -20,
+        top: -componentTop,
       };
     if (tooltipPosition === 'bottom')
       return {
         borderBottomColor: this.props.color,
+        left: -componentLeft,
         top: -20,
       };
     return {
       right: -20,
+      top: -componentTop,
     };
   };
 

@@ -7,11 +7,9 @@
   border: 1px solid var(--theme-staking-stake-pool-tooltip-border-color);
   box-shadow: 0 1.5px 5px 0 var(--theme-staking-stake-pool-tooltip-shadow-color);
   display: none;
-  left: 50px;
   margin: 20px;
   padding: 10px;
   position: absolute;
-  top: -21px;
   user-select: text;
   width: 240px;
   z-index: 1;
@@ -87,11 +85,10 @@
 
   &.tooltipPositionTop {
     border-top-color: var(--theme-staking-stake-pool-tooltip-background-color);
-    // top: -20px;
-    // &:before {
-    //   border-top-color: var(--theme-staking-stake-pool-tooltip-border-color);
-    //   top: -21px;
-    // }
+    &:before {
+      border-top-color: var(--theme-staking-stake-pool-tooltip-border-color);
+      top: -1px;
+    }
   }
   &.tooltipPositionRight {
     border-right-color: var(
@@ -99,82 +96,18 @@
     );
   }
   &.tooltipPositionBottom {
-    // bottom: 21px;
-    // &:before {
-    //   bottom: 20px;
-    // }
+    &:before {
+      border-top-color: var(--theme-staking-stake-pool-tooltip-border-color);
+      bottom: -1px;
+    }
   }
   &.tooltipPositionLeft {
-    // left: -20px;
     border-left-color: var(--theme-staking-stake-pool-tooltip-background-color);
-    // &:before {
-    //   border-left-color: var(--theme-staking-stake-pool-tooltip-border-color);
-    //   left: -22px;
-    // }
+    &:before {
+      border-left-color: var(--theme-staking-stake-pool-tooltip-border-color);
+      left: -1px;
+    }
   }
-
-  // &.positionXleft {
-  //   left: -20px;
-  //   border-right-color: var(
-  //     --theme-staking-stake-pool-tooltip-background-color
-  //   );
-  //   &:before {
-  //     border-right-color: var(--theme-staking-stake-pool-tooltip-border-color);
-  //     left: -22px;
-  //   }
-  // }
-  // &.positionXleftMiddle {
-  //   left: 20px;
-  //   border-top-color: var(--theme-staking-stake-pool-tooltip-background-color);
-  //   &:before {
-  //     border-top-color: var(--theme-staking-stake-pool-tooltip-border-color);
-  //     left: 21px;
-  //   }
-  // }
-  // &.positionXrightMiddle {
-  //   right: 20px;
-  //   border-top-color: var(--theme-staking-stake-pool-tooltip-background-color);
-  //   &:before {
-  //     border-top-color: var(--theme-staking-stake-pool-tooltip-border-color);
-  //     right: 21px;
-  //   }
-  // }
-  // &.positionXright {
-  //   border-left-color: var(--theme-staking-stake-pool-tooltip-background-color);
-  //   right: -20px;
-  //   &:before {
-  //     border-left-color: var(--theme-staking-stake-pool-tooltip-border-color);
-  //     right: -22px;
-  //   }
-  // }
-  // &.positionYtop {
-  //   top: 24px;
-  //   &:before {
-  //     top: 23px;
-  //   }
-  // }
-  // &.positionYtopMiddle {
-  //   border-bottom-color: var(
-  //     --theme-staking-stake-pool-tooltip-background-color
-  //   );
-  //   top: -20px;
-  //   &:before {
-  //     border-bottom-color: var(--theme-staking-stake-pool-tooltip-border-color);
-  //     top: -21px;
-  //   }
-  // }
-  // &.positionYbottom {
-  //   bottom: 21px;
-  //   &:before {
-  //     bottom: 20px;
-  //   }
-  // }
-  // &.positionYbottomMiddle {
-  //   bottom: -20px;
-  //   &:before {
-  //     bottom: -21px;
-  //   }
-  // }
 }
 
 .isVisible {
