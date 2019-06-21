@@ -69,6 +69,7 @@ const TOOLTIP_DELTA = 20;
 const TOOLTIP_WIDTH = 240;
 const TOOLTIP_MAX_HEIGHT = 337;
 const OFFSET_TOP = 135;
+const OFFSET_LEFT = 84;
 const THUMBNAIL_HEIGHT = 71;
 
 @observer
@@ -135,7 +136,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
       window.innerHeight - (top + THUMBNAIL_HEIGHT + OFFSET_TOP)
     )
       tooltipPosition = 'top';
-    else if (left > window.innerWidth - window.innerWidth / 2)
+    else if (left + OFFSET_LEFT > window.innerWidth - window.innerWidth / 2)
       tooltipPosition = 'left';
 
     const componentTop = -((TOOLTIP_MAX_HEIGHT * top) / window.innerHeight);
