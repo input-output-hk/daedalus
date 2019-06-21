@@ -13,7 +13,6 @@ import { CATEGORIES_BY_NAME } from '../../source/renderer/app/config/sidebarConf
 import StakingWithNavigation from '../../source/renderer/app/components/staking/layouts/StakingWithNavigation';
 import StakingCountdown from '../../source/renderer/app/components/staking/countdown/StakingCountdown';
 import DelegationCenter from '../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
-import StakingEpochs from '../../source/renderer/app/components/staking/epochs/StakingEpochs';
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
 import DelegationStepsIntroDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsIntroDialog';
 import DelegationStepsChooseWalletDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog';
@@ -22,6 +21,7 @@ import DelegationStepsNotAvailableDialog from '../../source/renderer/app/compone
 
 import { StakePoolsStory } from './StakePoolsStory.js';
 import { StakingRewardsStory } from './Staking-Rewards.stories';
+import { StakingEpochsStory } from './Staking-Epochs.stories';
 
 import translations from '../../source/renderer/app/i18n/translations';
 import STAKE_POOLS from '../../source/renderer/app/config/stakingStakePools.dummy.json';
@@ -123,7 +123,6 @@ storiesOf('Staking', module)
     () => (
       <div>
         <StakingCountdown
-          redirectToStakingInfo={linkTo('Staking', () => 'Info')}
           currentLocale="en-US"
           startDateTime={startDateTimeKnob(
             'Decentralization Start DateTime',
@@ -145,9 +144,7 @@ storiesOf('Staking', module)
 
   .add(pageNames.rewards, StakingRewardsStory, { id: 'rewards' })
 
-  .add(pageNames.epochs, () => <StakingEpochs name={pageNames.epochs} />, {
-    id: 'epochs',
-  })
+  .add(pageNames.epochs, StakingEpochsStory, { id: 'epochs' })
 
   .add(
     pageNames.info,

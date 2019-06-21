@@ -51,8 +51,8 @@ export const StakePoolThumbnail = observer((props: Props) => {
     <div className={componentClassnames}>
       <div
         className={styles.content}
-        onClick={onClick}
-        onMouseEnter={onHover ? onHover : null}
+        onClick={event => onClick(event, ranking)}
+        onMouseEnter={onHover ? event => onHover(event, ranking) : null}
         role="link"
         aria-hidden
       >
