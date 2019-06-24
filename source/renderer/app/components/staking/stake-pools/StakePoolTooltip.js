@@ -153,16 +153,19 @@ export default class StakePoolTooltip extends Component<Props, State> {
       tooltipPosition = 'left';
     }
 
-    let containerNode;
-    let containerWidth;
+    let containerWidth = 0;
     let componentLeft;
     let arrowLeft;
     let componentTop;
     let arrowTop;
 
     if (tooltipPosition === 'top' || tooltipPosition === 'bottom') {
-      containerNode = document.querySelector('.StakePoolsList_component');
-      containerWidth = containerNode.offsetWidth;
+      const containerNode: ?HTMLElement = document.querySelector(
+        '.StakePoolsList_component'
+      );
+      if (containerNode && containerNode instanceof HTMLElement)
+        containerWidth = containerNode.offsetWidth;
+
       const paddingOffset = rangeMap(
         left,
         THUMBNAIL_OFFSET,
@@ -170,16 +173,21 @@ export default class StakePoolTooltip extends Component<Props, State> {
         -(THUMBNAIL_OFFSET / 2),
         THUMBNAIL_OFFSET / 2
       );
+
       componentLeft =
         -((TOOLTIP_WIDTH * left) / containerWidth) +
         THUMBNAIL_OFFSET +
         paddingOffset;
-      arrowLeft = -componentLeft + THUMBNAIL_OFFSET - ARROW_OFFSET;
       componentTop = THUMBNAIL_HEIGHT + ARROW_HEIGHT;
+
+      arrowLeft = -componentLeft + THUMBNAIL_OFFSET - ARROW_OFFSET;
+      arrowTop = -ARROW_WIDTH;
     } else {
       componentTop = -((TOOLTIP_MAX_HEIGHT * top) / window.innerHeight);
-      arrowTop = -componentTop;
-      componentLeft = THUMBNAIL_WIDTH - 30;
+      componentLeft = THUMBNAIL_HEIGHT;
+
+      arrowTop = -componentTop + ARROW_WIDTH;
+      arrowLeft = -ARROW_WIDTH;
     }
 
     const componentStyle = this.getComponenStyle(
@@ -231,25 +239,31 @@ export default class StakePoolTooltip extends Component<Props, State> {
     };
   };
 
-  getArrowStyle = (tooltipPosition: string, top: number, left: number) => {
+  getArrowStyle = (
+    tooltipPosition: string,
+    top: number,
+    left: number,
+    right: number = left,
+    bottom: number = top
+  ) => {
     if (tooltipPosition === 'top')
       return {
-        bottom: -22,
+        bottom,
         left,
       };
     if (tooltipPosition === 'right')
       return {
-        left: -22,
+        left,
         top,
       };
     if (tooltipPosition === 'bottom')
       return {
         borderBottomColor: this.props.color,
         left,
-        top: -22,
+        top,
       };
     return {
-      right: -22,
+      right,
       top,
     };
   };
