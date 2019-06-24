@@ -12,6 +12,7 @@ import styles from './StakePoolTooltip.scss';
 import type { StakePool } from '../../../api/staking/types';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import { getColorFromRange } from '../../../utils/colors';
+import { rangeMap } from '../../../utils/rangeMap';
 
 const messages = defineMessages({
   ranking: {
@@ -70,7 +71,8 @@ const OFFSET_TOP = 135;
 const THUMBNAIL_HEIGHT = 71;
 const THUMBNAIL_WIDTH = 80;
 const THUMBNAIL_OFFSET = THUMBNAIL_WIDTH / 2;
-const ARROW_WIDTH = 30;
+const ARROW_WIDTH = 22;
+const ARROW_HEIGHT = 11;
 const ARROW_OFFSET = ARROW_WIDTH / 2;
 const TOOLTIP_DELTA = 20;
 const TOOLTIP_MAX_HEIGHT = 337;
@@ -140,14 +142,16 @@ export default class StakePoolTooltip extends Component<Props, State> {
       originalLeft - OFFSET_LEFT - CONTAINER_MARGIN + THUMBNAIL_OFFSET;
 
     let tooltipPosition = 'right';
-    if (top <= TOOLTIP_DELTA) tooltipPosition = 'bottom';
-    else if (
+    if (top <= TOOLTIP_DELTA) {
+      tooltipPosition = 'bottom';
+    } else if (
       TOOLTIP_DELTA >=
       window.innerHeight - (top + THUMBNAIL_HEIGHT + OFFSET_TOP)
-    )
+    ) {
       tooltipPosition = 'top';
-    else if (left + OFFSET_LEFT > window.innerWidth - window.innerWidth / 2)
+    } else if (left + OFFSET_LEFT > window.innerWidth - window.innerWidth / 2) {
       tooltipPosition = 'left';
+    }
 
     let containerNode;
     let containerWidth;
@@ -159,12 +163,23 @@ export default class StakePoolTooltip extends Component<Props, State> {
     if (tooltipPosition === 'top' || tooltipPosition === 'bottom') {
       containerNode = document.querySelector('.StakePoolsList_component');
       containerWidth = containerNode.offsetWidth;
+      const paddingOffset = rangeMap(
+        left,
+        THUMBNAIL_OFFSET,
+        containerWidth - THUMBNAIL_OFFSET,
+        -(THUMBNAIL_OFFSET / 2),
+        THUMBNAIL_OFFSET / 2
+      );
       componentLeft =
-        -((TOOLTIP_WIDTH * left) / containerWidth) + THUMBNAIL_OFFSET;
+        -((TOOLTIP_WIDTH * left) / containerWidth) +
+        THUMBNAIL_OFFSET +
+        paddingOffset;
       arrowLeft = -componentLeft + THUMBNAIL_OFFSET - ARROW_OFFSET;
+      componentTop = THUMBNAIL_HEIGHT + ARROW_HEIGHT;
     } else {
       componentTop = -((TOOLTIP_MAX_HEIGHT * top) / window.innerHeight);
       arrowTop = -componentTop;
+      componentLeft = THUMBNAIL_WIDTH - 30;
     }
 
     const componentStyle = this.getComponenStyle(
@@ -185,27 +200,33 @@ export default class StakePoolTooltip extends Component<Props, State> {
     });
   };
 
-  getComponenStyle = (tooltipPosition: string, top: number, left: number) => {
+  getComponenStyle = (
+    tooltipPosition: string,
+    top: number,
+    left: number,
+    right: number = left,
+    bottom: number = top
+  ) => {
     if (tooltipPosition === 'top') {
       return {
-        bottom: THUMBNAIL_HEIGHT - 12,
+        bottom,
         left,
       };
     }
     if (tooltipPosition === 'right') {
       return {
-        left: 50,
+        left,
         top,
       };
     }
     if (tooltipPosition === 'bottom') {
       return {
         left,
-        top: THUMBNAIL_HEIGHT - 12,
+        top,
       };
     }
     return {
-      right: 50,
+      right,
       top,
     };
   };
