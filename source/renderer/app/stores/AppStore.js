@@ -22,6 +22,7 @@ export default class AppStore extends Store {
   @observable numberOfEpochsConsolidated: number = 0;
   @observable previousRoute: string = ROUTES.ROOT;
   @observable activeDialog: ApplicationDialog = null;
+  @observable dialogIsFirstTimeClosed: boolean = false;
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
@@ -143,8 +144,9 @@ export default class AppStore extends Store {
     if (this.activeDialog !== currentDialog) this.activeDialog = currentDialog;
   };
 
-  @action _closeActiveDialog = () => {
+  @action _closeActiveDialog = (dialogIsFirstTimeClosed?: boolean) => {
     if (this.activeDialog !== null) this.activeDialog = null;
+    if (dialogIsFirstTimeClosed) this.dialogIsFirstTimeClosed = dialogIsFirstTimeClosed;
   };
 
   @action _openAdaRedemptionScreen = () => {

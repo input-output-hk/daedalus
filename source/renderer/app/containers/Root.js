@@ -21,7 +21,7 @@ export default class Root extends Component<Props> {
       app,
       staking,
     } = stores;
-    const { isActiveDialog, _closeActiveDialog } = app;
+    const { isActiveDialog, _closeActiveDialog, dialogIsFirstTimeClosed } = app;
     const { isStakingPage } = staking;
     const { isProfilePage, isSettingsPage } = profile;
     const { isAdaRedemptionPage } = adaRedemption;
@@ -62,9 +62,10 @@ export default class Root extends Component<Props> {
     ) {
       if (
         isNodeInStoppingSequence &&
-        !isActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS)
+        !isActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS) &&
+        !dialogIsFirstTimeClosed
       ) {
-        _closeActiveDialog();
+        _closeActiveDialog(dialogIsFirstTimeClosed);
       }
       return <LoadingPage stores={stores} actions={actions} />;
     }
