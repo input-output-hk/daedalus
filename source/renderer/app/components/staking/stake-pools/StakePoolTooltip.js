@@ -13,6 +13,19 @@ import type { StakePool } from '../../../api/staking/types';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import { getColorFromRange } from '../../../utils/colors';
 import { rangeMap } from '../../../utils/rangeMap';
+import {
+  OFFSET_LEFT,
+  OFFSET_TOP,
+  THUMBNAIL_HEIGHT,
+  THUMBNAIL_OFFSET,
+  ARROW_WIDTH,
+  ARROW_HEIGHT,
+  ARROW_OFFSET,
+  TOOLTIP_DELTA,
+  TOOLTIP_MAX_HEIGHT,
+  TOOLTIP_WIDTH,
+  CONTAINER_MARGIN,
+} from '../../../config/stakingConfig';
 
 const messages = defineMessages({
   ranking: {
@@ -66,19 +79,6 @@ type State = {
   colorBandStyle: {},
 };
 
-const OFFSET_LEFT = 84;
-const OFFSET_TOP = 135;
-const THUMBNAIL_HEIGHT = 71;
-const THUMBNAIL_WIDTH = 80;
-const THUMBNAIL_OFFSET = THUMBNAIL_WIDTH / 2;
-const ARROW_WIDTH = 22;
-const ARROW_HEIGHT = 11;
-const ARROW_OFFSET = ARROW_WIDTH / 2;
-const TOOLTIP_DELTA = 20;
-const TOOLTIP_MAX_HEIGHT = 337;
-const TOOLTIP_WIDTH = 240;
-const CONTAINER_MARGIN = 21;
-
 @observer
 export default class StakePoolTooltip extends Component<Props, State> {
   static contextTypes = {
@@ -95,13 +95,12 @@ export default class StakePoolTooltip extends Component<Props, State> {
   componentWillReceiveProps(nextProps: Props) {
     const { isVisible: nextVisibility, top, left } = nextProps;
     const { isVisible: currentVisibility } = this.props;
-    if (nextVisibility !== currentVisibility)
-      this.getTooltipPosition(top, left);
+    if (nextVisibility !== currentVisibility) this.getTooltipStyle(top, left);
   }
 
   componentDidMount() {
     const { top, left } = this.props;
-    this.getTooltipPosition(top, left);
+    this.getTooltipStyle(top, left);
   }
 
   tooltipClick: boolean = false;
@@ -134,61 +133,83 @@ export default class StakePoolTooltip extends Component<Props, State> {
     this.tooltipClick = true;
   };
 
-  getTooltipPosition = (originalTop: number, originalLeft: number) => {
+  getTopBottomPosition = (left: number) => {
+    let containerWidth = 0;
+    const containerNode: ?HTMLElement = document.querySelector(
+      '.StakePoolsList_component'
+    );
+    if (containerNode && containerNode instanceof HTMLElement)
+      containerWidth = containerNode.offsetWidth;
+
+    const paddingOffset = rangeMap(
+      left,
+      THUMBNAIL_OFFSET,
+      containerWidth - THUMBNAIL_OFFSET,
+      -(THUMBNAIL_OFFSET / 2),
+      THUMBNAIL_OFFSET / 2
+    );
+
+    const componentLeft =
+      -((TOOLTIP_WIDTH * left) / containerWidth) +
+      THUMBNAIL_OFFSET +
+      paddingOffset;
+    const componentTop = THUMBNAIL_HEIGHT + ARROW_HEIGHT;
+
+    const arrowLeft = -componentLeft + THUMBNAIL_OFFSET - ARROW_OFFSET;
+    const arrowTop = -ARROW_WIDTH;
+
+    return {
+      componentLeft,
+      componentTop,
+      arrowLeft,
+      arrowTop,
+    };
+  };
+
+  getLeftRightPosition = (top: number) => {
+    const componentTop = -((TOOLTIP_MAX_HEIGHT * top) / window.innerHeight);
+    const componentLeft = THUMBNAIL_HEIGHT;
+
+    const arrowTop = -componentTop + ARROW_WIDTH;
+    const arrowLeft = -ARROW_WIDTH;
+
+    return {
+      componentTop,
+      componentLeft,
+      arrowTop,
+      arrowLeft,
+    };
+  };
+
+  getTooltipPosition = (top: number, left: number) => {
+    if (top <= TOOLTIP_DELTA) {
+      return 'bottom';
+    }
+    if (
+      TOOLTIP_DELTA >=
+      window.innerHeight - (top + THUMBNAIL_HEIGHT + OFFSET_TOP)
+    ) {
+      return 'top';
+    }
+    if (left + OFFSET_LEFT > window.innerWidth - window.innerWidth / 2) {
+      return 'left';
+    }
+    return 'right';
+  };
+
+  getTooltipStyle = (originalTop: number, originalLeft: number) => {
     const { color } = this.props;
 
     const top = originalTop - OFFSET_TOP;
     const left =
       originalLeft - OFFSET_LEFT - CONTAINER_MARGIN + THUMBNAIL_OFFSET;
 
-    let tooltipPosition = 'right';
-    if (top <= TOOLTIP_DELTA) {
-      tooltipPosition = 'bottom';
-    } else if (
-      TOOLTIP_DELTA >=
-      window.innerHeight - (top + THUMBNAIL_HEIGHT + OFFSET_TOP)
-    ) {
-      tooltipPosition = 'top';
-    } else if (left + OFFSET_LEFT > window.innerWidth - window.innerWidth / 2) {
-      tooltipPosition = 'left';
-    }
+    const tooltipPosition = this.getTooltipPosition(top, left);
 
-    let containerWidth = 0;
-    let componentLeft;
-    let arrowLeft;
-    let componentTop;
-    let arrowTop;
-
-    if (tooltipPosition === 'top' || tooltipPosition === 'bottom') {
-      const containerNode: ?HTMLElement = document.querySelector(
-        '.StakePoolsList_component'
-      );
-      if (containerNode && containerNode instanceof HTMLElement)
-        containerWidth = containerNode.offsetWidth;
-
-      const paddingOffset = rangeMap(
-        left,
-        THUMBNAIL_OFFSET,
-        containerWidth - THUMBNAIL_OFFSET,
-        -(THUMBNAIL_OFFSET / 2),
-        THUMBNAIL_OFFSET / 2
-      );
-
-      componentLeft =
-        -((TOOLTIP_WIDTH * left) / containerWidth) +
-        THUMBNAIL_OFFSET +
-        paddingOffset;
-      componentTop = THUMBNAIL_HEIGHT + ARROW_HEIGHT;
-
-      arrowLeft = -componentLeft + THUMBNAIL_OFFSET - ARROW_OFFSET;
-      arrowTop = -ARROW_WIDTH;
-    } else {
-      componentTop = -((TOOLTIP_MAX_HEIGHT * top) / window.innerHeight);
-      componentLeft = THUMBNAIL_HEIGHT;
-
-      arrowTop = -componentTop + ARROW_WIDTH;
-      arrowLeft = -ARROW_WIDTH;
-    }
+    const { componentTop, componentLeft, arrowTop, arrowLeft } =
+      tooltipPosition === 'top' || tooltipPosition === 'bottom'
+        ? this.getTopBottomPosition(left)
+        : this.getLeftRightPosition(top);
 
     const componentStyle = this.getComponenStyle(
       tooltipPosition,
