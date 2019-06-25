@@ -65,7 +65,7 @@ export default class Root extends Component<Props> {
         !isActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS) &&
         !dialogIsFirstTimeClosed
       ) {
-        _closeActiveDialog(dialogIsFirstTimeClosed);
+        _closeActiveDialog(true);
       }
       return <LoadingPage stores={stores} actions={actions} />;
     }

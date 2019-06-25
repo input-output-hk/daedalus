@@ -146,8 +146,7 @@ export default class AppStore extends Store {
 
   @action _closeActiveDialog = (dialogIsFirstTimeClosed?: boolean) => {
     if (this.activeDialog !== null) this.activeDialog = null;
-    if (dialogIsFirstTimeClosed)
-      this.dialogIsFirstTimeClosed = dialogIsFirstTimeClosed;
+    this.dialogIsFirstTimeClosed = !!dialogIsFirstTimeClosed;
   };
 
   @action _openAdaRedemptionScreen = () => {
