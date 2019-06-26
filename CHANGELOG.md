@@ -40,7 +40,8 @@ Changelog
 
 ### Chores
 
-- Improved switching of the application menu screens ([PR 14189](https://github.com/input-output-hk/daedalus/pull/1419))
+- Added button to open local state directory on Daedalus Diagnostics Screen ([PR 1438](https://github.com/input-output-hk/daedalus/pull/1438))
+- Improved switching of the application menu screens ([PR 1419](https://github.com/input-output-hk/daedalus/pull/1419))
 - Remove legacy references to report server ([PR 1425](https://github.com/input-output-hk/daedalus/pull/1425))
 - Renamed Network Status to Daedalus Diagnostics ([PR 1408](https://github.com/input-output-hk/daedalus/pull/1408))
 - Updated React-Polymorph to version 0.8.6 ([PR 1396](https://github.com/input-output-hk/daedalus/pull/1396))
