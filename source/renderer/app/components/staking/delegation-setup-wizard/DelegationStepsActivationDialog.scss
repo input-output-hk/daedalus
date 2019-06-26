@@ -1,0 +1,82 @@
+.delegationStepsActivationDialogWrapper {
+  font-family: var(--font-regular);
+
+  :global {
+    .Dialog_title {
+      letter-spacing: 2px;
+      margin-bottom: 0;
+    }
+  }
+
+  .delegationStepsIndicatorWrapper {
+    margin: auto;
+    width: 410px;
+
+    .stepIndicatorLabel {
+      color: var(--theme-delegation-steps-activation-steps-indicator-color);
+      font-family: var(--font-medium);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.83;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+  }
+
+  .content {
+    font-size: 16px;
+    line-height: 1.38;
+    margin-top: 20px;
+    text-align: left;
+
+    .description {
+      color: var(--theme-delegation-steps-activation-description-color);
+      margin-bottom: 20px;
+    }
+
+    .resumeWrapper {
+      display: flex;
+    }
+
+    .resumeWrapper,
+    .totalWrapper,
+    .addressWrapper {
+      font-family: var(--font-medium);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.38;
+      margin-bottom: 20px;
+
+      .label {
+        color: var(--theme-delegation-steps-activation-fees-label-color);
+        margin-bottom: 6px;
+      }
+
+      .amount {
+        color: var(--theme-delegation-steps-activation-fees-amount-color);
+        span {
+          font-family: var(--font-light);
+        }
+      }
+
+      .amountWrapper {
+        width: 50%;
+      }
+      
+      .feesWrapper {
+        width: 50%;
+        .amount {
+          opacity: 0.5;
+        }
+      }
+
+      .addressValue {
+        color: var(--theme-delegation-steps-activation-address-value-color);
+        font-family: var(--font-light);
+        font-weight: 300;
+        opacity: 0.5;
+        word-break: break-all;
+      }
+    }
+  }
+}

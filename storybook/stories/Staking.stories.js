@@ -17,6 +17,8 @@ import StakingInfo from '../../source/renderer/app/components/staking/info/Staki
 import DelegationStepsIntroDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsIntroDialog';
 import DelegationStepsChooseWalletDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog';
 import DelegationStepsNotAvailableDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsNotAvailableDialog';
+import DelegationStepsConfirmationDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog';
+import DelegationStepsActivationDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog';
 
 import { StakePoolsStory } from './StakePoolsStory.js';
 import { StakingRewardsStory } from './Staking-Rewards.stories';
@@ -171,6 +173,26 @@ storiesOf('Staking', module)
       onBack={action('onBack')}
       wallets={WALLETS}
       minDelegationFunds={1}
+    />
+  ))
+
+  .add('DelegationStepsConfirmationDialog', () => (
+    <DelegationStepsConfirmationDialog
+      stepsList={DELEGATION_WIZARD_STEPS_LIST}
+      isSpendingPasswordSet
+      onClose={action('onClose')}
+      onContinue={action('onContinue')}
+      onBack={action('onBack')}
+    />
+  ))
+
+  .add('DelegationStepsActivationDialog', () => (
+    <DelegationStepsActivationDialog
+      stepsList={DELEGATION_WIZARD_STEPS_LIST}
+      isSpendingPasswordSet
+      onClose={action('onClose')}
+      onContinue={action('onContinue')}
+      onBack={action('onBack')}
     />
   ))
 

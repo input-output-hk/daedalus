@@ -4,6 +4,8 @@ import { observer } from 'mobx-react';
 import DelegationStepsNotAvailableDialog from './DelegationStepsNotAvailableDialog';
 import DelegationStepsIntroDialog from './DelegationStepsIntroDialog';
 import DelegationStepsChooseWalletDialog from './DelegationStepsChooseWalletDialog';
+import DelegationStepsConfirmationDialog from './DelegationStepsConfirmationDialog';
+import DelegationStepsActivationDialog from './DelegationStepsActivationDialog';
 
 type WalletData = {
   label: string,
@@ -55,6 +57,28 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             stepsList={stepsList}
             wallets={wallets}
             minDelegationFunds={minDelegationFunds}
+            onClose={onClose}
+            onContinue={onContinue}
+            onBack={onBack}
+          />
+        );
+        break;
+      case 3:
+        content = (
+          <DelegationStepsConfirmationDialog
+            stepsList={stepsList}
+            isSpendingPasswordSet
+            onClose={onClose}
+            onContinue={onContinue}
+            onBack={onBack}
+          />
+        );
+        break;
+      case 4:
+        content = (
+          <DelegationStepsActivationDialog
+            stepsList={stepsList}
+            isSpendingPasswordSet
             onClose={onClose}
             onContinue={onContinue}
             onBack={onBack}
