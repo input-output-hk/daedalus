@@ -575,6 +575,10 @@ export default class NetworkStatusStore extends Store {
     if (this.isConnected) this._updateNetworkStatus({ force_ntp_check: true });
   };
 
+  openStateDirectory = () => {
+    // @todo
+  };
+
   @action _onCheckDiskSpace = ({
     isNotEnoughDiskSpace,
     diskSpaceRequired,

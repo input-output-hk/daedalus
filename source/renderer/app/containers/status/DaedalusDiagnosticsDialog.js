@@ -41,6 +41,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       isSystemTimeCorrect,
       forceCheckTimeDifferenceRequest,
       forceCheckLocalTimeDifference,
+      openStateDirectory,
       getNetworkStatusRequest,
       localBlockHeight,
       networkBlockHeight,
@@ -113,6 +114,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
           localBlockHeight={localBlockHeight}
           networkBlockHeight={networkBlockHeight}
           onForceCheckLocalTimeDifference={forceCheckLocalTimeDifference}
+          onOpenStateDirectory={openStateDirectory}
           onOpenExternalLink={openExternalLink}
           onRestartNode={restartNode}
           onClose={closeDaedalusDiagnosticsDialog.trigger}

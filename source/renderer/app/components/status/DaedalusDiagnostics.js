@@ -105,6 +105,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Daedalus State Directory',
     description: 'Daedalus State Directory',
   },
+  stateDirectoryPathBtn: {
+    id: 'daedalus.diagnostics.dialog.stateDirectoryPathBtn',
+    defaultMessage: '!!!Open',
+    description: 'Open',
+  },
   connectionError: {
     id: 'daedalus.diagnostics.dialog.connectionError',
     defaultMessage: '!!!CONNECTION ERROR',
@@ -333,6 +338,7 @@ type Props = {
   localBlockHeight: number,
   networkBlockHeight: number,
   onForceCheckLocalTimeDifference: Function,
+  onOpenStateDirectory: Function,
   onOpenExternalLink: Function,
   onRestartNode: Function,
   onClose: Function,
@@ -467,6 +473,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       latestLocalBlockTimestamp,
       latestNetworkBlockTimestamp,
       onForceCheckLocalTimeDifference,
+      onOpenStateDirectory,
       onClose,
       nodeConnectionError,
       isSystemTimeIgnored,
@@ -625,6 +632,12 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.stateDirectoryPath)}:</td>
+                <button
+                  className={styles.stateDirectoryBtn}
+                  onClick={() => onOpenStateDirectory()}
+                >
+                  {intl.formatMessage(messages.stateDirectoryPathBtn)}
+                </button>
                 <Tooltip skin={TooltipSkin} tip={daedalusStateDirectoryPath}>
                   <td className={styles.stateDirectoryPath}>
                     {daedalusStateDirectoryPath}
