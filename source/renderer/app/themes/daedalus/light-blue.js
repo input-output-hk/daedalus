@@ -557,6 +557,9 @@ const LIGHT_BLUE_THEME_CONFIG = {
       '#34465e',
     '--theme-staking-decentralization-progress-stripe-dark-2-background-color':
       '#445b7c',
+    '--theme-staking-donut-ring-completed-color': '#ea4c5b',
+    '--theme-staking-donut-ring-remaining-color': '#f8e9eb',
+    '--theme-staking-wallet-row-border-color': '#dfe4e8',
   },
   support: {
     '--theme-support-settings-text-color': '#5e6066',

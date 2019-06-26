@@ -1,0 +1,178 @@
+// @flow
+import React, { Component, Fragment } from 'react';
+import { observer } from 'mobx-react';
+import {
+  defineMessages,
+  intlShape,
+  FormattedMessage,
+  FormattedHTMLMessage,
+} from 'react-intl';
+import BigNumber from 'bignumber.js';
+import SVGInline from 'react-svg-inline';
+import Wallet from '../../../domains/Wallet';
+import NavDropdown from '../../navigation/NavDropdown';
+import settingsIcon from '../../../assets/images/wallet-nav/wallet-settings-2-ic.inline.svg';
+import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import DonutRing, { DONUT_RING_SIZES } from './DonutRing';
+import styles from './WalletRow.scss';
+
+export const DELEGATION_ACTIONS = {
+  CHANGE_DELEGATION: 'changeDelegation',
+  REMOVE_DELEGATION: 'removeDelegation',
+};
+
+const messages = defineMessages({
+  walletAmount: {
+    id: 'staking.delegationCenter.walletAmount',
+    defaultMessage: '!!!{amount} ADA',
+    description:
+      'Amount of each wallet for the Delegation center body section.',
+  },
+  inactiveStakePercentageActivate: {
+    id: 'staking.delegationCenter.inactiveStakePercentageActivate',
+    defaultMessage:
+      '!!!<b>activate {inactiveStakePercentage}% of inactive stake</b>',
+    description:
+      'Inactive stake percentage of each wallet for the Delegation center body section.',
+  },
+  delegated: {
+    id: 'staking.delegationCenter.delegated',
+    defaultMessage: '!!!Delegated',
+    description: 'Delegated label for the Delegation center body section.',
+  },
+  notDelegated: {
+    id: 'staking.delegationCenter.notDelegated',
+    defaultMessage: '!!!Not-delegated',
+    description: 'Not-delegated label for the Delegation center body section.',
+  },
+  changeDelegation: {
+    id: 'staking.delegationCenter.changeDelegation',
+    defaultMessage: '!!!Change delegation',
+    description:
+      'Change delegation label for the Delegation center body section.',
+  },
+  removeDelegation: {
+    id: 'staking.delegationCenter.removeDelegation',
+    defaultMessage: '!!!Remove delegation',
+    description:
+      'Remove delegation label for the Delegation center body section.',
+  },
+  toStakePoolCategory: {
+    id: 'staking.delegationCenter.toStakePoolCategory',
+    defaultMessage: '!!!to <b>[{delegatedPoolCategory}]</b> stake pool',
+    description:
+      'Delegated stake pool category label for the Delegation center body section.',
+  },
+  delegate: {
+    id: 'staking.delegationCenter.delegate',
+    defaultMessage: '!!!<b>Delegate</b>',
+    description: 'Delegate label for the Delegation center body section.',
+  },
+  yourStake: {
+    id: 'staking.delegationCenter.yourStake',
+    defaultMessage: '!!!your stake',
+    description: 'Your stake label for the Delegation center body section.',
+  },
+});
+
+type Props = { wallet: Wallet };
+
+@observer
+export default class WalletRow extends Component<Props> {
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
+
+  render() {
+    const { intl } = this.context;
+    const {
+      wallet: {
+        name,
+        amount,
+        inactiveStakePercentage,
+        isDelegated,
+        delegatedPoolCategory,
+      },
+    } = this.props;
+    const inactiveStakePercentageValue = inactiveStakePercentage || 0;
+    const amountValue = new BigNumber(amount);
+    const delegated = intl.formatMessage(messages.delegated);
+    const notDelegated = intl.formatMessage(messages.notDelegated);
+    const changeDelegation = intl.formatMessage(messages.changeDelegation);
+    const removeDelegation = intl.formatMessage(messages.removeDelegation);
+    const yourStake = intl.formatMessage(messages.yourStake);
+    const delegationActionOptions = [
+      {
+        label: changeDelegation,
+        value: DELEGATION_ACTIONS.CHANGE_DELEGATION,
+      },
+      {
+        label: removeDelegation,
+        value: DELEGATION_ACTIONS.REMOVE_DELEGATION,
+      },
+    ];
+
+    return (
+      <div className={styles.component}>
+        <div className={styles.left}>
+          <div className={styles.title}>{name}</div>
+          <div className={styles.description}>
+            <FormattedMessage
+              {...messages.walletAmount}
+              values={{
+                amount: amountValue.toFormat(SIMPLE_DECIMAL_PLACES_IN_ADA),
+              }}
+            />
+            {inactiveStakePercentageValue > 0 && (
+              <Fragment>
+                <span className={styles.donutRing}>
+                  <DonutRing
+                    percentage={100 - inactiveStakePercentageValue}
+                    size={DONUT_RING_SIZES.SMALL}
+                  />
+                </span>
+                <FormattedHTMLMessage
+                  {...messages.inactiveStakePercentageActivate}
+                  values={{
+                    inactiveStakePercentage: inactiveStakePercentageValue,
+                  }}
+                />
+              </Fragment>
+            )}
+          </div>
+        </div>
+        <div className={styles.right}>
+          <div className={styles.status}>
+            {isDelegated ? (
+              <NavDropdown
+                label={delegated}
+                icon={settingsIcon}
+                isActive
+                onChange={() => null}
+                activeItem=""
+                options={delegationActionOptions}
+              />
+            ) : (
+              <Fragment>
+                <span>{notDelegated}</span>
+                <SVGInline svg={settingsIcon} className={styles.gearIcon} />
+              </Fragment>
+            )}
+          </div>
+          <div className={styles.action}>
+            {isDelegated ? (
+              <FormattedHTMLMessage
+                {...messages.toStakePoolCategory}
+                values={{ delegatedPoolCategory }}
+              />
+            ) : (
+              <span>
+                <FormattedHTMLMessage {...messages.delegate} /> {yourStake}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+}

@@ -560,6 +560,8 @@ const CARDANO_THEME_CONFIG = {
       '#259c59',
     '--theme-staking-decentralization-progress-stripe-dark-2-background-color':
       '#2cbb69',
+    '--theme-staking-donut-ring-completed-color': '#ea4c5b',
+    '--theme-staking-donut-ring-remaining-color': '#f8e9eb',
   },
   support: {
     '--theme-support-settings-text-color': '#5e6066',

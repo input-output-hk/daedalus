@@ -1,0 +1,16 @@
+@import '../stakingConfig';
+
+.component {
+  background-color: var(--theme-staking-background-color);
+  margin: 20px;
+
+  .bodyTitle {
+    @extend %regularLightColorText;
+    margin: 0 0 10px 20px;
+  }
+
+  .mainContent {
+    @extend %contentBorderAndBackground;
+    padding: 0 20px;
+  }
+}

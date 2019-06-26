@@ -1,0 +1,52 @@
+@import '../stakingConfig';
+
+.component {
+  background-color: var(--theme-staking-background-color);
+  margin: 20px;
+  text-align: center;
+}
+
+.mainContent {
+  @extend %contentBorderAndBackground;
+  padding: 20px 102px;
+  position: relative;
+}
+
+.progressRing {
+  position: absolute;
+  right: 38px;
+  top: 60px;
+}
+
+.heading {
+  @extend %accentText;
+  font-size: 19px;
+  margin-bottom: 14px;
+}
+
+.description {
+  @extend %regularLightColorText;
+  margin-bottom: 24px;
+
+  b {
+    @extend %accentText;
+  }
+
+  a {
+    border-bottom: 1px solid var(--theme-staking-link-color);
+    color: var(--theme-staking-link-color);
+    margin: 0 5px;
+    padding-right: 18px;
+    position: relative;
+    text-decoration: none;
+  }
+
+  .linkNewWindowIcon {
+    display: inline-block;
+    height: 15px;
+    position: absolute;
+    right: 0;
+    top: 2px;
+    width: 15px;
+  }
+}

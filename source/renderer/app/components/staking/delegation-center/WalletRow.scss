@@ -1,0 +1,59 @@
+@import '../stakingConfig';
+
+.component {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--theme-staking-wallet-row-border-color);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  .left {
+    .title {
+      @extend %accentText;
+      margin-bottom: 3px;
+    }
+    .description {
+      @extend %regularText;
+      align-items: center;
+      display: flex;
+      font-size: 14px;
+
+      .donutRing {
+        margin: 0 8px;
+      }
+    }
+  }
+
+  .right {
+    .status {
+      @extend %regularText;
+      align-items: center;
+      display: flex;
+      margin-bottom: 3px;
+
+      .gearIcon {
+        margin-left: 10px;
+
+        & > svg {
+          height: 12px;
+          width: 12px;
+        }
+
+        @media (max-width: 950px) {
+          display: none;
+        }
+      }
+    }
+    .action {
+      @extend %regularText;
+      font-size: 14px;
+    }
+  }
+
+  b {
+    color: var(--theme-staking-link-color);
+  }
+}

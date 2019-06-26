@@ -11,12 +11,12 @@ import { CATEGORIES_BY_NAME } from '../../source/renderer/app/config/sidebarConf
 
 import StakingWithNavigation from '../../source/renderer/app/components/staking/layouts/StakingWithNavigation';
 import StakingCountdown from '../../source/renderer/app/components/staking/countdown/StakingCountdown';
-import DelegationCenter from '../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
 import StakingEpochs from '../../source/renderer/app/components/staking/epochs/StakingEpochs';
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
 
 import { StakePoolsStory } from './StakePoolsStory.js';
 import { StakingRewardsStory } from './Staking-Rewards.stories';
+import { StakingDelegationCenterStory } from './Staking-DelegationCenter.stories';
 
 const defaultPercentage = 10;
 const defaultStartDateTime = new Date('2019-09-26');
@@ -89,11 +89,9 @@ storiesOf('Staking', module)
     { id: 'countdown' }
   )
 
-  .add(
-    pageNames['delegation-center'],
-    () => <DelegationCenter name={pageNames['delegation-center']} />,
-    { id: 'delegation-center' }
-  )
+  .add(pageNames['delegation-center'], StakingDelegationCenterStory, {
+    id: 'delegation-center',
+  })
 
   .add(pageNames['stake-pools'], StakePoolsStory, { id: 'stake-pools' })
 

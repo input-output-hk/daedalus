@@ -12,6 +12,16 @@ export default class DelegationCenterPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    return <DelegationCenter name="DelegationCenter" />;
+    const {
+      stores: { staking },
+    } = this.props;
+
+    return (
+      <DelegationCenter
+        adaValue={staking.adaValue}
+        percentage={staking.percentage}
+        wallets={[]}
+      />
+    );
   }
 }
