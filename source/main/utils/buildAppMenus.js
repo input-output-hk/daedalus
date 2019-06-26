@@ -7,10 +7,7 @@ import { Logger } from './logging';
 import { safeExitWithCode } from './safeExitWithCode';
 import { CardanoNode } from '../cardano/CardanoNode';
 import { DIALOGS, SCREENS } from '../../common/ipc/constants';
-import {
-  toggleUiPartChannel,
-  showUiPartChannel,
-} from '../ipc/control-ui-parts';
+import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { getLocale } from './getLocale';
 
 const localesFillForm = {
@@ -23,22 +20,23 @@ export const buildAppMenus = async (
   cardanoNode: ?CardanoNode,
   locale: string
 ) => {
-  const openAbout = () => {
-    if (mainWindow) toggleUiPartChannel.send(DIALOGS.ABOUT, mainWindow);
+  const { ADA_REDEMPTION } = SCREENS;
+  const { ABOUT, BLOCK_CONSOLIDATION, DAEDALUS_DIAGNOSTICS } = DIALOGS;
+
+  const openAboutDialog = () => {
+    if (mainWindow) showUiPartChannel.send(ABOUT, mainWindow);
   };
 
-  const openDaedalusDiagnostics = () => {
-    if (mainWindow)
-      toggleUiPartChannel.send(DIALOGS.DAEDALUS_DIAGNOSTICS, mainWindow);
+  const openAdaRedemptionScreen = () => {
+    if (mainWindow) showUiPartChannel.send(ADA_REDEMPTION, mainWindow);
   };
 
-  const goToAdaRedemption = () => {
-    if (mainWindow) showUiPartChannel.send(SCREENS.ADA_REDEMPTION, mainWindow);
+  const openBlockConsolidationStatusDialog = () => {
+    if (mainWindow) showUiPartChannel.send(BLOCK_CONSOLIDATION, mainWindow);
   };
 
-  const goBlockConsolidationStatus = () => {
-    if (mainWindow)
-      toggleUiPartChannel.send(SCREENS.BLOCK_CONSOLIDATION, mainWindow);
+  const openDaedalusDiagnosticsDialog = () => {
+    if (mainWindow) showUiPartChannel.send(DAEDALUS_DIAGNOSTICS, mainWindow);
   };
 
   const restartInSafeMode = async () => {
@@ -84,12 +82,12 @@ export const buildAppMenus = async (
   };
 
   const menuActions = {
-    openAbout,
-    openDaedalusDiagnostics,
-    goToAdaRedemption,
+    openAboutDialog,
+    openDaedalusDiagnosticsDialog,
+    openAdaRedemptionScreen,
     restartInSafeMode,
     restartWithoutSafeMode,
-    goBlockConsolidationStatus,
+    openBlockConsolidationStatusDialog,
   };
 
   // Build app menus

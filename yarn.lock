@@ -9170,15 +9170,16 @@ react-number-format@3.0.3:
   dependencies:
     prop-types "^15.6.0"
 
-react-polymorph@0.8.6:
-  version "0.8.6"
-  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.8.6.tgz#66f20ea52c787ca8683e3e00261eb85c906f5ee8"
+react-polymorph@0.8.7:
+  version "0.8.7"
+  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.8.7.tgz#1f31c509006736bf1334ed2fa2386b4c74f19e3b"
   dependencies:
     create-react-context "0.2.2"
     create-react-ref "0.1.0"
     filter-react-dom-props "0.0.2"
     postinstall-build "5.0.1"
     react-modal "3.1.12"
+  integrity sha512-0/JwkTb3btzFdnUY9mOJzFKEGIuzGCxQPW2TIOyqpeIvON73G36111ykxq3S2Sx+l37SRF90J5ClFYbZi0nP+g==
 
 react-resize-detector@~2.3.0:
   version "2.3.0"

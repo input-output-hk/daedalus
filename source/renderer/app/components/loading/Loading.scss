@@ -94,7 +94,7 @@
 
 .connecting,
 .syncing {
-  bottom: 60px;
+  bottom: 64px;
   position: absolute;
   text-align: center;
   width: 100%;
@@ -149,8 +149,8 @@ $adaLogoWidth: 43px;
 }
 
 .headline {
-  font-family: var(--font-light);
-  font-size: 16px;
+  font-family: var(--font-regular);
+  font-size: 18px;
 }
 
 .connecting {

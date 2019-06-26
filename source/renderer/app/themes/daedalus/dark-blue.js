@@ -22,6 +22,7 @@ const rpBubble = {
   '--rp-bubble-bg-color': '#263345',
   '--rp-bubble-border-color': '#667a8a',
   '--rp-bubble-border-radius': '2px',
+  '--rp-bubble-arrow-bg-color': '#536370',
 };
 
 // BUTTON
@@ -546,7 +547,7 @@ const DARK_BLUE_THEME_CONFIG = {
       '#fafbfc',
   },
   staking: {
-    '--theme-staking-background-color': '#0b1926',
+    '--theme-staking-background-color': 'rgba(233, 244, 254, 0.1)',
     '--theme-staking-content-background-color': '#263345',
     '--theme-staking-content-border-color': '#263345',
     '--theme-staking-font-color-accent': '#cecfd1',
@@ -557,12 +558,12 @@ const DARK_BLUE_THEME_CONFIG = {
     '--theme-staking-table-border-color': '#c6cdd6',
     '--theme-staking-link-color': 'rgba(32, 181, 107, 1)',
     '--theme-staking-link-color-light': 'rgba(32, 181, 107, 0.5)',
-    '--theme-staking-decentralization-progress-stripe-dark-1-background-color':
-      '#3c4852',
-    '--theme-staking-decentralization-progress-stripe-dark-2-background-color':
-      '#536370',
+    '--theme-staking-progress-stripe-dark-1-background-color': '#3c4852',
+    '--theme-staking-progress-stripe-dark-2-background-color': '#536370',
+    '--theme-staking-table-body-highlighted-text-color': '#2ab467',
     '--theme-staking-donut-ring-completed-color': '#ea4c5b',
     '--theme-staking-donut-ring-remaining-color': '#f8e9eb',
+    '--theme-staking-wallet-row-border-color': '#dfe4e8',
   },
   support: {
     '--theme-support-settings-text-color': '#e9f4fe',

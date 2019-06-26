@@ -11,12 +11,12 @@ import { CATEGORIES_BY_NAME } from '../../source/renderer/app/config/sidebarConf
 
 import StakingWithNavigation from '../../source/renderer/app/components/staking/layouts/StakingWithNavigation';
 import StakingCountdown from '../../source/renderer/app/components/staking/countdown/StakingCountdown';
-import StakingEpochs from '../../source/renderer/app/components/staking/epochs/StakingEpochs';
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
 
 import { StakePoolsStory } from './StakePoolsStory.js';
 import { StakingRewardsStory } from './Staking-Rewards.stories';
 import { StakingDelegationCenterStory } from './Staking-DelegationCenter.stories';
+import { StakingEpochsStory } from './Staking-Epochs.stories';
 
 const defaultPercentage = 10;
 const defaultStartDateTime = new Date('2019-09-26');
@@ -77,7 +77,6 @@ storiesOf('Staking', module)
     () => (
       <div>
         <StakingCountdown
-          redirectToStakingInfo={linkTo('Staking', () => 'Info')}
           currentLocale="en-US"
           startDateTime={startDateTimeKnob(
             'Decentralization Start DateTime',
@@ -97,9 +96,7 @@ storiesOf('Staking', module)
 
   .add(pageNames.rewards, StakingRewardsStory, { id: 'rewards' })
 
-  .add(pageNames.epochs, () => <StakingEpochs name={pageNames.epochs} />, {
-    id: 'epochs',
-  })
+  .add(pageNames.epochs, StakingEpochsStory, { id: 'epochs' })
 
   .add(
     pageNames.info,
