@@ -103,62 +103,64 @@ export default class WalletUtxo extends Component<Props, State> {
                   />
                 </p>
 
-                <ResponsiveContainer
-                  height={280}
-                  className={styles.responsiveContainer}
-                >
-                  <BarChart data={chartData} barGap={30} barCategoryGap={4}>
-                    <CartesianGrid
-                      className={styles.cartesianGrid}
-                      horizontal={false}
-                      vertical={false}
-                      y={-10}
-                      height={255}
-                      fill="transparent"
-                    />
-                    <XAxis
-                      dataKey="walletAmount"
-                      interval={0}
-                      axisLine={false}
-                      tickLine={false}
-                      tick={(props: TickProps) => (
-                        <Tick {...props} textAnchor="start" vertical />
-                      )}
-                      className={styles.xAxis}
-                      y={0}
-                    >
-                      <Label
-                        value={intl.formatMessage(messages.labelX)}
-                        offset={20}
-                        position="insideBottomRight"
-                        className={styles.xAxisLabel}
+                <div className={styles.responsiveContainerWrapper}>
+                  <ResponsiveContainer
+                    height={280}
+                    className={styles.responsiveContainer}
+                  >
+                    <BarChart data={chartData} barSize={22}>
+                      <CartesianGrid
+                        className={styles.cartesianGrid}
+                        horizontal={false}
+                        vertical={false}
+                        y={-10}
+                        height={255}
+                        fill="transparent"
                       />
-                    </XAxis>
-                    <YAxis
-                      dataKey="walletUtxosAmount"
-                      axisLine={false}
-                      tickLine={false}
-                      allowDecimals={false}
-                      domain={[0, 'dataMax']}
-                      tick={(props: TickProps) => (
-                        <Tick {...props} textAnchor="end" />
-                      )}
-                    >
-                      <Label
-                        value={intl.formatMessage(messages.labelY)}
-                        offset={0}
-                        position="insideTopLeft"
-                        className={styles.yAxisLabel}
+                      <XAxis
+                        dataKey="walletAmount"
+                        interval={0}
+                        axisLine={false}
+                        tickLine={false}
+                        tick={(props: TickProps) => (
+                          <Tick {...props} textAnchor="start" vertical />
+                        )}
+                        className={styles.xAxis}
+                        y={0}
+                      >
+                        <Label
+                          value={intl.formatMessage(messages.labelX)}
+                          offset={20}
+                          position="insideBottomRight"
+                          className={styles.xAxisLabel}
+                        />
+                      </XAxis>
+                      <YAxis
+                        dataKey="walletUtxosAmount"
+                        axisLine={false}
+                        tickLine={false}
+                        allowDecimals={false}
+                        domain={[0, 'dataMax']}
+                        tick={(props: TickProps) => (
+                          <Tick {...props} textAnchor="end" />
+                        )}
+                      >
+                        <Label
+                          value={intl.formatMessage(messages.labelY)}
+                          offset={0}
+                          position="insideTopLeft"
+                          className={styles.yAxisLabel}
+                        />
+                      </YAxis>
+                      <Tooltip
+                        cursor={<Cursor offsetWidth={22} />}
+                        isAnimationActive={false}
+                        content={<CustomTooltip />}
                       />
-                    </YAxis>
-                    <Tooltip
-                      cursor={<Cursor />}
-                      isAnimationActive={false}
-                      content={<CustomTooltip />}
-                    />
-                    <Bar dataKey="walletUtxosAmount" className={styles.bar} />
-                  </BarChart>
-                </ResponsiveContainer>
+                      <Bar dataKey="walletUtxosAmount" className={styles.bar} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
               </Fragment>
             ) : (
               <p>{intl.formatMessage(messages.emptyWallet)}</p>
