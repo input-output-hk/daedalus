@@ -634,7 +634,9 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 <td>{intl.formatMessage(messages.stateDirectoryPath)}:</td>
                 <button
                   className={styles.stateDirectoryBtn}
-                  onClick={() => onOpenStateDirectory()}
+                  onClick={() =>
+                    onOpenStateDirectory(daedalusStateDirectoryPath)
+                  }
                 >
                   {intl.formatMessage(messages.stateDirectoryPathBtn)}
                 </button>
