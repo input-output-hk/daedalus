@@ -366,6 +366,19 @@ const createDaedalusComponentsTheme = (
       '--theme-data-migration-layer-text-opacity-color': `${text.secondary}`,
     },
     delegationSetupWizard: {
+      '--theme-delegation-steps-activation-steps-indicator-color': `${
+        text.primary
+      }`,
+      '--theme-delegation-steps-activation-description-color': `${chroma(
+        text.primary
+      ).alpha(0.8)}`,
+      '--theme-delegation-steps-activation-fees-label-color': `${text.primary}`,
+      '--theme-delegation-steps-activation-fees-amount-color': `${
+        error.regular
+      }`,
+      '--theme-delegation-steps-activation-address-value-color': `${
+        text.primary
+      }`,
       '--theme-delegation-steps-choose-wallet-custom-value-color': `${
         text.primary
       }`,
@@ -386,6 +399,18 @@ const createDaedalusComponentsTheme = (
       }`,
       '--theme-delegation-steps-choose-wallet-steps-indicator-color': `${
         text.primary
+      }`,
+      '--theme-delegation-steps-confirmation-steps-indicator-color': `${
+        text.primary
+      }`,
+      '--theme-delegation-steps-confirmation-description-color': `${chroma(
+        text.primary
+      ).alpha(0.8)}`,
+      '--theme-delegation-steps-confirmation-fees-label-color': `${
+        text.primary
+      }`,
+      '--theme-delegation-steps-confirmation-fees-amount-color': `${
+        error.regular
       }`,
       '--theme-delegation-steps-intro-content-text-color': `${chroma(
         text.primary

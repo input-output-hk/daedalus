@@ -28,23 +28,29 @@ const messages = defineMessages({
   },
   descriptionLine1: {
     id: 'staking.delegationSetup.activation.step.dialog.description.line1',
-    defaultMessage: '!!!Now all new wallet addresses will match your delegation preferences and ada received on those addresses will be actively delegated.',
-    description: 'Description "line 1" on the delegation setup "activation" step dialog.',
+    defaultMessage:
+      '!!!Now all new wallet addresses will match your delegation preferences and ada received on those addresses will be actively delegated.',
+    description:
+      'Description "line 1" on the delegation setup "activation" step dialog.',
   },
   descriptionLine2: {
     id: 'staking.delegationSetup.activation.step.dialog.description.line2',
-    defaultMessage: '!!!To delegate the rest of the ada in your wallet, move it to a new addresses which match your delegation preferences.',
-    description: 'Description "line 2" on the delegation setup "activation" step dialog.',
+    defaultMessage:
+      '!!!To delegate the rest of the ada in your wallet, move it to a new addresses which match your delegation preferences.',
+    description:
+      'Description "line 2" on the delegation setup "activation" step dialog.',
   },
   addressLabel: {
     id: 'staking.delegationSetup.activation.step.dialog.addressLabel',
     defaultMessage: '!!!To',
-    description: 'Address label on the delegation setup "activation" step dialog.',
+    description:
+      'Address label on the delegation setup "activation" step dialog.',
   },
   amountLabel: {
     id: 'staking.delegationSetup.activation.step.dialog.amountLabel',
     defaultMessage: '!!!Amount',
-    description: 'Amount label on the delegation setup "activation" step dialog.',
+    description:
+      'Amount label on the delegation setup "activation" step dialog.',
   },
   feesLabel: {
     id: 'staking.delegationSetup.activation.step.dialog.feesLabel',
@@ -54,10 +60,12 @@ const messages = defineMessages({
   totalLabel: {
     id: 'staking.delegationSetup.activation.step.dialog.totalLabel',
     defaultMessage: '!!!Total',
-    description: 'Total label on the delegation setup "activation" step dialog.',
+    description:
+      'Total label on the delegation setup "activation" step dialog.',
   },
   spendingPasswordPlaceholder: {
-    id: 'staking.delegationSetup.activation.step.dialog.spendingPasswordPlaceholder',
+    id:
+      'staking.delegationSetup.activation.step.dialog.spendingPasswordPlaceholder',
     defaultMessage: '!!!Password',
     description: 'Placeholder for "spending password"',
   },
@@ -105,22 +113,18 @@ export default class DelegationStepsActivationDialog extends Component<
     spendingPasswordValue: '',
   };
 
-  form = new ReactToolboxMobxForm(
-    {
-      fields: {
-        spendingPassword: {
-          type: 'password',
-          label: this.context.intl.formatMessage(
-            messages.spendingPasswordLabel
-          ),
-          placeholder: this.context.intl.formatMessage(
-            messages.spendingPasswordPlaceholder
-          ),
-          value: '',
-        },
+  form = new ReactToolboxMobxForm({
+    fields: {
+      spendingPassword: {
+        type: 'password',
+        label: this.context.intl.formatMessage(messages.spendingPasswordLabel),
+        placeholder: this.context.intl.formatMessage(
+          messages.spendingPasswordPlaceholder
+        ),
+        value: '',
       },
     },
-  );
+  });
 
   submit = () => {
     this.form.submit({
@@ -129,7 +133,9 @@ export default class DelegationStepsActivationDialog extends Component<
         const { spendingPassword } = form.values();
         const data = {
           fees: 0.172081,
-          password: isSpendingPasswordSet ? this.state.spendingPasswordValue : null,
+          password: isSpendingPasswordSet
+            ? this.state.spendingPasswordValue
+            : null,
         };
         this.props.onConfirm(data);
       },
@@ -199,12 +205,8 @@ export default class DelegationStepsActivationDialog extends Component<
 
         <div className={styles.content}>
           <div className={styles.description}>
-            <p>
-              {intl.formatMessage(messages.descriptionLine1)}
-            </p>
-            <p>
-              {intl.formatMessage(messages.descriptionLine2)}
-            </p>
+            <p>{intl.formatMessage(messages.descriptionLine1)}</p>
+            <p>{intl.formatMessage(messages.descriptionLine2)}</p>
           </div>
 
           <div className={styles.addressWrapper}>
@@ -245,19 +247,19 @@ export default class DelegationStepsActivationDialog extends Component<
             </p>
           </div>
 
-          {isSpendingPasswordSet &&
+          {isSpendingPasswordSet && (
             <Input
               type="password"
               className={styles.spendingPassword}
               {...spendingPasswordField.bind()}
               skin={InputSkin}
-              onChange={(value) => {
-                this.handlePasswordChange(value)
+              onChange={value => {
+                this.handlePasswordChange(value);
               }}
               value={spendingPasswordValue}
               autoFocus
             />
-          }
+          )}
         </div>
       </Dialog>
     );

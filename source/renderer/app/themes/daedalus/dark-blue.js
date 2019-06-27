@@ -308,6 +308,12 @@ const DARK_BLUE_THEME_CONFIG = {
       'rgba(250, 251, 252, 0.5)',
   },
   delegationSetupWizard: {
+    '--theme-delegation-steps-activation-steps-indicator-color': '#e9f4fe',
+    '--theme-delegation-steps-activation-description-color':
+      'rgba(233, 244, 254, 0.8)',
+    '--theme-delegation-steps-activation-fees-label-color': '#e9f4fe',
+    '--theme-delegation-steps-activation-fees-amount-color': '#ea4c5b',
+    '--theme-delegation-steps-activation-address-value-color': '#e9f4fe',
     '--theme-delegation-steps-choose-wallet-custom-value-color': '#e9f4fe',
     '--theme-delegation-steps-choose-wallet-description-color':
       'rgba(233, 244, 254, 0.8)',
@@ -322,6 +328,11 @@ const DARK_BLUE_THEME_CONFIG = {
     '--theme-delegation-steps-choose-wallet-steps-indicator-color': '#e9f4fe',
     '--theme-delegation-steps-intro-content-text-color':
       'rgba(233, 244, 254, 0.8)',
+    '--theme-delegation-steps-confirmation-steps-indicator-color': '#e9f4fe',
+    '--theme-delegation-steps-confirmation-description-color':
+      'rgba(233, 244, 254, 0.8)',
+    '--theme-delegation-steps-confirmation-fees-label-color': '#e9f4fe',
+    '--theme-delegation-steps-confirmation-fees-amount-color': '#ea4c5b',
     '--theme-delegation-steps-intro-divider-border-color': '#334152',
     '--theme-delegation-steps-intro-link-color': 'rgba(32, 181, 107, 1)',
     '--theme-delegation-steps-intro-list-label-color': '#e9f4fe',

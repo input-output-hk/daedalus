@@ -28,21 +28,26 @@ const messages = defineMessages({
   },
   description: {
     id: 'staking.delegationSetup.confirmation.step.dialog.description',
-    defaultMessage: '!!!Confirm delegation to publish your delegation preferences on Cardano blockchain.',
-    description: 'Description on the delegation setup "confirmation" step dialog.',
+    defaultMessage:
+      '!!!Confirm delegation to publish your delegation preferences on Cardano blockchain.',
+    description:
+      'Description on the delegation setup "confirmation" step dialog.',
   },
   feesLabel: {
     id: 'staking.delegationSetup.confirmation.step.dialog.feesLabel',
     defaultMessage: '!!!Fees',
-    description: 'Fees label on the delegation setup "confirmation" step dialog.',
+    description:
+      'Fees label on the delegation setup "confirmation" step dialog.',
   },
   spendingPasswordPlaceholder: {
-    id: 'staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder',
+    id:
+      'staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder',
     defaultMessage: '!!!Password',
     description: 'Placeholder for "spending password"',
   },
   spendingPasswordLabel: {
-    id: 'staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel',
+    id:
+      'staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel',
     defaultMessage: '!!!Spending password',
     description: 'Label for "spending password"',
   },
@@ -85,22 +90,18 @@ export default class DelegationStepsConfirmationDialog extends Component<
     spendingPasswordValue: '',
   };
 
-  form = new ReactToolboxMobxForm(
-    {
-      fields: {
-        spendingPassword: {
-          type: 'password',
-          label: this.context.intl.formatMessage(
-            messages.spendingPasswordLabel
-          ),
-          placeholder: this.context.intl.formatMessage(
-            messages.spendingPasswordPlaceholder
-          ),
-          value: '',
-        },
+  form = new ReactToolboxMobxForm({
+    fields: {
+      spendingPassword: {
+        type: 'password',
+        label: this.context.intl.formatMessage(messages.spendingPasswordLabel),
+        placeholder: this.context.intl.formatMessage(
+          messages.spendingPasswordPlaceholder
+        ),
+        value: '',
       },
     },
-  );
+  });
 
   submit = () => {
     this.form.submit({
@@ -109,7 +110,9 @@ export default class DelegationStepsConfirmationDialog extends Component<
         const { spendingPassword } = form.values();
         const data = {
           fees: 0.172081,
-          password: isSpendingPasswordSet ? this.state.spendingPasswordValue : null,
+          password: isSpendingPasswordSet
+            ? this.state.spendingPasswordValue
+            : null,
         };
         this.props.onConfirm(data);
       },
@@ -191,19 +194,19 @@ export default class DelegationStepsConfirmationDialog extends Component<
             </p>
           </div>
 
-          {isSpendingPasswordSet &&
+          {isSpendingPasswordSet && (
             <Input
               type="password"
               className={styles.spendingPassword}
               {...spendingPasswordField.bind()}
               skin={InputSkin}
-              onChange={(value) => {
-                this.handlePasswordChange(value)
+              onChange={value => {
+                this.handlePasswordChange(value);
               }}
               value={spendingPasswordValue}
               autoFocus
             />
-          }
+          )}
         </div>
       </Dialog>
     );
