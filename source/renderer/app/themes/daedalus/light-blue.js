@@ -384,6 +384,7 @@ const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-nav-dropdown-item-text-color': '#1d2e47',
     '--theme-nav-dropdown-item-background-color': '#fafbfc',
     '--theme-nav-dropdown-item-background-color-hover': '#f1f3f5',
+    '--theme-nav-dropdown-item-color-hover': '#1d2e47',
   },
   navItem: {
     '--theme-nav-item-background-color': '#1c2e47',

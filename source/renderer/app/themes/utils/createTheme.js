@@ -443,6 +443,7 @@ const createDaedalusComponentsTheme = (
       '--theme-nav-dropdown-item-background-color-hover': `${chroma(
         background.primary.regular
       ).alpha(0.1)}`,
+      '--theme-nav-dropdown-item-color-hover': `${text.primary}`,
     },
     navItem: {
       '--theme-nav-item-background-color': `${background.secondary.darkest}`,
