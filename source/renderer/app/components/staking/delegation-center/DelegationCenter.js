@@ -1,12 +1,12 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import styles from './DelegationCenter.scss';
 import type { Node } from 'react';
+import styles from './DelegationCenter.scss';
 
 type Props = {
   name: string,
-  children: ?Node,
+  children?: Node,
 };
 
 @observer
