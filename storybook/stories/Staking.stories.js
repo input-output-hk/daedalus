@@ -18,10 +18,7 @@ import DelegationStepsIntroDialog from '../../source/renderer/app/components/sta
 import DelegationStepsChooseWalletDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog';
 import DelegationStepsNotAvailableDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsNotAvailableDialog';
 
-import {
-  StakePoolsStory,
-  StakePoolTooltipStory,
-} from './Staking-StakePoolsStory.js';
+import { StakePoolsStory } from './Staking-StakePoolsStory.js';
 import { StakingRewardsStory } from './Staking-Rewards.stories';
 import { StakingEpochsStory } from './Staking-Epochs.stories';
 
@@ -140,9 +137,6 @@ storiesOf('Staking', module)
   )
 
   .add(pageNames['stake-pools'], StakePoolsStory, { id: 'stake-pools' })
-  .add(pageNames['stake-pools-tooltip'], StakePoolTooltipStory, {
-    id: 'stake-pools-tooltip',
-  })
 
   .add(pageNames.rewards, StakingRewardsStory, { id: 'rewards' })
 
