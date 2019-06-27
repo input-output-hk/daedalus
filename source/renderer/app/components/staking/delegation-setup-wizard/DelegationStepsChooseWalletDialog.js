@@ -18,7 +18,7 @@ import Dialog from '../../widgets/Dialog';
 
 const messages = defineMessages({
   title: {
-    id: 'staking.delegationSetup.steps.dialog.title',
+    id: 'staking.delegationSetup.chooseWallet.step.dialog.title',
     defaultMessage: '!!!Delegation Setup',
     description:
       'Title "Delegation Setup" on the delegation setup "choose wallet" step dialog.',
