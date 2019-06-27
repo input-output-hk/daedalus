@@ -5,7 +5,10 @@ Changelog
 
 ### Features
 
+<<<<<<< HEAD
 - Implemented "Delegation Setup wizard" steps 4 & 5 UI ([PR 1439](https://github.com/input-output-hk/daedalus/pull/1439))
+=======
+>>>>>>> develop
 - Implemented "Delegation Setup wizard" steps 0 & 1 UI ([PR 1416](https://github.com/input-output-hk/daedalus/pull/1416))
 - Implemented "Current and Previous Epochs screen" UI ([PR 1418](https://github.com/input-output-hk/daedalus/pull/1418))
 - Added new application menu item "Help and Support" with "GPU Safe Mode", "Download Logs", "Support Request" and "Known Issues" options ([PR 1382](https://github.com/input-output-hk/daedalus/pull/1382))

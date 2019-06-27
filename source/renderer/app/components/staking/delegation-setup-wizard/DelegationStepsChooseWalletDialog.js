@@ -128,9 +128,9 @@ export default class DelegationStepsChooseWalletDialog extends Component<
     ];
 
     const walletSelectClasses = classNames([
-      styles.walletSelect,
-      walletChoiceError ? styles.error : null,
-    ]);
+        styles.walletSelect,
+        walletChoiceError ? styles.error : null,
+      ]);
 
     return (
       <Dialog
