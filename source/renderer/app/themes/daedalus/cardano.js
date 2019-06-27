@@ -100,7 +100,7 @@ const rpModal = {
 // OPTIONS
 const rpOptions = {
   '--rp-option-bg-color': '#fafbfc',
-  '--rp-option-bg-color-highlighted': 'rgba(32, 34, 37, 0.07)',
+  '--rp-option-bg-color-highlighted': '#edf0f3',
   '--rp-option-border-color': 'rgba(32, 34, 37, 0.07)',
   '--rp-option-checkmark-color': '#5e6066',
   '--rp-option-line-height': '22px',
