@@ -91,6 +91,16 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     this.props.stores.app.openExternalLink(learnMoreLinkUrl);
   };
 
+  handleConfirm = () => {
+    // @TODO - proceed confirmation data
+    this.handleContinue();
+  };
+
+  handleActivate = () => {
+    // @TODO - proceed activation data
+    this.handleDialogClose();
+  };
+
   render() {
     const { activeStep } = this.state;
     const { stores } = this.props;
@@ -124,6 +134,8 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         onContinue={this.handleContinue}
         onBack={this.onBack}
         onLearnMoreClick={this.handleLearnMoreClick}
+        onConfirm={this.handleConfirm}
+        onActivate={this.handleActivate}
       />
     );
   }

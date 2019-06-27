@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
-import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import { Input } from 'react-polymorph/lib/components/Input';
@@ -91,14 +90,15 @@ const messages = defineMessages({
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type State = {
-  spendingPassword: string,
+  spendingPasswordValue: string,
 };
 
 type Props = {
   onClose: Function,
-  onContinue: Function,
+  onActivate: Function,
   onBack: Function,
   stepsList: Array<string>,
+  isSpendingPasswordSet?: boolean,
 };
 
 export default class DelegationStepsActivationDialog extends Component<
@@ -128,16 +128,17 @@ export default class DelegationStepsActivationDialog extends Component<
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: () => {
         const { isSpendingPasswordSet } = this.props;
-        const { spendingPassword } = form.values();
         const data = {
-          fees: 0.172081,
+          fees: 12.042481,
+          amount: 3,
+          total: 15.042481,
           password: isSpendingPasswordSet
             ? this.state.spendingPasswordValue
             : null,
         };
-        this.props.onConfirm(data);
+        this.props.onActivate(data);
       },
       onError: () => {},
     });
@@ -153,7 +154,6 @@ export default class DelegationStepsActivationDialog extends Component<
     const {
       stepsList,
       onClose,
-      onContinue,
       onBack,
       isSpendingPasswordSet,
     } = this.props;

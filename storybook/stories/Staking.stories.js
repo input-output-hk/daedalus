@@ -181,7 +181,7 @@ storiesOf('Staking', module)
       stepsList={DELEGATION_WIZARD_STEPS_LIST}
       isSpendingPasswordSet
       onClose={action('onClose')}
-      onContinue={action('onContinue')}
+      onConfirm={action('onConfirm')}
       onBack={action('onBack')}
     />
   ))
@@ -191,7 +191,7 @@ storiesOf('Staking', module)
       stepsList={DELEGATION_WIZARD_STEPS_LIST}
       isSpendingPasswordSet
       onClose={action('onClose')}
-      onContinue={action('onContinue')}
+      onActivate={action('onActivate')}
       onBack={action('onBack')}
     />
   ))

@@ -23,6 +23,8 @@ type Props = {
   onLearnMoreClick: Function,
   stepsList: Array<string>,
   minDelegationFunds: number,
+  onActivate: Function,
+  onConfirm: Function,
 };
 
 @observer
@@ -38,6 +40,8 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       onLearnMoreClick,
       stepsList,
       minDelegationFunds,
+      onActivate,
+      onConfirm,
     } = this.props;
 
     if (isDisabled) {
@@ -69,7 +73,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             stepsList={stepsList}
             isSpendingPasswordSet
             onClose={onClose}
-            onContinue={onContinue}
+            onConfirm={onConfirm}
             onBack={onBack}
           />
         );
@@ -80,7 +84,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             stepsList={stepsList}
             isSpendingPasswordSet
             onClose={onClose}
-            onContinue={onContinue}
+            onActivate={onActivate}
             onBack={onBack}
           />
         );
