@@ -1,3 +1,7 @@
+// @flow
+
+export const MIN_DELEGATION_FUNDS = 1;
+
 // Dimensions
 
 export const OFFSET_LEFT = 84;
