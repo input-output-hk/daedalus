@@ -113,6 +113,27 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
       '--rp-select-input-border-color-focus': `${focus}`,
       '--rp-select-input-text-color': `${text.primary}`,
     },
+    rpStepper: {
+      '--rp-stepper-bullet-background-color-disabled': `${
+        background.primary.lightest
+      }`,
+      '--rp-stepper-bullet-border-color': `${chroma(
+        background.secondary.regular
+      ).alpha(0.1)}`,
+      '--rpstepper-bullet-height': '12px',
+      '--rpstepper-bullet-width': '12px',
+      '--rp-stepper-label-color': `${text.primary}`,
+      '--rp-stepper-label-color-light': `${chroma(text.primary).alpha(0.3)}`,
+      '--rp-stepper-main-color': `${background.secondary.regular}`,
+      '--rp-stepper-main-color-light': `${chroma(
+        background.secondary.regular
+      ).alpha(0.1)}`,
+      '--rpstepper-stepper-step-label-bottom-margin': '6px',
+      '--rpstepper-steps-bar-color-disabled': `${chroma(
+        background.secondary.regular
+      ).alpha(0.1)}`,
+      '--rpstepper-steps-bar-top-position': '6px',
+    },
     rpSwitch: {
       '--rp-switch-bg-color-off': `${background.secondary.regular}`,
       '--rp-switch-bg-color-on': `${background.secondary.regular}`,
@@ -343,6 +364,50 @@ const createDaedalusComponentsTheme = (
       }`,
       '--theme-data-migration-layer-text-color': `${text.secondary}`,
       '--theme-data-migration-layer-text-opacity-color': `${text.secondary}`,
+    },
+    delegationSetupWizard: {
+      '--theme-delegation-steps-choose-wallet-custom-value-color': `${
+        text.primary
+      }`,
+      '--theme-delegation-steps-choose-wallet-description-color': `${chroma(
+        text.primary
+      ).alpha(0.8)}`,
+      '--theme-delegation-steps-choose-wallet-description-highlighted-color': `${
+        text.primary
+      }`,
+      '--theme-delegation-steps-choose-wallet-error-message-color': `${
+        error.regular
+      }`,
+      '--theme-delegation-steps-choose-wallet-error-message-light-color': `${chroma(
+        error.regular
+      ).alpha(0.7)}`,
+      '--theme-delegation-steps-choose-wallet-error-select-options-color': `${
+        text.primary
+      }`,
+      '--theme-delegation-steps-choose-wallet-steps-indicator-color': `${
+        text.primary
+      }`,
+      '--theme-delegation-steps-intro-content-text-color': `${chroma(
+        text.primary
+      ).alpha(0.8)}`,
+      '--theme-delegation-steps-intro-divider-border-color': `${border}`,
+      '--theme-delegation-steps-intro-link-color': `${
+        background.secondary.regular
+      }`,
+      '--theme-delegation-steps-intro-list-label-color': `${text.primary}`,
+      '--theme-delegation-steps-intro-list-numbers-color': `${text.primary}`,
+      '--theme-delegation-steps-intro-list-optional-label-color': `${chroma(
+        text.primary
+      ).alpha(0.5)}`,
+      '--theme-delegation-steps-not-available-description-text-color': `${chroma(
+        text.primary
+      ).alpha(0.8)}`,
+      '--theme-delegation-steps-not-available-description-highlight-text-color': `${
+        text.primary
+      }`,
+      '--theme-delegation-steps-not-available-icon-color': `${text.primary}`,
+      '--theme-delegation-steps-not-available-subtitle-text-color':
+        text.primary,
     },
     dialog: {
       '--theme-dialog-choice-tabs-text-color': `${text.primary}`,

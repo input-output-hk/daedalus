@@ -1,0 +1,64 @@
+@import '../../../themes/mixins/loading-spinner';
+
+.delegationStepsIntroDialogWrapper {
+  font-family: var(--font-regular);
+
+  :global {
+    .Dialog_title {
+      letter-spacing: 2px;
+    }
+  }
+
+  .content {
+    color: var(--theme-delegation-steps-intro-content-text-color);
+    font-size: 16px;
+    line-height: 1.38;
+    text-align: left;
+
+    .link {
+      border-bottom: 1px solid var(--theme-delegation-steps-intro-link-color);
+      color: var(--theme-delegation-steps-intro-link-color);
+      cursor: pointer;
+      font-size: 16px;
+      svg {
+        margin-left: 2px;
+        vertical-align: middle;
+        width: 12px;
+        g {
+          stroke: var(--theme-delegation-steps-intro-link-color);
+        }
+      }
+    }
+
+    .description {
+    }
+
+    .stepsExplanation {
+      border-top: 1px solid
+        var(--theme-delegation-steps-intro-divider-border-color);
+      margin-top: 20px;
+      padding-top: 20px;
+      .label {
+        color: var(--theme-delegation-steps-intro-list-label-color);
+        font-family: var(--font-medium);
+        font-weight: 500;
+      }
+      ol {
+        margin-left: 14px;
+      }
+      ol,
+      li {
+        margin-top: 11px;
+        span {
+          color: var(--theme-delegation-steps-intro-list-numbers-color);
+          margin-right: 14px;
+          &.optionalLabel {
+            color: var(
+              --theme-delegation-steps-intro-list-optional-label-color
+            );
+          }
+        }
+      }
+    }
+  }
+}
