@@ -564,6 +564,9 @@ const DARK_BLUE_THEME_CONFIG = {
     '--theme-staking-donut-ring-completed-color': '#ea4c5b',
     '--theme-staking-donut-ring-remaining-color': '#f8e9eb',
     '--theme-staking-wallet-row-border-color': '#dfe4e8',
+    '--theme-staking-dropdown-item-text-color-hover': '#cecfd1',
+    '--theme-staking-dropdown-item-background-color': '#263345',
+    '--theme-staking-dropdown-item-background-color-hover': '#536370',
   },
   support: {
     '--theme-support-settings-text-color': '#e9f4fe',

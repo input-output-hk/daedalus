@@ -563,6 +563,10 @@ const CARDANO_THEME_CONFIG = {
     '--theme-staking-donut-ring-completed-color': '#ea4c5b',
     '--theme-staking-donut-ring-remaining-color': '#f8e9eb',
     '--theme-staking-wallet-row-border-color': '#dfe4e8',
+    '--theme-staking-dropdown-item-text-color-hover': '#cecfd1',
+    '--theme-staking-dropdown-item-background-color': '#fafbfc',
+    '--theme-staking-dropdown-item-background-color-hover':
+      'rgba(32, 34, 37, 0.7)',
   },
   support: {
     '--theme-support-settings-text-color': '#5e6066',

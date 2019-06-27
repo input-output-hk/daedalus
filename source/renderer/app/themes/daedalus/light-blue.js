@@ -560,6 +560,9 @@ const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-staking-donut-ring-completed-color': '#ea4c5b',
     '--theme-staking-donut-ring-remaining-color': '#f8e9eb',
     '--theme-staking-wallet-row-border-color': '#dfe4e8',
+    '--theme-staking-dropdown-item-text-color-hover': '#5e6066',
+    '--theme-staking-dropdown-item-background-color': '#fafbfc',
+    '--theme-staking-dropdown-item-background-color-hover': '#f1f3f5',
   },
   support: {
     '--theme-support-settings-text-color': '#5e6066',

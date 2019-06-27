@@ -1,0 +1,46 @@
+.component {
+  height: 100%;
+  width: 100%;
+
+  > div {
+    height: 100%;
+    width: 100%;
+  }
+
+  :global {
+    .SimpleOptions_options {
+      left: auto !important;
+      position: absolute;
+      right: 0;
+      top: 25px !important;
+      width: 200px !important;
+    }
+    .NavButton_component {
+      cursor: default;
+    }
+    .SimpleBubble_root:not(.SimpleBubble_transparent) {
+      .SimpleBubble_bubble {
+        border: none;
+        border-radius: 3px;
+        box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.12);
+        min-width: 100px;
+        right: 15px;
+      }
+      [data-bubble-arrow]:before,
+      [data-bubble-arrow]:after {
+        content: '';
+        display: none;
+      }
+    }
+  }
+  &:hover {
+    :global {
+      .SimpleOptions_options {
+        display: block;
+      }
+      .NavButton_normal .NavButton_container {
+        background-color: var(--theme-nav-item-background-color-hover);
+      }
+    }
+  }
+}

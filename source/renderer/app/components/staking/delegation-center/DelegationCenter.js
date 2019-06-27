@@ -2,14 +2,13 @@
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import BigNumber from 'bignumber.js';
-import Wallet from '../../../domains/Wallet';
 import DelegationCenterHeader from './DelegationCenterHeader';
 import DelegationCenterBody from './DelegationCenterBody';
 
 type Props = {
   adaValue: BigNumber,
   percentage: number,
-  wallets: Array<Wallet>,
+  wallets: Array<any>,
 };
 
 @observer

@@ -7,12 +7,11 @@ import {
   FormattedMessage,
   FormattedHTMLMessage,
 } from 'react-intl';
-import BigNumber from 'bignumber.js';
 import SVGInline from 'react-svg-inline';
 import Wallet from '../../../domains/Wallet';
-import NavDropdown from '../../navigation/NavDropdown';
 import settingsIcon from '../../../assets/images/wallet-nav/wallet-settings-2-ic.inline.svg';
 import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import DropdownMenu from './DropdownMenu/DropdownMenu';
 import DonutRing, { DONUT_RING_SIZES } from './DonutRing';
 import styles from './WalletRow.scss';
 
@@ -24,7 +23,7 @@ export const DELEGATION_ACTIONS = {
 const messages = defineMessages({
   walletAmount: {
     id: 'staking.delegationCenter.walletAmount',
-    defaultMessage: '!!!{amount} ADA',
+    defaultMessage: '!!!{amount} ada',
     description:
       'Amount of each wallet for the Delegation center body section.',
   },
@@ -59,7 +58,7 @@ const messages = defineMessages({
   },
   toStakePoolCategory: {
     id: 'staking.delegationCenter.toStakePoolCategory',
-    defaultMessage: '!!!to <b>[{delegatedPoolCategory}]</b> stake pool',
+    defaultMessage: '!!!To <b>[{delegatedPoolCategory}]</b> stake pool',
     description:
       'Delegated stake pool category label for the Delegation center body section.',
   },
@@ -95,7 +94,6 @@ export default class WalletRow extends Component<Props> {
       },
     } = this.props;
     const inactiveStakePercentageValue = inactiveStakePercentage || 0;
-    const amountValue = new BigNumber(amount);
     const delegated = intl.formatMessage(messages.delegated);
     const notDelegated = intl.formatMessage(messages.notDelegated);
     const changeDelegation = intl.formatMessage(messages.changeDelegation);
@@ -105,10 +103,12 @@ export default class WalletRow extends Component<Props> {
       {
         label: changeDelegation,
         value: DELEGATION_ACTIONS.CHANGE_DELEGATION,
+        className: styles.normalOption,
       },
       {
         label: removeDelegation,
         value: DELEGATION_ACTIONS.REMOVE_DELEGATION,
+        className: styles.removeOption,
       },
     ];
 
@@ -120,7 +120,7 @@ export default class WalletRow extends Component<Props> {
             <FormattedMessage
               {...messages.walletAmount}
               values={{
-                amount: amountValue.toFormat(SIMPLE_DECIMAL_PLACES_IN_ADA),
+                amount: amount.toFormat(SIMPLE_DECIMAL_PLACES_IN_ADA),
               }}
             />
             {inactiveStakePercentageValue > 0 && (
@@ -143,21 +143,16 @@ export default class WalletRow extends Component<Props> {
         </div>
         <div className={styles.right}>
           <div className={styles.status}>
-            {isDelegated ? (
-              <NavDropdown
-                label={delegated}
-                icon={settingsIcon}
-                isActive
-                onChange={() => null}
-                activeItem=""
-                options={delegationActionOptions}
-              />
-            ) : (
-              <Fragment>
-                <span>{notDelegated}</span>
-                <SVGInline svg={settingsIcon} className={styles.gearIcon} />
-              </Fragment>
-            )}
+            <DropdownMenu
+              label={
+                <Fragment>
+                  <span>{isDelegated ? delegated : notDelegated}</span>
+                  <SVGInline svg={settingsIcon} className={styles.gearIcon} />
+                </Fragment>
+              }
+              menuItems={delegationActionOptions}
+              onMenuItemClick={() => null}
+            />
           </div>
           <div className={styles.action}>
             {isDelegated ? (

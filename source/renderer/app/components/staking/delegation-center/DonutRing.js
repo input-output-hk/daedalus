@@ -1,3 +1,4 @@
+// @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -9,7 +10,7 @@ export const DONUT_RING_SIZES = {
   LARGE: 'large',
 };
 
-type Props = { percentage?: number, size?: string };
+type Props = { percentage: number, size: string };
 
 @observer
 export default class DonutRing extends Component<Props> {

@@ -18,7 +18,7 @@ const messages = defineMessages({
   descriptionFirstPart: {
     id: 'staking.delegationCenter.descriptionFirstPart',
     defaultMessage:
-      '!!!You are currently delegating <b>{adaValue} ADA</b> which is <b>{percentage}%</b> of ADA in your wallets.',
+      '!!!You are currently delegating <b>{adaValue} ada</b>. This is <b>{percentage}%</b> of ada in your wallets.',
     description: 'Delegation description-part1 for the Delegation center.',
   },
   descriptionSecondPart: {

@@ -1759,6 +1759,231 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Wallets",
+        "description": "Title for the Delegation center body section.",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterBody.js",
+        "id": "staking.delegationCenter.bodyTitle",
+        "start": {
+          "column": 13,
+          "line": 10
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/delegation-center/DelegationCenterBody.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Delegation center",
+        "description": "Headline for the Delegation center.",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
+        "id": "staking.delegationCenter.heading",
+        "start": {
+          "column": 11,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!You are currently delegating <b>{adaValue} ada</b>. This is <b>{percentage}%</b> of ada in your wallets.",
+        "description": "Delegation description-part1 for the Delegation center.",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
+        "id": "staking.delegationCenter.descriptionFirstPart",
+        "start": {
+          "column": 24,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!Read",
+        "description": "Delegation description-part2 for the Delegation center.",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
+        "id": "staking.delegationCenter.descriptionSecondPart",
+        "start": {
+          "column": 25,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!this article",
+        "description": "Delegation description-part3 for the Delegation center.",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
+        "id": "staking.delegationCenter.descriptionThirdPart",
+        "start": {
+          "column": 24,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!to learn how to increase the delegated amount.",
+        "description": "Delegation description-part4 for the Delegation center.",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
+        "id": "staking.delegationCenter.descriptionFourthPart",
+        "start": {
+          "column": 25,
+          "line": 34
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!{amount} ada",
+        "description": "Amount of each wallet for the Delegation center body section.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
+        "id": "staking.delegationCenter.walletAmount",
+        "start": {
+          "column": 16,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!<b>activate {inactiveStakePercentage}% of inactive stake</b>",
+        "description": "Inactive stake percentage of each wallet for the Delegation center body section.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
+        "id": "staking.delegationCenter.inactiveStakePercentageActivate",
+        "start": {
+          "column": 35,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Delegated",
+        "description": "Delegated label for the Delegation center body section.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
+        "id": "staking.delegationCenter.delegated",
+        "start": {
+          "column": 13,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Not-delegated",
+        "description": "Not-delegated label for the Delegation center body section.",
+        "end": {
+          "column": 3,
+          "line": 46
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
+        "id": "staking.delegationCenter.notDelegated",
+        "start": {
+          "column": 16,
+          "line": 42
+        }
+      },
+      {
+        "defaultMessage": "!!!Change delegation",
+        "description": "Change delegation label for the Delegation center body section.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
+        "id": "staking.delegationCenter.changeDelegation",
+        "start": {
+          "column": 20,
+          "line": 47
+        }
+      },
+      {
+        "defaultMessage": "!!!Remove delegation",
+        "description": "Remove delegation label for the Delegation center body section.",
+        "end": {
+          "column": 3,
+          "line": 58
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
+        "id": "staking.delegationCenter.removeDelegation",
+        "start": {
+          "column": 20,
+          "line": 53
+        }
+      },
+      {
+        "defaultMessage": "!!!To <b>[{delegatedPoolCategory}]</b> stake pool",
+        "description": "Delegated stake pool category label for the Delegation center body section.",
+        "end": {
+          "column": 3,
+          "line": 64
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
+        "id": "staking.delegationCenter.toStakePoolCategory",
+        "start": {
+          "column": 23,
+          "line": 59
+        }
+      },
+      {
+        "defaultMessage": "!!!<b>Delegate</b>",
+        "description": "Delegate label for the Delegation center body section.",
+        "end": {
+          "column": 3,
+          "line": 69
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
+        "id": "staking.delegationCenter.delegate",
+        "start": {
+          "column": 12,
+          "line": 65
+        }
+      },
+      {
+        "defaultMessage": "!!!your stake",
+        "description": "Your stake label for the Delegation center body section.",
+        "end": {
+          "column": 3,
+          "line": 74
+        },
+        "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
+        "id": "staking.delegationCenter.yourStake",
+        "start": {
+          "column": 13,
+          "line": 70
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/delegation-center/WalletRow.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!current epoch",
         "description": "Headline for the current epoch.",
         "end": {

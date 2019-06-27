@@ -1,10 +1,10 @@
 @import '../stakingConfig';
 
 .component {
+  border-bottom: 1px solid var(--theme-staking-wallet-row-border-color);
   display: flex;
   justify-content: space-between;
   padding: 20px 0;
-  border-bottom: 1px solid var(--theme-staking-wallet-row-border-color);
 
   &:last-child {
     border-bottom: 0;
@@ -29,10 +29,20 @@
 
   .right {
     .status {
-      @extend %regularText;
-      align-items: center;
-      display: flex;
-      margin-bottom: 3px;
+      .normalOption {
+        @extend %regularText;
+        font-size: 13px;
+      }
+      .removeOption {
+        @extend %regularText;
+        color: var(--theme-input-remove-color-light);
+        font-size: 13px;
+      }
+      li:hover {
+        .normalOption {
+          color: var(--theme-staking-dropdown-item-text-color-hover);
+        }
+      }
 
       .gearIcon {
         margin-left: 10px;
