@@ -12,7 +12,7 @@ import Wallet from '../../../domains/Wallet';
 import settingsIcon from '../../../assets/images/wallet-nav/wallet-settings-2-ic.inline.svg';
 import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import DropdownMenu from './DropdownMenu/DropdownMenu';
-import DonutRing, { DONUT_RING_SIZES } from './DonutRing';
+import DonutRing from './DonutRing';
 import styles from './WalletRow.scss';
 
 export const DELEGATION_ACTIONS = {
@@ -128,7 +128,8 @@ export default class WalletRow extends Component<Props> {
                 <span className={styles.donutRing}>
                   <DonutRing
                     percentage={100 - inactiveStakePercentageValue}
-                    size={DONUT_RING_SIZES.SMALL}
+                    sqSize={11}
+                    strokeWidth={3}
                   />
                 </span>
                 <FormattedHTMLMessage

@@ -6,7 +6,7 @@ import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import linkNewWindowIcon from '../../../assets/images/link-ic-colored.inline.svg';
-import DonutRing, { DONUT_RING_SIZES } from './DonutRing';
+import DonutRing from './DonutRing';
 import styles from './DelegationCenterHeader.scss';
 
 const messages = defineMessages({
@@ -64,7 +64,7 @@ export default class DelegationCenterHeader extends Component<Props> {
       <div className={styles.component}>
         <div className={styles.mainContent}>
           <div className={styles.progressRing}>
-            <DonutRing percentage={percentage} size={DONUT_RING_SIZES.MEDIUM} />
+            <DonutRing percentage={percentage} sqSize={44} strokeWidth={8} />
           </div>
           <div className={styles.heading}>{heading}</div>
           <div className={styles.description}>

@@ -1,53 +1,63 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import classnames from 'classnames';
 import styles from './DonutRing.scss';
 
-export const DONUT_RING_SIZES = {
-  SMALL: 'small',
-  MEDIUM: 'medium',
-  LARGE: 'large',
+type Props = {
+  percentage: number,
+  sqSize: number,
+  strokeWidth: number,
+  showText?: boolean,
 };
-
-type Props = { percentage: number, size: string };
 
 @observer
 export default class DonutRing extends Component<Props> {
   static defaultProps = {
-    percentage: 0,
-    size: DONUT_RING_SIZES.MEDIUM,
+    showText: false,
   };
 
   render() {
-    const { percentage, size } = this.props;
-    const deg = (1 - percentage / 100) * 360;
-    const percentageClassName =
-      percentage < 50 ? 'lessThanHalf' : 'moreThanHalf';
-    const componentClassNames = classnames([
-      styles.component,
-      styles[size],
-      styles[percentageClassName],
-    ]);
-    let deg1 = `${deg + 90}deg`;
-    let deg2 = '0deg';
-
-    if (percentage < 50) {
-      deg1 = '90deg';
-      deg2 = `${deg}deg`;
-    }
+    const { percentage, sqSize, strokeWidth, showText } = this.props;
+    const radius = (sqSize - strokeWidth) / 2;
+    const viewBox = `0 0 ${sqSize} ${sqSize}`;
+    const dashArray = radius * Math.PI * 2;
+    const dashOffset = dashArray - (dashArray * percentage) / 100;
+    const rotateDeg = -((percentage / 100) * 360 + 90);
 
     return (
-      <div className={componentClassNames}>
-        <div
-          className={classnames([styles.slice, styles.one])}
-          style={{ transform: `rotate(${deg1})` }}
-        />
-        <div
-          className={classnames([styles.slice, styles.two])}
-          style={{ transform: `rotate(${deg2})` }}
-        />
-        <div className={styles.center} />
+      <div className={styles.component}>
+        <svg width={sqSize} height={sqSize} viewBox={viewBox}>
+          <circle
+            className={styles.circleBackground}
+            cx={sqSize / 2}
+            cy={sqSize / 2}
+            r={radius}
+            strokeWidth={`${strokeWidth}px`}
+          />
+          <circle
+            className={styles.circleProgress}
+            cx={sqSize / 2}
+            cy={sqSize / 2}
+            r={radius}
+            strokeWidth={`${strokeWidth}px`}
+            transform={`rotate(${rotateDeg} ${sqSize / 2} ${sqSize / 2})`}
+            style={{
+              strokeDasharray: dashArray,
+              strokeDashoffset: dashOffset,
+            }}
+          />
+          {showText && (
+            <text
+              className={styles.circleText}
+              x="50%"
+              y="50%"
+              dy=".3em"
+              textAnchor="middle"
+            >
+              {`${percentage}%`}
+            </text>
+          )}
+        </svg>
       </div>
     );
   }
