@@ -17,7 +17,7 @@ import {
   OFFSET_LEFT,
   OFFSET_TOP,
   THUMBNAIL_HEIGHT,
-  THUMBNAIL_OFFSET,
+  THUMBNAIL_OFFSET_WIDTH,
   ARROW_WIDTH,
   ARROW_HEIGHT,
   ARROW_OFFSET,
@@ -74,9 +74,9 @@ type Props = {
 
 type State = {
   tooltipPosition: 'top' | 'right' | 'bottom' | 'left',
-  componentStyle: {},
-  arrowStyle: {},
-  colorBandStyle: {},
+  componentStyle: Object,
+  arrowStyle: Object,
+  colorBandStyle: Object,
 };
 
 @observer
@@ -143,19 +143,19 @@ export default class StakePoolTooltip extends Component<Props, State> {
 
     const paddingOffset = rangeMap(
       left,
-      THUMBNAIL_OFFSET,
-      containerWidth - THUMBNAIL_OFFSET,
-      -(THUMBNAIL_OFFSET / 2),
-      THUMBNAIL_OFFSET / 2
+      THUMBNAIL_OFFSET_WIDTH,
+      containerWidth - THUMBNAIL_OFFSET_WIDTH,
+      -(THUMBNAIL_OFFSET_WIDTH / 2),
+      THUMBNAIL_OFFSET_WIDTH / 2
     );
 
     const componentLeft =
       -((TOOLTIP_WIDTH * left) / containerWidth) +
-      THUMBNAIL_OFFSET +
+      THUMBNAIL_OFFSET_WIDTH +
       paddingOffset;
     const componentTop = THUMBNAIL_HEIGHT + ARROW_HEIGHT;
 
-    const arrowLeft = -componentLeft + THUMBNAIL_OFFSET - ARROW_OFFSET;
+    const arrowLeft = -componentLeft + THUMBNAIL_OFFSET_WIDTH - ARROW_OFFSET;
     const arrowTop = -ARROW_WIDTH;
 
     return {
@@ -187,7 +187,8 @@ export default class StakePoolTooltip extends Component<Props, State> {
     }
     if (
       TOOLTIP_DELTA >=
-      window.innerHeight - (top + THUMBNAIL_HEIGHT + OFFSET_TOP)
+      window.innerHeight -
+        (top + (THUMBNAIL_HEIGHT - TOOLTIP_DELTA) + OFFSET_TOP)
     ) {
       return 'top';
     }
@@ -202,7 +203,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
 
     const top = originalTop - OFFSET_TOP;
     const left =
-      originalLeft - OFFSET_LEFT - CONTAINER_MARGIN + THUMBNAIL_OFFSET;
+      originalLeft - OFFSET_LEFT - CONTAINER_MARGIN + THUMBNAIL_OFFSET_WIDTH;
 
     const tooltipPosition = this.getTooltipPosition(top, left);
 
