@@ -3182,7 +3182,6 @@ chownr@^1.1.1:
 chroma-js@2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/chroma-js/-/chroma-js-2.0.3.tgz#2521d4f80c4e786e00064c4a62824e38ff6557c4"
-  integrity sha512-2kTvZZOFSV1O81/rm99t9vmkh9jQxsHqsRRoZevDVz/VCC3yKMyPuMK8M5yHG+UMg2tV6cRoqtZtgcD92udcBw==
 
 chrome-trace-event@^1.0.0:
   version "1.0.2"
@@ -7267,7 +7266,6 @@ markdown-loader@4.0.0:
 marked@^0.5.0, marked@^0.5.2, marked@^0.6.1:
   version "0.6.2"
   resolved "https://registry.yarnpkg.com/marked/-/marked-0.6.2.tgz#c574be8b545a8b48641456ca1dbe0e37b6dccc1a"
-  integrity sha512-LqxwVH3P/rqKX4EKGz7+c2G9r98WeM/SW34ybhgNGhUQNKtf1GmmSkJ6cDGJ/t6tiyae49qRkpyTw2B9HOrgUA==
 
 matchdep@^2.0.0:
   version "2.0.0"
