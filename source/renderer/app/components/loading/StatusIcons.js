@@ -212,6 +212,7 @@ export default class StatusIcon extends Component<Props> {
     return classNames([
       styles.icon,
       styles[`icon-${status}`],
+      styles[`icon-${paramName}`],
       isNodeSyncing ? styles.syncing : styles.loading,
     ]);
   };

@@ -1,0 +1,50 @@
+@import '../../../themes/mixins/loading-spinner';
+
+.delegationStepsNotAvailableDialogWrapper {
+  font-family: var(--font-regular);
+
+  :global {
+    .Dialog_title {
+      letter-spacing: 2px;
+    }
+  }
+
+  .content {
+    font-size: 16px;
+    line-height: 1.38;
+    text-align: center;
+
+    .icon {
+      display: inline-block;
+      height: 66px;
+      margin: 10px 0 30px;
+      svg {
+        height: 66px;
+        width: 66px;
+        g {
+          fill: var(
+            --theme-delegation-steps-not-available-icon-color
+          ) !important;
+        }
+      }
+    }
+
+    .subtitle {
+      color: var(--theme-delegation-steps-not-available-subtitle-text-color);
+      font-family: var(--font-medium);
+      font-weight: 500;
+      margin-bottom: 11px;
+    }
+
+    .description {
+      color: var(--theme-delegation-steps-not-available-description-text-color);
+      span > span {
+        color: var(
+          --theme-delegation-steps-not-available-description-highlight-text-color
+        );
+        font-family: var(--font-medium);
+        font-weight: 500;
+      }
+    }
+  }
+}

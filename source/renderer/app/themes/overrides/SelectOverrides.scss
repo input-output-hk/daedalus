@@ -1,11 +1,26 @@
 .selectInput {
-  &:after {
+  :global {
+    .SimpleInput_customValueBlock {
+      height: 52px;
+      max-height: inherit;
+    }
+  }
+
+  &::after {
     bottom: 22.5px;
+  }
+
+  &:hover::after {
+    background-color: var(--rp-select-input-text-color);
+  }
+
+  input {
+    cursor: pointer;
   }
 }
 
 .isOpen {
-  .selectInput:after {
+  .selectInput::after {
     bottom: 22.5px;
   }
 }

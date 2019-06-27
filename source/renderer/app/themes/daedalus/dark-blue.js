@@ -22,6 +22,7 @@ const rpBubble = {
   '--rp-bubble-bg-color': '#263345',
   '--rp-bubble-border-color': '#667a8a',
   '--rp-bubble-border-radius': '2px',
+  '--rp-bubble-arrow-bg-color': '#536370',
 };
 
 // BUTTON
@@ -116,6 +117,22 @@ const rpSelect = {
   '--rp-select-input-border-color': 'rgba(102, 122, 138, 0.3)',
   '--rp-select-input-border-color-focus': '#667a8a',
   '--rp-select-input-text-color': '#e9f4fe',
+  '--rp-select-input-placeholder-color': '#8793a1',
+};
+
+// STEPPER
+const rpStepper = {
+  '--rp-stepper-bullet-background-color-disabled': '#263345',
+  '--rp-stepper-bullet-border-color': 'rgba(233, 244, 254, 0.1)',
+  '--rpstepper-bullet-height': '12px',
+  '--rpstepper-bullet-width': '12px',
+  '--rp-stepper-label-color': 'rgba(233, 244, 254, 1)',
+  '--rp-stepper-label-color-light': 'rgba(233, 244, 254, 0.3)',
+  '--rp-stepper-main-color': 'rgba(233, 244, 254, 1)',
+  '--rp-stepper-main-color-light': 'rgba(233, 244, 254, 0.1)',
+  '--rpstepper-stepper-step-label-bottom-margin': '6px',
+  '--rpstepper-steps-bar-color-disabled': 'rgba(233, 244, 254, 0.1)',
+  '--rpstepper-steps-bar-top-position': '6px',
 };
 
 // SWITCH
@@ -158,6 +175,7 @@ const rpDarkBlueTheme = {
   ...rpModal,
   ...rpOptions,
   ...rpSelect,
+  ...rpStepper,
   ...rpSwitch,
   ...rpTextArea,
 };
@@ -288,6 +306,35 @@ const DARK_BLUE_THEME_CONFIG = {
     '--theme-data-migration-layer-text-color': '#fafbfc',
     '--theme-data-migration-layer-text-opacity-color':
       'rgba(250, 251, 252, 0.5)',
+  },
+  delegationSetupWizard: {
+    '--theme-delegation-steps-choose-wallet-custom-value-color': '#e9f4fe',
+    '--theme-delegation-steps-choose-wallet-description-color':
+      'rgba(233, 244, 254, 0.8)',
+    '--theme-delegation-steps-choose-wallet-description-highlighted-color':
+      '#e9f4fe',
+    '--theme-delegation-steps-choose-wallet-error-message-color':
+      'rgba(234, 76, 91, 1)',
+    '--theme-delegation-steps-choose-wallet-error-message-light-color':
+      'rgba(234, 76, 91, 0.7)',
+    '--theme-delegation-steps-choose-wallet-error-select-options-color':
+      '#e9f4fe',
+    '--theme-delegation-steps-choose-wallet-steps-indicator-color': '#e9f4fe',
+    '--theme-delegation-steps-intro-content-text-color':
+      'rgba(233, 244, 254, 0.8)',
+    '--theme-delegation-steps-intro-divider-border-color': '#334152',
+    '--theme-delegation-steps-intro-link-color': 'rgba(32, 181, 107, 1)',
+    '--theme-delegation-steps-intro-list-label-color': '#e9f4fe',
+    '--theme-delegation-steps-intro-list-numbers-color': '#e9f4fe',
+    '--theme-delegation-steps-intro-list-optional-label-color':
+      'rgba(233, 244, 254, 0.5)',
+    '--theme-delegation-steps-not-available-description-text-color':
+      'rgba(233, 244, 254, 0.8)',
+    '--theme-delegation-steps-not-available-description-highlight-text-color':
+      '#e9f4fe',
+    '--theme-delegation-steps-not-available-icon-color': 'rgb(155, 166, 179)',
+    '--theme-delegation-steps-not-available-subtitle-text-color':
+      'rgba(233, 244, 254, 1)',
   },
   dialog: {
     '--theme-dialog-choice-tabs-text-color': '#e9f4fe',
@@ -546,7 +593,7 @@ const DARK_BLUE_THEME_CONFIG = {
       '#fafbfc',
   },
   staking: {
-    '--theme-staking-background-color': '#0b1926',
+    '--theme-staking-background-color': 'rgba(233, 244, 254, 0.1)',
     '--theme-staking-content-background-color': '#263345',
     '--theme-staking-content-border-color': '#263345',
     '--theme-staking-font-color-accent': '#cecfd1',
@@ -557,10 +604,9 @@ const DARK_BLUE_THEME_CONFIG = {
     '--theme-staking-table-border-color': '#c6cdd6',
     '--theme-staking-link-color': 'rgba(32, 181, 107, 1)',
     '--theme-staking-link-color-light': 'rgba(32, 181, 107, 0.5)',
-    '--theme-staking-decentralization-progress-stripe-dark-1-background-color':
-      '#3c4852',
-    '--theme-staking-decentralization-progress-stripe-dark-2-background-color':
-      '#536370',
+    '--theme-staking-progress-stripe-dark-1-background-color': '#3c4852',
+    '--theme-staking-progress-stripe-dark-2-background-color': '#536370',
+    '--theme-staking-table-body-highlighted-text-color': '#2ab467',
   },
   support: {
     '--theme-support-settings-text-color': '#e9f4fe',
