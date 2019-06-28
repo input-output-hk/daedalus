@@ -4,6 +4,7 @@ import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import classnames from 'classnames';
 import styles from './StakePoolsSearch.scss';
 import searchIcon from '../../../assets/images/search.inline.svg';
 
@@ -54,7 +55,7 @@ export class StakePoolsSearch extends Component<Props> {
   };
 
   getFilterItemClassName = (item: string) =>
-    item === this.props.filter && styles.searchFilterActiveItem;
+    classnames({ [styles.searchFilterActiveItem]: this.props.filter === item });
 
   render() {
     const { intl } = this.context;

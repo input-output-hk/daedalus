@@ -24,15 +24,11 @@ type Props = {
 };
 
 type State = {
-  selectedIndex?: ?number,
-  flipHorizontal: boolean,
-  flipVertical: boolean,
+  selectedPoolId?: ?number,
 };
 
 const initialState = {
-  selectedIndex: null,
-  flipHorizontal: false,
-  flipVertical: false,
+  selectedPoolId: null,
 };
 
 @observer
@@ -58,55 +54,27 @@ export class StakePoolsList extends Component<Props, State> {
   getIndex = (ranking: number) =>
     rangeMap(ranking, 1, this.props.stakePoolsList.length, 0, 99);
 
-  getIsSelected = (index: number) => index === this.state.selectedIndex;
+  getIsSelected = (id: string) =>
+    this.props.isListActive !== false && id === this.state.selectedPoolId;
 
-  handleClick = (
-    event: SyntheticMouseEvent<HTMLElement>,
-    selectedIndex: number
-  ) => {
+  handleClick = (selectedPoolId: number) => {
     const { isListActive, setListActive, listName } = this.props;
     if (isListActive === false && setListActive) setListActive(listName);
-    if (this.state.selectedIndex === selectedIndex) {
-      return this.handleClose();
-    }
-    event.persist();
-    if (event.target instanceof HTMLElement) {
-      const targetElement =
-        event.target.className === 'StakePool_content'
-          ? event.target
-          : event.target.parentNode;
-      if (targetElement instanceof HTMLElement) {
-        const { top, left } = targetElement.getBoundingClientRect();
-        const flipHorizontal = left > window.innerWidth - window.innerWidth / 2;
-        const flipVertical = top > window.innerHeight - window.innerHeight / 2;
-        return this.setState({
-          selectedIndex,
-          flipHorizontal,
-          flipVertical,
-        });
-      }
-    }
-    return false;
+    return this.setState({
+      selectedPoolId,
+    });
   };
 
   handleClose = () => this.setState({ ...initialState });
 
   render() {
-    const {
-      stakePoolsList,
-      onOpenExternalLink,
-      currentTheme,
-      isListActive,
-    } = this.props;
-
-    const { flipHorizontal, flipVertical } = this.state;
+    const { stakePoolsList, onOpenExternalLink, currentTheme } = this.props;
 
     return (
       <div className={styles.component}>
         {stakePoolsList.map(stakePool => {
           const index = this.getIndex(stakePool.ranking);
-          const isSelected =
-            this.getIsSelected(stakePool.ranking) && isListActive !== false;
+          const isSelected = this.getIsSelected(stakePool.id);
           return (
             <StakePoolThumbnail
               stakePool={stakePool}
@@ -116,8 +84,6 @@ export class StakePoolsList extends Component<Props, State> {
               onClose={this.handleClose}
               onClick={this.handleClick}
               currentTheme={currentTheme}
-              flipHorizontal={flipHorizontal}
-              flipVertical={flipVertical}
               index={index}
             />
           );
