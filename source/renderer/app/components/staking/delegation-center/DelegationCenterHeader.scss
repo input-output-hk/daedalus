@@ -48,5 +48,11 @@
     right: 0;
     top: 2px;
     width: 15px;
+
+    & > svg {
+      & > g {
+        stroke: var(--theme-staking-link-color);
+      }
+    }
   }
 }
