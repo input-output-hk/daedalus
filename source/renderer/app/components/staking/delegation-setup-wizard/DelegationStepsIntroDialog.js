@@ -15,7 +15,7 @@ type Props = {
 
 const messages = defineMessages({
   title: {
-    id: 'staking.delegationSetup.steps.dialog.title',
+    id: 'staking.delegationSetup.intro.step.dialog.title',
     defaultMessage: '!!!Delegation Setup',
     description:
       'Title "Delegation Setup" on the delegation setup "intro" dialog.',
