@@ -150,9 +150,7 @@ export default class WalletRow extends Component<Props> {
                 <SVGInline svg={settingsIcon} className={styles.gearIcon} />
               }
               menuItems={delegationActionOptions}
-              onMenuItemClick={value =>
-                console.log('----here---fuck---', value)
-              }
+              onMenuItemClick={() => null}
             />
           </div>
           <div className={styles.action}>
