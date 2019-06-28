@@ -1,6 +1,6 @@
 .component {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  margin: -5px 0 15px -5px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 80px);
+  grid-gap: 10px;
+  justify-content: space-between;
 }
