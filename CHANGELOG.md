@@ -9,6 +9,7 @@ Changelog
 - Implemented "Delegation Setup wizard" steps 0 & 1 UI ([PR 1416](https://github.com/input-output-hk/daedalus/pull/1416))
 - Implemented "Current and Previous Epochs screen" UI ([PR 1418](https://github.com/input-output-hk/daedalus/pull/1418))
 - Added new application menu item "Help and Support" with "GPU Safe Mode", "Download Logs", "Support Request" and "Known Issues" options ([PR 1382](https://github.com/input-output-hk/daedalus/pull/1382))
+- Implemented alternative update path for manual updates ([PR 1410](https://github.com/input-output-hk/daedalus/pull/1410), [PR 1423](https://github.com/input-output-hk/daedalus/pull/1423))
 - Implemented "Legacy wallet notification" UI ([PR 1409](https://github.com/input-output-hk/daedalus/pull/1409))
 - Implemented "Stake pool" UI ([PR 1397](https://github.com/input-output-hk/daedalus/pull/1397), [PR 1412](https://github.com/input-output-hk/daedalus/pull/1412))
 - Implemented "Staking rewards" UI ([PR 1403](https://github.com/input-output-hk/daedalus/pull/1403))
@@ -27,6 +28,7 @@ Changelog
 
 ### Fixes
 
+- Improved Stake pool tooltip positioning ([PR 1429](https://github.com/input-output-hk/daedalus/pull/1429))
 - Moved the Tooltip logic from `StakePools.js` into `StakePoolsList.js` ([PR 1431](https://github.com/input-output-hk/daedalus/pull/1431))
 - Added fine adjustments to the Stake Pools screen. ([PR 1420](https://github.com/input-output-hk/daedalus/pull/1420))
 - Fixed the Block consolidation status screen not fully shown in minimized mode when the Japanese language is selected ([PR 1416](https://github.com/input-output-hk/daedalus/pull/1416))
@@ -62,12 +64,6 @@ Changelog
 - Improved the internal IPC communication ([PR 1332](https://github.com/input-output-hk/daedalus/pull/1332), [PR 1368](https://github.com/input-output-hk/daedalus/pull/1368))
 - Improved Webpack 4 build performance ([PR 1320](https://github.com/input-output-hk/daedalus/pull/1320))
 - Improved error messages for connecting screen ([PR 1344](https://github.com/input-output-hk/daedalus/pull/1344))
-
-## 0.13.2
-
-### Fixes
-
-- Implemented alternative update path for manual updates ([PR 1410](https://github.com/input-output-hk/daedalus/pull/1410), [PR 1423](https://github.com/input-output-hk/daedalus/pull/1423))
 
 ## 0.13.1
 

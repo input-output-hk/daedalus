@@ -20,7 +20,7 @@ import DelegationStepsNotAvailableDialog from '../../source/renderer/app/compone
 import DelegationStepsConfirmationDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog';
 import DelegationStepsActivationDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog';
 
-import { StakePoolsStory } from './StakePoolsStory.js';
+import { StakePoolsStory } from './Staking-StakePoolsStory.js';
 import { StakingRewardsStory } from './Staking-Rewards.stories';
 import { StakingEpochsStory } from './Staking-Epochs.stories';
 
@@ -38,6 +38,7 @@ const pageNames = {
   countdown: 'Staking Countdown',
   'delegation-center': 'Delegation Center',
   'stake-pools': 'Stake Pools',
+  'stake-pools-tooltip': 'Tooltip',
   rewards: 'Rewards',
   epochs: 'Epochs',
   info: 'Info',
@@ -81,7 +82,10 @@ storiesOf('Staking', module)
     const getItemFromContext = () => context.parameters.id;
     let activeSidebarCategory = null;
 
-    if (context.parameters.id === 'countdown') {
+    if (
+      context.parameters.id === 'countdown' ||
+      context.parameters.id === 'stake-pools-tooltip'
+    ) {
       activeSidebarCategory =
         CATEGORIES_BY_NAME.STAKING_DELEGATION_COUNTDOWN.route;
     } else {
