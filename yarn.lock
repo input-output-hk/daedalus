@@ -9177,6 +9177,7 @@ react-polymorph@0.8.7:
     filter-react-dom-props "0.0.2"
     postinstall-build "5.0.1"
     react-modal "3.1.12"
+  integrity sha512-0/JwkTb3btzFdnUY9mOJzFKEGIuzGCxQPW2TIOyqpeIvON73G36111ykxq3S2Sx+l37SRF90J5ClFYbZi0nP+g==
 
 react-resize-detector@~2.3.0:
   version "2.3.0"
