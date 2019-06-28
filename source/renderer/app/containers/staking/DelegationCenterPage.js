@@ -6,9 +6,11 @@ import DelegationSetupWizardDialogContainer from './dialogs/DelegationSetupWizar
 import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
+type Props = InjectedProps;
+
 @inject('stores')
 @observer
-export default class DelegationCenterPage extends Component<InjectedProps> {
+export default class DelegationCenterPage extends Component<Props> {
   static defaultProps = { stores: null };
 
   render() {

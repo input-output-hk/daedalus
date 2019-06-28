@@ -41,10 +41,12 @@ type State = {
   activeStep: number,
 };
 
+type Props = InjectedDialogContainerProps;
+
 @inject('stores', 'actions')
 @observer
 export default class DelegationSetupWizardDialogContainer extends Component<
-  InjectedDialogContainerProps,
+  Props,
   State
 > {
   static contextTypes = {
