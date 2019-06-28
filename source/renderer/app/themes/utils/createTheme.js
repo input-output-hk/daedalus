@@ -688,7 +688,7 @@ const createDaedalusComponentsTheme = (
       '--theme-staking-stake-pool-glow-color': `${
         background.secondary.lightest
       }`,
-      '--theme-staking-stake-pool-id-color': `${text.primary}`,
+      '--theme-staking-stake-pool-slug-color': `${text.primary}`,
       '--theme-staking-stake-pool-retirement-background-color': `${
         error.regular
       }`,

@@ -568,7 +568,7 @@ const DARK_BLUE_THEME_CONFIG = {
     '--theme-staking-stake-pool-background-color': '#263345',
     '--theme-staking-stake-pool-border-color': 'transparent',
     '--theme-staking-stake-pool-glow-color': '#7cfeb54c',
-    '--theme-staking-stake-pool-id-color': '#e9f4fe',
+    '--theme-staking-stake-pool-slug-color': '#e9f4fe',
     '--theme-staking-stake-pool-retirement-background-color': '#ea4c5b',
     '--theme-staking-stake-pool-tooltip-background-color':
       'rgba(83, 99, 112, 0.98)',
