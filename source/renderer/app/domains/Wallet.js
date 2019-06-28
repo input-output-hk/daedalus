@@ -51,6 +51,7 @@ export type WalletProps = {
   inactiveStakePercentage?: number,
   isDelegated?: boolean,
   delegatedPoolCategory?: string,
+  stakePoolRanking?: number,
 };
 
 export default class Wallet {
@@ -65,6 +66,7 @@ export default class Wallet {
   @observable inactiveStakePercentage: ?number;
   @observable isDelegated: ?boolean;
   @observable delegatedPoolCategory: ?string;
+  @observable stakePoolRanking: ?number;
 
   constructor(data: WalletProps) {
     Object.assign(this, data);
@@ -85,6 +87,7 @@ export default class Wallet {
         'inactiveStakePercentage',
         'isDelegated',
         'delegatedPoolCategory',
+        'stakePoolRanking',
       ])
     );
   }

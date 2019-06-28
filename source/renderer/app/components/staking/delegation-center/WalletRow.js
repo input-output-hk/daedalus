@@ -9,6 +9,7 @@ import {
 } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import Wallet from '../../../domains/Wallet';
+import { getColorFromRange } from '../../../utils/colors';
 import settingsIcon from '../../../assets/images/wallet-nav/wallet-settings-2-ic.inline.svg';
 import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import DropdownMenu from './DropdownMenu';
@@ -91,9 +92,15 @@ export default class WalletRow extends Component<Props> {
         inactiveStakePercentage,
         isDelegated,
         delegatedPoolCategory,
+        stakePoolRanking,
       },
     } = this.props;
     const inactiveStakePercentageValue = inactiveStakePercentage || 0;
+    const rankingValue = stakePoolRanking || 1;
+    const color = stakePoolRanking
+      ? getColorFromRange(rankingValue)
+      : 'transparent';
+
     const delegated = intl.formatMessage(messages.delegated);
     const notDelegated = intl.formatMessage(messages.notDelegated);
     const changeDelegation = intl.formatMessage(messages.changeDelegation);
@@ -143,27 +150,37 @@ export default class WalletRow extends Component<Props> {
           </div>
         </div>
         <div className={styles.right}>
-          <div className={styles.status}>
-            <span>{isDelegated ? delegated : notDelegated}</span>
-            <DropdownMenu
-              label={
-                <SVGInline svg={settingsIcon} className={styles.gearIcon} />
-              }
-              menuItems={delegationActionOptions}
-              onMenuItemClick={() => null}
-            />
-          </div>
-          <div className={styles.action}>
-            {isDelegated ? (
-              <FormattedHTMLMessage
-                {...messages.toStakePoolCategory}
-                values={{ delegatedPoolCategory }}
+          <div>
+            <div className={styles.status}>
+              <span>{isDelegated ? delegated : notDelegated}</span>
+              <DropdownMenu
+                label={
+                  <SVGInline svg={settingsIcon} className={styles.gearIcon} />
+                }
+                menuItems={delegationActionOptions}
+                onMenuItemClick={() => null}
               />
-            ) : (
-              <span>
-                <FormattedHTMLMessage {...messages.delegate} /> {yourStake}
-              </span>
-            )}
+            </div>
+            <div className={styles.action}>
+              {isDelegated ? (
+                <FormattedHTMLMessage
+                  {...messages.toStakePoolCategory}
+                  values={{ delegatedPoolCategory }}
+                />
+              ) : (
+                <span>
+                  <FormattedHTMLMessage {...messages.delegate} /> {yourStake}
+                </span>
+              )}
+            </div>
+          </div>
+          <div>
+            <div
+              className={styles.stakePoolRankingIndicator}
+              style={{
+                background: color,
+              }}
+            />
           </div>
         </div>
       </div>

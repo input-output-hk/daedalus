@@ -27,6 +27,7 @@ const wallets = [
     inactiveStakePercentage: 24,
     isDelegated: true,
     delegatedPoolCategory: 'BLSH',
+    stakePoolRanking: 1,
   },
   {
     id: 'wallet2',
@@ -40,6 +41,7 @@ const wallets = [
     inactiveStakePercentage: 35,
     isDelegated: true,
     delegatedPoolCategory: 'BLSH',
+    stakePoolRanking: 50,
   },
   {
     id: 'wallet3',

@@ -4,6 +4,7 @@
   border-bottom: 1px solid var(--theme-staking-wallet-row-border-color);
   display: flex;
   justify-content: space-between;
+  overflow: visible;
   padding: 20px 0;
 
   &:last-child {
@@ -28,6 +29,9 @@
   }
 
   .right {
+    align-items: stretch;
+    display: flex;
+
     .status {
       @extend %regularText;
 
@@ -67,6 +71,12 @@
     .action {
       @extend %regularText;
       font-size: 14px;
+    }
+    .stakePoolRankingIndicator {
+      border-radius: 2px;
+      height: 100%;
+      transform: translate(20px);
+      width: 4px;
     }
   }
 
