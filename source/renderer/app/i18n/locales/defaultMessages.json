@@ -2251,13 +2251,13 @@
         "description": "\"Delegating List Title\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 16
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.searchInputPlaceholder",
         "start": {
           "column": 26,
-          "line": 11
+          "line": 12
         }
       },
       {
@@ -2265,13 +2265,13 @@
         "description": "\"Filter All\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.filterAll",
         "start": {
           "column": 13,
-          "line": 16
+          "line": 17
         }
       },
       {
@@ -2279,13 +2279,13 @@
         "description": "\"Filter New\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.filterNew",
         "start": {
           "column": 13,
-          "line": 21
+          "line": 22
         }
       },
       {
@@ -2293,13 +2293,13 @@
         "description": "\"FilterChar ity\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 31
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.filterCharity",
         "start": {
           "column": 17,
-          "line": 26
+          "line": 27
         }
       },
       {
@@ -2307,13 +2307,13 @@
         "description": "\"delegatingListTitlee\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.delegatingListTitle",
         "start": {
           "column": 23,
-          "line": 31
+          "line": 32
         }
       },
       {
@@ -2321,13 +2321,13 @@
         "description": "\"listTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.listTitle",
         "start": {
           "column": 13,
-          "line": 36
+          "line": 37
         }
       }
     ],
@@ -2340,13 +2340,13 @@
         "description": "\"\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 35
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.ranking",
         "start": {
           "column": 11,
-          "line": 16
+          "line": 31
         }
       },
       {
@@ -2354,13 +2354,13 @@
         "description": "\"Controlled stake\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 40
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.controlledStake",
         "start": {
           "column": 19,
-          "line": 21
+          "line": 36
         }
       },
       {
@@ -2368,13 +2368,13 @@
         "description": "\"Profit margin\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 45
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.profitMargin",
         "start": {
           "column": 16,
-          "line": 26
+          "line": 41
         }
       },
       {
@@ -2382,13 +2382,13 @@
         "description": "\"Performance\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 50
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.performance",
         "start": {
           "column": 15,
-          "line": 31
+          "line": 46
         }
       },
       {
@@ -2396,13 +2396,13 @@
         "description": "\"Retirement\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 55
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.retirement",
         "start": {
           "column": 14,
-          "line": 36
+          "line": 51
         }
       },
       {
@@ -2410,13 +2410,13 @@
         "description": "\"Delegate to this pool\" Button for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 61
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.delegateButton",
         "start": {
           "column": 18,
-          "line": 41
+          "line": 56
         }
       }
     ],

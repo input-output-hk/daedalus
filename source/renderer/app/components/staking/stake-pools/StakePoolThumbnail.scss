@@ -2,10 +2,7 @@
   background-color: var(--theme-staking-stake-pool-background-color);
   border: solid 1px var(--theme-staking-stake-pool-border-color);
   border-radius: 4px;
-  display: flex;
   height: 71px;
-  justify-content: center;
-  margin: 5px;
   position: relative;
   width: 80px;
 }
@@ -13,6 +10,7 @@
 .content {
   height: 100%;
   cursor: pointer;
+  padding: 12px 0 0;
   width: 100%;
 }
 
@@ -20,13 +18,13 @@
   box-shadow: 0 0 4px 2px var(--theme-staking-stake-pool-glow-color);
 }
 
-.id {
+.slug {
   color: var(--theme-staking-stake-pool-id-color);
   font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.5px;
   line-height: 1;
-  margin: 12px 0 9px;
+  margin: 0 0 9px;
   text-align: center;
 }
 
