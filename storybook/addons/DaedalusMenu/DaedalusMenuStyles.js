@@ -1,36 +1,39 @@
-// import { themes } from '@storybook/theming';
+// @flow
+import { themes } from '@storybook/theming';
+
+const { light: styles } = themes;
 
 export default {
   component: {
-    fontFamily:
-      '".SFNSText-Regular", "San Francisco", BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Lucida Grande", "Arial", sans-serif',
-  },
-  title: {
-    color: 'rgb(68, 68, 68)',
-    display: 'inline-block',
-    fontSize: '16px',
-    fontWeight: 'bold',
-    marginRight: '5px',
-  },
-  content: {
-    // background: '#f2f2f2',
-    // boxShadow: '0 0 10px 5px black',
-    // padding: '10px',
+    fontFamily: styles.fontBase,
   },
   menuSlot: {
     display: 'inline-block',
-    marginRight: '10px',
+    marginRight: 10,
   },
   button: {
-    borderRadius: '3px',
+    background: 'transparent',
+    border: 'none',
+    borderBottom: '3px solid',
+    borderBottomColor: 'transparent',
     color: 'rgba(0, 0, 0, 0.4)',
     cursor: 'pointer',
-    fontSize: '14px',
+    fontSize: 13,
+    height: 40,
     marginRight: '5px',
     padding: '3px',
+    verticalAlign: 'top',
   },
   selected: {
-    backgroundColor: 'rgba(0, 0, 0, 0.07)',
-    color: 'rgb(68, 68, 68)',
+    borderBottomColor: styles.barSelectedColor,
+    color: styles.colorSecondary,
+  },
+  separator: {
+    background: 'rgba(0,0,0,.1)',
+    display: 'inline-block',
+    height: 24,
+    margin: '8px 15px 0 0',
+    verticalAlign: 'top',
+    width: 1,
   },
 };

@@ -60,38 +60,37 @@ class DaedalusMenu extends Component<Props, State> {
 
     return (
       <div style={styles.component}>
-        <div style={styles.content}>
-          <div style={styles.menuSlot}>
-            <h2 style={styles.title}>Language:</h2>
-            {localeNames.map(localeItem => (
-              <button
-                key={localeItem}
-                onClick={() => this.handleSetParam('localeName', localeItem)}
-                style={{
-                  ...styles.button,
-                  ...(localeName === localeItem ? styles.selected : {}),
-                }}
-              >
-                {localeItem}
-              </button>
-            ))}
-          </div>
-          <div style={styles.menuSlot}>
-            <h2 style={styles.title}>Theme:</h2>
-            {themeNames.map(themeItem => (
-              <button
-                key={themeItem}
-                onClick={() => this.handleSetParam('themeName', themeItem)}
-                style={{
-                  ...styles.button,
-                  ...(themeName === themeItem ? styles.selected : {}),
-                }}
-              >
-                {themeItem}
-              </button>
-            ))}
-          </div>
+        <span style={styles.separator} />
+        <div style={styles.menuSlot}>
+          {localeNames.map(localeItem => (
+            <button
+              key={localeItem}
+              onClick={() => this.handleSetParam('localeName', localeItem)}
+              style={{
+                ...styles.button,
+                ...(localeName === localeItem ? styles.selected : {}),
+              }}
+            >
+              {localeItem}
+            </button>
+          ))}
         </div>
+        <span style={styles.separator} />
+        <div style={styles.menuSlot}>
+          {themeNames.map(themeItem => (
+            <button
+              key={themeItem}
+              onClick={() => this.handleSetParam('themeName', themeItem)}
+              style={{
+                ...styles.button,
+                ...(themeName === themeItem ? styles.selected : {}),
+              }}
+            >
+              {themeItem}
+            </button>
+          ))}
+        </div>
+        <span style={styles.separator} />
       </div>
     );
   }
