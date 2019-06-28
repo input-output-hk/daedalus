@@ -47,24 +47,14 @@ export default class StoryWrapper extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    /**
-     *
-     * themeNameSession and localeNameSession:
-     *
-     * the sessionStorage variables are necessary
-     * because it's impossible to change the Storybook sidebar links behaviour
-     * so when click a sidebar link, the sessionStorage variable will take advantage
-     *
-     */
-    const themeNameSession = sessionStorage.getItem('themeName');
-    const localeNameSession = sessionStorage.getItem('localeName');
-
     const themeName =
-      themeNameSession || this.params.get('themeName') || themeNames[0];
+      this.params.get('themeName') ||
+      localStorage.getItem('themeName') ||
+      themeNames[0];
     const localeName =
-      localeNameSession || this.params.get('localeName') || localeNames[0];
-
-    // this.updateQueryParam({ themeName, localeName });
+      this.params.get('localeName') ||
+      localStorage.getItem('localeName') ||
+      localeNames[0];
 
     onReceiveParam(this.handleSetParam);
 
@@ -87,13 +77,13 @@ export default class StoryWrapper extends Component<Props, State> {
   }
 
   get params() {
-    return new URLSearchParams(parent.window.location.search);
+    return new URLSearchParams(parent.window.location.search.slice(1));
   }
 
   handleSetParam = (param: string, value: string) => {
     const query = set({}, param, value);
     this.setState(query);
-    sessionStorage.setItem(param, value);
+    localStorage.setItem(param, value);
     updateParam(query);
   };
 
