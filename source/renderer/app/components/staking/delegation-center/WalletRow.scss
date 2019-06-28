@@ -58,13 +58,31 @@
       .gearIcon {
         cursor: pointer;
 
-        & > svg {
+        svg {
           height: 12px;
           width: 12px;
+
+          path {
+            fill: var(--theme-staking-delegation-center-gear-icon-fill-color);
+          }
         }
 
         @media (max-width: 950px) {
           display: none;
+        }
+      }
+
+      :global {
+        .SimpleSelect_isOpen {
+          .WalletRow_gearIcon {
+            svg {
+              path {
+                fill: var(
+                  --theme-staking-delegation-center-gear-icon-fill-color-active
+                );
+              }
+            }
+          }
         }
       }
     }

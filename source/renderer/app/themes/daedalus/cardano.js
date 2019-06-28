@@ -613,6 +613,8 @@ const CARDANO_THEME_CONFIG = {
     '--theme-staking-dropdown-item-background-color': '#fafbfc',
     '--theme-staking-dropdown-item-background-color-hover':
       'rgba(32, 34, 37, 0.7)',
+    '--theme-staking-delegation-center-gear-icon-fill-color': '#5e6066',
+    '--theme-staking-delegation-center-gear-icon-fill-color-active': '#5e6066',
   },
   support: {
     '--theme-support-settings-text-color': '#5e6066',

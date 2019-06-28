@@ -609,6 +609,8 @@ const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-staking-dropdown-item-text-color-hover': '#5e6066',
     '--theme-staking-dropdown-item-background-color': '#fafbfc',
     '--theme-staking-dropdown-item-background-color-hover': '#f1f3f5',
+    '--theme-staking-delegation-center-gear-icon-fill-color': '#5e6066',
+    '--theme-staking-delegation-center-gear-icon-fill-color-active': '#5e6066',
   },
   support: {
     '--theme-support-settings-text-color': '#5e6066',
