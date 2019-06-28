@@ -10,7 +10,6 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
-import globalMessages from '../../../i18n/global-messages';
 
 const messages = defineMessages({
   title: {
@@ -63,8 +62,6 @@ const messages = defineMessages({
       'Label for "Cancel" button on the delegation setup "confirmation" step dialog.',
   },
 });
-
-messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type State = {
   spendingPasswordValue: string,

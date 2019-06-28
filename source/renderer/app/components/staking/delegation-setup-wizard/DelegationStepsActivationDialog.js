@@ -10,7 +10,6 @@ import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
-import globalMessages from '../../../i18n/global-messages';
 
 const messages = defineMessages({
   title: {
