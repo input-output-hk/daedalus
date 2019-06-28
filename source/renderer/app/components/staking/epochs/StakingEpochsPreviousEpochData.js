@@ -12,15 +12,16 @@ import {
   sortData,
 } from './helpers.js';
 import styles from './StakingEpochs.scss';
+import globalMessages from '../../../i18n/global-messages';
 
 const messages = defineMessages({
   tableHeaderPool: {
-    id: 'staking.epochs.tableHeader.pool',
+    id: 'staking.epochs.previousEpoch.tableHeader.pool',
     defaultMessage: '!!!Stake pool',
     description: 'Table header "Stake pool" label on staking epochs page',
   },
   tableHeaderSlotsElected: {
-    id: 'staking.epochs.tableHeader.slotsElected',
+    id: 'staking.epochs.previousEpoch.tableHeader.slotsElected',
     defaultMessage: '!!!Slots elected',
     description: 'Table header "Slots elected" label on staking epochs page',
   },
@@ -43,11 +44,6 @@ const messages = defineMessages({
     id: 'staking.epochs.tableBody.of',
     defaultMessage: '!!!of',
     description: '"of" text in table body on staking epochs page',
-  },
-  tableBodyAda: {
-    id: 'environment.currency.ada',
-    defaultMessage: '!!!Ada',
-    description: '"Ada" text in table body on staking epochs page',
   },
 });
 
@@ -157,12 +153,12 @@ export default class StakingEpochsPreviousEpochData extends Component<
               <td>
                 <span className={styles.mediumText}>{sharedRewards[0]}</span>
                 <span className={styles.uppercaseText}>{` ${intl.formatMessage(
-                  messages.tableBodyAda
+                  globalMessages.currency
                 )} `}</span>
                 <span>{`${intl.formatMessage(messages.tableBodyOf)} `}</span>
                 <span className={styles.mediumText}>{sharedRewards[1]}</span>
                 <span className={styles.uppercaseText}>{` ${intl.formatMessage(
-                  messages.tableBodyAda
+                  globalMessages.currency
                 )}`}</span>
               </td>
             </tr>
