@@ -4,37 +4,38 @@ import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import classnames from 'classnames';
 import styles from './StakePoolsSearch.scss';
 import searchIcon from '../../../assets/images/search.inline.svg';
 
 const messages = defineMessages({
   searchInputPlaceholder: {
-    id: 'staking.stakePools.searchInputPlaceholder',
+    id: 'staking.stakePools.search.searchInputPlaceholder',
     defaultMessage: '!!!Search stake pools',
     description: '"Delegating List Title" for the Stake Pools page.',
   },
   filterAll: {
-    id: 'staking.stakePools.filterAll',
+    id: 'staking.stakePools.search.filterAll',
     defaultMessage: '!!!All',
     description: '"Filter All" for the Stake Pools page.',
   },
   filterNew: {
-    id: 'staking.stakePools.filterNew',
+    id: 'staking.stakePools.search.filterNew',
     defaultMessage: '!!!New',
     description: '"Filter New" for the Stake Pools page.',
   },
   filterCharity: {
-    id: 'staking.stakePools.filterCharity',
+    id: 'staking.stakePools.search.filterCharity',
     defaultMessage: '!!!Charity',
     description: '"FilterChar ity" for the Stake Pools page.',
   },
   delegatingListTitle: {
-    id: 'staking.stakePools.delegatingListTitle',
+    id: 'staking.stakePools.search.delegatingListTitle',
     defaultMessage: '!!!Stake pools you are currently delegating to',
     description: '"delegatingListTitlee" for the Stake Pools page.',
   },
   listTitle: {
-    id: 'staking.stakePools.listTitle',
+    id: 'staking.stakePools.search.listTitle',
     defaultMessage: '!!!Stake pools ({pools})',
     description: '"listTitle" for the Stake Pools page.',
   },
@@ -54,7 +55,7 @@ export class StakePoolsSearch extends Component<Props> {
   };
 
   getFilterItemClassName = (item: string) =>
-    item === this.props.filter && styles.searchFilterActiveItem;
+    classnames({ [styles.searchFilterActiveItem]: this.props.filter === item });
 
   render() {
     const { intl } = this.context;
