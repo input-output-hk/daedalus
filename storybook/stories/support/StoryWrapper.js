@@ -4,8 +4,12 @@ import { keys, set } from 'lodash';
 import { IntlProvider, addLocaleData } from 'react-intl';
 import en from 'react-intl/locale-data/en';
 import ja from 'react-intl/locale-data/ja';
+import {
+  setInitialProps,
+  updateParam,
+  onReceiveParam,
+} from '../../addons/DaedalusMenu';
 
-import DaedalusMenu from './DaedalusMenu';
 import translations from '../../../source/renderer/app/i18n/translations';
 import ThemeManager from '../../../source/renderer/app/ThemeManager';
 import cardano from '../../../source/renderer/app/themes/daedalus/cardano.js';
@@ -14,7 +18,7 @@ import lightBlue from '../../../source/renderer/app/themes/daedalus/light-blue.j
 
 /* eslint-disable no-restricted-globals */
 
-// https://github.com/yahoo/react-intl/wiki#loading-locale-data
+// // https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([...en, ...ja]);
 
 const themes = {
@@ -37,7 +41,6 @@ type Props = {
 type State = {
   themeName: string,
   localeName: string,
-  isMenuVisible: boolean,
 };
 
 export default class StoryWrapper extends Component<Props, State> {
@@ -61,62 +64,48 @@ export default class StoryWrapper extends Component<Props, State> {
     const localeName =
       localeNameSession || this.params.get('localeName') || localeNames[0];
 
-    if (themeNameSession) this.updateQueryParam('themeName', themeNameSession);
-    if (localeNameSession)
-      this.updateQueryParam('localeName', localeNameSession);
+    // this.updateQueryParam({ themeName, localeName });
+
+    onReceiveParam(this.handleSetParam);
 
     this.state = {
       themeName,
       localeName,
-      isMenuVisible: false,
     };
+  }
+
+  componentDidMount() {
+    const { themeName, localeName } = this.state;
+    setInitialProps({
+      themes,
+      themeNames,
+      locales,
+      localeNames,
+      themeName,
+      localeName,
+    });
   }
 
   get params() {
     return new URLSearchParams(parent.window.location.search);
   }
 
-  setParam = (param: string, value: string) => {
-    this.setState(set({}, param, value));
+  handleSetParam = (param: string, value: string) => {
+    const query = set({}, param, value);
+    this.setState(query);
     sessionStorage.setItem(param, value);
-    this.updateQueryParam(param, value);
+    updateParam(query);
   };
-
-  updateQueryParam = (param: string, value: string) => {
-    // this `setTimeout` is necessary, as it's not possible to control Storybook native links
-    setTimeout(() => {
-      const { params } = this;
-      params.set(param, value);
-      const { location } = parent.window;
-      const newurl = `${location.protocol}//${location.host}${
-        location.pathname
-      }?${params.toString()}`;
-      parent.window.history.pushState({ path: newurl }, '', newurl);
-    }, 500);
-  };
-
-  handleToggleVisibility = () =>
-    this.setState(({ isMenuVisible }) => ({ isMenuVisible: !isMenuVisible }));
 
   render() {
     const { children: Story } = this.props;
-    const { themeName, localeName, isMenuVisible } = this.state;
+    const { themeName, localeName } = this.state;
     const theme = themes[themeName];
     const locale = locales[localeName];
 
     return (
       <Fragment>
         <ThemeManager variables={theme} />
-        <DaedalusMenu
-          localeNames={localeNames}
-          themeNames={themeNames}
-          setParam={this.setParam}
-          currentLocale={localeName}
-          currentTheme={themeName}
-          onToggleVisibility={this.handleToggleVisibility}
-          isVisible={isMenuVisible}
-        />
-
         <IntlProvider
           {...{ locale, key: locale, messages: translations[locale] }}
         >

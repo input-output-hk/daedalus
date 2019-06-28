@@ -54,7 +54,7 @@ export class StakePoolsSearch extends Component<Props> {
   };
 
   getFilterItemClassName = (item: string) =>
-    item === this.props.filter && styles.searchFilterActiveItem;
+    item === this.props.filter ? styles.searchFilterActiveItem : null;
 
   render() {
     const { intl } = this.context;
