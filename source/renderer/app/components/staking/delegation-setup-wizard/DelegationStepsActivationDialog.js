@@ -6,15 +6,15 @@ import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import styles from './DelegationStepsActivationDialog.scss';
+import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
-import Dialog from '../../widgets/Dialog';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
 
 const messages = defineMessages({
   title: {
-    id: 'staking.delegationSetup.steps.confirmation.dialog.title',
+    id: 'staking.delegationSetup.steps.activation.dialog.title',
     defaultMessage: '!!!Confirm Delegation',
     description:
       'Title "Confirm Delegation" on the delegation setup "activation" step dialog.',
@@ -87,18 +87,16 @@ const messages = defineMessages({
   },
 });
 
-messages.fieldIsRequired = globalMessages.fieldIsRequired;
-
 type State = {
   spendingPasswordValue: string,
 };
 
 type Props = {
-  onClose: Function,
+  isSpendingPasswordSet?: boolean,
   onActivate: Function,
   onBack: Function,
+  onClose: Function,
   stepsList: Array<string>,
-  isSpendingPasswordSet?: boolean,
 };
 
 export default class DelegationStepsActivationDialog extends Component<
@@ -152,10 +150,10 @@ export default class DelegationStepsActivationDialog extends Component<
     const { form } = this;
     const { intl } = this.context;
     const {
-      stepsList,
-      onClose,
-      onBack,
       isSpendingPasswordSet,
+      onBack,
+      onClose,
+      stepsList,
     } = this.props;
     const { spendingPasswordValue } = this.state;
 
@@ -163,7 +161,7 @@ export default class DelegationStepsActivationDialog extends Component<
 
     const actions = [
       {
-        className: 'cancelButton',
+        className: 'postponeButton',
         label: intl.formatMessage(messages.postponeButtonLabel),
         onClick: onClose,
       },
@@ -249,7 +247,7 @@ export default class DelegationStepsActivationDialog extends Component<
 
           {isSpendingPasswordSet && (
             <Input
-              type="password"
+              type='password'
               className={styles.spendingPassword}
               {...spendingPasswordField.bind()}
               skin={InputSkin}

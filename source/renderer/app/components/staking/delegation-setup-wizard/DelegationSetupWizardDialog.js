@@ -1,47 +1,47 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import DelegationStepsNotAvailableDialog from './DelegationStepsNotAvailableDialog';
-import DelegationStepsIntroDialog from './DelegationStepsIntroDialog';
+import DelegationStepsActivationDialog from './DelegationStepsActivationDialog';
 import DelegationStepsChooseWalletDialog from './DelegationStepsChooseWalletDialog';
 import DelegationStepsConfirmationDialog from './DelegationStepsConfirmationDialog';
-import DelegationStepsActivationDialog from './DelegationStepsActivationDialog';
+import DelegationStepsIntroDialog from './DelegationStepsIntroDialog';
+import DelegationStepsNotAvailableDialog from './DelegationStepsNotAvailableDialog';
 
 type WalletData = {
+  isAcceptableSetupWallet: boolean,
   label: string,
   value: string,
-  isAcceptableSetupWallet: boolean,
 };
 
 type Props = {
-  isDisabled: boolean,
   activeStep: number,
-  wallets: Array<WalletData>,
-  onClose: Function,
-  onContinue: Function,
-  onBack: Function,
-  onLearnMoreClick: Function,
-  stepsList: Array<string>,
+  isDisabled: boolean,
   minDelegationFunds: number,
   onActivate: Function,
+  onBack: Function,
+  onClose: Function,
   onConfirm: Function,
+  onContinue: Function,
+  onLearnMoreClick: Function,
+  stepsList: Array<string>,
+  wallets: Array<WalletData>,
 };
 
 @observer
 export default class DelegationSetupWizardDialog extends Component<Props> {
   render() {
     const {
-      isDisabled,
-      onClose,
-      onContinue,
-      onBack,
       activeStep,
-      wallets,
-      onLearnMoreClick,
-      stepsList,
+      isDisabled,
       minDelegationFunds,
       onActivate,
+      onBack,
+      onClose,
       onConfirm,
+      onContinue,
+      onLearnMoreClick,
+      stepsList,
+      wallets,
     } = this.props;
 
     if (isDisabled) {

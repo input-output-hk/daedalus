@@ -71,11 +71,11 @@ type State = {
 };
 
 type Props = {
+  isSpendingPasswordSet?: boolean,
+  onBack: Function,
   onClose: Function,
   onConfirm: Function,
-  onBack: Function,
   stepsList: Array<string>,
-  isSpendingPasswordSet?: boolean,
 };
 
 export default class DelegationStepsConfirmationDialog extends Component<
@@ -127,10 +127,10 @@ export default class DelegationStepsConfirmationDialog extends Component<
     const { form } = this;
     const { intl } = this.context;
     const {
-      stepsList,
-      onClose,
-      onBack,
       isSpendingPasswordSet,
+      onBack,
+      onClose,
+      stepsList,
     } = this.props;
     const { spendingPasswordValue } = this.state;
 
