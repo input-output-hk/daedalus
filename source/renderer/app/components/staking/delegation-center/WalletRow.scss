@@ -29,6 +29,13 @@
 
   .right {
     .status {
+      @extend %regularText;
+
+      align-items: center;
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 3px;
+
       .normalOption {
         @extend %regularText;
         font-size: 13px;
@@ -45,7 +52,7 @@
       }
 
       .gearIcon {
-        margin-left: 10px;
+        cursor: pointer;
 
         & > svg {
           height: 12px;
@@ -65,5 +72,6 @@
 
   b {
     color: var(--theme-staking-link-color);
+    cursor: pointer;
   }
 }

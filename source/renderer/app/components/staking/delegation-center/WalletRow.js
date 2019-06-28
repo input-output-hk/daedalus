@@ -11,7 +11,7 @@ import SVGInline from 'react-svg-inline';
 import Wallet from '../../../domains/Wallet';
 import settingsIcon from '../../../assets/images/wallet-nav/wallet-settings-2-ic.inline.svg';
 import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
-import DropdownMenu from './DropdownMenu/DropdownMenu';
+import DropdownMenu from './DropdownMenu';
 import DonutRing from './DonutRing';
 import styles from './WalletRow.scss';
 
@@ -144,15 +144,15 @@ export default class WalletRow extends Component<Props> {
         </div>
         <div className={styles.right}>
           <div className={styles.status}>
+            <span>{isDelegated ? delegated : notDelegated}</span>
             <DropdownMenu
               label={
-                <Fragment>
-                  <span>{isDelegated ? delegated : notDelegated}</span>
-                  <SVGInline svg={settingsIcon} className={styles.gearIcon} />
-                </Fragment>
+                <SVGInline svg={settingsIcon} className={styles.gearIcon} />
               }
               menuItems={delegationActionOptions}
-              onMenuItemClick={() => null}
+              onMenuItemClick={value =>
+                console.log('----here---fuck---', value)
+              }
             />
           </div>
           <div className={styles.action}>
