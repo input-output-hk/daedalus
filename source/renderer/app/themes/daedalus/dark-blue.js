@@ -614,8 +614,9 @@ const DARK_BLUE_THEME_CONFIG = {
     '--theme-staking-dropdown-item-text-color-hover': '#e9f4fe',
     '--theme-staking-dropdown-item-background-color': '#314259',
     '--theme-staking-dropdown-item-background-color-hover': '#3a4e63',
-    '--theme-staking-delegation-center-gear-icon-fill-color': '#9ba6b3',
-    '--theme-staking-delegation-center-gear-icon-fill-color-active': '#fff',
+    '--theme-staking-delegation-center-gear-icon-fill-color':
+      'rgba(233, 244, 254, 0.5)',
+    '--theme-staking-delegation-center-gear-icon-fill-color-active': '#e9f4fe',
   },
   support: {
     '--theme-support-settings-item-color': 'rgba(233, 244, 254, 0.5)',

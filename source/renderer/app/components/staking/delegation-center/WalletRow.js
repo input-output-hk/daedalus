@@ -10,7 +10,7 @@ import {
 import SVGInline from 'react-svg-inline';
 import Wallet from '../../../domains/Wallet';
 import { getColorFromRange } from '../../../utils/colors';
-import settingsIcon from '../../../assets/images/wallet-nav/wallet-settings-2-ic.inline.svg';
+import settingsIcon from '../../../assets/images/settings-ic.inline.svg';
 import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import DropdownMenu from './DropdownMenu';
 import DonutRing from './DonutRing';
