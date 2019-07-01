@@ -4,9 +4,14 @@
   :global {
     .Dialog_title {
       letter-spacing: 2px;
+      margin-bottom: 0;
     }
 
-    .StakePoolTooltip_component {
+    .Dialog_content {
+      width: 600px;
+    }
+
+    /* .StakePoolTooltip_component {
       &.StakePoolTooltip_isVisible {
         opacity: 0.9;
         background-color: #5e6066;
@@ -48,7 +53,7 @@
       .StakePoolTooltip_colorBand {
         display: none;
       }
-    }
+    } */
   }
 
   .delegationStepsIndicatorWrapper {
@@ -99,11 +104,8 @@
 
         :global {
           .StakePoolsList_component {
-            margin: initial;
-            .StakePoolThumbnail_component {
-              margin: auto 20px 0;
-              margin-left: 0px;
-            }
+            justify-content: left;
+            grid-gap: 20px;
           }
         }
       }

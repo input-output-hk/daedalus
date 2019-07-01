@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
@@ -14,81 +14,113 @@ type Props = {
   index: number,
   isSelected: boolean,
   currentTheme: string,
-  flipHorizontal: boolean,
-  flipVertical: boolean,
   onOpenExternalLink: Function,
   onClick?: Function,
   onHover?: Function,
   onClose: Function,
   onSelect: Function,
-  showWithSelectButton: boolean,
+  showWithSelectButton?: boolean,
 };
 
-export const StakePoolThumbnail = observer((props: Props) => {
-  const {
-    stakePool,
-    index,
-    isSelected,
-    currentTheme,
-    flipHorizontal,
-    flipVertical,
-    onClick,
-    onHover,
-    onClose,
-    onOpenExternalLink,
-    onSelect,
-    showWithSelectButton,
-  } = props;
 
-  const color = getColorFromRange(index);
+type State = {
+  top: number,
+  left: number,
+};
 
-  const { ranking, id, retirement } = stakePool;
+@observer
+export class StakePoolThumbnail extends Component<Props, State> {
+  state = {
+    top: 0,
+    left: 0,
+  };
 
-  const componentClassnames = classnames([
-    styles.component,
-    isSelected ? styles.isSelected : null,
-  ]);
+  handleClick = (event: SyntheticMouseEvent<HTMLElement>) => {
+    const { onClose, onClick, onHover, isSelected, stakePool } = this.props;
+    if (isSelected) return onClose();
+    event.persist();
+    if (event.target instanceof HTMLElement) {
+      const targetElement =
+        event.target.className === 'StakePool_content'
+          ? event.target
+          : event.target.parentNode;
+      if (targetElement instanceof HTMLElement) {
+        const { top, left } = targetElement.getBoundingClientRect();
+        this.setState({ top, left });
+        onHover ? onHover(stakePool.id) : onClick(stakePool.id);
+      }
+    }
+    return false;
+  };
 
-  return (
-    <div className={componentClassnames}>
+  render() {
+    const {
+      stakePool,
+      index,
+      isSelected,
+      currentTheme,
+      onClose,
+      onHover,
+      onOpenExternalLink,
+      onSelect,
+      showWithSelectButton,
+    } = this.props;
+
+    const { top, left } = this.state;
+
+    const color = getColorFromRange(index);
+
+    const { ranking, slug, retirement } = stakePool;
+
+    const componentClassnames = classnames([
+      styles.component,
+      isSelected ? styles.isSelected : null,
+    ]);
+
+    return (
       <div
-        className={styles.content}
-        onClick={event => onClick(event, ranking)}
-        onMouseEnter={onHover ? event => onHover(event, ranking) : null}
-        role="link"
-        aria-hidden
+        className={componentClassnames}
+        onMouseEnter={onHover ? this.handleClick : null}
+        onMouseLeave={onHover ? onClose : null}
       >
-        <div className={styles.id}>{id}</div>
-        <div className={styles.ranking} style={{ color }}>
-          {ranking}
-        </div>
-        {retirement && (
-          <div className={styles.clock}>
-            <SVGInline svg={clockIcon} className={styles.clockIcon} />
-          </div>
-        )}
         <div
-          className={styles.colorBand}
-          style={{
-            background: color,
-          }}
-        />
+          className={styles.content}
+          onClick={!onHover ? this.handleClick : null}
+          role="link"
+          aria-hidden
+        >
+          <div className={styles.slug}>{slug}</div>
+          <div className={styles.ranking} style={{ color }}>
+            {ranking}
+          </div>
+          {retirement && (
+            <div className={styles.clock}>
+              <SVGInline svg={clockIcon} className={styles.clockIcon} />
+            </div>
+          )}
+          <div
+            className={styles.colorBand}
+            style={{
+              background: color,
+            }}
+          />
+        </div>
+        {isSelected && (
+          <StakePoolTooltip
+            stakePool={stakePool}
+            className={styles.tooltip}
+            isVisible
+            onClick={onClose}
+            currentTheme={currentTheme}
+            onOpenExternalLink={onOpenExternalLink}
+            top={top}
+            left={left}
+            color={color}
+            onSelect={onSelect}
+            showWithSelectButton={showWithSelectButton}
+          />
+        )}
       </div>
-      {isSelected && (
-        <StakePoolTooltip
-          stakePool={stakePool}
-          index={index}
-          className={styles.tooltip}
-          isVisible
-          onClick={onClose}
-          currentTheme={currentTheme}
-          flipHorizontal={flipHorizontal}
-          flipVertical={flipVertical}
-          onOpenExternalLink={onOpenExternalLink}
-          onSelect={onSelect}
-          showWithSelectButton={showWithSelectButton}
-        />
-      )}
-    </div>
-  );
-});
+    );
+  }
+}

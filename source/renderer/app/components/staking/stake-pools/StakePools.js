@@ -31,14 +31,12 @@ type State = {
   search: string,
   filter: string,
   selectedList?: ?string,
-  selectedIndex?: ?number,
   flipHorizontal: boolean,
   flipVertical: boolean,
 };
 
 const initialState = {
   selectedList: null,
-  selectedIndex: null,
   flipHorizontal: false,
   flipVertical: false,
 };
@@ -96,7 +94,6 @@ export default class StakePools extends Component<Props, State> {
 
         {stakePoolsDelegatingList.length && (
           <StakePoolsList
-            showWithSelectButton
             listName="stakePoolsDelegatingList"
             flipHorizontal={flipHorizontal}
             flipVertical={flipVertical}

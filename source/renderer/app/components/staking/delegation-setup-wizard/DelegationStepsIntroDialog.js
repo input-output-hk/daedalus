@@ -15,7 +15,7 @@ type Props = {
 
 const messages = defineMessages({
   title: {
-    id: 'staking.delegationSetup.steps.dialog.title',
+    id: 'staking.delegationSetup.intro.step.dialog.title',
     defaultMessage: '!!!Delegation Setup',
     description:
       'Title "Delegation Setup" on the delegation setup "intro" dialog.',
@@ -145,9 +145,7 @@ export default class DelegationStepsIntroDialog extends Component<Props> {
                   <span>4. </span>
                   {intl.formatMessage(messages.stepsExplanationLabel4)}{' '}
                   <span className={styles.optionalLabel}>
-                    {intl.formatMessage(
-                      messages.stepsExplanationOptionalLabel
-                    )}
+                    {intl.formatMessage(messages.stepsExplanationOptionalLabel)}
                   </span>
                 </p>
               </li>

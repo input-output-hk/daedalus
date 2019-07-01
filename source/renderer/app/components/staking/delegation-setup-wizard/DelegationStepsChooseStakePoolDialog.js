@@ -17,7 +17,7 @@ import type { StakePool } from '../../../api/staking/types';
 
 const messages = defineMessages({
   title: {
-    id: 'staking.delegationSetup.steps.dialog.title',
+    id: 'staking.delegationSetup.chooseStakePool.step.dialog.title',
     defaultMessage: '!!!Delegation Setup',
     description:
       'Title "Delegation Setup" on the delegation setup "choose stake pool" dialog.',
@@ -27,6 +27,24 @@ const messages = defineMessages({
     defaultMessage:
       '!!!Choose a stake pool to which you would like to delegate.',
     description: 'Description on the delegation setup "choose stake pool" dialog.',
+  },
+  delegatedPoolsLabel: {
+    id: 'staking.delegationSetup.chooseStakePool.step.dialog.delegatedPoolsLabel',
+    defaultMessage:
+      '!!!Stake pools you are already delegating to:',
+    description: '"Delegated Pools" section label on the delegation setup "choose stake pool" dialog.',
+  },
+  searchInputLabel: {
+    id: 'staking.delegationSetup.chooseStakePool.step.dialog.searchInput.label',
+    defaultMessage:
+      '!!!Or search for a stake pool:',
+    description: 'Search "Pools" input label on the delegation setup "choose stake pool" dialog.',
+  },
+  searchInputPlaceholder: {
+    id: 'staking.delegationSetup.chooseStakePool.step.dialog.searchInput.placeholder',
+    defaultMessage:
+      '!!!Search stake pools',
+    description: 'Search "Pools" input placeholder on the delegation setup "choose stake pool" dialog.',
   },
    continueButtonLabel: {
     id: 'staking.delegationSetup.chooseStakePool.step.dialog.continueButtonLabel',
@@ -54,17 +72,14 @@ type Props = {
 };
 
 type State = {
-  search: string,
-  filter: string,
+  searchValue: string,
   selectedList?: ?string,
-  selectedIndex?: ?number,
   flipHorizontal: boolean,
   flipVertical: boolean,
 };
 
 const initialState = {
   selectedList: null,
-  selectedIndex: null,
   flipHorizontal: false,
   flipVertical: false,
 };
@@ -74,75 +89,26 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<Prop
     intl: intlShape.isRequired,
   };
 
-  constructor(props: Props) {
-    super(props);
-    window.addEventListener(
-      'resize',
-      debounce(this.handleClose, 200, { leading: true, trailing: false })
-    );
-  }
-
   state = {
-    search: '',
+    searchValue: '',
     ...initialState,
   };
 
-  getIndex = (ranking: number) => {
-    console.debug('getIndex: ', ranking);
-    return rangeMap(ranking, 1, this.props.stakePoolsList.length, 0, 99)
+  searchInput: ?HTMLElement = null;
+
+  handleSearch = (searchValue: string) => this.setState({ searchValue });
+
+  handleHover = (item) => {
+    console.debug('Hovered: ', item);
   };
 
-  getIsSelected = (list: string, index: number) => {
-    console.debug('getIsSelected: ', list, index);
-    return list === this.state.selectedList && index === this.state.selectedIndex;
+   handleSelect = (item) => {
+    console.debug('Selected: ', item);
   };
 
-  handleClose = () => this.setState({ ...initialState });
-
-  handleSearch = (search: string) => this.setState({ search });
-
-  handleHover = (
-    selectedList: string,
-    event: SyntheticMouseEvent<HTMLElement>,
-    selectedIndex: number
-  ) => {
-    if (
-      this.state.selectedList === selectedList &&
-      this.state.selectedIndex === selectedIndex
-    ) {
-      return this.handleClose();
-    }
-    event.persist();
-    if (event.target instanceof HTMLElement) {
-      const targetElement =
-        event.target.className === 'StakePool_content'
-          ? event.target
-          : event.target.parentNode;
-      if (targetElement instanceof HTMLElement) {
-        const { top, left } = targetElement.getBoundingClientRect();
-        const flipHorizontal = left > window.innerWidth - window.innerWidth / 2;
-        const flipVertical = top > window.innerHeight - window.innerHeight / 2;
-        return this.setState({
-          selectedList,
-          selectedIndex,
-          flipHorizontal,
-          flipVertical,
-        });
-      }
-    }
-    return false;
-  };
-
-  handleSelect = (
-    selectedList: string,
-    event: SyntheticMouseEvent<HTMLElement>,
-    selectedIndex: number
-  ) => {
-    console.debug('Select 22: ', {
-      selectedList,
-      event,
-      selectedIndex,
-    });
+  handleSetListActive = (selectedList: string) => {
+    console.debug('handleSetListActive: ', selectedList);
+    this.setState({ selectedList });
   }
 
   render() {
@@ -157,7 +123,12 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<Prop
       onContinue,
       onBack,
     } = this.props;
-    const { search, flipHorizontal, flipVertical } = this.state;
+    const {
+      searchValue,
+      flipHorizontal,
+      flipVertical,
+      selectedList,
+    } = this.state;
 
     const actions = [
       {
@@ -204,7 +175,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<Prop
             <SVGInline svg={selectedStakePoolPlaceholderImage} className={styles.placeholderImage} />
             <div className={styles.delegatedStakePoolsList}>
               <p className={styles.stakePoolsDelegatingListLabel}>
-                Stake pools you are already delegating to:
+                {intl.formatMessage(messages.delegatedPoolsLabel)}
               </p>
               <StakePoolsList
                 listName="stakePoolsDelegatingList"
@@ -213,17 +184,18 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<Prop
                 stakePoolsList={stakePoolsDelegatingList}
                 onOpenExternalLink={onOpenExternalLink}
                 currentTheme={currentTheme}
-                getIsSelected={this.getIsSelected}
-                onClose={this.handleClose}
                 onHover={this.handleHover}
-                getIndex={this.getIndex}
+                isListActive={selectedList === 'stakePoolsDelegatingList'}
+                setListActive={this.handleSetListActive}
               />
             </div>
           </div>
 
           <div className={styles.searchStakePoolsWrapper}>
             <StakePoolsSearch
-              search={search}
+              search={searchValue}
+              label={intl.formatMessage(messages.searchInputLabel)}
+              placeholder={intl.formatMessage(messages.searchInputPlaceholder)}
               onSearch={this.handleSearch}
               registerSearchInput={searchInput => {
                 this.searchInput = searchInput;
@@ -233,15 +205,14 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<Prop
 
           <div className={styles.stakePoolsListWrapper}>
             <StakePoolsList
-              listName="stakePoolsList"
+              listName="selectedIndexList"
               stakePoolsList={stakePoolsList}
               onOpenExternalLink={onOpenExternalLink}
               currentTheme={currentTheme}
-              getIsSelected={this.getIsSelected}
-              onClose={this.handleClose}
               onHover={this.handleHover}
-              onClick={this.handleSelect}
-              getIndex={this.getIndex}
+              isListActive={selectedList === 'selectedIndexList'}
+              setListActive={this.handleSetListActive}
+              onSelect={this.handleSelect}
             />
           </div>
         </div>
