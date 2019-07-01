@@ -96,7 +96,8 @@ export default class WalletRow extends Component<Props> {
       index,
     } = this.props;
     const inactiveStakePercentageValue = inactiveStakePercentage || 0;
-    const color = isDelegated ? getColorFromRange(index) : 'transparent';
+    const color =
+      isDelegated && index ? getColorFromRange(index) : 'transparent';
 
     const delegated = intl.formatMessage(messages.delegated);
     const notDelegated = intl.formatMessage(messages.notDelegated);
@@ -159,7 +160,7 @@ export default class WalletRow extends Component<Props> {
               />
             </div>
             <div className={styles.action}>
-              {isDelegated ? (
+              {isDelegated && delegatedStakePool ? (
                 <FormattedHTMLMessage
                   {...messages.toStakePoolSlug}
                   values={{ delegatedStakePoolSlug: delegatedStakePool.slug }}

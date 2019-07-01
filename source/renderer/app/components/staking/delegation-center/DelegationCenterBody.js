@@ -23,7 +23,7 @@ export default class DelegationCenterBody extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  getIndex = (ranking: ?number) => {
+  getIndex = (ranking: number) => {
     const { wallets } = this.props;
 
     return rangeMap(
@@ -47,7 +47,7 @@ export default class DelegationCenterBody extends Component<Props> {
         </div>
         <div className={styles.mainContent}>
           {wallets.map(wallet => {
-            if (wallet.isDelegated) {
+            if (wallet.isDelegated && wallet.delegatedStakePool) {
               const index = this.getIndex(wallet.delegatedStakePool.ranking);
               return (
                 <WalletRow key={wallet.id} wallet={wallet} index={index} />
