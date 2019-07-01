@@ -53,7 +53,7 @@ const messages = defineMessages({
       'Label for continue button on the delegation setup "choose stake pool" dialog.',
   },
   stepIndicatorLabel: {
-    id: 'staking.delegationSetup.chooseWallet.step.dialog.stepIndicatorLabel',
+    id: 'staking.delegationSetup.chooseStakePool.step.dialog.stepIndicatorLabel',
     defaultMessage: '!!!STEP {currentStep} OF {totalSteps}',
     description:
       'Step indicator labe on the delegation setup "choose wallet" step dialog.',

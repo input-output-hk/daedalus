@@ -1760,6 +1760,109 @@
     "descriptors": [
       {
         "defaultMessage": "!!!Delegation Setup",
+        "description": "Title \"Delegation Setup\" on the delegation setup \"choose stake pool\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.title",
+        "start": {
+          "column": 9,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!Choose a stake pool to which you would like to delegate.",
+        "description": "Description on the delegation setup \"choose stake pool\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.description",
+        "start": {
+          "column": 15,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Stake pools you are already delegating to:",
+        "description": "\"Delegated Pools\" section label on the delegation setup \"choose stake pool\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.delegatedPoolsLabel",
+        "start": {
+          "column": 23,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!Or search for a stake pool:",
+        "description": "Search \"Pools\" input label on the delegation setup \"choose stake pool\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.label",
+        "start": {
+          "column": 20,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Search stake pools",
+        "description": "Search \"Pools\" input placeholder on the delegation setup \"choose stake pool\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.placeholder",
+        "start": {
+          "column": 26,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!Continue",
+        "description": "Label for continue button on the delegation setup \"choose stake pool\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 54
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.continueButtonLabel",
+        "start": {
+          "column": 24,
+          "line": 49
+        }
+      },
+      {
+        "defaultMessage": "!!!STEP {currentStep} OF {totalSteps}",
+        "description": "Step indicator labe on the delegation setup \"choose wallet\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 60
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.stepIndicatorLabel",
+        "start": {
+          "column": 22,
+          "line": 55
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Delegation Setup",
         "description": "Title \"Delegation Setup\" on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
