@@ -1763,13 +1763,13 @@
         "description": "Title for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 15
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterBody.js",
         "id": "staking.delegationCenter.bodyTitle",
         "start": {
           "column": 13,
-          "line": 10
+          "line": 11
         }
       }
     ],
@@ -1937,16 +1937,16 @@
         }
       },
       {
-        "defaultMessage": "!!!To <b>[{delegatedPoolCategory}]</b> stake pool",
-        "description": "Delegated stake pool category label for the Delegation center body section.",
+        "defaultMessage": "!!!To <b>[{delegatedStakePoolSlug}]</b> stake pool",
+        "description": "Delegated stake pool slug for the Delegation center body section.",
         "end": {
           "column": 3,
           "line": 65
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
-        "id": "staking.delegationCenter.toStakePoolCategory",
+        "id": "staking.delegationCenter.toStakePoolSlug",
         "start": {
-          "column": 23,
+          "column": 19,
           "line": 60
         }
       },
