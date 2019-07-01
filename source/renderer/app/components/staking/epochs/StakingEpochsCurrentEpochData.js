@@ -15,12 +15,12 @@ import styles from './StakingEpochs.scss';
 
 const messages = defineMessages({
   tableHeaderPool: {
-    id: 'staking.epochs.tableHeader.pool',
+    id: 'staking.epochs.currentEpoch.tableHeader.pool',
     defaultMessage: '!!!Stake pool',
     description: 'Table header "Stake pool" label on staking epochs page',
   },
   tableHeaderSlotsElected: {
-    id: 'staking.epochs.tableHeader.slotsElected',
+    id: 'staking.epochs.currentEpoch.tableHeader.slotsElected',
     defaultMessage: '!!!Slots elected',
     description: 'Table header "Slots elected" label on staking epochs page',
   },

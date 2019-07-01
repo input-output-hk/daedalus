@@ -4,9 +4,9 @@ import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { map } from 'lodash';
 import DelegationSetupWizardDialog from '../../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
-import type { InjectedContainerProps } from '../../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { MIN_DELEGATION_FUNDS } from '../../../config/stakingConfig';
+import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 
 const messages = defineMessages({
   learnMoreLinkUrl: {
@@ -37,11 +37,11 @@ const messages = defineMessages({
   },
 });
 
-type Props = InjectedContainerProps;
-
 type State = {
   activeStep: number,
 };
+
+type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
 @observer
@@ -51,6 +51,13 @@ export default class DelegationSetupWizardDialogContainer extends Component<
 > {
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  static defaultProps = {
+    actions: null,
+    stores: null,
+    children: null,
+    onClose: () => {},
   };
 
   state = {
