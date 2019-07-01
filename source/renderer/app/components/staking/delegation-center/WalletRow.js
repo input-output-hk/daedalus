@@ -19,6 +19,7 @@ import styles from './WalletRow.scss';
 export const DELEGATION_ACTIONS = {
   CHANGE_DELEGATION: 'changeDelegation',
   REMOVE_DELEGATION: 'removeDelegation',
+  DELEGATE: 'delegate',
 };
 
 const messages = defineMessages({
@@ -65,7 +66,7 @@ const messages = defineMessages({
   },
   delegate: {
     id: 'staking.delegationCenter.delegate',
-    defaultMessage: '!!!<b>Delegate</b>',
+    defaultMessage: '!!!Delegate',
     description: 'Delegate label for the Delegation center body section.',
   },
   yourStake: {
@@ -103,8 +104,10 @@ export default class WalletRow extends Component<Props> {
     const notDelegated = intl.formatMessage(messages.notDelegated);
     const changeDelegation = intl.formatMessage(messages.changeDelegation);
     const removeDelegation = intl.formatMessage(messages.removeDelegation);
+    const delegate = intl.formatMessage(messages.delegate);
     const yourStake = intl.formatMessage(messages.yourStake);
-    const delegationActionOptions = [
+
+    const delegatedWalletActionOptions = [
       {
         label: changeDelegation,
         value: DELEGATION_ACTIONS.CHANGE_DELEGATION,
@@ -114,6 +117,13 @@ export default class WalletRow extends Component<Props> {
         label: removeDelegation,
         value: DELEGATION_ACTIONS.REMOVE_DELEGATION,
         className: styles.removeOption,
+      },
+    ];
+    const notDelegatedWalletActionOptions = [
+      {
+        label: delegate,
+        value: DELEGATION_ACTIONS.DELEGATE,
+        className: styles.normalOption,
       },
     ];
 
@@ -155,7 +165,11 @@ export default class WalletRow extends Component<Props> {
                 label={
                   <SVGInline svg={settingsIcon} className={styles.gearIcon} />
                 }
-                menuItems={delegationActionOptions}
+                menuItems={
+                  isDelegated
+                    ? delegatedWalletActionOptions
+                    : notDelegatedWalletActionOptions
+                }
                 onMenuItemClick={() => null}
               />
             </div>
@@ -163,11 +177,13 @@ export default class WalletRow extends Component<Props> {
               {isDelegated && delegatedStakePool ? (
                 <FormattedHTMLMessage
                   {...messages.toStakePoolSlug}
-                  values={{ delegatedStakePoolSlug: delegatedStakePool.slug }}
+                  values={{
+                    delegatedStakePoolSlug: delegatedStakePool.slug,
+                  }}
                 />
               ) : (
                 <span>
-                  <FormattedHTMLMessage {...messages.delegate} /> {yourStake}
+                  <b>{delegate}</b> {yourStake}
                 </span>
               )}
             </div>
