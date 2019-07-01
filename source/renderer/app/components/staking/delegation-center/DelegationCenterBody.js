@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import { rangeMap } from '../../../utils/rangeMap';
 import Wallet from '../../../domains/Wallet';
 import WalletRow from './WalletRow';
 import styles from './DelegationCenterBody.scss';
@@ -22,6 +23,18 @@ export default class DelegationCenterBody extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  getIndex = (ranking: ?number) => {
+    const { wallets } = this.props;
+
+    return rangeMap(
+      ranking,
+      1,
+      wallets.filter(wallet => wallet.isDelegated).length,
+      0,
+      99
+    );
+  };
+
   render() {
     const { intl } = this.context;
     const { wallets } = this.props;
@@ -33,9 +46,15 @@ export default class DelegationCenterBody extends Component<Props> {
           <span>{title}</span>
         </div>
         <div className={styles.mainContent}>
-          {wallets.map(wallet => (
-            <WalletRow key={wallet.id} wallet={wallet} />
-          ))}
+          {wallets.map(wallet => {
+            if (wallet.isDelegated) {
+              const index = this.getIndex(wallet.delegatedStakePool.ranking);
+              return (
+                <WalletRow key={wallet.id} wallet={wallet} index={index} />
+              );
+            }
+            return <WalletRow key={wallet.id} wallet={wallet} />;
+          })}
         </div>
       </div>
     );

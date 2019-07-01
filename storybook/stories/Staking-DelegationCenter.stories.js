@@ -3,6 +3,7 @@ import React from 'react';
 import BigNumber from 'bignumber.js';
 import { number } from '@storybook/addon-knobs';
 import DelegationCenter from '../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
+import STAKE_POOLS from '../../source/renderer/app/config/stakingStakePools.dummy.json';
 
 const defaultAdaValue = 82650.15;
 const defaultPercentage = 10;
@@ -26,8 +27,7 @@ const wallets = [
     isLegacy: false,
     inactiveStakePercentage: 24,
     isDelegated: true,
-    delegatedPoolCategory: 'BLSH',
-    stakePoolRanking: 1,
+    delegatedStakePool: STAKE_POOLS[0],
   },
   {
     id: 'wallet2',
@@ -40,8 +40,7 @@ const wallets = [
     isLegacy: false,
     inactiveStakePercentage: 35,
     isDelegated: true,
-    delegatedPoolCategory: 'BLSH',
-    stakePoolRanking: 50,
+    delegatedStakePool: STAKE_POOLS[1],
   },
   {
     id: 'wallet3',
@@ -54,7 +53,6 @@ const wallets = [
     isLegacy: false,
     inactiveStakePercentage: 0,
     isDelegated: false,
-    delegatedPoolCategory: '',
   },
 ];
 

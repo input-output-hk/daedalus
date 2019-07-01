@@ -8,6 +8,7 @@ import type {
   WalletSyncState,
   SyncStateTag,
 } from '../api/wallets/types';
+import type { StakePool } from '../api/staking/types';
 
 export const WalletAssuranceModeOptions: {
   NORMAL: WalletAssuranceLevel,
@@ -50,8 +51,7 @@ export type WalletProps = {
   isLegacy: boolean,
   inactiveStakePercentage?: number,
   isDelegated?: boolean,
-  delegatedPoolCategory?: string,
-  stakePoolRanking?: number,
+  delegatedStakePool?: StakePool,
 };
 
 export default class Wallet {
@@ -65,8 +65,7 @@ export default class Wallet {
   @observable isLegacy: boolean;
   @observable inactiveStakePercentage: ?number;
   @observable isDelegated: ?boolean;
-  @observable delegatedPoolCategory: ?string;
-  @observable stakePoolRanking: ?number;
+  @observable delegatedStakePool: ?StakePool;
 
   constructor(data: WalletProps) {
     Object.assign(this, data);
@@ -86,8 +85,7 @@ export default class Wallet {
         'isLegacy',
         'inactiveStakePercentage',
         'isDelegated',
-        'delegatedPoolCategory',
-        'stakePoolRanking',
+        'delegatedStakePool',
       ])
     );
   }

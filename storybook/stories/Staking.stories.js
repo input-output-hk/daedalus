@@ -17,7 +17,7 @@ import DelegationStepsIntroDialog from '../../source/renderer/app/components/sta
 import DelegationStepsChooseWalletDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog';
 import DelegationStepsNotAvailableDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsNotAvailableDialog';
 
-import { StakePoolsStory } from './Staking-StakePoolsStory.js';
+import { StakePoolsStory } from './Staking-StakePools.stories';
 import { StakingRewardsStory } from './Staking-Rewards.stories';
 import { StakingDelegationCenterStory } from './Staking-DelegationCenter.stories';
 import { StakingEpochsStory } from './Staking-Epochs.stories';

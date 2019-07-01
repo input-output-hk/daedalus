@@ -57,11 +57,11 @@ const messages = defineMessages({
     description:
       'Remove delegation label for the Delegation center body section.',
   },
-  toStakePoolCategory: {
-    id: 'staking.delegationCenter.toStakePoolCategory',
-    defaultMessage: '!!!To <b>[{delegatedPoolCategory}]</b> stake pool',
+  toStakePoolSlug: {
+    id: 'staking.delegationCenter.toStakePoolSlug',
+    defaultMessage: '!!!To <b>[{delegatedStakePoolSlug}]</b> stake pool',
     description:
-      'Delegated stake pool category label for the Delegation center body section.',
+      'Delegated stake pool slug for the Delegation center body section.',
   },
   delegate: {
     id: 'staking.delegationCenter.delegate',
@@ -75,7 +75,7 @@ const messages = defineMessages({
   },
 });
 
-type Props = { wallet: Wallet };
+type Props = { wallet: Wallet, index?: number };
 
 @observer
 export default class WalletRow extends Component<Props> {
@@ -91,15 +91,12 @@ export default class WalletRow extends Component<Props> {
         amount,
         inactiveStakePercentage,
         isDelegated,
-        delegatedPoolCategory,
-        stakePoolRanking,
+        delegatedStakePool,
       },
+      index,
     } = this.props;
     const inactiveStakePercentageValue = inactiveStakePercentage || 0;
-    const rankingValue = stakePoolRanking || 1;
-    const color = stakePoolRanking
-      ? getColorFromRange(rankingValue)
-      : 'transparent';
+    const color = isDelegated ? getColorFromRange(index) : 'transparent';
 
     const delegated = intl.formatMessage(messages.delegated);
     const notDelegated = intl.formatMessage(messages.notDelegated);
@@ -164,8 +161,8 @@ export default class WalletRow extends Component<Props> {
             <div className={styles.action}>
               {isDelegated ? (
                 <FormattedHTMLMessage
-                  {...messages.toStakePoolCategory}
-                  values={{ delegatedPoolCategory }}
+                  {...messages.toStakePoolSlug}
+                  values={{ delegatedStakePoolSlug: delegatedStakePool.slug }}
                 />
               ) : (
                 <span>
@@ -177,9 +174,7 @@ export default class WalletRow extends Component<Props> {
           <div>
             <div
               className={styles.stakePoolRankingIndicator}
-              style={{
-                background: color,
-              }}
+              style={{ background: color }}
             />
           </div>
         </div>
