@@ -610,7 +610,7 @@ const DARK_BLUE_THEME_CONFIG = {
     '--theme-staking-table-body-highlighted-text-color': '#2ab467',
     '--theme-staking-donut-ring-completed-color': '#ea4c5b',
     '--theme-staking-donut-ring-remaining-color': 'rgba(234, 76, 91, 0.2)',
-    '--theme-staking-wallet-row-border-color': '#667a8a',
+    '--theme-staking-wallet-row-border-color': 'rgba(102, 122, 138, 0.3)',
     '--theme-staking-dropdown-item-text-color-hover': '#e9f4fe',
     '--theme-staking-dropdown-item-background-color': '#314259',
     '--theme-staking-dropdown-item-background-color-hover': '#3a4e63',
