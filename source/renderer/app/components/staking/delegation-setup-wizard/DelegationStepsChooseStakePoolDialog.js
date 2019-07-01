@@ -13,6 +13,7 @@ import { StakePoolsSearch } from '../stake-pools/StakePoolsSearch';
 import styles from './DelegationStepsChooseStakePoolDialog.scss';
 import { rangeMap } from '../../../utils/rangeMap';
 import selectedStakePoolPlaceholderImage from '../../../assets/images/stake-pool-placeholder.inline.svg';
+import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import type { StakePool } from '../../../api/staking/types';
 
 const messages = defineMessages({
@@ -162,7 +163,10 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<Prop
         >
           <div className={styles.label}>{selectedPool.slug}</div>
           <div className={styles.checkmarkWrapper}>
-            <span className={styles.checkmark}>L</span>
+            <SVGInline
+              svg={checkmarkImage}
+              className={styles.checkmarkImage}
+            />
           </div>
         </div>
       );

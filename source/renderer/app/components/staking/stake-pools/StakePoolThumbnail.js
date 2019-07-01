@@ -6,8 +6,9 @@ import classnames from 'classnames';
 import clockIcon from '../../../assets/images/clock.inline.svg';
 import styles from './StakePoolThumbnail.scss';
 import { getColorFromRange } from '../../../utils/colors';
-import type { StakePool } from '../../../api/staking/types';
 import StakePoolTooltip from './StakePoolTooltip';
+import checkmarkImage from '../../../assets/images/check-w.inline.svg';
+import type { StakePool } from '../../../api/staking/types';
 
 type Props = {
   currentTheme: string,
@@ -97,9 +98,20 @@ export class StakePoolThumbnail extends Component<Props, State> {
           aria-hidden
         >
           <div className={styles.slug}>{slug}</div>
-          <div className={styles.ranking} style={{ color }}>
-            {ranking}
-          </div>
+
+          {isSelected && showSelected ? (
+            <div className={styles.checkmarkWrapper}>
+              <SVGInline
+                svg={checkmarkImage}
+                className={styles.checkmarkImage}
+              />
+            </div>
+          ) : (
+            <div className={styles.ranking} style={{ color }}>
+              {ranking}
+            </div>
+          )}
+
           {retirement && (
             <div className={styles.clock}>
               <SVGInline svg={clockIcon} className={styles.clockIcon} />

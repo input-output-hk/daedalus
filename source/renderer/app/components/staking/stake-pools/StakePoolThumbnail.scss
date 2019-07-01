@@ -20,10 +20,12 @@
 
 .isSelected {
   background-color: #5da377;
-  color: #fafbfc !important;
   .colorBand,
   .ranking {
     visibility: hidden;
+  }
+  .slug {
+    color: #fafbfc !important;
   }
 }
 
@@ -41,6 +43,19 @@
   font-size: 20px;
   font-weight: bold;
   text-align: center;
+}
+
+.checkmarkWrapper {
+  text-align: center;
+  margin-top: 10px;
+  .checkmarkImage {
+    svg {
+      width: 15.5px;
+      path {
+        stroke: #fafbfc;
+      }
+    }
+  }
 }
 
 .clock {

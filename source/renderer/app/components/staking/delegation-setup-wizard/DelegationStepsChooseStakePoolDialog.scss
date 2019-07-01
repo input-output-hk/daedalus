@@ -54,6 +54,10 @@
         display: none;
       }
     }
+    .StakePoolThumbnail_slug {
+      color: #5e6066;
+      margin: 0 0 4px;
+    }
   }
 
   .delegationStepsIndicatorWrapper {
@@ -69,7 +73,7 @@
       margin-bottom: 10px;
       text-align: center;
     }
-  }  
+  }
 
   .content {
     color: rgba(94, 96, 102, 0.8);
@@ -85,6 +89,7 @@
       display: flex;
 
       .placeholderImage {
+        height: 103px;
         svg {
           width: 116px;
         }
@@ -108,12 +113,14 @@
 
         .checkmarkWrapper {
           text-align: center;
-          .checkmark {
-            color: #fafbfc;
-            display: block;
-            font-family: var(--font-regular);
-            font-size: 30px;
-            transform: scaleX(-1) rotate(-35deg);
+          margin-top: 14px;
+          .checkmarkImage {
+            svg {
+              width: 22.5px;
+              path {
+                stroke: #fafbfc;
+              }
+            }
           }
         }
       }
