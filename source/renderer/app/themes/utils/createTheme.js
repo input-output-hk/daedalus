@@ -115,7 +115,9 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
       '--rp-select-input-border-color': `${border}`,
       '--rp-select-input-border-color-focus': `${focus}`,
       '--rp-select-input-text-color': `${text.primary}`,
-      '--rp-select-input-placeholder-color': `${chroma(text.primary).alpha(0.5)}`,
+      '--rp-select-input-placeholder-color': `${chroma(text.primary).alpha(
+        0.5
+      )}`,
     },
     rpStepper: {
       '--rp-stepper-bullet-background-color-disabled': `${
@@ -503,7 +505,9 @@ const createDaedalusComponentsTheme = (
       '--theme-manual-update-overlay-button-background-color': `${
         background.secondary.dark
       }`,
-      '--theme-manual-update-overlay-button-background-color-hover': `${text.secondary}`,
+      '--theme-manual-update-overlay-button-background-color-hover': `${
+        text.secondary
+      }`,
       '--theme-manual-update-overlay-button-text-color-hover': `${
         background.secondary.regular
       }`,
@@ -561,10 +565,10 @@ const createDaedalusComponentsTheme = (
       '--theme-network-window-button-background-color': `${chroma(
         background.secondary.lightest
       ).alpha(0.4)}`,
-      '--theme-network-window-button-background-color-hover':  `${chroma(
+      '--theme-network-window-button-background-color-hover': `${chroma(
         background.secondary.lightest
       ).alpha(0.6)}`,
-      '--theme-network-window-button-background-color-active':  `${chroma(
+      '--theme-network-window-button-background-color-active': `${chroma(
         background.secondary.lightest
       ).alpha(0.8)}`,
     },
@@ -604,7 +608,9 @@ const createDaedalusComponentsTheme = (
 
       '--theme-legacy-badge-background-color': `${error.dark}`,
       '--theme-legacy-notification-background-color': '#ab2712',
-      '--theme-legacy-notification-learn-more-button-text-color': `${text.secondary}`,
+      '--theme-legacy-notification-learn-more-button-text-color': `${
+        text.secondary
+      }`,
       '--theme-legacy-notification-learn-more-button-background-color': `${chroma(
         background.primary.regular
       ).alpha(0.2)}`,
@@ -615,7 +621,9 @@ const createDaedalusComponentsTheme = (
         background.primary.regular
       ).alpha(0.4)}`,
       '--theme-legacy-notification-move-button-text-color': '#ab2712',
-      '--theme-legacy-notification-move-button-background-color': `${text.secondary}`,
+      '--theme-legacy-notification-move-button-background-color': `${
+        text.secondary
+      }`,
       '--theme-legacy-notification-move-button-background-color-hover': `${chroma(
         background.primary.regular
       ).alpha(0.9)}`,
