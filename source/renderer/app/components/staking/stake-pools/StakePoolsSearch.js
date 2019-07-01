@@ -42,11 +42,13 @@ const messages = defineMessages({
 });
 
 type Props = {
-  search: string,
   filter: string,
+  label?: string,
+  placeholder?: string,
   onSearch: Function,
   onFilterChange?: Function,
   registerSearchInput: Function,
+  search: string,
 };
 
 export class StakePoolsSearch extends Component<Props> {
@@ -60,10 +62,12 @@ export class StakePoolsSearch extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      search,
+      label,
       onSearch,
       onFilterChange,
+      placeholder,
       registerSearchInput,
+      search,
     } = this.props;
 
     const filterAll = onFilterChange && onFilterChange.bind(this, 'all');
@@ -76,10 +80,11 @@ export class StakePoolsSearch extends Component<Props> {
           <SVGInline svg={searchIcon} className={styles.searchIcon} />
           <Input
             autoFocus
+            label={label ? label : null}
             className={styles.searchInput}
             onChange={onSearch}
             ref={input => registerSearchInput(input)}
-            placeholder={intl.formatMessage(messages.searchInputPlaceholder)}
+            placeholder={placeholder ? placeholder : intl.formatMessage(messages.searchInputPlaceholder)}
             skin={InputSkin}
             value={search}
             maxLength={150}
