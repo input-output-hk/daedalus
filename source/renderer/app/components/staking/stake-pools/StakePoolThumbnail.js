@@ -10,16 +10,17 @@ import type { StakePool } from '../../../api/staking/types';
 import StakePoolTooltip from './StakePoolTooltip';
 
 type Props = {
-  stakePool: StakePool,
-  index: number,
-  isSelected: boolean,
   currentTheme: string,
-  onOpenExternalLink: Function,
+  index: number,
+  isHighlighted: boolean,
   onClick?: Function,
-  onHover?: Function,
   onClose: Function,
+  onHover?: Function,
+  onOpenExternalLink: Function,
   onSelect: Function,
   showWithSelectButton?: boolean,
+  showSelected?: boolean,
+  stakePool: StakePool,
 };
 
 
@@ -35,9 +36,9 @@ export class StakePoolThumbnail extends Component<Props, State> {
     left: 0,
   };
 
-  handleClick = (event: SyntheticMouseEvent<HTMLElement>) => {
-    const { onClose, onClick, onHover, isSelected, stakePool } = this.props;
-    if (isSelected) return onClose();
+  handleOpen = (event: SyntheticMouseEvent<HTMLElement>) => {
+    const { onClose, onClick, onHover, isHighlighted, stakePool } = this.props;
+    if (isHighlighted) return onClose();
     event.persist();
     if (event.target instanceof HTMLElement) {
       const targetElement =
@@ -53,39 +54,45 @@ export class StakePoolThumbnail extends Component<Props, State> {
     return false;
   };
 
+  handleSelect = () => {
+    const { stakePool, onSelect } = this.props;
+    onSelect(stakePool.id);
+  }
+
   render() {
     const {
-      stakePool,
-      index,
-      isSelected,
       currentTheme,
+      index,
+      isHighlighted,
+      isSelected,
       onClose,
       onHover,
       onOpenExternalLink,
       onSelect,
       showWithSelectButton,
+      showSelected,
+      stakePool,
     } = this.props;
-
     const { top, left } = this.state;
 
-    const color = getColorFromRange(index);
-
     const { ranking, slug, retirement } = stakePool;
+    const color = getColorFromRange(index);
 
     const componentClassnames = classnames([
       styles.component,
-      isSelected ? styles.isSelected : null,
+      isHighlighted ? styles.isHighlighted : null,
+      (isSelected && showSelected) ? styles.isSelected : null,
     ]);
 
     return (
       <div
         className={componentClassnames}
-        onMouseEnter={onHover ? this.handleClick : null}
+        onMouseEnter={onHover ? this.handleOpen : null}
         onMouseLeave={onHover ? onClose : null}
       >
         <div
           className={styles.content}
-          onClick={!onHover ? this.handleClick : null}
+          onClick={!onHover ? this.handleOpen : this.handleSelect}
           role="link"
           aria-hidden
         >
@@ -105,7 +112,7 @@ export class StakePoolThumbnail extends Component<Props, State> {
             }}
           />
         </div>
-        {isSelected && (
+        {isHighlighted && (
           <StakePoolTooltip
             stakePool={stakePool}
             className={styles.tooltip}
@@ -116,7 +123,7 @@ export class StakePoolThumbnail extends Component<Props, State> {
             top={top}
             left={left}
             color={color}
-            onSelect={onSelect}
+            onSelect={this.handleSelect}
             showWithSelectButton={showWithSelectButton}
           />
         )}

@@ -14,8 +14,17 @@
   width: 100%;
 }
 
-.isSelected {
+.isHighlighted {
   box-shadow: 0 0 4px 2px var(--theme-staking-stake-pool-glow-color);
+}
+
+.isSelected {
+  background-color: #5da377;
+  color: #fafbfc !important;
+  .colorBand,
+  .ranking {
+    visibility: hidden;
+  }
 }
 
 .slug {

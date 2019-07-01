@@ -14,6 +14,7 @@ type Props = {
   onHover?: Function,
   onSelect?: Function,
   showWithSelectButton?: boolean,
+  showSelected?: boolean,
   /**
    *
    * If the parent component has more than one <StakePoolsList />
@@ -24,14 +25,15 @@ type Props = {
   listName?: string,
   isListActive?: boolean,
   setListActive?: Function,
-};
-
-type State = {
   selectedPoolId?: ?number,
 };
 
+type State = {
+  highlightedPoolId?: ?number,
+};
+
 const initialState = {
-  selectedPoolId: null,
+  highlightedPoolId: null,
 };
 
 @observer
@@ -58,18 +60,28 @@ export class StakePoolsList extends Component<Props, State> {
   getIndex = (ranking: number) =>
     rangeMap(ranking, 1, this.props.stakePoolsList.length, 0, 99);
 
-  getIsSelected = (id: string) =>
-    this.props.isListActive !== false && id === this.state.selectedPoolId;
+  getIsHighlighted = (id: string) =>
+    this.props.isListActive !== false && id === this.state.highlightedPoolId;
 
-  handleOpenThumbnail = (selectedPoolId: number) => {
+  handleOpenThumbnail = (highlightedPoolId: number) => {
     const { isListActive, setListActive, listName } = this.props;
     if (isListActive === false && setListActive) setListActive(listName);
     return this.setState({
-      selectedPoolId,
+      highlightedPoolId,
     });
   };
 
-  handleClose = () => this.setState({ ...initialState });
+  handleClose = () => {
+    this.setState({
+      ...initialState,
+    })
+  };
+
+  handleSelect = (stakePoolId) => {
+    const { onSelect } = this.props;
+    let selectedPoolId = this.props.selectedPoolId === stakePoolId ? null : stakePoolId;
+    onSelect(selectedPoolId);
+  }
 
   render() {
     const {
@@ -77,28 +89,34 @@ export class StakePoolsList extends Component<Props, State> {
       onHover,
       onOpenExternalLink,
       onSelect,
+      showSelected,
       showWithSelectButton,
       stakePoolsList,
+      selectedPoolId,
     } = this.props;
 
     return (
       <div className={styles.component}>
         {stakePoolsList.map(stakePool => {
           const index = this.getIndex(stakePool.ranking);
-          const isSelected = this.getIsSelected(stakePool.id);
+          const isHighlighted = this.getIsHighlighted(stakePool.id);
+          const isSelected = selectedPoolId && (stakePool.id === selectedPoolId);
+
           return (
             <StakePoolThumbnail
               stakePool={stakePool}
               key={stakePool.id}
               onOpenExternalLink={onOpenExternalLink}
-              isSelected={isSelected}
+              isHighlighted={isHighlighted}
               onClose={this.handleClose}
               onClick={!onHover && this.handleOpenThumbnail}
               onHover={onHover && this.handleOpenThumbnail}
-              onSelect={onSelect}
+              onSelect={this.handleSelect}
               showWithSelectButton={showWithSelectButton}
               currentTheme={currentTheme}
               index={index}
+              isSelected={isSelected}
+              showSelected={showSelected}
             />
           );
         })}
