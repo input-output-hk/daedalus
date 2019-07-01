@@ -30,14 +30,22 @@
         h3 {
           color: #fafbfc;
         }
+        .StakePoolTooltip_name {
+          font-family: var(--font-semibold);
+        }
         .StakePoolTooltip_id {
           color: #fafbfc; 
+        }
+        .StakePoolTooltip_slug {
+          color: #fafbfc; 
+          opacity: 0.6;
         }
         .StakePoolTooltip_description {
           color: #fafbfc; 
         }
         .StakePoolTooltip_url {
           color: #85b6f9; 
+          font-family: var(--font-regular);
         }
         .StakePoolTooltip_table {
           dt {

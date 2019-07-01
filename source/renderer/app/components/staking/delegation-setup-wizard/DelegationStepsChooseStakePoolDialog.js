@@ -142,6 +142,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<Prop
         label: intl.formatMessage(messages.continueButtonLabel),
         onClick: onContinue,
         primary: true,
+        disabled: !selectedPoolId,
       },
     ];
 
