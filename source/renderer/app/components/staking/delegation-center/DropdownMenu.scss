@@ -20,7 +20,7 @@
     .SimpleOptions_options {
       left: auto !important;
       position: absolute;
-      right: 0;
+      right: -22px;
       top: 25px !important;
       width: 200px !important;
 
@@ -29,7 +29,8 @@
           background: var(--theme-staking-dropdown-item-background-color);
           border-radius: 4px;
           color: var(--theme-staking-font-color-regular);
-          padding: 6px 9px 6px 25px;
+          line-height: 1;
+          padding: 6px 9px 6px 24px;
           text-align: right;
 
           &.highlightedOption {
