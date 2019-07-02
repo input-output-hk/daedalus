@@ -68,7 +68,6 @@ export default class NetworkStatusStore extends Store {
   @observable cardanoNodeState: ?CardanoNodeState = null;
   @observable cardanoNodeID: number = 0;
   @observable isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
-  @observable isNodeRestarting = false; // It's 'true' while node is restarting
   @observable isNodeSubscribed = false; // Is 'true' in case node is subscribed to the network
   @observable isNodeSyncing = false; // Is 'true' in case we are receiving blocks and not stalling
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
@@ -157,9 +156,6 @@ export default class NetworkStatusStore extends Store {
   _restartNode = async () => {
     try {
       Logger.info('NetworkStatusStore: Requesting a restart of cardano-node');
-      runInAction('set isNodeRestarting = true', () => {
-        this.isNodeRestarting = true;
-      });
       await restartCardanoNodeChannel.send();
     } catch (error) {
       Logger.error('NetworkStatusStore: Restart of cardano-node failed', {
@@ -237,8 +233,9 @@ export default class NetworkStatusStore extends Store {
       if (status)
         runInAction('assigning node status', () => {
           const { cardanoNodeID } = status;
+          const { isNodeSyncing } = this;
           this.cardanoNodeID = cardanoNodeID;
-          Object.assign(this, status);
+          Object.assign(this, status, { isNodeSyncing });
         });
     } catch (error) {
       Logger.error('NetworkStatusStore: error while requesting node state', {
@@ -492,12 +489,6 @@ export default class NetworkStatusStore extends Store {
             (isLocalBlockHeightSyncing || isNetworkBlockHeightSyncing);
         });
 
-        if (this.isNodeRestarting && this.isNodeSyncing) {
-          runInAction('set isNodeRestarting = false', () => {
-            this.isNodeRestarting = false;
-          });
-        }
-
         runInAction('update isNodeInSync', () => {
           const remainingUnsyncedBlocks =
             this.networkBlockHeight - this.localBlockHeight;
@@ -617,12 +608,7 @@ export default class NetworkStatusStore extends Store {
   // DEFINE COMPUTED VALUES
 
   @computed get isConnected(): boolean {
-    return (
-      this.isNodeResponding &&
-      this.isNodeSubscribed &&
-      this.isNodeSyncing &&
-      !this.isNodeRestarting
-    );
+    return this.isNodeResponding && this.isNodeSubscribed && this.isNodeSyncing;
   }
 
   @computed get isSystemTimeCorrect(): boolean {
