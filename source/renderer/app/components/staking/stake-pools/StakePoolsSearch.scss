@@ -24,6 +24,9 @@
 
   svg {
     width: 15px;
+    g > g {
+      fill: var(--theme-staking-stake-pools-search-icon-color);
+    }
   }
 }
 

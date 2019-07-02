@@ -13,53 +13,71 @@
 
     .StakePoolTooltip_component {
       &.StakePoolTooltip_isVisible {
-        opacity: 0.9;
-        background-color: #5e6066;
-        box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25);
-        &:before {
+        background-color: var(--theme-delegation-steps-choose-stake-pool-tooltip-background-color);
+        box-shadow: var(--theme-delegation-steps-choose-stake-pool-tooltip-box-shadow);
+        .StakePoolTooltip_arrow {
           opacity: 0.9;
-          border-right-color: #5e6066;
-        }
+          &.StakePoolTooltip_tooltipPositionRight {
+            border-right-color: var(--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color) !important;
+            &:before {
+              border-right-color: var(--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color);
+            }
+          }
 
-        &:after {
-          border-right-color: #5e6066;
-          opacity: 0.9;
+          &.StakePoolTooltip_tooltipPositionLeft {
+            border-left-color: var(--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color) !important;
+            &:before {
+              border-left-color: var(--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color);
+            }
+          }
+
+          &.StakePoolTooltip_tooltipPositionTop {
+            border-top-color: var(--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color) !important;
+            &:before {
+              border-top-color: var(--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color);
+            }
+          }
+
+          &.StakePoolTooltip_tooltipPositionBottom {
+            border-bottom-color: var(--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color) !important;
+            &:before {
+              border-bottom-color: var(--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color);
+            }
+          }
         }
       }
       .StakePoolTooltip_container {
-        h3 {
-          color: #fafbfc;
-        }
         .StakePoolTooltip_name {
+          color: var(--theme-delegation-steps-choose-stake-pool-tooltip-title-color);
           font-family: var(--font-semibold);
         }
-        .StakePoolTooltip_id {
-          color: #fafbfc; 
-        }
         .StakePoolTooltip_slug {
-          color: #fafbfc; 
-          opacity: 0.6;
+          color: var(--theme-delegation-steps-choose-stake-pool-tooltip-slug-color);
         }
         .StakePoolTooltip_description {
-          color: #fafbfc; 
+          color: var(--theme-delegation-steps-choose-stake-pool-tooltip-description-color);
         }
         .StakePoolTooltip_url {
-          color: #85b6f9; 
+          color: var(--theme-delegation-steps-choose-stake-pool-tooltip-url-color);
           font-family: var(--font-regular);
         }
         .StakePoolTooltip_table {
           dt {
-            color: #fafbfc;    
+            color: var(--theme-delegation-steps-choose-stake-pool-tooltip-table-label-color);    
           }
           dd {
             span {
-              color: #fafbfc;
+              color: var(--theme-delegation-steps-choose-stake-pool-tooltip-table-value-color);
             }
           }
         }
       }
       .StakePoolTooltip_colorBand {
         display: none;
+      }
+
+      .StakePoolThumbnail_component {
+        border-color: var(--theme-staking-stake-pool-border-color);
       }
     }
   }
@@ -84,7 +102,7 @@
   }
 
   .content {
-    color: rgba(94, 96, 102, 0.8);
+    color: var(--theme-delegation-steps-choose-stake-pool-title-color);
     font-size: 16px;
     line-height: 1.38;
     text-align: left;
@@ -100,18 +118,28 @@
         height: 103px;
         svg {
           width: 116px;
+
+          use {
+            stroke: var(--theme-delegation-steps-choose-stake-pool-select-box-placeholder-color);
+          }
+          text {
+            fill: var(--theme-delegation-steps-choose-stake-pool-select-box-placeholder-color);
+          }
+          path {
+            stroke: var(--theme-delegation-steps-choose-stake-pool-select-box-placeholder-color);
+          }
         }
       }
 
       .selectedPoolBlock {
-        background-color: #5da377;
+        background-color: var(--theme-staking-stake-pool-selected-background-color);
         border-radius: 5.8px;
-        border: solid 2px #c6cdd6;
+        border: 2px solid var(--theme-staking-stake-pool-border-color);
         height: 103px;
         width: 116px;
 
         .label {
-          color: #fafbfc;
+          color: var(--theme-delegation-steps-choose-stake-pool-selected-slug-color);
           font-family: var(--font-semibold);
           font-size: 20.3px;
           font-weight: 600;
@@ -126,7 +154,7 @@
             svg {
               width: 22.5px;
               path {
-                stroke: #fafbfc;
+                stroke: var(--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color);
               }
             }
           }
@@ -137,7 +165,7 @@
         margin-left: 20px;
 
         .stakePoolsDelegatingListLabel {
-          color: #5e6066;
+          color: var(--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color);
           font-family: var(--font-medium);
           font-size: 16px;
           font-weight: 500;

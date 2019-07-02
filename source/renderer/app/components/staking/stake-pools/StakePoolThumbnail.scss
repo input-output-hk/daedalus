@@ -41,7 +41,7 @@
     svg {
       width: 15.5px;
       path {
-        stroke: #fafbfc;
+        stroke: var(--theme-staking-stake-pool-selected-checkmark-icon-color);
       }
     }
   }
@@ -81,12 +81,12 @@
 }
 
 .isSelected {
-  background-color: #5da377;
+  background-color: var(--theme-staking-stake-pool-selected-background-color);
   .colorBand,
   .ranking {
     visibility: hidden;
   }
   .slug {
-    color: #fafbfc;
+    color: var(--theme-staking-stake-pool-selected-slug-color);
   }
 }
