@@ -23,6 +23,7 @@ type Props = {
   showSelected?: boolean,
   stakePool: StakePool,
   isSelected?: ?Function,
+  containerClassName: string,
 };
 
 type State = {
@@ -42,14 +43,10 @@ export class StakePoolThumbnail extends Component<Props, State> {
     if (isHighlighted) return onClose();
     event.persist();
     if (event.target instanceof HTMLElement) {
-      const targetElement =
-        event.target.className === 'StakePool_content'
-          ? event.target
-          : event.target.parentNode;
+      const targetElement = this.getTargetElement(event.target);
       if (targetElement instanceof HTMLElement) {
-        const { top, left } = targetElement.getBoundingClientRect();
+        const { top, left } = this.getRelativePosition(targetElement);
         this.setState({ top, left });
-
         if (onHover) {
           onHover(stakePool.id);
         } else if (onClick) {
@@ -58,6 +55,30 @@ export class StakePoolThumbnail extends Component<Props, State> {
       }
     }
     return false;
+  };
+
+  getTargetElement = (originalTarget: HTMLElement) => {
+    const { className } = originalTarget;
+    if (className === 'StakePoolThumbnail_content') return originalTarget;
+    if (className === 'StakePoolThumbnail_component')
+      return originalTarget.querySelector('.StakePoolThumbnail_content');
+    return originalTarget.parentNode;
+  };
+
+  getRelativePosition = (targetElement: HTMLElement): Object => {
+    const { containerClassName } = this.props;
+    const relativePosition = {};
+    const parentElement = document.querySelector(`.${containerClassName}`);
+    if (
+      parentElement instanceof HTMLElement &&
+      targetElement instanceof HTMLElement
+    ) {
+      const parentPosition = parentElement.getBoundingClientRect();
+      const childrenPosition = targetElement.getBoundingClientRect();
+      relativePosition.top = childrenPosition.top - parentPosition.top;
+      relativePosition.left = childrenPosition.left - parentPosition.left;
+    }
+    return relativePosition;
   };
 
   handleSelect = () => {
@@ -77,6 +98,7 @@ export class StakePoolThumbnail extends Component<Props, State> {
       showWithSelectButton,
       showSelected,
       stakePool,
+      containerClassName,
     } = this.props;
     const { top, left } = this.state;
 
@@ -141,6 +163,7 @@ export class StakePoolThumbnail extends Component<Props, State> {
             color={color}
             onSelect={this.handleSelect}
             showWithSelectButton={showWithSelectButton}
+            containerClassName={containerClassName}
           />
         )}
       </div>
