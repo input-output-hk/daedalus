@@ -72,9 +72,12 @@ const locales = {
   English: 'en-US',
   Japanese: 'ja-JP',
 };
+
 // Delegation steps labels are translated outside components and we need to determine correct translations
 const locale = localStorage.getItem('currentLocale') || 'English';
 const translationIndex = locales[locale];
+
+// @TODO - improve locales GET once [DDW-711](https://github.com/input-output-hk/daedalus/pull/1426) is merged
 const DELEGATION_WIZARD_STEPS_LIST = [
   translations[translationIndex]['staking.delegationSetup.steps.step.1.label'],
   translations[translationIndex]['staking.delegationSetup.steps.step.2.label'],
@@ -127,7 +130,7 @@ storiesOf('Staking', module)
     () => (
       <div>
         <StakingCountdown
-          currentLocale="en-US"
+          currentLocale={translationIndex}
           startDateTime={startDateTimeKnob(
             'Decentralization Start DateTime',
             defaultStartDateTime
