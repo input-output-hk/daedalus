@@ -87,6 +87,7 @@ type State = {
 const initialState = {
   flipHorizontal: false,
   flipVertical: false,
+  searchValue: '',
   selectedList: null,
   selectedPoolId: null,
 };
@@ -100,7 +101,6 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
   };
 
   state = {
-    searchValue: '',
     ...initialState,
   };
 
@@ -247,6 +247,8 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
           <div className={styles.stakePoolsListWrapper}>
             <StakePoolsList
               listName="selectedIndexList"
+              flipHorizontal={flipHorizontal}
+              flipVertical={flipVertical}
               stakePoolsList={stakePoolsList}
               onOpenExternalLink={onOpenExternalLink}
               currentTheme={currentTheme}
