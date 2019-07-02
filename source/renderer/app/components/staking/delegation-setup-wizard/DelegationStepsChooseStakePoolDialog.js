@@ -4,14 +4,13 @@ import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
-import { debounce, find } from 'lodash';
+import { find } from 'lodash';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
 import { StakePoolsList } from '../stake-pools/StakePoolsList';
 import { StakePoolsSearch } from '../stake-pools/StakePoolsSearch';
 import styles from './DelegationStepsChooseStakePoolDialog.scss';
-import { rangeMap } from '../../../utils/rangeMap';
 import selectedStakePoolPlaceholderImage from '../../../assets/images/stake-pool-placeholder.inline.svg';
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import type { StakePool } from '../../../api/staking/types';
@@ -27,34 +26,39 @@ const messages = defineMessages({
     id: 'staking.delegationSetup.chooseStakePool.step.dialog.description',
     defaultMessage:
       '!!!Choose a stake pool to which you would like to delegate.',
-    description: 'Description on the delegation setup "choose stake pool" dialog.',
+    description:
+      'Description on the delegation setup "choose stake pool" dialog.',
   },
   delegatedPoolsLabel: {
-    id: 'staking.delegationSetup.chooseStakePool.step.dialog.delegatedPoolsLabel',
-    defaultMessage:
-      '!!!Stake pools you are already delegating to:',
-    description: '"Delegated Pools" section label on the delegation setup "choose stake pool" dialog.',
+    id:
+      'staking.delegationSetup.chooseStakePool.step.dialog.delegatedPoolsLabel',
+    defaultMessage: '!!!Stake pools you are already delegating to:',
+    description:
+      '"Delegated Pools" section label on the delegation setup "choose stake pool" dialog.',
   },
   searchInputLabel: {
     id: 'staking.delegationSetup.chooseStakePool.step.dialog.searchInput.label',
-    defaultMessage:
-      '!!!Or search for a stake pool:',
-    description: 'Search "Pools" input label on the delegation setup "choose stake pool" dialog.',
+    defaultMessage: '!!!Or search for a stake pool:',
+    description:
+      'Search "Pools" input label on the delegation setup "choose stake pool" dialog.',
   },
   searchInputPlaceholder: {
-    id: 'staking.delegationSetup.chooseStakePool.step.dialog.searchInput.placeholder',
-    defaultMessage:
-      '!!!Search stake pools',
-    description: 'Search "Pools" input placeholder on the delegation setup "choose stake pool" dialog.',
+    id:
+      'staking.delegationSetup.chooseStakePool.step.dialog.searchInput.placeholder',
+    defaultMessage: '!!!Search stake pools',
+    description:
+      'Search "Pools" input placeholder on the delegation setup "choose stake pool" dialog.',
   },
-   continueButtonLabel: {
-    id: 'staking.delegationSetup.chooseStakePool.step.dialog.continueButtonLabel',
+  continueButtonLabel: {
+    id:
+      'staking.delegationSetup.chooseStakePool.step.dialog.continueButtonLabel',
     defaultMessage: '!!!Continue',
     description:
       'Label for continue button on the delegation setup "choose stake pool" dialog.',
   },
   stepIndicatorLabel: {
-    id: 'staking.delegationSetup.chooseStakePool.step.dialog.stepIndicatorLabel',
+    id:
+      'staking.delegationSetup.chooseStakePool.step.dialog.stepIndicatorLabel',
     defaultMessage: '!!!STEP {currentStep} OF {totalSteps}',
     description:
       'Step indicator labe on the delegation setup "choose wallet" step dialog.',
@@ -77,16 +81,20 @@ type State = {
   selectedList?: ?string,
   flipHorizontal: boolean,
   flipVertical: boolean,
-  selectedPoolId: ?number
+  selectedPoolId: ?number,
 };
 
 const initialState = {
-  selectedList: null,
   flipHorizontal: false,
   flipVertical: false,
+  selectedList: null,
+  selectedPoolId: null,
 };
 
-export default class DelegationStepsChooseStakePoolDialog extends Component<Props, State> {
+export default class DelegationStepsChooseStakePoolDialog extends Component<
+  Props,
+  State
+> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -100,11 +108,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<Prop
 
   handleSearch = (searchValue: string) => this.setState({ searchValue });
 
-  handleHover = (item) => {
-    console.debug('Hovered: ', item);
-  };
-
-   handleSelect = (selectedPoolId) => {
+  handleSelect = (selectedPoolId: number) => {
     this.setState({ selectedPoolId });
   };
 
@@ -153,21 +157,21 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<Prop
       />
     );
 
-    const selectedPoolBlock = (selectedPoolId) => {
-      const { stakePoolsList } = this.props;
-      const selectedPool = find(stakePoolsList, (stakePools) => (stakePools.id === selectedPoolId));
+    const selectedPoolBlock = stakePoolId => {
+      const selectedPool = find(
+        stakePoolsList,
+        stakePools => stakePools.id === stakePoolId
+      );
 
       return (
         <div
+          role="presentation"
           className={styles.selectedPoolBlock}
           onClick={this.handleDeselectStakePool}
         >
           <div className={styles.label}>{selectedPool.slug}</div>
           <div className={styles.checkmarkWrapper}>
-            <SVGInline
-              svg={checkmarkImage}
-              className={styles.checkmarkImage}
-            />
+            <SVGInline svg={checkmarkImage} className={styles.checkmarkImage} />
           </div>
         </div>
       );
@@ -206,7 +210,9 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<Prop
             {intl.formatMessage(messages.description)}
           </p>
           <div className={styles.delegatedStakePoolsWrapper}>
-            {selectedPoolId ? selectedPoolBlock(selectedPoolId) : selectPoolPlaceholder}
+            {selectedPoolId
+              ? selectedPoolBlock(selectedPoolId)
+              : selectPoolPlaceholder}
 
             <div className={styles.delegatedStakePoolsList}>
               <p className={styles.stakePoolsDelegatingListLabel}>
@@ -219,9 +225,9 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<Prop
                 stakePoolsList={stakePoolsDelegatingList}
                 onOpenExternalLink={onOpenExternalLink}
                 currentTheme={currentTheme}
-                onHover={this.handleHover}
                 isListActive={selectedList === 'stakePoolsDelegatingList'}
                 setListActive={this.handleSetListActive}
+                highlightOnHover
               />
             </div>
           </div>
@@ -244,12 +250,12 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<Prop
               stakePoolsList={stakePoolsList}
               onOpenExternalLink={onOpenExternalLink}
               currentTheme={currentTheme}
-              onHover={this.handleHover}
               isListActive={selectedList === 'selectedIndexList'}
               setListActive={this.handleSetListActive}
               onSelect={this.handleSelect}
               selectedPoolId={selectedPoolId}
               showSelected
+              highlightOnHover
             />
           </div>
         </div>

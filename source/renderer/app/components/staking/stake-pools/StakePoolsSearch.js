@@ -42,7 +42,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  filter: string,
+  filter?: string,
   label?: string,
   placeholder?: string,
   onSearch: Function,
@@ -57,7 +57,10 @@ export class StakePoolsSearch extends Component<Props> {
   };
 
   getFilterItemClassName = (item: string) =>
-    classnames({ [styles.searchFilterActiveItem]: this.props.filter === item });
+    classnames({
+      [styles.searchFilterActiveItem]:
+        this.props.filter && this.props.filter === item,
+    });
 
   render() {
     const { intl } = this.context;
@@ -72,7 +75,8 @@ export class StakePoolsSearch extends Component<Props> {
 
     const filterAll = onFilterChange && onFilterChange.bind(this, 'all');
     const filterNew = onFilterChange && onFilterChange.bind(this, 'new');
-    const filterCharity = onFilterChange && onFilterChange.bind(this, 'charity');
+    const filterCharity =
+      onFilterChange && onFilterChange.bind(this, 'charity');
 
     return (
       <div className={styles.component}>
@@ -80,16 +84,18 @@ export class StakePoolsSearch extends Component<Props> {
           <SVGInline svg={searchIcon} className={styles.searchIcon} />
           <Input
             autoFocus
-            label={label ? label : null}
+            label={label || null}
             className={styles.searchInput}
             onChange={onSearch}
             ref={input => registerSearchInput(input)}
-            placeholder={placeholder ? placeholder : intl.formatMessage(messages.searchInputPlaceholder)}
+            placeholder={
+              placeholder || intl.formatMessage(messages.searchInputPlaceholder)
+            }
             skin={InputSkin}
             value={search}
             maxLength={150}
           />
-          {onFilterChange &&
+          {onFilterChange && (
             <ul className={styles.searchFilter}>
               <li>
                 <button
@@ -116,7 +122,7 @@ export class StakePoolsSearch extends Component<Props> {
                 </button>
               </li>
             </ul>
-          }
+          )}
         </div>
       </div>
     );

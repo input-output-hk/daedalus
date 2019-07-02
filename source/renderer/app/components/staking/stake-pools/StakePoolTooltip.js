@@ -464,13 +464,13 @@ export default class StakePoolTooltip extends Component<Props, State> {
             </dd>
           </dl>
         </div>
-        {(onSelect && showWithSelectButton) &&
+        {onSelect && showWithSelectButton && (
           <Button
             label={intl.formatMessage(messages.delegateButton)}
             onClick={onSelect}
             skin={ButtonSkin}
           />
-        }
+        )}
       </div>
     );
   }

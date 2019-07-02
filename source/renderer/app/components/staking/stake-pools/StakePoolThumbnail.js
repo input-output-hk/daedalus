@@ -22,8 +22,8 @@ type Props = {
   showWithSelectButton?: boolean,
   showSelected?: boolean,
   stakePool: StakePool,
+  isSelected?: ?Function,
 };
-
 
 type State = {
   top: number,
@@ -49,7 +49,12 @@ export class StakePoolThumbnail extends Component<Props, State> {
       if (targetElement instanceof HTMLElement) {
         const { top, left } = targetElement.getBoundingClientRect();
         this.setState({ top, left });
-        onHover ? onHover(stakePool.id) : onClick(stakePool.id);
+
+        if (onHover) {
+          onHover(stakePool.id);
+        } else if (onClick) {
+          onClick(stakePool.id);
+        }
       }
     }
     return false;
@@ -58,7 +63,7 @@ export class StakePoolThumbnail extends Component<Props, State> {
   handleSelect = () => {
     const { stakePool, onSelect } = this.props;
     onSelect(stakePool.id);
-  }
+  };
 
   render() {
     const {
@@ -69,7 +74,6 @@ export class StakePoolThumbnail extends Component<Props, State> {
       onClose,
       onHover,
       onOpenExternalLink,
-      onSelect,
       showWithSelectButton,
       showSelected,
       stakePool,
@@ -82,7 +86,7 @@ export class StakePoolThumbnail extends Component<Props, State> {
     const componentClassnames = classnames([
       styles.component,
       isHighlighted ? styles.isHighlighted : null,
-      (isSelected && showSelected) ? styles.isSelected : null,
+      isSelected && showSelected ? styles.isSelected : null,
     ]);
 
     return (

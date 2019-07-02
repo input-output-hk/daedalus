@@ -13,61 +13,93 @@
 
     .StakePoolTooltip_component {
       &.StakePoolTooltip_isVisible {
-        background-color: var(--theme-delegation-steps-choose-stake-pool-tooltip-background-color);
-        box-shadow: var(--theme-delegation-steps-choose-stake-pool-tooltip-box-shadow);
+        background-color: var(
+          --theme-delegation-steps-choose-stake-pool-tooltip-background-color
+        );
+        box-shadow: var(
+          --theme-delegation-steps-choose-stake-pool-tooltip-box-shadow
+        );
         .StakePoolTooltip_arrow {
           opacity: 0.9;
           &.StakePoolTooltip_tooltipPositionRight {
-            border-right-color: var(--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color) !important;
+            border-right-color: var(
+              --theme-delegation-steps-choose-stake-pool-tooltip-arrow-color
+            ) !important;
             &:before {
-              border-right-color: var(--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color);
+              border-right-color: var(
+                --theme-delegation-steps-choose-stake-pool-tooltip-arrow-color
+              );
             }
           }
 
           &.StakePoolTooltip_tooltipPositionLeft {
-            border-left-color: var(--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color) !important;
+            border-left-color: var(
+              --theme-delegation-steps-choose-stake-pool-tooltip-arrow-color
+            ) !important;
             &:before {
-              border-left-color: var(--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color);
+              border-left-color: var(
+                --theme-delegation-steps-choose-stake-pool-tooltip-arrow-color
+              );
             }
           }
 
           &.StakePoolTooltip_tooltipPositionTop {
-            border-top-color: var(--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color) !important;
+            border-top-color: var(
+              --theme-delegation-steps-choose-stake-pool-tooltip-arrow-color
+            ) !important;
             &:before {
-              border-top-color: var(--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color);
+              border-top-color: var(
+                --theme-delegation-steps-choose-stake-pool-tooltip-arrow-color
+              );
             }
           }
 
           &.StakePoolTooltip_tooltipPositionBottom {
-            border-bottom-color: var(--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color) !important;
+            border-bottom-color: var(
+              --theme-delegation-steps-choose-stake-pool-tooltip-arrow-color
+            ) !important;
             &:before {
-              border-bottom-color: var(--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color);
+              border-bottom-color: var(
+                --theme-delegation-steps-choose-stake-pool-tooltip-arrow-color
+              );
             }
           }
         }
       }
       .StakePoolTooltip_container {
         .StakePoolTooltip_name {
-          color: var(--theme-delegation-steps-choose-stake-pool-tooltip-title-color);
+          color: var(
+            --theme-delegation-steps-choose-stake-pool-tooltip-title-color
+          );
           font-family: var(--font-semibold);
         }
         .StakePoolTooltip_slug {
-          color: var(--theme-delegation-steps-choose-stake-pool-tooltip-slug-color);
+          color: var(
+            --theme-delegation-steps-choose-stake-pool-tooltip-slug-color
+          );
         }
         .StakePoolTooltip_description {
-          color: var(--theme-delegation-steps-choose-stake-pool-tooltip-description-color);
+          color: var(
+            --theme-delegation-steps-choose-stake-pool-tooltip-description-color
+          );
         }
         .StakePoolTooltip_url {
-          color: var(--theme-delegation-steps-choose-stake-pool-tooltip-url-color);
+          color: var(
+            --theme-delegation-steps-choose-stake-pool-tooltip-url-color
+          );
           font-family: var(--font-regular);
         }
         .StakePoolTooltip_table {
           dt {
-            color: var(--theme-delegation-steps-choose-stake-pool-tooltip-table-label-color);    
+            color: var(
+              --theme-delegation-steps-choose-stake-pool-tooltip-table-label-color
+            );
           }
           dd {
             span {
-              color: var(--theme-delegation-steps-choose-stake-pool-tooltip-table-value-color);
+              color: var(
+                --theme-delegation-steps-choose-stake-pool-tooltip-table-value-color
+              );
             }
           }
         }
@@ -120,26 +152,36 @@
           width: 116px;
 
           use {
-            stroke: var(--theme-delegation-steps-choose-stake-pool-select-box-placeholder-color);
+            stroke: var(
+              --theme-delegation-steps-choose-stake-pool-select-box-placeholder-color
+            );
           }
           text {
-            fill: var(--theme-delegation-steps-choose-stake-pool-select-box-placeholder-color);
+            fill: var(
+              --theme-delegation-steps-choose-stake-pool-select-box-placeholder-color
+            );
           }
           path {
-            stroke: var(--theme-delegation-steps-choose-stake-pool-select-box-placeholder-color);
+            stroke: var(
+              --theme-delegation-steps-choose-stake-pool-select-box-placeholder-color
+            );
           }
         }
       }
 
       .selectedPoolBlock {
-        background-color: var(--theme-staking-stake-pool-selected-background-color);
+        background-color: var(
+          --theme-staking-stake-pool-selected-background-color
+        );
         border-radius: 5.8px;
         border: 2px solid var(--theme-staking-stake-pool-border-color);
         height: 103px;
         width: 116px;
 
         .label {
-          color: var(--theme-delegation-steps-choose-stake-pool-selected-slug-color);
+          color: var(
+            --theme-delegation-steps-choose-stake-pool-selected-slug-color
+          );
           font-family: var(--font-semibold);
           font-size: 20.3px;
           font-weight: 600;
@@ -154,7 +196,9 @@
             svg {
               width: 22.5px;
               path {
-                stroke: var(--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color);
+                stroke: var(
+                  --theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color
+                );
               }
             }
           }
@@ -165,7 +209,9 @@
         margin-left: 20px;
 
         .stakePoolsDelegatingListLabel {
-          color: var(--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color);
+          color: var(
+            --theme-delegation-steps-choose-stake-pool-delegated-pools-label-color
+          );
           font-family: var(--font-medium);
           font-size: 16px;
           font-weight: 500;

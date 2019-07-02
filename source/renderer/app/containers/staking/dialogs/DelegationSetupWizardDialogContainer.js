@@ -100,7 +100,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
 
   render() {
     const { activeStep } = this.state;
-    const { staking, wallets, profile } = this.props.stores;
+    const { app, staking, wallets, profile } = this.props.stores;
     const { currentTheme } = profile;
     const { stakePools, delegatingStakePools } = staking;
 

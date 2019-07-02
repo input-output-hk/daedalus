@@ -115,7 +115,9 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
       '--rp-select-input-border-color': `${border}`,
       '--rp-select-input-border-color-focus': `${focus}`,
       '--rp-select-input-text-color': `${text.primary}`,
-      '--rp-select-input-placeholder-color': `${chroma(text.primary).alpha(0.5)}`,
+      '--rp-select-input-placeholder-color': `${chroma(text.primary).alpha(
+        0.5
+      )}`,
     },
     rpStepper: {
       '--rp-stepper-bullet-background-color-disabled': `${
@@ -370,26 +372,42 @@ const createDaedalusComponentsTheme = (
       '--theme-data-migration-layer-text-opacity-color': `${text.secondary}`,
     },
     delegationSetupWizard: {
-      '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color': `${text.primary}`,
+      '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color': `${
+        text.primary
+      }`,
       '--theme-delegation-steps-choose-stake-pool-select-box-placeholder-color': `${border}`,
-      '--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color': `${text.secondary}`,
-      '--theme-delegation-steps-choose-stake-pool-selected-slug-color': `${text.secondary}`,
-      '--theme-delegation-steps-choose-stake-pool-title-color': `${chroma(
-      ).alpha(0.6)}`,
+      '--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color': `${
+        text.secondary
+      }`,
+      '--theme-delegation-steps-choose-stake-pool-selected-slug-color': `${
+        text.secondary
+      }`,
+      '--theme-delegation-steps-choose-stake-pool-title-color': `${chroma().alpha(
+        0.6
+      )}`,
       '--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color': `${chroma(
         text.primary
       ).alpha(0.9)}`,
       '--theme-delegation-steps-choose-stake-pool-tooltip-background-color': `${chroma(
         text.primary
       ).alpha(0.9)}`,
-      '--theme-delegation-steps-choose-stake-pool-tooltip-box-shadow': '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
-      '--theme-delegation-steps-choose-stake-pool-tooltip-description-color': `${text.secondary}`,
+      '--theme-delegation-steps-choose-stake-pool-tooltip-box-shadow':
+        '0 5px 20px 0 rgba(0, 0, 0, 0.25)',
+      '--theme-delegation-steps-choose-stake-pool-tooltip-description-color': `${
+        text.secondary
+      }`,
       '--theme-delegation-steps-choose-stake-pool-tooltip-slug-color': `${chroma(
         text.primary
       ).alpha(0.6)}`,
-      '--theme-delegation-steps-choose-stake-pool-tooltip-table-label-color': `${text.secondary}`,
-      '--theme-delegation-steps-choose-stake-pool-tooltip-table-value-color': `${text.secondary}`,
-      '--theme-delegation-steps-choose-stake-pool-tooltip-title-color': `${text.secondary}`,
+      '--theme-delegation-steps-choose-stake-pool-tooltip-table-label-color': `${
+        text.secondary
+      }`,
+      '--theme-delegation-steps-choose-stake-pool-tooltip-table-value-color': `${
+        text.secondary
+      }`,
+      '--theme-delegation-steps-choose-stake-pool-tooltip-title-color': `${
+        text.secondary
+      }`,
       '--theme-delegation-steps-choose-stake-pool-tooltip-url-color': '#85b6f9',
       '--theme-delegation-steps-choose-wallet-custom-value-color': `${
         text.primary
@@ -524,7 +542,9 @@ const createDaedalusComponentsTheme = (
       '--theme-manual-update-overlay-button-background-color': `${
         background.secondary.dark
       }`,
-      '--theme-manual-update-overlay-button-background-color-hover': `${text.secondary}`,
+      '--theme-manual-update-overlay-button-background-color-hover': `${
+        text.secondary
+      }`,
       '--theme-manual-update-overlay-button-text-color-hover': `${
         background.secondary.regular
       }`,
@@ -582,10 +602,10 @@ const createDaedalusComponentsTheme = (
       '--theme-network-window-button-background-color': `${chroma(
         background.secondary.lightest
       ).alpha(0.4)}`,
-      '--theme-network-window-button-background-color-hover':  `${chroma(
+      '--theme-network-window-button-background-color-hover': `${chroma(
         background.secondary.lightest
       ).alpha(0.6)}`,
-      '--theme-network-window-button-background-color-active':  `${chroma(
+      '--theme-network-window-button-background-color-active': `${chroma(
         background.secondary.lightest
       ).alpha(0.8)}`,
     },
@@ -625,7 +645,9 @@ const createDaedalusComponentsTheme = (
 
       '--theme-legacy-badge-background-color': `${error.dark}`,
       '--theme-legacy-notification-background-color': '#ab2712',
-      '--theme-legacy-notification-learn-more-button-text-color': `${text.secondary}`,
+      '--theme-legacy-notification-learn-more-button-text-color': `${
+        text.secondary
+      }`,
       '--theme-legacy-notification-learn-more-button-background-color': `${chroma(
         background.primary.regular
       ).alpha(0.2)}`,
@@ -636,7 +658,9 @@ const createDaedalusComponentsTheme = (
         background.primary.regular
       ).alpha(0.4)}`,
       '--theme-legacy-notification-move-button-text-color': '#ab2712',
-      '--theme-legacy-notification-move-button-background-color': `${text.secondary}`,
+      '--theme-legacy-notification-move-button-background-color': `${
+        text.secondary
+      }`,
       '--theme-legacy-notification-move-button-background-color-hover': `${chroma(
         background.primary.regular
       ).alpha(0.9)}`,
@@ -764,9 +788,7 @@ const createDaedalusComponentsTheme = (
       '--theme-staking-stake-pool-selected-checkmark-icon-color': `${
         text.secondary
       }`,
-      '--theme-staking-stake-pool-selected-slug-color': `${
-        text.secondary
-      }`,
+      '--theme-staking-stake-pool-selected-slug-color': `${text.secondary}`,
       '--theme-staking-stake-pool-slug-color': `${text.primary}`,
       '--theme-staking-stake-pool-retirement-background-color': `${
         error.regular

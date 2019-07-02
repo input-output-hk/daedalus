@@ -11,7 +11,7 @@ type Props = {
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
   currentTheme: string,
-  onHover?: Function,
+  highlightOnHover?: boolean,
   onSelect?: Function,
   showWithSelectButton?: boolean,
   showSelected?: boolean,
@@ -74,21 +74,23 @@ export class StakePoolsList extends Component<Props, State> {
   handleClose = () => {
     this.setState({
       ...initialState,
-    })
+    });
   };
 
-  handleSelect = (stakePoolId) => {
+  handleSelect = (stakePoolId: number) => {
     const { onSelect } = this.props;
-    let selectedPoolId = this.props.selectedPoolId === stakePoolId ? null : stakePoolId;
-    onSelect(selectedPoolId);
-  }
+    const selectedPoolId =
+      this.props.selectedPoolId === stakePoolId ? null : stakePoolId;
+    if (onSelect) {
+      onSelect(selectedPoolId);
+    }
+  };
 
   render() {
     const {
       currentTheme,
-      onHover,
+      highlightOnHover,
       onOpenExternalLink,
-      onSelect,
       showSelected,
       showWithSelectButton,
       stakePoolsList,
@@ -100,7 +102,7 @@ export class StakePoolsList extends Component<Props, State> {
         {stakePoolsList.map(stakePool => {
           const index = this.getIndex(stakePool.ranking);
           const isHighlighted = this.getIsHighlighted(stakePool.id);
-          const isSelected = selectedPoolId && (stakePool.id === selectedPoolId);
+          const isSelected = selectedPoolId && stakePool.id === selectedPoolId;
 
           return (
             <StakePoolThumbnail
@@ -109,8 +111,8 @@ export class StakePoolsList extends Component<Props, State> {
               onOpenExternalLink={onOpenExternalLink}
               isHighlighted={isHighlighted}
               onClose={this.handleClose}
-              onClick={!onHover && this.handleOpenThumbnail}
-              onHover={onHover && this.handleOpenThumbnail}
+              onClick={!highlightOnHover && this.handleOpenThumbnail}
+              onHover={highlightOnHover && this.handleOpenThumbnail}
               onSelect={this.handleSelect}
               showWithSelectButton={showWithSelectButton}
               currentTheme={currentTheme}
