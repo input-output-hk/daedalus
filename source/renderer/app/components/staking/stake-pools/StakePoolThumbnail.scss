@@ -18,24 +18,13 @@
   box-shadow: 0 0 4px 2px var(--theme-staking-stake-pool-glow-color);
 }
 
-.isSelected {
-  background-color: #5da377;
-  .colorBand,
-  .ranking {
-    visibility: hidden;
-  }
-  .slug {
-    color: #fafbfc !important;
-  }
-}
-
 .slug {
-  color: var(--theme-staking-stake-pool-id-color);
+  color: var(--theme-staking-stake-pool-slug-color);
   font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.5px;
   line-height: 1;
-  margin: 0 0 9px;
+  margin: 0 0 4px;
   text-align: center;
 }
 
@@ -89,4 +78,15 @@
   left: 0;
   position: absolute;
   width: 100%;
+}
+
+.isSelected {
+  background-color: #5da377;
+  .colorBand,
+  .ranking {
+    visibility: hidden;
+  }
+  .slug {
+    color: #fafbfc;
+  }
 }

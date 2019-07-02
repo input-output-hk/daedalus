@@ -62,10 +62,6 @@
         display: none;
       }
     }
-    .StakePoolThumbnail_slug {
-      color: #5e6066;
-      margin: 0 0 4px;
-    }
   }
 
   .delegationStepsIndicatorWrapper {
@@ -81,6 +77,10 @@
       margin-bottom: 10px;
       text-align: center;
     }
+  }
+
+  .stakePoolsListWrapper {
+    margin-top: 20px;
   }
 
   .content {
