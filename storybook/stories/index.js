@@ -11,6 +11,7 @@ import './DeleteWalletConfirmationDialog.stories';
 import './WalletTransactionsList.stories';
 import './ExportWalletToFileDialog.stories';
 import './PaperWallets.stories';
+import './ManualUpdateOverlay.stories';
 
 // Staking
 import './Staking.stories';
@@ -20,6 +21,9 @@ import './AdaRedemptionDialog.stories';
 
 // Settings
 import './LanguageSelectionForm.stories';
+
+// Loading
+import './Loading.stories';
 
 // Navigation
 import './Sidebar.stories';

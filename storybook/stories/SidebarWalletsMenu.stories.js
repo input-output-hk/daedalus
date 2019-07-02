@@ -35,6 +35,7 @@ storiesOf('SidebarWalletsMenu', module)
           isConnected: false,
           isRestoreActive: false,
           restoreProgress: 0,
+          isLegacy: false,
         },
         {
           id: '2',
@@ -43,6 +44,7 @@ storiesOf('SidebarWalletsMenu', module)
           isConnected: false,
           isRestoreActive: false,
           restoreProgress: 0,
+          isLegacy: false,
         },
         {
           id: '3',
@@ -51,6 +53,7 @@ storiesOf('SidebarWalletsMenu', module)
           isConnected: false,
           isRestoreActive: false,
           restoreProgress: 0,
+          isLegacy: false,
         },
         {
           id: '4',
@@ -59,6 +62,7 @@ storiesOf('SidebarWalletsMenu', module)
           isConnected: false,
           isRestoreActive: false,
           restoreProgress: 0,
+          isLegacy: false,
         },
       ]}
       isActiveWallet={id => id === '2'}

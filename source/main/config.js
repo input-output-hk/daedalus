@@ -40,7 +40,6 @@ export type LauncherConfig = {
   nodePath: string,
   nodeArgs: Array<string>,
   tlsPath: string,
-  reportServer?: string,
   nodeDbPath: string,
   workingDir: string,
   logsPrefix: string,

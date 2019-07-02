@@ -17,9 +17,15 @@ const SELECTORS = {
     '.BlockConsolidationStatus_indicatorContainerNoCurrentEpochs',
 };
 
-When(/^I toggle the Block Consolidation Status Page$/, async function() {
+When(/^I open the Block Consolidation Status Dialog$/, async function() {
   await this.client.execute(() =>
-    daedalus.actions.app.toggleBlockConsolidationStatusScreen.trigger()
+    daedalus.actions.app.openBlockConsolidationStatusDialog.trigger()
+  );
+});
+
+When(/^I close the Block Consolidation Status Dialog$/, async function() {
+  await this.client.execute(() =>
+    daedalus.actions.app.closeBlockConsolidationStatusDialog.trigger()
   );
 });
 
@@ -182,7 +188,9 @@ Then(
       daedalus.stores.networkStatus
         ._updateNetworkStatus()
         .then(() =>
-          done({ epochsSynced: daedalus.stores.networkStatus.syncProgress })
+          done({
+            epochsSynced: daedalus.stores.networkStatus.syncProgress,
+          })
         )
         .catch(error => done(error));
     });

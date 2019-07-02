@@ -8,6 +8,7 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import SystemTimeErrorOverlay from './SystemTimeErrorOverlay';
 import NoDiskSpaceOverlay from './NoDiskSpaceOverlay';
+import ManualUpdateOverlay from './ManualUpdateOverlay';
 import StatusIcons from './StatusIcons';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
@@ -134,11 +135,17 @@ type Props = {
   isNodeSyncing: boolean,
   isNodeTimeCorrect: boolean,
   currentLocale: string,
+  availableAppVersion: ?string,
+  currentAppVersion: string,
+  isNewAppVersionAvailable: boolean,
+  isNewAppVersionLoading: boolean,
+  isNewAppVersionLoaded: boolean,
   onExternalLinkClick: Function,
   onReportIssueClick: Function,
   onCheckTheTimeAgain: Function,
   onContinueWithoutClockSyncCheck: Function,
   onDownloadLogs: Function,
+  onGetAvailableVersions: Function,
   disableDownloadLogs: boolean,
 };
 
@@ -165,7 +172,15 @@ export default class Loading extends Component<Props, State> {
   }
 
   componentDidUpdate() {
-    const { isConnected, isSynced, isNotEnoughDiskSpace } = this.props;
+    const { syncingTime, connectingTime } = this.state;
+    const {
+      isConnected,
+      isSynced,
+      isNotEnoughDiskSpace,
+      onGetAvailableVersions,
+      isNewAppVersionLoading,
+      isNewAppVersionLoaded,
+    } = this.props;
     const canResetSyncing = this._syncingTimerShouldStop(
       isSynced,
       isNotEnoughDiskSpace
@@ -179,6 +194,17 @@ export default class Loading extends Component<Props, State> {
     }
     if (canResetConnecting) {
       this._resetConnectingTime();
+    }
+    const isAppLoadingStuck =
+      (!isConnected && connectingTime >= REPORT_ISSUE_TIME_TRIGGER) ||
+      (isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER);
+    // If app loading is stuck, check if a newer version is available and set flag (state)
+    if (
+      isAppLoadingStuck &&
+      !isNewAppVersionLoaded &&
+      !isNewAppVersionLoading
+    ) {
+      onGetAvailableVersions();
     }
   }
 
@@ -386,6 +412,8 @@ export default class Loading extends Component<Props, State> {
       apiIcon,
       isConnected,
       isSynced,
+      isNodeStopping,
+      isNodeStopped,
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
       onReportIssueClick,
@@ -396,6 +424,11 @@ export default class Loading extends Component<Props, State> {
       isNodeSyncing,
       isNodeTimeCorrect,
       isCheckingSystemTime,
+      isNewAppVersionAvailable,
+      currentAppVersion,
+      availableAppVersion,
+      isNewAppVersionLoaded,
+      onExternalLinkClick,
     } = this.props;
 
     const { connectingTime, syncingTime } = this.state;
@@ -433,7 +466,10 @@ export default class Loading extends Component<Props, State> {
         cardanoNodeState === CardanoNodeStates.UNRECOVERABLE);
     const canReportSyncingIssue =
       isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER;
-    const showReportIssue = canReportConnectingIssue || canReportSyncingIssue;
+    const showReportIssue =
+      isNewAppVersionLoaded &&
+      !isNewAppVersionAvailable &&
+      (canReportConnectingIssue || canReportSyncingIssue);
 
     const buttonClasses = classNames(['primary', styles.reportIssueButton]);
 
@@ -480,7 +516,13 @@ export default class Loading extends Component<Props, State> {
           <SVGInline svg={apiLoadingLogo} className={apiLogoStyles} />
         </div>
         {hasLoadedCurrentLocale ? this._renderLoadingScreen() : null}
-
+        {isNewAppVersionAvailable && !isNodeStopping && !isNodeStopped && (
+          <ManualUpdateOverlay
+            currentAppVersion={currentAppVersion}
+            availableAppVersion={availableAppVersion}
+            onExternalLinkClick={onExternalLinkClick}
+          />
+        )}
         <StatusIcons
           nodeState={cardanoNodeState}
           isNodeResponding={isNodeResponding}

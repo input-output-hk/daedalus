@@ -7,7 +7,6 @@
     , seed         = [] : Optional Integer
     }
 , nodeTimeoutSec = 60
-, reportServer   = cluster.reportServer
 , walletArgs     = [] : List Text
 , logsPrefix     = os.nodeArgs.logsPrefix
 , tlsPath        = os.nodeArgs.tlsPath

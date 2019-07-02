@@ -26,6 +26,7 @@ import { getNodeSettings } from './nodes/requests/getNodeSettings';
 import { getCurrentEpoch } from './nodes/requests/getCurrentEpoch';
 import { getNextNodeUpdate } from './nodes/requests/getNextNodeUpdate';
 import { postponeNodeUpdate } from './nodes/requests/postponeNodeUpdate';
+import { getLatestAppVersion } from './nodes/requests/getLatestAppVersion';
 
 // Transactions requests
 import { getTransactionFee } from './transactions/requests/getTransactionFee';
@@ -97,12 +98,15 @@ import type { RequestConfig } from './common/types';
 
 // Nodes Types
 import type {
+  CardanoExplorerResponse,
+  LatestAppVersionInfoResponse,
   NodeInfoResponse,
   NodeSettingsResponse,
   NodeSoftware,
   GetNetworkStatusResponse,
   GetNodeSettingsResponse,
   GetCurrentEpochFallbackResponse,
+  GetLatestAppVersionResponse,
 } from './nodes/types';
 import type { NodeInfoQueryParams } from './nodes/requests/getNodeInfo';
 
@@ -1020,15 +1024,40 @@ export default class AdaApi {
   getCurrentEpochFallback = async (): Promise<GetCurrentEpochFallbackResponse> => {
     Logger.debug('AdaApi::getCurrentEpochFallback called');
     try {
-      const cardanoExplorerApi = await getCurrentEpoch();
+      const currentEpochInfo: CardanoExplorerResponse = await getCurrentEpoch();
       const currentEpochPath = 'Right[1][0].cbeEpoch';
-      const currentEpoch = get(cardanoExplorerApi, currentEpochPath);
+      const currentEpoch = get(currentEpochInfo, currentEpochPath, null);
       Logger.debug('AdaApi::getCurrentEpochFallback success', {
         currentEpoch,
+        currentEpochInfo,
       });
       return { currentEpoch };
     } catch (error) {
       Logger.error('AdaApi::getCurrentEpochFallback error', { error });
+      throw new GenericApiError();
+    }
+  };
+
+  getLatestAppVersion = async (): Promise<GetLatestAppVersionResponse> => {
+    Logger.debug('AdaApi::getLatestAppVersion called');
+    try {
+      const { isWindows, platform } = global.environment;
+      const latestAppVersionInfo: LatestAppVersionInfoResponse = await getLatestAppVersion();
+      const latestAppVersionPath = `platforms.${
+        isWindows ? 'windows' : platform
+      }.version`;
+      const latestAppVersion = get(
+        latestAppVersionInfo,
+        latestAppVersionPath,
+        null
+      );
+      Logger.debug('AdaApi::getLatestAppVersion success', {
+        latestAppVersion,
+        latestAppVersionInfo,
+      });
+      return { latestAppVersion };
+    } catch (error) {
+      Logger.error('AdaApi::getLatestAppVersion error', { error });
       throw new GenericApiError();
     }
   };
@@ -1044,6 +1073,7 @@ export default class AdaApi {
   setSubscriptionStatus: Function;
   setLocalBlockHeight: Function;
   setNetworkBlockHeight: Function;
+  setLatestAppVersion: Function;
   setFaultyNodeSettingsApi: boolean;
 }
 
@@ -1070,6 +1100,7 @@ const _createWalletFromServerData = action(
       hasPassword: hasSpendingPassword,
       passwordUpdateDate: new Date(`${spendingPasswordLastUpdate}Z`),
       syncState,
+      isLegacy: false,
     });
   }
 );

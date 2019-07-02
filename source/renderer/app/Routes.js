@@ -6,8 +6,6 @@ import { ROUTES } from './routes-config';
 // PAGES
 import Root from './containers/Root';
 import AdaRedemptionPage from './containers/wallet/AdaRedemptionPage';
-import BlockConsolidationStatusDialog from './containers/status/BlockConsolidationStatusDialog';
-import WalletAddPage from './containers/wallet/WalletAddPage';
 import LanguageSelectionPage from './containers/profile/LanguageSelectionPage';
 import Settings from './containers/settings/Settings';
 import GeneralSettingsPage from './containers/settings/categories/GeneralSettingsPage';
@@ -18,13 +16,14 @@ import DataLayerMigrationPage from './containers/profile/DataLayerMigrationPage'
 import DisplaySettingsPage from './containers/settings/categories/DisplaySettingsPage';
 import PaperWalletCreateCertificatePage from './containers/wallet/PaperWalletCreateCertificatePage';
 import Staking from './containers/staking/Staking';
-import StakingDelegationCenterPage from './containers/staking/StakingDelegationCenterPage';
+import DelegationCenterPage from './containers/staking/DelegationCenterPage';
 import StakingEpochsPage from './containers/staking/StakingEpochsPage';
 import StakingInfoPage from './containers/staking/StakingInfoPage';
 import StakingRewardsPage from './containers/staking/StakingRewardsPage';
-import StakingStakePoolsPage from './containers/staking/StakingStakePoolsPage';
-import StakingDelegationCountdownPage from './containers/staking/StakingDelegationCountdownPage';
+import StakePoolsListPage from './containers/staking/StakePoolsListPage';
+import StakingCountdownPage from './containers/staking/StakingCountdownPage';
 import Wallet from './containers/wallet/Wallet';
+import WalletAddPage from './containers/wallet/WalletAddPage';
 import WalletSummaryPage from './containers/wallet/WalletSummaryPage';
 import WalletSendPage from './containers/wallet/WalletSendPage';
 import WalletReceivePage from './containers/wallet/WalletReceivePage';
@@ -45,10 +44,6 @@ export const Routes = (
       component={DataLayerMigrationPage}
     />
     <Route path={ROUTES.ADA_REDEMPTION} component={AdaRedemptionPage} />
-    <Route
-      path={ROUTES.BLOCK_CONSOLIDATION_STATUS}
-      component={BlockConsolidationStatusDialog}
-    />
     <Route path={ROUTES.WALLETS.ADD} component={WalletAddPage} />
     <Route path={ROUTES.WALLETS.ROOT} component={Wallet}>
       <Route path={ROUTES.WALLETS.SUMMARY} component={WalletSummaryPage} />
@@ -77,18 +72,12 @@ export const Routes = (
     />
     <Route path={ROUTES.STAKING.ROOT} component={Staking}>
       <IndexRedirect to={ROUTES.STAKING.INFO} />
-      <Route
-        path={ROUTES.STAKING.DELEGATION_COUNTDOWN}
-        component={StakingDelegationCountdownPage}
-      />
+      <Route path={ROUTES.STAKING.COUNTDOWN} component={StakingCountdownPage} />
       <Route
         path={ROUTES.STAKING.DELEGATION_CENTER}
-        component={StakingDelegationCenterPage}
+        component={DelegationCenterPage}
       />
-      <Route
-        path={ROUTES.STAKING.STAKE_POOLS}
-        component={StakingStakePoolsPage}
-      />
+      <Route path={ROUTES.STAKING.STAKE_POOLS} component={StakePoolsListPage} />
       <Route path={ROUTES.STAKING.REWARDS} component={StakingRewardsPage} />
       <Route path={ROUTES.STAKING.EPOCHS} component={StakingEpochsPage} />
       <Route path={ROUTES.STAKING.INFO} component={StakingInfoPage} />

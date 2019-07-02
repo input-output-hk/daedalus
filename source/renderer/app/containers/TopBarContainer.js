@@ -36,7 +36,6 @@ export default class TopBarContainer extends Component<Props> {
       ? menuIconOpened
       : menuIconClosed;
     const leftIcon = showSubMenuToggle ? leftIconSVG : null;
-
     const testnetLabel = !isMainnet ? (
       <WalletTestEnvironmentLabel network={network} />
     ) : null;

@@ -1,13 +1,14 @@
 // @flow
 
-export type StakePoolProps = {
-  index: number,
+export type StakePool = {
   id: string,
-  name: string,
-  description: string,
-  url: string,
   controlledStake: number,
-  profitMargin: number,
+  description: string,
+  slug: string,
+  name: string,
   performance: number,
+  profitMargin: number,
+  ranking: number,
   retirement?: Date,
+  url: string,
 };

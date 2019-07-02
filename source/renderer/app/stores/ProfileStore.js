@@ -87,6 +87,9 @@ export default class ProfileStore extends Store {
     this.actions.profile.getLogs.listen(this._getLogs);
     this.actions.profile.getLogsAndCompress.listen(this._getLogsAndCompress);
     this.actions.profile.downloadLogs.listen(this._downloadLogs);
+    this.actions.profile.downloadLogsSuccess.listen(
+      this._toggleDisableDownloadLogs
+    );
     this.actions.app.initAppEnvironment.listen(() => {});
 
     this.registerReactions([
@@ -355,7 +358,7 @@ export default class ProfileStore extends Store {
           compressedLogsFilePath: this.compressedLogsFilePath,
           destinationPath: destination,
         });
-        this.actions.profile.downloadLogsSuccess.trigger();
+        this.actions.profile.downloadLogsSuccess.trigger(false);
         this._reset();
       } catch (error) {
         throw error;
@@ -365,6 +368,14 @@ export default class ProfileStore extends Store {
       this._getLogs();
     }
   });
+
+  _toggleDisableDownloadLogs = action(
+    async ({ isDownloadNotificationVisible }) => {
+      this.actions.app.setNotificationVisibility.trigger(
+        isDownloadNotificationVisible
+      );
+    }
+  );
 
   @action _onReceiveSystemLocale = (systemLocale: string) => {
     this.systemLocale = systemLocale;

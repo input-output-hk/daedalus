@@ -5,7 +5,7 @@ Feature: Display Block Consolidation Page
     Given I have completed the basic setup
 
   Scenario: Open/close the Block Consolidation Page and ensure epoch consolidation data is rendered correctly
-    When I toggle the Block Consolidation Status Page
+    When I open the Block Consolidation Status Dialog
     Then the Block Consolidation Status Page is visible
     And the page accurately renders the follow explanation of how block consolidation works in file storage:
       | message                               |
@@ -23,12 +23,12 @@ Feature: Display Block Consolidation Page
     And the page accurately renders the node's sync progress as a percentage below the progress bar:
       | message                        |
       | blockConsolidationStatus.synced |
-    When I toggle the Block Consolidation Status Page
+    When I close the Block Consolidation Status Dialog
     Then the Block Consolidation Status Page is hidden
 
   Scenario: Fetch current epoch from Cardano Explorer and ensure epoch consolidation data is rendered correctly
     When I set the Node Setting Api Request to return faulty response
-    And I toggle the Block Consolidation Status Page
+    And I open the Block Consolidation Status Dialog
     Then the Block Consolidation Status Page is visible
     And the page hides the node's sync progress as a percentage below the progress bar
     And the page renders the progress bar in loading state
@@ -40,5 +40,5 @@ Feature: Display Block Consolidation Page
     And the page accurately renders epochs consolidated above the progress bar:
       | message                                     |
       | blockConsolidationStatus.epochsConsolidated |
-    When I toggle the Block Consolidation Status Page
+    When I close the Block Consolidation Status Dialog
     Then the Block Consolidation Status Page is hidden

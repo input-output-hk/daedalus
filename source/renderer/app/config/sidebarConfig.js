@@ -19,7 +19,7 @@ export const CATEGORIES_BY_NAME = {
   },
   STAKING_DELEGATION_COUNTDOWN: {
     name: 'STAKING_DELEGATION_COUNTDOWN',
-    route: ROUTES.STAKING.DELEGATION_COUNTDOWN,
+    route: ROUTES.STAKING.COUNTDOWN,
     icon: delegationIcon,
   },
   STAKING: {

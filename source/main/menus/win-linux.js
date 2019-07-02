@@ -1,9 +1,13 @@
 // @flow
-import type { App, BrowserWindow } from 'electron';
 import { compact } from 'lodash';
+import { dialog, shell } from 'electron';
+import type { App, BrowserWindow } from 'electron';
 import type { MenuActions } from './MenuActions.types';
 import { getTranslation } from '../utils/getTranslation';
 import { environment } from '../environment';
+import { NOTIFICATIONS } from '../../common/ipc/constants';
+import { showUiPartChannel } from '../ipc/control-ui-parts';
+import type { SupportRequests } from '../../common/types/support-requests.types';
 
 const id = 'menu';
 const { isWindows, isInSafeMode } = environment;
@@ -13,6 +17,7 @@ export const winLinuxMenu = (
   window: BrowserWindow,
   actions: MenuActions,
   translations: {},
+  supportRequestData: SupportRequests,
   translation: Function = getTranslation(translations, id)
 ) => [
   {
@@ -21,39 +26,27 @@ export const winLinuxMenu = (
       {
         label: translation('daedalus.about'),
         click() {
-          actions.openAbout();
+          actions.openAboutDialog();
         },
       },
       {
         label: translation('daedalus.adaRedemption'),
         click() {
-          actions.goToAdaRedemption();
-        },
-      },
-      {
-        label: translation('daedalus.gpuSafeMode'),
-        type: 'checkbox',
-        checked: isInSafeMode,
-        click() {
-          if (isInSafeMode) {
-            actions.restartWithoutSafeMode();
-          } else {
-            actions.restartInSafeMode();
-          }
+          actions.openAdaRedemptionScreen();
         },
       },
       {
         label: translation('daedalus.blockConsolidationStatus'),
         accelerator: 'Ctrl+B',
         click() {
-          actions.goBlockConsolidationStatus();
+          actions.openBlockConsolidationStatusDialog();
         },
       },
       {
-        label: translation('daedalus.networkStatus'),
-        accelerator: 'Ctrl+S',
+        label: translation('daedalus.daedalusDiagnostics'),
+        accelerator: 'Ctrl+D',
         click() {
-          actions.openNetworkStatus();
+          actions.openDaedalusDiagnosticsDialog();
         },
       },
       {
@@ -140,5 +133,74 @@ export const winLinuxMenu = (
         },
       },
     ],
+  },
+  {
+    label: translation('helpSupport'),
+    submenu: compact([
+      {
+        label: translation('helpSupport.gpuSafeMode'),
+        type: 'checkbox',
+        checked: isInSafeMode,
+        click(item) {
+          const gpuSafeModeDialogOptions = {
+            buttons: [
+              translation('helpSupport.gpuSafeModeDialogConfirm'),
+              translation('helpSupport.gpuSafeModeDialogNo'),
+              translation('helpSupport.gpuSafeModeDialogCancel'),
+            ],
+            type: 'warning',
+            title: isInSafeMode
+              ? translation('helpSupport.gpuSafeModeDialogTitle')
+              : translation('helpSupport.nonGpuSafeModeDialogTitle'),
+            message: isInSafeMode
+              ? translation('helpSupport.gpuSafeModeDialogMessage')
+              : translation('helpSupport.nonGpuSafeModeDialogMessage'),
+            defaultId: isWindows ? 1 : 2,
+            cancelId: 2,
+            noLink: true,
+          };
+          dialog.showMessageBox(window, gpuSafeModeDialogOptions, buttonId => {
+            if (buttonId === 0) {
+              if (isInSafeMode) {
+                actions.restartWithoutSafeMode();
+              } else {
+                actions.restartInSafeMode();
+              }
+            }
+            item.checked = isInSafeMode;
+          });
+        },
+      },
+      {
+        label: translation('helpSupport.downloadLogs'),
+        click() {
+          showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
+        },
+      },
+      {
+        label: translation('helpSupport.supportRequest'),
+        click() {
+          const supportRequestLinkUrl = translation(
+            'helpSupport.supportRequestUrl'
+          );
+          const supportUrl = `${supportRequestLinkUrl}?${Object.entries(
+            supportRequestData
+          )
+            .map(
+              ([key, val]: [string, any]) =>
+                `${encodeURIComponent(key)}=${encodeURIComponent(val)}`
+            )
+            .join('&')}`;
+          shell.openExternal(supportUrl);
+        },
+      },
+      {
+        label: translation('helpSupport.knownIssues'),
+        click() {
+          const faqLink = translation('helpSupport.knownIssuesUrl');
+          shell.openExternal(faqLink);
+        },
+      },
+    ]),
   },
 ];
