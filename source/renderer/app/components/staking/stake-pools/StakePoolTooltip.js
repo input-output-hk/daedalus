@@ -14,8 +14,6 @@ import closeCross from '../../../assets/images/close-cross.inline.svg';
 import { getColorFromRange } from '../../../utils/colors';
 import { rangeMap } from '../../../utils/rangeMap';
 import {
-  OFFSET_LEFT,
-  OFFSET_TOP,
   THUMBNAIL_HEIGHT,
   THUMBNAIL_OFFSET_WIDTH,
   ARROW_WIDTH,
@@ -24,7 +22,6 @@ import {
   TOOLTIP_DELTA,
   TOOLTIP_MAX_HEIGHT,
   TOOLTIP_WIDTH,
-  CONTAINER_MARGIN,
 } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
@@ -72,6 +69,7 @@ type Props = {
   top: number,
   left: number,
   color: string,
+  containerClassName: string,
 };
 
 type State = {
@@ -101,11 +99,18 @@ export default class StakePoolTooltip extends Component<Props, State> {
   }
 
   componentDidMount() {
-    const { top, left } = this.props;
+    const { top, left, containerClassName } = this.props;
+    const container = document.querySelector(`.${containerClassName}`);
+    if (container instanceof HTMLElement) {
+      this.containerWidth = container.offsetWidth;
+      this.containerHeight = container.offsetHeight;
+    }
     this.getTooltipStyle(top, left);
   }
 
   tooltipClick: boolean = false;
+  containerWidth: number = 0;
+  containerHeight: number = 0;
 
   componentWillMount() {
     window.document.addEventListener('click', this.handleOutterClick);
@@ -135,16 +140,13 @@ export default class StakePoolTooltip extends Component<Props, State> {
     this.tooltipClick = true;
   };
 
-  getTooltipStyle = (originalTop: number, originalLeft: number) => {
+  getTooltipStyle = (top: number, originalLeft: number) => {
     const { color } = this.props;
 
-    const top = originalTop - OFFSET_TOP;
-    const left =
-      originalLeft - OFFSET_LEFT - CONTAINER_MARGIN + THUMBNAIL_OFFSET_WIDTH;
+    const left = originalLeft + THUMBNAIL_OFFSET_WIDTH;
 
-    const isTopHalf = top < window.innerHeight / 2 - OFFSET_TOP;
-    const isLeftHalf =
-      left + OFFSET_LEFT > window.innerWidth - window.innerWidth / 2;
+    const isTopHalf = top < this.containerHeight / 2;
+    const isLeftHalf = left < this.containerWidth - this.containerWidth / 2;
 
     const tooltipPosition = this.getTooltipPosition(top, isLeftHalf);
 
@@ -185,23 +187,16 @@ export default class StakePoolTooltip extends Component<Props, State> {
   };
 
   getTopBottomPosition = (left: number) => {
-    let containerWidth = 0;
-    const containerNode: ?HTMLElement = document.querySelector(
-      '.StakePoolsList_component'
-    );
-    if (containerNode && containerNode instanceof HTMLElement)
-      containerWidth = containerNode.offsetWidth;
-
     const paddingOffset = rangeMap(
       left,
       THUMBNAIL_OFFSET_WIDTH,
-      containerWidth - THUMBNAIL_OFFSET_WIDTH,
+      this.containerWidth - THUMBNAIL_OFFSET_WIDTH,
       -(THUMBNAIL_OFFSET_WIDTH / 2),
       THUMBNAIL_OFFSET_WIDTH / 2
     );
 
     const componentLeft =
-      -((TOOLTIP_WIDTH * left) / containerWidth) +
+      -((TOOLTIP_WIDTH * left) / this.containerWidth) +
       THUMBNAIL_OFFSET_WIDTH +
       paddingOffset;
     const componentTop = THUMBNAIL_HEIGHT + ARROW_HEIGHT;
@@ -222,7 +217,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
   };
 
   getLeftRightPosition = (top: number, isTopHalf: boolean) => {
-    const bottom = window.innerHeight - (top + OFFSET_TOP + THUMBNAIL_HEIGHT);
+    const bottom = this.containerHeight - (top + THUMBNAIL_HEIGHT);
 
     const componentLeft = THUMBNAIL_HEIGHT;
     let componentTop = 'auto';
@@ -231,10 +226,10 @@ export default class StakePoolTooltip extends Component<Props, State> {
     let arrowBottom = 'auto';
 
     if (isTopHalf) {
-      componentTop = -((TOOLTIP_MAX_HEIGHT * top) / window.innerHeight);
+      componentTop = -((TOOLTIP_MAX_HEIGHT * top) / this.containerHeight);
       arrowTop = -componentTop + ARROW_WIDTH;
     } else {
-      componentBottom = -((TOOLTIP_MAX_HEIGHT * bottom) / window.innerHeight);
+      componentBottom = -((TOOLTIP_MAX_HEIGHT * bottom) / this.containerHeight);
       arrowBottom = -componentBottom + ARROW_WIDTH;
     }
 
@@ -251,17 +246,19 @@ export default class StakePoolTooltip extends Component<Props, State> {
   };
 
   getTooltipPosition = (top: number, isLeftHalf: boolean) => {
-    if (top <= TOOLTIP_DELTA) {
-      return 'bottom';
+    const ignoreTopBottom = false;
+    if (!ignoreTopBottom) {
+      if (top <= TOOLTIP_DELTA) {
+        return 'bottom';
+      }
+      if (
+        TOOLTIP_DELTA >=
+        this.containerHeight - (top + (THUMBNAIL_HEIGHT - TOOLTIP_DELTA))
+      ) {
+        return 'top';
+      }
     }
-    if (
-      TOOLTIP_DELTA >=
-      window.innerHeight -
-        (top + (THUMBNAIL_HEIGHT - TOOLTIP_DELTA) + OFFSET_TOP)
-    ) {
-      return 'top';
-    }
-    if (isLeftHalf) {
+    if (!isLeftHalf) {
       return 'left';
     }
     return 'right';

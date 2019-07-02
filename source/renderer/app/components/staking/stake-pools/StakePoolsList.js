@@ -15,6 +15,7 @@ type Props = {
   onSelect?: Function,
   showWithSelectButton?: boolean,
   showSelected?: boolean,
+  containerClassName: string,
   /**
    *
    * If the parent component has more than one <StakePoolsList />
@@ -95,6 +96,7 @@ export class StakePoolsList extends Component<Props, State> {
       showWithSelectButton,
       stakePoolsList,
       selectedPoolId,
+      containerClassName,
     } = this.props;
 
     return (
@@ -119,6 +121,7 @@ export class StakePoolsList extends Component<Props, State> {
               index={index}
               isSelected={isSelected}
               showSelected={showSelected}
+              containerClassName={containerClassName}
             />
           );
         })}

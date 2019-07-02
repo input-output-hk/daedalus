@@ -227,6 +227,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
                 currentTheme={currentTheme}
                 isListActive={selectedList === 'stakePoolsDelegatingList'}
                 setListActive={this.handleSetListActive}
+                containerClassName="Dialog_content"
                 highlightOnHover
               />
             </div>
@@ -254,6 +255,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               setListActive={this.handleSetListActive}
               onSelect={this.handleSelect}
               selectedPoolId={selectedPoolId}
+              containerClassName="Dialog_content"
               showSelected
               highlightOnHover
             />

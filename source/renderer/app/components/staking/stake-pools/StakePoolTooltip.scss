@@ -105,9 +105,7 @@
   &.tooltipPositionBottom {
     border-bottom-color: var(--theme-staking-stake-pool-tooltip-border-color);
     &:before {
-      border-bottom-color: var(
-        --theme-staking-stake-pool-tooltip-background-color
-      );
+      border-bottom-color: transparent;
       top: -11px;
       left: -10px;
     }
