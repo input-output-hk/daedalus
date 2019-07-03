@@ -120,13 +120,6 @@ export default class WalletRow extends Component<Props> {
         className: styles.removeOption,
       },
     ];
-    const notDelegatedWalletActionOptions = [
-      {
-        label: delegate,
-        value: DELEGATION_ACTIONS.DELEGATE,
-        className: styles.normalOption,
-      },
-    ];
 
     return (
       <div className={styles.component}>
@@ -162,17 +155,15 @@ export default class WalletRow extends Component<Props> {
           <div>
             <div className={styles.status}>
               <span>{isDelegated ? delegated : notDelegated}</span>
-              <DropdownMenu
-                label={
-                  <SVGInline svg={settingsIcon} className={styles.gearIcon} />
-                }
-                menuItems={
-                  isDelegated
-                    ? delegatedWalletActionOptions
-                    : notDelegatedWalletActionOptions
-                }
-                onMenuItemClick={() => null}
-              />
+              {isDelegated && (
+                <DropdownMenu
+                  label={
+                    <SVGInline svg={settingsIcon} className={styles.gearIcon} />
+                  }
+                  menuItems={delegatedWalletActionOptions}
+                  onMenuItemClick={() => null}
+                />
+              )}
             </div>
             <div className={styles.action}>
               {isDelegated && delegatedStakePool ? (
