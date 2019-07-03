@@ -32,6 +32,7 @@ export default class DropdownMenu extends Component<Props> {
           options={menuItems}
           skin={SelectSkin}
           optionRenderer={this.optionRenderer}
+          optionsMaxHeight={null}
           selectionRenderer={this.selectionRenderer}
         />
       </div>
