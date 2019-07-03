@@ -1,0 +1,72 @@
+.component {
+  position: fixed;
+  text-align: center;
+  width: 100%;
+
+  &.is-connecting {
+    background-color: var(--theme-report-issue-connecting-background-color);
+    .reportIssueText {
+      color: var(--theme-report-issue-connecting-text-color);
+    }
+  }
+  &.is-syncing {
+    background-color: var(--theme-report-issue-syncing-background-color);
+    .reportIssueText {
+      color: var(--theme-report-issue-syncing-text-color);
+    }
+  }
+}
+
+.reportIssueText {
+  font-family: var(--font-regular);
+  font-size: 18px;
+  line-height: 1.22;
+  margin-top: 24px;
+}
+
+.reportIssueButton {
+  background-color: var(--theme-report-issue-button-background-color);
+  margin: 20px 0 10px;
+  width: 240px;
+
+  &:hover {
+    background-color: var(
+      --theme-report-issue-button-background-color-hover
+    ) !important;
+  }
+  &:active {
+    background-color: var(
+      --theme-report-issue-button-background-color-active
+    ) !important;
+  }
+}
+
+.downloadLogsButton {
+  border-bottom: 1px solid
+    var(--theme-report-issue-syncing-download-logs-text-color);
+  color: var(--theme-report-issue-syncing-download-logs-text-color);
+  cursor: pointer;
+  font-family: var(--font-regular);
+  font-size: 14px;
+  line-height: 1.36;
+  margin-bottom: 20px;
+  opacity: 0.8;
+  &:disabled {
+    color: var(--rp-button-bg-color-disabled);
+    text-decoration: none;
+    cursor: default;
+    border-bottom: none;
+  }
+}
+
+.downloadLogsButtonConnecting {
+  border-bottom: 1px solid
+    var(--theme-report-issue-syncing-download-logs-text-color-connecting);
+  color: var(--theme-report-issue-syncing-download-logs-text-color-connecting);
+}
+
+.linkNewWindow {
+  display: inline-block;
+  width: 12px;
+  margin-right: 10px;
+}

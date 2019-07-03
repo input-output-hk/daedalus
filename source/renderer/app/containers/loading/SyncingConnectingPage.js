@@ -43,6 +43,8 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         hasBeenConnected={hasBeenConnected}
         isConnected={isConnected}
         isSynced={isSynced}
+        isConnecting={!isConnected}
+        isSyncing={isConnected && !isSynced}
         isNodeStopping={isNodeStopping}
         isNodeStopped={isNodeStopped}
         isNotEnoughDiskSpace={isNotEnoughDiskSpace}

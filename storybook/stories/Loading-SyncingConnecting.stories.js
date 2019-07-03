@@ -16,6 +16,8 @@ export const SyncingConnectingStory = () => (
     hasBeenConnected={boolean('hasBeenConnected', true)}
     isConnected={boolean('isConnected', true)}
     isSynced={boolean('isSynced', true)}
+    isConnecting={boolean('isConnecting', true)}
+    isSyncing={boolean('isSyncing', true)}
     isNodeStopping={boolean('isNodeStopping', false)}
     isNodeStopped={boolean('isNodeStopped', false)}
     isTlsCertInvalid={boolean('isTlsCertInvalid', false)}
