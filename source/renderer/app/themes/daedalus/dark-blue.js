@@ -592,33 +592,33 @@ const DARK_BLUE_THEME_CONFIG = {
     '--theme-staking-stake-pool-background-color': '#263345',
     '--theme-staking-stake-pool-border-color': '#536370',
     '--theme-staking-stake-pool-glow-color': '#7cfeb54c',
+    '--theme-staking-stake-pool-retirement-background-color': '#ea4c5b',
     '--theme-staking-stake-pool-selected-background-color': '#5da377',
     '--theme-staking-stake-pool-selected-checkmark-icon-color': '#fafbfc',
     '--theme-staking-stake-pool-selected-slug-color': '#fafbfc',
     '--theme-staking-stake-pool-slug-color': '#e9f4fe',
-    '--theme-staking-stake-pool-retirement-background-color': '#ea4c5b',
     '--theme-staking-stake-pool-tooltip-background-color':
       'rgba(83, 99, 112, 0.98)',
     '--theme-staking-stake-pool-tooltip-border-color': 'transparent',
-    '--theme-staking-stake-pool-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
-    '--theme-staking-stake-pool-tooltip-text-color': '#e9f4fe',
-    '--theme-staking-stake-pool-tooltip-link-color': '#2ab467',
-    '--theme-staking-stake-pool-tooltip-table-title-color': '#e9f4fe',
-    '--theme-staking-stake-pool-tooltip-table-param-color': '#e9f4fe',
-    '--theme-staking-stake-pool-tooltip-retirement-text-color': '#fafbfc',
-    '--theme-staking-stake-pool-tooltip-retirement-background-color': '#ea4c5b',
-    '--theme-staking-stake-pool-tooltip-delegate-button-background-color':
-      'rgba(0, 0, 0, 0.1)',
-    '--theme-staking-stake-pool-tooltip-delegate-button-hover-background-color':
-      '#fafbfc',
     '--theme-staking-stake-pool-tooltip-delegate-button-active-background-color': `${chroma(
       '#fafbfc'
     ).alpha(0.8)}`,
-    '--theme-staking-stake-pool-tooltip-delegate-button-text-color': '#e9f4fe',
-    '--theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color':
-      '#263345',
+    '--theme-staking-stake-pool-tooltip-delegate-button-background-color':
+      'rgba(0, 0, 0, 0.1)',
     '--theme-staking-stake-pool-tooltip-delegate-button-border-color':
       '#fafbfc',
+    '--theme-staking-stake-pool-tooltip-delegate-button-hover-background-color':
+      '#fafbfc',
+    '--theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color':
+      '#263345',
+    '--theme-staking-stake-pool-tooltip-delegate-button-text-color': '#e9f4fe',
+    '--theme-staking-stake-pool-tooltip-link-color': '#2ab467',
+    '--theme-staking-stake-pool-tooltip-retirement-background-color': '#ea4c5b',
+    '--theme-staking-stake-pool-tooltip-retirement-text-color': '#fafbfc',
+    '--theme-staking-stake-pool-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
+    '--theme-staking-stake-pool-tooltip-table-param-color': '#e9f4fe',
+    '--theme-staking-stake-pool-tooltip-table-title-color': '#e9f4fe',
+    '--theme-staking-stake-pool-tooltip-text-color': '#e9f4fe',
     '--theme-staking-stake-pools-search-button-color': '#e9f4fe',
     '--theme-staking-stake-pools-search-icon-color': '#8793a1',
     '--theme-staking-stake-pools-title-color': '#e9f4fe',
