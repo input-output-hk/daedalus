@@ -8,6 +8,7 @@ import type {
   WalletSyncState,
   SyncStateTag,
 } from '../api/wallets/types';
+import type { StakePool } from '../api/staking/types';
 
 export const WalletAssuranceModeOptions: {
   NORMAL: WalletAssuranceLevel,
@@ -48,6 +49,9 @@ export type WalletProps = {
   passwordUpdateDate: ?Date,
   syncState?: WalletSyncState,
   isLegacy: boolean,
+  inactiveStakePercentage?: number,
+  isDelegated?: boolean,
+  delegatedStakePool?: StakePool,
 };
 
 export default class Wallet {
@@ -59,6 +63,9 @@ export default class Wallet {
   @observable passwordUpdateDate: ?Date;
   @observable syncState: ?WalletSyncState;
   @observable isLegacy: boolean;
+  @observable inactiveStakePercentage: ?number;
+  @observable isDelegated: ?boolean;
+  @observable delegatedStakePool: ?StakePool;
 
   constructor(data: WalletProps) {
     Object.assign(this, data);
@@ -76,6 +83,9 @@ export default class Wallet {
         'passwordUpdateDate',
         'syncState',
         'isLegacy',
+        'inactiveStakePercentage',
+        'isDelegated',
+        'delegatedStakePool',
       ])
     );
   }

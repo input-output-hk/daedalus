@@ -12,15 +12,15 @@ import { CATEGORIES_BY_NAME } from '../../source/renderer/app/config/sidebarConf
 
 import StakingWithNavigation from '../../source/renderer/app/components/staking/layouts/StakingWithNavigation';
 import StakingCountdown from '../../source/renderer/app/components/staking/countdown/StakingCountdown';
-import DelegationCenter from '../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
 import DelegationStepsIntroDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsIntroDialog';
 import DelegationStepsChooseWalletDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog';
 import DelegationStepsChooseStakePoolDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog';
 import DelegationStepsNotAvailableDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsNotAvailableDialog';
 
-import { StakePoolsStory } from './Staking-StakePoolsStory.js';
+import { StakePoolsStory } from './Staking-StakePools.stories';
 import { StakingRewardsStory } from './Staking-Rewards.stories';
+import { StakingDelegationCenterStory } from './Staking-DelegationCenter.stories';
 import { StakingEpochsStory } from './Staking-Epochs.stories';
 
 import translations from '../../source/renderer/app/i18n/translations';
@@ -141,11 +141,9 @@ storiesOf('Staking', module)
     { id: 'countdown' }
   )
 
-  .add(
-    pageNames['delegation-center'],
-    () => <DelegationCenter name={pageNames['delegation-center']} />,
-    { id: 'delegation-center' }
-  )
+  .add(pageNames['delegation-center'], StakingDelegationCenterStory, {
+    id: 'delegation-center',
+  })
 
   .add(pageNames['stake-pools'], StakePoolsStory, { id: 'stake-pools' })
 

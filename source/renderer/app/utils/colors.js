@@ -1,5 +1,6 @@
 // @flow
 import chroma from 'chroma-js';
+import isNil from 'lodash/isNil';
 
 // Ranking 001: hsla(142, 76%, 45%, 1)
 // Ranking 100: hsla(15, 97%, 58%, 1)
@@ -22,7 +23,7 @@ const defaultRangeOptions = {
   reverse: false,
 };
 
-export const getColorFromRange = (index: number, options?: RangeOptions) => {
+export const getColorFromRange = (index: ?number, options?: RangeOptions) => {
   const { colors, domain: originalDomain, darken, brighten, alpha, reverse } = {
     ...defaultRangeOptions,
     ...options,
@@ -30,6 +31,11 @@ export const getColorFromRange = (index: number, options?: RangeOptions) => {
   const domain = originalDomain.slice();
   if (reverse) domain.reverse();
   const scale = chroma.scale(colors).domain(domain);
+
+  if (isNil(index)) {
+    return 'transparent';
+  }
+
   return scale(index)
     .darken(darken)
     .brighten(brighten)
