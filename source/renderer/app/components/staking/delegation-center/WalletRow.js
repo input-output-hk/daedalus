@@ -8,6 +8,7 @@ import {
   FormattedHTMLMessage,
 } from 'react-intl';
 import SVGInline from 'react-svg-inline';
+import isNil from 'lodash/isNil';
 import Wallet from '../../../domains/Wallet';
 import { getColorFromRange } from '../../../utils/colors';
 import settingsIcon from '../../../assets/images/settings-ic.inline.svg';
@@ -98,7 +99,7 @@ export default class WalletRow extends Component<Props> {
     } = this.props;
     const inactiveStakePercentageValue = inactiveStakePercentage || 0;
     const color =
-      isDelegated && index ? getColorFromRange(index) : 'transparent';
+      isDelegated && !isNil(index) ? getColorFromRange(index) : 'transparent';
 
     const delegated = intl.formatMessage(messages.delegated);
     const notDelegated = intl.formatMessage(messages.notDelegated);

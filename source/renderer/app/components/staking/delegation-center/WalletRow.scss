@@ -66,10 +66,6 @@
             fill: var(--theme-staking-delegation-center-gear-icon-fill-color);
           }
         }
-
-        @media (max-width: 950px) {
-          display: none;
-        }
       }
 
       :global {
@@ -80,6 +76,20 @@
                 fill: var(
                   --theme-staking-delegation-center-gear-icon-fill-color-active
                 );
+              }
+            }
+          }
+        }
+
+        .SimpleSelect_select {
+          &:hover {
+            .WalletRow_gearIcon {
+              svg {
+                path {
+                  fill: var(
+                    --theme-staking-delegation-center-gear-icon-fill-color-active
+                  );
+                }
               }
             }
           }
