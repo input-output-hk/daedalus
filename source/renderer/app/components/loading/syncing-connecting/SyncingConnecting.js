@@ -104,6 +104,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Loading wallet data',
     description: 'Message "Loading wallet data" on the loading screen.',
   },
+  reportIssueButtonUrl: {
+    id: 'loading.screen.reportIssue.reportIssueButtonUrl',
+    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/requests/new/',
+    description: 'Link to Open Support page',
+  },
 });
 
 type State = {
@@ -119,7 +124,6 @@ type Props = {
   isSynced: boolean,
   isNodeStopping: boolean,
   isNodeStopped: boolean,
-  isNotEnoughDiskSpace: boolean,
   isTlsCertInvalid: boolean,
   syncPercentage: number,
   hasLoadedCurrentLocale: boolean,
@@ -151,12 +155,10 @@ export default class SyncingConnecting extends Component<Props, State> {
   };
 
   componentDidMount() {
-    if (this.props.isNotEnoughDiskSpace) return;
     this._defensivelyStartTimers(this.props.isConnected, this.props.isSynced);
   }
 
   componentWillReceiveProps(nextProps: Props) {
-    if (nextProps.isNotEnoughDiskSpace) return;
     this._defensivelyStartTimers(nextProps.isConnected, nextProps.isSynced);
   }
 
@@ -165,19 +167,12 @@ export default class SyncingConnecting extends Component<Props, State> {
     const {
       isConnected,
       isSynced,
-      isNotEnoughDiskSpace,
       onGetAvailableVersions,
       isNewAppVersionLoading,
       isNewAppVersionLoaded,
     } = this.props;
-    const canResetSyncing = this._syncingTimerShouldStop(
-      isSynced,
-      isNotEnoughDiskSpace
-    );
-    const canResetConnecting = this._connectingTimerShouldStop(
-      isConnected,
-      isNotEnoughDiskSpace
-    );
+    const canResetSyncing = this._syncingTimerShouldStop(isSynced);
+    const canResetConnecting = this._connectingTimerShouldStop(isConnected);
     if (canResetSyncing) {
       this._resetSyncingTime();
     }
@@ -210,16 +205,11 @@ export default class SyncingConnecting extends Component<Props, State> {
     isSynced: boolean
   ): boolean => isConnected && !isSynced && syncingInterval === null;
 
-  _syncingTimerShouldStop = (
-    isSynced: boolean,
-    isNotEnoughDiskSpace: boolean
-  ): boolean => (isNotEnoughDiskSpace || isSynced) && syncingInterval !== null;
+  _syncingTimerShouldStop = (isSynced: boolean): boolean =>
+    isSynced && syncingInterval !== null;
 
-  _connectingTimerShouldStop = (
-    isConnected: boolean,
-    isNotEnoughDiskSpace: boolean
-  ): boolean =>
-    (isNotEnoughDiskSpace || isConnected) && connectingInterval !== null;
+  _connectingTimerShouldStop = (isConnected: boolean): boolean =>
+    isConnected && connectingInterval !== null;
 
   _defensivelyStartTimers = (isConnected: boolean, isSynced: boolean) => {
     const needConnectingTimer = this._connectingTimerShouldStart(isConnected);
@@ -445,7 +435,11 @@ export default class SyncingConnecting extends Component<Props, State> {
                   {intl.formatMessage(messages.reportIssueButtonLabel)}
                 </p>
               }
-              onClick={onReportIssueClick}
+              onClick={() =>
+                onReportIssueClick(
+                  intl.formatMessage(messages.reportIssueButtonUrl)
+                )
+              }
               skin={ButtonSkin}
             />
             <br />
