@@ -28,6 +28,7 @@ Changelog
 
 ### Fixes
 
+- Removes files pushed without running Prettier ([PR 1445](https://github.com/input-output-hk/daedalus/pull/1445))
 - Improved Stake pool tooltip positioning ([PR 1429](https://github.com/input-output-hk/daedalus/pull/1429))
 - Moved the Tooltip logic from `StakePools.js` into `StakePoolsList.js` ([PR 1431](https://github.com/input-output-hk/daedalus/pull/1431))
 - Added fine adjustments to the Stake Pools screen. ([PR 1420](https://github.com/input-output-hk/daedalus/pull/1420))
