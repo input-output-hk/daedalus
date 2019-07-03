@@ -25,7 +25,7 @@ export const DELEGATION_ACTIONS = {
 const messages = defineMessages({
   walletAmount: {
     id: 'staking.delegationCenter.walletAmount',
-    defaultMessage: '!!!{amount} ada',
+    defaultMessage: '!!!{amount} ADA',
     description:
       'Amount of each wallet for the Delegation center body section.',
   },

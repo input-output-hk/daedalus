@@ -1792,7 +1792,7 @@
         }
       },
       {
-        "defaultMessage": "!!!You are currently delegating <b>{adaValue} ada</b>. This is <b>{percentage}%</b> of ada in your wallets.",
+        "defaultMessage": "!!!You are currently delegating <b>{adaValue} ADA</b>. This is <b>{percentage}%</b> of ada in your wallets.",
         "description": "Delegation description-part1 for the Delegation center.",
         "end": {
           "column": 3,
@@ -1853,7 +1853,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!{amount} ada",
+        "defaultMessage": "!!!{amount} ADA",
         "description": "Amount of each wallet for the Delegation center body section.",
         "end": {
           "column": 3,
