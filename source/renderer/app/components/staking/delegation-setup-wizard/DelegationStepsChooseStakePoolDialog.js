@@ -177,9 +177,20 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       );
     };
 
+    const stepsIndicatorLabel = (
+      <FormattedMessage
+        {...messages.stepIndicatorLabel}
+        values={{
+          currentStep: 2,
+          totalSteps: stepsList.length,
+        }}
+      />
+    );
+
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
+        subtitle={stepsIndicatorLabel}
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
@@ -188,15 +199,6 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         backButton={<DialogBackButton onBack={onBack} />}
       >
         <div className={styles.delegationStepsIndicatorWrapper}>
-          <p className={styles.stepIndicatorLabel}>
-            <FormattedMessage
-              {...messages.stepIndicatorLabel}
-              values={{
-                currentStep: 2,
-                totalSteps: stepsList.length,
-              }}
-            />
-          </p>
           <Stepper
             steps={stepsList}
             activeStep={2}

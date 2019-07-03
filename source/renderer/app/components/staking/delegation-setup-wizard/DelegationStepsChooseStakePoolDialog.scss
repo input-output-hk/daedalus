@@ -7,6 +7,10 @@
       margin-bottom: 0;
     }
 
+    .Dialog_subtitle {
+      color: var(--theme-delegation-steps-choose-wallet-steps-indicator-color);
+    }
+
     .Dialog_content {
       width: 600px;
     }
@@ -115,18 +119,8 @@
   }
 
   .delegationStepsIndicatorWrapper {
-    margin: auto;
+    margin: 4px auto 0;
     width: 410px;
-
-    .stepIndicatorLabel {
-      color: var(--theme-delegation-steps-choose-wallet-steps-indicator-color);
-      font-family: var(--font-medium);
-      font-size: 12px;
-      font-weight: 500;
-      line-height: 1.83;
-      margin-bottom: 10px;
-      text-align: center;
-    }
   }
 
   .stakePoolsListWrapper {

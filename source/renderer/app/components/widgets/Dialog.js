@@ -20,6 +20,7 @@ export type DialogAction = {
 
 type Props = {
   title?: string,
+  subtitle?: string,
   children?: Node,
   actions?: Array<DialogAction>,
   closeButton?: Element<any>,
@@ -34,6 +35,7 @@ export default class Dialog extends Component<Props> {
   render() {
     const {
       title,
+      subtitle,
       children,
       actions,
       closeOnOverlayClick,
@@ -55,6 +57,12 @@ export default class Dialog extends Component<Props> {
           {title && (
             <div className={styles.title}>
               <h1>{title}</h1>
+            </div>
+          )}
+
+          {subtitle && (
+            <div className={styles.subtitle}>
+              <h1>{subtitle}</h1>
             </div>
           )}
 
