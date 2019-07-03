@@ -21,7 +21,6 @@ export default class DelegationCenterPage extends Component<Props> {
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
           <DelegationSetupWizardDialogContainer />
         ) : null}
-        <DelegationSetupWizardDialogContainer />
       </DelegationCenter>
     );
   }
