@@ -608,6 +608,15 @@ const DARK_BLUE_THEME_CONFIG = {
     '--theme-staking-progress-stripe-dark-1-background-color': '#3c4852',
     '--theme-staking-progress-stripe-dark-2-background-color': '#536370',
     '--theme-staking-table-body-highlighted-text-color': '#2ab467',
+    '--theme-staking-donut-ring-completed-color': '#ea4c5b',
+    '--theme-staking-donut-ring-remaining-color': 'rgba(234, 76, 91, 0.2)',
+    '--theme-staking-wallet-row-border-color': 'rgba(102, 122, 138, 0.3)',
+    '--theme-staking-dropdown-item-text-color-hover': '#e9f4fe',
+    '--theme-staking-dropdown-item-background-color': '#314259',
+    '--theme-staking-dropdown-item-background-color-hover': '#3a4e63',
+    '--theme-staking-delegation-center-gear-icon-fill-color':
+      'rgba(233, 244, 254, 0.5)',
+    '--theme-staking-delegation-center-gear-icon-fill-color-active': '#e9f4fe',
   },
   support: {
     '--theme-support-settings-item-color': 'rgba(233, 244, 254, 0.5)',
