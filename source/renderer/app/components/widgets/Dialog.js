@@ -20,7 +20,7 @@ export type DialogAction = {
 
 type Props = {
   title?: string,
-  subtitle?: string,
+  subtitle?: string | Node,
   children?: Node,
   actions?: Array<DialogAction>,
   closeButton?: Element<any>,
