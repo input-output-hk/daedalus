@@ -391,6 +391,81 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Having trouble connecting to network?",
+        "description": "Report connecting issue text on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
+        "id": "loading.screen.reportIssue.connecting.text",
+        "start": {
+          "column": 29,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!Having trouble syncing?",
+        "description": "Report syncing issue text on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
+        "id": "loading.screen.reportIssue.syncing.text",
+        "start": {
+          "column": 26,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!Open support ticket",
+        "description": "Open support ticket button label on the loading.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
+        "id": "loading.screen.reportIssue.buttonLabel",
+        "start": {
+          "column": 26,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Download logs",
+        "description": "Download logs button label on the loading.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
+        "id": "loading.screen.reportIssue.downloadLogsLinkLabel",
+        "start": {
+          "column": 36,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/requests/new/",
+        "description": "Link to Open Support page",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
+        "id": "loading.screen.reportIssue.reportIssueButtonUrl",
+        "start": {
+          "column": 24,
+          "line": 33
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Node is running!",
         "description": "Message \"Node is running\" on the status icon tooltip",
         "end": {
@@ -722,13 +797,13 @@
         "description": "Message \"Starting Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 15
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
         "id": "loading.screen.startingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 24
+          "line": 11
         }
       },
       {
@@ -736,13 +811,13 @@
         "description": "Message \"Stopping Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 20
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
         "id": "loading.screen.stoppingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 29
+          "line": 16
         }
       },
       {
@@ -750,13 +825,13 @@
         "description": "Message \"Cardano node stopped\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 25
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
         "id": "loading.screen.stoppedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 34
+          "line": 21
         }
       },
       {
@@ -764,13 +839,13 @@
         "description": "Message \"Updating Cardano node\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 30
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
         "id": "loading.screen.updatingCardanoMessage",
         "start": {
           "column": 12,
-          "line": 39
+          "line": 26
         }
       },
       {
@@ -778,13 +853,13 @@
         "description": "Message \"Cardano node updated\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 35
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
         "id": "loading.screen.updatedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 44
+          "line": 31
         }
       },
       {
@@ -792,13 +867,13 @@
         "description": "Message \"Cardano node crashed\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 40
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
         "id": "loading.screen.crashedCardanoMessage",
         "start": {
           "column": 11,
-          "line": 49
+          "line": 36
         }
       },
       {
@@ -806,13 +881,13 @@
         "description": "Message \"Unable to start Cardano node. Please submit a support request.\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 47
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
         "id": "loading.screen.unrecoverableCardanoMessage",
         "start": {
           "column": 17,
-          "line": 54
+          "line": 41
         }
       },
       {
@@ -820,13 +895,13 @@
         "description": "Message \"Connecting to network\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 52
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
         "id": "loading.screen.connectingToNetworkMessage",
         "start": {
           "column": 14,
-          "line": 61
+          "line": 48
         }
       },
       {
@@ -834,13 +909,13 @@
         "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 58
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
         "id": "loading.screen.reconnectingToNetworkMessage",
         "start": {
           "column": 16,
-          "line": 66
+          "line": 53
         }
       },
       {
@@ -848,83 +923,13 @@
         "description": "Message \"Syncing blocks\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 63
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
         "id": "loading.screen.syncingBlocksMessage",
         "start": {
           "column": 11,
-          "line": 72
-        }
-      },
-      {
-        "defaultMessage": "!!!Having trouble connecting to network?",
-        "description": "Report connecting issue text on the loading screen.",
-        "end": {
-          "column": 3,
-          "line": 81
-        },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.js",
-        "id": "loading.screen.reportIssue.connecting.text",
-        "start": {
-          "column": 29,
-          "line": 77
-        }
-      },
-      {
-        "defaultMessage": "!!!Having trouble syncing?",
-        "description": "Report syncing issue text on the loading screen.",
-        "end": {
-          "column": 3,
-          "line": 86
-        },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.js",
-        "id": "loading.screen.reportIssue.syncing.text",
-        "start": {
-          "column": 26,
-          "line": 82
-        }
-      },
-      {
-        "defaultMessage": "!!!Open support ticket",
-        "description": "Open support ticket button label on the loading.",
-        "end": {
-          "column": 3,
-          "line": 91
-        },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.js",
-        "id": "loading.screen.reportIssue.buttonLabel",
-        "start": {
-          "column": 26,
-          "line": 87
-        }
-      },
-      {
-        "defaultMessage": "!!!Download logs",
-        "description": "Download logs button label on the loading.",
-        "end": {
-          "column": 3,
-          "line": 96
-        },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.js",
-        "id": "loading.screen.reportIssue.downloadLogsLinkLabel",
-        "start": {
-          "column": 36,
-          "line": 92
-        }
-      },
-      {
-        "defaultMessage": "!!!TLS certificate is not valid, please restart Daedalus.",
-        "description": "The TLS cert is not valid and Daedalus should be restarted",
-        "end": {
-          "column": 3,
-          "line": 101
-        },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.js",
-        "id": "loading.screen.errors.tlsCertificateNotValidPleaseRestartError",
-        "start": {
-          "column": 31,
-          "line": 97
+          "line": 59
         }
       },
       {
@@ -932,31 +937,31 @@
         "description": "Message \"Loading wallet data\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 106
+          "line": 68
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
         "id": "loading.screen.loadingWalletData",
         "start": {
           "column": 21,
-          "line": 102
+          "line": 64
         }
       },
       {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/requests/new/",
-        "description": "Link to Open Support page",
+        "defaultMessage": "!!!TLS certificate is not valid, please restart Daedalus.",
+        "description": "The TLS cert is not valid and Daedalus should be restarted",
         "end": {
           "column": 3,
-          "line": 111
+          "line": 73
         },
-        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.js",
-        "id": "loading.screen.reportIssue.reportIssueButtonUrl",
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "id": "loading.screen.errors.tlsCertificateNotValidPleaseRestartError",
         "start": {
-          "column": 24,
-          "line": 107
+          "column": 31,
+          "line": 69
         }
       }
     ],
-    "path": "source/renderer/app/components/loading/syncing-connecting/SyncingConnecting.json"
+    "path": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.json"
   },
   {
     "descriptors": [
