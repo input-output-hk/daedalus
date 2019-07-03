@@ -1,10 +1,10 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import type { InjectedProps } from '../../types/injectedPropsType';
+import type { InjectedStoresProps } from '../../types/injectedPropsType';
 import NoDiskSpaceError from '../../components/loading/no-disk-space-error/NoDiskSpaceError';
 
-type Props = InjectedProps;
+type Props = InjectedStoresProps;
 
 @inject('stores')
 @observer

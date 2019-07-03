@@ -10,7 +10,7 @@ type Props = InjectedProps;
 @inject('stores', 'actions')
 @observer
 export default class LoadingSyncingConnectingPage extends Component<Props> {
-  static defaultProps = { stores: null };
+  static defaultProps = { stores: null, actions: null };
 
   render() {
     const { stores } = this.props;

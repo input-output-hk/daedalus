@@ -1,10 +1,10 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import type { InjectedProps } from '../../types/injectedPropsType';
+import type { InjectedStoresProps } from '../../types/injectedPropsType';
 import SystemTimeError from '../../components/loading/system-time-error/SystemTimeError';
 
-type Props = InjectedProps;
+type Props = InjectedStoresProps;
 
 @inject('stores')
 @observer

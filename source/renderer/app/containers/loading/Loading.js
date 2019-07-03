@@ -11,6 +11,8 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 @inject('stores', 'actions')
 @observer
 export default class Loading extends Component<InjectedProps> {
+  static defaultProps = { stores: null, actions: null };
+
   get page() {
     if (this.isNotEnoughDiskSpace) return <NoDiskSpaceErrorPage />;
     if (this.isSystemTimeError) return <SystemTimeErrorPage />;
