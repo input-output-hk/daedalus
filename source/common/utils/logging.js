@@ -1,4 +1,6 @@
 // @flow
+import fs from 'fs';
+import path from 'path';
 import { pickBy } from 'lodash';
 import type {
   FormatMessageContextParams,
@@ -6,6 +8,7 @@ import type {
   MessageBody,
   ElectronLoggerMessage,
 } from '../types/logging.types';
+import { pubLogsFolderPath, APP_NAME } from '../../main/config';
 
 const DEFAULT_MESSAGE_BODY = {
   ns: ['daedalus'],
@@ -88,4 +91,56 @@ export const formatMessage = (loggerMessage: ElectronLoggerMessage): string => {
 
   const messageTime: string = formatMessageTime(loggerMessage.date);
   return `${messageTime} ${context} ${stringifyMessageBody(messageBody)}`;
+};
+
+const composeRotatedOldLogFiles = (compareLogFilePath: string) => {
+  let index = 0;
+  const rotatedLogFilePathes = [
+    `${APP_NAME}.old.1.json`,
+    `${APP_NAME}.old.2.json`,
+  ];
+
+  for (index = 0; index < 2; index++) {
+    if (!fs.existsSync(rotatedLogFilePathes[index])) {
+      break;
+    }
+  }
+  if (index < 2) {
+    fs.copyFileSync(compareLogFilePath, rotatedLogFilePathes[index]);
+    fs.unlinkSync(compareLogFilePath);
+    return;
+  }
+
+  fs.unlinkSync(rotatedLogFilePathes[0]);
+  fs.copyFileSync(rotatedLogFilePathes[1], rotatedLogFilePathes[0]);
+  fs.unlinkSync(rotatedLogFilePathes[1]);
+  fs.copyFileSync(compareLogFilePath, rotatedLogFilePathes[1]);
+  fs.unlinkSync(compareLogFilePath);
+};
+
+export const rotateOldLogFiles = () => {
+  const oldLogFilePath = path.join(pubLogsFolderPath, `${APP_NAME}.old.json`);
+  const compareLogFilePath = path.join(
+    pubLogsFolderPath,
+    `${APP_NAME}.compare.json`
+  );
+
+  if (!fs.existsSync(oldLogFilePath)) {
+    return;
+  }
+
+  if (!fs.existsSync(compareLogFilePath)) {
+    fs.copyFileSync(oldLogFilePath, compareLogFilePath);
+    return;
+  }
+
+  const oldLogFileBuf = fs.readFileSync(oldLogFilePath);
+  const compareLogFileBuf = fs.readFileSync(compareLogFilePath);
+
+  if (oldLogFileBuf.equals(compareLogFileBuf)) {
+    return;
+  }
+
+  composeRotatedOldLogFiles(compareLogFilePath);
+  fs.copyFileSync(oldLogFilePath, compareLogFilePath);
 };
