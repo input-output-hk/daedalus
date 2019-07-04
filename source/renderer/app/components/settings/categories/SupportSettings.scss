@@ -41,7 +41,7 @@
 
   a,
   button {
-    @include link(--theme-link-main-color)
+    @include link(--theme-link-main-color);
   }
 
   button {
@@ -63,6 +63,5 @@
   }
 
   .link {
-    
   }
 }

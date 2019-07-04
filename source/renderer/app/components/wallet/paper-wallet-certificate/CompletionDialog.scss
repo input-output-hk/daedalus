@@ -38,7 +38,9 @@
     word-wrap: break-word;
 
     .link {
-      @include link(--theme-paper-wallet-create-certificate-dialog-explorer-link-color);
+      @include link(
+        --theme-paper-wallet-create-certificate-dialog-explorer-link-color
+      );
     }
   }
 

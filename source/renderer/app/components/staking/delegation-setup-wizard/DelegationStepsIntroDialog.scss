@@ -18,7 +18,7 @@
 
     .link {
       font-size: 16px;
-      @include link(--theme-link-main-color)
+      @include link(--theme-link-main-color);
     }
 
     .description {

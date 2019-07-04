@@ -80,7 +80,9 @@
           .linkNewWindow {
             svg {
               g {
-                stroke: var(--theme-manual-update-overlay-button-icon-color-hover);
+                stroke: var(
+                  --theme-manual-update-overlay-button-icon-color-hover
+                );
               }
             }
           }
