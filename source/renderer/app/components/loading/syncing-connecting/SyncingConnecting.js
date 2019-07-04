@@ -158,6 +158,28 @@ export default class SyncingConnecting extends Component<Props, State> {
     }
   };
 
+  get showReportIssue() {
+    const {
+      isConnected,
+      isSynced,
+      cardanoNodeState,
+      isNewAppVersionLoaded,
+      isNewAppVersionAvailable,
+    } = this.props;
+    const { connectingTime, syncingTime } = this.state;
+    const canReportConnectingIssue =
+      !isConnected &&
+      (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
+        cardanoNodeState === CardanoNodeStates.UNRECOVERABLE);
+    const canReportSyncingIssue =
+      isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER;
+    return (
+      isNewAppVersionLoaded &&
+      !isNewAppVersionAvailable &&
+      (canReportConnectingIssue || canReportSyncingIssue)
+    );
+  }
+
   render() {
     const {
       cardanoNodeState,
@@ -175,16 +197,12 @@ export default class SyncingConnecting extends Component<Props, State> {
       isNodeSyncing,
       isNodeTimeCorrect,
       isCheckingSystemTime,
-      isNewAppVersionAvailable,
-      isNewAppVersionLoaded,
       hasBeenConnected,
       isTlsCertInvalid,
       isNodeStopping,
       isNodeStopped,
       syncPercentage,
     } = this.props;
-
-    const { connectingTime, syncingTime } = this.state;
 
     const componentStyles = classNames([
       styles.component,
@@ -193,20 +211,9 @@ export default class SyncingConnecting extends Component<Props, State> {
       isSyncing ? styles['is-syncing'] : null,
     ]);
 
-    const canReportConnectingIssue =
-      !isConnected &&
-      (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
-        cardanoNodeState === CardanoNodeStates.UNRECOVERABLE);
-    const canReportSyncingIssue =
-      isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER;
-    const showReportIssue =
-      isNewAppVersionLoaded &&
-      !isNewAppVersionAvailable &&
-      (canReportConnectingIssue || canReportSyncingIssue);
-
     return (
       <div className={componentStyles}>
-        {showReportIssue && (
+        {this.showReportIssue && (
           <ReportIssue
             isConnected={isConnected}
             onReportIssueClick={onReportIssueClick}
@@ -236,7 +243,6 @@ export default class SyncingConnecting extends Component<Props, State> {
             isCheckingSystemTime ? undefined : isNodeTimeCorrect
           }
           isNodeSyncing={isNodeSyncing}
-          isCheckingSystemTime={isCheckingSystemTime}
         />
       </div>
     );
