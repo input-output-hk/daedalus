@@ -825,7 +825,9 @@ const createDaedalusComponentsTheme = (
       '--theme-staking-table-border-color': `${border}`,
       '--theme-staking-link-color': `${background.secondary.regular}`,
       '--theme-staking-link-color-light': `${background.secondary.light}`,
-      '--theme-staking-progress-bar-background-color': `${background.primary.regular}`,
+      '--theme-staking-progress-bar-background-color': `${
+        background.primary.regular
+      }`,
       '--theme-staking-progress-stripe-dark-1-background-color': `${
         background.secondary.dark
       }`,
