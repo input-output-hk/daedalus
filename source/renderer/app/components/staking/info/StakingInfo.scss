@@ -1,8 +1,6 @@
 @import '../stakingConfig';
 
 .component {
-  background-color: var(--theme-staking-background-color);
-  height: 100%;
   margin: 20px;
   text-align: center;
 }
@@ -31,7 +29,7 @@
 }
 
 .progressBarContainer {
-  background-color: var(--theme-staking-background-color);
+  background-color: var(--theme-staking-progress-bar-background-color);
   border-radius: 5px;
   height: 100%;
   width: 100%;

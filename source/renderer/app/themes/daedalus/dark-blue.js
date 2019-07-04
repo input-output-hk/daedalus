@@ -605,7 +605,6 @@ const DARK_BLUE_THEME_CONFIG = {
       '#fafbfc',
   },
   staking: {
-    '--theme-staking-background-color': 'rgba(233, 244, 254, 0.1)',
     '--theme-staking-content-background-color': '#263345',
     '--theme-staking-content-border-color': '#263345',
     '--theme-staking-font-color-accent': '#cecfd1',
@@ -616,6 +615,7 @@ const DARK_BLUE_THEME_CONFIG = {
     '--theme-staking-table-border-color': '#c6cdd6',
     '--theme-staking-link-color': 'rgba(32, 181, 107, 1)',
     '--theme-staking-link-color-light': 'rgba(32, 181, 107, 0.5)',
+    '--theme-staking-progress-bar-background-color': 'rgba(233, 244, 254, 0.1)',
     '--theme-staking-progress-stripe-dark-1-background-color': '#3c4852',
     '--theme-staking-progress-stripe-dark-2-background-color': '#536370',
     '--theme-staking-table-body-highlighted-text-color': '#2ab467',
