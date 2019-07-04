@@ -1,0 +1,92 @@
+.component {
+  :global {
+    .SimpleSelect_select {
+      .SimpleSelect_selectInput {
+        &::after {
+          display: none;
+        }
+        input {
+          border: 0;
+          height: 22px;
+          padding: 0;
+          width: 22px;
+        }
+        .SimpleInput_customValueBlock {
+          height: auto;
+        }
+      }
+    }
+
+    .SimpleOptions_options {
+      left: auto !important;
+      position: absolute;
+      right: -22px;
+      top: 25px !important;
+      width: 200px !important;
+
+      ul {
+        li {
+          background: var(--theme-staking-dropdown-item-background-color);
+          border-radius: 4px;
+          color: var(--theme-staking-font-color-regular);
+          line-height: 1;
+          padding: 6px 9px 6px 24px;
+          text-align: right;
+
+          &.highlightedOption {
+            background-color: var(
+              --theme-staking-dropdown-item-background-color
+            );
+          }
+
+          &::after {
+            display: none;
+          }
+
+          &:hover {
+            background-color: var(
+              --theme-staking-dropdown-item-background-color-hover
+            );
+            span {
+              color: var(--theme-staking-dropdown-item-text-color-hover);
+            }
+          }
+
+          span {
+            white-space: nowrap;
+          }
+
+          &:first-child {
+            border-radius: 4px 4px 0 0;
+          }
+
+          &:last-child {
+            border-radius: 0 0 4px 4px;
+          }
+        }
+        .SimpleOptions_option.SimpleOptions_selectedOption {
+          display: list-item;
+        }
+      }
+    }
+
+    .SimpleBubble_root:not(.SimpleBubble_transparent) {
+      .SimpleBubble_bubble {
+        border: none;
+        border-radius: 3px;
+        box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.12);
+        min-width: auto;
+        right: 15px;
+      }
+      [data-bubble-arrow]:before,
+      [data-bubble-arrow]:after {
+        content: '';
+        display: none;
+      }
+    }
+  }
+
+  .dropdownToggle {
+    margin-left: 10px;
+  }
+}

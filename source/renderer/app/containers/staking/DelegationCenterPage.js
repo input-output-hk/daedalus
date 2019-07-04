@@ -14,10 +14,14 @@ export default class DelegationCenterPage extends Component<Props> {
   static defaultProps = { stores: null };
 
   render() {
-    const { uiDialogs } = this.props.stores;
+    const { uiDialogs, staking } = this.props.stores;
 
     return (
-      <DelegationCenter name="DelegationCenter">
+      <DelegationCenter
+        adaValue={staking.adaValue}
+        percentage={staking.percentage}
+        wallets={[]}
+      >
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
           <DelegationSetupWizardDialogContainer />
         ) : null}
