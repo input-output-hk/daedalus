@@ -14,18 +14,18 @@
 
     .externalLinkIcon {
       display: inline-block;
-      width: 12px;
       margin-right: 10px;
+      width: 12px;
       g {
         stroke: var(--theme-block-consolidation-button-icon-color);
       }
     }
 
     &:not(.disabled):hover {
-      border: none;
       background-color: var(
         --theme-block-consolidation-button-background-color-hover
       );
+      border: none;
       p {
         color: var(--theme-block-consolidation-button-text-color-hover);
       }
