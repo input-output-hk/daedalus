@@ -95,6 +95,7 @@ export default class SupportSettings extends Component<Props> {
 
     const faqLink = (
       <a
+        className={styles.externalLink}
         href={faqLinkUrl}
         onClick={event => onExternalLinkClick(faqLinkUrl, event)}
       >
@@ -110,10 +111,14 @@ export default class SupportSettings extends Component<Props> {
     );
 
     const reportProblemLink = (
-      <button onClick={onSupportRequestClick}>
+      <span
+        className={styles.externalLink}
+        role="presentation"
+        onClick={onSupportRequestClick}
+      >
         {intl.formatMessage(messages.stepsReportProblemLink)}
         <SVGInline svg={externalLinkIcon} />
-      </button>
+      </span>
     );
 
     return (

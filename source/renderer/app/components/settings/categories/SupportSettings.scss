@@ -31,17 +31,21 @@
     padding-left: 6.5px;
   }
 
-  a,
   button,
-  p {
+  p,
+  .externalLink {
     color: var(--theme-support-settings-text-color);
     font-family: var(--font-regular);
     font-size: 16px;
   }
 
-  a,
-  button {
+  button,
+  .externalLink {
     @include link(--theme-link-main-color);
+  }
+
+  .externalLink {
+    margin-right: 4px;
   }
 
   button {

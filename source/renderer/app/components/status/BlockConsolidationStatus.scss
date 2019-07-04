@@ -14,10 +14,13 @@
 
     .externalLinkIcon {
       display: inline-block;
-      margin-right: 10px;
+      margin-left: 10px;
       width: 12px;
-      g {
-        stroke: var(--theme-block-consolidation-button-icon-color);
+      svg {
+        vertical-align: middle;
+        g {
+          stroke: var(--theme-block-consolidation-button-icon-color);
+        }
       }
     }
 

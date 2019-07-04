@@ -27,7 +27,8 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
   handleSupportRequestClick = async (
     event: SyntheticEvent<HTMLButtonElement>
   ) => {
-    event.persist();
+    event.preventDefault();
+    event.stopPropagation();
     const { intl } = this.context;
     const supportRequestLinkUrl = intl.formatMessage(
       messages.supportRequestLinkUrl
