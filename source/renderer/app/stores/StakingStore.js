@@ -1,5 +1,6 @@
 // @flow
 import { computed, action } from 'mobx';
+import BigNumber from 'bignumber.js';
 import Store from './lib/Store';
 import { ROUTES } from '../routes-config';
 import type { StakePool } from '../api/staking/types';
@@ -9,6 +10,8 @@ import STAKE_POOLS from '../config/stakingStakePools.dummy.json';
 export default class StakingStore extends Store {
   startDateTime: string = '2019-09-26T00:00:00.161Z';
   decentralizationProgress: number = 10;
+  adaValue: BigNumber = new BigNumber(82650.15);
+  percentage: number = 14;
 
   setup() {
     const { staking } = this.actions;

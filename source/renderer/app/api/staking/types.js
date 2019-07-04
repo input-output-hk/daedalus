@@ -1,9 +1,10 @@
 // @flow
 
 export type StakePool = {
+  id: string,
   controlledStake: number,
   description: string,
-  id: string,
+  slug: string,
   name: string,
   performance: number,
   profitMargin: number,

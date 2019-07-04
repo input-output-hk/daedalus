@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import WalletAddPage from './wallet/WalletAddPage';
 import LoadingPage from './LoadingPage';
+import { DIALOGS } from '../../../common/ipc/constants';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 
 type Props = InjectedContainerProps;
@@ -20,7 +21,7 @@ export default class Root extends Component<Props> {
       app,
       staking,
     } = stores;
-    const { isBlockConsolidationStatusDialog } = app;
+    const { isActiveDialog } = app;
     const { isStakingPage } = staking;
     const { isProfilePage, isSettingsPage } = profile;
     const { isAdaRedemptionPage } = adaRedemption;
@@ -34,7 +35,7 @@ export default class Root extends Component<Props> {
     } = networkStatus;
 
     const isPageThatDoesntNeedWallets =
-      isBlockConsolidationStatusDialog ||
+      isActiveDialog(DIALOGS.BLOCK_CONSOLIDATION) ||
       ((isAdaRedemptionPage || isStakingPage || isSettingsPage) &&
         hasLoadedWallets &&
         isSynced);

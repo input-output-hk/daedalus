@@ -1,5 +1,185 @@
+%progressLabelText {
+  font-family: var(--font-medium);
+  font-size: 14px;
+  line-height: 24px;
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+}
+
 .component {
-  font-family: var(--font-regular);
-  margin: 20px;
-  text-align: center;
+  padding: 20px 20px 0;
+
+  .headerWrapper {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin: 0 20px 6px;
+  }
+
+  .epochSelector {
+    input {
+      border: 0;
+    }
+    :global {
+      .SimpleOptions_options {
+        top: 230px !important;
+      }
+
+      .SimpleOptions_options.SimpleOptions_firstOptionHighlighted:not(.SimpleOptions_openUpward)
+        [data-bubble-arrow]:after {
+        border-bottom-color: var(
+          --rp-bubble-arrow-bg-color,
+          #fafbfc
+        ) !important;
+      }
+    }
+  }
+
+  .customSelectValue {
+    color: var(--rp-select-input-text-color, #5e6066);
+    font-family: var(--font-medium);
+    font-size: 19px;
+    margin-right: 25px;
+    padding: var(--rp-select-input-padding, 14px 20px);
+  }
+
+  .noResultsLabel {
+    color: var(--theme-staking-font-color-lighter);
+    flex-grow: 1;
+    font-family: var(--font-regular);
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .loadingSpinnerWrapper {
+    margin: auto;
+  }
+
+  .currentEpochProgressBar {
+    height: 24px;
+    margin: -2px 20px 31px;
+  }
+
+  .progressBarContainer {
+    background-color: var(--theme-staking-background-color);
+    border-radius: 5px;
+    height: 100%;
+    position: relative;
+    width: 100%;
+  }
+
+  .progress {
+    background: repeating-linear-gradient(
+      -63deg,
+      var(--theme-staking-progress-stripe-dark-1-background-color),
+      var(--theme-staking-progress-stripe-dark-1-background-color) 10px,
+      var(--theme-staking-progress-stripe-dark-2-background-color) 10px,
+      var(--theme-staking-progress-stripe-dark-2-background-color) 20px
+    );
+    border-radius: 5px;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .overlapProgressLabel {
+    @extend %progressLabelText;
+    color: #fff;
+    transform: translateX(calc(-100% - 8px));
+    z-index: 98;
+  }
+
+  .progressLabel {
+    @extend %progressLabelText;
+    color: var(--theme-staking-font-color-regular);
+    right: 8px;
+    z-index: 97;
+  }
+
+  table {
+    border-style: hidden;
+    user-select: text;
+    width: 100%;
+
+    thead {
+      background-color: var(--theme-staking-table-head-background-color);
+    }
+
+    tr,
+    td,
+    th {
+      border: 1px solid var(--theme-staking-table-border-color);
+    }
+
+    th {
+      color: var(--theme-staking-font-color-regular);
+      cursor: pointer;
+      font-family: var(--font-semibold);
+      font-size: 14px;
+      line-height: 1.14;
+      padding: 14px 20px;
+      text-align: left;
+      white-space: nowrap;
+
+      &:hover {
+        & > .sortIcon {
+          opacity: 0.5;
+          visibility: visible;
+        }
+      }
+
+      & > .sortIcon {
+        margin-left: 6px;
+        visibility: hidden;
+        & > svg {
+          height: 7.5px;
+          width: 7px;
+          & > path {
+            fill: var(--theme-staking-font-color-regular);
+          }
+        }
+        &.ascending {
+          & > svg {
+            transform: rotate(180deg);
+          }
+        }
+        &.sorted {
+          opacity: 1;
+          visibility: visible;
+        }
+      }
+    }
+
+    td {
+      color: var(--theme-staking-font-color-regular);
+      font-family: var(--font-light);
+      font-size: 14px;
+      line-height: 1.3;
+      padding: 14px 20px;
+      text-align: left;
+      width: 25%;
+
+      p {
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
+        display: -webkit-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        .stakePoolReference {
+          color: var(--theme-staking-table-body-highlighted-text-color);
+          font-family: var(--font-medium);
+        }
+      }
+    }
+
+    .mediumText {
+      font-family: var(--font-medium);
+    }
+
+    .uppercaseText {
+      text-transform: uppercase;
+    }
+  }
 }
