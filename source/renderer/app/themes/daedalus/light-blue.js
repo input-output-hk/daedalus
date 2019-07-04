@@ -123,7 +123,7 @@ const rpLightBlueTheme = {
 };
 
 //  ==== Light Blue Theme for Daedalus Components === //
-const LIGHT_BLUE_THEME_CONFIG = {
+export const LIGHT_BLUE_THEME_CONFIG = {
   ...rpLightBlueTheme,
   aboutWindow: {
     '--theme-about-window-background-color': 'rgba(36, 62, 98, 0.96)',
@@ -584,7 +584,7 @@ const LIGHT_BLUE_THEME_CONFIG = {
   },
 };
 
-const LIGHT_BLUE_THEME_PARAMS: CreateThemeParams = {
+export const LIGHT_BLUE_THEME_PARAMS: CreateThemeParams = {
   config: LIGHT_BLUE_THEME_CONFIG,
 };
 
