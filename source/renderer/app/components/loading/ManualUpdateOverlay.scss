@@ -60,8 +60,14 @@
           display: inline-block;
           margin-left: 8px;
           opacity: 0.7;
-          vertical-align: middle;
-          width: 12px;
+          vertical-align: sub;
+          width: 15px;
+
+          svg {
+            g {
+              stroke: var(--theme-manual-update-overlay-button-icon-color);
+            }
+          }
         }
 
         &:not(.disabled):hover {
@@ -72,8 +78,10 @@
           color: var(--theme-manual-update-overlay-button-text-color-hover);
 
           .linkNewWindow {
-            path {
-              fill: rgb(36, 62, 98);
+            svg {
+              g {
+                stroke: var(--theme-manual-update-overlay-button-icon-color-hover);
+              }
             }
           }
         }

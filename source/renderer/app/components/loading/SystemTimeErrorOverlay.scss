@@ -1,4 +1,5 @@
 @import '../../themes/mixins/animations';
+@import '../../themes/mixins/link';
 
 .component {
   align-items: center;
@@ -55,9 +56,9 @@
   }
 
   a {
+    @include link(--theme-system-error-overlay-support-link-icon-color)
     border-bottom: 2px solid var(--theme-system-error-overlay-text-color);
     color: var(--theme-system-error-overlay-text-color);
-    text-decoration: none;
   }
 
   .checkLink {

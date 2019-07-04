@@ -238,6 +238,8 @@ const CARDANO_THEME_CONFIG = {
     '--theme-block-consolidation-stripe-light-2-background-color': '#fafbfc',
     '--theme-block-consolidation-button-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-block-consolidation-button-background-color-hover': '#fafbfc',
+    '--theme-block-consolidation-button-icon-color': 'rgba(250, 251, 252, 0.7)',
+    '--theme-block-consolidation-button-icon-color-hover': '#202225',
     '--theme-block-consolidation-button-text-color-hover': '#202225',
     '--theme-block-consolidation-button-border-color': '#fafbfc',
   },
@@ -398,6 +400,9 @@ const CARDANO_THEME_CONFIG = {
     '--theme-input-right-floating-text-color': 'rgba(94, 96, 102, 0.5)',
     '--theme-input-text-color': '#5e6066',
   },
+  link: {
+    '--theme-link-main-color': 'rgba(28, 172, 99, 1)',
+  },
   loading: {
     '--theme-loading-background-color': '#fafbfc',
     '--theme-loading-no-disk-space-background-color': 'rgba(171, 23, 0, 0.94)',
@@ -416,6 +421,8 @@ const CARDANO_THEME_CONFIG = {
       'rgba(0, 0, 0, 0.1)',
     '--theme-manual-update-overlay-button-background-color-hover': '#fafbfc',
     '--theme-manual-update-overlay-button-border-color': '#fafbfc',
+    '--theme-manual-update-overlay-button-icon-color': '#fafbfc',
+    '--theme-manual-update-overlay-button-icon-color-hover': '#202225',
     '--theme-manual-update-overlay-button-text-color-hover': '#202225',
     '--theme-manual-update-overlay-text-color': 'rgba(250, 251, 252, 0.7)',
     '--theme-manual-update-overlay-text-highlight-color': '#fafbfc',
@@ -520,6 +527,7 @@ const CARDANO_THEME_CONFIG = {
     '--theme-report-issue-connecting-background-color':
       'rgba(250, 251, 252, 0.05)',
     '--theme-report-issue-connecting-text-color': '#fafbfc',
+    '--theme-report-issue-icon-color': '#fafbfc',
     '--theme-report-issue-syncing-background-color': 'rgba(94, 96, 102, 0.05)',
     '--theme-report-issue-syncing-text-color': '#5e6066',
     '--theme-report-issue-syncing-download-logs-text-color': '#fafbfc',
@@ -629,6 +637,7 @@ const CARDANO_THEME_CONFIG = {
   systemError: {
     '--theme-system-error-overlay-attention-icon-color': '#fafbfc',
     '--theme-system-error-overlay-background-color': 'rgba(171, 23, 0, 0.94)',
+    '--theme-system-error-overlay-support-link-icon-color': '#fafbfc',
     '--theme-system-error-overlay-text-color': '#fafbfc',
   },
   tabs: {

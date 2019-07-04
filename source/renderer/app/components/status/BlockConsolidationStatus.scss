@@ -11,12 +11,29 @@
   .learnMoreButton {
     background-color: var(--theme-block-consolidation-button-background-color);
     border: solid 1px var(--theme-block-consolidation-button-border-color);
+
+    .externalLinkIcon {
+      display: inline-block;
+      width: 12px;
+      margin-right: 10px;
+      g {
+        stroke: var(--theme-block-consolidation-button-icon-color);
+      }
+    }
+
     &:not(.disabled):hover {
       border: none;
-      color: var(--theme-block-consolidation-button-text-color-hover);
       background-color: var(
         --theme-block-consolidation-button-background-color-hover
       );
+      p {
+        color: var(--theme-block-consolidation-button-text-color-hover);
+      }
+      .externalLinkIcon {
+        g {
+          stroke: var(--theme-block-consolidation-button-icon-color-hover);
+        }
+      }
     }
   }
 }

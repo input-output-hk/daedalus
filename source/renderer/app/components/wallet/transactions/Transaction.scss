@@ -1,3 +1,5 @@
+@import '../../../themes/mixins/link';
+
 .component {
   color: var(--theme-transactions-list-item-details-color);
   position: relative;
@@ -220,9 +222,17 @@
   &.clickable {
     .transactionId,
     .address {
+      @include link(--theme-transactions-list-item-details-color);
+      // link overrides
+      border-bottom: none;
+      svg {
+        visibility: hidden;
+      }
       &:hover {
-        cursor: pointer;
         text-decoration: underline;
+        svg {
+          visibility: visible;
+        }
       }
     }
   }
