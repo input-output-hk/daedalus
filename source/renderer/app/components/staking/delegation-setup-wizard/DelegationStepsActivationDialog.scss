@@ -32,6 +32,9 @@
     .description {
       color: var(--theme-delegation-steps-activation-description-color);
       margin-bottom: 20px;
+      span > span {
+        font-weight: bold;
+      }
     }
 
     .resumeWrapper {

@@ -13,7 +13,7 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 
 const messages = defineMessages({
   title: {
-    id: 'staking.delegationSetup.steps.confirmation.dialog.title',
+    id: 'staking.delegationSetup.confirmation.step.dialog.title',
     defaultMessage: '!!!Confirm Delegation',
     description:
       'Title "Confirm Delegation" on the delegation setup "confirmation" step dialog.',
@@ -27,7 +27,7 @@ const messages = defineMessages({
   description: {
     id: 'staking.delegationSetup.confirmation.step.dialog.description',
     defaultMessage:
-      '!!!Confirm delegation to publish your delegation preferences on Cardano blockchain.',
+      '!!!Confirm your delegation to publish your delegation preferences on Cardano blockchain.',
     description:
       'Description on the delegation setup "confirmation" step dialog.',
   },
@@ -123,12 +123,7 @@ export default class DelegationStepsConfirmationDialog extends Component<
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const {
-      isSpendingPasswordSet,
-      onBack,
-      onClose,
-      stepsList,
-    } = this.props;
+    const { isSpendingPasswordSet, onBack, onClose, stepsList } = this.props;
     const { spendingPasswordValue } = this.state;
 
     const spendingPasswordField = form.$('spendingPassword');

@@ -1,6 +1,11 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import {
+  defineMessages,
+  intlShape,
+  FormattedMessage,
+  FormattedHTMLMessage,
+} from 'react-intl';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import { Input } from 'react-polymorph/lib/components/Input';
@@ -13,7 +18,7 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 
 const messages = defineMessages({
   title: {
-    id: 'staking.delegationSetup.steps.activation.dialog.title',
+    id: 'staking.delegationSetup.activation.step.dialog.title',
     defaultMessage: '!!!Confirm Delegation',
     description:
       'Title "Confirm Delegation" on the delegation setup "activation" step dialog.',
@@ -27,14 +32,14 @@ const messages = defineMessages({
   descriptionLine1: {
     id: 'staking.delegationSetup.activation.step.dialog.description.line1',
     defaultMessage:
-      '!!!Now all new wallet addresses will match your delegation preferences and ada received on those addresses will be actively delegated.',
+      '!!!All <span>new</span> wallet addresses will now match your delegation preferences and the stake associated with ada received on those addresses will be delegated. ',
     description:
       'Description "line 1" on the delegation setup "activation" step dialog.',
   },
   descriptionLine2: {
     id: 'staking.delegationSetup.activation.step.dialog.description.line2',
     defaultMessage:
-      '!!!To delegate the rest of the ada in your wallet, move it to a new addresses which match your delegation preferences.',
+      '!!!To delegate ada which remains in old addresses in your wallet, move it to a new address where your delegation preferences have been applied.',
     description:
       'Description "line 2" on the delegation setup "activation" step dialog.',
   },
@@ -148,12 +153,7 @@ export default class DelegationStepsActivationDialog extends Component<
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const {
-      isSpendingPasswordSet,
-      onBack,
-      onClose,
-      stepsList,
-    } = this.props;
+    const { isSpendingPasswordSet, onBack, onClose, stepsList } = this.props;
     const { spendingPasswordValue } = this.state;
 
     const spendingPasswordField = form.$('spendingPassword');
@@ -202,7 +202,7 @@ export default class DelegationStepsActivationDialog extends Component<
 
         <div className={styles.content}>
           <div className={styles.description}>
-            <p>{intl.formatMessage(messages.descriptionLine1)}</p>
+            <FormattedHTMLMessage {...messages.descriptionLine1} />
             <p>{intl.formatMessage(messages.descriptionLine2)}</p>
           </div>
 
@@ -246,7 +246,7 @@ export default class DelegationStepsActivationDialog extends Component<
 
           {isSpendingPasswordSet && (
             <Input
-              type='password'
+              type="password"
               className={styles.spendingPassword}
               {...spendingPasswordField.bind()}
               skin={InputSkin}
