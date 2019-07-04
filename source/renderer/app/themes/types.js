@@ -6,6 +6,7 @@ export type CreateThemeParams = {
   colors?: ColorParams,
   fonts?: ThemeFonts,
   config?: Object,
+  write?: Object,
 };
 
 export type ColorParams = {

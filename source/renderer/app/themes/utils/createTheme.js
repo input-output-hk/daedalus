@@ -2,6 +2,7 @@
 import chroma from 'chroma-js';
 import { isEmpty } from 'lodash';
 import { createBackgroundShades, createErrorShades } from './createShades';
+import { writeCSSVariables } from './writeCSSVariables';
 import type { ThemeColors, ThemeFonts, CreateThemeParams } from '../types';
 
 type PartialThemeParts = {
@@ -798,7 +799,12 @@ const createDaedalusComponentsTheme = (
 };
 
 export const createTheme = (fullThemeParts: CreateThemeParams): Object => {
-  const { colors: themeColors, config, fonts: themeFonts } = fullThemeParts;
+  const {
+    colors: themeColors,
+    config,
+    fonts: themeFonts,
+    write,
+  } = fullThemeParts;
 
   let daedalusTheme = {};
   let colors = {};
@@ -836,6 +842,10 @@ export const createTheme = (fullThemeParts: CreateThemeParams): Object => {
       ...createReactPolymorphTheme({ colors, fonts }),
       ...createDaedalusComponentsTheme({ colors, fonts }),
     };
+
+    if (write && !isEmpty(write)) {
+      return writeCSSVariables(daedalusTheme);
+    }
 
     // flatten daedalusTheme object for consumption by ThemeManager
     daedalusTheme = Object.values(daedalusTheme).reduce(
