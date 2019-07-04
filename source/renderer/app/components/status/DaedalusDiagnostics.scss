@@ -113,7 +113,8 @@
       max-width: 100px;
     }
 
-    &.stateDirectoryPath {
+    .stateDirectoryPath {
+      display: inline-block;
       max-width: 400px;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -144,6 +145,10 @@
       button {
         padding-top: 0;
       }
+    }
+
+    &.stateDirectory {
+      display: flex;
     }
   }
 
@@ -231,9 +236,7 @@
     }
 
     &.stateDirectoryBtn {
-      margin-left: 10px;
-      margin-right: 0;
-      margin-top: 4px;
+      margin: 4px 16px 0 0;
       padding-top: 0;
     }
   }

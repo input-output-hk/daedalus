@@ -632,19 +632,21 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               </tr>
               <tr>
                 <td>{intl.formatMessage(messages.stateDirectoryPath)}:</td>
-                <button
-                  className={styles.stateDirectoryBtn}
-                  onClick={() =>
-                    onOpenStateDirectory(daedalusStateDirectoryPath)
-                  }
-                >
-                  {intl.formatMessage(messages.stateDirectoryPathBtn)}
-                </button>
-                <Tooltip skin={TooltipSkin} tip={daedalusStateDirectoryPath}>
-                  <td className={styles.stateDirectoryPath}>
-                    {daedalusStateDirectoryPath}
-                  </td>
-                </Tooltip>
+                <td className={styles.stateDirectory}>
+                  <button
+                    className={styles.stateDirectoryBtn}
+                    onClick={() =>
+                      onOpenStateDirectory(daedalusStateDirectoryPath)
+                    }
+                  >
+                    {intl.formatMessage(messages.stateDirectoryPathBtn)}
+                  </button>
+                  <Tooltip skin={TooltipSkin} tip={daedalusStateDirectoryPath}>
+                    <span className={styles.stateDirectoryPath}>
+                      {daedalusStateDirectoryPath}
+                    </span>
+                  </Tooltip>
+                </td>
               </tr>
               {!isConnected && nodeConnectionError ? (
                 <tr>
