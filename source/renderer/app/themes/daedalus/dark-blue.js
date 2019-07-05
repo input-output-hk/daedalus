@@ -434,7 +434,7 @@ const DARK_BLUE_THEME_CONFIG = {
   navDropdown: {
     '--theme-nav-dropdown-item-text-color': '#e9f4fe',
     '--theme-nav-dropdown-item-background-color': '#263345',
-    '--theme-nav-dropdown-item-background-color-hover': '#536370',
+    '--theme-nav-dropdown-item-background-color-hover': 'rgba(83, 99, 112, 0.1)',
     '--theme-nav-dropdown-item-color-hover': '#e9f4fe',
   },
   navItem: {
