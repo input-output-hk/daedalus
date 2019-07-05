@@ -11,6 +11,7 @@ import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
 import { WalletSyncStateTags } from '../../domains/Wallet';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
+import type { NavDropdownProps } from "../../components/navigation/Navigation";
 
 type Props = InjectedContainerProps;
 
@@ -19,16 +20,16 @@ type Props = InjectedContainerProps;
 export default class Wallet extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
-  isActiveScreen = (page: string, item: any) => {
+  isActiveScreen = (page: string, item: NavDropdownProps) => {
     const { app, wallets } = this.props.stores;
     if (!wallets.active) return false;
     if (item && item.options && item.options.length) {
       item.options.forEach(option => {
         if (
           app.currentRoute &&
-          app.currentRoute.includes(item.options[option].value)
+          app.currentRoute.includes(option.value.toString())
         ) {
-          page = item.options[option].value;
+          page = option.value.toString();
         }
       });
     }
