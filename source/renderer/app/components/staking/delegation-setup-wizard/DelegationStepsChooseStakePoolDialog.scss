@@ -7,126 +7,18 @@
       margin-bottom: 0;
     }
 
-    .Dialog_content {
-      width: 600px;
+    .Dialog_subtitle {
+      color: var(--theme-delegation-steps-choose-wallet-steps-indicator-color);
     }
 
-    .StakePoolTooltip_component {
-      &.StakePoolTooltip_isVisible {
-        background-color: var(
-          --theme-delegation-steps-choose-stake-pool-tooltip-background-color
-        );
-        box-shadow: var(
-          --theme-delegation-steps-choose-stake-pool-tooltip-box-shadow
-        );
-        .StakePoolTooltip_arrow {
-          opacity: 0.9;
-          &.StakePoolTooltip_tooltipPositionRight {
-            border-right-color: var(
-              --theme-delegation-steps-choose-stake-pool-tooltip-arrow-color
-            ) !important;
-            &:before {
-              border-right-color: var(
-                --theme-delegation-steps-choose-stake-pool-tooltip-arrow-color
-              );
-            }
-          }
-
-          &.StakePoolTooltip_tooltipPositionLeft {
-            border-left-color: var(
-              --theme-delegation-steps-choose-stake-pool-tooltip-arrow-color
-            ) !important;
-            &:before {
-              border-left-color: var(
-                --theme-delegation-steps-choose-stake-pool-tooltip-arrow-color
-              );
-            }
-          }
-
-          &.StakePoolTooltip_tooltipPositionTop {
-            border-top-color: var(
-              --theme-delegation-steps-choose-stake-pool-tooltip-arrow-color
-            ) !important;
-            &:before {
-              border-top-color: var(
-                --theme-delegation-steps-choose-stake-pool-tooltip-arrow-color
-              );
-            }
-          }
-
-          &.StakePoolTooltip_tooltipPositionBottom {
-            border-bottom-color: var(
-              --theme-delegation-steps-choose-stake-pool-tooltip-arrow-color
-            ) !important;
-            &:before {
-              border-bottom-color: var(
-                --theme-delegation-steps-choose-stake-pool-tooltip-arrow-color
-              );
-            }
-          }
-        }
-      }
-      .StakePoolTooltip_container {
-        .StakePoolTooltip_name {
-          color: var(
-            --theme-delegation-steps-choose-stake-pool-tooltip-title-color
-          );
-          font-family: var(--font-semibold);
-        }
-        .StakePoolTooltip_slug {
-          color: var(
-            --theme-delegation-steps-choose-stake-pool-tooltip-slug-color
-          );
-        }
-        .StakePoolTooltip_description {
-          color: var(
-            --theme-delegation-steps-choose-stake-pool-tooltip-description-color
-          );
-        }
-        .StakePoolTooltip_url {
-          color: var(
-            --theme-delegation-steps-choose-stake-pool-tooltip-url-color
-          );
-          font-family: var(--font-regular);
-        }
-        .StakePoolTooltip_table {
-          dt {
-            color: var(
-              --theme-delegation-steps-choose-stake-pool-tooltip-table-label-color
-            );
-          }
-          dd {
-            span {
-              color: var(
-                --theme-delegation-steps-choose-stake-pool-tooltip-table-value-color
-              );
-            }
-          }
-        }
-      }
-      .StakePoolTooltip_colorBand {
-        display: none;
-      }
-
-      .StakePoolThumbnail_component {
-        border-color: var(--theme-staking-stake-pool-border-color);
-      }
+    .Dialog_content {
+      padding: 0 25px 4px 4px;
     }
   }
 
   .delegationStepsIndicatorWrapper {
-    margin: auto;
+    margin: 4px auto 0;
     width: 410px;
-
-    .stepIndicatorLabel {
-      color: var(--theme-delegation-steps-choose-wallet-steps-indicator-color);
-      font-family: var(--font-medium);
-      font-size: 12px;
-      font-weight: 500;
-      line-height: 1.83;
-      margin-bottom: 10px;
-      text-align: center;
-    }
   }
 
   .stakePoolsListWrapper {
@@ -146,42 +38,16 @@
     .delegatedStakePoolsWrapper {
       display: flex;
 
-      .placeholderImage {
-        height: 103px;
-        svg {
-          width: 116px;
-
-          use {
-            stroke: var(
-              --theme-delegation-steps-choose-stake-pool-select-box-placeholder-color
-            );
-          }
-          text {
-            fill: var(
-              --theme-delegation-steps-choose-stake-pool-select-box-placeholder-color
-            );
-          }
-          path {
-            stroke: var(
-              --theme-delegation-steps-choose-stake-pool-select-box-placeholder-color
-            );
-          }
-        }
-      }
-
       .selectedPoolBlock {
-        background-color: var(
-          --theme-staking-stake-pool-selected-background-color
-        );
-        border-radius: 5.8px;
+        background-color: transparent;
         border: 2px solid var(--theme-staking-stake-pool-border-color);
+        border-style: dashed;
+        border-radius: 5.8px;
         height: 103px;
         width: 116px;
 
         .label {
-          color: var(
-            --theme-delegation-steps-choose-stake-pool-selected-slug-color
-          );
+          color: var(--theme-delegation-steps-choose-stake-pool-slug-color);
           font-family: var(--font-semibold);
           font-size: 20.3px;
           font-weight: 600;
@@ -195,6 +61,28 @@
           .checkmarkImage {
             svg {
               width: 22.5px;
+              path {
+                stroke: var(
+                  --theme-delegation-steps-choose-stake-pool-checkmark-icon-color
+                );
+              }
+            }
+          }
+        }
+
+        &.selected {
+          background-color: var(
+            --theme-staking-stake-pool-selected-background-color
+          );
+          border: 2px solid var(--theme-staking-stake-pool-border-color);
+
+          .label {
+            color: var(
+              --theme-delegation-steps-choose-stake-pool-selected-slug-color
+            );
+          }
+          .checkmarkImage {
+            svg {
               path {
                 stroke: var(
                   --theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color

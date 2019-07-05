@@ -1,23 +1,30 @@
 // @flow
-import React, { Component } from 'react';
-import { observer } from 'mobx-react';
+import React, { Component, Fragment } from 'react';
 import type { Node } from 'react';
-import styles from './DelegationCenter.scss';
+import { observer } from 'mobx-react';
+import BigNumber from 'bignumber.js';
+import DelegationCenterHeader from './DelegationCenterHeader';
+import DelegationCenterBody from './DelegationCenterBody';
+import Wallet from '../../../domains/Wallet';
 
 type Props = {
-  name: string,
+  adaValue: BigNumber,
+  percentage: number,
+  wallets: Array<Wallet>,
   children?: Node,
 };
 
 @observer
 export default class DelegationCenter extends Component<Props> {
   render() {
-    const { name, children } = this.props;
+    const { adaValue, percentage, wallets, children } = this.props;
+
     return (
-      <div className={styles.component}>
-        {name}
+      <Fragment>
+        <DelegationCenterHeader adaValue={adaValue} percentage={percentage} />
+        <DelegationCenterBody wallets={wallets} />
         {children}
-      </div>
+      </Fragment>
     );
   }
 }
