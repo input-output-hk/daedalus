@@ -47,9 +47,7 @@
         width: 116px;
 
         .label {
-          color: var(
-            --theme-delegation-steps-choose-stake-pool-slug-color
-          );
+          color: var(--theme-delegation-steps-choose-stake-pool-slug-color);
           font-family: var(--font-semibold);
           font-size: 20.3px;
           font-weight: 600;

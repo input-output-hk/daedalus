@@ -309,7 +309,8 @@ const DARK_BLUE_THEME_CONFIG = {
       'rgba(250, 251, 252, 0.5)',
   },
   delegationSetupWizard: {
-    '--theme-delegation-steps-choose-stake-pool-checkmark-icon-color': '#536370',
+    '--theme-delegation-steps-choose-stake-pool-checkmark-icon-color':
+      '#536370',
     '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color':
       'rgba(233, 244, 254, 1)',
     '--theme-delegation-steps-choose-stake-pool-select-box-placeholder-color':

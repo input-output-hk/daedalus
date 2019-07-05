@@ -162,7 +162,11 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         stakePoolsList,
         stakePools => stakePools.id === stakePoolId
       );
-      const blockLabel = get(selectedPool, 'slug', intl.formatMessage(messages.selectPoolPlaceholder));
+      const blockLabel = get(
+        selectedPool,
+        'slug',
+        intl.formatMessage(messages.selectPoolPlaceholder)
+      );
 
       const selectedPoolBlockClasses = classNames([
         styles.selectedPoolBlock,
