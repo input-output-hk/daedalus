@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { get, includes, upperFirst } from 'lodash';
+import { get, includes, upperFirst, capitalize } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import classNames from 'classnames';
@@ -569,54 +569,50 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
         <div className={styles.tables}>
           <table className={styles.table}>
             <tbody>
+              <caption>
+                {intl.formatMessage(messages.systemInfo)}
+                <hr />
+              </caption>
               <tr>
-                <th colSpan={2}>
-                  {intl.formatMessage(messages.systemInfo)}
-                  <hr />
-                </th>
-              </tr>
-              <tr>
-                <td>{intl.formatMessage(messages.platform)}:</td>
+                <th>{intl.formatMessage(messages.platform)}:</th>
                 <td>{platform}</td>
               </tr>
               <tr className={styles.platformVersion}>
-                <td>{intl.formatMessage(messages.platformVersion)}:</td>
+                <th>{intl.formatMessage(messages.platformVersion)}:</th>
                 <td className={styles.platform}>{platformVersion}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.cpu)}:</td>
+                <th>{intl.formatMessage(messages.cpu)}:</th>
                 <Tooltip skin={TooltipSkin} tip={cpu}>
                   <td>{cpu}</td>
                 </Tooltip>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.ram)}:</td>
+                <th>{intl.formatMessage(messages.ram)}:</th>
                 <td>{ram}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.availableDiskSpace)}:</td>
+                <th>{intl.formatMessage(messages.availableDiskSpace)}:</th>
                 <td>{availableDiskSpace}</td>
               </tr>
+              <caption>
+                {intl.formatMessage(messages.coreInfo)}
+                <hr />
+              </caption>
               <tr>
-                <th colSpan={2}>
-                  {intl.formatMessage(messages.coreInfo)}
-                  <hr />
-                </th>
-              </tr>
-              <tr>
-                <td>{intl.formatMessage(messages.daedalusVersion)}:</td>
+                <th>{intl.formatMessage(messages.daedalusVersion)}:</th>
                 <td>{daedalusVersion}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.daedalusMainProcessID)}:</td>
+                <th>{intl.formatMessage(messages.daedalusMainProcessID)}:</th>
                 <td>{daedalusMainProcessID}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.daedalusProcessID)}:</td>
+                <th>{intl.formatMessage(messages.daedalusProcessID)}:</th>
                 <td>{daedalusProcessID}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.safeMode)}:</td>
+                <th>{intl.formatMessage(messages.safeMode)}:</th>
                 <td className={styles.safeMode}>
                   {isInSafeMode
                     ? intl.formatMessage(messages.statusOn)
@@ -624,23 +620,23 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.cardanoVersion)}:</td>
+                <th>{intl.formatMessage(messages.cardanoVersion)}:</th>
                 <td>{cardanoVersion}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.cardanoProcessID)}:</td>
+                <th>{intl.formatMessage(messages.cardanoProcessID)}:</th>
                 <td>{cardanoProcessID}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.cardanoApiPort)}:</td>
+                <th>{intl.formatMessage(messages.cardanoApiPort)}:</th>
                 <td>{cardanoAPIPort || '-'}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.cardanoNetwork)}:</td>
-                <td>{cardanoNetwork}</td>
+                <th>{intl.formatMessage(messages.cardanoNetwork)}:</th>
+                <td>{capitalize(cardanoNetwork)}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.stateDirectoryPath)}:</td>
+                <th>{intl.formatMessage(messages.stateDirectoryPath)}:</th>
                 <td className={styles.stateDirectory}>
                   <button
                     className={styles.stateDirectoryOpenBtn}
@@ -690,14 +686,12 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
 
           <table className={styles.table}>
             <tbody>
+              <caption>
+                {intl.formatMessage(messages.daedalusStatus)}
+                <hr />
+              </caption>
               <tr>
-                <th colSpan={2}>
-                  {intl.formatMessage(messages.daedalusStatus)}
-                  <hr />
-                </th>
-              </tr>
-              <tr>
-                <td>{intl.formatMessage(messages.connected)}:</td>
+                <th>{intl.formatMessage(messages.connected)}:</th>
                 <td className={this.getClass(isConnected)}>
                   {isConnected
                     ? intl.formatMessage(messages.statusOn)
@@ -705,7 +699,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.synced)}:</td>
+                <th>{intl.formatMessage(messages.synced)}:</th>
                 <td className={this.getClass(isSynced)}>
                   {isSynced
                     ? intl.formatMessage(messages.statusOn)
@@ -713,25 +707,25 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.syncPercentage)}:</td>
+                <th>{intl.formatMessage(messages.syncPercentage)}:</th>
                 <td>{syncPercentage.toFixed(2)}%</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.networkBlockHeight)}:</td>
+                <th>{intl.formatMessage(messages.networkBlockHeight)}:</th>
                 <td>{networkBlockHeight}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.localBlockHeight)}:</td>
+                <th>{intl.formatMessage(messages.localBlockHeight)}:</th>
                 <td>{localBlockHeight}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.remainingUnsyncedBlocks)}:</td>
+                <th>{intl.formatMessage(messages.remainingUnsyncedBlocks)}:</th>
                 <td className={remainingUnsyncedBlocksClasses}>
                   {remainingUnsyncedBlocks >= 0 ? remainingUnsyncedBlocks : '-'}
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.latestLocalBlockAge)}:</td>
+                <th>{intl.formatMessage(messages.latestLocalBlockAge)}:</th>
                 <td className={latestLocalBlockAgeClasses}>
                   {latestLocalBlockTimestamp > 0
                     ? `${latestLocalBlockAge} ms`
@@ -739,7 +733,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.latestNetworkBlockAge)}:</td>
+                <th>{intl.formatMessage(messages.latestNetworkBlockAge)}:</th>
                 <td className={latestNetworkBlockAgeClasses}>
                   {latestNetworkBlockTimestamp > 0
                     ? `${latestNetworkBlockAge} ms`
@@ -747,7 +741,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.localTimeDifference)}:</td>
+                <th>{intl.formatMessage(messages.localTimeDifference)}:</th>
                 <td className={styles.localTimeDifferenceItem}>
                   <button
                     onClick={() => onForceCheckLocalTimeDifference()}
@@ -767,7 +761,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.systemTimeCorrect)}:</td>
+                <th>{intl.formatMessage(messages.systemTimeCorrect)}:</th>
                 <td className={this.getClass(isSystemTimeCorrect)}>
                   {isSystemTimeCorrect
                     ? intl.formatMessage(messages.statusOn)
@@ -775,7 +769,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.systemTimeIgnored)}:</td>
+                <th>{intl.formatMessage(messages.systemTimeIgnored)}:</th>
                 <td className={this.getClass(!isSystemTimeIgnored)}>
                   {isSystemTimeIgnored
                     ? intl.formatMessage(messages.statusOn)
@@ -783,33 +777,31 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.checkingNodeTime)}:</td>
+                <th>{intl.formatMessage(messages.checkingNodeTime)}:</th>
                 <td>
                   {isForceCheckingNodeTime
                     ? intl.formatMessage(messages.statusOn)
                     : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
-              <tr>
-                <th colSpan={2}>
-                  {intl.formatMessage(messages.cardanoNodeStatus)}
-                  <button
-                    className={styles.statusBtn}
-                    onClick={() => this.restartNode()}
-                    disabled={isNodeRestarting}
-                  >
-                    {isNodeRestarting
-                      ? intl.formatMessage(messages.cardanoNodeStatusRestarting)
-                      : intl.formatMessage(messages.cardanoNodeStatusRestart)}
-                  </button>
-                  <hr />
-                </th>
-              </tr>
+              <caption>
+                {intl.formatMessage(messages.cardanoNodeStatus)}
+                <button
+                  className={styles.statusBtn}
+                  onClick={() => this.restartNode()}
+                  disabled={isNodeRestarting}
+                >
+                  {isNodeRestarting
+                    ? intl.formatMessage(messages.cardanoNodeStatusRestarting)
+                    : intl.formatMessage(messages.cardanoNodeStatusRestart)}
+                </button>
+                <hr />
+              </caption>
               {cardanoNodeEkgLink ? (
                 <tr>
-                  <td>
+                  <th>
                     {intl.formatMessage(messages.cardanoNodeDiagnostics)}:
-                  </td>
+                  </th>
                   <td>
                     <button
                       className={styles.realTimeStatusBtn}
@@ -821,7 +813,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </tr>
               ) : null}
               <tr>
-                <td>{intl.formatMessage(messages.cardanoNodeState)}:</td>
+                <th>{intl.formatMessage(messages.cardanoNodeState)}:</th>
                 <td>
                   {upperFirst(
                     cardanoNodeState != null
@@ -833,7 +825,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.cardanoNodeResponding)}:</td>
+                <th>{intl.formatMessage(messages.cardanoNodeResponding)}:</th>
                 <td className={this.getClass(isNodeResponding)}>
                   {isNodeResponding
                     ? intl.formatMessage(messages.statusOn)
@@ -841,7 +833,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.cardanoNodeSubscribed)}:</td>
+                <th>{intl.formatMessage(messages.cardanoNodeSubscribed)}:</th>
                 <td className={this.getClass(isNodeSubscribed)}>
                   {isNodeSubscribed
                     ? intl.formatMessage(messages.statusOn)
@@ -849,7 +841,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.cardanoNodeTimeCorrect)}:</td>
+                <th>{intl.formatMessage(messages.cardanoNodeTimeCorrect)}:</th>
                 <td className={this.getClass(isNodeTimeCorrect)}>
                   {isNodeTimeCorrect
                     ? intl.formatMessage(messages.statusOn)
@@ -857,7 +849,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.cardanoNodeSyncing)}:</td>
+                <th>{intl.formatMessage(messages.cardanoNodeSyncing)}:</th>
                 <td className={this.getClass(isNodeSyncing)}>
                   {isNodeSyncing
                     ? intl.formatMessage(messages.statusOn)
@@ -865,7 +857,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.cardanoNodeInSync)}:</td>
+                <th>{intl.formatMessage(messages.cardanoNodeInSync)}:</th>
                 <td className={this.getClass(isNodeInSync)}>
                   {isNodeInSync
                     ? intl.formatMessage(messages.statusOn)

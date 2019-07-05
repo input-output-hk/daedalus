@@ -57,8 +57,9 @@
     }
   }
 
-  th {
+  caption {
     color: var(--theme-network-window-text-color);
+    display: inline-block;
     font-size: 14px;
     font-stretch: normal;
     font-style: normal;
@@ -67,9 +68,11 @@
     letter-spacing: 1px;
     padding-top: 30px;
     text-align: left;
+    white-space: nowrap;
     width: 100%;
   }
 
+  th,
   td {
     color: var(--theme-network-window-text-color);
     font-size: 14px;
@@ -79,15 +82,23 @@
     line-height: 2;
     letter-spacing: normal;
     opacity: 0.7;
+
+    .safeMode {
+      max-width: 100px;
+    }
+  }
+
+  th {
     white-space: nowrap;
+  }
+
+  td {
+    opacity: 1;
+    text-align: right;
+    user-select: text;
 
     &.topPadding {
       padding-top: 10px;
-    }
-
-    & + td {
-      opacity: 1;
-      text-align: right;
     }
 
     &.platform {
@@ -108,10 +119,6 @@
       @media (max-width: 1000px) {
         max-width: 565px;
       }
-    }
-
-    .safeMode {
-      max-width: 100px;
     }
 
     .stateDirectoryPath {
