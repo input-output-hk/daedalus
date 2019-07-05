@@ -79,14 +79,10 @@ type Props = {
 type State = {
   searchValue: string,
   selectedList?: ?string,
-  flipHorizontal: boolean,
-  flipVertical: boolean,
   selectedPoolId: ?number,
 };
 
 const initialState = {
-  flipHorizontal: false,
-  flipVertical: false,
   searchValue: '',
   selectedList: null,
   selectedPoolId: null,
@@ -132,13 +128,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       onContinue,
       onBack,
     } = this.props;
-    const {
-      searchValue,
-      flipHorizontal,
-      flipVertical,
-      selectedList,
-      selectedPoolId,
-    } = this.state;
+    const { searchValue, selectedList, selectedPoolId } = this.state;
 
     const actions = [
       {
@@ -220,8 +210,6 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               </p>
               <StakePoolsList
                 listName="stakePoolsDelegatingList"
-                flipHorizontal={flipHorizontal}
-                flipVertical={flipVertical}
                 stakePoolsList={stakePoolsDelegatingList}
                 onOpenExternalLink={onOpenExternalLink}
                 currentTheme={currentTheme}
@@ -248,8 +236,6 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
           <div className={styles.stakePoolsListWrapper}>
             <StakePoolsList
               listName="selectedIndexList"
-              flipHorizontal={flipHorizontal}
-              flipVertical={flipVertical}
               stakePoolsList={stakePoolsList}
               onOpenExternalLink={onOpenExternalLink}
               currentTheme={currentTheme}

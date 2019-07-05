@@ -31,14 +31,10 @@ type State = {
   search: string,
   filter: string,
   selectedList?: ?string,
-  flipHorizontal: boolean,
-  flipVertical: boolean,
 };
 
 const initialState = {
   selectedList: null,
-  flipHorizontal: false,
-  flipVertical: false,
 };
 
 @observer
@@ -70,13 +66,7 @@ export default class StakePools extends Component<Props, State> {
       onOpenExternalLink,
       currentTheme,
     } = this.props;
-    const {
-      search,
-      filter,
-      flipHorizontal,
-      flipVertical,
-      selectedList,
-    } = this.state;
+    const { search, filter, selectedList } = this.state;
 
     return (
       <div className={styles.component}>
@@ -95,8 +85,6 @@ export default class StakePools extends Component<Props, State> {
         {stakePoolsDelegatingList.length && (
           <StakePoolsList
             listName="stakePoolsDelegatingList"
-            flipHorizontal={flipHorizontal}
-            flipVertical={flipVertical}
             stakePoolsList={stakePoolsDelegatingList}
             onOpenExternalLink={onOpenExternalLink}
             currentTheme={currentTheme}
@@ -118,8 +106,6 @@ export default class StakePools extends Component<Props, State> {
         <StakePoolsList
           showWithSelectButton
           listName="selectedIndexList"
-          flipHorizontal={flipHorizontal}
-          flipVertical={flipVertical}
           stakePoolsList={stakePoolsList}
           onOpenExternalLink={onOpenExternalLink}
           currentTheme={currentTheme}
