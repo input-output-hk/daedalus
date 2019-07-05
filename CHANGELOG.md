@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented "Delegation center screen" UI ([PR 1440](https://github.com/input-output-hk/daedalus/pull/1440))
 - Implemented "Delegation Setup wizard" steps 0 & 1 UI ([PR 1416](https://github.com/input-output-hk/daedalus/pull/1416)), [PR 1442](https://github.com/input-output-hk/daedalus/pull/1442))
 - Implemented "Current and Previous Epochs screen" UI ([PR 1418](https://github.com/input-output-hk/daedalus/pull/1418))
 - Added new application menu item "Help and Support" with "GPU Safe Mode", "Download Logs", "Support Request" and "Known Issues" options ([PR 1382](https://github.com/input-output-hk/daedalus/pull/1382))
@@ -28,6 +29,7 @@ Changelog
 ### Fixes
 
 - Fixed shutting down screen top priority ([PR 1428](https://github.com/input-output-hk/daedalus/pull/1428))
+- Removes files pushed without running Prettier ([PR 1445](https://github.com/input-output-hk/daedalus/pull/1445))
 - Improved Stake pool tooltip positioning ([PR 1429](https://github.com/input-output-hk/daedalus/pull/1429))
 - Moved the Tooltip logic from `StakePools.js` into `StakePoolsList.js` ([PR 1431](https://github.com/input-output-hk/daedalus/pull/1431))
 - Added fine adjustments to the Stake Pools screen. ([PR 1420](https://github.com/input-output-hk/daedalus/pull/1420))
