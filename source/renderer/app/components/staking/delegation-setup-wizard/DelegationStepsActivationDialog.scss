@@ -58,7 +58,7 @@
       .amount {
         color: var(--theme-delegation-steps-activation-fees-amount-color);
         span {
-          font-family: var(--font-light);
+          opacity: 0.5;
         }
       }
 
