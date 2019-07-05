@@ -219,7 +219,7 @@ const DARK_BLUE_THEME_CONFIG = {
     '--theme-ada-redemption-no-wallets-instructions-color': '#e9f4fe',
   },
   blockConsolidation: {
-    '--theme-block-consolidation-background-color': 'rgba(38, 51, 69, 1)',
+    '--theme-block-consolidation-background-color': 'rgba(38, 51, 69, 0.96)',
     '--theme-block-consolidation-title-text-color': '#fafbfc',
     '--theme-block-consolidation-text-color': 'rgba(250, 251, 252, 0.7)',
     '--theme-block-consolidation-text-highlight-color': '#fafbfc',
