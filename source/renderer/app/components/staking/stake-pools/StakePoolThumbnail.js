@@ -9,6 +9,7 @@ import { getColorFromRange } from '../../../utils/colors';
 import StakePoolTooltip from './StakePoolTooltip';
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import type { StakePool } from '../../../api/staking/types';
+import { STAKE_POOL_TOOLTIP_HOVER_WAIT } from '../../../config/timingConfig';
 
 type Props = {
   currentTheme: string,
@@ -38,6 +39,20 @@ export class StakePoolThumbnail extends Component<Props, State> {
     left: 0,
   };
 
+  hoverWait: TimeoutID;
+
+  handleHover = (stakePoolId: string) => {
+    clearTimeout(this.hoverWait);
+    this.hoverWait = setTimeout(() => {
+      if (this.props.onHover) this.props.onHover(stakePoolId);
+    }, STAKE_POOL_TOOLTIP_HOVER_WAIT);
+  };
+
+  handleClose = (stakePoolId: string) => {
+    clearTimeout(this.hoverWait);
+    this.props.onClose(stakePoolId);
+  };
+
   handleOpen = (event: SyntheticMouseEvent<HTMLElement>) => {
     const { onClose, onClick, onHover, isHighlighted, stakePool } = this.props;
     if (isHighlighted) return onClose();
@@ -48,7 +63,7 @@ export class StakePoolThumbnail extends Component<Props, State> {
         const { top, left } = this.getRelativePosition(targetElement);
         this.setState({ top, left });
         if (onHover) {
-          onHover(stakePool.id);
+          this.handleHover(stakePool.id);
         } else if (onClick) {
           onClick(stakePool.id);
         }
@@ -115,7 +130,7 @@ export class StakePoolThumbnail extends Component<Props, State> {
       <div
         className={componentClassnames}
         onMouseEnter={onHover ? this.handleOpen : null}
-        onMouseLeave={onHover ? onClose : null}
+        onMouseLeave={onHover ? this.handleClose : null}
       >
         <div
           className={styles.content}
