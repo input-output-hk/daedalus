@@ -5,14 +5,14 @@ import styles from './Navigation.scss';
 import NavButton from './NavButton';
 import NavDropdown from './NavDropdown';
 
-type NavButtonProps = {
+export type NavButtonProps = {
   type?: 'button',
   id: string,
   label: string,
   icon?: string,
 };
 
-type NavDropdownProps = {
+export type NavDropdownProps = {
   ...$Exact<NavButtonProps>,
   type: 'dropdown',
   options: Array<{ value: number | string, label: string }>,
@@ -44,7 +44,7 @@ export default class Navigation extends Component<Props> {
               key={id}
               label={label}
               icon={icon}
-              isActive={isActiveNavItem(id)}
+              isActive={isActiveNavItem(id, item)}
               onChange={i => onNavItemClick(i)}
               activeItem={activeItem}
               options={item.options}
@@ -55,7 +55,7 @@ export default class Navigation extends Component<Props> {
               className={id}
               label={label}
               icon={icon}
-              isActive={isActiveNavItem(id)}
+              isActive={isActiveNavItem(id, item)}
               onClick={() => onNavItemClick(id)}
             />
           )
