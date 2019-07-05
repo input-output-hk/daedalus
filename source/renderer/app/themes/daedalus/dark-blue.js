@@ -309,6 +309,7 @@ const DARK_BLUE_THEME_CONFIG = {
       'rgba(250, 251, 252, 0.5)',
   },
   delegationSetupWizard: {
+    '--theme-delegation-steps-choose-stake-pool-checkmark-icon-color': '#536370',
     '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color':
       'rgba(233, 244, 254, 1)',
     '--theme-delegation-steps-choose-stake-pool-select-box-placeholder-color':
@@ -316,6 +317,7 @@ const DARK_BLUE_THEME_CONFIG = {
     '--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color':
       '#fafbfc',
     '--theme-delegation-steps-choose-stake-pool-selected-slug-color': '#fafbfc',
+    '--theme-delegation-steps-choose-stake-pool-slug-color': '#536370',
     '--theme-delegation-steps-choose-stake-pool-title-color':
       'rgba(233, 244, 254, 0.8)',
     '--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color':

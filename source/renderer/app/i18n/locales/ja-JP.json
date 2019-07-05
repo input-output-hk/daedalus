@@ -259,6 +259,7 @@
   "staking.delegationSetup.chooseStakePool.step.dialog.description": "委任するステークプールを選択してください。",
   "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.label": "または、ステークプールを検索します：",
   "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.placeholder": "ステークプールを検索",
+  "staking.delegationSetup.chooseStakePool.step.dialog.selectPoolPlaceholder": "プール",
   "staking.delegationSetup.chooseStakePool.step.dialog.stepIndicatorLabel": "ステップ{currentStep}/{totalSteps}",
   "staking.delegationSetup.chooseStakePool.step.dialog.title": "委任の設定",
   "staking.delegationSetup.chooseWallet.step.dialog.continueButtonLabel": "続ける",

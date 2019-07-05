@@ -372,9 +372,11 @@ const createDaedalusComponentsTheme = (
       '--theme-data-migration-layer-text-opacity-color': `${text.secondary}`,
     },
     delegationSetupWizard: {
+      '--theme-delegation-steps-choose-stake-pool-checkmark-icon-color': `${border}`,
       '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color': `${
         text.primary
       }`,
+      '--theme-delegation-steps-choose-stake-pool-slug-color': `${border}`,
       '--theme-delegation-steps-choose-stake-pool-select-box-placeholder-color': `${border}`,
       '--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color': `${
         text.secondary

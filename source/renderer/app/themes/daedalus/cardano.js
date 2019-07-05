@@ -308,8 +308,10 @@ const CARDANO_THEME_CONFIG = {
       'rgba(250, 251, 252, 0.5)',
   },
   delegationSetupWizard: {
+    '--theme-delegation-steps-choose-stake-pool-checkmark-icon-color': '#c6cdd6',
     '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color':
       'rgba(94, 96, 102, 1)',
+    '--theme-delegation-steps-choose-stake-pool-slug-color': '#c6cdd6',
     '--theme-delegation-steps-choose-stake-pool-select-box-placeholder-color':
       '#c6cdd6',
     '--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color':

@@ -4,14 +4,14 @@ import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
-import { find } from 'lodash';
+import { find, get } from 'lodash';
+import classNames from 'classnames';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
 import { StakePoolsList } from '../stake-pools/StakePoolsList';
 import { StakePoolsSearch } from '../stake-pools/StakePoolsSearch';
 import styles from './DelegationStepsChooseStakePoolDialog.scss';
-import selectedStakePoolPlaceholderImage from '../../../assets/images/stake-pool-placeholder.inline.svg';
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import type { StakePool } from '../../../api/staking/types';
 
@@ -62,6 +62,13 @@ const messages = defineMessages({
     defaultMessage: '!!!STEP {currentStep} OF {totalSteps}',
     description:
       'Step indicator labe on the delegation setup "choose wallet" step dialog.',
+  },
+  selectPoolPlaceholder: {
+    id:
+      'staking.delegationSetup.chooseStakePool.step.dialog.selectPoolPlaceholder',
+    defaultMessage: '!!!POOL',
+    description:
+      'Selected pool box placeholder on the delegation setup "choose wallet" step dialog.',
   },
 });
 
@@ -150,26 +157,25 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       },
     ];
 
-    const selectPoolPlaceholder = (
-      <SVGInline
-        svg={selectedStakePoolPlaceholderImage}
-        className={styles.placeholderImage}
-      />
-    );
-
     const selectedPoolBlock = stakePoolId => {
       const selectedPool = find(
         stakePoolsList,
         stakePools => stakePools.id === stakePoolId
       );
+      const blockLabel = get(selectedPool, 'slug', intl.formatMessage(messages.selectPoolPlaceholder));
+
+      const selectedPoolBlockClasses = classNames([
+        styles.selectedPoolBlock,
+        selectedPool ? styles.selected : null,
+      ]);
 
       return (
         <div
           role="presentation"
-          className={styles.selectedPoolBlock}
+          className={selectedPoolBlockClasses}
           onClick={this.handleDeselectStakePool}
         >
-          <div className={styles.label}>{selectedPool.slug}</div>
+          <div className={styles.label}>{blockLabel}</div>
           <div className={styles.checkmarkWrapper}>
             <SVGInline svg={checkmarkImage} className={styles.checkmarkImage} />
           </div>
@@ -212,9 +218,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
             {intl.formatMessage(messages.description)}
           </p>
           <div className={styles.delegatedStakePoolsWrapper}>
-            {selectedPoolId
-              ? selectedPoolBlock(selectedPoolId)
-              : selectPoolPlaceholder}
+            {selectedPoolBlock(selectedPoolId)}
 
             <div className={styles.delegatedStakePoolsList}>
               <p className={styles.stakePoolsDelegatingListLabel}>
@@ -230,6 +234,9 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
                 isListActive={selectedList === 'stakePoolsDelegatingList'}
                 setListActive={this.handleSetListActive}
                 containerClassName="Dialog_content"
+                onSelect={this.handleSelect}
+                selectedPoolId={selectedPoolId}
+                showSelected
                 highlightOnHover
               />
             </div>

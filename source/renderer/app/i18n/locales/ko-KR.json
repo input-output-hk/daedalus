@@ -259,6 +259,7 @@
   "staking.delegationSetup.chooseStakePool.step.dialog.description": "!!!Choose a stake pool to which you would like to delegate.",
   "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.label": "!!!Or search for a stake pool:",
   "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.placeholder": "!!!Search stake pools",
+  "staking.delegationSetup.chooseStakePool.step.dialog.selectPoolPlaceholder": "!!!POOL",
   "staking.delegationSetup.chooseStakePool.step.dialog.stepIndicatorLabel": "!!!STEP {currentStep} OF {totalSteps}",
   "staking.delegationSetup.chooseStakePool.step.dialog.title": "!!!Delegation Setup",
   "staking.delegationSetup.chooseWallet.step.dialog.continueButtonLabel": "!!!Continue",

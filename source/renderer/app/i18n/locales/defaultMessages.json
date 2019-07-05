@@ -2080,6 +2080,20 @@
           "column": 22,
           "line": 59
         }
+      },
+      {
+        "defaultMessage": "!!!POOL",
+        "description": "Selected pool box placeholder on the delegation setup \"choose wallet\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 72
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.selectPoolPlaceholder",
+        "start": {
+          "column": 25,
+          "line": 66
+        }
       }
     ],
     "path": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.json"

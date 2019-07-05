@@ -12,7 +12,7 @@
     }
 
     .Dialog_content {
-      width: 600px;
+      padding: 0 25px 4px 4px;
     }
   }
 
@@ -38,41 +38,17 @@
     .delegatedStakePoolsWrapper {
       display: flex;
 
-      .placeholderImage {
-        height: 103px;
-        svg {
-          width: 116px;
-
-          use {
-            stroke: var(
-              --theme-delegation-steps-choose-stake-pool-select-box-placeholder-color
-            );
-          }
-          text {
-            fill: var(
-              --theme-delegation-steps-choose-stake-pool-select-box-placeholder-color
-            );
-          }
-          path {
-            stroke: var(
-              --theme-delegation-steps-choose-stake-pool-select-box-placeholder-color
-            );
-          }
-        }
-      }
-
       .selectedPoolBlock {
-        background-color: var(
-          --theme-staking-stake-pool-selected-background-color
-        );
-        border-radius: 5.8px;
+        background-color: transparent;
         border: 2px solid var(--theme-staking-stake-pool-border-color);
+        border-style: dashed;
+        border-radius: 5.8px;
         height: 103px;
         width: 116px;
 
         .label {
           color: var(
-            --theme-delegation-steps-choose-stake-pool-selected-slug-color
+            --theme-delegation-steps-choose-stake-pool-slug-color
           );
           font-family: var(--font-semibold);
           font-size: 20.3px;
@@ -87,6 +63,28 @@
           .checkmarkImage {
             svg {
               width: 22.5px;
+              path {
+                stroke: var(
+                  --theme-delegation-steps-choose-stake-pool-checkmark-icon-color
+                );
+              }
+            }
+          }
+        }
+
+        &.selected {
+          background-color: var(
+            --theme-staking-stake-pool-selected-background-color
+          );
+          border: 2px solid var(--theme-staking-stake-pool-border-color);
+
+          .label {
+            color: var(
+              --theme-delegation-steps-choose-stake-pool-selected-slug-color
+            );
+          }
+          .checkmarkImage {
+            svg {
               path {
                 stroke: var(
                   --theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color
