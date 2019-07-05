@@ -194,7 +194,6 @@ export default class DelegationStepsConfirmationDialog extends Component<
                 this.handlePasswordChange(value);
               }}
               value={spendingPasswordValue}
-              autoFocus
             />
           )}
         </div>

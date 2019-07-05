@@ -46,6 +46,7 @@
       }
       .feesAmount {
         color: var(--theme-delegation-steps-confirmation-fees-amount-color);
+        user-select: text;
         span {
           opacity: 0.5;
         }
