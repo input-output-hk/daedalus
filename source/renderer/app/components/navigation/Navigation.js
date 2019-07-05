@@ -27,7 +27,10 @@ type Props = {
 
 @observer
 export default class Navigation extends Component<Props> {
-  isActiveNavItem = (id: string, item: NavButtonProps | NavDropdownProps | {}) => {
+  isActiveNavItem = (
+    id: string,
+    item: NavButtonProps | NavDropdownProps | {}
+  ) => {
     let result = false;
     if (!item) {
       result = id === this.props.activeItem;

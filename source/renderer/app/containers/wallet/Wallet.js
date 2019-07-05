@@ -11,7 +11,7 @@ import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
 import { WalletSyncStateTags } from '../../domains/Wallet';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
-import type { NavDropdownProps } from "../../components/navigation/Navigation";
+import type { NavDropdownProps } from '../../components/navigation/Navigation';
 
 type Props = InjectedContainerProps;
 
