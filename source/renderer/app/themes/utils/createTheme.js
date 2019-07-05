@@ -822,6 +822,18 @@ const createDaedalusComponentsTheme = (
       '--theme-staking-table-body-highlighted-text-color': `${
         background.secondary.dark
       }`,
+      '--theme-staking-info-learn-more-button-color': `${
+        background.primary.lightest
+      }`,
+      '--theme-staking-info-learn-more-icon-color': `${chroma(
+        text.secondary
+      ).alpha(0.7)}`,
+      '--theme-staking-learn-more-button-color': `${
+        background.primary.lightest
+      }`,
+      '--theme-staking-learn-more-icon-color': `${chroma(text.secondary).alpha(
+        0.7
+      )}`,
     },
     support: {
       '--theme-support-settings-item-color': `${text.primary}`,

@@ -1,9 +1,22 @@
 @import '../stakingConfig';
+@import '../../../themes/mixins/link';
 
 .component {
   background-color: var(--theme-staking-background-color);
   height: 100%;
   padding: 20px;
+
+  .learnMoreButton {
+    color: var(--theme-staking-learn-more-button-color);
+
+    .externalLinkIcon {
+      @include link(--theme-staking-learn-more-icon-color);
+      border-bottom: none;
+      svg {
+        margin-left: 8px;
+      }
+    }
+  }
 }
 
 .mainContent {
