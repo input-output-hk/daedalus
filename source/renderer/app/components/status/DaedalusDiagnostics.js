@@ -5,6 +5,7 @@ import { get, includes, upperFirst } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import classNames from 'classnames';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import SVGInline from 'react-svg-inline';
@@ -15,6 +16,7 @@ import {
 import { UNSYNCED_BLOCKS_ALLOWED } from '../../config/numbersConfig';
 import { getNetworkEkgUrl } from '../../utils/network';
 import closeCross from '../../assets/images/close-cross.inline.svg';
+import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './DaedalusDiagnostics.scss';
@@ -105,10 +107,15 @@ const messages = defineMessages({
     defaultMessage: '!!!Daedalus State Directory',
     description: 'Daedalus State Directory',
   },
-  stateDirectoryPathBtn: {
-    id: 'daedalus.diagnostics.dialog.stateDirectoryPathBtn',
+  stateDirectoryPathOpenBtn: {
+    id: 'daedalus.diagnostics.dialog.stateDirectoryPathOpenBtn',
     defaultMessage: '!!!Open',
     description: 'Open',
+  },
+  stateDirectoryCopyPathBtn: {
+    id: 'daedalus.diagnostics.dialog.stateDirectoryCopyPathBtn',
+    defaultMessage: '!!!Copy',
+    description: 'Copy',
   },
   connectionError: {
     id: 'daedalus.diagnostics.dialog.connectionError',
@@ -342,6 +349,7 @@ type Props = {
   onOpenExternalLink: Function,
   onRestartNode: Function,
   onClose: Function,
+  onCopyStateDirectoryPath: Function,
 };
 
 type State = {
@@ -475,6 +483,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       onForceCheckLocalTimeDifference,
       onOpenStateDirectory,
       onClose,
+      onCopyStateDirectoryPath,
       nodeConnectionError,
       isSystemTimeIgnored,
       onOpenExternalLink,
@@ -634,18 +643,31 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 <td>{intl.formatMessage(messages.stateDirectoryPath)}:</td>
                 <td className={styles.stateDirectory}>
                   <button
-                    className={styles.stateDirectoryBtn}
+                    className={styles.stateDirectoryOpenBtn}
                     onClick={() =>
                       onOpenStateDirectory(daedalusStateDirectoryPath)
                     }
                   >
-                    {intl.formatMessage(messages.stateDirectoryPathBtn)}
+                    {intl.formatMessage(messages.stateDirectoryPathOpenBtn)}
                   </button>
-                  <Tooltip skin={TooltipSkin} tip={daedalusStateDirectoryPath}>
-                    <span className={styles.stateDirectoryPath}>
-                      {daedalusStateDirectoryPath}
-                    </span>
-                  </Tooltip>
+                  <CopyToClipboard
+                    text={daedalusStateDirectoryPath}
+                    onCopy={onCopyStateDirectoryPath}
+                  >
+                    <div className={styles.stateDirectoryPath}>
+                      <Tooltip
+                        skin={TooltipSkin}
+                        tip={
+                          <div style={{ textAlign: 'center' }}>
+                            <div>{daedalusStateDirectoryPath}</div>
+                          </div>
+                        }
+                      >
+                        <p>{daedalusStateDirectoryPath}</p>
+                        <SVGInline svg={iconCopy} />
+                      </Tooltip>
+                    </div>
+                  </CopyToClipboard>
                 </td>
               </tr>
               {!isConnected && nodeConnectionError ? (

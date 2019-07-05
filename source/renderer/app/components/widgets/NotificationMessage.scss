@@ -10,6 +10,10 @@
   top: 0;
   transition: all 200ms linear;
   width: 100%;
+
+  &.theme-override-grey {
+    background-color: rgba(94, 96, 102, 0.8);
+  }
 }
 
 .show {

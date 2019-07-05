@@ -79,6 +79,7 @@
     line-height: 2;
     letter-spacing: normal;
     opacity: 0.7;
+    white-space: nowrap;
 
     &.topPadding {
       padding-top: 10px;
@@ -115,26 +116,48 @@
 
     .stateDirectoryPath {
       display: inline-block;
-      max-width: 400px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      width: 100%;
+      cursor: pointer;
 
-      @media (max-width: 1490px) {
-        max-width: 285px;
+      p {
+        display: inline-block;
+        margin: 0 6px 0 0;
+        max-width: 400px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 100%;
+        font-size: 14px;
+
+        @media (max-width: 1490px) {
+          max-width: 285px;
+        }
+
+        @media (max-width: 1300px) {
+          max-width: 189px;
+        }
+
+        @media (max-width: 1100px) {
+          max-width: 135px;
+        }
+
+        @media (max-width: 1000px) {
+          max-width: 100%;
+        }
       }
 
-      @media (max-width: 1300px) {
-        max-width: 189px;
+      svg {
+        width: 11px;
+        height: 14px;
+        stroke: var(--theme-network-window-white-color);
+        opacity: 0.7;
+        transition: 0.15s opacity;
       }
 
-      @media (max-width: 1100px) {
-        max-width: 135px;
-      }
-
-      @media (max-width: 1000px) {
-        max-width: 100%;
+      &:hover {
+        border-bottom: 1px solid;
+        svg {
+          opacity: 1;
+        }
       }
     }
 
@@ -145,10 +168,6 @@
       button {
         padding-top: 0;
       }
-    }
-
-    &.stateDirectory {
-      display: flex;
     }
   }
 
@@ -235,7 +254,7 @@
       }
     }
 
-    &.stateDirectoryBtn {
+    &.stateDirectoryOpenBtn {
       margin: 4px 16px 0 0;
       padding-top: 0;
     }

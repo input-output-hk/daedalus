@@ -3241,7 +3241,7 @@
           "line": 112
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
-        "id": "daedalus.diagnostics.dialog.stateDirectoryPathBtn",
+        "id": "daedalus.diagnostics.dialog.stateDirectoryPathOpenBtn",
         "start": {
           "column": 25,
           "line": 108
