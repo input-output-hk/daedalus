@@ -1,0 +1,64 @@
+// @flow
+import React, { Component } from 'react';
+import { observer } from 'mobx-react';
+import styles from './DonutRing.scss';
+
+type Props = {
+  percentage: number,
+  sqSize: number,
+  strokeWidth: number,
+  showText?: boolean,
+};
+
+@observer
+export default class DonutRing extends Component<Props> {
+  static defaultProps = {
+    showText: false,
+  };
+
+  render() {
+    const { percentage, sqSize, strokeWidth, showText } = this.props;
+    const radius = (sqSize - strokeWidth) / 2;
+    const viewBox = `0 0 ${sqSize} ${sqSize}`;
+    const dashArray = radius * Math.PI * 2;
+    const dashOffset = dashArray - (dashArray * percentage) / 100;
+    const rotateDeg = -((percentage / 100) * 360 + 90);
+
+    return (
+      <div className={styles.component}>
+        <svg width={sqSize} height={sqSize} viewBox={viewBox}>
+          <circle
+            className={styles.circleBackground}
+            cx={sqSize / 2}
+            cy={sqSize / 2}
+            r={radius}
+            strokeWidth={`${strokeWidth}px`}
+          />
+          <circle
+            className={styles.circleProgress}
+            cx={sqSize / 2}
+            cy={sqSize / 2}
+            r={radius}
+            strokeWidth={`${strokeWidth}px`}
+            transform={`rotate(${rotateDeg} ${sqSize / 2} ${sqSize / 2})`}
+            style={{
+              strokeDasharray: dashArray,
+              strokeDashoffset: dashOffset,
+            }}
+          />
+          {showText && (
+            <text
+              className={styles.circleText}
+              x="50%"
+              y="50%"
+              dy=".3em"
+              textAnchor="middle"
+            >
+              {`${percentage}%`}
+            </text>
+          )}
+        </svg>
+      </div>
+    );
+  }
+}

@@ -20,3 +20,9 @@
   color: var(--theme-staking-font-color-regular);
   font-family: var(--font-regular);
 }
+
+%regularLightColorText {
+  @extend %baseTypography;
+  color: var(--theme-staking-font-color-light);
+  font-family: var(--font-regular);
+}
