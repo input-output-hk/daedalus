@@ -569,10 +569,12 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
         <div className={styles.tables}>
           <table className={styles.table}>
             <tbody>
-              <caption>
-                {intl.formatMessage(messages.systemInfo)}
-                <hr />
-              </caption>
+              <tr>
+                <th colSpan={2}>
+                  {intl.formatMessage(messages.systemInfo)}
+                  <hr />
+                </th>
+              </tr>
               <tr>
                 <th>{intl.formatMessage(messages.platform)}:</th>
                 <td>{platform}</td>
@@ -595,10 +597,14 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 <th>{intl.formatMessage(messages.availableDiskSpace)}:</th>
                 <td>{availableDiskSpace}</td>
               </tr>
-              <caption>
-                {intl.formatMessage(messages.coreInfo)}
-                <hr />
-              </caption>
+            </tbody>
+            <tbody>
+              <tr>
+                <th colSpan={2}>
+                  {intl.formatMessage(messages.coreInfo)}
+                  <hr />
+                </th>
+              </tr>
               <tr>
                 <th>{intl.formatMessage(messages.daedalusVersion)}:</th>
                 <td>{daedalusVersion}</td>
@@ -686,10 +692,12 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
 
           <table className={styles.table}>
             <tbody>
-              <caption>
-                {intl.formatMessage(messages.daedalusStatus)}
-                <hr />
-              </caption>
+              <tr>
+                <th colSpan={2}>
+                  {intl.formatMessage(messages.daedalusStatus)}
+                  <hr />
+                </th>
+              </tr>
               <tr>
                 <th>{intl.formatMessage(messages.connected)}:</th>
                 <td className={this.getClass(isConnected)}>
@@ -784,19 +792,23 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                     : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
-              <caption>
-                {intl.formatMessage(messages.cardanoNodeStatus)}
-                <button
-                  className={styles.statusBtn}
-                  onClick={() => this.restartNode()}
-                  disabled={isNodeRestarting}
-                >
-                  {isNodeRestarting
-                    ? intl.formatMessage(messages.cardanoNodeStatusRestarting)
-                    : intl.formatMessage(messages.cardanoNodeStatusRestart)}
-                </button>
-                <hr />
-              </caption>
+            </tbody>
+            <tbody>
+              <tr>
+                <th colSpan={2}>
+                  {intl.formatMessage(messages.cardanoNodeStatus)}
+                  <button
+                    className={styles.statusBtn}
+                    onClick={() => this.restartNode()}
+                    disabled={isNodeRestarting}
+                  >
+                    {isNodeRestarting
+                      ? intl.formatMessage(messages.cardanoNodeStatusRestarting)
+                      : intl.formatMessage(messages.cardanoNodeStatusRestart)}
+                  </button>
+                  <hr />
+                </th>
+              </tr>
               {cardanoNodeEkgLink ? (
                 <tr>
                   <th>

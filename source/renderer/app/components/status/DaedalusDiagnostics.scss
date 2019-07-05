@@ -57,7 +57,7 @@
     }
   }
 
-  caption {
+  tbody > tr:first-child > th {
     color: var(--theme-network-window-text-color);
     display: inline-block;
     font-size: 14px;
