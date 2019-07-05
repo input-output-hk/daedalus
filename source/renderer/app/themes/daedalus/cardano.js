@@ -432,7 +432,8 @@ const CARDANO_THEME_CONFIG = {
   navDropdown: {
     '--theme-nav-dropdown-item-text-color': '#5e6066',
     '--theme-nav-dropdown-item-background-color': '#fafbfc',
-    '--theme-nav-dropdown-item-background-color-hover': 'rgba(32, 34, 37, 0.07)',
+    '--theme-nav-dropdown-item-background-color-hover':
+      'rgba(32, 34, 37, 0.07)',
     '--theme-nav-dropdown-item-color-hover': '#5e6066',
   },
   navItem: {

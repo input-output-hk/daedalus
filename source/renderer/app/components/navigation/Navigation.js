@@ -27,7 +27,13 @@ type Props = {
 
 @observer
 export default class Navigation extends Component<Props> {
-  isActiveNavItem = (id: string) => id === this.props.activeItem;
+  isActiveNavItem = (id: string, item?: any) => {
+    let result = false;
+    if (!item) {
+      result = id === this.props.activeItem;
+    }
+    return result;
+  };
 
   render() {
     const {
