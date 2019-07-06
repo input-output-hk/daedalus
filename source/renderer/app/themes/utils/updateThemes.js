@@ -44,6 +44,7 @@ const findNewDefinitions = (
         );
       }
     }
+    return [];
   });
 
   return [...newDefinitions, ...newCSSVariables];
