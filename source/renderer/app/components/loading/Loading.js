@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
-import { observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -16,6 +16,7 @@ import linkNewWindow from '../../assets/images/link-ic.inline.svg';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './Loading.scss';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
+import type { ActionsMap } from '../../actions';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
 import { REPORT_ISSUE_TIME_TRIGGER } from '../../config/timingConfig';
 
@@ -110,6 +111,7 @@ type State = {
 };
 
 type Props = {
+  actions?: any | ActionsMap,
   currencyIcon: string,
   apiIcon: string,
   cardanoNodeState: ?CardanoNodeState,
@@ -149,6 +151,7 @@ type Props = {
   disableDownloadLogs: boolean,
 };
 
+@inject('actions')
 @observer
 export default class Loading extends Component<Props, State> {
   static contextTypes = {
@@ -404,6 +407,15 @@ export default class Loading extends Component<Props, State> {
     );
   };
 
+  openDaedalusDiagnosticsDialog = () => {
+    const { actions } = this.props;
+
+    if (actions) {
+      const { app } = actions;
+      app.openDaedalusDiagnosticsDialog.trigger();
+    }
+  };
+
   render() {
     const { intl } = this.context;
     const {
@@ -511,9 +523,30 @@ export default class Loading extends Component<Props, State> {
           </div>
         )}
         <div className={styles.logos}>
-          <SVGInline svg={currencyLoadingLogo} className={currencyLogoStyles} />
-          <SVGInline svg={daedalusLoadingLogo} className={daedalusLogoStyles} />
-          <SVGInline svg={apiLoadingLogo} className={apiLogoStyles} />
+          <button
+            onClick={this.openDaedalusDiagnosticsDialog}
+            className={styles.logoButton}
+          >
+            <SVGInline
+              svg={currencyLoadingLogo}
+              className={currencyLogoStyles}
+            />
+          </button>
+          <button
+            onClick={this.openDaedalusDiagnosticsDialog}
+            className={styles.logoButton}
+          >
+            <SVGInline
+              svg={daedalusLoadingLogo}
+              className={daedalusLogoStyles}
+            />
+          </button>
+          <button
+            onClick={this.openDaedalusDiagnosticsDialog}
+            className={styles.logoButton}
+          >
+            <SVGInline svg={apiLoadingLogo} className={apiLogoStyles} />
+          </button>
         </div>
         {hasLoadedCurrentLocale ? this._renderLoadingScreen() : null}
         {isNewAppVersionAvailable && !isNodeStopping && !isNodeStopped && (
