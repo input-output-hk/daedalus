@@ -1988,13 +1988,13 @@
         "description": "Title \"Delegation Setup\" on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 26
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.title",
         "start": {
           "column": 9,
-          "line": 19
+          "line": 21
         }
       },
       {
@@ -2002,13 +2002,13 @@
         "description": "Description on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 33
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.description",
         "start": {
           "column": 15,
-          "line": 25
+          "line": 27
         }
       },
       {
@@ -2016,13 +2016,13 @@
         "description": "\"Delegated Pools\" section label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 40
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.delegatedPoolsLabel",
         "start": {
           "column": 23,
-          "line": 32
+          "line": 34
         }
       },
       {
@@ -2030,13 +2030,13 @@
         "description": "Search \"Pools\" input label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 46
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.label",
         "start": {
           "column": 20,
-          "line": 39
+          "line": 41
         }
       },
       {
@@ -2044,13 +2044,13 @@
         "description": "Search \"Pools\" input placeholder on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 53
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.placeholder",
         "start": {
           "column": 26,
-          "line": 45
+          "line": 47
         }
       },
       {
@@ -2058,13 +2058,13 @@
         "description": "Label for continue button on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 60
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 52
+          "line": 54
         }
       },
       {
@@ -2072,13 +2072,13 @@
         "description": "Step indicator labe on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 67
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.stepIndicatorLabel",
         "start": {
           "column": 22,
-          "line": 59
+          "line": 61
         }
       },
       {
@@ -2086,13 +2086,13 @@
         "description": "Selected pool box placeholder on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 74
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.selectPoolPlaceholder",
         "start": {
           "column": 25,
-          "line": 66
+          "line": 68
         }
       }
     ],
