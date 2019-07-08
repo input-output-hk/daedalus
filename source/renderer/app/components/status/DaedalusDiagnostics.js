@@ -344,6 +344,7 @@ type Props = {
   latestNetworkBlockTimestamp: number,
   localBlockHeight: number,
   networkBlockHeight: number,
+  currentLocale: string,
   onForceCheckLocalTimeDifference: Function,
   onOpenStateDirectory: Function,
   onOpenExternalLink: Function,
@@ -491,6 +492,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       isTestnet,
       isStaging,
       isMainnet,
+      currentLocale,
     } = this.props;
 
     const {
@@ -563,6 +565,11 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
           isStaging,
           isTestnet,
         });
+
+    const stateDirectoryPathStyles = classNames([
+      styles.stateDirectoryPath,
+      styles[`locale-${currentLocale}`],
+    ]);
 
     return (
       <div className={styles.component}>
@@ -656,7 +663,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                     text={daedalusStateDirectoryPath}
                     onCopy={onCopyStateDirectoryPath}
                   >
-                    <div className={styles.stateDirectoryPath}>
+                    <div className={stateDirectoryPathStyles}>
                       <Tooltip
                         skin={TooltipSkin}
                         tip={
