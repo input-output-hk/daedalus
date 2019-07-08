@@ -523,30 +523,9 @@ export default class Loading extends Component<Props, State> {
           </div>
         )}
         <div className={styles.logos}>
-          <button
-            onClick={this.openDaedalusDiagnosticsDialog}
-            className={styles.logoButton}
-          >
-            <SVGInline
-              svg={currencyLoadingLogo}
-              className={currencyLogoStyles}
-            />
-          </button>
-          <button
-            onClick={this.openDaedalusDiagnosticsDialog}
-            className={styles.logoButton}
-          >
-            <SVGInline
-              svg={daedalusLoadingLogo}
-              className={daedalusLogoStyles}
-            />
-          </button>
-          <button
-            onClick={this.openDaedalusDiagnosticsDialog}
-            className={styles.logoButton}
-          >
-            <SVGInline svg={apiLoadingLogo} className={apiLogoStyles} />
-          </button>
+          <SVGInline svg={currencyLoadingLogo} className={currencyLogoStyles} />
+          <SVGInline svg={daedalusLoadingLogo} className={daedalusLogoStyles} />
+          <SVGInline svg={apiLoadingLogo} className={apiLogoStyles} />
         </div>
         {hasLoadedCurrentLocale ? this._renderLoadingScreen() : null}
         {isNewAppVersionAvailable && !isNodeStopping && !isNodeStopped && (
@@ -557,6 +536,7 @@ export default class Loading extends Component<Props, State> {
           />
         )}
         <StatusIcons
+          onIconClick={this.openDaedalusDiagnosticsDialog}
           nodeState={cardanoNodeState}
           isNodeResponding={isNodeResponding}
           isNodeSubscribed={isNodeSubscribed}
