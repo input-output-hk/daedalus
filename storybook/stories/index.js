@@ -25,6 +25,9 @@ import './LanguageSelectionForm.stories';
 // Loading
 import './Loading.stories';
 
+// Diagnostics
+import './Diagnostics.stories';
+
 // Navigation
 import './Sidebar.stories';
 import './SidebarCategory.stories';

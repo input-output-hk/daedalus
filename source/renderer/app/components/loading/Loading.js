@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
-import { observer, inject } from 'mobx-react';
+import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -16,7 +16,6 @@ import linkNewWindow from '../../assets/images/link-ic.inline.svg';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './Loading.scss';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
-import type { ActionsMap } from '../../actions';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
 import { REPORT_ISSUE_TIME_TRIGGER } from '../../config/timingConfig';
 
@@ -111,7 +110,7 @@ type State = {
 };
 
 type Props = {
-  actions?: any | ActionsMap,
+  onStatusIconClick: Function,
   currencyIcon: string,
   apiIcon: string,
   cardanoNodeState: ?CardanoNodeState,
@@ -151,7 +150,6 @@ type Props = {
   disableDownloadLogs: boolean,
 };
 
-@inject('actions')
 @observer
 export default class Loading extends Component<Props, State> {
   static contextTypes = {
@@ -407,18 +405,10 @@ export default class Loading extends Component<Props, State> {
     );
   };
 
-  openDaedalusDiagnosticsDialog = () => {
-    const { actions } = this.props;
-
-    if (actions) {
-      const { app } = actions;
-      app.openDaedalusDiagnosticsDialog.trigger();
-    }
-  };
-
   render() {
     const { intl } = this.context;
     const {
+      onStatusIconClick,
       cardanoNodeState,
       currencyIcon,
       apiIcon,
@@ -536,7 +526,7 @@ export default class Loading extends Component<Props, State> {
           />
         )}
         <StatusIcons
-          onIconClick={this.openDaedalusDiagnosticsDialog}
+          onIconClick={onStatusIconClick}
           nodeState={cardanoNodeState}
           isNodeResponding={isNodeResponding}
           isNodeSubscribed={isNodeSubscribed}
