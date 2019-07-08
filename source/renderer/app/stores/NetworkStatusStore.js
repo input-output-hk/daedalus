@@ -153,7 +153,7 @@ export default class NetworkStatusStore extends Store {
     );
   };
 
-  @action async _restartNode() {
+  _restartNode = async () => {
     try {
       Logger.info('NetworkStatusStore: Requesting a restart of cardano-node');
       await restartCardanoNodeChannel.send();
@@ -162,7 +162,7 @@ export default class NetworkStatusStore extends Store {
         error,
       });
     }
-  }
+  };
 
   teardown() {
     super.teardown();
@@ -187,7 +187,7 @@ export default class NetworkStatusStore extends Store {
   };
 
   _updateNodeStatus = async () => {
-    if (!this.isConnected) return;
+    if (this.environment.isTest && !this.isConnected) return;
     try {
       Logger.info('NetworkStatusStore: Updating node status');
       await setCachedCardanoStatusChannel.send(this._extractNodeStatus(this));
@@ -231,11 +231,7 @@ export default class NetworkStatusStore extends Store {
         status,
       });
       if (status)
-        runInAction('assigning node status', () => {
-          const { cardanoNodeID } = status;
-          this.cardanoNodeID = cardanoNodeID;
-          Object.assign(this, status);
-        });
+        runInAction('assigning node status', () => Object.assign(this, status));
     } catch (error) {
       Logger.error('NetworkStatusStore: error while requesting node state', {
         error,
