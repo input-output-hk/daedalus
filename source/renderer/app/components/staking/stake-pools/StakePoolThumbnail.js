@@ -127,7 +127,6 @@ export class StakePoolThumbnail extends Component<Props, State> {
     return (
       <div
         className={componentClassnames}
-        onMouseEnter={onHover ? this.handleOpen : null}
         onMouseLeave={onHover ? this.handleClose : null}
         style={{
           background: isSelected && showSelected && color,
@@ -135,6 +134,7 @@ export class StakePoolThumbnail extends Component<Props, State> {
       >
         <div
           className={styles.content}
+          onMouseEnter={onHover ? this.handleOpen : null}
           onClick={!onHover ? this.handleOpen : this.handleSelect}
           role="link"
           aria-hidden
