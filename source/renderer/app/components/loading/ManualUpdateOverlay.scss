@@ -1,3 +1,5 @@
+@import '../../themes/mixins/link';
+
 .overlay {
   bottom: 0;
   display: flex;
@@ -57,16 +59,12 @@
         margin: 0 auto;
 
         .linkNewWindow {
-          display: inline-block;
-          margin-left: 8px;
-          opacity: 0.7;
-          vertical-align: sub;
-          width: 15px;
+          @include link(--theme-staking-info-learn-more-icon-color);
+          border-bottom: none;
 
           svg {
-            g {
-              stroke: var(--theme-manual-update-overlay-button-icon-color);
-            }
+            margin-left: 8px;
+            width: 15px;
           }
         }
 
