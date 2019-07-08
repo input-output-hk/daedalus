@@ -121,6 +121,10 @@
       }
     }
 
+    &.stateDirectory {
+      user-select: none;
+    }
+
     .stateDirectoryPath {
       display: inline-block;
       cursor: pointer;
@@ -128,13 +132,13 @@
 
       p {
         display: inline-block;
+        font-size: 14px;
         margin: 0 6px 0 0;
         max-width: 400px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
         width: 100%;
-        font-size: 14px;
 
         @media (max-width: 1490px) {
           max-width: 285px;
