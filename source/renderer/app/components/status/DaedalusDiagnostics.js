@@ -15,6 +15,7 @@ import {
 import { UNSYNCED_BLOCKS_ALLOWED } from '../../config/numbersConfig';
 import { getNetworkEkgUrl } from '../../utils/network';
 import closeCross from '../../assets/images/close-cross.inline.svg';
+import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './DaedalusDiagnostics.scss';
@@ -777,6 +778,10 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                       onClick={() => onOpenExternalLink(cardanoNodeEkgLink)}
                     >
                       {intl.formatMessage(messages.realtimeStatisticsMonitor)}
+                      <SVGInline
+                        svg={externalLinkIcon}
+                        className={styles.externalLinkIcon}
+                      />
                     </button>
                   </td>
                 </tr>
