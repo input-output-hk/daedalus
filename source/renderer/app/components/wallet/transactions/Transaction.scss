@@ -226,7 +226,8 @@
       border-bottom: none;
       display: initial;
       &:hover {
-        border-bottom: 1px solid var(--theme-transactions-list-item-details-color);
+        border-bottom: 1px solid
+          var(--theme-transactions-list-item-details-color);
       }
     }
   }
