@@ -1,3 +1,5 @@
+@import '../../themes/mixins/link';
+
 .container {
   display: flex;
   flex-direction: column;
@@ -140,9 +142,9 @@
     }
 
     .link {
+      @include link(--theme-about-window-content-color);
       color: var(--theme-about-window-content-color);
       cursor: pointer;
-      text-decoration: underline;
     }
 
     .copyright {

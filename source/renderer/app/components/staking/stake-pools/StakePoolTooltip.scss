@@ -1,4 +1,5 @@
 @import '../stakingConfig';
+@import '../../../themes/mixins/link';
 
 .component {
   @extend %regularText;
@@ -183,12 +184,17 @@
 }
 
 .url {
-  color: var(--theme-staking-stake-pool-tooltip-link-color);
-  cursor: pointer;
+  @include link(--theme-staking-stake-pool-tooltip-link-color);
   font-size: 14px;
   line-height: 1.36;
   margin-bottom: 18px;
-  text-decoration: underline;
+
+  & > span {
+    vertical-align: text-top;
+    svg {
+      vertical-align: baseline;
+    }
+  }
 }
 
 .table {

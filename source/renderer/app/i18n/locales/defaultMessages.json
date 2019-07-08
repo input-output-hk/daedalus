@@ -937,13 +937,13 @@
         "description": "Title of Sync error overlay",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 17
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.overlayTitle",
         "start": {
           "column": 16,
-          "line": 12
+          "line": 13
         }
       },
       {
@@ -951,13 +951,13 @@
         "description": "First paragraph of Sync error overlay",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.overlayTextP1",
         "start": {
           "column": 17,
-          "line": 17
+          "line": 18
         }
       },
       {
@@ -965,13 +965,13 @@
         "description": "Second paragraph of Sync error overlay",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.overlayTextP2",
         "start": {
           "column": 17,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -979,13 +979,13 @@
         "description": "Text of Sync error overlay when NTP service is unreachable",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.ntpUnreachableTextP1",
         "start": {
           "column": 24,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -993,13 +993,13 @@
         "description": "Text of Sync error overlay when NTP service is unreachable",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.ntpUnreachableTextP2",
         "start": {
           "column": 24,
-          "line": 35
+          "line": 36
         }
       },
       {
@@ -1007,13 +1007,13 @@
         "description": "\"Support Portal\" link text",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.supportPortalLink",
         "start": {
           "column": 21,
-          "line": 41
+          "line": 42
         }
       },
       {
@@ -1021,13 +1021,13 @@
         "description": "Link to \"Machine clock out of sync with Cardano network\" support page",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 53
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.supportPortalLinkUrl",
         "start": {
           "column": 24,
-          "line": 46
+          "line": 47
         }
       },
       {
@@ -1035,13 +1035,13 @@
         "description": "Text of Check the time again button",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 58
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.onCheckTheTimeAgainLink",
         "start": {
           "column": 27,
-          "line": 53
+          "line": 54
         }
       },
       {
@@ -1049,13 +1049,13 @@
         "description": "Text of \"Continue without clock synchronization checks\" button",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 64
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.onContinueWithoutClockSyncCheckLink",
         "start": {
           "column": 39,
-          "line": 58
+          "line": 59
         }
       }
     ],
@@ -1477,13 +1477,13 @@
         "description": "Title \"Help and support\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 13
+          "line": 15
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.faq.title",
         "start": {
           "column": 12,
-          "line": 9
+          "line": 11
         }
       },
       {
@@ -1491,13 +1491,13 @@
         "description": "Content for the \"Help and support\" section on the support settings page.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 22
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.faq.content",
         "start": {
           "column": 14,
-          "line": 14
+          "line": 16
         }
       },
       {
@@ -1505,13 +1505,13 @@
         "description": "\"Known Issues\" link in the \"Help and support\" section on the support settings page",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 28
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.faq.faqLink",
         "start": {
           "column": 11,
-          "line": 21
+          "line": 23
         }
       },
       {
@@ -1519,13 +1519,13 @@
         "description": "Title \"Steps for creating a support request\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 34
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.steps.title",
         "start": {
           "column": 14,
-          "line": 27
+          "line": 29
         }
       },
       {
@@ -1533,13 +1533,13 @@
         "description": "Title \"Download the logs\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 39
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.steps.downloadLogs.title",
         "start": {
           "column": 26,
-          "line": 33
+          "line": 35
         }
       },
       {
@@ -1547,13 +1547,13 @@
         "description": "Description of \"Download the logs\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 46
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.steps.downloadLogs.description",
         "start": {
           "column": 32,
-          "line": 38
+          "line": 40
         }
       },
       {
@@ -1561,13 +1561,13 @@
         "description": "\"download your logs here\" link in the Logs section on the support settings page",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 52
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.steps.downloadLogs.link",
         "start": {
           "column": 25,
-          "line": 45
+          "line": 47
         }
       },
       {
@@ -1575,13 +1575,13 @@
         "description": "Title \"Report a problem\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 57
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.steps.reportProblem.title",
         "start": {
           "column": 27,
-          "line": 51
+          "line": 53
         }
       },
       {
@@ -1589,13 +1589,13 @@
         "description": "Description of \"Download the logs\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 64
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.steps.reportProblem.description",
         "start": {
           "column": 33,
-          "line": 56
+          "line": 58
         }
       },
       {
@@ -1603,13 +1603,13 @@
         "description": "\"download your logs here\" link in the Logs section on the support settings page",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 70
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.steps.reportProblem.link",
         "start": {
           "column": 26,
-          "line": 63
+          "line": 65
         }
       }
     ],
@@ -1702,13 +1702,13 @@
         "description": "Headline for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 17
         },
         "file": "source/renderer/app/components/staking/countdown/StakingCountdown.js",
         "id": "staking.delegationCountdown.heading",
         "start": {
           "column": 11,
-          "line": 11
+          "line": 13
         }
       },
       {
@@ -1716,13 +1716,13 @@
         "description": "Info for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 23
         },
         "file": "source/renderer/app/components/staking/countdown/StakingCountdown.js",
         "id": "staking.delegationCountdown.description",
         "start": {
           "column": 15,
-          "line": 16
+          "line": 18
         }
       },
       {
@@ -1730,13 +1730,13 @@
         "description": "Description for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 28
         },
         "file": "source/renderer/app/components/staking/countdown/StakingCountdown.js",
         "id": "staking.delegationCountdown.timeLeftDesc",
         "start": {
           "column": 16,
-          "line": 22
+          "line": 24
         }
       },
       {
@@ -1744,13 +1744,13 @@
         "description": "Button Label for the Decentralisation notification.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 33
         },
         "file": "source/renderer/app/components/staking/countdown/StakingCountdown.js",
         "id": "staking.delegationCountdown.buttonLabel",
         "start": {
           "column": 15,
-          "line": 27
+          "line": 29
         }
       }
     ],
@@ -2485,13 +2485,13 @@
         "description": "Headline for the Decentralization progress notification.",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 16
         },
         "file": "source/renderer/app/components/staking/info/StakingInfo.js",
         "id": "staking.info.heading",
         "start": {
           "column": 11,
-          "line": 10
+          "line": 12
         }
       },
       {
@@ -2499,13 +2499,13 @@
         "description": "Info description for the Decentralization progress notification.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 23
         },
         "file": "source/renderer/app/components/staking/info/StakingInfo.js",
         "id": "staking.info.description",
         "start": {
           "column": 15,
-          "line": 15
+          "line": 17
         }
       },
       {
@@ -2513,13 +2513,13 @@
         "description": "Percentage info description for the Decentralization progress notification.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 30
         },
         "file": "source/renderer/app/components/staking/info/StakingInfo.js",
         "id": "staking.info.percentage",
         "start": {
           "column": 14,
-          "line": 22
+          "line": 24
         }
       },
       {
@@ -2527,13 +2527,13 @@
         "description": "Button Label for the Decentralization progress notification.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 35
         },
         "file": "source/renderer/app/components/staking/info/StakingInfo.js",
         "id": "staking.info.buttonLabel",
         "start": {
           "column": 15,
-          "line": 29
+          "line": 31
         }
       }
     ],
@@ -2621,13 +2621,13 @@
         "description": "Title \"Earned Rewards\" label on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.title",
         "start": {
           "column": 9,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -2635,13 +2635,13 @@
         "description": "Label for the \"Export CSV\" button on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.exportButtonLabel",
         "start": {
           "column": 21,
-          "line": 19
+          "line": 20
         }
       },
       {
@@ -2649,13 +2649,13 @@
         "description": "\"No rewards\" rewards label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.no.rewards",
         "start": {
           "column": 13,
-          "line": 25
+          "line": 26
         }
       },
       {
@@ -2663,13 +2663,13 @@
         "description": "Table header \"Date\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.date",
         "start": {
           "column": 19,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -2677,13 +2677,13 @@
         "description": "Table header \"Stake pool\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.pool",
         "start": {
           "column": 19,
-          "line": 35
+          "line": 36
         }
       },
       {
@@ -2691,13 +2691,13 @@
         "description": "Table header \"Wallet\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.wallet",
         "start": {
           "column": 21,
-          "line": 40
+          "line": 41
         }
       },
       {
@@ -2705,13 +2705,13 @@
         "description": "Table header \"Amount\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 50
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.amount",
         "start": {
           "column": 21,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -2719,13 +2719,13 @@
         "description": "Label for \"Learn more\" button on staking rewards page",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.learnMore.ButtonLabel",
         "start": {
           "column": 24,
-          "line": 50
+          "line": 51
         }
       },
       {
@@ -2733,13 +2733,13 @@
         "description": "Rewards description text on staking rewards page",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 61
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.note",
         "start": {
           "column": 8,
-          "line": 55
+          "line": 56
         }
       }
     ],
@@ -2874,13 +2874,13 @@
         "description": "\"\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.ranking",
         "start": {
           "column": 11,
-          "line": 31
+          "line": 32
         }
       },
       {
@@ -2888,13 +2888,13 @@
         "description": "\"Controlled stake\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.controlledStake",
         "start": {
           "column": 19,
-          "line": 36
+          "line": 37
         }
       },
       {
@@ -2902,13 +2902,13 @@
         "description": "\"Profit margin\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.profitMargin",
         "start": {
           "column": 16,
-          "line": 41
+          "line": 42
         }
       },
       {
@@ -2916,13 +2916,13 @@
         "description": "\"Performance\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.performance",
         "start": {
           "column": 15,
-          "line": 46
+          "line": 47
         }
       },
       {
@@ -2930,13 +2930,13 @@
         "description": "\"Retirement\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 56
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.retirement",
         "start": {
           "column": 14,
-          "line": 51
+          "line": 52
         }
       },
       {
@@ -2944,13 +2944,13 @@
         "description": "\"Delegate to this pool\" Button for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 62
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.delegateButton",
         "start": {
           "column": 18,
-          "line": 56
+          "line": 57
         }
       }
     ],
@@ -2963,13 +2963,13 @@
         "description": "About \"title\"",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 17
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.title",
         "start": {
           "column": 14,
-          "line": 12
+          "line": 13
         }
       },
       {
@@ -2977,13 +2977,13 @@
         "description": "About page daedalus team headline",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.daedalus.headline",
         "start": {
           "column": 32,
-          "line": 17
+          "line": 18
         }
       },
       {
@@ -2991,13 +2991,13 @@
         "description": "About page cardano team headline",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.cardano.headline",
         "start": {
           "column": 31,
-          "line": 22
+          "line": 23
         }
       },
       {
@@ -3005,13 +3005,13 @@
         "description": "About page daedalus team members",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.daedalus.members",
         "start": {
           "column": 31,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -3019,13 +3019,13 @@
         "description": "About page cardano team members",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.cardano.members",
         "start": {
           "column": 30,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -3033,13 +3033,13 @@
         "description": "About \"copyright\"",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.copyright",
         "start": {
           "column": 18,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -3047,13 +3047,13 @@
         "description": "About page license name",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.license",
         "start": {
           "column": 15,
-          "line": 44
+          "line": 45
         }
       },
       {
@@ -3061,13 +3061,13 @@
         "description": "About page build information",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 54
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.buildInfo",
         "start": {
           "column": 18,
-          "line": 49
+          "line": 50
         }
       }
     ],
@@ -3080,13 +3080,13 @@
         "description": "Title of \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 24
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.title",
         "start": {
           "column": 9,
-          "line": 18
+          "line": 20
         }
       },
       {
@@ -3094,13 +3094,13 @@
         "description": "Description 1 of \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 29
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.description1",
         "start": {
           "column": 16,
-          "line": 23
+          "line": 25
         }
       },
       {
@@ -3108,13 +3108,13 @@
         "description": "Description 2 of \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 35
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.description2",
         "start": {
           "column": 16,
-          "line": 28
+          "line": 30
         }
       },
       {
@@ -3122,13 +3122,13 @@
         "description": "Description 3 of \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 41
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.description3",
         "start": {
           "column": 16,
-          "line": 34
+          "line": 36
         }
       },
       {
@@ -3136,13 +3136,13 @@
         "description": "Epochs Consolidated Of Total on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 48
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.epochsConsolidatedOfTotal",
         "start": {
           "column": 29,
-          "line": 40
+          "line": 42
         }
       },
       {
@@ -3150,13 +3150,13 @@
         "description": "Singular Epoch on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 53
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.epoch",
         "start": {
           "column": 9,
-          "line": 47
+          "line": 49
         }
       },
       {
@@ -3164,13 +3164,13 @@
         "description": "Plural Epochs on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 58
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.epochs",
         "start": {
           "column": 10,
-          "line": 52
+          "line": 54
         }
       },
       {
@@ -3178,13 +3178,13 @@
         "description": "Epochs consolidated on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 63
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.epochsConsolidated",
         "start": {
           "column": 22,
-          "line": 57
+          "line": 59
         }
       },
       {
@@ -3192,13 +3192,13 @@
         "description": "synced on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 68
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.synced",
         "start": {
           "column": 10,
-          "line": 62
+          "line": 64
         }
       },
       {
@@ -3206,13 +3206,13 @@
         "description": "Learn more Button on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 73
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.learnMoreButton",
         "start": {
           "column": 19,
-          "line": 67
+          "line": 69
         }
       },
       {
@@ -3220,13 +3220,13 @@
         "description": "URL of Learn more Button on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 80
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.learnMoreButtonURL",
         "start": {
           "column": 22,
-          "line": 72
+          "line": 74
         }
       }
     ],
@@ -5086,13 +5086,13 @@
         "description": "Headline for the \"Paper wallet create certificate completion dialog\" headline.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.headline",
         "start": {
           "column": 12,
-          "line": 17
+          "line": 18
         }
       },
       {
@@ -5100,13 +5100,13 @@
         "description": "Headline for the \"Paper wallet create certificate completion dialog\" subtitle.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.subtitle",
         "start": {
           "column": 12,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -5114,13 +5114,13 @@
         "description": "Headline for the \"Paper wallet create certificate completion dialog\" link instructions.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 37
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.linkInstructions",
         "start": {
           "column": 20,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -5128,13 +5128,13 @@
         "description": "Headline for the \"Paper wallet create certificate completion dialog\" address instructions.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.addressInstructions",
         "start": {
           "column": 23,
-          "line": 37
+          "line": 38
         }
       },
       {
@@ -5142,13 +5142,13 @@
         "description": "\"Paper wallet create certificate completion dialog\" cardano link label.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 50
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.cardanoLinkLabel",
         "start": {
           "column": 20,
-          "line": 44
+          "line": 45
         }
       },
       {
@@ -5156,13 +5156,13 @@
         "description": "\"Paper wallet create certificate completion dialog\" address copied.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 56
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.addressCopiedLabel",
         "start": {
           "column": 22,
-          "line": 50
+          "line": 51
         }
       },
       {
@@ -5170,13 +5170,13 @@
         "description": "\"Paper wallet create certificate completion dialog\" wallet address label.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 62
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.addressLabel",
         "start": {
           "column": 16,
-          "line": 56
+          "line": 57
         }
       },
       {
@@ -5184,13 +5184,13 @@
         "description": "\"Paper wallet create certificate completion dialog\" finish button label.",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 68
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.finishButtonLabel",
         "start": {
           "column": 21,
-          "line": 62
+          "line": 63
         }
       }
     ],
@@ -5278,13 +5278,13 @@
         "description": "Headline for the \"Paper wallet create certificate instructions dialog\".",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 27
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.headline",
         "start": {
           "column": 12,
-          "line": 20
+          "line": 22
         }
       },
       {
@@ -5292,13 +5292,13 @@
         "description": "Subtitle for the \"Paper wallet create certificate instructions dialog\".",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 34
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.subtitle",
         "start": {
           "column": 12,
-          "line": 26
+          "line": 28
         }
       },
       {
@@ -5306,13 +5306,13 @@
         "description": "subtitle2 for the \"Paper wallet create certificate instructions dialog\".",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.subtitle2",
         "start": {
           "column": 13,
-          "line": 33
+          "line": 35
         }
       },
       {
@@ -5320,13 +5320,13 @@
         "description": "Instructions list label for the \"Paper wallet create certificate instructions dialog\".",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.label",
         "start": {
           "column": 25,
-          "line": 40
+          "line": 42
         }
       },
       {
@@ -5334,13 +5334,13 @@
         "description": "Wallet certificate create instructions dialog definition 1.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 57
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition1",
         "start": {
           "column": 31,
-          "line": 47
+          "line": 49
         }
       },
       {
@@ -5348,13 +5348,13 @@
         "description": "Wallet certificate create instructions dialog definition 2.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition2",
         "start": {
           "column": 31,
-          "line": 56
+          "line": 58
         }
       },
       {
@@ -5362,13 +5362,13 @@
         "description": "Wallet certificate create instructions dialog definition 3.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 72
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition3",
         "start": {
           "column": 31,
-          "line": 64
+          "line": 66
         }
       },
       {
@@ -5376,13 +5376,13 @@
         "description": "Wallet certificate create instructions dialog definition 4.",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 79
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition4",
         "start": {
           "column": 31,
-          "line": 71
+          "line": 73
         }
       },
       {
@@ -5390,13 +5390,13 @@
         "description": "Wallet certificate create instructions dialog definition 5.",
         "end": {
           "column": 3,
-          "line": 84
+          "line": 86
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition5",
         "start": {
           "column": 31,
-          "line": 78
+          "line": 80
         }
       },
       {
@@ -5404,13 +5404,13 @@
         "description": "Wallet certificate create instructions dialog - printing instructions.",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 95
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.printingInstructions",
         "start": {
           "column": 24,
-          "line": 85
+          "line": 87
         }
       },
       {
@@ -5418,13 +5418,13 @@
         "description": "Wallet certificate create instructions dialog \"Cardano Explorer\" label",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 101
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.cardanoExplorer",
         "start": {
           "column": 19,
-          "line": 94
+          "line": 96
         }
       },
       {
@@ -5432,13 +5432,13 @@
         "description": "\"Wallet certificate create instructions dialog\" print button label.",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 107
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.button.printLabel",
         "start": {
           "column": 20,
-          "line": 100
+          "line": 102
         }
       }
     ],
@@ -6290,13 +6290,13 @@
         "description": "Transaction type shown for credit card payments.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.card",
         "start": {
           "column": 8,
-          "line": 25
+          "line": 26
         }
       },
       {
@@ -6304,13 +6304,13 @@
         "description": "Transaction type shown for {currency} transactions.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type",
         "start": {
           "column": 8,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -6318,13 +6318,13 @@
         "description": "Transaction type shown for money exchanges between currencies.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.exchange",
         "start": {
           "column": 12,
-          "line": 35
+          "line": 36
         }
       },
       {
@@ -6332,13 +6332,13 @@
         "description": "Transaction assurance level.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel",
         "start": {
           "column": 18,
-          "line": 41
+          "line": 42
         }
       },
       {
@@ -6346,13 +6346,13 @@
         "description": "Transaction confirmations.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.confirmations",
         "start": {
           "column": 17,
-          "line": 46
+          "line": 47
         }
       },
       {
@@ -6360,13 +6360,13 @@
         "description": "Transaction ID.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 56
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionId",
         "start": {
           "column": 17,
-          "line": 51
+          "line": 52
         }
       },
       {
@@ -6374,13 +6374,13 @@
         "description": "Conversion rate.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 61
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.conversion.rate",
         "start": {
           "column": 18,
-          "line": 56
+          "line": 57
         }
       },
       {
@@ -6388,13 +6388,13 @@
         "description": "Label \"{currency} sent\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 66
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.sent",
         "start": {
           "column": 8,
-          "line": 61
+          "line": 62
         }
       },
       {
@@ -6402,13 +6402,13 @@
         "description": "Label \"{currency} received\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.received",
         "start": {
           "column": 12,
-          "line": 66
+          "line": 67
         }
       },
       {
@@ -6416,13 +6416,13 @@
         "description": "From address",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 76
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.from",
         "start": {
           "column": 15,
-          "line": 71
+          "line": 72
         }
       },
       {
@@ -6430,13 +6430,13 @@
         "description": "From addresses",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 81
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.from",
         "start": {
           "column": 17,
-          "line": 76
+          "line": 77
         }
       },
       {
@@ -6444,13 +6444,13 @@
         "description": "To address",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 86
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.to",
         "start": {
           "column": 13,
-          "line": 81
+          "line": 82
         }
       },
       {
@@ -6458,13 +6458,13 @@
         "description": "To addresses",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 91
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.to",
         "start": {
           "column": 15,
-          "line": 86
+          "line": 87
         }
       },
       {
@@ -6472,13 +6472,13 @@
         "description": "Transaction amount.",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 96
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionAmount",
         "start": {
           "column": 21,
-          "line": 91
+          "line": 92
         }
       },
       {
@@ -6486,13 +6486,13 @@
         "description": "Transaction assurance level \"low\".",
         "end": {
           "column": 3,
-          "line": 103
+          "line": 104
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.low",
         "start": {
           "column": 34,
-          "line": 99
+          "line": 100
         }
       },
       {
@@ -6500,13 +6500,13 @@
         "description": "Transaction assurance level \"medium\".",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 109
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.medium",
         "start": {
           "column": 37,
-          "line": 104
+          "line": 105
         }
       },
       {
@@ -6514,13 +6514,13 @@
         "description": "Transaction assurance level \"high\".",
         "end": {
           "column": 3,
-          "line": 113
+          "line": 114
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.high",
         "start": {
           "column": 35,
-          "line": 109
+          "line": 110
         }
       },
       {
@@ -6528,13 +6528,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 121
+          "line": 122
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 117
+          "line": 118
         }
       },
       {
@@ -6542,13 +6542,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 126
+          "line": 127
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.failed",
         "start": {
           "column": 30,
-          "line": 122
+          "line": 123
         }
       }
     ],
@@ -7912,6 +7912,44 @@
       }
     ],
     "path": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc",
+        "description": "\"Learn more\" link URL in the staking countdown page",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "source/renderer/app/containers/staking/StakingCountdownPage.js",
+        "id": "staking.countdown.learnMore.linkUrl",
+        "start": {
+          "column": 20,
+          "line": 9
+        }
+      }
+    ],
+    "path": "source/renderer/app/containers/staking/StakingCountdownPage.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc",
+        "description": "\"Learn more\" link URL in the staking info page",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "source/renderer/app/containers/staking/StakingInfoPage.js",
+        "id": "staking.info.learnMore.linkUrl",
+        "start": {
+          "column": 20,
+          "line": 9
+        }
+      }
+    ],
+    "path": "source/renderer/app/containers/staking/StakingInfoPage.json"
   },
   {
     "descriptors": [
