@@ -68,13 +68,11 @@
   height: 0px;
   border-color: transparent;
   border-style: solid;
-  border-width: 11px;
   position: absolute;
 
   &:before {
     border-color: transparent;
     border-style: solid;
-    border-width: 10px;
     content: '';
     display: block;
     height: 0;
@@ -84,38 +82,46 @@
 
   &.tooltipPositionTop {
     border-top-color: var(--theme-staking-stake-pool-tooltip-border-color);
+    border-width: 11px 11px 0 11px;
     &:before {
       border-top-color: var(
         --theme-staking-stake-pool-tooltip-background-color
       );
+      border-width: 10px 10px 0px 10px;
       top: -11px;
       left: -10px;
     }
   }
   &.tooltipPositionRight {
     border-right-color: var(--theme-staking-stake-pool-tooltip-border-color);
+    border-width: 11px 11px 11px 0;
     &:before {
       border-right-color: var(
         --theme-staking-stake-pool-tooltip-background-color
       );
+      border-width: 10px 10px 10px 0px;
       right: -11px;
       top: -10px;
     }
   }
   &.tooltipPositionBottom {
     border-bottom-color: var(--theme-staking-stake-pool-tooltip-border-color);
+    border-width: 0 11px 11px 11px;
     &:before {
       border-bottom-color: transparent;
+      border-width: 0px 10px 10px 10px;
       top: -11px;
       left: -10px;
     }
   }
   &.tooltipPositionLeft {
     border-left-color: var(--theme-staking-stake-pool-tooltip-border-color);
+    border-width: 11px 0 11px 11px;
     &:before {
       border-left-color: var(
         --theme-staking-stake-pool-tooltip-background-color
       );
+      border-width: 10px 0px 10px 10px;
       left: -11px;
       top: -10px;
     }

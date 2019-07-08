@@ -121,6 +121,7 @@ export class StakePoolThumbnail extends Component<Props, State> {
     const componentClassnames = classnames([
       styles.component,
       isHighlighted ? styles.isHighlighted : null,
+      onHover ? styles.isOnHover : null,
       isSelected && showSelected ? styles.isSelected : null,
     ]);
 

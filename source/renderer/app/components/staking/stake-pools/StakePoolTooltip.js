@@ -199,12 +199,12 @@ export default class StakePoolTooltip extends Component<Props, State> {
       -((TOOLTIP_WIDTH * left) / this.containerWidth) +
       THUMBNAIL_OFFSET_WIDTH +
       paddingOffset;
-    const componentTop = THUMBNAIL_HEIGHT + ARROW_HEIGHT;
-    const componentBottom = THUMBNAIL_HEIGHT + ARROW_HEIGHT;
+    const componentTop = THUMBNAIL_HEIGHT + ARROW_HEIGHT / 2;
+    const componentBottom = THUMBNAIL_HEIGHT + ARROW_HEIGHT / 2;
 
     const arrowLeft = -componentLeft + THUMBNAIL_OFFSET_WIDTH - ARROW_OFFSET;
-    const arrowTop = -ARROW_WIDTH;
-    const arrowBottom = -ARROW_WIDTH;
+    const arrowTop = -(ARROW_WIDTH / 2);
+    const arrowBottom = -(ARROW_WIDTH / 2);
 
     return {
       componentLeft,
@@ -227,13 +227,13 @@ export default class StakePoolTooltip extends Component<Props, State> {
 
     if (isTopHalf) {
       componentTop = -((TOOLTIP_MAX_HEIGHT * top) / this.containerHeight);
-      arrowTop = -componentTop + ARROW_WIDTH;
+      arrowTop = -componentTop + ARROW_WIDTH / 2;
     } else {
       componentBottom = -((TOOLTIP_MAX_HEIGHT * bottom) / this.containerHeight);
-      arrowBottom = -componentBottom + ARROW_WIDTH;
+      arrowBottom = -componentBottom + ARROW_WIDTH / 2;
     }
 
-    const arrowLeft = -ARROW_WIDTH;
+    const arrowLeft = -(ARROW_WIDTH / 2);
 
     return {
       componentTop,

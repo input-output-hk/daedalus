@@ -5,6 +5,10 @@
   height: 71px;
   position: relative;
   width: 80px;
+
+  &.isOnHover:hover {
+    @extend .isHighlighted;
+  }
 }
 
 .content {
