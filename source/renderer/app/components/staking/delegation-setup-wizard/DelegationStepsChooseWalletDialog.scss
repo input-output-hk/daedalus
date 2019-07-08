@@ -10,6 +10,12 @@
     .Dialog_subtitle {
       color: var(--theme-delegation-steps-choose-wallet-steps-indicator-color);
     }
+
+    .SimpleInput_input {
+      &::selection {
+        background: transparent;
+      }
+    }
   }
 
   .delegationStepsIndicatorWrapper {

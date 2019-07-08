@@ -91,6 +91,8 @@ export default class StakePools extends Component<Props, State> {
             isListActive={selectedList === 'stakePoolsDelegatingList'}
             setListActive={this.handleSetListActive}
             containerClassName="StakingWithNavigation_page"
+            onSelect={() => {}}
+            showWithSelectButton
           />
         )}
 

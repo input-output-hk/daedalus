@@ -5,7 +5,6 @@ import { debounce } from 'lodash';
 import styles from './StakePoolsList.scss';
 import type { StakePool } from '../../../api/staking/types';
 import { StakePoolThumbnail } from './StakePoolThumbnail';
-import { rangeMap } from '../../../utils/rangeMap';
 
 type Props = {
   stakePoolsList: Array<StakePool>,
@@ -58,9 +57,6 @@ export class StakePoolsList extends Component<Props, State> {
 
   searchInput: ?HTMLElement = null;
 
-  getIndex = (ranking: number) =>
-    rangeMap(ranking, 1, this.props.stakePoolsList.length, 0, 99);
-
   getIsHighlighted = (id: string) =>
     this.props.isListActive !== false && id === this.state.highlightedPoolId;
 
@@ -102,7 +98,6 @@ export class StakePoolsList extends Component<Props, State> {
     return (
       <div className={styles.component}>
         {stakePoolsList.map(stakePool => {
-          const index = this.getIndex(stakePool.ranking);
           const isHighlighted = this.getIsHighlighted(stakePool.id);
           const isSelected = selectedPoolId && stakePool.id === selectedPoolId;
 
@@ -118,7 +113,6 @@ export class StakePoolsList extends Component<Props, State> {
               onSelect={this.handleSelect}
               showWithSelectButton={showWithSelectButton}
               currentTheme={currentTheme}
-              index={index}
               isSelected={isSelected}
               showSelected={showSelected}
               containerClassName={containerClassName}

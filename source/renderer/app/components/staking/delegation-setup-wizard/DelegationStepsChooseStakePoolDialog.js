@@ -13,6 +13,8 @@ import { StakePoolsList } from '../stake-pools/StakePoolsList';
 import { StakePoolsSearch } from '../stake-pools/StakePoolsSearch';
 import styles from './DelegationStepsChooseStakePoolDialog.scss';
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
+import { getColorFromRange } from '../../../utils/colors';
+
 import type { StakePool } from '../../../api/staking/types';
 
 const messages = defineMessages({
@@ -163,11 +165,18 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         selectedPool ? styles.selected : null,
       ]);
 
+      const rankColor = selectedPool
+        ? getColorFromRange(selectedPool.ranking)
+        : 'transparent';
+
       return (
         <div
           role="presentation"
           className={selectedPoolBlockClasses}
           onClick={this.handleDeselectStakePool}
+          style={{
+            background: rankColor,
+          }}
         >
           <div className={styles.label}>{blockLabel}</div>
           <div className={styles.checkmarkWrapper}>

@@ -199,7 +199,11 @@ storiesOf('Staking', module)
           step: 1,
         })
       )}
-      stakePoolsDelegatingList={[STAKE_POOLS[36], STAKE_POOLS[3]]}
+      stakePoolsDelegatingList={[
+        STAKE_POOLS[0],
+        STAKE_POOLS[13],
+        STAKE_POOLS[36],
+      ]}
       onOpenExternalLink={() => {}}
       currentTheme={radios('Theme (Only for tooltip colors)', themes)}
       onClose={action('onClose')}

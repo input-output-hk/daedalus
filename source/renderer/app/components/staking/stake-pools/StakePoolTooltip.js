@@ -356,7 +356,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
       controlledStake,
       profitMargin,
       performance,
-      retirement,
+      retiring,
     } = stakePool;
 
     const componentClassnames = classnames([
@@ -372,9 +372,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
     const darken = currentTheme === 'dark-blue' ? 1 : 0;
     const alpha = 0.3;
     const reverse = true;
-    const retirementFromNow = retirement
-      ? moment(retirement).fromNow(true)
-      : '';
+    const retirementFromNow = retiring ? moment(retiring).fromNow(true) : '';
 
     return (
       <div
@@ -392,7 +390,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
             <SVGInline svg={closeCross} />
           </button>
           <div className={styles.slug}>{slug}</div>
-          {retirement && (
+          {retiring && (
             <div className={styles.retirement}>
               <FormattedMessage
                 {...messages.retirement}

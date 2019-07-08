@@ -13,7 +13,6 @@ import { STAKE_POOL_TOOLTIP_HOVER_WAIT } from '../../../config/timingConfig';
 
 type Props = {
   currentTheme: string,
-  index: number,
   isHighlighted: boolean,
   onClick?: Function,
   onClose: Function,
@@ -104,7 +103,6 @@ export class StakePoolThumbnail extends Component<Props, State> {
   render() {
     const {
       currentTheme,
-      index,
       isHighlighted,
       isSelected,
       onClose,
@@ -117,8 +115,8 @@ export class StakePoolThumbnail extends Component<Props, State> {
     } = this.props;
     const { top, left } = this.state;
 
-    const { ranking, slug, retirement } = stakePool;
-    const color = getColorFromRange(index);
+    const { ranking, slug, retiring } = stakePool;
+    const color = getColorFromRange(ranking);
 
     const componentClassnames = classnames([
       styles.component,
@@ -131,6 +129,9 @@ export class StakePoolThumbnail extends Component<Props, State> {
         className={componentClassnames}
         onMouseEnter={onHover ? this.handleOpen : null}
         onMouseLeave={onHover ? this.handleClose : null}
+        style={{
+          background: isSelected && showSelected && color,
+        }}
       >
         <div
           className={styles.content}
@@ -153,7 +154,7 @@ export class StakePoolThumbnail extends Component<Props, State> {
             </div>
           )}
 
-          {retirement && (
+          {retiring && (
             <div className={styles.clock}>
               <SVGInline svg={clockIcon} className={styles.clockIcon} />
             </div>
