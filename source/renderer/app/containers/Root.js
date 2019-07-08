@@ -53,11 +53,10 @@ export default class Root extends Component<Props> {
       isNodeInStoppingSequence
     ) {
       if (
-        isNodeInStoppingSequence &&
         !isActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS) &&
         !dialogIsFirstTimeClosed
       ) {
-        _closeActiveDialog(true);
+        _closeActiveDialog();
       }
       return <LoadingPage stores={stores} actions={actions} />;
     }
