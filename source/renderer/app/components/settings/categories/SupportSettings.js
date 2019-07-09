@@ -2,8 +2,10 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import SVGInline from 'react-svg-inline';
 import styles from './SupportSettings.scss';
 import globalMessages from '../../../i18n/global-messages.js';
+import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 
 const messages = defineMessages({
   faqTitle: {
@@ -93,10 +95,12 @@ export default class SupportSettings extends Component<Props> {
 
     const faqLink = (
       <a
+        className={styles.externalLink}
         href={faqLinkUrl}
         onClick={event => onExternalLinkClick(faqLinkUrl, event)}
       >
         {intl.formatMessage(messages.faqLink)}
+        <SVGInline svg={externalLinkIcon} />
       </a>
     );
 
@@ -107,9 +111,14 @@ export default class SupportSettings extends Component<Props> {
     );
 
     const reportProblemLink = (
-      <button onClick={onSupportRequestClick}>
+      <span
+        className={styles.externalLink}
+        role="presentation"
+        onClick={onSupportRequestClick}
+      >
         {intl.formatMessage(messages.stepsReportProblemLink)}
-      </button>
+        <SVGInline svg={externalLinkIcon} />
+      </span>
     );
 
     return (

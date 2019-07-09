@@ -10,8 +10,10 @@ import {
 import classnames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import SVGInline from 'react-svg-inline';
 import styles from './BlockConsolidationStatus.scss';
 import epochs from '../../assets/images/block-consolidation/epochs.png';
+import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 
 const messages = defineMessages({
@@ -232,7 +234,15 @@ export default class BlockConsolidationStatus extends Component<Props> {
 
             <Button
               className={styles.learnMoreButton}
-              label={formatMessage(messages.learnMoreButton)}
+              label={
+                <p>
+                  {formatMessage(messages.learnMoreButton)}
+                  <SVGInline
+                    svg={externalLinkIcon}
+                    className={styles.externalLinkIcon}
+                  />
+                </p>
+              }
               onClick={() =>
                 onExternalLinkClick(formatMessage(messages.learnMoreButtonURL))
               }
