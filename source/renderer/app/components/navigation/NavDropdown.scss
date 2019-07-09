@@ -33,7 +33,9 @@
             background: none;
 
             &.SimpleOptions_highlightedOption:hover {
-              background-color: var(--theme-nav-dropdown-item-background-color-hover);
+              background-color: var(
+                --theme-nav-dropdown-item-background-color-hover
+              );
             }
           }
         }
