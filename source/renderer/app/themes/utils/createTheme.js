@@ -653,7 +653,7 @@ const createDaedalusComponentsTheme = (
     notification: {
       '--theme-notification-message-background-color': `${chroma(
         background.secondary.regular
-      ).alpha(0.88)}`,
+      ).alpha(0.95)}`,
       '--theme-notification-message-text-color': `${text.secondary}`,
 
       '--theme-legacy-badge-background-color': `${error.dark}`,

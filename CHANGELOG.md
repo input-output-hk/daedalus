@@ -49,6 +49,7 @@ Changelog
 
 ### Chores
 
+- Added button to open local state directory on Daedalus Diagnostics Screen ([PR 1438](https://github.com/input-output-hk/daedalus/pull/1438))
 - Updated the list of contributors on the "About" screen ([PR 1450](https://github.com/input-output-hk/daedalus/pull/1450))
 - Improved switching of the application menu screens ([PR 1419](https://github.com/input-output-hk/daedalus/pull/1419))
 - Remove legacy references to report server ([PR 1425](https://github.com/input-output-hk/daedalus/pull/1425))
