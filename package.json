@@ -62,6 +62,7 @@
     "bufferutil": "4.0.0",
     "cache-loader": "2.0.1",
     "chai": "4.2.0",
+    "chalk": "^2.4.2",
     "concurrently": "4.1.0",
     "cross-env": "5.2.0",
     "css-loader": "2.0.1",
