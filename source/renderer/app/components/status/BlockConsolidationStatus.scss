@@ -1,3 +1,5 @@
+@import '../../themes/mixins/link';
+
 .component {
   background-color: var(--theme-block-consolidation-background-color);
   display: flex;
@@ -11,12 +13,29 @@
   .learnMoreButton {
     background-color: var(--theme-block-consolidation-button-background-color);
     border: solid 1px var(--theme-block-consolidation-button-border-color);
+
+    .externalLinkIcon {
+      @include link(--theme-block-consolidation-button-icon-color);
+      border-bottom: none;
+      svg {
+        margin-left: 8px;
+        width: 15px;
+      }
+    }
+
     &:not(.disabled):hover {
-      border: none;
-      color: var(--theme-block-consolidation-button-text-color-hover);
       background-color: var(
         --theme-block-consolidation-button-background-color-hover
       );
+      border: none;
+      p {
+        color: var(--theme-block-consolidation-button-text-color-hover);
+      }
+      .externalLinkIcon {
+        g {
+          stroke: var(--theme-block-consolidation-button-icon-color-hover);
+        }
+      }
     }
   }
 }

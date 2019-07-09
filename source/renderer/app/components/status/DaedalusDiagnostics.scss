@@ -1,3 +1,5 @@
+@import '../../themes/mixins/link';
+
 .component {
   align-items: center;
   background: var(--theme-network-window-background-color);
@@ -272,10 +274,10 @@
     }
 
     &.realTimeStatusBtn {
+      @include link(--theme-network-window-white-color);
       background: transparent !important;
+      border-bottom: none;
       border-radius: initial;
-      color: var(--theme-network-window-white-color);
-      cursor: pointer;
       font-size: 14px;
       font-weight: initial;
       height: initial;
