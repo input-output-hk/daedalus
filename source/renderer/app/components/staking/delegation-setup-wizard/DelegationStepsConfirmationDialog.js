@@ -157,9 +157,20 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
       },
     ];
 
+    const stepsIndicatorLabel = (
+      <FormattedMessage
+        {...messages.stepIndicatorLabel}
+        values={{
+          currentStep: 3,
+          totalSteps: stepsList.length,
+        }}
+      />
+    );
+
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
+        subtitle={stepsIndicatorLabel}
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
@@ -168,15 +179,6 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
         backButton={<DialogBackButton onBack={onBack} />}
       >
         <div className={styles.delegationStepsIndicatorWrapper}>
-          <p className={styles.stepIndicatorLabel}>
-            <FormattedMessage
-              {...messages.stepIndicatorLabel}
-              values={{
-                currentStep: 3,
-                totalSteps: stepsList.length,
-              }}
-            />
-          </p>
           <Stepper
             steps={stepsList}
             activeStep={3}
