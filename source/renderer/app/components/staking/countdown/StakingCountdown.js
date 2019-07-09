@@ -4,8 +4,10 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import SVGInline from 'react-svg-inline';
 import CountdownWidget from '../../widgets/CountdownWidget';
 import styles from './StakingCountdown.scss';
+import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 
 const messages = defineMessages({
   heading: {
@@ -35,6 +37,7 @@ type Props = {
   redirectToStakingInfo?: Function,
   currentLocale: string,
   startDateTime: string,
+  onLearnMoreClick: Function,
 };
 
 @observer
@@ -44,7 +47,12 @@ export default class StakingCountdown extends Component<Props> {
   };
 
   render() {
-    const { redirectToStakingInfo, currentLocale, startDateTime } = this.props;
+    const {
+      redirectToStakingInfo,
+      currentLocale,
+      startDateTime,
+      onLearnMoreClick,
+    } = this.props;
     const { intl } = this.context;
     const heading = intl.formatMessage(messages.heading);
     const description = intl.formatMessage(messages.description);
@@ -62,7 +70,20 @@ export default class StakingCountdown extends Component<Props> {
             currentLocale={currentLocale}
             startDateTime={startDateTime}
           />
-          <Button label={buttonLabel} skin={ButtonSkin} />
+          <Button
+            className={styles.learnMoreButton}
+            label={
+              <p>
+                {buttonLabel}
+                <SVGInline
+                  svg={externalLinkIcon}
+                  className={styles.externalLinkIcon}
+                />
+              </p>
+            }
+            skin={ButtonSkin}
+            onClick={onLearnMoreClick}
+          />
         </div>
       </div>
     );

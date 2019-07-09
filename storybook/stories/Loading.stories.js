@@ -8,6 +8,7 @@ import {
   text,
   select,
 } from '@storybook/addon-knobs';
+import { linkTo } from '@storybook/addon-links';
 import { action } from '@storybook/addon-actions';
 
 // Assets and helpers
@@ -28,6 +29,7 @@ storiesOf('Loading', module)
 
   .add('Default', () => (
     <Loading
+      onStatusIconClick={linkTo('Diagnostics', () => 'default')}
       currencyIcon={currencyIcon}
       apiIcon={apiIcon}
       cardanoNodeState={select(

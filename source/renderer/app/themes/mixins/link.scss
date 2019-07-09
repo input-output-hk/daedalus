@@ -1,0 +1,14 @@
+@mixin link($color) {
+  border-bottom: 1px solid var($color);
+  color: var($color);
+  cursor: pointer;
+  text-decoration: none;
+  svg {
+    margin-left: 2px;
+    vertical-align: middle;
+    width: 12px;
+    g {
+      stroke: var($color);
+    }
+  }
+}

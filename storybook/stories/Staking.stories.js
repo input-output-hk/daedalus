@@ -126,6 +126,7 @@ storiesOf('Staking', module)
             'Decentralization Start DateTime',
             defaultStartDateTime
           )}
+          onLearnMoreClick={action('onLearnMoreClick')}
         />
       </div>
     ),
@@ -152,6 +153,7 @@ storiesOf('Staking', module)
           step: 1,
           range: true,
         })}
+        onLearnMoreClick={action('onLearnMoreClick')}
       />
     ),
     {
