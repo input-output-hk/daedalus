@@ -15,6 +15,7 @@ export type Props = {
   hasCloseButton?: boolean,
   onClose?: Function,
   order?: 'auto' | number | 'initial' | 'inherit',
+  themeOverride?: 'grey', // if left empty, the noticiation will have its normal colors
 };
 
 export default class NotificationMessage extends Component<Props> {
@@ -32,12 +33,14 @@ export default class NotificationMessage extends Component<Props> {
       hasCloseButton,
       onClose,
       order,
+      themeOverride,
     } = this.props;
 
     const notificationMessageStyles = classNames([
       styles.component,
       show ? styles.show : null,
       clickToClose ? styles.clickToClose : null,
+      themeOverride ? styles[`theme-override-${themeOverride}`] : null,
     ]);
 
     const iconStyles = classNames([styles.icon, iconStyle]);

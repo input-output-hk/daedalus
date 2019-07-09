@@ -1988,13 +1988,13 @@
         "description": "Title \"Confirm Delegation\" on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 27
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.title",
         "start": {
           "column": 9,
-          "line": 20
+          "line": 22
         }
       },
       {
@@ -2002,13 +2002,13 @@
         "description": "Step indicator labe on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 33
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.stepIndicatorLabel",
         "start": {
           "column": 22,
-          "line": 26
+          "line": 28
         }
       },
       {
@@ -2016,13 +2016,13 @@
         "description": "Description \"line 1\" on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 40
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.description.line1",
         "start": {
           "column": 20,
-          "line": 32
+          "line": 34
         }
       },
       {
@@ -2030,13 +2030,13 @@
         "description": "Description \"line 2\" on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 47
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.description.line2",
         "start": {
           "column": 20,
-          "line": 39
+          "line": 41
         }
       },
       {
@@ -2044,13 +2044,13 @@
         "description": "Address label on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 53
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.addressLabel",
         "start": {
           "column": 16,
-          "line": 46
+          "line": 48
         }
       },
       {
@@ -2058,13 +2058,13 @@
         "description": "Amount label on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 59
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.amountLabel",
         "start": {
           "column": 15,
-          "line": 52
+          "line": 54
         }
       },
       {
@@ -2072,13 +2072,13 @@
         "description": "Fees label on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 64
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.feesLabel",
         "start": {
           "column": 13,
-          "line": 58
+          "line": 60
         }
       },
       {
@@ -2086,13 +2086,13 @@
         "description": "Total label on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 70
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.totalLabel",
         "start": {
           "column": 14,
-          "line": 63
+          "line": 65
         }
       },
       {
@@ -2100,13 +2100,13 @@
         "description": "Placeholder for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 76
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 69
+          "line": 71
         }
       },
       {
@@ -2114,13 +2114,13 @@
         "description": "Label for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 81
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 75
+          "line": 77
         }
       },
       {
@@ -2128,13 +2128,13 @@
         "description": "Label for continue button on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 87
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.confirmButtonLabel",
         "start": {
           "column": 22,
-          "line": 80
+          "line": 82
         }
       },
       {
@@ -2142,17 +2142,134 @@
         "description": "Postpone button label on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 91
+          "line": 93
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.postponeButtonLabel",
         "start": {
           "column": 23,
-          "line": 86
+          "line": 88
         }
       }
     ],
     "path": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Delegation Setup",
+        "description": "Title \"Delegation Setup\" on the delegation setup \"choose stake pool\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.title",
+        "start": {
+          "column": 9,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!Choose a stake pool to which you would like to delegate.",
+        "description": "Description on the delegation setup \"choose stake pool\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.description",
+        "start": {
+          "column": 15,
+          "line": 27
+        }
+      },
+      {
+        "defaultMessage": "!!!Stake pools you are already delegating to:",
+        "description": "\"Delegated Pools\" section label on the delegation setup \"choose stake pool\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 40
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.delegatedPoolsLabel",
+        "start": {
+          "column": 23,
+          "line": 34
+        }
+      },
+      {
+        "defaultMessage": "!!!Or search for a stake pool:",
+        "description": "Search \"Pools\" input label on the delegation setup \"choose stake pool\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 46
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.label",
+        "start": {
+          "column": 20,
+          "line": 41
+        }
+      },
+      {
+        "defaultMessage": "!!!Search stake pools",
+        "description": "Search \"Pools\" input placeholder on the delegation setup \"choose stake pool\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 53
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.placeholder",
+        "start": {
+          "column": 26,
+          "line": 47
+        }
+      },
+      {
+        "defaultMessage": "!!!Continue",
+        "description": "Label for continue button on the delegation setup \"choose stake pool\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 60
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.continueButtonLabel",
+        "start": {
+          "column": 23,
+          "line": 54
+        }
+      },
+      {
+        "defaultMessage": "!!!STEP {currentStep} OF {totalSteps}",
+        "description": "Step indicator labe on the delegation setup \"choose wallet\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 67
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.stepIndicatorLabel",
+        "start": {
+          "column": 22,
+          "line": 61
+        }
+      },
+      {
+        "defaultMessage": "!!!POOL",
+        "description": "Selected pool box placeholder on the delegation setup \"choose wallet\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 74
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.selectPoolPlaceholder",
+        "start": {
+          "column": 25,
+          "line": 68
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.json"
   },
   {
     "descriptors": [
@@ -2264,13 +2381,13 @@
         "description": "Title \"Confirm Delegation\" on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 22
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.title",
         "start": {
           "column": 9,
-          "line": 15
+          "line": 17
         }
       },
       {
@@ -2278,13 +2395,13 @@
         "description": "Step indicator labe on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 28
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.stepIndicatorLabel",
         "start": {
           "column": 22,
-          "line": 21
+          "line": 23
         }
       },
       {
@@ -2292,13 +2409,13 @@
         "description": "Description on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 35
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.description",
         "start": {
           "column": 15,
-          "line": 27
+          "line": 29
         }
       },
       {
@@ -2306,13 +2423,13 @@
         "description": "Fees label on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 41
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.feesLabel",
         "start": {
           "column": 13,
-          "line": 34
+          "line": 36
         }
       },
       {
@@ -2320,13 +2437,13 @@
         "description": "Placeholder for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 47
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 40
+          "line": 42
         }
       },
       {
@@ -2334,13 +2451,13 @@
         "description": "Label for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 53
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 46
+          "line": 48
         }
       },
       {
@@ -2348,13 +2465,13 @@
         "description": "Label for continue button on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 59
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.confirmButtonLabel",
         "start": {
           "column": 22,
-          "line": 52
+          "line": 54
         }
       },
       {
@@ -2362,13 +2479,13 @@
         "description": "Label for \"Cancel\" button on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 65
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.cancelButtonLabel",
         "start": {
           "column": 21,
-          "line": 58
+          "line": 60
         }
       }
     ],
@@ -3164,13 +3281,13 @@
         "description": "\"\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 33
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.ranking",
         "start": {
           "column": 11,
-          "line": 32
+          "line": 29
         }
       },
       {
@@ -3178,13 +3295,13 @@
         "description": "\"Controlled stake\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 38
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.controlledStake",
         "start": {
           "column": 19,
-          "line": 37
+          "line": 34
         }
       },
       {
@@ -3192,13 +3309,13 @@
         "description": "\"Profit margin\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 43
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.profitMargin",
         "start": {
           "column": 16,
-          "line": 42
+          "line": 39
         }
       },
       {
@@ -3206,13 +3323,13 @@
         "description": "\"Performance\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 48
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.performance",
         "start": {
           "column": 15,
-          "line": 47
+          "line": 44
         }
       },
       {
@@ -3220,13 +3337,13 @@
         "description": "\"Retirement\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 53
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.retirement",
         "start": {
           "column": 14,
-          "line": 52
+          "line": 49
         }
       },
       {
@@ -3234,13 +3351,13 @@
         "description": "\"Delegate to this pool\" Button for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 59
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.delegateButton",
         "start": {
           "column": 18,
-          "line": 57
+          "line": 54
         }
       }
     ],
@@ -3529,13 +3646,13 @@
         "description": "System info",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 35
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.system.info",
         "start": {
           "column": 14,
-          "line": 28
+          "line": 31
         }
       },
       {
@@ -3543,13 +3660,13 @@
         "description": "Platform",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 40
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.platform",
         "start": {
           "column": 12,
-          "line": 33
+          "line": 36
         }
       },
       {
@@ -3557,13 +3674,13 @@
         "description": "Platform Version",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 45
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.platform.version",
         "start": {
           "column": 19,
-          "line": 38
+          "line": 41
         }
       },
       {
@@ -3571,13 +3688,13 @@
         "description": "CPU",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 50
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cpu",
         "start": {
           "column": 7,
-          "line": 43
+          "line": 46
         }
       },
       {
@@ -3585,13 +3702,13 @@
         "description": "RAM",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 55
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.ram",
         "start": {
           "column": 7,
-          "line": 48
+          "line": 51
         }
       },
       {
@@ -3599,13 +3716,13 @@
         "description": "Available disk space",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 60
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.availableDiskSpace",
         "start": {
           "column": 22,
-          "line": 53
+          "line": 56
         }
       },
       {
@@ -3613,13 +3730,13 @@
         "description": "CORE INFO",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 65
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.coreInfo",
         "start": {
           "column": 12,
-          "line": 58
+          "line": 61
         }
       },
       {
@@ -3627,13 +3744,13 @@
         "description": "Daedalus Version",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 70
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusVersion",
         "start": {
           "column": 19,
-          "line": 63
+          "line": 66
         }
       },
       {
@@ -3641,13 +3758,13 @@
         "description": "Daedalus Main Process ID",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 75
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusMainProcessID",
         "start": {
           "column": 25,
-          "line": 68
+          "line": 71
         }
       },
       {
@@ -3655,13 +3772,13 @@
         "description": "Daedalus Renderer Process ID",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 80
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusProcessID",
         "start": {
           "column": 21,
-          "line": 73
+          "line": 76
         }
       },
       {
@@ -3669,13 +3786,13 @@
         "description": "Daedalus is running in safe mode",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 85
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.safeMode",
         "start": {
           "column": 12,
-          "line": 78
+          "line": 81
         }
       },
       {
@@ -3683,13 +3800,13 @@
         "description": "Cardano Version",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 90
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoVersion",
         "start": {
           "column": 18,
-          "line": 83
+          "line": 86
         }
       },
       {
@@ -3697,13 +3814,13 @@
         "description": "Cardano Process ID",
         "end": {
           "column": 3,
-          "line": 92
+          "line": 95
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoProcessID",
         "start": {
           "column": 20,
-          "line": 88
+          "line": 91
         }
       },
       {
@@ -3711,13 +3828,13 @@
         "description": "Cardano API Port",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 100
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoApiPort",
         "start": {
           "column": 18,
-          "line": 93
+          "line": 96
         }
       },
       {
@@ -3725,13 +3842,13 @@
         "description": "Cardano Network",
         "end": {
           "column": 3,
-          "line": 102
+          "line": 105
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNetwork",
         "start": {
           "column": 18,
-          "line": 98
+          "line": 101
         }
       },
       {
@@ -3739,13 +3856,41 @@
         "description": "Daedalus State Directory",
         "end": {
           "column": 3,
-          "line": 107
+          "line": 110
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.stateDirectory",
         "start": {
           "column": 22,
-          "line": 103
+          "line": 106
+        }
+      },
+      {
+        "defaultMessage": "!!!Open",
+        "description": "Open",
+        "end": {
+          "column": 3,
+          "line": 115
+        },
+        "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
+        "id": "daedalus.diagnostics.dialog.stateDirectoryPathOpenBtn",
+        "start": {
+          "column": 29,
+          "line": 111
+        }
+      },
+      {
+        "defaultMessage": "!!!Copy",
+        "description": "Copy",
+        "end": {
+          "column": 3,
+          "line": 120
+        },
+        "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
+        "id": "daedalus.diagnostics.dialog.stateDirectoryCopyPathBtn",
+        "start": {
+          "column": 29,
+          "line": 116
         }
       },
       {
@@ -3753,13 +3898,13 @@
         "description": "CONNECTION ERROR",
         "end": {
           "column": 3,
-          "line": 112
+          "line": 125
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.connectionError",
         "start": {
           "column": 19,
-          "line": 108
+          "line": 121
         }
       },
       {
@@ -3767,13 +3912,13 @@
         "description": "DAEDALUS STATUS",
         "end": {
           "column": 3,
-          "line": 117
+          "line": 130
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusStatus",
         "start": {
           "column": 18,
-          "line": 113
+          "line": 126
         }
       },
       {
@@ -3781,13 +3926,13 @@
         "description": "Connected",
         "end": {
           "column": 3,
-          "line": 122
+          "line": 135
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.connected",
         "start": {
           "column": 13,
-          "line": 118
+          "line": 131
         }
       },
       {
@@ -3795,13 +3940,13 @@
         "description": "Synced",
         "end": {
           "column": 3,
-          "line": 127
+          "line": 140
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.synced",
         "start": {
           "column": 10,
-          "line": 123
+          "line": 136
         }
       },
       {
@@ -3809,13 +3954,13 @@
         "description": "Sync Percentage",
         "end": {
           "column": 3,
-          "line": 132
+          "line": 145
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.syncPercentage",
         "start": {
           "column": 18,
-          "line": 128
+          "line": 141
         }
       },
       {
@@ -3823,13 +3968,13 @@
         "description": "Network Block Height",
         "end": {
           "column": 3,
-          "line": 137
+          "line": 150
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.networkBlockHeight",
         "start": {
           "column": 22,
-          "line": 133
+          "line": 146
         }
       },
       {
@@ -3837,13 +3982,13 @@
         "description": "Local Block Height",
         "end": {
           "column": 3,
-          "line": 142
+          "line": 155
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.localBlockHeight",
         "start": {
           "column": 20,
-          "line": 138
+          "line": 151
         }
       },
       {
@@ -3851,13 +3996,13 @@
         "description": "Remaining Unsynced Blocks",
         "end": {
           "column": 3,
-          "line": 147
+          "line": 160
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.remainingUnsyncedBlocks",
         "start": {
           "column": 27,
-          "line": 143
+          "line": 156
         }
       },
       {
@@ -3865,13 +4010,13 @@
         "description": "Latest Local Block Age",
         "end": {
           "column": 3,
-          "line": 152
+          "line": 165
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.latestLocalBlockAge",
         "start": {
           "column": 23,
-          "line": 148
+          "line": 161
         }
       },
       {
@@ -3879,13 +4024,13 @@
         "description": "Latest Network Block Age",
         "end": {
           "column": 3,
-          "line": 157
+          "line": 170
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.latestNetworkBlockAge",
         "start": {
           "column": 25,
-          "line": 153
+          "line": 166
         }
       },
       {
@@ -3893,13 +4038,13 @@
         "description": "Local Time Difference",
         "end": {
           "column": 3,
-          "line": 162
+          "line": 175
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.localTimeDifference",
         "start": {
           "column": 23,
-          "line": 158
+          "line": 171
         }
       },
       {
@@ -3907,13 +4052,13 @@
         "description": "System Time Correct",
         "end": {
           "column": 3,
-          "line": 167
+          "line": 180
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.systemTimeCorrect",
         "start": {
           "column": 21,
-          "line": 163
+          "line": 176
         }
       },
       {
@@ -3921,13 +4066,13 @@
         "description": "System Time Ignored",
         "end": {
           "column": 3,
-          "line": 172
+          "line": 185
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.systemTimeIgnored",
         "start": {
           "column": 21,
-          "line": 168
+          "line": 181
         }
       },
       {
@@ -3935,13 +4080,13 @@
         "description": "Checking Node Time",
         "end": {
           "column": 3,
-          "line": 177
+          "line": 190
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.checkingNodeTime",
         "start": {
           "column": 20,
-          "line": 173
+          "line": 186
         }
       },
       {
@@ -3949,13 +4094,13 @@
         "description": "CARDANO NODE STATUS",
         "end": {
           "column": 3,
-          "line": 182
+          "line": 195
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatus",
         "start": {
           "column": 21,
-          "line": 178
+          "line": 191
         }
       },
       {
@@ -3963,13 +4108,13 @@
         "description": "Restarting Cardano Node...",
         "end": {
           "column": 3,
-          "line": 187
+          "line": 200
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatusRestarting",
         "start": {
           "column": 31,
-          "line": 183
+          "line": 196
         }
       },
       {
@@ -3977,13 +4122,13 @@
         "description": "Restart Cardano Node",
         "end": {
           "column": 3,
-          "line": 192
+          "line": 205
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatusRestart",
         "start": {
           "column": 28,
-          "line": 188
+          "line": 201
         }
       },
       {
@@ -3991,13 +4136,13 @@
         "description": "Cardano Node Diagnostics",
         "end": {
           "column": 3,
-          "line": 197
+          "line": 210
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeDiagnostics",
         "start": {
           "column": 26,
-          "line": 193
+          "line": 206
         }
       },
       {
@@ -4005,13 +4150,13 @@
         "description": "Realtime statistics monitor",
         "end": {
           "column": 3,
-          "line": 202
+          "line": 215
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.realtimeStatisticsMonitor",
         "start": {
           "column": 29,
-          "line": 198
+          "line": 211
         }
       },
       {
@@ -4019,13 +4164,13 @@
         "description": "Cardano Node State",
         "end": {
           "column": 3,
-          "line": 207
+          "line": 220
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeState",
         "start": {
           "column": 20,
-          "line": 203
+          "line": 216
         }
       },
       {
@@ -4033,13 +4178,13 @@
         "description": "Updated",
         "end": {
           "column": 3,
-          "line": 212
+          "line": 225
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasBeenUpdated",
         "start": {
           "column": 22,
-          "line": 208
+          "line": 221
         }
       },
       {
@@ -4047,13 +4192,13 @@
         "description": "Crashed",
         "end": {
           "column": 3,
-          "line": 217
+          "line": 230
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasCrashed",
         "start": {
           "column": 18,
-          "line": 213
+          "line": 226
         }
       },
       {
@@ -4061,13 +4206,13 @@
         "description": "Errored",
         "end": {
           "column": 3,
-          "line": 222
+          "line": 235
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasErrored",
         "start": {
           "column": 18,
-          "line": 218
+          "line": 231
         }
       },
       {
@@ -4075,13 +4220,13 @@
         "description": "Stopped",
         "end": {
           "column": 3,
-          "line": 227
+          "line": 240
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasStopped",
         "start": {
           "column": 18,
-          "line": 223
+          "line": 236
         }
       },
       {
@@ -4089,13 +4234,13 @@
         "description": "Exiting",
         "end": {
           "column": 3,
-          "line": 232
+          "line": 245
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsExiting",
         "start": {
           "column": 17,
-          "line": 228
+          "line": 241
         }
       },
       {
@@ -4103,13 +4248,13 @@
         "description": "Running",
         "end": {
           "column": 3,
-          "line": 237
+          "line": 250
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsRunning",
         "start": {
           "column": 17,
-          "line": 233
+          "line": 246
         }
       },
       {
@@ -4117,13 +4262,13 @@
         "description": "Starting",
         "end": {
           "column": 3,
-          "line": 242
+          "line": 255
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsStarting",
         "start": {
           "column": 18,
-          "line": 238
+          "line": 251
         }
       },
       {
@@ -4131,13 +4276,13 @@
         "description": "Stopping",
         "end": {
           "column": 3,
-          "line": 247
+          "line": 260
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsStopping",
         "start": {
           "column": 18,
-          "line": 243
+          "line": 256
         }
       },
       {
@@ -4145,13 +4290,13 @@
         "description": "Unrecoverable",
         "end": {
           "column": 3,
-          "line": 252
+          "line": 265
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsUnrecoverable",
         "start": {
           "column": 23,
-          "line": 248
+          "line": 261
         }
       },
       {
@@ -4159,13 +4304,13 @@
         "description": "Updating",
         "end": {
           "column": 3,
-          "line": 257
+          "line": 270
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsUpdating",
         "start": {
           "column": 18,
-          "line": 253
+          "line": 266
         }
       },
       {
@@ -4173,13 +4318,13 @@
         "description": "Node Responding",
         "end": {
           "column": 3,
-          "line": 262
+          "line": 275
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeResponding",
         "start": {
           "column": 25,
-          "line": 258
+          "line": 271
         }
       },
       {
@@ -4187,13 +4332,13 @@
         "description": "Node Subscribed",
         "end": {
           "column": 3,
-          "line": 267
+          "line": 280
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeSubscribed",
         "start": {
           "column": 25,
-          "line": 263
+          "line": 276
         }
       },
       {
@@ -4201,13 +4346,13 @@
         "description": "Node Time Correct",
         "end": {
           "column": 3,
-          "line": 272
+          "line": 285
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeTimeCorrect",
         "start": {
           "column": 26,
-          "line": 268
+          "line": 281
         }
       },
       {
@@ -4215,13 +4360,13 @@
         "description": "Node Syncing",
         "end": {
           "column": 3,
-          "line": 277
+          "line": 290
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeSyncing",
         "start": {
           "column": 22,
-          "line": 273
+          "line": 286
         }
       },
       {
@@ -4229,13 +4374,13 @@
         "description": "Node In Sync",
         "end": {
           "column": 3,
-          "line": 282
+          "line": 295
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeInSync",
         "start": {
           "column": 21,
-          "line": 278
+          "line": 291
         }
       },
       {
@@ -4243,13 +4388,13 @@
         "description": "Checking...",
         "end": {
           "column": 3,
-          "line": 287
+          "line": 300
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.localTimeDifferenceChecking",
         "start": {
           "column": 31,
-          "line": 283
+          "line": 296
         }
       },
       {
@@ -4257,13 +4402,13 @@
         "description": "Check time",
         "end": {
           "column": 3,
-          "line": 292
+          "line": 305
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.localTimeDifferenceCheckTime",
         "start": {
           "column": 32,
-          "line": 288
+          "line": 301
         }
       },
       {
@@ -4271,13 +4416,13 @@
         "description": "YES",
         "end": {
           "column": 3,
-          "line": 297
+          "line": 310
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.statusOn",
         "start": {
           "column": 12,
-          "line": 293
+          "line": 306
         }
       },
       {
@@ -4285,13 +4430,13 @@
         "description": "NO",
         "end": {
           "column": 3,
-          "line": 302
+          "line": 315
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.statusOff",
         "start": {
           "column": 13,
-          "line": 298
+          "line": 311
         }
       },
       {
@@ -4299,13 +4444,13 @@
         "description": "NTP Service unreachable",
         "end": {
           "column": 3,
-          "line": 307
+          "line": 320
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.serviceUnreachable",
         "start": {
           "column": 22,
-          "line": 303
+          "line": 316
         }
       }
     ],
@@ -8259,6 +8404,25 @@
       }
     ],
     "path": "source/renderer/app/containers/staking/StakingRewardsPage.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Directory State Directory copied to clipboard",
+        "description": "Message for the wallet address copy success notification.",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/containers/status/DaedalusDiagnosticsDialog.js",
+        "id": "daedalus.diagnostics.dialog.stateDirectoryCopyNotificationMessage",
+        "start": {
+          "column": 41,
+          "line": 13
+        }
+      }
+    ],
+    "path": "source/renderer/app/containers/status/DaedalusDiagnosticsDialog.json"
   },
   {
     "descriptors": [

@@ -39,6 +39,7 @@ storiesOf('Diagnostics', module)
       systemInfo={systemInfo}
       coreInfo={coreInfo}
       cardanoNodeState="running"
+      currentLocale="en-US"
       isDev={false}
       isMainnet
       isStaging={false}
@@ -62,6 +63,8 @@ storiesOf('Diagnostics', module)
       localBlockHeight={42539}
       networkBlockHeight={42539}
       onForceCheckLocalTimeDifference={() => null}
+      onCopyStateDirectoryPath={() => null}
+      onOpenStateDirectory={() => null}
       onOpenExternalLink={() => null}
       onRestartNode={() => null}
       onClose={() => null}

@@ -6,6 +6,8 @@ import DelegationStepsChooseWalletDialog from './DelegationStepsChooseWalletDial
 import DelegationStepsConfirmationDialog from './DelegationStepsConfirmationDialog';
 import DelegationStepsIntroDialog from './DelegationStepsIntroDialog';
 import DelegationStepsNotAvailableDialog from './DelegationStepsNotAvailableDialog';
+import DelegationStepsChooseStakePoolDialog from './DelegationStepsChooseStakePoolDialog';
+import type { StakePool } from '../../../api/staking/types';
 
 type WalletData = {
   isAcceptableSetupWallet: boolean,
@@ -16,7 +18,6 @@ type WalletData = {
 type Props = {
   activeStep: number,
   isDisabled: boolean,
-  minDelegationFunds: number,
   onActivate: Function,
   onBack: Function,
   onClose: Function,
@@ -25,6 +26,11 @@ type Props = {
   onLearnMoreClick: Function,
   stepsList: Array<string>,
   wallets: Array<WalletData>,
+  minDelegationFunds: number,
+  stakePoolsDelegatingList: Array<StakePool>,
+  stakePoolsList: Array<StakePool>,
+  onOpenExternalLink: Function,
+  currentTheme: string,
 };
 
 @observer
@@ -33,7 +39,6 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
     const {
       activeStep,
       isDisabled,
-      minDelegationFunds,
       onActivate,
       onBack,
       onClose,
@@ -42,6 +47,11 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       onLearnMoreClick,
       stepsList,
       wallets,
+      minDelegationFunds,
+      stakePoolsDelegatingList,
+      stakePoolsList,
+      onOpenExternalLink,
+      currentTheme,
     } = this.props;
 
     if (isDisabled) {
@@ -61,6 +71,20 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             stepsList={stepsList}
             wallets={wallets}
             minDelegationFunds={minDelegationFunds}
+            onClose={onClose}
+            onContinue={onContinue}
+            onBack={onBack}
+          />
+        );
+        break;
+      case 2:
+        content = (
+          <DelegationStepsChooseStakePoolDialog
+            stepsList={stepsList}
+            stakePoolsDelegatingList={stakePoolsDelegatingList}
+            stakePoolsList={stakePoolsList}
+            onOpenExternalLink={onOpenExternalLink}
+            currentTheme={currentTheme}
             onClose={onClose}
             onContinue={onContinue}
             onBack={onBack}

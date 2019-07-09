@@ -5,11 +5,12 @@ import { observer } from 'mobx-react';
 import BigNumber from 'bignumber.js';
 import DelegationCenterHeader from './DelegationCenterHeader';
 import DelegationCenterBody from './DelegationCenterBody';
+import Wallet from '../../../domains/Wallet';
 
 type Props = {
   adaValue: BigNumber,
   percentage: number,
-  wallets: Array<any>,
+  wallets: Array<Wallet>,
   children?: Node,
 };
 

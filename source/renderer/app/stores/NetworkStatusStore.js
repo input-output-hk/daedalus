@@ -32,6 +32,7 @@ import type {
 import type { NodeInfoQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
+import { openLocalDirectoryChannel } from '../ipc/open-local-directory';
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
@@ -570,6 +571,11 @@ export default class NetworkStatusStore extends Store {
   forceCheckLocalTimeDifference = () => {
     if (this.isConnected) this._updateNetworkStatus({ force_ntp_check: true });
   };
+
+  openStateDirectory(path: string, event?: MouseEvent): void {
+    if (event) event.preventDefault();
+    openLocalDirectoryChannel.send(path);
+  }
 
   @action _onCheckDiskSpace = ({
     isNotEnoughDiskSpace,

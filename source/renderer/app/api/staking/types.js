@@ -9,6 +9,6 @@ export type StakePool = {
   performance: number,
   profitMargin: number,
   ranking: number,
-  retirement?: Date,
+  retiring?: Date,
   url: string,
 };
