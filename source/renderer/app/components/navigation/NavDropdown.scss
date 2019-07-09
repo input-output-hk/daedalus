@@ -24,6 +24,19 @@
         border: none;
         box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.12);
         right: 15px;
+
+        .SimpleOptions_ul {
+          background-color: var(--theme-nav-dropdown-item-background-color);
+          border-radius: 4px;
+
+          .SimpleOptions_option {
+            background: none;
+
+            &.SimpleOptions_highlightedOption:hover {
+              background-color: var(--theme-nav-dropdown-item-background-color-hover);
+            }
+          }
+        }
       }
       [data-bubble-arrow]:before,
       [data-bubble-arrow]:after {
