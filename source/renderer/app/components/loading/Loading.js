@@ -110,6 +110,7 @@ type State = {
 };
 
 type Props = {
+  onStatusIconClick: Function,
   currencyIcon: string,
   apiIcon: string,
   cardanoNodeState: ?CardanoNodeState,
@@ -407,6 +408,7 @@ export default class Loading extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const {
+      onStatusIconClick,
       cardanoNodeState,
       currencyIcon,
       apiIcon,
@@ -524,6 +526,7 @@ export default class Loading extends Component<Props, State> {
           />
         )}
         <StatusIcons
+          onIconClick={onStatusIconClick}
           nodeState={cardanoNodeState}
           isNodeResponding={isNodeResponding}
           isNodeSubscribed={isNodeSubscribed}
