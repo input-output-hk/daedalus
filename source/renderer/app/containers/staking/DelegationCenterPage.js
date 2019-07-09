@@ -13,19 +13,20 @@ type Props = InjectedProps;
 export default class DelegationCenterPage extends Component<Props> {
   static defaultProps = { stores: null };
 
-  // componentWillMount() {
-  // const { actions } = this.props;
-  // actions.dialogs.open.trigger({ dialog: DelegationSetupWizardDialog });
-  // }
+  handleDelegate = () => {
+    const { actions } = this.props;
+    actions.dialogs.open.trigger({ dialog: DelegationSetupWizardDialog });
+  };
 
   render() {
-    const { uiDialogs, staking } = this.props.stores;
+    const { uiDialogs, staking, wallets } = this.props.stores;
 
     return (
       <DelegationCenter
         adaValue={staking.adaValue}
         percentage={staking.percentage}
-        wallets={[]}
+        wallets={wallets.all}
+        onDelegate={this.handleDelegate}
       >
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
           <DelegationSetupWizardDialogContainer />

@@ -108,7 +108,8 @@
     }
   }
 
-  b {
+  b,
+  .actionLink {
     color: var(--theme-staking-link-color);
     cursor: pointer;
   }
