@@ -23,8 +23,9 @@ export default class Wallet extends Component<Props> {
   isActiveScreen = (page: string, item: NavDropdownProps) => {
     const { app, wallets } = this.props.stores;
     if (!wallets.active) return false;
-    if (item && item.options && item.options.length) {
-      item.options.forEach(option => {
+    const { options } = item;
+    if (options.length) {
+      options.forEach(option => {
         if (
           app.currentRoute &&
           app.currentRoute.includes(option.value.toString())
