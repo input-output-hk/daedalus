@@ -120,6 +120,8 @@ type Props = {
   apiIcon: string,
   cardanoNodeState: ?CardanoNodeState,
   hasBeenConnected: boolean,
+  forceConnectivityIssue?: boolean,
+  forceSyncIssue?: boolean,
   isConnected: boolean,
   isSynced: boolean,
   isNodeStopping: boolean,
@@ -419,6 +421,8 @@ export default class Loading extends Component<Props, State> {
       cardanoNodeState,
       currencyIcon,
       apiIcon,
+      forceConnectivityIssue,
+      forceSyncIssue,
       isConnected,
       isSynced,
       isNodeStopping,
@@ -472,11 +476,13 @@ export default class Loading extends Component<Props, State> {
     const apiLoadingLogo = apiIcon;
 
     const canReportConnectingIssue =
-      !isConnected &&
-      (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
-        cardanoNodeState === CardanoNodeStates.UNRECOVERABLE);
+      forceConnectivityIssue ||
+      (!isConnected &&
+        (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
+          cardanoNodeState === CardanoNodeStates.UNRECOVERABLE));
     const canReportSyncingIssue =
-      isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER;
+      forceSyncIssue ||
+      (isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER);
     const showReportIssue =
       isNewAppVersionLoaded &&
       !isNewAppVersionAvailable &&
