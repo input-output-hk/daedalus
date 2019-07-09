@@ -481,7 +481,7 @@ const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-node-update-button-text-color': '#fafbfc',
   },
   notification: {
-    '--theme-notification-message-background-color': 'rgba(36, 61, 98, 0.88)',
+    '--theme-notification-message-background-color': 'rgba(36, 61, 98, 0.95)',
     '--theme-notification-message-text-color': '#fafbfc',
     '--theme-legacy-badge-background-color': '#ab1700',
     '--theme-legacy-notification-background-color': '#ab2712',
