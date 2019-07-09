@@ -71,6 +71,7 @@ export default class LoadingPage extends Component<InjectedProps> {
     return (
       <CenteredLayout>
         <Loading
+          onStatusIconClick={this.openDaedalusDiagnosticsDialog}
           currencyIcon={adaLogo}
           apiIcon={cardanoLogo}
           cardanoNodeState={cardanoNodeState}
@@ -133,5 +134,13 @@ export default class LoadingPage extends Component<InjectedProps> {
   handleGetAvailableVersions = () => {
     const { nodeUpdate } = this.props.actions;
     nodeUpdate.getLatestAvailableAppVersion.trigger();
+  };
+
+  openDaedalusDiagnosticsDialog = () => {
+    const {
+      actions: { app },
+    } = this.props;
+
+    app.openDaedalusDiagnosticsDialog.trigger();
   };
 }
