@@ -6,6 +6,7 @@ import {
   FormattedHTMLMessage,
   FormattedMessage,
 } from 'react-intl';
+import { get } from 'lodash';
 import classNames from 'classnames';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
@@ -65,24 +66,26 @@ const messages = defineMessages({
   },
 });
 
-type WalletData = {
+type DelegationWalletData = {
+  id: string,
   label: string,
   value: string,
   isAcceptableSetupWallet: boolean,
+  hasPassword: boolean,
 };
 
 type Props = {
   onClose: Function,
-  onContinue: Function,
+  onSelectWallet: Function,
   onBack: Function,
-  wallets: Array<WalletData>,
+  wallets: Array<DelegationWalletData>,
   stepsList: Array<string>,
   minDelegationFunds: number,
+  selectedWallet: ?Object,
 };
 
 type State = {
-  selectedWalletAmount: string,
-  walletChoiceError: boolean,
+  selectedWallet: ?DelegationWalletData,
 };
 
 export default class DelegationStepsChooseWalletDialog extends Component<
@@ -94,47 +97,66 @@ export default class DelegationStepsChooseWalletDialog extends Component<
   };
 
   state = {
-    selectedWalletAmount: '',
-    walletChoiceError: false,
+    selectedWallet: this.props.selectedWallet,
   };
 
-  onWalletChange = (selectedWallet: WalletData) => {
-    this.setState({
-      walletChoiceError: !selectedWallet.isAcceptableSetupWallet,
-      selectedWalletAmount: selectedWallet.value,
-    });
+  onWalletChange = (selectedWallet: DelegationWalletData) => {
+    this.setState({ selectedWallet });
+  };
+
+  onSelectWallet = () => {
+    const { selectedWallet } = this.state;
+    const selectedWalletId = get(selectedWallet, 'id');
+    this.props.onSelectWallet(selectedWalletId);
   };
 
   render() {
     const { intl } = this.context;
-    const { walletChoiceError, selectedWalletAmount } = this.state;
+    const { selectedWallet } = this.state;
     const {
       wallets,
       stepsList,
       minDelegationFunds,
       onClose,
-      onContinue,
       onBack,
     } = this.props;
+
+    const selectedWalletValue = get(selectedWallet, 'value', '');
+    const isAcceptableSetupWallet = get(
+      selectedWallet,
+      'isAcceptableSetupWallet',
+      false
+    );
 
     const actions = [
       {
         className: 'continueButton',
         label: intl.formatMessage(messages.continueButtonLabel),
-        onClick: onContinue,
+        onClick: this.onSelectWallet.bind(this),
         primary: true,
-        disabled: !selectedWalletAmount || walletChoiceError,
+        disabled: !selectedWalletValue || !isAcceptableSetupWallet,
       },
     ];
 
     const walletSelectClasses = classNames([
       styles.walletSelect,
-      walletChoiceError ? styles.error : null,
+      selectedWallet && !isAcceptableSetupWallet ? styles.error : null,
     ]);
+
+    const stepsIndicatorLabel = (
+      <FormattedMessage
+        {...messages.stepIndicatorLabel}
+        values={{
+          currentStep: 1,
+          totalSteps: stepsList.length,
+        }}
+      />
+    );
 
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
+        subtitle={stepsIndicatorLabel}
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
@@ -143,18 +165,9 @@ export default class DelegationStepsChooseWalletDialog extends Component<
         backButton={<DialogBackButton onBack={onBack} />}
       >
         <div className={styles.delegationStepsIndicatorWrapper}>
-          <p className={styles.stepIndicatorLabel}>
-            <FormattedMessage
-              {...messages.stepIndicatorLabel}
-              values={{
-                currentStep: 2,
-                totalSteps: stepsList.length,
-              }}
-            />
-          </p>
           <Stepper
             steps={stepsList}
-            activeStep={2}
+            activeStep={1}
             skin={StepperSkin}
             labelDisabled
           />
@@ -171,18 +184,16 @@ export default class DelegationStepsChooseWalletDialog extends Component<
             className={walletSelectClasses}
             label={intl.formatMessage(messages.selectWalletInputLabel)}
             options={wallets}
-            optionRenderer={option => {
-              return (
-                <div
-                  className={styles.customOptionStyle}
-                  role="presentation"
-                  onClick={this.onWalletChange.bind(this, option)}
-                >
-                  <div className={styles.optionLabel}>{option.label}</div>
-                  <div className={styles.optionValue}>{option.value}</div>
-                </div>
-              );
-            }}
+            optionRenderer={option => (
+              <div
+                className={styles.customOptionStyle}
+                role="presentation"
+                onClick={this.onWalletChange.bind(this, option)}
+              >
+                <div className={styles.optionLabel}>{option.label}</div>
+                <div className={styles.optionValue}>{option.value}</div>
+              </div>
+            )}
             selectionRenderer={option => (
               <div className={styles.customValueStyle}>
                 <div className={styles.label}>{option.label}</div>
@@ -193,9 +204,9 @@ export default class DelegationStepsChooseWalletDialog extends Component<
               messages.selectWalletInputPlaceholder
             )}
             skin={SelectSkin}
-            value={selectedWalletAmount}
+            value={selectedWalletValue}
           />
-          {walletChoiceError && (
+          {selectedWallet && !isAcceptableSetupWallet && (
             <p className={styles.errorMessage}>
               <FormattedHTMLMessage
                 {...messages.errorMessage}

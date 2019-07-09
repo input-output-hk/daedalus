@@ -5,6 +5,11 @@ Changelog
 
 ### Features
 
+- Implemented "Delegation Setup wizard" steps 3 & 4 UI ([PR 1439](https://github.com/input-output-hk/daedalus/pull/1439))
+- Improved "Connectivity/Sync trouble notification" ([PR 1453](https://github.com/input-output-hk/daedalus/pull/1453))
+- Implemented "Delegation Setup wizard" step 2 UI ([PR 1430](https://github.com/input-output-hk/daedalus/pull/1430))
+- Improved loading screen status icons UX ([PR 1452](https://github.com/input-output-hk/daedalus/pull/1452))
+- Implemented external links icon UI ([PR 1447](https://github.com/input-output-hk/daedalus/pull/1447))
 - Implemented "Delegation center screen" UI ([PR 1440](https://github.com/input-output-hk/daedalus/pull/1440))
 - Implemented "Delegation Setup wizard" steps 0 & 1 UI ([PR 1416](https://github.com/input-output-hk/daedalus/pull/1416)), [PR 1442](https://github.com/input-output-hk/daedalus/pull/1442))
 - Implemented "Current and Previous Epochs screen" UI ([PR 1418](https://github.com/input-output-hk/daedalus/pull/1418))
@@ -28,6 +33,7 @@ Changelog
 
 ### Fixes
 
+- Fixed screen flashes during Daedalus loading ([PR 1444](https://github.com/input-output-hk/daedalus/pull/1444))
 - Removes files pushed without running Prettier ([PR 1445](https://github.com/input-output-hk/daedalus/pull/1445))
 - Improved Stake pool tooltip positioning ([PR 1429](https://github.com/input-output-hk/daedalus/pull/1429))
 - Moved the Tooltip logic from `StakePools.js` into `StakePoolsList.js` ([PR 1431](https://github.com/input-output-hk/daedalus/pull/1431))
@@ -45,6 +51,7 @@ Changelog
 
 ### Chores
 
+- Added button to open local state directory on Daedalus Diagnostics Screen ([PR 1438](https://github.com/input-output-hk/daedalus/pull/1438))
 - Updated the list of contributors on the "About" screen ([PR 1450](https://github.com/input-output-hk/daedalus/pull/1450))
 - Improved switching of the application menu screens ([PR 1419](https://github.com/input-output-hk/daedalus/pull/1419))
 - Remove legacy references to report server ([PR 1425](https://github.com/input-output-hk/daedalus/pull/1425))

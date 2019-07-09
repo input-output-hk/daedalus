@@ -6,17 +6,24 @@ import classnames from 'classnames';
 import clockIcon from '../../../assets/images/clock.inline.svg';
 import styles from './StakePoolThumbnail.scss';
 import { getColorFromRange } from '../../../utils/colors';
-import type { StakePool } from '../../../api/staking/types';
 import StakePoolTooltip from './StakePoolTooltip';
+import checkmarkImage from '../../../assets/images/check-w.inline.svg';
+import type { StakePool } from '../../../api/staking/types';
+import { STAKE_POOL_TOOLTIP_HOVER_WAIT } from '../../../config/timingConfig';
 
 type Props = {
-  stakePool: StakePool,
-  index: number,
-  isSelected: boolean,
   currentTheme: string,
-  onOpenExternalLink: Function,
-  onClick: Function,
+  isHighlighted: boolean,
+  onClick?: Function,
   onClose: Function,
+  onHover?: Function,
+  onOpenExternalLink: Function,
+  onSelect: Function,
+  showWithSelectButton?: boolean,
+  showSelected?: boolean,
+  stakePool: StakePool,
+  isSelected?: ?Function,
+  containerClassName: string,
 };
 
 type State = {
@@ -31,58 +38,124 @@ export class StakePoolThumbnail extends Component<Props, State> {
     left: 0,
   };
 
-  handleClick = (event: SyntheticMouseEvent<HTMLElement>) => {
-    const { onClose, onClick, isSelected, stakePool } = this.props;
-    if (isSelected) return onClose();
+  hoverWait: TimeoutID;
+
+  handleHover = (stakePoolId: string) => {
+    clearTimeout(this.hoverWait);
+    this.hoverWait = setTimeout(() => {
+      if (this.props.onHover) this.props.onHover(stakePoolId);
+    }, STAKE_POOL_TOOLTIP_HOVER_WAIT);
+  };
+
+  handleClose = (stakePoolId: string) => {
+    clearTimeout(this.hoverWait);
+    this.props.onClose(stakePoolId);
+  };
+
+  handleOpen = (event: SyntheticMouseEvent<HTMLElement>) => {
+    const { onClose, onClick, onHover, isHighlighted, stakePool } = this.props;
+    if (isHighlighted) return onClose();
     event.persist();
     if (event.target instanceof HTMLElement) {
-      const targetElement =
-        event.target.className === 'StakePool_content'
-          ? event.target
-          : event.target.parentNode;
+      const targetElement = this.getTargetElement(event.target);
       if (targetElement instanceof HTMLElement) {
-        const { top, left } = targetElement.getBoundingClientRect();
+        const { top, left } = this.getRelativePosition(targetElement);
         this.setState({ top, left });
-        onClick(stakePool.id);
+        if (onHover) {
+          this.handleHover(stakePool.id);
+        } else if (onClick) {
+          onClick(stakePool.id);
+        }
       }
     }
     return false;
   };
 
+  getTargetElement = (originalTarget: HTMLElement) => {
+    const { className } = originalTarget;
+    if (className === 'StakePoolThumbnail_content') return originalTarget;
+    if (className === 'StakePoolThumbnail_component')
+      return originalTarget.querySelector('.StakePoolThumbnail_content');
+    return originalTarget.parentNode;
+  };
+
+  getRelativePosition = (targetElement: HTMLElement): Object => {
+    const { containerClassName } = this.props;
+    const relativePosition = {};
+    const parentElement = document.querySelector(`.${containerClassName}`);
+    if (
+      parentElement instanceof HTMLElement &&
+      targetElement instanceof HTMLElement
+    ) {
+      const parentPosition = parentElement.getBoundingClientRect();
+      const childrenPosition = targetElement.getBoundingClientRect();
+      relativePosition.top = childrenPosition.top - parentPosition.top;
+      relativePosition.left = childrenPosition.left - parentPosition.left;
+    }
+    return relativePosition;
+  };
+
+  handleSelect = () => {
+    const { stakePool, onSelect } = this.props;
+    onSelect(stakePool.id);
+  };
+
   render() {
     const {
-      stakePool,
-      index,
-      isSelected,
       currentTheme,
+      isHighlighted,
+      isSelected,
       onClose,
+      onHover,
       onOpenExternalLink,
+      showWithSelectButton,
+      showSelected,
+      stakePool,
+      containerClassName,
     } = this.props;
-
     const { top, left } = this.state;
 
-    const color = getColorFromRange(index);
-
-    const { ranking, slug, retirement } = stakePool;
+    const { ranking, slug, retiring } = stakePool;
+    const color = getColorFromRange(ranking);
 
     const componentClassnames = classnames([
       styles.component,
-      isSelected ? styles.isSelected : null,
+      isHighlighted ? styles.isHighlighted : null,
+      onHover ? styles.isOnHover : null,
+      isSelected && showSelected ? styles.isSelected : null,
     ]);
 
     return (
-      <div className={componentClassnames}>
+      <div
+        className={componentClassnames}
+        onMouseLeave={onHover ? this.handleClose : null}
+        style={{
+          background: isSelected && showSelected && color,
+        }}
+      >
         <div
           className={styles.content}
-          onClick={this.handleClick}
+          onMouseEnter={onHover ? this.handleOpen : null}
+          onClick={!onHover ? this.handleOpen : this.handleSelect}
           role="link"
           aria-hidden
         >
           <div className={styles.slug}>{slug}</div>
-          <div className={styles.ranking} style={{ color }}>
-            {ranking}
-          </div>
-          {retirement && (
+
+          {isSelected && showSelected ? (
+            <div className={styles.checkmarkWrapper}>
+              <SVGInline
+                svg={checkmarkImage}
+                className={styles.checkmarkImage}
+              />
+            </div>
+          ) : (
+            <div className={styles.ranking} style={{ color }}>
+              {ranking}
+            </div>
+          )}
+
+          {retiring && (
             <div className={styles.clock}>
               <SVGInline svg={clockIcon} className={styles.clockIcon} />
             </div>
@@ -94,7 +167,7 @@ export class StakePoolThumbnail extends Component<Props, State> {
             }}
           />
         </div>
-        {isSelected && (
+        {isHighlighted && (
           <StakePoolTooltip
             stakePool={stakePool}
             className={styles.tooltip}
@@ -105,6 +178,9 @@ export class StakePoolThumbnail extends Component<Props, State> {
             top={top}
             left={left}
             color={color}
+            onSelect={this.handleSelect}
+            showWithSelectButton={showWithSelectButton}
+            containerClassName={containerClassName}
           />
         )}
       </div>
