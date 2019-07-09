@@ -5,6 +5,7 @@ import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import attentionIcon from '../../assets/images/attention-big-light.inline.svg';
+import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import { ALLOWED_TIME_DIFFERENCE } from '../../config/timingConfig';
 import styles from './SystemTimeErrorOverlay.scss';
 
@@ -94,10 +95,12 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
     );
     const supportPortalLink = (
       <a
+        className={styles.supportPortalLinkUrl}
         href={supportPortalLinkUrl}
         onClick={event => onExternalLinkClick(supportPortalLinkUrl, event)}
       >
         {intl.formatMessage(messages.supportPortalLink)}
+        <SVGInline svg={externalLinkIcon} />
       </a>
     );
 
