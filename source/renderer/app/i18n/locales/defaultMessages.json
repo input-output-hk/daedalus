@@ -465,17 +465,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Download logs",
-        "description": "Download logs button label on the loading.",
+        "defaultMessage": "!!!Read the article",
+        "description": "Read the article button label on the loading.",
         "end": {
           "column": 3,
           "line": 98
         },
         "file": "source/renderer/app/components/loading/Loading.js",
+        "id": "loading.screen.readArticle.buttonLabel",
+        "start": {
+          "column": 26,
+          "line": 94
+        }
+      },
+      {
+        "defaultMessage": "!!!Download logs",
+        "description": "Download logs button label on the loading.",
+        "end": {
+          "column": 3,
+          "line": 103
+        },
+        "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.downloadLogsLinkLabel",
         "start": {
           "column": 36,
-          "line": 94
+          "line": 99
         }
       },
       {
@@ -483,13 +497,13 @@
         "description": "The TLS cert is not valid and Daedalus should be restarted",
         "end": {
           "column": 3,
-          "line": 103
+          "line": 108
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.errors.tlsCertificateNotValidPleaseRestartError",
         "start": {
           "column": 31,
-          "line": 99
+          "line": 104
         }
       }
     ],
@@ -8216,6 +8230,34 @@
         "start": {
           "column": 24,
           "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360011536933",
+        "description": "Link to sync issue article page",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/containers/LoadingPage.js",
+        "id": "loading.screen.readIssueArticle.syncIssueArticleUrl",
+        "start": {
+          "column": 23,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360010522913",
+        "description": "Link to connectivity issue article page",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/containers/LoadingPage.js",
+        "id": "loading.screen.readIssueArticle.connectivityIssueArticleUrl",
+        "start": {
+          "column": 31,
+          "line": 29
         }
       }
     ],

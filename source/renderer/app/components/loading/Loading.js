@@ -91,6 +91,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Open support ticket',
     description: 'Open support ticket button label on the loading.',
   },
+  readArticleButtonLabel: {
+    id: 'loading.screen.readArticle.buttonLabel',
+    defaultMessage: '!!!Read the article',
+    description: 'Read the article button label on the loading.',
+  },
   reportIssueDownloadLogsLinkLabel: {
     id: 'loading.screen.reportIssue.downloadLogsLinkLabel',
     defaultMessage: '!!!Download logs',
@@ -115,6 +120,8 @@ type Props = {
   apiIcon: string,
   cardanoNodeState: ?CardanoNodeState,
   hasBeenConnected: boolean,
+  forceConnectivityIssue?: boolean,
+  forceSyncIssue?: boolean,
   isConnected: boolean,
   isSynced: boolean,
   isNodeStopping: boolean,
@@ -143,6 +150,8 @@ type Props = {
   isNewAppVersionLoaded: boolean,
   onExternalLinkClick: Function,
   onReportIssueClick: Function,
+  onReadSyncIssueArticleClick: Function,
+  onReadConnectivityIssueArticleClick: Function,
   onCheckTheTimeAgain: Function,
   onContinueWithoutClockSyncCheck: Function,
   onDownloadLogs: Function,
@@ -412,6 +421,8 @@ export default class Loading extends Component<Props, State> {
       cardanoNodeState,
       currencyIcon,
       apiIcon,
+      forceConnectivityIssue,
+      forceSyncIssue,
       isConnected,
       isSynced,
       isNodeStopping,
@@ -419,6 +430,8 @@ export default class Loading extends Component<Props, State> {
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
       onReportIssueClick,
+      onReadSyncIssueArticleClick,
+      onReadConnectivityIssueArticleClick,
       onDownloadLogs,
       disableDownloadLogs,
       isNodeResponding,
@@ -463,17 +476,19 @@ export default class Loading extends Component<Props, State> {
     const apiLoadingLogo = apiIcon;
 
     const canReportConnectingIssue =
-      !isConnected &&
-      (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
-        cardanoNodeState === CardanoNodeStates.UNRECOVERABLE);
+      forceConnectivityIssue ||
+      (!isConnected &&
+        (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
+          cardanoNodeState === CardanoNodeStates.UNRECOVERABLE));
     const canReportSyncingIssue =
-      isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER;
+      forceSyncIssue ||
+      (isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER);
     const showReportIssue =
       isNewAppVersionLoaded &&
       !isNewAppVersionAvailable &&
       (canReportConnectingIssue || canReportSyncingIssue);
 
-    const buttonClasses = classNames(['primary', styles.reportIssueButton]);
+    const buttonClasses = classNames(['primary', styles.actionButton]);
 
     const isNodeTimeCheckedAndCorrect = isCheckingSystemTime
       ? undefined
@@ -500,6 +515,24 @@ export default class Loading extends Component<Props, State> {
                 </p>
               }
               onClick={onReportIssueClick}
+              skin={ButtonSkin}
+            />
+            <Button
+              className={buttonClasses}
+              label={
+                <p>
+                  <SVGInline
+                    svg={linkNewWindow}
+                    className={styles.linkNewWindow}
+                  />
+                  {intl.formatMessage(messages.readArticleButtonLabel)}
+                </p>
+              }
+              onClick={
+                !isConnected
+                  ? onReadConnectivityIssueArticleClick
+                  : onReadSyncIssueArticleClick
+              }
               skin={ButtonSkin}
             />
             <br />
