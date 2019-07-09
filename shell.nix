@@ -7,6 +7,7 @@ in
 , cluster ? "demo"
 , systemStart ? null
 , autoStartBackend ? systemStart != null
+, generateTls ? true
 , walletExtraArgs ? []
 , allowFaultInjection ? false
 , purgeNpmCache ? false
@@ -139,7 +140,7 @@ let
         ''}
         mkdir -p "''${STATE_PATH}/${secretsDir}"
       ''}
-      ${localLib.optionalString autoStartBackend ''
+      ${localLib.optionalString generateTls ''
           TLS_PATH=$(eval echo $(jq ".tlsPath" < ${launcher-json}))
           mkdir -p "''${TLS_PATH}/server" "''${TLS_PATH}/client"
           cardano-x509-certificates \
@@ -147,6 +148,7 @@ let
           --clients-out-dir "''${TLS_PATH}/client" \
           --configuration-file ${daedalusPkgs.daedalus.cfg}/etc/configuration.yaml \
           --configuration-key mainnet_dryrun_full
+          echo "Generated TLS certs"
           echo ''${TLS_PATH}
         ''
       }

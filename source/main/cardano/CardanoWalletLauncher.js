@@ -2,14 +2,6 @@
 import { spawn } from 'child_process';
 import type { ChildProcess } from 'child_process';
 
-/*
-  cardano-wallet launch
-    [--network=STRING]
-    [(--port=INT | --random-port)]
-    [--node-port=INT]
-    [--state-dir=DIR]
-    [(--quiet | --verbose )]
-*/
 export type WalletOpts = {
   path: string,
   networkMode: string,
@@ -26,15 +18,19 @@ export function CardanoWalletLauncher({
   stateDir,
 }: WalletOpts): ChildProcess {
   const opts = [
+    'launch',
     '--network',
     networkMode,
-    '--node-port',
+    '--backend-port',
     String(nodePort),
     '--state-dir',
     stateDir,
-    '--random-port',
+    // TODO: Neither of these are working for some reason
+    // '--random-port',
+    // '--port',
+    // '8889',
   ];
 
   const walletStdio: string[] = ['inherit', logStream, logStream, 'ipc'];
-  return spawn(`${path} launch`, opts, { stdio: walletStdio });
+  return spawn(path, opts, { stdio: walletStdio });
 }

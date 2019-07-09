@@ -34,7 +34,7 @@ let
   isDaedalus = name: false;
   # TODO: Update once this branch is merged into input-output-hk/cardano-wallet
   cardanoWalletSrc = import (pkgs.fetchFromGitHub {
-    owner = "jbgi";
+    owner = "input-output-hk";
     repo = "cardano-wallet";
     rev = "0129cb2f0a40d9801c13ec64058899810c847509";
     sha256 = "0kic2mbkjyp433xmi8203j62qfw34yfkxdpalb3qcqh2652s5371";
