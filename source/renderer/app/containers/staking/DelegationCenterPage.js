@@ -8,10 +8,15 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
 
-@inject('stores')
+@inject('actions', 'stores')
 @observer
 export default class DelegationCenterPage extends Component<Props> {
   static defaultProps = { stores: null };
+
+  componentWillMount() {
+    const { actions } = this.props;
+    actions.dialogs.open.trigger({ dialog: DelegationSetupWizardDialog });
+  }
 
   render() {
     const { uiDialogs, staking } = this.props.stores;

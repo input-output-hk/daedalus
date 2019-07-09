@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import { get } from 'lodash';
 import DelegationStepsActivationDialog from './DelegationStepsActivationDialog';
 import DelegationStepsChooseWalletDialog from './DelegationStepsChooseWalletDialog';
 import DelegationStepsConfirmationDialog from './DelegationStepsConfirmationDialog';
@@ -9,10 +10,12 @@ import DelegationStepsNotAvailableDialog from './DelegationStepsNotAvailableDial
 import DelegationStepsChooseStakePoolDialog from './DelegationStepsChooseStakePoolDialog';
 import type { StakePool } from '../../../api/staking/types';
 
-type WalletData = {
+type DelegationWalletData = {
+  id: string,
   isAcceptableSetupWallet: boolean,
   label: string,
   value: string,
+  hasPassword: boolean,
 };
 
 type Props = {
@@ -24,13 +27,15 @@ type Props = {
   onConfirm: Function,
   onContinue: Function,
   onLearnMoreClick: Function,
+  onSelectWallet: Function,
   stepsList: Array<string>,
-  wallets: Array<WalletData>,
+  wallets: Array<DelegationWalletData>,
   minDelegationFunds: number,
   stakePoolsDelegatingList: Array<StakePool>,
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
   currentTheme: string,
+  selectedWallet: ?DelegationWalletData,
 };
 
 @observer
@@ -45,6 +50,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       onConfirm,
       onContinue,
       onLearnMoreClick,
+      onSelectWallet,
       stepsList,
       wallets,
       minDelegationFunds,
@@ -52,7 +58,10 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       stakePoolsList,
       onOpenExternalLink,
       currentTheme,
+      selectedWallet,
     } = this.props;
+
+    const selectedWalletHasPassword = get(selectedWallet, 'hasPassword', false);
 
     if (isDisabled) {
       return (
@@ -71,9 +80,10 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             stepsList={stepsList}
             wallets={wallets}
             minDelegationFunds={minDelegationFunds}
-            onClose={onClose}
-            onContinue={onContinue}
+            selectedWallet={selectedWallet}
             onBack={onBack}
+            onClose={onClose}
+            onSelectWallet={onSelectWallet}
           />
         );
         break;
@@ -95,7 +105,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
         content = (
           <DelegationStepsConfirmationDialog
             stepsList={stepsList}
-            isSpendingPasswordSet
+            isSpendingPasswordSet={selectedWalletHasPassword}
             onClose={onClose}
             onConfirm={onConfirm}
             onBack={onBack}
@@ -106,7 +116,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
         content = (
           <DelegationStepsActivationDialog
             stepsList={stepsList}
-            isSpendingPasswordSet
+            isSpendingPasswordSet={selectedWalletHasPassword}
             onClose={onClose}
             onActivate={onActivate}
             onBack={onBack}

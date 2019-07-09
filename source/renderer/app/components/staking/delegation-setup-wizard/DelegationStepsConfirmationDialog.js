@@ -97,8 +97,9 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
           value: '',
           validators: [
             ({ field }) => {
+              const { isSpendingPasswordSet } = this.props;
               const password = field.value;
-              if (password === '') {
+              if (isSpendingPasswordSet && password === '') {
                 return [
                   false,
                   this.context.intl.formatMessage(messages.fieldIsRequired),
