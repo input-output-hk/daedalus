@@ -70,9 +70,9 @@ storiesOf('Loading', module)
       isNewAppVersionLoaded={boolean('isNewAppVersionLoaded', false)}
       onExternalLinkClick={action('onExternalLinkClick')}
       onReportIssueClick={action('onReportIssueClick')}
-      onReadSyncIssueHelpClick={action('onReadSyncIssueHelpClick')}
-      onReadConnectivityIssueHelpClick={action(
-        'onReadConnectivityIssueHelpClick'
+      onReadSyncIssueArticleClick={action('onReadSyncIssueArticleClick')}
+      onReadConnectivityIssueArticleClick={action(
+        'onReadConnectivityIssueArticleClick'
       )}
       onCheckTheTimeAgain={action('onCheckTheTimeAgain')}
       onContinueWithoutClockSyncCheck={action(
@@ -123,9 +123,9 @@ storiesOf('Loading', module)
       isNewAppVersionLoaded
       onExternalLinkClick={action('onExternalLinkClick')}
       onReportIssueClick={action('onReportIssueClick')}
-      onReadSyncIssueHelpClick={action('onReadSyncIssueHelpClick')}
-      onReadConnectivityIssueHelpClick={action(
-        'onReadConnectivityIssueHelpClick'
+      onReadSyncIssueArticleClick={action('onReadSyncIssueArticleClick')}
+      onReadConnectivityIssueArticleClick={action(
+        'onReadConnectivityIssueArticleClick'
       )}
       onCheckTheTimeAgain={action('onCheckTheTimeAgain')}
       onContinueWithoutClockSyncCheck={action(
@@ -176,9 +176,9 @@ storiesOf('Loading', module)
       isNewAppVersionLoaded
       onExternalLinkClick={action('onExternalLinkClick')}
       onReportIssueClick={action('onReportIssueClick')}
-      onReadSyncIssueHelpClick={action('onReadSyncIssueHelpClick')}
-      onReadConnectivityIssueHelpClick={action(
-        'onReadConnectivityIssueHelpClick'
+      onReadSyncIssueArticleClick={action('onReadSyncIssueArticleClick')}
+      onReadConnectivityIssueArticleClick={action(
+        'onReadConnectivityIssueArticleClick'
       )}
       onCheckTheTimeAgain={action('onCheckTheTimeAgain')}
       onContinueWithoutClockSyncCheck={action(

@@ -91,8 +91,8 @@ const messages = defineMessages({
     defaultMessage: '!!!Open support ticket',
     description: 'Open support ticket button label on the loading.',
   },
-  readIssueHelpButtonLabel: {
-    id: 'loading.screen.readIssueHelp.buttonLabel',
+  readArticleButtonLabel: {
+    id: 'loading.screen.readArticle.buttonLabel',
     defaultMessage: '!!!Read the article',
     description: 'Read the article button label on the loading.',
   },
@@ -150,8 +150,8 @@ type Props = {
   isNewAppVersionLoaded: boolean,
   onExternalLinkClick: Function,
   onReportIssueClick: Function,
-  onReadSyncIssueHelpClick: Function,
-  onReadConnectivityIssueHelpClick: Function,
+  onReadSyncIssueArticleClick: Function,
+  onReadConnectivityIssueArticleClick: Function,
   onCheckTheTimeAgain: Function,
   onContinueWithoutClockSyncCheck: Function,
   onDownloadLogs: Function,
@@ -430,8 +430,8 @@ export default class Loading extends Component<Props, State> {
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
       onReportIssueClick,
-      onReadSyncIssueHelpClick,
-      onReadConnectivityIssueHelpClick,
+      onReadSyncIssueArticleClick,
+      onReadConnectivityIssueArticleClick,
       onDownloadLogs,
       disableDownloadLogs,
       isNodeResponding,
@@ -488,7 +488,7 @@ export default class Loading extends Component<Props, State> {
       !isNewAppVersionAvailable &&
       (canReportConnectingIssue || canReportSyncingIssue);
 
-    const buttonClasses = classNames(['primary', styles.reportReadIssueButton]);
+    const buttonClasses = classNames(['primary', styles.actionButton]);
 
     const isNodeTimeCheckedAndCorrect = isCheckingSystemTime
       ? undefined
@@ -525,13 +525,13 @@ export default class Loading extends Component<Props, State> {
                     svg={linkNewWindow}
                     className={styles.linkNewWindow}
                   />
-                  {intl.formatMessage(messages.readIssueHelpButtonLabel)}
+                  {intl.formatMessage(messages.readArticleButtonLabel)}
                 </p>
               }
               onClick={
                 !isConnected
-                  ? onReadConnectivityIssueHelpClick
-                  : onReadSyncIssueHelpClick
+                  ? onReadConnectivityIssueArticleClick
+                  : onReadSyncIssueArticleClick
               }
               skin={ButtonSkin}
             />

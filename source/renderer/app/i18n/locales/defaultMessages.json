@@ -472,9 +472,9 @@
           "line": 98
         },
         "file": "source/renderer/app/components/loading/Loading.js",
-        "id": "loading.screen.readIssueHelp.buttonLabel",
+        "id": "loading.screen.readArticle.buttonLabel",
         "start": {
-          "column": 28,
+          "column": 26,
           "line": 94
         }
       },
@@ -7799,29 +7799,29 @@
       },
       {
         "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360011536933",
-        "description": "Link to sync issue help page",
+        "description": "Link to sync issue article page",
         "end": {
           "column": 3,
           "line": 28
         },
         "file": "source/renderer/app/containers/LoadingPage.js",
-        "id": "loading.screen.readIssueHelp.readSyncIssueHelpButtonUrl",
+        "id": "loading.screen.readIssueArticle.syncIssueArticleUrl",
         "start": {
-          "column": 30,
+          "column": 23,
           "line": 23
         }
       },
       {
         "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360010522913",
-        "description": "Link to connectivity issue help page",
+        "description": "Link to connectivity issue article page",
         "end": {
           "column": 3,
           "line": 34
         },
         "file": "source/renderer/app/containers/LoadingPage.js",
-        "id": "loading.screen.readIssueHelp.readConnectivityIssueHelpButtonUrl",
+        "id": "loading.screen.readIssueArticle.connectivityIssueArticleUrl",
         "start": {
-          "column": 38,
+          "column": 31,
           "line": 29
         }
       }
