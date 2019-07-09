@@ -13,10 +13,10 @@ type Props = InjectedProps;
 export default class DelegationCenterPage extends Component<Props> {
   static defaultProps = { stores: null };
 
-  componentWillMount() {
-    const { actions } = this.props;
-    actions.dialogs.open.trigger({ dialog: DelegationSetupWizardDialog });
-  }
+  // componentWillMount() {
+  // const { actions } = this.props;
+  // actions.dialogs.open.trigger({ dialog: DelegationSetupWizardDialog });
+  // }
 
   render() {
     const { uiDialogs, staking } = this.props.stores;
