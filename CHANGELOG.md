@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented "Delegation Setup wizard" step 2 UI ([PR 1430](https://github.com/input-output-hk/daedalus/pull/1430))
 - Improved loading screen status icons UX ([PR 1452](https://github.com/input-output-hk/daedalus/pull/1452))
 - Implemented external links icon UI ([PR 1447](https://github.com/input-output-hk/daedalus/pull/1447))
 - Implemented "Delegation center screen" UI ([PR 1440](https://github.com/input-output-hk/daedalus/pull/1440))

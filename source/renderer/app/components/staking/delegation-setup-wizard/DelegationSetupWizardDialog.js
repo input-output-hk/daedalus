@@ -4,6 +4,8 @@ import { observer } from 'mobx-react';
 import DelegationStepsNotAvailableDialog from './DelegationStepsNotAvailableDialog';
 import DelegationStepsIntroDialog from './DelegationStepsIntroDialog';
 import DelegationStepsChooseWalletDialog from './DelegationStepsChooseWalletDialog';
+import DelegationStepsChooseStakePoolDialog from './DelegationStepsChooseStakePoolDialog';
+import type { StakePool } from '../../../api/staking/types';
 
 type WalletData = {
   label: string,
@@ -21,6 +23,10 @@ type Props = {
   onLearnMoreClick: Function,
   stepsList: Array<string>,
   minDelegationFunds: number,
+  stakePoolsDelegatingList: Array<StakePool>,
+  stakePoolsList: Array<StakePool>,
+  onOpenExternalLink: Function,
+  currentTheme: string,
 };
 
 @observer
@@ -36,6 +42,10 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       onLearnMoreClick,
       stepsList,
       minDelegationFunds,
+      stakePoolsDelegatingList,
+      stakePoolsList,
+      onOpenExternalLink,
+      currentTheme,
     } = this.props;
 
     if (isDisabled) {
@@ -55,6 +65,20 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             stepsList={stepsList}
             wallets={wallets}
             minDelegationFunds={minDelegationFunds}
+            onClose={onClose}
+            onContinue={onContinue}
+            onBack={onBack}
+          />
+        );
+        break;
+      case 2:
+        content = (
+          <DelegationStepsChooseStakePoolDialog
+            stepsList={stepsList}
+            stakePoolsDelegatingList={stakePoolsDelegatingList}
+            stakePoolsList={stakePoolsList}
+            onOpenExternalLink={onOpenExternalLink}
+            currentTheme={currentTheme}
             onClose={onClose}
             onContinue={onContinue}
             onBack={onBack}
