@@ -144,8 +144,12 @@ $adaLogoWidth: 43px;
 
 .linkNewWindow {
   display: inline-block;
-  width: 12px;
   margin-right: 10px;
+  vertical-align: middle;
+  width: 12px;
+  g {
+    stroke: var(--theme-report-issue-icon-color);
+  }
 }
 
 .headline {

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import SVGInline from 'react-svg-inline';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import { getNetworkExplorerUrl } from '../../../utils/network';
@@ -15,6 +16,7 @@ import {
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../../../config/cryptoConfig';
 import { DEVELOPMENT } from '../../../../../common/types/environment.types';
+import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 
 const messages = defineMessages({
   headline: {
@@ -169,6 +171,7 @@ export default class InstructionsDialog extends Component<Props> {
         aria-hidden
       >
         {intl.formatMessage(messages.cardanoExplorer)}
+        <SVGInline svg={externalLinkIcon} />
       </span>
     );
 
