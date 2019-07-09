@@ -70,6 +70,10 @@ storiesOf('Loading', module)
       isNewAppVersionLoaded={boolean('isNewAppVersionLoaded', false)}
       onExternalLinkClick={action('onExternalLinkClick')}
       onReportIssueClick={action('onReportIssueClick')}
+      onReadSyncIssueHelpClick={action('onReadSyncIssueHelpClick')}
+      onReadConnectivityIssueHelpClick={action(
+        'onReadConnectivityIssueHelpClick'
+      )}
       onCheckTheTimeAgain={action('onCheckTheTimeAgain')}
       onContinueWithoutClockSyncCheck={action(
         'onContinueWithoutClockSyncCheck'

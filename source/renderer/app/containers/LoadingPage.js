@@ -20,6 +20,18 @@ export const messages = defineMessages({
     defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/requests/new/',
     description: 'Link to Open Support page',
   },
+  readSyncIssueHelpButtonUrl: {
+    id: 'loading.screen.readIssueHelp.readSyncIssueHelpButtonUrl',
+    defaultMessage:
+      '!!!https://iohk.zendesk.com/hc/en-us/articles/360011536933',
+    description: 'Link to sync issue help page',
+  },
+  readConnectivityIssueHelpButtonUrl: {
+    id: 'loading.screen.readIssueHelp.readConnectivityIssueHelpButtonUrl',
+    defaultMessage:
+      '!!!https://iohk.zendesk.com/hc/en-us/articles/360010522913',
+    description: 'Link to connectivity issue help page',
+  },
 });
 
 @inject('stores', 'actions')
@@ -104,6 +116,10 @@ export default class LoadingPage extends Component<InjectedProps> {
           currentLocale={currentLocale}
           onExternalLinkClick={openExternalLink}
           onReportIssueClick={this.handleReportIssueClick}
+          onReadSyncIssueHelpClick={this.handleReadSyncIssueHelpClick}
+          onReadConnectivityIssueHelpClick={
+            this.handleReadConnectivityIssueHelpClick
+          }
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
           onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
           onGetAvailableVersions={this.handleGetAvailableVersions}
@@ -122,6 +138,35 @@ export default class LoadingPage extends Component<InjectedProps> {
     );
     const locale = this.props.stores.profile.currentLocale;
     const supportUrl = await getSupportUrl(reportIssueButtonUrl, locale);
+    this.props.stores.app.openExternalLink(supportUrl);
+  };
+
+  handleReadSyncIssueHelpClick = async (
+    event: SyntheticEvent<HTMLButtonElement>
+  ) => {
+    event.persist();
+    const { intl } = this.context;
+    const readSyncIssueHelpButtonUrl = intl.formatMessage(
+      messages.readSyncIssueHelpButtonUrl
+    );
+    const locale = this.props.stores.profile.currentLocale;
+    const supportUrl = await getSupportUrl(readSyncIssueHelpButtonUrl, locale);
+    this.props.stores.app.openExternalLink(supportUrl);
+  };
+
+  handleReadConnectivityIssueHelpClick = async (
+    event: SyntheticEvent<HTMLButtonElement>
+  ) => {
+    event.persist();
+    const { intl } = this.context;
+    const readConnectivityIssueHelpButtonUrl = intl.formatMessage(
+      messages.readConnectivityIssueHelpButtonUrl
+    );
+    const locale = this.props.stores.profile.currentLocale;
+    const supportUrl = await getSupportUrl(
+      readConnectivityIssueHelpButtonUrl,
+      locale
+    );
     this.props.stores.app.openExternalLink(supportUrl);
   };
 
