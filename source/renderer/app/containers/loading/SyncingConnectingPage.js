@@ -60,7 +60,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         isNewAppVersionAvailable={isNewAppVersionAvailable}
         isNewAppVersionLoading={isNewAppVersionLoading}
         isNewAppVersionLoaded={isNewAppVersionLoaded}
-        onReportIssueClick={this.handleReportIssueClick}
+        onIssueClick={this.handleIssueClick}
         onGetAvailableVersions={this.handleGetAvailableVersions}
         onDownloadLogs={this.handleDownloadLogs}
         disableDownloadLogs={stores.app.isDownloadNotificationVisible}
@@ -68,9 +68,9 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
     );
   }
 
-  handleReportIssueClick = async (reportIssueButtonUrl: string) => {
+  handleIssueClick = async (issueButtonUrl: string) => {
     const locale = this.props.stores.profile.currentLocale;
-    const supportUrl = await getSupportUrl(reportIssueButtonUrl, locale);
+    const supportUrl = await getSupportUrl(issueButtonUrl, locale);
     this.props.stores.app.openExternalLink(supportUrl);
   };
 

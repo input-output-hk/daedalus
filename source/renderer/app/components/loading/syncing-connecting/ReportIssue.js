@@ -25,6 +25,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Open support ticket',
     description: 'Open support ticket button label on the loading.',
   },
+  readArticleButtonLabel: {
+    id: 'loading.screen.readArticle.buttonLabel',
+    defaultMessage: '!!!Read the article',
+    description: 'Read the article button label on the loading.',
+  },
   reportIssueDownloadLogsLinkLabel: {
     id: 'loading.screen.reportIssue.downloadLogsLinkLabel',
     defaultMessage: '!!!Download logs',
@@ -35,11 +40,23 @@ const messages = defineMessages({
     defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/requests/new/',
     description: 'Link to Open Support page',
   },
+  syncIssueArticleUrl: {
+    id: 'loading.screen.readIssueArticle.syncIssueArticleUrl',
+    defaultMessage:
+      '!!!https://iohk.zendesk.com/hc/en-us/articles/360011536933',
+    description: 'Link to sync issue article page',
+  },
+  connectivityIssueArticleUrl: {
+    id: 'loading.screen.readIssueArticle.connectivityIssueArticleUrl',
+    defaultMessage:
+      '!!!https://iohk.zendesk.com/hc/en-us/articles/360010522913',
+    description: 'Link to connectivity issue article page',
+  },
 });
 
 type Props = {
   isConnected: boolean,
-  onReportIssueClick: Function,
+  onIssueClick: Function,
   onDownloadLogs: Function,
   disableDownloadLogs: boolean,
   isConnecting: boolean,
@@ -55,7 +72,7 @@ export default class ReportIssue extends Component<Props> {
     const { intl } = this.context;
     const {
       isConnected,
-      onReportIssueClick,
+      onIssueClick,
       onDownloadLogs,
       disableDownloadLogs,
       isConnecting,
@@ -68,12 +85,16 @@ export default class ReportIssue extends Component<Props> {
       isSyncing ? styles['is-syncing'] : null,
     ]);
 
-    const buttonClasses = classNames(['primary', styles.reportIssueButton]);
+    const buttonClasses = classNames(['primary', styles.actionButton]);
 
     const downloadLogsButtonStyles = classNames([
       styles.downloadLogsButton,
       !isConnected ? styles.downloadLogsButtonConnecting : null,
     ]);
+
+    const readArticleButtonUrl = isConnected
+      ? messages.syncIssueArticleUrl
+      : messages.connectivityIssueArticleUrl;
 
     return (
       <div className={componentStyles}>
@@ -91,10 +112,19 @@ export default class ReportIssue extends Component<Props> {
             </p>
           }
           onClick={() =>
-            onReportIssueClick(
-              intl.formatMessage(messages.reportIssueButtonUrl)
-            )
+            onIssueClick(intl.formatMessage(messages.reportIssueButtonUrl))
           }
+          skin={ButtonSkin}
+        />
+        <Button
+          className={buttonClasses}
+          label={
+            <p>
+              <SVGInline svg={linkNewWindow} className={styles.linkNewWindow} />
+              {intl.formatMessage(messages.readArticleButtonLabel)}
+            </p>
+          }
+          onClick={onIssueClick(readArticleButtonUrl)}
           skin={ButtonSkin}
         />
         <br />

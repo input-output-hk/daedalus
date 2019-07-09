@@ -23,6 +23,8 @@ type State = {
 type Props = {
   cardanoNodeState: ?CardanoNodeState,
   hasBeenConnected: boolean,
+  forceConnectivityIssue?: boolean,
+  forceSyncIssue?: boolean,
   isConnected: boolean,
   isSynced: boolean,
   isConnecting: boolean,
@@ -41,7 +43,7 @@ type Props = {
   isNewAppVersionAvailable: boolean,
   isNewAppVersionLoading: boolean,
   isNewAppVersionLoaded: boolean,
-  onReportIssueClick: Function,
+  onIssueClick: Function,
   onDownloadLogs: Function,
   onGetAvailableVersions: Function,
   disableDownloadLogs: boolean,
@@ -165,14 +167,18 @@ export default class SyncingConnecting extends Component<Props, State> {
       cardanoNodeState,
       isNewAppVersionLoaded,
       isNewAppVersionAvailable,
+      forceConnectivityIssue,
+      forceSyncIssue,
     } = this.props;
     const { connectingTime, syncingTime } = this.state;
     const canReportConnectingIssue =
-      !isConnected &&
-      (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
-        cardanoNodeState === CardanoNodeStates.UNRECOVERABLE);
+      forceConnectivityIssue ||
+      (!isConnected &&
+        (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
+          cardanoNodeState === CardanoNodeStates.UNRECOVERABLE));
     const canReportSyncingIssue =
-      isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER;
+      forceSyncIssue ||
+      (isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER);
     return (
       isNewAppVersionLoaded &&
       !isNewAppVersionAvailable &&
@@ -189,7 +195,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       isSyncing,
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
-      onReportIssueClick,
+      onIssueClick,
       onDownloadLogs,
       disableDownloadLogs,
       isNodeResponding,
@@ -202,6 +208,8 @@ export default class SyncingConnecting extends Component<Props, State> {
       isNodeStopping,
       isNodeStopped,
       syncPercentage,
+      onReadConnectivityIssueArticleClick,
+      onReadSyncIssueArticleClick,
     } = this.props;
 
     const componentStyles = classNames([
@@ -216,11 +224,15 @@ export default class SyncingConnecting extends Component<Props, State> {
         {this.showReportIssue && (
           <ReportIssue
             isConnected={isConnected}
-            onReportIssueClick={onReportIssueClick}
+            onIssueClick={onIssueClick}
             onDownloadLogs={onDownloadLogs}
             disableDownloadLogs={disableDownloadLogs}
             isConnecting={isConnecting}
             isSyncing={isSyncing}
+            onReadConnectivityIssueArticleClick={
+              onReadConnectivityIssueArticleClick
+            }
+            onReadSyncIssueArticleClick={onReadSyncIssueArticleClick}
           />
         )}
         <LogosDisplay isConnected={isConnected} />
