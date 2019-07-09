@@ -24,7 +24,7 @@ export default class Wallet extends Component<Props> {
     const { app, wallets } = this.props.stores;
     if (!wallets.active) return false;
     const { options } = item;
-    if (options.length) {
+    if (options && options.length) {
       options.forEach(option => {
         if (
           app.currentRoute &&
