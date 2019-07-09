@@ -28,6 +28,7 @@
     "manage:translations": "gulp purge:translations && gulp clear:cache && gulp build && node ./translations/translation-runner.js",
     "storybook": "start-storybook -p 6006 -c storybook",
     "storybook:build": "build-storybook -c storybook -o dist/storybook",
+    "themes:check": "yarn dev && node ./source/renderer/app/themes/utils/checkCreateTheme",
     "clear:cache": "gulp clear:cache",
     "nix:dev": "nix-shell --arg autoStartBackend true --arg allowFaultInjection true --arg systemStart",
     "nix:staging": "nix-shell --arg autoStartBackend true --argstr cluster staging"
