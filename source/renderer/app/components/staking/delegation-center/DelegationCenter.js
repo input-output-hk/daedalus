@@ -12,17 +12,18 @@ type Props = {
   percentage: number,
   wallets: Array<Wallet>,
   children?: Node,
+  onDelegate: Function,
 };
 
 @observer
 export default class DelegationCenter extends Component<Props> {
   render() {
-    const { adaValue, percentage, wallets, children } = this.props;
+    const { adaValue, percentage, wallets, children, onDelegate } = this.props;
 
     return (
       <Fragment>
         <DelegationCenterHeader adaValue={adaValue} percentage={percentage} />
-        <DelegationCenterBody wallets={wallets} />
+        <DelegationCenterBody wallets={wallets} onDelegate={onDelegate} />
         {children}
       </Fragment>
     );

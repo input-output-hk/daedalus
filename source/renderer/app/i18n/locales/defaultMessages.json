@@ -1998,6 +1998,179 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Confirm Delegation",
+        "description": "Title \"Confirm Delegation\" on the delegation setup \"activation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
+        "id": "staking.delegationSetup.activation.step.dialog.title",
+        "start": {
+          "column": 9,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!STEP {currentStep} OF {totalSteps}",
+        "description": "Step indicator labe on the delegation setup \"activation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
+        "id": "staking.delegationSetup.activation.step.dialog.stepIndicatorLabel",
+        "start": {
+          "column": 22,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!All <span>new</span> wallet addresses will now match your delegation preferences and the stake associated with ada received on those addresses will be delegated.",
+        "description": "Description \"line 1\" on the delegation setup \"activation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 40
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
+        "id": "staking.delegationSetup.activation.step.dialog.description.line1",
+        "start": {
+          "column": 20,
+          "line": 34
+        }
+      },
+      {
+        "defaultMessage": "!!!To delegate ada which remains in old addresses in your wallet, move it to a new address where your delegation preferences have been applied.",
+        "description": "Description \"line 2\" on the delegation setup \"activation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
+        "id": "staking.delegationSetup.activation.step.dialog.description.line2",
+        "start": {
+          "column": 20,
+          "line": 41
+        }
+      },
+      {
+        "defaultMessage": "!!!To",
+        "description": "Address label on the delegation setup \"activation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 53
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
+        "id": "staking.delegationSetup.activation.step.dialog.addressLabel",
+        "start": {
+          "column": 16,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Amount",
+        "description": "Amount label on the delegation setup \"activation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 59
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
+        "id": "staking.delegationSetup.activation.step.dialog.amountLabel",
+        "start": {
+          "column": 15,
+          "line": 54
+        }
+      },
+      {
+        "defaultMessage": "!!!Fees",
+        "description": "Fees label on the delegation setup \"activation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 64
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
+        "id": "staking.delegationSetup.activation.step.dialog.feesLabel",
+        "start": {
+          "column": 13,
+          "line": 60
+        }
+      },
+      {
+        "defaultMessage": "!!!Total",
+        "description": "Total label on the delegation setup \"activation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 70
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
+        "id": "staking.delegationSetup.activation.step.dialog.totalLabel",
+        "start": {
+          "column": 14,
+          "line": 65
+        }
+      },
+      {
+        "defaultMessage": "!!!Password",
+        "description": "Placeholder for \"spending password\"",
+        "end": {
+          "column": 3,
+          "line": 76
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
+        "id": "staking.delegationSetup.activation.step.dialog.spendingPasswordPlaceholder",
+        "start": {
+          "column": 31,
+          "line": 71
+        }
+      },
+      {
+        "defaultMessage": "!!!Spending password",
+        "description": "Label for \"spending password\"",
+        "end": {
+          "column": 3,
+          "line": 81
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
+        "id": "staking.delegationSetup.activation.step.dialog.spendingPasswordLabel",
+        "start": {
+          "column": 25,
+          "line": 77
+        }
+      },
+      {
+        "defaultMessage": "!!!Confirm",
+        "description": "Label for continue button on the delegation setup \"activation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 87
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
+        "id": "staking.delegationSetup.activation.step.dialog.confirmButtonLabel",
+        "start": {
+          "column": 22,
+          "line": 82
+        }
+      },
+      {
+        "defaultMessage": "!!!I’ll do it later",
+        "description": "Postpone button label on the delegation setup \"activation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 93
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
+        "id": "staking.delegationSetup.activation.step.dialog.postponeButtonLabel",
+        "start": {
+          "column": 23,
+          "line": 88
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Delegation Setup",
         "description": "Title \"Delegation Setup\" on the delegation setup \"choose stake pool\" dialog.",
         "end": {
@@ -2214,6 +2387,123 @@
       }
     ],
     "path": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Confirm Delegation",
+        "description": "Title \"Confirm Delegation\" on the delegation setup \"confirmation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "id": "staking.delegationSetup.confirmation.step.dialog.title",
+        "start": {
+          "column": 9,
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!STEP {currentStep} OF {totalSteps}",
+        "description": "Step indicator labe on the delegation setup \"confirmation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "id": "staking.delegationSetup.confirmation.step.dialog.stepIndicatorLabel",
+        "start": {
+          "column": 22,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Confirm your delegation to publish your delegation preferences on Cardano blockchain.",
+        "description": "Description on the delegation setup \"confirmation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "id": "staking.delegationSetup.confirmation.step.dialog.description",
+        "start": {
+          "column": 15,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!Fees",
+        "description": "Fees label on the delegation setup \"confirmation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "id": "staking.delegationSetup.confirmation.step.dialog.feesLabel",
+        "start": {
+          "column": 13,
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!Password",
+        "description": "Placeholder for \"spending password\"",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder",
+        "start": {
+          "column": 31,
+          "line": 42
+        }
+      },
+      {
+        "defaultMessage": "!!!Spending password",
+        "description": "Label for \"spending password\"",
+        "end": {
+          "column": 3,
+          "line": 53
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel",
+        "start": {
+          "column": 25,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Confirm",
+        "description": "Label for continue button on the delegation setup \"confirmation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 59
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "id": "staking.delegationSetup.confirmation.step.dialog.confirmButtonLabel",
+        "start": {
+          "column": 22,
+          "line": 54
+        }
+      },
+      {
+        "defaultMessage": "!!!Cancel",
+        "description": "Label for \"Cancel\" button on the delegation setup \"confirmation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 65
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "id": "staking.delegationSetup.confirmation.step.dialog.cancelButtonLabel",
+        "start": {
+          "column": 21,
+          "line": 60
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.json"
   },
   {
     "descriptors": [

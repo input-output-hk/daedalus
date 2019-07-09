@@ -1,52 +1,67 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import DelegationStepsNotAvailableDialog from './DelegationStepsNotAvailableDialog';
-import DelegationStepsIntroDialog from './DelegationStepsIntroDialog';
+import { get } from 'lodash';
+import DelegationStepsActivationDialog from './DelegationStepsActivationDialog';
 import DelegationStepsChooseWalletDialog from './DelegationStepsChooseWalletDialog';
+import DelegationStepsConfirmationDialog from './DelegationStepsConfirmationDialog';
+import DelegationStepsIntroDialog from './DelegationStepsIntroDialog';
+import DelegationStepsNotAvailableDialog from './DelegationStepsNotAvailableDialog';
 import DelegationStepsChooseStakePoolDialog from './DelegationStepsChooseStakePoolDialog';
 import type { StakePool } from '../../../api/staking/types';
 
-type WalletData = {
+type DelegationWalletData = {
+  id: string,
+  isAcceptableSetupWallet: boolean,
   label: string,
   value: string,
-  isAcceptableSetupWallet: boolean,
+  hasPassword: boolean,
 };
 
 type Props = {
-  isDisabled: boolean,
   activeStep: number,
-  wallets: Array<WalletData>,
-  onClose: Function,
-  onContinue: Function,
+  isDisabled: boolean,
+  onActivate: Function,
   onBack: Function,
+  onClose: Function,
+  onConfirm: Function,
+  onContinue: Function,
   onLearnMoreClick: Function,
+  onSelectWallet: Function,
   stepsList: Array<string>,
+  wallets: Array<DelegationWalletData>,
   minDelegationFunds: number,
   stakePoolsDelegatingList: Array<StakePool>,
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
   currentTheme: string,
+  selectedWallet: ?DelegationWalletData,
 };
 
 @observer
 export default class DelegationSetupWizardDialog extends Component<Props> {
   render() {
     const {
-      isDisabled,
-      onClose,
-      onContinue,
-      onBack,
       activeStep,
-      wallets,
+      isDisabled,
+      onActivate,
+      onBack,
+      onClose,
+      onConfirm,
+      onContinue,
       onLearnMoreClick,
+      onSelectWallet,
       stepsList,
+      wallets,
       minDelegationFunds,
       stakePoolsDelegatingList,
       stakePoolsList,
       onOpenExternalLink,
       currentTheme,
+      selectedWallet,
     } = this.props;
+
+    const selectedWalletHasPassword = get(selectedWallet, 'hasPassword', false);
 
     if (isDisabled) {
       return (
@@ -65,9 +80,10 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             stepsList={stepsList}
             wallets={wallets}
             minDelegationFunds={minDelegationFunds}
-            onClose={onClose}
-            onContinue={onContinue}
+            selectedWallet={selectedWallet}
             onBack={onBack}
+            onClose={onClose}
+            onSelectWallet={onSelectWallet}
           />
         );
         break;
@@ -81,6 +97,28 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             currentTheme={currentTheme}
             onClose={onClose}
             onContinue={onContinue}
+            onBack={onBack}
+          />
+        );
+        break;
+      case 3:
+        content = (
+          <DelegationStepsConfirmationDialog
+            stepsList={stepsList}
+            isSpendingPasswordSet={selectedWalletHasPassword}
+            onClose={onClose}
+            onConfirm={onConfirm}
+            onBack={onBack}
+          />
+        );
+        break;
+      case 4:
+        content = (
+          <DelegationStepsActivationDialog
+            stepsList={stepsList}
+            isSpendingPasswordSet={selectedWalletHasPassword}
+            onClose={onClose}
+            onActivate={onActivate}
             onBack={onBack}
           />
         );
