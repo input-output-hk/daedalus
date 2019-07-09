@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
+import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import styles from './StakingRewards.scss';
 
 const messages = defineMessages({
@@ -213,6 +214,7 @@ export default class StakingRewards extends Component<Props, State> {
           <span>* {intl.formatMessage(messages.note)} </span>
           <button onClick={onLearnMoreClick}>
             {intl.formatMessage(messages.learnMoreButtonLabel)}
+            <SVGInline svg={externalLinkIcon} />
           </button>
           <span>.</span>
         </div>

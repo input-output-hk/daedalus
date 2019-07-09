@@ -32,6 +32,7 @@ import type {
 import type { NodeInfoQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
+import { openLocalDirectoryChannel } from '../ipc/open-local-directory';
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
@@ -153,7 +154,7 @@ export default class NetworkStatusStore extends Store {
     );
   };
 
-  @action async _restartNode() {
+  _restartNode = async () => {
     try {
       Logger.info('NetworkStatusStore: Requesting a restart of cardano-node');
       await restartCardanoNodeChannel.send();
@@ -162,7 +163,7 @@ export default class NetworkStatusStore extends Store {
         error,
       });
     }
-  }
+  };
 
   teardown() {
     super.teardown();
@@ -187,7 +188,7 @@ export default class NetworkStatusStore extends Store {
   };
 
   _updateNodeStatus = async () => {
-    if (!this.isConnected) return;
+    if (this.environment.isTest && !this.isConnected) return;
     try {
       Logger.info('NetworkStatusStore: Updating node status');
       await setCachedCardanoStatusChannel.send(this._extractNodeStatus(this));
@@ -231,11 +232,7 @@ export default class NetworkStatusStore extends Store {
         status,
       });
       if (status)
-        runInAction('assigning node status', () => {
-          const { cardanoNodeID } = status;
-          this.cardanoNodeID = cardanoNodeID;
-          Object.assign(this, status);
-        });
+        runInAction('assigning node status', () => Object.assign(this, status));
     } catch (error) {
       Logger.error('NetworkStatusStore: error while requesting node state', {
         error,
@@ -574,6 +571,11 @@ export default class NetworkStatusStore extends Store {
   forceCheckLocalTimeDifference = () => {
     if (this.isConnected) this._updateNetworkStatus({ force_ntp_check: true });
   };
+
+  openStateDirectory(path: string, event?: MouseEvent): void {
+    if (event) event.preventDefault();
+    openLocalDirectoryChannel.send(path);
+  }
 
   @action _onCheckDiskSpace = ({
     isNotEnoughDiskSpace,

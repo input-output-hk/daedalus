@@ -10,6 +10,7 @@ import Dialog from '../../widgets/Dialog';
 import { getNetworkExplorerUrl } from '../../../utils/network';
 import styles from './CompletionDialog.scss';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
+import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import InlineNotification from '../../widgets/InlineNotification';
 import { DEVELOPMENT } from '../../../../../common/types/environment.types';
 
@@ -168,6 +169,7 @@ export default class CompletionDialog extends Component<Props, State> {
                 aria-hidden
               >
                 {cardanoExplorerLink}
+                <SVGInline svg={externalLinkIcon} />
               </span>
             </div>
           </div>
