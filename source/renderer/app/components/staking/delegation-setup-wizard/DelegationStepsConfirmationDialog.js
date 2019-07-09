@@ -10,6 +10,8 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+import { submitOnEnter } from '../../../utils/form';
+import globalMessages from '../../../i18n/global-messages';
 
 const messages = defineMessages({
   title: {
@@ -63,9 +65,7 @@ const messages = defineMessages({
   },
 });
 
-type State = {
-  spendingPasswordValue: string,
-};
+messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
   isSpendingPasswordSet?: boolean,
@@ -75,16 +75,9 @@ type Props = {
   stepsList: Array<string>,
 };
 
-export default class DelegationStepsConfirmationDialog extends Component<
-  Props,
-  State
-> {
+export default class DelegationStepsConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
-  };
-
-  state = {
-    spendingPasswordValue: '',
   };
 
   form = new ReactToolboxMobxForm({
@@ -102,13 +95,14 @@ export default class DelegationStepsConfirmationDialog extends Component<
 
   submit = () => {
     this.form.submit({
-      onSuccess: () => {
+      onSuccess: form => {
         const { isSpendingPasswordSet } = this.props;
+        const { spendingPassword } = form.values();
+        const password = isSpendingPasswordSet ? spendingPassword : null;
+
         const data = {
           fees: 0.172081,
-          password: isSpendingPasswordSet
-            ? this.state.spendingPasswordValue
-            : null,
+          password,
         };
         this.props.onConfirm(data);
       },
@@ -116,15 +110,12 @@ export default class DelegationStepsConfirmationDialog extends Component<
     });
   };
 
-  handlePasswordChange = (value: string) => {
-    this.setState({ spendingPasswordValue: value });
-  };
+  handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
 
   render() {
     const { form } = this;
     const { intl } = this.context;
     const { isSpendingPasswordSet, onBack, onClose, stepsList } = this.props;
-    const { spendingPasswordValue } = this.state;
 
     const spendingPasswordField = form.$('spendingPassword');
 
@@ -186,14 +177,10 @@ export default class DelegationStepsConfirmationDialog extends Component<
 
           {isSpendingPasswordSet && (
             <Input
-              type="password"
               className={styles.spendingPassword}
               {...spendingPasswordField.bind()}
               skin={InputSkin}
-              onChange={value => {
-                this.handlePasswordChange(value);
-              }}
-              value={spendingPasswordValue}
+              onKeyPress={this.handleSubmitOnEnter}
             />
           )}
         </div>
