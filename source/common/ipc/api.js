@@ -92,6 +92,13 @@ export type OpenExternalUrlRendererRequest = string;
 export type OpenExternalUrlMainResponse = void;
 
 /**
+ * Channel for opening an local directory in the default desktop explorer
+ */
+export const OPEN_LOCAL_DIRECTORY_CHANNEL = 'OpenLocalDirectoryChannel';
+export type OpenLocalDirectoryRendererRequest = string;
+export type OpenLocalDirectoryMainResponse = void;
+
+/**
  * Channel to send bug report requests
  */
 export const SUBMIT_BUG_REPORT_REQUEST_CHANNEL =

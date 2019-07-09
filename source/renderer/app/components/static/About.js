@@ -7,6 +7,7 @@ import globalMessages from '../../i18n/global-messages';
 import styles from './About.scss';
 import daedalusIcon from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import cardanoIcon from '../../assets/images/cardano-logo.inline.svg';
+import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 
 const messages = defineMessages({
   aboutTitle: {
@@ -127,6 +128,7 @@ export default class About extends Component<Props> {
             aria-hidden
           >
             http://daedaluswallet.io
+            <SVGInline svg={externalLinkIcon} />
           </span>
           <div className={styles.copyright}>
             {intl.formatMessage(messages.aboutCopyright)}&nbsp;
@@ -141,6 +143,7 @@ export default class About extends Component<Props> {
               aria-hidden
             >
               {intl.formatMessage(messages.licenseLink)}
+              <SVGInline svg={externalLinkIcon} />
             </span>
           </div>
         </div>

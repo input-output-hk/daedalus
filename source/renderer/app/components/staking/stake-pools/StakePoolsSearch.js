@@ -42,11 +42,13 @@ const messages = defineMessages({
 });
 
 type Props = {
-  search: string,
-  filter: string,
+  filter?: string,
+  label?: string,
+  placeholder?: string,
   onSearch: Function,
-  onFilterChange: Function,
+  onFilterChange?: Function,
   registerSearchInput: Function,
+  search: string,
 };
 
 export class StakePoolsSearch extends Component<Props> {
@@ -55,20 +57,26 @@ export class StakePoolsSearch extends Component<Props> {
   };
 
   getFilterItemClassName = (item: string) =>
-    classnames({ [styles.searchFilterActiveItem]: this.props.filter === item });
+    classnames({
+      [styles.searchFilterActiveItem]:
+        this.props.filter && this.props.filter === item,
+    });
 
   render() {
     const { intl } = this.context;
     const {
-      search,
+      label,
       onSearch,
       onFilterChange,
+      placeholder,
       registerSearchInput,
+      search,
     } = this.props;
 
-    const filterAll = onFilterChange.bind(this, 'all');
-    const filterNew = onFilterChange.bind(this, 'new');
-    const filterCharity = onFilterChange.bind(this, 'charity');
+    const filterAll = onFilterChange && onFilterChange.bind(this, 'all');
+    const filterNew = onFilterChange && onFilterChange.bind(this, 'new');
+    const filterCharity =
+      onFilterChange && onFilterChange.bind(this, 'charity');
 
     return (
       <div className={styles.component}>
@@ -76,40 +84,45 @@ export class StakePoolsSearch extends Component<Props> {
           <SVGInline svg={searchIcon} className={styles.searchIcon} />
           <Input
             autoFocus
+            label={label || null}
             className={styles.searchInput}
             onChange={onSearch}
             ref={input => registerSearchInput(input)}
-            placeholder={intl.formatMessage(messages.searchInputPlaceholder)}
+            placeholder={
+              placeholder || intl.formatMessage(messages.searchInputPlaceholder)
+            }
             skin={InputSkin}
             value={search}
             maxLength={150}
           />
-          <ul className={styles.searchFilter}>
-            <li>
-              <button
-                onClick={filterAll}
-                className={this.getFilterItemClassName('all')}
-              >
-                {intl.formatMessage(messages.filterAll)}
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={filterNew}
-                className={this.getFilterItemClassName('new')}
-              >
-                {intl.formatMessage(messages.filterNew)}
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={filterCharity}
-                className={this.getFilterItemClassName('charity')}
-              >
-                {intl.formatMessage(messages.filterCharity)}
-              </button>
-            </li>
-          </ul>
+          {onFilterChange && (
+            <ul className={styles.searchFilter}>
+              <li>
+                <button
+                  onClick={filterAll}
+                  className={this.getFilterItemClassName('all')}
+                >
+                  {intl.formatMessage(messages.filterAll)}
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={filterNew}
+                  className={this.getFilterItemClassName('new')}
+                >
+                  {intl.formatMessage(messages.filterNew)}
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={filterCharity}
+                  className={this.getFilterItemClassName('charity')}
+                >
+                  {intl.formatMessage(messages.filterCharity)}
+                </button>
+              </li>
+            </ul>
+          )}
         </div>
       </div>
     );

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="236" height="210" viewBox="0 0 236 210">
+    <defs>
+        <path id="a" d="M0 11.61C0 5.198 5.198 0 11.604 0h208.792C226.805 0 232 5.195 232 11.61v182.78c0 6.412-5.198 11.61-11.604 11.61H11.604C5.195 206 0 200.805 0 194.39V11.61z"/>
+    </defs>
+    <g fill="none" fill-rule="evenodd" transform="translate(2 2)">
+        <mask id="b" fill="#fff">
+            <use xlink:href="#a"/>
+        </mask>
+        <use fill="#C6CDD6" fill-opacity=".05" stroke="#C6CDD6" stroke-dasharray="17" stroke-width="4" xlink:href="#a"/>
+        <text fill="#C6CDD6" font-family="SFUIText-Semibold, SF UI Text" font-size="40.62" font-weight="500" letter-spacing="-1.451" mask="url(#b)">
+            <tspan x="61.909" y="62.211">POOL</tspan>
+        </text>
+        <path stroke="#C6CDD6" stroke-width="5.803" d="M94.25 130.563l15.95 15.958 29-30.465" mask="url(#b)"/>
+    </g>
+</svg>
