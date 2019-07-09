@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import { observer } from 'mobx-react';
 import {
   defineMessages,
   intlShape,
@@ -17,6 +18,7 @@ import DialogBackButton from '../../widgets/DialogBackButton';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { submitOnEnter } from '../../../utils/form';
 import globalMessages from '../../../i18n/global-messages';
+import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 
 const messages = defineMessages({
   title: {
@@ -103,23 +105,46 @@ type Props = {
   stepsList: Array<string>,
 };
 
+@observer
 export default class DelegationStepsActivationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
-  form = new ReactToolboxMobxForm({
-    fields: {
-      spendingPassword: {
-        type: 'password',
-        label: this.context.intl.formatMessage(messages.spendingPasswordLabel),
-        placeholder: this.context.intl.formatMessage(
-          messages.spendingPasswordPlaceholder
-        ),
-        value: '',
+  form = new ReactToolboxMobxForm(
+    {
+      fields: {
+        spendingPassword: {
+          type: 'password',
+          label: this.context.intl.formatMessage(
+            messages.spendingPasswordLabel
+          ),
+          placeholder: this.context.intl.formatMessage(
+            messages.spendingPasswordPlaceholder
+          ),
+          value: '',
+          validators: [
+            ({ field }) => {
+              const password = field.value;
+              if (password === '') {
+                return [
+                  false,
+                  this.context.intl.formatMessage(messages.fieldIsRequired),
+                ];
+              }
+              return [true];
+            },
+          ],
+        },
       },
     },
-  });
+    {
+      options: {
+        validateOnChange: true,
+        validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
+      },
+    }
+  );
 
   submit = () => {
     this.form.submit({
@@ -240,6 +265,7 @@ export default class DelegationStepsActivationDialog extends Component<Props> {
               className={styles.spendingPassword}
               {...spendingPasswordField.bind()}
               skin={InputSkin}
+              error={spendingPasswordField.error}
               onKeyPress={this.handleSubmitOnEnter}
             />
           )}
