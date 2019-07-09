@@ -8,6 +8,7 @@ import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon.js';
 import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
+import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import {
   transactionStates,
   transactionTypes,
@@ -300,6 +301,7 @@ export default class Transaction extends Component<Props> {
                   )}
                 >
                   {address}
+                  <SVGInline svg={externalLinkIcon} />
                 </span>
               ))}
               <h2>{intl.formatMessage(messages.toAddresses)}</h2>
@@ -317,6 +319,7 @@ export default class Transaction extends Component<Props> {
                   )}
                 >
                   {address}
+                  <SVGInline svg={externalLinkIcon} />
                 </span>
               ))}
 
@@ -348,6 +351,7 @@ export default class Transaction extends Component<Props> {
                 onClick={this.handleOpenExplorer.bind(this, 'tx', data.id)}
               >
                 {data.id}
+                <SVGInline svg={externalLinkIcon} />
               </span>
             </div>
             {/*

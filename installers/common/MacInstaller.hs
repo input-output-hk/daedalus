@@ -32,6 +32,7 @@ import           System.FilePath.Glob      (glob)
 import           System.IO                 (BufferMode (NoBuffering),
                                             hSetBuffering)
 import           System.IO.Error           (IOError, isDoesNotExistError)
+import           System.Environment        (getEnv)
 import           Turtle                    hiding (e, prefix, stdout)
 import           Turtle.Line               (unsafeTextToLine)
 
@@ -102,7 +103,8 @@ makePostInstall = "#!/usr/bin/env bash\n" %
 makeScriptsDir :: Options -> DarwinConfig -> Managed T.Text
 makeScriptsDir Options{..} DarwinConfig{..} = case oBackend of
   Cardano _ -> do
-    tempdir <- mktempdir "/tmp" "scripts"
+    tmp <- fromString <$> (liftIO $ getEnv "TMP")
+    tempdir <- mktempdir tmp "scripts"
     liftIO $ do
       cp "data/scripts/dockutil" (tempdir </> "dockutil")
       writeTextFile (tempdir </> "postinstall") (format makePostInstall dcAppNameApp)

@@ -100,8 +100,9 @@ export default class DelegationSetupWizardDialogContainer extends Component<
 
   render() {
     const { activeStep } = this.state;
-    const { stores } = this.props;
-    const { wallets } = stores;
+    const { app, staking, wallets, profile } = this.props.stores;
+    const { currentTheme } = profile;
+    const { stakePools, delegatingStakePools } = staking;
 
     let setupDisabled = true;
     const walletsData = map(wallets.all, wallet => {
@@ -127,10 +128,14 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         activeStep={activeStep}
         minDelegationFunds={MIN_DELEGATION_FUNDS}
         isDisabled={activeStep === 1 && setupDisabled}
+        onLearnMoreClick={this.handleLearnMoreClick}
+        stakePoolsList={stakePools}
+        stakePoolsDelegatingList={delegatingStakePools}
+        onOpenExternalLink={app.openExternalLink}
+        currentTheme={currentTheme}
         onClose={this.handleDialogClose}
         onContinue={this.handleContinue}
         onBack={this.onBack}
-        onLearnMoreClick={this.handleLearnMoreClick}
       />
     );
   }

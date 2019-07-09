@@ -19,6 +19,7 @@ type Props = {
   actionToListenAndOpen?: Action<any>,
   actionToListenAndClose?: Action<any>,
   hasEllipsis?: boolean,
+  themeOverride?: 'grey', // if left empty, the noticiation will have its normal colors
 
   /**
    *
@@ -91,6 +92,7 @@ export default class GenericNotification extends Component<Props> {
       clickToClose,
       order,
       hasEllipsis,
+      themeOverride,
     } = this.props;
 
     let { icon, iconStyle } = this.props;
@@ -111,6 +113,7 @@ export default class GenericNotification extends Component<Props> {
         hasCloseButton={hasCloseButton}
         clickToClose={clickToClose}
         order={order}
+        themeOverride={themeOverride}
       >
         <div className={childrenStyles}>{children}</div>
       </NotificationMessage>

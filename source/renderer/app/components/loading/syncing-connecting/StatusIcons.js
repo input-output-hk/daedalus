@@ -140,6 +140,7 @@ const messages = defineMessages({
 });
 
 type Props = {
+  onIconClick: Function,
   nodeState: ?CardanoNodeState,
   isNodeResponding?: boolean,
   isNodeSubscribed?: boolean,
@@ -185,7 +186,7 @@ const VARIABLE_VALUES = {
   null: 'IsStarting',
 };
 
-export default class StatusIcon extends Component<Props> {
+export default class StatusIcons extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -237,7 +238,9 @@ export default class StatusIcon extends Component<Props> {
       tip={this.getTip(paramName, this.props[paramName])}
       className={this.getTooltipClassname(paramName)}
     >
-      <SVGInline svg={icon} className={this.getClassName(paramName)} />
+      <button className={styles.iconButton} onClick={this.props.onIconClick}>
+        <SVGInline svg={icon} className={this.getClassName(paramName)} />
+      </button>
     </Tooltip>
   );
 
