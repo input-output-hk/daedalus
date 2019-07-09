@@ -131,7 +131,7 @@
   "loading.screen.crashedCardanoMessage": "カルダノ・ノードがクラッシュしました",
   "loading.screen.errors.tlsCertificateNotValidPleaseRestartError": "TLS証明書が無効です。Daedalusを再起動してください。",
   "loading.screen.loadingWalletData": "ウォレットデータ読み込み中",
-  "loading.screen.readIssueHelp.buttonLabel": "!!!Read the article",
+  "loading.screen.readIssueHelp.buttonLabel": "記事を読む",
   "loading.screen.readIssueHelp.readConnectivityIssueHelpButtonUrl": "https://iohk.zendesk.com/hc/ja/articles/360010522913",
   "loading.screen.readIssueHelp.readSyncIssueHelpButtonUrl": "https://iohk.zendesk.com/hc/ja/articles/360011536933",
   "loading.screen.reconnectingToNetworkMessage": "接続失敗 - 再接続中",
