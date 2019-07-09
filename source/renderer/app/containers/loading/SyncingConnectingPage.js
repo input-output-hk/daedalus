@@ -62,6 +62,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         isNewAppVersionLoaded={isNewAppVersionLoaded}
         onIssueClick={this.handleIssueClick}
         onGetAvailableVersions={this.handleGetAvailableVersions}
+        onStatusIconClick={this.openDaedalusDiagnosticsDialog}
         onDownloadLogs={this.handleDownloadLogs}
         disableDownloadLogs={stores.app.isDownloadNotificationVisible}
       />
@@ -83,5 +84,12 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
   handleGetAvailableVersions = () => {
     const { nodeUpdate } = this.props.actions;
     nodeUpdate.getLatestAvailableAppVersion.trigger();
+  };
+
+  openDaedalusDiagnosticsDialog = () => {
+    const {
+      actions: { app },
+    } = this.props;
+    app.openDaedalusDiagnosticsDialog.trigger();
   };
 }

@@ -43,10 +43,11 @@ type Props = {
   isNewAppVersionAvailable: boolean,
   isNewAppVersionLoading: boolean,
   isNewAppVersionLoaded: boolean,
+  disableDownloadLogs: boolean,
   onIssueClick: Function,
   onDownloadLogs: Function,
   onGetAvailableVersions: Function,
-  disableDownloadLogs: boolean,
+  onStatusIconClick: Function,
 };
 
 @observer
@@ -208,8 +209,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       isNodeStopping,
       isNodeStopped,
       syncPercentage,
-      onReadConnectivityIssueArticleClick,
-      onReadSyncIssueArticleClick,
+      onStatusIconClick,
     } = this.props;
 
     const componentStyles = classNames([
@@ -229,10 +229,6 @@ export default class SyncingConnecting extends Component<Props, State> {
             disableDownloadLogs={disableDownloadLogs}
             isConnecting={isConnecting}
             isSyncing={isSyncing}
-            onReadConnectivityIssueArticleClick={
-              onReadConnectivityIssueArticleClick
-            }
-            onReadSyncIssueArticleClick={onReadSyncIssueArticleClick}
           />
         )}
         <LogosDisplay isConnected={isConnected} />
@@ -248,6 +244,7 @@ export default class SyncingConnecting extends Component<Props, State> {
           syncPercentage={syncPercentage}
         />
         <StatusIcons
+          onIconClick={onStatusIconClick}
           nodeState={cardanoNodeState}
           isNodeResponding={isNodeResponding}
           isNodeSubscribed={isNodeSubscribed}
