@@ -277,6 +277,10 @@ const createDaedalusComponentsTheme = (
       '--theme-block-consolidation-button-background-color-hover': `${
         background.primary.lightest
       }`,
+      '--theme-block-consolidation-button-icon-color': `${text.secondary}`,
+      '--theme-block-consolidation-button-icon-color-hover': `${
+        background.secondary.regular
+      }`,
       '--theme-block-consolidation-button-text-color-hover': `${
         background.secondary.regular
       }`,
@@ -523,6 +527,9 @@ const createDaedalusComponentsTheme = (
       )}`,
       '--theme-input-text-color': `${text.primary}`,
     },
+    link: {
+      '--theme-link-main-color': `${background.secondary.regular}`,
+    },
     loading: {
       '--theme-loading-background-color': `${background.primary.regular}`,
       '--theme-loading-no-disk-space-background-color': `${
@@ -546,6 +553,10 @@ const createDaedalusComponentsTheme = (
       }`,
       '--theme-manual-update-overlay-button-background-color-hover': `${
         text.secondary
+      }`,
+      '--theme-manual-update-overlay-button-icon-color': `${text.secondary}`,
+      '--theme-manual-update-overlay-button-icon-color-hover': `${
+        background.secondary.regular
       }`,
       '--theme-manual-update-overlay-button-text-color-hover': `${
         background.secondary.regular
@@ -705,6 +716,7 @@ const createDaedalusComponentsTheme = (
       '--theme-report-issue-connecting-background-color': `${
         background.primary.regular
       }`,
+      '--theme-report-issue-icon-color': `${background.primary.regular}`,
       '--theme-report-issue-connecting-text-color': `${text.primary}`,
       '--theme-report-issue-syncing-background-color': `${
         background.primary.regular
@@ -855,6 +867,18 @@ const createDaedalusComponentsTheme = (
       '--theme-staking-table-body-highlighted-text-color': `${
         background.secondary.dark
       }`,
+      '--theme-staking-info-learn-more-button-color': `${
+        background.primary.lightest
+      }`,
+      '--theme-staking-info-learn-more-icon-color': `${chroma(
+        text.secondary
+      ).alpha(0.7)}`,
+      '--theme-staking-learn-more-button-color': `${
+        background.primary.lightest
+      }`,
+      '--theme-staking-learn-more-icon-color': `${chroma(text.secondary).alpha(
+        0.7
+      )}`,
     },
     support: {
       '--theme-support-settings-item-color': `${text.primary}`,
@@ -868,6 +892,9 @@ const createDaedalusComponentsTheme = (
     systemError: {
       '--theme-system-error-overlay-attention-icon-color': `${text.secondary}`,
       '--theme-system-error-overlay-background-color': `${error.regular}`,
+      '--theme-system-error-overlay-support-link-icon-color': `${
+        text.secondary
+      }`,
       '--theme-system-error-overlay-text-color': `${text.secondary}`,
     },
     tabs: {

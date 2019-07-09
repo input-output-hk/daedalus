@@ -1,5 +1,6 @@
 @import '../../../themes/mixins/loading-spinner';
 @import '../../../themes/mixins/error-message';
+@import '../../../themes/mixins/link';
 
 .instructionsContentWrapper {
   color: var(--theme-dialog-text-color);
@@ -26,8 +27,10 @@
     }
 
     .link {
-      cursor: pointer;
-      text-decoration: underline;
+      @include link(
+        --theme-paper-wallet-create-certificate-dialog-explorer-link-color
+      );
+      margin-right: 4px;
     }
 
     ul {
@@ -38,12 +41,6 @@
     li {
       line-height: 1.38;
       margin-bottom: 6px;
-    }
-
-    a {
-      color: var(
-        --theme-paper-wallet-create-certificate-dialog-explorer-link-color
-      );
     }
   }
 

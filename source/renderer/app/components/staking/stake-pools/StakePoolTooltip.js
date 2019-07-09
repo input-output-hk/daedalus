@@ -11,6 +11,7 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './StakePoolTooltip.scss';
 import type { StakePool } from '../../../api/staking/types';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
+import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import { getColorFromRange } from '../../../utils/colors';
 import { rangeMap } from '../../../utils/rangeMap';
 import {
@@ -404,6 +405,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
             onClick={() => onOpenExternalLink(url)}
           >
             {url}
+            <SVGInline svg={externalLinkIcon} />
           </button>
           <dl className={styles.table}>
             <dt>{intl.formatMessage(messages.ranking)}</dt>
