@@ -1,16 +1,34 @@
 // @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
+import { defineMessages, intlShape } from 'react-intl';
 import ReactModal from 'react-modal';
 import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
 import styles from './DaedalusDiagnosticsDialog.scss';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
+import GenericNotification from '../../components/notifications/GenericNotification';
+import { COPY_STATE_DIRECTORY_PATH_NOTIFICATION_DURATION } from '../../config/timingConfig';
+
+export const messages = defineMessages({
+  stateDirectoryCopyNotificationMessage: {
+    id: 'daedalus.diagnostics.dialog.stateDirectoryCopyNotificationMessage',
+    defaultMessage: '!!!Directory State Directory copied to clipboard',
+    description: 'Message for the wallet address copy success notification.',
+  },
+});
+
+const COPY_STATE_DIRECTORY_PATH_NOTIFICATION_ID =
+  'copy-state-directory-path-notification-id';
 
 type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
 @observer
 export default class DaedalusDiagnosticsDialog extends Component<Props> {
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
+
   static defaultProps = {
     actions: null,
     stores: null,
@@ -19,11 +37,13 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
   };
 
   render() {
+    const { intl } = this.context;
     const { actions, stores } = this.props;
     const { closeDaedalusDiagnosticsDialog } = actions.app;
     const { restartNode } = actions.networkStatus;
-    const { app, networkStatus } = stores;
+    const { app, networkStatus, profile } = stores;
     const { openExternalLink } = app;
+    const { currentLocale } = profile;
     const {
       // Node state
       cardanoNodeState,
@@ -41,6 +61,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       isSystemTimeCorrect,
       forceCheckTimeDifferenceRequest,
       forceCheckLocalTimeDifference,
+      openStateDirectory,
       getNetworkStatusRequest,
       localBlockHeight,
       networkBlockHeight,
@@ -113,13 +134,35 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
           localBlockHeight={localBlockHeight}
           networkBlockHeight={networkBlockHeight}
           onForceCheckLocalTimeDifference={forceCheckLocalTimeDifference}
+          onOpenStateDirectory={openStateDirectory}
           onOpenExternalLink={openExternalLink}
           onRestartNode={restartNode}
           onClose={closeDaedalusDiagnosticsDialog.trigger}
+          onCopyStateDirectoryPath={this.handleCopyStateDirectoryPath}
+          currentLocale={currentLocale}
         />
+        <GenericNotification
+          id={COPY_STATE_DIRECTORY_PATH_NOTIFICATION_ID}
+          show={stores.uiNotifications.isOpen(
+            COPY_STATE_DIRECTORY_PATH_NOTIFICATION_ID
+          )}
+          closeNotification={actions.notifications.closeActiveNotification}
+          icon="success"
+          themeOverride="grey"
+          hasCloseButton
+        >
+          {intl.formatMessage(messages.stateDirectoryCopyNotificationMessage)}
+        </GenericNotification>
       </ReactModal>
     );
   }
+
+  handleCopyStateDirectoryPath = () => {
+    this.props.actions.notifications.open.trigger({
+      id: COPY_STATE_DIRECTORY_PATH_NOTIFICATION_ID,
+      duration: COPY_STATE_DIRECTORY_PATH_NOTIFICATION_DURATION,
+    });
+  };
 
   convertBytesToSize = (bytes: number): string => {
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
