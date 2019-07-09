@@ -311,6 +311,12 @@ const DARK_BLUE_THEME_CONFIG = {
       'rgba(250, 251, 252, 0.5)',
   },
   delegationSetupWizard: {
+    '--theme-delegation-steps-activation-steps-indicator-color': '#e9f4fe',
+    '--theme-delegation-steps-activation-description-color':
+      'rgba(233, 244, 254, 0.8)',
+    '--theme-delegation-steps-activation-fees-label-color': '#e9f4fe',
+    '--theme-delegation-steps-activation-fees-amount-color': '#ea4c5b',
+    '--theme-delegation-steps-activation-address-value-color': '#e9f4fe',
     '--theme-delegation-steps-choose-stake-pool-checkmark-icon-color':
       '#536370',
     '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color':
@@ -352,6 +358,11 @@ const DARK_BLUE_THEME_CONFIG = {
     '--theme-delegation-steps-choose-wallet-error-select-options-color':
       '#e9f4fe',
     '--theme-delegation-steps-choose-wallet-steps-indicator-color': '#e9f4fe',
+    '--theme-delegation-steps-confirmation-description-color':
+      'rgba(233, 244, 254, 0.8)',
+    '--theme-delegation-steps-confirmation-fees-label-color': '#e9f4fe',
+    '--theme-delegation-steps-confirmation-fees-amount-color': '#ea4c5b',
+    '--theme-delegation-steps-confirmation-steps-indicator-color': '#e9f4fe',
     '--theme-delegation-steps-intro-content-text-color':
       'rgba(233, 244, 254, 0.8)',
     '--theme-delegation-steps-intro-divider-border-color': '#334152',
@@ -637,7 +648,6 @@ const DARK_BLUE_THEME_CONFIG = {
     '--theme-staking-stake-pools-title-color': '#e9f4fe',
   },
   staking: {
-    '--theme-staking-background-color': 'rgba(233, 244, 254, 0.1)',
     '--theme-staking-content-background-color': '#263345',
     '--theme-staking-content-border-color': '#263345',
     '--theme-staking-font-color-accent': '#cecfd1',
@@ -648,6 +658,7 @@ const DARK_BLUE_THEME_CONFIG = {
     '--theme-staking-table-border-color': '#c6cdd6',
     '--theme-staking-link-color': 'rgba(32, 181, 107, 1)',
     '--theme-staking-link-color-light': 'rgba(32, 181, 107, 0.5)',
+    '--theme-staking-progress-bar-background-color': 'rgba(233, 244, 254, 0.1)',
     '--theme-staking-progress-stripe-dark-1-background-color': '#3c4852',
     '--theme-staking-progress-stripe-dark-2-background-color': '#536370',
     '--theme-staking-table-body-highlighted-text-color': '#2ab467',

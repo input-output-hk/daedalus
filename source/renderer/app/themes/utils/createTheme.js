@@ -376,6 +376,19 @@ const createDaedalusComponentsTheme = (
       '--theme-data-migration-layer-text-opacity-color': `${text.secondary}`,
     },
     delegationSetupWizard: {
+      '--theme-delegation-steps-activation-steps-indicator-color': `${
+        text.primary
+      }`,
+      '--theme-delegation-steps-activation-description-color': `${chroma(
+        text.primary
+      ).alpha(0.8)}`,
+      '--theme-delegation-steps-activation-fees-label-color': `${text.primary}`,
+      '--theme-delegation-steps-activation-fees-amount-color': `${
+        error.regular
+      }`,
+      '--theme-delegation-steps-activation-address-value-color': `${
+        text.primary
+      }`,
       '--theme-delegation-steps-choose-stake-pool-checkmark-icon-color': `${border}`,
       '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color': `${
         text.primary
@@ -435,6 +448,18 @@ const createDaedalusComponentsTheme = (
       }`,
       '--theme-delegation-steps-choose-wallet-steps-indicator-color': `${
         text.primary
+      }`,
+      '--theme-delegation-steps-confirmation-steps-indicator-color': `${
+        text.primary
+      }`,
+      '--theme-delegation-steps-confirmation-description-color': `${chroma(
+        text.primary
+      ).alpha(0.8)}`,
+      '--theme-delegation-steps-confirmation-fees-label-color': `${
+        text.primary
+      }`,
+      '--theme-delegation-steps-confirmation-fees-amount-color': `${
+        error.regular
       }`,
       '--theme-delegation-steps-intro-content-text-color': `${chroma(
         text.primary
@@ -842,7 +867,6 @@ const createDaedalusComponentsTheme = (
         'transparent',
     },
     staking: {
-      '--theme-staking-background-color': `${background.primary.regular}`,
       '--theme-staking-content-background-color': `${
         background.primary.lightest
       }`,
@@ -859,6 +883,9 @@ const createDaedalusComponentsTheme = (
       '--theme-staking-table-border-color': `${border}`,
       '--theme-staking-link-color': `${background.secondary.regular}`,
       '--theme-staking-link-color-light': `${background.secondary.light}`,
+      '--theme-staking-progress-bar-background-color': `${
+        background.primary.regular
+      }`,
       '--theme-staking-progress-stripe-dark-1-background-color': `${
         background.secondary.dark
       }`,

@@ -77,7 +77,11 @@ const messages = defineMessages({
   },
 });
 
-type Props = { wallet: Wallet, index?: number };
+type Props = {
+  wallet: Wallet,
+  index?: number,
+  onDelegate: Function,
+};
 
 @observer
 export default class WalletRow extends Component<Props> {
@@ -96,7 +100,9 @@ export default class WalletRow extends Component<Props> {
         delegatedStakePool,
       },
       index,
+      onDelegate,
     } = this.props;
+
     const inactiveStakePercentageValue = inactiveStakePercentage || 0;
     const color =
       isDelegated && !isNil(index) ? getColorFromRange(index) : 'transparent';
@@ -175,7 +181,14 @@ export default class WalletRow extends Component<Props> {
                 />
               ) : (
                 <span>
-                  <b>{delegate}</b> {yourStake}
+                  <span
+                    className={styles.actionLink}
+                    role="presentation"
+                    onClick={onDelegate}
+                  >
+                    {delegate}
+                  </span>
+                  {` ${yourStake}`}
                 </span>
               )}
             </div>
