@@ -20,7 +20,7 @@ in
 , pass      =
   { statePath           = dataDir
   , workingDir          = dataDir
-  , nodePath            = "\${DAEDALUS_DIR}\\cardano-node.exe"
+  , nodePath            = "\${DAEDALUS_DIR}\\cardano-wallet.exe"
   , nodeDbPath          = "DB-1.0"
   , nodeLogConfig       = "\${DAEDALUS_INSTALL_DIRECTORY}\\log-config-prod.yaml"
   , nodeLogPath         = [] : Optional Text

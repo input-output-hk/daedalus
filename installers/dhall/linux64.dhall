@@ -17,7 +17,7 @@ in
 , pass      =
   { statePath           = dataDir
   , workingDir          = dataDir
-  , nodePath            = "cardano-wallet-launcher"
+  , nodePath            = "cardano-wallet"
   , nodeDbPath          = "${dataDir}/DB/"
   , nodeLogConfig       = "\${DAEDALUS_CONFIG}/log-config-prod.yaml"
   , nodeLogPath         = [] : Optional Text

@@ -29,8 +29,11 @@ import {
 } from '../ipc/cardano.ipc';
 import { safeExitWithCode } from '../utils/safeExitWithCode';
 
-const startCardanoNode = (node: CardanoNode, launcherConfig: Object) => {
-  const { nodePath, tlsPath, logsPrefix } = launcherConfig;
+const startCardanoNode = (
+  node: CardanoNode,
+  launcherConfig: LauncherConfig
+) => {
+  const { nodePath, tlsPath, logsPrefix, workingDir } = launcherConfig;
   const nodeArgs = prepareArgs(launcherConfig);
   const logFilePath = `${logsPrefix}/cardano-node.log`;
   const config = {
@@ -38,6 +41,7 @@ const startCardanoNode = (node: CardanoNode, launcherConfig: Object) => {
     logFilePath,
     tlsPath,
     nodeArgs,
+    workingDir,
     startupTimeout: NODE_STARTUP_TIMEOUT,
     startupMaxRetries: NODE_STARTUP_MAX_RETRIES,
     shutdownTimeout: NODE_SHUTDOWN_TIMEOUT,

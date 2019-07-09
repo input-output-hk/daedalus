@@ -73,8 +73,7 @@ let
   daedalusShellBuildInputs = [
       nodejs yarn
       localLib.cardanoWallet
-      localLib.cardanoWalletLauncher
-      localLib.cardanoHttpBridge
+      localLib.cardanoNode
     ] ++ (with pkgs; [
       nix bash binutils coreutils curl gnutar
       git python27 curl jq
