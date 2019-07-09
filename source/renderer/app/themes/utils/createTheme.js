@@ -2,7 +2,7 @@
 import chroma from 'chroma-js';
 import { isEmpty } from 'lodash';
 import { createBackgroundShades, createErrorShades } from './createShades';
-import { updateThemes } from './updateThemes';
+// import { updateThemes } from './updateThemes';
 import type { ThemeColors, ThemeFonts, CreateThemeParams } from '../types';
 
 type PartialThemeParts = {
@@ -950,7 +950,7 @@ export const createTheme = (fullThemeParts: CreateThemeParams): Object => {
     };
 
     if (write && !isEmpty(write)) {
-      return updateThemes(daedalusTheme);
+      // return updateThemes(daedalusTheme);
     }
 
     // flatten daedalusTheme object for consumption by ThemeManager
