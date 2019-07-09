@@ -15,6 +15,14 @@
     text-transform: uppercase;
   }
 
+  & > .subtitle {
+    font-family: var(--font-medium);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.83;
+    text-align: center;
+  }
+
   & > .content {
     flex: 1;
     margin-right: -25px;

@@ -1,6 +1,6 @@
 .component {
-  background: var(--theme-main-body-background-color);
-  padding: 20px 0 26px;
+  background: transparent;
+  padding: 20px 0 6px;
   width: 100%;
 
   /*
@@ -19,11 +19,14 @@
 .searchIcon {
   left: 20px;
   position: absolute;
-  top: 13.5px;
+  bottom: 11.5px;
   z-index: 1;
 
   svg {
     width: 15px;
+    g > g {
+      fill: var(--theme-staking-stake-pools-search-icon-color);
+    }
   }
 }
 
