@@ -23,7 +23,6 @@ import './LanguageSelectionForm.stories';
 
 // Loading
 import './Loading.stories';
-// import './ManualUpdateOverlay.stories';
 
 // Diagnostics
 import './Diagnostics.stories';
