@@ -610,7 +610,8 @@ const createDaedalusComponentsTheme = (
       }`,
       '--theme-nav-dropdown-item-background-color-hover': `${chroma(
         background.primary.regular
-      ).alpha(0.1)}`,
+      ).alpha(0.07)}`,
+      '--theme-nav-dropdown-item-color-hover': `${text.primary}`,
     },
     navItem: {
       '--theme-nav-item-background-color': `${background.secondary.darkest}`,
