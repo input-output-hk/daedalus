@@ -52,12 +52,7 @@ export default class Root extends Component<Props> {
       isNotEnoughDiskSpace ||
       isNodeInStoppingSequence
     ) {
-      if (
-        !isActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS) &&
-        !dialogIsFirstTimeClosed
-      ) {
-        _closeActiveDialog();
-      }
+      _closeActiveDialog();
       return <LoadingPage stores={stores} actions={actions} />;
     }
 
