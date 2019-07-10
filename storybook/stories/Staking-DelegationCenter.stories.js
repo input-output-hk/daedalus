@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
 import { number } from '@storybook/addon-knobs';
 import DelegationCenter from '../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
@@ -64,5 +65,6 @@ export const StakingDelegationCenterStory = () => (
       range: true,
     })}
     wallets={wallets}
+    onDelegate={action('onDelegate')}
   />
 );

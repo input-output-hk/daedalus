@@ -17,6 +17,8 @@ import DelegationStepsIntroDialog from '../../source/renderer/app/components/sta
 import DelegationStepsChooseWalletDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog';
 import DelegationStepsChooseStakePoolDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog';
 import DelegationStepsNotAvailableDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsNotAvailableDialog';
+import DelegationStepsConfirmationDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog';
+import DelegationStepsActivationDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog';
 
 import { StakePoolsStory } from './Staking-StakePools.stories';
 import { StakingRewardsStory } from './Staking-Rewards.stories';
@@ -46,19 +48,25 @@ const pageNames = {
 
 const WALLETS = [
   {
+    id: '1',
     value: '1.0001 ADA',
     label: 'First Wallet',
     isAcceptableSetupWallet: true,
+    hasPassword: true,
   },
   {
+    id: '2',
     value: '2 ADA',
     label: 'Second Wallet',
     isAcceptableSetupWallet: true,
+    hasPassword: true,
   },
   {
+    id: '3',
     value: '0.0001 ADA',
     label: 'Third Wallet',
     isAcceptableSetupWallet: false,
+    hasPassword: true,
   },
 ];
 
@@ -182,10 +190,31 @@ storiesOf('Staking', module)
     <DelegationStepsChooseWalletDialog
       stepsList={DELEGATION_WIZARD_STEPS_LIST}
       onClose={action('onClose')}
-      onContinue={action('onContinue')}
+      onSelectWallet={action('onSelectWallet')}
       onBack={action('onBack')}
       wallets={WALLETS}
       minDelegationFunds={1}
+      selectedWallet={null}
+    />
+  ))
+
+  .add('DelegationStepsConfirmationDialog', () => (
+    <DelegationStepsConfirmationDialog
+      stepsList={DELEGATION_WIZARD_STEPS_LIST}
+      isSpendingPasswordSet
+      onClose={action('onClose')}
+      onConfirm={action('onConfirm')}
+      onBack={action('onBack')}
+    />
+  ))
+
+  .add('DelegationStepsActivationDialog', () => (
+    <DelegationStepsActivationDialog
+      stepsList={DELEGATION_WIZARD_STEPS_LIST}
+      isSpendingPasswordSet
+      onClose={action('onClose')}
+      onActivate={action('onActivate')}
+      onBack={action('onBack')}
     />
   ))
 

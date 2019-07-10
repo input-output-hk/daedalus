@@ -310,6 +310,12 @@ const CARDANO_THEME_CONFIG = {
       'rgba(250, 251, 252, 0.5)',
   },
   delegationSetupWizard: {
+    '--theme-delegation-steps-activation-steps-indicator-color': '#5e6066',
+    '--theme-delegation-steps-activation-description-color':
+      'rgba(94, 96, 102, 0.8)',
+    '--theme-delegation-steps-activation-fees-label-color': '#5e6066',
+    '--theme-delegation-steps-activation-fees-amount-color': '#ea4c5b',
+    '--theme-delegation-steps-activation-address-value-color': '#5e6066',
     '--theme-delegation-steps-choose-stake-pool-checkmark-icon-color':
       '#c6cdd6',
     '--theme-delegation-steps-choose-stake-pool-delegated-pools-label-color':
@@ -351,6 +357,11 @@ const CARDANO_THEME_CONFIG = {
     '--theme-delegation-steps-choose-wallet-error-select-options-color':
       '#5e6066',
     '--theme-delegation-steps-choose-wallet-steps-indicator-color': '#5e6066',
+    '--theme-delegation-steps-confirmation-description-color':
+      'rgba(94, 96, 102, 0.8)',
+    '--theme-delegation-steps-confirmation-fees-label-color': '#5e6066',
+    '--theme-delegation-steps-confirmation-fees-amount-color': '#ea4c5b',
+    '--theme-delegation-steps-confirmation-steps-indicator-color': '#5e6066',
     '--theme-delegation-steps-intro-content-text-color':
       'rgba(94, 96, 102, 0.8)',
     '--theme-delegation-steps-intro-divider-border-color': '#dfe4e8',
@@ -468,7 +479,9 @@ const CARDANO_THEME_CONFIG = {
   navDropdown: {
     '--theme-nav-dropdown-item-text-color': '#5e6066',
     '--theme-nav-dropdown-item-background-color': '#fafbfc',
-    '--theme-nav-dropdown-item-background-color-hover': 'rgba(32, 34, 37, 0.7)',
+    '--theme-nav-dropdown-item-background-color-hover':
+      'rgba(32, 34, 37, 0.07)',
+    '--theme-nav-dropdown-item-color-hover': '#5e6066',
   },
   navItem: {
     '--theme-nav-item-background-color': '#202225',
@@ -633,7 +646,6 @@ const CARDANO_THEME_CONFIG = {
     '--theme-staking-stake-pools-title-color': '#5e6066',
   },
   staking: {
-    '--theme-staking-background-color': 'rgba(32, 34, 37, 0.1)',
     '--theme-staking-content-background-color': '#fafbfc',
     '--theme-staking-content-border-color': '#c6cdd6',
     '--theme-staking-font-color-accent': '#5e6066',
@@ -644,16 +656,17 @@ const CARDANO_THEME_CONFIG = {
     '--theme-staking-table-border-color': '#c6cdd6',
     '--theme-staking-link-color': 'rgba(28, 172, 99, 1)',
     '--theme-staking-link-color-light': 'rgba(28, 172, 99, 0.5)',
+    '--theme-staking-progress-bar-background-color': 'rgba(32, 34, 37, 0.1)',
     '--theme-staking-progress-stripe-dark-1-background-color': '#259c59',
     '--theme-staking-progress-stripe-dark-2-background-color': '#2cbb69',
     '--theme-staking-table-body-highlighted-text-color': '#26ab5f',
     '--theme-staking-donut-ring-completed-color': '#ea4c5b',
     '--theme-staking-donut-ring-remaining-color': '#f8e9eb',
     '--theme-staking-wallet-row-border-color': '#dfe4e8',
-    '--theme-staking-dropdown-item-text-color-hover': '#cecfd1',
+    '--theme-staking-dropdown-item-text-color-hover': '#5e6066',
     '--theme-staking-dropdown-item-background-color': '#fafbfc',
     '--theme-staking-dropdown-item-background-color-hover':
-      'rgba(32, 34, 37, 0.7)',
+      'rgba(32, 34, 37, 0.07)',
     '--theme-staking-delegation-center-gear-icon-fill-color':
       'rgba(94, 96, 102, 0.5)',
     '--theme-staking-delegation-center-gear-icon-fill-color-active': '#5e6066',

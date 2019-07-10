@@ -9,8 +9,9 @@ import AdaRedemptionSuccessOverlay from '../../components/wallet/ada-redemption/
 import RestoreNotification from '../../components/notifications/RestoreNotification';
 import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
-import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import { WalletSyncStateTags } from '../../domains/Wallet';
+import type { InjectedContainerProps } from '../../types/injectedPropsType';
+import type { NavDropdownProps } from '../../components/navigation/Navigation';
 
 type Props = InjectedContainerProps;
 
@@ -19,9 +20,20 @@ type Props = InjectedContainerProps;
 export default class Wallet extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
-  isActiveScreen = (page: string) => {
+  isActiveScreen = (page: string, item: NavDropdownProps) => {
     const { app, wallets } = this.props.stores;
     if (!wallets.active) return false;
+    const { options } = item;
+    if (options && options.length) {
+      options.forEach(option => {
+        if (
+          app.currentRoute &&
+          app.currentRoute.includes(option.value.toString())
+        ) {
+          page = option.value.toString();
+        }
+      });
+    }
     const screenRoute = buildRoute(ROUTES.WALLETS.PAGE, {
       id: wallets.active.id,
       page,
