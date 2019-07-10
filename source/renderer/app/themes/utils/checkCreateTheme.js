@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-/* eslint no-console: "error" */
+/* eslint-disable no-console */
 // @flow
 import { has, isEmpty } from 'lodash';
 import chalk from 'chalk';
