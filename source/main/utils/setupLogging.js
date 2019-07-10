@@ -94,3 +94,29 @@ export const logSystemInfo = (props: LogSystemInfoParams): MessageBody => {
   fs.writeFileSync(systemInfoFilePath, JSON.stringify(messageBody));
   return messageBody;
 };
+
+export const logStateSnapshot = (props: LogStateSnapshotParams): MessageBody => {
+  const { current, ...data } = props;
+  const {
+    frontendVersion,
+    backendVersion,
+    network,
+    os,
+    startTime: at,
+  } = data;
+  const env = `${network}:${os}:${backendVersion}:${frontendVersion}`;
+  const messageBodyParams: ConstructMessageBodyParams = {
+    at,
+    env,
+    ns: ['daedalus', `v${frontendVersion}`, `*${current}*`],
+    data,
+    msg: 'Updating State-snapshot.json file',
+    pid: '',
+    sev: 'info',
+    thread: '',
+  };
+  const messageBody: MessageBody = constructMessageBody(messageBodyParams);
+  const stateSnapshotFilePath = path.join(pubLogsFolderPath, 'State-snapshot.json');
+  fs.writeFileSync(stateSnapshotFilePath, JSON.stringify(messageBody));
+  return messageBody;
+};
