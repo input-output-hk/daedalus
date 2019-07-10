@@ -21,7 +21,7 @@ export default class Root extends Component<Props> {
       app,
       staking,
     } = stores;
-    const { isActiveDialog, _closeActiveDialog, dialogIsFirstTimeClosed } = app;
+    const { isActiveDialog, _closeActiveDialog } = app;
     const { isStakingPage } = staking;
     const { isProfilePage, isSettingsPage } = profile;
     const { isAdaRedemptionPage } = adaRedemption;
