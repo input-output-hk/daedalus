@@ -367,7 +367,7 @@ export default class NetworkStatusStore extends Store {
       }
 
       const {
-        subscriptionStatus,
+        // subscriptionStatus,
         syncProgress,
         blockchainHeight,
         localBlockchainHeight,
@@ -381,8 +381,10 @@ export default class NetworkStatusStore extends Store {
 
       // Node is subscribed in case it is subscribed to at least one other node in the network
       runInAction('update isNodeSubscribed', () => {
-        const nodeIPs = Object.values(subscriptionStatus || {});
-        this.isNodeSubscribed = nodeIPs.includes('subscribed');
+        // TODO: Resolve once mock is removed
+        // const nodeIPs = Object.values(subscriptionStatus || {});
+        // this.isNodeSubscribed = nodeIPs.includes('subscribed');
+        this.isNodeSubscribed = true;
       });
 
       // System time is correct if local time difference is below allowed threshold
@@ -485,11 +487,13 @@ export default class NetworkStatusStore extends Store {
         });
 
         runInAction('update isNodeInSync', () => {
-          const remainingUnsyncedBlocks =
-            this.networkBlockHeight - this.localBlockHeight;
-          this.isNodeInSync =
-            this.isNodeSyncing &&
-            remainingUnsyncedBlocks <= UNSYNCED_BLOCKS_ALLOWED;
+          // TODO: revert once mocks removed
+          // const remainingUnsyncedBlocks =
+          //   this.networkBlockHeight - this.localBlockHeight;
+          // this.isNodeInSync =
+          //   this.isNodeSyncing &&
+          //   remainingUnsyncedBlocks <= UNSYNCED_BLOCKS_ALLOWED;
+          this.isNodeInSync = true;
         });
 
         if (hasStartedReceivingBlocks) {

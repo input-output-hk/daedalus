@@ -963,6 +963,8 @@ export default class AdaApi {
     }`;
     Logger.debug(`${loggerText} called`);
     try {
+      /* TODO: Uncomment once implemented
+
       const nodeInfo: NodeInfoResponse = await getNodeInfo(
         this.config,
         queryInfoParams
@@ -976,6 +978,13 @@ export default class AdaApi {
         localBlockchainHeight,
         localTimeInformation,
       } = nodeInfo;
+      */
+
+      const blockchainHeight = { quantity: 100 };
+      const subscriptionStatus = 'subscribed';
+      const syncProgress = { quantity: 1 };
+      const localTimeInformation = { status: 'available' };
+      const localBlockchainHeight = { quantity: 100 };
 
       // extract relevant data before sending to NetworkStatusStore
       return {
