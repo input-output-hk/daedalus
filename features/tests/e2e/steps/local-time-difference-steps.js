@@ -11,5 +11,5 @@ Given(/^I set wrong local time difference$/, async function() {
 });
 
 Then(/^I should see system time error overlay$/, function() {
-  return this.client.waitForVisible('.SystemTimeErrorOverlay_component');
+  return this.client.waitForVisible('.SystemTimeError_component');
 });
