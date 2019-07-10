@@ -85,9 +85,17 @@ export default class ReportIssue extends Component<Props> {
       isSyncing ? styles['is-syncing'] : null,
     ]);
 
-    const buttonClasses = classNames(['primary', styles.actionButton]);
-
-    const downloadLogsButtonStyles = classNames([
+    const reportIssueButtonClasses = classNames([
+      'primary',
+      'reportIssueButton',
+      styles.actionButton,
+    ]);
+    const readArticleButtonClasses = classNames([
+      'primary',
+      'readArticleButton',
+      styles.actionButton,
+    ]);
+    const downloadLogsButtonClasses = classNames([
       styles.downloadLogsButton,
       !isConnected ? styles.downloadLogsButtonConnecting : null,
     ]);
@@ -104,7 +112,7 @@ export default class ReportIssue extends Component<Props> {
             : intl.formatMessage(messages.reportSyncingIssueText)}
         </h1>
         <Button
-          className={buttonClasses}
+          className={reportIssueButtonClasses}
           label={
             <p>
               <SVGInline svg={linkNewWindow} className={styles.linkNewWindow} />
@@ -117,7 +125,7 @@ export default class ReportIssue extends Component<Props> {
           skin={ButtonSkin}
         />
         <Button
-          className={buttonClasses}
+          className={readArticleButtonClasses}
           label={
             <p>
               <SVGInline svg={linkNewWindow} className={styles.linkNewWindow} />
@@ -129,7 +137,7 @@ export default class ReportIssue extends Component<Props> {
         />
         <br />
         <button
-          className={downloadLogsButtonStyles}
+          className={downloadLogsButtonClasses}
           onClick={onDownloadLogs}
           disabled={disableDownloadLogs}
         >

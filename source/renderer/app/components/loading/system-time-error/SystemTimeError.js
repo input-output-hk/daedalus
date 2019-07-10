@@ -74,7 +74,7 @@ type Props = {
 };
 
 @observer
-export default class SystemTimeErrorOverlay extends Component<Props> {
+export default class SystemTimeError extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
