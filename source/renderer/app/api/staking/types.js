@@ -12,3 +12,10 @@ export type StakePool = {
   retiring?: Date,
   url: string,
 };
+
+export type Reward = {
+  date: string,
+  wallet: string,
+  amount: number,
+  pool: StakePool,
+};
