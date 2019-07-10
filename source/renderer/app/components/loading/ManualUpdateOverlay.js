@@ -90,11 +90,11 @@ export default class ManualUpdateOverlay extends Component<Props> {
               className={styles.actionButton}
               label={
                 <p>
-                  <span>{formatMessage(messages.actionButtonLabel)}</span>
                   <SVGInline
                     svg={linkNewWindow}
                     className={styles.linkNewWindow}
                   />
+                  <span>{formatMessage(messages.actionButtonLabel)}</span>
                 </p>
               }
               onClick={() =>

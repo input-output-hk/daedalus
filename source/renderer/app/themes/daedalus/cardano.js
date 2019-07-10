@@ -461,8 +461,10 @@ const CARDANO_THEME_CONFIG = {
       'rgba(0, 0, 0, 0.1)',
     '--theme-manual-update-overlay-button-background-color-hover': '#fafbfc',
     '--theme-manual-update-overlay-button-border-color': '#fafbfc',
-    '--theme-manual-update-overlay-button-icon-color': '#fafbfc',
-    '--theme-manual-update-overlay-button-icon-color-hover': '#202225',
+    '--theme-manual-update-overlay-button-icon-color':
+      'rgba(250, 251, 252, 0.7)',
+    '--theme-manual-update-overlay-button-icon-color-hover':
+      'rgba(32, 34, 37, 0.7)',
     '--theme-manual-update-overlay-button-text-color-hover': '#202225',
     '--theme-manual-update-overlay-text-color': 'rgba(250, 251, 252, 0.7)',
     '--theme-manual-update-overlay-text-highlight-color': '#fafbfc',
@@ -669,9 +671,9 @@ const CARDANO_THEME_CONFIG = {
       'rgba(94, 96, 102, 0.5)',
     '--theme-staking-delegation-center-gear-icon-fill-color-active': '#5e6066',
     '--theme-staking-info-learn-more-button-color': '#fafbfc',
-    '--theme-staking-info-learn-more-icon-color': 'rgba(250, 251, 252, 0.7)',
+    '--theme-staking-info-learn-more-icon-color': 'rgba(250, 251, 252, 1)',
     '--theme-staking-learn-more-button-color': '#fafbfc',
-    '--theme-staking-learn-more-icon-color': 'rgba(250, 251, 252, 0.7)',
+    '--theme-staking-learn-more-icon-color': 'rgba(250, 251, 252, 1)',
   },
   support: {
     '--theme-support-settings-item-color': 'rgba(94, 96, 102, 0.5)',
