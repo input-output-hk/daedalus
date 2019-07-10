@@ -36,20 +36,6 @@ export const winLinuxMenu = (
         },
       },
       {
-        label: translation('daedalus.blockConsolidationStatus'),
-        accelerator: 'Ctrl+B',
-        click() {
-          actions.openBlockConsolidationStatusDialog();
-        },
-      },
-      {
-        label: translation('daedalus.daedalusDiagnostics'),
-        accelerator: 'Ctrl+D',
-        click() {
-          actions.openDaedalusDiagnosticsDialog();
-        },
-      },
-      {
         label: translation('daedalus.close'),
         accelerator: 'Ctrl+W',
         click() {
@@ -138,7 +124,14 @@ export const winLinuxMenu = (
     label: translation('helpSupport'),
     submenu: compact([
       {
-        label: translation('helpSupport.gpuSafeMode'),
+        label: translation('helpSupport.knownIssues'),
+        click() {
+          const faqLink = translation('helpSupport.knownIssuesUrl');
+          shell.openExternal(faqLink);
+        },
+      },
+      {
+        label: translation('helpSupport.blankScreenFix'),
         type: 'checkbox',
         checked: isInSafeMode,
         click(item) {
@@ -171,12 +164,7 @@ export const winLinuxMenu = (
           });
         },
       },
-      {
-        label: translation('helpSupport.downloadLogs'),
-        click() {
-          showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
-        },
-      },
+      { type: 'separator' },
       {
         label: translation('helpSupport.supportRequest'),
         click() {
@@ -195,10 +183,24 @@ export const winLinuxMenu = (
         },
       },
       {
-        label: translation('helpSupport.knownIssues'),
+        label: translation('helpSupport.downloadLogs'),
         click() {
-          const faqLink = translation('helpSupport.knownIssuesUrl');
-          shell.openExternal(faqLink);
+          showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
+        },
+      },
+      { type: 'separator' },
+      {
+        label: translation('helpSupport.blockConsolidationStatus'),
+        accelerator: 'Ctrl+B',
+        click() {
+          actions.openBlockConsolidationStatusDialog();
+        },
+      },
+      {
+        label: translation('helpSupport.daedalusDiagnostics'),
+        accelerator: 'Ctrl+D',
+        click() {
+          actions.openDaedalusDiagnosticsDialog();
         },
       },
     ]),
