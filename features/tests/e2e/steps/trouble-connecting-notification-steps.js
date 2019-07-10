@@ -2,13 +2,17 @@ import { Then, When } from 'cucumber';
 import { waitUntilTextInSelector } from '../helpers/shared-helpers';
 
 const SELECTORS = {
-  LOADING_COMPONENT: '.Loading_component',
-  REPORT_ISSUE_TEXT_H1: '.Loading_reportIssueText',
-  REPORT_ISSUE_BUTTON: '.Loading_reportIssueButton',
+  SYNCING_CONNECTING_COMPONENT: '.SyncingConnecting_component',
+  REPORT_ISSUE_TEXT_H1: '.ReportIssue_reportIssueText',
+  REPORT_ISSUE_BUTTON: '.ReportIssue_actionButton.reportIssueButton',
 };
 
 Then(/^I should not see the loading screen$/, async function() {
-  await this.client.waitForVisible(SELECTORS.LOADING_COMPONENT, null, true);
+  await this.client.waitForVisible(
+    SELECTORS.SYNCING_CONNECTING_COMPONENT,
+    null,
+    true
+  );
 });
 
 Then(

@@ -283,243 +283,14 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Starting Cardano node",
-        "description": "Message \"Starting Cardano node\" on the loading screen.",
-        "end": {
-          "column": 3,
-          "line": 30
-        },
-        "file": "source/renderer/app/components/loading/Loading.js",
-        "id": "loading.screen.startingCardanoMessage",
-        "start": {
-          "column": 12,
-          "line": 26
-        }
-      },
-      {
-        "defaultMessage": "!!!Stopping Cardano node",
-        "description": "Message \"Stopping Cardano node\" on the loading screen.",
-        "end": {
-          "column": 3,
-          "line": 35
-        },
-        "file": "source/renderer/app/components/loading/Loading.js",
-        "id": "loading.screen.stoppingCardanoMessage",
-        "start": {
-          "column": 12,
-          "line": 31
-        }
-      },
-      {
-        "defaultMessage": "!!!Cardano node stopped",
-        "description": "Message \"Cardano node stopped\" on the loading screen.",
-        "end": {
-          "column": 3,
-          "line": 40
-        },
-        "file": "source/renderer/app/components/loading/Loading.js",
-        "id": "loading.screen.stoppedCardanoMessage",
-        "start": {
-          "column": 11,
-          "line": 36
-        }
-      },
-      {
-        "defaultMessage": "!!!Updating Cardano node",
-        "description": "Message \"Updating Cardano node\" on the loading screen.",
-        "end": {
-          "column": 3,
-          "line": 45
-        },
-        "file": "source/renderer/app/components/loading/Loading.js",
-        "id": "loading.screen.updatingCardanoMessage",
-        "start": {
-          "column": 12,
-          "line": 41
-        }
-      },
-      {
-        "defaultMessage": "!!!Cardano node updated",
-        "description": "Message \"Cardano node updated\" on the loading screen.",
-        "end": {
-          "column": 3,
-          "line": 50
-        },
-        "file": "source/renderer/app/components/loading/Loading.js",
-        "id": "loading.screen.updatedCardanoMessage",
-        "start": {
-          "column": 11,
-          "line": 46
-        }
-      },
-      {
-        "defaultMessage": "!!!Cardano node crashed",
-        "description": "Message \"Cardano node crashed\" on the loading screen.",
-        "end": {
-          "column": 3,
-          "line": 55
-        },
-        "file": "source/renderer/app/components/loading/Loading.js",
-        "id": "loading.screen.crashedCardanoMessage",
-        "start": {
-          "column": 11,
-          "line": 51
-        }
-      },
-      {
-        "defaultMessage": "!!!Unable to start Cardano node. Please submit a support request.",
-        "description": "Message \"Unable to start Cardano node. Please submit a support request.\" on the loading screen.",
-        "end": {
-          "column": 3,
-          "line": 62
-        },
-        "file": "source/renderer/app/components/loading/Loading.js",
-        "id": "loading.screen.unrecoverableCardanoMessage",
-        "start": {
-          "column": 17,
-          "line": 56
-        }
-      },
-      {
-        "defaultMessage": "!!!Connecting to network",
-        "description": "Message \"Connecting to network\" on the loading screen.",
-        "end": {
-          "column": 3,
-          "line": 67
-        },
-        "file": "source/renderer/app/components/loading/Loading.js",
-        "id": "loading.screen.connectingToNetworkMessage",
-        "start": {
-          "column": 14,
-          "line": 63
-        }
-      },
-      {
-        "defaultMessage": "!!!Network connection lost - reconnecting",
-        "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
-        "end": {
-          "column": 3,
-          "line": 73
-        },
-        "file": "source/renderer/app/components/loading/Loading.js",
-        "id": "loading.screen.reconnectingToNetworkMessage",
-        "start": {
-          "column": 16,
-          "line": 68
-        }
-      },
-      {
-        "defaultMessage": "!!!Syncing blocks",
-        "description": "Message \"Syncing blocks\" on the loading screen.",
-        "end": {
-          "column": 3,
-          "line": 78
-        },
-        "file": "source/renderer/app/components/loading/Loading.js",
-        "id": "loading.screen.syncingBlocksMessage",
-        "start": {
-          "column": 11,
-          "line": 74
-        }
-      },
-      {
-        "defaultMessage": "!!!Having trouble connecting to network?",
-        "description": "Report connecting issue text on the loading screen.",
-        "end": {
-          "column": 3,
-          "line": 83
-        },
-        "file": "source/renderer/app/components/loading/Loading.js",
-        "id": "loading.screen.reportIssue.connecting.text",
-        "start": {
-          "column": 29,
-          "line": 79
-        }
-      },
-      {
-        "defaultMessage": "!!!Having trouble syncing?",
-        "description": "Report syncing issue text on the loading screen.",
-        "end": {
-          "column": 3,
-          "line": 88
-        },
-        "file": "source/renderer/app/components/loading/Loading.js",
-        "id": "loading.screen.reportIssue.syncing.text",
-        "start": {
-          "column": 26,
-          "line": 84
-        }
-      },
-      {
-        "defaultMessage": "!!!Open support ticket",
-        "description": "Open support ticket button label on the loading.",
-        "end": {
-          "column": 3,
-          "line": 93
-        },
-        "file": "source/renderer/app/components/loading/Loading.js",
-        "id": "loading.screen.reportIssue.buttonLabel",
-        "start": {
-          "column": 26,
-          "line": 89
-        }
-      },
-      {
-        "defaultMessage": "!!!Read the article",
-        "description": "Read the article button label on the loading.",
-        "end": {
-          "column": 3,
-          "line": 98
-        },
-        "file": "source/renderer/app/components/loading/Loading.js",
-        "id": "loading.screen.readArticle.buttonLabel",
-        "start": {
-          "column": 26,
-          "line": 94
-        }
-      },
-      {
-        "defaultMessage": "!!!Download logs",
-        "description": "Download logs button label on the loading.",
-        "end": {
-          "column": 3,
-          "line": 103
-        },
-        "file": "source/renderer/app/components/loading/Loading.js",
-        "id": "loading.screen.reportIssue.downloadLogsLinkLabel",
-        "start": {
-          "column": 36,
-          "line": 99
-        }
-      },
-      {
-        "defaultMessage": "!!!TLS certificate is not valid, please restart Daedalus.",
-        "description": "The TLS cert is not valid and Daedalus should be restarted",
-        "end": {
-          "column": 3,
-          "line": 108
-        },
-        "file": "source/renderer/app/components/loading/Loading.js",
-        "id": "loading.screen.errors.tlsCertificateNotValidPleaseRestartError",
-        "start": {
-          "column": 31,
-          "line": 104
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/loading/Loading.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Software update is available",
         "description": "Title for \"Manual update\" overlay",
         "end": {
           "column": 3,
           "line": 17
         },
-        "file": "source/renderer/app/components/loading/ManualUpdateOverlay.js",
-        "id": "manualUpdateOverlay.title",
+        "file": "source/renderer/app/components/loading/manual-update/ManualUpdate.js",
+        "id": "manualUpdate.title",
         "start": {
           "column": 9,
           "line": 13
@@ -532,8 +303,8 @@
           "column": 3,
           "line": 23
         },
-        "file": "source/renderer/app/components/loading/ManualUpdateOverlay.js",
-        "id": "manualUpdateOverlay.description1",
+        "file": "source/renderer/app/components/loading/manual-update/ManualUpdate.js",
+        "id": "manualUpdate.description1",
         "start": {
           "column": 20,
           "line": 18
@@ -546,8 +317,8 @@
           "column": 3,
           "line": 29
         },
-        "file": "source/renderer/app/components/loading/ManualUpdateOverlay.js",
-        "id": "manualUpdateOverlay.description2",
+        "file": "source/renderer/app/components/loading/manual-update/ManualUpdate.js",
+        "id": "manualUpdate.description2",
         "start": {
           "column": 20,
           "line": 24
@@ -560,8 +331,8 @@
           "column": 3,
           "line": 35
         },
-        "file": "source/renderer/app/components/loading/ManualUpdateOverlay.js",
-        "id": "manualUpdateOverlay.button.label",
+        "file": "source/renderer/app/components/loading/manual-update/ManualUpdate.js",
+        "id": "manualUpdate.button.label",
         "start": {
           "column": 21,
           "line": 30
@@ -574,15 +345,15 @@
           "column": 3,
           "line": 42
         },
-        "file": "source/renderer/app/components/loading/ManualUpdateOverlay.js",
-        "id": "manualUpdateOverlay.button.url",
+        "file": "source/renderer/app/components/loading/manual-update/ManualUpdate.js",
+        "id": "manualUpdate.button.url",
         "start": {
           "column": 25,
           "line": 36
         }
       }
     ],
-    "path": "source/renderer/app/components/loading/ManualUpdateOverlay.json"
+    "path": "source/renderer/app/components/loading/manual-update/ManualUpdate.json"
   },
   {
     "descriptors": [
@@ -593,7 +364,7 @@
           "column": 3,
           "line": 15
         },
-        "file": "source/renderer/app/components/loading/NoDiskSpaceOverlay.js",
+        "file": "source/renderer/app/components/loading/no-disk-space-error/NoDiskSpaceError.js",
         "id": "noDiskSpace.error.overlayContent",
         "start": {
           "column": 18,
@@ -607,7 +378,7 @@
           "column": 3,
           "line": 20
         },
-        "file": "source/renderer/app/components/loading/NoDiskSpaceOverlay.js",
+        "file": "source/renderer/app/components/loading/no-disk-space-error/NoDiskSpaceError.js",
         "id": "noDiskSpace.error.overlayTitle",
         "start": {
           "column": 16,
@@ -615,7 +386,124 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/loading/NoDiskSpaceOverlay.json"
+    "path": "source/renderer/app/components/loading/no-disk-space-error/NoDiskSpaceError.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Having trouble connecting to network?",
+        "description": "Report connecting issue text on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
+        "id": "loading.screen.reportIssue.connecting.text",
+        "start": {
+          "column": 29,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!Having trouble syncing?",
+        "description": "Report syncing issue text on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
+        "id": "loading.screen.reportIssue.syncing.text",
+        "start": {
+          "column": 26,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!Open support ticket",
+        "description": "Open support ticket button label on the loading.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
+        "id": "loading.screen.reportIssue.buttonLabel",
+        "start": {
+          "column": 26,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Read the article",
+        "description": "Read the article button label on the loading.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
+        "id": "loading.screen.readArticle.buttonLabel",
+        "start": {
+          "column": 26,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Download logs",
+        "description": "Download logs button label on the loading.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
+        "id": "loading.screen.reportIssue.downloadLogsLinkLabel",
+        "start": {
+          "column": 36,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/requests/new/",
+        "description": "Link to Open Support page",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
+        "id": "loading.screen.reportIssue.reportIssueButtonUrl",
+        "start": {
+          "column": 24,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360011536933",
+        "description": "Link to sync issue article page",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
+        "id": "loading.screen.readIssueArticle.syncIssueArticleUrl",
+        "start": {
+          "column": 23,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360010522913",
+        "description": "Link to connectivity issue article page",
+        "end": {
+          "column": 3,
+          "line": 54
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.js",
+        "id": "loading.screen.readIssueArticle.connectivityIssueArticleUrl",
+        "start": {
+          "column": 31,
+          "line": 49
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/loading/syncing-connecting/ReportIssue.json"
   },
   {
     "descriptors": [
@@ -626,7 +514,7 @@
           "column": 3,
           "line": 23
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeIsRunning",
         "start": {
           "column": 17,
@@ -640,7 +528,7 @@
           "column": 3,
           "line": 28
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeIsStarting",
         "start": {
           "column": 18,
@@ -654,7 +542,7 @@
           "column": 3,
           "line": 33
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeIsExiting",
         "start": {
           "column": 17,
@@ -668,7 +556,7 @@
           "column": 3,
           "line": 38
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeIsStopping",
         "start": {
           "column": 18,
@@ -682,7 +570,7 @@
           "column": 3,
           "line": 43
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeHasStopped",
         "start": {
           "column": 18,
@@ -696,7 +584,7 @@
           "column": 3,
           "line": 48
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeIsUpdating",
         "start": {
           "column": 18,
@@ -710,7 +598,7 @@
           "column": 3,
           "line": 53
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeHasBeenUpdated",
         "start": {
           "column": 22,
@@ -724,7 +612,7 @@
           "column": 3,
           "line": 58
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeHasCrashed",
         "start": {
           "column": 18,
@@ -738,7 +626,7 @@
           "column": 3,
           "line": 63
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeHasErrored",
         "start": {
           "column": 18,
@@ -752,7 +640,7 @@
           "column": 3,
           "line": 68
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeIsUnrecoverable",
         "start": {
           "column": 23,
@@ -766,7 +654,7 @@
           "column": 3,
           "line": 74
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.checkYourInternetConnection",
         "start": {
           "column": 31,
@@ -780,7 +668,7 @@
           "column": 3,
           "line": 79
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeRespondingOn",
         "start": {
           "column": 22,
@@ -794,7 +682,7 @@
           "column": 3,
           "line": 84
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeRespondingOff",
         "start": {
           "column": 23,
@@ -808,7 +696,7 @@
           "column": 3,
           "line": 90
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeRespondingLoading",
         "start": {
           "column": 27,
@@ -822,7 +710,7 @@
           "column": 3,
           "line": 95
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeSubscribedOn",
         "start": {
           "column": 22,
@@ -836,7 +724,7 @@
           "column": 3,
           "line": 100
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeSubscribedOff",
         "start": {
           "column": 23,
@@ -850,7 +738,7 @@
           "column": 3,
           "line": 106
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeSubscribedLoading",
         "start": {
           "column": 27,
@@ -864,7 +752,7 @@
           "column": 3,
           "line": 111
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeTimeCorrectOn",
         "start": {
           "column": 23,
@@ -878,7 +766,7 @@
           "column": 3,
           "line": 117
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeTimeCorrectOff",
         "start": {
           "column": 24,
@@ -892,7 +780,7 @@
           "column": 3,
           "line": 123
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeTimeCorrectLoading",
         "start": {
           "column": 28,
@@ -906,7 +794,7 @@
           "column": 3,
           "line": 128
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeSyncingOn",
         "start": {
           "column": 19,
@@ -920,7 +808,7 @@
           "column": 3,
           "line": 133
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeSyncingOff",
         "start": {
           "column": 20,
@@ -934,7 +822,7 @@
           "column": 3,
           "line": 139
         },
-        "file": "source/renderer/app/components/loading/StatusIcons.js",
+        "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeSyncingLoading",
         "start": {
           "column": 24,
@@ -942,7 +830,180 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/loading/StatusIcons.json"
+    "path": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Starting Cardano node",
+        "description": "Message \"Starting Cardano node\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "id": "loading.screen.startingCardanoMessage",
+        "start": {
+          "column": 12,
+          "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!Stopping Cardano node",
+        "description": "Message \"Stopping Cardano node\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "id": "loading.screen.stoppingCardanoMessage",
+        "start": {
+          "column": 12,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano node stopped",
+        "description": "Message \"Cardano node stopped\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "id": "loading.screen.stoppedCardanoMessage",
+        "start": {
+          "column": 11,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!Updating Cardano node",
+        "description": "Message \"Updating Cardano node\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "id": "loading.screen.updatingCardanoMessage",
+        "start": {
+          "column": 12,
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano node updated",
+        "description": "Message \"Cardano node updated\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "id": "loading.screen.updatedCardanoMessage",
+        "start": {
+          "column": 11,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano node crashed",
+        "description": "Message \"Cardano node crashed\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 40
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "id": "loading.screen.crashedCardanoMessage",
+        "start": {
+          "column": 11,
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!Unable to start Cardano node. Please submit a support request.",
+        "description": "Message \"Unable to start Cardano node. Please submit a support request.\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "id": "loading.screen.unrecoverableCardanoMessage",
+        "start": {
+          "column": 17,
+          "line": 41
+        }
+      },
+      {
+        "defaultMessage": "!!!Connecting to network",
+        "description": "Message \"Connecting to network\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "id": "loading.screen.connectingToNetworkMessage",
+        "start": {
+          "column": 14,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Network connection lost - reconnecting",
+        "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 58
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "id": "loading.screen.reconnectingToNetworkMessage",
+        "start": {
+          "column": 16,
+          "line": 53
+        }
+      },
+      {
+        "defaultMessage": "!!!Syncing blocks",
+        "description": "Message \"Syncing blocks\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 63
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "id": "loading.screen.syncingBlocksMessage",
+        "start": {
+          "column": 11,
+          "line": 59
+        }
+      },
+      {
+        "defaultMessage": "!!!Loading wallet data",
+        "description": "Message \"Loading wallet data\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 68
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "id": "loading.screen.loadingWalletData",
+        "start": {
+          "column": 21,
+          "line": 64
+        }
+      },
+      {
+        "defaultMessage": "!!!TLS certificate is not valid, please restart Daedalus.",
+        "description": "The TLS cert is not valid and Daedalus should be restarted",
+        "end": {
+          "column": 3,
+          "line": 73
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.js",
+        "id": "loading.screen.errors.tlsCertificateNotValidPleaseRestartError",
+        "start": {
+          "column": 31,
+          "line": 69
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingTitle.json"
   },
   {
     "descriptors": [
@@ -953,7 +1014,7 @@
           "column": 3,
           "line": 17
         },
-        "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
+        "file": "source/renderer/app/components/loading/system-time-error/SystemTimeError.js",
         "id": "systemTime.error.overlayTitle",
         "start": {
           "column": 16,
@@ -967,7 +1028,7 @@
           "column": 3,
           "line": 23
         },
-        "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
+        "file": "source/renderer/app/components/loading/system-time-error/SystemTimeError.js",
         "id": "systemTime.error.overlayTextP1",
         "start": {
           "column": 17,
@@ -981,7 +1042,7 @@
           "column": 3,
           "line": 29
         },
-        "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
+        "file": "source/renderer/app/components/loading/system-time-error/SystemTimeError.js",
         "id": "systemTime.error.overlayTextP2",
         "start": {
           "column": 17,
@@ -995,7 +1056,7 @@
           "column": 3,
           "line": 35
         },
-        "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
+        "file": "source/renderer/app/components/loading/system-time-error/SystemTimeError.js",
         "id": "systemTime.error.ntpUnreachableTextP1",
         "start": {
           "column": 24,
@@ -1009,7 +1070,7 @@
           "column": 3,
           "line": 41
         },
-        "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
+        "file": "source/renderer/app/components/loading/system-time-error/SystemTimeError.js",
         "id": "systemTime.error.ntpUnreachableTextP2",
         "start": {
           "column": 24,
@@ -1023,7 +1084,7 @@
           "column": 3,
           "line": 46
         },
-        "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
+        "file": "source/renderer/app/components/loading/system-time-error/SystemTimeError.js",
         "id": "systemTime.error.supportPortalLink",
         "start": {
           "column": 21,
@@ -1037,7 +1098,7 @@
           "column": 3,
           "line": 53
         },
-        "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
+        "file": "source/renderer/app/components/loading/system-time-error/SystemTimeError.js",
         "id": "systemTime.error.supportPortalLinkUrl",
         "start": {
           "column": 24,
@@ -1051,7 +1112,7 @@
           "column": 3,
           "line": 58
         },
-        "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
+        "file": "source/renderer/app/components/loading/system-time-error/SystemTimeError.js",
         "id": "systemTime.error.onCheckTheTimeAgainLink",
         "start": {
           "column": 27,
@@ -1065,7 +1126,7 @@
           "column": 3,
           "line": 64
         },
-        "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
+        "file": "source/renderer/app/components/loading/system-time-error/SystemTimeError.js",
         "id": "systemTime.error.onContinueWithoutClockSyncCheckLink",
         "start": {
           "column": 39,
@@ -1073,7 +1134,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/loading/SystemTimeErrorOverlay.json"
+    "path": "source/renderer/app/components/loading/system-time-error/SystemTimeError.json"
   },
   {
     "descriptors": [
@@ -2002,13 +2063,13 @@
         "description": "Title \"Confirm Delegation\" on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 29
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.title",
         "start": {
           "column": 9,
-          "line": 22
+          "line": 24
         }
       },
       {
@@ -2016,13 +2077,13 @@
         "description": "Step indicator labe on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 35
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.stepIndicatorLabel",
         "start": {
           "column": 22,
-          "line": 28
+          "line": 30
         }
       },
       {
@@ -2030,13 +2091,13 @@
         "description": "Description \"line 1\" on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 42
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.description.line1",
         "start": {
           "column": 20,
-          "line": 34
+          "line": 36
         }
       },
       {
@@ -2044,13 +2105,13 @@
         "description": "Description \"line 2\" on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 49
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.description.line2",
         "start": {
           "column": 20,
-          "line": 41
+          "line": 43
         }
       },
       {
@@ -2058,13 +2119,13 @@
         "description": "Address label on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 55
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.addressLabel",
         "start": {
           "column": 16,
-          "line": 48
+          "line": 50
         }
       },
       {
@@ -2072,13 +2133,13 @@
         "description": "Amount label on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 61
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.amountLabel",
         "start": {
           "column": 15,
-          "line": 54
+          "line": 56
         }
       },
       {
@@ -2086,13 +2147,13 @@
         "description": "Fees label on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 66
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.feesLabel",
         "start": {
           "column": 13,
-          "line": 60
+          "line": 62
         }
       },
       {
@@ -2100,13 +2161,13 @@
         "description": "Total label on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 72
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.totalLabel",
         "start": {
           "column": 14,
-          "line": 65
+          "line": 67
         }
       },
       {
@@ -2114,13 +2175,13 @@
         "description": "Placeholder for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 78
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 71
+          "line": 73
         }
       },
       {
@@ -2128,13 +2189,13 @@
         "description": "Label for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 83
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 77
+          "line": 79
         }
       },
       {
@@ -2142,13 +2203,13 @@
         "description": "Label for continue button on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 89
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.confirmButtonLabel",
         "start": {
           "column": 22,
-          "line": 82
+          "line": 84
         }
       },
       {
@@ -2156,13 +2217,13 @@
         "description": "Postpone button label on the delegation setup \"activation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 95
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog.js",
         "id": "staking.delegationSetup.activation.step.dialog.postponeButtonLabel",
         "start": {
           "column": 23,
-          "line": 88
+          "line": 90
         }
       }
     ],
@@ -2292,13 +2353,13 @@
         "description": "Title \"Delegation Setup\" on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.title",
         "start": {
           "column": 9,
-          "line": 20
+          "line": 21
         }
       },
       {
@@ -2306,13 +2367,13 @@
         "description": "Description on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.description",
         "start": {
           "column": 15,
-          "line": 26
+          "line": 27
         }
       },
       {
@@ -2320,13 +2381,13 @@
         "description": "Label \"Wallet\" for select input on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.selectWalletInputLabel",
         "start": {
           "column": 26,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -2334,13 +2395,13 @@
         "description": "Placeholder \"Select Wallet\" for select input on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 47
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.selectWalletInputPlaceholder",
         "start": {
           "column": 32,
-          "line": 40
+          "line": 41
         }
       },
       {
@@ -2348,13 +2409,13 @@
         "description": "Step indicator labe on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 53
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.stepIndicatorLabel",
         "start": {
           "column": 22,
-          "line": 47
+          "line": 48
         }
       },
       {
@@ -2362,13 +2423,13 @@
         "description": "Error Label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 60
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.errorMessage",
         "start": {
           "column": 16,
-          "line": 53
+          "line": 54
         }
       },
       {
@@ -2376,13 +2437,13 @@
         "description": "Label for continue button on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 66
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 60
+          "line": 61
         }
       }
     ],
@@ -2395,13 +2456,13 @@
         "description": "Title \"Confirm Delegation\" on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 24
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.title",
         "start": {
           "column": 9,
-          "line": 17
+          "line": 19
         }
       },
       {
@@ -2409,13 +2470,13 @@
         "description": "Step indicator labe on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 30
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.stepIndicatorLabel",
         "start": {
           "column": 22,
-          "line": 23
+          "line": 25
         }
       },
       {
@@ -2423,13 +2484,13 @@
         "description": "Description on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 37
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.description",
         "start": {
           "column": 15,
-          "line": 29
+          "line": 31
         }
       },
       {
@@ -2437,13 +2498,13 @@
         "description": "Fees label on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 43
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.feesLabel",
         "start": {
           "column": 13,
-          "line": 36
+          "line": 38
         }
       },
       {
@@ -2451,13 +2512,13 @@
         "description": "Placeholder for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 49
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 42
+          "line": 44
         }
       },
       {
@@ -2465,13 +2526,13 @@
         "description": "Label for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 55
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 48
+          "line": 50
         }
       },
       {
@@ -2479,13 +2540,13 @@
         "description": "Label for continue button on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 61
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.confirmButtonLabel",
         "start": {
           "column": 22,
-          "line": 54
+          "line": 56
         }
       },
       {
@@ -2493,13 +2554,13 @@
         "description": "Label for \"Cancel\" button on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 67
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.cancelButtonLabel",
         "start": {
           "column": 21,
-          "line": 60
+          "line": 62
         }
       }
     ],
@@ -8201,67 +8262,6 @@
       }
     ],
     "path": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Loading wallet data",
-        "description": "Message \"Loading wallet data\" on the loading screen.",
-        "end": {
-          "column": 3,
-          "line": 17
-        },
-        "file": "source/renderer/app/containers/LoadingPage.js",
-        "id": "loading.screen.loadingWalletData",
-        "start": {
-          "column": 21,
-          "line": 13
-        }
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/requests/new/",
-        "description": "Link to Open Support page",
-        "end": {
-          "column": 3,
-          "line": 22
-        },
-        "file": "source/renderer/app/containers/LoadingPage.js",
-        "id": "loading.screen.reportIssue.reportIssueButtonUrl",
-        "start": {
-          "column": 24,
-          "line": 18
-        }
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360011536933",
-        "description": "Link to sync issue article page",
-        "end": {
-          "column": 3,
-          "line": 28
-        },
-        "file": "source/renderer/app/containers/LoadingPage.js",
-        "id": "loading.screen.readIssueArticle.syncIssueArticleUrl",
-        "start": {
-          "column": 23,
-          "line": 23
-        }
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360010522913",
-        "description": "Link to connectivity issue article page",
-        "end": {
-          "column": 3,
-          "line": 34
-        },
-        "file": "source/renderer/app/containers/LoadingPage.js",
-        "id": "loading.screen.readIssueArticle.connectivityIssueArticleUrl",
-        "start": {
-          "column": 31,
-          "line": 29
-        }
-      }
-    ],
-    "path": "source/renderer/app/containers/LoadingPage.json"
   },
   {
     "descriptors": [
