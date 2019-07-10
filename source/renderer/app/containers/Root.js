@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import WalletAddPage from './wallet/WalletAddPage';
-import Loading from './loading/Loading';
+import LoadingPage from './loading/LoadingPage';
 import { DIALOGS } from '../../../common/ipc/constants';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 
@@ -59,7 +59,7 @@ export default class Root extends Component<Props> {
       !isSystemTimeCorrect ||
       isNotEnoughDiskSpace
     ) {
-      return <Loading stores={stores} actions={actions} />;
+      return <LoadingPage stores={stores} actions={actions} />;
     }
 
     if (!wallets.hasAnyWallets) {

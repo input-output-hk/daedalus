@@ -579,10 +579,12 @@ const createDaedalusComponentsTheme = (
       '--theme-manual-update-overlay-button-background-color-hover': `${
         text.secondary
       }`,
-      '--theme-manual-update-overlay-button-icon-color': `${text.secondary}`,
-      '--theme-manual-update-overlay-button-icon-color-hover': `${
+      '--theme-manual-update-overlay-button-icon-color': `${chroma(
+        text.secondary
+      ).alpha(0.7)}`,
+      '--theme-manual-update-overlay-button-icon-color-hover': `${chroma(
         background.secondary.regular
-      }`,
+      ).alpha(0.7)}`,
       '--theme-manual-update-overlay-button-text-color-hover': `${
         background.secondary.regular
       }`,
@@ -898,15 +900,11 @@ const createDaedalusComponentsTheme = (
       '--theme-staking-info-learn-more-button-color': `${
         background.primary.lightest
       }`,
-      '--theme-staking-info-learn-more-icon-color': `${chroma(
-        text.secondary
-      ).alpha(0.7)}`,
+      '--theme-staking-info-learn-more-icon-color': `${text.secondary}`,
       '--theme-staking-learn-more-button-color': `${
         background.primary.lightest
       }`,
-      '--theme-staking-learn-more-icon-color': `${chroma(text.secondary).alpha(
-        0.7
-      )}`,
+      '--theme-staking-learn-more-icon-color': `${text.secondary}`,
     },
     support: {
       '--theme-support-settings-item-color': `${text.primary}`,
