@@ -24,10 +24,10 @@ const logoAnimationOptionsLottie = {
 export default class LogosDisplay extends Component<Props> {
   componentDidMount() {
     // Manual adjustment due to `logo-animation-data.json` canvas size
-    const svg = document.querySelector('.LogosDisplay_daedalusLogo svg');
-    if (svg instanceof HTMLElement) {
-      svg.setAttribute('viewBox', '534 250 212 220');
-    }
+    const svg: Object = document.querySelector(
+      '.LogosDisplay_daedalusLogo svg'
+    );
+    svg.setAttribute('viewBox', '534 250 212 220');
   }
 
   render() {
