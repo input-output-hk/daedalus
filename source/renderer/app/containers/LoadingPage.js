@@ -20,6 +20,18 @@ export const messages = defineMessages({
     defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/requests/new/',
     description: 'Link to Open Support page',
   },
+  syncIssueArticleUrl: {
+    id: 'loading.screen.readIssueArticle.syncIssueArticleUrl',
+    defaultMessage:
+      '!!!https://iohk.zendesk.com/hc/en-us/articles/360011536933',
+    description: 'Link to sync issue article page',
+  },
+  connectivityIssueArticleUrl: {
+    id: 'loading.screen.readIssueArticle.connectivityIssueArticleUrl',
+    defaultMessage:
+      '!!!https://iohk.zendesk.com/hc/en-us/articles/360010522913',
+    description: 'Link to connectivity issue article page',
+  },
 });
 
 @inject('stores', 'actions')
@@ -71,6 +83,7 @@ export default class LoadingPage extends Component<InjectedProps> {
     return (
       <CenteredLayout>
         <Loading
+          onStatusIconClick={this.openDaedalusDiagnosticsDialog}
           currencyIcon={adaLogo}
           apiIcon={cardanoLogo}
           cardanoNodeState={cardanoNodeState}
@@ -103,6 +116,10 @@ export default class LoadingPage extends Component<InjectedProps> {
           currentLocale={currentLocale}
           onExternalLinkClick={openExternalLink}
           onReportIssueClick={this.handleReportIssueClick}
+          onReadSyncIssueArticleClick={this.handleReadSyncIssueArticleClick}
+          onReadConnectivityIssueArticleClick={
+            this.handleReadConnectivityIssueArticleClick
+          }
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
           onContinueWithoutClockSyncCheck={ignoreSystemTimeChecks}
           onGetAvailableVersions={this.handleGetAvailableVersions}
@@ -124,6 +141,32 @@ export default class LoadingPage extends Component<InjectedProps> {
     this.props.stores.app.openExternalLink(supportUrl);
   };
 
+  handleReadSyncIssueArticleClick = async (
+    event: SyntheticEvent<HTMLButtonElement>
+  ) => {
+    event.persist();
+    const { intl } = this.context;
+    const syncIssueArticleUrl = intl.formatMessage(
+      messages.syncIssueArticleUrl
+    );
+    const locale = this.props.stores.profile.currentLocale;
+    const supportUrl = await getSupportUrl(syncIssueArticleUrl, locale);
+    this.props.stores.app.openExternalLink(supportUrl);
+  };
+
+  handleReadConnectivityIssueArticleClick = async (
+    event: SyntheticEvent<HTMLButtonElement>
+  ) => {
+    event.persist();
+    const { intl } = this.context;
+    const connectivityIssueArticleUrl = intl.formatMessage(
+      messages.connectivityIssueArticleUrl
+    );
+    const locale = this.props.stores.profile.currentLocale;
+    const supportUrl = await getSupportUrl(connectivityIssueArticleUrl, locale);
+    this.props.stores.app.openExternalLink(supportUrl);
+  };
+
   handleDownloadLogs = () => {
     const { app } = this.props.actions;
     app.downloadLogs.trigger();
@@ -133,5 +176,13 @@ export default class LoadingPage extends Component<InjectedProps> {
   handleGetAvailableVersions = () => {
     const { nodeUpdate } = this.props.actions;
     nodeUpdate.getLatestAvailableAppVersion.trigger();
+  };
+
+  openDaedalusDiagnosticsDialog = () => {
+    const {
+      actions: { app },
+    } = this.props;
+
+    app.openDaedalusDiagnosticsDialog.trigger();
   };
 }

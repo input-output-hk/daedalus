@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, date, number } from '@storybook/addon-knobs';
+import { withKnobs, date, number, radios } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import { action } from '@storybook/addon-actions';
 import StoryLayout from './support/StoryLayout';
@@ -15,7 +15,10 @@ import StakingCountdown from '../../source/renderer/app/components/staking/count
 import StakingInfo from '../../source/renderer/app/components/staking/info/StakingInfo';
 import DelegationStepsIntroDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsIntroDialog';
 import DelegationStepsChooseWalletDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog';
+import DelegationStepsChooseStakePoolDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog';
 import DelegationStepsNotAvailableDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsNotAvailableDialog';
+import DelegationStepsConfirmationDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog';
+import DelegationStepsActivationDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog';
 
 import { StakePoolsStory } from './Staking-StakePools.stories';
 import { StakingRewardsStory } from './Staking-Rewards.stories';
@@ -23,6 +26,7 @@ import { StakingDelegationCenterStory } from './Staking-DelegationCenter.stories
 import { StakingEpochsStory } from './Staking-Epochs.stories';
 
 import translations from '../../source/renderer/app/i18n/translations';
+import STAKE_POOLS from '../../source/renderer/app/config/stakingStakePools.dummy.json';
 
 const defaultPercentage = 10;
 const defaultStartDateTime = new Date('2019-09-26');
@@ -44,29 +48,44 @@ const pageNames = {
 
 const WALLETS = [
   {
+    id: '1',
     value: '1.0001 ADA',
     label: 'First Wallet',
     isAcceptableSetupWallet: true,
+    hasPassword: true,
   },
   {
+    id: '2',
     value: '2 ADA',
     label: 'Second Wallet',
     isAcceptableSetupWallet: true,
+    hasPassword: true,
   },
   {
+    id: '3',
     value: '0.0001 ADA',
     label: 'Third Wallet',
     isAcceptableSetupWallet: false,
+    hasPassword: true,
   },
 ];
+
+const themes = {
+  'Light Blue': 'light-blue',
+  Cardano: 'cardano',
+  'Dark Blue': 'dark-blue',
+};
 
 const locales = {
   English: 'en-US',
   Japanese: 'ja-JP',
 };
+
 // Delegation steps labels are translated outside components and we need to determine correct translations
 const locale = localStorage.getItem('currentLocale') || 'English';
 const translationIndex = locales[locale];
+
+// @TODO - improve locales GET once [DDW-711](https://github.com/input-output-hk/daedalus/pull/1426) is merged
 const DELEGATION_WIZARD_STEPS_LIST = [
   translations[translationIndex]['staking.delegationSetup.steps.step.1.label'],
   translations[translationIndex]['staking.delegationSetup.steps.step.2.label'],
@@ -119,11 +138,12 @@ storiesOf('Staking', module)
     () => (
       <div>
         <StakingCountdown
-          currentLocale="en-US"
+          currentLocale={translationIndex}
           startDateTime={startDateTimeKnob(
             'Decentralization Start DateTime',
             defaultStartDateTime
           )}
+          onLearnMoreClick={action('onLearnMoreClick')}
         />
       </div>
     ),
@@ -150,6 +170,7 @@ storiesOf('Staking', module)
           step: 1,
           range: true,
         })}
+        onLearnMoreClick={action('onLearnMoreClick')}
       />
     ),
     {
@@ -169,10 +190,56 @@ storiesOf('Staking', module)
     <DelegationStepsChooseWalletDialog
       stepsList={DELEGATION_WIZARD_STEPS_LIST}
       onClose={action('onClose')}
-      onContinue={action('onContinue')}
+      onSelectWallet={action('onSelectWallet')}
       onBack={action('onBack')}
       wallets={WALLETS}
       minDelegationFunds={1}
+      selectedWallet={null}
+    />
+  ))
+
+  .add('DelegationStepsConfirmationDialog', () => (
+    <DelegationStepsConfirmationDialog
+      stepsList={DELEGATION_WIZARD_STEPS_LIST}
+      isSpendingPasswordSet
+      onClose={action('onClose')}
+      onConfirm={action('onConfirm')}
+      onBack={action('onBack')}
+    />
+  ))
+
+  .add('DelegationStepsActivationDialog', () => (
+    <DelegationStepsActivationDialog
+      stepsList={DELEGATION_WIZARD_STEPS_LIST}
+      isSpendingPasswordSet
+      onClose={action('onClose')}
+      onActivate={action('onActivate')}
+      onBack={action('onBack')}
+    />
+  ))
+
+  .add('DelegationStepsChooseStakePoolDialog', () => (
+    <DelegationStepsChooseStakePoolDialog
+      stepsList={DELEGATION_WIZARD_STEPS_LIST}
+      stakePoolsList={STAKE_POOLS.slice(
+        0,
+        number('Pools', 100, {
+          range: true,
+          min: 37,
+          max: 300,
+          step: 1,
+        })
+      )}
+      stakePoolsDelegatingList={[
+        STAKE_POOLS[0],
+        STAKE_POOLS[13],
+        STAKE_POOLS[36],
+      ]}
+      onOpenExternalLink={() => {}}
+      currentTheme={radios('Theme (Only for tooltip colors)', themes)}
+      onClose={action('onClose')}
+      onContinue={action('onContinue')}
+      onBack={action('onBack')}
     />
   ))
 

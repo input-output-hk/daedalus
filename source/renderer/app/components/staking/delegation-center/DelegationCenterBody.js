@@ -15,7 +15,10 @@ const messages = defineMessages({
   },
 });
 
-type Props = { wallets: Array<Wallet> };
+type Props = {
+  wallets: Array<Wallet>,
+  onDelegate: Function,
+};
 
 @observer
 export default class DelegationCenterBody extends Component<Props> {
@@ -37,7 +40,8 @@ export default class DelegationCenterBody extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { wallets } = this.props;
+    const { wallets, onDelegate } = this.props;
+
     const title = intl.formatMessage(messages.bodyTitle);
 
     return (
@@ -50,10 +54,21 @@ export default class DelegationCenterBody extends Component<Props> {
             if (wallet.isDelegated && wallet.delegatedStakePool) {
               const index = this.getIndex(wallet.delegatedStakePool.ranking);
               return (
-                <WalletRow key={wallet.id} wallet={wallet} index={index} />
+                <WalletRow
+                  key={wallet.id}
+                  wallet={wallet}
+                  index={index}
+                  onDelegate={onDelegate}
+                />
               );
             }
-            return <WalletRow key={wallet.id} wallet={wallet} />;
+            return (
+              <WalletRow
+                key={wallet.id}
+                wallet={wallet}
+                onDelegate={onDelegate}
+              />
+            );
           })}
         </div>
       </div>
