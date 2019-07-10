@@ -43,15 +43,17 @@
   }
 
   .externalLinkIcon {
-    @include link(--theme-button-primary-text-color);
+    @include link(--theme-report-issue-icon-color);
     border-bottom: none;
-    margin-right: 12px;
+    margin-right: 10px;
+    vertical-align: baseline;
+    width: 15px;
     svg {
       margin-left: 0;
       vertical-align: sub;
       width: 15px;
       g {
-        stroke-width: 3;
+        stroke-width: 2px;
       }
     }
   }
