@@ -45,10 +45,14 @@
   .externalLinkIcon {
     @include link(--theme-button-primary-text-color);
     border-bottom: none;
+    margin-right: 12px;
     svg {
-      margin-right: 8px;
+      margin-left: 0;
       vertical-align: sub;
       width: 15px;
+      g {
+        stroke-width: 3;
+      }
     }
   }
 }
