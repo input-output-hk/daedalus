@@ -6,7 +6,7 @@ in
 , pkgs ? localLib.iohkNix.getPkgs { inherit system config; }
 , cluster ? "demo"
 , systemStart ? null
-, autoStartBackend ? systemStart != null
+, autoStartBackend ? true
 , generateTls ? true
 , walletExtraArgs ? []
 , allowFaultInjection ? false
