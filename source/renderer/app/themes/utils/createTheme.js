@@ -298,6 +298,9 @@ const createDaedalusComponentsTheme = (
       '--theme-bordered-box-text-color': `${text.primary}`,
     },
     button: {
+      '--theme-button-spinner-color': `${
+        background.primary.lightest
+      }`,
       '--theme-label-button-color': `${text.primary}`,
     },
     buttonAttention: {

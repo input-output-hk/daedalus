@@ -254,6 +254,7 @@ const DARK_BLUE_THEME_CONFIG = {
     '--theme-bordered-box-text-color': '#e9f4fe',
   },
   button: {
+    '--theme-button-spinner-color': '#fafbfc',
     '--theme-label-button-color': 'rgba(233, 244, 254, 0.5)',
   },
   buttonAttention: {

@@ -253,6 +253,7 @@ const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-bordered-box-text-color': '#5e6066',
   },
   button: {
+    '--theme-button-spinner-color': '#fafbfc',
     '--theme-label-button-color': '#5e6066',
   },
   buttonAttention: {
