@@ -403,9 +403,9 @@ export const createDaedalusComponentsTheme = (
       '--theme-delegation-steps-choose-stake-pool-selected-slug-color': `${
         text.secondary
       }`,
-      '--theme-delegation-steps-choose-stake-pool-title-color': `${chroma().alpha(
-        0.6
-      )}`,
+      '--theme-delegation-steps-choose-stake-pool-title-color': `${chroma(
+        text.primary
+      ).alpha(0.8)}`,
       '--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color': `${chroma(
         text.primary
       ).alpha(0.9)}`,
