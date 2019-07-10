@@ -2,7 +2,6 @@
 import chroma from 'chroma-js';
 import { isEmpty } from 'lodash';
 import { createBackgroundShades, createErrorShades } from './createShades';
-// import { updateThemes } from './updateThemes';
 import type { ThemeColors, ThemeFonts, CreateThemeParams } from '../types';
 
 type PartialThemeParts = {
@@ -11,7 +10,9 @@ type PartialThemeParts = {
 };
 
 // assigns values to all react-polymorph CSS variables & returns them
-const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
+export const createReactPolymorphTheme = (
+  themeParts: PartialThemeParts
+): Object => {
   const { colors, fonts } = themeParts;
   const { background, border, error, focus, text } = colors;
   return {
@@ -171,7 +172,7 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
 };
 
 // assigns values to all Daedalus CSS variables & returns them
-const createDaedalusComponentsTheme = (
+export const createDaedalusComponentsTheme = (
   themeParts: PartialThemeParts
 ): Object => {
   const { colors, fonts } = themeParts;
@@ -905,12 +906,7 @@ const createDaedalusComponentsTheme = (
 };
 
 export const createTheme = (fullThemeParts: CreateThemeParams): Object => {
-  const {
-    colors: themeColors,
-    config,
-    fonts: themeFonts,
-    write,
-  } = fullThemeParts;
+  const { colors: themeColors, config, fonts: themeFonts } = fullThemeParts;
 
   let daedalusTheme = {};
   let colors = {};
@@ -948,10 +944,6 @@ export const createTheme = (fullThemeParts: CreateThemeParams): Object => {
       ...createReactPolymorphTheme({ colors, fonts }),
       ...createDaedalusComponentsTheme({ colors, fonts }),
     };
-
-    if (write && !isEmpty(write)) {
-      // return updateThemes(daedalusTheme);
-    }
 
     // flatten daedalusTheme object for consumption by ThemeManager
     daedalusTheme = Object.values(daedalusTheme).reduce(
