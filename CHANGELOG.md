@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Refactored the Loading screen, adding containers for each overlay ([PR 1446](https://github.com/input-output-hk/daedalus/pull/1446))
+- Implemented "Delegation Setup wizard" steps 3 & 4 UI ([PR 1439](https://github.com/input-output-hk/daedalus/pull/1439))
 - Improved "Connectivity/Sync trouble notification" ([PR 1453](https://github.com/input-output-hk/daedalus/pull/1453))
 - Implemented "Delegation Setup wizard" step 2 UI ([PR 1430](https://github.com/input-output-hk/daedalus/pull/1430))
 - Improved loading screen status icons UX ([PR 1452](https://github.com/input-output-hk/daedalus/pull/1452))
@@ -51,6 +51,7 @@ Changelog
 
 ### Chores
 
+- Refactored the Loading screen, adding containers for each overlay ([PR 1446](https://github.com/input-output-hk/daedalus/pull/1446))
 - Added button to open local state directory on Daedalus Diagnostics Screen ([PR 1438](https://github.com/input-output-hk/daedalus/pull/1438))
 - Updated the list of contributors on the "About" screen ([PR 1450](https://github.com/input-output-hk/daedalus/pull/1450))
 - Improved switching of the application menu screens ([PR 1419](https://github.com/input-output-hk/daedalus/pull/1419))

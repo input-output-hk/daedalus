@@ -8,7 +8,7 @@
 }
 
 .component {
-  padding: 20px 20px 0;
+  padding: 20px;
 
   .headerWrapper {
     align-items: center;
@@ -68,7 +68,7 @@
   }
 
   .progressBarContainer {
-    background-color: var(--theme-staking-background-color);
+    background-color: var(--theme-staking-progress-bar-background-color);
     border-radius: 5px;
     height: 100%;
     position: relative;

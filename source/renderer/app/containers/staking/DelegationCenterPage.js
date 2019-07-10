@@ -8,19 +8,25 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
 
-@inject('stores')
+@inject('actions', 'stores')
 @observer
 export default class DelegationCenterPage extends Component<Props> {
   static defaultProps = { stores: null };
 
+  handleDelegate = () => {
+    const { actions } = this.props;
+    actions.dialogs.open.trigger({ dialog: DelegationSetupWizardDialog });
+  };
+
   render() {
-    const { uiDialogs, staking } = this.props.stores;
+    const { uiDialogs, staking, wallets } = this.props.stores;
 
     return (
       <DelegationCenter
         adaValue={staking.adaValue}
         percentage={staking.percentage}
-        wallets={[]}
+        wallets={wallets.all}
+        onDelegate={this.handleDelegate}
       >
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
           <DelegationSetupWizardDialogContainer />
