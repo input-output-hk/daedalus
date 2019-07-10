@@ -68,7 +68,7 @@
   margin-bottom: 20px;
   opacity: 0.8;
   &:disabled {
-    border-bottom: none;
+    border-bottom-color: transparent;
     cursor: default;
     text-decoration: none;
   }

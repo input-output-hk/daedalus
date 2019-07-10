@@ -13,11 +13,11 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 export default class Loading extends Component<InjectedProps> {
   static defaultProps = { stores: null, actions: null };
 
-  get page() {
+  get activeOverlay() {
     if (this.isNotEnoughDiskSpace) return <NoDiskSpaceErrorPage />;
-    if (this.isSystemTimeError) return <SystemTimeErrorPage />;
     if (this.isManualUpdate) return <ManualUpdatePage />;
-    return <SyncingConnectingPage />;
+    if (this.isSystemTimeError) return <SystemTimeErrorPage />;
+    return null;
   }
 
   get isNotEnoughDiskSpace() {
@@ -44,6 +44,11 @@ export default class Loading extends Component<InjectedProps> {
   }
 
   render() {
-    return <CenteredLayout>{this.page}</CenteredLayout>;
+    return (
+      <CenteredLayout>
+        {this.activeOverlay}
+        <SyncingConnectingPage />
+      </CenteredLayout>
+    );
   }
 }
