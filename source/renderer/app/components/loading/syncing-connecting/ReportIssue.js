@@ -7,7 +7,7 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 
 import styles from './ReportIssue.scss';
-import linkNewWindow from '../../../assets/images/link-ic.inline.svg';
+import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 
 const messages = defineMessages({
   reportConnectingIssueText: {
@@ -115,7 +115,10 @@ export default class ReportIssue extends Component<Props> {
           className={reportIssueButtonClasses}
           label={
             <p>
-              <SVGInline svg={linkNewWindow} className={styles.linkNewWindow} />
+              <SVGInline
+                svg={externalLinkIcon}
+                className={styles.externalLinkIcon}
+              />
               {intl.formatMessage(messages.reportIssueButtonLabel)}
             </p>
           }
@@ -128,7 +131,10 @@ export default class ReportIssue extends Component<Props> {
           className={readArticleButtonClasses}
           label={
             <p>
-              <SVGInline svg={linkNewWindow} className={styles.linkNewWindow} />
+              <SVGInline
+                svg={externalLinkIcon}
+                className={styles.externalLinkIcon}
+              />
               {intl.formatMessage(messages.readArticleButtonLabel)}
             </p>
           }

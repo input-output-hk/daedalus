@@ -1,3 +1,5 @@
+@import '../../../themes/mixins/link';
+
 .component {
   position: fixed;
   text-align: center;
@@ -39,6 +41,16 @@
       --theme-report-issue-button-background-color-active
     ) !important;
   }
+
+  .externalLinkIcon {
+    @include link(--theme-button-primary-text-color);
+    border-bottom: none;
+    svg {
+      margin-right: 8px;
+      vertical-align: sub;
+      width: 15px;
+    }
+  }
 }
 
 .downloadLogsButton {
@@ -52,10 +64,9 @@
   margin-bottom: 20px;
   opacity: 0.8;
   &:disabled {
-    color: var(--rp-button-bg-color-disabled);
-    text-decoration: none;
-    cursor: default;
     border-bottom: none;
+    cursor: default;
+    text-decoration: none;
   }
 }
 
@@ -63,10 +74,4 @@
   border-bottom: 1px solid
     var(--theme-report-issue-syncing-download-logs-text-color-connecting);
   color: var(--theme-report-issue-syncing-download-logs-text-color-connecting);
-}
-
-.linkNewWindow {
-  display: inline-block;
-  margin-right: 10px;
-  width: 12px;
 }

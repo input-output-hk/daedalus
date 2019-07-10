@@ -14,21 +14,21 @@ export const DefaultSyncingConnectingStory = () => (
       CardanoNodeStates,
       CardanoNodeStates.STARTING
     )}
-    hasBeenConnected={boolean('hasBeenConnected', true)}
-    isConnected={boolean('isConnected', true)}
-    isSynced={boolean('isSynced', true)}
+    hasBeenConnected={boolean('hasBeenConnected', false)}
+    isConnected={boolean('isConnected', false)}
+    isSynced={boolean('isSynced', false)}
     isConnecting={boolean('isConnecting', true)}
-    isSyncing={boolean('isSyncing', true)}
+    isSyncing={boolean('isSyncing', false)}
     isNodeStopping={boolean('isNodeStopping', false)}
     isNodeStopped={boolean('isNodeStopped', false)}
     isTlsCertInvalid={boolean('isTlsCertInvalid', false)}
-    syncPercentage={number('syncPercentage', 100)}
+    syncPercentage={number('syncPercentage', 0)}
     hasLoadedCurrentLocale={boolean('hasLoadedCurrentLocale', true)}
     hasLoadedCurrentTheme={boolean('hasLoadedCurrentTheme', true)}
     isCheckingSystemTime={boolean('isCheckingSystemTime', false)}
-    isNodeResponding={boolean('isNodeResponding', true)}
-    isNodeSubscribed={boolean('isNodeSubscribed', true)}
-    isNodeSyncing={boolean('isNodeSyncing', true)}
+    isNodeResponding={boolean('isNodeResponding', false)}
+    isNodeSubscribed={boolean('isNodeSubscribed', false)}
+    isNodeSyncing={boolean('isNodeSyncing', false)}
     isNodeTimeCorrect={boolean('isNodeTimeCorrect', true)}
     isNewAppVersionAvailable={boolean('isNewAppVersionAvailable', false)}
     isNewAppVersionLoading={boolean('isNewAppVersionLoading', false)}
@@ -45,67 +45,60 @@ export const ConnectivityIssuesSyncingConnectingStory = () => (
   <SyncingConnecting
     forceConnectivityIssue
     isConnected={false}
-    cardanoNodeState={radios(
-      'cardanoNodeState',
-      CardanoNodeStates,
-      CardanoNodeStates.STARTING
-    )}
-    hasBeenConnected={boolean('hasBeenConnected', true)}
-    isSynced={boolean('isSynced', true)}
-    isConnecting={boolean('isConnecting', true)}
-    isSyncing={boolean('isSyncing', true)}
-    isNodeStopping={boolean('isNodeStopping', false)}
-    isNodeStopped={boolean('isNodeStopped', false)}
-    isTlsCertInvalid={boolean('isTlsCertInvalid', false)}
-    syncPercentage={number('syncPercentage', 100)}
-    hasLoadedCurrentLocale={boolean('hasLoadedCurrentLocale', true)}
-    hasLoadedCurrentTheme={boolean('hasLoadedCurrentTheme', true)}
-    isCheckingSystemTime={boolean('isCheckingSystemTime', false)}
-    isNodeResponding={boolean('isNodeResponding', true)}
-    isNodeSubscribed={boolean('isNodeSubscribed', true)}
-    isNodeSyncing={boolean('isNodeSyncing', true)}
-    isNodeTimeCorrect={boolean('isNodeTimeCorrect', true)}
-    isNewAppVersionAvailable={boolean('isNewAppVersionAvailable', false)}
-    isNewAppVersionLoading={boolean('isNewAppVersionLoading', false)}
-    isNewAppVersionLoaded={boolean('isNewAppVersionLoaded', false)}
+    cardanoNodeState={CardanoNodeStates.RUNNING}
+    hasBeenConnected
+    isSynced={false}
+    isConnecting
+    isSyncing={false}
+    isNodeStopping={false}
+    isNodeStopped={false}
+    isTlsCertInvalid={false}
+    syncPercentage={0}
+    hasLoadedCurrentLocale
+    hasLoadedCurrentTheme
+    isCheckingSystemTime={false}
+    isNodeResponding
+    isNodeSubscribed={false}
+    isNodeSyncing={false}
+    isNodeTimeCorrect
+    isNewAppVersionAvailable={false}
+    isNewAppVersionLoading={false}
+    isNewAppVersionLoaded
     onIssueClick={action('onIssueClick')}
     onDownloadLogs={action('onDownloadLogs')}
     onGetAvailableVersions={action('onGetAvailableVersions')}
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
-    disableDownloadLogs={boolean('disableDownloadLogs', true)}
+    disableDownloadLogs={boolean('disableDownloadLogs', false)}
   />
 );
 
 export const SyncIssuesSyncingConnectingStory = () => (
   <SyncingConnecting
-    cardanoNodeState={radios(
-      'cardanoNodeState',
-      CardanoNodeStates,
-      CardanoNodeStates.STARTING
-    )}
-    hasBeenConnected={boolean('hasBeenConnected', true)}
+    forceSyncIssue
+    cardanoNodeState={CardanoNodeStates.RUNNING}
+    hasBeenConnected
     isConnected
     isSynced={false}
-    isConnecting={boolean('isConnecting', true)}
-    isSyncing={boolean('isSyncing', true)}
-    isNodeStopping={boolean('isNodeStopping', false)}
-    isNodeStopped={boolean('isNodeStopped', false)}
-    isTlsCertInvalid={boolean('isTlsCertInvalid', false)}
-    syncPercentage={number('syncPercentage', 100)}
-    hasLoadedCurrentLocale={boolean('hasLoadedCurrentLocale', true)}
-    hasLoadedCurrentTheme={boolean('hasLoadedCurrentTheme', true)}
-    isCheckingSystemTime={boolean('isCheckingSystemTime', false)}
-    isNodeResponding={boolean('isNodeResponding', true)}
-    isNodeSubscribed={boolean('isNodeSubscribed', true)}
-    isNodeSyncing={boolean('isNodeSyncing', true)}
-    isNodeTimeCorrect={boolean('isNodeTimeCorrect', true)}
-    isNewAppVersionAvailable={boolean('isNewAppVersionAvailable', false)}
-    isNewAppVersionLoading={boolean('isNewAppVersionLoading', false)}
-    isNewAppVersionLoaded={boolean('isNewAppVersionLoaded', false)}
+    isConnecting={false}
+    isSyncing
+    isNodeStopping={false}
+    isNodeStopped={false}
+    isTlsCertInvalid={false}
+    syncPercentage={50}
+    hasLoadedCurrentLocale
+    hasLoadedCurrentTheme
+    isCheckingSystemTime={false}
+    isNodeResponding
+    isNodeSubscribed
+    isNodeSyncing
+    isNodeTimeCorrect
+    isNewAppVersionAvailable={false}
+    isNewAppVersionLoading={false}
+    isNewAppVersionLoaded
     onIssueClick={action('onIssueClick')}
     onDownloadLogs={action('onDownloadLogs')}
     onGetAvailableVersions={action('onGetAvailableVersions')}
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
-    disableDownloadLogs={boolean('disableDownloadLogs', true)}
+    disableDownloadLogs={boolean('disableDownloadLogs', false)}
   />
 );
