@@ -12,7 +12,6 @@ export type CreateThemeParams = {
   colors?: ColorParams,
   fonts?: ThemeFonts,
   config?: Object,
-  write?: Object,
 };
 
 export type ColorParams = {
@@ -27,6 +26,12 @@ export type ColorParams = {
     primary: string,
     secondary: string,
   },
+};
+
+export type LogDifferencesParams = {
+  color: string,
+  missingDefs: Object,
+  themeName: string,
 };
 
 export type ThemeColors = {

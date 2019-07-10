@@ -1,9 +1,24 @@
+/* eslint-disable no-unused-expressions */
 // @flow
 import { has, isEmpty } from 'lodash';
-import { createTheme } from './createTheme';
+import chalk from 'chalk';
 import { CARDANO_THEME_CONFIG } from '../daedalus/cardano';
 import { DARK_BLUE_THEME_CONFIG } from '../daedalus/dark-blue';
 import { LIGHT_BLUE_THEME_CONFIG } from '../daedalus/light-blue';
+import type { LogDifferencesParams } from '../types';
+
+const logDifferences = ({
+  color,
+  missingDefs,
+  themeName,
+}: LogDifferencesParams) => {
+  const message = chalk`\n{inverse  createTheme.js } is missing the following definitions that exist in the {underline ${themeName}} theme:\n\n${JSON.stringify(
+    missingDefs,
+    0,
+    2
+  )}\n`;
+  return console.log(chalk.hex(color)(message));
+};
 
 // Checks for properties/CSS vars on existing themes that don't exist on createThemeObj
 export const checkCreateTheme = (createThemeObj: Object) => {
@@ -20,23 +35,29 @@ export const checkCreateTheme = (createThemeObj: Object) => {
     ...findMissingCSSVars(LIGHT_BLUE_THEME_CONFIG, createThemeObj),
   };
 
-  !isEmpty(missingCardanoDefs) &&
-    console.log(`
-      createTheme is missing the following theme definitions that exist in the Cardano theme:
-      ${JSON.stringify(missingCardanoDefs, 0, 2)}
-    `);
+  if (!isEmpty(missingCardanoDefs)) {
+    logDifferences({
+      color: '#2cbb69',
+      missingDefs: missingCardanoDefs,
+      themeName: 'cardano.js',
+    });
+  }
 
-  !isEmpty(missingDarkBlueDefs) &&
-    console.log(`
-      createTheme is missing the following theme definitions that exist in the Dark-Blue theme:
-      ${JSON.stringify(missingDarkBlueDefs, 0, 2)}
-    `);
+  if (!isEmpty(missingDarkBlueDefs)) {
+    logDifferences({
+      color: '#2874A6',
+      missingDefs: missingDarkBlueDefs,
+      themeName: 'dark-blue.js',
+    });
+  }
 
-  !isEmpty(missingLightBlueDefs) &&
-    console.log(`
-      createTheme is missing the following theme definitions that exist in the Light-Blue theme:
-      ${JSON.stringify(missingLightBlueDefs, 0, 2)}
-    `);
+  if (!isEmpty(missingLightBlueDefs)) {
+    logDifferences({
+      color: '#33C4FF',
+      missingDefs: missingLightBlueDefs,
+      themeName: 'light-blue.js',
+    });
+  }
 };
 
 export const findMissingDefinitions = (
@@ -70,5 +91,3 @@ export const findMissingCSSVars = (basis: Object, target: Object): Object => {
   }
   return missingCSSVariables;
 };
-
-console.log(JSON.stringify(createTheme({ config: CARDANO_THEME_CONFIG })));
