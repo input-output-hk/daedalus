@@ -176,12 +176,6 @@ export const winLinuxMenu = (
       {
         label: translation('helpSupport.downloadLogs'),
         click() {
-          showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
-        },
-      },
-      {
-        label: translation('helpSupport.supportRequest'),
-        click() {
           const startTime = new Date().toISOString();
 
           const stateSnapshot = logStateSnapshot({
@@ -201,6 +195,12 @@ export const winLinuxMenu = (
 
           Logger.info('Updating State-snapshot.json file', { ...stateSnapshot.data });
 
+          showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
+        },
+      },
+      {
+        label: translation('helpSupport.supportRequest'),
+        click() {
           const supportRequestLinkUrl = translation(
             'helpSupport.supportRequestUrl'
           );
