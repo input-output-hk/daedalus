@@ -236,11 +236,11 @@ export default class BlockConsolidationStatus extends Component<Props> {
               className={styles.learnMoreButton}
               label={
                 <p>
-                  {formatMessage(messages.learnMoreButton)}
                   <SVGInline
                     svg={externalLinkIcon}
                     className={styles.externalLinkIcon}
                   />
+                  {formatMessage(messages.learnMoreButton)}
                 </p>
               }
               onClick={() =>

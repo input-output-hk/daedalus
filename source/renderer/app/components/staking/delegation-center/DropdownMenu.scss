@@ -25,6 +25,9 @@
       width: 200px !important;
 
       ul {
+        background-color: var(--theme-nav-dropdown-item-background-color);
+        border-radius: 4px;
+
         li {
           background: var(--theme-staking-dropdown-item-background-color);
           border-radius: 4px;
