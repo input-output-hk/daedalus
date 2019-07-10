@@ -482,7 +482,6 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       networkBlockHeight,
       latestLocalBlockTimestamp,
       latestNetworkBlockTimestamp,
-      onForceCheckLocalTimeDifference,
       onOpenStateDirectory,
       onClose,
       onCopyStateDirectoryPath,
@@ -578,8 +577,8 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
           <table className={styles.table}>
             <tbody>
               <tr>
-                <th colSpan={2}>
-                  {intl.formatMessage(messages.systemInfo)}
+                <th className={styles.sectionTitle} colSpan={2}>
+                  <span>{intl.formatMessage(messages.systemInfo)}</span>
                   <hr />
                 </th>
               </tr>
@@ -608,8 +607,8 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
             </tbody>
             <tbody>
               <tr>
-                <th colSpan={2}>
-                  {intl.formatMessage(messages.coreInfo)}
+                <th className={styles.sectionTitle} colSpan={2}>
+                  <span>{intl.formatMessage(messages.coreInfo)}</span>
                   <hr />
                 </th>
               </tr>
@@ -701,8 +700,8 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
           <table className={styles.table}>
             <tbody>
               <tr>
-                <th colSpan={2}>
-                  {intl.formatMessage(messages.daedalusStatus)}
+                <th className={styles.sectionTitle} colSpan={2}>
+                  <span>{intl.formatMessage(messages.daedalusStatus)}</span>
                   <hr />
                 </th>
               </tr>
@@ -760,7 +759,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 <th>{intl.formatMessage(messages.localTimeDifference)}:</th>
                 <td className={styles.localTimeDifferenceItem}>
                   <button
-                    onClick={() => onForceCheckLocalTimeDifference()}
+                    onClick={() => this.checkTime()}
                     disabled={isForceCheckingNodeTime || !isConnected}
                   >
                     {isForceCheckingNodeTime
@@ -803,8 +802,8 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
             </tbody>
             <tbody>
               <tr>
-                <th colSpan={2}>
-                  {intl.formatMessage(messages.cardanoNodeStatus)}
+                <th className={styles.sectionTitle} colSpan={2}>
+                  <span>{intl.formatMessage(messages.cardanoNodeStatus)}</span>
                   <button
                     className={styles.statusBtn}
                     onClick={() => this.restartNode()}
@@ -937,9 +936,22 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     return localisationKey;
   };
 
+  restoreDialogCloseOnEscKey = () => {
+    // This method is to be used on buttons which get disabled after click
+    // as without it the ReactModal is not closing if you press the ESC key
+    // even after the button is later re-enabled
+    document.getElementsByClassName('ReactModal__Content')[0].focus();
+  };
+
+  checkTime = () => {
+    this.props.onForceCheckLocalTimeDifference();
+    this.restoreDialogCloseOnEscKey();
+  };
+
   restartNode = () => {
     this.setState({ isNodeRestarting: true });
     this.props.onRestartNode.trigger();
+    this.restoreDialogCloseOnEscKey();
   };
 
   getClass = (isTrue: boolean) =>
