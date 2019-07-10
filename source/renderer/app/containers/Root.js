@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import WalletAddPage from './wallet/WalletAddPage';
-import LoadingPage from './LoadingPage';
+import LoadingPage from './loading/LoadingPage';
 import { DIALOGS } from '../../../common/ipc/constants';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 
@@ -21,7 +21,7 @@ export default class Root extends Component<Props> {
       app,
       staking,
     } = stores;
-    const { isActiveDialog, _closeActiveDialog } = app;
+    const { isActiveDialog } = app;
     const { isStakingPage } = staking;
     const { isProfilePage, isSettingsPage } = profile;
     const { isAdaRedemptionPage } = adaRedemption;
@@ -57,14 +57,8 @@ export default class Root extends Component<Props> {
       !isSynced ||
       !hasLoadedWallets ||
       !isSystemTimeCorrect ||
-      isNotEnoughDiskSpace ||
-      isNodeInStoppingSequence
+      isNotEnoughDiskSpace
     ) {
-      if (
-        !isActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS)
-      ) {
-        _closeActiveDialog();
-      }
       return <LoadingPage stores={stores} actions={actions} />;
     }
 

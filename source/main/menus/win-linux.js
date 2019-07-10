@@ -7,7 +7,6 @@ import { getTranslation } from '../utils/getTranslation';
 import { environment } from '../environment';
 import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
-import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import type { SupportRequests } from '../../common/types/support-requests.types';
 
 const id = 'menu';
@@ -19,7 +18,6 @@ export const winLinuxMenu = (
   actions: MenuActions,
   translations: {},
   supportRequestData: SupportRequests,
-  cardanoNodeState: CardanoNodeStates,
   translation: Function = getTranslation(translations, id)
 ) => [
   {
@@ -27,14 +25,12 @@ export const winLinuxMenu = (
     submenu: compact([
       {
         label: translation('daedalus.about'),
-        enabled: cardanoNodeState !== CardanoNodeStates.STOPPING,
         click() {
           actions.openAboutDialog();
         },
       },
       {
         label: translation('daedalus.adaRedemption'),
-        enabled: cardanoNodeState !== CardanoNodeStates.STOPPING,
         click() {
           actions.openAdaRedemptionScreen();
         },
@@ -42,7 +38,6 @@ export const winLinuxMenu = (
       {
         label: translation('daedalus.blockConsolidationStatus'),
         accelerator: 'Ctrl+B',
-        enabled: cardanoNodeState !== CardanoNodeStates.STOPPING,
         click() {
           actions.openBlockConsolidationStatusDialog();
         },
@@ -50,7 +45,6 @@ export const winLinuxMenu = (
       {
         label: translation('daedalus.daedalusDiagnostics'),
         accelerator: 'Ctrl+D',
-        enabled: cardanoNodeState !== CardanoNodeStates.STOPPING,
         click() {
           actions.openDaedalusDiagnosticsDialog();
         },
