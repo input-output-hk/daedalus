@@ -9,6 +9,7 @@ import { CardanoNode } from '../cardano/CardanoNode';
 import { DIALOGS, SCREENS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { getLocale } from './getLocale';
+import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 
 const localesFillForm = {
   'en-US': 'English',
@@ -92,9 +93,17 @@ export const buildAppMenus = async (
 
   // Build app menus
   let menu;
+  const cardanoNodeState: CardanoNodeStates = cardanoNode.state;
   if (isMacOS) {
     menu = Menu.buildFromTemplate(
-      osxMenu(app, mainWindow, menuActions, translations, supportRequestData)
+      osxMenu(
+        app,
+        mainWindow,
+        menuActions,
+        translations,
+        supportRequestData,
+        cardanoNodeState
+      )
     );
     Menu.setApplicationMenu(menu);
   } else {
@@ -104,7 +113,8 @@ export const buildAppMenus = async (
         mainWindow,
         menuActions,
         translations,
-        supportRequestData
+        supportRequestData,
+        cardanoNodeState
       )
     );
     mainWindow.setMenu(menu);
