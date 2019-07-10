@@ -92,7 +92,6 @@ export const buildAppMenus = async (
 
   // Build app menus
   let menu;
-
   if (isMacOS) {
     menu = Menu.buildFromTemplate(
       osxMenu(app, mainWindow, menuActions, translations, supportRequestData)
