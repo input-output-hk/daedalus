@@ -33,6 +33,7 @@ Changelog
 
 ### Fixes
 
+- Fix the position of the external link icon ([PR 1455](https://github.com/input-output-hk/daedalus/pull/1455))
 - Fixed screen flashes during Daedalus loading ([PR 1444](https://github.com/input-output-hk/daedalus/pull/1444))
 - Removes files pushed without running Prettier ([PR 1445](https://github.com/input-output-hk/daedalus/pull/1445))
 - Improved Stake pool tooltip positioning ([PR 1429](https://github.com/input-output-hk/daedalus/pull/1429))
