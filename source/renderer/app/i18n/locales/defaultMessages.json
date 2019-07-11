@@ -2793,13 +2793,13 @@
         "description": "Headline for the current epoch.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "source/renderer/app/components/staking/epochs/StakingEpochs.js",
         "id": "staking.epochs.currentHeading",
         "start": {
           "column": 23,
-          "line": 15
+          "line": 16
         }
       },
       {
@@ -2807,13 +2807,13 @@
         "description": "Headline for the previous epoch.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/components/staking/epochs/StakingEpochs.js",
         "id": "staking.epochs.previousHeading",
         "start": {
           "column": 24,
-          "line": 20
+          "line": 21
         }
       }
     ],
@@ -2826,13 +2826,13 @@
         "description": "Table header \"Stake pool\" label on staking epochs page",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "source/renderer/app/components/staking/epochs/StakingEpochsCurrentEpochData.js",
         "id": "staking.epochs.currentEpoch.tableHeader.pool",
         "start": {
           "column": 19,
-          "line": 17
+          "line": 18
         }
       },
       {
@@ -2840,13 +2840,13 @@
         "description": "Table header \"Slots elected\" label on staking epochs page",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "source/renderer/app/components/staking/epochs/StakingEpochsCurrentEpochData.js",
         "id": "staking.epochs.currentEpoch.tableHeader.slotsElected",
         "start": {
           "column": 27,
-          "line": 22
+          "line": 23
         }
       }
     ],
@@ -2878,13 +2878,13 @@
         "description": "Table header \"Stake pool\" label on staking epochs page",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/staking/epochs/StakingEpochsPreviousEpochData.js",
         "id": "staking.epochs.previousEpoch.tableHeader.pool",
         "start": {
           "column": 19,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -2892,13 +2892,13 @@
         "description": "Table header \"Slots elected\" label on staking epochs page",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/components/staking/epochs/StakingEpochsPreviousEpochData.js",
         "id": "staking.epochs.previousEpoch.tableHeader.slotsElected",
         "start": {
           "column": 27,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -2906,13 +2906,13 @@
         "description": "Table header \"Performance\" label on staking epochs page",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/staking/epochs/StakingEpochsPreviousEpochData.js",
         "id": "staking.epochs.tableHeader.performance",
         "start": {
           "column": 26,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -2920,13 +2920,13 @@
         "description": "Table header \"Shared rewards\" label on staking epochs page",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/staking/epochs/StakingEpochsPreviousEpochData.js",
         "id": "staking.epochs.tableHeader.sharedRewards",
         "start": {
           "column": 28,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -2934,13 +2934,13 @@
         "description": "\"slots\" text in table body on staking epochs page",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/staking/epochs/StakingEpochsPreviousEpochData.js",
         "id": "staking.epochs.tableBody.slots",
         "start": {
           "column": 18,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -2948,13 +2948,13 @@
         "description": "\"of\" text in table body on staking epochs page",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 48
         },
         "file": "source/renderer/app/components/staking/epochs/StakingEpochsPreviousEpochData.js",
         "id": "staking.epochs.tableBody.of",
         "start": {
           "column": 15,
-          "line": 43
+          "line": 44
         }
       }
     ],
@@ -3103,13 +3103,13 @@
         "description": "Title \"Earned Rewards\" label on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.title",
         "start": {
           "column": 9,
-          "line": 15
+          "line": 16
         }
       },
       {
@@ -3117,13 +3117,13 @@
         "description": "Label for the \"Export CSV\" button on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.exportButtonLabel",
         "start": {
           "column": 21,
-          "line": 20
+          "line": 21
         }
       },
       {
@@ -3131,13 +3131,13 @@
         "description": "\"No rewards\" rewards label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 31
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.no.rewards",
         "start": {
           "column": 13,
-          "line": 26
+          "line": 27
         }
       },
       {
@@ -3145,13 +3145,13 @@
         "description": "Table header \"Date\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.date",
         "start": {
           "column": 19,
-          "line": 31
+          "line": 32
         }
       },
       {
@@ -3159,13 +3159,13 @@
         "description": "Table header \"Stake pool\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.pool",
         "start": {
           "column": 19,
-          "line": 36
+          "line": 37
         }
       },
       {
@@ -3173,13 +3173,13 @@
         "description": "Table header \"Wallet\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.wallet",
         "start": {
           "column": 21,
-          "line": 41
+          "line": 42
         }
       },
       {
@@ -3187,13 +3187,13 @@
         "description": "Table header \"Amount\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.amount",
         "start": {
           "column": 21,
-          "line": 46
+          "line": 47
         }
       },
       {
@@ -3201,13 +3201,13 @@
         "description": "Label for \"Learn more\" button on staking rewards page",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 56
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.learnMore.ButtonLabel",
         "start": {
           "column": 24,
-          "line": 51
+          "line": 52
         }
       },
       {
@@ -3215,13 +3215,13 @@
         "description": "Rewards description text on staking rewards page",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 62
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.note",
         "start": {
           "column": 8,
-          "line": 56
+          "line": 57
         }
       }
     ],
