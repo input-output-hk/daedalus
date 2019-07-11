@@ -36,9 +36,18 @@ export const osxMenu = (
         },
       },
       { type: 'separator' },
-      { role: 'hide' },
-      { role: 'hideothers' },
-      { role: 'unhide' },
+      {
+        label: translation('daedalus.hideDaedalus'),
+        role: 'hide',
+      },
+      {
+        label: translation('daedalus.hideOthers'),
+        role: 'hideothers',
+      },
+      {
+        label: translation('daedalus.showAll'),
+        role: 'unhide',
+      },
       { type: 'separator' },
       {
         label: translation('daedalus.quit'),
