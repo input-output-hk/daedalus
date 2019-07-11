@@ -27,19 +27,21 @@ $adaLogoWidth: 43px;
 }
 
 .daedalusLogo {
-  & > svg {
-    display: block;
+  width: 173px;
+  height: 135px;
+  margin: 0 114px;
+  svg {
     width: 173px;
-    margin: 0 114px;
+    height: 135px;
   }
 }
 
 .connectingLogo {
-  & > svg path {
+  & svg > g > g path {
     fill: var(--theme-icon-connecting-logo-color);
   }
 }
 
-.syncingLogo svg path {
+.syncingLogo svg > g > g path {
   fill: var(--theme-icon-syncing-logo-color);
 }
