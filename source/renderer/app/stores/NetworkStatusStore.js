@@ -10,11 +10,11 @@ import {
   NETWORK_STATUS_REQUEST_TIMEOUT,
   NETWORK_STATUS_POLL_INTERVAL,
   NTP_IGNORE_CHECKS_GRACE_PERIOD,
-  NTP_CHECKS_BEFORE_ERROR_OVERLAY_INTERVAL,
+  NTP_TOLERATION_CHECKS_INTERVAL,
 } from '../config/timingConfig';
 import {
   UNSYNCED_BLOCKS_ALLOWED,
-  NTP_CHECKS_BEFORE_ERROR_OVERLAY,
+  MAX_NTP_TOLERATION_CHECKS,
 } from '../config/numbersConfig';
 import { Logger } from '../utils/logging';
 import {
@@ -82,7 +82,7 @@ export default class NetworkStatusStore extends Store {
 
   // NTP
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
-  @observable numberOfNTPChecks = 0; // Is 'true' in case local and global time are in sync
+  @observable numberOfNTPTolerationChecks = 0; // Is 'true' in case local and global time are in sync
 
   @observable hasBeenConnected = false;
   @observable syncProgress = null;
@@ -407,15 +407,15 @@ export default class NetworkStatusStore extends Store {
           if (
             !isNodeTimeCorrect &&
             this.isNodeTimeCorrect &&
-            this.numberOfNTPChecks < NTP_CHECKS_BEFORE_ERROR_OVERLAY
+            this.numberOfNTPTolerationChecks < MAX_NTP_TOLERATION_CHECKS
           ) {
-            this.numberOfNTPChecks++;
+            this.numberOfNTPTolerationChecks++;
             setTimeout(
               this.forceCheckLocalTimeDifference,
-              NTP_CHECKS_BEFORE_ERROR_OVERLAY_INTERVAL
+              NTP_TOLERATION_CHECKS_INTERVAL
             );
           } else {
-            this.numberOfNTPChecks = 0;
+            this.numberOfNTPTolerationChecks = 0;
             this.isNodeTimeCorrect = isNodeTimeCorrect;
           }
         }
