@@ -10,8 +10,12 @@ import {
   NETWORK_STATUS_REQUEST_TIMEOUT,
   NETWORK_STATUS_POLL_INTERVAL,
   NTP_IGNORE_CHECKS_GRACE_PERIOD,
+  NTP_CHECKS_BEFORE_ERROR_OVERLAY_INTERVAL,
 } from '../config/timingConfig';
-import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
+import {
+  UNSYNCED_BLOCKS_ALLOWED,
+  NTP_CHECKS_BEFORE_ERROR_OVERLAY,
+} from '../config/numbersConfig';
 import { Logger } from '../utils/logging';
 import {
   cardanoStateChangeChannel,
@@ -54,6 +58,7 @@ const NODE_STOPPED_STATES = [
   CardanoNodeStates.UPDATED,
   CardanoNodeStates.UNRECOVERABLE,
 ];
+
 // END CONSTANTS ----------------------------
 
 export default class NetworkStatusStore extends Store {
@@ -71,10 +76,13 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
   @observable isNodeSubscribed = false; // Is 'true' in case node is subscribed to the network
   @observable isNodeSyncing = false; // Is 'true' in case we are receiving blocks and not stalling
-  @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
   @observable isNodeInSync = false; // 'true' if syncing & local/network blocks diff within limit
   @observable isNodeStopping = false; // 'true' if node is in `NODE_STOPPING_STATES` states
   @observable isNodeStopped = false; // 'true' if node is in `NODE_STOPPED_STATES` states
+
+  // NTP
+  @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
+  @observable numberOfNTPChecks = 0; // Is 'true' in case local and global time are in sync
 
   @observable hasBeenConnected = false;
   @observable syncProgress = null;
@@ -392,9 +400,24 @@ export default class NetworkStatusStore extends Store {
         // Update localTimeDifference only in case NTP check status is not still pending
         if (localTimeInformation.status !== 'pending') {
           this.localTimeDifference = localTimeInformation.difference;
-          this.isNodeTimeCorrect =
+          const isNodeTimeCorrect =
             this.localTimeDifference != null && // If we receive 'null' it means NTP check failed
             this.localTimeDifference <= ALLOWED_TIME_DIFFERENCE;
+
+          if (
+            !isNodeTimeCorrect &&
+            this.isNodeTimeCorrect &&
+            this.numberOfNTPChecks < NTP_CHECKS_BEFORE_ERROR_OVERLAY
+          ) {
+            this.numberOfNTPChecks++;
+            setTimeout(
+              this.forceCheckLocalTimeDifference,
+              NTP_CHECKS_BEFORE_ERROR_OVERLAY_INTERVAL
+            );
+          } else {
+            this.numberOfNTPChecks = 0;
+            this.isNodeTimeCorrect = isNodeTimeCorrect;
+          }
         }
       });
 
