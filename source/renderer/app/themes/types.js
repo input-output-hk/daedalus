@@ -2,6 +2,12 @@
 export type BackgroundShades = Object;
 export type ErrorShades = Object;
 
+export type ExistingThemesUpdates = {
+  cardanoUpdates?: Object,
+  darkBlueUpdates?: Object,
+  lightBlueUpdates?: Object,
+};
+
 export type CreateThemeParams = {
   colors?: ColorParams,
   fonts?: ThemeFonts,
@@ -20,6 +26,12 @@ export type ColorParams = {
     primary: string,
     secondary: string,
   },
+};
+
+export type LogDifferencesParams = {
+  color: string,
+  missingDefs: Object,
+  themeName: string,
 };
 
 export type ThemeColors = {
