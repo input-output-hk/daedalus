@@ -420,9 +420,9 @@ export const DARK_BLUE_THEME_CONFIG = {
       'rgba(0, 0, 0, 0.1)',
     '--theme-manual-update-overlay-button-background-color-hover': '#fafbfc',
     '--theme-manual-update-overlay-button-icon-color':
-      'rgba(250, 251, 252, 0.7)',
+      'rgba(250, 251, 252, 1)',
     '--theme-manual-update-overlay-button-icon-color-hover':
-      'rgba(38, 51, 69, 0.7)',
+      'rgba(38, 51, 69, 1)',
     '--theme-manual-update-overlay-button-text-color-hover': '#263345',
     '--theme-manual-update-overlay-button-border-color': '#fafbfc',
     '--theme-manual-update-overlay-text-color': 'rgba(250, 251, 252, 0.7)',

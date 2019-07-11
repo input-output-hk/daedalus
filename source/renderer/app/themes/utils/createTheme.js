@@ -582,12 +582,8 @@ export const createDaedalusComponentsTheme = (
       '--theme-manual-update-overlay-button-background-color-hover': `${
         text.secondary
       }`,
-      '--theme-manual-update-overlay-button-icon-color': `${chroma(
-        text.secondary
-      ).alpha(0.7)}`,
-      '--theme-manual-update-overlay-button-icon-color-hover': `${chroma(
-        background.secondary.regular
-      ).alpha(0.7)}`,
+      '--theme-manual-update-overlay-button-icon-color': `${text.secondary}`,
+      '--theme-manual-update-overlay-button-icon-color-hover': `${background.secondary.regular}`,
       '--theme-manual-update-overlay-button-text-color-hover': `${
         background.secondary.regular
       }`,

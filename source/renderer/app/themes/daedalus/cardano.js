@@ -420,9 +420,9 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-manual-update-overlay-button-background-color-hover': '#fafbfc',
     '--theme-manual-update-overlay-button-border-color': '#fafbfc',
     '--theme-manual-update-overlay-button-icon-color':
-      'rgba(250, 251, 252, 0.7)',
+      'rgba(250, 251, 252, 1)',
     '--theme-manual-update-overlay-button-icon-color-hover':
-      'rgba(32, 34, 37, 0.7)',
+      'rgba(32, 34, 37, 1)',
     '--theme-manual-update-overlay-button-text-color-hover': '#202225',
     '--theme-manual-update-overlay-text-color': 'rgba(250, 251, 252, 0.7)',
     '--theme-manual-update-overlay-text-highlight-color': '#fafbfc',
