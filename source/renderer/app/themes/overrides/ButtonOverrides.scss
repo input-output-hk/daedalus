@@ -28,7 +28,8 @@
   }
 
   .SimpleLoadingSpinner_root {
-    border-color: var(--theme-button-spinner-color) var(--theme-button-spinner-color) transparent transparent;
+    border-color: var(--theme-button-spinner-color)
+      var(--theme-button-spinner-color) transparent transparent;
     border-width: 2px;
   }
 }
