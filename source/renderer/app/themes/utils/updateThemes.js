@@ -6,7 +6,7 @@ import { findMissingDefinitions, findMissingCSSVars } from './checkCreateTheme';
 import { CARDANO_THEME_CONFIG } from '../daedalus/cardano';
 import { DARK_BLUE_THEME_CONFIG } from '../daedalus/dark-blue';
 import { LIGHT_BLUE_THEME_CONFIG } from '../daedalus/light-blue';
-import type { DaedalusThemesUpdates } from '../types';
+import type { DaedalusThemesUpdates, LogDifferencesParams } from '../types';
 
 const logDifferences = ({
   color,
@@ -124,9 +124,9 @@ export const updateThemes = (daedalusThemesUpdates: DaedalusThemesUpdates) => {
 
     // write updatedCardanoTheme theme object to cardano.js
     // $FlowFixMe
-    console.log(
-      `cardano theme updated!\n${JSON.stringify(updatedCardanoTheme, 0, 2)}`
-    );
+    // console.log(
+    //   `cardano theme updated!\n${JSON.stringify(updatedCardanoTheme, 0, 2)}`
+    // );
   }
 
   if (darkBlueUpdates && !isEmpty(darkBlueUpdates)) {
@@ -137,9 +137,9 @@ export const updateThemes = (daedalusThemesUpdates: DaedalusThemesUpdates) => {
 
     // write updatedDarkBlueTheme theme object to dark-blue.js
     // $FlowFixMe
-    console.log(
-      `Dark Blue theme updated!\n${JSON.stringify(updatedDarkBlueTheme, 0, 2)}`
-    );
+    // console.log(
+    //   `Dark Blue theme updated!\n${JSON.stringify(updatedDarkBlueTheme, 0, 2)}`
+    // );
   }
 
   if (lightBlueUpdates && !isEmpty(lightBlueUpdates)) {
@@ -150,12 +150,12 @@ export const updateThemes = (daedalusThemesUpdates: DaedalusThemesUpdates) => {
 
     // write updatedLightBlueTheme theme object to light-blue.js
     // $FlowFixMe
-    console.log(
-      `Light Blue theme updated!\n${JSON.stringify(
-        updatedLightBlueTheme,
-        0,
-        2
-      )}`
-    );
+    // console.log(
+    //   `Light Blue theme updated!\n${JSON.stringify(
+    //     updatedLightBlueTheme,
+    //     0,
+    //     2
+    //   )}`
+    // );
   }
 };
