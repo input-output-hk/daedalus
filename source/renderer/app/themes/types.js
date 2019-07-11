@@ -2,7 +2,7 @@
 export type BackgroundShades = Object;
 export type ErrorShades = Object;
 
-export type ExistingThemesUpdates = {
+export type DaedalusThemesUpdates = {
   cardanoUpdates?: Object,
   darkBlueUpdates?: Object,
   lightBlueUpdates?: Object,
