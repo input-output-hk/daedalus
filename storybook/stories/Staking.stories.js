@@ -239,8 +239,9 @@ storiesOf('Staking', module)
       onOpenExternalLink={() => {}}
       currentTheme={radios('Theme (Only for tooltip colors)', themes)}
       onClose={action('onClose')}
-      onContinue={action('onContinue')}
       onBack={action('onBack')}
+      onSelectPool={action('onSelectPool')}
+      selectedPool={null}
     />
   ))
 
