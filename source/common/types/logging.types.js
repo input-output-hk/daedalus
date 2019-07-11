@@ -61,4 +61,5 @@ export type LogStateSnapshotParams = {
   supportLanguage: string,
   productVersion: string,
   startTime: string,
+  current: string,
 }
