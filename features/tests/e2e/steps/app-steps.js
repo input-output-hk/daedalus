@@ -33,7 +33,7 @@ Then(/^I should see the loading screen with "([^"]*)"$/, async function(
   message
 ) {
   await waitUntilTextInSelector(this.client, {
-    selector: '.Loading_connecting h1',
+    selector: '.SyncingConnectingTitle_connecting h1',
     text: message,
   });
 });

@@ -18,6 +18,7 @@ export const winLinuxMenu = (
   actions: MenuActions,
   translations: {},
   supportRequestData: SupportRequests,
+  isNodeInSync: boolean,
   translation: Function = getTranslation(translations, id)
 ) => [
   {
@@ -31,6 +32,7 @@ export const winLinuxMenu = (
       },
       {
         label: translation('daedalus.adaRedemption'),
+        enabled: isNodeInSync,
         click() {
           actions.openAdaRedemptionScreen();
         },

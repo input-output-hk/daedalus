@@ -117,11 +117,11 @@ export default class StakingInfo extends Component<Props, State> {
             className={styles.learnMoreButton}
             label={
               <p>
-                {buttonLabel}
                 <SVGInline
                   svg={externalLinkIcon}
                   className={styles.externalLinkIcon}
                 />
+                {buttonLabel}
               </p>
             }
             skin={ButtonSkin}
