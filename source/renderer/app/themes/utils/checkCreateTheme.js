@@ -13,6 +13,7 @@ const logDifferences = ({
   missingDefs,
   themeName,
 }: LogDifferencesParams) => {
+  // $FlowFixMe
   const message = chalk`\n{inverse  createTheme.js } is missing the following definitions that exist in the {underline ${themeName}} theme:\n\n${JSON.stringify(
     missingDefs,
     0,
