@@ -131,7 +131,7 @@
   "inline.editing.input.changesSaved": "変更は保存されました",
   "loading.screen.connectingToNetworkMessage": "ネットワークに接続中",
   "loading.screen.crashedCardanoMessage": "カルダノ・ノードがクラッシュしました",
-  "loading.screen.errors.tlsCertificateNotValidPleaseRestartError": "TLS証明書が無効です。Daedalusを再起動してください。",
+  "loading.screen.errors.tlsCertificateNotValidPleaseRestartError": "設定の不具合が検知され修正されました。続けるにはDaedalusを再起動してください。",
   "loading.screen.loadingWalletData": "ウォレットデータ読み込み中",
   "loading.screen.readArticle.buttonLabel": "記事を読む",
   "loading.screen.readIssueArticle.connectivityIssueArticleUrl": "https://iohk.zendesk.com/hc/ja/articles/360010522913",
