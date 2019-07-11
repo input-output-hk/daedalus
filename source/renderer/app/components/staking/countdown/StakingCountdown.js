@@ -74,11 +74,11 @@ export default class StakingCountdown extends Component<Props> {
             className={styles.learnMoreButton}
             label={
               <p>
-                {buttonLabel}
                 <SVGInline
                   svg={externalLinkIcon}
                   className={styles.externalLinkIcon}
                 />
+                {buttonLabel}
               </p>
             }
             skin={ButtonSkin}

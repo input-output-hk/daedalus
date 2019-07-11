@@ -16,7 +16,7 @@ When(
 
 Then(/^I should see the syncing status with "([^"]*)"$/, async function(text) {
   await waitUntilTextInSelector(this.client, {
-    selector: '.Loading_syncing h1',
+    selector: '.SyncingConnectingTitle_syncing h1',
     text,
   });
 });

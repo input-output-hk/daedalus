@@ -1,0 +1,47 @@
+.component {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.ada-logo,
+.ada-apiLogo {
+  & > svg {
+    display: block;
+    width: 48px;
+    opacity: 0.5;
+  }
+}
+
+$cardanoLogoWidth: 86px;
+.ada-apiLogo > svg {
+  width: $cardanoLogoWidth;
+}
+
+$adaLogoWidth: 43px;
+.ada-logo > svg {
+  width: $adaLogoWidth;
+  margin: 3px ($cardanoLogoWidth - $adaLogoWidth) / 2 0; // Visually align in the middle + Needs to be the same dimension as the apiLogo
+}
+
+.daedalusLogo {
+  width: 173px;
+  height: 135px;
+  margin: 0 114px;
+  svg {
+    width: 173px;
+    height: 135px;
+  }
+}
+
+.connectingLogo {
+  & svg > g > g path {
+    fill: var(--theme-icon-connecting-logo-color);
+  }
+}
+
+.syncingLogo svg > g > g path {
+  fill: var(--theme-icon-syncing-logo-color);
+}

@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
 const shell = require('gulp-shell');
 const electronConnect = require('electron-connect');
+const flowRemoveTypes = require('gulp-flow-remove-types');
 const mainWebpackConfig = require('./source/main/webpack.config');
 const rendererWebpackConfig = require('./source/renderer/webpack.config');
 
@@ -113,6 +114,30 @@ gulp.task('build:renderer:watch', buildRendererWatch());
 
 gulp.task('build', gulp.series('clean:dist', 'build:main', 'build:renderer'));
 
+gulp.task('prepare:themes:utils', () =>
+  gulp
+    .src([
+      'source/renderer/app/themes/utils/checkCreateTheme.js',
+      'source/renderer/app/themes/utils/constants.js',
+      'source/renderer/app/themes/utils/createTheme.js',
+      'source/renderer/app/themes/utils/createShades.js',
+      'source/renderer/app/themes/utils/index.js',
+    ])
+    .pipe(flowRemoveTypes())
+    .pipe(gulp.dest('dist/utils'))
+);
+
+gulp.task('prepare:themes:daedalus', () =>
+  gulp
+    .src([
+      'source/renderer/app/themes/daedalus/cardano.js',
+      'source/renderer/app/themes/daedalus/dark-blue.js',
+      'source/renderer/app/themes/daedalus/light-blue.js',
+    ])
+    .pipe(flowRemoveTypes())
+    .pipe(gulp.dest('dist/daedalus'))
+);
+
 gulp.task(
   'build:watch',
   gulp.series(
@@ -122,6 +147,11 @@ gulp.task(
     'build:main:watch',
     'build:renderer:watch'
   )
+);
+
+gulp.task(
+  'build:themes',
+  gulp.series('clean:dist', 'prepare:themes:utils', 'prepare:themes:daedalus')
 );
 
 gulp.task(

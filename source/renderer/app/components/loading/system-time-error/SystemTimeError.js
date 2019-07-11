@@ -4,10 +4,10 @@ import humanizeDuration from 'humanize-duration';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
-import attentionIcon from '../../assets/images/attention-big-light.inline.svg';
-import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
-import { ALLOWED_TIME_DIFFERENCE } from '../../config/timingConfig';
-import styles from './SystemTimeErrorOverlay.scss';
+import attentionIcon from '../../../assets/images/attention-big-light.inline.svg';
+import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
+import { ALLOWED_TIME_DIFFERENCE } from '../../../config/timingConfig';
+import styles from './SystemTimeError.scss';
 
 const messages = defineMessages({
   overlayTitle: {
@@ -74,7 +74,7 @@ type Props = {
 };
 
 @observer
-export default class SystemTimeErrorOverlay extends Component<Props> {
+export default class SystemTimeError extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
