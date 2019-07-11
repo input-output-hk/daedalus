@@ -46,7 +46,7 @@ export const sortData = (data, order, sortBy) => {
   let realSortBy = '';
 
   if (sortBy === 'pool') {
-    realSortBy = 'pool.title';
+    realSortBy = 'pool.name';
   } else if (sortBy === 'slotsElected') {
     realSortBy = 'slotsElected[0]';
   } else if (sortBy === 'sharedRewards') {

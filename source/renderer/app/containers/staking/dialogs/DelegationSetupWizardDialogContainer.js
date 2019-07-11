@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { map, find } from 'lodash';
+import { map, find, get } from 'lodash';
 import DelegationSetupWizardDialog from '../../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { MIN_DELEGATION_FUNDS } from '../../../config/stakingConfig';
@@ -40,14 +40,10 @@ const messages = defineMessages({
 type State = {
   activeStep: number,
   selectedWalletId: ?string,
+  selectedPoolId: ?string,
 };
 
 type Props = InjectedDialogContainerProps;
-
-const initialState = {
-  activeStep: 0,
-  selectedWalletId: null,
-};
 
 @inject('stores', 'actions')
 @observer
@@ -67,7 +63,17 @@ export default class DelegationSetupWizardDialogContainer extends Component<
   };
 
   state = {
-    ...initialState,
+    activeStep: 0,
+    selectedWalletId: get(
+      this.props,
+      ['stores', 'uiDialogs', 'dataForActiveDialog', 'walletId'],
+      null
+    ),
+    selectedPoolId: get(
+      this.props,
+      ['stores', 'uiDialogs', 'dataForActiveDialog', 'poolId'],
+      null
+    ),
   };
 
   STEPS_LIST = [
@@ -78,7 +84,6 @@ export default class DelegationSetupWizardDialogContainer extends Component<
   ];
 
   handleDialogClose = () => {
-    this.setState({ ...initialState });
     this.props.actions.dialogs.closeActiveDialog.trigger();
   };
 
@@ -114,8 +119,13 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     this.handleContinue();
   };
 
+  handleSelectPool = (poolId: string) => {
+    this.setState({ selectedPoolId: poolId });
+    this.handleContinue();
+  };
+
   render() {
-    const { activeStep, selectedWalletId } = this.state;
+    const { activeStep, selectedWalletId, selectedPoolId } = this.state;
     const { app, staking, wallets, profile } = this.props.stores;
     const { currentTheme } = profile;
     const { stakePools, delegatingStakePools } = staking;
@@ -144,6 +154,8 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       wallet => wallet.id === selectedWalletId
     );
 
+    const selectedPool = find(stakePools, pool => pool.id === selectedPoolId);
+
     return (
       <DelegationSetupWizardDialog
         wallets={walletsData}
@@ -152,6 +164,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         minDelegationFunds={MIN_DELEGATION_FUNDS}
         isDisabled={activeStep === 1 && setupDisabled}
         selectedWallet={selectedWallet || null}
+        selectedPool={selectedPool || null}
         stakePoolsList={stakePools}
         stakePoolsDelegatingList={delegatingStakePools}
         onOpenExternalLink={app.openExternalLink}
@@ -159,6 +172,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         onClose={this.handleDialogClose}
         onContinue={this.handleContinue}
         onSelectWallet={this.handleSelectWallet}
+        onSelectPool={this.handleSelectPool}
         onBack={this.onBack}
         onLearnMoreClick={this.handleLearnMoreClick}
         onConfirm={this.handleConfirm}
