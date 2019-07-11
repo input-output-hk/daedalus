@@ -583,7 +583,9 @@ export const createDaedalusComponentsTheme = (
         text.secondary
       }`,
       '--theme-manual-update-overlay-button-icon-color': `${text.secondary}`,
-      '--theme-manual-update-overlay-button-icon-color-hover': `${background.secondary.regular}`,
+      '--theme-manual-update-overlay-button-icon-color-hover': `${
+        background.secondary.regular
+      }`,
       '--theme-manual-update-overlay-button-text-color-hover': `${
         background.secondary.regular
       }`,

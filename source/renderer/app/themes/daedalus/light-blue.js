@@ -416,8 +416,7 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-manual-update-overlay-button-background-color': '#243e62',
     '--theme-manual-update-overlay-button-background-color-hover': '#fafbfc',
     '--theme-manual-update-overlay-button-border-color': '#fafbfc',
-    '--theme-manual-update-overlay-button-icon-color':
-      'rgba(250, 251, 252, 1)',
+    '--theme-manual-update-overlay-button-icon-color': 'rgba(250, 251, 252, 1)',
     '--theme-manual-update-overlay-button-icon-color-hover':
       'rgba(36, 62, 98, 1)',
     '--theme-manual-update-overlay-button-text-color-hover': '#243e62',
