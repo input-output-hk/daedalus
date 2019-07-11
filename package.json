@@ -166,6 +166,7 @@
     "react-dom": "16.6.3",
     "react-dropzone": "4.2.3",
     "react-intl": "2.7.2",
+    "react-lottie": "1.2.3",
     "react-markdown": "3.1.0",
     "react-number-format": "3.0.3",
     "react-polymorph": "0.8.7",

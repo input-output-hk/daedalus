@@ -5,11 +5,12 @@ Changelog
 
 ### Features
 
+- Implemented the animated Daedalus logo on the "Loading" screens ([PR 1457](https://github.com/input-output-hk/daedalus/pull/1457))
 - Implemented "Delegation Setup wizard" steps 3 & 4 UI ([PR 1439](https://github.com/input-output-hk/daedalus/pull/1439))
 - Improved "Connectivity/Sync trouble notification" ([PR 1453](https://github.com/input-output-hk/daedalus/pull/1453))
 - Implemented "Delegation Setup wizard" step 2 UI ([PR 1430](https://github.com/input-output-hk/daedalus/pull/1430))
 - Improved loading screen status icons UX ([PR 1452](https://github.com/input-output-hk/daedalus/pull/1452))
-- Implemented external links icon UI ([PR 1447](https://github.com/input-output-hk/daedalus/pull/1447))
+- Implemented external links icon UI ([PR 1447](https://github.com/input-output-hk/daedalus/pull/1447), [PR 1455](https://github.com/input-output-hk/daedalus/pull/1455))
 - Implemented "Delegation center screen" UI ([PR 1440](https://github.com/input-output-hk/daedalus/pull/1440))
 - Implemented "Delegation Setup wizard" steps 0 & 1 UI ([PR 1416](https://github.com/input-output-hk/daedalus/pull/1416)), [PR 1442](https://github.com/input-output-hk/daedalus/pull/1442))
 - Implemented "Current and Previous Epochs screen" UI ([PR 1418](https://github.com/input-output-hk/daedalus/pull/1418))
@@ -23,7 +24,7 @@ Changelog
 - Implemented timestamp on paper wallet PDF's ([PR 1385](https://github.com/input-output-hk/daedalus/pull/1385), [PR 1400](https://github.com/input-output-hk/daedalus/pull/1400))
 - Implemented "Start of decentralisation notification" UI ([PR 1390](https://github.com/input-output-hk/daedalus/pull/1390))
 - Implemented new Network Status dialog design ([PR 1370](https://github.com/input-output-hk/daedalus/pull/1370), [PR 1402](https://github.com/input-output-hk/daedalus/pull/1402), [PR 1404](https://github.com/input-output-hk/daedalus/pull/1404))
-- Implemented the wallet UTxO statistics screen ([PR 1353](https://github.com/input-output-hk/daedalus/pull/1353))
+- Implemented the wallet UTXO statistics screen ([PR 1353](https://github.com/input-output-hk/daedalus/pull/1353), [PR 1437](https://github.com/input-output-hk/daedalus/pull/1437))
 - Implemented scroll error message into view ([PR 1383](https://github.com/input-output-hk/daedalus/pull/1383))
 - Implemented new Block-consolidation status design ([PR 1377](https://github.com/input-output-hk/daedalus/pull/1377))
 - Implemented new About Us dialog design with a close button ([PR 1369](https://github.com/input-output-hk/daedalus/pull/1369))
@@ -33,6 +34,7 @@ Changelog
 
 ### Fixes
 
+- Fixed shutting down screen top priority ([PR 1428](https://github.com/input-output-hk/daedalus/pull/1428))
 - Fixed screen flashes during Daedalus loading ([PR 1444](https://github.com/input-output-hk/daedalus/pull/1444))
 - Removes files pushed without running Prettier ([PR 1445](https://github.com/input-output-hk/daedalus/pull/1445))
 - Improved Stake pool tooltip positioning ([PR 1429](https://github.com/input-output-hk/daedalus/pull/1429))
@@ -52,6 +54,7 @@ Changelog
 ### Chores
 
 - Added themes:check script for checking missing definitions on createTheme obj ([PR 1424](https://github.com/input-output-hk/daedalus/pull/1424))
+- Refactored the Loading screen, adding containers for each overlay ([PR 1446](https://github.com/input-output-hk/daedalus/pull/1446))
 - Added button to open local state directory on Daedalus Diagnostics Screen ([PR 1438](https://github.com/input-output-hk/daedalus/pull/1438))
 - Updated the list of contributors on the "About" screen ([PR 1450](https://github.com/input-output-hk/daedalus/pull/1450))
 - Improved switching of the application menu screens ([PR 1419](https://github.com/input-output-hk/daedalus/pull/1419))

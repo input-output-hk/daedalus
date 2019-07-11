@@ -25,7 +25,6 @@
     font-family: var(--font-light);
     font-size: 16px;
     line-height: 22px;
-    margin-bottom: 20px;
 
     b {
       color: var(--theme-utxo-title-text-color);
@@ -41,6 +40,12 @@
 }
 
 // CHARTS STYLES
+
+.responsiveContainerWrapper {
+  margin: auto;
+  max-width: 464px;
+  padding: 20px 0;
+}
 
 .responsiveContainer {
   margin: 30px 0 10px -13px;

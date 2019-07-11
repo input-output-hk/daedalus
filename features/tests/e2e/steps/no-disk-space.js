@@ -3,7 +3,7 @@ import { Given, When, Then } from 'cucumber';
 let diskSpaceRequired;
 const HUNDRED_TB = 100 * 1e12; // 100 TB | unit: bytes
 const ONE_KB = 1 * 1000; // 1 KB | unit: bytes
-const NO_DISK_SPACE_COMPONENT = '.NoDiskSpaceErrorOverlay_component';
+const NO_DISK_SPACE_COMPONENT = '.NoDiskSpaceError_component';
 
 Given(/^I set the required space to 100 TB$/, () => {
   diskSpaceRequired = HUNDRED_TB;
