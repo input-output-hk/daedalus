@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented no-wallets case on the Delegation Center screen ([PR 1463](https://github.com/input-output-hk/daedalus/pull/1463))
 - Implemented the animated Daedalus logo on the "Loading" screens ([PR 1457](https://github.com/input-output-hk/daedalus/pull/1457))
 - Implemented "Delegation Setup wizard" steps 3 & 4 UI ([PR 1439](https://github.com/input-output-hk/daedalus/pull/1439))
 - Improved "Connectivity/Sync trouble notification" ([PR 1453](https://github.com/input-output-hk/daedalus/pull/1453))
