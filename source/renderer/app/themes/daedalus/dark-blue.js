@@ -378,13 +378,14 @@ export const DARK_BLUE_THEME_CONFIG = {
       '#e9f4fe',
     '--theme-icon-add-wallet-dialog-big-button-color':
       'rgba(233, 244, 254, 0.8)',
-    '--theme-icon-copy-address-color': '#8793a1',
     '--theme-icon-back-button-color': '#e9f4fe',
     '--theme-icon-close-button-color': '#e9f4fe',
-    '--theme-icon-file-upload-color': '#8793a1',
-    '--theme-icon-transactions-ada-symbol-color': '#e9f4fe',
-    '--theme-icon-syncing-logo-color': '#e9f4fe',
     '--theme-icon-connecting-logo-color': '#fafbfc',
+    '--theme-icon-copy-address-color': '#8793a1',
+    '--theme-icon-file-upload-color': '#8793a1',
+    '--theme-icon-delegation-center-no-wallets': '#e9f4fe',
+    '--theme-icon-syncing-logo-color': '#e9f4fe',
+    '--theme-icon-transactions-ada-symbol-color': '#e9f4fe',
     '--theme-icon-transaction-type-color': '#fafbfc',
   },
   input: {
@@ -627,6 +628,8 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-staking-delegation-center-gear-icon-fill-color':
       'rgba(233, 244, 254, 0.5)',
     '--theme-staking-delegation-center-gear-icon-fill-color-active': '#e9f4fe',
+    '--theme-staking-delegation-center-no-wallets-instructions-color':
+      '#e9f4fe',
     '--theme-staking-info-learn-more-button-color': '#fafbfc',
     '--theme-staking-info-learn-more-icon-color': 'rgba(250, 251, 252, 1)',
     '--theme-staking-learn-more-button-color': '#fafbfc',

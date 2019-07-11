@@ -532,13 +532,14 @@ export const createDaedalusComponentsTheme = (
       '--theme-icon-add-wallet-dialog-big-button-color': `${
         background.primary.darker
       }`,
-      '--theme-icon-copy-address-color': `${text.primary}`,
       '--theme-icon-back-button-color': `${text.primary}`,
       '--theme-icon-close-button-color': `${text.primary}`,
-      '--theme-icon-file-upload-color': `${text.primary}`,
-      '--theme-icon-transactions-ada-symbol-color': `${text.primary}`,
-      '--theme-icon-syncing-logo-color': `${text.primary}`,
       '--theme-icon-connecting-logo-color': `${text.secondary}`,
+      '--theme-icon-copy-address-color': `${text.primary}`,
+      '--theme-icon-delegation-center-no-wallets': `${text.primary}`,
+      '--theme-icon-file-upload-color': `${text.primary}`,
+      '--theme-icon-syncing-logo-color': `${text.primary}`,
+      '--theme-icon-transactions-ada-symbol-color': `${text.primary}`,
       '--theme-icon-transaction-type-color': '#fafbfc',
     },
     input: {
@@ -921,6 +922,9 @@ export const createDaedalusComponentsTheme = (
         text.primary
       ).alpha(0.5)}`,
       '--theme-staking-delegation-center-gear-icon-fill-color-active': `${
+        text.primary
+      }`,
+      '--theme-staking-delegation-center-no-wallets-instructions-color': `${
         text.primary
       }`,
     },
