@@ -34,6 +34,7 @@ Changelog
 
 ### Fixes
 
+- Improved small UI and copy elements ([PR 1459](https://github.com/input-output-hk/daedalus/pull/1459))
 - Fixed shutting down screen top priority ([PR 1428](https://github.com/input-output-hk/daedalus/pull/1428))
 - Fixed screen flashes during Daedalus loading ([PR 1444](https://github.com/input-output-hk/daedalus/pull/1444))
 - Removes files pushed without running Prettier ([PR 1445](https://github.com/input-output-hk/daedalus/pull/1445))
