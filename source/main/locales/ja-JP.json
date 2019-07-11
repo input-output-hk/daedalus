@@ -15,7 +15,7 @@
   "menu.helpSupport.blockConsolidationStatus": "ブロック統合状況",
   "menu.helpSupport.daedalusDiagnostics": "Daedalus診断",
   "menu.helpSupport.downloadLogs": "ログのダウンロード",
-  "menu.helpSupport.blankScreenFix": "!!!Blank screen fix",
+  "menu.helpSupport.blankScreenFix": "!!!Blank Screen Fix",
   "menu.helpSupport.gpuSafeModeDialogCancel": "キャンセル",
   "menu.helpSupport.gpuSafeModeDialogConfirm": "はい",
   "menu.helpSupport.gpuSafeModeDialogMessage": "「GPUセーフモード」を解除しますか？ \n \n「GPUセーフモード」を解除します。ユーザーインターフェイスのレンダリングパフォーマンスが向上します。 \n \n「はい」をクリックしてDaedalusを再起動し、「GPUセーフモード」を解除してください。\n \n Daedalusを再起動した際にDaedalusユーザーインターフェイスの代わりにブランクスクリーンが表示される場合は、「GPUセーフモード」に戻してください。",
