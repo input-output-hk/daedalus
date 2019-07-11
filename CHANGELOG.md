@@ -54,6 +54,7 @@ Changelog
 
 ### Chores
 
+- Improved the "Ada redemption" menu item UX by disabling the option while Daedalus is out of sync ([PR 1458](https://github.com/input-output-hk/daedalus/pull/1458))
 - Added `themes:check` script for checking missing definitions on createTheme object ([PR 1424](https://github.com/input-output-hk/daedalus/pull/1424))
 - Refactored the Loading screen, adding containers for each overlay ([PR 1446](https://github.com/input-output-hk/daedalus/pull/1446))
 - Added button to open local state directory on Daedalus Diagnostics Screen ([PR 1438](https://github.com/input-output-hk/daedalus/pull/1438))
