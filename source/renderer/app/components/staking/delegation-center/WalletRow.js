@@ -89,6 +89,11 @@ export default class WalletRow extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  onDelegate = () => {
+    const { wallet } = this.props;
+    this.props.onDelegate(wallet.id);
+  };
+
   render() {
     const { intl } = this.context;
     const {
@@ -100,7 +105,6 @@ export default class WalletRow extends Component<Props> {
         delegatedStakePool,
       },
       index,
-      onDelegate,
     } = this.props;
 
     const inactiveStakePercentageValue = inactiveStakePercentage || 0;
@@ -184,7 +188,7 @@ export default class WalletRow extends Component<Props> {
                   <span
                     className={styles.actionLink}
                     role="presentation"
-                    onClick={onDelegate}
+                    onClick={this.onDelegate}
                   >
                     {delegate}
                   </span>

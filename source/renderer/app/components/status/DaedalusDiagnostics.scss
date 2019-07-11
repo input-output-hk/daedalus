@@ -83,7 +83,6 @@
     font-weight: normal;
     line-height: 2;
     letter-spacing: normal;
-    opacity: 0.7;
 
     .safeMode {
       max-width: 100px;
@@ -91,11 +90,19 @@
   }
 
   th {
+    opacity: 0.7;
     white-space: nowrap;
+
+    &.sectionTitle {
+      opacity: 1;
+
+      *:not(button) {
+        opacity: 0.7;
+      }
+    }
   }
 
   td {
-    opacity: 1;
     text-align: right;
     user-select: text;
 
@@ -300,8 +307,7 @@
     }
 
     &.stateDirectoryOpenBtn {
-      margin: 4px 16px 0 0;
-      padding-top: 0;
+      margin-right: 16px;
     }
   }
 
