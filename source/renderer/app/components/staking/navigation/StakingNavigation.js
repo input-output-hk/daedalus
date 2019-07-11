@@ -37,6 +37,7 @@ const messages = defineMessages({
 type Props = {
   activeItem: string,
   onNavItemClick: Function,
+  isActiveNavItem: Function,
 };
 
 @observer
@@ -46,11 +47,13 @@ export default class StakingNavigation extends Component<Props> {
   };
 
   render() {
-    const { onNavItemClick, activeItem } = this.props;
+    const { onNavItemClick, activeItem, isActiveNavItem } = this.props;
     const { intl } = this.context;
+
     return (
       <Navigation
         activeItem={activeItem}
+        isActiveNavItem={isActiveNavItem}
         onNavItemClick={onNavItemClick}
         items={[
           {

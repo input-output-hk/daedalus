@@ -113,11 +113,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Open',
     description: 'Open',
   },
-  stateDirectoryCopyPathBtn: {
-    id: 'daedalus.diagnostics.dialog.stateDirectoryCopyPathBtn',
-    defaultMessage: '!!!Copy',
-    description: 'Copy',
-  },
   connectionError: {
     id: 'daedalus.diagnostics.dialog.connectionError',
     defaultMessage: '!!!CONNECTION ERROR',
