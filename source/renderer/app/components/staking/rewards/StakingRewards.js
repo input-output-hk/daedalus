@@ -9,6 +9,7 @@ import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
+import type { Reward } from '../../../api/staking/types';
 import styles from './StakingRewards.scss';
 
 const messages = defineMessages({
@@ -62,7 +63,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  rewards: any,
+  rewards: Array<Reward>,
   isLoading: boolean,
   onLearnMoreClick: Function,
 };
@@ -102,7 +103,7 @@ export default class StakingRewards extends Component<Props, State> {
     if (showRewards) {
       sortedRewards = orderBy(
         rewards,
-        rewardsSortBy === 'pool' ? 'pool.title' : rewardsSortBy,
+        rewardsSortBy === 'pool' ? 'pool.name' : rewardsSortBy,
         rewardsOrder
       );
     }
@@ -175,12 +176,8 @@ export default class StakingRewards extends Component<Props, State> {
               <tbody>
                 {map(sortedRewards, (reward, key) => {
                   const rewardDate = get(reward, 'date', '');
-                  const rewardPoolCategory = get(
-                    reward,
-                    ['pool', 'category'],
-                    ''
-                  );
-                  const rewardPoolTitle = get(reward, ['pool', 'title'], '');
+                  const rewardPoolSlug = get(reward, ['pool', 'slug'], '');
+                  const rewardPoolName = get(reward, ['pool', 'name'], '');
                   const rewardWallet = get(reward, 'wallet', '');
                   const rewardAmount = get(reward, 'amount', '');
                   return (
@@ -189,9 +186,9 @@ export default class StakingRewards extends Component<Props, State> {
                       <td>
                         <p>
                           <span className={styles.stakePoolReference}>
-                            [{rewardPoolCategory}]
+                            [{rewardPoolSlug}]
                           </span>{' '}
-                          {rewardPoolTitle}
+                          {rewardPoolName}
                         </p>
                       </td>
                       <td>{rewardWallet}</td>

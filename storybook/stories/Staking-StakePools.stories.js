@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import { number, radios } from '@storybook/addon-knobs';
+import { action } from '@storybook/addon-actions';
 
 import StakePools from '../../source/renderer/app/components/staking/stake-pools/StakePools';
 import STAKE_POOLS from '../../source/renderer/app/config/stakingStakePools.dummy.json';
@@ -30,5 +31,6 @@ export const StakePoolsStory = () => (
     ]}
     onOpenExternalLink={() => {}}
     currentTheme={radios('Theme (Only for tooltip colors)', themes)}
+    onDelegate={action('onDelegate')}
   />
 );

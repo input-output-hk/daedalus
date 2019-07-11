@@ -25,6 +25,7 @@ type Props = {
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
   currentTheme: string,
+  onDelegate: Function,
 };
 
 type State = {
@@ -57,6 +58,11 @@ export default class StakePools extends Component<Props, State> {
 
   handleSetListActive = (selectedList: string) =>
     this.setState({ selectedList });
+
+  onDelegate = (poolId: string) => {
+    const { onDelegate } = this.props;
+    onDelegate(poolId);
+  };
 
   render() {
     const { intl } = this.context;
@@ -91,7 +97,7 @@ export default class StakePools extends Component<Props, State> {
             isListActive={selectedList === 'stakePoolsDelegatingList'}
             setListActive={this.handleSetListActive}
             containerClassName="StakingWithNavigation_page"
-            onSelect={() => {}}
+            onSelect={this.onDelegate}
             showWithSelectButton
           />
         )}
@@ -114,7 +120,7 @@ export default class StakePools extends Component<Props, State> {
           isListActive={selectedList === 'selectedIndexList'}
           setListActive={this.handleSetListActive}
           containerClassName="StakingWithNavigation_page"
-          onSelect={() => {}}
+          onSelect={this.onDelegate}
         />
       </div>
     );

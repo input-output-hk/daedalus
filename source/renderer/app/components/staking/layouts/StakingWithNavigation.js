@@ -9,16 +9,24 @@ type Props = {
   children?: Node,
   activeItem: string,
   onNavItemClick: Function,
+  isActiveNavItem: Function,
 };
 
 @observer
 export default class StakingWithNavigation extends Component<Props> {
   render() {
-    const { children, onNavItemClick, activeItem } = this.props;
+    const {
+      children,
+      onNavItemClick,
+      activeItem,
+      isActiveNavItem,
+    } = this.props;
+
     return (
       <div className={styles.component}>
         <div className={styles.navigation}>
           <StakingNavigation
+            isActiveNavItem={isActiveNavItem}
             onNavItemClick={onNavItemClick}
             activeItem={activeItem}
           />

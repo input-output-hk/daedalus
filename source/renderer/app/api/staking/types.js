@@ -12,3 +12,25 @@ export type StakePool = {
   retiring?: Date,
   url: string,
 };
+
+export type Reward = {
+  date: string,
+  wallet: string,
+  amount: number,
+  pool: StakePool,
+};
+
+export type EpochData = {
+  pool: StakePool,
+  slotsElected: Array<number>,
+  performance?: Array<number>,
+  sharedRewards?: Array<number>,
+};
+
+export type Epoch = {
+  id: number,
+  name: string,
+  progress?: number,
+  endsAt?: string,
+  data: Array<EpochData>,
+};

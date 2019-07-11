@@ -5,19 +5,10 @@ import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import StoryDecorator from './support/StoryDecorator';
 import Sidebar from '../../source/renderer/app/components/sidebar/Sidebar';
-import { CATEGORIES_BY_NAME } from '../../source/renderer/app/config/sidebarConfig';
-
-const CATEGORIES_WITH_DELEGATION_COUNTDOWN = [
-  CATEGORIES_BY_NAME.WALLETS,
-  CATEGORIES_BY_NAME.STAKING_DELEGATION_COUNTDOWN,
-  CATEGORIES_BY_NAME.SETTINGS,
-];
-
-const CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN = [
-  CATEGORIES_BY_NAME.WALLETS,
-  CATEGORIES_BY_NAME.STAKING,
-  CATEGORIES_BY_NAME.SETTINGS,
-];
+import {
+  CATEGORIES_WITH_DELEGATION_COUNTDOWN,
+  CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN,
+} from '../../source/renderer/app/config/sidebarConfig';
 
 const sidebarMenus = observable({
   wallets: {

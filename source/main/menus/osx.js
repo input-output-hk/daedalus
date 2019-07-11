@@ -37,20 +37,20 @@ export const osxMenu = (
           actions.openAdaRedemptionScreen();
         },
       },
+      { type: 'separator' },
       {
-        label: translation('daedalus.blockConsolidationStatus'),
-        accelerator: 'Command+B',
-        click() {
-          actions.openBlockConsolidationStatusDialog();
-        },
+        label: translation('daedalus.hideDaedalus'),
+        role: 'hide',
       },
       {
-        label: translation('daedalus.daedalusDiagnostics'),
-        accelerator: 'Command+D',
-        click() {
-          actions.openDaedalusDiagnosticsDialog();
-        },
+        label: translation('daedalus.hideOthers'),
+        role: 'hideothers',
       },
+      {
+        label: translation('daedalus.showAll'),
+        role: 'unhide',
+      },
+      { type: 'separator' },
       {
         label: translation('daedalus.quit'),
         accelerator: 'Command+Q',
@@ -73,9 +73,7 @@ export const osxMenu = (
         accelerator: 'Shift+Command+Z',
         role: 'redo',
       },
-      {
-        type: 'separator',
-      },
+      { type: 'separator' },
       {
         label: translation('edit.cut'),
         accelerator: 'Command+X',
@@ -122,7 +120,14 @@ export const osxMenu = (
     label: translation('helpSupport'),
     submenu: compact([
       {
-        label: translation('helpSupport.gpuSafeMode'),
+        label: translation('helpSupport.knownIssues'),
+        click() {
+          const faqLink = translation('helpSupport.knownIssuesUrl');
+          shell.openExternal(faqLink);
+        },
+      },
+      {
+        label: translation('helpSupport.blankScreenFix'),
         type: 'checkbox',
         checked: isInSafeMode,
         click(item) {
@@ -154,12 +159,7 @@ export const osxMenu = (
           });
         },
       },
-      {
-        label: translation('helpSupport.downloadLogs'),
-        click() {
-          showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
-        },
-      },
+      { type: 'separator' },
       {
         label: translation('helpSupport.supportRequest'),
         click() {
@@ -178,10 +178,24 @@ export const osxMenu = (
         },
       },
       {
-        label: translation('helpSupport.knownIssues'),
+        label: translation('helpSupport.downloadLogs'),
         click() {
-          const faqLink = translation('helpSupport.knownIssuesUrl');
-          shell.openExternal(faqLink);
+          showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
+        },
+      },
+      { type: 'separator' },
+      {
+        label: translation('helpSupport.blockConsolidationStatus'),
+        accelerator: 'Command+B',
+        click() {
+          actions.openBlockConsolidationStatusDialog();
+        },
+      },
+      {
+        label: translation('helpSupport.daedalusDiagnostics'),
+        accelerator: 'Command+D',
+        click() {
+          actions.openDaedalusDiagnosticsDialog();
         },
       },
     ]),

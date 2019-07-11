@@ -8,6 +8,7 @@
 
   &::after {
     bottom: 22.5px;
+    z-index: 1;
   }
 
   &:hover::after {
