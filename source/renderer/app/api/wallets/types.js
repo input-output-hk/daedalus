@@ -1,14 +1,27 @@
 // @flow
 export type AdaWallet = {
-  createdAt: string,
-  syncState: WalletSyncState,
-  balance: number,
-  hasSpendingPassword: boolean,
-  assuranceLevel: WalletAssuranceLevel,
-  name: string,
   id: string,
-  spendingPasswordLastUpdate: string,
+  balance: {
+    available: {
+      quantity: number,
+      unit: WalletUnit,
+    },
+    total: {
+      quantity: number,
+      unit: WalletUnit,
+    },
+  },
+  name: string,
+  state: {
+    status: 'ready' | string,
+  },
+  delegation: {
+    status: string,
+    target: string,
+  },
 };
+
+export type WalletUnit = 'lovelace' | 'ada';
 
 export type AdaWallets = Array<AdaWallet>;
 

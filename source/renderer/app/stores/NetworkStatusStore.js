@@ -481,9 +481,11 @@ export default class NetworkStatusStore extends Store {
 
         // Node is syncing in case we are receiving blocks and they are not stalling
         runInAction('update isNodeSyncing', () => {
-          this.isNodeSyncing =
-            hasStartedReceivingBlocks &&
-            (isLocalBlockHeightSyncing || isNetworkBlockHeightSyncing);
+          // TODO: revert once mocks removed
+          // this.isNodeSyncing =
+          //   hasStartedReceivingBlocks &&
+          //   (isLocalBlockHeightSyncing || isNetworkBlockHeightSyncing);
+          this.isNodeSyncing = true;
         });
 
         runInAction('update isNodeInSync', () => {

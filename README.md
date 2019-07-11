@@ -41,6 +41,15 @@ The result can be found at `./result/daedalus-*.bin`.
 `shell.nix` provides a way to load a shell with all the correct versions of all the
 required dependencies for development.
 
+## V2 API Integration Guide
+
+1. Ensure Docker and Docker Compose are installed on your machine
+2. Clone the following repo: `git clone git@github.com:Sam-Jeston/cardano-byron-docker.git`
+3. Start the demo cluster from the root of `cardano-byron-docker` by running `./daedalus/start-demo-cluster.sh` (NB: Run all commands from the root folder of `cardano-byron-docker`). The initial pull is big, but after that the containers will start straight away. The size of these images is far from optimized
+4. Run `nix-shell` from `daedalus`
+5. Run `yarn dev` from the `nix-shell`
+6. If required, import some funded wallets from `cardano-byron-docker` by running `./daedalus/import-wallets.sh`. This can only be done once `yarn dev` has been run as this script leverages the Wallet API that Daedalus starts.
+
 ## Connect to staging cluster:
 
 1. Start the nix-shell with staging environment `yarn nix:staging`

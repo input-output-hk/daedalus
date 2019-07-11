@@ -138,6 +138,7 @@ import type {
   ImportWalletFromFileRequest,
   UpdateWalletRequest,
   GetWalletUtxosRequest,
+  WalletSyncState,
 } from './wallets/types';
 
 // Common errors
@@ -1091,24 +1092,30 @@ export default class AdaApi {
 const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData',
   (data: AdaWallet) => {
-    const {
-      id,
-      balance,
-      name,
-      assuranceLevel,
-      hasSpendingPassword,
-      spendingPasswordLastUpdate,
-      syncState,
-    } = data;
+    const { id, balance, name, state } = data;
+
+    console.log(balance);
+
+    const walletBalance =
+      balance.total.unit === 'lovelace'
+        ? new BigNumber(balance.total.quantity).dividedBy(LOVELACES_PER_ADA)
+        : new BigNumber(balance.total.quantity);
+
+    // TODO: Should conform to WalletSyncState, but can't match the type
+    // at the moment
+    const walletSyncState: any = {
+      tag: state.status === 'ready' ? 'synced' : 'restoring',
+    };
 
     return new Wallet({
       id,
-      amount: new BigNumber(balance).dividedBy(LOVELACES_PER_ADA),
+      amount: walletBalance,
       name,
-      assurance: assuranceLevel,
-      hasPassword: hasSpendingPassword,
-      passwordUpdateDate: new Date(`${spendingPasswordLastUpdate}Z`),
-      syncState,
+      // NOTE: Assurance, hasPassword & passwordUpdateDate no longer returned on GET /v2/wallets
+      assurance: 'normal',
+      hasPassword: true,
+      passwordUpdateDate: new Date(0),
+      syncState: walletSyncState,
       isLegacy: false,
     });
   }
