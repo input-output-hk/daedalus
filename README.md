@@ -50,6 +50,13 @@ required dependencies for development.
 5. Run `yarn dev` from the `nix-shell`
 6. If required, import some funded wallets from `cardano-byron-docker` by running `./daedalus/import-wallets.sh`. This can only be done once `yarn dev` has been run as this script leverages the Wallet API that Daedalus starts.
 
+### V2 State of Affairs
+- It doesn't appear possible to connect `cardano-http-bridge` to the local demo cluster when using `cardano-wallet launcher`. For now, we are using `cardano-http-bridge` declared in the docker stack, and using the `cardano-wallet serve` command instead.
+- `cardano-wallet launcher` is not accepting the `--random-port` argument
+- Lots of things have been temporarily commented out or mocked to get the integration started. As such using `git push --no-verify`. This will be cleaned up once more routes become available.
+- A `console.log` is purposefully placed in `request.js` so we can see when requests are still trying to hit `/v1`.
+- TLS is not yet supported, so `request.js` has been overwritten to use the HTTP module for the time being.
+
 ## Connect to staging cluster:
 
 1. Start the nix-shell with staging environment `yarn nix:staging`

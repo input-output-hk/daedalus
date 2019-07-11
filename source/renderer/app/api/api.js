@@ -1092,9 +1092,7 @@ export default class AdaApi {
 const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData',
   (data: AdaWallet) => {
-    const { id, balance, name, state } = data;
-
-    console.log(balance);
+    const { id, balance, name, state, passphrase } = data;
 
     const walletBalance =
       balance.total.unit === 'lovelace'
@@ -1111,10 +1109,11 @@ const _createWalletFromServerData = action(
       id,
       amount: walletBalance,
       name,
-      // NOTE: Assurance, hasPassword & passwordUpdateDate no longer returned on GET /v2/wallets
+      // NOTE: Assurance not currently returned on GET /v2/wallets
       assurance: 'normal',
+      // TODO: Determine if hasPassword still applies
       hasPassword: true,
-      passwordUpdateDate: new Date(0),
+      passwordUpdateDate: new Date(passphrase.last_updated_at),
       syncState: walletSyncState,
       isLegacy: false,
     });

@@ -19,6 +19,9 @@ export type AdaWallet = {
     status: string,
     target: string,
   },
+  passphrase: {
+    last_updated_at: string,
+  },
 };
 
 export type WalletUnit = 'lovelace' | 'ada';
