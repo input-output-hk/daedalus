@@ -51,6 +51,7 @@ Changelog
 
 ### Chores
 
+- Added themes:check script for checking missing definitions on createTheme obj ([PR 1424](https://github.com/input-output-hk/daedalus/pull/1424))
 - Added button to open local state directory on Daedalus Diagnostics Screen ([PR 1438](https://github.com/input-output-hk/daedalus/pull/1438))
 - Updated the list of contributors on the "About" screen ([PR 1450](https://github.com/input-output-hk/daedalus/pull/1450))
 - Improved switching of the application menu screens ([PR 1419](https://github.com/input-output-hk/daedalus/pull/1419))
