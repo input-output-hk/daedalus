@@ -64,9 +64,6 @@ export const { nodeDbPath } = launcherConfig;
 export const stateDirectoryPath = launcherConfig.statePath;
 export const ALLOWED_LOGS = [
   'Daedalus.json',
-  'Daedalus.old.json',
-  'Daedalus.old.1.json',
-  'Daedalus.old.2.json',
   'System-info.json',
   'Daedalus-versions.json',
 ];

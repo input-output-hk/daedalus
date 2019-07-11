@@ -25,7 +25,20 @@ export const getLogsChannel: MainIpcChannel<
   GetLogsMainResponse
 > = new MainIpcChannel(GET_LOGS_CHANNEL);
 
-const isFileAllowed = (fileName: string) => includes(ALLOWED_LOGS, fileName);
+const isFileAllowed = (fileName: string) => {
+  let allowed = includes(ALLOWED_LOGS, fileName);
+  const appLogNamePosition = fileName.indexOf(ALLOWED_LOGS[0]);
+  let fileNamePostfix = null;
+
+  if (!allowed && appLogNamePosition === 0) {
+    fileNamePostfix = fileName.substring(ALLOWED_LOGS[0].length);
+    if (/^-\d{14}$/.test(fileNamePostfix)) {
+      allowed = true;
+    }
+  }
+
+  return allowed;
+};
 
 const isFileNodeLog = (fileName: string, nodeLogsIncluded: number) =>
   ALLOWED_NODE_LOGS.test(fileName) && nodeLogsIncluded < MAX_NODE_LOGS_ALLOWED;

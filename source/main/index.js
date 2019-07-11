@@ -3,7 +3,7 @@ import os from 'os';
 import path from 'path';
 import { app, BrowserWindow, shell } from 'electron';
 import { client } from 'electron-connect';
-import { Logger, rotateOldLogFiles } from './utils/logging';
+import { Logger } from './utils/logging';
 import { setupLogging, logSystemInfo } from './utils/setupLogging';
 import { getNumberOfEpochsConsolidated } from './utils/getNumberOfEpochsConsolidated';
 import { handleDiskSpace } from './utils/handleDiskSpace';
@@ -37,8 +37,6 @@ import { logUsedVersion } from './utils/logUsedVersion';
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
 let cardanoNode: ?CardanoNode;
-let intervalHandler: IntervalID;
-const LOG_ROTATE_CHECK_INTERVAL = 500;
 
 const {
   isDev,
@@ -52,7 +50,6 @@ const {
 } = environment;
 
 const safeExit = async () => {
-  clearInterval(intervalHandler);
   if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
     Logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });
     return safeExitWithCode(0);
@@ -79,10 +76,6 @@ const onAppReady = async () => {
   logUsedVersion(
     environment.version,
     path.join(pubLogsFolderPath, `${APP_NAME}-versions.json`)
-  );
-  intervalHandler = setInterval(
-    () => rotateOldLogFiles(),
-    LOG_ROTATE_CHECK_INTERVAL
   );
 
   const cpu = os.cpus();
