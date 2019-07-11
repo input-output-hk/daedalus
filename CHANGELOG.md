@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented the animated Daedalus logo on the "Loading" screens ([PR 1457](https://github.com/input-output-hk/daedalus/pull/1457))
 - Implemented "Delegation Setup wizard" steps 3 & 4 UI ([PR 1439](https://github.com/input-output-hk/daedalus/pull/1439))
 - Improved "Connectivity/Sync trouble notification" ([PR 1453](https://github.com/input-output-hk/daedalus/pull/1453))
 - Implemented "Delegation Setup wizard" step 2 UI ([PR 1430](https://github.com/input-output-hk/daedalus/pull/1430))
@@ -52,6 +53,8 @@ Changelog
 
 ### Chores
 
+- Improved the "Ada redemption" menu item UX by disabling the option while Daedalus is out of sync ([PR 1458](https://github.com/input-output-hk/daedalus/pull/1458))
+- Added `themes:check` script for checking missing definitions on createTheme object ([PR 1424](https://github.com/input-output-hk/daedalus/pull/1424))
 - Refactored the Loading screen, adding containers for each overlay ([PR 1446](https://github.com/input-output-hk/daedalus/pull/1446))
 - Added button to open local state directory on Daedalus Diagnostics Screen ([PR 1438](https://github.com/input-output-hk/daedalus/pull/1438))
 - Updated the list of contributors on the "About" screen ([PR 1450](https://github.com/input-output-hk/daedalus/pull/1450))

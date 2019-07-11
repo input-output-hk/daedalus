@@ -10,7 +10,9 @@ type PartialThemeParts = {
 };
 
 // assigns values to all react-polymorph CSS variables & returns them
-const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
+export const createReactPolymorphTheme = (
+  themeParts: PartialThemeParts
+): Object => {
   const { colors, fonts } = themeParts;
   const { background, border, error, focus, text } = colors;
   return {
@@ -60,7 +62,7 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
         0.3
       )}`,
     },
-    rpError: {
+    rpColors: {
       '--rp-theme-color-error': `${error.regular}`,
     },
     rpFonts: {
@@ -151,7 +153,7 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
       '--rp-switch-root-margin': '0 0 30px 0',
       '--rp-switch-thumb-bg-color': `${text.secondary}`,
     },
-    rpTextarea: {
+    rpTextArea: {
       '--rp-textarea-bg-color': `${background.primary.regular}`,
       '--rp-textarea-bg-color-disabled': `${chroma(
         background.primary.regular
@@ -170,7 +172,7 @@ const createReactPolymorphTheme = (themeParts: PartialThemeParts): Object => {
 };
 
 // assigns values to all Daedalus CSS variables & returns them
-const createDaedalusComponentsTheme = (
+export const createDaedalusComponentsTheme = (
   themeParts: PartialThemeParts
 ): Object => {
   const { colors, fonts } = themeParts;
@@ -401,9 +403,9 @@ const createDaedalusComponentsTheme = (
       '--theme-delegation-steps-choose-stake-pool-selected-slug-color': `${
         text.secondary
       }`,
-      '--theme-delegation-steps-choose-stake-pool-title-color': `${chroma().alpha(
-        0.6
-      )}`,
+      '--theme-delegation-steps-choose-stake-pool-title-color': `${chroma(
+        text.primary
+      ).alpha(0.8)}`,
       '--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color': `${chroma(
         text.primary
       ).alpha(0.9)}`,
@@ -905,6 +907,22 @@ const createDaedalusComponentsTheme = (
         background.primary.lightest
       }`,
       '--theme-staking-learn-more-icon-color': `${text.secondary}`,
+      '--theme-staking-donut-ring-completed-color': `${error.regular}`,
+      '--theme-staking-donut-ring-remaining-color': `${error.ultralight}`,
+      '--theme-staking-wallet-row-border-color': `${border}`,
+      '--theme-staking-dropdown-item-text-color-hover': `${text.primary}`,
+      '--theme-staking-dropdown-item-background-color': `${
+        background.primary.lightest
+      }`,
+      '--theme-staking-dropdown-item-background-color-hover': `${chroma(
+        background.primary.regular
+      ).alpha(0.1)}`,
+      '--theme-staking-delegation-center-gear-icon-fill-color': `${chroma(
+        text.primary
+      ).alpha(0.5)}`,
+      '--theme-staking-delegation-center-gear-icon-fill-color-active': `${
+        text.primary
+      }`,
     },
     support: {
       '--theme-support-settings-item-color': `${text.primary}`,

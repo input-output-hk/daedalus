@@ -1,5 +1,6 @@
 // @flow
 import { app, globalShortcut, Menu, BrowserWindow } from 'electron';
+import { get } from 'lodash';
 import { environment } from '../environment';
 import { winLinuxMenu } from '../menus/win-linux';
 import { osxMenu } from '../menus/osx';
@@ -92,9 +93,17 @@ export const buildAppMenus = async (
 
   // Build app menus
   let menu;
+  const isNodeInSync = get(cardanoNode, 'status.isNodeInSync', false);
   if (isMacOS) {
     menu = Menu.buildFromTemplate(
-      osxMenu(app, mainWindow, menuActions, translations, supportRequestData)
+      osxMenu(
+        app,
+        mainWindow,
+        menuActions,
+        translations,
+        supportRequestData,
+        isNodeInSync
+      )
     );
     Menu.setApplicationMenu(menu);
   } else {
@@ -104,7 +113,8 @@ export const buildAppMenus = async (
         mainWindow,
         menuActions,
         translations,
-        supportRequestData
+        supportRequestData,
+        isNodeInSync
       )
     );
     mainWindow.setMenu(menu);
