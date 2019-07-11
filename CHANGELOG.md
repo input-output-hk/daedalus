@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Improved NTP handling, avoiding a false error overlay ([PR 1462](https://github.com/input-output-hk/daedalus/pull/1462))
 - Implemented the animated Daedalus logo on the "Loading" screens ([PR 1457](https://github.com/input-output-hk/daedalus/pull/1457))
 - Implemented "Delegation Setup wizard" steps 3 & 4 UI ([PR 1439](https://github.com/input-output-hk/daedalus/pull/1439))
 - Improved "Connectivity/Sync trouble notification" ([PR 1453](https://github.com/input-output-hk/daedalus/pull/1453))
