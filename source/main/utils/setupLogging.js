@@ -14,6 +14,7 @@ import type {
   ConstructMessageBodyParams,
   MessageBody,
   LogSystemInfoParams,
+  LogStateSnapshotParams,
 } from '../../common/types/logging.types';
 
 const isTest = process.env.NODE_ENV === 'test';
