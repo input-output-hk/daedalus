@@ -172,6 +172,7 @@
         display: -webkit-box;
         overflow: hidden;
         text-overflow: ellipsis;
+        word-break: break-all;
 
         .stakePoolReference {
           color: var(--theme-staking-table-body-highlighted-text-color);

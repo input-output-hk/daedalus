@@ -7,8 +7,8 @@ import { getTranslation } from '../utils/getTranslation';
 import { environment } from '../environment';
 import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
-import { logStateSnapshot } from "../utils/setupLogging";
-import { Logger } from "../utils/logging";
+import { logStateSnapshot } from '../utils/setupLogging';
+import { Logger } from '../utils/logging';
 import type { SupportRequests } from '../../common/types/support-requests.types';
 
 const id = 'menu';
@@ -37,20 +37,6 @@ export const winLinuxMenu = (
         enabled: isNodeInSync,
         click() {
           actions.openAdaRedemptionScreen();
-        },
-      },
-      {
-        label: translation('daedalus.blockConsolidationStatus'),
-        accelerator: 'Ctrl+B',
-        click() {
-          actions.openBlockConsolidationStatusDialog();
-        },
-      },
-      {
-        label: translation('daedalus.daedalusDiagnostics'),
-        accelerator: 'Ctrl+D',
-        click() {
-          actions.openDaedalusDiagnosticsDialog();
         },
       },
       {
@@ -142,7 +128,14 @@ export const winLinuxMenu = (
     label: translation('helpSupport'),
     submenu: compact([
       {
-        label: translation('helpSupport.gpuSafeMode'),
+        label: translation('helpSupport.knownIssues'),
+        click() {
+          const faqLink = translation('helpSupport.knownIssuesUrl');
+          shell.openExternal(faqLink);
+        },
+      },
+      {
+        label: translation('helpSupport.blankScreenFix'),
         type: 'checkbox',
         checked: isInSafeMode,
         click(item) {
@@ -175,6 +168,24 @@ export const winLinuxMenu = (
           });
         },
       },
+      { type: 'separator' },
+      {
+        label: translation('helpSupport.supportRequest'),
+        click() {
+          const supportRequestLinkUrl = translation(
+            'helpSupport.supportRequestUrl'
+          );
+          const supportUrl = `${supportRequestLinkUrl}?${Object.entries(
+            supportRequestData
+          )
+            .map(
+              ([key, val]: [string, any]) =>
+                `${encodeURIComponent(key)}=${encodeURIComponent(val)}`
+            )
+            .join('&')}`;
+          shell.openExternal(supportUrl);
+        },
+      },
       {
         label: translation('helpSupport.downloadLogs'),
         click() {
@@ -195,33 +206,26 @@ export const winLinuxMenu = (
             startTime,
           });
 
-          Logger.info('Updating State-snapshot.json file', { ...stateSnapshot.data });
+          Logger.info('Updating State-snapshot.json file', {
+            ...stateSnapshot.data,
+          });
 
           showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
         },
       },
+      { type: 'separator' },
       {
-        label: translation('helpSupport.supportRequest'),
+        label: translation('helpSupport.blockConsolidationStatus'),
+        accelerator: 'Ctrl+B',
         click() {
-          const supportRequestLinkUrl = translation(
-            'helpSupport.supportRequestUrl'
-          );
-          const supportUrl = `${supportRequestLinkUrl}?${Object.entries(
-            supportRequestData
-          )
-            .map(
-              ([key, val]: [string, any]) =>
-                `${encodeURIComponent(key)}=${encodeURIComponent(val)}`
-            )
-            .join('&')}`;
-          shell.openExternal(supportUrl);
+          actions.openBlockConsolidationStatusDialog();
         },
       },
       {
-        label: translation('helpSupport.knownIssues'),
+        label: translation('helpSupport.daedalusDiagnostics'),
+        accelerator: 'Ctrl+D',
         click() {
-          const faqLink = translation('helpSupport.knownIssuesUrl');
-          shell.openExternal(faqLink);
+          actions.openDaedalusDiagnosticsDialog();
         },
       },
     ]),
