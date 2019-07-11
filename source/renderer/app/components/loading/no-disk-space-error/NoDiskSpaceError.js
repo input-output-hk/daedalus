@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import attentionIcon from '../../assets/images/attention-big-light.inline.svg';
-import styles from './NoDiskSpaceErrorOverlay.scss';
+import attentionIcon from '../../../assets/images/attention-big-light.inline.svg';
+import styles from './NoDiskSpaceError.scss';
 
 const messages = defineMessages({
   overlayContent: {
@@ -27,7 +27,7 @@ type Props = {
 };
 
 @observer
-export default class NoDiskSpaceErrorOverlay extends Component<Props> {
+export default class NoDiskSpaceError extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };

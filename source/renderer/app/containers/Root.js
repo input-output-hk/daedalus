@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import WalletAddPage from './wallet/WalletAddPage';
-import LoadingPage from './LoadingPage';
+import LoadingPage from './loading/LoadingPage';
 import { DIALOGS } from '../../../common/ipc/constants';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 
