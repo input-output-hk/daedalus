@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Configured electron-log-daedalus file transport configuration params for new log rotation scheme. ([PR 1448](https://github.com/input-output-hk/daedalus/pull/1448))
 - Implemented the animated Daedalus logo on the "Loading" screens ([PR 1457](https://github.com/input-output-hk/daedalus/pull/1457))
 - Implemented "Delegation Setup wizard" steps 3 & 4 UI ([PR 1439](https://github.com/input-output-hk/daedalus/pull/1439))
 - Improved "Connectivity/Sync trouble notification" ([PR 1453](https://github.com/input-output-hk/daedalus/pull/1453))
