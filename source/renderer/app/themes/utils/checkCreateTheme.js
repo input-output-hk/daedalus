@@ -59,6 +59,20 @@ export const checkCreateTheme = (createThemeObj: Object) => {
       themeName: 'light-blue.js',
     });
   }
+
+  if (
+    isEmpty(missingCardanoDefs) &&
+    isEmpty(missingDarkBlueDefs) &&
+    isEmpty(missingLightBlueDefs)
+  ) {
+    console.log(
+      chalk.hex('#2cbb69')(
+        `\n${chalk.bold.inverse(
+          '*** createTheme.js is up to date with all the Daedalus themes! ***'
+        )}`
+      )
+    );
+  }
 };
 
 export const findMissingDefinitions = (
