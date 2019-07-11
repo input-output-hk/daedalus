@@ -908,6 +908,22 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-learn-more-icon-color': `${chroma(text.secondary).alpha(
         0.7
       )}`,
+      '--theme-staking-donut-ring-completed-color': `${error.regular}`,
+      '--theme-staking-donut-ring-remaining-color': `${error.ultralight}`,
+      '--theme-staking-wallet-row-border-color': `${border}`,
+      '--theme-staking-dropdown-item-text-color-hover': `${text.primary}`,
+      '--theme-staking-dropdown-item-background-color': `${
+        background.primary.lightest
+      }`,
+      '--theme-staking-dropdown-item-background-color-hover': `${chroma(
+        background.primary.regular
+      ).alpha(0.1)}`,
+      '--theme-staking-delegation-center-gear-icon-fill-color': `${chroma(
+        text.primary
+      ).alpha(0.5)}`,
+      '--theme-staking-delegation-center-gear-icon-fill-color-active': `${
+        text.primary
+      }`,
     },
     support: {
       '--theme-support-settings-item-color': `${text.primary}`,
