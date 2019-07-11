@@ -83,6 +83,8 @@ export default class NetworkStatusStore extends Store {
 
   // NTP
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
+  @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
+  @observable isSystemTimeInTolerationMode = false; // Is 'true' in case `isNodeTimeCorrect === true` and `numberOfNTPTolerationChecks < MAX_NTP_TOLERATION_CHECKS`
   @observable numberOfNTPTolerationChecks = 0; // Is 'true' in case local and global time are in sync
 
   @observable hasBeenConnected = false;
@@ -93,7 +95,6 @@ export default class NetworkStatusStore extends Store {
   @observable latestLocalBlockTimestamp = 0; // milliseconds
   @observable latestNetworkBlockTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
-  @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
   @observable
   getNetworkStatusRequest: Request<GetNetworkStatusResponse> = new Request(
     this.api.ada.getNetworkStatus
@@ -415,12 +416,14 @@ export default class NetworkStatusStore extends Store {
             this.numberOfNTPTolerationChecks < MAX_NTP_TOLERATION_CHECKS
           ) {
             this.numberOfNTPTolerationChecks++;
+            this.isSystemTimeInTolerationMode = true;
             setTimeout(
               this.forceCheckLocalTimeDifference,
               NTP_TOLERATION_CHECKS_INTERVAL
             );
           } else {
             this.numberOfNTPTolerationChecks = 0;
+            this.isSystemTimeInTolerationMode = false;
             this.isNodeTimeCorrect = isNodeTimeCorrect;
           }
         }

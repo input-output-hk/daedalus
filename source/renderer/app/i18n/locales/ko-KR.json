@@ -95,6 +95,7 @@
   "daedalus.diagnostics.dialog.system.info": "SYSTEM INFO",
   "daedalus.diagnostics.dialog.systemTimeCorrect": "System Time Correct",
   "daedalus.diagnostics.dialog.systemTimeIgnored": "System Time Ignored",
+  "daedalus.diagnostics.dialog.systemTimeInTolerationMode": "!!!System Time in Toleration Mode",
   "environment.apiName.cardano": "!!!Cardano",
   "environment.currency.ada": "!!!Ada",
   "global.assuranceLevel.normal": "!!!Normal",
