@@ -23,7 +23,7 @@ import {
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
 import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
-import { getLogStateSnapshotChannel } from '../ipc/getLogStateSnapshotChannel';
+import { setLogStateSnapshotChannel } from '../ipc/setLogStateSnapshotChannel';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
 import type {
   CardanoNodeState,
@@ -586,6 +586,17 @@ export default class NetworkStatusStore extends Store {
     openLocalDirectoryChannel.send(path);
   }
 
+  convertBytesToSize = (bytes: number): string => {
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes === 0) return 'n/a';
+    const i = parseInt(
+      Math.floor(Math.log(Math.abs(bytes)) / Math.log(1024)),
+      10
+    );
+    if (i === 0) return `${bytes} ${sizes[i]})`;
+    return `${(bytes / 1024 ** i).toFixed(1)} ${sizes[i]}`;
+  };
+
   @action _onCheckDiskSpace = ({
     isNotEnoughDiskSpace,
     diskSpaceRequired,
@@ -616,7 +627,47 @@ export default class NetworkStatusStore extends Store {
   };
 
   @action _logStateSnapshot = () => {
-    getLogStateSnapshotChannel.send();
+    const stateSnapshotData = {
+      availableDiskSpace: this.diskSpaceAvailable,
+      cardanoAPIPort: this.tlsConfig ? this.tlsConfig.port : 0,
+      cardanoNetwork: this.environment.network,
+      cardanoNodeState: this.cardanoNodeState,
+      cardanoProcessID: this.cardanoNodeID,
+      cardanoVersion: this.environment.buildNumber,
+      cpu: this.environment.cpu[0].model,
+      current: this.environment.current,
+      currentLocale: this.stores.profile.currentLocale,
+      daedalusVersion: this.environment.version,
+      daedalusMainProcessID: this.environment.mainProcessID,
+      daedalusProcessID: this.environment.rendererProcessID,
+      daedalusStateDirectoryPath: this.stateDirectoryPath,
+      isConnected: this.isConnected,
+      isDev: this.isConnected,
+      isForceCheckingNodeTime: this.forceCheckTimeDifferenceRequest.isExecuting,
+      isInSafeMode: this.environment.isInSafeMode,
+      isMainnet: this.environment.isMainnet,
+      isNodeInSync: this.isNodeInSync,
+      isNodeResponding: this.isNodeResponding,
+      isNodeSubscribed: this.isNodeSubscribed,
+      isNodeSyncing: this.isNodeSyncing,
+      isNodeTimeCorrect: this.isNodeTimeCorrect,
+      isStaging: this.environment.isStaging,
+      isSynced: this.isSynced,
+      isSystemTimeCorrect: this.isSystemTimeCorrect,
+      isSystemTimeIgnored: this.isSystemTimeIgnored,
+      isTestnet: this.environment.isTestnet,
+      latestLocalBlockTimestamp: this.latestLocalBlockTimestamp,
+      latestNetworkBlockTimestamp: this.latestNetworkBlockTimestamp,
+      localBlockHeight: this.localBlockHeight,
+      localTimeDifference: this.localTimeDifference,
+      networkBlockHeight: this.networkBlockHeight,
+      platform: this.environment.os,
+      platformVersion: this.environment.platformVersion,
+      ram: this.convertBytesToSize(this.environment.ram),
+      startTime: new Date().toISOString(),
+      syncPercentage: this.syncPercentage,
+    };
+    setLogStateSnapshotChannel.send(stateSnapshotData);
   };
 
   // DEFINE COMPUTED VALUES
