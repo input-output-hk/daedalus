@@ -99,17 +99,17 @@ export const logSystemInfo = (props: LogSystemInfoParams): MessageBody => {
 export const logStateSnapshot = (props: LogStateSnapshotParams): MessageBody => {
   const { current, ...data } = props;
   const {
-    frontendVersion,
-    backendVersion,
-    network,
+    daedalusVersion,
+    cardanoVersion,
+    cardanoNetwork,
     os,
     startTime: at,
   } = data;
-  const env = `${network}:${os}:${backendVersion}:${frontendVersion}`;
+  const env = `${cardanoNetwork}:${os}:${cardanoVersion}:${daedalusVersion}`;
   const messageBodyParams: ConstructMessageBodyParams = {
     at,
     env,
-    ns: ['daedalus', `v${frontendVersion}`, `*${current}*`],
+    ns: ['daedalus', `v${daedalusVersion}`, `*${current}*`],
     data,
     msg: 'Updating State-snapshot.json file',
     pid: '',
