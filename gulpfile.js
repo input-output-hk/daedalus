@@ -121,7 +121,7 @@ gulp.task('prepare:themes:utils', () =>
       'source/renderer/app/themes/utils/constants.js',
       'source/renderer/app/themes/utils/createTheme.js',
       'source/renderer/app/themes/utils/createShades.js',
-      'source/renderer/app/themes/utils/index.js',
+      'source/renderer/app/themes/utils/updateThemes.js',
     ])
     .pipe(flowRemoveTypes())
     .pipe(gulp.dest('dist/utils'))
@@ -138,6 +138,25 @@ gulp.task('prepare:themes:daedalus', () =>
     .pipe(gulp.dest('dist/daedalus'))
 );
 
+gulp.task('prepare:themes:scripts', () =>
+  gulp
+    .src([
+      'source/renderer/app/themes/scripts/check.js',
+      'source/renderer/app/themes/scripts/update.js',
+    ])
+    .pipe(flowRemoveTypes())
+    .pipe(gulp.dest('dist/scripts'))
+);
+
+gulp.task(
+  'prepare:themes',
+  gulp.series(
+    'prepare:themes:utils',
+    'prepare:themes:daedalus',
+    'prepare:themes:scripts'
+  )
+);
+
 gulp.task(
   'build:watch',
   gulp.series(
@@ -149,10 +168,7 @@ gulp.task(
   )
 );
 
-gulp.task(
-  'build:themes',
-  gulp.series('clean:dist', 'prepare:themes:utils', 'prepare:themes:daedalus')
-);
+gulp.task('build:themes', gulp.series('clean:dist', 'prepare:themes'));
 
 gulp.task(
   'test:e2e:nodemon',
