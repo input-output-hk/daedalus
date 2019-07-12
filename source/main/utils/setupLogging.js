@@ -25,7 +25,7 @@ export const setupLogging = () => {
   log.transports.console.level = isTest ? 'error' : 'info';
   log.transports.rendererConsole.level = isDev ? 'info' : 'error';
   log.transports.file.level = 'debug';
-  log.transports.file.maxSize = 5 * 1024 * 1024;
+  log.transports.file.maxSize = 5 * 1024 * 1024; // 5MB, unit bytes
   log.transports.file.maxItems = 4;
   log.transports.file.timeStampPostfixFormat = '{y}{m}{d}{h}{i}{s}';
   log.transports.file.file = logFilePath;
