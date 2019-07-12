@@ -19,6 +19,7 @@ import DelegationStepsChooseStakePoolDialog from '../../source/renderer/app/comp
 import DelegationStepsNotAvailableDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsNotAvailableDialog';
 import DelegationStepsConfirmationDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog';
 import DelegationStepsActivationDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog';
+import DelegationCenterNoWallets from '../../source/renderer/app/components/staking/delegation-center/DelegationCenterNoWallets';
 
 import { StakePoolsStory } from './Staking-StakePools.stories';
 import { StakingRewardsStory } from './Staking-Rewards.stories';
@@ -154,6 +155,12 @@ storiesOf('Staking', module)
   .add(pageNames['delegation-center'], StakingDelegationCenterStory, {
     id: 'delegation-center',
   })
+
+  .add('Delegation Center - No Wallets', () => (
+    <DelegationCenterNoWallets
+      onGoToCreateWalletClick={action('onGoToCreateWalletClick')}
+    />
+  ))
 
   .add(pageNames['stake-pools'], StakePoolsStory, { id: 'stake-pools' })
 
