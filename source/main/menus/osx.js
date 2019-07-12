@@ -7,12 +7,11 @@ import { getTranslation } from '../utils/getTranslation';
 import { environment } from '../environment';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { NOTIFICATIONS } from '../../common/ipc/constants';
-import { Logger } from '../utils/logging';
-import { logStateSnapshot } from '../utils/setupLogging';
+import { setLogStateSnapshotChannel } from '../ipc/set-log-state-snapshot';
 import type { SupportRequests } from '../../common/types/support-requests.types';
 
 const id = 'menu';
-const { isInSafeMode, current } = environment;
+const { isInSafeMode } = environment;
 
 export const osxMenu = (
   app: App,
@@ -182,27 +181,7 @@ export const osxMenu = (
       {
         label: translation('helpSupport.downloadLogs'),
         click() {
-          const startTime = new Date().toISOString();
-
-          const stateSnapshot = logStateSnapshot({
-            frontendVersion: supportRequestData.frontendVersion,
-            backendVersion: supportRequestData.backendVersion,
-            network: supportRequestData.network,
-            build: supportRequestData.build,
-            installerVersion: supportRequestData.installerVersion,
-            os: supportRequestData.os,
-            networkLocale: supportRequestData.networkLocale,
-            product: supportRequestData.product,
-            supportLanguage: supportRequestData.supportLanguage,
-            productVersion: supportRequestData.productVersion,
-            current,
-            startTime,
-          });
-
-          Logger.info('Updating State-snapshot.json file', {
-            ...stateSnapshot.data,
-          });
-
+          setLogStateSnapshotChannel.send();
           showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
         },
       },

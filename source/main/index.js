@@ -4,7 +4,7 @@ import path from 'path';
 import { app, BrowserWindow, shell } from 'electron';
 import { client } from 'electron-connect';
 import { Logger } from './utils/logging';
-import {setupLogging, logSystemInfo, logStateSnapshot} from './utils/setupLogging';
+import { setupLogging, logSystemInfo, logStateSnapshot } from './utils/setupLogging';
 import { getNumberOfEpochsConsolidated } from './utils/getNumberOfEpochsConsolidated';
 import { handleDiskSpace } from './utils/handleDiskSpace';
 import { createMainWindow } from './windows/main';

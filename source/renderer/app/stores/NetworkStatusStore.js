@@ -32,6 +32,7 @@ import type {
 } from '../../../common/types/cardano-node.types';
 import type { NodeInfoQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
+import type { LogStateSnapshotParams } from "../../../common/types/logging.types";
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
 import { openLocalDirectoryChannel } from '../ipc/open-local-directory';
 import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
@@ -122,6 +123,8 @@ export default class NetworkStatusStore extends Store {
 
     // Passively receive state changes of the cardano-node
     cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
+
+    setLogStateSnapshotChannel.onReceive(this._handleLogStateSnapshot);
 
     // ========== MOBX REACTIONS =========== //
 
@@ -305,6 +308,10 @@ export default class NetworkStatusStore extends Store {
       this.isNodeStopped = includes(NODE_STOPPED_STATES, state);
     });
     return Promise.resolve();
+  };
+
+  _handleLogStateSnapshot = () => {
+    this._logStateSnapshot();
   };
 
   _extractNodeStatus = (from: Object & CardanoStatus): CardanoStatus => {
@@ -627,42 +634,58 @@ export default class NetworkStatusStore extends Store {
   };
 
   @action _logStateSnapshot = () => {
-    const stateSnapshotData = {
+    const {
+      network,
+      buildNumber,
+      cpu,
+      current,
+      version,
+      mainProcessID,
+      rendererProcessID,
+      isInSafeMode,
+      isMainnet,
+      isStaging,
+      isTestnet,
+      os,
+      platformVersion,
+    } = this.environment;
+
+    const stateSnapshotData: LogStateSnapshotParams = {
       availableDiskSpace: this.diskSpaceAvailable,
       cardanoAPIPort: this.tlsConfig ? this.tlsConfig.port : 0,
-      cardanoNetwork: this.environment.network,
+      cardanoNetwork: network,
       cardanoNodeState: this.cardanoNodeState,
       cardanoProcessID: this.cardanoNodeID,
-      cardanoVersion: this.environment.buildNumber,
-      cpu: this.environment.cpu[0].model,
-      current: this.environment.current,
+      cardanoVersion: buildNumber,
+      cpu: Array.isArray(cpu) ? cpu[0].model : '',
+      current,
       currentLocale: this.stores.profile.currentLocale,
-      daedalusVersion: this.environment.version,
-      daedalusMainProcessID: this.environment.mainProcessID,
-      daedalusProcessID: this.environment.rendererProcessID,
+      daedalusVersion: version,
+      daedalusMainProcessID: mainProcessID,
+      daedalusProcessID: rendererProcessID,
       daedalusStateDirectoryPath: this.stateDirectoryPath,
       isConnected: this.isConnected,
       isDev: this.isConnected,
       isForceCheckingNodeTime: this.forceCheckTimeDifferenceRequest.isExecuting,
-      isInSafeMode: this.environment.isInSafeMode,
-      isMainnet: this.environment.isMainnet,
+      isInSafeMode,
+      isMainnet,
       isNodeInSync: this.isNodeInSync,
       isNodeResponding: this.isNodeResponding,
       isNodeSubscribed: this.isNodeSubscribed,
       isNodeSyncing: this.isNodeSyncing,
       isNodeTimeCorrect: this.isNodeTimeCorrect,
-      isStaging: this.environment.isStaging,
+      isStaging,
       isSynced: this.isSynced,
       isSystemTimeCorrect: this.isSystemTimeCorrect,
       isSystemTimeIgnored: this.isSystemTimeIgnored,
-      isTestnet: this.environment.isTestnet,
+      isTestnet,
       latestLocalBlockTimestamp: this.latestLocalBlockTimestamp,
       latestNetworkBlockTimestamp: this.latestNetworkBlockTimestamp,
       localBlockHeight: this.localBlockHeight,
       localTimeDifference: this.localTimeDifference,
       networkBlockHeight: this.networkBlockHeight,
-      platform: this.environment.os,
-      platformVersion: this.environment.platformVersion,
+      platform: os,
+      platformVersion,
       ram: this.convertBytesToSize(this.environment.ram),
       startTime: new Date().toISOString(),
       syncPercentage: this.syncPercentage,

@@ -1,4 +1,6 @@
 // @flow
+import type { CardanoNodeState } from './cardano-node.types';
+
 export type FormatMessageContextParams = {
   appName: string,
   electronProcess: string,
@@ -53,7 +55,7 @@ export type LogStateSnapshotParams = {
   availableDiskSpace: string,
   cardanoAPIPort: number,
   cardanoNetwork: string,
-  cardanoNodeState: string,
+  cardanoNodeState: CardanoNodeState | any,
   cardanoProcessID: number,
   cardanoVersion: string,
   cpu: string,

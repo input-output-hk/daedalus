@@ -102,10 +102,10 @@ export const logStateSnapshot = (props: LogStateSnapshotParams): MessageBody => 
     daedalusVersion,
     cardanoVersion,
     cardanoNetwork,
-    os,
+    platform,
     startTime: at,
   } = data;
-  const env = `${cardanoNetwork}:${os}:${cardanoVersion}:${daedalusVersion}`;
+  const env = `${cardanoNetwork}:${platform}:${cardanoVersion}:${daedalusVersion}`;
   const messageBodyParams: ConstructMessageBodyParams = {
     at,
     env,
