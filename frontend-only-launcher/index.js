@@ -1,6 +1,7 @@
 const fs = require('fs')
 const rimraf = require('./lib/rimraf')
 const createAndWriteX509 = require('./lib/x509')
+const { exec } = require('child_process')
 
 // Declare our state directory for logging and tls certs
 const stateDir = `${process.cwd()}/frontend-only-launcher/state`
@@ -25,13 +26,26 @@ createAndWriteX509(`${stateDir}/tls/client`)
 // Specific env vars 
 const cardanoTlsPath = `${stateDir}/tls`
 
-console.log(`
-  Start command:
+// Determine ngrok proxy
+exec('docker exec cardano-byron-docker_proxy_1 curl -s localhost:4040/api/tunnels', (err, stdout) => {
+  if (err) {
+    throw err
+  }
 
-  CARDANO_TLS_PATH=${cardanoTlsPath} \\
-  CARDANO_HOST=localhost \\
-  CARDANO_PORT=8088 \\
-  LAUNCHER_CONFIG=${process.cwd()}/frontend-only-launcher/launcher-config-base.yaml \\
-  STATE_DIR=${stateDir} \\
-  yarn dev
-`)
+  const data = JSON.parse(stdout)
+  const url = data.tunnels.find(el => el.proto === 'http').public_url
+    .split('http://')[1]
+
+  console.log(`
+    Start command:
+
+    CARDANO_TLS_PATH=${cardanoTlsPath} \\
+    CARDANO_HOST=${url} \\
+    CARDANO_PORT=80 \\
+    LAUNCHER_CONFIG=${process.cwd()}/frontend-only-launcher/launcher-config-base.yaml \\
+    STATE_DIR=${stateDir} \\
+    yarn dev
+  `)
+
+  process.exit()
+})

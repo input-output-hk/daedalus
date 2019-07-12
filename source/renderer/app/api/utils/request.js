@@ -66,7 +66,7 @@ function typedRequest<Response>(
     }
 
     // TODO: Delete once HTTPS is supported by the new API
-    const httpOnlyOptions = {
+    let httpOnlyOptions = {
       hostname: options.hostname,
       method: options.method,
       path: options.path,
