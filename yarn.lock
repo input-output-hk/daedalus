@@ -4672,9 +4672,9 @@ electron-localshortcut@^3.0.0:
     keyboardevent-from-electron-accelerator "^1.1.0"
     keyboardevents-areequal "^0.2.1"
 
-electron-log-daedalus@2.2.18:
-  version "2.2.18"
-  resolved "https://registry.yarnpkg.com/electron-log-daedalus/-/electron-log-daedalus-2.2.18.tgz#3d4202e5793417eaec53216af198b1313dccfd76"
+electron-log-daedalus@2.2.19:
+  version "2.2.19"
+  resolved "https://registry.yarnpkg.com/electron-log-daedalus/-/electron-log-daedalus-2.2.19.tgz#194209004f56763d24b1af6c13273c8a0db11c16"
 
 electron-notarize@^0.0.5:
   version "0.0.5"
