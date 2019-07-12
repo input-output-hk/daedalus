@@ -68,7 +68,6 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       latestLocalBlockTimestamp,
       latestNetworkBlockTimestamp,
       isSystemTimeIgnored,
-      isSystemTimeInTolerationMode,
       environment,
       diskSpaceAvailable,
       tlsConfig,
@@ -126,7 +125,6 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
           isSystemTimeCorrect={isSystemTimeCorrect}
           isForceCheckingNodeTime={forceCheckTimeDifferenceRequest.isExecuting}
           isSystemTimeIgnored={isSystemTimeIgnored}
-          isSystemTimeInTolerationMode={isSystemTimeInTolerationMode}
           latestLocalBlockTimestamp={latestLocalBlockTimestamp}
           latestNetworkBlockTimestamp={latestNetworkBlockTimestamp}
           nodeConnectionError={

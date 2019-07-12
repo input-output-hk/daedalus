@@ -178,11 +178,6 @@ const messages = defineMessages({
     defaultMessage: '!!!System Time Ignored',
     description: 'System Time Ignored',
   },
-  systemTimeInTolerationMode: {
-    id: 'daedalus.diagnostics.dialog.systemTimeInTolerationMode',
-    defaultMessage: '!!!System Time in Toleration Mode',
-    description: 'System Time in Toleration Mode',
-  },
   checkingNodeTime: {
     id: 'daedalus.diagnostics.dialog.checkingNodeTime',
     defaultMessage: '!!!Checking Node Time',
@@ -339,7 +334,6 @@ type Props = {
   syncPercentage: number,
   localTimeDifference: ?number,
   isSystemTimeIgnored: boolean,
-  isSystemTimeInTolerationMode: boolean,
   isSystemTimeCorrect: boolean,
   isForceCheckingNodeTime: boolean,
   latestLocalBlockTimestamp: number,
@@ -488,7 +482,6 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       onCopyStateDirectoryPath,
       nodeConnectionError,
       isSystemTimeIgnored,
-      isSystemTimeInTolerationMode,
       onOpenExternalLink,
       isDev,
       isTestnet,
@@ -789,18 +782,6 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 <th>{intl.formatMessage(messages.systemTimeIgnored)}:</th>
                 <td className={this.getClassName(!isSystemTimeIgnored)}>
                   {isSystemTimeIgnored
-                    ? intl.formatMessage(messages.statusOn)
-                    : intl.formatMessage(messages.statusOff)}
-                </td>
-              </tr>
-              <tr>
-                <th>
-                  {intl.formatMessage(messages.systemTimeInTolerationMode)}:
-                </th>
-                <td
-                  className={this.getClassName(!isSystemTimeInTolerationMode)}
-                >
-                  {isSystemTimeInTolerationMode
                     ? intl.formatMessage(messages.statusOn)
                     : intl.formatMessage(messages.statusOff)}
                 </td>

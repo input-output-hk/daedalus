@@ -10,11 +10,11 @@ import {
   NETWORK_STATUS_REQUEST_TIMEOUT,
   NETWORK_STATUS_POLL_INTERVAL,
   NTP_IGNORE_CHECKS_GRACE_PERIOD,
-  NTP_TOLERATION_CHECKS_INTERVAL,
+  NTP_RECHECKS_INTERVAL,
 } from '../config/timingConfig';
 import {
   UNSYNCED_BLOCKS_ALLOWED,
-  MAX_NTP_TOLERATION_CHECKS,
+  MAX_NTP_RECHECKS,
 } from '../config/numbersConfig';
 import { Logger } from '../utils/logging';
 import {
@@ -84,8 +84,8 @@ export default class NetworkStatusStore extends Store {
   // NTP
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
-  @observable isSystemTimeInTolerationMode = false; // Is 'true' in case `isNodeTimeCorrect === true` and `numberOfNTPTolerationChecks < MAX_NTP_TOLERATION_CHECKS`
-  @observable numberOfNTPTolerationChecks = 0; // Is 'true' in case local and global time are in sync
+  @observable isRecheckingSystemTime = false; // Is 'true' in case NTP time is being rechecked
+  @observable numberOfNTPRechecks = 0; // Is 'true' in case local and global time are in sync
 
   @observable hasBeenConnected = false;
   @observable syncProgress = null;
@@ -413,17 +413,17 @@ export default class NetworkStatusStore extends Store {
           if (
             !isNodeTimeCorrect &&
             this.isNodeTimeCorrect &&
-            this.numberOfNTPTolerationChecks < MAX_NTP_TOLERATION_CHECKS
+            this.numberOfNTPRechecks < MAX_NTP_RECHECKS
           ) {
-            this.numberOfNTPTolerationChecks++;
-            this.isSystemTimeInTolerationMode = true;
+            this.numberOfNTPRechecks++;
+            this.isRecheckingSystemTime = true;
             setTimeout(
               this.forceCheckLocalTimeDifference,
-              NTP_TOLERATION_CHECKS_INTERVAL
+              NTP_RECHECKS_INTERVAL
             );
           } else {
-            this.numberOfNTPTolerationChecks = 0;
-            this.isSystemTimeInTolerationMode = false;
+            this.numberOfNTPRechecks = 0;
+            this.isRecheckingSystemTime = false;
             this.isNodeTimeCorrect = isNodeTimeCorrect;
           }
         }
