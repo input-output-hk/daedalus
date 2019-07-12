@@ -12,18 +12,18 @@ const messages = defineMessages({
   headLine: {
     id: 'staking.delegationCenter.noWallets.headLine',
     defaultMessage:
-      "!!!Delegation center is not available because you don't have any wallets.",
+      "!!!The Delegation Center is not available because you don't have any wallets.",
     description: '"No wallets" headLine on the Delegation centre Page.',
   },
   instructions: {
     id: 'staking.delegationCenter.noWallets.instructions',
     defaultMessage:
-      '!!!Create a new wallet (or restore an existing one), and come back here to delegate your stake.',
+      '!!!Create a new wallet (or restore an existing one) then come back here to delegate your stake.',
     description: '"No wallets" instructions on the Delegation centre Page.',
   },
   createWalletButtonLabel: {
     id: 'staking.delegationCenter.noWallets.createWalletButtonLabel',
-    defaultMessage: '!!!Create your first wallet',
+    defaultMessage: '!!!Create wallet',
     description:
       'Label for "Create New Wallet" button on the Delegation centre Page.',
   },

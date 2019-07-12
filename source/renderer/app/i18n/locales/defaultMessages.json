@@ -1928,7 +1928,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Delegation center is not available because you don't have any wallets.",
+        "defaultMessage": "!!!The Delegation Center is not available because you don't have any wallets.",
         "description": "\"No wallets\" headLine on the Delegation centre Page.",
         "end": {
           "column": 3,
@@ -1942,7 +1942,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Create a new wallet (or restore an existing one), and come back here to delegate your stake.",
+        "defaultMessage": "!!!Create a new wallet (or restore an existing one) then come back here to delegate your stake.",
         "description": "\"No wallets\" instructions on the Delegation centre Page.",
         "end": {
           "column": 3,
@@ -1956,7 +1956,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Create your first wallet",
+        "defaultMessage": "!!!Create wallet",
         "description": "Label for \"Create New Wallet\" button on the Delegation centre Page.",
         "end": {
           "column": 3,
