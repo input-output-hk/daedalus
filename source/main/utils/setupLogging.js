@@ -96,7 +96,9 @@ export const logSystemInfo = (props: LogSystemInfoParams): MessageBody => {
   return messageBody;
 };
 
-export const logStateSnapshot = (props: LogStateSnapshotParams): MessageBody => {
+export const logStateSnapshot = (
+  props: LogStateSnapshotParams
+): MessageBody => {
   const { current, ...data } = props;
   const {
     daedalusVersion,
@@ -117,7 +119,10 @@ export const logStateSnapshot = (props: LogStateSnapshotParams): MessageBody => 
     thread: '',
   };
   const messageBody: MessageBody = constructMessageBody(messageBodyParams);
-  const stateSnapshotFilePath = path.join(pubLogsFolderPath, 'State-snapshot.json');
+  const stateSnapshotFilePath = path.join(
+    pubLogsFolderPath,
+    'State-snapshot.json'
+  );
   fs.writeFileSync(stateSnapshotFilePath, JSON.stringify(messageBody));
   return messageBody;
 };

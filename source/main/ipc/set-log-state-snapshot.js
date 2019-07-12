@@ -9,6 +9,6 @@ import type {
 // IpcChannel<Incoming, Outgoing>
 
 export const setLogStateSnapshotChannel: MainIpcChannel<
-  SetLogStateSnapshotRendererRequest,
-  SetLogStateSnapshotMainResponse
+  SetLogStateSnapshotMainResponse,
+  SetLogStateSnapshotRendererRequest
 > = new MainIpcChannel(SET_LOG_STATE_SNAPSHOT_CHANNEL);

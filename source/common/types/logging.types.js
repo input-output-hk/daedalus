@@ -90,4 +90,4 @@ export type LogStateSnapshotParams = {
   ram: string,
   startTime: string,
   syncPercentage: number,
-}
+};

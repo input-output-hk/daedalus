@@ -32,7 +32,7 @@ import type {
 } from '../../../common/types/cardano-node.types';
 import type { NodeInfoQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
-import type { LogStateSnapshotParams } from "../../../common/types/logging.types";
+import type { LogStateSnapshotParams } from '../../../common/types/logging.types';
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
 import { openLocalDirectoryChannel } from '../ipc/open-local-directory';
 import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
@@ -310,8 +310,9 @@ export default class NetworkStatusStore extends Store {
     return Promise.resolve();
   };
 
-  _handleLogStateSnapshot = () => {
+  _handleLogStateSnapshot = (): Promise<void> => {
     this._logStateSnapshot();
+    return Promise.resolve();
   };
 
   _extractNodeStatus = (from: Object & CardanoStatus): CardanoStatus => {
