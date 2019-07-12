@@ -76,7 +76,8 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
   };
 
   handleDownloadLogs = () => {
-    const { app } = this.props.actions;
+    const { app, networkStatus } = this.props.actions;
+    networkStatus.logStateSnapshot.trigger();
     app.downloadLogs.trigger();
     app.setNotificationVisibility.trigger(true);
   };

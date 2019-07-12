@@ -23,6 +23,7 @@ import {
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
 import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
+import { getLogStateSnapshotChannel } from '../ipc/getLogStateSnapshotChannel';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
 import type {
   CardanoNodeState,
@@ -145,6 +146,8 @@ export default class NetworkStatusStore extends Store {
     this._checkDiskSpace();
 
     this._getStateDirectoryPath();
+
+    this.actions.networkStatus.logStateSnapshot.listen(this._logStateSnapshot);
   }
 
   // Setup network status polling interval
@@ -610,6 +613,10 @@ export default class NetworkStatusStore extends Store {
 
   @action _onReceiveStateDirectoryPath = (stateDirectoryPath: string) => {
     this.stateDirectoryPath = stateDirectoryPath;
+  };
+
+  @action _logStateSnapshot = () => {
+    getLogStateSnapshotChannel.send();
   };
 
   // DEFINE COMPUTED VALUES

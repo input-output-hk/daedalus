@@ -78,6 +78,13 @@ export type GetStateDirectoryPathRendererRequest = string | any;
 export type GetStateDirectoryPathMainResponse = any;
 
 /**
+ * Channel for getting log state snapshot
+ */
+export const GET_LOG_STATE_SNAPSHOT_CHANNEL = 'GetLogStateSnapshotChannel';
+export type GetLogStateSnapshotRendererRequest = any;
+export type GetLogStateSnapshotMainResponse = any;
+
+/**
  * Channel for loading a base64 encoded asset from within the `source/renderer` folder
  */
 export const LOAD_ASSET_CHANNEL = 'LoadAssetChannel';
