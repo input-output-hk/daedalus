@@ -7685,6 +7685,11 @@ node-fetch@^2.2.0:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.0.tgz#e633456386d4aa55863f676a7ab0daa8fdecb0fd"
 
+node-forge@^0.8.5:
+  version "0.8.5"
+  resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-0.8.5.tgz#57906f07614dc72762c84cef442f427c0e1b86ee"
+  integrity sha512-vFMQIWt+J/7FLNyKouZ9TazT74PRV3wgv9UT4cRjC8BffxFbKXkgIWR42URCPSnHm/QDz6BOlb2Q0U4+VQT67Q==
+
 node-gyp-build@~3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/node-gyp-build/-/node-gyp-build-3.4.0.tgz#f8f62507e65f152488b28aac25d04b9d79748cf7"
@@ -9171,13 +9176,13 @@ react-number-format@3.0.3:
 react-polymorph@0.8.7:
   version "0.8.7"
   resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.8.7.tgz#1f31c509006736bf1334ed2fa2386b4c74f19e3b"
+  integrity sha512-0/JwkTb3btzFdnUY9mOJzFKEGIuzGCxQPW2TIOyqpeIvON73G36111ykxq3S2Sx+l37SRF90J5ClFYbZi0nP+g==
   dependencies:
     create-react-context "0.2.2"
     create-react-ref "0.1.0"
     filter-react-dom-props "0.0.2"
     postinstall-build "5.0.1"
     react-modal "3.1.12"
-  integrity sha512-0/JwkTb3btzFdnUY9mOJzFKEGIuzGCxQPW2TIOyqpeIvON73G36111ykxq3S2Sx+l37SRF90J5ClFYbZi0nP+g==
 
 react-resize-detector@~2.3.0:
   version "2.3.0"
@@ -11949,6 +11954,11 @@ yargs@^7.0.0, yargs@^7.0.2, yargs@^7.1.0:
     which-module "^1.0.0"
     y18n "^3.2.1"
     yargs-parser "^5.0.0"
+
+yarn@^1.16.0:
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.16.0.tgz#5701b58ac555ff91f7b889b7d791b3dc86f8f999"
+  integrity sha512-cfemyGlnWKA1zopUUgebTPf8C4WkPIZ+TJmklwcEAJ4u6oWPtJeAzrsamaGGh/+b1XWe8W51yzAImC4AWbWR1g==
 
 yauzl@2.4.1:
   version "2.4.1"

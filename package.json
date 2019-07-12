@@ -30,7 +30,8 @@
     "storybook:build": "build-storybook -c storybook -o dist/storybook",
     "clear:cache": "gulp clear:cache",
     "nix:dev": "nix-shell --arg autoStartBackend true --arg allowFaultInjection true --arg systemStart",
-    "nix:staging": "nix-shell --arg autoStartBackend true --argstr cluster staging"
+    "nix:staging": "nix-shell --arg autoStartBackend true --argstr cluster staging",
+    "frontend": "node frontend-only-launcher/index.js"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -97,6 +98,7 @@
     "mini-css-extract-plugin": "0.5.0",
     "minimist": "1.2.0",
     "mobx-react-devtools": "6.0.3",
+    "node-forge": "^0.8.5",
     "node-libs-browser": "2.1.0",
     "node-sass": "4.11.0",
     "nodemon": "1.18.9",
