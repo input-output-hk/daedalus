@@ -6,7 +6,11 @@ import { findMissingDefinitions, findMissingCSSVars } from './checkCreateTheme';
 import { CARDANO_THEME_CONFIG } from '../daedalus/cardano';
 import { DARK_BLUE_THEME_CONFIG } from '../daedalus/dark-blue';
 import { LIGHT_BLUE_THEME_CONFIG } from '../daedalus/light-blue';
-import type { DaedalusThemesUpdates, LogDifferencesParams } from '../types';
+import type {
+  DaedalusThemesUpdates,
+  FindUpdatesParams,
+  LogDifferencesParams,
+} from '../types';
 
 const logDifferences = ({
   color,
@@ -23,19 +27,23 @@ const logDifferences = ({
 };
 
 // Checks for properties/CSS vars on createThemeObj that don't exist on existing themes
-export const checkExistingThemes = (createThemeObj: Object): Object => {
+export const findUpdates = (
+  createThemeOutputs: FindUpdatesParams
+): null | Object => {
+  const { cardano, darkBlue, lightBlue } = createThemeOutputs;
   const daedalusThemesUpdates = {};
+
   const cardanoDefsToAdd = {
-    ...findMissingDefinitions(createThemeObj, CARDANO_THEME_CONFIG),
-    ...findMissingCSSVars(createThemeObj, CARDANO_THEME_CONFIG),
+    ...findMissingDefinitions(cardano, CARDANO_THEME_CONFIG),
+    ...findMissingCSSVars(cardano, CARDANO_THEME_CONFIG),
   };
   const darkBlueDefsToAdd = {
-    ...findMissingDefinitions(createThemeObj, DARK_BLUE_THEME_CONFIG),
-    ...findMissingCSSVars(createThemeObj, DARK_BLUE_THEME_CONFIG),
+    ...findMissingDefinitions(darkBlue, DARK_BLUE_THEME_CONFIG),
+    ...findMissingCSSVars(darkBlue, DARK_BLUE_THEME_CONFIG),
   };
   const lightBlueDefsToAdd = {
-    ...findMissingDefinitions(createThemeObj, LIGHT_BLUE_THEME_CONFIG),
-    ...findMissingCSSVars(createThemeObj, LIGHT_BLUE_THEME_CONFIG),
+    ...findMissingDefinitions(lightBlue, LIGHT_BLUE_THEME_CONFIG),
+    ...findMissingCSSVars(lightBlue, LIGHT_BLUE_THEME_CONFIG),
   };
 
   if (!isEmpty(cardanoDefsToAdd)) {
@@ -77,6 +85,7 @@ export const checkExistingThemes = (createThemeObj: Object): Object => {
         )}`
       )
     );
+    return null;
   }
   return daedalusThemesUpdates;
 };
@@ -115,12 +124,13 @@ export const updateThemes = (daedalusThemesUpdates: DaedalusThemesUpdates) => {
     darkBlueUpdates,
     lightBlueUpdates,
   } = daedalusThemesUpdates;
-
+  const updatedThemes = {};
   if (cardanoUpdates && !isEmpty(cardanoUpdates)) {
     const updatedCardanoTheme = updateTheme(
       CARDANO_THEME_CONFIG,
       cardanoUpdates
     );
+    updateThemes['cardano'] = updatedCardanoTheme;
 
     // write updatedCardanoTheme theme object to cardano.js
     // $FlowFixMe
@@ -134,6 +144,7 @@ export const updateThemes = (daedalusThemesUpdates: DaedalusThemesUpdates) => {
       DARK_BLUE_THEME_CONFIG,
       darkBlueUpdates
     );
+    updateThemes['dark-blue'] = updatedDarkBlueTheme;
 
     // write updatedDarkBlueTheme theme object to dark-blue.js
     // $FlowFixMe
@@ -147,6 +158,7 @@ export const updateThemes = (daedalusThemesUpdates: DaedalusThemesUpdates) => {
       LIGHT_BLUE_THEME_CONFIG,
       lightBlueUpdates
     );
+    updateThemes['light-blue'] = updatedLightBlueTheme;
 
     // write updatedLightBlueTheme theme object to light-blue.js
     // $FlowFixMe
@@ -158,4 +170,5 @@ export const updateThemes = (daedalusThemesUpdates: DaedalusThemesUpdates) => {
     //   )}`
     // );
   }
+  return updateThemes;
 };

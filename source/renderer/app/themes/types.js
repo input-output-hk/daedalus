@@ -28,6 +28,12 @@ export type ColorParams = {
   },
 };
 
+export type FindUpdatesParams = {
+  cardano: Object,
+  darkBlue: Object,
+  lightBlue: Object,
+};
+
 export type LogDifferencesParams = {
   color: string,
   missingDefs: Object,

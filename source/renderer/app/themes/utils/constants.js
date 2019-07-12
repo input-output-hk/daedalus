@@ -1,5 +1,9 @@
 // @flow
 import { createBackgroundShades, createErrorShades } from './createShades';
+import {
+  createReactPolymorphTheme,
+  createDaedalusComponentsTheme,
+} from './createTheme';
 
 export const DEFAULT_FONTS = {
   black: 'NotoSans-Black, NotoSansCJKjp-Black',
@@ -29,4 +33,9 @@ export const CREATE_THEME_MOCK_PARAMS = {
     },
   },
   fonts: DEFAULT_FONTS,
+};
+
+export const CREATE_THEME_OBJ = {
+  ...createReactPolymorphTheme(CREATE_THEME_MOCK_PARAMS),
+  ...createDaedalusComponentsTheme(CREATE_THEME_MOCK_PARAMS),
 };
