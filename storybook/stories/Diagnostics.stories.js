@@ -57,7 +57,6 @@ storiesOf('Diagnostics', module)
       isSystemTimeCorrect
       isForceCheckingNodeTime={false}
       isSystemTimeIgnored={false}
-      isSystemTimeInTolerationMode={false}
       latestLocalBlockTimestamp={280719}
       latestNetworkBlockTimestamp={280719}
       nodeConnectionError={null}
