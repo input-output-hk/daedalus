@@ -11,6 +11,7 @@ import {
   hasDataExisting,
   sortData,
 } from './helpers.js';
+import type { EpochData } from '../../../api/staking/types';
 import styles from './StakingEpochs.scss';
 import globalMessages from '../../../i18n/global-messages';
 
@@ -48,7 +49,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  previousEpochData: any,
+  previousEpochData: EpochData,
   isLoading: boolean,
 };
 
@@ -117,8 +118,8 @@ export default class StakingEpochsPreviousEpochData extends Component<
     const tableBody = (
       <tbody>
         {map(sortedData, (row, key) => {
-          const poolCategory = get(row, ['pool', 'category'], '');
-          const poolTitle = get(row, ['pool', 'title'], '');
+          const poolSlug = get(row, ['pool', 'slug'], '');
+          const poolName = get(row, ['pool', 'name'], '');
           const slotsElected = get(row, 'slotsElected', [0, 0]);
           const performance = get(row, 'performance', [0, 0, 0]);
           const sharedRewards = get(row, 'sharedRewards', [0, 0]);
@@ -128,9 +129,9 @@ export default class StakingEpochsPreviousEpochData extends Component<
               <td>
                 <p>
                   <span className={styles.stakePoolReference}>
-                    [{poolCategory}]
+                    [{poolSlug}]
                   </span>{' '}
-                  {poolTitle}
+                  {poolName}
                 </p>
               </td>
               <td>

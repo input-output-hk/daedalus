@@ -28,6 +28,7 @@ type Props = {
   onContinue: Function,
   onLearnMoreClick: Function,
   onSelectWallet: Function,
+  onSelectPool: Function,
   stepsList: Array<string>,
   wallets: Array<DelegationWalletData>,
   minDelegationFunds: number,
@@ -36,6 +37,7 @@ type Props = {
   onOpenExternalLink: Function,
   currentTheme: string,
   selectedWallet: ?DelegationWalletData,
+  selectedPool: ?StakePool,
 };
 
 @observer
@@ -51,6 +53,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       onContinue,
       onLearnMoreClick,
       onSelectWallet,
+      onSelectPool,
       stepsList,
       wallets,
       minDelegationFunds,
@@ -59,6 +62,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       onOpenExternalLink,
       currentTheme,
       selectedWallet,
+      selectedPool,
     } = this.props;
 
     const selectedWalletHasPassword = get(selectedWallet, 'hasPassword', false);
@@ -95,9 +99,10 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             stakePoolsList={stakePoolsList}
             onOpenExternalLink={onOpenExternalLink}
             currentTheme={currentTheme}
+            selectedPool={selectedPool}
             onClose={onClose}
-            onContinue={onContinue}
             onBack={onBack}
+            onSelectPool={onSelectPool}
           />
         );
         break;
