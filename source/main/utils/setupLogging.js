@@ -104,6 +104,10 @@ export const logStateSnapshot = (
   const { platform } = systemInfo;
   const { daedalusVersion, cardanoVersion, cardanoNetwork } = coreInfo;
   const env = `${cardanoNetwork}:${platform}:${cardanoVersion}:${daedalusVersion}`;
+  Object.entries(data).map(([key, val]: [string, any]) => {
+    if (!val) delete data[key];
+    return val;
+  });
   const messageBodyParams: ConstructMessageBodyParams = {
     at,
     env,
