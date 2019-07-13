@@ -99,14 +99,10 @@ export const logSystemInfo = (props: LogSystemInfoParams): MessageBody => {
 export const logStateSnapshot = (
   props: LogStateSnapshotParams
 ): MessageBody => {
-  const { current, systemInfo, coreInfo,  ...data } = props;
+  const { current, systemInfo, coreInfo, ...data } = props;
   const { startTime: at } = data;
   const { platform } = systemInfo;
-  const {
-    daedalusVersion,
-    cardanoVersion,
-    cardanoNetwork,
-  } = coreInfo;
+  const { daedalusVersion, cardanoVersion, cardanoNetwork } = coreInfo;
   const env = `${cardanoNetwork}:${platform}:${cardanoVersion}:${daedalusVersion}`;
   const messageBodyParams: ConstructMessageBodyParams = {
     at,

@@ -598,90 +598,97 @@ export default class NetworkStatusStore extends Store {
 
   // Collect all relevant state snapshot params and send them for log file creation
   _logStateSnapshot = async () => {
-      try {
-        Logger.info('NetworkStatusStore: Requesting state snapshot log file creation');
+    try {
+      Logger.info(
+        'NetworkStatusStore: Requesting state snapshot log file creation'
+      );
 
-        const {
-          network,
-          buildNumber,
-          cpu,
-          current,
-          version,
-          mainProcessID,
-          rendererProcessID,
-          isInSafeMode,
-          isMainnet,
-          isStaging,
-          isTestnet,
-          os,
-          platformVersion,
-          ram,
-        } = this.environment;
+      const {
+        network,
+        buildNumber,
+        cpu,
+        current,
+        version,
+        mainProcessID,
+        rendererProcessID,
+        isInSafeMode,
+        isMainnet,
+        isStaging,
+        isTestnet,
+        os,
+        platformVersion,
+        ram,
+      } = this.environment;
 
-        const systemInfo = {
-          platform: os,
-          platformVersion,
-          cpu: Array.isArray(cpu) ? cpu[0].model : '',
-          ram: formattedBytesToSize(ram),
-          availableDiskSpace: this.diskSpaceAvailable,
-        };
+      const systemInfo = {
+        platform: os,
+        platformVersion,
+        cpu: Array.isArray(cpu) ? cpu[0].model : '',
+        ram: formattedBytesToSize(ram),
+        availableDiskSpace: this.diskSpaceAvailable,
+      };
 
-        const coreInfo = {
-          daedalusVersion: version,
-          daedalusProcessID: rendererProcessID,
-          daedalusMainProcessID: mainProcessID,
-          isInSafeMode,
-          cardanoVersion: buildNumber,
-          cardanoProcessID: this.cardanoNodeID,
-          cardanoAPIPort: this.tlsConfig ? this.tlsConfig.port : 0,
-          cardanoNetwork: network,
-          daedalusStateDirectoryPath: this.stateDirectoryPath,
-        };
+      const coreInfo = {
+        daedalusVersion: version,
+        daedalusProcessID: rendererProcessID,
+        daedalusMainProcessID: mainProcessID,
+        isInSafeMode,
+        cardanoVersion: buildNumber,
+        cardanoProcessID: this.cardanoNodeID,
+        cardanoAPIPort: this.tlsConfig ? this.tlsConfig.port : 0,
+        cardanoNetwork: network,
+        daedalusStateDirectoryPath: this.stateDirectoryPath,
+      };
 
-        const stateSnapshotData: LogStateSnapshotParams = {
-          systemInfo,
-          coreInfo,
-          cardanoNodeState: this.cardanoNodeState,
-          current,
-          currentLocale: this.stores.profile.currentLocale,
-          isConnected: this.isConnected,
-          isDev: this.isConnected,
-          isForceCheckingNodeTime: this.forceCheckTimeDifferenceRequest.isExecuting,
-          isMainnet,
-          isNodeInSync: this.isNodeInSync,
-          isNodeResponding: this.isNodeResponding,
-          isNodeSubscribed: this.isNodeSubscribed,
-          isNodeSyncing: this.isNodeSyncing,
-          isNodeTimeCorrect: this.isNodeTimeCorrect,
-          isStaging,
-          isSynced: this.isSynced,
-          isSystemTimeCorrect: this.isSystemTimeCorrect,
-          isSystemTimeIgnored: this.isSystemTimeIgnored,
-          isTestnet,
-          latestLocalBlockTimestamp: this.latestLocalBlockTimestamp,
-          latestNetworkBlockTimestamp: this.latestNetworkBlockTimestamp,
-          localBlockHeight: this.localBlockHeight,
-          localTimeDifference: this.localTimeDifference,
-          networkBlockHeight: this.networkBlockHeight,
-          startTime: new Date().toISOString(),
-          syncPercentage: this.syncPercentage
-        };
+      const stateSnapshotData: LogStateSnapshotParams = {
+        systemInfo,
+        coreInfo,
+        cardanoNodeState: this.cardanoNodeState,
+        current,
+        currentLocale: this.stores.profile.currentLocale,
+        isConnected: this.isConnected,
+        isDev: this.isConnected,
+        isForceCheckingNodeTime: this.forceCheckTimeDifferenceRequest
+          .isExecuting,
+        isMainnet,
+        isNodeInSync: this.isNodeInSync,
+        isNodeResponding: this.isNodeResponding,
+        isNodeSubscribed: this.isNodeSubscribed,
+        isNodeSyncing: this.isNodeSyncing,
+        isNodeTimeCorrect: this.isNodeTimeCorrect,
+        isStaging,
+        isSynced: this.isSynced,
+        isSystemTimeCorrect: this.isSystemTimeCorrect,
+        isSystemTimeIgnored: this.isSystemTimeIgnored,
+        isTestnet,
+        latestLocalBlockTimestamp: this.latestLocalBlockTimestamp,
+        latestNetworkBlockTimestamp: this.latestNetworkBlockTimestamp,
+        localBlockHeight: this.localBlockHeight,
+        localTimeDifference: this.localTimeDifference,
+        networkBlockHeight: this.networkBlockHeight,
+        startTime: new Date().toISOString(),
+        syncPercentage: this.syncPercentage,
+        onRestartNode: null,
+      };
 
-        await setLogStateSnapshotChannel.send(stateSnapshotData);
-      } catch (error) {
-        Logger.error('NetworkStatusStore: State snapshot log file creation failed', {
+      await setLogStateSnapshotChannel.send(stateSnapshotData);
+    } catch (error) {
+      Logger.error(
+        'NetworkStatusStore: State snapshot log file creation failed',
+        {
           error,
-        });
-      }
+        }
+      );
+    }
   };
 
   @action _onCheckDiskSpace = ({
-                                 isNotEnoughDiskSpace,
-                                 diskSpaceRequired,
-                                 diskSpaceMissing,
-                                 diskSpaceRecommended,
-                                 diskSpaceAvailable,
-                               }: CheckDiskSpaceResponse): Promise<void> => {
+    isNotEnoughDiskSpace,
+    diskSpaceRequired,
+    diskSpaceMissing,
+    diskSpaceRecommended,
+    diskSpaceAvailable,
+  }: CheckDiskSpaceResponse): Promise<void> => {
     this.isNotEnoughDiskSpace = isNotEnoughDiskSpace;
     this.diskSpaceRequired = diskSpaceRequired;
     this.diskSpaceMissing = diskSpaceMissing;
