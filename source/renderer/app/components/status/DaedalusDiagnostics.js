@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { get, includes, upperFirst, capitalize } from 'lodash';
+import {get, includes, upperFirst, capitalize, isEmpty} from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import classNames from 'classnames';
@@ -24,6 +24,7 @@ import styles from './DaedalusDiagnostics.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
 import type { SystemInfo } from '../../types/systemInfoTypes';
 import type { CoreSystemInfo } from '../../types/coreSystemInfoTypes';
+import Action from "../../actions/lib/Action";
 
 let syncingInterval = null;
 
@@ -315,7 +316,7 @@ const messages = defineMessages({
   },
 });
 
-type Props = {
+export type DaedalusDiagnosticsProps = {
   systemInfo: SystemInfo,
   coreInfo: CoreSystemInfo,
   cardanoNodeState: ?CardanoNodeState,
@@ -328,7 +329,7 @@ type Props = {
   isNodeSyncing: boolean,
   isNodeInSync: boolean,
   isNodeTimeCorrect: boolean,
-  nodeConnectionError: ?LocalizableError,
+  nodeConnectionError?: ?LocalizableError,
   isConnected: boolean,
   isSynced: boolean,
   syncPercentage: number,
@@ -341,12 +342,12 @@ type Props = {
   localBlockHeight: number,
   networkBlockHeight: number,
   currentLocale: string,
-  onForceCheckLocalTimeDifference: Function,
-  onOpenStateDirectory: Function,
-  onOpenExternalLink: Function,
-  onRestartNode: Function,
-  onClose: Function,
-  onCopyStateDirectoryPath: Function,
+  onForceCheckLocalTimeDifference?: Function,
+  onOpenStateDirectory?: Function,
+  onOpenExternalLink?: Function,
+  onRestartNode?: Function,
+  onClose?: Function,
+  onCopyStateDirectoryPath?: Function,
 };
 
 type State = {
@@ -359,12 +360,12 @@ type State = {
 };
 
 @observer
-export default class DaedalusDiagnostics extends Component<Props, State> {
+export default class DaedalusDiagnostics extends Component<DaedalusDiagnosticsProps, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
-  constructor(props: Props) {
+  constructor(props: DaedalusDiagnosticsProps) {
     super(props);
     let { localBlockHeight, networkBlockHeight } = props;
     localBlockHeight = localBlockHeight || null;
@@ -430,7 +431,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     syncingInterval = setInterval(this.syncingTimer, 2000);
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: DaedalusDiagnosticsProps) {
     const { cardanoNodeState } = this.props;
     const { cardanoNodeState: nextCardanoNodeState } = nextProps;
     const { isNodeRestarting } = this.state;
@@ -648,8 +649,11 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 <td className={styles.stateDirectory}>
                   <button
                     className={styles.stateDirectoryOpenBtn}
-                    onClick={() =>
-                      onOpenStateDirectory(daedalusStateDirectoryPath)
+                    onClick={() => {
+                      if (onOpenStateDirectory) {
+                        onOpenStateDirectory(daedalusStateDirectoryPath)
+                      }
+                    }
                     }
                   >
                     {intl.formatMessage(messages.stateDirectoryPathOpenBtn)}
@@ -819,7 +823,11 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                   <td>
                     <button
                       className={styles.realTimeStatusBtn}
-                      onClick={() => onOpenExternalLink(cardanoNodeEkgLink)}
+                      onClick={() => {
+                        if (onOpenExternalLink) {
+                          onOpenExternalLink(cardanoNodeEkgLink)
+                        }
+                      }}
                     >
                       {intl.formatMessage(messages.realtimeStatisticsMonitor)}
                       <SVGInline
@@ -886,7 +894,11 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
           </table>
         </div>
 
-        <button className={styles.closeButton} onClick={() => onClose()}>
+        <button className={styles.closeButton} onClick={() => {
+          if (onClose) {
+            onClose()
+          }
+        }}>
           <SVGInline svg={closeCross} />
         </button>
       </div>
@@ -939,14 +951,18 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
   };
 
   checkTime = () => {
-    this.props.onForceCheckLocalTimeDifference();
-    this.restoreDialogCloseOnEscKey();
+    if (this.props.onForceCheckLocalTimeDifference) {
+      this.props.onForceCheckLocalTimeDifference();
+      this.restoreDialogCloseOnEscKey();
+    }
   };
 
   restartNode = () => {
+    if (this.props.onRestartNode && this.props.onRestartNode.trigger) {
     this.setState({ isNodeRestarting: true });
     this.props.onRestartNode.trigger();
     this.restoreDialogCloseOnEscKey();
+    }
   };
 
   getClass = (isTrue: boolean) =>

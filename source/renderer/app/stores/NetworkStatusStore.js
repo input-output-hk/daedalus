@@ -36,6 +36,7 @@ import type { LogStateSnapshotParams } from '../../../common/types/logging.types
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
 import { openLocalDirectoryChannel } from '../ipc/open-local-directory';
 import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
+import { formattedBytesToSize } from '../utils/formatters';
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
@@ -110,6 +111,7 @@ export default class NetworkStatusStore extends Store {
     // ========== IPC CHANNELS =========== //
 
     this.actions.networkStatus.restartNode.listen(this._restartNode);
+    this.actions.networkStatus.logStateSnapshot.listen(this._logStateSnapshot);
 
     // Request node state
     this._requestCardanoState();
@@ -124,6 +126,7 @@ export default class NetworkStatusStore extends Store {
     // Passively receive state changes of the cardano-node
     cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
 
+    // Passively receive broadcasted request to create state snapshot log file
     setLogStateSnapshotChannel.onReceive(this._handleLogStateSnapshot);
 
     // ========== MOBX REACTIONS =========== //
@@ -149,8 +152,6 @@ export default class NetworkStatusStore extends Store {
     this._checkDiskSpace();
 
     this._getStateDirectoryPath();
-
-    this.actions.networkStatus.logStateSnapshot.listen(this._logStateSnapshot);
   }
 
   // Setup network status polling interval
@@ -310,6 +311,7 @@ export default class NetworkStatusStore extends Store {
     return Promise.resolve();
   };
 
+  // Receive info from main process to start creation of state snapshot log file
   _handleLogStateSnapshot = (): Promise<void> => {
     this._logStateSnapshot();
     return Promise.resolve();
@@ -594,24 +596,92 @@ export default class NetworkStatusStore extends Store {
     openLocalDirectoryChannel.send(path);
   }
 
-  convertBytesToSize = (bytes: number): string => {
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    if (bytes === 0) return 'n/a';
-    const i = parseInt(
-      Math.floor(Math.log(Math.abs(bytes)) / Math.log(1024)),
-      10
-    );
-    if (i === 0) return `${bytes} ${sizes[i]})`;
-    return `${(bytes / 1024 ** i).toFixed(1)} ${sizes[i]}`;
+  // Collect all relevant state snapshot params and send them for log file creation
+  _logStateSnapshot = async () => {
+      try {
+        Logger.info('NetworkStatusStore: Requesting state snapshot log file creation');
+
+        const {
+          network,
+          buildNumber,
+          cpu,
+          current,
+          version,
+          mainProcessID,
+          rendererProcessID,
+          isInSafeMode,
+          isMainnet,
+          isStaging,
+          isTestnet,
+          os,
+          platformVersion,
+          ram,
+        } = this.environment;
+
+        const systemInfo = {
+          platform: os,
+          platformVersion,
+          cpu: Array.isArray(cpu) ? cpu[0].model : '',
+          ram: formattedBytesToSize(ram),
+          availableDiskSpace: this.diskSpaceAvailable,
+        };
+
+        const coreInfo = {
+          daedalusVersion: version,
+          daedalusProcessID: rendererProcessID,
+          daedalusMainProcessID: mainProcessID,
+          isInSafeMode,
+          cardanoVersion: buildNumber,
+          cardanoProcessID: this.cardanoNodeID,
+          cardanoAPIPort: this.tlsConfig ? this.tlsConfig.port : 0,
+          cardanoNetwork: network,
+          daedalusStateDirectoryPath: this.stateDirectoryPath,
+        };
+
+        const stateSnapshotData: LogStateSnapshotParams = {
+          systemInfo,
+          coreInfo,
+          cardanoNodeState: this.cardanoNodeState,
+          current,
+          currentLocale: this.stores.profile.currentLocale,
+          isConnected: this.isConnected,
+          isDev: this.isConnected,
+          isForceCheckingNodeTime: this.forceCheckTimeDifferenceRequest.isExecuting,
+          isMainnet,
+          isNodeInSync: this.isNodeInSync,
+          isNodeResponding: this.isNodeResponding,
+          isNodeSubscribed: this.isNodeSubscribed,
+          isNodeSyncing: this.isNodeSyncing,
+          isNodeTimeCorrect: this.isNodeTimeCorrect,
+          isStaging,
+          isSynced: this.isSynced,
+          isSystemTimeCorrect: this.isSystemTimeCorrect,
+          isSystemTimeIgnored: this.isSystemTimeIgnored,
+          isTestnet,
+          latestLocalBlockTimestamp: this.latestLocalBlockTimestamp,
+          latestNetworkBlockTimestamp: this.latestNetworkBlockTimestamp,
+          localBlockHeight: this.localBlockHeight,
+          localTimeDifference: this.localTimeDifference,
+          networkBlockHeight: this.networkBlockHeight,
+          startTime: new Date().toISOString(),
+          syncPercentage: this.syncPercentage
+        };
+
+        await setLogStateSnapshotChannel.send(stateSnapshotData);
+      } catch (error) {
+        Logger.error('NetworkStatusStore: State snapshot log file creation failed', {
+          error,
+        });
+      }
   };
 
   @action _onCheckDiskSpace = ({
-    isNotEnoughDiskSpace,
-    diskSpaceRequired,
-    diskSpaceMissing,
-    diskSpaceRecommended,
-    diskSpaceAvailable,
-  }: CheckDiskSpaceResponse): Promise<void> => {
+                                 isNotEnoughDiskSpace,
+                                 diskSpaceRequired,
+                                 diskSpaceMissing,
+                                 diskSpaceRecommended,
+                                 diskSpaceAvailable,
+                               }: CheckDiskSpaceResponse): Promise<void> => {
     this.isNotEnoughDiskSpace = isNotEnoughDiskSpace;
     this.diskSpaceRequired = diskSpaceRequired;
     this.diskSpaceMissing = diskSpaceMissing;
@@ -632,66 +702,6 @@ export default class NetworkStatusStore extends Store {
 
   @action _onReceiveStateDirectoryPath = (stateDirectoryPath: string) => {
     this.stateDirectoryPath = stateDirectoryPath;
-  };
-
-  @action _logStateSnapshot = () => {
-    const {
-      network,
-      buildNumber,
-      cpu,
-      current,
-      version,
-      mainProcessID,
-      rendererProcessID,
-      isInSafeMode,
-      isMainnet,
-      isStaging,
-      isTestnet,
-      os,
-      platformVersion,
-    } = this.environment;
-
-    const stateSnapshotData: LogStateSnapshotParams = {
-      availableDiskSpace: this.diskSpaceAvailable,
-      cardanoAPIPort: this.tlsConfig ? this.tlsConfig.port : 0,
-      cardanoNetwork: network,
-      cardanoNodeState: this.cardanoNodeState,
-      cardanoProcessID: this.cardanoNodeID,
-      cardanoVersion: buildNumber,
-      cpu: Array.isArray(cpu) ? cpu[0].model : '',
-      current,
-      currentLocale: this.stores.profile.currentLocale,
-      daedalusVersion: version,
-      daedalusMainProcessID: mainProcessID,
-      daedalusProcessID: rendererProcessID,
-      daedalusStateDirectoryPath: this.stateDirectoryPath,
-      isConnected: this.isConnected,
-      isDev: this.isConnected,
-      isForceCheckingNodeTime: this.forceCheckTimeDifferenceRequest.isExecuting,
-      isInSafeMode,
-      isMainnet,
-      isNodeInSync: this.isNodeInSync,
-      isNodeResponding: this.isNodeResponding,
-      isNodeSubscribed: this.isNodeSubscribed,
-      isNodeSyncing: this.isNodeSyncing,
-      isNodeTimeCorrect: this.isNodeTimeCorrect,
-      isStaging,
-      isSynced: this.isSynced,
-      isSystemTimeCorrect: this.isSystemTimeCorrect,
-      isSystemTimeIgnored: this.isSystemTimeIgnored,
-      isTestnet,
-      latestLocalBlockTimestamp: this.latestLocalBlockTimestamp,
-      latestNetworkBlockTimestamp: this.latestNetworkBlockTimestamp,
-      localBlockHeight: this.localBlockHeight,
-      localTimeDifference: this.localTimeDifference,
-      networkBlockHeight: this.networkBlockHeight,
-      platform: os,
-      platformVersion,
-      ram: this.convertBytesToSize(this.environment.ram),
-      startTime: new Date().toISOString(),
-      syncPercentage: this.syncPercentage,
-    };
-    setLogStateSnapshotChannel.send(stateSnapshotData);
   };
 
   // DEFINE COMPUTED VALUES
