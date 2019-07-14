@@ -2,7 +2,7 @@
 export type BackgroundShades = Object;
 export type ErrorShades = Object;
 
-export type DaedalusThemesUpdates = {
+export type PendingThemesUpdates = {
   cardanoUpdates?: Object,
   darkBlueUpdates?: Object,
   lightBlueUpdates?: Object,
@@ -65,4 +65,9 @@ export type ThemeFonts = {
   semibold: string,
   thin: string,
   ultralight: string,
+};
+
+export type WriteThemeUpdateParams = {
+  fileName: string | 'cardano.js' | 'dark-blue.js' | 'light-blue.js',
+  updatedThemeObj: Object,
 };
