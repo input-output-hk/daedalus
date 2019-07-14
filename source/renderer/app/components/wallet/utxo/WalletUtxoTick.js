@@ -24,10 +24,9 @@ export default class WalletUtxoTick extends Component<TickProps> {
       vertical,
       textAnchor,
     } = this.props;
-    const componentStyles = classnames([
-      styles.component,
-      vertical ? styles.vertical : null,
-    ]);
+    const componentStyles = classnames(styles.component, {
+      [styles.vertical]: vertical,
+    });
     return (
       <g transform={`translate(${x},${y})`} className={componentStyles}>
         <text textAnchor={textAnchor}>{value}</text>

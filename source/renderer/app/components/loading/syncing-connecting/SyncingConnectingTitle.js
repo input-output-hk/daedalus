@@ -160,15 +160,14 @@ export default class SyncingConnectingTitle extends Component<Props> {
     const showEllipsis =
       !isConnected && (isNodeStopped || (isTlsCertInvalid && !isNodeStopping));
 
-    const componentStyles = classNames([
-      styles.component,
-      isConnected ? styles.syncing : styles.connecting,
-    ]);
+    const componentStyles = classNames(styles.component, {
+      [styles.syncing]: isConnected,
+      [styles.connecting]: !isConnected,
+    });
 
-    const headlineStyles = classNames([
-      styles.headline,
-      showEllipsis ? styles.withoutAnimation : null,
-    ]);
+    const headlineStyles = classNames(styles.headline, {
+      [styles.withoutAnimation]: showEllipsis,
+    });
 
     const syncPercentageDisplay =
       isConnected && !isSynced ? `${syncPercentage.toFixed(2)}%` : null;

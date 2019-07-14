@@ -507,10 +507,9 @@ export default class AdaRedemptionForm extends Component<Props> {
     const adaAmountField = form.$('adaAmount');
     const spendingPasswordField = form.$('spendingPassword');
     const decryptionKeyField = form.$('decryptionKey');
-    const componentClasses = classnames([
-      styles.component,
-      isSubmitting ? styles.isSubmitting : null,
-    ]);
+    const componentClasses = classnames(styles.component, {
+      [styles.isSubmitting]: isSubmitting,
+    });
 
     const selectedWallet = getSelectedWallet(walletId.value);
     const walletHasPassword = selectedWallet.hasPassword;
@@ -578,10 +577,10 @@ export default class AdaRedemptionForm extends Component<Props> {
         instructionMessage = messages.instructionsRegular;
     }
 
-    const submitButtonClasses = classnames([
-      'primary',
-      isSubmitting ? styles.submitButtonSpinning : styles.submitButton,
-    ]);
+    const submitButtonClasses = classnames('primary', {
+      [styles.submitButtonSpinning]: isSubmitting,
+      [styles.submitButton]: !isSubmitting,
+    });
 
     return (
       <div className={componentClasses}>

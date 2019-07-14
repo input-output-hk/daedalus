@@ -150,7 +150,7 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
       error,
     } = this.props;
     // const { exportType } = this.state;
-    const dialogClasses = classnames([styles.component, 'WalletExportDialog']);
+    const dialogClasses = classnames(styles.component, 'WalletExportDialog');
 
     const actions = [
       {

@@ -36,14 +36,13 @@ export default class NotificationMessage extends Component<Props> {
       themeOverride,
     } = this.props;
 
-    const notificationMessageStyles = classNames([
-      styles.component,
-      show ? styles.show : null,
-      clickToClose ? styles.clickToClose : null,
-      themeOverride ? styles[`theme-override-${themeOverride}`] : null,
-    ]);
+    const notificationMessageStyles = classNames(styles.component, {
+      [styles.show]: show,
+      [styles.clickToClose]: clickToClose,
+      [styles[`theme-override-${themeOverride}`]]: themeOverride,
+    });
 
-    const iconStyles = classNames([styles.icon, iconStyle]);
+    const iconStyles = classNames(styles.icon, iconStyle);
 
     return (
       <div

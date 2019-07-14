@@ -14,10 +14,9 @@ type Props = {
 export default class SidebarMenu extends Component<Props> {
   render() {
     const { children, visible } = this.props;
-    const componentStyles = classNames([
-      styles.component,
-      visible ? styles.visible : null,
-    ]);
+    const componentStyles = classNames(styles.component, {
+      [styles.visible]: visible,
+    });
     return <div className={componentStyles}>{children}</div>;
   }
 }

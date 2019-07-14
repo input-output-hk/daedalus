@@ -168,10 +168,9 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
       onExternalLinkClick,
     } = this.props;
 
-    const confirmButtonClasses = classnames([
-      'confirmButton',
-      isSubmitting ? styles.submitButtonSpinning : null,
-    ]);
+    const confirmButtonClasses = classnames('confirmButton', {
+      [styles.submitButtonSpinning]: isSubmitting,
+    });
 
     const actions = [
       {

@@ -515,42 +515,48 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     const connectionError = get(nodeConnectionError, 'values', '{}');
     const { message, code } = connectionError;
 
-    const localTimeDifferenceClasses = classNames([
+    const locationTimeClassShouldBeRed =
       !isNTPServiceReachable ||
-      (localTimeDifference && localTimeDifference > ALLOWED_TIME_DIFFERENCE)
-        ? styles.red
-        : styles.green,
-    ]);
+      (localTimeDifference && localTimeDifference > ALLOWED_TIME_DIFFERENCE);
+    const localTimeDifferenceClasses = classNames({
+      [styles.red]: locationTimeClassShouldBeRed,
+      [styles.green]: !locationTimeClassShouldBeRed,
+    });
 
     const remainingUnsyncedBlocks = networkBlockHeight - localBlockHeight;
-    const remainingUnsyncedBlocksClasses = classNames([
+    const remainingUnsyncedShouldBeRed =
       remainingUnsyncedBlocks < 0 ||
-      remainingUnsyncedBlocks > UNSYNCED_BLOCKS_ALLOWED
-        ? styles.red
-        : styles.green,
-    ]);
+      remainingUnsyncedBlocks > UNSYNCED_BLOCKS_ALLOWED;
+
+    const remainingUnsyncedBlocksClasses = classNames({
+      [styles.red]: remainingUnsyncedShouldBeRed,
+      [styles.green]: !remainingUnsyncedShouldBeRed,
+    });
 
     const latestLocalBlockAge = moment(Date.now()).diff(
       moment(latestLocalBlockTimestamp)
     );
+
     const isLocalBlockHeightStalling =
       latestLocalBlockAge > MAX_ALLOWED_STALL_DURATION;
-    const latestLocalBlockAgeClasses = classNames([
-      latestLocalBlockTimestamp > 0 && !isLocalBlockHeightStalling
-        ? styles.green
-        : styles.red,
-    ]);
+    const latestLocalShouldBeGreen =
+      latestLocalBlockTimestamp > 0 && !isLocalBlockHeightStalling;
+    const latestLocalBlockAgeClasses = classNames({
+      [styles.green]: latestLocalShouldBeGreen,
+      [styles.red]: !latestLocalShouldBeGreen,
+    });
 
     const latestNetworkBlockAge = moment(Date.now()).diff(
       moment(latestNetworkBlockTimestamp)
     );
     const isNetworkBlockHeightStalling =
       latestNetworkBlockAge > MAX_ALLOWED_STALL_DURATION;
-    const latestNetworkBlockAgeClasses = classNames([
-      latestNetworkBlockTimestamp > 0 && !isNetworkBlockHeightStalling
-        ? styles.green
-        : styles.red,
-    ]);
+    const latestNetworkShouldBeGreen =
+      latestNetworkBlockTimestamp > 0 && !isNetworkBlockHeightStalling;
+    const latestNetworkBlockAgeClasses = classNames({
+      [styles.green]: latestNetworkShouldBeGreen,
+      [styles.red]: !latestNetworkShouldBeGreen,
+    });
 
     // Cardano Node EKG server is not enabled for the Mainnet!
     const cardanoNodeEkgLink = isMainnet
@@ -561,10 +567,10 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
           isTestnet,
         });
 
-    const stateDirectoryPathStyles = classNames([
+    const stateDirectoryPathStyles = classNames(
       styles.stateDirectoryPath,
-      styles[`locale-${currentLocale}`],
-    ]);
+      styles[`locale-${currentLocale}`]
+    );
 
     return (
       <div className={styles.component}>
@@ -949,8 +955,8 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     this.restoreDialogCloseOnEscKey();
   };
 
-  getClassName = (isTrue: boolean) =>
-    classNames([isTrue ? styles.green : styles.red]);
+  getClass = (isTrue: boolean) =>
+    classNames({ [styles.green]: isTrue, [styles.red]: !isTrue });
 
   syncingTimer = () => {
     const { localBlockHeight, networkBlockHeight } = this.props;

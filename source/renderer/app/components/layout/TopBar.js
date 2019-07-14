@@ -23,10 +23,10 @@ export default class TopBar extends Component<Props> {
   render() {
     const { onLeftIconClick, leftIcon, activeWallet, children } = this.props;
 
-    const topBarStyles = classNames([
-      styles.topBar,
-      activeWallet ? styles.withWallet : styles.withoutWallet,
-    ]);
+    const topBarStyles = classNames(styles.topBar, {
+      [styles.withWallet]: activeWallet,
+      [styles.withoutWallet]: !activeWallet,
+    });
 
     const topBarTitle = activeWallet ? (
       <span className={styles.walletInfo}>

@@ -21,10 +21,10 @@ export default class LoadingSpinner extends Component<Props> {
     const { big } = this.props;
     const icon = big ? spinnerIconBig : spinnerIconSmall;
 
-    const componentClasses = classnames([
-      styles.component,
-      big ? styles.big : styles.small,
-    ]);
+    const componentClasses = classnames(styles.component, {
+      [styles.big]: big,
+      [styles.small]: !big,
+    });
 
     return (
       <div

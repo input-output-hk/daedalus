@@ -209,11 +209,13 @@ export default class WalletCreateDialog extends Component<Props, State> {
     const { intl } = this.context;
     const { onCancel } = this.props;
     const { createPassword, isSubmitting } = this.state;
-    const dialogClasses = classnames([styles.component, 'WalletCreateDialog']);
-    const spendingPasswordFieldsClasses = classnames([
+    const dialogClasses = classnames(styles.component, 'WalletCreateDialog');
+    const spendingPasswordFieldsClasses = classnames(
       styles.spendingPasswordFields,
-      createPassword ? styles.show : null,
-    ]);
+      {
+        [styles.show]: createPassword,
+      }
+    );
 
     const actions = [
       {

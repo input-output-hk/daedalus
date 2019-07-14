@@ -56,13 +56,13 @@ export default class ConfirmationDialog extends Component<Props> {
     const { intl } = this.context;
     const { onConfirm, onCancel } = this.props;
 
-    const dialogClasses = classnames([styles.component, 'ConfirmDialog']);
+    const dialogClasses = classnames(styles.component, 'ConfirmDialog');
 
-    const confirmButtonClasses = classnames([
+    const confirmButtonClasses = classnames(
       'confirmButton',
       'attention',
-      styles.confirmButton,
-    ]);
+      styles.confirmButton
+    );
 
     const actions = [
       {

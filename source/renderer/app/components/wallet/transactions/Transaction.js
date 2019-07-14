@@ -194,33 +194,26 @@ export default class Transaction extends Component<Props> {
       ? transactionStates.PENDING
       : state;
 
-    const componentStyles = classNames([
-      styles.component,
-      isFailedTransaction ? styles.failed : null,
-      isExpanded ? 'Transaction_expanded' : null,
-    ]);
+    const componentStyles = classNames(styles.component, {
+      [styles.failed]: isFailedTransaction,
+      Transaction_expanded: isExpanded,
+    });
 
-    const contentStyles = classNames([
-      styles.content,
-      isLastInList ? styles.last : null,
-      isExpanded ? styles.contentExpanded : null,
-    ]);
+    const contentStyles = classNames(styles.content, {
+      [styles.last]: isLastInList,
+      [styles.contentExpanded]: isExpanded,
+    });
 
-    const detailsStyles = classNames([
-      styles.details,
-      canOpenExplorer ? styles.clickable : null,
-      isExpanded ? styles.detailsExpanded : styles.detailsClosed,
-    ]);
+    const detailsStyles = classNames(styles.details, {
+      [styles.clickable]: canOpenExplorer,
+      [styles.detailsExpanded]: isExpanded,
+    });
 
-    const assuranceLevelRowStyles = classNames([
-      styles.row,
-      styles.retainHeight,
-    ]);
+    const assuranceLevelRowStyles = classNames(styles.row, styles.retainHeight);
 
-    const arrowStyles = classNames([
-      styles.arrow,
-      isExpanded ? styles.arrowExpanded : null,
-    ]);
+    const arrowStyles = classNames(styles.arrow, {
+      [styles.arrowExpanded]: isExpanded,
+    });
 
     const status = intl.formatMessage(
       assuranceLevelTranslations[assuranceLevel]

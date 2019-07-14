@@ -360,15 +360,14 @@ export default class StakePoolTooltip extends Component<Props, State> {
       retiring,
     } = stakePool;
 
-    const componentClassnames = classnames([
-      styles.component,
-      isVisible ? styles.isVisible : null,
-    ]);
+    const componentClassnames = classnames(styles.component, {
+      [styles.isVisible]: isVisible,
+    });
 
-    const arrowClassnames = classnames([
+    const arrowClassnames = classnames(
       styles.arrow,
-      styles[`tooltipPosition${capitalize(tooltipPosition)}`],
-    ]);
+      styles[`tooltipPosition${capitalize(tooltipPosition)}`]
+    );
 
     const darken = currentTheme === 'dark-blue' ? 1 : 0;
     const alpha = 0.3;

@@ -58,10 +58,10 @@ export default class InlineEditingDropdown extends Component<Props> {
       value,
       successfullyUpdated,
     } = this.props;
-    const componentClasses = classnames([className, styles.component]);
-    const dropdownStyles = classnames([
-      successfullyUpdated ? 'dropdown_animateSuccess' : null,
-    ]);
+    const componentClasses = classnames(className, styles.component);
+    const dropdownStyles = classnames({
+      dropdown_animateSuccess: successfullyUpdated,
+    });
 
     const labelText = [
       label,

@@ -33,12 +33,10 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       isLegacy,
     } = this.props;
 
-    const componentStyles = classNames([
-      styles.component,
-      active ? styles.active : null,
-      isLegacy ? styles.legacyItem : null,
-      className,
-    ]);
+    const componentStyles = classNames(className, styles.component, {
+      [styles.active]: active,
+      [styles.legacyItem]: isLegacy,
+    });
 
     return (
       <button className={componentStyles} onClick={onClick}>

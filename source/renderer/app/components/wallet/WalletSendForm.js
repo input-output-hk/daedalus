@@ -276,7 +276,7 @@ export default class WalletSendForm extends Component<Props, State> {
       total = amount.add(transactionFee).toFormat(currencyMaxFractionalDigits);
     }
 
-    const buttonClasses = classnames(['primary', styles.nextButton]);
+    const buttonClasses = classnames('primary', styles.nextButton);
 
     return (
       <div className={styles.component}>

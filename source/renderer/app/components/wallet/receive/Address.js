@@ -19,11 +19,13 @@ type Props = {
 export class Address extends Component<Props> {
   render() {
     const { address, onCopyAddress, copyAddressLabel, index } = this.props;
-    const addressClasses = classnames([
+    const addressClasses = classnames(
       `generatedAddress-${index + 1}`,
       styles.component,
-      address.used ? styles.usedWalletAddress : null,
-    ]);
+      {
+        [styles.usedWalletAddress]: address.used,
+      }
+    );
     return (
       <div className={addressClasses}>
         <div className={styles.addressId} id={`address-${address.id}`}>

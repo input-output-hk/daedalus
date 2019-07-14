@@ -126,20 +126,17 @@ export default class BlockConsolidationStatus extends Component<Props> {
       currentEpoch
     );
 
-    const description2Styles = classnames([
-      styles.description,
-      !currentEpoch ? styles.descriptionNoCurrentEpoch : null,
-    ]);
+    const description2Styles = classnames(styles.description, {
+      [styles.descriptionNoCurrentEpoch]: !currentEpoch,
+    });
 
-    const epochsStyles = classnames([
-      styles.epochs,
-      !currentEpoch ? styles.epochsNoCurrentEpoch : null,
-    ]);
+    const epochsStyles = classnames(styles.epochs, {
+      [styles.epochsNoCurrentEpoch]: !currentEpoch,
+    });
 
-    const indicatorContainerStyles = classnames([
-      styles.indicatorContainer,
-      !currentEpoch ? styles.indicatorContainerNoCurrentEpochs : null,
-    ]);
+    const indicatorContainerStyles = classnames(styles.indicatorContainer, {
+      [styles.indicatorContainerNoCurrentEpochs]: !currentEpoch,
+    });
 
     const currentEpochValue = currentEpoch > 0 ? <b>({currentEpoch})</b> : '';
     const currentEpochBehindValue =

@@ -91,7 +91,7 @@ export default class LanguageSelectionForm extends Component<Props> {
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
           <Button
-            className={classnames(['primary', styles.submitButton])}
+            className={classnames('primary', styles.submitButton)}
             label={intl.formatMessage(messages.submitLabel)}
             skin={ButtonSpinnerSkin}
             loading={isSubmitting}

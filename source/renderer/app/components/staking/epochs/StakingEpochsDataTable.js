@@ -38,11 +38,10 @@ export default class StakingEpochsDataTable extends Component<Props> {
           <tr>
             {map(tableHeaders, tableHeader => {
               const isSorted = tableHeader.name === sortBy;
-              const sortIconClasses = classNames([
-                styles.sortIcon,
-                isSorted ? styles.sorted : null,
-                isSorted && order === 'asc' ? styles.ascending : null,
-              ]);
+              const sortIconClasses = classNames(styles.sortIcon, {
+                [styles.sorted]: isSorted,
+                [styles.ascending]: isSorted && order === 'asc',
+              });
 
               return (
                 <th

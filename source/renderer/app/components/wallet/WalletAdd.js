@@ -116,7 +116,7 @@ export default class WalletAdd extends Component<Props> {
       isTestnet,
     } = this.props;
 
-    const componentClasses = classnames([styles.component, 'WalletAdd']);
+    const componentClasses = classnames(styles.component, 'WalletAdd');
 
     let activeNotification = null;
     if (isMaxNumberOfWalletsReached) {

@@ -17,15 +17,14 @@ type Props = {
 export default class NavButton extends Component<Props> {
   render() {
     const { isActive, icon, onClick, className } = this.props;
-    const componentClasses = classnames([
-      className,
-      styles.component,
-      isActive ? styles.active : styles.normal,
-    ]);
-    const iconClasses = classnames([
-      styles.icon,
-      isActive ? styles.activeIcon : styles.normalIcon,
-    ]);
+    const componentClasses = classnames(className, styles.component, {
+      [styles.active]: isActive,
+      [styles.normal]: !isActive,
+    });
+    const iconClasses = classnames(styles.icon, {
+      [styles.activeIcon]: isActive,
+      [styles.normalIcon]: !isActive,
+    });
     return (
       <button className={componentClasses} onClick={onClick}>
         <div className={styles.container}>

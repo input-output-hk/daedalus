@@ -117,7 +117,7 @@ export default class CompletionDialog extends Component<Props, State> {
       network,
     } = this.props;
     const { showCopyNotification } = this.state;
-    const dialogClasses = classnames([styles.component, 'completionDialog']);
+    const dialogClasses = classnames(styles.component, 'completionDialog');
 
     const actions = [
       {

@@ -84,10 +84,9 @@ export default class Sidebar extends Component<Props> {
       );
     }
 
-    const sidebarStyles = classNames([
-      styles.component,
-      !isShowingSubMenus || subMenu == null ? styles.minimized : null,
-    ]);
+    const sidebarStyles = classNames(styles.component, {
+      [styles.minimized]: !isShowingSubMenus || subMenu == null,
+    });
 
     return (
       <div className={sidebarStyles}>

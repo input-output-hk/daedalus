@@ -57,10 +57,9 @@ export default class WalletSummary extends Component<Props> {
     const { intl } = this.context;
     const isLoadingAllTransactions =
       numberOfRecentTransactions && !numberOfTransactions;
-    const numberOfTransactionsStyles = classnames([
-      styles.numberOfTransactions,
-      isLoadingAllTransactions ? styles.isLoadingNumberOfTransactions : null,
-    ]);
+    const numberOfTransactionsStyles = classnames(styles.numberOfTransactions, {
+      [styles.isLoadingNumberOfTransactions]: isLoadingAllTransactions,
+    });
 
     return (
       <div className={styles.component}>

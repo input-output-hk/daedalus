@@ -30,10 +30,10 @@ export default class LegacyBadge extends Component<Props> {
     const { intl } = this.context;
     const { mode } = this.props;
     const label = intl.formatMessage(messages.label);
-    const stylesClassName = classNames([
-      styles.component,
-      mode === LEGACY_BADGE_MODES.FLOATING ? styles.floating : styles.natural,
-    ]);
+    const stylesClassName = classNames(styles.component, {
+      [styles.floating]: mode === LEGACY_BADGE_MODES.FLOATING,
+      [styles.natural]: mode !== LEGACY_BADGE_MODES.FLOATING,
+    });
 
     return <div className={stylesClassName}>{label}</div>;
   }

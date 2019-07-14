@@ -210,21 +210,23 @@ export default class StatusIcons extends Component<Props> {
     if (this.isDisabled(paramName)) {
       status = 'unknown';
     }
-    return classNames([
+    return classNames(
       styles.icon,
       styles[`icon-${status}`],
       styles[`icon-${paramName}`],
-      isNodeSyncing ? styles.syncing : styles.loading,
-    ]);
+      {
+        [styles.syncing]: isNodeSyncing,
+        [styles.loading]: !isNodeSyncing,
+      }
+    );
   };
 
   getTooltipClassname = (paramName: string) => {
     const paramValue = this.props[paramName];
-    return classNames([
-      styles.tooltip,
-      typeof paramValue === 'undefined' ? styles.ellipsis : null,
-      this.isDisabled(paramName) ? styles.disabled : null,
-    ]);
+    return classNames(styles.tooltip, {
+      [styles.ellipsis]: typeof paramValue === 'undefined',
+      [styles.disabled]: this.isDisabled(paramName),
+    });
   };
 
   isDisabled = (paramName: string) =>

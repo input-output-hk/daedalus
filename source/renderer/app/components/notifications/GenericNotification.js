@@ -102,7 +102,7 @@ export default class GenericNotification extends Component<Props> {
       iconStyle = styles.spinnerIcon;
     }
 
-    const childrenStyles = classNames([hasEllipsis ? styles.ellipsis : null]);
+    const childrenStyles = classNames({ [styles.ellipsis]: hasEllipsis });
 
     return (
       <NotificationMessage

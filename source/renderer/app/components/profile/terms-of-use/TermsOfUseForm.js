@@ -66,10 +66,10 @@ export default class TermsOfUseForm extends Component<Props, State> {
     const { intl } = this.context;
     const { isSubmitting, error, localizedTermsOfUse } = this.props;
     const { areTermsOfUseAccepted } = this.state;
-    const buttonClasses = classnames([
-      'primary',
-      isSubmitting ? styles.submitButtonSpinning : styles.submitButton,
-    ]);
+    const buttonClasses = classnames('primary', {
+      [styles.submitButtonSpinning]: isSubmitting,
+      [styles.submitButton]: !isSubmitting,
+    });
 
     return (
       <div className={styles.component}>

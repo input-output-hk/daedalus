@@ -79,10 +79,9 @@ export default class WalletUtxo extends Component<Props, State> {
     const { walletAmount, walletUtxosAmount, chartData } = this.props;
     const formattedWalletAmount = walletAmount.toFormat(DECIMAL_PLACES_IN_ADA);
     const isEmpty = walletUtxosAmount === 0;
-    const componentStyles = classnames([
-      styles.component,
-      isEmpty ? styles.isEmpty : null,
-    ]);
+    const componentStyles = classnames(styles.component, {
+      [styles.isEmpty]: isEmpty,
+    });
 
     return (
       <div className={componentStyles}>

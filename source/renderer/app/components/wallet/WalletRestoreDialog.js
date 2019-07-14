@@ -328,21 +328,20 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     const { suggestedMnemonics, isSubmitting, error, onCancel } = this.props;
     const { createPassword } = this.state;
 
-    const dialogClasses = classnames([
+    const dialogClasses = classnames(
       styles.component,
       styles.dialogWithCertificateRestore,
-      'WalletRestoreDialog',
-    ]);
+      'WalletRestoreDialog'
+    );
 
-    const walletNameFieldClasses = classnames([
-      'walletName',
-      styles.walletName,
-    ]);
+    const walletNameFieldClasses = classnames('walletName', styles.walletName);
 
-    const spendingPasswordFieldsClasses = classnames([
+    const spendingPasswordFieldsClasses = classnames(
       styles.spendingPasswordFields,
-      createPassword ? styles.show : null,
-    ]);
+      {
+        [styles.show]: createPassword,
+      }
+    );
 
     const walletNameField = form.$('walletName');
     const recoveryPhraseField = form.$('recoveryPhrase');
@@ -359,15 +358,13 @@ export default class WalletRestoreDialog extends Component<Props, State> {
       },
     ];
 
-    const regularTabClasses = classnames([
-      'regularTab',
-      this.isRegular() ? styles.activeButton : '',
-    ]);
+    const regularTabClasses = classnames('regularTab', {
+      [styles.activeButton]: this.isRegular(),
+    });
 
-    const certificateTabClasses = classnames([
-      'certificateTab',
-      this.isCertificate() ? styles.activeButton : '',
-    ]);
+    const certificateTabClasses = classnames('certificateTab', {
+      [styles.activeButton]: this.isCertificate(),
+    });
 
     return (
       <Dialog

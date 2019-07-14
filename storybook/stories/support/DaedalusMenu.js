@@ -27,10 +27,10 @@ class DaedalusMenu extends Component<Props> {
       onToggleVisibility,
     } = this.props;
 
-    const componentStyles = classnames([
-      styles.component,
-      isVisible ? styles.visible : styles.minized,
-    ]);
+    const componentStyles = classnames(styles.component, {
+      [styles.visible]: isVisible,
+      [styles.minized]: !isVisible,
+    });
 
     return (
       <div className={componentStyles}>

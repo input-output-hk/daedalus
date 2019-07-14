@@ -91,10 +91,10 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
       onCancelBackup,
       onFinishBackup,
     } = this.props;
-    const dialogClasses = classnames([
+    const dialogClasses = classnames(
       styles.component,
-      'WalletRecoveryPhraseEntryDialog',
-    ]);
+      'WalletRecoveryPhraseEntryDialog'
+    );
 
     const enteredPhraseString = enteredPhrase.reduce(
       (phrase, { word }) => `${phrase} ${word}`,

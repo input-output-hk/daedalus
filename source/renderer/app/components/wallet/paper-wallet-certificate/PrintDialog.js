@@ -101,22 +101,22 @@ export default class PrintDialog extends Component<Props, State> {
     const { onContinue, onClose } = this.props;
     const { isPrintedCorrectly, isReadable, isScannable } = this.state;
 
-    const dialogClasses = classnames([styles.component, 'printDialog']);
+    const dialogClasses = classnames(styles.component, 'printDialog');
 
-    const certificatePrintedCheckboxClasses = classnames([
+    const certificatePrintedCheckboxClasses = classnames(
       'printedCheckbox',
-      styles.checkbox,
-    ]);
+      styles.checkbox
+    );
 
-    const certificateReadableCheckboxClasses = classnames([
+    const certificateReadableCheckboxClasses = classnames(
       'readableCheckbox',
-      styles.checkbox,
-    ]);
+      styles.checkbox
+    );
 
-    const qrScannableCheckboxClasses = classnames([
+    const qrScannableCheckboxClasses = classnames(
       'scannableCheckbox',
-      styles.checkbox,
-    ]);
+      styles.checkbox
+    );
 
     const canSubmit = isPrintedCorrectly && isReadable && isScannable;
 

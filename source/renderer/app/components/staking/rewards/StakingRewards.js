@@ -153,13 +153,10 @@ export default class StakingRewards extends Component<Props, State> {
                 <tr>
                   {map(availableTableHeaders, tableHeader => {
                     const isSorted = tableHeader.name === rewardsSortBy;
-                    const sortIconClasses = classNames([
-                      styles.sortIcon,
-                      isSorted ? styles.sorted : null,
-                      isSorted && rewardsOrder === 'asc'
-                        ? styles.ascending
-                        : null,
-                    ]);
+                    const sortIconClasses = classNames(styles.sortIcon, {
+                      [styles.sorted]: isSorted,
+                      [styles.ascending]: isSorted && rewardsOrder === 'asc',
+                    });
 
                     return (
                       <th

@@ -61,11 +61,10 @@ export default class GeneralSettings extends Component<Props> {
       value: language.value,
       label: intl.formatMessage(language.label),
     }));
-    const componentClassNames = classNames([styles.component, 'general']);
-    const languageSelectClassNames = classNames([
-      styles.language,
-      isSubmitting ? styles.submitLanguageSpinner : null,
-    ]);
+    const componentClassNames = classNames(styles.component, 'general');
+    const languageSelectClassNames = classNames(styles.language, {
+      [styles.submitLanguageSpinner]: isSubmitting,
+    });
     return (
       <div className={componentClassNames}>
         <Select

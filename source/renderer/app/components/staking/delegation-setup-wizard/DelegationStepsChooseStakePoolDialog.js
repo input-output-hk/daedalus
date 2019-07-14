@@ -161,10 +161,9 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         intl.formatMessage(messages.selectPoolPlaceholder)
       );
 
-      const selectedPoolBlockClasses = classNames([
-        styles.selectedPoolBlock,
-        selectedPool ? styles.selected : null,
-      ]);
+      const selectedPoolBlockClasses = classNames(styles.selectedPoolBlock, {
+        [styles.selected]: selectedPool,
+      });
 
       const rankColor = selectedPool
         ? getColorFromRange(selectedPool.ranking)

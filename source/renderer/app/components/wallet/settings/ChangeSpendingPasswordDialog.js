@@ -237,23 +237,24 @@ export default class ChangeSpendingPasswordDialog extends Component<
     } = this.props;
     const { removePassword } = this.state;
 
-    const dialogClasses = classnames([
-      isSpendingPasswordSet ? 'changePasswordDialog' : 'createPasswordDialog',
-      styles.dialog,
-    ]);
+    const dialogClasses = classnames(styles.dialog, {
+      changePasswordDialog: isSpendingPasswordSet,
+      createPasswordDialog: !isSpendingPasswordSet,
+    });
 
-    const spendingPasswordFieldsClasses = classnames([
+    const spendingPasswordFieldsClasses = classnames(
       styles.spendingPasswordFields,
-      removePassword ? styles.hidden : null,
-    ]);
+      {
+        [styles.hidden]: removePassword,
+      }
+    );
 
-    const confirmButtonClasses = classnames([
-      'confirmButton',
-      removePassword ? 'attention' : null,
-      isSubmitting ? styles.isSubmitting : null,
-    ]);
+    const confirmButtonClasses = classnames('confirmButton', {
+      attention: removePassword,
+      [styles.isSubmitting]: isSubmitting,
+    });
 
-    const newPasswordClasses = classnames(['newPassword', styles.newPassword]);
+    const newPasswordClasses = classnames('newPassword', styles.newPassword);
 
     const actions = [
       {

@@ -118,12 +118,11 @@ export class StakePoolThumbnail extends Component<Props, State> {
     const { ranking, slug, retiring } = stakePool;
     const color = getColorFromRange(ranking);
 
-    const componentClassnames = classnames([
-      styles.component,
-      isHighlighted ? styles.isHighlighted : null,
-      onHover ? styles.isOnHover : null,
-      isSelected && showSelected ? styles.isSelected : null,
-    ]);
+    const componentClassnames = classnames(styles.component, {
+      [styles.isHighlighted]: isHighlighted,
+      [styles.isOnHover]: onHover,
+      [styles.isSelected]: isSelected && showSelected,
+    });
 
     return (
       <div

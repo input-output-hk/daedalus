@@ -28,10 +28,10 @@ export default class ReadOnlyInput extends Component<Props> {
       globalMessages[isSet ? 'change' : 'create']
     );
 
-    const mainClasses = classnames([
-      styles.component,
-      isSet ? 'changeLabel' : 'createLabel',
-    ]);
+    const mainClasses = classnames(styles.component, {
+      changeLabel: isSet,
+      createLabel: !isSet,
+    });
 
     return (
       <div className={mainClasses}>

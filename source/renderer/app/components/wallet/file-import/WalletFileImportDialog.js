@@ -219,10 +219,10 @@ export default class WalletFileImportDialog extends Component<Props, State> {
     // const { createPassword } = this.state;
 
     const walletFile = form.$('walletFile');
-    const dialogClasses = classnames([
+    const dialogClasses = classnames(
       styles.component,
-      'WalletFileImportDialog',
-    ]);
+      'WalletFileImportDialog'
+    );
 
     // const spendingPasswordFieldsClasses = classnames([
     //   styles.spendingPasswordFields,

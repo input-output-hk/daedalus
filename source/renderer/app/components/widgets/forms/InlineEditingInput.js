@@ -142,15 +142,13 @@ export default class InlineEditingInput extends Component<Props, State> {
     } = this.props;
     const { intl } = this.context;
     const inputField = validator.$('inputField');
-    const componentStyles = classnames([
-      className,
-      styles.component,
-      isActive ? null : styles.inactive,
-    ]);
-    const inputStyles = classnames([
-      successfullyUpdated ? 'input_animateSuccess' : null,
-      isActive ? null : 'input_cursorPointer',
-    ]);
+    const componentStyles = classnames(className, styles.component, {
+      [styles.inactive]: !isActive,
+    });
+    const inputStyles = classnames({
+      input_animateSuccess: successfullyUpdated,
+      input_cursorPointer: !isActive,
+    });
 
     return (
       <div

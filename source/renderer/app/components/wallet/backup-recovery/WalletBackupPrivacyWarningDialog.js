@@ -62,10 +62,10 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
     } = this.props;
     const countdownDisplay =
       countdownRemaining > 0 ? ` (${countdownRemaining})` : '';
-    const dialogClasses = classnames([
+    const dialogClasses = classnames(
       styles.component,
-      'WalletBackupPrivacyWarningDialog',
-    ]);
+      'WalletBackupPrivacyWarningDialog'
+    );
 
     const actions = [
       {

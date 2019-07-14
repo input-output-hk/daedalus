@@ -34,11 +34,12 @@ export default class NodeSyncStatusIcon extends Component<Props> {
     const { isSynced, syncPercentage } = networkStatus;
     const { intl } = this.context;
     const statusIcon = isSynced ? syncedIcon : spinnerIcon;
-    const componentClasses = classNames([
-      styles.component,
-      isSynced ? styles.synced : styles.syncing,
-      isMainnet && styles.mainnet,
-    ]);
+
+    const componentClasses = classNames(styles.component, {
+      [styles.synced]: isSynced,
+      [styles.syncing]: !isSynced,
+      [styles.mainnet]: isMainnet,
+    });
 
     return (
       <div className={componentClasses}>

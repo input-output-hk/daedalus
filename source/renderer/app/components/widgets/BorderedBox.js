@@ -14,10 +14,9 @@ type Props = {
 export default class BorderedBox extends Component<Props> {
   render() {
     const { children, fullHeight } = this.props;
-    const componentClasses = classnames([
-      styles.component,
-      fullHeight ? styles.fullHeight : null,
-    ]);
+    const componentClasses = classnames(styles.component, {
+      [styles.fullHeight]: fullHeight,
+    });
     return <div className={componentClasses}>{children}</div>;
   }
 }

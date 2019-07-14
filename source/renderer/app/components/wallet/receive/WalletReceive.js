@@ -186,22 +186,26 @@ export default class WalletReceive extends Component<Props, State> {
     const { intl } = this.context;
     const { showUsed } = this.state;
 
-    const walletAddressClasses = classnames([
-      styles.hash,
-      isWalletAddressUsed ? styles.usedHash : null,
-    ]);
+    const walletAddressClasses = classnames(styles.hash, {
+      [styles.usedHash]: isWalletAddressUsed,
+    });
 
-    const generateAddressWrapperClasses = classnames([
+    const generateAddressWrapperClasses = classnames(
       styles.generateAddressWrapper,
-      isSidebarExpanded ? styles.fullWidthOnSmallScreen : null,
-    ]);
+      {
+        [styles.fullWidthOnSmallScreen]: isSidebarExpanded,
+      }
+    );
 
-    const generateAddressButtonClasses = classnames([
+    const generateAddressButtonClasses = classnames(
       'primary',
       'generateAddressButton',
-      walletHasPassword ? styles.submitWithPasswordButton : styles.submitButton,
-      isSubmitting ? styles.spinning : null,
-    ]);
+      {
+        [styles.submitWithPasswordButton]: walletHasPassword,
+        [styles.submitButton]: !walletHasPassword,
+        [styles.spinning]: isSubmitting,
+      }
+    );
 
     const passwordField = form.$('spendingPassword');
     const generateAddressForm = (

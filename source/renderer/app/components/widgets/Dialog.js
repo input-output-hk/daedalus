@@ -53,7 +53,7 @@ export default class Dialog extends Component<Props> {
         onClose={onClose}
         skin={ModalSkin}
       >
-        <div className={classnames([styles.dialogWrapper, className])}>
+        <div className={classnames(styles.dialogWrapper, className)}>
           {title && (
             <div className={styles.title}>
               <h1>{title}</h1>
@@ -71,10 +71,10 @@ export default class Dialog extends Component<Props> {
           {actions && (
             <div className={styles.actions}>
               {map(actions, (action, key) => {
-                const buttonClasses = classnames([
-                  action.className ? action.className : null,
-                  action.primary ? 'primary' : 'flat',
-                ]);
+                const buttonClasses = classnames(action.className, {
+                  primary: action.primary,
+                  flat: !action.primary,
+                });
                 return (
                   <Button
                     key={key}

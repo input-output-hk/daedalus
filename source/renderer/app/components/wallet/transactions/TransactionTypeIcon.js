@@ -20,10 +20,10 @@ export default class TransactionTypeIcon extends Component<Props> {
   render() {
     const { iconType } = this.props;
 
-    const transactionTypeIconClasses = classNames([
+    const transactionTypeIconClasses = classNames(
       styles.transactionTypeIconWrapper,
-      styles[iconType],
-    ]);
+      styles[iconType]
+    );
 
     let icon;
     switch (iconType) {

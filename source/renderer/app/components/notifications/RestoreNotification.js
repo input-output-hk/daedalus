@@ -33,10 +33,10 @@ export default class RestoreNotification extends Component<Props> {
     const { intl } = this.context;
     const { currentLocale, restoreProgress, restoreETA } = this.props;
 
-    const restoreNotificationClasses = classnames([
+    const restoreNotificationClasses = classnames(
       styles.component,
-      'ActiveRestoreNotification',
-    ]);
+      'ActiveRestoreNotification'
+    );
 
     let humanizedDurationLanguage;
     switch (currentLocale) {

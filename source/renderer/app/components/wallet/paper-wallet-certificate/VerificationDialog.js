@@ -234,17 +234,17 @@ export default class VerificationDialog extends Component<Props, State> {
 
     const recoveryPhraseField = form.$('recoveryPhrase');
 
-    const dialogClasses = classnames([styles.dialog, 'verificationDialog']);
+    const dialogClasses = classnames(styles.dialog, 'verificationDialog');
 
-    const storingUnderstandanceCheckboxClasses = classnames([
+    const storingUnderstandanceCheckboxClasses = classnames(
       styles.checkbox,
-      'storingUnderstandance',
-    ]);
+      'storingUnderstandance'
+    );
 
-    const recoveringUnderstandanceCheckboxClasses = classnames([
+    const recoveringUnderstandanceCheckboxClasses = classnames(
       styles.checkbox,
-      'recoveringUnderstandance',
-    ]);
+      'recoveringUnderstandance'
+    );
 
     const actions = [
       {

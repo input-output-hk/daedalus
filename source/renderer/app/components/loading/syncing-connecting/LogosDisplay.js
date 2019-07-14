@@ -32,18 +32,18 @@ export default class LogosDisplay extends Component<Props> {
 
   render() {
     const { isConnected } = this.props;
-    const currencyLogoStyles = classNames([
-      styles['ada-logo'],
-      !isConnected ? styles.connectingLogo : styles.syncingLogo,
-    ]);
-    const daedalusLogoStyles = classNames([
-      styles.daedalusLogo,
-      !isConnected ? styles.connectingLogo : styles.syncingLogo,
-    ]);
-    const apiLogoStyles = classNames([
-      styles['ada-apiLogo'],
-      !isConnected ? styles.connectingLogo : styles.syncingLogo,
-    ]);
+    const currencyLogoStyles = classNames(styles['ada-logo'], {
+      [styles.connectingLogo]: !isConnected,
+      [styles.syncingLogo]: isConnected,
+    });
+    const daedalusLogoStyles = classNames(styles.daedalusLogo, {
+      [styles.connectingLogo]: !isConnected,
+      [styles.syncingLogo]: isConnected,
+    });
+    const apiLogoStyles = classNames(styles['ada-apiLogo'], {
+      [styles.connectingLogo]: !isConnected,
+      [styles.syncingLogo]: isConnected,
+    });
 
     return (
       <div className={styles.component}>

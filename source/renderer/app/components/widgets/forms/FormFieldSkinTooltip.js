@@ -27,13 +27,15 @@ type Props = {
 
 export const FormFieldSkin = (props: Props) => (
   <div
-    className={classnames([
+    className={classnames(
       styles.component,
       props.className,
       props.theme[props.themeId].root,
-      props.disabled ? props.theme[props.themeId].disabled : null,
-      props.error ? props.theme[props.themeId].errored : null,
-    ])}
+      {
+        [props.theme[props.themeId].disabled]: props.disabled,
+        [props.theme[props.themeId].errored]: props.error,
+      }
+    )}
   >
     {props.label && (
       <label

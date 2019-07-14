@@ -66,9 +66,10 @@ export default class NodeUpdateNotification extends Component<Props> {
       onToggleExpanded,
       isExpanded,
     } = this.props;
-    const arrowClasses = classnames([
-      isExpanded ? styles.arrow : styles.arrowCollapsed,
-    ]);
+    const arrowClasses = classnames({
+      [styles.arrow]: isExpanded,
+      [styles.arrowCollapsed]: !isExpanded,
+    });
     const title = version
       ? intl.formatMessage(messages.titleWithVersion, { version })
       : intl.formatMessage(messages.titleWithoutVersion);

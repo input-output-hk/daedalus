@@ -43,10 +43,9 @@ export default class SidebarWalletsMenu extends Component<Props> {
       isAddWalletButtonActive,
     } = this.props;
 
-    const addWalletButtonStyles = classNames([
-      styles.addWalletButton,
-      isAddWalletButtonActive ? styles.active : null,
-    ]);
+    const addWalletButtonStyles = classNames(styles.addWalletButton, {
+      [styles.active]: isAddWalletButtonActive,
+    });
 
     return (
       <SidebarSubMenu visible={this.props.visible}>

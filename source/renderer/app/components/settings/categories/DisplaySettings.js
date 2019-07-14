@@ -70,20 +70,20 @@ export default class DisplaySettings extends Component<Props> {
     const { theme, selectTheme } = this.props;
     const { intl } = this.context;
 
-    const themeLightBlueClasses = classnames([
-      theme === THEMES.LIGHT_BLUE ? styles.active : styles.inactive,
-      styles.themeImageWrapper,
-    ]);
+    const themeLightBlueClasses = classnames(styles.themeImageWrapper, {
+      [styles.active]: theme === THEMES.LIGHT_BLUE,
+      [styles.inactive]: theme !== THEMES.LIGHT_BLUE,
+    });
 
-    const themeCardanoClasses = classnames([
-      theme === THEMES.CARDANO ? styles.active : styles.inactive,
-      styles.themeImageWrapper,
-    ]);
+    const themeCardanoClasses = classnames(styles.themeImageWrapper, {
+      [styles.active]: theme === THEMES.CARDANO,
+      [styles.inactive]: theme !== THEMES.CARDANO,
+    });
 
-    const themeDarkBlueClasses = classnames([
-      theme === THEMES.DARK_BLUE ? styles.active : styles.inactive,
-      styles.themeImageWrapper,
-    ]);
+    const themeDarkBlueClasses = classnames(styles.themeImageWrapper, {
+      [styles.active]: theme === THEMES.DARK_BLUE,
+      [styles.inactive]: theme !== THEMES.DARK_BLUE,
+    });
 
     const themeDarkCardanoClasses = classnames([
       theme === THEMES.DARK_CARDANO ? styles.active : styles.inactive,

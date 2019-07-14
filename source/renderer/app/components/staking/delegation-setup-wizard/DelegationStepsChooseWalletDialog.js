@@ -138,10 +138,9 @@ export default class DelegationStepsChooseWalletDialog extends Component<
       },
     ];
 
-    const walletSelectClasses = classNames([
-      styles.walletSelect,
-      selectedWallet && !isAcceptableSetupWallet ? styles.error : null,
-    ]);
+    const walletSelectClasses = classNames(styles.walletSelect, {
+      [styles.error]: selectedWallet && !isAcceptableSetupWallet,
+    });
 
     const stepsIndicatorLabel = (
       <FormattedMessage

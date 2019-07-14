@@ -16,12 +16,14 @@ type Props = {
 export default class SidebarCategory extends Component<Props> {
   render() {
     const { icon, active, className, onClick } = this.props;
-    const componentStyles = classNames([
+    const componentStyles = classNames(
       className,
       styles.component,
-      active ? styles.active : null,
-      styles[className] ? styles[className] : null,
-    ]);
+      styles[className],
+      {
+        [styles.active]: active,
+      }
+    );
 
     const iconStyles = classNames({
       [styles.supportRequestIcon]: className === 'supportRequest',

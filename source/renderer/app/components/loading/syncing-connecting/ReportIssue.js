@@ -79,26 +79,24 @@ export default class ReportIssue extends Component<Props> {
       isSyncing,
     } = this.props;
 
-    const componentStyles = classNames([
-      styles.component,
-      isConnecting ? styles['is-connecting'] : null,
-      isSyncing ? styles['is-syncing'] : null,
-    ]);
+    const componentStyles = classNames(styles.component, {
+      [styles['is-connecting']]: isConnected,
+      [styles['is-syncing']]: isSyncing,
+    });
 
-    const reportIssueButtonClasses = classNames([
+    const reportIssueButtonClasses = classNames(
       'primary',
       'reportIssueButton',
-      styles.actionButton,
-    ]);
-    const readArticleButtonClasses = classNames([
+      styles.actionButton
+    );
+    const readArticleButtonClasses = classNames(
       'primary',
       'readArticleButton',
-      styles.actionButton,
-    ]);
-    const downloadLogsButtonClasses = classNames([
-      styles.downloadLogsButton,
-      !isConnected ? styles.downloadLogsButtonConnecting : null,
-    ]);
+      styles.actionButton
+    );
+    const downloadLogsButtonClasses = classNames(styles.downloadLogsButton, {
+      [styles.downloadLogsButton]: !isConnected,
+    });
 
     const readArticleButtonUrl = isConnected
       ? messages.syncIssueArticleUrl

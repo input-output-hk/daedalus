@@ -99,10 +99,9 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
       !isWalletNameConfirmationCorrect;
     const handleSubmit = () => !isDisabled && onContinue();
 
-    const buttonClasses = classnames([
-      'attention',
-      isSubmitting ? styles.isSubmitting : null,
-    ]);
+    const buttonClasses = classnames('attention', {
+      [styles.isSubmitting]: isSubmitting,
+    });
 
     const actions = [
       {

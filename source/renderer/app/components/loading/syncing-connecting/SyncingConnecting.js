@@ -212,12 +212,11 @@ export default class SyncingConnecting extends Component<Props, State> {
       onStatusIconClick,
     } = this.props;
 
-    const componentStyles = classNames([
-      styles.component,
-      hasLoadedCurrentTheme ? null : styles['is-loading-theme'],
-      isConnecting ? styles['is-connecting'] : null,
-      isSyncing ? styles['is-syncing'] : null,
-    ]);
+    const componentStyles = classNames(styles.component, {
+      [styles['is-loading-theme']]: !hasLoadedCurrentTheme,
+      [styles['is-connecting']]: isConnecting,
+      [styles['is-syncing']]: isSyncing,
+    });
 
     return (
       <div className={componentStyles}>

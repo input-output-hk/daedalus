@@ -22,7 +22,7 @@ export default class SettingsMenuItem extends Component<Props> {
     } else if (active) {
       state = styles.active;
     }
-    const componentClasses = classNames([styles.component, state, className]);
+    const componentClasses = classNames(styles.component, state, className);
     return (
       <button className={componentClasses} onClick={onClick}>
         {label}

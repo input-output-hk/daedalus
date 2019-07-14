@@ -187,11 +187,10 @@ export default class WalletTransactionsList extends Component<Props> {
       onOpenExternalLink,
     } = this.props;
     const { isFirstInGroup, isLastInGroup, tx } = data;
-    const txClasses = classnames([
-      styles.transaction,
-      isFirstInGroup ? styles.firstInGroup : null,
-      isLastInGroup ? styles.lastInGroup : null,
-    ]);
+    const txClasses = classnames(styles.transaction, {
+      [styles.firstInGroup]: isFirstInGroup,
+      [styles.lastInGroup]: isLastInGroup,
+    });
     return (
       <div id={`tx-${tx.id}`} className={txClasses}>
         <Transaction
@@ -252,10 +251,10 @@ export default class WalletTransactionsList extends Component<Props> {
       </div>
     ) : null;
 
-    const buttonClasses = classnames([
+    const buttonClasses = classnames(
       'primary',
-      styles.showMoreTransactionsButton,
-    ]);
+      styles.showMoreTransactionsButton
+    );
 
     // Generate flat list with dates in-between
     const rows: Row[] = [];

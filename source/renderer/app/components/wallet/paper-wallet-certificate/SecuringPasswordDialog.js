@@ -74,10 +74,10 @@ export default class SecuringPasswordDialog extends Component<Props, State> {
     const { securePasswordConfirmed } = this.state;
     const { additionalMnemonics, onContinue, onClose } = this.props;
 
-    const dialogClasses = classnames([
+    const dialogClasses = classnames(
       styles.component,
-      'SecuringPasswordDialog',
-    ]);
+      'SecuringPasswordDialog'
+    );
 
     const actions = [
       {

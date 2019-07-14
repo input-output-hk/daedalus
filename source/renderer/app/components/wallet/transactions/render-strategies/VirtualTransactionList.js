@@ -281,11 +281,10 @@ export class VirtualTransactionList extends Component<Props> {
     // Prevent List rendering if we have no rows to render
     if (!rows.length) return false;
 
-    const componentStyles = classNames([
-      styles.component,
-      isLoadingSpinnerShown ? styles.withLoadingSpinner : null,
-      isSyncingSpinnerShown ? styles.withSyncingSpinner : null,
-    ]);
+    const componentStyles = classNames(styles.component, {
+      [styles.withLoadingSpinner]: isLoadingSpinnerShown,
+      [styles.withSyncingSpinner]: isSyncingSpinnerShown,
+    });
 
     return (
       <div className={componentStyles}>

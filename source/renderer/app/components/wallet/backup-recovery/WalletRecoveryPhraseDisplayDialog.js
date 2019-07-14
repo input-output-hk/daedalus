@@ -42,10 +42,10 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> 
   render() {
     const { intl } = this.context;
     const { recoveryPhrase, onStartWalletBackup, onCancelBackup } = this.props;
-    const dialogClasses = classnames([
+    const dialogClasses = classnames(
       styles.component,
-      'WalletRecoveryPhraseDisplayDialog',
-    ]);
+      'WalletRecoveryPhraseDisplayDialog'
+    );
 
     const actions = [
       {
