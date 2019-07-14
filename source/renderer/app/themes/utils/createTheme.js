@@ -1,12 +1,40 @@
 // @flow
 import chroma from 'chroma-js';
-import { isEmpty } from 'lodash';
+import { isEmpty, has } from 'lodash';
 import { createBackgroundShades, createErrorShades } from './createShades';
 import type { ThemeColors, ThemeFonts, CreateThemeParams } from '../types';
 
-type PartialThemeParts = {
+export type PartialThemeParts = {
   colors: ThemeColors,
   fonts: ThemeFonts,
+};
+
+export const updateTheme = (existingTheme: Object, themeUpdates: Object) => {
+  const updatedTheme = Object.entries(themeUpdates).reduce(
+    (theme: Object, newEntry: [string, Object]) => {
+      const [keyName, newCSSVars] = newEntry;
+      if (keyName && has(theme, keyName)) {
+        return {
+          ...theme,
+          [keyName]: {
+            ...theme[keyName],
+            ...newCSSVars,
+          },
+        };
+      }
+      if (keyName && !has(theme, keyName)) {
+        return {
+          ...theme,
+          [keyName]: {
+            ...newCSSVars,
+          },
+        };
+      }
+      return theme;
+    },
+    { ...existingTheme }
+  );
+  return updatedTheme;
 };
 
 // assigns values to all react-polymorph CSS variables & returns them
@@ -1057,22 +1085,13 @@ export const createTheme = (fullThemeParts: CreateThemeParams): Object => {
       ...createReactPolymorphTheme({ colors, fonts }),
       ...createDaedalusComponentsTheme({ colors, fonts }),
     };
-
-    // flatten daedalusTheme object for consumption by ThemeManager
-    daedalusTheme = Object.values(daedalusTheme).reduce(
-      (theme, componentVars) => ({ ...theme, ...componentVars }),
-      {}
-    );
   }
 
   // if user passed theme config, compose its values with daedalusTheme object
   if (config && !isEmpty(config)) {
-    daedalusTheme = Object.values(config).reduce(
-      (theme, componentVars) => ({ ...theme, ...componentVars }),
-      daedalusTheme
-    );
+    daedalusTheme = updateTheme(daedalusTheme, config);
   }
 
-  // returned flat theme object composed with config (if passed by user)
+  // return theme object (composed with config if passed by user)
   return daedalusTheme;
 };
