@@ -80,7 +80,7 @@ export default class ReportIssue extends Component<Props> {
     } = this.props;
 
     const componentStyles = classNames(styles.component, {
-      [styles['is-connecting']]: isConnected,
+      [styles['is-connecting']]: isConnecting,
       [styles['is-syncing']]: isSyncing,
     });
 
