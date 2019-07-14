@@ -2,7 +2,6 @@
 // @flow
 import { isEmpty } from 'lodash';
 import { updateTheme } from './createTheme';
-// these throw the error
 import { CARDANO_THEME_CONFIG } from '../daedalus/cardano';
 import { DARK_BLUE_THEME_CONFIG } from '../daedalus/dark-blue';
 import { LIGHT_BLUE_THEME_CONFIG } from '../daedalus/light-blue';
@@ -25,12 +24,6 @@ export const updateThemes = (pendingUpdates: PendingThemesUpdates) => {
       darkBlueUpdates
     );
     updateThemes['dark-blue'] = updatedDarkBlueTheme;
-
-    // write updatedDarkBlueTheme theme object to dark-blue.js
-    // $FlowFixMe
-    // console.log(
-    //   `Dark Blue theme updated!\n${JSON.stringify(updatedDarkBlueTheme, 0, 2)}`
-    // );
   }
 
   if (lightBlueUpdates && !isEmpty(lightBlueUpdates)) {
@@ -39,16 +32,6 @@ export const updateThemes = (pendingUpdates: PendingThemesUpdates) => {
       lightBlueUpdates
     );
     updateThemes['light-blue'] = updatedLightBlueTheme;
-
-    // write updatedLightBlueTheme theme object to light-blue.js
-    // $FlowFixMe
-    // console.log(
-    //   `Light Blue theme updated!\n${JSON.stringify(
-    //     updatedLightBlueTheme,
-    //     0,
-    //     2
-    //   )}`
-    // );
   }
   return updatedThemes;
 };
