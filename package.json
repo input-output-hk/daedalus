@@ -83,7 +83,7 @@
     "eslint-loader": "2.1.1",
     "eslint-plugin-flowtype": "3.2.0",
     "eslint-plugin-flowtype-errors": "3.6.0",
-    "eslint-plugin-import": "2.14.0",
+    "eslint-plugin-import": "2.18.0",
     "eslint-plugin-jsx-a11y": "6.1.2",
     "eslint-plugin-promise": "4.0.1",
     "eslint-plugin-react": "7.11.1",
@@ -147,7 +147,7 @@
     "graceful-fs": "4.1.15",
     "gulp": "4.0.0",
     "humanize-duration": "3.16.0",
-    "lodash": "4.17.11",
+    "lodash": "4.17.14",
     "mkdirp": "0.5.1",
     "mobx": "5.6.0",
     "mobx-react": "5.4.2",
@@ -195,6 +195,10 @@
     }
   },
   "resolutions": {
-    "**/**/marked": "^0.6.1"
+    "**/**/marked": "^0.6.1",
+    "**/**/minimatch": "^3.0.2",
+    "**/**/lodash.mergewith": "^4.6.2",
+    "**/**/lodash.template": "^4.5.0",
+    "**/**/lodash": "^4.17.14"
   }
 }
