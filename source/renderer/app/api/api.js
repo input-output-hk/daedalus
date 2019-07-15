@@ -12,11 +12,9 @@ import {
 } from '../domains/WalletTransaction';
 import WalletAddress from '../domains/WalletAddress';
 
-// Accounts requests
-import { getAccounts } from './accounts/requests/getAccounts';
-
 // Addresses requests
 import { getAddress } from './addresses/requests/getAddress';
+import { getAddresses as getAddressesFromApi } from './addresses/requests/getAddresses';
 import { createAddress } from './addresses/requests/createAddress';
 
 // Nodes requests
@@ -201,24 +199,11 @@ export default class AdaApi {
     });
     const { walletId } = request;
     try {
-      const accounts: Accounts = await getAccounts(this.config, { walletId });
-
-      const response = accounts.map(account =>
-        Object.assign({}, account, { addresses: account.addresses.length })
+      const addresses: Address[] = await getAddressesFromApi(
+        this.config,
+        walletId
       );
-      Logger.debug('AdaApi::getAddresses success', { response });
-
-      if (!accounts || !accounts.length) {
-        return new Promise(resolve =>
-          resolve({ accountIndex: null, addresses: [] })
-        );
-      }
-
-      // For now only the first wallet account is used
-      const firstAccount = accounts[0];
-      const { index: accountIndex, addresses } = firstAccount;
-
-      return new Promise(resolve => resolve({ accountIndex, addresses }));
+      return new Promise(resolve => resolve({ accountIndex: 0, addresses }));
     } catch (error) {
       Logger.error('AdaApi::getAddresses error', { error });
       throw new GenericApiError();
@@ -242,6 +227,11 @@ export default class AdaApi {
       isRestoreCompleted, // once restoration is done we fetch potentially missing transactions
       cachedTransactions,
     } = request;
+    // NOTE: Not yet available in the API
+    return new Promise(resolve => resolve({ transactions: [], total: 0 }));
+
+    /* TODO: Uncomment once API available
+
     const accounts: Accounts = await getAccounts(this.config, { walletId });
 
     if (!accounts.length || !accounts[0].index) {
@@ -369,6 +359,8 @@ export default class AdaApi {
       Logger.error('AdaApi::searchHistory error', { error });
       throw new GenericApiError();
     }
+
+    */
   };
 
   createWallet = async (request: CreateWalletRequest): Promise<Wallet> => {
@@ -823,6 +815,8 @@ export default class AdaApi {
 
   nextUpdate = async (): Promise<NodeSoftware | null> => {
     Logger.debug('AdaApi::nextUpdate called');
+
+    /* TODO: Re-enable when API is available
     try {
       const nodeUpdate = await getNextNodeUpdate(this.config);
       if (nodeUpdate && nodeUpdate.version) {
@@ -834,6 +828,8 @@ export default class AdaApi {
       Logger.error('AdaApi::nextUpdate error', { error });
       throw new GenericApiError();
     }
+    */
+
     return null;
   };
 

@@ -25,7 +25,8 @@ import { WalletPaperWalletOpenPdfError } from '../i18n/errors';
  */
 
 export default class WalletsStore extends Store {
-  WALLET_REFRESH_INTERVAL = 5000;
+  // TODO: Restore back to 5s once ngrok proxy is removed
+  WALLET_REFRESH_INTERVAL = 25000;
 
   // REQUESTS
   /* eslint-disable max-len */

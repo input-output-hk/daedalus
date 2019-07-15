@@ -1,8 +1,9 @@
 // @flow
 export type Address = {
   id: string,
-  used: boolean,
-  changeAddress: boolean,
+  state: 'used' | 'unused',
+  // NOTE: V2 Address API only returns id and state
+  // changeAddress: boolean,
 };
 
 export type Addresses = Array<Address>;

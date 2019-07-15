@@ -9,6 +9,9 @@ export type CreateAddressParams = {
   walletId: string,
 };
 
+// NOTE: There is no longer a construct of "create address"
+// We can still present it to the user as such, but we just take
+// the first unused address from this endpoint: /wallets/${walletId}/addresses?state=unused
 export const createAddress = (
   config: RequestConfig,
   { spendingPassword, accountIndex, walletId }: CreateAddressParams

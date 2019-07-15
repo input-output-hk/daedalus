@@ -54,13 +54,14 @@ required dependencies for development.
 ### macOS
 **There are no working macOS options for cardano-wallet. Nix or otherwise (except building from source with `stack`, which we consider to not be an option).**
 
-To get around this, I have created the `yarn frontend` command and a complete Docker stack to start the integration. This runs Daedalus in frontendOnly mode, and hits a wallet running in a docker-compose stack**
+To get around this, I have created the `yarn frontend` command and a complete Docker stack to start the integration. This runs Daedalus in frontendOnly mode, and hits a wallet running in a docker-compose stack
+
+As the local network can't be exposed to the host machine (due to a combination of limitations with the backend services that forced an undesirible networking configuration, and limitations with Docker Desktop on macOS), ngrok is used as a proxy. **Free ngrok containers are limited to 20 req/min**. Because of this, WALLET_REFRESH_INTERVAL has been increased to 25s (up from 5s) until this workaround is removed.
 
 1. _As above_
 2. _As above_
 3. Start the demo cluster from the root of `cardano-byron-docker` by running `./start.sh`. This command includes an edge node and instance of cardano-wallet.
-4. From Daedalus, run `yarn frontend`. This prints the start command to the terminal.
-5. Run the command printed to the terminal.
+4. From Daedalus, run `yarn frontend`
 
 ### V2 State of Affairs
 - No macOS build options. While this remains the case, it will be impossible for most of the team to develop or test the new process management configuration.
