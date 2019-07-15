@@ -101,20 +101,50 @@ export const logSystemInfo = (props: LogSystemInfoParams): MessageBody => {
 export const logStateSnapshot = (
   props: StateSnapshotLogParams
 ): MessageBody => {
-  const { current, systemInfo, coreInfo, ...data } = props;
-  const { currentTime: at } = data;
-  const { platform } = systemInfo;
-  const { daedalusVersion, cardanoVersion, cardanoNetwork } = coreInfo;
+  const { current, ...data } = props;
+  const { currentTime: at, systemInfo, coreInfo } = data;
+  const {
+    platform,
+    platformVersion,
+    cpu,
+    ram,
+    availableDiskSpace,
+  } = systemInfo;
+  const {
+    daedalusVersion,
+    daedalusProcessID,
+    daedalusMainProcessID,
+    isInSafeMode,
+    cardanoVersion,
+    cardanoNetwork,
+    cardanoProcessID,
+    cardanoAPIPort,
+    daedalusStateDirectoryPath,
+  } = coreInfo;
   const env = `${cardanoNetwork}:${platform}:${cardanoVersion}:${daedalusVersion}`;
   const messageBodyParams: ConstructMessageBodyParams = {
     at,
     env,
-    ns: ['daedalus', `v${daedalusVersion}`, `*${current}*`],
-    data,
     msg: 'Updating State-snapshot.json file',
     pid: '',
     sev: 'info',
     thread: '',
+    ns: ['daedalus', `v${daedalusVersion}`, `*${current}*`],
+    platform,
+    platformVersion,
+    cpu,
+    ram,
+    availableDiskSpace,
+    daedalusVersion,
+    daedalusProcessID,
+    daedalusMainProcessID,
+    isInSafeMode,
+    cardanoVersion,
+    cardanoNetwork,
+    cardanoProcessID,
+    cardanoAPIPort,
+    daedalusStateDirectoryPath,
+    data,
   };
   const messageBody: MessageBody = constructMessageBody(messageBodyParams);
   const stateSnapshotFilePath = path.join(
