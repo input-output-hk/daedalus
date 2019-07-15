@@ -63,8 +63,10 @@ As the local network can't be exposed to the host machine (due to a combination 
 3. Start the demo cluster from the root of `cardano-byron-docker` by running `./start.sh`. This command includes an edge node and instance of cardano-wallet.
 4. From Daedalus, run `yarn frontend`
 
-### V2 State of Affairs
+### V2 Known Issues
 - No macOS build options. While this remains the case, it will be impossible for most of the team to develop or test the new process management configuration.
+- As network-info is stubbed, the NTP check will throw. Just disregard this for now.
+- The long hang on "Loading Wallet Data" is just due to the increase to WALLET_REFRESH_INTERVAL. This will be reverted as soon as possible
 - It doesn't appear possible to connect `cardano-http-bridge` to the local demo cluster when using `cardano-wallet launcher`. For now, we are using `cardano-http-bridge` declared in the docker stack, and using the `cardano-wallet serve` command instead.
 - `cardano-wallet launcher` is not accepting the `--random-port` argument
 - Lots of things have been temporarily commented out or mocked to get the integration started. As such using `git push --no-verify`. This will be cleaned up once more routes become available.
