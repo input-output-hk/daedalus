@@ -85,6 +85,7 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
   @observable numberOfNTPRechecks = 0; // Is 'true' in case local and global time are in sync
+  NTPRecheckInterval: TimeoutID;
 
   @observable hasBeenConnected = false;
   @observable syncProgress = null;
@@ -180,6 +181,7 @@ export default class NetworkStatusStore extends Store {
     // Teardown polling intervals
     if (this._networkStatusPollingInterval) {
       clearInterval(this._networkStatusPollingInterval);
+      this._resetNTPRechecks();
     }
   }
 
@@ -416,12 +418,12 @@ export default class NetworkStatusStore extends Store {
             this.numberOfNTPRechecks < MAX_NTP_RECHECKS
           ) {
             this.numberOfNTPRechecks++;
-            setTimeout(
+            this.NTPRecheckInterval = setTimeout(
               this.forceCheckLocalTimeDifference,
               NTP_RECHECKS_INTERVAL
             );
           } else {
-            this.numberOfNTPRechecks = 0;
+            this._resetNTPRechecks();
             this.isNodeTimeCorrect = isNodeTimeCorrectNext;
           }
         }
@@ -579,11 +581,17 @@ export default class NetworkStatusStore extends Store {
     }
   };
 
+  @action _resetNTPRechecks = () => {
+    clearTimeout(this.NTPRecheckInterval);
+    this.numberOfNTPRechecks = 0;
+  };
+
   @action _setDisconnected = (wasConnected: boolean) => {
     this.isNodeResponding = false;
     this.isNodeSubscribed = false;
     this.isNodeSyncing = false;
     this.isNodeInSync = false;
+    this._resetNTPRechecks();
     if (wasConnected) {
       if (!this.hasBeenConnected) {
         runInAction('update hasBeenConnected', () => {
@@ -624,6 +632,7 @@ export default class NetworkStatusStore extends Store {
       if (this._networkStatusPollingInterval) {
         clearInterval(this._networkStatusPollingInterval);
         this._networkStatusPollingInterval = null;
+        this._resetNTPRechecks();
       }
     } else if (!this._networkStatusPollingInterval) {
       this._setNetworkStatusPollingInterval();
