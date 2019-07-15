@@ -405,14 +405,14 @@ export default class NetworkStatusStore extends Store {
         // Update localTimeDifference only in case NTP check status is not still pending
         if (localTimeInformation.status !== 'pending') {
           this.localTimeDifference = localTimeInformation.difference;
-          const { isNodeTimeCorrect: isNodeTimeCorrectCurrent } = this;
+          const { isNodeTimeCorrect: isNodeTimeCorrectPrev } = this;
           const isNodeTimeCorrectNext =
             this.localTimeDifference != null && // If we receive 'null' it means NTP check failed
             this.localTimeDifference <= ALLOWED_TIME_DIFFERENCE;
 
           if (
             !isNodeTimeCorrectNext &&
-            isNodeTimeCorrectCurrent &&
+            isNodeTimeCorrectPrev &&
             this.numberOfNTPRechecks < MAX_NTP_RECHECKS
           ) {
             this.numberOfNTPRechecks++;
