@@ -6,8 +6,7 @@ import type { MenuActions } from './MenuActions.types';
 import { getTranslation } from '../utils/getTranslation';
 import { environment } from '../environment';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
-import { NOTIFICATIONS, STATE_SNAPSHOT } from '../../common/ipc/constants';
-import { setStateSnapshotLogChannel } from '../ipc/set-log-state-snapshot';
+import { NOTIFICATIONS } from '../../common/ipc/constants';
 import type { SupportRequests } from '../../common/types/support-requests.types';
 
 const id = 'menu';
@@ -181,7 +180,6 @@ export const osxMenu = (
       {
         label: translation('helpSupport.downloadLogs'),
         click() {
-          setStateSnapshotLogChannel.send(STATE_SNAPSHOT.LOG, window);
           showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
         },
       },

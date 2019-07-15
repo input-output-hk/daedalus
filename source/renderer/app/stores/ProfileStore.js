@@ -10,8 +10,10 @@ import { ROUTES } from '../routes-config';
 import LocalizableError from '../i18n/LocalizableError';
 import globalMessages from '../i18n/global-messages';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
-import type { LogFiles, CompressedLogStatus } from '../types/LogTypes';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
+import { formattedBytesToSize } from '../utils/formatters';
+import { Logger } from '../utils/logging';
+import { setStateSnapshotLogChannel } from '../ipc/setStateSnapshotLogChannel';
 import { detectSystemLocaleChannel } from '../ipc/detect-system-locale';
 import { LOCALES } from '../../../common/types/locales.types';
 import {
@@ -19,6 +21,8 @@ import {
   downloadLogsChannel,
   getLogsChannel,
 } from '../ipc/logs.ipc';
+import type { LogFiles, CompressedLogStatus } from '../types/LogTypes';
+import type { StateSnapshotLogParams } from '../../../common/types/logging.types';
 
 // TODO: refactor all parts that rely on this to ipc channels!
 const { ipcRenderer } = global;
@@ -307,6 +311,7 @@ export default class ProfileStore extends Store {
     const { isDownloading } = this.compressedLogsStatus;
     const logs = await getLogsChannel.request();
     this._setLogFiles(logs);
+    await this._logStateSnapshot();
     if (isDownloading || this.isSubmittingBugReport) {
       this._compressLogs({ logs });
     }
@@ -368,6 +373,112 @@ export default class ProfileStore extends Store {
       this._getLogs();
     }
   });
+
+  // Collect all relevant state snapshot params and send them for log file creation
+  _logStateSnapshot = async () => {
+    try {
+      Logger.info('ProfileStore: Requesting state snapshot log file creation');
+
+      const { networkStatus } = this.stores;
+
+      const {
+        cardanoNodeID,
+        tlsConfig,
+        stateDirectoryPath,
+        diskSpaceAvailable,
+        cardanoNodeState,
+        isConnected,
+        forceCheckTimeDifferenceRequest,
+        isNodeInSync,
+        isNodeResponding,
+        isNodeSubscribed,
+        isNodeSyncing,
+        isNodeTimeCorrect,
+        isSynced,
+        isSystemTimeCorrect,
+        isSystemTimeIgnored,
+        latestLocalBlockTimestamp,
+        latestNetworkBlockTimestamp,
+        localBlockHeight,
+        localTimeDifference,
+        networkBlockHeight,
+        syncPercentage,
+      } = networkStatus;
+
+      const {
+        network,
+        buildNumber,
+        cpu,
+        current,
+        version,
+        mainProcessID,
+        rendererProcessID,
+        isInSafeMode,
+        isDev,
+        isMainnet,
+        isStaging,
+        isTestnet,
+        os,
+        platformVersion,
+        ram,
+      } = this.environment;
+
+      const systemInfo = {
+        platform: os,
+        platformVersion,
+        cpu: Array.isArray(cpu) ? cpu[0].model : '',
+        ram: formattedBytesToSize(ram),
+        availableDiskSpace: diskSpaceAvailable,
+      };
+
+      const coreInfo = {
+        daedalusVersion: version,
+        daedalusProcessID: rendererProcessID,
+        daedalusMainProcessID: mainProcessID,
+        isInSafeMode,
+        cardanoVersion: buildNumber,
+        cardanoProcessID: cardanoNodeID,
+        cardanoAPIPort: tlsConfig ? tlsConfig.port : 0,
+        cardanoNetwork: network,
+        daedalusStateDirectoryPath: stateDirectoryPath,
+      };
+
+      const stateSnapshotData: StateSnapshotLogParams = {
+        systemInfo,
+        coreInfo,
+        cardanoNodeState,
+        current,
+        currentLocale: this.currentLocale,
+        isConnected,
+        isDev,
+        isForceCheckingNodeTime: forceCheckTimeDifferenceRequest.isExecuting,
+        isMainnet,
+        isNodeInSync,
+        isNodeResponding,
+        isNodeSubscribed,
+        isNodeSyncing,
+        isNodeTimeCorrect,
+        isStaging,
+        isSynced,
+        isSystemTimeCorrect,
+        isSystemTimeIgnored,
+        isTestnet,
+        latestLocalBlockTimestamp,
+        latestNetworkBlockTimestamp,
+        localBlockHeight,
+        localTimeDifference,
+        networkBlockHeight,
+        currentTime: new Date().toISOString(),
+        syncPercentage,
+      };
+
+      await setStateSnapshotLogChannel.send(stateSnapshotData);
+    } catch (error) {
+      Logger.error('ProfileStore: State snapshot log file creation failed', {
+        error,
+      });
+    }
+  };
 
   _toggleDisableDownloadLogs = action(
     async ({ isDownloadNotificationVisible }) => {

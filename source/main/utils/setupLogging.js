@@ -100,7 +100,7 @@ export const logStateSnapshot = (
   props: StateSnapshotLogParams
 ): MessageBody => {
   const { current, systemInfo, coreInfo, ...data } = props;
-  const { startTime: at } = data;
+  const { currentTime: at } = data;
   const { platform } = systemInfo;
   const { daedalusVersion, cardanoVersion, cardanoNetwork } = coreInfo;
   const env = `${cardanoNetwork}:${platform}:${cardanoVersion}:${daedalusVersion}`;

@@ -16,7 +16,3 @@ export const ERRORS = {
 export const NOTIFICATIONS = {
   DOWNLOAD_LOGS: 'DOWNLOAD_LOGS_NOTIFICATION',
 };
-
-export const STATE_SNAPSHOT = {
-  LOG: 'LOG',
-};

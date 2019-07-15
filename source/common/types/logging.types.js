@@ -78,5 +78,5 @@ export type StateSnapshotLogParams = {
   localBlockHeight: number,
   localTimeDifference: ?number,
   networkBlockHeight: number,
-  startTime: string,
+  currentTime: string,
 };

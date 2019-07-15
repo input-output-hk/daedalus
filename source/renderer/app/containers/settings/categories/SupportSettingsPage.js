@@ -39,8 +39,7 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
   };
 
   handleDownloadLogs = () => {
-    const { app, networkStatus } = this.props.actions;
-    networkStatus.logStateSnapshot.trigger();
+    const { app } = this.props.actions;
     app.downloadLogs.trigger();
     app.setNotificationVisibility.trigger(true);
   };

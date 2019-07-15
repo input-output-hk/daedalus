@@ -7,5 +7,4 @@ export default class NetworkStatusActions {
   isSyncedAndReady: Action<any> = new Action();
   tlsConfigIsReady: Action<any> = new Action();
   restartNode: Action<any> = new Action();
-  logStateSnapshot: Action<any> = new Action();
 }
