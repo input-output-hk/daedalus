@@ -139,7 +139,7 @@
     "classnames": "2.2.6",
     "electron": "3.0.14",
     "electron-debug": "2.0.0",
-    "electron-log-daedalus": "2.2.18",
+    "electron-log-daedalus": "2.2.20",
     "electron-store": "2.0.0",
     "electron-unhandled": "2.1.0",
     "es6-error": "4.1.1",
