@@ -36,6 +36,7 @@ Changelog
 
 ### Fixes
 
+- Fixed dependency vulnerabilities ([PR 1467](https://github.com/input-output-hk/daedalus/pull/1467))
 - Fixed Staking screen ([PR 1461](https://github.com/input-output-hk/daedalus/pull/1461))
 - Improved small UI and copy elements ([PR 1459](https://github.com/input-output-hk/daedalus/pull/1459))
 - Fixed shutting down screen top priority ([PR 1428](https://github.com/input-output-hk/daedalus/pull/1428))
