@@ -23,7 +23,7 @@ import {
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
 import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
-import { setLogStateSnapshotChannel } from '../ipc/setLogStateSnapshotChannel';
+import { setStateSnapshotLogChannel } from '../ipc/setStateSnapshotLogChannel';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
 import type {
   CardanoNodeState,
@@ -32,7 +32,7 @@ import type {
 } from '../../../common/types/cardano-node.types';
 import type { NodeInfoQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
-import type { LogStateSnapshotParams } from '../../../common/types/logging.types';
+import type { StateSnapshotLogParams } from '../../../common/types/logging.types';
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
 import { openLocalDirectoryChannel } from '../ipc/open-local-directory';
 import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
@@ -127,7 +127,7 @@ export default class NetworkStatusStore extends Store {
     cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
 
     // Passively receive broadcasted request to create state snapshot log file
-    setLogStateSnapshotChannel.onReceive(this._handleLogStateSnapshot);
+    setStateSnapshotLogChannel.onReceive(this._handleLogStateSnapshot);
 
     // ========== MOBX REACTIONS =========== //
 
@@ -640,7 +640,7 @@ export default class NetworkStatusStore extends Store {
         daedalusStateDirectoryPath: this.stateDirectoryPath,
       };
 
-      const stateSnapshotData: LogStateSnapshotParams = {
+      const stateSnapshotData: StateSnapshotLogParams = {
         systemInfo,
         coreInfo,
         cardanoNodeState: this.cardanoNodeState,
@@ -668,10 +668,9 @@ export default class NetworkStatusStore extends Store {
         networkBlockHeight: this.networkBlockHeight,
         startTime: new Date().toISOString(),
         syncPercentage: this.syncPercentage,
-        onRestartNode: null,
       };
 
-      await setLogStateSnapshotChannel.send(stateSnapshotData);
+      await setStateSnapshotLogChannel.send(stateSnapshotData);
     } catch (error) {
       Logger.error(
         'NetworkStatusStore: State snapshot log file creation failed',

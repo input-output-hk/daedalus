@@ -35,7 +35,7 @@ import { getStateDirectoryPathChannel } from './ipc/getStateDirectoryPathChannel
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
 import { logUsedVersion } from './utils/logUsedVersion';
-import { setLogStateSnapshotChannel } from './ipc/set-log-state-snapshot';
+import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 
 /* eslint-disable consistent-return */
 
@@ -161,7 +161,7 @@ const onAppReady = async () => {
 
   getNumberOfEpochsConsolidated();
 
-  setLogStateSnapshotChannel.onReceive(data => {
+  setStateSnapshotLogChannel.onReceive(data => {
     return Promise.resolve(logStateSnapshot(data));
   });
 

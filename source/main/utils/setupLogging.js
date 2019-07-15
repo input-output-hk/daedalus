@@ -14,7 +14,7 @@ import type {
   ConstructMessageBodyParams,
   MessageBody,
   LogSystemInfoParams,
-  LogStateSnapshotParams,
+  StateSnapshotLogParams,
 } from '../../common/types/logging.types';
 
 const isTest = process.env.NODE_ENV === 'test';
@@ -97,17 +97,13 @@ export const logSystemInfo = (props: LogSystemInfoParams): MessageBody => {
 };
 
 export const logStateSnapshot = (
-  props: LogStateSnapshotParams
+  props: StateSnapshotLogParams
 ): MessageBody => {
   const { current, systemInfo, coreInfo, ...data } = props;
   const { startTime: at } = data;
   const { platform } = systemInfo;
   const { daedalusVersion, cardanoVersion, cardanoNetwork } = coreInfo;
   const env = `${cardanoNetwork}:${platform}:${cardanoVersion}:${daedalusVersion}`;
-  Object.entries(data).map(([key, val]: [string, any]) => {
-    if (!val) delete data[key];
-    return val;
-  });
   const messageBodyParams: ConstructMessageBodyParams = {
     at,
     env,

@@ -1,5 +1,5 @@
 // @flow
-import type { DaedalusDiagnosticsProps } from '../../renderer/app/components/status/DaedalusDiagnostics';
+import type { CardanoNodeState } from './cardano-node.types';
 
 export type FormatMessageContextParams = {
   appName: string,
@@ -51,8 +51,42 @@ export type LogSystemInfoParams = {
   startTime: string,
 };
 
-export type LogStateSnapshotParams = {
-  ...$Exact<DaedalusDiagnosticsProps>,
+export type StateSnapshotLogParams = {
+  availableDiskSpace: string,
+  cardanoAPIPort: number,
+  cardanoNetwork: string,
+  cardanoNodeState: CardanoNodeState | any,
+  cardanoProcessID: number,
+  cardanoVersion: string,
+  cpu: string,
   current: string,
+  currentLocale: string,
+  daedalusVersion: string,
+  daedalusMainProcessID: string,
+  daedalusProcessID: string,
+  daedalusStateDirectoryPath: string,
+  isConnected: boolean,
+  isDev: boolean,
+  isForceCheckingNodeTime: boolean,
+  isInSafeMode: boolean,
+  isMainnet: boolean,
+  isNodeInSync: boolean,
+  isNodeResponding: boolean,
+  isNodeSubscribed: boolean,
+  isNodeSyncing: boolean,
+  isNodeTimeCorrect: boolean,
+  isStaging: boolean,
+  isSynced: boolean,
+  isSystemTimeCorrect: boolean,
+  isSystemTimeIgnored: boolean,
+  isTestnet: boolean,
+  latestLocalBlockTimestamp: number,
+  latestNetworkBlockTimestamp: number,
+  localBlockHeight: number,
+  localTimeDifference: ?number,
+  networkBlockHeight: number,
+  platform: string,
+  platformVersion: string,
+  ram: string,
   startTime: string,
 };

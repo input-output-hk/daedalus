@@ -18,7 +18,7 @@ import type { RedemptionTypeChoices } from '../../renderer/app/types/redemptionT
 import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
 import type { LogFiles } from '../../renderer/app/types/LogTypes';
 import type { GpuStatus } from '../../renderer/app/types/gpuStatus';
-import type { LogStateSnapshotParams } from '../types/logging.types';
+import type { StateSnapshotLogParams } from '../types/logging.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -81,9 +81,9 @@ export type GetStateDirectoryPathMainResponse = any;
 /**
  * Channel for setting log state snapshot
  */
-export const SET_LOG_STATE_SNAPSHOT_CHANNEL = 'SetLogStateSnapshotChannel';
-export type SetLogStateSnapshotRendererRequest = LogStateSnapshotParams | any;
-export type SetLogStateSnapshotMainResponse = LogStateSnapshotParams | any;
+export const SET_STATE_SNAPSHOT_LOG_CHANNEL = 'SetStateSnapshotLogChannel';
+export type SetStateSnapshotLogRendererRequest = StateSnapshotLogParams | any;
+export type SetStateSnapshotLogMainResponse = StateSnapshotLogParams | any;
 
 /**
  * Channel for loading a base64 encoded asset from within the `source/renderer` folder

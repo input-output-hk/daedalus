@@ -315,7 +315,7 @@ const messages = defineMessages({
   },
 });
 
-export type DaedalusDiagnosticsProps = {
+type Props = {
   systemInfo: SystemInfo,
   coreInfo: CoreSystemInfo,
   cardanoNodeState: ?CardanoNodeState,
@@ -328,7 +328,7 @@ export type DaedalusDiagnosticsProps = {
   isNodeSyncing: boolean,
   isNodeInSync: boolean,
   isNodeTimeCorrect: boolean,
-  nodeConnectionError?: ?LocalizableError,
+  nodeConnectionError: ?LocalizableError,
   isConnected: boolean,
   isSynced: boolean,
   syncPercentage: number,
@@ -341,12 +341,12 @@ export type DaedalusDiagnosticsProps = {
   localBlockHeight: number,
   networkBlockHeight: number,
   currentLocale: string,
-  onForceCheckLocalTimeDifference?: Function,
-  onOpenStateDirectory?: Function,
-  onOpenExternalLink?: Function,
+  onForceCheckLocalTimeDifference: Function,
+  onOpenStateDirectory: Function,
+  onOpenExternalLink: Function,
   onRestartNode: Function,
-  onClose?: Function,
-  onCopyStateDirectoryPath?: Function,
+  onClose: Function,
+  onCopyStateDirectoryPath: Function,
 };
 
 type State = {
@@ -359,15 +359,12 @@ type State = {
 };
 
 @observer
-export default class DaedalusDiagnostics extends Component<
-  DaedalusDiagnosticsProps,
-  State
-> {
+export default class DaedalusDiagnostics extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
-  constructor(props: DaedalusDiagnosticsProps) {
+  constructor(props: Props) {
     super(props);
     let { localBlockHeight, networkBlockHeight } = props;
     localBlockHeight = localBlockHeight || null;
@@ -433,7 +430,7 @@ export default class DaedalusDiagnostics extends Component<
     syncingInterval = setInterval(this.syncingTimer, 2000);
   }
 
-  componentWillReceiveProps(nextProps: DaedalusDiagnosticsProps) {
+  componentWillReceiveProps(nextProps: Props) {
     const { cardanoNodeState } = this.props;
     const { cardanoNodeState: nextCardanoNodeState } = nextProps;
     const { isNodeRestarting } = this.state;
@@ -651,11 +648,9 @@ export default class DaedalusDiagnostics extends Component<
                 <td className={styles.stateDirectory}>
                   <button
                     className={styles.stateDirectoryOpenBtn}
-                    onClick={() => {
-                      if (onOpenStateDirectory) {
-                        onOpenStateDirectory(daedalusStateDirectoryPath);
-                      }
-                    }}
+                    onClick={() =>
+                      onOpenStateDirectory(daedalusStateDirectoryPath)
+                    }
                   >
                     {intl.formatMessage(messages.stateDirectoryPathOpenBtn)}
                   </button>
@@ -824,11 +819,7 @@ export default class DaedalusDiagnostics extends Component<
                   <td>
                     <button
                       className={styles.realTimeStatusBtn}
-                      onClick={() => {
-                        if (onOpenExternalLink) {
-                          onOpenExternalLink(cardanoNodeEkgLink);
-                        }
-                      }}
+                      onClick={() => onOpenExternalLink(cardanoNodeEkgLink)}
                     >
                       {intl.formatMessage(messages.realtimeStatisticsMonitor)}
                       <SVGInline
@@ -895,14 +886,7 @@ export default class DaedalusDiagnostics extends Component<
           </table>
         </div>
 
-        <button
-          className={styles.closeButton}
-          onClick={() => {
-            if (onClose) {
-              onClose();
-            }
-          }}
-        >
+        <button className={styles.closeButton} onClick={() => onClose()}>
           <SVGInline svg={closeCross} />
         </button>
       </div>
@@ -955,18 +939,14 @@ export default class DaedalusDiagnostics extends Component<
   };
 
   checkTime = () => {
-    if (this.props.onForceCheckLocalTimeDifference) {
-      this.props.onForceCheckLocalTimeDifference();
-      this.restoreDialogCloseOnEscKey();
-    }
+    this.props.onForceCheckLocalTimeDifference();
+    this.restoreDialogCloseOnEscKey();
   };
 
   restartNode = () => {
-    if (this.props.onRestartNode) {
-      this.setState({ isNodeRestarting: true });
-      this.props.onRestartNode.trigger();
-      this.restoreDialogCloseOnEscKey();
-    }
+    this.setState({ isNodeRestarting: true });
+    this.props.onRestartNode.trigger();
+    this.restoreDialogCloseOnEscKey();
   };
 
   getClass = (isTrue: boolean) =>
