@@ -463,8 +463,12 @@ export default class ProfileStore extends Store {
         isSystemTimeCorrect,
         isSystemTimeIgnored,
         isTestnet,
-        latestLocalBlockTimestamp: moment(Date.now()).diff(moment(latestLocalBlockTimestamp)),
-        latestNetworkBlockTimestamp: moment(Date.now()).diff(moment(latestNetworkBlockTimestamp)),
+        latestLocalBlockTimestamp: moment(Date.now()).diff(
+          moment(latestLocalBlockTimestamp)
+        ),
+        latestNetworkBlockTimestamp: moment(Date.now()).diff(
+          moment(latestNetworkBlockTimestamp)
+        ),
         localBlockHeight,
         localTimeDifference,
         networkBlockHeight,
