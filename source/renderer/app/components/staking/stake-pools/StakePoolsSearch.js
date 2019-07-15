@@ -41,8 +41,11 @@ const messages = defineMessages({
   },
 });
 
+export type Filters = Array<Filter>;
+export type Filter = 'all' | 'charity' | 'new';
+
 type Props = {
-  filter?: string,
+  filters: Filters,
   label?: string,
   placeholder?: string,
   onSearch: Function,
@@ -56,11 +59,17 @@ export class StakePoolsSearch extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  getFilterItemClassName = (item: string) =>
-    classnames({
+  getFilterItemClassName = (item: string) => {
+    if (item === 'all') {
+      return classnames({
+        [styles.searchFilterActiveItem]: !this.props.filters.length,
+      });
+    }
+    return classnames({
       [styles.searchFilterActiveItem]:
-        this.props.filter && this.props.filter === item,
+        this.props.filters.length && this.props.filters.indexOf(item) > -1,
     });
+  };
 
   render() {
     const { intl } = this.context;
