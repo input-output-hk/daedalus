@@ -25,7 +25,27 @@ export const getLogsChannel: MainIpcChannel<
   GetLogsMainResponse
 > = new MainIpcChannel(GET_LOGS_CHANNEL);
 
-const isFileAllowed = (fileName: string) => includes(ALLOWED_LOGS, fileName);
+const isOldDaedalusLog = (fileName: string) => {
+  const appLogNamePosition = fileName.indexOf(ALLOWED_LOGS[0]);
+
+  // if fileName doesn't start with AppLog filename, it's not old daedalus log
+  if (appLogNamePosition !== 0) {
+    return false;
+  }
+
+  // extract subsequent string attached to log file name
+  const fileNamePostfix = fileName.substring(ALLOWED_LOGS[0].length);
+
+  // if extracted string is in -{datetimestamp} format, it's old daedalus log
+  if (/^-\d{14}$/.test(fileNamePostfix)) {
+    return true;
+  }
+
+  return false;
+};
+
+const isFileAllowed = (fileName: string) =>
+  includes(ALLOWED_LOGS, fileName) || isOldDaedalusLog(fileName);
 
 const isFileNodeLog = (fileName: string, nodeLogsIncluded: number) =>
   ALLOWED_NODE_LOGS.test(fileName) && nodeLogsIncluded < MAX_NODE_LOGS_ALLOWED;
