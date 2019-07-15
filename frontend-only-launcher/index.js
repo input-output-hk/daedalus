@@ -1,7 +1,7 @@
 const fs = require('fs')
 const rimraf = require('./lib/rimraf')
 const createAndWriteX509 = require('./lib/x509')
-const { exec } = require('child_process')
+const { exec, spawn } = require('child_process')
 
 // Declare our state directory for logging and tls certs
 const stateDir = `${process.cwd()}/frontend-only-launcher/state`
@@ -36,16 +36,31 @@ exec('docker exec cardano-byron-docker_proxy_1 curl -s localhost:4040/api/tunnel
   const url = data.tunnels.find(el => el.proto === 'http').public_url
     .split('http://')[1]
 
-  console.log(`
-    Start command:
+  if (process.platform === 'darwin') {
+    console.log('On Darwin, running `yarn dev`')
+    spawn(`yarn`, ['dev'], {
+      stdio: ['inherit', 'inherit', 'inherit'],
+      env: {
+        PATH: process.env.PATH,
+        CARDANO_TLS_PATH: cardanoTlsPath,
+        CARDANO_HOST: url,
+        CARDANO_PORT: 80,
+        LAUNCHER_CONFIG: `${process.cwd()}/frontend-only-launcher/launcher-config-base.yaml`,
+        STATE_DIR: stateDir
+      }
+    })
+  } else {
+    console.log(`
+      On ${process.platform}, run the command below:
 
-    CARDANO_TLS_PATH=${cardanoTlsPath} \\
-    CARDANO_HOST=${url} \\
-    CARDANO_PORT=80 \\
-    LAUNCHER_CONFIG=${process.cwd()}/frontend-only-launcher/launcher-config-base.yaml \\
-    STATE_DIR=${stateDir} \\
-    yarn dev
-  `)
+      CARDANO_TLS_PATH=${cardanoTlsPath} \\
+      CARDANO_HOST=${url} \\
+      CARDANO_PORT=80 \\
+      LAUNCHER_CONFIG=${process.cwd()}/frontend-only-launcher/launcher-config-base.yaml \\
+      STATE_DIR=${stateDir} \\
+      yarn dev
+    `)
 
-  process.exit()
+    process.exit()
+  }
 })
