@@ -85,7 +85,7 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
   @observable numberOfNTPRechecks = 0; // Is 'true' in case local and global time are in sync
-  NTPRecheckInterval: TimeoutID;
+  _NTPRecheckInterval: ?TimeoutID = null;
 
   @observable hasBeenConnected = false;
   @observable syncProgress = null;
@@ -418,7 +418,7 @@ export default class NetworkStatusStore extends Store {
             this.numberOfNTPRechecks < MAX_NTP_RECHECKS
           ) {
             this.numberOfNTPRechecks++;
-            this.NTPRecheckInterval = setTimeout(
+            this._NTPRecheckInterval = setTimeout(
               this.forceCheckLocalTimeDifference,
               NTP_RECHECKS_INTERVAL
             );
@@ -582,7 +582,8 @@ export default class NetworkStatusStore extends Store {
   };
 
   @action _resetNTPRechecks = () => {
-    clearTimeout(this.NTPRecheckInterval);
+    clearTimeout(this._NTPRecheckInterval);
+    this._NTPRecheckInterval = null;
     this.numberOfNTPRechecks = 0;
   };
 
