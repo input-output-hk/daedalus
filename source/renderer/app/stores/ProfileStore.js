@@ -473,7 +473,7 @@ export default class ProfileStore extends Store {
         localTimeDifference,
         networkBlockHeight,
         currentTime: new Date().toISOString(),
-        syncPercentage,
+        syncPercentage: syncPercentage.toFixed(2),
       };
 
       await setStateSnapshotLogChannel.send(stateSnapshotData);
