@@ -3572,7 +3572,7 @@
         }
       },
       {
-        "defaultMessage": "!!!MIT licence",
+        "defaultMessage": "!!!Apache 2.0 license",
         "description": "About page license name",
         "end": {
           "column": 3,
@@ -8487,13 +8487,13 @@
         "description": "Message for the wallet address copy success notification.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/containers/status/DaedalusDiagnosticsDialog.js",
         "id": "daedalus.diagnostics.dialog.stateDirectoryCopyNotificationMessage",
         "start": {
           "column": 41,
-          "line": 13
+          "line": 14
         }
       }
     ],
