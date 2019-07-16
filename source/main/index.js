@@ -48,7 +48,6 @@ const {
   isWatchMode,
   isInSafeMode,
   network,
-  current,
   os: osName,
   version: daedalusVersion,
   buildNumber: cardanoVersion,
@@ -93,7 +92,6 @@ const onAppReady = async () => {
   const systemInfo = logSystemInfo({
     cardanoVersion,
     cpu,
-    current,
     daedalusVersion,
     isInSafeMode,
     network,
