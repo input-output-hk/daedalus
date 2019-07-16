@@ -16,7 +16,7 @@ export const StakePoolsStory = () => (
   <StakePools
     stakePoolsList={STAKE_POOLS.slice(
       0,
-      number('Pools', 100, {
+      number('Pools', 300, {
         range: true,
         min: 37,
         max: 300,

@@ -261,7 +261,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
                 this.searchInput = searchInput;
               }}
               scrollableElementSelector=".Dialog_content"
-              backToTopScrollThreashold={100}
+              backToTopScrollThreashold={300}
             />
           </div>
 
