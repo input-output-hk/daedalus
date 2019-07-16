@@ -10,7 +10,7 @@ import {
   NETWORK_STATUS_REQUEST_TIMEOUT,
   NETWORK_STATUS_POLL_INTERVAL,
   NTP_IGNORE_CHECKS_GRACE_PERIOD,
-  NTP_RECHECKS_INTERVAL,
+  NTP_RECHECK_TIMEOUT,
 } from '../config/timingConfig';
 import {
   UNSYNCED_BLOCKS_ALLOWED,
@@ -59,7 +59,6 @@ const NODE_STOPPED_STATES = [
   CardanoNodeStates.UPDATED,
   CardanoNodeStates.UNRECOVERABLE,
 ];
-
 // END CONSTANTS ----------------------------
 
 export default class NetworkStatusStore extends Store {
@@ -67,6 +66,8 @@ export default class NetworkStatusStore extends Store {
   _startTime = Date.now();
   _networkStatus = NETWORK_STATUS.CONNECTING;
   _networkStatusPollingInterval: ?IntervalID = null;
+  _ntpRecheckTimeout: ?TimeoutID = null;
+  _numberOfNTPRechecks = 0;
 
   // Initialize store observables
 
@@ -80,12 +81,8 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeInSync = false; // 'true' if syncing & local/network blocks diff within limit
   @observable isNodeStopping = false; // 'true' if node is in `NODE_STOPPING_STATES` states
   @observable isNodeStopped = false; // 'true' if node is in `NODE_STOPPED_STATES` states
-
-  // NTP
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
-  @observable numberOfNTPRechecks = 0; // Is 'true' in case local and global time are in sync
-  _NTPRecheckInterval: ?TimeoutID = null;
 
   @observable hasBeenConnected = false;
   @observable syncProgress = null;
@@ -415,12 +412,12 @@ export default class NetworkStatusStore extends Store {
           if (
             !isNodeTimeCorrectNext &&
             isNodeTimeCorrectPrev &&
-            this.numberOfNTPRechecks < MAX_NTP_RECHECKS
+            this._numberOfNTPRechecks < MAX_NTP_RECHECKS
           ) {
-            this.numberOfNTPRechecks++;
-            this._NTPRecheckInterval = setTimeout(
+            this._numberOfNTPRechecks++;
+            this._ntpRecheckTimeout = setTimeout(
               this.forceCheckLocalTimeDifference,
-              NTP_RECHECKS_INTERVAL
+              NTP_RECHECK_TIMEOUT
             );
           } else {
             this._resetNTPRechecks();
@@ -582,9 +579,9 @@ export default class NetworkStatusStore extends Store {
   };
 
   @action _resetNTPRechecks = () => {
-    clearTimeout(this._NTPRecheckInterval);
-    this._NTPRecheckInterval = null;
-    this.numberOfNTPRechecks = 0;
+    clearTimeout(this._ntpRecheckTimeout);
+    this._ntpRecheckTimeout = null;
+    this._numberOfNTPRechecks = 0;
   };
 
   @action _setDisconnected = (wasConnected: boolean) => {
