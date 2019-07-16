@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Fixes
+
+- Fixed broken wallets storybook stories ([PR 1473](https://github.com/input-output-hk/daedalus/pull/1473))
+
 ## 0.14.0
 
 ### Features
