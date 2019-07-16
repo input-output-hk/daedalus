@@ -75,11 +75,12 @@
   padding: 6px 12px;
   position: fixed;
   text-align: center;
-  top: 100px;
+  top: 144px;
   transform: translateX(-50%);
-  transition: top 0.25s ease-out;
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
   z-index: 1;
   &.active {
-    top: 144px;
+    opacity: 1;
   }
 }
