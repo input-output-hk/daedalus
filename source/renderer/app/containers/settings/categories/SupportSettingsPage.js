@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import SupportSettings from '../../../components/settings/categories/SupportSettings';
+import { generateSupportRequestLink } from '../../../../../common/utils/reporting';
 import type { InjectedProps } from '../../../types/injectedPropsType';
-import { getSupportUrl } from '../../../utils/network';
 
 const messages = defineMessages({
   supportRequestLinkUrl: {
@@ -33,8 +33,7 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
     const supportRequestLinkUrl = intl.formatMessage(
       messages.supportRequestLinkUrl
     );
-    const locale = this.props.stores.profile.currentLocale;
-    const supportUrl = await getSupportUrl(supportRequestLinkUrl, locale);
+    const supportUrl = generateSupportRequestLink(supportRequestLinkUrl);
     this.props.stores.app.openExternalLink(supportUrl);
   };
 

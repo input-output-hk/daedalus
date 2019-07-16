@@ -9,12 +9,6 @@ import { safeExitWithCode } from './safeExitWithCode';
 import { CardanoNode } from '../cardano/CardanoNode';
 import { DIALOGS, SCREENS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
-import { getLocale } from './getLocale';
-
-const localesFillForm = {
-  'en-US': 'English',
-  'ja-JP': 'Japanese',
-};
 
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
@@ -54,33 +48,9 @@ export const buildAppMenus = async (
     safeExitWithCode(22);
   };
 
-  const {
-    isMacOS,
-    version,
-    apiVersion,
-    network,
-    build,
-    installerVersion,
-    os,
-    buildNumber,
-  } = environment;
+  const { isMacOS } = environment;
 
   const translations = require(`../locales/${locale}`);
-
-  const networkLocale = getLocale(network);
-
-  const supportRequestData = {
-    frontendVersion: version,
-    backendVersion: apiVersion,
-    network: network === 'development' ? 'staging' : network,
-    build,
-    installerVersion,
-    os,
-    networkLocale,
-    product: `Daedalus wallet - ${network}`,
-    supportLanguage: localesFillForm[networkLocale],
-    productVersion: `Daedalus ${version}+Cardano ${buildNumber}`,
-  };
 
   const menuActions = {
     openAboutDialog,
@@ -96,26 +66,12 @@ export const buildAppMenus = async (
   const isNodeInSync = get(cardanoNode, 'status.isNodeInSync', false);
   if (isMacOS) {
     menu = Menu.buildFromTemplate(
-      osxMenu(
-        app,
-        mainWindow,
-        menuActions,
-        translations,
-        supportRequestData,
-        isNodeInSync
-      )
+      osxMenu(app, mainWindow, menuActions, translations, isNodeInSync)
     );
     Menu.setApplicationMenu(menu);
   } else {
     menu = Menu.buildFromTemplate(
-      winLinuxMenu(
-        app,
-        mainWindow,
-        menuActions,
-        translations,
-        supportRequestData,
-        isNodeInSync
-      )
+      winLinuxMenu(app, mainWindow, menuActions, translations, isNodeInSync)
     );
     mainWindow.setMenu(menu);
   }

@@ -7,7 +7,7 @@ import { getTranslation } from '../utils/getTranslation';
 import { environment } from '../environment';
 import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
-import type { SupportRequests } from '../../common/types/support-requests.types';
+import { generateSupportRequestLink } from '../../common/utils/reporting';
 
 const id = 'menu';
 const { isWindows, isInSafeMode } = environment;
@@ -17,7 +17,6 @@ export const winLinuxMenu = (
   window: BrowserWindow,
   actions: MenuActions,
   translations: {},
-  supportRequestData: SupportRequests,
   isNodeInSync: boolean,
   translation: Function = getTranslation(translations, id)
 ) => [
@@ -173,14 +172,7 @@ export const winLinuxMenu = (
           const supportRequestLinkUrl = translation(
             'helpSupport.supportRequestUrl'
           );
-          const supportUrl = `${supportRequestLinkUrl}?${Object.entries(
-            supportRequestData
-          )
-            .map(
-              ([key, val]: [string, any]) =>
-                `${encodeURIComponent(key)}=${encodeURIComponent(val)}`
-            )
-            .join('&')}`;
+          const supportUrl = generateSupportRequestLink(supportRequestLinkUrl);
           shell.openExternal(supportUrl);
         },
       },
