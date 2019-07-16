@@ -166,7 +166,11 @@ export const osxMenu = (
           const supportRequestLinkUrl = translation(
             'helpSupport.supportRequestUrl'
           );
-          const supportUrl = generateSupportRequestLink(supportRequestLinkUrl, environment, locale);
+          const supportUrl = generateSupportRequestLink(
+            supportRequestLinkUrl,
+            environment,
+            locale
+          );
           shell.openExternal(supportUrl);
         },
       },

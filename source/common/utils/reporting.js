@@ -8,7 +8,11 @@ const localesFillForm = {
   'ja-JP': 'Japanese',
 };
 
-export const generateSupportRequestLink = (baseUrl: string, environmentData: Environment, networkLocale: string): string => {
+export const generateSupportRequestLink = (
+  baseUrl: string,
+  environmentData: Environment,
+  networkLocale: string
+): string => {
   const {
     version,
     apiVersion,
@@ -32,9 +36,8 @@ export const generateSupportRequestLink = (baseUrl: string, environmentData: Env
     productVersion: `Daedalus ${version}+Cardano ${buildNumber}`,
   };
 
-  return `${baseUrl}?${Object.entries(
-    supportRequestData
-  ).map(
+  return `${baseUrl}?${Object.entries(supportRequestData)
+    .map(
       ([key, val]: [string, any]) =>
         `${encodeURIComponent(key)}=${encodeURIComponent(val)}`
     )
