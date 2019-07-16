@@ -13,6 +13,7 @@ import startCase from 'lodash/startCase';
 import StoryLayout from './support/StoryLayout';
 import StoryProvider from './support/StoryProvider';
 import StoryDecorator from './support/StoryDecorator';
+import VerticalFlexContainer from '../../source/renderer/app/components/layout/VerticalFlexContainer';
 import {
   generateWallet,
   generateTransaction,
@@ -103,26 +104,28 @@ storiesOf('WalletScreens', module)
   ))
 
   .add('Receive', () => (
-    <WalletReceive
-      walletAddress={text(
-        'Wallet address',
-        '5628aab8ac98c963e4a2e8cfce5aa1cbd4384fe2f9a0f3c5f791bfb83a5e02ds'
-      )}
-      isWalletAddressUsed={boolean('isWalletAddressUsed', false)}
-      walletAddresses={[
-        ...Array.from(Array(number('Addresses', 1))).map(() =>
-          generateAddress()
-        ),
-        ...Array.from(Array(number('Addresses (used)', 1))).map(() =>
-          generateAddress(true)
-        ),
-      ]}
-      onGenerateAddress={action('onGenerateAddress')}
-      onCopyAddress={action('onGenerateAddress')}
-      isSidebarExpanded
-      walletHasPassword={boolean('walletHasPassword', false)}
-      isSubmitting={boolean('isSubmitting', false)}
-    />
+    <VerticalFlexContainer>
+      <WalletReceive
+        walletAddress={text(
+          'Wallet address',
+          'DdzFFzCqrhsg9ngNRhHEa49se7qEMKyubT9tcE13Fkvh8QC82trpTDsNvdQV7mg9SCZiuENkf77zrtwPXrTyGMNznUsSinPC1gb2ZCqK'
+        )}
+        isWalletAddressUsed={boolean('isWalletAddressUsed', false)}
+        walletAddresses={[
+          ...Array.from(Array(number('Addresses', 10))).map(() =>
+            generateAddress()
+          ),
+          ...Array.from(Array(number('Addresses (used)', 10))).map(() =>
+            generateAddress(true)
+          ),
+        ]}
+        onGenerateAddress={action('onGenerateAddress')}
+        onCopyAddress={action('onGenerateAddress')}
+        isSidebarExpanded={boolean('isSidebarExpanded', true)}
+        walletHasPassword={boolean('walletHasPassword', false)}
+        isSubmitting={boolean('isSubmitting', false)}
+      />
+    </VerticalFlexContainer>
   ))
 
   .add('Transactions', () => (
