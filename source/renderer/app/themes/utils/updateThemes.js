@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 // @flow
 import { isEmpty } from 'lodash';
 import { updateTheme } from './createTheme';
@@ -9,13 +8,14 @@ import type { PendingThemesUpdates } from '../types';
 
 export const updateThemes = (pendingUpdates: PendingThemesUpdates) => {
   const { cardanoUpdates, darkBlueUpdates, lightBlueUpdates } = pendingUpdates;
+
   const updatedThemes = {};
   if (cardanoUpdates && !isEmpty(cardanoUpdates)) {
     const updatedCardanoTheme = updateTheme(
       CARDANO_THEME_CONFIG,
       cardanoUpdates
     );
-    updateThemes.cardano = updatedCardanoTheme;
+    updatedThemes.cardano = updatedCardanoTheme;
   }
 
   if (darkBlueUpdates && !isEmpty(darkBlueUpdates)) {
@@ -23,7 +23,7 @@ export const updateThemes = (pendingUpdates: PendingThemesUpdates) => {
       DARK_BLUE_THEME_CONFIG,
       darkBlueUpdates
     );
-    updateThemes['dark-blue'] = updatedDarkBlueTheme;
+    updatedThemes['dark-blue'] = updatedDarkBlueTheme;
   }
 
   if (lightBlueUpdates && !isEmpty(lightBlueUpdates)) {
@@ -31,7 +31,7 @@ export const updateThemes = (pendingUpdates: PendingThemesUpdates) => {
       LIGHT_BLUE_THEME_CONFIG,
       lightBlueUpdates
     );
-    updateThemes['light-blue'] = updatedLightBlueTheme;
+    updatedThemes['light-blue'] = updatedLightBlueTheme;
   }
   return updatedThemes;
 };
