@@ -2283,13 +2283,13 @@
         "description": "Title \"Delegation Setup\" on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.title",
         "start": {
           "column": 9,
-          "line": 21
+          "line": 22
         }
       },
       {
@@ -2297,13 +2297,13 @@
         "description": "Description on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.description",
         "start": {
           "column": 15,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -2311,13 +2311,13 @@
         "description": "\"Delegated Pools\" section label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.delegatedPoolsLabel",
         "start": {
           "column": 23,
-          "line": 34
+          "line": 35
         }
       },
       {
@@ -2325,13 +2325,13 @@
         "description": "Search \"Pools\" input label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 47
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.label",
         "start": {
           "column": 20,
-          "line": 41
+          "line": 42
         }
       },
       {
@@ -2339,13 +2339,13 @@
         "description": "Search \"Pools\" input placeholder on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 54
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.placeholder",
         "start": {
           "column": 26,
-          "line": 47
+          "line": 48
         }
       },
       {
@@ -2353,13 +2353,13 @@
         "description": "Label for continue button on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 61
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 54
+          "line": 55
         }
       },
       {
@@ -2367,13 +2367,13 @@
         "description": "Step indicator labe on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 68
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.stepIndicatorLabel",
         "start": {
           "column": 22,
-          "line": 61
+          "line": 62
         }
       },
       {
@@ -2381,13 +2381,13 @@
         "description": "Selected pool box placeholder on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 75
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.selectPoolPlaceholder",
         "start": {
           "column": 25,
-          "line": 68
+          "line": 69
         }
       }
     ],
@@ -3281,13 +3281,13 @@
         "description": "\"delegatingListTitlee\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 18
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.delegatingListTitle",
         "start": {
           "column": 23,
-          "line": 11
+          "line": 14
         }
       },
       {
@@ -3295,13 +3295,13 @@
         "description": "\"listTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 23
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitle",
         "start": {
           "column": 13,
-          "line": 16
+          "line": 19
         }
       }
     ],
@@ -3311,7 +3311,7 @@
     "descriptors": [
       {
         "defaultMessage": "!!!Search stake pools",
-        "description": "\"Delegating List Title\" for the Stake Pools page.",
+        "description": "\"Delegating List Title\" for the Stake Pools search.",
         "end": {
           "column": 3,
           "line": 16
@@ -3325,7 +3325,7 @@
       },
       {
         "defaultMessage": "!!!All",
-        "description": "\"Filter All\" for the Stake Pools page.",
+        "description": "\"Filter All\" for the Stake Pools search.",
         "end": {
           "column": 3,
           "line": 21
@@ -3339,7 +3339,7 @@
       },
       {
         "defaultMessage": "!!!New",
-        "description": "\"Filter New\" for the Stake Pools page.",
+        "description": "\"Filter New\" for the Stake Pools search.",
         "end": {
           "column": 3,
           "line": 26
@@ -3353,7 +3353,7 @@
       },
       {
         "defaultMessage": "!!!Charity",
-        "description": "\"FilterChar ity\" for the Stake Pools page.",
+        "description": "\"FilterChar ity\" for the Stake Pools search.",
         "end": {
           "column": 3,
           "line": 31
@@ -3367,7 +3367,7 @@
       },
       {
         "defaultMessage": "!!!Stake pools you are currently delegating to",
-        "description": "\"delegatingListTitlee\" for the Stake Pools page.",
+        "description": "\"delegatingListTitlee\" for the Stake Pools search.",
         "end": {
           "column": 3,
           "line": 36
@@ -3381,7 +3381,7 @@
       },
       {
         "defaultMessage": "!!!Stake pools ({pools})",
-        "description": "\"listTitle\" for the Stake Pools page.",
+        "description": "\"listTitle\" for the Stake Pools search.",
         "end": {
           "column": 3,
           "line": 41
@@ -3391,6 +3391,20 @@
         "start": {
           "column": 13,
           "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Back to top",
+        "description": "\"backToTop\" for the Stake Pools search.",
+        "end": {
+          "column": 3,
+          "line": 46
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
+        "id": "staking.stakePools.search.backToTop",
+        "start": {
+          "column": 13,
+          "line": 42
         }
       }
     ],
