@@ -1,11 +1,12 @@
 // @flow
-/* eslint-disable */
 import readline from 'readline';
 import chalk from 'chalk';
 import { updateThemes } from './updateThemes';
 import { writeThemeUpdate } from './writeThemeUpdate';
 import type { PendingThemesUpdates } from '../types';
 
+/* eslint-disable-next-line no-console */
+const logMsg = (msg: string) => console.log(msg);
 const logInputOption = (option: string) => chalk.magenta.italic(`'${option}'`);
 const YES_OR_NO = `${logInputOption('yes')} / ${logInputOption('no')}`;
 
@@ -19,45 +20,50 @@ export const runUpdateThemesCLI = (pendingUpdates: PendingThemesUpdates) => {
   });
 
   rl.prompt();
+
   rl.on('line', line => {
     switch (line.trim()) {
-      case 'yes' || 'y': {
+      case 'yes': {
+        /* eslint-disable-next-line no-unused-expressions */
         chalk`\n{bold Upating themes...}\n`;
+        // returns updated theme objects in 'daedalus/themes'
         const updatedThemes = updateThemes(pendingUpdates);
 
         for (const updatedTheme of Object.entries(updatedThemes)) {
-          const [file, updatedThemeObj] = updatedTheme;
-          const fileName = `${file}.js`;
-          // should this by async?
+          const [fileName, updatedThemeObj] = updatedTheme;
           writeThemeUpdate({ fileName, updatedThemeObj });
         }
 
-        chalk
-          .hex('#2cbb69')
-          .bold(
-            `\nThemes updated! Please check the result and commit the updates if neccessary.\n`
-          );
+        logMsg(
+          chalk
+            .hex('#2cbb69')
+            .bold(
+              `\nThemes updated! Please check the output and commit the changes if correct.\n`
+            )
+        );
+        process.exit(0);
         break;
       }
 
-      case 'no' || 'n': {
-        chalk.cyan('Exiting... See you later!');
+      case 'no': {
+        logMsg(chalk.cyan('Exiting... See you later!'));
         process.exit(0);
         break;
       }
 
       default: {
-        chalk.cyan(
-          `Umm... Enter ( ${YES_OR_NO} ) to continue, or ${logInputOption(
-            'ctrl + c'
-          )} to exit.`
+        logMsg(
+          chalk.cyan(
+            `\nCommand not recognized.\nEnter ( ${YES_OR_NO} ) to continue, or ${logInputOption(
+              'ctrl + c'
+            )} to exit.`
+          )
         );
         break;
       }
     }
-    rl.prompt();
   }).on('close', () => {
-    chalk.cyan('Exiting... See you later!');
+    logMsg(chalk.cyan('Exiting... See you later!'));
     process.exit(0);
   });
 };
