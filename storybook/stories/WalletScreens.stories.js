@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-// import { action } from '@storybook/addon-actions';
+import { action } from '@storybook/addon-actions';
 import { linkTo } from '@storybook/addon-links';
 import { withKnobs, text, boolean, number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
@@ -95,9 +95,9 @@ storiesOf('WalletScreens', module)
       currencyMaxIntegerDigits={11}
       validateAmount={promise(true)}
       calculateTransactionFee={promise(true)}
-      addressValidator={() => {}}
-      openDialogAction={() => {}}
-      isDialogOpen={() => boolean('hasDialog', false)}
+      addressValidator={action('addressValidator')}
+      openDialogAction={action('openDialogAction')}
+      isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
     />
   ))
@@ -117,8 +117,8 @@ storiesOf('WalletScreens', module)
           generateAddress(true)
         ),
       ]}
-      onGenerateAddress={() => {}}
-      onCopyAddress={() => {}}
+      onGenerateAddress={action('onGenerateAddress')}
+      onCopyAddress={action('onGenerateAddress')}
       isSidebarExpanded
       walletHasPassword={boolean('walletHasPassword', false)}
       isSubmitting={boolean('isSubmitting', false)}

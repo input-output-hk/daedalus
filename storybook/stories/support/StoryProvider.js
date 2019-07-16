@@ -58,14 +58,12 @@ export default class StoryProvider extends Component<Props> {
 
   @computed get stores(): {} {
     return {
-      ada: {
-        wallets: {
-          active: WALLETS[parseInt(this.activeWalletId, 10)],
-          sendMoney: () => {},
-          sendMoneyRequest: {
-            isExecuting: false,
-            reset: () => {},
-          },
+      wallets: {
+        active: WALLETS[parseInt(this.activeWalletId, 10)],
+        sendMoney: () => {},
+        sendMoneyRequest: {
+          isExecuting: false,
+          reset: () => {},
         },
       },
     };
