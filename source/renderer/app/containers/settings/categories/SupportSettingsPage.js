@@ -33,7 +33,9 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
     const supportRequestLinkUrl = intl.formatMessage(
       messages.supportRequestLinkUrl
     );
-    const supportUrl = generateSupportRequestLink(supportRequestLinkUrl);
+    const locale = this.props.stores.profile.currentLocale;
+    const { environment } = this.props.stores.app;
+    const supportUrl = generateSupportRequestLink(supportRequestLinkUrl, environment, locale);
     this.props.stores.app.openExternalLink(supportUrl);
   };
 

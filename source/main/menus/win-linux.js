@@ -18,6 +18,7 @@ export const winLinuxMenu = (
   actions: MenuActions,
   translations: {},
   isNodeInSync: boolean,
+  locale: string,
   translation: Function = getTranslation(translations, id)
 ) => [
   {
@@ -172,7 +173,7 @@ export const winLinuxMenu = (
           const supportRequestLinkUrl = translation(
             'helpSupport.supportRequestUrl'
           );
-          const supportUrl = generateSupportRequestLink(supportRequestLinkUrl);
+          const supportUrl = generateSupportRequestLink(supportRequestLinkUrl, environment, locale);
           shell.openExternal(supportUrl);
         },
       },

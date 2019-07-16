@@ -66,12 +66,12 @@ export const buildAppMenus = async (
   const isNodeInSync = get(cardanoNode, 'status.isNodeInSync', false);
   if (isMacOS) {
     menu = Menu.buildFromTemplate(
-      osxMenu(app, mainWindow, menuActions, translations, isNodeInSync)
+      osxMenu(app, mainWindow, menuActions, translations, isNodeInSync, locale)
     );
     Menu.setApplicationMenu(menu);
   } else {
     menu = Menu.buildFromTemplate(
-      winLinuxMenu(app, mainWindow, menuActions, translations, isNodeInSync)
+      winLinuxMenu(app, mainWindow, menuActions, translations, isNodeInSync, locale)
     );
     mainWindow.setMenu(menu);
   }

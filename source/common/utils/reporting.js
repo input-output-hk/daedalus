@@ -1,16 +1,14 @@
 // @flow
 
-import { getLocale } from '../../main/utils/getLocale';
-import { environment } from '../../main/environment';
-import serialize from '../../renderer/app/utils/serialize';
 import type { SupportRequests } from '../types/support-requests.types';
+import type { Environment } from '../types/environment.types';
 
 const localesFillForm = {
   'en-US': 'English',
   'ja-JP': 'Japanese',
 };
 
-export const generateSupportRequestLink = (baseUrl: string): string => {
+export const generateSupportRequestLink = (baseUrl: string, environmentData: Environment, networkLocale: string): string => {
   const {
     version,
     apiVersion,
@@ -19,9 +17,7 @@ export const generateSupportRequestLink = (baseUrl: string): string => {
     installerVersion,
     os,
     buildNumber,
-  } = environment;
-
-  const networkLocale = getLocale(network);
+  } = environmentData;
 
   const supportRequestData: SupportRequests = {
     frontendVersion: version,
@@ -36,5 +32,11 @@ export const generateSupportRequestLink = (baseUrl: string): string => {
     productVersion: `Daedalus ${version}+Cardano ${buildNumber}`,
   };
 
-  return `${baseUrl}?${serialize(supportRequestData)}`;
+  return `${baseUrl}?${Object.entries(
+    supportRequestData
+  ).map(
+      ([key, val]: [string, any]) =>
+        `${encodeURIComponent(key)}=${encodeURIComponent(val)}`
+    )
+    .join('&')}`;
 };

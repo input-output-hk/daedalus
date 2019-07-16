@@ -70,7 +70,9 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
   }
 
   handleIssueClick = async (issueButtonUrl: string) => {
-    const supportUrl = generateSupportRequestLink(issueButtonUrl);
+    const locale = this.props.stores.profile.currentLocale;
+    const { environment } = this.props.stores.app;
+    const supportUrl = generateSupportRequestLink(issueButtonUrl, environment, locale);
     this.props.stores.app.openExternalLink(supportUrl);
   };
 
