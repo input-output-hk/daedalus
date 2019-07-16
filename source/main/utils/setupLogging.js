@@ -14,6 +14,7 @@ import type {
   ConstructMessageBodyParams,
   MessageBody,
   LogSystemInfoParams,
+  StateSnapshotLogParams,
 } from '../../common/types/logging.types';
 
 const isTest = process.env.NODE_ENV === 'test';
@@ -72,7 +73,7 @@ export const setupLogging = () => {
 };
 
 export const logSystemInfo = (props: LogSystemInfoParams): MessageBody => {
-  const { current, ...data } = props;
+  const { ...data } = props;
   const {
     network,
     osName,
@@ -80,11 +81,11 @@ export const logSystemInfo = (props: LogSystemInfoParams): MessageBody => {
     daedalusVersion,
     startTime: at,
   } = data;
-  const env = `${network}:${osName}:${platformVersion}:${daedalusVersion}`;
+  const env = `${network}:${osName}:${platformVersion}`;
   const messageBodyParams: ConstructMessageBodyParams = {
     at,
     env,
-    ns: ['daedalus', `v${daedalusVersion}`, `*${current}*`],
+    ns: ['daedalus', `v${daedalusVersion}`, `*${network}*`],
     data,
     msg: 'Updating System-info.json file',
     pid: '',
@@ -94,5 +95,62 @@ export const logSystemInfo = (props: LogSystemInfoParams): MessageBody => {
   const messageBody: MessageBody = constructMessageBody(messageBodyParams);
   const systemInfoFilePath = path.join(pubLogsFolderPath, 'System-info.json');
   fs.writeFileSync(systemInfoFilePath, JSON.stringify(messageBody));
+  return messageBody;
+};
+
+export const logStateSnapshot = (
+  props: StateSnapshotLogParams
+): MessageBody => {
+  const { ...data } = props;
+  const { currentTime: at, systemInfo, coreInfo } = data;
+  const {
+    platform,
+    platformVersion,
+    cpu,
+    ram,
+    availableDiskSpace,
+  } = systemInfo;
+  const {
+    daedalusVersion,
+    daedalusProcessID,
+    daedalusMainProcessID,
+    isInSafeMode,
+    cardanoVersion,
+    cardanoNetwork,
+    cardanoProcessID,
+    cardanoAPIPort,
+    daedalusStateDirectoryPath,
+  } = coreInfo;
+  const env = `${cardanoNetwork}:${platform}:${platformVersion}`;
+  const messageBodyParams: ConstructMessageBodyParams = {
+    at,
+    env,
+    msg: 'Updating State-snapshot.json file',
+    pid: '',
+    sev: 'info',
+    thread: '',
+    ns: ['daedalus', `v${daedalusVersion}`, `*${cardanoNetwork}*`],
+    platform,
+    platformVersion,
+    cpu,
+    ram,
+    availableDiskSpace,
+    daedalusVersion,
+    daedalusProcessID,
+    daedalusMainProcessID,
+    isInSafeMode,
+    cardanoVersion,
+    cardanoNetwork,
+    cardanoProcessID,
+    cardanoAPIPort,
+    daedalusStateDirectoryPath,
+    data,
+  };
+  const messageBody: MessageBody = constructMessageBody(messageBodyParams);
+  const stateSnapshotFilePath = path.join(
+    pubLogsFolderPath,
+    'State-snapshot.json'
+  );
+  fs.writeFileSync(stateSnapshotFilePath, JSON.stringify(messageBody));
   return messageBody;
 };
