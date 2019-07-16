@@ -6,6 +6,7 @@ Changelog
 ### Features
 
 - Added Daedalus state snapshot log file "State-snapshot.json" on Download logs action ([PR 1456](https://github.com/input-output-hk/daedalus/pull/1456))
+- Improved NTP handling, avoiding a false error overlay ([PR 1462](https://github.com/input-output-hk/daedalus/pull/1462))
 - Configured electron-log-daedalus file transport configuration params for new log rotation scheme ([PR 1448](https://github.com/input-output-hk/daedalus/pull/1448))
 - Implemented no-wallets case on the Delegation Center screen ([PR 1463](https://github.com/input-output-hk/daedalus/pull/1463))
 - Implemented the animated Daedalus logo on the "Loading" screens ([PR 1457](https://github.com/input-output-hk/daedalus/pull/1457))
