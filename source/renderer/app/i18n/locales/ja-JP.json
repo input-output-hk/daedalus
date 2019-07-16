@@ -369,7 +369,7 @@
   "static.about.content.daedalus.headline": "ダイダロスチーム",
   "static.about.content.daedalus.members": "Alan McNicholas, Aleksandar Djordjevic, Alexander Rukin, Brian McKenna, Charles Hoskinson, Danilo Prates, Darko Mijić, Dominik Guzei, Dmitrii Gaico, Elin Liu, Gabriela Ponce, Iulia Dolishniak, Jane Wild, Jeremy Wood, Juli Sudi, Junko Oda, Laurie Wang, Marcus Hurney, Michael Bishop, Nikola Glumac, Piotr Stachyra, Rhys Bartels-Waller, Richard Wild, Robert Moore, Rodney Lorrimar, Sam Jeston, Samuel Leathers, Serge Kosyrev, Tatyana Valkevych, Tomas Vrana, Tomislav Horaček, Yakov Karavelov",
   "static.about.copyright": "Input Output HK Limited. Licensed under",
-  "static.about.license": "MIT licence",
+  "static.about.license": "Apache 2.0 licence",
   "static.about.title": "ダイダロス",
   "status.icons.checkYourInternetConnection": "インターネット接続を確認してください。",
   "status.icons.isNodeRespondingLoading": "ノードが<b>応答しているかどうか</b>確認しています。",

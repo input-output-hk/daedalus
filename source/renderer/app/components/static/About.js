@@ -44,7 +44,7 @@ const messages = defineMessages({
   },
   licenseLink: {
     id: 'static.about.license',
-    defaultMessage: '!!!MIT licence',
+    defaultMessage: '!!!Apache 2.0 licence',
     description: 'About page license name',
   },
   aboutBuildInfo: {

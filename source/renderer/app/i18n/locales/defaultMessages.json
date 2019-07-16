@@ -3572,7 +3572,7 @@
         }
       },
       {
-        "defaultMessage": "!!!MIT licence",
+        "defaultMessage": "!!!Apache 2.0 licence",
         "description": "About page license name",
         "end": {
           "column": 3,
