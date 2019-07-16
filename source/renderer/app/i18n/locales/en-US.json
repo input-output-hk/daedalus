@@ -369,7 +369,7 @@
   "static.about.content.daedalus.headline": "Daedalus Team:",
   "static.about.content.daedalus.members": "Alan McNicholas, Aleksandar Djordjevic, Alexander Rukin, Brian McKenna, Charles Hoskinson, Danilo Prates, Darko Mijić, Dominik Guzei, Dmitrii Gaico, Elin Liu, Gabriela Ponce, Iulia Dolishniak, Jane Wild, Jeremy Wood, Juli Sudi, Junko Oda, Laurie Wang, Marcus Hurney, Michael Bishop, Nikola Glumac, Piotr Stachyra, Rhys Bartels-Waller, Richard Wild, Robert Moore, Rodney Lorrimar, Sam Jeston, Samuel Leathers, Serge Kosyrev, Tatyana Valkevych, Tomas Vrana, Tomislav Horaček, Yakov Karavelov",
   "static.about.copyright": "Input Output HK Limited. Licensed under",
-  "static.about.license": "Apache 2.0 licence",
+  "static.about.license": "Apache 2.0 license",
   "static.about.title": "Daedalus",
   "status.icons.checkYourInternetConnection": "Check your <b>Internet connection</b>",
   "status.icons.isNodeRespondingLoading": "Checking if Node is <b>responding</b>",

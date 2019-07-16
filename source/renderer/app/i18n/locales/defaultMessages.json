@@ -3572,7 +3572,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Apache 2.0 licence",
+        "defaultMessage": "!!!Apache 2.0 license",
         "description": "About page license name",
         "end": {
           "column": 3,
