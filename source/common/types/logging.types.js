@@ -43,7 +43,6 @@ export type ElectronLoggerMessage = {
 export type LogSystemInfoParams = {
   cardanoVersion: string,
   cpu: Array<Object>,
-  current: string,
   daedalusVersion: string,
   isInSafeMode: boolean,
   network: string,
@@ -57,7 +56,6 @@ export type StateSnapshotLogParams = {
   systemInfo: SystemInfo,
   coreInfo: CoreSystemInfo,
   cardanoNodeState: CardanoNodeState | any,
-  current: string,
   currentLocale: string,
   isConnected: boolean,
   isDev: boolean,

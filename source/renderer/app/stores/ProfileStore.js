@@ -309,9 +309,9 @@ export default class ProfileStore extends Store {
 
   _getLogs = async () => {
     const { isDownloading } = this.compressedLogsStatus;
+    await this._setStateSnapshotLog();
     const logs = await getLogsChannel.request();
     this._setLogFiles(logs);
-    await this._logStateSnapshot();
     if (isDownloading || this.isSubmittingBugReport) {
       this._compressLogs({ logs });
     }
@@ -375,7 +375,7 @@ export default class ProfileStore extends Store {
   });
 
   // Collect all relevant state snapshot params and send them for log file creation
-  _logStateSnapshot = async () => {
+  _setStateSnapshotLog = async () => {
     try {
       Logger.info('ProfileStore: Requesting state snapshot log file creation');
 
@@ -409,7 +409,6 @@ export default class ProfileStore extends Store {
         network,
         buildNumber,
         cpu,
-        current,
         version,
         mainProcessID,
         rendererProcessID,
@@ -447,7 +446,6 @@ export default class ProfileStore extends Store {
         systemInfo,
         coreInfo,
         cardanoNodeState,
-        current,
         currentLocale: this.currentLocale,
         isConnected,
         isDev,

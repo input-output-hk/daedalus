@@ -73,7 +73,7 @@ export const setupLogging = () => {
 };
 
 export const logSystemInfo = (props: LogSystemInfoParams): MessageBody => {
-  const { current, ...data } = props;
+  const { ...data } = props;
   const {
     network,
     osName,
@@ -81,11 +81,11 @@ export const logSystemInfo = (props: LogSystemInfoParams): MessageBody => {
     daedalusVersion,
     startTime: at,
   } = data;
-  const env = `${network}:${osName}:${platformVersion}:${daedalusVersion}`;
+  const env = `${network}:${osName}:${platformVersion}`;
   const messageBodyParams: ConstructMessageBodyParams = {
     at,
     env,
-    ns: ['daedalus', `v${daedalusVersion}`, `*${current}*`],
+    ns: ['daedalus', `v${daedalusVersion}`, `*${network}*`],
     data,
     msg: 'Updating System-info.json file',
     pid: '',
@@ -101,7 +101,7 @@ export const logSystemInfo = (props: LogSystemInfoParams): MessageBody => {
 export const logStateSnapshot = (
   props: StateSnapshotLogParams
 ): MessageBody => {
-  const { current, ...data } = props;
+  const { ...data } = props;
   const { currentTime: at, systemInfo, coreInfo } = data;
   const {
     platform,
@@ -121,7 +121,7 @@ export const logStateSnapshot = (
     cardanoAPIPort,
     daedalusStateDirectoryPath,
   } = coreInfo;
-  const env = `${cardanoNetwork}:${platform}:${cardanoVersion}:${daedalusVersion}`;
+  const env = `${cardanoNetwork}:${platform}:${platformVersion}`;
   const messageBodyParams: ConstructMessageBodyParams = {
     at,
     env,
@@ -129,7 +129,7 @@ export const logStateSnapshot = (
     pid: '',
     sev: 'info',
     thread: '',
-    ns: ['daedalus', `v${daedalusVersion}`, `*${current}*`],
+    ns: ['daedalus', `v${daedalusVersion}`, `*${cardanoNetwork}*`],
     platform,
     platformVersion,
     cpu,
