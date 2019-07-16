@@ -119,9 +119,12 @@ gulp.task('prepare:themes:utils', () =>
     .src([
       'source/renderer/app/themes/utils/checkCreateTheme.js',
       'source/renderer/app/themes/utils/constants.js',
-      'source/renderer/app/themes/utils/createTheme.js',
       'source/renderer/app/themes/utils/createShades.js',
+      'source/renderer/app/themes/utils/createTheme.js',
+      'source/renderer/app/themes/utils/findUpdates.js',
       'source/renderer/app/themes/utils/updateThemes.js',
+      'source/renderer/app/themes/utils/updateThemesCLI.js',
+      'source/renderer/app/themes/utils/writeThemeUpdate.js',
     ])
     .pipe(flowRemoveTypes())
     .pipe(gulp.dest('dist/utils'))
