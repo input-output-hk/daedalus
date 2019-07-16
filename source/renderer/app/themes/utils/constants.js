@@ -45,11 +45,11 @@ export const CREATE_THEME_OBJ = {
 export const CREATE_CARDANO_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
-      primary: createBackgroundShades('#efefef'),
-      secondary: createBackgroundShades('#2cbb69'),
+      primary: '#efefef',
+      secondary: '#2cbb69',
     },
     border: '#c6cdd6',
-    error: createErrorShades('#ea4c5b'),
+    error: '#ea4c5b',
     focus: '#5e6066',
     text: {
       primary: '#5e6066',
@@ -62,11 +62,11 @@ export const CREATE_CARDANO_THEME_PARAMS: CreateThemeParams = {
 export const CREATE_LIGHT_BLUE_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
-      primary: createBackgroundShades('#ebeff2'),
-      secondary: createBackgroundShades('#2f496e'),
+      primary: '#ebeff2',
+      secondary: '#2f496e',
     },
     border: '#c6cdd6',
-    error: createErrorShades('#ea4c5b'),
+    error: '#ea4c5b',
     focus: '#5e6066',
     text: {
       primary: '#5e6066',
@@ -79,11 +79,11 @@ export const CREATE_LIGHT_BLUE_THEME_PARAMS: CreateThemeParams = {
 export const CREATE_DARK_BLUE_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
-      primary: createBackgroundShades('#263345'),
-      secondary: createBackgroundShades('#536370'),
+      primary: '#263345',
+      secondary: '#536370',
     },
     border: 'rgba(102, 122, 138, 0.3)',
-    error: createErrorShades('#ea4c5b'),
+    error: '#ea4c5b',
     focus: '#667a8a',
     text: {
       primary: '#e9f4fe',
