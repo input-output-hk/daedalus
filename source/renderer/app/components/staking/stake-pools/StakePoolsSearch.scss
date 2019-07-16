@@ -61,3 +61,25 @@
     opacity: 1;
   }
 }
+
+.backToTopBtn {
+  background-color: #5e6066;
+  border-radius: 5px;
+  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.36);
+  color: #fafbfc;
+  cursor: pointer;
+  font-size: 12px;
+  left: 50%;
+  line-height: 1.17;
+  opacity: 0.98;
+  padding: 6px 12px;
+  position: fixed;
+  text-align: center;
+  top: 100px;
+  transform: translateX(-50%);
+  transition: top 0.25s ease-out;
+  z-index: 1;
+  &.active {
+    top: 144px;
+  }
+}

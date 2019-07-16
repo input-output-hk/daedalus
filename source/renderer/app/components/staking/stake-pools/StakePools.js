@@ -110,6 +110,8 @@ export default class StakePools extends Component<Props, State> {
           registerSearchInput={searchInput => {
             this.searchInput = searchInput;
           }}
+          scrollableElementSelector=".StakingWithNavigation_page"
+          backToTopScrollThreashold={50}
         />
 
         <h2>{intl.formatMessage(messages.delegatingListTitle)}</h2>

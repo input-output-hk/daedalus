@@ -7,7 +7,7 @@ const searchFields = ['slug', 'name'];
 const NEW_POOLS_MONTHS_OLD = 3;
 
 const stakePoolsListSearch = (stakePool: StakePool, search: string) => {
-  let pass = !search || search.length < 3;
+  let pass = !search;
   searchFields.forEach((field: string) => {
     if (!pass) pass = RegExp(search, 'i').test(stakePool[field]);
   });
@@ -30,7 +30,7 @@ const filtersFn = {
 export const getFilteredStakePoolsList = (
   stakePoolsList: StakePoolsListType,
   search: string,
-  filters: Filters
+  filters?: Filters = []
 ): Array<any> =>
   stakePoolsList
     .filter((stakePool: StakePool) => stakePoolsListSearch(stakePool, search))
