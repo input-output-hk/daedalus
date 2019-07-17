@@ -11,7 +11,7 @@ const localesFillForm = {
 export const generateSupportRequestLink = (
   baseUrl: string,
   environmentData: Environment,
-  networkLocale: string
+  locale: string
 ): string => {
   const {
     version,
@@ -30,9 +30,9 @@ export const generateSupportRequestLink = (
     build,
     installerVersion,
     os,
-    networkLocale,
+    locale,
     product: `Daedalus wallet - ${network}`,
-    supportLanguage: localesFillForm[networkLocale],
+    supportLanguage: localesFillForm[locale],
     productVersion: `Daedalus ${version}+Cardano ${buildNumber}`,
   };
 

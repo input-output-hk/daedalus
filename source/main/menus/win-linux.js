@@ -18,7 +18,7 @@ export const winLinuxMenu = (
   actions: MenuActions,
   translations: {},
   isNodeInSync: boolean,
-  networkLocale: string,
+  locale: string,
   translation: Function = getTranslation(translations, id)
 ) => [
   {
@@ -176,7 +176,7 @@ export const winLinuxMenu = (
           const supportUrl = generateSupportRequestLink(
             supportRequestLinkUrl,
             environment,
-            networkLocale
+            locale
           );
           shell.openExternal(supportUrl);
         },

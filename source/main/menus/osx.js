@@ -18,7 +18,7 @@ export const osxMenu = (
   actions: MenuActions,
   translations: {},
   isNodeInSync: boolean,
-  networkLocale: string,
+  locale: string,
   translation: Function = getTranslation(translations, id)
 ) => [
   {
@@ -169,7 +169,7 @@ export const osxMenu = (
           const supportUrl = generateSupportRequestLink(
             supportRequestLinkUrl,
             environment,
-            networkLocale
+            locale
           );
           shell.openExternal(supportUrl);
         },
