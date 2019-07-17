@@ -1,7 +1,9 @@
 let
   localLib = import ./lib.nix;
+  system = builtins.currentSystem; # todo
 in
-{ system ? builtins.currentSystem
+{ target ? builtins.currentSystem
+#system ? builtins.currentSystem
 , config ? {}
 , pkgs ? localLib.iohkNix.getPkgs { inherit system config; }
 , cluster ? "mainnet"
@@ -22,7 +24,7 @@ let
   }) {};
   installPath = ".daedalus";
   lib = pkgs.lib;
-  cardanoSL = localLib.cardanoSL { inherit system config; };
+  cardanoSL = localLib.cardanoSL { inherit target config; };
   cardanoJSON = builtins.fromJSON (builtins.readFile ./cardano-sl-src.json);
   cardanoSrc = pkgs.fetchFromGitHub {
     owner = "input-output-hk";
@@ -67,13 +69,7 @@ let
     # the native makensis binary, with cross-compiled windows stubs
     nsis = nsisNixPkgs.callPackage ./nsis.nix {};
 
-    # TODO, put the cross bridge into cardano's default.nix
-    crossCompiledCardano = (import (cardanoSrc + "/release.nix") { cardano = { outPath = cardanoSrc; rev = cardanoJSON.rev; }; }).daedalus-mingw32-pkg;
-    unsignedUnpackedCardano = pkgs.runCommand "daedalus-bridge" { buildInputs = [ pkgs.unzip ]; } ''
-      mkdir $out
-      cd $out
-      unzip ${self.crossCompiledCardano}/CardanoSL.zip
-    '';
+    unsignedUnpackedCardano = cardanoSL.daedalus-bridge;
     unpackedCardano = if dummyInstaller then self.dummyUnpacked else (if signingKeys != null then self.signedCardano else self.unsignedUnpackedCardano);
     signFile = file: let
       signingScript = pkgs.writeScript "signing-script" ''
@@ -158,7 +154,11 @@ let
         testnet = "Daedalus Testnet";
       };
       installDir = mapping.${cluster};
-    in pkgs.runCommand "win64-installer-${cluster}" { buildInputs = [ self.daedalus-installer self.nsis pkgs.unzip self.configMutator pkgs.jq self.yaml2json ]; } ''
+    in pkgs.runCommand "win64-installer-${cluster}" {
+      buildInputs = [
+        self.daedalus-installer self.nsis pkgs.unzip pkgs.jq self.yaml2json
+      ] ++ lib.optional (fudgeConfig != null) self.configMutator;
+    } ''
       mkdir home
       export HOME=$(realpath home)
 
@@ -180,7 +180,7 @@ let
       pushd dlls
       ${if dummyInstaller then "touch foo" else "unzip ${self.dlls}"}
       popd
-      cp -v ${self.unpackedCardano}/* .
+      cp -v ${self.unpackedCardano}/{bin,config}/* .
       cp ${self.unsignedUninstaller}/uninstall.exe ../uninstall.exe
       cp -v ${self.nsisFiles}/{daedalus.nsi,wallet-topology.yaml,launcher-config.yaml} .
       chmod -R +w .
