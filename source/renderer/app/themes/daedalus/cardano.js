@@ -244,13 +244,14 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color':
       '#5e6066',
     '--theme-icon-add-wallet-dialog-big-button-color': '#ababab',
-    '--theme-icon-copy-address-color': '#5e6066',
     '--theme-icon-back-button-color': '#5e6066',
     '--theme-icon-close-button-color': '#5e6066',
-    '--theme-icon-file-upload-color': '#5e6066',
-    '--theme-icon-transactions-ada-symbol-color': '#5e6066',
-    '--theme-icon-syncing-logo-color': '#5e6066',
     '--theme-icon-connecting-logo-color': '#fafbfc',
+    '--theme-icon-copy-address-color': '#5e6066',
+    '--theme-icon-delegation-center-no-wallets': '#5e6066',
+    '--theme-icon-file-upload-color': '#5e6066',
+    '--theme-icon-syncing-logo-color': '#5e6066',
+    '--theme-icon-transactions-ada-symbol-color': '#5e6066',
     '--theme-icon-transaction-type-color': '#fafbfc',
   },
   input: {
@@ -622,6 +623,8 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-staking-delegation-center-gear-icon-fill-color':
       'rgba(94, 96, 102, 0.5)',
     '--theme-staking-delegation-center-gear-icon-fill-color-active': '#5e6066',
+    '--theme-staking-delegation-center-no-wallets-instructions-color':
+      '#5e6066',
     '--theme-staking-info-learn-more-button-color': '#fafbfc',
     '--theme-staking-info-learn-more-icon-color': 'rgba(250, 251, 252, 1)',
     '--theme-staking-learn-more-button-color': '#fafbfc',
