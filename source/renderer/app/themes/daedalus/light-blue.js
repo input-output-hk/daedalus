@@ -20,13 +20,13 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-about-window-icon-close-hover-background': 'rgba(0, 0, 0, 0.2)',
   },
   adaRedemption: {
-    '--theme-ada-redemption-headline-color': '#5e6066', // primary.text
-    '--theme-ada-redemption-instructions-color': '#5e6066', // primary.text
+    '--theme-ada-redemption-headline-color': '#5e6066',
+    '--theme-ada-redemption-instructions-color': '#5e6066',
     '--theme-ada-redemption-success-overlay-background-color':
-      'rgba(36, 61, 98, 0.88)', // config
-    '--theme-ada-redemption-success-overlay-border-color': '#fafbfc', // secondary.text
-    '--theme-ada-redemption-success-overlay-message-color': '#fafbfc', // secondary.text
-    '--theme-ada-redemption-success-overlay-button-text-color': '#fafbfc', // secondary.text
+      'rgba(36, 61, 98, 0.88)',
+    '--theme-ada-redemption-success-overlay-border-color': '#fafbfc',
+    '--theme-ada-redemption-success-overlay-message-color': '#fafbfc',
+    '--theme-ada-redemption-success-overlay-button-text-color': '#fafbfc',
     '--theme-ada-redemption-success-overlay-button-text-color-hover': '#243e62',
     '--theme-ada-redemption-success-overlay-button-background-color-hover':
       '#fafbfc',
@@ -38,6 +38,7 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-ada-redemption-disclaimer-checkbox-color-after': '#ab1700',
     '--theme-ada-redemption-disclaimer-checkbox-label-color': '#fafbfc',
     '--theme-ada-redemption-no-wallets-instructions-color': '#5e6066',
+    '--theme-ada-redemption-disclaimer-button-border-color': '#f7f9fa',
   },
   blockConsolidation: {
     '--theme-block-consolidation-background-color': 'rgba(36, 62, 98, 0.96)',
@@ -410,6 +411,7 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--rp-bubble-bg-color': '#fafbfc',
     '--rp-bubble-border-color': '#c6cdd6',
     '--rp-bubble-border-radius': '2px',
+    '--rp-bubble-arrow-bg-color': '#ebeff2',
   },
   rpButton: {
     '--rp-button-bg-color': '#243e62',
@@ -424,6 +426,7 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--rp-button-text-color-disabled': '#fafbfc',
     '--rp-button-text-transform': 'none',
     '--rp-button-width': '360px',
+    '--rp-button-font-size': '14px',
   },
   rpCheckbox: {
     '--rp-checkbox-border': '1px solid #2f496e',
@@ -485,6 +488,7 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--rp-select-input-border-color': '#c6cdd6',
     '--rp-select-input-border-color-focus': '#5e6066',
     '--rp-select-input-text-color': '#5e6066',
+    '--rp-select-input-placeholder-color': '#5e606680',
   },
   rpStepper: {
     '--rp-stepper-bullet-background-color-disabled': '#fafbfc',
@@ -688,7 +692,7 @@ export const LIGHT_BLUE_THEME_CONFIG = {
   },
 };
 
-export const LIGHT_BLUE_THEME_PARAMS: CreateThemeParams = {
+const LIGHT_BLUE_THEME_PARAMS: CreateThemeParams = {
   config: LIGHT_BLUE_THEME_CONFIG,
 };
 

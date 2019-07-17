@@ -20,13 +20,13 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-about-window-icon-close-hover-background': 'rgba(0, 0, 0, 0.2)',
   },
   adaRedemption: {
-    '--theme-ada-redemption-headline-color': '#e9f4fe', // primary.text
-    '--theme-ada-redemption-instructions-color': '#e9f4fe', // primary.text
+    '--theme-ada-redemption-headline-color': '#e9f4fe',
+    '--theme-ada-redemption-instructions-color': '#e9f4fe',
     '--theme-ada-redemption-success-overlay-background-color':
-      'rgba(38, 51, 69, 0.88)', // config
-    '--theme-ada-redemption-success-overlay-border-color': '#fafbfc', // secondary.text
-    '--theme-ada-redemption-success-overlay-message-color': '#e9f4fe', // config
-    '--theme-ada-redemption-success-overlay-button-text-color': '#e9f4fe', // config
+      'rgba(38, 51, 69, 0.88)',
+    '--theme-ada-redemption-success-overlay-border-color': '#fafbfc',
+    '--theme-ada-redemption-success-overlay-message-color': '#e9f4fe',
+    '--theme-ada-redemption-success-overlay-button-text-color': '#e9f4fe',
     '--theme-ada-redemption-success-overlay-button-text-color-hover': '#263345',
     '--theme-ada-redemption-success-overlay-button-background-color-hover':
       '#e9f4fe',
@@ -38,6 +38,7 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-ada-redemption-disclaimer-checkbox-color-after': '#ab1700',
     '--theme-ada-redemption-disclaimer-checkbox-label-color': '#fafbfc',
     '--theme-ada-redemption-no-wallets-instructions-color': '#e9f4fe',
+    '--theme-ada-redemption-disclaimer-button-border-color': '#a8adb5',
   },
   blockConsolidation: {
     '--theme-block-consolidation-background-color': 'rgba(38, 51, 69, 0.96)',
@@ -413,6 +414,7 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--rp-bubble-bg-color': '#263345',
     '--rp-bubble-border-color': '#667a8a',
     '--rp-bubble-border-radius': '2px',
+    '--rp-bubble-arrow-bg-color': '#263345',
   },
   rpButton: {
     '--rp-button-bg-color': '#536370',
@@ -427,6 +429,7 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--rp-button-text-color-disabled': 'rgba(233, 244, 254, 0.5)',
     '--rp-button-text-transform': 'none',
     '--rp-button-width': '360px',
+    '--rp-button-font-size': '14px',
   },
   rpCheckbox: {
     '--rp-checkbox-border': '1px solid #536370',
@@ -489,6 +492,7 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--rp-select-input-border-color': 'rgba(102, 122, 138, 0.3)',
     '--rp-select-input-border-color-focus': '#667a8a',
     '--rp-select-input-text-color': '#e9f4fe',
+    '--rp-select-input-placeholder-color': '#e9f4fe80',
   },
   rpStepper: {
     '--rp-stepper-bullet-background-color-disabled': '#263345',

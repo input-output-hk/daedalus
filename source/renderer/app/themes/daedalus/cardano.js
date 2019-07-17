@@ -38,6 +38,7 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-ada-redemption-disclaimer-checkbox-color-after': '#ab1700',
     '--theme-ada-redemption-disclaimer-checkbox-label-color': '#fafbfc',
     '--theme-ada-redemption-no-wallets-instructions-color': '#5e6066',
+    '--theme-ada-redemption-disclaimer-button-border-color': '#f9f9f9',
   },
   blockConsolidation: {
     '--theme-block-consolidation-background-color': 'rgba(32, 34, 37, 0.96)',
@@ -412,6 +413,7 @@ export const CARDANO_THEME_CONFIG = {
     '--rp-bubble-bg-color': '#fafbfc',
     '--rp-bubble-border-color': '#c6cdd6',
     '--rp-bubble-border-radius': '2px',
+    '--rp-bubble-arrow-bg-color': '#efefef',
   },
   rpButton: {
     '--rp-button-bg-color': '#2cbb69',
@@ -488,6 +490,7 @@ export const CARDANO_THEME_CONFIG = {
     '--rp-select-input-border-color': '#c6cdd6',
     '--rp-select-input-border-color-focus': '#5e6066',
     '--rp-select-input-text-color': '#5e6066',
+    '--rp-select-input-placeholder-color': '#5e606680',
   },
   rpStepper: {
     '--rp-stepper-bullet-background-color-disabled': '#fff',
