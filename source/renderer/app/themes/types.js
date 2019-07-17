@@ -34,6 +34,11 @@ export type FindUpdatesParams = {
   lightBlue: Object,
 };
 
+export type FormattedConstNames = {
+  themeConfig: string,
+  themeParams: string,
+};
+
 export type LogDifferencesParams = {
   color: string,
   missingDefs: Object,

@@ -2,7 +2,25 @@
 /* eslint-disable */
 import fs from 'fs';
 import path from 'path';
-import type { WriteThemeUpdateParams } from '../types';
+import type { FormattedConstNames, WriteThemeUpdateParams } from '../types';
+
+const formatConstNames = (fileName: string): FormattedConstNames => {
+  const constNames = {};
+  let PREFIX = '';
+
+  const fileNameParts = fileName.split('-');
+  if (fileNameParts.length > 1) {
+    PREFIX = `${fileNameParts[0].toUpperCase()}_${fileNameParts[1].toUpperCase()}`;
+    constNames.themeConfig = `${PREFIX}_THEME_CONFIG`;
+    constNames.themeParams = `${PREFIX}_THEME_PARAMS`;
+    return constNames;
+  }
+
+  PREFIX = `${fileNameParts[0].toUpperCase()}`;
+  constNames.themeConfig = `${PREFIX}_THEME_CONFIG`;
+  constNames.themeParams = `${PREFIX}_THEME_PARAMS`;
+  return constNames;
+};
 
 export const writeThemeUpdate = ({
   fileName,
@@ -13,24 +31,22 @@ export const writeThemeUpdate = ({
     `../../source/renderer/app/themes/daedalus/${fileName}.js`
   );
   const TEMP_THEME_FILE = path.join(__dirname, `../daedalus/${fileName}.js`);
-  const fileNameParts = fileName.split('-');
-  fs.writeFileSync(
-    TEMP_THEME_FILE,
-    `
+  const { themeConfig, themeParams } = formatConstNames(fileName);
+  const FILE_CONTENT = `
     // @flow
     import chroma from 'chroma-js';
     import { createTheme } from '../utils/createTheme';
+    import type { CreateThemeParams } from '../types';
 
-    export const CARDANO_THEME_CONFIG = ${JSON.stringify(
-      updatedThemeObj,
-      null,
-      2
-    )};
-  
-    export default createTheme({
-      config: CARDANO_THEME_CONFIG
-    });
-  `,
-    {}
-  );
+    //  ==== ${fileName} theme config for Daedalus and react-polymorph components === //
+    export const ${themeConfig} = ${JSON.stringify(updatedThemeObj, null, 2)};
+
+    const ${themeParams}: CreateThemeParams = {
+      config: ${themeConfig},
+    };
+
+    export default createTheme(${themeParams});
+  `;
+
+  fs.writeFileSync(TEMP_THEME_FILE, FILE_CONTENT, {});
 };
