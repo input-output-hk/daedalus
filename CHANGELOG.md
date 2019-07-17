@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Improved scrollbar look and feel on wallets list ([PR 1475](https://github.com/input-output-hk/daedalus/pull/1475))
 - Improved NTP handling, avoiding a false error overlay ([PR 1462](https://github.com/input-output-hk/daedalus/pull/1462))
 - Configured electron-log-daedalus file transport configuration params for new log rotation scheme ([PR 1448](https://github.com/input-output-hk/daedalus/pull/1448))
 - Implemented no-wallets case on the Delegation Center screen ([PR 1463](https://github.com/input-output-hk/daedalus/pull/1463))
