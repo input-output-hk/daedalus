@@ -38,7 +38,7 @@ export const runUpdateThemesCLI = (pendingUpdates: PendingThemesUpdates) => {
           chalk
             .hex('#2cbb69')
             .bold(
-              `\nThemes updated! Please check the output and commit the changes if correct.\n`
+              `\nThemes are up to date! Prettier is now formatting the updated theme files. Please check the diff and commit the changes if all is correct.\n`
             )
         );
         process.exit(0);
