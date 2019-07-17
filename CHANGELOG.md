@@ -1,11 +1,16 @@
 Changelog
 =========
 
-## 0.14.0
+## vNext
 
 ### Features
 
 - Improved scrollbar look and feel on wallets list ([PR 1475](https://github.com/input-output-hk/daedalus/pull/1475))
+
+## 0.14.0
+
+### Features
+
 - Implemented guided manual updates ([PR 1410](https://github.com/input-output-hk/daedalus/pull/1410), [PR 1423](https://github.com/input-output-hk/daedalus/pull/1423))
 - Application menu improvements:
   - Implemented "Help" application menu item with "Known Issues", "Blank Screen Fix", "Support Request", "Download Logs", "Block Consolidation Status" and "Daedalus Diagnostics" options ([PR 1382](https://github.com/input-output-hk/daedalus/pull/1382), [PR 1459](https://github.com/input-output-hk/daedalus/pull/1459))
