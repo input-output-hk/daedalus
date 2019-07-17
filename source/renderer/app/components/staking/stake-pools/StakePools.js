@@ -75,6 +75,7 @@ export default class StakePools extends Component<Props, State> {
   };
 
   handleSearch = (search: string) => this.setState({ search });
+  handleClearSearch = () => this.setState({ search: '' });
 
   handleSetListActive = (selectedList: string) =>
     this.setState({ selectedList });
@@ -110,12 +111,14 @@ export default class StakePools extends Component<Props, State> {
           search={search}
           filters={filters}
           onSearch={this.handleSearch}
+          onClearSearch={this.handleClearSearch}
           onFilterChange={this.handleFilterChange}
           registerSearchInput={searchInput => {
             this.searchInput = searchInput;
           }}
           scrollableElementSelector=".StakingWithNavigation_page"
           backToTopScrollThreashold={50}
+          clearHasSeparator
         />
 
         <h2>{intl.formatMessage(messages.delegatingListTitle)}</h2>

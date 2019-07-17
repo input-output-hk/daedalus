@@ -9,6 +9,16 @@
   &.isOnHover:hover {
     @extend .isHighlighted;
   }
+
+  > button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+  }
 }
 
 .content {

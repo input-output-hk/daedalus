@@ -110,6 +110,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
   searchInput: ?HTMLElement = null;
 
   handleSearch = (searchValue: string) => this.setState({ searchValue });
+  handleClearSearch = () => this.setState({ searchValue: '' });
 
   handleSelect = (selectedPoolId: number) => {
     this.setState({ selectedPoolId });
@@ -257,6 +258,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               label={intl.formatMessage(messages.searchInputLabel)}
               placeholder={intl.formatMessage(messages.searchInputPlaceholder)}
               onSearch={this.handleSearch}
+              onClearSearch={this.handleClearSearch}
               registerSearchInput={searchInput => {
                 this.searchInput = searchInput;
               }}

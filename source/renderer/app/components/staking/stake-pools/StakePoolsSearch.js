@@ -4,9 +4,12 @@ import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
+import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import classnames from 'classnames';
 import styles from './StakePoolsSearch.scss';
 import searchIcon from '../../../assets/images/search.inline.svg';
+import closeIcon from '../../../assets/images/close-cross.inline.svg';
 
 const messages = defineMessages({
   searchInputPlaceholder: {
@@ -55,7 +58,9 @@ type Props = {
   placeholder?: string,
   scrollableElementSelector: string,
   backToTopScrollThreashold: number,
+  clearHasSeparator: boolean,
   onSearch: Function,
+  onClearSearch: Function,
   onFilterChange?: Function,
   registerSearchInput: Function,
   search: string,
@@ -126,6 +131,8 @@ export class StakePoolsSearch extends Component<Props, State> {
     const {
       label,
       onSearch,
+      onClearSearch,
+      clearHasSeparator,
       onFilterChange,
       placeholder,
       registerSearchInput,
@@ -140,6 +147,10 @@ export class StakePoolsSearch extends Component<Props, State> {
 
     const backToTopBtnStyles = classnames(styles.backToTopBtn, {
       [styles.active]: isBackToTopActive,
+    });
+
+    const clearSearchStyles = classnames(styles.clearSearch, {
+      [styles.clearSearchSeparator]: clearHasSeparator,
     });
 
     return (
@@ -159,6 +170,17 @@ export class StakePoolsSearch extends Component<Props, State> {
             value={search}
             maxLength={150}
           />
+          {search.length > 0 && (
+            <Tooltip
+              skin={TooltipSkin}
+              tip="Clear"
+              className={clearSearchStyles}
+            >
+              <button onClick={onClearSearch}>
+                <SVGInline svg={closeIcon} />
+              </button>
+            </Tooltip>
+          )}
           {onFilterChange && (
             <ul className={styles.searchFilter}>
               <li>

@@ -35,7 +35,8 @@
     border-radius: 4px;
     height: 50px;
     padding-left: 55px;
-    padding-right: 175px;
+    // padding-right: 175px;
+    padding-right: 250px;
   }
 }
 
@@ -59,6 +60,37 @@
 
   .searchFilterActiveItem {
     opacity: 1;
+  }
+}
+
+.clearSearch {
+  position: absolute !important;
+  right: 11px;
+  bottom: 11px;
+
+  button {
+    background-color: rgba(68, 91, 124, 0.05);
+    border-radius: 3px;
+    cursor: pointer;
+    height: 28px;
+    width: 28px;
+  }
+
+  svg {
+    width: 10px;
+  }
+
+  &.clearSearchSeparator {
+    right: 170px;
+    &:after {
+      content: '';
+      display: block;
+      height: 20px;
+      margin: 3px 0 0 20px;
+      opacity: 0.2;
+      background-color: #5e6066;
+      width: 1px;
+    }
   }
 }
 
