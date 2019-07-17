@@ -1,4 +1,3 @@
-
 Changelog
 =========
 
@@ -7,7 +6,7 @@ Changelog
 ### Features
 
 - "Delegation" screens UI:
-- Implemented "Search and Filtering" logic on "Stake pools" screen ([PR 1468](https://github.com/input-output-hk/daedalus/pull/1468))
+  - Implemented "Search and Filtering" logic on "Stake pools" screen ([PR 1468](https://github.com/input-output-hk/daedalus/pull/1468))
 
 ### Chores
 
