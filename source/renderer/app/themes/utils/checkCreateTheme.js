@@ -5,7 +5,10 @@ import { has, isEmpty } from 'lodash';
 import chalk from 'chalk';
 import { CARDANO_THEME_CONFIG } from '../daedalus/cardano';
 import { DARK_BLUE_THEME_CONFIG } from '../daedalus/dark-blue';
+import { DARK_CARDANO_THEME_CONFIG } from '../daedalus/dark-cardano';
 import { LIGHT_BLUE_THEME_CONFIG } from '../daedalus/light-blue';
+import { YELLOW_THEME_CONFIG } from '../daedalus/yellow';
+import { WHITE_THEME_CONFIG } from '../daedalus/white';
 import type { LogDifferencesParams } from '../types';
 
 const logDifferences = ({
@@ -37,6 +40,21 @@ export const checkCreateTheme = (createThemeObj: Object) => {
     ...findMissingCSSVars(LIGHT_BLUE_THEME_CONFIG, createThemeObj),
   };
 
+  const missingDarkCardanoDefs = {
+    ...findMissingDefinitions(DARK_CARDANO_THEME_CONFIG, createThemeObj),
+    ...findMissingCSSVars(DARK_CARDANO_THEME_CONFIG, createThemeObj),
+  };
+
+  const missingYelloweDefs = {
+    ...findMissingDefinitions(YELLOW_THEME_CONFIG, createThemeObj),
+    ...findMissingCSSVars(YELLOW_THEME_CONFIG, createThemeObj),
+  };
+
+  const missingWhiteDefs = {
+    ...findMissingDefinitions(WHITE_THEME_CONFIG, createThemeObj),
+    ...findMissingCSSVars(WHITE_THEME_CONFIG, createThemeObj),
+  };
+
   if (!isEmpty(missingCardanoDefs)) {
     logDifferences({
       color: '#2cbb69',
@@ -61,10 +79,37 @@ export const checkCreateTheme = (createThemeObj: Object) => {
     });
   }
 
+  if (!isEmpty(missingWhiteDefs)) {
+    logDifferences({
+      color: '#33C4FF',
+      missingDefs: missingWhiteDefs,
+      themeName: 'light-blue.js',
+    });
+  }
+
+  if (!isEmpty(missingYelloweDefs)) {
+    logDifferences({
+      color: '#33C4FF',
+      missingDefs: missingYelloweDefs,
+      themeName: 'light-blue.js',
+    });
+  }
+
+  if (!isEmpty(missingDarkCardanoDefs)) {
+    logDifferences({
+      color: '#33C4FF',
+      missingDefs: missingDarkCardanoDefs,
+      themeName: 'light-blue.js',
+    });
+  }
+
   if (
     isEmpty(missingCardanoDefs) &&
     isEmpty(missingDarkBlueDefs) &&
-    isEmpty(missingLightBlueDefs)
+    isEmpty(missingLightBlueDefs) &&
+    isEmpty(missingWhiteDefs) &&
+    isEmpty(missingYelloweDefs) &&
+    isEmpty(missingDarkCardanoDefs)
   ) {
     console.log(
       chalk.hex('#2cbb69')(
