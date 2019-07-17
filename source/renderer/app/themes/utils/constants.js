@@ -114,7 +114,7 @@ export const CREATE_YELLOW_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
       primary: '#eeeae0',
-      secondary: '#2d2d2d',
+      secondary: '#fdcd68',
     },
     border: '#e1dac6',
     error: '#ea4c5b',
@@ -131,7 +131,7 @@ export const CREATE_WHITE_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
       primary: '#f9f9f9',
-      secondary: '#4c5bff',
+      secondary: '#ffffff',
     },
     border: 'rgba(45, 45, 45, 0.1)',
     error: '#ea4c5b',
