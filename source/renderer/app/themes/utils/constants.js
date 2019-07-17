@@ -92,3 +92,54 @@ export const CREATE_DARK_BLUE_THEME_PARAMS: CreateThemeParams = {
   },
   fonts: DEFAULT_FONTS,
 };
+
+export const CREATE_DARK_CARDANO_THEME_PARAMS: CreateThemeParams = {
+  colors: {
+    background: {
+      primary: '#1e1f31',
+      secondary: '#1fc1c3',
+    },
+    border: 'rgba(255, 255, 255, 0.2)',
+    error: '#ea4c5b',
+    focus: 'rgba(255, 255, 255, 0.4)',
+    text: {
+      primary: '#ffffff',
+      secondary: '#0b1926',
+    },
+  },
+  fonts: DEFAULT_FONTS,
+};
+
+export const CREATE_YELLOW_THEME_PARAMS: CreateThemeParams = {
+  colors: {
+    background: {
+      primary: '#eeeae0',
+      secondary: '#2d2d2d',
+    },
+    border: '#e1dac6',
+    error: '#ea4c5b',
+    focus: '#2d2d2d',
+    text: {
+      primary: '#2d2d2d',
+      secondary: '#fafbfc',
+    },
+  },
+  fonts: DEFAULT_FONTS,
+};
+
+export const CREATE_WHITE_THEME_PARAMS: CreateThemeParams = {
+  colors: {
+    background: {
+      primary: '#f9f9f9',
+      secondary: '#4c5bff',
+    },
+    border: 'rgba(45, 45, 45, 0.1)',
+    error: '#ea4c5b',
+    focus: '#2d2d2d',
+    text: {
+      primary: '#2d2d2d',
+      secondary: '#fafbfc',
+    },
+  },
+  fonts: DEFAULT_FONTS,
+};
