@@ -351,6 +351,7 @@
   "staking.rewards.title": "Earned Rewards",
   "staking.stakePools.delegatingListTitle": "Staking pools your are delegating to",
   "staking.stakePools.listTitle": "Stake pools ({pools})",
+  "staking.stakePools.listTitleWithSearch": "Stake pools. Search results: ({pools})",
   "staking.stakePools.search.backToTop": "Back to top",
   "staking.stakePools.search.delegatingListTitle": "Staking pools your are delegating to",
   "staking.stakePools.search.filterAll": "All",

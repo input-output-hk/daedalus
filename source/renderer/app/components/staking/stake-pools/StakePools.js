@@ -21,6 +21,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Stake pools ({pools})',
     description: '"listTitle" for the Stake Pools page.',
   },
+  listTitleWithSearch: {
+    id: 'staking.stakePools.listTitleWithSearch',
+    defaultMessage: '!!!Stake pools. Search results: ({pools})',
+    description: '"listTitle" for the Stake Pools page.',
+  },
 });
 
 type Props = {
@@ -89,16 +94,15 @@ export default class StakePools extends Component<Props, State> {
     } = this.props;
     const { search, filters, selectedList } = this.state;
 
-    const filteredStakePoolsDelegatingList: StakePoolsListType = getFilteredStakePoolsList(
-      stakePoolsDelegatingList,
-      search,
-      filters
-    );
     const filteredStakePoolsList: StakePoolsListType = getFilteredStakePoolsList(
       stakePoolsList,
       search,
       filters
     );
+
+    const listTitleMessage = search.length
+      ? messages.listTitleWithSearch
+      : messages.listTitle;
 
     return (
       <div className={styles.component}>
@@ -116,10 +120,10 @@ export default class StakePools extends Component<Props, State> {
 
         <h2>{intl.formatMessage(messages.delegatingListTitle)}</h2>
 
-        {filteredStakePoolsDelegatingList.length > 0 && (
+        {stakePoolsDelegatingList.length > 0 && (
           <StakePoolsList
             listName="stakePoolsDelegatingList"
-            stakePoolsList={filteredStakePoolsDelegatingList}
+            stakePoolsList={stakePoolsDelegatingList}
             onOpenExternalLink={onOpenExternalLink}
             currentTheme={currentTheme}
             isListActive={selectedList === 'stakePoolsDelegatingList'}
@@ -132,9 +136,9 @@ export default class StakePools extends Component<Props, State> {
 
         <h2>
           <FormattedMessage
-            {...messages.listTitle}
+            {...listTitleMessage}
             values={{
-              pools: stakePoolsList.length,
+              pools: filteredStakePoolsList.length,
             }}
           />
         </h2>
