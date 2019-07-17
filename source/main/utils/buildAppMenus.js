@@ -9,6 +9,7 @@ import { safeExitWithCode } from './safeExitWithCode';
 import { CardanoNode } from '../cardano/CardanoNode';
 import { DIALOGS, SCREENS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
+import { getLocale } from './getLocale';
 
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
@@ -48,9 +49,11 @@ export const buildAppMenus = async (
     safeExitWithCode(22);
   };
 
-  const { isMacOS } = environment;
+  const { isMacOS, network } = environment;
 
   const translations = require(`../locales/${locale}`);
+
+  const networkLocale = getLocale(network);
 
   const menuActions = {
     openAboutDialog,
@@ -66,7 +69,7 @@ export const buildAppMenus = async (
   const isNodeInSync = get(cardanoNode, 'status.isNodeInSync', false);
   if (isMacOS) {
     menu = Menu.buildFromTemplate(
-      osxMenu(app, mainWindow, menuActions, translations, isNodeInSync, locale)
+      osxMenu(app, mainWindow, menuActions, translations, isNodeInSync, networkLocale)
     );
     Menu.setApplicationMenu(menu);
   } else {
@@ -77,7 +80,7 @@ export const buildAppMenus = async (
         menuActions,
         translations,
         isNodeInSync,
-        locale
+        networkLocale
       )
     );
     mainWindow.setMenu(menu);
