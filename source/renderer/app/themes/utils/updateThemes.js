@@ -45,18 +45,12 @@ export const updateThemes = (pendingUpdates: PendingThemesUpdates) => {
   }
 
   if (yellowUpdates && !isEmpty(yellowUpdates)) {
-    const updatedYellowTheme = updateTheme(
-      YELLOW_THEME_CONFIG,
-      yellowUpdates
-    );
+    const updatedYellowTheme = updateTheme(YELLOW_THEME_CONFIG, yellowUpdates);
     updatedThemes.yellow = updatedYellowTheme;
   }
 
   if (whiteUpdates && !isEmpty(whiteUpdates)) {
-    const updatedWhiteTheme = updateTheme(
-      WHITE_THEME_CONFIG,
-      whiteUpdates
-    );
+    const updatedWhiteTheme = updateTheme(WHITE_THEME_CONFIG, whiteUpdates);
     updatedThemes.white = updatedWhiteTheme;
   }
 

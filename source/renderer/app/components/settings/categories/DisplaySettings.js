@@ -38,7 +38,8 @@ const messages = defineMessages({
   themeDarkCardano: {
     id: 'settings.display.themeNames.darkCardano',
     defaultMessage: '!!!Dark cardano',
-    description: 'Name of the "Dark cardano" theme on the display settings page.',
+    description:
+      'Name of the "Dark cardano" theme on the display settings page.',
   },
 
   themeYellow: {

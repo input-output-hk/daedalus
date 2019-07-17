@@ -83,7 +83,7 @@ export const checkCreateTheme = (createThemeObj: Object) => {
     logDifferences({
       color: '#33C4FF',
       missingDefs: missingWhiteDefs,
-      themeName: 'light-blue.js',
+      themeName: 'white.js',
     });
   }
 
@@ -91,7 +91,7 @@ export const checkCreateTheme = (createThemeObj: Object) => {
     logDifferences({
       color: '#33C4FF',
       missingDefs: missingYelloweDefs,
-      themeName: 'light-blue.js',
+      themeName: 'yellow.js',
     });
   }
 
@@ -99,7 +99,7 @@ export const checkCreateTheme = (createThemeObj: Object) => {
     logDifferences({
       color: '#33C4FF',
       missingDefs: missingDarkCardanoDefs,
-      themeName: 'light-blue.js',
+      themeName: 'dark-cardano.js',
     });
   }
 

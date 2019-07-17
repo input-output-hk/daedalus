@@ -136,6 +136,9 @@ gulp.task('prepare:themes:daedalus', () =>
       'source/renderer/app/themes/daedalus/cardano.js',
       'source/renderer/app/themes/daedalus/dark-blue.js',
       'source/renderer/app/themes/daedalus/light-blue.js',
+      'source/renderer/app/themes/daedalus/dark-cardano.js',
+      'source/renderer/app/themes/daedalus/yellow.js',
+      'source/renderer/app/themes/daedalus/white.js',
     ])
     .pipe(flowRemoveTypes())
     .pipe(gulp.dest('dist/daedalus'))

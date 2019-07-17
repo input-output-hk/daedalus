@@ -90,7 +90,7 @@ export const findUpdates = (
     logDifferences({
       color: '#33C4FF',
       missingDefs: darkCardanoDefsToAdd,
-      themeName: 'dark-cardanor.js',
+      themeName: 'dark-cardano.js',
     });
     pendingThemesUpdates.darcCardanoUpdates = darkCardanoDefsToAdd;
   }

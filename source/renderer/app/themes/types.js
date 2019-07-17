@@ -79,6 +79,13 @@ export type ThemeFonts = {
 };
 
 export type WriteThemeUpdateParams = {
-  fileName: string | 'cardano.js' | 'dark-blue.js' | 'dark-cardano.js' |  'light-blue.js' | 'yellow.js' | 'white.js',
+  fileName:
+    | string
+    | 'cardano.js'
+    | 'dark-blue.js'
+    | 'dark-cardano.js'
+    | 'light-blue.js'
+    | 'yellow.js'
+    | 'white.js',
   updatedThemeObj: Object,
 };
