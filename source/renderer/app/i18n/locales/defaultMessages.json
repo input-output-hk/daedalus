@@ -1472,13 +1472,13 @@
         "description": "Label for the \"Theme\" selection on the display settings page.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 21
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeLabel",
         "start": {
           "column": 14,
-          "line": 13
+          "line": 16
         }
       },
       {
@@ -1486,13 +1486,13 @@
         "description": "Name of the \"Light blue\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 26
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.lightBlue",
         "start": {
           "column": 18,
-          "line": 19
+          "line": 22
         }
       },
       {
@@ -1500,13 +1500,13 @@
         "description": "Name of the \"Cardano\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 31
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.cardano",
         "start": {
           "column": 16,
-          "line": 24
+          "line": 27
         }
       },
       {
@@ -1514,13 +1514,55 @@
         "description": "Name of the \"Dark blue\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 36
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.darkBlue",
         "start": {
           "column": 17,
-          "line": 29
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Dark cardano",
+        "description": "Name of the \"Dark cardano\" theme on the display settings page.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
+        "id": "settings.display.themeNames.darkCardano",
+        "start": {
+          "column": 20,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Yellow",
+        "description": "Name of the \"Yellow\" theme on the display settings page.",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
+        "id": "settings.display.themeNames.yellow",
+        "start": {
+          "column": 15,
+          "line": 44
+        }
+      },
+      {
+        "defaultMessage": "!!!White",
+        "description": "Name of the \"White\" theme on the display settings page.",
+        "end": {
+          "column": 3,
+          "line": 54
+        },
+        "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
+        "id": "settings.display.themeNames.white",
+        "start": {
+          "column": 14,
+          "line": 50
         }
       }
     ],
