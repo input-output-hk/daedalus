@@ -6,6 +6,7 @@ import {
   extendObservable,
   runInAction,
 } from 'mobx';
+import remotedev from 'mobx-remotedev/lib/dev';
 import BigNumber from 'bignumber.js';
 import { find, get } from 'lodash';
 import Store from './lib/Store';
@@ -33,6 +34,7 @@ type TransactionFeeRequest = {
   amount: number,
 };
 
+@remotedev
 export default class TransactionsStore extends Store {
   INITIAL_SEARCH_LIMIT = null; // 'null' value stands for 'load all'
   SEARCH_LIMIT_INCREASE = 500;

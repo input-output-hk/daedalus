@@ -1,9 +1,11 @@
 // @flow
 import { observable, action } from 'mobx';
+import remotedev from 'mobx-remotedev/lib/dev';
 import { set, omit } from 'lodash';
 import Store from './lib/Store';
 import type { Notification } from '../types/notificationType';
 
+@remotedev
 export default class UiNotificationsStore extends Store {
   @observable activeNotifications: {} = {};
 

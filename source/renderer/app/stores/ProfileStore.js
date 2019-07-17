@@ -1,5 +1,6 @@
 // @flow
 import { action, observable, computed, toJS, runInAction } from 'mobx';
+import remotedev from 'mobx-remotedev/lib/dev';
 import BigNumber from 'bignumber.js';
 import moment from 'moment/moment';
 import { includes } from 'lodash';
@@ -27,6 +28,7 @@ import type { StateSnapshotLogParams } from '../../../common/types/logging.types
 // TODO: refactor all parts that rely on this to ipc channels!
 const { ipcRenderer } = global;
 
+@remotedev
 export default class ProfileStore extends Store {
   LANGUAGE_OPTIONS = [
     { value: 'en-US', label: globalMessages.languageEnglish },

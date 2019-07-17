@@ -1,5 +1,6 @@
 // @flow
 import { observable, action, computed } from 'mobx';
+import remotedev from 'mobx-remotedev/lib/dev';
 import Store from './lib/Store';
 import WalletBackupDialog from '../components/wallet/WalletBackupDialog';
 import { WALLET_BACKUP_STEPS } from '../types/walletBackupTypes';
@@ -8,6 +9,7 @@ import type {
   walletBackupStep,
 } from '../types/walletBackupTypes';
 
+@remotedev
 export default class WalletBackupStore extends Store {
   @observable inProgress = false;
   @observable currentStep: walletBackupStep = WALLET_BACKUP_STEPS.NOT_INITIATED;

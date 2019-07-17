@@ -1,5 +1,6 @@
 // @flow
 import { computed, action } from 'mobx';
+import remotedev from 'mobx-remotedev/lib/dev';
 import BigNumber from 'bignumber.js';
 import Store from './lib/Store';
 import { ROUTES } from '../routes-config';
@@ -8,6 +9,7 @@ import type { StakePool, Reward } from '../api/staking/types';
 import STAKE_POOLS from '../config/stakingStakePools.dummy.json';
 import REWARDS from '../config/stakingRewards.dummy.json';
 
+@remotedev
 export default class StakingStore extends Store {
   startDateTime: string = '2019-09-26T00:00:00.161Z';
   decentralizationProgress: number = 10;

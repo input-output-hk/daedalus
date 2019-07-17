@@ -1,6 +1,7 @@
 // @flow
-import { find } from 'lodash';
 import { observable, computed, action, runInAction } from 'mobx';
+import remotedev from 'mobx-remotedev/lib/dev';
+import { find } from 'lodash';
 import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
 import Request from './lib/LocalizedRequest';
@@ -11,6 +12,7 @@ import type {
   GetAddressesResponse,
 } from '../api/addresses/types';
 
+@remotedev
 export default class AddressesStore extends Store {
   @observable lastGeneratedAddress: ?Address = null;
   @observable addressesRequests: Array<{

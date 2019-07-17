@@ -1,5 +1,6 @@
 // @flow
 import { observable, computed, action, runInAction } from 'mobx';
+import remotedev from 'mobx-remotedev/lib/dev';
 import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
@@ -15,6 +16,7 @@ import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import type { GpuStatus } from '../types/gpuStatus';
 import type { ApplicationDialog } from '../types/applicationDialogTypes';
 
+@remotedev
 export default class AppStore extends Store {
   @observable error: ?LocalizableError = null;
   @observable isDownloadNotificationVisible = false;

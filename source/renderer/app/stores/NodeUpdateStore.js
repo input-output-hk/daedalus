@@ -1,5 +1,6 @@
 // @flow
 import { action, computed, observable, runInAction } from 'mobx';
+import remotedev from 'mobx-remotedev/lib/dev';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import type {
@@ -8,6 +9,7 @@ import type {
 } from '../api/nodes/types';
 import { NODE_UPDATE_POLL_INTERVAL } from '../config/timingConfig';
 
+@remotedev
 export default class NodeUpdateStore extends Store {
   @observable isUpdateAvailable = false;
   @observable isUpdatePostponed = false;

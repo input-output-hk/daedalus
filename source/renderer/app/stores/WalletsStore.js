@@ -1,5 +1,6 @@
 // @flow
 import { observable, action, computed, runInAction, flow } from 'mobx';
+import remotedev from 'mobx-remotedev/lib/dev';
 import { get, chunk, find, isEqual } from 'lodash';
 import { BigNumber } from 'bignumber.js';
 import Store from './lib/Store';
@@ -24,6 +25,7 @@ import { WalletPaperWalletOpenPdfError } from '../i18n/errors';
  * dealing with wallets / accounts.
  */
 
+@remotedev
 export default class WalletsStore extends Store {
   WALLET_REFRESH_INTERVAL = 5000;
 

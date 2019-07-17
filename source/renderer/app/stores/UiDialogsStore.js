@@ -1,7 +1,9 @@
 // @flow
 import { observable, action } from 'mobx';
+import remotedev from 'mobx-remotedev/lib/dev';
 import Store from './lib/Store';
 
+@remotedev
 export default class UiDialogsStore extends Store {
   @observable activeDialog: ?Function = null;
   @observable secondsSinceActiveDialogIsOpen: number = 0;

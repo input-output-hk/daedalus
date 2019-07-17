@@ -1,5 +1,6 @@
 // @flow
 import { action, computed, observable } from 'mobx';
+import remotedev from 'mobx-remotedev/lib/dev';
 import { get } from 'lodash';
 import Store from './lib/Store';
 import { sidebarConfig } from '../config/sidebarConfig';
@@ -7,6 +8,7 @@ import { WalletSyncStateTags } from '../domains/Wallet';
 import { formattedWalletAmount } from '../utils/formatters';
 import type { SidebarWalletType } from '../types/sidebarTypes';
 
+@remotedev
 export default class SidebarStore extends Store {
   @observable CATEGORIES: Array<any> = sidebarConfig.CATEGORIES;
   @observable activeSidebarCategory: string = this.CATEGORIES[0].route;

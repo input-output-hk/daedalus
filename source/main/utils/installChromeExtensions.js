@@ -1,13 +1,17 @@
 // @flow
 export const installChromeExtensions = async (isDev: boolean) => {
   if (isDev) {
-    const installer = require('electron-devtools-installer'); // eslint-disable-line global-require
+    const {
+      default: installer,
+      REACT_DEVELOPER_TOOLS,
+      REDUX_DEVTOOLS,
+    } = require('electron-devtools-installer');
 
-    const extensions = ['REACT_DEVELOPER_TOOLS'];
+    const extensions = [REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS];
     const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-    for (const name of extensions) {
+    for (const extension of extensions) {
       try {
-        await installer.default(installer[name], forceDownload);
+        await installer(extension, forceDownload);
       } catch (e) {} // eslint-disable-line
     }
   }

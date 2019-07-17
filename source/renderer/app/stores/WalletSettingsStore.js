@@ -1,5 +1,6 @@
 // @flow
 import { observable, action } from 'mobx';
+import remotedev from 'mobx-remotedev/lib/dev';
 import { findIndex } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -9,6 +10,7 @@ import type { WalletExportToFileParams } from '../actions/wallet-settings-action
 import type { WalletUtxos } from '../api/wallets/types';
 import { WALLET_UTXO_API_REQUEST_INTERVAL } from '../config/timingConfig';
 
+@remotedev
 export default class WalletSettingsStore extends Store {
   WALLET_ASSURANCE_LEVEL_OPTIONS = [
     {

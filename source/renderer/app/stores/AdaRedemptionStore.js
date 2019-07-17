@@ -1,5 +1,6 @@
 // @flow
 import { action, computed, observable, runInAction } from 'mobx';
+import remotedev from 'mobx-remotedev/lib/dev';
 import { isString } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -21,6 +22,7 @@ import type { RedeemAdaParams } from '../api/transactions/requests/redeemAda';
 import type { RedeemPaperVendedAdaParams } from '../api/transactions/requests/redeemPaperVendedAda';
 import type { AdaRedemptionDecryptionKey } from '../../../common/types/ada-redemption.types';
 
+@remotedev
 export default class AdaRedemptionStore extends Store {
   @observable redemptionType: RedemptionTypeChoices =
     ADA_REDEMPTION_TYPES.REGULAR;

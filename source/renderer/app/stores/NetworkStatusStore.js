@@ -1,5 +1,6 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
+import remotedev from 'mobx-remotedev/lib/dev';
 import moment from 'moment';
 import { isEqual, includes } from 'lodash';
 import Store from './lib/Store';
@@ -61,6 +62,12 @@ const NODE_STOPPED_STATES = [
 ];
 // END CONSTANTS ----------------------------
 
+const remotedevConfig = {
+  name: 'Network Status',
+  global: true,
+};
+
+@remotedev(remotedevConfig)
 export default class NetworkStatusStore extends Store {
   // Initialize store properties
   _startTime = Date.now();
@@ -244,7 +251,11 @@ export default class NetworkStatusStore extends Store {
         status,
       });
       if (status)
-        runInAction('assigning node status', () => Object.assign(this, status));
+        runInAction(
+          'assigning node status',
+          () => Object.assign(this, status),
+          this
+        );
     } catch (error) {
       Logger.error('NetworkStatusStore: error while requesting node state', {
         error,
@@ -271,9 +282,13 @@ export default class NetworkStatusStore extends Store {
       return Promise.resolve();
     Logger.info('NetworkStatusStore: received tls config from main process');
     this.api.ada.setRequestConfig(config);
-    runInAction('updating tlsConfig', () => {
-      this.tlsConfig = config;
-    });
+    runInAction(
+      'updating tlsConfig',
+      () => {
+        this.tlsConfig = config;
+      },
+      this
+    );
     this.actions.networkStatus.tlsConfigIsReady.trigger();
     return Promise.resolve();
   };
@@ -294,20 +309,28 @@ export default class NetworkStatusStore extends Store {
       case CardanoNodeStates.STOPPING:
       case CardanoNodeStates.EXITING:
       case CardanoNodeStates.UPDATING:
-        runInAction('updating tlsConfig', () => {
-          this.tlsConfig = null;
-        });
+        runInAction(
+          'updating tlsConfig',
+          () => {
+            this.tlsConfig = null;
+          },
+          this
+        );
         this._setDisconnected(wasConnected);
         this.stores.app._closeActiveDialog();
         break;
       default:
         this._setDisconnected(wasConnected);
     }
-    runInAction('setting cardanoNodeState', () => {
-      this.cardanoNodeState = state;
-      this.isNodeStopping = includes(NODE_STOPPING_STATES, state);
-      this.isNodeStopped = includes(NODE_STOPPED_STATES, state);
-    });
+    runInAction(
+      'setting cardanoNodeState',
+      () => {
+        this.cardanoNodeState = state;
+        this.isNodeStopping = includes(NODE_STOPPING_STATES, state);
+        this.isNodeStopped = includes(NODE_STOPPED_STATES, state);
+      },
+      this
+    );
     return Promise.resolve();
   };
 
@@ -355,11 +378,15 @@ export default class NetworkStatusStore extends Store {
     if (isForcedTimeDifferenceCheck) {
       // Set latest block timestamps into the future as a guard
       // against system time changes - e.g. if system time was set into the past
-      runInAction('update latest block timestamps', () => {
-        const futureTimestamp = Date.now() + NETWORK_STATUS_REQUEST_TIMEOUT;
-        this.latestLocalBlockTimestamp = futureTimestamp;
-        this.latestNetworkBlockTimestamp = futureTimestamp;
-      });
+      runInAction(
+        'update latest block timestamps',
+        () => {
+          const futureTimestamp = Date.now() + NETWORK_STATUS_REQUEST_TIMEOUT;
+          this.latestLocalBlockTimestamp = futureTimestamp;
+          this.latestNetworkBlockTimestamp = futureTimestamp;
+        },
+        this
+      );
     }
 
     // Record connection status before running network status call

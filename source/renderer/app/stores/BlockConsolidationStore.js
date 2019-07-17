@@ -1,5 +1,6 @@
 // @flow
 import { observable, action, runInAction } from 'mobx';
+import remotedev from 'mobx-remotedev/lib/dev';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
@@ -14,6 +15,7 @@ import type {
   GetCurrentEpochFallbackResponse,
 } from '../api/nodes/types';
 
+@remotedev
 export default class BlockConsolidationStore extends Store {
   // Initialize store observables
   @observable epochsConsolidated: number = 0; // Received from the IPC channel
