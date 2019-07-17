@@ -955,7 +955,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     this.restoreDialogCloseOnEscKey();
   };
 
-  getClass = (isTrue: boolean) =>
+  getClassName = (isTrue: boolean) =>
     classNames({ [styles.green]: isTrue, [styles.red]: !isTrue });
 
   syncingTimer = () => {
