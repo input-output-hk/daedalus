@@ -2,7 +2,7 @@
 export type BackgroundShades = Object;
 export type ErrorShades = Object;
 
-export type ExistingThemesUpdates = {
+export type PendingThemesUpdates = {
   cardanoUpdates?: Object,
   darkBlueUpdates?: Object,
   lightBlueUpdates?: Object,
@@ -26,6 +26,17 @@ export type ColorParams = {
     primary: string,
     secondary: string,
   },
+};
+
+export type FindUpdatesParams = {
+  cardano: Object,
+  darkBlue: Object,
+  lightBlue: Object,
+};
+
+export type FormattedConstNames = {
+  themeConfig: string,
+  themeParams: string,
 };
 
 export type LogDifferencesParams = {
@@ -59,4 +70,9 @@ export type ThemeFonts = {
   semibold: string,
   thin: string,
   ultralight: string,
+};
+
+export type WriteThemeUpdateParams = {
+  fileName: string | 'cardano.js' | 'dark-blue.js' | 'light-blue.js',
+  updatedThemeObj: Object,
 };
