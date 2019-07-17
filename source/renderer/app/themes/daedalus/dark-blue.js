@@ -1,5 +1,4 @@
 // @flow
-import chroma from 'chroma-js';
 import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
 
@@ -574,9 +573,8 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-staking-stake-pool-tooltip-background-color':
       'rgba(83, 99, 112, 0.98)',
     '--theme-staking-stake-pool-tooltip-border-color': 'transparent',
-    '--theme-staking-stake-pool-tooltip-delegate-button-active-background-color': `${chroma(
-      '#fafbfc'
-    ).alpha(0.8)}`,
+    '--theme-staking-stake-pool-tooltip-delegate-button-active-background-color':
+      'rgba(250, 251, 252, 0.8)',
     '--theme-staking-stake-pool-tooltip-delegate-button-background-color':
       'rgba(0, 0, 0, 0.1)',
     '--theme-staking-stake-pool-tooltip-delegate-button-border-color':

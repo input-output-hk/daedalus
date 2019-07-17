@@ -1,5 +1,4 @@
 // @flow
-import chroma from 'chroma-js';
 import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
 
@@ -570,9 +569,8 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-staking-stake-pool-selected-checkmark-icon-color': '#fafbfc',
     '--theme-staking-stake-pool-selected-slug-color': '#fafbfc',
     '--theme-staking-stake-pool-slug-color': '#5e6066',
-    '--theme-staking-stake-pool-tooltip-background-color': `${chroma(
-      '#FFFFFF'
-    ).alpha(0.97)}`,
+    '--theme-staking-stake-pool-tooltip-background-color':
+      'rgba(255, 255, 255, 0.97)',
     '--theme-staking-stake-pool-tooltip-border-color': '#c6cdd6',
     '--theme-staking-stake-pool-tooltip-delegate-button-active-background-color':
       '#239554',
