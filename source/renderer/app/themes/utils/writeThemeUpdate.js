@@ -1,5 +1,4 @@
 // @flow
-/* eslint-disable */
 import fs from 'fs';
 import path from 'path';
 import type { FormattedConstNames, WriteThemeUpdateParams } from '../types';
@@ -30,11 +29,9 @@ export const writeThemeUpdate = ({
     __dirname,
     `../../source/renderer/app/themes/daedalus/${fileName}.js`
   );
-  const TEMP_THEME_FILE = path.join(__dirname, `../daedalus/${fileName}.js`);
   const { themeConfig, themeParams } = formatConstNames(fileName);
   const FILE_CONTENT = `
     // @flow
-    import chroma from 'chroma-js';
     import { createTheme } from '../utils/createTheme';
     import type { CreateThemeParams } from '../types';
 
@@ -48,5 +45,5 @@ export const writeThemeUpdate = ({
     export default createTheme(${themeParams});
   `;
 
-  fs.writeFileSync(TEMP_THEME_FILE, FILE_CONTENT, {});
+  fs.writeFileSync(THEME_FILE, FILE_CONTENT, {});
 };
