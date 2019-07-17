@@ -66,6 +66,7 @@ export const ALLOWED_LOGS = [
   'Daedalus.json',
   'System-info.json',
   'Daedalus-versions.json',
+  'State-snapshot.json',
 ];
 export const ALLOWED_NODE_LOGS = new RegExp(/(node.json-)(\d{14}$)/);
 export const ALLOWED_LAUNCHER_LOGS = new RegExp(/(launcher-)(\d{14}$)/);
