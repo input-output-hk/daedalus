@@ -34,6 +34,10 @@ export default class SidebarWalletsMenu extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  renderThumb = (props: any) => (
+    <div {...props} className={styles.scrollbarThumb} />
+  );
+
   render() {
     const { intl } = this.context;
     const {
@@ -52,7 +56,10 @@ export default class SidebarWalletsMenu extends Component<Props> {
     return (
       <SidebarSubMenu visible={this.props.visible}>
         <div className={styles.wallets}>
-          <Scrollbars>
+          <Scrollbars
+            renderThumbHorizontal={this.renderThumb}
+            renderThumbVertical={this.renderThumb}
+          >
             {wallets.map(wallet => (
               <SidebarWalletMenuItem
                 title={wallet.title}
