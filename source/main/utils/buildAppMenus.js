@@ -69,7 +69,14 @@ export const buildAppMenus = async (
   const isNodeInSync = get(cardanoNode, 'status.isNodeInSync', false);
   if (isMacOS) {
     menu = Menu.buildFromTemplate(
-      osxMenu(app, mainWindow, menuActions, translations, isNodeInSync, networkLocale)
+      osxMenu(
+        app,
+        mainWindow,
+        menuActions,
+        translations,
+        isNodeInSync,
+        networkLocale
+      )
     );
     Menu.setApplicationMenu(menu);
   } else {
