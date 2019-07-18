@@ -12,6 +12,7 @@ import Dialog from '../../widgets/Dialog';
 import { StakePoolsList } from '../stake-pools/StakePoolsList';
 import { StakePoolsSearch } from '../stake-pools/StakePoolsSearch';
 import { getFilteredStakePoolsList } from '../stake-pools/helpers';
+import BackToTopButton from '../../widgets/BackToTopButton';
 import styles from './DelegationStepsChooseStakePoolDialog.scss';
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import { getColorFromRange } from '../../../utils/colors';
@@ -213,6 +214,12 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         closeButton={<DialogCloseButton onClose={onClose} />}
         backButton={<DialogBackButton onBack={onBack} />}
       >
+        <BackToTopButton
+          scrollableElementClassName="Dialog_content"
+          buttonTopPosition={100}
+          scrollTopToActivate={100}
+        />
+
         <div className={styles.delegationStepsIndicatorWrapper}>
           <Stepper
             steps={stepsList}

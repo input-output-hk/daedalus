@@ -5,10 +5,11 @@ import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { without } from 'lodash';
 import { StakePoolsList } from './StakePoolsList';
 import { StakePoolsSearch } from './StakePoolsSearch';
-import type { StakePoolsListType } from '../../../api/staking/types';
-import type { Filters, Filter } from './StakePoolsSearch';
+import BackToTopButton from '../../widgets/BackToTopButton';
 import styles from './StakePools.scss';
 import { getFilteredStakePoolsList } from './helpers';
+import type { StakePoolsListType } from '../../../api/staking/types';
+import type { Filters, Filter } from './StakePoolsSearch';
 
 const messages = defineMessages({
   delegatingListTitle: {
@@ -105,13 +106,17 @@ export default class StakePools extends Component<Props, State> {
 
     return (
       <div className={styles.component}>
+        <BackToTopButton
+          scrollableElementClassName="StakingWithNavigation_page"
+          buttonTopPosition={144}
+        />
+
         <StakePoolsSearch
           search={search}
           filters={filters}
           onSearch={this.handleSearch}
           onClearSearch={this.handleClearSearch}
           onFilterChange={this.handleFilterChange}
-          scrollableElementClassName="StakingWithNavigation_page"
         />
 
         <h2>{intl.formatMessage(messages.delegatingListTitle)}</h2>

@@ -10,7 +10,6 @@ import classnames from 'classnames';
 import styles from './StakePoolsSearch.scss';
 import searchIcon from '../../../assets/images/search.inline.svg';
 import closeIcon from '../../../assets/images/close-cross.inline.svg';
-import { getRelativePosition } from '../../../utils/domManipulation';
 
 const messages = defineMessages({
   searchInputPlaceholder: {
@@ -43,11 +42,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Stake pools ({pools})',
     description: '"listTitle" for the Stake Pools search.',
   },
-  backToTop: {
-    id: 'staking.stakePools.search.backToTop',
-    defaultMessage: '!!!Back to top',
-    description: '"backToTop" for the Stake Pools search.',
-  },
 });
 
 export type Filters = Array<Filter>;
@@ -57,57 +51,18 @@ type Props = {
   filters?: Filters,
   label?: string,
   placeholder?: string,
-  scrollableElementClassName: string,
   onSearch: Function,
   onClearSearch: Function,
   onFilterChange?: Function,
-  registerSearchInput?: Function,
   search: string,
 };
 
-type State = {
-  isBackToTopButtonActive: boolean,
-  inputTopPosition: number,
-};
-
-export class StakePoolsSearch extends Component<Props, State> {
+export class StakePoolsSearch extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
-  state = {
-    isBackToTopButtonActive: false,
-    inputTopPosition: 0,
-  };
-
   searchInput: ?HTMLElement = null;
-  scrollableDomElement: ?HTMLElement = null;
-
-  componentDidMount() {
-    this.setupBackToTopButton();
-    this.scrollableDomElement = document.querySelector(
-      `.${this.props.scrollableElementClassName}`
-    );
-    if (!this.scrollableDomElement) return false;
-    return this.scrollableDomElement.addEventListener(
-      'scroll',
-      this.getIsBackToTopActive
-    );
-  }
-
-  setupBackToTopButton = () => {
-    try {
-      const { scrollableElementClassName } = this.props;
-      const input = this.searchInput.inputElement.current;
-      const { top: inputTopPosition } = getRelativePosition(
-        input,
-        `.${scrollableElementClassName}`
-      );
-      this.setState({ inputTopPosition });
-    } catch (err) {
-      throw err;
-    }
-  };
 
   getFilterItemClassName = (item: string) => {
     const { filters = [] } = this.props;
@@ -122,27 +77,6 @@ export class StakePoolsSearch extends Component<Props, State> {
     });
   };
 
-  getIsBackToTopActive = () => {
-    const { isBackToTopButtonActive, inputTopPosition } = this.state;
-    if (this.scrollableDomElement instanceof HTMLElement) {
-      const scrollPosition = this.scrollableDomElement.scrollTop;
-      if (scrollPosition > inputTopPosition && !isBackToTopButtonActive) {
-        this.setState({ isBackToTopButtonActive: true });
-      } else if (
-        scrollPosition <= inputTopPosition &&
-        isBackToTopButtonActive
-      ) {
-        this.setState({ isBackToTopButtonActive: false });
-      }
-    }
-  };
-
-  backToTop = () => {
-    if (this.scrollableDomElement instanceof HTMLElement) {
-      this.scrollableDomElement.scrollTop = 0;
-    }
-  };
-
   render() {
     const { intl } = this.context;
     const {
@@ -154,7 +88,6 @@ export class StakePoolsSearch extends Component<Props, State> {
       placeholder,
       search,
     } = this.props;
-    const { isBackToTopButtonActive, inputTopPosition } = this.state;
 
     const filterAll =
       filters && onFilterChange && onFilterChange.bind(this, 'all');
@@ -162,10 +95,6 @@ export class StakePoolsSearch extends Component<Props, State> {
       filters && onFilterChange && onFilterChange.bind(this, 'new');
     const filterCharity =
       filters && onFilterChange && onFilterChange.bind(this, 'charity');
-
-    const backToTopBtnStyles = classnames(styles.backToTopBtn, {
-      [styles.active]: isBackToTopButtonActive,
-    });
 
     const clearSearchStyles = classnames(styles.clearSearch, {
       [styles.clearSearchSeparator]: !!filters,
@@ -230,9 +159,6 @@ export class StakePoolsSearch extends Component<Props, State> {
             </ul>
           )}
         </div>
-        <button className={backToTopBtnStyles} onClick={this.backToTop}>
-          {intl.formatMessage(messages.backToTop)}
-        </button>
       </div>
     );
   }

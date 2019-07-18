@@ -10,7 +10,7 @@ export const getRelativePosition = (
   const targetHTMLElement = getElementHTMLElement(targetElement);
   const parentHTMLElement = parentElement
     ? getElementHTMLElement(parentElement)
-    : targetHTMLElement.parentNode;
+    : getParentNode(targetHTMLElement);
   const relativePosition = {};
   if (
     parentHTMLElement instanceof HTMLElement &&
@@ -26,3 +26,6 @@ export const getRelativePosition = (
 
 const getElementHTMLElement = (element: Element) =>
   typeof element === 'string' ? document.querySelector(element) : element;
+
+const getParentNode = (element?: ?HTMLElement) =>
+  element instanceof HTMLElement ? element.parentNode : element;
