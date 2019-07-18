@@ -6,7 +6,8 @@ import type { Filters } from './StakePoolsSearch';
 const searchFields = ['slug', 'name'];
 const NEW_POOLS_MONTHS_OLD = 3;
 
-const stakePoolsListSearch = (stakePool: StakePool, search: string) => {
+const stakePoolsListSearch = (stakePool: StakePool, rawSearch: string) => {
+  const search = rawSearch.replace(/[^a-zA-Z0-9 ]/g, '');
   let pass = !search;
   searchFields.forEach((field: string) => {
     if (!pass) pass = RegExp(search, 'i').test(stakePool[field]);
