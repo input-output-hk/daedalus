@@ -9,6 +9,6 @@ export const getAddresses = (
 ): Promise<Address[]> =>
   request({
     method: 'GET',
-    path: `/wallets/${walletId}/addresses?state=used`,
+    path: `/v2/wallets/${walletId}/addresses?state=used`,
     ...config,
   });

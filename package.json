@@ -31,7 +31,8 @@
     "clear:cache": "gulp clear:cache",
     "nix:dev": "nix-shell --arg autoStartBackend true --arg allowFaultInjection true --arg systemStart",
     "nix:staging": "nix-shell --arg autoStartBackend true --argstr cluster staging",
-    "frontend": "node frontend-only-launcher/index.js"
+    "frontend": "node utils/frontend-only-launcher/index.js",
+    "v2-api-importer": "node utils/v2-api-importer/index.js"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -56,6 +57,7 @@
     "@storybook/react": "4.1.18",
     "asar": "0.14.6",
     "autodll-webpack-plugin": "0.4.2",
+    "axios": "^0.19.0",
     "babel-eslint": "10.0.1",
     "babel-loader": "8.0.4",
     "babel-plugin-react-intl": "3.0.1",

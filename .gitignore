@@ -92,4 +92,6 @@ public.key
 public.key.lock
 
 # Frontend launcher state
-frontend-only-launcher/state
+utils/frontend-only-launcher/state
+
+cardano-wallet-http-bridge

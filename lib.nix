@@ -36,10 +36,10 @@ let
   cardanoWalletSrc = import (pkgs.fetchFromGitHub {
     owner = "input-output-hk";
     repo = "cardano-wallet";
-    rev = "0129cb2f0a40d9801c13ec64058899810c847509";
-    sha256 = "0kic2mbkjyp433xmi8203j62qfw34yfkxdpalb3qcqh2652s5371";
+    rev = "7495ae4a9b23add81a3c99745d8d4e87eb287f4a";
+    sha256 = "184lncbl13b15xbwr237nqh1fff5qv0d7dr3n7dbfs6akqfprwhm";
   }) {};
-  cardanoWallet = cardanoWalletSrc.cardano-wallet;
+  cardanoWallet = cardanoWalletSrc.cardano-wallet-http-bridge;
   cardanoNode = cardanoWalletSrc.cardano-http-bridge;
 in lib // {
   inherit iohkNix pkgs cardanoSL isDaedalus cardanoWallet cardanoNode;

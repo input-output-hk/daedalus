@@ -12,44 +12,27 @@ export type WalletOpts = {
 
 export function CardanoWalletLauncher({
   logStream,
-  // networkMode,
-  // nodePort,
+  networkMode,
+  nodePort,
   path,
   stateDir,
 }: WalletOpts): ChildProcess {
-  /*
-  NOTE: These are the options we want, but due to the local http-bridge 
-  being unable to connect to the local demo cluster, we'll rely on the
-  http-bridge spun up as part of the docker cluster, and run the wallet
-  in serve mode. We will change this once we have access to the new nodes
+  const networkOpt =
+    networkMode === 'local' ? ['--local-network'] : ['--network', networkMode];
 
   const opts = [
     'launch',
-    '--network',
-    networkMode,
-    '--backend-port',
+    '--node-port',
     String(nodePort),
     '--state-dir',
     stateDir,
-    // TODO: Neither of these are working for some reason
+    // NOTE: --random-port is the value we will use
+    // in production. For early development (and to enable the seed script)
+    // we will fix the port
     // '--random-port',
-    // '--port',
-    // '8889',
-  ];
-  */
-
-  // Hardcoded values until we can uncomment the block above
-  const opts = [
-    'serve',
-    '--network',
-    'testnet',
     '--port',
     '8088',
-    '--backend-port',
-    '8090',
-    '--database',
-    `${stateDir}/wallet.db`,
-  ];
+  ].concat(networkOpt);
 
   const walletStdio: string[] = ['inherit', logStream, logStream, 'ipc'];
   return spawn(path, opts, { stdio: walletStdio });

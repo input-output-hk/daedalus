@@ -73,7 +73,6 @@ function typedRequest<Response>(
       port: options.port,
     };
 
-    console.log(httpOnlyOptions);
     const httpsRequest = global.http.request(httpOnlyOptions);
 
     // TODO: Uncomment once HTTPS is supported by the new API

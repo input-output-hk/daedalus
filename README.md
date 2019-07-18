@@ -38,39 +38,18 @@ The result can be found at `./result/daedalus-*.bin`.
 
 # Development
 
-`shell.nix` provides a way to load a shell with all the correct versions of all the
-required dependencies for development.
+`shell.nix` provides a way to load a shell with all the correct versions of all the required dependencies for development.
 
 ## V2 API Integration Guide
 
-### Linux
-1. Ensure Docker and Docker Compose are installed on your machine
-2. Clone the following repo: `git clone git@github.com:Sam-Jeston/cardano-byron-docker.git`
-3. Start the demo cluster from the root of `cardano-byron-docker` by running `./daedalus/start-demo-cluster.sh` (NB: Run all commands from the root folder of `cardano-byron-docker`). The initial pull is big, but after that the containers will start straight away. The size of these images is far from optimized
-4. Run `nix-shell` from `daedalus`
-5. Run `yarn dev` from the `nix-shell`
-6. If required, import some funded wallets from `cardano-byron-docker` by running `./daedalus/import-wallets.sh`. This can only be done once `yarn dev` has been run as this script leverages the Wallet API that Daedalus starts.
-
-### macOS
-**There are no working macOS options for cardano-wallet. Nix or otherwise (except building from source with `stack`, which we consider to not be an option).**
-
-To get around this, I have created the `yarn frontend` command and a complete Docker stack to start the integration. This runs Daedalus in frontendOnly mode, and hits a wallet running in a docker-compose stack
-
-As the local network can't be exposed to the host machine (due to a combination of limitations with the backend services that forced an undesirible networking configuration, and limitations with Docker Desktop on macOS), ngrok is used as a proxy. **Free ngrok containers are limited to 20 req/min**. Because of this, WALLET_REFRESH_INTERVAL has been increased to 25s (up from 5s) until this workaround is removed.
-
-1. _As above_
-2. _As above_
-3. Start the demo cluster from the root of `cardano-byron-docker` by running `./start.sh`. This command includes an edge node and instance of cardano-wallet.
-4. From Daedalus, run `yarn frontend`
+1. From `cardano-sl` repo, start the demo cluster with reference to the custom config.yaml in the Daedalus utils folder. As an example, `./scripts/launch/demo-nix.sh -c /absolute/path/to/daedalus/utils/configurations/cardano-wallet-genesis.yaml`
+2. Run `yarn nix:dev *system-start*` from `daedalus`
+3. Run `yarn dev` from the `nix-shell`
+4. Once Daedalus has started, and has gotten past the loading screen, run `yarn v2-api-importer` from a new terminal window. This is only required if you wish to import some funded wallets
 
 ### V2 Known Issues
-- No macOS build options. While this remains the case, it will be impossible for most of the team to develop or test the new process management configuration.
 - As network-info is stubbed, the NTP check will throw. Just disregard this for now.
-- The long hang on "Loading Wallet Data" is just due to the increase to WALLET_REFRESH_INTERVAL. This will be reverted as soon as possible
-- It doesn't appear possible to connect `cardano-http-bridge` to the local demo cluster when using `cardano-wallet launcher`. For now, we are using `cardano-http-bridge` declared in the docker stack, and using the `cardano-wallet serve` command instead.
-- `cardano-wallet launcher` is not accepting the `--random-port` argument
-- Lots of things have been temporarily commented out or mocked to get the integration started. As such using `git push --no-verify`. This will be cleaned up once more routes become available.
-- A `console.log` is purposefully placed in `request.js` so we can see when requests are still trying to hit `/v1`.
+- Lots of things have been temporarily commented out or mocked to get the integration started. As such we are using `git push --no-verify`. This will be cleaned up once more endpoints become available.
 - TLS is not yet supported, so `request.js` has been overwritten to use the HTTP module for the time being.
 
 ## Connect to staging cluster:
