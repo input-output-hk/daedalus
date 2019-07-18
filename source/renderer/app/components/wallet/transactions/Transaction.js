@@ -288,39 +288,48 @@ export default class Transaction extends Component<Props> {
             <div>
               <h2>{intl.formatMessage(messages.fromAddresses)}</h2>
               {data.addresses.from.map((address, addressIndex) => (
-                <span
-                  role="presentation"
-                  aria-hidden
+                <div
                   // eslint-disable-next-line react/no-array-index-key
                   key={`${data.id}-from-${address}-${addressIndex}`}
-                  className={styles.address}
-                  onClick={this.handleOpenExplorer.bind(
-                    this,
-                    'address',
-                    address
-                  )}
+                  className={styles.addressRow}
                 >
-                  {address}
-                  <SVGInline svg={externalLinkIcon} />
-                </span>
+                  <span
+                    role="presentation"
+                    aria-hidden
+                    className={styles.address}
+                    onClick={this.handleOpenExplorer.bind(
+                      this,
+                      'address',
+                      address
+                    )}
+                  >
+                    {address}
+                    <SVGInline svg={externalLinkIcon} />
+                  </span>
+                </div>
               ))}
+
               <h2>{intl.formatMessage(messages.toAddresses)}</h2>
               {data.addresses.to.map((address, addressIndex) => (
-                <span
-                  role="presentation"
-                  aria-hidden
+                <div
                   // eslint-disable-next-line react/no-array-index-key
                   key={`${data.id}-to-${address}-${addressIndex}`}
-                  className={styles.address}
-                  onClick={this.handleOpenExplorer.bind(
-                    this,
-                    'address',
-                    address
-                  )}
+                  className={styles.addressRow}
                 >
-                  {address}
-                  <SVGInline svg={externalLinkIcon} />
-                </span>
+                  <span
+                    role="presentation"
+                    aria-hidden
+                    className={styles.address}
+                    onClick={this.handleOpenExplorer.bind(
+                      this,
+                      'address',
+                      address
+                    )}
+                  >
+                    {address}
+                    <SVGInline svg={externalLinkIcon} />
+                  </span>
+                </div>
               ))}
 
               <div className={assuranceLevelRowStyles}>
@@ -344,15 +353,17 @@ export default class Transaction extends Component<Props> {
               </div>
 
               <h2>{intl.formatMessage(messages.transactionId)}</h2>
-              <span
-                role="presentation"
-                aria-hidden
-                className={styles.transactionId}
-                onClick={this.handleOpenExplorer.bind(this, 'tx', data.id)}
-              >
-                {data.id}
-                <SVGInline svg={externalLinkIcon} />
-              </span>
+              <div className={styles.transactionIdRow}>
+                <span
+                  role="presentation"
+                  aria-hidden
+                  className={styles.transactionId}
+                  onClick={this.handleOpenExplorer.bind(this, 'tx', data.id)}
+                >
+                  {data.id}
+                  <SVGInline svg={externalLinkIcon} />
+                </span>
+              </div>
             </div>
             {/*
             <div>
