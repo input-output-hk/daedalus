@@ -63,7 +63,7 @@ export class StakePoolsSearch extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  searchInput: ?HTMLElement = null;
+  searchInput: ?Object = null;
 
   getFilterItemClassName = (item: string) => {
     const { filters = [] } = this.props;
@@ -78,10 +78,17 @@ export class StakePoolsSearch extends Component<Props> {
     });
   };
 
-  get hasFilters() {
-    const { filters, onFilterChange } = this.props;
-    return !!filters && !!onFilterChange;
-  }
+  autoSelectOnFocus = () => {
+    try {
+      const { searchInput } = this;
+      if (searchInput) {
+        return searchInput.inputElement.current.select();
+      }
+      return false;
+    } catch (error) {
+      throw error;
+    }
+  };
 
   render() {
     const { intl } = this.context;
@@ -96,17 +103,19 @@ export class StakePoolsSearch extends Component<Props> {
       isClearTooltipOpeningDownward,
     } = this.props;
 
-    const filterAll = this.hasFilters && onFilterChange.bind(this, 'all');
-    const filterNew = this.hasFilters && onFilterChange.bind(this, 'new');
+    const filterAll =
+      !!filters && !!onFilterChange && onFilterChange.bind(this, 'all');
+    const filterNew =
+      !!filters && !!onFilterChange && onFilterChange.bind(this, 'new');
     const filterCharity =
-      this.hasFilters && onFilterChange.bind(this, 'charity');
+      !!filters && !!onFilterChange && onFilterChange.bind(this, 'charity');
 
     const clearSearchStyles = classnames(styles.clearSearch, {
       [styles.clearSearchSeparator]: !!filters,
     });
 
     const searchInputStyles = classnames(styles.searchInput, {
-      [styles.hasFilters]: this.hasFilters,
+      [styles.hasFilters]: !!filters && !!onFilterChange,
     });
 
     return (
@@ -127,6 +136,7 @@ export class StakePoolsSearch extends Component<Props> {
             skin={InputSkin}
             value={search}
             maxLength={150}
+            onFocus={this.autoSelectOnFocus}
           />
           {search.length > 0 && (
             <Tooltip
@@ -140,7 +150,7 @@ export class StakePoolsSearch extends Component<Props> {
               </button>
             </Tooltip>
           )}
-          {this.hasFilters && (
+          {!!filters && !!onFilterChange && (
             <ul className={styles.searchFilter}>
               <li>
                 <button
