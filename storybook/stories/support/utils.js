@@ -55,7 +55,10 @@ export const generateTransaction = (
     numberOfConfirmations: confirmations,
     addresses: {
       from: [faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100)],
-      to: [faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100)],
+      to: [
+        faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
+        faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
+      ],
     },
   });
 
