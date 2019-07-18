@@ -58,15 +58,15 @@
 .content {
   border-radius: 4px;
   font-family: var(--font-regular);
+  line-height: 1.2;
   margin: 20px;
   padding: 20px;
   text-align: center;
 
   h1 {
     color: var(--theme-block-consolidation-title-text-color);
-    font-size: 19px;
-    font-weight: 600;
-    margin-bottom: 14px;
+    font-size: 20px;
+    margin-bottom: 16px;
   }
 
   p {
@@ -85,7 +85,7 @@
   }
 
   &:last-of-type {
-    margin-bottom: 40px;
+    margin-bottom: 29px;
   }
 }
 .descriptionNoCurrentEpoch {
@@ -96,7 +96,7 @@
 
 .epochs {
   height: 149px;
-  margin: 0 auto 60px;
+  margin: 0 auto 59px;
   position: relative;
   width: 620px;
 
@@ -119,9 +119,6 @@
     }
   }
 
-  img {
-    width: 100%;
-  }
 }
 .epochsNoCurrentEpoch {
   em,

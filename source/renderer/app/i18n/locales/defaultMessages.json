@@ -1524,7 +1524,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Dark cardano",
+        "defaultMessage": "!!!Dark Cardano",
         "description": "Name of the \"Dark cardano\" theme on the display settings page.",
         "end": {
           "column": 3,

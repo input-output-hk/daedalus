@@ -94,7 +94,7 @@ export default class ManualUpdate extends Component<Props> {
                     svg={linkNewWindow}
                     className={styles.linkNewWindow}
                   />
-                  <span>{formatMessage(messages.actionButtonLabel)}</span>
+                  <span className={styles.btnLabel}>{formatMessage(messages.actionButtonLabel)}</span>
                 </p>
               }
               onClick={() =>

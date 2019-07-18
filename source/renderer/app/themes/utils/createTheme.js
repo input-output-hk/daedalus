@@ -624,6 +624,7 @@ export const createDaedalusComponentsTheme = (
       ).alpha(0.7)}`,
       '--theme-manual-update-overlay-text-highlight-color': `${text.secondary}`,
       '--theme-manual-update-overlay-title-text-color': `${text.secondary}`,
+      '--theme-manual-update-overlay-button-label-color': `${text.secondary}`,
     },
     mnemonic: {
       '--theme-mnemonic-background-color': `${background.primary.regular}`,
