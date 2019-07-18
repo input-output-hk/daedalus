@@ -32,7 +32,6 @@ let
   pkgs = iohkNix.pkgs;
   lib = pkgs.lib;
   isDaedalus = name: false;
-  # TODO: Update once this branch is merged into input-output-hk/cardano-wallet
   cardanoWalletSrc = import (pkgs.fetchFromGitHub {
     owner = "input-output-hk";
     repo = "cardano-wallet";
