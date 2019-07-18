@@ -96,15 +96,15 @@ export const CREATE_DARK_BLUE_THEME_PARAMS: CreateThemeParams = {
 export const CREATE_DARK_CARDANO_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
-      primary: '#1e1f31',
-      secondary: '#1fc1c3',
+      primary: '#121326',
+      secondary: '#36374d',
     },
     border: 'rgba(255, 255, 255, 0.2)',
     error: '#ea4c5b',
     focus: 'rgba(255, 255, 255, 0.4)',
     text: {
       primary: '#ffffff',
-      secondary: '#0b1926',
+      secondary: '#ffffff',
     },
   },
   fonts: DEFAULT_FONTS,

@@ -191,6 +191,7 @@ export const WHITE_THEME_CONFIG = {
     '--theme-block-consolidation-button-icon-color-hover': '#ffffff',
     '--theme-block-consolidation-button-text-color-hover': '#ffffff',
     '--theme-block-consolidation-button-border-color': '#fdfdfd',
+    '--theme-block-consolidation-epochs-image-color': 'rgba(76, 91, 255, 0.6)',
   },
   body: {
     '--theme-main-body-background-color': '#f9f9f9',

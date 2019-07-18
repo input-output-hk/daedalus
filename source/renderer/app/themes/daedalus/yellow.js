@@ -195,6 +195,7 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-block-consolidation-button-icon-color-hover': '#ffffff',
     '--theme-block-consolidation-button-text-color-hover': '#ffffff',
     '--theme-block-consolidation-button-border-color': 'rgba(45, 45, 45, 1)',
+    '--theme-block-consolidation-epochs-image-color': 'rgba(45, 45, 45, 0.6)',
   },
   body: {
     '--theme-main-body-background-color': '#eeeae0',

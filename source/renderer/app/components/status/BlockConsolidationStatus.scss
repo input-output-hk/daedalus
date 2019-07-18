@@ -117,6 +117,12 @@
       font-size: 18px;
       font-weight: 600;
     }
+
+  }
+  svg {
+    g {
+      fill: var(--theme-block-consolidation-epochs-image-color);
+    }
   }
 }
 .epochsNoCurrentEpoch {

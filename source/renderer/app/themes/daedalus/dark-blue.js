@@ -65,6 +65,7 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-block-consolidation-button-icon-color-hover': '#263345',
     '--theme-block-consolidation-button-text-color-hover': '#263345',
     '--theme-block-consolidation-button-border-color': '#fafbfc',
+    '--theme-block-consolidation-epochs-image-color': 'rgba(255, 255, 255, 0.6)',
   },
   body: {
     '--theme-main-body-background-color': '#0b1926',

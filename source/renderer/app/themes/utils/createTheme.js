@@ -317,6 +317,9 @@ export const createDaedalusComponentsTheme = (
       '--theme-block-consolidation-button-border-color': `${
         background.primary.lightest
       }`,
+      '--theme-block-consolidation-epochs-image-color': `${chroma(
+        text.secondary
+      ).alpha(0.6)}`,
     },
     body: {
       '--theme-main-body-background-color': `${background.primary.regular}`,
