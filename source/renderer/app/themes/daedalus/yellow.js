@@ -181,10 +181,14 @@ export const YELLOW_THEME_CONFIG = {
       '#f8f7f3',
     '--theme-block-consolidation-indicator-epochs-behind-background-color-2':
       '#fdcd68',
-    '--theme-block-consolidation-stripe-dark-1-background-color': 'rgba(63, 62, 62, 0.3)',
-    '--theme-block-consolidation-stripe-dark-2-background-color': 'rgba(45, 45, 45, 0.3)',
-    '--theme-block-consolidation-stripe-light-1-background-color': 'rgba(63, 62, 62, 1)',
-    '--theme-block-consolidation-stripe-light-2-background-color': 'rgba(45, 45, 45, 1)',
+    '--theme-block-consolidation-stripe-dark-1-background-color':
+      'rgba(63, 62, 62, 0.3)',
+    '--theme-block-consolidation-stripe-dark-2-background-color':
+      'rgba(45, 45, 45, 0.3)',
+    '--theme-block-consolidation-stripe-light-1-background-color':
+      'rgba(63, 62, 62, 1)',
+    '--theme-block-consolidation-stripe-light-2-background-color':
+      'rgba(45, 45, 45, 1)',
     '--theme-block-consolidation-button-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-block-consolidation-button-background-color-hover': '#2d2d2d',
     '--theme-block-consolidation-button-icon-color': '#2d2d2d',
@@ -395,15 +399,18 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-loading-spinner-color': '#2d2d2d',
   },
   manualUpdate: {
-    '--theme-manual-update-overlay-background-color': 'rgba(255, 185, 35, 0.96)',
-    '--theme-manual-update-overlay-button-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-manual-update-overlay-background-color':
+      'rgba(255, 185, 35, 0.96)',
+    '--theme-manual-update-overlay-button-background-color':
+      'rgba(0, 0, 0, 0.1)',
     '--theme-manual-update-overlay-button-background-color-hover': '#2d2d2d',
     '--theme-manual-update-overlay-button-icon-color': '#2d2d2d',
     '--theme-manual-update-overlay-button-icon-color-hover': '#ffffff',
     '--theme-manual-update-overlay-button-text-color-hover': '#ffffff',
     '--theme-manual-update-overlay-button-border-color': '#2d2d2d',
     '--theme-manual-update-overlay-text-color': 'rgba(45, 45, 45, 0.7)',
-    '--theme-manual-update-overlay-text-highlight-color': '#rgba(45, 45, 45, 1)',
+    '--theme-manual-update-overlay-text-highlight-color':
+      '#rgba(45, 45, 45, 1)',
     '--theme-manual-update-overlay-title-text-color': 'rgba(45, 45, 45, 1)',
     '--theme-manual-update-overlay-button-label-color': 'rgba(45, 45, 45, 1)',
   },

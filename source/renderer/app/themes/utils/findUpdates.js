@@ -92,7 +92,7 @@ export const findUpdates = (
       missingDefs: darkCardanoDefsToAdd,
       themeName: 'dark-cardano.js',
     });
-    pendingThemesUpdates.darcCardanoUpdates = darkCardanoDefsToAdd;
+    pendingThemesUpdates.darkCardanoUpdates = darkCardanoDefsToAdd;
   }
 
   if (!isEmpty(lightBlueDefsToAdd)) {

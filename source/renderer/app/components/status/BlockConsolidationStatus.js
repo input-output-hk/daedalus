@@ -178,10 +178,7 @@ export default class BlockConsolidationStatus extends Component<Props> {
                   }}
                 />
               </p>
-              <SVGInline
-                svg={epochs}
-                className={styles.epochsImage}
-              />
+              <SVGInline svg={epochs} className={styles.epochsImage} />
             </div>
 
             <div className={styles.indicator}>

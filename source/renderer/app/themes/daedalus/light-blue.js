@@ -291,6 +291,7 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-manual-update-overlay-text-color': 'rgba(250, 251, 252, 0.7)',
     '--theme-manual-update-overlay-text-highlight-color': '#fafbfc',
     '--theme-manual-update-overlay-title-text-color': '#fafbfc',
+    '--theme-manual-update-overlay-button-label-color': '#fafbfc',
   },
   mnemonic: {
     '--theme-mnemonic-background-color': '#e6e9ee',
