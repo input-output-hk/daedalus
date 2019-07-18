@@ -253,7 +253,6 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
 
           <div className={styles.searchStakePoolsWrapper}>
             <StakePoolsSearch
-              filters={[]}
               search={searchValue}
               label={intl.formatMessage(messages.searchInputLabel)}
               placeholder={intl.formatMessage(messages.searchInputPlaceholder)}

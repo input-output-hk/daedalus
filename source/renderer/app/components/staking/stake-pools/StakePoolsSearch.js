@@ -53,12 +53,11 @@ export type Filters = Array<Filter>;
 export type Filter = 'all' | 'charity' | 'new';
 
 type Props = {
-  filters: Filters,
+  filters?: Filters,
   label?: string,
   placeholder?: string,
   scrollableElementSelector: string,
   backToTopScrollThreashold: number,
-  clearHasSeparator: boolean,
   onSearch: Function,
   onClearSearch: Function,
   onFilterChange?: Function,
@@ -93,14 +92,15 @@ export class StakePoolsSearch extends Component<Props, State> {
   }
 
   getFilterItemClassName = (item: string) => {
+    const { filters = [] } = this.props;
     if (item === 'all') {
       return classnames({
-        [styles.searchFilterActiveItem]: !this.props.filters.length,
+        [styles.searchFilterActiveItem]: !filters.length,
       });
     }
     return classnames({
       [styles.searchFilterActiveItem]:
-        this.props.filters.length && this.props.filters.indexOf(item) > -1,
+        filters.length && filters.indexOf(item) > -1,
     });
   };
 
@@ -130,9 +130,9 @@ export class StakePoolsSearch extends Component<Props, State> {
     const { intl } = this.context;
     const {
       label,
+      filters,
       onSearch,
       onClearSearch,
-      clearHasSeparator,
       onFilterChange,
       placeholder,
       registerSearchInput,
@@ -140,17 +140,19 @@ export class StakePoolsSearch extends Component<Props, State> {
     } = this.props;
     const { isBackToTopActive } = this.state;
 
-    const filterAll = onFilterChange && onFilterChange.bind(this, 'all');
-    const filterNew = onFilterChange && onFilterChange.bind(this, 'new');
+    const filterAll =
+      filters && onFilterChange && onFilterChange.bind(this, 'all');
+    const filterNew =
+      filters && onFilterChange && onFilterChange.bind(this, 'new');
     const filterCharity =
-      onFilterChange && onFilterChange.bind(this, 'charity');
+      filters && onFilterChange && onFilterChange.bind(this, 'charity');
 
     const backToTopBtnStyles = classnames(styles.backToTopBtn, {
       [styles.active]: isBackToTopActive,
     });
 
     const clearSearchStyles = classnames(styles.clearSearch, {
-      [styles.clearSearchSeparator]: clearHasSeparator,
+      [styles.clearSearchSeparator]: !!filters,
     });
 
     return (
@@ -181,7 +183,7 @@ export class StakePoolsSearch extends Component<Props, State> {
               </button>
             </Tooltip>
           )}
-          {onFilterChange && (
+          {filters && onFilterChange && (
             <ul className={styles.searchFilter}>
               <li>
                 <button

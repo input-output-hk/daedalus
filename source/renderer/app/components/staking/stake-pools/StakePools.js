@@ -118,7 +118,6 @@ export default class StakePools extends Component<Props, State> {
           }}
           scrollableElementSelector=".StakingWithNavigation_page"
           backToTopScrollThreashold={50}
-          clearHasSeparator
         />
 
         <h2>{intl.formatMessage(messages.delegatingListTitle)}</h2>
