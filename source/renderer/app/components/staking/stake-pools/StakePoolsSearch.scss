@@ -27,8 +27,12 @@
     border-radius: 4px;
     height: 50px;
     padding-left: 55px;
-    // padding-right: 175px;
-    padding-right: 250px;
+    padding-right: 50px;
+  }
+  &.hasFilters {
+    input {
+      padding-right: 250px;
+    }
   }
 }
 
@@ -73,14 +77,16 @@
   }
 
   &.clearSearchSeparator {
-    right: 170px;
+    right: 190px;
     &:after {
+      background-color: #5e6066;
       content: '';
       display: block;
       height: 20px;
-      margin: 3px 0 0 20px;
       opacity: 0.2;
-      background-color: #5e6066;
+      position: absolute;
+      right: -20px;
+      top: 3px;
       width: 1px;
     }
   }

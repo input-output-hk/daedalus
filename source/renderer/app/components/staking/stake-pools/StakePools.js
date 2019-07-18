@@ -117,6 +117,7 @@ export default class StakePools extends Component<Props, State> {
           onSearch={this.handleSearch}
           onClearSearch={this.handleClearSearch}
           onFilterChange={this.handleFilterChange}
+          isClearTooltipOpeningDownward
         />
 
         <h2>{intl.formatMessage(messages.delegatingListTitle)}</h2>

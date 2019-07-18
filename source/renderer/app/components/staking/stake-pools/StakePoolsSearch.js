@@ -51,6 +51,7 @@ type Props = {
   filters?: Filters,
   label?: string,
   placeholder?: string,
+  isClearTooltipOpeningDownward?: boolean,
   onSearch: Function,
   onClearSearch: Function,
   onFilterChange?: Function,
@@ -77,6 +78,11 @@ export class StakePoolsSearch extends Component<Props> {
     });
   };
 
+  get hasFilters() {
+    const { filters, onFilterChange } = this.props;
+    return !!filters && !!onFilterChange;
+  }
+
   render() {
     const { intl } = this.context;
     const {
@@ -87,17 +93,20 @@ export class StakePoolsSearch extends Component<Props> {
       onFilterChange,
       placeholder,
       search,
+      isClearTooltipOpeningDownward,
     } = this.props;
 
-    const filterAll =
-      filters && onFilterChange && onFilterChange.bind(this, 'all');
-    const filterNew =
-      filters && onFilterChange && onFilterChange.bind(this, 'new');
+    const filterAll = this.hasFilters && onFilterChange.bind(this, 'all');
+    const filterNew = this.hasFilters && onFilterChange.bind(this, 'new');
     const filterCharity =
-      filters && onFilterChange && onFilterChange.bind(this, 'charity');
+      this.hasFilters && onFilterChange.bind(this, 'charity');
 
     const clearSearchStyles = classnames(styles.clearSearch, {
       [styles.clearSearchSeparator]: !!filters,
+    });
+
+    const searchInputStyles = classnames(styles.searchInput, {
+      [styles.hasFilters]: this.hasFilters,
     });
 
     return (
@@ -107,7 +116,7 @@ export class StakePoolsSearch extends Component<Props> {
           <Input
             autoFocus
             label={label || null}
-            className={styles.searchInput}
+            className={searchInputStyles}
             onChange={onSearch}
             ref={input => {
               this.searchInput = input;
@@ -124,13 +133,14 @@ export class StakePoolsSearch extends Component<Props> {
               skin={TooltipSkin}
               tip="Clear"
               className={clearSearchStyles}
+              isOpeningUpward={!isClearTooltipOpeningDownward}
             >
               <button onClick={onClearSearch}>
                 <SVGInline svg={closeIcon} />
               </button>
             </Tooltip>
           )}
-          {filters && onFilterChange && (
+          {this.hasFilters && (
             <ul className={styles.searchFilter}>
               <li>
                 <button
