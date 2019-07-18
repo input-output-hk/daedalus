@@ -129,9 +129,7 @@ let
         ${pkgs.lib.optionalString (cluster == "demo") ''
           ln -svf ${demoTopologyYaml} wallet-topology.yaml
 
-          # Refresh the old state directory, as it will have
-          # invalid wallet dbs, so we need to do this each time
-          # we run nix shell
+          # Refresh the old state directory
           rm -rf "''${STATE_PATH}"
           mkdir -p "''${STATE_PATH}"
           echo -n ${systemStartString} > "''${STATE_PATH}/system-start"
