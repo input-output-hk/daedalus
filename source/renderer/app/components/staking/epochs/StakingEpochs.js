@@ -9,6 +9,7 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import StakingEpochsCurrentEpochData from './StakingEpochsCurrentEpochData';
 import StakingEpochsPreviousEpochData from './StakingEpochsPreviousEpochData';
 import { SELECTED_EPOCH_OPTIONS, humanizeDurationToShort } from './helpers.js';
+import type { EpochData } from '../../../api/staking/types';
 import styles from './StakingEpochs.scss';
 
 const messages = defineMessages({
@@ -26,11 +27,11 @@ const messages = defineMessages({
 
 type Props = {
   currentEpochName: string,
-  currentEpochData: any,
+  currentEpochData: EpochData,
   currentEpochEndDateTime: string,
   currentEpochProgress: number,
   previousEpochName: string,
-  previousEpochData: any,
+  previousEpochData: EpochData,
   isLoading: boolean,
 };
 

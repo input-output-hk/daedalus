@@ -7,13 +7,13 @@ import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import classNames from 'classnames';
 import styles from './StatusIcons.scss';
 import tooltipStyles from './StatusIcons-tooltip.scss';
-import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
-import nodeStateIcon from '../../assets/images/node-state-icon.inline.svg';
-import isNodeRespondingIcon from '../../assets/images/is-node-responding-icon.inline.svg';
-import isNodeSubscribedIcon from '../../assets/images/is-node-subscribed-icon.inline.svg';
-import isNodeTimeCorrectIcon from '../../assets/images/is-node-time-correct-icon.inline.svg';
-import isNodeSyncingIcon from '../../assets/images/is-node-syncing-icon.inline.svg';
-import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
+import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
+import nodeStateIcon from '../../../assets/images/node-state-icon.inline.svg';
+import isNodeRespondingIcon from '../../../assets/images/is-node-responding-icon.inline.svg';
+import isNodeSubscribedIcon from '../../../assets/images/is-node-subscribed-icon.inline.svg';
+import isNodeTimeCorrectIcon from '../../../assets/images/is-node-time-correct-icon.inline.svg';
+import isNodeSyncingIcon from '../../../assets/images/is-node-syncing-icon.inline.svg';
+import type { CardanoNodeState } from '../../../../../common/types/cardano-node.types';
 
 const messages = defineMessages({
   nodeIsRunning: {
@@ -140,6 +140,7 @@ const messages = defineMessages({
 });
 
 type Props = {
+  onIconClick: Function,
   nodeState: ?CardanoNodeState,
   isNodeResponding?: boolean,
   isNodeSubscribed?: boolean,
@@ -185,7 +186,7 @@ const VARIABLE_VALUES = {
   null: 'IsStarting',
 };
 
-export default class StatusIcon extends Component<Props> {
+export default class StatusIcons extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -237,7 +238,9 @@ export default class StatusIcon extends Component<Props> {
       tip={this.getTip(paramName, this.props[paramName])}
       className={this.getTooltipClassname(paramName)}
     >
-      <SVGInline svg={icon} className={this.getClassName(paramName)} />
+      <button className={styles.iconButton} onClick={this.props.onIconClick}>
+        <SVGInline svg={icon} className={this.getClassName(paramName)} />
+      </button>
     </Tooltip>
   );
 

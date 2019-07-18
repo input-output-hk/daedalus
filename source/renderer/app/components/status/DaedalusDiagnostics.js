@@ -1,10 +1,11 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { get, includes, upperFirst } from 'lodash';
+import { get, includes, upperFirst, capitalize } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import classNames from 'classnames';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import SVGInline from 'react-svg-inline';
@@ -15,6 +16,7 @@ import {
 import { UNSYNCED_BLOCKS_ALLOWED } from '../../config/numbersConfig';
 import { getNetworkEkgUrl } from '../../utils/network';
 import closeCross from '../../assets/images/close-cross.inline.svg';
+import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
@@ -105,6 +107,11 @@ const messages = defineMessages({
     id: 'daedalus.diagnostics.dialog.stateDirectory',
     defaultMessage: '!!!Daedalus State Directory',
     description: 'Daedalus State Directory',
+  },
+  stateDirectoryPathOpenBtn: {
+    id: 'daedalus.diagnostics.dialog.stateDirectoryPathOpenBtn',
+    defaultMessage: '!!!Open',
+    description: 'Open',
   },
   connectionError: {
     id: 'daedalus.diagnostics.dialog.connectionError',
@@ -333,10 +340,13 @@ type Props = {
   latestNetworkBlockTimestamp: number,
   localBlockHeight: number,
   networkBlockHeight: number,
+  currentLocale: string,
   onForceCheckLocalTimeDifference: Function,
+  onOpenStateDirectory: Function,
   onOpenExternalLink: Function,
   onRestartNode: Function,
   onClose: Function,
+  onCopyStateDirectoryPath: Function,
 };
 
 type State = {
@@ -467,8 +477,9 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       networkBlockHeight,
       latestLocalBlockTimestamp,
       latestNetworkBlockTimestamp,
-      onForceCheckLocalTimeDifference,
+      onOpenStateDirectory,
       onClose,
+      onCopyStateDirectoryPath,
       nodeConnectionError,
       isSystemTimeIgnored,
       onOpenExternalLink,
@@ -476,6 +487,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       isTestnet,
       isStaging,
       isMainnet,
+      currentLocale,
     } = this.props;
 
     const {
@@ -549,59 +561,66 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
           isTestnet,
         });
 
+    const stateDirectoryPathStyles = classNames([
+      styles.stateDirectoryPath,
+      styles[`locale-${currentLocale}`],
+    ]);
+
     return (
       <div className={styles.component}>
         <div className={styles.tables}>
           <table className={styles.table}>
             <tbody>
               <tr>
-                <th colSpan={2}>
-                  {intl.formatMessage(messages.systemInfo)}
+                <th className={styles.sectionTitle} colSpan={2}>
+                  <span>{intl.formatMessage(messages.systemInfo)}</span>
                   <hr />
                 </th>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.platform)}:</td>
+                <th>{intl.formatMessage(messages.platform)}:</th>
                 <td>{platform}</td>
               </tr>
               <tr className={styles.platformVersion}>
-                <td>{intl.formatMessage(messages.platformVersion)}:</td>
+                <th>{intl.formatMessage(messages.platformVersion)}:</th>
                 <td className={styles.platform}>{platformVersion}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.cpu)}:</td>
+                <th>{intl.formatMessage(messages.cpu)}:</th>
                 <Tooltip skin={TooltipSkin} tip={cpu}>
                   <td>{cpu}</td>
                 </Tooltip>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.ram)}:</td>
+                <th>{intl.formatMessage(messages.ram)}:</th>
                 <td>{ram}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.availableDiskSpace)}:</td>
+                <th>{intl.formatMessage(messages.availableDiskSpace)}:</th>
                 <td>{availableDiskSpace}</td>
               </tr>
+            </tbody>
+            <tbody>
               <tr>
-                <th colSpan={2}>
-                  {intl.formatMessage(messages.coreInfo)}
+                <th className={styles.sectionTitle} colSpan={2}>
+                  <span>{intl.formatMessage(messages.coreInfo)}</span>
                   <hr />
                 </th>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.daedalusVersion)}:</td>
+                <th>{intl.formatMessage(messages.daedalusVersion)}:</th>
                 <td>{daedalusVersion}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.daedalusMainProcessID)}:</td>
+                <th>{intl.formatMessage(messages.daedalusMainProcessID)}:</th>
                 <td>{daedalusMainProcessID}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.daedalusProcessID)}:</td>
+                <th>{intl.formatMessage(messages.daedalusProcessID)}:</th>
                 <td>{daedalusProcessID}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.safeMode)}:</td>
+                <th>{intl.formatMessage(messages.safeMode)}:</th>
                 <td className={styles.safeMode}>
                   {isInSafeMode
                     ? intl.formatMessage(messages.statusOn)
@@ -609,28 +628,51 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.cardanoVersion)}:</td>
+                <th>{intl.formatMessage(messages.cardanoVersion)}:</th>
                 <td>{cardanoVersion}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.cardanoProcessID)}:</td>
+                <th>{intl.formatMessage(messages.cardanoProcessID)}:</th>
                 <td>{cardanoProcessID}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.cardanoApiPort)}:</td>
+                <th>{intl.formatMessage(messages.cardanoApiPort)}:</th>
                 <td>{cardanoAPIPort || '-'}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.cardanoNetwork)}:</td>
-                <td>{cardanoNetwork}</td>
+                <th>{intl.formatMessage(messages.cardanoNetwork)}:</th>
+                <td>{capitalize(cardanoNetwork)}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.stateDirectoryPath)}:</td>
-                <Tooltip skin={TooltipSkin} tip={daedalusStateDirectoryPath}>
-                  <td className={styles.stateDirectoryPath}>
-                    {daedalusStateDirectoryPath}
-                  </td>
-                </Tooltip>
+                <th>{intl.formatMessage(messages.stateDirectoryPath)}:</th>
+                <td className={styles.stateDirectory}>
+                  <button
+                    className={styles.stateDirectoryOpenBtn}
+                    onClick={() =>
+                      onOpenStateDirectory(daedalusStateDirectoryPath)
+                    }
+                  >
+                    {intl.formatMessage(messages.stateDirectoryPathOpenBtn)}
+                  </button>
+                  <CopyToClipboard
+                    text={daedalusStateDirectoryPath}
+                    onCopy={onCopyStateDirectoryPath}
+                  >
+                    <div className={stateDirectoryPathStyles}>
+                      <Tooltip
+                        skin={TooltipSkin}
+                        tip={
+                          <div style={{ textAlign: 'center' }}>
+                            <div>{daedalusStateDirectoryPath}</div>
+                          </div>
+                        }
+                      >
+                        <p>{daedalusStateDirectoryPath}</p>
+                        <SVGInline svg={iconCopy} />
+                      </Tooltip>
+                    </div>
+                  </CopyToClipboard>
+                </td>
               </tr>
               {!isConnected && nodeConnectionError ? (
                 <tr>
@@ -653,47 +695,47 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
           <table className={styles.table}>
             <tbody>
               <tr>
-                <th colSpan={2}>
-                  {intl.formatMessage(messages.daedalusStatus)}
+                <th className={styles.sectionTitle} colSpan={2}>
+                  <span>{intl.formatMessage(messages.daedalusStatus)}</span>
                   <hr />
                 </th>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.connected)}:</td>
-                <td className={this.getClass(isConnected)}>
+                <th>{intl.formatMessage(messages.connected)}:</th>
+                <td className={this.getClassName(isConnected)}>
                   {isConnected
                     ? intl.formatMessage(messages.statusOn)
                     : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.synced)}:</td>
-                <td className={this.getClass(isSynced)}>
+                <th>{intl.formatMessage(messages.synced)}:</th>
+                <td className={this.getClassName(isSynced)}>
                   {isSynced
                     ? intl.formatMessage(messages.statusOn)
                     : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.syncPercentage)}:</td>
+                <th>{intl.formatMessage(messages.syncPercentage)}:</th>
                 <td>{syncPercentage.toFixed(2)}%</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.networkBlockHeight)}:</td>
+                <th>{intl.formatMessage(messages.networkBlockHeight)}:</th>
                 <td>{networkBlockHeight}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.localBlockHeight)}:</td>
+                <th>{intl.formatMessage(messages.localBlockHeight)}:</th>
                 <td>{localBlockHeight}</td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.remainingUnsyncedBlocks)}:</td>
+                <th>{intl.formatMessage(messages.remainingUnsyncedBlocks)}:</th>
                 <td className={remainingUnsyncedBlocksClasses}>
                   {remainingUnsyncedBlocks >= 0 ? remainingUnsyncedBlocks : '-'}
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.latestLocalBlockAge)}:</td>
+                <th>{intl.formatMessage(messages.latestLocalBlockAge)}:</th>
                 <td className={latestLocalBlockAgeClasses}>
                   {latestLocalBlockTimestamp > 0
                     ? `${latestLocalBlockAge} ms`
@@ -701,7 +743,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.latestNetworkBlockAge)}:</td>
+                <th>{intl.formatMessage(messages.latestNetworkBlockAge)}:</th>
                 <td className={latestNetworkBlockAgeClasses}>
                   {latestNetworkBlockTimestamp > 0
                     ? `${latestNetworkBlockAge} ms`
@@ -709,10 +751,10 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.localTimeDifference)}:</td>
+                <th>{intl.formatMessage(messages.localTimeDifference)}:</th>
                 <td className={styles.localTimeDifferenceItem}>
                   <button
-                    onClick={() => onForceCheckLocalTimeDifference()}
+                    onClick={() => this.checkTime()}
                     disabled={isForceCheckingNodeTime || !isConnected}
                   >
                     {isForceCheckingNodeTime
@@ -729,32 +771,34 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.systemTimeCorrect)}:</td>
-                <td className={this.getClass(isSystemTimeCorrect)}>
+                <th>{intl.formatMessage(messages.systemTimeCorrect)}:</th>
+                <td className={this.getClassName(isSystemTimeCorrect)}>
                   {isSystemTimeCorrect
                     ? intl.formatMessage(messages.statusOn)
                     : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.systemTimeIgnored)}:</td>
-                <td className={this.getClass(!isSystemTimeIgnored)}>
+                <th>{intl.formatMessage(messages.systemTimeIgnored)}:</th>
+                <td className={this.getClassName(!isSystemTimeIgnored)}>
                   {isSystemTimeIgnored
                     ? intl.formatMessage(messages.statusOn)
                     : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.checkingNodeTime)}:</td>
+                <th>{intl.formatMessage(messages.checkingNodeTime)}:</th>
                 <td>
                   {isForceCheckingNodeTime
                     ? intl.formatMessage(messages.statusOn)
                     : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
+            </tbody>
+            <tbody>
               <tr>
-                <th colSpan={2}>
-                  {intl.formatMessage(messages.cardanoNodeStatus)}
+                <th className={styles.sectionTitle} colSpan={2}>
+                  <span>{intl.formatMessage(messages.cardanoNodeStatus)}</span>
                   <button
                     className={styles.statusBtn}
                     onClick={() => this.restartNode()}
@@ -769,9 +813,9 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               </tr>
               {cardanoNodeEkgLink ? (
                 <tr>
-                  <td>
+                  <th>
                     {intl.formatMessage(messages.cardanoNodeDiagnostics)}:
-                  </td>
+                  </th>
                   <td>
                     <button
                       className={styles.realTimeStatusBtn}
@@ -787,7 +831,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </tr>
               ) : null}
               <tr>
-                <td>{intl.formatMessage(messages.cardanoNodeState)}:</td>
+                <th>{intl.formatMessage(messages.cardanoNodeState)}:</th>
                 <td>
                   {upperFirst(
                     cardanoNodeState != null
@@ -799,40 +843,40 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.cardanoNodeResponding)}:</td>
-                <td className={this.getClass(isNodeResponding)}>
+                <th>{intl.formatMessage(messages.cardanoNodeResponding)}:</th>
+                <td className={this.getClassName(isNodeResponding)}>
                   {isNodeResponding
                     ? intl.formatMessage(messages.statusOn)
                     : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.cardanoNodeSubscribed)}:</td>
-                <td className={this.getClass(isNodeSubscribed)}>
+                <th>{intl.formatMessage(messages.cardanoNodeSubscribed)}:</th>
+                <td className={this.getClassName(isNodeSubscribed)}>
                   {isNodeSubscribed
                     ? intl.formatMessage(messages.statusOn)
                     : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.cardanoNodeTimeCorrect)}:</td>
-                <td className={this.getClass(isNodeTimeCorrect)}>
+                <th>{intl.formatMessage(messages.cardanoNodeTimeCorrect)}:</th>
+                <td className={this.getClassName(isNodeTimeCorrect)}>
                   {isNodeTimeCorrect
                     ? intl.formatMessage(messages.statusOn)
                     : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.cardanoNodeSyncing)}:</td>
-                <td className={this.getClass(isNodeSyncing)}>
+                <th>{intl.formatMessage(messages.cardanoNodeSyncing)}:</th>
+                <td className={this.getClassName(isNodeSyncing)}>
                   {isNodeSyncing
                     ? intl.formatMessage(messages.statusOn)
                     : intl.formatMessage(messages.statusOff)}
                 </td>
               </tr>
               <tr>
-                <td>{intl.formatMessage(messages.cardanoNodeInSync)}:</td>
-                <td className={this.getClass(isNodeInSync)}>
+                <th>{intl.formatMessage(messages.cardanoNodeInSync)}:</th>
+                <td className={this.getClassName(isNodeInSync)}>
                   {isNodeInSync
                     ? intl.formatMessage(messages.statusOn)
                     : intl.formatMessage(messages.statusOff)}
@@ -887,12 +931,25 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     return localisationKey;
   };
 
+  restoreDialogCloseOnEscKey = () => {
+    // This method is to be used on buttons which get disabled after click
+    // as without it the ReactModal is not closing if you press the ESC key
+    // even after the button is later re-enabled
+    document.getElementsByClassName('ReactModal__Content')[0].focus();
+  };
+
+  checkTime = () => {
+    this.props.onForceCheckLocalTimeDifference();
+    this.restoreDialogCloseOnEscKey();
+  };
+
   restartNode = () => {
     this.setState({ isNodeRestarting: true });
     this.props.onRestartNode.trigger();
+    this.restoreDialogCloseOnEscKey();
   };
 
-  getClass = (isTrue: boolean) =>
+  getClassName = (isTrue: boolean) =>
     classNames([isTrue ? styles.green : styles.red]);
 
   syncingTimer = () => {

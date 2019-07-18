@@ -1,4 +1,4 @@
-@import '../../themes/mixins/animations';
+@import '../../../themes/mixins/animations';
 
 .component {
   bottom: 20px;
@@ -30,6 +30,10 @@
         width: 24px;
       }
     }
+  }
+
+  .iconButton {
+    cursor: pointer;
   }
 }
 

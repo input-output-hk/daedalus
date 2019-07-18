@@ -1,4 +1,4 @@
-@import '../../themes/mixins/link';
+@import '../../../themes/mixins/link';
 
 .overlay {
   bottom: 0;
@@ -59,11 +59,12 @@
         margin: 0 auto;
 
         .linkNewWindow {
-          @include link(--theme-staking-info-learn-more-icon-color);
+          @include link(--theme-manual-update-overlay-button-icon-color);
           border-bottom: none;
-
+          margin-right: 12px;
           svg {
-            margin-left: 8px;
+            margin-left: 0;
+            vertical-align: sub;
             width: 15px;
           }
         }

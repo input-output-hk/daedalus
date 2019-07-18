@@ -25,22 +25,17 @@ type Props = {
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
   currentTheme: string,
+  onDelegate: Function,
 };
 
 type State = {
   search: string,
   filter: string,
   selectedList?: ?string,
-  selectedIndex?: ?number,
-  flipHorizontal: boolean,
-  flipVertical: boolean,
 };
 
 const initialState = {
   selectedList: null,
-  selectedIndex: null,
-  flipHorizontal: false,
-  flipVertical: false,
 };
 
 @observer
@@ -64,6 +59,11 @@ export default class StakePools extends Component<Props, State> {
   handleSetListActive = (selectedList: string) =>
     this.setState({ selectedList });
 
+  onDelegate = (poolId: string) => {
+    const { onDelegate } = this.props;
+    onDelegate(poolId);
+  };
+
   render() {
     const { intl } = this.context;
     const {
@@ -72,13 +72,7 @@ export default class StakePools extends Component<Props, State> {
       onOpenExternalLink,
       currentTheme,
     } = this.props;
-    const {
-      search,
-      filter,
-      flipHorizontal,
-      flipVertical,
-      selectedList,
-    } = this.state;
+    const { search, filter, selectedList } = this.state;
 
     return (
       <div className={styles.component}>
@@ -97,13 +91,14 @@ export default class StakePools extends Component<Props, State> {
         {stakePoolsDelegatingList.length && (
           <StakePoolsList
             listName="stakePoolsDelegatingList"
-            flipHorizontal={flipHorizontal}
-            flipVertical={flipVertical}
             stakePoolsList={stakePoolsDelegatingList}
             onOpenExternalLink={onOpenExternalLink}
             currentTheme={currentTheme}
             isListActive={selectedList === 'stakePoolsDelegatingList'}
             setListActive={this.handleSetListActive}
+            containerClassName="StakingWithNavigation_page"
+            onSelect={this.onDelegate}
+            showWithSelectButton
           />
         )}
 
@@ -117,14 +112,15 @@ export default class StakePools extends Component<Props, State> {
         </h2>
 
         <StakePoolsList
+          showWithSelectButton
           listName="selectedIndexList"
-          flipHorizontal={flipHorizontal}
-          flipVertical={flipVertical}
           stakePoolsList={stakePoolsList}
           onOpenExternalLink={onOpenExternalLink}
           currentTheme={currentTheme}
           isListActive={selectedList === 'selectedIndexList'}
           setListActive={this.handleSetListActive}
+          containerClassName="StakingWithNavigation_page"
+          onSelect={this.onDelegate}
         />
       </div>
     );

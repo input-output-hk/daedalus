@@ -32,9 +32,11 @@ export default class StakingRewardsPage extends Component<Props> {
   };
 
   render() {
+    const { rewards } = this.props.stores.staking;
+
     return (
       <StakingRewards
-        rewards={[]}
+        rewards={rewards}
         isLoading={false}
         onLearnMoreClick={this.handleLearnMoreClick}
       />

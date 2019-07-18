@@ -6,7 +6,7 @@ import i18n from '../helpers/i18n-helpers';
 
 const SELECTORS = {
   MANUAL_UPDATE_VERSION_INFO:
-    '.ManualUpdateOverlay_content .ManualUpdateOverlay_description p:nth-child(2)',
+    '.ManualUpdate_content .ManualUpdate_description p:nth-child(2)',
 };
 
 const currentAppVersion = environment.version;
@@ -28,7 +28,7 @@ When(/^Daedalus is stuck in connecting state$/, async function() {
 });
 
 Then(/^I should see the "Manual Update" overlay$/, function() {
-  return this.client.waitForVisible('.ManualUpdateOverlay_content');
+  return this.client.waitForVisible('.ManualUpdate_content');
 });
 
 Then(
@@ -40,7 +40,7 @@ Then(
     );
 
     let expectedText = await i18n.formatMessage(this.client, {
-      id: 'manualUpdateOverlay.description2',
+      id: 'manualUpdate.description2',
       values: {
         currentAppVersion,
         availableAppVersion: nextAppVersion,

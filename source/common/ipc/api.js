@@ -18,6 +18,7 @@ import type { RedemptionTypeChoices } from '../../renderer/app/types/redemptionT
 import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
 import type { LogFiles } from '../../renderer/app/types/LogTypes';
 import type { GpuStatus } from '../../renderer/app/types/gpuStatus';
+import type { StateSnapshotLogParams } from '../types/logging.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -78,6 +79,13 @@ export type GetStateDirectoryPathRendererRequest = string | any;
 export type GetStateDirectoryPathMainResponse = any;
 
 /**
+ * Channel for setting log state snapshot
+ */
+export const SET_STATE_SNAPSHOT_LOG_CHANNEL = 'SetStateSnapshotLogChannel';
+export type SetStateSnapshotLogRendererRequest = StateSnapshotLogParams | any;
+export type SetStateSnapshotLogMainResponse = StateSnapshotLogParams | any;
+
+/**
  * Channel for loading a base64 encoded asset from within the `source/renderer` folder
  */
 export const LOAD_ASSET_CHANNEL = 'LoadAssetChannel';
@@ -90,6 +98,13 @@ export type LoadAssetMainResponse = string;
 export const OPEN_EXTERNAL_URL_CHANNEL = 'OPEN_EXTERNAL_URL_CHANNEL';
 export type OpenExternalUrlRendererRequest = string;
 export type OpenExternalUrlMainResponse = void;
+
+/**
+ * Channel for opening an local directory in the default desktop explorer
+ */
+export const OPEN_LOCAL_DIRECTORY_CHANNEL = 'OpenLocalDirectoryChannel';
+export type OpenLocalDirectoryRendererRequest = string;
+export type OpenLocalDirectoryMainResponse = void;
 
 /**
  * Channel to send bug report requests
