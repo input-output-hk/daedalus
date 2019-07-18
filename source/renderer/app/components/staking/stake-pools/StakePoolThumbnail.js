@@ -10,6 +10,7 @@ import StakePoolTooltip from './StakePoolTooltip';
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import type { StakePool } from '../../../api/staking/types';
 import { STAKE_POOL_TOOLTIP_HOVER_WAIT } from '../../../config/timingConfig';
+import { getRelativePosition } from '../../../utils/domManipulation';
 
 type Props = {
   currentTheme: string,
@@ -53,12 +54,22 @@ export class StakePoolThumbnail extends Component<Props, State> {
   };
 
   handleOpen = (event: SyntheticMouseEvent<HTMLElement>) => {
-    const { onClose, onClick, onHover, isHighlighted, stakePool } = this.props;
+    const {
+      onClose,
+      onClick,
+      onHover,
+      isHighlighted,
+      stakePool,
+      containerClassName,
+    } = this.props;
     if (isHighlighted) return onClose();
     event.persist();
     const targetElement = event.target;
     if (targetElement instanceof HTMLElement) {
-      const { top, left } = this.getRelativePosition(targetElement);
+      const { top, left } = getRelativePosition(
+        targetElement,
+        `.${containerClassName}`
+      );
       this.setState({ top, left });
       if (onHover) {
         this.handleHover(stakePool.id);
@@ -67,22 +78,6 @@ export class StakePoolThumbnail extends Component<Props, State> {
       }
     }
     return false;
-  };
-
-  getRelativePosition = (targetElement: HTMLElement): Object => {
-    const { containerClassName } = this.props;
-    const relativePosition = {};
-    const parentElement = document.querySelector(`.${containerClassName}`);
-    if (
-      parentElement instanceof HTMLElement &&
-      targetElement instanceof HTMLElement
-    ) {
-      const parentPosition = parentElement.getBoundingClientRect();
-      const childrenPosition = targetElement.getBoundingClientRect();
-      relativePosition.top = childrenPosition.top - parentPosition.top;
-      relativePosition.left = childrenPosition.left - parentPosition.left;
-    }
-    return relativePosition;
   };
 
   handleSelect = () => {

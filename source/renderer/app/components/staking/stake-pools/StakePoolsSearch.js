@@ -10,6 +10,7 @@ import classnames from 'classnames';
 import styles from './StakePoolsSearch.scss';
 import searchIcon from '../../../assets/images/search.inline.svg';
 import closeIcon from '../../../assets/images/close-cross.inline.svg';
+import { getRelativePosition } from '../../../utils/domManipulation';
 
 const messages = defineMessages({
   searchInputPlaceholder: {
@@ -56,17 +57,17 @@ type Props = {
   filters?: Filters,
   label?: string,
   placeholder?: string,
-  scrollableElementSelector: string,
-  backToTopScrollThreashold: number,
+  scrollableElementClassName: string,
   onSearch: Function,
   onClearSearch: Function,
   onFilterChange?: Function,
-  registerSearchInput: Function,
+  registerSearchInput?: Function,
   search: string,
 };
 
 type State = {
-  isBackToTopActive: boolean,
+  isBackToTopButtonActive: boolean,
+  inputTopPosition: number,
 };
 
 export class StakePoolsSearch extends Component<Props, State> {
@@ -75,14 +76,17 @@ export class StakePoolsSearch extends Component<Props, State> {
   };
 
   state = {
-    isBackToTopActive: false,
+    isBackToTopButtonActive: false,
+    inputTopPosition: 0,
   };
 
+  searchInput: ?HTMLElement = null;
   scrollableDomElement: ?HTMLElement = null;
 
   componentDidMount() {
+    this.setupBackToTopButton();
     this.scrollableDomElement = document.querySelector(
-      this.props.scrollableElementSelector
+      `.${this.props.scrollableElementClassName}`
     );
     if (!this.scrollableDomElement) return false;
     return this.scrollableDomElement.addEventListener(
@@ -90,6 +94,20 @@ export class StakePoolsSearch extends Component<Props, State> {
       this.getIsBackToTopActive
     );
   }
+
+  setupBackToTopButton = () => {
+    try {
+      const { scrollableElementClassName } = this.props;
+      const input = this.searchInput.inputElement.current;
+      const { top: inputTopPosition } = getRelativePosition(
+        input,
+        `.${scrollableElementClassName}`
+      );
+      this.setState({ inputTopPosition });
+    } catch (err) {
+      throw err;
+    }
+  };
 
   getFilterItemClassName = (item: string) => {
     const { filters = [] } = this.props;
@@ -105,17 +123,16 @@ export class StakePoolsSearch extends Component<Props, State> {
   };
 
   getIsBackToTopActive = () => {
-    const { isBackToTopActive } = this.state;
-    const { backToTopScrollThreashold } = this.props;
+    const { isBackToTopButtonActive, inputTopPosition } = this.state;
     if (this.scrollableDomElement instanceof HTMLElement) {
       const scrollPosition = this.scrollableDomElement.scrollTop;
-      if (scrollPosition > backToTopScrollThreashold && !isBackToTopActive) {
-        this.setState({ isBackToTopActive: true });
+      if (scrollPosition > inputTopPosition && !isBackToTopButtonActive) {
+        this.setState({ isBackToTopButtonActive: true });
       } else if (
-        scrollPosition <= backToTopScrollThreashold &&
-        isBackToTopActive
+        scrollPosition <= inputTopPosition &&
+        isBackToTopButtonActive
       ) {
-        this.setState({ isBackToTopActive: false });
+        this.setState({ isBackToTopButtonActive: false });
       }
     }
   };
@@ -135,10 +152,9 @@ export class StakePoolsSearch extends Component<Props, State> {
       onClearSearch,
       onFilterChange,
       placeholder,
-      registerSearchInput,
       search,
     } = this.props;
-    const { isBackToTopActive } = this.state;
+    const { isBackToTopButtonActive, inputTopPosition } = this.state;
 
     const filterAll =
       filters && onFilterChange && onFilterChange.bind(this, 'all');
@@ -148,7 +164,7 @@ export class StakePoolsSearch extends Component<Props, State> {
       filters && onFilterChange && onFilterChange.bind(this, 'charity');
 
     const backToTopBtnStyles = classnames(styles.backToTopBtn, {
-      [styles.active]: isBackToTopActive,
+      [styles.active]: isBackToTopButtonActive,
     });
 
     const clearSearchStyles = classnames(styles.clearSearch, {
@@ -164,7 +180,9 @@ export class StakePoolsSearch extends Component<Props, State> {
             label={label || null}
             className={styles.searchInput}
             onChange={onSearch}
-            ref={input => registerSearchInput(input)}
+            ref={input => {
+              this.searchInput = input;
+            }}
             placeholder={
               placeholder || intl.formatMessage(messages.searchInputPlaceholder)
             }

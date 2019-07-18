@@ -107,8 +107,6 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
     selectedPoolId: get(this.props, ['selectedPool', 'id'], null),
   };
 
-  searchInput: ?HTMLElement = null;
-
   handleSearch = (searchValue: string) => this.setState({ searchValue });
   handleClearSearch = () => this.setState({ searchValue: '' });
 
@@ -258,11 +256,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               placeholder={intl.formatMessage(messages.searchInputPlaceholder)}
               onSearch={this.handleSearch}
               onClearSearch={this.handleClearSearch}
-              registerSearchInput={searchInput => {
-                this.searchInput = searchInput;
-              }}
-              scrollableElementSelector=".Dialog_content"
-              backToTopScrollThreashold={300}
+              scrollableElementClassName="Dialog_content"
             />
           </div>
 
