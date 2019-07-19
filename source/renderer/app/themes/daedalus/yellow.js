@@ -140,7 +140,7 @@ export const YELLOW_THEME_CONFIG = {
     '--rp-tooltip-text-color': '#ffffff',
   },
   aboutWindow: {
-    '--theme-about-window-background-color': '#fdcd68f5',
+    '--theme-about-window-background-color': 'rgba(255, 185, 35, 0.96)',
     '--theme-about-window-header-bottom-border-color': 'rgba(45, 45, 45, 0.2)',
     '--theme-about-window-daedalus-icon-color': '#2d2d2d',
     '--theme-about-window-cardano-icon-color': '#2d2d2d',
