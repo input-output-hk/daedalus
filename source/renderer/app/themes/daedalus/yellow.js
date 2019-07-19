@@ -559,7 +559,7 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-staking-stake-pools-search-button-color': '#2d2d2d',
     '--theme-staking-stake-pool-background-color': '#ffffff',
     '--theme-staking-stake-pool-border-color': '#e1dac6',
-    '--theme-staking-stake-pool-glow-color': '#feebc3',
+    '--theme-staking-stake-pool-glow-color': 'rgba(45, 45, 45, 0.14)',
     '--theme-staking-stake-pools-search-icon-color': '#2d2d2d',
     '--theme-staking-stake-pool-selected-background-color': '#5da377',
     '--theme-staking-stake-pool-selected-checkmark-icon-color': '#fafbfc',
