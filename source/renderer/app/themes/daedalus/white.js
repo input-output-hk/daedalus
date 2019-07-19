@@ -185,15 +185,15 @@ export const WHITE_THEME_CONFIG = {
     '--theme-block-consolidation-stripe-dark-2-background-color': '#C1E9E1',
     '--theme-block-consolidation-stripe-light-1-background-color': '#29b595',
     '--theme-block-consolidation-stripe-light-2-background-color': '#53C3AA',
-    '--theme-block-consolidation-button-background-color': '#29b595',
-    '--theme-block-consolidation-button-background-color-hover':
+    '--theme-block-consolidation-button-background-color':
       'rgba(41, 181, 149, 0.1)',
-    '--theme-block-consolidation-button-icon-color': '#fafbfc',
+    '--theme-block-consolidation-button-background-color-hover': '#29b595',
+    '--theme-block-consolidation-button-icon-color': '#29b595',
     '--theme-block-consolidation-button-icon-color-hover': '#ffffff',
-    '--theme-block-consolidation-button-text-color': '#ffffff',
-    '--theme-block-consolidation-button-text-color-hover': '#29b595',
+    '--theme-block-consolidation-button-text-color': '#29b595',
+    '--theme-block-consolidation-button-text-color-hover': '#ffffff',
     '--theme-block-consolidation-button-border-color': '#29b595',
-    '--theme-block-consolidation-button-border-color-hover': '#29b595',
+    '--theme-block-consolidation-button-border-color-hover': 'transparent',
     '--theme-block-consolidation-epochs-image-color': '#29b595',
   },
   body: {
