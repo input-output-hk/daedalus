@@ -1,8 +1,8 @@
 .component {
-  background-color: #5e6066;
+  background-color: var(--theme-back-to-top-button-background-color);
   border-radius: 5px;
-  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.36);
-  color: #fafbfc;
+  box-shadow: 0 5px 10px 0 var(--theme-back-to-top-button-box-shadow-color);
+  color: var(--theme-back-to-top-button-text-color);
   cursor: pointer;
   font-size: 12px;
   left: 50%;
