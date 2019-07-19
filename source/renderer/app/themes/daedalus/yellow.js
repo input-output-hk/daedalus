@@ -430,9 +430,9 @@ export const YELLOW_THEME_CONFIG = {
   },
   navDropdown: {
     '--theme-nav-dropdown-item-text-color': '#2d2d2d',
-    '--theme-nav-dropdown-item-background-color': '#f8f7f3',
+    '--theme-nav-dropdown-item-background-color': '#fff',
     '--theme-nav-dropdown-item-background-color-hover':
-      'rgba(179, 175, 168, 0.1)',
+      'rgba(45, 45, 45, 0.07)',
     '--theme-nav-dropdown-item-color-hover': '#2d2d2d',
   },
   navItem: {
