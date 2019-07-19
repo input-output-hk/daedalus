@@ -2,12 +2,19 @@
 @import '../sidebarConfig';
 
 .scrollbarThumb {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--theme-sidebar-wallets-scrollbar-background-color);
   border-radius: 3px;
 
-  &:hover,
   &:active {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: var(
+      --theme-sidebar-wallets-scrollbar-background-color-active
+    );
+  }
+
+  &:hover {
+    background-color: var(
+      --theme-sidebar-wallets-scrollbar-background-color-hover
+    );
   }
 }
 

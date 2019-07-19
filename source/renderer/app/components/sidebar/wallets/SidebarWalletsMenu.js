@@ -56,10 +56,7 @@ export default class SidebarWalletsMenu extends Component<Props> {
     return (
       <SidebarSubMenu visible={this.props.visible}>
         <div className={styles.wallets}>
-          <Scrollbars
-            renderThumbHorizontal={this.renderThumb}
-            renderThumbVertical={this.renderThumb}
-          >
+          <Scrollbars renderThumbVertical={this.renderThumb}>
             {wallets.map(wallet => (
               <SidebarWalletMenuItem
                 title={wallet.title}
