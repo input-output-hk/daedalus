@@ -207,6 +207,7 @@ export default class Transaction extends Component<Props> {
     const detailsStyles = classNames(styles.details, {
       [styles.clickable]: canOpenExplorer,
       [styles.detailsExpanded]: isExpanded,
+      [styles.detailsClosed]: !isExpanded,
     });
 
     const assuranceLevelRowStyles = classNames(styles.row, styles.retainHeight);
