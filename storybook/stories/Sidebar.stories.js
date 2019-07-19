@@ -49,6 +49,9 @@ const sidebarMenus = observable({
 
 let emptyMenus;
 
+let currentTheme = localStorage.getItem('currentTheme') || 'light-blue';
+currentTheme = currentTheme.toLowerCase();
+
 storiesOf('Sidebar', module)
   .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
   // ====== Stories ======
@@ -64,7 +67,7 @@ storiesOf('Sidebar', module)
       openDialogAction={action('openDialog')}
       onSubmitSupportRequest={() => {}}
       pathname="/"
-      currentTheme="light-blue"
+      currentTheme={currentTheme}
     />
   ))
   .add('wallets category', () => (
@@ -78,7 +81,7 @@ storiesOf('Sidebar', module)
       openDialogAction={action('openDialog')}
       onSubmitSupportRequest={() => {}}
       pathname="/"
-      currentTheme="light-blue"
+      currentTheme={currentTheme}
     />
   ))
   .add('wallets / sub', () => (
@@ -93,7 +96,7 @@ storiesOf('Sidebar', module)
       openDialogAction={action('openDialog')}
       onSubmitSupportRequest={() => {}}
       pathname="/"
-      currentTheme="light-blue"
+      currentTheme={currentTheme}
     />
   ))
   .add('delegation category', () => (
@@ -107,7 +110,7 @@ storiesOf('Sidebar', module)
       openDialogAction={action('openDialog')}
       onSubmitSupportRequest={() => {}}
       pathname="/"
-      currentTheme="light-blue"
+      currentTheme={currentTheme}
     />
   ))
   .add('decentralization-progress', () => (
@@ -121,6 +124,6 @@ storiesOf('Sidebar', module)
       openDialogAction={action('openDialog')}
       onSubmitSupportRequest={() => {}}
       pathname="/"
-      currentTheme="light-blue"
+      currentTheme={currentTheme}
     />
   ));

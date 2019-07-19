@@ -45,6 +45,9 @@ const CATEGORIES = [
   CATEGORIES_BY_NAME.SETTINGS,
 ];
 
+let currentTheme = localStorage.getItem('currentTheme') || 'light-blue';
+currentTheme = currentTheme.toLowerCase();
+
 @inject('stores', 'storiesProps')
 @observer
 export default class StoryLayout extends Component<Props> {
@@ -146,7 +149,7 @@ export default class StoryLayout extends Component<Props> {
         openDialogAction={action('openDialog')}
         onSubmitSupportRequest={() => {}}
         pathname="/"
-        currentTheme="light-blue"
+        currentTheme={currentTheme}
       />
     );
   };

@@ -48,6 +48,13 @@ export default class Sidebar extends Component<Props> {
     isShowingSubMenus: false,
   };
 
+  get supportIcon() {
+    const { currentTheme } = this.props;
+    return currentTheme === 'yellow' || currentTheme === 'white'
+      ? supportIconDark
+      : supportIconLight;
+  }
+
   render() {
     const {
       menus,
@@ -57,7 +64,6 @@ export default class Sidebar extends Component<Props> {
       isShowingSubMenus,
       onAddWallet,
       onSubmitSupportRequest,
-      currentTheme,
     } = this.props;
     let subMenu = null;
 
@@ -83,9 +89,6 @@ export default class Sidebar extends Component<Props> {
       !isShowingSubMenus || subMenu == null ? styles.minimized : null,
     ]);
 
-    const supportIcon =
-      currentTheme === 'yellow' ? supportIconDark : supportIconLight;
-
     return (
       <div className={sidebarStyles}>
         <div className={styles.minimized}>
@@ -105,7 +108,7 @@ export default class Sidebar extends Component<Props> {
 
           <SidebarCategory
             className="supportRequest"
-            icon={supportIcon}
+            icon={this.supportIcon}
             active={false}
             onClick={onSubmitSupportRequest}
           />
