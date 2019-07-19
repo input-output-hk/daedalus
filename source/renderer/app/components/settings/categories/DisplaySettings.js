@@ -132,6 +132,20 @@ export default class DisplaySettings extends Component<Props> {
           </button>
 
           <button
+            className={themeWhiteClasses}
+            onClick={selectTheme.bind(this, { theme: THEMES.WHITE })}
+          >
+            <img
+              src={themeWhitePreview}
+              role="presentation"
+              draggable="false"
+            />
+            <span>{intl.formatMessage(messages.themeWhite)}</span>
+          </button>
+        </div>
+
+        <div className={styles.themesRowWrapper}>
+          <button
             className={themeDarkBlueClasses}
             onClick={selectTheme.bind(this, { theme: THEMES.DARK_BLUE })}
           >
@@ -141,20 +155,6 @@ export default class DisplaySettings extends Component<Props> {
               draggable="false"
             />
             <span>{intl.formatMessage(messages.themeDarkBlue)}</span>
-          </button>
-        </div>
-
-        <div className={styles.themesRowWrapper}>
-          <button
-            className={themeYellowClasses}
-            onClick={selectTheme.bind(this, { theme: THEMES.YELLOW })}
-          >
-            <img
-              src={themeYellowPreview}
-              role="presentation"
-              draggable="false"
-            />
-            <span>{intl.formatMessage(messages.themeYellow)}</span>
           </button>
 
           <button
@@ -170,15 +170,15 @@ export default class DisplaySettings extends Component<Props> {
           </button>
 
           <button
-            className={themeWhiteClasses}
-            onClick={selectTheme.bind(this, { theme: THEMES.WHITE })}
+            className={themeYellowClasses}
+            onClick={selectTheme.bind(this, { theme: THEMES.YELLOW })}
           >
             <img
-              src={themeWhitePreview}
+              src={themeYellowPreview}
               role="presentation"
               draggable="false"
             />
-            <span>{intl.formatMessage(messages.themeWhite)}</span>
+            <span>{intl.formatMessage(messages.themeYellow)}</span>
           </button>
         </div>
       </div>
