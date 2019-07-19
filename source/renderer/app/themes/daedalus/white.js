@@ -241,7 +241,8 @@ export const WHITE_THEME_CONFIG = {
     '--theme-button-primary-background-color': '#29b595',
     '--theme-button-primary-background-color-hover': '#54c4aa',
     '--theme-button-primary-background-color-active': '#25a386',
-    '--theme-button-primary-background-color-disabled': 'rgba(41, 181, 149, 0.3)',
+    '--theme-button-primary-background-color-disabled':
+      'rgba(41, 181, 149, 0.3)',
     '--theme-button-primary-text-color-disabled': 'rgba(255, 255, 255, 0.7)',
     '--theme-button-primary-text-color': '#fff',
     '--theme-button-primary-outline-color': '#fff',

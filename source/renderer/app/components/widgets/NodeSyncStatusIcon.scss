@@ -26,12 +26,11 @@
   svg {
     height: 22px;
     width: 22px;
-
   }
 }
 
 .syncing {
-  .icon :global{
+  .icon :global {
     svg {
       animation: loading-spin 1.5s linear;
       animation-iteration-count: infinite;

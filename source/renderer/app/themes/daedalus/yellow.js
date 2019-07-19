@@ -536,17 +536,21 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-settings-menu-item-text-color': '#2d2d2d',
     '--theme-settings-menu-item-text-color-active': '#2d2d2d',
     '--theme-settings-menu-item-text-color-disabled': '#2d2d2d80',
-    '--theme-settings-menu-item-background-color-active': 'rgba(45, 45, 45, 0.07)',
-    '--theme-settings-menu-item-left-border-color-active': 'rgba(45, 45, 45, 1)',
+    '--theme-settings-menu-item-background-color-active':
+      'rgba(45, 45, 45, 0.07)',
+    '--theme-settings-menu-item-left-border-color-active':
+      'rgba(45, 45, 45, 1)',
     '--theme-settings-theme-select-title-color': '#2d2d2d',
   },
   sidebar: {
     '--theme-sidebar-background-color': '#fdcd68',
-    '--theme-sidebar-category-background-color-hover': 'rgba(255, 185, 35, 0.5)',
+    '--theme-sidebar-category-background-color-hover':
+      'rgba(255, 185, 35, 0.5)',
     '--theme-sidebar-category-background-color-active': '#ffb923',
     '--theme-sidebar-category-text-color': '#2d2d2d',
     '--theme-sidebar-menu-background-color': '#ffb923',
-    '--theme-sidebar-menu-item-background-color-hover': 'rgba(237, 167, 14, 0.5)',
+    '--theme-sidebar-menu-item-background-color-hover':
+      'rgba(237, 167, 14, 0.5)',
     '--theme-sidebar-menu-item-background-color-active': '#eea70e',
     '--theme-sidebar-menu-item-wallet-name-color': '#2d2d2d',
     '--theme-sidebar-menu-item-wallet-info-color': '#2d2d2d',
