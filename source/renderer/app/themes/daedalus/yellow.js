@@ -329,7 +329,7 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-dialog-choice-tabs-text-color': '#2d2d2d',
     '--theme-dialog-choice-tabs-text-color-active': '#2d2d2d',
     '--theme-dialog-choice-tabs-bottom-border-color-active': '#2d2d2d',
-    '--theme-dialog-big-button-background-color': '#f8f7f3',
+    '--theme-dialog-big-button-background-color': '#ffffff',
     '--theme-dialog-big-button-border-color': '#e1dac6',
     '--theme-dialog-big-button-label-color': '#2d2d2d',
     '--theme-dialog-big-button-description-color': '#2d2d2d',
@@ -557,7 +557,7 @@ export const YELLOW_THEME_CONFIG = {
   stakePools: {
     '--theme-staking-stake-pools-title-color': '#2d2d2d',
     '--theme-staking-stake-pools-search-button-color': '#2d2d2d',
-    '--theme-staking-stake-pool-background-color': '#f8f7f3',
+    '--theme-staking-stake-pool-background-color': '#ffffff',
     '--theme-staking-stake-pool-border-color': '#e1dac6',
     '--theme-staking-stake-pool-glow-color': '#feebc3',
     '--theme-staking-stake-pools-search-icon-color': '#2d2d2d',
@@ -566,7 +566,7 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-staking-stake-pool-selected-slug-color': '#fafbfc',
     '--theme-staking-stake-pool-slug-color': '#2d2d2d',
     '--theme-staking-stake-pool-retirement-background-color': '#ea4c5b',
-    '--theme-staking-stake-pool-tooltip-background-color': '#f8f7f3',
+    '--theme-staking-stake-pool-tooltip-background-color': '#ffffff',
     '--theme-staking-stake-pool-tooltip-border-color': '#e1dac6',
     '--theme-staking-stake-pool-tooltip-shadow-color': 'rgba(0, 0, 0, 0.25)',
     '--theme-staking-stake-pool-tooltip-text-color': '#2d2d2d',
@@ -613,7 +613,8 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-staking-wallet-row-border-color': '#e1dac6',
     '--theme-staking-dropdown-item-text-color-hover': '#2d2d2d',
     '--theme-staking-dropdown-item-background-color': '#ffffff',
-    '--theme-staking-dropdown-item-background-color-hover': '#eeeae01a',
+    '--theme-staking-dropdown-item-background-color-hover':
+      'rgba(45, 45, 45, 0.07)',
     '--theme-staking-delegation-center-gear-icon-fill-color': '#2d2d2d80',
     '--theme-staking-delegation-center-gear-icon-fill-color-active': '#2d2d2d',
     '--theme-staking-delegation-center-no-wallets-instructions-color':
