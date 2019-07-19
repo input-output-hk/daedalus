@@ -5,7 +5,7 @@ import type { CreateThemeParams } from '../types';
 //  ==== dark-cardano theme config for Daedalus and react-polymorph components === //
 export const DARK_CARDANO_THEME_CONFIG = {
   rpAutocomplete: {
-    '--rp-autocomplete-bg-color': '#a0a1a8',
+    '--rp-autocomplete-bg-color': '#1e1f31',
     '--rp-autocomplete-border': '1px solid rgba(255, 255, 255, 0.2)',
     '--rp-autocomplete-border-color-opened': 'rgba(255, 255, 255, 0.4)',
     '--rp-autocomplete-input-text-color': '#ffffff',
@@ -75,7 +75,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--rp-input-text-color-disabled': '#ffffff80',
   },
   rpModal: {
-    '--rp-modal-bg-color': '#a0a1a8',
+    '--rp-modal-bg-color': '#1e1f31',
     '--rp-modal-max-height': '90%',
     '--rp-modal-overlay-bg-color': 'rgba(0, 0, 0, 0.4)',
   },
@@ -330,8 +330,8 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-dialog-choice-tabs-text-color-active': '#ffffff',
     '--theme-dialog-choice-tabs-bottom-border-color-active':
       'rgba(255, 255, 255, 0.4)',
-    '--theme-dialog-big-button-background-color': 'rgba(18, 19, 38, 0.1)',
-    '--theme-dialog-big-button-border-color': 'rgba(18, 19, 38, 0.1)',
+    '--theme-dialog-big-button-background-color': 'rgba(255, 255, 255, 0.05)',
+    '--theme-dialog-big-button-border-color': 'none',
     '--theme-dialog-big-button-label-color': 'rgba(255, 255, 255, 1)',
     '--theme-dialog-big-button-description-color': 'rgba(255, 255, 255, 0.6)',
     '--theme-dialog-title-color': '#ffffff',
@@ -357,7 +357,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-icon-nav-color': 'rgba(255, 255, 255, 0.6)',
     '--theme-icon-nav-color-active': 'rgba(255, 255, 255, 1)',
     '--theme-icon-sidebar-color': '#ffffff',
-    '--theme-icon-toggle-menu-color': '#121326',
+    '--theme-icon-toggle-menu-color': '#ffffff',
     '--theme-icon-node-update-notification-arrow-color': '#ffffff',
     '--theme-icon-add-wallet-from-sidebar-color': '#ffffff',
     '--theme-icon-ada-redemption-attention-color': '#ffffff',
@@ -526,10 +526,10 @@ export const DARK_CARDANO_THEME_CONFIG = {
   },
   settings: {
     '--theme-settings-body-background-color': '#121326',
-    '--theme-settings-pane-background-color': '#a0a1a8',
-    '--theme-settings-pane-border': '1px solid rgba(255, 255, 255, 0.2)',
-    '--theme-settings-menu-box-background-color': '#a0a1a8',
-    '--theme-settings-menu-box-border': '1px solid rgba(255, 255, 255, 0.2)',
+    '--theme-settings-pane-background-color': '#1e1f31',
+    '--theme-settings-pane-border': 'none',
+    '--theme-settings-menu-box-background-color': '#1e1f31',
+    '--theme-settings-menu-box-border': 'none',
     '--theme-settings-menu-item-text-color': '#ffffff',
     '--theme-settings-menu-item-text-color-active': '#ffffff',
     '--theme-settings-menu-item-text-color-disabled': '#ffffff80',
@@ -589,7 +589,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-staking-progress-label-light': '#000000',
   },
   staking: {
-    '--theme-staking-content-background-color': '#a0a1a8',
+    '--theme-staking-content-background-color': '#1e1f31',
     '--theme-staking-content-border-color': 'rgba(255, 255, 255, 0.2)',
     '--theme-staking-font-color-accent': 'rgba(255, 255, 255, 0.4)',
     '--theme-staking-font-color-regular': '#ffffff',
