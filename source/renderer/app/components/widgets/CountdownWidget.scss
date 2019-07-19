@@ -17,22 +17,22 @@
         width: 60px;
 
         .fieldLabel {
-          @extend %regularText;
-
           align-items: center;
+          color: var(--theme-staking-countdown-widget-field-label-color);
           display: flex;
           font-size: 12px;
+          font-weight: 500;
           height: 22px;
           justify-content: center;
           opacity: 0.7;
           text-transform: uppercase;
         }
         .fieldValue {
-          @extend %accentText;
-
           align-items: center;
+          color: var(--theme-staking-countdown-widget-field-value-color);
           display: flex;
           font-size: 36px;
+          font-weight: 500;
           height: 44px;
           justify-content: center;
         }
@@ -42,12 +42,18 @@
         align-items: center;
         display: flex;
         height: 44px;
-        opacity: 0.5;
 
-        .fieldDelimeter {
-          @extend %regularText;
+        .delimeterIcon {
+          height: 14px;
+          width: 4px;
 
-          font-size: 28px;
+          svg {
+            path {
+              fill: var(
+                --theme-staking-countdown-widget-delimeter-background-color
+              );
+            }
+          }
         }
       }
     }

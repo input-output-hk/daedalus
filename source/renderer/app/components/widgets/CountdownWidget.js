@@ -3,7 +3,9 @@ import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
+import SVGInline from 'react-svg-inline';
 import styles from './CountdownWidget.scss';
+import delimeterIcon from '../../assets/images/delimeter.inline.svg';
 
 const messages = defineMessages({
   years: {
@@ -111,7 +113,7 @@ export default class CountdownWidget extends Component<Props, State> {
         </div>
         {includeDelimeter && (
           <div className={styles.right}>
-            <div className={styles.fieldDelimeter}>&#58;</div>
+            <SVGInline svg={delimeterIcon} className={styles.delimeterIcon} />
           </div>
         )}
       </div>
