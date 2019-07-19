@@ -241,14 +241,15 @@ export const WHITE_THEME_CONFIG = {
     '--theme-button-primary-background-color': '#29b595',
     '--theme-button-primary-background-color-hover': '#54c4aa',
     '--theme-button-primary-background-color-active': '#25a386',
-    '--theme-button-primary-background-color-disabled': 'rgba(41, 181, 149, 0.3)',
+    '--theme-button-primary-background-color-disabled':
+      'rgba(41, 181, 149, 0.3)',
     '--theme-button-primary-text-color-disabled': 'rgba(255, 255, 255, 0.7)',
     '--theme-button-primary-text-color': '#fff',
     '--theme-button-primary-outline-color': '#fff',
   },
   connecting: {
     '--theme-connecting-background-color': '#ffffff',
-    '--theme-connecting-text-color': '#fafbfc',
+    '--theme-connecting-text-color': '#2d2d2d',
   },
   dataMigration: {
     '--theme-data-migration-layer-background-color': '#ffffff',
@@ -348,7 +349,7 @@ export const WHITE_THEME_CONFIG = {
   },
   icon: {
     '--theme-icon-nav-color': 'rgba(45, 45, 45, 0.6)',
-    '--theme-icon-nav-color-active': '#4c5bff',
+    '--theme-icon-nav-color-active': '#29b595',
     '--theme-icon-sidebar-color': '#2d2d2d',
     '--theme-icon-toggle-menu-color': '#2d2d2d',
     '--theme-icon-node-update-notification-arrow-color': '#2d2d2d',
@@ -360,10 +361,10 @@ export const WHITE_THEME_CONFIG = {
     '--theme-icon-ada-summary-wallet-amount-symbol-color': '#2d2d2d',
     '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color':
       '#2d2d2d',
-    '--theme-icon-add-wallet-dialog-big-button-color': '#c7c7c7',
+    '--theme-icon-add-wallet-dialog-big-button-color': '#2d2d2d',
     '--theme-icon-back-button-color': '#2d2d2d',
     '--theme-icon-close-button-color': '#2d2d2d',
-    '--theme-icon-connecting-logo-color': '#fafbfc',
+    '--theme-icon-connecting-logo-color': '#2D2D2D',
     '--theme-icon-copy-address-color': '#2d2d2d',
     '--theme-icon-delegation-center-no-wallets': '#2d2d2d',
     '--theme-icon-file-upload-color': '#2d2d2d',
@@ -430,7 +431,7 @@ export const WHITE_THEME_CONFIG = {
     '--theme-nav-item-background-color-active': 'transparent',
     '--theme-nav-item-background-color-hover': '#cccccc',
     '--theme-nav-item-text-color': 'rgba(45, 45, 45, 0.6)',
-    '--theme-nav-item-text-color-active': '#4c5bff',
+    '--theme-nav-item-text-color-active': '#29b595',
   },
   network: {
     '--theme-network-window-background-color': '#fffffff5',
@@ -462,7 +463,7 @@ export const WHITE_THEME_CONFIG = {
   },
   notification: {
     '--theme-notification-message-background-color': '#fffffff2',
-    '--theme-notification-message-text-color': '#fafbfc',
+    '--theme-notification-message-text-color': '#2d2d2d',
     '--theme-legacy-badge-background-color': '#d34452',
     '--theme-legacy-notification-background-color': '#ab2712',
     '--theme-legacy-notification-learn-more-button-text-color': '#fafbfc',
