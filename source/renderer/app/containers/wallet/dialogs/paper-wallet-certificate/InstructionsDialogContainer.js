@@ -33,17 +33,9 @@ export default class InstructionsDialogContainer extends Component<Props> {
   onPrint = () => {
     const { intl } = this.context;
     const date = moment();
-    const locale = this.props.stores.profile.currentLocale;
+    const localizedTimestampFormat = intl.formatMessage(messages.timestamp);
+    const timestamp = moment(date).format(localizedTimestampFormat);
 
-    moment.updateLocale(locale, {
-      longDateFormat: {
-        pdfTimestamp: intl.formatMessage(messages.timestamp),
-      },
-    });
-    const localizedDateFormat = moment()
-      .localeData()
-      .longDateFormat('pdfTimestamp');
-    const timestamp = moment(date).format(localizedDateFormat);
     const name = generateFileNameWithTimestamp({
       prefix: 'paper-wallet-certificate',
       date,
