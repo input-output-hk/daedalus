@@ -197,8 +197,10 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-block-consolidation-button-background-color-hover': '#2d2d2d',
     '--theme-block-consolidation-button-icon-color': '#2d2d2d',
     '--theme-block-consolidation-button-icon-color-hover': '#ffffff',
+    '--theme-block-consolidation-button-text-color': 'rgba(45, 45, 45, 0.7)',
     '--theme-block-consolidation-button-text-color-hover': '#ffffff',
     '--theme-block-consolidation-button-border-color': 'rgba(45, 45, 45, 1)',
+    '--theme-block-consolidation-button-border-color-hover': 'transparent',
     '--theme-block-consolidation-epochs-image-color': '#2d2d2d',
   },
   body: {

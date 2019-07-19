@@ -28,7 +28,7 @@
       background-color: var(
         --theme-block-consolidation-button-background-color-hover
       );
-      border: none;
+      border-color: var(--theme-block-consolidation-button-border-color-hover);
       p {
         color: var(--theme-block-consolidation-button-text-color-hover);
       }

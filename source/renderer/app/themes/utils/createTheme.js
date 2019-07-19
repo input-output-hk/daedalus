@@ -315,12 +315,14 @@ export const createDaedalusComponentsTheme = (
       '--theme-block-consolidation-button-icon-color-hover': `${
         background.secondary.regular
       }`,
+      '--theme-block-consolidation-button-text-color': `${text.secondary}`,
       '--theme-block-consolidation-button-text-color-hover': `${
         background.secondary.regular
       }`,
       '--theme-block-consolidation-button-border-color': `${
         background.primary.lightest
       }`,
+      '--theme-block-consolidation-button-border-color-hover': 'transparent',
       '--theme-block-consolidation-epochs-image-color': `${chroma(
         text.secondary
       ).alpha(0.6)}`,

@@ -194,8 +194,9 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-block-consolidation-button-background-color-hover': '#fafbfc',
     '--theme-block-consolidation-button-icon-color': '#fafbfc',
     '--theme-block-consolidation-button-icon-color-hover': '#2a2b3c',
+    '--theme-block-consolidation-button-text-color': 'rgba(250, 251, 252, 0.7)',
     '--theme-block-consolidation-button-text-color-hover': '#2a2b3c',
-    '--theme-block-consolidation-button-border-color': '#fafbfc',
+    '--theme-block-consolidation-button-border-color-hover': 'transparent',
     '--theme-block-consolidation-epochs-image-color':
       'rgba(255, 255, 255, 0.6)',
   },
