@@ -113,7 +113,7 @@ export const CREATE_DARK_CARDANO_THEME_PARAMS: CreateThemeParams = {
 export const CREATE_YELLOW_THEME_PARAMS: CreateThemeParams = {
   colors: {
     background: {
-      primary: '#eeeae0',
+      primary: '#f8f3ed',
       secondary: '#fdcd68',
     },
     border: '#e1dac6',
