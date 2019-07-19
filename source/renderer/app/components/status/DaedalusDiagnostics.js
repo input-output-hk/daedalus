@@ -662,7 +662,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                       <Tooltip
                         skin={TooltipSkin}
                         tip={
-                          <div style={{ textAlign: 'center' }}>
+                          <div className={styles.tooltipLabelWrapper}>
                             <div>{daedalusStateDirectoryPath}</div>
                           </div>
                         }

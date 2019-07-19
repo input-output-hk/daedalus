@@ -8,9 +8,19 @@
   z-index: 100;
 
   &.withoutWallet {
-    background: var(--theme-topbar-background-color)
+    /* background: var(--theme-topbar-background-color)
       url('../../assets/images/header-logo.svg') no-repeat center !important;
-    background-size: 61px !important;
+    background-size: 61px !important; */
+
+    .headerLogo {
+      margin: auto;
+      width: 61px;
+      svg {
+        g {
+          fill: var(--theme-topbar-logo-color);
+        }
+      }
+    }
   }
 
   &.withWallet {

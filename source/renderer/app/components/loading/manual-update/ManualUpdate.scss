@@ -89,6 +89,10 @@
               }
             }
           }
+
+          .btnLabel {
+            color: var(--theme-manual-update-overlay-button-label-color-hover);
+          }
         }
       }
     }

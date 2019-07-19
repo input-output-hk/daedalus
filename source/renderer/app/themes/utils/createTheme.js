@@ -196,6 +196,10 @@ export const createReactPolymorphTheme = (
       '--rp-textarea-resize': 'none',
       '--rp-textarea-text-color': `${text.primary}`,
     },
+    rpTooltip: {
+      '--rp-tooltip-bg-color': `${text.primary}`,
+      '--rp-tooltip-text-color': `${text.secondary}`,
+    },
   };
 };
 
@@ -628,6 +632,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-manual-update-overlay-text-highlight-color': `${text.secondary}`,
       '--theme-manual-update-overlay-title-text-color': `${text.secondary}`,
       '--theme-manual-update-overlay-button-label-color': `${text.secondary}`,
+      '--theme-manual-update-overlay-button-label-color-hover': `${text.secondary}`,
     },
     mnemonic: {
       '--theme-mnemonic-background-color': `${background.primary.regular}`,
@@ -717,6 +722,8 @@ export const createDaedalusComponentsTheme = (
         background.secondary.regular
       ).alpha(0.95)}`,
       '--theme-notification-message-text-color': `${text.secondary}`,
+      '--theme-notification-message-checkmark-icon-color': `${text.secondary}`,
+      '--theme-notification-message-close-icon-color': `${text.secondary}`,
 
       '--theme-legacy-badge-background-color': `${error.dark}`,
       '--theme-legacy-notification-background-color': '#ab2712',
@@ -901,6 +908,7 @@ export const createDaedalusComponentsTheme = (
       }`,
       '--theme-staking-stake-pool-tooltip-delegate-button-border-color':
         'transparent',
+      '--theme-staking-progress-label-light': `${text.secondary}`,
     },
     staking: {
       '--theme-staking-content-background-color': `${
@@ -992,6 +1000,7 @@ export const createDaedalusComponentsTheme = (
       }`,
       '--theme-topbar-wallet-name-color': `${text.secondary}`,
       '--theme-topbar-wallet-info-color': `${text.secondary}`,
+      '--theme-topbar-logo-color': `${text.primary}`,
     },
     transactions: {
       '--theme-transactions-list-background-color': `${
