@@ -64,6 +64,7 @@ storiesOf('Sidebar', module)
       openDialogAction={action('openDialog')}
       onSubmitSupportRequest={() => {}}
       pathname="/"
+      currentTheme="light-blue"
     />
   ))
   .add('wallets category', () => (
@@ -77,6 +78,7 @@ storiesOf('Sidebar', module)
       openDialogAction={action('openDialog')}
       onSubmitSupportRequest={() => {}}
       pathname="/"
+      currentTheme="light-blue"
     />
   ))
   .add('wallets / sub', () => (
@@ -91,6 +93,7 @@ storiesOf('Sidebar', module)
       openDialogAction={action('openDialog')}
       onSubmitSupportRequest={() => {}}
       pathname="/"
+      currentTheme="light-blue"
     />
   ))
   .add('delegation category', () => (
@@ -104,6 +107,7 @@ storiesOf('Sidebar', module)
       openDialogAction={action('openDialog')}
       onSubmitSupportRequest={() => {}}
       pathname="/"
+      currentTheme="light-blue"
     />
   ))
   .add('decentralization-progress', () => (
@@ -117,5 +121,6 @@ storiesOf('Sidebar', module)
       openDialogAction={action('openDialog')}
       onSubmitSupportRequest={() => {}}
       pathname="/"
+      currentTheme="light-blue"
     />
   ));

@@ -146,6 +146,7 @@ export default class StoryLayout extends Component<Props> {
         openDialogAction={action('openDialog')}
         onSubmitSupportRequest={() => {}}
         pathname="/"
+        currentTheme="light-blue"
       />
     );
   };
