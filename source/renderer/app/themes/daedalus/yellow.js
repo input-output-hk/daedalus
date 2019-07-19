@@ -16,7 +16,7 @@ export const YELLOW_THEME_CONFIG = {
       'NotoSans-Regular, NotoSansCJKjp-Regular',
   },
   rpBubble: {
-    '--rp-bubble-bg-color': '#fafbfc',
+    '--rp-bubble-bg-color': '#fff',
     '--rp-bubble-border-color': 'rgba(45, 45, 45, 0.2)',
     '--rp-bubble-border-radius': '2px',
     '--rp-bubble-arrow-bg-color': 'rgba(45, 45, 45, 0.07)',
@@ -80,7 +80,7 @@ export const YELLOW_THEME_CONFIG = {
     '--rp-modal-overlay-bg-color': 'rgba(0, 0, 0, 0.4)',
   },
   rpOptions: {
-    '--rp-option-bg-color': '#fafbfc',
+    '--rp-option-bg-color': '#fff',
     '--rp-option-bg-color-highlighted': '#edeeef',
     '--rp-option-border-color': 'rgba(45, 45, 45, 0.2)',
     '--rp-option-checkmark-color': '#2d2d2d',
@@ -120,7 +120,7 @@ export const YELLOW_THEME_CONFIG = {
     '--rp-switch-label-width': '100%',
     '--rp-switch-opacity-off': '0.3',
     '--rp-switch-root-margin': '0 0 30px 0',
-    '--rp-switch-thumb-bg-color': '#fafbfc',
+    '--rp-switch-thumb-bg-color': '#fff',
   },
   rpTextArea: {
     '--rp-textarea-bg-color': '#f8f3ed',
@@ -681,16 +681,16 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-uploader-border-color': 'rgba(45, 45, 45, 0.2)',
   },
   utxo: {
-    '--theme-utxo-background-color': '#f8f3ed80',
+    '--theme-utxo-background-color': 'rgba(45, 45, 45, 0.05)',
     '--theme-utxo-title-text-color': '#2d2d2d',
     '--theme-utxo-title-description-color': '#2d2d2db3',
     '--theme-utxo-bar-color': '#2d2d2d',
     '--theme-utxo-label-text-color': '#2d2d2d73',
     '--theme-utxo-tick-text-color': '#2d2d2d73',
-    '--theme-utxo-cursor-background-color': '#2d2d2d33',
-    '--theme-utxo-tooltip-background-color': '#a7a49d',
-    '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
-    '--theme-utxo-tooltip-text-color': 'dfafbfc',
+    '--theme-utxo-cursor-background-color': 'rgba(45, 45, 45, 0.1)',
+    '--theme-utxo-tooltip-background-color': '#2d2d2d',
+    '--theme-utxo-tooltip-shadow-color': 'rgba(45, 45, 45, 0.18)',
+    '--theme-utxo-tooltip-text-color': '#fff',
   },
 };
 
