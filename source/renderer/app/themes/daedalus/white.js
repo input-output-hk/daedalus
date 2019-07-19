@@ -10,8 +10,8 @@ export const WHITE_THEME_CONFIG = {
     '--rp-autocomplete-border-color-opened': '#2d2d2d',
     '--rp-autocomplete-input-text-color': '#2d2d2d',
     '--rp-autocomplete-placeholder-color': '#2d2d2d80',
-    '--rp-autocomplete-selected-word-box-bg-color': '#ffffff',
-    '--rp-autocomplete-selected-word-text-color': '#fafbfc',
+    '--rp-autocomplete-selected-word-box-bg-color': '#29b595',
+    '--rp-autocomplete-selected-word-text-color': '#ffffff',
     '--rp-autocomplete-selected-words-font-family':
       'NotoSans-Regular, NotoSansCJKjp-Regular',
   },
@@ -37,8 +37,9 @@ export const WHITE_THEME_CONFIG = {
     '--rp-button-width': '360px',
   },
   rpCheckbox: {
-    '--rp-checkbox-border': '1px solid #ffffff',
-    '--rp-checkbox-border-color-disabled': '#ffffff66',
+    '--rp-checkbox-border': '1px solid #29b595',
+    '--rp-checkbox-border-color-disabled': 'rgba(41, 181, 149, 0.3)',
+    '--rp-checkbox-border-color': '#29b595',
     '--rp-checkbox-check-bg-color': '#ffffff',
     '--rp-checkbox-label-text-color': '#2d2d2d',
     '--rp-checkbox-label-text-color-disabled': '#2d2d2d4d',
@@ -490,7 +491,7 @@ export const WHITE_THEME_CONFIG = {
   },
   paperWallet: {
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-color':
-      '#ffffff',
+      '#29b595',
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-background-color':
       '#fafbfc',
   },
