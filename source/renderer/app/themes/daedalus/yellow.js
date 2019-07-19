@@ -613,7 +613,8 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-staking-wallet-row-border-color': '#e1dac6',
     '--theme-staking-dropdown-item-text-color-hover': '#2d2d2d',
     '--theme-staking-dropdown-item-background-color': '#ffffff',
-    '--theme-staking-dropdown-item-background-color-hover': 'rgba(45, 45, 45, 0.07)',
+    '--theme-staking-dropdown-item-background-color-hover':
+      'rgba(45, 45, 45, 0.07)',
     '--theme-staking-delegation-center-gear-icon-fill-color': '#2d2d2d80',
     '--theme-staking-delegation-center-gear-icon-fill-color-active': '#2d2d2d',
     '--theme-staking-delegation-center-no-wallets-instructions-color':

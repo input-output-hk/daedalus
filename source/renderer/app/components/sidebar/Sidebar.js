@@ -8,7 +8,6 @@ import SidebarCategory from './SidebarCategory';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import InstructionsDialog from '../wallet/paper-wallet-certificate/InstructionsDialog';
 import supportIcon from '../../assets/images/sidebar/bug-report-ic.inline.svg';
-import supportIconDark from '../../assets/images/sidebar/bug-report-ic-dark.inline.svg';
 import type { SidebarWalletType } from '../../types/sidebarTypes';
 import { ROUTES } from '../../routes-config';
 import { CATEGORIES_BY_NAME } from '../../config/sidebarConfig.js';
