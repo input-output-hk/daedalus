@@ -104,7 +104,7 @@ export const CREATE_DARK_CARDANO_THEME_PARAMS: CreateThemeParams = {
     focus: 'rgba(255, 255, 255, 0.4)',
     text: {
       primary: '#ffffff',
-      secondary: '#ffffff',
+      secondary: '#000000',
     },
   },
   fonts: DEFAULT_FONTS,

@@ -409,6 +409,7 @@ export const WHITE_THEME_CONFIG = {
     '--theme-manual-update-overlay-text-highlight-color': '#fafbfc',
     '--theme-manual-update-overlay-title-text-color': '#fafbfc',
     '--theme-manual-update-overlay-button-label-color': '#fafbfc',
+    '--theme-manual-update-overlay-button-label-color-hover': '#fafbfc',
   },
   mnemonic: {
     '--theme-mnemonic-background-color': '#f9f9f9',
@@ -479,6 +480,8 @@ export const WHITE_THEME_CONFIG = {
       '#f9f9f9cc',
     '--theme-legacy-notification-title-color': '#fafbfc',
     '--theme-legacy-notification-description-color': '#fafbfc',
+    '--theme-notification-message-checkmark-icon-color': '#fafbfc',
+    '--theme-notification-message-close-icon-color': '#fafbfc',
   },
   paperWallet: {
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-color':
@@ -574,6 +577,7 @@ export const WHITE_THEME_CONFIG = {
       '#fafbfc',
     '--theme-staking-stake-pool-tooltip-delegate-button-border-color':
       'transparent',
+    '--theme-staking-progress-label-light': '#fafbfc',
   },
   staking: {
     '--theme-staking-content-background-color': '#fdfdfd',
@@ -634,6 +638,7 @@ export const WHITE_THEME_CONFIG = {
     '--theme-topbar-layout-body-background-color': '#ffffff',
     '--theme-topbar-wallet-name-color': '#fafbfc',
     '--theme-topbar-wallet-info-color': '#fafbfc',
+    '--theme-topbar-logo-color': '#2d2d2d',
   },
   transactions: {
     '--theme-transactions-list-background-color': '#fdfdfd',
@@ -670,6 +675,10 @@ export const WHITE_THEME_CONFIG = {
     '--theme-utxo-tooltip-background-color': '#aeaeae',
     '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-utxo-tooltip-text-color': '#fafbfc',
+  },
+  rpTooltip: {
+    '--rp-tooltip-bg-color': '#2d2d2d',
+    '--rp-tooltip-text-color': '#fafbfc',
   },
 };
 

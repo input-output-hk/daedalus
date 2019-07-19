@@ -136,7 +136,7 @@ export const YELLOW_THEME_CONFIG = {
     '--rp-textarea-text-color': '#2d2d2d',
   },
   rpTooltip: {
-    '--rp-tooltip-bg-color': "#2d2d2d",
+    '--rp-tooltip-bg-color': '#2d2d2d',
     '--rp-tooltip-text-color': '#ffffff',
   },
   aboutWindow: {

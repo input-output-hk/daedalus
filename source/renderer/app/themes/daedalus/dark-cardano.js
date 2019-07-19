@@ -172,7 +172,8 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-block-consolidation-background-color': 'rgba(42, 43, 60, 0.96)',
     '--theme-block-consolidation-title-text-color': '#fafbfc',
     '--theme-block-consolidation-text-color': 'rgba(250, 251, 252, 0.7)',
-    '--theme-block-consolidation-text-highlight-color': 'rgba(250, 251, 252, 1)',
+    '--theme-block-consolidation-text-highlight-color':
+      'rgba(250, 251, 252, 1)',
     '--theme-block-consolidation-epochs-text-color': '#2a2b3c',
     '--theme-block-consolidation-indicator-text-color': '#ffffff',
     '--theme-block-consolidation-indicator-container-background-color':
@@ -181,17 +182,22 @@ export const DARK_CARDANO_THEME_CONFIG = {
       '#a0a1a8',
     '--theme-block-consolidation-indicator-epochs-behind-background-color-2':
       '#36374d',
-    '--theme-block-consolidation-stripe-dark-1-background-color': 'rgba(224, 229, 234, 0.3)',
-    '--theme-block-consolidation-stripe-dark-2-background-color': 'rgba(250, 251, 252, 0.3)',
-    '--theme-block-consolidation-stripe-light-1-background-color': 'rgba(224, 229, 234, 1)',
-    '--theme-block-consolidation-stripe-light-2-background-color': 'rgba(250, 251, 252, 1)',
+    '--theme-block-consolidation-stripe-dark-1-background-color':
+      'rgba(224, 229, 234, 0.3)',
+    '--theme-block-consolidation-stripe-dark-2-background-color':
+      'rgba(250, 251, 252, 0.3)',
+    '--theme-block-consolidation-stripe-light-1-background-color':
+      'rgba(224, 229, 234, 1)',
+    '--theme-block-consolidation-stripe-light-2-background-color':
+      'rgba(250, 251, 252, 1)',
     '--theme-block-consolidation-button-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-block-consolidation-button-background-color-hover': '#fafbfc',
     '--theme-block-consolidation-button-icon-color': '#fafbfc',
     '--theme-block-consolidation-button-icon-color-hover': '#2a2b3c',
     '--theme-block-consolidation-button-text-color-hover': '#2a2b3c',
     '--theme-block-consolidation-button-border-color': '#fafbfc',
-    '--theme-block-consolidation-epochs-image-color': 'rgba(255, 255, 255, 0.6)',
+    '--theme-block-consolidation-epochs-image-color':
+      'rgba(255, 255, 255, 0.6)',
   },
   body: {
     '--theme-main-body-background-color': '#121326',
@@ -410,6 +416,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-manual-update-overlay-text-highlight-color': '#ffffff',
     '--theme-manual-update-overlay-title-text-color': '#ffffff',
     '--theme-manual-update-overlay-button-label-color': '#ffffff',
+    '--theme-manual-update-overlay-button-label-color-hover': '#000000',
   },
   mnemonic: {
     '--theme-mnemonic-background-color': '#121326',
@@ -480,6 +487,8 @@ export const DARK_CARDANO_THEME_CONFIG = {
       '#121326cc',
     '--theme-legacy-notification-title-color': '#ffffff',
     '--theme-legacy-notification-description-color': '#ffffff',
+    '--theme-notification-message-checkmark-icon-color': '#000000',
+    '--theme-notification-message-close-icon-color': '#000000',
   },
   paperWallet: {
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-color':
@@ -576,6 +585,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
       '#ffffff',
     '--theme-staking-stake-pool-tooltip-delegate-button-border-color':
       'transparent',
+    '--theme-staking-progress-label-light': '#000000',
   },
   staking: {
     '--theme-staking-content-background-color': '#a0a1a8',
@@ -636,6 +646,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-topbar-layout-body-background-color': '#36374d',
     '--theme-topbar-wallet-name-color': '#ffffff',
     '--theme-topbar-wallet-info-color': '#ffffff',
+    '--theme-topbar-logo-color': '#ffffff',
   },
   transactions: {
     '--theme-transactions-list-background-color': '#1e1f31',
@@ -672,6 +683,10 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-utxo-tooltip-background-color': '#0d0d1b',
     '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-utxo-tooltip-text-color': '#ffffff',
+  },
+  rpTooltip: {
+    '--rp-tooltip-bg-color': '#ffffff',
+    '--rp-tooltip-text-color': '#000000',
   },
 };
 
