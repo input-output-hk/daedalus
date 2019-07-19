@@ -454,6 +454,7 @@ export const WHITE_THEME_CONFIG = {
     '--theme-node-update-background-color': '#f9f9f9',
     '--theme-node-update-title-color': '#2d2d2d',
     '--theme-node-update-message-color': '#2d2d2d',
+    '--theme-node-sync-icon-color': '#2d2d2d',
     '--theme-node-sync-info-message-background-color': '#f9f9f9',
     '--theme-node-sync-info-message-text-color': '#2d2d2d',
     '--theme-node-update-accept-button-background-color': '#ffffff',

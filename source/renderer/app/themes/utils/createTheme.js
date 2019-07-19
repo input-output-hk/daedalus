@@ -701,6 +701,7 @@ export const createDaedalusComponentsTheme = (
         background.primary.regular
       }`,
       '--theme-node-sync-info-message-text-color': `${text.primary}`,
+      '--theme-node-sync-icon-color': `${text.primary}`,
       '--theme-node-update-accept-button-background-color': `${
         background.secondary.regular
       }`,

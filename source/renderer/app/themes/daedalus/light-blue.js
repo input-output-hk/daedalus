@@ -208,7 +208,7 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-dialog-choice-tabs-text-color': '#5e6066',
     '--theme-dialog-choice-tabs-text-color-active': '#5e6066',
     '--theme-dialog-choice-tabs-bottom-border-color-active': '#5e6066',
-    '--theme-dialog-big-button-background-color': '#FAFBFC',
+    '--theme-dialog-big-button-background-color': '#fafbfc',
     '--theme-dialog-big-button-border-color': '#c6cdd6',
     '--theme-dialog-big-button-label-color': '#5e6066',
     '--theme-dialog-big-button-description-color': '#5e6066',
@@ -308,7 +308,7 @@ export const LIGHT_BLUE_THEME_CONFIG = {
   },
   navDropdown: {
     '--theme-nav-dropdown-item-text-color': '#1d2e47',
-    '--theme-nav-dropdown-item-background-color': '#fafbfc',
+    '--theme-nav-dropdown-item-background-color': '#fff',
     '--theme-nav-dropdown-item-background-color-hover':
       'rgba(68, 91, 124, 0.07)',
     '--theme-nav-dropdown-item-color-hover': '#1d2e47',
@@ -343,6 +343,7 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-node-update-message-color': '#5e6066',
     '--theme-node-sync-info-message-background-color': '#fafbfc',
     '--theme-node-sync-info-message-text-color': '#5e6066',
+    '--theme-node-sync-icon-color': '#fff',
     '--theme-node-update-accept-button-background-color': '#445b7c',
     '--theme-node-update-accept-button-background-color-hover': '#243e62',
     '--theme-node-update-accept-button-background-color-active': '#1e304a',
@@ -417,7 +418,7 @@ export const LIGHT_BLUE_THEME_CONFIG = {
       'NotoSans-Regular, NotoSansCJKjp-Regular',
   },
   rpBubble: {
-    '--rp-bubble-bg-color': '#fafbfc',
+    '--rp-bubble-bg-color': '#fff',
     '--rp-bubble-border-color': '#c6cdd6',
     '--rp-bubble-border-radius': '2px',
     '--rp-bubble-arrow-bg-color': '#ebeff2',
@@ -481,7 +482,7 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--rp-modal-overlay-bg-color': 'rgba(0, 0, 0, 0.4)',
   },
   rpOptions: {
-    '--rp-option-bg-color': '#fafbfc',
+    '--rp-option-bg-color': '#fff',
     '--rp-option-bg-color-highlighted': '#edf0f3',
     '--rp-option-border-color': '#c6cdd6',
     '--rp-option-checkmark-color': '#5e6066',
