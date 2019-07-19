@@ -7,7 +7,7 @@ import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import InstructionsDialog from '../wallet/paper-wallet-certificate/InstructionsDialog';
-import supportIcon from '../../assets/images/sidebar/bug-report-ic.inline.svg';
+import supportIconLight from '../../assets/images/sidebar/bug-report-ic.inline.svg';
 import supportIconDark from '../../assets/images/sidebar/bug-report-ic-dark.inline.svg';
 import type { SidebarWalletType } from '../../types/sidebarTypes';
 import { ROUTES } from '../../routes-config';
@@ -17,6 +17,7 @@ type Props = {
   menus: SidebarMenus,
   categories: SidebarCategories,
   activeSidebarCategory: string,
+  currentTheme: string,
   onCategoryClicked: Function,
   isShowingSubMenus: boolean,
   openDialogAction: Function,
@@ -56,6 +57,7 @@ export default class Sidebar extends Component<Props> {
       isShowingSubMenus,
       onAddWallet,
       onSubmitSupportRequest,
+      currentTheme,
     } = this.props;
     let subMenu = null;
 
@@ -80,6 +82,9 @@ export default class Sidebar extends Component<Props> {
       styles.component,
       !isShowingSubMenus || subMenu == null ? styles.minimized : null,
     ]);
+
+    const supportIcon =
+      currentTheme === 'yellow' ? supportIconDark : supportIconLight;
 
     return (
       <div className={sidebarStyles}>
