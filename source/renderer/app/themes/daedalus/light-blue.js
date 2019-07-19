@@ -342,6 +342,7 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-node-update-message-color': '#5e6066',
     '--theme-node-sync-info-message-background-color': '#fafbfc',
     '--theme-node-sync-info-message-text-color': '#5e6066',
+    '--theme-node-sync-icon-color': '#fff',
     '--theme-node-update-accept-button-background-color': '#445b7c',
     '--theme-node-update-accept-button-background-color-hover': '#243e62',
     '--theme-node-update-accept-button-background-color-active': '#1e304a',

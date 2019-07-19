@@ -345,6 +345,7 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-node-update-message-color': '#e9f4fe',
     '--theme-node-sync-info-message-background-color': '#536370',
     '--theme-node-sync-info-message-text-color': '#e9f4fe',
+    '--theme-node-sync-icon-color': '#fff',
     '--theme-node-update-accept-button-background-color': '#263345',
     '--theme-node-update-accept-button-background-color-hover': '#34465e',
     '--theme-node-update-accept-button-background-color-active': '#18202b',

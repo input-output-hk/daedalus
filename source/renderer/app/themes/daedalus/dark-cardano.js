@@ -459,6 +459,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-node-update-message-color': '#ffffff',
     '--theme-node-sync-info-message-background-color': '#121326',
     '--theme-node-sync-info-message-text-color': '#ffffff',
+    '--theme-node-sync-icon-color': '#fff',
     '--theme-node-update-accept-button-background-color': '#36374d',
     '--theme-node-update-accept-button-background-color-hover': '#5e5f71',
     '--theme-node-update-accept-button-background-color-active': '#262736',
