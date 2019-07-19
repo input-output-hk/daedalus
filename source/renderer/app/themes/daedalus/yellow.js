@@ -366,7 +366,7 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-icon-ada-summary-wallet-amount-symbol-color': '#2d2d2d',
     '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color':
       '#2d2d2d',
-    '--theme-icon-add-wallet-dialog-big-button-color': '#bebbb3',
+    '--theme-icon-add-wallet-dialog-big-button-color': '#2d2d2d',
     '--theme-icon-back-button-color': '#2d2d2d',
     '--theme-icon-close-button-color': '#2d2d2d',
     '--theme-icon-connecting-logo-color': '#2d2d2d',
