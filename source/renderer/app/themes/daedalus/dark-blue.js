@@ -631,6 +631,8 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-staking-info-learn-more-icon-color': 'rgba(250, 251, 252, 1)',
     '--theme-staking-learn-more-button-color': '#fafbfc',
     '--theme-staking-learn-more-icon-color': 'rgba(250, 251, 252, 1)',
+    '--theme-staking-countdown-widget-background-color':
+      'rgba(68, 91, 124, 0.05)',
   },
   support: {
     '--theme-support-settings-item-color': 'rgba(233, 244, 254, 0.5)',

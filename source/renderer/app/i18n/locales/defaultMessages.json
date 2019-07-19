@@ -8134,6 +8134,95 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!years",
+        "description": "Label for years value in duration.",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "source/renderer/app/components/widgets/CountdownWidget.js",
+        "id": "global.duration.years",
+        "start": {
+          "column": 9,
+          "line": 9
+        }
+      },
+      {
+        "defaultMessage": "!!!months",
+        "description": "Label for months value in duration.",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "source/renderer/app/components/widgets/CountdownWidget.js",
+        "id": "global.duration.months",
+        "start": {
+          "column": 10,
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!days",
+        "description": "Label for days value in duration.",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/widgets/CountdownWidget.js",
+        "id": "global.duration.days",
+        "start": {
+          "column": 8,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!hours",
+        "description": "Label for hours value in duration.",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/widgets/CountdownWidget.js",
+        "id": "global.duration.hours",
+        "start": {
+          "column": 9,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!minutes",
+        "description": "Label for minutes value in duration.",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/widgets/CountdownWidget.js",
+        "id": "global.duration.minutes",
+        "start": {
+          "column": 11,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!seconds",
+        "description": "Label for seconds value in duration.",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/widgets/CountdownWidget.js",
+        "id": "global.duration.seconds",
+        "start": {
+          "column": 11,
+          "line": 34
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/widgets/CountdownWidget.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Drop file here",
         "description": "Label \"Drop file here\" on the file upload widget.",
         "end": {
