@@ -11,9 +11,10 @@ import classnames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import SVGInline from 'react-svg-inline';
-import styles from './BlockConsolidationStatus.scss';
-import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import DialogCloseButton from '../widgets/DialogCloseButton';
+import styles from './BlockConsolidationStatus.scss';
+import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
+import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import epochs from '../../assets/images/block-consolidation/epochs.inline.svg';
 
 const messages = defineMessages({
@@ -146,8 +147,11 @@ export default class BlockConsolidationStatus extends Component<Props> {
 
     return (
       <div className={styles.component}>
-        {/* <TopBar onLeftIconClick={onClose} leftIcon={backArrow} /> */}
-        <DialogCloseButton className={styles.closeButton} onClose={onClose} />
+        <DialogCloseButton
+          className={styles.closeButton}
+          icon={closeCrossThin}
+          onClose={onClose}
+        />
 
         <div className={styles.container}>
           <div className={styles.content}>
