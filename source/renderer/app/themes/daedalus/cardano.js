@@ -60,15 +60,16 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-block-consolidation-stripe-light-1-background-color': '#e0e5ea',
     '--theme-block-consolidation-stripe-light-2-background-color': '#fafbfc',
     '--theme-block-consolidation-button-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-block-consolidation-button-background-color-active': '#e9e9ea',
     '--theme-block-consolidation-button-background-color-hover': '#fafbfc',
-    '--theme-block-consolidation-button-icon-color': 'rgba(250, 251, 252, 0.7)',
+    '--theme-block-consolidation-button-icon-color': '#fafbfc',
     '--theme-block-consolidation-button-icon-color-hover': '#202225',
-    '--theme-block-consolidation-button-text-color': 'rgba(250, 251, 252, 0.7)',
+    '--theme-block-consolidation-button-text-color': '#fafbfc',
     '--theme-block-consolidation-button-text-color-hover': '#202225',
     '--theme-block-consolidation-button-border-color': '#fafbfc',
     '--theme-block-consolidation-button-border-color-hover': 'transparent',
     '--theme-block-consolidation-epochs-image-color':
-      'rgba(255, 255, 255, 0.6)',
+      'rgba(255, 255, 255, 0.9)',
   },
   body: {
     '--theme-main-body-background-color': '#efefef',
@@ -249,7 +250,7 @@ export const CARDANO_THEME_CONFIG = {
       '#5e6066',
     '--theme-icon-add-wallet-dialog-big-button-color': '#ababab',
     '--theme-icon-back-button-color': '#5e6066',
-    '--theme-icon-close-button-color': '#5e6066',
+    '--theme-icon-close-button-color': '#fafbfc',
     '--theme-icon-connecting-logo-color': '#fafbfc',
     '--theme-icon-copy-address-color': '#5e6066',
     '--theme-icon-delegation-center-no-wallets': '#5e6066',
@@ -270,7 +271,7 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-input-text-color': '#5e6066',
   },
   link: {
-    '--theme-link-main-color': 'rgba(28, 172, 99, 1)',
+    '--theme-link-main-color': '#26AB5F',
   },
   loading: {
     '--theme-loading-background-color': '#fafbfc',
@@ -313,7 +314,7 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-nav-dropdown-item-text-color': '#5e6066',
     '--theme-nav-dropdown-item-background-color': '#fafbfc',
     '--theme-nav-dropdown-item-background-color-hover':
-      'rgba(32, 34, 37, 0.07)',
+      'rgba(239, 239, 239, 0.5)',
     '--theme-nav-dropdown-item-color-hover': '#5e6066',
   },
   navItem: {
@@ -383,7 +384,7 @@ export const CARDANO_THEME_CONFIG = {
   },
   paperWallet: {
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-color':
-      '#5e6066',
+      '#26ab5f',
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-background-color':
       'rgba(68, 91, 124, 0.05)',
   },

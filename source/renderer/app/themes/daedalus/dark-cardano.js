@@ -24,7 +24,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
   rpButton: {
     '--rp-button-bg-color': '#1fc1c3',
     '--rp-button-bg-color-active': '#1cabad',
-    '--rp-button-bg-color-disabled': '#1fc1c3',
+    '--rp-button-bg-color-disabled': 'rgba(31, 193, 195, 0.3)',
     '--rp-button-bg-color-hover': '#26e7eb',
     '--rp-button-font-family': 'NotoSans-Medium, NotoSansCJKjp-Medium',
     '--rp-button-font-size': '14px',
@@ -112,8 +112,8 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--rpstepper-steps-bar-top-position': '6px',
   },
   rpSwitch: {
-    '--rp-switch-bg-color-off': '#36374d',
-    '--rp-switch-bg-color-on': '#36374d',
+    '--rp-switch-bg-color-off': 'rgba(31, 193, 195, 0.3)',
+    '--rp-switch-bg-color-on': '#1fc1c3',
     '--rp-switch-label-margin': '0 30px 0 0',
     '--rp-switch-label-opacity': '0.5',
     '--rp-switch-label-text-color': '#ffffff',
@@ -146,7 +146,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-about-window-content-text-color': '#ffffff',
     '--theme-about-window-content-bottom-border-color': '#ffffff4d',
     '--theme-about-window-icon-close-button-color': '#fafbfc',
-    '--theme-about-window-icon-close-hover-background': '#313245',
+    '--theme-about-window-icon-close-hover-background': 'rgba(0, 0, 0, 0.16)',
   },
   adaRedemption: {
     '--theme-ada-redemption-headline-color': '#ffffff',
@@ -191,14 +191,16 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-block-consolidation-stripe-light-2-background-color':
       'rgba(250, 251, 252, 1)',
     '--theme-block-consolidation-button-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-block-consolidation-button-background-color-active': '#e9e9ea',
     '--theme-block-consolidation-button-background-color-hover': '#fafbfc',
     '--theme-block-consolidation-button-icon-color': '#fafbfc',
     '--theme-block-consolidation-button-icon-color-hover': '#2a2b3c',
-    '--theme-block-consolidation-button-text-color': 'rgba(250, 251, 252, 0.7)',
+    '--theme-block-consolidation-button-text-color': '#fafbfc',
     '--theme-block-consolidation-button-text-color-hover': '#2a2b3c',
+    '--theme-block-consolidation-button-border-color': '#fafbfc',
     '--theme-block-consolidation-button-border-color-hover': 'transparent',
     '--theme-block-consolidation-epochs-image-color':
-      'rgba(255, 255, 255, 0.6)',
+      'rgba(255, 255, 255, 0.9)',
   },
   body: {
     '--theme-main-body-background-color': '#121326',
@@ -248,10 +250,11 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-button-primary-background-color': '#1fc1c3',
     '--theme-button-primary-background-color-hover': '#26e7eb',
     '--theme-button-primary-background-color-active': '#1cabad',
-    '--theme-button-primary-background-color-disabled': '#1fc1c3',
+    '--theme-button-primary-background-color-disabled':
+      'rgba(31, 193, 195, 0.3)',
     '--theme-button-primary-text-color-disabled': '#121326',
     '--theme-button-primary-text-color': '#121326',
-    '--theme-button-primary-outline-color': '#1fc1c3',
+    '--theme-button-primary-outline-color': 'rgba(255, 255, 255, 0.5)',
   },
   connecting: {
     '--theme-connecting-background-color': '#36374d',
@@ -391,7 +394,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-input-text-color': '#ffffff',
   },
   link: {
-    '--theme-link-main-color': '#36374d',
+    '--theme-link-main-color': '#1fc1c3',
   },
   loading: {
     '--theme-loading-background-color': '#121326',
@@ -494,7 +497,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
   },
   paperWallet: {
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-color':
-      '#36374d',
+      '#1fc1c3',
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-background-color':
       '#ffffff',
   },
@@ -503,7 +506,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-progress-bar-foreground-color': '#414251b3',
   },
   receiveQRCode: {
-    '--theme-receive-qr-code-background-color': 'transparent',
+    '--theme-receive-qr-code-background-color': '#fff',
     '--theme-receive-qr-code-foreground-color': '#000',
   },
   reportIssue: {

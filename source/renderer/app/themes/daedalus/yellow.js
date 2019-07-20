@@ -175,7 +175,7 @@ export const YELLOW_THEME_CONFIG = {
   blockConsolidation: {
     '--theme-block-consolidation-background-color': 'rgba(255, 185, 35, 0.96)',
     '--theme-block-consolidation-title-text-color': 'rgba(45, 45, 45, 1)',
-    '--theme-block-consolidation-text-color': 'rgba(45, 45, 45, 1)',
+    '--theme-block-consolidation-text-color': 'rgba(45, 45, 45, 0.7)',
     '--theme-block-consolidation-text-highlight-color': 'rgba(45, 45, 45, 1)',
     '--theme-block-consolidation-epochs-text-color': '#ffffff',
     '--theme-block-consolidation-indicator-text-color': 'rgba(45, 45, 45, 1)',
@@ -194,14 +194,16 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-block-consolidation-stripe-light-2-background-color':
       'rgba(45, 45, 45, 1)',
     '--theme-block-consolidation-button-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-block-consolidation-button-background-color-active':
+      'rgba(28, 28, 28, 0.96)',
     '--theme-block-consolidation-button-background-color-hover': '#2d2d2d',
     '--theme-block-consolidation-button-icon-color': '#2d2d2d',
     '--theme-block-consolidation-button-icon-color-hover': '#ffffff',
-    '--theme-block-consolidation-button-text-color': 'rgba(45, 45, 45, 0.7)',
+    '--theme-block-consolidation-button-text-color': '#2d2d2d',
     '--theme-block-consolidation-button-text-color-hover': '#ffffff',
-    '--theme-block-consolidation-button-border-color': 'rgba(45, 45, 45, 1)',
+    '--theme-block-consolidation-button-border-color': '#2d2d2d',
     '--theme-block-consolidation-button-border-color-hover': 'transparent',
-    '--theme-block-consolidation-epochs-image-color': '#2d2d2d',
+    '--theme-block-consolidation-epochs-image-color': 'rgba(45, 45, 45, 0.9)',
   },
   body: {
     '--theme-main-body-background-color': '#f8f3ed',
@@ -434,7 +436,7 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-nav-dropdown-item-text-color': '#2d2d2d',
     '--theme-nav-dropdown-item-background-color': '#fff',
     '--theme-nav-dropdown-item-background-color-hover':
-      'rgba(45, 45, 45, 0.07)',
+      'rgba(248, 243, 237, 0.5)',
     '--theme-nav-dropdown-item-color-hover': '#2d2d2d',
   },
   navItem: {

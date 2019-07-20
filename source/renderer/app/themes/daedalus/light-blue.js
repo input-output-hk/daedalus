@@ -60,14 +60,16 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-block-consolidation-stripe-light-1-background-color': '#e0e5ea',
     '--theme-block-consolidation-stripe-light-2-background-color': '#fafbfc',
     '--theme-block-consolidation-button-background-color': '#243e62',
+    '--theme-block-consolidation-button-background-color-active': '#e9e9ea',
     '--theme-block-consolidation-button-background-color-hover': '#fafbfc',
-    '--theme-block-consolidation-button-icon-color': 'rgba(250, 251, 252, 0.7)',
+    '--theme-block-consolidation-button-icon-color': '#fafbfc',
     '--theme-block-consolidation-button-icon-color-hover': '#243e62',
-    '--theme-block-consolidation-button-text-color': 'rgba(250, 251, 252, 0.7)',
+    '--theme-block-consolidation-button-text-color': '#fafbfc',
     '--theme-block-consolidation-button-text-color-hover': '#243e62',
+    '--theme-block-consolidation-button-border-color': '#fafbfc',
     '--theme-block-consolidation-button-border-color-hover': 'transparent',
     '--theme-block-consolidation-epochs-image-color':
-      'rgba(255, 255, 255, 0.6)',
+      'rgba(255, 255, 255, 0.9)',
   },
   body: {
     '--theme-main-body-background-color': '#ebeff2',
@@ -247,7 +249,7 @@ export const LIGHT_BLUE_THEME_CONFIG = {
       '#5e6066',
     '--theme-icon-add-wallet-dialog-big-button-color': '#8a98ab',
     '--theme-icon-back-button-color': '#5e6066',
-    '--theme-icon-close-button-color': '#5e6066',
+    '--theme-icon-close-button-color': '#fafbfc',
     '--theme-icon-connecting-logo-color': '#fafbfc',
     '--theme-icon-copy-address-color': '#5e6066',
     '--theme-icon-delegation-center-no-wallets': '#5e6066',
@@ -268,7 +270,7 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-input-text-color': '#5e6066',
   },
   link: {
-    '--theme-link-main-color': 'rgba(41, 111, 208, 1)',
+    '--theme-link-main-color': 'rgb(41, 111, 208)',
   },
   loading: {
     '--theme-loading-background-color': '#fafbfc',
@@ -380,7 +382,7 @@ export const LIGHT_BLUE_THEME_CONFIG = {
   },
   paperWallet: {
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-color':
-      '#5e6066',
+      'rgb(41, 111, 208)',
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-background-color':
       'rgba(68, 91, 124, 0.05)',
   },

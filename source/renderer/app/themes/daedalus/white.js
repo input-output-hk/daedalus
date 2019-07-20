@@ -146,8 +146,9 @@ export const WHITE_THEME_CONFIG = {
     '--theme-about-window-content-color': '#fafbfc',
     '--theme-about-window-content-text-color': '#fafbfc',
     '--theme-about-window-content-bottom-border-color': '#fafbfc4d',
-    '--theme-about-window-icon-close-button-color': '#fdfdfd',
-    '--theme-about-window-icon-close-hover-background': '#e6e6e6',
+    '--theme-about-window-icon-close-button-color': '#2d2d2d',
+    '--theme-about-window-icon-close-hover-background':
+      'rgba(165, 173, 255, 0.1)',
   },
   adaRedemption: {
     '--theme-ada-redemption-headline-color': '#2d2d2d',
@@ -172,7 +173,7 @@ export const WHITE_THEME_CONFIG = {
   blockConsolidation: {
     '--theme-block-consolidation-background-color': '#ffffff',
     '--theme-block-consolidation-title-text-color': '#2d2d2d',
-    '--theme-block-consolidation-text-color': 'rgba(45, 45, 45, 0.6)',
+    '--theme-block-consolidation-text-color': 'rgba(45, 45, 45, 0.7)',
     '--theme-block-consolidation-text-highlight-color': '#2d2d2d',
     '--theme-block-consolidation-epochs-text-color': '#ffffff',
     '--theme-block-consolidation-indicator-text-color': '#2d2d2d',
@@ -188,6 +189,7 @@ export const WHITE_THEME_CONFIG = {
     '--theme-block-consolidation-stripe-light-2-background-color': '#53C3AA',
     '--theme-block-consolidation-button-background-color':
       'rgba(41, 181, 149, 0.1)',
+    '--theme-block-consolidation-button-background-color-active': '#25a386',
     '--theme-block-consolidation-button-background-color-hover': '#29b595',
     '--theme-block-consolidation-button-icon-color': '#29b595',
     '--theme-block-consolidation-button-icon-color-hover': '#ffffff',
@@ -195,7 +197,7 @@ export const WHITE_THEME_CONFIG = {
     '--theme-block-consolidation-button-text-color-hover': '#ffffff',
     '--theme-block-consolidation-button-border-color': '#29b595',
     '--theme-block-consolidation-button-border-color-hover': 'transparent',
-    '--theme-block-consolidation-epochs-image-color': '#29b595',
+    '--theme-block-consolidation-epochs-image-color': 'rgba(41, 181, 149, 0.9)',
   },
   body: {
     '--theme-main-body-background-color': '#f9f9f9',
@@ -249,7 +251,7 @@ export const WHITE_THEME_CONFIG = {
       'rgba(41, 181, 149, 0.3)',
     '--theme-button-primary-text-color-disabled': 'rgba(255, 255, 255, 0.7)',
     '--theme-button-primary-text-color': '#fff',
-    '--theme-button-primary-outline-color': '#fff',
+    '--theme-button-primary-outline-color': '#54c4aa',
   },
   connecting: {
     '--theme-connecting-background-color': '#ffffff',
@@ -388,7 +390,7 @@ export const WHITE_THEME_CONFIG = {
     '--theme-input-text-color': '#2d2d2d',
   },
   link: {
-    '--theme-link-main-color': '#ffffff',
+    '--theme-link-main-color': '#29b595',
   },
   loading: {
     '--theme-loading-background-color': '#f9f9f9',
@@ -427,7 +429,8 @@ export const WHITE_THEME_CONFIG = {
   navDropdown: {
     '--theme-nav-dropdown-item-text-color': '#2d2d2d',
     '--theme-nav-dropdown-item-background-color': '#fdfdfd',
-    '--theme-nav-dropdown-item-background-color-hover': '#f9f9f912',
+    '--theme-nav-dropdown-item-background-color-hover':
+      'rgba(239, 239, 239, 0.5)',
     '--theme-nav-dropdown-item-color-hover': '#2d2d2d',
   },
   navItem: {
@@ -438,7 +441,7 @@ export const WHITE_THEME_CONFIG = {
     '--theme-nav-item-text-color-active': '#29b595',
   },
   network: {
-    '--theme-network-window-background-color': '#fffffff5',
+    '--theme-network-window-background-color': 'rgba(41, 181, 149, 0.96)',
     '--theme-network-window-text-color': '#2d2d2d',
     '--theme-network-window-icon-close-hover-background': '#e6e6e6',
     '--theme-network-window-red-color': '#f06e05',
@@ -446,10 +449,12 @@ export const WHITE_THEME_CONFIG = {
     '--theme-network-window-white-color': '#fafbfc',
     '--theme-network-window-transparent-color': 'transparent',
     '--theme-network-window-border-color': '#fafbfcb3',
-    '--theme-network-window-button-text-color': '#fafbfc',
-    '--theme-network-window-button-background-color': '#ffffff66',
-    '--theme-network-window-button-background-color-hover': '#ffffff99',
-    '--theme-network-window-button-background-color-active': '#ffffffcc',
+    '--theme-network-window-button-text-color': '#2d2d2d',
+    '--theme-network-window-button-background-color': 'rgba(94, 96, 102, 0.4)',
+    '--theme-network-window-button-background-color-hover':
+      'rgba(94, 96, 102, 0.6)',
+    '--theme-network-window-button-background-color-active':
+      'rgba(94, 96, 102, 0.8)',
   },
   nodeUpdate: {
     '--theme-node-update-background-color': '#f9f9f9',
@@ -467,7 +472,8 @@ export const WHITE_THEME_CONFIG = {
     '--theme-node-update-button-text-color': '#fafbfc',
   },
   notification: {
-    '--theme-notification-message-background-color': '#fffffff2',
+    '--theme-notification-message-background-color':
+      'rgba(249, 249, 249, 0.95)',
     '--theme-notification-message-text-color': '#2d2d2d',
     '--theme-legacy-badge-background-color': '#d34452',
     '--theme-legacy-notification-background-color': '#ab2712',
@@ -486,8 +492,8 @@ export const WHITE_THEME_CONFIG = {
       '#f9f9f9cc',
     '--theme-legacy-notification-title-color': '#fafbfc',
     '--theme-legacy-notification-description-color': '#fafbfc',
-    '--theme-notification-message-checkmark-icon-color': '#fafbfc',
-    '--theme-notification-message-close-icon-color': '#fafbfc',
+    '--theme-notification-message-checkmark-icon-color': '#2d2d2d',
+    '--theme-notification-message-close-icon-color': '#2d2d2d',
   },
   paperWallet: {
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-color':
@@ -532,7 +538,7 @@ export const WHITE_THEME_CONFIG = {
     '--theme-settings-menu-item-text-color-active': '#2d2d2d',
     '--theme-settings-menu-item-text-color-disabled': '#2d2d2d80',
     '--theme-settings-menu-item-background-color-active': '#f9f9f9',
-    '--theme-settings-menu-item-left-border-color-active': '#ffffff',
+    '--theme-settings-menu-item-left-border-color-active': '#29b595',
     '--theme-settings-theme-select-title-color': '#2d2d2d',
   },
   sidebar: {
