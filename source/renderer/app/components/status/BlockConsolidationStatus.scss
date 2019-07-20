@@ -42,6 +42,21 @@
         }
       }
     }
+
+    &:not(.disabled):active {
+      background-color: var(
+        --theme-block-consolidation-button-background-color-active
+      );
+      border-color: var(--theme-block-consolidation-button-border-color-hover);
+      p {
+        color: var(--theme-block-consolidation-button-text-color-hover);
+      }
+      .externalLinkIcon {
+        g {
+          stroke: var(--theme-block-consolidation-button-icon-color-hover);
+        }
+      }
+    }
   }
 }
 
