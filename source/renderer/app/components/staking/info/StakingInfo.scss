@@ -6,7 +6,7 @@
   text-align: center;
 
   .learnMoreButton {
-    color: var(--theme-staking-info-learn-more-button-color);
+    color: var(--theme-staking-info-learn-more-button-text-color);
 
     .externalLinkIcon {
       @include link(--theme-staking-info-learn-more-icon-color);

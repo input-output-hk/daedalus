@@ -944,7 +944,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-table-body-highlighted-text-color': `${
         background.secondary.dark
       }`,
-      '--theme-staking-info-learn-more-button-color': `${
+      '--theme-staking-info-learn-more-button-text-color': `${
         background.primary.lightest
       }`,
       '--theme-staking-info-learn-more-icon-color': `${text.secondary}`,

@@ -456,9 +456,11 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-network-window-transparent-color': 'transparent',
     '--theme-network-window-border-color': 'rgba(45, 45, 45, 0.2)',
     '--theme-network-window-button-text-color': '#ffffff',
-    '--theme-network-window-button-background-color': '#2d2d2d',
-    '--theme-network-window-button-background-color-hover': '#424242',
-    '--theme-network-window-button-background-color-active': '#222222',
+    '--theme-network-window-button-background-color': 'rgba(45, 45, 45, 0.4)',
+    '--theme-network-window-button-background-color-hover':
+      'rgba(45, 45, 45, 0.6)',
+    '--theme-network-window-button-background-color-active':
+      'rgba(45, 45, 45, 0.8)',
   },
   nodeUpdate: {
     '--theme-node-update-background-color': '#f8f3ed',
@@ -613,7 +615,7 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-staking-progress-stripe-dark-1-background-color': '#e4b95e',
     '--theme-staking-progress-stripe-dark-2-background-color': '#fdcd68',
     '--theme-staking-table-body-highlighted-text-color': '#d6902f',
-    '--theme-staking-info-learn-more-button-color': '#f8f7f3',
+    '--theme-staking-info-learn-more-button-text-color': '#f8f7f3',
     '--theme-staking-info-learn-more-icon-color': '#fafbfc',
     '--theme-staking-learn-more-button-color': '#f8f7f3',
     '--theme-staking-learn-more-icon-color': '#fafbfc',

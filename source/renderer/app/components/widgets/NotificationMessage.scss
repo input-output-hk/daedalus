@@ -11,18 +11,18 @@
   transition: all 200ms linear;
   width: 100%;
 
-  &.theme-override-grey {
-    background-color: rgba(94, 96, 102, 0.95);
+  // &.theme-override-grey {
+  //   background-color: rgba(94, 96, 102, 0.95);
 
-    .closeButton svg polygon,
-    .icon svg g path:nth-child(2) {
-      fill: var(--rp-tooltip-text-color);
-    }
+  //   .closeButton svg polygon,
+  //   .icon svg g path:nth-child(2) {
+  //     fill: var(--rp-tooltip-text-color);
+  //   }
 
-    .message {
-      color: var(--rp-tooltip-text-color);
-    }
-  }
+  //   .message {
+  //     color: var(--rp-tooltip-text-color);
+  //   }
+  // }
 }
 
 .show {
