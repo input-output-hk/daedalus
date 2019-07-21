@@ -447,7 +447,7 @@ export const WHITE_THEME_CONFIG = {
       'rgba(165, 173, 255, 0.1)',
     '--theme-network-window-red-color': '#f06e05',
     '--theme-network-window-green-color': '#05f079',
-    '--theme-network-window-white-color': '#fafbfc',
+    '--theme-network-window-white-color': '#2d2d2d',
     '--theme-network-window-transparent-color': 'transparent',
     '--theme-network-window-border-color': 'rgba(45, 45, 45, 0.2)',
     '--theme-network-window-button-text-color': '#fafbfc',
@@ -531,7 +531,7 @@ export const WHITE_THEME_CONFIG = {
   settings: {
     '--theme-settings-body-background-color': '#f9f9f9',
     '--theme-settings-pane-background-color': '#fdfdfd',
-    '--theme-settings-pane-border': '1px solid rgba(45, 45, 45, 0.1)',
+    '--theme-settings-pane-border': 'none',
     '--theme-settings-menu-box-background-color': '#fdfdfd',
     '--theme-settings-menu-box-border': 'none',
     '--theme-settings-menu-item-text-color': '#2d2d2d',

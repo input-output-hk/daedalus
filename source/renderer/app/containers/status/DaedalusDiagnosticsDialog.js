@@ -150,6 +150,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
           closeNotification={actions.notifications.closeActiveNotification}
           icon="success"
           hasCloseButton
+          themeOverride="grey"
         >
           {intl.formatMessage(messages.stateDirectoryCopyNotificationMessage)}
         </GenericNotification>
