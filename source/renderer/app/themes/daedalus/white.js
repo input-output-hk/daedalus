@@ -421,7 +421,7 @@ export const WHITE_THEME_CONFIG = {
   mnemonic: {
     '--theme-mnemonic-background-color': '#f9f9f9',
     '--theme-mnemonic-background-color-hover': '#e0e0e0',
-    '--theme-backup-mnemonic-background-color': '#fafafa',
+    '--theme-backup-mnemonic-background-color': 'rgba(219, 219, 219, 0.2)',
   },
   modal: {
     '--theme-modal-overlay-background-color': 'rgba(0, 0, 0, 0.4)',
