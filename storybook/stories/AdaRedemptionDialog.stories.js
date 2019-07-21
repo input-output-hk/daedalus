@@ -6,6 +6,8 @@ import wordlist from 'bip39/wordlists/english';
 import StoryDecorator from './support/StoryDecorator';
 import AdaRedemptionForm from '../../source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm';
 import AdaRedemptionChoices from '../../source/renderer/app/components/wallet/ada-redemption/AdaRedemptionChoices';
+import AdaRedemptionSuccessOverlay from '../../source/renderer/app/components/wallet/ada-redemption/AdaRedemptionSuccessOverlay';
+import AdaRedemptionDisclaimer from '../../source/renderer/app/components/wallet/ada-redemption/AdaRedemptionDisclaimer';
 import { ADA_REDEMPTION_TYPES } from '../../source/renderer/app/types/redemptionTypes';
 
 storiesOf('AdaRedemptionForm', module)
@@ -136,5 +138,17 @@ storiesOf('AdaRedemptionForm', module)
         mnemonicValidator={() => {}}
         error={null}
       />
+    </div>
+  ))
+
+  .add('Ada redemption success overlay', () => (
+    <div>
+      <AdaRedemptionSuccessOverlay amount={100} onClose={action('onClose')} />
+    </div>
+  ))
+
+  .add('Ada redemption disclaimer', () => (
+    <div>
+      <AdaRedemptionDisclaimer onSubmit={action('onSubmit')} />
     </div>
   ));
