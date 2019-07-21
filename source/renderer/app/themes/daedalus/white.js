@@ -235,13 +235,13 @@ export const WHITE_THEME_CONFIG = {
       'rgba(250, 251, 252, .3)',
   },
   buttonFlat: {
-    '--theme-button-flat-background-color': '#fafafa',
-    '--theme-button-flat-background-color-hover': '#fbfbfb',
-    '--theme-button-flat-background-color-active': '#f9f9f9',
-    '--theme-button-flat-background-color-disabled': '#fbfbfb',
+    '--theme-button-flat-background-color': '#fafbfc',
+    '--theme-button-flat-background-color-hover': '#f3f5f7',
+    '--theme-button-flat-background-color-active': '#ebeef0',
+    '--theme-button-flat-background-color-disabled': 'rgba(240, 243, 245, 0.3)',
     '--theme-button-flat-text-color-disabled': '#2d2d2d',
     '--theme-button-flat-text-color': '#2d2d2d',
-    '--theme-button-flat-outline-color': '#e0e0e0',
+    '--theme-button-flat-outline-color': '#e5e5e5',
   },
   buttonPrimary: {
     '--theme-button-primary-background-color': '#29b595',
@@ -579,11 +579,11 @@ export const WHITE_THEME_CONFIG = {
     '--theme-staking-stake-pool-tooltip-retirement-background-color':
       '#ea4c5b4d',
     '--theme-staking-stake-pool-tooltip-delegate-button-background-color':
-      '#ffffff',
+      '#29b595',
     '--theme-staking-stake-pool-tooltip-delegate-button-hover-background-color':
-      '#ffffff',
+      '#54c4aa',
     '--theme-staking-stake-pool-tooltip-delegate-button-active-background-color':
-      '#b3b3b3',
+      '#25a386',
     '--theme-staking-stake-pool-tooltip-delegate-button-text-color': '#fafbfc',
     '--theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color':
       '#fafbfc',
@@ -684,10 +684,10 @@ export const WHITE_THEME_CONFIG = {
     '--theme-utxo-background-color': '#f9f9f980',
     '--theme-utxo-title-text-color': '#2d2d2d',
     '--theme-utxo-title-description-color': '#2d2d2db3',
-    '--theme-utxo-bar-color': '#e6e6e680',
+    '--theme-utxo-bar-color': 'rgba(45, 45, 45, 0.4)',
     '--theme-utxo-label-text-color': '#2d2d2d73',
     '--theme-utxo-tick-text-color': '#2d2d2d73',
-    '--theme-utxo-cursor-background-color': '#ffffff33',
+    '--theme-utxo-cursor-background-color': 'rgba(41, 181, 149, 0.2)',
     '--theme-utxo-tooltip-background-color': '#aeaeae',
     '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-utxo-tooltip-text-color': '#fafbfc',
