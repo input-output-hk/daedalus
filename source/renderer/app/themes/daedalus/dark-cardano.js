@@ -605,7 +605,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
   },
   staking: {
     '--theme-staking-content-background-color': '#1e1f31',
-    '--theme-staking-content-border-color': 'rgba(255, 255, 255, 0.2)',
+    '--theme-staking-content-border-color': '#1e1f31',
     '--theme-staking-font-color-accent': 'rgba(255, 255, 255, 0.4)',
     '--theme-staking-font-color-regular': '#ffffff',
     '--theme-staking-font-color-light': '#ffffffb3',
