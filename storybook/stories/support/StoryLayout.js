@@ -3,6 +3,7 @@ import React, { Component, Children } from 'react';
 import type { Node } from 'react';
 import { observable, runInAction } from 'mobx';
 import { observer, inject } from 'mobx-react';
+import { get } from 'lodash';
 import { action } from '@storybook/addon-actions';
 
 // Assets and helpers
@@ -109,8 +110,8 @@ export default class StoryLayout extends Component<Props> {
       title: wallet.name,
       info: `${wallet.amount} ADA`,
       isConnected: true,
-      isRestoreActive: false,
-      restoreProgress: 0,
+      isRestoreActive: get(wallet, 'syncState.tag', 'synced') === 'restoring',
+      restoreProgress: get(wallet, 'syncState.data.percentage', 0),
       isLegacy: wallet.isLegacy,
     }));
 

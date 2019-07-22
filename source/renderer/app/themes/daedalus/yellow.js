@@ -265,9 +265,8 @@ export const YELLOW_THEME_CONFIG = {
   dataMigration: {
     '--theme-data-migration-layer-background-color': '#fdcd68',
     '--theme-data-migration-layer-box-shadow-color': '#fdcd68',
-    '--theme-data-migration-layer-button-background-color-hover': '#f8f3ed',
-    '--theme-data-migration-layer-text-color': '#fafbfc',
-    '--theme-data-migration-layer-text-opacity-color': '#fafbfc',
+    '--theme-data-migration-layer-button-background-color-hover': '#2d2d2d',
+    '--theme-data-migration-layer-text-color': '#2d2d2d',
   },
   delegationSetupWizard: {
     '--theme-delegation-steps-activation-steps-indicator-color': '#2d2d2d',
@@ -469,12 +468,14 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-node-sync-info-message-background-color': '#f8f3ed',
     '--theme-node-sync-info-message-text-color': '#2d2d2d',
     '--theme-node-sync-icon-color': '#2d2d2d',
-    '--theme-node-update-accept-button-background-color': '#fdcd68',
-    '--theme-node-update-accept-button-background-color-hover': '#fdd786',
-    '--theme-node-update-accept-button-background-color-active': '#eea70e',
-    '--theme-node-update-deny-button-background-color': '#fdcd68',
-    '--theme-node-update-deny-button-background-color-hover': '#fdd786',
-    '--theme-node-update-deny-button-background-color-active': '#eea70e',
+    '--theme-node-update-accept-button-background-color': '#424242',
+    '--theme-node-update-accept-button-background-color-hover': '#2d2d2d',
+    '--theme-node-update-accept-button-background-color-active': '#222222',
+    '--theme-node-update-deny-button-background-color': 'rgba(45, 45, 45, 0.4)',
+    '--theme-node-update-deny-button-background-color-hover':
+      'rgba(45, 45, 45, 0.6)',
+    '--theme-node-update-deny-button-background-color-active':
+      'rgba(45, 45, 45, 0.8)',
     '--theme-node-update-button-text-color': '#fafbfc',
   },
   notification: {

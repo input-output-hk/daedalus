@@ -47,8 +47,9 @@
   }
 }
 .content3 {
-  color: var(--theme-data-migration-layer-text-opacity-color);
+  color: var(--theme-data-migration-layer-text-color);
   margin-bottom: 30px;
+  opacity: 0.5;
 }
 
 .submitButton {
