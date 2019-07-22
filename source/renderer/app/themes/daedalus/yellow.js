@@ -508,8 +508,8 @@ export const YELLOW_THEME_CONFIG = {
       'rgba(45, 45, 45, 0.07)',
   },
   progressBar: {
-    '--theme-progress-bar-background-color': '#f1eee64d',
-    '--theme-progress-bar-foreground-color': '#f1eee6b3',
+    '--theme-progress-bar-background-color': 'rgba(45, 45, 45, 0.3)',
+    '--theme-progress-bar-foreground-color': 'rgba(45, 45, 45, 0.7)',
   },
   receiveQRCode: {
     '--theme-receive-qr-code-background-color': 'transparent',
