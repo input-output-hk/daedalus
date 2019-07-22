@@ -435,8 +435,8 @@ export const DARK_CARDANO_THEME_CONFIG = {
   },
   navDropdown: {
     '--theme-nav-dropdown-item-text-color': '#ffffff',
-    '--theme-nav-dropdown-item-background-color': '#a0a1a8',
-    '--theme-nav-dropdown-item-background-color-hover': '#12132612',
+    '--theme-nav-dropdown-item-background-color': '#36374d',
+    '--theme-nav-dropdown-item-background-color-hover': 'rgba(233, 244, 254, 0.07)',
     '--theme-nav-dropdown-item-color-hover': '#ffffff',
   },
   navItem: {
