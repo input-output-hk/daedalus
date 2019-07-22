@@ -18,6 +18,8 @@ import type { SidebarWalletType } from '../../../source/renderer/app/types/sideb
 import TopBar from '../../../source/renderer/app/components/layout/TopBar';
 import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
 import SidebarLayout from '../../../source/renderer/app/components/layout/SidebarLayout';
+import menuIconOpened from '../../../source/renderer/app/assets/images/menu-opened-ic.inline.svg';
+import menuIconClosed from '../../../source/renderer/app/assets/images/menu-ic.inline.svg';
 
 export type StoriesProps = {
   wallets: Array<Wallet>,
@@ -87,7 +89,7 @@ export default class StoryLayout extends Component<Props> {
           topbar={this.getTopbar(
             activeSidebarCategory,
             activeWallet,
-            activeNavItem
+            activeNavItem,
           )}
         >
           {Children.map(children, child =>
@@ -174,6 +176,7 @@ export default class StoryLayout extends Component<Props> {
       }
       showSubMenuToggle
       showSubMenus={this.isShowingSubMenus}
+      leftIcon={this.isShowingSubMenus ? menuIconOpened : menuIconClosed}
     >
       <NodeSyncStatusIcon
         networkStatus={{

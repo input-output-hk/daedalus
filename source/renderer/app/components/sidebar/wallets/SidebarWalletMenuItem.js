@@ -45,7 +45,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
         <span className={styles.meta}>
           <span className={styles.title}>{title}</span>
           <span className={styles.info}>{info}</span>
-          {isRestoreActive ? <ProgressBar progress={restoreProgress} /> : null}
+          {!isRestoreActive ? <ProgressBar progress={50} /> : null}
           {isLegacy && <LegacyBadge mode={LEGACY_BADGE_MODES.FLOATING} />}
         </span>
       </button>
