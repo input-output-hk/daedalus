@@ -267,6 +267,8 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-data-migration-layer-button-background-color-hover': '#ffffff',
     '--theme-data-migration-layer-text-color': '#ffffff',
     '--theme-data-migration-layer-text-opacity-color': '#000000',
+    '--theme-data-migration-button-border-color': '#ffffff',
+    '--theme-data-migration-button-label-color': '#ffffff',
   },
   delegationSetupWizard: {
     '--theme-delegation-steps-activation-steps-indicator-color': '#ffffff',

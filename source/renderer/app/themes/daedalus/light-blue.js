@@ -135,6 +135,8 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-data-migration-layer-button-background-color-hover': '#fafbfc',
     '--theme-data-migration-layer-text-color': '#fafbfc',
     '--theme-data-migration-layer-text-opacity-color': '#fafbfc',
+    '--theme-data-migration-button-border-color': '#fafbfc',
+    '--theme-data-migration-button-label-color': '#fafbfc',
   },
   delegationSetupWizard: {
     '--theme-delegation-steps-activation-steps-indicator-color': '#5e6066',
@@ -248,7 +250,7 @@ export const LIGHT_BLUE_THEME_CONFIG = {
       '#5e6066',
     '--theme-icon-add-wallet-dialog-big-button-color': '#8a98ab',
     '--theme-icon-back-button-color': '#5e6066',
-    '--theme-icon-close-button-color': '#fafbfc',
+    '--theme-icon-close-button-color': '#5e6066',
     '--theme-icon-connecting-logo-color': '#fafbfc',
     '--theme-icon-copy-address-color': '#5e6066',
     '--theme-icon-delegation-center-no-wallets': '#5e6066',
