@@ -40,7 +40,8 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-ada-redemption-no-wallets-instructions-color': '#e9f4fe',
     '--theme-ada-redemption-disclaimer-button-border-color': '#a8adb5',
     '--theme-ada-redemption-success-overlay-close-button-color': '#fff',
-    '--theme-ada-redemption-success-overlay-close-button-background-color-hover': 'rgba(0, 0, 0, 0.07)',
+    '--theme-ada-redemption-success-overlay-close-button-background-color-hover':
+      'rgba(0, 0, 0, 0.07)',
   },
   blockConsolidation: {
     '--theme-block-consolidation-background-color': 'rgba(38, 51, 69, 0.96)',

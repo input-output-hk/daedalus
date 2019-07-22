@@ -170,7 +170,8 @@ export const WHITE_THEME_CONFIG = {
     '--theme-ada-redemption-no-wallets-instructions-color': '#2d2d2d',
     '--theme-ada-redemption-disclaimer-button-border-color': '#fdfdfd',
     '--theme-ada-redemption-success-overlay-close-button-color': '#2d2d2d',
-    '--theme-ada-redemption-success-overlay-close-button-background-color-hover': 'rgba(41, 181, 149, 0.07)',
+    '--theme-ada-redemption-success-overlay-close-button-background-color-hover':
+      'rgba(41, 181, 149, 0.07)',
   },
   blockConsolidation: {
     '--theme-block-consolidation-background-color': '#ffffff',
@@ -584,8 +585,7 @@ export const WHITE_THEME_CONFIG = {
     '--theme-staking-stake-pool-tooltip-table-title-color': '#2d2d2d',
     '--theme-staking-stake-pool-tooltip-table-param-color': '#2d2d2d',
     '--theme-staking-stake-pool-tooltip-retirement-text-color': '#fafbfc',
-    '--theme-staking-stake-pool-tooltip-retirement-background-color':
-      '#ea4c5b',
+    '--theme-staking-stake-pool-tooltip-retirement-background-color': '#ea4c5b',
     '--theme-staking-stake-pool-tooltip-delegate-button-background-color':
       '#29b595',
     '--theme-staking-stake-pool-tooltip-delegate-button-hover-background-color':
@@ -623,7 +623,8 @@ export const WHITE_THEME_CONFIG = {
     '--theme-staking-wallet-row-border-color': 'rgba(45, 45, 45, 0.1)',
     '--theme-staking-dropdown-item-text-color-hover': '#2d2d2d',
     '--theme-staking-dropdown-item-background-color': '#fdfdfd',
-    '--theme-staking-dropdown-item-background-color-hover': 'rgba(94, 96, 102, 0.07)',
+    '--theme-staking-dropdown-item-background-color-hover':
+      'rgba(94, 96, 102, 0.07)',
     '--theme-staking-delegation-center-gear-icon-fill-color': '#2d2d2d80',
     '--theme-staking-delegation-center-gear-icon-fill-color-active': '#2d2d2d',
     '--theme-staking-delegation-center-no-wallets-instructions-color':
