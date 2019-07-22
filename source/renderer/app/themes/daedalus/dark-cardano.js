@@ -442,7 +442,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
   navItem: {
     '--theme-nav-item-background-color': '#2a2b3c',
     '--theme-nav-item-background-color-active': 'rgba(255, 255, 255, 0.1)',
-    '--theme-nav-item-background-color-hover': 'rgba(31, 193, 195, 0.1)',
+    '--theme-nav-item-background-color-hover': '#afafb833',
     '--theme-nav-item-text-color': 'rgba(255, 255, 255, 0.6)',
     '--theme-nav-item-text-color-active': '#ffffff',
   },
