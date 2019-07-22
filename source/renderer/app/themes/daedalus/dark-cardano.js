@@ -549,7 +549,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-sidebar-category-background-color-active': '#2b2c3e',
     '--theme-sidebar-category-text-color': '#ffffff',
     '--theme-sidebar-menu-background-color': '#2b2c3e',
-    '--theme-sidebar-menu-item-background-color-hover': '#20212e',
+    '--theme-sidebar-menu-item-background-color-hover': 'rgba(32, 33, 46, 0.5)',
     '--theme-sidebar-menu-item-background-color-active': '#20212e',
     '--theme-sidebar-menu-item-wallet-name-color': '#ffffff',
     '--theme-sidebar-menu-item-wallet-info-color': '#ffffff',
