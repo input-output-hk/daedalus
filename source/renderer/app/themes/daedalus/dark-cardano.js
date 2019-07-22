@@ -167,6 +167,8 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-ada-redemption-disclaimer-checkbox-label-color': '#fafbfc',
     '--theme-ada-redemption-no-wallets-instructions-color': '#ffffff',
     '--theme-ada-redemption-disclaimer-button-border-color': '#a0a1a8',
+    '--theme-ada-redemption-success-overlay-close-button-color': '#fafbfc',
+    '--theme-ada-redemption-success-overlay-close-button-background-color-hover': 'rgba(0, 0, 0, 0.07)',
   },
   blockConsolidation: {
     '--theme-block-consolidation-background-color': 'rgba(42, 43, 60, 0.96)',

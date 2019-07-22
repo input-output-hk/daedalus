@@ -39,6 +39,8 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-ada-redemption-disclaimer-checkbox-label-color': '#fafbfc',
     '--theme-ada-redemption-no-wallets-instructions-color': '#5e6066',
     '--theme-ada-redemption-disclaimer-button-border-color': '#f9f9f9',
+    '--theme-ada-redemption-success-overlay-close-button-color': '#fff',
+    '--theme-ada-redemption-success-overlay-close-button-background-color-hover': 'rgba(0, 0, 0, 0.07)',
   },
   blockConsolidation: {
     '--theme-block-consolidation-background-color': 'rgba(32, 34, 37, 0.96)',

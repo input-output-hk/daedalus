@@ -171,6 +171,8 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-ada-redemption-disclaimer-checkbox-label-color': '#fafbfc',
     '--theme-ada-redemption-no-wallets-instructions-color': '#2d2d2d',
     '--theme-ada-redemption-disclaimer-button-border-color': '#f8f7f3',
+    '--theme-ada-redemption-success-overlay-close-button-color': '#2d2d2d',
+    '--theme-ada-redemption-success-overlay-close-button-background-color-hover': 'rgba(45, 45, 45, 0.07)',
   },
   blockConsolidation: {
     '--theme-block-consolidation-background-color': 'rgba(255, 185, 35, 0.96)',
