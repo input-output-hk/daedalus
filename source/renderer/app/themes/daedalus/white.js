@@ -101,7 +101,6 @@ export const WHITE_THEME_CONFIG = {
   },
   rpStepper: {
     '--rp-stepper-bullet-background-color-disabled': '#fff',
-    '--rp-stepper-bullet-border-color': '#29b5951a',
     '--rp-stepper-bullet-border-color': 'rgba(45, 45, 45, 0.1)',
     '--rpstepper-bullet-height': '12px',
     '--rpstepper-bullet-width': '12px',

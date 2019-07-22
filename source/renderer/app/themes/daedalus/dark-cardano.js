@@ -475,8 +475,10 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-node-update-accept-button-background-color-hover': '#5e5f71',
     '--theme-node-update-accept-button-background-color-active': '#262736',
     '--theme-node-update-deny-button-background-color': 'rgba(54, 55, 77, 0.3)',
-    '--theme-node-update-deny-button-background-color-hover': 'rgba(94, 95, 113, 0.3)',
-    '--theme-node-update-deny-button-background-color-active': 'rgba(38, 39, 54, 0.3)',
+    '--theme-node-update-deny-button-background-color-hover':
+      'rgba(94, 95, 113, 0.3)',
+    '--theme-node-update-deny-button-background-color-active':
+      'rgba(38, 39, 54, 0.3)',
     '--theme-node-update-button-text-color': '#ffffff',
   },
   notification: {
@@ -520,10 +522,12 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-report-issue-button-background-color': '#1fc1c3',
     '--theme-report-issue-button-background-color-hover': '#26e7eb',
     '--theme-report-issue-button-background-color-active': '#1cabad',
-    '--theme-report-issue-connecting-background-color': 'rgba(255, 255, 255, 0.05)',
+    '--theme-report-issue-connecting-background-color':
+      'rgba(255, 255, 255, 0.05)',
     '--theme-report-issue-icon-color': '#121326',
     '--theme-report-issue-connecting-text-color': '#ffffff',
-    '--theme-report-issue-syncing-background-color': 'rgba(255, 255, 255, 0.05)',
+    '--theme-report-issue-syncing-background-color':
+      'rgba(255, 255, 255, 0.05)',
     '--theme-report-issue-syncing-text-color': '#ffffff',
     '--theme-report-issue-syncing-download-logs-text-color': '#ffffff',
     '--theme-report-issue-syncing-download-logs-text-color-connecting':
@@ -575,7 +579,8 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-staking-stake-pool-selected-slug-color': '#ffffff',
     '--theme-staking-stake-pool-slug-color': '#ffffff',
     '--theme-staking-stake-pool-retirement-background-color': '#ea4c5b',
-    '--theme-staking-stake-pool-tooltip-background-color': 'rgba(42, 43, 60, 0.98)',
+    '--theme-staking-stake-pool-tooltip-background-color':
+      'rgba(42, 43, 60, 0.98)',
     '--theme-staking-stake-pool-tooltip-border-color':
       'rgba(255, 255, 255, 0.2)',
     '--theme-staking-stake-pool-tooltip-shadow-color': 'rgba(0, 0, 0, 0.25)',
@@ -584,8 +589,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-staking-stake-pool-tooltip-table-title-color': '#ffffff',
     '--theme-staking-stake-pool-tooltip-table-param-color': '#ffffff',
     '--theme-staking-stake-pool-tooltip-retirement-text-color': '#fafbfc',
-    '--theme-staking-stake-pool-tooltip-retirement-background-color':
-      '#ea4c5b',
+    '--theme-staking-stake-pool-tooltip-retirement-background-color': '#ea4c5b',
     '--theme-staking-stake-pool-tooltip-delegate-button-background-color':
       '#36374d',
     '--theme-staking-stake-pool-tooltip-delegate-button-hover-background-color':
@@ -610,7 +614,8 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-staking-table-border-color': 'rgba(255, 255, 255, 0.2)',
     '--theme-staking-link-color': '#1fc1c3',
     '--theme-staking-link-color-light': 'rgba(31, 193, 195, 0.5)',
-    '--theme-staking-progress-bar-background-color': 'rgba(255, 255, 255, 0.07)',
+    '--theme-staking-progress-bar-background-color':
+      'rgba(255, 255, 255, 0.07)',
     '--theme-staking-progress-stripe-dark-1-background-color': '#313245',
     '--theme-staking-progress-stripe-dark-2-background-color': '#1fc1c3',
     '--theme-staking-table-body-highlighted-text-color': '#313245',
