@@ -62,7 +62,7 @@ export const YELLOW_THEME_CONFIG = {
   },
   rpInput: {
     '--rp-input-bg-color': '#ffffff',
-    '--rp-input-bg-color-disabled': 'rgba(45, 45, 45, 0.07)',
+    '--rp-input-bg-color-disabled': 'rgba(94, 96, 102, 0.05)',
     '--rp-input-border-color': 'rgba(45, 45, 45, 0.2)',
     '--rp-input-border-color-disabled': '#e1dac680',
     '--rp-input-border-color-errored': '#ea4c5b',
@@ -267,6 +267,8 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-data-migration-layer-box-shadow-color': '#fdcd68',
     '--theme-data-migration-layer-button-background-color-hover': '#2d2d2d',
     '--theme-data-migration-layer-text-color': '#2d2d2d',
+    '--theme-data-migration-button-border-color': '#2d2d2d',
+    '--theme-data-migration-button-label-color': '#2d2d2d',
   },
   delegationSetupWizard: {
     '--theme-delegation-steps-activation-steps-indicator-color': '#2d2d2d',
