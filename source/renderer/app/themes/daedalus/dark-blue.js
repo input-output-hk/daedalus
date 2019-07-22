@@ -702,8 +702,9 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-transactions-icon-type-failed-background-color':
       'rgba(234, 76, 91, 0.5)',
     '--theme-transactions-arrow-stroke-color': '#e9f4fe',
-    '--theme-transactions-state-failed-text-color': '#fafbfccc',
-    '--theme-transactions-state-failed-text-secondary-color': '#e9f4fecc',
+    '--theme-transactions-state-failed-text-color': 'rgba(233, 244, 254, 0.4)',
+    '--theme-transactions-state-failed-text-secondary-color':
+      'rgba(250, 251, 252, 0.8)',
   },
   uploader: {
     '--theme-uploader-text-color': '#e9f4fe',

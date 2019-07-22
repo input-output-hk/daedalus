@@ -679,7 +679,8 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-transactions-list-border-color': '#c6cdd6',
     '--theme-transactions-list-group-date-color': '#5e6066',
     '--theme-transactions-list-item-details-color': '#5e6066',
-    '--theme-transactions-state-failed-background-color': '#bdc5ce',
+    '--theme-transactions-state-failed-background-color':
+      'rgba(189, 197, 206, 0.8)',
     '--theme-transactions-state-pending-background-color': '#bdc5ce',
     '--theme-transactions-state-pending-stripes-color': '#b2bac2',
     '--theme-transactions-priority-color': '#fafbfc',
@@ -692,8 +693,8 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-transactions-icon-type-exchange-background-color': '#10aca4',
     '--theme-transactions-icon-type-failed-background-color': '#ea4c5b',
     '--theme-transactions-arrow-stroke-color': '#243e62',
-    '--theme-transactions-state-failed-text-color': 'rgba(94, 96, 102, 0.8)',
-    '--theme-transactions-state-failed-text-secondary-color': '#fafbfccc',
+    '--theme-transactions-state-failed-text-color': 'rgba(94, 96, 102, 0.4)',
+    '--theme-transactions-state-failed-text-secondary-color': '#fafbfc',
   },
   uploader: {
     '--theme-uploader-text-color': '#5e6066',

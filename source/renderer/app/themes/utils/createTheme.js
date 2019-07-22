@@ -1045,6 +1045,9 @@ export const createDaedalusComponentsTheme = (
         error.light
       }`,
       '--theme-transactions-arrow-stroke-color': `${text.primary}`,
+      '--theme-transactions-state-failed-text-secondary-color': `${chroma(
+        text.secondary
+      ).alpha(0.8)}`,
     },
     uploader: {
       '--theme-uploader-text-color': `${text.primary}`,
