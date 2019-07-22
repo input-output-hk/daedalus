@@ -80,7 +80,7 @@ yarn2nix.mkYarnPackage {
     export ELECTRON_CACHE=${electron-cache}
     mkdir home
     export HOME=$(realpath home)
-    yarn --offline package --win64 --icon installers/icons/${cluster}/128x128
+    yarn --offline package --win64 --icon installers/icons/${cluster}/${cluster}
     ls -ltrh release/win32-x64/Daedalus-win32-x64/
     cp -r release/win32-x64/Daedalus-win32-x64 $out
     pushd $out/resources/app/dist
