@@ -172,7 +172,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
       'rgba(0, 0, 0, 0.07)',
   },
   blockConsolidation: {
-    '--theme-block-consolidation-background-color': 'rgba(42, 43, 60, 0.96)',
+    '--theme-block-consolidation-background-color': '#36374df5',
     '--theme-block-consolidation-title-text-color': '#fafbfc',
     '--theme-block-consolidation-text-color': 'rgba(250, 251, 252, 0.7)',
     '--theme-block-consolidation-text-highlight-color':
@@ -453,7 +453,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
   network: {
     '--theme-network-window-background-color': '#36374df5',
     '--theme-network-window-text-color': '#ffffff',
-    '--theme-network-window-icon-close-hover-background': '#313245',
+    '--theme-network-window-icon-close-hover-background': 'rgba(0, 0, 0, 0.16)',
     '--theme-network-window-red-color': '#f06e05',
     '--theme-network-window-green-color': '#05f079',
     '--theme-network-window-white-color': '#ffffff',
