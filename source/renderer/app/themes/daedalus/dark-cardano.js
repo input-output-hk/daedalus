@@ -81,7 +81,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
   },
   rpOptions: {
     '--rp-option-bg-color': '#1e1f31',
-    '--rp-option-bg-color-highlighted': 'rgba(255, 255, 255, 0.1)',
+    '--rp-option-bg-color-highlighted': '#343646',
     '--rp-option-border-color': 'rgba(255, 255, 255, 0.1)',
     '--rp-option-checkmark-color': 'rgba(255, 255, 255, 0.7)',
     '--rp-option-line-height': '22px',
