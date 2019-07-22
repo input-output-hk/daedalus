@@ -265,9 +265,8 @@ export const YELLOW_THEME_CONFIG = {
   dataMigration: {
     '--theme-data-migration-layer-background-color': '#fdcd68',
     '--theme-data-migration-layer-box-shadow-color': '#fdcd68',
-    '--theme-data-migration-layer-button-background-color-hover': '#f8f3ed',
-    '--theme-data-migration-layer-text-color': '#fafbfc',
-    '--theme-data-migration-layer-text-opacity-color': '#fafbfc',
+    '--theme-data-migration-layer-button-background-color-hover': '#2d2d2d',
+    '--theme-data-migration-layer-text-color': '#2d2d2d',
   },
   delegationSetupWizard: {
     '--theme-delegation-steps-activation-steps-indicator-color': '#2d2d2d',

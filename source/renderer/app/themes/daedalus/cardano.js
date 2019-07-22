@@ -135,8 +135,6 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-data-migration-layer-box-shadow-color': 'rgba(0, 0, 0, 0.25)',
     '--theme-data-migration-layer-button-background-color-hover': '#fafbfc',
     '--theme-data-migration-layer-text-color': '#fafbfc',
-    '--theme-data-migration-layer-text-opacity-color':
-      'rgba(250, 251, 252, 0.5)',
   },
   delegationSetupWizard: {
     '--theme-delegation-steps-activation-steps-indicator-color': '#5e6066',
