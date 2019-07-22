@@ -616,8 +616,8 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-staking-link-color-light': 'rgba(31, 193, 195, 0.5)',
     '--theme-staking-progress-bar-background-color':
       'rgba(255, 255, 255, 0.07)',
-    '--theme-staking-progress-stripe-dark-1-background-color': '#313245',
-    '--theme-staking-progress-stripe-dark-2-background-color': '#1fc1c3',
+    '--theme-staking-progress-stripe-dark-1-background-color': '#1fc1c3',
+    '--theme-staking-progress-stripe-dark-2-background-color': '#0da2a4',
     '--theme-staking-table-body-highlighted-text-color': '#313245',
     '--theme-staking-info-learn-more-button-text-color': 'rgba(18, 19, 38, 1)',
     '--theme-staking-info-learn-more-icon-color': 'rgba(18, 19, 38, 1)',
