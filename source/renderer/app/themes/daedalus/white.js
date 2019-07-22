@@ -154,12 +154,12 @@ export const WHITE_THEME_CONFIG = {
     '--theme-ada-redemption-headline-color': '#2d2d2d',
     '--theme-ada-redemption-instructions-color': '#2d2d2d',
     '--theme-ada-redemption-success-overlay-background-color': '#ffffff',
-    '--theme-ada-redemption-success-overlay-border-color': '#fafbfc',
-    '--theme-ada-redemption-success-overlay-message-color': '#fafbfc',
-    '--theme-ada-redemption-success-overlay-button-text-color': '#fafbfc',
+    '--theme-ada-redemption-success-overlay-border-color': '#424242',
+    '--theme-ada-redemption-success-overlay-message-color': '#424242',
+    '--theme-ada-redemption-success-overlay-button-text-color': '#424242',
     '--theme-ada-redemption-success-overlay-button-text-color-hover': '#ffffff',
     '--theme-ada-redemption-success-overlay-button-background-color-hover':
-      '#ffffff',
+      '#424242',
     '--theme-ada-redemption-disclaimer-background-color':
       'rgba(171, 23, 0, 0.94)',
     '--theme-ada-redemption-disclaimer-text-color': '#fafbfc',

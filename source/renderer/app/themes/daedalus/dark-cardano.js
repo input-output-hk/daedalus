@@ -157,7 +157,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-ada-redemption-success-overlay-button-text-color': '#ffffff',
     '--theme-ada-redemption-success-overlay-button-text-color-hover': '#36374d',
     '--theme-ada-redemption-success-overlay-button-background-color-hover':
-      '#5e5f71',
+      '#ffffff',
     '--theme-ada-redemption-disclaimer-background-color':
       'rgba(171, 23, 0, 0.94)',
     '--theme-ada-redemption-disclaimer-text-color': '#ffffff',
