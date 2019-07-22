@@ -273,6 +273,12 @@ export const createDaedalusComponentsTheme = (
       '--theme-ada-redemption-disclaimer-button-border-color': `${
         background.primary.lightest
       }`,
+      '--theme-ada-redemption-success-overlay-close-button-color': `${
+        background.primary.lightest
+      }`,
+      '--theme-ada-redemption-success-overlay-close-button-background-color-hover': `${
+        background.secondary.dark
+      }`,
     },
     blockConsolidation: {
       '--theme-block-consolidation-background-color': `${
@@ -413,6 +419,8 @@ export const createDaedalusComponentsTheme = (
         background.primary.regular
       }`,
       '--theme-data-migration-layer-text-color': `${text.secondary}`,
+      '--theme-data-migration-button-border-color': `${text.secondary}`,
+      '--theme-data-migration-button-label-color': `${text.secondary}`,
     },
     delegationSetupWizard: {
       '--theme-delegation-steps-activation-steps-indicator-color': `${
@@ -1016,12 +1024,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-transactions-state-failed-background-color': `${
         background.primary.dark
       }`,
-      '--theme-transactions-state-failed-text-color': `${chroma(
-        text.secondary
-      ).alpha(0.8)}`,
-      '--theme-transactions-state-failed-text-secondary-color': `${chroma(
-        text.primary
-      ).alpha(0.8)}`,
+      '--theme-transactions-state-failed-text-color': `${text.primary}`,
       '--theme-transactions-state-pending-background-color': `${
         background.primary.dark
       }`,
