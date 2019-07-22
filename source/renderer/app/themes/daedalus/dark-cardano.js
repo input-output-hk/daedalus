@@ -411,7 +411,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-loading-status-icons-off-color': '#ea4c5b',
     '--theme-loading-status-icons-unloaded-loading-color': '#ffffff',
     '--theme-loading-status-icons-unloaded-syncing-color': '#ffffff',
-    '--theme-loading-status-icons-tooltip-color': '#424358',
+    '--theme-loading-status-icons-tooltip-color': '#56576b',
     '--theme-loading-spinner-color': '#ffffff',
   },
   manualUpdate: {
