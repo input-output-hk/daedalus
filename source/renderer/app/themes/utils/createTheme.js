@@ -1017,7 +1017,12 @@ export const createDaedalusComponentsTheme = (
       '--theme-transactions-state-failed-background-color': `${
         background.primary.dark
       }`,
-      '--theme-transactions-state-failed-text-color': `${text.primary}`,
+      '--theme-transactions-state-failed-text-color': `${chroma(
+        text.secondary
+      ).alpha(0.8)}`,
+      '--theme-transactions-state-failed-text-secondary-color': `${chroma(
+        text.primary
+      ).alpha(0.8)}`,
       '--theme-transactions-state-pending-background-color': `${
         background.primary.dark
       }`,

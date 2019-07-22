@@ -267,6 +267,7 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-data-migration-layer-box-shadow-color': '#fdcd68',
     '--theme-data-migration-layer-button-background-color-hover': '#2d2d2d',
     '--theme-data-migration-layer-text-color': '#2d2d2d',
+    '--theme-data-migration-layer-text-opacity-color': '#fafbfc',
   },
   delegationSetupWizard: {
     '--theme-delegation-steps-activation-steps-indicator-color': '#2d2d2d',
@@ -669,7 +670,6 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-transactions-list-group-date-color': '#2d2d2d',
     '--theme-transactions-list-item-details-color': '#2d2d2d',
     '--theme-transactions-state-failed-background-color': '#d6d3ca',
-    '--theme-transactions-state-failed-text-color': '#2d2d2d',
     '--theme-transactions-state-pending-background-color': '#d6d3ca',
     '--theme-transactions-state-pending-stripes-color': '#bebbb3',
     '--theme-transactions-priority-color': '#f8f3ed',
@@ -682,6 +682,8 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-transactions-icon-type-exchange-background-color': '#10aca4',
     '--theme-transactions-icon-type-failed-background-color': '#ee707c',
     '--theme-transactions-arrow-stroke-color': '#2d2d2d',
+    '--theme-transactions-state-failed-text-color': 'rgba(94, 96, 102, 0.8)',
+    '--theme-transactions-state-failed-text-secondary-color': '#fafbfccc',
   },
   uploader: {
     '--theme-uploader-text-color': '#2d2d2d',
