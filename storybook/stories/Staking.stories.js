@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, date, number, radios } from '@storybook/addon-knobs';
+import { withKnobs, date, number } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import { action } from '@storybook/addon-actions';
 import StoryLayout from './support/StoryLayout';
@@ -71,12 +71,6 @@ const WALLETS = [
   },
 ];
 
-const themes = {
-  'Light Blue': 'light-blue',
-  Cardano: 'cardano',
-  'Dark Blue': 'dark-blue',
-};
-
 const locales = {
   English: 'en-US',
   Japanese: 'ja-JP',
@@ -84,6 +78,7 @@ const locales = {
 
 // Delegation steps labels are translated outside components and we need to determine correct translations
 const locale = localStorage.getItem('currentLocale') || 'English';
+const currentTheme = localStorage.getItem('currentTheme') || 'light-blue';
 const translationIndex = locales[locale];
 
 // @TODO - improve locales GET once [DDW-711](https://github.com/input-output-hk/daedalus/pull/1426) is merged
@@ -244,7 +239,7 @@ storiesOf('Staking', module)
         STAKE_POOLS[36],
       ]}
       onOpenExternalLink={() => {}}
-      currentTheme={radios('Theme (Only for tooltip colors)', themes)}
+      currentTheme={currentTheme}
       onClose={action('onClose')}
       onBack={action('onBack')}
       onSelectPool={action('onSelectPool')}
