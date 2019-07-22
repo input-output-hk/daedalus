@@ -90,7 +90,7 @@ export default class StoryLayout extends Component<Props> {
           topbar={this.getTopbar(
             activeSidebarCategory,
             activeWallet,
-            activeNavItem,
+            activeNavItem
           )}
         >
           {Children.map(children, child =>
