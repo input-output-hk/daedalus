@@ -19,7 +19,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--rp-bubble-bg-color': '#1e1f31',
     '--rp-bubble-border-color': 'rgba(255, 255, 255, 0.2)',
     '--rp-bubble-border-radius': '2px',
-    '--rp-bubble-arrow-bg-color': '#121326',
+    '--rp-bubble-arrow-bg-color': '#343646',
   },
   rpButton: {
     '--rp-button-bg-color': '#1fc1c3',
