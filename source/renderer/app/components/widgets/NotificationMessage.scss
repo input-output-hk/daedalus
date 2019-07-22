@@ -13,6 +13,15 @@
 
   &.theme-override-grey {
     background-color: rgba(94, 96, 102, 0.95);
+
+    .closeButton svg polygon,
+    .icon svg g path:nth-child(2) {
+      fill: var(--rp-tooltip-text-color);
+    }
+
+    .message {
+      color: var(--rp-tooltip-text-color);
+    }
   }
 }
 
@@ -37,6 +46,11 @@
   & > svg {
     height: 44px;
     width: 44px;
+    g {
+      path:nth-child(2) {
+        fill: var(--theme-notification-message-checkmark-icon-color);
+      }
+    }
   }
 }
 
@@ -64,7 +78,7 @@
     width: 11px;
     height: 11px;
     polygon {
-      fill: #fff;
+      fill: var(--theme-notification-message-close-icon-color);
     }
   }
 }

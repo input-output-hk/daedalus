@@ -21,10 +21,11 @@ export default class MainLayout extends Component<InjectedContainerProps> {
 
   render() {
     const { actions, stores } = this.props;
-    const { nodeUpdate, sidebar, wallets } = stores;
+    const { nodeUpdate, sidebar, wallets, profile } = stores;
     const { isUpdateAvailable, isUpdatePostponed } = nodeUpdate;
     const activeWallet = wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
+    const { currentTheme } = profile;
 
     const sidebarMenus =
       sidebar.wallets.length > 0
@@ -59,6 +60,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
           actions.router.goToRoute.trigger({ route: ROUTES.SETTINGS.SUPPORT })
         }
         pathname={this.props.stores.router.location.pathname}
+        currentTheme={currentTheme}
       />
     );
 
