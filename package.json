@@ -33,7 +33,6 @@
     "clear:cache": "gulp clear:cache",
     "nix:dev": "nix-shell --arg autoStartBackend true --arg allowFaultInjection true --arg systemStart",
     "nix:staging": "nix-shell --arg autoStartBackend true --argstr cluster staging",
-    "frontend": "node utils/frontend-only-launcher/index.js",
     "v2-api-importer": "node utils/v2-api-importer/index.js"
   },
   "bin": {
