@@ -90,6 +90,15 @@ export class StakePoolsSearch extends Component<Props> {
     }
   };
 
+  get hasSearchClearButton() {
+    return this.props.search.length > 0;
+  }
+
+  get hasFilters() {
+    const { filters, onFilterChange } = this.props;
+    return !!filters && !!onFilterChange;
+  }
+
   render() {
     const { intl } = this.context;
     const {
@@ -138,45 +147,49 @@ export class StakePoolsSearch extends Component<Props> {
             maxLength={150}
             onFocus={this.autoSelectOnFocus}
           />
-          {search.length > 0 && (
-            <Tooltip
-              skin={TooltipSkin}
-              tip="Clear"
-              className={clearSearchStyles}
-              isOpeningUpward={!isClearTooltipOpeningDownward}
-            >
-              <button onClick={onClearSearch}>
-                <SVGInline svg={closeIcon} />
-              </button>
-            </Tooltip>
-          )}
-          {!!filters && !!onFilterChange && (
-            <ul className={styles.searchFilter}>
-              <li>
-                <button
-                  onClick={filterAll}
-                  className={this.getFilterItemClassName('all')}
+          {(this.hasSearchClearButton || this.hasFilters) && (
+            <div className={styles.inputExtras}>
+              {this.hasSearchClearButton && (
+                <Tooltip
+                  skin={TooltipSkin}
+                  tip="Clear"
+                  className={clearSearchStyles}
+                  isOpeningUpward={!isClearTooltipOpeningDownward}
                 >
-                  {intl.formatMessage(messages.filterAll)}
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={filterNew}
-                  className={this.getFilterItemClassName('new')}
-                >
-                  {intl.formatMessage(messages.filterNew)}
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={filterCharity}
-                  className={this.getFilterItemClassName('charity')}
-                >
-                  {intl.formatMessage(messages.filterCharity)}
-                </button>
-              </li>
-            </ul>
+                  <button onClick={onClearSearch}>
+                    <SVGInline svg={closeIcon} />
+                  </button>
+                </Tooltip>
+              )}
+              {this.hasFilters && (
+                <ul className={styles.searchFilter}>
+                  <li>
+                    <button
+                      onClick={filterAll}
+                      className={this.getFilterItemClassName('all')}
+                    >
+                      {intl.formatMessage(messages.filterAll)}
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={filterNew}
+                      className={this.getFilterItemClassName('new')}
+                    >
+                      {intl.formatMessage(messages.filterNew)}
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={filterCharity}
+                      className={this.getFilterItemClassName('charity')}
+                    >
+                      {intl.formatMessage(messages.filterCharity)}
+                    </button>
+                  </li>
+                </ul>
+              )}
+            </div>
           )}
         </div>
       </div>

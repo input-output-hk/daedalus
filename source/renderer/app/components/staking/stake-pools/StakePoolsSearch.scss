@@ -26,22 +26,22 @@
   input {
     border-radius: 4px;
     height: 50px;
-    padding-left: 55px;
-    padding-right: 50px;
-  }
-  &.hasFilters {
-    input {
-      padding-right: 250px;
-    }
+    padding: 0 50px 0 55px;
   }
 }
 
-.searchFilter {
-  display: block;
+.inputExtras {
+  background: var(--rp-input-bg-color);
+  display: flex;
+  height: 48px;
+  line-height: 48px;
+  padding-left: 20px;
   position: absolute;
   right: 20px;
-  top: 13px;
+  bottom: 1px;
+}
 
+.searchFilter {
   li {
     display: inline-block;
     margin-left: 20px;
@@ -60,9 +60,7 @@
 }
 
 .clearSearch {
-  position: absolute !important;
-  right: 11px;
-  bottom: 11px;
+  margin-top: 11px;
 
   button {
     background-color: var(
@@ -79,7 +77,6 @@
   }
 
   &.clearSearchSeparator {
-    right: 190px;
     &:after {
       background-color: var(--theme-staking-stake-pools-search-separator-color);
       content: '';
