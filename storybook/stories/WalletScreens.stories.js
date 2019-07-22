@@ -24,6 +24,7 @@ import { transactionTypes } from '../../source/renderer/app/domains/WalletTransa
 import WalletWithNavigation from '../../source/renderer/app/components/wallet/layouts/WalletWithNavigation';
 
 // Screens
+import WalletAdd from '../../source/renderer/app/components/wallet/WalletAdd';
 import WalletSummary from '../../source/renderer/app/components/wallet/summary/WalletSummary';
 import WalletSendForm from '../../source/renderer/app/components/wallet/WalletSendForm';
 import WalletReceive from '../../source/renderer/app/components/wallet/receive/WalletReceive';
@@ -48,7 +49,7 @@ storiesOf('WalletScreens', module)
             activeSidebarCategory="/wallets"
             storyName={context.story}
           >
-            {context.story !== 'Empty' ? (
+            {context.story !== 'Empty' && context.story !== 'Wallet Add' ? (
               <WalletWithNavigation
                 isActiveScreen={item => item === getItemFromContext()}
                 onWalletNavItemClick={linkTo('WalletScreens', item =>
@@ -72,6 +73,21 @@ storiesOf('WalletScreens', module)
   .add('Empty', () => null)
 
   .add('Wallet Navigation', () => <div>&nbsp;</div>)
+
+  .add('Wallet Add', () => (
+    <WalletAdd
+      onCreate={() => {}}
+      onRestore={() => {}}
+      onImportFile={() => {}}
+      isRestoreActive={boolean('isRestoreActive', false)}
+      isMainnet={boolean('isMainnet', false)}
+      isTestnet={boolean('isTestnet', false)}
+      isMaxNumberOfWalletsReached={boolean(
+        'isMaxNumberOfWalletsReached',
+        false
+      )}
+    />
+  ))
 
   .add('Summary', () => (
     <WalletSummary
