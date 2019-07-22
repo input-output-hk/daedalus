@@ -511,9 +511,9 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-receive-qr-code-foreground-color': '#000',
   },
   reportIssue: {
-    '--theme-report-issue-button-background-color': '#36374d',
-    '--theme-report-issue-button-background-color-hover': '#5e5f71',
-    '--theme-report-issue-button-background-color-active': '#262736',
+    '--theme-report-issue-button-background-color': '#1fc1c3',
+    '--theme-report-issue-button-background-color-hover': '#26e7eb',
+    '--theme-report-issue-button-background-color-active': '#1cabad',
     '--theme-report-issue-connecting-background-color': '#121326',
     '--theme-report-issue-icon-color': '#121326',
     '--theme-report-issue-connecting-text-color': '#ffffff',
