@@ -41,24 +41,6 @@
   bottom: 1px;
 }
 
-.searchFilter {
-  li {
-    display: inline-block;
-    margin-left: 20px;
-  }
-
-  button {
-    color: var(--theme-staking-stake-pools-search-button-color);
-    cursor: pointer;
-    font-size: 16px;
-    opacity: 0.3;
-  }
-
-  .searchFilterActiveItem {
-    opacity: 1;
-  }
-}
-
 .clearSearch {
   margin-top: 11px;
 

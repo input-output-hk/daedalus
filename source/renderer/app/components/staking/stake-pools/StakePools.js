@@ -2,14 +2,12 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
-import { without } from 'lodash';
 import { StakePoolsList } from './StakePoolsList';
 import { StakePoolsSearch } from './StakePoolsSearch';
 import BackToTopButton from '../../widgets/BackToTopButton';
 import styles from './StakePools.scss';
 import { getFilteredStakePoolsList } from './helpers';
 import type { StakePoolsListType } from '../../../api/staking/types';
-import type { Filters, Filter } from './StakePoolsSearch';
 
 const messages = defineMessages({
   delegatingListTitle: {
@@ -39,7 +37,6 @@ type Props = {
 
 type State = {
   search: string,
-  filters: Filters,
   selectedList?: ?string,
 };
 
@@ -55,22 +52,7 @@ export default class StakePools extends Component<Props, State> {
 
   state = {
     search: '',
-    filters: [],
     ...initialState,
-  };
-
-  handleFilterChange = (filter: Filter) => {
-    const { filters: currentFilters } = this.state;
-    let filters = [];
-    if (filter === 'all') {
-      filters = [];
-    } else {
-      filters =
-        currentFilters.indexOf(filter) > -1
-          ? [...without(currentFilters, filter)]
-          : [...currentFilters, filter];
-    }
-    this.setState({ filters });
   };
 
   handleSearch = (search: string) => this.setState({ search });
@@ -92,12 +74,11 @@ export default class StakePools extends Component<Props, State> {
       onOpenExternalLink,
       currentTheme,
     } = this.props;
-    const { search, filters, selectedList } = this.state;
+    const { search, selectedList } = this.state;
 
     const filteredStakePoolsList: StakePoolsListType = getFilteredStakePoolsList(
       stakePoolsList,
-      search,
-      filters
+      search
     );
 
     const listTitleMessage = search.length
@@ -113,10 +94,8 @@ export default class StakePools extends Component<Props, State> {
 
         <StakePoolsSearch
           search={search}
-          filters={filters}
           onSearch={this.handleSearch}
           onClearSearch={this.handleClearSearch}
-          onFilterChange={this.handleFilterChange}
           isClearTooltipOpeningDownward
         />
 

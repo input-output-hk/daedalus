@@ -17,21 +17,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Search stake pools',
     description: '"Delegating List Title" for the Stake Pools search.',
   },
-  filterAll: {
-    id: 'staking.stakePools.search.filterAll',
-    defaultMessage: '!!!All',
-    description: '"Filter All" for the Stake Pools search.',
-  },
-  filterNew: {
-    id: 'staking.stakePools.search.filterNew',
-    defaultMessage: '!!!New',
-    description: '"Filter New" for the Stake Pools search.',
-  },
-  filterCharity: {
-    id: 'staking.stakePools.search.filterCharity',
-    defaultMessage: '!!!Charity',
-    description: '"FilterChar ity" for the Stake Pools search.',
-  },
   delegatingListTitle: {
     id: 'staking.stakePools.search.delegatingListTitle',
     defaultMessage: '!!!Stake pools you are currently delegating to',
@@ -54,7 +39,6 @@ type Props = {
   isClearTooltipOpeningDownward?: boolean,
   onSearch: Function,
   onClearSearch: Function,
-  onFilterChange?: Function,
   search: string,
 };
 
@@ -94,11 +78,6 @@ export class StakePoolsSearch extends Component<Props> {
     return this.props.search.length > 0;
   }
 
-  get hasFilters() {
-    const { filters, onFilterChange } = this.props;
-    return !!filters && !!onFilterChange;
-  }
-
   render() {
     const { intl } = this.context;
     const {
@@ -106,25 +85,13 @@ export class StakePoolsSearch extends Component<Props> {
       filters,
       onSearch,
       onClearSearch,
-      onFilterChange,
       placeholder,
       search,
       isClearTooltipOpeningDownward,
     } = this.props;
 
-    const filterAll =
-      !!filters && !!onFilterChange && onFilterChange.bind(this, 'all');
-    const filterNew =
-      !!filters && !!onFilterChange && onFilterChange.bind(this, 'new');
-    const filterCharity =
-      !!filters && !!onFilterChange && onFilterChange.bind(this, 'charity');
-
     const clearSearchStyles = classnames(styles.clearSearch, {
       [styles.clearSearchSeparator]: !!filters,
-    });
-
-    const searchInputStyles = classnames(styles.searchInput, {
-      [styles.hasFilters]: !!filters && !!onFilterChange,
     });
 
     return (
@@ -134,7 +101,7 @@ export class StakePoolsSearch extends Component<Props> {
           <Input
             autoFocus
             label={label || null}
-            className={searchInputStyles}
+            className={styles.searchInput}
             onChange={onSearch}
             ref={input => {
               this.searchInput = input;
@@ -160,34 +127,6 @@ export class StakePoolsSearch extends Component<Props> {
                     <SVGInline svg={closeIcon} />
                   </button>
                 </Tooltip>
-              )}
-              {this.hasFilters && (
-                <ul className={styles.searchFilter}>
-                  <li>
-                    <button
-                      onClick={filterAll}
-                      className={this.getFilterItemClassName('all')}
-                    >
-                      {intl.formatMessage(messages.filterAll)}
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={filterNew}
-                      className={this.getFilterItemClassName('new')}
-                    >
-                      {intl.formatMessage(messages.filterNew)}
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={filterCharity}
-                      className={this.getFilterItemClassName('charity')}
-                    >
-                      {intl.formatMessage(messages.filterCharity)}
-                    </button>
-                  </li>
-                </ul>
               )}
             </div>
           )}
