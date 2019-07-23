@@ -69,6 +69,10 @@
           }
         }
 
+        .btnLabel {
+          color: var(--theme-manual-update-overlay-button-label-color);
+        }
+
         &:not(.disabled):hover {
           background-color: var(
             --theme-manual-update-overlay-button-background-color-hover
@@ -84,6 +88,10 @@
                 );
               }
             }
+          }
+
+          .btnLabel {
+            color: var(--theme-manual-update-overlay-button-label-color-hover);
           }
         }
       }

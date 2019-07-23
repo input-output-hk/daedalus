@@ -7,7 +7,8 @@ import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import InstructionsDialog from '../wallet/paper-wallet-certificate/InstructionsDialog';
-import supportIcon from '../../assets/images/sidebar/bug-report-ic.inline.svg';
+import supportIconLight from '../../assets/images/sidebar/bug-report-ic.inline.svg';
+import supportIconDark from '../../assets/images/sidebar/bug-report-ic-dark.inline.svg';
 import type { SidebarWalletType } from '../../types/sidebarTypes';
 import { ROUTES } from '../../routes-config';
 import { CATEGORIES_BY_NAME } from '../../config/sidebarConfig.js';
@@ -16,6 +17,7 @@ type Props = {
   menus: SidebarMenus,
   categories: SidebarCategories,
   activeSidebarCategory: string,
+  currentTheme: string,
   onCategoryClicked: Function,
   isShowingSubMenus: boolean,
   openDialogAction: Function,
@@ -45,6 +47,13 @@ export default class Sidebar extends Component<Props> {
   static defaultProps = {
     isShowingSubMenus: false,
   };
+
+  get supportIcon() {
+    const { currentTheme } = this.props;
+    return currentTheme === 'yellow' || currentTheme === 'white'
+      ? supportIconDark
+      : supportIconLight;
+  }
 
   render() {
     const {
@@ -99,7 +108,7 @@ export default class Sidebar extends Component<Props> {
 
           <SidebarCategory
             className="supportRequest"
-            icon={supportIcon}
+            icon={this.supportIcon}
             active={false}
             onClick={onSubmitSupportRequest}
           />
