@@ -6,7 +6,6 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
-import classnames from 'classnames';
 import styles from './StakePoolsSearch.scss';
 import searchIcon from '../../../assets/images/search.inline.svg';
 import closeIcon from '../../../assets/images/close-cross.inline.svg';
@@ -29,11 +28,7 @@ const messages = defineMessages({
   },
 });
 
-export type Filters = Array<Filter>;
-export type Filter = 'all' | 'charity' | 'new';
-
 type Props = {
-  filters?: Filters,
   label?: string,
   placeholder?: string,
   isClearTooltipOpeningDownward?: boolean,
@@ -60,17 +55,12 @@ export class StakePoolsSearch extends Component<Props> {
     const { intl } = this.context;
     const {
       label,
-      filters,
       onSearch,
       onClearSearch,
       placeholder,
       search,
       isClearTooltipOpeningDownward,
     } = this.props;
-
-    const clearSearchStyles = classnames(styles.clearSearch, {
-      [styles.clearSearchSeparator]: !!filters,
-    });
 
     return (
       <div className={styles.component}>
@@ -98,7 +88,7 @@ export class StakePoolsSearch extends Component<Props> {
                 <Tooltip
                   skin={TooltipSkin}
                   tip="Clear"
-                  className={clearSearchStyles}
+                  className={styles.clearSearch}
                   isOpeningUpward={!isClearTooltipOpeningDownward}
                 >
                   <button onClick={onClearSearch}>

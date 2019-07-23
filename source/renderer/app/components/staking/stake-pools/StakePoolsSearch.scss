@@ -57,18 +57,4 @@
   svg {
     width: 10px;
   }
-
-  &.clearSearchSeparator {
-    &:after {
-      background-color: var(--theme-staking-stake-pools-search-separator-color);
-      content: '';
-      display: block;
-      height: 20px;
-      opacity: 0.2;
-      position: absolute;
-      right: -20px;
-      top: 3px;
-      width: 1px;
-    }
-  }
 }

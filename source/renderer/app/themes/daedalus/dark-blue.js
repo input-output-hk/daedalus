@@ -622,7 +622,6 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-staking-stake-pools-search-icon-color': '#8793a1',
     '--theme-staking-stake-pools-search-clear-button-background-color':
       'rgba(68, 91, 124, 0.05)',
-    '--theme-staking-stake-pools-search-separator-color': '#5e6066',
     '--theme-staking-stake-pools-title-color': '#e9f4fe',
   },
   staking: {
