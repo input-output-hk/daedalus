@@ -14,7 +14,8 @@ process.once('loaded', () => {
   Object.assign(global, {
     Buffer,
     dialog: {
-      showSaveDialog: (...args) => _remote.dialog.showSaveDialog(...args),
+      showSaveDialog: (...args) =>
+        _remote.dialog.showSaveDialog(_remote.getCurrentWindow(), ...args),
     },
     electronLog: {
       debug: (...args) => _electronLog.debug(...args),
