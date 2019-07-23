@@ -30,8 +30,8 @@
       margin-top: 16px;
       width: 12px;
 
-      polygon {
-        fill: var(--theme-about-window-icon-close-button-color);
+      g {
+        stroke: var(--theme-about-window-icon-close-button-color);
       }
     }
   }

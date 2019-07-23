@@ -69,8 +69,23 @@
 
   :global {
     .DialogCloseButton_component {
-      top: 36px;
-      right: 55px;
+      height: 44px;
+      right: 15px;
+      top: 15px;
+      width: 44px;
+      &:hover {
+        border-radius: 50%;
+        background-color: var(
+          --theme-ada-redemption-success-overlay-close-button-background-color-hover
+        );
+      }
+      svg {
+        g {
+          stroke: var(
+            --theme-ada-redemption-success-overlay-close-button-color
+          );
+        }
+      }
     }
   }
 }
