@@ -9,6 +9,7 @@ import LegacyNotification from '../notifications/LegacyNotification';
 import Wallet from '../../domains/Wallet';
 import styles from './TopBar.scss';
 import { formattedWalletAmount } from '../../utils/formatters';
+import headerLogo from '../../assets/images/header-logo.inline.svg';
 
 type Props = {
   onLeftIconClick?: ?Function,
@@ -54,7 +55,11 @@ export default class TopBar extends Component<Props> {
               {leftIconSVG}
             </button>
           )}
-          <div className={styles.topBarTitle}>{topBarTitle}</div>
+          {activeWallet ? (
+            <div className={styles.topBarTitle}>{topBarTitle}</div>
+          ) : (
+            <SVGInline svg={headerLogo} className={styles.headerLogo} />
+          )}
           {children}
         </div>
         {activeWallet && activeWallet.isLegacy && (

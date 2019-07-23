@@ -39,6 +39,9 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-ada-redemption-disclaimer-checkbox-label-color': '#fafbfc',
     '--theme-ada-redemption-no-wallets-instructions-color': '#e9f4fe',
     '--theme-ada-redemption-disclaimer-button-border-color': '#a8adb5',
+    '--theme-ada-redemption-success-overlay-close-button-color': '#fff',
+    '--theme-ada-redemption-success-overlay-close-button-background-color-hover':
+      'rgba(0, 0, 0, 0.07)',
   },
   blockConsolidation: {
     '--theme-block-consolidation-background-color': 'rgba(38, 51, 69, 0.96)',
@@ -60,11 +63,16 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-block-consolidation-stripe-light-1-background-color': '#e0e5ea',
     '--theme-block-consolidation-stripe-light-2-background-color': '#fafbfc',
     '--theme-block-consolidation-button-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-block-consolidation-button-background-color-active': '#e9e9ea',
     '--theme-block-consolidation-button-background-color-hover': '#fafbfc',
-    '--theme-block-consolidation-button-icon-color': 'rgba(250, 251, 252, 0.7)',
+    '--theme-block-consolidation-button-icon-color': '#fafbfc',
     '--theme-block-consolidation-button-icon-color-hover': '#263345',
+    '--theme-block-consolidation-button-text-color': '#fafbfc',
     '--theme-block-consolidation-button-text-color-hover': '#263345',
     '--theme-block-consolidation-button-border-color': '#fafbfc',
+    '--theme-block-consolidation-button-border-color-hover': 'transparent',
+    '--theme-block-consolidation-epochs-image-color':
+      'rgba(255, 255, 255, 0.9)',
   },
   body: {
     '--theme-main-body-background-color': '#0b1926',
@@ -130,8 +138,9 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-data-migration-layer-box-shadow-color': 'rgba(0, 0, 0, 0.25)',
     '--theme-data-migration-layer-button-background-color-hover': '#fafbfc',
     '--theme-data-migration-layer-text-color': '#fafbfc',
-    '--theme-data-migration-layer-text-opacity-color':
-      'rgba(250, 251, 252, 0.5)',
+    '--theme-data-migration-layer-text-opacity-color': '#fafbfc',
+    '--theme-data-migration-button-border-color': '#ffffff',
+    '--theme-data-migration-button-label-color': '#ffffff',
   },
   delegationSetupWizard: {
     '--theme-delegation-steps-activation-steps-indicator-color': '#e9f4fe',
@@ -246,7 +255,7 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-icon-add-wallet-dialog-big-button-color':
       'rgba(233, 244, 254, 0.8)',
     '--theme-icon-back-button-color': '#e9f4fe',
-    '--theme-icon-close-button-color': '#e9f4fe',
+    '--theme-icon-close-button-color': '#fafbfc',
     '--theme-icon-connecting-logo-color': '#fafbfc',
     '--theme-icon-copy-address-color': '#8793a1',
     '--theme-icon-file-upload-color': '#8793a1',
@@ -254,6 +263,7 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-icon-syncing-logo-color': '#e9f4fe',
     '--theme-icon-transactions-ada-symbol-color': '#e9f4fe',
     '--theme-icon-transaction-type-color': '#fafbfc',
+    '--theme-icon-ada-api-logo-color': 'rgba(250, 251, 252, 0.5)',
   },
   input: {
     '--theme-input-background-color': '#263345',
@@ -267,7 +277,7 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-input-text-color': '#e9f4fe',
   },
   link: {
-    '--theme-link-main-color': 'rgba(32, 181, 107, 1)',
+    '--theme-link-main-color': 'rgb(32, 181, 107)',
   },
   loading: {
     '--theme-loading-background-color': '#0b1926',
@@ -289,11 +299,14 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-manual-update-overlay-button-icon-color': 'rgba(250, 251, 252, 1)',
     '--theme-manual-update-overlay-button-icon-color-hover':
       'rgba(38, 51, 69, 1)',
+    '--theme-manual-update-overlay-button-label-color-hover':
+      'rgba(38, 51, 69, 1)',
     '--theme-manual-update-overlay-button-text-color-hover': '#263345',
     '--theme-manual-update-overlay-button-border-color': '#fafbfc',
     '--theme-manual-update-overlay-text-color': 'rgba(250, 251, 252, 0.7)',
     '--theme-manual-update-overlay-text-highlight-color': '#fafbfc',
     '--theme-manual-update-overlay-title-text-color': '#fafbfc',
+    '--theme-manual-update-overlay-button-label-color': '#fafbfc',
   },
   mnemonic: {
     '--theme-backup-mnemonic-background-color': 'rgba(233, 244, 254, 0.05)',
@@ -340,6 +353,7 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-node-update-message-color': '#e9f4fe',
     '--theme-node-sync-info-message-background-color': '#536370',
     '--theme-node-sync-info-message-text-color': '#e9f4fe',
+    '--theme-node-sync-icon-color': '#fff',
     '--theme-node-update-accept-button-background-color': '#263345',
     '--theme-node-update-accept-button-background-color-hover': '#34465e',
     '--theme-node-update-accept-button-background-color-active': '#18202b',
@@ -353,6 +367,8 @@ export const DARK_BLUE_THEME_CONFIG = {
   notification: {
     '--theme-notification-message-background-color': 'rgba(83, 99, 112, 0.95)',
     '--theme-notification-message-text-color': '#fafbfc',
+    '--theme-notification-message-checkmark-icon-color': '#fafbfc',
+    '--theme-notification-message-close-icon-color': '#fafbfc',
     '--theme-legacy-badge-background-color': '#ab1700',
     '--theme-legacy-notification-background-color': '#ab2712',
     '--theme-legacy-notification-learn-more-button-text-color': '#fafbfc',
@@ -373,7 +389,7 @@ export const DARK_BLUE_THEME_CONFIG = {
   },
   paperWallet: {
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-color':
-      '#e9f4fe',
+      'rgb(32, 181, 107)',
     '--theme-paper-wallet-create-certificate-dialog-explorer-link-background-color':
       'rgba(233, 244, 254, 0.05)',
   },
@@ -568,8 +584,9 @@ export const DARK_BLUE_THEME_CONFIG = {
   },
   stakePools: {
     '--theme-staking-stake-pool-background-color': '#263345',
-    '--theme-staking-stake-pool-border-color': '#536370',
+    '--theme-staking-stake-pool-border-color': '#263345',
     '--theme-staking-stake-pool-glow-color': '#7cfeb54c',
+    '--theme-staking-progress-label-light': '#fafbfc',
     '--theme-staking-stake-pool-retirement-background-color': '#ea4c5b',
     '--theme-staking-stake-pool-selected-background-color': '#5da377',
     '--theme-staking-stake-pool-selected-checkmark-icon-color': '#fafbfc',
@@ -627,7 +644,7 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-staking-delegation-center-gear-icon-fill-color-active': '#e9f4fe',
     '--theme-staking-delegation-center-no-wallets-instructions-color':
       '#e9f4fe',
-    '--theme-staking-info-learn-more-button-color': '#fafbfc',
+    '--theme-staking-info-learn-more-button-text-color': '#fafbfc',
     '--theme-staking-info-learn-more-icon-color': 'rgba(250, 251, 252, 1)',
     '--theme-staking-learn-more-button-color': '#fafbfc',
     '--theme-staking-learn-more-icon-color': 'rgba(250, 251, 252, 1)',
@@ -666,6 +683,7 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-topbar-layout-body-background-color': '#0b1926',
     '--theme-topbar-wallet-name-color': '#e9f4fe',
     '--theme-topbar-wallet-info-color': '#e9f4fe',
+    '--theme-topbar-logo-color': 'rgb(250, 251, 252)',
   },
   transactions: {
     '--theme-transactions-list-background-color': '#263345',
@@ -674,7 +692,6 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-transactions-list-item-details-color': '#e9f4fe',
     '--theme-transactions-state-failed-background-color':
       'rgba(189, 197, 206, 0.4)',
-    '--theme-transactions-state-failed-text-color': 'rgba(233, 244, 254, 0.4)',
     '--theme-transactions-state-pending-background-color':
       'rgba(189, 197, 206, 0.4)',
     '--theme-transactions-state-pending-stripes-color':
@@ -690,6 +707,9 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-transactions-icon-type-failed-background-color':
       'rgba(234, 76, 91, 0.5)',
     '--theme-transactions-arrow-stroke-color': '#e9f4fe',
+    '--theme-transactions-state-failed-text-color': 'rgba(233, 244, 254, 0.4)',
+    '--theme-transactions-state-failed-text-secondary-color':
+      'rgba(250, 251, 252, 0.8)',
   },
   uploader: {
     '--theme-uploader-text-color': '#e9f4fe',
@@ -706,6 +726,10 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-utxo-tooltip-background-color': 'rgba(94, 96, 102, 0.9)',
     '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-utxo-tooltip-text-color': '#fafbfc',
+  },
+  rpTooltip: {
+    '--rp-tooltip-bg-color': '#e9f4fe',
+    '--rp-tooltip-text-color': '#fafbfc',
   },
 };
 

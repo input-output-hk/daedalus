@@ -47,14 +47,15 @@
   }
 }
 .content3 {
-  color: var(--theme-data-migration-layer-text-opacity-color);
+  color: var(--theme-data-migration-layer-text-color);
   margin-bottom: 30px;
+  opacity: 0.5;
 }
 
 .submitButton {
   background: none !important;
-  border: solid 1px var(--theme-data-migration-layer-text-color) !important;
-  color: var(--theme-data-migration-layer-text-color) !important;
+  border: solid 1px var(--theme-data-migration-button-border-color) !important;
+  color: var(--theme-data-migration-button-label-color) !important;
   line-height: 1.36 !important;
   margin-bottom: 30px;
   transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1),
