@@ -584,7 +584,7 @@ export const DARK_BLUE_THEME_CONFIG = {
   },
   stakePools: {
     '--theme-staking-stake-pool-background-color': '#49576b',
-    '--theme-staking-stake-pool-border-color': '#263345',
+    '--theme-staking-stake-pool-border-color': '#49576b',
     '--theme-staking-stake-pool-glow-color': '#7cfeb54c',
     '--theme-staking-progress-label-light': '#fafbfc',
     '--theme-staking-stake-pool-retirement-background-color': '#ea4c5b',
