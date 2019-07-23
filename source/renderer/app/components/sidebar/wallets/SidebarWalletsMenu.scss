@@ -25,9 +25,9 @@
   }
 
   .icon {
-    width: 25px;
     line-height: 12px;
     margin: 0 20px;
+    width: 25px;
     & > svg {
       width: 25px;
       path {
@@ -42,9 +42,9 @@
   }
 
   &.active {
-    cursor: default;
     background-color: var(
       --theme-sidebar-menu-add-button-background-color-active
     );
+    cursor: default;
   }
 }

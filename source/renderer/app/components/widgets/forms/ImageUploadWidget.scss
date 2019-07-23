@@ -1,8 +1,8 @@
 %base {
+  color: var(--theme-uploader-text-color);
+  font-family: var(--font-regular);
   font-size: 16px;
   line-height: 1.38;
-  font-family: var(--font-regular);
-  color: var(--theme-uploader-text-color);
 }
 
 .label {
@@ -12,18 +12,18 @@
 }
 
 .uploadBox {
-  width: 154px;
-  height: 154px;
-  border-radius: 2px;
-  border: solid 1px var(--theme-uploader-border-color);
-  display: flex;
   align-items: center;
+  border: solid 1px var(--theme-uploader-border-color);
+  border-radius: 2px;
+  display: flex;
+  height: 154px;
   padding: 10px;
+  width: 154px;
 }
 
 .instructions {
-  width: 100%;
   text-align: center;
+  width: 100%;
 
   .title {
     @extend %base;

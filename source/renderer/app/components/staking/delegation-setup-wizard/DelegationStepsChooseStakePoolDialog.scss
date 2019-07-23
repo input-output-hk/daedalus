@@ -41,8 +41,8 @@
       .selectedPoolBlock {
         background-color: transparent;
         border: 2px solid var(--theme-staking-stake-pool-border-color);
-        border-style: dashed;
         border-radius: 5.8px;
+        border-style: dashed;
         height: 103px;
         width: 116px;
 
@@ -56,8 +56,8 @@
         }
 
         .checkmarkWrapper {
-          text-align: center;
           margin-top: 14px;
+          text-align: center;
           .checkmarkImage {
             svg {
               width: 22.5px;

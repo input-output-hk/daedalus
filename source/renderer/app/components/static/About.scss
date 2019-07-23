@@ -20,8 +20,8 @@
       width: 44px;
 
       &:hover {
-        border-radius: 50%;
         background-color: var(--theme-about-window-icon-close-hover-background);
+        border-radius: 50%;
       }
     }
 
@@ -66,8 +66,8 @@
         font-size: 24px;
         letter-spacing: 6px;
         line-height: 1.33;
-        text-transform: uppercase;
         -webkit-text-stroke: 0.5px var(--theme-about-window-title-stroke-color);
+        text-transform: uppercase;
 
         .daedalusVersion {
           font-family: var(--font-regular);
