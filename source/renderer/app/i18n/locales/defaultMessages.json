@@ -1472,13 +1472,13 @@
         "description": "Label for the \"Theme\" selection on the display settings page.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 21
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeLabel",
         "start": {
           "column": 14,
-          "line": 13
+          "line": 16
         }
       },
       {
@@ -1486,13 +1486,13 @@
         "description": "Name of the \"Light blue\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 26
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.lightBlue",
         "start": {
           "column": 18,
-          "line": 19
+          "line": 22
         }
       },
       {
@@ -1500,13 +1500,13 @@
         "description": "Name of the \"Cardano\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 31
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.cardano",
         "start": {
           "column": 16,
-          "line": 24
+          "line": 27
         }
       },
       {
@@ -1514,13 +1514,55 @@
         "description": "Name of the \"Dark blue\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 36
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.darkBlue",
         "start": {
           "column": 17,
-          "line": 29
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Dark Cardano",
+        "description": "Name of the \"Dark cardano\" theme on the display settings page.",
+        "end": {
+          "column": 3,
+          "line": 43
+        },
+        "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
+        "id": "settings.display.themeNames.darkCardano",
+        "start": {
+          "column": 20,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Yellow",
+        "description": "Name of the \"Yellow\" theme on the display settings page.",
+        "end": {
+          "column": 3,
+          "line": 49
+        },
+        "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
+        "id": "settings.display.themeNames.yellow",
+        "start": {
+          "column": 15,
+          "line": 45
+        }
+      },
+      {
+        "defaultMessage": "!!!White",
+        "description": "Name of the \"White\" theme on the display settings page.",
+        "end": {
+          "column": 3,
+          "line": 55
+        },
+        "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
+        "id": "settings.display.themeNames.white",
+        "start": {
+          "column": 14,
+          "line": 51
         }
       }
     ],
@@ -3506,13 +3548,13 @@
         "description": "About \"title\"",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.title",
         "start": {
           "column": 14,
-          "line": 13
+          "line": 14
         }
       },
       {
@@ -3520,13 +3562,13 @@
         "description": "About page daedalus team headline",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.daedalus.headline",
         "start": {
           "column": 32,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -3534,13 +3576,13 @@
         "description": "About page cardano team headline",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.cardano.headline",
         "start": {
           "column": 31,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -3548,13 +3590,13 @@
         "description": "About page daedalus team members",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.daedalus.members",
         "start": {
           "column": 31,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -3562,13 +3604,13 @@
         "description": "About page cardano team members",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.cardano.members",
         "start": {
           "column": 30,
-          "line": 34
+          "line": 35
         }
       },
       {
@@ -3576,13 +3618,13 @@
         "description": "About \"copyright\"",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.copyright",
         "start": {
           "column": 18,
-          "line": 40
+          "line": 41
         }
       },
       {
@@ -3590,13 +3632,13 @@
         "description": "About page license name",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 50
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.license",
         "start": {
           "column": 15,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -3604,13 +3646,13 @@
         "description": "About page build information",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.buildInfo",
         "start": {
           "column": 18,
-          "line": 50
+          "line": 51
         }
       }
     ],
@@ -3623,13 +3665,13 @@
         "description": "Title of \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.title",
         "start": {
           "column": 9,
-          "line": 20
+          "line": 21
         }
       },
       {
@@ -3637,13 +3679,13 @@
         "description": "Description 1 of \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.description1",
         "start": {
           "column": 16,
-          "line": 25
+          "line": 26
         }
       },
       {
@@ -3651,13 +3693,13 @@
         "description": "Description 2 of \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.description2",
         "start": {
           "column": 16,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -3665,13 +3707,13 @@
         "description": "Description 3 of \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 42
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.description3",
         "start": {
           "column": 16,
-          "line": 36
+          "line": 37
         }
       },
       {
@@ -3679,13 +3721,13 @@
         "description": "Epochs Consolidated Of Total on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.epochsConsolidatedOfTotal",
         "start": {
           "column": 29,
-          "line": 42
+          "line": 43
         }
       },
       {
@@ -3693,13 +3735,13 @@
         "description": "Singular Epoch on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 54
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.epoch",
         "start": {
           "column": 9,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -3707,13 +3749,13 @@
         "description": "Plural Epochs on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 59
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.epochs",
         "start": {
           "column": 10,
-          "line": 54
+          "line": 55
         }
       },
       {
@@ -3721,13 +3763,13 @@
         "description": "Epochs consolidated on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 64
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.epochsConsolidated",
         "start": {
           "column": 22,
-          "line": 59
+          "line": 60
         }
       },
       {
@@ -3735,13 +3777,13 @@
         "description": "synced on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 69
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.synced",
         "start": {
           "column": 10,
-          "line": 64
+          "line": 65
         }
       },
       {
@@ -3749,13 +3791,13 @@
         "description": "Learn more Button on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 74
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.learnMoreButton",
         "start": {
           "column": 19,
-          "line": 69
+          "line": 70
         }
       },
       {
@@ -3763,13 +3805,13 @@
         "description": "URL of Learn more Button on \"Block consolidation status\" page.",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 81
         },
         "file": "source/renderer/app/components/status/BlockConsolidationStatus.js",
         "id": "blockConsolidationStatus.learnMoreButtonURL",
         "start": {
           "column": 22,
-          "line": 74
+          "line": 75
         }
       }
     ],
@@ -8270,13 +8312,13 @@
         "description": "Label for the blocks synced info overlay on node sync status icon.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 16
         },
         "file": "source/renderer/app/components/widgets/NodeSyncStatusIcon.js",
         "id": "cardano.node.sync.status.blocksSynced",
         "start": {
           "column": 16,
-          "line": 10
+          "line": 11
         }
       }
     ],

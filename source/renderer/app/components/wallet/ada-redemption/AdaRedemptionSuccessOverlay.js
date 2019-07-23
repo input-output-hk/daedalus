@@ -8,7 +8,7 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import styles from './AdaRedemptionSuccessOverlay.scss';
 import successIcon from '../../../assets/images/success-big.inline.svg';
-import closeCrossWhite from '../../../assets/images/close-cross-white.inline.svg';
+import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 
 const messages = defineMessages({
   headline: {
@@ -53,7 +53,7 @@ export default class AdaRedemptionSuccessOverlay extends Component<Props> {
             skin={ButtonSkin}
           />
         </div>
-        <DialogCloseButton onClose={onClose} icon={closeCrossWhite} />
+        <DialogCloseButton onClose={onClose} icon={closeCrossThin} />
       </div>
     );
   }

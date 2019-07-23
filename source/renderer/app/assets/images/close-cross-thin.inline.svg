@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="27" height="26" viewBox="0 0 27 26">
+    <g fill="none" fill-rule="evenodd" stroke="var(--theme-icon-close-button-color)" stroke-width="3">
+        <path d="M2 1l24 24M26 1L2 25"/>
+    </g>
+</svg>
