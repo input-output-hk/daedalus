@@ -8,12 +8,12 @@
   left: 50%;
   line-height: 1.17;
   opacity: 0.98;
+  opacity: 0;
   padding: 6px 12px;
   position: fixed;
   text-align: center;
   top: 144px;
   transform: translateX(-50%);
-  opacity: 0;
   transition: opacity 0.25s ease-out, top 0.25s ease-out;
   z-index: 3;
   &.isActive {

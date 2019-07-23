@@ -81,7 +81,7 @@ export default class StakePools extends Component<Props, State> {
       search
     );
 
-    const listTitleMessage = search.length
+    const listTitleMessage = search.trim().length
       ? messages.listTitleWithSearch
       : messages.listTitle;
 

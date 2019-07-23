@@ -49,30 +49,8 @@ export class StakePoolsSearch extends Component<Props> {
 
   searchInput: ?Object = null;
 
-  getFilterItemClassName = (item: string) => {
-    const { filters = [] } = this.props;
-    if (item === 'all') {
-      return classnames({
-        [styles.searchFilterActiveItem]: !filters.length,
-      });
-    }
-    return classnames({
-      [styles.searchFilterActiveItem]:
-        filters.length && filters.indexOf(item) > -1,
-    });
-  };
-
-  autoSelectOnFocus = () => {
-    try {
-      const { searchInput } = this;
-      if (searchInput) {
-        return searchInput.inputElement.current.select();
-      }
-      return false;
-    } catch (error) {
-      throw error;
-    }
-  };
+  autoSelectOnFocus = () =>
+    this.searchInput ? this.searchInput.inputElement.current.select() : false;
 
   get hasSearchClearButton() {
     return this.props.search.length > 0;
@@ -114,7 +92,7 @@ export class StakePoolsSearch extends Component<Props> {
             maxLength={150}
             onFocus={this.autoSelectOnFocus}
           />
-          {(this.hasSearchClearButton || this.hasFilters) && (
+          {this.hasSearchClearButton && (
             <div className={styles.inputExtras}>
               {this.hasSearchClearButton && (
                 <Tooltip
