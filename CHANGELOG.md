@@ -3,11 +3,6 @@ Changelog
 
 ## vNext
 
-### Features
-
-- "Delegation" screens UI:
-  - Implemented "Search and Filtering" logic on "Stake pools" screen ([PR 1468](https://github.com/input-output-hk/daedalus/pull/1468))
-
 ### Chores
 
 - Unified support request data handling in common method ([1472](https://github.com/input-output-hk/daedalus/pull/1472))
