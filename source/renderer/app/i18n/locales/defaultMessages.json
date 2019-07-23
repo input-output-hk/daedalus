@@ -3370,13 +3370,13 @@
         "description": "\"Delegating List Title\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 18
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.searchInputPlaceholder",
         "start": {
           "column": 26,
-          "line": 15
+          "line": 14
         }
       },
       {
@@ -3384,13 +3384,13 @@
         "description": "\"delegatingListTitlee\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 23
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.delegatingListTitle",
         "start": {
           "column": 23,
-          "line": 20
+          "line": 19
         }
       },
       {
@@ -3398,13 +3398,13 @@
         "description": "\"listTitle\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 28
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.listTitle",
         "start": {
           "column": 13,
-          "line": 25
+          "line": 24
         }
       }
     ],
