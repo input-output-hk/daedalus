@@ -167,10 +167,11 @@ export default class CountdownWidget extends Component<Props, State> {
     return (
       <div className={styles.timeLeftContainer}>
         <div className={styles.timeLeft}>
-          {timeLeft === 0 && (
+          {timeLeft === 0 ? (
             <SVGInline svg={spinnerIcon} className={styles.spinnerIcon} />
+          ) : (
+            fieldPanels
           )}
-          {timeLeft !== 0 && fieldPanels}
         </div>
       </div>
     );

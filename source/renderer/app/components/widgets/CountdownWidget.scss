@@ -6,12 +6,14 @@
 
   .timeLeft {
     background-color: var(--theme-staking-countdown-widget-background-color);
+    border-radius: 2px;
     display: flex;
     padding: 10px 20px;
 
     .spinnerIcon {
       animation: rotating-spinner 1.2s linear infinite;
       height: 42px;
+      margin: 12px 0;
       width: 42px;
 
       svg {
