@@ -23,8 +23,8 @@
     "lint": "eslint --format=node_modules/eslint-formatter-pretty source features storybook *.js",
     "flow:test": "flow; test $? -eq 0 -o $? -eq 2",
     "prettier": "./node_modules/.bin/prettier \"**/*.*\"",
-    "prettier:check": "yarn prettier --check && yarn stylelint",
-    "prettier:format": "yarn prettier --write --loglevel warn && yarn stylelint:fix",
+    "prettier:check": "yarn prettier --check",
+    "prettier:format": "yarn prettier --write --loglevel warn",
     "stylelint": "./node_modules/.bin/stylelint \"**/*.scss\"",
     "stylelint:fix": "yarn stylelint --fix",
     "manage:translations": "gulp purge:translations && gulp clear:cache && gulp build && node ./translations/translation-runner.js",
@@ -196,7 +196,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "pretty-quick --staged",
-      "pre-push": "yarn prettier:check && yarn lint && yarn flow:test && yarn manage:translations"
+      "pre-push": "yarn prettier:check && yarn lint && yarn flow:test && yarn stylelint && yarn manage:translations"
     }
   },
   "resolutions": {
