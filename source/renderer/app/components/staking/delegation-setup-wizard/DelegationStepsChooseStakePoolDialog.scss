@@ -47,7 +47,8 @@
 
       .selectedPoolBlock {
         background-color: transparent;
-        border: 2px solid var(--theme-staking-stake-pool-border-color);
+        border: 2px solid
+          var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
         border-style: dashed;
         border-radius: 5.8px;
         height: 103px;
@@ -81,7 +82,8 @@
           background-color: var(
             --theme-staking-stake-pool-selected-background-color
           );
-          border: 2px solid var(--theme-staking-stake-pool-border-color);
+          border: 2px solid
+            var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
 
           .label {
             color: var(
