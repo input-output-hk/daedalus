@@ -18,7 +18,7 @@ import { setupApi } from './api/index';
 
 // run MobX in strict mode
 configure({
-  enforceActions: 'always',
+  enforceActions: 'never',
 });
 
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
