@@ -65,30 +65,23 @@ export const createMainWindow = (locale: string) => {
 
   rendererErrorHandler.setup(window, createMainWindow);
 
-  // Minimum Windows height of window
-  const windowsWindowHeight = 544;
+  // Minimum windows height
+  let minWindowsHeight = 600;
 
-  // Minimum Linux/Mac height of window
-  const linuxMacWindowHeight = 560;
-
-  // Default Windows title bar + status bar - (based on default values from Windows 10)
-  const windowsTopBarHeight = 50;
+  // Default Windows title bar + status bar - (based on the default values from Windows 10)
+  const windowsTopBarHeight = 56;
 
   // Default Linux/Mac title bar height
   const linuxMacTopBarHeight = 40;
 
-  // Minimum windows height
-  let minWindowsHeight;
-
   switch (platform) {
     case WINDOWS:
-      minWindowsHeight = windowsWindowHeight - windowsTopBarHeight;
+      minWindowsHeight -= windowsTopBarHeight;
       break;
     case LINUX || MAC_OS:
-      minWindowsHeight = linuxMacWindowHeight - linuxMacTopBarHeight;
+      minWindowsHeight -= linuxMacTopBarHeight;
       break;
     default:
-      minWindowsHeight = 600;
   }
 
   window.setMinimumSize(905, minWindowsHeight);
