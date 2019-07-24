@@ -33,6 +33,13 @@ const locales = {
 };
 const localeNames = keys(locales);
 
+const operatingSystems = {
+  Windows: 'windows',
+  Linux: 'linux',
+  Mac: 'mac',
+};
+const osNames = keys(operatingSystems);
+
 type Props = {
   children: any,
 };
@@ -40,6 +47,7 @@ type Props = {
 type State = {
   themeName: string,
   localeName: string,
+  osName: string,
   isMenuVisible: boolean,
 };
 
@@ -47,6 +55,7 @@ export default class StoryWrapper extends Component<Props, State> {
   state = {
     themeName: localStorage.getItem('currentTheme') || themeNames[0],
     localeName: localStorage.getItem('currentLocale') || localeNames[0],
+    osName: localStorage.getItem('currentOs') || osNames[0],
     isMenuVisible: false,
   };
 
@@ -60,12 +69,17 @@ export default class StoryWrapper extends Component<Props, State> {
     localStorage.setItem('currentTheme', themeName);
   };
 
+  setOsName = (osName: string) => {
+    this.setState({ osName });
+    localStorage.setItem('currentOs', osName);
+  };
+
   handleToggleVisibility = () =>
     this.setState(({ isMenuVisible }) => ({ isMenuVisible: !isMenuVisible }));
 
   render() {
     const { children: Story } = this.props;
-    const { themeName, localeName, isMenuVisible } = this.state;
+    const { themeName, localeName, osName, isMenuVisible } = this.state;
     const theme = themes[themeName];
     const locale = locales[localeName];
 
@@ -75,10 +89,13 @@ export default class StoryWrapper extends Component<Props, State> {
         <DaedalusMenu
           localeNames={localeNames}
           themeNames={themeNames}
+          osNames={osNames}
           setLocaleName={this.setLocaleName}
           setThemeName={this.setThemeName}
+          setOsName={this.setOsName}
           currentLocale={localeName}
           currentTheme={themeName}
+          currentOs={osName}
           onToggleVisibility={this.handleToggleVisibility}
           isVisible={isMenuVisible}
         />
