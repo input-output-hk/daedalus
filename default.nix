@@ -103,6 +103,8 @@ let
         exec 3>&1
         exec 1>&2
 
+        echo signing "${file}"
+
         set -e
 
         DIR=$(realpath $(mktemp -d))
@@ -203,7 +205,7 @@ let
       ${if dummyInstaller then "touch foo" else "unzip ${self.dlls}"}
       popd
       cp -v ${self.unpackedCardano}/{bin,config}/* .
-      cp ${self.unsignedUninstaller}/uninstall.exe ../uninstall.exe
+      cp ${self.uninstaller}/uninstall.exe ../uninstall.exe
       cp -v ${self.nsisFiles}/{daedalus.nsi,wallet-topology.yaml,launcher-config.yaml} .
       chmod -R +w .
       ${lib.optionalString (fudgeConfig != null) ''
