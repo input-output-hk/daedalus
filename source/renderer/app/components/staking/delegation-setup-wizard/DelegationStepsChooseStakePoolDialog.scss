@@ -7,6 +7,13 @@
       margin-bottom: 0;
     }
 
+    .StakePoolThumbnail_component {
+      background-color: 1px solid
+        var(--theme-delegation-steps-choose-stake-pool-thumb-background-color);
+      border: 1px solid
+        var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
+    }
+
     .Dialog_subtitle {
       color: var(--theme-delegation-steps-choose-wallet-steps-indicator-color);
     }
@@ -40,7 +47,8 @@
 
       .selectedPoolBlock {
         background-color: transparent;
-        border: 2px solid var(--theme-staking-stake-pool-border-color);
+        border: 2px solid
+          var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
         border-radius: 5.8px;
         border-style: dashed;
         height: 103px;
@@ -74,7 +82,8 @@
           background-color: var(
             --theme-staking-stake-pool-selected-background-color
           );
-          border: 2px solid var(--theme-staking-stake-pool-border-color);
+          border: 2px solid
+            var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
 
           .label {
             color: var(
