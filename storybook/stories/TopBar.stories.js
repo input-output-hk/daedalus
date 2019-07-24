@@ -7,12 +7,14 @@ import TopBar from '../../source/renderer/app/components/layout/TopBar';
 import NodeSyncStatusIcon from '../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
 import WalletTestEnvironmentLabel from '../../source/renderer/app/components/widgets/WalletTestEnvironmentLabel';
 import { formattedWalletAmount } from '../../source/renderer/app/utils/formatters';
+import menuIconClosed from '../../source/renderer/app/assets/images/menu-ic.inline.svg';
 
 const topBarTestEnv = (
   <TopBar
     formattedWalletAmount={formattedWalletAmount}
     currentRoute=""
     showSubMenuToggle={false}
+    leftIcon={menuIconClosed}
   >
     <WalletTestEnvironmentLabel network="testnet" />
     <NodeSyncStatusIcon
@@ -31,6 +33,7 @@ const topBarProductionEnv = (
     formattedWalletAmount={formattedWalletAmount}
     currentRoute=""
     showSubMenuToggle={false}
+    leftIcon={menuIconClosed}
   >
     <NodeSyncStatusIcon
       networkStatus={{

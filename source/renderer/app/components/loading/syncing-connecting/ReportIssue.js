@@ -138,7 +138,7 @@ export default class ReportIssue extends Component<Props> {
               {intl.formatMessage(messages.readArticleButtonLabel)}
             </p>
           }
-          onClick={onIssueClick(readArticleButtonUrl)}
+          onClick={() => onIssueClick(intl.formatMessage(readArticleButtonUrl))}
           skin={ButtonSkin}
         />
         <br />
