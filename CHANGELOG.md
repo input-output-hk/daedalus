@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Added minimum heights of main app window for different environments (Windows, Linux, MacOS) ([1472](https://github.com/input-output-hk/daedalus/pull/1472))
+
 ## 0.14.0
 
 ### Features

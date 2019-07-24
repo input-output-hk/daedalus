@@ -6,10 +6,18 @@ import ipcApi from '../ipc';
 import RendererErrorHandler from '../utils/rendererErrorHandler';
 import { getTranslation } from '../utils/getTranslation';
 import { launcherConfig } from '../config';
+import { LINUX, MAC_OS, WINDOWS } from '../../common/types/environment.types';
 
 const rendererErrorHandler = new RendererErrorHandler();
 
-const { isDev, isTest, buildLabel, isLinux, isInSafeMode } = environment;
+const {
+  isDev,
+  isTest,
+  buildLabel,
+  platform,
+  isLinux,
+  isInSafeMode,
+} = environment;
 
 const id = 'window';
 
@@ -57,7 +65,33 @@ export const createMainWindow = (locale: string) => {
 
   rendererErrorHandler.setup(window, createMainWindow);
 
-  window.setMinimumSize(905, 600);
+  // Minimum Windows height of window
+  const windowsWindowHeight = 544;
+
+  // Minimum Linux/Mac height of window
+  const linuxMacWindowHeight = 560;
+
+  // Default Windows title bar height - (based on default value from Windows 10)
+  const windowsTitleBarHeight = 32;
+
+  // Default Linux/Mac title bar height
+  const linuxMacTitleBarHeight = 40;
+
+  // Minimum windows height
+  let minWindowsHeight;
+
+  switch (platform) {
+    case WINDOWS:
+      minWindowsHeight = windowsWindowHeight - windowsTitleBarHeight;
+      break;
+    case LINUX || MAC_OS:
+      minWindowsHeight = linuxMacWindowHeight - linuxMacTitleBarHeight;
+      break;
+    default:
+      minWindowsHeight = 600;
+  }
+
+  window.setMinimumSize(905, minWindowsHeight);
 
   // Initialize our ipc api methods that can be called by the render processes
   ipcApi({ window });
