@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import { map } from 'lodash';
@@ -7,9 +8,14 @@ import classNames from 'classnames';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
 import styles from './StakingEpochs.scss';
 
+type TableHeaders = {
+  name: string,
+  title: string,
+};
+
 type Props = {
-  tableHeaders: any,
-  tableBody: any,
+  tableHeaders: TableHeaders,
+  tableBody: Node,
   order: string,
   sortBy: string,
   handleDataSort: Function,

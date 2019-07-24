@@ -4,6 +4,9 @@ import { observer, inject } from 'mobx-react';
 import StakingEpochs from '../../components/staking/epochs/StakingEpochs';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
+import PREVIOUS_EPOCHS from '../../config/stakingPreviousEpoch.dummy.json';
+import CURRENT_EPOCHS from '../../config/stakingCurrentEpoch.dummy.json';
+
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
@@ -14,12 +17,12 @@ export default class StakingEpochsPage extends Component<Props> {
   render() {
     return (
       <StakingEpochs
-        currentEpochName=""
-        currentEpochData={[]}
-        currentEpochEndDateTime="2019-12-31T00:00:00.161Z"
-        currentEpochProgress={0}
-        previousEpochName=""
-        previousEpochData={[]}
+        currentEpochName={CURRENT_EPOCHS.name}
+        currentEpochData={CURRENT_EPOCHS.data}
+        currentEpochEndDateTime={CURRENT_EPOCHS.endsAt}
+        currentEpochProgress={CURRENT_EPOCHS.progress}
+        previousEpochName={PREVIOUS_EPOCHS.name}
+        previousEpochData={PREVIOUS_EPOCHS.data}
         isLoading={false}
       />
     );

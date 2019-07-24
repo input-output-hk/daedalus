@@ -5,8 +5,10 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import globalMessages from '../../i18n/global-messages';
 import styles from './About.scss';
+import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import daedalusIcon from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import cardanoIcon from '../../assets/images/cardano-logo.inline.svg';
+import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 
 const messages = defineMessages({
   aboutTitle: {
@@ -43,7 +45,7 @@ const messages = defineMessages({
   },
   licenseLink: {
     id: 'static.about.license',
-    defaultMessage: '!!!MIT licence',
+    defaultMessage: '!!!Apache 2.0 license',
     description: 'About page license name',
   },
   aboutBuildInfo: {
@@ -87,7 +89,11 @@ export default class About extends Component<Props> {
 
     return (
       <div className={styles.container}>
-        <DialogCloseButton className={styles.closeButton} onClose={onClose} />
+        <DialogCloseButton
+          className={styles.closeButton}
+          icon={closeCrossThin}
+          onClose={onClose}
+        />
         <div className={styles.headerWrapper}>
           <SVGInline svg={daedalusIcon} className={styles.daedalusIcon} />
 
@@ -127,6 +133,7 @@ export default class About extends Component<Props> {
             aria-hidden
           >
             http://daedaluswallet.io
+            <SVGInline svg={externalLinkIcon} />
           </span>
           <div className={styles.copyright}>
             {intl.formatMessage(messages.aboutCopyright)}&nbsp;
@@ -141,6 +148,7 @@ export default class About extends Component<Props> {
               aria-hidden
             >
               {intl.formatMessage(messages.licenseLink)}
+              <SVGInline svg={externalLinkIcon} />
             </span>
           </div>
         </div>

@@ -1,14 +1,18 @@
 // @flow
 import { computed, action } from 'mobx';
+import BigNumber from 'bignumber.js';
 import Store from './lib/Store';
 import { ROUTES } from '../routes-config';
-import type { StakePool } from '../api/staking/types';
+import type { StakePool, Reward } from '../api/staking/types';
 
 import STAKE_POOLS from '../config/stakingStakePools.dummy.json';
+import REWARDS from '../config/stakingRewards.dummy.json';
 
 export default class StakingStore extends Store {
   startDateTime: string = '2019-09-26T00:00:00.161Z';
   decentralizationProgress: number = 10;
+  adaValue: BigNumber = new BigNumber(82650.15);
+  percentage: number = 14;
 
   setup() {
     const { staking } = this.actions;
@@ -36,9 +40,14 @@ export default class StakingStore extends Store {
     // return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
     return [STAKE_POOLS[1], STAKE_POOLS[3], STAKE_POOLS[20], STAKE_POOLS[36]];
   }
+
   @computed
   get isStakingDelegationCountdown(): boolean {
     return this.currentRoute === ROUTES.STAKING.COUNTDOWN;
+  }
+
+  @computed get rewards(): Array<Reward> {
+    return REWARDS;
   }
 
   @action showCountdown(): boolean {

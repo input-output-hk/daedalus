@@ -4,6 +4,8 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import SVGInline from 'react-svg-inline';
+import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import styles from './StakingInfo.scss';
 
 const messages = defineMessages({
@@ -33,7 +35,10 @@ const messages = defineMessages({
   },
 });
 
-type Props = { percentage: number };
+type Props = {
+  percentage: number,
+  onLearnMoreClick: Function,
+};
 type State = { progressLabelClassName: string };
 
 @observer
@@ -80,7 +85,7 @@ export default class StakingInfo extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { percentage } = this.props;
+    const { percentage, onLearnMoreClick } = this.props;
     const { progressLabelClassName } = this.state;
     const heading = intl.formatMessage(messages.heading);
     const description = intl.formatMessage(messages.description);
@@ -108,7 +113,20 @@ export default class StakingInfo extends Component<Props, State> {
               </div>
             </div>
           </div>
-          <Button label={buttonLabel} skin={ButtonSkin} />
+          <Button
+            className={styles.learnMoreButton}
+            label={
+              <p>
+                <SVGInline
+                  svg={externalLinkIcon}
+                  className={styles.externalLinkIcon}
+                />
+                {buttonLabel}
+              </p>
+            }
+            skin={ButtonSkin}
+            onClick={onLearnMoreClick}
+          />
         </div>
       </div>
     );

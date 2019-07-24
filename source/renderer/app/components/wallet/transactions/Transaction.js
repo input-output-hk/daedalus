@@ -8,6 +8,7 @@ import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon.js';
 import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
+import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import {
   transactionStates,
   transactionTypes,
@@ -287,37 +288,48 @@ export default class Transaction extends Component<Props> {
             <div>
               <h2>{intl.formatMessage(messages.fromAddresses)}</h2>
               {data.addresses.from.map((address, addressIndex) => (
-                <span
-                  role="presentation"
-                  aria-hidden
+                <div
                   // eslint-disable-next-line react/no-array-index-key
                   key={`${data.id}-from-${address}-${addressIndex}`}
-                  className={styles.address}
-                  onClick={this.handleOpenExplorer.bind(
-                    this,
-                    'address',
-                    address
-                  )}
+                  className={styles.addressRow}
                 >
-                  {address}
-                </span>
+                  <span
+                    role="presentation"
+                    aria-hidden
+                    className={styles.address}
+                    onClick={this.handleOpenExplorer.bind(
+                      this,
+                      'address',
+                      address
+                    )}
+                  >
+                    {address}
+                    <SVGInline svg={externalLinkIcon} />
+                  </span>
+                </div>
               ))}
+
               <h2>{intl.formatMessage(messages.toAddresses)}</h2>
               {data.addresses.to.map((address, addressIndex) => (
-                <span
-                  role="presentation"
-                  aria-hidden
+                <div
                   // eslint-disable-next-line react/no-array-index-key
                   key={`${data.id}-to-${address}-${addressIndex}`}
-                  className={styles.address}
-                  onClick={this.handleOpenExplorer.bind(
-                    this,
-                    'address',
-                    address
-                  )}
+                  className={styles.addressRow}
                 >
-                  {address}
-                </span>
+                  <span
+                    role="presentation"
+                    aria-hidden
+                    className={styles.address}
+                    onClick={this.handleOpenExplorer.bind(
+                      this,
+                      'address',
+                      address
+                    )}
+                  >
+                    {address}
+                    <SVGInline svg={externalLinkIcon} />
+                  </span>
+                </div>
               ))}
 
               <div className={assuranceLevelRowStyles}>
@@ -341,14 +353,17 @@ export default class Transaction extends Component<Props> {
               </div>
 
               <h2>{intl.formatMessage(messages.transactionId)}</h2>
-              <span
-                role="presentation"
-                aria-hidden
-                className={styles.transactionId}
-                onClick={this.handleOpenExplorer.bind(this, 'tx', data.id)}
-              >
-                {data.id}
-              </span>
+              <div className={styles.transactionIdRow}>
+                <span
+                  role="presentation"
+                  aria-hidden
+                  className={styles.transactionId}
+                  onClick={this.handleOpenExplorer.bind(this, 'tx', data.id)}
+                >
+                  {data.id}
+                  <SVGInline svg={externalLinkIcon} />
+                </span>
+              </div>
             </div>
             {/*
             <div>

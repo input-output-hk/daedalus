@@ -10,8 +10,12 @@ import {
   NETWORK_STATUS_REQUEST_TIMEOUT,
   NETWORK_STATUS_POLL_INTERVAL,
   NTP_IGNORE_CHECKS_GRACE_PERIOD,
+  NTP_RECHECK_TIMEOUT,
 } from '../config/timingConfig';
-import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
+import {
+  UNSYNCED_BLOCKS_ALLOWED,
+  MAX_NTP_RECHECKS,
+} from '../config/numbersConfig';
 import { Logger } from '../utils/logging';
 import {
   cardanoStateChangeChannel,
@@ -32,6 +36,8 @@ import type {
 import type { NodeInfoQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
+import { openLocalDirectoryChannel } from '../ipc/open-local-directory';
+import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
@@ -60,6 +66,8 @@ export default class NetworkStatusStore extends Store {
   _startTime = Date.now();
   _networkStatus = NETWORK_STATUS.CONNECTING;
   _networkStatusPollingInterval: ?IntervalID = null;
+  _ntpRecheckTimeout: ?TimeoutID = null;
+  _numberOfNTPRechecks = 0;
 
   // Initialize store observables
 
@@ -70,10 +78,11 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
   @observable isNodeSubscribed = false; // Is 'true' in case node is subscribed to the network
   @observable isNodeSyncing = false; // Is 'true' in case we are receiving blocks and not stalling
-  @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
   @observable isNodeInSync = false; // 'true' if syncing & local/network blocks diff within limit
   @observable isNodeStopping = false; // 'true' if node is in `NODE_STOPPING_STATES` states
   @observable isNodeStopped = false; // 'true' if node is in `NODE_STOPPED_STATES` states
+  @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
+  @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
 
   @observable hasBeenConnected = false;
   @observable syncProgress = null;
@@ -83,7 +92,6 @@ export default class NetworkStatusStore extends Store {
   @observable latestLocalBlockTimestamp = 0; // milliseconds
   @observable latestNetworkBlockTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
-  @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
   @observable
   getNetworkStatusRequest: Request<GetNetworkStatusResponse> = new Request(
     this.api.ada.getNetworkStatus
@@ -153,7 +161,7 @@ export default class NetworkStatusStore extends Store {
     );
   };
 
-  @action async _restartNode() {
+  _restartNode = async () => {
     try {
       Logger.info('NetworkStatusStore: Requesting a restart of cardano-node');
       await restartCardanoNodeChannel.send();
@@ -162,7 +170,7 @@ export default class NetworkStatusStore extends Store {
         error,
       });
     }
-  }
+  };
 
   teardown() {
     super.teardown();
@@ -170,6 +178,7 @@ export default class NetworkStatusStore extends Store {
     // Teardown polling intervals
     if (this._networkStatusPollingInterval) {
       clearInterval(this._networkStatusPollingInterval);
+      this._resetNTPRechecks();
     }
   }
 
@@ -187,10 +196,14 @@ export default class NetworkStatusStore extends Store {
   };
 
   _updateNodeStatus = async () => {
-    if (!this.isConnected) return;
+    if (this.environment.isTest && !this.isConnected) return;
     try {
       Logger.info('NetworkStatusStore: Updating node status');
       await setCachedCardanoStatusChannel.send(this._extractNodeStatus(this));
+      // Force application menu rebuild in order to disable/enable
+      // "Ada redemption" option based on isNodeInSync variable value
+      // which was sent to the main process via setCachedCardanoStatusChannel
+      await rebuildApplicationMenu.send();
     } catch (error) {
       Logger.error('NetworkStatusStore: Error while updating node status', {
         error,
@@ -231,11 +244,7 @@ export default class NetworkStatusStore extends Store {
         status,
       });
       if (status)
-        runInAction('assigning node status', () => {
-          const { cardanoNodeID } = status;
-          this.cardanoNodeID = cardanoNodeID;
-          Object.assign(this, status);
-        });
+        runInAction('assigning node status', () => Object.assign(this, status));
     } catch (error) {
       Logger.error('NetworkStatusStore: error while requesting node state', {
         error,
@@ -289,6 +298,7 @@ export default class NetworkStatusStore extends Store {
           this.tlsConfig = null;
         });
         this._setDisconnected(wasConnected);
+        this.stores.app._closeActiveDialog();
         break;
       default:
         this._setDisconnected(wasConnected);
@@ -394,9 +404,25 @@ export default class NetworkStatusStore extends Store {
         // Update localTimeDifference only in case NTP check status is not still pending
         if (localTimeInformation.status !== 'pending') {
           this.localTimeDifference = localTimeInformation.difference;
-          this.isNodeTimeCorrect =
+          const { isNodeTimeCorrect: isNodeTimeCorrectPrev } = this;
+          const isNodeTimeCorrectNext =
             this.localTimeDifference != null && // If we receive 'null' it means NTP check failed
             this.localTimeDifference <= ALLOWED_TIME_DIFFERENCE;
+
+          if (
+            !isNodeTimeCorrectNext &&
+            isNodeTimeCorrectPrev &&
+            this._numberOfNTPRechecks < MAX_NTP_RECHECKS
+          ) {
+            this._numberOfNTPRechecks++;
+            this._ntpRecheckTimeout = setTimeout(
+              this.forceCheckLocalTimeDifference,
+              NTP_RECHECK_TIMEOUT
+            );
+          } else {
+            this._resetNTPRechecks();
+            this.isNodeTimeCorrect = isNodeTimeCorrectNext;
+          }
         }
       });
 
@@ -552,11 +578,18 @@ export default class NetworkStatusStore extends Store {
     }
   };
 
+  @action _resetNTPRechecks = () => {
+    clearTimeout(this._ntpRecheckTimeout);
+    this._ntpRecheckTimeout = null;
+    this._numberOfNTPRechecks = 0;
+  };
+
   @action _setDisconnected = (wasConnected: boolean) => {
     this.isNodeResponding = false;
     this.isNodeSubscribed = false;
     this.isNodeSyncing = false;
     this.isNodeInSync = false;
+    this._resetNTPRechecks();
     if (wasConnected) {
       if (!this.hasBeenConnected) {
         runInAction('update hasBeenConnected', () => {
@@ -575,6 +608,11 @@ export default class NetworkStatusStore extends Store {
     if (this.isConnected) this._updateNetworkStatus({ force_ntp_check: true });
   };
 
+  openStateDirectory(path: string, event?: MouseEvent): void {
+    if (event) event.preventDefault();
+    openLocalDirectoryChannel.send(path);
+  }
+
   @action _onCheckDiskSpace = ({
     isNotEnoughDiskSpace,
     diskSpaceRequired,
@@ -592,6 +630,7 @@ export default class NetworkStatusStore extends Store {
       if (this._networkStatusPollingInterval) {
         clearInterval(this._networkStatusPollingInterval);
         this._networkStatusPollingInterval = null;
+        this._resetNTPRechecks();
       }
     } else if (!this._networkStatusPollingInterval) {
       this._setNetworkStatusPollingInterval();

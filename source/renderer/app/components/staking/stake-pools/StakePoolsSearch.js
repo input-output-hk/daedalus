@@ -4,48 +4,51 @@ import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import classnames from 'classnames';
 import styles from './StakePoolsSearch.scss';
 import searchIcon from '../../../assets/images/search.inline.svg';
 
 const messages = defineMessages({
   searchInputPlaceholder: {
-    id: 'staking.stakePools.searchInputPlaceholder',
+    id: 'staking.stakePools.search.searchInputPlaceholder',
     defaultMessage: '!!!Search stake pools',
     description: '"Delegating List Title" for the Stake Pools page.',
   },
   filterAll: {
-    id: 'staking.stakePools.filterAll',
+    id: 'staking.stakePools.search.filterAll',
     defaultMessage: '!!!All',
     description: '"Filter All" for the Stake Pools page.',
   },
   filterNew: {
-    id: 'staking.stakePools.filterNew',
+    id: 'staking.stakePools.search.filterNew',
     defaultMessage: '!!!New',
     description: '"Filter New" for the Stake Pools page.',
   },
   filterCharity: {
-    id: 'staking.stakePools.filterCharity',
+    id: 'staking.stakePools.search.filterCharity',
     defaultMessage: '!!!Charity',
     description: '"FilterChar ity" for the Stake Pools page.',
   },
   delegatingListTitle: {
-    id: 'staking.stakePools.delegatingListTitle',
+    id: 'staking.stakePools.search.delegatingListTitle',
     defaultMessage: '!!!Stake pools you are currently delegating to',
     description: '"delegatingListTitlee" for the Stake Pools page.',
   },
   listTitle: {
-    id: 'staking.stakePools.listTitle',
+    id: 'staking.stakePools.search.listTitle',
     defaultMessage: '!!!Stake pools ({pools})',
     description: '"listTitle" for the Stake Pools page.',
   },
 });
 
 type Props = {
-  search: string,
-  filter: string,
+  filter?: string,
+  label?: string,
+  placeholder?: string,
   onSearch: Function,
-  onFilterChange: Function,
+  onFilterChange?: Function,
   registerSearchInput: Function,
+  search: string,
 };
 
 export class StakePoolsSearch extends Component<Props> {
@@ -54,20 +57,26 @@ export class StakePoolsSearch extends Component<Props> {
   };
 
   getFilterItemClassName = (item: string) =>
-    item === this.props.filter ? styles.searchFilterActiveItem : null;
+    classnames({
+      [styles.searchFilterActiveItem]:
+        this.props.filter && this.props.filter === item,
+    });
 
   render() {
     const { intl } = this.context;
     const {
-      search,
+      label,
       onSearch,
       onFilterChange,
+      placeholder,
       registerSearchInput,
+      search,
     } = this.props;
 
-    const filterAll = onFilterChange.bind(this, 'all');
-    const filterNew = onFilterChange.bind(this, 'new');
-    const filterCharity = onFilterChange.bind(this, 'charity');
+    const filterAll = onFilterChange && onFilterChange.bind(this, 'all');
+    const filterNew = onFilterChange && onFilterChange.bind(this, 'new');
+    const filterCharity =
+      onFilterChange && onFilterChange.bind(this, 'charity');
 
     return (
       <div className={styles.component}>
@@ -75,40 +84,45 @@ export class StakePoolsSearch extends Component<Props> {
           <SVGInline svg={searchIcon} className={styles.searchIcon} />
           <Input
             autoFocus
+            label={label || null}
             className={styles.searchInput}
             onChange={onSearch}
             ref={input => registerSearchInput(input)}
-            placeholder={intl.formatMessage(messages.searchInputPlaceholder)}
+            placeholder={
+              placeholder || intl.formatMessage(messages.searchInputPlaceholder)
+            }
             skin={InputSkin}
             value={search}
             maxLength={150}
           />
-          <ul className={styles.searchFilter}>
-            <li>
-              <button
-                onClick={filterAll}
-                className={this.getFilterItemClassName('all')}
-              >
-                {intl.formatMessage(messages.filterAll)}
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={filterNew}
-                className={this.getFilterItemClassName('new')}
-              >
-                {intl.formatMessage(messages.filterNew)}
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={filterCharity}
-                className={this.getFilterItemClassName('charity')}
-              >
-                {intl.formatMessage(messages.filterCharity)}
-              </button>
-            </li>
-          </ul>
+          {onFilterChange && (
+            <ul className={styles.searchFilter}>
+              <li>
+                <button
+                  onClick={filterAll}
+                  className={this.getFilterItemClassName('all')}
+                >
+                  {intl.formatMessage(messages.filterAll)}
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={filterNew}
+                  className={this.getFilterItemClassName('new')}
+                >
+                  {intl.formatMessage(messages.filterNew)}
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={filterCharity}
+                  className={this.getFilterItemClassName('charity')}
+                >
+                  {intl.formatMessage(messages.filterCharity)}
+                </button>
+              </li>
+            </ul>
+          )}
         </div>
       </div>
     );

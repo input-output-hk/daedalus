@@ -1,9 +1,10 @@
 // @flow
 import React, { Component } from 'react';
+import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
-import spinnerIcon from '../../assets/images/top-bar/node-sync-spinner.png';
-import syncedIcon from '../../assets/images/top-bar/node-sync-synced.png';
+import spinnerIcon from '../../assets/images/top-bar/node-sync-spinner.inline.svg';
+import syncedIcon from '../../assets/images/top-bar/node-sync-synced.inline.svg';
 import styles from './NodeSyncStatusIcon.scss';
 
 const messages = defineMessages({
@@ -38,9 +39,10 @@ export default class NodeSyncStatusIcon extends Component<Props> {
       isSynced ? styles.synced : styles.syncing,
       isMainnet && styles.mainnet,
     ]);
+
     return (
       <div className={componentClasses}>
-        <img className={styles.icon} src={statusIcon} role="presentation" />
+        <SVGInline className={styles.icon} svg={statusIcon} />
         <div className={styles.info}>
           {intl.formatMessage(messages.blocksSynced, {
             percentage: syncPercentage.toFixed(0),

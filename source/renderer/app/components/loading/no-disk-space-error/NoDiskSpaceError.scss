@@ -1,0 +1,60 @@
+@import '../../../themes/mixins/animations';
+
+.component {
+  align-items: center;
+  background-color: var(--theme-loading-no-disk-space-background-color);
+  bottom: 0;
+  box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25);
+  color: var(--theme-loading-no-disk-space-text-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  left: 0;
+  padding: 50px;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: 0;
+  z-index: 1;
+
+  .icon {
+    margin-bottom: 36px;
+    object-fit: contain;
+    & > svg {
+      height: 110px;
+      width: 110px;
+      path {
+        fill: var(--theme-loading-no-disk-space-attention-icon-color);
+      }
+      path:nth-child(1) {
+        opacity: 0.2;
+      }
+      path:nth-child(2) {
+        opacity: 0.6;
+      }
+    }
+  }
+
+  h1,
+  p,
+  button {
+    font-family: var(--font-regular);
+  }
+
+  h1 {
+    font-size: 20px;
+    line-height: 1.2;
+    margin-bottom: 8.5px;
+  }
+
+  p {
+    font-size: 16px;
+    line-height: 1.38;
+    margin-bottom: 20px;
+    opacity: 0.8;
+  }
+
+  b {
+    font-weight: bold;
+  }
+}

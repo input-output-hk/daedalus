@@ -11,7 +11,6 @@ import './DeleteWalletConfirmationDialog.stories';
 import './WalletTransactionsList.stories';
 import './ExportWalletToFileDialog.stories';
 import './PaperWallets.stories';
-import './ManualUpdateOverlay.stories';
 
 // Staking
 import './Staking.stories';
@@ -24,6 +23,9 @@ import './LanguageSelectionForm.stories';
 
 // Loading
 import './Loading.stories';
+
+// Diagnostics
+import './Diagnostics.stories';
 
 // Navigation
 import './Sidebar.stories';

@@ -1,3 +1,5 @@
+@import '../../themes/mixins/link';
+
 .component {
   background-color: var(--theme-block-consolidation-background-color);
   display: flex;
@@ -11,12 +13,49 @@
   .learnMoreButton {
     background-color: var(--theme-block-consolidation-button-background-color);
     border: solid 1px var(--theme-block-consolidation-button-border-color);
+
+    p {
+      color: var(--theme-block-consolidation-button-text-color);
+    }
+
+    .externalLinkIcon {
+      @include link(--theme-block-consolidation-button-icon-color);
+      border-bottom: none;
+      margin-right: 12px;
+      svg {
+        margin-left: 0;
+        width: 15px;
+      }
+    }
+
     &:not(.disabled):hover {
-      border: none;
-      color: var(--theme-block-consolidation-button-text-color-hover);
       background-color: var(
         --theme-block-consolidation-button-background-color-hover
       );
+      border-color: var(--theme-block-consolidation-button-border-color-hover);
+      p {
+        color: var(--theme-block-consolidation-button-text-color-hover);
+      }
+      .externalLinkIcon {
+        g {
+          stroke: var(--theme-block-consolidation-button-icon-color-hover);
+        }
+      }
+    }
+
+    &:not(.disabled):active {
+      background-color: var(
+        --theme-block-consolidation-button-background-color-active
+      );
+      border-color: var(--theme-block-consolidation-button-border-color-hover);
+      p {
+        color: var(--theme-block-consolidation-button-text-color-hover);
+      }
+      .externalLinkIcon {
+        g {
+          stroke: var(--theme-block-consolidation-button-icon-color-hover);
+        }
+      }
     }
   }
 }
@@ -38,15 +77,15 @@
 .content {
   border-radius: 4px;
   font-family: var(--font-regular);
+  line-height: 1.2;
   margin: 20px;
   padding: 20px;
   text-align: center;
 
   h1 {
     color: var(--theme-block-consolidation-title-text-color);
-    font-size: 19px;
-    font-weight: 600;
-    margin-bottom: 14px;
+    font-size: 20px;
+    margin-bottom: 16px;
   }
 
   p {
@@ -65,7 +104,7 @@
   }
 
   &:last-of-type {
-    margin-bottom: 40px;
+    margin-bottom: 29px;
   }
 }
 .descriptionNoCurrentEpoch {
@@ -76,7 +115,7 @@
 
 .epochs {
   height: 149px;
-  margin: 0 auto 60px;
+  margin: 0 auto 59px;
   position: relative;
   width: 620px;
 
@@ -98,9 +137,10 @@
       font-weight: 600;
     }
   }
-
-  img {
-    width: 100%;
+  svg {
+    g {
+      fill: var(--theme-block-consolidation-epochs-image-color);
+    }
   }
 }
 .epochsNoCurrentEpoch {

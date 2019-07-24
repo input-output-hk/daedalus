@@ -11,23 +11,24 @@ import {
   hasDataExisting,
   sortData,
 } from './helpers.js';
+import type { EpochData } from '../../../api/staking/types';
 import styles from './StakingEpochs.scss';
 
 const messages = defineMessages({
   tableHeaderPool: {
-    id: 'staking.epochs.tableHeader.pool',
+    id: 'staking.epochs.currentEpoch.tableHeader.pool',
     defaultMessage: '!!!Stake pool',
     description: 'Table header "Stake pool" label on staking epochs page',
   },
   tableHeaderSlotsElected: {
-    id: 'staking.epochs.tableHeader.slotsElected',
+    id: 'staking.epochs.currentEpoch.tableHeader.slotsElected',
     defaultMessage: '!!!Slots elected',
     description: 'Table header "Slots elected" label on staking epochs page',
   },
 });
 
 type Props = {
-  currentEpochData: any,
+  currentEpochData: EpochData,
   isLoading: boolean,
 };
 
@@ -96,8 +97,8 @@ export default class StakingEpochsCurrentEpochData extends Component<
     const tableBody = (
       <tbody>
         {map(sortedData, (row, key) => {
-          const poolCategory = get(row, ['pool', 'category'], '');
-          const poolTitle = get(row, ['pool', 'title'], '');
+          const poolSlug = get(row, ['pool', 'slug'], '');
+          const poolName = get(row, ['pool', 'name'], '');
           const slotsElected = get(row, 'slotsElected', [0]);
 
           return (
@@ -105,9 +106,9 @@ export default class StakingEpochsCurrentEpochData extends Component<
               <td>
                 <p>
                   <span className={styles.stakePoolReference}>
-                    [{poolCategory}]
+                    [{poolSlug}]
                   </span>{' '}
-                  {poolTitle}
+                  {poolName}
                 </p>
               </td>
               <td>

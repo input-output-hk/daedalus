@@ -4,7 +4,11 @@ import path from 'path';
 import { app, BrowserWindow, shell } from 'electron';
 import { client } from 'electron-connect';
 import { Logger } from './utils/logging';
-import { setupLogging, logSystemInfo } from './utils/setupLogging';
+import {
+  setupLogging,
+  logSystemInfo,
+  logStateSnapshot,
+} from './utils/setupLogging';
 import { getNumberOfEpochsConsolidated } from './utils/getNumberOfEpochsConsolidated';
 import { handleDiskSpace } from './utils/handleDiskSpace';
 import { createMainWindow } from './windows/main';
@@ -31,6 +35,7 @@ import { getStateDirectoryPathChannel } from './ipc/getStateDirectoryPathChannel
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
 import { logUsedVersion } from './utils/logUsedVersion';
+import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 
 /* eslint-disable consistent-return */
 
@@ -43,7 +48,6 @@ const {
   isWatchMode,
   isInSafeMode,
   network,
-  current,
   os: osName,
   version: daedalusVersion,
   buildNumber: cardanoVersion,
@@ -88,7 +92,6 @@ const onAppReady = async () => {
   const systemInfo = logSystemInfo({
     cardanoVersion,
     cpu,
-    current,
     daedalusVersion,
     isInSafeMode,
     network,
@@ -155,6 +158,10 @@ const onAppReady = async () => {
   detectSystemLocaleChannel.onRequest(() => Promise.resolve(systemLocale));
 
   getNumberOfEpochsConsolidated();
+
+  setStateSnapshotLogChannel.onReceive(data => {
+    return Promise.resolve(logStateSnapshot(data));
+  });
 
   getStateDirectoryPathChannel.onRequest(() =>
     Promise.resolve(stateDirectoryPath)

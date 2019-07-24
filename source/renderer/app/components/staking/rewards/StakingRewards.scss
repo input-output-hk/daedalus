@@ -1,5 +1,6 @@
+@import '../../../themes/mixins/link';
 .component {
-  padding: 20px 20px 0;
+  padding: 20px;
 
   .headerWrapper {
     display: flex;
@@ -39,12 +40,16 @@
     line-height: 1.43;
     padding: 10px 20px;
     & > button {
-      color: var(--theme-staking-link-color-light);
-      cursor: pointer;
+      @include link(--theme-staking-link-color-light);
       font-size: 14px;
-      text-decoration: underline;
       &:hover {
+        border-bottom: 1px solid var(--theme-staking-link-color);
         color: var(--theme-staking-link-color);
+        svg {
+          g {
+            stroke: var(--theme-staking-link-color);
+          }
+        }
       }
     }
   }
@@ -119,6 +124,7 @@
         display: -webkit-box;
         overflow: hidden;
         text-overflow: ellipsis;
+        word-break: break-all;
         -webkit-line-clamp: 1;
         -webkit-box-orient: vertical;
 

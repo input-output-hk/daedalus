@@ -11,16 +11,18 @@ import {
   hasDataExisting,
   sortData,
 } from './helpers.js';
+import type { EpochData } from '../../../api/staking/types';
 import styles from './StakingEpochs.scss';
+import globalMessages from '../../../i18n/global-messages';
 
 const messages = defineMessages({
   tableHeaderPool: {
-    id: 'staking.epochs.tableHeader.pool',
+    id: 'staking.epochs.previousEpoch.tableHeader.pool',
     defaultMessage: '!!!Stake pool',
     description: 'Table header "Stake pool" label on staking epochs page',
   },
   tableHeaderSlotsElected: {
-    id: 'staking.epochs.tableHeader.slotsElected',
+    id: 'staking.epochs.previousEpoch.tableHeader.slotsElected',
     defaultMessage: '!!!Slots elected',
     description: 'Table header "Slots elected" label on staking epochs page',
   },
@@ -44,15 +46,10 @@ const messages = defineMessages({
     defaultMessage: '!!!of',
     description: '"of" text in table body on staking epochs page',
   },
-  tableBodyAda: {
-    id: 'environment.currency.ada',
-    defaultMessage: '!!!Ada',
-    description: '"Ada" text in table body on staking epochs page',
-  },
 });
 
 type Props = {
-  previousEpochData: any,
+  previousEpochData: EpochData,
   isLoading: boolean,
 };
 
@@ -121,8 +118,8 @@ export default class StakingEpochsPreviousEpochData extends Component<
     const tableBody = (
       <tbody>
         {map(sortedData, (row, key) => {
-          const poolCategory = get(row, ['pool', 'category'], '');
-          const poolTitle = get(row, ['pool', 'title'], '');
+          const poolSlug = get(row, ['pool', 'slug'], '');
+          const poolName = get(row, ['pool', 'name'], '');
           const slotsElected = get(row, 'slotsElected', [0, 0]);
           const performance = get(row, 'performance', [0, 0, 0]);
           const sharedRewards = get(row, 'sharedRewards', [0, 0]);
@@ -132,9 +129,9 @@ export default class StakingEpochsPreviousEpochData extends Component<
               <td>
                 <p>
                   <span className={styles.stakePoolReference}>
-                    [{poolCategory}]
+                    [{poolSlug}]
                   </span>{' '}
-                  {poolTitle}
+                  {poolName}
                 </p>
               </td>
               <td>
@@ -157,12 +154,12 @@ export default class StakingEpochsPreviousEpochData extends Component<
               <td>
                 <span className={styles.mediumText}>{sharedRewards[0]}</span>
                 <span className={styles.uppercaseText}>{` ${intl.formatMessage(
-                  messages.tableBodyAda
+                  globalMessages.currency
                 )} `}</span>
                 <span>{`${intl.formatMessage(messages.tableBodyOf)} `}</span>
                 <span className={styles.mediumText}>{sharedRewards[1]}</span>
                 <span className={styles.uppercaseText}>{` ${intl.formatMessage(
-                  messages.tableBodyAda
+                  globalMessages.currency
                 )}`}</span>
               </td>
             </tr>

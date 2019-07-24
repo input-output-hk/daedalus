@@ -1,3 +1,5 @@
+@import '../../themes/mixins/link';
+
 .container {
   display: flex;
   flex-direction: column;
@@ -28,8 +30,8 @@
       margin-top: 16px;
       width: 12px;
 
-      polygon {
-        fill: var(--theme-about-window-icon-close-button-color);
+      g {
+        stroke: var(--theme-about-window-icon-close-button-color);
       }
     }
   }
@@ -140,9 +142,9 @@
     }
 
     .link {
+      @include link(--theme-about-window-content-color);
       color: var(--theme-about-window-content-color);
       cursor: pointer;
-      text-decoration: underline;
     }
 
     .copyright {

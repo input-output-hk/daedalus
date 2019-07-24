@@ -1,4 +1,8 @@
 // @flow
+import type { CardanoNodeState } from './cardano-node.types';
+import type { SystemInfo } from '../../renderer/app/types/systemInfoTypes';
+import type { CoreSystemInfo } from '../../renderer/app/types/coreSystemInfoTypes';
+
 export type FormatMessageContextParams = {
   appName: string,
   electronProcess: string,
@@ -39,7 +43,6 @@ export type ElectronLoggerMessage = {
 export type LogSystemInfoParams = {
   cardanoVersion: string,
   cpu: Array<Object>,
-  current: string,
   daedalusVersion: string,
   isInSafeMode: boolean,
   network: string,
@@ -47,4 +50,31 @@ export type LogSystemInfoParams = {
   platformVersion: string,
   ram: string,
   startTime: string,
+};
+
+export type StateSnapshotLogParams = {
+  systemInfo: SystemInfo,
+  coreInfo: CoreSystemInfo,
+  cardanoNodeState: CardanoNodeState | any,
+  currentLocale: string,
+  isConnected: boolean,
+  isDev: boolean,
+  isForceCheckingNodeTime: boolean,
+  isMainnet: boolean,
+  isNodeInSync: boolean,
+  isNodeResponding: boolean,
+  isNodeSubscribed: boolean,
+  isNodeSyncing: boolean,
+  isNodeTimeCorrect: boolean,
+  isStaging: boolean,
+  isSynced: boolean,
+  isSystemTimeCorrect: boolean,
+  isSystemTimeIgnored: boolean,
+  isTestnet: boolean,
+  latestLocalBlockTimestamp: number,
+  latestNetworkBlockTimestamp: number,
+  localBlockHeight: number,
+  localTimeDifference: ?number,
+  networkBlockHeight: number,
+  currentTime: string,
 };

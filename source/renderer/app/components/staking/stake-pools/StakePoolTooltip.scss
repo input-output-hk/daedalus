@@ -1,4 +1,5 @@
 @import '../stakingConfig';
+@import '../../../themes/mixins/link';
 
 .component {
   @extend %regularText;
@@ -7,77 +8,11 @@
   border: 1px solid var(--theme-staking-stake-pool-tooltip-border-color);
   box-shadow: 0 1.5px 5px 0 var(--theme-staking-stake-pool-tooltip-shadow-color);
   display: none;
-  left: 50px;
-  margin: 20px;
   padding: 10px;
   position: absolute;
-  top: -21px;
   user-select: text;
   width: 240px;
   z-index: 1;
-
-  &:before,
-  &:after {
-    border-color: transparent;
-    border-style: solid;
-    content: '';
-    display: block;
-    height: 0;
-    position: absolute;
-    width: 0;
-  }
-
-  /* triangle bg color */
-  &:after {
-    border-right-color: var(
-      --theme-staking-stake-pool-tooltip-background-color
-    );
-    border-width: 10px;
-    left: -20px;
-    top: 24px;
-  }
-
-  /* triangle border */
-  &:before {
-    border-right-color: var(--theme-staking-stake-pool-tooltip-border-color);
-    border-width: 11px;
-    left: -22px;
-    top: 23px;
-  }
-
-  &.flipHorizontal {
-    left: auto;
-    right: 45px;
-
-    &:after {
-      border-right-color: transparent;
-      border-left-color: var(
-        --theme-staking-stake-pool-tooltip-background-color
-      );
-      left: auto;
-      right: -20px;
-    }
-    &:before {
-      border-right-color: transparent;
-      border-left-color: var(--theme-staking-stake-pool-tooltip-border-color);
-      left: auto;
-      right: -22px;
-    }
-  }
-
-  &.flipVertical {
-    top: auto;
-    bottom: -21px;
-
-    &:after {
-      top: auto;
-      bottom: 21px;
-    }
-    &:before {
-      top: auto;
-      bottom: 20px;
-    }
-  }
 
   :global {
     button.SimpleButton_root {
@@ -129,12 +64,78 @@
   width: 100%;
 }
 
+.arrow {
+  width: 0px;
+  height: 0px;
+  border-color: transparent;
+  border-style: solid;
+  position: absolute;
+
+  &:before {
+    border-color: transparent;
+    border-style: solid;
+    content: '';
+    display: block;
+    height: 0;
+    position: absolute;
+    width: 0;
+  }
+
+  &.tooltipPositionTop {
+    border-top-color: var(--theme-staking-stake-pool-tooltip-border-color);
+    border-width: 11px 11px 0 11px;
+    &:before {
+      border-top-color: var(
+        --theme-staking-stake-pool-tooltip-background-color
+      );
+      border-width: 10px 10px 0px 10px;
+      top: -11px;
+      left: -10px;
+    }
+  }
+  &.tooltipPositionRight {
+    border-right-color: var(--theme-staking-stake-pool-tooltip-border-color);
+    border-width: 11px 11px 11px 0;
+    &:before {
+      border-right-color: var(
+        --theme-staking-stake-pool-tooltip-background-color
+      );
+      border-width: 10px 10px 10px 0px;
+      right: -11px;
+      top: -10px;
+    }
+  }
+  &.tooltipPositionBottom {
+    border-bottom-color: var(--theme-staking-stake-pool-tooltip-border-color);
+    border-width: 0 11px 11px 11px;
+    &:before {
+      border-bottom-color: transparent;
+      border-width: 0px 10px 10px 10px;
+      top: -11px;
+      left: -10px;
+    }
+  }
+  &.tooltipPositionLeft {
+    border-left-color: var(--theme-staking-stake-pool-tooltip-border-color);
+    border-width: 11px 0 11px 11px;
+    &:before {
+      border-left-color: var(
+        --theme-staking-stake-pool-tooltip-background-color
+      );
+      border-width: 10px 0px 10px 10px;
+      left: -11px;
+      top: -10px;
+    }
+  }
+}
+
 .isVisible {
   display: block;
 }
 
 .name {
   color: var(--theme-staking-stake-pool-tooltip-text-color);
+  font-family: var(--font-semibold);
   font-size: 16px;
   letter-spacing: 0.5px;
   line-height: 1.38;
@@ -161,7 +162,7 @@
   }
 }
 
-.id {
+.slug {
   color: var(--theme-staking-stake-pool-tooltip-text-color);
   display: inline-block;
   font-size: 14px;
@@ -196,12 +197,17 @@
 }
 
 .url {
-  color: var(--theme-staking-stake-pool-tooltip-link-color);
-  cursor: pointer;
+  @include link(--theme-staking-stake-pool-tooltip-link-color);
   font-size: 14px;
   line-height: 1.36;
   margin-bottom: 18px;
-  text-decoration: underline;
+
+  & > span {
+    vertical-align: text-top;
+    svg {
+      vertical-align: baseline;
+    }
+  }
 }
 
 .table {

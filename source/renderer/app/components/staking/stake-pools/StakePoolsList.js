@@ -5,12 +5,16 @@ import { debounce } from 'lodash';
 import styles from './StakePoolsList.scss';
 import type { StakePool } from '../../../api/staking/types';
 import { StakePoolThumbnail } from './StakePoolThumbnail';
-import { rangeMap } from '../../../utils/rangeMap';
 
 type Props = {
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
   currentTheme: string,
+  highlightOnHover?: boolean,
+  onSelect?: Function,
+  showWithSelectButton?: boolean,
+  showSelected?: boolean,
+  containerClassName: string,
   /**
    *
    * If the parent component has more than one <StakePoolsList />
@@ -21,24 +25,22 @@ type Props = {
   listName?: string,
   isListActive?: boolean,
   setListActive?: Function,
+  selectedPoolId?: ?number,
 };
 
 type State = {
-  selectedIndex?: ?number,
-  flipHorizontal: boolean,
-  flipVertical: boolean,
+  highlightedPoolId?: ?number,
 };
 
 const initialState = {
-  selectedIndex: null,
-  flipHorizontal: false,
-  flipVertical: false,
+  highlightedPoolId: null,
 };
 
 @observer
 export class StakePoolsList extends Component<Props, State> {
   static defaultProps = {
     isListActive: true,
+    showWithSelectButton: false,
   };
 
   constructor(props: Props) {
@@ -59,70 +61,65 @@ export class StakePoolsList extends Component<Props, State> {
 
   searchInput: ?HTMLElement = null;
 
-  getIndex = (ranking: number) =>
-    rangeMap(ranking, 1, this.props.stakePoolsList.length, 0, 99);
+  getIsHighlighted = (id: string) =>
+    this.props.isListActive !== false && id === this.state.highlightedPoolId;
 
-  getIsSelected = (index: number) => index === this.state.selectedIndex;
-
-  handleClick = (
-    event: SyntheticMouseEvent<HTMLElement>,
-    selectedIndex: number
-  ) => {
+  handleOpenThumbnail = (highlightedPoolId: number) => {
     const { isListActive, setListActive, listName } = this.props;
     if (isListActive === false && setListActive) setListActive(listName);
-    if (this.state.selectedIndex === selectedIndex) {
-      return this.handleClose();
-    }
-    event.persist();
-    if (event.target instanceof HTMLElement) {
-      const targetElement =
-        event.target.className === 'StakePool_content'
-          ? event.target
-          : event.target.parentNode;
-      if (targetElement instanceof HTMLElement) {
-        const { top, left } = targetElement.getBoundingClientRect();
-        const flipHorizontal = left > window.innerWidth - window.innerWidth / 2;
-        const flipVertical = top > window.innerHeight - window.innerHeight / 2;
-        return this.setState({
-          selectedIndex,
-          flipHorizontal,
-          flipVertical,
-        });
-      }
-    }
-    return false;
+    return this.setState({
+      highlightedPoolId,
+    });
   };
 
-  handleClose = () => this.setState({ ...initialState });
+  handleClose = () => {
+    this.setState({
+      ...initialState,
+    });
+  };
+
+  handleSelect = (stakePoolId: number) => {
+    const { onSelect } = this.props;
+    const selectedPoolId =
+      this.props.selectedPoolId === stakePoolId ? null : stakePoolId;
+    if (onSelect) {
+      onSelect(selectedPoolId);
+    }
+  };
 
   render() {
     const {
-      stakePoolsList,
-      onOpenExternalLink,
       currentTheme,
-      isListActive,
+      highlightOnHover,
+      onOpenExternalLink,
+      showSelected,
+      showWithSelectButton,
+      stakePoolsList,
+      selectedPoolId,
+      containerClassName,
     } = this.props;
-
-    const { flipHorizontal, flipVertical } = this.state;
 
     return (
       <div className={styles.component}>
         {stakePoolsList.map(stakePool => {
-          const index = this.getIndex(stakePool.ranking);
-          const isSelected =
-            this.getIsSelected(stakePool.ranking) && isListActive !== false;
+          const isHighlighted = this.getIsHighlighted(stakePool.id);
+          const isSelected = selectedPoolId && stakePool.id === selectedPoolId;
+
           return (
             <StakePoolThumbnail
               stakePool={stakePool}
               key={stakePool.id + stakePool.ranking}
               onOpenExternalLink={onOpenExternalLink}
-              isSelected={isSelected}
+              isHighlighted={isHighlighted}
               onClose={this.handleClose}
-              onClick={this.handleClick}
+              onClick={!highlightOnHover && this.handleOpenThumbnail}
+              onHover={highlightOnHover && this.handleOpenThumbnail}
+              onSelect={this.handleSelect}
+              showWithSelectButton={showWithSelectButton}
               currentTheme={currentTheme}
-              flipHorizontal={flipHorizontal}
-              flipVertical={flipVertical}
-              index={index}
+              isSelected={isSelected}
+              showSelected={showSelected}
+              containerClassName={containerClassName}
             />
           );
         })}

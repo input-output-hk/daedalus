@@ -1,0 +1,104 @@
+[
+  {
+    "date": "15.01.2019",
+    "wallet": "Main Wallet",
+    "amount": 0.2,
+    "pool": {
+      "id": "a476343dd1dd57d680656224886ad9c11b5c44f6331bf029e9008a702713eda4",
+      "ranking": 1,
+      "slug": "ELSAC",
+      "name": "Cefuroxime",
+      "description": "Abdominoperineal resection of the rectum, not otherwise specified",
+      "url": "https://technorati.com",
+      "controlledStake": 65,
+      "profitMargin": 43,
+      "performance": 9,
+      "retiring": null
+    }
+  },
+  {
+    "date": "15.01.2019",
+    "wallet": "Spending Money",
+    "amount": 1.003,
+    "pool": {
+      "id": "afd042672ed0212d074c5814771dc0f9d696b0fe3ca00c6bf613c1843f70419d",
+      "ranking": 2,
+      "slug": "MOCO",
+      "name": "Cyclobenzaprine Hydrochloride",
+      "description": "Other and unspecified repair of atrial septal defect",
+      "url": "https://amazon.de",
+      "controlledStake": 47,
+      "profitMargin": 62,
+      "performance": 90,
+      "retiring": null
+    }
+  },
+  {
+    "date": "10.01.2019",
+    "wallet": "Spending Money",
+    "amount": 2,
+    "pool": {
+      "id": "4484e2076b4604250f63032644acf37f0630e208b5d03378d546f747f9b7d3ff",
+      "ranking": 3,
+      "slug": "IMMR",
+      "name": "Hydrochlorothiazide",
+      "description": "Other operations on ossicular chain",
+      "url": "https://springer.com",
+      "controlledStake": 63,
+      "profitMargin": 63,
+      "performance": 40,
+      "retiring": null
+    }
+  },
+  {
+    "date": "10.01.2019",
+    "wallet": "Saving",
+    "amount": 0.9,
+    "pool": {
+      "id": "b537af120298162372fc393d87e35803a8573a654786838e7a34b8d2354ec2fb",
+      "ranking": 4,
+      "slug": "ORAN",
+      "name": "Prednisone",
+      "description": "Removal of intraocular foreign body from anterior segment of eye with use of magnet",
+      "url": "http://cisco.com",
+      "controlledStake": 69,
+      "profitMargin": 76,
+      "performance": 40,
+      "retiring": null
+    }
+  },
+  {
+    "date": "10.01.2019",
+    "wallet": "Main Wallet",
+    "amount": 0.2,
+    "pool": {
+      "id": "9438c572026bf8a7019ae1733e4c6a1b4208fc12291e4788a7db70891d6bdb97",
+      "ranking": 5,
+      "slug": "ITUB",
+      "name": "Cefadroxil",
+      "description": "Operations on thalamus",
+      "url": "http://stumbleupon.com",
+      "controlledStake": 75,
+      "profitMargin": 86,
+      "performance": 67,
+      "retiring": null
+    }
+  },
+  {
+    "date": "05.01.2019",
+    "wallet": "Main Wallet",
+    "amount": 1.6,
+    "pool": {
+      "id": "9eebf901e2ab6ee31eddd54b9725df5b59f23a531f5cb6d547b69f3fa880df89",
+      "ranking": 6,
+      "slug": "MKL",
+      "name": "Topcare Nite Time Cold and Flu",
+      "description": "Closed reduction of fracture without internal fixation, femur",
+      "url": "http://soundcloud.com",
+      "controlledStake": 69,
+      "profitMargin": 89,
+      "performance": 79,
+      "retiring": null
+    }
+  }
+]
