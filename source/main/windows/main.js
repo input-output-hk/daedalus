@@ -71,21 +71,21 @@ export const createMainWindow = (locale: string) => {
   // Minimum Linux/Mac height of window
   const linuxMacWindowHeight = 560;
 
-  // Default Windows title bar height - (based on default value from Windows 10)
-  const windowsTitleBarHeight = 32;
+  // Default Windows title bar + status bar - (based on default values from Windows 10)
+  const windowsTopBarHeight = 50;
 
   // Default Linux/Mac title bar height
-  const linuxMacTitleBarHeight = 40;
+  const linuxMacTopBarHeight = 40;
 
   // Minimum windows height
   let minWindowsHeight;
 
   switch (platform) {
     case WINDOWS:
-      minWindowsHeight = windowsWindowHeight - windowsTitleBarHeight;
+      minWindowsHeight = windowsWindowHeight - windowsTopBarHeight;
       break;
     case LINUX || MAC_OS:
-      minWindowsHeight = linuxMacWindowHeight - linuxMacTitleBarHeight;
+      minWindowsHeight = linuxMacWindowHeight - linuxMacTopBarHeight;
       break;
     default:
       minWindowsHeight = 600;
