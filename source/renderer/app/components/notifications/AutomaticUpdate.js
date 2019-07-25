@@ -94,7 +94,11 @@ export default class AutomaticUpdate extends Component<Props> {
               skin={ButtonSkin}
             />
 
-            <span className={styles.postponeButton} onClick={onPostpone}>
+            <span
+              className={styles.postponeButton}
+              onClick={onPostpone}
+              role="presentation"
+            >
               {formatMessage(messages.postponeButtonLabel)}
             </span>
           </div>

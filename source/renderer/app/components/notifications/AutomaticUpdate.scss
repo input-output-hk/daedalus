@@ -57,7 +57,8 @@
         background-color: var(
           --theme-automatic-update-overlay-button-background-color
         );
-        border: solid 1px var(--theme-automatic-update-overlay-button-border-color);
+        border: solid 1px
+          var(--theme-automatic-update-overlay-button-border-color);
         display: block;
         font-weight: 500;
         line-height: 1.36;
@@ -75,18 +76,23 @@
           color: var(--theme-automatic-update-overlay-button-text-color-hover);
 
           .btnLabel {
-            color: var(--theme-automatic-update-overlay-button-label-color-hover);
+            color: var(
+              --theme-automatic-update-overlay-button-label-color-hover
+            );
           }
         }
       }
 
       .postponeButton {
-        @include link(--theme-automatic-update-overlay-button-label-color-light);
+        @include link(
+          --theme-automatic-update-overlay-button-label-color-light
+        );
         font-size: 14px;
         margin: 20px auto;
         &:hover {
           color: var(--theme-automatic-update-overlay-button-label-color);
-          border-bottom: 1px solid var(--theme-automatic-update-overlay-button-label-color);
+          border-bottom: 1px solid
+            var(--theme-automatic-update-overlay-button-label-color);
         }
       }
 
@@ -105,7 +111,9 @@
 
           &:hover {
             border-radius: 50%;
-            background-color: var(--theme-automatic-update-overlay-close-button-hover-background);
+            background-color: var(
+              --theme-automatic-update-overlay-close-button-hover-background
+            );
           }
         }
 

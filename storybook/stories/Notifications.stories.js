@@ -10,14 +10,14 @@ import StoryDecorator from './support/StoryDecorator';
 import AutomaticUpdate from '../../source/renderer/app/components/notifications/AutomaticUpdate';
 
 storiesOf('Notifications', module)
-  .addDecorator(story =>  <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 
   .add('AutomaticUpdate', () => (
     <AutomaticUpdate
-      currentAppVersion='0.12.0'
-      availableAppVersion='0.14.0'
+      currentAppVersion="0.12.0"
+      availableAppVersion="0.14.0"
       onAccept={action('onAccept')}
       onPostpone={action('onPostpone')}
     />

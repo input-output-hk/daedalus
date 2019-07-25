@@ -297,13 +297,19 @@ export const createDaedalusComponentsTheme = (
       '--theme-automatic-update-overlay-button-text-color-hover': `${
         background.secondary.regular
       }`,
-      '--theme-automatic-update-overlay-button-border-color': `${text.secondary}`,
+      '--theme-automatic-update-overlay-button-border-color': `${
+        text.secondary
+      }`,
       '--theme-automatic-update-overlay-text-color': `${chroma(
         text.secondary
       ).alpha(0.7)}`,
-      '--theme-automatic-update-overlay-text-highlight-color': `${text.secondary}`,
+      '--theme-automatic-update-overlay-text-highlight-color': `${
+        text.secondary
+      }`,
       '--theme-automatic-update-overlay-title-text-color': `${text.secondary}`,
-      '--theme-automatic-update-overlay-button-label-color': `${text.secondary}`,
+      '--theme-automatic-update-overlay-button-label-color': `${
+        text.secondary
+      }`,
       '--theme-automatic-update-overlay-button-label-color-hover': `${
         text.secondary
       }`,

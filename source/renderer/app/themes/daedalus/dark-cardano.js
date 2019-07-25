@@ -184,9 +184,11 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-automatic-update-overlay-title-text-color': '#ffffff',
     '--theme-automatic-update-overlay-button-label-color': '#ffffff',
     '--theme-automatic-update-overlay-button-label-color-hover': '#000000',
-    '--theme-automatic-update-overlay-button-label-color-light': 'rgba(255, 255, 255, 0.8)',
+    '--theme-automatic-update-overlay-button-label-color-light':
+      'rgba(255, 255, 255, 0.8)',
     '--theme-automatic-update-overlay-close-button-color': '#fff',
-    '--theme-automatic-update-overlay-close-button-hover-background': 'rgba(0, 0, 0, 0.1)',
+    '--theme-automatic-update-overlay-close-button-hover-background':
+      'rgba(0, 0, 0, 0.1)',
   },
   blockConsolidation: {
     '--theme-block-consolidation-background-color': '#36374df5',
