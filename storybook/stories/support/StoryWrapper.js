@@ -53,8 +53,19 @@ export default class StoryWrapper extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    const themeName = this.params.get('themeName') || themeNames[0];
-    const localeName = this.params.get('localeName') || localeNames[0];
+    const themeName =
+      this.params.get('themeName') ||
+      sessionStorage.getItem('themeName') ||
+      themeNames[0];
+    const localeName =
+      this.params.get('localeName') ||
+      sessionStorage.getItem('localeName') ||
+      localeNames[0];
+
+    if (!parent.window.location.hash) {
+      this.setHashParam('themeName', themeName);
+      this.setHashParam('localeName', localeName);
+    }
 
     onReceiveParam(this.handleSetParam);
 
@@ -84,6 +95,7 @@ export default class StoryWrapper extends Component<Props, State> {
 
   setHashParam = (param: string, value: string) => {
     const hash = this.params;
+    hash.delete('path');
     hash.set(param, value);
     parent.window.location.hash = hash;
   };
@@ -92,7 +104,7 @@ export default class StoryWrapper extends Component<Props, State> {
     const query = set({}, param, value);
     this.setState(query);
     this.setHashParam(param, value);
-    localStorage.setItem(param, value);
+    sessionStorage.setItem(param, value);
     updateParam(query);
   };
 
