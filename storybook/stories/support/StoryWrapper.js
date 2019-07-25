@@ -13,6 +13,7 @@ import lightBlue from '../../../source/renderer/app/themes/daedalus/light-blue.j
 import darkCardano from '../../../source/renderer/app/themes/daedalus/dark-cardano.js';
 import white from '../../../source/renderer/app/themes/daedalus/white.js';
 import yellow from '../../../source/renderer/app/themes/daedalus/yellow.js';
+import WindowSizeManager from '../../../source/renderer/app/WindowSizeManager';
 
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([...en, ...ja]);
@@ -38,6 +39,13 @@ const operatingSystems = {
   Linux: 'linux',
   Mac: 'mac',
 };
+
+const osMinWindowHeights = {
+  Windows: '541px',
+  Linux: '560px',
+  Mac: '600px',
+};
+
 const osNames = keys(operatingSystems);
 
 type Props = {
@@ -82,10 +90,12 @@ export default class StoryWrapper extends Component<Props, State> {
     const { themeName, localeName, osName, isMenuVisible } = this.state;
     const theme = themes[themeName];
     const locale = locales[localeName];
+    const minScreenHeight = osMinWindowHeights[osName];
 
     return (
       <Fragment>
         <ThemeManager variables={theme} />
+        <WindowSizeManager minScreenHeight={minScreenHeight} />
         <DaedalusMenu
           localeNames={localeNames}
           themeNames={themeNames}
