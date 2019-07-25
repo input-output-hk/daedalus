@@ -49,7 +49,7 @@ The result can be found at `./result/daedalus-*.bin`.
 
 ### V2 Known Issues
 - As network-info is stubbed, the NTP check will throw. Just disregard this for now.
-- Lots of things have been temporarily commented out or mocked to get the integration started. As such we are using `git push --no-verify`. This will be cleaned up once more endpoints become available.
+- Lots of things have been temporarily commented out or mocked to get the integration started.
 - TLS is not yet supported, so `request.js` has been overwritten to use the HTTP module for the time being.
 
 ## Connect to staging cluster:
