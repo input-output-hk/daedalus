@@ -84,9 +84,9 @@ export const buildAppMenus = async (
       message: isInSafeMode
         ? translation('helpSupport.gpuSafeModeDialogMessage')
         : translation('helpSupport.nonGpuSafeModeDialogMessage'),
-      defaultId: isWindows ? 1 : 2,
-      cancelId: 2,
-      noLink: !!isMacOS,
+      defaultId: isWindows ? 0 : 1,
+      cancelId: 1,
+      noLink: true,
     };
     dialog.showMessageBox(mainWindow, gpuSafeModeDialogOptions, buttonId => {
       if (buttonId === 0) {
