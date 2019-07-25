@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from 'react';
-import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import ReactModal from 'react-modal';
@@ -41,7 +40,6 @@ type Props = {
   currentAppVersion: string,
   onAccept: Function,
   onPostpone: Function,
-  onClose: Function,
 };
 
 @observer
@@ -56,7 +54,6 @@ export default class AutomaticUpdate extends Component<Props> {
       currentAppVersion,
       onAccept,
       onPostpone,
-      onClose,
     } = this.props;
     const { formatMessage } = this.context.intl;
 
@@ -66,6 +63,7 @@ export default class AutomaticUpdate extends Component<Props> {
         shouldCloseOnOverlayClick={false}
         className={styles.dialog}
         overlayClassName={styles.overlay}
+        onRequestClose={onPostpone}
         ariaHideApp={false}
       >
         <div className={styles.content}>
@@ -92,18 +90,11 @@ export default class AutomaticUpdate extends Component<Props> {
                   </span>
                 </p>
               }
-              onClick={() =>
-                onAccept()
-              }
+              onClick={onAccept}
               skin={ButtonSkin}
             />
 
-            <span
-              className={styles.postponeButton}
-              onClick={() =>
-                onPostpone()
-              }
-            >
+            <span className={styles.postponeButton} onClick={onPostpone}>
               {formatMessage(messages.postponeButtonLabel)}
             </span>
           </div>
@@ -111,7 +102,7 @@ export default class AutomaticUpdate extends Component<Props> {
           <DialogCloseButton
             className={styles.closeButton}
             icon={closeCrossThin}
-            onClose={onClose}
+            onClose={onPostpone}
           />
         </div>
       </ReactModal>
