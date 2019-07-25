@@ -1,8 +1,8 @@
 // @flow
-import { split, get, unionBy } from 'lodash';
+import { split, get } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
-import moment from 'moment';
+// import moment from 'moment';
 
 // domains
 import Wallet from '../domains/Wallet';
@@ -19,16 +19,16 @@ import { createAddress } from './addresses/requests/createAddress';
 
 // Nodes requests
 import { applyNodeUpdate } from './nodes/requests/applyNodeUpdate';
-import { getNodeInfo } from './nodes/requests/getNodeInfo';
+// import { getNodeInfo } from './nodes/requests/getNodeInfo';
 import { getNodeSettings } from './nodes/requests/getNodeSettings';
 import { getCurrentEpoch } from './nodes/requests/getCurrentEpoch';
-import { getNextNodeUpdate } from './nodes/requests/getNextNodeUpdate';
+// import { getNextNodeUpdate } from './nodes/requests/getNextNodeUpdate';
 import { postponeNodeUpdate } from './nodes/requests/postponeNodeUpdate';
 import { getLatestAppVersion } from './nodes/requests/getLatestAppVersion';
 
 // Transactions requests
 import { getTransactionFee } from './transactions/requests/getTransactionFee';
-import { getTransactionHistory } from './transactions/requests/getTransactionHistory';
+// import { getTransactionHistory } from './transactions/requests/getTransactionHistory';
 import { createTransaction } from './transactions/requests/createTransaction';
 import { redeemAda } from './transactions/requests/redeemAda';
 import { redeemPaperVendedAda } from './transactions/requests/redeemPaperVendedAda';
@@ -70,9 +70,9 @@ import { filterLogData } from '../../../common/utils/logging';
 // config constants
 import {
   LOVELACES_PER_ADA,
-  MAX_TRANSACTIONS_PER_PAGE,
+  // MAX_TRANSACTIONS_PER_PAGE,
   MAX_TRANSACTION_CONFIRMATIONS,
-  TX_AGE_POLLING_THRESHOLD,
+  // TX_AGE_POLLING_THRESHOLD,
 } from '../config/numbersConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
@@ -81,7 +81,7 @@ import {
 } from '../config/cryptoConfig';
 
 // Accounts types
-import type { Accounts } from './accounts/types';
+// import type { Accounts } from './accounts/types';
 
 // Addresses Types
 import type {
@@ -98,7 +98,7 @@ import type { RequestConfig } from './common/types';
 import type {
   CardanoExplorerResponse,
   LatestAppVersionInfoResponse,
-  NodeInfoResponse,
+  // NodeInfoResponse,
   NodeSettingsResponse,
   NodeSoftware,
   GetNetworkStatusResponse,
@@ -113,7 +113,7 @@ import type { RedeemAdaParams } from './transactions/requests/redeemAda';
 import type { RedeemPaperVendedAdaParams } from './transactions/requests/redeemPaperVendedAda';
 import type {
   Transaction,
-  Transactions,
+  // Transactions,
   TransactionFee,
   TransactionRequest,
   GetTransactionsRequest,
@@ -136,7 +136,7 @@ import type {
   ImportWalletFromFileRequest,
   UpdateWalletRequest,
   GetWalletUtxosRequest,
-  WalletSyncState,
+  // WalletSyncState,
 } from './wallets/types';
 
 // Common errors
@@ -213,11 +213,13 @@ export default class AdaApi {
   getTransactions = async (
     request: GetTransactionsRequest
   ): Promise<GetTransactionsResponse> => {
-    const requestTimestamp = moment();
+    // const requestTimestamp = moment();
     const requestStats = Object.assign({}, request, {
       cachedTransactions: request.cachedTransactions.length,
     });
     Logger.debug('AdaApi::searchHistory called', { parameters: requestStats });
+
+    /*
     const {
       walletId,
       skip,
@@ -226,7 +228,8 @@ export default class AdaApi {
       isRestoreActive, // during restoration we fetch only missing transactions
       isRestoreCompleted, // once restoration is done we fetch potentially missing transactions
       cachedTransactions,
-    } = request;
+    } , unionBy= request;
+    */
     // NOTE: Not yet available in the API
     return new Promise(resolve => resolve({ transactions: [], total: 0 }));
 

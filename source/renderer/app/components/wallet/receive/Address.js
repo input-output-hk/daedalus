@@ -22,7 +22,7 @@ export class Address extends Component<Props> {
     const addressClasses = classnames([
       `generatedAddress-${index + 1}`,
       styles.component,
-      address.used ? styles.usedWalletAddress : null,
+      address.state === 'used' ? styles.usedWalletAddress : null,
     ]);
     return (
       <div className={addressClasses}>

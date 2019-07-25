@@ -1,19 +1,19 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
-import moment from 'moment';
+// import moment from 'moment';
 import { isEqual, includes } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
   ALLOWED_TIME_DIFFERENCE,
-  MAX_ALLOWED_STALL_DURATION,
+  // MAX_ALLOWED_STALL_DURATION,
   NETWORK_STATUS_REQUEST_TIMEOUT,
   NETWORK_STATUS_POLL_INTERVAL,
   NTP_IGNORE_CHECKS_GRACE_PERIOD,
   NTP_RECHECK_TIMEOUT,
 } from '../config/timingConfig';
 import {
-  UNSYNCED_BLOCKS_ALLOWED,
+  // UNSYNCED_BLOCKS_ALLOWED,
   MAX_NTP_RECHECKS,
 } from '../config/numbersConfig';
 import { Logger } from '../utils/logging';
@@ -383,8 +383,8 @@ export default class NetworkStatusStore extends Store {
       const {
         // subscriptionStatus,
         syncProgress,
-        blockchainHeight,
-        localBlockchainHeight,
+        // blockchainHeight,
+        // localBlockchainHeight,
         localTimeInformation,
       } = networkStatus;
 
@@ -446,6 +446,7 @@ export default class NetworkStatusStore extends Store {
       });
 
       runInAction('update block heights', () => {
+        /*
         if (this.initialLocalHeight === null) {
           // If initial local block height isn't set, mark the first
           // result as the 'starting' height for the sync progress
@@ -508,6 +509,7 @@ export default class NetworkStatusStore extends Store {
           latestNetworkBlockAge > MAX_ALLOWED_STALL_DURATION;
         const isNetworkBlockHeightSyncing =
           isNetworkBlockHeightIncreasing || !isNetworkBlockHeightStalling;
+        */
 
         // Node is syncing in case we are receiving blocks and they are not stalling
         runInAction('update isNodeSyncing', () => {
@@ -528,6 +530,7 @@ export default class NetworkStatusStore extends Store {
           this.isNodeInSync = true;
         });
 
+        /*
         if (hasStartedReceivingBlocks) {
           const initialLocalHeight = this.initialLocalHeight || 0;
           const blocksSyncedSinceStart =
@@ -542,6 +545,7 @@ export default class NetworkStatusStore extends Store {
             blocksSyncedSinceStart,
           });
         }
+        */
       });
 
       if (this._networkStatus === NETWORK_STATUS.SYNCING && this.isNodeInSync) {

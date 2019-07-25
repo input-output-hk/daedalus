@@ -20,12 +20,12 @@ export type RequestOptions = {
 function typedRequest<Response>(
   httpOptions: RequestOptions,
   queryParams?: {},
-  rawBodyParams?: any,
-  requestOptions?: { returnMeta: boolean }
+  rawBodyParams?: any
+  // requestOptions?: { returnMeta: boolean }
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
     const options: RequestOptions = Object.assign({}, httpOptions);
-    const { returnMeta } = Object.assign({}, requestOptions);
+    // const { returnMeta } = Object.assign({}, requestOptions);
     let hasRequestBody = false;
     let requestBody = '';
 
@@ -66,7 +66,7 @@ function typedRequest<Response>(
     }
 
     // TODO: Delete once HTTPS is supported by the new API
-    let httpOnlyOptions = {
+    const httpOnlyOptions = {
       hostname: options.hostname,
       method: options.method,
       path: options.path,

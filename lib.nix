@@ -35,8 +35,8 @@ let
   cardanoWalletSrc = import (pkgs.fetchFromGitHub {
     owner = "input-output-hk";
     repo = "cardano-wallet";
-    rev = "7495ae4a9b23add81a3c99745d8d4e87eb287f4a";
-    sha256 = "184lncbl13b15xbwr237nqh1fff5qv0d7dr3n7dbfs6akqfprwhm";
+    rev = "b9a860ff3590cf80cc6aea519ecac0be44c62c35";
+    sha256 = "11j3an4i6kvk9h71hz1cngns2a47cmv38bsr3qyagcr1829rlrxl";
   }) {};
   cardanoWallet = cardanoWalletSrc.cardano-wallet-http-bridge;
   cardanoNode = cardanoWalletSrc.cardano-http-bridge;

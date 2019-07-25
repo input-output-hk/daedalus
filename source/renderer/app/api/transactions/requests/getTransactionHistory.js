@@ -12,9 +12,9 @@ export type GetTxnHistoryParams = {
   created_at: string,
 };
 
-const requestOptions = {
-  returnMeta: true,
-};
+// const requestOptions = {
+//   returnMeta: true,
+// };
 
 export const getTransactionHistory = (
   config: RequestConfig,
@@ -27,6 +27,6 @@ export const getTransactionHistory = (
       ...config,
     },
     requestParams,
-    null,
-    requestOptions
+    null
+    // requestOptions
   );

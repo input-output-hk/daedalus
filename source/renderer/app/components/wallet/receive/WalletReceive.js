@@ -168,7 +168,8 @@ export default class WalletReceive extends Component<Props, State> {
 
   getFilteredAddresses = (walletAddresses: Addresses): Addresses =>
     walletAddresses.filter(
-      (address: AddressType) => !address.used || this.state.showUsed
+      (address: AddressType) =>
+        !(address.state !== 'used') || this.state.showUsed
     );
 
   render() {
