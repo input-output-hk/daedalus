@@ -11,7 +11,6 @@ import { NODE_UPDATE_POLL_INTERVAL } from '../config/timingConfig';
 export default class NodeUpdateStore extends Store {
   @observable isUpdateAvailable = false;
   @observable isUpdatePostponed = false;
-  @observable isNotificationExpanded = false;
   @observable isUpdateInstalled = false;
   @observable updateVersion = null;
   @observable availableAppVersion: ?string = null;
@@ -38,9 +37,6 @@ export default class NodeUpdateStore extends Store {
     const actions = this.actions.nodeUpdate;
     actions.acceptNodeUpdate.listen(this._acceptNodeUpdate);
     actions.postponeNodeUpdate.listen(this._postponeNodeUpdate);
-    actions.toggleNodeUpdateNotificationExpanded.listen(
-      this._toggleNotificationExpanded
-    );
     actions.getLatestAvailableAppVersion.listen(
       this._getLatestAvailableAppVersion
     );
@@ -59,7 +55,6 @@ export default class NodeUpdateStore extends Store {
       ) {
         runInAction('refreshNextUpdate', () => {
           this.isUpdateAvailable = true;
-          this.isNotificationExpanded = true;
           this.updateVersion = result.version;
         });
       }
@@ -75,10 +70,6 @@ export default class NodeUpdateStore extends Store {
     this.applyUpdateRequest.execute();
     this.isUpdateAvailable = false;
     this.isUpdateInstalled = true;
-  };
-
-  @action _toggleNotificationExpanded = () => {
-    this.isNotificationExpanded = !this.isNotificationExpanded;
   };
 
   @action _getLatestAvailableAppVersion = async () => {
