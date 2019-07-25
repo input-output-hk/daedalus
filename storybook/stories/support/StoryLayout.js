@@ -48,7 +48,7 @@ const CATEGORIES = [
   CATEGORIES_BY_NAME.SETTINGS,
 ];
 
-let currentTheme = localStorage.getItem('currentTheme') || 'light-blue';
+let currentTheme = sessionStorage.getItem('currentTheme') || 'light-blue';
 currentTheme = currentTheme.toLowerCase();
 
 @inject('stores', 'storiesProps')

@@ -77,8 +77,8 @@ const locales = {
 };
 
 // Delegation steps labels are translated outside components and we need to determine correct translations
-const locale = localStorage.getItem('currentLocale') || 'English';
-const currentTheme = localStorage.getItem('currentTheme') || 'light-blue';
+const locale = sessionStorage.getItem('currentLocale') || 'English';
+const currentTheme = sessionStorage.getItem('currentTheme') || 'light-blue';
 const translationIndex = locales[locale];
 
 // @TODO - improve locales GET once [DDW-711](https://github.com/input-output-hk/daedalus/pull/1426) is merged
