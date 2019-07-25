@@ -9,14 +9,14 @@ type Props = {
   api: Object,
 };
 
-type State = {
+export type DaedalusMenuState = {
   localeNames: Array<string>,
   themeNames: Array<string>,
   themeName?: string,
   localeName?: string,
 };
 
-class DaedalusMenu extends Component<Props, State> {
+class DaedalusMenu extends Component<Props, DaedalusMenuState> {
   state = {
     localeNames: [],
     themeNames: [],
@@ -36,7 +36,7 @@ class DaedalusMenu extends Component<Props, State> {
     api.on('daedalusMenu/updateParam', this.updateParam);
   }
 
-  init = (initialState: State) =>
+  init = (initialState: DaedalusMenuState) =>
     this.setState(
       currenState => ({
         ...currenState,

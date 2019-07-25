@@ -78,9 +78,7 @@ export default class StoryWrapper extends Component<Props, State> {
   componentDidMount() {
     const { themeName, localeName } = this.state;
     setInitialProps({
-      themes,
       themeNames,
-      locales,
       localeNames,
       themeName,
       localeName,
