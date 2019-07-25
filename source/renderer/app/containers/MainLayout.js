@@ -4,7 +4,6 @@ import { observer, inject } from 'mobx-react';
 import Sidebar from '../components/sidebar/Sidebar';
 import TopBarContainer from './TopBarContainer';
 import SidebarLayout from '../components/layout/SidebarLayout';
-import NodeUpdatePage from './notifications/NodeUpdatePage';
 import AutomaticUpdatePage from './notifications/AutomaticUpdatePage';
 import PaperWalletCreateCertificatePage from './wallet/PaperWalletCreateCertificatePage';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
