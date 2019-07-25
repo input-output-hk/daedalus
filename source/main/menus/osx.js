@@ -161,6 +161,15 @@ export const osxMenu = (
       },
       { type: 'separator' },
       {
+        label: translation('helpSupport.featureRequest'),
+        click() {
+          const featureRequestLinkUrl = translation(
+            'helpSupport.featureRequestUrl'
+          );
+          shell.openExternal(featureRequestLinkUrl);
+        },
+      },
+      {
         label: translation('helpSupport.supportRequest'),
         click() {
           const supportRequestLinkUrl = translation(
