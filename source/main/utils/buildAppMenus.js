@@ -75,7 +75,7 @@ export const buildAppMenus = async (
     const gpuSafeModeDialogOptions = {
       buttons: [
         translation('helpSupport.gpuSafeModeDialogConfirm'),
-        translation('helpSupport.gpuSafeModeDialogNo'),
+        translation('helpSupport.gpuSafeModeDialogCancel'),
       ],
       type: 'warning',
       title: isInSafeMode

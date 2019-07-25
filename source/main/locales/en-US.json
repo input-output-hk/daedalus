@@ -22,7 +22,6 @@
   "menu.helpSupport.gpuSafeModeDialogCancel": "Cancel",
   "menu.helpSupport.gpuSafeModeDialogConfirm": "Yes",
   "menu.helpSupport.gpuSafeModeDialogMessage": "Turn off 'Blank screen fix'? \n \nDisabling the blank screen fix setting will improve the performance of user interface rendering by enabling graphics acceleration, however, some users may find that Daedalus runs better with this setting enabled. If you see a blank screen instead of the Daedalus user interface after disabling this setting and restarting Daedalus, please turn this setting back on. \n \nDo you want to disable this setting and restart Daedalus?",
-  "menu.helpSupport.gpuSafeModeDialogNo": "No",
   "menu.helpSupport.gpuSafeModeDialogTitle": "Turn off 'Blank screen fix'?",
   "menu.helpSupport.knownIssues": "Known Issues",
   "menu.helpSupport.knownIssuesUrl": "https://daedaluswallet.io/known-issues/",
