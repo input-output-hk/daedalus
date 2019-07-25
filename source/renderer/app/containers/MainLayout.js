@@ -5,6 +5,7 @@ import Sidebar from '../components/sidebar/Sidebar';
 import TopBarContainer from './TopBarContainer';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import NodeUpdatePage from './notifications/NodeUpdatePage';
+import AutomaticUpdatePage from './notifications/AutomaticUpdatePage';
 import PaperWalletCreateCertificatePage from './wallet/PaperWalletCreateCertificatePage';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 import { ROUTES } from '../routes-config';
@@ -65,7 +66,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     );
 
     const addNodeUpdateNotification =
-      isUpdateAvailable && !isUpdatePostponed ? <NodeUpdatePage /> : null;
+      isUpdateAvailable && !isUpdatePostponed ? <AutomaticUpdatePage /> : null;
 
     return (
       <SidebarLayout

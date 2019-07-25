@@ -9,7 +9,7 @@ import type {
 import { NODE_UPDATE_POLL_INTERVAL } from '../config/timingConfig';
 
 export default class NodeUpdateStore extends Store {
-  @observable isUpdateAvailable = false;
+  @observable isUpdateAvailable = true;
   @observable isUpdatePostponed = false;
   @observable isNotificationExpanded = false;
   @observable isUpdateInstalled = false;

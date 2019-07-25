@@ -173,6 +173,23 @@ export const WHITE_THEME_CONFIG = {
     '--theme-ada-redemption-success-overlay-close-button-background-color-hover':
       'rgba(41, 181, 149, 0.07)',
   },
+  automaticUpdate: {
+    '--theme-automatic-update-overlay-background-color': '#fffffff5',
+    '--theme-automatic-update-overlay-button-background-color': '#fff',
+    '--theme-automatic-update-overlay-button-background-color-hover': '#29b595',
+    '--theme-automatic-update-overlay-button-icon-color': '#29b595',
+    '--theme-automatic-update-overlay-button-icon-color-hover': '#ffffff',
+    '--theme-automatic-update-overlay-button-text-color-hover': '#ffffff',
+    '--theme-automatic-update-overlay-button-border-color': '#29b595',
+    '--theme-automatic-update-overlay-text-color': '#2d2d2db3',
+    '--theme-automatic-update-overlay-text-highlight-color': '#2d2d2d',
+    '--theme-automatic-update-overlay-title-text-color': '#2d2d2d',
+    '--theme-automatic-update-overlay-button-label-color': '#29b595',
+    '--theme-automatic-update-overlay-button-label-color-hover': '#fff',
+    '--theme-automatic-update-overlay-button-label-color-light': 'rgba(41, 181, 149, 0.8)',
+    '--theme-automatic-update-overlay-close-button-color': 'rgba(45, 45, 45, 1)',
+    '--theme-automatic-update-overlay-close-button-hover-background': 'rgba(41, 181, 149, 0.1)',
+  },
   blockConsolidation: {
     '--theme-block-consolidation-background-color': '#ffffff',
     '--theme-block-consolidation-title-text-color': '#2d2d2d',
