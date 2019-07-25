@@ -6,7 +6,7 @@ import ipcApi from '../ipc';
 import RendererErrorHandler from '../utils/rendererErrorHandler';
 import { getTranslation } from '../utils/getTranslation';
 import { launcherConfig } from '../config';
-import { LINUX, MAC_OS, WINDOWS } from '../../common/types/environment.types';
+import { LINUX, WINDOWS } from '../../common/types/environment.types';
 
 const rendererErrorHandler = new RendererErrorHandler();
 
@@ -68,18 +68,18 @@ export const createMainWindow = (locale: string) => {
   // Minimum windows height
   let minWindowsHeight = 600;
 
-  // Default Windows title bar + status bar - (based on the default values from Windows 10)
-  const windowsTopBarHeight = 56;
+  // Windows title bar gap height
+  const windowsTopBarHeight = 34;
 
-  // Default Linux/Mac title bar height
-  const linuxMacTopBarHeight = 40;
+  // Linux title bar gap height
+  const linuxTopBarHeight = 18;
 
   switch (platform) {
     case WINDOWS:
-      minWindowsHeight -= windowsTopBarHeight;
+      minWindowsHeight += windowsTopBarHeight;
       break;
-    case LINUX || MAC_OS:
-      minWindowsHeight -= linuxMacTopBarHeight;
+    case LINUX:
+      minWindowsHeight += linuxTopBarHeight;
       break;
     default:
   }
