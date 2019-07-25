@@ -37,16 +37,18 @@ class DaedalusMenu extends Component<Props, State> {
   }
 
   init = (initialState: State) =>
-    this.setState(currenState => ({
-      ...currenState,
-      ...initialState,
-    }));
+    this.setState(
+      currenState => ({
+        ...currenState,
+        ...initialState,
+      }),
+      () => {
+        const { themeName, localeName } = this.state;
+        this.props.api.setQueryParams({ themeName, localeName });
+      }
+    );
 
   updateParam = (newParamState: Object) => this.setState(newParamState);
-
-  get params() {
-    return new URLSearchParams(parent.window.location.search);
-  }
 
   handleSetParam = (param: string, value: string) => {
     const { api } = this.props;
