@@ -47,7 +47,7 @@
     semver "^5.4.1"
     source-map "^0.5.0"
 
-"@babel/core@^7.0.0", "@babel/core@^7.4.3", "@babel/core@^7.4.5":
+"@babel/core@7.4.5", "@babel/core@^7.0.0", "@babel/core@^7.4.3":
   version "7.4.5"
   resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.4.5.tgz#081f97e8ffca65a9b4b0fdc7e274e703f000c06a"
   dependencies:
@@ -1347,7 +1347,7 @@
     pretty-hrtime "^1.0.3"
     regenerator-runtime "^0.12.1"
 
-"@storybook/react@^5.1.9":
+"@storybook/react@5.1.9":
   version "5.1.9"
   resolved "https://registry.yarnpkg.com/@storybook/react/-/react-5.1.9.tgz#4052f4b88e91d5a823bb9cbb61104c530fcfb1a1"
   dependencies:
