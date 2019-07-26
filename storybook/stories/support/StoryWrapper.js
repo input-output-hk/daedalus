@@ -57,15 +57,13 @@ export default class StoryWrapper extends Component<Props, State> {
       this.params.get('themeName') ||
       sessionStorage.getItem('themeName') ||
       themeNames[0];
+    this.handleSetParam('themeName', themeName);
+
     const localeName =
       this.params.get('localeName') ||
       sessionStorage.getItem('localeName') ||
       localeNames[0];
-
-    if (!parent.window.location.hash) {
-      this.setHashParam('themeName', themeName);
-      this.setHashParam('localeName', localeName);
-    }
+    this.handleSetParam('localeName', localeName);
 
     onReceiveParam(this.handleSetParam);
 

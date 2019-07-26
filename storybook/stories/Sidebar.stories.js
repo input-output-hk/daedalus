@@ -49,7 +49,7 @@ const sidebarMenus = observable({
 
 let emptyMenus;
 
-let currentTheme = sessionStorage.getItem('currentTheme') || 'light-blue';
+let currentTheme = sessionStorage.getItem('themeName') || 'light-blue';
 currentTheme = currentTheme.toLowerCase();
 
 storiesOf('Sidebar', module)

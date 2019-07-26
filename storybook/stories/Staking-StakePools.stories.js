@@ -6,7 +6,7 @@ import { action } from '@storybook/addon-actions';
 import StakePools from '../../source/renderer/app/components/staking/stake-pools/StakePools';
 import STAKE_POOLS from '../../source/renderer/app/config/stakingStakePools.dummy.json';
 
-const currentTheme = sessionStorage.getItem('currentTheme') || 'light-blue';
+const currentTheme = sessionStorage.getItem('themeName') || 'light-blue';
 
 export const StakePoolsStory = () => (
   <StakePools
