@@ -36,7 +36,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  availableAppVersion: string,
+  availableAppVersion: ?string,
   currentAppVersion: string,
   onAccept: Function,
   onPostpone: Function,

@@ -24,31 +24,28 @@ When(/^I make newer application version available$/, async function() {
   }, nextAppVersion);
 });
 
-Then('I should see the node update notification overlay', async function () {
-   return this.client.waitForVisible('.AutomaticUpdate_overlay');
- });
+Then('I should see the node update notification overlay', async function() {
+  return this.client.waitForVisible('.AutomaticUpdate_overlay');
+});
 
-Then(
-  /^Overlay should display the versions info$/,
-  async function() {
-    const [newAppVersionInfo] = await getVisibleTextsForSelector(
-      this.client,
-      SELECTORS.newAppVersionInfo
-    );
+Then(/^Overlay should display the versions info$/, async function() {
+  const [newAppVersionInfo] = await getVisibleTextsForSelector(
+    this.client,
+    SELECTORS.newAppVersionInfo
+  );
 
-    const [currentAppVersionInfo] = await getVisibleTextsForSelector(
-      this.client,
-      SELECTORS.currentAppVersionInfo
-    );
+  const [currentAppVersionInfo] = await getVisibleTextsForSelector(
+    this.client,
+    SELECTORS.currentAppVersionInfo
+  );
 
-    expect(newAppVersionInfo).to.equal(nextAppVersion);
-    expect(currentAppVersionInfo).to.equal(currentAppVersion);
-  }
-);
+  expect(newAppVersionInfo).to.equal(nextAppVersion);
+  expect(currentAppVersionInfo).to.equal(currentAppVersion);
+});
 
-Then('I should see the accept update button', async function () {
-   return this.client.waitForVisible('.AutomaticUpdate_acceptButton');
- });
+Then('I should see the accept update button', async function() {
+  return this.client.waitForVisible('.AutomaticUpdate_acceptButton');
+});
 
 Then('I should see the postpone update button', async function() {
   return this.client.waitForVisible('.AutomaticUpdate_postponeButton');
@@ -67,9 +64,5 @@ When(/^I click the accept update button$/, function() {
 });
 
 Then(/^I should not see the notification component anymore$/, function() {
-  return this.client.waitForVisible(
-    '.AutomaticUpdate_overlay',
-    null,
-    true
-  );
+  return this.client.waitForVisible('.AutomaticUpdate_overlay', null, true);
 });

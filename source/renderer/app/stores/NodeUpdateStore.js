@@ -50,7 +50,7 @@ export default class NodeUpdateStore extends Store {
 
       // If nextUpdate is available, fetch additional Daedalus info
       if (result) {
-        await this._getLatestAvailableAppVersion()
+        await this._getLatestAvailableAppVersion();
       }
 
       if (
