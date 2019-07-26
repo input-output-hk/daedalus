@@ -14,6 +14,8 @@ process.once('loaded', () => {
   Object.assign(global, {
     Buffer,
     dialog: {
+      showOpenDialog: (...args) =>
+        _remote.dialog.showOpenDialog(_remote.getCurrentWindow(), ...args),
       showSaveDialog: (...args) =>
         _remote.dialog.showSaveDialog(_remote.getCurrentWindow(), ...args),
     },

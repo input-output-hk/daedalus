@@ -144,6 +144,7 @@
     "electron-store": "2.0.0",
     "electron-unhandled": "2.1.0",
     "es6-error": "4.1.1",
+    "file-type": "^12.0.1",
     "form-data": "2.3.1",
     "graceful-fs": "4.1.15",
     "gulp": "4.0.0",

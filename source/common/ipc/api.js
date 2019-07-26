@@ -3,6 +3,7 @@ import type {
   BugReportRequestHttpOptions,
   BugReportRequestPayload,
 } from '../types/bug-report-request.types';
+import type { GenerateFileContentParams } from '../types/file-content-request.types';
 import type { GeneratePaperWalletParams } from '../types/paper-wallet-request.types';
 import type {
   CardanoNodeState,
@@ -144,6 +145,13 @@ export type ParseRedemptionCodeRendererRequest = {
   redemptionType: RedemptionTypeChoices,
 };
 export type ParseRedemptionCodeMainResponse = AdaRedemptionCode;
+
+/**
+ * Channel to generate file blob
+ */
+export const GENERATE_FILE_BLOB_CHANNEL = 'GENERATE_FILE_BLOB_CHANNEL';
+export type GenerateFileContentRendererRequest = GenerateFileContentParams;
+export type GenerateFileContentMainResponse = any;
 
 /**
  * Channel to generate and save a paper wallet certificate
