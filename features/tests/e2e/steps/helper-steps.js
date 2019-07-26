@@ -46,6 +46,8 @@ When('I make a node update available', async function() {
     daedalus.api.ada
       .setNextUpdate(10)
       .then(done)
-      .catch(error => console.log('error: ', error));
+      .catch(e => {
+        throw e;
+      });
   });
 });
