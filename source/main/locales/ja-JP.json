@@ -22,7 +22,6 @@
   "menu.helpSupport.gpuSafeModeDialogCancel": "キャンセル",
   "menu.helpSupport.gpuSafeModeDialogConfirm": "はい",
   "menu.helpSupport.gpuSafeModeDialogMessage": "「ブランク画面修正」を無効にしますか? \n \nブランク画面修正設定を無効にすると、グラフィックアクセラレーションが有効化されてユーザーインターフェイスのレンダリングパフォーマンスが向上しますが、この設定を有効にした方がDaedalusがスムーズに作動する場合があります。この設定を無効にしてDaedalusを再起動した際にDaedalusユーザーインターフェイスの代わりにブランク画面が表示される場合は、この設定をもう一度有効にしてください。 \n \nこの設定を無効にしてDaedalusを再起動しますか。",
-  "menu.helpSupport.gpuSafeModeDialogNo": "いいえ",
   "menu.helpSupport.gpuSafeModeDialogTitle": "「ブランク画面修正」を無効にしますか?",
   "menu.helpSupport.knownIssues": "既知の問題",
   "menu.helpSupport.knownIssuesUrl": "https://daedaluswallet.io/ja/known-issues/",
