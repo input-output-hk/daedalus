@@ -47,8 +47,15 @@ export default class NodeUpdateStore extends Store {
     if (this.stores.networkStatus.isSynced) {
       await this.nextUpdateRequest.execute();
       const { result } = this.nextUpdateRequest;
+
+      // If nextUpdate is available, fetch additional Daedalus info
+      if (result) {
+        await this._getLatestAvailableAppVersion()
+      }
+
       if (
         result &&
+        this.availableAppVersion &&
         !this.isUpdateAvailable &&
         !this.isUpdatePostponed &&
         !this.isUpdateInstalled

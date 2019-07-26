@@ -16,7 +16,7 @@ const messages = defineMessages({
     description: 'Title for "Automatic update" overlay',
   },
   descriptionLine: {
-    id: 'automaticUpdate.description2',
+    id: 'automaticUpdate.description',
     defaultMessage:
       '!!!You are currently running Daedalus v <b>{currentAppVersion}</b> and v <b>{availableAppVersion}</b> is available',
     description: 'Description line of "Automatic update" overlay',

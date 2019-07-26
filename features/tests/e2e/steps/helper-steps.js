@@ -40,3 +40,13 @@ When(/^I trigger the apply-update endpoint$/, async function() {
       });
   });
 });
+
+
+When('I make a node update available', async function() {
+  await this.client.executeAsync(done => {
+    daedalus.api.ada
+      .setNextUpdate(10)
+      .then(done)
+      .catch(error => console.log('error: ', error));
+  });
+});
