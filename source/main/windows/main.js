@@ -37,8 +37,8 @@ type WindowOptionsType = {
 export const createMainWindow = (locale: string) => {
   const windowOptions: WindowOptionsType = {
     show: false,
-    width: 1150,
-    height: 870,
+    width: 1280,
+    height: 720,
     webPreferences: {
       nodeIntegration: isTest,
       webviewTag: false,
@@ -54,6 +54,8 @@ export const createMainWindow = (locale: string) => {
 
   // Construct new BrowserWindow
   const window = new BrowserWindow(windowOptions);
+
+  window.setPosition(0, 0);
 
   rendererErrorHandler.setup(window, createMainWindow);
 
