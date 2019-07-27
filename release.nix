@@ -13,7 +13,7 @@ let
   };
   suffix = if buildNum == null then "" else "-${toString buildNum}";
   version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
-  daedalusPkgsWithSystem = system: import ./. { inherit system; };
+  daedalusPkgsWithSystem = system: import ./. { target = system; };
   yaml2json = {
     x86_64-linux = (daedalusPkgsWithSystem "x86_64-linux").yaml2json;
     x86_64-darwin = (daedalusPkgsWithSystem "x86_64-darwin").yaml2json;
