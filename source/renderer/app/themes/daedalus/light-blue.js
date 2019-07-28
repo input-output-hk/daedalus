@@ -578,6 +578,7 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-sidebar-menu-add-button-background-color': '#1e304a',
     '--theme-sidebar-menu-add-button-background-color-active': '#1f324d',
     '--theme-sidebar-menu-add-button-background-color-hover': '#1f324d',
+    '--theme-sidebar-menu-add-button-text-color': '#fafbfc',
     '--theme-sidebar-wallets-scrollbar-background-color':
       'rgba(255, 255, 255, 0.1)',
     '--theme-sidebar-wallets-scrollbar-background-color-active':
