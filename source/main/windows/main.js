@@ -38,7 +38,7 @@ export const createMainWindow = (locale: string) => {
   const windowOptions: WindowOptionsType = {
     show: false,
     width: 1280,
-    height: 720,
+    height: 720 - 23,
     webPreferences: {
       nodeIntegration: isTest,
       webviewTag: false,
