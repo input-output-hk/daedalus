@@ -984,6 +984,16 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-delegation-center-no-wallets-instructions-color': `${
         text.primary
       }`,
+      '--theme-staking-countdown-widget-background-color': `${
+        background.primary.regular
+      }`,
+      '--theme-staking-countdown-widget-delimeter-background-color': `${
+        text.primary
+      }`,
+      '--theme-staking-countdown-widget-field-label-color': `${chroma(
+        background.primary.light
+      ).alpha(0.7)}`,
+      '--theme-staking-countdown-widget-field-value-color': `${text.primary}`,
     },
     support: {
       '--theme-support-settings-item-color': `${text.primary}`,
