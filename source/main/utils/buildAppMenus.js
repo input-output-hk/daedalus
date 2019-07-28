@@ -34,7 +34,6 @@ export const buildAppMenus = async (
     installerVersion,
     os,
     buildNumber,
-    isWindows,
     isInSafeMode,
   } = environment;
   const translations = require(`../locales/${locale}`);
@@ -84,7 +83,7 @@ export const buildAppMenus = async (
       message: isInSafeMode
         ? translation('helpSupport.gpuSafeModeDialogMessage')
         : translation('helpSupport.nonGpuSafeModeDialogMessage'),
-      defaultId: isWindows ? 0 : 1,
+      defaultId: 1,
       cancelId: 1,
       noLink: true,
     };
