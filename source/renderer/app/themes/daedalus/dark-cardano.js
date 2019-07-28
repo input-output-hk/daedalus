@@ -290,6 +290,10 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color':
       '#ffffff',
     '--theme-delegation-steps-choose-stake-pool-selected-slug-color': '#ffffff',
+    '--theme-delegation-steps-choose-stake-pool-thumb-background-color':
+      'rgba(42, 43, 60, 1)',
+    '--theme-delegation-steps-choose-stake-pool-thumb-border-color':
+      'rgba(255, 255, 255, 0.2)',
     '--theme-delegation-steps-choose-stake-pool-title-color': '#ffffffcc',
     '--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color':
       '#ffffffe6',
