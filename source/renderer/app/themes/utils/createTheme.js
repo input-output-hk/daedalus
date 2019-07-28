@@ -873,6 +873,12 @@ export const createDaedalusComponentsTheme = (
         background.secondary.darkest
       ).alpha(0.66)}`,
       '--theme-sidebar-menu-add-button-text-color': `${text.secondary}`,
+      '--theme-sidebar-wallets-scrollbar-background-color':
+        'rgba(255, 255, 255, 0.1)',
+      '--theme-sidebar-wallets-scrollbar-background-color-active':
+        'rgba(255, 255, 255, 0.3)',
+      '--theme-sidebar-wallets-scrollbar-background-color-hover':
+        'rgba(255, 255, 255, 0.3)',
     },
     stakePools: {
       '--theme-staking-stake-pools-title-color': `${text.primary}`,
