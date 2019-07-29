@@ -97,8 +97,8 @@ storiesOf('WalletScreens', module)
         outgoing: new BigNumber(number('Outgoing', 2)),
         total: new BigNumber(3),
       }}
-      numberOfTransactions={number('Number of transactions', 20303585)}
-      numberOfRecentTransactions={50}
+      numberOfTransactions={number('Number of transactions', 100)}
+      numberOfRecentTransactions={number('Number of Recent transactions', 100)}
       isLoadingTransactions={boolean('isLoadingTransactions', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
     />
