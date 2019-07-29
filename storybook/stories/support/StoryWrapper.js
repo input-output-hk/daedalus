@@ -40,6 +40,7 @@ const operatingSystems = {
   Mac: 'mac',
 };
 
+// These differences are due to the different menu heights on each OS
 const osMinWindowHeights = {
   Windows: '541px',
   Linux: '560px',
