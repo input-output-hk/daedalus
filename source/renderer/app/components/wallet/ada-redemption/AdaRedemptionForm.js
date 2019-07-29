@@ -656,9 +656,9 @@ export default class AdaRedemptionForm extends Component<Props> {
                   <AdaCertificateUploadWidget
                     {...certificateField.bind()}
                     selectedFile={certificateField.value}
-                    onFileSelected={file => {
+                    onFileSelected={(filePath, file) => {
                       resetForm();
-                      onCertificateSelected(file);
+                      onCertificateSelected(filePath, file);
                       certificateField.set(file);
                     }}
                     isCertificateEncrypted={isCertificateEncrypted}

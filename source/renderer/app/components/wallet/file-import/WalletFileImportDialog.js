@@ -258,7 +258,6 @@ export default class WalletFileImportDialog extends Component<Props, State> {
             selectedFile={walletFile.value}
             onFileSelected={file => {
               // "set(value)" is an unbound method and thus must be explicitly called
-              console.log('----here----', file);
               walletFile.set(file);
             }}
           />

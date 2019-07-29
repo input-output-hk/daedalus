@@ -1,6 +1,7 @@
 // @flow
 import fs from 'fs';
-import fileType from 'file-type';
+import mime from 'mime-types';
+import path from 'path';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { GENERATE_FILE_BLOB_CHANNEL } from '../../common/ipc/api';
 import type {
@@ -21,7 +22,13 @@ export const handleFileContentRequests = () => {
         const { filePath } = request;
         try {
           const fileBuffer = fs.readFileSync(filePath);
-          resolve({ fileBuffer, fileType: fileType(fileBuffer) });
+          const fileLastModified = fs.statSync(filePath).mtime.getTime();
+          resolve({
+            fileBuffer,
+            fileLastModified,
+            fileName: path.basename(filePath),
+            fileType: mime.lookup(filePath),
+          });
         } catch (err) {
           reject(err);
         }

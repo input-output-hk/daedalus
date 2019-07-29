@@ -115,8 +115,8 @@ export default class AdaRedemptionPage extends Component<Props> {
     return (
       <Layout>
         <AdaRedemptionForm
-          onCertificateSelected={certificate =>
-            setCertificate.trigger({ certificate })
+          onCertificateSelected={(path, certificate) =>
+            setCertificate.trigger({ path, certificate })
           }
           onPassPhraseChanged={passPhrase =>
             setPassPhrase.trigger({ passPhrase })

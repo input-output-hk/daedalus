@@ -24,6 +24,7 @@ import type { AdaRedemptionDecryptionKey } from '../../../common/types/ada-redem
 export default class AdaRedemptionStore extends Store {
   @observable redemptionType: RedemptionTypeChoices =
     ADA_REDEMPTION_TYPES.REGULAR;
+  @observable certificatePath: ?string = null;
   @observable certificate: ?File = null;
   @observable isCertificateEncrypted = false;
   @observable passPhrase: ?string = null;
@@ -99,7 +100,8 @@ export default class AdaRedemptionStore extends Store {
     this.isRedemptionDisclaimerAccepted = true;
   });
 
-  _setCertificate = action(({ certificate }) => {
+  _setCertificate = action(({ path, certificate }) => {
+    this.certificatePath = path;
     this.certificate = certificate;
     this.isCertificateEncrypted = certificate.type !== 'application/pdf';
     if (
@@ -177,10 +179,9 @@ export default class AdaRedemptionStore extends Store {
       throw new Error('Certificate File is required for parsing.');
 
     // PREPARATION
-    const path = this.certificate.path; // eslint-disable-line
     Logger.debug(
       'AdaRedemptionStore: Parsing ADA Redemption code from certificate',
-      { path }
+      { path: this.certificatePath }
     );
     let decryptionKeyValue = null;
     if (
@@ -205,7 +206,7 @@ export default class AdaRedemptionStore extends Store {
     // PARSING
     try {
       const redemptionCode = await parseRedemptionCodeChannel.request({
-        certificateFilePath: path,
+        certificateFilePath: this.certificatePath || '',
         redemptionType: this.redemptionType,
         decryptionKey: decryptionKeyValue,
       });
