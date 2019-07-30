@@ -41,7 +41,7 @@ export type FindUpdatesParams = {
 };
 
 export type FormattedConstNames = {
-  themeConfig: string,
+  themeOutput: string,
   themeParams: string,
 };
 
@@ -79,13 +79,6 @@ export type ThemeFonts = {
 };
 
 export type WriteThemeUpdateParams = {
-  fileName:
-    | string
-    | 'cardano.js'
-    | 'dark-blue.js'
-    | 'dark-cardano.js'
-    | 'light-blue.js'
-    | 'yellow.js'
-    | 'white.js',
+  fileName: string,
   updatedThemeObj: Object,
 };
