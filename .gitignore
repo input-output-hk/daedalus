@@ -75,7 +75,6 @@ ci-url
 commit-id
 mainnet
 staging
-cardano-node
 configuration.yaml
 log-config-prod.yaml
 mainnet-genesis-dryrun-with-stakeholders.json
@@ -90,3 +89,7 @@ package-lock.json
 # cardano public keys
 public.key
 public.key.lock
+
+# Development executables
+cardano-wallet-http-bridge
+cardano-node

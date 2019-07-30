@@ -20,6 +20,7 @@ import type {
   TlsConfig,
 } from '../../common/types/cardano-node.types';
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
+import { CardanoWalletLauncher } from './CardanoWalletLauncher';
 
 /* eslint-disable consistent-return */
 
@@ -59,6 +60,7 @@ type CardanoNodeIpcMessage = {
 type NodeArgs = Array<string>;
 
 export type CardanoNodeConfig = {
+  workingDir: string, // Path to the state directory
   nodePath: string, // Path to cardano-node executable
   logFilePath: string, // Log file path for cardano-sl
   tlsPath: string, // Path to cardano-node TLS folder
@@ -235,6 +237,7 @@ export class CardanoNode {
     if (this._isUnrecoverable(config) && !isForced) {
       return Promise.reject(new Error('CardanoNode: Too many startup retries'));
     }
+
     // Setup
     const { _log } = this;
     const { nodePath, nodeArgs, startupTimeout } = config;
@@ -259,7 +262,21 @@ export class CardanoNode {
           path: nodePath,
           args: nodeArgs,
         });
-        const node = this._spawnNode(nodePath, nodeArgs, logFile);
+
+        // TODO: Cleanup nodeArgs to only include those relevant to `cardano-wallet`
+        // TODO: Add TSL path once supported by cardano-wallet
+        const networkIndexFromArgs = nodeArgs.indexOf('--network');
+        const networkFromArgs = nodeArgs[networkIndexFromArgs + 1];
+
+        const node = CardanoWalletLauncher({
+          path: nodePath,
+          logStream: logFile,
+          networkMode: networkFromArgs,
+          // TODO: Make this dynamic
+          nodePort: 8888,
+          stateDir: config.workingDir,
+        });
+
         this._node = node;
         try {
           await promisedCondition(() => node.connected, startupTimeout);
@@ -439,21 +456,6 @@ export class CardanoNode {
   }
 
   // ================================= PRIVATE ===================================
-
-  /**
-   * Spawns cardano-node as child_process in ipc mode writing to given log file
-   * @param nodePath {string}
-   * @param args {NodeArgs}
-   * @param logFile {WriteStream}
-   * @returns {ChildProcess}
-   * @private
-   */
-  _spawnNode(nodePath: string, args: NodeArgs, logFile: WriteStream) {
-    return this._actions.spawn(nodePath, args, {
-      stdio: ['inherit', logFile, logFile, 'ipc'],
-    });
-  }
-
   /**
    * Handles node ipc messages sent by the cardano-node process.
    * Updates the tls config where possible and broadcasts it to

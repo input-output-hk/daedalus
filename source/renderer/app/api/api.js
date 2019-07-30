@@ -1,8 +1,8 @@
 // @flow
-import { split, get, unionBy } from 'lodash';
+import { split, get } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
-import moment from 'moment';
+// import moment from 'moment';
 
 // domains
 import Wallet from '../domains/Wallet';
@@ -12,25 +12,23 @@ import {
 } from '../domains/WalletTransaction';
 import WalletAddress from '../domains/WalletAddress';
 
-// Accounts requests
-import { getAccounts } from './accounts/requests/getAccounts';
-
 // Addresses requests
 import { getAddress } from './addresses/requests/getAddress';
+import { getAddresses as getAddressesFromApi } from './addresses/requests/getAddresses';
 import { createAddress } from './addresses/requests/createAddress';
 
 // Nodes requests
 import { applyNodeUpdate } from './nodes/requests/applyNodeUpdate';
-import { getNodeInfo } from './nodes/requests/getNodeInfo';
+// import { getNodeInfo } from './nodes/requests/getNodeInfo';
 import { getNodeSettings } from './nodes/requests/getNodeSettings';
 import { getCurrentEpoch } from './nodes/requests/getCurrentEpoch';
-import { getNextNodeUpdate } from './nodes/requests/getNextNodeUpdate';
+// import { getNextNodeUpdate } from './nodes/requests/getNextNodeUpdate';
 import { postponeNodeUpdate } from './nodes/requests/postponeNodeUpdate';
 import { getLatestAppVersion } from './nodes/requests/getLatestAppVersion';
 
 // Transactions requests
 import { getTransactionFee } from './transactions/requests/getTransactionFee';
-import { getTransactionHistory } from './transactions/requests/getTransactionHistory';
+// import { getTransactionHistory } from './transactions/requests/getTransactionHistory';
 import { createTransaction } from './transactions/requests/createTransaction';
 import { redeemAda } from './transactions/requests/redeemAda';
 import { redeemPaperVendedAda } from './transactions/requests/redeemPaperVendedAda';
@@ -72,9 +70,9 @@ import { filterLogData } from '../../../common/utils/logging';
 // config constants
 import {
   LOVELACES_PER_ADA,
-  MAX_TRANSACTIONS_PER_PAGE,
+  // MAX_TRANSACTIONS_PER_PAGE,
   MAX_TRANSACTION_CONFIRMATIONS,
-  TX_AGE_POLLING_THRESHOLD,
+  // TX_AGE_POLLING_THRESHOLD,
 } from '../config/numbersConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
@@ -83,7 +81,7 @@ import {
 } from '../config/cryptoConfig';
 
 // Accounts types
-import type { Accounts } from './accounts/types';
+// import type { Accounts } from './accounts/types';
 
 // Addresses Types
 import type {
@@ -100,7 +98,7 @@ import type { RequestConfig } from './common/types';
 import type {
   CardanoExplorerResponse,
   LatestAppVersionInfoResponse,
-  NodeInfoResponse,
+  // NodeInfoResponse,
   NodeSettingsResponse,
   NodeSoftware,
   GetNetworkStatusResponse,
@@ -115,7 +113,7 @@ import type { RedeemAdaParams } from './transactions/requests/redeemAda';
 import type { RedeemPaperVendedAdaParams } from './transactions/requests/redeemPaperVendedAda';
 import type {
   Transaction,
-  Transactions,
+  // Transactions,
   TransactionFee,
   TransactionRequest,
   GetTransactionsRequest,
@@ -138,6 +136,7 @@ import type {
   ImportWalletFromFileRequest,
   UpdateWalletRequest,
   GetWalletUtxosRequest,
+  // WalletSyncState,
 } from './wallets/types';
 
 // Common errors
@@ -200,24 +199,11 @@ export default class AdaApi {
     });
     const { walletId } = request;
     try {
-      const accounts: Accounts = await getAccounts(this.config, { walletId });
-
-      const response = accounts.map(account =>
-        Object.assign({}, account, { addresses: account.addresses.length })
+      const addresses: Address[] = await getAddressesFromApi(
+        this.config,
+        walletId
       );
-      Logger.debug('AdaApi::getAddresses success', { response });
-
-      if (!accounts || !accounts.length) {
-        return new Promise(resolve =>
-          resolve({ accountIndex: null, addresses: [] })
-        );
-      }
-
-      // For now only the first wallet account is used
-      const firstAccount = accounts[0];
-      const { index: accountIndex, addresses } = firstAccount;
-
-      return new Promise(resolve => resolve({ accountIndex, addresses }));
+      return new Promise(resolve => resolve({ accountIndex: 0, addresses }));
     } catch (error) {
       Logger.error('AdaApi::getAddresses error', { error });
       throw new GenericApiError();
@@ -227,11 +213,13 @@ export default class AdaApi {
   getTransactions = async (
     request: GetTransactionsRequest
   ): Promise<GetTransactionsResponse> => {
-    const requestTimestamp = moment();
+    // const requestTimestamp = moment();
     const requestStats = Object.assign({}, request, {
       cachedTransactions: request.cachedTransactions.length,
     });
     Logger.debug('AdaApi::searchHistory called', { parameters: requestStats });
+
+    /*
     const {
       walletId,
       skip,
@@ -240,7 +228,13 @@ export default class AdaApi {
       isRestoreActive, // during restoration we fetch only missing transactions
       isRestoreCompleted, // once restoration is done we fetch potentially missing transactions
       cachedTransactions,
-    } = request;
+    } , unionBy= request;
+    */
+    // NOTE: Not yet available in the API
+    return new Promise(resolve => resolve({ transactions: [], total: 0 }));
+
+    /* TODO: Uncomment once API available
+
     const accounts: Accounts = await getAccounts(this.config, { walletId });
 
     if (!accounts.length || !accounts[0].index) {
@@ -368,6 +362,8 @@ export default class AdaApi {
       Logger.error('AdaApi::searchHistory error', { error });
       throw new GenericApiError();
     }
+
+    */
   };
 
   createWallet = async (request: CreateWalletRequest): Promise<Wallet> => {
@@ -822,6 +818,8 @@ export default class AdaApi {
 
   nextUpdate = async (): Promise<NodeSoftware | null> => {
     Logger.debug('AdaApi::nextUpdate called');
+
+    /* TODO: Re-enable when API is available
     try {
       const nodeUpdate = await getNextNodeUpdate(this.config);
       if (nodeUpdate && nodeUpdate.version) {
@@ -833,6 +831,8 @@ export default class AdaApi {
       Logger.error('AdaApi::nextUpdate error', { error });
       throw new GenericApiError();
     }
+    */
+
     return null;
   };
 
@@ -963,6 +963,8 @@ export default class AdaApi {
     }`;
     Logger.debug(`${loggerText} called`);
     try {
+      /* TODO: Uncomment once implemented
+
       const nodeInfo: NodeInfoResponse = await getNodeInfo(
         this.config,
         queryInfoParams
@@ -976,6 +978,13 @@ export default class AdaApi {
         localBlockchainHeight,
         localTimeInformation,
       } = nodeInfo;
+      */
+
+      const blockchainHeight = { quantity: 100 };
+      const subscriptionStatus = 'subscribed';
+      const syncProgress = { quantity: 1 };
+      const localTimeInformation = { status: 'available' };
+      const localBlockchainHeight = { quantity: 100 };
 
       // extract relevant data before sending to NetworkStatusStore
       return {
@@ -1082,24 +1091,29 @@ export default class AdaApi {
 const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData',
   (data: AdaWallet) => {
-    const {
-      id,
-      balance,
-      name,
-      assuranceLevel,
-      hasSpendingPassword,
-      spendingPasswordLastUpdate,
-      syncState,
-    } = data;
+    const { id, balance, name, state, passphrase } = data;
+
+    const walletBalance =
+      balance.total.unit === 'lovelace'
+        ? new BigNumber(balance.total.quantity).dividedBy(LOVELACES_PER_ADA)
+        : new BigNumber(balance.total.quantity);
+
+    // TODO: Should conform to WalletSyncState, but can't match the type
+    // at the moment
+    const walletSyncState: any = {
+      tag: state.status === 'ready' ? 'synced' : 'restoring',
+    };
 
     return new Wallet({
       id,
-      amount: new BigNumber(balance).dividedBy(LOVELACES_PER_ADA),
+      amount: walletBalance,
       name,
-      assurance: assuranceLevel,
-      hasPassword: hasSpendingPassword,
-      passwordUpdateDate: new Date(`${spendingPasswordLastUpdate}Z`),
-      syncState,
+      // NOTE: Assurance not currently returned on GET /v2/wallets
+      assurance: 'normal',
+      // TODO: Determine if hasPassword still applies
+      hasPassword: true,
+      passwordUpdateDate: new Date(passphrase.last_updated_at),
+      syncState: walletSyncState,
       isLegacy: false,
     });
   }

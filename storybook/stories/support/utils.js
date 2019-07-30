@@ -78,9 +78,7 @@ export const generateMultipleTransactions = (
 export const generateAddress = (used: boolean = false): WalletAddress =>
   new WalletAddress({
     id: generateHash(),
-    amount: new BigNumber(faker.random.number(5)),
-    changeAddress: false,
-    used,
+    state: used ? 'used' : 'unused',
   });
 
 export const promise = (returnValue: any): (() => Promise<any>) => () =>

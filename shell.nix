@@ -70,7 +70,11 @@ let
   '';
   # This has all the dependencies of daedalusShell, but no shellHook allowing hydra
   # to evaluate it.
-  daedalusShellBuildInputs = [ nodejs yarn ] ++ (with pkgs; [
+  daedalusShellBuildInputs = [
+      nodejs yarn
+      localLib.cardanoWallet
+      localLib.cardanoNode
+    ] ++ (with pkgs; [
       nix bash binutils coreutils curl gnutar
       git python27 curl jq
       nodePackages.node-gyp nodePackages.node-pre-gyp
@@ -112,9 +116,11 @@ let
       elif test "${systemStartString}" -lt $(date -d '12 hours ago' +%s)
       then warn "--arg systemStart is in 12 hours in the past, unless there is a cluster running with this systemStart cardano won't be able to connect to the demo cluster!"
       fi
+
       ${localLib.optionalString pkgs.stdenv.isLinux "export XDG_DATA_HOME=$HOME/.local/share"}
       cp -f ${daedalusPkgs.iconPath.${cluster}.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
       ln -svf $(type -P cardano-node)
+      ln -svf $(type -P cardano-wallet-http-bridge)
       ${pkgs.lib.optionalString autoStartBackend ''
         for x in wallet-topology.yaml log-config-prod.yaml configuration.yaml mainnet-genesis-dryrun-with-stakeholders.json ; do
           ln -svf ${daedalusPkgs.daedalus.cfg}/etc/$x
@@ -122,15 +128,11 @@ let
         STATE_PATH=$(eval echo $(jq ".statePath" < ${launcher-json}))
         ${pkgs.lib.optionalString (cluster == "demo") ''
           ln -svf ${demoTopologyYaml} wallet-topology.yaml
-          if [[ -f "''${STATE_PATH}/system-start" && "${systemStartString}" == $(cat "$''${STATE_PATH}/system-start") ]]
-          then
-            echo "running pre-existing demo cluster matching system start: ${systemStartString}"
-          else
-            echo "removing pre-existing demo cluster because system-start differs or doesn't exist"
-            rm -rf "''${STATE_PATH}"
-            mkdir -p "''${STATE_PATH}"
-            echo -n ${systemStartString} > "''${STATE_PATH}/system-start"
-          fi
+
+          # Refresh the old state directory
+          rm -rf "''${STATE_PATH}"
+          mkdir -p "''${STATE_PATH}"
+          echo -n ${systemStartString} > "''${STATE_PATH}/system-start"
         ''}
         mkdir -p "''${STATE_PATH}/${secretsDir}"
       ''}

@@ -20,12 +20,12 @@ export type RequestOptions = {
 function typedRequest<Response>(
   httpOptions: RequestOptions,
   queryParams?: {},
-  rawBodyParams?: any,
-  requestOptions?: { returnMeta: boolean }
+  rawBodyParams?: any
+  // requestOptions?: { returnMeta: boolean }
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
     const options: RequestOptions = Object.assign({}, httpOptions);
-    const { returnMeta } = Object.assign({}, requestOptions);
+    // const { returnMeta } = Object.assign({}, requestOptions);
     let hasRequestBody = false;
     let requestBody = '';
 
@@ -65,7 +65,18 @@ function typedRequest<Response>(
       };
     }
 
-    const httpsRequest = global.https.request(options);
+    // TODO: Delete once HTTPS is supported by the new API
+    const httpOnlyOptions = {
+      hostname: options.hostname,
+      method: options.method,
+      path: options.path,
+      port: options.port,
+    };
+
+    const httpsRequest = global.http.request(httpOnlyOptions);
+
+    // TODO: Uncomment once HTTPS is supported by the new API
+    // const httpsRequest = global.https.request(options);
     if (hasRequestBody) {
       httpsRequest.write(requestBody);
     }
@@ -102,21 +113,26 @@ function typedRequest<Response>(
             }`;
           }
 
-          const parsedBody = JSON.parse(body);
-          const status = get(parsedBody, 'status', false);
-          if (status) {
-            if (status === 'success') {
-              resolve(returnMeta ? parsedBody : parsedBody.data);
-            } else if (status === 'error' || status === 'fail') {
-              reject(parsedBody);
-            } else {
-              // TODO: find a way to record this case and report to the backend team
-              reject(new Error('Unknown response from backend.'));
-            }
-          } else {
-            // TODO: find a way to record this case and report to the backend team
-            reject(new Error('Unknown response from backend.'));
-          }
+          resolve(JSON.parse(body));
+          // Note: The V2 API does not have the status field.
+          // Is this not re-creating HTTP status codes? I don't think this
+          // should be required. We should rely on status codes now we have
+          // the shiny new API
+          //
+          // const status = get(parsedBody, 'status', false);
+          // if (status) {
+          //   if (status === 'success') {
+          //     resolve(returnMeta ? parsedBody : parsedBody.data);
+          //   } else if (status === 'error' || status === 'fail') {
+          //     reject(parsedBody);
+          //   } else {
+          //     // TODO: find a way to record this case and report to the backend team
+          //     reject(new Error('Unknown response from backend.'));
+          //   }
+          // } else {
+          //   // TODO: find a way to record this case and report to the backend team
+          //   reject(new Error('Unknown response from backend.'));
+          // }
         } catch (error) {
           // Handle internal server errors (e.g. HTTP 500 - 'Something went wrong')
           reject(new Error(error));
