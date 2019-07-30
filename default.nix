@@ -34,6 +34,7 @@ let
     sha256 = cardanoJSON.sha256;
   };
   needSignedBinaries = (signingKeys != null) || (HSMServer != null);
+  buildNumSuffix = if buildNum == null then "" else ("-${builtins.toString buildNum}");
   cleanSourceFilter = with pkgs.stdenv;
     name: type: let baseName = baseNameOf (toString name); in ! (
       # Filter out .git repo
@@ -225,7 +226,7 @@ let
     signed-windows-installer = let
       backend_version = lib.removeSuffix "\n" (builtins.readFile "${self.unpackedCardano}/version"); # TODO, get from a nix expr
       frontend_version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
-      fullName = "daedalus-${frontend_version}-cardano-sl-${backend_version}-${cluster}-windows.exe"; # must match to packageFileName in make-installer
+      fullName = "daedalus-${frontend_version}-cardano-sl-${backend_version}-${cluster}-windows${buildNumSuffix}.exe"; # must match to packageFileName in make-installer
     in pkgs.runCommand "signed-windows-installer-${cluster}" {} ''
       mkdir $out
       cp -v ${self.signFile "${self.unsigned-windows-installer}/${fullName}"} $out/${fullName}
