@@ -3,7 +3,7 @@ import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
 
 //  ==== yellow theme config for Daedalus and react-polymorph components === //
-export const YELLOW_THEME_CONFIG = {
+export const YELLOW_THEME_OUTPUT = {
   rpAutocomplete: {
     '--rp-autocomplete-bg-color': '#fff',
     '--rp-autocomplete-border': '1px solid #e1dac6',
@@ -712,7 +712,7 @@ export const YELLOW_THEME_CONFIG = {
 };
 
 const YELLOW_THEME_PARAMS: CreateThemeParams = {
-  config: YELLOW_THEME_CONFIG,
+  config: YELLOW_THEME_OUTPUT,
 };
 
 export default createTheme(YELLOW_THEME_PARAMS);

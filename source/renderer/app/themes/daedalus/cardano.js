@@ -3,7 +3,7 @@ import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
 
 //  ==== cardano theme config for Daedalus and react-polymorph components === //
-export const CARDANO_THEME_CONFIG = {
+export const CARDANO_THEME_OUTPUT = {
   aboutWindow: {
     '--theme-about-window-background-color': 'rgba(32, 34, 37, 0.96)',
     '--theme-about-window-header-bottom-border-color':
@@ -725,7 +725,7 @@ export const CARDANO_THEME_CONFIG = {
 };
 
 const CARDANO_THEME_PARAMS: CreateThemeParams = {
-  config: CARDANO_THEME_CONFIG,
+  config: CARDANO_THEME_OUTPUT,
 };
 
 export default createTheme(CARDANO_THEME_PARAMS);

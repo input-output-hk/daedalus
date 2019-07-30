@@ -3,7 +3,7 @@ import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
 
 //  ==== dark-cardano theme config for Daedalus and react-polymorph components === //
-export const DARK_CARDANO_THEME_CONFIG = {
+export const DARK_CARDANO_THEME_OUTPUT = {
   rpAutocomplete: {
     '--rp-autocomplete-bg-color': '#1e1f31',
     '--rp-autocomplete-border': '1px solid rgba(255, 255, 255, 0.2)',
@@ -718,7 +718,7 @@ export const DARK_CARDANO_THEME_CONFIG = {
 };
 
 const DARK_CARDANO_THEME_PARAMS: CreateThemeParams = {
-  config: DARK_CARDANO_THEME_CONFIG,
+  config: DARK_CARDANO_THEME_OUTPUT,
 };
 
 export default createTheme(DARK_CARDANO_THEME_PARAMS);

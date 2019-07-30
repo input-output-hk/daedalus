@@ -3,7 +3,7 @@ import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
 
 //  ==== dark-blue theme config for Daedalus and react-polymorph components === //
-export const DARK_BLUE_THEME_CONFIG = {
+export const DARK_BLUE_THEME_OUTPUT = {
   aboutWindow: {
     '--theme-about-window-background-color': 'rgba(38, 51, 69, 0.96)',
     '--theme-about-window-header-bottom-border-color':
@@ -733,7 +733,7 @@ export const DARK_BLUE_THEME_CONFIG = {
 };
 
 const DARK_BLUE_THEME_PARAMS: CreateThemeParams = {
-  config: DARK_BLUE_THEME_CONFIG,
+  config: DARK_BLUE_THEME_OUTPUT,
 };
 
 export default createTheme(DARK_BLUE_THEME_PARAMS);

@@ -3,7 +3,7 @@ import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
 
 //  ==== white theme config for Daedalus and react-polymorph components === //
-export const WHITE_THEME_CONFIG = {
+export const WHITE_THEME_OUTPUT = {
   rpAutocomplete: {
     '--rp-autocomplete-bg-color': '#fff',
     '--rp-autocomplete-border': '1px solid rgba(45, 45, 45, 0.1)',
@@ -711,7 +711,7 @@ export const WHITE_THEME_CONFIG = {
 };
 
 const WHITE_THEME_PARAMS: CreateThemeParams = {
-  config: WHITE_THEME_CONFIG,
+  config: WHITE_THEME_OUTPUT,
 };
 
 export default createTheme(WHITE_THEME_PARAMS);
