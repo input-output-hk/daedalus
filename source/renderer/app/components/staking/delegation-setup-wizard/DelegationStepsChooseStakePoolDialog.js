@@ -80,21 +80,16 @@ type Props = {
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
   currentTheme: string,
+  selectedPool: ?StakePool,
   onClose: Function,
-  onContinue: Function,
   onBack: Function,
+  onSelectPool: Function,
 };
 
 type State = {
   searchValue: string,
   selectedList?: ?string,
   selectedPoolId: ?number,
-};
-
-const initialState = {
-  searchValue: '',
-  selectedList: null,
-  selectedPoolId: null,
 };
 
 export default class DelegationStepsChooseStakePoolDialog extends Component<
@@ -106,7 +101,9 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
   };
 
   state = {
-    ...initialState,
+    searchValue: '',
+    selectedList: null,
+    selectedPoolId: get(this.props, ['selectedPool', 'id'], null),
   };
 
   searchInput: ?HTMLElement = null;
@@ -125,6 +122,11 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
     this.setState({ selectedPoolId: null });
   };
 
+  onAcceptPool = () => {
+    const { selectedPoolId } = this.state;
+    this.props.onSelectPool(selectedPoolId);
+  };
+
   render() {
     const { intl } = this.context;
     const {
@@ -134,7 +136,6 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       onOpenExternalLink,
       currentTheme,
       onClose,
-      onContinue,
       onBack,
     } = this.props;
     const { searchValue, selectedList, selectedPoolId } = this.state;
@@ -143,7 +144,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       {
         className: 'continueButton',
         label: intl.formatMessage(messages.continueButtonLabel),
-        onClick: onContinue,
+        onClick: this.onAcceptPool,
         primary: true,
         disabled: !selectedPoolId,
       },

@@ -21,8 +21,9 @@ let
     staging = "Daedalus Staging";
     testnet = "Daedalus Testnet";
   };
-  newPackage = origPackage // {
+  newPackage = (origPackage // {
     productName = nameTable.${if cluster == null then "testnet" else cluster};
+  }) // lib.optionalAttrs (win64 == false) {
     main = "main/index.js";
   };
   newPackagePath = builtins.toFile "package.json" (builtins.toJSON newPackage);
@@ -80,9 +81,10 @@ yarn2nix.mkYarnPackage {
     export ELECTRON_CACHE=${electron-cache}
     mkdir home
     export HOME=$(realpath home)
-    yarn --offline package --win64 --icon installers/icons/${cluster}/128x128
-    ls -ltrh release/win32-x64/Daedalus-win32-x64/
-    cp -r release/win32-x64/Daedalus-win32-x64 $out
+    cp ${newPackagePath} package.json
+    yarn --offline package --win64 --icon installers/icons/${cluster}/${cluster}
+    ls -ltrh release/win32-x64/Daedalus*-win32-x64/
+    cp -r release/win32-x64/Daedalus*-win32-x64 $out
     pushd $out/resources/app/dist
     ${nukeAllRefs}
     popd
@@ -115,7 +117,7 @@ yarn2nix.mkYarnPackage {
     };
     flow-bin = {
       postInstall = ''
-      flow_ver=$(${pkgs.jq}/bin/jq .devDependencies.'"flow-bin"' ${newPackagePath} | sed 's/"//g')
+        flow_ver=${origPackage.devDependencies."flow-bin"}
         patchelf --set-interpreter ${stdenv.cc.libc}/lib/ld-linux-x86-64.so.2 flow-linux64-v$flow_ver/flow
       '';
     };

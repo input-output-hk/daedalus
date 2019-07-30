@@ -1,7 +1,6 @@
 // @flow
 export type MenuActions = {
-  restartInSafeMode: Function,
-  restartWithoutSafeMode: Function,
+  toggleOnSafeMode: Function,
   openAboutDialog: Function,
   openAdaRedemptionScreen: Function,
   openBlockConsolidationStatusDialog: Function,

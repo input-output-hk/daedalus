@@ -14,10 +14,19 @@ export default class ThemeManager extends Component {
   }
 
   updateCSSVariables(variables) {
-    map(variables, (value, prop) => {
+    const flattenedTheme = this.flattenTheme(variables);
+    map(flattenedTheme, (value, prop) => {
       document.documentElement.style.setProperty(prop, value);
     });
   }
+
+  flattenTheme(daedalusTheme) {
+    return Object.values(daedalusTheme).reduce(
+      (theme, componentVars) => ({ ...theme, ...componentVars }),
+      {}
+    );
+  }
+
   render() {
     // eslint-disable-next-line react/prop-types
     return <Fragment>{this.props.children}</Fragment>;

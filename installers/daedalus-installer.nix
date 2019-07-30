@@ -11,6 +11,7 @@ mkDerivation {
   src = ./.;
   isLibrary = true;
   isExecutable = true;
+  doCheck = false;
   libraryHaskellDepends = [
     aeson base bytestring containers dhall dhall-json directory github
     Glob lens-aeson megaparsec microlens network-uri nsis optional-args

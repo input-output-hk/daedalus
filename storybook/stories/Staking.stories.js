@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, date, number, radios } from '@storybook/addon-knobs';
+import { withKnobs, date, number } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import { action } from '@storybook/addon-actions';
 import StoryLayout from './support/StoryLayout';
@@ -19,6 +19,7 @@ import DelegationStepsChooseStakePoolDialog from '../../source/renderer/app/comp
 import DelegationStepsNotAvailableDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsNotAvailableDialog';
 import DelegationStepsConfirmationDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog';
 import DelegationStepsActivationDialog from '../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsActivationDialog';
+import DelegationCenterNoWallets from '../../source/renderer/app/components/staking/delegation-center/DelegationCenterNoWallets';
 
 import { StakePoolsStory } from './Staking-StakePools.stories';
 import { StakingRewardsStory } from './Staking-Rewards.stories';
@@ -70,12 +71,6 @@ const WALLETS = [
   },
 ];
 
-const themes = {
-  'Light Blue': 'light-blue',
-  Cardano: 'cardano',
-  'Dark Blue': 'dark-blue',
-};
-
 const locales = {
   English: 'en-US',
   Japanese: 'ja-JP',
@@ -83,6 +78,7 @@ const locales = {
 
 // Delegation steps labels are translated outside components and we need to determine correct translations
 const locale = localStorage.getItem('currentLocale') || 'English';
+const currentTheme = localStorage.getItem('currentTheme') || 'light-blue';
 const translationIndex = locales[locale];
 
 // @TODO - improve locales GET once [DDW-711](https://github.com/input-output-hk/daedalus/pull/1426) is merged
@@ -120,6 +116,7 @@ storiesOf('Staking', module)
               storyWithKnobs
             ) : (
               <StakingWithNavigation
+                isActiveNavItem={item => item === getItemFromContext()}
                 activeItem={getItemFromContext()}
                 onNavItemClick={linkTo('Staking', item => pageNames[item])}
               >
@@ -153,6 +150,12 @@ storiesOf('Staking', module)
   .add(pageNames['delegation-center'], StakingDelegationCenterStory, {
     id: 'delegation-center',
   })
+
+  .add('Delegation Center - No Wallets', () => (
+    <DelegationCenterNoWallets
+      onGoToCreateWalletClick={action('onGoToCreateWalletClick')}
+    />
+  ))
 
   .add(pageNames['stake-pools'], StakePoolsStory, { id: 'stake-pools' })
 
@@ -236,10 +239,11 @@ storiesOf('Staking', module)
         STAKE_POOLS[36],
       ]}
       onOpenExternalLink={() => {}}
-      currentTheme={radios('Theme (Only for tooltip colors)', themes)}
+      currentTheme={currentTheme}
       onClose={action('onClose')}
-      onContinue={action('onContinue')}
       onBack={action('onBack')}
+      onSelectPool={action('onSelectPool')}
+      selectedPool={null}
     />
   ))
 

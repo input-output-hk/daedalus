@@ -80,6 +80,7 @@ export default class WalletsStore extends Store {
   @observable certificateStep = null;
   @observable certificateTemplate = null;
   @observable additionalMnemonicWords = null;
+  @observable walletCreateStep = null;
 
   _newWalletDetails: {
     name: string,

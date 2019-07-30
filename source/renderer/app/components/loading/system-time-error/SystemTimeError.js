@@ -139,7 +139,9 @@ export default class SystemTimeError extends Component<Props> {
             <p>
               <FormattedMessage
                 {...messages.overlayTextP1}
-                values={{ timeOffset }}
+                values={{
+                  timeOffset: <em className="time-off">{timeOffset}</em>,
+                }}
               />
             </p>
 

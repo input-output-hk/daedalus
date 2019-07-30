@@ -1,49 +1,6 @@
 version: "{build}"
 
-environment:
-  nodejs_version: "8"
-  AWS_ACCESS_KEY_ID:
-    secure: O0+bBTm/Ud3pxP8nvC3ZuDSkmmlr+b8hVluqpRdJGBg=
-  AWS_SECRET_ACCESS_KEY:
-    secure: DbpP02aDGoC3Tdsi3+ONm8ov0nuXzEF/Yi453SBKj38qjROzvPXo6qW44bYiKBf4
-  CERT_PASS:
-    secure: Y3pbyZBSORhsefMiSFBBm2nuhHQ2Hmmfppm3E+Fr7U+EXYrXwdCNl8wLwfCCMK2k
-  GITHUB_OAUTH_TOKEN:
-    secure: prH84TwXLO2CGaiwmipj05AAndcR7bDDxTv9hL8adIpr2bNjrV7pN15JKVmsxISc
-  # Avoid long paths on Windows
-  STACK_ROOT: "c:\\sr"
-
 build: off
 
-cache:
-  - C:\sr -> installers/stack.yaml
-
-install:
-  - ps: Install-Product node $env:nodejs_version x64
-  - IF NOT DEFINED APPVEYOR_PULL_REQUEST_NUMBER aws s3 cp --region eu-central-1 s3://iohk-private-2/iohk-windows-certificate-5.p12 C:/iohk-windows-certificate.p12
-
 test_script:
-  - scripts\build-installer-win64.bat %APPVEYOR_BUILD_VERSION%
-
-artifacts:
-  - path: release\win32-x64\Daedalus-win32-x64
-    name: Daedalus Electron application
-    type: zip
-  - path: installers\daedalus-*.exe
-    name: Daedalus Win64 Installer
-  - path: installers\launcher-config-*.yaml
-    name: Cardano launcher configuration
-  - path: installers\wallet-topology-*.yaml
-    name: Wallet topology
-
-deploy:
-  provider: S3
-  access_key_id:
-    secure: IEky6PsMzHaKHNBMxR8tQaQI8X7qWRB9+HuEroTVRBk=
-  secret_access_key:
-    secure: cqjzG96hWB1x3JDbVSbF9E+aJ5jKvIGacJRUDWATHaTOYfSt6Rvive/NrF4lKBIm
-  bucket: appveyor-ci-deploy
-  region: ap-northeast-1
-  folder:
-  artifact: Daedalus Win64 Installer
-  set_public: true
+- ps: echo "No Longer Used, windows binaries cross compiled in hydra"

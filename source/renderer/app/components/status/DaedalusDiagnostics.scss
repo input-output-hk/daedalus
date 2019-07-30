@@ -62,6 +62,7 @@
   tbody > tr:first-child > th {
     color: var(--theme-network-window-text-color);
     display: inline-block;
+    font-family: var(font-medium);
     font-size: 14px;
     font-stretch: normal;
     font-style: normal;
@@ -72,11 +73,15 @@
     text-align: left;
     white-space: nowrap;
     width: 100%;
+    span {
+      opacity: 1;
+    }
   }
 
   th,
   td {
     color: var(--theme-network-window-text-color);
+    font-family: var(--font-regular);
     font-size: 14px;
     font-stretch: normal;
     font-style: normal;
@@ -103,6 +108,7 @@
   }
 
   td {
+    font-weight: 500;
     text-align: right;
     user-select: text;
 
@@ -138,6 +144,10 @@
       display: inline-block;
       cursor: pointer;
       position: relative;
+
+      .tooltipLabelWrapper {
+        text-align: center;
+      }
 
       p {
         display: inline-block;

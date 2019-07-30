@@ -5,9 +5,10 @@ import { defineMessages, intlShape } from 'react-intl';
 import ReactModal from 'react-modal';
 import DaedalusDiagnostics from '../../components/status/DaedalusDiagnostics';
 import styles from './DaedalusDiagnosticsDialog.scss';
-import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
 import GenericNotification from '../../components/notifications/GenericNotification';
 import { COPY_STATE_DIRECTORY_PATH_NOTIFICATION_DURATION } from '../../config/timingConfig';
+import { formattedBytesToSize } from '../../utils/formatters';
+import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
 
 export const messages = defineMessages({
   stateDirectoryCopyNotificationMessage: {
@@ -79,7 +80,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       platform: environment.os,
       platformVersion: environment.platformVersion,
       cpu: Array.isArray(environment.cpu) ? environment.cpu[0].model : '',
-      ram: this.convertBytesToSize(environment.ram),
+      ram: formattedBytesToSize(environment.ram),
       availableDiskSpace: diskSpaceAvailable,
     };
 
@@ -148,8 +149,8 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
           )}
           closeNotification={actions.notifications.closeActiveNotification}
           icon="success"
-          themeOverride="grey"
           hasCloseButton
+          themeOverride="grey"
         >
           {intl.formatMessage(messages.stateDirectoryCopyNotificationMessage)}
         </GenericNotification>
@@ -162,16 +163,5 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       id: COPY_STATE_DIRECTORY_PATH_NOTIFICATION_ID,
       duration: COPY_STATE_DIRECTORY_PATH_NOTIFICATION_DURATION,
     });
-  };
-
-  convertBytesToSize = (bytes: number): string => {
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    if (bytes === 0) return 'n/a';
-    const i = parseInt(
-      Math.floor(Math.log(Math.abs(bytes)) / Math.log(1024)),
-      10
-    );
-    if (i === 0) return `${bytes} ${sizes[i]})`;
-    return `${(bytes / 1024 ** i).toFixed(1)} ${sizes[i]}`;
   };
 }

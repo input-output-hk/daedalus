@@ -15,7 +15,7 @@ import {
 } from '../../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../../config/numbersConfig';
 import { getNetworkEkgUrl } from '../../utils/network';
-import closeCross from '../../assets/images/close-cross.inline.svg';
+import closeCross from '../../assets/images/close-cross-thin.inline.svg';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
@@ -112,11 +112,6 @@ const messages = defineMessages({
     id: 'daedalus.diagnostics.dialog.stateDirectoryPathOpenBtn',
     defaultMessage: '!!!Open',
     description: 'Open',
-  },
-  stateDirectoryCopyPathBtn: {
-    id: 'daedalus.diagnostics.dialog.stateDirectoryCopyPathBtn',
-    defaultMessage: '!!!Copy',
-    description: 'Copy',
   },
   connectionError: {
     id: 'daedalus.diagnostics.dialog.connectionError',
@@ -667,7 +662,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                       <Tooltip
                         skin={TooltipSkin}
                         tip={
-                          <div style={{ textAlign: 'center' }}>
+                          <div className={styles.tooltipLabelWrapper}>
                             <div>{daedalusStateDirectoryPath}</div>
                           </div>
                         }
@@ -707,7 +702,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.connected)}:</th>
-                <td className={this.getClass(isConnected)}>
+                <td className={this.getClassName(isConnected)}>
                   {isConnected
                     ? intl.formatMessage(messages.statusOn)
                     : intl.formatMessage(messages.statusOff)}
@@ -715,7 +710,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.synced)}:</th>
-                <td className={this.getClass(isSynced)}>
+                <td className={this.getClassName(isSynced)}>
                   {isSynced
                     ? intl.formatMessage(messages.statusOn)
                     : intl.formatMessage(messages.statusOff)}
@@ -777,7 +772,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.systemTimeCorrect)}:</th>
-                <td className={this.getClass(isSystemTimeCorrect)}>
+                <td className={this.getClassName(isSystemTimeCorrect)}>
                   {isSystemTimeCorrect
                     ? intl.formatMessage(messages.statusOn)
                     : intl.formatMessage(messages.statusOff)}
@@ -785,7 +780,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.systemTimeIgnored)}:</th>
-                <td className={this.getClass(!isSystemTimeIgnored)}>
+                <td className={this.getClassName(!isSystemTimeIgnored)}>
                   {isSystemTimeIgnored
                     ? intl.formatMessage(messages.statusOn)
                     : intl.formatMessage(messages.statusOff)}
@@ -849,7 +844,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.cardanoNodeResponding)}:</th>
-                <td className={this.getClass(isNodeResponding)}>
+                <td className={this.getClassName(isNodeResponding)}>
                   {isNodeResponding
                     ? intl.formatMessage(messages.statusOn)
                     : intl.formatMessage(messages.statusOff)}
@@ -857,7 +852,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.cardanoNodeSubscribed)}:</th>
-                <td className={this.getClass(isNodeSubscribed)}>
+                <td className={this.getClassName(isNodeSubscribed)}>
                   {isNodeSubscribed
                     ? intl.formatMessage(messages.statusOn)
                     : intl.formatMessage(messages.statusOff)}
@@ -865,7 +860,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.cardanoNodeTimeCorrect)}:</th>
-                <td className={this.getClass(isNodeTimeCorrect)}>
+                <td className={this.getClassName(isNodeTimeCorrect)}>
                   {isNodeTimeCorrect
                     ? intl.formatMessage(messages.statusOn)
                     : intl.formatMessage(messages.statusOff)}
@@ -873,7 +868,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.cardanoNodeSyncing)}:</th>
-                <td className={this.getClass(isNodeSyncing)}>
+                <td className={this.getClassName(isNodeSyncing)}>
                   {isNodeSyncing
                     ? intl.formatMessage(messages.statusOn)
                     : intl.formatMessage(messages.statusOff)}
@@ -881,7 +876,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               </tr>
               <tr>
                 <th>{intl.formatMessage(messages.cardanoNodeInSync)}:</th>
-                <td className={this.getClass(isNodeInSync)}>
+                <td className={this.getClassName(isNodeInSync)}>
                   {isNodeInSync
                     ? intl.formatMessage(messages.statusOn)
                     : intl.formatMessage(messages.statusOff)}
@@ -954,7 +949,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     this.restoreDialogCloseOnEscKey();
   };
 
-  getClass = (isTrue: boolean) =>
+  getClassName = (isTrue: boolean) =>
     classNames([isTrue ? styles.green : styles.red]);
 
   syncingTimer = () => {
