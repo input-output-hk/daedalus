@@ -2,18 +2,9 @@
 // @flow
 import { isEmpty } from 'lodash';
 import chalk from 'chalk';
+import { EXISTING_THEME_OUTPUTS } from '../daedalus/index.js';
 import { findMissingDefinitions, findMissingCSSVars } from './checkCreateTheme';
-import { CARDANO_THEME_CONFIG } from '../daedalus/cardano';
-import { DARK_BLUE_THEME_CONFIG } from '../daedalus/dark-blue';
-import { DARK_CARDANO_THEME_CONFIG } from '../daedalus/dark-cardano';
-import { LIGHT_BLUE_THEME_CONFIG } from '../daedalus/light-blue';
-import { YELLOW_THEME_CONFIG } from '../daedalus/yellow';
-import { WHITE_THEME_CONFIG } from '../daedalus/white';
-import type {
-  PendingThemesUpdates,
-  FindUpdatesParams,
-  LogDifferencesParams,
-} from '../types';
+import type { PendingThemesUpdates, LogDifferencesParams } from '../types';
 
 const logDifferences = ({
   color,
@@ -29,20 +20,32 @@ const logDifferences = ({
   return console.log(chalk.hex(color)(message));
 };
 
+const EXISTING_THEME_OUTPUTS_OBJ = Object.fromEntries(EXISTING_THEME_OUTPUTS);
+
 // Checks for properties/CSS vars on createThemeObj that don't exist on existing themes
 export const findUpdates = (
-  createThemeOutputs: FindUpdatesParams
+  createThemeOutputs: Array<[string, Object]>
 ): null | PendingThemesUpdates => {
-  const {
-    cardano,
-    darkBlue,
-    darkCardano,
-    lightBlue,
-    yellow,
-    white,
-  } = createThemeOutputs;
-  const pendingThemesUpdates = {};
+  const pendingThemesUpdates = createThemeOutputs.reduce(
+    (defsToAdd, themeOutput) => {
+      const [fileName, themeObj] = themeOutput;
 
+      const missingDefs = {
+        ...findMissingDefinitions(
+          themeObj,
+          EXISTING_THEME_OUTPUTS_OBJ[fileName]
+        ),
+        ...findMissingCSSVars(themeObj, EXISTING_THEME_OUTPUTS_OBJ[fileName]),
+      };
+      if (!isEmpty(missingDefs)) {
+        defsToAdd[fileName] = missingDefs;
+      }
+      return defsToAdd;
+    },
+    {}
+  );
+
+  // TODO: finish refactoring below
   const cardanoDefsToAdd = {
     ...findMissingDefinitions(cardano, CARDANO_THEME_CONFIG),
     ...findMissingCSSVars(cardano, CARDANO_THEME_CONFIG),
