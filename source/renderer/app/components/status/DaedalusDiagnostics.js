@@ -15,7 +15,7 @@ import {
 } from '../../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../../config/numbersConfig';
 import { getNetworkEkgUrl } from '../../utils/network';
-import closeCross from '../../assets/images/close-cross.inline.svg';
+import closeCross from '../../assets/images/close-cross-thin.inline.svg';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
@@ -662,7 +662,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                       <Tooltip
                         skin={TooltipSkin}
                         tip={
-                          <div style={{ textAlign: 'center' }}>
+                          <div className={styles.tooltipLabelWrapper}>
                             <div>{daedalusStateDirectoryPath}</div>
                           </div>
                         }

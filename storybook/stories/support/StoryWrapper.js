@@ -10,6 +10,9 @@ import ThemeManager from '../../../source/renderer/app/ThemeManager';
 import cardano from '../../../source/renderer/app/themes/daedalus/cardano.js';
 import darkBlue from '../../../source/renderer/app/themes/daedalus/dark-blue.js';
 import lightBlue from '../../../source/renderer/app/themes/daedalus/light-blue.js';
+import darkCardano from '../../../source/renderer/app/themes/daedalus/dark-cardano.js';
+import white from '../../../source/renderer/app/themes/daedalus/white.js';
+import yellow from '../../../source/renderer/app/themes/daedalus/yellow.js';
 
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([...en, ...ja]);
@@ -18,6 +21,9 @@ const themes = {
   Cardano: cardano,
   DarkBlue: darkBlue,
   LightBlue: lightBlue,
+  DarkCardano: darkCardano,
+  Yellow: yellow,
+  White: white,
 };
 const themeNames = keys(themes);
 

@@ -13,7 +13,7 @@ in
 }:
 
 let
-  daedalusPkgs = import ./. { inherit cluster system; };
+  daedalusPkgs = import ./. { inherit cluster; target = system; };
   hostPkgs = import pkgs.path { config = {}; overlays = []; };
   yaml2json = pkgs.haskell.lib.disableCabalFlag pkgs.haskellPackages.yaml "no-exe";
   yarn = pkgs.yarn.override { inherit nodejs; };
