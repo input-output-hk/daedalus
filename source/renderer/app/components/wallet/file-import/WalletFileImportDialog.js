@@ -117,6 +117,11 @@ export default class WalletFileImportDialog extends Component<Props, State> {
   form = new ReactToolboxMobxForm(
     {
       fields: {
+        walletFilePath: {
+          label: 'filePath',
+          placeholder: 'filePath',
+          type: 'hidden',
+        },
         walletFile: {
           label: this.context.intl.formatMessage(messages.walletFileLabel),
           placeholder: this.context.intl.formatMessage(messages.walletFileHint),
@@ -200,9 +205,9 @@ export default class WalletFileImportDialog extends Component<Props, State> {
     this.form.submit({
       onSuccess: form => {
         const { createPassword } = this.state;
-        const { walletFile, spendingPassword, walletName } = form.values();
+        const { walletFilePath, spendingPassword, walletName } = form.values();
         const walletData = {
-          filePath: walletFile.path,
+          filePath: walletFilePath,
           spendingPassword: createPassword ? spendingPassword : null,
           walletName: walletName.length > 0 ? walletName : null,
         };
@@ -218,6 +223,7 @@ export default class WalletFileImportDialog extends Component<Props, State> {
     const { isSubmitting, error, onClose } = this.props;
     // const { createPassword } = this.state;
 
+    const walletFilePath = form.$('walletFilePath');
     const walletFile = form.$('walletFile');
     const dialogClasses = classnames([
       styles.component,
@@ -256,8 +262,9 @@ export default class WalletFileImportDialog extends Component<Props, State> {
           <FileUploadWidget
             {...walletFile.bind()}
             selectedFile={walletFile.value}
-            onFileSelected={file => {
+            onFileSelected={(filePath, file) => {
               // "set(value)" is an unbound method and thus must be explicitly called
+              walletFilePath.set(filePath);
               walletFile.set(file);
             }}
           />

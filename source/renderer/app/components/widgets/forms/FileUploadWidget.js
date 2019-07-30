@@ -46,7 +46,7 @@ export default class FileUploadWidget extends Component<Props> {
             lastModified: fileLastModified,
             type: fileType,
           });
-          this.props.onFileSelected(file);
+          this.props.onFileSelected(filePath, file);
         } catch (error) {} // eslint-disable-line
       }
     );
