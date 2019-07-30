@@ -24,3 +24,11 @@ export type InjectedDialogContainerProps = {
   children: Node,
   onClose: Function,
 };
+
+export type InjectedDialogContainerStepProps = {
+  stores: any | StoresMap,
+  actions: any | ActionsMap,
+  children: Node,
+  onClose: Function,
+  onContinue: Function,
+};

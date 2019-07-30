@@ -36,15 +36,6 @@ export default class WalletCreateDialogContainer extends Component<
     onClose: () => {},
   };
 
-  componentWillReceiveProps(nextProps: Props) {
-    console.log('nextProps', nextProps);
-    const stepChanged =
-      nextProps.stores.wallets.walletCreateStep !== this.state.currentStep;
-    if (nextProps.stores.wallets.walletCreateStep && stepChanged) {
-      this.onContinue(nextProps.stores.wallets.walletCreateStep);
-    }
-  }
-
   state = {
     currentStep: 0,
     showConfirmationDialog: false,
@@ -62,8 +53,8 @@ export default class WalletCreateDialogContainer extends Component<
     if (uiDialogs.isOpen(InstructionsDialog)) {
       activeDialog = (
         <InstructionsDialogContainer
-          onContinue={this.onContinue}
           onClose={this.onClose}
+          onContinue={this.onContinue}
         />
       );
     }
@@ -73,19 +64,28 @@ export default class WalletCreateDialogContainer extends Component<
     return activeDialog;
   }
 
-  onContinue = (nextStep: number) => {
-    const nextDialog = CREATE_WALLET_STEPS[nextStep];
-    this.switchDialog(nextDialog);
-    this.setState({ currentStep: nextStep });
+  onContinue = () => {
+    const { currentStep } = this.state;
+    const nextStep =
+      currentStep + 1 < CREATE_WALLET_STEPS.length
+        ? currentStep + 1
+        : currentStep;
+    this.changeStep(nextStep);
   };
 
   onBack = () => {
-    // eslint-disable-next-line react/no-access-state-in-setstate
-    const prevStep = this.state.currentStep ? this.state.currentStep - 1 : 0;
-    const prevDialog = CREATE_WALLET_STEPS[prevStep];
-    this.setState({ currentStep: prevStep });
-    this.switchDialog(prevDialog);
-    this.props.actions.wallets.updateCertificateStep.trigger(true);
+    const { currentStep } = this.state;
+    const prevStep = currentStep ? currentStep - 1 : currentStep;
+    this.changeStep(prevStep);
+  };
+
+  changeStep = (newStep: number) => {
+    const { currentStep } = this.state;
+    const isBack = newStep < currentStep;
+    const newDialog = CREATE_WALLET_STEPS[newStep];
+    this.switchDialog(newDialog);
+    this.setState({ currentStep: newStep });
+    this.props.actions.wallets.updateCertificateStep.trigger(isBack);
   };
 
   onClose = () => {
