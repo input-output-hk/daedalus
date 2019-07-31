@@ -267,7 +267,6 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-icon-syncing-logo-color': '#e9f4fe',
     '--theme-icon-transactions-ada-symbol-color': '#e9f4fe',
     '--theme-icon-transaction-type-color': '#fafbfc',
-    '--theme-icon-ada-api-logo-color': 'rgba(250, 251, 252, 0.5)',
   },
   input: {
     '--theme-input-background-color': '#263345',
