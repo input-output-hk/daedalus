@@ -43,6 +43,11 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-ada-redemption-success-overlay-close-button-background-color-hover':
       'rgba(0, 0, 0, 0.07)',
   },
+  backToTopButton: {
+    '--theme-back-to-top-button-background-color': '#5e6066',
+    '--theme-back-to-top-button-text-color': '#fafbfc',
+    '--theme-back-to-top-button-box-shadow-color': 'rgba(0, 0, 0, 0.36)',
+  },
   blockConsolidation: {
     '--theme-block-consolidation-background-color': 'rgba(38, 51, 69, 0.96)',
     '--theme-block-consolidation-title-text-color': '#fafbfc',
@@ -618,6 +623,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-staking-stake-pool-tooltip-text-color': '#e9f4fe',
     '--theme-staking-stake-pools-search-button-color': '#e9f4fe',
     '--theme-staking-stake-pools-search-icon-color': '#8793a1',
+    '--theme-staking-stake-pools-search-clear-button-background-color':
+      'rgba(68, 91, 124, 0.05)',
     '--theme-staking-stake-pools-title-color': '#e9f4fe',
   },
   staking: {

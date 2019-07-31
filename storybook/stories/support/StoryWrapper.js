@@ -1,10 +1,15 @@
 // @flow
 import React, { Component, Fragment } from 'react';
-import { keys } from 'lodash';
+import { keys, set } from 'lodash';
 import { IntlProvider, addLocaleData } from 'react-intl';
 import en from 'react-intl/locale-data/en';
 import ja from 'react-intl/locale-data/ja';
-import DaedalusMenu from './DaedalusMenu';
+import {
+  setInitialProps,
+  updateParam,
+  onReceiveParam,
+} from '../../addons/DaedalusMenu';
+
 import translations from '../../../source/renderer/app/i18n/translations';
 import ThemeManager from '../../../source/renderer/app/ThemeManager';
 import cardano from '../../../source/renderer/app/themes/daedalus/cardano.js';
@@ -14,7 +19,9 @@ import darkCardano from '../../../source/renderer/app/themes/daedalus/dark-carda
 import white from '../../../source/renderer/app/themes/daedalus/white.js';
 import yellow from '../../../source/renderer/app/themes/daedalus/yellow.js';
 
-// https://github.com/yahoo/react-intl/wiki#loading-locale-data
+/* eslint-disable no-restricted-globals */
+
+// // https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([...en, ...ja]);
 
 const themes = {
@@ -40,49 +47,72 @@ type Props = {
 type State = {
   themeName: string,
   localeName: string,
-  isMenuVisible: boolean,
 };
 
 export default class StoryWrapper extends Component<Props, State> {
-  state = {
-    themeName: localStorage.getItem('currentTheme') || themeNames[0],
-    localeName: localStorage.getItem('currentLocale') || localeNames[0],
-    isMenuVisible: false,
+  constructor(props: Props) {
+    super(props);
+
+    const themeName =
+      this.params.get('themeName') ||
+      sessionStorage.getItem('themeName') ||
+      themeNames[0];
+    this.handleSetParam('themeName', themeName);
+
+    const localeName =
+      this.params.get('localeName') ||
+      sessionStorage.getItem('localeName') ||
+      localeNames[0];
+    this.handleSetParam('localeName', localeName);
+
+    onReceiveParam(this.handleSetParam);
+
+    this.state = {
+      themeName,
+      localeName,
+    };
+  }
+
+  componentDidMount() {
+    const { themeName, localeName } = this.state;
+    setInitialProps({
+      themeNames,
+      localeNames,
+      themeName,
+      localeName,
+    });
+  }
+
+  get params() {
+    const { hash, search } = parent.window.location;
+    const queries = hash || search;
+    return new URLSearchParams(queries.slice(1));
+  }
+
+  setHashParam = (param: string, value: string) => {
+    const hash = this.params;
+    hash.delete('path');
+    hash.set(param, value);
+    parent.window.location.hash = hash;
   };
 
-  setLocaleName = (localeName: string) => {
-    this.setState({ localeName });
-    localStorage.setItem('currentLocale', localeName);
+  handleSetParam = (param: string, value: string) => {
+    const query = set({}, param, value);
+    this.setState(query);
+    this.setHashParam(param, value);
+    sessionStorage.setItem(param, value);
+    updateParam(query);
   };
-
-  setThemeName = (themeName: string) => {
-    this.setState({ themeName });
-    localStorage.setItem('currentTheme', themeName);
-  };
-
-  handleToggleVisibility = () =>
-    this.setState(({ isMenuVisible }) => ({ isMenuVisible: !isMenuVisible }));
 
   render() {
     const { children: Story } = this.props;
-    const { themeName, localeName, isMenuVisible } = this.state;
+    const { themeName, localeName } = this.state;
     const theme = themes[themeName];
     const locale = locales[localeName];
 
     return (
       <Fragment>
         <ThemeManager variables={theme} />
-        <DaedalusMenu
-          localeNames={localeNames}
-          themeNames={themeNames}
-          setLocaleName={this.setLocaleName}
-          setThemeName={this.setThemeName}
-          currentLocale={localeName}
-          currentTheme={themeName}
-          onToggleVisibility={this.handleToggleVisibility}
-          isVisible={isMenuVisible}
-        />
-
         <IntlProvider
           {...{ locale, key: locale, messages: translations[locale] }}
         >
