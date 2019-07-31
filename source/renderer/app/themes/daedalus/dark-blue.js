@@ -665,6 +665,11 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-staking-info-learn-more-icon-color': 'rgba(250, 251, 252, 1)',
     '--theme-staking-learn-more-button-color': '#fafbfc',
     '--theme-staking-learn-more-icon-color': 'rgba(250, 251, 252, 1)',
+    '--theme-staking-countdown-widget-background-color':
+      'rgba(233, 244, 254, 0.07)',
+    '--theme-staking-countdown-widget-delimeter-background-color': '#e9f4fe',
+    '--theme-staking-countdown-widget-field-label-color': '#e9f4fe',
+    '--theme-staking-countdown-widget-field-value-color': '#e9f4fe',
   },
   support: {
     '--theme-support-settings-item-color': 'rgba(233, 244, 254, 0.5)',

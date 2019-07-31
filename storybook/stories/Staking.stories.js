@@ -135,7 +135,6 @@ storiesOf('Staking', module)
     () => (
       <div>
         <StakingCountdown
-          currentLocale={translationIndex}
           startDateTime={startDateTimeKnob(
             'Decentralization Start DateTime',
             defaultStartDateTime

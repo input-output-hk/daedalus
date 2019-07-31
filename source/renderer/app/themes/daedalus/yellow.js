@@ -647,6 +647,12 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-staking-delegation-center-gear-icon-fill-color-active': '#2d2d2d',
     '--theme-staking-delegation-center-no-wallets-instructions-color':
       '#2d2d2d',
+    '--theme-staking-countdown-widget-background-color':
+      'rgba(45, 45, 45, 0.07)',
+    '--theme-staking-countdown-widget-delimeter-background-color': '#2d2d2d',
+    '--theme-staking-countdown-widget-field-label-color':
+      'rgba(45, 45, 45, 0.7)',
+    '--theme-staking-countdown-widget-field-value-color': '#2d2d2d',
   },
   support: {
     '--theme-support-settings-item-color': '#2d2d2d',

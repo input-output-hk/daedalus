@@ -646,6 +646,12 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-staking-delegation-center-gear-icon-fill-color-active': '#ffffff',
     '--theme-staking-delegation-center-no-wallets-instructions-color':
       '#ffffff',
+    '--theme-staking-countdown-widget-background-color':
+      'rgba(255, 255, 255, 0.07)',
+    '--theme-staking-countdown-widget-delimeter-background-color': '#ffffff',
+    '--theme-staking-countdown-widget-field-label-color':
+      'rgba(255, 255, 255, 0.7)',
+    '--theme-staking-countdown-widget-field-value-color': '#ffffff',
   },
   support: {
     '--theme-support-settings-item-color': '#ffffff',
