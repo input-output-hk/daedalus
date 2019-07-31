@@ -570,6 +570,12 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-sidebar-menu-add-button-background-color-active': '#20212ea8',
     '--theme-sidebar-menu-add-button-background-color-hover': '#20212ea8',
     '--theme-sidebar-menu-add-button-text-color': '#ffffff',
+    '--theme-sidebar-wallets-scrollbar-background-color':
+      'rgba(255, 255, 255, 0.1)',
+    '--theme-sidebar-wallets-scrollbar-background-color-active':
+      'rgba(255, 255, 255, 0.3)',
+    '--theme-sidebar-wallets-scrollbar-background-color-hover':
+      'rgba(255, 255, 255, 0.3)',
   },
   stakePools: {
     '--theme-staking-stake-pools-title-color': '#ffffff',

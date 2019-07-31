@@ -567,6 +567,12 @@ export const WHITE_THEME_CONFIG = {
     '--theme-sidebar-menu-add-button-background-color-active': '#e9e9e9a8',
     '--theme-sidebar-menu-add-button-background-color-hover': '#eeeeeea8',
     '--theme-sidebar-menu-add-button-text-color': '#2d2d2d',
+    '--theme-sidebar-wallets-scrollbar-background-color':
+      'rgba(255, 255, 255, 0.1)',
+    '--theme-sidebar-wallets-scrollbar-background-color-active':
+      'rgba(255, 255, 255, 0.3)',
+    '--theme-sidebar-wallets-scrollbar-background-color-hover':
+      'rgba(255, 255, 255, 0.3)',
   },
   stakePools: {
     '--theme-staking-stake-pools-title-color': '#2d2d2d',
