@@ -5,14 +5,21 @@ Changelog
 
 ### Features
 
+- Implemented css rules automatic sort ([PR 1483](https://github.com/input-output-hk/daedalus/pull/1483))
+- Improved scrollbar look and feel on wallets list ([PR 1475](https://github.com/input-output-hk/daedalus/pull/1475))
+- Implemented new delegation countdown design ([PR 1481](https://github.com/input-output-hk/daedalus/pull/1481))
 - "Delegation" screens UI:
   - Optimized delegation setup wizard ([PR 1503](https://github.com/input-output-hk/daedalus/pull/1503))
   - Implemented "Search and Filtering" logic on "Stake pools" screen ([PR 1468](https://github.com/input-output-hk/daedalus/pull/1468))
 
 ### Fixes
 
-  - Implemented Storybook menu using queryStrings over localStorage ([PR 1426](https://github.com/input-output-hk/daedalus/pull/1426))
+- Fixed broken wallets storybook stories ([PR 1473](https://github.com/input-output-hk/daedalus/pull/1473))
+- Implemented Storybook menu using queryStrings over localStorage ([PR 1426](https://github.com/input-output-hk/daedalus/pull/1426))
 
+### Chores
+
+- Unified support request data handling in common method ([1472](https://github.com/input-output-hk/daedalus/pull/1472))
 
 ## 0.14.0
 

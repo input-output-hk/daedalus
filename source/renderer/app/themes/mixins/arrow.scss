@@ -8,36 +8,36 @@
     @if $direction == up {
       bottom: 100%;
     }
-    left: 50%;
     border: solid transparent;
     content: ' ';
     height: 0;
-    width: 0;
-    position: absolute;
+    left: 50%;
     pointer-events: none;
+    position: absolute;
+    width: 0;
   }
 
   &:after {
     border-color: rgba($bg-color, 0);
+    border-width: $size;
+    margin-left: -$size;
     @if $direction == down {
       border-top-color: $bg-color;
     }
     @if $direction == up {
       border-bottom-color: $bg-color;
     }
-    border-width: $size;
-    margin-left: -$size;
   }
 
   &:before {
     border-color: rgba($border-color, 0);
+    border-width: $size;
+    margin-left: -$size;
     @if $direction == down {
       border-top-color: $border-color;
     }
     @if $direction == up {
       border-bottom-color: $border-color;
     }
-    border-width: $size;
-    margin-left: -$size;
   }
 }

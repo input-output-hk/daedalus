@@ -12,27 +12,27 @@
   overflow-y: overlay;
   padding: 20px;
   &::-webkit-scrollbar-button {
-    height: 7px;
     display: block;
+    height: 7px;
   }
 }
 
 .headline {
-  text-align: center;
-  text-transform: uppercase;
+  color: var(--theme-ada-redemption-headline-color);
   font-family: var(--font-medium);
   font-size: 18px;
   margin-bottom: 2rem;
   margin-top: 10px;
-  color: var(--theme-ada-redemption-headline-color);
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .instructions {
-  margin-bottom: 25px;
+  color: var(--theme-ada-redemption-instructions-color);
   font-family: var(--font-regular);
   font-size: 16px;
   line-height: 1.38;
-  color: var(--theme-ada-redemption-instructions-color);
+  margin-bottom: 25px;
   strong {
     font-family: var(--font-bold);
   }
@@ -46,8 +46,8 @@
   width: 100%;
 
   .certificate {
-    flex-grow: 0;
     flex-basis: 154px;
+    flex-grow: 0;
     margin-left: 30px;
   }
 
@@ -82,7 +82,7 @@
 
 .error {
   @include error-message;
-  text-align: center;
   margin-bottom: 2rem;
   margin-top: 1rem;
+  text-align: center;
 }
