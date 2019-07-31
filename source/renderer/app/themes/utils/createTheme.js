@@ -10,6 +10,14 @@ export type PartialThemeParts = {
 };
 
 export const updateTheme = (existingTheme: Object, themeUpdates: Object) => {
+  let updateEntries = [];
+
+  for (const key in themeUpdates) {
+    if (key && !isEmpty(themeUpdates[key])) {
+      updateEntries = [[key, themeUpdates[key]], ...updateEntries];
+    }
+  }
+
   const updatedTheme = Object.entries(themeUpdates).reduce(
     (theme: Object, newEntry: [string, Object]) => {
       const [keyName, newCSSVars] = newEntry;
