@@ -12,6 +12,9 @@ Changelog
 
   - Implemented Storybook menu using queryStrings over localStorage ([PR 1426](https://github.com/input-output-hk/daedalus/pull/1426))
 
+## Chores
+
+- Refactored theme management code to be scalable ([PR 1502](https://github.com/input-output-hk/daedalus/pull/1502))
 
 ## 0.14.0
 
