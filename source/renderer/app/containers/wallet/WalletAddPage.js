@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import WalletAdd from '../../components/wallet/WalletAdd';
-import WalletCreateInstructionsDialog from '../../components/wallet/wallet-create/InstructionsDialog';
 import WalletRestoreDialog from '../../components/wallet/WalletRestoreDialog';
 import WalletFileImportDialog from '../../components/wallet/file-import/WalletFileImportDialog';
 import WalletBackupDialog from '../../components/wallet/WalletBackupDialog';
@@ -34,7 +33,7 @@ export default class WalletAddPage extends Component<Props> {
 
     let content = null;
 
-    if (uiDialogs.isOpen(WalletCreateInstructionsDialog)) {
+    if (wallets.createWalletStep !== null) {
       content = <WalletCreateDialogContainer onClose={this.onClose} />;
     } else if (uiDialogs.isOpen(WalletBackupDialog)) {
       content = <WalletBackupDialogContainer onClose={this.onClose} />;
@@ -47,11 +46,7 @@ export default class WalletAddPage extends Component<Props> {
         <WalletAdd
           isMainnet={isMainnet}
           isTestnet={isTestnet}
-          onCreate={() =>
-            actions.dialogs.open.trigger({
-              dialog: WalletCreateInstructionsDialog,
-            })
-          }
+          onCreate={() => actions.wallets.createWalletBegin.trigger()}
           onRestore={() =>
             actions.dialogs.open.trigger({ dialog: WalletRestoreDialog })
           }

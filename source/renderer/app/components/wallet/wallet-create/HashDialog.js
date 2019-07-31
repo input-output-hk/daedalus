@@ -7,22 +7,22 @@ type Props = {
   onClose: Function,
 };
 
-export default class InstructionsDialog extends Component<Props> {
+export default class HashDialog extends Component<Props> {
   render() {
     const { onContinue, onClose } = this.props;
     return (
       <WalletCreateDialog
-        stepNumber={0}
+        stepNumber={4}
         actions={[
           {
             primary: true,
-            label: 'Skip video and continue',
+            label: 'Continue',
             onClick: onContinue,
           },
         ]}
         onClose={onClose}
       >
-        INSTRUCTIONS DIALOG CONTENT
+        HASH AND IMAGE DIALOG CONTENT
       </WalletCreateDialog>
     );
   }

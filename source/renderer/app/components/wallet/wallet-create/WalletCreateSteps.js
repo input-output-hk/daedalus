@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
-import { CREATE_WALLET_STEPS } from '../../../containers/wallet/dialogs/WalletCreateDialogContainer';
+import { CREATE_WALLET_STEPS } from '../../../config/walletsConfig';
 import styles from './WalletCreateSteps.scss';
 
 type Props = {
@@ -43,7 +43,7 @@ const messages = defineMessages({
   },
   hashImageStep: {
     id: 'wallet.create.dialog.hashImageStep',
-    defaultMessage: '!!!HashImage',
+    defaultMessage: '!!!Hash & Image',
     description: 'Step "HashImage" in the wallet create dialog.',
   },
   configStep: {
@@ -53,7 +53,7 @@ const messages = defineMessages({
   },
 });
 
-export default class WalletCreateHeader extends Component<Props> {
+export default class WalletCreateSteps extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };

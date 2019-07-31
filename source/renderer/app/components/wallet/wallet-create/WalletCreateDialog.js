@@ -1,12 +1,12 @@
 // @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
-import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import WalletCreateSteps from './WalletCreateSteps';
 import styles from './WalletCreateDialog.scss';
+import type { DialogAction } from '../../widgets/Dialog';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -18,19 +18,19 @@ const messages = defineMessages({
 
 type Props = {
   stepNumber: number,
-  actions: Array<DialogAction>,
-  primaryButtonAutoFocus?: boolean,
+  actions?: Array<DialogAction>,
+  onClose?: Function,
   children: Node,
 };
 
-class WalletCreateHeader extends Component<Props> {
+export default class WalletCreateDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   render() {
     const { intl } = this.context;
-    const { actions, children, stepNumber } = this.props;
+    const { actions, children, stepNumber, onClose } = this.props;
 
     return (
       <Dialog
@@ -38,14 +38,12 @@ class WalletCreateHeader extends Component<Props> {
         title={intl.formatMessage(messages.dialogTitle)}
         actions={actions}
         closeOnOverlayClick
-        onClose={() => {}}
+        onClose={onClose}
         closeButton={<DialogCloseButton />}
       >
         <WalletCreateSteps stepNumber={stepNumber} />
-        {children}
+        <div className={styles.content}>{children}</div>
       </Dialog>
     );
   }
 }
-
-export default WalletCreateHeader;

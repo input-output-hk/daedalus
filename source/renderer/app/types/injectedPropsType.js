@@ -31,4 +31,14 @@ export type InjectedDialogContainerStepProps = {
   children: Node,
   onClose: Function,
   onContinue: Function,
+  onBack: Function,
+};
+
+export const InjectedDialogContainerStepDefaultProps = {
+  actions: null,
+  stores: null,
+  children: null,
+  onClose: () => {},
+  onContinue: () => {},
+  onBack: () => {},
 };

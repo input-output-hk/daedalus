@@ -444,7 +444,7 @@
   "wallet.create.dialog.templateStep": "Template",
   "wallet.create.dialog.mnemonicsStep": "Mnemonics",
   "wallet.create.dialog.validateStep": "Validate",
-  "wallet.create.dialog.hashImageStep": "HashImage",
+  "wallet.create.dialog.hashImageStep": "Hash & Image",
   "wallet.create.dialog.configStep": "Config",
   "wallet.create.dialog.walletNameHint": "e.g: Shopping Wallet",
   "wallet.file.import.dialog.headline": "Import Wallet",

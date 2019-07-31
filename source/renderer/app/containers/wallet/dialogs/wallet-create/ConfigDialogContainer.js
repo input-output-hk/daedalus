@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import InstructionsDialog from '../../../../components/wallet/wallet-create/InstructionsDialog';
+import ConfigDialog from '../../../../components/wallet/wallet-create/ConfigDialog';
 import type { InjectedDialogContainerStepProps } from '../../../../types/injectedPropsType';
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
 
@@ -10,11 +10,13 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
 @inject('stores', 'actions')
 @observer
-export default class InstructionsDialogContainer extends Component<Props> {
+export default class ConfigDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   render() {
-    const { onClose, onContinue } = this.props;
-    return <InstructionsDialog onClose={onClose} onContinue={onContinue} />;
+    const onContinue = () =>
+      this.props.actions.wallets.createWalletAbort.trigger();
+    const { onClose } = this.props;
+    return <ConfigDialog onClose={onClose} onContinue={onContinue} />;
   }
 }

@@ -5,3 +5,11 @@
     }
   }
 }
+
+.content {
+  align-items: center;
+  display: flex;
+  font-family: var(--font-regular);
+  height: 100px;
+  justify-content: center;
+}

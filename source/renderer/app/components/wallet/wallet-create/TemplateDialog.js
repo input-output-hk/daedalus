@@ -7,22 +7,27 @@ type Props = {
   onClose: Function,
 };
 
-export default class InstructionsDialog extends Component<Props> {
+export default class TemplateDialog extends Component<Props> {
   render() {
     const { onContinue, onClose } = this.props;
+
     return (
       <WalletCreateDialog
-        stepNumber={0}
+        stepNumber={1}
         actions={[
           {
             primary: true,
-            label: 'Skip video and continue',
+            label: 'Print template',
+            onClick: () => {},
+          },
+          {
+            label: 'Continue without template',
             onClick: onContinue,
           },
         ]}
         onClose={onClose}
       >
-        INSTRUCTIONS DIALOG CONTENT
+        TEMPLATE STEP CONTENT
       </WalletCreateDialog>
     );
   }

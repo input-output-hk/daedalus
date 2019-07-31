@@ -80,7 +80,9 @@ export default class WalletsStore extends Store {
   @observable certificateStep = null;
   @observable certificateTemplate = null;
   @observable additionalMnemonicWords = null;
-  @observable walletCreateStep = null;
+  @observable createWalletStep = null;
+  @observable createWalletAbort = false;
+  @observable createWalletAbortConfirmation = false;
 
   _newWalletDetails: {
     name: string,
@@ -99,7 +101,13 @@ export default class WalletsStore extends Store {
     this.registerReactions([this._updateActiveWalletOnRouteChanges]);
 
     const { router, walletBackup, wallets, app, networkStatus } = this.actions;
+    // Create Wallet Actions ---
     wallets.createWallet.listen(this._create);
+    wallets.createWalletBegin.listen(this._createWalletBegin);
+    wallets.createWalletChangeStep.listen(this._createWalletChangeStep);
+    wallets.createWalletClose.listen(this._createWalletClose);
+    wallets.createWalletAbort.listen(this._createWalletAbort);
+    // ---
     wallets.deleteWallet.listen(this._deleteWallet);
     wallets.sendMoney.listen(this._sendMoney);
     wallets.restoreWallet.listen(this._restoreWallet);
@@ -111,7 +119,7 @@ export default class WalletsStore extends Store {
     wallets.setCertificateTemplate.listen(this._setCertificateTemplate);
     wallets.finishCertificate.listen(this._finishCertificate);
     router.goToRoute.listen(this._onRouteChange);
-    walletBackup.finishWalletBackup.listen(this._finishCreation);
+    walletBackup.finishWalletBackup.listen(this._finishWalletBackup);
     app.initAppEnvironment.listen(() => {});
     networkStatus.restartNode.listen(this._updateGeneratingCertificateError);
   }
@@ -131,7 +139,27 @@ export default class WalletsStore extends Store {
     }
   };
 
-  _finishCreation = async () => {
+  @action _createWalletBegin = () => {
+    this.createWalletStep = 0;
+  };
+
+  @action _createWalletChangeStep = (isBack: boolean = false) => {
+    const currrentCreateWalletStep = this.createWalletStep || 0;
+    this.createWalletStep =
+      isBack === true
+        ? currrentCreateWalletStep - 1
+        : currrentCreateWalletStep + 1;
+  };
+
+  @action _createWalletClose = () => {
+    this.createWalletAbort = true;
+  };
+
+  @action _createWalletAbort = () => {
+    this.createWalletStep = null;
+  };
+
+  _finishWalletBackup = async () => {
     this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(
       ' '
     );
