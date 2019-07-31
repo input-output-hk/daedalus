@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import WalletCreateDialog from './WalletCreateDialog';
+import commonStyles from './WalletCreateStyles.scss';
 
 type Props = {
   onContinue: Function,
@@ -27,7 +28,7 @@ export default class TemplateDialog extends Component<Props> {
         ]}
         onClose={onClose}
       >
-        TEMPLATE STEP CONTENT
+        <div className={commonStyles.component}>TEMPLATE STEP CONTENT</div>
       </WalletCreateDialog>
     );
   }

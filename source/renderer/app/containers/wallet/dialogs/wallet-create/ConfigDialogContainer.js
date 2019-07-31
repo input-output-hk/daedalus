@@ -14,9 +14,7 @@ export default class ConfigDialogContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   render() {
-    const onContinue = () =>
-      this.props.actions.wallets.createWalletAbort.trigger();
-    const { onClose } = this.props;
+    const { onClose, onContinue } = this.props;
     return <ConfigDialog onClose={onClose} onContinue={onContinue} />;
   }
 }

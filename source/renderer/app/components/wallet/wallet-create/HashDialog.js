@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import WalletCreateDialog from './WalletCreateDialog';
+import commonStyles from './WalletCreateStyles.scss';
 
 type Props = {
   onContinue: Function,
@@ -22,7 +23,9 @@ export default class HashDialog extends Component<Props> {
         ]}
         onClose={onClose}
       >
-        HASH AND IMAGE DIALOG CONTENT
+        <div className={commonStyles.component}>
+          HASH AND IMAGE DIALOG CONTENT
+        </div>
       </WalletCreateDialog>
     );
   }

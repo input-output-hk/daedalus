@@ -31,32 +31,53 @@ export default class WalletCreateDialogContainer extends Component<Props> {
     };
   }
 
+  get shouldDisplayAbortAlert() {
+    return (
+      this.currentStep < 0 && this.currentStep > CREATE_WALLET_STEPS.length
+    );
+  }
+
+  get currentStep() {
+    return this.props.stores.wallets.createWalletStep;
+  }
+
   onContinue = () => {
-    this.props.actions.wallets.createWalletChangeStep.trigger();
+    const {
+      createWalletChangeStep,
+      createWalletClose,
+    } = this.props.actions.wallets;
+    if (this.currentStep < CREATE_WALLET_STEPS.length - 1) {
+      createWalletChangeStep.trigger();
+    } else {
+      createWalletClose.trigger();
+    }
   };
 
   onBack = () => {
-    this.props.actions.wallets.createWalletClose.trigger();
+    this.props.actions.wallets.createWalletChangeStep.trigger(true);
   };
 
   onClose = () => {
-    this.props.actions.wallets.createWalletClose.trigger();
+    const { createWalletAbort, createWalletClose } = this.props.actions.wallets;
+    if (this.shouldDisplayAbortAlert) {
+      createWalletAbort.trigger();
+    } else {
+      createWalletClose.trigger();
+    }
   };
 
-  onAbort = () => {
-    this.props.actions.wallets.createWalletAbort.trigger();
-  };
+  onAbort = () => this.props.actions.wallets.createWalletAbort.trigger();
 
   render() {
     const {
       createWalletStep,
-      createWalletAbortConfirmation,
+      createWalletShowAbortConfirmation,
     } = this.props.stores.wallets;
     const stepId = CREATE_WALLET_STEPS[createWalletStep];
     const CurrentContainer = this.containers[stepId];
     return (
       <Fragment>
-        {createWalletAbortConfirmation && (
+        {createWalletShowAbortConfirmation && (
           <CreateWalletAbortConfirmation onAbort={this.onAbort} />
         )}
         <CurrentContainer

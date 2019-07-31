@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import WalletCreateDialog from './WalletCreateDialog';
+import commonStyles from './WalletCreateStyles.scss';
 
 type Props = {
   onContinue: Function,
@@ -23,7 +24,7 @@ export default class MnemonicsDialog extends Component<Props> {
         ]}
         onClose={onClose}
       >
-        MNEMONICS STEP CONTENT
+        <div className={commonStyles.component}>MNEMONICS STEP CONTENT</div>
       </WalletCreateDialog>
     );
   }

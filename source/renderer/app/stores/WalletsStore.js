@@ -81,8 +81,7 @@ export default class WalletsStore extends Store {
   @observable certificateTemplate = null;
   @observable additionalMnemonicWords = null;
   @observable createWalletStep = null;
-  @observable createWalletAbort = false;
-  @observable createWalletAbortConfirmation = false;
+  @observable createWalletShowAbortConfirmation = false;
 
   _newWalletDetails: {
     name: string,
@@ -105,8 +104,8 @@ export default class WalletsStore extends Store {
     wallets.createWallet.listen(this._create);
     wallets.createWalletBegin.listen(this._createWalletBegin);
     wallets.createWalletChangeStep.listen(this._createWalletChangeStep);
-    wallets.createWalletClose.listen(this._createWalletClose);
     wallets.createWalletAbort.listen(this._createWalletAbort);
+    wallets.createWalletClose.listen(this._createWalletClose);
     // ---
     wallets.deleteWallet.listen(this._deleteWallet);
     wallets.sendMoney.listen(this._sendMoney);
@@ -141,6 +140,7 @@ export default class WalletsStore extends Store {
 
   @action _createWalletBegin = () => {
     this.createWalletStep = 0;
+    this.createWalletShowAbortConfirmation = false;
   };
 
   @action _createWalletChangeStep = (isBack: boolean = false) => {
@@ -149,14 +149,16 @@ export default class WalletsStore extends Store {
       isBack === true
         ? currrentCreateWalletStep - 1
         : currrentCreateWalletStep + 1;
+    this.createWalletShowAbortConfirmation = false;
   };
 
   @action _createWalletClose = () => {
-    this.createWalletAbort = true;
+    this.createWalletStep = null;
+    this.createWalletShowAbortConfirmation = false;
   };
 
   @action _createWalletAbort = () => {
-    this.createWalletStep = null;
+    this.createWalletShowAbortConfirmation = true;
   };
 
   _finishWalletBackup = async () => {
