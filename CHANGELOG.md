@@ -11,12 +11,12 @@ Changelog
 
 ### Fixes
 
+- Fixed broken wallets storybook stories ([PR 1473](https://github.com/input-output-hk/daedalus/pull/1473))
 - Implemented Storybook menu using queryStrings over localStorage ([PR 1426](https://github.com/input-output-hk/daedalus/pull/1426))
 
 ### Chores
 
 - Unified support request data handling in common method ([1472](https://github.com/input-output-hk/daedalus/pull/1472))
-
 
 ## 0.14.0
 
