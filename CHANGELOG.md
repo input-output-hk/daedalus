@@ -6,10 +6,17 @@ Changelog
 ### Features
 
 - Implemented css rules automatic sort ([PR 1483](https://github.com/input-output-hk/daedalus/pull/1483))
+- "Delegation" screens UI:
+  - Implemented "Search and Filtering" logic on "Stake pools" screen ([PR 1468](https://github.com/input-output-hk/daedalus/pull/1468))
 
 ### Fixes
 
 - Implemented Storybook menu using queryStrings over localStorage ([PR 1426](https://github.com/input-output-hk/daedalus/pull/1426))
+
+### Chores
+
+- Unified support request data handling in common method ([1472](https://github.com/input-output-hk/daedalus/pull/1472))
+
 
 ## 0.14.0
 
