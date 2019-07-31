@@ -1,6 +1,6 @@
 // @flow
 import { compact } from 'lodash';
-import { dialog, shell } from 'electron';
+import { shell } from 'electron';
 import type { App, BrowserWindow } from 'electron';
 import type { MenuActions } from './MenuActions.types';
 import { getTranslation } from '../utils/getTranslation';
@@ -137,33 +137,7 @@ export const winLinuxMenu = (
         type: 'checkbox',
         checked: isInSafeMode,
         click(item) {
-          const gpuSafeModeDialogOptions = {
-            buttons: [
-              translation('helpSupport.gpuSafeModeDialogConfirm'),
-              translation('helpSupport.gpuSafeModeDialogNo'),
-              translation('helpSupport.gpuSafeModeDialogCancel'),
-            ],
-            type: 'warning',
-            title: isInSafeMode
-              ? translation('helpSupport.gpuSafeModeDialogTitle')
-              : translation('helpSupport.nonGpuSafeModeDialogTitle'),
-            message: isInSafeMode
-              ? translation('helpSupport.gpuSafeModeDialogMessage')
-              : translation('helpSupport.nonGpuSafeModeDialogMessage'),
-            defaultId: isWindows ? 1 : 2,
-            cancelId: 2,
-            noLink: true,
-          };
-          dialog.showMessageBox(window, gpuSafeModeDialogOptions, buttonId => {
-            if (buttonId === 0) {
-              if (isInSafeMode) {
-                actions.restartWithoutSafeMode();
-              } else {
-                actions.restartInSafeMode();
-              }
-            }
-            item.checked = isInSafeMode;
-          });
+          actions.toggleOnSafeMode(item);
         },
       },
       { type: 'separator' },

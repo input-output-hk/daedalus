@@ -8,13 +8,14 @@
   height: 50px;
   flex-shrink: 0;
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
 .page {
   height: calc(100% - 50px);
   overflow-y: overlay;
   position: relative;
+  scroll-behavior: smooth;
 }
 
 .settingsTabPage {
