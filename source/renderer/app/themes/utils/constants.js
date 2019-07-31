@@ -20,6 +20,15 @@ export const DEFAULT_FONTS = {
   ultralight: 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
 };
 
+export const THEME_LOGGING_COLORS = {
+  'cardano.js': '#2cbb69',
+  'dark-blue.js': '#2874A6',
+  'dark-cardano.js': '#1fc1c3',
+  'light-blue.js': '#33C4FF',
+  'white.js': '#29b595',
+  'yellow.js': '#fdcd68',
+};
+
 const CREATE_THEME_MOCK_PARAMS: PartialThemeParts = {
   colors: {
     border: '#eee',
