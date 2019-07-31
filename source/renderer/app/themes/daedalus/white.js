@@ -601,6 +601,8 @@ export const WHITE_THEME_CONFIG = {
     '--theme-staking-stake-pool-tooltip-delegate-button-border-color':
       'transparent',
     '--theme-staking-progress-label-light': '#fafbfc',
+    '--theme-staking-stake-pools-search-clear-button-background-color':
+      'rgba(68, 91, 124, 0.05)',
   },
   staking: {
     '--theme-staking-content-background-color': '#fff',
@@ -707,6 +709,11 @@ export const WHITE_THEME_CONFIG = {
   rpTooltip: {
     '--rp-tooltip-bg-color': '#2d2d2d',
     '--rp-tooltip-text-color': '#fafbfc',
+  },
+  backToTopButton: {
+    '--theme-back-to-top-button-background-color': '#2d2d2d',
+    '--theme-back-to-top-button-text-color': '#fafbfc',
+    '--theme-back-to-top-button-box-shadow-color': 'rgba(0, 0, 0, 0.36)',
   },
 };
 

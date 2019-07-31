@@ -11,11 +11,13 @@ import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
 import { StakePoolsList } from '../stake-pools/StakePoolsList';
 import { StakePoolsSearch } from '../stake-pools/StakePoolsSearch';
+import { getFilteredStakePoolsList } from '../stake-pools/helpers';
+import BackToTopButton from '../../widgets/BackToTopButton';
 import styles from './DelegationStepsChooseStakePoolDialog.scss';
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import { getColorFromRange } from '../../../utils/colors';
 
-import type { StakePool } from '../../../api/staking/types';
+import type { StakePool, StakePoolsListType } from '../../../api/staking/types';
 
 const messages = defineMessages({
   title: {
@@ -106,9 +108,8 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
     selectedPoolId: get(this.props, ['selectedPool', 'id'], null),
   };
 
-  searchInput: ?HTMLElement = null;
-
   handleSearch = (searchValue: string) => this.setState({ searchValue });
+  handleClearSearch = () => this.setState({ searchValue: '' });
 
   handleSelect = (selectedPoolId: number) => {
     this.setState({ selectedPoolId });
@@ -197,6 +198,11 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       />
     );
 
+    const filteredStakePoolsList: StakePoolsListType = getFilteredStakePoolsList(
+      stakePoolsList,
+      searchValue
+    );
+
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -208,6 +214,12 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         closeButton={<DialogCloseButton onClose={onClose} />}
         backButton={<DialogBackButton onBack={onBack} />}
       >
+        <BackToTopButton
+          scrollableElementClassName="Dialog_content"
+          buttonTopPosition={100}
+          scrollTopToActivate={100}
+        />
+
         <div className={styles.delegationStepsIndicatorWrapper}>
           <Stepper
             steps={stepsList}
@@ -250,16 +262,15 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               label={intl.formatMessage(messages.searchInputLabel)}
               placeholder={intl.formatMessage(messages.searchInputPlaceholder)}
               onSearch={this.handleSearch}
-              registerSearchInput={searchInput => {
-                this.searchInput = searchInput;
-              }}
+              onClearSearch={this.handleClearSearch}
+              scrollableElementClassName="Dialog_content"
             />
           </div>
 
           <div className={styles.stakePoolsListWrapper}>
             <StakePoolsList
               listName="selectedIndexList"
-              stakePoolsList={stakePoolsList}
+              stakePoolsList={filteredStakePoolsList}
               onOpenExternalLink={onOpenExternalLink}
               currentTheme={currentTheme}
               isListActive={selectedList === 'selectedIndexList'}

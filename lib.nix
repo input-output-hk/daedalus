@@ -15,17 +15,17 @@ let
 
   # NIX_PATH=cardano-sl=/path/to/cardano-sl
   # WARNING: currently broken with infinite recursion
-  cardanoSL = { config ? {}, system ? builtins.currentSystem }:
+  cardanoSL = { config ? {}, target }:
     let try = builtins.tryEval <cardano-sl>;
     in if try.success
-    then builtins.trace "using host <cardano-sl>" (import try.value { inherit system config; })
+    then builtins.trace "using host <cardano-sl>" (import try.value { inherit target; })
     else
       let
         spec = builtins.fromJSON (builtins.readFile ./cardano-sl-src.json);
       in import (builtins.fetchTarball {
         url = "${spec.url}/archive/${spec.rev}.tar.gz";
         inherit (spec) sha256;
-      }) { inherit system config; gitrev = spec.rev; };
+      }) { inherit target; gitrev = spec.rev; };
 
   # nixpkgs can be overridden for debugging purposes by setting
   # NIX_PATH=custom_nixpkgs=/path/to/nixpkgs
