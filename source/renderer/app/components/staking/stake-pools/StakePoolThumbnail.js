@@ -10,6 +10,7 @@ import StakePoolTooltip from './StakePoolTooltip';
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import type { StakePool } from '../../../api/staking/types';
 import { STAKE_POOL_TOOLTIP_HOVER_WAIT } from '../../../config/timingConfig';
+import { getRelativePosition } from '../../../utils/domManipulation';
 
 type Props = {
   currentTheme: string,
@@ -53,46 +54,30 @@ export class StakePoolThumbnail extends Component<Props, State> {
   };
 
   handleOpen = (event: SyntheticMouseEvent<HTMLElement>) => {
-    const { onClose, onClick, onHover, isHighlighted, stakePool } = this.props;
+    const {
+      onClose,
+      onClick,
+      onHover,
+      isHighlighted,
+      stakePool,
+      containerClassName,
+    } = this.props;
     if (isHighlighted) return onClose();
     event.persist();
-    if (event.target instanceof HTMLElement) {
-      const targetElement = this.getTargetElement(event.target);
-      if (targetElement instanceof HTMLElement) {
-        const { top, left } = this.getRelativePosition(targetElement);
-        this.setState({ top, left });
-        if (onHover) {
-          this.handleHover(stakePool.id);
-        } else if (onClick) {
-          onClick(stakePool.id);
-        }
+    const targetElement = event.target;
+    if (targetElement instanceof HTMLElement) {
+      const { top, left } = getRelativePosition(
+        targetElement,
+        `.${containerClassName}`
+      );
+      this.setState({ top, left });
+      if (onHover) {
+        this.handleHover(stakePool.id);
+      } else if (onClick) {
+        onClick(stakePool.id);
       }
     }
     return false;
-  };
-
-  getTargetElement = (originalTarget: HTMLElement) => {
-    const { className } = originalTarget;
-    if (className === 'StakePoolThumbnail_content') return originalTarget;
-    if (className === 'StakePoolThumbnail_component')
-      return originalTarget.querySelector('.StakePoolThumbnail_content');
-    return originalTarget.parentNode;
-  };
-
-  getRelativePosition = (targetElement: HTMLElement): Object => {
-    const { containerClassName } = this.props;
-    const relativePosition = {};
-    const parentElement = document.querySelector(`.${containerClassName}`);
-    if (
-      parentElement instanceof HTMLElement &&
-      targetElement instanceof HTMLElement
-    ) {
-      const parentPosition = parentElement.getBoundingClientRect();
-      const childrenPosition = targetElement.getBoundingClientRect();
-      relativePosition.top = childrenPosition.top - parentPosition.top;
-      relativePosition.left = childrenPosition.left - parentPosition.left;
-    }
-    return relativePosition;
   };
 
   handleSelect = () => {
@@ -133,13 +118,11 @@ export class StakePoolThumbnail extends Component<Props, State> {
           background: isSelected && showSelected && color,
         }}
       >
-        <div
-          className={styles.content}
+        <button
           onMouseEnter={onHover ? this.handleOpen : null}
           onClick={!onHover ? this.handleOpen : this.handleSelect}
-          role="link"
-          aria-hidden
-        >
+        />
+        <div className={styles.content}>
           <div className={styles.slug}>{slug}</div>
 
           {isSelected && showSelected ? (

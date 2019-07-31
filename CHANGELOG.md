@@ -3,9 +3,15 @@ Changelog
 
 ## vNext
 
+### Features
+
+- "Delegation" screens UI:
+  - Implemented "Search and Filtering" logic on "Stake pools" screen ([PR 1468](https://github.com/input-output-hk/daedalus/pull/1468))
+
 ### Fixes
 
   - Implemented Storybook menu using queryStrings over localStorage ([PR 1426](https://github.com/input-output-hk/daedalus/pull/1426))
+
 
 ## 0.14.0
 
