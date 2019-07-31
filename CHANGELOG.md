@@ -6,6 +6,7 @@ Changelog
 ### Features
 
 - "Delegation" screens UI:
+  - Optimized delegation setup wizard ([PR 1503](https://github.com/input-output-hk/daedalus/pull/1503))
   - Implemented "Search and Filtering" logic on "Stake pools" screen ([PR 1468](https://github.com/input-output-hk/daedalus/pull/1468))
 
 ### Fixes
