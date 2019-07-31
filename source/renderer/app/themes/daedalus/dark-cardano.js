@@ -606,6 +606,8 @@ export const DARK_CARDANO_THEME_CONFIG = {
     '--theme-staking-stake-pool-tooltip-delegate-button-border-color':
       'transparent',
     '--theme-staking-progress-label-light': '#fff',
+    '--theme-staking-stake-pools-search-clear-button-background-color':
+      'rgba(68, 91, 124, 0.05)',
   },
   staking: {
     '--theme-staking-content-background-color': '#1e1f31',
@@ -720,6 +722,11 @@ export const DARK_CARDANO_THEME_CONFIG = {
   rpTooltip: {
     '--rp-tooltip-bg-color': '#ffffff',
     '--rp-tooltip-text-color': '#000000',
+  },
+  backToTopButton: {
+    '--theme-back-to-top-button-background-color': '#ffffff',
+    '--theme-back-to-top-button-text-color': '#000000',
+    '--theme-back-to-top-button-box-shadow-color': 'rgba(0, 0, 0, 0.36)',
   },
 };
 
