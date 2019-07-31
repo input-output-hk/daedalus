@@ -20,6 +20,7 @@ export const WALLETS = [
     assurance: WalletAssuranceModeOptions.NORMAL,
     hasPassword: false,
     passwordUpdateDate: new Date(),
+    syncState: { data: null, tag: 'synced' },
     isLegacy: false,
   },
   {
@@ -31,6 +32,7 @@ export const WALLETS = [
     passwordUpdateDate: moment()
       .subtract(1, 'month')
       .toDate(),
+    syncState: { data: null, tag: 'synced' },
     isLegacy: false,
   },
   {
@@ -40,7 +42,34 @@ export const WALLETS = [
     assurance: WalletAssuranceModeOptions.NORMAL,
     hasPassword: false,
     passwordUpdateDate: new Date(),
+    syncState: { data: null, tag: 'synced' },
     isLegacy: true,
+  },
+  {
+    id: '3',
+    name: 'Restoring',
+    amount: new BigNumber(12.345),
+    assurance: WalletAssuranceModeOptions.NORMAL,
+    hasPassword: false,
+    passwordUpdateDate: new Date(),
+    syncState: {
+      data: {
+        estimatedCompletionTime: {
+          quantity: 123456789,
+          unit: 'milliseconds',
+        },
+        percentage: {
+          quantity: 50,
+          unit: 'percent',
+        },
+        throughput: {
+          quantity: 500,
+          unit: 'blocksPerSecond',
+        },
+      },
+      tag: 'restoring',
+    },
+    isLegacy: false,
   },
 ];
 

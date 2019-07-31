@@ -6,7 +6,7 @@
   text-align: center;
 
   .learnMoreButton {
-    color: var(--theme-staking-info-learn-more-button-color);
+    color: var(--theme-staking-info-learn-more-button-text-color);
 
     .externalLinkIcon {
       @include link(--theme-staking-info-learn-more-icon-color);
@@ -73,6 +73,6 @@
 
 .progressLabelWhite {
   @extend %regularText;
-  color: #fff;
+  color: var(--theme-staking-progress-label-light);
   transform: translateX(-8px);
 }

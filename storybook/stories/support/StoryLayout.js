@@ -3,6 +3,7 @@ import React, { Component, Children } from 'react';
 import type { Node } from 'react';
 import { observable, runInAction } from 'mobx';
 import { observer, inject } from 'mobx-react';
+import { get } from 'lodash';
 import { action } from '@storybook/addon-actions';
 
 // Assets and helpers
@@ -18,6 +19,8 @@ import type { SidebarWalletType } from '../../../source/renderer/app/types/sideb
 import TopBar from '../../../source/renderer/app/components/layout/TopBar';
 import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
 import SidebarLayout from '../../../source/renderer/app/components/layout/SidebarLayout';
+import menuIconOpened from '../../../source/renderer/app/assets/images/menu-opened-ic.inline.svg';
+import menuIconClosed from '../../../source/renderer/app/assets/images/menu-ic.inline.svg';
 
 export type StoriesProps = {
   wallets: Array<Wallet>,
@@ -44,6 +47,9 @@ const CATEGORIES = [
   CATEGORIES_BY_NAME.STAKING,
   CATEGORIES_BY_NAME.SETTINGS,
 ];
+
+let currentTheme = sessionStorage.getItem('themeName') || 'light-blue';
+currentTheme = currentTheme.toLowerCase();
 
 @inject('stores', 'storiesProps')
 @observer
@@ -104,8 +110,8 @@ export default class StoryLayout extends Component<Props> {
       title: wallet.name,
       info: `${wallet.amount} ADA`,
       isConnected: true,
-      isRestoreActive: false,
-      restoreProgress: 0,
+      isRestoreActive: get(wallet, 'syncState.tag', 'synced') === 'restoring',
+      restoreProgress: get(wallet, 'syncState.data.percentage.quantity', 0),
       isLegacy: wallet.isLegacy,
     }));
 
@@ -146,6 +152,7 @@ export default class StoryLayout extends Component<Props> {
         openDialogAction={action('openDialog')}
         onSubmitSupportRequest={() => {}}
         pathname="/"
+        currentTheme={currentTheme}
       />
     );
   };
@@ -170,6 +177,7 @@ export default class StoryLayout extends Component<Props> {
       }
       showSubMenuToggle
       showSubMenus={this.isShowingSubMenus}
+      leftIcon={this.isShowingSubMenus ? menuIconOpened : menuIconClosed}
     >
       <NodeSyncStatusIcon
         networkStatus={{

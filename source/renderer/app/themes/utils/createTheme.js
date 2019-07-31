@@ -1,12 +1,40 @@
 // @flow
 import chroma from 'chroma-js';
-import { isEmpty } from 'lodash';
+import { isEmpty, has } from 'lodash';
 import { createBackgroundShades, createErrorShades } from './createShades';
 import type { ThemeColors, ThemeFonts, CreateThemeParams } from '../types';
 
-type PartialThemeParts = {
+export type PartialThemeParts = {
   colors: ThemeColors,
   fonts: ThemeFonts,
+};
+
+export const updateTheme = (existingTheme: Object, themeUpdates: Object) => {
+  const updatedTheme = Object.entries(themeUpdates).reduce(
+    (theme: Object, newEntry: [string, Object]) => {
+      const [keyName, newCSSVars] = newEntry;
+      if (keyName && has(theme, keyName)) {
+        return {
+          ...theme,
+          [keyName]: {
+            ...theme[keyName],
+            ...newCSSVars,
+          },
+        };
+      }
+      if (keyName && !has(theme, keyName)) {
+        return {
+          ...theme,
+          [keyName]: {
+            ...newCSSVars,
+          },
+        };
+      }
+      return theme;
+    },
+    { ...existingTheme }
+  );
+  return updatedTheme;
 };
 
 // assigns values to all react-polymorph CSS variables & returns them
@@ -168,6 +196,10 @@ export const createReactPolymorphTheme = (
       '--rp-textarea-resize': 'none',
       '--rp-textarea-text-color': `${text.primary}`,
     },
+    rpTooltip: {
+      '--rp-tooltip-bg-color': `${text.primary}`,
+      '--rp-tooltip-text-color': `${text.secondary}`,
+    },
   };
 };
 
@@ -241,6 +273,12 @@ export const createDaedalusComponentsTheme = (
       '--theme-ada-redemption-disclaimer-button-border-color': `${
         background.primary.lightest
       }`,
+      '--theme-ada-redemption-success-overlay-close-button-color': `${
+        background.primary.lightest
+      }`,
+      '--theme-ada-redemption-success-overlay-close-button-background-color-hover': `${
+        background.secondary.dark
+      }`,
     },
     blockConsolidation: {
       '--theme-block-consolidation-background-color': `${
@@ -283,12 +321,22 @@ export const createDaedalusComponentsTheme = (
       '--theme-block-consolidation-button-icon-color-hover': `${
         background.secondary.regular
       }`,
+      '--theme-block-consolidation-button-text-color': `${text.secondary}`,
       '--theme-block-consolidation-button-text-color-hover': `${
         background.secondary.regular
       }`,
       '--theme-block-consolidation-button-border-color': `${
         background.primary.lightest
       }`,
+      '--theme-block-consolidation-button-border-color-hover': 'transparent',
+      '--theme-block-consolidation-epochs-image-color': `${chroma(
+        text.secondary
+      ).alpha(0.6)}`,
+    },
+    backToTopButton: {
+      '--theme-back-to-top-button-background-color': `${text.primary}`,
+      '--theme-back-to-top-button-text-color': `${text.secondary}`,
+      '--theme-back-to-top-button-box-shadow-color': 'rgba(0, 0, 0, 0.36)',
     },
     body: {
       '--theme-main-body-background-color': `${background.primary.regular}`,
@@ -376,7 +424,8 @@ export const createDaedalusComponentsTheme = (
         background.primary.regular
       }`,
       '--theme-data-migration-layer-text-color': `${text.secondary}`,
-      '--theme-data-migration-layer-text-opacity-color': `${text.secondary}`,
+      '--theme-data-migration-button-border-color': `${text.secondary}`,
+      '--theme-data-migration-button-label-color': `${text.secondary}`,
     },
     delegationSetupWizard: {
       '--theme-delegation-steps-activation-steps-indicator-color': `${
@@ -404,6 +453,12 @@ export const createDaedalusComponentsTheme = (
       '--theme-delegation-steps-choose-stake-pool-selected-slug-color': `${
         text.secondary
       }`,
+      '--theme-delegation-steps-choose-stake-pool-thumb-background-color': `${
+        background.primary.lightest
+      }`,
+      '--theme-delegation-steps-choose-stake-pool-thumb-border-color': `${chroma(
+        border
+      ).alpha(0.2)}`,
       '--theme-delegation-steps-choose-stake-pool-title-color': `${chroma(
         text.primary
       ).alpha(0.8)}`,
@@ -596,6 +651,10 @@ export const createDaedalusComponentsTheme = (
       ).alpha(0.7)}`,
       '--theme-manual-update-overlay-text-highlight-color': `${text.secondary}`,
       '--theme-manual-update-overlay-title-text-color': `${text.secondary}`,
+      '--theme-manual-update-overlay-button-label-color': `${text.secondary}`,
+      '--theme-manual-update-overlay-button-label-color-hover': `${
+        text.secondary
+      }`,
     },
     mnemonic: {
       '--theme-mnemonic-background-color': `${background.primary.regular}`,
@@ -660,6 +719,7 @@ export const createDaedalusComponentsTheme = (
         background.primary.regular
       }`,
       '--theme-node-sync-info-message-text-color': `${text.primary}`,
+      '--theme-node-sync-icon-color': `${text.primary}`,
       '--theme-node-update-accept-button-background-color': `${
         background.secondary.regular
       }`,
@@ -685,6 +745,8 @@ export const createDaedalusComponentsTheme = (
         background.secondary.regular
       ).alpha(0.95)}`,
       '--theme-notification-message-text-color': `${text.secondary}`,
+      '--theme-notification-message-checkmark-icon-color': `${text.secondary}`,
+      '--theme-notification-message-close-icon-color': `${text.secondary}`,
 
       '--theme-legacy-badge-background-color': `${error.dark}`,
       '--theme-legacy-notification-background-color': '#ab2712',
@@ -828,6 +890,8 @@ export const createDaedalusComponentsTheme = (
         background.secondary.lightest
       }`,
       '--theme-staking-stake-pools-search-icon-color': `${text.primary}`,
+      '--theme-staking-stake-pools-search-clear-button-background-color':
+        'rgba(68, 91, 124, 0.05)',
       '--theme-staking-stake-pool-selected-background-color': '#5da377',
       '--theme-staking-stake-pool-selected-checkmark-icon-color': `${
         text.secondary
@@ -869,6 +933,7 @@ export const createDaedalusComponentsTheme = (
       }`,
       '--theme-staking-stake-pool-tooltip-delegate-button-border-color':
         'transparent',
+      '--theme-staking-progress-label-light': `${text.secondary}`,
     },
     staking: {
       '--theme-staking-content-background-color': `${
@@ -899,7 +964,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-table-body-highlighted-text-color': `${
         background.secondary.dark
       }`,
-      '--theme-staking-info-learn-more-button-color': `${
+      '--theme-staking-info-learn-more-button-text-color': `${
         background.primary.lightest
       }`,
       '--theme-staking-info-learn-more-icon-color': `${text.secondary}`,
@@ -960,6 +1025,7 @@ export const createDaedalusComponentsTheme = (
       }`,
       '--theme-topbar-wallet-name-color': `${text.secondary}`,
       '--theme-topbar-wallet-info-color': `${text.secondary}`,
+      '--theme-topbar-logo-color': `${text.primary}`,
     },
     transactions: {
       '--theme-transactions-list-background-color': `${
@@ -992,6 +1058,9 @@ export const createDaedalusComponentsTheme = (
         error.light
       }`,
       '--theme-transactions-arrow-stroke-color': `${text.primary}`,
+      '--theme-transactions-state-failed-text-secondary-color': `${chroma(
+        text.secondary
+      ).alpha(0.8)}`,
     },
     uploader: {
       '--theme-uploader-text-color': `${text.primary}`,
@@ -1061,22 +1130,13 @@ export const createTheme = (fullThemeParts: CreateThemeParams): Object => {
       ...createReactPolymorphTheme({ colors, fonts }),
       ...createDaedalusComponentsTheme({ colors, fonts }),
     };
-
-    // flatten daedalusTheme object for consumption by ThemeManager
-    daedalusTheme = Object.values(daedalusTheme).reduce(
-      (theme, componentVars) => ({ ...theme, ...componentVars }),
-      {}
-    );
   }
 
   // if user passed theme config, compose its values with daedalusTheme object
   if (config && !isEmpty(config)) {
-    daedalusTheme = Object.values(config).reduce(
-      (theme, componentVars) => ({ ...theme, ...componentVars }),
-      daedalusTheme
-    );
+    daedalusTheme = updateTheme(daedalusTheme, config);
   }
 
-  // returned flat theme object composed with config (if passed by user)
+  // return theme object (composed with config if passed by user)
   return daedalusTheme;
 };

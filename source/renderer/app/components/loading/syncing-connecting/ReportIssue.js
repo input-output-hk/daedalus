@@ -112,6 +112,20 @@ export default class ReportIssue extends Component<Props> {
             : intl.formatMessage(messages.reportSyncingIssueText)}
         </h1>
         <Button
+          className={readArticleButtonClasses}
+          label={
+            <p>
+              <SVGInline
+                svg={externalLinkIcon}
+                className={styles.externalLinkIcon}
+              />
+              {intl.formatMessage(messages.readArticleButtonLabel)}
+            </p>
+          }
+          onClick={() => onIssueClick(intl.formatMessage(readArticleButtonUrl))}
+          skin={ButtonSkin}
+        />
+        <Button
           className={reportIssueButtonClasses}
           label={
             <p>
@@ -125,20 +139,6 @@ export default class ReportIssue extends Component<Props> {
           onClick={() =>
             onIssueClick(intl.formatMessage(messages.reportIssueButtonUrl))
           }
-          skin={ButtonSkin}
-        />
-        <Button
-          className={readArticleButtonClasses}
-          label={
-            <p>
-              <SVGInline
-                svg={externalLinkIcon}
-                className={styles.externalLinkIcon}
-              />
-              {intl.formatMessage(messages.readArticleButtonLabel)}
-            </p>
-          }
-          onClick={onIssueClick(readArticleButtonUrl)}
           skin={ButtonSkin}
         />
         <br />
