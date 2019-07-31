@@ -333,6 +333,11 @@ export const createDaedalusComponentsTheme = (
         text.secondary
       ).alpha(0.6)}`,
     },
+    backToTopButton: {
+      '--theme-back-to-top-button-background-color': `${text.primary}`,
+      '--theme-back-to-top-button-text-color': `${text.secondary}`,
+      '--theme-back-to-top-button-box-shadow-color': 'rgba(0, 0, 0, 0.36)',
+    },
     body: {
       '--theme-main-body-background-color': `${background.primary.regular}`,
       '--theme-main-body-messages-color': `${text.primary}`,
@@ -891,6 +896,8 @@ export const createDaedalusComponentsTheme = (
         background.secondary.lightest
       }`,
       '--theme-staking-stake-pools-search-icon-color': `${text.primary}`,
+      '--theme-staking-stake-pools-search-clear-button-background-color':
+        'rgba(68, 91, 124, 0.05)',
       '--theme-staking-stake-pool-selected-background-color': '#5da377',
       '--theme-staking-stake-pool-selected-checkmark-icon-color': `${
         text.secondary
