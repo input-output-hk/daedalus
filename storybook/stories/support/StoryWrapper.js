@@ -18,6 +18,7 @@ import lightBlue from '../../../source/renderer/app/themes/daedalus/light-blue.j
 import darkCardano from '../../../source/renderer/app/themes/daedalus/dark-cardano.js';
 import white from '../../../source/renderer/app/themes/daedalus/white.js';
 import yellow from '../../../source/renderer/app/themes/daedalus/yellow.js';
+import WindowSizeManager from '../../../source/renderer/app/WindowSizeManager';
 
 /* eslint-disable no-restricted-globals */
 
@@ -40,6 +41,21 @@ const locales = {
 };
 const localeNames = keys(locales);
 
+const operatingSystems = {
+  Windows: 'windows',
+  Linux: 'linux',
+  Mac: 'mac',
+};
+
+// These differences are due to the different menu heights on each OS
+const osMinWindowHeights = {
+  Windows: '541px',
+  Linux: '560px',
+  Mac: '600px',
+};
+
+const osNames = keys(operatingSystems);
+
 type Props = {
   children: any,
 };
@@ -47,6 +63,7 @@ type Props = {
 type State = {
   themeName: string,
   localeName: string,
+  osName: string,
 };
 
 export default class StoryWrapper extends Component<Props, State> {
@@ -65,21 +82,30 @@ export default class StoryWrapper extends Component<Props, State> {
       localeNames[0];
     this.handleSetParam('localeName', localeName);
 
+    const osName =
+      this.params.get('osName') ||
+      sessionStorage.getItem('osName') ||
+      osNames[0];
+    this.handleSetParam('osName', osName);
+
     onReceiveParam(this.handleSetParam);
 
     this.state = {
       themeName,
       localeName,
+      osName,
     };
   }
 
   componentDidMount() {
-    const { themeName, localeName } = this.state;
+    const { themeName, localeName, osName } = this.state;
     setInitialProps({
       themeNames,
       localeNames,
+      osNames,
       themeName,
       localeName,
+      osName,
     });
   }
 
@@ -106,13 +132,15 @@ export default class StoryWrapper extends Component<Props, State> {
 
   render() {
     const { children: Story } = this.props;
-    const { themeName, localeName } = this.state;
+    const { themeName, localeName, osName } = this.state;
     const theme = themes[themeName];
     const locale = locales[localeName];
+    const minScreenHeight = osMinWindowHeights[osName];
 
     return (
       <Fragment>
         <ThemeManager variables={theme} />
+        <WindowSizeManager minScreenHeight={minScreenHeight} />
         <IntlProvider
           {...{ locale, key: locale, messages: translations[locale] }}
         >

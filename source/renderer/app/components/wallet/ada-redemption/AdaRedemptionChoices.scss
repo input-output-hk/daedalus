@@ -1,19 +1,19 @@
 .component {
   display: flex;
-  width: 100%;
   margin-bottom: 20px;
+  width: 100%;
 
   button {
-    flex: 1;
-    min-height: 80px;
-    padding: 20px;
-    position: relative;
-    font-family: var(--font-medium);
-    font-size: 16px;
-    text-align: center;
     color: var(--theme-choice-tabs-text-color);
     cursor: pointer;
+    flex: 1;
+    font-family: var(--font-medium);
+    font-size: 16px;
+    min-height: 80px;
     opacity: 0.5;
+    padding: 20px;
+    position: relative;
+    text-align: center;
   }
 
   .activeButton {
@@ -25,8 +25,8 @@
       background: var(--theme-choice-tabs-bottom-border-color-active);
       bottom: 0;
       content: '';
-      height: 2px;
       display: block;
+      height: 2px;
       left: 0;
       position: absolute;
       right: 0;
