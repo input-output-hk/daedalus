@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { CARDANO_THEME_OUTPUT } from './cardano';
 import { LIGHT_BLUE_THEME_OUTPUT } from './light-blue';
 import { DARK_BLUE_THEME_OUTPUT } from './dark-blue';
@@ -13,3 +14,14 @@ export const EXISTING_THEME_OUTPUTS = [
   ['white.js', WHITE_THEME_OUTPUT],
   ['yellow.js', YELLOW_THEME_OUTPUT],
 ];
+
+export const EXISTING_THEME_OUTPUTS_OBJ = EXISTING_THEME_OUTPUTS.reduce(
+  (outputsObj, theme) => {
+    const [themeName, themeOutput] = theme;
+    if (themeName && !isEmpty(themeOutput)) {
+      outputsObj[themeName] = themeOutput;
+    }
+    return outputsObj;
+  },
+  {}
+);
