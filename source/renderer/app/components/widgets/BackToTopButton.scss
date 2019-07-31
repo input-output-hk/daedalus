@@ -1,0 +1,22 @@
+.component {
+  background-color: var(--theme-back-to-top-button-background-color);
+  border-radius: 5px;
+  box-shadow: 0 5px 10px 0 var(--theme-back-to-top-button-box-shadow-color);
+  color: var(--theme-back-to-top-button-text-color);
+  cursor: pointer;
+  font-size: 12px;
+  left: 50%;
+  line-height: 1.17;
+  opacity: 0.98;
+  opacity: 0;
+  padding: 6px 12px;
+  position: fixed;
+  text-align: center;
+  top: 144px;
+  transform: translateX(-50%);
+  transition: opacity 0.25s ease-out, top 0.25s ease-out;
+  z-index: 3;
+  &.isActive {
+    opacity: 1;
+  }
+}
