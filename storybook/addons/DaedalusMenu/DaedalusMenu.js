@@ -12,16 +12,20 @@ type Props = {
 export type DaedalusMenuState = {
   localeNames: Array<string>,
   themeNames: Array<string>,
+  osNames: Array<string>,
   themeName?: string,
   localeName?: string,
+  osName?: string,
 };
 
 class DaedalusMenu extends Component<Props, DaedalusMenuState> {
   state = {
     localeNames: [],
     themeNames: [],
+    osNames: [],
     themeName: '',
     localeName: '',
+    osName: '',
   };
 
   componentDidMount() {
@@ -43,8 +47,8 @@ class DaedalusMenu extends Component<Props, DaedalusMenuState> {
         ...initialState,
       }),
       () => {
-        const { themeName, localeName } = this.state;
-        this.props.api.setQueryParams({ themeName, localeName });
+        const { themeName, localeName, osName } = this.state;
+        this.props.api.setQueryParams({ themeName, localeName, osName });
       }
     );
 
@@ -58,7 +62,14 @@ class DaedalusMenu extends Component<Props, DaedalusMenuState> {
   };
 
   render() {
-    const { localeNames, themeNames, themeName, localeName } = this.state;
+    const {
+      localeNames,
+      themeNames,
+      themeName,
+      localeName,
+      osNames,
+      osName,
+    } = this.state;
 
     return (
       <div style={styles.component}>
@@ -89,6 +100,21 @@ class DaedalusMenu extends Component<Props, DaedalusMenuState> {
               }}
             >
               {themeItem}
+            </button>
+          ))}
+        </div>
+        <span style={styles.separator} />
+        <div style={styles.menuSlot}>
+          {osNames.map(osItem => (
+            <button
+              key={osItem}
+              onClick={() => this.handleSetParam('osName', osItem)}
+              style={{
+                ...styles.button,
+                ...(osName === osItem ? styles.selected : {}),
+              }}
+            >
+              {osItem}
             </button>
           ))}
         </div>
