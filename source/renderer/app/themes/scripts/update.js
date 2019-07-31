@@ -1,4 +1,5 @@
 // @flow
+import { isEmpty } from 'lodash';
 import { createTheme } from '../utils/createTheme';
 import { findUpdates } from '../utils/findUpdates';
 import { runUpdateThemesCLI } from '../utils/updateThemesCLI';
@@ -11,7 +12,7 @@ const createThemeOutputs = CREATE_THEME_PARAMS.reduce(
 
 const pendingUpdates = findUpdates(createThemeOutputs);
 
-if (pendingUpdates !== null) {
-  // opens CLI which will allow user to update theme objects in 'themes/daedalus'
+if (!isEmpty(pendingUpdates)) {
+  // opens CLI which will allow user to update theme outputs in 'themes/daedalus'
   runUpdateThemesCLI(pendingUpdates);
 }
