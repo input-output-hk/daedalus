@@ -290,6 +290,8 @@ export const YELLOW_THEME_CONFIG = {
     '--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color':
       '#fafbfc',
     '--theme-delegation-steps-choose-stake-pool-selected-slug-color': '#fafbfc',
+    '--theme-delegation-steps-choose-stake-pool-thumb-background-color': '#fff',
+    '--theme-delegation-steps-choose-stake-pool-thumb-border-color': '#e1dac6',
     '--theme-delegation-steps-choose-stake-pool-title-color': '#2d2d2dcc',
     '--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color':
       '#2d2d2de6',

@@ -453,6 +453,12 @@ export const createDaedalusComponentsTheme = (
       '--theme-delegation-steps-choose-stake-pool-selected-slug-color': `${
         text.secondary
       }`,
+      '--theme-delegation-steps-choose-stake-pool-thumb-background-color': `${
+        background.primary.lightest
+      }`,
+      '--theme-delegation-steps-choose-stake-pool-thumb-border-color': `${chroma(
+        border
+      ).alpha(0.2)}`,
       '--theme-delegation-steps-choose-stake-pool-title-color': `${chroma(
         text.primary
       ).alpha(0.8)}`,

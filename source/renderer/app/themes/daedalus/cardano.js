@@ -164,6 +164,9 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color':
       '#fafbfc',
     '--theme-delegation-steps-choose-stake-pool-selected-slug-color': '#fafbfc',
+    '--theme-delegation-steps-choose-stake-pool-thumb-background-color':
+      '#fafbfc',
+    '--theme-delegation-steps-choose-stake-pool-thumb-border-color': '#c6cdd6',
     '--theme-delegation-steps-choose-stake-pool-title-color':
       'rgba(94, 96, 102, 0.8)',
     '--theme-delegation-steps-choose-stake-pool-tooltip-arrow-color':
