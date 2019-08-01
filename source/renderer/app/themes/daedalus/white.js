@@ -567,6 +567,12 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-sidebar-menu-add-button-background-color-active': '#e9e9e9a8',
     '--theme-sidebar-menu-add-button-background-color-hover': '#eeeeeea8',
     '--theme-sidebar-menu-add-button-text-color': '#2d2d2d',
+    '--theme-sidebar-wallets-scrollbar-background-color':
+      'rgba(255, 255, 255, 0.1)',
+    '--theme-sidebar-wallets-scrollbar-background-color-active':
+      'rgba(255, 255, 255, 0.3)',
+    '--theme-sidebar-wallets-scrollbar-background-color-hover':
+      'rgba(255, 255, 255, 0.3)',
   },
   stakePools: {
     '--theme-staking-stake-pools-title-color': '#2d2d2d',
@@ -634,6 +640,12 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-staking-delegation-center-gear-icon-fill-color-active': '#2d2d2d',
     '--theme-staking-delegation-center-no-wallets-instructions-color':
       '#2d2d2d',
+    '--theme-staking-countdown-widget-background-color':
+      'rgba(94, 96, 102, 0.07)',
+    '--theme-staking-countdown-widget-delimeter-background-color': '#2d2d2d',
+    '--theme-staking-countdown-widget-field-label-color':
+      'rgba(45, 45, 45, 0.7)',
+    '--theme-staking-countdown-widget-field-value-color': '#2d2d2d',
   },
   support: {
     '--theme-support-settings-item-color': '#2d2d2d',

@@ -584,6 +584,12 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-sidebar-menu-add-button-background-color-active': '#1f324d',
     '--theme-sidebar-menu-add-button-background-color-hover': '#1f324d',
     '--theme-sidebar-menu-add-button-text-color': '#fafbfc',
+    '--theme-sidebar-wallets-scrollbar-background-color':
+      'rgba(255, 255, 255, 0.1)',
+    '--theme-sidebar-wallets-scrollbar-background-color-active':
+      'rgba(255, 255, 255, 0.3)',
+    '--theme-sidebar-wallets-scrollbar-background-color-hover':
+      'rgba(255, 255, 255, 0.3)',
   },
   stakePools: {
     '--theme-staking-stake-pool-background-color': '#fafbfc',
@@ -652,6 +658,11 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-staking-info-learn-more-icon-color': 'rgba(250, 251, 252, 1)',
     '--theme-staking-learn-more-button-color': '#fafbfc',
     '--theme-staking-learn-more-icon-color': 'rgba(250, 251, 252, 1)',
+    '--theme-staking-countdown-widget-background-color':
+      'rgba(68, 91, 124, 0.07)',
+    '--theme-staking-countdown-widget-delimeter-background-color': '#5e6066',
+    '--theme-staking-countdown-widget-field-label-color': '#5e6066',
+    '--theme-staking-countdown-widget-field-value-color': '#5e6066',
   },
   support: {
     '--theme-support-settings-item-color': 'rgba(94, 96, 102, 0.5)',
