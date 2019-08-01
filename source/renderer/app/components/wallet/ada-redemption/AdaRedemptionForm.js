@@ -241,13 +241,6 @@ export default class AdaRedemptionForm extends Component<Props> {
   form = new ReactToolboxMobxForm(
     {
       fields: {
-        certificate: {
-          label: this.context.intl.formatMessage(messages.certificateLabel),
-          placeholder: this.context.intl.formatMessage(
-            messages.certificateHint
-          ),
-          type: 'file',
-        },
         passPhrase: {
           label: this.context.intl.formatMessage(messages.passphraseLabel),
           placeholder: this.context.intl.formatMessage(
@@ -497,7 +490,6 @@ export default class AdaRedemptionForm extends Component<Props> {
       suggestedMnemonics,
       showInputForDecryptionKey,
     } = this.props;
-    const certificateField = form.$('certificate');
     const passPhraseField = form.$('passPhrase');
     const redemptionKeyField = form.$('redemptionKey');
     const shieldedRedemptionKeyField = form.$('shieldedRedemptionKey');
@@ -654,12 +646,11 @@ export default class AdaRedemptionForm extends Component<Props> {
               {showUploadWidget ? (
                 <div className={styles.certificate}>
                   <AdaCertificateUploadWidget
-                    {...certificateField.bind()}
-                    selectedFile={certificateField.value}
-                    onFileSelected={(filePath, file) => {
+                    label={intl.formatMessage(messages.certificateLabel)}
+                    placeholder={intl.formatMessage(messages.certificateHint)}
+                    onFileSelected={(filePath, fileMeta) => {
                       resetForm();
-                      onCertificateSelected(filePath, file);
-                      certificateField.set(file);
+                      onCertificateSelected(filePath, fileMeta);
                     }}
                     isCertificateEncrypted={isCertificateEncrypted}
                     isCertificateSelected={isCertificateSelected}

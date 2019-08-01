@@ -25,7 +25,6 @@ export default class AdaRedemptionStore extends Store {
   @observable redemptionType: RedemptionTypeChoices =
     ADA_REDEMPTION_TYPES.REGULAR;
   @observable certificatePath: ?string = null;
-  @observable certificate: ?File = null;
   @observable isCertificateEncrypted = false;
   @observable passPhrase: ?string = null;
   @observable shieldedRedemptionKey: ?string = null;
@@ -100,10 +99,9 @@ export default class AdaRedemptionStore extends Store {
     this.isRedemptionDisclaimerAccepted = true;
   });
 
-  _setCertificate = action(({ path, certificate }) => {
-    this.certificatePath = path;
-    this.certificate = certificate;
-    this.isCertificateEncrypted = certificate.type !== 'application/pdf';
+  _setCertificate = action(({ certificatePath, fileMeta }) => {
+    this.certificatePath = certificatePath;
+    this.isCertificateEncrypted = fileMeta.fileType !== 'application/pdf';
     if (
       this.isCertificateEncrypted &&
       (!this.passPhrase || !this.decryptionKey)
@@ -175,7 +173,7 @@ export default class AdaRedemptionStore extends Store {
       if (!this.decryptionKey && this.isCertificateEncrypted) return;
     }
     if (this.redemptionType === ADA_REDEMPTION_TYPES.PAPER_VENDED) return;
-    if (this.certificate == null)
+    if (this.certificatePath == null)
       throw new Error('Certificate File is required for parsing.');
 
     // PREPARATION
@@ -328,7 +326,7 @@ export default class AdaRedemptionStore extends Store {
 
   _onRemoveCertificate = action(() => {
     this.error = null;
-    this.certificate = null;
+    this.certificatePath = null;
     this.redemptionCode = '';
     this.passPhrase = null;
     this.email = null;
@@ -339,7 +337,7 @@ export default class AdaRedemptionStore extends Store {
 
   @action _reset = () => {
     this.error = null;
-    this.certificate = null;
+    this.certificatePath = null;
     this.isCertificateEncrypted = false;
     this.walletId = null;
     this.redemptionType = ADA_REDEMPTION_TYPES.REGULAR;

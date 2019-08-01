@@ -8,7 +8,10 @@ export default class AdaRedemptionActions {
   chooseRedemptionType: Action<{
     redemptionType: RedemptionTypeChoices,
   }> = new Action();
-  setCertificate: Action<{ path: string, certificate: File }> = new Action();
+  setCertificate: Action<{
+    certificatePath: string,
+    fileMeta: any,
+  }> = new Action();
   removeCertificate: Action<any> = new Action();
   setPassPhrase: Action<{ passPhrase: string }> = new Action();
   setRedemptionCode: Action<{ redemptionCode: string }> = new Action();

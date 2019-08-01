@@ -122,11 +122,6 @@ export default class WalletFileImportDialog extends Component<Props, State> {
           placeholder: 'filePath',
           type: 'hidden',
         },
-        walletFile: {
-          label: this.context.intl.formatMessage(messages.walletFileLabel),
-          placeholder: this.context.intl.formatMessage(messages.walletFileHint),
-          type: 'file',
-        },
         walletName: {
           label: this.context.intl.formatMessage(messages.walletNameInputLabel),
           placeholder: this.context.intl.formatMessage(
@@ -221,10 +216,7 @@ export default class WalletFileImportDialog extends Component<Props, State> {
     const { intl } = this.context;
     const { form } = this;
     const { isSubmitting, error, onClose } = this.props;
-    // const { createPassword } = this.state;
-
     const walletFilePath = form.$('walletFilePath');
-    const walletFile = form.$('walletFile');
     const dialogClasses = classnames([
       styles.component,
       'WalletFileImportDialog',
@@ -240,7 +232,7 @@ export default class WalletFileImportDialog extends Component<Props, State> {
         className: isSubmitting ? styles.isSubmitting : null,
         label: intl.formatMessage(messages.submitLabel),
         primary: true,
-        disabled: isSubmitting || !(walletFile.value instanceof File),
+        disabled: isSubmitting || !walletFilePath.value,
         onClick: this.submit,
       },
     ];
@@ -260,12 +252,13 @@ export default class WalletFileImportDialog extends Component<Props, State> {
       >
         <div className={styles.fileUpload}>
           <FileUploadWidget
-            {...walletFile.bind()}
-            selectedFile={walletFile.value}
-            onFileSelected={(filePath, file) => {
+            label={intl.formatMessage(messages.walletFileLabel)}
+            placeholder={intl.formatMessage(messages.walletFileHint)}
+            acceptedFileTypes={['*']}
+            selectedFile={walletFilePath.value}
+            onFileSelected={filePath => {
               // "set(value)" is an unbound method and thus must be explicitly called
               walletFilePath.set(filePath);
-              walletFile.set(file);
             }}
           />
         </div>

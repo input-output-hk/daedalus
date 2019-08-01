@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import { intlShape } from 'react-intl';
-import { generateFileContent } from '../../../utils/fileContentGenerator';
+import { generateFileMeta } from '../../../utils/fileMetaGenerator';
 import certificateNormalIcon from '../../../assets/images/cert-ic.inline.svg';
 import certificateLockedIcon from '../../../assets/images/cert-locked-ic.inline.svg';
 import certificateInvalidIcon from '../../../assets/images/cert-bad-ic.inline.svg';
@@ -15,7 +15,7 @@ type Props = {
   label: string,
   onFileSelected: Function,
   onRemoveCertificate: Function,
-  acceptedFileTypes: string,
+  acceptedFileTypes: [string],
   isCertificateEncrypted: boolean,
   isCertificateSelected: boolean,
   isCertificateInvalid: boolean,
@@ -27,7 +27,7 @@ export default class AdaCertificateUploadWidget extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  onOpen = () => {
+  onOpen = () =>
     global.dialog.showOpenDialog(
       {
         filters: [
@@ -45,22 +45,28 @@ export default class AdaCertificateUploadWidget extends Component<Props> {
 
         try {
           const filePath = files[0];
-          const fileContent = await generateFileContent({ filePath });
-          const {
-            fileBuffer,
-            fileLastModified,
-            fileName,
-            fileType,
-          } = fileContent;
-          const fileBlob = new Blob([fileBuffer]);
-          const file = new File([fileBlob], fileName, {
-            lastModified: fileLastModified,
-            type: fileType,
-          });
-          this.props.onFileSelected(filePath, file);
+          const fileMeta = await generateFileMeta({ filePath });
+          this.props.onFileSelected(filePath, fileMeta);
         } catch (error) {} // eslint-disable-line
       }
     );
+
+  onDragOver = () => false;
+  onDragLeave = () => false;
+  onDragEnd = () => false;
+  onDrop = async (e: any) => {
+    e.preventDefault();
+
+    const { files } = e.dataTransfer;
+    if (!files || files.length === 0) {
+      return;
+    }
+
+    try {
+      const filePath = files[0].path;
+      const fileMeta = await generateFileMeta({ filePath });
+      this.props.onFileSelected(filePath, fileMeta);
+    } catch (error) {} // eslint-disable-line
   };
 
   render() {
@@ -81,6 +87,7 @@ export default class AdaCertificateUploadWidget extends Component<Props> {
         ? certificateInvalidIcon
         : certificateNormalIcon;
     }
+
     return (
       <div>
         <div className={styles.label}>{label}</div>
@@ -102,7 +109,14 @@ export default class AdaCertificateUploadWidget extends Component<Props> {
               />
             </div>
           ) : (
-            <button className={styles.dropZone} onClick={this.onOpen}>
+            <button
+              className={styles.dropZone}
+              onClick={this.onOpen}
+              onDragOver={this.onDragOver}
+              onDragLeave={this.onDragLeave}
+              onDragEnd={this.onDragEnd}
+              onDrop={this.onDrop}
+            >
               <div className={styles.instructions}>
                 <div className={styles.title}>
                   {intl.formatMessage(messages.orClickToUpload)}
