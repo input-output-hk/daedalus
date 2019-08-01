@@ -95,7 +95,7 @@ export default class AdaRedemptionPage extends Component<Props> {
       redemptionType === ADA_REDEMPTION_TYPES.PAPER_VENDED
         ? redeemPaperVendedAdaRequest
         : redeemAdaRequest;
-    const isCertificateSelected = adaRedemption.certificate !== null;
+    const isCertificateSelected = adaRedemption.certificatePath !== null;
 
     const showInputsForDecryptingForceVendedCertificate =
       isCertificateSelected &&

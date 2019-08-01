@@ -648,6 +648,7 @@ export default class AdaRedemptionForm extends Component<Props> {
                   <AdaCertificateUploadWidget
                     label={intl.formatMessage(messages.certificateLabel)}
                     placeholder={intl.formatMessage(messages.certificateHint)}
+                    acceptedFileTypes={['*']}
                     onFileSelected={(filePath, fileMeta) => {
                       resetForm();
                       onCertificateSelected(filePath, fileMeta);
