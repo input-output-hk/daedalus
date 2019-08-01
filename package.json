@@ -25,6 +25,8 @@
     "prettier": "./node_modules/.bin/prettier \"**/*.*\"",
     "prettier:check": "yarn prettier --check",
     "prettier:format": "yarn prettier --write --loglevel warn",
+    "stylelint": "./node_modules/.bin/stylelint \"**/*.scss\"",
+    "stylelint:fix": "yarn stylelint --fix",
     "manage:translations": "gulp purge:translations && gulp clear:cache && gulp build && node ./translations/translation-runner.js",
     "storybook": "start-storybook -p 6006 -c storybook -s /",
     "storybook:build": "build-storybook -c storybook -o dist/storybook",
@@ -118,6 +120,8 @@
     "spawn-sync": "2.0.0",
     "spectron": "5.0.0",
     "style-loader": "0.23.1",
+    "stylelint": "10.1.0",
+    "stylelint-order": "3.0.1",
     "svg-inline-loader": "0.8.0",
     "thread-loader": "2.1.2",
     "transform-loader": "0.2.4",
@@ -165,6 +169,7 @@
     "qrcode.react": "0.8.0",
     "react": "16.6.3",
     "react-copy-to-clipboard": "5.0.1",
+    "react-custom-scrollbars": "4.2.1",
     "react-dom": "16.6.3",
     "react-dropzone": "4.2.3",
     "react-intl": "2.7.2",
@@ -193,7 +198,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "pretty-quick --staged",
-      "pre-push": "yarn prettier:check && yarn lint && yarn flow:test && yarn manage:translations"
+      "pre-push": "yarn prettier:check && yarn lint && yarn flow:test && yarn stylelint && yarn manage:translations"
     }
   },
   "resolutions": {

@@ -878,6 +878,12 @@ export const createDaedalusComponentsTheme = (
         background.secondary.darkest
       ).alpha(0.66)}`,
       '--theme-sidebar-menu-add-button-text-color': `${text.secondary}`,
+      '--theme-sidebar-wallets-scrollbar-background-color':
+        'rgba(255, 255, 255, 0.1)',
+      '--theme-sidebar-wallets-scrollbar-background-color-active':
+        'rgba(255, 255, 255, 0.3)',
+      '--theme-sidebar-wallets-scrollbar-background-color-hover':
+        'rgba(255, 255, 255, 0.3)',
     },
     stakePools: {
       '--theme-staking-stake-pools-title-color': `${text.primary}`,
@@ -991,6 +997,16 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-delegation-center-no-wallets-instructions-color': `${
         text.primary
       }`,
+      '--theme-staking-countdown-widget-background-color': `${
+        background.primary.regular
+      }`,
+      '--theme-staking-countdown-widget-delimeter-background-color': `${
+        text.primary
+      }`,
+      '--theme-staking-countdown-widget-field-label-color': `${chroma(
+        background.primary.light
+      ).alpha(0.7)}`,
+      '--theme-staking-countdown-widget-field-value-color': `${text.primary}`,
     },
     support: {
       '--theme-support-settings-item-color': `${text.primary}`,

@@ -21,8 +21,8 @@
   }
 
   ol {
-    font-family: var(--font-semibold);
     color: var(--theme-support-settings-item-color);
+    font-family: var(--font-semibold);
     list-style: decimal;
     padding-left: 17px;
   }
@@ -52,8 +52,8 @@
     cursor: pointer;
     &:disabled {
       color: var(--rp-button-bg-color-disabled);
-      text-decoration: none;
       cursor: default;
+      text-decoration: none;
     }
   }
 
