@@ -3,9 +3,23 @@ Changelog
 
 ## vNext
 
-### Chores
+### Features
+
+- Implemented css rules automatic sort ([PR 1483](https://github.com/input-output-hk/daedalus/pull/1483))
+- Improved scrollbar look and feel on wallets list ([PR 1475](https://github.com/input-output-hk/daedalus/pull/1475))
+- Implemented new delegation countdown design ([PR 1481](https://github.com/input-output-hk/daedalus/pull/1481))
+- "Delegation" screens UI:
+  - Implemented "Search and Filtering" logic on "Stake pools" screen ([PR 1468](https://github.com/input-output-hk/daedalus/pull/1468))
+
+### Fixes
 
 - Added minimum heights of main app window for different environments (Windows, Linux, MacOS) ([1485](https://github.com/input-output-hk/daedalus/pull/1485))
+- Fixed broken wallets storybook stories ([PR 1473](https://github.com/input-output-hk/daedalus/pull/1473))
+- Implemented Storybook menu using queryStrings over localStorage ([PR 1426](https://github.com/input-output-hk/daedalus/pull/1426))
+
+### Chores
+
+- Unified support request data handling in common method ([1472](https://github.com/input-output-hk/daedalus/pull/1472))
 
 ## 0.14.0
 
@@ -13,7 +27,7 @@ Changelog
 
 - Implemented guided manual updates ([PR 1410](https://github.com/input-output-hk/daedalus/pull/1410), [PR 1423](https://github.com/input-output-hk/daedalus/pull/1423))
 - Application menu improvements:
-  - Implemented "Help" application menu item with "Known Issues", "Blank Screen Fix", "Feature Request", "Support Request", "Download Logs", "Block Consolidation Status" and "Daedalus Diagnostics" options ([PR 1382](https://github.com/input-output-hk/daedalus/pull/1382), [PR 1459](https://github.com/input-output-hk/daedalus/pull/1459), [PR 1487](https://github.com/input-output-hk/daedalus/issues/1487), [PR 1488](https://github.com/input-output-hk/daedalus/pull/1488))
+  - Implemented "Help" application menu item with "Known Issues", "Blank Screen Fix", "Feature Request", "Support Request", "Download Logs", "Block Consolidation Status" and "Daedalus Diagnostics" options ([PR 1382](https://github.com/input-output-hk/daedalus/pull/1382), [PR 1459](https://github.com/input-output-hk/daedalus/pull/1459), [PR 1487](https://github.com/input-output-hk/daedalus/issues/1487), [PR 1488](https://github.com/input-output-hk/daedalus/pull/1488), [PR 1493](https://github.com/input-output-hk/daedalus/pull/1493))
   - Improved the "Ada redemption" menu item UX by disabling the option while Daedalus is not fully synced ([PR 1458](https://github.com/input-output-hk/daedalus/pull/1458))
 - Application dialogs improvements:
   - Implemented new "About Us" dialog design ([PR 1369](https://github.com/input-output-hk/daedalus/pull/1369), [PR 1450](https://github.com/input-output-hk/daedalus/pull/1450))
@@ -66,6 +80,7 @@ Changelog
 ### Chores
 
 - Code improvements:
+  - Implemented Storybook menu using queryStrings over localStorage ([PR 1426](https://github.com/input-output-hk/daedalus/pull/1426))
   - Implemented Storybook build script for deployment to "Netlify" ([1391](https://github.com/input-output-hk/daedalus/pull/1391))
   - Implemented Storybook theme and language selection ([PR 1408](https://github.com/input-output-hk/daedalus/pull/1408))
   - Implemented `prettier` formatting tool and set up automation for basic maintainance tasks ([PR 1335](https://github.com/input-output-hk/daedalus/pull/1335), [PR 1347](https://github.com/input-output-hk/daedalus/pull/1347), [PR 1352](https://github.com/input-output-hk/daedalus/pull/1352), [PR 1375](https://github.com/input-output-hk/daedalus/pull/1375))

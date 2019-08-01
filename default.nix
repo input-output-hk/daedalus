@@ -1,7 +1,9 @@
 let
   localLib = import ./lib.nix;
+  system = builtins.currentSystem; # todo
 in
-{ system ? builtins.currentSystem
+{ target ? builtins.currentSystem
+#system ? builtins.currentSystem
 , config ? {}
 , pkgs ? localLib.iohkNix.getPkgs { inherit system config; }
 , cluster ? "mainnet"
@@ -9,6 +11,7 @@ in
 , buildNum ? null
 , dummyInstaller ? false
 , signingKeys ? null
+, HSMServer ? null
 , fudgeConfig ? null
 }:
 
@@ -22,7 +25,7 @@ let
   }) {};
   installPath = ".daedalus";
   lib = pkgs.lib;
-  cardanoSL = localLib.cardanoSL { inherit system config; };
+  cardanoSL = localLib.cardanoSL { inherit target config; };
   cardanoJSON = builtins.fromJSON (builtins.readFile ./cardano-sl-src.json);
   cardanoSrc = pkgs.fetchFromGitHub {
     owner = "input-output-hk";
@@ -30,6 +33,8 @@ let
     rev = cardanoJSON.rev;
     sha256 = cardanoJSON.sha256;
   };
+  needSignedBinaries = (signingKeys != null) || (HSMServer != null);
+  buildNumSuffix = if buildNum == null then "" else ("-${builtins.toString buildNum}");
   cleanSourceFilter = with pkgs.stdenv;
     name: type: let baseName = baseNameOf (toString name); in ! (
       # Filter out .git repo
@@ -67,16 +72,10 @@ let
     # the native makensis binary, with cross-compiled windows stubs
     nsis = nsisNixPkgs.callPackage ./nsis.nix {};
 
-    # TODO, put the cross bridge into cardano's default.nix
-    crossCompiledCardano = (import (cardanoSrc + "/release.nix") { cardano = { outPath = cardanoSrc; rev = cardanoJSON.rev; }; }).daedalus-mingw32-pkg;
-    unsignedUnpackedCardano = pkgs.runCommand "daedalus-bridge" { buildInputs = [ pkgs.unzip ]; } ''
-      mkdir $out
-      cd $out
-      unzip ${self.crossCompiledCardano}/CardanoSL.zip
-    '';
-    unpackedCardano = if dummyInstaller then self.dummyUnpacked else (if signingKeys != null then self.signedCardano else self.unsignedUnpackedCardano);
+    unsignedUnpackedCardano = cardanoSL.daedalus-bridge;
+    unpackedCardano = if dummyInstaller then self.dummyUnpacked else (if needSignedBinaries then self.signedCardano else self.unsignedUnpackedCardano);
     signFile = file: let
-      signingScript = pkgs.writeScript "signing-script" ''
+      localSigningScript = pkgs.writeScript "signing-script" ''
         #!${pkgs.stdenv.shell}
 
         exec 3>&1
@@ -99,6 +98,28 @@ let
         rm -rf $DIR
         echo $storePath >&3
       '';
+      remoteSigningScript = pkgs.writeScript "signing-script" ''
+        #!${pkgs.stdenv.shell}
+
+        exec 3>&1
+        exec 1>&2
+
+        echo signing "${file}"
+
+        set -e
+
+        DIR=$(realpath $(mktemp -d))
+        cd $DIR
+        FILE=$(basename ${file})
+
+        cat ${file} | ssh ${HSMServer} > $FILE
+
+        storePath=$(nix-store --add-fixed sha256 $FILE)
+        cd /
+        rm -rf $DIR
+        echo $storePath >&3
+      '';
+      signingScript = if (HSMServer != null) then remoteSigningScript else localSigningScript;
       # requires --allow-unsafe-native-code-during-evaluation
       res = builtins.exec [ signingScript ];
     in res;
@@ -106,11 +127,11 @@ let
       cp -r ${self.unsignedUnpackedCardano} $out
       chmod -R +w $out
       cd $out
-      rm *.exe
-      cp ${self.signFile "${self.unsignedUnpackedCardano}/cardano-launcher.exe"} cardano-launcher.exe
-      cp ${self.signFile "${self.unsignedUnpackedCardano}/cardano-node.exe"} cardano-node.exe
-      cp ${self.signFile "${self.unsignedUnpackedCardano}/cardano-x509-certificates.exe"} cardano-x509-certificates.exe
-      cp ${self.signFile "${self.unsignedUnpackedCardano}/wallet-extractor.exe"} wallet-extractor.exe
+      rm bin/*.exe
+      cp ${self.signFile "${self.unsignedUnpackedCardano}/bin/cardano-launcher.exe"} bin/cardano-launcher.exe
+      cp ${self.signFile "${self.unsignedUnpackedCardano}/bin/cardano-node.exe"} bin/cardano-node.exe
+      cp ${self.signFile "${self.unsignedUnpackedCardano}/bin/cardano-x509-certificates.exe"} bin/cardano-x509-certificates.exe
+      cp ${self.signFile "${self.unsignedUnpackedCardano}/bin/wallet-extractor.exe"} bin/wallet-extractor.exe
     '';
     dummyUnpacked = pkgs.runCommand "dummy-unpacked-cardano" {} ''
       mkdir $out
@@ -149,16 +170,20 @@ let
       mkdir $out
       cp ${self.signFile "${self.unsignedUninstaller}/uninstall.exe"} $out/uninstall.exe
     '';
-    uninstaller = if (signingKeys != null) then self.signedUninstaller else self.unsignedUninstaller;
+    uninstaller = if needSignedBinaries then self.signedUninstaller else self.unsignedUninstaller;
 
-    windows-installer = let
+    unsigned-windows-installer = let
       mapping = {
         mainnet = "Daedalus";
         staging = "Daedalus Staging";
         testnet = "Daedalus Testnet";
       };
       installDir = mapping.${cluster};
-    in pkgs.runCommand "win64-installer-${cluster}" { buildInputs = [ self.daedalus-installer self.nsis pkgs.unzip self.configMutator pkgs.jq self.yaml2json ]; } ''
+    in pkgs.runCommand "win64-installer-${cluster}" {
+      buildInputs = [
+        self.daedalus-installer self.nsis pkgs.unzip pkgs.jq self.yaml2json
+      ] ++ lib.optional (fudgeConfig != null) self.configMutator;
+    } ''
       mkdir home
       export HOME=$(realpath home)
 
@@ -180,8 +205,8 @@ let
       pushd dlls
       ${if dummyInstaller then "touch foo" else "unzip ${self.dlls}"}
       popd
-      cp -v ${self.unpackedCardano}/* .
-      cp ${self.unsignedUninstaller}/uninstall.exe ../uninstall.exe
+      cp -v ${self.unpackedCardano}/{bin,config}/* .
+      cp ${self.uninstaller}/uninstall.exe ../uninstall.exe
       cp -v ${self.nsisFiles}/{daedalus.nsi,wallet-topology.yaml,launcher-config.yaml} .
       chmod -R +w .
       ${lib.optionalString (fudgeConfig != null) ''
@@ -198,6 +223,15 @@ let
       cp *.yaml $out/cfg-files/
       echo file installer $out/*.exe > $out/nix-support/hydra-build-products
     '';
+    signed-windows-installer = let
+      backend_version = lib.removeSuffix "\n" (builtins.readFile "${self.unpackedCardano}/version"); # TODO, get from a nix expr
+      frontend_version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
+      fullName = "daedalus-${frontend_version}-cardano-sl-${backend_version}-${cluster}-windows${buildNumSuffix}.exe"; # must match to packageFileName in make-installer
+    in pkgs.runCommand "signed-windows-installer-${cluster}" {} ''
+      mkdir $out
+      cp -v ${self.signFile "${self.unsigned-windows-installer}/${fullName}"} $out/${fullName}
+    '';
+    windows-installer = if needSignedBinaries then self.signed-windows-installer else self.unsigned-windows-installer;
 
     ## TODO: move to installers/nix
     hsDaedalusPkgs = import ./installers {

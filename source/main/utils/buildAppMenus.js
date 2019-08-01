@@ -9,13 +9,7 @@ import { safeExitWithCode } from './safeExitWithCode';
 import { CardanoNode } from '../cardano/CardanoNode';
 import { DIALOGS, SCREENS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
-import { getLocale } from './getLocale';
 import { getTranslation } from './getTranslation';
-
-const localesFillForm = {
-  'en-US': 'English',
-  'ja-JP': 'Japanese',
-};
 
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
@@ -25,20 +19,8 @@ export const buildAppMenus = async (
   const { ADA_REDEMPTION } = SCREENS;
   const { ABOUT, BLOCK_CONSOLIDATION, DAEDALUS_DIAGNOSTICS } = DIALOGS;
 
-  const {
-    isMacOS,
-    version,
-    apiVersion,
-    network,
-    build,
-    installerVersion,
-    os,
-    buildNumber,
-    isWindows,
-    isInSafeMode,
-  } = environment;
+  const { isMacOS, isInSafeMode } = environment;
   const translations = require(`../locales/${locale}`);
-  const networkLocale = getLocale(network);
 
   const openAboutDialog = () => {
     if (mainWindow) showUiPartChannel.send(ABOUT, mainWindow);
@@ -84,7 +66,7 @@ export const buildAppMenus = async (
       message: isInSafeMode
         ? translation('helpSupport.gpuSafeModeDialogMessage')
         : translation('helpSupport.nonGpuSafeModeDialogMessage'),
-      defaultId: isWindows ? 0 : 1,
+      defaultId: 1,
       cancelId: 1,
       noLink: true,
     };
@@ -100,19 +82,6 @@ export const buildAppMenus = async (
     });
   };
 
-  const supportRequestData = {
-    frontendVersion: version,
-    backendVersion: apiVersion,
-    network: network === 'development' ? 'staging' : network,
-    build,
-    installerVersion,
-    os,
-    networkLocale,
-    product: `Daedalus wallet - ${network}`,
-    supportLanguage: localesFillForm[networkLocale],
-    productVersion: `Daedalus ${version}+Cardano ${buildNumber}`,
-  };
-
   const menuActions = {
     openAboutDialog,
     openDaedalusDiagnosticsDialog,
@@ -126,14 +95,7 @@ export const buildAppMenus = async (
   const isNodeInSync = get(cardanoNode, 'status.isNodeInSync', false);
   if (isMacOS) {
     menu = Menu.buildFromTemplate(
-      osxMenu(
-        app,
-        mainWindow,
-        menuActions,
-        translations,
-        supportRequestData,
-        isNodeInSync
-      )
+      osxMenu(app, mainWindow, menuActions, translations, isNodeInSync, locale)
     );
     Menu.setApplicationMenu(menu);
   } else {
@@ -143,8 +105,8 @@ export const buildAppMenus = async (
         mainWindow,
         menuActions,
         translations,
-        supportRequestData,
-        isNodeInSync
+        isNodeInSync,
+        locale
       )
     );
     mainWindow.setMenu(menu);

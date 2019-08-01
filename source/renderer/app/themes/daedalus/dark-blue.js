@@ -43,6 +43,11 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-ada-redemption-success-overlay-close-button-background-color-hover':
       'rgba(0, 0, 0, 0.07)',
   },
+  backToTopButton: {
+    '--theme-back-to-top-button-background-color': '#5e6066',
+    '--theme-back-to-top-button-text-color': '#fafbfc',
+    '--theme-back-to-top-button-box-shadow-color': 'rgba(0, 0, 0, 0.36)',
+  },
   blockConsolidation: {
     '--theme-block-consolidation-background-color': 'rgba(38, 51, 69, 0.96)',
     '--theme-block-consolidation-title-text-color': '#fafbfc',
@@ -585,6 +590,12 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-sidebar-menu-add-button-background-color-active': '#1f2a38',
     '--theme-sidebar-menu-add-button-background-color-hover': '#1f2a38',
     '--theme-sidebar-menu-add-button-text-color': '#e9f4fe',
+    '--theme-sidebar-wallets-scrollbar-background-color':
+      'rgba(255, 255, 255, 0.1)',
+    '--theme-sidebar-wallets-scrollbar-background-color-active':
+      'rgba(255, 255, 255, 0.3)',
+    '--theme-sidebar-wallets-scrollbar-background-color-hover':
+      'rgba(255, 255, 255, 0.3)',
   },
   stakePools: {
     '--theme-staking-stake-pool-background-color': '#263345',
@@ -619,6 +630,8 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-staking-stake-pool-tooltip-text-color': '#e9f4fe',
     '--theme-staking-stake-pools-search-button-color': '#e9f4fe',
     '--theme-staking-stake-pools-search-icon-color': '#8793a1',
+    '--theme-staking-stake-pools-search-clear-button-background-color':
+      'rgba(68, 91, 124, 0.05)',
     '--theme-staking-stake-pools-title-color': '#e9f4fe',
   },
   staking: {
@@ -652,6 +665,11 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-staking-info-learn-more-icon-color': 'rgba(250, 251, 252, 1)',
     '--theme-staking-learn-more-button-color': '#fafbfc',
     '--theme-staking-learn-more-icon-color': 'rgba(250, 251, 252, 1)',
+    '--theme-staking-countdown-widget-background-color':
+      'rgba(233, 244, 254, 0.07)',
+    '--theme-staking-countdown-widget-delimeter-background-color': '#e9f4fe',
+    '--theme-staking-countdown-widget-field-label-color': '#e9f4fe',
+    '--theme-staking-countdown-widget-field-value-color': '#e9f4fe',
   },
   support: {
     '--theme-support-settings-item-color': 'rgba(233, 244, 254, 0.5)',

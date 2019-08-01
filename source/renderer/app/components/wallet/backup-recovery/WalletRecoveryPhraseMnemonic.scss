@@ -1,12 +1,12 @@
 .component {
-  padding: 14px;
-  border-radius: 2px;
-  text-align: center;
   background-color: var(--theme-backup-mnemonic-background-color);
+  border-radius: 2px;
+  color: var(--theme-dialog-text-color);
   font-family: var(--font-medium);
   font-size: 16px;
   line-height: 1.38;
-  color: var(--theme-dialog-text-color);
   min-height: 50px;
+  padding: 14px;
+  text-align: center;
   word-spacing: 2px;
 }
