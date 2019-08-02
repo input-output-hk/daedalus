@@ -551,6 +551,10 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--rp-textarea-resize': 'none',
     '--rp-textarea-text-color': '#5e6066',
   },
+  rpTooltip: {
+    '--rp-tooltip-bg-color': '#5e6066',
+    '--rp-tooltip-text-color': '#fafbfc',
+  },
   scrollbar: {
     '--theme-scrollbar-thumb-background': '#c8ccce',
   },
@@ -732,10 +736,6 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-utxo-tooltip-background-color': '#5e6066',
     '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-utxo-tooltip-text-color': '#fafbfc',
-  },
-  rpTooltip: {
-    '--rp-tooltip-bg-color': '#5e6066',
-    '--rp-tooltip-text-color': '#fafbfc',
   },
 };
 

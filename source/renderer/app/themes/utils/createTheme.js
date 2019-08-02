@@ -289,6 +289,11 @@ export const createDaedalusComponentsTheme = (
         background.secondary.dark
       }`,
     },
+    backToTopButton: {
+      '--theme-back-to-top-button-background-color': `${text.primary}`,
+      '--theme-back-to-top-button-text-color': `${text.secondary}`,
+      '--theme-back-to-top-button-box-shadow-color': 'rgba(0, 0, 0, 0.36)',
+    },
     blockConsolidation: {
       '--theme-block-consolidation-background-color': `${
         background.secondary.regular
@@ -344,11 +349,6 @@ export const createDaedalusComponentsTheme = (
       '--theme-block-consolidation-epochs-image-color': `${chroma(
         text.secondary
       ).alpha(0.6)}`,
-    },
-    backToTopButton: {
-      '--theme-back-to-top-button-background-color': `${text.primary}`,
-      '--theme-back-to-top-button-text-color': `${text.secondary}`,
-      '--theme-back-to-top-button-box-shadow-color': 'rgba(0, 0, 0, 0.36)',
     },
     body: {
       '--theme-main-body-background-color': `${background.primary.regular}`,
