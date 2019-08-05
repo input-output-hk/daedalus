@@ -200,10 +200,6 @@ export default class NetworkStatusStore extends Store {
     try {
       Logger.info('NetworkStatusStore: Updating node status');
       await setCachedCardanoStatusChannel.send(this._extractNodeStatus(this));
-      // Force application menu rebuild in order to disable/enable
-      // "Ada redemption" option based on isNodeInSync variable value
-      // which was sent to the main process via setCachedCardanoStatusChannel
-      await rebuildApplicationMenu.send();
     } catch (error) {
       Logger.error('NetworkStatusStore: Error while updating node status', {
         error,
