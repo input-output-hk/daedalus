@@ -10,7 +10,6 @@ import { handleBugReportRequests } from './bugReportRequestChannel';
 import { handlePaperWalletRequests } from './generatePaperWalletChannel';
 import { openExternalUrlChannel } from './open-external-url';
 import { openLocalDirectoryChannel } from './open-local-directory';
-import { setupParseRedemptionCodeHandler } from './parse-redemption-code';
 
 export default (window: BrowserWindow) => {
   compressLogsApi();
@@ -25,5 +24,4 @@ export default (window: BrowserWindow) => {
   openExternalUrlChannel;
   // eslint-disable-next-line no-unused-expressions
   openLocalDirectoryChannel;
-  setupParseRedemptionCodeHandler();
 };
