@@ -37,7 +37,6 @@ import type { NodeInfoQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
 import { openLocalDirectoryChannel } from '../ipc/open-local-directory';
-import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
