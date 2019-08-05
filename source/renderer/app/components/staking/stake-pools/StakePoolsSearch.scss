@@ -32,13 +32,13 @@
 
 .inputExtras {
   background: var(--rp-input-bg-color);
+  bottom: 1px;
   display: flex;
   height: 48px;
   line-height: 48px;
   padding-left: 20px;
   position: absolute;
   right: 20px;
-  bottom: 1px;
 }
 
 .clearSearch {
