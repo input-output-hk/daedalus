@@ -30,13 +30,6 @@ export const osxMenu = (
           actions.openAboutDialog();
         },
       },
-      {
-        label: translation('daedalus.adaRedemption'),
-        enabled: isNodeInSync,
-        click() {
-          actions.openAdaRedemptionScreen();
-        },
-      },
       { type: 'separator' },
       {
         label: translation('daedalus.hideDaedalus'),

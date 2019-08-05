@@ -31,13 +31,6 @@ export const winLinuxMenu = (
         },
       },
       {
-        label: translation('daedalus.adaRedemption'),
-        enabled: isNodeInSync,
-        click() {
-          actions.openAdaRedemptionScreen();
-        },
-      },
-      {
         label: translation('daedalus.close'),
         accelerator: 'Ctrl+W',
         click() {

@@ -7,7 +7,7 @@ import { osxMenu } from '../menus/osx';
 import { Logger } from './logging';
 import { safeExitWithCode } from './safeExitWithCode';
 import { CardanoNode } from '../cardano/CardanoNode';
-import { DIALOGS, SCREENS } from '../../common/ipc/constants';
+import { DIALOGS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { getTranslation } from './getTranslation';
 
@@ -16,7 +16,6 @@ export const buildAppMenus = async (
   cardanoNode: ?CardanoNode,
   locale: string
 ) => {
-  const { ADA_REDEMPTION } = SCREENS;
   const { ABOUT, BLOCK_CONSOLIDATION, DAEDALUS_DIAGNOSTICS } = DIALOGS;
 
   const { isMacOS, isInSafeMode } = environment;
@@ -24,10 +23,6 @@ export const buildAppMenus = async (
 
   const openAboutDialog = () => {
     if (mainWindow) showUiPartChannel.send(ABOUT, mainWindow);
-  };
-
-  const openAdaRedemptionScreen = () => {
-    if (mainWindow) showUiPartChannel.send(ADA_REDEMPTION, mainWindow);
   };
 
   const openBlockConsolidationStatusDialog = () => {
@@ -85,7 +80,6 @@ export const buildAppMenus = async (
   const menuActions = {
     openAboutDialog,
     openDaedalusDiagnosticsDialog,
-    openAdaRedemptionScreen,
     toggleOnSafeMode,
     openBlockConsolidationStatusDialog,
   };
