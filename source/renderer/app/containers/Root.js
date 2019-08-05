@@ -13,18 +13,10 @@ type Props = InjectedContainerProps;
 export default class Root extends Component<Props> {
   render() {
     const { stores, actions, children } = this.props;
-    const {
-      networkStatus,
-      profile,
-      adaRedemption,
-      wallets,
-      app,
-      staking,
-    } = stores;
+    const { networkStatus, profile, wallets, app, staking } = stores;
     const { isActiveDialog } = app;
     const { isStakingPage } = staking;
     const { isProfilePage, isSettingsPage } = profile;
-    const { isAdaRedemptionPage } = adaRedemption;
     const { hasLoadedWallets } = wallets;
     const {
       isSynced,
@@ -36,9 +28,7 @@ export default class Root extends Component<Props> {
 
     const isPageThatDoesntNeedWallets =
       isActiveDialog(DIALOGS.BLOCK_CONSOLIDATION) ||
-      ((isAdaRedemptionPage || isStakingPage || isSettingsPage) &&
-        hasLoadedWallets &&
-        isSynced);
+      ((isStakingPage || isSettingsPage) && hasLoadedWallets && isSynced);
 
     // In case node is in stopping sequence we must show the "Connecting" screen
     // with the "Stopping Cardano node..." and "Cardano node stopped" messages
