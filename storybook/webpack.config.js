@@ -1,6 +1,51 @@
+const AutoDllPlugin = require('autodll-webpack-plugin');
+
 module.exports = async ({ config }) => {
   const [jsxRule] = config.module.rules;
-  jsxRule.use.unshift('thread-loader');
+  config.plugins.push(
+    new AutoDllPlugin({
+      entry: {
+        vendor: [
+          '@storybook/addon-actions',
+          '@storybook/addon-knobs',
+          '@storybook/addon-links',
+          '@storybook/addon-notes',
+          '@storybook/addons',
+          '@storybook/core',
+          '@storybook/react',
+          'aes-js',
+          'bignumber.js',
+          'bip39',
+          'blakejs',
+          'bs58',
+          'classnames',
+          'es6-error',
+          'faker',
+          'humanize-duration',
+          'lodash',
+          'mobx',
+          'mobx-react',
+          'mobx-react-form',
+          'mobx-react-router',
+          'moment',
+          'pbkdf2',
+          'qrcode.react',
+          'react',
+          'react-copy-to-clipboard',
+          'react-dom',
+          'react-dropzone',
+          'react-number-format',
+          'react-router',
+          'react-svg-inline',
+          'recharts',
+          'route-parser',
+          'safe-buffer',
+          'unorm',
+          'validator',
+        ],
+      },
+    })
+  );
   return {
     ...config,
     cache: true,
