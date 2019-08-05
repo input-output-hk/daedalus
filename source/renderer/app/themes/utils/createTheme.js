@@ -233,53 +233,6 @@ export const createDaedalusComponentsTheme = (
         background.secondary.dark
       }`,
     },
-    adaRedemption: {
-      '--theme-ada-redemption-headline-color': `${text.primary}`,
-      '--theme-ada-redemption-instructions-color': `${text.primary}`,
-      '--theme-ada-redemption-success-overlay-background-color': `${
-        background.secondary.regular
-      }`,
-      '--theme-ada-redemption-success-overlay-border-color': `${
-        text.secondary
-      }`,
-      '--theme-ada-redemption-success-overlay-message-color': `${
-        text.secondary
-      }`,
-      '--theme-ada-redemption-success-overlay-button-text-color': `${
-        text.secondary
-      }`,
-      '--theme-ada-redemption-success-overlay-button-text-color-hover': `${
-        background.secondary.regular
-      }`,
-      '--theme-ada-redemption-success-overlay-button-background-color-hover': `${
-        background.secondary.light
-      }`,
-      '--theme-ada-redemption-disclaimer-background-color':
-        'rgba(171, 23, 0, 0.94)',
-      '--theme-ada-redemption-disclaimer-text-color': `${text.secondary}`,
-      '--theme-ada-redemption-disclaimer-checkbox-color-check': `${
-        background.primary.lightest
-      }`,
-      '--theme-ada-redemption-disclaimer-checkbox-color-checked': `${
-        background.primary.lightest
-      }`,
-      '--theme-ada-redemption-disclaimer-checkbox-color-after': `${
-        error.regular
-      }`,
-      '--theme-ada-redemption-disclaimer-checkbox-label-color': `${
-        text.secondary
-      }`,
-      '--theme-ada-redemption-no-wallets-instructions-color': `${text.primary}`,
-      '--theme-ada-redemption-disclaimer-button-border-color': `${
-        background.primary.lightest
-      }`,
-      '--theme-ada-redemption-success-overlay-close-button-color': `${
-        background.primary.lightest
-      }`,
-      '--theme-ada-redemption-success-overlay-close-button-background-color-hover': `${
-        background.secondary.dark
-      }`,
-    },
     blockConsolidation: {
       '--theme-block-consolidation-background-color': `${
         background.secondary.regular
@@ -577,10 +530,6 @@ export const createDaedalusComponentsTheme = (
       '--theme-icon-toggle-menu-color': `${background.primary.regular}`,
       '--theme-icon-node-update-notification-arrow-color': `${text.primary}`,
       '--theme-icon-add-wallet-from-sidebar-color': `${text.secondary}`,
-      '--theme-icon-ada-redemption-attention-color': `${text.secondary}`,
-      '--theme-icon-ada-redemption-success-color': `${text.primary}`,
-      '--theme-icon-ada-redemption-certificate-color': `${text.primary}`,
-      '--theme-icon-ada-redemption-no-wallets': `${text.primary}`,
       '--theme-icon-ada-summary-wallet-amount-symbol-color': `${text.primary}`,
       '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color': `${
         text.primary

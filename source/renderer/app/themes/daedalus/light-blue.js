@@ -19,30 +19,6 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-about-window-icon-close-button-color': '#fff',
     '--theme-about-window-icon-close-hover-background': 'rgba(0, 0, 0, 0.2)',
   },
-  adaRedemption: {
-    '--theme-ada-redemption-headline-color': '#5e6066',
-    '--theme-ada-redemption-instructions-color': '#5e6066',
-    '--theme-ada-redemption-success-overlay-background-color':
-      'rgba(36, 61, 98, 0.88)',
-    '--theme-ada-redemption-success-overlay-border-color': '#fafbfc',
-    '--theme-ada-redemption-success-overlay-message-color': '#fafbfc',
-    '--theme-ada-redemption-success-overlay-button-text-color': '#fafbfc',
-    '--theme-ada-redemption-success-overlay-button-text-color-hover': '#243e62',
-    '--theme-ada-redemption-success-overlay-button-background-color-hover':
-      '#fafbfc',
-    '--theme-ada-redemption-disclaimer-background-color':
-      'rgba(171, 23, 0, 0.94)',
-    '--theme-ada-redemption-disclaimer-text-color': '#fafbfc',
-    '--theme-ada-redemption-disclaimer-checkbox-color-check': '#fafbfc',
-    '--theme-ada-redemption-disclaimer-checkbox-color-checked': '#fafbfc',
-    '--theme-ada-redemption-disclaimer-checkbox-color-after': '#ab1700',
-    '--theme-ada-redemption-disclaimer-checkbox-label-color': '#fafbfc',
-    '--theme-ada-redemption-no-wallets-instructions-color': '#5e6066',
-    '--theme-ada-redemption-disclaimer-button-border-color': '#f7f9fa',
-    '--theme-ada-redemption-success-overlay-close-button-color': '#fff',
-    '--theme-ada-redemption-success-overlay-close-button-background-color-hover':
-      'rgba(0, 0, 0, 0.07)',
-  },
   backToTopButton: {
     '--theme-back-to-top-button-background-color': '#5e6066',
     '--theme-back-to-top-button-text-color': '#fafbfc',
@@ -252,10 +228,6 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-icon-toggle-menu-color': '#fafbfc',
     '--theme-icon-node-update-notification-arrow-color': '#5e6066',
     '--theme-icon-add-wallet-from-sidebar-color': '#fafbfc',
-    '--theme-icon-ada-redemption-attention-color': '#fafbfc',
-    '--theme-icon-ada-redemption-success-color': '#fafbfc',
-    '--theme-icon-ada-redemption-certificate-color': '#9eabbb',
-    '--theme-icon-ada-redemption-no-wallets': '#5e6066',
     '--theme-icon-ada-summary-wallet-amount-symbol-color': '#5e6066',
     '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color':
       '#5e6066',
