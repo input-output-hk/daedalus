@@ -4,7 +4,11 @@ import type { CreateThemeParams } from '../types';
 
 //  ==== yellow theme config for Daedalus and react-polymorph components === //
 export const YELLOW_THEME_OUTPUT = {
+  // missingDefinition: {
+  //   '--theme-i-bought-all-the-shit-coins': '#2d2d2d',
+  // },
   aboutWindow: {
+    // '--theme-about-window-missing-css-variable': '#ffffff',
     '--theme-about-window-background-color': 'rgba(255, 185, 35, 0.96)',
     '--theme-about-window-header-bottom-border-color': 'rgba(45, 45, 45, 0.2)',
     '--theme-about-window-daedalus-icon-color': '#2d2d2d',

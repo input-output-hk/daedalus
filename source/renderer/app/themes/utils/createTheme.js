@@ -219,7 +219,11 @@ export const createDaedalusComponentsTheme = (
   const { colors, fonts } = themeParts;
   const { background, border, error, focus, text } = colors;
   return {
+    // missingDefinition: {
+    //   '--theme-i-bought-all-the-shit-coins': `${background.primary.regular}`,
+    // },
     aboutWindow: {
+      // '—theme-about-window-missing-css-variable': `${text.secondary}`,
       '--theme-about-window-background-color': `${chroma(
         background.secondary.regular
       ).alpha(0.96)}`,

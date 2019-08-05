@@ -4,7 +4,11 @@ import type { CreateThemeParams } from '../types';
 
 //  ==== dark-blue theme config for Daedalus and react-polymorph components === //
 export const DARK_BLUE_THEME_OUTPUT = {
+  // missingDefinition: {
+  //   '--theme-i-bought-all-the-shit-coins': '#263345',
+  // },
   aboutWindow: {
+    // '--theme-about-window-missing-css-variable': '#e9f4fe',
     '--theme-about-window-background-color': 'rgba(38, 51, 69, 0.96)',
     '--theme-about-window-header-bottom-border-color':
       'rgba(233, 244, 254, 0.3)',
