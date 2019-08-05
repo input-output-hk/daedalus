@@ -18,6 +18,7 @@ Changelog
 
 ### Chores
 
+- Removed all Ada Redemption components, containers, stores, api methods, actions, utility functions, tests, CSS variables, constants, types, and terms of use ([PR 1510](https://github.com/input-output-hk/daedalus/pull/1510))
 - Unified support request data handling in common method ([1472](https://github.com/input-output-hk/daedalus/pull/1472))
 
 ## 0.14.0
