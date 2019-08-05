@@ -104,8 +104,6 @@
   "global.duration.months": "!!!months",
   "global.duration.seconds": "!!!seconds",
   "global.duration.years": "!!!years",
-  "global.errors.AdaRedemptionCertificateParseError": "!!!The ADA redemption code could not be parsed from the given document.",
-  "global.errors.AdaRedemptionEncryptedCertificateParseError": "!!!The ADA redemption code could not be parsed, please check your passphrase.",
   "global.errors.fieldIsRequired": "!!!Sie müssen dieses Feld ausfüllen.",
   "global.errors.incompleteMnemonic": "!!!Please enter all {expected} words.",
   "global.errors.invalidEmail": "!!!Invalid email entered, please check.",

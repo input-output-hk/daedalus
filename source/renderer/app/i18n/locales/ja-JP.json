@@ -104,8 +104,6 @@
   "global.duration.months": "月",
   "global.duration.seconds": "秒",
   "global.duration.years": "年",
-  "global.errors.AdaRedemptionCertificateParseError": "指定されたファイルからはada還元キーを解析することができませんでした。",
-  "global.errors.AdaRedemptionEncryptedCertificateParseError": "Ada還元キーを解析することができませんでした。パスフレーズを再度確認してください。",
   "global.errors.fieldIsRequired": "このフィールドは必須です。",
   "global.errors.incompleteMnemonic": "{expected}語を入力して下さい",
   "global.errors.invalidEmail": "無効なメールアドレスです、再度確認してください。",
