@@ -1,7 +1,9 @@
 module.exports = async ({ config }) => {
   const [jsxRule] = config.module.rules;
+  jsxRule.use.unshift('thread-loader');
   return {
     ...config,
+    cache: true,
     module: {
       rules: [
         jsxRule,
