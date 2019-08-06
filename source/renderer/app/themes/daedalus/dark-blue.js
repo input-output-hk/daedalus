@@ -2,13 +2,9 @@
 import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
 
-//  ==== dark-blue theme config for Daedalus and react-polymorph components === //
+//  ==== dark-blue theme output for Daedalus and react-polymorph components === //
 export const DARK_BLUE_THEME_OUTPUT = {
-  // missingDefinition: {
-  //   '--theme-i-bought-all-the-shit-coins': '#263345',
-  // },
   aboutWindow: {
-    // '--theme-about-window-missing-css-variable': '#e9f4fe',
     '--theme-about-window-background-color': 'rgba(38, 51, 69, 0.96)',
     '--theme-about-window-header-bottom-border-color':
       'rgba(233, 244, 254, 0.3)',
@@ -466,6 +462,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--rp-checkbox-check-bg-color': '#536370',
     '--rp-checkbox-label-text-color': '#e9f4fe',
     '--rp-checkbox-label-text-color-disabled': 'rgba(233, 244, 254, 0.3)',
+    '--rp-checkbox-border-color': 'rgba(102, 122, 138, 0.3)',
   },
   rpColors: {
     '--rp-theme-color-error': '#ea4c5b',

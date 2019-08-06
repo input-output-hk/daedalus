@@ -2,13 +2,9 @@
 import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
 
-//  ==== yellow theme config for Daedalus and react-polymorph components === //
+//  ==== yellow theme output for Daedalus and react-polymorph components === //
 export const YELLOW_THEME_OUTPUT = {
-  // missingDefinition: {
-  //   '--theme-i-bought-all-the-shit-coins': '#2d2d2d',
-  // },
   aboutWindow: {
-    // '--theme-about-window-missing-css-variable': '#ffffff',
     '--theme-about-window-background-color': 'rgba(255, 185, 35, 0.96)',
     '--theme-about-window-header-bottom-border-color': 'rgba(45, 45, 45, 0.2)',
     '--theme-about-window-daedalus-icon-color': '#2d2d2d',
@@ -448,6 +444,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--rp-checkbox-check-bg-color': '#2d2d2d',
     '--rp-checkbox-label-text-color': '#2d2d2d',
     '--rp-checkbox-label-text-color-disabled': '#2d2d2d4d',
+    '--rp-checkbox-border-color': '#e1dac6',
   },
   rpColors: {
     '--rp-theme-color-error': '#ea4c5b',
