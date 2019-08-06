@@ -2,8 +2,17 @@ const AutoDllPlugin = require('autodll-webpack-plugin');
 
 module.exports = async ({ config }) => {
   const [jsxRule] = config.module.rules;
+  const [htmlWebpackPlugin] = config.plugins;
+  const { templateParameters } = htmlWebpackPlugin.options;
+  htmlWebpackPlugin.options.templateParameters = (...args) =>
+    Object.assign(templateParameters.call(null, ...args), {
+      dlls: ['./vendor.dll.js'],
+    });
+  // console.log(htmlWebpackPlugin.options.);
   config.plugins.push(
     new AutoDllPlugin({
+      inject: true,
+      filename: '[name].dll.js',
       entry: {
         vendor: [
           '@storybook/addon-actions',
