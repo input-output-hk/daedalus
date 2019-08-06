@@ -1,9 +1,9 @@
 .component {
   text {
+    fill: var(--theme-utxo-tick-text-color);
     font-family: var(--font-regular);
     font-size: 10px;
     font-weight: 600;
-    fill: var(--theme-utxo-tick-text-color);
   }
 }
 

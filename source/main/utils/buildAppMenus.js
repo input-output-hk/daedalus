@@ -1,5 +1,5 @@
 // @flow
-import { app, globalShortcut, Menu, BrowserWindow } from 'electron';
+import { app, globalShortcut, Menu, BrowserWindow, dialog } from 'electron';
 import { get } from 'lodash';
 import { environment } from '../environment';
 import { winLinuxMenu } from '../menus/win-linux';
@@ -9,12 +9,7 @@ import { safeExitWithCode } from './safeExitWithCode';
 import { CardanoNode } from '../cardano/CardanoNode';
 import { DIALOGS, SCREENS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
-import { getLocale } from './getLocale';
-
-const localesFillForm = {
-  'en-US': 'English',
-  'ja-JP': 'Japanese',
-};
+import { getTranslation } from './getTranslation';
 
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
@@ -23,6 +18,9 @@ export const buildAppMenus = async (
 ) => {
   const { ADA_REDEMPTION } = SCREENS;
   const { ABOUT, BLOCK_CONSOLIDATION, DAEDALUS_DIAGNOSTICS } = DIALOGS;
+
+  const { isMacOS, isInSafeMode } = environment;
+  const translations = require(`../locales/${locale}`);
 
   const openAboutDialog = () => {
     if (mainWindow) showUiPartChannel.send(ABOUT, mainWindow);
@@ -54,40 +52,41 @@ export const buildAppMenus = async (
     safeExitWithCode(22);
   };
 
-  const {
-    isMacOS,
-    version,
-    apiVersion,
-    network,
-    build,
-    installerVersion,
-    os,
-    buildNumber,
-  } = environment;
-
-  const translations = require(`../locales/${locale}`);
-
-  const networkLocale = getLocale(network);
-
-  const supportRequestData = {
-    frontendVersion: version,
-    backendVersion: apiVersion,
-    network: network === 'development' ? 'staging' : network,
-    build,
-    installerVersion,
-    os,
-    networkLocale,
-    product: `Daedalus wallet - ${network}`,
-    supportLanguage: localesFillForm[networkLocale],
-    productVersion: `Daedalus ${version}+Cardano ${buildNumber}`,
+  const toggleOnSafeMode = item => {
+    const translation = getTranslation(translations, 'menu');
+    const gpuSafeModeDialogOptions = {
+      buttons: [
+        translation('helpSupport.gpuSafeModeDialogConfirm'),
+        translation('helpSupport.gpuSafeModeDialogCancel'),
+      ],
+      type: 'warning',
+      title: isInSafeMode
+        ? translation('helpSupport.gpuSafeModeDialogTitle')
+        : translation('helpSupport.nonGpuSafeModeDialogTitle'),
+      message: isInSafeMode
+        ? translation('helpSupport.gpuSafeModeDialogMessage')
+        : translation('helpSupport.nonGpuSafeModeDialogMessage'),
+      defaultId: 1,
+      cancelId: 1,
+      noLink: true,
+    };
+    dialog.showMessageBox(mainWindow, gpuSafeModeDialogOptions, buttonId => {
+      if (buttonId === 0) {
+        if (isInSafeMode) {
+          restartWithoutSafeMode();
+        } else {
+          restartInSafeMode();
+        }
+      }
+      item.checked = isInSafeMode;
+    });
   };
 
   const menuActions = {
     openAboutDialog,
     openDaedalusDiagnosticsDialog,
     openAdaRedemptionScreen,
-    restartInSafeMode,
-    restartWithoutSafeMode,
+    toggleOnSafeMode,
     openBlockConsolidationStatusDialog,
   };
 
@@ -96,14 +95,7 @@ export const buildAppMenus = async (
   const isNodeInSync = get(cardanoNode, 'status.isNodeInSync', false);
   if (isMacOS) {
     menu = Menu.buildFromTemplate(
-      osxMenu(
-        app,
-        mainWindow,
-        menuActions,
-        translations,
-        supportRequestData,
-        isNodeInSync
-      )
+      osxMenu(app, mainWindow, menuActions, translations, isNodeInSync, locale)
     );
     Menu.setApplicationMenu(menu);
   } else {
@@ -113,8 +105,8 @@ export const buildAppMenus = async (
         mainWindow,
         menuActions,
         translations,
-        supportRequestData,
-        isNodeInSync
+        isNodeInSync,
+        locale
       )
     );
     mainWindow.setMenu(menu);

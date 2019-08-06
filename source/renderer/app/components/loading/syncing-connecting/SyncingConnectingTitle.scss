@@ -21,7 +21,7 @@
   .headline {
     overflow: visible;
     &:not(.withoutAnimation) {
-      @include animated-ellipsis($width: 16px);
+      @include animated-ellipsis($width: 20px);
     }
   }
 }

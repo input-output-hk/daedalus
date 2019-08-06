@@ -14,11 +14,11 @@
   z-index: 1;
 
   .icon {
-    margin-bottom: 36px;
     line-height: 0;
+    margin-bottom: 36px;
     & > svg {
-      width: 110px;
       height: 110px;
+      width: 110px;
       path {
         fill: var(--theme-icon-ada-redemption-success-color);
       }
@@ -74,10 +74,10 @@
       top: 15px;
       width: 44px;
       &:hover {
-        border-radius: 50%;
         background-color: var(
           --theme-ada-redemption-success-overlay-close-button-background-color-hover
         );
+        border-radius: 50%;
       }
       svg {
         g {

@@ -11,8 +11,8 @@
   background-color: var(--theme-bordered-box-background-color);
   border: var(--theme-bordered-box-border);
   border-radius: 4px;
-  padding: 30px 30px 20px;
   overflow: visible;
+  padding: 30px 30px 20px;
   width: 620px;
 }
 
@@ -27,6 +27,6 @@
 
 .error {
   @include error-message;
-  text-align: center;
   margin-bottom: 1rem;
+  text-align: center;
 }
