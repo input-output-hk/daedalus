@@ -1,8 +1,8 @@
 %base {
+  color: var(--theme-uploader-text-color);
+  font-family: var(--font-regular);
   font-size: 16px;
   line-height: 1.38;
-  font-family: var(--font-regular);
-  color: var(--theme-uploader-text-color);
 }
 
 .label {
@@ -12,20 +12,20 @@
 }
 
 .uploadBox {
-  width: 154px;
-  height: 154px;
-  border-radius: 2px;
-  border: solid 1px var(--theme-uploader-border-color);
-  display: flex;
   align-items: center;
+  border: solid 1px var(--theme-uploader-border-color);
+  border-radius: 2px;
+  display: flex;
+  height: 154px;
+  width: 154px;
 }
 
 .dropZone {
-  height: 100%;
-  width: 100%;
-  display: flex;
   align-items: center;
+  display: flex;
+  height: 100%;
   text-align: center;
+  width: 100%;
 
   &:hover .attachIcon {
     opacity: 1;
@@ -33,13 +33,13 @@
 }
 
 .instructions {
-  width: 100%;
-  height: 100%;
+  align-items: center;
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  height: 100%;
   justify-content: center;
+  width: 100%;
   .title {
     @extend %base;
     font-family: var(--font-regular);
@@ -53,18 +53,18 @@
 }
 
 .certificateUploaded {
-  width: 100%;
+  align-items: center;
+  display: flex;
   height: 100%;
   position: relative;
-  display: flex;
-  align-items: center;
+  width: 100%;
 }
 
 .certificateIcon {
   margin: auto;
   & > svg {
-    width: 54px;
     height: 74px;
+    width: 54px;
     & > g > path {
       fill: var(--theme-icon-ada-redemption-certificate-color);
     }
@@ -75,10 +75,10 @@
 }
 
 .removeFileButton {
-  position: absolute;
   cursor: pointer;
-  top: 10px;
+  position: absolute;
   right: 10px;
+  top: 10px;
 
   .closeCrossIcon {
     & > svg {
