@@ -33,19 +33,25 @@
 
   button,
   p,
-  .externalLink {
+  .externalLink,
+  .externalLinkNotWrapped {
     color: var(--theme-support-settings-text-color);
     font-family: var(--font-regular);
     font-size: 16px;
   }
 
   button,
-  .externalLink {
+  .externalLink,
+  .externalLinkNotWrapped {
     @include link(--theme-link-main-color);
   }
 
-  .externalLink {
+  .externalLink,
+  .externalLinkNotWrapped {
     margin-right: 4px;
+  }
+
+  .externalLinkNotWrapped {
     white-space: nowrap;
   }
 
