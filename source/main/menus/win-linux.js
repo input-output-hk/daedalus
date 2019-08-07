@@ -142,6 +142,13 @@ export const winLinuxMenu = (
       },
       { type: 'separator' },
       {
+        label: translation('helpSupport.safetyTips'),
+        click() {
+          const safetyTipsLinkUrl = translation('helpSupport.safetyTipsUrl');
+          shell.openExternal(safetyTipsLinkUrl);
+        },
+      },
+      {
         label: translation('helpSupport.featureRequest'),
         click() {
           const featureRequestLinkUrl = translation(
