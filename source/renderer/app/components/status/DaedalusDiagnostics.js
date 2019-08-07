@@ -15,7 +15,8 @@ import {
 } from '../../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../../config/numbersConfig';
 import { getNetworkEkgUrl } from '../../utils/network';
-import closeCross from '../../assets/images/close-cross-thin.inline.svg';
+import DialogCloseButton from '../widgets/DialogCloseButton';
+import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
@@ -568,6 +569,15 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
 
     return (
       <div className={styles.component}>
+        <DialogCloseButton
+          className={styles.closeButton}
+          icon={closeCrossThin}
+          onClose={onClose}
+        />
+        {/* <button className={styles.closeButton} onClick={() => onClose()}>
+          <SVGInline svg={closeCross} />
+        </button> */}
+
         <div className={styles.tables}>
           <table className={styles.table}>
             <tbody>
@@ -885,10 +895,6 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
             </tbody>
           </table>
         </div>
-
-        <button className={styles.closeButton} onClick={() => onClose()}>
-          <SVGInline svg={closeCross} />
-        </button>
       </div>
     );
   }
