@@ -277,11 +277,11 @@
   z-index: 1;
 
   span {
+    border-radius: 50%;
     height: 44px;
     width: 44px;
 
     &:hover {
-      border-radius: 50%;
       background-color: var(--theme-about-window-icon-close-hover-background);
     }
   }
@@ -293,6 +293,9 @@
 
     polygon {
       fill: var(--theme-about-window-icon-close-button-color);
+    }
+    path {
+      stroke: var(--theme-about-window-icon-close-button-color);
     }
   }
 }
