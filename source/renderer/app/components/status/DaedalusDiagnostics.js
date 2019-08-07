@@ -553,14 +553,15 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
         : styles.red,
     ]);
 
-    // Cardano Node EKG server is not enabled for the Mainnet!
-    const cardanoNodeEkgLink = isMainnet
-      ? false
-      : getNetworkEkgUrl({
-          isDev,
-          isStaging,
-          isTestnet,
-        });
+    // Cardano Node EKG server is not enabled for the Mainnet and Testnet builds!
+    const cardanoNodeEkgLink =
+      isMainnet || isTestnet
+        ? false
+        : getNetworkEkgUrl({
+            isDev,
+            isStaging,
+            isTestnet,
+          });
 
     const stateDirectoryPathStyles = classNames([
       styles.stateDirectoryPath,
