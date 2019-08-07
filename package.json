@@ -121,8 +121,8 @@
     "spawn-sync": "2.0.0",
     "spectron": "5.0.0",
     "style-loader": "0.23.1",
-    "stylelint": "10.1.0",
-    "stylelint-order": "3.0.1",
+    "stylelint": "9.6.0",
+    "stylelint-order": "2.2.1",
     "svg-inline-loader": "0.8.0",
     "thread-loader": "2.1.2",
     "transform-loader": "0.2.4",
@@ -206,6 +206,7 @@
     "**/**/minimatch": "^3.0.2",
     "**/**/lodash.mergewith": "^4.6.2",
     "**/**/lodash.template": "^4.5.0",
-    "**/**/lodash": "^4.17.14"
+    "**/**/lodash": "^4.17.14",
+    "**/**/unicode-properties": "1.1.0"
   }
 }
