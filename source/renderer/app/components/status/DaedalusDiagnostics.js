@@ -574,9 +574,6 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
           icon={closeCrossThin}
           onClose={onClose}
         />
-        {/* <button className={styles.closeButton} onClick={() => onClose()}>
-          <SVGInline svg={closeCross} />
-        </button> */}
 
         <div className={styles.tables}>
           <table className={styles.table}>
