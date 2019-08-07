@@ -637,7 +637,6 @@ Changelog
 - Transactions ordering
 - Smaller UI improvements and fixes
 
-
 ## 0.5.0
 
 ![Main Wallet screenshot in 0.5.0](screenshots/2016-11-24 release 0.5.0 main-wallet.png)
