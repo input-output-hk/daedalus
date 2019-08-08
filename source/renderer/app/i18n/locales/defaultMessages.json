@@ -3946,16 +3946,16 @@
         }
       },
       {
-        "defaultMessage": "!!!Daedalus is running in safe mode",
-        "description": "Daedalus is running in safe mode",
+        "defaultMessage": "!!!'Blank Screen Fix' active",
+        "description": "'Blank Screen Fix' active",
         "end": {
           "column": 3,
           "line": 86
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
-        "id": "daedalus.diagnostics.dialog.safeMode",
+        "id": "daedalus.diagnostics.dialog.blankScreenFix",
         "start": {
-          "column": 12,
+          "column": 18,
           "line": 82
         }
       },

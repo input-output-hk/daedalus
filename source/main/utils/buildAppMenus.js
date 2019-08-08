@@ -34,7 +34,7 @@ export const buildAppMenus = async (
     installerVersion,
     os,
     buildNumber,
-    isInSafeMode,
+    isBlankScreenFixActive,
   } = environment;
   const translations = require(`../locales/${locale}`);
   const networkLocale = getLocale(network);
@@ -55,47 +55,47 @@ export const buildAppMenus = async (
     if (mainWindow) showUiPartChannel.send(DAEDALUS_DIAGNOSTICS, mainWindow);
   };
 
-  const restartInSafeMode = async () => {
-    Logger.info('Restarting in SafeMode...');
+  const restartWithBlankScreenFix = async () => {
+    Logger.info('Restarting in BlankScreenFix...');
     if (cardanoNode) await cardanoNode.stop();
     Logger.info('Exiting Daedalus with code 21', { code: 21 });
     safeExitWithCode(21);
   };
 
-  const restartWithoutSafeMode = async () => {
-    Logger.info('Restarting without SafeMode...');
+  const restartWithoutBlankScreenFix = async () => {
+    Logger.info('Restarting without BlankScreenFix...');
     if (cardanoNode) await cardanoNode.stop();
     Logger.info('Exiting Daedalus with code 22', { code: 22 });
     safeExitWithCode(22);
   };
 
-  const toggleOnSafeMode = item => {
+  const toggleBlankScreenFix = item => {
     const translation = getTranslation(translations, 'menu');
-    const gpuSafeModeDialogOptions = {
+    const blankScreenFixDialogOptions = {
       buttons: [
-        translation('helpSupport.gpuSafeModeDialogConfirm'),
-        translation('helpSupport.gpuSafeModeDialogCancel'),
+        translation('helpSupport.blankScreenFixDialogConfirm'),
+        translation('helpSupport.blankScreenFixDialogCancel'),
       ],
       type: 'warning',
-      title: isInSafeMode
-        ? translation('helpSupport.gpuSafeModeDialogTitle')
-        : translation('helpSupport.nonGpuSafeModeDialogTitle'),
-      message: isInSafeMode
-        ? translation('helpSupport.gpuSafeModeDialogMessage')
-        : translation('helpSupport.nonGpuSafeModeDialogMessage'),
+      title: isBlankScreenFixActive
+        ? translation('helpSupport.blankScreenFixDialogTitle')
+        : translation('helpSupport.nonBlankScreenFixDialogTitle'),
+      message: isBlankScreenFixActive
+        ? translation('helpSupport.blankScreenFixDialogMessage')
+        : translation('helpSupport.nonBlankScreenFixDialogMessage'),
       defaultId: 1,
       cancelId: 1,
       noLink: true,
     };
-    dialog.showMessageBox(mainWindow, gpuSafeModeDialogOptions, buttonId => {
+    dialog.showMessageBox(mainWindow, blankScreenFixDialogOptions, buttonId => {
       if (buttonId === 0) {
-        if (isInSafeMode) {
-          restartWithoutSafeMode();
+        if (isBlankScreenFixActive) {
+          restartWithoutBlankScreenFix();
         } else {
-          restartInSafeMode();
+          restartWithBlankScreenFix();
         }
       }
-      item.checked = isInSafeMode;
+      item.checked = isBlankScreenFixActive;
     });
   };
 
@@ -116,7 +116,7 @@ export const buildAppMenus = async (
     openAboutDialog,
     openDaedalusDiagnosticsDialog,
     openAdaRedemptionScreen,
-    toggleOnSafeMode,
+    toggleBlankScreenFix,
     openBlockConsolidationStatusDialog,
   };
 

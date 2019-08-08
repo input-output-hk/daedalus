@@ -10,7 +10,7 @@ import { showUiPartChannel } from '../ipc/control-ui-parts';
 import type { SupportRequests } from '../../common/types/support-requests.types';
 
 const id = 'menu';
-const { isWindows, isInSafeMode } = environment;
+const { isWindows, isBlankScreenFixActive } = environment;
 
 export const winLinuxMenu = (
   app: App,
@@ -135,9 +135,9 @@ export const winLinuxMenu = (
       {
         label: translation('helpSupport.blankScreenFix'),
         type: 'checkbox',
-        checked: isInSafeMode,
+        checked: isBlankScreenFixActive,
         click(item) {
-          actions.toggleOnSafeMode(item);
+          actions.toggleBlankScreenFix(item);
         },
       },
       { type: 'separator' },

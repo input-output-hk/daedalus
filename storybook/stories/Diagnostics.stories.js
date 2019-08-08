@@ -20,7 +20,7 @@ const coreInfo = {
   daedalusVersion: '0.14.0',
   daedalusProcessID: '98954',
   daedalusMainProcessID: '82734',
-  isInSafeMode: false,
+  isBlankScreenFixActive: false,
   cardanoVersion: 'dev',
   cardanoProcessID: 87212,
   cardanoAPIPort: 59982,
