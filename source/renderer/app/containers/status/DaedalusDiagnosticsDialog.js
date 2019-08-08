@@ -88,7 +88,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       daedalusVersion: environment.version,
       daedalusProcessID: environment.rendererProcessID,
       daedalusMainProcessID: environment.mainProcessID,
-      isInSafeMode: environment.isInSafeMode,
+      isBlankScreenFixActive: environment.isBlankScreenFixActive,
       cardanoVersion: environment.buildNumber,
       cardanoProcessID: cardanoNodeID,
       cardanoAPIPort: tlsConfig ? tlsConfig.port : 0,

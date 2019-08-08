@@ -10,7 +10,7 @@ import { NOTIFICATIONS } from '../../common/ipc/constants';
 import type { SupportRequests } from '../../common/types/support-requests.types';
 
 const id = 'menu';
-const { isInSafeMode } = environment;
+const { isBlankScreenFixActive } = environment;
 
 export const osxMenu = (
   app: App,
@@ -129,9 +129,9 @@ export const osxMenu = (
       {
         label: translation('helpSupport.blankScreenFix'),
         type: 'checkbox',
-        checked: isInSafeMode,
+        checked: isBlankScreenFixActive,
         click(item) {
-          actions.toggleOnSafeMode(item);
+          actions.toggleBlankScreenFix(item);
         },
       },
       { type: 'separator' },
