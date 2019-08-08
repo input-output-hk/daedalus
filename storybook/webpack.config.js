@@ -1,7 +1,15 @@
+const isCi = process.env.CI && process.env.CI !== '';
+
 module.exports = async ({ config }) => {
   const [jsxRule] = config.module.rules;
+  jsxRule.use.unshift('thread-loader');
   return {
     ...config,
+    cache: false,
+    devtool: isCi ? 'none' : config.devtool,
+    optimization: {
+      minimize: false,
+    },
     module: {
       rules: [
         jsxRule,
@@ -14,18 +22,18 @@ module.exports = async ({ config }) => {
             {
               loader: 'css-loader',
               options: {
-                sourceMap: true,
+                sourceMap: !isCi,
                 modules: true,
                 localIdentName: '[name]_[local]',
                 importLoaders: true,
               },
             },
-            { loader: 'sass-loader', options: { sourceMap: true } },
+            { loader: 'fast-sass-loader', options: { sourceMap: !isCi } },
           ],
         },
         {
           test: /\.css/,
-          use: [{ loader: 'css-loader', options: { sourceMap: true } }],
+          use: [{ loader: 'css-loader', options: { sourceMap: !isCi } }],
         },
         {
           test: /\.inline\.svg$/,
