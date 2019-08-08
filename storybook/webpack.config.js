@@ -1,63 +1,15 @@
-const AutoDllPlugin = require('autodll-webpack-plugin');
+const isCi = process.env.CI && process.env.CI !== '';
 
 module.exports = async ({ config }) => {
   const [jsxRule] = config.module.rules;
-  const [htmlWebpackPlugin] = config.plugins;
-  const { templateParameters } = htmlWebpackPlugin.options;
-  htmlWebpackPlugin.options.templateParameters = (...args) =>
-    Object.assign(templateParameters.call(null, ...args), {
-      dlls: ['./vendor.dll.js'],
-    });
-  // console.log(htmlWebpackPlugin.options.);
-  config.plugins.push(
-    new AutoDllPlugin({
-      inject: true,
-      filename: '[name].dll.js',
-      entry: {
-        vendor: [
-          '@storybook/addon-actions',
-          '@storybook/addon-knobs',
-          '@storybook/addon-links',
-          '@storybook/addon-notes',
-          '@storybook/addons',
-          '@storybook/core',
-          '@storybook/react',
-          'aes-js',
-          'bignumber.js',
-          'bip39',
-          'blakejs',
-          'bs58',
-          'classnames',
-          'es6-error',
-          'faker',
-          'humanize-duration',
-          'lodash',
-          'mobx',
-          'mobx-react',
-          'mobx-react-form',
-          'mobx-react-router',
-          'moment',
-          'pbkdf2',
-          'qrcode.react',
-          'react',
-          'react-copy-to-clipboard',
-          'react-dom',
-          'react-dropzone',
-          'react-number-format',
-          'react-router',
-          'react-svg-inline',
-          'recharts',
-          'route-parser',
-          'safe-buffer',
-          'unorm',
-          'validator',
-        ],
-      },
-    })
-  );
+  jsxRule.use.unshift('thread-loader');
   return {
     ...config,
-    cache: true,
+    cache: false,
+    devtool: isCi ? 'none' : config.devtool,
+    optimization: {
+      minimize: false,
+    },
     module: {
       rules: [
         jsxRule,
@@ -70,18 +22,18 @@ module.exports = async ({ config }) => {
             {
               loader: 'css-loader',
               options: {
-                sourceMap: true,
+                sourceMap: !isCi,
                 modules: true,
                 localIdentName: '[name]_[local]',
                 importLoaders: true,
               },
             },
-            { loader: 'sass-loader', options: { sourceMap: true } },
+            { loader: 'fast-sass-loader', options: { sourceMap: !isCi } },
           ],
         },
         {
           test: /\.css/,
-          use: [{ loader: 'css-loader', options: { sourceMap: true } }],
+          use: [{ loader: 'css-loader', options: { sourceMap: !isCi } }],
         },
         {
           test: /\.inline\.svg$/,

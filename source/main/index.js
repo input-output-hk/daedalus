@@ -46,7 +46,7 @@ let cardanoNode: ?CardanoNode;
 const {
   isDev,
   isWatchMode,
-  isInSafeMode,
+  isBlankScreenFixActive,
   network,
   os: osName,
   version: daedalusVersion,
@@ -93,7 +93,7 @@ const onAppReady = async () => {
     cardanoVersion,
     cpu,
     daedalusVersion,
-    isInSafeMode,
+    isBlankScreenFixActive,
     network,
     osName,
     platformVersion,
