@@ -96,6 +96,9 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       daedalusStateDirectoryPath: stateDirectoryPath,
     };
 
+    // Copy-address notification component z-index
+    const notificationOrder = 99999;
+
     return (
       <ReactModal
         isOpen
@@ -150,6 +153,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
           closeNotification={actions.notifications.closeActiveNotification}
           icon="success"
           hasCloseButton
+          order={notificationOrder}
           themeOverride="grey"
         >
           {intl.formatMessage(messages.stateDirectoryCopyNotificationMessage)}
