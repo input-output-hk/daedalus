@@ -7606,6 +7606,137 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Create a new wallet",
+        "description": "Title \"Create a new wallet\" in the wallet create form.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
+        "id": "wallet.create.dialog.title",
+        "start": {
+          "column": 15,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Wallet Name",
+        "description": "Label for the \"Wallet Name\" text input in the wallet create form.",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
+        "id": "wallet.create.dialog.name.label",
+        "start": {
+          "column": 14,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!e.g: Shopping Wallet",
+        "description": "Hint for the \"Wallet Name\" text input in the wallet create form.",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
+        "id": "wallet.create.dialog.walletNameHint",
+        "start": {
+          "column": 18,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!Create personal wallet",
+        "description": "Label for the \"Create personal wallet\" button on create wallet dialog.",
+        "end": {
+          "column": 3,
+          "line": 50
+        },
+        "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
+        "id": "wallet.create.dialog.create.personal.wallet.button.label",
+        "start": {
+          "column": 24,
+          "line": 45
+        }
+      },
+      {
+        "defaultMessage": "!!!Keep your private keys safely encrypted by setting the spending password",
+        "description": "Text for the \"Activate to create password\" switch in the create wallet dialog.",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
+        "id": "wallet.create.dialog.passwordSwitchPlaceholder",
+        "start": {
+          "column": 29,
+          "line": 51
+        }
+      },
+      {
+        "defaultMessage": "!!!Spending password",
+        "description": "Label for the \"Activate to create password\" switch in the create wallet dialog.",
+        "end": {
+          "column": 3,
+          "line": 63
+        },
+        "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
+        "id": "wallet.create.dialog.passwordSwitchLabel",
+        "start": {
+          "column": 23,
+          "line": 58
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter password",
+        "description": "Label for the \"Wallet password\" input in the create wallet dialog.",
+        "end": {
+          "column": 3,
+          "line": 69
+        },
+        "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
+        "id": "wallet.create.dialog.spendingPasswordLabel",
+        "start": {
+          "column": 25,
+          "line": 64
+        }
+      },
+      {
+        "defaultMessage": "!!!Repeat password",
+        "description": "Label for the \"Repeat password\" input in the create wallet dialog.",
+        "end": {
+          "column": 3,
+          "line": 75
+        },
+        "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
+        "id": "wallet.create.dialog.repeatPasswordLabel",
+        "start": {
+          "column": 23,
+          "line": 70
+        }
+      },
+      {
+        "defaultMessage": "!!!Password",
+        "description": "Placeholder for the \"Password\" inputs in the create wallet dialog.",
+        "end": {
+          "column": 3,
+          "line": 81
+        },
+        "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
+        "id": "wallet.create.dialog.passwordFieldPlaceholder",
+        "start": {
+          "column": 28,
+          "line": 76
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/WalletCreateDialog.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Restore a wallet",
         "description": "Label \"Restore wallet\" on the wallet restore dialog.",
         "end": {
