@@ -32,10 +32,10 @@
     .description {
       color: var(--theme-delegation-steps-choose-wallet-description-color);
       span > span {
-        font-family: var(--font-medium);
         color: var(
           --theme-delegation-steps-choose-wallet-description-highlighted-color
         );
+        font-family: var(--font-medium);
         font-weight: 500;
       }
     }

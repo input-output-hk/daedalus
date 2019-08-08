@@ -62,8 +62,8 @@
 
 .container {
   display: flex;
-  flex-direction: column;
   flex: 1;
+  flex-direction: column;
   justify-content: center;
   overflow-x: hidden;
   overflow-y: overlay;
@@ -99,8 +99,8 @@
   max-width: 610px;
 
   b {
-    font-family: var(--font-medium);
     color: var(--theme-block-consolidation-text-highlight-color);
+    font-family: var(--font-medium);
   }
 
   &:last-of-type {
@@ -155,8 +155,8 @@
   position: relative;
 
   p {
-    font-size: 14px;
     color: var(--theme-block-consolidation-indicator-text-color);
+    font-size: 14px;
   }
 }
 
@@ -171,6 +171,7 @@
   width: 600px;
 }
 .indicatorContainerNoCurrentEpochs {
+  animation: indicatorContainerNoCurrentEpochs 0.5s linear infinite;
   background: repeating-linear-gradient(
     -44.46deg,
     var(--theme-block-consolidation-stripe-dark-1-background-color),
@@ -178,7 +179,6 @@
     var(--theme-block-consolidation-stripe-dark-2-background-color) 10px,
     var(--theme-block-consolidation-stripe-dark-2-background-color) 20px
   );
-  animation: indicatorContainerNoCurrentEpochs 0.5s linear infinite;
 }
 
 .indicatorEpochsSynced {
@@ -194,8 +194,8 @@
   position: relative;
 
   p {
-    position: absolute;
     bottom: -18px;
+    position: absolute;
     white-space: nowrap;
   }
 }
@@ -246,17 +246,17 @@
 }
 
 .indicatorEpochsBehind {
+  background: linear-gradient(
+    to top,
+    var(--theme-block-consolidation-indicator-epochs-behind-background-color-1),
+    var(--theme-block-consolidation-indicator-epochs-behind-background-color-2)
+  );
   bottom: 0;
   height: 47px;
   position: absolute;
   right: 80px;
   width: 1px;
   z-index: 1;
-  background: linear-gradient(
-    to top,
-    var(--theme-block-consolidation-indicator-epochs-behind-background-color-1),
-    var(--theme-block-consolidation-indicator-epochs-behind-background-color-2)
-  );
 
   p {
     left: 8px;
@@ -283,6 +283,7 @@
 
     &:hover {
       background-color: var(--theme-about-window-icon-close-hover-background);
+      border-radius: 50%;
     }
   }
 
