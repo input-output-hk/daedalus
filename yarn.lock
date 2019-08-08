@@ -5775,7 +5775,6 @@ fast-levenshtein@~2.0.4:
 fast-sass-loader@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/fast-sass-loader/-/fast-sass-loader-1.5.0.tgz#b3bcf91aaa5fd042e01c536bb338db74b03fef0c"
-  integrity sha512-3K4/xG/sm0MqdjrOBKZhnOrrQ3TWMsdvqjxI4ZN0FlVwImNqChYHFUChpyQ9ecQsXS0pytOMEa5H+MDfatPqBA==
   dependencies:
     async "^2.0.1"
     cli-source-preview "^1.0.0"
