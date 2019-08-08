@@ -1,6 +1,6 @@
 .component {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 80px);
   grid-gap: 10px;
+  grid-template-columns: repeat(auto-fill, 80px);
   justify-content: space-between;
 }

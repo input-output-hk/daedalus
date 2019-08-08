@@ -1,17 +1,17 @@
 .component {
-  display: flex;
-  justify-content: center;
   align-items: center;
-  width: 100%;
+  display: flex;
   height: 100%;
+  justify-content: center;
+  width: 100%;
 }
 
 .ada-logo,
 .ada-apiLogo {
   & > svg {
     display: block;
-    width: 48px;
     opacity: 0.5;
+    width: 48px;
   }
 }
 
@@ -22,17 +22,17 @@ $cardanoLogoWidth: 86px;
 
 $adaLogoWidth: 43px;
 .ada-logo > svg {
-  width: $adaLogoWidth;
   margin: 3px ($cardanoLogoWidth - $adaLogoWidth) / 2 0; // Visually align in the middle + Needs to be the same dimension as the apiLogo
+  width: $adaLogoWidth;
 }
 
 .daedalusLogo {
-  width: 173px;
   height: 135px;
   margin: 0 114px;
+  width: 173px;
   svg {
-    width: 173px;
     height: 135px;
+    width: 173px;
   }
 }
 
