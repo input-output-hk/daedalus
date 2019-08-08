@@ -18,6 +18,8 @@ Changelog
 
 ### Chores
 
+- Changed `themes:check` to `themes:check:createTheme` and added a "Theme Management Tuorial Series" to a README document in themes directory.
+  ([PR 1525](https://github.com/input-output-hk/daedalus/pull/1525))
 - Refactored theme management code to be scalable ([PR 1502](https://github.com/input-output-hk/daedalus/pull/1502))
 - Unified support request data handling in common method ([1472](https://github.com/input-output-hk/daedalus/pull/1472))
 
