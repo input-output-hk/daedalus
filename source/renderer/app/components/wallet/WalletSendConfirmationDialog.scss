@@ -83,8 +83,8 @@
 
   .error {
     @include error-message;
-    text-align: center;
     margin-top: 27px;
+    text-align: center;
   }
 }
 

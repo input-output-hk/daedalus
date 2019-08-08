@@ -567,6 +567,12 @@ export const WHITE_THEME_CONFIG = {
     '--theme-sidebar-menu-add-button-background-color-active': '#e9e9e9a8',
     '--theme-sidebar-menu-add-button-background-color-hover': '#eeeeeea8',
     '--theme-sidebar-menu-add-button-text-color': '#2d2d2d',
+    '--theme-sidebar-wallets-scrollbar-background-color':
+      'rgba(255, 255, 255, 0.1)',
+    '--theme-sidebar-wallets-scrollbar-background-color-active':
+      'rgba(255, 255, 255, 0.3)',
+    '--theme-sidebar-wallets-scrollbar-background-color-hover':
+      'rgba(255, 255, 255, 0.3)',
   },
   stakePools: {
     '--theme-staking-stake-pools-title-color': '#2d2d2d',
@@ -601,6 +607,8 @@ export const WHITE_THEME_CONFIG = {
     '--theme-staking-stake-pool-tooltip-delegate-button-border-color':
       'transparent',
     '--theme-staking-progress-label-light': '#fafbfc',
+    '--theme-staking-stake-pools-search-clear-button-background-color':
+      'rgba(68, 91, 124, 0.05)',
   },
   staking: {
     '--theme-staking-content-background-color': '#fff',
@@ -632,6 +640,12 @@ export const WHITE_THEME_CONFIG = {
     '--theme-staking-delegation-center-gear-icon-fill-color-active': '#2d2d2d',
     '--theme-staking-delegation-center-no-wallets-instructions-color':
       '#2d2d2d',
+    '--theme-staking-countdown-widget-background-color':
+      'rgba(94, 96, 102, 0.07)',
+    '--theme-staking-countdown-widget-delimeter-background-color': '#2d2d2d',
+    '--theme-staking-countdown-widget-field-label-color':
+      'rgba(45, 45, 45, 0.7)',
+    '--theme-staking-countdown-widget-field-value-color': '#2d2d2d',
   },
   support: {
     '--theme-support-settings-item-color': '#2d2d2d',
@@ -707,6 +721,11 @@ export const WHITE_THEME_CONFIG = {
   rpTooltip: {
     '--rp-tooltip-bg-color': '#2d2d2d',
     '--rp-tooltip-text-color': '#fafbfc',
+  },
+  backToTopButton: {
+    '--theme-back-to-top-button-background-color': '#2d2d2d',
+    '--theme-back-to-top-button-text-color': '#fafbfc',
+    '--theme-back-to-top-button-box-shadow-color': 'rgba(0, 0, 0, 0.36)',
   },
 };
 

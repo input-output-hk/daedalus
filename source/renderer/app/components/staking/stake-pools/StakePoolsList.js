@@ -45,15 +45,19 @@ export class StakePoolsList extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    window.addEventListener(
-      'resize',
-      debounce(this.handleClose, 200, { leading: true, trailing: false })
-    );
+    window.addEventListener('resize', this.handleResize);
   }
 
   state = {
     ...initialState,
   };
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleClose);
+  }
+
+  handleResize = () =>
+    debounce(this.handleClose, 200, { leading: true, trailing: false });
 
   searchInput: ?HTMLElement = null;
 
@@ -104,7 +108,7 @@ export class StakePoolsList extends Component<Props, State> {
           return (
             <StakePoolThumbnail
               stakePool={stakePool}
-              key={stakePool.id}
+              key={stakePool.id + stakePool.ranking}
               onOpenExternalLink={onOpenExternalLink}
               isHighlighted={isHighlighted}
               onClose={this.handleClose}

@@ -1,8 +1,8 @@
 .root {
   .bubble {
     > div {
-      transform: translateX(-30%) !important;
       margin-left: 8px !important;
+      transform: translateX(-30%) !important;
     }
   }
 }
