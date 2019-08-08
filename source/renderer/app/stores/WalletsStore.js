@@ -84,6 +84,8 @@ export default class WalletsStore extends Store {
   @observable additionalMnemonicWords = null;
   @observable createWalletStep = null;
   @observable createWalletShowAbortConfirmation = false;
+  // TODO: Remove once the new wallet creation process is ready
+  @observable useNewWalletCreationProcess = false;
 
   _newWalletDetails: {
     name: string,
@@ -138,6 +140,11 @@ export default class WalletsStore extends Store {
     } catch (error) {
       throw error;
     }
+  };
+
+  // TODO: Remove once the new wallet creation process is ready
+  @action _toggleUseNewWalletCreationProcess = () => {
+    this.useNewWalletCreationProcess = !this.useNewWalletCreationProcess;
   };
 
   @action _createWalletBegin = () => {
