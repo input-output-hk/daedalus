@@ -141,7 +141,7 @@ export default class WalletsStore extends Store {
   };
 
   // TODO: Remove once the new wallet creation process is ready
-  @action _tooggleUseNewWalletCreationProcess = () => {
+  @action _toggleUseNewWalletCreationProcess = () => {
     this.useNewWalletCreationProcess = !this.useNewWalletCreationProcess;
   };
 
