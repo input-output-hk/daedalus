@@ -17,9 +17,7 @@ When(/^I click on secondary menu (.*) item$/, async function(buttonName) {
 });
 
 When(/^I select second theme$/, async function() {
-  await this.client.click(
-    '.DisplaySettings_themesWrapper > button:nth-child(2)'
-  );
+  await this.client.click('.DisplaySettings_component button:nth-child(2)');
 });
 
 When(/^I open General Settings language selection dropdown$/, async function() {
@@ -44,7 +42,7 @@ Then(/^I should see Japanese language as selected$/, async function() {
 
 Then(/^I should see second theme as selected$/, async function() {
   await this.client.waitForVisible(
-    '.DisplaySettings_themesWrapper button:nth-child(2).DisplaySettings_active'
+    '.DisplaySettings_component button:nth-child(2).DisplaySettings_active'
   );
 });
 
