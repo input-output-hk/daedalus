@@ -9,7 +9,13 @@ import { launcherConfig } from '../config';
 
 const rendererErrorHandler = new RendererErrorHandler();
 
-const { isDev, isTest, buildLabel, isLinux, isInSafeMode } = environment;
+const {
+  isDev,
+  isTest,
+  buildLabel,
+  isLinux,
+  isBlankScreenFixActive,
+} = environment;
 
 const id = 'window';
 
@@ -17,7 +23,8 @@ const getWindowTitle = (locale: string): string => {
   const translations = require(`../locales/${locale}`);
   const translation = getTranslation(translations, id);
   let title = buildLabel;
-  if (isInSafeMode) title += ` ${translation('title.gpuSafeMode')}`;
+  if (isBlankScreenFixActive)
+    title += ` ${translation('title.blankScreenFix')}`;
   return title;
 };
 
@@ -44,7 +51,7 @@ export const createMainWindow = (locale: string) => {
       webviewTag: false,
       enableRemoteModule: isTest,
       preload: path.join(__dirname, './preload.js'),
-      additionalArguments: isInSafeMode ? ['--safe-mode'] : [],
+      additionalArguments: isBlankScreenFixActive ? ['--safe-mode'] : [],
     },
   };
 

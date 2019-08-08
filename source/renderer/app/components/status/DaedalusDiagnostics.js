@@ -79,10 +79,10 @@ const messages = defineMessages({
     defaultMessage: '!!!Daedalus Renderer Process ID',
     description: 'Daedalus Renderer Process ID',
   },
-  safeMode: {
-    id: 'daedalus.diagnostics.dialog.safeMode',
-    defaultMessage: '!!!Daedalus is running in safe mode',
-    description: 'Daedalus is running in safe mode',
+  blankScreenFix: {
+    id: 'daedalus.diagnostics.dialog.blankScreenFix',
+    defaultMessage: "!!!'Blank Screen Fix' active",
+    description: "'Blank Screen Fix' active",
   },
   cardanoVersion: {
     id: 'daedalus.diagnostics.dialog.cardanoVersion',
@@ -503,7 +503,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
       daedalusVersion,
       daedalusProcessID,
       daedalusMainProcessID,
-      isInSafeMode,
+      isBlankScreenFixActive,
       cardanoVersion,
       cardanoProcessID,
       cardanoAPIPort,
@@ -628,9 +628,9 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 <td>{daedalusProcessID}</td>
               </tr>
               <tr>
-                <th>{intl.formatMessage(messages.safeMode)}:</th>
-                <td className={styles.safeMode}>
-                  {isInSafeMode
+                <th>{intl.formatMessage(messages.blankScreenFix)}:</th>
+                <td className={styles.blankScreenFix}>
+                  {isBlankScreenFixActive
                     ? intl.formatMessage(messages.statusOn)
                     : intl.formatMessage(messages.statusOff)}
                 </td>
