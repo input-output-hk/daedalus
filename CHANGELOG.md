@@ -19,7 +19,9 @@ Changelog
 
 ### Chores
 
-- Removed all Ada Redemption components, containers, stores, api methods, actions, utility functions, tests, CSS variables, constants, types, and terms of use ([PR 1510](https://github.com/input-output-hk/daedalus/pull/1510))
+- Removed "Ada Redemption" feature ([PR 1510](https://github.com/input-output-hk/daedalus/pull/1510))
+- Changed `themes:check` to `themes:check:createTheme` and added a 4 part "Theme Management in Daedalus" tutorial series to a README document in the themes directory ([PR 1525](https://github.com/input-output-hk/daedalus/pull/1525))
+- Refactored theme management code to be scalable ([PR 1502](https://github.com/input-output-hk/daedalus/pull/1502))
 - Improved "Netlify" build setup ([PR 1509](https://github.com/input-output-hk/daedalus/pull/1509))
 - Unified support request data handling in common method ([1472](https://github.com/input-output-hk/daedalus/pull/1472))
 

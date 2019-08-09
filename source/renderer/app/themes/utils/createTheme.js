@@ -10,6 +10,14 @@ export type PartialThemeParts = {
 };
 
 export const updateTheme = (existingTheme: Object, themeUpdates: Object) => {
+  let updateEntries = [];
+
+  for (const key in themeUpdates) {
+    if (key && !isEmpty(themeUpdates[key])) {
+      updateEntries = [[key, themeUpdates[key]], ...updateEntries];
+    }
+  }
+
   const updatedTheme = Object.entries(themeUpdates).reduce(
     (theme: Object, newEntry: [string, Object]) => {
       const [keyName, newCSSVars] = newEntry;
@@ -81,6 +89,7 @@ export const createReactPolymorphTheme = (
     },
     rpCheckbox: {
       '--rp-checkbox-border': `1px solid ${background.secondary.regular}`,
+      '--rp-checkbox-border-color': `${border}`,
       '--rp-checkbox-border-color-disabled': `${chroma(
         background.secondary.regular
       ).alpha(0.4)}`,
@@ -233,6 +242,11 @@ export const createDaedalusComponentsTheme = (
         background.secondary.dark
       }`,
     },
+    backToTopButton: {
+      '--theme-back-to-top-button-background-color': `${text.primary}`,
+      '--theme-back-to-top-button-text-color': `${text.secondary}`,
+      '--theme-back-to-top-button-box-shadow-color': 'rgba(0, 0, 0, 0.36)',
+    },
     blockConsolidation: {
       '--theme-block-consolidation-background-color': `${
         background.secondary.regular
@@ -267,6 +281,9 @@ export const createDaedalusComponentsTheme = (
       '--theme-block-consolidation-button-background-color': `${
         background.secondary.dark
       }`,
+      '--theme-block-consolidation-button-background-color-active': `${
+        background.secondary.darkest
+      }`,
       '--theme-block-consolidation-button-background-color-hover': `${
         background.primary.lightest
       }`,
@@ -285,11 +302,6 @@ export const createDaedalusComponentsTheme = (
       '--theme-block-consolidation-epochs-image-color': `${chroma(
         text.secondary
       ).alpha(0.6)}`,
-    },
-    backToTopButton: {
-      '--theme-back-to-top-button-background-color': `${text.primary}`,
-      '--theme-back-to-top-button-text-color': `${text.secondary}`,
-      '--theme-back-to-top-button-box-shadow-color': 'rgba(0, 0, 0, 0.36)',
     },
     body: {
       '--theme-main-body-background-color': `${background.primary.regular}`,
@@ -376,6 +388,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-data-migration-layer-button-background-color-hover': `${
         background.primary.regular
       }`,
+      '--theme-data-migration-layer-text-opacity-color': `${text.secondary}`,
       '--theme-data-migration-layer-text-color': `${text.secondary}`,
       '--theme-data-migration-button-border-color': `${text.secondary}`,
       '--theme-data-migration-button-label-color': `${text.secondary}`,
