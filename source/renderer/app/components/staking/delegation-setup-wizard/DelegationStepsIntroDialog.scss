@@ -2,19 +2,8 @@
 @import '../../../themes/mixins/link';
 
 .delegationStepsIntroDialogWrapper {
-  font-family: var(--font-regular);
-
-  :global {
-    .Dialog_title {
-      letter-spacing: 2px;
-    }
-  }
-
   .content {
     color: var(--theme-delegation-steps-intro-content-text-color);
-    font-size: 16px;
-    line-height: 1.38;
-    text-align: left;
 
     .link {
       font-size: 16px;

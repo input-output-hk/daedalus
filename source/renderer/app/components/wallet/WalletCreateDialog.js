@@ -1,4 +1,5 @@
 // @flow
+// TODO: Remove once the new wallet creation process is ready
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
