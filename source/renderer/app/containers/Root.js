@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import WalletAddPage from './wallet/WalletAddPage';
 import LoadingPage from './loading/LoadingPage';
-import { DIALOGS } from '../../../common/ipc/constants';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 
 type Props = InjectedContainerProps;
@@ -13,15 +12,7 @@ type Props = InjectedContainerProps;
 export default class Root extends Component<Props> {
   render() {
     const { stores, actions, children } = this.props;
-    const {
-      networkStatus,
-      profile,
-      adaRedemption,
-      wallets,
-      app,
-      staking,
-    } = stores;
-    const { isActiveDialog } = app;
+    const { networkStatus, profile, adaRedemption, wallets, staking } = stores;
     const { isStakingPage } = staking;
     const { isProfilePage, isSettingsPage } = profile;
     const { isAdaRedemptionPage } = adaRedemption;
@@ -35,10 +26,9 @@ export default class Root extends Component<Props> {
     } = networkStatus;
 
     const isPageThatDoesntNeedWallets =
-      isActiveDialog(DIALOGS.BLOCK_CONSOLIDATION) ||
-      ((isAdaRedemptionPage || isStakingPage || isSettingsPage) &&
-        hasLoadedWallets &&
-        isSynced);
+      (isAdaRedemptionPage || isStakingPage || isSettingsPage) &&
+      hasLoadedWallets &&
+      isSynced;
 
     // In case node is in stopping sequence we must show the "Connecting" screen
     // with the "Stopping Cardano node..." and "Cardano node stopped" messages
