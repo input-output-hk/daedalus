@@ -2,8 +2,8 @@
 import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
 
-//  ==== dark-blue theme config for Daedalus and react-polymorph components === //
-export const DARK_BLUE_THEME_CONFIG = {
+//  ==== dark-blue theme output for Daedalus and react-polymorph components === //
+export const DARK_BLUE_THEME_OUTPUT = {
   aboutWindow: {
     '--theme-about-window-background-color': 'rgba(38, 51, 69, 0.96)',
     '--theme-about-window-header-bottom-border-color':
@@ -272,7 +272,6 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-icon-syncing-logo-color': '#e9f4fe',
     '--theme-icon-transactions-ada-symbol-color': '#e9f4fe',
     '--theme-icon-transaction-type-color': '#fafbfc',
-    '--theme-icon-ada-api-logo-color': 'rgba(250, 251, 252, 0.5)',
   },
   input: {
     '--theme-input-background-color': '#263345',
@@ -463,6 +462,7 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--rp-checkbox-check-bg-color': '#536370',
     '--rp-checkbox-label-text-color': '#e9f4fe',
     '--rp-checkbox-label-text-color-disabled': 'rgba(233, 244, 254, 0.3)',
+    '--rp-checkbox-border-color': 'rgba(102, 122, 138, 0.3)',
   },
   rpColors: {
     '--rp-theme-color-error': '#ea4c5b',
@@ -556,6 +556,10 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--rp-textarea-placeholder-color': '#8793a1',
     '--rp-textarea-resize': 'none',
     '--rp-textarea-text-color': '#e9f4fe',
+  },
+  rpTooltip: {
+    '--rp-tooltip-bg-color': '#e9f4fe',
+    '--rp-tooltip-text-color': '#fafbfc',
   },
   scrollbar: {
     '--theme-scrollbar-thumb-background': '#536370',
@@ -744,14 +748,10 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-utxo-tooltip-text-color': '#fafbfc',
   },
-  rpTooltip: {
-    '--rp-tooltip-bg-color': '#e9f4fe',
-    '--rp-tooltip-text-color': '#fafbfc',
-  },
 };
 
 const DARK_BLUE_THEME_PARAMS: CreateThemeParams = {
-  config: DARK_BLUE_THEME_CONFIG,
+  config: DARK_BLUE_THEME_OUTPUT,
 };
 
 export default createTheme(DARK_BLUE_THEME_PARAMS);
