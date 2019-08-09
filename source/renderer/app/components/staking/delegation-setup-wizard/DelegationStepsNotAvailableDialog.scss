@@ -1,17 +1,7 @@
 @import '../../../themes/mixins/loading-spinner';
 
 .delegationStepsNotAvailableDialogWrapper {
-  font-family: var(--font-regular);
-
-  :global {
-    .Dialog_title {
-      letter-spacing: 2px;
-    }
-  }
-
   .content {
-    font-size: 16px;
-    line-height: 1.38;
     text-align: center;
 
     .icon {

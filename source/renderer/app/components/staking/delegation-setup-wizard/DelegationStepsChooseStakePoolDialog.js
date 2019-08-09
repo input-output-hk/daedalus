@@ -1,11 +1,11 @@
 // @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import { find, get } from 'lodash';
-import classNames from 'classnames';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
@@ -13,6 +13,7 @@ import { StakePoolsList } from '../stake-pools/StakePoolsList';
 import { StakePoolsSearch } from '../stake-pools/StakePoolsSearch';
 import { getFilteredStakePoolsList } from '../stake-pools/helpers';
 import BackToTopButton from '../../widgets/BackToTopButton';
+import commonStyles from './DelegationSteps.scss';
 import styles from './DelegationStepsChooseStakePoolDialog.scss';
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import { getColorFromRange } from '../../../utils/colors';
@@ -151,6 +152,12 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       },
     ];
 
+    const dialogClassName = classNames([
+      commonStyles.delegationSteps,
+      styles.delegationStepsChooseStakePoolDialogWrapper,
+    ]);
+    const contentClassName = classNames([commonStyles.content, styles.content]);
+
     const selectedPoolBlock = stakePoolId => {
       const selectedPool = find(
         stakePoolsList,
@@ -210,7 +217,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
-        className={styles.delegationStepsChooseStakePoolDialogWrapper}
+        className={dialogClassName}
         closeButton={<DialogCloseButton onClose={onClose} />}
         backButton={<DialogBackButton onBack={onBack} />}
       >
@@ -220,7 +227,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
           scrollTopToActivate={100}
         />
 
-        <div className={styles.delegationStepsIndicatorWrapper}>
+        <div className={commonStyles.delegationStepsIndicatorWrapper}>
           <Stepper
             steps={stepsList}
             activeStep={2}
@@ -229,7 +236,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
           />
         </div>
 
-        <div className={styles.content}>
+        <div className={contentClassName}>
           <p className={styles.description}>
             {intl.formatMessage(messages.description)}
           </p>
