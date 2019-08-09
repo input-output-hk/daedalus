@@ -17,7 +17,6 @@ export const winLinuxMenu = (
   window: BrowserWindow,
   actions: MenuActions,
   translations: {},
-  isNodeInSync: boolean,
   locale: string,
   translation: Function = getTranslation(translations, id)
 ) => [
