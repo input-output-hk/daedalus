@@ -11,6 +11,7 @@ Changelog
 - Improved scrollbar look and feel on wallets list ([PR 1475](https://github.com/input-output-hk/daedalus/pull/1475))
 - Implemented new delegation countdown design ([PR 1481](https://github.com/input-output-hk/daedalus/pull/1481))
 - "Delegation" screens UI:
+  - Improved "Delegation setup" wizard ([PR 1503](https://github.com/input-output-hk/daedalus/pull/1503))
   - Implemented "Search and Filtering" logic on "Stake pools" screen ([PR 1468](https://github.com/input-output-hk/daedalus/pull/1468))
 
 ### Fixes
@@ -20,6 +21,7 @@ Changelog
 
 ### Chores
 
+- Removed "Ada Redemption" feature ([PR 1510](https://github.com/input-output-hk/daedalus/pull/1510))
 - Changed `themes:check` to `themes:check:createTheme` and added a 4 part "Theme Management in Daedalus" tutorial series to a README document in the themes directory ([PR 1525](https://github.com/input-output-hk/daedalus/pull/1525))
 - Refactored theme management code to be scalable ([PR 1502](https://github.com/input-output-hk/daedalus/pull/1502))
 - Improved "Netlify" build setup ([PR 1509](https://github.com/input-output-hk/daedalus/pull/1509))

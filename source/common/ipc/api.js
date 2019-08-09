@@ -11,11 +11,6 @@ import type {
   FaultInjectionIpcRequest,
   TlsConfig,
 } from '../types/cardano-node.types';
-import type {
-  AdaRedemptionCode,
-  AdaRedemptionDecryptionKey,
-} from '../types/ada-redemption.types';
-import type { RedemptionTypeChoices } from '../../renderer/app/types/redemptionTypes';
 import type { CheckDiskSpaceResponse } from '../types/no-disk-space.types';
 import type { LogFiles } from '../../renderer/app/types/LogTypes';
 import type { GpuStatus } from '../../renderer/app/types/gpuStatus';
@@ -132,19 +127,6 @@ export const GET_CONSOLIDATED_EPOCHS_COUNT_CHANNEL =
   'GET_CONSOLIDATED_EPOCHS_COUNT_CHANNEL';
 export type GetConsolidatedEpochsCountRendererRequest = void;
 export type GetConsolidatedEpochsCountMainResponse = number;
-
-/**
- * Channel where renderer can ask the main process to parse the redemption
- * code from a given certificate, providing the file path, decryption key
- * and type of redemption that is required.
- */
-export const PARSE_REDEMPTION_CODE_CHANNEL = 'PARSE_REDEMPTION_CODE_CHANNEL';
-export type ParseRedemptionCodeRendererRequest = {
-  certificateFilePath: string,
-  decryptionKey: ?AdaRedemptionDecryptionKey,
-  redemptionType: RedemptionTypeChoices,
-};
-export type ParseRedemptionCodeMainResponse = AdaRedemptionCode;
 
 /**
  * Channel to generate file blob
