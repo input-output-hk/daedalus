@@ -3,7 +3,7 @@ export type CoreSystemInfo = {
   daedalusVersion: string,
   daedalusProcessID: string,
   daedalusMainProcessID: string,
-  isInSafeMode: boolean,
+  isBlankScreenFixActive: boolean,
   cardanoVersion: string,
   cardanoProcessID: number,
   cardanoAPIPort: number,
