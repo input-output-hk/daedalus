@@ -79,8 +79,8 @@ export const buildAppMenus = async (
   const menuActions = {
     openAboutDialog,
     openDaedalusDiagnosticsDialog,
-    toggleBlankScreenFix,
     openBlockConsolidationStatusDialog,
+    toggleBlankScreenFix,
   };
 
   // Build app menus
