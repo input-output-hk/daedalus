@@ -2,8 +2,8 @@
 import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
 
-//  ==== light-blue theme config for Daedalus and react-polymorph components === //
-export const LIGHT_BLUE_THEME_CONFIG = {
+//  ==== light-blue theme output for Daedalus and react-polymorph components === //
+export const LIGHT_BLUE_THEME_OUTPUT = {
   aboutWindow: {
     '--theme-about-window-background-color': 'rgba(36, 62, 98, 0.96)',
     '--theme-about-window-header-bottom-border-color':
@@ -458,6 +458,7 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--rp-checkbox-check-bg-color': '#2f496e',
     '--rp-checkbox-label-text-color': '#5e6066',
     '--rp-checkbox-label-text-color-disabled': 'rgba(94, 96, 102, 0.3)',
+    '--rp-checkbox-border-color': '#c6cdd6',
   },
   rpColors: {
     '--rp-theme-color-error': '#ea4c5b',
@@ -550,6 +551,10 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--rp-textarea-placeholder-color': 'rgba(94, 96, 102, 0.5)',
     '--rp-textarea-resize': 'none',
     '--rp-textarea-text-color': '#5e6066',
+  },
+  rpTooltip: {
+    '--rp-tooltip-bg-color': '#5e6066',
+    '--rp-tooltip-text-color': '#fafbfc',
   },
   scrollbar: {
     '--theme-scrollbar-thumb-background': '#c8ccce',
@@ -733,14 +738,10 @@ export const LIGHT_BLUE_THEME_CONFIG = {
     '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-utxo-tooltip-text-color': '#fafbfc',
   },
-  rpTooltip: {
-    '--rp-tooltip-bg-color': '#5e6066',
-    '--rp-tooltip-text-color': '#fafbfc',
-  },
 };
 
 const LIGHT_BLUE_THEME_PARAMS: CreateThemeParams = {
-  config: LIGHT_BLUE_THEME_CONFIG,
+  config: LIGHT_BLUE_THEME_OUTPUT,
 };
 
 export default createTheme(LIGHT_BLUE_THEME_PARAMS);
