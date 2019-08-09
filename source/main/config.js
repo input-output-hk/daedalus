@@ -4,7 +4,7 @@ import { app, dialog } from 'electron';
 import { readLauncherConfig } from './utils/config';
 import { environment } from './environment';
 
-const { isTest, isProduction, isInSafeMode } = environment;
+const { isTest, isProduction, isBlankScreenFixActive } = environment;
 
 // Make sure Daedalus is started with required configuration
 const { LAUNCHER_CONFIG } = process.env;
@@ -79,7 +79,7 @@ export const windowOptions: WindowOptionsType = {
     webviewTag: false,
     enableRemoteModule: isTest,
     preload: path.join(__dirname, './preload.js'),
-    additionalArguments: isInSafeMode ? ['--safe-mode'] : [],
+    additionalArguments: isBlankScreenFixActive ? ['--safe-mode'] : [],
   },
   useContentSize: true,
 };

@@ -17,7 +17,7 @@ const {
   buildLabel,
   platform,
   isLinux,
-  isInSafeMode,
+  isBlankScreenFixActive,
 } = environment;
 
 const id = 'window';
@@ -26,11 +26,38 @@ const getWindowTitle = (locale: string): string => {
   const translations = require(`../locales/${locale}`);
   const translation = getTranslation(translations, id);
   let title = buildLabel;
-  if (isInSafeMode) title += ` ${translation('title.gpuSafeMode')}`;
+  if (isBlankScreenFixActive)
+    title += ` ${translation('title.blankScreenFix')}`;
   return title;
 };
 
+type WindowOptionsType = {
+  show: boolean,
+  width: number,
+  height: number,
+  webPreferences: {
+    nodeIntegration: boolean,
+    webviewTag: boolean,
+    enableRemoteModule: boolean,
+    preload: string,
+  },
+  icon?: string,
+};
+
 export const createMainWindow = (locale: string) => {
+  const windowOptions: WindowOptionsType = {
+    show: false,
+    width: 1150,
+    height: 870,
+    webPreferences: {
+      nodeIntegration: isTest,
+      webviewTag: false,
+      enableRemoteModule: isTest,
+      preload: path.join(__dirname, './preload.js'),
+      additionalArguments: isBlankScreenFixActive ? ['--safe-mode'] : [],
+    },
+  };
+
   if (isLinux) {
     windowOptions.icon = path.join(launcherConfig.statePath, 'icon.png');
   }

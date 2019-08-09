@@ -35,7 +35,7 @@ const PLATFORM_VERSION = os.release();
 const OS = OS_NAMES[PLATFORM] || PLATFORM;
 const cpu = os.cpus();
 const ram = os.totalmem();
-const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
+const isBlankScreenFixActive = includes(process.argv.slice(1), '--safe-mode');
 const BUILD = process.env.BUILD_NUMBER || 'dev';
 const BUILD_NUMBER = uniq([API_VERSION, BUILD]).join('.');
 const BUILD_LABEL = (() => {
@@ -81,7 +81,7 @@ export const environment: Environment = Object.assign(
     isWindows,
     isMacOS,
     isLinux,
-    isInSafeMode,
+    isBlankScreenFixActive,
   },
   process.env
 );
