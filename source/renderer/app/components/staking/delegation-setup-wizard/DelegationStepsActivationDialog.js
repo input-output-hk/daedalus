@@ -7,10 +7,12 @@ import {
   FormattedMessage,
   FormattedHTMLMessage,
 } from 'react-intl';
+import classNames from 'classnames';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import commonStyles from './DelegationSteps.scss';
 import styles from './DelegationStepsActivationDialog.scss';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -189,6 +191,12 @@ export default class DelegationStepsActivationDialog extends Component<Props> {
       },
     ];
 
+    const dialogClassName = classNames([
+      commonStyles.delegationSteps,
+      styles.delegationStepsActivationDialogWrapper,
+    ]);
+    const contentClassName = classNames([commonStyles.content, styles.content]);
+
     const stepsIndicatorLabel = (
       <FormattedMessage
         {...messages.stepIndicatorLabel}
@@ -206,11 +214,11 @@ export default class DelegationStepsActivationDialog extends Component<Props> {
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
-        className={styles.delegationStepsActivationDialogWrapper}
+        className={dialogClassName}
         closeButton={<DialogCloseButton onClose={onClose} />}
         backButton={<DialogBackButton onBack={onBack} />}
       >
-        <div className={styles.delegationStepsIndicatorWrapper}>
+        <div className={commonStyles.delegationStepsIndicatorWrapper}>
           <Stepper
             steps={stepsList}
             activeStep={4}
@@ -219,7 +227,7 @@ export default class DelegationStepsActivationDialog extends Component<Props> {
           />
         </div>
 
-        <div className={styles.content}>
+        <div className={contentClassName}>
           <div className={styles.description}>
             <FormattedHTMLMessage {...messages.descriptionLine1} />
             <p>{intl.formatMessage(messages.descriptionLine2)}</p>
