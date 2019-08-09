@@ -22,20 +22,6 @@ export default defineMessages({
     defaultMessage: '!!!Invalid email entered, please check.',
     description: 'Error message shown when invalid email was entered.',
   },
-  invalidAdaRedemptionCertificate: {
-    id: 'global.errors.AdaRedemptionCertificateParseError',
-    defaultMessage:
-      '!!!The ada redemption code could not be parsed from the given document.',
-    description:
-      'Error message shown when invalid Ada redemption certificate was uploaded.',
-  },
-  invalidAdaRedemptionEncryptedCertificate: {
-    id: 'global.errors.AdaRedemptionEncryptedCertificateParseError',
-    defaultMessage:
-      '!!!The ada redemption code could not be parsed, please check your passphrase.',
-    description:
-      'Error message shown when invalid Ada redemption encrypted certificate was uploaded.',
-  },
   invalidWalletName: {
     id: 'global.errors.invalidWalletName',
     defaultMessage:
