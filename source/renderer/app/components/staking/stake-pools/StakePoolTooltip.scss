@@ -204,8 +204,8 @@
   max-width: 100%;
 
   .urlContent {
-    max-width: calc(100% - 14px);
     display: inline-block;
+    max-width: calc(100% - 14px);
     overflow: hidden;
     text-overflow: ellipsis;
   }
