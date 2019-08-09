@@ -6524,13 +6524,13 @@
         "description": "Title for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.title",
         "start": {
           "column": 9,
-          "line": 25
+          "line": 27
         }
       },
       {
@@ -6538,13 +6538,13 @@
         "description": "Description for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 37
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.description",
         "start": {
           "column": 15,
-          "line": 30
+          "line": 32
         }
       },
       {
@@ -6552,13 +6552,13 @@
         "description": "Empty wallet description for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.emptyWallet",
         "start": {
           "column": 15,
-          "line": 36
+          "line": 38
         }
       },
       {
@@ -6566,13 +6566,13 @@
         "description": "Label X for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.labelX",
         "start": {
           "column": 10,
-          "line": 42
+          "line": 44
         }
       },
       {
@@ -6580,13 +6580,41 @@
         "description": "Label Y for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 53
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.labelY",
         "start": {
           "column": 10,
-          "line": 47
+          "line": 49
+        }
+      },
+      {
+        "defaultMessage": "!!!Find out more",
+        "description": "\"Find out more\" link on the \"Wallet Utxos\" screen.",
+        "end": {
+          "column": 3,
+          "line": 58
+        },
+        "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
+        "id": "wallet.settings.utxos.findOutMoreLink",
+        "start": {
+          "column": 19,
+          "line": 54
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360034118013",
+        "description": "\"Find out more\" link URL on the \"Wallet Utxos\" screen.",
+        "end": {
+          "column": 3,
+          "line": 64
+        },
+        "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
+        "id": "wallet.settings.utxos.findOutMoreLinkUrl",
+        "start": {
+          "column": 22,
+          "line": 59
         }
       }
     ],

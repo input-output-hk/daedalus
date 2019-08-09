@@ -54,5 +54,6 @@ export default () => (
       '10000000000000000': number('16. 10K+ - 10B', 0, cfg),
       '45000000000000000': number('17. 10K+ - 45B', 0, cfg),
     })}
+    onExternalLinkClick={() => {}}
   />
 );
