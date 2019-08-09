@@ -27,7 +27,7 @@ export type Environment = {
   isWindows: boolean,
   isMacOS: boolean,
   isLinux: boolean,
-  isInSafeMode: boolean,
+  isBlankScreenFixActive: boolean,
 };
 
 // constants
