@@ -89,7 +89,7 @@
     letter-spacing: normal;
     line-height: 2;
 
-    .safeMode {
+    .blankScreenFix {
       max-width: 100px;
     }
   }
@@ -351,25 +351,33 @@
 
 .closeButton {
   cursor: pointer;
-  height: 44px;
+  display: flex;
+  justify-content: flex-end;
   position: fixed;
   right: 15px;
   top: 15px;
-  width: 44px;
+  z-index: 1;
 
-  &:hover {
-    background-color: var(--theme-network-window-icon-close-hover-background);
+  span {
     border-radius: 50%;
+    height: 44px;
+    width: 44px;
+
+    &:hover {
+      background-color: var(--theme-network-window-icon-close-hover-background);
+    }
   }
 
   svg {
     height: 12px;
-    margin-left: -1px;
-    margin-top: 1px;
+    margin-top: 16px;
     width: 12px;
 
     polygon {
-      fill: var(--theme-network-window-white-color);
+      stroke: var(--theme-network-window-white-color);
+    }
+    path {
+      stroke: var(--theme-network-window-white-color);
     }
   }
 }

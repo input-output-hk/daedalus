@@ -1,6 +1,6 @@
 // @flow
 export type MenuActions = {
-  toggleOnSafeMode: Function,
+  toggleBlankScreenFix: Function,
   openAboutDialog: Function,
   openBlockConsolidationStatusDialog: Function,
   openDaedalusDiagnosticsDialog: Function,
