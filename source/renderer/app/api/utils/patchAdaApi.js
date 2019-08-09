@@ -1,5 +1,4 @@
 // @flow
-import BigNumber from 'bignumber.js';
 import { get } from 'lodash';
 import AdaApi from '../api';
 import { getNodeInfo } from '../nodes/requests/getNodeInfo';
@@ -7,9 +6,6 @@ import { getNodeSettings } from '../nodes/requests/getNodeSettings';
 import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
 import { GenericApiError } from '../common/errors';
 import { Logger } from '../../utils/logging';
-import { RedeemAdaError } from '../transactions/errors';
-import type { RedeemAdaParams } from '../transactions/requests/redeemAda';
-import type { RedeemPaperVendedAdaParams } from '../transactions/requests/redeemPaperVendedAda';
 import type { NodeInfoQueryParams } from '../nodes/requests/getNodeInfo';
 import type {
   LatestAppVersionInfoResponse,
@@ -28,59 +24,6 @@ let NEXT_ADA_UPDATE = null;
 let SUBSCRIPTION_STATUS = null;
 
 export default (api: AdaApi) => {
-  // Since we cannot test ada redemption in dev mode, just resolve the requests
-  api.redeemAda = (request: RedeemAdaParams): Promise<any> =>
-    new Promise(resolve => {
-      try {
-        Logger.debug('AdaApi::redeemAda (PATCHED) called', { request });
-        const { redemptionCode } = request;
-        const isValidRedemptionCode = api.isValidRedemptionKey(redemptionCode);
-        if (!isValidRedemptionCode) {
-          Logger.debug(
-            'AdaApi::redeemAda (PATCHED) failed: not a valid redemption key!'
-          );
-          throw new RedeemAdaError();
-        }
-        Logger.debug('AdaApi::redeemAda (PATCHED) success');
-        resolve({ amount: new BigNumber(1000) });
-      } catch (error) {
-        Logger.error('AdaApi::redeemAda (PATCHED) error', { error });
-        throw new RedeemAdaError();
-      }
-    });
-
-  api.redeemPaperVendedAda = (
-    request: RedeemPaperVendedAdaParams
-  ): Promise<any> =>
-    new Promise(resolve => {
-      try {
-        Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) called', {
-          request,
-        });
-        const { redemptionCode, mnemonic } = request;
-        const isValidKey = api.isValidPaperVendRedemptionKey(redemptionCode);
-        const isValidMnemonic = api.isValidRedemptionMnemonic(
-          mnemonic.join(' ')
-        );
-        if (!isValidKey)
-          Logger.debug(
-            'AdaApi::redeemPaperVendedAda (PATCHED) failed: not a valid redemption key!'
-          );
-        if (!isValidMnemonic)
-          Logger.debug(
-            'AdaApi::redeemPaperVendedAda (PATCHED) failed: not a valid mnemonic!'
-          );
-        if (!isValidKey || !isValidMnemonic) {
-          throw new RedeemAdaError();
-        }
-        Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) success');
-        resolve({ amount: new BigNumber(1000) });
-      } catch (error) {
-        Logger.error('AdaApi::redeemPaperVendedAda (PATCHED) error', { error });
-        throw new RedeemAdaError();
-      }
-    });
-
   api.getLocalTimeDifference = async () =>
     Promise.resolve(LOCAL_TIME_DIFFERENCE);
 
