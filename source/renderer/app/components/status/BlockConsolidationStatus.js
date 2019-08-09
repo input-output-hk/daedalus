@@ -12,10 +12,10 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import SVGInline from 'react-svg-inline';
 import DialogCloseButton from '../widgets/DialogCloseButton';
-import styles from './BlockConsolidationStatus.scss';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import epochs from '../../assets/images/block-consolidation/epochs.inline.svg';
+import styles from './BlockConsolidationStatus.scss';
 
 const messages = defineMessages({
   title: {
