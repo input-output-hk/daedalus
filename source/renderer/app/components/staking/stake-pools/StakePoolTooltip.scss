@@ -201,6 +201,14 @@
   font-size: 14px;
   line-height: 1.36;
   margin-bottom: 18px;
+  max-width: 100%;
+
+  .urlContent {
+    display: inline-block;
+    max-width: calc(100% - 14px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   & > span {
     vertical-align: text-top;
