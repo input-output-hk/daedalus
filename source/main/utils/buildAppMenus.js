@@ -1,13 +1,12 @@
 // @flow
 import { app, globalShortcut, Menu, BrowserWindow, dialog } from 'electron';
-import { get } from 'lodash';
 import { environment } from '../environment';
 import { winLinuxMenu } from '../menus/win-linux';
 import { osxMenu } from '../menus/osx';
 import { Logger } from './logging';
 import { safeExitWithCode } from './safeExitWithCode';
 import { CardanoNode } from '../cardano/CardanoNode';
-import { DIALOGS, SCREENS } from '../../common/ipc/constants';
+import { DIALOGS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { getTranslation } from './getTranslation';
 
@@ -16,7 +15,6 @@ export const buildAppMenus = async (
   cardanoNode: ?CardanoNode,
   locale: string
 ) => {
-  const { ADA_REDEMPTION } = SCREENS;
   const { ABOUT, BLOCK_CONSOLIDATION, DAEDALUS_DIAGNOSTICS } = DIALOGS;
 
   const { isMacOS, isBlankScreenFixActive } = environment;
@@ -24,10 +22,6 @@ export const buildAppMenus = async (
 
   const openAboutDialog = () => {
     if (mainWindow) showUiPartChannel.send(ABOUT, mainWindow);
-  };
-
-  const openAdaRedemptionScreen = () => {
-    if (mainWindow) showUiPartChannel.send(ADA_REDEMPTION, mainWindow);
   };
 
   const openBlockConsolidationStatusDialog = () => {
@@ -85,29 +79,20 @@ export const buildAppMenus = async (
   const menuActions = {
     openAboutDialog,
     openDaedalusDiagnosticsDialog,
-    openAdaRedemptionScreen,
     toggleBlankScreenFix,
     openBlockConsolidationStatusDialog,
   };
 
   // Build app menus
   let menu;
-  const isNodeInSync = get(cardanoNode, 'status.isNodeInSync', false);
   if (isMacOS) {
     menu = Menu.buildFromTemplate(
-      osxMenu(app, mainWindow, menuActions, translations, isNodeInSync, locale)
+      osxMenu(app, mainWindow, menuActions, translations, locale)
     );
     Menu.setApplicationMenu(menu);
   } else {
     menu = Menu.buildFromTemplate(
-      winLinuxMenu(
-        app,
-        mainWindow,
-        menuActions,
-        translations,
-        isNodeInSync,
-        locale
-      )
+      winLinuxMenu(app, mainWindow, menuActions, translations, locale)
     );
     mainWindow.setMenu(menu);
   }
