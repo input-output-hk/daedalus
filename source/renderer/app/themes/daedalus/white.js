@@ -2,7 +2,7 @@
 import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
 
-//  ==== white theme config for Daedalus and react-polymorph components === //
+//  ==== white theme output for Daedalus and react-polymorph components === //
 export const WHITE_THEME_OUTPUT = {
   aboutWindow: {
     '--theme-about-window-background-color': '#fffffff5',
