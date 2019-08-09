@@ -12182,6 +12182,10 @@ specificity@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/specificity/-/specificity-0.4.1.tgz#aab5e645012db08ba182e151165738d00887b019"
 
+spectron-fake-dialog@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/spectron-fake-dialog/-/spectron-fake-dialog-0.0.1.tgz#ffd5cfadcac64eb957340389f047529c4a68e23a"
+
 spectron@5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/spectron/-/spectron-5.0.0.tgz#602440da0c892f8d73471652ae68000b98d7769c"

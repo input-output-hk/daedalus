@@ -1,5 +1,6 @@
 import path from 'path';
 import { Application } from 'spectron';
+import electron, { dialog } from 'electron';
 import {
   BeforeAll,
   Before,
@@ -8,6 +9,7 @@ import {
   setDefaultTimeout,
 } from 'cucumber';
 import electronPath from 'electron';
+import fakeDialog from 'spectron-fake-dialog';
 import { TEST } from '../../../../source/common/types/environment.types';
 import {
   generateScreenshotFilePath,
@@ -33,6 +35,11 @@ const printMainProcessLogs = () =>
     return true;
   });
 
+const defaultWalletKeyFilePath = path.resolve(
+  __dirname,
+  '../documents/default-wallet.key'
+);
+
 const startApp = async () => {
   const app = new Application({
     path: electronPath,
@@ -48,7 +55,12 @@ const startApp = async () => {
     ),
     webdriverLogPath: path.join(__dirname, '../../../../logs/webdriver'),
   });
+  fakeDialog.apply(app);
   await app.start();
+  // TODO: develop mock that accept custom value to return
+  fakeDialog.mock([
+    { method: 'showOpenDialog', value: [defaultWalletKeyFilePath] },
+  ]);
   await app.client.waitUntilWindowLoaded();
   return app;
 };
