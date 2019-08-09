@@ -2,7 +2,7 @@
 import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
 
-//  ==== dark-cardano theme config for Daedalus and react-polymorph components === //
+//  ==== dark-cardano theme output for Daedalus and react-polymorph components === //
 export const DARK_CARDANO_THEME_OUTPUT = {
   aboutWindow: {
     '--theme-about-window-background-color': '#36374df5',
@@ -449,6 +449,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--rp-checkbox-check-bg-color': '#1fc1c3',
     '--rp-checkbox-label-text-color': '#ffffff',
     '--rp-checkbox-label-text-color-disabled': '#ffffff4d',
+    '--rp-checkbox-border-color': 'rgba(255, 255, 255, 0.2)',
   },
   rpColors: {
     '--rp-theme-color-error': '#ea4c5b',
