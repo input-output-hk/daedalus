@@ -20,6 +20,7 @@ import { MAX_TRANSACTION_CONFIRMATIONS } from '../../../config/numbersConfig';
 import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';
 import { getNetworkExplorerUrl } from '../../../utils/network';
+import type { StoresMap } from '../../../stores';
 
 /* eslint-disable consistent-return */
 
@@ -131,6 +132,7 @@ const stateTranslations = defineMessages({
 type Props = {
   data: WalletTransaction,
   state: TransactionState,
+  stores: any | StoresMap,
   assuranceLevel: string,
   isExpanded: boolean,
   isRestoreActive: boolean,
