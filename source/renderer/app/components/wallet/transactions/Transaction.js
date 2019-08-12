@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
+import { observer, inject } from 'mobx-react';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
@@ -140,6 +141,8 @@ type Props = {
   onOpenExternalLink: ?Function,
 };
 
+@inject('stores')
+@observer
 export default class Transaction extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -165,6 +168,16 @@ export default class Transaction extends Component<Props> {
       MAX_TRANSACTION_CONFIRMATIONS
     ).toLocaleString();
     if (confirmations > MAX_TRANSACTION_CONFIRMATIONS) text += '+';
+    return text;
+  };
+
+  formatConfirmationsText = (confirmations: number) => {
+    const { stores } = this.props;
+    const locale = stores.profile.currentLocale;
+    let text = this.context.intl.formatMessage(messages.confirmations);
+    if (locale === 'en-US' && confirmations === 1) {
+      text.slice(0, -1);
+    }
     return text;
   };
 
@@ -347,7 +360,9 @@ export default class Transaction extends Component<Props> {
                       data.numberOfConfirmations
                     )}
                     &nbsp;
-                    {intl.formatMessage(messages.confirmations)}.
+                    {this.formatConfirmationsText(
+                      data.numberOfConfirmations
+                    )}
                   </span>
                 ) : null}
               </div>
