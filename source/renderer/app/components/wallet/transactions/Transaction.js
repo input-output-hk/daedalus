@@ -364,9 +364,7 @@ export default class Transaction extends Component<Props> {
                       data.numberOfConfirmations
                     )}
                     &nbsp;
-                    {this.formatConfirmationsText(
-                      data.numberOfConfirmations
-                    )}
+                    {this.formatConfirmationsText(data.numberOfConfirmations)}
                   </span>
                 ) : null}
               </div>
