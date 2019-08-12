@@ -1,24 +1,23 @@
 // @flow
 import { compact } from 'lodash';
-import { dialog, shell } from 'electron';
+import { shell } from 'electron';
 import type { App, BrowserWindow } from 'electron';
 import type { MenuActions } from './MenuActions.types';
 import { getTranslation } from '../utils/getTranslation';
 import { environment } from '../environment';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { NOTIFICATIONS } from '../../common/ipc/constants';
-import type { SupportRequests } from '../../common/types/support-requests.types';
+import { generateSupportRequestLink } from '../../common/utils/reporting';
 
 const id = 'menu';
-const { isInSafeMode } = environment;
+const { isBlankScreenFixActive } = environment;
 
 export const osxMenu = (
   app: App,
   window: BrowserWindow,
   actions: MenuActions,
   translations: {},
-  supportRequestData: SupportRequests,
-  isNodeInSync: boolean,
+  locale: string,
   translation: Function = getTranslation(translations, id)
 ) => [
   {
@@ -28,13 +27,6 @@ export const osxMenu = (
         label: translation('daedalus.about'),
         click() {
           actions.openAboutDialog();
-        },
-      },
-      {
-        label: translation('daedalus.adaRedemption'),
-        enabled: isNodeInSync,
-        click() {
-          actions.openAdaRedemptionScreen();
         },
       },
       { type: 'separator' },
@@ -129,37 +121,19 @@ export const osxMenu = (
       {
         label: translation('helpSupport.blankScreenFix'),
         type: 'checkbox',
-        checked: isInSafeMode,
+        checked: isBlankScreenFixActive,
         click(item) {
-          const gpuSafeModeDialogOptions = {
-            buttons: [
-              translation('helpSupport.gpuSafeModeDialogConfirm'),
-              translation('helpSupport.gpuSafeModeDialogNo'),
-              translation('helpSupport.gpuSafeModeDialogCancel'),
-            ],
-            type: 'warning',
-            title: isInSafeMode
-              ? translation('helpSupport.gpuSafeModeDialogTitle')
-              : translation('helpSupport.nonGpuSafeModeDialogTitle'),
-            message: isInSafeMode
-              ? translation('helpSupport.gpuSafeModeDialogMessage')
-              : translation('helpSupport.nonGpuSafeModeDialogMessage'),
-            defaultId: 2,
-            cancelId: 2,
-          };
-          dialog.showMessageBox(window, gpuSafeModeDialogOptions, buttonId => {
-            if (buttonId === 0) {
-              if (isInSafeMode) {
-                actions.restartWithoutSafeMode();
-              } else {
-                actions.restartInSafeMode();
-              }
-            }
-            item.checked = isInSafeMode;
-          });
+          actions.toggleBlankScreenFix(item);
         },
       },
       { type: 'separator' },
+      {
+        label: translation('helpSupport.safetyTips'),
+        click() {
+          const safetyTipsLinkUrl = translation('helpSupport.safetyTipsUrl');
+          shell.openExternal(safetyTipsLinkUrl);
+        },
+      },
       {
         label: translation('helpSupport.featureRequest'),
         click() {
@@ -175,14 +149,11 @@ export const osxMenu = (
           const supportRequestLinkUrl = translation(
             'helpSupport.supportRequestUrl'
           );
-          const supportUrl = `${supportRequestLinkUrl}?${Object.entries(
-            supportRequestData
-          )
-            .map(
-              ([key, val]: [string, any]) =>
-                `${encodeURIComponent(key)}=${encodeURIComponent(val)}`
-            )
-            .join('&')}`;
+          const supportUrl = generateSupportRequestLink(
+            supportRequestLinkUrl,
+            environment,
+            locale
+          );
           shell.openExternal(supportUrl);
         },
       },
