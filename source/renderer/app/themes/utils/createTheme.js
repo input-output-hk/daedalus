@@ -10,6 +10,14 @@ export type PartialThemeParts = {
 };
 
 export const updateTheme = (existingTheme: Object, themeUpdates: Object) => {
+  let updateEntries = [];
+
+  for (const key in themeUpdates) {
+    if (key && !isEmpty(themeUpdates[key])) {
+      updateEntries = [[key, themeUpdates[key]], ...updateEntries];
+    }
+  }
+
   const updatedTheme = Object.entries(themeUpdates).reduce(
     (theme: Object, newEntry: [string, Object]) => {
       const [keyName, newCSSVars] = newEntry;
@@ -81,6 +89,7 @@ export const createReactPolymorphTheme = (
     },
     rpCheckbox: {
       '--rp-checkbox-border': `1px solid ${background.secondary.regular}`,
+      '--rp-checkbox-border-color': `${border}`,
       '--rp-checkbox-border-color-disabled': `${chroma(
         background.secondary.regular
       ).alpha(0.4)}`,
@@ -233,52 +242,10 @@ export const createDaedalusComponentsTheme = (
         background.secondary.dark
       }`,
     },
-    adaRedemption: {
-      '--theme-ada-redemption-headline-color': `${text.primary}`,
-      '--theme-ada-redemption-instructions-color': `${text.primary}`,
-      '--theme-ada-redemption-success-overlay-background-color': `${
-        background.secondary.regular
-      }`,
-      '--theme-ada-redemption-success-overlay-border-color': `${
-        text.secondary
-      }`,
-      '--theme-ada-redemption-success-overlay-message-color': `${
-        text.secondary
-      }`,
-      '--theme-ada-redemption-success-overlay-button-text-color': `${
-        text.secondary
-      }`,
-      '--theme-ada-redemption-success-overlay-button-text-color-hover': `${
-        background.secondary.regular
-      }`,
-      '--theme-ada-redemption-success-overlay-button-background-color-hover': `${
-        background.secondary.light
-      }`,
-      '--theme-ada-redemption-disclaimer-background-color':
-        'rgba(171, 23, 0, 0.94)',
-      '--theme-ada-redemption-disclaimer-text-color': `${text.secondary}`,
-      '--theme-ada-redemption-disclaimer-checkbox-color-check': `${
-        background.primary.lightest
-      }`,
-      '--theme-ada-redemption-disclaimer-checkbox-color-checked': `${
-        background.primary.lightest
-      }`,
-      '--theme-ada-redemption-disclaimer-checkbox-color-after': `${
-        error.regular
-      }`,
-      '--theme-ada-redemption-disclaimer-checkbox-label-color': `${
-        text.secondary
-      }`,
-      '--theme-ada-redemption-no-wallets-instructions-color': `${text.primary}`,
-      '--theme-ada-redemption-disclaimer-button-border-color': `${
-        background.primary.lightest
-      }`,
-      '--theme-ada-redemption-success-overlay-close-button-color': `${
-        background.primary.lightest
-      }`,
-      '--theme-ada-redemption-success-overlay-close-button-background-color-hover': `${
-        background.secondary.dark
-      }`,
+    backToTopButton: {
+      '--theme-back-to-top-button-background-color': `${text.primary}`,
+      '--theme-back-to-top-button-text-color': `${text.secondary}`,
+      '--theme-back-to-top-button-box-shadow-color': 'rgba(0, 0, 0, 0.36)',
     },
     automaticUpdate: {
       '--theme-automatic-update-overlay-background-color': `${chroma(
@@ -356,6 +323,9 @@ export const createDaedalusComponentsTheme = (
       }`,
       '--theme-block-consolidation-button-background-color': `${
         background.secondary.dark
+      }`,
+      '--theme-block-consolidation-button-background-color-active': `${
+        background.secondary.darkest
       }`,
       '--theme-block-consolidation-button-background-color-hover': `${
         background.primary.lightest
@@ -461,6 +431,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-data-migration-layer-button-background-color-hover': `${
         background.primary.regular
       }`,
+      '--theme-data-migration-layer-text-opacity-color': `${text.secondary}`,
       '--theme-data-migration-layer-text-color': `${text.secondary}`,
       '--theme-data-migration-button-border-color': `${text.secondary}`,
       '--theme-data-migration-button-label-color': `${text.secondary}`,
@@ -615,10 +586,6 @@ export const createDaedalusComponentsTheme = (
       '--theme-icon-toggle-menu-color': `${background.primary.regular}`,
       '--theme-icon-node-update-notification-arrow-color': `${text.primary}`,
       '--theme-icon-add-wallet-from-sidebar-color': `${text.secondary}`,
-      '--theme-icon-ada-redemption-attention-color': `${text.secondary}`,
-      '--theme-icon-ada-redemption-success-color': `${text.primary}`,
-      '--theme-icon-ada-redemption-certificate-color': `${text.primary}`,
-      '--theme-icon-ada-redemption-no-wallets': `${text.primary}`,
       '--theme-icon-ada-summary-wallet-amount-symbol-color': `${text.primary}`,
       '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color': `${
         text.primary
@@ -916,6 +883,12 @@ export const createDaedalusComponentsTheme = (
         background.secondary.darkest
       ).alpha(0.66)}`,
       '--theme-sidebar-menu-add-button-text-color': `${text.secondary}`,
+      '--theme-sidebar-wallets-scrollbar-background-color':
+        'rgba(255, 255, 255, 0.1)',
+      '--theme-sidebar-wallets-scrollbar-background-color-active':
+        'rgba(255, 255, 255, 0.3)',
+      '--theme-sidebar-wallets-scrollbar-background-color-hover':
+        'rgba(255, 255, 255, 0.3)',
     },
     stakePools: {
       '--theme-staking-stake-pools-title-color': `${text.primary}`,
@@ -928,6 +901,8 @@ export const createDaedalusComponentsTheme = (
         background.secondary.lightest
       }`,
       '--theme-staking-stake-pools-search-icon-color': `${text.primary}`,
+      '--theme-staking-stake-pools-search-clear-button-background-color':
+        'rgba(68, 91, 124, 0.05)',
       '--theme-staking-stake-pool-selected-background-color': '#5da377',
       '--theme-staking-stake-pool-selected-checkmark-icon-color': `${
         text.secondary
@@ -1027,6 +1002,16 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-delegation-center-no-wallets-instructions-color': `${
         text.primary
       }`,
+      '--theme-staking-countdown-widget-background-color': `${
+        background.primary.regular
+      }`,
+      '--theme-staking-countdown-widget-delimeter-background-color': `${
+        text.primary
+      }`,
+      '--theme-staking-countdown-widget-field-label-color': `${chroma(
+        background.primary.light
+      ).alpha(0.7)}`,
+      '--theme-staking-countdown-widget-field-value-color': `${text.primary}`,
     },
     support: {
       '--theme-support-settings-item-color': `${text.primary}`,

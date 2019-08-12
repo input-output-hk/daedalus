@@ -1,12 +1,12 @@
 .component {
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
   overflow-y: overlay;
   position: relative;
 
   &::-webkit-scrollbar-button {
-    height: 7px;
     display: block;
+    height: 7px;
   }
 }

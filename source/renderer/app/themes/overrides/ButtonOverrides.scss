@@ -22,8 +22,8 @@
       color: var(--theme-button-disclaimer-background-color);
     }
     &:disabled {
-      color: var(--theme-button-disclaimer-text-color-disabled);
       border-color: var(--theme-button-disclaimer-border-color-disabled);
+      color: var(--theme-button-disclaimer-text-color-disabled);
     }
   }
 

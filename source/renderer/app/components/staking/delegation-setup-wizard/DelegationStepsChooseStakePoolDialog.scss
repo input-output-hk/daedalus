@@ -1,12 +1,5 @@
 .delegationStepsChooseStakePoolDialogWrapper {
-  font-family: var(--font-regular);
-
   :global {
-    .Dialog_title {
-      letter-spacing: 2px;
-      margin-bottom: 0;
-    }
-
     .StakePoolThumbnail_component {
       background-color: 1px solid
         var(--theme-delegation-steps-choose-stake-pool-thumb-background-color);
@@ -23,23 +16,15 @@
     }
   }
 
-  .delegationStepsIndicatorWrapper {
-    margin: 4px auto 0;
-    width: 410px;
-  }
-
   .stakePoolsListWrapper {
     margin-top: 20px;
   }
 
   .content {
     color: var(--theme-delegation-steps-choose-stake-pool-title-color);
-    font-size: 16px;
-    line-height: 1.38;
-    text-align: left;
 
     .description {
-      margin: 20px auto;
+      margin: 0 auto 20px;
     }
 
     .delegatedStakePoolsWrapper {
@@ -49,8 +34,8 @@
         background-color: transparent;
         border: 2px solid
           var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
-        border-style: dashed;
         border-radius: 5.8px;
+        border-style: dashed;
         height: 103px;
         width: 116px;
 
@@ -64,8 +49,8 @@
         }
 
         .checkmarkWrapper {
-          text-align: center;
           margin-top: 14px;
+          text-align: center;
           .checkmarkImage {
             svg {
               width: 22.5px;
