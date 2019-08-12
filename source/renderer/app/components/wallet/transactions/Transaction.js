@@ -46,7 +46,7 @@ const messages = defineMessages({
   confirmations: {
     id: 'wallet.transaction.confirmations',
     defaultMessage:
-      '{confirmationsNumber, plural, one {# confirmation} =21 {#+ confirmations} other {# confirmations}}',
+      '{confirmationsNumber, plural, one {# confirmation} =21 {20+ confirmations} other {# confirmations}}',
     description: 'Transaction confirmations.',
   },
   transactionId: {
