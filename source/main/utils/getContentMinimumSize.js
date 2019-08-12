@@ -1,5 +1,6 @@
 // @flow
 import { BrowserWindow } from 'electron';
+import { environment } from '../environment';
 import {
   MIN_WINDOW_CONTENT_WIDTH,
   MIN_WINDOW_CONTENT_HEIGHT,
@@ -26,13 +27,17 @@ type getContentMinimumSizeResponse = {
 export const getContentMinimumSize = (
   window: BrowserWindow
 ): getContentMinimumSizeResponse => {
+  const { isWindows } = environment;
   const { width: frameWidth, height: frameHeight } = window.getBounds();
   const {
     width: contentWidth,
     height: contentHeight,
   } = window.getContentBounds();
   const paddingWidth = frameWidth - contentWidth || 0;
-  const paddingHeight = frameHeight - contentHeight || 0;
+  let paddingHeight = frameHeight - contentHeight || 0;
+  if (isWindows) {
+    paddingHeight += 20;
+  }
   const minWindowsWidth = MIN_WINDOW_CONTENT_WIDTH + paddingWidth;
   const minWindowsHeight = MIN_WINDOW_CONTENT_HEIGHT + paddingHeight;
 
