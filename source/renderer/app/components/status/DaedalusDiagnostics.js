@@ -687,13 +687,11 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                   <td className={styles.topPadding} colSpan={2}>
                     {intl.formatMessage(messages.connectionError)}
                     <br />
-                    <Tooltip skin={TooltipSkin} tip={message}>
-                      <div className={styles.error}>
-                        message: {message || '-'}
-                        <br />
-                        code: {code || '-'}
-                      </div>
-                    </Tooltip>
+                    <div className={styles.error}>
+                      message: {message || '-'}
+                      <br />
+                      code: {code || '-'}
+                    </div>
                   </td>
                 </tr>
               ) : null}
