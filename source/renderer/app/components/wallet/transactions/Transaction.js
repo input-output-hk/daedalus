@@ -144,6 +144,8 @@ type Props = {
 @inject('stores')
 @observer
 export default class Transaction extends Component<Props> {
+  static defaultProps = { stores: null };
+
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -174,7 +176,7 @@ export default class Transaction extends Component<Props> {
   formatConfirmationsText = (confirmations: number) => {
     const { stores } = this.props;
     const locale = stores.profile.currentLocale;
-    let text = this.context.intl.formatMessage(messages.confirmations);
+    const text = this.context.intl.formatMessage(messages.confirmations);
     if (locale === 'en-US' && confirmations === 1) {
       text.slice(0, -1);
     }

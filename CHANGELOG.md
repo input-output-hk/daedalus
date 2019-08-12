@@ -15,6 +15,7 @@ Changelog
 
 ### Fixes
 
+- Fixed single/plural wording in "confirmation" word on Transaction Assurance Level ([PR 1531](https://github.com/input-output-hk/daedalus/pull/1531))
 - Fixed external and copy icons inconsistencies ([PR 1512](https://github.com/input-output-hk/daedalus/pull/1512))
 - Fixed broken wallets storybook stories ([PR 1473](https://github.com/input-output-hk/daedalus/pull/1473))
 - Implemented Storybook menu using queryStrings over localStorage ([PR 1426](https://github.com/input-output-hk/daedalus/pull/1426))
