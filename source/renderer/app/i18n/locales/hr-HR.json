@@ -571,7 +571,7 @@
   "wallet.transaction.assuranceLevel.high": "!!!visok",
   "wallet.transaction.assuranceLevel.low": "!!!nizak",
   "wallet.transaction.assuranceLevel.medium": "!!!srednji",
-  "wallet.transaction.confirmations": "!!!potvrda",
+  "wallet.transaction.confirmations": "!!!{confirmationsNumber, plural, one {# potvrda} >20 {#+ potvrda} other {# potvrda}}",
   "wallet.transaction.conversion.rate": "!!!Tečajna stopa",
   "wallet.transaction.received": "!!!{currency} received",
   "wallet.transaction.sent": "!!!{currency} sent",

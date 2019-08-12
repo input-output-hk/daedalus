@@ -571,7 +571,7 @@
   "wallet.transaction.assuranceLevel.high": "!!!high",
   "wallet.transaction.assuranceLevel.low": "!!!low",
   "wallet.transaction.assuranceLevel.medium": "!!!medium",
-  "wallet.transaction.confirmations": "!!!confirmations",
+  "wallet.transaction.confirmations": "!!!{confirmationsNumber, plural, one {# confirmation} >20 {#+ confirmations} other {# confirmations}}",
   "wallet.transaction.conversion.rate": "!!!Conversion rate",
   "wallet.transaction.received": "!!!{currency} received",
   "wallet.transaction.sent": "!!!{currency} sent",

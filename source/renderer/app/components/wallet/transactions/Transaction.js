@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, intlShape } from 'react-intl';
-import { observer, inject } from 'mobx-react';
+import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
@@ -16,11 +15,9 @@ import {
   TxnAssuranceLevelOptions,
   WalletTransaction,
 } from '../../../domains/WalletTransaction';
-import { MAX_TRANSACTION_CONFIRMATIONS } from '../../../config/numbersConfig';
 import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';
 import { getNetworkExplorerUrl } from '../../../utils/network';
-import type { StoresMap } from '../../../stores';
 
 /* eslint-disable consistent-return */
 
@@ -48,7 +45,8 @@ const messages = defineMessages({
   },
   confirmations: {
     id: 'wallet.transaction.confirmations',
-    defaultMessage: '!!!confirmations',
+    defaultMessage:
+      '{confirmationsNumber, plural, one {# confirmation} >20 {#+ confirmations} other {# confirmations}}',
     description: 'Transaction confirmations.',
   },
   transactionId: {
@@ -132,7 +130,6 @@ const stateTranslations = defineMessages({
 type Props = {
   data: WalletTransaction,
   state: TransactionState,
-  stores: any | StoresMap,
   assuranceLevel: string,
   isExpanded: boolean,
   isRestoreActive: boolean,
@@ -143,11 +140,7 @@ type Props = {
   onOpenExternalLink: ?Function,
 };
 
-@inject('stores')
-@observer
 export default class Transaction extends Component<Props> {
-  static defaultProps = { stores: null };
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -165,25 +158,6 @@ export default class Transaction extends Component<Props> {
       onOpenExternalLink(link);
     }
   }
-
-  displayNumberOfConfirmations = (confirmations: number) => {
-    let text = Math.min(
-      confirmations,
-      MAX_TRANSACTION_CONFIRMATIONS
-    ).toLocaleString();
-    if (confirmations > MAX_TRANSACTION_CONFIRMATIONS) text += '+';
-    return text;
-  };
-
-  formatConfirmationsText = (confirmations: number) => {
-    const { stores } = this.props;
-    const locale = stores.profile.currentLocale;
-    const text = this.context.intl.formatMessage(messages.confirmations);
-    if (locale === 'en-US' && confirmations === 1) {
-      text.slice(0, -1);
-    }
-    return text;
-  };
 
   render() {
     const {
@@ -360,11 +334,12 @@ export default class Transaction extends Component<Props> {
                         {status}.&nbsp;
                       </span>
                     )}
-                    {this.displayNumberOfConfirmations(
-                      data.numberOfConfirmations
-                    )}
-                    &nbsp;
-                    {this.formatConfirmationsText(data.numberOfConfirmations)}
+                    <FormattedMessage
+                      {...messages.confirmations}
+                      values={{
+                        confirmationsNumber: data.numberOfConfirmations,
+                      }}
+                    />
                   </span>
                 ) : null}
               </div>
