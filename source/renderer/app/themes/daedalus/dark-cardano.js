@@ -334,6 +334,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
       'rgba(94, 95, 113, 0.3)',
     '--theme-node-update-deny-button-background-color-active':
       'rgba(38, 39, 54, 0.3)',
+    '--theme-node-update-deny-button-text-color': '#ffffff',
     '--theme-node-update-button-text-color': '#ffffff',
   },
   notification: {

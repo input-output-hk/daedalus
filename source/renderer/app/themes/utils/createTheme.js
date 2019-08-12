@@ -704,6 +704,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-node-update-deny-button-background-color-active': `${
         background.secondary.darkest
       }`,
+      '--theme-node-update-deny-button-text-color': `${text.secondary}`,
       '--theme-node-update-button-text-color': `${text.secondary}`,
     },
     notification: {

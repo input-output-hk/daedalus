@@ -343,6 +343,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'rgba(36, 62, 98, 0.3)',
     '--theme-node-update-deny-button-background-color-active':
       'rgba(30, 48, 74, 0.3)',
+    '--theme-node-update-deny-button-text-color': '#fafbfc',
     '--theme-node-update-button-text-color': '#fafbfc',
   },
   notification: {

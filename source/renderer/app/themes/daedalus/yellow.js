@@ -331,6 +331,7 @@ export const YELLOW_THEME_OUTPUT = {
       'rgba(45, 45, 45, 0.6)',
     '--theme-node-update-deny-button-background-color-active':
       'rgba(45, 45, 45, 0.8)',
+    '--theme-node-update-deny-button-text-color': '#fafbfc',
     '--theme-node-update-button-text-color': '#fafbfc',
   },
   notification: {

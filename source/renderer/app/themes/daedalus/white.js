@@ -326,12 +326,13 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-node-update-accept-button-background-color-hover': '#54c4aa',
     '--theme-node-update-accept-button-background-color-active': '#25a386',
     '--theme-node-update-deny-button-background-color':
-      'rgba(41, 181, 149, 0.3)',
+      'rgba(41, 181, 149, 0.1)',
     '--theme-node-update-deny-button-background-color-hover':
-      'rgba(84, 196, 170, 0.3)',
+      'rgba(41, 181, 149, 0.05)',
     '--theme-node-update-deny-button-background-color-active':
-      'rgba(37, 163, 134, 0.3)',
-    '--theme-node-update-button-text-color': '#fafbfc',
+      'rgba(41, 181, 149, 0.12)',
+    '--theme-node-update-deny-button-text-color': '#2d2d2d',
+    '--theme-node-update-button-text-color': '#ffffff',
   },
   notification: {
     '--theme-notification-message-background-color': 'rgba(41, 181, 149, 0.9)',

@@ -346,6 +346,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(52, 70, 94, 0.3)',
     '--theme-node-update-deny-button-background-color-active':
       'rgba(24, 32, 43, 0.3)',
+    '--theme-node-update-deny-button-text-color': '#fafbfc',
     '--theme-node-update-button-text-color': '#fafbfc',
   },
   notification: {

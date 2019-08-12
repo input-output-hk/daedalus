@@ -345,6 +345,7 @@ export const CARDANO_THEME_OUTPUT = {
       'rgba(44, 187, 105, 0.3)',
     '--theme-node-update-deny-button-background-color-active':
       'rgba(35, 149, 84, 0.3)',
+    '--theme-node-update-deny-button-text-color': '#fafbfc',
     '--theme-node-update-button-text-color': '#fafbfc',
   },
   notification: {
