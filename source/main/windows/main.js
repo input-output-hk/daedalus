@@ -5,7 +5,8 @@ import { environment } from '../environment';
 import ipcApi from '../ipc';
 import RendererErrorHandler from '../utils/rendererErrorHandler';
 import { getTranslation } from '../utils/getTranslation';
-import { launcherConfig } from '../config';
+import { getContentMinimumSize } from '../utils/getContentMinimumSize';
+import { launcherConfig, windowOptions } from '../config';
 import { LINUX, WINDOWS } from '../../common/types/environment.types';
 
 const rendererErrorHandler = new RendererErrorHandler();
@@ -66,26 +67,8 @@ export const createMainWindow = (locale: string) => {
 
   rendererErrorHandler.setup(window, createMainWindow);
 
-  // Minimum windows height
-  let minWindowsHeight = 600;
-
-  // Windows title bar gap height
-  const windowsTopBarHeight = 34;
-
-  // Linux title bar gap height
-  const linuxTopBarHeight = 18;
-
-  switch (platform) {
-    case WINDOWS:
-      minWindowsHeight += windowsTopBarHeight;
-      break;
-    case LINUX:
-      minWindowsHeight += linuxTopBarHeight;
-      break;
-    default:
-  }
-
-  window.setMinimumSize(905, minWindowsHeight);
+  const { minWindowsWidth, minWindowsHeight } = getContentMinimumSize(window);
+  window.setMinimumSize(minWindowsWidth, minWindowsHeight);
 
   // Initialize our ipc api methods that can be called by the render processes
   ipcApi({ window });
