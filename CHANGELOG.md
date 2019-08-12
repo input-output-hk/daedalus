@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Implemented the new "Wallet Creation" process ([PR 1499](https://github.com/input-output-hk/daedalus/pull/1499), [PR 1515](https://github.com/input-output-hk/daedalus/pull/1515))
+- Implemented the new "Wallet Creation" process ([PR 1499](https://github.com/input-output-hk/daedalus/pull/1499), [PR 1515](https://github.com/input-output-hk/daedalus/pull/1515), [PR 1530](https://github.com/input-output-hk/daedalus/issues/1530))
 - Implemented css rules automatic sort ([PR 1483](https://github.com/input-output-hk/daedalus/pull/1483))
 - Improved scrollbar look and feel on wallets list ([PR 1475](https://github.com/input-output-hk/daedalus/pull/1475))
 - Implemented new delegation countdown design ([PR 1481](https://github.com/input-output-hk/daedalus/pull/1481))
@@ -15,7 +15,8 @@ Changelog
 
 ### Fixes
 
-- Added minimum heights of main app window for different environments (Windows, Linux, MacOS) ([1485](https://github.com/input-output-hk/daedalus/pull/1485))
+- Added minimum heights of main app window for different platforms (Windows, Linux, MacOS) ([1485](https://github.com/input-output-hk/daedalus/pull/1485))
+- Fixed external and copy icons inconsistencies ([PR 1512](https://github.com/input-output-hk/daedalus/pull/1512))
 - Fixed broken wallets storybook stories ([PR 1473](https://github.com/input-output-hk/daedalus/pull/1473))
 - Implemented Storybook menu using queryStrings over localStorage ([PR 1426](https://github.com/input-output-hk/daedalus/pull/1426))
 
