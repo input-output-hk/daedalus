@@ -6,7 +6,7 @@ Changelog
 ### Features
 
 - Updated behavior of system dialogs ([PR 1494](https://github.com/input-output-hk/daedalus/pull/1494))
-- Implemented the new "Wallet Creation" process ([PR 1499](https://github.com/input-output-hk/daedalus/pull/1499), [PR 1515](https://github.com/input-output-hk/daedalus/pull/1515))
+- Implemented the new "Wallet Creation" process ([PR 1499](https://github.com/input-output-hk/daedalus/pull/1499), [PR 1515](https://github.com/input-output-hk/daedalus/pull/1515), [PR 1530](https://github.com/input-output-hk/daedalus/issues/1530))
 - Implemented css rules automatic sort ([PR 1483](https://github.com/input-output-hk/daedalus/pull/1483))
 - Improved scrollbar look and feel on wallets list ([PR 1475](https://github.com/input-output-hk/daedalus/pull/1475))
 - Implemented new delegation countdown design ([PR 1481](https://github.com/input-output-hk/daedalus/pull/1481))
