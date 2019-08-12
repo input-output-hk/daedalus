@@ -6,8 +6,7 @@ import ipcApi from '../ipc';
 import RendererErrorHandler from '../utils/rendererErrorHandler';
 import { getTranslation } from '../utils/getTranslation';
 import { getContentMinimumSize } from '../utils/getContentMinimumSize';
-import { launcherConfig, windowOptions } from '../config';
-import { LINUX, WINDOWS } from '../../common/types/environment.types';
+import { launcherConfig } from '../config';
 
 const rendererErrorHandler = new RendererErrorHandler();
 
@@ -15,7 +14,6 @@ const {
   isDev,
   isTest,
   buildLabel,
-  platform,
   isLinux,
   isBlankScreenFixActive,
 } = environment;
