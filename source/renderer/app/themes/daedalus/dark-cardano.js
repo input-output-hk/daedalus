@@ -468,11 +468,11 @@ export const DARK_CARDANO_THEME_OUTPUT = {
   rpOptions: {
     '--rp-option-bg-color': '#1e1f31',
     '--rp-option-bg-color-highlighted': '#343646',
-    '--rp-option-border-color': 'rgba(255, 255, 255, 0.1)',
+    '--rp-option-border-color': 'rgba(255, 255, 255, 0.2)',
     '--rp-option-checkmark-color': 'rgba(255, 255, 255, 0.7)',
     '--rp-option-line-height': '22px',
     '--rp-option-text-color': '#ffffff',
-    '--rp-options-border-color': '#787883',
+    '--rp-options-border-color': 'rgba(255, 255, 255, 0.2)',
     '--rp-options-shadow': 'none',
   },
   rpSelect: {

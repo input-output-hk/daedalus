@@ -399,7 +399,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--rp-bubble-bg-color': '#fff',
     '--rp-bubble-border-color': 'rgba(45, 45, 45, 0.2)',
     '--rp-bubble-border-radius': '2px',
-    '--rp-bubble-arrow-bg-color': 'rgba(45, 45, 45, 0.07)',
+    '--rp-bubble-arrow-bg-color': '#edeeef',
   },
   rpButton: {
     '--rp-button-bg-color': '#2d2d2d',

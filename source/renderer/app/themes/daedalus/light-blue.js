@@ -412,7 +412,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--rp-bubble-bg-color': '#fff',
     '--rp-bubble-border-color': '#c6cdd6',
     '--rp-bubble-border-radius': '2px',
-    '--rp-bubble-arrow-bg-color': '#ebeff2',
+    '--rp-bubble-arrow-bg-color': '#edf0f3',
   },
   rpButton: {
     '--rp-button-bg-color': '#243e62',

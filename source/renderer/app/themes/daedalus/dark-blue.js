@@ -416,7 +416,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--rp-bubble-bg-color': '#263345',
     '--rp-bubble-border-color': '#667a8a',
     '--rp-bubble-border-radius': '2px',
-    '--rp-bubble-arrow-bg-color': '#263345',
+    '--rp-bubble-arrow-bg-color': '#536370',
   },
   rpButton: {
     '--rp-button-bg-color': '#536370',

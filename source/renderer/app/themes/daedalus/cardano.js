@@ -414,7 +414,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--rp-bubble-bg-color': '#fafbfc',
     '--rp-bubble-border-color': '#c6cdd6',
     '--rp-bubble-border-radius': '2px',
-    '--rp-bubble-arrow-bg-color': '#efefef',
+    '--rp-bubble-arrow-bg-color': '#edeeef',
   },
   rpButton: {
     '--rp-button-bg-color': '#2cbb69',
