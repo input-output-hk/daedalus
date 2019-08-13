@@ -682,20 +682,26 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                   </CopyToClipboard>
                 </td>
               </tr>
-              {!isConnected && nodeConnectionError ? (
+            </tbody>
+            {isConnected && nodeConnectionError ? (
+              <tbody>
                 <tr>
-                  <td className={styles.topPadding} colSpan={2}>
-                    {intl.formatMessage(messages.connectionError)}
-                    <br />
+                  <th className={styles.sectionTitle} colSpan={2}>
+                    <span>{intl.formatMessage(messages.connectionError)}</span>
+                    <hr />
+                  </th>
+                </tr>
+                <tr>
+                  <th>
                     <div className={styles.error}>
                       message: {message || '-'}
                       <br />
                       code: {code || '-'}
                     </div>
-                  </td>
+                  </th>
                 </tr>
-              ) : null}
-            </tbody>
+              </tbody>
+            ) : null}
           </table>
 
           <table className={styles.table}>
