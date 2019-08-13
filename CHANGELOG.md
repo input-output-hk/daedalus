@@ -15,12 +15,15 @@ Changelog
 
 ### Fixes
 
+- Fixed single/plural wording in "confirmation" word on Transaction Assurance Level ([PR 1531](https://github.com/input-output-hk/daedalus/pull/1531))
+- Fixed the "Feature Request" menu item in Japanese to 機能リクエスト ([PR 1533](https://github.com/input-output-hk/daedalus/pull/1533))
 - Fixed external and copy icons inconsistencies ([PR 1512](https://github.com/input-output-hk/daedalus/pull/1512))
 - Fixed broken wallets storybook stories ([PR 1473](https://github.com/input-output-hk/daedalus/pull/1473))
 - Implemented Storybook menu using queryStrings over localStorage ([PR 1426](https://github.com/input-output-hk/daedalus/pull/1426))
 
 ### Chores
 
+- Added minimum heights of main app window for different environments (Windows, Linux, MacOS) ([1485](https://github.com/input-output-hk/daedalus/pull/1485))
 - Removed "Ada Redemption" feature ([PR 1510](https://github.com/input-output-hk/daedalus/pull/1510))
 - Changed `themes:check` to `themes:check:createTheme` and added a 4 part "Theme Management in Daedalus" tutorial series to a README document in the themes directory ([PR 1525](https://github.com/input-output-hk/daedalus/pull/1525))
 - Refactored theme management code to be scalable ([PR 1502](https://github.com/input-output-hk/daedalus/pull/1502))

@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
@@ -15,7 +15,6 @@ import {
   TxnAssuranceLevelOptions,
   WalletTransaction,
 } from '../../../domains/WalletTransaction';
-import { MAX_TRANSACTION_CONFIRMATIONS } from '../../../config/numbersConfig';
 import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';
 import { getNetworkExplorerUrl } from '../../../utils/network';
@@ -46,7 +45,8 @@ const messages = defineMessages({
   },
   confirmations: {
     id: 'wallet.transaction.confirmations',
-    defaultMessage: '!!!confirmations',
+    defaultMessage:
+      '{confirmationsNumber, plural, one {# confirmation} =21 {20+ confirmations} other {# confirmations}}',
     description: 'Transaction confirmations.',
   },
   transactionId: {
@@ -158,15 +158,6 @@ export default class Transaction extends Component<Props> {
       onOpenExternalLink(link);
     }
   }
-
-  displayNumberOfConfirmations = (confirmations: number) => {
-    let text = Math.min(
-      confirmations,
-      MAX_TRANSACTION_CONFIRMATIONS
-    ).toLocaleString();
-    if (confirmations > MAX_TRANSACTION_CONFIRMATIONS) text += '+';
-    return text;
-  };
 
   render() {
     const {
@@ -343,11 +334,12 @@ export default class Transaction extends Component<Props> {
                         {status}.&nbsp;
                       </span>
                     )}
-                    {this.displayNumberOfConfirmations(
-                      data.numberOfConfirmations
-                    )}
-                    &nbsp;
-                    {intl.formatMessage(messages.confirmations)}.
+                    <FormattedMessage
+                      {...messages.confirmations}
+                      values={{
+                        confirmationsNumber: data.numberOfConfirmations,
+                      }}
+                    />
                   </span>
                 ) : null}
               </div>
