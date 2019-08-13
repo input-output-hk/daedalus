@@ -15,6 +15,7 @@ Changelog
 
 ### Fixes
 
+- Fixed single/plural wording in "confirmation" word on Transaction Assurance Level ([PR 1531](https://github.com/input-output-hk/daedalus/pull/1531))
 - Fixed the "Feature Request" menu item in Japanese to 機能リクエスト ([PR 1533](https://github.com/input-output-hk/daedalus/pull/1533))
 - Fixed external and copy icons inconsistencies ([PR 1512](https://github.com/input-output-hk/daedalus/pull/1512))
 - Fixed broken wallets storybook stories ([PR 1473](https://github.com/input-output-hk/daedalus/pull/1473))
