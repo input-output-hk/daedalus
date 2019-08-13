@@ -9,11 +9,21 @@
   &.isOnHover:hover {
     @extend .isHighlighted;
   }
+
+  > button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+  }
 }
 
 .content {
-  height: 100%;
   cursor: pointer;
+  height: 100%;
   padding: 12px 0 0;
   width: 100%;
 }
@@ -39,8 +49,8 @@
 }
 
 .checkmarkWrapper {
-  text-align: center;
   margin-top: 10px;
+  text-align: center;
   .checkmarkImage {
     svg {
       width: 15.5px;

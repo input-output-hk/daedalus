@@ -7,10 +7,10 @@
   .bubble {
     font-size: 14px;
     > div {
-      transform: translateX(-45%);
-      margin-left: 10px;
       border-radius: 5px;
+      margin-left: 10px;
       padding-bottom: 7px;
+      transform: translateX(-45%);
     }
   }
   b {
