@@ -22,6 +22,7 @@ Changelog
 
 ### Chores
 
+- Added minimum heights of main app window for different environments (Windows, Linux, MacOS) ([1485](https://github.com/input-output-hk/daedalus/pull/1485))
 - Removed "Ada Redemption" feature ([PR 1510](https://github.com/input-output-hk/daedalus/pull/1510))
 - Changed `themes:check` to `themes:check:createTheme` and added a 4 part "Theme Management in Daedalus" tutorial series to a README document in the themes directory ([PR 1525](https://github.com/input-output-hk/daedalus/pull/1525))
 - Refactored theme management code to be scalable ([PR 1502](https://github.com/input-output-hk/daedalus/pull/1502))
