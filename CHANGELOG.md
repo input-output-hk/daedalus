@@ -15,6 +15,7 @@ Changelog
 
 ### Fixes
 
+- Fixed the "Feature Request" menu item in Japanese to 機能リクエスト ([PR 1533](https://github.com/input-output-hk/daedalus/pull/1533))
 - Fixed external and copy icons inconsistencies ([PR 1512](https://github.com/input-output-hk/daedalus/pull/1512))
 - Fixed broken wallets storybook stories ([PR 1473](https://github.com/input-output-hk/daedalus/pull/1473))
 - Implemented Storybook menu using queryStrings over localStorage ([PR 1426](https://github.com/input-output-hk/daedalus/pull/1426))
