@@ -3,13 +3,7 @@ import '../../source/renderer/app/themes/index.global.scss';
 import './support/environment';
 
 // Wallets
-import './WalletScreens.stories';
-import './WalletSummary.stories';
-import './BlockConsolidationStatus.stories';
-import './AddWallet.stories';
-import './DeleteWalletConfirmationDialog.stories';
-import './WalletTransactionsList.stories';
-import './ExportWalletToFileDialog.stories';
+import './wallets/Wallets.stories';
 import './PaperWallets.stories';
 
 // Staking
@@ -32,3 +26,6 @@ import './TopBar.stories';
 
 // Widgets
 import './Widgets.stories';
+
+// Overlays
+import './BlockConsolidationStatus.stories';

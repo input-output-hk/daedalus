@@ -11,7 +11,7 @@ import BlockConsolidationStatus from '../../source/renderer/app/components/statu
 
 const currentEpoch = 95;
 
-storiesOf('BlockConsolidationStatus', module)
+storiesOf('Overlays|BlockConsolidationStatus', module)
   .addDecorator((story, context) => (
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
   ))

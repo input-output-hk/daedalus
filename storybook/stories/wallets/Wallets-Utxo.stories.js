@@ -4,9 +4,9 @@ import { number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 
 // Screens
-import WalletUtxo from '../../source/renderer/app/components/wallet/utxo/WalletUtxo';
+import WalletUtxo from '../../../source/renderer/app/components/wallet/utxo/WalletUtxo';
 
-import { getUtxoChartData } from '../../source/renderer/app/utils/utxoUtils';
+import { getUtxoChartData } from '../../../source/renderer/app/utils/utxoUtils';
 
 const cfg = {
   range: true,

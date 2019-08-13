@@ -10,7 +10,7 @@ import SecuringPasswordDialog from '../../source/renderer/app/components/wallet/
 import VerificationDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog';
 import CompletionDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog';
 
-storiesOf('PaperWallets', module)
+storiesOf('WALLETS|PaperWallets', module)
   .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======

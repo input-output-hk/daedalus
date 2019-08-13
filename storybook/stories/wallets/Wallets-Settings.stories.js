@@ -5,16 +5,28 @@ import { action } from '@storybook/addon-actions';
 import moment from 'moment';
 
 // Screens
-import WalletSettings from '../../source/renderer/app/components/wallet/settings/WalletSettings';
-import { WalletAssuranceModeOptions } from '../../source/renderer/app/domains/Wallet';
-import ChangeSpendingPasswordDialog from '../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
-import DeleteWalletConfirmationDialog from '../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
-import ExportWalletToFileDialog from '../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
+import WalletSettings from '../../../source/renderer/app/components/wallet/settings/WalletSettings';
+import { WalletAssuranceModeOptions } from '../../../source/renderer/app/domains/Wallet';
+import ChangeSpendingPasswordDialog from '../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
+import DeleteWalletConfirmationDialog from '../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
+import ExportWalletToFileDialog from '../../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
 
 /* eslint-disable react/display-name  */
 
 export default () => (
   <WalletSettings
+    isDialogOpen={dialog => {
+      if (dialog === ChangeSpendingPasswordDialog) {
+        return boolean('Change Password - Show dialog', false);
+      }
+      if (dialog === DeleteWalletConfirmationDialog) {
+        return boolean('Delete Wallet - Show dialog', false);
+      }
+      if (dialog === ExportWalletToFileDialog) {
+        return boolean('Export Wallet - Show dialog', false);
+      }
+      return false;
+    }}
     activeField={null}
     assuranceLevels={[
       {
@@ -34,20 +46,8 @@ export default () => (
         },
       },
     ]}
-    isDialogOpen={dialog => {
-      if (dialog === ChangeSpendingPasswordDialog) {
-        return boolean('Change Password - Show dialog', false);
-      }
-      if (dialog === DeleteWalletConfirmationDialog) {
-        return boolean('Delete Wallet - Show dialog', false);
-      }
-      if (dialog === ExportWalletToFileDialog) {
-        return boolean('Export Wallet - Show dialog', false);
-      }
-      return false;
-    }}
-    isInvalid={false}
-    isSubmitting={false}
+    isInvalid={boolean('isInvalid', false)}
+    isSubmitting={boolean('isSubmitting', false)}
     isSpendingPasswordSet={boolean('isSpendingPasswordSet', false)}
     lastUpdatedField={null}
     nameValidator={() => true}
