@@ -7,7 +7,7 @@ import { getTranslation } from '../utils/getTranslation';
 import { environment } from '../environment';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { NOTIFICATIONS } from '../../common/ipc/constants';
-import type { SupportRequests } from '../../common/types/support-requests.types';
+import { generateSupportRequestLink } from '../../common/utils/reporting';
 
 const id = 'menu';
 const { isBlankScreenFixActive } = environment;
@@ -17,8 +17,7 @@ export const osxMenu = (
   window: BrowserWindow,
   actions: MenuActions,
   translations: {},
-  supportRequestData: SupportRequests,
-  isNodeInSync: boolean,
+  locale: string,
   translation: Function = getTranslation(translations, id)
 ) => [
   {
@@ -28,13 +27,6 @@ export const osxMenu = (
         label: translation('daedalus.about'),
         click() {
           actions.openAboutDialog();
-        },
-      },
-      {
-        label: translation('daedalus.adaRedemption'),
-        enabled: isNodeInSync,
-        click() {
-          actions.openAdaRedemptionScreen();
         },
       },
       { type: 'separator' },
@@ -157,14 +149,11 @@ export const osxMenu = (
           const supportRequestLinkUrl = translation(
             'helpSupport.supportRequestUrl'
           );
-          const supportUrl = `${supportRequestLinkUrl}?${Object.entries(
-            supportRequestData
-          )
-            .map(
-              ([key, val]: [string, any]) =>
-                `${encodeURIComponent(key)}=${encodeURIComponent(val)}`
-            )
-            .join('&')}`;
+          const supportUrl = generateSupportRequestLink(
+            supportRequestLinkUrl,
+            environment,
+            locale
+          );
           shell.openExternal(supportUrl);
         },
       },

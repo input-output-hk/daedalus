@@ -1,7 +1,6 @@
 // @flow
 import { observable, action } from 'mobx';
 import type Store from './lib/Store';
-import AdaRedemptionStore from './AdaRedemptionStore';
 import AddressesStore from './AddressesStore';
 import AppStore from './AppStore';
 import BlockConsolidationStore from './BlockConsolidationStore';
@@ -19,7 +18,6 @@ import WalletBackupStore from './WalletBackupStore';
 import WindowStore from './WindowStore';
 
 export const storeClasses = {
-  adaRedemption: AdaRedemptionStore,
   addresses: AddressesStore,
   app: AppStore,
   blockConsolidation: BlockConsolidationStore,
@@ -38,7 +36,6 @@ export const storeClasses = {
 };
 
 export type StoresMap = {
-  adaRedemption: AdaRedemptionStore,
   addresses: AddressesStore,
   app: AppStore,
   blockConsolidation: BlockConsolidationStore,
@@ -79,7 +76,6 @@ export default action(
 
     // Create fresh instances of all stores
     stores = observable({
-      adaRedemption: createStoreInstanceOf(AdaRedemptionStore),
       addresses: createStoreInstanceOf(AddressesStore),
       app: createStoreInstanceOf(AppStore),
       blockConsolidation: createStoreInstanceOf(BlockConsolidationStore),
