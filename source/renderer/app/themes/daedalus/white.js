@@ -375,7 +375,8 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-report-issue-button-background-color': '#29b595',
     '--theme-report-issue-button-background-color-hover': '#54c4aa',
     '--theme-report-issue-button-background-color-active': '#25a386',
-    '--theme-report-issue-connecting-background-color': '#f9f9f9',
+    '--theme-report-issue-connecting-background-color':
+      'rgba(45, 45, 45, 0.05)',
     '--theme-report-issue-icon-color': '#f9f9f9',
     '--theme-report-issue-connecting-text-color': '#2d2d2d',
     '--theme-report-issue-syncing-background-color': 'rgba(45, 45, 45, 0.05)',
