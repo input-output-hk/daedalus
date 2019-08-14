@@ -4,7 +4,6 @@ import './support/environment';
 
 // Wallets
 import './wallets/Wallets.stories';
-import './PaperWallets.stories';
 
 // Staking
 import './Staking.stories';
