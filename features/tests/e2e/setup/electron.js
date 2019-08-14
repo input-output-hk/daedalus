@@ -1,6 +1,5 @@
 import path from 'path';
 import { Application } from 'spectron';
-import electron, { dialog } from 'electron';
 import {
   BeforeAll,
   Before,
