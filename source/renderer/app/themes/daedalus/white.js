@@ -107,7 +107,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-button-primary-outline-color': '#54c4aa',
   },
   connecting: {
-    '--theme-connecting-background-color': '#ffffff',
+    '--theme-connecting-background-color': '#f9f9f9',
     '--theme-connecting-text-color': '#2d2d2d',
   },
   dataMigration: {
@@ -294,7 +294,7 @@ export const WHITE_THEME_OUTPUT = {
   navItem: {
     '--theme-nav-item-background-color': '#ffffff',
     '--theme-nav-item-background-color-active': 'transparent',
-    '--theme-nav-item-background-color-hover': 'rgba(94, 96, 102, 0.1)',
+    '--theme-nav-item-background-color-hover': 'rgba(94, 96, 102, 0.07)',
     '--theme-nav-item-text-color': 'rgba(45, 45, 45, 0.6)',
     '--theme-nav-item-text-color-active': '#29b595',
   },
@@ -536,7 +536,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-settings-menu-item-text-color-active': '#2d2d2d',
     '--theme-settings-menu-item-text-color-disabled': '#2d2d2d80',
     '--theme-settings-menu-item-background-color-active':
-      'rgba(45, 45, 45, 0.07)',
+      'rgba(94, 96, 102, 0.07)',
     '--theme-settings-menu-item-left-border-color-active': '#29b595',
     '--theme-settings-theme-select-title-color': '#2d2d2d',
   },
@@ -552,16 +552,16 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-sidebar-menu-item-background-color-active': '#e9e9e9',
     '--theme-sidebar-menu-item-wallet-name-color': '#2d2d2d',
     '--theme-sidebar-menu-item-wallet-info-color': '#2d2d2d',
-    '--theme-sidebar-menu-add-button-background-color': '#f4f4f4',
-    '--theme-sidebar-menu-add-button-background-color-active': '#e9e9e9a8',
-    '--theme-sidebar-menu-add-button-background-color-hover': '#eeeeeea8',
+    '--theme-sidebar-menu-add-button-background-color': '#e9e9e9',
+    '--theme-sidebar-menu-add-button-background-color-active': '#eeeeee',
+    '--theme-sidebar-menu-add-button-background-color-hover': '#eeeeee',
     '--theme-sidebar-menu-add-button-text-color': '#2d2d2d',
     '--theme-sidebar-wallets-scrollbar-background-color':
-      'rgba(255, 255, 255, 0.1)',
+      'rgba(45, 45, 45, 0.1)',
     '--theme-sidebar-wallets-scrollbar-background-color-active':
-      'rgba(255, 255, 255, 0.3)',
+      'rgba(45, 45, 45, 0.3)',
     '--theme-sidebar-wallets-scrollbar-background-color-hover':
-      'rgba(255, 255, 255, 0.3)',
+      'rgba(45, 45, 45, 0.3)',
   },
   stakePools: {
     '--theme-staking-stake-pools-title-color': '#2d2d2d',
@@ -642,7 +642,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-support-settings-text-color': '#2d2d2d',
   },
   syncing: {
-    '--theme-syncing-background-color': '#f9f9f9',
+    '--theme-syncing-background-color': '#ffffff',
     '--theme-syncing-text-color': '#2d2d2d',
   },
   systemError: {
