@@ -5,7 +5,7 @@ import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
 
 // Assets and helpers
-import WalletWrapper from '../_support/WalletWrapper';
+import WalletsWrapper from './WalletsWrapper';
 
 // Screens
 import WalletAdd from '../../../source/renderer/app/components/wallet/WalletAdd';
@@ -15,7 +15,7 @@ import WalletsCreateWallet from './Wallets-Add-Create.stories';
 
 /* eslint-disable consistent-return */
 storiesOf('WALLETS|Add wallet', module)
-  .addDecorator(WalletWrapper)
+  .addDecorator(WalletsWrapper)
 
   // ====== Stories ======
 

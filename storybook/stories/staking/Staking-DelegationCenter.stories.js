@@ -3,9 +3,9 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
 import { number } from '@storybook/addon-knobs';
-import DelegationCenter from '../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
-import STAKE_POOLS from '../../source/renderer/app/config/stakingStakePools.dummy.json';
-import Wallet from '../../source/renderer/app/domains/Wallet';
+import DelegationCenter from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
+import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
+import Wallet from '../../../source/renderer/app/domains/Wallet';
 
 const defaultAdaValue = 82650.15;
 const defaultPercentage = 10;

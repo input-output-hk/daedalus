@@ -20,7 +20,7 @@ import {
   transactionStates,
   transactionTypes,
 } from '../../../source/renderer/app/domains/WalletTransaction';
-import WalletWrapper from '../_support/WalletWrapper';
+import WalletsWrapper from './WalletsWrapper';
 
 // Screens
 import WalletSummary from '../../../source/renderer/app/components/wallet/summary/WalletSummary';
@@ -34,7 +34,7 @@ import './Wallets-Wallet-Settings.stories';
 
 /* eslint-disable consistent-return */
 storiesOf('WALLETS|Wallet', module)
-  .addDecorator(WalletWrapper)
+  .addDecorator(WalletsWrapper)
 
   // ====== Stories ======
 

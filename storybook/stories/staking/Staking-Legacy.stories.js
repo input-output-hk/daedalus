@@ -2,9 +2,9 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { observable } from 'mobx';
-import StoryDecorator from './_support/StoryDecorator';
-import StakingChart from '../../source/renderer/app/components/staking/legacy/StakingChart';
-import StakingChartTooltip from '../../source/renderer/app/components/staking/legacy/StakingChartTooltip';
+import StoryDecorator from '../_support/StoryDecorator';
+import StakingChart from '../../../source/renderer/app/components/staking/legacy/StakingChart';
+import StakingChartTooltip from '../../../source/renderer/app/components/staking/legacy/StakingChartTooltip';
 
 const generateRandomSlots = (count: number) => {
   const slots = [];

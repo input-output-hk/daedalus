@@ -6,7 +6,7 @@ import './_support/environment';
 import './wallets/Wallets.stories';
 
 // Staking
-import './Staking.stories';
+import './staking/Staking.stories';
 
 // Settings
 import './LanguageSelectionForm.stories';

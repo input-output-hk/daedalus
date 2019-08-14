@@ -3,11 +3,11 @@ import React from 'react';
 import { date, number } from '@storybook/addon-knobs';
 
 // Component
-import StakingEpochs from '../../source/renderer/app/components/staking/epochs/StakingEpochs';
+import StakingEpochs from '../../../source/renderer/app/components/staking/epochs/StakingEpochs';
 
 // Dummy data initialization
-import PREVIOUS_EPOCHS from '../../source/renderer/app/config/stakingPreviousEpoch.dummy.json';
-import CURRENT_EPOCHS from '../../source/renderer/app/config/stakingCurrentEpoch.dummy.json';
+import PREVIOUS_EPOCHS from '../../../source/renderer/app/config/stakingPreviousEpoch.dummy.json';
+import CURRENT_EPOCHS from '../../../source/renderer/app/config/stakingCurrentEpoch.dummy.json';
 
 const endDateTimeKnob = (name, defaultValue) => {
   const stringTimestamp = date(name, defaultValue);

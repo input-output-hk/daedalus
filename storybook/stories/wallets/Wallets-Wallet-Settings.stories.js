@@ -6,7 +6,7 @@ import { action } from '@storybook/addon-actions';
 import moment from 'moment';
 
 // Support
-import WalletWrapper from '../_support/WalletWrapper';
+import WalletsWrapper from './WalletsWrapper';
 
 // Screens
 import WalletSettings from '../../../source/renderer/app/components/wallet/settings/WalletSettings';
@@ -99,7 +99,7 @@ const defaultProps = {
 
 /* eslint-disable consistent-return */
 storiesOf('WALLETS|Wallet/Settings', module)
-  .addDecorator(WalletWrapper)
+  .addDecorator(WalletsWrapper)
 
   // ====== Stories ======
 
