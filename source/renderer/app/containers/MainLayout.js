@@ -9,34 +9,38 @@ import PaperWalletCreateCertificatePage from './wallet/PaperWalletCreateCertific
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 import { ROUTES } from '../routes-config';
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class MainLayout extends Component<InjectedContainerProps> {
-
   static defaultProps = {
     actions: null,
     stores: null,
     children: null,
-    onClose: () => {}
+    onClose: () => {},
   };
 
   render() {
     const { actions, stores } = this.props;
-    const { nodeUpdate, sidebar, wallets } = stores;
+    const { nodeUpdate, sidebar, wallets, profile } = stores;
     const { isUpdateAvailable, isUpdatePostponed } = nodeUpdate;
     const activeWallet = wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
+    const { currentTheme } = profile;
 
-    const sidebarMenus = sidebar.wallets.length > 0 ? {
-      wallets: {
-        items: sidebar.wallets,
-        activeWalletId,
-        actions: {
-          onWalletItemClick: (walletId: string) => {
-            actions.sidebar.walletSelected.trigger({ walletId });
-          },
-        }
-      }
-    } : null;
+    const sidebarMenus =
+      sidebar.wallets.length > 0
+        ? {
+            wallets: {
+              items: sidebar.wallets,
+              activeWalletId,
+              actions: {
+                onWalletItemClick: (walletId: string) => {
+                  actions.sidebar.walletSelected.trigger({ walletId });
+                },
+              },
+            },
+          }
+        : null;
 
     const sidebarComponent = (
       <Sidebar
@@ -49,17 +53,19 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         }}
         isSynced
         openDialogAction={actions.dialogs.open.trigger}
-        onAddWallet={() => actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD })}
-        onSubmitSupportRequest={
-          () => actions.router.goToRoute.trigger({ route: ROUTES.SETTINGS.SUPPORT })
+        onAddWallet={() =>
+          actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD })
+        }
+        onSubmitSupportRequest={() =>
+          actions.router.goToRoute.trigger({ route: ROUTES.SETTINGS.SUPPORT })
         }
         pathname={this.props.stores.router.location.pathname}
+        currentTheme={currentTheme}
       />
     );
 
-    const addNodeUpdateNotification = (
-      isUpdateAvailable && !isUpdatePostponed ? <NodeUpdatePage /> : null
-    );
+    const addNodeUpdateNotification =
+      isUpdateAvailable && !isUpdatePostponed ? <NodeUpdatePage /> : null;
 
     return (
       <SidebarLayout
@@ -77,5 +83,4 @@ export default class MainLayout extends Component<InjectedContainerProps> {
       </SidebarLayout>
     );
   }
-
 }

@@ -9,18 +9,22 @@ import { launcherConfig } from '../config';
 
 const rendererErrorHandler = new RendererErrorHandler();
 
-const { isDev, isTest, buildLabel, isLinux } = environment;
+const {
+  isDev,
+  isTest,
+  buildLabel,
+  isLinux,
+  isBlankScreenFixActive,
+} = environment;
 
 const id = 'window';
 
-const getWindowTitle = (
-  isInSafeMode: boolean,
-  locale: string,
-): string => {
+const getWindowTitle = (locale: string): string => {
   const translations = require(`../locales/${locale}`);
   const translation = getTranslation(translations, id);
   let title = buildLabel;
-  if (isInSafeMode) title += ` ${translation('title.gpuSafeMode')}`;
+  if (isBlankScreenFixActive)
+    title += ` ${translation('title.blankScreenFix')}`;
   return title;
 };
 
@@ -37,10 +41,7 @@ type WindowOptionsType = {
   icon?: string,
 };
 
-export const createMainWindow = (
-  isInSafeMode: boolean,
-  locale: string,
-) => {
+export const createMainWindow = (locale: string) => {
   const windowOptions: WindowOptionsType = {
     show: false,
     width: 1150,
@@ -49,8 +50,9 @@ export const createMainWindow = (
       nodeIntegration: isTest,
       webviewTag: false,
       enableRemoteModule: isTest,
-      preload: path.join(__dirname, './preload.js')
-    }
+      preload: path.join(__dirname, './preload.js'),
+      additionalArguments: isBlankScreenFixActive ? ['--safe-mode'] : [],
+    },
   };
 
   if (isLinux) {
@@ -74,14 +76,16 @@ export const createMainWindow = (
   });
 
   // Provide render process with an api to close the main window
-  ipcMain.on('close-window', (event) => {
+  ipcMain.on('close-window', event => {
     if (event.sender !== window.webContents) return;
     window.close();
   });
 
   window.loadURL(`file://${__dirname}/../renderer/index.html`);
-  window.on('page-title-updated', event => { event.preventDefault(); });
-  window.setTitle(getWindowTitle(isInSafeMode, locale));
+  window.on('page-title-updated', event => {
+    event.preventDefault();
+  });
+  window.setTitle(getWindowTitle(locale));
 
   window.webContents.on('context-menu', (e, props) => {
     const contextMenuOptions = [
@@ -95,7 +99,7 @@ export const createMainWindow = (
         label: 'Inspect element',
         click() {
           window.inspectElement(x, y);
-        }
+        },
       });
     }
 
@@ -127,16 +131,16 @@ export const createMainWindow = (
     app.quit();
   });
 
-  window.webContents.on('did-fail-load', (err) => {
+  window.webContents.on('did-fail-load', err => {
     rendererErrorHandler.onError('did-fail-load', err);
   });
 
-  window.webContents.on('crashed', (err) => {
+  window.webContents.on('crashed', err => {
     rendererErrorHandler.onError('crashed', err);
   });
 
   window.updateTitle = (locale: string) => {
-    window.setTitle(getWindowTitle(isInSafeMode, locale));
+    window.setTitle(getWindowTitle(locale));
   };
 
   return window;

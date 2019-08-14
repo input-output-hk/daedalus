@@ -1,0 +1,96 @@
+.component {
+  background-color: var(--theme-staking-stake-pool-background-color);
+  border: solid 1px var(--theme-staking-stake-pool-border-color);
+  border-radius: 4px;
+  height: 71px;
+  position: relative;
+  width: 80px;
+
+  &.isOnHover:hover {
+    @extend .isHighlighted;
+  }
+}
+
+.content {
+  height: 100%;
+  cursor: pointer;
+  padding: 12px 0 0;
+  width: 100%;
+}
+
+.isHighlighted {
+  box-shadow: 0 0 4px 2px var(--theme-staking-stake-pool-glow-color);
+}
+
+.slug {
+  color: var(--theme-staking-stake-pool-slug-color);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  line-height: 1;
+  margin: 0 0 4px;
+  text-align: center;
+}
+
+.ranking {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.checkmarkWrapper {
+  text-align: center;
+  margin-top: 10px;
+  .checkmarkImage {
+    svg {
+      width: 15.5px;
+      path {
+        stroke: var(--theme-staking-stake-pool-selected-checkmark-icon-color);
+      }
+    }
+  }
+}
+
+.clock {
+  background: var(--theme-staking-stake-pool-retirement-background-color);
+  border-radius: 0 2px 0 4px;
+  height: 18px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 18px;
+}
+
+.clockIcon {
+  display: block;
+  line-height: 0;
+  margin: 1px 0 0;
+  padding: 0;
+  text-align: center;
+
+  svg {
+    height: 15px;
+    width: 15px;
+  }
+}
+
+.colorBand {
+  border-radius: 0 0 4px 4px;
+  bottom: 0;
+  display: block;
+  height: 5px;
+  left: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.isSelected {
+  background-color: var(--theme-staking-stake-pool-selected-background-color);
+  .colorBand,
+  .ranking {
+    visibility: hidden;
+  }
+  .slug {
+    color: var(--theme-staking-stake-pool-selected-slug-color);
+  }
+}

@@ -6,10 +6,15 @@ import type { InjectedDialogContainerProps } from '../../../types/injectedPropsT
 
 type Props = InjectedDialogContainerProps;
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class WalletBackupDialogContainer extends Component<Props> {
-
-  static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
+  static defaultProps = {
+    actions: null,
+    stores: null,
+    children: null,
+    onClose: () => {},
+  };
 
   onCancelBackup = () => {
     this.props.onClose();
@@ -27,7 +32,7 @@ export default class WalletBackupDialogContainer extends Component<Props> {
       isTermDeviceAccepted,
       isTermRecoveryAccepted,
       isPrivacyNoticeAccepted,
-      currentStep
+      currentStep,
     } = stores.walletBackup;
     const {
       startWalletBackup,
@@ -38,7 +43,7 @@ export default class WalletBackupDialogContainer extends Component<Props> {
       restartWalletBackup,
       finishWalletBackup,
       acceptPrivacyNoticeForWalletBackup,
-      continueToRecoveryPhraseForWalletBackup
+      continueToRecoveryPhraseForWalletBackup,
     } = actions.walletBackup;
     const { createWalletRequest } = stores.wallets;
     return (
@@ -53,12 +58,19 @@ export default class WalletBackupDialogContainer extends Component<Props> {
         onAcceptPrivacyNotice={acceptPrivacyNoticeForWalletBackup.trigger}
         onContinue={continueToRecoveryPhraseForWalletBackup.trigger}
         // Props for WalletRecoveryPhraseDisplayDialog
-        recoveryPhrase={recoveryPhraseWords.reduce((phrase, { word }) => `${phrase} ${word}`, '')}
+        recoveryPhrase={recoveryPhraseWords.reduce(
+          (phrase, { word }) => `${phrase} ${word}`,
+          ''
+        )}
         onStartWalletBackup={startWalletBackup.trigger}
         // Props for WalletRecoveryPhraseEntryDialog
         isTermDeviceAccepted={isTermDeviceAccepted}
         enteredPhrase={enteredPhrase}
-        canFinishBackup={isRecoveryPhraseValid && isTermDeviceAccepted && isTermRecoveryAccepted}
+        canFinishBackup={
+          isRecoveryPhraseValid &&
+          isTermDeviceAccepted &&
+          isTermRecoveryAccepted
+        }
         isTermRecoveryAccepted={isTermRecoveryAccepted}
         isValid={isRecoveryPhraseValid}
         isSubmitting={createWalletRequest.isExecuting}

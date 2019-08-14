@@ -1,11 +1,93 @@
 Changelog
 =========
 
+## 0.14.0
+
+### Features
+
+- Implemented guided manual updates ([PR 1410](https://github.com/input-output-hk/daedalus/pull/1410), [PR 1423](https://github.com/input-output-hk/daedalus/pull/1423))
+- Application menu improvements:
+  - Implemented "Help" application menu item with "Known Issues", "Blank Screen Fix", "Safety Tips", "Feature Request", "Support Request", "Download Logs", "Block Consolidation Status" and "Daedalus Diagnostics" options ([PR 1382](https://github.com/input-output-hk/daedalus/pull/1382), [PR 1459](https://github.com/input-output-hk/daedalus/pull/1459), [PR 1487](https://github.com/input-output-hk/daedalus/issues/1487), [PR 1488](https://github.com/input-output-hk/daedalus/pull/1488), [PR 1493](https://github.com/input-output-hk/daedalus/pull/1493), [PR 1518](https://github.com/input-output-hk/daedalus/pull/1518), [PR 1523](https://github.com/input-output-hk/daedalus/pull/1523))
+  - Improved the "Ada redemption" menu item UX by disabling the option while Daedalus is not fully synced ([PR 1458](https://github.com/input-output-hk/daedalus/pull/1458))
+- Application dialogs improvements:
+  - Implemented new "About Us" dialog design ([PR 1369](https://github.com/input-output-hk/daedalus/pull/1369), [PR 1450](https://github.com/input-output-hk/daedalus/pull/1450))
+  - Implemented new "Block Consolidation Status" dialog design ([PR 1377](https://github.com/input-output-hk/daedalus/pull/1377), [PR 1416](https://github.com/input-output-hk/daedalus/pull/1416), [PR 1521](https://github.com/input-output-hk/daedalus/pull/1521))
+  - Implemented new "Daedalus Diagnostics" dialog design ([PR 1370](https://github.com/input-output-hk/daedalus/pull/1370), [PR 1402](https://github.com/input-output-hk/daedalus/pull/1402), [PR 1404](https://github.com/input-output-hk/daedalus/pull/1404), [PR 1408](https://github.com/input-output-hk/daedalus/pull/1408), [PR 1438](https://github.com/input-output-hk/daedalus/pull/1438), [PR 1516](https://github.com/input-output-hk/daedalus/pull/1516), [PR 1521](https://github.com/input-output-hk/daedalus/pull/1521))
+- Implemented detection of system locale during Daedalus startup ([PR 1348](https://github.com/input-output-hk/daedalus/pull/1348))
+- Logging improvements:
+  - Implemented "Daedalus versions" log file ([PR 1401](https://github.com/input-output-hk/daedalus/pull/1401))
+  - Implemented "State-snapshot.json" log file ([PR 1456](https://github.com/input-output-hk/daedalus/pull/1456))
+  - Improved file extension of Daedalus logs ([PR 1381](https://github.com/input-output-hk/daedalus/pull/1381), [PR 1384](https://github.com/input-output-hk/daedalus/pull/1384))
+  - Improved Daedalus log file rotation logic ([PR 1448](https://github.com/input-output-hk/daedalus/pull/1448))
+- "Loading" screen improvements:
+  - Implemented animated Daedalus logo ([PR 1457](https://github.com/input-output-hk/daedalus/pull/1457))
+  - Implemented status icons ([PR 1325](https://github.com/input-output-hk/daedalus/pull/1325), [PR 1365](https://github.com/input-output-hk/daedalus/pull/1365), [PR 1452](https://github.com/input-output-hk/daedalus/pull/1452))
+  - Improved "Having trouble connecting/syncing?" notification ([PR 1453](https://github.com/input-output-hk/daedalus/pull/1453), [PR 1479](https://github.com/input-output-hk/daedalus/pull/1479), [PR 1489](https://github.com/input-output-hk/daedalus/pull/1489))
+  - Improved handling of "Invalid TLS certificate" error ([PR 1344](https://github.com/input-output-hk/daedalus/pull/1344)), ([PR 1471](https://github.com/input-output-hk/daedalus/pull/1471))
+  - Improved clock synchronisation checks (NTP) ([PR 1462](https://github.com/input-output-hk/daedalus/pull/1462))
+  - Improved code structure by adding containers for each overlay ([PR 1446](https://github.com/input-output-hk/daedalus/pull/1446))
+- Implemented "Wallet UTXO distribution" screen ([PR 1353](https://github.com/input-output-hk/daedalus/pull/1353), [PR 1437](https://github.com/input-output-hk/daedalus/pull/1437), [PR 1526](https://github.com/input-output-hk/daedalus/pull/1526))
+- Implemented "External link" icon on all links which open external content ([PR 1447](https://github.com/input-output-hk/daedalus/pull/1447), [PR 1455](https://github.com/input-output-hk/daedalus/pull/1455), [PR 1476](https://github.com/input-output-hk/daedalus/pull/1476))
+- Implemented "Preparing logs for download" notification ([PR 1341](https://github.com/input-output-hk/daedalus/pull/1341))
+- Implemented autmated scrolling of error messages into view ([PR 1383](https://github.com/input-output-hk/daedalus/pull/1383))
+- Implemented timestamp on "Paper wallet certificate" PDF ([PR 1385](https://github.com/input-output-hk/daedalus/pull/1385), [PR 1400](https://github.com/input-output-hk/daedalus/pull/1400), [PR 1482](https://github.com/input-output-hk/daedalus/pull/1482))
+- Implemented three new themes: "Yellow", "White" and "Dark Cardano" ([PR 1480](https://github.com/input-output-hk/daedalus/pull/1480), [PR 1517](https://github.com/input-output-hk/daedalus/pull/1517))
+- "Delegation" screens UI:
+  - Implemented "Legacy wallet" notification UI ([PR 1409](https://github.com/input-output-hk/daedalus/pull/1409))
+  - Implemented "Decentralisation countdown" screen UI ([PR 1390](https://github.com/input-output-hk/daedalus/pull/1390))
+  - Implemented "Staking" screens navigation ([PR 1395](https://github.com/input-output-hk/daedalus/pull/1395), [PR 1400](https://github.com/input-output-hk/daedalus/pull/1400), [PR 1461](https://github.com/input-output-hk/daedalus/pull/1461))
+  - Implemented "Delegation center" screen UI ([PR 1440](https://github.com/input-output-hk/daedalus/pull/1440), [PR 1463](https://github.com/input-output-hk/daedalus/pull/1463))
+  - Implemented "Delegation setup" wizard UI ([PR 1416](https://github.com/input-output-hk/daedalus/pull/1416)), [PR 1430](https://github.com/input-output-hk/daedalus/pull/1430), [PR 1439](https://github.com/input-output-hk/daedalus/pull/1439), [PR 1442](https://github.com/input-output-hk/daedalus/pull/1442))
+  - Implemented "Stake pools" screen UI ([PR 1397](https://github.com/input-output-hk/daedalus/pull/1397), [PR 1412](https://github.com/input-output-hk/daedalus/pull/1412), [PR 1420](https://github.com/input-output-hk/daedalus/pull/1420), [PR 1429](https://github.com/input-output-hk/daedalus/pull/1429), [PR 1431](https://github.com/input-output-hk/daedalus/pull/1431), [PR 1484](https://github.com/input-output-hk/daedalus/pull/1484))
+  - Implemented "Rewards" screen UI ([PR 1403](https://github.com/input-output-hk/daedalus/pull/1403))
+  - Implemented "Epochs" screen UI ([PR 1418](https://github.com/input-output-hk/daedalus/pull/1418))
+  - Implemented "Info" screen UI ([PR 1394](https://github.com/input-output-hk/daedalus/pull/1394))
+
+### Fixes
+
+- Fixed validation rules for passwords containing non-Latin characters ([PR 1354](https://github.com/input-output-hk/daedalus/pull/1354))
+- Minor UI fixes:
+  - Fixed content truncation on the "Receive" screen of wallets with spending password while Daedalus is in minimized mode ([PR 1407](https://github.com/input-output-hk/daedalus/pull/1407))
+  - Fixed content truncation on the "Add Wallet" screen during wallet restoration ([PR 1405](https://github.com/input-output-hk/daedalus/pull/1405))
+  - Fixed spending password being asked on the "Receive" screen when clicking on the "Copy address" link ([PR 1392](https://github.com/input-output-hk/daedalus/pull/1392))
+  - Fixed the "download logs" link position in Japanese version of the "Support" screen ([PR 1372](https://github.com/input-output-hk/daedalus/pull/1372))
+  - Fixed incorrect capitalization by replacing "Ada" with "ada" ([PR 1317](https://github.com/input-output-hk/daedalus/pull/1317), [PR 1336](https://github.com/input-output-hk/daedalus/pull/1336))
+- Routing logic fixes:
+  - Fixed screen flashes during Daedalus loading stage ([PR 1444](https://github.com/input-output-hk/daedalus/pull/1444))
+  - Fixed routing logic which allowed the display of "Settings" screens before the wallet data is fully loaded ([PR 1373](https://github.com/input-output-hk/daedalus/pull/1373))
+  - Fixed shutting down screen priority ([PR 1428](https://github.com/input-output-hk/daedalus/pull/1428))
+
+### Chores
+
+- Code improvements:
+  - Implemented Storybook build script for deployment to "Netlify" ([1391](https://github.com/input-output-hk/daedalus/pull/1391))
+  - Implemented Storybook theme and language selection ([PR 1408](https://github.com/input-output-hk/daedalus/pull/1408))
+  - Implemented `prettier` formatting tool and set up automation for basic maintainance tasks ([PR 1335](https://github.com/input-output-hk/daedalus/pull/1335), [PR 1347](https://github.com/input-output-hk/daedalus/pull/1347), [PR 1352](https://github.com/input-output-hk/daedalus/pull/1352), [PR 1375](https://github.com/input-output-hk/daedalus/pull/1375))
+  - Improved internal IPC communication ([PR 1332](https://github.com/input-output-hk/daedalus/pull/1332), [PR 1368](https://github.com/input-output-hk/daedalus/pull/1368))
+  - Improved switching of the application menu screens ([PR 1419](https://github.com/input-output-hk/daedalus/pull/1419))
+  - Improved `Webpack 4` build performance ([PR 1320](https://github.com/input-output-hk/daedalus/pull/1320))
+  - Refactored store async functions to use mobx runInAction calls ([PR 1367](https://github.com/input-output-hk/daedalus/pull/1367))
+  - Refactored the current epoch calculation ([PR 1339](https://github.com/input-output-hk/daedalus/pull/1339))
+  - Removed legacy references to report server ([PR 1338](https://github.com/input-output-hk/daedalus/pull/1338), [PR 1425](https://github.com/input-output-hk/daedalus/pull/1425))
+  - Removed legacy references to `npm` in favour of `yarn` ([PR 1399](https://github.com/input-output-hk/daedalus/pull/1399), [PR 1402](https://github.com/input-output-hk/daedalus/pull/1402))
+  - Resolved dependency vulnerabilities ([PR 1414](https://github.com/input-output-hk/daedalus/pull/1414), [PR 1467](https://github.com/input-output-hk/daedalus/pull/1467))
+  - Resolved EKG port collision in Linux development environment ([PR 1393](https://github.com/input-output-hk/daedalus/pull/1393))
+  - Updated `React-Polymorph` to version 0.8.6 ([PR 1396](https://github.com/input-output-hk/daedalus/pull/1396))
+  - Updated PR template ([PR 1376](https://github.com/input-output-hk/daedalus/pull/1376))
+- Theming improvements:
+  - Implemented `createTheme` utility function for rapid generation of new themes ([PR 1371](https://github.com/input-output-hk/daedalus/pull/1371), [PR 1445](https://github.com/input-output-hk/daedalus/pull/1445))
+  - Implemented `themes:check` script for checking missing definitions on `createTheme` object ([PR 1424](https://github.com/input-output-hk/daedalus/pull/1424))
+  - Implemented `themes:update` script for automatically generating color values using `createTheme` and writing the updates to all themes ([PR 1464](https://github.com/input-output-hk/daedalus/pull/1464))
+- Testing improvements:
+  - Implemented unit tests for mnemonic generation and validation ([PR 1379](https://github.com/input-output-hk/daedalus/pull/1379))
+  - Implemented acceptance tests for the "Loading" screen and "Block Consolidation Status" dialog ([PR 1318](https://github.com/input-output-hk/daedalus/pull/1318))
+  - Simplified the test setup ([PR 1378](https://github.com/input-output-hk/daedalus/pull/1378))
+
 ## 0.13.1
 
 ### Fixes
 
-- Improve text on the Support screen ([PR 1361](https://github.com/input-output-hk/daedalus/pull/1361))
+- Improved text on the "Support" screen ([PR 1361](https://github.com/input-output-hk/daedalus/pull/1361))
 - Fixed Daedalus log file rotation ([PR 1358](https://github.com/input-output-hk/daedalus/pull/1358))
 
 ## 0.13.0
@@ -32,6 +114,7 @@ Changelog
 
 ### Fixes
 
+- Fixed "Daedalus" state directory on "Staging" and "Testnet" builds ([PR 1316](https://github.com/input-output-hk/daedalus/pull/1316))
 - Fixed Dev-Tools initialization in development mode ([PR 1302](https://github.com/input-output-hk/daedalus/pull/1302))
 - Fixed text selection issues (disabled drag and drop of selected text and enabled unselect option) ([PR 1289](https://github.com/input-output-hk/daedalus/pull/1289))
 - Disabled the default behavior of the context menu following a right click for non-input elements ([PR 1281](https://github.com/input-output-hk/daedalus/pull/1281))
@@ -553,7 +636,6 @@ Changelog
 - No transactions message is not vertically centered on Transactions page
 - Transactions ordering
 - Smaller UI improvements and fixes
-
 
 ## 0.5.0
 

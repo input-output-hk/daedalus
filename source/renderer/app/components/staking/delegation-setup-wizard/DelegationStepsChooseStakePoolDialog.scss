@@ -1,0 +1,129 @@
+.delegationStepsChooseStakePoolDialogWrapper {
+  font-family: var(--font-regular);
+
+  :global {
+    .Dialog_title {
+      letter-spacing: 2px;
+      margin-bottom: 0;
+    }
+
+    .StakePoolThumbnail_component {
+      background-color: 1px solid
+        var(--theme-delegation-steps-choose-stake-pool-thumb-background-color);
+      border: 1px solid
+        var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
+    }
+
+    .Dialog_subtitle {
+      color: var(--theme-delegation-steps-choose-wallet-steps-indicator-color);
+    }
+
+    .Dialog_content {
+      padding: 0 25px 4px 4px;
+    }
+  }
+
+  .delegationStepsIndicatorWrapper {
+    margin: 4px auto 0;
+    width: 410px;
+  }
+
+  .stakePoolsListWrapper {
+    margin-top: 20px;
+  }
+
+  .content {
+    color: var(--theme-delegation-steps-choose-stake-pool-title-color);
+    font-size: 16px;
+    line-height: 1.38;
+    text-align: left;
+
+    .description {
+      margin: 20px auto;
+    }
+
+    .delegatedStakePoolsWrapper {
+      display: flex;
+
+      .selectedPoolBlock {
+        background-color: transparent;
+        border: 2px solid
+          var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
+        border-style: dashed;
+        border-radius: 5.8px;
+        height: 103px;
+        width: 116px;
+
+        .label {
+          color: var(--theme-delegation-steps-choose-stake-pool-slug-color);
+          font-family: var(--font-semibold);
+          font-size: 20.3px;
+          font-weight: 600;
+          margin-top: 12px;
+          text-align: center;
+        }
+
+        .checkmarkWrapper {
+          text-align: center;
+          margin-top: 14px;
+          .checkmarkImage {
+            svg {
+              width: 22.5px;
+              path {
+                stroke: var(
+                  --theme-delegation-steps-choose-stake-pool-checkmark-icon-color
+                );
+              }
+            }
+          }
+        }
+
+        &.selected {
+          background-color: var(
+            --theme-staking-stake-pool-selected-background-color
+          );
+          border: 2px solid
+            var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
+
+          .label {
+            color: var(
+              --theme-delegation-steps-choose-stake-pool-selected-slug-color
+            );
+          }
+          .checkmarkImage {
+            svg {
+              path {
+                stroke: var(
+                  --theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color
+                );
+              }
+            }
+          }
+        }
+      }
+
+      .delegatedStakePoolsList {
+        flex: 1;
+        margin-left: 20px;
+
+        .stakePoolsDelegatingListLabel {
+          color: var(
+            --theme-delegation-steps-choose-stake-pool-delegated-pools-label-color
+          );
+          font-family: var(--font-medium);
+          font-size: 16px;
+          font-weight: 500;
+          line-height: 1.38;
+          margin-bottom: 10px;
+        }
+
+        :global {
+          .StakePoolsList_component {
+            grid-gap: 20px;
+            justify-content: left;
+          }
+        }
+      }
+    }
+  }
+}

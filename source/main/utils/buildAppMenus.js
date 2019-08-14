@@ -1,80 +1,150 @@
 // @flow
-import { app, globalShortcut, Menu, BrowserWindow } from 'electron';
+import { app, globalShortcut, Menu, BrowserWindow, dialog } from 'electron';
+import { get } from 'lodash';
 import { environment } from '../environment';
 import { winLinuxMenu } from '../menus/win-linux';
 import { osxMenu } from '../menus/osx';
 import { Logger } from './logging';
 import { safeExitWithCode } from './safeExitWithCode';
 import { CardanoNode } from '../cardano/CardanoNode';
-import {
-  TOGGLE_ABOUT_DIALOG_CHANNEL,
-  TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL,
-  GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL,
-  TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL
-} from '../../common/ipc/api';
+import { DIALOGS, SCREENS } from '../../common/ipc/constants';
+import { showUiPartChannel } from '../ipc/control-ui-parts';
+import { getLocale } from './getLocale';
+import { getTranslation } from './getTranslation';
+
+const localesFillForm = {
+  'en-US': 'English',
+  'ja-JP': 'Japanese',
+};
 
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
   cardanoNode: ?CardanoNode,
-  isInSafeMode: boolean,
-  locale: string,
+  locale: string
 ) => {
+  const { ADA_REDEMPTION } = SCREENS;
+  const { ABOUT, BLOCK_CONSOLIDATION, DAEDALUS_DIAGNOSTICS } = DIALOGS;
 
-  const openAbout = () => {
-    if (mainWindow) mainWindow.webContents.send(TOGGLE_ABOUT_DIALOG_CHANNEL);
+  const {
+    isMacOS,
+    version,
+    apiVersion,
+    network,
+    build,
+    installerVersion,
+    os,
+    buildNumber,
+    isBlankScreenFixActive,
+  } = environment;
+  const translations = require(`../locales/${locale}`);
+  const networkLocale = getLocale(network);
+
+  const openAboutDialog = () => {
+    if (mainWindow) showUiPartChannel.send(ABOUT, mainWindow);
   };
 
-  const openNetworkStatus = () => {
-    if (mainWindow) mainWindow.webContents.send(TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL);
+  const openAdaRedemptionScreen = () => {
+    if (mainWindow) showUiPartChannel.send(ADA_REDEMPTION, mainWindow);
   };
 
-  const goToAdaRedemption = () => {
-    if (mainWindow) mainWindow.webContents.send(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL);
+  const openBlockConsolidationStatusDialog = () => {
+    if (mainWindow) showUiPartChannel.send(BLOCK_CONSOLIDATION, mainWindow);
   };
 
-  const goBlockConsolidationStatus = () => {
-    if (mainWindow) {
-      mainWindow.webContents.send(
-        TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL
-      );
-    }
+  const openDaedalusDiagnosticsDialog = () => {
+    if (mainWindow) showUiPartChannel.send(DAEDALUS_DIAGNOSTICS, mainWindow);
   };
 
-  const restartInSafeMode = async () => {
-    Logger.info('Restarting in SafeMode...');
+  const restartWithBlankScreenFix = async () => {
+    Logger.info('Restarting in BlankScreenFix...');
     if (cardanoNode) await cardanoNode.stop();
     Logger.info('Exiting Daedalus with code 21', { code: 21 });
     safeExitWithCode(21);
   };
 
-  const restartWithoutSafeMode = async () => {
-    Logger.info('Restarting without SafeMode...');
+  const restartWithoutBlankScreenFix = async () => {
+    Logger.info('Restarting without BlankScreenFix...');
     if (cardanoNode) await cardanoNode.stop();
     Logger.info('Exiting Daedalus with code 22', { code: 22 });
     safeExitWithCode(22);
   };
 
-  const { isMacOS } = environment;
-  const translations = require(`../locales/${locale}`);
+  const toggleBlankScreenFix = item => {
+    const translation = getTranslation(translations, 'menu');
+    const blankScreenFixDialogOptions = {
+      buttons: [
+        translation('helpSupport.blankScreenFixDialogConfirm'),
+        translation('helpSupport.blankScreenFixDialogCancel'),
+      ],
+      type: 'warning',
+      title: isBlankScreenFixActive
+        ? translation('helpSupport.blankScreenFixDialogTitle')
+        : translation('helpSupport.nonBlankScreenFixDialogTitle'),
+      message: isBlankScreenFixActive
+        ? translation('helpSupport.blankScreenFixDialogMessage')
+        : translation('helpSupport.nonBlankScreenFixDialogMessage'),
+      defaultId: 1,
+      cancelId: 1,
+      noLink: true,
+    };
+    dialog.showMessageBox(mainWindow, blankScreenFixDialogOptions, buttonId => {
+      if (buttonId === 0) {
+        if (isBlankScreenFixActive) {
+          restartWithoutBlankScreenFix();
+        } else {
+          restartWithBlankScreenFix();
+        }
+      }
+      item.checked = isBlankScreenFixActive;
+    });
+  };
+
+  const supportRequestData = {
+    frontendVersion: version,
+    backendVersion: apiVersion,
+    network: network === 'development' ? 'staging' : network,
+    build,
+    installerVersion,
+    os,
+    networkLocale,
+    product: `Daedalus wallet - ${network}`,
+    supportLanguage: localesFillForm[networkLocale],
+    productVersion: `Daedalus ${version}+Cardano ${buildNumber}`,
+  };
+
   const menuActions = {
-    openAbout,
-    openNetworkStatus,
-    goToAdaRedemption,
-    restartInSafeMode,
-    restartWithoutSafeMode,
-    goBlockConsolidationStatus,
+    openAboutDialog,
+    openDaedalusDiagnosticsDialog,
+    openAdaRedemptionScreen,
+    toggleBlankScreenFix,
+    openBlockConsolidationStatusDialog,
   };
 
   // Build app menus
   let menu;
+  const isNodeInSync = get(cardanoNode, 'status.isNodeInSync', false);
   if (isMacOS) {
     menu = Menu.buildFromTemplate(
-      osxMenu(app, mainWindow, menuActions, isInSafeMode, translations)
+      osxMenu(
+        app,
+        mainWindow,
+        menuActions,
+        translations,
+        supportRequestData,
+        isNodeInSync
+      )
     );
     Menu.setApplicationMenu(menu);
   } else {
     menu = Menu.buildFromTemplate(
-      winLinuxMenu(app, mainWindow, menuActions, isInSafeMode, translations)
+      winLinuxMenu(
+        app,
+        mainWindow,
+        menuActions,
+        translations,
+        supportRequestData,
+        isNodeInSync
+      )
     );
     mainWindow.setMenu(menu);
   }
@@ -93,5 +163,4 @@ export const buildAppMenus = async (
       globalShortcut.unregister('CommandOrControl+H');
     });
   }
-
 };

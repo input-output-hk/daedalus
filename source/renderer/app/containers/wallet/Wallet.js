@@ -9,20 +9,35 @@ import AdaRedemptionSuccessOverlay from '../../components/wallet/ada-redemption/
 import RestoreNotification from '../../components/notifications/RestoreNotification';
 import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
-import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import { WalletSyncStateTags } from '../../domains/Wallet';
+import type { InjectedContainerProps } from '../../types/injectedPropsType';
+import type { NavDropdownProps } from '../../components/navigation/Navigation';
 
 type Props = InjectedContainerProps;
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class Wallet extends Component<Props> {
-
   static defaultProps = { actions: null, stores: null };
 
-  isActiveScreen = (page: string) => {
+  isActiveScreen = (page: string, item: NavDropdownProps) => {
     const { app, wallets } = this.props.stores;
     if (!wallets.active) return false;
-    const screenRoute = buildRoute(ROUTES.WALLETS.PAGE, { id: wallets.active.id, page });
+    const { options } = item;
+    if (options && options.length) {
+      options.forEach(option => {
+        if (
+          app.currentRoute &&
+          app.currentRoute.includes(option.value.toString())
+        ) {
+          page = option.value.toString();
+        }
+      });
+    }
+    const screenRoute = buildRoute(ROUTES.WALLETS.PAGE, {
+      id: wallets.active.id,
+      page,
+    });
     return app.currentRoute === screenRoute;
   };
 
@@ -37,15 +52,29 @@ export default class Wallet extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { wallets, adaRedemption, profile } = stores;
+    const { wallets, adaRedemption, profile, app } = stores;
     const { showAdaRedemptionSuccessMessage, amountRedeemed } = adaRedemption;
     const { currentLocale } = profile;
 
-    if (!wallets.active) return <MainLayout><LoadingSpinner /></MainLayout>;
+    if (!wallets.active)
+      return (
+        <MainLayout>
+          <LoadingSpinner />
+        </MainLayout>
+      );
 
-    const isRestoreActive = get(wallets.active, 'syncState.tag') === WalletSyncStateTags.RESTORING;
-    const restoreProgress = get(wallets.active, 'syncState.data.percentage.quantity', 0);
-    const restoreETA = get(wallets.active, 'syncState.data.estimatedCompletionTime.quantity', 0);
+    const isRestoreActive =
+      get(wallets.active, 'syncState.tag') === WalletSyncStateTags.RESTORING;
+    const restoreProgress = get(
+      wallets.active,
+      'syncState.data.percentage.quantity',
+      0
+    );
+    const restoreETA = get(
+      wallets.active,
+      'syncState.data.estimatedCompletionTime.quantity',
+      0
+    );
 
     return (
       <MainLayout>
@@ -60,6 +89,7 @@ export default class Wallet extends Component<Props> {
         <WalletWithNavigation
           isActiveScreen={this.isActiveScreen}
           onWalletNavItemClick={this.handleWalletNavItemClick}
+          activeItem={app.currentPage}
         >
           {this.props.children}
         </WalletWithNavigation>
@@ -67,7 +97,9 @@ export default class Wallet extends Component<Props> {
         {showAdaRedemptionSuccessMessage ? (
           <AdaRedemptionSuccessOverlay
             amount={amountRedeemed}
-            onClose={actions.adaRedemption.closeAdaRedemptionSuccessOverlay.trigger}
+            onClose={
+              actions.adaRedemption.closeAdaRedemptionSuccessOverlay.trigger
+            }
           />
         ) : null}
       </MainLayout>

@@ -1,0 +1,20 @@
+@import './stakingConfig';
+
+.component {
+  height: 100%;
+  display: flex;
+  padding: 20px;
+}
+
+.leftSide {
+  flex: 1;
+  margin-right: 20px;
+
+  .mainContent {
+    @extend %contentBorderAndBackground;
+  }
+}
+
+.rightSide {
+  width: 240px;
+}

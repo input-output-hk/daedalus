@@ -20,6 +20,7 @@ export type DialogAction = {
 
 type Props = {
   title?: string,
+  subtitle?: string | Node,
   children?: Node,
   actions?: Array<DialogAction>,
   closeButton?: Element<any>,
@@ -31,10 +32,10 @@ type Props = {
 };
 
 export default class Dialog extends Component<Props> {
-
   render() {
     const {
       title,
+      subtitle,
       children,
       actions,
       closeOnOverlayClick,
@@ -52,7 +53,6 @@ export default class Dialog extends Component<Props> {
         onClose={onClose}
         skin={ModalSkin}
       >
-
         <div className={classnames([styles.dialogWrapper, className])}>
           {title && (
             <div className={styles.title}>
@@ -60,11 +60,13 @@ export default class Dialog extends Component<Props> {
             </div>
           )}
 
-          {children && (
-            <div className={styles.content}>
-              {children}
+          {subtitle && (
+            <div className={styles.subtitle}>
+              <h1>{subtitle}</h1>
             </div>
           )}
+
+          {children && <div className={styles.content}>{children}</div>}
 
           {actions && (
             <div className={styles.actions}>
@@ -90,7 +92,6 @@ export default class Dialog extends Component<Props> {
 
           {closeButton ? React.cloneElement(closeButton, { onClose }) : null}
           {backButton}
-
         </div>
       </Modal>
     );

@@ -10,31 +10,34 @@ import {
   NETWORK_STATUS_REQUEST_TIMEOUT,
   NETWORK_STATUS_POLL_INTERVAL,
   NTP_IGNORE_CHECKS_GRACE_PERIOD,
+  NTP_RECHECK_TIMEOUT,
 } from '../config/timingConfig';
-import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
+import {
+  UNSYNCED_BLOCKS_ALLOWED,
+  MAX_NTP_RECHECKS,
+} from '../config/numbersConfig';
 import { Logger } from '../utils/logging';
-import { getCurrentEpoch } from '../utils/network';
 import {
   cardanoStateChangeChannel,
-  tlsConfigChannel,
+  cardanoTlsConfigChannel,
   restartCardanoNodeChannel,
-  cardanoStatusChannel,
+  getCachedCardanoStatusChannel,
+  setCachedCardanoStatusChannel,
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
-import { getNumberOfEpochsConsolidatedChannel } from '../ipc/getNumberOfEpochsConsolidatedChannel';
-import { getSystemStartTimeChannel } from '../ipc/getSystemStartTime.ipc';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
+import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
 import type { GetNetworkStatusResponse } from '../api/nodes/types';
 import type {
   CardanoNodeState,
   CardanoStatus,
-  TlsConfig
+  TlsConfig,
 } from '../../../common/types/cardano-node.types';
-import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
-import type { GetNumberOfEpochsConsolidatedChannelResponse } from '../../../common/ipc/api';
+import type { NodeInfoQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
-
-const { isDevelopment } = global.environment;
+import { TlsCertificateNotValidError } from '../api/nodes/errors';
+import { openLocalDirectoryChannel } from '../ipc/open-local-directory';
+import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
@@ -59,41 +62,42 @@ const NODE_STOPPED_STATES = [
 // END CONSTANTS ----------------------------
 
 export default class NetworkStatusStore extends Store {
-
   // Initialize store properties
   _startTime = Date.now();
-  _tlsConfig: ?TlsConfig = null;
   _networkStatus = NETWORK_STATUS.CONNECTING;
   _networkStatusPollingInterval: ?IntervalID = null;
+  _ntpRecheckTimeout: ?TimeoutID = null;
+  _numberOfNTPRechecks = 0;
 
   // Initialize store observables
 
   // Internal Node states
+  @observable tlsConfig: ?TlsConfig = null;
   @observable cardanoNodeState: ?CardanoNodeState = null;
+  @observable cardanoNodeID: number = 0;
   @observable isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
   @observable isNodeSubscribed = false; // Is 'true' in case node is subscribed to the network
   @observable isNodeSyncing = false; // Is 'true' in case we are receiving blocks and not stalling
-  @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
-  @observable systemStartTime: number = 0;
   @observable isNodeInSync = false; // 'true' if syncing & local/network blocks diff within limit
   @observable isNodeStopping = false; // 'true' if node is in `NODE_STOPPING_STATES` states
-  @observable isNodeStopped = false // 'true' if node is in `NODE_STOPPED_STATES` states
+  @observable isNodeStopped = false; // 'true' if node is in `NODE_STOPPED_STATES` states
+  @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
+  @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
 
   @observable hasBeenConnected = false;
   @observable syncProgress = null;
   @observable initialLocalHeight = null;
   @observable localBlockHeight = 0;
   @observable networkBlockHeight = 0;
-  @observable epochsConsolidated: number = 0;
-  @observable currentEpoch: number = 0;
   @observable latestLocalBlockTimestamp = 0; // milliseconds
   @observable latestNetworkBlockTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
-  @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
-  @observable getNetworkStatusRequest: Request<GetNetworkStatusResponse> = new Request(
+  @observable
+  getNetworkStatusRequest: Request<GetNetworkStatusResponse> = new Request(
     this.api.ada.getNetworkStatus
   );
-  @observable forceCheckTimeDifferenceRequest: Request<GetNetworkStatusResponse> = new Request(
+  @observable
+  forceCheckTimeDifferenceRequest: Request<GetNetworkStatusResponse> = new Request(
     this.api.ada.getNetworkStatus
   );
 
@@ -101,12 +105,15 @@ export default class NetworkStatusStore extends Store {
   @observable diskSpaceRequired: string = '';
   @observable diskSpaceMissing: string = '';
   @observable diskSpaceRecommended: string = '';
+  @observable diskSpaceAvailable: string = '';
+  @observable isTlsCertInvalid: boolean = false;
+  @observable stateDirectoryPath: string = '';
 
   // DEFINE STORE METHODS
   setup() {
-    const actions = this.actions.networkStatus;
-    actions.getEpochsData.listen(this._getEpochsData);
     // ========== IPC CHANNELS =========== //
+
+    this.actions.networkStatus.restartNode.listen(this._restartNode);
 
     // Request node state
     this._requestCardanoState();
@@ -116,13 +123,10 @@ export default class NetworkStatusStore extends Store {
 
     // Passively receive broadcasted tls config changes (which can happen without requesting it)
     // E.g if the cardano-node restarted for some reason
-    tlsConfigChannel.onReceive(this._updateTlsConfig);
+    cardanoTlsConfigChannel.onReceive(this._updateTlsConfig);
 
     // Passively receive state changes of the cardano-node
     cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
-
-    // Get cluster start time (only needed for demo cluster)
-    if (isDevelopment) this._getSystemStartTime();
 
     // ========== MOBX REACTIONS =========== //
 
@@ -145,23 +149,28 @@ export default class NetworkStatusStore extends Store {
     // Setup disk space checks
     getDiskSpaceStatusChannel.onReceive(this._onCheckDiskSpace);
     this._checkDiskSpace();
+
+    this._getStateDirectoryPath();
   }
 
   // Setup network status polling interval
   _setNetworkStatusPollingInterval = () => {
     this._networkStatusPollingInterval = setInterval(
-      this._updateNetworkStatus, NETWORK_STATUS_POLL_INTERVAL
+      this._updateNetworkStatus,
+      NETWORK_STATUS_POLL_INTERVAL
     );
   };
 
-  async restartNode() {
+  _restartNode = async () => {
     try {
-      Logger.info('NetwortStatusStore: Requesting a restart of cardano-node');
+      Logger.info('NetworkStatusStore: Requesting a restart of cardano-node');
       await restartCardanoNodeChannel.send();
     } catch (error) {
-      Logger.error('NetwortStatusStore: Restart of cardano-node failed', { error });
+      Logger.error('NetworkStatusStore: Restart of cardano-node failed', {
+        error,
+      });
     }
-  }
+  };
 
   teardown() {
     super.teardown();
@@ -169,6 +178,7 @@ export default class NetworkStatusStore extends Store {
     // Teardown polling intervals
     if (this._networkStatusPollingInterval) {
       clearInterval(this._networkStatusPollingInterval);
+      this._resetNTPRechecks();
     }
   }
 
@@ -186,12 +196,18 @@ export default class NetworkStatusStore extends Store {
   };
 
   _updateNodeStatus = async () => {
-    if (!this.isConnected) return;
+    if (this.environment.isTest && !this.isConnected) return;
     try {
       Logger.info('NetworkStatusStore: Updating node status');
-      await cardanoStatusChannel.send(this._extractNodeStatus(this));
+      await setCachedCardanoStatusChannel.send(this._extractNodeStatus(this));
+      // Force application menu rebuild in order to disable/enable
+      // "Ada redemption" option based on isNodeInSync variable value
+      // which was sent to the main process via setCachedCardanoStatusChannel
+      await rebuildApplicationMenu.send();
     } catch (error) {
-      Logger.error('NetworkStatusStore: Error while updating node status', { error });
+      Logger.error('NetworkStatusStore: Error while updating node status', {
+        error,
+      });
     }
   };
 
@@ -205,56 +221,87 @@ export default class NetworkStatusStore extends Store {
     getDiskSpaceStatusChannel.send(diskSpaceRequired);
   }
 
+  _getStateDirectoryPath = async () => {
+    this._onReceiveStateDirectoryPath(
+      await getStateDirectoryPathChannel.request()
+    );
+  };
+
   _requestCardanoState = async () => {
     Logger.info('NetworkStatusStore: requesting node state');
     const state = await cardanoStateChangeChannel.request();
-    Logger.info(`NetworkStatusStore: handling node state <${state}>`, { state });
+    Logger.info(`NetworkStatusStore: handling node state <${state}>`, {
+      state,
+    });
     await this._handleCardanoNodeStateChange(state);
   };
 
   _requestCardanoStatus = async () => {
     try {
       Logger.info('NetworkStatusStore: requesting node status');
-      const status = await cardanoStatusChannel.request();
-      Logger.info('NetworkStatusStore: received cached node status', { status });
-      if (status) runInAction('assigning node status', () => Object.assign(this, status));
+      const status = await getCachedCardanoStatusChannel.request();
+      Logger.info('NetworkStatusStore: received cached node status', {
+        status,
+      });
+      if (status)
+        runInAction('assigning node status', () => Object.assign(this, status));
     } catch (error) {
-      Logger.error('NetworkStatusStore: error while requesting node state', { error });
+      Logger.error('NetworkStatusStore: error while requesting node state', {
+        error,
+      });
     }
   };
 
   _requestTlsConfig = async () => {
     try {
-      Logger.info('NetworkStatusStore: requesting tls config from main process');
-      const tlsConfig = await tlsConfigChannel.request();
+      Logger.info(
+        'NetworkStatusStore: requesting tls config from main process'
+      );
+      const tlsConfig = await cardanoTlsConfigChannel.request();
       await this._updateTlsConfig(tlsConfig);
     } catch (error) {
-      Logger.error('NetworkStatusStore: error while requesting tls config', { error });
+      Logger.error('NetworkStatusStore: error while requesting tls config', {
+        error,
+      });
     }
   };
 
   _updateTlsConfig = (config: ?TlsConfig): Promise<void> => {
-    if (config == null || isEqual(config, this._tlsConfig)) return Promise.resolve();
+    if (config == null || isEqual(config, this.tlsConfig))
+      return Promise.resolve();
     Logger.info('NetworkStatusStore: received tls config from main process');
     this.api.ada.setRequestConfig(config);
-    this._tlsConfig = config;
+    runInAction('updating tlsConfig', () => {
+      this.tlsConfig = config;
+    });
+    this.actions.networkStatus.tlsConfigIsReady.trigger();
     return Promise.resolve();
   };
 
   _handleCardanoNodeStateChange = async (state: CardanoNodeState) => {
     if (state === this.cardanoNodeState) return Promise.resolve();
-    Logger.info(`NetworkStatusStore: handling cardano-node state <${state}>`, { state });
+    Logger.info(`NetworkStatusStore: handling cardano-node state <${state}>`, {
+      state,
+    });
     const wasConnected = this.isConnected;
     switch (state) {
-      case CardanoNodeStates.STARTING: break;
-      case CardanoNodeStates.RUNNING: await this._requestTlsConfig(); break;
+      case CardanoNodeStates.STARTING:
+        break;
+      case CardanoNodeStates.RUNNING:
+        await this._requestTlsConfig();
+        await this._requestCardanoStatus();
+        break;
       case CardanoNodeStates.STOPPING:
       case CardanoNodeStates.EXITING:
       case CardanoNodeStates.UPDATING:
-        runInAction('reset _tlsConfig', () => this._tlsConfig = null);
+        runInAction('updating tlsConfig', () => {
+          this.tlsConfig = null;
+        });
         this._setDisconnected(wasConnected);
+        this.stores.app._closeActiveDialog();
         break;
-      default: this._setDisconnected(wasConnected);
+      default:
+        this._setDisconnected(wasConnected);
     }
     runInAction('setting cardanoNodeState', () => {
       this.cardanoNodeState = state;
@@ -271,6 +318,7 @@ export default class NetworkStatusStore extends Store {
       isNodeSyncing,
       isNodeInSync,
       hasBeenConnected,
+      cardanoNodeID,
     } = from;
 
     return {
@@ -279,41 +327,19 @@ export default class NetworkStatusStore extends Store {
       isNodeSyncing,
       isNodeInSync,
       hasBeenConnected,
+      cardanoNodeID,
     };
-  };
-
-  _getSystemStartTime = async () => {
-    this._onReceiveSystemStartTime(
-      await getSystemStartTimeChannel.request()
-    );
-  };
-
-  _getEpochsData = async () => {
-    this._onReceiveEpochsData(
-      await getNumberOfEpochsConsolidatedChannel.request(),
-      getCurrentEpoch(this.systemStartTime)
-    );
   };
 
   // DEFINE ACTIONS
 
-  @action _onReceiveSystemStartTime = (systemStartTime: number) => {
-    this.systemStartTime = systemStartTime;
-  };
-
-  @action _onReceiveEpochsData = (
-    epochsConsolidated: GetNumberOfEpochsConsolidatedChannelResponse,
-    currentEpoch: number
+  @action _updateNetworkStatus = async (
+    queryInfoParams?: NodeInfoQueryParams
   ) => {
-    this.epochsConsolidated = epochsConsolidated;
-    this.currentEpoch = currentEpoch;
-  };
-
-  @action _updateNetworkStatus = async (queryParams?: NodeQueryParams) => {
     // In case we haven't received TLS config we shouldn't trigger any API calls
-    if (!this._tlsConfig) return;
+    if (!this.tlsConfig) return;
 
-    const isForcedTimeDifferenceCheck = !!queryParams;
+    const isForcedTimeDifferenceCheck = !!queryInfoParams;
 
     // Prevent network status requests in case there is an already executing
     // forced time difference check unless we are trying to run another
@@ -340,16 +366,17 @@ export default class NetworkStatusStore extends Store {
     const wasConnected = this.isConnected;
 
     try {
-      const networkStatus: GetNetworkStatusResponse = isForcedTimeDifferenceCheck ? (
-        await this.forceCheckTimeDifferenceRequest.execute(queryParams).promise
-      ) : (
-        await this.getNetworkStatusRequest.execute().promise
-      );
+      const networkStatus: GetNetworkStatusResponse = isForcedTimeDifferenceCheck
+        ? await this.forceCheckTimeDifferenceRequest.execute(queryInfoParams)
+            .promise
+        : await this.getNetworkStatusRequest.execute().promise;
 
       // In case we no longer have TLS config we ignore all API call responses
       // as this means we are in the Cardano shutdown (stopping|exiting|updating) sequence
-      if (!this._tlsConfig) {
-        Logger.debug('NetworkStatusStore: Ignoring NetworkStatusRequest result during Cardano shutdown sequence...');
+      if (!this.tlsConfig) {
+        Logger.debug(
+          'NetworkStatusStore: Ignoring NetworkStatusRequest result during Cardano shutdown sequence...'
+        );
         return;
       }
 
@@ -377,19 +404,38 @@ export default class NetworkStatusStore extends Store {
         // Update localTimeDifference only in case NTP check status is not still pending
         if (localTimeInformation.status !== 'pending') {
           this.localTimeDifference = localTimeInformation.difference;
-          this.isNodeTimeCorrect = (
+          const { isNodeTimeCorrect: isNodeTimeCorrectPrev } = this;
+          const isNodeTimeCorrectNext =
             this.localTimeDifference != null && // If we receive 'null' it means NTP check failed
-            this.localTimeDifference <= ALLOWED_TIME_DIFFERENCE
-          );
+            this.localTimeDifference <= ALLOWED_TIME_DIFFERENCE;
+
+          if (
+            !isNodeTimeCorrectNext &&
+            isNodeTimeCorrectPrev &&
+            this._numberOfNTPRechecks < MAX_NTP_RECHECKS
+          ) {
+            this._numberOfNTPRechecks++;
+            this._ntpRecheckTimeout = setTimeout(
+              this.forceCheckLocalTimeDifference,
+              NTP_RECHECK_TIMEOUT
+            );
+          } else {
+            this._resetNTPRechecks();
+            this.isNodeTimeCorrect = isNodeTimeCorrectNext;
+          }
         }
       });
 
-      if (this._networkStatus === NETWORK_STATUS.CONNECTING && this.isNodeSubscribed) {
+      if (
+        this._networkStatus === NETWORK_STATUS.CONNECTING &&
+        this.isNodeSubscribed
+      ) {
         // We are connected for the first time, move on to syncing stage
         this._networkStatus = NETWORK_STATUS.SYNCING;
-        Logger.info(
-          `========== Connected after ${this._getStartupTimeDelta()} milliseconds ==========`
-        );
+        const connectingTimeDelta = this._getStartupTimeDelta();
+        Logger.info(`Connected after ${connectingTimeDelta} milliseconds`, {
+          connectingTimeDelta,
+        });
       }
 
       // Update sync progress
@@ -402,85 +448,93 @@ export default class NetworkStatusStore extends Store {
           // If initial local block height isn't set, mark the first
           // result as the 'starting' height for the sync progress
           this.initialLocalHeight = localBlockchainHeight;
-          Logger.debug('NetworkStatusStore: Initial local block height', { localBlockchainHeight });
+          Logger.debug('NetworkStatusStore: Initial local block height', {
+            localBlockchainHeight,
+          });
         }
 
         // Update the local block height on each request
         const lastLocalBlockHeight = this.localBlockHeight;
         this.localBlockHeight = localBlockchainHeight;
-        Logger.debug('NetworkStatusStore: Local blockchain height', { localBlockchainHeight });
+        Logger.debug('NetworkStatusStore: Local blockchain height', {
+          localBlockchainHeight,
+        });
 
         // Update the network block height on each request
         const hasStartedReceivingBlocks = blockchainHeight > 0;
         const lastNetworkBlockHeight = this.networkBlockHeight;
         this.networkBlockHeight = blockchainHeight;
         if (hasStartedReceivingBlocks) {
-          Logger.debug('NetworkStatusStore: Network blockchain height', { blockchainHeight });
+          Logger.debug('NetworkStatusStore: Network blockchain height', {
+            blockchainHeight,
+          });
         }
 
         // Check if the local block height has ceased to change
-        const isLocalBlockHeightIncreasing = this.localBlockHeight > lastLocalBlockHeight;
+        const isLocalBlockHeightIncreasing =
+          this.localBlockHeight > lastLocalBlockHeight;
         if (
           isLocalBlockHeightIncreasing || // New local block detected
-          this.latestLocalBlockTimestamp > Date.now() || // Guard against future timestamps
-          ( // Guard against incorrect system time
-            !this.isNodeTimeCorrect && !this.isSystemTimeIgnored
-          )
+          this.latestLocalBlockTimestamp > Date.now() || // Guard against future timestamps // Guard against incorrect system time
+          (!this.isNodeTimeCorrect && !this.isSystemTimeIgnored)
         ) {
           this.latestLocalBlockTimestamp = Date.now(); // Record latest local block timestamp
         }
-        const latestLocalBlockAge = moment(
-          Date.now()).diff(moment(this.latestLocalBlockTimestamp)
+        const latestLocalBlockAge = moment(Date.now()).diff(
+          moment(this.latestLocalBlockTimestamp)
         );
-        const isLocalBlockHeightStalling = latestLocalBlockAge > MAX_ALLOWED_STALL_DURATION;
-        const isLocalBlockHeightSyncing = (
-          isLocalBlockHeightIncreasing || !isLocalBlockHeightStalling
-        );
+        const isLocalBlockHeightStalling =
+          latestLocalBlockAge > MAX_ALLOWED_STALL_DURATION;
+        const isLocalBlockHeightSyncing =
+          isLocalBlockHeightIncreasing || !isLocalBlockHeightStalling;
 
         // Check if the network's block height has ceased to change
-        const isNetworkBlockHeightIncreasing = (
+        const isNetworkBlockHeightIncreasing =
           hasStartedReceivingBlocks &&
-          this.networkBlockHeight > lastNetworkBlockHeight
-        );
+          this.networkBlockHeight > lastNetworkBlockHeight;
         if (
           isNetworkBlockHeightIncreasing || // New network block detected
-          this.latestNetworkBlockTimestamp > Date.now() || // Guard against future timestamps
-          ( // Guard against incorrect system time
-            !this.isNodeTimeCorrect && !this.isSystemTimeIgnored
-          )
+          this.latestNetworkBlockTimestamp > Date.now() || // Guard against future timestamps // Guard against incorrect system time
+          (!this.isNodeTimeCorrect && !this.isSystemTimeIgnored)
         ) {
           this.latestNetworkBlockTimestamp = Date.now(); // Record latest network block timestamp
         }
-        const latestNetworkBlockAge = moment(
-          Date.now()).diff(moment(this.latestNetworkBlockTimestamp)
+        const latestNetworkBlockAge = moment(Date.now()).diff(
+          moment(this.latestNetworkBlockTimestamp)
         );
-        const isNetworkBlockHeightStalling = latestNetworkBlockAge > MAX_ALLOWED_STALL_DURATION;
-        const isNetworkBlockHeightSyncing = (
-          isNetworkBlockHeightIncreasing || !isNetworkBlockHeightStalling
-        );
+        const isNetworkBlockHeightStalling =
+          latestNetworkBlockAge > MAX_ALLOWED_STALL_DURATION;
+        const isNetworkBlockHeightSyncing =
+          isNetworkBlockHeightIncreasing || !isNetworkBlockHeightStalling;
 
         // Node is syncing in case we are receiving blocks and they are not stalling
         runInAction('update isNodeSyncing', () => {
-          this.isNodeSyncing = (
+          this.isNodeSyncing =
             hasStartedReceivingBlocks &&
-            (isLocalBlockHeightSyncing || isNetworkBlockHeightSyncing)
-          );
+            (isLocalBlockHeightSyncing || isNetworkBlockHeightSyncing);
         });
 
         runInAction('update isNodeInSync', () => {
-          const remainingUnsyncedBlocks = this.networkBlockHeight - this.localBlockHeight;
-          this.isNodeInSync = (
+          const remainingUnsyncedBlocks =
+            this.networkBlockHeight - this.localBlockHeight;
+          this.isNodeInSync =
             this.isNodeSyncing &&
-            remainingUnsyncedBlocks <= UNSYNCED_BLOCKS_ALLOWED
-          );
+            remainingUnsyncedBlocks <= UNSYNCED_BLOCKS_ALLOWED;
         });
 
         if (hasStartedReceivingBlocks) {
           const initialLocalHeight = this.initialLocalHeight || 0;
-          const blocksSyncedSinceStart = this.localBlockHeight - initialLocalHeight;
-          const totalUnsyncedBlocksAtStart = this.networkBlockHeight - initialLocalHeight;
-          Logger.debug('NetworkStatusStore: Total unsynced blocks at node start', { totalUnsyncedBlocksAtStart });
-          Logger.debug('NetworkStatusStore: Blocks synced since node start', { blocksSyncedSinceStart });
+          const blocksSyncedSinceStart =
+            this.localBlockHeight - initialLocalHeight;
+          const totalUnsyncedBlocksAtStart =
+            this.networkBlockHeight - initialLocalHeight;
+          Logger.debug(
+            'NetworkStatusStore: Total unsynced blocks at node start',
+            { totalUnsyncedBlocksAtStart }
+          );
+          Logger.debug('NetworkStatusStore: Blocks synced since node start', {
+            blocksSyncedSinceStart,
+          });
         }
       });
 
@@ -488,13 +542,18 @@ export default class NetworkStatusStore extends Store {
         // We are synced for the first time, move on to running stage
         this._networkStatus = NETWORK_STATUS.RUNNING;
         this.actions.networkStatus.isSyncedAndReady.trigger();
-        Logger.info(`========== Synced after ${this._getStartupTimeDelta()} milliseconds ==========`);
+        const syncingTimeDelta = this._getStartupTimeDelta();
+        Logger.info(`Synced after ${syncingTimeDelta} milliseconds`, {
+          syncingTimeDelta,
+        });
       }
 
       if (wasConnected !== this.isConnected) {
         if (!this.isConnected) {
           if (!this.hasBeenConnected) {
-            runInAction('update hasBeenConnected', () => this.hasBeenConnected = true);
+            runInAction('update hasBeenConnected', () => {
+              this.hasBeenConnected = true;
+            });
           }
           Logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
         } else if (this.hasBeenConnected) {
@@ -502,11 +561,27 @@ export default class NetworkStatusStore extends Store {
           this.stores.wallets.resetWalletsData();
           Logger.debug('NetworkStatusStore: Connection Restored');
         }
+        if (this.isTlsCertInvalid) {
+          runInAction('set isTlsCertInvalid = false', () => {
+            this.isTlsCertInvalid = false;
+          });
+        }
       }
     } catch (error) {
       // Node is not responding, switch to disconnected state
       this._setDisconnected(wasConnected);
+      if (error instanceof TlsCertificateNotValidError) {
+        runInAction('set isTlsCertInvalid = true', () => {
+          this.isTlsCertInvalid = true;
+        });
+      }
     }
+  };
+
+  @action _resetNTPRechecks = () => {
+    clearTimeout(this._ntpRecheckTimeout);
+    this._ntpRecheckTimeout = null;
+    this._numberOfNTPRechecks = 0;
   };
 
   @action _setDisconnected = (wasConnected: boolean) => {
@@ -514,9 +589,12 @@ export default class NetworkStatusStore extends Store {
     this.isNodeSubscribed = false;
     this.isNodeSyncing = false;
     this.isNodeInSync = false;
+    this._resetNTPRechecks();
     if (wasConnected) {
       if (!this.hasBeenConnected) {
-        runInAction('update hasBeenConnected', () => this.hasBeenConnected = true);
+        runInAction('update hasBeenConnected', () => {
+          this.hasBeenConnected = true;
+        });
       }
       Logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
     }
@@ -530,29 +608,39 @@ export default class NetworkStatusStore extends Store {
     if (this.isConnected) this._updateNetworkStatus({ force_ntp_check: true });
   };
 
-  @action _onCheckDiskSpace = (
-    {
-      isNotEnoughDiskSpace,
-      diskSpaceRequired,
-      diskSpaceMissing,
-      diskSpaceRecommended,
-    }: CheckDiskSpaceResponse
-  ): Promise<void> => {
+  openStateDirectory(path: string, event?: MouseEvent): void {
+    if (event) event.preventDefault();
+    openLocalDirectoryChannel.send(path);
+  }
+
+  @action _onCheckDiskSpace = ({
+    isNotEnoughDiskSpace,
+    diskSpaceRequired,
+    diskSpaceMissing,
+    diskSpaceRecommended,
+    diskSpaceAvailable,
+  }: CheckDiskSpaceResponse): Promise<void> => {
     this.isNotEnoughDiskSpace = isNotEnoughDiskSpace;
     this.diskSpaceRequired = diskSpaceRequired;
     this.diskSpaceMissing = diskSpaceMissing;
     this.diskSpaceRecommended = diskSpaceRecommended;
+    this.diskSpaceAvailable = diskSpaceAvailable;
 
     if (this.isNotEnoughDiskSpace) {
       if (this._networkStatusPollingInterval) {
         clearInterval(this._networkStatusPollingInterval);
         this._networkStatusPollingInterval = null;
+        this._resetNTPRechecks();
       }
     } else if (!this._networkStatusPollingInterval) {
       this._setNetworkStatusPollingInterval();
     }
 
     return Promise.resolve();
+  };
+
+  @action _onReceiveStateDirectoryPath = (stateDirectoryPath: string) => {
+    this.stateDirectoryPath = stateDirectoryPath;
   };
 
   // DEFINE COMPUTED VALUES
@@ -572,10 +660,11 @@ export default class NetworkStatusStore extends Store {
   @computed get syncPercentage(): number {
     const { networkBlockHeight, localBlockHeight } = this;
     if (networkBlockHeight >= 1) {
-      if (localBlockHeight >= networkBlockHeight) { return 100; }
-      return localBlockHeight / networkBlockHeight * 100;
+      if (localBlockHeight >= networkBlockHeight) {
+        return 100;
+      }
+      return (localBlockHeight / networkBlockHeight) * 100;
     }
     return 0;
   }
-
 }

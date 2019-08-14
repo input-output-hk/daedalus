@@ -10,9 +10,11 @@ import type { Row } from '../types';
 import styles from './VirtualTransactionList.scss';
 import { TransactionInfo, TransactionsGroup } from '../types';
 
+/* eslint-disable react/no-unused-prop-types */
+
 type Props = {
   getExpandedTransactions: () => Array<any>,
-  renderRow: (Row) => Node,
+  renderRow: Row => Node,
   rows: Row[],
   isLoadingSpinnerShown?: boolean,
   isSyncingSpinnerShown?: boolean,
@@ -30,7 +32,6 @@ const TX_ID_SELECTOR = '.Transaction_transactionId';
 
 @observer
 export class VirtualTransactionList extends Component<Props> {
-
   static defaultProps = {
     isLoadingSpinnerShown: false,
     isSyncingSpinnerShown: false,
@@ -55,18 +56,21 @@ export class VirtualTransactionList extends Component<Props> {
   /**
    * Returns the row index of a given tx.
    */
-  findIndexForTx = (tx: WalletTransaction): number => (
-    this.props.rows.findIndex(r => (r instanceof TransactionInfo) && r.tx.id === tx.id)
-  );
+  findIndexForTx = (tx: WalletTransaction): number =>
+    this.props.rows.findIndex(
+      r => r instanceof TransactionInfo && r.tx.id === tx.id
+    );
 
   /**
    * Recomputes virtual row heights only once per tick (debounced)
    */
-  recomputeVirtualRowHeights = debounce((startIndex: number = 0): void => {
-    const { list } = this;
-    if (!list) return;
-    list.recomputeRowHeights(startIndex);
-  });
+  recomputeVirtualRowHeights = debounce(
+    (startIndex: number = 0): void => {
+      const { list } = this;
+      if (!list) return;
+      list.recomputeRowHeights(startIndex);
+    }
+  );
 
   /**
    * Calculates the number of lines of the addresses and id from the first expanded tx
@@ -74,7 +78,10 @@ export class VirtualTransactionList extends Component<Props> {
   updateAddressesAndIdHeights = (): void => {
     const firstTxAddress = document.querySelector(TX_ADDRESS_SELECTOR);
     const firstTxId = document.querySelector(TX_ID_SELECTOR);
-    if (firstTxAddress instanceof HTMLElement && firstTxId instanceof HTMLElement) {
+    if (
+      firstTxAddress instanceof HTMLElement &&
+      firstTxId instanceof HTMLElement
+    ) {
       this.txAddressHeight = firstTxAddress.offsetHeight;
       this.txIdHeight = firstTxId.offsetHeight;
     }
@@ -86,12 +93,17 @@ export class VirtualTransactionList extends Component<Props> {
   estimateHeightOfTxExpandedRow = (row: Row, tx: WalletTransaction): number => {
     if (!this.txAddressHeight) this.updateAddressesAndIdHeights();
     const txSingleAddressHeight = this.txAddressHeight;
-    const txIdHeight = this.txIdHeight;
+    const txIdHeightValue = this.txIdHeight;
     const { addresses } = tx;
     const txAddressesCount = addresses.from.length + addresses.to.length;
     const txAddressesHeight = txAddressesCount * txSingleAddressHeight;
     const txBottomMargin = row.isLastInGroup ? TX_LAST_IN_GROUP_MARGIN : 1;
-    return TX_EXPANDED_ROW_BASE_HEIGHT + txAddressesHeight + txIdHeight + txBottomMargin;
+    return (
+      TX_EXPANDED_ROW_BASE_HEIGHT +
+      txAddressesHeight +
+      txIdHeightValue +
+      txBottomMargin
+    );
   };
 
   /**
@@ -136,23 +148,21 @@ export class VirtualTransactionList extends Component<Props> {
   /**
    * Gets a row height based on its type
    */
-  estimateRowHeight = (row: Row): number => (
-    (row instanceof TransactionInfo)
+  estimateRowHeight = (row: Row): number =>
+    row instanceof TransactionInfo
       ? this.estimateHeightOfTxContractedRow(row)
-      : GROUP_DATE_HEIGHT
-  );
+      : GROUP_DATE_HEIGHT;
 
   /**
    * Maps over all rows and returns array of calculated heights.
    */
-  estimateRowHeights = (rows: Row[]): RowHeight[] => rows.map(this.estimateRowHeight);
+  estimateRowHeights = (rows: Row[]): RowHeight[] =>
+    rows.map(this.estimateRowHeight);
 
   /**
    * Returns the DOM element for given transaction id
    */
-  getTxRowElementById = (id: string) => (
-    document.getElementById(`tx-${id}`)
-  );
+  getTxRowElementById = (id: string) => document.getElementById(`tx-${id}`);
 
   /**
    * Measures the exact height of a rendered tx content DOM element.
@@ -173,22 +183,28 @@ export class VirtualTransactionList extends Component<Props> {
   checkIfTxContentIsFullyExpanded = (tx: WalletTransaction): boolean => {
     const txRow = this.getTxRowElementById(tx.id);
     const txElement = txRow && txRow.firstChild;
-    const isFullyExpanded = txElement instanceof HTMLElement &&
-      txElement.classList.contains('Transaction_expanded');
-    return isFullyExpanded;
+    return (
+      txElement instanceof HTMLElement &&
+      txElement.classList.contains('Transaction_expanded')
+    );
   };
 
   /**
    * Corrects potential estimation errors that can happen due to various reasons.
    */
-  correctExpandedTxHeightEstimationErrors = (tx: WalletTransaction, estimatedHeight: number) => {
+  correctExpandedTxHeightEstimationErrors = (
+    tx: WalletTransaction,
+    estimatedHeight: number
+  ) => {
     const txContentHeight = this.measureTxContentHeight(tx);
     if (!txContentHeight) return;
     const { rows } = this.props;
     const txIndex = this.findIndexForTx(tx);
     const txInfo = rows[txIndex];
     if (txInfo instanceof TransactionInfo) {
-      const margin = txInfo.isLastInGroup ? TX_LAST_IN_GROUP_MARGIN : TX_BOTTOM_BORDER_MARGIN;
+      const margin = txInfo.isLastInGroup
+        ? TX_LAST_IN_GROUP_MARGIN
+        : TX_BOTTOM_BORDER_MARGIN;
       const requiredHeight = txContentHeight + margin;
       const estimationError = Math.abs(estimatedHeight - requiredHeight);
       if (estimationError > 1) {
@@ -228,12 +244,15 @@ export class VirtualTransactionList extends Component<Props> {
    * Callback that gets invoked when virtual rows are rendered.
    * Used to update the array of visible expanded transactions and remeasure their height.
    */
-  onRowsRendered = ({ overscanStartIndex, overscanStopIndex }: {
+  onRowsRendered = ({
+    overscanStartIndex,
+    overscanStopIndex,
+  }: {
     overscanStartIndex: number,
     overscanStopIndex: number,
   }) => {
     const expandedRows = this.props.getExpandedTransactions();
-    this.visibleExpandedTx = expandedRows.filter((tx) => {
+    this.visibleExpandedTx = expandedRows.filter(tx => {
       const index = this.findIndexForTx(tx);
       return index >= overscanStartIndex && index <= overscanStopIndex;
     });
@@ -243,8 +262,12 @@ export class VirtualTransactionList extends Component<Props> {
   rowRenderer = ({
     key, // Unique key within array of rows
     index, // Index of row within collection
-    style // Style object to be applied to row (to position it)
-  }: { key: string, index: number, style: string }) => (
+    style, // Style object to be applied to row (to position it)
+  }: {
+    key: string,
+    index: number,
+    style: string,
+  }) => (
     <div key={key} style={style} className={styles.row}>
       {this.props.renderRow(this.props.rows[index])}
     </div>
@@ -266,16 +289,28 @@ export class VirtualTransactionList extends Component<Props> {
 
     return (
       <div className={componentStyles}>
-        <AutoSizer onResize={throttle(this.onResize, 100, { leading: true, trailing: true })}>
+        <AutoSizer
+          onResize={throttle(this.onResize, 100, {
+            leading: true,
+            trailing: true,
+          })}
+        >
           {({ width, height }) => (
             <List
               className={styles.list}
-              ref={(list) => this.list = list}
+              ref={list => {
+                this.list = list;
+              }}
               width={width}
               height={height}
-              onRowsRendered={throttle(this.onRowsRendered, 100, { leading: true, trailing: true })}
+              onRowsRendered={throttle(this.onRowsRendered, 100, {
+                leading: true,
+                trailing: true,
+              })}
               rowCount={rows.length}
-              rowHeight={({ index }) => this.rowHeights[index] || TX_CONTRACTED_ROW_HEIGHT}
+              rowHeight={({ index }) =>
+                this.rowHeights[index] || TX_CONTRACTED_ROW_HEIGHT
+              }
               rowRenderer={this.rowRenderer}
               style={{ overflowY: 'scroll' }}
             />

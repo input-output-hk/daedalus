@@ -1,0 +1,62 @@
+// @flow
+import { computed, action } from 'mobx';
+import BigNumber from 'bignumber.js';
+import Store from './lib/Store';
+import { ROUTES } from '../routes-config';
+import type { StakePool, Reward } from '../api/staking/types';
+
+import STAKE_POOLS from '../config/stakingStakePools.dummy.json';
+import REWARDS from '../config/stakingRewards.dummy.json';
+
+export default class StakingStore extends Store {
+  startDateTime: string = '2019-09-26T00:00:00.161Z';
+  decentralizationProgress: number = 10;
+  adaValue: BigNumber = new BigNumber(82650.15);
+  percentage: number = 14;
+
+  setup() {
+    const { staking } = this.actions;
+    staking.goToStakingPage.listen(this._goToStakingPage);
+  }
+
+  // =================== PUBLIC API ==================== //
+
+  // GETTERS
+
+  @computed get currentRoute(): string {
+    return this.stores.router.location.pathname;
+  }
+
+  @computed get isStakingPage(): boolean {
+    return this.currentRoute.indexOf(ROUTES.STAKING.ROOT) > -1;
+  }
+
+  @computed get stakePools(): Array<StakePool> {
+    // return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
+    return STAKE_POOLS;
+  }
+
+  @computed get delegatingStakePools(): Array<StakePool> {
+    // return this.stakePoolsRequest.result ? this.stakePoolsRequest.result : [];
+    return [STAKE_POOLS[1], STAKE_POOLS[3], STAKE_POOLS[20], STAKE_POOLS[36]];
+  }
+
+  @computed
+  get isStakingDelegationCountdown(): boolean {
+    return this.currentRoute === ROUTES.STAKING.COUNTDOWN;
+  }
+
+  @computed get rewards(): Array<Reward> {
+    return REWARDS;
+  }
+
+  @action showCountdown(): boolean {
+    return new Date(this.startDateTime).getTime() - new Date().getTime() > 0;
+  }
+
+  _goToStakingPage = () => {
+    this.actions.router.goToRoute.trigger({
+      route: ROUTES.STAKING.ROOT,
+    });
+  };
+}

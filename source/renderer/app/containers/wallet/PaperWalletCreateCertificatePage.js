@@ -21,13 +21,17 @@ type State = {
   showConfirmationDialog: boolean,
 };
 
-@inject('actions', 'stores') @observer
-export default class PaperWalletCreateCertificatePage extends Component<Props, State> {
-
+@inject('actions', 'stores')
+@observer
+export default class PaperWalletCreateCertificatePage extends Component<
+  Props,
+  State
+> {
   static defaultProps = { actions: null, stores: null };
 
   componentWillReceiveProps(nextProps: Props) {
-    const stepChanged = nextProps.stores.wallets.certificateStep !== this.state.currentStep;
+    const stepChanged =
+      nextProps.stores.wallets.certificateStep !== this.state.currentStep;
     if (nextProps.stores.wallets.certificateStep && stepChanged) {
       this.onContinue(nextProps.stores.wallets.certificateStep);
     }
@@ -89,11 +93,7 @@ export default class PaperWalletCreateCertificatePage extends Component<Props, S
     }
 
     if (uiDialogs.isOpen(CompletionDialog)) {
-      activeDialog = (
-        <CompletionDialogContainer
-          onClose={this.onClose}
-        />
-      );
+      activeDialog = <CompletionDialogContainer onClose={this.onClose} />;
     }
 
     return (
@@ -117,6 +117,7 @@ export default class PaperWalletCreateCertificatePage extends Component<Props, S
   };
 
   onBack = () => {
+    // eslint-disable-next-line react/no-access-state-in-setstate
     const prevStep = this.state.currentStep ? this.state.currentStep - 1 : 0;
     const prevDialog = this.CREATE_CERTIFICATE_DIALOGS[prevStep];
     this.setState({ currentStep: prevStep });

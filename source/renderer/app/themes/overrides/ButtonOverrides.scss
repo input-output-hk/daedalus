@@ -13,14 +13,23 @@
   .disclaimer {
     border: 1px solid var(--theme-button-disclaimer-border-color);
     min-height: 50px;
-    transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1),
+      background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
-    &:hover, &:active {
+    &:hover,
+    &:active {
       color: var(--theme-button-disclaimer-background-color);
     }
     &:disabled {
       color: var(--theme-button-disclaimer-text-color-disabled);
       border-color: var(--theme-button-disclaimer-border-color-disabled);
     }
+  }
+
+  .SimpleLoadingSpinner_root {
+    border-color: var(--theme-button-spinner-color)
+      var(--theme-button-spinner-color) transparent transparent;
+    border-width: 2px;
   }
 }

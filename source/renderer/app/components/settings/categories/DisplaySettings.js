@@ -4,16 +4,20 @@ import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './DisplaySettings.scss';
-import themeLightBluePreview from '../../../assets/images/themes/light-blue.png';
 import themeCardanoPreview from '../../../assets/images/themes/cardano.png';
 import themeDarkBluePreview from '../../../assets/images/themes/dark-blue.png';
+import themeDarkCardanoPreview from '../../../assets/images/themes/dark-cardano.png';
+import themeLightBluePreview from '../../../assets/images/themes/light-blue.png';
+import themeYellowPreview from '../../../assets/images/themes/yellow.png';
+import themeWhitePreview from '../../../assets/images/themes/white.png';
 import { THEMES } from '../../../themes/index';
 
 const messages = defineMessages({
   themeLabel: {
     id: 'settings.display.themeLabel',
     defaultMessage: '!!!Theme',
-    description: 'Label for the "Theme" selection on the display settings page.',
+    description:
+      'Label for the "Theme" selection on the display settings page.',
   },
   themeLightBlue: {
     id: 'settings.display.themeNames.lightBlue',
@@ -30,6 +34,25 @@ const messages = defineMessages({
     defaultMessage: '!!!Dark blue',
     description: 'Name of the "Dark blue" theme on the display settings page.',
   },
+
+  themeDarkCardano: {
+    id: 'settings.display.themeNames.darkCardano',
+    defaultMessage: '!!!Dark Cardano',
+    description:
+      'Name of the "Dark cardano" theme on the display settings page.',
+  },
+
+  themeYellow: {
+    id: 'settings.display.themeNames.yellow',
+    defaultMessage: '!!!Yellow',
+    description: 'Name of the "Yellow" theme on the display settings page.',
+  },
+
+  themeWhite: {
+    id: 'settings.display.themeNames.white',
+    defaultMessage: '!!!White',
+    description: 'Name of the "White" theme on the display settings page.',
+  },
 });
 
 type Props = {
@@ -39,7 +62,6 @@ type Props = {
 
 @observer
 export default class DisplaySettings extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -63,20 +85,37 @@ export default class DisplaySettings extends Component<Props> {
       styles.themeImageWrapper,
     ]);
 
+    const themeDarkCardanoClasses = classnames([
+      theme === THEMES.DARK_CARDANO ? styles.active : styles.inactive,
+      styles.themeImageWrapper,
+    ]);
+
+    const themeYellowClasses = classnames([
+      theme === THEMES.YELLOW ? styles.active : styles.inactive,
+      styles.themeImageWrapper,
+    ]);
+
+    const themeWhiteClasses = classnames([
+      theme === THEMES.WHITE ? styles.active : styles.inactive,
+      styles.themeImageWrapper,
+    ]);
+
     return (
       <div className={styles.component}>
-
         <div className={styles.label}>
           {intl.formatMessage(messages.themeLabel)}
         </div>
 
-        <div className={styles.themesWrapper}>
-
+        <div className={styles.themesRowWrapper}>
           <button
             className={themeLightBlueClasses}
             onClick={selectTheme.bind(this, { theme: THEMES.LIGHT_BLUE })}
           >
-            <img src={themeLightBluePreview} role="presentation" draggable="false" />
+            <img
+              src={themeLightBluePreview}
+              role="presentation"
+              draggable="false"
+            />
             <span>{intl.formatMessage(messages.themeLightBlue)}</span>
           </button>
 
@@ -84,22 +123,65 @@ export default class DisplaySettings extends Component<Props> {
             className={themeCardanoClasses}
             onClick={selectTheme.bind(this, { theme: THEMES.CARDANO })}
           >
-            <img src={themeCardanoPreview} role="presentation" draggable="false" />
+            <img
+              src={themeCardanoPreview}
+              role="presentation"
+              draggable="false"
+            />
             <span>{intl.formatMessage(messages.themeCardano)}</span>
           </button>
 
           <button
+            className={themeWhiteClasses}
+            onClick={selectTheme.bind(this, { theme: THEMES.WHITE })}
+          >
+            <img
+              src={themeWhitePreview}
+              role="presentation"
+              draggable="false"
+            />
+            <span>{intl.formatMessage(messages.themeWhite)}</span>
+          </button>
+        </div>
+
+        <div className={styles.themesRowWrapper}>
+          <button
             className={themeDarkBlueClasses}
             onClick={selectTheme.bind(this, { theme: THEMES.DARK_BLUE })}
           >
-            <img src={themeDarkBluePreview} role="presentation" draggable="false" />
+            <img
+              src={themeDarkBluePreview}
+              role="presentation"
+              draggable="false"
+            />
             <span>{intl.formatMessage(messages.themeDarkBlue)}</span>
           </button>
 
-        </div>
+          <button
+            className={themeDarkCardanoClasses}
+            onClick={selectTheme.bind(this, { theme: THEMES.DARK_CARDANO })}
+          >
+            <img
+              src={themeDarkCardanoPreview}
+              role="presentation"
+              draggable="false"
+            />
+            <span>{intl.formatMessage(messages.themeDarkCardano)}</span>
+          </button>
 
+          <button
+            className={themeYellowClasses}
+            onClick={selectTheme.bind(this, { theme: THEMES.YELLOW })}
+          >
+            <img
+              src={themeYellowPreview}
+              role="presentation"
+              draggable="false"
+            />
+            <span>{intl.formatMessage(messages.themeYellow)}</span>
+          </button>
+        </div>
       </div>
     );
   }
-
 }

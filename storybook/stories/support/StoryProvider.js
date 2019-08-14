@@ -12,14 +12,16 @@ type Props = {
   children: Node,
 };
 
-const WALLETS = [
+export const WALLETS = [
   {
     id: '0',
     name: 'No Password',
     amount: new BigNumber(66.998),
     assurance: WalletAssuranceModeOptions.NORMAL,
     hasPassword: false,
-    passwordUpdateDate: new Date()
+    passwordUpdateDate: new Date(),
+    syncState: { data: null, tag: 'synced' },
+    isLegacy: false,
   },
   {
     id: '1',
@@ -27,47 +29,91 @@ const WALLETS = [
     amount: new BigNumber(0),
     assurance: WalletAssuranceModeOptions.NORMAL,
     hasPassword: true,
-    passwordUpdateDate: moment().subtract(1, 'month').toDate()
-  }
+    passwordUpdateDate: moment()
+      .subtract(1, 'month')
+      .toDate(),
+    syncState: { data: null, tag: 'synced' },
+    isLegacy: false,
+  },
+  {
+    id: '2',
+    name: 'Legacy',
+    amount: new BigNumber(55.555),
+    assurance: WalletAssuranceModeOptions.NORMAL,
+    hasPassword: false,
+    passwordUpdateDate: new Date(),
+    syncState: { data: null, tag: 'synced' },
+    isLegacy: true,
+  },
+  {
+    id: '3',
+    name: 'Restoring',
+    amount: new BigNumber(12.345),
+    assurance: WalletAssuranceModeOptions.NORMAL,
+    hasPassword: false,
+    passwordUpdateDate: new Date(),
+    syncState: {
+      data: {
+        estimatedCompletionTime: {
+          quantity: 123456789,
+          unit: 'milliseconds',
+        },
+        percentage: {
+          quantity: 50,
+          unit: 'percent',
+        },
+        throughput: {
+          quantity: 500,
+          unit: 'blocksPerSecond',
+        },
+      },
+      tag: 'restoring',
+    },
+    isLegacy: false,
+  },
 ];
 
 @observer
 export default class StoryProvider extends Component<Props> {
-
   @observable activeWalletId = '0';
 
   @computed get storiesProps(): {} {
-    return ({
+    return {
       wallets: WALLETS,
       activeWalletId: this.activeWalletId,
-      setActiveWalletId: this.setActiveWalletId
-    });
+      setActiveWalletId: this.setActiveWalletId,
+    };
   }
 
   @computed get stores(): {} {
-    return ({
+    return {
       ada: {
         wallets: {
           active: WALLETS[parseInt(this.activeWalletId, 10)],
           sendMoney: () => {},
           sendMoneyRequest: {
             isExecuting: false,
-            reset: () => {}
-          }
-        }
-      }
-    });
+            reset: () => {},
+          },
+        },
+      },
+    };
   }
 
-  setActiveWalletId = (walletId: string) => runInAction(() => this.activeWalletId = walletId);
+  setActiveWalletId = (walletId: string) =>
+    runInAction(() => {
+      this.activeWalletId = walletId;
+    });
 
   render() {
-
     return (
-      <Provider stores={this.stores} actions={actions} storiesProps={this.storiesProps}>
+      <Provider
+        stores={this.stores}
+        actions={actions}
+        storiesProps={this.storiesProps}
+      >
         {this.props.children}
       </Provider>
     );
   }
-
 }

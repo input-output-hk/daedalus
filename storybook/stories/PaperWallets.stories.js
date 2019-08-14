@@ -11,12 +11,7 @@ import VerificationDialog from '../../source/renderer/app/components/wallet/pape
 import CompletionDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog';
 
 storiesOf('PaperWallets', module)
-
-  .addDecorator((story) => (
-    <StoryDecorator>
-      {story()}
-    </StoryDecorator>
-  ))
+  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 

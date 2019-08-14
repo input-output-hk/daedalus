@@ -18,30 +18,36 @@ import type { RecoveryPhraseWord } from '../../../types/walletBackupTypes';
 const messages = defineMessages({
   verificationInstructions: {
     id: 'wallet.backup.recovery.phrase.entry.dialog.verification.instructions',
-    defaultMessage: '!!!Tap each word in the correct order to verify your recovery phrase',
-    description: 'Instructions for verifying wallet recovery phrase on dialog for entering wallet recovery phrase.'
+    defaultMessage:
+      '!!!Tap each word in the correct order to verify your recovery phrase',
+    description:
+      'Instructions for verifying wallet recovery phrase on dialog for entering wallet recovery phrase.',
   },
   buttonLabelConfirm: {
     id: 'wallet.recovery.phrase.show.entry.dialog.button.labelConfirm',
     defaultMessage: '!!!Confirm',
-    description: 'Label for button "Confirm" on wallet backup dialog'
+    description: 'Label for button "Confirm" on wallet backup dialog',
   },
   buttonLabelClear: {
     id: 'wallet.recovery.phrase.show.entry.dialog.button.labelClear',
     defaultMessage: '!!!Clear',
-    description: 'Label for button "Clear" on wallet backup dialog'
+    description: 'Label for button "Clear" on wallet backup dialog',
   },
   termDevice: {
     id: 'wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.device',
-    defaultMessage: '!!!I understand that my money are held securely on this device only, not on the company servers',
-    description: 'Term and condition on wallet backup dialog describing that wallet is on a users device, not on company servers'
+    defaultMessage:
+      '!!!I understand that my money are held securely on this device only, not on the company servers',
+    description:
+      'Term and condition on wallet backup dialog describing that wallet is on a users device, not on company servers',
   },
   termRecovery: {
-    id: 'wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery',
+    id:
+      'wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery',
     defaultMessage: `!!!I understand that if this application is moved to another device or deleted, my money can
     be only recovered with the backup phrase which were written down in a secure place`,
-    description: 'Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase'
-  }
+    description:
+      'Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase',
+  },
 });
 
 type Props = {
@@ -63,7 +69,6 @@ type Props = {
 
 @observer
 export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -84,14 +89,17 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
       canFinishBackup,
       onRestartBackup,
       onCancelBackup,
-      onFinishBackup
+      onFinishBackup,
     } = this.props;
     const dialogClasses = classnames([
       styles.component,
       'WalletRecoveryPhraseEntryDialog',
     ]);
 
-    const enteredPhraseString = enteredPhrase.reduce((phrase, { word }) => `${phrase} ${word}`, '');
+    const enteredPhraseString = enteredPhrase.reduce(
+      (phrase, { word }) => `${phrase} ${word}`,
+      ''
+    );
 
     const actions = [];
 
@@ -100,7 +108,7 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
       label: intl.formatMessage(messages.buttonLabelConfirm),
       onClick: onFinishBackup,
       disabled: !canFinishBackup,
-      primary: true
+      primary: true,
     });
 
     // Only show "Clear" button when user is not yet done with entering mnemonic
@@ -119,11 +127,15 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
         closeOnOverlayClick={false}
         onClose={onCancelBackup}
         closeButton={<DialogCloseButton onClose={onCancelBackup} />}
-        backButton={!isValid ? <DialogBackButton onBack={onRestartBackup} /> : null}
+        backButton={
+          !isValid ? <DialogBackButton onBack={onRestartBackup} /> : null
+        }
       >
         {!isValid && (
           <WalletRecoveryInstructions
-            instructionsText={intl.formatMessage(messages.verificationInstructions)}
+            instructionsText={intl.formatMessage(
+              messages.verificationInstructions
+            )}
           />
         )}
 
@@ -136,6 +148,7 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
 
               return (
                 <MnemonicWord
+                  // eslint-disable-next-line react/no-array-index-key
                   key={index}
                   word={word}
                   index={index}
@@ -170,5 +183,4 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
       </Dialog>
     );
   }
-
 }

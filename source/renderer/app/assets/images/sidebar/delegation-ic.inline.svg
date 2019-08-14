@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="66" height="46" viewBox="0 0 66 46">
+    <g fill="none" fill-rule="evenodd" transform="translate(-13 -25)">
+        <circle cx="44" cy="44" r="44"/>
+        <circle cx="19" cy="32" r="6" fill="var(--theme-icon-sidebar-color)"/>
+        <circle cx="74" cy="30" r="5" fill="var(--theme-icon-sidebar-color)"/>
+        <circle cx="50" cy="66" r="5" fill="var(--theme-icon-sidebar-color)"/>
+        <g opacity=".5" transform="translate(16 30)">
+            <path stroke="var(--theme-icon-sidebar-color)" stroke-width="2" d="M3 29l23.492-11.746M3 29V2M35.497 17.332L58 29V0M31.693 19.853L34 36" opacity=".8"/>
+            <circle cx="58" cy="29" r="5" fill="var(--theme-icon-sidebar-color)"/>
+            <circle cx="3" cy="29" r="3" fill="var(--theme-icon-sidebar-color)"/>
+        </g>
+        <circle cx="47" cy="45" r="5" stroke="var(--theme-icon-sidebar-color)" stroke-width="2"/>
+    </g>
+</svg>

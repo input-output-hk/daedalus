@@ -8,6 +8,10 @@ export type InjectedProps = {
   actions: any | ActionsMap,
 };
 
+export type InjectedStoresProps = {
+  stores: any | StoresMap,
+};
+
 export type InjectedContainerProps = {
   stores: any | StoresMap,
   actions: any | ActionsMap,

@@ -6,23 +6,26 @@ import BigNumber from 'bignumber.js';
 import {
   WalletTransaction,
   transactionStates,
-  transactionTypes
+  transactionTypes,
 } from '../../../source/renderer/app/domains/WalletTransaction';
 import Wallet from '../../../source/renderer/app/domains/Wallet';
 import WalletAddress from '../../../source/renderer/app/domains/WalletAddress';
 import { LOVELACES_PER_ADA } from '../../../source/renderer/app/config/numbersConfig';
 import type {
   TransactionState,
-  TransactionType
+  TransactionType,
 } from '../../../source/renderer/app/api/transactions/types';
 
 export const generateHash = () => {
-  const now = (new Date()).valueOf().toString();
+  const now = new Date().valueOf().toString();
   const random = Math.random().toString();
-  return hash.sha512().update(now + random).digest('hex');
+  return hash
+    .sha512()
+    .update(now + random)
+    .digest('hex');
 };
 
-export const generateWallet = (name: string, amount: string) => (
+export const generateWallet = (name: string, amount: string) =>
   new Wallet({
     id: generateHash(),
     amount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
@@ -31,8 +34,8 @@ export const generateWallet = (name: string, amount: string) => (
     hasPassword: false,
     passwordUpdateDate: new Date(),
     syncState: { data: null, tag: 'synced' },
-  })
-);
+    isLegacy: false,
+  });
 
 export const generateTransaction = (
   type: TransactionType = transactionTypes.INCOME,
@@ -40,7 +43,7 @@ export const generateTransaction = (
   amount: BigNumber = new BigNumber(faker.finance.amount()),
   confirmations: number = 1,
   state: TransactionState = transactionStates.OK
-) => (
+) =>
   new WalletTransaction({
     id: faker.random.uuid(),
     title: '',
@@ -52,40 +55,40 @@ export const generateTransaction = (
     numberOfConfirmations: confirmations,
     addresses: {
       from: [faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100)],
-      to: [faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100)]
+      to: [
+        faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
+        faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
+      ],
     },
-  })
-);
+  });
 
-export const generateRandomTransaction = (index: number) => (
+export const generateRandomTransaction = (index: number) =>
   generateTransaction(
     transactionTypes.INCOME,
-    moment().subtract(index, 'days').toDate(),
+    moment()
+      .subtract(index, 'days')
+      .toDate(),
     new BigNumber(faker.random.number(5))
-  )
-);
+  );
 
-export const generateMultipleTransactions = (amount: number): WalletTransaction[] => (
-  Array.from(Array(amount).keys()).map((key: number) => (
+export const generateMultipleTransactions = (
+  amount: number
+): WalletTransaction[] =>
+  Array.from(Array(amount).keys()).map((key: number) =>
     generateRandomTransaction(Math.round(Math.random() * key))
-  ))
-);
+  );
 
-export const generateAddress = (used: boolean = false): WalletAddress => (
+export const generateAddress = (used: boolean = false): WalletAddress =>
   new WalletAddress({
     id: generateHash(),
     amount: new BigNumber(faker.random.number(5)),
     changeAddress: false,
-    used
-  })
-);
+    used,
+  });
 
-export const promise = (returnValue: any): () => Promise<any> => (
-  () => (
-    new Promise(resolve => {
-      setTimeout(() => {
-        resolve(returnValue);
-      }, 2000);
-    })
-  )
-);
+export const promise = (returnValue: any): (() => Promise<any>) => () =>
+  new Promise(resolve => {
+    setTimeout(() => {
+      resolve(returnValue);
+    }, 2000);
+  });

@@ -1,11 +1,9 @@
 // @flow
 import os from 'os';
 import _https from 'https';
-import {
-  ipcRenderer as _ipcRenderer,
-  remote as _remote
-} from 'electron';
-import _electronLog from 'electron-log';
+import _http from 'http';
+import { ipcRenderer as _ipcRenderer, remote as _remote } from 'electron';
+import _electronLog from 'electron-log-daedalus';
 import ElectronStore from 'electron-store';
 import { environment } from './environment';
 
@@ -33,6 +31,9 @@ process.once('loaded', () => {
     https: {
       request: (...args) => _https.request(...args),
     },
+    http: {
+      request: (...args) => _http.request(...args),
+    },
     ipcRenderer: {
       on: (...args) => _ipcRenderer.on(...args),
       once: (...args) => _ipcRenderer.once(...args),
@@ -50,7 +51,7 @@ process.once('loaded', () => {
     global.spectronRequire = __non_webpack_require__; // eslint-disable-line
   }
   // ESLint will warn about any use of eval(), even this one
-  // eslint-disable-next-line
+  // eslint-disable-next-line no-eval
   global.eval = () => {
     throw new Error('This app does not support window.eval().');
   };
@@ -59,13 +60,20 @@ process.once('loaded', () => {
   if (_process.env.NODE_ENV === 'production') {
     // elements that can be copied using the context menu (right click),
     // must have a css property of user-select: 'text' or be an input element
-    global.document.addEventListener('contextmenu', event => {
-      const targetIsSelectable = getComputedStyle(event.target).userSelect === 'text';
-      const targetIsInput = event.target.nodeName === 'INPUT';
+    global.document.addEventListener(
+      'contextmenu',
+      event => {
+        const targetIsSelectable =
+          getComputedStyle(event.target).userSelect === 'text';
+        const targetIsInput = event.target.nodeName === 'INPUT';
 
-      if (targetIsSelectable || targetIsInput) { return true; }
+        if (targetIsSelectable || targetIsInput) {
+          return true;
+        }
 
-      event.preventDefault();
-    }, false);
+        return event.preventDefault();
+      },
+      false
+    );
   }
 });

@@ -4,7 +4,10 @@ import { observer } from 'mobx-react';
 import WalletBackupPrivacyWarningDialog from './backup-recovery/WalletBackupPrivacyWarningDialog';
 import WalletRecoveryPhraseDisplayDialog from './backup-recovery/WalletRecoveryPhraseDisplayDialog';
 import WalletRecoveryPhraseEntryDialog from './backup-recovery/WalletRecoveryPhraseEntryDialog';
-import type { RecoveryPhraseWord, walletBackupStep } from '../../types/walletBackupTypes';
+import type {
+  RecoveryPhraseWord,
+  walletBackupStep,
+} from '../../types/walletBackupTypes';
 import { WALLET_BACKUP_STEPS } from '../../types/walletBackupTypes';
 
 type Props = {
@@ -34,19 +37,30 @@ type Props = {
 
 @observer
 export default class WalletBackupDialog extends Component<Props> {
-
   render() {
     const {
-      currentStep, onCancelBackup,
-      canPhraseBeShown, isPrivacyNoticeAccepted,
-      countdownRemaining, onAcceptPrivacyNotice,
-      onContinue, recoveryPhrase,
-      onStartWalletBackup, isTermDeviceAccepted,
-      enteredPhrase, canFinishBackup,
-      isTermRecoveryAccepted, isValid, isSubmitting,
-      onAcceptTermDevice, onAcceptTermRecovery,
-      onAddWord, onClear, onFinishBackup,
-      onRestartBackup, recoveryPhraseShuffled,
+      currentStep,
+      onCancelBackup,
+      canPhraseBeShown,
+      isPrivacyNoticeAccepted,
+      countdownRemaining,
+      onAcceptPrivacyNotice,
+      onContinue,
+      recoveryPhrase,
+      onStartWalletBackup,
+      isTermDeviceAccepted,
+      enteredPhrase,
+      canFinishBackup,
+      isTermRecoveryAccepted,
+      isValid,
+      isSubmitting,
+      onAcceptTermDevice,
+      onAcceptTermRecovery,
+      onAddWord,
+      onClear,
+      onFinishBackup,
+      onRestartBackup,
+      recoveryPhraseShuffled,
     } = this.props;
 
     if (currentStep === WALLET_BACKUP_STEPS.PRIVACY_WARNING) {

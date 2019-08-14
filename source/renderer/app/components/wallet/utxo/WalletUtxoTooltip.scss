@@ -1,0 +1,19 @@
+.component {
+  background-color: var(--theme-utxo-tooltip-background-color);
+  border-radius: 4px;
+  box-shadow: 0 1.5px 5px 0 var(--theme-utxo-tooltip-shadow-color);
+  opacity: 0.9;
+
+  p {
+    color: var(--theme-utxo-tooltip-text-color);
+    font-family: var(--font-regular);
+    font-size: 12px;
+    line-height: 1.17;
+    padding: 6px 12px;
+    text-align: center;
+
+    b {
+      font-family: var(--font-bold);
+    }
+  }
+}

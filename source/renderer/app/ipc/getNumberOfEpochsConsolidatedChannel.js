@@ -1,11 +1,13 @@
 // @flow
-import { GetNumberOfEpochsConsolidatedChannel } from '../../../common/ipc/api';
-import type { GetNumberOfEpochsConsolidatedChannelResponse } from '../../../common/ipc/api';
+import { GET_CONSOLIDATED_EPOCHS_COUNT_CHANNEL } from '../../../common/ipc/api';
+import type {
+  GetConsolidatedEpochsCountMainResponse,
+  GetConsolidatedEpochsCountRendererRequest,
+} from '../../../common/ipc/api';
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
 
-export const getNumberOfEpochsConsolidatedChannel: (
-  // IpcChannel<Incoming, Outgoing>
-  RendererIpcChannel<GetNumberOfEpochsConsolidatedChannelResponse, void>
-) = (
-  new RendererIpcChannel(GetNumberOfEpochsConsolidatedChannel)
-);
+export const getNumberOfEpochsConsolidatedChannel: // IpcChannel<Incoming, Outgoing>
+RendererIpcChannel<
+  GetConsolidatedEpochsCountMainResponse,
+  GetConsolidatedEpochsCountRendererRequest
+> = new RendererIpcChannel(GET_CONSOLIDATED_EPOCHS_COUNT_CHANNEL);

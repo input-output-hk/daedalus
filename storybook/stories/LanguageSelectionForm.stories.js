@@ -16,12 +16,7 @@ const LANGUAGES = [
 ];
 
 storiesOf('LanguageSelectionForm', module)
-
-  .addDecorator((story) => (
-    <StoryDecorator>
-      {story()}
-    </StoryDecorator>
-  ))
+  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 
@@ -30,6 +25,7 @@ storiesOf('LanguageSelectionForm', module)
       <LanguageSelectionForm
         onSubmit={action('submit')}
         languages={LANGUAGES}
+        preselectedLanguage={LANGUAGES[0].value}
         isSubmitting={false}
       />
     </div>
@@ -40,6 +36,7 @@ storiesOf('LanguageSelectionForm', module)
       <LanguageSelectionForm
         onSubmit={action('submit')}
         languages={LANGUAGES}
+        preselectedLanguage={LANGUAGES[0].value}
         isSubmitting
       />
     </div>

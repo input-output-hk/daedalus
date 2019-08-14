@@ -1,65 +1,70 @@
 // @flow
-import { observable, computed, action } from 'mobx';
+import { observable, computed, action, runInAction } from 'mobx';
 import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
-import {
-  TOGGLE_ABOUT_DIALOG_CHANNEL,
-  TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL,
-  TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL,
-  GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL
-} from '../../../common/ipc/api';
-import { GET_GPU_STATUS } from '../../../common/ipc-api';
 import { ROUTES } from '../routes-config';
-import type { GpuStatus } from '../types/gpuStatus';
+import { DIALOGS, SCREENS, NOTIFICATIONS } from '../../../common/ipc/constants';
 import { openExternalUrlChannel } from '../ipc/open-external-url';
-
-// TODO: refactor all parts that rely on this to ipc channels!
-const { ipcRenderer } = global;
+import {
+  toggleUiPartChannel,
+  showUiPartChannel,
+} from '../ipc/control-ui-parts';
+import { getGPUStatusChannel } from '../ipc/get-gpu-status.ipc';
+import { generateFileNameWithTimestamp } from '../../../common/utils/files';
+import type { GpuStatus } from '../types/gpuStatus';
+import type { ApplicationDialog } from '../types/applicationDialogTypes';
 
 export default class AppStore extends Store {
-
   @observable error: ?LocalizableError = null;
-  @observable isAboutDialogOpen = false;
-  @observable isNetworkStatusDialogOpen = false;
+  @observable isDownloadNotificationVisible = false;
   @observable gpuStatus: ?GpuStatus = null;
   @observable numberOfEpochsConsolidated: number = 0;
   @observable previousRoute: string = ROUTES.ROOT;
+  @observable activeDialog: ApplicationDialog = null;
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
-    this.actions.app.openAboutDialog.listen(this._openAboutDialog);
-    this.actions.app.closeAboutDialog.listen(this._closeAboutDialog);
-    this.actions.app.openNetworkStatusDialog.listen(this._openNetworkStatusDialog);
-    this.actions.app.closeNetworkStatusDialog.listen(this._closeNetworkStatusDialog);
     this.actions.app.getGpuStatus.listen(this._getGpuStatus);
-    this.actions.app.toggleBlockConsolidationStatusScreen.listen(
-      this._toggleBlockConsolidationStatusScreen
+
+    // About dialog actions
+    this.actions.app.closeAboutDialog.listen(() => {
+      this._closeActiveDialog();
+    });
+    this.actions.app.openAboutDialog.listen(() => {
+      this._updateActiveDialog(DIALOGS.ABOUT);
+    });
+
+    // Block Consolidation dialog actions
+    this.actions.app.closeBlockConsolidationStatusDialog.listen(() => {
+      this._closeActiveDialog();
+    });
+    this.actions.app.openBlockConsolidationStatusDialog.listen(() => {
+      this._updateActiveDialog(DIALOGS.BLOCK_CONSOLIDATION);
+    });
+
+    // Daedalus Diagnostics dialog actions
+    this.actions.app.closeDaedalusDiagnosticsDialog.listen(() => {
+      this._closeActiveDialog();
+    });
+    this.actions.app.openDaedalusDiagnosticsDialog.listen(() => {
+      this._updateActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS);
+    });
+
+    this.actions.app.downloadLogs.listen(this._downloadLogs);
+    this.actions.app.setNotificationVisibility.listen(
+      this._setDownloadNotification
     );
-
-    /* eslint-disable max-len */
-    // TODO: refactor to ipc channels
-    ipcRenderer.on(TOGGLE_ABOUT_DIALOG_CHANNEL, this._toggleAboutDialog);
-    ipcRenderer.on(TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL, this._toggleNetworkStatusDialog);
-    ipcRenderer.on(TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL, this._toggleBlockConsolidationStatusScreen);
-    ipcRenderer.on(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
-    ipcRenderer.on(GET_GPU_STATUS.SUCCESS, this._onGetGpuStatusSuccess);
-    /* eslint-disable max-len */
-  }
-
-  teardown() {
-    /* eslint-disable max-len */
-    // TODO: refactor to ipc channels
-    ipcRenderer.removeListener(TOGGLE_ABOUT_DIALOG_CHANNEL, this._toggleAboutDialog);
-    ipcRenderer.removeListener(TOGGLE_NETWORK_STATUS_DIALOG_CHANNEL, this._toggleNetworkStatusDialog);
-    ipcRenderer.removeListener(TOGGLE_BLOCK_CONSOLIDATION_STATUS_SCREEN_CHANNEL, this._toggleBlockConsolidationStatusScreen);
-    ipcRenderer.removeListener(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
-    ipcRenderer.removeListener(GET_GPU_STATUS.SUCCESS, this._onGetGpuStatusSuccess);
-    /* eslint-disable max-len */
+    toggleUiPartChannel.onReceive(this.toggleUiPart);
+    showUiPartChannel.onReceive(this.showUiPart);
   }
 
   @computed get currentRoute(): string {
     return this.stores.router.location.pathname;
+  }
+
+  @computed get currentPage(): string {
+    return this.currentRoute.split('/').pop();
   }
 
   openExternalLink(url: string, event?: MouseEvent): void {
@@ -67,14 +72,61 @@ export default class AppStore extends Store {
     openExternalUrlChannel.send(url);
   }
 
-  _getGpuStatus = () => {
-    // TODO: refactor to ipc channel
-    ipcRenderer.send(GET_GPU_STATUS.REQUEST);
+  isActiveDialog = (dialog: ApplicationDialog): boolean => {
+    return this.activeDialog === dialog;
   };
 
-  _onGetGpuStatusSuccess = action((event, status) => {
-    this.gpuStatus = status;
-  });
+  /**
+   * Toggles the dialog specified by the constant string identifier.
+   */
+  toggleUiPart = (uiPart: string) => {
+    switch (uiPart) {
+      default:
+    }
+    return Promise.resolve();
+  };
+
+  /**
+   * Shows the screen specified by the constant string identifier.
+   */
+  showUiPart = (uiPart: string) => {
+    switch (uiPart) {
+      case DIALOGS.ABOUT:
+        this._updateActiveDialog(DIALOGS.ABOUT);
+        break;
+      case DIALOGS.BLOCK_CONSOLIDATION:
+        this._updateActiveDialog(DIALOGS.BLOCK_CONSOLIDATION);
+        break;
+      case DIALOGS.DAEDALUS_DIAGNOSTICS:
+        this._updateActiveDialog(DIALOGS.DAEDALUS_DIAGNOSTICS);
+        break;
+      case NOTIFICATIONS.DOWNLOAD_LOGS:
+        this._downloadLogs();
+        break;
+      case SCREENS.ADA_REDEMPTION:
+        this._openAdaRedemptionScreen();
+        this._closeActiveDialog();
+        break;
+      default:
+    }
+    return Promise.resolve();
+  };
+
+  @computed get isSetupPage(): boolean {
+    return (
+      this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION ||
+      this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE
+    );
+  }
+
+  // ===================== PRIVATE ======================= //
+
+  _getGpuStatus = async () => {
+    const gpuStatus = await getGPUStatusChannel.request();
+    runInAction('get gpu status', () => {
+      this.gpuStatus = gpuStatus;
+    });
+  };
 
   _updateRouteLocation = (options: { route: string, params?: ?Object }) => {
     const routePath = buildRoute(options.route, options.params);
@@ -85,56 +137,53 @@ export default class AppStore extends Store {
 
   @action _updatePreviousRoute = (currentRoute?: string) => {
     this.previousRoute = currentRoute || ROUTES.ROOT;
-  }
-
-  @action _openAboutDialog = () => {
-    this.isAboutDialogOpen = true;
   };
 
-  @action _closeAboutDialog = () => {
-    this.isAboutDialogOpen = false;
+  @action _updateActiveDialog = (currentDialog: ApplicationDialog) => {
+    if (this.activeDialog !== currentDialog) this.activeDialog = currentDialog;
   };
 
-  @action _toggleAboutDialog = () => {
-    this.isAboutDialogOpen = !this.isAboutDialogOpen;
+  @action _closeActiveDialog = () => {
+    if (this.activeDialog !== null) this.activeDialog = null;
   };
 
-  @action _openNetworkStatusDialog = () => {
-    this.isNetworkStatusDialogOpen = true;
-  };
-
-  @action _closeNetworkStatusDialog = () => {
-    this.isNetworkStatusDialogOpen = false;
-  };
-
-  @action _toggleNetworkStatusDialog = () => {
-    this.isNetworkStatusDialogOpen = !this.isNetworkStatusDialogOpen;
-  };
-
-  @action _goToAdaRedemptionScreen = () => {
+  @action _openAdaRedemptionScreen = () => {
     const { isConnected, isSynced } = this.stores.networkStatus;
     const { hasLoadedWallets } = this.stores.wallets;
     if (isConnected && isSynced && hasLoadedWallets && !this.isSetupPage) {
-      this.actions.router.goToRoute.trigger({ route: ROUTES.ADA_REDEMPTION });
+      this._updateRouteLocation({ route: ROUTES.ADA_REDEMPTION });
     }
   };
 
-  @action _toggleBlockConsolidationStatusScreen = () => {
-    const route = this.isBlockConsolidationStatusPage
-      ? this.previousRoute
-      : ROUTES.BLOCK_CONSOLIDATION_STATUS;
-    this._updateRouteLocation({ route });
+  @action _downloadLogs = () => {
+    if (this.isDownloadNotificationVisible) {
+      return;
+    }
+    const fileName = generateFileNameWithTimestamp();
+    global.dialog.showSaveDialog(
+      {
+        defaultPath: fileName,
+      },
+      destination => {
+        if (destination) {
+          this.actions.profile.downloadLogs.trigger({
+            fileName,
+            destination,
+            fresh: true,
+          });
+        } else {
+          this.actions.app.setNotificationVisibility.trigger(
+            !this.isDownloadNotificationVisible
+          );
+        }
+      }
+    );
+    this.isDownloadNotificationVisible = true;
   };
 
-  @computed get isBlockConsolidationStatusPage(): boolean {
-    return this.currentRoute === ROUTES.BLOCK_CONSOLIDATION_STATUS;
-  }
-
-  @computed get isSetupPage(): boolean {
-    return (
-      this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION ||
-      this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE
-    );
-  }
-
+  @action _setDownloadNotification = (
+    isDownloadNotificationVisible: boolean
+  ) => {
+    this.isDownloadNotificationVisible = isDownloadNotificationVisible;
+  };
 }

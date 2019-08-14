@@ -13,6 +13,7 @@
   right: 0;
   text-align: center;
   top: 0;
+  z-index: 1;
 
   .icon {
     margin-bottom: 36px;
@@ -32,7 +33,9 @@
     }
   }
 
-  h1, p, button {
+  h1,
+  p,
+  button {
     font-family: var(--font-regular);
   }
 
@@ -55,13 +58,19 @@
       padding-top: 20px;
 
       .SimpleCheckbox_check {
-        border-color: var(--theme-ada-redemption-disclaimer-checkbox-color-check);
+        border-color: var(
+          --theme-ada-redemption-disclaimer-checkbox-color-check
+        );
 
         &.SimpleCheckbox_checked {
-          background-color: var(--theme-ada-redemption-disclaimer-checkbox-color-checked);
+          background-color: var(
+            --theme-ada-redemption-disclaimer-checkbox-color-checked
+          );
 
           &:after {
-            border-color: var(--theme-ada-redemption-disclaimer-checkbox-color-after);
+            border-color: var(
+              --theme-ada-redemption-disclaimer-checkbox-color-after
+            );
           }
         }
       }

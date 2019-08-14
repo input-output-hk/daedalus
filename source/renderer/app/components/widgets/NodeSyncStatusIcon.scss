@@ -10,26 +10,36 @@
   &.mainnet {
     right: 40px;
     .icon {
-      height: 31px;
-      width: 31px;
+      svg {
+        height: 22px;
+        width: 22px;
+        path {
+          fill: var(--theme-node-sync-icon-color);
+        }
+      }
     }
   }
 }
 
 .icon {
-  height: 22px;
   pointer-events: none;
-  width: 22px;
+  svg {
+    height: 22px;
+    width: 22px;
+  }
 }
 
 .syncing {
   .icon :global {
-    animation: loading-spin 1.5s linear;
-    animation-iteration-count: infinite;
+    svg {
+      animation: loading-spin 1.5s linear;
+      animation-iteration-count: infinite;
+    }
   }
 }
 
-.synced {}
+.synced {
+}
 
 .info {
   opacity: 0;

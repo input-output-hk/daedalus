@@ -8,22 +8,22 @@ import { formattedWalletAmount } from '../utils/formatters';
 import type { SidebarWalletType } from '../types/sidebarTypes';
 
 export default class SidebarStore extends Store {
-
-  CATEGORIES = sidebarConfig.CATEGORIES;
-
+  @observable CATEGORIES: Array<any> = sidebarConfig.CATEGORIES;
   @observable activeSidebarCategory: string = this.CATEGORIES[0].route;
   @observable isShowingSubMenus: boolean = true;
 
   setup() {
-    const actions = this.actions.sidebar;
-    actions.showSubMenus.listen(this._showSubMenus);
-    actions.toggleSubMenus.listen(this._toggleSubMenus);
-    actions.activateSidebarCategory.listen(this._onActivateSidebarCategory);
-    actions.walletSelected.listen(this._onWalletSelected);
+    const { sidebar: sidebarActions } = this.actions;
 
-    this.registerReactions([
-      this._syncSidebarRouteWithRouter,
-    ]);
+    sidebarActions.showSubMenus.listen(this._showSubMenus);
+    sidebarActions.toggleSubMenus.listen(this._toggleSubMenus);
+    sidebarActions.activateSidebarCategory.listen(
+      this._onActivateSidebarCategory
+    );
+    sidebarActions.walletSelected.listen(this._onWalletSelected);
+
+    this.registerReactions([this._syncSidebarRouteWithRouter]);
+    this._configureCategories();
   }
 
   @computed get wallets(): Array<SidebarWalletType> {
@@ -33,12 +33,23 @@ export default class SidebarStore extends Store {
       title: w.name,
       info: formattedWalletAmount(w.amount),
       isConnected: networkStatus.isConnected,
-      isRestoreActive: get(w, 'syncState.tag') === WalletSyncStateTags.RESTORING,
+      isRestoreActive:
+        get(w, 'syncState.tag') === WalletSyncStateTags.RESTORING,
       restoreProgress: get(w, 'syncState.data.percentage.quantity', 0),
+      isLegacy: w.isLegacy,
     }));
   }
 
-  @action _onActivateSidebarCategory = (params: { category: string, showSubMenu?: boolean }) => {
+  @action _configureCategories = () => {
+    if (this.stores.networkStatus.environment.isDev) {
+      this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_STAKING;
+    }
+  };
+
+  @action _onActivateSidebarCategory = (params: {
+    category: string,
+    showSubMenu?: boolean,
+  }) => {
     const { category, showSubMenu } = params;
     if (category !== this.activeSidebarCategory) {
       this.activeSidebarCategory = category;
@@ -78,10 +89,10 @@ export default class SidebarStore extends Store {
 
   _syncSidebarRouteWithRouter = () => {
     const route = this.stores.app.currentRoute;
-    this.CATEGORIES.forEach((category) => {
+    this.CATEGORIES.forEach(category => {
       // If the current route starts with the root of the category
-      if (route.indexOf(category.route) === 0) this._setActivateSidebarCategory(category.route);
+      if (route.indexOf(category.route) === 0)
+        this._setActivateSidebarCategory(category.route);
     });
   };
-
 }

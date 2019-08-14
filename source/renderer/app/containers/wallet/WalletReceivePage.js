@@ -25,9 +25,9 @@ type State = {
   copiedAddress: string,
 };
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class WalletReceivePage extends Component<Props, State> {
-
   static defaultProps = { actions: null, stores: null };
 
   state = {
@@ -60,21 +60,26 @@ export default class WalletReceivePage extends Component<Props, State> {
     const wallet = wallets.active;
     if (wallet) {
       const notificationId = `${wallet.id}-copyNotification`;
-      this.props.actions.notifications.closeActiveNotification.trigger({ id: notificationId });
+      this.props.actions.notifications.closeActiveNotification.trigger({
+        id: notificationId,
+      });
     }
   };
 
   render() {
     const { copiedAddress } = this.state;
-    const actions = this.props.actions;
+    const { actions } = this.props;
     const { sidebar, uiNotifications, wallets, addresses } = this.props.stores;
     const wallet = wallets.active;
 
     // Guard against potential null values
-    if (!wallet) throw new Error('Active wallet required for WalletReceivePage.');
+    if (!wallet)
+      throw new Error('Active wallet required for WalletReceivePage.');
 
     const walletAddress = addresses.active ? addresses.active.id : '';
-    const isWalletAddressUsed = addresses.active ? addresses.active.used : false;
+    const isWalletAddressUsed = addresses.active
+      ? addresses.active.used
+      : false;
     const walletAddresses = addresses.all.slice().reverse();
 
     const notification = {
@@ -88,7 +93,7 @@ export default class WalletReceivePage extends Component<Props, State> {
               copiedAddress,
               ADDRESS_COPY_NOTIFICATION_ELLIPSIS,
               ADDRESS_COPY_NOTIFICATION_ELLIPSIS
-            )
+            ),
           }}
         />
       ),
@@ -102,7 +107,7 @@ export default class WalletReceivePage extends Component<Props, State> {
             isWalletAddressUsed={isWalletAddressUsed}
             walletAddresses={walletAddresses}
             onGenerateAddress={this.handleGenerateAddress}
-            onCopyAddress={(address) => {
+            onCopyAddress={address => {
               this.setState({ copiedAddress: address });
               actions.notifications.open.trigger({
                 id: notification.id,
@@ -121,7 +126,7 @@ export default class WalletReceivePage extends Component<Props, State> {
           show={uiNotifications.isOpen(notification.id)}
           onClose={() => {
             actions.notifications.closeActiveNotification.trigger({
-              id: notification.id
+              id: notification.id,
             });
           }}
           clickToClose

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="112" height="110" viewBox="0 0 112 110">
+    <g fill="none" fill-rule="evenodd">
+        <circle cx="55" cy="56" r="44"/>
+        <circle cx="30" cy="44" r="6" fill="var(--theme-icon-sidebar-color)"/>
+        <circle cx="85" cy="42" r="5" fill="var(--theme-icon-sidebar-color)"/>
+        <circle cx="61" cy="78" r="5" fill="var(--theme-icon-sidebar-color)"/>
+        <g opacity=".2">
+            <path stroke="var(--theme-icon-sidebar-color)" stroke-width="2" d="M30 71l23.492-11.746M30 71V44l26.859-14M62.497 59.332L85 71V42M58.693 61.853L61 78 44 91" opacity=".8"/>
+            <circle cx="85" cy="71" r="5" fill="var(--theme-icon-sidebar-color)"/>
+            <circle cx="57" cy="30" r="5" fill="var(--theme-icon-sidebar-color)"/>
+            <circle cx="30" cy="71" r="3" fill="var(--theme-icon-sidebar-color)"/>
+            <circle cx="44" cy="91" r="3" fill="var(--theme-icon-sidebar-color)"/>
+            <g opacity=".4">
+                <path stroke="var(--theme-icon-sidebar-color)" stroke-width="2" d="M56.859 30L30 17 58 4M85 17L56.859 30M85 17l24 13-24 12M108 66L85 42 56.859 30M3 58l27-14V17M61 78l24-7M30 71l14 20-32-1M77 106l8-35" opacity=".3"/>
+                <circle cx="58" cy="4" r="4" fill="var(--theme-icon-sidebar-color)"/>
+                <circle cx="108" cy="66" r="4" fill="var(--theme-icon-sidebar-color)"/>
+                <circle cx="85" cy="17" r="3" fill="var(--theme-icon-sidebar-color)"/>
+                <circle cx="109" cy="30" r="2" fill="var(--theme-icon-sidebar-color)"/>
+                <circle cx="30" cy="17" r="3" fill="var(--theme-icon-sidebar-color)"/>
+                <circle cx="3" cy="58" r="3" fill="var(--theme-icon-sidebar-color)"/>
+                <circle cx="77" cy="106" r="4" fill="var(--theme-icon-sidebar-color)"/>
+                <circle cx="12" cy="90" r="4" fill="var(--theme-icon-sidebar-color)"/>
+            </g>
+        </g>
+        <circle cx="58" cy="57" r="5" stroke="var(--theme-icon-sidebar-color)" stroke-width="2"/>
+    </g>
+</svg>

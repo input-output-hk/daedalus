@@ -20,21 +20,19 @@ export class Address extends Component<Props> {
   render() {
     const { address, onCopyAddress, copyAddressLabel, index } = this.props;
     const addressClasses = classnames([
-      'generatedAddress-' + (index + 1),
+      `generatedAddress-${index + 1}`,
       styles.component,
       address.used ? styles.usedWalletAddress : null,
     ]);
     return (
       <div className={addressClasses}>
-        <div
-          className={styles.addressId}
-          id={`address-${address.id}`}
-        >
+        <div className={styles.addressId} id={`address-${address.id}`}>
           {address.id}
         </div>
         <div className={styles.addressActions}>
           <CopyToClipboard
             text={address.id}
+            // eslint-disable-next-line react/jsx-no-bind
             onCopy={onCopyAddress.bind(this, address.id)}
           >
             <span className={styles.copyAddress}>

@@ -4,9 +4,9 @@ import { observer, inject } from 'mobx-react';
 import NodeUpdateNotification from '../../components/notifications/NodeUpdateNotification';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
-@inject('stores', 'actions') @observer
+@inject('stores', 'actions')
+@observer
 export default class NodeUpdatePage extends Component<InjectedProps> {
-
   static defaultProps = { actions: null, stores: null };
 
   render() {

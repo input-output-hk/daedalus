@@ -1,10 +1,14 @@
+@import '../../../themes/mixins/link';
+
 .component {
   color: var(--theme-transactions-list-item-details-color);
   position: relative;
   cursor: pointer;
 
   &.failed {
-    .title, .amount, .details {
+    .title,
+    .amount,
+    .details {
       color: var(--theme-transactions-state-failed-text-color);
     }
     .currencySymbol {
@@ -29,7 +33,7 @@
   display: none;
   margin-left: -70px;
   margin-top: -17px;
-  opacity: .1;
+  opacity: 0.1;
   position: sticky;
   text-align: center;
   width: 74px;
@@ -42,12 +46,12 @@
     }
   }
   .component:hover & {
-    opacity: .2;
+    opacity: 0.2;
   }
   .content:hover & {
-    opacity: .1;
+    opacity: 0.1;
     &:hover {
-      opacity: .2;
+      opacity: 0.2;
     }
   }
 }
@@ -69,7 +73,8 @@
   width: 100%;
 }
 
-.title, .amount {
+.title,
+.amount {
   color: var(--theme-transactions-list-item-details-color);
   font-family: var(--font-semibold);
   font-size: 16px;
@@ -86,7 +91,11 @@
   user-select: text;
 }
 
-.pendingLabel, .failedLabel, .low, .medium, .high {
+.pendingLabel,
+.failedLabel,
+.low,
+.medium,
+.high {
   border-radius: 3px;
   color: var(--theme-transactions-priority-color);
   display: inline-block;
@@ -112,24 +121,24 @@
   }
 
   background-color: var(--theme-transactions-state-pending-background-color);
-  background-image:
-    linear-gradient(
-        -45deg,
-        var(--theme-transactions-state-pending-stripes-color) 25%,
-        transparent 25%,
-        transparent 50%,
-        var(--theme-transactions-state-pending-stripes-color) 50%,
-        var(--theme-transactions-state-pending-stripes-color) 75%,
-        transparent 75%,
-        transparent
-    );
-  background-size:50px 50px;
+  background-image: linear-gradient(
+    -45deg,
+    var(--theme-transactions-state-pending-stripes-color) 25%,
+    transparent 25%,
+    transparent 50%,
+    var(--theme-transactions-state-pending-stripes-color) 50%,
+    var(--theme-transactions-state-pending-stripes-color) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 50px 50px;
   animation: pending-label-animation 2s linear infinite;
   overflow: hidden;
 }
 
 .failedLabel {
   background-color: var(--theme-transactions-state-failed-background-color);
+  color: var(--theme-transactions-state-failed-text-secondary-color);
 }
 
 .low {
@@ -141,7 +150,7 @@
 }
 
 .high {
-  background-color: var(--theme-transactions-priority-heigh-background-color);
+  background-color: var(--theme-transactions-priority-high-background-color);
 }
 
 .assuranceLevel {
@@ -157,7 +166,7 @@
 // ========= DETAILS =========
 
 .content {
-  border-bottom: 1px solid var(--theme-separation-border-color);
+  border-bottom: 1px solid var(--theme-dialog-border-color);
   margin-left: 74px;
   margin-right: 10px;
 }
@@ -192,30 +201,32 @@
     margin-bottom: 8px;
   }
 
+  .addressRow,
+  .transactionIdRow {
+    line-height: 17px;
+  }
+
   span {
     font-family: var(--font-light);
     font-size: 14px;
     user-select: text;
     word-break: break-all;
 
-    &.address, &.transactionId {
+    &.address,
+    &.transactionId {
       font-family: var(--font-mono);
-      letter-spacing: -.4px;
+      letter-spacing: -0.4px;
       opacity: 0.8;
-    }
-
-    &.address {
-      display: block;
-      line-height: 19px;
     }
   }
 
   &.clickable {
     .transactionId,
     .address {
+      @include link(--theme-transactions-list-item-details-color);
+      border-bottom: 1px solid transparent;
       &:hover {
-        cursor: pointer;
-        text-decoration: underline;
+        border-bottom-color: var(--theme-transactions-list-item-details-color);
       }
     }
   }

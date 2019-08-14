@@ -1,0 +1,21 @@
+@import '../stakingConfig';
+
+.component {
+  .circleBackground,
+  .circleProgress {
+    fill: none;
+  }
+
+  .circleBackground {
+    stroke: var(--theme-staking-donut-ring-remaining-color);
+  }
+
+  .circleProgress {
+    stroke: var(--theme-staking-donut-ring-completed-color);
+  }
+
+  .circleText {
+    @extend %regularText;
+    fill: var(--theme-staking-donut-ring-completed-color);
+  }
+}

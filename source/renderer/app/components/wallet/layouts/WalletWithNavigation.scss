@@ -7,10 +7,16 @@
 .navigation {
   height: 50px;
   flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .page {
   height: calc(100% - 50px);
   overflow: auto;
   position: relative;
+}
+
+.settingsTabPage {
+  overflow: hidden;
 }

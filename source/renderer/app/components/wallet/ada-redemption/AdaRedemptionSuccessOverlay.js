@@ -8,18 +8,18 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import styles from './AdaRedemptionSuccessOverlay.scss';
 import successIcon from '../../../assets/images/success-big.inline.svg';
-import closeCrossWhite from '../../../assets/images/close-cross-white.inline.svg';
+import closeCrossThin from '../../../assets/images/close-cross-thin.inline.svg';
 
 const messages = defineMessages({
   headline: {
     id: 'wallet.redeem.success.overlay.headline',
     defaultMessage: '!!!You have successfully redeemed',
-    description: 'Headline for the ada redemption success overlay.'
+    description: 'Headline for the ada redemption success overlay.',
   },
   confirmButton: {
     id: 'wallet.redeem.success.overlay.confirmButton',
     defaultMessage: '!!!Great',
-    description: 'Confirm button text'
+    description: 'Confirm button text',
   },
 });
 
@@ -30,9 +30,8 @@ type Props = {
 
 @observer
 export default class AdaRedemptionSuccessOverlay extends Component<Props> {
-
   static contextTypes = {
-    intl: intlShape.isRequired
+    intl: intlShape.isRequired,
   };
 
   render() {
@@ -43,7 +42,9 @@ export default class AdaRedemptionSuccessOverlay extends Component<Props> {
       <div className={styles.component}>
         <SVGInline svg={successIcon} className={styles.icon} />
         <div className={styles.text}>
-          <h1 className={styles.headline}>{intl.formatMessage(messages.headline)}</h1>
+          <h1 className={styles.headline}>
+            {intl.formatMessage(messages.headline)}
+          </h1>
           <div className={styles.amount}>{amount} ADA</div>
           <Button
             className={styles.confirmButton}
@@ -52,9 +53,8 @@ export default class AdaRedemptionSuccessOverlay extends Component<Props> {
             skin={ButtonSkin}
           />
         </div>
-        <DialogCloseButton onClose={onClose} icon={closeCrossWhite} />
+        <DialogCloseButton onClose={onClose} icon={closeCrossThin} />
       </div>
     );
   }
-
 }

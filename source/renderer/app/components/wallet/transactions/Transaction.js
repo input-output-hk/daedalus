@@ -8,6 +8,7 @@ import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon.js';
 import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
+import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import {
   transactionStates,
   transactionTypes,
@@ -18,6 +19,8 @@ import { MAX_TRANSACTION_CONFIRMATIONS } from '../../../config/numbersConfig';
 import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';
 import { getNetworkExplorerUrl } from '../../../utils/network';
+
+/* eslint-disable consistent-return */
 
 const messages = defineMessages({
   card: {
@@ -33,7 +36,8 @@ const messages = defineMessages({
   exchange: {
     id: 'wallet.transaction.type.exchange',
     defaultMessage: '!!!Exchange',
-    description: 'Transaction type shown for money exchanges between currencies.',
+    description:
+      'Transaction type shown for money exchanges between currencies.',
   },
   assuranceLevel: {
     id: 'wallet.transaction.assuranceLevel',
@@ -137,7 +141,6 @@ type Props = {
 };
 
 export default class Transaction extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -157,15 +160,22 @@ export default class Transaction extends Component<Props> {
   }
 
   displayNumberOfConfirmations = (confirmations: number) => {
-    let text = Math.min(confirmations, MAX_TRANSACTION_CONFIRMATIONS).toLocaleString();
+    let text = Math.min(
+      confirmations,
+      MAX_TRANSACTION_CONFIRMATIONS
+    ).toLocaleString();
     if (confirmations > MAX_TRANSACTION_CONFIRMATIONS) text += '+';
     return text;
   };
 
   render() {
     const {
-      data, isLastInList, state, assuranceLevel,
-      formattedWalletAmount, onOpenExternalLink,
+      data,
+      isLastInList,
+      state,
+      assuranceLevel,
+      formattedWalletAmount,
+      onOpenExternalLink,
       isRestoreActive,
       isExpanded,
     } = this.props;
@@ -175,11 +185,14 @@ export default class Transaction extends Component<Props> {
 
     const hasConfirmations = data.numberOfConfirmations > 0;
     const isFailedTransaction = state === transactionStates.FAILED;
-    const isPendingTransaction = (state === transactionStates.PENDING) ||
-      ((state === transactionStates.OK) && !hasConfirmations);
+    const isPendingTransaction =
+      state === transactionStates.PENDING ||
+      (state === transactionStates.OK && !hasConfirmations);
 
     // transaction state is mutated in order to capture zero-confirmations status as pending state
-    const transactionState = isPendingTransaction ? transactionStates.PENDING : state;
+    const transactionState = isPendingTransaction
+      ? transactionStates.PENDING
+      : state;
 
     const componentStyles = classNames([
       styles.component,
@@ -190,39 +203,39 @@ export default class Transaction extends Component<Props> {
     const contentStyles = classNames([
       styles.content,
       isLastInList ? styles.last : null,
-      isExpanded ? styles.contentExpanded : null
+      isExpanded ? styles.contentExpanded : null,
     ]);
 
     const detailsStyles = classNames([
       styles.details,
       canOpenExplorer ? styles.clickable : null,
-      isExpanded ? styles.detailsExpanded : styles.detailsClosed
+      isExpanded ? styles.detailsExpanded : styles.detailsClosed,
     ]);
 
     const assuranceLevelRowStyles = classNames([
       styles.row,
-      styles.retainHeight
+      styles.retainHeight,
     ]);
 
     const arrowStyles = classNames([
       styles.arrow,
-      isExpanded ? styles.arrowExpanded : null
+      isExpanded ? styles.arrowExpanded : null,
     ]);
 
-    const status = intl.formatMessage(assuranceLevelTranslations[assuranceLevel]);
+    const status = intl.formatMessage(
+      assuranceLevelTranslations[assuranceLevel]
+    );
     const currency = intl.formatMessage(globalMessages.currency);
     const symbol = adaSymbol;
 
     const transactionStateTag = () => {
       if (isRestoreActive) return;
-      return (
-        (transactionState === transactionStates.OK) ? (
-          <div className={styles[assuranceLevel]}>{status}</div>
-        ) : (
-          <div className={styles[`${transactionState}Label`]}>
-            {intl.formatMessage(stateTranslations[transactionState])}
-          </div>
-        )
+      return transactionState === transactionStates.OK ? (
+        <div className={styles[assuranceLevel]}>{status}</div>
+      ) : (
+        <div className={styles[`${transactionState}Label`]}>
+          {intl.formatMessage(stateTranslations[transactionState])}
+        </div>
       );
     };
 
@@ -233,34 +246,31 @@ export default class Transaction extends Component<Props> {
         role="presentation"
         aria-hidden
       >
-        <div
-          className={styles.toggler}
-        >
+        <div className={styles.toggler}>
           <TransactionTypeIcon
-            iconType={isFailedTransaction ? transactionStates.FAILED : data.type}
+            iconType={
+              isFailedTransaction ? transactionStates.FAILED : data.type
+            }
           />
 
           <div className={styles.togglerContent}>
             <div className={styles.header}>
               <div className={styles.title}>
-                {data.type === transactionTypes.EXPEND ?
-                  intl.formatMessage(messages.sent, { currency }) :
-                  intl.formatMessage(messages.received, { currency })
-                }
+                {data.type === transactionTypes.EXPEND
+                  ? intl.formatMessage(messages.sent, { currency })
+                  : intl.formatMessage(messages.received, { currency })}
               </div>
               <div className={styles.amount}>
-                {
-                  // hide currency (we are showing symbol instead)
-                  formattedWalletAmount(data.amount, false)
-                }
+                {// hide currency (we are showing symbol instead)
+                formattedWalletAmount(data.amount, false)}
                 <SVGInline svg={symbol} className={styles.currencySymbol} />
               </div>
             </div>
 
             <div className={styles.details}>
               <div className={styles.type}>
-                {intl.formatMessage(messages.type, { currency })}
-                , {moment(data.date).format('hh:mm:ss A')}
+                {intl.formatMessage(messages.type, { currency })},{' '}
+                {moment(data.date).format('hh:mm:ss A')}
               </div>
               {transactionStateTag()}
             </div>
@@ -268,69 +278,92 @@ export default class Transaction extends Component<Props> {
         </div>
 
         {/* ==== Toggleable Transaction Details ==== */}
-        <div
-          className={contentStyles}
-        >
+        <div className={contentStyles}>
           <div
             className={detailsStyles}
-            onClick={(event) => event.stopPropagation()}
+            onClick={event => event.stopPropagation()}
             role="presentation"
             aria-hidden
           >
             <div>
-              <h2>
-                {intl.formatMessage(messages.fromAddresses)}
-              </h2>
+              <h2>{intl.formatMessage(messages.fromAddresses)}</h2>
               {data.addresses.from.map((address, addressIndex) => (
-                <span
-                  role="presentation"
-                  aria-hidden
+                <div
+                  // eslint-disable-next-line react/no-array-index-key
                   key={`${data.id}-from-${address}-${addressIndex}`}
-                  className={styles.address}
-                  onClick={this.handleOpenExplorer.bind(this, 'address', address)}
+                  className={styles.addressRow}
                 >
-                  {address}
-                </span>
+                  <span
+                    role="presentation"
+                    aria-hidden
+                    className={styles.address}
+                    onClick={this.handleOpenExplorer.bind(
+                      this,
+                      'address',
+                      address
+                    )}
+                  >
+                    {address}
+                    <SVGInline svg={externalLinkIcon} />
+                  </span>
+                </div>
               ))}
-              <h2>
-                {intl.formatMessage(messages.toAddresses)}
-              </h2>
+
+              <h2>{intl.formatMessage(messages.toAddresses)}</h2>
               {data.addresses.to.map((address, addressIndex) => (
-                <span
-                  role="presentation"
-                  aria-hidden
+                <div
+                  // eslint-disable-next-line react/no-array-index-key
                   key={`${data.id}-to-${address}-${addressIndex}`}
-                  className={styles.address}
-                  onClick={this.handleOpenExplorer.bind(this, 'address', address)}
+                  className={styles.addressRow}
                 >
-                  {address}
-                </span>
+                  <span
+                    role="presentation"
+                    aria-hidden
+                    className={styles.address}
+                    onClick={this.handleOpenExplorer.bind(
+                      this,
+                      'address',
+                      address
+                    )}
+                  >
+                    {address}
+                    <SVGInline svg={externalLinkIcon} />
+                  </span>
+                </div>
               ))}
 
               <div className={assuranceLevelRowStyles}>
                 <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
-                {!isRestoreActive && (
-                  transactionState === transactionStates.OK ||
-                  transactionState === transactionStates.PENDING
-                ) ? (
+                {!isRestoreActive &&
+                (transactionState === transactionStates.OK ||
+                  transactionState === transactionStates.PENDING) ? (
                   <span>
-                    {transactionState === transactionStates.OK &&
-                      <span className={styles.assuranceLevel}>{status}.&nbsp;</span>}
-                    {this.displayNumberOfConfirmations(data.numberOfConfirmations)}&nbsp;
+                    {transactionState === transactionStates.OK && (
+                      <span className={styles.assuranceLevel}>
+                        {status}.&nbsp;
+                      </span>
+                    )}
+                    {this.displayNumberOfConfirmations(
+                      data.numberOfConfirmations
+                    )}
+                    &nbsp;
                     {intl.formatMessage(messages.confirmations)}.
                   </span>
-                  ) : null}
+                ) : null}
               </div>
 
               <h2>{intl.formatMessage(messages.transactionId)}</h2>
-              <span
-                role="presentation"
-                aria-hidden
-                className={styles.transactionId}
-                onClick={this.handleOpenExplorer.bind(this, 'tx', data.id)}
-              >
-                {data.id}
-              </span>
+              <div className={styles.transactionIdRow}>
+                <span
+                  role="presentation"
+                  aria-hidden
+                  className={styles.transactionId}
+                  onClick={this.handleOpenExplorer.bind(this, 'tx', data.id)}
+                >
+                  {data.id}
+                  <SVGInline svg={externalLinkIcon} />
+                </span>
+              </div>
             </div>
             {/*
             <div>

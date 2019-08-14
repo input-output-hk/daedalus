@@ -6,22 +6,30 @@ import type {
   WalletAssuranceLevel,
   WalletAssuranceMode,
   WalletSyncState,
-  SyncStateTag
+  SyncStateTag,
 } from '../api/wallets/types';
+import type { StakePool } from '../api/staking/types';
 
 export const WalletAssuranceModeOptions: {
-  NORMAL: WalletAssuranceLevel, STRICT: WalletAssuranceLevel,
+  NORMAL: WalletAssuranceLevel,
+  STRICT: WalletAssuranceLevel,
 } = {
-  NORMAL: 'normal', STRICT: 'strict',
+  NORMAL: 'normal',
+  STRICT: 'strict',
 };
 
 export const WalletSyncStateTags: {
-  RESTORING: SyncStateTag, SYNCED: SyncStateTag,
+  RESTORING: SyncStateTag,
+  SYNCED: SyncStateTag,
 } = {
-  RESTORING: 'restoring', SYNCED: 'synced',
+  RESTORING: 'restoring',
+  SYNCED: 'synced',
 };
 
-const WalletAssuranceModes: { NORMAL: WalletAssuranceMode, STRICT: WalletAssuranceMode } = {
+const WalletAssuranceModes: {
+  NORMAL: WalletAssuranceMode,
+  STRICT: WalletAssuranceMode,
+} = {
   NORMAL: {
     low: 3,
     medium: 9,
@@ -29,7 +37,7 @@ const WalletAssuranceModes: { NORMAL: WalletAssuranceMode, STRICT: WalletAssuran
   STRICT: {
     low: 5,
     medium: 15,
-  }
+  },
 };
 
 export type WalletProps = {
@@ -40,10 +48,13 @@ export type WalletProps = {
   hasPassword: boolean,
   passwordUpdateDate: ?Date,
   syncState?: WalletSyncState,
+  isLegacy: boolean,
+  inactiveStakePercentage?: number,
+  isDelegated?: boolean,
+  delegatedStakePool?: StakePool,
 };
 
 export default class Wallet {
-
   id: string = '';
   @observable name: string = '';
   @observable amount: BigNumber;
@@ -51,15 +62,32 @@ export default class Wallet {
   @observable hasPassword: boolean;
   @observable passwordUpdateDate: ?Date;
   @observable syncState: ?WalletSyncState;
+  @observable isLegacy: boolean;
+  @observable inactiveStakePercentage: ?number;
+  @observable isDelegated: ?boolean;
+  @observable delegatedStakePool: ?StakePool;
 
   constructor(data: WalletProps) {
     Object.assign(this, data);
   }
 
   @action update(other: Wallet) {
-    Object.assign(this, pick(other, [
-      'id', 'name', 'amount', 'assurance', 'hasPassword', 'passwordUpdateDate', 'syncState'
-    ]));
+    Object.assign(
+      this,
+      pick(other, [
+        'id',
+        'name',
+        'amount',
+        'assurance',
+        'hasPassword',
+        'passwordUpdateDate',
+        'syncState',
+        'isLegacy',
+        'inactiveStakePercentage',
+        'isDelegated',
+        'delegatedStakePool',
+      ])
+    );
   }
 
   @computed get hasFunds(): boolean {
@@ -68,10 +96,12 @@ export default class Wallet {
 
   @computed get assuranceMode(): WalletAssuranceMode {
     switch (this.assurance) {
-      case WalletAssuranceModeOptions.NORMAL: return WalletAssuranceModes.NORMAL;
-      case WalletAssuranceModeOptions.STRICT: return WalletAssuranceModes.STRICT;
-      default: return WalletAssuranceModes.NORMAL;
+      case WalletAssuranceModeOptions.NORMAL:
+        return WalletAssuranceModes.NORMAL;
+      case WalletAssuranceModeOptions.STRICT:
+        return WalletAssuranceModes.STRICT;
+      default:
+        return WalletAssuranceModes.NORMAL;
     }
   }
-
 }

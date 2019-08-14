@@ -12,7 +12,8 @@
 .active {
   color: var(--theme-settings-menu-item-text-color-active);
   background-color: var(--theme-settings-menu-item-background-color-active);
-  border-left: 4px solid var(--theme-settings-menu-item-left-border-color-active);
+  border-left: 4px solid
+    var(--theme-settings-menu-item-left-border-color-active);
   font-family: var(--font-bold);
   padding-left: 16px;
 }

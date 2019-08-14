@@ -8,7 +8,10 @@ export default class WalletBackupActions {
   initiateWalletBackup: Action<{ recoveryPhrase: string[] }> = new Action();
   acceptPrivacyNoticeForWalletBackup: Action<any> = new Action();
   continueToRecoveryPhraseForWalletBackup: Action<any> = new Action();
-  addWordToWalletBackupVerification: Action<{ word: string, index: number }> = new Action();
+  addWordToWalletBackupVerification: Action<{
+    word: string,
+    index: number,
+  }> = new Action();
   clearEnteredRecoveryPhrase: Action<any> = new Action();
   acceptWalletBackupTermDevice: Action<any> = new Action();
   acceptWalletBackupTermRecovery: Action<any> = new Action();

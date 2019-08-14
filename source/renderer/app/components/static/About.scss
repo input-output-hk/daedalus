@@ -1,20 +1,53 @@
+@import '../../themes/mixins/link';
+
 .container {
-  background-color: var(--theme-about-window-background-color);
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 30px 30px 20px;
+  padding: 50px 80px;
   user-select: text;
 
+  .closeButton {
+    cursor: pointer;
+    display: flex;
+    justify-content: flex-end;
+    position: fixed;
+    right: 15px;
+    top: 15px;
+
+    span {
+      height: 44px;
+      width: 44px;
+
+      &:hover {
+        border-radius: 50%;
+        background-color: var(--theme-about-window-icon-close-hover-background);
+      }
+    }
+
+    svg {
+      height: 12px;
+      margin-top: 16px;
+      width: 12px;
+
+      g {
+        stroke: var(--theme-about-window-icon-close-button-color);
+      }
+    }
+  }
+
   .headerWrapper {
-    border-bottom: 1px solid var(--theme-about-window-header-bottom-border-color);
+    border-bottom: 1px solid
+      var(--theme-about-window-header-bottom-border-color);
     display: flex;
     padding-bottom: 20px;
 
     .daedalusIcon {
       svg {
         height: 58px;
+        margin-top: 14px;
         width: 74px;
+
         path {
           fill: var(--theme-about-window-daedalus-icon-color);
         }
@@ -24,7 +57,6 @@
     .daedalusTitleVersion {
       color: var(--theme-about-window-title-varsion-color);
       display: flex;
-      flex: 1;
       flex-direction: column;
       justify-content: center;
       margin-left: 30px;
@@ -39,7 +71,7 @@
 
         .daedalusVersion {
           font-family: var(--font-regular);
-          font-size: 14px;
+          font-size: 16px;
           font-weight: 300;
           letter-spacing: 0;
           line-height: 1.38;
@@ -49,7 +81,7 @@
 
       .daedalusBuildInfo {
         font-family: var(--font-regular);
-        font-size: 12px;
+        font-size: 16px;
         font-weight: 300;
         line-height: 1.25;
         margin-top: 6px;
@@ -62,10 +94,13 @@
     }
 
     .apiIcon {
-      margin-top: 7.5px;
+      margin-left: 10px;
+      margin-top: 45px;
+
       svg {
-        height: 43px;
-        width: 47px;
+        height: 25px;
+        width: 25px;
+
         path {
           fill: var(--theme-about-window-cardano-icon-color);
         }
@@ -74,16 +109,18 @@
   }
 
   .contentText {
-    border-bottom: 1px solid var(--theme-about-window-content-bottom-border-color);
+    border-bottom: 1px solid
+      var(--theme-about-window-content-bottom-border-color);
     color: var(--theme-about-window-content-text-color);
     flex: 1;
     font-family: var(--font-regular);
-    font-size: 12px;
-    line-height: 1.25;
+    font-size: 16px;
+    line-height: 1.5;
     margin-top: 20px;
     padding-bottom: 20px;
 
     h2 {
+      color: var(--theme-about-window-content-color);
       font-family: var(--font-semibold);
       margin-bottom: 3px;
     }
@@ -98,15 +135,16 @@
 
     .link,
     .copyright {
-      color: var(--theme-about-window-copyright-color);
+      color: var(--theme-about-window-content-text-color);
       font-family: var(--font-regular);
-      font-size: 12px;
-      line-height: 1.25;
+      font-size: 14px;
+      line-height: 1.43;
     }
 
     .link {
+      @include link(--theme-about-window-content-color);
+      color: var(--theme-about-window-content-color);
       cursor: pointer;
-      text-decoration: underline;
     }
 
     .copyright {

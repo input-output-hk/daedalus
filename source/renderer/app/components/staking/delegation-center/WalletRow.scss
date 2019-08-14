@@ -1,0 +1,116 @@
+@import '../stakingConfig';
+
+.component {
+  border-bottom: 1px solid var(--theme-staking-wallet-row-border-color);
+  display: flex;
+  justify-content: space-between;
+  overflow: visible;
+  padding: 20px 0;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  .left {
+    .title {
+      @extend %accentText;
+      margin-bottom: 3px;
+    }
+    .description {
+      @extend %regularText;
+      align-items: center;
+      display: flex;
+      font-size: 14px;
+
+      .donutRing {
+        margin: 0 8px;
+      }
+    }
+  }
+
+  .right {
+    align-items: stretch;
+    display: flex;
+
+    .status {
+      @extend %regularText;
+
+      align-items: center;
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 3px;
+
+      .normalOption {
+        @extend %regularText;
+        font-size: 13px;
+      }
+      .removeOption {
+        @extend %regularText;
+        color: var(--theme-input-remove-color-light);
+        font-size: 13px;
+      }
+      li:hover {
+        .normalOption {
+          color: var(--theme-staking-dropdown-item-text-color-hover);
+        }
+      }
+
+      .gearIcon {
+        cursor: pointer;
+
+        svg {
+          height: 12px;
+          width: 12px;
+
+          path {
+            fill: var(--theme-staking-delegation-center-gear-icon-fill-color);
+          }
+        }
+      }
+
+      :global {
+        .SimpleSelect_isOpen {
+          .WalletRow_gearIcon {
+            svg {
+              path {
+                fill: var(
+                  --theme-staking-delegation-center-gear-icon-fill-color-active
+                );
+              }
+            }
+          }
+        }
+
+        .SimpleSelect_select {
+          &:hover {
+            .WalletRow_gearIcon {
+              svg {
+                path {
+                  fill: var(
+                    --theme-staking-delegation-center-gear-icon-fill-color-active
+                  );
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    .action {
+      @extend %regularText;
+      font-size: 14px;
+    }
+    .stakePoolRankingIndicator {
+      border-radius: 2px;
+      height: 100%;
+      transform: translate(20px);
+      width: 4px;
+    }
+  }
+
+  b,
+  .actionLink {
+    color: var(--theme-staking-link-color);
+    cursor: pointer;
+  }
+}

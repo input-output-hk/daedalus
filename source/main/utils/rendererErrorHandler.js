@@ -4,8 +4,9 @@ import unhandled from 'electron-unhandled';
 import { Logger } from './logging';
 
 unhandled({
-  logger: (error: any) => Logger.error('unhandledException::renderer', { error }),
-  showDialog: false
+  logger: (error: any) =>
+    Logger.error('unhandledException::renderer', { error }),
+  showDialog: false,
 });
 
 export default class RendererErrorHandler {
@@ -24,6 +25,7 @@ export default class RendererErrorHandler {
 
     if (this.count < this.maxReloads) {
       this.count++;
+      // eslint-disable-next-line no-unused-expressions
       this.createMainWindow && this.createMainWindow();
     } else {
       this.count = 0;

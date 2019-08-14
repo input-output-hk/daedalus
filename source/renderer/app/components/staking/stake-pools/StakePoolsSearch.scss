@@ -1,0 +1,63 @@
+.component {
+  background: transparent;
+  padding: 20px 0 6px;
+  width: 100%;
+
+  /*
+   * This makes the Search component to be fixed.
+   * Removing this for now until we have a solution that won't take too much space.
+   */
+  // position: sticky;
+  // top: 0;
+  // z-index: 2;
+}
+
+.container {
+  position: relative;
+}
+
+.searchIcon {
+  left: 20px;
+  position: absolute;
+  bottom: 12.5px;
+  z-index: 1;
+
+  svg {
+    width: 15px;
+    g > g {
+      fill: var(--theme-staking-stake-pools-search-icon-color);
+    }
+  }
+}
+
+.searchInput {
+  input {
+    border-radius: 4px;
+    height: 50px;
+    padding-left: 55px;
+    padding-right: 175px;
+  }
+}
+
+.searchFilter {
+  display: block;
+  position: absolute;
+  right: 20px;
+  top: 13px;
+
+  li {
+    display: inline-block;
+    margin-left: 20px;
+  }
+
+  button {
+    color: var(--theme-staking-stake-pools-search-button-color);
+    cursor: pointer;
+    font-size: 16px;
+    opacity: 0.3;
+  }
+
+  .searchFilterActiveItem {
+    opacity: 1;
+  }
+}

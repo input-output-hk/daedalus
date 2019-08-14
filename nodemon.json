@@ -3,5 +3,5 @@
     "dist",
     "features"
   ],
-  "ext": "js json css html"
+  "ext": "js json css html feature"
 }

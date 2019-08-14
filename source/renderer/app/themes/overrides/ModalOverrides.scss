@@ -5,6 +5,8 @@
 .modal {
   display: flex;
   flex-direction: column;
+  max-width: 640px;
+
   :global {
     .WalletExportDialogChoices_component {
       & > button {
@@ -13,7 +15,8 @@
 
       & > .WalletExportDialogChoices_activeButton {
         color: var(--theme-dialog-choice-tabs-text-color-active);
-        border-bottom: 2px solid var(--theme-dialog-choice-tabs-bottom-border-color-active);
+        border-bottom: 2px solid
+          var(--theme-dialog-choice-tabs-bottom-border-color-active);
       }
     }
   }

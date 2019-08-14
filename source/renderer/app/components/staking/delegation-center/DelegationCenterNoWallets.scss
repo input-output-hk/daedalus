@@ -1,0 +1,38 @@
+.component {
+  align-items: center;
+  color: var(--theme-staking-delegation-center-no-wallets-instructions-color);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-medium);
+  justify-content: center;
+  line-height: 1.38;
+  padding: 0 40px;
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  transform: translateY(-130px);
+  width: 100%;
+
+  h1 {
+    font-weight: 500;
+    margin-bottom: 11px;
+  }
+
+  p {
+    font-family: var(--font-light);
+  }
+
+  button {
+    margin-top: 40px;
+  }
+}
+
+.icon {
+  margin-bottom: 30px;
+  & > svg {
+    width: 66px;
+    path {
+      fill: var(--theme-icon-delegation-center-no-wallets);
+    }
+  }
+}

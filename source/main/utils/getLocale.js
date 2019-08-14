@@ -1,15 +1,18 @@
 // @flow
 import Store from 'electron-store';
+import { detectSystemLocale } from './detectSystemLocale';
 
 const store = new Store();
 
 export const getLocale = (network: string) => {
-  const english = 'en-US';
+  const systemLocale = detectSystemLocale();
   try {
     const locale = store.get(`${network}-USER-LOCALE`);
-    if (locale) { return locale; }
-    return english;
+    if (locale) {
+      return locale;
+    }
+    return systemLocale;
   } catch (error) {
-    return english;
+    return systemLocale;
   }
 };

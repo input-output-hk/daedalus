@@ -7,22 +7,17 @@ import styles from './BorderedBox.scss';
 
 type Props = {
   children?: Node,
-  fullHeight?: boolean
+  fullHeight?: boolean,
 };
 
 @observer
 export default class BorderedBox extends Component<Props> {
-
   render() {
     const { children, fullHeight } = this.props;
     const componentClasses = classnames([
       styles.component,
-      fullHeight ? styles.fullHeight : null
+      fullHeight ? styles.fullHeight : null,
     ]);
-    return (
-      <div className={componentClasses}>
-        {children}
-      </div>
-    );
+    return <div className={componentClasses}>{children}</div>;
   }
 }

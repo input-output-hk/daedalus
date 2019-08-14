@@ -7,7 +7,8 @@ import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import InstructionsDialog from '../wallet/paper-wallet-certificate/InstructionsDialog';
-import supportIcon from '../../assets/images/sidebar/bug-report-ic.inline.svg';
+import supportIconLight from '../../assets/images/sidebar/bug-report-ic.inline.svg';
+import supportIconDark from '../../assets/images/sidebar/bug-report-ic-dark.inline.svg';
 import type { SidebarWalletType } from '../../types/sidebarTypes';
 import { ROUTES } from '../../routes-config';
 import { CATEGORIES_BY_NAME } from '../../config/sidebarConfig.js';
@@ -16,6 +17,7 @@ type Props = {
   menus: SidebarMenus,
   categories: SidebarCategories,
   activeSidebarCategory: string,
+  currentTheme: string,
   onCategoryClicked: Function,
   isShowingSubMenus: boolean,
   openDialogAction: Function,
@@ -30,8 +32,8 @@ export type SidebarMenus = ?{
     activeWalletId: ?string,
     actions: {
       onWalletItemClick: Function,
-    }
-  }
+    },
+  },
 };
 
 export type SidebarCategories = Array<{
@@ -42,20 +44,31 @@ export type SidebarCategories = Array<{
 
 @observer
 export default class Sidebar extends Component<Props> {
-
   static defaultProps = {
     isShowingSubMenus: false,
   };
 
+  get supportIcon() {
+    const { currentTheme } = this.props;
+    return currentTheme === 'yellow' || currentTheme === 'white'
+      ? supportIconDark
+      : supportIconLight;
+  }
+
   render() {
     const {
-      menus, categories, activeSidebarCategory, pathname,
-      isShowingSubMenus, onAddWallet, onSubmitSupportRequest,
+      menus,
+      categories,
+      activeSidebarCategory,
+      pathname,
+      isShowingSubMenus,
+      onAddWallet,
+      onSubmitSupportRequest,
     } = this.props;
     let subMenu = null;
 
     const walletsCategory = find(categories, {
-      name: CATEGORIES_BY_NAME.WALLETS.name
+      name: CATEGORIES_BY_NAME.WALLETS.name,
     }).route;
 
     if (menus && activeSidebarCategory === walletsCategory) {
@@ -73,7 +86,7 @@ export default class Sidebar extends Component<Props> {
 
     const sidebarStyles = classNames([
       styles.component,
-      !isShowingSubMenus || subMenu == null ? styles.minimized : null
+      !isShowingSubMenus || subMenu == null ? styles.minimized : null,
     ]);
 
     return (
@@ -83,6 +96,7 @@ export default class Sidebar extends Component<Props> {
             const categoryClassName = kebabCase(category.name);
             return (
               <SidebarCategory
+                // eslint-disable-next-line react/no-array-index-key
                 key={index}
                 className={categoryClassName}
                 icon={category.icon}
@@ -94,7 +108,7 @@ export default class Sidebar extends Component<Props> {
 
           <SidebarCategory
             className="supportRequest"
-            icon={supportIcon}
+            icon={this.supportIcon}
             active={false}
             onClick={onSubmitSupportRequest}
           />

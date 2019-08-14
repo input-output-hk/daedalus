@@ -1,0 +1,254 @@
+@import '../stakingConfig';
+@import '../../../themes/mixins/link';
+
+.component {
+  @extend %regularText;
+  background: var(--theme-staking-stake-pool-tooltip-background-color);
+  border-radius: 5px;
+  border: 1px solid var(--theme-staking-stake-pool-tooltip-border-color);
+  box-shadow: 0 1.5px 5px 0 var(--theme-staking-stake-pool-tooltip-shadow-color);
+  display: none;
+  padding: 10px;
+  position: absolute;
+  user-select: text;
+  width: 240px;
+  z-index: 1;
+
+  :global {
+    button.SimpleButton_root {
+      background-color: var(
+        --theme-staking-stake-pool-tooltip-delegate-button-background-color
+      );
+      border: 1px solid
+        var(--theme-staking-stake-pool-tooltip-delegate-button-border-color);
+      color: var(--theme-staking-stake-pool-tooltip-delegate-button-text-color);
+      height: 33px;
+      user-select: none;
+      width: 100%;
+      border-radius: 2px;
+
+      &:hover {
+        background-color: var(
+          --theme-staking-stake-pool-tooltip-delegate-button-hover-background-color,
+          --rp-button-bg-color-hover
+        );
+        color: var(
+          --theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color
+        );
+      }
+
+      &:active {
+        background-color: var(
+          --theme-staking-stake-pool-tooltip-delegate-button-active-background-color
+        );
+        border: none;
+        color: var(
+          --theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color
+        );
+      }
+    }
+  }
+}
+
+.container {
+  padding: 10px 10px 0;
+}
+
+.colorBand {
+  border-radius: 4px 4px 0 0;
+  top: 0;
+  display: block;
+  height: 5px;
+  left: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.arrow {
+  width: 0px;
+  height: 0px;
+  border-color: transparent;
+  border-style: solid;
+  position: absolute;
+
+  &:before {
+    border-color: transparent;
+    border-style: solid;
+    content: '';
+    display: block;
+    height: 0;
+    position: absolute;
+    width: 0;
+  }
+
+  &.tooltipPositionTop {
+    border-top-color: var(--theme-staking-stake-pool-tooltip-border-color);
+    border-width: 11px 11px 0 11px;
+    &:before {
+      border-top-color: var(
+        --theme-staking-stake-pool-tooltip-background-color
+      );
+      border-width: 10px 10px 0px 10px;
+      top: -11px;
+      left: -10px;
+    }
+  }
+  &.tooltipPositionRight {
+    border-right-color: var(--theme-staking-stake-pool-tooltip-border-color);
+    border-width: 11px 11px 11px 0;
+    &:before {
+      border-right-color: var(
+        --theme-staking-stake-pool-tooltip-background-color
+      );
+      border-width: 10px 10px 10px 0px;
+      right: -11px;
+      top: -10px;
+    }
+  }
+  &.tooltipPositionBottom {
+    border-bottom-color: var(--theme-staking-stake-pool-tooltip-border-color);
+    border-width: 0 11px 11px 11px;
+    &:before {
+      border-bottom-color: transparent;
+      border-width: 0px 10px 10px 10px;
+      top: -11px;
+      left: -10px;
+    }
+  }
+  &.tooltipPositionLeft {
+    border-left-color: var(--theme-staking-stake-pool-tooltip-border-color);
+    border-width: 11px 0 11px 11px;
+    &:before {
+      border-left-color: var(
+        --theme-staking-stake-pool-tooltip-background-color
+      );
+      border-width: 10px 0px 10px 10px;
+      left: -11px;
+      top: -10px;
+    }
+  }
+}
+
+.isVisible {
+  display: block;
+}
+
+.name {
+  color: var(--theme-staking-stake-pool-tooltip-text-color);
+  font-family: var(--font-semibold);
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  line-height: 1.38;
+  margin-bottom: 3px;
+  max-height: 44px;
+  overflow: hidden;
+  padding-right: 25px;
+  text-overflow: ellipsis;
+}
+
+.closeButton {
+  cursor: pointer;
+  position: absolute;
+  right: 20px;
+  top: 25px;
+
+  svg {
+    height: 8px;
+    width: 8px;
+
+    polygon {
+      fill: var(--theme-staking-stake-pool-tooltip-text-color);
+    }
+  }
+}
+
+.slug {
+  color: var(--theme-staking-stake-pool-tooltip-text-color);
+  display: inline-block;
+  font-size: 14px;
+  line-height: 1.36;
+  margin-bottom: 9px;
+  opacity: 0.6;
+  vertical-align: middle;
+}
+
+.retirement {
+  background: var(
+    --theme-staking-stake-pool-tooltip-retirement-background-color
+  );
+  border-radius: 3px;
+  color: var(--theme-staking-stake-pool-tooltip-retirement-text-color);
+  display: inline-block;
+  font-size: 10px;
+  margin-bottom: 9px;
+  margin-left: 8px;
+  padding: 3px 9px;
+  vertical-align: middle;
+}
+
+.description {
+  color: var(--theme-staking-stake-pool-tooltip-text-color);
+  font-size: 14px;
+  line-height: 1.36;
+  margin-bottom: 4px;
+  max-height: 79px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.url {
+  @include link(--theme-staking-stake-pool-tooltip-link-color);
+  font-size: 14px;
+  line-height: 1.36;
+  margin-bottom: 18px;
+
+  & > span {
+    vertical-align: text-top;
+    svg {
+      vertical-align: baseline;
+    }
+  }
+}
+
+.table {
+  @extend %regularText;
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+
+  dt,
+  dd {
+    height: 19px;
+    margin-bottom: 6px;
+
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+  }
+
+  dt {
+    color: var(--theme-staking-stake-pool-tooltip-table-title-color);
+    font-size: 14px;
+    line-height: 1.36;
+    opacity: 0.8;
+    width: 60%;
+  }
+
+  dd {
+    line-height: 0;
+    padding-top: 1px;
+    text-align: right;
+    width: 40%;
+  }
+
+  span {
+    border-radius: 3px;
+    color: var(--theme-staking-stake-pool-tooltip-table-param-color);
+    display: inline-block;
+    font-size: 8px;
+    font-weight: bold;
+    height: 16px;
+    line-height: 16px;
+    padding: 0 9px;
+  }
+}

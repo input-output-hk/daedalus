@@ -1,9 +1,10 @@
 .terms {
-  color: var(--theme-terms-of-use-text-color);
+  color: var(--theme-support-settings-text-color);
   text-align: justify;
   user-select: text;
 
-  h1, h2 {
+  h1,
+  h2 {
     font-family: var(--font-medium);
     font-size: 19px;
     margin-bottom: 11px;
@@ -19,7 +20,8 @@
     margin-left: 20px;
   }
 
-  p, li {
+  p,
+  li {
     font-family: var(--font-regular);
     line-height: 1.38;
     margin-bottom: 11px;

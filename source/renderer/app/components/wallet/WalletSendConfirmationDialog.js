@@ -19,12 +19,13 @@ export const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.send.confirmationDialog.title',
     defaultMessage: '!!!Confirm transaction',
-    description: 'Title for the "Confirm transaction" dialog.'
+    description: 'Title for the "Confirm transaction" dialog.',
   },
   spendingPasswordLabel: {
     id: 'wallet.send.confirmationDialog.spendingPasswordLabel',
     defaultMessage: '!!!Spending password',
-    description: 'Label for the "Spending password" input in the wallet send confirmation dialog.',
+    description:
+      'Label for the "Spending password" input in the wallet send confirmation dialog.',
   },
   addressToLabel: {
     id: 'wallet.send.confirmationDialog.addressToLabel',
@@ -34,7 +35,8 @@ export const messages = defineMessages({
   amountLabel: {
     id: 'wallet.send.confirmationDialog.amountLabel',
     defaultMessage: '!!!Amount',
-    description: 'Label for the "Amount" in the wallet send confirmation dialog.',
+    description:
+      'Label for the "Amount" in the wallet send confirmation dialog.',
   },
   feesLabel: {
     id: 'wallet.send.confirmationDialog.feesLabel',
@@ -44,22 +46,26 @@ export const messages = defineMessages({
   totalLabel: {
     id: 'wallet.send.confirmationDialog.totalLabel',
     defaultMessage: '!!!Total',
-    description: 'Label for the "Total" in the wallet send confirmation dialog.',
+    description:
+      'Label for the "Total" in the wallet send confirmation dialog.',
   },
   spendingPasswordFieldPlaceholder: {
     id: 'wallet.send.confirmationDialog.spendingPasswordFieldPlaceholder',
     defaultMessage: '!!!Type your spending password',
-    description: 'Placeholder for the "Spending password" inputs in the wallet send confirmation dialog.',
+    description:
+      'Placeholder for the "Spending password" inputs in the wallet send confirmation dialog.',
   },
   sendButtonLabel: {
     id: 'wallet.send.confirmationDialog.submit',
     defaultMessage: '!!!Send',
-    description: 'Label for the send button in the wallet send confirmation dialog.'
+    description:
+      'Label for the send button in the wallet send confirmation dialog.',
   },
   backButtonLabel: {
     id: 'wallet.send.confirmationDialog.back',
     defaultMessage: '!!!Back',
-    description: 'Label for the back button in the wallet send confirmation dialog.'
+    description:
+      'Label for the back button in the wallet send confirmation dialog.',
   },
 });
 
@@ -82,37 +88,53 @@ type Props = {
 
 @observer
 export default class WalletSendConfirmationDialog extends Component<Props> {
-
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
-  form = new ReactToolboxMobxForm({
-    fields: {
-      spendingPassword: {
-        type: 'password',
-        label: this.context.intl.formatMessage(messages.spendingPasswordLabel),
-        placeholder: this.context.intl.formatMessage(messages.spendingPasswordFieldPlaceholder),
-        value: '',
-        validators: [({ field }) => {
-          if (this.props.isSpendingPasswordSet && field.value === '') {
-            return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
-          }
-          return [true];
-        }],
+  form = new ReactToolboxMobxForm(
+    {
+      fields: {
+        spendingPassword: {
+          type: 'password',
+          label: this.context.intl.formatMessage(
+            messages.spendingPasswordLabel
+          ),
+          placeholder: this.context.intl.formatMessage(
+            messages.spendingPasswordFieldPlaceholder
+          ),
+          value: '',
+          validators: [
+            ({ field }) => {
+              if (this.props.isSpendingPasswordSet && field.value === '') {
+                return [
+                  false,
+                  this.context.intl.formatMessage(messages.fieldIsRequired),
+                ];
+              }
+              return [true];
+            },
+          ],
+        },
+      },
+    },
+    {
+      options: {
+        validateOnChange: true,
+        validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
-  }, {
-    options: {
-      validateOnChange: true,
-      validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
-    },
-  });
+  );
 
   submit = () => {
     this.form.submit({
-      onSuccess: (form) => {
-        const { isSpendingPasswordSet, receiver, amount, amountToNaturalUnits } = this.props;
+      onSuccess: form => {
+        const {
+          isSpendingPasswordSet,
+          receiver,
+          amount,
+          amountToNaturalUnits,
+        } = this.props;
         const { spendingPassword } = form.values();
         const transactionData = {
           receiver,
@@ -121,11 +143,13 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
         };
         this.props.onSubmit(transactionData);
       },
-      onError: () => {}
+      onError: () => {},
     });
   };
 
-  submitOnEnter = (event: {}) => this.form.$('spendingPassword').isValid && submitOnEnter(this.submit, event);
+  handleSubmitOnEnter = (event: {}) =>
+    this.form.$('spendingPassword').isValid &&
+    submitOnEnter(this.submit, event);
 
   render() {
     const { form } = this;
@@ -141,7 +165,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
       isSubmitting,
       error,
       currencyUnit,
-      onExternalLinkClick
+      onExternalLinkClick,
     } = this.props;
 
     const confirmButtonClasses = classnames([
@@ -166,14 +190,14 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
     let errorElement = null;
     if (error) {
       const errorHasLink = !!error.values.linkLabel;
-      errorElement = errorHasLink
-        ? (
-          <FormattedHTMLMessageWithLink
-            message={error}
-            onExternalLinkClick={onExternalLinkClick}
-          />
-        )
-        : this.context.intl.formatMessage(error);
+      errorElement = errorHasLink ? (
+        <FormattedHTMLMessageWithLink
+          message={error}
+          onExternalLinkClick={onExternalLinkClick}
+        />
+      ) : (
+        this.context.intl.formatMessage(error)
+      );
     }
 
     return (
@@ -196,24 +220,39 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
 
           <div className={styles.amountFeesWrapper}>
             <div className={styles.amountWrapper}>
-              <div className={styles.amountLabel}>{intl.formatMessage(messages.amountLabel)}</div>
-              <div className={styles.amount}>{amount}
-                <span className={styles.currencySymbol}>&nbsp;{currencyUnit}</span>
+              <div className={styles.amountLabel}>
+                {intl.formatMessage(messages.amountLabel)}
+              </div>
+              <div className={styles.amount}>
+                {amount}
+                <span className={styles.currencySymbol}>
+                  &nbsp;{currencyUnit}
+                </span>
               </div>
             </div>
 
             <div className={styles.feesWrapper}>
-              <div className={styles.feesLabel}>{intl.formatMessage(messages.feesLabel)}</div>
-              <div className={styles.fees}>+{transactionFee}
-                <span className={styles.currencySymbol}>&nbsp;{currencyUnit}</span>
+              <div className={styles.feesLabel}>
+                {intl.formatMessage(messages.feesLabel)}
+              </div>
+              <div className={styles.fees}>
+                +{transactionFee}
+                <span className={styles.currencySymbol}>
+                  &nbsp;{currencyUnit}
+                </span>
               </div>
             </div>
           </div>
 
           <div className={styles.totalAmountWrapper}>
-            <div className={styles.totalAmountLabel}>{intl.formatMessage(messages.totalLabel)}</div>
-            <div className={styles.totalAmount}>{totalAmount}
-              <span className={styles.currencySymbol}>&nbsp;{currencyUnit}</span>
+            <div className={styles.totalAmountLabel}>
+              {intl.formatMessage(messages.totalLabel)}
+            </div>
+            <div className={styles.totalAmount}>
+              {totalAmount}
+              <span className={styles.currencySymbol}>
+                &nbsp;{currencyUnit}
+              </span>
             </div>
           </div>
 
@@ -224,16 +263,14 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
               {...spendingPasswordField.bind()}
               error={spendingPasswordField.error}
               skin={InputSkin}
-              onKeyPress={this.submitOnEnter}
+              onKeyPress={this.handleSubmitOnEnter}
               autoFocus
             />
           ) : null}
         </div>
 
         {errorElement ? <p className={styles.error}>{errorElement}</p> : null}
-
       </Dialog>
     );
   }
-
 }

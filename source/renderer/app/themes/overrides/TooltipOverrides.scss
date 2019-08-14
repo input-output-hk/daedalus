@@ -1,0 +1,19 @@
+.root {
+  display: flex;
+  margin-right: 12px;
+  &:last-child {
+    margin-right: 0;
+  }
+  .bubble {
+    font-size: 14px;
+    > div {
+      transform: translateX(-45%);
+      margin-left: 10px;
+      border-radius: 5px;
+      padding-bottom: 7px;
+    }
+  }
+  b {
+    font-weight: bold;
+  }
+}

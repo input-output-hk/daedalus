@@ -9,8 +9,10 @@ import SimpleLoadingSpinner from 'react-polymorph/lib/themes/simple/SimpleLoadin
 import SimpleModal from 'react-polymorph/lib/themes/simple/SimpleModal.scss';
 import SimpleOptions from 'react-polymorph/lib/themes/simple/SimpleOptions.scss';
 import SimpleSelect from 'react-polymorph/lib/themes/simple/SimpleSelect.scss';
+import SimpleStepper from 'react-polymorph/lib/themes/simple/SimpleStepper.scss';
 import SimpleSwitch from 'react-polymorph/lib/themes/simple/SimpleSwitch.scss';
 import SimpleTextArea from 'react-polymorph/lib/themes/simple/SimpleTextArea.scss';
+import SimpleTooltip from 'react-polymorph/lib/themes/simple/SimpleTooltip.scss';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 
 const {
@@ -24,8 +26,10 @@ const {
   MODAL,
   OPTIONS,
   SELECT,
+  STEPPER,
   SWITCH,
   TEXT_AREA,
+  TOOLTIP,
 } = IDENTIFIERS;
 
 export const daedalusTheme = {
@@ -39,6 +43,8 @@ export const daedalusTheme = {
   [MODAL]: SimpleModal,
   [OPTIONS]: SimpleOptions,
   [SELECT]: SimpleSelect,
+  [STEPPER]: SimpleStepper,
   [SWITCH]: SimpleSwitch,
   [TEXT_AREA]: SimpleTextArea,
+  [TOOLTIP]: SimpleTooltip,
 };
