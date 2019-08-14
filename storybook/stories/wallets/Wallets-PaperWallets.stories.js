@@ -3,7 +3,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import wordlist from 'bip39/wordlists/english';
-import StoryDecorator from '../support/StoryDecorator';
+import StoryDecorator from '../_support/StoryDecorator';
 import InstructionsDialog from '../../../source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog';
 import PrintDialog from '../../../source/renderer/app/components/wallet/paper-wallet-certificate/PrintDialog';
 import SecuringPasswordDialog from '../../../source/renderer/app/components/wallet/paper-wallet-certificate/SecuringPasswordDialog';

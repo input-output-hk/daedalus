@@ -3,7 +3,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { observable, action as mobxAction } from 'mobx';
 import { action } from '@storybook/addon-actions';
-import StoryDecorator from './support/StoryDecorator';
+import StoryDecorator from './_support/StoryDecorator';
 import BigButtonForDialogs from '../../source/renderer/app/components/widgets/BigButtonForDialogs';
 import MnemonicInputWidget from '../../source/renderer/app/components/widgets/forms/MnemonicInputWidget';
 import NotificationMessage from '../../source/renderer/app/components/widgets/NotificationMessage';

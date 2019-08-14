@@ -1,6 +1,6 @@
 // @flow
 import '../../source/renderer/app/themes/index.global.scss';
-import './support/environment';
+import './_support/environment';
 
 // Wallets
 import './wallets/Wallets.stories';

@@ -14,13 +14,13 @@ import {
   generateTransaction,
   generateAddress,
   promise,
-} from '../support/utils';
+} from '../_support/utils';
 import { formattedWalletAmount } from '../../../source/renderer/app/utils/formatters';
 import {
   transactionStates,
   transactionTypes,
 } from '../../../source/renderer/app/domains/WalletTransaction';
-import WalletWrapper from '../support/WalletWrapper';
+import WalletWrapper from '../_support/WalletWrapper';
 
 // Screens
 import WalletSummary from '../../../source/renderer/app/components/wallet/summary/WalletSummary';

@@ -5,7 +5,7 @@ import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
 
 // Assets and helpers
-import WalletWrapper from '../support/WalletWrapper';
+import WalletWrapper from '../_support/WalletWrapper';
 
 // Screens
 import WalletAdd from '../../../source/renderer/app/components/wallet/WalletAdd';

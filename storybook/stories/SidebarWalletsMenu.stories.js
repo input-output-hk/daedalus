@@ -2,7 +2,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import StoryDecorator from './support/StoryDecorator';
+import StoryDecorator from './_support/StoryDecorator';
 import SidebarWalletsMenu from '../../source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu';
 
 storiesOf('SidebarWalletsMenu', module)

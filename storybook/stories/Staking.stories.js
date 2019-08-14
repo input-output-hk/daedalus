@@ -4,9 +4,9 @@ import { storiesOf } from '@storybook/react';
 import { withKnobs, date, number } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import { action } from '@storybook/addon-actions';
-import StoryLayout from './support/StoryLayout';
-import StoryProvider from './support/StoryProvider';
-import StoryDecorator from './support/StoryDecorator';
+import StoryLayout from './_support/StoryLayout';
+import StoryProvider from './_support/StoryProvider';
+import StoryDecorator from './_support/StoryDecorator';
 
 import { CATEGORIES_BY_NAME } from '../../source/renderer/app/config/sidebarConfig';
 

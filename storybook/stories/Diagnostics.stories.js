@@ -3,7 +3,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 
 // Assets and helpers
-import StoryDecorator from './support/StoryDecorator';
+import StoryDecorator from './_support/StoryDecorator';
 
 // Screens
 import DaedalusDiagnostics from '../../source/renderer/app/components/status/DaedalusDiagnostics';

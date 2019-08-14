@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react';
 import { withKnobs, number, boolean } from '@storybook/addon-knobs';
 
 // Assets and helpers
-import StoryDecorator from './support/StoryDecorator';
+import StoryDecorator from './_support/StoryDecorator';
 
 // Screens
 import BlockConsolidationStatus from '../../source/renderer/app/components/status/BlockConsolidationStatus';

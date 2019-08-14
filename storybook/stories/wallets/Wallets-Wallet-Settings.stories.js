@@ -6,7 +6,7 @@ import { action } from '@storybook/addon-actions';
 import moment from 'moment';
 
 // Support
-import WalletWrapper from '../support/WalletWrapper';
+import WalletWrapper from '../_support/WalletWrapper';
 
 // Screens
 import WalletSettings from '../../../source/renderer/app/components/wallet/settings/WalletSettings';

@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import StoryDecorator from './support/StoryDecorator';
+import StoryDecorator from './_support/StoryDecorator';
 import SidebarLayout from '../../source/renderer/app/components/layout/SidebarLayout';
 import TopBar from '../../source/renderer/app/components/layout/TopBar';
 import NodeSyncStatusIcon from '../../source/renderer/app/components/widgets/NodeSyncStatusIcon';

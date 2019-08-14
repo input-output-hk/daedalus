@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import SidebarCategory from '../../source/renderer/app/components/sidebar/SidebarCategory';
 import walletsIcon from '../../source/renderer/app/assets/images/sidebar/wallet-ic.inline.svg';
-import StoryDecorator from './support/StoryDecorator';
+import StoryDecorator from './_support/StoryDecorator';
 
 storiesOf('SidebarCategory', module)
   .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)

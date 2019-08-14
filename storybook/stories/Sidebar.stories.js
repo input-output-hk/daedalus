@@ -3,7 +3,7 @@ import React from 'react';
 import { observable, runInAction } from 'mobx';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import StoryDecorator from './support/StoryDecorator';
+import StoryDecorator from './_support/StoryDecorator';
 import Sidebar from '../../source/renderer/app/components/sidebar/Sidebar';
 import {
   CATEGORIES_WITH_DELEGATION_COUNTDOWN,
