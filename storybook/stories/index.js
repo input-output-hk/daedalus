@@ -16,7 +16,7 @@ import './PaperWallets.stories';
 import './Staking.stories';
 
 // Settings
-import './LanguageSelectionForm.stories';
+import './Settings.stories';
 
 // Loading
 import './Loading.stories';
