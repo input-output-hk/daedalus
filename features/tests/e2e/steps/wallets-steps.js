@@ -123,12 +123,7 @@ When(/^I see the import wallet dialog$/, function() {
 });
 
 When(/^I select a valid wallet import key file$/, function() {
-  // return importWalletDialog.selectFile(this.client, { filePath: defaultWalletJSONFilePath });
-  // ^^ JSON wallet file import is currently not working due to missing JSON import V1 API endpoint
-  // so we have to use the KEY wallet file instead:
-  return importWalletDialog.selectFile(this.client, {
-    filePath: defaultWalletKeyFilePath,
-  });
+  this.waitAndClick('.WalletFileImportDialog .FileUploadWidget_dropZone');
 });
 
 When(
@@ -438,14 +433,8 @@ When(/^I try to import the wallet with funds again$/, async function() {
   await sidebar.clickAddWalletButton(this.client);
   await addWalletPage.waitForVisible(this.client);
   await addWalletPage.clickImportButton(this.client);
-  await importWalletDialog.waitForDialog(this.client);
-  // await importWalletDialog.selectFile(this.client, { filePath: defaultWalletJSONFilePath });
-  // ^^ JSON wallet file import is currently not working due to missing JSON import V1 API endpoint
-  // so we have to use the KEY wallet file instead:
-  await importWalletDialog.selectFile(this.client, {
-    filePath: defaultWalletKeyFilePath,
-  });
-  return importWalletDialog.clickImport(this.client);
+  this.waitAndClick('.WalletFileImportDialog .FileUploadWidget_dropZone');
+  this.waitAndClick('.Dialog_actions button');
 });
 
 Then(
