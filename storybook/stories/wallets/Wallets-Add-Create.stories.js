@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { action } from '@storybook/addon-actions';
+import { boolean } from '@storybook/addon-knobs';
 import { CREATE_WALLET_STEPS } from '../../../source/renderer/app/config/walletsConfig';
 // Screens
 import InstructionsDialog from '../../../source/renderer/app/components/wallet/wallet-create/InstructionsDialog';
@@ -33,7 +34,7 @@ export default class CreateWalletScreens extends Component<any, State> {
   get dialogProps() {
     return {
       instructions: {
-        onAcceptTermsAndConditions: action('onAcceptTermsAndConditions'),
+        isVideoWatched: boolean('isVideoWatched', false),
       },
       template: {},
       mnemonics: {},
