@@ -52,3 +52,14 @@ Then(
     expect(renderedText).to.equal(expectedText);
   }
 );
+
+When(/^I trigger the apply-update endpoint$/, async function() {
+  await this.client.executeAsync(done => {
+    daedalus.api.ada
+      .applyUpdate()
+      .then(done)
+      .catch(e => {
+        throw e;
+      });
+  });
+});

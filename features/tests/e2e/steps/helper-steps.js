@@ -29,14 +29,3 @@ When(/^I inject fault named "([^"]*)"$/, async function(faultName) {
       });
   }, faultName);
 });
-
-When(/^I trigger the apply-update endpoint$/, async function() {
-  await this.client.executeAsync(done => {
-    daedalus.api.ada
-      .applyUpdate()
-      .then(done)
-      .catch(e => {
-        throw e;
-      });
-  });
-});
