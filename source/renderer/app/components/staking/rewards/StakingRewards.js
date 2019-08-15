@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { get, map, orderBy } from 'lodash';
+import moment from 'moment';
 import classNames from 'classnames';
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
@@ -64,6 +65,7 @@ const messages = defineMessages({
 
 type Props = {
   rewards: Array<Reward>,
+  locale: string,
   isLoading: boolean,
   onLearnMoreClick: Function,
 };
@@ -83,6 +85,8 @@ export default class StakingRewards extends Component<Props, State> {
     isLoading: false,
   };
 
+  localizedDateFormat: 'DD/MM/YYYY';
+
   constructor() {
     super();
     this.state = {
@@ -93,8 +97,8 @@ export default class StakingRewards extends Component<Props, State> {
 
   render() {
     const { rewardsOrder, rewardsSortBy } = this.state;
-    const { rewards, isLoading, onLearnMoreClick } = this.props;
-
+    const { rewards, isLoading, onLearnMoreClick, locale } = this.props;
+    this.localizedDateFormat = moment.localeData(locale).longDateFormat('L');
     const { intl } = this.context;
     const noRewards = !isLoading && ((rewards && !rewards.length) || !rewards);
     const showRewards = rewards && rewards.length > 0 && !isLoading;
@@ -175,7 +179,9 @@ export default class StakingRewards extends Component<Props, State> {
               </thead>
               <tbody>
                 {map(sortedRewards, (reward, key) => {
-                  const rewardDate = get(reward, 'date', '');
+                  const dateArray = get(reward, 'date', '').split('.');
+                  const date = dateArray[1] + '/' + dateArray[0] + '/' + dateArray[2];
+                  const rewardDate = moment(date).format(this.localizedDateFormat);
                   const rewardPoolSlug = get(reward, ['pool', 'slug'], '');
                   const rewardPoolName = get(reward, ['pool', 'name'], '');
                   const rewardWallet = get(reward, 'wallet', '');

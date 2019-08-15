@@ -33,10 +33,12 @@ export default class StakingRewardsPage extends Component<Props> {
 
   render() {
     const { rewards } = this.props.stores.staking;
+    const { currentLocale } = this.props.stores.profile;
 
     return (
       <StakingRewards
         rewards={rewards}
+        locale={currentLocale}
         isLoading={false}
         onLearnMoreClick={this.handleLearnMoreClick}
       />
