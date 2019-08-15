@@ -180,8 +180,12 @@ export default class StakingRewards extends Component<Props, State> {
               <tbody>
                 {map(sortedRewards, (reward, key) => {
                   const dateArray = get(reward, 'date', '').split('.');
-                  const date = dateArray[1] + '/' + dateArray[0] + '/' + dateArray[2];
-                  const rewardDate = moment(date).format(this.localizedDateFormat);
+                  const date = `${dateArray[1]}/${dateArray[0]}/${
+                    dateArray[2]
+                  }`;
+                  const rewardDate = moment(date).format(
+                    this.localizedDateFormat
+                  );
                   const rewardPoolSlug = get(reward, ['pool', 'slug'], '');
                   const rewardPoolName = get(reward, ['pool', 'name'], '');
                   const rewardWallet = get(reward, 'wallet', '');

@@ -11,6 +11,7 @@ import REWARDS from '../../source/renderer/app/config/stakingRewards.dummy.json'
 export const StakingRewardsStory = () => (
   <StakingRewards
     rewards={REWARDS}
+    locale="en-US"
     isLoading={false}
     onLearnMoreClick={action('onLearnMoreClick')}
   />
