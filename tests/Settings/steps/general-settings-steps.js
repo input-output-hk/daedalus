@@ -1,15 +1,8 @@
-import { Given, When, Then } from 'cucumber';
-import _ from 'lodash';
-import { navigateTo, waitUntilUrlEquals } from '../helpers/route-helpers';
-
-Given(/^I am on the General Settings "([^"]*)" screen$/, async function(
-  screen
-) {
-  await navigateTo.call(this, `/settings/${screen}`);
-});
+import { When, Then } from 'cucumber';
+import { camelCase } from 'lodash';
 
 When(/^I click on secondary menu (.*) item$/, async function(buttonName) {
-  const buttonSelector = `.SettingsMenuItem_component.${_.camelCase(
+  const buttonSelector = `.SettingsMenuItem_component.${camelCase(
     buttonName
   )}`;
   await this.client.waitForVisible(buttonSelector);
@@ -22,12 +15,6 @@ When(/^I select second theme$/, async function() {
 
 When(/^I open General Settings language selection dropdown$/, async function() {
   await this.client.click('.GeneralSettings_component .SimpleInput_input');
-});
-
-Then(/^I should see General Settings "([^"]*)" screen$/, async function(
-  screenName
-) {
-  return waitUntilUrlEquals.call(this, `/settings/${screenName}`);
 });
 
 Then(/^I should see Japanese language as selected$/, async function() {
