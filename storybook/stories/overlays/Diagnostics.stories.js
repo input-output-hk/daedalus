@@ -3,10 +3,10 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 
 // Assets and helpers
-import StoryDecorator from './_support/StoryDecorator';
+import StoryDecorator from '../_support/StoryDecorator';
 
 // Screens
-import DaedalusDiagnostics from '../../source/renderer/app/components/status/DaedalusDiagnostics';
+import DaedalusDiagnostics from '../../../source/renderer/app/components/status/DaedalusDiagnostics';
 
 const systemInfo = {
   platform: 'macOS',
@@ -29,7 +29,7 @@ const coreInfo = {
     '/Users/daedalus/Library/Application Support/Daedalus Demo',
 };
 
-storiesOf('Diagnostics', module)
+storiesOf('Overlays|Diagnostics', module)
   .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======

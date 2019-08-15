@@ -3,19 +3,22 @@ import '../../source/renderer/app/themes/index.global.scss';
 import './_support/environment';
 
 // Wallets
-import './wallets/Wallets.stories';
+import './wallets';
+import './settings';
 
 // Staking
 import './staking/Staking.stories';
 
+// Loading
+import './loading/Loading.stories';
+
+// Overlays
+import './overlays/Overlays.stories';
+
 // Settings
 import './LanguageSelectionForm.stories';
 
-// Loading
-import './Loading.stories';
-
 // Diagnostics
-import './Diagnostics.stories';
 
 // Navigation
 import './Sidebar.stories';
@@ -27,4 +30,3 @@ import './TopBar.stories';
 import './Widgets.stories';
 
 // Overlays
-import './BlockConsolidationStatus.stories';

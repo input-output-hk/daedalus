@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react';
 import { withKnobs } from '@storybook/addon-knobs';
 
 // Assets and helpers
-import StoryDecorator from './_support/StoryDecorator';
+import StoryDecorator from '../_support/StoryDecorator';
 
 // Screens
 import {
