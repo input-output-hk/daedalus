@@ -6,11 +6,11 @@
 
 ### File types and Cucumber syntax
 
-- Cucumber looks for files with the `.feature` file extension as a starting point for executing the `scenarios` of defined within the `.feature` file. Each `scenario` contains one or more `steps`. Together, the collective `scenarios`  within a `.feature` file comprise test coverage of at least one feature within the Daedalus UI.
+- Cucumber looks for files with a `.feature` file extension as the starting point for executing `scenarios` defined within a given `.feature` file. Each `scenario` contains one or more `steps`. `scenarios` describe the broader context or purpose of a given set of steps while the `steps` themselves describe the intended functionality of the Javascript test executables. Together, the collective `scenarios`  within a `.feature` file comprise test coverage of at least one feature within the Daedalus UI.
 
 ### JavaScript Executables
 
-- Each `step` in a `.feature` file will match a JavaScript `string` within a separate `.js` file containing the executable JavaScript that runs the test itself. The text of a `step` within a `.feature` file must precisely match its associated JavaScript `string` in order for the test to execute.
+- Each `step` in a `.feature` file will match a JavaScript `string` passed as the first parameter to a `step-definition` function within a separate `.js` file. A `step-definition` also contains the executable JavaScript function(s) that run the test logic itself. The `step`'s name written as text within a `.feature` file must exactly match the associated JavaScript `string` within a `step-definition` in order for the executable to run.
 
 ### File Structure
 
