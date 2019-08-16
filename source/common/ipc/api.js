@@ -3,6 +3,7 @@ import type {
   BugReportRequestHttpOptions,
   BugReportRequestPayload,
 } from '../types/bug-report-request.types';
+import type { GenerateFileMetaParams } from '../types/file-meta-request.types';
 import type { GeneratePaperWalletParams } from '../types/paper-wallet-request.types';
 import type {
   CardanoNodeState,
@@ -126,6 +127,13 @@ export const GET_CONSOLIDATED_EPOCHS_COUNT_CHANNEL =
   'GET_CONSOLIDATED_EPOCHS_COUNT_CHANNEL';
 export type GetConsolidatedEpochsCountRendererRequest = void;
 export type GetConsolidatedEpochsCountMainResponse = number;
+
+/**
+ * Channel to generate file blob
+ */
+export const GENERATE_FILE_META_CHANNEL = 'GENERATE_FILE_META_CHANNEL';
+export type GenerateFileMetaRendererRequest = GenerateFileMetaParams;
+export type GenerateFileMetaMainResponse = any;
 
 /**
  * Channel to generate and save a paper wallet certificate

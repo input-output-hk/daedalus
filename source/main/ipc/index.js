@@ -7,6 +7,7 @@ import resizeWindowApi from './resize-window';
 import loadAsset from './load-asset';
 import getGpuStatus from './get-gpu-status';
 import { handleBugReportRequests } from './bugReportRequestChannel';
+import { handleFileMetaRequests } from './generateFileMetaChannel';
 import { handlePaperWalletRequests } from './generatePaperWalletChannel';
 import { openExternalUrlChannel } from './open-external-url';
 import { openLocalDirectoryChannel } from './open-local-directory';
@@ -19,6 +20,7 @@ export default (window: BrowserWindow) => {
   loadAsset();
   getGpuStatus();
   handleBugReportRequests();
+  handleFileMetaRequests();
   handlePaperWalletRequests();
   // eslint-disable-next-line no-unused-expressions
   openExternalUrlChannel;
