@@ -20,6 +20,7 @@
   "automaticUpdate.accept.button.label": "!!!Restart and Update",
   "automaticUpdate.description1": "!!!You are currently running Daedalus v <b>{currentAppVersion}</b> and <b>newer version</b> is available.",
   "automaticUpdate.description2": "!!!Would you like to install the update? If you close this overlay or choose to postpone, the update will be installed automatically on the next Daedalus launch.",
+  "automaticUpdate.newerVersion.label": "!!!newer version",
   "automaticUpdate.postpone.button.label": "!!!Postpone",
   "automaticUpdate.title": "!!!Software update is available",
   "backToTopButton.label": "トップに戻る",

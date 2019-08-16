@@ -22,6 +22,7 @@ let LOCAL_BLOCK_HEIGHT = null;
 let NETWORK_BLOCK_HEIGHT = null;
 let NEXT_ADA_UPDATE = null;
 let SUBSCRIPTION_STATUS = null;
+let APPLICATION_VERSION = null;
 
 export default (api: AdaApi) => {
   api.getLocalTimeDifference = async () =>
@@ -121,16 +122,31 @@ export default (api: AdaApi) => {
       const latestAppVersionPath = `platforms.${
         isWindows ? 'windows' : platform
       }.version`;
+
+      const applicationVersionPath = `platforms.${
+        isWindows ? 'windows' : platform
+      }.applicationVersion`;
+
       const latestAppVersion = get(
         latestAppVersionInfo,
         latestAppVersionPath,
         null
       );
+
+      const applicationVersion = get(
+        latestAppVersionInfo,
+        applicationVersionPath,
+        null
+      );
       Logger.debug('AdaApi::getLatestAppVersion success', {
         latestAppVersion,
         latestAppVersionInfo,
+        applicationVersion,
       });
-      return { latestAppVersion: LATEST_APP_VERSION || latestAppVersion };
+      return {
+        latestAppVersion: LATEST_APP_VERSION || latestAppVersion,
+        applicationVersion: APPLICATION_VERSION || applicationVersion,
+      };
     } catch (error) {
       Logger.error('AdaApi::getLatestAppVersion (PATCHED) error', { error });
       throw new GenericApiError();
@@ -139,6 +155,10 @@ export default (api: AdaApi) => {
 
   api.setLatestAppVersion = async (latestAppVersion: ?string) => {
     LATEST_APP_VERSION = latestAppVersion;
+  };
+
+  api.setApplicationVersion = async (applicationVersion: ?number) => {
+    APPLICATION_VERSION = applicationVersion;
   };
 
   api.setSubscriptionStatus = async (subscriptionStatus: ?Object) => {

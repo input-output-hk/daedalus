@@ -1131,7 +1131,7 @@
           "column": 3,
           "line": 17
         },
-        "file": "source/renderer/app/components/notifications/AutomaticUpdate.js",
+        "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
         "id": "automaticUpdate.title",
         "start": {
           "column": 9,
@@ -1139,13 +1139,13 @@
         }
       },
       {
-        "defaultMessage": "!!!You are currently running Daedalus v <b>{currentAppVersion}</b> and <b>newer version</b> is available.",
+        "defaultMessage": "!!!You are currently running Daedalus v <b>{currentAppVersion}</b> and <b>{nextAppVersion}</b> is available.",
         "description": "First description line of \"Automatic update\" overlay",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
-        "file": "source/renderer/app/components/notifications/AutomaticUpdate.js",
+        "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
         "id": "automaticUpdate.description1",
         "start": {
           "column": 20,
@@ -1157,13 +1157,13 @@
         "description": "Second description line of \"Automatic update\" overlay",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 29
         },
-        "file": "source/renderer/app/components/notifications/AutomaticUpdate.js",
+        "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
         "id": "automaticUpdate.description2",
         "start": {
           "column": 20,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -1171,13 +1171,13 @@
         "description": "Label for \"Restart and Update\" action button on \"Automatic update\" overlay",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 35
         },
-        "file": "source/renderer/app/components/notifications/AutomaticUpdate.js",
+        "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
         "id": "automaticUpdate.accept.button.label",
         "start": {
           "column": 21,
-          "line": 28
+          "line": 30
         }
       },
       {
@@ -1185,17 +1185,31 @@
         "description": "Label for \"Postpone\" action button on \"Automatic update\" overlay",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 41
         },
-        "file": "source/renderer/app/components/notifications/AutomaticUpdate.js",
+        "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
         "id": "automaticUpdate.postpone.button.label",
         "start": {
           "column": 23,
-          "line": 34
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!newer version",
+        "description": "Label for \"newer version\" on \"Automatic update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
+        "id": "automaticUpdate.newerVersion.label",
+        "start": {
+          "column": 21,
+          "line": 42
         }
       }
     ],
-    "path": "source/renderer/app/components/notifications/AutomaticUpdate.json"
+    "path": "source/renderer/app/components/notifications/AutomaticUpdateNotification.json"
   },
   {
     "descriptors": [

@@ -12,9 +12,10 @@ export default class NodeUpdateStore extends Store {
   @observable isUpdateAvailable = false;
   @observable isUpdatePostponed = false;
   @observable isUpdateInstalled = false;
-  @observable updateVersion = null;
   @observable availableAppVersion: ?string = null;
   @observable isNewAppVersionAvailable: boolean = false;
+  @observable nextUpdateVersion: ?string = null;
+  @observable applicationVersion: ?number = null;
 
   // REQUESTS
   /* eslint-disable max-len */
@@ -47,7 +48,6 @@ export default class NodeUpdateStore extends Store {
     if (this.stores.networkStatus.isSynced) {
       await this.nextUpdateRequest.execute();
       const { result } = this.nextUpdateRequest;
-
       // If nextUpdate is available, fetch additional Daedalus info
       if (result) {
         await this._getLatestAvailableAppVersion();
@@ -55,14 +55,17 @@ export default class NodeUpdateStore extends Store {
 
       if (
         result &&
-        this.availableAppVersion &&
         !this.isUpdateAvailable &&
         !this.isUpdatePostponed &&
         !this.isUpdateInstalled
       ) {
         runInAction('refreshNextUpdate', () => {
           this.isUpdateAvailable = true;
-          this.updateVersion = result.version;
+          // If next update version matches applicationVersion (fetched from latestAppVersion json) then set next update version to latest availableAppVersion
+          this.nextUpdateVersion =
+            result.version === this.applicationVersion
+              ? this.availableAppVersion
+              : null;
         });
       }
     }
@@ -80,12 +83,17 @@ export default class NodeUpdateStore extends Store {
   };
 
   @action _getLatestAvailableAppVersion = async () => {
-    const { latestAppVersion } = await this.getLatestAppVersionRequest.execute()
-      .promise;
-    this.setLatestAvailableAppVersion(latestAppVersion);
+    const {
+      latestAppVersion,
+      applicationVersion,
+    } = await this.getLatestAppVersionRequest.execute().promise;
+    this.setLatestAvailableAppVersion(latestAppVersion, applicationVersion);
   };
 
-  @action setLatestAvailableAppVersion = (latestAppVersion: ?string) => {
+  @action setLatestAvailableAppVersion = (
+    latestAppVersion: ?string,
+    applicationVersion: ?number
+  ) => {
     let isNewAppVersionAvailable = false;
 
     if (latestAppVersion) {
@@ -111,6 +119,7 @@ export default class NodeUpdateStore extends Store {
 
     this.isNewAppVersionAvailable = isNewAppVersionAvailable;
     this.availableAppVersion = latestAppVersion;
+    this.applicationVersion = applicationVersion;
   };
 
   @computed get isNewAppVersionLoading(): boolean {

@@ -7,7 +7,7 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
-import styles from './AutomaticUpdate.scss';
+import styles from './AutomaticUpdateNotification.scss';
 
 const messages = defineMessages({
   title: {
@@ -18,7 +18,7 @@ const messages = defineMessages({
   descriptionLine1: {
     id: 'automaticUpdate.description1',
     defaultMessage:
-      '!!!You are currently running Daedalus v <b>{currentAppVersion}</b> and <b>newer version</b> is available.',
+      '!!!You are currently running Daedalus <b>v {currentAppVersion}</b> and <b>{nextAppVersion}</b> is available.',
     description: 'First description line of "Automatic update" overlay',
   },
   descriptionLine2: {
@@ -39,22 +39,33 @@ const messages = defineMessages({
     description:
       'Label for "Postpone" action button on "Automatic update" overlay',
   },
+  newerVersionlabel: {
+    id: 'automaticUpdate.newerVersion.label',
+    defaultMessage: '!!!newer version',
+    description: 'Label for "newer version" on "Automatic update" overlay',
+  },
 });
 
 type Props = {
   currentAppVersion: string,
+  nextUpdateVersion: ?string,
   onAccept: Function,
   onPostpone: Function,
 };
 
 @observer
-export default class AutomaticUpdate extends Component<Props> {
+export default class AutomaticUpdateNotification extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   render() {
-    const { currentAppVersion, onAccept, onPostpone } = this.props;
+    const {
+      currentAppVersion,
+      nextUpdateVersion,
+      onAccept,
+      onPostpone,
+    } = this.props;
     const { formatMessage } = this.context.intl;
 
     return (
@@ -72,7 +83,12 @@ export default class AutomaticUpdate extends Component<Props> {
             <p>
               <FormattedHTMLMessage
                 {...messages.descriptionLine1}
-                values={{ currentAppVersion }}
+                values={{
+                  currentAppVersion,
+                  nextUpdateVersion: nextUpdateVersion
+                    ? `v ${nextUpdateVersion}`
+                    : formatMessage(messages.newerVersionlabel),
+                }}
               />
             </p>
             <p>{formatMessage(messages.descriptionLine2)}</p>
