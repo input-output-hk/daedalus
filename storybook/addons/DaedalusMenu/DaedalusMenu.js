@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { keys, set } from 'lodash';
+import { set } from 'lodash';
 import styles from './DaedalusMenuStyles';
 import {
   themeNames,
@@ -8,10 +8,6 @@ import {
   osNames,
   getInitialState,
 } from '../../stories/_support/config';
-// import {
-//   updateParam,
-//   onReceiveParam,
-// } from '.';
 
 /* eslint-disable no-restricted-globals */
 

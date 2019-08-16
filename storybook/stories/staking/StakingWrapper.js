@@ -19,7 +19,6 @@ const pageNames = {
 };
 
 export default (story, context) => {
-  console.log('context', context);
   const storyWithKnobs = withKnobs(story, context);
   const getItemFromContext = () => context.parameters.id;
   let activeSidebarCategory = null;

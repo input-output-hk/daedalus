@@ -15,6 +15,14 @@ export const themes = {
   White: white,
 };
 export const themeNames = Object.keys(themes);
+export const themesIds = {
+  Cardano: 'cardano',
+  DarkBlue: 'dark-blue',
+  LightBlue: 'light-blue',
+  DarkCardano: 'dark-cardano',
+  Yellow: 'yellow',
+  White: 'white',
+};
 
 export const locales = {
   English: 'en-US',
