@@ -13,7 +13,7 @@ import {
 import { waitUntilUrlEquals, navigateTo } from '../helpers/route-helpers';
 import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
 import sidebar from '../helpers/sidebar-helpers';
-import addWalletPage from '../helpers/add-wallet-page-helpers';
+import helpers from '../helpers/add-wallet';
 import importWalletDialog from '../helpers/dialogs/import-wallet-dialog-helpers';
 import i18n from '../helpers/i18n-helpers';
 import {
@@ -84,7 +84,7 @@ Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function(
 });
 
 Given(/^I see the add wallet page/, function() {
-  return addWalletPage.waitForVisible(this.client);
+  return helpers.waitForVisible(this.client);
 });
 
 Given(/^I see delete wallet dialog$/, function() {
@@ -115,7 +115,7 @@ When(/^I click on the create wallet button on the add wallet page/, function() {
 });
 
 When(/^I click on the import wallet button on the add wallet page/, function() {
-  return addWalletPage.clickImportButton(this.client);
+  return helpers.clickImportButton(this.client);
 });
 
 When(/^I see the import wallet dialog$/, function() {
@@ -431,8 +431,8 @@ When(/^I submit the delete wallet dialog$/, function() {
 When(/^I try to import the wallet with funds again$/, async function() {
   await sidebar.activateCategory(this.client, { category: 'wallets' });
   await sidebar.clickAddWalletButton(this.client);
-  await addWalletPage.waitForVisible(this.client);
-  await addWalletPage.clickImportButton(this.client);
+  await helpers.waitForVisible(this.client);
+  await helpers.clickImportButton(this.client);
   this.waitAndClick('.WalletFileImportDialog .FileUploadWidget_dropZone');
   this.waitAndClick('.Dialog_actions button');
 });
