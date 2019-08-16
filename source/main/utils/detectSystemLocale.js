@@ -9,5 +9,13 @@ export const detectSystemLocale = (): string => {
   if (systemLocale === 'ja') {
     return LOCALES.japanese;
   }
-  return LOCALES.english;
+  if (systemLocale === 'en-US') {
+    return LOCALES.english;
+  }
+  return systemLocale;
+};
+
+export const detectSystemDateLocale = (): string => {
+  const systemDateLocale = app.getLocale();
+  return systemDateLocale;
 };

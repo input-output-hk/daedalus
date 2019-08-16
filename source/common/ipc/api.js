@@ -207,3 +207,11 @@ export type SetCachedCardanoStatusMainResponse = void;
 export const DETECT_SYSTEM_LOCALE_CHANNEL = 'DETECT_SYSTEM_LOCALE_CHANNEL';
 export type DetectSystemLocaleRendererRequest = void;
 export type DetectSystemLocaleMainResponse = string;
+
+/**
+ * Channel where renderer can ask main process for the result of electron's app.getLocale()
+ */
+export const DETECT_SYSTEM_DATE_LOCALE_CHANNEL =
+  'DETECT_SYSTEM_DATE_LOCALE_CHANNEL';
+export type DetectSystemDateLocaleRendererRequest = void;
+export type DetectSystemDateLocaleMainResponse = string;

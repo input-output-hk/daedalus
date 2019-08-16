@@ -44,7 +44,7 @@ export default class WalletTransactionsPage extends Component<Props> {
     const { intl } = this.context;
     const { actions, stores } = this.props;
     const { app, wallets, profile } = stores;
-    const { currentLocale } = profile;
+    const { systemDateLocale } = profile;
     const {
       openExternalLink,
       environment: { network },
@@ -100,7 +100,7 @@ export default class WalletTransactionsPage extends Component<Props> {
           hasMoreToLoad={hasMoreToLoad()}
           onLoadMore={actions.transactions.loadMoreTransactions.trigger}
           assuranceMode={activeWallet.assuranceMode}
-          locale={currentLocale}
+          locale={systemDateLocale}
           walletId={activeWallet.id}
           formattedWalletAmount={formattedWalletAmount}
           onOpenExternalLink={openExternalLink}

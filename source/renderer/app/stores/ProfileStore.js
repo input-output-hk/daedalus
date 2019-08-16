@@ -15,6 +15,7 @@ import { formattedBytesToSize } from '../utils/formatters';
 import { Logger } from '../utils/logging';
 import { setStateSnapshotLogChannel } from '../ipc/setStateSnapshotLogChannel';
 import { detectSystemLocaleChannel } from '../ipc/detect-system-locale';
+import { detectSystemDateLocaleChannel } from '../ipc/detect-system-date-locale';
 import { LOCALES } from '../../../common/types/locales.types';
 import {
   compressLogsChannel,
@@ -38,6 +39,7 @@ export default class ProfileStore extends Store {
   ];
 
   @observable systemLocale: string = LOCALES.english;
+  @observable systemDateLocale: string = LOCALES.english;
   @observable bigNumberDecimalFormat = {
     decimalSeparator: '.',
     groupSeparator: ',',
@@ -107,6 +109,7 @@ export default class ProfileStore extends Store {
       this._redirectToMainUiAfterDataLayerMigrationIsAccepted,
     ]);
     this._getSystemLocale();
+    this._getSystemDateLocale();
     this._getTermsOfUseAcceptance();
     this._getDataLayerMigrationAcceptance();
   }
@@ -194,6 +197,12 @@ export default class ProfileStore extends Store {
 
   _getSystemLocale = async () => {
     this._onReceiveSystemLocale(await detectSystemLocaleChannel.request());
+  };
+
+  _getSystemDateLocale = async () => {
+    this._onReceiveSystemDateLocale(
+      await detectSystemDateLocaleChannel.request()
+    );
   };
 
   _updateLocale = async ({ locale }: { locale: string }) => {
@@ -492,6 +501,10 @@ export default class ProfileStore extends Store {
 
   @action _onReceiveSystemLocale = (systemLocale: string) => {
     this.systemLocale = systemLocale;
+  };
+
+  @action _onReceiveSystemDateLocale = (systemDateLocale: string) => {
+    this.systemDateLocale = systemDateLocale;
   };
 
   @action _reset = () => {

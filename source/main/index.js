@@ -27,10 +27,14 @@ import { CardanoNode } from './cardano/CardanoNode';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { buildAppMenus } from './utils/buildAppMenus';
 import { getLocale } from './utils/getLocale';
-import { detectSystemLocale } from './utils/detectSystemLocale';
+import {
+  detectSystemLocale,
+  detectSystemDateLocale,
+} from './utils/detectSystemLocale';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
 import { detectSystemLocaleChannel } from './ipc/detect-system-locale';
+import { detectSystemDateLocaleChannel } from './ipc/detect-system-date-locale';
 import { getStateDirectoryPathChannel } from './ipc/getStateDirectoryPathChannel';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
@@ -88,6 +92,8 @@ const onAppReady = async () => {
   const startTime = new Date().toISOString();
   // first checks for japanese locale, otherwise returns english
   const systemLocale = detectSystemLocale();
+  // first checks for japanese locale, otherwise returns english
+  const systemDateLocale = detectSystemDateLocale();
 
   const systemInfo = logSystemInfo({
     cardanoVersion,
@@ -156,6 +162,10 @@ const onAppReady = async () => {
   }
 
   detectSystemLocaleChannel.onRequest(() => Promise.resolve(systemLocale));
+
+  detectSystemDateLocaleChannel.onRequest(() =>
+    Promise.resolve(systemDateLocale)
+  );
 
   getNumberOfEpochsConsolidated();
 
