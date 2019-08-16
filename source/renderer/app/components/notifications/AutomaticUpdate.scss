@@ -36,21 +36,17 @@
 
       .description {
         margin: 16px auto 0;
+        max-width: 620px;
         p {
           color: var(--theme-automatic-update-overlay-text-color);
           font-size: 16px;
           line-height: 1.38;
           margin-bottom: 14px;
-          max-width: 610px;
           b {
             color: var(--theme-automatic-update-overlay-text-highlight-color);
             font-family: var(--font-medium);
           }
         }
-      }
-
-      .actionsWrapper {
-        margin-top: 10px;
       }
 
       .acceptButton {
@@ -62,7 +58,7 @@
         display: block;
         font-weight: 500;
         line-height: 1.36;
-        margin: 20px auto;
+        margin: 30px auto 0;
 
         .btnLabel {
           color: var(--theme-automatic-update-overlay-button-label-color);
@@ -87,8 +83,9 @@
         @include link(
           --theme-automatic-update-overlay-button-label-color-light
         );
+        display: inline-block;
         font-size: 14px;
-        margin: 20px auto;
+        margin: 20px auto 0;
         &:hover {
           color: var(--theme-automatic-update-overlay-button-label-color);
           border-bottom: 1px solid

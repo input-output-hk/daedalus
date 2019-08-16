@@ -11,14 +11,12 @@ export default class AutomaticUpdatePage extends Component<InjectedProps> {
 
   render() {
     const { stores, actions } = this.props;
-    const { availableAppVersion } = stores.nodeUpdate;
     const { environment } = stores.app;
     const { version } = environment;
     const { acceptNodeUpdate, postponeNodeUpdate } = actions.nodeUpdate;
 
     return (
       <AutomaticUpdate
-        availableAppVersion={availableAppVersion}
         currentAppVersion={version}
         onAccept={acceptNodeUpdate.trigger}
         onPostpone={postponeNodeUpdate.trigger}

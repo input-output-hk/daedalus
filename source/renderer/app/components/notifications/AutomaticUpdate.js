@@ -15,11 +15,17 @@ const messages = defineMessages({
     defaultMessage: '!!!Software update is available',
     description: 'Title for "Automatic update" overlay',
   },
-  descriptionLine: {
-    id: 'automaticUpdate.description',
+  descriptionLine1: {
+    id: 'automaticUpdate.description1',
     defaultMessage:
-      '!!!You are currently running Daedalus v <b>{currentAppVersion}</b> and v <b>{availableAppVersion}</b> is available',
-    description: 'Description line of "Automatic update" overlay',
+      '!!!You are currently running Daedalus v <b>{currentAppVersion}</b> and <b>newer version</b> is available.',
+    description: 'First description line of "Automatic update" overlay',
+  },
+  descriptionLine2: {
+    id: 'automaticUpdate.description2',
+    defaultMessage:
+      '!!!Would you like to install the update? If you close this overlay or choose to postpone, the update will be installed automatically on the next Daedalus launch.',
+    description: 'Second description line of "Automatic update" overlay',
   },
   acceptButtonLabel: {
     id: 'automaticUpdate.accept.button.label',
@@ -36,7 +42,6 @@ const messages = defineMessages({
 });
 
 type Props = {
-  availableAppVersion: ?string,
   currentAppVersion: string,
   onAccept: Function,
   onPostpone: Function,
@@ -49,12 +54,7 @@ export default class AutomaticUpdate extends Component<Props> {
   };
 
   render() {
-    const {
-      availableAppVersion,
-      currentAppVersion,
-      onAccept,
-      onPostpone,
-    } = this.props;
+    const { currentAppVersion, onAccept, onPostpone } = this.props;
     const { formatMessage } = this.context.intl;
 
     return (
@@ -71,13 +71,11 @@ export default class AutomaticUpdate extends Component<Props> {
           <div className={styles.description}>
             <p>
               <FormattedHTMLMessage
-                {...messages.descriptionLine}
-                values={{
-                  currentAppVersion,
-                  availableAppVersion,
-                }}
+                {...messages.descriptionLine1}
+                values={{ currentAppVersion }}
               />
             </p>
+            <p>{formatMessage(messages.descriptionLine2)}</p>
           </div>
 
           <div className={styles.actionsWrapper}>

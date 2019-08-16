@@ -1125,6 +1125,81 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Software update is available",
+        "description": "Title for \"Automatic update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/notifications/AutomaticUpdate.js",
+        "id": "automaticUpdate.title",
+        "start": {
+          "column": 9,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!You are currently running Daedalus v <b>{currentAppVersion}</b> and <b>newer version</b> is available.",
+        "description": "First description line of \"Automatic update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/notifications/AutomaticUpdate.js",
+        "id": "automaticUpdate.description1",
+        "start": {
+          "column": 20,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!Would you like to install the update? If you close this overlay or choose to postpone, the update will be installed automatically on the next Daedalus launch.",
+        "description": "Second description line of \"Automatic update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/notifications/AutomaticUpdate.js",
+        "id": "automaticUpdate.description2",
+        "start": {
+          "column": 20,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Restart and Update",
+        "description": "Label for \"Restart and Update\" action button on \"Automatic update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/notifications/AutomaticUpdate.js",
+        "id": "automaticUpdate.accept.button.label",
+        "start": {
+          "column": 21,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Postpone",
+        "description": "Label for \"Postpone\" action button on \"Automatic update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/notifications/AutomaticUpdate.js",
+        "id": "automaticUpdate.postpone.button.label",
+        "start": {
+          "column": 23,
+          "line": 34
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/notifications/AutomaticUpdate.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Legacy",
         "description": "Label \"Legacy\" on the legacy badge.",
         "end": {
@@ -1201,81 +1276,6 @@
       }
     ],
     "path": "source/renderer/app/components/notifications/LegacyNotification.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Update and restart",
-        "description": "Label \"Update and restart\" on the Cardano node update notification.",
-        "end": {
-          "column": 3,
-          "line": 18
-        },
-        "file": "source/renderer/app/components/notifications/NodeUpdateNotification.js",
-        "id": "cardano.node.update.notification.accept.button.label",
-        "start": {
-          "column": 15,
-          "line": 13
-        }
-      },
-      {
-        "defaultMessage": "!!!Postpone until restart",
-        "description": "Label \"Postpone until restart\" on the Cardano node update notification.",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/components/notifications/NodeUpdateNotification.js",
-        "id": "cardano.node.update.notification.postpone.button.label",
-        "start": {
-          "column": 13,
-          "line": 19
-        }
-      },
-      {
-        "defaultMessage": "!!!Cardano-Core update v{version} is available",
-        "description": "Cardano-Core update notification with version.",
-        "end": {
-          "column": 3,
-          "line": 29
-        },
-        "file": "source/renderer/app/components/notifications/NodeUpdateNotification.js",
-        "id": "cardano.node.update.notification.titleWithVersion",
-        "start": {
-          "column": 20,
-          "line": 25
-        }
-      },
-      {
-        "defaultMessage": "!!!Cardano-Core update is available",
-        "description": "Cardano-Core update notification without version.",
-        "end": {
-          "column": 3,
-          "line": 34
-        },
-        "file": "source/renderer/app/components/notifications/NodeUpdateNotification.js",
-        "id": "cardano.node.update.notification.titleWithoutVersion",
-        "start": {
-          "column": 23,
-          "line": 30
-        }
-      },
-      {
-        "defaultMessage": "!!!Daedalus and Cardano node update is available. Would you like to install the update?",
-        "description": "Message shown when there is a Daedalus and Cardano node update available.",
-        "end": {
-          "column": 3,
-          "line": 41
-        },
-        "file": "source/renderer/app/components/notifications/NodeUpdateNotification.js",
-        "id": "cardano.node.update.notification.message",
-        "start": {
-          "column": 17,
-          "line": 35
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/notifications/NodeUpdateNotification.json"
   },
   {
     "descriptors": [
