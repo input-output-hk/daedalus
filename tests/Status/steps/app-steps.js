@@ -1,10 +1,9 @@
 // @flow
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
-import type { Daedalus } from '../setup/global-types';
 import { waitUntilTextInSelector } from '../helpers/shared-helpers';
-import { waitForCardanoNodeToExit } from '../helpers/cardano-node-helpers';
-import { refreshClient, waitForDaedalusToExit } from '../helpers/app-helpers';
+import { refreshClient, waitForCardanoNodeToExit, waitForDaedalusToExit } from '../helpers';
+import type { Daedalus } from '../../types';
 
 declare var daedalus: Daedalus;
 
