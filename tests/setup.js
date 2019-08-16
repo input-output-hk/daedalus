@@ -15,7 +15,7 @@ import {
   getTestNameFromTestFile,
   saveScreenshot,
 } from '../helpers/screenshot';
-import { refreshClient } from '../helpers/app-helpers';
+import { refreshClient } from './Status/helpers';
 
 /* eslint-disable consistent-return */
 
@@ -122,6 +122,43 @@ Before({ timeout: DEFAULT_TIMEOUT * 2 }, async function() {
     waitUntilSyncedAndReady();
   });
 });
+
+// adds context object to webdriver
+Before(function() {
+  this.context = {};
+});
+
+// adds waitAndClick method to webdriver
+Before(function() {
+  this.waitAndClick = async (selector, ...waitArgs) => {
+    await this.client.waitForVisible(selector, ...waitArgs);
+    return this.client.click(selector);
+  };
+});
+
+// ads intl method to webdriver
+Before(function() {
+  this.intl = async (translationId, translationValues = {}) => {
+    const translation = await this.client.execute(
+      (id, values) => {
+        const IntlProvider = require('react-intl').IntlProvider; // eslint-disable-line
+        const locale = daedalus.stores.profile.currentLocale;
+        const messages = daedalus.translations;
+        const intlProvider = new IntlProvider(
+          { locale, messages: messages[locale] },
+          {}
+        );
+        return intlProvider
+          .getChildContext()
+          .intl.formatMessage({ id }, values);
+      },
+      translationId,
+      translationValues
+    );
+    return translation.value;
+  };
+});
+
 
 // this ensures that the spectron instance of the app restarts
 // after the node update acceptance test shuts it down via 'kill-process'
