@@ -13,13 +13,11 @@ import {
 import { waitUntilUrlEquals, navigateTo } from '../helpers/route-helpers';
 import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
 import sidebar from '../helpers/sidebar-helpers';
-import helpers from '../helpers/add-wallet';
+import { addWalletHelpers } from '../helpers';
 import importWalletDialog from '../helpers/dialogs/import-wallet-dialog-helpers';
 import i18n from '../helpers/i18n-helpers';
-import {
-  isActiveWalletBeingRestored,
-  waitForActiveRestoreNotification,
-} from '../helpers/notifications-helpers';
+import { isActiveWalletBeingRestored } from '../helpers';
+import { waitForActiveRestoreNotification } from '../../Status/helpers';
 
 const defaultWalletKeyFilePath = path.resolve(
   __dirname,
@@ -84,7 +82,7 @@ Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function(
 });
 
 Given(/^I see the add wallet page/, function() {
-  return helpers.waitForVisible(this.client);
+  return addWalletHelpers.waitForVisible(this.client);
 });
 
 Given(/^I see delete wallet dialog$/, function() {
@@ -115,7 +113,7 @@ When(/^I click on the create wallet button on the add wallet page/, function() {
 });
 
 When(/^I click on the import wallet button on the add wallet page/, function() {
-  return helpers.clickImportButton(this.client);
+  return addWalletHelpers.clickImportButton(this.client);
 });
 
 When(/^I see the import wallet dialog$/, function() {
@@ -431,8 +429,8 @@ When(/^I submit the delete wallet dialog$/, function() {
 When(/^I try to import the wallet with funds again$/, async function() {
   await sidebar.activateCategory(this.client, { category: 'wallets' });
   await sidebar.clickAddWalletButton(this.client);
-  await helpers.waitForVisible(this.client);
-  await helpers.clickImportButton(this.client);
+  await addWalletHelpers.waitForVisible(this.client);
+  await addWalletHelpers.clickImportButton(this.client);
   this.waitAndClick('.WalletFileImportDialog .FileUploadWidget_dropZone');
   this.waitAndClick('.Dialog_actions button');
 });
