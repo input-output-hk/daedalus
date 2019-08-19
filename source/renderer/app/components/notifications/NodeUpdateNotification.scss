@@ -42,6 +42,7 @@
   .denyButton {
     @extend %actionButton;
     background-color: var(--theme-node-update-deny-button-background-color);
+    color: var(--theme-node-update-deny-button-text-color);
 
     &:hover {
       background-color: var(
