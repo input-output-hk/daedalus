@@ -61,10 +61,10 @@ Feature: Send Money to Receiver
       | title          | amount         |
       | my transaction | <WRONG_AMOUNT> |
     Then I should see the following error messages on the wallet send form:
-      | message                               |
-      | wallet.send.form.errors.invalidAmount |
+      | message |
+      | <ERROR> |
 
     Examples:
-      | WRONG_AMOUNT |
-      | 45000000001  |
-      | 0            |
+      | WRONG_AMOUNT | ERROR                                        |
+      | 99999999     | api.errors.NotEnoughFundsForTransactionError |
+      | 0            | wallet.send.form.errors.invalidAmount        |
