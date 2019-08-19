@@ -84,7 +84,9 @@ export default class WalletTransactionsList extends Component<Props> {
 
   componentWillMount() {
     const { dateLocale } = this.props;
-    this.localizedDateFormat = moment.localeData(dateLocale).longDateFormat('L');
+    this.localizedDateFormat = moment
+      .localeData(dateLocale)
+      .longDateFormat('L');
     // Localized dateFormat:
     // English - MM/DD/YYYY
     // Japanese - YYYY/MM/DD

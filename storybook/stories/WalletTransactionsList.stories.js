@@ -56,7 +56,7 @@ storiesOf('WalletTransactionsList', module)
         ),
       ]}
       isRestoreActive={false}
-      locale="en-US"
+      dateLocale="en-US"
       isLoadingTransactions={false}
       hasMoreToLoad={false}
       assuranceMode={{ low: 1, medium: 2 }}
@@ -92,7 +92,7 @@ storiesOf('WalletTransactionsList', module)
         ),
       ]}
       isRestoreActive={false}
-      locale="en-US"
+      dateLocale="en-US"
       isLoadingTransactions={false}
       hasMoreToLoad={false}
       assuranceMode={{ low: 1, medium: 2 }}
@@ -106,7 +106,7 @@ storiesOf('WalletTransactionsList', module)
     <WalletTransactionsList
       isRenderingAsVirtualList
       isRestoreActive={false}
-      locale="en-US"
+      dateLocale="en-US"
       transactions={generateMultipleTransactions(500)}
       isLoadingTransactions={false}
       hasMoreToLoad={false}

@@ -98,7 +98,9 @@ export default class StakingRewards extends Component<Props, State> {
   render() {
     const { rewardsOrder, rewardsSortBy } = this.state;
     const { rewards, isLoading, onLearnMoreClick, dateLocale } = this.props;
-    this.localizedDateFormat = moment.localeData(dateLocale).longDateFormat('L');
+    this.localizedDateFormat = moment
+      .localeData(dateLocale)
+      .longDateFormat('L');
     const { intl } = this.context;
     const noRewards = !isLoading && ((rewards && !rewards.length) || !rewards);
     const showRewards = rewards && rewards.length > 0 && !isLoading;
