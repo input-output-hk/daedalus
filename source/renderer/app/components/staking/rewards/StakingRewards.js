@@ -65,7 +65,7 @@ const messages = defineMessages({
 
 type Props = {
   rewards: Array<Reward>,
-  locale: string,
+  dateLocale: string,
   isLoading: boolean,
   onLearnMoreClick: Function,
 };
@@ -97,8 +97,8 @@ export default class StakingRewards extends Component<Props, State> {
 
   render() {
     const { rewardsOrder, rewardsSortBy } = this.state;
-    const { rewards, isLoading, onLearnMoreClick, locale } = this.props;
-    this.localizedDateFormat = moment.localeData(locale).longDateFormat('L');
+    const { rewards, isLoading, onLearnMoreClick, dateLocale } = this.props;
+    this.localizedDateFormat = moment.localeData(dateLocale).longDateFormat('L');
     const { intl } = this.context;
     const noRewards = !isLoading && ((rewards && !rewards.length) || !rewards);
     const showRewards = rewards && rewards.length > 0 && !isLoading;

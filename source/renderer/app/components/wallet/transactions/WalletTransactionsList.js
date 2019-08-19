@@ -56,7 +56,7 @@ type Props = {
   onOpenExternalLink?: Function,
   showMoreTransactionsButton?: boolean,
   transactions: Array<WalletTransaction>,
-  locale: string,
+  dateLocale: string,
   walletId: string,
 };
 
@@ -83,8 +83,8 @@ export default class WalletTransactionsList extends Component<Props> {
   localizedDateFormat: 'MM/DD/YYYY';
 
   componentWillMount() {
-    const { locale } = this.props;
-    this.localizedDateFormat = moment.localeData(locale).longDateFormat('L');
+    const { dateLocale } = this.props;
+    this.localizedDateFormat = moment.localeData(dateLocale).longDateFormat('L');
     // Localized dateFormat:
     // English - MM/DD/YYYY
     // Japanese - YYYY/MM/DD

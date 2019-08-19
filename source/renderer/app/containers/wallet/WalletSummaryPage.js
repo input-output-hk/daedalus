@@ -79,7 +79,7 @@ export default class WalletSummaryPage extends Component<Props> {
           hasMoreToLoad={false}
           assuranceMode={wallet.assuranceMode}
           walletId={wallet.id}
-          locale={systemDateLocale}
+          dateLocale={systemDateLocale}
           isRestoreActive={isRestoreActive}
           formattedWalletAmount={formattedWalletAmount}
           showMoreTransactionsButton={

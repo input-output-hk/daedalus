@@ -9,10 +9,7 @@ export const detectSystemLocale = (): string => {
   if (systemLocale === 'ja') {
     return LOCALES.japanese;
   }
-  if (systemLocale === 'en-US') {
-    return LOCALES.english;
-  }
-  return systemLocale;
+  return LOCALES.english;
 };
 
 export const detectSystemDateLocale = (): string => {

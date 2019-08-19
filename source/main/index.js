@@ -90,9 +90,9 @@ const onAppReady = async () => {
   const platformVersion = os.release();
   const ram = JSON.stringify(os.totalmem(), null, 2);
   const startTime = new Date().toISOString();
-  // first checks for japanese locale, otherwise returns english
+  // First checks for japanese locale, otherwise returns english
   const systemLocale = detectSystemLocale();
-  // first checks for japanese locale, otherwise returns english
+  // Checks for system local value in order to use it for date formatting
   const systemDateLocale = detectSystemDateLocale();
 
   const systemInfo = logSystemInfo({

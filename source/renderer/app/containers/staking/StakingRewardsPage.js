@@ -38,7 +38,7 @@ export default class StakingRewardsPage extends Component<Props> {
     return (
       <StakingRewards
         rewards={rewards}
-        locale={systemDateLocale}
+        dateLocale={systemDateLocale}
         isLoading={false}
         onLearnMoreClick={this.handleLearnMoreClick}
       />

@@ -100,7 +100,7 @@ export default class WalletTransactionsPage extends Component<Props> {
           hasMoreToLoad={hasMoreToLoad()}
           onLoadMore={actions.transactions.loadMoreTransactions.trigger}
           assuranceMode={activeWallet.assuranceMode}
-          locale={systemDateLocale}
+          dateLocale={systemDateLocale}
           walletId={activeWallet.id}
           formattedWalletAmount={formattedWalletAmount}
           onOpenExternalLink={openExternalLink}
