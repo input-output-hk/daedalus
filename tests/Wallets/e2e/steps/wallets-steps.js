@@ -12,7 +12,7 @@ import {
 } from '../helpers/wallets-helpers';
 import { waitUntilUrlEquals, navigateTo } from '../helpers/route-helpers';
 import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
-import sidebar from '../helpers/sidebar-helpers';
+import { sidebarHelpers } from '../../../Navigation/e2e/steps/helpers';
 import { addWalletHelpers } from '../helpers';
 import importWalletDialog from '../helpers/dialogs/import-wallet-dialog-helpers';
 import i18n from '../helpers/i18n-helpers';
@@ -427,8 +427,8 @@ When(/^I submit the delete wallet dialog$/, function() {
 });
 
 When(/^I try to import the wallet with funds again$/, async function() {
-  await sidebar.activateCategory(this.client, { category: 'wallets' });
-  await sidebar.clickAddWalletButton(this.client);
+  await sidebarHelpers.activateCategory(this.client, { category: 'wallets' });
+  await sidebarHelpers.clickAddWalletButton(this.client);
   await addWalletHelpers.waitForVisible(this.client);
   await addWalletHelpers.clickImportButton(this.client);
   this.waitAndClick('.WalletFileImportDialog .FileUploadWidget_dropZone');

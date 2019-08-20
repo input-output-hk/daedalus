@@ -1,5 +1,5 @@
 import { Given, When, Then } from 'cucumber';
-import sidebar from '../helpers/sidebar-helpers';
+import { sidebarHelpers } from './helpers';
 
 Given(/^the sidebar submenu is (hidden|visible)/, async function(state) {
   const isVisible = state === 'visible';
@@ -30,7 +30,7 @@ Given(/^the sidebar submenu is (hidden|visible)/, async function(state) {
 });
 
 Given(/^The sidebar shows the "([^"]*)" category$/, function(category) {
-  return sidebar.activateCategory(this.client, { category });
+  return sidebarHelpers.activateCategory(this.client, { category });
 });
 
 When(/^I click on the sidebar toggle button$/, function() {
@@ -42,7 +42,7 @@ When(/^I click on the "([^"]*)" category in the sidebar$/, function(category) {
 });
 
 When(/^I click on the add wallet button in the sidebar$/, function() {
-  return sidebar.clickAddWalletButton(this.client);
+  return sidebarHelpers.clickAddWalletButton(this.client);
 });
 
 When(/^I click on the "([^"]*)" wallet in the sidebar$/, function(walletName) {

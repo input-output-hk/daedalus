@@ -2,7 +2,7 @@ import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { createWallets, getWalletByName } from '../helpers/wallets-helpers';
 import { MAX_ADA_WALLETS_COUNT } from '../../../../source/renderer/app/config/numbersConfig';
-import sidebar from '../helpers/sidebar-helpers';
+import { sidebarHelpers } from '../../../Navigation/e2e/steps/helpers';
 
 Given(
   'I create wallets until I reach the maximum number permitted',
@@ -44,7 +44,7 @@ Then(
   async function(state) {
     const isDisabled = state === 'disabled' ? 'true' : null;
 
-    sidebar.clickAddWalletButton(this.client);
+    sidebarHelpers.clickAddWalletButton(this.client);
 
     await this.client.waitForVisible(
       '.WalletAdd_buttonsContainer .BigButtonForDialogs_component'
