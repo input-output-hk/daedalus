@@ -7,6 +7,7 @@ import type {
   GetLatestAppVersionResponse,
 } from '../api/nodes/types';
 import { NODE_UPDATE_POLL_INTERVAL } from '../config/timingConfig';
+import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
 
 export default class NodeUpdateStore extends Store {
   @observable isUpdateAvailable = false;
@@ -67,13 +68,25 @@ export default class NodeUpdateStore extends Store {
               ? this.availableAppVersion
               : null;
         });
+        // Rebuild app menu
+        await rebuildApplicationMenu.send(true);
       }
     }
   };
 
-  @action _postponeNodeUpdate = () => {
+  /** Automatic update overlay faker
+    - Set some version number e.g. "0.14.0" or null
+    */
+  @action _setNextUpdateVersion = async nextUpdateVersion => {
+    this.nextUpdateVersion = nextUpdateVersion;
+    this.isUpdateAvailable = true;
+    await rebuildApplicationMenu.send(true);
+  };
+
+  @action _postponeNodeUpdate = async () => {
     this.postponeUpdateRequest.execute();
     this.isUpdatePostponed = true;
+    await rebuildApplicationMenu.send();
   };
 
   @action _acceptNodeUpdate = () => {

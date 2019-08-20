@@ -13,7 +13,8 @@ import { getTranslation } from './getTranslation';
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
   cardanoNode: ?CardanoNode,
-  locale: string
+  locale: string,
+  isAppUpdateAvailable?: boolean
 ) => {
   const { ABOUT, BLOCK_CONSOLIDATION, DAEDALUS_DIAGNOSTICS } = DIALOGS;
 
@@ -87,12 +88,26 @@ export const buildAppMenus = async (
   let menu;
   if (isMacOS) {
     menu = Menu.buildFromTemplate(
-      osxMenu(app, mainWindow, menuActions, translations, locale)
+      osxMenu(
+        app,
+        mainWindow,
+        menuActions,
+        translations,
+        locale,
+        isAppUpdateAvailable
+      )
     );
     Menu.setApplicationMenu(menu);
   } else {
     menu = Menu.buildFromTemplate(
-      winLinuxMenu(app, mainWindow, menuActions, translations, locale)
+      winLinuxMenu(
+        app,
+        mainWindow,
+        menuActions,
+        translations,
+        locale,
+        isAppUpdateAvailable
+      )
     );
     mainWindow.setMenu(menu);
   }

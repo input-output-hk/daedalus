@@ -18,6 +18,7 @@ export const osxMenu = (
   actions: MenuActions,
   translations: {},
   locale: string,
+  isAppUpdateAvailable: ?boolean,
   translation: Function = getTranslation(translations, id)
 ) => [
   {
@@ -170,6 +171,7 @@ export const osxMenu = (
         click() {
           actions.openBlockConsolidationStatusDialog();
         },
+        enabled: !isAppUpdateAvailable,
       },
       {
         label: translation('helpSupport.daedalusDiagnostics'),
@@ -177,6 +179,7 @@ export const osxMenu = (
         click() {
           actions.openDaedalusDiagnosticsDialog();
         },
+        enabled: !isAppUpdateAvailable,
       },
     ]),
   },

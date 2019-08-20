@@ -175,17 +175,16 @@ const onAppReady = async () => {
     await safeExit();
   });
 
-  buildAppMenus(mainWindow, cardanoNode, locale);
+  buildAppMenus(mainWindow, cardanoNode, locale, false);
 
-  await rebuildApplicationMenu.onReceive(
-    () =>
-      new Promise(resolve => {
-        locale = getLocale(network);
-        buildAppMenus(mainWindow, cardanoNode, locale);
-        mainWindow.updateTitle(locale);
-        resolve();
-      })
-  );
+  await rebuildApplicationMenu.onReceive(isAppUpdateAvailable => {
+    return new Promise(resolve => {
+      locale = getLocale(network);
+      buildAppMenus(mainWindow, cardanoNode, locale, isAppUpdateAvailable);
+      mainWindow.updateTitle(locale);
+      resolve();
+    });
+  });
 
   // Security feature: Prevent creation of new browser windows
   // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows
