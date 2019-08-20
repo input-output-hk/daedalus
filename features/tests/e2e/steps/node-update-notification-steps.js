@@ -4,12 +4,6 @@ import { environment } from '../../../../source/main/environment';
 import { getVisibleTextsForSelector } from '../helpers/shared-helpers';
 
 const currentAppVersion = environment.version;
-const currentAppVersionChunks = currentAppVersion.split('.');
-const nextAppVersion = [
-  currentAppVersionChunks[0],
-  parseInt(currentAppVersionChunks[1], 10) + 1,
-  currentAppVersionChunks[2],
-].join('.');
 
 const SELECTORS = {
   currentAppVersionInfo:
@@ -42,16 +36,12 @@ When(
   }
 );
 
-Then('I should see the accept update button', async function() {
-  return this.client.waitForVisible(
-    '.AutomaticUpdateNotification_acceptButton'
-  );
-});
-
-Then('I should see the postpone update button', async function() {
-  return this.client.waitForVisible(
-    '.AutomaticUpdateNotification_postponeButton'
-  );
+When(/^I set next application version to "([^"]*)"$/, async function(
+  applicationVersion
+) {
+  await this.client.execute(version => {
+    daedalus.api.ada.setApplicationVersion(parseInt(version));
+  }, applicationVersion);
 });
 
 When(/^I click the postpone update button$/, function() {

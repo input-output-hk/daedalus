@@ -22,7 +22,7 @@ let LOCAL_BLOCK_HEIGHT = null;
 let NETWORK_BLOCK_HEIGHT = null;
 let NEXT_ADA_UPDATE = null;
 let SUBSCRIPTION_STATUS = null;
-const APPLICATION_VERSION = 15;
+let APPLICATION_VERSION = null;
 
 export default (api: AdaApi) => {
   api.getLocalTimeDifference = async () =>
@@ -108,10 +108,18 @@ export default (api: AdaApi) => {
     LOCAL_TIME_DIFFERENCE = timeDifference;
   };
 
-  api.nextUpdate = async () =>
-    Promise.resolve({
-      version: NEXT_ADA_UPDATE,
-    });
+  api.nextUpdate = async () => {
+    let nodeUpdate = null;
+
+    if (NEXT_ADA_UPDATE) {
+      nodeUpdate = {
+        version: NEXT_ADA_UPDATE,
+      };
+    }
+
+    Logger.debug('AdaApi::nextUpdate success', { nodeUpdate });
+    return Promise.resolve(nodeUpdate);
+  };
 
   api.setNextUpdate = async nextUpdate => {
     NEXT_ADA_UPDATE = nextUpdate;
@@ -150,7 +158,7 @@ export default (api: AdaApi) => {
 
       return {
         latestAppVersion: LATEST_APP_VERSION || latestAppVersion,
-        applicationVersion: APPLICATION_VERSION,
+        applicationVersion: APPLICATION_VERSION || applicationVersion,
       };
     } catch (error) {
       Logger.error('AdaApi::getLatestAppVersion (PATCHED) error', { error });
@@ -160,6 +168,10 @@ export default (api: AdaApi) => {
 
   api.setLatestAppVersion = async (latestAppVersion: ?string) => {
     LATEST_APP_VERSION = latestAppVersion;
+  };
+
+  api.setApplicationVersion = async (applicationVersion: number) => {
+    APPLICATION_VERSION = applicationVersion;
   };
 
   api.setSubscriptionStatus = async (subscriptionStatus: ?Object) => {

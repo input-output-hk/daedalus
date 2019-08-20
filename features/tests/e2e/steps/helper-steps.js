@@ -41,7 +41,7 @@ When(/^I trigger the apply-update endpoint$/, async function() {
   });
 });
 
-When(/^I set next application update version to "([^"]*)"$/, async function(
+When(/^I set next update version to "([^"]*)"$/, async function(
   applicationVersion
 ) {
   await this.client.executeAsync((applicationVersion, done) => {
