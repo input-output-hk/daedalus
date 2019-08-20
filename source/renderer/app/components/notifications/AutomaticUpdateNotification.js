@@ -22,18 +22,18 @@ const messages = defineMessages({
   descriptionLine2: {
     id: 'automaticUpdate.description2',
     defaultMessage:
-      '!!!Would you like to install the update? If you close this overlay or choose to postpone, the update will be installed automatically on the next Daedalus launch.',
+      '!!!Would you like to install the update? If choose to postpone, the update will be installed automatically on the next Daedalus launch.',
     description: 'Second description line of "Automatic update" overlay',
   },
   acceptButtonLabel: {
     id: 'automaticUpdate.accept.button.label',
-    defaultMessage: '!!!Restart and Update',
+    defaultMessage: '!!!Restart Daedalus and Update',
     description:
-      'Label for "Restart and Update" action button on "Automatic update" overlay',
+      'Label for "Restart Daedalus and Update" action button on "Automatic update" overlay',
   },
   postponeButtonLabel: {
     id: 'automaticUpdate.postpone.button.label',
-    defaultMessage: '!!!Postpone',
+    defaultMessage: '!!!Postpone until Daedalus restart',
     description:
       'Label for "Postpone" action button on "Automatic update" overlay',
   },

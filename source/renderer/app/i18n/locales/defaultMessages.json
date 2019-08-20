@@ -1129,69 +1129,69 @@
         "description": "Title for \"Automatic update\" overlay",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 15
         },
         "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
         "id": "automaticUpdate.title",
         "start": {
           "column": 9,
-          "line": 13
+          "line": 11
         }
       },
       {
-        "defaultMessage": "!!!You are currently running Daedalus v <b>{currentAppVersion}</b> and <b>{nextAppVersion}</b> is available.",
+        "defaultMessage": "!!!You are currently running Daedalus <b>v {currentAppVersion}</b> and <b>{nextAppVersion}</b> is available.",
         "description": "First description line of \"Automatic update\" overlay",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 21
         },
         "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
         "id": "automaticUpdate.description1",
         "start": {
           "column": 20,
-          "line": 18
+          "line": 16
         }
       },
       {
-        "defaultMessage": "!!!Would you like to install the update? If you close this overlay or choose to postpone, the update will be installed automatically on the next Daedalus launch.",
+        "defaultMessage": "!!!Would you like to install the update? If choose to postpone, the update will be installed automatically on the next Daedalus launch.",
         "description": "Second description line of \"Automatic update\" overlay",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 27
         },
         "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
         "id": "automaticUpdate.description2",
         "start": {
           "column": 20,
-          "line": 24
+          "line": 22
         }
       },
       {
-        "defaultMessage": "!!!Restart and Update",
-        "description": "Label for \"Restart and Update\" action button on \"Automatic update\" overlay",
+        "defaultMessage": "!!!Restart Daedalus and Update",
+        "description": "Label for \"Restart Daedalus and Update\" action button on \"Automatic update\" overlay",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 33
         },
         "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
         "id": "automaticUpdate.accept.button.label",
         "start": {
           "column": 21,
-          "line": 30
+          "line": 28
         }
       },
       {
-        "defaultMessage": "!!!Postpone",
+        "defaultMessage": "!!!Postpone until Daedalus restart",
         "description": "Label for \"Postpone\" action button on \"Automatic update\" overlay",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 39
         },
         "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
         "id": "automaticUpdate.postpone.button.label",
         "start": {
           "column": 23,
-          "line": 36
+          "line": 34
         }
       },
       {
@@ -1199,13 +1199,13 @@
         "description": "Label for \"newer version\" on \"Automatic update\" overlay",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 44
         },
         "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
         "id": "automaticUpdate.newerVersion.label",
         "start": {
           "column": 21,
-          "line": 42
+          "line": 40
         }
       }
     ],
