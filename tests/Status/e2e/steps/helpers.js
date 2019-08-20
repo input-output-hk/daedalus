@@ -1,29 +1,10 @@
 // @flow
 import { getProcessesByName } from '../../../source/main/utils/processes';
-import type { Daedalus, WebdriverClient } from '../../types';
+import type { Daedalus, WebdriverClient } from '../../../types';
 
 declare var daedalus: Daedalus;
 
-const DATA_LAYER_MIGRATION_ACCEPTANCE_COMPONENT = '.DataLayerMigrationForm_component';
 const ACTIVE_RESTORE_NOTIFICATION = '.ActiveRestoreNotification';
-
-export const migrationHelpers = {
-  waitForVisible: async (
-    client: WebdriverClient,
-    { isHidden } : { isHidden: boolean } = {}
-  ) =>
-    client.waitForVisible(
-      DATA_LAYER_MIGRATION_ACCEPTANCE_COMPONENT,
-      null,
-      isHidden
-    ),
-  acceptMigration: async (client: WebdriverClient) => {
-    await client.execute(() => {
-      daedalus.actions.profile.acceptDataLayerMigration.trigger();
-    });
-    await migrationHelpers.waitForVisible(client, { isHidden: true });
-  },
-};
 
 export const getCardanoNodeState = async (client: WebdriverClient) =>
   (await client.execute(() => daedalus.stores.networkStatus.cardanoNodeState)).value;

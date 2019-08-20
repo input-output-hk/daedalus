@@ -1,11 +1,12 @@
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
-import termsOfUse from '../helpers/terms-of-use-helpers';
+import { termsOfUseHelpers } from './helpers';
 
 const TERMS_OF_USE_FORM = '.TermsOfUseForm_component';
+const { acceptTerms } = termsOfUseHelpers;
 
 Given(/^I have accepted "Terms of use"$/, async function() {
-  await termsOfUse.acceptTerms(this.client);
+  await acceptTerms(this.client);
 });
 
 Given(/^I didnt accept "Terms of use"$/, async function() {

@@ -1,11 +1,12 @@
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
-import languageSelection from '../helpers/language-selection-helpers';
+import { languageSelectionHelpers } from './helpers';
 
+const { ensureLanguageIsSelected } = languageSelectionHelpers;
 const LANGUAGE_SELECTION_FORM = '.LanguageSelectionForm_component';
 
 Given(/^I have selected English language$/, async function() {
-  await languageSelection.ensureLanguageIsSelected(this.client, {
+  await ensureLanguageIsSelected(this.client, {
     language: 'en-US',
   });
 });
