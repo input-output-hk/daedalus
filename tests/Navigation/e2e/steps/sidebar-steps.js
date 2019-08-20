@@ -63,3 +63,7 @@ Then(/^the sidebar submenu should be (hidden|visible)/, function(state) {
 Then(/^The "([^"]*)" category should be active$/, function(category) {
   return this.client.waitForVisible(`.SidebarCategory_active.${category}`);
 });
+
+Then(/^I should see the initial screen$/, function() {
+  return this.client.waitForVisible('.SidebarLayout_component');
+});
