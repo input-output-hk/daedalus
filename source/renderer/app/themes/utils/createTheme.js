@@ -552,11 +552,15 @@ export const createDaedalusComponentsTheme = (
       }`,
       '--theme-icon-back-button-color': `${text.primary}`,
       '--theme-icon-close-button-color': `${text.primary}`,
-      '--theme-icon-connecting-logo-color': `${text.secondary}`,
+      '--theme-icon-connecting-ada-api-logo-color': `${text.secondary}`,
+      '--theme-icon-connecting-ada-logo-color': `${text.secondary}`,
+      '--theme-icon-connecting-daedalus-logo-color': `${text.secondary}`,
       '--theme-icon-copy-address-color': `${text.primary}`,
       '--theme-icon-delegation-center-no-wallets': `${text.primary}`,
       '--theme-icon-file-upload-color': `${text.primary}`,
-      '--theme-icon-syncing-logo-color': `${text.primary}`,
+      '--theme-icon-syncing-ada-api-logo-color': `${text.primary}`,
+      '--theme-icon-syncing-ada-logo-color': `${text.primary}`,
+      '--theme-icon-syncing-daedalus-logo-color': `${text.primary}`,
       '--theme-icon-transactions-ada-symbol-color': `${text.primary}`,
       '--theme-icon-transaction-type-color': '#fafbfc',
     },
@@ -700,6 +704,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-node-update-deny-button-background-color-active': `${
         background.secondary.darkest
       }`,
+      '--theme-node-update-deny-button-text-color': `${text.secondary}`,
       '--theme-node-update-button-text-color': `${text.secondary}`,
     },
     notification: {
@@ -821,6 +826,8 @@ export const createDaedalusComponentsTheme = (
         background.secondary.darker
       }`,
       '--theme-sidebar-category-text-color': `${text.secondary}`,
+      '--theme-sidebar-layout-shadow-color': 'rgba(0, 0, 0, 0.25)',
+      '--theme-sidebar-layout-topbar-shadow-color': 'rgba(0, 0, 0, 0.25)',
       '--theme-sidebar-menu-background-color': `${background.secondary.darker}`,
       '--theme-sidebar-menu-item-background-color-hover': `${
         background.secondary.darkest
