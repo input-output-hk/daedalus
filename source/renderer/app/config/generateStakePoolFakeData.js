@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 function generatStakePoolsFakeData() {
-  let stakePools = [];
+  const stakePools = [];
   for (let i=1; i <= 300; i++) {
     const ranking = i;
     const id = faker.random.alphaNumeric(64);
@@ -36,4 +36,4 @@ function generatStakePoolsFakeData() {
 }
 
 const fakeStakePools = generatStakePoolsFakeData();
-fs.writeFileSync(path.join(__dirname, '/') + 'stakingStakePools.dummy.json', JSON.stringify(fakeStakePools, null, '\t'));
+fs.writeFileSync(`${path.join(__dirname, '/')}stakingStakePools.dummy.json`, JSON.stringify(fakeStakePools, null, '\t'));
