@@ -223,11 +223,15 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-icon-add-wallet-dialog-big-button-color': '#2d2d2d',
     '--theme-icon-back-button-color': '#2d2d2d',
     '--theme-icon-close-button-color': '#2d2d2d',
-    '--theme-icon-connecting-logo-color': '#2d2d2d',
+    '--theme-icon-connecting-ada-api-logo-color': '#2d2d2d',
+    '--theme-icon-connecting-ada-logo-color': '#2d2d2d',
+    '--theme-icon-connecting-daedalus-logo-color': '#2d2d2d',
     '--theme-icon-copy-address-color': '#2d2d2d',
     '--theme-icon-delegation-center-no-wallets': '#2d2d2d',
     '--theme-icon-file-upload-color': '#2d2d2d',
-    '--theme-icon-syncing-logo-color': '#2d2d2d',
+    '--theme-icon-syncing-ada-api-logo-color': '#2d2d2d',
+    '--theme-icon-syncing-ada-logo-color': '#2d2d2d',
+    '--theme-icon-syncing-daedalus-logo-color': '#2d2d2d',
     '--theme-icon-transactions-ada-symbol-color': '#2d2d2d',
     '--theme-icon-transaction-type-color': '#fafbfc',
   },
@@ -327,6 +331,7 @@ export const YELLOW_THEME_OUTPUT = {
       'rgba(45, 45, 45, 0.6)',
     '--theme-node-update-deny-button-background-color-active':
       'rgba(45, 45, 45, 0.8)',
+    '--theme-node-update-deny-button-text-color': '#fafbfc',
     '--theme-node-update-button-text-color': '#fafbfc',
   },
   notification: {
@@ -394,7 +399,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--rp-bubble-bg-color': '#fff',
     '--rp-bubble-border-color': 'rgba(45, 45, 45, 0.2)',
     '--rp-bubble-border-radius': '2px',
-    '--rp-bubble-arrow-bg-color': 'rgba(45, 45, 45, 0.07)',
+    '--rp-bubble-arrow-bg-color': '#edeeef',
   },
   rpButton: {
     '--rp-button-bg-color': '#2d2d2d',
@@ -542,6 +547,8 @@ export const YELLOW_THEME_OUTPUT = {
       'rgba(255, 185, 35, 0.5)',
     '--theme-sidebar-category-background-color-active': '#ffb923',
     '--theme-sidebar-category-text-color': '#2d2d2d',
+    '--theme-sidebar-layout-shadow-color': 'rgba(0, 0, 0, 0.25)',
+    '--theme-sidebar-layout-topbar-shadow-color': 'rgba(0, 0, 0, 0.25)',
     '--theme-sidebar-menu-background-color': '#ffb923',
     '--theme-sidebar-menu-item-background-color-hover':
       'rgba(237, 167, 14, 0.5)',

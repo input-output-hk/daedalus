@@ -16,7 +16,7 @@ import './loading/Loading.stories';
 import './overlays/Overlays.stories';
 
 // Settings
-import './LanguageSelectionForm.stories';
+import './Settings.stories';
 
 // Diagnostics
 
