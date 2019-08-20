@@ -92,38 +92,6 @@
             var(--theme-automatic-update-overlay-button-label-color);
         }
       }
-
-      .closeButton {
-        cursor: pointer;
-        display: flex;
-        justify-content: flex-end;
-        position: fixed;
-        right: 10px;
-        top: 10px;
-        z-index: 1;
-
-        span {
-          height: 44px;
-          width: 44px;
-
-          &:hover {
-            border-radius: 50%;
-            background-color: var(
-              --theme-automatic-update-overlay-close-button-hover-background
-            );
-          }
-        }
-
-        svg {
-          height: 12px;
-          margin-top: 16px;
-          width: 12px;
-
-          g {
-            stroke: var(--theme-automatic-update-overlay-close-button-color);
-          }
-        }
-      }
     }
   }
 

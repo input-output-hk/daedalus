@@ -77,7 +77,7 @@ export default class NodeUpdateStore extends Store {
   /** Automatic update overlay faker
     - Set some version number e.g. "0.14.0" or null
     */
-  @action _setNextUpdateVersion = async nextUpdateVersion => {
+  @action _setNextUpdateVersion = async (nextUpdateVersion) => {
     this.nextUpdateVersion = nextUpdateVersion;
     this.isUpdateAvailable = true;
     await rebuildApplicationMenu.send(true);

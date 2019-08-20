@@ -5,8 +5,6 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import ReactModal from 'react-modal';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import DialogCloseButton from '../widgets/DialogCloseButton';
-import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import styles from './AutomaticUpdateNotification.scss';
 
 const messages = defineMessages({
@@ -116,12 +114,6 @@ export default class AutomaticUpdateNotification extends Component<Props> {
               {formatMessage(messages.postponeButtonLabel)}
             </span>
           </div>
-
-          <DialogCloseButton
-            className={styles.closeButton}
-            icon={closeCrossThin}
-            onClose={onPostpone}
-          />
         </div>
       </ReactModal>
     );
