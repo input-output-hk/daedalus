@@ -3,17 +3,18 @@ import { expect } from 'chai';
 import path from 'path';
 import BigNumber from 'bignumber.js';
 import {
+  addWalletHelpers,
+  importWalletHelpers,
+  isActiveWalletBeingRestored,
   createWallets,
   fillOutWalletSendForm,
   getWalletByName,
   waitUntilWalletIsLoaded,
   addOrSetWalletsForScenario,
   importWalletWithFunds,
-} from '../helpers/wallets-helpers';
-import { waitUntilUrlEquals, navigateTo } from '../helpers/route-helpers';
+} from '../helpers';
+import { sidebarHelpers, waitUntilUrlEquals, navigateTo } from '../../../Navigation/e2e/steps/helpers';
 import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
-import { sidebarHelpers } from '../../../Navigation/e2e/steps/helpers';
-import { addWalletHelpers, importWalletHelpers, isActiveWalletBeingRestored } from '../helpers';
 import { waitForActiveRestoreNotification } from '../../Status/helpers';
 import { i18nHelpers } from '../../../Settings/e2e/helpers';
 

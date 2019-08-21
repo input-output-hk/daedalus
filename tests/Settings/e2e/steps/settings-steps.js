@@ -4,7 +4,7 @@ import { navigateTo } from '../helpers/route-helpers';
 import {
   waitUntilWaletNamesEqual,
   getNameOfActiveWalletInSidebar,
-} from '../helpers/wallets-helpers';
+} from '../../../Wallets/e2e/steps/helpers';
 
 Given(/^I am on the settings screen$/, async function() {
   await navigateTo.call(this, '/settings');

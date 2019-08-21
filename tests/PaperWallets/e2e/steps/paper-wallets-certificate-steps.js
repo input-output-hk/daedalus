@@ -1,7 +1,7 @@
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import path from 'path';
-import { fillOutWalletSendForm } from '../helpers/wallets-helpers';
+import { fillOutWalletSendForm } from '../../../Wallets/e2e/steps/helpers';
 import { waitUntilTextInSelector } from '../helpers/shared-helpers';
 
 const paperWalletCertificatePath = path.resolve(
