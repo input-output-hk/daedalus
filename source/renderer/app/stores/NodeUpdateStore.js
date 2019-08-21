@@ -81,7 +81,8 @@ export default class NodeUpdateStore extends Store {
   };
 
   /** Automatic update overlay faker
-    - Set some version number e.g. "0.14.0" or null
+    - example with "newer version" label: _setNextUpdateVersion(11, 10, '0.16.0')
+    - example with "v 0.16.0" label: _setNextUpdateVersion(10, 10, '0.16.0')
     */
   @action _setNextUpdateVersion = async (
     nextUpdateVersion,
