@@ -29,6 +29,7 @@ export const winLinuxMenu = (
         click() {
           actions.openAboutDialog();
         },
+        enabled: !isAppUpdateAvailable,
       },
       {
         label: translation('daedalus.close'),
@@ -169,6 +170,7 @@ export const winLinuxMenu = (
         click() {
           showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
         },
+        enabled: !isAppUpdateAvailable,
       },
       { type: 'separator' },
       {

@@ -29,6 +29,7 @@ export const osxMenu = (
         click() {
           actions.openAboutDialog();
         },
+        enabled: !isAppUpdateAvailable,
       },
       { type: 'separator' },
       {
@@ -163,6 +164,7 @@ export const osxMenu = (
         click() {
           showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
         },
+        enabled: !isAppUpdateAvailable,
       },
       { type: 'separator' },
       {
