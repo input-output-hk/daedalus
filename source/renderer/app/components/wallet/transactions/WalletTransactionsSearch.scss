@@ -7,13 +7,13 @@
     }
 
     .input_inputElement {
-      border-radius: 4px;
       background: url('../../../assets/images/search-ic.svg') no-repeat 20px
         center;
-      background-size: 15px;
-      padding: 16px 1rem 16px 52px;
       background-color: var(--theme-transactions-search-background-color);
+      background-size: 15px;
+      border-radius: 4px;
       font-family: var(--font-regular);
+      padding: 16px 1rem 16px 52px;
       &:focus {
         background: url('../../../assets/images/search-ic-dark.svg') no-repeat
           20px center;
@@ -22,8 +22,8 @@
     }
 
     .input_hint {
-      top: 19px;
       left: 54px;
+      top: 19px;
     }
   }
 }

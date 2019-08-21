@@ -24,7 +24,7 @@ export default class WalletSettingsPage extends Component<Props> {
   }
 
   render() {
-    const { wallets, walletSettings } = this.props.stores;
+    const { app, wallets, walletSettings } = this.props.stores;
     const { walletUtxos } = walletSettings;
     const { histogram } = walletUtxos || { histogram: {} };
     const { active: activeWallet } = wallets;
@@ -37,6 +37,7 @@ export default class WalletSettingsPage extends Component<Props> {
         walletAmount={activeWallet.amount}
         walletUtxosAmount={walletUtxosAmount}
         chartData={chartData}
+        onExternalLinkClick={app.openExternalLink}
       />
     );
   }

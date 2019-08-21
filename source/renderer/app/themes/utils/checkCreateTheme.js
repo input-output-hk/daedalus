@@ -1,14 +1,9 @@
-/* eslint-disable no-unused-expressions */
 /* eslint-disable no-console */
 // @flow
 import { has, isEmpty } from 'lodash';
 import chalk from 'chalk';
-import { CARDANO_THEME_CONFIG } from '../daedalus/cardano';
-import { DARK_BLUE_THEME_CONFIG } from '../daedalus/dark-blue';
-import { DARK_CARDANO_THEME_CONFIG } from '../daedalus/dark-cardano';
-import { LIGHT_BLUE_THEME_CONFIG } from '../daedalus/light-blue';
-import { YELLOW_THEME_CONFIG } from '../daedalus/yellow';
-import { WHITE_THEME_CONFIG } from '../daedalus/white';
+import { EXISTING_THEME_OUTPUTS } from '../daedalus/index.js';
+import { THEME_LOGGING_COLORS } from './constants';
 import type { LogDifferencesParams } from '../types';
 
 const logDifferences = ({
@@ -16,10 +11,9 @@ const logDifferences = ({
   missingDefs,
   themeName,
 }: LogDifferencesParams) => {
-  // $FlowFixMe
   const message = chalk`\n{inverse  createTheme.js } is missing the following definitions that exist in the {underline ${themeName}} theme:\n\n${JSON.stringify(
     missingDefs,
-    0,
+    null,
     2
   )}\n`;
   return console.log(chalk.hex(color)(message));
@@ -27,90 +21,36 @@ const logDifferences = ({
 
 // Checks for properties/CSS vars on existing themes that don't exist on createThemeObj
 export const checkCreateTheme = (createThemeObj: Object) => {
-  const missingCardanoDefs = {
-    ...findMissingDefinitions(CARDANO_THEME_CONFIG, createThemeObj),
-    ...findMissingCSSVars(CARDANO_THEME_CONFIG, createThemeObj),
-  };
-  const missingDarkBlueDefs = {
-    ...findMissingDefinitions(DARK_BLUE_THEME_CONFIG, createThemeObj),
-    ...findMissingCSSVars(DARK_BLUE_THEME_CONFIG, createThemeObj),
-  };
-  const missingLightBlueDefs = {
-    ...findMissingDefinitions(LIGHT_BLUE_THEME_CONFIG, createThemeObj),
-    ...findMissingCSSVars(LIGHT_BLUE_THEME_CONFIG, createThemeObj),
-  };
+  const missingDefinitions = EXISTING_THEME_OUTPUTS.reduce(
+    (defsToAdd: Object, themeOutput: [string, Object]) => {
+      const [fileName, themeObj] = themeOutput;
 
-  const missingDarkCardanoDefs = {
-    ...findMissingDefinitions(DARK_CARDANO_THEME_CONFIG, createThemeObj),
-    ...findMissingCSSVars(DARK_CARDANO_THEME_CONFIG, createThemeObj),
-  };
+      const missingDefs = {
+        ...findMissingDefinitions(themeObj, createThemeObj),
+        ...findMissingCSSVars(themeObj, createThemeObj),
+      };
 
-  const missingYelloweDefs = {
-    ...findMissingDefinitions(YELLOW_THEME_CONFIG, createThemeObj),
-    ...findMissingCSSVars(YELLOW_THEME_CONFIG, createThemeObj),
-  };
+      if (!isEmpty(missingDefs)) {
+        defsToAdd[fileName] = missingDefs;
+      }
 
-  const missingWhiteDefs = {
-    ...findMissingDefinitions(WHITE_THEME_CONFIG, createThemeObj),
-    ...findMissingCSSVars(WHITE_THEME_CONFIG, createThemeObj),
-  };
+      return defsToAdd;
+    },
+    {}
+  );
 
-  if (!isEmpty(missingCardanoDefs)) {
-    logDifferences({
-      color: '#2cbb69',
-      missingDefs: missingCardanoDefs,
-      themeName: 'cardano.js',
-    });
+  // loop over missingDefinitions and log differences
+  for (const themeName in missingDefinitions) {
+    if (themeName && !isEmpty(missingDefinitions[themeName])) {
+      logDifferences({
+        color: THEME_LOGGING_COLORS[themeName],
+        missingDefs: missingDefinitions[themeName],
+        themeName,
+      });
+    }
   }
 
-  if (!isEmpty(missingDarkBlueDefs)) {
-    logDifferences({
-      color: '#2874A6',
-      missingDefs: missingDarkBlueDefs,
-      themeName: 'dark-blue.js',
-    });
-  }
-
-  if (!isEmpty(missingLightBlueDefs)) {
-    logDifferences({
-      color: '#33C4FF',
-      missingDefs: missingLightBlueDefs,
-      themeName: 'light-blue.js',
-    });
-  }
-
-  if (!isEmpty(missingWhiteDefs)) {
-    logDifferences({
-      color: '#33C4FF',
-      missingDefs: missingWhiteDefs,
-      themeName: 'white.js',
-    });
-  }
-
-  if (!isEmpty(missingYelloweDefs)) {
-    logDifferences({
-      color: '#33C4FF',
-      missingDefs: missingYelloweDefs,
-      themeName: 'yellow.js',
-    });
-  }
-
-  if (!isEmpty(missingDarkCardanoDefs)) {
-    logDifferences({
-      color: '#33C4FF',
-      missingDefs: missingDarkCardanoDefs,
-      themeName: 'dark-cardano.js',
-    });
-  }
-
-  if (
-    isEmpty(missingCardanoDefs) &&
-    isEmpty(missingDarkBlueDefs) &&
-    isEmpty(missingLightBlueDefs) &&
-    isEmpty(missingWhiteDefs) &&
-    isEmpty(missingYelloweDefs) &&
-    isEmpty(missingDarkCardanoDefs)
-  ) {
+  if (isEmpty(missingDefinitions)) {
     console.log(
       chalk.hex('#2cbb69')(
         `\n${chalk.bold.inverse(

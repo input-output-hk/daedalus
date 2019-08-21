@@ -1,50 +1,28 @@
+
 // @flow
 import { app, globalShortcut, Menu, BrowserWindow, dialog } from 'electron';
-import { get } from 'lodash';
 import { environment } from '../environment';
 import { winLinuxMenu } from '../menus/win-linux';
 import { osxMenu } from '../menus/osx';
 import { Logger } from './logging';
 import { safeExitWithCode } from './safeExitWithCode';
 import { CardanoNode } from '../cardano/CardanoNode';
-import { DIALOGS, SCREENS } from '../../common/ipc/constants';
+import { DIALOGS } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
-import { getLocale } from './getLocale';
 import { getTranslation } from './getTranslation';
-
-const localesFillForm = {
-  'en-US': 'English',
-  'ja-JP': 'Japanese',
-};
 
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
   cardanoNode: ?CardanoNode,
   locale: string
 ) => {
-  const { ADA_REDEMPTION } = SCREENS;
   const { ABOUT, BLOCK_CONSOLIDATION, DAEDALUS_DIAGNOSTICS } = DIALOGS;
 
-  const {
-    isMacOS,
-    version,
-    apiVersion,
-    network,
-    build,
-    installerVersion,
-    os,
-    buildNumber,
-    isInSafeMode,
-  } = environment;
+  const { isMacOS, isBlankScreenFixActive } = environment;
   const translations = require(`../locales/${locale}`);
-  const networkLocale = getLocale(network);
 
   const openAboutDialog = () => {
     if (mainWindow) showUiPartChannel.send(ABOUT, mainWindow);
-  };
-
-  const openAdaRedemptionScreen = () => {
-    if (mainWindow) showUiPartChannel.send(ADA_REDEMPTION, mainWindow);
   };
 
   const openBlockConsolidationStatusDialog = () => {
@@ -55,96 +33,67 @@ export const buildAppMenus = async (
     if (mainWindow) showUiPartChannel.send(DAEDALUS_DIAGNOSTICS, mainWindow);
   };
 
-  const restartInSafeMode = async () => {
-    Logger.info('Restarting in SafeMode...');
+  const restartWithBlankScreenFix = async () => {
+    Logger.info('Restarting in BlankScreenFix...');
     if (cardanoNode) await cardanoNode.stop();
     Logger.info('Exiting Daedalus with code 21', { code: 21 });
     safeExitWithCode(21);
   };
 
-  const restartWithoutSafeMode = async () => {
-    Logger.info('Restarting without SafeMode...');
+  const restartWithoutBlankScreenFix = async () => {
+    Logger.info('Restarting without BlankScreenFix...');
     if (cardanoNode) await cardanoNode.stop();
     Logger.info('Exiting Daedalus with code 22', { code: 22 });
     safeExitWithCode(22);
   };
 
-  const toggleOnSafeMode = item => {
+  const toggleBlankScreenFix = item => {
     const translation = getTranslation(translations, 'menu');
-    const gpuSafeModeDialogOptions = {
+    const blankScreenFixDialogOptions = {
       buttons: [
-        translation('helpSupport.gpuSafeModeDialogConfirm'),
-        translation('helpSupport.gpuSafeModeDialogCancel'),
+        translation('helpSupport.blankScreenFixDialogConfirm'),
+        translation('helpSupport.blankScreenFixDialogCancel'),
       ],
       type: 'warning',
-      title: isInSafeMode
-        ? translation('helpSupport.gpuSafeModeDialogTitle')
-        : translation('helpSupport.nonGpuSafeModeDialogTitle'),
-      message: isInSafeMode
-        ? translation('helpSupport.gpuSafeModeDialogMessage')
-        : translation('helpSupport.nonGpuSafeModeDialogMessage'),
+      title: isBlankScreenFixActive
+        ? translation('helpSupport.blankScreenFixDialogTitle')
+        : translation('helpSupport.nonBlankScreenFixDialogTitle'),
+      message: isBlankScreenFixActive
+        ? translation('helpSupport.blankScreenFixDialogMessage')
+        : translation('helpSupport.nonBlankScreenFixDialogMessage'),
       defaultId: 1,
       cancelId: 1,
       noLink: true,
     };
-    dialog.showMessageBox(mainWindow, gpuSafeModeDialogOptions, buttonId => {
+    dialog.showMessageBox(mainWindow, blankScreenFixDialogOptions, buttonId => {
       if (buttonId === 0) {
-        if (isInSafeMode) {
-          restartWithoutSafeMode();
+        if (isBlankScreenFixActive) {
+          restartWithoutBlankScreenFix();
         } else {
-          restartInSafeMode();
+          restartWithBlankScreenFix();
         }
       }
-      item.checked = isInSafeMode;
+      item.checked = isBlankScreenFixActive;
     });
-  };
-
-  const supportRequestData = {
-    frontendVersion: version,
-    backendVersion: apiVersion,
-    network: network === 'development' ? 'staging' : network,
-    build,
-    installerVersion,
-    os,
-    networkLocale,
-    product: `Daedalus wallet - ${network}`,
-    supportLanguage: localesFillForm[networkLocale],
-    productVersion: `Daedalus ${version}+Cardano ${buildNumber}`,
   };
 
   const menuActions = {
     openAboutDialog,
     openDaedalusDiagnosticsDialog,
-    openAdaRedemptionScreen,
-    toggleOnSafeMode,
     openBlockConsolidationStatusDialog,
+    toggleBlankScreenFix,
   };
 
   // Build app menus
   let menu;
-  const isNodeInSync = get(cardanoNode, 'status.isNodeInSync', false);
   if (isMacOS) {
     menu = Menu.buildFromTemplate(
-      osxMenu(
-        app,
-        mainWindow,
-        menuActions,
-        translations,
-        supportRequestData,
-        isNodeInSync
-      )
+      osxMenu(app, mainWindow, menuActions, translations, locale)
     );
     Menu.setApplicationMenu(menu);
   } else {
     menu = Menu.buildFromTemplate(
-      winLinuxMenu(
-        app,
-        mainWindow,
-        menuActions,
-        translations,
-        supportRequestData,
-        isNodeInSync
-      )
+      winLinuxMenu(app, mainWindow, menuActions, translations, locale)
     );
     mainWindow.setMenu(menu);
   }

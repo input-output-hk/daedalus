@@ -44,7 +44,7 @@ export type LogSystemInfoParams = {
   cardanoVersion: string,
   cpu: Array<Object>,
   daedalusVersion: string,
-  isInSafeMode: boolean,
+  isBlankScreenFixActive: boolean,
   network: string,
   osName: string,
   platformVersion: string,

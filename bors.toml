@@ -2,13 +2,10 @@ status = [
   # Buildkite: osx/linux installers
   "buildkite/daedalus",
 
-  # Appveyor: windows installers
-  "continuous-integration/appveyor/branch",
-
   # Hydra: we just care about tests attribute set
-  "ci/hydra:serokell:daedalus:tests.runFlow",
-  "ci/hydra:serokell:daedalus:tests.runLint",
-  "ci/hydra:serokell:daedalus:tests.runShellcheck"
+  "ci/hydra:Cardano:daedalus:tests.runFlow",
+  "ci/hydra:Cardano:daedalus:tests.runLint",
+  "ci/hydra:Cardano:daedalus:tests.runShellcheck"
 ]
 timeout_sec = 7200
 required_approvals = 1

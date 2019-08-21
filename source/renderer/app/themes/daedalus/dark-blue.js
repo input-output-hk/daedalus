@@ -2,8 +2,8 @@
 import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
 
-//  ==== dark-blue theme config for Daedalus and react-polymorph components === //
-export const DARK_BLUE_THEME_CONFIG = {
+//  ==== dark-blue theme output for Daedalus and react-polymorph components === //
+export const DARK_BLUE_THEME_OUTPUT = {
   aboutWindow: {
     '--theme-about-window-background-color': 'rgba(38, 51, 69, 0.96)',
     '--theme-about-window-header-bottom-border-color':
@@ -19,29 +19,10 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-about-window-icon-close-button-color': '#fff',
     '--theme-about-window-icon-close-hover-background': 'rgba(0, 0, 0, 0.2)',
   },
-  adaRedemption: {
-    '--theme-ada-redemption-headline-color': '#e9f4fe',
-    '--theme-ada-redemption-instructions-color': '#e9f4fe',
-    '--theme-ada-redemption-success-overlay-background-color':
-      'rgba(38, 51, 69, 0.88)',
-    '--theme-ada-redemption-success-overlay-border-color': '#fafbfc',
-    '--theme-ada-redemption-success-overlay-message-color': '#e9f4fe',
-    '--theme-ada-redemption-success-overlay-button-text-color': '#e9f4fe',
-    '--theme-ada-redemption-success-overlay-button-text-color-hover': '#263345',
-    '--theme-ada-redemption-success-overlay-button-background-color-hover':
-      '#e9f4fe',
-    '--theme-ada-redemption-disclaimer-background-color':
-      'rgba(171, 23, 0, 0.94)',
-    '--theme-ada-redemption-disclaimer-text-color': '#fafbfc',
-    '--theme-ada-redemption-disclaimer-checkbox-color-check': '#fafbfc',
-    '--theme-ada-redemption-disclaimer-checkbox-color-checked': '#fafbfc',
-    '--theme-ada-redemption-disclaimer-checkbox-color-after': '#ab1700',
-    '--theme-ada-redemption-disclaimer-checkbox-label-color': '#fafbfc',
-    '--theme-ada-redemption-no-wallets-instructions-color': '#e9f4fe',
-    '--theme-ada-redemption-disclaimer-button-border-color': '#a8adb5',
-    '--theme-ada-redemption-success-overlay-close-button-color': '#fff',
-    '--theme-ada-redemption-success-overlay-close-button-background-color-hover':
-      'rgba(0, 0, 0, 0.07)',
+  backToTopButton: {
+    '--theme-back-to-top-button-background-color': '#5e6066',
+    '--theme-back-to-top-button-text-color': '#fafbfc',
+    '--theme-back-to-top-button-box-shadow-color': 'rgba(0, 0, 0, 0.36)',
   },
   blockConsolidation: {
     '--theme-block-consolidation-background-color': 'rgba(38, 51, 69, 0.96)',
@@ -249,10 +230,6 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-icon-toggle-menu-color': '#fafbfc',
     '--theme-icon-node-update-notification-arrow-color': '#e9f4fe',
     '--theme-icon-add-wallet-from-sidebar-color': '#fafbfc',
-    '--theme-icon-ada-redemption-attention-color': '#fafbfc',
-    '--theme-icon-ada-redemption-success-color': '#fafbfc',
-    '--theme-icon-ada-redemption-certificate-color': '#9eabbb',
-    '--theme-icon-ada-redemption-no-wallets': '#e9f4fe',
     '--theme-icon-ada-summary-wallet-amount-symbol-color': '#e9f4fe',
     '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color':
       '#e9f4fe',
@@ -260,14 +237,17 @@ export const DARK_BLUE_THEME_CONFIG = {
       'rgba(233, 244, 254, 0.8)',
     '--theme-icon-back-button-color': '#e9f4fe',
     '--theme-icon-close-button-color': '#fafbfc',
-    '--theme-icon-connecting-logo-color': '#fafbfc',
+    '--theme-icon-connecting-ada-api-logo-color': '#fafbfc',
+    '--theme-icon-connecting-ada-logo-color': '#fafbfc',
+    '--theme-icon-connecting-daedalus-logo-color': '#fafbfc',
     '--theme-icon-copy-address-color': '#8793a1',
     '--theme-icon-file-upload-color': '#8793a1',
     '--theme-icon-delegation-center-no-wallets': '#e9f4fe',
-    '--theme-icon-syncing-logo-color': '#e9f4fe',
+    '--theme-icon-syncing-ada-api-logo-color': '#e9f4fe',
+    '--theme-icon-syncing-ada-logo-color': '#e9f4fe',
+    '--theme-icon-syncing-daedalus-logo-color': '#e9f4fe',
     '--theme-icon-transactions-ada-symbol-color': '#e9f4fe',
     '--theme-icon-transaction-type-color': '#fafbfc',
-    '--theme-icon-ada-api-logo-color': 'rgba(250, 251, 252, 0.5)',
   },
   input: {
     '--theme-input-background-color': '#263345',
@@ -366,6 +346,7 @@ export const DARK_BLUE_THEME_CONFIG = {
       'rgba(52, 70, 94, 0.3)',
     '--theme-node-update-deny-button-background-color-active':
       'rgba(24, 32, 43, 0.3)',
+    '--theme-node-update-deny-button-text-color': '#fafbfc',
     '--theme-node-update-button-text-color': '#fafbfc',
   },
   notification: {
@@ -435,7 +416,7 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--rp-bubble-bg-color': '#263345',
     '--rp-bubble-border-color': '#667a8a',
     '--rp-bubble-border-radius': '2px',
-    '--rp-bubble-arrow-bg-color': '#263345',
+    '--rp-bubble-arrow-bg-color': '#536370',
   },
   rpButton: {
     '--rp-button-bg-color': '#536370',
@@ -458,6 +439,7 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--rp-checkbox-check-bg-color': '#536370',
     '--rp-checkbox-label-text-color': '#e9f4fe',
     '--rp-checkbox-label-text-color-disabled': 'rgba(233, 244, 254, 0.3)',
+    '--rp-checkbox-border-color': 'rgba(102, 122, 138, 0.3)',
   },
   rpColors: {
     '--rp-theme-color-error': '#ea4c5b',
@@ -552,6 +534,10 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--rp-textarea-resize': 'none',
     '--rp-textarea-text-color': '#e9f4fe',
   },
+  rpTooltip: {
+    '--rp-tooltip-bg-color': '#e9f4fe',
+    '--rp-tooltip-text-color': '#fafbfc',
+  },
   scrollbar: {
     '--theme-scrollbar-thumb-background': '#536370',
   },
@@ -576,6 +562,8 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-sidebar-category-background-color-hover': 'rgba(38, 51, 69, 0.5)',
     '--theme-sidebar-category-background-color-active': '#263345',
     '--theme-sidebar-category-text-color': '#e9f4fe',
+    '--theme-sidebar-layout-shadow-color': 'rgba(0, 0, 0, 0.25)',
+    '--theme-sidebar-layout-topbar-shadow-color': 'rgba(0, 0, 0, 0.25)',
     '--theme-sidebar-menu-background-color': '#263345',
     '--theme-sidebar-menu-item-background-color-hover': 'rgba(27, 36, 48, 0.5)',
     '--theme-sidebar-menu-item-background-color-active': '#1b2430',
@@ -585,6 +573,12 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-sidebar-menu-add-button-background-color-active': '#1f2a38',
     '--theme-sidebar-menu-add-button-background-color-hover': '#1f2a38',
     '--theme-sidebar-menu-add-button-text-color': '#e9f4fe',
+    '--theme-sidebar-wallets-scrollbar-background-color':
+      'rgba(255, 255, 255, 0.1)',
+    '--theme-sidebar-wallets-scrollbar-background-color-active':
+      'rgba(255, 255, 255, 0.3)',
+    '--theme-sidebar-wallets-scrollbar-background-color-hover':
+      'rgba(255, 255, 255, 0.3)',
   },
   stakePools: {
     '--theme-staking-stake-pool-background-color': '#263345',
@@ -619,6 +613,8 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-staking-stake-pool-tooltip-text-color': '#e9f4fe',
     '--theme-staking-stake-pools-search-button-color': '#e9f4fe',
     '--theme-staking-stake-pools-search-icon-color': '#8793a1',
+    '--theme-staking-stake-pools-search-clear-button-background-color':
+      'rgba(68, 91, 124, 0.05)',
     '--theme-staking-stake-pools-title-color': '#e9f4fe',
   },
   staking: {
@@ -652,6 +648,11 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-staking-info-learn-more-icon-color': 'rgba(250, 251, 252, 1)',
     '--theme-staking-learn-more-button-color': '#fafbfc',
     '--theme-staking-learn-more-icon-color': 'rgba(250, 251, 252, 1)',
+    '--theme-staking-countdown-widget-background-color':
+      'rgba(233, 244, 254, 0.07)',
+    '--theme-staking-countdown-widget-delimeter-background-color': '#e9f4fe',
+    '--theme-staking-countdown-widget-field-label-color': '#e9f4fe',
+    '--theme-staking-countdown-widget-field-value-color': '#e9f4fe',
   },
   support: {
     '--theme-support-settings-item-color': 'rgba(233, 244, 254, 0.5)',
@@ -726,14 +727,10 @@ export const DARK_BLUE_THEME_CONFIG = {
     '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-utxo-tooltip-text-color': '#fafbfc',
   },
-  rpTooltip: {
-    '--rp-tooltip-bg-color': '#e9f4fe',
-    '--rp-tooltip-text-color': '#fafbfc',
-  },
 };
 
 const DARK_BLUE_THEME_PARAMS: CreateThemeParams = {
-  config: DARK_BLUE_THEME_CONFIG,
+  config: DARK_BLUE_THEME_OUTPUT,
 };
 
 export default createTheme(DARK_BLUE_THEME_PARAMS);

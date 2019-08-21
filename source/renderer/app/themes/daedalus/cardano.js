@@ -2,8 +2,8 @@
 import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
 
-//  ==== cardano theme config for Daedalus and react-polymorph components === //
-export const CARDANO_THEME_CONFIG = {
+//  ==== cardano theme output for Daedalus and react-polymorph components === //
+export const CARDANO_THEME_OUTPUT = {
   aboutWindow: {
     '--theme-about-window-background-color': 'rgba(32, 34, 37, 0.96)',
     '--theme-about-window-header-bottom-border-color':
@@ -19,29 +19,10 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-about-window-icon-close-button-color': '#fff',
     '--theme-about-window-icon-close-hover-background': 'rgba(0, 0, 0, 0.2)',
   },
-  adaRedemption: {
-    '--theme-ada-redemption-headline-color': '#5e6066',
-    '--theme-ada-redemption-instructions-color': '#5e6066',
-    '--theme-ada-redemption-success-overlay-background-color':
-      'rgba(44, 187, 105, 0.88)',
-    '--theme-ada-redemption-success-overlay-border-color': '#fafbfc',
-    '--theme-ada-redemption-success-overlay-message-color': '#fafbfc',
-    '--theme-ada-redemption-success-overlay-button-text-color': '#fafbfc',
-    '--theme-ada-redemption-success-overlay-button-text-color-hover': '#2cbb69',
-    '--theme-ada-redemption-success-overlay-button-background-color-hover':
-      '#fafbfc',
-    '--theme-ada-redemption-disclaimer-background-color':
-      'rgba(171, 23, 0, 0.94)',
-    '--theme-ada-redemption-disclaimer-text-color': '#fafbfc',
-    '--theme-ada-redemption-disclaimer-checkbox-color-check': '#fafbfc',
-    '--theme-ada-redemption-disclaimer-checkbox-color-checked': '#fafbfc',
-    '--theme-ada-redemption-disclaimer-checkbox-color-after': '#ab1700',
-    '--theme-ada-redemption-disclaimer-checkbox-label-color': '#fafbfc',
-    '--theme-ada-redemption-no-wallets-instructions-color': '#5e6066',
-    '--theme-ada-redemption-disclaimer-button-border-color': '#f9f9f9',
-    '--theme-ada-redemption-success-overlay-close-button-color': '#fff',
-    '--theme-ada-redemption-success-overlay-close-button-background-color-hover':
-      'rgba(0, 0, 0, 0.07)',
+  backToTopButton: {
+    '--theme-back-to-top-button-background-color': '#5e6066',
+    '--theme-back-to-top-button-text-color': '#fafbfc',
+    '--theme-back-to-top-button-box-shadow-color': 'rgba(0, 0, 0, 0.36)',
   },
   blockConsolidation: {
     '--theme-block-consolidation-background-color': 'rgba(32, 34, 37, 0.96)',
@@ -248,21 +229,21 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-icon-toggle-menu-color': '#fafbfc',
     '--theme-icon-node-update-notification-arrow-color': '#5e6066',
     '--theme-icon-add-wallet-from-sidebar-color': '#fafbfc',
-    '--theme-icon-ada-redemption-attention-color': '#fafbfc',
-    '--theme-icon-ada-redemption-success-color': '#fafbfc',
-    '--theme-icon-ada-redemption-certificate-color': '#9eabbb',
-    '--theme-icon-ada-redemption-no-wallets': '#5e6066',
     '--theme-icon-ada-summary-wallet-amount-symbol-color': '#5e6066',
     '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color':
       '#5e6066',
     '--theme-icon-add-wallet-dialog-big-button-color': '#ababab',
     '--theme-icon-back-button-color': '#5e6066',
     '--theme-icon-close-button-color': '#5e6066',
-    '--theme-icon-connecting-logo-color': '#fafbfc',
+    '--theme-icon-connecting-ada-api-logo-color': '#fafbfc',
+    '--theme-icon-connecting-ada-logo-color': '#fafbfc',
+    '--theme-icon-connecting-daedalus-logo-color': '#fafbfc',
     '--theme-icon-copy-address-color': '#5e6066',
     '--theme-icon-delegation-center-no-wallets': '#5e6066',
     '--theme-icon-file-upload-color': '#5e6066',
-    '--theme-icon-syncing-logo-color': '#5e6066',
+    '--theme-icon-syncing-ada-api-logo-color': '#5e6066',
+    '--theme-icon-syncing-ada-logo-color': '#5e6066',
+    '--theme-icon-syncing-daedalus-logo-color': '#5e6066',
     '--theme-icon-transactions-ada-symbol-color': '#5e6066',
     '--theme-icon-transaction-type-color': '#fafbfc',
   },
@@ -364,6 +345,7 @@ export const CARDANO_THEME_CONFIG = {
       'rgba(44, 187, 105, 0.3)',
     '--theme-node-update-deny-button-background-color-active':
       'rgba(35, 149, 84, 0.3)',
+    '--theme-node-update-deny-button-text-color': '#fafbfc',
     '--theme-node-update-button-text-color': '#fafbfc',
   },
   notification: {
@@ -432,7 +414,7 @@ export const CARDANO_THEME_CONFIG = {
     '--rp-bubble-bg-color': '#fafbfc',
     '--rp-bubble-border-color': '#c6cdd6',
     '--rp-bubble-border-radius': '2px',
-    '--rp-bubble-arrow-bg-color': '#efefef',
+    '--rp-bubble-arrow-bg-color': '#edeeef',
   },
   rpButton: {
     '--rp-button-bg-color': '#2cbb69',
@@ -455,6 +437,7 @@ export const CARDANO_THEME_CONFIG = {
     '--rp-checkbox-check-bg-color': '#2cbb69',
     '--rp-checkbox-label-text-color': '#5e6066',
     '--rp-checkbox-label-text-color-disabled': 'rgba(94, 96, 102, 0.3)',
+    '--rp-checkbox-border-color': '#c6cdd6',
   },
   rpColors: {
     '--rp-theme-color-error': '#ea4c5b',
@@ -548,6 +531,10 @@ export const CARDANO_THEME_CONFIG = {
     '--rp-textarea-resize': 'none',
     '--rp-textarea-text-color': '#5e6066',
   },
+  rpTooltip: {
+    '--rp-tooltip-bg-color': '#5e6066',
+    '--rp-tooltip-text-color': '#fafbfc',
+  },
   scrollbar: {
     '--theme-scrollbar-thumb-background': '#c8ccce',
   },
@@ -572,6 +559,8 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-sidebar-category-background-color-hover': 'rgba(52, 56, 61, 0.5)',
     '--theme-sidebar-category-background-color-active': '#34383d',
     '--theme-sidebar-category-text-color': '#fafbfc',
+    '--theme-sidebar-layout-shadow-color': 'rgba(0, 0, 0, 0.25)',
+    '--theme-sidebar-layout-topbar-shadow-color': 'rgba(0, 0, 0, 0.25)',
     '--theme-sidebar-menu-background-color': '#34383d',
     '--theme-sidebar-menu-item-background-color-hover': 'rgba(32, 34, 37, 0.5)',
     '--theme-sidebar-menu-item-background-color-active': '#202225',
@@ -581,6 +570,12 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-sidebar-menu-add-button-background-color-active': '#272a2e',
     '--theme-sidebar-menu-add-button-background-color-hover': '#272a2e',
     '--theme-sidebar-menu-add-button-text-color': '#fafbfc',
+    '--theme-sidebar-wallets-scrollbar-background-color':
+      'rgba(255, 255, 255, 0.1)',
+    '--theme-sidebar-wallets-scrollbar-background-color-active':
+      'rgba(255, 255, 255, 0.3)',
+    '--theme-sidebar-wallets-scrollbar-background-color-hover':
+      'rgba(255, 255, 255, 0.3)',
   },
   stakePools: {
     '--theme-staking-stake-pool-background-color': '#fafbfc',
@@ -615,6 +610,8 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-staking-stake-pool-tooltip-text-color': '#5e6066',
     '--theme-staking-stake-pools-search-button-color': '#5e6066',
     '--theme-staking-stake-pools-search-icon-color': 'rgba(94, 96, 102, 1)',
+    '--theme-staking-stake-pools-search-clear-button-background-color':
+      'rgba(68, 91, 124, 0.05)',
     '--theme-staking-stake-pools-title-color': '#5e6066',
   },
   staking: {
@@ -648,6 +645,11 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-staking-info-learn-more-icon-color': 'rgba(250, 251, 252, 1)',
     '--theme-staking-learn-more-button-color': '#fafbfc',
     '--theme-staking-learn-more-icon-color': 'rgba(250, 251, 252, 1)',
+    '--theme-staking-countdown-widget-background-color':
+      'rgba(32, 34, 37, 0.07)',
+    '--theme-staking-countdown-widget-delimeter-background-color': '#5e6066',
+    '--theme-staking-countdown-widget-field-label-color': '#5e6066',
+    '--theme-staking-countdown-widget-field-value-color': '#5e6066',
   },
   support: {
     '--theme-support-settings-item-color': 'rgba(94, 96, 102, 0.5)',
@@ -718,14 +720,10 @@ export const CARDANO_THEME_CONFIG = {
     '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-utxo-tooltip-text-color': '#fafbfc',
   },
-  rpTooltip: {
-    '--rp-tooltip-bg-color': '#5e6066',
-    '--rp-tooltip-text-color': '#fafbfc',
-  },
 };
 
 const CARDANO_THEME_PARAMS: CreateThemeParams = {
-  config: CARDANO_THEME_CONFIG,
+  config: CARDANO_THEME_OUTPUT,
 };
 
 export default createTheme(CARDANO_THEME_PARAMS);

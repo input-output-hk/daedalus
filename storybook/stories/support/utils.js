@@ -81,7 +81,8 @@ export const generateMultipleTransactions = (
 export const generateAddress = (used: boolean = false): WalletAddress =>
   new WalletAddress({
     id: generateHash(),
-    state: used ? 'used' : 'unused',
+    changeAddress: false,
+    used,
   });
 
 export const promise = (returnValue: any): (() => Promise<any>) => () =>

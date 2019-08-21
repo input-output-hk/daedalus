@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-// import { action } from '@storybook/addon-actions';
+import { action } from '@storybook/addon-actions';
 import { linkTo } from '@storybook/addon-links';
 import { withKnobs, text, boolean, number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
@@ -13,6 +13,7 @@ import startCase from 'lodash/startCase';
 import StoryLayout from './support/StoryLayout';
 import StoryProvider from './support/StoryProvider';
 import StoryDecorator from './support/StoryDecorator';
+import VerticalFlexContainer from '../../source/renderer/app/components/layout/VerticalFlexContainer';
 import {
   generateWallet,
   generateTransaction,
@@ -29,6 +30,7 @@ import WalletSummary from '../../source/renderer/app/components/wallet/summary/W
 import WalletSendForm from '../../source/renderer/app/components/wallet/WalletSendForm';
 import WalletReceive from '../../source/renderer/app/components/wallet/receive/WalletReceive';
 import WalletTransactionsList from '../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
+import WalletScreensCreateWallet from './WalletScreens-Create-Wallet.stories';
 import WalletScreensSettings from './WalletScreens-Settings.stories';
 import WalletScreensUtxo from './WalletScreens-Utxo.stories';
 
@@ -89,6 +91,8 @@ storiesOf('WalletScreens', module)
     />
   ))
 
+  .add('Wallet Create', () => <WalletScreensCreateWallet />)
+
   .add('Summary', () => (
     <WalletSummary
       wallet={generateWallet('Wallet name', '45119903750165')}
@@ -111,34 +115,36 @@ storiesOf('WalletScreens', module)
       currencyMaxIntegerDigits={11}
       validateAmount={promise(true)}
       calculateTransactionFee={promise(true)}
-      addressValidator={() => {}}
-      openDialogAction={() => {}}
-      isDialogOpen={() => boolean('hasDialog', false)}
+      addressValidator={action('addressValidator')}
+      openDialogAction={action('openDialogAction')}
+      isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
     />
   ))
 
   .add('Receive', () => (
-    <WalletReceive
-      walletAddress={text(
-        'Wallet address',
-        '5628aab8ac98c963e4a2e8cfce5aa1cbd4384fe2f9a0f3c5f791bfb83a5e02ds'
-      )}
-      isWalletAddressUsed={boolean('isWalletAddressUsed', false)}
-      walletAddresses={[
-        ...Array.from(Array(number('Addresses', 1))).map(() =>
-          generateAddress()
-        ),
-        ...Array.from(Array(number('Addresses (used)', 1))).map(() =>
-          generateAddress(true)
-        ),
-      ]}
-      onGenerateAddress={() => {}}
-      onCopyAddress={() => {}}
-      isSidebarExpanded
-      walletHasPassword={boolean('walletHasPassword', false)}
-      isSubmitting={boolean('isSubmitting', false)}
-    />
+    <VerticalFlexContainer>
+      <WalletReceive
+        walletAddress={text(
+          'Wallet address',
+          'DdzFFzCqrhsg9ngNRhHEa49se7qEMKyubT9tcE13Fkvh8QC82trpTDsNvdQV7mg9SCZiuENkf77zrtwPXrTyGMNznUsSinPC1gb2ZCqK'
+        )}
+        isWalletAddressUsed={boolean('isWalletAddressUsed', false)}
+        walletAddresses={[
+          ...Array.from(Array(number('Addresses', 10))).map(() =>
+            generateAddress()
+          ),
+          ...Array.from(Array(number('Addresses (used)', 10))).map(() =>
+            generateAddress(true)
+          ),
+        ]}
+        onGenerateAddress={action('onGenerateAddress')}
+        onCopyAddress={action('onGenerateAddress')}
+        isSidebarExpanded={boolean('isSidebarExpanded', true)}
+        walletHasPassword={boolean('walletHasPassword', false)}
+        isSubmitting={boolean('isSubmitting', false)}
+      />
+    </VerticalFlexContainer>
   ))
 
   .add('Transactions', () => (

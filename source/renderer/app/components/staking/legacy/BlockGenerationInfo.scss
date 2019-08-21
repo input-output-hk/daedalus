@@ -1,9 +1,9 @@
 @import './stakingConfig';
 
 .component {
+  border-bottom: 1px solid var(--theme-dialog-border-color);
   margin: 30px;
   padding-bottom: 15px;
-  border-bottom: 1px solid var(--theme-dialog-border-color);
   text-align: center;
 }
 
@@ -14,15 +14,15 @@
 
 .timeLeft {
   @extend %accentText;
-  margin-bottom: 7px;
   font-size: 36px;
+  margin-bottom: 7px;
 }
 
 .info {
   @extend %regularText;
   margin-bottom: 7px;
   span.link {
-    text-decoration: underline;
     color: #5e6066;
+    text-decoration: underline;
   }
 }
