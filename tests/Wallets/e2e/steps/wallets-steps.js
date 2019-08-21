@@ -13,10 +13,7 @@ import {
 import { waitUntilUrlEquals, navigateTo } from '../helpers/route-helpers';
 import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
 import { sidebarHelpers } from '../../../Navigation/e2e/steps/helpers';
-import { addWalletHelpers } from '../helpers';
-import importWalletDialog from '../helpers/dialogs/import-wallet-dialog-helpers';
-import i18n from '../helpers/i18n-helpers';
-import { isActiveWalletBeingRestored } from '../helpers';
+import { addWalletHelpers, importWalletHelpers, isActiveWalletBeingRestored } from '../helpers';
 import { waitForActiveRestoreNotification } from '../../Status/helpers';
 import { i18nHelpers } from '../../../Settings/e2e/helpers';
 
@@ -119,7 +116,7 @@ When(/^I click on the import wallet button on the add wallet page/, function() {
 });
 
 When(/^I see the import wallet dialog$/, function() {
-  return importWalletDialog.waitForDialog(this.client);
+  return importWalletHelpers.waitForDialog(this.client);
 });
 
 When(/^I select a valid wallet import key file$/, function() {
@@ -148,7 +145,7 @@ When(/^I enter wallet spending password:$/, async function(table) {
 When(
   /^I click on the import wallet button in import wallet dialog$/,
   function() {
-    return importWalletDialog.clickImport(this.client);
+    return importWalletHelpers.clickImport(this.client);
   }
 );
 
@@ -440,7 +437,7 @@ When(/^I try to import the wallet with funds again$/, async function() {
 Then(
   /^I see the import wallet dialog with an error that the wallet already exists$/,
   async function() {
-    return importWalletDialog.expectError(this.client, {
+    return importWalletHelpers.expectError(this.client, {
       error: await formatMessage(this.client, {
         id: 'api.errors.WalletAlreadyImportedError',
       }),
@@ -468,7 +465,7 @@ Then(/^I should not see the delete wallet dialog anymore$/, function() {
 });
 
 Then(/^I should not see the import wallet dialog anymore$/, function() {
-  return importWalletDialog.waitForDialog(this.client, { isHidden: true });
+  return importWalletHelpers.waitForDialog(this.client, { isHidden: true });
 });
 
 Then(/^I should not see the restore wallet dialog anymore$/, function() {
