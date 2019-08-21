@@ -1,5 +1,4 @@
 @e2e
-@watch
 Feature: Node Update Notification
 
   Background:

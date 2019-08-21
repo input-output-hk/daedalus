@@ -1,5 +1,5 @@
 // @flow
-import { action, computed, observable, runInAction } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import type {
@@ -52,35 +52,45 @@ export default class NodeUpdateStore extends Store {
       // If nextUpdate is available, fetch additional Daedalus info
       if (result) {
         await this._getLatestAvailableAppVersion();
+        this._activateAutomaticUpdate(result.version);
       }
+    }
+  };
 
-      if (
-        result &&
-        !this.isUpdateAvailable &&
-        !this.isUpdatePostponed &&
-        !this.isUpdateInstalled
-      ) {
-        runInAction('refreshNextUpdate', () => {
-          this.isUpdateAvailable = true;
-          // If next update version matches applicationVersion (fetched from latestAppVersion json) then set next update version to latest availableAppVersion
-          this.nextUpdateVersion =
-            result.version === this.applicationVersion
-              ? this.availableAppVersion
-              : null;
-        });
-        // Rebuild app menu
-        await rebuildApplicationMenu.send(true);
-      }
+  @action _activateAutomaticUpdate = async nextUpdateVersion => {
+    if (
+      nextUpdateVersion &&
+      !this.isUpdateAvailable &&
+      !this.isUpdatePostponed &&
+      !this.isUpdateInstalled
+    ) {
+      this.isUpdateAvailable = true;
+      // If next update version matches applicationVersion (fetched from latestAppVersion json) then set next update version to latest availableAppVersion
+      this.nextUpdateVersion =
+        nextUpdateVersion === this.applicationVersion
+          ? this.availableAppVersion
+          : null;
+
+      // Close all active dialogs
+      this.stores.app._closeActiveDialog();
+      this.actions.app.closeAboutDialog.trigger();
+
+      // Rebuild app menu
+      await rebuildApplicationMenu.send(true);
     }
   };
 
   /** Automatic update overlay faker
     - Set some version number e.g. "0.14.0" or null
     */
-  @action _setNextUpdateVersion = async nextUpdateVersion => {
-    this.nextUpdateVersion = nextUpdateVersion;
-    this.isUpdateAvailable = true;
-    await rebuildApplicationMenu.send(true);
+  @action _setNextUpdateVersion = async (
+    nextUpdateVersion,
+    applicationVersion,
+    availableAppVersion
+  ) => {
+    this.applicationVersion = applicationVersion;
+    this.availableAppVersion = availableAppVersion;
+    this._activateAutomaticUpdate(nextUpdateVersion);
   };
 
   @action _postponeNodeUpdate = async () => {
