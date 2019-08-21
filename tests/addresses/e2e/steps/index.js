@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import {
   waitAndClick,
   getVisibleElementsCountForSelector,
-} from '../helpers/shared-helpers';
+} from '../../../common/e2e/steps/helpers';
 
 Given('I generate {int} addresses', async function(numberOfAddresses) {
   for (let i = 0; i < numberOfAddresses; i++) {
