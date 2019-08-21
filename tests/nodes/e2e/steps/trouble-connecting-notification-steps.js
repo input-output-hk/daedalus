@@ -1,5 +1,9 @@
+// @flow
 import { Then, When } from 'cucumber';
-import { waitUntilTextInSelector } from '../helpers/shared-helpers';
+import { waitUntilTextInSelector } from '../../../common/e2e/steps/helpers';
+import type { Daedalus } from '../../../types';
+
+declare var daedalus: Daedalus;
 
 const SELECTORS = {
   SYNCING_CONNECTING_COMPONENT: '.SyncingConnecting_component',

@@ -1,5 +1,5 @@
 // @flow
-import { getProcessesByName } from '../../../source/main/utils/processes';
+import { getProcessesByName } from '../../../../source/main/utils/processes';
 import type { Daedalus, WebdriverClient } from '../../../types';
 
 declare var daedalus: Daedalus;

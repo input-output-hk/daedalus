@@ -1,5 +1,9 @@
+// @flow
 import { When, Then } from 'cucumber';
 import { expect } from 'chai';
+import type { Daedalus } from '../../../types';
+
+declare var daedalus: Daedalus;
 
 const NODE_UPDATE_COMPONENT = '.NodeUpdateNotification_component';
 const TITLE_BAR = '.NodeUpdateNotification_titleBar';

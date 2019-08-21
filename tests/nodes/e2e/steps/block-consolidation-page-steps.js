@@ -1,7 +1,11 @@
+// @flow
 import { When, Then } from 'cucumber';
 import { expect } from 'chai';
-import { getVisibleTextsForSelector } from '../helpers/shared-helpers';
-import { i18nHelpers } from '../../../Settings/e2e/helpers';
+import { getVisibleTextsForSelector } from '../../../common/e2e/steps/helpers';
+import { i18nHelpers } from '../../../settings/e2e/steps/helpers';
+import type { Daedalus } from '../../../types';
+
+declare var daedalus: Daedalus;
 
 const SELECTORS = {
   BLOCK_CONSOLIDATION_COMPONENT: '.BlockConsolidationStatus_component',

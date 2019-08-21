@@ -1,4 +1,8 @@
+// @flow
 import { Given, When, Then } from 'cucumber';
+import type { Daedalus } from '../../../types';
+
+declare var daedalus: Daedalus;
 
 let diskSpaceRequired;
 const HUNDRED_TB = 100 * 1e12; // 100 TB | unit: bytes

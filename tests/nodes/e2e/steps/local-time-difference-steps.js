@@ -1,5 +1,9 @@
+// @flow
 import { Given, Then } from 'cucumber';
-import { expectTextInSelector } from '../helpers/shared-helpers';
+import { expectTextInSelector } from '../../../common/e2e/steps/helpers';
+import type { Daedalus } from '../../../types';
+
+declare var daedalus: Daedalus;
 
 const selector = '.time-off';
 

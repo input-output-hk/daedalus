@@ -1,8 +1,12 @@
+// @flow
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { environment } from '../../../../source/main/environment';
-import { getVisibleTextsForSelector } from '../helpers/shared-helpers';
-import { i18nHelpers } from '../../../Settings/e2e/helpers';
+import { getVisibleTextsForSelector } from '../../../common/e2e/steps/helpers';
+import { i18nHelpers } from '../../../settings/e2e/steps/helpers';
+import type { Daedalus } from '../../../types';
+
+declare var daedalus: Daedalus;
 
 const SELECTORS = {
   MANUAL_UPDATE_VERSION_INFO:
