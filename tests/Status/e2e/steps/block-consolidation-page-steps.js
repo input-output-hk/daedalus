@@ -1,7 +1,7 @@
 import { When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { getVisibleTextsForSelector } from '../helpers/shared-helpers';
-import i18n from '../helpers/i18n-helpers';
+import { i18nHelpers } from '../../../Settings/e2e/helpers';
 
 const SELECTORS = {
   BLOCK_CONSOLIDATION_COMPONENT: '.BlockConsolidationStatus_component',
@@ -16,6 +16,7 @@ const SELECTORS = {
   SYNC_PROGRESS_LOADING_STATE:
     '.BlockConsolidationStatus_indicatorContainerNoCurrentEpochs',
 };
+const { formatMessage } = i18nHelpers;
 
 When(/^I open the Block Consolidation Status Dialog$/, async function() {
   await this.client.execute(() =>
@@ -66,7 +67,7 @@ Then(
       currentEpochBehind = `(${Math.max(currentEpochValue - 1, 0)})`;
     }
 
-    let expectedText = await i18n.formatMessage(this.client, {
+    let expectedText = await formatMessage(this.client, {
       id: consolidationText.message,
       values: {
         currentEpoch,
@@ -195,7 +196,7 @@ Then(
         .catch(error => done(error));
     });
     const [expectedTextData] = data.hashes();
-    const expectedText = await i18n.formatMessage(this.client, {
+    const expectedText = await formatMessage(this.client, {
       id: expectedTextData.message,
       values: { epochsSynced },
     });

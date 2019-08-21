@@ -18,7 +18,9 @@ import importWalletDialog from '../helpers/dialogs/import-wallet-dialog-helpers'
 import i18n from '../helpers/i18n-helpers';
 import { isActiveWalletBeingRestored } from '../helpers';
 import { waitForActiveRestoreNotification } from '../../Status/helpers';
+import { i18nHelpers } from '../../../Settings/e2e/helpers';
 
+const { formatMessage } = i18nHelpers;
 const defaultWalletKeyFilePath = path.resolve(
   __dirname,
   '../documents/default-wallet.key'
@@ -439,7 +441,7 @@ Then(
   /^I see the import wallet dialog with an error that the wallet already exists$/,
   async function() {
     return importWalletDialog.expectError(this.client, {
-      error: await i18n.formatMessage(this.client, {
+      error: await formatMessage(this.client, {
         id: 'api.errors.WalletAlreadyImportedError',
       }),
     });

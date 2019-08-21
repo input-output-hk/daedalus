@@ -2,7 +2,7 @@ import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { environment } from '../../../../source/main/environment';
 import { getVisibleTextsForSelector } from '../helpers/shared-helpers';
-import i18n from '../helpers/i18n-helpers';
+import { i18nHelpers } from '../../../Settings/e2e/helpers';
 
 const SELECTORS = {
   MANUAL_UPDATE_VERSION_INFO:
@@ -16,6 +16,7 @@ const nextAppVersion = [
   parseInt(currentAppVersionChunks[1], 10) + 1,
   currentAppVersionChunks[2],
 ].join('.');
+const { formatMessage } = i18nHelpers;
 
 Given(/^There is a newer application version available$/, async function() {
   await this.client.execute(version => {
@@ -39,7 +40,7 @@ Then(
       SELECTORS.MANUAL_UPDATE_VERSION_INFO
     );
 
-    let expectedText = await i18n.formatMessage(this.client, {
+    let expectedText = await formatMessage(this.client, {
       id: 'manualUpdate.description2',
       values: {
         currentAppVersion,
