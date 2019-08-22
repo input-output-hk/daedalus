@@ -1,10 +1,15 @@
+// @flow
 import fs from 'fs';
 import path from 'path';
 import { expect } from 'chai';
 import { generateFileNameWithTimestamp } from '../../../../source/common/utils/files';
 import ensureDirectoryExists from '../../../../source/main/utils/ensureDirectoryExists';
+import type { WebdriverClient } from '../../../types';
 
-export const expectTextInSelector = async (client, { selector, text }) => {
+export const expectTextInSelector = async (
+  client: WebdriverClient,
+  { selector, text }: { selector: string, text: string }
+) => {
   await client.waitForText(selector);
   let textOnScreen = await client.getText(selector);
   // The selector could exist multiple times in the DOM
@@ -13,7 +18,7 @@ export const expectTextInSelector = async (client, { selector, text }) => {
   expect(textOnScreen[0]).to.equal(text);
 };
 
-export const generateScreenshotFilePath = prefix => {
+export const generateScreenshotFilePath = (prefix: string) => {
   const filePath = path.resolve(__dirname, '../screenshots', prefix);
   const extension = 'png';
   const fileName = generateFileNameWithTimestamp({ prefix, extension });
@@ -21,14 +26,14 @@ export const generateScreenshotFilePath = prefix => {
   return `${filePath}/${fileName}`;
 };
 
-export const getTestNameFromTestFile = testFile =>
+export const getTestNameFromTestFile = (testFile: string) =>
   testFile.replace('features/', '').replace('.feature', '');
 
 export const getVisibleElementsCountForSelector = async (
-  client,
-  selectSelector,
-  waitSelector = selectSelector,
-  ...waitArgs
+  client: WebdriverClient,
+  selectSelector: string,
+  waitSelector: string = selectSelector,
+  ...waitArgs: Array<*>
 ) => {
   const elements = await getVisibleElementsForSelector(
     client,
@@ -40,22 +45,28 @@ export const getVisibleElementsCountForSelector = async (
 };
 
 export const getVisibleElementsForSelector = async (
-  client,
-  selectSelector,
-  waitSelector = selectSelector,
-  ...waitArgs
+  client: WebdriverClient,
+  selectSelector: string,
+  waitSelector: string = selectSelector,
+  ...waitArgs: Array<*>
 ) => {
   await client.waitForVisible(waitSelector, ...waitArgs);
   return client.elements(selectSelector);
 };
 
-export const getVisibleTextsForSelector = async (client, selector) => {
+export const getVisibleTextsForSelector = async (
+  client: WebdriverClient,
+  selector: string
+): Promise<Array<string>> => {
   await client.waitForVisible(selector);
   const texts = await client.getText(selector);
   return [].concat(texts);
 };
 
-export const saveScreenshot = async (context, file) => {
+export const saveScreenshot = async (
+  context: Object,
+  file: any
+) => {
   await context.browserWindow
     .capturePage()
     .then(imageBuffer => fs.writeFile(file, imageBuffer))
@@ -65,13 +76,20 @@ export const saveScreenshot = async (context, file) => {
     });
 };
 
-export const waitAndClick = async (client, selector, ...waitArgs) => {
+export const waitAndClick = async (
+  client: WebdriverClient,
+  selector: string,
+  ...waitArgs: Array<*>
+) => {
   await client.waitForVisible(selector, ...waitArgs);
   await client.waitForEnabled(selector, ...waitArgs);
   return client.click(selector);
 };
 
-export const waitUntilTextInSelector = async (client, { selector, text }) =>
+export const waitUntilTextInSelector = async (
+  client: WebdriverClient,
+  { selector, text }: { selector: string, text: string }
+) =>
   client.waitUntil(async () => {
     await client.waitForText(selector);
     let textOnScreen = await client.getText(selector);
