@@ -4,13 +4,17 @@ import { inject, observer } from 'mobx-react';
 import ReactModal from 'react-modal';
 import InternetConnectionOfflineStatus from '../../components/status/InternetConnectionOfflineStatus';
 import styles from './InternetConnectionStatusDialog.scss';
-import type { InjectedStoresProps } from '../../types/injectedPropsType';
-
-type Props = InjectedStoresProps;
 
 @inject('stores')
 @observer
-export default class InternetConnectionStatusDialog extends Component<Props> {
+export default class InternetConnectionStatusDialog extends Component<any> {
+  componentDidMount() {
+    const { stores } = this.props;
+    const { updateInternetConnectionStatus } = stores.networkStatus;
+
+    updateInternetConnectionStatus();
+  }
+
   render() {
     const { stores } = this.props;
     const {

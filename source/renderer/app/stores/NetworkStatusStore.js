@@ -2,9 +2,10 @@
 import { observable, action, computed, runInAction } from 'mobx';
 import moment from 'moment';
 import { isEqual, includes } from 'lodash';
-import isInternetOnline from 'is-online';
+import isIp from 'is-ip';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
+import { INTERNET_PING_HOSTNAME } from '../config/urlsConfig';
 import {
   ALLOWED_TIME_DIFFERENCE,
   MAX_ALLOWED_STALL_DURATION,
@@ -17,6 +18,7 @@ import {
   UNSYNCED_BLOCKS_ALLOWED,
   MAX_NTP_RECHECKS,
 } from '../config/numbersConfig';
+import { externalRequestForRawBody } from '../api/utils/externalRequest';
 import { Logger } from '../utils/logging';
 import {
   cardanoStateChangeChannel,
@@ -111,7 +113,7 @@ export default class NetworkStatusStore extends Store {
   @observable stateDirectoryPath: string = '';
 
   // DEFINE STORE METHODS
-  async setup() {
+  setup() {
     // ========== IPC CHANNELS =========== //
 
     this.actions.networkStatus.restartNode.listen(this._restartNode);
@@ -152,7 +154,6 @@ export default class NetworkStatusStore extends Store {
     this._checkDiskSpace();
 
     this._getStateDirectoryPath();
-    await this.updateInternetConnectionStatus();
   }
 
   // Setup network status polling interval
@@ -337,10 +338,21 @@ export default class NetworkStatusStore extends Store {
 
   @action updateInternetConnectionStatus = async () => {
     try {
-      const connectionResult = await isInternetOnline();
-      runInAction('update isInternetConnected', () => {
-        this.isInternetConnected = connectionResult;
+      const ipAddress = await externalRequestForRawBody({
+        hostname: INTERNET_PING_HOSTNAME,
+        path: `/?_t=${parseInt(Math.random() * 10000, 10)}`,
+        method: 'GET',
+        protocol: 'https',
       });
+      if (isIp(ipAddress)) {
+        runInAction('update isInternetConnected', () => {
+          this.isInternetConnected = true;
+        });
+      } else {
+        runInAction('update isInternetConnected', () => {
+          this.isInternetConnected = false;
+        });
+      }
     } catch (err) {
       runInAction('update isInternetConnected', () => {
         this.isInternetConnected = false;

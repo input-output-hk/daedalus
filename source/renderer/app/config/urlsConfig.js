@@ -13,6 +13,7 @@ export const MAINNET_LATEST_VERSION_INFO_URL =
 export const TESTNET_LATEST_VERSION_INFO_URL =
   'updates-cardano-testnet.s3.amazonaws.com';
 export const STAGING_LATEST_VERSION_INFO_URL = 'update-awstest.iohkdev.io';
+export const INTERNET_PING_HOSTNAME = 'ipv4.icanhazip.com';
 
 export const ALLOWED_EXTERNAL_HOSTNAMES = [
   MAINNET_EXPLORER_URL,
@@ -21,4 +22,5 @@ export const ALLOWED_EXTERNAL_HOSTNAMES = [
   MAINNET_LATEST_VERSION_INFO_URL,
   TESTNET_LATEST_VERSION_INFO_URL,
   STAGING_LATEST_VERSION_INFO_URL,
+  INTERNET_PING_HOSTNAME,
 ];

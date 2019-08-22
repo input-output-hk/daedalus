@@ -4567,6 +4567,53 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!No Internet connection",
+        "description": "No internet connection title",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/status/InternetConnectionOfflineStatus.js",
+        "id": "daedalus.internetConnectionStatus.dialog.disconnectedTitle",
+        "start": {
+          "column": 21,
+          "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus cannot operate without an Internet connection.",
+        "description": "No internet connection description",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/status/InternetConnectionOfflineStatus.js",
+        "id": "daedalus.internetConnectionStatus.dialog.disconnectedDescription",
+        "start": {
+          "column": 27,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!Check again",
+        "description": "Check again button label",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "source/renderer/app/components/status/InternetConnectionOfflineStatus.js",
+        "id": "daedalus.internetConnectionStatus.dialog.checkAgainLabel",
+        "start": {
+          "column": 19,
+          "line": 22
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/status/InternetConnectionOfflineStatus.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!On the following screen, you will see a set of X random words. This is\n    your wallet backup phrase. It can be entered in any version of Daedalus application in order\n    to back up or restore your wallet’s funds and private key.",
         "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
         "end": {
