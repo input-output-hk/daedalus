@@ -14,7 +14,7 @@
 
 ### File Structure
 
-- All the files comprising the Daedalus acceptance tests are divided into directories by domain. A test belongs to a domain depending on the category of functionality it's meant to test. Within Daedalus the domains `Wallets`, `Paper Wallets`, `Addresses`, `Transactions`, `Staking`, `Status`, and `Settings`. These domains also constitute the top level directories of the Daedalus acceptance tests.
+- All the files comprising the Daedalus acceptance tests are divided into directories by domain. A test belongs to a domain depending on the category of functionality it's meant to test. Within Daedalus the domains `wallets`, `paper-wallets`, `addresses`, `transactions`, `navigation`, `nodes`, `settings`, and `common`. These domains also constitute the top level directories of the Daedalus acceptance tests.
 
 # Running Daedalus Acceptance Tests
 
