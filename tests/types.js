@@ -23,8 +23,14 @@ export type Daedalus = {
 export type WebdriverExecuteResult<T> = { value: T };
 
 export type WebdriverClient = {
-  execute: (script: Function, scriptArgs: any) => WebdriverExecuteResult<any>,
+  click: (selector: string) => Promise<any>,
+  elements: (selector: string) => Promise<Object>,
+  execute: (script: Function, ...scriptArgs: Array<any>) => WebdriverExecuteResult<any>,
+  executeAsync: (script: Function, ...scriptArgs: Array<any>) => Promise<WebdriverExecuteResult<any>>,
+  getText: (selector: string) => Promise<any>,
   url: (url: string) => Promise<any>,
+  waitForEnabled: (selector: string, ms?: number | null, reverse?: boolean) => Promise<any>,
+  waitForText: (selector: string) => Promise<any>,
   waitForVisible: (target: string, ms?: number | null, reverse?: boolean) => Promise<any>,
   waitUntil: (script: Function, timeout?: number) => Promise<any>,
 };

@@ -1,3 +1,4 @@
+// @flow
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { isValidSpendingPassword } from '../../../../source/renderer/app/utils/validations';

@@ -1,3 +1,5 @@
+// @flow
+import readline from 'readline';
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { range } from 'lodash';
@@ -34,9 +36,9 @@ Given(
         throw new Error(`"${mnemonic}" is not valid`);
       }
       numberOfTestsExecuted++;
-      process.stdout.clearLine();
-      process.stdout.cursorTo(0);
-      process.stdout.write(numberOfTestsExecuted + ' mnemonics validated.');
+      readline.clearLine(process.stdout, 0);
+      readline.cursorTo(process.stdout, 0);
+      process.stdout.write(`${numberOfTestsExecuted} mnemonics validated.`);
     }
   }
 );

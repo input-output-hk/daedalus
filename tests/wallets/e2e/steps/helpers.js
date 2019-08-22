@@ -1,6 +1,9 @@
 // @flow
-import { expectTextInSelector, waitAndClick } from '../../../features/tests/e2e/helpers/shared-helpers';
-import { WalletSyncStateTags } from '../../../source/renderer/app/domains/Wallet';
+import { expectTextInSelector, waitAndClick } from '../../../common/e2e/steps/helpers';
+import { WalletSyncStateTags } from '../../../../source/renderer/app/domains/Wallet';
+import type { Daedalus, WebdriverClient } from '../../../types';
+
+declare var daedalus: Daedalus;
 
 const ADD_WALLET = '.WalletAdd';
 const IMPORT_WALLET_BUTTON = '.importWalletButton';
@@ -132,8 +135,8 @@ export const importWalletHelpers = {
 };
 
 export const importWalletWithFunds = async (
-  client,
-  { keyFilePath, password }
+  client: WebdriverClient,
+  { keyFilePath, password }: { keyFilePath: string, password: string }
 ) =>
   client.executeAsync(
     (filePath, spendingPassword, done) => {
@@ -151,16 +154,23 @@ export const importWalletWithFunds = async (
     password
   );
 
-export const isActiveWalletBeingRestored = async client => {
+export const isActiveWalletBeingRestored = async (client: WebdriverClient) => {
   const result = await client.execute(
-    expectedSyncTag =>
-      daedalus.stores.wallets.active.syncState.tag === expectedSyncTag,
+    (expectedSyncTag: string) => {
+      if (
+        daedalus.stores.wallets.active &&
+        daedalus.stores.wallets.active.syncState
+      ) {
+        return daedalus.stores.wallets.active.syncState.tag === expectedSyncTag;
+      }
+      return false;
+    },
     WalletSyncStateTags.RESTORING
   );
   return result.value;
 };
 
-export const waitUntilWalletIsLoaded = async function(walletName) {
+export const waitUntilWalletIsLoaded = async function(walletName: string): Promise<any> {
   let wallet = null;
   const context = this;
   await context.client.waitUntil(async () => {
@@ -177,7 +187,7 @@ export const waitUntilWalletIsLoaded = async function(walletName) {
   return wallet;
 };
 
-export const waitUntilWaletNamesEqual = function(walletName) {
+export const waitUntilWaletNamesEqual = function(walletName: string) {
   const context = this;
   return context.client.waitUntil(async () => {
     const currentWalletName = await getNameOfActiveWalletInSidebar.call(

@@ -1,7 +1,9 @@
+// @flow
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import path from 'path';
 import BigNumber from 'bignumber.js';
+import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
 import {
   addWalletHelpers,
   importWalletHelpers,
@@ -12,11 +14,13 @@ import {
   waitUntilWalletIsLoaded,
   addOrSetWalletsForScenario,
   importWalletWithFunds,
-} from '../helpers';
-import { sidebarHelpers, waitUntilUrlEquals, navigateTo } from '../../../Navigation/e2e/steps/helpers';
-import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
-import { waitForActiveRestoreNotification } from '../../Status/helpers';
-import { i18nHelpers } from '../../../Settings/e2e/helpers';
+} from './helpers';
+import { navigateTo, sidebarHelpers, waitUntilUrlEquals } from '../../../navigation/e2e/steps/helpers';
+import { waitForActiveRestoreNotification } from '../../../nodes/e2e/steps/helpers';
+import { i18nHelpers } from '../../../settings/e2e/steps/helpers';
+import type { Daedalus } from '../../../types';
+
+declare var daedalus: Daedalus;
 
 const { formatMessage } = i18nHelpers;
 const defaultWalletKeyFilePath = path.resolve(
