@@ -5,6 +5,8 @@ import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
 
+const SYNCING_STATUS_HEADER = '.SyncingConnectingTitle_syncing h1';
+
 When(
   /^I arbitrarily set the local block height to half the network block height$/,
   async function() {
@@ -20,7 +22,7 @@ When(
 
 Then(/^I should see the syncing status with "([^"]*)"$/, async function(text) {
   await waitUntilTextInSelector(this.client, {
-    selector: '.SyncingConnectingTitle_syncing h1',
+    selector: SYNCING_STATUS_HEADER,
     text,
   });
 });

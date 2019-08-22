@@ -9,16 +9,13 @@ declare var daedalus: Daedalus;
 
 const SELECTORS = {
   BLOCK_CONSOLIDATION_COMPONENT: '.BlockConsolidationStatus_component',
-  BLOCK_CONSOLIDATION_EXPLANATION:
-    '.BlockConsolidationStatus_content p:nth-child(3)',
+  BLOCK_CONSOLIDATION_EXPLANATION: '.BlockConsolidationStatus_content p:nth-child(3)',
+  EPOCHS_CONSOLIDATED: '.BlockConsolidationStatus_indicatorEpochsConsolidated p',
   EPOCHS_CONSOLIDATION_STATUS: '.BlockConsolidationStatus_epochs p span b',
-  EPOCHS_CONSOLIDATED:
-    '.BlockConsolidationStatus_indicatorEpochsConsolidated p',
-  TRAILING_BY_2_EPOCH: '.BlockConsolidationStatus_indicatorEpochsBehind p',
   MAXIMUM_EPOCH: '.BlockConsolidationStatus_fullEpoch',
   SYNC_PROGRESS: '.BlockConsolidationStatus_indicatorEpochsSynced p span',
-  SYNC_PROGRESS_LOADING_STATE:
-    '.BlockConsolidationStatus_indicatorContainerNoCurrentEpochs',
+  SYNC_PROGRESS_LOADING_STATE: '.BlockConsolidationStatus_indicatorContainerNoCurrentEpochs',
+  TRAILING_BY_2_EPOCH: '.BlockConsolidationStatus_indicatorEpochsBehind p',
 };
 const { formatMessage } = i18nHelpers;
 

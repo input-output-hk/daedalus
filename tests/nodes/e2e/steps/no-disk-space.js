@@ -3,11 +3,10 @@ import { Given, When, Then } from 'cucumber';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
-
 let diskSpaceRequired;
 const HUNDRED_TB = 100 * 1e12; // 100 TB | unit: bytes
-const ONE_KB = 1 * 1000; // 1 KB | unit: bytes
 const NO_DISK_SPACE_COMPONENT = '.NoDiskSpaceError_component';
+const ONE_KB = 1 * 1000; // 1 KB | unit: bytes
 
 Given(/^I set the required space to 100 TB$/, () => {
   diskSpaceRequired = HUNDRED_TB;

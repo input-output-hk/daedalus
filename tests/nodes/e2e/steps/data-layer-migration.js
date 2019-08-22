@@ -1,7 +1,13 @@
+// @flow
 import { Given, When, Then } from 'cucumber';
+import type { Daedalus } from '../../../types';
 
-const DATA_LAYER_MIGRATION_ACCEPTANCE_COMPONENT =
-  '.DataLayerMigrationForm_component';
+declare var daedalus: Daedalus;
+
+const SELECTORS = {
+  COMPONENT: '.DataLayerMigrationForm_component',
+  SUBMIT_BTN: '.DataLayerMigrationForm_submitButton',
+};
 
 Given(/^I haven't accepted the data layer migration$/, async function() {
   await this.client.execute(() => {
@@ -10,12 +16,12 @@ Given(/^I haven't accepted the data layer migration$/, async function() {
 });
 
 Then(/^I should see the Data Layer Migration screen$/, function() {
-  return this.client.waitForVisible(DATA_LAYER_MIGRATION_ACCEPTANCE_COMPONENT);
+  return this.client.waitForVisible(SELECTORS.COMPONENT);
 });
 
 Then(/^I should not see the Data Layer Migration screen$/, function() {
   return this.client.waitForVisible(
-    DATA_LAYER_MIGRATION_ACCEPTANCE_COMPONENT,
+    SELECTORS.COMPONENT,
     null,
     true
   );
@@ -23,6 +29,6 @@ Then(/^I should not see the Data Layer Migration screen$/, function() {
 
 When(/^I click the migration button$/, function() {
   return this.waitAndClick(
-    `${DATA_LAYER_MIGRATION_ACCEPTANCE_COMPONENT} .DataLayerMigrationForm_submitButton`
+    `${SELECTORS.COMPONENT} ${SELECTORS.SUBMIT_BTN}`
   );
 });

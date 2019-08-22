@@ -5,14 +5,13 @@ import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
 
+const ACCEPT_BTN = '.NodeUpdateNotification_acceptButton';
+const ACTIONS = '.NodeUpdateNotification_actions';
+const DENY_BTN = '.NodeUpdateNotification_denyButton';
 const NODE_UPDATE_COMPONENT = '.NodeUpdateNotification_component';
 const TITLE_BAR = '.NodeUpdateNotification_titleBar';
 const TOGGLE_BUTTON = '.NodeUpdateNotification_toggleButton';
 const UPDATE_MESSAGE = '.NodeUpdateNotification_message';
-const ACTIONS = '.NodeUpdateNotification_actions';
-const ACCEPT_BTN = '.NodeUpdateNotification_acceptButton';
-const DENY_BTN = '.NodeUpdateNotification_denyButton';
-
 const UPDATE_VERSION = 50;
 
 When(/^I make a node update available$/, async function() {
@@ -20,7 +19,7 @@ When(/^I make a node update available$/, async function() {
     (nextVersion, done) => {
       daedalus.api.ada
         .setNextUpdate(nextVersion)
-        .then(() => daedalus.stores.NodeUpdateStore.refreshNextUpdate())
+        .then(() => daedalus.stores.nodeUpdate.refreshNextUpdate())
         .then(done)
         .catch(error => done(error));
     },

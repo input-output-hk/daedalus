@@ -6,9 +6,9 @@ import type { Daedalus } from '../../../types';
 declare var daedalus: Daedalus;
 
 const SELECTORS = {
+  REPORT_ISSUE_BTN: '.ReportIssue_actionButton.reportIssueButton',
+  REPORT_ISSUE_HEADER: '.ReportIssue_reportIssueText',
   SYNCING_CONNECTING_COMPONENT: '.SyncingConnecting_component',
-  REPORT_ISSUE_TEXT_H1: '.ReportIssue_reportIssueText',
-  REPORT_ISSUE_BUTTON: '.ReportIssue_actionButton.reportIssueButton',
 };
 
 Then(/^I should not see the loading screen$/, async function() {
@@ -23,14 +23,14 @@ Then(
   /^I should see the report issue notification displaying "([^"]*)"$/,
   async function(text) {
     await waitUntilTextInSelector(this.client, {
-      selector: SELECTORS.REPORT_ISSUE_TEXT_H1,
+      selector: SELECTORS.REPORT_ISSUE_HEADER,
       text,
     });
   }
 );
 
 Then(/^I should not see the report issue notification$/, async function() {
-  await this.client.waitForVisible(SELECTORS.REPORT_ISSUE_TEXT_H1, null, true);
+  await this.client.waitForVisible(SELECTORS.REPORT_ISSUE_HEADER, null, true);
 });
 
 Then(/^The report issue button should be (hidden|visible)$/, async function(
@@ -38,7 +38,7 @@ Then(/^The report issue button should be (hidden|visible)$/, async function(
 ) {
   const waitForHidden = state === 'hidden';
   await this.client.waitForVisible(
-    SELECTORS.REPORT_ISSUE_BUTTON,
+    SELECTORS.REPORT_ISSUE_BTN,
     null,
     waitForHidden
   );

@@ -4,8 +4,10 @@ import { expectTextInSelector } from '../../../common/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
-
-const selector = '.time-off';
+const SELECTORS = {
+  ERROR_COMPONENT: '.SystemTimeError_component',
+  TIME_OFF: '.time-off',
+};
 
 Given('I set the local time difference to be {int} seconds', async function(
   seconds
@@ -25,12 +27,13 @@ Then(/^the system time error overlay should be (hidden|visible)$/, function(
 ) {
   const isVisible = state === 'visible';
   return this.client.waitForVisible(
-    '.SystemTimeError_component',
+    SELECTORS.ERROR_COMPONENT,
     null,
     !isVisible
   );
 });
 
 Then('the system time difference should be {string}', async function(text) {
+  let selector = SELECTORS.TIME_OFF;
   await expectTextInSelector(this.client, { selector, text });
 });

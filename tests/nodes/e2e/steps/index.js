@@ -6,6 +6,7 @@ import { refreshClient, waitForCardanoNodeToExit, waitForDaedalusToExit } from '
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
+const CONNECTING_TITLE = '.SyncingConnectingTitle_connecting h1';
 
 Given(/^Daedalus is running$/, function() {
   expect(this.app.isRunning()).to.equal(true);
@@ -32,7 +33,7 @@ Then(/^I should see the loading screen with "([^"]*)"$/, async function(
   message
 ) {
   await waitUntilTextInSelector(this.client, {
-    selector: '.SyncingConnectingTitle_connecting h1',
+    selector: CONNECTING_TITLE,
     text: message,
   });
 });

@@ -7,20 +7,19 @@ import { i18nHelpers } from '../../../settings/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
-
-const SELECTORS = {
-  MANUAL_UPDATE_VERSION_INFO:
-    '.ManualUpdate_content .ManualUpdate_description p:nth-child(2)',
-};
-
 const currentAppVersion = environment.version;
 const currentAppVersionChunks = currentAppVersion.split('.');
+const { formatMessage } = i18nHelpers;
 const nextAppVersion = [
   currentAppVersionChunks[0],
   parseInt(currentAppVersionChunks[1], 10) + 1,
   currentAppVersionChunks[2],
 ].join('.');
-const { formatMessage } = i18nHelpers;
+const SELECTORS = {
+  DESCRIPTION: 'manualUpdate.description2',
+  OVERLAY: '.ManualUpdate_content',
+  VERSION_INFO: '.ManualUpdate_content .ManualUpdate_description p:nth-child(2)',
+};
 
 Given(/^There is a newer application version available$/, async function() {
   await this.client.execute(version => {
@@ -33,7 +32,7 @@ When(/^Daedalus is stuck in connecting state$/, async function() {
 });
 
 Then(/^I should see the "Manual Update" overlay$/, function() {
-  return this.client.waitForVisible('.ManualUpdate_content');
+  return this.client.waitForVisible(SELECTORS.OVERLAY);
 });
 
 Then(
@@ -41,11 +40,11 @@ Then(
   async function() {
     const [renderedText] = await getVisibleTextsForSelector(
       this.client,
-      SELECTORS.MANUAL_UPDATE_VERSION_INFO
+      SELECTORS.VERSION_INFO
     );
 
     let expectedText = await formatMessage(this.client, {
-      id: 'manualUpdate.description2',
+      id: SELECTORS.DESCRIPTION,
       values: {
         currentAppVersion,
         availableAppVersion: nextAppVersion,
