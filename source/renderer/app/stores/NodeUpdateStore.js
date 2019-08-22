@@ -102,8 +102,6 @@ export default class NodeUpdateStore extends Store {
 
   @action _acceptNodeUpdate = () => {
     this.applyUpdateRequest.execute();
-    this.isUpdateAvailable = false;
-    this.isUpdateInstalled = true;
   };
 
   @action _getLatestAvailableAppVersion = async () => {
