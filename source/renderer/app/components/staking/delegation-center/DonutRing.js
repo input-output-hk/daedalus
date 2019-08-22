@@ -23,9 +23,7 @@ export default class DonutRing extends Component<Props> {
     const radius = (sqSize - strokeWidth) / 2;
     const viewBox = `0 0 ${sqSize} ${sqSize}`;
     const dashArray = radius * Math.PI * 2;
-    // const dashOffset = dashArray - (dashArray * percentage) / 100;
     const dashOffset = dashArray - (dashArray * invertedPercentage) / 100;
-    // const rotateDeg = -((percentage / 100) * 360 + 90);
     const rotateDeg = -((invertedPercentage / 100) * 360 + 90);
 
     return (
