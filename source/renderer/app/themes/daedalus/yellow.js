@@ -310,11 +310,21 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-network-window-transparent-color': 'transparent',
     '--theme-network-window-border-color': 'rgba(45, 45, 45, 0.2)',
     '--theme-network-window-button-text-color': '#ffffff',
+    '--theme-network-window-description-color': 'rgba(45, 45, 45, 0.7)',
     '--theme-network-window-button-background-color': 'rgba(45, 45, 45, 0.4)',
     '--theme-network-window-button-background-color-hover':
       'rgba(45, 45, 45, 0.6)',
     '--theme-network-window-button-background-color-active':
       'rgba(45, 45, 45, 0.8)',
+    '--theme-network-window-primary-button-background-color':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-network-window-primary-button-background-color-active':
+      'rgba(28, 28, 28, 0.96)',
+    '--theme-network-window-primary-button-background-color-hover': '#2d2d2d',
+    '--theme-network-window-primary-button-text-color': '#2d2d2d',
+    '--theme-network-window-primary-button-text-color-hover': '#ffffff',
+    '--theme-network-window-primary-button-border-color': '#2d2d2d',
+    '--theme-network-window-primary-button-border-color-hover': 'transparent',
   },
   nodeUpdate: {
     '--theme-node-update-background-color': '#f8f3ed',

@@ -2,6 +2,7 @@
 import { observable, action, computed, runInAction } from 'mobx';
 import moment from 'moment';
 import { isEqual, includes } from 'lodash';
+import isInternetOnline from 'is-online';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
@@ -82,6 +83,7 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeStopped = false; // 'true' if node is in `NODE_STOPPED_STATES` states
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
+  @observable isInternetConnected = true;
 
   @observable hasBeenConnected = false;
   @observable syncProgress = null;
@@ -109,7 +111,7 @@ export default class NetworkStatusStore extends Store {
   @observable stateDirectoryPath: string = '';
 
   // DEFINE STORE METHODS
-  setup() {
+  async setup() {
     // ========== IPC CHANNELS =========== //
 
     this.actions.networkStatus.restartNode.listen(this._restartNode);
@@ -150,6 +152,7 @@ export default class NetworkStatusStore extends Store {
     this._checkDiskSpace();
 
     this._getStateDirectoryPath();
+    await this.updateInternetConnectionStatus();
   }
 
   // Setup network status polling interval
@@ -183,15 +186,19 @@ export default class NetworkStatusStore extends Store {
 
   // ================= REACTIONS ==================
 
-  _updateNetworkStatusWhenDisconnected = () => {
+  _updateNetworkStatusWhenDisconnected = async () => {
     if (!this.isConnected) this._updateNetworkStatus();
+
+    await this.updateInternetConnectionStatus();
   };
 
-  _updateNetworkStatusWhenConnected = () => {
+  _updateNetworkStatusWhenConnected = async () => {
     if (this.isConnected) {
       Logger.info('NetworkStatusStore: Connected, forcing NTP check now...');
       this._updateNetworkStatus({ force_ntp_check: true });
     }
+
+    await this.updateInternetConnectionStatus();
   };
 
   _updateNodeStatus = async () => {
@@ -327,6 +334,19 @@ export default class NetworkStatusStore extends Store {
   };
 
   // DEFINE ACTIONS
+
+  @action updateInternetConnectionStatus = async () => {
+    try {
+      const connectionResult = await isInternetOnline();
+      runInAction('update isInternetConnected', () => {
+        this.isInternetConnected = connectionResult;
+      });
+    } catch (err) {
+      runInAction('update isInternetConnected', () => {
+        this.isInternetConnected = false;
+      });
+    }
+  };
 
   @action _updateNetworkStatus = async (
     queryInfoParams?: NodeInfoQueryParams

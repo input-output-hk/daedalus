@@ -1,0 +1,71 @@
+@import '../../themes/mixins/link';
+
+.component {
+  align-items: center;
+  background: var(--theme-network-window-background-color);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  padding: 50px 64px;
+  width: 100%;
+}
+
+.disconnectedIconContainer {
+  width: 306px;
+
+  .disconnectedIcon {
+    width: 100%;
+  }
+}
+
+.disconnectedTitle {
+  color: var(--theme-network-window-text-color);
+  font-family: var(--font-regular);
+  font-size: 20px;
+  line-height: 1.2;
+  margin-top: 36px;
+}
+
+.disconnectedDescription {
+  color: var(--theme-network-window-description-color);
+  font-family: var(--font-regular);
+  font-size: 16px;
+  line-height: 1.38;
+  margin-top: 16px;
+}
+
+.disconnectedAction {
+  margin-top: 30px;
+
+  .checkAgainButton {
+    background-color: var(
+      --theme-network-window-primary-button-background-color
+    );
+    border: 1px solid var(--theme-network-window-primary-button-border-color);
+    border-radius: 5px;
+    color: var(--theme-network-window-primary-button-text-color);
+    height: 50px;
+    width: 360px;
+
+    &:not(.disabled):hover {
+      background-color: var(
+        --theme-network-window-primary-button-background-color-hover
+      );
+      border-color: var(
+        --theme-network-window-primary-button-border-color-hover
+      );
+      color: var(--theme-network-window-primary-button-text-color-hover);
+    }
+
+    &:not(.disabled):active {
+      background-color: var(
+        --theme-network-window-primary-button-background-color-active
+      );
+      border-color: var(
+        --theme-network-window-primary-button-border-color-hover
+      );
+      color: var(--theme-network-window-primary-button-text-color-hover);
+    }
+  }
+}

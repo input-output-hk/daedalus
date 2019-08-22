@@ -11,6 +11,7 @@ import { themeOverrides } from './themes/overrides/index.js';
 import translations from './i18n/translations';
 import ThemeManager from './ThemeManager';
 import AboutDialog from './containers/static/AboutDialog';
+import InternetConnectionStatusDialog from './containers/status/InternetConnectionStatusDialog';
 import DaedalusDiagnosticsDialog from './containers/status/DaedalusDiagnosticsDialog';
 import BlockConsolidationStatusDialog from './containers/status/BlockConsolidationStatusDialog';
 import GenericNotificationContainer from './containers/notifications/GenericNotificationContainer';
@@ -55,6 +56,7 @@ export default class App extends Component<{
                 {isActiveDialog(DAEDALUS_DIAGNOSTICS) && (
                   <DaedalusDiagnosticsDialog />
                 )}
+                <InternetConnectionStatusDialog />
                 <GenericNotificationContainer />
               </Fragment>
             </IntlProvider>

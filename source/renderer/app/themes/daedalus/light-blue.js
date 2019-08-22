@@ -320,12 +320,20 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-network-window-transparent-color': 'transparent',
     '--theme-network-window-border-color': 'rgba(255, 255, 255, 0.25)',
     '--theme-network-window-button-text-color': '#243e62',
+    '--theme-network-window-description-color': 'rgba(250, 251, 252, 0.7)',
     '--theme-network-window-button-background-color':
       'rgba(250, 251, 252, 0.4)',
     '--theme-network-window-button-background-color-hover':
       'rgba(250, 251, 252, 0.6)',
     '--theme-network-window-button-background-color-active':
       'rgba(250, 251, 252, 0.8)',
+    '--theme-network-window-primary-button-background-color': '#243e62',
+    '--theme-network-window-primary-button-background-color-active': '#e9e9ea',
+    '--theme-network-window-primary-button-background-color-hover': '#fafbfc',
+    '--theme-network-window-primary-button-text-color': '#fafbfc',
+    '--theme-network-window-primary-button-text-color-hover': '#243e62',
+    '--theme-network-window-primary-button-border-color': '#fafbfc',
+    '--theme-network-window-primary-button-border-color-hover': 'transparent',
   },
   nodeUpdate: {
     '--theme-node-update-background-color': '#ebeff2',

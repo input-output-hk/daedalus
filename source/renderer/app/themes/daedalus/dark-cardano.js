@@ -315,9 +315,18 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-network-window-transparent-color': 'transparent',
     '--theme-network-window-border-color': '#ffffffb3',
     '--theme-network-window-button-text-color': '#ffffff',
+    '--theme-network-window-description-color': '#afafb8aa',
     '--theme-network-window-button-background-color': '#afafb866',
     '--theme-network-window-button-background-color-hover': '#afafb899',
     '--theme-network-window-button-background-color-active': '#afafb8cc',
+    '--theme-network-window-primary-button-background-color':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-network-window-primary-button-background-color-active': '#e9e9ea',
+    '--theme-network-window-primary-button-background-color-hover': '#fafbfc',
+    '--theme-network-window-primary-button-text-color': '#fafbfc',
+    '--theme-network-window-primary-button-text-color-hover': '#2a2b3c',
+    '--theme-network-window-primary-button-border-color': '#fafbfc',
+    '--theme-network-window-primary-button-border-color-hover': 'transparent',
   },
   nodeUpdate: {
     '--theme-node-update-background-color': '#121326',
