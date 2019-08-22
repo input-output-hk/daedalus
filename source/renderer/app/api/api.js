@@ -79,6 +79,7 @@ import {
 // Addresses Types
 import type {
   Address,
+  Addresses,
   GetAddressesRequest,
   CreateAddressRequest,
   GetAddressesResponse,
@@ -189,9 +190,13 @@ export default class AdaApi {
     });
     const { walletId } = request;
     try {
-      const addresses: Address[] = await getAddressesFromApi(
+      const response: Addresses = await getAddressesFromApi(
         this.config,
         walletId
+      );
+      Logger.debug('AdaApi::getAddresses success', { addresses: response });
+      const addresses = response.map(data =>
+        _createAddressFromServerData(data)
       );
       return new Promise(resolve => resolve({ accountIndex: 0, addresses }));
     } catch (error) {
@@ -530,7 +535,9 @@ export default class AdaApi {
     }
   };
 
-  createAddress = async (request: CreateAddressRequest): Promise<Address> => {
+  createAddress = async (
+    request: CreateAddressRequest
+  ): Promise<WalletAddress> => {
     Logger.debug('AdaApi::createAddress called', {
       parameters: filterLogData(request),
     });
@@ -1052,7 +1059,13 @@ const _createWalletFromServerData = action(
 
 const _createAddressFromServerData = action(
   'AdaApi::_createAddressFromServerData',
-  (address: Address) => new WalletAddress(address)
+  (address: Address) => {
+    const { id, state } = address;
+    return new WalletAddress({
+      id,
+      used: state === 'used',
+    });
+  }
 );
 
 const _conditionToTxState = (condition: string) => {

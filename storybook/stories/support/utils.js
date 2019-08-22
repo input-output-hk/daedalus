@@ -81,7 +81,6 @@ export const generateMultipleTransactions = (
 export const generateAddress = (used: boolean = false): WalletAddress =>
   new WalletAddress({
     id: generateHash(),
-    changeAddress: false,
     used,
   });
 
