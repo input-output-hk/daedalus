@@ -428,7 +428,7 @@
   "wallet.backup.recovery.phrase.dialog.title": "Recovery phrase",
   "wallet.backup.recovery.phrase.display.dialog.backup.instructions": "The phrase is case sensitive. Please make sure you <strong>write down and save your recovery phrase</strong>. You will need this phrase to use and restore your wallet.",
   "wallet.backup.recovery.phrase.display.dialog.button.label.iHaveWrittenItDown": "Yes, I have written it down.",
-  "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.device": "I understand that my <strong>wallet and tokens are held securely on this device only and not on any servers.</strong>",
+  "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.device": "I understand that my wallet and tokens are held securely on this device only and not on any servers.",
   "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery": "I understand that if this application is moved to another device or is deleted, my wallet can be only recovered with the backup phrase that I have written down and saved in a secure place",
   "wallet.backup.recovery.phrase.entry.dialog.verification.instructions": "Tap each word in the correct order to verify your recovery phrase",
   "wallet.create.dialog.configStep": "Config",
