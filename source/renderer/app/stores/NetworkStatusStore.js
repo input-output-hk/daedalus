@@ -2,7 +2,6 @@
 import { observable, action, computed, runInAction } from 'mobx';
 import moment from 'moment';
 import { isEqual, includes } from 'lodash';
-import isIp from 'is-ip';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { INTERNET_PING_HOSTNAME } from '../config/urlsConfig';
@@ -338,21 +337,15 @@ export default class NetworkStatusStore extends Store {
 
   @action updateInternetConnectionStatus = async () => {
     try {
-      const ipAddress = await externalRequestForRawBody({
+      await externalRequestForRawBody({
         hostname: INTERNET_PING_HOSTNAME,
         path: `/?_t=${parseInt(Math.random() * 10000, 10)}`,
         method: 'GET',
         protocol: 'https',
       });
-      if (isIp(ipAddress)) {
-        runInAction('update isInternetConnected', () => {
-          this.isInternetConnected = true;
-        });
-      } else {
-        runInAction('update isInternetConnected', () => {
-          this.isInternetConnected = false;
-        });
-      }
+      runInAction('update isInternetConnected', () => {
+        this.isInternetConnected = true;
+      });
     } catch (err) {
       runInAction('update isInternetConnected', () => {
         this.isInternetConnected = false;
