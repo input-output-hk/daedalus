@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import BigNumber from 'bignumber.js';
 import SVGInline from 'react-svg-inline';
+import { get } from 'lodash';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import linkNewWindowIcon from '../../../assets/images/link-ic-colored.inline.svg';
@@ -46,6 +47,12 @@ export default class DelegationCenterHeader extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  with2Decimals = (value: number) => {
+    const formatedValue = value.toString().match(/^-?\d+(?:\.\d{0,2})?/);
+    const result = get(formatedValue, 0, 0);
+    return result;
+  };
+
   render() {
     const { intl } = this.context;
     const { adaValue, percentage } = this.props;
@@ -60,11 +67,17 @@ export default class DelegationCenterHeader extends Component<Props> {
       messages.descriptionFourthPart
     );
 
+    const percentageWith2Decimals = this.with2Decimals(percentage);
+
     return (
       <div className={styles.component}>
         <div className={styles.mainContent}>
           <div className={styles.progressRing}>
-            <DonutRing percentage={percentage} sqSize={44} strokeWidth={8} />
+            <DonutRing
+              percentage={percentageWith2Decimals}
+              sqSize={44}
+              strokeWidth={8}
+            />
           </div>
           <div className={styles.heading}>{heading}</div>
           <div className={styles.description}>
@@ -73,7 +86,7 @@ export default class DelegationCenterHeader extends Component<Props> {
                 {...messages.descriptionFirstPart}
                 values={{
                   adaValue: adaValue.toFormat(SIMPLE_DECIMAL_PLACES_IN_ADA),
-                  percentage,
+                  percentage: parseFloat(percentageWith2Decimals).toFixed(2),
                 }}
               />
             </p>
