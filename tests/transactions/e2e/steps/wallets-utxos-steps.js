@@ -1,8 +1,12 @@
+// @flow
 import { Then } from 'cucumber';
 import { expect } from 'chai';
 import { BigNumber } from 'bignumber.js';
-import { getVisibleTextsForSelector } from '../helpers/shared-helpers';
+import { getVisibleTextsForSelector } from '../../../common/e2e/steps/helpers';
 import { getWalletUtxosTotalAmount } from '../../../../source/renderer/app/utils/utxoUtils';
+import type { Daedalus } from '../../../types';
+
+declare var daedalus: Daedalus;
 
 const container = '.WalletUtxo_container';
 
@@ -39,13 +43,16 @@ Then(
       this.client,
       selectors.walletUtxosAmount
     );
-
+    const walletSettingsHistogram =
+      daedalus.stores.walletSettings.walletUtxos ?
+      daedalus.stores.walletSettings.walletUtxos.histogram :
+      null;
     const {
       value: { expextedWalletAmount, histogram },
     } = await this.client.executeAsync(done =>
       done({
         expextedWalletAmount: daedalus.stores.wallets.activeValue,
-        histogram: daedalus.stores.walletSettings.walletUtxos.histogram,
+        histogram: walletSettingsHistogram,
       })
     );
 

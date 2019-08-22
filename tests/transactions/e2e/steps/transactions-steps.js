@@ -1,3 +1,4 @@
+// @flow
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import BigNumber from 'bignumber.js/bignumber';
@@ -5,8 +6,11 @@ import {
   DECIMAL_PLACES_IN_ADA,
   LOVELACES_PER_ADA,
 } from '../../../../source/renderer/app/config/numbersConfig';
-import { getVisibleTextsForSelector } from '../helpers/shared-helpers';
-import { getWalletByName } from '../helpers/wallets-helpers';
+import { getVisibleTextsForSelector } from '../../../common/e2e/steps/helpers';
+import { getWalletByName } from '../../../wallets/e2e/steps/helpers';
+import type { Daedalus } from '../../../types';
+
+declare var daedalus: Daedalus;
 
 // This step ensures sequential creation of given transactions
 // use only when the order is important because it's slower!

@@ -10,7 +10,7 @@ import {
   getUtxoWalletPrettyAmount,
   getWalletUtxosTotalAmount,
 } from '../../../../source/renderer/app/utils/utxoUtils';
-import { getHistogramFromTable } from '../setup/utxo-helpers';
+import { getHistogramFromTable } from './helpers';
 
 Given('the `getUtxoChartData` function receives the following props:', function(
   data
