@@ -1,5 +1,4 @@
 import { Given } from 'cucumber';
-import languageSelection from './helpers';
 import { languageSelectionHelpers, migrationHelpers, termsOfUseHelpers } from './helpers';
 
 const { acceptMigration } = migrationHelpers;

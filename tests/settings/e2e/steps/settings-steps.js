@@ -1,10 +1,10 @@
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
-import { navigateTo } from '../helpers/route-helpers';
+import { navigateTo } from '../../../navigation/e2e/steps/helpers';
 import {
   waitUntilWaletNamesEqual,
   getNameOfActiveWalletInSidebar,
-} from '../../../Wallets/e2e/steps/helpers';
+} from '../../../wallets/e2e/steps/helpers';
 
 Given(/^I am on the settings screen$/, async function() {
   await navigateTo.call(this, '/settings');
