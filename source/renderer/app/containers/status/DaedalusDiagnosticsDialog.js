@@ -88,13 +88,16 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       daedalusVersion: environment.version,
       daedalusProcessID: environment.rendererProcessID,
       daedalusMainProcessID: environment.mainProcessID,
-      isInSafeMode: environment.isInSafeMode,
+      isBlankScreenFixActive: environment.isBlankScreenFixActive,
       cardanoVersion: environment.buildNumber,
       cardanoProcessID: cardanoNodeID,
       cardanoAPIPort: tlsConfig ? tlsConfig.port : 0,
       cardanoNetwork: environment.network,
       daedalusStateDirectoryPath: stateDirectoryPath,
     };
+
+    // Copy-address notification component z-index
+    const notificationOrder = 99999;
 
     return (
       <ReactModal
@@ -150,6 +153,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
           closeNotification={actions.notifications.closeActiveNotification}
           icon="success"
           hasCloseButton
+          order={notificationOrder}
           themeOverride="grey"
         >
           {intl.formatMessage(messages.stateDirectoryCopyNotificationMessage)}

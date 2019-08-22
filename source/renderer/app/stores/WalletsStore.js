@@ -12,6 +12,7 @@ import { mnemonicToSeedHex } from '../utils/crypto';
 import { downloadPaperWalletCertificate } from '../utils/paperWalletPdfGenerator';
 import { buildRoute, matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
+import type { GetAddressesResponse } from '../api/addresses/types';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 import type LocalizableError from '../i18n/LocalizableError';
@@ -42,7 +43,8 @@ export default class WalletsStore extends Store {
   @observable createWalletRequest: Request<Wallet> = new Request(
     this.api.ada.createWallet
   );
-  @observable getWalletAddressesRequest: Request<any> = new Request(
+  @observable
+  getWalletAddressesRequest: Request<GetAddressesResponse> = new Request(
     this.api.ada.getAddresses
   );
   @observable deleteWalletRequest: Request<boolean> = new Request(
@@ -80,6 +82,10 @@ export default class WalletsStore extends Store {
   @observable certificateStep = null;
   @observable certificateTemplate = null;
   @observable additionalMnemonicWords = null;
+  @observable createWalletStep = null;
+  @observable createWalletShowAbortConfirmation = false;
+  // TODO: Remove once the new wallet creation process is ready
+  @observable useNewWalletCreationProcess = false;
 
   _newWalletDetails: {
     name: string,
@@ -98,7 +104,13 @@ export default class WalletsStore extends Store {
     this.registerReactions([this._updateActiveWalletOnRouteChanges]);
 
     const { router, walletBackup, wallets, app, networkStatus } = this.actions;
+    // Create Wallet Actions ---
     wallets.createWallet.listen(this._create);
+    wallets.createWalletBegin.listen(this._createWalletBegin);
+    wallets.createWalletChangeStep.listen(this._createWalletChangeStep);
+    wallets.createWalletAbort.listen(this._createWalletAbort);
+    wallets.createWalletClose.listen(this._createWalletClose);
+    // ---
     wallets.deleteWallet.listen(this._deleteWallet);
     wallets.sendMoney.listen(this._sendMoney);
     wallets.restoreWallet.listen(this._restoreWallet);
@@ -110,7 +122,7 @@ export default class WalletsStore extends Store {
     wallets.setCertificateTemplate.listen(this._setCertificateTemplate);
     wallets.finishCertificate.listen(this._finishCertificate);
     router.goToRoute.listen(this._onRouteChange);
-    walletBackup.finishWalletBackup.listen(this._finishCreation);
+    walletBackup.finishWalletBackup.listen(this._finishWalletBackup);
     app.initAppEnvironment.listen(() => {});
     networkStatus.restartNode.listen(this._updateGeneratingCertificateError);
   }
@@ -130,7 +142,35 @@ export default class WalletsStore extends Store {
     }
   };
 
-  _finishCreation = async () => {
+  // TODO: Remove once the new wallet creation process is ready
+  @action _toggleUseNewWalletCreationProcess = () => {
+    this.useNewWalletCreationProcess = !this.useNewWalletCreationProcess;
+  };
+
+  @action _createWalletBegin = () => {
+    this.createWalletStep = 0;
+    this.createWalletShowAbortConfirmation = false;
+  };
+
+  @action _createWalletChangeStep = (isBack: boolean = false) => {
+    const currrentCreateWalletStep = this.createWalletStep || 0;
+    this.createWalletStep =
+      isBack === true
+        ? currrentCreateWalletStep - 1
+        : currrentCreateWalletStep + 1;
+    this.createWalletShowAbortConfirmation = false;
+  };
+
+  @action _createWalletClose = () => {
+    this.createWalletStep = null;
+    this.createWalletShowAbortConfirmation = false;
+  };
+
+  @action _createWalletAbort = () => {
+    this.createWalletShowAbortConfirmation = true;
+  };
+
+  _finishWalletBackup = async () => {
     this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(
       ' '
     );

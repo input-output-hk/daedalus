@@ -5,7 +5,6 @@ import { get } from 'lodash';
 import MainLayout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
-import AdaRedemptionSuccessOverlay from '../../components/wallet/ada-redemption/AdaRedemptionSuccessOverlay';
 import RestoreNotification from '../../components/notifications/RestoreNotification';
 import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
@@ -51,9 +50,7 @@ export default class Wallet extends Component<Props> {
   };
 
   render() {
-    const { actions, stores } = this.props;
-    const { wallets, adaRedemption, profile, app } = stores;
-    const { showAdaRedemptionSuccessMessage, amountRedeemed } = adaRedemption;
+    const { wallets, profile, app } = this.props.stores;
     const { currentLocale } = profile;
 
     if (!wallets.active)
@@ -93,15 +90,6 @@ export default class Wallet extends Component<Props> {
         >
           {this.props.children}
         </WalletWithNavigation>
-
-        {showAdaRedemptionSuccessMessage ? (
-          <AdaRedemptionSuccessOverlay
-            amount={amountRedeemed}
-            onClose={
-              actions.adaRedemption.closeAdaRedemptionSuccessOverlay.trigger
-            }
-          />
-        ) : null}
       </MainLayout>
     );
   }

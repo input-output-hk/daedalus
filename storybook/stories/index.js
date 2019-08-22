@@ -15,11 +15,8 @@ import './PaperWallets.stories';
 // Staking
 import './Staking.stories';
 
-// Ada Redemption
-import './AdaRedemptionDialog.stories';
-
 // Settings
-import './LanguageSelectionForm.stories';
+import './Settings.stories';
 
 // Loading
 import './Loading.stories';

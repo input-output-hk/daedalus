@@ -30,8 +30,6 @@ import { getLatestAppVersion } from './nodes/requests/getLatestAppVersion';
 import { getTransactionFee } from './transactions/requests/getTransactionFee';
 // import { getTransactionHistory } from './transactions/requests/getTransactionHistory';
 import { createTransaction } from './transactions/requests/createTransaction';
-import { redeemAda } from './transactions/requests/redeemAda';
-import { redeemPaperVendedAda } from './transactions/requests/redeemPaperVendedAda';
 
 // Wallets requests
 import { resetWalletState } from './wallets/requests/resetWalletState';
@@ -56,10 +54,6 @@ import { isValidMnemonic } from '../../../common/crypto/decrypt';
 import { utcStringToDate, encryptPassphrase } from './utils';
 import { Logger } from '../utils/logging';
 import {
-  isValidRedemptionKey,
-  isValidPaperVendRedemptionKey,
-} from '../utils/redemption-key-validation';
-import {
   unscrambleMnemonics,
   scrambleMnemonics,
   generateAccountMnemonics,
@@ -76,7 +70,6 @@ import {
 } from '../config/numbersConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
-  ADA_REDEMPTION_PASSPHRASE_LENGTH,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../config/cryptoConfig';
 
@@ -86,6 +79,7 @@ import {
 // Addresses Types
 import type {
   Address,
+  Addresses,
   GetAddressesRequest,
   CreateAddressRequest,
   GetAddressesResponse,
@@ -109,8 +103,6 @@ import type {
 import type { NodeInfoQueryParams } from './nodes/requests/getNodeInfo';
 
 // Transactions Types
-import type { RedeemAdaParams } from './transactions/requests/redeemAda';
-import type { RedeemPaperVendedAdaParams } from './transactions/requests/redeemPaperVendedAda';
 import type {
   Transaction,
   // Transactions,
@@ -161,7 +153,6 @@ import {
   NotEnoughFundsForTransactionFeesError,
   NotEnoughFundsForTransactionError,
   NotEnoughMoneyToSendError,
-  RedeemAdaError,
   TooBigTransactionError,
 } from './transactions/errors';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
@@ -199,9 +190,13 @@ export default class AdaApi {
     });
     const { walletId } = request;
     try {
-      const addresses: Address[] = await getAddressesFromApi(
+      const response: Addresses = await getAddressesFromApi(
         this.config,
         walletId
+      );
+      Logger.debug('AdaApi::getAddresses success', { addresses: response });
+      const addresses = response.map(data =>
+        _createAddressFromServerData(data)
       );
       return new Promise(resolve => resolve({ accountIndex: 0, addresses }));
     } catch (error) {
@@ -540,7 +535,9 @@ export default class AdaApi {
     }
   };
 
-  createAddress = async (request: CreateAddressRequest): Promise<Address> => {
+  createAddress = async (
+    request: CreateAddressRequest
+  ): Promise<WalletAddress> => {
     Logger.debug('AdaApi::createAddress called', {
       parameters: filterLogData(request),
     });
@@ -585,15 +582,6 @@ export default class AdaApi {
 
   isValidMnemonic = (mnemonic: string): boolean =>
     isValidMnemonic(mnemonic, WALLET_RECOVERY_PHRASE_WORD_COUNT);
-
-  isValidRedemptionKey = (mnemonic: string): boolean =>
-    isValidRedemptionKey(mnemonic);
-
-  isValidPaperVendRedemptionKey = (mnemonic: string): boolean =>
-    isValidPaperVendRedemptionKey(mnemonic);
-
-  isValidRedemptionMnemonic = (mnemonic: string): boolean =>
-    isValidMnemonic(mnemonic, ADA_REDEMPTION_PASSPHRASE_LENGTH);
 
   isValidCertificateMnemonic = (mnemonic: string): boolean =>
     mnemonic.split(' ').length === ADA_CERTIFICATE_MNEMONIC_LENGTH;
@@ -763,56 +751,6 @@ export default class AdaApi {
         throw new WalletAlreadyImportedError();
       }
       throw new WalletFileImportError();
-    }
-  };
-
-  redeemAda = async (request: RedeemAdaParams): Promise<WalletTransaction> => {
-    Logger.debug('AdaApi::redeemAda called', {
-      parameters: filterLogData(request),
-    });
-    const { spendingPassword: passwordString } = request;
-    const spendingPassword = passwordString
-      ? encryptPassphrase(passwordString)
-      : '';
-    try {
-      const transaction: Transaction = await redeemAda(this.config, {
-        ...request,
-        spendingPassword,
-      });
-      Logger.debug('AdaApi::redeemAda success', { transaction });
-      return _createTransactionFromServerData(transaction);
-    } catch (error) {
-      Logger.error('AdaApi::redeemAda error', { error });
-      if (error.message === 'CannotCreateAddress') {
-        throw new IncorrectSpendingPasswordError();
-      }
-      throw new RedeemAdaError();
-    }
-  };
-
-  redeemPaperVendedAda = async (
-    request: RedeemPaperVendedAdaParams
-  ): Promise<WalletTransaction> => {
-    Logger.debug('AdaApi::redeemAdaPaperVend called', {
-      parameters: filterLogData(request),
-    });
-    const { spendingPassword: passwordString } = request;
-    const spendingPassword = passwordString
-      ? encryptPassphrase(passwordString)
-      : '';
-    try {
-      const transaction: Transaction = await redeemPaperVendedAda(this.config, {
-        ...request,
-        spendingPassword,
-      });
-      Logger.debug('AdaApi::redeemAdaPaperVend success', { transaction });
-      return _createTransactionFromServerData(transaction);
-    } catch (error) {
-      Logger.error('AdaApi::redeemAdaPaperVend error', { error });
-      if (error.message === 'CannotCreateAddress') {
-        throw new IncorrectSpendingPasswordError();
-      }
-      throw new RedeemAdaError();
     }
   };
 
@@ -1121,7 +1059,13 @@ const _createWalletFromServerData = action(
 
 const _createAddressFromServerData = action(
   'AdaApi::_createAddressFromServerData',
-  (address: Address) => new WalletAddress(address)
+  (address: Address) => {
+    const { id, state } = address;
+    return new WalletAddress({
+      id,
+      used: state === 'used',
+    });
+  }
 );
 
 const _conditionToTxState = (condition: string) => {

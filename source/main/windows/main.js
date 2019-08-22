@@ -5,11 +5,18 @@ import { environment } from '../environment';
 import ipcApi from '../ipc';
 import RendererErrorHandler from '../utils/rendererErrorHandler';
 import { getTranslation } from '../utils/getTranslation';
+import { getContentMinimumSize } from '../utils/getContentMinimumSize';
 import { launcherConfig } from '../config';
 
 const rendererErrorHandler = new RendererErrorHandler();
 
-const { isDev, isTest, buildLabel, isLinux, isInSafeMode } = environment;
+const {
+  isDev,
+  isTest,
+  buildLabel,
+  isLinux,
+  isBlankScreenFixActive,
+} = environment;
 
 const id = 'window';
 
@@ -17,7 +24,8 @@ const getWindowTitle = (locale: string): string => {
   const translations = require(`../locales/${locale}`);
   const translation = getTranslation(translations, id);
   let title = buildLabel;
-  if (isInSafeMode) title += ` ${translation('title.gpuSafeMode')}`;
+  if (isBlankScreenFixActive)
+    title += ` ${translation('title.blankScreenFix')}`;
   return title;
 };
 
@@ -44,7 +52,7 @@ export const createMainWindow = (locale: string) => {
       webviewTag: false,
       enableRemoteModule: isTest,
       preload: path.join(__dirname, './preload.js'),
-      additionalArguments: isInSafeMode ? ['--safe-mode'] : [],
+      additionalArguments: isBlankScreenFixActive ? ['--safe-mode'] : [],
     },
   };
 
@@ -57,7 +65,8 @@ export const createMainWindow = (locale: string) => {
 
   rendererErrorHandler.setup(window, createMainWindow);
 
-  window.setMinimumSize(905, 600);
+  const { minWindowsWidth, minWindowsHeight } = getContentMinimumSize(window);
+  window.setMinimumSize(minWindowsWidth, minWindowsHeight);
 
   // Initialize our ipc api methods that can be called by the render processes
   ipcApi({ window });

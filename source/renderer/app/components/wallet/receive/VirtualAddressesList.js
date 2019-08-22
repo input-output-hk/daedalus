@@ -3,13 +3,13 @@ import React, { Component } from 'react';
 import { throttle } from 'lodash';
 import { observer } from 'mobx-react';
 import { AutoSizer, List } from 'react-virtualized';
-import type { Addresses } from '../../../api/addresses/types';
+import WalletAddress from '../../../domains/WalletAddress';
 import styles from './VirtualAddressesList.scss';
 
 /* eslint-disable react/no-unused-prop-types */
 
 type Props = {
-  rows: Addresses,
+  rows: Array<WalletAddress>,
   renderRow: Function,
 };
 

@@ -21,8 +21,8 @@
   }
 
   ol {
-    font-family: var(--font-semibold);
     color: var(--theme-support-settings-item-color);
+    font-family: var(--font-semibold);
     list-style: decimal;
     padding-left: 17px;
   }
@@ -33,27 +33,34 @@
 
   button,
   p,
-  .externalLink {
+  .externalLink,
+  .externalLinkNotWrapped {
     color: var(--theme-support-settings-text-color);
     font-family: var(--font-regular);
     font-size: 16px;
   }
 
   button,
-  .externalLink {
+  .externalLink,
+  .externalLinkNotWrapped {
     @include link(--theme-link-main-color);
   }
 
-  .externalLink {
+  .externalLink,
+  .externalLinkNotWrapped {
     margin-right: 4px;
+  }
+
+  .externalLinkNotWrapped {
+    white-space: nowrap;
   }
 
   button {
     cursor: pointer;
     &:disabled {
       color: var(--rp-button-bg-color-disabled);
-      text-decoration: none;
       cursor: default;
+      text-decoration: none;
     }
   }
 

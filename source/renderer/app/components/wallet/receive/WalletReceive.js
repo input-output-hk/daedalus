@@ -15,10 +15,7 @@ import { submitOnEnter } from '../../../utils/form';
 import BorderedBox from '../../widgets/BorderedBox';
 import TinySwitch from '../../widgets/forms/TinySwitch';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
-import type {
-  Addresses,
-  Address as AddressType,
-} from '../../../api/addresses/types';
+import WalletAddress from '../../../domains/WalletAddress';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { VirtualAddressesList } from './VirtualAddressesList';
@@ -74,7 +71,7 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 type Props = {
   walletAddress: string,
   isWalletAddressUsed: boolean,
-  walletAddresses: Addresses,
+  walletAddresses: Array<WalletAddress>,
   onGenerateAddress: Function,
   onCopyAddress: Function,
   isSidebarExpanded: boolean,
@@ -137,7 +134,7 @@ export default class WalletReceive extends Component<Props, State> {
     }
   );
 
-  renderRow = (address: AddressType, index: number) => (
+  renderRow = (address: WalletAddress, index: number) => (
     <Address
       index={index}
       address={address}
@@ -166,10 +163,11 @@ export default class WalletReceive extends Component<Props, State> {
 
   handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
 
-  getFilteredAddresses = (walletAddresses: Addresses): Addresses =>
+  getFilteredAddresses = (
+    walletAddresses: Array<WalletAddress>
+  ): Array<WalletAddress> =>
     walletAddresses.filter(
-      (address: AddressType) =>
-        !(address.state !== 'used') || this.state.showUsed
+      (address: WalletAddress) => !address.used || this.state.showUsed
     );
 
   render() {
