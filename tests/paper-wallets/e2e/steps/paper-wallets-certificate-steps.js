@@ -1,8 +1,8 @@
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import path from 'path';
-import { fillOutWalletSendForm } from '../../../Wallets/e2e/steps/helpers';
-import { waitUntilTextInSelector } from '../helpers/shared-helpers';
+import { fillOutWalletSendForm } from '../../../wallets/e2e/steps/helpers';
+import { waitUntilTextInSelector } from '../../../common/e2e/steps/helpers';
 
 const paperWalletCertificatePath = path.resolve(
   __dirname,
