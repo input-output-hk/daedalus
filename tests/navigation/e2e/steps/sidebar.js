@@ -1,9 +1,23 @@
+// @flow
 import { Given, When, Then } from 'cucumber';
 import { sidebarHelpers } from './helpers';
+import type { Daedalus } from '../../../types';
+
+declare var daedalus: Daedalus;
+const SELECTORS = {
+  CATEGORY_ACTIVE: 'SidebarCategory_active',
+  CATEGORY_COMPONENT: '.SidebarCategory_component',
+  LAYOUT_COMPONENT: '.SidebarLayout_component',
+  MENU_COMPONENT: '.SidebarMenu_component',
+  MENU_VISIBLE: '.SidebarMenu_visible',
+  SIDEBAR_COMPONENT: '.Sidebar_component',
+  TOP_BAR: '.SidebarLayout_topbar',
+  TOP_BAR_LEFT_ICON: '.TopBar_leftIcon',
+};
 
 Given(/^the sidebar submenu is (hidden|visible)/, async function(state) {
   const isVisible = state === 'visible';
-  await this.client.waitForVisible('.Sidebar_component');
+  await this.client.waitForVisible(SELECTORS.SIDEBAR_COMPONENT);
   await this.client.executeAsync((visible, done) => {
     const { isShowingSubMenus } = daedalus.stores.sidebar;
     let sidebarWillAnimate = false;
@@ -13,7 +27,7 @@ Given(/^the sidebar submenu is (hidden|visible)/, async function(state) {
     }
     if (sidebarWillAnimate) {
       // Wait until the sidebar transition is finished -> otherwise webdriver click error!
-      const sidebarElement = document.querySelectorAll('.Sidebar_component')[0];
+      const sidebarElement = document.querySelectorAll(SELECTORS.SIDEBAR_COMPONENT)[0];
       const onTransitionFinished = () => {
         sidebarElement.removeEventListener(
           'transitioned',
@@ -26,7 +40,7 @@ Given(/^the sidebar submenu is (hidden|visible)/, async function(state) {
       done();
     }
   }, isVisible);
-  return this.client.waitForExist('.SidebarMenu_visible', null, !isVisible);
+  return this.client.waitForExist(SELECTORS.MENU_VISIBLE, null, !isVisible);
 });
 
 Given(/^The sidebar shows the "([^"]*)" category$/, function(category) {
@@ -34,11 +48,11 @@ Given(/^The sidebar shows the "([^"]*)" category$/, function(category) {
 });
 
 When(/^I click on the sidebar toggle button$/, function() {
-  return this.waitAndClick('.SidebarLayout_topbar .TopBar_leftIcon');
+  return this.waitAndClick(`${SELECTORS.TOP_BAR} ${SELECTORS.TOP_BAR_LEFT_ICON}`);
 });
 
 When(/^I click on the "([^"]*)" category in the sidebar$/, function(category) {
-  return this.waitAndClick(`.SidebarCategory_component.${category}`);
+  return this.waitAndClick(`${SELECTORS.CATEGORY_COMPONENT}.${category}`);
 });
 
 When(/^I click on the add wallet button in the sidebar$/, function() {
@@ -54,16 +68,16 @@ When(/^I click on the "([^"]*)" wallet in the sidebar$/, function(walletName) {
 Then(/^the sidebar submenu should be (hidden|visible)/, function(state) {
   const waitForHidden = state === 'hidden';
   return this.client.waitForVisible(
-    '.SidebarMenu_component',
+    SELECTORS.MENU_COMPONENT,
     null,
     waitForHidden
   );
 });
 
 Then(/^The "([^"]*)" category should be active$/, function(category) {
-  return this.client.waitForVisible(`.SidebarCategory_active.${category}`);
+  return this.client.waitForVisible(`${SELECTORS.CATEGORY_ACTIVE}.${category}`);
 });
 
 Then(/^I should see the initial screen$/, function() {
-  return this.client.waitForVisible('.SidebarLayout_component');
+  return this.client.waitForVisible(SELECTORS.LAYOUT_COMPONENT);
 });

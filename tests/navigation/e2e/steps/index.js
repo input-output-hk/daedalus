@@ -1,5 +1,6 @@
+// @flow
 import { Given, Then } from 'cucumber';
-import { navigateTo, waitUntilUrlEquals } from '../helpers/route-helpers';
+import { navigateTo, waitUntilUrlEquals } from './helpers';
 
 Given(/^I am on the General Settings "([^"]*)" screen$/, async function(
   screen
