@@ -3,12 +3,12 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import BigNumber from 'bignumber.js';
 import SVGInline from 'react-svg-inline';
-import { get } from 'lodash';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import linkNewWindowIcon from '../../../assets/images/link-ic-colored.inline.svg';
 import DonutRing from './DonutRing';
 import styles from './DelegationCenterHeader.scss';
+import { with2Decimals } from './helpers';
 
 const messages = defineMessages({
   heading: {
@@ -47,12 +47,6 @@ export default class DelegationCenterHeader extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  with2Decimals = (value: number) => {
-    const formatedValue = value.toString().match(/^-?\d+(?:\.\d{0,2})?/);
-    const result = get(formatedValue, 0, 0);
-    return result;
-  };
-
   render() {
     const { intl } = this.context;
     const { adaValue, percentage } = this.props;
@@ -66,8 +60,7 @@ export default class DelegationCenterHeader extends Component<Props> {
     const descriptionFourthPart = intl.formatMessage(
       messages.descriptionFourthPart
     );
-
-    const percentageWith2Decimals = this.with2Decimals(percentage);
+    const percentageWith2Decimals = with2Decimals(percentage);
 
     return (
       <div className={styles.component}>
