@@ -293,7 +293,7 @@ export default class NetworkStatusStore extends Store {
           this.tlsConfig = null;
         });
         this._setDisconnected(wasConnected);
-        this.stores.nodeUpdate.finishNodeUpdate();
+        this.stores.nodeUpdate.hideUpdateDialog();
         this.stores.app._closeActiveDialog();
         break;
       default:

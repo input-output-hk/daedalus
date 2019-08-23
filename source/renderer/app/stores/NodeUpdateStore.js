@@ -109,12 +109,9 @@ export default class NodeUpdateStore extends Store {
     this.applyUpdateRequest.execute();
   };
 
-  @action finishNodeUpdate = async () => {
+  @action hideUpdateDialog = async () => {
     this.isUpdateInstalled = true;
     this.isUpdateAvailable = false;
-    await rebuildApplicationMenu.send({
-      isUpdateAvailable: this.isUpdateAvailable,
-    });
   };
 
   @action _getLatestAvailableAppVersion = async () => {
