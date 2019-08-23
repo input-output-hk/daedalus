@@ -18,7 +18,7 @@ export const winLinuxMenu = (
   actions: MenuActions,
   translations: {},
   locale: string,
-  isAppUpdateAvailable: ?boolean,
+  isUpdateAvailable: boolean,
   translation: Function = getTranslation(translations, id)
 ) => [
   {
@@ -29,7 +29,7 @@ export const winLinuxMenu = (
         click() {
           actions.openAboutDialog();
         },
-        enabled: !isAppUpdateAvailable,
+        enabled: !isUpdateAvailable,
       },
       {
         label: translation('daedalus.close'),
@@ -170,7 +170,7 @@ export const winLinuxMenu = (
         click() {
           showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
         },
-        enabled: !isAppUpdateAvailable,
+        enabled: !isUpdateAvailable,
       },
       { type: 'separator' },
       {
@@ -179,7 +179,7 @@ export const winLinuxMenu = (
         click() {
           actions.openBlockConsolidationStatusDialog();
         },
-        enabled: !isAppUpdateAvailable,
+        enabled: !isUpdateAvailable,
       },
       {
         label: translation('helpSupport.daedalusDiagnostics'),
@@ -187,7 +187,7 @@ export const winLinuxMenu = (
         click() {
           actions.openDaedalusDiagnosticsDialog();
         },
-        enabled: !isAppUpdateAvailable,
+        enabled: !isUpdateAvailable,
       },
     ]),
   },

@@ -76,7 +76,9 @@ export default class NodeUpdateStore extends Store {
       this.actions.app.closeAboutDialog.trigger();
 
       // Rebuild app menu
-      await rebuildApplicationMenu.send(true);
+      await rebuildApplicationMenu.send({
+        isUpdateAvailable: this.isUpdateAvailable,
+      });
     }
   };
 
@@ -97,7 +99,10 @@ export default class NodeUpdateStore extends Store {
   @action _postponeNodeUpdate = async () => {
     this.postponeUpdateRequest.execute();
     this.isUpdatePostponed = true;
-    await rebuildApplicationMenu.send();
+    this.isUpdateAvailable = false;
+    await rebuildApplicationMenu.send({
+      isUpdateAvailable: this.isUpdateAvailable,
+    });
   };
 
   @action _acceptNodeUpdate = () => {
@@ -153,6 +158,14 @@ export default class NodeUpdateStore extends Store {
       this.getLatestAppVersionRequest.wasExecuted &&
       (this.getLatestAppVersionRequest.result !== null ||
         this.getLatestAppVersionRequest.error !== null)
+    );
+  }
+
+  @computed get showNextUpdate(): boolean {
+    return (
+      this.isUpdateAvailable &&
+      !this.isUpdatePostponed &&
+      !this.isUpdateInstalled
     );
   }
 }

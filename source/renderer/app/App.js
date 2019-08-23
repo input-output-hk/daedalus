@@ -31,18 +31,15 @@ export default class App extends Component<{
   }
   render() {
     const { stores, actions, history } = this.props;
-    const { app, nodeUpdate, networkStatus } = stores;
-    const { isConnected, isSynced } = networkStatus;
+    const { app, nodeUpdate } = stores;
+    const { showNextUpdate } = nodeUpdate;
     const { isActiveDialog } = app;
     const locale = stores.profile.currentLocale;
     const mobxDevTools = global.environment.mobxDevTools ? <DevTools /> : null;
     const { currentTheme } = stores.profile;
     const themeVars = require(`./themes/daedalus/${currentTheme}.js`).default;
     const { ABOUT, BLOCK_CONSOLIDATION, DAEDALUS_DIAGNOSTICS } = DIALOGS;
-    const { isUpdateAvailable, isUpdatePostponed } = nodeUpdate;
 
-    const showAutomaticUpdateDialog =
-      isConnected && isSynced && isUpdateAvailable && !isUpdatePostponed;
     return (
       <Fragment>
         <ThemeManager variables={themeVars} />
@@ -54,7 +51,7 @@ export default class App extends Component<{
               <Fragment>
                 <Router history={history} routes={Routes} />
                 {mobxDevTools}
-                {showAutomaticUpdateDialog ? (
+                {showNextUpdate ? (
                   <AutomaticUpdateNotificationDialog />
                 ) : (
                   [

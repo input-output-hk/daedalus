@@ -14,9 +14,12 @@ export const buildAppMenus = async (
   mainWindow: BrowserWindow,
   cardanoNode: ?CardanoNode,
   locale: string,
-  isAppUpdateAvailable?: boolean
+  data: {
+    isUpdateAvailable: boolean,
+  }
 ) => {
   const { ABOUT, BLOCK_CONSOLIDATION, DAEDALUS_DIAGNOSTICS } = DIALOGS;
+  const { isUpdateAvailable } = data;
 
   const { isMacOS, isBlankScreenFixActive } = environment;
   const translations = require(`../locales/${locale}`);
@@ -94,7 +97,7 @@ export const buildAppMenus = async (
         menuActions,
         translations,
         locale,
-        isAppUpdateAvailable
+        isUpdateAvailable
       )
     );
     Menu.setApplicationMenu(menu);
@@ -106,7 +109,7 @@ export const buildAppMenus = async (
         menuActions,
         translations,
         locale,
-        isAppUpdateAvailable
+        isUpdateAvailable
       )
     );
     mainWindow.setMenu(menu);
