@@ -27,7 +27,7 @@ const DEFAULT_OPTS = {
   ignore: [
     /^\/.buildkite($|\/)/,
     /^\/.storybook($|\/)/,
-    /^\/features($|\/)/,
+    /^\/tests($|\/)/,
     /^\/flow($|\/)/,
     /^\/node_modules($|\/)/,
     /^\/scripts($|\/)/,

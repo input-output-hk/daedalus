@@ -1,4 +1,3 @@
-@unit
 Feature: Mnemonics generation and validation
 
   As a developer I want to be sure our mnemonic

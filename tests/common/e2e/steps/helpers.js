@@ -19,7 +19,7 @@ export const expectTextInSelector = async (
 };
 
 export const generateScreenshotFilePath = (prefix: string) => {
-  const filePath = path.resolve(__dirname, '../screenshots', prefix);
+  const filePath = path.resolve(__dirname, '../../../screenshots', prefix);
   const extension = 'png';
   const fileName = generateFileNameWithTimestamp({ prefix, extension });
   ensureDirectoryExists(filePath);
@@ -27,7 +27,7 @@ export const generateScreenshotFilePath = (prefix: string) => {
 };
 
 export const getTestNameFromTestFile = (testFile: string) =>
-  testFile.replace('features/', '').replace('.feature', '');
+  testFile.replace('tests/', '').replace('.feature', '');
 
 export const getVisibleElementsCountForSelector = async (
   client: WebdriverClient,

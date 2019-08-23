@@ -39,7 +39,7 @@ const printMainProcessLogs = () =>
 
 const defaultWalletKeyFilePath = path.resolve(
   __dirname,
-  '../documents/default-wallet.key'
+  './wallets/e2e/documents/default-wallet.key'
 );
 
 const startApp = async () => {
@@ -53,9 +53,9 @@ const startApp = async () => {
     waitTimeout: DEFAULT_TIMEOUT,
     chromeDriverLogPath: path.join(
       __dirname,
-      '../../../../logs/chrome-driver.log'
+      '../logs/chrome-driver.log'
     ),
-    webdriverLogPath: path.join(__dirname, '../../../../logs/webdriver'),
+    webdriverLogPath: path.join(__dirname, '../logs/webdriver'),
   });
   fakeDialog.apply(app);
   await app.start();
