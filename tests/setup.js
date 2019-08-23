@@ -1,3 +1,4 @@
+// @flow
 import path from 'path';
 import { Application } from 'spectron';
 import {
@@ -9,16 +10,18 @@ import {
 } from 'cucumber';
 import electronPath from 'electron';
 import fakeDialog from 'spectron-fake-dialog';
-import { TEST } from '../../../../source/common/types/environment.types';
 import {
   generateScreenshotFilePath,
   getTestNameFromTestFile,
   saveScreenshot,
-} from '../helpers/screenshot';
-import { refreshClient } from './Status/helpers';
+} from './common/e2e/steps/helpers';
+import { refreshClient } from './nodes/e2e/steps/helpers';
+import { TEST } from '../source/common/types/environment.types';
+import type { Daedalus } from './types';
 
 /* eslint-disable consistent-return */
 
+declare var daedalus: Daedalus;
 const context = {};
 const DEFAULT_TIMEOUT = 20000;
 let scenariosCount = 0;
