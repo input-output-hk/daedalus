@@ -12,12 +12,17 @@ defineParameterType({
 });
 
 export type Daedalus = {
+  actions: ActionsMap,
   api: Api,
   environment: Object,
-  actions: ActionsMap,
+  reset: Function,
   stores: StoresMap,
   translations: Object,
-  reset: Function,
+  utils: {
+    crypto: {
+      generateMnemonic: Function
+    }
+  },
 };
 
 export type WebdriverExecuteResult<T> = { value: T };
