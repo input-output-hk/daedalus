@@ -1,12 +1,18 @@
-import type { WebdriverClient } from '../../../types';
+// @flow
+import type { Daedalus, WebdriverClient } from '../../../types';
 
 const DATA_LAYER_MIGRATION_ACCEPTANCE_COMPONENT = '.DataLayerMigrationForm_component';
 const DEFAULT_LANGUAGE = 'en-US';
 const LANGUAGE_SELECTION_FORM = '.LanguageSelectionForm_component';
 const TERMS_OF_USE_FORM = '.TermsOfUseForm_component';
 
+declare var daedalus: Daedalus;
+
 export const i18nHelpers = {
-  formatMessage: async (client, { id, values }) => {
+  formatMessage: async (
+    client: WebdriverClient,
+    { id, values }: { id: string, values?: Object }
+  ) => {
     const translation = await client.execute(
       (translationId, translationValues) => {
         const IntlProvider = require('react-intl').IntlProvider; // eslint-disable-line
@@ -25,16 +31,25 @@ export const i18nHelpers = {
     );
     return translation.value;
   },
-  setActiveLanguage: async (client, { language } = {}) =>
+  setActiveLanguage: async (
+    client: WebdriverClient,
+    { language }: { language: string } = {}
+  ) =>
     client.execute(locale => {
       daedalus.actions.profile.updateLocale.trigger({ locale });
     }, language || DEFAULT_LANGUAGE),
 };
 
 export const languageSelectionHelpers = {
-  waitForVisible: async (client, { isHidden } = {}) =>
+  waitForVisible: async (
+    client: WebdriverClient,
+    { isHidden }: { isHidden: boolean } = {}
+  ) =>
     client.waitForVisible(LANGUAGE_SELECTION_FORM, null, isHidden),
-  ensureLanguageIsSelected: async (client, { language } = {}) => {
+  ensureLanguageIsSelected: async (
+    client: WebdriverClient,
+    { language }: { language: string } = {}
+  ) => {
     await languageSelectionHelpers.waitForVisible(client);
     await i18nHelpers.setActiveLanguage(client, { language });
     await languageSelectionHelpers.waitForVisible(client, { isHidden: true });
@@ -60,9 +75,12 @@ export const migrationHelpers = {
 };
 
 export const termsOfUseHelpers = {
-  waitForVisible: async (client, { isHidden } = {}) =>
+  waitForVisible: async (
+    client: WebdriverClient,
+    { isHidden } : { isHidden: boolean } = {}
+  ) =>
     client.waitForVisible(TERMS_OF_USE_FORM, null, isHidden),
-  acceptTerms: async client => {
+  acceptTerms: async (client: WebdriverClient) => {
     await termsOfUseHelpers.waitForVisible(client);
     await client.execute(() => {
       daedalus.actions.profile.acceptTermsOfUse.trigger();
