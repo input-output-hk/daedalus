@@ -1,8 +1,12 @@
+// @flow
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import path from 'path';
 import { fillOutWalletSendForm } from '../../../wallets/e2e/steps/helpers';
 import { waitUntilTextInSelector } from '../../../common/e2e/steps/helpers';
+import type { Daedalus } from '../../../types';
+
+declare var daedalus: Daedalus;
 
 const paperWalletCertificatePath = path.resolve(
   __dirname,
