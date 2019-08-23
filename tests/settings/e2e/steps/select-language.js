@@ -1,7 +1,10 @@
+// @flow
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { languageSelectionHelpers } from './helpers';
+import type { Daedalus } from '../../../types';
 
+declare var daedalus: Daedalus;
 const { ensureLanguageIsSelected } = languageSelectionHelpers;
 const LANGUAGE_SELECTION_FORM = '.LanguageSelectionForm_component';
 
