@@ -105,8 +105,16 @@ export default class NodeUpdateStore extends Store {
     });
   };
 
-  @action _acceptNodeUpdate = () => {
+  @action _acceptNodeUpdate = async () => {
     this.applyUpdateRequest.execute();
+  };
+
+  @action finishNodeUpdate = async () => {
+    this.isUpdateInstalled = true;
+    this.isUpdateAvailable = false;
+    await rebuildApplicationMenu.send({
+      isUpdateAvailable: this.isUpdateAvailable,
+    });
   };
 
   @action _getLatestAvailableAppVersion = async () => {
