@@ -1,3 +1,4 @@
+// @flow
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { pickBy, identity } from 'lodash';
@@ -8,9 +9,14 @@ import {
 
 const getDataFromFunction = props => {
   const filename = generateFileNameWithTimestamp(props);
-  const prefix = filename.match(/^[^-]*[^ -]/i)[0];
-  const extension = filename.match(/\.[0-9a-z]+$/i)[0].replace('.', '');
-  const isUTC = !!filename.match(`Z.${extension}`);
+  let prefix = filename.match(/^[^-]*[^ -]/i);
+  let extension = filename.match(/\.[0-9a-z]+$/i);
+  let isUTC = false;
+
+  if (prefix) { prefix = prefix[0]; }
+  if (extension) { extension = extension[0].replace('.', ''); }
+  if (extension) { isUTC = !!filename.match(`Z.${extension}`); }
+
   return {
     filename,
     prefix,
