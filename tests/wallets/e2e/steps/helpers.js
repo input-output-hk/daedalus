@@ -1,5 +1,6 @@
 // @flow
 import { expectTextInSelector, waitAndClick } from '../../../common/e2e/steps/helpers';
+import Wallet from '../../../../source/renderer/app/domains/Wallet';
 import { WalletSyncStateTags } from '../../../../source/renderer/app/domains/Wallet';
 import type { Daedalus, WebdriverClient } from '../../../types';
 
@@ -9,7 +10,7 @@ const ADD_WALLET = '.WalletAdd';
 const IMPORT_WALLET_BUTTON = '.importWalletButton';
 const IMPORT_WALLET_DIALOG = '.WalletFileImportDialog';
 
-export const addOrSetWalletsForScenario = function(wallet) {
+export const addOrSetWalletsForScenario = function(wallet: Wallet) {
   this.wallet = wallet;
   if (this.wallets != null) {
     this.wallets.push(this.wallet);
@@ -19,9 +20,12 @@ export const addOrSetWalletsForScenario = function(wallet) {
 };
 
 export const addWalletHelpers = {
-  waitForVisible: (client, { isHidden } = {}) =>
+  waitForVisible: (
+    client: WebdriverClient,
+    { isHidden } : { isHidden: boolean } = {}
+  ) =>
     client.waitForVisible(ADD_WALLET, null, isHidden),
-  clickImportButton: client =>
+  clickImportButton: (client: WebdriverClient) =>
     waitAndClick(client, `${ADD_WALLET} ${IMPORT_WALLET_BUTTON}`),
 };
 
@@ -57,7 +61,11 @@ const createWalletsAsync = async (table, context) => {
   }
 };
 
-export const createWallets = async (wallets, context, options = {}) => {
+export const createWallets = async (
+  wallets: Array<Wallet>,
+  context: Object,
+  options: Object = {}
+) => {
   if (options.sequentially === true) {
     await createWalletsSequentially(wallets, context);
   } else {
@@ -92,7 +100,7 @@ const createWalletsSequentially = async (wallets, context) => {
   }
 };
 
-export const fillOutWalletSendForm = async function(values) {
+export const fillOutWalletSendForm = async function(values: Object) {
   const formSelector = '.WalletSendForm_component';
   await this.client.setValue(
     `${formSelector} .receiver .SimpleInput_input`,
@@ -118,16 +126,24 @@ export const getNameOfActiveWalletInSidebar = async function() {
   );
 };
 
-export const getWalletByName = function(walletName) {
+export const getWalletByName = function(walletName: string) {
   return this.wallets.find(w => w.name === walletName);
 };
 
 export const importWalletHelpers = {
-  waitForDialog: (client, { isHidden } = {}) =>
+  waitForDialog: (
+    client: WebdriverClient,
+    { isHidden } : { isHidden: boolean } = {}
+  ) =>
     client.waitForVisible(IMPORT_WALLET_DIALOG, null, isHidden),
-  clickImport: client =>
+  clickImport: (
+    client: WebdriverClient
+  ) =>
     waitAndClick(client, `${IMPORT_WALLET_DIALOG} .primary`),
-  expectError: (client, { error }) =>
+  expectError: (
+    client: WebdriverClient,
+    { error }: { error: string }
+  ) =>
     expectTextInSelector(client, {
       selector: `${IMPORT_WALLET_DIALOG}_error`,
       text: error,
