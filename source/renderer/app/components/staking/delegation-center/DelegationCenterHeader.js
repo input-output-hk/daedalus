@@ -8,6 +8,7 @@ import { SIMPLE_DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import linkNewWindowIcon from '../../../assets/images/link-ic-colored.inline.svg';
 import DonutRing from './DonutRing';
 import styles from './DelegationCenterHeader.scss';
+import { with2Decimals } from './helpers';
 
 const messages = defineMessages({
   heading: {
@@ -59,12 +60,17 @@ export default class DelegationCenterHeader extends Component<Props> {
     const descriptionFourthPart = intl.formatMessage(
       messages.descriptionFourthPart
     );
+    const percentageWith2Decimals = with2Decimals(percentage);
 
     return (
       <div className={styles.component}>
         <div className={styles.mainContent}>
           <div className={styles.progressRing}>
-            <DonutRing percentage={percentage} sqSize={44} strokeWidth={8} />
+            <DonutRing
+              percentage={percentageWith2Decimals}
+              sqSize={44}
+              strokeWidth={8}
+            />
           </div>
           <div className={styles.heading}>{heading}</div>
           <div className={styles.description}>
@@ -73,7 +79,7 @@ export default class DelegationCenterHeader extends Component<Props> {
                 {...messages.descriptionFirstPart}
                 values={{
                   adaValue: adaValue.toFormat(SIMPLE_DECIMAL_PLACES_IN_ADA),
-                  percentage,
+                  percentage: parseFloat(percentageWith2Decimals).toFixed(2),
                 }}
               />
             </p>
