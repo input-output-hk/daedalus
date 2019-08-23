@@ -4,6 +4,9 @@ import { expect } from 'chai';
 import { createWallets, getWalletByName } from './helpers';
 import { MAX_ADA_WALLETS_COUNT } from '../../../../source/renderer/app/config/numbersConfig';
 import { sidebarHelpers } from '../../../navigation/e2e/steps/helpers';
+import type { Daedalus } from '../../../types';
+
+declare var daedalus: Daedalus;
 
 Given(
   'I create wallets until I reach the maximum number permitted',

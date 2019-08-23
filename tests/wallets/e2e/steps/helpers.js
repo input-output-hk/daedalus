@@ -1,6 +1,5 @@
 // @flow
 import { expectTextInSelector, waitAndClick } from '../../../common/e2e/steps/helpers';
-import Wallet from '../../../../source/renderer/app/domains/Wallet';
 import { WalletSyncStateTags } from '../../../../source/renderer/app/domains/Wallet';
 import type { Daedalus, WebdriverClient } from '../../../types';
 
@@ -10,7 +9,7 @@ const ADD_WALLET = '.WalletAdd';
 const IMPORT_WALLET_BUTTON = '.importWalletButton';
 const IMPORT_WALLET_DIALOG = '.WalletFileImportDialog';
 
-export const addOrSetWalletsForScenario = function(wallet: Wallet) {
+export const addOrSetWalletsForScenario = function(wallet: Object) {
   this.wallet = wallet;
   if (this.wallets != null) {
     this.wallets.push(this.wallet);
@@ -62,7 +61,7 @@ const createWalletsAsync = async (table, context) => {
 };
 
 export const createWallets = async (
-  wallets: Array<Wallet>,
+  wallets: Array<{}>,
   context: Object,
   options: Object = {}
 ) => {
@@ -152,7 +151,7 @@ export const importWalletHelpers = {
 
 export const importWalletWithFunds = async (
   client: WebdriverClient,
-  { keyFilePath, password }: { keyFilePath: string, password: string }
+  { keyFilePath, password }: { keyFilePath: string, password: ?string }
 ) =>
   client.executeAsync(
     (filePath, spendingPassword, done) => {

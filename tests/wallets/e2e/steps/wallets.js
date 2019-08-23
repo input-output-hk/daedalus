@@ -55,7 +55,6 @@ Given(/^I have a "Imported Wallet" with funds and password$/, async function() {
     daedalus.api.ada
       .updateSpendingPassword({
         walletId,
-        oldPassword: null,
         newPassword: 'Secret123',
       })
       .then(() =>
@@ -103,13 +102,6 @@ Given(/^I see the restore wallet dialog$/, function() {
 
 Given(/^I dont see the create wallet dialog(?: anymore)?$/, function() {
   return this.client.waitForVisible('.WalletCreateDialog', null, true);
-});
-
-Given(/^the active wallet is "([^"]*)"$/, function(walletName) {
-  const wallet = getWalletByName.call(this, walletName);
-  this.client.execute(walletId => {
-    daedalus.actions.setActiveWallet.trigger({ walletId });
-  }, wallet.id);
 });
 
 When(/^I click on the create wallet button on the add wallet page/, function() {
