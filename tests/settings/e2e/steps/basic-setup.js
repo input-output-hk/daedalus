@@ -1,3 +1,4 @@
+// @flow
 import { Given } from 'cucumber';
 import { languageSelectionHelpers, migrationHelpers, termsOfUseHelpers } from './helpers';
 
