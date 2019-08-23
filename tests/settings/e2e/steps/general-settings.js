@@ -1,3 +1,4 @@
+// @flow
 import { When, Then } from 'cucumber';
 import { camelCase } from 'lodash';
 
