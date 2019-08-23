@@ -50,7 +50,7 @@ const pageNames = {
 const WALLETS = [
   {
     id: '1',
-    value: '1.0001 ADA',
+    value: '1 ADA',
     label: 'First Wallet',
     isAcceptableSetupWallet: true,
     hasPassword: true,
