@@ -1,6 +1,10 @@
+// @flow
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { termsOfUseHelpers } from './helpers';
+import type { Daedalus } from '../../../types';
+
+declare var daedalus: Daedalus;
 
 const TERMS_OF_USE_FORM = '.TermsOfUseForm_component';
 const { acceptTerms } = termsOfUseHelpers;
