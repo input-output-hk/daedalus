@@ -35,8 +35,18 @@ export default class LoadingPage extends Component<InjectedProps> {
 
   get isManualUpdate() {
     const { isNodeStopping, isNodeStopped } = this.networkStatus;
-    const { isNewAppVersionAvailable } = this.props.stores.nodeUpdate;
-    return isNewAppVersionAvailable && !isNodeStopping && !isNodeStopped;
+    const {
+      isNewAppVersionAvailable,
+      isUpdatePostponed,
+      isUpdateAvailable,
+    } = this.props.stores.nodeUpdate;
+    return (
+      isNewAppVersionAvailable &&
+      !isNodeStopping &&
+      !isNodeStopped &&
+      !isUpdatePostponed &&
+      !isUpdateAvailable
+    );
   }
 
   get networkStatus() {
