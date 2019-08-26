@@ -16,6 +16,18 @@
 
   .disconnectedIcon {
     width: 100%;
+
+    svg > g {
+      & > path:last-child {
+        fill: var(--theme-network-window-text-color);
+      }
+
+      circle,
+      g,
+      path {
+        stroke: var(--theme-network-window-text-color);
+      }
+    }
   }
 }
 
