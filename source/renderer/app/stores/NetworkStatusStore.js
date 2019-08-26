@@ -17,7 +17,7 @@ import {
   UNSYNCED_BLOCKS_ALLOWED,
   MAX_NTP_RECHECKS,
 } from '../config/numbersConfig';
-import { externalRequestForRawBody } from '../api/utils/externalRequest';
+import { externalRequest } from '../api/utils/externalRequest';
 import { Logger } from '../utils/logging';
 import {
   cardanoStateChangeChannel,
@@ -337,12 +337,15 @@ export default class NetworkStatusStore extends Store {
 
   @action updateInternetConnectionStatus = async () => {
     try {
-      await externalRequestForRawBody({
-        hostname: INTERNET_PING_HOSTNAME,
-        path: `/?_t=${parseInt(Math.random() * 10000, 10)}`,
-        method: 'GET',
-        protocol: 'https',
-      });
+      await externalRequest(
+        {
+          hostname: INTERNET_PING_HOSTNAME,
+          path: `/?_t=${parseInt(Math.random() * 10000, 10)}`,
+          method: 'GET',
+          protocol: 'https',
+        },
+        true
+      );
       runInAction('update isInternetConnected', () => {
         this.isInternetConnected = true;
       });

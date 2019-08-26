@@ -14,8 +14,9 @@ export type HttpOptions = {
   },
 };
 
-export const externalRequestForRawBody = (
-  httpOptions: HttpOptions
+export const externalRequest = (
+  httpOptions: HttpOptions,
+  expectRawBody?: boolean
 ): Promise<any> =>
   new Promise((resolve, reject) => {
     if (!ALLOWED_EXTERNAL_HOSTNAMES.includes(httpOptions.hostname)) {
@@ -33,23 +34,20 @@ export const externalRequestForRawBody = (
         body += chunk;
       });
       response.on('error', error => reject(error));
-      response.on('end', () => resolve(body));
+      response.on('end', () => {
+        if (expectRawBody) {
+          return resolve(body);
+        }
+
+        try {
+          const parsedBody = JSON.parse(body);
+          return resolve(parsedBody);
+        } catch (error) {
+          // Handle internal server errors (e.g. HTTP 500 - 'Something went wrong')
+          return reject(new Error(error));
+        }
+      });
     });
     request.on('error', error => reject(error));
     return request.end();
-  });
-
-export const externalRequest = (httpOptions: HttpOptions): Promise<any> =>
-  new Promise((resolve, reject) => {
-    externalRequestForRawBody(httpOptions)
-      .then(response => {
-        try {
-          const parsedBody = JSON.parse(response);
-          resolve(parsedBody);
-        } catch (error) {
-          // Handle internal server errors (e.g. HTTP 500 - 'Something went wrong')
-          reject(new Error(error));
-        }
-      })
-      .catch(error => reject(error));
   });
