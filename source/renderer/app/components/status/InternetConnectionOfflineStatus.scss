@@ -2,7 +2,7 @@
 
 .component {
   align-items: center;
-  background: var(--theme-network-window-background-color);
+  background: var(--theme-internet-offline-window-background-color);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -19,20 +19,20 @@
 
     svg > g {
       & > path:last-child {
-        fill: var(--theme-network-window-text-color);
+        fill: var(--theme-internet-offline-window-text-color);
       }
 
       circle,
       g,
       path {
-        stroke: var(--theme-network-window-text-color);
+        stroke: var(--theme-internet-offline-window-text-color);
       }
     }
   }
 }
 
 .disconnectedTitle {
-  color: var(--theme-network-window-text-color);
+  color: var(--theme-internet-offline-window-text-color);
   font-family: var(--font-regular);
   font-size: 20px;
   line-height: 1.2;
@@ -40,7 +40,7 @@
 }
 
 .disconnectedDescription {
-  color: var(--theme-network-window-description-color);
+  color: var(--theme-internet-offline-window-description-color);
   font-family: var(--font-regular);
   font-size: 16px;
   line-height: 1.38;
@@ -52,32 +52,32 @@
 
   .checkAgainButton {
     background-color: var(
-      --theme-network-window-primary-button-background-color
+      --theme-internet-offline-window-button-background-color
     );
-    border: 1px solid var(--theme-network-window-primary-button-border-color);
+    border: 1px solid var(--theme-internet-offline-window-button-border-color);
     border-radius: 5px;
-    color: var(--theme-network-window-primary-button-text-color);
+    color: var(--theme-internet-offline-window-button-text-color);
     height: 50px;
     width: 360px;
 
     &:not(.disabled):hover {
       background-color: var(
-        --theme-network-window-primary-button-background-color-hover
+        --theme-internet-offline-window-button-background-color-hover
       );
       border-color: var(
-        --theme-network-window-primary-button-border-color-hover
+        --theme-internet-offline-window-button-border-color-hover
       );
-      color: var(--theme-network-window-primary-button-text-color-hover);
+      color: var(--theme-internet-offline-window-button-text-color-hover);
     }
 
     &:not(.disabled):active {
       background-color: var(
-        --theme-network-window-primary-button-background-color-active
+        --theme-internet-offline-window-button-background-color-active
       );
       border-color: var(
-        --theme-network-window-primary-button-border-color-hover
+        --theme-internet-offline-window-button-border-color-hover
       );
-      color: var(--theme-network-window-primary-button-text-color-hover);
+      color: var(--theme-internet-offline-window-button-text-color-hover);
     }
   }
 }

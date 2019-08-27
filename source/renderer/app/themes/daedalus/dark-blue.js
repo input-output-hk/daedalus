@@ -324,21 +324,27 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-network-window-transparent-color': 'transparent',
     '--theme-network-window-border-color': 'rgba(255, 255, 255, 0.25)',
     '--theme-network-window-button-text-color': '#282c31',
-    '--theme-network-window-description-color': 'rgba(250, 251, 252, 0.7)',
     '--theme-network-window-button-background-color':
       'rgba(250, 251, 252, 0.4)',
     '--theme-network-window-button-background-color-hover':
       'rgba(250, 251, 252, 0.6)',
     '--theme-network-window-button-background-color-active':
       'rgba(250, 251, 252, 0.8)',
-    '--theme-network-window-primary-button-background-color':
+  },
+  internet: {
+    '--theme-internet-offline-window-background-color':
+      'rgba(38, 51, 69, 0.96)',
+    '--theme-internet-offline-window-text-color': '#fafbfc',
+    '--theme-internet-offline-window-description-color':
+      'rgba(250, 251, 252, 0.7)',
+    '--theme-internet-offline-window-button-background-color':
       'rgba(0, 0, 0, 0.1)',
-    '--theme-network-window-primary-button-background-color-active': '#e9e9ea',
-    '--theme-network-window-primary-button-background-color-hover': '#fafbfc',
-    '--theme-network-window-primary-button-text-color': '#fafbfc',
-    '--theme-network-window-primary-button-text-color-hover': '#263345',
-    '--theme-network-window-primary-button-border-color': '#fafbfc',
-    '--theme-network-window-primary-button-border-color-hover': 'transparent',
+    '--theme-internet-offline-window-button-background-color-active': '#e9e9ea',
+    '--theme-internet-offline-window-button-background-color-hover': '#fafbfc',
+    '--theme-internet-offline-window-button-text-color': '#fafbfc',
+    '--theme-internet-offline-window-button-text-color-hover': '#263345',
+    '--theme-internet-offline-window-button-border-color': '#fafbfc',
+    '--theme-internet-offline-window-button-border-color-hover': 'transparent',
   },
   nodeUpdate: {
     '--theme-node-update-background-color': '#536370',
