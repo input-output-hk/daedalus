@@ -28,13 +28,14 @@ export const generateHash = () => {
 export const generateWallet = (name: string, amount: string) =>
   new Wallet({
     id: generateHash(),
+    addressPoolGap: 20,
     amount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
     name,
-    assurance: 'normal',
     hasPassword: false,
     passwordUpdateDate: new Date(),
-    syncState: { data: null, tag: 'synced' },
+    syncState: { status: 'ready' },
     isLegacy: false,
+    isDelegated: false,
   });
 
 export const generateTransaction = (

@@ -1,12 +1,11 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
-import type { AdaWallet, WalletAssuranceLevel } from '../types';
+import type { AdaWallet } from '../types';
 import { request } from '../../utils/request';
 
 export type WalletInitData = {
   operation: 'create' | 'restore',
   backupPhrase: [string],
-  assuranceLevel: WalletAssuranceLevel,
   name: string,
   spendingPassword?: string,
 };

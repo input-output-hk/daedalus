@@ -6,7 +6,6 @@ import moment from 'moment';
 
 // Screens
 import WalletSettings from '../../source/renderer/app/components/wallet/settings/WalletSettings';
-import { WalletAssuranceModeOptions } from '../../source/renderer/app/domains/Wallet';
 import ChangeSpendingPasswordDialog from '../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
 import DeleteWalletConfirmationDialog from '../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
 import ExportWalletToFileDialog from '../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
@@ -16,24 +15,6 @@ import ExportWalletToFileDialog from '../../source/renderer/app/components/walle
 export default () => (
   <WalletSettings
     activeField={null}
-    assuranceLevels={[
-      {
-        value: WalletAssuranceModeOptions.NORMAL,
-        label: {
-          id: 'global.assuranceLevel.normal',
-          defaultMessage: '!!!Normal',
-          description: '',
-        },
-      },
-      {
-        value: WalletAssuranceModeOptions.STRICT,
-        label: {
-          id: 'global.assuranceLevel.strict',
-          defaultMessage: '!!!Strict',
-          description: '',
-        },
-      },
-    ]}
     isDialogOpen={dialog => {
       if (dialog === ChangeSpendingPasswordDialog) {
         return boolean('Change Password - Show dialog', false);
@@ -56,7 +37,6 @@ export default () => (
     onStartEditing={() => {}}
     onStopEditing={() => {}}
     openDialogAction={() => {}}
-    walletAssurance={WalletAssuranceModeOptions.NORMAL}
     walletName={text('Wallet Name', 'Wallet Name')}
     spendingPasswordUpdateDate={moment()
       .subtract(1, 'month')

@@ -3,7 +3,7 @@ import { action, computed, observable } from 'mobx';
 import { get } from 'lodash';
 import Store from './lib/Store';
 import { sidebarConfig } from '../config/sidebarConfig';
-import { WalletSyncStateTags } from '../domains/Wallet';
+import { WalletSyncStateStatuses } from '../domains/Wallet';
 import { formattedWalletAmount } from '../utils/formatters';
 import type { SidebarWalletType } from '../types/sidebarTypes';
 
@@ -34,8 +34,8 @@ export default class SidebarStore extends Store {
       info: formattedWalletAmount(w.amount),
       isConnected: networkStatus.isConnected,
       isRestoreActive:
-        get(w, 'syncState.tag') === WalletSyncStateTags.RESTORING,
-      restoreProgress: get(w, 'syncState.data.percentage.quantity', 0),
+        get(w, 'syncState.status') === WalletSyncStateStatuses.RESTORING,
+      restoreProgress: get(w, 'syncState.progress.quantity', 0),
       isLegacy: w.isLegacy,
     }));
   }

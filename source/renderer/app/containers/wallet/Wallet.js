@@ -8,7 +8,7 @@ import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import RestoreNotification from '../../components/notifications/RestoreNotification';
 import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
-import { WalletSyncStateTags } from '../../domains/Wallet';
+import { WalletSyncStateStatuses } from '../../domains/Wallet';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import type { NavDropdownProps } from '../../components/navigation/Navigation';
 
@@ -61,15 +61,16 @@ export default class Wallet extends Component<Props> {
       );
 
     const isRestoreActive =
-      get(wallets.active, 'syncState.tag') === WalletSyncStateTags.RESTORING;
+      get(wallets.active, 'syncState.status') ===
+      WalletSyncStateStatuses.RESTORING;
     const restoreProgress = get(
       wallets.active,
-      'syncState.data.percentage.quantity',
+      'syncState.progress.quantity',
       0
     );
     const restoreETA = get(
       wallets.active,
-      'syncState.data.estimatedCompletionTime.quantity',
+      'syncState.data.estimatedCompletionTime.quantity', // @API TODO
       0
     );
 

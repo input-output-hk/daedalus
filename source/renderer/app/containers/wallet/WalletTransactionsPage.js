@@ -9,7 +9,7 @@ import WalletNoTransactions from '../../components/wallet/transactions/WalletNoT
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
-import { WalletSyncStateTags } from '../../domains/Wallet';
+import { WalletSyncStateStatuses } from '../../domains/Wallet';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -73,7 +73,8 @@ export default class WalletTransactionsPage extends Component<Props> {
       searchLimit !== null && totalAvailable > searchLimit;
 
     const isRestoreActive =
-      get(activeWallet, 'syncState.tag') === WalletSyncStateTags.RESTORING;
+      get(activeWallet, ['syncState', 'status']) ===
+      WalletSyncStateStatuses.RESTORING;
 
     // if (wasSearched || hasAny) {
     //   transactionSearch = (
@@ -98,7 +99,6 @@ export default class WalletTransactionsPage extends Component<Props> {
           isRestoreActive={isRestoreActive}
           hasMoreToLoad={hasMoreToLoad()}
           onLoadMore={actions.transactions.loadMoreTransactions.trigger}
-          assuranceMode={activeWallet.assuranceMode}
           walletId={activeWallet.id}
           formattedWalletAmount={formattedWalletAmount}
           onOpenExternalLink={openExternalLink}

@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
@@ -12,7 +12,6 @@ import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import {
   transactionStates,
   transactionTypes,
-  TxnAssuranceLevelOptions,
   WalletTransaction,
 } from '../../../domains/WalletTransaction';
 import globalMessages from '../../../i18n/global-messages';
@@ -38,11 +37,12 @@ const messages = defineMessages({
     description:
       'Transaction type shown for money exchanges between currencies.',
   },
-  assuranceLevel: {
-    id: 'wallet.transaction.assuranceLevel',
-    defaultMessage: '!!!Transaction assurance level',
-    description: 'Transaction assurance level.',
-  },
+  // @API TODO - wallet has no assurance
+  // assuranceLevel: {
+  //   id: 'wallet.transaction.assuranceLevel',
+  //   defaultMessage: '!!!Transaction assurance level',
+  //   description: 'Transaction assurance level.',
+  // },
   confirmations: {
     id: 'wallet.transaction.confirmations',
     defaultMessage:
@@ -96,23 +96,24 @@ const messages = defineMessages({
   },
 });
 
-const assuranceLevelTranslations = defineMessages({
-  [TxnAssuranceLevelOptions.LOW]: {
-    id: 'wallet.transaction.assuranceLevel.low',
-    defaultMessage: '!!!low',
-    description: 'Transaction assurance level "low".',
-  },
-  [TxnAssuranceLevelOptions.MEDIUM]: {
-    id: 'wallet.transaction.assuranceLevel.medium',
-    defaultMessage: '!!!medium',
-    description: 'Transaction assurance level "medium".',
-  },
-  [TxnAssuranceLevelOptions.HIGH]: {
-    id: 'wallet.transaction.assuranceLevel.high',
-    defaultMessage: '!!!high',
-    description: 'Transaction assurance level "high".',
-  },
-});
+// @API TODO - wallet has no assurance
+// const assuranceLevelTranslations = defineMessages({
+//   [TxnAssuranceLevelOptions.LOW]: {
+//     id: 'wallet.transaction.assuranceLevel.low',
+//     defaultMessage: '!!!low',
+//     description: 'Transaction assurance level "low".',
+//   },
+//   [TxnAssuranceLevelOptions.MEDIUM]: {
+//     id: 'wallet.transaction.assuranceLevel.medium',
+//     defaultMessage: '!!!medium',
+//     description: 'Transaction assurance level "medium".',
+//   },
+//   [TxnAssuranceLevelOptions.HIGH]: {
+//     id: 'wallet.transaction.assuranceLevel.high',
+//     defaultMessage: '!!!high',
+//     description: 'Transaction assurance level "high".',
+//   },
+// });
 
 const stateTranslations = defineMessages({
   [transactionStates.PENDING]: {
@@ -130,7 +131,7 @@ const stateTranslations = defineMessages({
 type Props = {
   data: WalletTransaction,
   state: TransactionState,
-  assuranceLevel: string,
+  // assuranceLevel: string,
   isExpanded: boolean,
   isRestoreActive: boolean,
   isLastInList: boolean,
@@ -164,7 +165,7 @@ export default class Transaction extends Component<Props> {
       data,
       isLastInList,
       state,
-      assuranceLevel,
+      // assuranceLevel,
       formattedWalletAmount,
       onOpenExternalLink,
       isRestoreActive,
@@ -203,27 +204,35 @@ export default class Transaction extends Component<Props> {
       isExpanded ? styles.detailsExpanded : styles.detailsClosed,
     ]);
 
-    const assuranceLevelRowStyles = classNames([
-      styles.row,
-      styles.retainHeight,
-    ]);
+    // @API TODO - wallet has no assurance
+    // const assuranceLevelRowStyles = classNames([
+    // styles.row,
+    // styles.retainHeight,
+    // ]);
 
     const arrowStyles = classNames([
       styles.arrow,
       isExpanded ? styles.arrowExpanded : null,
     ]);
 
-    const status = intl.formatMessage(
-      assuranceLevelTranslations[assuranceLevel]
-    );
+    // @API TODO - wallet has no assurance
+    // const status = intl.formatMessage(
+    //   assuranceLevelTranslations[assuranceLevel]
+    // );
     const currency = intl.formatMessage(globalMessages.currency);
     const symbol = adaSymbol;
 
     const transactionStateTag = () => {
       if (isRestoreActive) return;
-      return transactionState === transactionStates.OK ? (
-        <div className={styles[assuranceLevel]}>{status}</div>
-      ) : (
+      // @API TODO - wallet has no assurance
+      // return transactionState === transactionStates.OK ? (
+      //   <div className={styles[assuranceLevel]}>{status}</div>
+      // ) : (
+      //   <div className={styles[`${transactionState}Label`]}>
+      //     {intl.formatMessage(stateTranslations[transactionState])}
+      //   </div>
+      // );
+      return (
         <div className={styles[`${transactionState}Label`]}>
           {intl.formatMessage(stateTranslations[transactionState])}
         </div>
@@ -323,26 +332,29 @@ export default class Transaction extends Component<Props> {
                 </div>
               ))}
 
-              <div className={assuranceLevelRowStyles}>
-                <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
-                {!isRestoreActive &&
-                (transactionState === transactionStates.OK ||
-                  transactionState === transactionStates.PENDING) ? (
-                  <span>
-                    {transactionState === transactionStates.OK && (
-                      <span className={styles.assuranceLevel}>
-                        {status}.&nbsp;
-                      </span>
-                    )}
-                    <FormattedMessage
-                      {...messages.confirmations}
-                      values={{
-                        confirmationsNumber: data.numberOfConfirmations,
-                      }}
-                    />
-                  </span>
-                ) : null}
-              </div>
+              {
+                // // @API TODO - wallet has no assurance
+                // <div className={assuranceLevelRowStyles}>
+                //   <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
+                //   {!isRestoreActive &&
+                //   (transactionState === transactionStates.OK ||
+                //     transactionState === transactionStates.PENDING) ? (
+                //     <span>
+                //       {transactionState === transactionStates.OK && (
+                //         <span className={styles.assuranceLevel}>
+                //           {status}.&nbsp;
+                //         </span>
+                //       )}
+                //       <FormattedMessage
+                //         {...messages.confirmations}
+                //         values={{
+                //           confirmationsNumber: data.numberOfConfirmations,
+                //         }}
+                //       />
+                //     </span>
+                //   ) : null}
+                // </div>
+              }
 
               <h2>{intl.formatMessage(messages.transactionId)}</h2>
               <div className={styles.transactionIdRow}>

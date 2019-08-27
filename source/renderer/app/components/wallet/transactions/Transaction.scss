@@ -153,9 +153,10 @@
   background-color: var(--theme-transactions-priority-high-background-color);
 }
 
-.assuranceLevel {
-  text-transform: capitalize;
-}
+// @API TODO - block is commented-in due to missing / not needed assurance parameter
+// .assuranceLevel {
+//   text-transform: capitalize;
+// }
 
 .type {
   font-family: var(--font-light);

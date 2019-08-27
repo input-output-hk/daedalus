@@ -23,7 +23,6 @@ export default class WalletSettingsPage extends Component<Props> {
     } = app;
     const activeWallet = wallets.active;
     const {
-      WALLET_ASSURANCE_LEVEL_OPTIONS,
       updateWalletRequest,
       lastUpdatedWalletField,
       walletFieldBeingEdited,
@@ -41,8 +40,6 @@ export default class WalletSettingsPage extends Component<Props> {
 
     return (
       <WalletSettings
-        assuranceLevels={WALLET_ASSURANCE_LEVEL_OPTIONS}
-        walletAssurance={activeWallet.assurance}
         error={updateWalletRequest.error}
         openDialogAction={actions.dialogs.open.trigger}
         isSpendingPasswordSet={activeWallet.hasPassword}

@@ -1,11 +1,11 @@
 // @flow
-import { split, get } from 'lodash';
+import { split, get, size } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 // import moment from 'moment';
 
 // domains
-import Wallet from '../domains/Wallet';
+import Wallet, { WalletDelegationStatuses } from '../domains/Wallet';
 import {
   WalletTransaction,
   transactionTypes,
@@ -128,7 +128,6 @@ import type {
   ImportWalletFromFileRequest,
   UpdateWalletRequest,
   GetWalletUtxosRequest,
-  // WalletSyncState,
 } from './wallets/types';
 
 // Common errors
@@ -175,7 +174,7 @@ export default class AdaApi {
     try {
       const response: AdaWallets = await getWallets(this.config);
       Logger.debug('AdaApi::getWallets success', { wallets: response });
-      return response.map(data => _createWalletFromServerData(data));
+      return response.map(wallet => _createWalletFromServerData(wallet));
     } catch (error) {
       Logger.error('AdaApi::getWallets error', { error });
       throw new GenericApiError();
@@ -369,12 +368,10 @@ export default class AdaApi {
     const spendingPassword = passwordString
       ? encryptPassphrase(passwordString)
       : '';
-    const assuranceLevel = 'normal';
     try {
       const walletInitData = {
         operation: 'create',
         backupPhrase: split(mnemonic, ' '),
-        assuranceLevel,
         name,
         spendingPassword,
       };
@@ -665,11 +662,9 @@ export default class AdaApi {
     const spendingPassword = passwordString
       ? encryptPassphrase(passwordString)
       : '';
-    const assuranceLevel = 'normal';
     const walletInitData = {
       operation: 'restore',
       backupPhrase: split(recoveryPhrase, ' '),
-      assuranceLevel,
       name: walletName,
       spendingPassword,
     };
@@ -801,11 +796,10 @@ export default class AdaApi {
     Logger.debug('AdaApi::updateWallet called', {
       parameters: filterLogData(request),
     });
-    const { walletId, assuranceLevel, name } = request;
+    const { walletId, name } = request;
     try {
       const wallet: AdaWallet = await updateWallet(this.config, {
         walletId,
-        assuranceLevel,
         name,
       });
       Logger.debug('AdaApi::updateWallet success', { wallet });
@@ -1029,30 +1023,38 @@ export default class AdaApi {
 const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData',
   (data: AdaWallet) => {
-    const { id, balance, name, state, passphrase } = data;
+    const {
+      id,
+      address_pool_gap, // eslint-disable-line
+      balance,
+      name,
+      state,
+      passphrase,
+      delegation,
+    } = data;
 
+    const isDelegated =
+      delegation.status === WalletDelegationStatuses.DELEGATING;
+    const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletBalance =
       balance.total.unit === 'lovelace'
         ? new BigNumber(balance.total.quantity).dividedBy(LOVELACES_PER_ADA)
         : new BigNumber(balance.total.quantity);
 
-    // TODO: Should conform to WalletSyncState, but can't match the type
-    // at the moment
-    const walletSyncState: any = {
-      tag: state.status === 'ready' ? 'synced' : 'restoring',
-    };
-
     return new Wallet({
       id,
-      amount: walletBalance,
+      addressPoolGap: address_pool_gap,
       name,
-      // NOTE: Assurance not currently returned on GET /v2/wallets
-      assurance: 'normal',
-      // TODO: Determine if hasPassword still applies
-      hasPassword: true,
-      passwordUpdateDate: new Date(passphrase.last_updated_at),
-      syncState: walletSyncState,
-      isLegacy: false,
+      amount: walletBalance,
+      hasPassword: size(passphrase) > 0,
+      passwordUpdateDate:
+        passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
+      syncState: state,
+      isLegacy: false, // @API TODO - legacy declaration not exist for now
+      isDelegated,
+      // @API TODO - integrate once "Stake Pools" endpoints are done
+      // inactiveStakePercentage: 0,
+      // delegatedStakePool: new StakePool(),
     });
   }
 );
