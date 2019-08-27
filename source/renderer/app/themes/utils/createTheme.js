@@ -677,6 +677,24 @@ export const createDaedalusComponentsTheme = (
         background.secondary.lightest
       ).alpha(0.8)}`,
     },
+    internet: {
+      '--theme-internet-offline-window-background-color': `${chroma(
+        background.secondary.regular
+      ).alpha(0.96)}`,
+      '--theme-internet-offline-window-text-color': `${text.secondary}`,
+      '--theme-internet-offline-window-description-color':
+        'rgba(250, 251, 252, 0.7)',
+      '--theme-internet-offline-window-button-background-color': '#243e62',
+      '--theme-internet-offline-window-button-background-color-active':
+        '#e9e9ea',
+      '--theme-internet-offline-window-button-background-color-hover':
+        '#fafbfc',
+      '--theme-internet-offline-window-button-text-color': '#fafbfc',
+      '--theme-internet-offline-window-button-text-color-hover': '#243e62',
+      '--theme-internet-offline-window-button-border-color': '#fafbfc',
+      '--theme-internet-offline-window-button-border-color-hover':
+        'transparent',
+    },
     nodeUpdate: {
       '--theme-node-update-background-color': `${background.primary.regular}`,
       '--theme-node-update-title-color': `${text.primary}`,
