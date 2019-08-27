@@ -36,7 +36,7 @@ export default class WalletSendPage extends Component<Props> {
       throw new Error('Active wallet required for WalletSendPage.');
 
     const isRestoreActive =
-      get(activeWallet, 'syncState.status') ===
+      get(activeWallet, ['syncState', 'status'], '') ===
       WalletSyncStateStatuses.RESTORING;
 
     return (

@@ -15,8 +15,6 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { DEVELOPMENT } from '../../../../../common/types/environment.types';
 import { VirtualTransactionList } from './render-strategies/VirtualTransactionList';
 import { TransactionInfo, TransactionsGroup } from './types';
-// @API TODO - wallet has no assurance
-// import type { WalletAssuranceMode } from '../../../api/wallets/types';
 import type { Row } from './types';
 import { SimpleTransactionList } from './render-strategies/SimpleTransactionList';
 

@@ -27,9 +27,6 @@ export type PaymentDistribution = {
   amount: number,
 };
 
-// @API TODO - assurance not exist in api
-// export type TxnAssuranceLevel = 'low' | 'medium' | 'high';
-
 export type TransactionState = 'pending' | 'failed' | 'ok';
 
 export type TransactionFee = ResponseBase & {

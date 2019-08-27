@@ -63,7 +63,8 @@ export default class WalletSummaryPage extends Component<Props> {
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
     const isRestoreActive =
-      get(wallet, 'syncState.status') === WalletSyncStateStatuses.RESTORING;
+      get(wallet, ['syncState', 'status'], '') ===
+      WalletSyncStateStatuses.RESTORING;
 
     if (
       recentTransactionsRequest.isExecutingFirstTime ||

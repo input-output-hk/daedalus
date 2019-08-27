@@ -399,11 +399,11 @@ export default class WalletsStore extends Store {
         }
       });
       runInAction('refresh active wallet restore', () => {
-        const restoringWallet = find(result, [
-          'syncState',
-          'status',
-          WalletSyncStateStatuses.RESTORING,
-        ]);
+        const restoringWallet = find(
+          result,
+          ['syncState', 'status'],
+          WalletSyncStateStatuses.RESTORING
+        );
         const restoringWalletId = get(restoringWallet, 'id', null);
         restoredWalletId =
           (restoringWalletId === null && this.restoringWalletId) || null;
