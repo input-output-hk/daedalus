@@ -24,6 +24,9 @@ import './Loading.stories';
 // Diagnostics
 import './Diagnostics.stories';
 
+// Internet connection status
+import './InternetConnectionStatus.stories';
+
 // Navigation
 import './Sidebar.stories';
 import './SidebarCategory.stories';
