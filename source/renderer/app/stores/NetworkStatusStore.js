@@ -4,7 +4,7 @@ import moment from 'moment';
 import { isEqual, includes } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import { INTERNET_PING_HOSTNAME } from '../config/urlsConfig';
+import { CHECK_INTERNET_PING_HOSTNAME } from '../config/urlsConfig';
 import {
   ALLOWED_TIME_DIFFERENCE,
   MAX_ALLOWED_STALL_DURATION,
@@ -340,7 +340,7 @@ export default class NetworkStatusStore extends Store {
     try {
       await externalRequest(
         {
-          hostname: INTERNET_PING_HOSTNAME,
+          hostname: CHECK_INTERNET_PING_HOSTNAME,
           path: `/?_t=${parseInt(Math.random() * 10000, 10)}`,
           method: 'GET',
           protocol: 'https',
