@@ -1,17 +1,16 @@
 // @flow
+import WalletAddress from '../../domains/WalletAddress';
+
 export type Address = {
   id: string,
   state: 'used' | 'unused',
-  // NOTE: V2 Address API only returns id and state
-  // changeAddress: boolean,
 };
 
 export type Addresses = Array<Address>;
 
-// req/res Address types
 export type GetAddressesResponse = {
   accountIndex: ?number,
-  addresses: Addresses,
+  addresses: Array<WalletAddress>,
 };
 
 export type GetAddressesRequest = {

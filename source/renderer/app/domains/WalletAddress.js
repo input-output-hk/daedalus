@@ -1,12 +1,16 @@
 // @flow
 import { observable } from 'mobx';
-import type { Address } from '../api/addresses/types';
+
+type Params = {
+  id: string,
+  used: boolean,
+};
 
 export default class WalletAddress {
   @observable id: string = '';
-  @observable state: 'used' | 'unused' = 'unused';
+  @observable used: boolean = false;
 
-  constructor(data: Address) {
+  constructor(data: Params) {
     Object.assign(this, data);
   }
 }

@@ -78,7 +78,7 @@ export default class WalletReceivePage extends Component<Props, State> {
 
     const walletAddress = addresses.active ? addresses.active.id : '';
     const isWalletAddressUsed = addresses.active
-      ? addresses.active.state === 'used'
+      ? addresses.active.used
       : false;
     const walletAddresses = addresses.all.slice().reverse();
 

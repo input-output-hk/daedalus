@@ -12,6 +12,7 @@ import { mnemonicToSeedHex } from '../utils/crypto';
 import { downloadPaperWalletCertificate } from '../utils/paperWalletPdfGenerator';
 import { buildRoute, matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
+import type { GetAddressesResponse } from '../api/addresses/types';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 import type LocalizableError from '../i18n/LocalizableError';
@@ -42,7 +43,8 @@ export default class WalletsStore extends Store {
   @observable createWalletRequest: Request<Wallet> = new Request(
     this.api.ada.createWallet
   );
-  @observable getWalletAddressesRequest: Request<any> = new Request(
+  @observable
+  getWalletAddressesRequest: Request<GetAddressesResponse> = new Request(
     this.api.ada.getAddresses
   );
   @observable deleteWalletRequest: Request<boolean> = new Request(

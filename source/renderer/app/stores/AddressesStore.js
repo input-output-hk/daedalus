@@ -5,14 +5,11 @@ import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
 import Request from './lib/LocalizedRequest';
 import LocalizableError from '../i18n/LocalizableError';
-import type {
-  Address,
-  Addresses,
-  GetAddressesResponse,
-} from '../api/addresses/types';
+import WalletAddress from '../domains/WalletAddress';
+import type { GetAddressesResponse } from '../api/addresses/types';
 
 export default class AddressesStore extends Store {
-  @observable lastGeneratedAddress: ?Address = null;
+  @observable lastGeneratedAddress: ?WalletAddress = null;
   @observable addressesRequests: Array<{
     walletId: string,
     allRequest: CachedRequest<GetAddressesResponse>,
@@ -21,7 +18,7 @@ export default class AddressesStore extends Store {
 
   // REQUESTS
   /* eslint-disable max-len */
-  @observable createAddressRequest: Request<Address> = new Request(
+  @observable createAddressRequest: Request<WalletAddress> = new Request(
     this.api.ada.createAddress
   );
   /* eslint-disable max-len */
@@ -40,7 +37,7 @@ export default class AddressesStore extends Store {
       const { walletId, spendingPassword } = params;
       const accountIndex = await this.getAccountIndexByWalletId(walletId);
 
-      const address: ?Address = await this.createAddressRequest.execute({
+      const address: ?WalletAddress = await this.createAddressRequest.execute({
         accountIndex,
         spendingPassword,
         walletId,
@@ -60,7 +57,7 @@ export default class AddressesStore extends Store {
     }
   };
 
-  @computed get all(): Addresses {
+  @computed get all(): Array<WalletAddress> {
     const wallet = this.stores.wallets.active;
     if (!wallet) return [];
     const results = this._getAddressesAllRequest(wallet.id).result;
@@ -74,7 +71,7 @@ export default class AddressesStore extends Store {
     return results ? results.addresses.length > 0 : false;
   }
 
-  @computed get active(): ?Address {
+  @computed get active(): ?WalletAddress {
     if (this.lastGeneratedAddress) return this.lastGeneratedAddress;
     const wallet = this.stores.wallets.active;
     if (!wallet) return null;
@@ -109,7 +106,9 @@ export default class AddressesStore extends Store {
     return result ? result.accountIndex : null;
   };
 
-  getAddressesByWalletId = async (walletId: string): Promise<Array<string>> => {
+  getAddressesByWalletId = async (
+    walletId: string
+  ): Promise<Array<WalletAddress>> => {
     const result = await this._getAddressesAllRequest(walletId);
     return result ? result.addresses : [];
   };

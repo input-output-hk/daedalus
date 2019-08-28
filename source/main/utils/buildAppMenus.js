@@ -1,4 +1,3 @@
-
 // @flow
 import { app, globalShortcut, Menu, BrowserWindow, dialog } from 'electron';
 import { environment } from '../environment';
