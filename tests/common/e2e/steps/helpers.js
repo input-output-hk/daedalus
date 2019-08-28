@@ -19,15 +19,17 @@ export const expectTextInSelector = async (
 };
 
 export const generateScreenshotFilePath = (prefix: string) => {
-  const filePath = path.resolve(__dirname, '../../../screenshots', prefix);
+  const prefixParts = prefix.split('/');
+  const testName = prefixParts.pop();
+  const testPath = prefixParts.slice(1).join('/');
+  const filePath = path.resolve(__dirname, '../../../screenshots/', testPath);
   const extension = 'png';
-  const fileName = generateFileNameWithTimestamp({ prefix, extension });
+  const fileName = generateFileNameWithTimestamp({ prefix: testName, extension });
   ensureDirectoryExists(filePath);
   return `${filePath}/${fileName}`;
 };
 
-export const getTestNameFromTestFile = (testFile: string) =>
-  testFile.replace('tests/', '').replace('.feature', '');
+export const getTestNameFromTestFile = (testFile: string) => testFile.split('.feature').join('');
 
 export const getVisibleElementsCountForSelector = async (
   client: WebdriverClient,
@@ -66,15 +68,13 @@ export const getVisibleTextsForSelector = async (
 export const saveScreenshot = async (
   context: Object,
   file: any
-) => {
-  await context.browserWindow
-    .capturePage()
-    .then(imageBuffer => fs.writeFile(file, imageBuffer))
-    .catch(err => {
-      // eslint-disable-next-line no-console
-      console.log(err);
-    });
-};
+) => await context.browserWindow
+      .capturePage()
+      .then(imageBuffer => fs.writeFile(file, imageBuffer))
+      .catch(err => {
+        // eslint-disable-next-line no-console
+        console.log(err);
+      });
 
 export const waitAndClick = async (
   client: WebdriverClient,
