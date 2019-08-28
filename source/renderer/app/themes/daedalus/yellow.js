@@ -545,7 +545,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--rp-tooltip-text-color': '#ffffff',
   },
   scrollbar: {
-    '--theme-scrollbar-thumb-background': '#bebbb3',
+    '--theme-scrollbar-thumb-background': '#2d2d2d',
   },
   sendConfirmation: {
     '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',
