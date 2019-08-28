@@ -87,9 +87,9 @@
         font-size: 14px;
         margin: 20px auto 0;
         &:hover {
-          color: var(--theme-automatic-update-overlay-button-label-color);
           border-bottom: 1px solid
             var(--theme-automatic-update-overlay-button-label-color);
+          color: var(--theme-automatic-update-overlay-button-label-color);
         }
       }
     }
