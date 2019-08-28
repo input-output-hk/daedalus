@@ -1,15 +1,29 @@
 @e2e
+@watch
 Feature: Internet Connection Status
 
-  Background:
-    Given I have app setup completely
+  Scenario: No Internet connection on Daedalus start
+    Given I set Internet Connection to: "offline"
+    Then I should see Internet Connection status dialog
 
-  Scenario: Internet Connection Online
-    Given App runs while physical internet connection is online
-    When I watch the app screen
-    Then Internet connection offline overlay should never open automatically
+  Scenario: Daedalus loses Internet connection when is up and running
+    Given I have completed the basic setup
+    And I have the following wallets:
+      | name        |
+      | Test wallet |
+    And I am on the "Test wallet" wallet "settings" screen
+    And I set Internet Connection to: "offline"
+    Then I should see Internet Connection status dialog
 
-  Scenario: Internet Connection Offline
-    Given App runs while physical internet connection is offline
-    When I watch the app screen
-    Then Internet connection offline overlay should open automatically
+
+  Scenario: Daedalus loses Internet connection when is up and running
+    Given I have completed the basic setup
+    And I have the following wallets:
+      | name        |
+      | Test wallet |
+    And I am on the "Test wallet" wallet "settings" screen
+    And I set Internet Connection to: "offline"
+    Then I should see Internet Connection status dialog
+    And I click on "Check again" button
+    And I see loading spinner
+    Then I should not see the Internet connection status dialog anymore

@@ -189,8 +189,7 @@ export default class NetworkStatusStore extends Store {
 
   _updateNetworkStatusWhenDisconnected = async () => {
     if (!this.isConnected) this._updateNetworkStatus();
-
-    await this.updateInternetConnectionStatus();
+    if (!this.environment.isTest) await this.updateInternetConnectionStatus();
   };
 
   _updateNetworkStatusWhenConnected = async () => {
@@ -198,8 +197,7 @@ export default class NetworkStatusStore extends Store {
       Logger.info('NetworkStatusStore: Connected, forcing NTP check now...');
       this._updateNetworkStatus({ force_ntp_check: true });
     }
-
-    await this.updateInternetConnectionStatus();
+    if (!this.environment.isTest) await this.updateInternetConnectionStatus();
   };
 
   _updateNodeStatus = async () => {
@@ -338,7 +336,6 @@ export default class NetworkStatusStore extends Store {
   // DEFINE ACTIONS
 
   @action updateInternetConnectionStatus = async () => {
-    this.checkingInternetConnection = true;
     try {
       await externalRequest(
         {
@@ -359,6 +356,16 @@ export default class NetworkStatusStore extends Store {
         this.checkingInternetConnection = false;
       });
     }
+  };
+
+  @action checkInternetConnectionStatus = () => {
+    this.checkingInternetConnection = true;
+    this.updateInternetConnectionStatus();
+  };
+
+  @action setIsInternetConnected = isConnected => {
+    this.isInternetConnected = isConnected;
+    this.checkingInternetConnection = false;
   };
 
   @action _updateNetworkStatus = async (

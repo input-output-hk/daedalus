@@ -8,24 +8,12 @@ import styles from './InternetConnectionStatusDialog.scss';
 @inject('stores')
 @observer
 export default class InternetConnectionStatusDialog extends Component<any> {
-  componentDidMount() {
-    const { stores } = this.props;
-    const { updateInternetConnectionStatus } = stores.networkStatus;
-
-    updateInternetConnectionStatus();
-  }
-
   render() {
     const { stores } = this.props;
     const {
-      isInternetConnected,
       checkingInternetConnection,
-      updateInternetConnectionStatus,
+      checkInternetConnectionStatus,
     } = stores.networkStatus;
-
-    if (isInternetConnected) {
-      return null;
-    }
 
     return (
       <ReactModal
@@ -36,7 +24,7 @@ export default class InternetConnectionStatusDialog extends Component<any> {
       >
         <InternetConnectionOfflineStatus
           checking={checkingInternetConnection}
-          checkAgain={updateInternetConnectionStatus}
+          checkAgain={checkInternetConnectionStatus}
         />
       </ReactModal>
     );

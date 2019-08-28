@@ -32,8 +32,9 @@ export default class App extends Component<{
   }
   render() {
     const { stores, actions, history } = this.props;
-    const { app, nodeUpdate } = stores;
+    const { app, nodeUpdate, networkStatus } = stores;
     const { showNextUpdate } = nodeUpdate;
+    const { isInternetConnected } = networkStatus;
     const { isActiveDialog } = app;
     const locale = stores.profile.currentLocale;
     const mobxDevTools = global.environment.mobxDevTools ? <DevTools /> : null;
@@ -66,7 +67,7 @@ export default class App extends Component<{
                     <GenericNotificationContainer key="genericNotification" />,
                   ]
                 )}
-                <InternetConnectionStatusDialog />
+                {!isInternetConnected && <InternetConnectionStatusDialog />}
               </Fragment>
             </IntlProvider>
           </ThemeProvider>
