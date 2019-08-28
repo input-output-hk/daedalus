@@ -644,7 +644,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-staking-info-learn-more-icon-color': 'rgba(18, 19, 38, 1)',
     '--theme-staking-learn-more-button-color': 'rgba(18, 19, 38, 1)',
     '--theme-staking-learn-more-icon-color': 'rgba(18, 19, 38, 1)',
-    '--theme-staking-donut-ring-completed-color': '#ea4c5b',
+    '--theme-staking-donut-ring-completed-color': '#1fc1c3',
     '--theme-staking-donut-ring-remaining-color': '#fbdbde',
     '--theme-staking-wallet-row-border-color': 'rgba(255, 255, 255, 0.2)',
     '--theme-staking-dropdown-item-text-color-hover': '#ffffff',
