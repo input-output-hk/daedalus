@@ -8,7 +8,7 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import ReactToolboxMobxForm, {
   handleFormErrors,
 } from '../../utils/ReactToolboxMobxForm';
@@ -279,7 +279,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
               skin={InputSkin}
             />
             <p className={styles.passwordInstructions}>
-              {intl.formatMessage(globalMessages.passwordInstructions)}
+              <FormattedHTMLMessage {...globalMessages.passwordInstructions} />
             </p>
           </div>
         </div>

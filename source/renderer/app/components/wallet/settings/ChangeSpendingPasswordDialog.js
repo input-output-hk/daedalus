@@ -7,7 +7,7 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
@@ -344,7 +344,7 @@ export default class ChangeSpendingPasswordDialog extends Component<
           />
 
           <p className={styles.passwordInstructions}>
-            {intl.formatMessage(globalMessages.passwordInstructions)}
+            <FormattedHTMLMessage {...globalMessages.passwordInstructions} />
           </p>
         </div>
 
