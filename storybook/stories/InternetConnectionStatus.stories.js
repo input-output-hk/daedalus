@@ -11,6 +11,11 @@ storiesOf('Internet Connection Status', module)
 
   .add(
     'Offline',
-    () => <InternetConnectionOfflineStatus checkAgain={() => null} />,
+    () => (
+      <InternetConnectionOfflineStatus
+        checking={false}
+        checkAgain={() => null}
+      />
+    ),
     { id: 'offline' }
   );
