@@ -563,7 +563,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--rp-tooltip-text-color': '#fafbfc',
   },
   scrollbar: {
-    '--theme-scrollbar-thumb-background': '#536370',
+    '--theme-scrollbar-thumb-background': '#fff',
   },
   sendConfirmation: {
     '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',

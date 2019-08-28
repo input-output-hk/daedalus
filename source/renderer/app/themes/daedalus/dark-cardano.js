@@ -545,7 +545,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--rp-tooltip-text-color': '#000000',
   },
   scrollbar: {
-    '--theme-scrollbar-thumb-background': '#0e0f1e',
+    '--theme-scrollbar-thumb-background': '#fff',
   },
   sendConfirmation: {
     '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',
@@ -628,7 +628,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-staking-content-background-color': '#1e1f31',
     '--theme-staking-content-border-color': '#1e1f31',
     '--theme-staking-font-color-accent': 'rgba(255, 255, 255, 0.4)',
-    '--theme-staking-font-color-regular': '#ffffff',
+    '--theme-staking-font-color-regular': 'rgba(255, 255, 255, 0.4)',
     '--theme-staking-font-color-light': '#ffffffb3',
     '--theme-staking-font-color-lighter': '#ffffff80',
     '--theme-staking-table-head-background-color': 'rgba(255, 255, 255, 0.07)',

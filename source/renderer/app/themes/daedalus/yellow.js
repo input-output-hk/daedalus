@@ -314,7 +314,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-nav-dropdown-item-text-color': '#2d2d2d',
     '--theme-nav-dropdown-item-background-color': '#fff',
     '--theme-nav-dropdown-item-background-color-hover':
-      'rgba(248, 243, 237, 0.5)',
+      'rgba(45, 45, 45, 0.07)',
     '--theme-nav-dropdown-item-color-hover': '#2d2d2d',
   },
   navItem: {
