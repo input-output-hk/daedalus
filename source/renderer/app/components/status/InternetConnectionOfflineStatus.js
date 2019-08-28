@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { ButtonSpinnerSkin } from 'react-polymorph/lib/skins/simple/ButtonSpinnerSkin';
 import disconnectedIcon from '../../assets/images/disconnected.inline.svg';
 import styles from './InternetConnectionOfflineStatus.scss';
 
@@ -27,6 +27,7 @@ const messages = defineMessages({
 });
 
 type Props = {
+  checking: boolean,
   checkAgain: Function,
 };
 
@@ -37,7 +38,7 @@ export default class InternetConnectionOfflineStatus extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { checkAgain } = this.props;
+    const { checking, checkAgain } = this.props;
 
     return (
       <div className={styles.component}>
@@ -57,8 +58,9 @@ export default class InternetConnectionOfflineStatus extends Component<Props> {
           <Button
             className={styles.checkAgainButton}
             label={intl.formatMessage(messages.checkAgainLabel)}
+            skin={ButtonSpinnerSkin}
+            loading={checking}
             onClick={checkAgain}
-            skin={ButtonSkin}
           />
         </div>
       </div>

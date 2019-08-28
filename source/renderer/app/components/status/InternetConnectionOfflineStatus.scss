@@ -60,6 +60,14 @@
     height: 50px;
     width: 360px;
 
+    :global {
+      .SimpleLoadingSpinner_root {
+        border-color: var(--theme-internet-offline-window-button-text-color)
+          var(--theme-internet-offline-window-button-text-color) transparent
+          transparent;
+      }
+    }
+
     &:not(.disabled):hover {
       background-color: var(
         --theme-internet-offline-window-button-background-color-hover
@@ -68,6 +76,16 @@
         --theme-internet-offline-window-button-border-color-hover
       );
       color: var(--theme-internet-offline-window-button-text-color-hover);
+
+      :global {
+        .SimpleLoadingSpinner_root {
+          border-color: var(
+              --theme-internet-offline-window-button-text-color-hover
+            )
+            var(--theme-internet-offline-window-button-text-color-hover)
+            transparent transparent;
+        }
+      }
     }
 
     &:not(.disabled):active {
@@ -78,6 +96,16 @@
         --theme-internet-offline-window-button-border-color-hover
       );
       color: var(--theme-internet-offline-window-button-text-color-hover);
+
+      :global {
+        .SimpleLoadingSpinner_root {
+          border-color: var(
+              --theme-internet-offline-window-button-text-color-hover
+            )
+            var(--theme-internet-offline-window-button-text-color-hover)
+            transparent transparent;
+        }
+      }
     }
   }
 }

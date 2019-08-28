@@ -19,6 +19,7 @@ export default class InternetConnectionStatusDialog extends Component<any> {
     const { stores } = this.props;
     const {
       isInternetConnected,
+      checkingInternetConnection,
       updateInternetConnectionStatus,
     } = stores.networkStatus;
 
@@ -34,6 +35,7 @@ export default class InternetConnectionStatusDialog extends Component<any> {
         ariaHideApp={false}
       >
         <InternetConnectionOfflineStatus
+          checking={checkingInternetConnection}
           checkAgain={updateInternetConnectionStatus}
         />
       </ReactModal>

@@ -4,7 +4,7 @@ import moment from 'moment';
 import { isEqual, includes } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import { CHECK_INTERNET_CONNECTIVITY_HOSTNAME } from '../config/urlsConfig';
+import { CHECK_INTERNET_CONNECTION_HOSTNAME } from '../config/urlsConfig';
 import {
   ALLOWED_TIME_DIFFERENCE,
   MAX_ALLOWED_STALL_DURATION,
@@ -85,6 +85,7 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
   @observable isInternetConnected = true;
+  @observable checkingInternetConnection = false;
 
   @observable hasBeenConnected = false;
   @observable syncProgress = null;
@@ -337,11 +338,12 @@ export default class NetworkStatusStore extends Store {
   // DEFINE ACTIONS
 
   @action updateInternetConnectionStatus = async () => {
+    this.checkingInternetConnection = true;
     try {
       await externalRequest(
         {
-          hostname: CHECK_INTERNET_CONNECTIVITY_HOSTNAME,
-          path: `/?_t=${parseInt(Math.random() * 10000, 10)}`,
+          hostname: CHECK_INTERNET_CONNECTION_HOSTNAME,
+          path: '/generate_204',
           method: 'GET',
           protocol: 'https',
         },
@@ -349,10 +351,12 @@ export default class NetworkStatusStore extends Store {
       );
       runInAction('update isInternetConnected', () => {
         this.isInternetConnected = true;
+        this.checkingInternetConnection = false;
       });
     } catch (err) {
       runInAction('update isInternetConnected', () => {
         this.isInternetConnected = false;
+        this.checkingInternetConnection = false;
       });
     }
   };
