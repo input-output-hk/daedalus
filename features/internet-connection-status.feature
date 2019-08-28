@@ -1,5 +1,4 @@
 @e2e
-@watch
 Feature: Internet Connection Status
 
   Scenario: No Internet connection on Daedalus start
