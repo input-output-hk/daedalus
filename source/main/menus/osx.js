@@ -18,6 +18,7 @@ export const osxMenu = (
   actions: MenuActions,
   translations: {},
   locale: string,
+  isUpdateAvailable: boolean,
   translation: Function = getTranslation(translations, id)
 ) => [
   {
@@ -28,6 +29,7 @@ export const osxMenu = (
         click() {
           actions.openAboutDialog();
         },
+        enabled: !isUpdateAvailable,
       },
       { type: 'separator' },
       {
@@ -162,6 +164,7 @@ export const osxMenu = (
         click() {
           showUiPartChannel.send(NOTIFICATIONS.DOWNLOAD_LOGS, window);
         },
+        enabled: !isUpdateAvailable,
       },
       { type: 'separator' },
       {
@@ -170,6 +173,7 @@ export const osxMenu = (
         click() {
           actions.openBlockConsolidationStatusDialog();
         },
+        enabled: !isUpdateAvailable,
       },
       {
         label: translation('helpSupport.daedalusDiagnostics'),
@@ -177,6 +181,7 @@ export const osxMenu = (
         click() {
           actions.openDaedalusDiagnosticsDialog();
         },
+        enabled: !isUpdateAvailable,
       },
     ]),
   },
