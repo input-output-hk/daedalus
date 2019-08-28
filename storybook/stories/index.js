@@ -32,3 +32,6 @@ import './TopBar.stories';
 
 // Widgets
 import './Widgets.stories';
+
+// Notifications
+import './Notifications.stories';

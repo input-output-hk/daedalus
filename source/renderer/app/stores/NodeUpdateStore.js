@@ -1,5 +1,5 @@
 // @flow
-import { action, computed, observable, runInAction } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import type {
@@ -7,15 +7,16 @@ import type {
   GetLatestAppVersionResponse,
 } from '../api/nodes/types';
 import { NODE_UPDATE_POLL_INTERVAL } from '../config/timingConfig';
+import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
 
 export default class NodeUpdateStore extends Store {
   @observable isUpdateAvailable = false;
   @observable isUpdatePostponed = false;
-  @observable isNotificationExpanded = false;
   @observable isUpdateInstalled = false;
-  @observable updateVersion = null;
   @observable availableAppVersion: ?string = null;
   @observable isNewAppVersionAvailable: boolean = false;
+  @observable nextUpdateVersion: ?string = null;
+  @observable applicationVersion: ?number = null;
 
   // REQUESTS
   /* eslint-disable max-len */
@@ -38,9 +39,6 @@ export default class NodeUpdateStore extends Store {
     const actions = this.actions.nodeUpdate;
     actions.acceptNodeUpdate.listen(this._acceptNodeUpdate);
     actions.postponeNodeUpdate.listen(this._postponeNodeUpdate);
-    actions.toggleNodeUpdateNotificationExpanded.listen(
-      this._toggleNotificationExpanded
-    );
     actions.getLatestAvailableAppVersion.listen(
       this._getLatestAvailableAppVersion
     );
@@ -51,43 +49,83 @@ export default class NodeUpdateStore extends Store {
     if (this.stores.networkStatus.isSynced) {
       await this.nextUpdateRequest.execute();
       const { result } = this.nextUpdateRequest;
-      if (
-        result &&
-        !this.isUpdateAvailable &&
-        !this.isUpdatePostponed &&
-        !this.isUpdateInstalled
-      ) {
-        runInAction('refreshNextUpdate', () => {
-          this.isUpdateAvailable = true;
-          this.isNotificationExpanded = true;
-          this.updateVersion = result.version;
-        });
+      // If nextUpdate is available, fetch additional Daedalus info
+      if (result) {
+        await this._getLatestAvailableAppVersion();
+        this._activateAutomaticUpdate(result.version);
       }
     }
   };
 
-  @action _postponeNodeUpdate = () => {
+  @action _activateAutomaticUpdate = async nextUpdateVersion => {
+    if (
+      nextUpdateVersion &&
+      !this.isUpdateAvailable &&
+      !this.isUpdatePostponed &&
+      !this.isUpdateInstalled
+    ) {
+      this.isUpdateAvailable = true;
+      // If next update version matches applicationVersion (fetched from latestAppVersion json) then set next update version to latest availableAppVersion
+      this.nextUpdateVersion =
+        nextUpdateVersion === this.applicationVersion
+          ? this.availableAppVersion
+          : null;
+
+      // Close all active dialogs
+      this.stores.app._closeActiveDialog();
+      this.actions.app.closeAboutDialog.trigger();
+
+      // Rebuild app menu
+      await rebuildApplicationMenu.send({
+        isUpdateAvailable: this.isUpdateAvailable,
+      });
+    }
+  };
+
+  /** Automatic update overlay faker
+    - example with "newer version" label: _setNextUpdateVersion(11, 10, '0.16.0')
+    - example with "v 0.16.0" label: _setNextUpdateVersion(10, 10, '0.16.0')
+    */
+  @action _setNextUpdateVersion = async (
+    nextUpdateVersion,
+    applicationVersion,
+    availableAppVersion
+  ) => {
+    this.applicationVersion = applicationVersion;
+    this.availableAppVersion = availableAppVersion;
+    this._activateAutomaticUpdate(nextUpdateVersion);
+  };
+
+  @action _postponeNodeUpdate = async () => {
     this.postponeUpdateRequest.execute();
     this.isUpdatePostponed = true;
-  };
-
-  @action _acceptNodeUpdate = () => {
-    this.applyUpdateRequest.execute();
     this.isUpdateAvailable = false;
-    this.isUpdateInstalled = true;
+    await rebuildApplicationMenu.send({
+      isUpdateAvailable: this.isUpdateAvailable,
+    });
   };
 
-  @action _toggleNotificationExpanded = () => {
-    this.isNotificationExpanded = !this.isNotificationExpanded;
+  @action _acceptNodeUpdate = async () => {
+    this.applyUpdateRequest.execute();
+  };
+
+  @action hideUpdateDialog = async () => {
+    this.isUpdateInstalled = true;
+    this.isUpdateAvailable = false;
   };
 
   @action _getLatestAvailableAppVersion = async () => {
-    const { latestAppVersion } = await this.getLatestAppVersionRequest.execute()
-      .promise;
-    this.setLatestAvailableAppVersion(latestAppVersion);
+    const {
+      latestAppVersion,
+      applicationVersion,
+    } = await this.getLatestAppVersionRequest.execute().promise;
+    this.setLatestAvailableAppVersion(latestAppVersion, applicationVersion);
   };
 
-  @action setLatestAvailableAppVersion = (latestAppVersion: ?string) => {
+  @action setLatestAvailableAppVersion = (
+    latestAppVersion: ?string,
+    applicationVersion: ?number
+  ) => {
     let isNewAppVersionAvailable = false;
 
     if (latestAppVersion) {
@@ -113,6 +151,7 @@ export default class NodeUpdateStore extends Store {
 
     this.isNewAppVersionAvailable = isNewAppVersionAvailable;
     this.availableAppVersion = latestAppVersion;
+    this.applicationVersion = applicationVersion;
   };
 
   @computed get isNewAppVersionLoading(): boolean {
@@ -124,6 +163,14 @@ export default class NodeUpdateStore extends Store {
       this.getLatestAppVersionRequest.wasExecuted &&
       (this.getLatestAppVersionRequest.result !== null ||
         this.getLatestAppVersionRequest.error !== null)
+    );
+  }
+
+  @computed get showNextUpdate(): boolean {
+    return (
+      this.isUpdateAvailable &&
+      !this.isUpdatePostponed &&
+      !this.isUpdateInstalled
     );
   }
 }
