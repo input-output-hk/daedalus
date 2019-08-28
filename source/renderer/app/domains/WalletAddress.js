@@ -1,7 +1,7 @@
 // @flow
 import { observable } from 'mobx';
 
-type Params = {
+type WalletAddressProps = {
   id: string,
   used: boolean,
 };
@@ -10,7 +10,7 @@ export default class WalletAddress {
   @observable id: string = '';
   @observable used: boolean = false;
 
-  constructor(data: Params) {
+  constructor(data: WalletAddressProps) {
     Object.assign(this, data);
   }
 }

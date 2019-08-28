@@ -14,7 +14,7 @@ import WalletAddress from '../domains/WalletAddress';
 
 // Addresses requests
 import { getAddress } from './addresses/requests/getAddress';
-import { getAddresses as getAddressesFromApi } from './addresses/requests/getAddresses';
+import { getAddresses } from './addresses/requests/getAddresses';
 import { createAddress } from './addresses/requests/createAddress';
 
 // Nodes requests
@@ -78,11 +78,11 @@ import {
 
 // Addresses Types
 import type {
-  Address,
-  Addresses,
+  AdaAddress,
+  AdaAddresses,
   GetAddressesRequest,
-  CreateAddressRequest,
   GetAddressesResponse,
+  CreateAddressRequest,
 } from './addresses/types';
 
 // Common Types
@@ -187,16 +187,19 @@ export default class AdaApi {
     Logger.debug('AdaApi::getAddresses called', {
       parameters: filterLogData(request),
     });
-    const { walletId } = request;
+    const { walletId, queryParams } = request;
     try {
-      const response: Addresses = await getAddressesFromApi(
+      const response: AdaAddresses = await getAddresses(
         this.config,
-        walletId
+        walletId,
+        queryParams
       );
+
       Logger.debug('AdaApi::getAddresses success', { addresses: response });
       const addresses = response.map(data =>
         _createAddressFromServerData(data)
       );
+
       return new Promise(resolve => resolve({ accountIndex: 0, addresses }));
     } catch (error) {
       Logger.error('AdaApi::getAddresses error', { error });
@@ -547,7 +550,7 @@ export default class AdaApi {
       ? encryptPassphrase(passwordString)
       : '';
     try {
-      const address: Address = await createAddress(this.config, {
+      const address: AdaAddress = await createAddress(this.config, {
         spendingPassword,
         accountIndex,
         walletId,
@@ -568,7 +571,7 @@ export default class AdaApi {
       parameters: { address },
     });
     try {
-      const response: Address = await getAddress(this.config, { address });
+      const response: AdaAddress = await getAddress(this.config, { address });
       Logger.debug('AdaApi::isValidAdaAddress success', { response });
       return true;
     } catch (error) {
@@ -1075,7 +1078,7 @@ const _createWalletFromServerData = action(
 
 const _createAddressFromServerData = action(
   'AdaApi::_createAddressFromServerData',
-  (address: Address) => {
+  (address: AdaAddress) => {
     const { id, state } = address;
     return new WalletAddress({
       id,

@@ -1,6 +1,6 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
-import type { Address } from '../types';
+import type { AdaAddress } from '../types';
 import { request } from '../../utils/request';
 
 export type GetAddressParams = {
@@ -10,7 +10,7 @@ export type GetAddressParams = {
 export const getAddress = (
   config: RequestConfig,
   { address }: GetAddressParams
-): Promise<Address> => {
+): Promise<AdaAddress> => {
   const encodedAddress = encodeURIComponent(address);
   return request({
     method: 'GET',

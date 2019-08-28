@@ -1,20 +1,27 @@
 // @flow
 import WalletAddress from '../../domains/WalletAddress';
 
-export type Address = {
-  id: string,
-  state: 'used' | 'unused',
+export type AddressState = 'used' | 'unused';
+
+export type GetAddressesRequestQueryParams = {
+  state: AddressState,
 };
 
-export type Addresses = Array<Address>;
+export type AdaAddress = {
+  id: string,
+  state: AddressState,
+};
+
+export type AdaAddresses = Array<AdaAddress>;
+
+export type GetAddressesRequest = {
+  walletId: string,
+  queryParams?: GetAddressesRequestQueryParams,
+};
 
 export type GetAddressesResponse = {
   accountIndex: ?number,
   addresses: Array<WalletAddress>,
-};
-
-export type GetAddressesRequest = {
-  walletId: string,
 };
 
 export type CreateAddressRequest = {
