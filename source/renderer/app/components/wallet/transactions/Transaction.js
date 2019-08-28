@@ -224,7 +224,7 @@ export default class Transaction extends Component<Props> {
 
     const transactionStateTag = () => {
       if (isRestoreActive) return;
-      // @API TODO - wallet has no assurance
+      // @API TODO - wallet has no assurance - Improve once transactions endpoints are done
       // return transactionState === transactionStates.OK ? (
       //   <div className={styles[assuranceLevel]}>{status}</div>
       // ) : (
@@ -233,9 +233,11 @@ export default class Transaction extends Component<Props> {
       //   </div>
       // );
       return (
-        <div className={styles[`${transactionState}Label`]}>
-          {intl.formatMessage(stateTranslations[transactionState])}
-        </div>
+        transactionState === transactionStates.OK && (
+          <div className={styles.pendingLabel}>
+            {intl.formatMessage(stateTranslations.pending)}
+          </div>
+        )
       );
     };
 
