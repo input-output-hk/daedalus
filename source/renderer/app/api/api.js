@@ -1010,10 +1010,10 @@ export default class AdaApi {
   checkInternetConnection = async (): Promise<string> => {
     Logger.debug('AdaApi::checkInternetConnection called');
     try {
-      await checkInternetConnection();
+      const result = await checkInternetConnection();
       Logger.debug('AdaApi::checkInternetConnection success');
 
-      return true;
+      return result;
     } catch (error) {
       Logger.error('AdaApi::checkInternetConnection error', { error });
       throw new GenericApiError();

@@ -170,10 +170,10 @@ export default (api: AdaApi) => {
   api.checkInternetConnection = async (): Promise<string> => {
     Logger.debug('AdaApi::checkInternetConnection (PATCHED) called');
     try {
-      await checkInternetConnection();
+      const result = await checkInternetConnection();
       Logger.debug('AdaApi::checkInternetConnection success');
 
-      return true;
+      return result;
     } catch (error) {
       Logger.error('AdaApi::checkInternetConnection (PATCHED) error', {
         error,
