@@ -4,6 +4,7 @@ import AdaApi from '../api';
 import { getNodeInfo } from '../nodes/requests/getNodeInfo';
 import { getNodeSettings } from '../nodes/requests/getNodeSettings';
 import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
+import { checkInternetConnection } from '../nodes/requests/checkInternetConnection';
 import { GenericApiError } from '../common/errors';
 import { Logger } from '../../utils/logging';
 import type { NodeInfoQueryParams } from '../nodes/requests/getNodeInfo';
@@ -162,6 +163,21 @@ export default (api: AdaApi) => {
       };
     } catch (error) {
       Logger.error('AdaApi::getLatestAppVersion (PATCHED) error', { error });
+      throw new GenericApiError();
+    }
+  };
+
+  api.checkInternetConnection = async (): Promise<string> => {
+    Logger.debug('AdaApi::checkInternetConnection (PATCHED) called');
+    try {
+      await checkInternetConnection();
+      Logger.debug('AdaApi::checkInternetConnection success');
+
+      return true;
+    } catch (error) {
+      Logger.error('AdaApi::checkInternetConnection (PATCHED) error', {
+        error,
+      });
       throw new GenericApiError();
     }
   };

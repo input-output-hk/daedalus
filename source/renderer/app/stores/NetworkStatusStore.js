@@ -4,7 +4,6 @@ import moment from 'moment';
 import { isEqual, includes } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import { CHECK_INTERNET_CONNECTION_HOSTNAME } from '../config/urlsConfig';
 import {
   ALLOWED_TIME_DIFFERENCE,
   MAX_ALLOWED_STALL_DURATION,
@@ -17,7 +16,6 @@ import {
   UNSYNCED_BLOCKS_ALLOWED,
   MAX_NTP_RECHECKS,
 } from '../config/numbersConfig';
-import { externalRequest } from '../api/utils/externalRequest';
 import { Logger } from '../utils/logging';
 import {
   cardanoStateChangeChannel,
@@ -85,7 +83,6 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
   @observable isInternetConnected = true;
-  @observable checkingInternetConnection = false;
 
   @observable hasBeenConnected = false;
   @observable syncProgress = null;
@@ -95,13 +92,20 @@ export default class NetworkStatusStore extends Store {
   @observable latestLocalBlockTimestamp = 0; // milliseconds
   @observable latestNetworkBlockTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
+
   @observable
   getNetworkStatusRequest: Request<GetNetworkStatusResponse> = new Request(
     this.api.ada.getNetworkStatus
   );
+
   @observable
   forceCheckTimeDifferenceRequest: Request<GetNetworkStatusResponse> = new Request(
     this.api.ada.getNetworkStatus
+  );
+
+  @observable
+  checkInternetConnectionRequest: Request<string> = new Request(
+    this.api.ada.checkInternetConnection
   );
 
   @observable isNotEnoughDiskSpace: boolean = false;
@@ -337,35 +341,19 @@ export default class NetworkStatusStore extends Store {
 
   @action updateInternetConnectionStatus = async () => {
     try {
-      await externalRequest(
-        {
-          hostname: CHECK_INTERNET_CONNECTION_HOSTNAME,
-          path: '/generate_204',
-          method: 'GET',
-          protocol: 'https',
-        },
-        true
-      );
+      await this.checkInternetConnectionRequest.execute().promise;
       runInAction('update isInternetConnected', () => {
         this.isInternetConnected = true;
-        this.checkingInternetConnection = false;
       });
     } catch (err) {
       runInAction('update isInternetConnected', () => {
         this.isInternetConnected = false;
-        this.checkingInternetConnection = false;
       });
     }
   };
 
-  @action checkInternetConnectionStatus = () => {
-    this.checkingInternetConnection = true;
-    this.updateInternetConnectionStatus();
-  };
-
   @action setIsInternetConnected = isConnected => {
     this.isInternetConnected = isConnected;
-    this.checkingInternetConnection = false;
   };
 
   @action _updateNetworkStatus = async (
@@ -679,6 +667,17 @@ export default class NetworkStatusStore extends Store {
   };
 
   // DEFINE COMPUTED VALUES
+  @computed get isInternetConnectionChecking(): boolean {
+    return this.checkInternetConnectionRequest.isExecuting;
+  }
+
+  @computed get isInternetConnectionChecked(): boolean {
+    return (
+      this.checkInternetConnectionRequest.wasExecuted &&
+      (this.checkInternetConnectionRequest.result !== null ||
+        this.checkInternetConnectionRequest.error !== null)
+    );
+  }
 
   @computed get isConnected(): boolean {
     return this.isNodeResponding && this.isNodeSubscribed && this.isNodeSyncing;

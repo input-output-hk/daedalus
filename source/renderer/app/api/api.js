@@ -27,6 +27,7 @@ import { getCurrentEpoch } from './nodes/requests/getCurrentEpoch';
 import { getNextNodeUpdate } from './nodes/requests/getNextNodeUpdate';
 import { postponeNodeUpdate } from './nodes/requests/postponeNodeUpdate';
 import { getLatestAppVersion } from './nodes/requests/getLatestAppVersion';
+import { checkInternetConnection } from './nodes/requests/checkInternetConnection';
 
 // Transactions requests
 import { getTransactionFee } from './transactions/requests/getTransactionFee';
@@ -1002,6 +1003,19 @@ export default class AdaApi {
       return { latestAppVersion, applicationVersion };
     } catch (error) {
       Logger.error('AdaApi::getLatestAppVersion error', { error });
+      throw new GenericApiError();
+    }
+  };
+
+  checkInternetConnection = async (): Promise<string> => {
+    Logger.debug('AdaApi::checkInternetConnection called');
+    try {
+      await checkInternetConnection();
+      Logger.debug('AdaApi::checkInternetConnection success');
+
+      return true;
+    } catch (error) {
+      Logger.error('AdaApi::checkInternetConnection error', { error });
       throw new GenericApiError();
     }
   };
