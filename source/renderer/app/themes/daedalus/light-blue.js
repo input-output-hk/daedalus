@@ -356,7 +356,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-internet-offline-window-text-color': '#fafbfc',
     '--theme-internet-offline-window-description-color':
       'rgba(250, 251, 252, 0.7)',
-    '--theme-internet-offline-window-button-background-color': '#243e62',
+    '--theme-internet-offline-window-button-background-color':
+      'rgba(0, 0, 0, 0.1)',
     '--theme-internet-offline-window-button-background-color-active': '#e9e9ea',
     '--theme-internet-offline-window-button-background-color-hover': '#fafbfc',
     '--theme-internet-offline-window-button-text-color': '#fafbfc',

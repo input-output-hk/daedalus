@@ -27,8 +27,8 @@ const messages = defineMessages({
 });
 
 type Props = {
-  checking: boolean,
-  checkAgain: Function,
+  isCheckingInternetConnectionStatus: boolean,
+  checkInternetConnectionStatus: Function,
 };
 
 export default class InternetConnectionOfflineStatus extends Component<Props> {
@@ -38,7 +38,10 @@ export default class InternetConnectionOfflineStatus extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { checking, checkAgain } = this.props;
+    const {
+      isCheckingInternetConnectionStatus,
+      checkInternetConnectionStatus,
+    } = this.props;
 
     return (
       <div className={styles.component}>
@@ -59,8 +62,9 @@ export default class InternetConnectionOfflineStatus extends Component<Props> {
             className={styles.checkAgainButton}
             label={intl.formatMessage(messages.checkAgainLabel)}
             skin={ButtonSpinnerSkin}
-            loading={checking}
-            onClick={checkAgain}
+            disabled={isCheckingInternetConnectionStatus}
+            loading={isCheckingInternetConnectionStatus}
+            onClick={checkInternetConnectionStatus}
           />
         </div>
       </div>

@@ -667,18 +667,6 @@ export default class NetworkStatusStore extends Store {
   };
 
   // DEFINE COMPUTED VALUES
-  @computed get isInternetConnectionChecking(): boolean {
-    return this.checkInternetConnectionRequest.isExecuting;
-  }
-
-  @computed get isInternetConnectionChecked(): boolean {
-    return (
-      this.checkInternetConnectionRequest.wasExecuted &&
-      (this.checkInternetConnectionRequest.result !== null ||
-        this.checkInternetConnectionRequest.error !== null)
-    );
-  }
-
   @computed get isConnected(): boolean {
     return this.isNodeResponding && this.isNodeSubscribed && this.isNodeSyncing;
   }

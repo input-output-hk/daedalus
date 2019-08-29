@@ -12,14 +12,14 @@ storiesOf('Internet Connection Status', module)
 
   .add('Offline - default', () => (
     <InternetConnectionOfflineStatus
-      checking={false}
-      checkAgain={action('checkAgain')}
+      isCheckingInternetConnectionStatus={false}
+      checkInternetConnectionStatus={action('checkInternetConnectionStatus')}
     />
   ))
 
   .add('Offline - with checking spinner', () => (
     <InternetConnectionOfflineStatus
-      checking
-      checkAgain={action('checkAgain')}
+      isCheckingInternetConnectionStatus
+      checkInternetConnectionStatus={action('checkInternetConnectionStatus')}
     />
   ));
