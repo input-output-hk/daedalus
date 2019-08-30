@@ -16,7 +16,7 @@ const pageNames = {
 };
 
 /* eslint-disable react/display-name  */
-export default (story, context) => {
+export default (story: Object, context: Object) => {
   const storyWithKnobs = withKnobs(story, context);
 
   const menu = (
