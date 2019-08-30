@@ -582,7 +582,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-sidebar-category-background-color-active': '#233856',
     '--theme-sidebar-category-text-color': '#fafbfc',
     '--theme-sidebar-layout-shadow-color': 'rgba(0, 0, 0, 0.25)',
-    '--theme-sidebar-layout-topbar-shadow-color': 'rgba(0, 0, 0, 0.25)',
+    '--theme-sidebar-layout-topbar-shadow-color': 'rgba(0, 0, 0, 0.08)',
     '--theme-sidebar-menu-background-color': '#233856',
     '--theme-sidebar-menu-item-background-color-hover': 'rgba(30, 48, 74, 0.5)',
     '--theme-sidebar-menu-item-background-color-active': '#1e304a',
