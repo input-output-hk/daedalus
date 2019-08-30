@@ -37,8 +37,13 @@ export default class StoryWrapper extends Component<Props, State> {
     setInitialState(this.state);
   }
 
-  handleReceiveParam = ({ param, value }) =>
-    this.setState(set({}, param, value));
+  handleReceiveParam = ({
+    param,
+    value,
+  }: {
+    param: Array<*> | string,
+    value: *,
+  }) => this.setState(set({}, param, value));
 
   render() {
     const { children: Story } = this.props;
