@@ -78,8 +78,8 @@ import {
 
 // Addresses Types
 import type {
-  AdaAddress,
-  AdaAddresses,
+  Address,
+  Addresses,
   GetAddressesRequest,
   GetAddressesResponse,
   CreateAddressRequest,
@@ -189,7 +189,7 @@ export default class AdaApi {
     });
     const { walletId, queryParams } = request;
     try {
-      const response: AdaAddresses = await getAddresses(
+      const response: Addresses = await getAddresses(
         this.config,
         walletId,
         queryParams
@@ -550,7 +550,7 @@ export default class AdaApi {
       ? encryptPassphrase(passwordString)
       : '';
     try {
-      const address: AdaAddress = await createAddress(this.config, {
+      const address: Address = await createAddress(this.config, {
         spendingPassword,
         accountIndex,
         walletId,
@@ -571,7 +571,7 @@ export default class AdaApi {
       parameters: { address },
     });
     try {
-      const response: AdaAddress = await getAddress(this.config, { address });
+      const response: Address = await getAddress(this.config, { address });
       Logger.debug('AdaApi::isValidAdaAddress success', { response });
       return true;
     } catch (error) {
@@ -1078,7 +1078,7 @@ const _createWalletFromServerData = action(
 
 const _createAddressFromServerData = action(
   'AdaApi::_createAddressFromServerData',
-  (address: AdaAddress) => {
+  (address: Address) => {
     const { id, state } = address;
     return new WalletAddress({
       id,

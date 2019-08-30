@@ -7,12 +7,12 @@ export type GetAddressesRequestQueryParams = {
   state: AddressState,
 };
 
-export type AdaAddress = {
+export type Address = {
   id: string,
   state: AddressState,
 };
 
-export type AdaAddresses = Array<AdaAddress>;
+export type Addresses = Array<Address>;
 
 export type GetAddressesRequest = {
   walletId: string,

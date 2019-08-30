@@ -11,10 +11,10 @@ import type { StakePool } from '../api/staking/types';
 
 export const WalletSyncStateStatuses: {
   RESTORING: SyncStateStatus,
-  SYNCED: SyncStateStatus,
+  READY: SyncStateStatus,
 } = {
   RESTORING: 'restoring',
-  SYNCED: 'ready',
+  READY: 'ready',
 };
 
 export const WalletDelegationStatuses: {

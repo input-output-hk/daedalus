@@ -1,9 +1,9 @@
 // @flow
-import type { AdaAddresses } from '../addresses/types';
+import type { Addresses } from '../addresses/types';
 
 export type Account = {
   amount: number,
-  addresses: AdaAddresses,
+  addresses: Addresses,
   name: string,
   walletId: string,
   index: number,
