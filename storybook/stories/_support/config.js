@@ -14,7 +14,7 @@ export const themes = {
   Yellow: yellow,
   White: white,
 };
-export const themeNames = Object.keys(themes);
+export const themeNames: Array<any> = Object.keys(themes);
 export const themesIds = {
   Cardano: 'cardano',
   DarkBlue: 'dark-blue',
@@ -28,14 +28,14 @@ export const locales = {
   English: 'en-US',
   Japanese: 'ja-JP',
 };
-export const localeNames = Object.keys(locales);
+export const localeNames: Array<any> = Object.keys(locales);
 
 export const operatingSystems = {
   Windows: 'windows',
   Linux: 'linux',
   Mac: 'mac',
 };
-export const osNames = Object.keys(operatingSystems);
+export const osNames: Array<any> = Object.keys(operatingSystems);
 
 // These differences are due to the different menu heights on each OS
 export const osMinWindowHeights = {
