@@ -11,11 +11,11 @@ import {
   DefaultSyncingConnectingStory,
   ConnectivityIssuesSyncingConnectingStory,
   SyncIssuesSyncingConnectingStory,
-} from './Loading-SyncingConnecting.stories';
-import { NoDiskSpaceErrorStory } from './Loading-NoDiskSpaceError.stories';
-import { SystemTimeErrorStory } from './Loading-SystemTimeError.stories';
-import { ManualUpdateStory } from './Loading-ManualUpdate.stories';
-import { DataLayerMigrationStory } from './Loading-DataLayerMigration.stories';
+} from './loading/Loading-SyncingConnecting.stories';
+import { NoDiskSpaceErrorStory } from './loading/Loading-NoDiskSpaceError.stories';
+import { SystemTimeErrorStory } from './loading/Loading-SystemTimeError.stories';
+import { ManualUpdateStory } from './loading/Loading-ManualUpdate.stories';
+import { DataLayerMigrationStory } from './loading/Loading-DataLayerMigration.stories';
 
 storiesOf('Loading|Syncing and Connecting', module)
   .addDecorator((story, context) => (
