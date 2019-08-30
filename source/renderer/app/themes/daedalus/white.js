@@ -558,7 +558,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-settings-menu-item-text-color-active': '#2d2d2d',
     '--theme-settings-menu-item-text-color-disabled': '#2d2d2d80',
     '--theme-settings-menu-item-background-color-active':
-      'rgba(94, 96, 102, 0.07)',
+      'rgba(45, 45, 45, 0.07)',
     '--theme-settings-menu-item-left-border-color-active': '#29b595',
     '--theme-settings-theme-select-title-color': '#2d2d2d',
   },
