@@ -360,7 +360,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
   notification: {
     '--theme-notification-message-background-color': '#36374df2',
     '--theme-notification-message-text-color': '#ffffff',
-    '--theme-legacy-badge-background-color': '#d34452',
+    '--theme-legacy-badge-background-color': '#ab1700',
     '--theme-legacy-notification-background-color': '#ab2712',
     '--theme-legacy-notification-learn-more-button-text-color': '#ffffff',
     '--theme-legacy-notification-learn-more-button-background-color':
@@ -372,7 +372,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-legacy-notification-move-button-text-color': '#ab2712',
     '--theme-legacy-notification-move-button-background-color': '#ffffff',
     '--theme-legacy-notification-move-button-background-color-hover':
-      '#121326e6',
+      'rgba(250, 251, 252, 0.9)',
     '--theme-legacy-notification-move-button-background-color-active':
       '#121326cc',
     '--theme-legacy-notification-title-color': '#ffffff',

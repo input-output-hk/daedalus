@@ -358,7 +358,7 @@ export const WHITE_THEME_OUTPUT = {
   notification: {
     '--theme-notification-message-background-color': 'rgba(41, 181, 149, 0.9)',
     '--theme-notification-message-text-color': '#fafbfc',
-    '--theme-legacy-badge-background-color': '#d34452',
+    '--theme-legacy-badge-background-color': '#ab1700',
     '--theme-legacy-notification-background-color': '#ab2712',
     '--theme-legacy-notification-learn-more-button-text-color': '#fafbfc',
     '--theme-legacy-notification-learn-more-button-background-color':

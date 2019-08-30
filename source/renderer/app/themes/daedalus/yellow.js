@@ -364,7 +364,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-notification-message-text-color': '#2d2d2d',
     '--theme-notification-message-checkmark-icon-color': '#2d2d2d',
     '--theme-notification-message-close-icon-color': '#2d2d2d',
-    '--theme-legacy-badge-background-color': '#d34452',
+    '--theme-legacy-badge-background-color': '#ab1700',
     '--theme-legacy-notification-background-color': '#ab2712',
     '--theme-legacy-notification-learn-more-button-text-color': '#fafbfc',
     '--theme-legacy-notification-learn-more-button-background-color':
