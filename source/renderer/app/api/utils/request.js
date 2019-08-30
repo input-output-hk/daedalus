@@ -1,5 +1,5 @@
 // @flow
-import { size, has, get, omit } from 'lodash';
+import { size, has, get, omit, includes } from 'lodash';
 import querystring from 'querystring';
 import { encryptPassphrase, getContentLength } from '.';
 
@@ -24,6 +24,9 @@ function typedRequest<Response>(
   // requestOptions?: { returnMeta: boolean }
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
+    const allowedErrorExceptionPaths = [
+      '/api/internal/next-update', // when nextAdaUpdate receives a 404, it isn't an error
+    ];
     const options: RequestOptions = Object.assign({}, httpOptions);
     // const { returnMeta } = Object.assign({}, requestOptions);
     let hasRequestBody = false;
@@ -65,18 +68,19 @@ function typedRequest<Response>(
       };
     }
 
-    // TODO: Delete once HTTPS is supported by the new API
+    // @API TODO:  Delete once HTTPS is supported by the new API
     const httpOnlyOptions = {
+      ...options,
       hostname: options.hostname,
       method: options.method,
       path: options.path,
       port: options.port,
     };
 
+    // @API TODO: Uncomment / switch once HTTPS is supported by the new API
+    // const httpsRequest = global.https.request(options);
     const httpsRequest = global.http.request(httpOnlyOptions);
 
-    // TODO: Uncomment once HTTPS is supported by the new API
-    // const httpsRequest = global.https.request(options);
     if (hasRequestBody) {
       httpsRequest.write(requestBody);
     }
@@ -91,48 +95,38 @@ function typedRequest<Response>(
       // Resolve JSON results and handle backend errors
       response.on('end', () => {
         try {
-          // When deleting a wallet, the API does not return any data in body
-          // even if it was successful
           const { statusCode, statusMessage } = response;
+          const successResponse =
+            (statusCode >= 200 && statusCode <= 206) ||
+            (statusCode === 404 &&
+              includes(allowedErrorExceptionPaths, options.path));
 
-          if (!body && statusCode >= 200 && statusCode <= 206) {
-            // adds status and data properties so JSON.parse doesn't throw an error
-            body = `{
-              "status": "success",
-              "data": "statusCode: ${statusCode} -- statusMessage: ${statusMessage}"
-            }`;
-          } else if (
-            options.path === '/api/internal/next-update' &&
-            statusCode === 404
-          ) {
-            // when nextAdaUpdate receives a 404, it isn't an error
-            // it means no updates are available
-            body = `{
-              "status": "success",
-              "data": null
-            }`;
+          if (successResponse) {
+            const data =
+              statusCode === 404
+                ? null
+                : `"statusCode: ${statusCode} -- statusMessage: ${statusMessage}"`;
+            // When deleting a wallet, the API does not return any data in body
+            // even if it was successful
+            if (!body) {
+              body = `{
+                "status": ${statusCode},
+                "data": ${data}
+              }`;
+            }
+            resolve(JSON.parse(body));
+          } else if (body) {
+            const parsedBody = JSON.parse(body);
+            if (parsedBody.code && parsedBody.message) {
+              reject(parsedBody);
+            } else {
+              // TODO: find a way to record this case and report to the backend team
+              reject(new Error('Unknown response from backend.'));
+            }
+          } else {
+            // TODO: find a way to record this case and report to the backend team
+            reject(new Error('Unknown response from backend.'));
           }
-
-          resolve(JSON.parse(body));
-          // Note: The V2 API does not have the status field.
-          // Is this not re-creating HTTP status codes? I don't think this
-          // should be required. We should rely on status codes now we have
-          // the shiny new API
-          //
-          // const status = get(parsedBody, 'status', false);
-          // if (status) {
-          //   if (status === 'success') {
-          //     resolve(returnMeta ? parsedBody : parsedBody.data);
-          //   } else if (status === 'error' || status === 'fail') {
-          //     reject(parsedBody);
-          //   } else {
-          //     // TODO: find a way to record this case and report to the backend team
-          //     reject(new Error('Unknown response from backend.'));
-          //   }
-          // } else {
-          //   // TODO: find a way to record this case and report to the backend team
-          //   reject(new Error('Unknown response from backend.'));
-          // }
         } catch (error) {
           // Handle internal server errors (e.g. HTTP 500 - 'Something went wrong')
           reject(new Error(error));
