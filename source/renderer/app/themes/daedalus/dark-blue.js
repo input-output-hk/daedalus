@@ -576,10 +576,10 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-settings-menu-box-background-color': '#263345',
     '--theme-settings-menu-box-border': 'none',
     '--theme-settings-menu-item-text-color': '#cecfd1',
-    '--theme-settings-menu-item-text-color-active': '#cecfd1',
+    '--theme-settings-menu-item-text-color-active': '#e9f4fe',
     '--theme-settings-menu-item-text-color-disabled': '#7a8691',
-    '--theme-settings-menu-item-background-color-active': '#536370',
-    '--theme-settings-menu-item-left-border-color-active': '#0b1926',
+    '--theme-settings-menu-item-background-color-active': '#e9f4fe12',
+    '--theme-settings-menu-item-left-border-color-active': '#536370',
     '--theme-settings-theme-select-title-color': '#cecfd1',
   },
   sidebar: {

@@ -560,8 +560,8 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-settings-menu-item-text-color': '#ffffff',
     '--theme-settings-menu-item-text-color-active': '#ffffff',
     '--theme-settings-menu-item-text-color-disabled': '#ffffff80',
-    '--theme-settings-menu-item-background-color-active': '#121326',
-    '--theme-settings-menu-item-left-border-color-active': '#36374d',
+    '--theme-settings-menu-item-background-color-active': 'rgba(255, 255, 255, 0.07)',
+    '--theme-settings-menu-item-left-border-color-active': '#1fc1c3',
     '--theme-settings-theme-select-title-color': '#ffffff',
   },
   sidebar: {

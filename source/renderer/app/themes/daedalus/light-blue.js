@@ -498,7 +498,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--rp-modal-overlay-bg-color': 'rgba(0, 0, 0, 0.4)',
   },
   rpOptions: {
-    '--rp-option-bg-color': '#fff',
+    '--rp-option-bg-color': '#fafbfc',
     '--rp-option-bg-color-highlighted': '#edf0f3',
     '--rp-option-border-color': '#c6cdd6',
     '--rp-option-checkmark-color': '#5e6066',
