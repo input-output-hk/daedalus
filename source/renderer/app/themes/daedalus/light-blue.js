@@ -141,6 +141,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-data-migration-layer-box-shadow-color': 'rgba(0, 0, 0, 0.25)',
     '--theme-data-migration-layer-button-background-color-hover': '#fafbfc',
     '--theme-data-migration-layer-text-color': '#fafbfc',
+    '--theme-data-migration-layer-text-color-hover': '#243E62',
     '--theme-data-migration-layer-text-opacity-color': '#fafbfc',
     '--theme-data-migration-button-border-color': '#fafbfc',
     '--theme-data-migration-button-label-color': '#fafbfc',

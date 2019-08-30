@@ -141,6 +141,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-data-migration-layer-box-shadow-color': '#fdcd68',
     '--theme-data-migration-layer-button-background-color-hover': '#2d2d2d',
     '--theme-data-migration-layer-text-color': '#2d2d2d',
+    '--theme-data-migration-layer-text-color-hover': '#ffffff',
     '--theme-data-migration-layer-text-opacity-color': '#fafbfc',
     '--theme-data-migration-button-border-color': '#2d2d2d',
     '--theme-data-migration-button-label-color': '#2d2d2d',

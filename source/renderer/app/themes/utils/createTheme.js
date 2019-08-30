@@ -433,6 +433,7 @@ export const createDaedalusComponentsTheme = (
       }`,
       '--theme-data-migration-layer-text-opacity-color': `${text.secondary}`,
       '--theme-data-migration-layer-text-color': `${text.secondary}`,
+      '--theme-data-migration-layer-text-color-hover': `${text.primary}`,
       '--theme-data-migration-button-border-color': `${text.secondary}`,
       '--theme-data-migration-button-label-color': `${text.secondary}`,
     },
