@@ -421,9 +421,11 @@ export const YELLOW_THEME_OUTPUT = {
   },
   rpBubble: {
     '--rp-bubble-bg-color': '#fff',
-    '--rp-bubble-border-color': 'rgba(45, 45, 45, 0.2)',
+    '--rp-bubble-border-color': 'rgba(45, 45, 45, 0.7)',
     '--rp-bubble-border-radius': '2px',
     '--rp-bubble-arrow-bg-color': '#edeeef',
+    '--rp-bubble-box-shadow':
+      '0 4px 16px 0 rgba(0, 0, 0, 0.12), 0 0 8px 0 rgba(0, 0, 0, 0.06)',
   },
   rpButton: {
     '--rp-button-bg-color': '#2d2d2d',
@@ -486,7 +488,7 @@ export const YELLOW_THEME_OUTPUT = {
   },
   rpOptions: {
     '--rp-option-bg-color': '#fff',
-    '--rp-option-bg-color-highlighted': '#edeeef',
+    '--rp-option-bg-color-highlighted': 'rgba(45, 45, 45, 0.07)',
     '--rp-option-border-color': 'rgba(45, 45, 45, 0.2)',
     '--rp-option-checkmark-color': '#2d2d2d',
     '--rp-option-line-height': '22px',
@@ -498,10 +500,10 @@ export const YELLOW_THEME_OUTPUT = {
     '--rp-select-arrow-bg-color': 'rgba(45, 45, 45, 0.2)',
     '--rp-select-arrow-bg-color-open': '#2d2d2d',
     '--rp-select-input-bg-color': '#fff',
-    '--rp-select-input-border-color': 'rgba(45, 45, 45, 0.2)',
-    '--rp-select-input-border-color-focus': '#2d2d2d',
-    '--rp-select-input-text-color': '#2d2d2d',
-    '--rp-select-input-placeholder-color': '#2d2d2d80',
+    '--rp-select-input-border-color': 'rgba(45, 45, 45, 0.3)',
+    '--rp-select-input-border-color-focus': 'rgba(45, 45, 45, 0.7)',
+    '--rp-select-input-text-color': 'rgba(45, 45, 45, 0.7)',
+    '--rp-select-input-placeholder-color': 'rgba(45, 45, 45, 0.5)',
   },
   rpStepper: {
     '--rp-stepper-bullet-background-color-disabled': '#ffffff',
