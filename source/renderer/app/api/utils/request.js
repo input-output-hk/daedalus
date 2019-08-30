@@ -104,7 +104,7 @@ function typedRequest<Response>(
           if (successResponse) {
             const data =
               statusCode === 404
-                ? null
+                ? 'null'
                 : `"statusCode: ${statusCode} -- statusMessage: ${statusMessage}"`;
             // When deleting a wallet, the API does not return any data in body
             // even if it was successful
