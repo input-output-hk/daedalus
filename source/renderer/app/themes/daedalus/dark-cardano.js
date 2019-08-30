@@ -611,14 +611,14 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-staking-stake-pool-tooltip-retirement-text-color': '#fafbfc',
     '--theme-staking-stake-pool-tooltip-retirement-background-color': '#ea4c5b',
     '--theme-staking-stake-pool-tooltip-delegate-button-background-color':
-      '#36374d',
+      '#1fc1c3',
     '--theme-staking-stake-pool-tooltip-delegate-button-hover-background-color':
-      '#5e5f71',
+      '#26e7eb',
     '--theme-staking-stake-pool-tooltip-delegate-button-active-background-color':
-      '#262736',
-    '--theme-staking-stake-pool-tooltip-delegate-button-text-color': '#ffffff',
+      '#26e7eb',
+    '--theme-staking-stake-pool-tooltip-delegate-button-text-color': 'rgba(18, 19, 38, 1)',
     '--theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color':
-      '#ffffff',
+      'rgba(18, 19, 38, 1)',
     '--theme-staking-stake-pool-tooltip-delegate-button-border-color':
       'transparent',
     '--theme-staking-progress-label-light': 'rgba(18, 19, 38, 1)',
