@@ -560,7 +560,8 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-settings-menu-item-text-color': '#ffffff',
     '--theme-settings-menu-item-text-color-active': '#ffffff',
     '--theme-settings-menu-item-text-color-disabled': '#ffffff80',
-    '--theme-settings-menu-item-background-color-active': 'rgba(255, 255, 255, 0.07)',
+    '--theme-settings-menu-item-background-color-active':
+      'rgba(255, 255, 255, 0.07)',
     '--theme-settings-menu-item-left-border-color-active': '#1fc1c3',
     '--theme-settings-theme-select-title-color': '#ffffff',
   },
@@ -616,7 +617,8 @@ export const DARK_CARDANO_THEME_OUTPUT = {
       '#26e7eb',
     '--theme-staking-stake-pool-tooltip-delegate-button-active-background-color':
       '#26e7eb',
-    '--theme-staking-stake-pool-tooltip-delegate-button-text-color': 'rgba(18, 19, 38, 1)',
+    '--theme-staking-stake-pool-tooltip-delegate-button-text-color':
+      'rgba(18, 19, 38, 1)',
     '--theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color':
       'rgba(18, 19, 38, 1)',
     '--theme-staking-stake-pool-tooltip-delegate-button-border-color':

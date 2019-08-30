@@ -575,7 +575,8 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-settings-menu-item-text-color': '#5e6066',
     '--theme-settings-menu-item-text-color-active': '#5e6066',
     '--theme-settings-menu-item-text-color-disabled': '#b3b3b3',
-    '--theme-settings-menu-item-background-color-active': 'rgba(32, 34, 37, 0.07)',
+    '--theme-settings-menu-item-background-color-active':
+      'rgba(32, 34, 37, 0.07)',
     '--theme-settings-menu-item-left-border-color-active': '#2cbb69',
     '--theme-settings-theme-select-title-color': '#5e6066',
   },
