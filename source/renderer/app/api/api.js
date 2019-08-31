@@ -174,7 +174,7 @@ export default class AdaApi {
     try {
       const response: AdaWallets = await getWallets(this.config);
       Logger.debug('AdaApi::getWallets success', { wallets: response });
-      return response.map(wallet => _createWalletFromServerData(wallet));
+      return response.map(_createWalletFromServerData);
     } catch (error) {
       Logger.error('AdaApi::getWallets error', { error });
       throw new GenericApiError();
@@ -196,9 +196,7 @@ export default class AdaApi {
       );
 
       Logger.debug('AdaApi::getAddresses success', { addresses: response });
-      const addresses = response.map(data =>
-        _createAddressFromServerData(data)
-      );
+      const addresses = response.map(_createAddressFromServerData);
 
       return new Promise(resolve => resolve({ accountIndex: 0, addresses }));
     } catch (error) {
