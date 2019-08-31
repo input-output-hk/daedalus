@@ -726,7 +726,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-utxo-background-color': 'rgba(45, 45, 45, 0.05)',
     '--theme-utxo-title-text-color': '#2d2d2d',
     '--theme-utxo-title-description-color': '#2d2d2db3',
-    '--theme-utxo-bar-color': '#2d2d2d',
+    '--theme-utxo-bar-color': 'rgba(45, 45, 45, 0.5)',
     '--theme-utxo-label-text-color': '#2d2d2d73',
     '--theme-utxo-tick-text-color': '#2d2d2d73',
     '--theme-utxo-cursor-background-color': 'rgba(45, 45, 45, 0.1)',
