@@ -543,7 +543,7 @@ export const WHITE_THEME_OUTPUT = {
     '--rp-tooltip-text-color': '#fafbfc',
   },
   scrollbar: {
-    '--theme-scrollbar-thumb-background': '#c7c7c7',
+    '--theme-scrollbar-thumb-background': 'rgba(45, 45, 45, 0.3)',
   },
   sendConfirmation: {
     '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',

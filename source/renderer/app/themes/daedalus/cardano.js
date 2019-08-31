@@ -561,7 +561,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--rp-tooltip-text-color': '#fafbfc',
   },
   scrollbar: {
-    '--theme-scrollbar-thumb-background': '#c8ccce',
+    '--theme-scrollbar-thumb-background': 'rgba(200, 204, 206, 0.3)',
   },
   sendConfirmation: {
     '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',
