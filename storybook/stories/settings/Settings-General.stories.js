@@ -15,8 +15,8 @@ import DisplaySettings from '../../../source/renderer/app/components/settings/ca
 import SupportSettings from '../../../source/renderer/app/components/settings/categories/SupportSettings';
 import TermsOfUseSettings from '../../../source/renderer/app/components/settings/categories/TermsOfUseSettings';
 
-const getParamName = (obj, itemName) =>
-  Object.entries(obj).find(entry => itemName === entry[1]);
+const getParamName = (obj, itemName): any =>
+  Object.entries(obj).find((entry: [any, any]) => itemName === entry[1]);
 
 /* eslint-disable consistent-return */
 storiesOf('SETTINGS|Settings', module)

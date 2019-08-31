@@ -22,7 +22,7 @@ export type DaedalusMenuState = {
 };
 
 class DaedalusMenu extends Component<Props, DaedalusMenuState> {
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     const { themeName, localeName, osName } = getInitialState();
     this.state = {
