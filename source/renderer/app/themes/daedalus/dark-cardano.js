@@ -543,7 +543,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
   },
   rpTooltip: {
     '--rp-tooltip-bg-color': '#ffffff',
-    '--rp-tooltip-text-color': '#000000',
+    '--rp-tooltip-text-color': '#ffffff',
   },
   scrollbar: {
     '--theme-scrollbar-thumb-background': '#fff',
