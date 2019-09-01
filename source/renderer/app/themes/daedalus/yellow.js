@@ -487,7 +487,7 @@ export const YELLOW_THEME_OUTPUT = {
   },
   rpOptions: {
     '--rp-option-bg-color': '#fff',
-    '--rp-option-bg-color-highlighted': '#edeeef',
+    '--rp-option-bg-color-highlighted': '#f0f0f0',
     '--rp-option-border-color': 'rgba(45, 45, 45, 0.2)',
     '--rp-option-checkmark-color': '#2d2d2d',
     '--rp-option-line-height': '22px',
