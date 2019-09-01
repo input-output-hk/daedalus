@@ -574,7 +574,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-sidebar-category-text-color': '#2d2d2d',
     '--theme-sidebar-layout-shadow-color': 'rgba(0, 0, 0, 0.25)',
     '--theme-sidebar-layout-topbar-shadow-color': 'rgba(0, 0, 0, 0.25)',
-    '--theme-sidebar-menu-background-color': '#ffb923',
+    '--theme-sidebar-menu-background-color': '#f6af18',
     '--theme-sidebar-menu-item-background-color-hover':
       'rgba(237, 167, 14, 0.5)',
     '--theme-sidebar-menu-item-background-color-active': '#eea70e',
