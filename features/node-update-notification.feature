@@ -3,26 +3,32 @@ Feature: Node Update Notification
 
   Background:
     Given I have completed the basic setup
-    And I have the following wallets:
-      | name        |
-      | Test wallet |
-    When I am on the "Test wallet" wallet "summary" screen
-    When I make a node update available
 
-  Scenario: Notification shows up when update available
-    Then I should see the node update notification component
-    And I should see the notification's title bar
-    And I should see the expected update version in the notification's title bar
-    And I should see the notification's toggle button
-    And I should see the notification's update message
-    And I should see the notification's accept button
-    And I should see the notification's postpone button
+  Scenario: Application version and next update version not match
+    When I set next update version to "10"
+    And I set next application version to "15"
+    Then I should see the node update notification overlay
+    And Overlay should display "newer version" as available version and actions
+  
+  Scenario: Application version and next update version match
+    When I set next application version to "15"
+    And I set next update version to "15"
+    Then I should see the node update notification overlay
+    And Overlay should display "0.14.0" as available version and actions
 
   Scenario: User postpones a node update notification
-    When I click the notification's postpone button
+    When I set next application version to "15"
+    And I set next update version to "15"
+    Then I should see the node update notification overlay
+    And Overlay should display "0.14.0" as available version and actions
+    When I click the postpone update button
     Then I should not see the notification component anymore
 
   @restartApp
   Scenario: User accepts a node update notification
-    When I click the notification's accept button
-    Then Daedalus should quit
+    When I set next update version to "15"
+    And I set next application version to "15"
+    Then I should see the node update notification overlay
+    And Overlay should display "0.14.0" as available version and actions
+    When I click the accept update button
+    Then Daedalus should quit 

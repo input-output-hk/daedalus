@@ -247,6 +247,49 @@ export const createDaedalusComponentsTheme = (
       '--theme-back-to-top-button-text-color': `${text.secondary}`,
       '--theme-back-to-top-button-box-shadow-color': 'rgba(0, 0, 0, 0.36)',
     },
+    automaticUpdate: {
+      '--theme-automatic-update-overlay-background-color': `${chroma(
+        background.secondary.regular
+      ).alpha(0.96)}`,
+      '--theme-automatic-update-overlay-button-background-color': `${
+        background.secondary.dark
+      }`,
+      '--theme-automatic-update-overlay-button-background-color-hover': `${
+        text.secondary
+      }`,
+      '--theme-automatic-update-overlay-button-icon-color': `${text.secondary}`,
+      '--theme-automatic-update-overlay-button-icon-color-hover': `${
+        background.secondary.regular
+      }`,
+      '--theme-automatic-update-overlay-button-text-color-hover': `${
+        background.secondary.regular
+      }`,
+      '--theme-automatic-update-overlay-button-border-color': `${
+        text.secondary
+      }`,
+      '--theme-automatic-update-overlay-text-color': `${chroma(
+        text.secondary
+      ).alpha(0.7)}`,
+      '--theme-automatic-update-overlay-text-highlight-color': `${
+        text.secondary
+      }`,
+      '--theme-automatic-update-overlay-title-text-color': `${text.secondary}`,
+      '--theme-automatic-update-overlay-button-label-color': `${
+        text.secondary
+      }`,
+      '--theme-automatic-update-overlay-button-label-color-hover': `${
+        text.secondary
+      }`,
+      '--theme-automatic-update-overlay-button-label-color-light': `${chroma(
+        text.secondary
+      ).alpha(0.8)}`,
+      '--theme-automatic-update-overlay-close-button-color': `${
+        background.primary.lightest
+      }`,
+      '--theme-automatic-update-overlay-close-button-hover-background': `${
+        background.secondary.dark
+      }`,
+    },
     blockConsolidation: {
       '--theme-block-consolidation-background-color': `${
         background.secondary.regular

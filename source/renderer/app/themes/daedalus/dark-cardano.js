@@ -22,6 +22,25 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-back-to-top-button-text-color': '#000000',
     '--theme-back-to-top-button-box-shadow-color': 'rgba(0, 0, 0, 0.36)',
   },
+  automaticUpdate: {
+    '--theme-automatic-update-overlay-background-color': '#36374df5',
+    '--theme-automatic-update-overlay-button-background-color': '#313245',
+    '--theme-automatic-update-overlay-button-background-color-hover': '#ffffff',
+    '--theme-automatic-update-overlay-button-icon-color': '#ffffff',
+    '--theme-automatic-update-overlay-button-icon-color-hover': '#36374d',
+    '--theme-automatic-update-overlay-button-text-color-hover': '#36374d',
+    '--theme-automatic-update-overlay-button-border-color': '#ffffff',
+    '--theme-automatic-update-overlay-text-color': '#ffffffb3',
+    '--theme-automatic-update-overlay-text-highlight-color': '#ffffff',
+    '--theme-automatic-update-overlay-title-text-color': '#ffffff',
+    '--theme-automatic-update-overlay-button-label-color': '#ffffff',
+    '--theme-automatic-update-overlay-button-label-color-hover': '#000000',
+    '--theme-automatic-update-overlay-button-label-color-light':
+      'rgba(255, 255, 255, 0.8)',
+    '--theme-automatic-update-overlay-close-button-color': '#fff',
+    '--theme-automatic-update-overlay-close-button-hover-background':
+      'rgba(0, 0, 0, 0.1)',
+  },
   blockConsolidation: {
     '--theme-block-consolidation-background-color': '#36374df5',
     '--theme-block-consolidation-title-text-color': '#fafbfc',

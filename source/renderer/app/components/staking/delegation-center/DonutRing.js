@@ -18,24 +18,26 @@ export default class DonutRing extends Component<Props> {
 
   render() {
     const { percentage, sqSize, strokeWidth, showText } = this.props;
+
+    const invertedPercentage = 100 - percentage;
     const radius = (sqSize - strokeWidth) / 2;
     const viewBox = `0 0 ${sqSize} ${sqSize}`;
     const dashArray = radius * Math.PI * 2;
-    const dashOffset = dashArray - (dashArray * percentage) / 100;
-    const rotateDeg = -((percentage / 100) * 360 + 90);
+    const dashOffset = dashArray - (dashArray * invertedPercentage) / 100;
+    const rotateDeg = -((invertedPercentage / 100) * 360 + 90);
 
     return (
       <div className={styles.component}>
         <svg width={sqSize} height={sqSize} viewBox={viewBox}>
           <circle
-            className={styles.circleBackground}
+            className={styles.circleProgress}
             cx={sqSize / 2}
             cy={sqSize / 2}
             r={radius}
             strokeWidth={`${strokeWidth}px`}
           />
           <circle
-            className={styles.circleProgress}
+            className={styles.circleBackground}
             cx={sqSize / 2}
             cy={sqSize / 2}
             r={radius}
@@ -54,7 +56,7 @@ export default class DonutRing extends Component<Props> {
               dy=".3em"
               textAnchor="middle"
             >
-              {`${percentage}%`}
+              {`${invertedPercentage}%`}
             </text>
           )}
         </svg>

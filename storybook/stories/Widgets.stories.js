@@ -7,7 +7,6 @@ import StoryDecorator from './support/StoryDecorator';
 import BigButtonForDialogs from '../../source/renderer/app/components/widgets/BigButtonForDialogs';
 import MnemonicInputWidget from '../../source/renderer/app/components/widgets/forms/MnemonicInputWidget';
 import NotificationMessage from '../../source/renderer/app/components/widgets/NotificationMessage';
-import NodeUpdateNotification from '../../source/renderer/app/components/notifications/NodeUpdateNotification';
 import createIcon from '../../source/renderer/app/assets/images/create-ic.inline.svg';
 import importIcon from '../../source/renderer/app/assets/images/import-ic.inline.svg';
 import joinSharedIcon from '../../source/renderer/app/assets/images/join-shared-ic.inline.svg';
@@ -80,18 +79,6 @@ storiesOf('Widgets', module)
         <strong>1gGHFU9VsXV89kcJNzibNo8wJugxNtWsaqbjWaZEKzLtMGD</strong>
         copied to clipboard
       </NotificationMessage>
-    </div>
-  ))
-
-  .add('NodeUpdateNotification', () => (
-    <div>
-      <NodeUpdateNotification
-        version="99"
-        onAccept={action('onAccept')}
-        onPostpone={action('onPostpone')}
-        onToggleExpanded={action('onToggleExpanded')}
-        isExpanded
-      />
     </div>
   ))
 
