@@ -9,6 +9,6 @@ export const deleteWallet = (
 ): Promise<*> =>
   request({
     method: 'DELETE',
-    path: `/api/v1/wallets/${walletId}`,
+    path: `/v2/wallets/${walletId}`,
     ...config,
   });
