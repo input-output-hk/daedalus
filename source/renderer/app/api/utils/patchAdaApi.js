@@ -1,7 +1,7 @@
 // @flow
 import { get } from 'lodash';
 import AdaApi from '../api';
-import { getNodeInfo } from '../nodes/requests/getNodeInfo';
+// import { getNodeInfo } from '../nodes/requests/getNodeInfo';
 import { getNodeSettings } from '../nodes/requests/getNodeSettings';
 import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
 import { GenericApiError } from '../common/errors';
@@ -9,7 +9,7 @@ import { Logger } from '../../utils/logging';
 import type { NodeInfoQueryParams } from '../nodes/requests/getNodeInfo';
 import type {
   LatestAppVersionInfoResponse,
-  NodeInfoResponse,
+  // NodeInfoResponse,
   GetNetworkStatusResponse,
   NodeSettingsResponse,
   GetNodeSettingsResponse,
@@ -33,6 +33,7 @@ export default (api: AdaApi) => {
   ): Promise<GetNetworkStatusResponse> => {
     Logger.debug('AdaApi::getNetworkStatus (PATCHED) called');
     try {
+      /* @API TODO: Uncomment once implemented
       const nodeInfo: NodeInfoResponse = await getNodeInfo(
         api.config,
         queryInfoParams
@@ -46,7 +47,13 @@ export default (api: AdaApi) => {
         subscriptionStatus,
         syncProgress,
         localBlockchainHeight,
-      } = nodeInfo;
+      } = nodeInfo; */
+
+      const blockchainHeight = { quantity: 100 };
+      const subscriptionStatus = 'subscribed';
+      const syncProgress = { quantity: 1 };
+      const localTimeInformation = { status: 'available' };
+      const localBlockchainHeight = { quantity: 100 };
 
       // extract relevant data before sending to NetworkStatusStore
       const response = {
@@ -57,8 +64,12 @@ export default (api: AdaApi) => {
         localBlockchainHeight:
           LOCAL_BLOCK_HEIGHT || localBlockchainHeight.quantity,
         localTimeInformation: {
-          status: 'available',
-          difference: LOCAL_TIME_DIFFERENCE,
+          status: localTimeInformation.status,
+          difference: get(
+            localTimeInformation,
+            'localTimeDifference.quantity',
+            LOCAL_TIME_DIFFERENCE
+          ),
         },
       };
 
