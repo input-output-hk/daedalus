@@ -183,7 +183,7 @@ export const createReactPolymorphTheme = (
       '--rp-switch-bg-color-off': `${background.secondary.regular}`,
       '--rp-switch-bg-color-on': `${background.secondary.regular}`,
       '--rp-switch-label-margin': '0 30px 0 0',
-      '--rp-switch-label-opacity': '0.5',
+      '--rp-switch-label-opacity': '1',
       '--rp-switch-label-text-color': `${text.primary}`,
       '--rp-switch-label-width': '100%',
       '--rp-switch-opacity-off': '0.3',
@@ -563,7 +563,6 @@ export const createDaedalusComponentsTheme = (
       '--theme-dialog-big-button-description-color': `${text.primary}`,
       '--theme-dialog-title-color': `${text.primary}`,
       '--theme-dialog-text-color': `${text.primary}`,
-      '--theme-dialog-password-text-color': `${text.primary}`,
       '--theme-dialog-border-color': `${border}`,
     },
     errors: {
