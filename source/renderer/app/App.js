@@ -67,7 +67,9 @@ export default class App extends Component<{
                     <GenericNotificationContainer key="genericNotification" />,
                   ]
                 )}
-                {!isInternetConnected && <InternetConnectionStatusDialog />}
+                {isInternetConnected === false && (
+                  <InternetConnectionStatusDialog />
+                )}
               </Fragment>
             </IntlProvider>
           </ThemeProvider>

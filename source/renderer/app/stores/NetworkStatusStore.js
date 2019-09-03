@@ -82,7 +82,7 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeStopped = false; // 'true' if node is in `NODE_STOPPED_STATES` states
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
-  @observable isInternetConnected = true;
+  @observable isInternetConnected = null;
 
   @observable hasBeenConnected = false;
   @observable syncProgress = null;
