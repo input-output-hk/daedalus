@@ -833,8 +833,8 @@ export const createDaedalusComponentsTheme = (
       }`,
     },
     scrollbar: {
-      '--theme-scrollbar-thumb-background': `${background.primary.darker}`,
-      '--theme-scrollbar-thumb-background-hover': `${background.primary.lighter}`,
+      '--theme-scrollbar-thumb-background': `${background.primary.ultralight}`,
+      '--theme-scrollbar-thumb-background-hover': `${background.primary.ultralighter}`,
     },
     sendConfirmation: {
       '--theme-send-confirmation-dialog-send-values-color': `${error.regular}`,
