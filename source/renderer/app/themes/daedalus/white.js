@@ -544,6 +544,7 @@ export const WHITE_THEME_OUTPUT = {
   },
   scrollbar: {
     '--theme-scrollbar-thumb-background': 'rgba(45, 45, 45, 0.3)',
+    '--theme-scrollbar-thumb-background-hover': 'rgba(45, 45, 45, 0.5)',
   },
   sendConfirmation: {
     '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',

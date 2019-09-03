@@ -834,6 +834,7 @@ export const createDaedalusComponentsTheme = (
     },
     scrollbar: {
       '--theme-scrollbar-thumb-background': `${background.primary.darker}`,
+      '--theme-scrollbar-thumb-background-hover': `${background.primary.lighter}`,
     },
     sendConfirmation: {
       '--theme-send-confirmation-dialog-send-values-color': `${error.regular}`,

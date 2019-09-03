@@ -547,6 +547,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
   },
   scrollbar: {
     '--theme-scrollbar-thumb-background': 'rgba(255, 255, 255, 0.3)',
+    '--theme-scrollbar-thumb-background-hover': 'rgba(255, 255, 255, 0.5)',
   },
   sendConfirmation: {
     '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',

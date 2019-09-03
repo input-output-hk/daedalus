@@ -562,6 +562,7 @@ export const CARDANO_THEME_OUTPUT = {
   },
   scrollbar: {
     '--theme-scrollbar-thumb-background': 'rgba(200, 204, 206, 0.3)',
+    '--theme-scrollbar-thumb-background-hover': 'rgba(200, 204, 206, 0.5)',
   },
   sendConfirmation: {
     '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',
