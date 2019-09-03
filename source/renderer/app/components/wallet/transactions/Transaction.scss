@@ -234,9 +234,8 @@
     }
 
     .address {
-      @include link(--theme-transactions-list-item-details-color);
-      border-bottom: 1px solid var(--theme-transactions-list-item-details-color);
-      color: var(--theme-link-main-color);
+      @include link(--theme-link-main-color);
+      border-bottom: 1px solid var(--theme-link-main-color);
     }
   }
 }
