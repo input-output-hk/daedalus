@@ -42,6 +42,7 @@ import { createWallet } from './wallets/requests/createWallet';
 import { restoreWallet } from './wallets/requests/restoreWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
+import { getWallet } from './wallets/requests/getWallet';
 
 // utility functions
 import {
@@ -127,6 +128,7 @@ import type {
   ImportWalletFromFileRequest,
   UpdateWalletRequest,
   GetWalletUtxosRequest,
+  GetWalletRequest,
 } from './wallets/types';
 
 // Common errors
@@ -176,6 +178,21 @@ export default class AdaApi {
       return response.map(_createWalletFromServerData);
     } catch (error) {
       Logger.error('AdaApi::getWallets error', { error });
+      throw new GenericApiError();
+    }
+  };
+
+  getWallet = async (request: GetWalletRequest): Promise<Wallet> => {
+    Logger.debug('AdaApi::getWallet called', {
+      parameters: filterLogData(request),
+    });
+    try {
+      const { walletId } = request;
+      const wallet: AdaWallet = await getWallet(this.config, { walletId });
+      Logger.debug('AdaApi::getWallet success', { wallet });
+      return _createWalletFromServerData(wallet);
+    } catch (error) {
+      Logger.error('AdaApi::getWallet error', { error });
       throw new GenericApiError();
     }
   };
