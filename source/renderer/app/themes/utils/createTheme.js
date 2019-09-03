@@ -563,6 +563,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-dialog-big-button-description-color': `${text.primary}`,
       '--theme-dialog-title-color': `${text.primary}`,
       '--theme-dialog-text-color': `${text.primary}`,
+      '--theme-dialog-password-text-color': `${text.primary}`,
       '--theme-dialog-border-color': `${border}`,
     },
     errors: {

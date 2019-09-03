@@ -231,6 +231,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-dialog-big-button-description-color': 'rgba(233, 244, 254, 0.6)',
     '--theme-dialog-title-color': '#e9f4fe',
     '--theme-dialog-text-color': '#e9f4fe',
+    '--theme-dialog-password-text-color': '#ffffff',
     '--theme-dialog-border-color': '#334152',
   },
   errors: {

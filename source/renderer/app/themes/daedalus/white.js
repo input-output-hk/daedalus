@@ -215,6 +215,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-dialog-big-button-description-color': 'rgba(45, 45, 45, 0.6)',
     '--theme-dialog-title-color': '#2d2d2d',
     '--theme-dialog-text-color': '#2d2d2d',
+    '--theme-dialog-password-text-color': '#000000',
     '--theme-dialog-border-color': 'rgba(45, 45, 45, 0.1)',
   },
   errors: {

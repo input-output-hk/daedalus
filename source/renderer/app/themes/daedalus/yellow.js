@@ -218,6 +218,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-dialog-big-button-description-color': '#2d2d2d',
     '--theme-dialog-title-color': '#2d2d2d',
     '--theme-dialog-text-color': '#2d2d2d',
+    '--theme-dialog-password-text-color': '#000000',
     '--theme-dialog-border-color': 'rgba(45, 45, 45, 0.2)',
   },
   errors: {

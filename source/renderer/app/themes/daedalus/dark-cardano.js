@@ -221,6 +221,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-dialog-big-button-description-color': 'rgba(255, 255, 255, 0.6)',
     '--theme-dialog-title-color': '#ffffff',
     '--theme-dialog-text-color': '#ffffff',
+    '--theme-dialog-password-text-color': '#ffffff',
     '--theme-dialog-border-color': 'rgba(255, 255, 255, 0.2)',
   },
   errors: {

@@ -230,6 +230,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-dialog-big-button-description-color': '#5e6066',
     '--theme-dialog-title-color': '#5e6066',
     '--theme-dialog-text-color': '#5e6066',
+    '--theme-dialog-password-text-color': '#000000',
     '--theme-dialog-border-color': '#dfe4e8',
   },
   errors: {
