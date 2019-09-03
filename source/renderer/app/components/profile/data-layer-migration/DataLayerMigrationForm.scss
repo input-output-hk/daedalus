@@ -53,7 +53,9 @@
 }
 
 .submitButton {
-  background: none !important;
+  background-color: var(
+    --theme-data-migration-layer-button-background-color
+  );
   border: solid 1px var(--theme-data-migration-button-border-color) !important;
   color: var(--theme-data-migration-button-label-color) !important;
   line-height: 1.36 !important;

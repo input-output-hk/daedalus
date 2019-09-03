@@ -137,6 +137,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
   dataMigration: {
     '--theme-data-migration-layer-background-color': '#36374d',
     '--theme-data-migration-layer-box-shadow-color': '#36374d',
+    '--theme-data-migration-layer-button-background-color': '#36374d',
     '--theme-data-migration-layer-button-background-color-hover': '#ffffff',
     '--theme-data-migration-layer-text-color': '#ffffff',
     '--theme-data-migration-layer-text-color-hover': '#36374d',

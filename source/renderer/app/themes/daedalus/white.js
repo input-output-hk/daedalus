@@ -133,6 +133,7 @@ export const WHITE_THEME_OUTPUT = {
   dataMigration: {
     '--theme-data-migration-layer-background-color': '#ffffff',
     '--theme-data-migration-layer-box-shadow-color': '#29b595',
+    '--theme-data-migration-layer-button-background-color': '#ffffff',
     '--theme-data-migration-layer-button-background-color-hover': '#29b595',
     '--theme-data-migration-layer-text-color': '#2d2d2d',
     '--theme-data-migration-layer-text-color-hover': '#ffffff',

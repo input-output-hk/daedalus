@@ -139,6 +139,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   dataMigration: {
     '--theme-data-migration-layer-background-color': '#243E62',
     '--theme-data-migration-layer-box-shadow-color': 'rgba(0, 0, 0, 0.25)',
+    '--theme-data-migration-layer-button-background-color': '#243E62',
     '--theme-data-migration-layer-button-background-color-hover': '#fafbfc',
     '--theme-data-migration-layer-text-color': '#fafbfc',
     '--theme-data-migration-layer-text-color-hover': '#243E62',

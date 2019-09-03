@@ -428,6 +428,9 @@ export const createDaedalusComponentsTheme = (
       '--theme-data-migration-layer-box-shadow-color': `${
         background.secondary.regular
       }`,
+      '--theme-data-migration-layer-button-background-color': `${
+        background.secondary.regular
+      }`,
       '--theme-data-migration-layer-button-background-color-hover': `${
         background.primary.regular
       }`,
