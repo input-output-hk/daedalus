@@ -410,10 +410,10 @@ export const YELLOW_THEME_OUTPUT = {
   },
   rpAutocomplete: {
     '--rp-autocomplete-bg-color': '#fff',
-    '--rp-autocomplete-border': '1px solid #e1dac6',
-    '--rp-autocomplete-border-color-opened': '#2d2d2d',
-    '--rp-autocomplete-input-text-color': '#2d2d2d',
-    '--rp-autocomplete-placeholder-color': '#2d2d2d80',
+    '--rp-autocomplete-border': '1px solid rgba(45, 45, 45, 0.3)',
+    '--rp-autocomplete-border-color-opened': 'rgba(45, 45, 45, 0.7)',
+    '--rp-autocomplete-input-text-color': 'rgba(45, 45, 45, 0.7)',
+    '--rp-autocomplete-placeholder-color': 'rgba(45, 45, 45, 0.5)',
     '--rp-autocomplete-selected-word-box-bg-color': '#2d2d2d',
     '--rp-autocomplete-selected-word-text-color': '#fafbfc',
     '--rp-autocomplete-selected-words-font-family':

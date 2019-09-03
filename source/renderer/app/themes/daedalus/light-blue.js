@@ -422,9 +422,9 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   },
   rpAutocomplete: {
     '--rp-autocomplete-bg-color': '#fafbfc',
-    '--rp-autocomplete-border': '1px solid #c6cdd6',
-    '--rp-autocomplete-border-color-opened': '#5e6066',
-    '--rp-autocomplete-input-text-color': '#5e6066',
+    '--rp-autocomplete-border': '1px solid rgba(94, 96, 102, 0.3)',
+    '--rp-autocomplete-border-color-opened': 'rgba(94, 96, 102, 0.7)',
+    '--rp-autocomplete-input-text-color': 'rgba(94, 96, 102, 0.7)',
     '--rp-autocomplete-placeholder-color': 'rgba(94, 96, 102, 0.5)',
     '--rp-autocomplete-selected-word-box-bg-color': 'rgba(68, 91, 124, 0.5)',
     '--rp-autocomplete-selected-word-text-color': '#fafbfc',

@@ -427,10 +427,10 @@ export const DARK_BLUE_THEME_OUTPUT = {
   },
   rpAutocomplete: {
     '--rp-autocomplete-bg-color': '#263345',
-    '--rp-autocomplete-border': '1px solid rgba(102, 122, 138, 0.3)',
-    '--rp-autocomplete-border-color-opened': '#667a8a',
-    '--rp-autocomplete-input-text-color': '#e9f4fe',
-    '--rp-autocomplete-placeholder-color': '#8793a1',
+    '--rp-autocomplete-border': '1px solid rgba(233, 244, 254, 0.3)',
+    '--rp-autocomplete-border-color-opened': 'rgba(233, 244, 254, 0.7)',
+    '--rp-autocomplete-input-text-color': 'rgba(233, 244, 254, 0.7)',
+    '--rp-autocomplete-placeholder-color': 'rgba(233, 244, 254, 0.5)',
     '--rp-autocomplete-selected-word-box-bg-color': 'rgba(83, 99, 112, 0.5)',
     '--rp-autocomplete-selected-word-text-color': '#fafbfc',
     '--rp-autocomplete-selected-words-font-family':
