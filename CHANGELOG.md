@@ -18,6 +18,7 @@ Changelog
 
 ### Fixes
 
+- Fixed overlay blinking issue which showing default theme rather than current theme for a second ([PR 1554](https://github.com/input-output-hk/daedalus/pull/1554))
 - Fixed minor UI issues on the "Delegation center" screen and "Delegation setup" wizard ([PR 1545](https://github.com/input-output-hk/daedalus/pull/1545))
 - Fixed "White" theme styles ([PR 1532](https://github.com/input-output-hk/daedalus/pull/1532))
 - Removed tooltip on Diagnostics Screen connection error message ([PR 1535](https://github.com/input-output-hk/daedalus/pull/1535))
