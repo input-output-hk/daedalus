@@ -8,6 +8,8 @@ Feature: Wallet Settings
       | first  |           |
       | second | Secret123 |
 
+  # It is not possible to set wallet password because it is always available and required in API v2
+  @skip
   Scenario: User sets Wallet password
     Given I am on the "first" wallet "settings" screen
     And I click on the "create" password label
@@ -18,6 +20,8 @@ Feature: Wallet Settings
     And I submit the wallet password dialog
     Then I should see "change" label in password field
 
+  # It is not possible to set wallet password because it is always available and required in API v2
+  @skip
   Scenario: User tries to set Wallet password with invalid password format
     Given I am on the "first" wallet "settings" screen
     And I click on the "create" password label
@@ -40,6 +44,16 @@ Feature: Wallet Settings
     And I submit the wallet password dialog
     Then I should not see the change password dialog anymore
 
+  Scenario: User tries to change Wallet password with wrong old password
+    Given I am on the "second" wallet "settings" screen
+    And I click on the "change" password label
+    And I should see the "change" wallet password dialog
+    And I change wallet password:
+      | currentPassword | password     | repeatedPassword |
+      | Secret123Wrong  | newSecret123 | newSecret123     |
+    And I submit the wallet password dialog
+    Then I should see error message that old password is not correct
+  
   Scenario: User changes wallet password to one which contains only cyrillic characters and numbers
     Given I am on the "second" wallet "settings" screen
     And I click on the "change" password label
@@ -49,7 +63,7 @@ Feature: Wallet Settings
       | Secret123       | ЬнЫгзукЗфыыцщкв123 | ЬнЫгзукЗфыыцщкв123 |
     And I submit the wallet password dialog
     Then I should not see the change password dialog anymore
-
+  
   Scenario: User changes wallet password to one which contains only japanese characters and numbers
     Given I am on the "second" wallet "settings" screen
     And I click on the "change" password label
@@ -60,6 +74,8 @@ Feature: Wallet Settings
     And I submit the wallet password dialog
     Then I should not see the change password dialog anymore
 
+  # It is not possible to remove wallet password because it is required in API v2
+  @skip
   Scenario: User removes Wallet password
     Given I am on the "second" wallet "settings" screen
     And I click on the "change" password label
@@ -89,6 +105,8 @@ Feature: Wallet Settings
     And I click outside "name" input field
     Then I should see new wallet name "キュビズム"
 
+  # It is not possible to change wallet assurance level because it is not available in API v2
+  @skip
   Scenario: User changes Wallet assurance level
     Given I am on the "first" wallet "settings" screen
     And I open "Transaction assurance security level" selection dropdown

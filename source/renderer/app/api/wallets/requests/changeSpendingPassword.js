@@ -23,10 +23,13 @@ export const changeSpendingPassword = (
   return request(
     {
       method: 'PUT',
-      path: `/api/v1/wallets/${walletId}/password`,
+      path: `/v2/wallets/${walletId}/passphrase`,
       ...config,
     },
     {},
-    { old: encryptedOldPassphrase, new: encryptedNewPassphrase }
+    {
+      old_passphrase: encryptedOldPassphrase,
+      new_passphrase: encryptedNewPassphrase,
+    }
   );
 };

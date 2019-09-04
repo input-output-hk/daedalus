@@ -834,8 +834,8 @@ export default class AdaApi {
       return true;
     } catch (error) {
       Logger.error('AdaApi::updateSpendingPassword error', { error });
-      const errorMessage = get(error, 'diagnostic.msg', '');
-      if (errorMessage.includes('UpdateWalletPasswordOldPasswordMismatch')) {
+      const errorCode = get(error, 'code', '');
+      if (errorCode === 'wrong_encryption_passphrase') {
         throw new IncorrectSpendingPasswordError();
       }
       throw new GenericApiError();

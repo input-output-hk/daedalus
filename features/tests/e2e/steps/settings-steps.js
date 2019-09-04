@@ -140,3 +140,10 @@ Then(/^I should see the following error messages:$/, async function(data) {
   const expectedError = await this.intl(error.message);
   expect(errorsOnScreen).to.equal(expectedError);
 });
+
+Then(
+  /^I should see error message that old password is not correct$/,
+  function() {
+    return this.client.waitForVisible('.ChangeSpendingPasswordDialog_error');
+  }
+);
