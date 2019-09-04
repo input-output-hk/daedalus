@@ -32,14 +32,15 @@ let
   pkgs = iohkNix.pkgs;
   lib = pkgs.lib;
   isDaedalus = name: false;
+  # inherit (iohkNix.rust-packages.pkgs) jormungandr;
   cardanoWalletSrc = import (pkgs.fetchFromGitHub {
     owner = "input-output-hk";
     repo = "cardano-wallet";
     rev = "b9a860ff3590cf80cc6aea519ecac0be44c62c35";
     sha256 = "11j3an4i6kvk9h71hz1cngns2a47cmv38bsr3qyagcr1829rlrxl";
   }) {};
-  cardanoWallet = cardanoWalletSrc.cardano-wallet-http-bridge;
-  cardanoNode = cardanoWalletSrc.cardano-http-bridge;
+  cardanoWallet = cardanoWalletSrc.cardano-wallet-jormungandr;
+  cardanoNode = cardanoWalletSrc.jormungandr;
 in lib // {
   inherit iohkNix pkgs cardanoSL isDaedalus cardanoWallet cardanoNode;
 }

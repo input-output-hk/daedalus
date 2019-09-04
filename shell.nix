@@ -107,8 +107,8 @@ let
       warn() {
          (echo "###"; echo "### WARNING:  $*"; echo "###") >&2
       }
-      if ! test -x "$(type -P cardano-node)"
-      then warn "cardano-node not in $PATH"; fi
+      if ! test -x "$(type -P jormungandr)"
+      then warn "jormungandr not in $PATH"; fi
       if   test -z "${systemStartString}"
       then warn "--arg systemStart wasn't passed, cardano won't be able to connect to the demo cluster!"
       elif test "${systemStartString}" -gt $(date +%s)
@@ -119,7 +119,7 @@ let
 
       ${localLib.optionalString pkgs.stdenv.isLinux "export XDG_DATA_HOME=$HOME/.local/share"}
       cp -f ${daedalusPkgs.iconPath.${cluster}.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
-      ln -svf $(type -P cardano-node)
+      ln -svf $(type -P jormungandr)
       ln -svf $(type -P cardano-wallet-http-bridge)
       ${pkgs.lib.optionalString autoStartBackend ''
         for x in wallet-topology.yaml log-config-prod.yaml configuration.yaml mainnet-genesis-dryrun-with-stakeholders.json ; do
