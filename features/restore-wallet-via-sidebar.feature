@@ -1,5 +1,4 @@
 @e2e
-@watch
 Feature: Add Wallet via Sidebar
 
   Background:
