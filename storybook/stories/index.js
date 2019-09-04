@@ -12,9 +12,6 @@ import './staking/Staking.stories';
 // Nodes
 import './nodes';
 
-// Overlays
-import './overlays/Overlays.stories';
-
 // Settings
 import './Settings.stories';
 
