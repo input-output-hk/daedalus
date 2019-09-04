@@ -364,16 +364,23 @@ export default class AdaApi {
     Logger.debug('AdaApi::createWallet called', {
       parameters: filterLogData(request),
     });
-    const { name, mnemonic, spendingPassword: passwordString } = request;
+    const {
+      name,
+      mnemonic,
+      mnemonicPassphrase,
+      spendingPassword: passwordString,
+      addressPoolGap,
+    } = request;
     const spendingPassword = passwordString
       ? encryptPassphrase(passwordString)
       : '';
     try {
       const walletInitData = {
-        operation: 'create',
-        backupPhrase: split(mnemonic, ' '),
         name,
-        spendingPassword,
+        mnemonic_sentence: split(mnemonic, ' '),
+        mnemonic_second_factor: mnemonicPassphrase,
+        passphrase: spendingPassword,
+        address_pool_gap: addressPoolGap,
       };
       const wallet: AdaWallet = await createWallet(this.config, {
         walletInitData,
@@ -663,10 +670,9 @@ export default class AdaApi {
       ? encryptPassphrase(passwordString)
       : '';
     const walletInitData = {
-      operation: 'restore',
-      backupPhrase: split(recoveryPhrase, ' '),
+      mnemonic_sentence: split(recoveryPhrase, ' '),
       name: walletName,
-      spendingPassword,
+      passphrase: spendingPassword,
     };
     try {
       const wallet: AdaWallet = await restoreWallet(this.config, {
@@ -676,9 +682,10 @@ export default class AdaApi {
       return _createWalletFromServerData(wallet);
     } catch (error) {
       Logger.error('AdaApi::restoreWallet error', { error });
-      if (error.message === 'WalletAlreadyExists') {
+      if (error.code === 'wallet_already_exists') {
         throw new WalletAlreadyRestoredError();
       }
+      // @API TOOD - improve once error is handled by v2 API (REPORT to BE team)
       if (error.message === 'JSONValidationFailed') {
         const validationError = get(error, 'diagnostic.validationError', '');
         if (

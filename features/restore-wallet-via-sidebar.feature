@@ -1,4 +1,5 @@
 @e2e
+@watch
 Feature: Add Wallet via Sidebar
 
   Background:
@@ -7,6 +8,8 @@ Feature: Add Wallet via Sidebar
       | name        |
       | Test wallet |
 
+  # It is not possible to create wallet without password with API v2
+  @skip
   Scenario: Successfully Restoring a Wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar
@@ -16,7 +19,7 @@ Feature: Add Wallet via Sidebar
     And I enter wallet name "Restored wallet" in restore wallet dialog
     And I enter recovery phrase in restore wallet dialog:
       | recoveryPhrase                                                            |
-      | marriage glide need gold actress grant judge eager spawn plug sister whip |
+      | turkey size valley cross wear erase enjoy post vivid leisure sustain that twelve grow travel |
     And I toggle "Spending password" switch on the restore wallet dialog
     And I submit the restore wallet dialog
     Then I should not see the restore wallet dialog anymore
@@ -24,7 +27,7 @@ Feature: Add Wallet via Sidebar
     And I should be on the "Restored wallet" wallet "summary" screen
     And I should see the restore status notification while restore is running
     And I should not see the restore status notification once restore is finished
-
+  
   Scenario: Successfully Restoring a Wallet with spending password
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar
@@ -34,7 +37,7 @@ Feature: Add Wallet via Sidebar
     And I enter wallet name "Restored wallet" in restore wallet dialog
     And I enter recovery phrase in restore wallet dialog:
       | recoveryPhrase                                                            |
-      | marriage glide need gold actress grant judge eager spawn plug sister whip |
+      | turkey size valley cross wear erase enjoy post vivid leisure sustain that twelve grow travel |
     And I enter wallet password in restore wallet dialog:
       | password  | repeatedPassword |
       | Secret123 | Secret123        |

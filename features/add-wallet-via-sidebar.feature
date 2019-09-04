@@ -1,4 +1,5 @@
 @e2e
+@watch
 Feature: Add Wallet via Sidebar
 
   Background:
@@ -7,6 +8,8 @@ Feature: Add Wallet via Sidebar
       | name        |
       | Test wallet |
 
+  # It is not possible to create wallet without password with API v2
+  @skip
   Scenario: Successfully Adding a Wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar

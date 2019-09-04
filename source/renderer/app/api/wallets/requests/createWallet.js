@@ -1,14 +1,7 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
-import type { AdaWallet } from '../types';
+import type { AdaWallet, WalletInitData } from '../types';
 import { request } from '../../utils/request';
-
-export type WalletInitData = {
-  operation: 'create' | 'restore',
-  backupPhrase: [string],
-  name: string,
-  spendingPassword?: string,
-};
 
 export const createWallet = (
   config: RequestConfig,
@@ -17,7 +10,7 @@ export const createWallet = (
   request(
     {
       method: 'POST',
-      path: '/api/v1/wallets',
+      path: '/v2/wallets',
       ...config,
     },
     {},

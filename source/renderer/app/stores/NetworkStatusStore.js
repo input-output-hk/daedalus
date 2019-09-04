@@ -655,8 +655,10 @@ export default class NetworkStatusStore extends Store {
     return this.isNodeResponding && this.isNodeSubscribed && this.isNodeSyncing;
   }
 
+  // @API TODO - uncomment checking once api v2 is integrated
   @computed get isSystemTimeCorrect(): boolean {
-    return this.isNodeTimeCorrect || this.isSystemTimeIgnored;
+    // return this.isNodeTimeCorrect || this.isSystemTimeIgnored;
+    return true;
   }
 
   @computed get isSynced(): boolean {
