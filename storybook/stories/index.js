@@ -9,8 +9,8 @@ import './settings';
 // Staking
 import './staking/Staking.stories';
 
-// Loading
-import './loading/Loading.stories';
+// Nodes
+import './nodes';
 
 // Overlays
 import './overlays/Overlays.stories';

@@ -2,7 +2,7 @@
 import React from 'react';
 import { text } from '@storybook/addon-knobs';
 
-import NoDiskSpaceError from '../../../source/renderer/app/components/loading/no-disk-space-error/NoDiskSpaceError';
+import NoDiskSpaceError from '../../../../source/renderer/app/components/loading/no-disk-space-error/NoDiskSpaceError';
 
 export const NoDiskSpaceErrorStory = () => (
   <NoDiskSpaceError
