@@ -8,7 +8,7 @@ import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import RestoreNotification from '../../components/notifications/RestoreNotification';
 import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
-import { WalletSyncStateTags } from '../../domains/Wallet';
+import { WalletSyncStateStatuses } from '../../domains/Wallet';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import type { NavDropdownProps } from '../../components/navigation/Navigation';
 
@@ -50,8 +50,7 @@ export default class Wallet extends Component<Props> {
   };
 
   render() {
-    const { wallets, profile, app } = this.props.stores;
-    const { currentLocale } = profile;
+    const { wallets, app } = this.props.stores;
 
     if (!wallets.active)
       return (
@@ -61,26 +60,18 @@ export default class Wallet extends Component<Props> {
       );
 
     const isRestoreActive =
-      get(wallets.active, 'syncState.tag') === WalletSyncStateTags.RESTORING;
+      get(wallets.active, ['syncState', 'status']) ===
+      WalletSyncStateStatuses.RESTORING;
     const restoreProgress = get(
       wallets.active,
-      'syncState.data.percentage.quantity',
-      0
-    );
-    const restoreETA = get(
-      wallets.active,
-      'syncState.data.estimatedCompletionTime.quantity',
+      'syncState.progress.quantity',
       0
     );
 
     return (
       <MainLayout>
         {isRestoreActive ? (
-          <RestoreNotification
-            currentLocale={currentLocale}
-            restoreProgress={restoreProgress}
-            restoreETA={restoreETA}
-          />
+          <RestoreNotification restoreProgress={restoreProgress} />
         ) : null}
 
         <WalletWithNavigation

@@ -6,7 +6,6 @@ import { observable, computed, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import actions from '../../../source/renderer/app/actions';
-import { WalletAssuranceModeOptions } from '../../../source/renderer/app/domains/Wallet';
 
 type Props = {
   children: Node,
@@ -17,7 +16,6 @@ export const WALLETS = [
     id: '0',
     name: 'No Password',
     amount: new BigNumber(66.998),
-    assurance: WalletAssuranceModeOptions.NORMAL,
     hasPassword: false,
     passwordUpdateDate: new Date(),
     syncState: { data: null, tag: 'synced' },
@@ -27,7 +25,6 @@ export const WALLETS = [
     id: '1',
     name: 'With Password',
     amount: new BigNumber(0),
-    assurance: WalletAssuranceModeOptions.NORMAL,
     hasPassword: true,
     passwordUpdateDate: moment()
       .subtract(1, 'month')
@@ -39,7 +36,6 @@ export const WALLETS = [
     id: '2',
     name: 'Legacy',
     amount: new BigNumber(55.555),
-    assurance: WalletAssuranceModeOptions.NORMAL,
     hasPassword: false,
     passwordUpdateDate: new Date(),
     syncState: { data: null, tag: 'synced' },
@@ -49,7 +45,6 @@ export const WALLETS = [
     id: '3',
     name: 'Restoring',
     amount: new BigNumber(12.345),
-    assurance: WalletAssuranceModeOptions.NORMAL,
     hasPassword: false,
     passwordUpdateDate: new Date(),
     syncState: {

@@ -11,7 +11,7 @@ import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer
 import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
-import { WalletSyncStateTags } from '../../domains/Wallet';
+import { WalletSyncStateStatuses } from '../../domains/Wallet';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -63,7 +63,8 @@ export default class WalletSummaryPage extends Component<Props> {
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
     const isRestoreActive =
-      get(wallet, 'syncState.tag') === WalletSyncStateTags.RESTORING;
+      get(wallet, ['syncState', 'status'], '') ===
+      WalletSyncStateStatuses.RESTORING;
 
     if (
       recentTransactionsRequest.isExecutingFirstTime ||
@@ -76,7 +77,6 @@ export default class WalletSummaryPage extends Component<Props> {
           transactions={take(recent, MAX_TRANSACTIONS_ON_SUMMARY_PAGE)}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
           hasMoreToLoad={false}
-          assuranceMode={wallet.assuranceMode}
           walletId={wallet.id}
           isRestoreActive={isRestoreActive}
           formattedWalletAmount={formattedWalletAmount}

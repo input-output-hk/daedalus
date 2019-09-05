@@ -16,42 +16,55 @@ const adaValueKnob = (name, defaultValue) => {
   return new BigNumber(value);
 };
 
+const walletSyncedStateReady = { status: 'ready' };
+
+const walletSyncedStateRestoring = {
+  status: 'restoring',
+  progress: {
+    quantity: 25,
+    unit: 'percentage',
+  },
+};
+
 // Dummy data initialization
 const wallets = [
   new Wallet({
     id: 'wallet1',
+    addressPoolGap: 20,
     name: 'Main wallet',
     amount: new BigNumber(100100),
-    assurance: 'normal',
     hasPassword: true,
     passwordUpdateDate: new Date(),
     isLegacy: false,
     inactiveStakePercentage: 24,
     isDelegated: true,
+    syncState: walletSyncedStateReady,
     delegatedStakePool: STAKE_POOLS[0],
   }),
   new Wallet({
     id: 'wallet2',
+    addressPoolGap: 20,
     name: 'Spending money',
     amount: new BigNumber(10100.2),
-    assurance: 'normal',
     hasPassword: true,
     passwordUpdateDate: new Date(),
     isLegacy: false,
     inactiveStakePercentage: 35,
     isDelegated: true,
+    syncState: walletSyncedStateReady,
     delegatedStakePool: STAKE_POOLS[1],
   }),
   new Wallet({
     id: 'wallet3',
+    addressPoolGap: 20,
     name: 'Savings',
     amount: new BigNumber(5001000),
-    assurance: 'normal',
     hasPassword: true,
     passwordUpdateDate: new Date(),
     isLegacy: false,
     inactiveStakePercentage: 0,
     isDelegated: false,
+    syncState: walletSyncedStateRestoring,
   }),
 ];
 

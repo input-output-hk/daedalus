@@ -3,68 +3,53 @@ import { pick } from 'lodash';
 import { observable, computed, action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import type {
-  WalletAssuranceLevel,
-  WalletAssuranceMode,
   WalletSyncState,
-  SyncStateTag,
+  SyncStateStatus,
+  DelegationStatus,
 } from '../api/wallets/types';
 import type { StakePool } from '../api/staking/types';
 
-export const WalletAssuranceModeOptions: {
-  NORMAL: WalletAssuranceLevel,
-  STRICT: WalletAssuranceLevel,
-} = {
-  NORMAL: 'normal',
-  STRICT: 'strict',
-};
-
-export const WalletSyncStateTags: {
-  RESTORING: SyncStateTag,
-  SYNCED: SyncStateTag,
+export const WalletSyncStateStatuses: {
+  RESTORING: SyncStateStatus,
+  READY: SyncStateStatus,
 } = {
   RESTORING: 'restoring',
-  SYNCED: 'synced',
+  READY: 'ready',
 };
 
-const WalletAssuranceModes: {
-  NORMAL: WalletAssuranceMode,
-  STRICT: WalletAssuranceMode,
+export const WalletDelegationStatuses: {
+  DELEGATING: DelegationStatus,
+  NOT_DELEGATING: DelegationStatus,
 } = {
-  NORMAL: {
-    low: 3,
-    medium: 9,
-  },
-  STRICT: {
-    low: 5,
-    medium: 15,
-  },
+  DELEGATING: 'delegating',
+  NOT_DELEGATING: 'not_delegating',
 };
 
 export type WalletProps = {
   id: string,
+  addressPoolGap: number,
   name: string,
   amount: BigNumber,
-  assurance: WalletAssuranceLevel,
   hasPassword: boolean,
   passwordUpdateDate: ?Date,
-  syncState?: WalletSyncState,
+  syncState: WalletSyncState,
   isLegacy: boolean,
+  isDelegated: boolean,
   inactiveStakePercentage?: number,
-  isDelegated?: boolean,
   delegatedStakePool?: StakePool,
 };
 
 export default class Wallet {
   id: string = '';
+  @observable addressPoolGap: number;
   @observable name: string = '';
   @observable amount: BigNumber;
-  @observable assurance: WalletAssuranceLevel;
   @observable hasPassword: boolean;
   @observable passwordUpdateDate: ?Date;
   @observable syncState: ?WalletSyncState;
   @observable isLegacy: boolean;
+  @observable isDelegated: boolean;
   @observable inactiveStakePercentage: ?number;
-  @observable isDelegated: ?boolean;
   @observable delegatedStakePool: ?StakePool;
 
   constructor(data: WalletProps) {
@@ -76,15 +61,15 @@ export default class Wallet {
       this,
       pick(other, [
         'id',
+        'addressPoolGap',
         'name',
         'amount',
-        'assurance',
         'hasPassword',
         'passwordUpdateDate',
         'syncState',
         'isLegacy',
-        'inactiveStakePercentage',
         'isDelegated',
+        'inactiveStakePercentage',
         'delegatedStakePool',
       ])
     );
@@ -92,16 +77,5 @@ export default class Wallet {
 
   @computed get hasFunds(): boolean {
     return this.amount > 0;
-  }
-
-  @computed get assuranceMode(): WalletAssuranceMode {
-    switch (this.assurance) {
-      case WalletAssuranceModeOptions.NORMAL:
-        return WalletAssuranceModes.NORMAL;
-      case WalletAssuranceModeOptions.STRICT:
-        return WalletAssuranceModes.STRICT;
-      default:
-        return WalletAssuranceModes.NORMAL;
-    }
   }
 }

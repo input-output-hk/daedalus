@@ -93,11 +93,9 @@
 
 .pendingLabel,
 .failedLabel,
-.low,
-.medium,
-.high {
+.okLabel {
   border-radius: 3px;
-  color: var(--theme-transactions-priority-color);
+  color: var(--theme-transactions-state-text-color);
   display: inline-block;
   font-family: var(--font-bold);
   font-size: 8px;
@@ -141,20 +139,8 @@
   color: var(--theme-transactions-state-failed-text-secondary-color);
 }
 
-.low {
-  background-color: var(--theme-transactions-priority-low-background-color);
-}
-
-.medium {
-  background-color: var(--theme-transactions-priority-medium-background-color);
-}
-
-.high {
-  background-color: var(--theme-transactions-priority-high-background-color);
-}
-
-.assuranceLevel {
-  text-transform: capitalize;
+.okLabel {
+  background-color: var(--theme-transactions-state-ok-background-color);
 }
 
 .type {
