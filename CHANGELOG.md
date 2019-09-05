@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Implemented Internet connection status overlay ([PR 1546](https://github.com/input-output-hk/daedalus/pull/1546))
+- Implemented Internet connection status overlay ([PR 1546](https://github.com/input-output-hk/daedalus/pull/1546), [PR 1554](https://github.com/input-output-hk/daedalus/pull/1554))
 - Implemented automated and manual update flows unification ([PR 1491](https://github.com/input-output-hk/daedalus/pull/1491))
 - Updated behavior of system dialogs ([PR 1494](https://github.com/input-output-hk/daedalus/pull/1494))
 - Implemented the new "Wallet Creation" process ([PR 1499](https://github.com/input-output-hk/daedalus/pull/1499), [PR 1515](https://github.com/input-output-hk/daedalus/pull/1515), [PR 1530](https://github.com/input-output-hk/daedalus/issues/1530))
