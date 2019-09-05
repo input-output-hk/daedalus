@@ -139,7 +139,8 @@ export const YELLOW_THEME_OUTPUT = {
   dataMigration: {
     '--theme-data-migration-layer-background-color': 'rgba(255, 185, 35, 0.96)',
     '--theme-data-migration-layer-box-shadow-color': '#fdcd68',
-    '--theme-data-migration-layer-button-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-data-migration-layer-button-background-color':
+      'rgba(0, 0, 0, 0.1)',
     '--theme-data-migration-layer-button-background-color-hover': '#2d2d2d',
     '--theme-data-migration-layer-text-color': '#2d2d2d',
     '--theme-data-migration-layer-text-color-hover': '#ffffff',
