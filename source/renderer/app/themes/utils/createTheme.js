@@ -183,7 +183,7 @@ export const createReactPolymorphTheme = (
       '--rp-switch-bg-color-off': `${background.secondary.regular}`,
       '--rp-switch-bg-color-on': `${background.secondary.regular}`,
       '--rp-switch-label-margin': '0 30px 0 0',
-      '--rp-switch-label-opacity': '0.5',
+      '--rp-switch-label-opacity': '1',
       '--rp-switch-label-text-color': `${text.primary}`,
       '--rp-switch-label-width': '100%',
       '--rp-switch-opacity-off': '0.3',
@@ -428,11 +428,15 @@ export const createDaedalusComponentsTheme = (
       '--theme-data-migration-layer-box-shadow-color': `${
         background.secondary.regular
       }`,
+      '--theme-data-migration-layer-button-background-color': `${
+        background.secondary.regular
+      }`,
       '--theme-data-migration-layer-button-background-color-hover': `${
         background.primary.regular
       }`,
       '--theme-data-migration-layer-text-opacity-color': `${text.secondary}`,
       '--theme-data-migration-layer-text-color': `${text.secondary}`,
+      '--theme-data-migration-layer-text-color-hover': `${text.primary}`,
       '--theme-data-migration-button-border-color': `${text.secondary}`,
       '--theme-data-migration-button-label-color': `${text.secondary}`,
     },
@@ -832,7 +836,10 @@ export const createDaedalusComponentsTheme = (
       }`,
     },
     scrollbar: {
-      '--theme-scrollbar-thumb-background': `${background.primary.darker}`,
+      '--theme-scrollbar-thumb-background': `${background.primary.ultralight}`,
+      '--theme-scrollbar-thumb-background-hover': `${
+        background.primary.ultralighter
+      }`,
     },
     sendConfirmation: {
       '--theme-send-confirmation-dialog-send-values-color': `${error.regular}`,
