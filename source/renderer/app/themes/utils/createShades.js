@@ -8,7 +8,9 @@ export const createBackgroundShades = (color: string): BackgroundShades => {
 
   return {
     lightest: lightShades(0.6).hex(),
+    ultralighter: lightShades(0.5).hex(),
     lighter: lightShades(0.4).hex(),
+    ultralight: lightShades(0.3).hex(),
     light: lightShades(0.2).hex(),
     regular: color,
     dark: darkShades(0.1).hex(),

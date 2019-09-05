@@ -18,6 +18,7 @@
 
   .description {
     @extend %regularText;
+    color: var(--theme-staking-font-color-light);
     margin-bottom: 24px;
   }
 
