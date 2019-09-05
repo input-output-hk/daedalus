@@ -312,6 +312,7 @@ export default class NetworkStatusStore extends Store {
           this
         );
         this._setDisconnected(wasConnected);
+        this.stores.nodeUpdate.hideUpdateDialog();
         this.stores.app._closeActiveDialog();
         break;
       default:

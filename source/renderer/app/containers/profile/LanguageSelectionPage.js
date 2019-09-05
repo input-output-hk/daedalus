@@ -13,8 +13,11 @@ export default class LanguageSelectionPage extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   onSubmit = async (values: { locale: string }) => {
-    this.props.actions.profile.updateLocale.trigger(values);
-    await rebuildApplicationMenu.send();
+    const { actions, stores } = this.props;
+    const { isUpdateAvailable } = stores.nodeUpdate;
+    const { updateLocale } = actions.profile;
+    updateLocale.trigger(values);
+    await rebuildApplicationMenu.send({ isUpdateAvailable });
   };
 
   render() {

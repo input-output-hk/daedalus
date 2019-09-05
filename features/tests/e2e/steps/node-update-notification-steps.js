@@ -1,91 +1,61 @@
-import { When, Then } from 'cucumber';
+import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
+import { environment } from '../../../../source/main/environment';
+import { getVisibleTextsForSelector } from '../helpers/shared-helpers';
 
-const NODE_UPDATE_COMPONENT = '.NodeUpdateNotification_component';
-const TITLE_BAR = '.NodeUpdateNotification_titleBar';
-const TOGGLE_BUTTON = '.NodeUpdateNotification_toggleButton';
-const UPDATE_MESSAGE = '.NodeUpdateNotification_message';
-const ACTIONS = '.NodeUpdateNotification_actions';
-const ACCEPT_BTN = '.NodeUpdateNotification_acceptButton';
-const DENY_BTN = '.NodeUpdateNotification_denyButton';
+const currentAppVersion = environment.version;
 
-const UPDATE_VERSION = 50;
+const SELECTORS = {
+  currentAppVersionInfo:
+    '.AutomaticUpdateNotification_description p span b:nth-child(1)',
+  newAppVersionInfo:
+    '.AutomaticUpdateNotification_description p span b:nth-child(2)',
+};
 
-When(/^I make a node update available$/, async function() {
-  await this.client.executeAsync(
-    (nextVersion, done) => {
-      daedalus.api.ada
-        .setNextUpdate(nextVersion)
-        .then(() => daedalus.stores.NodeUpdateStore.refreshNextUpdate())
-        .then(done)
-        .catch(error => done(error));
-    },
-    { version: UPDATE_VERSION }
-  );
+Then('I should see the node update notification overlay', async function() {
+  return this.client.waitForVisible('.AutomaticUpdateNotification_dialog');
 });
 
-Then(/^I should see the node update notification component$/, async function() {
-  await this.client.waitForVisible(`${NODE_UPDATE_COMPONENT}`);
-});
-
-Then(/^I should see the notification's title bar$/, async function() {
-  await this.client.waitForVisible(`${NODE_UPDATE_COMPONENT} ${TITLE_BAR}`);
-});
-
-Then(
-  /^I should see the expected update version in the notification's title bar$/,
-  async function() {
-    const titleBarSelector = `${NODE_UPDATE_COMPONENT} ${TITLE_BAR}`;
-    await this.client.waitForText(titleBarSelector);
-    const versionText = await this.client.getText(titleBarSelector);
-    const expectedVersionText = await this.intl(
-      'cardano.node.update.notification.titleWithVersion',
-      { version: UPDATE_VERSION }
+When(
+  /^Overlay should display "([^"]*)" as available version and actions$/,
+  async function(nextVersion) {
+    const [newAppVersionInfo] = await getVisibleTextsForSelector(
+      this.client,
+      SELECTORS.newAppVersionInfo
     );
-    expect(versionText).to.equal(expectedVersionText);
+
+    const [currentAppVersionInfo] = await getVisibleTextsForSelector(
+      this.client,
+      SELECTORS.currentAppVersionInfo
+    );
+
+    expect(newAppVersionInfo.replace('v ', '')).to.equal(nextVersion);
+    expect(currentAppVersionInfo.replace('v ', '')).to.equal(currentAppVersion);
+    this.client.waitForVisible('.AutomaticUpdateNotification_acceptButton');
+    this.client.waitForVisible('.AutomaticUpdateNotification_postponeButton');
   }
 );
 
-Then(/^I should see the notification's toggle button$/, async function() {
-  await this.client.waitForVisible(
-    `${NODE_UPDATE_COMPONENT} ${TITLE_BAR} ${TOGGLE_BUTTON}`
+When(/^I set next application version to "([^"]*)"$/, async function(
+  applicationVersion
+) {
+  await this.client.execute(version => {
+    daedalus.api.ada.setApplicationVersion(parseInt(version));
+  }, applicationVersion);
+});
+
+When(/^I click the postpone update button$/, function() {
+  return this.waitAndClick('.AutomaticUpdateNotification_postponeButton');
+});
+
+When(/^I click the accept update button$/, function() {
+  return this.waitAndClick('.AutomaticUpdateNotification_acceptButton');
+});
+
+Then(/^I should not see the notification component anymore$/, function() {
+  return this.client.waitForVisible(
+    '.AutomaticUpdateNotification_overlay',
+    null,
+    true
   );
-});
-
-Then(/^I should see the notification's update message$/, async function() {
-  await this.client.waitForVisible(
-    `${NODE_UPDATE_COMPONENT} ${UPDATE_MESSAGE}`
-  );
-});
-
-Then(/^I should see the notification's accept button/, async function() {
-  await this.client.waitForVisible(
-    `${NODE_UPDATE_COMPONENT} ${ACTIONS} ${ACCEPT_BTN}`
-  );
-});
-
-Then(/^I should see the notification's postpone button$/, async function() {
-  await this.client.waitForVisible(
-    `${NODE_UPDATE_COMPONENT} ${ACTIONS} ${DENY_BTN}`
-  );
-});
-
-When(/^I click the notification's postpone button$/, async function() {
-  await this.waitAndClick(`${NODE_UPDATE_COMPONENT} ${ACTIONS} ${DENY_BTN}`);
-});
-
-When(/^I click the notification's accept button$/, async function() {
-  await this.waitAndClick(`${NODE_UPDATE_COMPONENT} ${ACTIONS} ${ACCEPT_BTN}`);
-});
-
-Then(/^I should not see the notification component anymore$/, async function() {
-  await this.client.waitForVisible(NODE_UPDATE_COMPONENT, null, true);
-});
-
-Then(/^I should see the Daedalus window close$/, async function() {
-  // there is latency between the window closing and this test running, so setTimeout
-  await setTimeout(async () => {
-    const windowCount = await this.client.getWindowCount();
-    expect(windowCount).to.equal(0);
-  }, 1500);
 });

@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented automated and manual update flows unification ([PR 1491](https://github.com/input-output-hk/daedalus/pull/1491))
 - Updated behavior of system dialogs ([PR 1494](https://github.com/input-output-hk/daedalus/pull/1494))
 - Implemented the new "Wallet Creation" process ([PR 1499](https://github.com/input-output-hk/daedalus/pull/1499), [PR 1515](https://github.com/input-output-hk/daedalus/pull/1515), [PR 1530](https://github.com/input-output-hk/daedalus/issues/1530))
 - Implemented css rules automatic sort ([PR 1483](https://github.com/input-output-hk/daedalus/pull/1483))
@@ -16,11 +17,13 @@ Changelog
 
 ### Fixes
 
+- Fixed UI issues across different app themes ([PR 1547](https://github.com/input-output-hk/daedalus/pull/1547))
+- Fixed minor UI issues on the "Delegation center" screen and "Delegation setup" wizard ([PR 1545](https://github.com/input-output-hk/daedalus/pull/1545))
 - Fixed "White" theme styles ([PR 1532](https://github.com/input-output-hk/daedalus/pull/1532))
 - Removed tooltip on Diagnostics Screen connection error message ([PR 1535](https://github.com/input-output-hk/daedalus/pull/1535))
 - Fixed "Storybook" dialog content overflow issues in Chrome 76+ versions ([PR 1536](https://github.com/input-output-hk/daedalus/pull/1536))
 - Fixed single/plural wording in "confirmation" word on Transaction Assurance Level ([PR 1531](https://github.com/input-output-hk/daedalus/pull/1531))
-- Fixed the "Feature Request" menu item in Japanese to 機能リクエスト ([PR 1533](https://github.com/input-output-hk/daedalus/pull/1533))
+- Fixed the "Feature Request" menu item in Japanese to "機能リクエスト" ([PR 1533](https://github.com/input-output-hk/daedalus/pull/1533))
 - Fixed external and copy icons inconsistencies ([PR 1512](https://github.com/input-output-hk/daedalus/pull/1512))
 - Fixed broken wallets storybook stories ([PR 1473](https://github.com/input-output-hk/daedalus/pull/1473))
 - Implemented Storybook menu using queryStrings over localStorage ([PR 1426](https://github.com/input-output-hk/daedalus/pull/1426))

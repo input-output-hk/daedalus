@@ -24,6 +24,29 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-back-to-top-button-text-color': '#fafbfc',
     '--theme-back-to-top-button-box-shadow-color': 'rgba(0, 0, 0, 0.36)',
   },
+  automaticUpdate: {
+    '--theme-automatic-update-overlay-background-color':
+      'rgba(36, 62, 98, 0.96)',
+    '--theme-automatic-update-overlay-button-background-color': '#243e62',
+    '--theme-automatic-update-overlay-button-background-color-hover': '#fafbfc',
+    '--theme-automatic-update-overlay-button-border-color': '#fafbfc',
+    '--theme-automatic-update-overlay-button-icon-color':
+      'rgba(250, 251, 252, 1)',
+    '--theme-automatic-update-overlay-button-icon-color-hover':
+      'rgba(36, 62, 98, 1)',
+    '--theme-automatic-update-overlay-button-label-color-hover':
+      'rgba(36, 62, 98, 1)',
+    '--theme-automatic-update-overlay-button-text-color-hover': '#243e62',
+    '--theme-automatic-update-overlay-text-color': 'rgba(250, 251, 252, 0.7)',
+    '--theme-automatic-update-overlay-text-highlight-color': '#fafbfc',
+    '--theme-automatic-update-overlay-title-text-color': '#fafbfc',
+    '--theme-automatic-update-overlay-button-label-color': '#fafbfc',
+    '--theme-automatic-update-overlay-button-label-color-light':
+      'rgba(250, 251, 252, 0.8)',
+    '--theme-automatic-update-overlay-close-button-color': '#fff',
+    '--theme-automatic-update-overlay-close-button-hover-background':
+      'rgba(0, 0, 0, 0.1)',
+  },
   blockConsolidation: {
     '--theme-block-consolidation-background-color': 'rgba(36, 62, 98, 0.96)',
     '--theme-block-consolidation-title-text-color': '#fafbfc',
@@ -116,8 +139,10 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   dataMigration: {
     '--theme-data-migration-layer-background-color': '#243E62',
     '--theme-data-migration-layer-box-shadow-color': 'rgba(0, 0, 0, 0.25)',
+    '--theme-data-migration-layer-button-background-color': '#243E62',
     '--theme-data-migration-layer-button-background-color-hover': '#fafbfc',
     '--theme-data-migration-layer-text-color': '#fafbfc',
+    '--theme-data-migration-layer-text-color-hover': '#243E62',
     '--theme-data-migration-layer-text-opacity-color': '#fafbfc',
     '--theme-data-migration-button-border-color': '#fafbfc',
     '--theme-data-migration-button-label-color': '#fafbfc',
@@ -474,7 +499,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--rp-modal-overlay-bg-color': 'rgba(0, 0, 0, 0.4)',
   },
   rpOptions: {
-    '--rp-option-bg-color': '#fff',
+    '--rp-option-bg-color': '#fafbfc',
     '--rp-option-bg-color-highlighted': '#edf0f3',
     '--rp-option-border-color': '#c6cdd6',
     '--rp-option-checkmark-color': '#5e6066',
@@ -509,7 +534,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--rp-switch-bg-color-off': '#2f496e',
     '--rp-switch-bg-color-on': '#2f496e',
     '--rp-switch-label-margin': '0 30px 0 0',
-    '--rp-switch-label-opacity': '0.5',
+    '--rp-switch-label-opacity': '1',
     '--rp-switch-label-text-color': '#5e6066',
     '--rp-switch-label-width': '100%',
     '--rp-switch-opacity-off': '0.3',
@@ -534,7 +559,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--rp-tooltip-text-color': '#fafbfc',
   },
   scrollbar: {
-    '--theme-scrollbar-thumb-background': '#c8ccce',
+    '--theme-scrollbar-thumb-background': 'rgba(200, 204, 206, 0.3)',
+    '--theme-scrollbar-thumb-background-hover': 'rgba(200, 204, 206, 0.5)',
   },
   sendConfirmation: {
     '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',
@@ -558,7 +584,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-sidebar-category-background-color-active': '#233856',
     '--theme-sidebar-category-text-color': '#fafbfc',
     '--theme-sidebar-layout-shadow-color': 'rgba(0, 0, 0, 0.25)',
-    '--theme-sidebar-layout-topbar-shadow-color': 'rgba(0, 0, 0, 0.25)',
+    '--theme-sidebar-layout-topbar-shadow-color': 'rgba(0, 0, 0, 0.08)',
     '--theme-sidebar-menu-background-color': '#233856',
     '--theme-sidebar-menu-item-background-color-hover': 'rgba(30, 48, 74, 0.5)',
     '--theme-sidebar-menu-item-background-color-active': '#1e304a',
@@ -627,8 +653,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-staking-progress-stripe-dark-1-background-color': '#34465e',
     '--theme-staking-progress-stripe-dark-2-background-color': '#445b7c',
     '--theme-staking-table-body-highlighted-text-color': '#296fd0',
-    '--theme-staking-donut-ring-completed-color': '#ea4c5b',
-    '--theme-staking-donut-ring-remaining-color': '#f8e9eb',
+    '--theme-staking-donut-ring-completed-color': 'rgba(234, 76, 91, 0.2)',
+    '--theme-staking-donut-ring-remaining-color': '#ea4c5b',
     '--theme-staking-wallet-row-border-color': '#dfe4e8',
     '--theme-staking-dropdown-item-text-color-hover': '#5e6066',
     '--theme-staking-dropdown-item-background-color': '#fafbfc',

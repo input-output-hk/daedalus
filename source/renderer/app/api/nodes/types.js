@@ -75,6 +75,7 @@ export type GetCurrentEpochFallbackResponse = {
 
 export type GetLatestAppVersionResponse = {
   latestAppVersion: ?string,
+  applicationVersion: ?number,
 };
 
 export type Platform = {

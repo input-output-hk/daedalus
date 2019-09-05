@@ -1125,6 +1125,95 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Software update is available",
+        "description": "Title for \"Automatic update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
+        "id": "automaticUpdate.title",
+        "start": {
+          "column": 9,
+          "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!You are currently running Daedalus <b>v {currentAppVersion}</b> and <b>{nextAppVersion}</b> is available.",
+        "description": "First description line of \"Automatic update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
+        "id": "automaticUpdate.description1",
+        "start": {
+          "column": 20,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!Would you like to install the update? If choose to postpone, the update will be installed automatically on the next Daedalus launch.",
+        "description": "Second description line of \"Automatic update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
+        "id": "automaticUpdate.description2",
+        "start": {
+          "column": 20,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!Restart Daedalus and Update",
+        "description": "Label for \"Restart Daedalus and Update\" action button on \"Automatic update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
+        "id": "automaticUpdate.accept.button.label",
+        "start": {
+          "column": 21,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Postpone until Daedalus restart",
+        "description": "Label for \"Postpone\" action button on \"Automatic update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
+        "id": "automaticUpdate.postpone.button.label",
+        "start": {
+          "column": 23,
+          "line": 34
+        }
+      },
+      {
+        "defaultMessage": "!!!newer version",
+        "description": "Label for \"newer version\" on \"Automatic update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
+        "id": "automaticUpdate.newerVersion.label",
+        "start": {
+          "column": 21,
+          "line": 40
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/notifications/AutomaticUpdateNotification.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Legacy",
         "description": "Label \"Legacy\" on the legacy badge.",
         "end": {
@@ -1201,81 +1290,6 @@
       }
     ],
     "path": "source/renderer/app/components/notifications/LegacyNotification.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Update and restart",
-        "description": "Label \"Update and restart\" on the Cardano node update notification.",
-        "end": {
-          "column": 3,
-          "line": 18
-        },
-        "file": "source/renderer/app/components/notifications/NodeUpdateNotification.js",
-        "id": "cardano.node.update.notification.accept.button.label",
-        "start": {
-          "column": 15,
-          "line": 13
-        }
-      },
-      {
-        "defaultMessage": "!!!Postpone until restart",
-        "description": "Label \"Postpone until restart\" on the Cardano node update notification.",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/components/notifications/NodeUpdateNotification.js",
-        "id": "cardano.node.update.notification.postpone.button.label",
-        "start": {
-          "column": 13,
-          "line": 19
-        }
-      },
-      {
-        "defaultMessage": "!!!Cardano-Core update v{version} is available",
-        "description": "Cardano-Core update notification with version.",
-        "end": {
-          "column": 3,
-          "line": 29
-        },
-        "file": "source/renderer/app/components/notifications/NodeUpdateNotification.js",
-        "id": "cardano.node.update.notification.titleWithVersion",
-        "start": {
-          "column": 20,
-          "line": 25
-        }
-      },
-      {
-        "defaultMessage": "!!!Cardano-Core update is available",
-        "description": "Cardano-Core update notification without version.",
-        "end": {
-          "column": 3,
-          "line": 34
-        },
-        "file": "source/renderer/app/components/notifications/NodeUpdateNotification.js",
-        "id": "cardano.node.update.notification.titleWithoutVersion",
-        "start": {
-          "column": 23,
-          "line": 30
-        }
-      },
-      {
-        "defaultMessage": "!!!Daedalus and Cardano node update is available. Would you like to install the update?",
-        "description": "Message shown when there is a Daedalus and Cardano node update available.",
-        "end": {
-          "column": 3,
-          "line": 41
-        },
-        "file": "source/renderer/app/components/notifications/NodeUpdateNotification.js",
-        "id": "cardano.node.update.notification.message",
-        "start": {
-          "column": 17,
-          "line": 35
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/notifications/NodeUpdateNotification.json"
   },
   {
     "descriptors": [
@@ -1885,13 +1899,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.heading",
         "start": {
           "column": 11,
-          "line": 13
+          "line": 14
         }
       },
       {
@@ -1899,13 +1913,13 @@
         "description": "Delegation description-part1 for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.descriptionFirstPart",
         "start": {
           "column": 24,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -1913,13 +1927,13 @@
         "description": "Delegation description-part2 for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.descriptionSecondPart",
         "start": {
           "column": 25,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -1927,13 +1941,13 @@
         "description": "Delegation description-part3 for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.descriptionThirdPart",
         "start": {
           "column": 24,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -1941,13 +1955,13 @@
         "description": "Delegation description-part4 for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.descriptionFourthPart",
         "start": {
           "column": 25,
-          "line": 34
+          "line": 35
         }
       }
     ],
