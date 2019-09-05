@@ -716,14 +716,12 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-transactions-list-item-details-color': '#e9f4fe',
     '--theme-transactions-state-failed-background-color':
       'rgba(189, 197, 206, 0.4)',
+    '--theme-transactions-state-ok-background-color': '#274c2d',
     '--theme-transactions-state-pending-background-color':
       'rgba(189, 197, 206, 0.4)',
     '--theme-transactions-state-pending-stripes-color':
       'rgba(78, 98, 128, 0.5)',
-    '--theme-transactions-priority-color': 'rgba(250, 251, 252, 0.8)',
-    '--theme-transactions-priority-low-background-color': '#542A2B',
-    '--theme-transactions-priority-medium-background-color': '#706233',
-    '--theme-transactions-priority-high-background-color': '#274C2D',
+    '--theme-transactions-state-text-color': 'rgba(250, 251, 252, 0.8)',
     '--theme-transactions-search-background-color': '#fafbfc',
     '--theme-transactions-icon-type-expend-background-color': '#4f5f7a',
     '--theme-transactions-icon-type-income-background-color': '#3b6956',
