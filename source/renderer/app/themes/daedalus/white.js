@@ -496,10 +496,10 @@ export const WHITE_THEME_OUTPUT = {
   rpSelect: {
     '--rp-select-arrow-bg-color': 'rgba(45, 45, 45, 0.1)',
     '--rp-select-arrow-bg-color-open': '#2d2d2d',
-    '--rp-select-input-bg-color': '#fff',
+    '--rp-select-input-bg-color': 'transparent',
     '--rp-select-input-border-color': 'rgba(45, 45, 45, 0.3)',
     '--rp-select-input-border-color-focus': 'rgba(45, 45, 45, 0.7)',
-    '--rp-select-input-text-color': 'rgba(45, 45, 45, 0.7)',
+    '--rp-select-input-text-color': '#2d2d2d',
     '--rp-select-input-placeholder-color': 'rgba(45, 45, 45, 0.5)',
   },
   rpStepper: {

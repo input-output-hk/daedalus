@@ -514,10 +514,10 @@ export const CARDANO_THEME_OUTPUT = {
   rpSelect: {
     '--rp-select-arrow-bg-color': '#c6cdd6',
     '--rp-select-arrow-bg-color-open': '#5e6066',
-    '--rp-select-input-bg-color': '#fff',
+    '--rp-select-input-bg-color': 'transparent',
     '--rp-select-input-border-color': 'rgba(94, 96, 102, 0.3)',
     '--rp-select-input-border-color-focus': 'rgba(94, 96, 102, 0.7)',
-    '--rp-select-input-text-color': 'rgba(94, 96, 102, 0.7)',
+    '--rp-select-input-text-color': '#5e6066',
     '--rp-select-input-placeholder-color': 'rgba(94, 96, 102, 0.5)',
   },
   rpStepper: {

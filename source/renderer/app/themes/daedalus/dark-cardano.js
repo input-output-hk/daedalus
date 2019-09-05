@@ -499,10 +499,10 @@ export const DARK_CARDANO_THEME_OUTPUT = {
   rpSelect: {
     '--rp-select-arrow-bg-color': 'rgba(255, 255, 255, 0.3)',
     '--rp-select-arrow-bg-color-open': 'rgba(255, 255, 255, 0.7)',
-    '--rp-select-input-bg-color': '#1e1f31',
+    '--rp-select-input-bg-color': 'transparent',
     '--rp-select-input-border-color': 'rgba(255, 255, 255, 0.3)',
     '--rp-select-input-border-color-focus': 'rgba(255, 255, 255, 0.7)',
-    '--rp-select-input-text-color': 'rgba(255, 255, 255, 0.7)',
+    '--rp-select-input-text-color': '#ffffff',
     '--rp-select-input-placeholder-color': 'rgba(255, 255, 255, 0.5)',
   },
   rpStepper: {

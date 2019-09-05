@@ -516,10 +516,10 @@ export const DARK_BLUE_THEME_OUTPUT = {
   rpSelect: {
     '--rp-select-arrow-bg-color': '#606d7b',
     '--rp-select-arrow-bg-color-open': '#e9f4fe',
-    '--rp-select-input-bg-color': '#263345',
+    '--rp-select-input-bg-color': 'transparent',
     '--rp-select-input-border-color': 'rgba(233, 244, 254, 0.3)',
     '--rp-select-input-border-color-focus': 'rgba(233, 244, 254, 0.7)',
-    '--rp-select-input-text-color': 'rgba(233, 244, 254, 0.7)',
+    '--rp-select-input-text-color': '#e9f4fe',
     '--rp-select-input-placeholder-color': 'rgba(233, 244, 254, 0.5)',
   },
   rpStepper: {
