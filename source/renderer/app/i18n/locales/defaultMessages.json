@@ -6051,27 +6051,13 @@
         "description": "Label for the \"Name\" text input on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 23
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.name.label",
         "start": {
           "column": 8,
-          "line": 21
-        }
-      },
-      {
-        "defaultMessage": "!!!Transaction assurance security level",
-        "description": "Label for the \"Transaction assurance security level\" dropdown.",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
-        "id": "wallet.settings.assurance",
-        "start": {
-          "column": 23,
-          "line": 26
+          "line": 19
         }
       },
       {
@@ -6079,13 +6065,13 @@
         "description": "Label for the \"Password\" field.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 35
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.password",
         "start": {
           "column": 17,
-          "line": 32
+          "line": 31
         }
       },
       {
@@ -6093,13 +6079,13 @@
         "description": "Last updated X time ago message.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 40
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordLastUpdated",
         "start": {
           "column": 23,
-          "line": 37
+          "line": 36
         }
       },
       {
@@ -6107,13 +6093,13 @@
         "description": "You still don't have password set message.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 45
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordNotSet",
         "start": {
           "column": 18,
-          "line": 42
+          "line": 41
         }
       },
       {
@@ -6121,13 +6107,13 @@
         "description": "Label for the export button on wallet settings.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 50
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.exportWalletButtonLabel",
         "start": {
           "column": 21,
-          "line": 47
+          "line": 46
         }
       }
     ],
@@ -6206,13 +6192,13 @@
         "description": "Transaction type shown for credit card payments.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 28
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.card",
         "start": {
           "column": 8,
-          "line": 25
+          "line": 24
         }
       },
       {
@@ -6220,13 +6206,13 @@
         "description": "Transaction type shown for {currency} transactions.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 33
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type",
         "start": {
           "column": 8,
-          "line": 30
+          "line": 29
         }
       },
       {
@@ -6234,27 +6220,13 @@
         "description": "Transaction type shown for money exchanges between currencies.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 39
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.exchange",
         "start": {
           "column": 12,
-          "line": 35
-        }
-      },
-      {
-        "defaultMessage": "!!!Transaction assurance level",
-        "description": "Transaction assurance level.",
-        "end": {
-          "column": 3,
-          "line": 45
-        },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
-        "id": "wallet.transaction.assuranceLevel",
-        "start": {
-          "column": 18,
-          "line": 41
+          "line": 34
         }
       },
       {
@@ -6398,59 +6370,17 @@
         }
       },
       {
-        "defaultMessage": "!!!low",
-        "description": "Transaction assurance level \"low\".",
-        "end": {
-          "column": 3,
-          "line": 104
-        },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
-        "id": "wallet.transaction.assuranceLevel.low",
-        "start": {
-          "column": 34,
-          "line": 100
-        }
-      },
-      {
-        "defaultMessage": "!!!medium",
-        "description": "Transaction assurance level \"medium\".",
-        "end": {
-          "column": 3,
-          "line": 109
-        },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
-        "id": "wallet.transaction.assuranceLevel.medium",
-        "start": {
-          "column": 37,
-          "line": 105
-        }
-      },
-      {
-        "defaultMessage": "!!!high",
-        "description": "Transaction assurance level \"high\".",
-        "end": {
-          "column": 3,
-          "line": 114
-        },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
-        "id": "wallet.transaction.assuranceLevel.high",
-        "start": {
-          "column": 35,
-          "line": 110
-        }
-      },
-      {
         "defaultMessage": "!!!Transaction pending",
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 122
+          "line": 123
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 118
+          "line": 119
         }
       },
       {
@@ -6458,13 +6388,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 127
+          "line": 128
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.failed",
         "start": {
           "column": 30,
-          "line": 123
+          "line": 124
         }
       }
     ],
@@ -6477,13 +6407,13 @@
         "description": "Label for the \"Today\" label on the wallet summary page.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 26
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.js",
         "id": "wallet.summary.page.todayLabel",
         "start": {
           "column": 9,
-          "line": 23
+          "line": 22
         }
       },
       {
@@ -6491,13 +6421,13 @@
         "description": "Label for the \"Yesterday\" label on the wallet summary page.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.js",
         "id": "wallet.summary.page.yesterdayLabel",
         "start": {
           "column": 13,
-          "line": 28
+          "line": 27
         }
       },
       {
@@ -6505,13 +6435,13 @@
         "description": "Label for the \"Show more transactions\" button on the wallet summary page.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 37
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.js",
         "id": "wallet.summary.page.showMoreTransactionsButtonLabel",
         "start": {
           "column": 35,
-          "line": 33
+          "line": 32
         }
       },
       {
@@ -6519,13 +6449,13 @@
         "description": "Syncing transactions message on async wallet restore.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.js",
         "id": "wallet.summary.page.syncingTransactionsMessage",
         "start": {
           "column": 30,
-          "line": 39
+          "line": 38
         }
       }
     ],
@@ -6548,7 +6478,7 @@
         }
       },
       {
-        "defaultMessage": "!!!This wallet contains <b>{formattedWalletAmount} ADA</b> on <b>{walletUtxosAmount} UTXOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTXOs with different amounts of ada.",
+        "defaultMessage": "!!!This wallet contains <b>{formattedWalletDistributionAmount} ADA</b> on <b>{walletUtxosAmount} UTXOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTXOs with different amounts of ada.",
         "description": "Description for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
@@ -7775,25 +7705,6 @@
       }
     ],
     "path": "source/renderer/app/components/widgets/CountdownWidget.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Your changes have been saved",
-        "description": "Message \"Your changes have been saved\" for inline editing (eg. on Wallet Settings page).",
-        "end": {
-          "column": 3,
-          "line": 22
-        },
-        "file": "source/renderer/app/components/widgets/forms/InlineEditingDropdown.js",
-        "id": "inline.editing.dropdown.changesSaved",
-        "start": {
-          "column": 16,
-          "line": 17
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/widgets/forms/InlineEditingDropdown.json"
   },
   {
     "descriptors": [

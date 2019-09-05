@@ -9,6 +9,6 @@ export const getWalletUtxos = (
 ): Promise<WalletUtxos> =>
   request({
     method: 'GET',
-    path: `api/v1/wallets/${walletId}/statistics/utxos`,
+    path: `/v2/wallets/${walletId}/statistics/utxos`,
     ...config,
   });

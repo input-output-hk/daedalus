@@ -46,10 +46,15 @@ export type Histogram = {
   [string]: number,
 };
 
+export type WalletUtxoTotal = {
+  quantity: number,
+  unit: 'lovelace',
+};
+
 export type WalletUtxos = {
-  allStakes: number,
-  boundType: string,
-  histogram: {
+  total: WalletUtxoTotal,
+  scale: 'log10',
+  distribution: {
     [string]: number,
   },
 };
