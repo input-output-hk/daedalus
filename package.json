@@ -33,7 +33,7 @@
     "themes:check:createTheme": "gulp build:themes && node -r esm ./dist/scripts/check.js",
     "themes:update": "gulp build:themes && node -r esm ./dist/scripts/update.js && yarn prettier --loglevel warn --write source/renderer/app/themes/daedalus/*.js",
     "clear:cache": "gulp clear:cache",
-    "nix:dev": "nix-shell --arg autoStartBackend true --arg allowFaultInjection true --arg systemStart",
+    "nix:dev": "nix-shell --arg autoStartBackend true --arg allowFaultInjection true",
     "nix:staging": "nix-shell --arg autoStartBackend true --argstr cluster staging",
     "v2-api-importer": "node utils/v2-api-importer/index.js"
   },

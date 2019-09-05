@@ -12,14 +12,12 @@ export type WalletOpts = {
 
 export function CardanoWalletLauncher({
   logStream,
-  networkMode,
   nodePort,
   path,
   stateDir,
 }: WalletOpts): ChildProcess {
-  const networkOpt =
-    networkMode === 'local' ? ['--local-network'] : ['--network', networkMode];
-
+  // Note: Network Mode doesn't currently apply to cardano-wallet-jormungandr
+  // It will be re-applied when it does
   const opts = [
     'launch',
     '--node-port',
@@ -32,7 +30,13 @@ export function CardanoWalletLauncher({
     // '--random-port',
     '--port',
     '8088',
-  ].concat(networkOpt);
+    // TODO: Move Jormangandr opts to config
+    '--genesis-block',
+    'utils/jormungandr/block0.bin',
+    '--bft-leaders',
+    // TODO: This needs to be generated for builds
+    'utils/jormungandr/secret.yaml',
+  ];
 
   const walletStdio: string[] = ['inherit', logStream, logStream, 'ipc'];
   return spawn(path, opts, { stdio: walletStdio });

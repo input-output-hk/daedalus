@@ -120,7 +120,7 @@ let
       ${localLib.optionalString pkgs.stdenv.isLinux "export XDG_DATA_HOME=$HOME/.local/share"}
       cp -f ${daedalusPkgs.iconPath.${cluster}.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
       ln -svf $(type -P jormungandr)
-      ln -svf $(type -P cardano-wallet-http-bridge)
+      ln -svf $(type -P cardano-wallet-jormungandr)
       ${pkgs.lib.optionalString autoStartBackend ''
         for x in wallet-topology.yaml log-config-prod.yaml configuration.yaml mainnet-genesis-dryrun-with-stakeholders.json ; do
           ln -svf ${daedalusPkgs.daedalus.cfg}/etc/$x
