@@ -2,11 +2,9 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import StoryDecorator from './_support/StoryDecorator';
-import LanguageSelectionForm from '../../source/renderer/app/components/profile/language-selection/LanguageSelectionForm';
-import SettingsMenu from '../../source/renderer/app/components/settings/menu/SettingsMenu';
-import globalMessages from '../../source/renderer/app/i18n/global-messages';
-import { ROUTES } from '../../source/renderer/app/routes-config';
+import StoryDecorator from '../../_support/StoryDecorator';
+import LanguageSelectionForm from '../../../../source/renderer/app/components/profile/language-selection/LanguageSelectionForm';
+import globalMessages from '../../../../source/renderer/app/i18n/global-messages';
 
 const LANGUAGES = [
   { value: 'en-US', label: globalMessages.languageEnglish },
@@ -17,28 +15,12 @@ const LANGUAGES = [
   { value: 'hr-HR', label: globalMessages.languageCroatian },
 ];
 
-const isActiveItem = item => {
-  if (item === ROUTES.SETTINGS.GENERAL) {
-    return true;
-  }
-  return false;
-};
-
-storiesOf('Settings', module)
+storiesOf('Settings|Language', module)
   .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 
-  .add('SettingsMenu', () => (
-    <div>
-      <SettingsMenu
-        onItemClick={action('onItemClick')}
-        isActiveItem={isActiveItem}
-      />
-    </div>
-  ))
-
-  .add('LanguageSelectionForm - initial', () => (
+  .add('Select Language - initial', () => (
     <div>
       <LanguageSelectionForm
         onSubmit={action('submit')}
@@ -49,7 +31,7 @@ storiesOf('Settings', module)
     </div>
   ))
 
-  .add('LanguageSelectionForm - submitting', () => (
+  .add('Select Language - submitting', () => (
     <div>
       <LanguageSelectionForm
         onSubmit={action('submit')}

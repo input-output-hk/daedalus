@@ -4,7 +4,6 @@ import './_support/environment';
 
 // Wallets
 import './wallets';
-import './settings';
 
 // Staking
 import './staking/Staking.stories';
@@ -13,7 +12,7 @@ import './staking/Staking.stories';
 import './nodes';
 
 // Settings
-import './Settings.stories';
+import './settings';
 
 // Diagnostics
 

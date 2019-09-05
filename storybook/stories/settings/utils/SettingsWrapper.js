@@ -2,11 +2,11 @@
 import React from 'react';
 import { withKnobs } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
-import StoryLayout from '../_support/StoryLayout';
-import StoryProvider from '../_support/StoryProvider';
-import StoryDecorator from '../_support/StoryDecorator';
-import SettingsLayout from '../../../source/renderer/app/components/settings/SettingsLayout';
-import SettingsMenu from '../../../source/renderer/app/components/settings/menu/SettingsMenu';
+import StoryLayout from '../../_support/StoryLayout';
+import StoryProvider from '../../_support/StoryProvider';
+import StoryDecorator from '../../_support/StoryDecorator';
+import SettingsLayout from '../../../../source/renderer/app/components/settings/SettingsLayout';
+import SettingsMenu from '../../../../source/renderer/app/components/settings/menu/SettingsMenu';
 
 const pageNames = {
   '/settings/general': 'General',

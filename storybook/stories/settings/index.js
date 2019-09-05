@@ -1,1 +1,2 @@
-import './Settings-General.stories';
+import './general/General.stories';
+import './language/Language.stories';
