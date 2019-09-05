@@ -143,7 +143,7 @@ export default class WalletUtxo extends Component<Props, State> {
                     height={280}
                     className={styles.responsiveContainer}
                   >
-                    <BarChart data={chartData} barSize={22}>
+                    <BarChart data={chartData} barSize={23}>
                       <CartesianGrid
                         className={styles.cartesianGrid}
                         horizontal={false}
@@ -188,7 +188,7 @@ export default class WalletUtxo extends Component<Props, State> {
                         />
                       </YAxis>
                       <Tooltip
-                        cursor={<Cursor offsetWidth={22} />}
+                        cursor={<Cursor offsetWidth={28} />}
                         isAnimationActive={false}
                         content={<CustomTooltip />}
                       />

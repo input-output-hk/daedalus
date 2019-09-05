@@ -127,7 +127,7 @@
   "global.language.german": "!!!njemački",
   "global.language.japanese": "!!!japanski",
   "global.language.korean": "!!!korejski",
-  "global.passwordInstructions": "!!!Note that password needs to be at least 7 characters long, and have at least 1 uppercase, 1 lowercase letter and 1 number.",
+  "global.passwordInstructions": "!!!Note that password needs to be at least <strong>7 characters</strong> long, and have at least <strong>1 uppercase</strong>, <strong>1 lowercase</strong> letter and <strong>1 number</strong>.",
   "global.spendingPasswordLabel": "!!!Spending Password",
   "global.spendingPasswordPlaceholder": "!!!Password",
   "global.unit.ada": "!!!ada",
