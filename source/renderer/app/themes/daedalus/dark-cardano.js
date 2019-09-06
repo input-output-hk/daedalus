@@ -425,10 +425,10 @@ export const DARK_CARDANO_THEME_OUTPUT = {
   },
   rpAutocomplete: {
     '--rp-autocomplete-bg-color': '#1e1f31',
-    '--rp-autocomplete-border': '1px solid rgba(255, 255, 255, 0.2)',
-    '--rp-autocomplete-border-color-opened': 'rgba(255, 255, 255, 0.4)',
-    '--rp-autocomplete-input-text-color': '#ffffff',
-    '--rp-autocomplete-placeholder-color': '#ffffff80',
+    '--rp-autocomplete-border': '1px solid rgba(255, 255, 255, 0.3)',
+    '--rp-autocomplete-border-color-opened': 'rgba(255, 255, 255, 0.7)',
+    '--rp-autocomplete-input-text-color': 'rgba(255, 255, 255, 0.7)',
+    '--rp-autocomplete-placeholder-color': 'rgba(255, 255, 255, 0.5)',
     '--rp-autocomplete-selected-word-box-bg-color': '#1fc1c3',
     '--rp-autocomplete-selected-word-text-color': '#121326',
     '--rp-autocomplete-selected-words-font-family':
@@ -436,9 +436,11 @@ export const DARK_CARDANO_THEME_OUTPUT = {
   },
   rpBubble: {
     '--rp-bubble-bg-color': '#1e1f31',
-    '--rp-bubble-border-color': 'rgba(255, 255, 255, 0.2)',
+    '--rp-bubble-border-color': 'rgba(255, 255, 255, 0.7)',
     '--rp-bubble-border-radius': '2px',
     '--rp-bubble-arrow-bg-color': '#343646',
+    '--rp-bubble-box-shadow':
+      '0 4px 16px 0 rgba(0, 0, 0, 0.4), 0 0 8px 0 rgba(0, 0, 0, 0.2)',
   },
   rpButton: {
     '--rp-button-bg-color': '#1fc1c3',
@@ -501,7 +503,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
   },
   rpOptions: {
     '--rp-option-bg-color': '#1e1f31',
-    '--rp-option-bg-color-highlighted': '#343646',
+    '--rp-option-bg-color-highlighted': 'rgba(255, 255, 255, 0.07)',
     '--rp-option-border-color': 'rgba(255, 255, 255, 0.2)',
     '--rp-option-checkmark-color': 'rgba(255, 255, 255, 0.7)',
     '--rp-option-line-height': '22px',
@@ -512,9 +514,9 @@ export const DARK_CARDANO_THEME_OUTPUT = {
   rpSelect: {
     '--rp-select-arrow-bg-color': 'rgba(255, 255, 255, 0.3)',
     '--rp-select-arrow-bg-color-open': 'rgba(255, 255, 255, 0.7)',
-    '--rp-select-input-bg-color': '#1e1f31',
-    '--rp-select-input-border-color': 'rgba(255, 255, 255, 0.2)',
-    '--rp-select-input-border-color-focus': 'rgba(255, 255, 255, 0.4)',
+    '--rp-select-input-bg-color': 'transparent',
+    '--rp-select-input-border-color': 'rgba(255, 255, 255, 0.3)',
+    '--rp-select-input-border-color-focus': 'rgba(255, 255, 255, 0.7)',
     '--rp-select-input-text-color': '#ffffff',
     '--rp-select-input-placeholder-color': 'rgba(255, 255, 255, 0.5)',
   },
