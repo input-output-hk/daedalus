@@ -6,7 +6,7 @@ import { request } from '../../utils/request';
 export type TransactionParams = {
   data: {
     source: {
-      accountIndex: number,
+      // accountIndex: number,
       walletId: string,
     },
     destinations: Array<PaymentDistribution>,

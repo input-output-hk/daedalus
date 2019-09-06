@@ -30,6 +30,7 @@ export type WalletProps = {
   addressPoolGap: number,
   name: string,
   amount: BigNumber,
+  availableAmount: BigNumber,
   hasPassword: boolean,
   passwordUpdateDate: ?Date,
   syncState: WalletSyncState,
@@ -44,6 +45,7 @@ export default class Wallet {
   @observable addressPoolGap: number;
   @observable name: string = '';
   @observable amount: BigNumber;
+  @observable availableAmount: BigNumber;
   @observable hasPassword: boolean;
   @observable passwordUpdateDate: ?Date;
   @observable syncState: ?WalletSyncState;
@@ -64,6 +66,7 @@ export default class Wallet {
         'addressPoolGap',
         'name',
         'amount',
+        'availableAmount',
         'hasPassword',
         'passwordUpdateDate',
         'syncState',

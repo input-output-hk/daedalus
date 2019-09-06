@@ -109,7 +109,6 @@ type Props = {
     address: string,
     amount: number
   ) => Promise<BigNumber>,
-  addressValidator: Function,
   openDialogAction: Function,
   isDialogOpen: Function,
   onExternalLinkClick?: Function,
@@ -186,13 +185,15 @@ export default class WalletSendForm extends Component<Props, State> {
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
-              const isValidAddress = await this.props.addressValidator(value);
               const amountField = form.$('amount');
               const amountValue = amountField.value;
               const isAmountValid = amountField.isValid;
-              if (isValidAddress && isAmountValid) {
-                await this._calculateTransactionFee(value, amountValue);
-              } else {
+              const transactionFee = await this._calculateTransactionFee(
+                value,
+                amountValue
+              );
+              const { isValidAddress } = transactionFee;
+              if (!isAmountValid || !isValidAddress) {
                 this._resetTransactionFee();
               }
               return [
@@ -374,7 +375,19 @@ export default class WalletSendForm extends Component<Props, State> {
           transactionFeeError: null,
         });
       }
+      return {
+        isValidAddress: true,
+        hasError: false,
+        amount: fee,
+      };
     } catch (error) {
+      if (error.message === 'NotValidAddress') {
+        return {
+          isValidAddress: false,
+          hasError: true,
+          amount: null,
+        };
+      }
       const errorHasLink = !!error.values.linkLabel;
       const transactionFeeError = errorHasLink ? (
         <FormattedHTMLMessageWithLink
@@ -393,5 +406,10 @@ export default class WalletSendForm extends Component<Props, State> {
         });
       }
     }
+    return {
+      isValidAddress: true,
+      hasError: true,
+      fee: null,
+    };
   }
 }

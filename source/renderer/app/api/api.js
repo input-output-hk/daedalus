@@ -13,7 +13,6 @@ import {
 import WalletAddress from '../domains/WalletAddress';
 
 // Addresses requests
-import { getAddress } from './addresses/requests/getAddress';
 import { getAddresses } from './addresses/requests/getAddresses';
 import { createAddress } from './addresses/requests/createAddress';
 
@@ -52,6 +51,7 @@ import patchAdaApi from './utils/patchAdaApi';
 import { isValidMnemonic } from '../../../common/crypto/decrypt';
 import { utcStringToDate, encryptPassphrase } from './utils';
 import { Logger } from '../utils/logging';
+import { formattedAmountToLovelace } from '../utils/formatters';
 import {
   unscrambleMnemonics,
   scrambleMnemonics,
@@ -63,6 +63,7 @@ import { filterLogData } from '../../../common/utils/logging';
 // config constants
 import {
   LOVELACES_PER_ADA,
+  DECIMAL_PLACES_IN_ADA,
   // MAX_TRANSACTIONS_PER_PAGE,
   MAX_TRANSACTION_CONFIRMATIONS,
   // TX_AGE_POLLING_THRESHOLD,
@@ -415,7 +416,7 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     const {
-      accountIndex,
+      // accountIndex,
       walletId,
       address,
       amount,
@@ -427,7 +428,7 @@ export default class AdaApi {
     try {
       const data = {
         source: {
-          accountIndex,
+          // accountIndex,
           walletId,
         },
         destinations: [
@@ -473,67 +474,77 @@ export default class AdaApi {
     Logger.debug('AdaApi::calculateTransactionFee called', {
       parameters: filterLogData(request),
     });
-    const { accountIndex, walletId, walletBalance, address, amount } = request;
+    const {
+      walletId,
+      walletBalance,
+      walletAvailableBalance,
+      address,
+      amount,
+    } = request;
+
     try {
       const data = {
-        source: {
-          accountIndex,
-          walletId,
-        },
-        destinations: [
+        payments: [
           {
             address,
-            amount,
+            amount: {
+              quantity: amount,
+              unit: 'lovelace',
+            },
           },
         ],
-        groupingPolicy: 'OptimizeForSecurity',
       };
       const response: TransactionFee = await getTransactionFee(this.config, {
+        walletId,
         data,
       });
+
       Logger.debug('AdaApi::calculateTransactionFee success', {
         transactionFee: response,
       });
+
+      const amountWithFee = request.amount + response.amount.quantity;
+      const formattedWalletAmount = walletBalance.toFormat(
+        DECIMAL_PLACES_IN_ADA
+      );
+      const walletAmountInLovelace = formattedAmountToLovelace(
+        formattedWalletAmount
+      );
+
+      // Amount + fees exceeds walletBalance on API success response
+      if (amountWithFee > walletAmountInLovelace) {
+        throw new Error('NotEnoughFundsForTransactionFees');
+      }
+
       return _createTransactionFeeFromServerData(response);
     } catch (error) {
       Logger.error('AdaApi::calculateTransactionFee error', { error });
       if (
-        error.message === 'NotEnoughMoney' ||
-        error.message === 'UtxoNotEnoughFragmented'
+        error.code === 'not_enough_money' ||
+        error.message === 'UtxoNotEnoughFragmented' // @API TODO - investigate which error code is for this one
       ) {
-        const errorMessage = get(error, 'diagnostic.details.msg', '');
-        if (errorMessage.includes('Not enough coins to cover fee')) {
-          // Amount + fees exceeds walletBalance:
-          // - error.diagnostic.details.msg === 'Not enough coins to cover fee.'
-          // = show "Not enough Ada for fees. Try sending a smaller amount."
-          throw new NotEnoughFundsForTransactionFeesError();
-        } else if (
-          errorMessage.includes('Not enough available coins to proceed')
-        ) {
-          const availableBalance = new BigNumber(
-            get(error, 'diagnostic.details.availableBalance', 0)
-          ).dividedBy(LOVELACES_PER_ADA);
-          if (walletBalance.gt(availableBalance)) {
-            // Amount exceeds availableBalance due to pending transactions:
-            // - error.diagnostic.details.msg === 'Not enough available coins to proceed.'
-            // - total walletBalance > error.diagnostic.details.availableBalance
+        if (error.code === 'not_enough_money') {
+          if (walletBalance.gt(walletAvailableBalance)) {
+            // Amount exceeds walletAvailableBalance due to pending transactions:
+            // - total walletBalance > walletAvailableBalance && request amount > walletAvailableBalance && request amount <= walletBalance
             // = show "Cannot calculate fees while there are pending transactions."
             throw new CanNotCalculateTransactionFeesError();
           } else {
             // Amount exceeds walletBalance:
-            // - error.diagnostic.details.msg === 'Not enough available coins to proceed.'
-            // - total walletBalance === error.diagnostic.details.availableBalance
+            // - total walletBalance === walletAvailableBalance && request amount > walletBalance
             // = show "Not enough Ada. Try sending a smaller amount."
             throw new NotEnoughFundsForTransactionError();
           }
-        } else {
-          // Amount exceeds walletBalance:
-          // = show "Not enough Ada. Try sending a smaller amount."
-          throw new NotEnoughFundsForTransactionError();
         }
+      }
+      if (error.message.includes('Unable to decode Address')) {
+        throw new Error('NotValidAddress');
       }
       if (error.message === 'TooBigTransaction') {
         throw new TooBigTransactionError();
+      }
+      if (error.message === 'NotEnoughFundsForTransactionFees') {
+        throw new NotEnoughFundsForTransactionFeesError();
       }
       throw new GenericApiError();
     }
@@ -569,20 +580,6 @@ export default class AdaApi {
       throw new GenericApiError();
     }
   };
-
-  async isValidAddress(address: string): Promise<boolean> {
-    Logger.debug('AdaApi::isValidAdaAddress called', {
-      parameters: { address },
-    });
-    try {
-      const response: Address = await getAddress(this.config, { address });
-      Logger.debug('AdaApi::isValidAdaAddress success', { response });
-      return true;
-    } catch (error) {
-      Logger.error('AdaApi::isValidAdaAddress error', { error });
-      return false;
-    }
-  }
 
   isValidMnemonic = (mnemonic: string): boolean =>
     isValidMnemonic(mnemonic, WALLET_RECOVERY_PHRASE_WORD_COUNT);
@@ -1057,16 +1054,22 @@ const _createWalletFromServerData = action(
     const isDelegated =
       delegation.status === WalletDelegationStatuses.DELEGATING;
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
-    const walletBalance =
+    const walletTotalAmount =
       balance.total.unit === 'lovelace'
         ? new BigNumber(balance.total.quantity).dividedBy(LOVELACES_PER_ADA)
         : new BigNumber(balance.total.quantity);
+
+    const walletAvailableAmount =
+      balance.available.unit === 'lovelace'
+        ? new BigNumber(balance.available.quantity).dividedBy(LOVELACES_PER_ADA)
+        : new BigNumber(balance.available.quantity);
 
     return new Wallet({
       id,
       addressPoolGap: address_pool_gap,
       name,
-      amount: walletBalance,
+      amount: walletTotalAmount,
+      availableAmount: walletAvailableAmount,
       hasPassword: size(passphrase) > 0,
       passwordUpdateDate:
         passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
@@ -1145,6 +1148,8 @@ const _createTransactionFromServerData = action(
 
 const _createTransactionFeeFromServerData = action(
   'AdaApi::_createTransactionFeeFromServerData',
-  (data: TransactionFee) =>
-    new BigNumber(data.estimatedAmount).dividedBy(LOVELACES_PER_ADA)
+  (data: TransactionFee) => {
+    const amount = get(data, ['amount', 'quantity'], 0);
+    return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
+  }
 );

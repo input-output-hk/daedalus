@@ -29,9 +29,9 @@ export type PaymentDistribution = {
 
 export type TransactionState = 'pending' | 'failed' | 'ok';
 
-export type TransactionFee = ResponseBase & {
+/* export type TransactionFee = ResponseBase & {
   estimatedAmount: number,
-};
+}; */
 
 export type TrasactionAddresses = { from: Array<string>, to: Array<string> };
 export type TransactionType = 'card' | 'expend' | 'income' | 'exchange';
@@ -49,9 +49,9 @@ export type GetTransactionsRequest = {
 };
 
 export type TransactionRequest = {
-  accountIndex: number,
   walletId: string,
   walletBalance: BigNumber,
+  walletAvailableBalance: BigNumber,
   address: string,
   amount: number,
   spendingPassword?: ?string,
@@ -60,4 +60,25 @@ export type TransactionRequest = {
 export type GetTransactionsResponse = {
   transactions: Array<WalletTransaction>,
   total: number,
+};
+
+export type TransactionFeeAmount = {
+  quantity: number,
+  unit: 'lovelace',
+};
+
+export type TransactionFeePaymentData = {
+  address: string,
+  amount: TransactionFeeAmount,
+};
+
+export type GetTransactionFeeRequest = {
+  walletId: string,
+  data: {
+    payments: Array<TransactionFeePaymentData>,
+  },
+};
+
+export type TransactionFee = {
+  amount: TransactionFeeAmount,
 };

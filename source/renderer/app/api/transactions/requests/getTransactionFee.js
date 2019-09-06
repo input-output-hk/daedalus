@@ -1,17 +1,16 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
-import type { TransactionParams } from './createTransaction';
-import type { TransactionFee } from '../types';
+import type { TransactionFee, GetTransactionFeeRequest } from '../types';
 import { request } from '../../utils/request';
 
 export const getTransactionFee = (
   config: RequestConfig,
-  { data }: TransactionParams
+  { walletId, data }: GetTransactionFeeRequest
 ): Promise<TransactionFee> =>
   request(
     {
       method: 'POST',
-      path: '/api/v1/transactions/fees',
+      path: `/v2/wallets/${walletId}/transactions/fees`,
       ...config,
     },
     {},
