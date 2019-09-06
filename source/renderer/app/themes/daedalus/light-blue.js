@@ -424,9 +424,9 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   },
   rpAutocomplete: {
     '--rp-autocomplete-bg-color': '#fafbfc',
-    '--rp-autocomplete-border': '1px solid #c6cdd6',
-    '--rp-autocomplete-border-color-opened': '#5e6066',
-    '--rp-autocomplete-input-text-color': '#5e6066',
+    '--rp-autocomplete-border': '1px solid rgba(94, 96, 102, 0.3)',
+    '--rp-autocomplete-border-color-opened': 'rgba(94, 96, 102, 0.7)',
+    '--rp-autocomplete-input-text-color': 'rgba(94, 96, 102, 0.7)',
     '--rp-autocomplete-placeholder-color': 'rgba(94, 96, 102, 0.5)',
     '--rp-autocomplete-selected-word-box-bg-color': 'rgba(68, 91, 124, 0.5)',
     '--rp-autocomplete-selected-word-text-color': '#fafbfc',
@@ -434,10 +434,12 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'NotoSans-Regular, NotoSansCJKjp-Regular',
   },
   rpBubble: {
-    '--rp-bubble-bg-color': '#fff',
-    '--rp-bubble-border-color': '#c6cdd6',
+    '--rp-bubble-bg-color': '#fafbfc',
+    '--rp-bubble-border-color': 'rgba(94, 96, 102, 0.7)',
     '--rp-bubble-border-radius': '2px',
     '--rp-bubble-arrow-bg-color': '#edf0f3',
+    '--rp-bubble-box-shadow':
+      '0 4px 16px 0 rgba(0, 0, 0, 0.12), 0 0 8px 0 rgba(0, 0, 0, 0.06)',
   },
   rpButton: {
     '--rp-button-bg-color': '#243e62',
@@ -500,7 +502,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   },
   rpOptions: {
     '--rp-option-bg-color': '#fafbfc',
-    '--rp-option-bg-color-highlighted': '#edf0f3',
+    '--rp-option-bg-color-highlighted': 'rgba(68, 91, 124, 0.07)',
     '--rp-option-border-color': '#c6cdd6',
     '--rp-option-checkmark-color': '#5e6066',
     '--rp-option-line-height': '22px',
@@ -511,11 +513,11 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   rpSelect: {
     '--rp-select-arrow-bg-color': '#c6cdd6',
     '--rp-select-arrow-bg-color-open': '#5e6066',
-    '--rp-select-input-bg-color': '#fafbfc',
-    '--rp-select-input-border-color': '#c6cdd6',
-    '--rp-select-input-border-color-focus': '#5e6066',
+    '--rp-select-input-bg-color': 'transparent',
+    '--rp-select-input-border-color': 'rgba(94, 96, 102, 0.3)',
+    '--rp-select-input-border-color-focus': 'rgba(94, 96, 102, 0.7)',
     '--rp-select-input-text-color': '#5e6066',
-    '--rp-select-input-placeholder-color': '#5e606680',
+    '--rp-select-input-placeholder-color': 'rgba(94, 96, 102, 0.5)',
   },
   rpStepper: {
     '--rp-stepper-bullet-background-color-disabled': '#fafbfc',
