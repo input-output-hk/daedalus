@@ -2,10 +2,10 @@ import React from 'react';
 import { withKnobs } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import startCase from 'lodash/startCase';
-import StoryLayout from '../_support/StoryLayout';
-import StoryProvider from '../_support/StoryProvider';
-import StoryDecorator from '../_support/StoryDecorator';
-import WalletWithNavigation from '../../../source/renderer/app/components/wallet/layouts/WalletWithNavigation';
+import StoryLayout from '../../_support/StoryLayout';
+import StoryProvider from '../../_support/StoryProvider';
+import StoryDecorator from '../../_support/StoryDecorator';
+import WalletWithNavigation from '../../../../source/renderer/app/components/wallet/layouts/WalletWithNavigation';
 
 export default (story, context) => {
   const storyWithKnobs = withKnobs(story, context);

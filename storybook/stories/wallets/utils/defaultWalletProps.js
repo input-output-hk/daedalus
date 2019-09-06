@@ -1,21 +1,16 @@
 // @flow
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { text, boolean, number } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import moment from 'moment';
 
-// Support
-import WalletsWrapper from './WalletsWrapper';
-
 // Screens
-import WalletSettings from '../../../source/renderer/app/components/wallet/settings/WalletSettings';
-import { WalletAssuranceModeOptions } from '../../../source/renderer/app/domains/Wallet';
-import ChangeSpendingPasswordDialog from '../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
-import DeleteWalletConfirmationDialog from '../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
-import ExportWalletToFileDialog from '../../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
+import { WalletAssuranceModeOptions } from '../../../../source/renderer/app/domains/Wallet';
+import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
+import DeleteWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
+import ExportWalletToFileDialog from '../../../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
 
-const defaultProps = {
+export const defaultProps = {
   isDialogOpen: () => {},
   activeField: null,
   assuranceLevels: [
@@ -96,47 +91,3 @@ const defaultProps = {
     />
   ),
 };
-
-/* eslint-disable consistent-return */
-storiesOf('WALLETS|Wallet/Settings', module)
-  .addDecorator(WalletsWrapper)
-
-  // ====== Stories ======
-
-  .add('Default', () => <WalletSettings {...defaultProps} />)
-
-  .add('changePassword', () => (
-    <WalletSettings
-      {...defaultProps}
-      isDialogOpen={dialog => {
-        if (dialog === ChangeSpendingPasswordDialog) {
-          return true;
-        }
-        return false;
-      }}
-    />
-  ))
-
-  .add('deleteWallet', () => (
-    <WalletSettings
-      {...defaultProps}
-      isDialogOpen={dialog => {
-        if (dialog === DeleteWalletConfirmationDialog) {
-          return true;
-        }
-        return false;
-      }}
-    />
-  ))
-
-  .add('exportToFile', () => (
-    <WalletSettings
-      {...defaultProps}
-      isDialogOpen={dialog => {
-        if (dialog === ExportWalletToFileDialog) {
-          return true;
-        }
-        return false;
-      }}
-    />
-  ));
