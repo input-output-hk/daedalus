@@ -29,7 +29,7 @@ Changelog
 
 ### Chores
 
-- Integration of the V2 API ([PR 1557](https://github.com/input-output-hk/daedalus/pull/1557), [PR 1558](https://github.com/input-output-hk/daedalus/pull/1558), [PR 1559](https://github.com/input-output-hk/daedalus/pull/1559))
+- Integration of the V2 API ([PR 1557](https://github.com/input-output-hk/daedalus/pull/1557), [PR 1558](https://github.com/input-output-hk/daedalus/pull/1558), [PR 1559](https://github.com/input-output-hk/daedalus/pull/1559), [PR 1560](https://github.com/input-output-hk/daedalus/pull/1560))
 - Added minimum heights of main app window for different environments (Windows, Linux, MacOS) ([1485](https://github.com/input-output-hk/daedalus/pull/1485))
 - Removed "Ada Redemption" feature ([PR 1510](https://github.com/input-output-hk/daedalus/pull/1510))
 - Changed `themes:check` to `themes:check:createTheme` and added a 4 part "Theme Management in Daedalus" tutorial series to a README document in the themes directory ([PR 1525](https://github.com/input-output-hk/daedalus/pull/1525))
