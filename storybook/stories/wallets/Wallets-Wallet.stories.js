@@ -1,3 +1,5 @@
+// TODO: Move these stories into transactions and addresses domains
+
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
