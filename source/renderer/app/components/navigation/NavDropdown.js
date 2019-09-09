@@ -3,9 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 
-import { Select } from 'react-polymorph/lib/components/Select';
-import { SelectSkin } from './NavSelectSkin';
-import selectStyles from './NavSelectStyles.scss';
+import { Dropdown } from 'react-polymorph/lib/components/Dropdown';
 
 import NavButton from './NavButton';
 import styles from './NavDropdown.scss';
@@ -38,7 +36,7 @@ export default class NavDropdown extends Component<Props> {
     ]);
     return (
       <div className={componentStyles}>
-        <Select
+        <Dropdown
           label={
             <NavButton
               label={label}
@@ -49,10 +47,9 @@ export default class NavDropdown extends Component<Props> {
             />
           }
           onChange={({ value }) => onChange(value)}
-          options={options}
-          skin={SelectSkin}
-          themeOverrides={selectStyles}
-          value={activeItem}
+          items={options}
+          activeItem={activeItem}
+          noArrow
         />
       </div>
     );

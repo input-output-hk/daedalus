@@ -2,6 +2,7 @@
 import React, { Component, Fragment } from 'react';
 import { Provider, observer } from 'mobx-react';
 import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
+import simpleSkins from 'react-polymorph/lib/skins';
 import DevTools from 'mobx-react-devtools';
 import { Router } from 'react-router';
 import { IntlProvider } from 'react-intl';
@@ -66,7 +67,11 @@ export default class App extends Component<{
       <Fragment>
         <ThemeManager variables={themeVars} />
         <Provider stores={stores} actions={actions}>
-          <ThemeProvider theme={daedalusTheme} themeOverrides={themeOverrides}>
+          <ThemeProvider
+            theme={daedalusTheme}
+            skins={simpleSkins}
+            themeOverrides={themeOverrides}
+          >
             <IntlProvider
               {...{ locale, key: locale, messages: translations[locale] }}
             >
