@@ -42,7 +42,7 @@ The result can be found at `./result/daedalus-*.bin`.
 
 ## V2 API Integration Guide [Jormungandr]
 
-1. Run `yarn dev:nix` from `daedalus`. The systemStart argument no longer applies.
+1. Run `yarn nix:dev` from `daedalus`. The systemStart argument no longer applies.
 2. Run `yarn dev` from the `nix-shell`
 3. Once Daedalus has started, and has gotten past the loading screen, run `yarn v2-api-importer` from a new terminal window. This is only required if you wish to import some funded wallets
 
