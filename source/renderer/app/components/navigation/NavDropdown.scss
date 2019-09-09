@@ -8,13 +8,6 @@
   }
 
   :global {
-    .SimpleOptions_options {
-      left: auto !important;
-      position: absolute;
-      right: 0;
-      top: 45px !important;
-      width: 200px !important;
-    }
     .NavButton_component {
       cursor: default;
     }
@@ -40,18 +33,13 @@
           }
         }
       }
-      [data-bubble-arrow]:before,
-      [data-bubble-arrow]:after {
-        content: '';
-        display: none;
-      }
+    }
+    .OptionsOverrides_options {
+      margin-top: 0;
     }
   }
   &:hover {
     :global {
-      .SimpleOptions_options {
-        display: block;
-      }
       .NavButton_normal .NavButton_container {
         background-color: var(--theme-nav-item-background-color-hover);
       }
