@@ -323,6 +323,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   total={total}
                   skin={AmountInputSkin}
                   onKeyPress={this.handleSubmitOnEnter}
+                  allowSigns={false}
                 />
               </div>
 
