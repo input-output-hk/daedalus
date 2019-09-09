@@ -8,11 +8,11 @@ import StakingCountdown from '../../../source/renderer/app/components/staking/co
 import StakingInfo from '../../../source/renderer/app/components/staking/info/StakingInfo';
 import DelegationCenterNoWallets from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenterNoWallets';
 
-import { StakePoolsStory } from './Staking-StakePools.stories';
-import { StakingRewardsStory } from './Staking-Rewards.stories';
-import { StakingDelegationCenterStory } from './Staking-DelegationCenter.stories';
-import { StakingDelegationSteps } from './Staking-DelegationSteps.stories';
-import { StakingEpochsStory } from './Staking-Epochs.stories';
+import { StakePoolsStory } from './StakePools.stories';
+import { StakingRewardsStory } from './Rewards.stories';
+import { StakingDelegationCenterStory } from './DelegationCenter.stories';
+import { StakingDelegationSteps } from './DelegationSteps.stories';
+import { StakingEpochsStory } from './Epochs.stories';
 
 import StakingWrapper from './StakingWrapper';
 

@@ -8,7 +8,7 @@ import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.d
 import Wallet from '../../../source/renderer/app/domains/Wallet';
 
 const defaultAdaValue = 82650.15;
-const defaultPercentage = 10;
+const defaultPercentage = 33.123456;
 
 const adaValueKnob = (name, defaultValue) => {
   const value = number(name, defaultValue);

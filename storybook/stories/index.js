@@ -8,6 +8,9 @@ import './wallets';
 // Paper Wallets
 import './paper-wallets/PaperWallets.stories';
 
+// Transactions
+import './transactions';
+
 // Staking
 import './staking/Staking.stories';
 

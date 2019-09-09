@@ -117,7 +117,7 @@ export type SubmitBugReportRequestMainResponse = void;
  * Channel to rebuild the electron application menu after the language setting changes
  */
 export const REBUILD_APP_MENU_CHANNEL = 'REBUILD_APP_MENU_CHANNEL';
-export type RebuildAppMenuRendererRequest = void;
+export type RebuildAppMenuRendererRequest = { isUpdateAvailable: boolean };
 export type RebuildAppMenuMainResponse = void;
 
 /**

@@ -17,7 +17,7 @@ const cfg = {
 
 /* eslint-disable react/display-name  */
 
-export default () => (
+export const UtxoDistributionStory = () => (
   <WalletUtxo
     walletAmount={
       new BigNumber(

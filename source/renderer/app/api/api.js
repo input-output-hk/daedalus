@@ -974,19 +974,32 @@ export default class AdaApi {
     try {
       const { isWindows, platform } = global.environment;
       const latestAppVersionInfo: LatestAppVersionInfoResponse = await getLatestAppVersion();
+
       const latestAppVersionPath = `platforms.${
         isWindows ? 'windows' : platform
       }.version`;
+
+      const applicationVersionPath = `platforms.${
+        isWindows ? 'windows' : platform
+      }.applicationVersion`;
+
       const latestAppVersion = get(
         latestAppVersionInfo,
         latestAppVersionPath,
         null
       );
+
+      const applicationVersion = get(
+        latestAppVersionInfo,
+        applicationVersionPath,
+        null
+      );
       Logger.debug('AdaApi::getLatestAppVersion success', {
         latestAppVersion,
         latestAppVersionInfo,
+        applicationVersion,
       });
-      return { latestAppVersion };
+      return { latestAppVersion, applicationVersion };
     } catch (error) {
       Logger.error('AdaApi::getLatestAppVersion error', { error });
       throw new GenericApiError();
@@ -1005,6 +1018,7 @@ export default class AdaApi {
   setLocalBlockHeight: Function;
   setNetworkBlockHeight: Function;
   setLatestAppVersion: Function;
+  setApplicationVersion: Function;
   setFaultyNodeSettingsApi: boolean;
 }
 

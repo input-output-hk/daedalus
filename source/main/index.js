@@ -175,13 +175,15 @@ const onAppReady = async () => {
     await safeExit();
   });
 
-  buildAppMenus(mainWindow, cardanoNode, locale);
+  buildAppMenus(mainWindow, cardanoNode, locale, { isUpdateAvailable: false });
 
   await rebuildApplicationMenu.onReceive(
-    () =>
+    data =>
       new Promise(resolve => {
         locale = getLocale(network);
-        buildAppMenus(mainWindow, cardanoNode, locale);
+        buildAppMenus(mainWindow, cardanoNode, locale, {
+          isUpdateAvailable: data.isUpdateAvailable,
+        });
         mainWindow.updateTitle(locale);
         resolve();
       })

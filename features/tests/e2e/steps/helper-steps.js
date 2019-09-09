@@ -40,3 +40,16 @@ When(/^I trigger the apply-update endpoint$/, async function() {
       });
   });
 });
+
+When(/^I set next update version to "([^"]*)"$/, async function(
+  applicationVersion
+) {
+  await this.client.executeAsync((applicationVersion, done) => {
+    daedalus.api.ada
+      .setNextUpdate(parseInt(applicationVersion))
+      .then(done)
+      .catch(e => {
+        throw e;
+      });
+  }, applicationVersion);
+});

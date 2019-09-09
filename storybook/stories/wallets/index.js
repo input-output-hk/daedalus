@@ -1,5 +1,6 @@
 // @flow
 
 // Screens sets
+import './summary/WalletSummary.stories';
 import './actions';
-import './settings/Wallet-Settings.stories';
+import './settings/WalletSettings.stories';

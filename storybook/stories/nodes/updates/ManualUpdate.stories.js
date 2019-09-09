@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import { action } from '@storybook/addon-actions';
-
 import ManualUpdate from '../../../../source/renderer/app/components/loading/manual-update/ManualUpdate';
 
 export const ManualUpdateStory = () => (
