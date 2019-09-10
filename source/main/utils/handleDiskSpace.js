@@ -3,7 +3,6 @@ import { BrowserWindow } from 'electron';
 import checkDiskSpace from 'check-disk-space';
 import prettysize from 'prettysize';
 import { getDiskSpaceStatusChannel } from '../ipc/get-disk-space-status';
-import { environment } from '../environment';
 import { Logger } from './logging';
 import {
   DISK_SPACE_REQUIRED,
@@ -12,13 +11,13 @@ import {
   DISK_SPACE_CHECK_MEDIUM_INTERVAL,
   DISK_SPACE_CHECK_SHORT_INTERVAL,
   DISK_SPACE_RECOMMENDED_PERCENTAGE,
+  stateDrive,
 } from '../config';
 
 export const handleDiskSpace = (
   mainWindow: BrowserWindow,
   onCheckDiskSpace?: Function
 ) => {
-  const path = environment.isWindows ? 'C:' : '/';
   let diskSpaceCheckInterval;
   let diskSpaceCheckIntervalLength = DISK_SPACE_CHECK_LONG_INTERVAL; // Default check interval
   let isNotEnoughDiskSpace = false; // Default check state
@@ -28,7 +27,7 @@ export const handleDiskSpace = (
     const {
       free: diskSpaceAvailable,
       size: diskTotalSpace,
-    } = await checkDiskSpace(path);
+    } = await checkDiskSpace(stateDrive);
     const diskSpaceMissing = Math.max(
       diskSpaceRequired - diskSpaceAvailable,
       0
