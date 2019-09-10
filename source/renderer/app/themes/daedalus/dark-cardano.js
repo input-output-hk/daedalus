@@ -700,14 +700,12 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-transactions-list-item-details-color': '#ffffff',
     '--theme-transactions-state-failed-background-color':
       'rgba(189, 196, 206, 0.4)',
+    '--theme-transactions-state-ok-background-color': '#007600',
     '--theme-transactions-state-pending-background-color':
       'rgba(188, 196, 205, 0.4)',
     '--theme-transactions-state-pending-stripes-color':
       'rgba(189, 197, 206, 0.4)',
-    '--theme-transactions-priority-color': '#121326',
-    '--theme-transactions-priority-low-background-color': '#d34452',
-    '--theme-transactions-priority-medium-background-color': '#e6aa00',
-    '--theme-transactions-priority-high-background-color': '#007600',
+    '--theme-transactions-state-text-color': 'rgba(255, 255, 255, 0.8)',
     '--theme-transactions-search-background-color': '#121326',
     '--theme-transactions-icon-type-expend-background-color': '#84a2d2',
     '--theme-transactions-icon-type-income-background-color': '#2dc06c',

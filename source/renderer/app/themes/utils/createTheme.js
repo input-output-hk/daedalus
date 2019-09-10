@@ -1066,16 +1066,14 @@ export const createDaedalusComponentsTheme = (
         background.primary.dark
       }`,
       '--theme-transactions-state-failed-text-color': `${text.primary}`,
+      '--theme-transactions-state-ok-background-color': '#007600',
       '--theme-transactions-state-pending-background-color': `${
         background.primary.dark
       }`,
       '--theme-transactions-state-pending-stripes-color': `${
         background.primary.darker
       }`,
-      '--theme-transactions-priority-color': `${background.primary.regular}`,
-      '--theme-transactions-priority-low-background-color': `${error.dark}`,
-      '--theme-transactions-priority-medium-background-color': '#e6aa00',
-      '--theme-transactions-priority-high-background-color': '#007600',
+      '--theme-transactions-state-text-color': `${background.primary.regular}`,
       '--theme-transactions-search-background-color': `${
         background.primary.regular
       }`,

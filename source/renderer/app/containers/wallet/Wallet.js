@@ -50,8 +50,7 @@ export default class Wallet extends Component<Props> {
   };
 
   render() {
-    const { wallets, profile, app } = this.props.stores;
-    const { currentLocale } = profile;
+    const { wallets, app } = this.props.stores;
 
     if (!wallets.active)
       return (
@@ -61,27 +60,18 @@ export default class Wallet extends Component<Props> {
       );
 
     const isRestoreActive =
-      get(wallets.active, ['syncState', 'status']) ===
+      get(wallets, ['active', 'syncState', 'status']) ===
       WalletSyncStateStatuses.RESTORING;
     const restoreProgress = get(
-      wallets.active,
-      'syncState.progress.quantity',
-      0
-    );
-    const restoreETA = get(
-      wallets.active,
-      'syncState.data.estimatedCompletionTime.quantity', // @API TODO
+      wallets,
+      ['active', 'syncState', 'progress', 'quantity'],
       0
     );
 
     return (
       <MainLayout>
         {isRestoreActive ? (
-          <RestoreNotification
-            currentLocale={currentLocale}
-            restoreProgress={restoreProgress}
-            restoreETA={restoreETA}
-          />
+          <RestoreNotification restoreProgress={restoreProgress} />
         ) : null}
 
         <WalletWithNavigation
