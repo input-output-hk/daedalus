@@ -187,6 +187,10 @@
     margin-bottom: 8px;
   }
 
+  .addressRow {
+    padding-bottom: 6px;
+  }
+
   .addressRow,
   .transactionIdRow {
     line-height: 17px;
@@ -207,13 +211,17 @@
   }
 
   &.clickable {
-    .transactionId,
-    .address {
+    .transactionId {
       @include link(--theme-transactions-list-item-details-color);
       border-bottom: 1px solid transparent;
       &:hover {
         border-bottom-color: var(--theme-transactions-list-item-details-color);
       }
+    }
+
+    .address {
+      @include link(--theme-link-main-color);
+      border-bottom: 1px solid var(--theme-link-main-color);
     }
   }
 }
