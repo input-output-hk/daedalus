@@ -53,6 +53,12 @@ export const generateTransaction = (
     amount,
     date,
     state,
+    depth: {
+      quantity: 0,
+      unit: 'slot',
+    },
+    epochNumber: 0,
+    slotNumber: 0,
     description: '',
     numberOfConfirmations: confirmations,
     addresses: {

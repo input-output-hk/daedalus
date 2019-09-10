@@ -65,7 +65,7 @@ import {
   LOVELACES_PER_ADA,
   DECIMAL_PLACES_IN_ADA,
   // MAX_TRANSACTIONS_PER_PAGE,
-  MAX_TRANSACTION_CONFIRMATIONS,
+  // MAX_TRANSACTION_CONFIRMATIONS,
   // TX_AGE_POLLING_THRESHOLD,
 } from '../config/numbersConfig';
 import {
@@ -110,6 +110,7 @@ import type {
   TransactionRequest,
   GetTransactionsRequest,
   GetTransactionsResponse,
+  GetTransactionFeeRequest,
 } from './transactions/types';
 
 // Wallets Types
@@ -415,52 +416,48 @@ export default class AdaApi {
     Logger.debug('AdaApi::createTransaction called', {
       parameters: filterLogData(request),
     });
-    const {
-      // accountIndex,
-      walletId,
-      address,
-      amount,
-      spendingPassword: passwordString,
-    } = request;
-    const spendingPassword = passwordString
-      ? encryptPassphrase(passwordString)
-      : '';
+    const { walletId, address, amount, spendingPassword } = request;
+
     try {
       const data = {
-        source: {
-          // accountIndex,
-          walletId,
-        },
-        destinations: [
+        payments: [
           {
             address,
-            amount,
+            amount: {
+              quantity: amount,
+              unit: 'lovelace',
+            },
           },
         ],
-        groupingPolicy: 'OptimizeForSecurity',
-        spendingPassword,
+        passphrase: spendingPassword,
       };
+
       const response: Transaction = await createTransaction(this.config, {
+        walletId,
         data,
       });
+
       Logger.debug('AdaApi::createTransaction success', {
         transaction: response,
       });
+
       return _createTransactionFromServerData(response);
     } catch (error) {
       Logger.error('AdaApi::createTransaction error', { error });
+      // @API TODO - check error codes that match old api error messages
       if (error.message === 'OutputIsRedeem') {
         throw new NotAllowedToSendMoneyToRedeemAddressError();
       }
       if (
-        error.message === 'NotEnoughMoney' ||
-        error.message === 'UtxoNotEnoughFragmented'
+        error.code === 'not_enough_money' ||
+        error.message === 'UtxoNotEnoughFragmented' // @API TODO - check error codes that match old api error messages
       ) {
         throw new NotEnoughMoneyToSendError();
       }
-      if (error.message === 'CannotCreateAddress') {
+      if (error.code === 'wrong_encryption_passphrase') {
         throw new IncorrectSpendingPasswordError();
       }
+      // @API TODO - check error codes that match old api error messages
       if (error.message === 'TooBigTransaction') {
         throw new TooBigTransactionError();
       }
@@ -469,7 +466,7 @@ export default class AdaApi {
   };
 
   calculateTransactionFee = async (
-    request: TransactionRequest
+    request: GetTransactionFeeRequest
   ): Promise<BigNumber> => {
     Logger.debug('AdaApi::calculateTransactionFee called', {
       parameters: filterLogData(request),
@@ -1096,10 +1093,9 @@ const _createAddressFromServerData = action(
 
 const _conditionToTxState = (condition: string) => {
   switch (condition) {
-    case 'applying':
-    case 'creating':
+    case 'pending':
       return 'pending';
-    case 'wontApply':
+    case 'invalidated':
       return 'failed';
     default:
       return 'ok';
@@ -1113,35 +1109,38 @@ const _createTransactionFromServerData = action(
   (data: Transaction) => {
     const {
       id,
-      direction,
       amount,
-      confirmations,
-      creationTime,
+      inserted_at, // eslint-disable-line
+      depth,
+      direction,
       inputs,
       outputs,
       status,
     } = data;
+    const creationTime = get(inserted_at, 'time');
+    const slotNumber = get(inserted_at, 'slot_number', null);
+    const epochNumber = get(inserted_at, 'epoch_number', null);
+
     return new WalletTransaction({
       id,
+      depth,
+      slotNumber,
+      epochNumber,
       title: direction === 'outgoing' ? 'Ada sent' : 'Ada received',
       type:
         direction === 'outgoing'
           ? transactionTypes.EXPEND
           : transactionTypes.INCOME,
       amount: new BigNumber(
-        direction === 'outgoing' ? amount * -1 : amount
+        direction === 'outgoing' ? amount.quantity * -1 : amount.quantity
       ).dividedBy(LOVELACES_PER_ADA),
-      date: utcStringToDate(creationTime),
+      date: creationTime ? utcStringToDate(creationTime) : null,
       description: '',
-      numberOfConfirmations: Math.min(
-        confirmations,
-        MAX_TRANSACTION_CONFIRMATIONS + 1
-      ),
       addresses: {
         from: inputs.map(({ address }) => address),
         to: outputs.map(({ address }) => address),
       },
-      state: _conditionToTxState(status.tag),
+      state: _conditionToTxState(status),
     });
   }
 );

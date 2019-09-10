@@ -124,7 +124,7 @@ const stateTranslations = defineMessages({
   [transactionStates.FAILED]: {
     id: 'wallet.transaction.state.failed',
     defaultMessage: '!!!Transaction failed',
-    description: 'Transaction state "pending"',
+    description: 'Transaction state "failed"',
   },
 });
 
@@ -174,17 +174,7 @@ export default class Transaction extends Component<Props> {
     const { intl } = this.context;
 
     const canOpenExplorer = onOpenExternalLink;
-
-    const hasConfirmations = data.numberOfConfirmations > 0;
     const isFailedTransaction = state === transactionStates.FAILED;
-    const isPendingTransaction =
-      state === transactionStates.PENDING ||
-      (state === transactionStates.OK && !hasConfirmations);
-
-    // transaction state is mutated in order to capture zero-confirmations status as pending state
-    const transactionState = isPendingTransaction
-      ? transactionStates.PENDING
-      : state;
 
     const componentStyles = classNames([
       styles.component,
@@ -233,7 +223,7 @@ export default class Transaction extends Component<Props> {
       //   </div>
       // );
       return (
-        transactionState === transactionStates.OK && (
+        state === transactionStates.OK && (
           <div className={styles.pendingLabel}>
             {intl.formatMessage(stateTranslations.pending)}
           </div>

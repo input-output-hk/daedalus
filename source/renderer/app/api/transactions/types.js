@@ -7,33 +7,51 @@ export type Transactions = ResponseBase & {
   data: Array<Transaction>,
 };
 
-export type Transaction = {
-  amount: number,
-  confirmations: number,
-  creationTime: string,
-  direction: 'outgoing' | 'incoming',
-  id: string,
-  type: 'local' | 'foreign',
-  inputs: Array<PaymentDistribution>,
-  outputs: Array<PaymentDistribution>,
-  status: {
-    tag: 'applying' | 'inNewestBlocks' | 'persisted' | 'wontApply' | 'creating',
-    data: {},
-  },
+export type TransactionAmount = {
+  quantity: number,
+  unit: 'lovelace',
 };
 
-export type PaymentDistribution = {
+export type TransactionDepth = {
+  quantity: number,
+  unit: 'slot',
+};
+
+export type TransactionInsertionBlock = {
+  slot_number: number,
+  epoch_number: number,
+};
+
+export type Transaction = {
+  id: string,
+  amount: TransactionAmount,
+  inserted_at?: {
+    time: Date,
+    block: TransactionInsertionBlock,
+  },
+  depth: TransactionDepth,
+  direction: 'outgoing' | 'incoming',
+  inputs: Array<TransactionInputs>,
+  outputs: Array<TransactionOutputs>,
+  status: 'pending' | 'in_ledger' | 'invalidated',
+};
+
+export type TransactionInputs = {
   address: string,
-  amount: number,
+  amount: TransactionAmount,
+  id: string,
+  index: number,
+};
+
+export type TransactionOutputs = {
+  address: string,
+  amount: TransactionAmount,
 };
 
 export type TransactionState = 'pending' | 'failed' | 'ok';
 
-/* export type TransactionFee = ResponseBase & {
-  estimatedAmount: number,
-}; */
-
 export type TrasactionAddresses = { from: Array<string>, to: Array<string> };
+
 export type TransactionType = 'card' | 'expend' | 'income' | 'exchange';
 
 // req/res Transaction Types
@@ -54,7 +72,15 @@ export type TransactionRequest = {
   walletAvailableBalance: BigNumber,
   address: string,
   amount: number,
-  spendingPassword?: ?string,
+  spendingPassword: string,
+};
+
+export type GetTransactionFeeRequest = {
+  walletId: string,
+  walletBalance: BigNumber,
+  walletAvailableBalance: BigNumber,
+  address: string,
+  amount: number,
 };
 
 export type GetTransactionsResponse = {
@@ -67,15 +93,16 @@ export type TransactionFeeAmount = {
   unit: 'lovelace',
 };
 
-export type TransactionFeePaymentData = {
+export type TransactionPaymentData = {
   address: string,
   amount: TransactionFeeAmount,
 };
 
-export type GetTransactionFeeRequest = {
+export type CreateTransactionRequest = {
   walletId: string,
   data: {
-    payments: Array<TransactionFeePaymentData>,
+    payments: Array<TransactionPaymentData>,
+    passphrase: string,
   },
 };
 
