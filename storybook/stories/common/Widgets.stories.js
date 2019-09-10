@@ -3,17 +3,17 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { observable, action as mobxAction } from 'mobx';
 import { action } from '@storybook/addon-actions';
-import StoryDecorator from './_support/StoryDecorator';
-import BigButtonForDialogs from '../../source/renderer/app/components/widgets/BigButtonForDialogs';
-import MnemonicInputWidget from '../../source/renderer/app/components/widgets/forms/MnemonicInputWidget';
-import NotificationMessage from '../../source/renderer/app/components/widgets/NotificationMessage';
-import createIcon from '../../source/renderer/app/assets/images/create-ic.inline.svg';
-import importIcon from '../../source/renderer/app/assets/images/import-ic.inline.svg';
-import joinSharedIcon from '../../source/renderer/app/assets/images/join-shared-ic.inline.svg';
-import NotificationIcon from '../../source/renderer/app/assets/images/success-small.inline.svg';
-import TinySwitch from '../../source/renderer/app/components/widgets/forms/TinySwitch';
+import StoryDecorator from '../_support/StoryDecorator';
+import BigButtonForDialogs from '../../../source/renderer/app/components/widgets/BigButtonForDialogs';
+import MnemonicInputWidget from '../../../source/renderer/app/components/widgets/forms/MnemonicInputWidget';
+import NotificationMessage from '../../../source/renderer/app/components/widgets/NotificationMessage';
+import createIcon from '../../../source/renderer/app/assets/images/create-ic.inline.svg';
+import importIcon from '../../../source/renderer/app/assets/images/import-ic.inline.svg';
+import joinSharedIcon from '../../../source/renderer/app/assets/images/join-shared-ic.inline.svg';
+import NotificationIcon from '../../../source/renderer/app/assets/images/success-small.inline.svg';
+import TinySwitch from '../../../source/renderer/app/components/widgets/forms/TinySwitch';
 
-storiesOf('Widgets', module)
+storiesOf('Common|Widgets', module)
   .addDecorator(story => {
     const onChangeAction = action('onChange');
     const state = observable({

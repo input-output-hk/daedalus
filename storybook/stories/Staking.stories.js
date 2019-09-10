@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, date, number } from '@storybook/addon-knobs';

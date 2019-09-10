@@ -3,12 +3,12 @@ import React from 'react';
 import { observable, runInAction } from 'mobx';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import StoryDecorator from './_support/StoryDecorator';
-import Sidebar from '../../source/renderer/app/components/sidebar/Sidebar';
+import StoryDecorator from '../_support/StoryDecorator';
+import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
 import {
   CATEGORIES_WITH_DELEGATION_COUNTDOWN,
   CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN,
-} from '../../source/renderer/app/config/sidebarConfig';
+} from '../../../source/renderer/app/config/sidebarConfig';
 
 const sidebarMenus = observable({
   wallets: {
@@ -52,11 +52,11 @@ let emptyMenus;
 let currentTheme = sessionStorage.getItem('themeName') || 'light-blue';
 currentTheme = currentTheme.toLowerCase();
 
-storiesOf('Sidebar', module)
+storiesOf('Navigation|Sidebar', module)
   .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
   // ====== Stories ======
 
-  .add('no category', () => (
+  .add('No Category', () => (
     <Sidebar
       menus={emptyMenus}
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
@@ -70,7 +70,7 @@ storiesOf('Sidebar', module)
       currentTheme={currentTheme}
     />
   ))
-  .add('wallets category', () => (
+  .add('Wallets Category', () => (
     <Sidebar
       menus={emptyMenus}
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
@@ -84,7 +84,7 @@ storiesOf('Sidebar', module)
       currentTheme={currentTheme}
     />
   ))
-  .add('wallets / sub', () => (
+  .add('Wallet Selected', () => (
     <Sidebar
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
       activeSidebarCategory={CATEGORIES_WITH_DELEGATION_COUNTDOWN[0].route}
@@ -99,7 +99,7 @@ storiesOf('Sidebar', module)
       currentTheme={currentTheme}
     />
   ))
-  .add('delegation category', () => (
+  .add('Delegation Category', () => (
     <Sidebar
       menus={emptyMenus}
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
@@ -113,7 +113,7 @@ storiesOf('Sidebar', module)
       currentTheme={currentTheme}
     />
   ))
-  .add('decentralization-progress', () => (
+  .add('Decentralization Progress Category', () => (
     <Sidebar
       menus={emptyMenus}
       categories={CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN}

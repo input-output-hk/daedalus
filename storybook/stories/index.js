@@ -20,15 +20,12 @@ import './nodes';
 // Settings
 import './settings';
 
-// Diagnostics
-
 // Navigation
-import './Sidebar.stories';
-import './SidebarCategory.stories';
-import './SidebarWalletsMenu.stories';
-import './TopBar.stories';
+import './navigation/Sidebar.stories';
+import './navigation/SidebarCategory.stories';
+import './navigation/SidebarWalletsMenu.stories';
 
-// Widgets
-import './Widgets.stories';
+// Common
+import './common/Widgets.stories';
 
 // Overlays
