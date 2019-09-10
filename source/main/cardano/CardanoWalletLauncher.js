@@ -10,7 +10,7 @@ import {
 export type WalletOpts = {
   path: string,
   cliPath: string,
-  nodeImplementation: 'http-bridge' | 'jormungandr' | 'cardano-node',
+  nodeImplementation: 'cardano-http-bridge' | 'jormungandr' | 'cardano-node',
   networkMode: string,
   nodePort: number,
   stateDir: string,
@@ -24,7 +24,7 @@ export async function CardanoWalletLauncher(
 
   let nodeOpts: string[] = [];
   switch (nodeImplementation) {
-    case 'http-bridge':
+    case 'cardano-http-bridge':
       nodeOpts = buildHttpBridgeNodeOpts(walletOpts);
       break;
     case 'cardano-node':

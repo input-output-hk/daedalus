@@ -61,7 +61,9 @@ type NodeArgs = Array<string>;
 
 export type CardanoNodeConfig = {
   workingDir: string, // Path to the state directory
-  nodePath: string, // Path to cardano-node executable
+  nodePath: string, // Path to jormungandr or cardano-node executable
+  cliPath: string, // Path to node CLI tool. Jormungandr only
+  nodeImplementation: string, // Node Type (Jormungandr, cardano-http-bridge or cardano-node)
   logFilePath: string, // Log file path for cardano-sl
   tlsPath: string, // Path to cardano-node TLS folder
   nodeArgs: NodeArgs, // Arguments that are used to spwan cardano-node
@@ -240,7 +242,13 @@ export class CardanoNode {
 
     // Setup
     const { _log } = this;
-    const { nodePath, nodeArgs, startupTimeout } = config;
+    const {
+      nodePath,
+      cliPath,
+      nodeArgs,
+      startupTimeout,
+      nodeImplementation,
+    } = config;
     const { createWriteStream } = this._actions;
     this._config = config;
 
@@ -272,10 +280,8 @@ export class CardanoNode {
           path: nodePath,
           logStream: logFile,
           networkMode: networkFromArgs,
-          // TODO: Pull from build
-          nodeImplementation: 'jormungandr',
-          // TODO: Pull from build
-          cliPath: 'jcli',
+          nodeImplementation,
+          cliPath,
           // TODO: Make this dynamic
           nodePort: 8888,
           stateDir: config.workingDir,

@@ -1,3 +1,5 @@
+{ nodeImplementation }:
+
 let
   # iohk-nix can be overridden for debugging purposes by setting
   # NIX_PATH=iohk_nix=/path/to/iohk-nix
@@ -38,8 +40,9 @@ let
     rev = "7208a54a018415108dc359b7e20cb024bef1af63";
     sha256 = "0nqvf9m3kv83vb1dgbf0n6nf1iwik9wq91hmhy5q1dhzcdxj2ffs";
   }) {};
-  cardanoWallet = cardanoWalletSrc.cardano-wallet-jormungandr;
-  cardanoNode = cardanoWalletSrc.jormungandr;
+
+  cardanoWallet = if nodeImplementation == "jormungandr" then cardanoWalletSrc.cardano-wallet-jormungandr else cardanoWalletSrc.cardano-wallet-http-bridge;
+  cardanoNode = if nodeImplementation == "jormungandr" then cardanoWalletSrc.jormungandr else cardanoWalletSrc.cardano-http-bridge;
   jcli = cardanoWalletSrc.jormungandr-cli;
 in lib // {
   inherit iohkNix pkgs cardanoSL isDaedalus cardanoWallet cardanoNode jcli;

@@ -1,8 +1,7 @@
-let
-  localLib = import ./lib.nix;
-in
 { system ? builtins.currentSystem
 , config ? {}
+, nodeImplementation ? "jormungandr"
+, localLib ? import ./lib.nix { inherit nodeImplementation; }
 , pkgs ? localLib.iohkNix.getPkgs { inherit system config; }
 , cluster ? "demo"
 , systemStart ? null
@@ -101,6 +100,9 @@ let
     DAEDALUS_INSTALL_DIRECTORY = "./";
     DAEDALUS_DIR = DAEDALUS_INSTALL_DIRECTORY;
     CLUSTER = cluster;
+    NODE_EXE = if nodeImplementation == "jormungandr" then "cardano-wallet-jormungandr" else "cardano-wallet-http-bridge";
+    CLI_EXE = if nodeImplementation == "jormungandr" then "jcli" else "";
+    NODE_IMPLEMENTATION = nodeImplementation;
     shellHook = let
       secretsDir = if pkgs.stdenv.isLinux then "Secrets" else "Secrets-1.0";
       systemStartString = builtins.toString systemStart;
@@ -120,9 +122,15 @@ let
 
       ${localLib.optionalString pkgs.stdenv.isLinux "export XDG_DATA_HOME=$HOME/.local/share"}
       cp -f ${daedalusPkgs.iconPath.${cluster}.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
+
+      # These links will only occur to binaries that exist for the 
+      # specific build config
       ln -svf $(type -P jormungandr)
       ln -svf $(type -P cardano-wallet-jormungandr)
+      ln -svf $(type -P cardano-http-bridge)
+      ln -svf $(type -P cardano-wallet-http-bridge)
       ln -svf $(type -P jcli)
+
       ${pkgs.lib.optionalString autoStartBackend ''
         for x in wallet-topology.yaml log-config-prod.yaml configuration.yaml mainnet-genesis-dryrun-with-stakeholders.json ; do
           ln -svf ${daedalusPkgs.daedalus.cfg}/etc/$x
