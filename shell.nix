@@ -74,6 +74,7 @@ let
       nodejs yarn
       localLib.cardanoWallet
       localLib.cardanoNode
+      localLib.jcli
     ] ++ (with pkgs; [
       nix bash binutils coreutils curl gnutar
       git python27 curl jq
@@ -121,6 +122,7 @@ let
       cp -f ${daedalusPkgs.iconPath.${cluster}.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
       ln -svf $(type -P jormungandr)
       ln -svf $(type -P cardano-wallet-jormungandr)
+      ln -svf $(type -P jcli)
       ${pkgs.lib.optionalString autoStartBackend ''
         for x in wallet-topology.yaml log-config-prod.yaml configuration.yaml mainnet-genesis-dryrun-with-stakeholders.json ; do
           ln -svf ${daedalusPkgs.daedalus.cfg}/etc/$x

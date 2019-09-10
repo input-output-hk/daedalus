@@ -1,43 +1,42 @@
 // @flow
 import { spawn } from 'child_process';
 import type { ChildProcess } from 'child_process';
+import {
+  createClientSecret,
+  buildHttpBridgeNodeOpts,
+  buildJormungandrNodeOpts,
+} from './nodes';
 
 export type WalletOpts = {
   path: string,
+  cliPath: string,
+  nodeImplementation: 'http-bridge' | 'jormungandr' | 'cardano-node',
   networkMode: string,
   nodePort: number,
   stateDir: string,
   logStream: any,
 };
 
-export function CardanoWalletLauncher({
-  logStream,
-  nodePort,
-  path,
-  stateDir,
-}: WalletOpts): ChildProcess {
-  // Note: Network Mode doesn't currently apply to cardano-wallet-jormungandr
-  // It will be re-applied when it does
-  const opts = [
-    'launch',
-    '--node-port',
-    String(nodePort),
-    '--state-dir',
-    stateDir,
-    // NOTE: --random-port is the value we will use
-    // in production. For early development (and to enable the seed script)
-    // we will fix the port
-    // '--random-port',
-    '--port',
-    '8088',
-    // TODO: Move Jormangandr opts to config
-    '--genesis-block',
-    'utils/jormungandr/block0.bin',
-    '--bft-leaders',
-    // TODO: This needs to be generated for builds
-    'utils/jormungandr/secret.yaml',
-  ];
+export async function CardanoWalletLauncher(
+  walletOpts: WalletOpts
+): Promise<ChildProcess> {
+  const { logStream, nodeImplementation, cliPath, stateDir, path } = walletOpts;
+
+  let nodeOpts: string[] = [];
+  switch (nodeImplementation) {
+    case 'http-bridge':
+      nodeOpts = buildHttpBridgeNodeOpts(walletOpts);
+      break;
+    case 'cardano-node':
+      break;
+    case 'jormungandr':
+      await createClientSecret(cliPath, `${stateDir}/secret.yaml`);
+      nodeOpts = buildJormungandrNodeOpts(walletOpts);
+      break;
+    default:
+      break;
+  }
 
   const walletStdio: string[] = ['inherit', logStream, logStream, 'ipc'];
-  return spawn(path, opts, { stdio: walletStdio });
+  return spawn(path, nodeOpts, { stdio: walletStdio });
 }

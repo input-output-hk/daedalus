@@ -253,7 +253,7 @@ export class CardanoNode {
       { startupTries: this._startupTries }
     );
 
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const logFile = createWriteStream(config.logFilePath, { flags: 'a' });
       logFile.on('open', async () => {
         this._cardanoLogFile = logFile;
@@ -268,10 +268,14 @@ export class CardanoNode {
         const networkIndexFromArgs = nodeArgs.indexOf('--network');
         const networkFromArgs = nodeArgs[networkIndexFromArgs + 1];
 
-        const node = CardanoWalletLauncher({
+        const node = await CardanoWalletLauncher({
           path: nodePath,
           logStream: logFile,
           networkMode: networkFromArgs,
+          // TODO: Pull from build
+          nodeImplementation: 'jormungandr',
+          // TODO: Pull from build
+          cliPath: 'jcli',
           // TODO: Make this dynamic
           nodePort: 8888,
           stateDir: config.workingDir,
