@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { text, boolean, number } from '@storybook/addon-knobs';
+import { text, boolean, number, select } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import moment from 'moment';
 
@@ -12,6 +12,16 @@ import DeleteWalletConfirmationDialog from '../../source/renderer/app/components
 import ExportWalletToFileDialog from '../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
 
 /* eslint-disable react/display-name  */
+
+const mnemonicsConfirmationDateOptions = {
+  Ok: new Date(),
+  Warning: moment()
+    .subtract(15, 'days')
+    .toDate(),
+  Error: moment()
+    .subtract(35, 'days')
+    .toDate(),
+};
 
 export default () => (
   <WalletSettings
@@ -105,5 +115,9 @@ export default () => (
         onClose={action('Export Wallet - onClose')}
       />
     }
+    mnemonicsConfirmationDate={select(
+      'mnemonicsConfirmationDate',
+      mnemonicsConfirmationDateOptions
+    )}
   />
 );
