@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented Wallet mnemonics checker ([PR 1565](https://github.com/input-output-hk/daedalus/pull/1565))
 - Removed select dropdown arrow ([PR 1550](https://github.com/input-output-hk/daedalus/pull/1550))
 - Implemented automated and manual update flows unification ([PR 1491](https://github.com/input-output-hk/daedalus/pull/1491))
 - Updated behavior of system dialogs ([PR 1494](https://github.com/input-output-hk/daedalus/pull/1494))
