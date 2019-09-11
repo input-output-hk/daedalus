@@ -1,71 +1,47 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+// import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
-import styles from './WalletRecoveryPhraseStep1.scss';
+import styles from './WalletRecoveryPhraseStep1Dialog.scss';
 
-export const messages = defineMessages({
-  recoveryPhraseValidationTitle: {
-    id: 'wallet.settings.recoveryPhraseValidationTitle',
-    defaultMessage: '!!!Do you have your wallet recovery phrase?',
-    description:
-      'Label for the recoveryPhraseValidationTitle on wallet settings.',
-  },
-  recoveryPhraseValidationDescription: {
-    id: 'wallet.settings.recoveryPhraseValidationDescription',
-    defaultMessage:
-      '!!!Funds in this wallet can only be recovered on another computer using the correct wallet recovery phrase. You can re-enter your wallet recovery phrase to verify that you have the correct recovery phrase for this wallet.',
-    description:
-      'Label for the recoveryPhraseValidationDescription on wallet settings.',
-  },
-  recoveryPhraseValidationConfirmed: {
-    id: 'wallet.settings.recoveryPhraseValidationConfirmed',
-    defaultMessage:
-      '!!!You confirmed that you still have recovery phrase for this wallet <b>{timeAgo}</b>.',
-    description:
-      'Label for the recoveryPhraseValidationConfirmed on wallet settings.',
-  },
-  recoveryPhraseValidationNotConfirmed: {
-    id: 'wallet.settings.recoveryPhraseValidationNotConfirmed',
-    defaultMessage:
-      '!!!You never confirmed that you still have recovery phrase for this wallet.',
-    description:
-      'Label for the recoveryPhraseValidationNotConfirmed on wallet settings.',
-  },
-  recoveryPhraseValidationNotification: {
-    id: 'wallet.settings.recoveryPhraseValidationNotification',
-    defaultMessage: '!!!We recommend that you check your recovery phrase.',
-    description:
-      'Label for the recoveryPhraseValidationNotConfirmed on wallet settings.',
-  },
-  recoveryPhraseValidationButton: {
-    id: 'wallet.settings.recoveryPhraseValidationButton',
-    defaultMessage: '!!!Confirm mnemonics.',
-    description:
-      'Label for the recoveryPhraseValidationButton on wallet settings.',
-  },
-});
+// export const messages = defineMessages({
+//   recoveryPhraseStep1Title: {
+//     id: 'wallet.settings.recoveryPhraseStep1Title',
+//     defaultMessage: '!!!Wallet recovery phrase verification',
+//     description: 'Label for the recoveryPhraseStep1Title on wallet settings.',
+//   },
+//   recoveryPhraseStep1Paragraph1: {
+//     id: 'wallet.settings.recoveryPhraseStep1Paragraph1',
+//     defaultMessage: '!!!To verify that you have the correct recovery phrase for this wallet you can enter your 12-word wallet recovery phrase on the following screen.',
+//     description: 'Label for the recoveryPhraseStep1Paragraph1 on wallet settings.',
+//   },
+//     recoveryPhraseStep1Paragraph2: {
+//     id: 'wallet.settings.recoveryPhraseStep1Paragraph2',
+//     defaultMessage: '!!!Are you being watched? Please make sure that nobody can see your screen while you are entering your wallet recovery phrase.',
+//     description: 'Label for the recoveryPhraseStep1Paragraph2 on wallet settings.',
+//   },
+// });
 
 type Props = {
-  mnemonicsConfirmationDate: Date,
+  onContinue: Date,
 };
 
 @observer
-export default class WalletRecoveryPhraseStep2Dialog extends Component<Props> {
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
+export default class WalletRecoveryPhraseStep1 extends Component<Props> {
+  // static contextTypes = {
+  //   intl: intlShape.isRequired,
+  // };
   render() {
-    const { intl } = this.context;
-    // const { mnemonicsConfirmationDate } = this.props;
+    // const { intl } = this.context;
+    const { onContinue } = this.props;
     const isSubmitting = false;
 
     const actions = [
       {
         className: isSubmitting ? styles.isSubmitting : null,
-        label: intl.formatMessage(messages.exportButtonLabel),
+        label: 'Continue',
         primary: true,
         onClick: this.submit,
       },
@@ -73,14 +49,22 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<Props> {
 
     return (
       <Dialog
-        className={styles.component}
-        title={intl.formatMessage(messages.recoveryPhraseValidationTitle)}
+        className={styles.dialog}
+        title="Wallet recovery phrase verification"
         actions={actions}
         closeOnOverlayClick
-        onClose={() => {}}
+        onClose={onContinue}
         closeButton={<DialogCloseButton />}
       >
-        WalletRecoveryPhraseStep1
+        <p>
+          To verify that you have the correct recovery phrase for this wallet
+          you can enter your 12-word wallet recovery phrase on the following
+          screen.
+        </p>
+        <p>
+          Are you being watched? Please make sure that nobody can see your
+          screen while you are entering your wallet recovery phrase.
+        </p>
       </Dialog>
     );
   }

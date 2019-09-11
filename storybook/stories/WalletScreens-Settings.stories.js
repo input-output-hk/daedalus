@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { text, boolean, number, select, radios } from '@storybook/addon-knobs';
+import { text, boolean, number, select } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import moment from 'moment';
 

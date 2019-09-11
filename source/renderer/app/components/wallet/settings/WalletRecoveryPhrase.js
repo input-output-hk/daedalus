@@ -132,7 +132,6 @@ export default class WalletRecoveryPhrase extends Component<Props> {
 
   get recoveryPhraseStatus() {
     const { mnemonicsConfirmationDate, walletCreationDate } = this.props;
-    console.log('mnemonicsConfirmationDate 1', mnemonicsConfirmationDate);
     const dateToCheck = mnemonicsConfirmationDate || walletCreationDate;
     const daysSinceDate = moment().diff(moment(dateToCheck), 'days');
     let status = 'ok';
@@ -140,11 +139,9 @@ export default class WalletRecoveryPhrase extends Component<Props> {
       status = 'notification';
     else if (daysSinceDate > MNEMONICS_CHECKING_WARNING) status = 'warning';
     const type = mnemonicsConfirmationDate ? 'alreadyChecked' : 'neverChecked';
-    console.log('2');
     const statuses = this.statuses[type];
     const { icon, message } = statuses[status];
     const timeAgo = moment(mnemonicsConfirmationDate).fromNow();
-    console.log('3');
     const timeUntilWarning = 'few months, more or less';
     const timeUntilNotification = 'couple of days, more or less';
     return {
