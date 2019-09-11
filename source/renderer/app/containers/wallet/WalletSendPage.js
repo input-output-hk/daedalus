@@ -27,6 +27,7 @@ export default class WalletSendPage extends Component<Props> {
     const { intl } = this.context;
     const { uiDialogs, wallets, transactions, app } = this.props.stores;
     const { actions } = this.props;
+    const { isValidAddress } = wallets;
     const { calculateTransactionFee, validateAmount } = transactions;
     const activeWallet = wallets.active;
 
@@ -51,6 +52,7 @@ export default class WalletSendPage extends Component<Props> {
             amount,
           })
         }
+        addressValidator={isValidAddress}
         isDialogOpen={uiDialogs.isOpen}
         openDialogAction={actions.dialogs.open.trigger}
         isRestoreActive={isRestoreActive}

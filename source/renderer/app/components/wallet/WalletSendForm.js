@@ -20,7 +20,6 @@ import globalMessages from '../../i18n/global-messages';
 import WalletSendConfirmationDialog from './WalletSendConfirmationDialog';
 import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
 import {
-  formattedAmountToBigNumber,
   formattedAmountToNaturalUnits,
   formattedAmountToLovelace,
 } from '../../utils/formatters';
@@ -109,6 +108,7 @@ type Props = {
     address: string,
     amount: number
   ) => Promise<BigNumber>,
+  addressValidator: Function,
   openDialogAction: Function,
   isDialogOpen: Function,
   onExternalLinkClick?: Function,
@@ -178,6 +178,7 @@ export default class WalletSendForm extends Component<Props, State> {
           validators: [
             async ({ field, form }) => {
               const { value } = field;
+
               if (value === '') {
                 this._resetTransactionFee();
                 return [
@@ -188,13 +189,12 @@ export default class WalletSendForm extends Component<Props, State> {
               const amountField = form.$('amount');
               const amountValue = amountField.value;
               const isAmountValid = amountField.isValid;
-              const transactionFee = await this._calculateTransactionFee(
-                value,
-                amountValue
-              );
-              const { isValidAddress } = transactionFee;
-              if (!isAmountValid || !isValidAddress) {
+              const isValidAddress = await this.props.addressValidator(value);
+
+              if (isValidAddress && isAmountValid) {
                 this._resetTransactionFee();
+              } else {
+                await this._calculateTransactionFee(value, amountValue);
               }
               return [
                 isValidAddress,
@@ -208,17 +208,17 @@ export default class WalletSendForm extends Component<Props, State> {
           placeholder: `0.${'0'.repeat(
             this.props.currencyMaxFractionalDigits
           )}`,
-          value: '',
+          value: null,
           validators: [
             async ({ field, form }) => {
-              const amountValue = field.value;
-              if (amountValue === '') {
+              if (field.value === null) {
                 this._resetTransactionFee();
                 return [
                   false,
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
+              const amountValue = field.value.toString();
               const isValid = await this.props.validateAmount(
                 formattedAmountToNaturalUnits(amountValue)
               );
@@ -253,7 +253,6 @@ export default class WalletSendForm extends Component<Props, State> {
     const { intl } = this.context;
     const {
       currencyUnit,
-      currencyMaxIntegerDigits,
       currencyMaxFractionalDigits,
       isDialogOpen,
       isRestoreActive,
@@ -268,7 +267,8 @@ export default class WalletSendForm extends Component<Props, State> {
     const receiverField = form.$('receiver');
     const receiverFieldProps = receiverField.bind();
     const amountFieldProps = amountField.bind();
-    const amount = formattedAmountToBigNumber(amountFieldProps.value);
+
+    const amount = new BigNumber(amountFieldProps.value || 0);
 
     let fees = null;
     let total = null;
@@ -311,12 +311,13 @@ export default class WalletSendForm extends Component<Props, State> {
                   {...amountFieldProps}
                   className="amount"
                   label={intl.formatMessage(messages.amountLabel)}
-                  maxBeforeDot={currencyMaxIntegerDigits}
-                  maxAfterDot={currencyMaxFractionalDigits}
+                  numberLocaleOptions={{
+                    minimumFractionDigits: currencyMaxFractionalDigits,
+                  }}
                   error={transactionFeeError || amountField.error}
                   onChange={value => {
                     this._isCalculatingFee = true;
-                    amountField.onChange(value || '');
+                    amountField.onChange(value);
                   }}
                   // AmountInputSkin props
                   currency={currencyUnit}
@@ -324,6 +325,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   total={total}
                   skin={AmountInputSkin}
                   onKeyPress={this.handleSubmitOnEnter}
+                  allowSigns={false}
                 />
               </div>
 
@@ -340,7 +342,7 @@ export default class WalletSendForm extends Component<Props, State> {
 
         {isDialogOpen(WalletSendConfirmationDialog) ? (
           <WalletSendConfirmationDialogContainer
-            amount={amountFieldProps.value}
+            amount={amount.toFormat(currencyMaxFractionalDigits)}
             receiver={receiverFieldProps.value}
             totalAmount={total}
             transactionFee={fees}
@@ -375,18 +377,10 @@ export default class WalletSendForm extends Component<Props, State> {
           transactionFeeError: null,
         });
       }
-      return {
-        isValidAddress: true,
-        hasError: false,
-        amount: fee,
-      };
     } catch (error) {
+      // @API TODO - address is not correct on fee check
       if (error.message === 'NotValidAddress') {
-        return {
-          isValidAddress: false,
-          hasError: true,
-          amount: null,
-        };
+        return;
       }
       const errorHasLink = !!error.values.linkLabel;
       const transactionFeeError = errorHasLink ? (
@@ -406,10 +400,5 @@ export default class WalletSendForm extends Component<Props, State> {
         });
       }
     }
-    return {
-      isValidAddress: true,
-      hasError: true,
-      fee: null,
-    };
   }
 }

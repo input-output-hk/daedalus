@@ -28,7 +28,7 @@ When(/^I open language selection dropdown$/, function() {
 
 When(/^I select Japanese language$/, function() {
   return this.waitAndClick(
-    '//*[@class="SimpleOptions_label"][contains(text(), "Japanese")]'
+    '//*[@class="SimpleOptions_option"]//*[contains(text(), "Japanese")]'
   );
 });
 

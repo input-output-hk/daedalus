@@ -37,18 +37,6 @@ const messages = defineMessages({
     description:
       'Transaction type shown for money exchanges between currencies.',
   },
-  // @API TODO - wallet has no assurance
-  // assuranceLevel: {
-  //   id: 'wallet.transaction.assuranceLevel',
-  //   defaultMessage: '!!!Transaction assurance level',
-  //   description: 'Transaction assurance level.',
-  // },
-  confirmations: {
-    id: 'wallet.transaction.confirmations',
-    defaultMessage:
-      '{confirmationsNumber, plural, one {# confirmation} =21 {20+ confirmations} other {# confirmations}}',
-    description: 'Transaction confirmations.',
-  },
   transactionId: {
     id: 'wallet.transaction.transactionId',
     defaultMessage: '!!!Transaction ID',
@@ -96,26 +84,12 @@ const messages = defineMessages({
   },
 });
 
-// @API TODO - wallet has no assurance
-// const assuranceLevelTranslations = defineMessages({
-//   [TxnAssuranceLevelOptions.LOW]: {
-//     id: 'wallet.transaction.assuranceLevel.low',
-//     defaultMessage: '!!!low',
-//     description: 'Transaction assurance level "low".',
-//   },
-//   [TxnAssuranceLevelOptions.MEDIUM]: {
-//     id: 'wallet.transaction.assuranceLevel.medium',
-//     defaultMessage: '!!!medium',
-//     description: 'Transaction assurance level "medium".',
-//   },
-//   [TxnAssuranceLevelOptions.HIGH]: {
-//     id: 'wallet.transaction.assuranceLevel.high',
-//     defaultMessage: '!!!high',
-//     description: 'Transaction assurance level "high".',
-//   },
-// });
-
 const stateTranslations = defineMessages({
+  [transactionStates.OK]: {
+    id: 'wallet.transaction.state.confirmed',
+    defaultMessage: '!!!Transaction confirmed',
+    description: 'Transaction state "confirmed"',
+  },
   [transactionStates.PENDING]: {
     id: 'wallet.transaction.state.pending',
     defaultMessage: '!!!Transaction pending',
@@ -131,7 +105,6 @@ const stateTranslations = defineMessages({
 type Props = {
   data: WalletTransaction,
   state: TransactionState,
-  // assuranceLevel: string,
   isExpanded: boolean,
   isRestoreActive: boolean,
   isLastInList: boolean,
@@ -165,7 +138,6 @@ export default class Transaction extends Component<Props> {
       data,
       isLastInList,
       state,
-      // assuranceLevel,
       formattedWalletAmount,
       onOpenExternalLink,
       isRestoreActive,
@@ -175,6 +147,10 @@ export default class Transaction extends Component<Props> {
 
     const canOpenExplorer = onOpenExternalLink;
     const isFailedTransaction = state === transactionStates.FAILED;
+    const isPendingTransaction = state === transactionStates.PENDING;
+    const transactionState = isPendingTransaction
+      ? transactionStates.PENDING
+      : state;
 
     const componentStyles = classNames([
       styles.component,
@@ -194,40 +170,21 @@ export default class Transaction extends Component<Props> {
       isExpanded ? styles.detailsExpanded : styles.detailsClosed,
     ]);
 
-    // @API TODO - wallet has no assurance
-    // const assuranceLevelRowStyles = classNames([
-    // styles.row,
-    // styles.retainHeight,
-    // ]);
-
     const arrowStyles = classNames([
       styles.arrow,
       isExpanded ? styles.arrowExpanded : null,
     ]);
 
-    // @API TODO - wallet has no assurance
-    // const status = intl.formatMessage(
-    //   assuranceLevelTranslations[assuranceLevel]
-    // );
     const currency = intl.formatMessage(globalMessages.currency);
     const symbol = adaSymbol;
 
     const transactionStateTag = () => {
       if (isRestoreActive) return;
-      // @API TODO - wallet has no assurance - Improve once transactions endpoints are done
-      // return transactionState === transactionStates.OK ? (
-      //   <div className={styles[assuranceLevel]}>{status}</div>
-      // ) : (
-      //   <div className={styles[`${transactionState}Label`]}>
-      //     {intl.formatMessage(stateTranslations[transactionState])}
-      //   </div>
-      // );
+
       return (
-        state === transactionStates.OK && (
-          <div className={styles.pendingLabel}>
-            {intl.formatMessage(stateTranslations.pending)}
-          </div>
-        )
+        <div className={styles[`${transactionState}Label`]}>
+          {intl.formatMessage(stateTranslations[transactionState])}
+        </div>
       );
     };
 
@@ -324,30 +281,6 @@ export default class Transaction extends Component<Props> {
                 </div>
               ))}
 
-              {
-                // // @API TODO - wallet has no assurance
-                // <div className={assuranceLevelRowStyles}>
-                //   <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
-                //   {!isRestoreActive &&
-                //   (transactionState === transactionStates.OK ||
-                //     transactionState === transactionStates.PENDING) ? (
-                //     <span>
-                //       {transactionState === transactionStates.OK && (
-                //         <span className={styles.assuranceLevel}>
-                //           {status}.&nbsp;
-                //         </span>
-                //       )}
-                //       <FormattedMessage
-                //         {...messages.confirmations}
-                //         values={{
-                //           confirmationsNumber: data.numberOfConfirmations,
-                //         }}
-                //       />
-                //     </span>
-                //   ) : null}
-                // </div>
-              }
-
               <h2>{intl.formatMessage(messages.transactionId)}</h2>
               <div className={styles.transactionIdRow}>
                 <span
@@ -361,12 +294,6 @@ export default class Transaction extends Component<Props> {
                 </span>
               </div>
             </div>
-            {/*
-            <div>
-              <h2>Description</h2>
-              <span>{data.description !== '' ? data.description : 'No description yet'}</span>
-            </div>
-            */}
           </div>
           <SVGInline svg={arrow} className={arrowStyles} />
         </div>
