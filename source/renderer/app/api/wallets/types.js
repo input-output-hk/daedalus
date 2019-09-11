@@ -121,3 +121,7 @@ export type GetWalletRecoveryPhraseFromCertificateRequest = {
   passphrase: string,
   scrambledInput: string,
 };
+
+export type GetWalletRequest = {
+  walletId: string,
+};
