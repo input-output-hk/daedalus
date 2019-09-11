@@ -41,8 +41,8 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props> {
     const actions = [
       {
         label: 'Verify recovery phrase again',
-        primary: true,
         onClick: onVerifyAgain,
+        className: 'attention',
       },
     ];
 
