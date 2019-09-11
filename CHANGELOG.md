@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Reorganized Storybook and added missing stories ([PR 1537](https://github.com/input-output-hk/daedalus/pull/1537))
+- Reorganized Storybook by domain ([PR 1537](https://github.com/input-output-hk/daedalus/pull/1537))
 - Removed select dropdown arrow ([PR 1550](https://github.com/input-output-hk/daedalus/pull/1550))
 - Implemented automated and manual update flows unification ([PR 1491](https://github.com/input-output-hk/daedalus/pull/1491))
 - Updated behavior of system dialogs ([PR 1494](https://github.com/input-output-hk/daedalus/pull/1494))
