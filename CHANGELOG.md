@@ -5,6 +5,8 @@ Changelog
 
 ### Features
 
+- Integrated Cardano V2 API endpoints ([PR 1548](https://github.com/input-output-hk/daedalus/pull/1548), [PR 1551](https://github.com/input-output-hk/daedalus/pull/1551), [PR 1552](https://github.com/input-output-hk/daedalus/pull/1552), [PR 1553](https://github.com/input-output-hk/daedalus/pull/1553), [PR 1555](https://github.com/input-output-hk/daedalus/pull/1555))
+- Removed select dropdown arrow ([PR 1550](https://github.com/input-output-hk/daedalus/pull/1550))
 - Implemented automated and manual update flows unification ([PR 1491](https://github.com/input-output-hk/daedalus/pull/1491))
 - Updated behavior of system dialogs ([PR 1494](https://github.com/input-output-hk/daedalus/pull/1494))
 - Implemented the new "Wallet Creation" process ([PR 1499](https://github.com/input-output-hk/daedalus/pull/1499), [PR 1515](https://github.com/input-output-hk/daedalus/pull/1515), [PR 1530](https://github.com/input-output-hk/daedalus/issues/1530))
@@ -17,6 +19,7 @@ Changelog
 
 ### Fixes
 
+- Fixed UI issues across different app themes ([PR 1547](https://github.com/input-output-hk/daedalus/pull/1547))
 - Fixed minor UI issues on the "Delegation center" screen and "Delegation setup" wizard ([PR 1545](https://github.com/input-output-hk/daedalus/pull/1545))
 - Fixed "White" theme styles ([PR 1532](https://github.com/input-output-hk/daedalus/pull/1532))
 - Removed tooltip on Diagnostics Screen connection error message ([PR 1535](https://github.com/input-output-hk/daedalus/pull/1535))

@@ -15,7 +15,7 @@ export const updateWallet = (
   request(
     {
       method: 'PUT',
-      path: `/api/v1/wallets/${walletId}`,
+      path: `/v2/wallets/${walletId}`,
       ...config,
     },
     {},

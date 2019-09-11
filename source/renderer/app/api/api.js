@@ -213,7 +213,6 @@ export default class AdaApi {
 
       Logger.debug('AdaApi::getAddresses success', { addresses: response });
       const addresses = response.map(_createAddressFromServerData);
-
       return new Promise(resolve => resolve({ accountIndex: 0, addresses }));
     } catch (error) {
       Logger.error('AdaApi::getAddresses error', { error });
