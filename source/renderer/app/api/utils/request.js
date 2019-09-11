@@ -28,9 +28,6 @@ function typedRequest<Response>(
   // requestOptions?: { returnMeta: boolean }
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
-    const allowedErrorExceptionPaths = [
-      '/api/internal/next-update', // when nextAdaUpdate receives a 404, it isn't an error
-    ];
     const options: RequestOptions = Object.assign({}, httpOptions);
     // const { returnMeta } = Object.assign({}, requestOptions);
     let hasRequestBody = false;
