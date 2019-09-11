@@ -21,13 +21,6 @@ export const messages = defineMessages({
     defaultMessage: '!!!Name',
     description: 'Label for the "Name" text input on the wallet settings page.',
   },
-  // // @API TODO - wallet has no assurance
-  // assuranceLevelLabel: {
-  //   id: 'wallet.settings.assurance',
-  //   defaultMessage: '!!!Transaction assurance security level',
-  //   description:
-  //     'Label for the "Transaction assurance security level" dropdown.',
-  // },
   passwordLabel: {
     id: 'wallet.settings.password',
     defaultMessage: '!!!Password',
@@ -51,9 +44,6 @@ export const messages = defineMessages({
 });
 
 type Props = {
-  // @API TODO - wallet has no assurance
-  // assuranceLevels: Array<{ value: string, label: ReactIntlMessage }>,
-  // walletAssurance: string,
   walletName: string,
   isSpendingPasswordSet: boolean,
   spendingPasswordUpdateDate: ?Date,
@@ -93,9 +83,6 @@ export default class WalletSettings extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      // @API TODO - wallet has no assurance
-      // assuranceLevels,
-      // walletAssurance,
       walletName,
       isSpendingPasswordSet,
       spendingPasswordUpdateDate,
@@ -116,12 +103,6 @@ export default class WalletSettings extends Component<Props> {
       deleteWalletDialogContainer,
       exportWalletDialogContainer,
     } = this.props;
-
-    // @API TODO - wallet has no assurance
-    // const assuranceLevelOptions = assuranceLevels.map(assurance => ({
-    //   value: assurance.value,
-    //   label: intl.formatMessage(assurance.label),
-    // }));
 
     const passwordMessage = isSpendingPasswordSet
       ? intl.formatMessage(messages.passwordLastUpdated, {
@@ -149,23 +130,6 @@ export default class WalletSettings extends Component<Props> {
               !isSubmitting && lastUpdatedField === 'name' && !isInvalid
             }
           />
-
-          {
-            // @API TODO - wallet has no assurance
-            // <InlineEditingDropdown
-            //   className="walletAssuranceLevel"
-            //   label={intl.formatMessage(messages.assuranceLevelLabel)}
-            //   options={assuranceLevelOptions}
-            //   value={walletAssurance}
-            //   isActive={activeField === 'assurance'}
-            //   onStartEditing={() => onStartEditing('assurance')}
-            //   onStopEditing={onStopEditing}
-            //   onSubmit={value => onFieldValueChange('assurance', value)}
-            //   successfullyUpdated={
-            //     !isSubmitting && lastUpdatedField === 'assurance'
-            //   }
-            // />
-          }
 
           <ReadOnlyInput
             label={intl.formatMessage(messages.passwordLabel)}
