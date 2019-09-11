@@ -17,6 +17,8 @@ import {
 } from '../../../config/walletsConfig';
 import WalletRecoveryPhraseStep1Dialog from './WalletRecoveryPhraseStep1Dialog';
 import WalletRecoveryPhraseStep2Dialog from './WalletRecoveryPhraseStep2Dialog';
+import WalletRecoveryPhraseStep3Dialog from './WalletRecoveryPhraseStep3Dialog';
+import WalletRecoveryPhraseStep4Dialog from './WalletRecoveryPhraseStep4Dialog';
 
 export const messages = defineMessages({
   recoveryPhraseValidationTitle: {
@@ -89,6 +91,8 @@ type Props = {
   isDialogOpen: Function,
   walletRecoveryPhraseStep1Container: Node,
   walletRecoveryPhraseStep2Container: Node,
+  walletRecoveryPhraseStep3Container: Node,
+  walletRecoveryPhraseStep4Container: Node,
 };
 
 @observer
@@ -162,6 +166,8 @@ export default class WalletRecoveryPhrase extends Component<Props> {
       isDialogOpen,
       walletRecoveryPhraseStep1Container,
       walletRecoveryPhraseStep2Container,
+      walletRecoveryPhraseStep3Container,
+      walletRecoveryPhraseStep4Container,
     } = this.props;
     const {
       icon,
@@ -213,6 +219,14 @@ export default class WalletRecoveryPhrase extends Component<Props> {
 
         {isDialogOpen(WalletRecoveryPhraseStep2Dialog)
           ? walletRecoveryPhraseStep2Container
+          : false}
+
+        {isDialogOpen(WalletRecoveryPhraseStep3Dialog)
+          ? walletRecoveryPhraseStep3Container
+          : false}
+
+        {isDialogOpen(WalletRecoveryPhraseStep4Dialog)
+          ? walletRecoveryPhraseStep4Container
           : false}
       </div>
     );

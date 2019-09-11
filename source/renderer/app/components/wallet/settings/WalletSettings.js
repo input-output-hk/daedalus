@@ -77,6 +77,8 @@ type Props = {
   exportWalletDialogContainer: Node,
   walletRecoveryPhraseStep1Container: Node,
   walletRecoveryPhraseStep2Container: Node,
+  walletRecoveryPhraseStep3Container: Node,
+  walletRecoveryPhraseStep4Container: Node,
   mnemonicsConfirmationDate?: Date,
 };
 
@@ -122,6 +124,8 @@ export default class WalletSettings extends Component<Props> {
       exportWalletDialogContainer,
       walletRecoveryPhraseStep1Container,
       walletRecoveryPhraseStep2Container,
+      walletRecoveryPhraseStep3Container,
+      walletRecoveryPhraseStep4Container,
       mnemonicsConfirmationDate,
     } = this.props;
 
@@ -192,6 +196,12 @@ export default class WalletSettings extends Component<Props> {
             }
             walletRecoveryPhraseStep2Container={
               walletRecoveryPhraseStep2Container
+            }
+            walletRecoveryPhraseStep3Container={
+              walletRecoveryPhraseStep3Container
+            }
+            walletRecoveryPhraseStep4Container={
+              walletRecoveryPhraseStep4Container
             }
           />
 

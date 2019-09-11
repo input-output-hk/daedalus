@@ -25,66 +25,49 @@ import styles from './WalletRecoveryPhraseStep1Dialog.scss';
 // });
 
 type Props = {
-  onVerify: Function,
   onClose: Function,
-};
-
-type State = {
-  isVeryfying: boolean,
+  onVerifyAgain: Function,
 };
 
 @observer
-export default class WalletRecoveryPhraseStep1 extends Component<Props, State> {
+export default class WalletRecoveryPhraseStep1 extends Component<Props> {
   // static contextTypes = {
   //   intl: intlShape.isRequired,
   // };
-
-  state = {
-    isVeryfying: false,
-  };
-
-  handleVerify = () => {
-    this.setState({
-      isVeryfying: true,
-    });
-    this.props.onVerify();
-  };
-
   render() {
     // const { intl } = this.context;
-    const { onClose, onVerify } = this.props;
-    const { isVeryfying } = this.state;
+    const { onClose, onVerifyAgain } = this.props;
 
     const actions = [
       {
-        className: isVeryfying ? styles.isVeryfying : null,
-        label: 'Verify - successfuly',
+        label: 'Verify recovery phrase again',
         primary: true,
-        onClick: () => onVerify(true),
-        disabled: isVeryfying,
-      },
-      {
-        className: isVeryfying ? styles.isVeryfying : null,
-        label: 'Verify - failure',
-        onClick: () => onVerify(false),
-        disabled: isVeryfying,
+        onClick: onVerifyAgain,
       },
     ];
 
     return (
       <Dialog
         className={styles.dialog}
-        title="Wallet recovery phrase verification"
+        title="verification failure"
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
         closeButton={<DialogCloseButton />}
       >
         <p>
-          Please enter your 12-word wallet recovery phrase. Make sure you enter
-          the words in the correct order.
+          The wallet recovery phrase you have entered does not match the
+          recovery phrase associated with this wallet. Make sure you have
+          entered the wallet recovery phrase which was written down during the
+          wallet creation process for this wallet and make sure the words are in
+          the correct order.
         </p>
-        <h3>Recovery phrase</h3>
+        <p>
+          If you are unable to verify your wallet recovery phrase you should
+          create a new wallet and move all of the funds from this wallet to the
+          new wallet. If you do this, make sure you keep the wallet recovery
+          phrase for the new wallet safe and secure.
+        </p>
       </Dialog>
     );
   }

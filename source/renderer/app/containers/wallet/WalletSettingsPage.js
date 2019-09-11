@@ -10,6 +10,8 @@ import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogCo
 import ExportWalletToFileDialogContainer from './dialogs/settings/ExportWalletToFileDialogContainer';
 import WalletRecoveryPhraseStep1Container from './dialogs/settings/WalletRecoveryPhraseStep1Container';
 import WalletRecoveryPhraseStep2Container from './dialogs/settings/WalletRecoveryPhraseStep2Container';
+import WalletRecoveryPhraseStep3Container from './dialogs/settings/WalletRecoveryPhraseStep3Container';
+import WalletRecoveryPhraseStep4Container from './dialogs/settings/WalletRecoveryPhraseStep4Container';
 
 type Props = InjectedProps;
 
@@ -103,6 +105,12 @@ export default class WalletSettingsPage extends Component<Props, State> {
         }
         walletRecoveryPhraseStep2Container={
           <WalletRecoveryPhraseStep2Container />
+        }
+        walletRecoveryPhraseStep3Container={
+          <WalletRecoveryPhraseStep3Container />
+        }
+        walletRecoveryPhraseStep4Container={
+          <WalletRecoveryPhraseStep4Container />
         }
       />
     );

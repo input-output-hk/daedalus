@@ -25,66 +25,45 @@ import styles from './WalletRecoveryPhraseStep1Dialog.scss';
 // });
 
 type Props = {
-  onVerify: Function,
   onClose: Function,
 };
 
-type State = {
-  isVeryfying: boolean,
-};
-
 @observer
-export default class WalletRecoveryPhraseStep1 extends Component<Props, State> {
+export default class WalletRecoveryPhraseStep1 extends Component<Props> {
   // static contextTypes = {
   //   intl: intlShape.isRequired,
   // };
-
-  state = {
-    isVeryfying: false,
-  };
-
-  handleVerify = () => {
-    this.setState({
-      isVeryfying: true,
-    });
-    this.props.onVerify();
-  };
-
   render() {
     // const { intl } = this.context;
-    const { onClose, onVerify } = this.props;
-    const { isVeryfying } = this.state;
+    const { onClose } = this.props;
 
     const actions = [
       {
-        className: isVeryfying ? styles.isVeryfying : null,
-        label: 'Verify - successfuly',
+        label: 'Continue',
         primary: true,
-        onClick: () => onVerify(true),
-        disabled: isVeryfying,
-      },
-      {
-        className: isVeryfying ? styles.isVeryfying : null,
-        label: 'Verify - failure',
-        onClick: () => onVerify(false),
-        disabled: isVeryfying,
+        onClick: onClose,
       },
     ];
 
     return (
       <Dialog
         className={styles.dialog}
-        title="Wallet recovery phrase verification"
+        title="verification successful"
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
         closeButton={<DialogCloseButton />}
       >
         <p>
-          Please enter your 12-word wallet recovery phrase. Make sure you enter
-          the words in the correct order.
+          You have verified the recovery phrase for this wallet. You can use it
+          at any time to recover the funds in this wallet on another computer,
+          even if using a different version of Daedalus.
         </p>
-        <h3>Recovery phrase</h3>
+        <p>
+          Please make sure to keep the paper with your wallet recovery phrase in
+          a safe place. Anyone with access to your wallet recovery phrase can
+          take control of your funds.
+        </p>
       </Dialog>
     );
   }

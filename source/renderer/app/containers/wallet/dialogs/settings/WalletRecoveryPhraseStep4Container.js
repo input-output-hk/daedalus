@@ -1,15 +1,15 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import WalletRecoveryPhraseStep1Dialog from '../../../../components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
 import WalletRecoveryPhraseStep2Dialog from '../../../../components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
+import WalletRecoveryPhraseStep4Dialog from '../../../../components/wallet/settings/WalletRecoveryPhraseStep4Dialog';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
 
 type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions')
 @observer
-export default class WalletRecoveryPhraseStep1Container extends Component<Props> {
+export default class WalletRecoveryPhraseStep2Container extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
@@ -17,7 +17,7 @@ export default class WalletRecoveryPhraseStep1Container extends Component<Props>
     onClose: () => {},
   };
 
-  handleContinue = () => {
+  handleVerify = () => {
     this.props.actions.dialogs.open.trigger({
       dialog: WalletRecoveryPhraseStep2Dialog,
     });
@@ -26,8 +26,8 @@ export default class WalletRecoveryPhraseStep1Container extends Component<Props>
   render() {
     const { closeActiveDialog } = this.props.actions.dialogs;
     return (
-      <WalletRecoveryPhraseStep1Dialog
-        onContinue={this.handleContinue}
+      <WalletRecoveryPhraseStep4Dialog
+        onVerifyAgain={this.handleVerify}
         onClose={closeActiveDialog.trigger}
       />
     );
