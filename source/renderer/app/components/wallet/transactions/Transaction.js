@@ -202,6 +202,7 @@ export default class Transaction extends Component<Props> {
 
     const transactionStateTag = () => {
       if (isRestoreActive) return;
+
       return (
         <div className={styles[`${transactionState}Label`]}>
           {intl.formatMessage(stateTranslations[transactionState])}
