@@ -86,10 +86,10 @@ export const handleDiskSpace = (
       }
       const response = {
         isNotEnoughDiskSpace: false,
-        diskSpaceRequired: '? GB',
-        diskSpaceMissing: '? Bytes',
-        diskSpaceRecommended: '? GB',
-        diskSpaceAvailable: '? GB',
+        diskSpaceRequired: '',
+        diskSpaceMissing: '',
+        diskSpaceRecommended: '',
+        diskSpaceAvailable: '',
       };
       getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
       return response;
