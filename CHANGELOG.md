@@ -5,6 +5,8 @@ Changelog
 
 ### Features
 
+- Integrated Cardano V2 API endpoints ([PR 1548](https://github.com/input-output-hk/daedalus/pull/1548), [PR 1551](https://github.com/input-output-hk/daedalus/pull/1551), [PR 1552](https://github.com/input-output-hk/daedalus/pull/1552), [PR 1553](https://github.com/input-output-hk/daedalus/pull/1553), [PR 1555](https://github.com/input-output-hk/daedalus/pull/1555), [PR 1556](https://github.com/input-output-hk/daedalus/pull/1556), [PR 1557](https://github.com/input-output-hk/daedalus/pull/1557), [PR 1558](https://github.com/input-output-hk/daedalus/pull/1558), [PR 1559](https://github.com/input-output-hk/daedalus/pull/1559))
+- Removed select dropdown arrow ([PR 1550](https://github.com/input-output-hk/daedalus/pull/1550))
 - Implemented automated and manual update flows unification ([PR 1491](https://github.com/input-output-hk/daedalus/pull/1491))
 - Updated behavior of system dialogs ([PR 1494](https://github.com/input-output-hk/daedalus/pull/1494))
 - Implemented the new "Wallet Creation" process ([PR 1499](https://github.com/input-output-hk/daedalus/pull/1499), [PR 1515](https://github.com/input-output-hk/daedalus/pull/1515), [PR 1530](https://github.com/input-output-hk/daedalus/issues/1530))
@@ -17,6 +19,7 @@ Changelog
 
 ### Fixes
 
+- Fixed UI issues across different app themes ([PR 1547](https://github.com/input-output-hk/daedalus/pull/1547))
 - Fixed minor UI issues on the "Delegation center" screen and "Delegation setup" wizard ([PR 1545](https://github.com/input-output-hk/daedalus/pull/1545))
 - Fixed "White" theme styles ([PR 1532](https://github.com/input-output-hk/daedalus/pull/1532))
 - Removed tooltip on Diagnostics Screen connection error message ([PR 1535](https://github.com/input-output-hk/daedalus/pull/1535))
@@ -29,7 +32,11 @@ Changelog
 
 ### Chores
 
+<<<<<<< HEAD
 - Integration of the V2 API ([PR 1557](https://github.com/input-output-hk/daedalus/pull/1557), [PR 1558](https://github.com/input-output-hk/daedalus/pull/1558), [PR 1559](https://github.com/input-output-hk/daedalus/pull/1559), [PR 1560](https://github.com/input-output-hk/daedalus/pull/1560))
+=======
+- Use improved `NumericInput` component of `React-Polymorph` v0.9.0 ([1511](https://github.com/input-output-hk/daedalus/pull/1511))
+>>>>>>> chore/ddw-876-get-wallet-utxo-statistics-v2-api-integration
 - Added minimum heights of main app window for different environments (Windows, Linux, MacOS) ([1485](https://github.com/input-output-hk/daedalus/pull/1485))
 - Removed "Ada Redemption" feature ([PR 1510](https://github.com/input-output-hk/daedalus/pull/1510))
 - Changed `themes:check` to `themes:check:createTheme` and added a 4 part "Theme Management in Daedalus" tutorial series to a README document in the themes directory ([PR 1525](https://github.com/input-output-hk/daedalus/pull/1525))

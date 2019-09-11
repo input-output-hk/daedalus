@@ -270,6 +270,9 @@ body,
       // This ensures that the scroll bar never shrinks too much
       min-height: 30px;
     }
+    &:hover {
+      background-color: var(--theme-scrollbar-thumb-background-hover);
+    }
   }
 }
 
