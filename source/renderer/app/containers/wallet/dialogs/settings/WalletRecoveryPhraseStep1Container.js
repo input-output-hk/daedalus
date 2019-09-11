@@ -7,31 +7,14 @@ import type { InjectedDialogContainerProps } from '../../../../types/injectedPro
 
 type Props = InjectedDialogContainerProps;
 
-type State = {
-  safetyAgreement: boolean,
-};
-
 @inject('stores', 'actions')
 @observer
-export default class WalletRecoveryPhraseStep1Container extends Component<
-  Props,
-  State
-> {
+export default class WalletRecoveryPhraseStep1Container extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
     children: null,
     onClose: () => {},
-  };
-
-  state = {
-    safetyAgreement: false,
-  };
-
-  handleToggleSafetyAgreement = checked => {
-    this.setState({
-      safetyAgreement: checked,
-    });
   };
 
   handleContinue = () => {
@@ -42,13 +25,10 @@ export default class WalletRecoveryPhraseStep1Container extends Component<
 
   render() {
     const { closeActiveDialog } = this.props.actions.dialogs;
-    const { safetyAgreement } = this.state;
     return (
       <WalletRecoveryPhraseStep1Dialog
         onContinue={this.handleContinue}
         onClose={closeActiveDialog.trigger}
-        safetyAgreement={safetyAgreement}
-        onToggleSafetyAgreement={this.handleToggleSafetyAgreement}
       />
     );
   }

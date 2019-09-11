@@ -38,23 +38,32 @@ export const messages = defineMessages({
 type Props = {
   onContinue: Function,
   onClose: Function,
-  onToggleSafetyAgreement: Function,
+};
+
+type State = {
   safetyAgreement: boolean,
 };
 
 @observer
-export default class WalletRecoveryPhraseStep1 extends Component<Props> {
+export default class WalletRecoveryPhraseStep1 extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
+  state = {
+    safetyAgreement: false,
+  };
+
+  onToggleSafetyAgreement = checked => {
+    this.setState({
+      safetyAgreement: checked,
+    });
+  };
+
   render() {
     const { intl } = this.context;
-    const {
-      onContinue,
-      onClose,
-      onToggleSafetyAgreement,
-      safetyAgreement,
-    } = this.props;
+    const { onContinue, onClose } = this.props;
+    const { safetyAgreement } = this.state;
     const isSubmitting = false;
 
     const actions = [
@@ -79,7 +88,7 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props> {
         <p>{intl.formatMessage(messages.recoveryPhraseStep1Paragraph1)}</p>
         <p className={styles.checkboxContainer}>
           <Checkbox
-            onChange={onToggleSafetyAgreement}
+            onChange={this.onToggleSafetyAgreement}
             checked={safetyAgreement}
             skin={CheckboxSkin}
             className={styles.checkbox}
