@@ -10,16 +10,20 @@ import { WalletAssuranceModeOptions } from '../../source/renderer/app/domains/Wa
 import ChangeSpendingPasswordDialog from '../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
 import DeleteWalletConfirmationDialog from '../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
 import ExportWalletToFileDialog from '../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
+import {
+  MNEMONICS_CHECKING_WARNING,
+  MNEMONICS_CHECKING_NOTIFICATION,
+} from '../../source/renderer/app/config/walletsConfig';
 
 /* eslint-disable react/display-name  */
 
 const mnemonicsConfirmationDateOptions = {
   Ok: new Date(),
   Warning: moment()
-    .subtract(15, 'days')
+    .subtract(MNEMONICS_CHECKING_WARNING + 10, 'days')
     .toDate(),
-  Error: moment()
-    .subtract(35, 'days')
+  Notification: moment()
+    .subtract(MNEMONICS_CHECKING_NOTIFICATION + 10, 'days')
     .toDate(),
 };
 

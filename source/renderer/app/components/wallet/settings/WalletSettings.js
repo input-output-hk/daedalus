@@ -2,9 +2,8 @@
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
-import SVGInline from 'react-svg-inline';
 import LocalizableError from '../../../i18n/LocalizableError';
 import BorderedBox from '../../widgets/BorderedBox';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
@@ -16,10 +15,8 @@ import ExportWalletToFileDialog from './ExportWalletToFileDialog';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
 import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
 import globalMessages from '../../../i18n/global-messages';
-import iconMnemonicsOk from '../../../assets/images/mnemonics-verification-ok.inline.svg';
-// import iconMnemonicsWarning from '../../../assets/images/mnemonics-verification-warning.inline.svg';
-// import iconMnemonicsError from '../../../assets/images/mnemonics-verification-error.inline.svg';
 import styles from './WalletSettings.scss';
+import WalletSettingsRecoveryPhrase from './WalletSettingsRecoveryPhrase';
 
 export const messages = defineMessages({
   name: {
@@ -52,35 +49,6 @@ export const messages = defineMessages({
     id: 'wallet.settings.exportWalletButtonLabel',
     defaultMessage: '!!!Export wallet',
     description: 'Label for the export button on wallet settings.',
-  },
-  mnemonicsValidationTitle: {
-    id: 'wallet.settings.mnemonicsValidationTitle',
-    defaultMessage: '!!!Wallet ownership',
-    description: 'Label for the mnemonicsValidationTitle on wallet settings.',
-  },
-  mnemonicsValidationHint: {
-    id: 'wallet.settings.mnemonicsValidationHint',
-    defaultMessage: '!!!(recovery phrase)',
-    description: 'Label for the mnemonicsValidationHint on wallet settings.',
-  },
-  mnemonicsValidationConfirmed: {
-    id: 'wallet.settings.mnemonicsValidationConfirmed',
-    defaultMessage:
-      '!!!You confirmed that you still have recovery phrase for this wallet <b>{timeAgo}</b>.',
-    description:
-      'Label for the mnemonicsValidationConfirmed on wallet settings.',
-  },
-  mnemonicsValidationNotConfirmed: {
-    id: 'wallet.settings.mnemonicsValidationNotConfirmed',
-    defaultMessage:
-      '!!!You never confirmed that you still have recovery phrase for this wallet.',
-    description:
-      'Label for the mnemonicsValidationNotConfirmed on wallet settings.',
-  },
-  mnemonicsValidationButton: {
-    id: 'wallet.settings.mnemonicsValidationButton',
-    defaultMessage: '!!!Confirm mnemonics.',
-    description: 'Label for the mnemonicsValidationButton on wallet settings.',
   },
 });
 
@@ -162,8 +130,6 @@ export default class WalletSettings extends Component<Props> {
         })
       : intl.formatMessage(messages.passwordNotSet);
 
-    const mnemonicsValidationIcon = iconMnemonicsOk;
-
     return (
       <div className={styles.component}>
         <BorderedBox>
@@ -210,29 +176,9 @@ export default class WalletSettings extends Component<Props> {
             }
           />
 
-          <div className={styles.mnemonicsValidation}>
-            <h2>
-              <b>{intl.formatMessage(messages.mnemonicsValidationTitle)}</b>
-              &nbsp;
-              {intl.formatMessage(messages.mnemonicsValidationHint)}
-              <SVGInline
-                svg={mnemonicsValidationIcon}
-                className={styles.mnemonicsValidationIcon}
-              />
-            </h2>
-            <FormattedHTMLMessage
-              {...messages.mnemonicsValidationConfirmed}
-              values={{
-                timeAgo: moment(mnemonicsConfirmationDate).fromNow(),
-              }}
-            />
-            <button
-              className={styles.mnemonicsValidationButton}
-              onClick={() => {}}
-            >
-              {intl.formatMessage(messages.mnemonicsValidationButton)}
-            </button>
-          </div>
+          <WalletSettingsRecoveryPhrase
+            mnemonicsConfirmationDate={mnemonicsConfirmationDate}
+          />
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
