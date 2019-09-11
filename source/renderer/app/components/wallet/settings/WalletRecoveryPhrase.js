@@ -1,20 +1,21 @@
 // @flow
 import React, { Component } from 'react';
+import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import iconMnemonicsOk from '../../../assets/images/mnemonics-verification-ok.inline.svg';
 import iconMnemonicsWarning from '../../../assets/images/mnemonics-verification-warning.inline.svg';
 import iconMnemonicsNotification from '../../../assets/images/mnemonics-verification-notification.inline.svg';
-import styles from './WalletSettingsRecoveryPhrase.scss';
+import styles from './WalletRecoveryPhrase.scss';
 import {
   MNEMONICS_CHECKING_WARNING,
   MNEMONICS_CHECKING_NOTIFICATION,
 } from '../../../config/walletsConfig';
+import WalletRecoveryPhraseStep1Dialog from './WalletRecoveryPhraseStep1Dialog';
+import WalletRecoveryPhraseStep2Dialog from './WalletRecoveryPhraseStep2Dialog';
 
 export const messages = defineMessages({
   mnemonicsValidationTitle: {
@@ -25,7 +26,7 @@ export const messages = defineMessages({
   mnemonicsValidationDescription: {
     id: 'wallet.settings.mnemonicsValidationDescription',
     defaultMessage:
-      '!!!Funds in this wallet can only be recovered on another computer using a wallet recovery phrase. You can re-enter your wallet recovery phrase to confirm that you have the correct recovery phrase for this wallet.',
+      '!!!Funds in this wallet can only be recovered on another computer using the correct wallet recovery phrase. You can re-enter your wallet recovery phrase to verify that you have the correct recovery phrase for this wallet.',
     description:
       'Label for the mnemonicsValidationDescription on wallet settings.',
   },
@@ -58,10 +59,14 @@ export const messages = defineMessages({
 
 type Props = {
   mnemonicsConfirmationDate: Date,
+  openDialogAction: Function,
+  isDialogOpen: Function,
+  walletRecoveryPhraseStep1Container: Node,
+  walletRecoveryPhraseStep2Container: Node,
 };
 
 @observer
-export default class WalletSettingsRecoveryPhrase extends Component<Props> {
+export default class WalletRecoveryPhrase extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -71,20 +76,14 @@ export default class WalletSettingsRecoveryPhrase extends Component<Props> {
       ok: {
         icon: iconMnemonicsOk,
         message: messages.mnemonicsValidationConfirmed,
-        tooltip: messages.mnemonicsValidationConfirmed,
-        tooltipClassname: styles.tooltipOk,
       },
       warning: {
         icon: iconMnemonicsWarning,
         message: messages.mnemonicsValidationConfirmed,
-        tooltip: messages.mnemonicsValidationConfirmed,
-        tooltipClassname: styles.tooltipWarning,
       },
       notification: {
         icon: iconMnemonicsNotification,
         message: messages.mnemonicsValidationNotification,
-        tooltip: messages.mnemonicsValidationNotification,
-        tooltipClassname: styles.tooltipNotification,
       },
     };
   }
@@ -100,43 +99,30 @@ export default class WalletSettingsRecoveryPhrase extends Component<Props> {
       status = 'notification';
     else if (daysSinceLastCheck > MNEMONICS_CHECKING_WARNING)
       status = 'warning';
-    const { icon, message, tooltip, tooltipClassname } = this.statuses[status];
-
-    const tooltipClassnameStyles = classnames([
-      tooltipClassname,
-      styles.tooltipClassname,
-    ]);
+    const { icon, message } = this.statuses[status];
 
     return {
       icon,
       message,
-      tooltip,
-      tooltipClassname: tooltipClassnameStyles,
     };
   }
 
   render() {
     const { intl } = this.context;
-    const { mnemonicsConfirmationDate } = this.props;
     const {
-      icon,
-      message,
-      tooltip,
-      tooltipClassname,
-    } = this.recoveryPhraseStatus;
+      mnemonicsConfirmationDate,
+      openDialogAction,
+      isDialogOpen,
+      walletRecoveryPhraseStep1Container,
+      walletRecoveryPhraseStep2Container,
+    } = this.props;
+    const { icon, message } = this.recoveryPhraseStatus;
 
     return (
       <div className={styles.component}>
         <h2>
           {intl.formatMessage(messages.mnemonicsValidationTitle)}
-          <Tooltip
-            skin={TooltipSkin}
-            themeOverrides1="{tooltipStyles}"
-            tip={intl.formatMessage(tooltip)}
-            className={tooltipClassname}
-          >
-            <SVGInline svg={icon} className={styles.mnemonicsValidationIcon} />
-          </Tooltip>
+          <SVGInline svg={icon} className={styles.mnemonicsValidationIcon} />
         </h2>
         <div className={styles.description}>
           {intl.formatMessage(messages.mnemonicsValidationDescription)}
@@ -148,9 +134,24 @@ export default class WalletSettingsRecoveryPhrase extends Component<Props> {
             timeAgo: moment(mnemonicsConfirmationDate).fromNow(),
           }}
         />
-        <button className={styles.mnemonicsValidationButton} onClick={() => {}}>
+        <button
+          className={styles.mnemonicsValidationButton}
+          onClick={() => {
+            openDialogAction({
+              dialog: WalletRecoveryPhraseStep1Dialog,
+            });
+          }}
+        >
           {intl.formatMessage(messages.mnemonicsValidationButton)}
         </button>
+
+        {isDialogOpen(WalletRecoveryPhraseStep1Dialog)
+          ? walletRecoveryPhraseStep1Container
+          : false}
+
+        {isDialogOpen(WalletRecoveryPhraseStep2Dialog)
+          ? walletRecoveryPhraseStep2Container
+          : false}
       </div>
     );
   }

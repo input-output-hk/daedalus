@@ -10,6 +10,8 @@ import { WalletAssuranceModeOptions } from '../../source/renderer/app/domains/Wa
 import ChangeSpendingPasswordDialog from '../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
 import DeleteWalletConfirmationDialog from '../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
 import ExportWalletToFileDialog from '../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
+import WalletRecoveryPhraseStep1Dialog from '../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
+import WalletRecoveryPhraseStep2Dialog from '../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
 import {
   MNEMONICS_CHECKING_WARNING,
   MNEMONICS_CHECKING_NOTIFICATION,
@@ -27,8 +29,40 @@ const mnemonicsConfirmationDateOptions = {
     .toDate(),
 };
 
+const basicSettingsId = 'Basic Settings';
+const changePasswordId = 'Change Password';
+const deleteWalletId = 'Delete Wallet';
+const exportWalletId = 'Export Wallet';
+const recoveryPhraseId = 'Recovery Phrase';
+
 export default () => (
   <WalletSettings
+    isDialogOpen={dialog => {
+      if (dialog === ChangeSpendingPasswordDialog) {
+        return boolean(
+          'Change Password - Show dialog',
+          false,
+          changePasswordId
+        );
+      }
+      if (dialog === DeleteWalletConfirmationDialog) {
+        return boolean('Delete Wallet - Show dialog', false, deleteWalletId);
+      }
+      if (dialog === ExportWalletToFileDialog) {
+        return boolean('Export Wallet - Show dialog', false, exportWalletId);
+      }
+      if (dialog === WalletRecoveryPhraseStep1Dialog) {
+        return boolean(
+          'Recovery Phrase - Step 1 Dialog',
+          false,
+          recoveryPhraseId
+        );
+      }
+      // if (dialog === WalletRecoveryPhraseStep2Dialog) {
+      //   return boolean('Recovery Phrase - Step 2 Dialog', false, recoveryPhraseId);
+      // }
+      return false;
+    }}
     activeField={null}
     assuranceLevels={[
       {
@@ -48,21 +82,8 @@ export default () => (
         },
       },
     ]}
-    isDialogOpen={dialog => {
-      if (dialog === ChangeSpendingPasswordDialog) {
-        return boolean('Change Password - Show dialog', false);
-      }
-      if (dialog === DeleteWalletConfirmationDialog) {
-        return boolean('Delete Wallet - Show dialog', false);
-      }
-      if (dialog === ExportWalletToFileDialog) {
-        return boolean('Export Wallet - Show dialog', false);
-      }
-      return false;
-    }}
     isInvalid={false}
     isSubmitting={false}
-    isSpendingPasswordSet={boolean('isSpendingPasswordSet', false)}
     lastUpdatedField={null}
     nameValidator={() => true}
     onCancelEditing={() => {}}
@@ -71,23 +92,36 @@ export default () => (
     onStopEditing={() => {}}
     openDialogAction={() => {}}
     walletAssurance={WalletAssuranceModeOptions.NORMAL}
-    walletName={text('Wallet Name', 'Wallet Name')}
+    walletName={text('Wallet Name', 'Wallet Name', basicSettingsId)}
     spendingPasswordUpdateDate={moment()
       .subtract(1, 'month')
       .toDate()}
+    isSpendingPasswordSet={boolean(
+      'isSpendingPasswordSet',
+      false,
+      changePasswordId
+    )}
     changeSpendingPasswordDialog={
       <ChangeSpendingPasswordDialog
         currentPasswordValue="current"
         newPasswordValue="new"
         repeatedPasswordValue="new"
-        isSpendingPasswordSet={boolean('isSpendingPasswordSet', false)}
+        isSpendingPasswordSet={boolean(
+          'isSpendingPasswordSet',
+          false,
+          changePasswordId
+        )}
         onSave={action('Change Password - onSave')}
         onCancel={action('Change Password - onCancel')}
         onPasswordSwitchToggle={action(
           'Change Password - onPasswordSwitchToggle'
         )}
         onDataChange={action('Change Password - onDataChange')}
-        isSubmitting={boolean('Change Password - isSubmitting', false)}
+        isSubmitting={boolean(
+          'Change Password - isSubmitting',
+          false,
+          changePasswordId
+        )}
         error={null}
       />
     }
@@ -95,33 +129,58 @@ export default () => (
       <DeleteWalletConfirmationDialog
         walletName={text(
           'DeleteWalletConfirmationDialog: Wallet Name',
-          'Wallet To Delete'
+          'Wallet To Delete',
+          deleteWalletId
         )}
-        hasWalletFunds={boolean('hasWalletFunds', false)}
-        countdownFn={() => number('Delete Wallet Countdown', 9)}
-        isBackupNoticeAccepted={boolean('isBackupNoticeAccepted', false)}
+        hasWalletFunds={boolean('hasWalletFunds', false, basicSettingsId)}
+        countdownFn={() => number('Delete Wallet Countdown', 9, deleteWalletId)}
+        isBackupNoticeAccepted={boolean(
+          'isBackupNoticeAccepted',
+          false,
+          basicSettingsId
+        )}
         onAcceptBackupNotice={action('Delete Wallet - onAcceptBackupNotice')}
         onContinue={action('Delete Wallet - onContinue')}
         onCancel={action('Delete Wallet - onCancel')}
-        confirmationValue={text('Delete Wallet Confirmation Value')}
+        confirmationValue={text(
+          'Delete Wallet Confirmation Value',
+          'Wallet name',
+          deleteWalletId
+        )}
         onConfirmationValueChange={action(
           'Delete Wallet - onConfirmationValueChange'
         )}
-        isSubmitting={boolean('Delete Wallet - isSubmitting', false)}
+        isSubmitting={boolean(
+          'Delete Wallet - isSubmitting',
+          false,
+          deleteWalletId
+        )}
       />
     }
     exportWalletDialogContainer={
       <ExportWalletToFileDialog
         walletName={text('Wallet Name', 'Wallet Name')}
-        hasSpendingPassword={boolean('isSpendingPasswordSet', false)}
-        isSubmitting={boolean('Export Wallet - isSubmitting', false)}
+        hasSpendingPassword={boolean(
+          'isSpendingPasswordSet',
+          false,
+          basicSettingsId
+        )}
+        isSubmitting={boolean(
+          'Export Wallet - isSubmitting',
+          false,
+          exportWalletId
+        )}
         onSubmit={action('Export Wallet - onSubmit')}
         onClose={action('Export Wallet - onClose')}
       />
     }
+    walletRecoveryPhraseStep1Container={<WalletRecoveryPhraseStep1Dialog />}
+    walletRecoveryPhraseStep2Container={<WalletRecoveryPhraseStep2Dialog />}
     mnemonicsConfirmationDate={select(
       'mnemonicsConfirmationDate',
-      mnemonicsConfirmationDateOptions
+      mnemonicsConfirmationDateOptions,
+      'Ok',
+      recoveryPhraseId
     )}
   />
 );

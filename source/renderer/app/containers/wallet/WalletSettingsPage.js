@@ -7,6 +7,8 @@ import { isValidWalletName } from '../../utils/validations';
 import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
 import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
 import ExportWalletToFileDialogContainer from './dialogs/settings/ExportWalletToFileDialogContainer';
+import WalletRecoveryPhraseStep1Container from './dialogs/settings/WalletRecoveryPhraseStep1Container';
+import WalletRecoveryPhraseStep2Container from './dialogs/settings/WalletRecoveryPhraseStep2Container';
 
 type Props = InjectedProps;
 
@@ -67,6 +69,12 @@ export default class WalletSettingsPage extends Component<Props> {
         changeSpendingPasswordDialog={<ChangeSpendingPasswordDialogContainer />}
         deleteWalletDialogContainer={<DeleteWalletDialogContainer />}
         exportWalletDialogContainer={<ExportWalletToFileDialogContainer />}
+        walletRecoveryPhraseStep1Container={
+          <WalletRecoveryPhraseStep1Container />
+        }
+        walletRecoveryPhraseStep2Container={
+          <WalletRecoveryPhraseStep2Container />
+        }
       />
     );
   }

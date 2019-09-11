@@ -16,7 +16,7 @@ import type { ReactIntlMessage } from '../../../types/i18nTypes';
 import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletSettings.scss';
-import WalletSettingsRecoveryPhrase from './WalletSettingsRecoveryPhrase';
+import WalletRecoveryPhrase from './WalletRecoveryPhrase';
 
 export const messages = defineMessages({
   name: {
@@ -74,6 +74,8 @@ type Props = {
   changeSpendingPasswordDialog: Node,
   deleteWalletDialogContainer: Node,
   exportWalletDialogContainer: Node,
+  walletRecoveryPhraseStep1Container: Node,
+  walletRecoveryPhraseStep2Container: Node,
   mnemonicsConfirmationDate: Date,
 };
 
@@ -117,6 +119,8 @@ export default class WalletSettings extends Component<Props> {
       deleteWalletDialogContainer,
       exportWalletDialogContainer,
       mnemonicsConfirmationDate,
+      walletRecoveryPhraseStep1Container,
+      walletRecoveryPhraseStep2Container,
     } = this.props;
 
     const assuranceLevelOptions = assuranceLevels.map(assurance => ({
@@ -176,8 +180,16 @@ export default class WalletSettings extends Component<Props> {
             }
           />
 
-          <WalletSettingsRecoveryPhrase
+          <WalletRecoveryPhrase
             mnemonicsConfirmationDate={mnemonicsConfirmationDate}
+            openDialogAction={openDialogAction}
+            isDialogOpen={isDialogOpen}
+            walletRecoveryPhraseStep1Container={
+              walletRecoveryPhraseStep1Container
+            }
+            walletRecoveryPhraseStep2Container={
+              walletRecoveryPhraseStep2Container
+            }
           />
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
