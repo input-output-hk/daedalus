@@ -11,9 +11,6 @@ import './paper-wallets/PaperWallets.stories';
 // Transactions
 import './transactions';
 
-// Staking
-import './staking/Staking.stories';
-
 // Nodes
 import './nodes';
 
@@ -25,7 +22,8 @@ import './navigation/Sidebar.stories';
 import './navigation/SidebarCategory.stories';
 import './navigation/SidebarWalletsMenu.stories';
 
+// Staking
+import './staking/Staking.stories';
+
 // Common
 import './common/Widgets.stories';
-
-// Overlays
