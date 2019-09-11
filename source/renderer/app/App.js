@@ -37,7 +37,11 @@ export default class App extends Component<{
     const locale = stores.profile.currentLocale;
     const mobxDevTools = global.environment.mobxDevTools ? <DevTools /> : null;
     const { currentTheme } = stores.profile;
-    const themeVars = require(`./themes/daedalus/${currentTheme}.js`).default;
+    const { isIncentivizedTestnet } = stores.networkStatus;
+    console.log(isIncentivizedTestnet);
+    const themeVars = isIncentivizedTestnet
+      ? require(`./themes/daedalus/yellow.js`)
+      : require(`./themes/daedalus/${currentTheme}.js`).default;
     const { ABOUT, BLOCK_CONSOLIDATION, DAEDALUS_DIAGNOSTICS } = DIALOGS;
 
     return (

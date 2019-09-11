@@ -18,6 +18,7 @@ import type {
   FaultInjectionIpcRequest,
   FaultInjectionIpcResponse,
   TlsConfig,
+  CardanoNodeImplementation,
 } from '../../common/types/cardano-node.types';
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import { CardanoWalletLauncher } from './CardanoWalletLauncher';
@@ -63,7 +64,7 @@ export type CardanoNodeConfig = {
   workingDir: string, // Path to the state directory
   nodePath: string, // Path to jormungandr or cardano-node executable
   cliPath: string, // Path to node CLI tool. Jormungandr only
-  nodeImplementation: string, // Node Type (Jormungandr, cardano-http-bridge or cardano-node)
+  nodeImplementation: CardanoNodeImplementation,
   logFilePath: string, // Log file path for cardano-sl
   tlsPath: string, // Path to cardano-node TLS folder
   nodeArgs: NodeArgs, // Arguments that are used to spwan cardano-node
@@ -162,6 +163,14 @@ export class CardanoNode {
   _injectedFaults: Array<FaultInjection> = [];
 
   /**
+   * Cardano Node config getter
+   * @returns {CardanoNodeImplementation}
+   */
+  get config(): CardanoNodeConfig {
+    return this._config;
+  }
+
+  /**
    * Getter which copies and returns the internal tls config.
    * @returns {TlsConfig}
    */
@@ -249,6 +258,7 @@ export class CardanoNode {
       startupTimeout,
       nodeImplementation,
     } = config;
+
     const { createWriteStream } = this._actions;
     this._config = config;
 
@@ -288,6 +298,7 @@ export class CardanoNode {
         });
 
         this._node = node;
+
         try {
           await promisedCondition(() => node.connected, startupTimeout);
           // Setup livecycle event handlers

@@ -1,6 +1,7 @@
 // @flow
 import type {
   CardanoNodeState,
+  CardanoNodeImplementation,
   CardanoStatus,
   FaultInjectionIpcRequest,
 } from '../../../common/types/cardano-node.types';
@@ -9,6 +10,7 @@ import {
   CARDANO_FAULT_INJECTION_CHANNEL,
   CARDANO_RESTART_CHANNEL,
   CARDANO_STATE_CHANNEL,
+  CARDANO_NODE_IMPLEMENTATION_CHANNEL,
   GET_CACHED_CARDANO_STATUS_CHANNEL,
   CARDANO_TLS_CONFIG_CHANNEL,
   CARDANO_AWAIT_UPDATE_CHANNEL,
@@ -35,6 +37,11 @@ export const cardanoStateChangeChannel: RendererIpcChannel<
   CardanoNodeState,
   void
 > = new RendererIpcChannel(CARDANO_STATE_CHANNEL);
+
+export const cardanoNodeImplementationChannel: RendererIpcChannel<
+  CardanoNodeImplementation,
+  void
+> = new RendererIpcChannel(CARDANO_NODE_IMPLEMENTATION_CHANNEL);
 
 export const awaitUpdateChannel: RendererIpcChannel<
   void,

@@ -15,6 +15,7 @@ import { Logger } from '../utils/logging';
 import type { LauncherConfig } from '../config';
 import type {
   CardanoNodeState,
+  CardanoNodeImplementation,
   CardanoStatus,
   TlsConfig,
 } from '../../common/types/cardano-node.types';
@@ -23,6 +24,7 @@ import {
   cardanoFaultInjectionChannel,
   cardanoRestartChannel,
   cardanoStateChangeChannel,
+  cardanoNodeImplementationChannel,
   getCachedCardanoStatusChannel,
   cardanoTlsConfigChannel,
   setCachedCardanoStatusChannel,
@@ -117,6 +119,16 @@ export const setupCardanoNodeMode = (
       status: cardanoNode.status,
     });
     return Promise.resolve(cardanoNode.status);
+  });
+
+  cardanoNodeImplementationChannel.onRequest(() => {
+    Logger.info(
+      'ipcMain: Received request from renderer for cardano node implementation',
+      {
+        nodeImplementation: cardanoNode.config.nodeImplementation,
+      }
+    );
+    return Promise.resolve(cardanoNode.config.nodeImplementation);
   });
 
   setCachedCardanoStatusChannel.onReceive((status: ?CardanoStatus) => {

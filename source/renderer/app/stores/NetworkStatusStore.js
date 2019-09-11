@@ -19,6 +19,7 @@ import {
 import { Logger } from '../utils/logging';
 import {
   cardanoStateChangeChannel,
+  cardanoNodeImplementationChannel,
   cardanoTlsConfigChannel,
   restartCardanoNodeChannel,
   getCachedCardanoStatusChannel,
@@ -32,6 +33,7 @@ import type {
   CardanoNodeState,
   CardanoStatus,
   TlsConfig,
+  CardanoNodeImplementation,
 } from '../../../common/types/cardano-node.types';
 import type { NodeInfoQueryParams } from '../api/nodes/requests/getNodeInfo';
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
@@ -58,6 +60,13 @@ const NODE_STOPPED_STATES = [
   CardanoNodeStates.UPDATED,
   CardanoNodeStates.UNRECOVERABLE,
 ];
+
+const NODE_IMPLEMENTATIONS: { [key: string]: CardanoNodeImplementation } = {
+  jormungandr: 'jormungandr',
+  cardanoHttpBridge: 'cardano-http-bridge',
+  cardanoNode: 'cardano-node',
+};
+
 // END CONSTANTS ----------------------------
 
 export default class NetworkStatusStore extends Store {
@@ -107,6 +116,8 @@ export default class NetworkStatusStore extends Store {
   @observable diskSpaceAvailable: string = '';
   @observable isTlsCertInvalid: boolean = false;
   @observable stateDirectoryPath: string = '';
+  @observable nodeImplementation: CardanoNodeImplementation =
+    NODE_IMPLEMENTATIONS.cardanoNode;
 
   // DEFINE STORE METHODS
   setup() {
@@ -120,6 +131,9 @@ export default class NetworkStatusStore extends Store {
     // Request cached node status for fast bootstrapping of frontend
     this._requestCardanoStatus();
 
+    // Request node implementation
+    this._requestCardanoNodeImplementation();
+
     // Passively receive broadcasted tls config changes (which can happen without requesting it)
     // E.g if the cardano-node restarted for some reason
     cardanoTlsConfigChannel.onReceive(this._updateTlsConfig);
@@ -127,6 +141,8 @@ export default class NetworkStatusStore extends Store {
     // Passively receive state changes of the cardano-node
     cardanoStateChangeChannel.onReceive(this._handleCardanoNodeStateChange);
 
+    // Passively receive the node implementation from the main process
+    cardanoNodeImplementationChannel.onReceive(this._handleNodeImplementation);
     // ========== MOBX REACTIONS =========== //
 
     this.registerReactions([
@@ -231,6 +247,16 @@ export default class NetworkStatusStore extends Store {
     await this._handleCardanoNodeStateChange(state);
   };
 
+  _requestCardanoNodeImplementation = async () => {
+    Logger.info('NetworkStatusStore: requesting node implementation');
+    const impl = await cardanoNodeImplementationChannel.request();
+    Logger.info(`NetworkStatusStore: handling node implementation <${impl}>`, {
+      nodeImplementation: impl,
+    });
+
+    await this._handleNodeImplementation(impl);
+  };
+
   _requestCardanoStatus = async () => {
     try {
       Logger.info('NetworkStatusStore: requesting node status');
@@ -270,6 +296,15 @@ export default class NetworkStatusStore extends Store {
       this.tlsConfig = config;
     });
     this.actions.networkStatus.tlsConfigIsReady.trigger();
+    return Promise.resolve();
+  };
+
+  _handleNodeImplementation = (
+    nodeImplementation: CardanoNodeImplementation
+  ) => {
+    runInAction('updating nodeImplementation', () => {
+      this.nodeImplementation = nodeImplementation;
+    });
     return Promise.resolve();
   };
 
@@ -650,6 +685,9 @@ export default class NetworkStatusStore extends Store {
   };
 
   // DEFINE COMPUTED VALUES
+  @computed get isIncentivizedTestnet(): boolean {
+    return this.nodeImplementation === NODE_IMPLEMENTATIONS.jormungandr;
+  }
 
   @computed get isConnected(): boolean {
     return this.isNodeResponding && this.isNodeSubscribed && this.isNodeSyncing;
