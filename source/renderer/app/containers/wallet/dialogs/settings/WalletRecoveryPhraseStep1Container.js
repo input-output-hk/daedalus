@@ -8,7 +8,6 @@ export default class WalletRecoveryPhraseStep1Container extends Component {
   handleContinue = () => {};
 
   render() {
-    return <div>KJHFKDFHKHDK</div>;
     return <WalletRecoveryPhraseStep1Dialog onContinue={this.handleContinue} />;
   }
 }

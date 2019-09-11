@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
+import { capitalize } from 'lodash';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import moment from 'moment';
@@ -18,47 +19,72 @@ import WalletRecoveryPhraseStep1Dialog from './WalletRecoveryPhraseStep1Dialog';
 import WalletRecoveryPhraseStep2Dialog from './WalletRecoveryPhraseStep2Dialog';
 
 export const messages = defineMessages({
-  mnemonicsValidationTitle: {
-    id: 'wallet.settings.mnemonicsValidationTitle',
+  recoveryPhraseValidationTitle: {
+    id: 'wallet.settings.recoveryPhraseValidationTitle',
     defaultMessage: '!!!Do you have your wallet recovery phrase?',
-    description: 'Label for the mnemonicsValidationTitle on wallet settings.',
+    description:
+      'Label for the recoveryPhraseValidationTitle on wallet settings.',
   },
-  mnemonicsValidationDescription: {
-    id: 'wallet.settings.mnemonicsValidationDescription',
+  recoveryPhraseValidationDescription: {
+    id: 'wallet.settings.recoveryPhraseValidationDescription',
     defaultMessage:
       '!!!Funds in this wallet can only be recovered on another computer using the correct wallet recovery phrase. You can re-enter your wallet recovery phrase to verify that you have the correct recovery phrase for this wallet.',
     description:
-      'Label for the mnemonicsValidationDescription on wallet settings.',
+      'Label for the recoveryPhraseValidationDescription on wallet settings.',
   },
-  mnemonicsValidationConfirmed: {
-    id: 'wallet.settings.mnemonicsValidationConfirmed',
+  recoveryPhraseValidationNeverOk: {
+    id: 'wallet.settings.recoveryPhraseValidationNeverOk',
     defaultMessage:
-      '!!!You confirmed that you still have recovery phrase for this wallet <b>{timeAgo}</b>.',
+      '!!!We recommend that you verify your wallet recovery phrase in <b>{timeUntilWarning}</b>',
     description:
-      'Label for the mnemonicsValidationConfirmed on wallet settings.',
+      'Label for the recoveryPhraseValidationNeverOk on wallet settings.',
   },
-  mnemonicsValidationNotConfirmed: {
-    id: 'wallet.settings.mnemonicsValidationNotConfirmed',
+  recoveryPhraseValidationNeverWarning: {
+    id: 'wallet.settings.recoveryPhraseValidationNeverWarning',
     defaultMessage:
-      '!!!You never confirmed that you still have recovery phrase for this wallet.',
+      '!!!We recommend that you verify your wallet recovery phrase in <b>{timeUntilNotification}</b>.',
     description:
-      'Label for the mnemonicsValidationNotConfirmed on wallet settings.',
+      'Label for the recoveryPhraseValidationNeverWarning on wallet settings.',
   },
-  mnemonicsValidationNotification: {
-    id: 'wallet.settings.mnemonicsValidationNotification',
-    defaultMessage: '!!!We recommend that you check your recovery phrase.',
+  recoveryPhraseValidationNeverNotification: {
+    id: 'wallet.settings.recoveryPhraseValidationNeverNotification',
+    defaultMessage:
+      '!!!We recommend that you verify your wallet recovery phrase.',
     description:
-      'Label for the mnemonicsValidationNotConfirmed on wallet settings.',
+      'Label for the recoveryPhraseValidationNeverNotification on wallet settings.',
   },
-  mnemonicsValidationButton: {
-    id: 'wallet.settings.mnemonicsValidationButton',
+  recoveryPhraseValidationCheckedOk: {
+    id: 'wallet.settings.recoveryPhraseValidationCheckedOk',
+    defaultMessage:
+      '!!!You verified the recovery phrase for this wallet <b>{timeAgo}</b>.',
+    description:
+      'Label for the recoveryPhraseValidationCheckedOk on wallet settings.',
+  },
+  recoveryPhraseValidationCheckedWarning: {
+    id: 'wallet.settings.recoveryPhraseValidationCheckedWarning',
+    defaultMessage:
+      '!!!You verified the recovery phrase for this wallet <b>{timeAgo}</b>.',
+    description:
+      'Label for the recoveryPhraseValidationCheckedWarning on wallet settings.',
+  },
+  recoveryPhraseValidationCheckedNotification: {
+    id: 'wallet.settings.recoveryPhraseValidationCheckedNotification',
+    defaultMessage:
+      '!!!You verified the recovery phrase for this wallet <b>{timeAgo}</b>. We recommend that you verify your wallet recovery phrase again.',
+    description:
+      'Label for the recoveryPhraseValidationCheckedNotification on wallet settings.',
+  },
+  recoveryPhraseValidationButton: {
+    id: 'wallet.settings.recoveryPhraseValidationButton',
     defaultMessage: '!!!Confirm mnemonics.',
-    description: 'Label for the mnemonicsValidationButton on wallet settings.',
+    description:
+      'Label for the recoveryPhraseValidationButton on wallet settings.',
   },
 });
 
 type Props = {
   mnemonicsConfirmationDate: Date,
+  walletCreationDate: Date,
   openDialogAction: Function,
   isDialogOpen: Function,
   walletRecoveryPhraseStep1Container: Node,
@@ -73,77 +99,116 @@ export default class WalletRecoveryPhrase extends Component<Props> {
 
   get statuses() {
     return {
-      ok: {
-        icon: iconMnemonicsOk,
-        message: messages.mnemonicsValidationConfirmed,
+      neverChecked: {
+        ok: {
+          icon: iconMnemonicsOk,
+          message: messages.recoveryPhraseValidationNeverOk,
+        },
+        warning: {
+          icon: iconMnemonicsWarning,
+          message: messages.recoveryPhraseValidationNeverWarning,
+        },
+        notification: {
+          icon: iconMnemonicsNotification,
+          message: messages.recoveryPhraseValidationNeverNotification,
+        },
       },
-      warning: {
-        icon: iconMnemonicsWarning,
-        message: messages.mnemonicsValidationConfirmed,
-      },
-      notification: {
-        icon: iconMnemonicsNotification,
-        message: messages.mnemonicsValidationNotification,
+      alreadyChecked: {
+        ok: {
+          icon: iconMnemonicsOk,
+          message: messages.recoveryPhraseValidationCheckedOk,
+        },
+        warning: {
+          icon: iconMnemonicsWarning,
+          message: messages.recoveryPhraseValidationCheckedWarning,
+        },
+        notification: {
+          icon: iconMnemonicsNotification,
+          message: messages.recoveryPhraseValidationCheckedNotification,
+        },
       },
     };
   }
 
   get recoveryPhraseStatus() {
-    const { mnemonicsConfirmationDate } = this.props;
-    const daysSinceLastCheck = moment().diff(
-      moment(mnemonicsConfirmationDate),
-      'days'
-    );
+    const { mnemonicsConfirmationDate, walletCreationDate } = this.props;
+    console.log('mnemonicsConfirmationDate 1', mnemonicsConfirmationDate);
+    const dateToCheck = mnemonicsConfirmationDate || walletCreationDate;
+    const daysSinceDate = moment().diff(moment(dateToCheck), 'days');
     let status = 'ok';
-    if (daysSinceLastCheck > MNEMONICS_CHECKING_NOTIFICATION)
+    if (daysSinceDate > MNEMONICS_CHECKING_NOTIFICATION)
       status = 'notification';
-    else if (daysSinceLastCheck > MNEMONICS_CHECKING_WARNING)
-      status = 'warning';
-    const { icon, message } = this.statuses[status];
-
+    else if (daysSinceDate > MNEMONICS_CHECKING_WARNING) status = 'warning';
+    const type = mnemonicsConfirmationDate ? 'alreadyChecked' : 'neverChecked';
+    console.log('2');
+    const statuses = this.statuses[type];
+    const { icon, message } = statuses[status];
+    const timeAgo = moment(mnemonicsConfirmationDate).fromNow();
+    console.log('3');
+    const timeUntilWarning = 'few months, more or less';
+    const timeUntilNotification = 'couple of days, more or less';
     return {
       icon,
       message,
+      type,
+      status,
+      timeAgo,
+      timeUntilWarning,
+      timeUntilNotification,
     };
   }
 
   render() {
     const { intl } = this.context;
     const {
-      mnemonicsConfirmationDate,
       openDialogAction,
       isDialogOpen,
       walletRecoveryPhraseStep1Container,
       walletRecoveryPhraseStep2Container,
     } = this.props;
-    const { icon, message } = this.recoveryPhraseStatus;
+    const {
+      icon,
+      message,
+      status,
+      timeAgo,
+      timeUntilWarning,
+      timeUntilNotification,
+    } = this.recoveryPhraseStatus;
+
+    const validationStatusStyles = classnames([
+      styles.validationStatus,
+      styles[`validationStatus${capitalize(status)}`],
+    ]);
 
     return (
       <div className={styles.component}>
-        <h2>
-          {intl.formatMessage(messages.mnemonicsValidationTitle)}
-          <SVGInline svg={icon} className={styles.mnemonicsValidationIcon} />
-        </h2>
+        <h2>{intl.formatMessage(messages.recoveryPhraseValidationTitle)}</h2>
         <div className={styles.description}>
-          {intl.formatMessage(messages.mnemonicsValidationDescription)}
+          {intl.formatMessage(messages.recoveryPhraseValidationDescription)}
         </div>
         <br />
-        <FormattedHTMLMessage
-          {...message}
-          values={{
-            timeAgo: moment(mnemonicsConfirmationDate).fromNow(),
-          }}
-        />
-        <button
-          className={styles.mnemonicsValidationButton}
-          onClick={() => {
-            openDialogAction({
-              dialog: WalletRecoveryPhraseStep1Dialog,
-            });
-          }}
-        >
-          {intl.formatMessage(messages.mnemonicsValidationButton)}
-        </button>
+        <div className={validationStatusStyles}>
+          <SVGInline svg={icon} className={styles.validationStatusIcon} />
+          <FormattedHTMLMessage
+            {...message}
+            className={styles.validationStatusMessage}
+            values={{
+              timeAgo,
+              timeUntilWarning,
+              timeUntilNotification,
+            }}
+          />
+          <button
+            className={styles.validationStatusButton}
+            onClick={() => {
+              openDialogAction({
+                dialog: WalletRecoveryPhraseStep1Dialog,
+              });
+            }}
+          >
+            {intl.formatMessage(messages.recoveryPhraseValidationButton)}
+          </button>
+        </div>
 
         {isDialogOpen(WalletRecoveryPhraseStep1Dialog)
           ? walletRecoveryPhraseStep1Container

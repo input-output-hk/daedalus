@@ -6,6 +6,7 @@ export type GeneratePaperWalletParams = {
   isMainnet: boolean,
   buildLabel: string,
   timestamp: string,
+  createdAt: Date,
   messages: {
     walletAddressLabel: string,
     recoveryPhraseLabel: string,

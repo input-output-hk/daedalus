@@ -1035,6 +1035,7 @@ const _createWalletFromServerData = action(
       hasSpendingPassword,
       spendingPasswordLastUpdate,
       syncState,
+      createdAt,
     } = data;
 
     return new Wallet({
@@ -1046,6 +1047,7 @@ const _createWalletFromServerData = action(
       passwordUpdateDate: new Date(`${spendingPasswordLastUpdate}Z`),
       syncState,
       isLegacy: false,
+      createdAt,
     });
   }
 );

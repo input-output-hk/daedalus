@@ -55,6 +55,7 @@ export const messages = defineMessages({
 type Props = {
   assuranceLevels: Array<{ value: string, label: ReactIntlMessage }>,
   walletName: string,
+  walletCreationDate: Date,
   walletAssurance: string,
   isSpendingPasswordSet: boolean,
   spendingPasswordUpdateDate: ?Date,
@@ -76,7 +77,7 @@ type Props = {
   exportWalletDialogContainer: Node,
   walletRecoveryPhraseStep1Container: Node,
   walletRecoveryPhraseStep2Container: Node,
-  mnemonicsConfirmationDate: Date,
+  mnemonicsConfirmationDate?: Date,
 };
 
 @observer
@@ -100,6 +101,7 @@ export default class WalletSettings extends Component<Props> {
       assuranceLevels,
       walletAssurance,
       walletName,
+      walletCreationDate,
       isSpendingPasswordSet,
       spendingPasswordUpdateDate,
       error,
@@ -118,9 +120,9 @@ export default class WalletSettings extends Component<Props> {
       changeSpendingPasswordDialog,
       deleteWalletDialogContainer,
       exportWalletDialogContainer,
-      mnemonicsConfirmationDate,
       walletRecoveryPhraseStep1Container,
       walletRecoveryPhraseStep2Container,
+      mnemonicsConfirmationDate,
     } = this.props;
 
     const assuranceLevelOptions = assuranceLevels.map(assurance => ({
@@ -182,6 +184,7 @@ export default class WalletSettings extends Component<Props> {
 
           <WalletRecoveryPhrase
             mnemonicsConfirmationDate={mnemonicsConfirmationDate}
+            walletCreationDate={walletCreationDate}
             openDialogAction={openDialogAction}
             isDialogOpen={isDialogOpen}
             walletRecoveryPhraseStep1Container={

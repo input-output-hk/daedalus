@@ -1,5 +1,7 @@
 .component {
+  color: #5e6066;
   font-family: var(--font-light);
+  line-height: 1.38;
   margin-bottom: 14px;
 
   h2 {
@@ -13,34 +15,54 @@
     font-family: var(--font-medium);
     line-height: 1.38;
   }
-  .mnemonicsValidationIcon {
-    margin-left: 6px;
-    vertical-align: middle;
+
+  .validationStatus {
+    align-items: center;
+    border-radius: 4px;
+    display: flex;
+    font-style: italic;
+    padding: 10px;
+  }
+  .validationStatusIcon {
+    margin-right: 25px;
     svg {
-      height: 14px;
-      width: 14px;
+      height: 28px;
+      width: 28px;
     }
   }
-  .mnemonicsValidationButton {
-    background-color: rgba(68, 91, 124, 0.05);
-    border-radius: 5px;
+  .validationStatusMessage {
+    background: pink;
     color: #5e6066;
+  }
+  .validationStatusButton {
+    border-radius: 5px;
+    color: #fafbfc;
     cursor: pointer;
     display: block;
     font-size: 14px;
     font-weight: 500;
     height: 36px;
     line-height: 1.36;
-    margin: 30px auto 0;
+    margin-left: 25px;
     padding: 0 27px;
+    white-space: nowrap;
   }
-
-  .tooltipClassname {
-    display: inline-block;
+  .validationStatusOk {
+    background: rgba(0, 128, 0, 0.1);
+    .validationStatusButton {
+      background-color: green;
+    }
   }
-
-  .tooltipOk {
-    // background: green;
-    // ba
+  .validationStatusWarning {
+    background: rgba(228, 225, 4, 0.1);
+    .validationStatusButton {
+      background-color: #d2a80e;
+    }
+  }
+  .validationStatusNotification {
+    background-color: rgba(234, 76, 91, 0.1);
+    .validationStatusButton {
+      background-color: #ea4c5b;
+    }
   }
 }

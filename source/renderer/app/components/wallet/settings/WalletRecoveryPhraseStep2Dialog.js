@@ -7,42 +7,44 @@ import Dialog from '../../widgets/Dialog';
 import styles from './WalletRecoveryPhraseStep1.scss';
 
 export const messages = defineMessages({
-  mnemonicsValidationTitle: {
-    id: 'wallet.settings.mnemonicsValidationTitle',
+  recoveryPhraseValidationTitle: {
+    id: 'wallet.settings.recoveryPhraseValidationTitle',
     defaultMessage: '!!!Do you have your wallet recovery phrase?',
-    description: 'Label for the mnemonicsValidationTitle on wallet settings.',
+    description:
+      'Label for the recoveryPhraseValidationTitle on wallet settings.',
   },
-  mnemonicsValidationDescription: {
-    id: 'wallet.settings.mnemonicsValidationDescription',
+  recoveryPhraseValidationDescription: {
+    id: 'wallet.settings.recoveryPhraseValidationDescription',
     defaultMessage:
       '!!!Funds in this wallet can only be recovered on another computer using the correct wallet recovery phrase. You can re-enter your wallet recovery phrase to verify that you have the correct recovery phrase for this wallet.',
     description:
-      'Label for the mnemonicsValidationDescription on wallet settings.',
+      'Label for the recoveryPhraseValidationDescription on wallet settings.',
   },
-  mnemonicsValidationConfirmed: {
-    id: 'wallet.settings.mnemonicsValidationConfirmed',
+  recoveryPhraseValidationConfirmed: {
+    id: 'wallet.settings.recoveryPhraseValidationConfirmed',
     defaultMessage:
       '!!!You confirmed that you still have recovery phrase for this wallet <b>{timeAgo}</b>.',
     description:
-      'Label for the mnemonicsValidationConfirmed on wallet settings.',
+      'Label for the recoveryPhraseValidationConfirmed on wallet settings.',
   },
-  mnemonicsValidationNotConfirmed: {
-    id: 'wallet.settings.mnemonicsValidationNotConfirmed',
+  recoveryPhraseValidationNotConfirmed: {
+    id: 'wallet.settings.recoveryPhraseValidationNotConfirmed',
     defaultMessage:
       '!!!You never confirmed that you still have recovery phrase for this wallet.',
     description:
-      'Label for the mnemonicsValidationNotConfirmed on wallet settings.',
+      'Label for the recoveryPhraseValidationNotConfirmed on wallet settings.',
   },
-  mnemonicsValidationNotification: {
-    id: 'wallet.settings.mnemonicsValidationNotification',
+  recoveryPhraseValidationNotification: {
+    id: 'wallet.settings.recoveryPhraseValidationNotification',
     defaultMessage: '!!!We recommend that you check your recovery phrase.',
     description:
-      'Label for the mnemonicsValidationNotConfirmed on wallet settings.',
+      'Label for the recoveryPhraseValidationNotConfirmed on wallet settings.',
   },
-  mnemonicsValidationButton: {
-    id: 'wallet.settings.mnemonicsValidationButton',
+  recoveryPhraseValidationButton: {
+    id: 'wallet.settings.recoveryPhraseValidationButton',
     defaultMessage: '!!!Confirm mnemonics.',
-    description: 'Label for the mnemonicsValidationButton on wallet settings.',
+    description:
+      'Label for the recoveryPhraseValidationButton on wallet settings.',
   },
 });
 
@@ -72,7 +74,7 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<Props> {
     return (
       <Dialog
         className={styles.component}
-        title={intl.formatMessage(messages.mnemonicsValidationTitle)}
+        title={intl.formatMessage(messages.recoveryPhraseValidationTitle)}
         actions={actions}
         closeOnOverlayClick
         onClose={() => {}}

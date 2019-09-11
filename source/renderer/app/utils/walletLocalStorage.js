@@ -1,9 +1,9 @@
 // @flow
 
 const { electronStore, environment } = global;
-const { NETWORK } = environment;
+const { network } = environment;
 
-const networkForLocalStorage = String(NETWORK);
+const networkForLocalStorage = String(network);
 const storageKeys = {
   WALLETS: `${networkForLocalStorage}-WALLETS`,
 };
@@ -27,7 +27,6 @@ export const getWalletLocalData = (
       if (!walletData) {
         walletData = {
           id: walletId,
-          mnemonicsConfirmationDate: new Date(),
         };
         setWalletLocalData(walletData);
       }

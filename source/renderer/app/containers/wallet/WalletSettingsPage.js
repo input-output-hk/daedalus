@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import WalletSettings from '../../components/wallet/settings/WalletSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { isValidWalletName } from '../../utils/validations';
+import { getWalletLocalData } from '../../utils/walletLocalStorage.js';
 import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
 import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
 import ExportWalletToFileDialogContainer from './dialogs/settings/ExportWalletToFileDialogContainer';
@@ -12,18 +13,46 @@ import WalletRecoveryPhraseStep2Container from './dialogs/settings/WalletRecover
 
 type Props = InjectedProps;
 
+type State = {
+  mnemonicsConfirmationDate?: Date,
+};
+
 @inject('stores', 'actions')
 @observer
-export default class WalletSettingsPage extends Component<Props> {
+export default class WalletSettingsPage extends Component<Props, State> {
   static defaultProps = { actions: null, stores: null };
 
+  state = {
+    mnemonicsConfirmationDate: null,
+  };
+
+  componentDidMount() {
+    this.getWalletLocalData();
+  }
+
+  getWalletLocalData = async () => {
+    const { id } = this.activeWallet;
+    const { mnemonicsConfirmationDate } = await getWalletLocalData(id);
+    this.setState({ mnemonicsConfirmationDate });
+  };
+
+  get activeWallet() {
+    const { active: activeWallet } = this.props.stores.wallets;
+
+    // Guard against potential null values
+    if (!activeWallet)
+      throw new Error('Active wallet required for WalletSettingsPage.');
+
+    return activeWallet;
+  }
+
   render() {
-    const { uiDialogs, wallets, walletSettings, app } = this.props.stores;
+    const { uiDialogs, walletSettings, app } = this.props.stores;
     const { actions } = this.props;
     const {
       environment: { isProduction },
     } = app;
-    const activeWallet = wallets.active;
+    const { activeWallet } = this;
     const {
       WALLET_ASSURANCE_LEVEL_OPTIONS,
       updateWalletRequest,
@@ -36,10 +65,7 @@ export default class WalletSettingsPage extends Component<Props> {
       cancelEditingWalletField,
       updateWalletField,
     } = actions.walletSettings;
-
-    // Guard against potential null values
-    if (!activeWallet)
-      throw new Error('Active wallet required for WalletSettingsPage.');
+    const { mnemonicsConfirmationDate } = this.state;
 
     return (
       <WalletSettings
@@ -49,8 +75,11 @@ export default class WalletSettingsPage extends Component<Props> {
         openDialogAction={actions.dialogs.open.trigger}
         isSpendingPasswordSet={activeWallet.hasPassword}
         spendingPasswordUpdateDate={activeWallet.passwordUpdateDate}
+        mnemonicsConfirmationDate={mnemonicsConfirmationDate}
         isDialogOpen={uiDialogs.isOpen}
+        walletId={activeWallet.id}
         walletName={activeWallet.name}
+        walletCreationDate={activeWallet.createdAt}
         isSubmitting={updateWalletRequest.isExecuting}
         isInvalid={
           updateWalletRequest.wasExecuted &&
