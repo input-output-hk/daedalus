@@ -70,13 +70,7 @@ function typedRequest<Response>(
     }
 
     // @API TODO:  Delete once HTTPS is supported by the new API
-    const httpOnlyOptions = {
-      ...options,
-      hostname: options.hostname,
-      method: options.method,
-      path: options.path,
-      port: options.port,
-    };
+    const httpOnlyOptions = omit(options, ['ca', 'cert', 'key']);
 
     // @API TODO: Uncomment / switch once HTTPS is supported by the new API
     // const httpsRequest = global.https.request(options);
