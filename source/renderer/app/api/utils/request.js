@@ -17,6 +17,10 @@ export type RequestOptions = {
   },
 };
 
+const ALLOWED_ERROR_EXCEPTION_PATHS = [
+  '/api/internal/next-update', // when nextAdaUpdate receives a 404, it isn't an error
+];
+
 function typedRequest<Response>(
   httpOptions: RequestOptions,
   queryParams?: {},
@@ -24,9 +28,6 @@ function typedRequest<Response>(
   // requestOptions?: { returnMeta: boolean }
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
-    const allowedErrorExceptionPaths = [
-      '/api/internal/next-update', // when nextAdaUpdate receives a 404, it isn't an error
-    ];
     const options: RequestOptions = Object.assign({}, httpOptions);
     // const { returnMeta } = Object.assign({}, requestOptions);
     let hasRequestBody = false;
@@ -69,13 +70,7 @@ function typedRequest<Response>(
     }
 
     // @API TODO:  Delete once HTTPS is supported by the new API
-    const httpOnlyOptions = {
-      ...options,
-      hostname: options.hostname,
-      method: options.method,
-      path: options.path,
-      port: options.port,
-    };
+    const httpOnlyOptions = omit(options, ['ca', 'cert', 'key']);
 
     // @API TODO: Uncomment / switch once HTTPS is supported by the new API
     // const httpsRequest = global.https.request(options);
@@ -96,12 +91,12 @@ function typedRequest<Response>(
       response.on('end', () => {
         try {
           const { statusCode, statusMessage } = response;
-          const successResponse =
+          const isSuccessResponse =
             (statusCode >= 200 && statusCode <= 206) ||
             (statusCode === 404 &&
-              includes(allowedErrorExceptionPaths, options.path));
+              includes(ALLOWED_ERROR_EXCEPTION_PATHS, options.path));
 
-          if (successResponse) {
+          if (isSuccessResponse) {
             const data =
               statusCode === 404
                 ? 'null'
@@ -116,16 +111,16 @@ function typedRequest<Response>(
             }
             resolve(JSON.parse(body));
           } else if (body) {
+            // Error response with a body
             const parsedBody = JSON.parse(body);
             if (parsedBody.code && parsedBody.message) {
               reject(parsedBody);
             } else {
-              // TODO: find a way to record this case and report to the backend team
-              reject(new Error('Unknown response from backend.'));
+              reject(new Error('Unknown API response'));
             }
           } else {
-            // TODO: find a way to record this case and report to the backend team
-            reject(new Error('Unknown response from backend.'));
+            // Error response without a body
+            reject(new Error('Unknown API response'));
           }
         } catch (error) {
           // Handle internal server errors (e.g. HTTP 500 - 'Something went wrong')

@@ -103,7 +103,7 @@ When(
 
 When(/^I select "Strict" assurance level$/, function() {
   return this.waitAndClick(
-    '//*[@class="SimpleOptions_label"][contains(text(), "Strict")]'
+    '//*[@class="SimpleOptions_option"]//*[contains(text(), "Strict")]'
   );
 });
 
