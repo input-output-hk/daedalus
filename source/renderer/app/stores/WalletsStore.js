@@ -372,6 +372,8 @@ export default class WalletsStore extends Store {
     });
   };
 
+  isValidAddress = (address: string) => this.api.ada.isValidAddress(address);
+
   isValidMnemonic = (mnemonic: string) =>
     this.api.ada.isValidMnemonic(mnemonic);
 

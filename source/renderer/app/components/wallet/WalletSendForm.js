@@ -108,6 +108,7 @@ type Props = {
     address: string,
     amount: number
   ) => Promise<BigNumber>,
+  addressValidator: Function,
   openDialogAction: Function,
   isDialogOpen: Function,
   onExternalLinkClick?: Function,
@@ -177,6 +178,7 @@ export default class WalletSendForm extends Component<Props, State> {
           validators: [
             async ({ field, form }) => {
               const { value } = field;
+
               if (value === '') {
                 this._resetTransactionFee();
                 return [
@@ -187,13 +189,12 @@ export default class WalletSendForm extends Component<Props, State> {
               const amountField = form.$('amount');
               const amountValue = amountField.value;
               const isAmountValid = amountField.isValid;
-              const transactionFee = await this._calculateTransactionFee(
-                value,
-                amountValue
-              );
-              const { isValidAddress } = transactionFee;
-              if (!isAmountValid || !isValidAddress) {
+              const isValidAddress = await this.props.addressValidator(value);
+
+              if (isValidAddress && isAmountValid) {
                 this._resetTransactionFee();
+              } else {
+                await this._calculateTransactionFee(value, amountValue);
               }
               return [
                 isValidAddress,
@@ -376,18 +377,10 @@ export default class WalletSendForm extends Component<Props, State> {
           transactionFeeError: null,
         });
       }
-      return {
-        isValidAddress: true,
-        hasError: false,
-        amount: fee,
-      };
     } catch (error) {
+      // @API TODO - address is not correct on fee check
       if (error.message === 'NotValidAddress') {
-        return {
-          isValidAddress: false,
-          hasError: true,
-          amount: null,
-        };
+        return;
       }
       const errorHasLink = !!error.values.linkLabel;
       const transactionFeeError = errorHasLink ? (
@@ -407,10 +400,5 @@ export default class WalletSendForm extends Component<Props, State> {
         });
       }
     }
-    return {
-      isValidAddress: true,
-      hasError: true,
-      fee: null,
-    };
   }
 }
