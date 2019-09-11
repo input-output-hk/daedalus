@@ -1,28 +1,36 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-// import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
 
-// export const messages = defineMessages({
-//   recoveryPhraseStep1Title: {
-//     id: 'wallet.settings.recoveryPhraseStep1Title',
-//     defaultMessage: '!!!Wallet recovery phrase verification',
-//     description: 'Label for the recoveryPhraseStep1Title on wallet settings.',
-//   },
-//   recoveryPhraseStep1Paragraph1: {
-//     id: 'wallet.settings.recoveryPhraseStep1Paragraph1',
-//     defaultMessage: '!!!To verify that you have the correct recovery phrase for this wallet you can enter your 12-word wallet recovery phrase on the following screen.',
-//     description: 'Label for the recoveryPhraseStep1Paragraph1 on wallet settings.',
-//   },
-//     recoveryPhraseStep1Paragraph2: {
-//     id: 'wallet.settings.recoveryPhraseStep1Paragraph2',
-//     defaultMessage: '!!!Are you being watched? Please make sure that nobody can see your screen while you are entering your wallet recovery phrase.',
-//     description: 'Label for the recoveryPhraseStep1Paragraph2 on wallet settings.',
-//   },
-// });
+export const messages = defineMessages({
+  recoveryPhraseStep2Title: {
+    id: 'wallet.settings.recoveryPhraseStep2Title',
+    defaultMessage: '!!!Wallet recovery phrase verification',
+    description: 'Label for the recoveryPhraseStep2Title on wallet settings.',
+  },
+  recoveryPhraseStep2Description: {
+    id: 'wallet.settings.recoveryPhraseStep2Description',
+    defaultMessage:
+      '!!!Please enter your 12-word wallet recovery phrase. Make sure you enter the words in the correct order.',
+    description:
+      'Label for the recoveryPhraseStep2Description on wallet settings.',
+  },
+  recoveryPhraseStep2Subtitle: {
+    id: 'wallet.settings.recoveryPhraseStep2Subtitle',
+    defaultMessage: '!!!Recovery phrase',
+    description:
+      'Label for the recoveryPhraseStep2Subtitle on wallet settings.',
+  },
+  recoveryPhraseStep2Button: {
+    id: 'wallet.settings.recoveryPhraseStep2Button',
+    defaultMessage: '!!!Verify',
+    description: 'Label for the recoveryPhraseStep2Button on wallet settings.',
+  },
+});
 
 type Props = {
   onVerify: Function,
@@ -35,9 +43,9 @@ type State = {
 
 @observer
 export default class WalletRecoveryPhraseStep1 extends Component<Props, State> {
-  // static contextTypes = {
-  //   intl: intlShape.isRequired,
-  // };
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
 
   state = {
     isVeryfying: false,
@@ -51,22 +59,26 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props, State> {
   };
 
   render() {
-    // const { intl } = this.context;
+    const { intl } = this.context;
     const { onClose, onVerify } = this.props;
     const { isVeryfying } = this.state;
 
     const actions = [
       {
         className: isVeryfying ? styles.isVeryfying : null,
-        label: 'Verify - successfuly',
+        label: `${intl.formatMessage(
+          messages.recoveryPhraseStep2Button
+        )} - successfuly`,
         primary: true,
         onClick: () => onVerify(true),
         disabled: isVeryfying,
       },
       {
-        className: isVeryfying ? styles.isVeryfying : null,
-        label: 'Verify - failure',
+        label: `${intl.formatMessage(
+          messages.recoveryPhraseStep2Button
+        )} - failure`,
         onClick: () => onVerify(false),
+        className: 'attention',
         disabled: isVeryfying,
       },
     ];
@@ -74,18 +86,15 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props, State> {
     return (
       <Dialog
         className={styles.dialog}
-        title="Wallet recovery phrase verification"
+        title={intl.formatMessage(messages.recoveryPhraseStep2Title)}
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
         closeButton={<DialogCloseButton />}
       >
-        <p>
-          Please enter your 12-word wallet recovery phrase. Make sure you enter
-          the words in the correct order.
-        </p>
+        <p>{intl.formatMessage(messages.recoveryPhraseStep2Description)}</p>
         <div className={styles.subtitle}>
-          <h2>Recovery phrase</h2>
+          <h2>{intl.formatMessage(messages.recoveryPhraseStep2Subtitle)}</h2>
         </div>
       </Dialog>
     );

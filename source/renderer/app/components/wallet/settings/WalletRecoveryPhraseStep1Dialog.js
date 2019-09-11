@@ -28,6 +28,11 @@ export const messages = defineMessages({
     description:
       'Label for the recoveryPhraseStep1Paragraph2 on wallet settings.',
   },
+  recoveryPhraseStep1Button: {
+    id: 'wallet.settings.recoveryPhraseStep1Button',
+    defaultMessage: '!!!Continue',
+    description: 'Label for the recoveryPhraseStep1Button on wallet settings.',
+  },
 });
 
 type Props = {
@@ -55,7 +60,7 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props> {
     const actions = [
       {
         className: isSubmitting ? styles.isSubmitting : null,
-        label: 'Continue',
+        label: intl.formatMessage(messages.recoveryPhraseStep1Button),
         primary: true,
         onClick: onContinue,
         disabled: !safetyAgreement,
@@ -65,17 +70,13 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props> {
     return (
       <Dialog
         className={styles.dialog}
-        title="Wallet recovery phrase verification"
+        title={intl.formatMessage(messages.recoveryPhraseStep1Title)}
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
         closeButton={<DialogCloseButton />}
       >
-        <p>
-          To verify that you have the correct recovery phrase for this wallet
-          you can enter your 12-word wallet recovery phrase on the following
-          screen.
-        </p>
+        <p>{intl.formatMessage(messages.recoveryPhraseStep1Paragraph1)}</p>
         <p className={styles.checkboxContainer}>
           <Checkbox
             onChange={onToggleSafetyAgreement}
@@ -83,8 +84,7 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props> {
             skin={CheckboxSkin}
             className={styles.checkbox}
           />
-          Are you being watched? Please make sure that nobody can see your
-          screen while you are entering your wallet recovery phrase.
+          {intl.formatMessage(messages.recoveryPhraseStep1Paragraph2)}
         </p>
       </Dialog>
     );
