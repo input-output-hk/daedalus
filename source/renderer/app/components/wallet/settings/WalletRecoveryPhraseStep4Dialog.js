@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 // import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
-import styles from './WalletRecoveryPhraseStep1Dialog.scss';
+import styles from './WalletRecoveryPhraseStepDialogs.scss';
 
 // export const messages = defineMessages({
 //   recoveryPhraseStep1Title: {

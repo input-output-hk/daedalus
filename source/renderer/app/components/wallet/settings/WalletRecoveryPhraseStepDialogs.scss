@@ -1,0 +1,23 @@
+.dialog {
+  p {
+    color: #5e6066;
+    font-family: var(--font-light);
+    line-height: 1.38;
+    &:first-child {
+      margin-bottom: 20px;
+    }
+  }
+}
+.subtitle h2 {
+  color: #5e6066;
+  font-family: var(--font-regular);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.38;
+}
+.checkboxContainer {
+  display: flex;
+}
+.checkbox {
+  margin-right: 20px;
+}

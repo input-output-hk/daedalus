@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 // import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
-import styles from './WalletRecoveryPhraseStep1Dialog.scss';
+import styles from './WalletRecoveryPhraseStepDialogs.scss';
 
 // export const messages = defineMessages({
 //   recoveryPhraseStep1Title: {
@@ -84,7 +84,9 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props, State> {
           Please enter your 12-word wallet recovery phrase. Make sure you enter
           the words in the correct order.
         </p>
-        <h3>Recovery phrase</h3>
+        <div className={styles.subtitle}>
+          <h2>Recovery phrase</h2>
+        </div>
       </Dialog>
     );
   }

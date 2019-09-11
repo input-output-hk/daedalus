@@ -2,9 +2,11 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 // import { defineMessages, intlShape } from 'react-intl';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
-import styles from './WalletRecoveryPhraseStep1Dialog.scss';
+import styles from './WalletRecoveryPhraseStepDialogs.scss';
 
 // export const messages = defineMessages({
 //   recoveryPhraseStep1Title: {
@@ -26,6 +28,8 @@ import styles from './WalletRecoveryPhraseStep1Dialog.scss';
 
 type Props = {
   onClose: Function,
+  onToggleSafetyAgreement: Function,
+  safetyAgreement: boolean,
 };
 
 @observer
@@ -35,13 +39,14 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props> {
   // };
   render() {
     // const { intl } = this.context;
-    const { onClose } = this.props;
+    const { onClose, onToggleSafetyAgreement, safetyAgreement } = this.props;
 
     const actions = [
       {
         label: 'Continue',
         primary: true,
         onClick: onClose,
+        disabled: !safetyAgreement,
       },
     ];
 
@@ -59,7 +64,13 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props> {
           at any time to recover the funds in this wallet on another computer,
           even if using a different version of Daedalus.
         </p>
-        <p>
+        <p className={styles.checkboxContainer}>
+          <Checkbox
+            onChange={onToggleSafetyAgreement}
+            checked={safetyAgreement}
+            skin={CheckboxSkin}
+            className={styles.checkbox}
+          />
           Please make sure to keep the paper with your wallet recovery phrase in
           a safe place. Anyone with access to your wallet recovery phrase can
           take control of your funds.
