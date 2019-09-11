@@ -12,6 +12,8 @@ import DeleteWalletConfirmationDialog from '../../source/renderer/app/components
 import ExportWalletToFileDialog from '../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
 import WalletRecoveryPhraseStep1Dialog from '../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
 import WalletRecoveryPhraseStep2Dialog from '../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
+import WalletRecoveryPhraseStep3Dialog from '../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog';
+import WalletRecoveryPhraseStep4Dialog from '../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog';
 import {
   MNEMONICS_CHECKING_WARNING,
   MNEMONICS_CHECKING_NOTIFICATION,
@@ -122,9 +124,15 @@ export default () => {
         if (dialog === WalletRecoveryPhraseStep1Dialog) {
           return recoveryDialog === 1;
         }
-        // if (dialog === WalletRecoveryPhraseStep2Dialog) {
-        //   return boolean('Recovery Phrase - Step 2 Dialog', false, recoveryPhraseId);
-        // }
+        if (dialog === WalletRecoveryPhraseStep2Dialog) {
+          return recoveryDialog === 2;
+        }
+        if (dialog === WalletRecoveryPhraseStep3Dialog) {
+          return recoveryDialog === 3;
+        }
+        if (dialog === WalletRecoveryPhraseStep4Dialog) {
+          return recoveryDialog === 4;
+        }
         return false;
       }}
       activeField={null}
@@ -242,6 +250,8 @@ export default () => {
       }
       walletRecoveryPhraseStep1Container={<WalletRecoveryPhraseStep1Dialog />}
       walletRecoveryPhraseStep2Container={<WalletRecoveryPhraseStep2Dialog />}
+      walletRecoveryPhraseStep3Container={<WalletRecoveryPhraseStep3Dialog />}
+      walletRecoveryPhraseStep4Container={<WalletRecoveryPhraseStep4Dialog />}
       walletCreationDate={walletCreationDate}
       mnemonicsConfirmationDate={mnemonicsConfirmationDate}
     />
