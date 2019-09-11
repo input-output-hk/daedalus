@@ -25,7 +25,8 @@ import styles from './WalletRecoveryPhraseStep1Dialog.scss';
 // });
 
 type Props = {
-  onContinue: Date,
+  onContinue: Function,
+  onClose: Function,
 };
 
 @observer
@@ -35,7 +36,7 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props> {
   // };
   render() {
     // const { intl } = this.context;
-    const { onContinue } = this.props;
+    const { onContinue, onClose } = this.props;
     const isSubmitting = false;
 
     const actions = [
@@ -43,7 +44,7 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props> {
         className: isSubmitting ? styles.isSubmitting : null,
         label: 'Continue',
         primary: true,
-        onClick: this.submit,
+        onClick: onContinue,
       },
     ];
 
@@ -53,7 +54,7 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props> {
         title="Wallet recovery phrase verification"
         actions={actions}
         closeOnOverlayClick
-        onClose={onContinue}
+        onClose={onClose}
         closeButton={<DialogCloseButton />}
       >
         <p>

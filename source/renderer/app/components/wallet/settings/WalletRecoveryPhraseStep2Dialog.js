@@ -25,25 +25,43 @@ import styles from './WalletRecoveryPhraseStep1Dialog.scss';
 // });
 
 type Props = {
-  onContinue: Date,
+  onVerify: Function,
+  onClose: Function,
+};
+
+type State = {
+  isVeryfying: boolean,
 };
 
 @observer
-export default class WalletRecoveryPhraseStep1 extends Component<Props> {
+export default class WalletRecoveryPhraseStep1 extends Component<Props, State> {
   // static contextTypes = {
   //   intl: intlShape.isRequired,
   // };
+
+  state = {
+    isVeryfying: false,
+  };
+
+  handleVerify = () => {
+    this.setState({
+      isVeryfying: true,
+    });
+    this.props.onVerify();
+  };
+
   render() {
     // const { intl } = this.context;
-    const { onContinue } = this.props;
-    const isSubmitting = false;
+    const { onClose } = this.props;
+    const { isVeryfying } = this.state;
 
     const actions = [
       {
-        className: isSubmitting ? styles.isSubmitting : null,
-        label: 'Continue',
+        className: isVeryfying ? styles.isVeryfying : null,
+        label: 'Verify',
         primary: true,
         onClick: this.submit,
+        disabled: isVeryfying,
       },
     ];
 
@@ -53,7 +71,7 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props> {
         title="Wallet recovery phrase verification"
         actions={actions}
         closeOnOverlayClick
-        onClose={onContinue}
+        onClose={onClose}
         closeButton={<DialogCloseButton />}
       >
         <p>

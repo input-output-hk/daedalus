@@ -29,6 +29,7 @@ export const generateWallet = (name: string, amount: string) =>
   new Wallet({
     id: generateHash(),
     amount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
+    createdAt: new Date(),
     name,
     assurance: 'normal',
     hasPassword: false,

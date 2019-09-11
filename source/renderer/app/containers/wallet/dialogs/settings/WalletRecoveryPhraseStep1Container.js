@@ -8,6 +8,12 @@ export default class WalletRecoveryPhraseStep1Container extends Component {
   handleContinue = () => {};
 
   render() {
-    return <WalletRecoveryPhraseStep1Dialog onContinue={this.handleContinue} />;
+    // daedalus.actions.dialogs.closeActiveDialog
+    return (
+      <WalletRecoveryPhraseStep1Dialog
+        onContinue={this.handleContinue}
+        onClose={() => {}}
+      />
+    );
   }
 }
