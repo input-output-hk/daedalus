@@ -1,10 +1,17 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import { join } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
+import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
+import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
+import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
+import globalMessages from '../../../i18n/global-messages';
+// import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 
 export const messages = defineMessages({
   recoveryPhraseStep2Title: {
@@ -30,57 +37,87 @@ export const messages = defineMessages({
     defaultMessage: '!!!Verify',
     description: 'Label for the recoveryPhraseStep2Button on wallet settings.',
   },
+  // Autocomplete labels
+  recoveryPhraseInputHint: {
+    id: 'wallet.settings.dialog.recovery.phrase.input.hint',
+    defaultMessage: '!!!Enter recovery phrase',
+    description:
+      'Hint "Enter recovery phrase" for the recovery phrase input on the wallet restore dialog.',
+  },
+  recoveryPhraseNoResults: {
+    id: 'wallet.settings.dialog.recovery.phrase.input.noResults',
+    defaultMessage: '!!!No results',
+    description:
+      '"No results" message for the recovery phrase input search results.',
+  },
 });
 
 type Props = {
+  mnemonicValidator: Function,
+  suggestedMnemonics: Array<string>,
   onVerify: Function,
   onClose: Function,
 };
 
-type State = {
-  isVeryfying: boolean,
-};
-
 @observer
-export default class WalletRecoveryPhraseStep1 extends Component<Props, State> {
+export default class WalletRecoveryPhraseStep2 extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
-  state = {
-    isVeryfying: false,
-  };
+  form = new ReactToolboxMobxForm(
+    {
+      fields: {
+        recoveryPhrase: {
+          value: [],
+          validators: ({ field }) => {
+            const { intl } = this.context;
+            const enteredWords = field.value;
+            const wordCount = enteredWords.length;
+            const value = join(enteredWords, ' ');
 
-  handleVerify = () => {
-    this.setState({
-      isVeryfying: true,
-    });
-    this.props.onVerify();
-  };
+            // Check if recovery phrase contains 12 words
+            const isPhraseComplete = wordCount === WALLET_RECOVERY_PHRASE_WORD_COUNT;
+            const isValid = this.props.mnemonicValidator(value);
+
+            console.debug('TEST: ', {wordCount, WALLET_RECOVERY_PHRASE_WORD_COUNT, isPhraseComplete, isValid});
+            if (!isPhraseComplete) {
+              return [
+                false,
+                intl.formatMessage(globalMessages.incompleteMnemonic, {
+                  expected: WALLET_RECOVERY_PHRASE_WORD_COUNT,
+                }),
+              ];
+            }
+            return [
+              this.props.mnemonicValidator(value),
+              this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
+            ];
+          },
+        },
+      },
+    },
+    {
+      options: {
+        validateOnChange: true,
+      },
+    }
+  );
 
   render() {
+    const { form } = this;
     const { intl } = this.context;
-    const { onClose, onVerify } = this.props;
-    const { isVeryfying } = this.state;
+    const { onClose, onVerify, suggestedMnemonics, isVeryfying } = this.props;
 
+    const recoveryPhraseField = form.$('recoveryPhrase');
     const actions = [
       {
         className: isVeryfying ? styles.isVeryfying : null,
-        label: `${intl.formatMessage(
-          messages.recoveryPhraseStep2Button
-        )} - successfuly`,
+        label: intl.formatMessage(messages.recoveryPhraseStep2Button),
         primary: true,
         onClick: () => onVerify(true),
         disabled: isVeryfying,
-      },
-      {
-        label: `${intl.formatMessage(
-          messages.recoveryPhraseStep2Button
-        )} - failure`,
-        onClick: () => onVerify(false),
-        className: 'attention',
-        disabled: isVeryfying,
-      },
+      }
     ];
 
     return (
@@ -92,10 +129,23 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props, State> {
         onClose={onClose}
         closeButton={<DialogCloseButton />}
       >
-        <p>{intl.formatMessage(messages.recoveryPhraseStep2Description)}</p>
         <div className={styles.subtitle}>
-          <h2>{intl.formatMessage(messages.recoveryPhraseStep2Subtitle)}</h2>
+          <p>{intl.formatMessage(messages.recoveryPhraseStep2Description)}</p>
         </div>
+
+        <Autocomplete
+          {...recoveryPhraseField.bind()}
+          label={intl.formatMessage(messages.recoveryPhraseStep2Subtitle)}
+          placeholder={intl.formatMessage(messages.recoveryPhraseInputHint)}
+          options={suggestedMnemonics}
+          maxSelections={WALLET_RECOVERY_PHRASE_WORD_COUNT}
+          error={recoveryPhraseField.error}
+          maxVisibleOptions={5}
+          noResultsMessage={intl.formatMessage(
+            messages.recoveryPhraseNoResults
+          )}
+          skin={AutocompleteSkin}
+        />
       </Dialog>
     );
   }

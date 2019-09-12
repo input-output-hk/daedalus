@@ -1,3 +1,5 @@
+@import '../../../themes/mixins/loading-spinner';
+
 .dialog {
   p {
     color: #5e6066;
@@ -8,16 +10,27 @@
     }
   }
 }
-.subtitle h2 {
+
+.subtitle {
   color: #5e6066;
   font-family: var(--font-regular);
   font-size: 16px;
   font-weight: 500;
   line-height: 1.38;
+  margin-top: 10px;
 }
+
 .checkboxContainer {
   display: flex;
 }
+
 .checkbox {
   margin-right: 20px;
+}
+
+button {
+  &.isVeryfying {
+    box-shadow: none !important;
+    @include loading-spinner('../../../assets/images/spinner-light.svg');
+  }
 }

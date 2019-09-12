@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import WalletRecoveryPhraseStep2Dialog from '../../../../components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
 import WalletRecoveryPhraseStep3Dialog from '../../../../components/wallet/settings/WalletRecoveryPhraseStep3Dialog';
 import WalletRecoveryPhraseStep4Dialog from '../../../../components/wallet/settings/WalletRecoveryPhraseStep4Dialog';
+import validWords from '../../../../../../common/crypto/valid-words.en';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
 
 type Props = InjectedDialogContainerProps;
@@ -35,9 +36,14 @@ export default class WalletRecoveryPhraseStep2Container extends Component<Props>
   };
 
   render() {
+    const { wallets } = this.props.stores;
+    const { isValidMnemonic } = wallets;
     const { closeActiveDialog } = this.props.actions.dialogs;
     return (
       <WalletRecoveryPhraseStep2Dialog
+        mnemonicValidator={mnemonic => isValidMnemonic(mnemonic)}
+        suggestedMnemonics={validWords}
+        isVeryfying={false}
         onVerify={this.handleVerify}
         onClose={closeActiveDialog.trigger}
       />
