@@ -84,6 +84,18 @@ function typedRequest<Response>(
           // even if it was successful
           const { statusCode, statusMessage } = response;
 
+          // TODO: remove once calculate_mnemonic is fixed
+          if (
+            options.path === '/api/internal/calculate_mnemonic' &&
+            statusCode === 200
+          ) {
+            const data = body;
+            body = `{
+              "status": "success",
+              "data": ${data}
+            }`;
+          }
+
           if (!body && statusCode >= 200 && statusCode <= 206) {
             // adds status and data properties so JSON.parse doesn't throw an error
             body = `{
