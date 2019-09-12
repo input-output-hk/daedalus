@@ -67,3 +67,16 @@
   letter-spacing: 1px;
   opacity: 0.7;
 }
+
+.mnemonicsConfirmationStatus-notification {
+  &:after {
+    background: red;
+    border-radius: 50%;
+    content: '';
+    display: block;
+    height: 10px;
+    position: absolute;
+    right: 10px;
+    width: 10px;
+  }
+}
