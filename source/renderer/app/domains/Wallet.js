@@ -2,7 +2,10 @@
 import { pick } from 'lodash';
 import { observable, computed, action, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
-import { getWalletLocalData } from '../utils/walletLocalStorage';
+import {
+  getWalletLocalData,
+  updateWalletLocalData,
+} from '../utils/walletLocalStorage';
 import type {
   WalletAssuranceLevel,
   WalletAssuranceMode,
@@ -81,6 +84,16 @@ export default class Wallet {
     const { mnemonicsConfirmationDate } = await getWalletLocalData(id);
     runInAction('set mnemonicsConfirmationDate', () => {
       this.mnemonicsConfirmationDate = mnemonicsConfirmationDate;
+    });
+  };
+
+  @action updateWalletLocalData = async () => {
+    const { id } = this;
+    const mnemonicsConfirmationDate = new Date();
+    this.mnemonicsConfirmationDate = mnemonicsConfirmationDate;
+    await updateWalletLocalData({
+      id,
+      mnemonicsConfirmationDate,
     });
   };
 
