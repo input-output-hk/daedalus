@@ -8,7 +8,7 @@ import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import RestoreNotification from '../../components/notifications/RestoreNotification';
 import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
-import { WalletSyncStateTags } from '../../domains/Wallet';
+import { WalletSyncStateTags, WalletStatuses } from '../../domains/Wallet';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import type { NavDropdownProps } from '../../components/navigation/Navigation';
 
@@ -72,6 +72,9 @@ export default class Wallet extends Component<Props> {
       'syncState.data.estimatedCompletionTime.quantity',
       0
     );
+    const hasNotification =
+      wallets.active.mnemonicsConfirmationStatus ===
+      WalletStatuses.NOTIFICATION;
 
     return (
       <MainLayout>
@@ -87,6 +90,7 @@ export default class Wallet extends Component<Props> {
           isActiveScreen={this.isActiveScreen}
           onWalletNavItemClick={this.handleWalletNavItemClick}
           activeItem={app.currentPage}
+          hasNotification={hasNotification}
         >
           {this.props.children}
         </WalletWithNavigation>

@@ -10,6 +10,7 @@ type Props = {
   activeItem: string,
   isActiveScreen: Function,
   onWalletNavItemClick: Function,
+  hasNotification: boolean,
 };
 
 @observer
@@ -20,6 +21,7 @@ export default class WalletWithNavigation extends Component<Props> {
       isActiveScreen,
       onWalletNavItemClick,
       activeItem,
+      hasNotification,
     } = this.props;
     return (
       <div className={styles.component}>
@@ -28,6 +30,7 @@ export default class WalletWithNavigation extends Component<Props> {
             isActiveNavItem={isActiveScreen}
             onNavItemClick={onWalletNavItemClick}
             activeItem={activeItem}
+            hasNotification={hasNotification}
           />
         </div>
         <div className={styles.page}>{children}</div>

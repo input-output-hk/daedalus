@@ -7,6 +7,20 @@
     width: 100%;
   }
 
+  &.hasNotification {
+    &:after {
+      background: red;
+      border-radius: 50%;
+      content: '';
+      display: block;
+      height: 8px;
+      position: absolute;
+      right: 30px;
+      top: 16px;
+      width: 8px;
+    }
+  }
+
   :global {
     .SimpleOptions_options {
       left: auto !important;
