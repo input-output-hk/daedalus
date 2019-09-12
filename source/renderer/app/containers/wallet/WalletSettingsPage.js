@@ -4,7 +4,6 @@ import { observer, inject } from 'mobx-react';
 import WalletSettings from '../../components/wallet/settings/WalletSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { isValidWalletName } from '../../utils/validations';
-// import { getWalletLocalData } from '../../utils/walletLocalStorage.js';
 import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
 import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
 import ExportWalletToFileDialogContainer from './dialogs/settings/ExportWalletToFileDialogContainer';
@@ -54,6 +53,10 @@ export default class WalletSettingsPage extends Component<Props> {
         isSpendingPasswordSet={activeWallet.hasPassword}
         spendingPasswordUpdateDate={activeWallet.passwordUpdateDate}
         mnemonicsConfirmationDate={activeWallet.mnemonicsConfirmationDate}
+        mnemonicsConfirmationStatus={activeWallet.mnemonicsConfirmationStatus}
+        mnemonicsConfirmationStatusType={
+          activeWallet.mnemonicsConfirmationStatusType
+        }
         isDialogOpen={uiDialogs.isOpen}
         walletId={activeWallet.id}
         walletName={activeWallet.name}

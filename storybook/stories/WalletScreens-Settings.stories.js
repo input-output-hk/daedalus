@@ -73,11 +73,8 @@ const getWalletDates = (type: string, status: string) => {
       .subtract(MNEMONICS_CHECKING_NOTIFICATION + 10, 'days')
       .toDate();
 
-  let walletCreationDate;
-  let mnemonicsConfirmationDate;
-
-  if (type === 'alreadyChecked') mnemonicsConfirmationDate = date;
-  else walletCreationDate = date;
+  const mnemonicsConfirmationDate = date;
+  const walletCreationDate = date;
 
   return {
     mnemonicsConfirmationDate,
@@ -248,12 +245,31 @@ export default () => {
           onClose={action('Export Wallet - onClose')}
         />
       }
-      walletRecoveryPhraseStep1Container={<WalletRecoveryPhraseStep1Dialog />}
-      walletRecoveryPhraseStep2Container={<WalletRecoveryPhraseStep2Dialog />}
-      walletRecoveryPhraseStep3Container={<WalletRecoveryPhraseStep3Dialog />}
-      walletRecoveryPhraseStep4Container={<WalletRecoveryPhraseStep4Dialog />}
+      walletRecoveryPhraseStep1Container={
+        <WalletRecoveryPhraseStep1Dialog
+          onClose={action('onClose')}
+          onContinue={action('onContinue')}
+        />
+      }
+      walletRecoveryPhraseStep2Container={
+        <WalletRecoveryPhraseStep2Dialog
+          onClose={action('onClose')}
+          onVerify={action('onVerify')}
+        />
+      }
+      walletRecoveryPhraseStep3Container={
+        <WalletRecoveryPhraseStep3Dialog onClose={action('onClose')} />
+      }
+      walletRecoveryPhraseStep4Container={
+        <WalletRecoveryPhraseStep4Dialog
+          onClose={action('onClose')}
+          onVerifyAgain={action('onVerifyAgain')}
+        />
+      }
       walletCreationDate={walletCreationDate}
       mnemonicsConfirmationDate={mnemonicsConfirmationDate}
+      mnemonicsConfirmationStatus={status}
+      mnemonicsConfirmationStatusType={type}
     />
   );
 };

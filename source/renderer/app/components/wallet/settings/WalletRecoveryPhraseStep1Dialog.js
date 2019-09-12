@@ -54,7 +54,7 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props, State> {
     safetyAgreement: false,
   };
 
-  onToggleSafetyAgreement = checked => {
+  onToggleSafetyAgreement = (checked: boolean) => {
     this.setState({
       safetyAgreement: checked,
     });

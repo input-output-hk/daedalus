@@ -3,12 +3,15 @@ import hash from 'hash.js';
 import faker from 'faker';
 import moment from 'moment';
 import BigNumber from 'bignumber.js';
+import Wallet, {
+  WalletStatuses,
+  WalletStatusesType,
+} from '../../../source/renderer/app/domains/Wallet';
 import {
   WalletTransaction,
   transactionStates,
   transactionTypes,
 } from '../../../source/renderer/app/domains/WalletTransaction';
-import Wallet from '../../../source/renderer/app/domains/Wallet';
 import WalletAddress from '../../../source/renderer/app/domains/WalletAddress';
 import { LOVELACES_PER_ADA } from '../../../source/renderer/app/config/numbersConfig';
 import type {
@@ -36,6 +39,9 @@ export const generateWallet = (name: string, amount: string) =>
     passwordUpdateDate: new Date(),
     syncState: { data: null, tag: 'synced' },
     isLegacy: false,
+    mnemonicsConfirmationDate: new Date(),
+    mnemonicsConfirmationStatus: WalletStatuses.OK,
+    mnemonicsConfirmationStatusType: WalletStatusesType.NEVER_CHECKED,
   });
 
 export const generateTransaction = (

@@ -10,7 +10,7 @@ type Props = {
   activeItem: string,
   isActiveScreen: Function,
   onWalletNavItemClick: Function,
-  hasNotification: boolean,
+  hasNotification?: boolean,
 };
 
 @observer

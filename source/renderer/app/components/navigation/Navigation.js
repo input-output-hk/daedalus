@@ -17,7 +17,7 @@ export type NavDropdownProps = {
   ...$Exact<NavButtonProps>,
   type: 'dropdown',
   options: Array<{ value: number | string, label: string }>,
-  hasNotification: boolean,
+  hasNotification?: boolean,
 };
 
 type Props = {
