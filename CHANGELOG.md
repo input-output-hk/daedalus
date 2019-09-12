@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Integrated Cardano V2 API endpoints ([PR 1548](https://github.com/input-output-hk/daedalus/pull/1548), [PR 1551](https://github.com/input-output-hk/daedalus/pull/1551), [PR 1552](https://github.com/input-output-hk/daedalus/pull/1552), [PR 1553](https://github.com/input-output-hk/daedalus/pull/1553), [PR 1555](https://github.com/input-output-hk/daedalus/pull/1555), [PR 1556](https://github.com/input-output-hk/daedalus/pull/1556))
+- Integrated Cardano V2 API endpoints ([PR 1548](https://github.com/input-output-hk/daedalus/pull/1548), [PR 1551](https://github.com/input-output-hk/daedalus/pull/1551), [PR 1552](https://github.com/input-output-hk/daedalus/pull/1552), [PR 1553](https://github.com/input-output-hk/daedalus/pull/1553), [PR 1555](https://github.com/input-output-hk/daedalus/pull/1555), [PR 1556](https://github.com/input-output-hk/daedalus/pull/1556), [PR 1557](https://github.com/input-output-hk/daedalus/pull/1557))
 - Removed select dropdown arrow ([PR 1550](https://github.com/input-output-hk/daedalus/pull/1550))
 - Implemented automated and manual update flows unification ([PR 1491](https://github.com/input-output-hk/daedalus/pull/1491))
 - Updated behavior of system dialogs ([PR 1494](https://github.com/input-output-hk/daedalus/pull/1494))

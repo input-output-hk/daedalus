@@ -100,7 +100,7 @@ const createWalletsAsync = async (table, context) => {
         daedalus.api.ada.createWallet({
           name: wallet.name,
           mnemonic: daedalus.utils.crypto.generateMnemonic(),
-          spendingPassword: wallet.password || null,
+          spendingPassword: wallet.password || 'Secret123',
         })
       )
     )
@@ -133,7 +133,7 @@ const createWalletsSequentially = async (wallets, context) => {
         .createWallet({
           name: wallet.name,
           mnemonic: daedalus.utils.crypto.generateMnemonic(),
-          spendingPassword: wallet.password || null,
+          spendingPassword: wallet.password || 'Secret123',
         })
         .then(() =>
           daedalus.stores.wallets.walletsRequest

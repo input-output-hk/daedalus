@@ -260,6 +260,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
               label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
               checked={createPassword}
               skin={SwitchSkin}
+              disabled // @API TODO: in V2 API passphrase is required
             />
           </div>
 

@@ -54,11 +54,21 @@ export type WalletUtxos = {
   },
 };
 
+export type WalletInitData = {
+  name: string,
+  mnemonic_sentence: [string], // [ 15 .. 24 ] words
+  mnemonic_second_factor?: [string], // [ 9 .. 12 ] words
+  passphrase: string,
+  address_pool_gap?: number,
+};
+
 // req/res Wallet types
 export type CreateWalletRequest = {
   name: string,
-  mnemonic: string,
+  mnemonic: [string],
+  mnemonicPassphrase?: [string],
   spendingPassword: ?string,
+  addressPoolGap?: number,
 };
 
 export type UpdateSpendingPasswordRequest = {

@@ -36,7 +36,7 @@ export default class SidebarStore extends Store {
       isRestoreActive:
         get(wallet, ['syncState', 'status'], '') ===
         WalletSyncStateStatuses.RESTORING,
-      restoreProgress: get(wallet, 'syncState.progress.quantity', 0),
+      restoreProgress: get(wallet, ['syncState', 'progress', 'quantity'], 0),
       isLegacy: wallet.isLegacy,
     }));
   }
