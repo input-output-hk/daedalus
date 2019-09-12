@@ -132,7 +132,7 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
         className={styles.dialog}
         title={intl.formatMessage(messages.recoveryPhraseStep2Title)}
         actions={actions}
-        closeOnOverlayClick
+        closeOnOverlayClick={false}
         onClose={onClose}
         closeButton={<DialogCloseButton />}
       >
