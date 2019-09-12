@@ -32,7 +32,6 @@ import { getTransactionFee } from './transactions/requests/getTransactionFee';
 import { createTransaction } from './transactions/requests/createTransaction';
 
 // Wallets requests
-import { resetWalletState } from './wallets/requests/resetWalletState';
 import { changeSpendingPassword } from './wallets/requests/changeSpendingPassword';
 import { deleteWallet } from './wallets/requests/deleteWallet';
 import { exportWalletAsJSON } from './wallets/requests/exportWalletAsJSON';
@@ -877,9 +876,9 @@ export default class AdaApi {
   testReset = async (): Promise<void> => {
     Logger.debug('AdaApi::testReset called');
     try {
-      const response: Promise<void> = await resetWalletState(this.config);
+      const wallets: AdaWallets = await getWallets(this.config);
+      wallets.map(wallet => deleteWallet(this.config, { walletId: wallet.id }));
       Logger.debug('AdaApi::testReset success');
-      return response;
     } catch (error) {
       Logger.error('AdaApi::testReset error', { error });
       throw new GenericApiError();
@@ -895,7 +894,7 @@ export default class AdaApi {
     }`;
     Logger.debug(`${loggerText} called`);
     try {
-      /* TODO: Uncomment once implemented
+      /* @API TODO: Uncomment once implemented
 
       const nodeInfo: NodeInfoResponse = await getNodeInfo(
         this.config,
