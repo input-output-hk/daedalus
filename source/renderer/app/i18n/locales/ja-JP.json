@@ -122,7 +122,7 @@
   "global.language.german": "ドイツ語",
   "global.language.japanese": "日本語",
   "global.language.korean": "韓国語",
-  "global.passwordInstructions": "パスワードは７文字以上であり、英字大文字、小文字、数字を含む必要があります。",
+  "global.passwordInstructions": "パスワードは10文字以上であり、英字大文字、小文字、数字を含む必要があります。",
   "global.spendingPasswordLabel": "送金時のパスワード",
   "global.spendingPasswordPlaceholder": "パスワード",
   "global.unit.ada": "ADA",

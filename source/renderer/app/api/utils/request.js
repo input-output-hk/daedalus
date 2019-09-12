@@ -1,7 +1,7 @@
 // @flow
-import { size, has, get, omit, includes } from 'lodash';
+import { size, omit, includes } from 'lodash';
 import querystring from 'querystring';
-import { encryptPassphrase, getContentLength } from '.';
+import { getContentLength } from '.';
 
 export type RequestOptions = {
   hostname: string,
@@ -33,29 +33,9 @@ function typedRequest<Response>(
     let hasRequestBody = false;
     let requestBody = '';
 
-    let queryString = '';
     if (queryParams && size(queryParams) > 0) {
-      // Handle passphrase
-      if (has(queryParams, 'passphrase')) {
-        const passphrase = get(queryParams, 'passphrase');
-
-        // If passphrase is present it must be encrypted and included in options.path
-        if (passphrase) {
-          const encryptedPassphrase = encryptPassphrase(passphrase);
-          queryString = `?passphrase=${encryptedPassphrase}`;
-        }
-
-        // Passphrase must be ommited from rest query params
-        queryParams = omit(queryParams, 'passphrase');
-
-        if (size(queryParams > 1) && passphrase) {
-          queryString += `&${querystring.stringify(queryParams)}`;
-        }
-      } else {
-        queryString = `?${querystring.stringify(queryParams)}`;
-      }
-
-      if (queryString) options.path += queryString;
+      const queryString = `?${querystring.stringify(queryParams)}`;
+      options.path += queryString;
     }
 
     // Handle raw body params

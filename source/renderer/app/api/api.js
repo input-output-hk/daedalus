@@ -51,7 +51,7 @@ import {
 } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
 import { isValidMnemonic } from '../../../common/crypto/decrypt';
-import { utcStringToDate, encryptPassphrase } from './utils';
+import { utcStringToDate } from './utils';
 import { Logger } from '../utils/logging';
 import {
   unscrambleMnemonics,
@@ -384,18 +384,15 @@ export default class AdaApi {
       name,
       mnemonic,
       mnemonicPassphrase,
-      spendingPassword: passwordString,
+      spendingPassword,
       addressPoolGap,
     } = request;
-    const spendingPassword = passwordString
-      ? encryptPassphrase(passwordString)
-      : '';
     try {
       const walletInitData = {
         name,
         mnemonic_sentence: split(mnemonic, ' '),
         mnemonic_second_factor: mnemonicPassphrase,
-        passphrase: spendingPassword,
+        passphrase: spendingPassword || '',
         address_pool_gap: addressPoolGap,
       };
       const wallet: AdaWallet = await createWallet(this.config, {
@@ -435,11 +432,8 @@ export default class AdaApi {
       walletId,
       address,
       amount,
-      spendingPassword: passwordString,
+      spendingPassword,
     } = request;
-    const spendingPassword = passwordString
-      ? encryptPassphrase(passwordString)
-      : '';
     try {
       const data = {
         source: {
@@ -453,7 +447,7 @@ export default class AdaApi {
           },
         ],
         groupingPolicy: 'OptimizeForSecurity',
-        spendingPassword,
+        spendingPassword: spendingPassword || '',
       };
       const response: Transaction = await createTransaction(this.config, {
         data,
@@ -561,17 +555,10 @@ export default class AdaApi {
     Logger.debug('AdaApi::createAddress called', {
       parameters: filterLogData(request),
     });
-    const {
-      accountIndex,
-      walletId,
-      spendingPassword: passwordString,
-    } = request;
-    const spendingPassword = passwordString
-      ? encryptPassphrase(passwordString)
-      : '';
+    const { accountIndex, walletId, spendingPassword } = request;
     try {
       const address: Address = await createAddress(this.config, {
-        spendingPassword,
+        spendingPassword: spendingPassword || '',
         accountIndex,
         walletId,
       });
@@ -677,18 +664,11 @@ export default class AdaApi {
     Logger.debug('AdaApi::restoreWallet called', {
       parameters: filterLogData(request),
     });
-    const {
-      recoveryPhrase,
-      walletName,
-      spendingPassword: passwordString,
-    } = request;
-    const spendingPassword = passwordString
-      ? encryptPassphrase(passwordString)
-      : '';
+    const { recoveryPhrase, walletName, spendingPassword } = request;
     const walletInitData = {
       mnemonic_sentence: split(recoveryPhrase, ' '),
       name: walletName,
-      passphrase: spendingPassword,
+      passphrase: spendingPassword || '',
     };
     try {
       const wallet: AdaWallet = await restoreWallet(this.config, {
@@ -722,14 +702,11 @@ export default class AdaApi {
     Logger.debug('AdaApi::importWalletFromKey called', {
       parameters: filterLogData(request),
     });
-    const { filePath, spendingPassword: passwordString } = request;
-    const spendingPassword = passwordString
-      ? encryptPassphrase(passwordString)
-      : '';
+    const { filePath, spendingPassword } = request;
     try {
       const importedWallet: AdaWallet = await importWalletAsKey(this.config, {
         filePath,
-        spendingPassword,
+        spendingPassword: spendingPassword || '',
       });
       Logger.debug('AdaApi::importWalletFromKey success', { importedWallet });
       return _createWalletFromServerData(importedWallet);
@@ -748,10 +725,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::importWalletFromFile called', {
       parameters: filterLogData(request),
     });
-    const { filePath, spendingPassword: passwordString } = request;
-    const spendingPassword = passwordString
-      ? encryptPassphrase(passwordString)
-      : '';
+    const { filePath, spendingPassword } = request;
     const isKeyFile =
       filePath
         .split('.')
@@ -759,7 +733,10 @@ export default class AdaApi {
         .toLowerCase() === 'key';
     try {
       const importedWallet: AdaWallet = isKeyFile
-        ? await importWalletAsKey(this.config, { filePath, spendingPassword })
+        ? await importWalletAsKey(this.config, {
+            filePath,
+            spendingPassword: spendingPassword || '',
+          })
         : await importWalletAsJSON(this.config, filePath);
       Logger.debug('AdaApi::importWalletFromFile success', { importedWallet });
       return _createWalletFromServerData(importedWallet);

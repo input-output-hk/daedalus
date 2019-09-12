@@ -41,7 +41,7 @@ Feature: Add Wallet via Sidebar
     And I see the create wallet dialog
     And I submit the create wallet with spending password dialog with the following inputs:
       | walletName | password  | repeatedPassword |
-      | New wallet | Secret123 | Secret123        |
+      | New wallet | Secret1234 | Secret1234      |
     And I see the create wallet privacy dialog
     And I click on "Please make sure nobody looks your screen" checkbox
     And I submit the create wallet privacy dialog

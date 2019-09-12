@@ -38,7 +38,7 @@ Feature: Import Wallet via Sidebar
     And I should see wallet spending password inputs
     And I enter wallet spending password:
       | password  | repeatedPassword |
-      | Secret123 | Secret123        |
+      | Secret1234 | Secret1234      |
     And I click on the import wallet button in import wallet dialog
     Then I should not see the import wallet dialog anymore
     And I should have newly created "Imported Wallet" wallet loaded
