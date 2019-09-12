@@ -78,7 +78,7 @@ export const messages = defineMessages({
   },
   recoveryPhraseValidationButton: {
     id: 'wallet.settings.recoveryPhraseValidationButton',
-    defaultMessage: '!!!Confirm mnemonics.',
+    defaultMessage: '!!!Verify wallet recovery phrase',
     description:
       'Label for the recoveryPhraseValidationButton on wallet settings.',
   },
