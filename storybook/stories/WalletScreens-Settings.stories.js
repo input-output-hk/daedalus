@@ -272,8 +272,8 @@ export default () => {
       }
       walletCreationDate={walletCreationDate}
       mnemonicsConfirmationDate={mnemonicsConfirmationDate}
-      mnemonicsConfirmationStatus={status}
-      mnemonicsConfirmationStatusType={type}
+      mnemonicsConfirmationStatus={status || 'ok'}
+      mnemonicsConfirmationStatusType={type || 'neverChecked'}
     />
   );
 };
