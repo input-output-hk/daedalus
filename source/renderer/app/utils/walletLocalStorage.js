@@ -83,13 +83,3 @@ export const unsetWalletLocalData = (walletId: string): Promise<void> =>
       return reject(error);
     }
   });
-
-export const unsetEtcWalletsData = (): Promise<void> =>
-  new Promise((resolve, reject) => {
-    try {
-      electronStore.delete(storageKeys.WALLETS);
-      return resolve();
-    } catch (error) {
-      return reject(error);
-    }
-  });

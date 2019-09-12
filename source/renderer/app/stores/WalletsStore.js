@@ -17,6 +17,7 @@ import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 import type LocalizableError from '../i18n/LocalizableError';
 import { formattedWalletAmount } from '../utils/formatters';
 import { WalletPaperWalletOpenPdfError } from '../i18n/errors';
+import { unsetWalletLocalData } from '../utils/walletLocalStorage';
 /* eslint-disable consistent-return */
 
 /**
@@ -206,6 +207,7 @@ export default class WalletsStore extends Store {
         this.activeValue = null;
       }
     });
+    unsetWalletLocalData(params.walletId);
     this._resumePolling();
     this.deleteWalletRequest.reset();
     this.refreshWalletsData();
