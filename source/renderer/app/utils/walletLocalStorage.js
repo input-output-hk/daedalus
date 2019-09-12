@@ -15,7 +15,7 @@ const storageKeys = {
 
 export type WalletLocalData = {
   id: string,
-  mnemonicsConfirmationDate: ?Date,
+  mnemonicsConfirmationDate?: ?Date,
 };
 
 export const getWalletLocalData = (
@@ -51,7 +51,6 @@ export const setWalletLocalData = (
 
 export const updateWalletLocalData = (updatedWalletData: {
   id: string,
-  mnemonicsConfirmationDate: Date,
 }): Promise<void> =>
   new Promise(async (resolve, reject) => {
     const walletId = updatedWalletData.id;

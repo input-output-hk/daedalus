@@ -79,7 +79,9 @@ type Props = {
   walletRecoveryPhraseStep2Container: Node,
   walletRecoveryPhraseStep3Container: Node,
   walletRecoveryPhraseStep4Container: Node,
-  mnemonicsConfirmationDate?: Date,
+  mnemonicsConfirmationDate: ?Date,
+  mnemonicsConfirmationStatus: string,
+  mnemonicsConfirmationStatusType: string,
 };
 
 @observer
@@ -127,6 +129,8 @@ export default class WalletSettings extends Component<Props> {
       walletRecoveryPhraseStep3Container,
       walletRecoveryPhraseStep4Container,
       mnemonicsConfirmationDate,
+      mnemonicsConfirmationStatus,
+      mnemonicsConfirmationStatusType,
     } = this.props;
 
     const assuranceLevelOptions = assuranceLevels.map(assurance => ({
@@ -188,6 +192,8 @@ export default class WalletSettings extends Component<Props> {
 
           <WalletRecoveryPhrase
             mnemonicsConfirmationDate={mnemonicsConfirmationDate}
+            mnemonicsConfirmationStatus={mnemonicsConfirmationStatus}
+            mnemonicsConfirmationStatusType={mnemonicsConfirmationStatusType}
             walletCreationDate={walletCreationDate}
             openDialogAction={openDialogAction}
             isDialogOpen={isDialogOpen}

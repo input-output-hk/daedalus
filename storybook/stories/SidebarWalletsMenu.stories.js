@@ -36,6 +36,10 @@ storiesOf('SidebarWalletsMenu', module)
           isRestoreActive: false,
           restoreProgress: 0,
           isLegacy: false,
+          createdAt: new Date(),
+          mnemonicsConfirmationDate: new Date(),
+          mnemonicsConfirmationStatus: 'ok',
+          mnemonicsConfirmationStatusType: 'neverChecked',
         },
         {
           id: '2',
@@ -45,6 +49,10 @@ storiesOf('SidebarWalletsMenu', module)
           isRestoreActive: false,
           restoreProgress: 0,
           isLegacy: false,
+          createdAt: new Date(),
+          mnemonicsConfirmationDate: new Date(),
+          mnemonicsConfirmationStatus: 'ok',
+          mnemonicsConfirmationStatusType: 'neverChecked',
         },
         {
           id: '3',
@@ -54,6 +62,10 @@ storiesOf('SidebarWalletsMenu', module)
           isRestoreActive: false,
           restoreProgress: 0,
           isLegacy: false,
+          createdAt: new Date(),
+          mnemonicsConfirmationDate: new Date(),
+          mnemonicsConfirmationStatus: 'ok',
+          mnemonicsConfirmationStatusType: 'neverChecked',
         },
         {
           id: '4',
@@ -63,6 +75,10 @@ storiesOf('SidebarWalletsMenu', module)
           isRestoreActive: false,
           restoreProgress: 0,
           isLegacy: false,
+          createdAt: new Date(),
+          mnemonicsConfirmationDate: new Date(),
+          mnemonicsConfirmationStatus: 'ok',
+          mnemonicsConfirmationStatusType: 'neverChecked',
         },
       ]}
       isActiveWallet={id => id === '2'}

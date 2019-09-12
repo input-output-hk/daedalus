@@ -73,6 +73,9 @@ export type WalletProps = {
   isDelegated?: boolean,
   delegatedStakePool?: StakePool,
   createdAt: Date,
+  mnemonicsConfirmationDate: ?Date,
+  mnemonicsConfirmationStatus: string,
+  mnemonicsConfirmationStatusType: string,
 };
 
 export default class Wallet {
@@ -109,8 +112,8 @@ export default class Wallet {
   };
 
   getWalletStatus = (mnemonicsConfirmationDate: ?Date) => {
-    const { walletCreationDate } = this;
-    const dateToCheck = mnemonicsConfirmationDate || walletCreationDate;
+    const { createdAt } = this;
+    const dateToCheck = mnemonicsConfirmationDate || createdAt;
     const daysSinceDate = moment().diff(moment(dateToCheck), 'days');
     let status = WalletStatuses.OK;
     if (daysSinceDate > MNEMONICS_CHECKING_NOTIFICATION)

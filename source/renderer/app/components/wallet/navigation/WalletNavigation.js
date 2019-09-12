@@ -54,7 +54,7 @@ type Props = {
   activeItem: string,
   isActiveNavItem: Function,
   onNavItemClick: Function,
-  hasNotification: boolean,
+  hasNotification?: boolean,
 };
 
 @observer

@@ -73,8 +73,9 @@ export default class Wallet extends Component<Props> {
       0
     );
     const hasNotification =
+      wallets.active &&
       wallets.active.mnemonicsConfirmationStatus ===
-      WalletStatuses.NOTIFICATION;
+        WalletStatuses.NOTIFICATION;
 
     return (
       <MainLayout>

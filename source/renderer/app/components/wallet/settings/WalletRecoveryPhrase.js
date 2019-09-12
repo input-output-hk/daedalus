@@ -85,7 +85,6 @@ export const messages = defineMessages({
 });
 
 type Props = {
-  mnemonicsConfirmationDate: Date,
   walletCreationDate: Date,
   openDialogAction: Function,
   isDialogOpen: Function,
@@ -93,6 +92,9 @@ type Props = {
   walletRecoveryPhraseStep2Container: Node,
   walletRecoveryPhraseStep3Container: Node,
   walletRecoveryPhraseStep4Container: Node,
+  mnemonicsConfirmationDate: ?Date,
+  mnemonicsConfirmationStatus: string,
+  mnemonicsConfirmationStatusType: string,
 };
 
 @observer
@@ -135,24 +137,32 @@ export default class WalletRecoveryPhrase extends Component<Props> {
   }
 
   get recoveryPhraseStatus() {
-    const { mnemonicsConfirmationDate, walletCreationDate } = this.props;
-    const dateToCheck = mnemonicsConfirmationDate || walletCreationDate;
-    const daysSinceDate = moment().diff(moment(dateToCheck), 'days');
-    let status = 'ok';
-    if (daysSinceDate > MNEMONICS_CHECKING_NOTIFICATION)
-      status = 'notification';
-    else if (daysSinceDate > MNEMONICS_CHECKING_WARNING) status = 'warning';
-    const type = mnemonicsConfirmationDate ? 'alreadyChecked' : 'neverChecked';
-    const statuses = this.statuses[type];
-    const { icon, message } = statuses[status];
+    const {
+      walletCreationDate,
+      mnemonicsConfirmationDate,
+      mnemonicsConfirmationStatus,
+      mnemonicsConfirmationStatusType,
+    } = this.props;
+
+    const statuses = this.statuses[mnemonicsConfirmationStatusType];
+    const { icon, message } = statuses[mnemonicsConfirmationStatus];
     const timeAgo = moment(mnemonicsConfirmationDate).fromNow();
-    const timeUntilWarning = 'few months, more or less';
-    const timeUntilNotification = 'couple of days, more or less';
+    const fromNowToWarning = moment().add(MNEMONICS_CHECKING_WARNING, 'days');
+    const fromNowToNotification = moment().add(
+      MNEMONICS_CHECKING_NOTIFICATION,
+      'days'
+    );
+    const timeUntilWarning = moment(walletCreationDate).diff(
+      fromNowToWarning,
+      'days'
+    );
+    const timeUntilNotification = moment(walletCreationDate).diff(
+      fromNowToNotification,
+      'days'
+    );
     return {
       icon,
       message,
-      type,
-      status,
       timeAgo,
       timeUntilWarning,
       timeUntilNotification,
@@ -168,11 +178,11 @@ export default class WalletRecoveryPhrase extends Component<Props> {
       walletRecoveryPhraseStep2Container,
       walletRecoveryPhraseStep3Container,
       walletRecoveryPhraseStep4Container,
+      mnemonicsConfirmationStatus,
     } = this.props;
     const {
       icon,
       message,
-      status,
       timeAgo,
       timeUntilWarning,
       timeUntilNotification,
@@ -180,7 +190,7 @@ export default class WalletRecoveryPhrase extends Component<Props> {
 
     const validationStatusStyles = classnames([
       styles.validationStatus,
-      styles[`validationStatus${capitalize(status)}`],
+      styles[`validationStatus${capitalize(mnemonicsConfirmationStatus)}`],
     ]);
 
     return (

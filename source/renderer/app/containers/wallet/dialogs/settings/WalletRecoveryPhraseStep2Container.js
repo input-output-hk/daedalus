@@ -21,10 +21,10 @@ export default class WalletRecoveryPhraseStep2Container extends Component<Props>
   updateWalletLocalData = () => {
     const { wallets } = this.props.stores;
     const activeWallet = wallets.active;
-    activeWallet.updateWalletLocalData();
+    if (activeWallet) activeWallet.updateWalletLocalData();
   };
 
-  handleVerify = successful => {
+  handleVerify = (successful: boolean) => {
     const dialog = successful
       ? WalletRecoveryPhraseStep3Dialog
       : WalletRecoveryPhraseStep4Dialog;
