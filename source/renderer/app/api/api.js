@@ -45,6 +45,7 @@ import { createWallet } from './wallets/requests/createWallet';
 import { restoreWallet } from './wallets/requests/restoreWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
+import { getWalletIdAndBalance } from './wallets/requests/getWalletIdAndBalance';
 
 // utility functions
 import {
@@ -118,6 +119,7 @@ import type {
   AdaWallet,
   AdaWallets,
   WalletUtxos,
+  WalletIdAndBalance,
   CreateWalletRequest,
   DeleteWalletRequest,
   RestoreWalletRequest,
@@ -129,6 +131,8 @@ import type {
   ImportWalletFromFileRequest,
   UpdateWalletRequest,
   GetWalletUtxosRequest,
+  GetWalletIdAndBalanceRequest,
+  GetWalletIdAndBalanceResponse,
 } from './wallets/types';
 
 // Common errors
@@ -869,6 +873,30 @@ export default class AdaApi {
       return response;
     } catch (error) {
       Logger.error('AdaApi::getWalletUtxos error', { error });
+      throw new GenericApiError();
+    }
+  };
+
+  getWalletIdAndBalance = async (
+    request: GetWalletIdAndBalanceRequest
+  ): Promise<WalletIdAndBalance> => {
+    const { recoveryPhrase } = request;
+    Logger.debug('AdaApi::getWalletIdAndBalance called');
+    try {
+      const response: GetWalletIdAndBalanceResponse = await getWalletIdAndBalance(
+        this.config,
+        {
+          recoveryPhrase,
+        }
+      );
+      Logger.debug('AdaApi::getWalletIdAndBalance success', { response });
+      const { walletId, balance } = response;
+      return {
+        walletId,
+        balance: new BigNumber(balance).dividedBy(LOVELACES_PER_ADA),
+      };
+    } catch (error) {
+      Logger.error('AdaApi::getWalletIdAndBalance error', { error });
       throw new GenericApiError();
     }
   };
