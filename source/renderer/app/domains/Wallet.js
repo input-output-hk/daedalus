@@ -73,9 +73,9 @@ export type WalletProps = {
   isDelegated?: boolean,
   delegatedStakePool?: StakePool,
   createdAt: Date,
-  mnemonicsConfirmationDate: ?Date,
-  mnemonicsConfirmationStatus: string,
-  mnemonicsConfirmationStatusType: string,
+  mnemonicsConfirmationDate?: ?Date,
+  mnemonicsConfirmationStatus?: string,
+  mnemonicsConfirmationStatusType?: string,
 };
 
 export default class Wallet {

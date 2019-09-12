@@ -2,7 +2,7 @@
 import BigNumber from 'bignumber.js';
 
 export type AdaWallet = {
-  createdAt: string,
+  createdAt: Date,
   syncState: WalletSyncState,
   balance: number,
   hasSpendingPassword: boolean,

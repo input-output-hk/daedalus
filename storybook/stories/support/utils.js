@@ -3,7 +3,7 @@ import hash from 'hash.js';
 import faker from 'faker';
 import moment from 'moment';
 import BigNumber from 'bignumber.js';
-import {
+import Wallet, {
   WalletStatuses,
   WalletStatusesType,
 } from '../../../source/renderer/app/domains/Wallet';
@@ -12,7 +12,6 @@ import {
   transactionStates,
   transactionTypes,
 } from '../../../source/renderer/app/domains/WalletTransaction';
-import Wallet from '../../../source/renderer/app/domains/Wallet';
 import WalletAddress from '../../../source/renderer/app/domains/WalletAddress';
 import { LOVELACES_PER_ADA } from '../../../source/renderer/app/config/numbersConfig';
 import type {
