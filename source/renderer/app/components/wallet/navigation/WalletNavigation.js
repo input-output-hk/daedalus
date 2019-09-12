@@ -54,6 +54,7 @@ type Props = {
   activeItem: string,
   isActiveNavItem: Function,
   onNavItemClick: Function,
+  hasNotification: boolean,
 };
 
 @observer
@@ -63,7 +64,12 @@ export default class WalletNavigation extends Component<Props> {
   };
 
   render() {
-    const { isActiveNavItem, onNavItemClick, activeItem } = this.props;
+    const {
+      isActiveNavItem,
+      onNavItemClick,
+      activeItem,
+      hasNotification,
+    } = this.props;
     const { intl } = this.context;
     return (
       <Navigation
@@ -96,10 +102,12 @@ export default class WalletNavigation extends Component<Props> {
             id: 'settings',
             label: intl.formatMessage(messages.more),
             icon: settingsIcon,
+            hasNotification,
             options: [
               {
                 label: intl.formatMessage(messages.settings),
                 value: 'settings',
+                hasNotification,
               },
               {
                 label: intl.formatMessage(messages.utxo),

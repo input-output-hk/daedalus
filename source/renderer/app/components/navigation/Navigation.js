@@ -10,12 +10,14 @@ export type NavButtonProps = {
   id: string,
   label: string,
   icon?: string,
+  hasNotification?: boolean,
 };
 
 export type NavDropdownProps = {
   ...$Exact<NavButtonProps>,
   type: 'dropdown',
   options: Array<{ value: number | string, label: string }>,
+  hasNotification: boolean,
 };
 
 type Props = {
@@ -47,7 +49,7 @@ export default class Navigation extends Component<Props> {
     } = this.props;
     return (
       <div className={styles.component}>
-        {items.map(({ id, icon, label, ...item }) =>
+        {items.map(({ id, icon, label, hasNotification, ...item }) =>
           item.type === 'dropdown' ? (
             <NavDropdown
               key={id}
@@ -57,6 +59,7 @@ export default class Navigation extends Component<Props> {
               onChange={i => onNavItemClick(i)}
               activeItem={activeItem}
               options={item.options}
+              hasNotification={hasNotification}
             />
           ) : (
             <NavButton
@@ -66,6 +69,7 @@ export default class Navigation extends Component<Props> {
               icon={icon}
               isActive={isActiveNavItem(id, item)}
               onClick={() => onNavItemClick(id)}
+              hasNotification={hasNotification}
             />
           )
         )}
