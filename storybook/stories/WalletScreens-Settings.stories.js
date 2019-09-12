@@ -3,6 +3,7 @@ import React from 'react';
 import { text, boolean, number, select } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import moment from 'moment';
+import wordlist from 'bip39/wordlists/english';
 
 // Screens
 import WalletSettings from '../../source/renderer/app/components/wallet/settings/WalletSettings';
@@ -253,6 +254,9 @@ export default () => {
       }
       walletRecoveryPhraseStep2Container={
         <WalletRecoveryPhraseStep2Dialog
+          suggestedMnemonics={wordlist}
+          mnemonicValidator={() => {}}
+          isVerifying={false}
           onClose={action('onClose')}
           onVerify={action('onVerify')}
         />

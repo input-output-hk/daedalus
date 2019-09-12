@@ -11,7 +11,6 @@ import Dialog from '../../widgets/Dialog';
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
 import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import globalMessages from '../../../i18n/global-messages';
-// import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 
 export const messages = defineMessages({
   recoveryPhraseStep2Title: {
@@ -37,24 +36,30 @@ export const messages = defineMessages({
     defaultMessage: '!!!Verify',
     description: 'Label for the recoveryPhraseStep2Button on wallet settings.',
   },
-  // Autocomplete labels
   recoveryPhraseInputHint: {
-    id: 'wallet.settings.dialog.recovery.phrase.input.hint',
+    id: 'wallet.settings.recoveryPhraseInputHint',
     defaultMessage: '!!!Enter recovery phrase',
     description:
       'Hint "Enter recovery phrase" for the recovery phrase input on the wallet restore dialog.',
   },
   recoveryPhraseNoResults: {
-    id: 'wallet.settings.dialog.recovery.phrase.input.noResults',
+    id: 'wallet.settings.recoveryPhraseInputNoResults',
     defaultMessage: '!!!No results',
     description:
       '"No results" message for the recovery phrase input search results.',
+  },
+  invalidRecoveryPhrase: {
+    id: 'wallet.settings.invalidRecoveryPhrase',
+    defaultMessage: '!!!Invalid recovery phrase',
+    description:
+      'Error message shown when invalid recovery phrase was entered.',
   },
 });
 
 type Props = {
   mnemonicValidator: Function,
   suggestedMnemonics: Array<string>,
+  isVerifying: boolean,
   onVerify: Function,
   onClose: Function,
 };
@@ -77,10 +82,8 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
             const value = join(enteredWords, ' ');
 
             // Check if recovery phrase contains 12 words
-            const isPhraseComplete = wordCount === WALLET_RECOVERY_PHRASE_WORD_COUNT;
-            const isValid = this.props.mnemonicValidator(value);
-
-            console.debug('TEST: ', {wordCount, WALLET_RECOVERY_PHRASE_WORD_COUNT, isPhraseComplete, isValid});
+            const isPhraseComplete =
+              wordCount === WALLET_RECOVERY_PHRASE_WORD_COUNT;
             if (!isPhraseComplete) {
               return [
                 false,
@@ -107,17 +110,21 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { onClose, onVerify, suggestedMnemonics, isVeryfying } = this.props;
+    const { onClose, onVerify, suggestedMnemonics, isVerifying } = this.props;
 
     const recoveryPhraseField = form.$('recoveryPhrase');
+    const canSubmit =
+      !recoveryPhraseField.error &&
+      !isVerifying &&
+      recoveryPhraseField.value.length === WALLET_RECOVERY_PHRASE_WORD_COUNT;
     const actions = [
       {
-        className: isVeryfying ? styles.isVeryfying : null,
+        className: isVerifying ? styles.isVerifying : null,
         label: intl.formatMessage(messages.recoveryPhraseStep2Button),
         primary: true,
-        onClick: () => onVerify(true),
-        disabled: isVeryfying,
-      }
+        onClick: () => onVerify(recoveryPhraseField.value),
+        disabled: !canSubmit,
+      },
     ];
 
     return (

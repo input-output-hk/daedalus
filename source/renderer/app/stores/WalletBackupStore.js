@@ -1,5 +1,5 @@
 // @flow
-import { observable, action, computed } from 'mobx';
+import { observable, action, computed, runInAction } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import WalletBackupDialog from '../components/wallet/WalletBackupDialog';
@@ -134,7 +134,10 @@ export default class WalletBackupStore extends Store {
     }: WalletIdAndBalance = await this.getWalletIdAndBalanceRequest.execute(
       params
     ).promise;
-    this.isRecoveryPhraseMatching = walletId === activeWallet.id;
+
+    runInAction('AdaWalletBackupStore::_checkRecoveryPhrase', () => {
+      this.isRecoveryPhraseMatching = walletId === activeWallet.id;
+    });
   };
 
   @action _resetRecoveryPhraseCheck = () => {

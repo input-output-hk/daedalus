@@ -9,9 +9,16 @@ import type { InjectedDialogContainerProps } from '../../../../types/injectedPro
 
 type Props = InjectedDialogContainerProps;
 
+type State = {
+  isVerifying: boolean,
+};
+
 @inject('stores', 'actions')
 @observer
-export default class WalletRecoveryPhraseStep2Container extends Component<Props> {
+export default class WalletRecoveryPhraseStep2Container extends Component<
+  Props,
+  State
+> {
   static defaultProps = {
     actions: null,
     stores: null,
@@ -19,31 +26,52 @@ export default class WalletRecoveryPhraseStep2Container extends Component<Props>
     onClose: () => {},
   };
 
-  updateWalletLocalData = () => {
-    const { wallets } = this.props.stores;
-    const activeWallet = wallets.active;
-    if (activeWallet) activeWallet.updateWalletLocalData();
+  state = {
+    isVerifying: false,
   };
 
-  handleVerify = (successful: boolean) => {
-    const dialog = successful
-      ? WalletRecoveryPhraseStep3Dialog
-      : WalletRecoveryPhraseStep4Dialog;
-    if (successful) this.updateWalletLocalData();
-    this.props.actions.dialogs.open.trigger({
-      dialog,
+  componentWillReceiveProps(nextProps: Props) {
+    const { walletBackup, wallets } = nextProps.stores;
+    const { actions } = this.props;
+    const {
+      isRecoveryPhraseMatching: nextRecoveryPhraseMatching,
+      getWalletIdAndBalanceRequest: getWalletIdAndBalanceRequestNext,
+    } = walletBackup;
+
+    let dialog;
+    if (getWalletIdAndBalanceRequestNext.wasExecuted) {
+      if (nextRecoveryPhraseMatching) {
+        dialog = WalletRecoveryPhraseStep3Dialog;
+        const activeWallet = wallets.active;
+        if (activeWallet) activeWallet.updateWalletLocalData();
+      } else {
+        dialog = WalletRecoveryPhraseStep4Dialog;
+      }
+      this.setState({ isVerifying: false });
+      actions.dialogs.open.trigger({
+        dialog,
+      });
+      actions.walletBackup.resetRecoveryPhraseCheck.trigger();
+    }
+  }
+
+  handleVerify = (recoveryPhrase: Array<string>) => {
+    this.setState({ isVerifying: true });
+    this.props.actions.walletBackup.checkRecoveryPhrase.trigger({
+      recoveryPhrase,
     });
   };
 
   render() {
-    const { wallets } = this.props.stores;
-    const { isValidMnemonic } = wallets;
+    const { isVerifying } = this.state;
+    const { isValidMnemonic } = this.props.stores.wallets;
     const { closeActiveDialog } = this.props.actions.dialogs;
+
     return (
       <WalletRecoveryPhraseStep2Dialog
         mnemonicValidator={mnemonic => isValidMnemonic(mnemonic)}
         suggestedMnemonics={validWords}
-        isVeryfying={false}
+        isVerifying={isVerifying}
         onVerify={this.handleVerify}
         onClose={closeActiveDialog.trigger}
       />

@@ -29,7 +29,7 @@
 }
 
 button {
-  &.isVeryfying {
+  &.isVerifying {
     box-shadow: none !important;
     @include loading-spinner('../../../assets/images/spinner-light.svg');
   }
