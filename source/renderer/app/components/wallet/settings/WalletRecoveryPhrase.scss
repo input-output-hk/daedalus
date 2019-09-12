@@ -21,6 +21,8 @@
     border-radius: 4px;
     display: flex;
     font-style: italic;
+    justify-content: space-between;
+    margin-bottom: 20px;
     padding: 10px;
   }
   .validationStatusIcon {
@@ -30,9 +32,8 @@
       width: 28px;
     }
   }
-  .validationStatusMessage {
-    background: pink;
-    color: #5e6066;
+  span:nth-child(2) {
+    flex: 1;
   }
   .validationStatusButton {
     border-radius: 5px;
