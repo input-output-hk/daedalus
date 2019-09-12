@@ -2,6 +2,11 @@
 import { pick } from 'lodash';
 import { observable, computed, action, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
+import moment from 'moment';
+import {
+  MNEMONICS_CHECKING_NOTIFICATION,
+  MNEMONICS_CHECKING_WARNING,
+} from '../config/walletsConfig';
 import {
   getWalletLocalData,
   updateWalletLocalData,
@@ -44,6 +49,17 @@ const WalletAssuranceModes: {
   },
 };
 
+export const WalletStatuses = {
+  OK: 'ok',
+  WARNING: 'warning',
+  NOTIFICATION: 'notification',
+};
+
+export const WalletStatusesType = {
+  NEVER_CHECKED: 'neverChecked',
+  ALREADY_CHECKED: 'alreadyChecked',
+};
+
 export type WalletProps = {
   id: string,
   name: string,
@@ -73,6 +89,8 @@ export default class Wallet {
   @observable delegatedStakePool: ?StakePool;
   @observable createdAt: Date;
   @observable mnemonicsConfirmationDate: ?Date;
+  @observable mnemonicsConfirmationStatus: string;
+  @observable mnemonicsConfirmationStatusType: string;
 
   constructor(data: WalletProps) {
     Object.assign(this, data);
@@ -82,15 +100,35 @@ export default class Wallet {
   getWalletLocalData = async () => {
     const { id } = this;
     const { mnemonicsConfirmationDate } = await getWalletLocalData(id);
+    const { status, type } = this.getWalletStatus(mnemonicsConfirmationDate);
     runInAction('set mnemonicsConfirmationDate', () => {
       this.mnemonicsConfirmationDate = mnemonicsConfirmationDate;
+      this.mnemonicsConfirmationStatus = status;
+      this.mnemonicsConfirmationStatusType = type;
     });
+  };
+
+  getWalletStatus = (mnemonicsConfirmationDate: ?Date) => {
+    const { walletCreationDate } = this;
+    const dateToCheck = mnemonicsConfirmationDate || walletCreationDate;
+    const daysSinceDate = moment().diff(moment(dateToCheck), 'days');
+    let status = WalletStatuses.OK;
+    if (daysSinceDate > MNEMONICS_CHECKING_NOTIFICATION)
+      status = WalletStatuses.NOTIFICATION;
+    else if (daysSinceDate > MNEMONICS_CHECKING_WARNING)
+      status = WalletStatuses.WARNING;
+    const type = mnemonicsConfirmationDate
+      ? WalletStatusesType.ALREADY_CHECKED
+      : WalletStatusesType.NEVER_CHECKED;
+    return { status, type };
   };
 
   @action updateWalletLocalData = async () => {
     const { id } = this;
     const mnemonicsConfirmationDate = new Date();
     this.mnemonicsConfirmationDate = mnemonicsConfirmationDate;
+    this.mnemonicsConfirmationStatus = WalletStatuses.OK;
+    this.mnemonicsConfirmationStatusType = WalletStatusesType.ALREADY_CHECKED;
     await updateWalletLocalData({
       id,
       mnemonicsConfirmationDate,

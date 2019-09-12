@@ -37,6 +37,10 @@ export default class SidebarStore extends Store {
         get(w, 'syncState.tag') === WalletSyncStateTags.RESTORING,
       restoreProgress: get(w, 'syncState.data.percentage.quantity', 0),
       isLegacy: w.isLegacy,
+      mnemonicsConfirmationDate: w.mnemonicsConfirmationDate,
+      mnemonicsConfirmationStatus: w.mnemonicsConfirmationStatus,
+      mnemonicsConfirmationStatusType: w.mnemonicsConfirmationStatusType,
+      blah: true,
     }));
   }
 
