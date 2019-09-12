@@ -4,7 +4,7 @@ import { observer, inject } from 'mobx-react';
 import WalletSettings from '../../components/wallet/settings/WalletSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { isValidWalletName } from '../../utils/validations';
-import { getWalletLocalData } from '../../utils/walletLocalStorage.js';
+// import { getWalletLocalData } from '../../utils/walletLocalStorage.js';
 import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
 import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
 import ExportWalletToFileDialogContainer from './dialogs/settings/ExportWalletToFileDialogContainer';
@@ -15,46 +15,23 @@ import WalletRecoveryPhraseStep4Container from './dialogs/settings/WalletRecover
 
 type Props = InjectedProps;
 
-type State = {
-  mnemonicsConfirmationDate?: Date,
-};
-
 @inject('stores', 'actions')
 @observer
-export default class WalletSettingsPage extends Component<Props, State> {
+export default class WalletSettingsPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
-  state = {
-    mnemonicsConfirmationDate: null,
-  };
-
-  componentDidMount() {
-    this.getWalletLocalData();
-  }
-
-  getWalletLocalData = async () => {
-    const { id } = this.activeWallet;
-    const { mnemonicsConfirmationDate } = await getWalletLocalData(id);
-    this.setState({ mnemonicsConfirmationDate });
-  };
-
-  get activeWallet() {
-    const { active: activeWallet } = this.props.stores.wallets;
+  render() {
+    const { uiDialogs, walletSettings, app, wallets } = this.props.stores;
+    const activeWallet = wallets.active;
 
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSettingsPage.');
 
-    return activeWallet;
-  }
-
-  render() {
-    const { uiDialogs, walletSettings, app } = this.props.stores;
     const { actions } = this.props;
     const {
       environment: { isProduction },
     } = app;
-    const { activeWallet } = this;
     const {
       WALLET_ASSURANCE_LEVEL_OPTIONS,
       updateWalletRequest,
@@ -67,7 +44,6 @@ export default class WalletSettingsPage extends Component<Props, State> {
       cancelEditingWalletField,
       updateWalletField,
     } = actions.walletSettings;
-    const { mnemonicsConfirmationDate } = this.state;
 
     return (
       <WalletSettings
@@ -77,7 +53,7 @@ export default class WalletSettingsPage extends Component<Props, State> {
         openDialogAction={actions.dialogs.open.trigger}
         isSpendingPasswordSet={activeWallet.hasPassword}
         spendingPasswordUpdateDate={activeWallet.passwordUpdateDate}
-        mnemonicsConfirmationDate={mnemonicsConfirmationDate}
+        mnemonicsConfirmationDate={activeWallet.mnemonicsConfirmationDate}
         isDialogOpen={uiDialogs.isOpen}
         walletId={activeWallet.id}
         walletName={activeWallet.name}

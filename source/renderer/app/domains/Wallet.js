@@ -1,7 +1,8 @@
 // @flow
 import { pick } from 'lodash';
-import { observable, computed, action } from 'mobx';
+import { observable, computed, action, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
+import { getWalletLocalData } from '../utils/walletLocalStorage';
 import type {
   WalletAssuranceLevel,
   WalletAssuranceMode,
@@ -68,10 +69,20 @@ export default class Wallet {
   @observable isDelegated: ?boolean;
   @observable delegatedStakePool: ?StakePool;
   @observable createdAt: Date;
+  @observable mnemonicsConfirmationDate: ?Date;
 
   constructor(data: WalletProps) {
     Object.assign(this, data);
+    this.getWalletLocalData();
   }
+
+  getWalletLocalData = async () => {
+    const { id } = this;
+    const { mnemonicsConfirmationDate } = await getWalletLocalData(id);
+    runInAction('set mnemonicsConfirmationDate', () => {
+      this.mnemonicsConfirmationDate = mnemonicsConfirmationDate;
+    });
+  };
 
   @action update(other: Wallet) {
     Object.assign(
