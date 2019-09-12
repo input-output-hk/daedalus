@@ -17,6 +17,7 @@
     "test:e2e:watch": "gulp test:e2e:watch",
     "cucumber": "cross-env NODE_ENV=test cucumber-js --require-module @babel/register -f node_modules/cucumber-pretty --format-options '{\"snippetInterface\": \"async-await\"}'",
     "debug": "gulp debug",
+    "eyes-storybook": "APPLITOOLS_STORYBOOK_PORT=6006",
     "package": "gulp build && cross-env NODE_ENV=production node -r @babel/register -r @babel/polyfill scripts/package.js",
     "package:all": "yarn package --all",
     "cleanup": "mop -v",
@@ -135,6 +136,7 @@
     "yamljs": "0.3.0"
   },
   "dependencies": {
+    "@applitools/eyes-storybook": "^2.7.36",
     "aes-js": "3.1.0",
     "bignumber.js": "5.0.0",
     "bip39": "2.3.0",
