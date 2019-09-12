@@ -291,7 +291,8 @@
       padding-top: 0;
     }
 
-    &.realTimeStatusBtn {
+    &.realTimeStatusBtn,
+    &.unknownDiskSpaceBtn {
       @include link(--theme-network-window-white-color);
       background: transparent !important;
       border-bottom: none;
