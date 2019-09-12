@@ -1,12 +1,22 @@
 // @flow
 
-const { electronStore, environment } = global;
+const { environment } = global;
+let { electronStore } = global;
 const { network } = environment;
 
 const networkForLocalStorage = String(network);
 const storageKeys = {
   WALLETS: `${networkForLocalStorage}-WALLETS`,
 };
+
+// TODO: Find a better way to handle situation where ElectronStore is not available
+if (!electronStore) {
+  electronStore = {
+    get: localStorage.getItem.bind(localStorage),
+    set: localStorage.setItem.bind(localStorage),
+    delete: localStorage.removeItem.bind(localStorage),
+  };
+}
 
 /**
  * This api layer provides access to the electron local storage
