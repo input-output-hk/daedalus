@@ -178,7 +178,6 @@ export default class WalletSendForm extends Component<Props, State> {
           validators: [
             async ({ field, form }) => {
               const { value } = field;
-
               if (value === '') {
                 this._resetTransactionFee();
                 return [
@@ -190,11 +189,10 @@ export default class WalletSendForm extends Component<Props, State> {
               const amountValue = amountField.value;
               const isAmountValid = amountField.isValid;
               const isValidAddress = await this.props.addressValidator(value);
-
               if (isValidAddress && isAmountValid) {
-                this._resetTransactionFee();
-              } else {
                 await this._calculateTransactionFee(value, amountValue);
+              } else {
+                this._resetTransactionFee();
               }
               return [
                 isValidAddress,
@@ -378,10 +376,6 @@ export default class WalletSendForm extends Component<Props, State> {
         });
       }
     } catch (error) {
-      // @API TODO - address is not correct on fee check
-      if (error.message === 'NotValidAddress') {
-        return;
-      }
       const errorHasLink = !!error.values.linkLabel;
       const transactionFeeError = errorHasLink ? (
         <FormattedHTMLMessageWithLink

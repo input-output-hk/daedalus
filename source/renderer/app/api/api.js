@@ -230,151 +230,146 @@ export default class AdaApi {
     });
     Logger.debug('AdaApi::searchHistory called', { parameters: requestStats });
 
-    /*
-    const {
-      walletId,
-      skip,
-      limit,
-      isFirstLoad, // during first load we fetch all wallet's transactions
-      isRestoreActive, // during restoration we fetch only missing transactions
-      isRestoreCompleted, // once restoration is done we fetch potentially missing transactions
-      cachedTransactions,
-    } , unionBy= request;
-    */
     // NOTE: Not yet available in the API
     return new Promise(resolve => resolve({ transactions: [], total: 0 }));
 
-    /* TODO: Uncomment once API available
-
-    const accounts: Accounts = await getAccounts(this.config, { walletId });
-
-    if (!accounts.length || !accounts[0].index) {
-      return new Promise(resolve => resolve({ transactions: [], total: 0 }));
-    }
-
-    let perPage = limit;
-    const shouldLoadAll = limit === null;
-    if (shouldLoadAll || limit > MAX_TRANSACTIONS_PER_PAGE) {
-      perPage = MAX_TRANSACTIONS_PER_PAGE;
-    }
-
-    const params = {
-      wallet_id: walletId,
-      account_index: accounts[0].index,
-      page: skip === 0 ? 1 : skip + 1,
-      per_page: perPage,
-      sort_by: 'DES[created_at]',
-      created_at: `LTE[${moment.utc().format('YYYY-MM-DDTHH:mm:ss')}]`,
-      // ^^ By setting created_at filter to current time we make sure
-      // all subsequent multi-pages requests load the same set of transactions
-    };
-
-    const shouldLoadOnlyFresh =
-      !isFirstLoad && !isRestoreActive && !isRestoreCompleted;
-    if (shouldLoadOnlyFresh) {
-      const tenMinutesAgo = moment
-        .utc(Date.now() - TX_AGE_POLLING_THRESHOLD)
-        .format('YYYY-MM-DDTHH:mm:ss');
-      // Since we load all transactions in a first load, later on we only care about fresh ones
-      Object.assign(params, { created_at: `GTE[${tenMinutesAgo}]` });
-    }
-
-    const pagesToBeLoaded = Math.ceil(limit / params.per_page);
-
-    try {
-      // Load first page of transactions
-      const response: Transactions = await getTransactionHistory(
-        this.config,
-        params
-      );
-      const { meta, data: txHistory } = response;
-      const { totalPages, totalEntries: totalTransactions } = meta.pagination;
-
-      let transactions = txHistory.map(tx =>
-        _createTransactionFromServerData(tx)
-      );
-
-      // Load additional pages of transactions
-      const hasMultiplePages =
-        totalPages > 1 && (shouldLoadAll || limit > perPage);
-      if (hasMultiplePages) {
-        let page = 2;
-        const hasNextPage = () => {
-          const hasMorePages = page < totalPages + 1;
-          if ((isRestoreActive || isRestoreCompleted) && hasMorePages) {
-            const loadedTransactions = unionBy(
-              transactions,
-              cachedTransactions,
-              'id'
-            );
-            const hasMoreTransactions =
-              totalTransactions - loadedTransactions.length > 0;
-            return hasMoreTransactions;
-          }
-          return hasMorePages;
-        };
-        const shouldLoadNextPage = () =>
-          shouldLoadAll || page <= pagesToBeLoaded;
-
-        if (isRestoreActive || isRestoreCompleted) {
-          const latestLoadedTransactionDate = transactions[0].date;
-          const latestLoadedTransactionDateString = moment
-            .utc(latestLoadedTransactionDate)
-            .format('YYYY-MM-DDTHH:mm:ss');
-          // During restoration we need to fetch only transactions older than the latest loaded one
-          // as this ensures that both totalPages and totalEntries remain unchanged throught out
-          // subsequent page loads (as in the meantime new transactions can be discovered)
-          Object.assign(params, {
-            created_at: `LTE[${latestLoadedTransactionDateString}]`,
-          });
-        }
-
-        for (page; hasNextPage() && shouldLoadNextPage(); page++) {
-          const { data: pageHistory } = await getTransactionHistory(
-            this.config,
-            Object.assign(params, { page })
-          );
-          transactions.push(
-            ...pageHistory.map(tx => _createTransactionFromServerData(tx))
-          );
-        }
-      }
-
-      // Merge newly loaded and previously loaded transactions
-      // - unionBy also serves the purpose of removing transaction duplicates
-      //   which may occur as a side-effect of transaction request pagination
-      //   as multi-page requests are not executed at the exact same time!
-      transactions = unionBy(transactions, cachedTransactions, 'id');
-
-      // Enforce the limit in case we are not loading all transactions
-      if (!shouldLoadAll) transactions.splice(limit);
-
-      const total = transactions.length;
-
-      const responseStats = {
-        apiRequested: limit || 'all',
-        apiFiltered: shouldLoadOnlyFresh ? 'fresh' : '',
-        apiReturned: totalTransactions,
-        apiPagesTotal: totalPages,
-        apiPagesRequested: params.page,
-        daedalusCached: cachedTransactions.length,
-        daedalusLoaded: total - cachedTransactions.length,
-        daedalusTotal: total,
-        requestDurationInMs: moment
-          .duration(moment().diff(requestTimestamp))
-          .as('milliseconds'),
-      };
-      Logger.debug(
-        `AdaApi::searchHistory success: ${total} transactions loaded`,
-        { responseStats }
-      );
-      return new Promise(resolve => resolve({ transactions, total }));
-    } catch (error) {
-      Logger.error('AdaApi::searchHistory error', { error });
-      throw new GenericApiError();
-    }
-
-    */
+    // TODO: Uncomment once API available
+    // const {
+    //   walletId,
+    //   skip,
+    //   limit,
+    //   isFirstLoad, // during first load we fetch all wallet's transactions
+    //   isRestoreActive, // during restoration we fetch only missing transactions
+    //   isRestoreCompleted, // once restoration is done we fetch potentially missing transactions
+    //   cachedTransactions,
+    // } = request;
+    // const accounts: Accounts = await getAccounts(this.config, { walletId });
+    //
+    // if (!accounts.length || !accounts[0].index) {
+    //   return new Promise(resolve => resolve({ transactions: [], total: 0 }));
+    // }
+    //
+    // let perPage = limit;
+    // const shouldLoadAll = limit === null;
+    // if (shouldLoadAll || limit > MAX_TRANSACTIONS_PER_PAGE) {
+    //   perPage = MAX_TRANSACTIONS_PER_PAGE;
+    // }
+    //
+    // const params = {
+    //   wallet_id: walletId,
+    //   account_index: accounts[0].index,
+    //   page: skip === 0 ? 1 : skip + 1,
+    //   per_page: perPage,
+    //   sort_by: 'DES[created_at]',
+    //   created_at: `LTE[${moment.utc().format('YYYY-MM-DDTHH:mm:ss')}]`,
+    //   // ^^ By setting created_at filter to current time we make sure
+    //   // all subsequent multi-pages requests load the same set of transactions
+    // };
+    //
+    // const shouldLoadOnlyFresh =
+    //   !isFirstLoad && !isRestoreActive && !isRestoreCompleted;
+    // if (shouldLoadOnlyFresh) {
+    //   const tenMinutesAgo = moment
+    //     .utc(Date.now() - TX_AGE_POLLING_THRESHOLD)
+    //     .format('YYYY-MM-DDTHH:mm:ss');
+    //   // Since we load all transactions in a first load, later on we only care about fresh ones
+    //   Object.assign(params, { created_at: `GTE[${tenMinutesAgo}]` });
+    // }
+    //
+    // const pagesToBeLoaded = Math.ceil(limit / params.per_page);
+    //
+    // try {
+    //   // Load first page of transactions
+    //   const response: Transactions = await getTransactionHistory(
+    //     this.config,
+    //     params
+    //   );
+    //   const { meta, data: txHistory } = response;
+    //   const { totalPages, totalEntries: totalTransactions } = meta.pagination;
+    //
+    //   let transactions = txHistory.map(tx =>
+    //     _createTransactionFromServerData(tx)
+    //   );
+    //
+    //   // Load additional pages of transactions
+    //   const hasMultiplePages =
+    //     totalPages > 1 && (shouldLoadAll || limit > perPage);
+    //   if (hasMultiplePages) {
+    //     let page = 2;
+    //     const hasNextPage = () => {
+    //       const hasMorePages = page < totalPages + 1;
+    //       if ((isRestoreActive || isRestoreCompleted) && hasMorePages) {
+    //         const loadedTransactions = unionBy(
+    //           transactions,
+    //           cachedTransactions,
+    //           'id'
+    //         );
+    //         const hasMoreTransactions =
+    //           totalTransactions - loadedTransactions.length > 0;
+    //         return hasMoreTransactions;
+    //       }
+    //       return hasMorePages;
+    //     };
+    //     const shouldLoadNextPage = () =>
+    //       shouldLoadAll || page <= pagesToBeLoaded;
+    //
+    //     if (isRestoreActive || isRestoreCompleted) {
+    //       const latestLoadedTransactionDate = transactions[0].date;
+    //       const latestLoadedTransactionDateString = moment
+    //         .utc(latestLoadedTransactionDate)
+    //         .format('YYYY-MM-DDTHH:mm:ss');
+    //       // During restoration we need to fetch only transactions older than the latest loaded one
+    //       // as this ensures that both totalPages and totalEntries remain unchanged throught out
+    //       // subsequent page loads (as in the meantime new transactions can be discovered)
+    //       Object.assign(params, {
+    //         created_at: `LTE[${latestLoadedTransactionDateString}]`,
+    //       });
+    //     }
+    //
+    //     for (page; hasNextPage() && shouldLoadNextPage(); page++) {
+    //       const { data: pageHistory } = await getTransactionHistory(
+    //         this.config,
+    //         Object.assign(params, { page })
+    //       );
+    //       transactions.push(
+    //         ...pageHistory.map(tx => _createTransactionFromServerData(tx))
+    //       );
+    //     }
+    //   }
+    //
+    //   // Merge newly loaded and previously loaded transactions
+    //   // - unionBy also serves the purpose of removing transaction duplicates
+    //   //   which may occur as a side-effect of transaction request pagination
+    //   //   as multi-page requests are not executed at the exact same time!
+    //   transactions = unionBy(transactions, cachedTransactions, 'id');
+    //
+    //   // Enforce the limit in case we are not loading all transactions
+    //   if (!shouldLoadAll) transactions.splice(limit);
+    //
+    //   const total = transactions.length;
+    //
+    //   const responseStats = {
+    //     apiRequested: limit || 'all',
+    //     apiFiltered: shouldLoadOnlyFresh ? 'fresh' : '',
+    //     apiReturned: totalTransactions,
+    //     apiPagesTotal: totalPages,
+    //     apiPagesRequested: params.page,
+    //     daedalusCached: cachedTransactions.length,
+    //     daedalusLoaded: total - cachedTransactions.length,
+    //     daedalusTotal: total,
+    //     requestDurationInMs: moment
+    //       .duration(moment().diff(requestTimestamp))
+    //       .as('milliseconds'),
+    //   };
+    //   Logger.debug(
+    //     `AdaApi::searchHistory success: ${total} transactions loaded`,
+    //     { responseStats }
+    //   );
+    //   return new Promise(resolve => resolve({ transactions, total }));
+    // } catch (error) {
+    //   Logger.error('AdaApi::searchHistory error', { error });
+    //   throw new GenericApiError();
+    // }
   };
 
   createWallet = async (request: CreateWalletRequest): Promise<Wallet> => {
@@ -420,17 +415,10 @@ export default class AdaApi {
     Logger.debug('AdaApi::createTransaction called', {
       parameters: filterLogData(request),
     });
-    const {
-      // accountIndex,
-      walletId,
-      address,
-      amount,
-      spendingPassword,
-    } = request;
+    const { walletId, address, amount, spendingPassword } = request;
     try {
       const data = {
         source: {
-          // accountIndex,
           walletId,
         },
         destinations: [
@@ -580,15 +568,19 @@ export default class AdaApi {
     Logger.debug('AdaApi::isValidAdaAddress called', {
       parameters: { address },
     });
-    /* try {
-      const response: Address = await getAddress(this.config, { address });
-      Logger.debug('AdaApi::isValidAdaAddress success', { response });
-      return true;
-    } catch (error) {
-      Logger.error('AdaApi::isValidAdaAddress error', { error });
-      return false;
-    } */
-    return true;
+
+    // NOTE: Not yet available in the API
+    return new Promise(resolve => resolve(true));
+
+    // TODO: Uncomment once API available
+    // try {
+    //   const response: Address = await getAddress(this.config, { address });
+    //   Logger.debug('AdaApi::isValidAdaAddress success', { response });
+    //   return true;
+    // } catch (error) {
+    //   Logger.error('AdaApi::isValidAdaAddress error', { error });
+    //   return false;
+    // }
   }
 
   isValidMnemonic = (mnemonic: string): boolean =>

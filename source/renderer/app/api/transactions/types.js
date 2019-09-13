@@ -29,10 +29,6 @@ export type PaymentDistribution = {
 
 export type TransactionState = 'pending' | 'failed' | 'ok';
 
-/* export type TransactionFee = ResponseBase & {
-  estimatedAmount: number,
-}; */
-
 export type TrasactionAddresses = { from: Array<string>, to: Array<string> };
 export type TransactionType = 'card' | 'expend' | 'income' | 'exchange';
 
