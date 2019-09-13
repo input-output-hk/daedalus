@@ -3,7 +3,7 @@
 
 .dialog {
   p {
-    color: #5e6066;
+    color: var(--theme-bordered-box-text-color);
     font-family: var(--font-light);
     line-height: 1.38;
     &:first-child {
@@ -21,7 +21,7 @@
 }
 
 .subtitle {
-  color: #5e6066;
+  color: var(--theme-bordered-box-text-color);
   font-family: var(--font-regular);
   font-size: 16px;
   font-weight: 500;
@@ -52,8 +52,8 @@ button {
 }
 
 .supportPortalLink {
-  border-bottom: 1px solid #5e6066 !important;
-  color: #5e6066;
+  border-bottom: 1px solid var(--theme-bordered-box-text-color) !important;
+  color: var(--theme-bordered-box-text-color);
   cursor: pointer;
   font-family: var(--font-regular);
   font-size: 14px;
@@ -62,7 +62,7 @@ button {
 }
 
 .externalLinkIcon {
-  @include link(#5e6066);
+  @include link(--theme-bordered-box-text-color);
   padding-left: 2px;
   vertical-align: baseline;
   width: 15px;

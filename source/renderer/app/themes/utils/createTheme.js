@@ -809,6 +809,12 @@ export const createDaedalusComponentsTheme = (
       '--theme-receive-qr-code-background-color': 'transparent',
       '--theme-receive-qr-code-foreground-color': '#000',
     },
+    recoveryPhrase: {
+      '--theme-recovery-phrase-normal-background-color':
+        'rgba(32, 34, 37, 0.05)',
+      '--theme-recovery-phrase-attention-background-color':
+        'rgba(234, 76, 91, .1)',
+    },
     reportIssue: {
       '--theme-report-issue-button-background-color': `${
         background.secondary.regular

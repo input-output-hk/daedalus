@@ -268,6 +268,7 @@ export default () => {
         <WalletRecoveryPhraseStep4Dialog
           onClose={action('onClose')}
           onVerifyAgain={action('onVerifyAgain')}
+          openExternalLink={action('openExternalLink')}
         />
       }
       walletCreationDate={walletCreationDate}

@@ -755,6 +755,11 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-utxo-tooltip-text-color': '#fafbfc',
   },
+  recoveryPhrase: {
+    '--theme-recovery-phrase-normal-background-color': 'rgba(83, 99, 112, .3)',
+    '--theme-recovery-phrase-attention-background-color':
+      'rgba(234, 76, 91, .2)',
+  },
 };
 
 const DARK_BLUE_THEME_PARAMS: CreateThemeParams = {

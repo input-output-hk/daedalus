@@ -1,5 +1,5 @@
 .component {
-  color: #5e6066;
+  color: var(--theme-bordered-box-text-color);
   font-family: var(--font-light);
   line-height: 1.38;
   margin-bottom: 14px;
@@ -36,34 +36,20 @@
     flex: 1;
   }
   .validationStatusButton {
-    border-radius: 5px;
-    color: #fafbfc;
-    cursor: pointer;
-    display: block;
-    font-size: 14px;
-    font-weight: 500;
     height: 36px;
     line-height: 1.36;
     margin-left: 25px;
     padding: 0 27px;
     white-space: nowrap;
+    width: auto;
   }
   .validationStatusOk {
-    background: rgba(0, 128, 0, 0.1);
-    .validationStatusButton {
-      background-color: green;
-    }
+    background-color: var(--theme-recovery-phrase-normal-background-color);
   }
   .validationStatusWarning {
-    background: rgba(228, 225, 4, 0.1);
-    .validationStatusButton {
-      background-color: #d2a80e;
-    }
+    background-color: var(--theme-recovery-phrase-normal-background-color);
   }
   .validationStatusNotification {
-    background-color: rgba(234, 76, 91, 0.1);
-    .validationStatusButton {
-      background-color: #ea4c5b;
-    }
+    background-color: var(--theme-recovery-phrase-attention-background-color);
   }
 }

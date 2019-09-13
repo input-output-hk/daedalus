@@ -5,12 +5,15 @@ import { observer } from 'mobx-react';
 import { capitalize } from 'lodash';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
-import iconMnemonicsOk from '../../../assets/images/mnemonics-verification-ok.inline.svg';
-import iconMnemonicsWarning from '../../../assets/images/mnemonics-verification-warning.inline.svg';
-import iconMnemonicsNotification from '../../../assets/images/mnemonics-verification-notification.inline.svg';
+import iconRecoveryPhraseOk from '../../../assets/images/recovery-phrase-verification-ok.inline.svg';
+import iconRecoveryPhraseWarning from '../../../assets/images/recovery-phrase-verification-warning.inline.svg';
+import iconRecoveryPhraseNotification from '../../../assets/images/recovery-phrase-verification-notification.inline.svg';
 import styles from './WalletRecoveryPhrase.scss';
+import { WalletStatuses } from '../../../domains/Wallet';
 import {
   MNEMONICS_CHECKING_WARNING,
   MNEMONICS_CHECKING_NOTIFICATION,
@@ -107,29 +110,29 @@ export default class WalletRecoveryPhrase extends Component<Props> {
     return {
       neverChecked: {
         ok: {
-          icon: iconMnemonicsOk,
+          icon: iconRecoveryPhraseOk,
           message: messages.recoveryPhraseValidationNeverOk,
         },
         warning: {
-          icon: iconMnemonicsWarning,
+          icon: iconRecoveryPhraseWarning,
           message: messages.recoveryPhraseValidationNeverWarning,
         },
         notification: {
-          icon: iconMnemonicsNotification,
+          icon: iconRecoveryPhraseNotification,
           message: messages.recoveryPhraseValidationNeverNotification,
         },
       },
       alreadyChecked: {
         ok: {
-          icon: iconMnemonicsOk,
+          icon: iconRecoveryPhraseOk,
           message: messages.recoveryPhraseValidationCheckedOk,
         },
         warning: {
-          icon: iconMnemonicsWarning,
+          icon: iconRecoveryPhraseWarning,
           message: messages.recoveryPhraseValidationCheckedWarning,
         },
         notification: {
-          icon: iconMnemonicsNotification,
+          icon: iconRecoveryPhraseNotification,
           message: messages.recoveryPhraseValidationCheckedNotification,
         },
       },
@@ -193,6 +196,17 @@ export default class WalletRecoveryPhrase extends Component<Props> {
       styles[`validationStatus${capitalize(mnemonicsConfirmationStatus)}`],
     ]);
 
+    let validationStatusButtonType = 'flat';
+    if (mnemonicsConfirmationStatus === WalletStatuses.WARNING)
+      validationStatusButtonType = 'primary';
+    else if (mnemonicsConfirmationStatus === WalletStatuses.NOTIFICATION)
+      validationStatusButtonType = 'attention';
+
+    const validationStatusButtonStyles = classnames([
+      styles.validationStatusButton,
+      validationStatusButtonType,
+    ]);
+
     return (
       <div className={styles.component}>
         <h2>{intl.formatMessage(messages.recoveryPhraseValidationTitle)}</h2>
@@ -211,8 +225,9 @@ export default class WalletRecoveryPhrase extends Component<Props> {
               timeUntilNotification,
             }}
           />
+          {/*
           <button
-            className={styles.validationStatusButton}
+            className={validationStatusButtonStyles}
             onClick={() => {
               openDialogAction({
                 dialog: WalletRecoveryPhraseStep1Dialog,
@@ -221,6 +236,18 @@ export default class WalletRecoveryPhrase extends Component<Props> {
           >
             {intl.formatMessage(messages.recoveryPhraseValidationButton)}
           </button>
+          */}
+          <Button
+            className={validationStatusButtonStyles}
+            themeOverrides={styles}
+            label={intl.formatMessage(messages.recoveryPhraseValidationButton)}
+            onClick={() => {
+              openDialogAction({
+                dialog: WalletRecoveryPhraseStep1Dialog,
+              });
+            }}
+            skin={ButtonSkin}
+          />
         </div>
 
         {isDialogOpen(WalletRecoveryPhraseStep1Dialog)
