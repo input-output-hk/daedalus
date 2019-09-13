@@ -87,9 +87,9 @@
     debug "^4.1.0"
 
 "@applitools/visual-grid-client@^12.28.4":
-  version "12.29.1"
-  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-12.29.1.tgz#c36dff01455b6b1a7e8b11a5478b2ad4179149ac"
-  integrity sha512-w/Huw/KdIbSRU1g8YRsQ+LLmTfWXh532RAmruEqSjJIcWjqA3wmpu3aEVK9ud7LNaDs8lc6opubuC1VNMX2sTg==
+  version "12.29.2"
+  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-12.29.2.tgz#c5e3e85f3d0486c138a2929cd034500070cb46d4"
+  integrity sha512-8trsg1RpbTDxBWfyDfAH2k4NI7t3kazZ3JTj1iT5jye/feltOdzPtXrjlUkOstldupkq1f7np9S+GQyQELOhSw==
   dependencies:
     "@applitools/dom-snapshot" "^3.0.2"
     "@applitools/eyes-common" "^3.9.3"
@@ -10993,9 +10993,9 @@ punycode@^2.1.0, punycode@^2.1.1:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
 
 puppeteer@^1.19.0:
-  version "1.19.0"
-  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-1.19.0.tgz#e3b7b448c2c97933517078d7a2c53687361bebea"
-  integrity sha512-2S6E6ygpoqcECaagDbBopoSOPDv0pAZvTbnBgUY+6hq0/XDFDOLEMNlHF/SKJlzcaZ9ckiKjKDuueWI3FN/WXw==
+  version "1.20.0"
+  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-1.20.0.tgz#e3d267786f74e1d87cf2d15acc59177f471bbe38"
+  integrity sha512-bt48RDBy2eIwZPrkgbcwHtb51mj2nKvHOPMaSH2IsWiv7lOG9k9zhaRzpDZafrk05ajMc3cu+lSQYYOfH2DkVQ==
   dependencies:
     debug "^4.1.0"
     extract-zip "^1.6.6"
