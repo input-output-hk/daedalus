@@ -1,10 +1,12 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
+import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 
 export const messages = defineMessages({
   recoveryPhraseStep4Title: {
@@ -31,11 +33,25 @@ export const messages = defineMessages({
     defaultMessage: '!!!Verify recovery phrase again',
     description: 'Label for the recoveryPhraseStep4Button on wallet settings.',
   },
+  recoveryPhraseStep4SupportTitle: {
+    id: 'wallet.settings.recoveryPhraseStep4SupportTitle',
+    defaultMessage: '!!!Read support portal article',
+    description:
+      'Label for the recoveryPhraseStep4SupportTitle on wallet settings.',
+  },
+  recoveryPhraseStep4SupportUrl: {
+    id: 'wallet.settings.recoveryPhraseStep4SupportUrl',
+    defaultMessage:
+      '!!!https://iohk.zendesk.com/hc/en-us/articles/360035341914',
+    description:
+      'Label for the recoveryPhraseStep4SupportUrl on wallet settings.',
+  },
 });
 
 type Props = {
   onClose: Function,
   onVerifyAgain: Function,
+  openExternalLink: Function,
 };
 
 @observer
@@ -45,7 +61,7 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props> {
   };
   render() {
     const { intl } = this.context;
-    const { onClose, onVerifyAgain } = this.props;
+    const { onClose, onVerifyAgain, openExternalLink } = this.props;
 
     const actions = [
       {
@@ -66,6 +82,24 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props> {
       >
         <p>{intl.formatMessage(messages.recoveryPhraseStep4Paragraph1)}</p>
         <p>{intl.formatMessage(messages.recoveryPhraseStep4Paragraph2)}</p>
+        <div className={styles.supportPortalContainer}>
+          <span
+            role="presentation"
+            onClick={(event: MouseEvent) =>
+              openExternalLink(
+                intl.formatMessage(messages.recoveryPhraseStep4SupportUrl),
+                event
+              )
+            }
+            className={styles.supportPortalLink}
+          >
+            {intl.formatMessage(messages.recoveryPhraseStep4SupportTitle)}
+            <SVGInline
+              svg={externalLinkIcon}
+              className={styles.externalLinkIcon}
+            />
+          </span>
+        </div>
       </Dialog>
     );
   }

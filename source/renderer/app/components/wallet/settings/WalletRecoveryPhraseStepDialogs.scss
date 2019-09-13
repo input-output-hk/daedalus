@@ -1,4 +1,5 @@
 @import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/link';
 
 .dialog {
   p {
@@ -7,6 +8,11 @@
     line-height: 1.38;
     &:first-child {
       margin-bottom: 20px;
+    }
+  }
+  :global {
+    .Dialog_actions {
+      margin-bottom: 50px;
     }
   }
 }
@@ -32,5 +38,36 @@ button {
   &.isVerifying {
     box-shadow: none !important;
     @include loading-spinner('../../../assets/images/spinner-light.svg');
+  }
+}
+
+.supportPortalContainer {
+  bottom: 16px;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+}
+
+.supportPortalLink {
+  border-bottom: 1px solid #5e6066 !important;
+  color: #5e6066;
+  font-family: var(--font-regular);
+  font-size: 14px;
+  line-height: 1.36;
+  text-align: center;
+}
+
+.externalLinkIcon {
+  @include link(#5e6066);
+  padding-left: 2px;
+  vertical-align: baseline;
+  width: 15px;
+  svg {
+    margin-left: 0;
+    vertical-align: sub;
+    width: 15px;
+    g {
+      stroke-width: 2px;
+    }
   }
 }

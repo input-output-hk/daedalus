@@ -24,11 +24,14 @@ export default class WalletRecoveryPhraseStep2Container extends Component<Props>
   };
 
   render() {
-    const { closeActiveDialog } = this.props.actions.dialogs;
+    const { stores, actions } = this.props;
+    const { closeActiveDialog } = actions.dialogs;
+    const { openExternalLink } = stores.app;
     return (
       <WalletRecoveryPhraseStep4Dialog
         onVerifyAgain={this.handleVerify}
         onClose={closeActiveDialog.trigger}
+        openExternalLink={openExternalLink}
       />
     );
   }

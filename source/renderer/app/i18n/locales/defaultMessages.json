@@ -6485,6 +6485,34 @@
           "column": 29,
           "line": 29
         }
+      },
+      {
+        "defaultMessage": "!!!Read support portal article",
+        "description": "Label for the recoveryPhraseStep4SupportTitle on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog.js",
+        "id": "wallet.settings.recoveryPhraseStep4SupportTitle",
+        "start": {
+          "column": 35,
+          "line": 34
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360035341914",
+        "description": "Label for the recoveryPhraseStep4SupportUrl on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 43
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog.js",
+        "id": "wallet.settings.recoveryPhraseStep4SupportUrl",
+        "start": {
+          "column": 33,
+          "line": 39
+        }
       }
     ],
     "path": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog.json"
