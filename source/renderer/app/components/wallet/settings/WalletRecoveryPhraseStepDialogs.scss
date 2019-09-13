@@ -10,6 +10,9 @@
       margin-bottom: 20px;
     }
   }
+}
+
+.dialog4 {
   :global {
     .Dialog_actions {
       margin-bottom: 50px;
@@ -51,6 +54,7 @@ button {
 .supportPortalLink {
   border-bottom: 1px solid #5e6066 !important;
   color: #5e6066;
+  cursor: pointer;
   font-family: var(--font-regular);
   font-size: 14px;
   line-height: 1.36;
