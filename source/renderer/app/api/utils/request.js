@@ -34,8 +34,7 @@ function typedRequest<Response>(
     let requestBody = '';
 
     if (queryParams && size(queryParams) > 0) {
-      const queryString = `?${querystring.stringify(queryParams)}`;
-      options.path += queryString;
+      options.path += `?${querystring.stringify(queryParams)}`;
     }
 
     // Handle raw body params
@@ -49,11 +48,11 @@ function typedRequest<Response>(
       };
     }
 
-    // @API TODO:  Delete once HTTPS is supported by the new API
-    const httpOnlyOptions = omit(options, ['ca', 'cert', 'key']);
-
     // @API TODO: Uncomment / switch once HTTPS is supported by the new API
     // const httpsRequest = global.https.request(options);
+
+    // @API TODO:  Delete once HTTPS is supported by the new API
+    const httpOnlyOptions = omit(options, ['ca', 'cert', 'key']);
     const httpsRequest = global.http.request(httpOnlyOptions);
 
     if (hasRequestBody) {
