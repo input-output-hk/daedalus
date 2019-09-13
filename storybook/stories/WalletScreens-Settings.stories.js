@@ -16,8 +16,8 @@ import WalletRecoveryPhraseStep2Dialog from '../../source/renderer/app/component
 import WalletRecoveryPhraseStep3Dialog from '../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog';
 import WalletRecoveryPhraseStep4Dialog from '../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog';
 import {
-  MNEMONICS_CHECKING_WARNING,
-  MNEMONICS_CHECKING_NOTIFICATION,
+  RECOVERY_PHRASE_VERIFICATION_WARNING,
+  RECOVERY_PHRASE_VERIFICATION_NOTIFICATION,
 } from '../../source/renderer/app/config/walletsConfig';
 
 /* eslint-disable react/display-name  */
@@ -67,11 +67,11 @@ const getWalletDates = (type: string, status: string) => {
   let date = new Date();
   if (status === 'warning')
     date = moment()
-      .subtract(MNEMONICS_CHECKING_WARNING + 10, 'days')
+      .subtract(RECOVERY_PHRASE_VERIFICATION_WARNING + 10, 'days')
       .toDate();
   else if (status === 'notification')
     date = moment()
-      .subtract(MNEMONICS_CHECKING_NOTIFICATION + 10, 'days')
+      .subtract(RECOVERY_PHRASE_VERIFICATION_NOTIFICATION + 10, 'days')
       .toDate();
 
   const mnemonicsConfirmationDate = date;

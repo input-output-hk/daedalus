@@ -4,8 +4,8 @@ import { observable, computed, action, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import {
-  MNEMONICS_CHECKING_NOTIFICATION,
-  MNEMONICS_CHECKING_WARNING,
+  RECOVERY_PHRASE_VERIFICATION_NOTIFICATION,
+  RECOVERY_PHRASE_VERIFICATION_WARNING,
 } from '../config/walletsConfig';
 import {
   getWalletLocalData,
@@ -116,9 +116,9 @@ export default class Wallet {
     const dateToCheck = mnemonicsConfirmationDate || createdAt;
     const daysSinceDate = moment().diff(moment(dateToCheck), 'days');
     let status = WalletStatuses.OK;
-    if (daysSinceDate > MNEMONICS_CHECKING_NOTIFICATION)
+    if (daysSinceDate > RECOVERY_PHRASE_VERIFICATION_NOTIFICATION)
       status = WalletStatuses.NOTIFICATION;
-    else if (daysSinceDate > MNEMONICS_CHECKING_WARNING)
+    else if (daysSinceDate > RECOVERY_PHRASE_VERIFICATION_WARNING)
       status = WalletStatuses.WARNING;
     const type = mnemonicsConfirmationDate
       ? WalletStatusesType.ALREADY_CHECKED

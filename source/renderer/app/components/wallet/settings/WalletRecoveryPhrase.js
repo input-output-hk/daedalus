@@ -14,10 +14,7 @@ import iconRecoveryPhraseWarning from '../../../assets/images/recovery-phrase-ve
 import iconRecoveryPhraseNotification from '../../../assets/images/recovery-phrase-verification-notification.inline.svg';
 import styles from './WalletRecoveryPhrase.scss';
 import { WalletStatuses } from '../../../domains/Wallet';
-import {
-  MNEMONICS_CHECKING_WARNING,
-  MNEMONICS_CHECKING_NOTIFICATION,
-} from '../../../config/walletsConfig';
+import { RECOVERY_PHRASE_VERIFICATION_WARNING } from '../../../config/walletsConfig';
 import WalletRecoveryPhraseStep1Dialog from './WalletRecoveryPhraseStep1Dialog';
 import WalletRecoveryPhraseStep2Dialog from './WalletRecoveryPhraseStep2Dialog';
 import WalletRecoveryPhraseStep3Dialog from './WalletRecoveryPhraseStep3Dialog';
@@ -40,14 +37,14 @@ export const messages = defineMessages({
   recoveryPhraseValidationNeverOk: {
     id: 'wallet.settings.recoveryPhraseValidationNeverOk',
     defaultMessage:
-      '!!!We recommend that you verify your wallet recovery phrase in <b>{timeUntilWarning}</b>',
+      '!!!We recommend that you verify your wallet recovery phrase in <b>{timeUntilWarning}</b>.',
     description:
       'Label for the recoveryPhraseValidationNeverOk on wallet settings.',
   },
   recoveryPhraseValidationNeverWarning: {
     id: 'wallet.settings.recoveryPhraseValidationNeverWarning',
     defaultMessage:
-      '!!!We recommend that you verify your wallet recovery phrase in <b>{timeUntilNotification}</b>.',
+      '!!!We recommend that you verify your wallet recovery phrase.',
     description:
       'Label for the recoveryPhraseValidationNeverWarning on wallet settings.',
   },
@@ -150,25 +147,16 @@ export default class WalletRecoveryPhrase extends Component<Props> {
     const statuses = this.statuses[mnemonicsConfirmationStatusType];
     const { icon, message } = statuses[mnemonicsConfirmationStatus];
     const timeAgo = moment(mnemonicsConfirmationDate).fromNow();
-    const fromNowToWarning = moment().add(MNEMONICS_CHECKING_WARNING, 'days');
-    const fromNowToNotification = moment().add(
-      MNEMONICS_CHECKING_NOTIFICATION,
+    const timeFromCreationToWarning = moment(new Date(walletCreationDate)).add(
+      RECOVERY_PHRASE_VERIFICATION_WARNING,
       'days'
     );
-    const timeUntilWarning = moment(walletCreationDate).diff(
-      fromNowToWarning,
-      'days'
-    );
-    const timeUntilNotification = moment(walletCreationDate).diff(
-      fromNowToNotification,
-      'days'
-    );
+    const timeUntilWarning = moment().to(timeFromCreationToWarning, true);
     return {
       icon,
       message,
       timeAgo,
       timeUntilWarning,
-      timeUntilNotification,
     };
   }
 
@@ -188,7 +176,6 @@ export default class WalletRecoveryPhrase extends Component<Props> {
       message,
       timeAgo,
       timeUntilWarning,
-      timeUntilNotification,
     } = this.recoveryPhraseStatus;
 
     const validationStatusStyles = classnames([
@@ -222,21 +209,8 @@ export default class WalletRecoveryPhrase extends Component<Props> {
             values={{
               timeAgo,
               timeUntilWarning,
-              timeUntilNotification,
             }}
           />
-          {/*
-          <button
-            className={validationStatusButtonStyles}
-            onClick={() => {
-              openDialogAction({
-                dialog: WalletRecoveryPhraseStep1Dialog,
-              });
-            }}
-          >
-            {intl.formatMessage(messages.recoveryPhraseValidationButton)}
-          </button>
-          */}
           <Button
             className={validationStatusButtonStyles}
             themeOverrides={styles}

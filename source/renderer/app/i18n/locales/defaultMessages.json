@@ -6079,13 +6079,13 @@
         "description": "Label for the recoveryPhraseValidationTitle on wallet settings.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 32
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
         "id": "wallet.settings.recoveryPhraseValidationTitle",
         "start": {
           "column": 33,
-          "line": 24
+          "line": 27
         }
       },
       {
@@ -6093,41 +6093,41 @@
         "description": "Label for the recoveryPhraseValidationDescription on wallet settings.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 39
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
         "id": "wallet.settings.recoveryPhraseValidationDescription",
         "start": {
           "column": 39,
-          "line": 30
+          "line": 33
         }
       },
       {
-        "defaultMessage": "!!!We recommend that you verify your wallet recovery phrase in <b>{timeUntilWarning}</b>",
+        "defaultMessage": "!!!We recommend that you verify your wallet recovery phrase in <b>{timeUntilWarning}</b>.",
         "description": "Label for the recoveryPhraseValidationNeverOk on wallet settings.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
         "id": "wallet.settings.recoveryPhraseValidationNeverOk",
         "start": {
           "column": 35,
-          "line": 37
+          "line": 40
         }
       },
       {
-        "defaultMessage": "!!!We recommend that you verify your wallet recovery phrase in <b>{timeUntilNotification}</b>.",
+        "defaultMessage": "!!!We recommend that you verify your wallet recovery phrase.",
         "description": "Label for the recoveryPhraseValidationNeverWarning on wallet settings.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 53
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
         "id": "wallet.settings.recoveryPhraseValidationNeverWarning",
         "start": {
           "column": 40,
-          "line": 44
+          "line": 47
         }
       },
       {
@@ -6135,13 +6135,13 @@
         "description": "Label for the recoveryPhraseValidationNeverNotification on wallet settings.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 60
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
         "id": "wallet.settings.recoveryPhraseValidationNeverNotification",
         "start": {
           "column": 45,
-          "line": 51
+          "line": 54
         }
       },
       {
@@ -6149,13 +6149,13 @@
         "description": "Label for the recoveryPhraseValidationCheckedOk on wallet settings.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 67
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
         "id": "wallet.settings.recoveryPhraseValidationCheckedOk",
         "start": {
           "column": 37,
-          "line": 58
+          "line": 61
         }
       },
       {
@@ -6163,13 +6163,13 @@
         "description": "Label for the recoveryPhraseValidationCheckedWarning on wallet settings.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 74
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
         "id": "wallet.settings.recoveryPhraseValidationCheckedWarning",
         "start": {
           "column": 42,
-          "line": 65
+          "line": 68
         }
       },
       {
@@ -6177,13 +6177,13 @@
         "description": "Label for the recoveryPhraseValidationCheckedNotification on wallet settings.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 81
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
         "id": "wallet.settings.recoveryPhraseValidationCheckedNotification",
         "start": {
           "column": 47,
-          "line": 72
+          "line": 75
         }
       },
       {
@@ -6191,13 +6191,13 @@
         "description": "Label for the recoveryPhraseValidationButton on wallet settings.",
         "end": {
           "column": 3,
-          "line": 84
+          "line": 87
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
         "id": "wallet.settings.recoveryPhraseValidationButton",
         "start": {
           "column": 34,
-          "line": 79
+          "line": 82
         }
       }
     ],
@@ -6435,13 +6435,13 @@
         "description": "Label for the recoveryPhraseStep4Title on wallet settings.",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 17
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog.js",
         "id": "wallet.settings.recoveryPhraseStep4Title",
         "start": {
           "column": 28,
-          "line": 10
+          "line": 13
         }
       },
       {
@@ -6449,13 +6449,13 @@
         "description": "Label for the recoveryPhraseStep4Paragraph1 on wallet settings.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog.js",
         "id": "wallet.settings.recoveryPhraseStep4Paragraph1",
         "start": {
           "column": 33,
-          "line": 15
+          "line": 18
         }
       },
       {
@@ -6463,13 +6463,13 @@
         "description": "Label for the recoveryPhraseStep4Paragraph2 on wallet settings.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog.js",
         "id": "wallet.settings.recoveryPhraseStep4Paragraph2",
         "start": {
           "column": 33,
-          "line": 22
+          "line": 25
         }
       },
       {
@@ -6477,13 +6477,13 @@
         "description": "Label for the recoveryPhraseStep4Button on wallet settings.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog.js",
         "id": "wallet.settings.recoveryPhraseStep4Button",
         "start": {
           "column": 29,
-          "line": 29
+          "line": 32
         }
       },
       {
@@ -6491,13 +6491,13 @@
         "description": "Label for the recoveryPhraseStep4SupportTitle on wallet settings.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 42
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog.js",
         "id": "wallet.settings.recoveryPhraseStep4SupportTitle",
         "start": {
           "column": 35,
-          "line": 34
+          "line": 37
         }
       },
       {
@@ -6505,13 +6505,13 @@
         "description": "Label for the recoveryPhraseStep4SupportUrl on wallet settings.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog.js",
         "id": "wallet.settings.recoveryPhraseStep4SupportUrl",
         "start": {
           "column": 33,
-          "line": 39
+          "line": 43
         }
       }
     ],
