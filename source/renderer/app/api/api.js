@@ -43,7 +43,7 @@ import { updateWallet } from './wallets/requests/updateWallet';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
 import { getWallet } from './wallets/requests/getWallet';
 
-// utility functions
+// Utility functions
 import {
   awaitUpdateChannel,
   cardanoFaultInjectionChannel,
@@ -61,7 +61,7 @@ import {
 } from './utils/mnemonics';
 import { filterLogData } from '../../../common/utils/logging';
 
-// config constants
+// Config constants
 import {
   LOVELACES_PER_ADA,
   DECIMAL_PLACES_IN_ADA,
@@ -73,9 +73,6 @@ import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../config/cryptoConfig';
-
-// Accounts types
-// import type { Accounts } from './accounts/types';
 
 // Addresses Types
 import type {
@@ -230,10 +227,10 @@ export default class AdaApi {
     });
     Logger.debug('AdaApi::searchHistory called', { parameters: requestStats });
 
-    // NOTE: Not yet available in the API
+    // @API TODO: Not yet available in the API
     return new Promise(resolve => resolve({ transactions: [], total: 0 }));
 
-    // TODO: Uncomment once API available
+    // @API TODO: Uncomment once API available
     // const {
     //   walletId,
     //   skip,
@@ -569,10 +566,10 @@ export default class AdaApi {
       parameters: { address },
     });
 
-    // NOTE: Not yet available in the API
+    // @API TODO: Not yet available in the API
     return new Promise(resolve => resolve(true));
 
-    // TODO: Uncomment once API available
+    // @API TODO: Uncomment once API available
     // try {
     //   const response: Address = await getAddress(this.config, { address });
     //   Logger.debug('AdaApi::isValidAdaAddress success', { response });
@@ -603,7 +600,6 @@ export default class AdaApi {
     }
   }
 
-  // eslint-disable-next-line max-len
   getWalletCertificateAdditionalMnemonics(): Promise<Array<string>> {
     Logger.debug('AdaApi::getWalletCertificateAdditionalMnemonics called');
     try {
