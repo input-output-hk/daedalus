@@ -224,7 +224,7 @@ export default class WalletRecoveryPhrase extends Component<Props> {
         </div>
 
         {isDialogOpen(WalletRecoveryPhraseStep1Dialog)
-          ? walletRecoveryPhraseStep4Container
+          ? walletRecoveryPhraseStep1Container
           : false}
 
         {isDialogOpen(WalletRecoveryPhraseStep2Dialog)
