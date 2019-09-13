@@ -11,6 +11,7 @@
   justify-content: space-between;
   overflow: hidden;
   padding: 0 20px;
+  position: relative;
   width: $sidebar-width - $sidebar-minimized-category-width;
 
   &:hover {
@@ -70,13 +71,15 @@
 
 .mnemonicsConfirmationStatus-notification {
   &:after {
-    background: red;
+    background: var(--theme-button-attention-background-color);
     border-radius: 50%;
     content: '';
     display: block;
-    height: 10px;
+    height: 8px;
     position: absolute;
-    right: 8px;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-8px);
     width: 8px;
   }
 }

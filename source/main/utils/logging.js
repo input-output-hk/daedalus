@@ -22,12 +22,12 @@ const environmentData = {
   version,
 };
 
-const logToLevel = (level: string) => (message: string, data: ?Object) => {};
-// log[level](formatContext({ ...messageContext, level }), {
-//   message,
-//   data,
-//   environmentData,
-// });
+const logToLevel = (level: string) => (message: string, data: ?Object) =>
+  log[level](formatContext({ ...messageContext, level }), {
+    message,
+    data,
+    environmentData,
+  });
 
 export const Logger = {
   debug: logToLevel('debug'),
