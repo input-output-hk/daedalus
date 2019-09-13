@@ -15,7 +15,6 @@
   { statePath           : Text
   , nodePath            : Text
   , cliPath             : Text
-  , nodeImplementation  : Text
   , nodeDbPath          : Text
   , nodeLogConfig       : Text
   , nodeLogPath         : Optional Text

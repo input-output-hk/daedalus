@@ -165,7 +165,7 @@ export type CardanoStateRendererRequest = void;
 export type CardanoStateRendererResponse = CardanoNodeState;
 
 /**
- * Channel where main process tells the renderer about cardano-node state updates
+ * Channel where main process tells the renderer about the specific cardano node implementation
  */
 export const CARDANO_NODE_IMPLEMENTATION_CHANNEL =
   'CARDANO_NODE_IMPLEMENTATION_CHANNEL';

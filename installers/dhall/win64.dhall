@@ -22,7 +22,6 @@ in
   , workingDir          = dataDir
   , nodePath            = "\${DAEDALUS_DIR}\\${NODE_EXE}.exe"
   , cliPath             = "\${DAEDALUS_DIR}\\${CLI_EXE}.exe"
-  , nodeImplementation  = "\${NODE_IMPLEMENTATION}"
   , nodeDbPath          = "DB-1.0"
   , nodeLogConfig       = "\${DAEDALUS_INSTALL_DIRECTORY}\\log-config-prod.yaml"
   , nodeLogPath         = [] : Optional Text

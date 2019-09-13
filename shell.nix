@@ -110,8 +110,6 @@ let
       warn() {
          (echo "###"; echo "### WARNING:  $*"; echo "###") >&2
       }
-      if ! test -x "$(type -P jormungandr)"
-      then warn "jormungandr not in $PATH"; fi
       if   test -z "${systemStartString}"
       then warn "--arg systemStart wasn't passed, cardano won't be able to connect to the demo cluster!"
       elif test "${systemStartString}" -gt $(date +%s)

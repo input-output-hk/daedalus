@@ -19,7 +19,6 @@ in
   , workingDir          = dataDir
   , nodePath            = "\${NODE_EXE}"
   , cliPath             = "\${CLI_EXE}"
-  , nodeImplementation  = "\${NODE_IMPLEMENTATION}"
   , nodeDbPath          = "${dataDir}/DB/"
   , nodeLogConfig       = "\${DAEDALUS_CONFIG}/log-config-prod.yaml"
   , nodeLogPath         = [] : Optional Text
