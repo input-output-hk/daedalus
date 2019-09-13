@@ -124,6 +124,7 @@ export default class WalletBackupStore extends Store {
   @action _checkRecoveryPhrase = async (params: {
     recoveryPhrase: Array<string>,
   }) => {
+    const { recoveryPhrase } = params;
     const activeWallet = this.stores.wallets.active;
     if (!activeWallet)
       throw new Error(
@@ -131,10 +132,10 @@ export default class WalletBackupStore extends Store {
       );
     const {
       walletId,
-    }: WalletIdAndBalance = await this.getWalletIdAndBalanceRequest.execute(
-      params
-    ).promise;
-
+    }: WalletIdAndBalance = await this.getWalletIdAndBalanceRequest.execute({
+      recoveryPhrase,
+      getBalance: false, // We don't need the balance (getting balance increases request response time)
+    }).promise;
     runInAction('AdaWalletBackupStore::_checkRecoveryPhrase', () => {
       this.isRecoveryPhraseMatching = walletId === activeWallet.id;
     });
