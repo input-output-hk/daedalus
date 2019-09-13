@@ -18,7 +18,7 @@ const cfg = {
 /* eslint-disable react/display-name  */
 export default () => (
   <WalletUtxo
-    walletDistributionAmount={
+    walletAmount={
       new BigNumber(
         number('Amount', 66.998, {
           range: true,

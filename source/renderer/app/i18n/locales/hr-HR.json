@@ -541,7 +541,7 @@
   "wallet.settings.password": "!!!Password",
   "wallet.settings.passwordLastUpdated": "!!!Last updated",
   "wallet.settings.passwordNotSet": "!!!You still don't have password",
-  "wallet.settings.utxos.description": "!!!This wallet contains <b>{formattedWalletDistributionAmount} ADA</b> on <b>{walletUtxosAmount} UTXOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTXOs with different amounts of ada.",
+  "wallet.settings.utxos.description": "!!!This wallet contains <b>{formattedwalletAmount} ADA</b> on <b>{walletUtxosAmount} UTXOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTXOs with different amounts of ada.",
   "wallet.settings.utxos.emptyWallet": "!!!This wallet is empty so it does not contain any UTXOs (unspent transaction outputs).",
   "wallet.settings.utxos.findOutMoreLink": "!!!Find out more",
   "wallet.settings.utxos.findOutMoreLinkUrl": "!!!https://iohk.zendesk.com/hc/en-us/articles/360034118013",

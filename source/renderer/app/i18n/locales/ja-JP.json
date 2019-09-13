@@ -541,7 +541,7 @@
   "wallet.settings.password": "パスワード",
   "wallet.settings.passwordLastUpdated": "最終更新 {lastUpdated}",
   "wallet.settings.passwordNotSet": "パスワードが設定されていません",
-  "wallet.settings.utxos.description": "このウォレットには、<b>{walletUtxosAmount}のUTXO</b>（未使用トランザクションアウトプット)に<b>{formattedWalletDistributionAmount}ADA</b>が含まれています。含まれるADAの額ごとのUTXO分布状況は、下のグラフで確認できます。",
+  "wallet.settings.utxos.description": "このウォレットには、<b>{walletUtxosAmount}のUTXO</b>（未使用トランザクションアウトプット)に<b>{formattedwalletAmount}ADA</b>が含まれています。含まれるADAの額ごとのUTXO分布状況は、下のグラフで確認できます。",
   "wallet.settings.utxos.emptyWallet": "このウォレットは空のため、UTXO（未使用トランザクションアウトプット）はありません。",
   "wallet.settings.utxos.findOutMoreLink": "もっと詳しく",
   "wallet.settings.utxos.findOutMoreLinkUrl": "https://iohk.zendesk.com/hc/ja/articles/360034118013",
