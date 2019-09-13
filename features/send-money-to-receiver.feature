@@ -36,7 +36,7 @@ Feature: Send Money to Receiver
     And the transaction fees are calculated
     And I click on the next button in the wallet send form
     And I see send money confirmation dialog
-    And I enter wallet spending password in confirmation dialog "Secret123"
+    And I enter wallet spending password in confirmation dialog "Secret1234"
     And I submit the wallet send form
     Then I should be on the "Imported Wallet" wallet "summary" screen
     And the latest transaction should show:

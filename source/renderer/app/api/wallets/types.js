@@ -64,7 +64,7 @@ export type WalletInitData = {
   mnemonic_sentence: [string], // [ 15 .. 24 ] words
   mnemonic_second_factor?: [string], // [ 9 .. 12 ] words
   passphrase: string,
-  address_pool_gap?: number,
+  address_pool_gap?: number, // 20
 };
 
 // req/res Wallet types

@@ -43,7 +43,7 @@ Given(/^I have a "Imported Wallet" with funds$/, async function() {
 Given(/^I have a "Imported Wallet" with funds and password$/, async function() {
   await importWalletWithFunds(this.client, {
     keyFilePath: defaultWalletKeyFilePath,
-    password: null, // 'Secret123',
+    password: null, // 'Secret1234',
   });
   const wallet = await waitUntilWalletIsLoaded.call(this, 'Imported Wallet');
   addOrSetWalletsForScenario.call(this, wallet);
@@ -54,7 +54,7 @@ Given(/^I have a "Imported Wallet" with funds and password$/, async function() {
       .updateSpendingPassword({
         walletId,
         oldPassword: null,
-        newPassword: 'Secret123',
+        newPassword: 'Secret1234',
       })
       .then(() =>
         daedalus.stores.wallets
