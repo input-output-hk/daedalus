@@ -9,25 +9,14 @@ import type { InjectedDialogContainerProps } from '../../../../types/injectedPro
 
 type Props = InjectedDialogContainerProps;
 
-type State = {
-  isVerifying: boolean,
-};
-
 @inject('stores', 'actions')
 @observer
-export default class WalletRecoveryPhraseStep2Container extends Component<
-  Props,
-  State
-> {
+export default class WalletRecoveryPhraseStep2Container extends Component<Props> {
   static defaultProps = {
     actions: null,
     stores: null,
     children: null,
     onClose: () => {},
-  };
-
-  state = {
-    isVerifying: false,
   };
 
   componentWillReceiveProps(nextProps: Props) {
@@ -47,7 +36,6 @@ export default class WalletRecoveryPhraseStep2Container extends Component<
       } else {
         dialog = WalletRecoveryPhraseStep4Dialog;
       }
-      this.setState({ isVerifying: false });
       actions.dialogs.open.trigger({
         dialog,
       });
@@ -56,22 +44,23 @@ export default class WalletRecoveryPhraseStep2Container extends Component<
   }
 
   handleVerify = (recoveryPhrase: Array<string>) => {
-    this.setState({ isVerifying: true });
     this.props.actions.walletBackup.checkRecoveryPhrase.trigger({
       recoveryPhrase,
     });
   };
 
   render() {
-    const { isVerifying } = this.state;
-    const { isValidMnemonic } = this.props.stores.wallets;
+    const { stores } = this.props;
+    const { wallets, walletBackup } = stores;
+    const { isValidMnemonic } = wallets;
+    const { getWalletIdAndBalanceRequest } = walletBackup;
     const { closeActiveDialog } = this.props.actions.dialogs;
 
     return (
       <WalletRecoveryPhraseStep2Dialog
         mnemonicValidator={mnemonic => isValidMnemonic(mnemonic)}
         suggestedMnemonics={validWords}
-        isVerifying={isVerifying}
+        isVerifying={getWalletIdAndBalanceRequest.isExecuting}
         onVerify={this.handleVerify}
         onClose={closeActiveDialog.trigger}
       />
