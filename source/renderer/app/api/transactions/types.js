@@ -47,7 +47,6 @@ export type GetTransactionsRequest = {
 export type TransactionRequest = {
   walletId: string,
   walletBalance: BigNumber,
-  walletAvailableBalance: BigNumber,
   address: string,
   amount: number,
   spendingPassword?: ?string,
