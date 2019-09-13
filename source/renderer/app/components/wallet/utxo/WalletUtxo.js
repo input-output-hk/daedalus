@@ -32,7 +32,7 @@ export const messages = defineMessages({
   description: {
     id: 'wallet.settings.utxos.description',
     defaultMessage:
-      '!!!This wallet contains <b>{formattedwalletAmount} ADA</b> on <b>{walletUtxosAmount} UTXOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTXOs with different amounts of ada.',
+      '!!!This wallet contains <b>{formattedWalletAmount} ADA</b> on <b>{walletUtxosAmount} UTXOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTXOs with different amounts of ada.',
     description: 'Description for the "Wallet Utxos" screen.',
   },
   emptyWallet: {
@@ -96,7 +96,7 @@ export default class WalletUtxo extends Component<Props, State> {
       chartData,
       onExternalLinkClick,
     } = this.props;
-    const formattedwalletAmount = walletAmount.toFormat(DECIMAL_PLACES_IN_ADA);
+    const formattedWalletAmount = walletAmount.toFormat(DECIMAL_PLACES_IN_ADA);
     const isEmpty = walletUtxosAmount === 0;
     const componentStyles = classnames([
       styles.component,
@@ -131,7 +131,7 @@ export default class WalletUtxo extends Component<Props, State> {
                   <FormattedHTMLMessage
                     {...messages.description}
                     values={{
-                      formattedwalletAmount,
+                      formattedWalletAmount,
                       walletUtxosAmount,
                     }}
                   />{' '}
