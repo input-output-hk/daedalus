@@ -1,5 +1,4 @@
 // @flow
-import { platform } from 'os';
 import type { WalletOpts } from '../CardanoWalletLauncher';
 
 export function buildHttpBridgeNodeOpts({

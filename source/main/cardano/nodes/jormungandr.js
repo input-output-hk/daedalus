@@ -50,5 +50,5 @@ bft:
   signing_key: ${secret}
   `;
 
-  return fs.writeFile(secretPath, secretFileContents);
+  await fs.writeFile(secretPath, secretFileContents);
 }

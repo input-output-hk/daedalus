@@ -15,7 +15,6 @@ import { Logger } from '../utils/logging';
 import type { LauncherConfig } from '../config';
 import type {
   CardanoNodeState,
-  CardanoNodeImplementation,
   CardanoStatus,
   TlsConfig,
 } from '../../common/types/cardano-node.types';
