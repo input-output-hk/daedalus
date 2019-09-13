@@ -94,6 +94,8 @@
   "daedalus.diagnostics.dialog.system.info": "!!!SYSTEM INFO",
   "daedalus.diagnostics.dialog.systemTimeCorrect": "!!!System Time Correct",
   "daedalus.diagnostics.dialog.systemTimeIgnored": "!!!System Time Ignored",
+  "daedalus.diagnostics.dialog.unknownDiskSpace": "!!!Unknown",
+  "daedalus.diagnostics.dialog.unknownDiskSpaceSupportUrl": "!!!https://iohk.zendesk.com/hc",
   "environment.apiName.cardano": "!!!Cardano",
   "environment.currency.ada": "!!!Ada",
   "global.assuranceLevel.normal": "!!!Normal",
