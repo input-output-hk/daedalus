@@ -32,7 +32,7 @@ export const messages = defineMessages({
   description: {
     id: 'wallet.settings.utxos.description',
     defaultMessage:
-      '!!!This wallet contains <b>{formattedWalletDistributionAmount} ADA</b> on <b>{walletUtxosAmount} UTXOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTXOs with different amounts of ada.',
+      '!!!This wallet contains <b>{formattedWalletAmount} ADA</b> on <b>{walletUtxosAmount} UTXOs</b> (unspent transaction outputs). Examine the histogram below to see the distribution of UTXOs with different amounts of ada.',
     description: 'Description for the "Wallet Utxos" screen.',
   },
   emptyWallet: {
@@ -65,7 +65,7 @@ export const messages = defineMessages({
 });
 
 type Props = {
-  walletDistributionAmount: BigNumber,
+  walletAmount: BigNumber,
   walletUtxosAmount: number,
   chartData: Array<any>,
   onExternalLinkClick: Function,
@@ -91,14 +91,12 @@ export default class WalletUtxo extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const {
-      walletDistributionAmount,
+      walletAmount,
       walletUtxosAmount,
       chartData,
       onExternalLinkClick,
     } = this.props;
-    const formattedWalletDistributionAmount = walletDistributionAmount.toFormat(
-      DECIMAL_PLACES_IN_ADA
-    );
+    const formattedWalletAmount = walletAmount.toFormat(DECIMAL_PLACES_IN_ADA);
     const isEmpty = walletUtxosAmount === 0;
     const componentStyles = classnames([
       styles.component,
@@ -133,7 +131,7 @@ export default class WalletUtxo extends Component<Props, State> {
                   <FormattedHTMLMessage
                     {...messages.description}
                     values={{
-                      formattedWalletDistributionAmount,
+                      formattedWalletAmount,
                       walletUtxosAmount,
                     }}
                   />{' '}
@@ -155,7 +153,7 @@ export default class WalletUtxo extends Component<Props, State> {
                         fill="transparent"
                       />
                       <XAxis
-                        dataKey="walletDistributionAmount"
+                        dataKey="walletAmount"
                         interval={0}
                         axisLine={false}
                         tickLine={false}

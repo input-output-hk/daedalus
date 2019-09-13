@@ -61,8 +61,8 @@ export const isValidSpendingPassword = (password: string): boolean => {
   // Validation rules (uses unicode categories for checks):
   // https://github.com/tc39/proposal-regexp-unicode-property-escapes
 
-  // Should contain at least 7 characters
-  if (password.length < 7) return false;
+  // Should contain at least 10 characters
+  if (password.length < 10) return false;
 
   // Must not contain white spaces
   if (containsWhitespace(password)) return false;

@@ -51,7 +51,7 @@ export default defineMessages({
   passwordInstructions: {
     id: 'global.passwordInstructions',
     defaultMessage:
-      '!!!Note that password needs to be at least 7 characters long, and have at least 1 uppercase, 1 lowercase letter and 1 number.',
+      '!!!Note that password needs to be at least 10 characters long, and have at least 1 uppercase, 1 lowercase letter and 1 number.',
     description: 'Password instructions note.',
   },
   cancel: {

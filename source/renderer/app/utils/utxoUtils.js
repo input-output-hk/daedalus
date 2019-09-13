@@ -4,8 +4,8 @@ import type { Histogram } from '../api/wallets/types';
 import { formattedLovelaceToAmount } from './formatters';
 
 type UtxoChartItem = {
-  walletRawDistributionAmount: number,
-  walletDistributionAmount: string,
+  walletRawAmount: number,
+  walletAmount: string,
   walletUtxosAmount: number,
 };
 
@@ -15,10 +15,10 @@ export const getUtxoChartData = (histogram: Histogram): UtxoChartData =>
   Object.entries(histogram)
     .sort()
     .reduce((data, [lovelaceWalletAmount, walletUtxosAmount]) => {
-      const walletDistributionAmount = formattedLovelaceToAmount(
+      const walletAmount = formattedLovelaceToAmount(
         parseInt(lovelaceWalletAmount, 10)
       );
-      if (walletDistributionAmount > 100000) {
+      if (walletAmount > 100000) {
         let lastItem: UtxoChartItem = last(data);
         const { walletUtxosAmount: lastWalletUtxosAmount } = lastItem;
         lastItem = {
@@ -30,10 +30,8 @@ export const getUtxoChartData = (histogram: Histogram): UtxoChartData =>
         data[data.length - 1] = lastItem;
       } else {
         data.push({
-          walletRawDistributionAmount: walletDistributionAmount,
-          walletDistributionAmount: getUtxoWalletPrettyAmount(
-            walletDistributionAmount
-          ),
+          walletRawAmount: walletAmount,
+          walletAmount: getUtxoWalletPrettyAmount(walletAmount),
           walletUtxosAmount: parseInt(walletUtxosAmount, 10),
         });
       }
