@@ -564,7 +564,7 @@
   "wallet.transaction.address.to": "送信先",
   "wallet.transaction.addresses.from": "送信元",
   "wallet.transaction.addresses.to": "送信先",
-  "wallet.transaction.confirmations": "{confirmationsNumber, plural, one {# 確認} =21 {20+ 確認} other {# 確認}}",
+  "wallet.transaction.confirmations": "{confirmationsNumber, plural, one {# 承認} =21 {20+ 承認} other {# 承認}}",
   "wallet.transaction.conversion.rate": "両替率",
   "wallet.transaction.numberOfConfirmations": "承認数",
   "wallet.transaction.received": "{currency}受取済み",
