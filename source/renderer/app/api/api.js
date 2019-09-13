@@ -380,20 +380,12 @@ export default class AdaApi {
     Logger.debug('AdaApi::createWallet called', {
       parameters: filterLogData(request),
     });
-    const {
-      name,
-      mnemonic,
-      mnemonicPassphrase,
-      spendingPassword,
-      addressPoolGap,
-    } = request;
+    const { name, mnemonic, spendingPassword } = request;
     try {
       const walletInitData = {
         name,
         mnemonic_sentence: split(mnemonic, ' '),
-        mnemonic_second_factor: mnemonicPassphrase,
         passphrase: spendingPassword || '',
-        address_pool_gap: addressPoolGap,
       };
       const wallet: AdaWallet = await createWallet(this.config, {
         walletInitData,
@@ -666,8 +658,8 @@ export default class AdaApi {
     });
     const { recoveryPhrase, walletName, spendingPassword } = request;
     const walletInitData = {
-      mnemonic_sentence: split(recoveryPhrase, ' '),
       name: walletName,
+      mnemonic_sentence: split(recoveryPhrase, ' '),
       passphrase: spendingPassword || '',
     };
     try {
