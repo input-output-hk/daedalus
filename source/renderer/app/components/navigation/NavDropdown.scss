@@ -8,16 +8,19 @@
   }
 
   &.hasNotification {
-    &:after {
-      background: red;
-      border-radius: 50%;
-      content: '';
-      display: block;
-      height: 8px;
-      position: absolute;
-      right: 30px;
-      top: 16px;
-      width: 8px;
+    :global {
+      .SimpleOptions_option:first-child span {
+        &:before {
+          background: var(--theme-button-attention-background-color);
+          border-radius: 50%;
+          content: '';
+          display: inline-block;
+          height: 8px;
+          margin-right: 5px;
+          // top: 50%;
+          width: 8px;
+        }
+      }
     }
   }
 

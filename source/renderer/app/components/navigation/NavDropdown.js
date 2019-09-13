@@ -45,6 +45,7 @@ export default class NavDropdown extends Component<Props> {
               icon={icon}
               isActive={isActive}
               onClick={() => {}}
+              hasNotification={hasNotification}
             />
           }
           onChange={({ value }) => onChange(value)}
