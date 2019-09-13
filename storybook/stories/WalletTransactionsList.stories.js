@@ -58,7 +58,6 @@ storiesOf('WalletTransactionsList', module)
       isRestoreActive={false}
       isLoadingTransactions={false}
       hasMoreToLoad={false}
-      assuranceMode={{ low: 1, medium: 2 }}
       walletId="test-wallet"
       formattedWalletAmount={formattedWalletAmount}
       totalAvailable={5}
@@ -93,7 +92,6 @@ storiesOf('WalletTransactionsList', module)
       isRestoreActive={false}
       isLoadingTransactions={false}
       hasMoreToLoad={false}
-      assuranceMode={{ low: 1, medium: 2 }}
       walletId="test-wallet"
       formattedWalletAmount={formattedWalletAmount}
       totalAvailable={3}
@@ -107,7 +105,6 @@ storiesOf('WalletTransactionsList', module)
       transactions={generateMultipleTransactions(500)}
       isLoadingTransactions={false}
       hasMoreToLoad={false}
-      assuranceMode={{ low: 1, medium: 2 }}
       walletId="test-wallet"
       formattedWalletAmount={formattedWalletAmount}
       totalAvailable={500}

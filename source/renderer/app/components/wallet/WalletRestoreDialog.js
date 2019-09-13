@@ -10,7 +10,7 @@ import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteS
 import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import ReactToolboxMobxForm, {
   handleFormErrors,
 } from '../../utils/ReactToolboxMobxForm';
@@ -441,6 +441,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
               label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
               checked={createPassword}
               skin={SwitchSkin}
+              disabled // @API TODO: in V2 API passphrase is required
             />
           </div>
 
@@ -460,7 +461,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
               skin={InputSkin}
             />
             <p className={styles.passwordInstructions}>
-              {intl.formatMessage(globalMessages.passwordInstructions)}
+              <FormattedHTMLMessage {...globalMessages.passwordInstructions} />
             </p>
           </div>
         </div>

@@ -93,11 +93,9 @@
 
 .pendingLabel,
 .failedLabel,
-.low,
-.medium,
-.high {
+.okLabel {
   border-radius: 3px;
-  color: var(--theme-transactions-priority-color);
+  color: var(--theme-transactions-state-text-color);
   display: inline-block;
   font-family: var(--font-bold);
   font-size: 8px;
@@ -141,20 +139,8 @@
   color: var(--theme-transactions-state-failed-text-secondary-color);
 }
 
-.low {
-  background-color: var(--theme-transactions-priority-low-background-color);
-}
-
-.medium {
-  background-color: var(--theme-transactions-priority-medium-background-color);
-}
-
-.high {
-  background-color: var(--theme-transactions-priority-high-background-color);
-}
-
-.assuranceLevel {
-  text-transform: capitalize;
+.okLabel {
+  background-color: var(--theme-transactions-state-ok-background-color);
 }
 
 .type {
@@ -201,6 +187,10 @@
     margin-bottom: 8px;
   }
 
+  .addressRow {
+    padding-bottom: 6px;
+  }
+
   .addressRow,
   .transactionIdRow {
     line-height: 17px;
@@ -221,13 +211,17 @@
   }
 
   &.clickable {
-    .transactionId,
-    .address {
+    .transactionId {
       @include link(--theme-transactions-list-item-details-color);
       border-bottom: 1px solid transparent;
       &:hover {
         border-bottom-color: var(--theme-transactions-list-item-details-color);
       }
+    }
+
+    .address {
+      @include link(--theme-link-main-color);
+      border-bottom: 1px solid var(--theme-link-main-color);
     }
   }
 }

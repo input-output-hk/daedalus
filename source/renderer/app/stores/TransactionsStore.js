@@ -18,6 +18,7 @@ import type { GetTransactionsResponse } from '../api/transactions/types';
 import type { UnconfirmedAmount } from '../types/unconfirmedAmountType';
 import { isValidAmountInLovelaces } from '../utils/validations';
 import { TX_UNCONFIRMED_THRESHOLD } from '../config/numbersConfig';
+import { WalletSyncStateStatuses } from '../domains/Wallet';
 
 /* eslint-disable consistent-return */
 
@@ -131,7 +132,8 @@ export default class TransactionsStore extends Store {
       const allWallets = this.stores.wallets.all;
       for (const wallet of allWallets) {
         const isRestoreActive =
-          get(wallet, 'syncState.tag', '') === 'restoring';
+          get(wallet, ['syncState', 'status'], '') ===
+          WalletSyncStateStatuses.RESTORING;
         const isRestoreCompleted = restoredWalletId === wallet.id;
         const recentRequest = this._getTransactionsRecentRequest(wallet.id);
         if (isRestoreCompleted && recentRequest.isExecuting) {

@@ -27,8 +27,6 @@ export type PaymentDistribution = {
   amount: number,
 };
 
-export type TxnAssuranceLevel = 'low' | 'medium' | 'high';
-
 export type TransactionState = 'pending' | 'failed' | 'ok';
 
 export type TransactionFee = ResponseBase & {

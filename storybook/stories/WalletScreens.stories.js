@@ -172,7 +172,6 @@ storiesOf('WalletScreens', module)
       isLoadingTransactions={boolean('isLoadingTransactions', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
       hasMoreToLoad={false}
-      assuranceMode={{ low: 1, medium: 2 }}
       walletId="test-wallet"
       formattedWalletAmount={formattedWalletAmount}
       totalAvailable={

@@ -10,7 +10,7 @@ import {
   DECIMAL_PLACES_IN_ADA,
   MAX_INTEGER_PLACES_IN_ADA,
 } from '../../config/numbersConfig';
-import { WalletSyncStateTags } from '../../domains/Wallet';
+import { WalletSyncStateStatuses } from '../../domains/Wallet';
 
 type Props = InjectedProps;
 
@@ -36,7 +36,8 @@ export default class WalletSendPage extends Component<Props> {
       throw new Error('Active wallet required for WalletSendPage.');
 
     const isRestoreActive =
-      get(activeWallet, 'syncState.tag') === WalletSyncStateTags.RESTORING;
+      get(activeWallet, ['syncState', 'status'], '') ===
+      WalletSyncStateStatuses.RESTORING;
 
     return (
       <WalletSendForm

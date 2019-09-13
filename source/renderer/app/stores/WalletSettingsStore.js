@@ -3,24 +3,12 @@ import { observable, action } from 'mobx';
 import { findIndex } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import globalMessages from '../i18n/global-messages';
-import Wallet, { WalletAssuranceModeOptions } from '../domains/Wallet';
+import Wallet from '../domains/Wallet';
 import type { WalletExportToFileParams } from '../actions/wallet-settings-actions';
 import type { WalletUtxos } from '../api/wallets/types';
 import { WALLET_UTXO_API_REQUEST_INTERVAL } from '../config/timingConfig';
 
 export default class WalletSettingsStore extends Store {
-  WALLET_ASSURANCE_LEVEL_OPTIONS = [
-    {
-      value: WalletAssuranceModeOptions.NORMAL,
-      label: globalMessages.assuranceLevelNormal,
-    },
-    {
-      value: WalletAssuranceModeOptions.STRICT,
-      label: globalMessages.assuranceLevelStrict,
-    },
-  ];
-
   /* eslint-disable max-len */
   @observable updateWalletRequest: Request<Wallet> = new Request(
     this.api.ada.updateWallet
@@ -118,14 +106,13 @@ export default class WalletSettingsStore extends Store {
     const activeWallet = this.stores.wallets.active;
     if (!activeWallet) return;
 
-    const { id: walletId, name, assurance } = activeWallet;
-    const walletData = { walletId, name, assurance };
+    const { id: walletId, name } = activeWallet;
+    const walletData = { walletId, name };
     walletData[field] = value;
 
     const wallet = await this.updateWalletRequest.execute({
       walletId: walletData.walletId,
       name: walletData.name,
-      assuranceLevel: walletData.assurance,
     }).promise;
 
     if (!wallet) return;

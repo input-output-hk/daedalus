@@ -19,7 +19,7 @@ import validWords from '../../../common/crypto/valid-words.en';
   |  224  |  7 |   231  |  21  |
   |  256  |  8 |   264  |  24  |
 */
-export const generateMnemonic = (ms: ?number = 12) => {
+export const generateMnemonic = (ms: ?number = 15) => {
   let ent;
   switch (ms) {
     case 9:

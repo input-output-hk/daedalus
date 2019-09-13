@@ -4,7 +4,7 @@ import { get, chunk, find, isEqual } from 'lodash';
 import { BigNumber } from 'bignumber.js';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import Wallet from '../domains/Wallet';
+import Wallet, { WalletSyncStateStatuses } from '../domains/Wallet';
 import { WalletTransaction } from '../domains/WalletTransaction';
 import { MAX_ADA_WALLETS_COUNT } from '../config/numbersConfig';
 import { i18nContext } from '../utils/i18nContext';
@@ -399,7 +399,11 @@ export default class WalletsStore extends Store {
         }
       });
       runInAction('refresh active wallet restore', () => {
-        const restoringWallet = find(result, ['syncState.tag', 'restoring']);
+        const restoringWallet = find(
+          result,
+          ['syncState', 'status'],
+          WalletSyncStateStatuses.RESTORING
+        );
         const restoringWalletId = get(restoringWallet, 'id', null);
         restoredWalletId =
           (restoringWalletId === null && this.restoringWalletId) || null;

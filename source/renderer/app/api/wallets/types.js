@@ -1,55 +1,45 @@
 // @flow
 export type AdaWallet = {
   id: string,
+  address_pool_gap: number,
   balance: {
-    available: {
-      quantity: number,
-      unit: WalletUnit,
-    },
-    total: {
-      quantity: number,
-      unit: WalletUnit,
-    },
+    available: WalletBalance,
+    total: WalletBalance,
   },
+  delegation: WalletDelegation,
   name: string,
-  state: {
-    status: 'ready' | string,
-  },
-  delegation: {
-    status: string,
-    target: string,
-  },
-  passphrase: {
+  passphrase?: {
     last_updated_at: string,
   },
+  state: WalletSyncState,
 };
 
 export type WalletUnit = 'lovelace' | 'ada';
 
 export type AdaWallets = Array<AdaWallet>;
 
-export type WalletAssuranceLevel = 'normal' | 'strict';
+export type SyncStateStatus = 'ready' | 'restoring';
 
-export type WalletAssuranceMode = { low: number, medium: number };
+export type DelegationStatus = 'delegating' | 'not_delegating';
 
-export type SyncStateTag = 'restoring' | 'synced';
+export type WalletSyncStateProgress = {
+  quantity: number,
+  unit: 'percentage',
+};
 
 export type WalletSyncState = {
-  data: ?{
-    estimatedCompletionTime: {
-      quantity: number,
-      unit: 'milliseconds',
-    },
-    percentage: {
-      quantity: number,
-      unit: 'percent',
-    },
-    throughput: {
-      quantity: number,
-      unit: 'blocksPerSecond',
-    },
-  },
-  tag: SyncStateTag,
+  status: SyncStateStatus,
+  progress?: WalletSyncStateProgress,
+};
+
+export type WalletBalance = {
+  quantity: number,
+  unit: 'lovelace' | 'ada',
+};
+
+export type WalletDelegation = {
+  status: DelegationStatus,
+  target?: string,
 };
 
 export type Histogram = {
@@ -64,11 +54,21 @@ export type WalletUtxos = {
   },
 };
 
+export type WalletInitData = {
+  name: string,
+  mnemonic_sentence: [string], // [ 15 .. 24 ] words
+  mnemonic_second_factor?: [string], // [ 9 .. 12 ] words
+  passphrase: string,
+  address_pool_gap?: number,
+};
+
 // req/res Wallet types
 export type CreateWalletRequest = {
   name: string,
-  mnemonic: string,
+  mnemonic: [string],
+  mnemonicPassphrase?: [string],
   spendingPassword: ?string,
+  addressPoolGap?: number,
 };
 
 export type UpdateSpendingPasswordRequest = {
@@ -93,7 +93,6 @@ export type RestoreWalletRequest = {
 
 export type UpdateWalletRequest = {
   walletId: string,
-  assuranceLevel: WalletAssuranceLevel,
   name: string,
 };
 export type ImportWalletFromKeyRequest = {
@@ -121,4 +120,8 @@ export type GetWalletCertificateRecoveryPhraseRequest = {
 export type GetWalletRecoveryPhraseFromCertificateRequest = {
   passphrase: string,
   scrambledInput: string,
+};
+
+export type GetWalletRequest = {
+  walletId: string,
 };

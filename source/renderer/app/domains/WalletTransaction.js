@@ -1,9 +1,7 @@
 // @flow
 import { observable } from 'mobx';
 import BigNumber from 'bignumber.js';
-import type { WalletAssuranceMode } from '../api/wallets/types';
 import type {
-  TxnAssuranceLevel,
   TransactionState,
   TrasactionAddresses,
   TransactionType,
@@ -17,16 +15,6 @@ export const transactionStates: {
   PENDING: 'pending',
   FAILED: 'failed',
   OK: 'ok',
-};
-
-export const TxnAssuranceLevelOptions: {
-  LOW: TxnAssuranceLevel,
-  MEDIUM: TxnAssuranceLevel,
-  HIGH: TxnAssuranceLevel,
-} = {
-  LOW: 'low',
-  MEDIUM: 'medium',
-  HIGH: 'high',
 };
 
 export const transactionTypes: {
@@ -64,15 +52,5 @@ export class WalletTransaction {
     state: TransactionState,
   }) {
     Object.assign(this, data);
-  }
-
-  getAssuranceLevelForMode(mode: WalletAssuranceMode): TxnAssuranceLevel {
-    if (this.numberOfConfirmations < mode.low) {
-      return TxnAssuranceLevelOptions.LOW;
-    }
-    if (this.numberOfConfirmations < mode.medium) {
-      return TxnAssuranceLevelOptions.MEDIUM;
-    }
-    return TxnAssuranceLevelOptions.HIGH;
   }
 }

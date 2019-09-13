@@ -1,14 +1,14 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
-import type { DeleteWalletRequest } from '../types';
+import type { GetWalletRequest, AdaWallet } from '../types';
 import { request } from '../../utils/request';
 
-export const deleteWallet = (
+export const getWallet = (
   config: RequestConfig,
-  { walletId }: DeleteWalletRequest
-): Promise<*> =>
+  { walletId }: GetWalletRequest
+): Promise<AdaWallet> =>
   request({
-    method: 'DELETE',
+    method: 'GET',
     path: `/v2/wallets/${walletId}`,
     ...config,
   });
