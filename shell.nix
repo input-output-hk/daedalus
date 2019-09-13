@@ -110,13 +110,6 @@ let
       warn() {
          (echo "###"; echo "### WARNING:  $*"; echo "###") >&2
       }
-      if   test -z "${systemStartString}"
-      then warn "--arg systemStart wasn't passed, cardano won't be able to connect to the demo cluster!"
-      elif test "${systemStartString}" -gt $(date +%s)
-      then warn "--arg systemStart is in future, cardano PROBABLY won't be able to connect to the demo cluster!"
-      elif test "${systemStartString}" -lt $(date -d '12 hours ago' +%s)
-      then warn "--arg systemStart is in 12 hours in the past, unless there is a cluster running with this systemStart cardano won't be able to connect to the demo cluster!"
-      fi
 
       ${localLib.optionalString pkgs.stdenv.isLinux "export XDG_DATA_HOME=$HOME/.local/share"}
       cp -f ${daedalusPkgs.iconPath.${cluster}.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
