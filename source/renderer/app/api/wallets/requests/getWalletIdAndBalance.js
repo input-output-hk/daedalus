@@ -8,7 +8,7 @@ import { request } from '../../utils/request';
 
 export const getWalletIdAndBalance = (
   config: RequestConfig,
-  { recoveryPhrase }: GetWalletIdAndBalanceRequest
+  { recoveryPhrase, getBalance }: GetWalletIdAndBalanceRequest
 ): Promise<GetWalletIdAndBalanceResponse> =>
   request(
     {
@@ -16,6 +16,8 @@ export const getWalletIdAndBalance = (
       path: '/api/internal/calculate_mnemonic',
       ...config,
     },
-    {},
+    {
+      read_balance: getBalance,
+    },
     recoveryPhrase
   );

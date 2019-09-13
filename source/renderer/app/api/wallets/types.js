@@ -52,7 +52,7 @@ export type WalletUtxos = {
 
 export type WalletIdAndBalance = {
   walletId: string,
-  balance: BigNumber,
+  balance: ?BigNumber,
 };
 
 // req/res Wallet types
@@ -78,11 +78,12 @@ export type GetWalletUtxosRequest = {
 
 export type GetWalletIdAndBalanceRequest = {
   recoveryPhrase: Array<string>,
+  getBalance: boolean,
 };
 
 export type GetWalletIdAndBalanceResponse = {
   walletId: string,
-  balance: number,
+  balance: ?number,
 };
 
 export type RestoreWalletRequest = {

@@ -880,20 +880,26 @@ export default class AdaApi {
   getWalletIdAndBalance = async (
     request: GetWalletIdAndBalanceRequest
   ): Promise<WalletIdAndBalance> => {
-    const { recoveryPhrase } = request;
-    Logger.debug('AdaApi::getWalletIdAndBalance called');
+    const { recoveryPhrase, getBalance } = request;
+    Logger.debug('AdaApi::getWalletIdAndBalance called', {
+      parameters: { getBalance },
+    });
     try {
       const response: GetWalletIdAndBalanceResponse = await getWalletIdAndBalance(
         this.config,
         {
           recoveryPhrase,
+          getBalance,
         }
       );
       Logger.debug('AdaApi::getWalletIdAndBalance success', { response });
       const { walletId, balance } = response;
       return {
         walletId,
-        balance: new BigNumber(balance).dividedBy(LOVELACES_PER_ADA),
+        balance:
+          balance !== null // If balance is "null" it means we didn't fetch it - getBalance was false
+            ? new BigNumber(balance).dividedBy(LOVELACES_PER_ADA)
+            : null,
       };
     } catch (error) {
       Logger.error('AdaApi::getWalletIdAndBalance error', { error });
