@@ -1,0 +1,59 @@
+.component {
+  height: 90vh;
+  width: 90vw;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid red;
+  margin-top: 5vh;
+  margin-left: 5vw;
+  margin-right: 5vw;
+  background-color: rgba(193, 66, 66, 0.7);
+}
+
+.h1 {
+  color: #fff;
+  margin-bottom: 1vh;
+}
+.paragraph {
+  color: #fff;
+}
+
+.closeButton {
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-end;
+  position: fixed;
+  right: 0.5vw;
+  top: 6vh;
+  margin-right: 6vw;
+  z-index: 4;
+
+  span {
+    border-radius: 50%;
+    height: 44px;
+    width: 44px;
+
+    &:hover {
+      background-color: var(--theme-about-window-icon-close-hover-background);
+      border-radius: 50%;
+    }
+  }
+
+  svg {
+    height: 12px;
+    margin-top: 16px;
+    width: 12px;
+
+    polygon {
+      fill: #fff;
+      // fill: var(--theme-about-window-icon-close-button-color);
+    }
+    path {
+      stroke: #fff;
+      // stroke: var(--theme-about-window-icon-close-button-color);
+    }
+  }
+}

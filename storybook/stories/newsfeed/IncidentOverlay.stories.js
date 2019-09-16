@@ -1,6 +1,19 @@
 // @flow
-// eslint-disable-file no-unused-vars
+
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
 import StoryDecorator from '../support/StoryDecorator';
+import IncidentOverlay from '../../../source/renderer/app/components/newsfeed/IncidentOverlay';
+
+storiesOf('NewsFeed', module)
+  .addDecorator(story => (
+    <StoryDecorator>
+      {story({
+        content: {
+          h1: 'Lazarus Incident',
+          paragraph: 'The network has failed, please go home',
+        },
+      })}
+    </StoryDecorator>
+  ))
+  .add('Incident Overlay', props => <IncidentOverlay {...props} />);

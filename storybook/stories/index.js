@@ -38,3 +38,4 @@ import './Notifications.stories';
 
 // News feed
 import './newsfeed/NewsFeed.stories';
+import './newsfeed/IncidentOverlay.stories';
