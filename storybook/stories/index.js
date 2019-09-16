@@ -35,3 +35,6 @@ import './Widgets.stories';
 
 // Notifications
 import './Notifications.stories';
+
+// NewsFeed
+import './newsfeed/IncidentOverlay.stories';
