@@ -89,8 +89,8 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props, State> {
             checked={safetyAgreement}
             skin={CheckboxSkin}
             className={styles.checkbox}
+            label={intl.formatMessage(messages.recoveryPhraseStep3Paragraph2)}
           />
-          {intl.formatMessage(messages.recoveryPhraseStep3Paragraph2)}
         </p>
       </Dialog>
     );
