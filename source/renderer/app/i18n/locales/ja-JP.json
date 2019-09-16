@@ -489,7 +489,7 @@
   "wallet.restore.dialog.passwordSwitchPlaceholder": "パスワードを設定することでウォレットの秘密鍵を暗号化し、ウォレットの安全性を高めます。",
   "wallet.restore.dialog.recovery.phrase.input.hint": "復元フレーズを入力してください",
   "wallet.restore.dialog.recovery.phrase.input.label": "復元フレーズ",
-  "wallet.restore.dialog.recovery.phrase.input.noResults": "該当する単語は見つかりませんでした",
+  "wallet.restore.dialog.recovery.phrase.input.noResults": "該当するフレーズは見つかりませんでした",
   "wallet.restore.dialog.repeatPasswordLabel": "パスワードを再度入力してください",
   "wallet.restore.dialog.restore.wallet.button.label": "ウォレット復元",
   "wallet.restore.dialog.shielded.recovery.phrase.input.hint": "ペーパーウォレット証明書に記載されている復元フレーズを入力してください。",
