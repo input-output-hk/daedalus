@@ -1,7 +1,10 @@
 @wip
 Feature: News feed
 
-  News feed delivers
+  News feed delivers important information to Daedalus users, like information about network failures, bugs and other
+  issues, information about upcoming and recent releases and so on. News are categorised in 4 types:
+  incident, alert, announcement and info. Incidents and alerts cover the whole user interface,
+  announcements and info are delivered in the news feed part of the user interface.
 
   Scenario: No news available
 
