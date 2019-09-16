@@ -40,7 +40,6 @@ export default class SidebarStore extends Store {
       mnemonicsConfirmationDate: w.mnemonicsConfirmationDate,
       mnemonicsConfirmationStatus: w.mnemonicsConfirmationStatus,
       mnemonicsConfirmationStatusType: w.mnemonicsConfirmationStatusType,
-      blah: true,
     }));
   }
 

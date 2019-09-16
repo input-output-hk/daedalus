@@ -569,7 +569,7 @@
   "wallet.settings.recoveryPhraseStep4SupportUrl": "https://iohk.zendesk.com/hc/ja/articles/360035341914 ",
   "wallet.settings.recoveryPhraseStep4Title": "不一致",
   "wallet.settings.recoveryPhraseValidationButton": "ウォレット復元フレーズを検証する",
-  "wallet.settings.recoveryPhraseValidationCheckedNotification":  "このウォレットの復元フレーズは<b>{timeAgo}</b>に検証されました。ウォレット復元フレーズを再度検証してください。",
+  "wallet.settings.recoveryPhraseValidationCheckedNotification": "このウォレットの復元フレーズは<b>{timeAgo}</b>に検証されました。ウォレット復元フレーズを再度検証してください。",
   "wallet.settings.recoveryPhraseValidationCheckedOk": "このウォレットの復元フレーズは<b>{timeAgo}</b>に検証されました。",
   "wallet.settings.recoveryPhraseValidationCheckedWarning": "このウォレットの復元フレーズは<b>{timeAgo}</b>に検証されました。",
   "wallet.settings.recoveryPhraseValidationDescription": "ウォレットの資金を別のコンピューターで復元するには、正確なウォレット復元フレーズが必要です。お持ちのウォレット復元フレーズを再入力すると、フレーズが正しいかどうか確認することができます。",
