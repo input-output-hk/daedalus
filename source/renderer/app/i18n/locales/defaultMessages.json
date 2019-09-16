@@ -6358,9 +6358,9 @@
           "line": 56
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
-        "id": "wallet.settings.invalidRecoveryPhrase",
+        "id": "wallet.settings.recoveryPhraseStep2InvalidMnemonics",
         "start": {
-          "column": 25,
+          "column": 39,
           "line": 51
         }
       }

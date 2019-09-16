@@ -48,8 +48,8 @@ export const messages = defineMessages({
     description:
       '"No results" message for the recovery phrase input search results.',
   },
-  invalidRecoveryPhrase: {
-    id: 'wallet.settings.invalidRecoveryPhrase',
+  recoveryPhraseStep2InvalidMnemonics: {
+    id: 'wallet.settings.recoveryPhraseStep2InvalidMnemonics',
     defaultMessage: '!!!Invalid recovery phrase',
     description:
       'Error message shown when invalid recovery phrase was entered.',
@@ -94,7 +94,9 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
             }
             return [
               this.props.mnemonicValidator(value),
-              this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
+              this.context.intl.formatMessage(
+                messages.recoveryPhraseStep2InvalidMnemonics
+              ),
             ];
           },
         },
