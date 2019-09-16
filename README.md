@@ -46,6 +46,8 @@ The result can be found at `./result/daedalus-*.bin`.
 2. Run `yarn dev` from the `nix-shell`
 3. Once Daedalus has started, and has gotten past the loading screen, run `yarn v2-api-importer` from a new terminal window. This is only required if you wish to import some funded wallets
 
+API docs for pinned cardano-wallet version: https://input-output-hk.github.io/cardano-wallet/api/v2019-09-13/
+
 ### V2 Known Issues
 - As network-info is stubbed, the NTP check will throw. Just disregard this for now.
 - Lots of things have been temporarily commented out or mocked to get the integration started.
