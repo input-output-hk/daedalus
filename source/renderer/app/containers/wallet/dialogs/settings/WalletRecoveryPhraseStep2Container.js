@@ -56,11 +56,15 @@ export default class WalletRecoveryPhraseStep2Container extends Component<Props>
     const { getWalletIdAndBalanceRequest } = walletBackup;
     const { closeActiveDialog } = this.props.actions.dialogs;
 
+    const isVerifying =
+      getWalletIdAndBalanceRequest.isExecuting ||
+      getWalletIdAndBalanceRequest.wasExecuted;
+
     return (
       <WalletRecoveryPhraseStep2Dialog
         mnemonicValidator={mnemonic => isValidMnemonic(mnemonic)}
         suggestedMnemonics={validWords}
-        isVerifying={getWalletIdAndBalanceRequest.isExecuting}
+        isVerifying={isVerifying}
         onVerify={this.handleVerify}
         onClose={closeActiveDialog.trigger}
       />
