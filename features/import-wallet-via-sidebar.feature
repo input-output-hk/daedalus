@@ -7,6 +7,7 @@ Feature: Import Wallet via Sidebar
       | name        |
       | Test wallet |
 
+  @skip
   Scenario: Successfully Importing a Wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar
@@ -21,6 +22,7 @@ Feature: Import Wallet via Sidebar
     And I should see the restore status notification while import is running
     And I should not see the restore status notification once import is finished
 
+  @skip
   Scenario: Wallet Already Imported Error
     Given I have a "Imported Wallet" with funds
     When I try to import the wallet with funds again
@@ -38,7 +40,7 @@ Feature: Import Wallet via Sidebar
     And I should see wallet spending password inputs
     And I enter wallet spending password:
       | password  | repeatedPassword |
-      | Secret123 | Secret123        |
+      | Secret1234 | Secret1234      |
     And I click on the import wallet button in import wallet dialog
     Then I should not see the import wallet dialog anymore
     And I should have newly created "Imported Wallet" wallet loaded

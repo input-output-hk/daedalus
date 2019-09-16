@@ -16,7 +16,6 @@ const cfg = {
 };
 
 /* eslint-disable react/display-name  */
-
 export default () => (
   <WalletUtxo
     walletAmount={

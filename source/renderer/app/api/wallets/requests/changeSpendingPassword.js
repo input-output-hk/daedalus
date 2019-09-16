@@ -1,7 +1,6 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
 import type { AdaWallet } from '../types';
-import { encryptPassphrase } from '../../utils';
 import { request } from '../../utils/request';
 
 export type ChangeSpendingPasswordParams = {
@@ -13,20 +12,16 @@ export type ChangeSpendingPasswordParams = {
 export const changeSpendingPassword = (
   config: RequestConfig,
   { walletId, oldPassword, newPassword }: ChangeSpendingPasswordParams
-): Promise<AdaWallet> => {
-  const encryptedOldPassphrase = oldPassword
-    ? encryptPassphrase(oldPassword)
-    : '';
-  const encryptedNewPassphrase = newPassword
-    ? encryptPassphrase(newPassword)
-    : '';
-  return request(
+): Promise<AdaWallet> =>
+  request(
     {
       method: 'PUT',
-      path: `/api/v1/wallets/${walletId}/password`,
+      path: `/v2/wallets/${walletId}/passphrase`,
       ...config,
     },
     {},
-    { old: encryptedOldPassphrase, new: encryptedNewPassphrase }
+    {
+      old_passphrase: oldPassword,
+      new_passphrase: newPassword,
+    }
   );
-};
