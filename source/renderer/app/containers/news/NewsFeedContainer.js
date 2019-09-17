@@ -10,9 +10,7 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    const { newsFeedData, newsItems, newsUpdatedAt } = this.props.stores.newsFeed;
-    console.debug('newsFeedData: ', {newsFeedData, newsItems, newsUpdatedAt});
-    // return <NewsFeed news={newsFeedData} />;
-    return <p>das</p>;
+    const { newsFeedData } = this.props.stores.newsFeed;
+    return <NewsFeed news={newsFeedData} />;
   }
 }

@@ -13,11 +13,13 @@ export default class IncidentOverlayContainer extends Component<InjectedProps> {
 
   render() {
     const { newsFeedData } = this.props.stores.newsFeed;
-    const incident = newsFeedData.find(newsItem => newsItem.type === NewsTypes.INCIDENT);
+    const incident = newsFeedData.find(
+      newsItem => newsItem.type === NewsTypes.INCIDENT
+    );
 
     return (
       <CenteredLayout>
-        <IncidentOverlay item={incident} />
+        {incident && <IncidentOverlay item={incident} />}
       </CenteredLayout>
     );
   }

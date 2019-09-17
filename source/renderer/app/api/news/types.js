@@ -23,7 +23,7 @@ export type NewsItem = {
   title: NewsTranslations,
   content: NewsTranslations,
   target: NewsTarget,
-  action:  NewsAction,
+  action: NewsAction,
   date: Date,
   type: NewsType,
 };

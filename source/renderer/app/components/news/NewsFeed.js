@@ -6,7 +6,6 @@ import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import styles from './NewsFeed.scss';
-import type NewsItem from '../../api/news/types';
 import News from '../../domains/News';
 
 const messages = defineMessages({
@@ -42,8 +41,7 @@ type Props = {
 export default class NewsFeed extends Component<Props> {
   static defaultProps = {
     onClose: null,
-    news: [],
-    noFetchedData: false,
+    noFetchedData: false, // @TODO - track News Items state from storage
   };
 
   static contextTypes = {
