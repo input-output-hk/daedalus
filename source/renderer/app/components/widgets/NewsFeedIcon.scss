@@ -1,0 +1,26 @@
+.component {
+  overflow: visible;
+  position: absolute;
+  right: 30px;
+}
+
+.icon {
+  background-color: var(--theme-news-feed-icon-close-hover-background-color);
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 11px 8px;
+  position: relative;
+  top: -5px;
+
+  svg {
+    height: 22px;
+    opacity: 0.4;
+    position: relative;
+    top: 5px;
+    width: 22px;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}

@@ -3,10 +3,12 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
+import NewsFeedIcon from '../components/widgets/NewsFeedIcon';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
 import type { InjectedProps } from '../types/injectedPropsType';
 import menuIconOpened from '../assets/images/menu-opened-ic.inline.svg';
 import menuIconClosed from '../assets/images/menu-ic.inline.svg';
+import newsFeedBellIcon from '../assets/images/top-bar/bell.inline.svg';
 import { matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
 
@@ -50,6 +52,10 @@ export default class TopBarContainer extends Component<Props> {
         <NodeSyncStatusIcon
           networkStatus={networkStatus}
           isMainnet={isMainnet}
+        />
+        <NewsFeedIcon
+          onNewsFeedIconClick={actions.app.toggleNewsFeed.trigger}
+          newsFeedBellIcon={newsFeedBellIcon}
         />
       </TopBar>
     );

@@ -66,9 +66,7 @@ export default class App extends Component<{
                     <GenericNotificationContainer key="genericNotification" />,
                   ]
                 )}
-                {newsFeedIsOpen && (
-                  <NewsFeedContainer />
-                )}
+                {newsFeedIsOpen && <NewsFeedContainer />}
               </Fragment>
             </IntlProvider>
           </ThemeProvider>
