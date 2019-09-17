@@ -16,14 +16,14 @@
     position: relative;
     top: 5px;
     width: 22px;
-
-    &:hover {
-      opacity: 1;
-    }
   }
 
   &:hover {
     background-color: var(--theme-news-feed-icon-toggle-hover-background-color);
     border-radius: 50%;
+
+    svg {
+      opacity: 1;
+    }
   }
 }
