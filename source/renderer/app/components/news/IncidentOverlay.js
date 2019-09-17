@@ -10,7 +10,7 @@ type Props = {
     text?: string,
     url?: string,
   },
-  content?: {
+  content: {
     h1: string,
     h2?: string,
     paragraph: string,

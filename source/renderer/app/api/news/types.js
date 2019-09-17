@@ -1,8 +1,8 @@
 // @flow
 
 export type NewsTranslations = {
-  ['en-US']: string,
-  ['ja-JP']: string,
+  'en-US': string,
+  'ja-JP': string,
 };
 
 export type NewsItem = {
@@ -24,5 +24,5 @@ export type NewsItem = {
 
 export type GetNewsResponse = {
   updatedAt: Date,
-  items: Array<Item>,
+  items: Array<NewsItem>,
 };
