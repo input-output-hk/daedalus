@@ -40,6 +40,10 @@ Changelog
 - Improved "Netlify" build setup ([PR 1509](https://github.com/input-output-hk/daedalus/pull/1509))
 - Unified support request data handling in common method ([1472](https://github.com/input-output-hk/daedalus/pull/1472))
 
+### Specifications
+
+- News feed ([PR 1569](https://github.com/input-output-hk/daedalus/pull/1569))
+
 ## 0.14.0
 
 ### Features
