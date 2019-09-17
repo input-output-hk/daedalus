@@ -1,35 +1,22 @@
 // @flow
 import React, { Component } from 'react';
+import moment from 'moment';
+import { observer } from 'mobx-react';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import styles from './IncidentOverlay.scss';
-
-type Props = {
-  action?: {
-    route?: Function,
-    text?: string,
-    url?: string,
-  },
-  content: {
-    h1: string,
-    h2?: string,
-    paragraph: string,
-    bold?: string,
-    italic?: string,
-  },
-  target?: {
-    daedalus_version?: string,
-    target_os?: string,
-    target_os_version?: string,
-  },
-  title?: string,
-  type?: string,
-};
+import type { NewsItem } from '../../api/news/types';
+import News from '../../domains/News';
 
 type State = {
   showOverlay: boolean,
 };
 
+type Props = {
+  item: News,
+};
+
+@observer
 export default class IncidentOverlay extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -42,7 +29,7 @@ export default class IncidentOverlay extends Component<Props, State> {
 
   render() {
     const { showOverlay } = this.state;
-    const { content } = this.props;
+    const { content, date, action, title } = this.props;
     return (
       showOverlay && (
         <div className={styles.component}>
@@ -51,8 +38,18 @@ export default class IncidentOverlay extends Component<Props, State> {
             icon={closeCrossThin}
             onClose={this.onClose}
           />
-          <h1 className={styles.h1}>{content.h1}</h1>
-          <p className={styles.paragraph}>{content.paragraph}</p>
+          <h1 className={styles.title}>{title}</h1>
+          <span className={styles.date}>
+            {moment(date).format('YYYY-MM-DD')}
+          </span>
+          <p className={styles.content}>{content}</p>
+          <button
+            className={styles.dismissBtn}
+            type="button"
+            onClick={this.onClose}
+          >
+            {action.label}
+          </button>
         </div>
       )
     );

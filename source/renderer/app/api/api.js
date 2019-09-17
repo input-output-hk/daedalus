@@ -1012,7 +1012,7 @@ export default class AdaApi {
   getNews = async (): Promise<any> => {
     try {
       return await getNews();
-    } catch(error) {
+    } catch (error) {
       throw new Error('NEWS_FETCH_FAILED');
     }
   };
