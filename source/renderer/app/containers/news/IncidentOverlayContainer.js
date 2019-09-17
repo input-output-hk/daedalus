@@ -11,9 +11,12 @@ export default class IncidentOverlayContainer extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
+    const { newsFeed } = this.props.stores.newsFeed;
+    const incident = newsFeed.find(newsItem => newsItem.type === 'incident');
+
     return (
       <CenteredLayout>
-        <IncidentOverlay />
+        <IncidentOverlay {...incident} />
       </CenteredLayout>
     );
   }
