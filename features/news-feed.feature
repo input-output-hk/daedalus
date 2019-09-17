@@ -9,7 +9,7 @@ Feature: News feed
   Background:
     Given I have completed the basic setup
 
-  @watch
+  @wip
   Scenario: Bell icon is highlighted when there are unread news
 
     Given there are unread news
@@ -22,7 +22,7 @@ Feature: News feed
     Then the bell icon is not highlighted
 
   @wip
-  Scenario: No news available
+  Scenario: No news available in the feed
 
     Given there is no news
     Then the bell icon is not highlighted
@@ -31,7 +31,7 @@ Feature: News feed
     And the news feed contains "no news available" message
 
   @wip
-  Scenario: Only read news available
+  Scenario: Only read news available in the feed
 
     Given there are 5 read news
     When I click on the bell icon

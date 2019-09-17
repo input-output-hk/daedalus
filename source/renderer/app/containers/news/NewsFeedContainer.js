@@ -11,6 +11,14 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
 
   render() {
     const { newsFeedData } = this.props.stores.newsFeed;
-    return <NewsFeed news={newsFeedData} />;
+    const { toggleNewsFeed } = this.props.actions.app;
+    const newsFeedShowClass = this.props.stores.app.newsFeedIsOpen;
+    return (
+      <NewsFeed
+        news={newsFeedData}
+        onClose={toggleNewsFeed.trigger}
+        newsFeedShowClass={newsFeedShowClass}
+      />
+    );
   }
 }
