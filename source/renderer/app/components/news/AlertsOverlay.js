@@ -2,6 +2,8 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import { observer } from 'mobx-react';
+import DialogCloseButton from '../widgets/DialogCloseButton';
+import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import styles from './IncidentOverlay.scss';
 import News from '../../domains/News';
 
@@ -10,11 +12,11 @@ type State = {
 };
 
 type Props = {
-  incident: News,
+  alerts: Array<News>,
 };
 
 @observer
-export default class IncidentOverlay extends Component<Props, State> {
+export default class AlertsOverlay extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -26,10 +28,17 @@ export default class IncidentOverlay extends Component<Props, State> {
 
   render() {
     const { showOverlay } = this.state;
-    const { content, date, action, title } = this.props.incident;
+    const { alerts } = this.props;
+    const alert = alerts[0];
+    const { content, date, action, title } = alert;
     return (
       showOverlay && (
         <div className={styles.component}>
+          <DialogCloseButton
+            className={styles.closeButton}
+            icon={closeCrossThin}
+            onClose={this.onClose}
+          />
           <h1 className={styles.title}>{title}</h1>
           <span className={styles.date}>
             {moment(date).format('YYYY-MM-DD')}

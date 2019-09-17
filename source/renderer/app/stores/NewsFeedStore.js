@@ -65,7 +65,14 @@ export default class NewsFeedStore extends Store {
         read: readNews.includes(item.date),
       }));
     }
-
     return newsFeedData;
+  }
+
+  @computed get incident(): ?News {
+    return null;
+  }
+
+  @computed get alerts(): Array<News> {
+    return [];
   }
 }

@@ -1,5 +1,4 @@
 // @flow
-
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import StoryDecorator from '../support/StoryDecorator';
@@ -9,25 +8,18 @@ storiesOf('NewsFeed', module)
   .addDecorator(story => (
     <StoryDecorator>
       {story({
-        action: {
-          label: {
-            'en-US': 'Dismiss',
-            'ja-JP': 'Dismiss',
+        incident: {
+          action: {
+            label: 'Dismiss',
           },
-        },
-        content: {
-          'en-US': 'Network failure',
-          'ja-JP': 'Network failure',
-        },
-        date: Date.now(),
-        target: {
-          daedalus: 'v0.13',
-          platform: 'macOS',
-          platformVersion: '10.14.6',
-        },
-        title: {
-          'en-US': 'Lazarus Incident',
-          'ja-JP': 'Lazarus Incident',
+          content: 'Network failure',
+          date: Date.now(),
+          target: {
+            daedalus: 'v0.13',
+            platform: 'macOS',
+            platformVersion: '10.14.6',
+          },
+          title: 'Lazarus Incident',
         },
       })}
     </StoryDecorator>

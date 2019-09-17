@@ -1,3 +1,37 @@
+.closeButton {
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-end;
+  position: fixed;
+  right: 5vw;
+  top: 8vh;
+  z-index: 4;
+
+  span {
+    border-radius: 50%;
+    height: 44px;
+    width: 44px;
+
+    &:hover {
+      background-color: var(--theme-about-window-icon-close-hover-background);
+      border-radius: 50%;
+    }
+  }
+
+  svg {
+    height: 12px;
+    margin-top: 16px;
+    width: 12px;
+
+    polygon {
+      fill: #fff;
+    }
+    path {
+      stroke: #fff;
+    }
+  }
+}
+
 .component {
   align-items: center;
   background-color: rgba(193, 66, 66, 0.7);
