@@ -34,7 +34,7 @@ function generateImportPayload(mnemonic, name) {
   return {
     name,
     mnemonic_sentence: mnemonic,
-    passphrase: 'Secure Passphrase',
+    passphrase: 'Secret1234',
     address_pool_gap: 20
   }
 }
