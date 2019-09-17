@@ -24,7 +24,7 @@ export default class IncidentOverlay extends Component<NewsItem, State> {
 
   render() {
     const { showOverlay } = this.state;
-    const { content, date, title } = this.props;
+    const { content, date, action, title } = this.props;
     return (
       showOverlay && (
         <div className={styles.component}>
@@ -33,14 +33,18 @@ export default class IncidentOverlay extends Component<NewsItem, State> {
             icon={closeCrossThin}
             onClose={this.onClose}
           />
-          <h1 className={styles.title}>{title[0]}</h1>
+          <h1 className={styles.title}>{title['en-US']}</h1>
           <span className={styles.date}>
             {moment(date).format('YYYY-MM-DD')}
           </span>
-          <p className={styles.p}>{content[0]}</p>
-          {/* <p className={styles.paragraph}>{content.paragraph}</p>
-          <bold className={styles.bold}>{content.bold}</bold>
-          <i className={styles.italic}>{content.italic}</i> */}
+          <p className={styles.content}>{content['en-US']}</p>
+          <button
+            className={styles.dismissBtn}
+            type="button"
+            onClick={this.onClose}
+          >
+            {action.label['en-US']}
+          </button>
         </div>
       )
     );

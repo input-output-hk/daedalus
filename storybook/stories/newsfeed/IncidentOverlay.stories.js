@@ -9,14 +9,26 @@ storiesOf('NewsFeed', module)
   .addDecorator(story => (
     <StoryDecorator>
       {story({
-        content: {
-          h1: 'Network failure',
-          h2:
-            'The network has failed, please do not try accessing it at this time',
-          paragraph:
-            'You will not recieve a response until it is running again',
+        action: {
+          label: {
+            'en-US': 'Dismiss',
+            'ja-JP': 'Dismiss',
+          },
         },
-        title: 'Lazarus Incident',
+        content: {
+          'en-US': 'Network failure',
+          'ja-JP': 'Network failure',
+        },
+        date: Date.now(),
+        target: {
+          daedalus: 'v0.13',
+          platform: 'macOS',
+          platformVersion: '10.14.6',
+        },
+        title: {
+          'en-US': 'Lazarus Incident',
+          'ja-JP': 'Lazarus Incident',
+        },
       })}
     </StoryDecorator>
   ))
