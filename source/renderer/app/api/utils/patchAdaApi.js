@@ -15,6 +15,7 @@ import type {
   GetNodeSettingsResponse,
   GetLatestAppVersionResponse,
 } from '../nodes/types';
+import type { GetNewsResponse } from '../news/types';
 
 let LATEST_APP_VERSION = null;
 let LOCAL_TIME_DIFFERENCE = 0;
@@ -23,6 +24,7 @@ let NETWORK_BLOCK_HEIGHT = null;
 let NEXT_ADA_UPDATE = null;
 let SUBSCRIPTION_STATUS = null;
 let APPLICATION_VERSION = null;
+let fakeNewsFeedJson: ?GetNewsResponse;
 
 export default (api: AdaApi) => {
   api.getLocalTimeDifference = async () =>
@@ -184,5 +186,19 @@ export default (api: AdaApi) => {
 
   api.setNetworkBlockHeight = async (height: number) => {
     NETWORK_BLOCK_HEIGHT = height;
+  };
+
+  api.setFakeNewsFeedJsonForTesting = (json: ?GetNewsResponse) => {
+    fakeNewsFeedJson = json;
+  };
+
+  api.getNews = (): Promise<GetNewsResponse> => {
+    return new Promise((resolve, reject) => {
+      if (!fakeNewsFeedJson) {
+        reject(new Error('NEWS_FETCH_FAILED'));
+      } else {
+        resolve(fakeNewsFeedJson);
+      }
+    });
   };
 };
