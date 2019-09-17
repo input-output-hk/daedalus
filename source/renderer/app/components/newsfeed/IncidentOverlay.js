@@ -25,7 +25,7 @@ type Props = {
     target_os_version?: string,
   },
   title?: string,
-  type?: string,
+  // type?: string,
 };
 
 type State = {
