@@ -94,6 +94,8 @@
   "daedalus.diagnostics.dialog.system.info": "システム情報",
   "daedalus.diagnostics.dialog.systemTimeCorrect": "システム時間正常",
   "daedalus.diagnostics.dialog.systemTimeIgnored": "システム時間無視",
+  "daedalus.diagnostics.dialog.unknownDiskSpace": "不明",
+  "daedalus.diagnostics.dialog.unknownDiskSpaceSupportUrl": "https://iohk.zendesk.com/hc/ja/articles/360035654533",
   "daedalus.internetConnectionStatus.dialog.checkAgainLabel": "もう一度確認する",
   "daedalus.internetConnectionStatus.dialog.disconnectedDescription": "Daedalusはオフラインで動作しません。",
   "daedalus.internetConnectionStatus.dialog.disconnectedTitle": "インターネットの接続が切れています",

@@ -19,6 +19,7 @@ Changelog
 
 ### Fixes
 
+- Implemented disk space check error handling ([PR 1562](https://github.com/input-output-hk/daedalus/pull/1562))
 - Fixed UI issues across different app themes ([PR 1547](https://github.com/input-output-hk/daedalus/pull/1547))
 - Fixed minor UI issues on the "Delegation center" screen and "Delegation setup" wizard ([PR 1545](https://github.com/input-output-hk/daedalus/pull/1545))
 - Fixed "White" theme styles ([PR 1532](https://github.com/input-output-hk/daedalus/pull/1532))
@@ -39,6 +40,10 @@ Changelog
 - Refactored theme management code to be scalable ([PR 1502](https://github.com/input-output-hk/daedalus/pull/1502))
 - Improved "Netlify" build setup ([PR 1509](https://github.com/input-output-hk/daedalus/pull/1509))
 - Unified support request data handling in common method ([1472](https://github.com/input-output-hk/daedalus/pull/1472))
+
+### Specifications
+
+- News feed ([PR 1569](https://github.com/input-output-hk/daedalus/pull/1569))
 
 ## 0.14.0
 
