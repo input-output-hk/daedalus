@@ -4,7 +4,13 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  max-width: 360px;
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: width 400ms linear;
+  width: 0;
+  z-index: 20;
 
   .newsFeedHeader {
     align-items: center;
@@ -20,6 +26,7 @@
       font-family: var(--font-regular);
       font-size: 18px;
       line-height: 1.33;
+      opacity: 0;
     }
 
     .newsFeedCloseBtn {
@@ -81,6 +88,16 @@
         padding: 7px;
         text-align: center;
         width: 280px;
+      }
+    }
+  }
+
+  &.show {
+    width: 360px;
+
+    .newsFeedHeader {
+      .newsFeedTitle {
+        opacity: 1;
       }
     }
   }
