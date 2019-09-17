@@ -1,133 +1,99 @@
 import { Given } from 'cucumber';
 import newsDummyJson from '../../../../source/renderer/app/config/news.dummy';
 
-Given('there are unread news', async function() {
-  // Prepare news in Daedalus client
-  const newsFeedData = await this.client.executeAsync((news, done) => {
+async function prepareFakeNews(context, fakeNews, preparation, ...args) {
+  // Run custom preparation logic
+  await context.client.executeAsync(preparation, fakeNews, ...args);
+  // Extract the computed news feed data from the store
+  const newsData = await context.client.executeAsync(done => {
     const newsFeed = daedalus.stores.newsFeed;
-    // Set dummy news feed data
-    daedalus.api.ada.setFakeNewsFeedJsonForTesting(news);
     // Refresh the news feed request & store
     newsFeed.getNews().then(() => done(newsFeed.newsFeedData));
-  }, newsDummyJson);
-  if (newsFeedData.value) {
+  });
+  if (newsData.value) {
     // Provide the news feed data from the store to the other steps
-    this.news = newsFeedData.value;
+    context.news = newsData.value;
   }
+}
+
+Given('there are unread news', async function() {
+  await prepareFakeNews(this, newsDummyJson, (news, done) => {
+    daedalus.api.ada.setFakeNewsFeedJsonForTesting(news);
+    done();
+  });
 });
 
 Given('there are no unread news', async function() {
-  // Prepare news in Daedalus client
-  const newsFeedData = await this.client.executeAsync((news, done) => {
-    const newsFeed = daedalus.stores.newsFeed;
+  await prepareFakeNews(this, newsDummyJson, (news, done) => {
     const api = daedalus.api;
     // Set dummy news feed data
     api.ada.setFakeNewsFeedJsonForTesting(news);
     // Mark all news as read
-    api.localStorage
-      .markNewsAsRead(news.items.map(i => i.date))
-      // Refresh the news feed request & store
-      .then(newsFeed.getNews)
-      // Return the computed news feed data
-      .then(() => done(newsFeed.newsFeedData));
-  }, newsDummyJson);
-
-  // Provide the news feed data from the store to the other steps
-  if (newsFeedData.value) {
-    this.news = newsFeedData.value;
-  }
+    api.localStorage.markNewsAsRead(news.items.map(i => i.date)).then(done);
+  });
+  console.log(this.news);
 });
 
 Given('there is no news', async function() {
-  // Prepare news in Daedalus client
-  await this.client.executeAsync(done => {
-    // Set dummy news feed data
+  await prepareFakeNews(this, newsDummyJson, (news, done) => {
     daedalus.api.ada.setFakeNewsFeedJsonForTesting({
       updatedAt: Date.now(),
       items: [],
     });
-    // Refresh the news feed request & store
-    daedalus.stores.newsFeed.getNews().then(done);
+    done();
   });
-  this.news = [];
 });
 
 Given('there are 5 read news', async function() {
-  // Prepare news in Daedalus client
-  const newsFeedData = await this.client.executeAsync((news, done) => {
-    const newsFeed = daedalus.stores.newsFeed;
-    const items = news.items.slice(0, 5);
+  await prepareFakeNews(this, newsDummyJson, (news, done) => {
     const api = daedalus.api;
+    const items = news.items.slice(0, 5);
     // Set dummy news feed data
     api.ada.setFakeNewsFeedJsonForTesting({
       updatedAt: Date.now(),
       items,
     });
     // Mark all news as read
-    api.localStorage
-      .markNewsAsRead(items.map(i => i.date))
-      // Refresh the news feed request & store
-      .then(newsFeed.getNews)
-      // Return the computed news feed data
-      .then(() => done(newsFeed.newsFeedData));
-  }, newsDummyJson);
-
-  // Provide the news feed data from the store to the other steps
-  if (newsFeedData.value) {
-    this.news = newsFeedData.value;
-  }
+    api.localStorage.markNewsAsRead(items.map(i => i.date)).then(done);
+  });
 });
 
 Given('there is an incident', async function() {
-  const newsIncident = newsDummyJson.items.find(i => i.type === 'incident');
-  const newsFeedData = await this.client.executeAsync((incident, done) => {
-    const newsFeed = daedalus.stores.newsFeed;
+  await prepareFakeNews(this, newsDummyJson, (news, done) => {
+    const incident = news.items.find(i => i.type === 'incident');
     daedalus.api.ada.setFakeNewsFeedJsonForTesting({
       updatedAt: Date.now(),
       items: [incident],
     });
-    // Refresh the news feed request & store
-    newsFeed.getNews().then(() => done(newsFeed.newsFeedData));
-  }, newsIncident);
-  // Provide the news feed data from the store to the other steps
-  if (newsFeedData.value) {
-    this.news = newsFeedData.value;
-  }
+    done();
+  });
 });
 
 Given('there are unread alerts', async function() {
-  const unreadAlerts = newsDummyJson.items.filter(i => i.type === 'alert');
-  const newsFeedData = await this.client.executeAsync((alerts, done) => {
-    const newsFeed = daedalus.stores.newsFeed;
+  await prepareFakeNews(this, newsDummyJson, (news, done) => {
+    const alerts = news.items.filter(i => i.type === 'alert');
     daedalus.api.ada.setFakeNewsFeedJsonForTesting({
       updatedAt: Date.now(),
       items: alerts,
     });
-    // Refresh the news feed request & store
-    newsFeed.getNews().then(() => done(newsFeed.newsFeedData));
-  }, unreadAlerts);
-  // Provide the news feed data from the store to the other steps
-  if (newsFeedData.value) {
-    this.news = newsFeedData.value;
-  }
+    done();
+  });
 });
 
-Given('there is 1 unread {word}', async function(type) {
-  const newsAnnouncement = newsDummyJson.items.find(i => i.type === type);
-  const newsFeedData = await this.client.executeAsync((announcement, done) => {
-    const newsFeed = daedalus.stores.newsFeed;
-    daedalus.api.ada.setFakeNewsFeedJsonForTesting({
-      updatedAt: Date.now(),
-      items: [announcement],
-    });
-    // Refresh the news feed request & store
-    newsFeed.getNews().then(() => done(newsFeed.newsFeedData));
-  }, newsAnnouncement);
-  // Provide the news feed data from the store to the other steps
-  if (newsFeedData.value) {
-    this.news = newsFeedData.value;
-  }
-  console.log(this.news);
+Given('there is 1 unread {word}', async function(newsType) {
+  await prepareFakeNews(
+    this,
+    newsDummyJson,
+    (news, type, done) => {
+      const newsItem = news.items.find(i => i.type === type);
+      daedalus.api.ada.setFakeNewsFeedJsonForTesting({
+        updatedAt: Date.now(),
+        items: [newsItem],
+      });
+      done();
+    },
+    newsType
+  );
 });
 
 Given('the news feed server is unreachable', async function() {
