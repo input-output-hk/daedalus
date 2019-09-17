@@ -18,7 +18,6 @@ import AutomaticUpdateNotificationDialog from './containers/notifications/Automa
 import { DIALOGS } from '../../common/ipc/constants';
 import type { StoresMap } from './stores/index';
 import type { ActionsMap } from './actions/index';
-import NewsFeedContainer from './containers/news/NewsFeedContainer';
 
 @observer
 export default class App extends Component<{
@@ -66,7 +65,7 @@ export default class App extends Component<{
                     <GenericNotificationContainer key="genericNotification" />,
                   ]
                 )}
-                {!newsFeedIsOpen && <NewsFeedContainer />}
+                {newsFeedIsOpen && <NewsFeedContainer />}
               </Fragment>
             </IntlProvider>
           </ThemeProvider>
