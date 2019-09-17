@@ -15,6 +15,7 @@ storiesOf('NewsFeed', module)
     <div>
       <NewsFeed
         onClose={action('onClose')}
+        news={[]}
       />
     </div>
   ));

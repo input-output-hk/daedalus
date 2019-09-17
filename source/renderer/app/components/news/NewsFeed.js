@@ -26,6 +26,7 @@ const messages = defineMessages({
 
 type Props = {
   onClose: Function,
+  news?: []
 };
 
 @observer
@@ -40,8 +41,8 @@ export default class NewsFeed extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose } = this.props;
-
+    const { onClose, news } = this.props;
+    const totalNewsItems = news.length;
     return (
       <div className={styles.component}>
         <div className={styles.newsFeedHeader}>
@@ -56,12 +57,16 @@ export default class NewsFeed extends Component<Props> {
           </button>
         </div>
         <div className={styles.newsFeedList}>
-          <p className={styles.newsFeedNoFetch}>
-            {intl.formatMessage(messages.newsFeedNoFetch)}
-          </p>
-          <button className={styles.newsFeedReloadBtn}>
-            {intl.formatMessage(messages.newsFeedReload)}
-          </button>
+          {!totalNewsItems && (
+            <div className={styles.newsFeedNoFetchContainer}>
+              <p className={styles.newsFeedNoFetch}>
+                {intl.formatMessage(messages.newsFeedNoFetch)}
+              </p>
+              <button className={styles.newsFeedReloadBtn}>
+                {intl.formatMessage(messages.newsFeedReload)}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     );
