@@ -29,7 +29,9 @@
         padding: 15.5px 16px;
 
         &:hover {
-          background-color: var(--theme-news-feed-icon-close-hover-background);
+          background-color: var(
+            --theme-news-feed-icon-close-hover-background-color
+          );
           border-radius: 50%;
         }
       }
@@ -69,7 +71,7 @@
     .newsFeedReloadBtn {
       border-radius: 2px;
       border: solid 1px var(--theme-news-feed-reload-button-border-color);
-      background-color: var(--theme-news-feed-reload-button-background);
+      background-color: var(--theme-news-feed-reload-button-background-color);
       color: var(--theme-news-feed-reload-button-color);
       font-family: var(--font-regular);
       font-size: 14px;
