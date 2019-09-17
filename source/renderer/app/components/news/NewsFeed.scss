@@ -23,10 +23,13 @@
 
     .newsFeedTitle {
       color: var(--theme-news-feed-header-title-color);
+      display: none;
       font-family: var(--font-regular);
       font-size: 18px;
       line-height: 1.33;
-      opacity: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .newsFeedCloseBtn {
@@ -97,7 +100,7 @@
 
     .newsFeedHeader {
       .newsFeedTitle {
-        opacity: 1;
+        display: block;
       }
     }
   }
