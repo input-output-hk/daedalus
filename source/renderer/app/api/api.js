@@ -1011,8 +1011,7 @@ export default class AdaApi {
 
   getNews = async (): Promise<any> => {
     try {
-      const res = await getNews();
-      return res;
+      return await getNews();
     } catch(error) {
       throw new Error('NEWS_FETCH_FAILED');
     }
