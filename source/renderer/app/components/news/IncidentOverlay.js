@@ -5,7 +5,6 @@ import { observer } from 'mobx-react';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import styles from './IncidentOverlay.scss';
-import type { NewsItem } from '../../api/news/types';
 import News from '../../domains/News';
 
 type State = {
@@ -29,7 +28,7 @@ export default class IncidentOverlay extends Component<Props, State> {
 
   render() {
     const { showOverlay } = this.state;
-    const { content, date, action, title } = this.props;
+    const { content, date, action, title } = this.props.item;
     return (
       showOverlay && (
         <div className={styles.component}>

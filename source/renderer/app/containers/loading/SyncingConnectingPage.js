@@ -36,6 +36,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       isNewAppVersionLoaded,
     } = stores.nodeUpdate;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = stores.profile;
+    const { toggleNewsFeed } = this.props.actions.app;
 
     return (
       <SyncingConnecting
@@ -64,6 +65,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         onGetAvailableVersions={this.handleGetAvailableVersions}
         onStatusIconClick={this.openDaedalusDiagnosticsDialog}
         onDownloadLogs={this.handleDownloadLogs}
+        onToggleNewsFeedIconClick={toggleNewsFeed.trigger}
         disableDownloadLogs={stores.app.isDownloadNotificationVisible}
       />
     );

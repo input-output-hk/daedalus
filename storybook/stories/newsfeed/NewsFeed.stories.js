@@ -53,7 +53,7 @@ storiesOf('NewsFeed', module)
     <div>
       <NewsFeed
         onClose={action('onClose')}
-        news={{ items: [] }}
+        news={[]}
         noFetchedData={boolean('noFetchedData', true)}
       />
     </div>
@@ -63,7 +63,7 @@ storiesOf('NewsFeed', module)
     <div>
       <NewsFeed
         onClose={action('onClose')}
-        news={{ items: [] }}
+        news={[]}
         noFetchedData={boolean('noFetchedDataSecond', false)}
       />
     </div>

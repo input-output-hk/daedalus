@@ -65,6 +65,9 @@ export default class NewsFeedStore extends Store {
         },
         read: readNews.includes(item.date),
       }));
+      /* return new News({
+
+      }) */
     }
 
     return newsFeedData;
