@@ -1,24 +1,42 @@
 .component {
-  height: 90vh;
-  width: 90vw;
-  z-index: 3;
+  align-items: center;
+  background-color: rgba(193, 66, 66, 0.7);
+  border: 1px solid red;
   display: flex;
   flex-direction: column;
+  height: 90vh;
   justify-content: center;
-  align-items: center;
-  border: 1px solid red;
-  margin-top: 5vh;
   margin-left: 5vw;
   margin-right: 5vw;
-  background-color: rgba(193, 66, 66, 0.7);
+  margin-top: 5vh;
+  width: 90vw;
+  z-index: 3;
+}
+
+.bold {
+  color: #fff;
+}
+
+.date {
+  color: #fff;
+  margin-bottom: 1vh;
 }
 
 .h1 {
   color: #fff;
   margin-bottom: 1vh;
 }
+.h2 {
+  color: #fff;
+  margin-bottom: 1vh;
+}
 .paragraph {
   color: #fff;
+}
+.title {
+  color: #fff;
+  font-size: 20px;
+  margin-bottom: 1vh;
 }
 
 .closeButton {
@@ -26,9 +44,8 @@
   display: flex;
   justify-content: flex-end;
   position: fixed;
-  right: 0.5vw;
-  top: 6vh;
-  margin-right: 6vw;
+  right: 5vw;
+  top: 8vh;
   z-index: 4;
 
   span {

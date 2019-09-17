@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import { get } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
@@ -37,7 +38,7 @@ type Props = {
 };
 
 @observer
-export default class NewsFeed extends Component<Props, State> {
+export default class NewsFeed extends Component<Props> {
   static defaultProps = {
     onClose: null,
     news: [],
@@ -51,18 +52,14 @@ export default class NewsFeed extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const { onClose, news, noFetchedData } = this.props;
-    const { items } = news;
-    const totalNewsItems = items.length;
+    const totalNewsItems = get(news, 'items').length;
     return (
       <div className={styles.component}>
         <div className={styles.newsFeedHeader}>
           <h3 className={styles.newsFeedTitle}>
             {intl.formatMessage(messages.newsFeedTitle)}
           </h3>
-          <button
-            onClick={onClose}
-            className={styles.newsFeedCloseBtn}
-          >
+          <button onClick={onClose} className={styles.newsFeedCloseBtn}>
             <SVGInline svg={closeCrossThin} />
           </button>
         </div>
@@ -85,9 +82,7 @@ export default class NewsFeed extends Component<Props, State> {
             </div>
           )}
           {!noFetchedData && totalNewsItems > 0 && (
-            <div className={styles.newsFeedNoFetchContainer}>
-              News items
-            </div>
+            <div className={styles.newsFeedNoFetchContainer}>News items</div>
           )}
         </div>
       </div>
