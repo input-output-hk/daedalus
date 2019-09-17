@@ -7,6 +7,7 @@ import SVGInline from 'react-svg-inline';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import styles from './NewsFeed.scss';
 import type NewsItem from '../../api/news/types';
+import News from '../../domains/News';
 
 const messages = defineMessages({
   newsFeedEmpty: {
@@ -33,7 +34,7 @@ const messages = defineMessages({
 
 type Props = {
   onClose: Function,
-  news: Array<NewsItem>,
+  news: Array<News>,
   noFetchedData: boolean,
 };
 

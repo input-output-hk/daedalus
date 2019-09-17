@@ -6,14 +6,19 @@ import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import styles from './IncidentOverlay.scss';
 import type { NewsItem } from '../../api/news/types';
+import News from '../../domains/News';
 
 type State = {
   showOverlay: boolean,
 };
 
+type Props = {
+  item: News,
+};
+
 @observer
-export default class IncidentOverlay extends Component<NewsItem, State> {
-  constructor(props: NewsItem) {
+export default class IncidentOverlay extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       showOverlay: true,
@@ -33,17 +38,17 @@ export default class IncidentOverlay extends Component<NewsItem, State> {
             icon={closeCrossThin}
             onClose={this.onClose}
           />
-          <h1 className={styles.title}>{title['en-US']}</h1>
+          <h1 className={styles.title}>{title}</h1>
           <span className={styles.date}>
             {moment(date).format('YYYY-MM-DD')}
           </span>
-          <p className={styles.content}>{content['en-US']}</p>
+          <p className={styles.content}>{content}</p>
           <button
             className={styles.dismissBtn}
             type="button"
             onClick={this.onClose}
           >
-            {action.label['en-US']}
+            {action.label}
           </button>
         </div>
       )

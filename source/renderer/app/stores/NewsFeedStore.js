@@ -1,36 +1,61 @@
 // @flow
-import { observable, action } from 'mobx';
+import { observable, action, runInAction, computed } from 'mobx';
+import { map, get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { NEWS_POLL_INTERVAL } from '../config/timingConfig';
-import type { GetNewsResponse } from '../api/news/types';
+import News from '../domains/News';
+import type { GetNewsResponse, NewsItem } from '../api/news/types';
 
 const { isTest } = global.environment;
 
 export default class NewsFeedStore extends Store {
-  @observable newsFeed = [];
-  @observable newsUpdatedAt = null;
+  @observable newsItems: Array<NewsItem>;
+  @observable newsUpdatedAt: ?Date = null;
+  // @TODO - jsut if we don't have a data - show error
+  @observable fetchingNewsFailed = false;
   @observable
   getNewsRequest: Request<GetNewsResponse> = new Request(this.api.ada.getNews);
+
+  pollingNewsInterval: ?IntervalID = null;
 
   setup() {
     // Fetch news on app start
     this.getNews();
     if (!isTest) {
       // Refetch news each 30min
-      setInterval(this.getNews, NEWS_POLL_INTERVAL);
+      this.pollingNewsInterval = setInterval(this.getNews, NEWS_POLL_INTERVAL);
     }
   }
 
-  getNews = async () => {
-    const result = await this.getNewsRequest.execute().promise;
-    if (result) {
-      this._setNewsFeed(result);
+  @action getNews = async () => {
+    const newsData = await this.getNewsRequest.execute().promise;
+    if (newsData) {
+      runInAction('set news data', () => {
+        this.newsItems = get(newsData, 'items', []);
+        this.newsUpdatedAt = get(newsData, 'updatedAt', null);
+      });
     }
   };
 
-  @action _setNewsFeed = newsFeed => {
-    this.newsFeed = newsFeed.items;
-    this.newsUpdatedAt = newsFeed.updatedAt;
-  };
+  @computed get newsFeedData(): Array<News> {
+    const { currentLocale } = this.stores.profile;
+    let newsFeedData = [];
+    if (this.getNewsRequest.wasExecuted) {
+      // @TODO - check news stored in local storage, compare update date and merge data if is needed
+      newsFeedData = map(this.newsItems, (item) => ({
+        ...item,
+        title: item.title[currentLocale],
+        content: item.title[currentLocale],
+        action: {
+          ...item.action,
+          label: item.action.label[currentLocale],
+          url: get(item, ['action', 'url', currentLocale]),
+        },
+        read: false // @TODO - check in LC
+      }));
+    }
+
+    return newsFeedData;
+  }
 }
