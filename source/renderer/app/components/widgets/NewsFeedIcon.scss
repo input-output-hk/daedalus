@@ -5,8 +5,6 @@
 }
 
 .icon {
-  background-color: var(--theme-news-feed-icon-close-hover-background-color);
-  border-radius: 50%;
   cursor: pointer;
   padding: 11px 8px;
   position: relative;
@@ -22,5 +20,10 @@
     &:hover {
       opacity: 1;
     }
+  }
+
+  &:hover {
+    background-color: var(--theme-news-feed-icon-toggle-hover-background-color);
+    border-radius: 50%;
   }
 }
