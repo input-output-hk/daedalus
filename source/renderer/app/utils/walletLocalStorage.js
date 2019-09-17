@@ -11,6 +11,11 @@ type WalletLocalData = {
 };
 
 export default class WalletLocalStorage {
+  electronStore: Function;
+  storageKeys: {
+    WALLETS: string,
+  };
+
   constructor(electronStore: Object, network: string) {
     this.electronStore = electronStore;
     const networkForLocalStorage = String(network);
