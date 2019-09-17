@@ -10,9 +10,13 @@ storiesOf('NewsFeed', module)
     <StoryDecorator>
       {story({
         content: {
-          h1: 'Lazarus Incident',
-          paragraph: 'The network has failed, please go home',
+          h1: 'Network failure',
+          h2:
+            'The network has failed, please do not try accessing it at this time',
+          paragraph:
+            'You will not recieve a response until it is running again',
         },
+        title: 'Lazarus Incident',
       })}
     </StoryDecorator>
   ))

@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import moment from 'moment';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import styles from './IncidentOverlay.scss';
@@ -10,13 +11,14 @@ type Props = {
     text?: string,
     url?: string,
   },
-  content?: {
+  content: {
     h1: string,
-    h2?: string,
+    h2: string,
     paragraph: string,
-    bold?: string,
-    italic?: string,
+    bold: string,
+    italic: string,
   },
+  date: Date,
   target?: {
     daedalus_version?: string,
     target_os?: string,
@@ -42,7 +44,7 @@ export default class IncidentOverlay extends Component<Props, State> {
 
   render() {
     const { showOverlay } = this.state;
-    const { content } = this.props;
+    const { content, date, title } = this.props;
     return (
       showOverlay && (
         <div className={styles.component}>
@@ -51,8 +53,15 @@ export default class IncidentOverlay extends Component<Props, State> {
             icon={closeCrossThin}
             onClose={this.onClose}
           />
+          <h1 className={styles.title}>{title}</h1>
           <h1 className={styles.h1}>{content.h1}</h1>
+          <span className={styles.date}>
+            {moment(date).format('YYYY-MM-DD')}
+          </span>
+          <h2 className={styles.h2}>{content.h2}</h2>
           <p className={styles.paragraph}>{content.paragraph}</p>
+          <bold className={styles.bold}>{content.bold}</bold>
+          <i className={styles.italic}>{content.italic}</i>
         </div>
       )
     );
