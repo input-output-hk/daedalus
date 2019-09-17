@@ -42,4 +42,9 @@ export default class WalletsActions {
   closeCertificateGeneration: Action<any> = new Action();
   setCertificateTemplate: Action<{ selectedTemplate: string }> = new Action();
   finishCertificate: Action<any> = new Action();
+  // Recovery phrase confirmation dialog actions
+  getWalletsLocalData: Action<any> = new Action();
+  getWalletLocalData: Action<any> = new Action();
+  updateWalletLocalData: Action<any> = new Action();
+  unsetWalletLocalData: Action<any> = new Action();
 }

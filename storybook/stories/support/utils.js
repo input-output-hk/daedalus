@@ -3,10 +3,7 @@ import hash from 'hash.js';
 import faker from 'faker';
 import moment from 'moment';
 import BigNumber from 'bignumber.js';
-import Wallet, {
-  WalletStatuses,
-  WalletStatusesType,
-} from '../../../source/renderer/app/domains/Wallet';
+import Wallet from '../../../source/renderer/app/domains/Wallet';
 import {
   WalletTransaction,
   transactionStates,
@@ -39,9 +36,9 @@ export const generateWallet = (name: string, amount: string) =>
     passwordUpdateDate: new Date(),
     syncState: { data: null, tag: 'synced' },
     isLegacy: false,
-    mnemonicsConfirmationDate: new Date(),
-    mnemonicsConfirmationStatus: WalletStatuses.OK,
-    mnemonicsConfirmationStatusType: WalletStatusesType.NEVER_CHECKED,
+    recoveryPhraseVerificationDate: new Date(),
+    recoveryPhraseVerificationStatus: 'ok',
+    recoveryPhraseVerificationStatusType: 'neverChecked',
   });
 
 export const generateTransaction = (

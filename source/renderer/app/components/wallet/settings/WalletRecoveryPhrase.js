@@ -13,7 +13,7 @@ import iconRecoveryPhraseOk from '../../../assets/images/recovery-phrase-verific
 import iconRecoveryPhraseWarning from '../../../assets/images/recovery-phrase-verification-warning.inline.svg';
 import iconRecoveryPhraseNotification from '../../../assets/images/recovery-phrase-verification-notification.inline.svg';
 import styles from './WalletRecoveryPhrase.scss';
-import { WalletStatuses } from '../../../domains/Wallet';
+import { WalletRecoveryPhraseVerificationStatuses } from '../../../stores/WalletsStore';
 import { RECOVERY_PHRASE_VERIFICATION_WARNING } from '../../../config/walletsConfig';
 import WalletRecoveryPhraseStep1Dialog from './WalletRecoveryPhraseStep1Dialog';
 import WalletRecoveryPhraseStep2Dialog from './WalletRecoveryPhraseStep2Dialog';
@@ -92,9 +92,9 @@ type Props = {
   walletRecoveryPhraseStep2Container: Node,
   walletRecoveryPhraseStep3Container: Node,
   walletRecoveryPhraseStep4Container: Node,
-  mnemonicsConfirmationDate: ?Date,
-  mnemonicsConfirmationStatus: string,
-  mnemonicsConfirmationStatusType: string,
+  recoveryPhraseVerificationDate: ?Date,
+  recoveryPhraseVerificationStatus: string,
+  recoveryPhraseVerificationStatusType: string,
 };
 
 @observer
@@ -139,14 +139,14 @@ export default class WalletRecoveryPhrase extends Component<Props> {
   get recoveryPhraseStatus() {
     const {
       walletCreationDate,
-      mnemonicsConfirmationDate,
-      mnemonicsConfirmationStatus,
-      mnemonicsConfirmationStatusType,
+      recoveryPhraseVerificationDate,
+      recoveryPhraseVerificationStatus,
+      recoveryPhraseVerificationStatusType,
     } = this.props;
 
-    const statuses = this.statuses[mnemonicsConfirmationStatusType];
-    const { icon, message } = statuses[mnemonicsConfirmationStatus];
-    const timeAgo = moment(mnemonicsConfirmationDate).fromNow();
+    const statuses = this.statuses[recoveryPhraseVerificationStatusType];
+    const { icon, message } = statuses[recoveryPhraseVerificationStatus];
+    const timeAgo = moment(recoveryPhraseVerificationDate).fromNow();
     const timeFromCreationToWarning = moment(new Date(walletCreationDate)).add(
       RECOVERY_PHRASE_VERIFICATION_WARNING,
       'days'
@@ -169,7 +169,7 @@ export default class WalletRecoveryPhrase extends Component<Props> {
       walletRecoveryPhraseStep2Container,
       walletRecoveryPhraseStep3Container,
       walletRecoveryPhraseStep4Container,
-      mnemonicsConfirmationStatus,
+      recoveryPhraseVerificationStatus,
     } = this.props;
     const {
       icon,
@@ -180,13 +180,19 @@ export default class WalletRecoveryPhrase extends Component<Props> {
 
     const validationStatusStyles = classnames([
       styles.validationStatus,
-      styles[`validationStatus${capitalize(mnemonicsConfirmationStatus)}`],
+      styles[`validationStatus${capitalize(recoveryPhraseVerificationStatus)}`],
     ]);
 
     let validationStatusButtonType = 'flat';
-    if (mnemonicsConfirmationStatus === WalletStatuses.WARNING)
+    if (
+      recoveryPhraseVerificationStatus ===
+      WalletRecoveryPhraseVerificationStatuses.WARNING
+    )
       validationStatusButtonType = 'primary';
-    else if (mnemonicsConfirmationStatus === WalletStatuses.NOTIFICATION)
+    else if (
+      recoveryPhraseVerificationStatus ===
+      WalletRecoveryPhraseVerificationStatuses.NOTIFICATION
+    )
       validationStatusButtonType = 'attention';
 
     const validationStatusButtonStyles = classnames([

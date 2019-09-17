@@ -19,7 +19,7 @@ const sidebarMenus = observable({
         info: '100 ADA',
         isConnected: true,
         isLegacy: false,
-        mnemonicsConfirmationStatus: 'ok',
+        recoveryPhraseVerificationStatus: 'ok',
       },
       {
         id: '2',
@@ -27,7 +27,7 @@ const sidebarMenus = observable({
         info: '200 ADA',
         isConnected: true,
         isLegacy: false,
-        mnemonicsConfirmationStatus: 'ok',
+        recoveryPhraseVerificationStatus: 'ok',
       },
       {
         id: '3',
@@ -35,7 +35,7 @@ const sidebarMenus = observable({
         info: '300 ADA',
         isConnected: true,
         isLegacy: false,
-        mnemonicsConfirmationStatus: 'ok',
+        recoveryPhraseVerificationStatus: 'ok',
       },
     ],
     activeWalletId: '1',

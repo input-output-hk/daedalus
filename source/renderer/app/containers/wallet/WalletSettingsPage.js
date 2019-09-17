@@ -43,6 +43,13 @@ export default class WalletSettingsPage extends Component<Props> {
       cancelEditingWalletField,
       updateWalletField,
     } = actions.walletSettings;
+    const { getWalletRecoveryPhraseVerification } = wallets;
+    const {
+      creationDate,
+      recoveryPhraseVerificationDate,
+      recoveryPhraseVerificationStatus,
+      recoveryPhraseVerificationStatusType,
+    } = getWalletRecoveryPhraseVerification(activeWallet.id);
 
     return (
       <WalletSettings
@@ -52,15 +59,15 @@ export default class WalletSettingsPage extends Component<Props> {
         openDialogAction={actions.dialogs.open.trigger}
         isSpendingPasswordSet={activeWallet.hasPassword}
         spendingPasswordUpdateDate={activeWallet.passwordUpdateDate}
-        mnemonicsConfirmationDate={activeWallet.mnemonicsConfirmationDate}
-        mnemonicsConfirmationStatus={activeWallet.mnemonicsConfirmationStatus}
-        mnemonicsConfirmationStatusType={
-          activeWallet.mnemonicsConfirmationStatusType
+        recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
+        recoveryPhraseVerificationStatus={recoveryPhraseVerificationStatus}
+        recoveryPhraseVerificationStatusType={
+          recoveryPhraseVerificationStatusType
         }
         isDialogOpen={uiDialogs.isOpen}
         walletId={activeWallet.id}
         walletName={activeWallet.name}
-        walletCreationDate={activeWallet.createdAt}
+        walletCreationDate={creationDate}
         isSubmitting={updateWalletRequest.isExecuting}
         isInvalid={
           updateWalletRequest.wasExecuted &&

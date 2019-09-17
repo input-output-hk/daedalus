@@ -22,7 +22,7 @@ export const WALLETS = [
     passwordUpdateDate: new Date(),
     syncState: { data: null, tag: 'synced' },
     isLegacy: false,
-    mnemonicsConfirmationDate: new Date(),
+    recoveryPhraseVerificationDate: new Date(),
   },
   {
     id: '1',
@@ -35,7 +35,7 @@ export const WALLETS = [
       .toDate(),
     syncState: { data: null, tag: 'synced' },
     isLegacy: false,
-    mnemonicsConfirmationDate: new Date(),
+    recoveryPhraseVerificationDate: new Date(),
   },
   {
     id: '2',
@@ -46,8 +46,8 @@ export const WALLETS = [
     passwordUpdateDate: new Date(),
     syncState: { data: null, tag: 'synced' },
     isLegacy: true,
-    mnemonicsConfirmationDate: moment()
-      .subtract(15, 'days')
+    recoveryPhraseVerificationDate: moment()
+      .subtract(200, 'days')
       .toDate(),
   },
   {
@@ -75,8 +75,8 @@ export const WALLETS = [
       tag: 'restoring',
     },
     isLegacy: false,
-    mnemonicsConfirmationDate: moment()
-      .subtract(2, 'month')
+    recoveryPhraseVerificationDate: moment()
+      .subtract(400, 'days')
       .toDate(),
   },
 ];

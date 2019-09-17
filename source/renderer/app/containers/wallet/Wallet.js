@@ -8,7 +8,7 @@ import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import RestoreNotification from '../../components/notifications/RestoreNotification';
 import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
-import { WalletSyncStateTags, WalletStatuses } from '../../domains/Wallet';
+import { WalletSyncStateTags } from '../../domains/Wallet';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import type { NavDropdownProps } from '../../components/navigation/Navigation';
 
@@ -72,10 +72,12 @@ export default class Wallet extends Component<Props> {
       'syncState.data.estimatedCompletionTime.quantity',
       0
     );
-    const hasNotification =
-      !!wallets.active &&
-      wallets.active.mnemonicsConfirmationStatus ===
-        WalletStatuses.NOTIFICATION;
+    // TODO: Update info from the store #recovery
+    const hasNotification = false;
+    // const hasNotification =
+    //   !!wallets.active &&
+    //   wallets.active.recoveryPhraseVerificationStatus ===
+    //     WalletStatuses.NOTIFICATION;
 
     return (
       <MainLayout>

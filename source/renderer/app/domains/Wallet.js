@@ -1,13 +1,7 @@
 // @flow
 import { pick } from 'lodash';
-import { observable, computed, action, runInAction } from 'mobx';
+import { observable, computed, action } from 'mobx';
 import BigNumber from 'bignumber.js';
-import moment from 'moment';
-import {
-  RECOVERY_PHRASE_VERIFICATION_NOTIFICATION,
-  RECOVERY_PHRASE_VERIFICATION_WARNING,
-} from '../config/walletsConfig';
-import WalletLocalStorage from '../utils/WalletLocalStorage';
 import type {
   WalletAssuranceLevel,
   WalletAssuranceMode,
@@ -15,13 +9,6 @@ import type {
   SyncStateTag,
 } from '../api/wallets/types';
 import type { StakePool } from '../api/staking/types';
-
-const { environment, electronStore } = global;
-const { network } = environment;
-const { getWalletLocalData, updateWalletLocalData } = new WalletLocalStorage(
-  electronStore,
-  network
-);
 
 export const WalletAssuranceModeOptions: {
   NORMAL: WalletAssuranceLevel,
@@ -53,17 +40,6 @@ const WalletAssuranceModes: {
   },
 };
 
-export const WalletStatuses = {
-  OK: 'ok',
-  WARNING: 'warning',
-  NOTIFICATION: 'notification',
-};
-
-export const WalletStatusesType = {
-  NEVER_CHECKED: 'neverChecked',
-  ALREADY_CHECKED: 'alreadyChecked',
-};
-
 export type WalletProps = {
   id: string,
   name: string,
@@ -76,10 +52,6 @@ export type WalletProps = {
   inactiveStakePercentage?: number,
   isDelegated?: boolean,
   delegatedStakePool?: StakePool,
-  createdAt: Date,
-  mnemonicsConfirmationDate?: ?Date,
-  mnemonicsConfirmationStatus?: string,
-  mnemonicsConfirmationStatusType?: string,
 };
 
 export default class Wallet {
@@ -94,53 +66,10 @@ export default class Wallet {
   @observable inactiveStakePercentage: ?number;
   @observable isDelegated: ?boolean;
   @observable delegatedStakePool: ?StakePool;
-  @observable createdAt: Date;
-  @observable mnemonicsConfirmationDate: ?Date;
-  @observable mnemonicsConfirmationStatus: string;
-  @observable mnemonicsConfirmationStatusType: string;
 
   constructor(data: WalletProps) {
     Object.assign(this, data);
-    this.getWalletLocalData();
   }
-
-  getWalletLocalData = async () => {
-    const { id } = this;
-    const { mnemonicsConfirmationDate } = await getWalletLocalData(id);
-    const { status, type } = this.getWalletStatus(mnemonicsConfirmationDate);
-    runInAction('set mnemonicsConfirmationDate', () => {
-      this.mnemonicsConfirmationDate = mnemonicsConfirmationDate;
-      this.mnemonicsConfirmationStatus = status;
-      this.mnemonicsConfirmationStatusType = type;
-    });
-  };
-
-  getWalletStatus = (mnemonicsConfirmationDate: ?Date) => {
-    const { createdAt } = this;
-    const dateToCheck = mnemonicsConfirmationDate || createdAt;
-    const daysSinceDate = moment().diff(moment(dateToCheck), 'days');
-    let status = WalletStatuses.OK;
-    if (daysSinceDate > RECOVERY_PHRASE_VERIFICATION_NOTIFICATION)
-      status = WalletStatuses.NOTIFICATION;
-    else if (daysSinceDate > RECOVERY_PHRASE_VERIFICATION_WARNING)
-      status = WalletStatuses.WARNING;
-    const type = mnemonicsConfirmationDate
-      ? WalletStatusesType.ALREADY_CHECKED
-      : WalletStatusesType.NEVER_CHECKED;
-    return { status, type };
-  };
-
-  @action updateWalletLocalData = async () => {
-    const { id } = this;
-    const mnemonicsConfirmationDate = new Date();
-    this.mnemonicsConfirmationDate = mnemonicsConfirmationDate;
-    this.mnemonicsConfirmationStatus = WalletStatuses.OK;
-    this.mnemonicsConfirmationStatusType = WalletStatusesType.ALREADY_CHECKED;
-    await updateWalletLocalData({
-      id,
-      mnemonicsConfirmationDate,
-    });
-  };
 
   @action update(other: Wallet) {
     Object.assign(
@@ -157,7 +86,6 @@ export default class Wallet {
         'inactiveStakePercentage',
         'isDelegated',
         'delegatedStakePool',
-        'createdAt',
       ])
     );
   }

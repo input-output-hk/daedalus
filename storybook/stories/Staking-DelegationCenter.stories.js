@@ -30,9 +30,9 @@ const wallets = [
     isDelegated: true,
     delegatedStakePool: STAKE_POOLS[0],
     createdAt: new Date(),
-    mnemonicsConfirmationDate: new Date(),
-    mnemonicsConfirmationStatus: 'ok',
-    mnemonicsConfirmationStatusType: 'neverChecked',
+    recoveryPhraseVerificationDate: new Date(),
+    recoveryPhraseVerificationStatus: 'ok',
+    recoveryPhraseVerificationStatusType: 'neverChecked',
   }),
   new Wallet({
     id: 'wallet2',
@@ -46,9 +46,9 @@ const wallets = [
     isDelegated: true,
     delegatedStakePool: STAKE_POOLS[1],
     createdAt: new Date(),
-    mnemonicsConfirmationDate: new Date(),
-    mnemonicsConfirmationStatus: 'ok',
-    mnemonicsConfirmationStatusType: 'neverChecked',
+    recoveryPhraseVerificationDate: new Date(),
+    recoveryPhraseVerificationStatus: 'ok',
+    recoveryPhraseVerificationStatusType: 'neverChecked',
   }),
   new Wallet({
     id: 'wallet3',
@@ -61,9 +61,9 @@ const wallets = [
     inactiveStakePercentage: 0,
     isDelegated: false,
     createdAt: new Date(),
-    mnemonicsConfirmationDate: new Date(),
-    mnemonicsConfirmationStatus: 'ok',
-    mnemonicsConfirmationStatusType: 'neverChecked',
+    recoveryPhraseVerificationDate: new Date(),
+    recoveryPhraseVerificationStatus: 'ok',
+    recoveryPhraseVerificationStatusType: 'neverChecked',
   }),
 ];
 

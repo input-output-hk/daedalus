@@ -28,7 +28,7 @@ const deleteWalletId = 'Delete Wallet';
 const exportWalletId = 'Export Wallet';
 const recoveryPhraseId = 'Recovery Phrase';
 
-const mnemonicsConfirmationDateOptions = {
+const recoveryPhraseVerificationDateOptions = {
   'Never Checked - Ok': {
     type: 'neverChecked',
     status: 'ok',
@@ -74,11 +74,11 @@ const getWalletDates = (type: string, status: string) => {
       .subtract(RECOVERY_PHRASE_VERIFICATION_NOTIFICATION + 10, 'days')
       .toDate();
 
-  const mnemonicsConfirmationDate = date;
+  const recoveryPhraseVerificationDate = date;
   const walletCreationDate = date;
 
   return {
-    mnemonicsConfirmationDate,
+    recoveryPhraseVerificationDate,
     walletCreationDate,
   };
 };
@@ -86,12 +86,12 @@ const getWalletDates = (type: string, status: string) => {
 export default () => {
   const { type, status } = select(
     'Wallet Recovery Phrase Verification',
-    mnemonicsConfirmationDateOptions,
+    recoveryPhraseVerificationDateOptions,
     'Already Checked - Ok',
     recoveryPhraseId
   );
 
-  const { mnemonicsConfirmationDate, walletCreationDate } = getWalletDates(
+  const { recoveryPhraseVerificationDate, walletCreationDate } = getWalletDates(
     type,
     status
   );
@@ -272,9 +272,9 @@ export default () => {
         />
       }
       walletCreationDate={walletCreationDate}
-      mnemonicsConfirmationDate={mnemonicsConfirmationDate}
-      mnemonicsConfirmationStatus={status || 'ok'}
-      mnemonicsConfirmationStatusType={type || 'neverChecked'}
+      recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
+      recoveryPhraseVerificationStatus={status || 'ok'}
+      recoveryPhraseVerificationStatusType={type || 'neverChecked'}
     />
   );
 };
