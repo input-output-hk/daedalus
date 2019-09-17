@@ -46,6 +46,9 @@ import { restoreWallet } from './wallets/requests/restoreWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
 
+// News requests
+import { getNews } from './news/requests/getNews';
+
 // utility functions
 import {
   awaitUpdateChannel,
@@ -1003,6 +1006,15 @@ export default class AdaApi {
     } catch (error) {
       Logger.error('AdaApi::getLatestAppVersion error', { error });
       throw new GenericApiError();
+    }
+  };
+
+  getNews = async (): Promise<any> => {
+    try {
+      const res = await getNews();
+      return res;
+    } catch(error) {
+      throw new Error('NEWS_FETCH_FAILED');
     }
   };
 
