@@ -53,7 +53,6 @@ export default class NewsFeedStore extends Store {
     const readNews = this.getReadNewsRequest.result;
     let newsFeedData = [];
     if (this.getNewsRequest.wasExecuted) {
-      // @TODO - check news stored in local storage, compare update date and merge data if is needed
       newsFeedData = map(this.newsItems, item => ({
         ...item,
         title: item.title[currentLocale],
@@ -65,9 +64,6 @@ export default class NewsFeedStore extends Store {
         },
         read: readNews.includes(item.date),
       }));
-      /* return new News({
-
-      }) */
     }
 
     return newsFeedData;
