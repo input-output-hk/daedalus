@@ -27,13 +27,12 @@
       font-family: var(--font-regular);
       font-size: 18px;
       line-height: 1.33;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      overflow-x: hidden;
     }
 
     .newsFeedCloseBtn {
       cursor: pointer;
+      visibility: hidden;
 
       span {
         padding: 15.5px 16px;
@@ -100,7 +99,11 @@
 
     .newsFeedHeader {
       .newsFeedTitle {
-        display: block;
+        display: inline-block;
+      }
+
+      .newsFeedCloseBtn {
+        visibility: visible;
       }
     }
   }
