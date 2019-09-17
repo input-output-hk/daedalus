@@ -1,39 +1,19 @@
 // @flow
 import React, { Component } from 'react';
 import moment from 'moment';
+import { observer } from 'mobx-react';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import styles from './IncidentOverlay.scss';
-
-type Props = {
-  action?: {
-    route?: Function,
-    text?: string,
-    url?: string,
-  },
-  content: {
-    h1: string,
-    h2: string,
-    paragraph: string,
-    bold: string,
-    italic: string,
-  },
-  date: Date,
-  target?: {
-    daedalus_version?: string,
-    target_os?: string,
-    target_os_version?: string,
-  },
-  title?: string,
-  // type?: string,
-};
+import type { NewsItem } from '../../api/news/types';
 
 type State = {
   showOverlay: boolean,
 };
 
-export default class IncidentOverlay extends Component<Props, State> {
-  constructor(props: Props) {
+@observer
+export default class IncidentOverlay extends Component<NewsItem, State> {
+  constructor(props: NewsItem) {
     super(props);
     this.state = {
       showOverlay: true,
@@ -53,15 +33,14 @@ export default class IncidentOverlay extends Component<Props, State> {
             icon={closeCrossThin}
             onClose={this.onClose}
           />
-          <h1 className={styles.title}>{title}</h1>
-          <h1 className={styles.h1}>{content.h1}</h1>
+          <h1 className={styles.title}>{title[0]}</h1>
           <span className={styles.date}>
             {moment(date).format('YYYY-MM-DD')}
           </span>
-          <h2 className={styles.h2}>{content.h2}</h2>
-          <p className={styles.paragraph}>{content.paragraph}</p>
+          <p className={styles.p}>{content[0]}</p>
+          {/* <p className={styles.paragraph}>{content.paragraph}</p>
           <bold className={styles.bold}>{content.bold}</bold>
-          <i className={styles.italic}>{content.italic}</i>
+          <i className={styles.italic}>{content.italic}</i> */}
         </div>
       )
     );
