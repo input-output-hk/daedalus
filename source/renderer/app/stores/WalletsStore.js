@@ -17,8 +17,12 @@ import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 import type LocalizableError from '../i18n/LocalizableError';
 import { formattedWalletAmount } from '../utils/formatters';
 import { WalletPaperWalletOpenPdfError } from '../i18n/errors';
-import { unsetWalletLocalData } from '../utils/walletLocalStorage';
+import WalletLocalStorage from '../utils/WalletLocalStorage';
 /* eslint-disable consistent-return */
+
+const { environment, electronStore } = global;
+const { network } = environment;
+const { unsetWalletLocalData } = new WalletLocalStorage(electronStore, network);
 
 /**
  * The base wallet store that contains the shared logic

@@ -7,10 +7,7 @@ import {
   RECOVERY_PHRASE_VERIFICATION_NOTIFICATION,
   RECOVERY_PHRASE_VERIFICATION_WARNING,
 } from '../config/walletsConfig';
-import {
-  getWalletLocalData,
-  updateWalletLocalData,
-} from '../utils/walletLocalStorage';
+import WalletLocalStorage from '../utils/WalletLocalStorage';
 import type {
   WalletAssuranceLevel,
   WalletAssuranceMode,
@@ -18,6 +15,13 @@ import type {
   SyncStateTag,
 } from '../api/wallets/types';
 import type { StakePool } from '../api/staking/types';
+
+const { environment, electronStore } = global;
+const { network } = environment;
+const { getWalletLocalData, updateWalletLocalData } = new WalletLocalStorage(
+  electronStore,
+  network
+);
 
 export const WalletAssuranceModeOptions: {
   NORMAL: WalletAssuranceLevel,
