@@ -55,7 +55,7 @@ export const messages = defineMessages({
 type Props = {
   assuranceLevels: Array<{ value: string, label: ReactIntlMessage }>,
   walletName: string,
-  walletCreationDate: Date,
+  creationDate: Date,
   walletAssurance: string,
   isSpendingPasswordSet: boolean,
   spendingPasswordUpdateDate: ?Date,
@@ -105,7 +105,7 @@ export default class WalletSettings extends Component<Props> {
       assuranceLevels,
       walletAssurance,
       walletName,
-      walletCreationDate,
+      creationDate,
       isSpendingPasswordSet,
       spendingPasswordUpdateDate,
       error,
@@ -196,7 +196,7 @@ export default class WalletSettings extends Component<Props> {
             recoveryPhraseVerificationStatusType={
               recoveryPhraseVerificationStatusType
             }
-            walletCreationDate={walletCreationDate}
+            creationDate={creationDate}
             openDialogAction={openDialogAction}
             isDialogOpen={isDialogOpen}
             walletRecoveryPhraseStep1Container={

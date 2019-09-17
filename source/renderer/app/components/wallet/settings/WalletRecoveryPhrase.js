@@ -85,7 +85,7 @@ export const messages = defineMessages({
 });
 
 type Props = {
-  walletCreationDate: Date,
+  creationDate: Date,
   openDialogAction: Function,
   isDialogOpen: Function,
   walletRecoveryPhraseStep1Container: Node,
@@ -138,7 +138,7 @@ export default class WalletRecoveryPhrase extends Component<Props> {
 
   get recoveryPhraseStatus() {
     const {
-      walletCreationDate,
+      creationDate,
       recoveryPhraseVerificationDate,
       recoveryPhraseVerificationStatus,
       recoveryPhraseVerificationStatusType,
@@ -147,7 +147,7 @@ export default class WalletRecoveryPhrase extends Component<Props> {
     const statuses = this.statuses[recoveryPhraseVerificationStatusType];
     const { icon, message } = statuses[recoveryPhraseVerificationStatus];
     const timeAgo = moment(recoveryPhraseVerificationDate).fromNow();
-    const timeFromCreationToWarning = moment(new Date(walletCreationDate)).add(
+    const timeFromCreationToWarning = moment(new Date(creationDate)).add(
       RECOVERY_PHRASE_VERIFICATION_WARNING,
       'days'
     );

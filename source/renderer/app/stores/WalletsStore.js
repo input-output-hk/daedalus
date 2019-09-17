@@ -382,15 +382,25 @@ export default class WalletsStore extends Store {
 
   getWalletRecoveryPhraseVerification = (
     walletId: string
-  ): WalletRecoveryPhraseVerificationData =>
-    this.recoveryPhraseVerificationData[walletId] || {
-      creationDate: null,
-      recoveryPhraseVerificationDate: null,
-      recoveryPhraseVerificationStatus: this
-        .WALLET_RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
-      recoveryPhraseVerificationStatusType: this
-        .WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
+  ): WalletRecoveryPhraseVerificationData => {
+    const {
+      creationDate,
+      recoveryPhraseVerificationDate,
+      recoveryPhraseVerificationStatus,
+      recoveryPhraseVerificationStatusType,
+    } = this.recoveryPhraseVerificationData[walletId];
+
+    return {
+      creationDate: creationDate || new Date(),
+      recoveryPhraseVerificationDate,
+      recoveryPhraseVerificationStatus:
+        recoveryPhraseVerificationStatus ||
+        this.WALLET_RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
+      recoveryPhraseVerificationStatusType:
+        recoveryPhraseVerificationStatusType ||
+        this.WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
     };
+  };
 
   // ACTIONS
 

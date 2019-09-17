@@ -67,7 +67,7 @@ export default class WalletSettingsPage extends Component<Props> {
         isDialogOpen={uiDialogs.isOpen}
         walletId={activeWallet.id}
         walletName={activeWallet.name}
-        walletCreationDate={creationDate}
+        creationDate={creationDate}
         isSubmitting={updateWalletRequest.isExecuting}
         isInvalid={
           updateWalletRequest.wasExecuted &&

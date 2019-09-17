@@ -75,11 +75,11 @@ const getWalletDates = (type: string, status: string) => {
       .toDate();
 
   const recoveryPhraseVerificationDate = date;
-  const walletCreationDate = date;
+  const creationDate = date;
 
   return {
     recoveryPhraseVerificationDate,
-    walletCreationDate,
+    creationDate,
   };
 };
 
@@ -91,7 +91,7 @@ export default () => {
     recoveryPhraseId
   );
 
-  const { recoveryPhraseVerificationDate, walletCreationDate } = getWalletDates(
+  const { recoveryPhraseVerificationDate, creationDate } = getWalletDates(
     type,
     status
   );
@@ -271,7 +271,7 @@ export default () => {
           openExternalLink={action('openExternalLink')}
         />
       }
-      walletCreationDate={walletCreationDate}
+      creationDate={creationDate}
       recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
       recoveryPhraseVerificationStatus={status || 'ok'}
       recoveryPhraseVerificationStatusType={type || 'neverChecked'}
