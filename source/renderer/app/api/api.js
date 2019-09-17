@@ -1031,6 +1031,9 @@ export default class AdaApi {
   setLatestAppVersion: Function;
   setApplicationVersion: Function;
   setFaultyNodeSettingsApi: boolean;
+
+  // News feed testing utility
+  setFakeNewsFeedJsonForTesting: (json: Object) => void;
 }
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
