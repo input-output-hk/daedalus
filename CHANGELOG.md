@@ -33,6 +33,7 @@ Changelog
 
 ### Chores
 
+- Use "daedalus" `Buildkite` to build macOS installers ([PR 1568](https://github.com/input-output-hk/daedalus/pull/1568))
 - Use improved `NumericInput` component of `React-Polymorph` v0.9.0 ([1511](https://github.com/input-output-hk/daedalus/pull/1511))
 - Added minimum heights of main app window for different environments (Windows, Linux, MacOS) ([1485](https://github.com/input-output-hk/daedalus/pull/1485))
 - Removed "Ada Redemption" feature ([PR 1510](https://github.com/input-output-hk/daedalus/pull/1510))
@@ -40,6 +41,10 @@ Changelog
 - Refactored theme management code to be scalable ([PR 1502](https://github.com/input-output-hk/daedalus/pull/1502))
 - Improved "Netlify" build setup ([PR 1509](https://github.com/input-output-hk/daedalus/pull/1509))
 - Unified support request data handling in common method ([1472](https://github.com/input-output-hk/daedalus/pull/1472))
+
+### Specifications
+
+- News feed ([PR 1569](https://github.com/input-output-hk/daedalus/pull/1569))
 
 ## 0.14.0
 
