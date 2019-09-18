@@ -31,8 +31,9 @@ export default class AlertsOverlay extends Component<Props, State> {
 
   renderAction = (action: Object) => {
     if (action && action.url) {
-      return <a href={action.url}>{action.label}</a>;
+      return <button className={styles.actionBtn}>{action.label}</button>;
     }
+    return null;
   };
 
   render() {
