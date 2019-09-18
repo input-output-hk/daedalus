@@ -2,9 +2,11 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import { observer } from 'mobx-react';
+import SVGInline from 'react-svg-inline';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
-import styles from './IncidentOverlay.scss';
+import attentionIcon from '../../assets/images/attention-big-light.inline.svg';
+import styles from './AlertsOverlay.scss';
 import News from '../../domains/News';
 
 type State = {
@@ -26,6 +28,12 @@ export default class AlertsOverlay extends Component<Props, State> {
 
   onClose = () => this.setState({ showOverlay: false });
 
+  renderAction = (action: Object) => {
+    if (action && action.url) {
+      return <a href={action.url}>{action.label}</a>;
+    }
+  };
+
   render() {
     const { showOverlay } = this.state;
     const { alerts } = this.props;
@@ -39,18 +47,13 @@ export default class AlertsOverlay extends Component<Props, State> {
             icon={closeCrossThin}
             onClose={this.onClose}
           />
+          <SVGInline svg={attentionIcon} className={styles.icon} />
           <h1 className={styles.title}>{title}</h1>
           <span className={styles.date}>
             {moment(date).format('YYYY-MM-DD')}
           </span>
           <p className={styles.content}>{content}</p>
-          <button
-            className={styles.dismissBtn}
-            type="button"
-            onClick={this.onClose}
-          >
-            {action.label}
-          </button>
+          {this.renderAction(action)}
         </div>
       )
     );
