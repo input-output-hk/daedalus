@@ -8,6 +8,7 @@ import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import styles from './NewsFeed.scss';
 import News from '../../domains/News';
 import NewsItem from './NewsItem';
+import LoadingSpinner from '../widgets/LoadingSpinner';
 
 const messages = defineMessages({
   newsFeedEmpty: {
@@ -66,7 +67,7 @@ export default class NewsFeed extends Component<Props> {
         <div className={styles.newsFeedHeader}>
           <h3 className={styles.newsFeedTitle}>
             {intl.formatMessage(messages.newsFeedTitle)}
-            {news.unread && news.unread.length > 0 && (
+            {news && news.unread && news.unread.length > 0 && (
               <span className={styles.newsFeedBadge}>{news.unread.length}</span>
             )}
           </h3>
@@ -80,6 +81,7 @@ export default class NewsFeed extends Component<Props> {
               <p className={styles.newsFeedNoFetch}>
                 {intl.formatMessage(messages.newsFeedNoFetch)}
               </p>
+              <LoadingSpinner medium />
             </div>
           )}
           {news && totalNewsItems === 0 && (

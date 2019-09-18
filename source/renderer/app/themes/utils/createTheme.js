@@ -640,6 +640,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-loading-status-icons-unloaded-syncing-color': `${text.primary}`,
       '--theme-loading-status-icons-tooltip-color': `${text.primary}`,
       '--theme-loading-spinner-color': `${text.primary}`,
+      '--theme-loading-spinner-medium-color': '#fff',
     },
     manualUpdate: {
       '--theme-manual-update-overlay-background-color': `${chroma(

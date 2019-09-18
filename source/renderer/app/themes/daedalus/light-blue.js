@@ -296,6 +296,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-loading-status-icons-unloaded-syncing-color': '#5e6066',
     '--theme-loading-status-icons-tooltip-color': '#062148',
     '--theme-loading-spinner-color': '#5e6066',
+    '--theme-loading-spinner-medium-color': '#fff',
   },
   manualUpdate: {
     '--theme-manual-update-overlay-background-color': 'rgba(36, 62, 98, 0.96)',
