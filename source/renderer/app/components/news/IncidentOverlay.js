@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import { observer } from 'mobx-react';
 import ReactMarkdown from 'react-markdown';
-import SVGInline from 'react-svg-inline';
-import attentionIcon from '../../assets/images/attention-big-light.inline.svg';
 import styles from './IncidentOverlay.scss';
 import News from '../../domains/News';
 
@@ -26,7 +24,6 @@ export default class IncidentOverlay extends Component<Props> {
     const { content, date, action, title } = incident;
     return (
       <div className={styles.component}>
-        <SVGInline svg={attentionIcon} className={styles.icon} />
         <h1 className={styles.title}>{title}</h1>
         <span className={styles.date}>{moment(date).format('YYYY-MM-DD')}</span>
         <div className={styles.content}>
