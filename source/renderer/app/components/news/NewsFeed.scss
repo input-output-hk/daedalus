@@ -4,8 +4,8 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
   margin-right: -380px;
+  overflow: hidden;
   position: fixed;
   right: 0;
   top: 0;
@@ -86,9 +86,9 @@
       }
 
       .newsFeedReloadBtn {
-        border-radius: 2px;
-        border: solid 1px var(--theme-news-feed-reload-button-border-color);
         background-color: var(--theme-news-feed-reload-button-background-color);
+        border: solid 1px var(--theme-news-feed-reload-button-border-color);
+        border-radius: 2px;
         color: var(--theme-news-feed-reload-button-color);
         font-family: var(--font-regular);
         font-size: 14px;

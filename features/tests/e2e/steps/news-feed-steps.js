@@ -32,7 +32,10 @@ function getLatestAlert(news) {
 
 Given('there are unread news', async function() {
   await prepareFakeNews(this, newsDummyJson, (news, done) => {
-    daedalus.api.ada.setFakeNewsFeedJsonForTesting(news);
+    daedalus.api.ada.setFakeNewsFeedJsonForTesting({
+      updatedAt: Date.now(),
+      items: news.items.filter(i => i.type === 'info'),
+    });
     done();
   });
 });
@@ -41,7 +44,10 @@ Given('there are no unread news', async function() {
   await prepareFakeNews(this, newsDummyJson, (news, done) => {
     const api = daedalus.api;
     // Set dummy news feed data
-    api.ada.setFakeNewsFeedJsonForTesting(news);
+    api.ada.setFakeNewsFeedJsonForTesting({
+      updatedAt: Date.now(),
+      items: news.items.filter(i => i.type === 'info'),
+    });
     // Mark all news as read
     api.localStorage.markNewsAsRead(news.items.map(i => i.date)).then(done);
   });
@@ -82,15 +88,20 @@ Given('there is an incident', async function() {
   });
 });
 
-Given('there are unread alerts', async function() {
-  await prepareFakeNews(this, newsDummyJson, (news, done) => {
-    const alerts = news.items.filter(i => i.type === 'alert');
-    daedalus.api.ada.setFakeNewsFeedJsonForTesting({
-      updatedAt: Date.now(),
-      items: alerts,
-    });
-    done();
-  });
+Given('there is unread {word}s', async function(newsType) {
+  await prepareFakeNews(
+    this,
+    newsDummyJson,
+    (news, type, done) => {
+      const items = news.items.filter(i => i.type === type);
+      daedalus.api.ada.setFakeNewsFeedJsonForTesting({
+        updatedAt: Date.now(),
+        items,
+      });
+      done();
+    },
+    newsType
+  );
 });
 
 Given('there is 1 unread {word}', async function(newsType) {
@@ -139,15 +150,15 @@ Then('i should see the news feed icon', async function() {
 });
 
 Then('the news feed icon is highlighted', async function() {
-  await this.client.waitForVisible('.NewsFeedIcon_component_is-highlighted');
+  await this.client.waitForVisible('.NewsFeedIcon_highlighted');
+});
+
+Then('the news feed icon shows a dot', async function() {
+  await this.client.waitForVisible('.NewsFeedIcon_withDot');
 });
 
 Then('the news feed icon is not highlighted', async function() {
-  await this.client.waitForVisible(
-    '.NewsFeedIcon_component_is-highlighted',
-    null,
-    true
-  );
+  await this.client.waitForVisible('.NewsFeedIcon_highlighted', null, true);
 });
 
 Then('the news feed is open', async function() {

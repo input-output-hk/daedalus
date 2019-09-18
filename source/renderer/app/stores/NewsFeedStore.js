@@ -97,13 +97,12 @@ export default class NewsFeedStore extends Store {
   @computed get newsFeedData(): News.NewsCollection {
     const { currentLocale } = this.stores.profile;
     const readNews = this.getReadNewsRequest.result;
-
     let news = [];
     if (this.getNewsRequest.wasExecuted) {
       news = map(this.rawNews, item => ({
         ...item,
         title: item.title[currentLocale],
-        content: item.title[currentLocale],
+        content: item.content[currentLocale],
         action: {
           ...item.action,
           label: item.action.label[currentLocale],

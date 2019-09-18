@@ -86,14 +86,31 @@ export default class NewsFeed extends Component<Props> {
           )}
           {news && totalNewsItems > 0 && (
             <div className={styles.newsFeedItemsContainer}>
-              {news.all.map((newsItem, index) => (
-                <NewsItem
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={index}
-                  onNewsItemActionClick={onNewsItemActionClick}
-                  newsItem={newsItem}
-                />
-              ))}
+              {news.unread && (
+                <div className={styles.newsFeedUnread}>
+                  {news.unread.map((newsItem, index) => (
+                    <NewsItem
+                      // eslint-disable-next-line react/no-array-index-key
+                      key={index}
+                      onNewsItemActionClick={onNewsItemActionClick}
+                      newsItem={newsItem}
+                    />
+                  ))}
+                </div>
+              )}
+              {news.read && (
+                <div className={styles.newsFeedRead}>
+                  {news.read.map((newsItem, index) => (
+                    <NewsItem
+                      // eslint-disable-next-line react/no-array-index-key
+                      key={index}
+                      onNewsItemActionClick={onNewsItemActionClick}
+                      newsItem={newsItem}
+                    />
+                  ))}
+                </div>
+              )}
+              <div />
             </div>
           )}
         </div>
