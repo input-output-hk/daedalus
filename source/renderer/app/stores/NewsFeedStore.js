@@ -49,6 +49,7 @@ export default class NewsFeedStore extends Store {
 
   @action getNews = async () => {
     let rawNews;
+    let fetchingNewsFailed;
     try {
       rawNews = await this.getNewsRequest.execute().promise;
       // Reset "getNews" fast polling interval if set and set again reular polling interval
@@ -60,7 +61,7 @@ export default class NewsFeedStore extends Store {
           NEWS_POLL_INTERVAL
         );
       }
-      this.fetchingNewsFailed = false;
+      fetchingNewsFailed = false;
     } catch (error) {
       // Decrease "getNews" fetching timer in case we got an error and there are no initial news set in store
       if (!this.rawNews && this.pollingNewsIntervalId) {
@@ -71,7 +72,7 @@ export default class NewsFeedStore extends Store {
           NEWS_POLL_INTERVAL_ON_ERROR
         );
       }
-      this.fetchingNewsFailed = true;
+      fetchingNewsFailed = true;
     }
 
     await this.getReadNewsRequest.execute();
@@ -80,6 +81,7 @@ export default class NewsFeedStore extends Store {
       runInAction('set news data', () => {
         this.rawNews = get(rawNews, 'items', []);
         this.newsUpdatedAt = get(rawNews, 'updatedAt', null);
+        this.fetchingNewsFailed = fetchingNewsFailed;
       });
     }
   };
