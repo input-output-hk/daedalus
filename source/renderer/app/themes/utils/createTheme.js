@@ -733,8 +733,8 @@ export const createDaedalusComponentsTheme = (
       '--theme-news-feed-icon-close-hover-background-color':
         'rgba(0, 0, 0, 0.1)',
       '--theme-news-feed-icon-color': '#fafbfc',
-      '--theme-news-feed-icon-color-connecting-screen': 'red',
-      '--theme-news-feed-icon-color-syncing-screen': 'purple',
+      '--theme-news-feed-icon-color-connecting-screen': '#fafbfc',
+      '--theme-news-feed-icon-color-syncing-screen': '#5e6066',
       '--theme-news-feed-icon-dot-background-color': '#ea4c5b',
       '--theme-news-feed-icon-toggle-hover-background-color':
         'rgba(0, 0, 0, 0.1)',

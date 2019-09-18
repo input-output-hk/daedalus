@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import { observer } from 'mobx-react';
 import ReactMarkdown from 'react-markdown';
-import styles from './IncidentOverlay.scss';
 import News from '../../domains/News';
+import styles from './IncidentOverlay.scss';
 
 type Props = {
   incident: News,
@@ -12,8 +12,16 @@ type Props = {
 
 @observer
 export default class IncidentOverlay extends Component<Props> {
+  renderAction = (action: Object) => {
+    if (action && action.url) {
+      return <button className={styles.actionBtn}>{action.label}</button>;
+    }
+    return null;
+  };
+
   render() {
-    const { content, date, action, title } = this.props.incident;
+    const { incident } = this.props;
+    const { content, date, action, title } = incident;
     return (
       <div className={styles.component}>
         <h1 className={styles.title}>{title}</h1>
@@ -21,13 +29,7 @@ export default class IncidentOverlay extends Component<Props> {
         <div className={styles.content}>
           <ReactMarkdown escapeHtml={false} source={content} />
         </div>
-        <button
-          className={styles.dismissBtn}
-          type="button"
-          onClick={action.route}
-        >
-          {action.label}
-        </button>
+        {this.renderAction(action)}
       </div>
     );
   }

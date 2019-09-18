@@ -1,9 +1,28 @@
+.actionBtn {
+  background-color: #ab1700;
+  border: 1px solid #fafbfc;
+  box-sizing: border-box;
+  border-radius: 5px;
+  color: #fafbfc;
+  font-family: var(--font-medium);
+  font-size: 14px;
+  font-weight: 500;
+  min-height: 50px;
+  line-height: 1.36;
+  width: 360px;
+  &:hover {
+    background-color: #fafbfc;
+    color: #ab1700;
+  }
+}
+
 .component {
   align-items: center;
-  background-color: rgba(193, 66, 66, 0.7);
-  border: 1px solid red;
+  background-color: rgba(171, 23, 0, 0.94);
+  color: #fafbfc;
   display: flex;
   flex-direction: column;
+  font-family: var(--font-regular);
   height: 100vh;
   justify-content: center;
   width: 100vw;
@@ -11,30 +30,69 @@
 }
 
 .content {
-  color: #fff;
-  margin-bottom: 1vh;
-}
+  background-color: rgba(171, 23, 0, 0.94);
+  font-size: 16px;
+  line-height: 1.2;
+  margin-bottom: 30px;
+  max-height: 464px;
+  max-width: 600px;
+  padding: 12px 24px;
+  overflow-y: scroll;
+  opacity: 0.8;
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(250, 251, 252, 0.3);
+    outline: none;
+    width: 4px;
 
-.date {
-  color: #fff;
-  margin-bottom: 1vh;
-}
+    &:hover {
+      background-color: rgba(250, 251, 252, 0.5);
+    }
+  }
 
-.dismissBtn {
-  background-color: transparent;
-  border: 1px solid #fff;
-  color: #fff;
-  height: 30px;
-  width: 300px;
+  h1,
+  h2 {
+    font-family: var(--font-medium);
+    font-size: 19px;
+    margin-bottom: 11px;
+  }
 
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.7);
-    color: rgba(193, 66, 66, 0.7);
+  h2 {
+    margin-top: 13px;
+  }
+
+  ul {
+    list-style: disc;
+    margin-left: 20px;
+  }
+
+  p,
+  li {
+    font-family: var(--font-regular);
+    line-height: 1.38;
+    margin-bottom: 11px;
+
+    strong {
+      font-weight: 500;
+    }
+  }
+  li {
+    margin-bottom: 4px;
+  }
+  a {
+    color: #fafbfc;
   }
 }
 
+.date {
+  font-family: var(--font-medium);
+  font-size: 14px;
+  line-height: 1.43;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+
 .title {
-  color: #fff;
   font-size: 20px;
-  margin-bottom: 1vh;
+  line-height: 1.2;
+  margin-bottom: 3px;
 }
