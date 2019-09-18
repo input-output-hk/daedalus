@@ -13,14 +13,14 @@ storiesOf('NewsFeed', module)
             action: {
               label: 'Dismiss',
             },
-            content: 'Network failure',
+            content: 'Network failures have been reported.',
             date: Date.now(),
             target: {
               daedalus: 'v0.13',
               platform: 'macOS',
               platformVersion: '10.14.6',
             },
-            title: 'Lazarus Incident',
+            title: 'Failure Alert',
           },
         ],
       })}

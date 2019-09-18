@@ -3,8 +3,8 @@
   display: flex;
   justify-content: flex-end;
   position: fixed;
-  right: 5vw;
-  top: 8vh;
+  right: 1.5vw;
+  top: 3vh;
   z-index: 4;
 
   span {
@@ -34,27 +34,28 @@
 
 .component {
   align-items: center;
-  background-color: rgba(193, 66, 66, 0.7);
-  border: 1px solid red;
+  background-color: var(--theme-loading-no-disk-space-background-color);
+  color: var(--theme-loading-no-disk-space-text-color);
   display: flex;
   flex-direction: column;
-  height: 90vh;
+  height: 100vh;
   justify-content: center;
-  margin-left: 5vw;
-  margin-right: 5vw;
-  margin-top: 5vh;
-  width: 90vw;
+  width: 100vw;
   z-index: 3;
 }
 
 .content {
-  color: #fff;
-  margin-bottom: 1vh;
+  font-size: 16px;
+  line-height: 1.38;
+  margin-bottom: 20px;
+  opacity: 0.8;
 }
 
 .date {
-  color: #fff;
-  margin-bottom: 1vh;
+  font-size: 16px;
+  line-height: 1.38;
+  margin-bottom: 20px;
+  opacity: 0.8;
 }
 
 .dismissBtn {
@@ -70,8 +71,26 @@
   }
 }
 
+.icon {
+  margin-bottom: 36px;
+  object-fit: contain;
+  & > svg {
+    height: 110px;
+    width: 110px;
+    path {
+      fill: var(--theme-loading-no-disk-space-attention-icon-color);
+    }
+    path:nth-child(1) {
+      opacity: 0.2;
+    }
+    path:nth-child(2) {
+      opacity: 0.6;
+    }
+  }
+}
+
 .title {
-  color: #fff;
   font-size: 20px;
-  margin-bottom: 1vh;
+  line-height: 1.2;
+  margin-bottom: 8.5px;
 }

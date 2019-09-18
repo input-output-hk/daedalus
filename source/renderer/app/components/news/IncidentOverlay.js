@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import { observer } from 'mobx-react';
+import ReactMarkdown from 'react-markdown';
 import styles from './IncidentOverlay.scss';
 import News from '../../domains/News';
 
@@ -17,7 +18,9 @@ export default class IncidentOverlay extends Component<Props> {
       <div className={styles.component}>
         <h1 className={styles.title}>{title}</h1>
         <span className={styles.date}>{moment(date).format('YYYY-MM-DD')}</span>
-        <p className={styles.content}>{content}</p>
+        <div className={styles.content}>
+          <ReactMarkdown escapeHtml={false} source={content} />
+        </div>
         <button
           className={styles.dismissBtn}
           type="button"
