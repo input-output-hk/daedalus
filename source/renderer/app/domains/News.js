@@ -52,7 +52,7 @@ class News {
 }
 
 class NewsCollection {
-  @observable all: Array<News>;
+  @observable news: Array<News>;
 
   constructor(data: Array<News>) {
     // Filter news by palatform and versions
@@ -68,7 +68,7 @@ class NewsCollection {
 
     Object.assign(this, {
       // Order news from oldest to newest
-      all: orderBy(data, 'date', 'desc'),
+      all: orderBy(filteredNews, 'date', 'desc'),
     });
   }
 
