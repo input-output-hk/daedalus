@@ -11,214 +11,105 @@ storiesOf('NewsFeed', module)
   .addDecorator(story => (
     <StoryDecorator>
       {story({
-        updatedAt: 1568650464961,
-        items: [
+        news: [
           {
-            title: {
-              'en-US': 'Some title 1 in English',
-              'ja-JP': 'Some title 1 in Japanese',
-            },
-            content: {
-              'en-US': 'Content 1 in English',
-              'ja-JP': 'Content 1 in Japanese',
-            },
-            target: {
-              daedalus: '0.14.0',
-              platform: 'darwin',
-              platformVersion: '17.7.0',
-            },
+            title: 'Some title 1 in English',
+            content: 'Some title 1 in English',
+            target: { daedalus: '0.14.0', platform: 'darwin' },
             action: {
-              label: {
-                'en-US': 'Visit en-US',
-                'ja-JP': 'Visit ja-JP',
-              },
-              url: {
-                'en-US': 'https://iohk.zendesk.com/hc/en-us/articles/',
-                'ja-JP': 'https://iohk.zendesk.com/hc/ja/articles/',
-              },
+              label: 'Visit en-US',
+              url: 'https://iohk.zendesk.com/hc/en-us/articles/',
             },
             date: 1568650464961,
             type: 'incident',
+            read: false,
           },
           {
-            title: {
-              'en-US': 'Some title 2 in English',
-              'ja-JP': 'Some title 2 in Japanese',
-            },
-            content: {
-              'en-US': 'Content 2 in English',
-              'ja-JP': 'Content 2 in Japanese',
-            },
-            target: {
-              daedalus: '0.13.0',
-              platform: 'win32',
-              platformVersion: '17.7.0',
-            },
+            title: 'Some title 2 in English',
+            content: 'Some title 2 in English',
+            target: { daedalus: '0.13.0', platform: 'win32' },
             action: {
-              label: {
-                'en-US': 'Visit en-US',
-                'ja-JP': 'Visit ja-JP',
-              },
-              url: {
-                'en-US': 'https://iohk.zendesk.com/hc/en-us/articles/',
-                'ja-JP': 'https://iohk.zendesk.com/hc/ja/articles/',
-              },
+              label: 'Visit en-US',
+              url: 'https://iohk.zendesk.com/hc/en-us/articles/',
             },
             date: 1568736864962,
             type: 'incident',
+            read: false,
           },
           {
-            title: {
-              'en-US': 'Some title 3 in English',
-              'ja-JP': 'Some title 3 in Japanese',
-            },
-            content: {
-              'en-US': 'Content 3 in English',
-              'ja-JP': 'Content 3 in Japanese',
-            },
-            target: {
-              daedalus: '0.13.0',
-              platform: 'linux',
-              platformVersion: '17.7.0',
-            },
-            action: {
-              label: {
-                'en-US': 'Check en-US',
-                'ja-JP': 'Check ja-JP',
-              },
-              route: '/wallets',
-            },
+            title: 'Some title 3 in English',
+            content: 'Some title 3 in English',
+            target: { daedalus: '0.13.0', platform: 'linux' },
+            action: { label: 'Check en-US', route: '/wallets' },
             date: 1568823264963,
             type: 'alert',
+            read: false,
           },
           {
-            title: {
-              'en-US': 'Some title 4 in English',
-              'ja-JP': 'Some title 4 in Japanese',
-            },
-            content: {
-              'en-US': 'Content 4 in English',
-              'ja-JP': 'Content 4 in Japanese',
-            },
-            target: {
-              daedalus: '0.14.0',
-              platform: 'darwin',
-              platformVersion: '17.7.0',
-            },
+            title: 'Some title 4 in English',
+            content: 'Some title 4 in English',
+            target: { daedalus: '0.14.0', platform: 'darwin' },
             action: {
-              label: {
-                'en-US': 'Visit en-US',
-                'ja-JP': 'Visit ja-JP',
-              },
-              url: {
-                'en-US': 'https://iohk.zendesk.com/hc/en-us/articles/',
-                'ja-JP': 'https://iohk.zendesk.com/hc/ja/articles/',
-              },
+              label: 'Visit en-US',
+              url: 'https://iohk.zendesk.com/hc/en-us/articles/',
             },
             date: 1568909664963,
             type: 'alert',
+            read: false,
           },
           {
-            title: {
-              'en-US': 'Some title 5 in English',
-              'ja-JP': 'Some title 5 in Japanese',
-            },
-            content: {
-              'en-US': 'Content 5 in English',
-              'ja-JP': 'Content 5 in Japanese',
-            },
-            target: {
-              daedalus: '0.12.0',
-              platform: 'darwin',
-              platformVersion: '17.7.0',
-            },
-            action: {
-              label: {
-                'en-US': 'Check en-US',
-                'ja-JP': 'Check ja-JP',
-              },
-              route: '/settings',
-            },
+            title: 'Some title 5 in English',
+            content: 'Some title 5 in English',
+            target: { daedalus: '0.12.0', platform: 'darwin' },
+            action: { label: 'Check en-US', route: '/settings' },
             date: 1568996064964,
             type: 'announcement',
+            read: false,
           },
           {
-            title: {
-              'en-US': 'Some title 6 in English',
-              'ja-JP': 'Some title 6 in Japanese',
-            },
-            content: {
-              'en-US': 'Content 6 in English',
-              'ja-JP': 'Content 6 in Japanese',
-            },
-            target: {
-              daedalus: '0.13.0',
-              platform: 'win32',
-              platformVersion: '17.7.0',
-            },
+            title: 'Some title 6 in English',
+            content: 'Some title 6 in English',
+            target: { daedalus: '0.13.0', platform: 'win32' },
             action: {
-              label: {
-                'en-US': 'Visit en-US',
-                'ja-JP': 'Visit ja-JP',
-              },
-              url: {
-                'en-US': 'https://iohk.zendesk.com/hc/en-us/articles/',
-                'ja-JP': 'https://iohk.zendesk.com/hc/ja/articles/',
-              },
+              label: 'Visit en-US',
+              url: 'https://iohk.zendesk.com/hc/en-us/articles/',
             },
             date: 1569082464964,
             type: 'announcement',
+            read: false,
           },
           {
-            title: {
-              'en-US': 'Some title 7 in English',
-              'ja-JP': 'Some title 7 in Japanese',
-            },
-            content: {
-              'en-US': 'Content 7 in English',
-              'ja-JP': 'Content 7 in Japanese',
-            },
-            target: {
-              daedalus: '0.14.0',
-              platform: 'darwin',
-              platformVersion: '17.7.0',
-            },
-            action: {
-              label: {
-                'en-US': 'Check en-US',
-                'ja-JP': 'Check ja-JP',
-              },
-              route: '/settings',
-            },
+            title: 'Some title 7 in English',
+            content: 'Some title 7 in English',
+            target: { daedalus: '0.14.0', platform: 'darwin' },
+            action: { label: 'Check en-US', route: '/settings' },
             date: 1569168864965,
             type: 'info',
+            read: false,
           },
           {
-            title: {
-              'en-US': 'Some title 8 in English',
-              'ja-JP': 'Some title 8 in Japanese',
-            },
-            content: {
-              'en-US': 'Content 8 in English',
-              'ja-JP': 'Content 8 in Japanese',
-            },
-            target: {
-              daedalus: '0.13.0',
-              platform: 'linux',
-              platformVersion: '17.7.0',
-            },
+            title: 'Some title 8 in English',
+            content: 'Some title 8 in English',
+            target: { daedalus: '0.13.0', platform: 'linux' },
             action: {
-              label: {
-                'en-US': 'Visit en-US',
-                'ja-JP': 'Visit ja-JP',
-              },
-              url: {
-                'en-US': 'https://iohk.zendesk.com/hc/en-us/articles/',
-                'ja-JP': 'https://iohk.zendesk.com/hc/ja/articles/',
-              },
+              label: 'Visit en-US',
+              url: 'https://iohk.zendesk.com/hc/en-us/articles/',
             },
             date: 1569255264965,
             type: 'info',
+            read: false,
+          },
+          {
+            title: 'Some title 9 in English',
+            content: 'Some title 9 in English',
+            target: { daedalus: '0.13.0', platform: 'darwin' },
+            action: {
+              label: 'Visit https://markdown-it.github.io/',
+              url: 'https://markdown-it.github.io/',
+            },
+            date: 1569255294965,
+            type: 'alert',
+            read: false,
           },
         ],
       })}
