@@ -66,9 +66,9 @@ export default class NewsFeed extends Component<Props> {
         <div className={styles.newsFeedHeader}>
           <h3 className={styles.newsFeedTitle}>
             {intl.formatMessage(messages.newsFeedTitle)}
-            {news.unread && news.unread.length > 0 && <span className={styles.newsFeedBadge}>
-              {news.unread.length}
-          </span>}
+            {news.unread && news.unread.length > 0 && (
+              <span className={styles.newsFeedBadge}>{news.unread.length}</span>
+            )}
           </h3>
           <button onClick={onClose} className={styles.newsFeedCloseBtn}>
             <SVGInline svg={closeCrossThin} />
