@@ -60,8 +60,10 @@
   font-family: var(--font-regular);
   height: 100vh;
   justify-content: flex-start;
+  position: fixed;
+  top: 0px;
   width: 100vw;
-  z-index: 3;
+  z-index: 20;
 }
 
 .content {
@@ -71,6 +73,7 @@
   margin-bottom: 30px;
   max-height: 464px;
   max-width: 600px;
+  min-width: 600px;
   padding: 12px 24px;
   overflow-y: scroll;
   opacity: 0.8;
@@ -95,13 +98,19 @@
     margin-top: 13px;
   }
 
+  ol,
   ul {
     list-style: disc;
     margin-left: 20px;
   }
 
+  ol {
+    list-style-type: decimal;
+  }
+
   p,
   li {
+    color: rgba(45, 45, 45, 0.7);
     font-family: var(--font-regular);
     line-height: 1.38;
     margin-bottom: 11px;

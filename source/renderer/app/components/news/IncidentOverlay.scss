@@ -1,5 +1,5 @@
 .actionBtn {
-  background-color: #ab1700;
+  background-color: rgba(0, 0, 0, 0.1);
   border: 1px solid #fafbfc;
   box-sizing: border-box;
   border-radius: 5px;
@@ -25,17 +25,20 @@
   font-family: var(--font-regular);
   height: 100vh;
   justify-content: center;
+  position: fixed;
+  top: 0px;
   width: 100vw;
-  z-index: 3;
+  z-index: 20;
 }
 
 .content {
-  background-color: rgba(171, 23, 0, 0.94);
+  background-color: rgba(0, 0, 0, 0.1);
   font-size: 16px;
   line-height: 1.2;
   margin-bottom: 30px;
   max-height: 464px;
   max-width: 600px;
+  min-width: 600px;
   padding: 12px 24px;
   overflow-y: scroll;
   opacity: 0.8;
@@ -60,16 +63,22 @@
     margin-top: 13px;
   }
 
+  ol,
   ul {
     list-style: disc;
     margin-left: 20px;
+  }
+  ol {
+    list-style-type: decimal;
   }
 
   p,
   li {
     font-family: var(--font-regular);
+    font-size: 14px;
     line-height: 1.38;
     margin-bottom: 11px;
+    color: rgba(250, 251, 252, 0.7);
 
     strong {
       font-weight: 500;

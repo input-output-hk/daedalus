@@ -50,7 +50,7 @@ Feature: News feed
     When I open the news feed
     Then the news feed contains 5 read news
 
-  @wip
+  @watch
   Scenario: Displaying an incident
     Given there is an incident
     Then the incident will cover the screen
