@@ -41,6 +41,7 @@ export default class NewsFeedStore extends Store {
 
   @action getNews = async () => {
     const rawNews = await this.getNewsRequest.execute().promise;
+    await this.getReadNewsRequest.execute();
     if (rawNews) {
       runInAction('set news data', () => {
         this.rawNews = get(rawNews, 'items', []);
@@ -49,17 +50,17 @@ export default class NewsFeedStore extends Store {
     }
   };
 
-  // @action markNewsAsRead = (newsTimestamps) => {
-  //   const readNews = this.getReadNewsRequest.result;
-  //   console.debug('readNews OLD', readNews);
-  //   const readNews2 = this.getReadNewsRequest.result;
-  //   console.debug('readNews NEW', readNews2);
-  // }
+  @action markNewsAsRead = async (newsTimestamps) => {
+    // Set news timestamp to LC
+    await this.markNewsAsReadRequest.execute(newsTimestamps);
+    // GET all read news to force @computed to trigger
+    await this.getReadNewsRequest.execute();
+  }
 
   @computed get newsFeedData(): News.NewsCollection {
-    console.debug('RUN COMPUTED');
     const { currentLocale } = this.stores.profile;
     const readNews = this.getReadNewsRequest.result;
+
     let news = [];
     if (this.getNewsRequest.wasExecuted) {
       // @TODO - check news stored in local storage, compare update date and merge data if is needed
@@ -72,12 +73,10 @@ export default class NewsFeedStore extends Store {
           label: item.action.label[currentLocale],
           url: get(item, ['action', 'url', currentLocale]),
         },
-        // read: readNews.includes(item.date),
-        read: false,
+        read: readNews.includes(item.date),
       }));
     }
 
-    console.debug('START: ', news);
     return new News.NewsCollection(news);
   }
 }
