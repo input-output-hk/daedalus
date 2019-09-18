@@ -1,9 +1,10 @@
 .component {
   background-color: var(--theme-news-item-info-background-color);
   border-radius: 5px;
-  height: 107px;
   margin: 10px 0;
+  min-height: 107px;
   padding: 20px;
+  transition: min-height 400ms ease;
   width: 100%;
 
   .newsItemTitle {
@@ -11,6 +12,15 @@
     font-family: var(--font-regular);
     font-size: 18px;
     line-height: 1.33;
+  }
+
+  .newsItemBadge {
+    background-color: var(--theme-news-item-badge-color);
+    border-radius: 12.5px;
+    display: inline-block;
+    height: 8px;
+    margin: 3px 5px;
+    width: 8px;
   }
 
   .newsItemDate {
@@ -24,10 +34,22 @@
   }
 
   .newsItemContentContainer {
-    display: none;
+    visibility: hidden;
   }
 
   .newsItemActionBtn {
-    display: none;
+    visibility: hidden;
+  }
+
+  &.expanded {
+    min-height: 199px;
+
+    .newsItemContentContainer {
+      visibility: visible;
+    }
+
+    .newsItemActionBtn {
+      visibility: visible;
+    }
   }
 }

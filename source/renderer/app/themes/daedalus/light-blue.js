@@ -369,6 +369,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   newsItem: {
     '--theme-news-item-info-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-news-item-title-color': '#fafbfc',
+    '--theme-news-item-badge-color': '#ea4c5b',
   },
   nodeUpdate: {
     '--theme-node-update-background-color': '#ebeff2',
