@@ -2,6 +2,7 @@
   background-color: var(--theme-news-item-info-background-color);
   border-radius: 5px;
   margin: 10px 0;
+  max-height: 107px;
   min-height: 107px;
   padding: 20px;
   transition: min-height 400ms ease;
@@ -46,7 +47,31 @@
   }
 
   .newsItemActionBtn {
+    background-color: var(--theme-news-item-action-button-background-color);
+    border: solid 1px var(--theme-news-item-action-button-border-color);
+    border-radius: 2px;
+    color: var(--theme-news-item-action-button-color);
+    cursor: pointer;
+    font-family: var(--font-regular);
+    font-size: 14px;
+    font-weight: 500;
+    height: 33px;
+    margin: 20px 0;
+    text-align: center;
     visibility: hidden;
+    width: 280px;
+
+    svg {
+      height: 13px;
+      margin: -1px 5px;
+      width: 13px;
+
+      g {
+        path {
+          stroke: var(--theme-news-item-action-button-color);
+        }
+      }
+    }
   }
 
   &.expanded {
