@@ -388,29 +388,6 @@ export default class WalletsStore extends Store {
   getWalletRoute = (walletId: string, page: string = 'summary'): string =>
     buildRoute(ROUTES.WALLETS.PAGE, { id: walletId, page });
 
-  getWalletRecoveryPhraseVerification = (
-    walletId: string
-    // ): WalletRecoveryPhraseVerificationData => {
-  ) => {
-    const {
-      creationDate,
-      recoveryPhraseVerificationDate,
-      recoveryPhraseVerificationStatus,
-      recoveryPhraseVerificationStatusType,
-    } = this.recoveryPhraseVerificationData[walletId] || {};
-
-    return {
-      creationDate: creationDate || new Date(),
-      recoveryPhraseVerificationDate,
-      recoveryPhraseVerificationStatus:
-        recoveryPhraseVerificationStatus ||
-        this.WALLET_RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
-      recoveryPhraseVerificationStatusType:
-        recoveryPhraseVerificationStatusType ||
-        this.WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
-    };
-  };
-
   // ACTIONS
 
   goToWalletRoute(walletId: string) {
@@ -495,6 +472,7 @@ export default class WalletsStore extends Store {
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
       const walletIds = result.map((wallet: Wallet) => wallet.id);
+      await this._setWalletsRecoveryPhraseVerificationData(walletIds);
       let restoredWalletId = null; // id of a wallet which has just been restored
       runInAction('refresh active wallet', () => {
         if (this.active) {
@@ -529,7 +507,6 @@ export default class WalletsStore extends Store {
         );
         this.stores.transactions._refreshTransactionData(restoredWalletId);
       });
-      await this._getWalletsRecoveryPhraseVerificationData(walletIds);
     }
   };
 
@@ -793,22 +770,30 @@ export default class WalletsStore extends Store {
    * - Receives a walet local data
    * - Returns the wallet's recovery phrase verification status
    */
-  _getWalletRecoveryPhraseVerificationData = ({
+  _setWalletRecoveryPhraseVerificationData = ({
     recoveryPhraseVerificationDate,
     creationDate,
   }: WalletLocalData) => {
     const dateToCheck =
       recoveryPhraseVerificationDate || creationDate || new Date();
     const daysSinceDate = moment().diff(moment(dateToCheck), 'days');
-    let status = WalletRecoveryPhraseVerificationStatuses.OK;
+    let recoveryPhraseVerificationStatus =
+      WalletRecoveryPhraseVerificationStatuses.OK;
     if (daysSinceDate > RECOVERY_PHRASE_VERIFICATION_NOTIFICATION)
-      status = WalletRecoveryPhraseVerificationStatuses.NOTIFICATION;
+      recoveryPhraseVerificationStatus =
+        WalletRecoveryPhraseVerificationStatuses.NOTIFICATION;
     else if (daysSinceDate > RECOVERY_PHRASE_VERIFICATION_WARNING)
-      status = WalletRecoveryPhraseVerificationStatuses.WARNING;
-    const type = recoveryPhraseVerificationDate
+      recoveryPhraseVerificationStatus =
+        WalletRecoveryPhraseVerificationStatuses.WARNING;
+    const recoveryPhraseVerificationStatusType = recoveryPhraseVerificationDate
       ? WalletRecoveryPhraseVerificationTypes.ALREADY_CHECKED
       : WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED;
-    return { creationDate, recoveryPhraseVerificationDate, status, type };
+    return {
+      creationDate,
+      recoveryPhraseVerificationDate,
+      recoveryPhraseVerificationStatus,
+      recoveryPhraseVerificationStatusType,
+    };
   };
 
   /**
@@ -818,7 +803,7 @@ export default class WalletsStore extends Store {
    *   the wallets recovery phrase verification data
    * - Updates localStorage in case of missing information
    */
-  _getWalletsRecoveryPhraseVerificationData = async (
+  _setWalletsRecoveryPhraseVerificationData = async (
     walletIds: Array<string>
   ): RecoveryPhraseVerificationData => {
     const walletsLocalData = await this._getWalletsLocalData();
@@ -843,11 +828,33 @@ export default class WalletsStore extends Store {
       }
       recoveryPhraseVerificationData[
         id
-      ] = this._getWalletRecoveryPhraseVerificationData(walletLocalData);
+      ] = this._setWalletRecoveryPhraseVerificationData(walletLocalData);
     });
     runInAction('refresh recovery phrase verification data', async () => {
       this.recoveryPhraseVerificationData = recoveryPhraseVerificationData;
     });
+  };
+
+  getWalletRecoveryPhraseVerification = (
+    walletId: string
+  ): WalletRecoveryPhraseVerificationData => {
+    const {
+      creationDate,
+      recoveryPhraseVerificationDate,
+      recoveryPhraseVerificationStatus,
+      recoveryPhraseVerificationStatusType,
+    } = this.recoveryPhraseVerificationData[walletId] || {};
+
+    return {
+      creationDate: creationDate || new Date(),
+      recoveryPhraseVerificationDate,
+      recoveryPhraseVerificationStatus:
+        recoveryPhraseVerificationStatus ||
+        this.WALLET_RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
+      recoveryPhraseVerificationStatusType:
+        recoveryPhraseVerificationStatusType ||
+        this.WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
+    };
   };
 
   @action _setCertificateTemplate = (params: { selectedTemplate: string }) => {
