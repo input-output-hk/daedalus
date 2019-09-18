@@ -12,6 +12,7 @@ storiesOf('NewsFeed', module)
           {
             action: {
               label: 'Dismiss',
+              url: 'https://www.daedalus.io',
             },
             content: 'Network failures have been reported.',
             date: Date.now(),

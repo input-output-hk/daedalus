@@ -1,10 +1,29 @@
+.actionBtn {
+  background-color: rgba(45, 45, 45, 0.1);
+  border: 1px solid #2d2d2d;
+  box-sizing: border-box;
+  border-radius: 5px;
+  color: #2d2d2d;
+  font-family: var(--font-medium);
+  font-size: 14px;
+  font-weight: 500;
+  height: 50px;
+  line-height: 1.36;
+  width: 360px;
+  &:hover {
+    background-color: #2d2d2d;
+    color: #fff;
+    // border: none;
+  }
+}
+
 .closeButton {
   cursor: pointer;
   display: flex;
   justify-content: flex-end;
   position: fixed;
-  right: 1.5vw;
-  top: 3vh;
+  right: 10px;
+  top: 10px;
   z-index: 4;
 
   span {
@@ -24,20 +43,21 @@
     width: 12px;
 
     polygon {
-      fill: #fff;
+      fill: #2d2d2d;
     }
     path {
-      stroke: #fff;
+      stroke: #2d2d2d;
     }
   }
 }
 
 .component {
   align-items: center;
-  background-color: var(--theme-loading-no-disk-space-background-color);
-  color: var(--theme-loading-no-disk-space-text-color);
+  background-color: rgba(255, 185, 35, 0.96);
+  color: #2d2d2d;
   display: flex;
   flex-direction: column;
+  font-family: var(--font-regular);
   height: 100vh;
   justify-content: center;
   width: 100vw;
@@ -46,22 +66,25 @@
 
 .content {
   font-size: 16px;
-  line-height: 1.38;
+  line-height: 1.2;
   margin-bottom: 20px;
+  max-height: 200px;
+  overflow-y: scroll;
   opacity: 0.8;
 }
 
 .date {
-  font-size: 16px;
-  line-height: 1.38;
+  font-family: var(--font-medium);
+  font-size: 14px;
+  line-height: 1.43;
   margin-bottom: 20px;
-  opacity: 0.8;
+  opacity: 0.5;
 }
 
 .dismissBtn {
   background-color: transparent;
   border: 1px solid #fff;
-  color: #fff;
+  color: #2d2d2d;
   height: 30px;
   width: 300px;
 
@@ -74,11 +97,12 @@
 .icon {
   margin-bottom: 36px;
   object-fit: contain;
+  transform: rotate(180deg);
   & > svg {
     height: 110px;
     width: 110px;
     path {
-      fill: var(--theme-loading-no-disk-space-attention-icon-color);
+      fill: #2d2d2d;
     }
     path:nth-child(1) {
       opacity: 0.2;
@@ -92,5 +116,5 @@
 .title {
   font-size: 20px;
   line-height: 1.2;
-  margin-bottom: 8.5px;
+  margin-bottom: 3px;
 }
