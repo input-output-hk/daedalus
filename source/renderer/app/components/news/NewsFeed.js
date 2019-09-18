@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { get } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
@@ -51,7 +50,7 @@ export default class NewsFeed extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { onClose, news, newsFeedShowClass } = this.props;
-    const totalNewsItems = get(this.props, 'news').length;
+    const totalNewsItems = news ? news.length : 0;
 
     const componentClasses = classNames([
       styles.component,
