@@ -1,5 +1,5 @@
 // @flow
-import { observable, computed } from 'mobx';
+import { observable, computed, runInAction } from 'mobx';
 import { filter, orderBy } from 'lodash';
 import type { NewsTarget, NewsType } from '../api/news/types';
 
@@ -52,7 +52,7 @@ class News {
 }
 
 class NewsCollection {
-  @observable all: Array<News>;
+  @observable all: Array<News> = [];
 
   constructor(data: Array<News>) {
     // Filter news by palatform and versions
@@ -64,9 +64,8 @@ class NewsCollection {
     //     newsItem.target.platformVersion === platformVersion
     // );
 
-    Object.assign(this, {
-      // Order news from oldest to newest
-      all: orderBy(data, 'date', 'desc'),
+    runInAction(() => {
+      this.all.replace(orderBy(data, 'date', 'desc'));
     });
   }
 
