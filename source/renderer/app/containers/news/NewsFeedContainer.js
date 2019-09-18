@@ -21,8 +21,6 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
     const { toggleNewsFeed } = actions.app;
     const newsFeedShowClass = stores.app.newsFeedIsOpen;
 
-    console.debug('newsFeedData: ', newsFeedData);
-
     return (
       <NewsFeed
         news={newsFeedData}
