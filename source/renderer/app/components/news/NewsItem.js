@@ -46,7 +46,8 @@ export default class NewsItem extends Component<Props, State> {
     const componentClasses = classNames([
       styles.component,
       newsItem.type,
-      this.state.newsItemExpanded ? styles.expanded : null]);
+      this.state.newsItemExpanded ? styles.expanded : null,
+    ]);
 
     return (
       <div
@@ -54,16 +55,15 @@ export default class NewsItem extends Component<Props, State> {
         role="presentation"
         onClick={this.newsItemClickHandler.bind(this)}
       >
-        <h4 className={styles.newsItemTitle}>{newsItem.title}
-        <span className={styles.newsItemBadge}></span>
+        <h4 className={styles.newsItemTitle}>
+          {newsItem.title}
+          <span className={styles.newsItemBadge} />
         </h4>
         <div className={styles.newsItemDate}>
           {moment(newsItem.date).format(this.localizedDateFormat)}
         </div>
         <div className={styles.newsItemContentContainer}>
-          <ReactMarkdown
-            escapeHtml={false}
-            source={newsItem.content} />
+          <ReactMarkdown escapeHtml={false} source={newsItem.content} />
         </div>
         <button
           className={styles.newsItemActionBtn}

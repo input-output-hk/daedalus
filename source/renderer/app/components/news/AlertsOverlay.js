@@ -8,7 +8,6 @@ import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import attentionIcon from '../../assets/images/attention-big-light.inline.svg';
 import styles from './AlertsOverlay.scss';
-import News from '../../domains/News';
 
 type State = {
   showOverlay: boolean,
