@@ -12,6 +12,7 @@ import type {
   GetNewsResponse,
   GetReadNewsResponse,
   NewsItem,
+  MarkNewsAsReadResponse,
 } from '../api/news/types';
 
 const { isTest } = global.environment;

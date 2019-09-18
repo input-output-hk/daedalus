@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
 import StoryDecorator from '../support/StoryDecorator';
 import AlertsOverlay from '../../../source/renderer/app/components/news/AlertsOverlay';
 
@@ -47,4 +48,9 @@ storiesOf('NewsFeed', module)
       ])}
     </StoryDecorator>
   ))
-  .add('Alerts Overlay', props => <AlertsOverlay alerts={props['0'].alerts} />);
+  .add('Alerts Overlay', props => (
+    <AlertsOverlay
+      alerts={props['0'].alerts}
+      onMarkNewsAsRead={action('onMarkNewsAsRead')}
+    />
+  ));

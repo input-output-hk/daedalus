@@ -30,8 +30,8 @@ const messages = defineMessages({
 type Props = {
   onClose: Function,
   onNewsItemActionClick: Function,
-  news: Array<News>,
-  newsFeedShowClass: string,
+  news?: News.NewsCollection,
+  newsFeedShowClass: boolean,
 };
 
 @observer
@@ -53,11 +53,12 @@ export default class NewsFeed extends Component<Props> {
       newsFeedShowClass,
     } = this.props;
 
-    const totalNewsItems = news ? news.all.length : 0;
+    const totalNewsItems = news && news.all ? news.all.length : 0;
     const componentClasses = classNames([
       styles.component,
       newsFeedShowClass ? styles.show : null,
     ]);
+
     return (
       <div className={componentClasses}>
         <div className={styles.newsFeedHeader}>
