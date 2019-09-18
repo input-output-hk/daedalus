@@ -53,8 +53,8 @@ storiesOf('NewsFeed', module)
     <div>
       <NewsFeed
         onClose={action('onClose')}
-        news={[]}
-        noFetchedData={boolean('noFetchedData', true)}
+        news={undefined}
+        newsFeedShowClass={boolean('newsFeedShowClass', true)}
       />
     </div>
   ))
@@ -64,7 +64,7 @@ storiesOf('NewsFeed', module)
       <NewsFeed
         onClose={action('onClose')}
         news={[]}
-        noFetchedData={boolean('noFetchedDataSecond', false)}
+        newsFeedShowClass={boolean('newsFeedShowClass2', true)}
       />
     </div>
   ))
@@ -74,7 +74,7 @@ storiesOf('NewsFeed', module)
       <NewsFeed
         onClose={action('onClose')}
         news={props.news}
-        noFetchedData={boolean('noFetchedDataThird', false)}
+        newsFeedShowClass={boolean('newsFeedShowClass3', true)}
       />
     </div>
   ));
