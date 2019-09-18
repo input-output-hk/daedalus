@@ -9,6 +9,12 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 export default class NewsFeedContainer extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
+  handleMarkNewsAsRead = (newsTimestamps) => {
+    const { stores } = this.props;
+    const { markNewsAsRead } = stores.newsFeed;
+    markNewsAsRead([newsTimestamps]);
+  };
+
   render() {
     const { stores, actions } = this.props;
     const { newsFeedData } = stores.newsFeed;
@@ -19,6 +25,7 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
         news={newsFeedData}
         onClose={toggleNewsFeed.trigger}
         onNewsItemActionClick={stores.app.openExternalLink}
+        onMarkNewsAsRead={this.handleMarkNewsAsRead}
         newsFeedShowClass={newsFeedShowClass}
       />
     );

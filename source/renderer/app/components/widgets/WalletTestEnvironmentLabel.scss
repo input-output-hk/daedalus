@@ -1,16 +1,14 @@
 .component {
   background-color: var(--theme-test-environment-label-background-color);
+  border-radius: 0 0 0 2px;
   box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25);
   color: var(--theme-test-environment-label-text-color);
-  display: flex;
   font-family: var(--font-regular);
   font-size: 10px;
-  height: 18px;
   justify-content: center;
-  line-height: 1.21;
-  padding: 2px 5px;
+  line-height: 12px;
+  padding: 3px 6px 4px;
   position: absolute;
   right: 0;
   top: 0;
-  width: 70.5px;
 }

@@ -17,13 +17,8 @@ const messages = defineMessages({
   },
   newsFeedNoFetch: {
     id: 'news.newsfeed.noFetch',
-    defaultMessage: 'News feed couldn’t be fetched',
-    description: 'News feed couldn’t be fetched',
-  },
-  newsFeedReload: {
-    id: 'news.newsfeed.reload',
-    defaultMessage: 'Reload',
-    description: 'Reload',
+    defaultMessage: 'Trying to fetch the news feed...',
+    description: 'Trying to fetch the news feed...',
   },
   newsFeedTitle: {
     id: 'news.newsfeed.title',
@@ -78,9 +73,6 @@ export default class NewsFeed extends Component<Props> {
               <p className={styles.newsFeedNoFetch}>
                 {intl.formatMessage(messages.newsFeedNoFetch)}
               </p>
-              <button className={styles.newsFeedReloadBtn}>
-                {intl.formatMessage(messages.newsFeedReload)}
-              </button>
             </div>
           )}
           {news && totalNewsItems === 0 && (

@@ -22,9 +22,15 @@ export default class NewsItem extends Component<Props, State> {
     onNewsItemActionClick: null,
   };
 
+  localizedDateFormat: 'MM/DD/YYYY';
+
   state = {
     newsItemExpanded: false,
   };
+
+  componentWillMount() {
+    this.localizedDateFormat = moment.localeData().longDateFormat('L');
+  }
 
   newsItemClickHandler() {
     if (this.props.newsItem.type === 'info') {
@@ -52,7 +58,7 @@ export default class NewsItem extends Component<Props, State> {
         <span className={styles.newsItemBadge}></span>
         </h4>
         <div className={styles.newsItemDate}>
-          {moment(newsItem.date).format('YYYY-MM-DD')}
+          {moment(newsItem.date).format(this.localizedDateFormat)}
         </div>
         <div className={styles.newsItemContentContainer}>
           <ReactMarkdown
