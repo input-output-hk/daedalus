@@ -58,7 +58,7 @@
   flex-direction: column;
   font-family: var(--font-regular);
   height: 100vh;
-  justify-content: center;
+  justify-content: flex-start;
   width: 100vw;
   z-index: 3;
 }
@@ -76,11 +76,20 @@
   ::-webkit-scrollbar-thumb {
     background-color: rgba(45, 45, 45, 0.3);
     outline: none;
+    width: 4px;
 
     &:hover {
       background-color: rgba(45, 45, 45, 0.5);
     }
   }
+}
+
+.counter {
+  font-family: var(--font-regular);
+  color: #2d2d2d;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 22.5px;
 }
 
 .date {
@@ -106,6 +115,7 @@
 
 .icon {
   margin-bottom: 36px;
+  margin-top: 22.5px;
   object-fit: contain;
   transform: rotate(180deg);
   & > svg {

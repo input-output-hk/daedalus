@@ -15,7 +15,8 @@ type State = {
 };
 
 type Props = {
-  alerts: Array<News>,
+  alerts: Array<{}>,
+  onMarkNewsAsRead: Function,
 };
 
 @observer
@@ -27,7 +28,14 @@ export default class AlertsOverlay extends Component<Props, State> {
     };
   }
 
-  onClose = () => this.setState({ showOverlay: false });
+  onClose = () => {
+    if (this.props.alerts.length <= 1) {
+      this.props.onMarkNewsAsRead(this.props.alerts[0].id);
+      this.setState({ showOverlay: false });
+      return;
+    }
+    this.props.onMarkNewsAsRead(this.props.alerts[0].id);
+  };
 
   renderAction = (action: Object) => {
     if (action && action.url) {
@@ -36,10 +44,17 @@ export default class AlertsOverlay extends Component<Props, State> {
     return null;
   };
 
+  renderCounter = (alerts: Array<{}>) => {
+    if (alerts.length > 1) {
+      return <span className={styles.counter}>1 / {alerts.length}</span>;
+    }
+    return null;
+  };
+
   render() {
     const { showOverlay } = this.state;
     const { alerts } = this.props;
-    const alert = alerts[0];
+    const [alert] = alerts;
     const { content, date, action, title } = alert;
     return (
       showOverlay && (
@@ -49,6 +64,7 @@ export default class AlertsOverlay extends Component<Props, State> {
             icon={closeCrossThin}
             onClose={this.onClose}
           />
+          {this.renderCounter(alerts)}
           <SVGInline svg={attentionIcon} className={styles.icon} />
           <h1 className={styles.title}>{title}</h1>
           <span className={styles.date}>
