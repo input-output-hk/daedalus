@@ -66,6 +66,9 @@ export default class NewsFeed extends Component<Props> {
         <div className={styles.newsFeedHeader}>
           <h3 className={styles.newsFeedTitle}>
             {intl.formatMessage(messages.newsFeedTitle)}
+            {news.unread && news.unread.length > 0 && (
+              <span className={styles.newsFeedBadge}>{news.unread.length}</span>
+            )}
           </h3>
           <button onClick={onClose} className={styles.newsFeedCloseBtn}>
             <SVGInline svg={closeCrossThin} />
@@ -88,34 +91,9 @@ export default class NewsFeed extends Component<Props> {
           )}
           {news && totalNewsItems > 0 && (
             <div className={styles.newsFeedItemsContainer}>
-              {news.unread && (
-                <div className={styles.newsFeedUnread}>
-                  <div className={styles.newsFeedUnreadLabel}>
-                    <span>Unread</span>
-                    <span className={styles.newsFeedUnreadCounter}>
-                      ({news.unread.length})
-                    </span>
-                  </div>
-                  {news.unread.map((newsItem, index) => (
-                    <NewsItem
-                      // eslint-disable-next-line react/no-array-index-key
-                      key={index}
-                      onNewsItemActionClick={onNewsItemActionClick}
-                      newsItem={newsItem}
-                      onMarkNewsAsRead={onMarkNewsAsRead}
-                    />
-                  ))}
-                </div>
-              )}
-              {news.read && (
-                <div className={styles.newsFeedRead}>
-                  <div className={styles.newsFeedReadLabel}>
-                    <span>Read</span>
-                    <span className={styles.newsFeedReadCounter}>
-                      ({news.read.length})
-                    </span>
-                  </div>
-                  {news.read.map((newsItem, index) => (
+              {news.all && (
+                <div className={styles.newsFeedItems}>
+                  {news.all.map((newsItem, index) => (
                     <NewsItem
                       // eslint-disable-next-line react/no-array-index-key
                       key={index}
