@@ -60,7 +60,7 @@
   flex-direction: column;
   font-family: var(--font-regular);
   height: 100vh;
-  justify-content: flex-start;
+  justify-content: center;
   position: fixed;
   top: 0px;
   width: 100vw;
@@ -78,7 +78,7 @@
   min-width: 600px;
   opacity: 0.8;
   overflow-y: scroll;
-  padding: 12px 24px;
+  padding: 12px 20px;
   &::-webkit-scrollbar-thumb {
     background-color: rgba(45, 45, 45, 0.3);
     min-height: 60px;
@@ -133,7 +133,7 @@
 
 .counter {
   color: #2d2d2d;
-  font-family: var(--font-regular);
+  font-family: var(--font-medium);
   font-size: 14px;
   font-weight: 500;
   margin-bottom: 30px;
