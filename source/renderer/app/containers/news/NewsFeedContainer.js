@@ -15,13 +15,11 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
     markNewsAsRead([newsTimestamps]);
   };
 
-
   render() {
     const { stores, actions } = this.props;
     const { newsFeedData } = stores.newsFeed;
     const { toggleNewsFeed } = actions.app;
     const newsFeedShowClass = stores.app.newsFeedIsOpen;
-    console.debug('newsFeedData: ', newsFeedData.all);
 
     return (
       <NewsFeed
