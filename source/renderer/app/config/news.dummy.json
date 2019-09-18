@@ -224,7 +224,7 @@
         }
       },
       "date": 1569255294965,
-      "type": "alert"
+      "type": "incident"
     }
   ]
 }
