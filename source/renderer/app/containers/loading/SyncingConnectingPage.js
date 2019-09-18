@@ -37,6 +37,10 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
     } = stores.nodeUpdate;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = stores.profile;
     const { toggleNewsFeed } = this.props.actions.app;
+    const { alerts, announcements, unread } = stores.newsFeed;
+    const hasUnreadAlerts = alerts.unread.length > 0;
+    const hasUnreadAnnouncements = announcements.unread.length > 0;
+    const hasUnreadNews = unread.length > 0;
 
     return (
       <SyncingConnecting
@@ -51,6 +55,9 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         isNotEnoughDiskSpace={isNotEnoughDiskSpace}
         isTlsCertInvalid={isTlsCertInvalid}
         syncPercentage={syncPercentage}
+        hasUnreadAlerts={hasUnreadAlerts}
+        hasUnreadAnnouncements={hasUnreadAnnouncements}
+        hasUnreadNews={hasUnreadNews}
         hasLoadedCurrentLocale={hasLoadedCurrentLocale}
         hasLoadedCurrentTheme={hasLoadedCurrentTheme}
         isCheckingSystemTime={forceCheckTimeDifferenceRequest.isExecuting}
