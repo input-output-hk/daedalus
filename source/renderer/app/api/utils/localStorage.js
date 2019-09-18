@@ -195,7 +195,7 @@ export default class LocalStorageApi {
       }
     });
 
-  updateWalletLocalData = (updatedWalletData: Object): Promise<void> =>
+  updateWalletLocalData = (updatedWalletData: Object): Promise<Object> =>
     new Promise(async (resolve, reject) => {
       const walletId = updatedWalletData.id;
       const currentWalletData = await this.getWalletLocalData(walletId);
@@ -206,7 +206,7 @@ export default class LocalStorageApi {
       );
       try {
         store.set(`${this.storageKeys.WALLETS}.${walletId}`, walletData);
-        return resolve();
+        return resolve(walletData);
       } catch (error) {
         return reject(error);
       }

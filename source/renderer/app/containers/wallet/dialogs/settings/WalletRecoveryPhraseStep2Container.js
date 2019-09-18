@@ -20,7 +20,7 @@ export default class WalletRecoveryPhraseStep2Container extends Component<Props>
   };
 
   componentWillReceiveProps(nextProps: Props) {
-    const { walletBackup /* , wallets */ } = nextProps.stores;
+    const { walletBackup } = nextProps.stores;
     const { actions } = this.props;
     const {
       isRecoveryPhraseMatching: nextRecoveryPhraseMatching,
@@ -31,9 +31,7 @@ export default class WalletRecoveryPhraseStep2Container extends Component<Props>
     if (getWalletIdAndBalanceRequestNext.wasExecuted) {
       if (nextRecoveryPhraseMatching) {
         dialog = WalletRecoveryPhraseStep3Dialog;
-        // TODO: updateWalletLocalData #recovery
-        // const activeWallet = wallets.active;
-        // if (activeWallet) activeWallet.updateWalletLocalData();
+        actions.wallets.updateRecoveryPhraseVerificationDate.trigger();
       } else {
         dialog = WalletRecoveryPhraseStep4Dialog;
       }

@@ -190,8 +190,10 @@ export default class WalletsStore extends Store {
     walletBackup.finishWalletBackup.listen(this._finishWalletBackup);
     app.initAppEnvironment.listen(() => {});
     networkStatus.restartNode.listen(this._updateGeneratingCertificateError);
+    walletsActions.updateRecoveryPhraseVerificationDate.listen(
+      this._updateRecoveryPhraseVerificationDate
+    );
     // walletsActions.getWalletLocalData.listen(this._getWalletLocalData);
-    // walletsActions.updateWalletLocalData.listen(this._updateWalletLocalData);
     // walletsActions.unsetWalletLocalData.listen(this._unsetWalletLocalData);
   }
 
@@ -894,8 +896,19 @@ export default class WalletsStore extends Store {
     const walletsLocalData: WalletsLocalData = await this.getWalletsLocalDataRequest.execute();
     return walletsLocalData;
   };
-  _updateWalletLocalData = (updatedLocalWalletData: Object) => {
-    this.updateWalletLocalDataRequest.execute(updatedLocalWalletData);
+  _updateRecoveryPhraseVerificationDate = async () => {
+    if (!this.active) return;
+    const { id } = this.active;
+    const recoveryPhraseVerificationDate = new Date();
+    const updatedWalletData = await this.updateWalletLocalDataRequest.execute({
+      id,
+      recoveryPhraseVerificationDate,
+    });
+    runInAction('Update wallet verification date', () => {
+      this.recoveryPhraseVerificationData[
+        id
+      ] = this._setWalletRecoveryPhraseVerificationData(updatedWalletData);
+    });
   };
   _unsetWalletLocalData = (walletId: string) => {
     this.unsetWalletLocalDataRequest.execute(walletId);
