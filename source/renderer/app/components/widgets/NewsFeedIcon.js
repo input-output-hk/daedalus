@@ -2,26 +2,26 @@
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
-import newsFeedBellIcon from '../../assets/images/top-bar/bell.inline.svg';
+import newsFeedIcon from '../../assets/images/top-bar/news-feed-icon.inline.svg';
 import styles from './NewsFeedIcon.scss';
 
 type Props = {
   onNewsFeedIconClick: Function,
-  newsFeedBellIconClass?: string,
+  newsFeedIconClass?: string,
 };
 
 export default class NewsFeedIcon extends Component<Props> {
   render() {
-    const { onNewsFeedIconClick, newsFeedBellIconClass } = this.props;
+    const { onNewsFeedIconClick, newsFeedIconClass } = this.props;
 
     const componentClasses = classNames([
       styles.component,
-      newsFeedBellIconClass,
+      newsFeedIconClass,
     ]);
 
     return (
       <button className={componentClasses} onClick={onNewsFeedIconClick}>
-        <SVGInline className={styles.icon} svg={newsFeedBellIcon} />
+        <SVGInline className={styles.icon} svg={newsFeedIcon} />
       </button>
     );
   }
