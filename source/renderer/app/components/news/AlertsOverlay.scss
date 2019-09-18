@@ -90,7 +90,6 @@
   font-size: 14px;
   font-weight: 500;
   margin-top: 22.5px;
-  margin-bottom: 22.5px;
 }
 
 .date {
@@ -116,6 +115,7 @@
 
 .icon {
   margin-bottom: 36px;
+  margin-top: 22.5px;
   object-fit: contain;
   transform: rotate(180deg);
   & > svg {
