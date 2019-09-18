@@ -724,6 +724,25 @@ export const createDaedalusComponentsTheme = (
         background.secondary.lightest
       ).alpha(0.8)}`,
     },
+    newsFeed: {
+      '--theme-news-feed-background-color': '#233856',
+      '--theme-news-feed-box-shadow-color': 'rgba(0, 0, 0, 0.25)',
+      '--theme-news-feed-header-background-color': '#1e304a',
+      '--theme-news-feed-header-title-color': '#fafbfc',
+      '--theme-news-feed-icon-close-button-color': '#fff',
+      '--theme-news-feed-icon-close-hover-background-color': 'rgba(0, 0, 0, 0.1)',
+      '--theme-news-feed-icon-toggle-hover-background-color':
+        'rgba(0, 0, 0, 0.1)',
+      '--theme-news-feed-no-fetch-color': '#fafbfc',
+      '--theme-news-feed-reload-button-background-color': 'rgba(0, 0, 0, 0.1)',
+      '--theme-news-feed-reload-button-border-color': '#fafbfc',
+      '--theme-news-feed-reload-button-color': '#fafbfc',
+    },
+    newsItem: {
+      '--theme-news-item-info-background-color': 'rgba(0, 0, 0, 0.1)',
+      '--theme-news-item-title-color': '#fafbfc',
+      '--theme-news-item-badge-color': '#ea4c5b',
+    },
     nodeUpdate: {
       '--theme-node-update-background-color': `${background.primary.regular}`,
       '--theme-node-update-title-color': `${text.primary}`,
