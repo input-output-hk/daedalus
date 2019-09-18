@@ -31,6 +31,10 @@ Feature: News feed
     Given there are no unread news
     Then the news feed icon is not highlighted
 
+  Scenario: News feed icon shows a dot when there are unread announcements
+    Given there is unread announcements
+    Then the news feed icon shows a dot
+
   Scenario: Open the news feed by clicking the news feed icon
     Given I click on the news feed icon
     Then the news feed is open
@@ -40,8 +44,8 @@ Feature: News feed
     When I open the news feed
     Then the news feed is empty
 
+  @wip
   Scenario: Only read news available in the feed
-
     Given there are 5 read news
     When I open the news feed
     Then the news feed contains 5 read news
