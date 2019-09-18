@@ -11,6 +11,7 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
 
   render() {
     const { newsFeedData } = this.props.stores.newsFeed;
+
     return <NewsFeed news={newsFeedData} />;
   }
 }

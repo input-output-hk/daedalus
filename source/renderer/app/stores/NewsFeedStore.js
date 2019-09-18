@@ -10,9 +10,9 @@ import type { GetNewsResponse, NewsItem } from '../api/news/types';
 const { isTest } = global.environment;
 
 export default class NewsFeedStore extends Store {
-  @observable newsItems: Array<NewsItem>;
+  @observable rawNews: Array<NewsItem>;
   @observable newsUpdatedAt: ?Date = null;
-  // @TODO - jsut if we don't have a data - show error
+  // @TODO - just if we don't have a data - show error
   @observable fetchingNewsFailed = false;
   @observable
   getNewsRequest: Request<GetNewsResponse> = new Request(this.api.ada.getNews);
@@ -29,21 +29,21 @@ export default class NewsFeedStore extends Store {
   }
 
   @action getNews = async () => {
-    const newsData = await this.getNewsRequest.execute().promise;
-    if (newsData) {
+    const rawNews = await this.getNewsRequest.execute().promise;
+    if (rawNews) {
       runInAction('set news data', () => {
-        this.newsItems = get(newsData, 'items', []);
-        this.newsUpdatedAt = get(newsData, 'updatedAt', null);
+        this.rawNews = get(rawNews, 'items', []);
+        this.newsUpdatedAt = get(rawNews, 'updatedAt', null);
       });
     }
   };
 
-  @computed get newsFeedData(): Array<News> {
+  @computed get newsFeedData(): News.NewsCollection {
     const { currentLocale } = this.stores.profile;
-    let newsFeedData = [];
+    let news = [];
     if (this.getNewsRequest.wasExecuted) {
       // @TODO - check news stored in local storage, compare update date and merge data if is needed
-      newsFeedData = map(this.newsItems, item => ({
+      news = map(this.rawNews, item => ({
         ...item,
         title: item.title[currentLocale],
         content: item.title[currentLocale],
@@ -54,11 +54,7 @@ export default class NewsFeedStore extends Store {
         },
         read: false, // @TODO - check in LC
       }));
-      /* return new News({
-
-      }) */
     }
-
-    return newsFeedData;
+    return new News.NewsCollection(news);
   }
 }
