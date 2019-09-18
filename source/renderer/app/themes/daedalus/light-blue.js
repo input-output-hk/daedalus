@@ -365,6 +365,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-news-feed-icon-dot-background-color': '#ea4c5b',
     '--theme-news-feed-icon-toggle-hover-background-color':
       'rgba(0, 0, 0, 0.1)',
+    '--theme-news-feed-label-color': '#fafbfc',
+    '--theme-news-feed-label-counter-color': 'rgba(250, 251, 252, 0.5)',
     '--theme-news-feed-no-fetch-color': '#fafbfc',
     '--theme-news-feed-reload-button-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-news-feed-reload-button-border-color': '#fafbfc',

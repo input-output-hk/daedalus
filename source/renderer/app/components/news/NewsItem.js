@@ -12,6 +12,7 @@ import styles from './NewsItem.scss';
 type Props = {
   newsItem: News,
   onNewsItemActionClick: Function,
+  onMarkNewsAsRead: Function,
 };
 
 type State = {
@@ -35,11 +36,15 @@ export default class NewsItem extends Component<Props, State> {
   }
 
   newsItemClickHandler() {
-    if (this.props.newsItem.type === 'info') {
+    if (
+      this.props.newsItem.type === 'info' ||
+      this.props.newsItem.type === 'announcement'
+    ) {
       this.setState(prevState => ({
         newsItemExpanded: !prevState.newsItemExpanded,
       }));
     }
+    this.props.onMarkNewsAsRead(this.props.newsItem.date);
   }
 
   render() {

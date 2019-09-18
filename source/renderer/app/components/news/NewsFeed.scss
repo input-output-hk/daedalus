@@ -101,11 +101,33 @@
     }
 
     .newsFeedItemsContainer {
-      align-items: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      width: 100%;
+      font-family: var(--font-regular);
+
+      .newsFeedUnread,
+      .newsFeedRead {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 100%;
+
+        .newsFeedUnreadLabel,
+        .newsFeedReadLabel {
+          color: var(--theme-news-feed-label-color);
+          font-size: 14px;
+          font-weight: 300;
+          letter-spacing: 0.5px;
+          padding: 10px 10px 0 20px;
+          text-align: left;
+          width: 100%;
+
+          .newsFeedUnreadCounter,
+          .newsFeedReadCounter {
+            color: var(--theme-news-feed-label-counter-color);
+            padding-left: 5px;
+          }
+        }
+      }
     }
   }
 
