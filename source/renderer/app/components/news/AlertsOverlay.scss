@@ -73,16 +73,16 @@
   line-height: 1.2;
   margin-bottom: 30px;
   max-height: 464px;
-  min-height: 100px;
   max-width: 600px;
+  min-height: 100px;
   min-width: 600px;
   opacity: 0.8;
   overflow-y: scroll;
   padding: 12px 24px;
   &::-webkit-scrollbar-thumb {
     background-color: rgba(45, 45, 45, 0.3);
-    outline: none;
     min-height: 60px;
+    outline: none;
     width: 4px;
 
     &:hover {
