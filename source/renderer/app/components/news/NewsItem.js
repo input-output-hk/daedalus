@@ -59,7 +59,7 @@ export default class NewsItem extends Component<Props, State> {
       >
         <h4 className={styles.newsItemTitle}>
           {newsItem.title}
-          <span className={styles.newsItemBadge} />
+          {!newsItem.read && <span className={styles.newsItemBadge} />}
         </h4>
         <div className={styles.newsItemDate}>
           {moment(newsItem.date).format(this.localizedDateFormat)}
