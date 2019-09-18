@@ -193,8 +193,6 @@ export default class WalletsStore extends Store {
     walletsActions.updateRecoveryPhraseVerificationDate.listen(
       this._updateRecoveryPhraseVerificationDate
     );
-    // walletsActions.getWalletLocalData.listen(this._getWalletLocalData);
-    // walletsActions.unsetWalletLocalData.listen(this._unsetWalletLocalData);
   }
 
   _create = async (params: { name: string, spendingPassword: ?string }) => {
@@ -279,8 +277,7 @@ export default class WalletsStore extends Store {
         this.activeValue = null;
       }
     });
-    // TODO: remove local wallet data #recovery
-    // unsetWalletLocalData(params.walletId);
+    this._unsetWalletLocalData(params.walletId);
     this._resumePolling();
     this.deleteWalletRequest.reset();
     this.refreshWalletsData();
@@ -910,7 +907,7 @@ export default class WalletsStore extends Store {
       ] = this._setWalletRecoveryPhraseVerificationData(updatedWalletData);
     });
   };
-  _unsetWalletLocalData = (walletId: string) => {
-    this.unsetWalletLocalDataRequest.execute(walletId);
+  _unsetWalletLocalData = async (walletId: string) => {
+    await this.unsetWalletLocalDataRequest.execute(walletId);
   };
 }
