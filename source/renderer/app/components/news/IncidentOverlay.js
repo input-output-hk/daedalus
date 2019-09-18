@@ -15,6 +15,12 @@ type Props = {
 
 @observer
 export default class IncidentOverlay extends Component<Props> {
+  localizedDateFormat: 'MM/DD/YYYY';
+
+  componentWillMount() {
+    this.localizedDateFormat = moment.localeData().longDateFormat('L');
+  }
+
   renderAction = (action: Object) => {
     if (action && action.url) {
       return <button className={styles.actionBtn}>{action.label}</button>;
@@ -28,7 +34,9 @@ export default class IncidentOverlay extends Component<Props> {
     return (
       <div className={styles.component}>
         <h1 className={styles.title}>{title}</h1>
-        <span className={styles.date}>{moment(date).format('YYYY-MM-DD')}</span>
+        <span className={styles.date}>
+          {moment(date).format(this.localizedDateFormat)}
+        </span>
         <div className={styles.content}>
           <ReactMarkdown escapeHtml={false} source={content} />
         </div>

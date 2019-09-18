@@ -26,6 +26,12 @@ export default class AlertsOverlay extends Component<Props, State> {
     };
   }
 
+  localizedDateFormat: 'MM/DD/YYYY';
+
+  componentWillMount() {
+    this.localizedDateFormat = moment.localeData().longDateFormat('L');
+  }
+
   onClose = () => {
     const { alerts } = this.props;
     if (alerts.length <= 1) {
@@ -66,7 +72,7 @@ export default class AlertsOverlay extends Component<Props, State> {
           {this.renderCounter(alerts)}
           <h1 className={styles.title}>{title}</h1>
           <span className={styles.date}>
-            {moment(date).format('YYYY-MM-DD')}
+            {moment(date).format(this.localizedDateFormat)}
           </span>
           <div className={styles.content}>
             <ReactMarkdown escapeHtml={false} source={content} />
