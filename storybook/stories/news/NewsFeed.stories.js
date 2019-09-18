@@ -8,115 +8,113 @@ import StoryDecorator from '../support/StoryDecorator';
 import NewsFeed from '../../../source/renderer/app/components/news/NewsFeed';
 import News from '../../../source/renderer/app/domains/News';
 
+const news = [
+  new News.News({
+    title: 'Some title 1 in English',
+    content: 'Some title 1 in English',
+    target: { daedalusVersion: null, platform: 'darwin' },
+    action: {
+      label: 'Visit en-US',
+      url: 'https://iohk.zendesk.com/hc/en-us/articles/',
+    },
+    date: 1568650464961,
+    type: 'incident',
+    read: false,
+  }),
+  new News.News({
+    title: 'Some title 2 in English',
+    content: 'Some title 2 in English',
+    target: { daedalusVersion: null, platform: 'win32' },
+    action: {
+      label: 'Visit en-US',
+      url: 'https://iohk.zendesk.com/hc/en-us/articles/',
+    },
+    date: 1568736864962,
+    type: 'incident',
+    read: false,
+  }),
+  new News.News({
+    title: 'Some title 3 in English',
+    content: 'Some title 3 in English',
+    target: { daedalusVersion: null, platform: 'linux' },
+    action: { label: 'Check en-US', route: '/wallets' },
+    date: 1568823264963,
+    type: 'alert',
+    read: false,
+  }),
+  new News.News({
+    title: 'Some title 4 in English',
+    content: 'Some title 4 in English',
+    target: { daedalusVersion: null, platform: 'darwin' },
+    action: {
+      label: 'Visit en-US',
+      url: 'https://iohk.zendesk.com/hc/en-us/articles/',
+    },
+    date: 1568909664963,
+    type: 'alert',
+    read: false,
+  }),
+  new News.News({
+    title: 'Some title 5 in English',
+    content: 'Some title 5 in English',
+    target: { daedalusVersion: null, platform: 'darwin' },
+    action: { label: 'Check en-US', route: '/settings' },
+    date: 1568996064964,
+    type: 'announcement',
+    read: false,
+  }),
+  new News.News({
+    title: 'Some title 6 in English',
+    content: 'Some title 6 in English',
+    target: { daedalusVersion: null, platform: 'win32' },
+    action: {
+      label: 'Visit en-US',
+      url: 'https://iohk.zendesk.com/hc/en-us/articles/',
+    },
+    date: 1569082464964,
+    type: 'announcement',
+    read: false,
+  }),
+  new News.News({
+    title: 'Some title 7 in English',
+    content: 'Some title 7 in English',
+    target: { daedalusVersion: null, platform: 'darwin' },
+    action: { label: 'Check en-US', route: '/settings' },
+    date: 1569168864965,
+    type: 'info',
+    read: false,
+  }),
+  new News.News({
+    title: 'Some title 8 in English',
+    content: 'Some title 8 in English',
+    target: { daedalusVersion: null, platform: 'linux' },
+    action: {
+      label: 'Visit en-US',
+      url: 'https://iohk.zendesk.com/hc/en-us/articles/',
+    },
+    date: 1569255264965,
+    type: 'info',
+    read: false,
+  }),
+  new News.News({
+    title: 'Some title 9 in English',
+    content: 'Some title 9 in English',
+    target: { daedalusVersion: null, platform: 'darwin' },
+    action: {
+      label: 'Visit https://markdown-it.github.io/',
+      url: 'https://markdown-it.github.io/',
+    },
+    date: 1569255294965,
+    type: 'alert',
+    read: false,
+  }),
+];
+
+const newsCollection = new News.NewsCollection(news);
+
 storiesOf('NewsFeed', module)
   .addDecorator(story => (
-    <StoryDecorator>
-      {story({
-        news: {
-          all: [
-            {
-              title: 'Some title 1 in English',
-              content: 'Some title 1 in English',
-              target: { daedalus: '0.14.0', platform: 'darwin' },
-              action: {
-                label: 'Visit en-US',
-                url: 'https://iohk.zendesk.com/hc/en-us/articles/',
-              },
-              date: 1568650464961,
-              type: 'incident',
-              read: false,
-            },
-            {
-              title: 'Some title 2 in English',
-              content: 'Some title 2 in English',
-              target: { daedalus: '0.13.0', platform: 'win32' },
-              action: {
-                label: 'Visit en-US',
-                url: 'https://iohk.zendesk.com/hc/en-us/articles/',
-              },
-              date: 1568736864962,
-              type: 'incident',
-              read: false,
-            },
-            {
-              title: 'Some title 3 in English',
-              content: 'Some title 3 in English',
-              target: { daedalus: '0.13.0', platform: 'linux' },
-              action: { label: 'Check en-US', route: '/wallets' },
-              date: 1568823264963,
-              type: 'alert',
-              read: false,
-            },
-            {
-              title: 'Some title 4 in English',
-              content: 'Some title 4 in English',
-              target: { daedalus: '0.14.0', platform: 'darwin' },
-              action: {
-                label: 'Visit en-US',
-                url: 'https://iohk.zendesk.com/hc/en-us/articles/',
-              },
-              date: 1568909664963,
-              type: 'alert',
-              read: false,
-            },
-            {
-              title: 'Some title 5 in English',
-              content: 'Some title 5 in English',
-              target: { daedalus: '0.12.0', platform: 'darwin' },
-              action: { label: 'Check en-US', route: '/settings' },
-              date: 1568996064964,
-              type: 'announcement',
-              read: false,
-            },
-            {
-              title: 'Some title 6 in English',
-              content: 'Some title 6 in English',
-              target: { daedalus: '0.13.0', platform: 'win32' },
-              action: {
-                label: 'Visit en-US',
-                url: 'https://iohk.zendesk.com/hc/en-us/articles/',
-              },
-              date: 1569082464964,
-              type: 'announcement',
-              read: false,
-            },
-            {
-              title: 'Some title 7 in English',
-              content: 'Some title 7 in English',
-              target: { daedalus: '0.14.0', platform: 'darwin' },
-              action: { label: 'Check en-US', route: '/settings' },
-              date: 1569168864965,
-              type: 'info',
-              read: false,
-            },
-            {
-              title: 'Some title 8 in English',
-              content: 'Some title 8 in English',
-              target: { daedalus: '0.13.0', platform: 'linux' },
-              action: {
-                label: 'Visit en-US',
-                url: 'https://iohk.zendesk.com/hc/en-us/articles/',
-              },
-              date: 1569255264965,
-              type: 'info',
-              read: false,
-            },
-            {
-              title: 'Some title 9 in English',
-              content: 'Some title 9 in English',
-              target: { daedalus: '0.13.0', platform: 'darwin' },
-              action: {
-                label: 'Visit https://markdown-it.github.io/',
-                url: 'https://markdown-it.github.io/',
-              },
-              date: 1569255294965,
-              type: 'alert',
-              read: false,
-            },
-          ],
-        },
-      })}
-    </StoryDecorator>
+    <StoryDecorator>{story(newsCollection)}</StoryDecorator>
   ))
 
   // ====== Stories ======
@@ -143,12 +141,12 @@ storiesOf('NewsFeed', module)
     </div>
   ))
 
-  .add('NewsFeed', props => (
+  .add('NewsFeed', () => (
     <div>
       <NewsFeed
         onNewsItemActionClick={action('onNewsItemActionClick')}
         onClose={action('onClose')}
-        news={props.news}
+        news={newsCollection}
         newsFeedShowClass={boolean('newsFeedShowClass3', true)}
       />
     </div>
