@@ -21,7 +21,6 @@ type Props = {
     +isSynced: boolean,
     +syncPercentage: number,
   },
-  isMainnet: boolean,
 };
 
 export default class NodeSyncStatusIcon extends Component<Props> {
@@ -30,14 +29,13 @@ export default class NodeSyncStatusIcon extends Component<Props> {
   };
 
   render() {
-    const { networkStatus, isMainnet } = this.props;
+    const { networkStatus } = this.props;
     const { isSynced, syncPercentage } = networkStatus;
     const { intl } = this.context;
     const statusIcon = isSynced ? syncedIcon : spinnerIcon;
     const componentClasses = classNames([
       styles.component,
       isSynced ? styles.synced : styles.syncing,
-      isMainnet && styles.mainnet,
     ]);
 
     return (

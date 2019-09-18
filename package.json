@@ -15,7 +15,7 @@
     "test:unit:unbound": "yarn cucumber --require 'features/tests/unit/**/*.js' --tags '@unbound and not @skip and not @wip'",
     "test:e2e": "yarn cucumber --require 'features/tests/e2e/**/*.js' --tags '@e2e and not @skip and not @wip'",
     "test:e2e:watch": "gulp test:e2e:watch",
-    "test:e2e:watch:once": "yarn test:e2e --tags '@e2e and @watch'",
+    "test:e2e:watch:once": "KEEP_APP_AFTER_TESTS=true yarn test:e2e --tags '@e2e and @watch'",
     "cucumber": "cross-env NODE_ENV=test cucumber-js --require-module @babel/register -f node_modules/cucumber-pretty --format-options '{\"snippetInterface\": \"async-await\"}'",
     "debug": "gulp debug",
     "package": "gulp build && cross-env NODE_ENV=production node -r @babel/register -r @babel/polyfill scripts/package.js",

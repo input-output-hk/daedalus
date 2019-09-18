@@ -350,6 +350,10 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-news-feed-header-title-color': '#fafbfc',
     '--theme-news-feed-icon-close-button-color': '#fff',
     '--theme-news-feed-icon-close-hover-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-news-feed-icon-color': '#2d2d2d',
+    '--theme-news-feed-icon-color-connecting-screen': '#2d2d2d',
+    '--theme-news-feed-icon-color-syncing-screen': '#2d2d2d',
+    '--theme-news-feed-icon-dot-background-color': '#be0b0b',
     '--theme-news-feed-icon-toggle-hover-background-color':
       'rgba(0, 0, 0, 0.1)',
     '--theme-news-feed-no-fetch-color': '#fafbfc',

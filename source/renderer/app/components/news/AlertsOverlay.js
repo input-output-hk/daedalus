@@ -3,11 +3,9 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import { observer } from 'mobx-react';
 import ReactMarkdown from 'react-markdown';
-import SVGInline from 'react-svg-inline';
 import DialogCloseButton from '../widgets/DialogCloseButton';
-import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
-import attentionIcon from '../../assets/images/attention-big-light.inline.svg';
 import styles from './AlertsOverlay.scss';
+import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 
 type State = {
   showOverlay: boolean,
@@ -64,7 +62,6 @@ export default class AlertsOverlay extends Component<Props, State> {
             onClose={this.onClose}
           />
           {this.renderCounter(alerts)}
-          <SVGInline svg={attentionIcon} className={styles.icon} />
           <h1 className={styles.title}>{title}</h1>
           <span className={styles.date}>
             {moment(date).format('YYYY-MM-DD')}
