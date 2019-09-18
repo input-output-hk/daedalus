@@ -122,6 +122,7 @@ storiesOf('NewsFeed', module)
   .add('NewsFeed - no news items fetched from server', () => (
     <div>
       <NewsFeed
+        onMarkNewsAsRead={action('onMarkNewsAsRead')}
         onNewsItemActionClick={action('onNewsItemActionClick')}
         onClose={action('onClose')}
         news={undefined}
@@ -133,6 +134,7 @@ storiesOf('NewsFeed', module)
   .add('NewsFeed - news feed empty', () => (
     <div>
       <NewsFeed
+        onMarkNewsAsRead={action('onMarkNewsAsRead')}
         onNewsItemActionClick={action('onNewsItemActionClick')}
         onClose={action('onClose')}
         news={new News.NewsCollection([])}
@@ -144,6 +146,7 @@ storiesOf('NewsFeed', module)
   .add('NewsFeed', () => (
     <div>
       <NewsFeed
+        onMarkNewsAsRead={action('onMarkNewsAsRead')}
         onNewsItemActionClick={action('onNewsItemActionClick')}
         onClose={action('onClose')}
         news={newsCollection}
