@@ -10,6 +10,7 @@ import { CardanoNodeStates } from '../../../../../common/types/cardano-node.type
 import styles from './SyncingConnecting.scss';
 import type { CardanoNodeState } from '../../../../../common/types/cardano-node.types';
 import { REPORT_ISSUE_TIME_TRIGGER } from '../../../config/timingConfig';
+import NewsFeedIcon from '../../widgets/NewsFeedIcon';
 
 let connectingInterval = null;
 let syncingInterval = null;
@@ -48,6 +49,7 @@ type Props = {
   onDownloadLogs: Function,
   onGetAvailableVersions: Function,
   onStatusIconClick: Function,
+  onToggleNewsFeedIconClick: Function,
 };
 
 @observer
@@ -210,6 +212,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       isNodeStopped,
       syncPercentage,
       onStatusIconClick,
+      onToggleNewsFeedIconClick,
     } = this.props;
 
     const componentStyles = classNames([
@@ -221,6 +224,10 @@ export default class SyncingConnecting extends Component<Props, State> {
 
     return (
       <div className={componentStyles}>
+        <NewsFeedIcon
+          onNewsFeedIconClick={onToggleNewsFeedIconClick}
+          newsFeedIconClass={styles.newsFeedIcon}
+        />
         {this.showReportIssue && (
           <ReportIssue
             isConnected={isConnected}

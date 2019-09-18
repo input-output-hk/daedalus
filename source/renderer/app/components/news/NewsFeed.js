@@ -1,12 +1,13 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { get } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
+import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import styles from './NewsFeed.scss';
 import News from '../../domains/News';
+import NewsItem from './NewsItem';
 
 const messages = defineMessages({
   newsFeedEmpty: {
@@ -33,15 +34,15 @@ const messages = defineMessages({
 
 type Props = {
   onClose: Function,
+  onNewsItemActionClick: Function,
   news: Array<News>,
-  noFetchedData: boolean,
+  newsFeedShowClass: string,
 };
 
 @observer
 export default class NewsFeed extends Component<Props> {
   static defaultProps = {
     onClose: null,
-    noFetchedData: false, // @TODO - track News Items state from storage
   };
 
   static contextTypes = {
@@ -50,10 +51,19 @@ export default class NewsFeed extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, news, noFetchedData } = this.props;
-    const totalNewsItems = get(news, 'items').length;
+    const {
+      onClose,
+      onNewsItemActionClick,
+      news,
+      newsFeedShowClass,
+    } = this.props;
+    const totalNewsItems = news ? news.length : 0;
+    const componentClasses = classNames([
+      styles.component,
+      newsFeedShowClass ? styles.show : null,
+    ]);
     return (
-      <div className={styles.component}>
+      <div className={componentClasses}>
         <div className={styles.newsFeedHeader}>
           <h3 className={styles.newsFeedTitle}>
             {intl.formatMessage(messages.newsFeedTitle)}
@@ -63,7 +73,7 @@ export default class NewsFeed extends Component<Props> {
           </button>
         </div>
         <div className={styles.newsFeedList}>
-          {noFetchedData && totalNewsItems === 0 && (
+          {!news && (
             <div className={styles.newsFeedNoFetchContainer}>
               <p className={styles.newsFeedNoFetch}>
                 {intl.formatMessage(messages.newsFeedNoFetch)}
@@ -73,15 +83,24 @@ export default class NewsFeed extends Component<Props> {
               </button>
             </div>
           )}
-          {!noFetchedData && totalNewsItems === 0 && (
+          {news && totalNewsItems === 0 && (
             <div className={styles.newsFeedNoFetchContainer}>
               <p className={styles.newsFeedNoFetch}>
                 {intl.formatMessage(messages.newsFeedEmpty)}
               </p>
             </div>
           )}
-          {!noFetchedData && totalNewsItems > 0 && (
-            <div className={styles.newsFeedNoFetchContainer}>News items</div>
+          {news && totalNewsItems > 0 && (
+            <div className={styles.newsFeedItemsContainer}>
+              {news.map((newsItem, index) => (
+                <NewsItem
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={index}
+                  onNewsItemActionClick={onNewsItemActionClick}
+                  newsItem={newsItem}
+                />
+              ))}
+            </div>
           )}
         </div>
       </div>

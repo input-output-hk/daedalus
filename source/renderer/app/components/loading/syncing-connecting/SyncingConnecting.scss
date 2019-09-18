@@ -12,6 +12,10 @@
   &.is-syncing {
     background-color: var(--theme-syncing-background-color);
   }
+
+  .newsFeedIcon {
+    top: 30px;
+  }
 }
 
 .component,

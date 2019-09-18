@@ -359,10 +359,16 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-news-feed-header-title-color': '#fafbfc',
     '--theme-news-feed-icon-close-button-color': '#fff',
     '--theme-news-feed-icon-close-hover-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-news-feed-icon-toggle-hover-background-color':
+      'rgba(0, 0, 0, 0.1)',
     '--theme-news-feed-no-fetch-color': '#fafbfc',
     '--theme-news-feed-reload-button-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-news-feed-reload-button-border-color': '#fafbfc',
     '--theme-news-feed-reload-button-color': '#fafbfc',
+  },
+  newsItem: {
+    '--theme-news-item-info-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-news-item-title-color': '#fafbfc',
   },
   nodeUpdate: {
     '--theme-node-update-background-color': '#ebeff2',

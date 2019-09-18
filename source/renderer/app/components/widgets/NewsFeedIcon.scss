@@ -1,25 +1,29 @@
 .component {
   overflow: visible;
   position: absolute;
-  right: 30px;
+  right: 32px;
+  top: 30px;
 }
 
 .icon {
-  background-color: var(--theme-news-feed-icon-close-hover-background-color);
-  border-radius: 50%;
   cursor: pointer;
   padding: 11px 8px;
   position: relative;
-  top: -5px;
+  top: -4px;
 
   svg {
     height: 22px;
     opacity: 0.4;
     position: relative;
-    top: 5px;
+    top: 4px;
     width: 22px;
+  }
 
-    &:hover {
+  &:hover {
+    background-color: var(--theme-news-feed-icon-toggle-hover-background-color);
+    border-radius: 50%;
+
+    svg {
       opacity: 1;
     }
   }

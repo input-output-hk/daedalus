@@ -8,7 +8,6 @@ import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironm
 import type { InjectedProps } from '../types/injectedPropsType';
 import menuIconOpened from '../assets/images/menu-opened-ic.inline.svg';
 import menuIconClosed from '../assets/images/menu-ic.inline.svg';
-import newsFeedBellIcon from '../assets/images/top-bar/bell.inline.svg';
 import { matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
 
@@ -55,7 +54,6 @@ export default class TopBarContainer extends Component<Props> {
         />
         <NewsFeedIcon
           onNewsFeedIconClick={actions.app.toggleNewsFeed.trigger}
-          newsFeedBellIcon={newsFeedBellIcon}
         />
       </TopBar>
     );

@@ -5,7 +5,11 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { NEWS_POLL_INTERVAL } from '../config/timingConfig';
 import News from '../domains/News';
-import type { GetNewsResponse, NewsItem } from '../api/news/types';
+import type {
+  GetNewsResponse,
+  GetReadNewsResponse,
+  NewsItem,
+} from '../api/news/types';
 
 const { isTest } = global.environment;
 
@@ -14,8 +18,13 @@ export default class NewsFeedStore extends Store {
   @observable newsUpdatedAt: ?Date = null;
   // @TODO - just if we don't have a data - show error
   @observable fetchingNewsFailed = false;
-  @observable
-  getNewsRequest: Request<GetNewsResponse> = new Request(this.api.ada.getNews);
+  @observable getNewsRequest: Request<GetNewsResponse> = new Request(
+    this.api.ada.getNews
+  );
+
+  @observable getReadNewsRequest: Request<GetReadNewsResponse> = new Request(
+    this.api.localStorage.getReadNews
+  );
 
   pollingNewsInterval: ?IntervalID = null;
 
@@ -40,6 +49,7 @@ export default class NewsFeedStore extends Store {
 
   @computed get newsFeedData(): News.NewsCollection {
     const { currentLocale } = this.stores.profile;
+    const readNews = this.getReadNewsRequest.result;
     let news = [];
     if (this.getNewsRequest.wasExecuted) {
       // @TODO - check news stored in local storage, compare update date and merge data if is needed
@@ -52,9 +62,17 @@ export default class NewsFeedStore extends Store {
           label: item.action.label[currentLocale],
           url: get(item, ['action', 'url', currentLocale]),
         },
-        read: false, // @TODO - check in LC
+        read: readNews.includes(item.date),
       }));
     }
     return new News.NewsCollection(news);
+  }
+
+  @computed get incident(): ?News {
+    return null;
+  }
+
+  @computed get alerts(): Array<News> {
+    return [];
   }
 }

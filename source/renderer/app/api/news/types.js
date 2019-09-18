@@ -19,16 +19,22 @@ export type NewsTarget = {
 
 export type NewsType = 'incident' | 'alert' | 'announcement' | 'info';
 
+export type NewsTimestamp = number;
+
 export type NewsItem = {
   title: NewsTranslations,
   content: NewsTranslations,
   target: NewsTarget,
   action: NewsAction,
-  date: Date,
+  date: NewsTimestamp,
   type: NewsType,
 };
 
 export type GetNewsResponse = {
   updatedAt: Date,
   items: Array<NewsItem>,
+};
+
+export type GetReadNewsResponse = {
+  readNewsItems: NewsTimestamp[],
 };

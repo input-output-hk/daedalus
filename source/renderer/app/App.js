@@ -15,6 +15,7 @@ import DaedalusDiagnosticsDialog from './containers/status/DaedalusDiagnosticsDi
 import BlockConsolidationStatusDialog from './containers/status/BlockConsolidationStatusDialog';
 import GenericNotificationContainer from './containers/notifications/GenericNotificationContainer';
 import AutomaticUpdateNotificationDialog from './containers/notifications/AutomaticUpdateNotificationDialog';
+import NewsOverlayContainer from './containers/news/NewsOverlayContainer';
 import { DIALOGS } from '../../common/ipc/constants';
 import type { StoresMap } from './stores/index';
 import type { ActionsMap } from './actions/index';
@@ -34,7 +35,7 @@ export default class App extends Component<{
     const { stores, actions, history } = this.props;
     const { app, nodeUpdate } = stores;
     const { showNextUpdate } = nodeUpdate;
-    const { isActiveDialog, newsFeedIsOpen } = app;
+    const { isActiveDialog } = app;
     const locale = stores.profile.currentLocale;
     const mobxDevTools = global.environment.mobxDevTools ? <DevTools /> : null;
     const { currentTheme } = stores.profile;
@@ -66,7 +67,8 @@ export default class App extends Component<{
                     <GenericNotificationContainer key="genericNotification" />,
                   ]
                 )}
-                {!newsFeedIsOpen && <NewsFeedContainer />}
+                <NewsFeedContainer />
+                <NewsOverlayContainer />
               </Fragment>
             </IntlProvider>
           </ThemeProvider>
