@@ -1,0 +1,33 @@
+.component {
+  background-color: var(--theme-news-item-info-background-color);
+  border-radius: 5px;
+  height: 107px;
+  margin: 10px 0;
+  padding: 20px;
+  width: 100%;
+
+  .newsItemTitle {
+    color: var(--theme-news-item-title-color);
+    font-family: var(--font-regular);
+    font-size: 18px;
+    line-height: 1.33;
+  }
+
+  .newsItemDate {
+    color: var(--theme-news-item-title-color);
+    font-family: var(--font-regular);
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    line-height: 1.36;
+    opacity: 0.7;
+  }
+
+  .newsItemContentContainer {
+    display: none;
+  }
+
+  .newsItemActionBtn {
+    display: none;
+  }
+}

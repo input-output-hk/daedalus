@@ -65,6 +65,7 @@
     flex-direction: column;
     justify-content: center;
     height: 100vh;
+    overflow-y: overlay;
     padding: 0 20px;
 
     .newsFeedNoFetchContainer {
@@ -91,6 +92,12 @@
         text-align: center;
         width: 280px;
       }
+    }
+
+    .newsFeedItemsContainer {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
     }
   }
 

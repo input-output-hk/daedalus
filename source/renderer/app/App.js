@@ -15,11 +15,11 @@ import DaedalusDiagnosticsDialog from './containers/status/DaedalusDiagnosticsDi
 import BlockConsolidationStatusDialog from './containers/status/BlockConsolidationStatusDialog';
 import GenericNotificationContainer from './containers/notifications/GenericNotificationContainer';
 import AutomaticUpdateNotificationDialog from './containers/notifications/AutomaticUpdateNotificationDialog';
-import NewsFeedContainer from './containers/news/NewsFeedContainer';
 import NewsOverlayContainer from './containers/news/NewsOverlayContainer';
 import { DIALOGS } from '../../common/ipc/constants';
 import type { StoresMap } from './stores/index';
 import type { ActionsMap } from './actions/index';
+import NewsFeedContainer from './containers/news/NewsFeedContainer';
 
 @observer
 export default class App extends Component<{

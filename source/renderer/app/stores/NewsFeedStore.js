@@ -14,7 +14,7 @@ import type {
 const { isTest } = global.environment;
 
 export default class NewsFeedStore extends Store {
-  @observable newsItems: Array<NewsItem>;
+  @observable rawNews: Array<NewsItem>;
   @observable newsUpdatedAt: ?Date = null;
   // @TODO - just if we don't have a data - show error
   @observable fetchingNewsFailed = false;
@@ -38,22 +38,22 @@ export default class NewsFeedStore extends Store {
   }
 
   @action getNews = async () => {
-    await this.getReadNewsRequest.execute();
-    const newsData = await this.getNewsRequest.execute().promise;
-    if (newsData) {
+    const rawNews = await this.getNewsRequest.execute().promise;
+    if (rawNews) {
       runInAction('set news data', () => {
-        this.newsItems = get(newsData, 'items', []);
-        this.newsUpdatedAt = get(newsData, 'updatedAt', null);
+        this.rawNews = get(rawNews, 'items', []);
+        this.newsUpdatedAt = get(rawNews, 'updatedAt', null);
       });
     }
   };
 
-  @computed get newsFeedData(): Array<News> {
+  @computed get newsFeedData(): News.NewsCollection {
     const { currentLocale } = this.stores.profile;
     const readNews = this.getReadNewsRequest.result;
-    let newsFeedData = [];
+    let news = [];
     if (this.getNewsRequest.wasExecuted) {
-      newsFeedData = map(this.newsItems, item => ({
+      // @TODO - check news stored in local storage, compare update date and merge data if is needed
+      news = map(this.rawNews, item => ({
         ...item,
         title: item.title[currentLocale],
         content: item.title[currentLocale],
@@ -65,7 +65,7 @@ export default class NewsFeedStore extends Store {
         read: readNews.includes(item.date),
       }));
     }
-    return newsFeedData;
+    return new News.NewsCollection(news);
   }
 
   @computed get incident(): ?News {
