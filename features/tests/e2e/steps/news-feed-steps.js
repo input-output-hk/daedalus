@@ -46,7 +46,7 @@ Given('there is no news', async function() {
 Given('there are 5 read news', async function() {
   await prepareFakeNews(this, newsDummyJson, (news, done) => {
     const api = daedalus.api;
-    const items = news.items.slice(0, 5);
+    const items = news.items.filter(i => i.type !== 'incident').slice(0, 5);
     // Set dummy news feed data
     api.ada.setFakeNewsFeedJsonForTesting({
       updatedAt: Date.now(),

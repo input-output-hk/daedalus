@@ -56,17 +56,17 @@ class NewsCollection {
 
   constructor(data: Array<News>) {
     // Filter news by palatform and versions
-    const filteredNews = filter(
-      data,
-      newsItem =>
-        newsItem.target.daedalus === version &&
-        newsItem.target.platform === platform &&
-        newsItem.target.platformVersion === platformVersion
-    );
+    // const filteredNews = filter(
+    //   data,
+    //   newsItem =>
+    //     newsItem.target.daedalus === version &&
+    //     newsItem.target.platform === platform &&
+    //     newsItem.target.platformVersion === platformVersion
+    // );
 
     Object.assign(this, {
       // Order news from oldest to newest
-      all: orderBy(filteredNews, 'date', 'asc'),
+      all: orderBy(data, 'date', 'desc'),
     });
   }
 

@@ -52,7 +52,7 @@ export default class NewsFeed extends Component<Props> {
       news,
       newsFeedShowClass,
     } = this.props;
-    const totalNewsItems = news ? news.length : 0;
+    const totalNewsItems = news ? news.all.length : 0;
     const componentClasses = classNames([
       styles.component,
       newsFeedShowClass ? styles.show : null,
@@ -84,7 +84,7 @@ export default class NewsFeed extends Component<Props> {
           )}
           {news && totalNewsItems > 0 && (
             <div className={styles.newsFeedItemsContainer}>
-              {news.map((newsItem, index) => (
+              {news.all.map((newsItem, index) => (
                 <NewsItem
                   // eslint-disable-next-line react/no-array-index-key
                   key={index}
