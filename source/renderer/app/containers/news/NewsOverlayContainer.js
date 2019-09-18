@@ -11,9 +11,11 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    const { incident, alerts } = this.props.stores.newsFeed;
+    const { newsFeedData } = this.props.stores.newsFeed;
+    const { incident, alerts } = newsFeedData;
+    const unreadAlerts = alerts.unread;
     if (incident) return <IncidentOverlay incident={incident} />;
-    if (alerts.length) return <AlertsOverlay alerts={alerts} />;
+    if (unreadAlerts.length) return <AlertsOverlay alerts={unreadAlerts} />;
     return null;
   }
 }
