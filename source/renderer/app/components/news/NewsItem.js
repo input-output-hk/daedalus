@@ -55,7 +55,7 @@ export default class NewsItem extends Component<Props, State> {
         onClick={this.newsItemClickHandler.bind(this)}
       >
         <h4 className={styles.newsItemTitle}>{newsItem.title}
-        <span className={styles.newsItemBadge}></span>
+          <span className={styles.newsItemBadge}></span>
         </h4>
         <div className={styles.newsItemDate}>
           {moment(newsItem.date).format(this.localizedDateFormat)}

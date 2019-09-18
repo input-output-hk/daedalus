@@ -7,6 +7,14 @@
   transition: min-height 400ms ease;
   width: 100%;
 
+  &.alert {
+    background-color: var(--theme-news-item-alert-background-color);
+  }
+
+  &.announcement {
+    background-color: var(--theme-news-item-announcement-background-color);
+  }
+
   .newsItemTitle {
     color: var(--theme-news-item-title-color);
     font-family: var(--font-regular);
