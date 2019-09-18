@@ -1,6 +1,7 @@
 // @flow
 import { observable, computed } from 'mobx';
-import { filter, orderBy } from 'lodash';
+import { get, filter, orderBy } from 'lodash';
+import semver from 'semver';
 import type { NewsTarget, NewsType } from '../api/news/types';
 
 export type NewsAction = {
@@ -27,7 +28,7 @@ export type MethodStateReturnType = {
   read: Array<News>,
 };
 
-const { version, platform, platformVersion } = global.environment;
+const { version, platform } = global.environment;
 
 class News {
   @observable title: string;
@@ -56,13 +57,20 @@ class NewsCollection {
 
   constructor(data: Array<News>) {
     // Filter news by palatform and versions
-    const filteredNews = filter(
-      data,
-      newsItem =>
-        newsItem.target.daedalus === version &&
-        newsItem.target.platform === platform &&
-        newsItem.target.platformVersion === platformVersion
-    );
+    const filteredNews = filter(data, newsItem => {
+      const availableTargetVersionRange = get(
+        newsItem,
+        ['target', 'daedalusVersion'],
+        null
+      );
+      const targetPlatform = get(newsItem, ['target', 'platform']);
+      return (
+        (!availableTargetVersionRange ||
+          (availableTargetVersionRange &&
+            semver.satisfies(version, availableTargetVersionRange))) &&
+        targetPlatform === platform
+      );
+    });
 
     Object.assign(this, {
       // Order news from oldest to newest

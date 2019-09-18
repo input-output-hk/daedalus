@@ -12,9 +12,8 @@ export type NewsAction = {
 };
 
 export type NewsTarget = {
-  daedalus: string,
+  daedalusVersion: ?string,
   platform: string,
-  platformVersion: string,
 };
 
 export type NewsType = 'incident' | 'alert' | 'announcement' | 'info';
