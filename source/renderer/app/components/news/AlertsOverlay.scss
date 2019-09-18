@@ -13,7 +13,6 @@
   &:hover {
     background-color: #2d2d2d;
     color: #fff;
-    // border: none;
   }
 }
 
@@ -65,12 +64,23 @@
 }
 
 .content {
+  background-color: rgba(45, 45, 45, 0.1);
   font-size: 16px;
   line-height: 1.2;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   max-height: 200px;
+  max-width: 600px;
+  padding: 12px 24px;
   overflow-y: scroll;
   opacity: 0.8;
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(45, 45, 45, 0.3);
+    outline: none;
+
+    &:hover {
+      background-color: rgba(45, 45, 45, 0.5);
+    }
+  }
 }
 
 .date {
