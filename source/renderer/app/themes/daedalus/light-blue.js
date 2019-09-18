@@ -354,6 +354,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   },
   newsFeed: {
     '--theme-news-feed-background-color': '#233856',
+    '--theme-news-feed-badge-color': '#ea4c5b',
     '--theme-news-feed-box-shadow-color': 'rgba(0, 0, 0, 0.25)',
     '--theme-news-feed-header-background-color': '#1e304a',
     '--theme-news-feed-header-title-color': '#fafbfc',
