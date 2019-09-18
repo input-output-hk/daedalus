@@ -1125,6 +1125,53 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "News feed is empty",
+        "description": "News feed is empty",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/news/NewsFeed.js",
+        "id": "news.newsfeed.empty",
+        "start": {
+          "column": 17,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "Trying to fetch the news feed...",
+        "description": "Trying to fetch the news feed...",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/news/NewsFeed.js",
+        "id": "news.newsfeed.noFetch",
+        "start": {
+          "column": 19,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "News feed",
+        "description": "News feed",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/news/NewsFeed.js",
+        "id": "news.newsfeed.title",
+        "start": {
+          "column": 17,
+          "line": 23
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/news/NewsFeed.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Software update is available",
         "description": "Title for \"Automatic update\" overlay",
         "end": {
