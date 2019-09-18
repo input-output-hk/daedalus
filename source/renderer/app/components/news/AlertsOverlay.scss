@@ -82,6 +82,39 @@
       background-color: rgba(45, 45, 45, 0.5);
     }
   }
+
+  h1,
+  h2 {
+    font-family: var(--font-medium);
+    font-size: 19px;
+    margin-bottom: 11px;
+  }
+
+  h2 {
+    margin-top: 13px;
+  }
+
+  ul {
+    list-style: disc;
+    margin-left: 20px;
+  }
+
+  p,
+  li {
+    font-family: var(--font-regular);
+    line-height: 1.38;
+    margin-bottom: 11px;
+
+    strong {
+      font-weight: 500;
+    }
+  }
+  li {
+    margin-bottom: 4px;
+  }
+  a {
+    color: #2d2d2d;
+  }
 }
 
 .counter {
