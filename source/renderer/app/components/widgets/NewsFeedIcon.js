@@ -8,14 +8,24 @@ import styles from './NewsFeedIcon.scss';
 type Props = {
   onNewsFeedIconClick: Function,
   newsFeedIconClass?: string,
+  isHighlighted: boolean,
+  showDot: boolean,
 };
 
 export default class NewsFeedIcon extends Component<Props> {
   render() {
-    const { onNewsFeedIconClick, newsFeedIconClass } = this.props;
-
-    const componentClasses = classNames([styles.component, newsFeedIconClass]);
-
+    const {
+      onNewsFeedIconClick,
+      newsFeedIconClass,
+      isHighlighted,
+      showDot,
+    } = this.props;
+    const componentClasses = classNames([
+      styles.component,
+      showDot ? styles.withDot : null,
+      isHighlighted ? styles.highlighted : null,
+      newsFeedIconClass,
+    ]);
     return (
       <button className={componentClasses} onClick={onNewsFeedIconClick}>
         <SVGInline className={styles.icon} svg={newsFeedIcon} />

@@ -99,7 +99,6 @@ export default class NewsFeedStore extends Store {
 
     let news = [];
     if (this.getNewsRequest.wasExecuted) {
-      // @TODO - check news stored in local storage, compare update date and merge data if is needed
       news = map(this.rawNews, item => ({
         ...item,
         title: item.title[currentLocale],

@@ -347,6 +347,10 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-news-feed-header-title-color': '#fafbfc',
     '--theme-news-feed-icon-close-button-color': '#fff',
     '--theme-news-feed-icon-close-hover-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-news-feed-icon-color': '#ffffff',
+    '--theme-news-feed-icon-color-connecting-screen': '#ffffff',
+    '--theme-news-feed-icon-color-syncing-screen': '#ffffff',
+    '--theme-news-feed-icon-dot-background-color': '#ea4c5b',
     '--theme-news-feed-icon-toggle-hover-background-color':
       'rgba(0, 0, 0, 0.1)',
     '--theme-news-feed-no-fetch-color': '#fafbfc',
@@ -355,9 +359,15 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-news-feed-reload-button-color': '#fafbfc',
   },
   newsItem: {
+    '--theme-news-item-action-button-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-news-item-action-button-border-color': '#fafbfc',
+    '--theme-news-item-action-button-color': '#fafbfc',
+    '--theme-news-item-alert-background-color': 'rgba(242, 162, 24, 0.5)',
+    '--theme-news-item-announcement-background-color':
+      'rgba(234, 76, 91, 0.25)',
+    '--theme-news-item-badge-color': '#ea4c5b',
     '--theme-news-item-info-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-news-item-title-color': '#fafbfc',
-    '--theme-news-item-badge-color': '#ea4c5b',
   },
   nodeUpdate: {
     '--theme-node-update-background-color': '#121326',

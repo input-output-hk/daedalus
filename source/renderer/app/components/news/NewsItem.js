@@ -4,7 +4,9 @@ import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import ReactMarkdown from 'react-markdown';
 import moment from 'moment';
+import SVGInline from 'react-svg-inline';
 import News from '../../domains/News';
+import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import styles from './NewsItem.scss';
 
 type Props = {
@@ -57,7 +59,7 @@ export default class NewsItem extends Component<Props, State> {
       >
         <h4 className={styles.newsItemTitle}>
           {newsItem.title}
-          <span className={styles.newsItemBadge} />
+          {!newsItem.read && <span className={styles.newsItemBadge} />}
         </h4>
         <div className={styles.newsItemDate}>
           {moment(newsItem.date).format(this.localizedDateFormat)}
@@ -70,6 +72,7 @@ export default class NewsItem extends Component<Props, State> {
           onClick={event => onNewsItemActionClick(actionUrl, event)}
         >
           {newsItem.action.label}
+          <SVGInline svg={externalLinkIcon} />
         </button>
       </div>
     );

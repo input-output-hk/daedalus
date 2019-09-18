@@ -40,8 +40,8 @@ Feature: News feed
     When I open the news feed
     Then the news feed is empty
 
-  @wip
   Scenario: Only read news available in the feed
+
     Given there are 5 read news
     When I open the news feed
     Then the news feed contains 5 read news
@@ -54,7 +54,7 @@ Feature: News feed
   @wip
   Scenario: Dismissing an alert
     Given there are unread alerts
-    Then the latest alert will cover the screen
+    And the latest alert will cover the screen
     When I dismiss the alert
     Then the alert I have dismissed becomes read
 
@@ -79,7 +79,7 @@ Feature: News feed
     And the info is marked as read
     And the news feed icon is not highlighted
 
-  @watch
+  @wip
   Scenario: News unavailable
     Given the news feed server is unreachable
     When I open the news feed

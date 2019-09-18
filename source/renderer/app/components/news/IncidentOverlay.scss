@@ -1,52 +1,85 @@
 .actionBtn {
-  background-color: rgba(45, 45, 45, 0.1);
-  border: 1px solid #2d2d2d;
+  background-color: #ab1700;
+  border: 1px solid #fafbfc;
   box-sizing: border-box;
   border-radius: 5px;
-  color: #2d2d2d;
+  color: #fafbfc;
   font-family: var(--font-medium);
   font-size: 14px;
   font-weight: 500;
-  height: 50px;
+  min-height: 50px;
   line-height: 1.36;
   width: 360px;
   &:hover {
-    background-color: #2d2d2d;
-    color: #fff;
+    background-color: #fafbfc;
+    color: #ab1700;
   }
 }
 
 .component {
   align-items: center;
-  background-color: rgba(255, 185, 35, 0.96);
-  color: #2d2d2d;
+  background-color: rgba(171, 23, 0, 0.94);
+  color: #fafbfc;
   display: flex;
   flex-direction: column;
   font-family: var(--font-regular);
   height: 100vh;
-  justify-content: flex-start;
+  justify-content: center;
   width: 100vw;
   z-index: 3;
 }
 
 .content {
-  background-color: rgba(45, 45, 45, 0.1);
+  background-color: rgba(171, 23, 0, 0.94);
   font-size: 16px;
   line-height: 1.2;
   margin-bottom: 30px;
-  max-height: 200px;
+  max-height: 464px;
   max-width: 600px;
   padding: 12px 24px;
   overflow-y: scroll;
   opacity: 0.8;
   ::-webkit-scrollbar-thumb {
-    background-color: rgba(45, 45, 45, 0.3);
+    background-color: rgba(250, 251, 252, 0.3);
     outline: none;
     width: 4px;
 
     &:hover {
-      background-color: rgba(45, 45, 45, 0.5);
+      background-color: rgba(250, 251, 252, 0.5);
     }
+  }
+
+  h1,
+  h2 {
+    font-family: var(--font-medium);
+    font-size: 19px;
+    margin-bottom: 11px;
+  }
+
+  h2 {
+    margin-top: 13px;
+  }
+
+  ul {
+    list-style: disc;
+    margin-left: 20px;
+  }
+
+  p,
+  li {
+    font-family: var(--font-regular);
+    line-height: 1.38;
+    margin-bottom: 11px;
+
+    strong {
+      font-weight: 500;
+    }
+  }
+  li {
+    margin-bottom: 4px;
+  }
+  a {
+    color: #fafbfc;
   }
 }
 
@@ -56,38 +89,6 @@
   line-height: 1.43;
   margin-bottom: 20px;
   opacity: 0.5;
-}
-
-.dismissBtn {
-  background-color: transparent;
-  border: 1px solid #fff;
-  color: #2d2d2d;
-  height: 30px;
-  width: 300px;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.7);
-    color: rgba(193, 66, 66, 0.7);
-  }
-}
-
-.icon {
-  margin-bottom: 36px;
-  margin-top: 36px;
-  object-fit: contain;
-  & > svg {
-    height: 110px;
-    width: 110px;
-    path {
-      fill: #2d2d2d;
-    }
-    path:nth-child(1) {
-      opacity: 0.2;
-    }
-    path:nth-child(2) {
-      opacity: 0.6;
-    }
-  }
 }
 
 .title {
