@@ -76,8 +76,8 @@ export default class NewsFeed extends Component<Props> {
             </div>
           )}
           {news && totalNewsItems === 0 && (
-            <div className={styles.newsFeedNoFetchContainer}>
-              <p className={styles.newsFeedNoFetch}>
+            <div className={styles.newsFeedEmptyContainer}>
+              <p className={styles.newsFeedEmpty}>
                 {intl.formatMessage(messages.newsFeedEmpty)}
               </p>
             </div>

@@ -52,7 +52,7 @@ class News {
 }
 
 class NewsCollection {
-  @observable news: Array<News>;
+  @observable all: Array<News>;
 
   constructor(data: Array<News>) {
     // Filter news by palatform and versions
@@ -87,9 +87,9 @@ class NewsCollection {
   @computed get alerts(): MethodStateReturnType {
     const alerts = filter(this.all, item => item.type === NewsTypes.ALERT);
     // Order alerts from newest to oldest
-    const orederedAlerts = orderBy(alerts, 'date', 'desc');
+    const orderedAlerts = orderBy(alerts, 'date', 'asc');
 
-    const obj = new NewsCollection(orederedAlerts);
+    const obj = new NewsCollection(orderedAlerts);
     return {
       all: obj.all,
       unread: obj.unread,
@@ -103,8 +103,8 @@ class NewsCollection {
       item => item.type === NewsTypes.ANNOUNCEMENT && !item.read
     );
     // Order announcements from newest to oldest
-    const orederedAnnouncements = orderBy(announcements, 'date', 'desc');
-    const obj = new NewsCollection(orederedAnnouncements);
+    const orderedAnnouncements = orderBy(announcements, 'date', 'desc');
+    const obj = new NewsCollection(orderedAnnouncements);
     return {
       all: obj.all,
       unread: obj.unread,
@@ -131,15 +131,13 @@ class NewsCollection {
   @computed get unread(): Array<News> {
     const unread = filter(this.all, item => !item.read);
     // Order unread from newest to oldest
-    const orederedUnread = orderBy(unread, 'date', 'desc');
-    return orederedUnread;
+    return orderBy(unread, 'date', 'desc');
   }
 
   @computed get read(): Array<News> {
     const read = filter(this.all, item => item.read);
     // Order read from newest to oldest
-    const orederedRead = orderBy(read, 'date', 'desc');
-    return orederedRead;
+    return orderBy(read, 'date', 'desc');
   }
 }
 
