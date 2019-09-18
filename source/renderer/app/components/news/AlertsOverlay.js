@@ -15,7 +15,7 @@ type State = {
 };
 
 type Props = {
-  alerts: Array<News>,
+  alerts: Array<typeof News>,
 };
 
 @observer
@@ -36,10 +36,14 @@ export default class AlertsOverlay extends Component<Props, State> {
     return null;
   };
 
+  renderCounter = (alerts: News.NewsCollection) => (
+    <span className={styles.counter}>1 / {alerts.unread.length}</span>
+  );
+
   render() {
     const { showOverlay } = this.state;
     const { alerts } = this.props;
-    const alert = alerts[0];
+    const [alert] = alerts;
     const { content, date, action, title } = alert;
     return (
       showOverlay && (
@@ -49,6 +53,7 @@ export default class AlertsOverlay extends Component<Props, State> {
             icon={closeCrossThin}
             onClose={this.onClose}
           />
+          {this.renderCounter(new News.NewsCollection([]))}
           <SVGInline svg={attentionIcon} className={styles.icon} />
           <h1 className={styles.title}>{title}</h1>
           <span className={styles.date}>
