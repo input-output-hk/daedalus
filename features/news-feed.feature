@@ -9,44 +9,50 @@ Feature: News feed
   Background:
     Given I have completed the basic setup
 
-  @wip
-  Scenario: Bell icon is highlighted when there are unread news
+  @reconnectApp
+  Scenario: News feed icon is visible on the connecting screen
+    Given im on the connecting screen
+    Then i should see the news feed icon
 
+  @reconnectApp
+  Scenario: News feed icon is visible on the syncing screen
+    Given im on the syncing screen
+    Then i should see the news feed icon
+
+  Scenario: News feed icon is visible in the main ui
+    Given I should see the main ui
+    Then i should see the news feed icon
+
+  Scenario: News feed icon is highlighted when there are unread news
     Given there are unread news
-    Then the bell icon is highlighted
+    Then the news feed icon is highlighted
 
-  @wip
-  Scenario: Bell icon is not highlighted when there are no unread news
-
+  Scenario: News feed icon is not highlighted when there are no unread news
     Given there are no unread news
-    Then the bell icon is not highlighted
+    Then the news feed icon is not highlighted
 
-  @wip
+  Scenario: Open the news feed by clicking the news feed icon
+    Given I click on the news feed icon
+    Then the news feed is open
+
   Scenario: No news available in the feed
-
     Given there is no news
-    Then the bell icon is not highlighted
-    When I click on the bell icon
-    Then the news feed is opened
-    And the news feed contains "no news available" message
+    When I open the news feed
+    Then the news feed is empty
 
   @wip
   Scenario: Only read news available in the feed
-
     Given there are 5 read news
-    When I click on the bell icon
-    Then the news feed is opened
-    And the news feed contains 5 read news
+    When I open the news feed
+    Then the news feed contains 5 read news
 
   @wip
   Scenario: Displaying an incident
-
     Given there is an incident
     Then the incident will cover the screen
 
   @wip
   Scenario: Dismissing an alert
-
     Given there are unread alerts
     Then the latest alert will cover the screen
     When I dismiss the alert
@@ -54,9 +60,8 @@ Feature: News feed
 
   @wip
   Scenario: Reading an announcement
-
     Given there is 1 unread announcement
-    When I click on the bell icon
+    When I click on the news feed icon
     Then the news feed is opened
     And the news feed contains 1 unread announcement
     When I click on the unread announcement to expand it
@@ -65,20 +70,17 @@ Feature: News feed
 
   @wip
   Scenario: Reading an info
-
     Given there is 1 unread info
-    When I click on the bell icon
+    When I click on the news feed icon
     Then the news feed is opened
     And the news feed contains 1 unread info
     When I click on the unread info to expand it
     Then the info content is shown
     And the info is marked as read
-    And the bell icon is not highlighted
+    And the news feed icon is not highlighted
 
-  @wip
+  @watch
   Scenario: News unavailable
-
     Given the news feed server is unreachable
-    When I click on the bell icon
-    Then the news feed is opened
-    And the news feed contains "news unavailable message"
+    When I open the news feed
+    Then no news are available

@@ -14,16 +14,18 @@ import type {
 const { isTest } = global.environment;
 
 export default class NewsFeedStore extends Store {
-  @observable newsItems: Array<NewsItem>;
+  @observable rawNews: Array<NewsItem>;
   @observable newsUpdatedAt: ?Date = null;
   // @TODO - just if we don't have a data - show error
   @observable fetchingNewsFailed = false;
   @observable getNewsRequest: Request<GetNewsResponse> = new Request(
     this.api.ada.getNews
   );
-
   @observable getReadNewsRequest: Request<GetReadNewsResponse> = new Request(
     this.api.localStorage.getReadNews
+  );
+  @observable markNewsAsReadRequest: Request<MarkNewsAsReadResponse> = new Request(
+    this.api.localStorage.markNewsAsRead
   );
 
   pollingNewsInterval: ?IntervalID = null;
@@ -38,22 +40,30 @@ export default class NewsFeedStore extends Store {
   }
 
   @action getNews = async () => {
-    await this.getReadNewsRequest.execute();
-    const newsData = await this.getNewsRequest.execute().promise;
-    if (newsData) {
+    const rawNews = await this.getNewsRequest.execute().promise;
+    if (rawNews) {
       runInAction('set news data', () => {
-        this.newsItems = get(newsData, 'items', []);
-        this.newsUpdatedAt = get(newsData, 'updatedAt', null);
+        this.rawNews = get(rawNews, 'items', []);
+        this.newsUpdatedAt = get(rawNews, 'updatedAt', null);
       });
     }
   };
 
-  @computed get newsFeedData(): Array<News> {
+  // @action markNewsAsRead = (newsTimestamps) => {
+  //   const readNews = this.getReadNewsRequest.result;
+  //   console.debug('readNews OLD', readNews);
+  //   const readNews2 = this.getReadNewsRequest.result;
+  //   console.debug('readNews NEW', readNews2);
+  // }
+
+  @computed get newsFeedData(): News.NewsCollection {
+    console.debug('RUN COMPUTED');
     const { currentLocale } = this.stores.profile;
     const readNews = this.getReadNewsRequest.result;
-    let newsFeedData = [];
+    let news = [];
     if (this.getNewsRequest.wasExecuted) {
-      newsFeedData = map(this.newsItems, item => ({
+      // @TODO - check news stored in local storage, compare update date and merge data if is needed
+      news = map(this.rawNews, item => ({
         ...item,
         title: item.title[currentLocale],
         content: item.title[currentLocale],
@@ -62,17 +72,12 @@ export default class NewsFeedStore extends Store {
           label: item.action.label[currentLocale],
           url: get(item, ['action', 'url', currentLocale]),
         },
-        read: readNews.includes(item.date),
+        // read: readNews.includes(item.date),
+        read: false,
       }));
     }
-    return newsFeedData;
-  }
 
-  @computed get incident(): ?News {
-    return null;
-  }
-
-  @computed get alerts(): Array<News> {
-    return [];
+    console.debug('START: ', news);
+    return new News.NewsCollection(news);
   }
 }

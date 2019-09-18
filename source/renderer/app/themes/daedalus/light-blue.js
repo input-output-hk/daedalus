@@ -366,6 +366,11 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-news-feed-reload-button-border-color': '#fafbfc',
     '--theme-news-feed-reload-button-color': '#fafbfc',
   },
+  newsItem: {
+    '--theme-news-item-info-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-news-item-title-color': '#fafbfc',
+    '--theme-news-item-badge-color': '#ea4c5b',
+  },
   nodeUpdate: {
     '--theme-node-update-background-color': '#ebeff2',
     '--theme-node-update-title-color': '#5e6066',

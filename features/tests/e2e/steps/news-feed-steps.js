@@ -1,4 +1,4 @@
-import { Given } from 'cucumber';
+import { Given, When, Then } from 'cucumber';
 import newsDummyJson from '../../../../source/renderer/app/config/news.dummy';
 
 async function prepareFakeNews(context, fakeNews, preparation, ...args) {
@@ -31,7 +31,6 @@ Given('there are no unread news', async function() {
     // Mark all news as read
     api.localStorage.markNewsAsRead(news.items.map(i => i.date)).then(done);
   });
-  console.log(this.news);
 });
 
 Given('there is no news', async function() {
@@ -98,4 +97,36 @@ Given('there is 1 unread {word}', async function(newsType) {
 
 Given('the news feed server is unreachable', async function() {
   this.news = [];
+});
+
+When('I click on the news feed icon', async function() {
+  await this.waitAndClick('.NewsFeedIcon_component');
+});
+
+When('I open the news feed', async function() {
+  await this.waitAndClick('.NewsFeedIcon_component');
+});
+
+Then('i should see the news feed icon', async function() {
+  await this.client.waitForVisible('.NewsFeedIcon_component');
+});
+
+Then('the news feed icon is highlighted', async function() {
+  await this.client.waitForVisible('.NewsFeedIcon_component_is-highlighted');
+});
+
+Then('the news feed icon is not highlighted', async function() {
+  await this.client.waitForVisible(
+    '.NewsFeedIcon_component_is-highlighted',
+    null,
+    true
+  );
+});
+
+Then('the news feed is open', async function() {
+  await this.client.waitForVisible('.NewsFeed_component');
+});
+
+Then('the news feed is empty', async function() {
+  await this.client.waitForVisible('.NewsFeed_newsFeedNoFetch');
 });

@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import { observer } from 'mobx-react';
+import ReactMarkdown from 'react-markdown';
 import SVGInline from 'react-svg-inline';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
@@ -53,7 +54,9 @@ export default class AlertsOverlay extends Component<Props, State> {
           <span className={styles.date}>
             {moment(date).format('YYYY-MM-DD')}
           </span>
-          <p className={styles.content}>{content}</p>
+          <div className={styles.content}>
+            <ReactMarkdown escapeHtml={false} source={content} />
+          </div>
           {this.renderAction(action)}
         </div>
       )

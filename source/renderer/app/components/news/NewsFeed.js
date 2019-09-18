@@ -7,6 +7,7 @@ import SVGInline from 'react-svg-inline';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import styles from './NewsFeed.scss';
 import News from '../../domains/News';
+import NewsItem from './NewsItem';
 
 const messages = defineMessages({
   newsFeedEmpty: {
@@ -33,6 +34,7 @@ const messages = defineMessages({
 
 type Props = {
   onClose: Function,
+  onNewsItemActionClick: Function,
   news: Array<News>,
   newsFeedShowClass: string,
 };
@@ -49,9 +51,13 @@ export default class NewsFeed extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, news, newsFeedShowClass } = this.props;
+    const {
+      onClose,
+      onNewsItemActionClick,
+      news,
+      newsFeedShowClass,
+    } = this.props;
     const totalNewsItems = news ? news.length : 0;
-
     const componentClasses = classNames([
       styles.component,
       newsFeedShowClass ? styles.show : null,
@@ -85,7 +91,16 @@ export default class NewsFeed extends Component<Props> {
             </div>
           )}
           {news && totalNewsItems > 0 && (
-            <div className={styles.newsFeedNoFetchContainer}>News items</div>
+            <div className={styles.newsFeedItemsContainer}>
+              {news.map((newsItem, index) => (
+                <NewsItem
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={index}
+                  onNewsItemActionClick={onNewsItemActionClick}
+                  newsItem={newsItem}
+                />
+              ))}
+            </div>
           )}
         </div>
       </div>
