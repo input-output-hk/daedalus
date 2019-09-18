@@ -6,8 +6,11 @@ import ReactMarkdown from 'react-markdown';
 import News from '../../domains/News';
 import styles from './IncidentOverlay.scss';
 
+// import type { NewsTypesStateType } from '../../domains/News';
+
 type Props = {
-  incident: News,
+  // incident: NewsTypesStateType
+  incident: News.News,
 };
 
 @observer

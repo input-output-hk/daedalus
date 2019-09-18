@@ -10,7 +10,7 @@ import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import styles from './NewsItem.scss';
 
 type Props = {
-  newsItem: News,
+  newsItem: News.News,
   onNewsItemActionClick: Function,
 };
 

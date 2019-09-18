@@ -6,13 +6,14 @@ import ReactMarkdown from 'react-markdown';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import styles from './AlertsOverlay.scss';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
+import News from '../../domains/News';
 
 type State = {
   showOverlay: boolean,
 };
 
 type Props = {
-  alerts: Array<{}>,
+  alerts: Array<News.News>,
   onMarkNewsAsRead: Function,
 };
 
@@ -26,12 +27,13 @@ export default class AlertsOverlay extends Component<Props, State> {
   }
 
   onClose = () => {
-    if (this.props.alerts.length <= 1) {
-      this.props.onMarkNewsAsRead(this.props.alerts[0].id);
+    const { alerts } = this.props;
+    if (alerts.length <= 1) {
+      this.props.onMarkNewsAsRead(alerts[0].date);
       this.setState({ showOverlay: false });
       return;
     }
-    this.props.onMarkNewsAsRead(this.props.alerts[0].id);
+    this.props.onMarkNewsAsRead(alerts[0].date);
   };
 
   renderAction = (action: Object) => {
@@ -41,7 +43,7 @@ export default class AlertsOverlay extends Component<Props, State> {
     return null;
   };
 
-  renderCounter = (alerts: Array<{}>) => {
+  renderCounter = (alerts: Array<News.News>) => {
     if (alerts.length > 1) {
       return <span className={styles.counter}>1 / {alerts.length}</span>;
     }
