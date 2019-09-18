@@ -142,7 +142,7 @@ storiesOf('NewsFeed', module)
     <div>
       <NewsFeed
         onClose={action('onClose')}
-        news={props.items}
+        news={props.news}
         newsFeedShowClass={boolean('newsFeedShowClass3', true)}
       />
     </div>
