@@ -65,6 +65,7 @@
     overflow-y: overlay;
     padding: 0 20px;
 
+    .newsFeedEmptyContainer,
     .newsFeedNoFetchContainer {
       align-items: center;
       display: flex;
@@ -72,6 +73,7 @@
       height: 100%;
       justify-content: center;
 
+      .newsFeedEmpty,
       .newsFeedNoFetch {
         color: var(--theme-news-feed-no-fetch-color);
         font-family: var(--font-regular);
