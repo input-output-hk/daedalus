@@ -35,7 +35,7 @@ class News {
   @observable content: string;
   @observable target: NewsTarget;
   @observable action: NewsAction;
-  @observable date: Date;
+  @observable date: number;
   @observable type: NewsType;
   @observable read: boolean;
 
@@ -44,7 +44,7 @@ class News {
     content: string,
     target: NewsTarget,
     action: NewsAction,
-    date: Date,
+    date: number,
     type: NewsType,
     read: boolean,
   }) {
@@ -68,10 +68,9 @@ class NewsCollection {
         (!availableTargetVersionRange ||
           (availableTargetVersionRange &&
             semver.satisfies(version, availableTargetVersionRange))) &&
-        targetPlatform === platform
+        (platform === 'browser' || targetPlatform === platform)
       );
     });
-
     const orderedNews = orderBy(filteredNews, 'date', 'asc');
     runInAction(() => {
       this.all = orderedNews;
