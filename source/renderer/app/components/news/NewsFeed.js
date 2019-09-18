@@ -51,7 +51,12 @@ export default class NewsFeed extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, onNewsItemActionClick, news, newsFeedShowClass } = this.props;
+    const {
+      onClose,
+      onNewsItemActionClick,
+      news,
+      newsFeedShowClass,
+    } = this.props;
     const totalNewsItems = news ? news.length : 0;
     const componentClasses = classNames([
       styles.component,
@@ -92,7 +97,8 @@ export default class NewsFeed extends Component<Props> {
                   // eslint-disable-next-line react/no-array-index-key
                   key={index}
                   onNewsItemActionClick={onNewsItemActionClick}
-                  newsItem={newsItem}/>
+                  newsItem={newsItem}
+                />
               ))}
             </div>
           )}

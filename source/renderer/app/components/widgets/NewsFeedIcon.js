@@ -14,10 +14,7 @@ export default class NewsFeedIcon extends Component<Props> {
   render() {
     const { onNewsFeedIconClick, newsFeedIconClass } = this.props;
 
-    const componentClasses = classNames([
-      styles.component,
-      newsFeedIconClass,
-    ]);
+    const componentClasses = classNames([styles.component, newsFeedIconClass]);
 
     return (
       <button className={componentClasses} onClick={onNewsFeedIconClick}>
