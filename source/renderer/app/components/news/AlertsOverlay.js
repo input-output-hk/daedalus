@@ -4,8 +4,8 @@ import moment from 'moment';
 import { observer } from 'mobx-react';
 import ReactMarkdown from 'react-markdown';
 import DialogCloseButton from '../widgets/DialogCloseButton';
-import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import styles from './AlertsOverlay.scss';
+import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 
 type State = {
   showOverlay: boolean,

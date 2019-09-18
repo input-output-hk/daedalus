@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import { observer } from 'mobx-react';
 import ReactMarkdown from 'react-markdown';
-import styles from './IncidentOverlay.scss';
 import News from '../../domains/News';
+import styles from './IncidentOverlay.scss';
 
 type Props = {
   incident: News,
