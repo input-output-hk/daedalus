@@ -21,9 +21,11 @@ export default class NewsFeedStore extends Store {
   @observable getNewsRequest: Request<GetNewsResponse> = new Request(
     this.api.ada.getNews
   );
-
   @observable getReadNewsRequest: Request<GetReadNewsResponse> = new Request(
     this.api.localStorage.getReadNews
+  );
+  @observable markNewsAsReadRequest: Request<MarkNewsAsReadResponse> = new Request(
+    this.api.localStorage.markNewsAsRead
   );
 
   pollingNewsInterval: ?IntervalID = null;
@@ -47,7 +49,15 @@ export default class NewsFeedStore extends Store {
     }
   };
 
+  // @action markNewsAsRead = (newsTimestamps) => {
+  //   const readNews = this.getReadNewsRequest.result;
+  //   console.debug('readNews OLD', readNews);
+  //   const readNews2 = this.getReadNewsRequest.result;
+  //   console.debug('readNews NEW', readNews2);
+  // }
+
   @computed get newsFeedData(): News.NewsCollection {
+    console.debug('RUN COMPUTED');
     const { currentLocale } = this.stores.profile;
     const readNews = this.getReadNewsRequest.result;
     let news = [];
@@ -62,17 +72,12 @@ export default class NewsFeedStore extends Store {
           label: item.action.label[currentLocale],
           url: get(item, ['action', 'url', currentLocale]),
         },
-        read: readNews.includes(item.date),
+        // read: readNews.includes(item.date),
+        read: false,
       }));
     }
+
+    console.debug('START: ', news);
     return new News.NewsCollection(news);
-  }
-
-  @computed get incident(): ?News {
-    return null;
-  }
-
-  @computed get alerts(): Array<News> {
-    return [];
   }
 }
