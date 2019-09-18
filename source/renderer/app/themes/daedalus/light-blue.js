@@ -378,6 +378,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-news-item-announcement-background-color':
       'rgba(234, 76, 91, 0.25)',
     '--theme-news-item-badge-color': '#ea4c5b',
+    '--theme-news-item-content-link-color': '#2d2d2d',
     '--theme-news-item-info-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-news-item-title-color': '#fafbfc',
   },
