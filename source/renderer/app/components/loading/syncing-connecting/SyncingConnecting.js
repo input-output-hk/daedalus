@@ -226,7 +226,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       <div className={componentStyles}>
         <NewsFeedIcon
           onNewsFeedIconClick={onToggleNewsFeedIconClick}
-          newsFeedBellIconClass={styles.newsFeedBellIcon}
+          newsFeedIconClass={styles.newsFeedIcon}
         />
         {this.showReportIssue && (
           <ReportIssue
