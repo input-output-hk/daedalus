@@ -32,6 +32,7 @@ type Props = {
   onNewsItemActionClick: Function,
   news?: News.NewsCollection,
   newsFeedShowClass: boolean,
+  onMarkNewsAsRead: Function,
 };
 
 @observer
@@ -51,6 +52,7 @@ export default class NewsFeed extends Component<Props> {
       onNewsItemActionClick,
       news,
       newsFeedShowClass,
+      onMarkNewsAsRead,
     } = this.props;
 
     const totalNewsItems = news && news.all ? news.all.length : 0;
@@ -88,24 +90,38 @@ export default class NewsFeed extends Component<Props> {
             <div className={styles.newsFeedItemsContainer}>
               {news.unread && (
                 <div className={styles.newsFeedUnread}>
+                  <div className={styles.newsFeedUnreadLabel}>
+                    <span>Unread</span>
+                    <span className={styles.newsFeedUnreadCounter}>
+                      ({news.unread.length})
+                    </span>
+                  </div>
                   {news.unread.map((newsItem, index) => (
                     <NewsItem
                       // eslint-disable-next-line react/no-array-index-key
                       key={index}
                       onNewsItemActionClick={onNewsItemActionClick}
                       newsItem={newsItem}
+                      onMarkNewsAsRead={onMarkNewsAsRead}
                     />
                   ))}
                 </div>
               )}
               {news.read && (
                 <div className={styles.newsFeedRead}>
+                  <div className={styles.newsFeedReadLabel}>
+                    <span>Read</span>
+                    <span className={styles.newsFeedReadCounter}>
+                      ({news.read.length})
+                    </span>
+                  </div>
                   {news.read.map((newsItem, index) => (
                     <NewsItem
                       // eslint-disable-next-line react/no-array-index-key
                       key={index}
                       onNewsItemActionClick={onNewsItemActionClick}
                       newsItem={newsItem}
+                      onMarkNewsAsRead={onMarkNewsAsRead}
                     />
                   ))}
                 </div>

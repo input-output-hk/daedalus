@@ -15,7 +15,7 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
     const { incident, alerts } = newsFeedData;
     const unreadAlerts = alerts.unread;
     if (incident) return <IncidentOverlay incident={incident} />;
-    if (unreadAlerts.length)
+    if (unreadAlerts.length > 0)
       return (
         <AlertsOverlay
           onMarkNewsAsRead={markNewsAsRead}

@@ -36,8 +36,6 @@ type Props = {
   syncPercentage: number,
   hasLoadedCurrentLocale: boolean,
   hasLoadedCurrentTheme: boolean,
-  hasUnreadAlerts: boolean,
-  hasUnreadAnnouncements: boolean,
   hasUnreadNews: boolean,
   isCheckingSystemTime: boolean,
   isNodeResponding: boolean,
@@ -201,8 +199,6 @@ export default class SyncingConnecting extends Component<Props, State> {
       isSyncing,
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
-      hasUnreadAlerts,
-      hasUnreadAnnouncements,
       hasUnreadNews,
       onIssueClick,
       onDownloadLogs,
@@ -238,7 +234,6 @@ export default class SyncingConnecting extends Component<Props, State> {
         <NewsFeedIcon
           onNewsFeedIconClick={onToggleNewsFeedIconClick}
           newsFeedIconClass={newsFeedIconStyles}
-          isHighlighted={hasUnreadAlerts || hasUnreadAnnouncements}
           showDot={hasUnreadNews}
         />
         {this.showReportIssue && (
