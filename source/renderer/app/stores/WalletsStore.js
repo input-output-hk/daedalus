@@ -193,6 +193,7 @@ export default class WalletsStore extends Store {
     walletsActions.updateRecoveryPhraseVerificationDate.listen(
       this._updateRecoveryPhraseVerificationDate
     );
+    walletsActions.updateWalletLocalData.listen(this._updateWalletLocalData);
   }
 
   _create = async (params: { name: string, spendingPassword: ?string }) => {
@@ -820,7 +821,7 @@ export default class WalletsStore extends Store {
       // In case a wallet doesn't have creationDate in the localStorage yet, it adds it
       if (!walletLocalData.creationDate) {
         walletLocalData.creationDate = new Date();
-        await this.updateWalletLocalDataRequest.execute({
+        await this._updateWalletLocalData({
           id,
           creationDate: walletLocalData.creationDate,
         });
@@ -893,18 +894,24 @@ export default class WalletsStore extends Store {
     const walletsLocalData: WalletsLocalData = await this.getWalletsLocalDataRequest.execute();
     return walletsLocalData;
   };
+  _updateWalletLocalData = async (updatedWalletData: Object): Object => {
+    const { id } = updatedWalletData;
+    const walletLocalData = await this.updateWalletLocalDataRequest.execute(
+      updatedWalletData
+    );
+    runInAction('Update wallet verification date', () => {
+      this.recoveryPhraseVerificationData[
+        id
+      ] = this._setWalletRecoveryPhraseVerificationData(walletLocalData);
+    });
+  };
   _updateRecoveryPhraseVerificationDate = async () => {
     if (!this.active) return;
     const { id } = this.active;
     const recoveryPhraseVerificationDate = new Date();
-    const updatedWalletData = await this.updateWalletLocalDataRequest.execute({
+    await this._updateWalletLocalData({
       id,
       recoveryPhraseVerificationDate,
-    });
-    runInAction('Update wallet verification date', () => {
-      this.recoveryPhraseVerificationData[
-        id
-      ] = this._setWalletRecoveryPhraseVerificationData(updatedWalletData);
     });
   };
   _unsetWalletLocalData = async (walletId: string) => {
