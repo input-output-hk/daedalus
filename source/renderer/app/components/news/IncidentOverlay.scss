@@ -24,7 +24,7 @@
   flex-direction: column;
   font-family: var(--font-regular);
   height: 100vh;
-  justify-content: center;
+  justify-content: flex-start;
   width: 100vw;
   z-index: 3;
 }
@@ -73,6 +73,7 @@
 
 .icon {
   margin-bottom: 36px;
+  margin-top: 36px;
   object-fit: contain;
   & > svg {
     height: 110px;

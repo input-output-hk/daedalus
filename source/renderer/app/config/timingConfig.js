@@ -21,5 +21,6 @@ export const BLOCK_CONSOLIDATION_API_REQUEST_INTERVAL = 30 * 1000; // 30 seconds
 export const WALLET_UTXO_API_REQUEST_INTERVAL = 5 * 1000; // 5 seconds | unit: milliseconds
 export const STAKE_POOL_TOOLTIP_HOVER_WAIT = 700; // 700 milliseconds | unit: milliseconds
 export const COPY_STATE_DIRECTORY_PATH_NOTIFICATION_DURATION = 10; // unit: seconds
-export const NEWS_POLL_INTERVAL = 30 * 60 * 1000; // 30 minutes | unit: milliseconds
+export const NEWS_POLL_INTERVAL = 20 * 1000; // 30 minutes | unit: milliseconds
+export const NEWS_POLL_INTERVAL_ON_ERROR = 1 * 60 * 1000; // 1 minute | unit: milliseconds
 /* eslint-disable max-len */
