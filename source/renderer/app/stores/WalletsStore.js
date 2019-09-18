@@ -16,6 +16,7 @@ import { i18nContext } from '../utils/i18nContext';
 import { mnemonicToSeedHex } from '../utils/crypto';
 import { downloadPaperWalletCertificate } from '../utils/paperWalletPdfGenerator';
 import { buildRoute, matchRoute } from '../utils/routing';
+import { asyncForEach } from '../utils/asyncForEach';
 import { ROUTES } from '../routes-config';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
@@ -112,8 +113,8 @@ export default class WalletsStore extends Store {
   getWalletsLocalDataRequest: Request<WalletsLocalData> = new Request(
     this.api.localStorage.getWalletsLocalData
   );
-  @observable getWalletLocalDataRequest: Request<WalletLocalData> = new Request(
-    this.api.localStorage.getWalletLocalData
+  @observable setWalletLocalDataRequest: Request<any> = new Request(
+    this.api.localStorage.setWalletLocalData
   );
   @observable updateWalletLocalDataRequest: Request<any> = new Request(
     this.api.localStorage.updateWalletLocalData
@@ -156,7 +157,6 @@ export default class WalletsStore extends Store {
 
   setup() {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
-    this._getWalletsLocalData();
 
     this.registerReactions([this._updateActiveWalletOnRouteChanges]);
 
@@ -190,10 +190,9 @@ export default class WalletsStore extends Store {
     walletBackup.finishWalletBackup.listen(this._finishWalletBackup);
     app.initAppEnvironment.listen(() => {});
     networkStatus.restartNode.listen(this._updateGeneratingCertificateError);
-    walletsActions.getWalletsLocalData.listen(this._getWalletsLocalData);
-    walletsActions.getWalletLocalData.listen(this._getWalletLocalData);
-    walletsActions.updateWalletLocalData.listen(this._updateWalletLocalData);
-    walletsActions.unsetWalletLocalData.listen(this._unsetWalletLocalData);
+    // walletsActions.getWalletLocalData.listen(this._getWalletLocalData);
+    // walletsActions.updateWalletLocalData.listen(this._updateWalletLocalData);
+    // walletsActions.unsetWalletLocalData.listen(this._unsetWalletLocalData);
   }
 
   _create = async (params: { name: string, spendingPassword: ?string }) => {
@@ -247,6 +246,7 @@ export default class WalletsStore extends Store {
       this._newWalletDetails
     ).promise;
     if (wallet) {
+      await this._createWalletLocalData(wallet.id);
       await this.walletsRequest.patch(result => {
         result.push(wallet);
       });
@@ -297,6 +297,14 @@ export default class WalletsStore extends Store {
     this.restoreRequest.reset();
     this.goToWalletRoute(restoredWallet.id);
     this.refreshWalletsData();
+  };
+
+  _createWalletLocalData = async (id: string) => {
+    const walletLocalData = {
+      id,
+      creationDate: new Date(),
+    };
+    await this.setWalletLocalDataRequest(walletLocalData);
   };
 
   _sendMoney = async ({
@@ -382,13 +390,14 @@ export default class WalletsStore extends Store {
 
   getWalletRecoveryPhraseVerification = (
     walletId: string
-  ): WalletRecoveryPhraseVerificationData => {
+    // ): WalletRecoveryPhraseVerificationData => {
+  ) => {
     const {
       creationDate,
       recoveryPhraseVerificationDate,
       recoveryPhraseVerificationStatus,
       recoveryPhraseVerificationStatusType,
-    } = this.recoveryPhraseVerificationData[walletId];
+    } = this.recoveryPhraseVerificationData[walletId] || {};
 
     return {
       creationDate: creationDate || new Date(),
@@ -485,6 +494,7 @@ export default class WalletsStore extends Store {
     if (this.stores.networkStatus.isConnected) {
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
+      const walletIds = result.map((wallet: Wallet) => wallet.id);
       let restoredWalletId = null; // id of a wallet which has just been restored
       runInAction('refresh active wallet', () => {
         if (this.active) {
@@ -499,7 +509,6 @@ export default class WalletsStore extends Store {
         this._setIsRestoreActive(restoringWalletId);
       });
       runInAction('refresh address data', () => {
-        const walletIds = result.map((wallet: Wallet) => wallet.id);
         this.stores.addresses.addressesRequests = walletIds.map(walletId => ({
           walletId,
           allRequest: this.stores.addresses._getAddressesAllRequest(walletId),
@@ -507,7 +516,6 @@ export default class WalletsStore extends Store {
         this.stores.addresses._refreshAddresses();
       });
       runInAction('refresh transaction data', () => {
-        const walletIds = result.map((wallet: Wallet) => wallet.id);
         this.stores.transactions.transactionsRequests = walletIds.map(
           walletId => ({
             walletId,
@@ -521,6 +529,7 @@ export default class WalletsStore extends Store {
         );
         this.stores.transactions._refreshTransactionData(restoredWalletId);
       });
+      await this._getWalletsRecoveryPhraseVerificationData(walletIds);
     }
   };
 
@@ -780,7 +789,11 @@ export default class WalletsStore extends Store {
     }
   });
 
-  _getWalletStatus = ({
+  /**
+   * - Receives a walet local data
+   * - Returns the wallet's recovery phrase verification status
+   */
+  _getWalletRecoveryPhraseVerificationData = ({
     recoveryPhraseVerificationDate,
     creationDate,
   }: WalletLocalData) => {
@@ -798,16 +811,43 @@ export default class WalletsStore extends Store {
     return { creationDate, recoveryPhraseVerificationDate, status, type };
   };
 
-  _getRecoveryPhraseVerificationData = (
-    walletsLocalData: WalletsLocalData
+  /**
+   * - Receives a list of wallets Ids
+   * - Retrieves the wallets local data from localStorage
+   * - Populates `recoveryPhraseVerificationData` with
+   *   the wallets recovery phrase verification data
+   * - Updates localStorage in case of missing information
+   */
+  _getWalletsRecoveryPhraseVerificationData = async (
+    walletIds: Array<string>
   ): RecoveryPhraseVerificationData => {
+    const walletsLocalData = await this._getWalletsLocalData();
     const recoveryPhraseVerificationData = {};
-    Object.values(walletsLocalData).forEach((walletLocalData: Object = {}) => {
+    await asyncForEach(walletIds, async id => {
+      let walletLocalData = walletsLocalData[id];
+      // In case a wallet is not in the localStorage yet, it adds it
+      if (!walletLocalData) {
+        walletLocalData = {
+          id,
+          creationDate: new Date(),
+        };
+        await this.setWalletLocalDataRequest.execute(walletLocalData);
+      }
+      // In case a wallet doesn't have creationDate in the localStorage yet, it adds it
+      if (!walletLocalData.creationDate) {
+        walletLocalData.creationDate = new Date();
+        await this.updateWalletLocalDataRequest.execute({
+          id,
+          creationDate: walletLocalData.creationDate,
+        });
+      }
       recoveryPhraseVerificationData[
-        walletLocalData.id
-      ] = this._getWalletStatus(walletLocalData);
+        id
+      ] = this._getWalletRecoveryPhraseVerificationData(walletLocalData);
     });
-    return recoveryPhraseVerificationData;
+    runInAction('refresh recovery phrase verification data', async () => {
+      this.recoveryPhraseVerificationData = recoveryPhraseVerificationData;
+    });
   };
 
   @action _setCertificateTemplate = (params: { selectedTemplate: string }) => {
@@ -845,14 +885,7 @@ export default class WalletsStore extends Store {
 
   _getWalletsLocalData = async () => {
     const walletsLocalData: WalletsLocalData = await this.getWalletsLocalDataRequest.execute();
-    runInAction('recoveryPhraseVerificationData', () => {
-      this.recoveryPhraseVerificationData = this._getRecoveryPhraseVerificationData(
-        walletsLocalData
-      );
-    });
-  };
-  _getWalletLocalData = (walletId: string) => {
-    this.getWalletLocalDataRequest.execute(walletId);
+    return walletsLocalData;
   };
   _updateWalletLocalData = (updatedLocalWalletData: Object) => {
     this.updateWalletLocalDataRequest.execute(updatedLocalWalletData);
