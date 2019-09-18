@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import { get } from 'lodash';
 import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
 import NewsFeedIcon from '../components/widgets/NewsFeedIcon';
@@ -20,7 +21,7 @@ export default class TopBarContainer extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar, app, networkStatus, wallets } = stores;
+    const { sidebar, app, networkStatus, wallets, newsFeed } = stores;
     const { active, isWalletRoute, hasAnyWallets } = wallets;
     const {
       currentRoute,
@@ -41,6 +42,11 @@ export default class TopBarContainer extends Component<Props> {
       <WalletTestEnvironmentLabel network={network} />
     ) : null;
 
+    const { alerts, announcements, unread } = newsFeed;
+    const hasUnreadAlerts = get(alerts, 'unread', []).length > 0;
+    const hasUnreadAnnouncements = get(announcements, 'unread', []).length > 0;
+    const hasUnreadNews = (unread || []).length > 0;
+
     return (
       <TopBar
         leftIcon={leftIcon}
@@ -48,12 +54,11 @@ export default class TopBarContainer extends Component<Props> {
         activeWallet={activeWallet}
       >
         {testnetLabel}
-        <NodeSyncStatusIcon
-          networkStatus={networkStatus}
-          isMainnet={isMainnet}
-        />
+        <NodeSyncStatusIcon networkStatus={networkStatus} />
         <NewsFeedIcon
           onNewsFeedIconClick={actions.app.toggleNewsFeed.trigger}
+          isHighlighted={hasUnreadNews}
+          showDot={hasUnreadAlerts || hasUnreadAnnouncements}
         />
       </TopBar>
     );

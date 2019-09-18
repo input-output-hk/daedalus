@@ -7,7 +7,7 @@
   font-family: var(--font-medium);
   font-size: 14px;
   font-weight: 500;
-  height: 50px;
+  min-height: 50px;
   line-height: 1.36;
   width: 360px;
   &:hover {
@@ -24,7 +24,7 @@
   flex-direction: column;
   font-family: var(--font-regular);
   height: 100vh;
-  justify-content: flex-start;
+  justify-content: center;
   width: 100vw;
   z-index: 3;
 }
@@ -34,7 +34,7 @@
   font-size: 16px;
   line-height: 1.2;
   margin-bottom: 30px;
-  max-height: 200px;
+  max-height: 464px;
   max-width: 600px;
   padding: 12px 24px;
   overflow-y: scroll;
@@ -89,25 +89,6 @@
   line-height: 1.43;
   margin-bottom: 20px;
   opacity: 0.5;
-}
-
-.icon {
-  margin-bottom: 36px;
-  margin-top: 36px;
-  object-fit: contain;
-  & > svg {
-    height: 110px;
-    width: 110px;
-    path {
-      fill: #fafbfc;
-    }
-    path:nth-child(1) {
-      opacity: 0.2;
-    }
-    path:nth-child(2) {
-      opacity: 0.6;
-    }
-  }
 }
 
 .title {

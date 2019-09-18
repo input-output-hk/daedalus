@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import { get } from 'lodash';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import SyncingConnecting from '../../components/loading/syncing-connecting/SyncingConnecting';
 import { generateSupportRequestLink } from '../../../../common/utils/reporting';
@@ -37,6 +38,10 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
     } = stores.nodeUpdate;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = stores.profile;
     const { toggleNewsFeed } = this.props.actions.app;
+    const { alerts, announcements, unread } = stores.newsFeed;
+    const hasUnreadAlerts = get(alerts, 'unread', []).length > 0;
+    const hasUnreadAnnouncements = get(announcements, 'unread', []).length > 0;
+    const hasUnreadNews = (unread || []).length > 0;
 
     return (
       <SyncingConnecting
@@ -51,6 +56,9 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         isNotEnoughDiskSpace={isNotEnoughDiskSpace}
         isTlsCertInvalid={isTlsCertInvalid}
         syncPercentage={syncPercentage}
+        hasUnreadAlerts={hasUnreadAlerts}
+        hasUnreadAnnouncements={hasUnreadAnnouncements}
+        hasUnreadNews={hasUnreadNews}
         hasLoadedCurrentLocale={hasLoadedCurrentLocale}
         hasLoadedCurrentTheme={hasLoadedCurrentTheme}
         isCheckingSystemTime={forceCheckTimeDifferenceRequest.isExecuting}
