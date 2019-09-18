@@ -11,6 +11,7 @@ import { ROUTES } from '../../routes-config';
 import { WalletSyncStateTags } from '../../domains/Wallet';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import type { NavDropdownProps } from '../../components/navigation/Navigation';
+import { WalletRecoveryPhraseVerificationStatuses } from '../../stores/WalletsStore';
 
 type Props = InjectedContainerProps;
 
@@ -53,7 +54,9 @@ export default class Wallet extends Component<Props> {
     const { wallets, profile, app } = this.props.stores;
     const { currentLocale } = profile;
 
-    if (!wallets.active)
+    const { active: activeWallet } = wallets;
+
+    if (!activeWallet)
       return (
         <MainLayout>
           <LoadingSpinner />
@@ -61,23 +64,24 @@ export default class Wallet extends Component<Props> {
       );
 
     const isRestoreActive =
-      get(wallets.active, 'syncState.tag') === WalletSyncStateTags.RESTORING;
+      get(activeWallet, 'syncState.tag') === WalletSyncStateTags.RESTORING;
     const restoreProgress = get(
-      wallets.active,
+      activeWallet,
       'syncState.data.percentage.quantity',
       0
     );
     const restoreETA = get(
-      wallets.active,
+      activeWallet,
       'syncState.data.estimatedCompletionTime.quantity',
       0
     );
-    // TODO: Update info from the store #recovery
-    const hasNotification = false;
-    // const hasNotification =
-    //   !!wallets.active &&
-    //   wallets.active.recoveryPhraseVerificationStatus ===
-    //     WalletStatuses.NOTIFICATION;
+
+    const {
+      recoveryPhraseVerificationStatus,
+    } = wallets.getWalletRecoveryPhraseVerification(activeWallet.id);
+    const hasNotification =
+      recoveryPhraseVerificationStatus ===
+      WalletRecoveryPhraseVerificationStatuses.NOTIFICATION;
 
     return (
       <MainLayout>

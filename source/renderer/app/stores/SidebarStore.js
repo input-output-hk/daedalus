@@ -30,9 +30,7 @@ export default class SidebarStore extends Store {
     const { networkStatus, wallets } = this.stores;
     return wallets.all.map(w => {
       const {
-        recoveryPhraseVerificationDate,
         recoveryPhraseVerificationStatus,
-        recoveryPhraseVerificationStatusType,
       } = wallets.getWalletRecoveryPhraseVerification(w.id);
       return {
         id: w.id,
@@ -43,9 +41,7 @@ export default class SidebarStore extends Store {
           get(w, 'syncState.tag') === WalletSyncStateTags.RESTORING,
         restoreProgress: get(w, 'syncState.data.percentage.quantity', 0),
         isLegacy: w.isLegacy,
-        recoveryPhraseVerificationDate,
         recoveryPhraseVerificationStatus,
-        recoveryPhraseVerificationStatusType,
       };
     });
   }

@@ -304,7 +304,7 @@ export default class WalletsStore extends Store {
       id,
       creationDate: new Date(),
     };
-    await this.setWalletLocalDataRequest(walletLocalData);
+    await this.setWalletLocalDataRequest.execute(walletLocalData);
   };
 
   _sendMoney = async ({
