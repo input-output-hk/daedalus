@@ -42,7 +42,7 @@ export default class TopBarContainer extends Component<Props> {
       <WalletTestEnvironmentLabel network={network} />
     ) : null;
 
-    const { alerts, announcements, unread } = newsFeed;
+    const { alerts, announcements, unread } = newsFeed.newsFeedData;
     const hasUnreadAlerts = get(alerts, 'unread', []).length > 0;
     const hasUnreadAnnouncements = get(announcements, 'unread', []).length > 0;
     const hasUnreadNews = (unread || []).length > 0;

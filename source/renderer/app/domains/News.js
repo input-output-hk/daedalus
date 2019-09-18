@@ -55,17 +55,8 @@ class NewsCollection {
   @observable all: Array<News> = [];
 
   constructor(data: Array<News>) {
-    // Filter news by palatform and versions
-    // const filteredNews = filter(
-    //   data,
-    //   newsItem =>
-    //     newsItem.target.daedalus === version &&
-    //     newsItem.target.platform === platform &&
-    //     newsItem.target.platformVersion === platformVersion
-    // );
-
     runInAction(() => {
-      this.all.replace(orderBy(data, 'date', 'desc'));
+      this.all.replace(orderBy(data, 'date', 'asc'));
     });
   }
 

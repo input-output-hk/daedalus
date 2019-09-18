@@ -38,7 +38,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
     } = stores.nodeUpdate;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = stores.profile;
     const { toggleNewsFeed } = this.props.actions.app;
-    const { alerts, announcements, unread } = stores.newsFeed;
+    const { alerts, announcements, unread } = stores.newsFeed.newsFeedData;
     const hasUnreadAlerts = get(alerts, 'unread', []).length > 0;
     const hasUnreadAnnouncements = get(announcements, 'unread', []).length > 0;
     const hasUnreadNews = (unread || []).length > 0;
