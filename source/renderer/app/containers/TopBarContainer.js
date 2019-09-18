@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { get } from 'lodash';
 import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
 import NewsFeedIcon from '../components/widgets/NewsFeedIcon';
@@ -42,9 +41,8 @@ export default class TopBarContainer extends Component<Props> {
       <WalletTestEnvironmentLabel network={network} />
     ) : null;
 
-    const { announcements, unread } = newsFeed.newsFeedData;
-    const hasUnreadAnnouncements = get(announcements, 'unread', []).length > 0;
-    const hasUnreadNews = (unread || []).length > 0;
+    const { unread } = newsFeed.newsFeedData;
+    const hasUnreadNews = unread.length > 0;
 
     return (
       <TopBar
@@ -56,8 +54,7 @@ export default class TopBarContainer extends Component<Props> {
         <NodeSyncStatusIcon networkStatus={networkStatus} />
         <NewsFeedIcon
           onNewsFeedIconClick={actions.app.toggleNewsFeed.trigger}
-          isHighlighted={hasUnreadNews}
-          showDot={hasUnreadAnnouncements}
+          showDot={hasUnreadNews}
         />
       </TopBar>
     );

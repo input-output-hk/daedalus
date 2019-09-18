@@ -1,15 +1,15 @@
 .actionBtn {
   background-color: rgba(45, 45, 45, 0.1);
   border: 1px solid #2d2d2d;
-  box-sizing: border-box;
   border-radius: 5px;
+  box-sizing: border-box;
   color: #2d2d2d;
   font-family: var(--font-medium);
   font-size: 14px;
   font-weight: 500;
-  min-height: 50px;
   line-height: 1.36;
   margin-bottom: 22.5px;
+  min-height: 50px;
   width: 360px;
   &:hover {
     background-color: #2d2d2d;
@@ -74,9 +74,9 @@
   max-height: 464px;
   max-width: 600px;
   min-width: 600px;
-  padding: 12px 24px;
-  overflow-y: scroll;
   opacity: 0.8;
+  overflow-y: scroll;
+  padding: 12px 24px;
   ::-webkit-scrollbar-thumb {
     background-color: rgba(45, 45, 45, 0.3);
     outline: none;
@@ -128,12 +128,12 @@
 }
 
 .counter {
-  font-family: var(--font-regular);
   color: #2d2d2d;
+  font-family: var(--font-regular);
   font-size: 14px;
   font-weight: 500;
-  margin-top: 22.5px;
   margin-bottom: 30px;
+  margin-top: 22.5px;
 }
 
 .date {

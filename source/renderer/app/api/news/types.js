@@ -37,3 +37,5 @@ export type GetNewsResponse = {
 export type GetReadNewsResponse = {
   readNewsItems: NewsTimestamp[],
 };
+
+export type MarkNewsAsReadResponse = Array<number>;

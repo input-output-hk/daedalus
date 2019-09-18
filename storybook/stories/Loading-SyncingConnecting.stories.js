@@ -9,6 +9,10 @@ import { CardanoNodeStates } from '../../source/common/types/cardano-node.types'
 
 export const DefaultSyncingConnectingStory = () => (
   <SyncingConnecting
+    hasUnreadAlerts={false}
+    hasUnreadAnnouncements={false}
+    hasUnreadNews={false}
+    onToggleNewsFeedIconClick={action('onToggleNewsFeedIconClick')}
     cardanoNodeState={radios(
       'cardanoNodeState',
       CardanoNodeStates,
@@ -43,6 +47,10 @@ export const DefaultSyncingConnectingStory = () => (
 
 export const ConnectivityIssuesSyncingConnectingStory = () => (
   <SyncingConnecting
+    hasUnreadAlerts={false}
+    hasUnreadAnnouncements={false}
+    hasUnreadNews={false}
+    onToggleNewsFeedIconClick={action('onToggleNewsFeedIconClick')}
     forceConnectivityIssue
     isConnected={false}
     cardanoNodeState={CardanoNodeStates.RUNNING}
@@ -74,6 +82,10 @@ export const ConnectivityIssuesSyncingConnectingStory = () => (
 
 export const SyncIssuesSyncingConnectingStory = () => (
   <SyncingConnecting
+    hasUnreadAlerts={false}
+    hasUnreadAnnouncements={false}
+    hasUnreadNews={false}
+    onToggleNewsFeedIconClick={action('onToggleNewsFeedIconClick')}
     forceSyncIssue
     cardanoNodeState={CardanoNodeStates.RUNNING}
     hasBeenConnected

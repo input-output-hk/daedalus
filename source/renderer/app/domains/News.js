@@ -22,7 +22,7 @@ export const NewsTypes: {
   INFO: 'info',
 };
 
-export type MethodStateReturnType = {
+export type NewsTypesStateType = {
   all: Array<News>,
   unread: Array<News>,
   read: Array<News>,
@@ -72,12 +72,13 @@ class NewsCollection {
       );
     });
 
+    const orderedNews = orderBy(filteredNews, 'date', 'asc');
     runInAction(() => {
-      this.all.replace(orderBy(data, 'date', 'asc'));
+      this.all = orderedNews;
     });
   }
 
-  @computed get incident(): ?MethodStateReturnType {
+  @computed get incident(): ?News {
     const incidents = filter(
       this.all,
       item => item.type === NewsTypes.INCIDENT
@@ -91,7 +92,7 @@ class NewsCollection {
     return null;
   }
 
-  @computed get alerts(): MethodStateReturnType {
+  @computed get alerts(): NewsTypesStateType {
     const alerts = filter(this.all, item => item.type === NewsTypes.ALERT);
     // Order alerts from newest to oldest
     const orderedAlerts = orderBy(alerts, 'date', 'asc');
@@ -104,7 +105,7 @@ class NewsCollection {
     };
   }
 
-  @computed get announcements(): MethodStateReturnType {
+  @computed get announcements(): NewsTypesStateType {
     const announcements = filter(
       this.all,
       item => item.type === NewsTypes.ANNOUNCEMENT && !item.read
@@ -119,7 +120,7 @@ class NewsCollection {
     };
   }
 
-  @computed get infos(): MethodStateReturnType {
+  @computed get infos(): NewsTypesStateType {
     const infos = filter(
       this.all,
       item => item.type === NewsTypes.INFO && !item.read

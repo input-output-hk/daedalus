@@ -1,14 +1,14 @@
 .actionBtn {
   background-color: rgba(0, 0, 0, 0.1);
   border: 1px solid #fafbfc;
-  box-sizing: border-box;
   border-radius: 5px;
+  box-sizing: border-box;
   color: #fafbfc;
   font-family: var(--font-medium);
   font-size: 14px;
   font-weight: 500;
-  min-height: 50px;
   line-height: 1.36;
+  min-height: 50px;
   width: 360px;
   &:hover {
     background-color: #fafbfc;
@@ -39,9 +39,9 @@
   max-height: 464px;
   max-width: 600px;
   min-width: 600px;
-  padding: 12px 24px;
-  overflow-y: scroll;
   opacity: 0.8;
+  overflow-y: scroll;
+  padding: 12px 24px;
   ::-webkit-scrollbar-thumb {
     background-color: rgba(250, 251, 252, 0.3);
     outline: none;
@@ -74,11 +74,11 @@
 
   p,
   li {
+    color: rgba(250, 251, 252, 0.7);
     font-family: var(--font-regular);
     font-size: 14px;
     line-height: 1.38;
     margin-bottom: 11px;
-    color: rgba(250, 251, 252, 0.7);
 
     strong {
       font-weight: 500;
