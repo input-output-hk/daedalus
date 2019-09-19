@@ -31,10 +31,11 @@ const messages = defineMessages({
 type Props = {
   onClose: Function,
   onNewsItemActionClick: Function,
-  news: ?News.NewsCollection,
+  news?: News.NewsCollection,
   newsFeedShowClass: boolean,
   onMarkNewsAsRead: Function,
   openWithoutTransition?: boolean,
+  isLoadingNews: boolean,
 };
 
 @observer
@@ -57,6 +58,7 @@ export default class NewsFeed extends Component<Props> {
       newsFeedShowClass,
       onMarkNewsAsRead,
       openWithoutTransition,
+      isLoadingNews,
     } = this.props;
 
     const totalNewsItems = news && news.all ? news.all.length : 0;
@@ -80,7 +82,7 @@ export default class NewsFeed extends Component<Props> {
           </button>
         </div>
         <div className={styles.newsFeedList}>
-          {!news && (
+          {isLoadingNews && (
             <div className={styles.newsFeedNoFetchContainer}>
               <p className={styles.newsFeedNoFetch}>
                 {intl.formatMessage(messages.newsFeedNoFetch)}

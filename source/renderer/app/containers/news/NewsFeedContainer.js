@@ -17,13 +17,14 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
 
   render() {
     const { stores, actions } = this.props;
-    const { fetchingNewsFailed, newsFeedData } = stores.newsFeed;
+    const { newsFeedData, isLoadingNews } = stores.newsFeed;
     const { toggleNewsFeed } = actions.app;
     const newsFeedShowClass = stores.app.newsFeedIsOpen;
 
     return (
       <NewsFeed
-        news={fetchingNewsFailed ? null : newsFeedData}
+        news={newsFeedData}
+        isLoadingNews={isLoadingNews}
         onClose={toggleNewsFeed.trigger}
         onNewsItemActionClick={stores.app.openExternalLink}
         onMarkNewsAsRead={this.handleMarkNewsAsRead}

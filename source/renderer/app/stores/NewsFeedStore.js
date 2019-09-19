@@ -50,7 +50,6 @@ export default class NewsFeedStore extends Store {
 
   @action getNews = async () => {
     let rawNews;
-    let fetchingNewsFailed;
     try {
       rawNews = await this.getNewsRequest.execute().promise;
       // Reset "getNews" fast polling interval if set and set again regular polling interval
@@ -97,7 +96,7 @@ export default class NewsFeedStore extends Store {
     this.fetchingNewsFailed = fetchingNewsFailed;
   };
 
-  @computed get newsFeedData(): ?News.NewsCollection {
+  @computed get newsFeedData(): News.NewsCollection {
     const { currentLocale } = this.stores.profile;
     const readNews = this.getReadNewsRequest.result;
     let news = [];
@@ -116,5 +115,9 @@ export default class NewsFeedStore extends Store {
     }
 
     return new News.NewsCollection(news);
+  }
+
+  @computed get isLoadingNews() {
+    return this.fetchingNewsFailed || !this.rawNews;
   }
 }
