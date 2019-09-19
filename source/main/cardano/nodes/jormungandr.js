@@ -101,9 +101,12 @@ export async function createBlock0({
   const genesisFileWithLeaderKey = [pre, publicKey, post].join('');
   await fs.writeFile(genesisPath, genesisFileWithLeaderKey);
 
+  const pathEscaper = str => str.replace(/(\s+)/g, '\\$1');
   await new Promise((resolve, reject) => {
     exec(
-      `${cliPath} genesis encode --input ${genesisPath} --output ${block0Path}`,
+      `${cliPath} genesis encode --input ${pathEscaper(
+        genesisPath
+      )} --output ${pathEscaper(block0Path)}`,
       (err, stdout, stderr) => {
         if (err || stderr) {
           return err ? reject(err) : reject(stderr);
