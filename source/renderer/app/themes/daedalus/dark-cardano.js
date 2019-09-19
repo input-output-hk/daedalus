@@ -342,11 +342,11 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-network-window-button-background-color-active': '#afafb8cc',
   },
   newsFeed: {
-    '--theme-news-feed-background-color': '#233856',
+    '--theme-news-feed-background-color': '#2a2b3c',
     '--theme-news-feed-badge-background-color': '#ea4c5b',
     '--theme-news-feed-badge-text-color': '#ffffff',
     '--theme-news-feed-box-shadow-color': '-5px 0 20px 0 rgba(0, 0, 0, 0.25)',
-    '--theme-news-feed-header-background-color': '#1e304a',
+    '--theme-news-feed-header-background-color': '#20212e',
     '--theme-news-feed-header-title-color': '#fafbfc',
     '--theme-news-feed-icon-close-button-color': '#ffffff',
     '--theme-news-feed-icon-close-hover-background-color': 'rgba(0, 0, 0, 0.1)',
