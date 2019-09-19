@@ -12,6 +12,7 @@ import type {
   GetNewsResponse,
   GetReadNewsResponse,
   NewsItem,
+  NewsTimestamp,
   MarkNewsAsReadResponse,
 } from '../api/news/types';
 
@@ -32,6 +33,7 @@ export default class NewsFeedStore extends Store {
   markNewsAsReadRequest: Request<MarkNewsAsReadResponse> = new Request(
     this.api.localStorage.markNewsAsRead
   );
+  @observable openedAlert: ?NewsItem = null;
 
   pollingNewsIntervalId: ?IntervalID = null;
   pollingNewsOnErrorIntervalId: ?IntervalID = null;
@@ -92,6 +94,17 @@ export default class NewsFeedStore extends Store {
     await this.markNewsAsReadRequest.execute(newsTimestamps);
     // GET all read news to force @computed to trigger
     await this.getReadNewsRequest.execute();
+  };
+
+  @action openAlert = (newsTimestamp: NewsTimestamp) => {
+    if (this.getNewsRequest.wasExecuted && this.rawNews) {
+      const alertToOpen = this.rawNews.find(
+        newsItem => newsItem.date === newsTimestamp
+      );
+      if (alertToOpen) {
+        this.openedAlert = alertToOpen;
+      }
+    }
   };
 
   @computed get newsFeedData(): News.NewsCollection {

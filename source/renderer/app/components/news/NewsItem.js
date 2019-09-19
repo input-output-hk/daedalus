@@ -12,6 +12,7 @@ import styles from './NewsItem.scss';
 type Props = {
   newsItem: News.News,
   onNewsItemActionClick: Function,
+  onOpenAlert?: Function,
   onMarkNewsAsRead: Function,
 };
 
@@ -43,6 +44,8 @@ export default class NewsItem extends Component<Props, State> {
       this.setState(prevState => ({
         newsItemExpanded: !prevState.newsItemExpanded,
       }));
+    } else if (this.props.newsItem.type === 'alert' && this.props.onOpenAlert) {
+      this.props.onOpenAlert(this.props.newsItem.date);
     }
     this.props.onMarkNewsAsRead(this.props.newsItem.date);
   }
