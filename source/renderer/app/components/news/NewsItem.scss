@@ -122,7 +122,9 @@
     }
 
     &:hover {
-      background-color: var(--theme-news-item-action-button-background-color-hover);
+      background-color: var(
+        --theme-news-item-action-button-background-color-hover
+      );
       color: var(--theme-news-item-action-button-color-hover);
 
       svg {
