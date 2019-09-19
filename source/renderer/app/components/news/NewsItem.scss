@@ -3,7 +3,7 @@
   background-color: var(--theme-news-item-info-background-color);
   border-radius: 5px;
   cursor: pointer;
-  height: 107px;
+  height: 84px;
   margin-top: 10px;
   max-height: 107px;
   padding: 20px;
@@ -46,7 +46,9 @@
   .newsItemContentContainer {
     color: var(--theme-news-item-title-color);
     margin-top: 6px;
+    line-height: 1.36;
     opacity: 0.7;
+    word-wrap: break-word;
     visibility: hidden;
 
     h1,
@@ -99,7 +101,7 @@
     font-size: 14px;
     font-weight: 500;
     height: 33px;
-    margin: 20px 0;
+    margin: 20px 0 0 0;
     text-align: center;
     visibility: hidden;
     width: 280px;
@@ -118,8 +120,8 @@
   }
 
   &.expanded {
-    height: 156px;
-    max-height: 199px;
+    height: auto;
+    max-height: max-content;
 
     .newsItemContentContainer {
       visibility: visible;
