@@ -84,6 +84,7 @@
   .newsFeedList {
     background: var(--theme-news-feed-background-color);
     height: calc(100% - 84px);
+    overflow-x: hidden;
     overflow-y: overlay;
     padding: 20px;
 

@@ -4,6 +4,7 @@
   cursor: pointer;
   padding: 20px;
   position: relative;
+  word-break: break-word;
   width: 100%;
 
   & + .component {
@@ -53,17 +54,23 @@
     margin-top: 6px;
     line-height: 1.36;
     opacity: 0.7;
-    word-wrap: break-word;
 
     h1,
     h2 {
       font-family: var(--font-medium);
-      font-size: 19px;
-      margin-bottom: 11px;
+      margin-bottom: 3px;
+    }
+
+    h1 {
+      font-size: 16px;
     }
 
     h2 {
-      margin-top: 13px;
+      font-size: 15px;
+    }
+
+    * + h2 {
+      margin-top: 8px;
     }
 
     ol,
@@ -80,18 +87,20 @@
     li {
       font-family: var(--font-regular);
       font-size: 14px;
+      margin-bottom: 3px;
 
       strong {
         font-weight: 500;
       }
     }
 
-    li {
-      margin-bottom: 4px;
-    }
-
     a {
       color: var(--theme-news-item-content-link-color);
+      text-decoration: underline;
+    }
+
+    em {
+      font-style: italic;
     }
   }
 

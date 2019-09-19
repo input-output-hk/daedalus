@@ -79,6 +79,7 @@
   opacity: 0.8;
   overflow-y: scroll;
   padding: 12px 20px;
+  word-break: break-word;
   &::-webkit-scrollbar-thumb {
     background-color: rgba(45, 45, 45, 0.3);
     min-height: 60px;
