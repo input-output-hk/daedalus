@@ -6374,13 +6374,13 @@
         "description": "Label for the recoveryPhraseStep3Title on wallet settings.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 17
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog.js",
         "id": "wallet.settings.recoveryPhraseStep3Title",
         "start": {
           "column": 28,
-          "line": 12
+          "line": 13
         }
       },
       {
@@ -6388,13 +6388,13 @@
         "description": "Label for the recoveryPhraseStep3Paragraph1 on wallet settings.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog.js",
         "id": "wallet.settings.recoveryPhraseStep3Paragraph1",
         "start": {
           "column": 33,
-          "line": 17
+          "line": 18
         }
       },
       {
@@ -6402,13 +6402,13 @@
         "description": "Label for the recoveryPhraseStep3Paragraph2 on wallet settings.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog.js",
         "id": "wallet.settings.recoveryPhraseStep3Paragraph2",
         "start": {
           "column": 33,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -6416,13 +6416,13 @@
         "description": "Label for the recoveryPhraseStep3Button on wallet settings.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog.js",
         "id": "wallet.settings.recoveryPhraseStep3Button",
         "start": {
           "column": 29,
-          "line": 31
+          "line": 32
         }
       }
     ],
