@@ -1032,7 +1032,7 @@ export default class AdaApi {
   setApplicationVersion: Function;
   setFaultyNodeSettingsApi: boolean;
 
-  // News feed testing utility
+  // Newsfeed testing utility
   setFakeNewsFeedJsonForTesting: (json: Object) => void;
 }
 
