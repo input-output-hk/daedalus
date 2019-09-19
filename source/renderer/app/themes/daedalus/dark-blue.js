@@ -386,8 +386,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-news-item-content-link-color': '#2d2d2d',
     '--theme-news-item-info-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-news-item-title-color': '#fafbfc',
-    '--theme-news-item-action-button-background-color-hover': '#29b595',
-    '--theme-news-item-action-button-color-hover': '#ffffff',
+    '--theme-news-item-action-button-background-color-hover': '#fafbfc',
+    '--theme-news-item-action-button-color-hover': '#263345',
   },
   nodeUpdate: {
     '--theme-node-update-background-color': '#536370',
