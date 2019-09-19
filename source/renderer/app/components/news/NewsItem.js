@@ -12,6 +12,7 @@ import styles from './NewsItem.scss';
 type Props = {
   newsItem: News.News,
   onNewsItemActionClick: Function,
+  onOpenAlert?: Function,
   onMarkNewsAsRead: Function,
 };
 
@@ -49,8 +50,8 @@ export default class NewsItem extends Component<Props, State> {
         this.setState({ newsItemCollapsible: true });
       }
     }
-    if (type === 'alert') {
-      // @todo - use alert action to trigger an alert
+    if (type === 'alert' && this.props.onOpenAlert) {
+      this.props.onOpenAlert(date);
     }
     this.props.onMarkNewsAsRead(date);
   }

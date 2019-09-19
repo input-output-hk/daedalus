@@ -359,8 +359,10 @@ export const WHITE_THEME_OUTPUT = {
   newsItem: {
     '--theme-news-item-action-button-background-color':
       'rgba(41, 181, 149, 0.1)',
+    '--theme-news-item-action-button-background-color-hover': '#29b595',
     '--theme-news-item-action-button-border-color': '#29b595',
     '--theme-news-item-action-button-color': '#29b595',
+    '--theme-news-item-action-button-color-hover': '#ffffff',
     '--theme-news-item-alert-background-color': 'rgba(242, 162, 24, 0.5)',
     '--theme-news-item-announcement-background-color':
       'rgba(31, 193, 195, 0.2)',

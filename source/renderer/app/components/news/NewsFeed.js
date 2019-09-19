@@ -32,6 +32,7 @@ const messages = defineMessages({
 type Props = {
   onClose: Function,
   onNewsItemActionClick: Function,
+  onOpenAlert: Function,
   news?: News.NewsCollection,
   newsFeedShowClass: boolean,
   onMarkNewsAsRead: Function,
@@ -55,6 +56,7 @@ export default class NewsFeed extends Component<Props> {
     const {
       onClose,
       onNewsItemActionClick,
+      onOpenAlert,
       news,
       newsFeedShowClass,
       onMarkNewsAsRead,
@@ -103,15 +105,29 @@ export default class NewsFeed extends Component<Props> {
           )}
           {news && totalNewsItems > 0 && (
             <div className={styles.newsFeedItemsContainer}>
-              {news.all.map((newsItem, index) => (
-                <NewsItem
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={index}
-                  onNewsItemActionClick={onNewsItemActionClick}
-                  newsItem={newsItem}
-                  onMarkNewsAsRead={onMarkNewsAsRead}
-                />
-              ))}
+              {news.all.map((newsItem, index) => {
+                if (newsItem.type === 'alert') {
+                  return (
+                    <NewsItem
+                      // eslint-disable-next-line react/no-array-index-key
+                      key={index}
+                      onNewsItemActionClick={onNewsItemActionClick}
+                      onOpenAlert={onOpenAlert}
+                      newsItem={newsItem}
+                      onMarkNewsAsRead={onMarkNewsAsRead}
+                    />
+                  );
+                }
+                return (
+                  <NewsItem
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={index}
+                    onNewsItemActionClick={onNewsItemActionClick}
+                    newsItem={newsItem}
+                    onMarkNewsAsRead={onMarkNewsAsRead}
+                  />
+                );
+              })}
               <div />
             </div>
           )}
