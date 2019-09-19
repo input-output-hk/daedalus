@@ -44,7 +44,20 @@ When(/^I click the recovery phrase veryfication button$/, function() {
 });
 
 When(/^I click the checkbox and Continue button$/, function() {
-  this.recoveryPhrase = this.mnemonics[walletName];
   this.waitAndClick(DIALOG_CHECKBOX_SELECTOR);
   return this.waitAndClick(DIALOG_CONTINUE_BUTTON_SELECTOR);
+});
+
+When(/^I enter the recovery phrase mnemonics correctly$/, function() {
+  const recoveryPhrase = this.mnemonics[walletName];
+  actions.walletBackup.checkRecoveryPhrase.trigger({
+    recoveryPhrase,
+  });
+});
+
+When(/^I enter the recovery phrase mnemonics incorrectly$/, function() {
+  const recoveryPhrase = this.mnemonics[walletName];
+  actions.walletBackup.checkRecoveryPhrase.trigger({
+    recoveryPhrase,
+  });
 });
