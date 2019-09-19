@@ -1,5 +1,4 @@
-.component,
-.isRead {
+.component {
   background-color: var(--theme-news-item-info-background-color);
   border-radius: 5px;
   cursor: pointer;
@@ -12,12 +11,24 @@
     margin-top: 10px;
   }
 
+  &.isRead {
+    opacity: 0.5;
+  }
+
   &.alert {
     background-color: var(--theme-news-item-alert-background-color);
+
+    &.isRead {
+      opacity: 0.5;
+    }
   }
 
   &.announcement {
     background-color: var(--theme-news-item-announcement-background-color);
+
+    &.isRead {
+      opacity: 0.5;
+    }
   }
 
   .newsItemTitle {
@@ -140,6 +151,7 @@
   &.expanded {
     height: auto;
     max-height: max-content;
+    opacity: 1;
 
     .newsItemContentContainer {
       display: block;
@@ -147,6 +159,10 @@
 
     .newsItemActionBtn {
       display: block;
+    }
+
+    &.announcement {
+      opacity: 1;
     }
   }
 }
