@@ -62,7 +62,7 @@ export default class NewsFeedStore extends Store {
           NEWS_POLL_INTERVAL
         );
       }
-      fetchingNewsFailed = false;
+      this._setFetchingNewsFailed(false);
     } catch (error) {
       // Decrease "getNews" fetching timer in case we got an error and there are no initial news set in store
       if (!isTest && !this.rawNews && this.pollingNewsIntervalId) {
@@ -73,7 +73,7 @@ export default class NewsFeedStore extends Store {
           NEWS_POLL_INTERVAL_ON_ERROR
         );
       }
-      fetchingNewsFailed = true;
+      this._setFetchingNewsFailed(true);
     }
 
     await this.getReadNewsRequest.execute();
@@ -83,10 +83,6 @@ export default class NewsFeedStore extends Store {
         this.rawNews = get(rawNews, 'items', []);
         this.newsUpdatedAt = get(rawNews, 'updatedAt', null);
       });
-    } else {
-      runInAction('set news fetching failed', () => {
-        this.fetchingNewsFailed = fetchingNewsFailed;
-      });
     }
   };
 
@@ -95,6 +91,10 @@ export default class NewsFeedStore extends Store {
     await this.markNewsAsReadRequest.execute(newsTimestamps);
     // GET all read news to force @computed to trigger
     await this.getReadNewsRequest.execute();
+  };
+
+  @action _setFetchingNewsFailed = (fetchingNewsFailed: boolean) => {
+    this.fetchingNewsFailed = fetchingNewsFailed;
   };
 
   @computed get newsFeedData(): ?News.NewsCollection {

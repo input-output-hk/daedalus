@@ -73,7 +73,6 @@ Feature: Newsfeed
     And the info is marked as read
     And the newsfeed icon is not highlighted
 
-  @watch
   Scenario: News unavailable
     Given the newsfeed server is unreachable
     When I open the newsfeed
