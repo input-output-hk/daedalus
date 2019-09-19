@@ -38,29 +38,26 @@ export default class NewsItem extends Component<Props, State> {
   }
 
   newsItemClickHandler() {
-    setTimeout(() => {
-      const { type, date } = this.props.newsItem;
-      const { newsItemCollapsible } = this.state;
-      if (type === 'info' || type === 'announcement') {
-        if (newsItemCollapsible) {
-          this.setState(prevState => ({
-            newsItemExpanded: !prevState.newsItemExpanded,
-          }));
-        } else {
-          this.setState({ newsItemCollapsible: true });
-        }
+    const { type, date } = this.props.newsItem;
+    const { newsItemCollapsible } = this.state;
+    if (type === 'info' || type === 'announcement') {
+      if (newsItemCollapsible) {
+        this.setState(prevState => ({
+          newsItemExpanded: !prevState.newsItemExpanded,
+        }));
+      } else {
+        this.setState({ newsItemCollapsible: true });
       }
-      if (type === 'alert') {
-        // @todo - use alert action to trigger an alert
-      }
-      this.props.onMarkNewsAsRead(date);
-    }, 100);
+    }
+    if (type === 'alert') {
+      // @todo - use alert action to trigger an alert
+    }
+    this.props.onMarkNewsAsRead(date);
   }
 
   newsItemButtonClickHandler(event) {
     const { onNewsItemActionClick, newsItem } = this.props;
     const actionUrl = newsItem.action.url;
-    this.setState({ newsItemCollapsible: false });
     if (actionUrl) {
       onNewsItemActionClick(actionUrl, event);
     }
@@ -88,16 +85,23 @@ export default class NewsItem extends Component<Props, State> {
         <div className={styles.newsItemDate}>
           {moment(newsItem.date).format(this.localizedDateFormat)}
         </div>
-        <div className={styles.newsItemContentContainer}>
-          <ReactMarkdown escapeHtml={false} source={newsItem.content} />
-        </div>
-        <button
-          className={styles.newsItemActionBtn}
-          onClick={this.newsItemButtonClickHandler.bind(this)}
+        <div
+          className={styles.newsItemContent}
+          onClick={event => event.stopPropagation()}
+          role="presentation"
+          aria-hidden
         >
-          {newsItem.action.label}
-          <SVGInline svg={externalLinkIcon} />
-        </button>
+          <div className={styles.newsItemContentContainer}>
+            <ReactMarkdown escapeHtml={false} source={newsItem.content} />
+          </div>
+          <button
+            className={styles.newsItemActionBtn}
+            onClick={this.newsItemButtonClickHandler.bind(this)}
+          >
+            {newsItem.action.label}
+            <SVGInline svg={externalLinkIcon} />
+          </button>
+        </div>
       </div>
     );
   }

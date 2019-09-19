@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
+import { get } from 'lodash';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import styles from './NewsFeed.scss';
 import News from '../../domains/News';
@@ -61,7 +62,8 @@ export default class NewsFeed extends Component<Props> {
       isLoadingNews,
     } = this.props;
 
-    const totalNewsItems = news && news.all ? news.all.length : 0;
+    const totalNewsItems = get(news, 'all', 0).length;
+    const totalUnreadNewsItems = get(news, 'unread', 0).length;
     const componentClasses = classNames([
       styles.component,
       newsFeedShowClass ? styles.show : null,
@@ -73,8 +75,10 @@ export default class NewsFeed extends Component<Props> {
         <div className={styles.newsFeedHeader}>
           <h3 className={styles.newsFeedTitle}>
             {intl.formatMessage(messages.newsFeedTitle)}
-            {news && news.unread && news.unread.length > 0 && (
-              <span className={styles.newsFeedBadge}>{news.unread.length}</span>
+            {totalUnreadNewsItems > 0 && (
+              <span className={styles.newsFeedBadge}>
+                {totalUnreadNewsItems}
+              </span>
             )}
           </h3>
           <button onClick={onClose} className={styles.newsFeedCloseBtn}>
@@ -90,7 +94,7 @@ export default class NewsFeed extends Component<Props> {
               <LoadingSpinner medium />
             </div>
           )}
-          {news && totalNewsItems === 0 && (
+          {!isLoadingNews && totalNewsItems === 0 && (
             <div className={styles.newsFeedEmptyContainer}>
               <p className={styles.newsFeedEmpty}>
                 {intl.formatMessage(messages.newsFeedEmpty)}
