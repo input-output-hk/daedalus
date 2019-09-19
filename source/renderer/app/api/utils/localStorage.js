@@ -170,7 +170,10 @@ export default class LocalStorageApi {
         const readNews = store.get(this.storageKeys.READ_NEWS) || [];
 
         if (!includes(readNews, newsTimestamps[0])) {
-          store.set(this.storageKeys.READ_NEWS, readNews.concat(newsTimestamps));
+          store.set(
+            this.storageKeys.READ_NEWS,
+            readNews.concat(newsTimestamps)
+          );
         }
 
         resolve(readNews);

@@ -14,6 +14,7 @@ type Props = {
   onNewsItemActionClick: Function,
   onOpenAlert?: Function,
   onMarkNewsAsRead: Function,
+  expandWithoutTransition?: boolean,
 };
 
 type State = {
@@ -25,6 +26,7 @@ type State = {
 export default class NewsItem extends Component<Props, State> {
   static defaultProps = {
     onNewsItemActionClick: null,
+    expandWithoutTransition: false,
   };
 
   localizedDateFormat: 'MM/DD/YYYY';
@@ -65,12 +67,13 @@ export default class NewsItem extends Component<Props, State> {
   }
 
   render() {
-    const { newsItem } = this.props;
+    const { newsItem, expandWithoutTransition } = this.props;
     const componentClasses = classNames([
       styles.component,
       newsItem.type ? styles[newsItem.type] : null,
       this.state.newsItemExpanded ? styles.expanded : null,
       newsItem.read ? styles.isRead : null,
+      expandWithoutTransition ? styles.noTransition : null,
     ]);
 
     return (

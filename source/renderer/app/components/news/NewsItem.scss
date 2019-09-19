@@ -1,4 +1,6 @@
-.component {
+.component,
+.isRead,
+.info {
   background-color: var(--theme-news-item-info-background-color);
   border-radius: 5px;
   cursor: pointer;
@@ -6,6 +8,11 @@
   position: relative;
   word-break: break-word;
   width: 100%;
+  transition: max-height 400ms ease;
+
+  &.noTransition {
+    transition: none;
+  }
 
   & + .component {
     margin-top: 10px;
