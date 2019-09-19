@@ -31,7 +31,7 @@ const messages = defineMessages({
 type Props = {
   onClose: Function,
   onNewsItemActionClick: Function,
-  news?: News.NewsCollection,
+  news: ?News.NewsCollection,
   newsFeedShowClass: boolean,
   onMarkNewsAsRead: Function,
   openWithoutTransition?: boolean,

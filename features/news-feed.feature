@@ -1,4 +1,4 @@
-@e2e @watch
+@e2e
 Feature: Newsfeed
 
   Newsfeed delivers important information to Daedalus users, like information about network failures, bugs and other
@@ -65,18 +65,15 @@ Feature: Newsfeed
     Then the announcement content is shown
     And the announcement is marked as read
 
-  @wip
   Scenario: Reading an info
     Given there is 1 unread info
-    When I click on the newsfeed icon
-    Then the newsfeed is opened
-    And the newsfeed contains 1 unread info
-    When I click on the unread info to expand it
+    When I open the newsfeed
+    And I click on the unread info to expand it
     Then the info content is shown
     And the info is marked as read
     And the newsfeed icon is not highlighted
 
-  @wip
+  @watch
   Scenario: News unavailable
     Given the newsfeed server is unreachable
     When I open the newsfeed

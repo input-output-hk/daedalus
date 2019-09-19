@@ -53,8 +53,8 @@ export default class NewsFeedStore extends Store {
     let fetchingNewsFailed;
     try {
       rawNews = await this.getNewsRequest.execute().promise;
-      // Reset "getNews" fast polling interval if set and set again reular polling interval
-      if (this.pollingNewsOnErrorIntervalId) {
+      // Reset "getNews" fast polling interval if set and set again regular polling interval
+      if (!isTest && this.pollingNewsOnErrorIntervalId) {
         clearInterval(this.pollingNewsIntervalId);
         this.pollingNewsOnErrorIntervalId = null;
         this.pollingNewsIntervalId = setInterval(
@@ -65,7 +65,7 @@ export default class NewsFeedStore extends Store {
       fetchingNewsFailed = false;
     } catch (error) {
       // Decrease "getNews" fetching timer in case we got an error and there are no initial news set in store
-      if (!this.rawNews && this.pollingNewsIntervalId) {
+      if (!isTest && !this.rawNews && this.pollingNewsIntervalId) {
         clearInterval(this.pollingNewsIntervalId);
         this.pollingNewsIntervalId = null;
         this.pollingNewsOnErrorIntervalId = setInterval(
@@ -82,6 +82,9 @@ export default class NewsFeedStore extends Store {
       runInAction('set news data', () => {
         this.rawNews = get(rawNews, 'items', []);
         this.newsUpdatedAt = get(rawNews, 'updatedAt', null);
+      });
+    } else {
+      runInAction('set news fetching failed', () => {
         this.fetchingNewsFailed = fetchingNewsFailed;
       });
     }
@@ -94,7 +97,7 @@ export default class NewsFeedStore extends Store {
     await this.getReadNewsRequest.execute();
   };
 
-  @computed get newsFeedData(): News.NewsCollection {
+  @computed get newsFeedData(): ?News.NewsCollection {
     const { currentLocale } = this.stores.profile;
     const readNews = this.getReadNewsRequest.result;
     let news = [];
