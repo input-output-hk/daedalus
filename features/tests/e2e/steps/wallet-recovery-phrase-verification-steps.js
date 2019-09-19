@@ -11,6 +11,10 @@ const SETTINGS_PAGE_BUTTON_SELECTOR = `${SETTINGS_PAGE_STATUS_SELECTOR} .WalletR
 const DIALOG_SELECTOR = '.Dialog_dialogWrapper';
 const DIALOG_CHECKBOX_SELECTOR = `${DIALOG_SELECTOR} .SimpleCheckbox_check`;
 const DIALOG_CONTINUE_BUTTON_SELECTOR = `${DIALOG_SELECTOR} .SimpleButton_root`;
+const DIALOG_SUCCESSFUL_SELECTOR = '.verification-successful';
+const DIALOG_UNSUCCESSFUL_SELECTOR = '.verification-unsuccessful';
+const DIALOG_VERIFY_AGAIN_BUTTON_SELECTOR = `${DIALOG_SELECTOR} button.attention`;
+const DIALOG_CLOSE_BUTTON_SELECTOR = `${DIALOG_SELECTOR} .DialogCloseButton_component`;
 const walletName = 'Wallet';
 
 Given(
@@ -48,16 +52,43 @@ When(/^I click the checkbox and Continue button$/, function() {
   return this.waitAndClick(DIALOG_CONTINUE_BUTTON_SELECTOR);
 });
 
-When(/^I enter the recovery phrase mnemonics correctly$/, function() {
-  const recoveryPhrase = this.mnemonics[walletName];
-  actions.walletBackup.checkRecoveryPhrase.trigger({
-    recoveryPhrase,
-  });
+When(/^I enter the recovery phrase mnemonics correctly$/, async function() {
+  const recoveryPhrase = this.mnemonics[walletName].slice();
+  await this.client.executeAsync((recoveryPhrase, done) => {
+    const { checkRecoveryPhrase } = daedalus.actions.walletBackup;
+    checkRecoveryPhrase.once(done);
+    checkRecoveryPhrase.trigger({
+      recoveryPhrase,
+    });
+  }, recoveryPhrase);
 });
 
-When(/^I enter the recovery phrase mnemonics incorrectly$/, function() {
-  const recoveryPhrase = this.mnemonics[walletName];
-  actions.walletBackup.checkRecoveryPhrase.trigger({
-    recoveryPhrase,
-  });
+When(/^I enter the recovery phrase mnemonics incorrectly$/, async function() {
+  const incorrectRecoveryPhrase = [...this.mnemonics[walletName]];
+  incorrectRecoveryPhrase[0] = 'wrong';
+  await this.client.executeAsync((recoveryPhrase, done) => {
+    const { checkRecoveryPhrase } = daedalus.actions.walletBackup;
+    checkRecoveryPhrase.once(done);
+    checkRecoveryPhrase.trigger({
+      recoveryPhrase,
+    });
+  }, incorrectRecoveryPhrase);
+});
+
+When(/^I should see the confirmation dialog$/, async function() {
+  return this.client.waitForVisible(DIALOG_SUCCESSFUL_SELECTOR);
+});
+
+When(/^I should see the error dialog$/, async function() {
+  return this.client.waitForVisible(DIALOG_UNSUCCESSFUL_SELECTOR);
+});
+
+When(/^I should not see any dialog$/, async function() {
+  return this.client.waitForVisible(DIALOG_SELECTOR, null, true);
+});
+When(/^I click the Verify again button$/, async function() {
+  return this.waitAndClick(DIALOG_VERIFY_AGAIN_BUTTON_SELECTOR);
+});
+When(/^I click the close button$/, async function() {
+  return this.waitAndClick(DIALOG_CLOSE_BUTTON_SELECTOR);
 });

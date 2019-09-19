@@ -1,4 +1,4 @@
-@e2e @skip
+@e2e
 Feature: Wallet Settings - Recovery Phrase Verification
 
   Background:
@@ -15,8 +15,9 @@ Feature: Wallet Settings - Recovery Phrase Verification
     And I click the checkbox and Continue button
     And I enter the recovery phrase mnemonics correctly
     Then I should see the confirmation dialog
-    Then I click the checkbox and Continue button
+    When I click the checkbox and Continue button
     Then I should not see any dialog
+    And I should see a "Ok" recovery phrase veryfication feature
 
   Scenario: Recovery phrase incorrectly verified
     Given the last recovery phrase veryfication was done 400 days ago
@@ -26,7 +27,7 @@ Feature: Wallet Settings - Recovery Phrase Verification
     And I click the checkbox and Continue button
     And I enter the recovery phrase mnemonics incorrectly
     Then I should see the error dialog
-    Then I click the checkbox and Continue button
+    When I click the close button
     Then I should not see any dialog
 
 

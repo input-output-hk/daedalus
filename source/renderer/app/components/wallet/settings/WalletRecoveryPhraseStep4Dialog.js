@@ -72,7 +72,11 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props> {
       },
     ];
 
-    const dialogStyles = classnames([styles.dialog, styles.dialog4]);
+    const dialogStyles = classnames([
+      styles.dialog,
+      styles.dialog4,
+      'verification-unsuccessful',
+    ]);
 
     return (
       <Dialog
