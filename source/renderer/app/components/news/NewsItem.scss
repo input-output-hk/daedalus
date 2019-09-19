@@ -3,11 +3,14 @@
   border-radius: 5px;
   cursor: pointer;
   height: 107px;
-  margin-top: 10px;
   max-height: 107px;
   padding: 20px;
   transition: height 400ms ease;
   width: 100%;
+
+  & + .component {
+    margin-top: 10px;
+  }
 
   &.alert {
     background-color: var(--theme-news-item-alert-background-color);
