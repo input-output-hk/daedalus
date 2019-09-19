@@ -1,56 +1,79 @@
 import { expect } from 'chai';
 import { Given, When, Then } from 'cucumber';
+import moment from 'moment';
 
 import newsDummyJson from '../../../../source/renderer/app/config/news.dummy';
 import {
   expectTextInSelector,
   getVisibleElementsCountForSelector,
-  getVisibleElementsForSelector,
 } from '../helpers/shared-helpers';
-import moment from 'moment';
 
 async function prepareFakeNews(context, fakeNews, preparation, ...args) {
   // Run custom preparation logic
   await context.client.executeAsync(preparation, fakeNews, ...args);
-  // Extract the computed news feed data from the store
+  // Extract the computed newsfeed data from the store
   const newsData = await context.client.executeAsync(done => {
     const newsFeed = daedalus.stores.newsFeed;
-    // Refresh the news feed request & store
-    newsFeed.getNews().then(() => done(newsFeed.newsFeedData));
+    // Refresh the newsfeed request & store
+    newsFeed.getNews().then(() => {
+      const d = newsFeed.newsFeedData;
+      done({
+        all: d.all,
+        read: d.read,
+        unread: d.unread,
+        alerts: d.alerts,
+        infos: d.infos,
+        announcements: d.announcements,
+        incident: d.incident,
+      });
+    });
   });
   if (newsData.value) {
-    // Provide the news feed data from the store to the other steps
+    // Provide the newsfeed data from the store to the other steps
     context.news = newsData.value;
   }
 }
 
-function getLatestAlert(news) {
-  // Reduce to latest alert by comparing timestamps
-  const alerts = news.filter(i => i.type === 'alert');
-  return alerts.reduce((a, b) => (a.date > b.date ? a : b));
+async function prepareNewsOfType(
+  context,
+  type,
+  count = null,
+  markAsRead = false
+) {
+  const items = newsDummyJson.items
+    .filter(i => i.type === type)
+    .slice(0, count);
+  const newsFeed = {
+    updatedAt: Date.now(),
+    items,
+  };
+  await prepareFakeNews(
+    context,
+    newsFeed,
+    (news, isRead, done) => {
+      const api = daedalus.api;
+      api.ada.setFakeNewsFeedJsonForTesting(news);
+      if (isRead) {
+        api.localStorage.markNewsAsRead(news.items.map(i => i.date)).then(done);
+      } else {
+        done();
+      }
+    },
+    markAsRead
+  );
 }
 
-Given('there are unread news', async function() {
-  await prepareFakeNews(this, newsDummyJson, (news, done) => {
-    daedalus.api.ada.setFakeNewsFeedJsonForTesting({
-      updatedAt: Date.now(),
-      items: news.items.filter(i => i.type === 'info'),
-    });
-    done();
-  });
-});
-
-Given('there are no unread news', async function() {
-  await prepareFakeNews(this, newsDummyJson, (news, done) => {
-    const api = daedalus.api;
-    // Set dummy news feed data
-    api.ada.setFakeNewsFeedJsonForTesting({
-      updatedAt: Date.now(),
-      items: news.items.filter(i => i.type === 'info'),
-    });
-    // Mark all news as read
-    api.localStorage.markNewsAsRead(news.items.map(i => i.date)).then(done);
-  });
+Given(/^there (?:are|is)\s?(\d+)? (read|unread) (\w+?)s?$/, async function(
+  count,
+  read,
+  newsType
+) {
+  await prepareNewsOfType(
+    this,
+    newsType,
+    parseInt(count || 2),
+    read === 'read'
+  );
 });
 
 Given('there is no news', async function() {
@@ -60,20 +83,6 @@ Given('there is no news', async function() {
       items: [],
     });
     done();
-  });
-});
-
-Given('there are 5 read news', async function() {
-  await prepareFakeNews(this, newsDummyJson, (news, done) => {
-    const api = daedalus.api;
-    const items = news.items.filter(i => i.type !== 'incident').slice(0, 5);
-    // Set dummy news feed data
-    api.ada.setFakeNewsFeedJsonForTesting({
-      updatedAt: Date.now(),
-      items,
-    });
-    // Mark all news as read
-    api.localStorage.markNewsAsRead(items.map(i => i.date)).then(done);
   });
 });
 
@@ -88,39 +97,7 @@ Given('there is an incident', async function() {
   });
 });
 
-Given('there is unread {word}s', async function(newsType) {
-  await prepareFakeNews(
-    this,
-    newsDummyJson,
-    (news, type, done) => {
-      const items = news.items.filter(i => i.type === type);
-      daedalus.api.ada.setFakeNewsFeedJsonForTesting({
-        updatedAt: Date.now(),
-        items,
-      });
-      done();
-    },
-    newsType
-  );
-});
-
-Given('there is 1 unread {word}', async function(newsType) {
-  await prepareFakeNews(
-    this,
-    newsDummyJson,
-    (news, type, done) => {
-      const newsItem = news.items.find(i => i.type === type);
-      daedalus.api.ada.setFakeNewsFeedJsonForTesting({
-        updatedAt: Date.now(),
-        items: [newsItem],
-      });
-      done();
-    },
-    newsType
-  );
-});
-
-Given('the news feed server is unreachable', async function() {
+Given('the newsfeed server is unreachable', async function() {
   this.news = [];
 });
 
@@ -132,40 +109,40 @@ Given('the latest alert will cover the screen', async function() {
   });
 });
 
-When('I click on the news feed icon', async function() {
+When('I click on the newsfeed icon', async function() {
   await this.waitAndClick('.NewsFeedIcon_component');
 });
 
-When('I open the news feed', async function() {
+When('I open the newsfeed', async function() {
   await this.waitAndClick('.NewsFeedIcon_component');
 });
 
 When('I dismiss the alert', async function() {
-  this.dismissedAlert = getLatestAlert(this.news);
-  await this.waitAndClick('.AlertsOverlay_component .closeButton');
+  this.dismissedAlert = this.news.alerts.unread[0];
+  await this.waitAndClick('.AlertsOverlay_closeButton');
 });
 
-Then('i should see the news feed icon', async function() {
+When(/^I click on the unread (\w+?) to expand it$/, async function(type) {
+  await this.waitAndClick(`.NewsItem_component.${type}`);
+});
+
+Then('i should see the newsfeed icon', async function() {
   await this.client.waitForVisible('.NewsFeedIcon_component');
 });
 
-Then('the news feed icon is highlighted', async function() {
-  await this.client.waitForVisible('.NewsFeedIcon_highlighted');
-});
-
-Then('the news feed icon shows a dot', async function() {
+Then('the newsfeed icon is highlighted', async function() {
   await this.client.waitForVisible('.NewsFeedIcon_withDot');
 });
 
-Then('the news feed icon is not highlighted', async function() {
-  await this.client.waitForVisible('.NewsFeedIcon_highlighted', null, true);
+Then('the newsfeed icon is not highlighted', async function() {
+  await this.client.waitForVisible('.NewsFeedIcon_withDot', null, true);
 });
 
-Then('the news feed is open', async function() {
+Then('the newsfeed is open', async function() {
   await this.client.waitForVisible('.NewsFeed_component');
 });
 
-Then('the news feed is empty', async function() {
+Then('the newsfeed is empty', async function() {
   await this.client.waitForVisible('.NewsFeed_newsFeedEmpty');
 });
 
@@ -177,21 +154,27 @@ Then('the incident will cover the screen', async function() {
   await this.client.waitForVisible('.IncidentOverlay_component');
 });
 
-Then('the alert I have dismissed becomes read', async function() {
+Then('the alert disappears', async function() {
   await this.client.waitForVisible('.AlertsOverlay_component', null, true);
-  await expectTextInSelector(this.client, {
-    // We check if the alert appears as "read" by selecting by class
-    selector: '.alert.NewsItem_component_is-read .NewsItem_newsItemDate',
-    text: moment(this.dismissedAlert.date).format('YYYY-MM-DD'),
-  });
 });
 
-Then('the news feed contains {int} read news', async function(
-  expectedReadNewsCount
+Then(/^the newsfeed contains (\d+) read (\w+?)s$/, async function(
+  expectedReadNewsCount,
+  newsType
 ) {
   const readNewsCount = await getVisibleElementsCountForSelector(
     this.client,
-    '.NewsItem_component_is-read'
+    `.NewsItem_isRead.${newsType}`
   );
   expect(readNewsCount).to.equal(expectedReadNewsCount);
+});
+
+Then(/^the (\w+?) content is shown$/, async function(type) {
+  await this.client.waitForVisible(
+    `.NewsItem_component.${type} .NewsItem_newsItemContentContainer`
+  );
+});
+
+Then(/^the (\w+?) is marked as read$/, async function(type) {
+  await this.client.waitForVisible(`.NewsItem_isRead.${type}`);
 });

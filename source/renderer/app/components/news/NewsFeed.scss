@@ -9,9 +9,13 @@
   position: fixed;
   right: 0;
   top: 0;
-  transition: margin-right 400ms ease;
   width: 360px;
   z-index: 20;
+  transition: margin-right 400ms ease;
+
+  &.noTransition {
+    transition: none;
+  }
 
   .newsFeedHeader {
     align-items: center;
@@ -41,10 +45,10 @@
       height: 16px;
       left: 8px;
       margin: 3px 8px;
+      min-width: 16px;
       padding: 0 5px;
       position: relative;
       top: -2.5px;
-      min-width: 16px;
     }
 
     .newsFeedCloseBtn {

@@ -131,7 +131,7 @@ storiesOf('NewsFeed', module)
     </div>
   ))
 
-  .add('NewsFeed - news feed empty', () => (
+  .add('NewsFeed - newsfeed empty', () => (
     <div>
       <NewsFeed
         onMarkNewsAsRead={action('onMarkNewsAsRead')}

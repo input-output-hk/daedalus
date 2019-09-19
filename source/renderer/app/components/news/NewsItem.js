@@ -72,6 +72,7 @@ export default class NewsItem extends Component<Props, State> {
       styles.component,
       newsItem.type,
       this.state.newsItemExpanded ? styles.expanded : null,
+      newsItem.read ? styles.isRead : null,
     ]);
 
     return (

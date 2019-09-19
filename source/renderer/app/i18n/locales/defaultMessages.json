@@ -1125,45 +1125,45 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "News feed is empty",
-        "description": "News feed is empty",
+        "defaultMessage": "Newsfeed is empty",
+        "description": "Newsfeed is empty",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/news/NewsFeed.js",
         "id": "news.newsfeed.empty",
         "start": {
           "column": 17,
-          "line": 13
+          "line": 14
         }
       },
       {
-        "defaultMessage": "Trying to fetch the news feed...",
-        "description": "Trying to fetch the news feed...",
+        "defaultMessage": "Trying to fetch the newsfeed...",
+        "description": "Trying to fetch the newsfeed...",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/news/NewsFeed.js",
         "id": "news.newsfeed.noFetch",
         "start": {
           "column": 19,
-          "line": 18
+          "line": 19
         }
       },
       {
-        "defaultMessage": "News feed",
-        "description": "News feed",
+        "defaultMessage": "Newsfeed",
+        "description": "Newsfeed",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/components/news/NewsFeed.js",
         "id": "news.newsfeed.title",
         "start": {
           "column": 17,
-          "line": 23
+          "line": 24
         }
       }
     ],

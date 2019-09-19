@@ -1,4 +1,5 @@
-.component {
+.component,
+.isRead {
   background-color: var(--theme-news-item-info-background-color);
   border-radius: 5px;
   cursor: pointer;

@@ -13,33 +13,35 @@ import LoadingSpinner from '../widgets/LoadingSpinner';
 const messages = defineMessages({
   newsFeedEmpty: {
     id: 'news.newsfeed.empty',
-    defaultMessage: 'News feed is empty',
-    description: 'News feed is empty',
+    defaultMessage: 'Newsfeed is empty',
+    description: 'Newsfeed is empty',
   },
   newsFeedNoFetch: {
     id: 'news.newsfeed.noFetch',
-    defaultMessage: 'Trying to fetch the news feed...',
-    description: 'Trying to fetch the news feed...',
+    defaultMessage: 'Trying to fetch the newsfeed...',
+    description: 'Trying to fetch the newsfeed...',
   },
   newsFeedTitle: {
     id: 'news.newsfeed.title',
-    defaultMessage: 'News feed',
-    description: 'News feed',
+    defaultMessage: 'Newsfeed',
+    description: 'Newsfeed',
   },
 });
 
 type Props = {
   onClose: Function,
   onNewsItemActionClick: Function,
-  news?: News.NewsCollection,
+  news: ?News.NewsCollection,
   newsFeedShowClass: boolean,
   onMarkNewsAsRead: Function,
+  openWithoutTransition?: boolean,
 };
 
 @observer
 export default class NewsFeed extends Component<Props> {
   static defaultProps = {
     onClose: null,
+    openWithoutTransition: false,
   };
 
   static contextTypes = {
@@ -54,12 +56,14 @@ export default class NewsFeed extends Component<Props> {
       news,
       newsFeedShowClass,
       onMarkNewsAsRead,
+      openWithoutTransition,
     } = this.props;
 
     const totalNewsItems = news && news.all ? news.all.length : 0;
     const componentClasses = classNames([
       styles.component,
       newsFeedShowClass ? styles.show : null,
+      openWithoutTransition ? styles.noTransition : null,
     ]);
 
     return (
