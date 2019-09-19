@@ -69,13 +69,18 @@ const startApp = async () => {
 // and helpful than "this step timed out after 5 seconds" messages
 setDefaultTimeout(DEFAULT_TIMEOUT + 1000);
 
+function getTagNames(testCase) {
+  return testCase.pickle.tags.map(t => t.name);
+}
+
 // Boot up the electron app before all features
 BeforeAll({ timeout: 5 * 60 * 1000 }, async () => {
   context.app = await startApp();
 });
 
 // Make the electron app accessible in each scenario context
-Before({ timeout: DEFAULT_TIMEOUT * 2 }, async function() {
+Before({ timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) {
+  const tags = getTagNames(testCase);
   this.app = context.app;
   this.client = context.app.client;
   this.browserWindow = context.app.browserWindow;
@@ -108,7 +113,9 @@ Before({ timeout: DEFAULT_TIMEOUT * 2 }, async function() {
   });
 
   // Load fresh root url with test environment for each test case
-  await refreshClient(this.client);
+  if (!tags.includes('@noReload')) {
+    await refreshClient(this.client);
+  }
 
   // Ensure that frontend is synced and ready before test case
   await this.client.executeAsync(done => {
@@ -135,9 +142,9 @@ After({ tags: '@restartApp' }, async function() {
 // eslint-disable-next-line prefer-arrow-callback
 After({ tags: '@reconnectApp' }, async function() {
   await this.client.executeAsync(done => {
-    daedalus.api.ada
-      .setSubscriptionStatus(null)
-      .then(() => daedalus.stores.networkStatus._updateNetworkStatus())
+    daedalus.api.ada.resetTestOverrides();
+    daedalus.stores.networkStatus
+      ._updateNetworkStatus()
       .then(done)
       .catch(error => done(error));
   });
@@ -146,12 +153,12 @@ After({ tags: '@reconnectApp' }, async function() {
 // eslint-disable-next-line prefer-arrow-callback
 After(async function({ sourceLocation, result }) {
   scenariosCount++;
-  if (result.status === 'failed') {
-    const testName = getTestNameFromTestFile(sourceLocation.uri);
-    const file = generateScreenshotFilePath(testName);
-    await saveScreenshot(context.app, file);
-    await printMainProcessLogs();
-  }
+  // if (result.status === 'failed') {
+  //   const testName = getTestNameFromTestFile(sourceLocation.uri);
+  //   const file = generateScreenshotFilePath(testName);
+  //   await saveScreenshot(context.app, file);
+  //   await printMainProcessLogs();
+  // }
 });
 
 // eslint-disable-next-line prefer-arrow-callback
@@ -162,10 +169,6 @@ AfterAll(async function() {
     await printMainProcessLogs();
   }
   if (process.env.KEEP_APP_AFTER_TESTS === 'true') {
-    // eslint-disable-next-line no-console
-    console.log(
-      'Keeping the app running since KEEP_APP_AFTER_TESTS env var is true'
-    );
     return;
   }
   return context.app.stop();

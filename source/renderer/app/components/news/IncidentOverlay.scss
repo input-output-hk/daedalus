@@ -44,6 +44,7 @@
   opacity: 0.8;
   overflow-y: scroll;
   padding: 12px 20px;
+  word-break: break-word;
   &::-webkit-scrollbar-thumb {
     background-color: rgba(250, 251, 252, 0.3);
     outline: none;

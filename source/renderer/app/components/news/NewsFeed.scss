@@ -83,9 +83,14 @@
 
   .newsFeedList {
     background: var(--theme-news-feed-background-color);
-    height: 100%;
+    height: calc(100% - 84px);
+    overflow-x: hidden;
     overflow-y: overlay;
     padding: 20px;
+
+    &::-webkit-scrollbar-track {
+      margin: 13px 0;
+    }
 
     .newsFeedEmptyContainer,
     .newsFeedNoFetchContainer {
@@ -111,14 +116,6 @@
     .newsFeedItemsContainer {
       font-family: var(--font-regular);
       overflow: hidden;
-
-      .newsFeedItems {
-        align-items: center;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        width: 100%;
-      }
     }
   }
 
