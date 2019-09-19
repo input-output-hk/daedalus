@@ -19,7 +19,7 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
     const { stores, actions } = this.props;
     const { newsFeedData, isLoadingNews } = stores.newsFeed;
     const { toggleNewsFeed } = actions.app;
-    const newsFeedShowClass = stores.app.newsFeedIsOpen;
+    const { openExternalLink, newsFeedIsOpen } = stores.app;
 
     return (
       <NewsFeed
@@ -29,8 +29,9 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
         onNewsItemActionClick={stores.app.openExternalLink}
         onOpenAlert={stores.newsFeed.openAlert}
         onMarkNewsAsRead={this.handleMarkNewsAsRead}
-        newsFeedShowClass={newsFeedShowClass}
+        newsFeedShowClass={newsFeedIsOpen}
         openWithoutTransition={stores.networkStatus.environment.isTest}
+        onOpenExternalLink={openExternalLink}
       />
     );
   }

@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
+import { get } from 'lodash';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import styles from './NewsFeed.scss';
 import News from '../../domains/News';
@@ -37,6 +38,7 @@ type Props = {
   onMarkNewsAsRead: Function,
   openWithoutTransition?: boolean,
   isLoadingNews: boolean,
+  onOpenExternalLink: Function;
 };
 
 @observer
@@ -48,6 +50,23 @@ export default class NewsFeed extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  constructor(props: Props) {
+    super(props);
+    window.addEventListener('click', this.onOpenExternalLink);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('click', this.onOpenExternalLink);
+  }
+
+  onOpenExternalLink = (event: SyntheticMouseEvent<HTMLElement>) => {
+    const linkUrl = get(event, ['target', 'href']);
+    if (linkUrl) {
+      event.preventDefault();
+      this.props.onOpenExternalLink(linkUrl)
+    }
   };
 
   render() {
