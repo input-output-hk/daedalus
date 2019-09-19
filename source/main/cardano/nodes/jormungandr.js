@@ -3,12 +3,8 @@ import * as fs from 'fs-extra';
 import { exec } from 'child_process';
 import type { WalletOpts } from '../CardanoWalletLauncher';
 
-export function buildJormungandrNodeOpts({
-  nodePort,
-  stateDir,
-  networkMode,
-}: WalletOpts) {
-  const network = networkMode === 'local' ? 'testnet' : networkMode;
+export function buildJormungandrNodeOpts({ nodePort, stateDir }: WalletOpts) {
+  // const network = networkMode === 'local' ? 'testnet' : networkMode;
 
   return [
     'launch',
@@ -23,19 +19,34 @@ export function buildJormungandrNodeOpts({
     '--port',
     '8088',
     '--genesis-block',
-    `utils/jormungandr/${network}/block0.bin`,
+    `${stateDir}/block0.bin`,
     '--bft-leaders',
     `${stateDir}/secret.yaml`,
   ];
 }
 
-export async function createClientSecret(cliPath: string, secretPath: string) {
+export async function configureJormungandrDeps(
+  cliPath: string,
+  stateDir: string
+) {
+  const secretPath = `${stateDir}/secret.yaml`;
+  const genesisPath = `${stateDir}/genesis.yaml`;
+  const block0Path = `${stateDir}/block0.bin`;
+
   const secretFileExists = await fs.pathExists(secretPath);
   if (secretFileExists) {
     return;
   }
 
-  const secret = await new Promise((resolve, reject) => {
+  const secret = await createAndWriteClientSecret(cliPath, secretPath);
+  await createBlock0({ cliPath, genesisPath, block0Path, secret });
+}
+
+export async function createAndWriteClientSecret(
+  cliPath: string,
+  secretPath: string
+): Promise<string> {
+  const secret: string = await new Promise((resolve, reject) => {
     exec(`${cliPath} key generate --type=Ed25519`, (err, stdout, stderr) => {
       if (err || stderr) {
         return err ? reject(err) : reject(stderr);
@@ -45,10 +56,61 @@ export async function createClientSecret(cliPath: string, secretPath: string) {
     });
   });
 
-  const secretFileContents = `
-bft:
+  const secretFileContents = `bft:
   signing_key: ${secret}
-  `;
+`;
 
   await fs.writeFile(secretPath, secretFileContents);
+  return secret;
+}
+
+export async function createBlock0({
+  cliPath,
+  genesisPath,
+  block0Path,
+  secret,
+}: {
+  cliPath: string,
+  genesisPath: string,
+  block0Path: string,
+  secret: string,
+}) {
+  // Only testnet genesis is support at the moment
+  const genesisDefaultPath = `utils/jormungandr/testnet/genesis.yaml`;
+  const networkGenesisFileExists = await fs.pathExists(genesisDefaultPath);
+  if (!networkGenesisFileExists) {
+    throw new Error(`No genesis file exists for testnet`);
+  }
+
+  const publicKey = await new Promise((resolve, reject) => {
+    exec(
+      `echo "${secret}" | ${cliPath} key to-public`,
+      (err, stdout, stderr) => {
+        if (err || stderr) {
+          return err ? reject(err) : reject(stderr);
+        }
+
+        return resolve(stdout.split('\n')[0]);
+      }
+    );
+  });
+
+  const genesisFile = (await fs.readFile(genesisDefaultPath)).toString('utf8');
+  const KEY_PLACEHOLDER = '!!CONSENSUS_ID_OVERRIDE!!';
+  const [pre, post] = genesisFile.split(KEY_PLACEHOLDER);
+  const genesisFileWithLeaderKey = [pre, publicKey, post].join('');
+  await fs.writeFile(genesisPath, genesisFileWithLeaderKey);
+
+  await new Promise((resolve, reject) => {
+    exec(
+      `${cliPath} genesis encode --input ${genesisPath} --output ${block0Path}`,
+      (err, stdout, stderr) => {
+        if (err || stderr) {
+          return err ? reject(err) : reject(stderr);
+        }
+
+        return resolve(stdout);
+      }
+    );
+  });
 }

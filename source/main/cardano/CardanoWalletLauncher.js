@@ -2,7 +2,7 @@
 import { spawn } from 'child_process';
 import type { ChildProcess } from 'child_process';
 import {
-  createClientSecret,
+  configureJormungandrDeps,
   buildHttpBridgeNodeOpts,
   buildJormungandrNodeOpts,
 } from './nodes';
@@ -30,7 +30,7 @@ export async function CardanoWalletLauncher(
     case 'cardano-node':
       break;
     case 'jormungandr':
-      await createClientSecret(cliPath, `${stateDir}/secret.yaml`);
+      await configureJormungandrDeps(cliPath, stateDir);
       nodeOpts = buildJormungandrNodeOpts(walletOpts);
       break;
     default:
