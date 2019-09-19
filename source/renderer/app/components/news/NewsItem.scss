@@ -1,12 +1,17 @@
 .component,
-.isRead {
+.isRead,
+.info {
   background-color: var(--theme-news-item-info-background-color);
   border-radius: 5px;
   cursor: pointer;
   max-height: 100%;
   padding: 20px;
-  transition: max-height 400ms ease;
   width: 100%;
+  transition: max-height 400ms ease;
+
+  &.noTransition {
+    transition: none;
+  }
 
   & + .component {
     margin-top: 10px;

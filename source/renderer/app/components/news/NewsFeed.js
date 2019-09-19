@@ -82,21 +82,6 @@ export default class NewsFeed extends Component<Props> {
           </button>
         </div>
         <div className={styles.newsFeedList}>
-          {isLoadingNews && (
-            <div className={styles.newsFeedNoFetchContainer}>
-              <p className={styles.newsFeedNoFetch}>
-                {intl.formatMessage(messages.newsFeedNoFetch)}
-              </p>
-              <LoadingSpinner medium />
-            </div>
-          )}
-          {news && totalNewsItems === 0 && (
-            <div className={styles.newsFeedEmptyContainer}>
-              <p className={styles.newsFeedEmpty}>
-                {intl.formatMessage(messages.newsFeedEmpty)}
-              </p>
-            </div>
-          )}
           {news && totalNewsItems > 0 && (
             <div className={styles.newsFeedItemsContainer}>
               {news.all.map((newsItem, index) => (
@@ -106,9 +91,25 @@ export default class NewsFeed extends Component<Props> {
                   onNewsItemActionClick={onNewsItemActionClick}
                   newsItem={newsItem}
                   onMarkNewsAsRead={onMarkNewsAsRead}
+                  expandWithoutTransition={openWithoutTransition}
                 />
               ))}
               <div />
+            </div>
+          )}
+          {news && totalNewsItems === 0 && !isLoadingNews && (
+            <div className={styles.newsFeedEmptyContainer}>
+              <p className={styles.newsFeedEmpty}>
+                {intl.formatMessage(messages.newsFeedEmpty)}
+              </p>
+            </div>
+          )}
+          {(!news || totalNewsItems === 0) && isLoadingNews && (
+            <div className={styles.newsFeedNoFetchContainer}>
+              <p className={styles.newsFeedNoFetch}>
+                {intl.formatMessage(messages.newsFeedNoFetch)}
+              </p>
+              <LoadingSpinner medium />
             </div>
           )}
         </div>
