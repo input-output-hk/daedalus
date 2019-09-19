@@ -1,54 +1,54 @@
 @e2e
-Feature: News feed
+Feature: Newsfeed
 
-  News feed delivers important information to Daedalus users, like information about network failures, bugs and other
+  Newsfeed delivers important information to Daedalus users, like information about network failures, bugs and other
   issues, information about upcoming and recent releases and so on. News are categorised in 4 types:
   incident, alert, announcement and info. Incidents and alerts cover the whole user interface,
-  announcements and info are delivered in the news feed part of the user interface.
+  announcements and info are delivered in the newsfeed part of the user interface.
 
   Background:
     Given I have completed the basic setup
 
   @reconnectApp
-  Scenario: News feed icon is visible on the connecting screen
+  Scenario: Newsfeed icon is visible on the connecting screen
     Given im on the connecting screen
-    Then i should see the news feed icon
+    Then i should see the newsfeed icon
 
   @reconnectApp
-  Scenario: News feed icon is visible on the syncing screen
+  Scenario: Newsfeed icon is visible on the syncing screen
     Given im on the syncing screen
-    Then i should see the news feed icon
+    Then i should see the newsfeed icon
 
-  Scenario: News feed icon is visible in the main ui
+  Scenario: Newsfeed icon is visible in the main ui
     Given I should see the main ui
-    Then i should see the news feed icon
+    Then i should see the newsfeed icon
 
-  Scenario: News feed icon is highlighted when there are unread news
+  Scenario: Newsfeed icon is highlighted when there are unread news
     Given there are unread news
-    Then the news feed icon is highlighted
+    Then the newsfeed icon is highlighted
 
-  Scenario: News feed icon is not highlighted when there are no unread news
+  Scenario: Newsfeed icon is not highlighted when there are no unread news
     Given there are no unread news
-    Then the news feed icon is not highlighted
+    Then the newsfeed icon is not highlighted
 
-  Scenario: News feed icon shows a dot when there are unread announcements
+  Scenario: Newsfeed icon shows a dot when there are unread announcements
     Given there is unread announcements
-    Then the news feed icon shows a dot
+    Then the newsfeed icon shows a dot
 
-  Scenario: Open the news feed by clicking the news feed icon
-    Given I click on the news feed icon
-    Then the news feed is open
+  Scenario: Open the newsfeed by clicking the newsfeed icon
+    Given I click on the newsfeed icon
+    Then the newsfeed is open
 
   Scenario: No news available in the feed
     Given there is no news
-    When I open the news feed
-    Then the news feed is empty
+    When I open the newsfeed
+    Then the newsfeed is empty
 
   @wip
   Scenario: Only read news available in the feed
     Given there are 5 read news
-    When I open the news feed
-    Then the news feed contains 5 read news
+    When I open the newsfeed
+    Then the newsfeed contains 5 read news
 
   @watch
   Scenario: Displaying an incident
@@ -65,9 +65,9 @@ Feature: News feed
   @wip
   Scenario: Reading an announcement
     Given there is 1 unread announcement
-    When I click on the news feed icon
-    Then the news feed is opened
-    And the news feed contains 1 unread announcement
+    When I click on the newsfeed icon
+    Then the newsfeed is opened
+    And the newsfeed contains 1 unread announcement
     When I click on the unread announcement to expand it
     Then the announcement content is shown
     And the announcement is marked as read
@@ -75,16 +75,16 @@ Feature: News feed
   @wip
   Scenario: Reading an info
     Given there is 1 unread info
-    When I click on the news feed icon
-    Then the news feed is opened
-    And the news feed contains 1 unread info
+    When I click on the newsfeed icon
+    Then the newsfeed is opened
+    And the newsfeed contains 1 unread info
     When I click on the unread info to expand it
     Then the info content is shown
     And the info is marked as read
-    And the news feed icon is not highlighted
+    And the newsfeed icon is not highlighted
 
   @wip
   Scenario: News unavailable
-    Given the news feed server is unreachable
-    When I open the news feed
+    Given the newsfeed server is unreachable
+    When I open the newsfeed
     Then no news are available

@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Implemented "News feed" feature ([PR 1570](https://github.com/input-output-hk/daedalus/pull/1570))
+- Implemented "Newsfeed" feature ([PR 1570](https://github.com/input-output-hk/daedalus/pull/1570))
 - Removed select dropdown arrow ([PR 1550](https://github.com/input-output-hk/daedalus/pull/1550))
 - Implemented automated and manual update flows unification ([PR 1491](https://github.com/input-output-hk/daedalus/pull/1491))
 - Updated behavior of system dialogs ([PR 1494](https://github.com/input-output-hk/daedalus/pull/1494))
@@ -44,7 +44,7 @@ Changelog
 
 ### Specifications
 
-- News feed ([PR 1569](https://github.com/input-output-hk/daedalus/pull/1569))
+- Newsfeed ([PR 1569](https://github.com/input-output-hk/daedalus/pull/1569))
 
 ## 0.14.0
 

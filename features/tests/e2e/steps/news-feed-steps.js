@@ -12,14 +12,14 @@ import moment from 'moment';
 async function prepareFakeNews(context, fakeNews, preparation, ...args) {
   // Run custom preparation logic
   await context.client.executeAsync(preparation, fakeNews, ...args);
-  // Extract the computed news feed data from the store
+  // Extract the computed newsfeed data from the store
   const newsData = await context.client.executeAsync(done => {
     const newsFeed = daedalus.stores.newsFeed;
-    // Refresh the news feed request & store
+    // Refresh the newsfeed request & store
     newsFeed.getNews().then(() => done(newsFeed.newsFeedData));
   });
   if (newsData.value) {
-    // Provide the news feed data from the store to the other steps
+    // Provide the newsfeed data from the store to the other steps
     context.news = newsData.value;
   }
 }
@@ -43,7 +43,7 @@ Given('there are unread news', async function() {
 Given('there are no unread news', async function() {
   await prepareFakeNews(this, newsDummyJson, (news, done) => {
     const api = daedalus.api;
-    // Set dummy news feed data
+    // Set dummy newsfeed data
     api.ada.setFakeNewsFeedJsonForTesting({
       updatedAt: Date.now(),
       items: news.items.filter(i => i.type === 'info'),
@@ -67,7 +67,7 @@ Given('there are 5 read news', async function() {
   await prepareFakeNews(this, newsDummyJson, (news, done) => {
     const api = daedalus.api;
     const items = news.items.filter(i => i.type !== 'incident').slice(0, 5);
-    // Set dummy news feed data
+    // Set dummy newsfeed data
     api.ada.setFakeNewsFeedJsonForTesting({
       updatedAt: Date.now(),
       items,
@@ -120,7 +120,7 @@ Given('there is 1 unread {word}', async function(newsType) {
   );
 });
 
-Given('the news feed server is unreachable', async function() {
+Given('the newsfeed server is unreachable', async function() {
   this.news = [];
 });
 
@@ -132,11 +132,11 @@ Given('the latest alert will cover the screen', async function() {
   });
 });
 
-When('I click on the news feed icon', async function() {
+When('I click on the newsfeed icon', async function() {
   await this.waitAndClick('.NewsFeedIcon_component');
 });
 
-When('I open the news feed', async function() {
+When('I open the newsfeed', async function() {
   await this.waitAndClick('.NewsFeedIcon_component');
 });
 
@@ -145,27 +145,27 @@ When('I dismiss the alert', async function() {
   await this.waitAndClick('.AlertsOverlay_component .closeButton');
 });
 
-Then('i should see the news feed icon', async function() {
+Then('i should see the newsfeed icon', async function() {
   await this.client.waitForVisible('.NewsFeedIcon_component');
 });
 
-Then('the news feed icon is highlighted', async function() {
+Then('the newsfeed icon is highlighted', async function() {
   await this.client.waitForVisible('.NewsFeedIcon_highlighted');
 });
 
-Then('the news feed icon shows a dot', async function() {
+Then('the newsfeed icon shows a dot', async function() {
   await this.client.waitForVisible('.NewsFeedIcon_withDot');
 });
 
-Then('the news feed icon is not highlighted', async function() {
+Then('the newsfeed icon is not highlighted', async function() {
   await this.client.waitForVisible('.NewsFeedIcon_highlighted', null, true);
 });
 
-Then('the news feed is open', async function() {
+Then('the newsfeed is open', async function() {
   await this.client.waitForVisible('.NewsFeed_component');
 });
 
-Then('the news feed is empty', async function() {
+Then('the newsfeed is empty', async function() {
   await this.client.waitForVisible('.NewsFeed_newsFeedEmpty');
 });
 
@@ -186,7 +186,7 @@ Then('the alert I have dismissed becomes read', async function() {
   });
 });
 
-Then('the news feed contains {int} read news', async function(
+Then('the newsfeed contains {int} read news', async function(
   expectedReadNewsCount
 ) {
   const readNewsCount = await getVisibleElementsCountForSelector(

@@ -36,7 +36,7 @@ import './Widgets.stories';
 // Notifications
 import './Notifications.stories';
 
-// News feed
+// Newsfeed
 import './news/NewsFeed.stories';
 import './news/IncidentOverlay.stories';
 import './news/AlertsOverlay.stories';
