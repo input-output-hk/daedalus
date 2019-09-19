@@ -28,6 +28,7 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
         onNewsItemActionClick={stores.app.openExternalLink}
         onMarkNewsAsRead={this.handleMarkNewsAsRead}
         newsFeedShowClass={newsFeedShowClass}
+        openWithoutTransition={stores.networkStatus.environment.isTest}
       />
     );
   }

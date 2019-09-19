@@ -1,4 +1,4 @@
-@e2e
+@e2e @watch
 Feature: Newsfeed
 
   Newsfeed delivers important information to Daedalus users, like information about network failures, bugs and other
@@ -23,17 +23,17 @@ Feature: Newsfeed
     Given I should see the main ui
     Then i should see the newsfeed icon
 
-  Scenario: Newsfeed icon is highlighted when there are unread news
-    Given there are unread news
+  Scenario: Newsfeed icon is highlighted when there are unread infos
+    Given there are unread infos
     Then the newsfeed icon is highlighted
 
-  Scenario: Newsfeed icon is not highlighted when there are no unread news
-    Given there are no unread news
-    Then the newsfeed icon is not highlighted
+  Scenario: Newsfeed icon is highlighted when there are unread announcements
+    Given there are unread announcements
+    Then the newsfeed icon is highlighted
 
-  Scenario: Newsfeed icon shows a dot when there are unread announcements
-    Given there is unread announcements
-    Then the newsfeed icon shows a dot
+  Scenario: Newsfeed icon is not highlighted when all infos have been read
+    Given there are read infos
+    Then the newsfeed icon is not highlighted
 
   Scenario: Open the newsfeed by clicking the newsfeed icon
     Given I click on the newsfeed icon
@@ -44,31 +44,24 @@ Feature: Newsfeed
     When I open the newsfeed
     Then the newsfeed is empty
 
-  @wip
-  Scenario: Only read news available in the feed
-    Given there are 5 read news
+  Scenario: Only read infos available in the feed
+    Given there are 2 read infos
     When I open the newsfeed
-    Then the newsfeed contains 5 read news
+    Then the newsfeed contains 2 read infos
 
-  @watch
   Scenario: Displaying an incident
     Given there is an incident
     Then the incident will cover the screen
 
-  @wip
   Scenario: Dismissing an alert
-    Given there are unread alerts
-    And the latest alert will cover the screen
+    Given there is 1 unread alert
     When I dismiss the alert
-    Then the alert I have dismissed becomes read
+    Then the alert disappears
 
-  @wip
   Scenario: Reading an announcement
     Given there is 1 unread announcement
-    When I click on the newsfeed icon
-    Then the newsfeed is opened
-    And the newsfeed contains 1 unread announcement
-    When I click on the unread announcement to expand it
+    When I open the newsfeed
+    And I click on the unread announcement to expand it
     Then the announcement content is shown
     And the announcement is marked as read
 
