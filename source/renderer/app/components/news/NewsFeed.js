@@ -31,15 +31,17 @@ const messages = defineMessages({
 type Props = {
   onClose: Function,
   onNewsItemActionClick: Function,
-  news?: News.NewsCollection,
+  news: ?News.NewsCollection,
   newsFeedShowClass: boolean,
   onMarkNewsAsRead: Function,
+  openWithoutTransition?: boolean,
 };
 
 @observer
 export default class NewsFeed extends Component<Props> {
   static defaultProps = {
     onClose: null,
+    openWithoutTransition: false,
   };
 
   static contextTypes = {
@@ -54,12 +56,14 @@ export default class NewsFeed extends Component<Props> {
       news,
       newsFeedShowClass,
       onMarkNewsAsRead,
+      openWithoutTransition,
     } = this.props;
 
     const totalNewsItems = news && news.all ? news.all.length : 0;
     const componentClasses = classNames([
       styles.component,
       newsFeedShowClass ? styles.show : null,
+      openWithoutTransition ? styles.noTransition : null,
     ]);
 
     return (
