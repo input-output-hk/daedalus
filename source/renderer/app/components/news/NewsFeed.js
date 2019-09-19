@@ -35,12 +35,15 @@ type Props = {
   news?: News.NewsCollection,
   newsFeedShowClass: boolean,
   onMarkNewsAsRead: Function,
+  openWithoutTransition?: boolean,
+  isLoadingNews: boolean,
 };
 
 @observer
 export default class NewsFeed extends Component<Props> {
   static defaultProps = {
     onClose: null,
+    openWithoutTransition: false,
   };
 
   static contextTypes = {
@@ -56,12 +59,15 @@ export default class NewsFeed extends Component<Props> {
       news,
       newsFeedShowClass,
       onMarkNewsAsRead,
+      openWithoutTransition,
+      isLoadingNews,
     } = this.props;
 
     const totalNewsItems = news && news.all ? news.all.length : 0;
     const componentClasses = classNames([
       styles.component,
       newsFeedShowClass ? styles.show : null,
+      openWithoutTransition ? styles.noTransition : null,
     ]);
 
     return (
@@ -78,7 +84,7 @@ export default class NewsFeed extends Component<Props> {
           </button>
         </div>
         <div className={styles.newsFeedList}>
-          {!news && (
+          {isLoadingNews && (
             <div className={styles.newsFeedNoFetchContainer}>
               <p className={styles.newsFeedNoFetch}>
                 {intl.formatMessage(messages.newsFeedNoFetch)}

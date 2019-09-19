@@ -18,6 +18,7 @@ type Props = {
 
 type State = {
   newsItemExpanded: boolean,
+  newsItemCollapsible: boolean,
 };
 
 @observer
@@ -30,6 +31,7 @@ export default class NewsItem extends Component<Props, State> {
 
   state = {
     newsItemExpanded: false,
+    newsItemCollapsible: true,
   };
 
   componentWillMount() {
@@ -37,26 +39,41 @@ export default class NewsItem extends Component<Props, State> {
   }
 
   newsItemClickHandler() {
-    if (
-      this.props.newsItem.type === 'info' ||
-      this.props.newsItem.type === 'announcement'
-    ) {
-      this.setState(prevState => ({
-        newsItemExpanded: !prevState.newsItemExpanded,
-      }));
-    } else if (this.props.newsItem.type === 'alert' && this.props.onOpenAlert) {
-      this.props.onOpenAlert(this.props.newsItem.date);
+    setTimeout(() => {
+      const { type, date } = this.props.newsItem;
+      const { newsItemCollapsible } = this.state;
+      if (type === 'info' || type === 'announcement') {
+        if (newsItemCollapsible) {
+          this.setState(prevState => ({
+            newsItemExpanded: !prevState.newsItemExpanded,
+          }));
+        } else {
+          this.setState({ newsItemCollapsible: true });
+        }
+      }
+      if (type === 'alert' && this.props.onOpenAlert) {
+        this.props.onOpenAlert(date);
+      }
+      this.props.onMarkNewsAsRead(date);
+    }, 100);
+  }
+
+  newsItemButtonClickHandler(event) {
+    const { onNewsItemActionClick, newsItem } = this.props;
+    const actionUrl = newsItem.action.url;
+    this.setState({ newsItemCollapsible: false });
+    if (actionUrl) {
+      onNewsItemActionClick(actionUrl, event);
     }
-    this.props.onMarkNewsAsRead(this.props.newsItem.date);
   }
 
   render() {
-    const { onNewsItemActionClick, newsItem } = this.props;
-    const actionUrl = newsItem.action.url;
+    const { newsItem } = this.props;
     const componentClasses = classNames([
       styles.component,
-      newsItem.type,
+      newsItem.type ? styles[newsItem.type] : null,
       this.state.newsItemExpanded ? styles.expanded : null,
+      newsItem.read ? styles.isRead : null,
     ]);
 
     return (
@@ -77,7 +94,7 @@ export default class NewsItem extends Component<Props, State> {
         </div>
         <button
           className={styles.newsItemActionBtn}
-          onClick={event => onNewsItemActionClick(actionUrl, event)}
+          onClick={this.newsItemButtonClickHandler.bind(this)}
         >
           {newsItem.action.label}
           <SVGInline svg={externalLinkIcon} />
