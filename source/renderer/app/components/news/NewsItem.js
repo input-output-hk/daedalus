@@ -70,7 +70,7 @@ export default class NewsItem extends Component<Props, State> {
     const { newsItem } = this.props;
     const componentClasses = classNames([
       styles.component,
-      newsItem.type,
+      newsItem.type ? styles[newsItem.type] : null,
       this.state.newsItemExpanded ? styles.expanded : null,
       newsItem.read ? styles.isRead : null,
     ]);

@@ -3,12 +3,14 @@
   background-color: var(--theme-news-item-info-background-color);
   border-radius: 5px;
   cursor: pointer;
-  height: 84px;
-  margin-top: 10px;
-  max-height: 107px;
+  max-height: 100%;
   padding: 20px;
-  transition: height 400ms ease;
+  transition: max-height 400ms ease;
   width: 100%;
+
+  & + .component {
+    margin-top: 10px;
+  }
 
   &.alert {
     background-color: var(--theme-news-item-alert-background-color);
@@ -21,8 +23,9 @@
   .newsItemTitle {
     color: var(--theme-news-item-title-color);
     font-family: var(--font-regular);
-    font-size: 18px;
+    font-size: 16px;
     line-height: 1.33;
+    margin-bottom: 2px;
   }
 
   .newsItemBadge {
@@ -45,11 +48,11 @@
 
   .newsItemContentContainer {
     color: var(--theme-news-item-title-color);
+    display: none;
     margin-top: 6px;
     line-height: 1.36;
     opacity: 0.7;
     word-wrap: break-word;
-    visibility: hidden;
 
     h1,
     h2 {
@@ -97,13 +100,13 @@
     border-radius: 2px;
     color: var(--theme-news-item-action-button-color);
     cursor: pointer;
+    display: none;
     font-family: var(--font-regular);
     font-size: 14px;
     font-weight: 500;
     height: 33px;
     margin: 20px 0 0 0;
     text-align: center;
-    visibility: hidden;
     width: 280px;
 
     svg {
@@ -117,6 +120,21 @@
         }
       }
     }
+
+    &:hover {
+      background-color: var(
+        --theme-news-item-action-button-background-color-hover
+      );
+      color: var(--theme-news-item-action-button-color-hover);
+
+      svg {
+        g {
+          path {
+            stroke: var(--theme-news-item-action-button-color-hover);
+          }
+        }
+      }
+    }
   }
 
   &.expanded {
@@ -124,11 +142,11 @@
     max-height: max-content;
 
     .newsItemContentContainer {
-      visibility: visible;
+      display: block;
     }
 
     .newsItemActionBtn {
-      visibility: visible;
+      display: block;
     }
   }
 }

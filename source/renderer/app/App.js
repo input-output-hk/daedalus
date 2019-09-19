@@ -68,7 +68,7 @@ export default class App extends Component<{
                   ]
                 )}
                 <NewsFeedContainer />
-                <NewsOverlayContainer />
+                {/*<NewsOverlayContainer />*/}
               </Fragment>
             </IntlProvider>
           </ThemeProvider>
