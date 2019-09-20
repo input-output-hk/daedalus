@@ -33,7 +33,7 @@ export default class NewsFeedStore extends Store {
   markNewsAsReadRequest: Request<MarkNewsAsReadResponse> = new Request(
     this.api.localStorage.markNewsAsRead
   );
-  @observable openedAlert: ?NewsItem = null;
+  @observable openedAlert: ?News.News = null;
 
   pollingNewsIntervalId: ?IntervalID = null;
   pollingNewsOnErrorIntervalId: ?IntervalID = null;
@@ -95,14 +95,18 @@ export default class NewsFeedStore extends Store {
   };
 
   @action openAlert = (newsTimestamp: NewsTimestamp) => {
-    if (this.getNewsRequest.wasExecuted && this.rawNews) {
-      const alertToOpen = this.rawNews.find(
+    if (this.getNewsRequest.wasExecuted) {
+      const alertToOpen = this.newsFeedData.alerts.all.find(
         newsItem => newsItem.date === newsTimestamp
       );
       if (alertToOpen) {
         this.openedAlert = alertToOpen;
       }
     }
+  };
+
+  @action closeOpenedAlert = () => {
+    this.openedAlert = null;
   };
 
   @action _setFetchingNewsFailed = (fetchingNewsFailed: boolean) => {

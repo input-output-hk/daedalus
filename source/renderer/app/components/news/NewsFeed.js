@@ -31,7 +31,7 @@ const messages = defineMessages({
 
 type Props = {
   onClose: Function,
-  onOpenAlert: Function,
+  onOpenAlert?: Function,
   news?: News.NewsCollection,
   newsFeedShowClass: boolean,
   onMarkNewsAsRead: Function,

@@ -15,6 +15,7 @@ type State = {
 
 type Props = {
   alerts: Array<News.News>,
+  onCloseOpenAlert: Function,
   onMarkNewsAsRead: Function,
   onOpenExternalLink: Function,
 };
@@ -46,6 +47,7 @@ export default class AlertsOverlay extends Component<Props, State> {
     const { alerts } = this.props;
     if (alerts.length <= 1) {
       this.props.onMarkNewsAsRead(alerts[0].date);
+      this.props.onCloseOpenAlert();
       this.setState({ showOverlay: false });
       return;
     }
