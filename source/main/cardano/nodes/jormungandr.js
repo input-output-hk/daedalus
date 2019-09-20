@@ -103,10 +103,11 @@ export async function createBlock0({
 
   const pathEscaper = str => str.replace(/(\s+)/g, '\\$1');
   await new Promise((resolve, reject) => {
+    const inputPath = pathEscaper(genesisPath);
+    const outputPath = pathEscaper(block0Path);
+
     exec(
-      `${cliPath} genesis encode --input ${pathEscaper(
-        genesisPath
-      )} --output ${pathEscaper(block0Path)}`,
+      `${cliPath} genesis encode --input ${inputPath} --output ${outputPath}`,
       (err, stdout, stderr) => {
         if (err || stderr) {
           return err ? reject(err) : reject(stderr);
