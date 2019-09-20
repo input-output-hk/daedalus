@@ -9,9 +9,9 @@
   position: fixed;
   right: 0;
   top: 0;
+  transition: margin-right 400ms ease;
   width: 460px;
   z-index: 20;
-  transition: margin-right 400ms ease;
 
   &.noTransition {
     transition: none;
