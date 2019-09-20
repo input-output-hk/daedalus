@@ -105,7 +105,21 @@ export default class NewsItem extends Component<Props, State> {
             height={this.state.newsItemExpanded ? 'auto' : 0}
           >
             <div className={styles.newsItemContentContainer}>
-              <ReactMarkdown escapeHtml={false} source={newsItem.content} />
+              <ReactMarkdown
+                escapeHtml={false}
+                source={newsItem.content}
+                disallowedTypes={[
+                  'image',
+                  'imageReference',
+                  'table',
+                  'definition',
+                  'inlineCode',
+                  'code',
+                  'html',
+                  'virtualHtml',
+                  'parsedHtml',
+                ]}
+              />
             </div>
             <button
               className={styles.newsItemActionBtn}
