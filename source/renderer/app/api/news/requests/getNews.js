@@ -3,14 +3,15 @@ import type { GetNewsResponse } from '../types';
 import { externalRequest } from '../../utils/externalRequest';
 import { getNewsURL } from '../../../utils/network';
 
-const { isStaging, isTestnet, network } = global.environment;
+const { network } = global.environment;
 const hostname = getNewsURL(network);
-const path = isStaging || isTestnet ? '' : '/news-feed';
+const path = '/input-output-hk/daedalus/newsfeed';
+const filename = `newsfeed_${network}.json`;
 
 export const getNews = (): Promise<GetNewsResponse> =>
   externalRequest({
     hostname,
-    path: `${path}/news.dummy.json`,
+    path: `${path}/${filename}`,
     method: 'GET',
     protocol: 'https',
   });
