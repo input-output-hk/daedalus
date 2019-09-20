@@ -6,6 +6,8 @@ import ReactMarkdown from 'react-markdown';
 import moment from 'moment';
 import { get } from 'lodash';
 import SVGInline from 'react-svg-inline';
+import AnimateHeight from 'react-animate-height';
+
 import News from '../../domains/News';
 import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import styles from './NewsItem.scss';
@@ -82,7 +84,6 @@ export default class NewsItem extends Component<Props, State> {
       newsItem.type ? styles[newsItem.type] : null,
       this.state.newsItemExpanded ? styles.expanded : null,
       newsItem.read ? styles.isRead : null,
-      expandWithoutTransition ? styles.noTransition : null,
     ]);
 
     return (
@@ -99,16 +100,21 @@ export default class NewsItem extends Component<Props, State> {
           {moment(newsItem.date).format(this.localizedDateFormat)}
         </div>
         <div className={styles.newsItemContentWrapper}>
-          <div className={styles.newsItemContentContainer}>
-            <ReactMarkdown escapeHtml={false} source={newsItem.content} />
-          </div>
-          <button
-            className={styles.newsItemActionBtn}
-            onClick={this.newsItemButtonClickHandler.bind(this)}
+          <AnimateHeight
+            duration={expandWithoutTransition ? 0 : 500}
+            height={this.state.newsItemExpanded ? 'auto' : 0}
           >
-            {newsItem.action.label}
-            <SVGInline svg={externalLinkIcon} />
-          </button>
+            <div className={styles.newsItemContentContainer}>
+              <ReactMarkdown escapeHtml={false} source={newsItem.content} />
+            </div>
+            <button
+              className={styles.newsItemActionBtn}
+              onClick={this.newsItemButtonClickHandler.bind(this)}
+            >
+              {newsItem.action.label}
+              <SVGInline svg={externalLinkIcon} />
+            </button>
+          </AnimateHeight>
         </div>
       </div>
     );

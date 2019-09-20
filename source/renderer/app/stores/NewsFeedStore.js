@@ -33,7 +33,7 @@ export default class NewsFeedStore extends Store {
   markNewsAsReadRequest: Request<MarkNewsAsReadResponse> = new Request(
     this.api.localStorage.markNewsAsRead
   );
-  @observable openedAlert: ?NewsItem = null;
+  @observable openedAlert: ?News.News = null;
 
   pollingNewsIntervalId: ?IntervalID = null;
   pollingNewsOnErrorIntervalId: ?IntervalID = null;

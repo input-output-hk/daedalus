@@ -51,6 +51,7 @@ storiesOf('NewsFeed', module)
   .add('Alerts Overlay', props => (
     <AlertsOverlay
       alerts={props['0'].alerts}
+      onCloseOpenAlert={() => {}}
       onMarkNewsAsRead={action('onMarkNewsAsRead')}
       onOpenExternalLink={() => {}}
     />

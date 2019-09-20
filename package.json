@@ -170,6 +170,7 @@
     "qr-image": "3.2.0",
     "qrcode.react": "0.8.0",
     "react": "16.6.3",
+    "react-animate-height": "2.0.15",
     "react-copy-to-clipboard": "5.0.1",
     "react-custom-scrollbars": "4.2.1",
     "react-dom": "16.6.3",
