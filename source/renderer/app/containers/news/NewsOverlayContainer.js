@@ -11,28 +11,37 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    const {
-      markNewsAsRead,
-      newsFeedData,
-      openedAlert,
-    } = this.props.stores.newsFeed;
+    const { app, newsFeed } = this.props.stores;
+    const { openExternalLink } = app;
+    const { markNewsAsRead, newsFeedData, openedAlert } = newsFeed;
     const { incident, alerts } = newsFeedData;
     const unreadAlerts = alerts.unread;
     const alertToOpen = [];
     if (openedAlert) {
       alertToOpen.push(openedAlert);
     }
-    if (incident) return <IncidentOverlay incident={incident} />;
+    if (incident)
+      return (
+        <IncidentOverlay
+          incident={incident}
+          onOpenExternalLink={openExternalLink}
+        />
+      );
     if (unreadAlerts.length > 0)
       return (
         <AlertsOverlay
-          onMarkNewsAsRead={markNewsAsRead}
           alerts={unreadAlerts}
+          onMarkNewsAsRead={markNewsAsRead}
+          onOpenExternalLink={openExternalLink}
         />
       );
     if (alertToOpen.length > 0) {
       return (
-        <AlertsOverlay onMarkNewsAsRead={markNewsAsRead} alerts={alertToOpen} />
+        <AlertsOverlay
+          alerts={alertToOpen}
+          onMarkNewsAsRead={markNewsAsRead}
+          onOpenExternalLink={openExternalLink}
+        />
       );
     }
     return null;

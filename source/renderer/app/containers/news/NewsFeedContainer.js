@@ -24,14 +24,13 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
     return (
       <NewsFeed
         news={newsFeedData}
+        newsFeedShowClass={newsFeedIsOpen}
         isLoadingNews={isLoadingNews}
         onClose={toggleNewsFeed.trigger}
-        onNewsItemActionClick={stores.app.openExternalLink}
         onOpenAlert={stores.newsFeed.openAlert}
-        onMarkNewsAsRead={this.handleMarkNewsAsRead}
-        newsFeedShowClass={newsFeedIsOpen}
-        openWithoutTransition={stores.networkStatus.environment.isTest}
         onOpenExternalLink={openExternalLink}
+        onMarkNewsAsRead={this.handleMarkNewsAsRead}
+        openWithoutTransition={stores.networkStatus.environment.isTest}
       />
     );
   }

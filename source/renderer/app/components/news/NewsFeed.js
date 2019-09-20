@@ -31,14 +31,13 @@ const messages = defineMessages({
 
 type Props = {
   onClose: Function,
-  onNewsItemActionClick: Function,
   onOpenAlert: Function,
   news?: News.NewsCollection,
   newsFeedShowClass: boolean,
   onMarkNewsAsRead: Function,
   openWithoutTransition?: boolean,
   isLoadingNews: boolean,
-  onOpenExternalLink: Function;
+  onOpenExternalLink: Function,
 };
 
 @observer
@@ -52,34 +51,17 @@ export default class NewsFeed extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  constructor(props: Props) {
-    super(props);
-    window.addEventListener('click', this.onOpenExternalLink);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('click', this.onOpenExternalLink);
-  }
-
-  onOpenExternalLink = (event: SyntheticMouseEvent<HTMLElement>) => {
-    const linkUrl = get(event, ['target', 'href']);
-    if (linkUrl) {
-      event.preventDefault();
-      this.props.onOpenExternalLink(linkUrl)
-    }
-  };
-
   render() {
     const { intl } = this.context;
     const {
-      onClose,
-      onNewsItemActionClick,
-      onOpenAlert,
       news,
       newsFeedShowClass,
-      onMarkNewsAsRead,
-      openWithoutTransition,
       isLoadingNews,
+      onClose,
+      onOpenAlert,
+      onMarkNewsAsRead,
+      onOpenExternalLink,
+      openWithoutTransition,
     } = this.props;
 
     const totalNewsItems = get(news, 'all', 0).length;
@@ -111,10 +93,10 @@ export default class NewsFeed extends Component<Props> {
               {news.all.map(newsItem => (
                 <NewsItem
                   key={newsItem.date}
-                  onNewsItemActionClick={onNewsItemActionClick}
-                  onOpenAlert={onOpenAlert}
                   newsItem={newsItem}
                   onMarkNewsAsRead={onMarkNewsAsRead}
+                  onOpenExternalLink={onOpenExternalLink}
+                  onOpenAlert={onOpenAlert}
                 />
               ))}
             </div>

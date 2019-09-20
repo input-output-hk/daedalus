@@ -128,6 +128,8 @@ storiesOf('NewsFeed', module)
         onClose={action('onClose')}
         news={undefined}
         newsFeedShowClass={boolean('newsFeedShowClass', true)}
+        onOpenExternalLink={() => {}}
+        onOpenAlert={() => {}}
       />
     </div>
   ))
@@ -141,6 +143,8 @@ storiesOf('NewsFeed', module)
         onClose={action('onClose')}
         news={new News.NewsCollection([])}
         newsFeedShowClass={boolean('newsFeedShowClass2', true)}
+        onOpenExternalLink={() => {}}
+        onOpenAlert={() => {}}
       />
     </div>
   ))
@@ -154,6 +158,8 @@ storiesOf('NewsFeed', module)
         onClose={action('onClose')}
         news={new News.NewsCollection([])}
         newsFeedShowClass={boolean('newsFeedShowClass2', true)}
+        onOpenExternalLink={() => {}}
+        onOpenAlert={() => {}}
       />
     </div>
   ))
@@ -167,6 +173,8 @@ storiesOf('NewsFeed', module)
         onClose={action('onClose')}
         news={newsCollection}
         newsFeedShowClass={boolean('newsFeedShowClass3', true)}
+        onOpenExternalLink={() => {}}
+        onOpenAlert={() => {}}
       />
     </div>
   ));

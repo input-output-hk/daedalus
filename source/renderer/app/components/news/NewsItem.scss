@@ -6,9 +6,9 @@
   cursor: pointer;
   padding: 20px;
   position: relative;
-  word-break: break-word;
-  width: 100%;
   transition: max-height 400ms ease;
+  width: 100%;
+  word-break: break-word;
 
   &.noTransition {
     transition: none;
@@ -120,10 +120,11 @@
     font-family: var(--font-regular);
     font-size: 14px;
     font-weight: 500;
-    height: 33px;
+    line-height: 20px;
     margin: 20px 0 0 0;
+    padding: 5px 10px;
     text-align: center;
-    width: 280px;
+    width: 100%;
 
     svg {
       height: 13px;
@@ -153,7 +154,7 @@
     }
   }
 
-  .newsItemContent {
+  .newsItemContentWrapper {
     height: 0;
     overflow: hidden;
   }
@@ -161,7 +162,7 @@
   &.expanded {
     opacity: 1;
 
-    .newsItemContent {
+    .newsItemContentWrapper {
       height: auto;
     }
   }
