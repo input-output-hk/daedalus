@@ -126,6 +126,10 @@ When(/^I click on the unread (\w+?) to expand it$/, async function(type) {
   await this.waitAndClick(`.NewsItem_component.${type}`);
 });
 
+When('I click on the alert in the newsfeed', async function() {
+  await this.waitAndClick('.NewsItem_alert.NewsItem_isRead');
+});
+
 Then('i should see the newsfeed icon', async function() {
   await this.client.waitForVisible('.NewsFeedIcon_component');
 });

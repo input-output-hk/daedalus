@@ -12,6 +12,7 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
 
   render() {
     const {
+      closeOpenedAlert,
       markNewsAsRead,
       newsFeedData,
       openedAlert,
@@ -26,13 +27,18 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
     if (unreadAlerts.length > 0)
       return (
         <AlertsOverlay
+          onCloseOpenAlert={closeOpenedAlert}
           onMarkNewsAsRead={markNewsAsRead}
           alerts={unreadAlerts}
         />
       );
     if (alertToOpen.length > 0) {
       return (
-        <AlertsOverlay onMarkNewsAsRead={markNewsAsRead} alerts={alertToOpen} />
+        <AlertsOverlay
+          alerts={alertToOpen}
+          onCloseOpenAlert={closeOpenedAlert}
+          onMarkNewsAsRead={markNewsAsRead}
+        />
       );
     }
     return null;

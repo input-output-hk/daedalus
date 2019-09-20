@@ -39,23 +39,21 @@ export default class NewsItem extends Component<Props, State> {
   }
 
   newsItemClickHandler() {
-    setTimeout(() => {
-      const { type, date } = this.props.newsItem;
-      const { newsItemCollapsible } = this.state;
-      if (type === 'info' || type === 'announcement') {
-        if (newsItemCollapsible) {
-          this.setState(prevState => ({
-            newsItemExpanded: !prevState.newsItemExpanded,
-          }));
-        } else {
-          this.setState({ newsItemCollapsible: true });
-        }
+    const { type, date } = this.props.newsItem;
+    const { newsItemCollapsible } = this.state;
+    if (type === 'info' || type === 'announcement') {
+      if (newsItemCollapsible) {
+        this.setState(prevState => ({
+          newsItemExpanded: !prevState.newsItemExpanded,
+        }));
+      } else {
+        this.setState({ newsItemCollapsible: true });
       }
-      if (type === 'alert' && this.props.onOpenAlert) {
-        this.props.onOpenAlert(date);
-      }
-      this.props.onMarkNewsAsRead(date);
-    }, 100);
+    }
+    if (type === 'alert' && this.props.onOpenAlert) {
+      this.props.onOpenAlert(date);
+    }
+    this.props.onMarkNewsAsRead(date);
   }
 
   newsItemButtonClickHandler(event) {
