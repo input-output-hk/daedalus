@@ -4,9 +4,11 @@ import moment from 'moment';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
 import ReactMarkdown from 'react-markdown';
+import SVGInline from 'react-svg-inline';
 import News from '../../domains/News';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
+import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import styles from './AlertsOverlay.scss';
 
 type State = {
@@ -62,6 +64,7 @@ export default class AlertsOverlay extends Component<Props, State> {
           onClick={() => this.props.onOpenExternalLink(action.url)}
         >
           {action.label}
+          <SVGInline svg={externalLinkIcon} />
         </button>
       );
     }

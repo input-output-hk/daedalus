@@ -11,10 +11,29 @@
   margin-bottom: 22.5px;
   min-height: 50px;
   width: 360px;
+  svg {
+    height: 13px;
+    margin: -1px 5px;
+    width: 13px;
+
+    g {
+      path {
+        stroke: #fafbfc;
+      }
+    }
+  }
+
   &:hover {
     background-color: #fafbfc;
     color: #ab1700;
     cursor: pointer;
+    svg {
+      g {
+        path {
+          stroke: #ab1700;
+        }
+      }
+    }
   }
 }
 

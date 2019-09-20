@@ -4,7 +4,9 @@ import moment from 'moment';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
 import ReactMarkdown from 'react-markdown';
+import SVGInline from 'react-svg-inline';
 import News from '../../domains/News';
+import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import styles from './IncidentOverlay.scss';
 
 type Props = {
@@ -36,6 +38,7 @@ export default class IncidentOverlay extends Component<Props> {
           onClick={() => this.props.onOpenExternalLink(action.url)}
         >
           {action.label}
+          <SVGInline svg={externalLinkIcon} />
         </button>
       );
     }
