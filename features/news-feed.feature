@@ -1,4 +1,4 @@
-@e2e
+@e2e @newsfeed @noReload
 Feature: Newsfeed
 
   Newsfeed delivers important information to Daedalus users, like information about network failures, bugs and other

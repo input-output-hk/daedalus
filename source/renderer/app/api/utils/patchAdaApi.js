@@ -201,4 +201,14 @@ export default (api: AdaApi) => {
       }
     });
   };
+
+  api.resetTestOverrides = () => {
+    LATEST_APP_VERSION = null;
+    LOCAL_TIME_DIFFERENCE = 0;
+    LOCAL_BLOCK_HEIGHT = null;
+    NETWORK_BLOCK_HEIGHT = null;
+    NEXT_ADA_UPDATE = null;
+    SUBSCRIPTION_STATUS = null;
+    APPLICATION_VERSION = null;
+  };
 };

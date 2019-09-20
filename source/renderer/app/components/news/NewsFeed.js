@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
+import { get } from 'lodash';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import styles from './NewsFeed.scss';
 import News from '../../domains/News';
@@ -30,13 +31,13 @@ const messages = defineMessages({
 
 type Props = {
   onClose: Function,
-  onNewsItemActionClick: Function,
   onOpenAlert?: Function,
   news?: News.NewsCollection,
   newsFeedShowClass: boolean,
   onMarkNewsAsRead: Function,
   openWithoutTransition?: boolean,
   isLoadingNews: boolean,
+  onOpenExternalLink: Function,
 };
 
 @observer
@@ -53,17 +54,18 @@ export default class NewsFeed extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      onClose,
-      onNewsItemActionClick,
-      onOpenAlert,
       news,
       newsFeedShowClass,
-      onMarkNewsAsRead,
-      openWithoutTransition,
       isLoadingNews,
+      onClose,
+      onOpenAlert,
+      onMarkNewsAsRead,
+      onOpenExternalLink,
+      openWithoutTransition,
     } = this.props;
 
-    const totalNewsItems = news && news.all ? news.all.length : 0;
+    const totalNewsItems = get(news, 'all', 0).length;
+    const totalUnreadNewsItems = get(news, 'unread', 0).length;
     const componentClasses = classNames([
       styles.component,
       newsFeedShowClass ? styles.show : null,
@@ -75,8 +77,10 @@ export default class NewsFeed extends Component<Props> {
         <div className={styles.newsFeedHeader}>
           <h3 className={styles.newsFeedTitle}>
             {intl.formatMessage(messages.newsFeedTitle)}
-            {news && news.unread && news.unread.length > 0 && (
-              <span className={styles.newsFeedBadge}>{news.unread.length}</span>
+            {totalUnreadNewsItems > 0 && (
+              <span className={styles.newsFeedBadge}>
+                {totalUnreadNewsItems}
+              </span>
             )}
           </h3>
           <button onClick={onClose} className={styles.newsFeedCloseBtn}>
@@ -84,47 +88,32 @@ export default class NewsFeed extends Component<Props> {
           </button>
         </div>
         <div className={styles.newsFeedList}>
-          {isLoadingNews && (
-            <div className={styles.newsFeedNoFetchContainer}>
-              <p className={styles.newsFeedNoFetch}>
-                {intl.formatMessage(messages.newsFeedNoFetch)}
-              </p>
-              <LoadingSpinner medium />
+          {news && totalNewsItems > 0 && (
+            <div className={styles.newsFeedItemsContainer}>
+              {news.all.map(newsItem => (
+                <NewsItem
+                  key={newsItem.date}
+                  newsItem={newsItem}
+                  onMarkNewsAsRead={onMarkNewsAsRead}
+                  onOpenExternalLink={onOpenExternalLink}
+                  onOpenAlert={onOpenAlert}
+                />
+              ))}
             </div>
           )}
-          {news && totalNewsItems === 0 && (
+          {news && totalNewsItems === 0 && !isLoadingNews && (
             <div className={styles.newsFeedEmptyContainer}>
               <p className={styles.newsFeedEmpty}>
                 {intl.formatMessage(messages.newsFeedEmpty)}
               </p>
             </div>
           )}
-          {news && totalNewsItems > 0 && (
-            <div className={styles.newsFeedItemsContainer}>
-              {news.all.map((newsItem, index) => {
-                if (newsItem.type === 'alert') {
-                  return (
-                    <NewsItem
-                      // eslint-disable-next-line react/no-array-index-key
-                      key={index}
-                      onNewsItemActionClick={onNewsItemActionClick}
-                      onOpenAlert={onOpenAlert}
-                      newsItem={newsItem}
-                      onMarkNewsAsRead={onMarkNewsAsRead}
-                    />
-                  );
-                }
-                return (
-                  <NewsItem
-                    // eslint-disable-next-line react/no-array-index-key
-                    key={index}
-                    onNewsItemActionClick={onNewsItemActionClick}
-                    newsItem={newsItem}
-                    onMarkNewsAsRead={onMarkNewsAsRead}
-                  />
-                );
-              })}
-              <div />
+          {(!news || totalNewsItems === 0) && isLoadingNews && (
+            <div className={styles.newsFeedNoFetchContainer}>
+              <p className={styles.newsFeedNoFetch}>
+                {intl.formatMessage(messages.newsFeedNoFetch)}
+              </p>
+              <LoadingSpinner medium />
             </div>
           )}
         </div>

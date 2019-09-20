@@ -2,6 +2,7 @@
 
 /* eslint-disable consistent-return */
 
+import { includes } from 'lodash';
 import type { NewsTimestamp } from '../news/types';
 
 const store = global.electronStore;
@@ -167,7 +168,14 @@ export default class LocalStorageApi {
     new Promise((resolve, reject) => {
       try {
         const readNews = store.get(this.storageKeys.READ_NEWS) || [];
-        store.set(this.storageKeys.READ_NEWS, readNews.concat(newsTimestamps));
+
+        if (!includes(readNews, newsTimestamps[0])) {
+          store.set(
+            this.storageKeys.READ_NEWS,
+            readNews.concat(newsTimestamps)
+          );
+        }
+
         resolve(readNews);
       } catch (error) {
         return reject(error);

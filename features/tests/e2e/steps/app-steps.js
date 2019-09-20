@@ -13,22 +13,21 @@ Given(/^Daedalus is running$/, function() {
 });
 
 Given('im on the syncing screen', async function() {
-  this.client.execute(() => {
+  this.client.executeAsync(done => {
     // Simulate that syncing is necessary
     const adaApi = daedalus.api.ada;
-    adaApi.setSubscriptionStatus(null);
     adaApi.setNetworkBlockHeight(10);
     adaApi.setLocalBlockHeight(1);
-    daedalus.stores.networkStatus.getNetworkStatusRequest.execute();
+    daedalus.stores.networkStatus._updateNetworkStatus().then(done);
   });
   await this.client.waitForVisible('.SyncingConnecting_is-syncing');
 });
 
 Given('im on the connecting screen', async function() {
-  this.client.execute(() => {
+  this.client.executeAsync(done => {
     // Simulate that there is no connection to cardano node
     daedalus.api.ada.setSubscriptionStatus({});
-    daedalus.stores.networkStatus.getNetworkStatusRequest.execute();
+    daedalus.stores.networkStatus._updateNetworkStatus().then(done);
   });
   await this.client.waitForVisible('.SyncingConnecting_is-connecting');
 });

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { Given, When, Then } from 'cucumber';
+import { Before, Given, When, Then } from 'cucumber';
 import moment from 'moment';
 
 import newsDummyJson from '../../../../source/renderer/app/config/news.dummy';
@@ -63,6 +63,34 @@ async function prepareNewsOfType(
   );
 }
 
+function setNewsFeedIsOpen(client, flag) {
+  return client.execute(desiredState => {
+    if (daedalus.stores.app.newsFeedIsOpen !== desiredState) {
+      daedalus.actions.app.toggleNewsFeed.trigger();
+    }
+  }, flag);
+}
+
+// Reset the fake news
+function resetTestNews(client) {
+  return client.executeAsync(done => {
+    daedalus.api.ada.setFakeNewsFeedJsonForTesting({
+      updatedAt: Date.now(),
+      items: [],
+    });
+    daedalus.stores.newsFeed.getNews().then(done);
+  });
+}
+
+// SCENARIO HOOKS
+
+Before({ tags: '@newsfeed' }, async function() {
+  setNewsFeedIsOpen(this.client, false);
+  resetTestNews(this.client);
+});
+
+// GIVEN STEPS
+
 Given(/^there (?:are|is)\s?(\d+)? (read|unread) (\w+?)s?$/, async function(
   count,
   read,
@@ -98,6 +126,10 @@ Given('there is an incident', async function() {
 });
 
 Given('the newsfeed server is unreachable', async function() {
+  this.client.executeAsync(done => {
+    daedalus.api.ada.setFakeNewsFeedJsonForTesting(null);
+    daedalus.stores.newsFeed.getNews().then(done);
+  });
   this.news = [];
 });
 
@@ -114,7 +146,7 @@ When('I click on the newsfeed icon', async function() {
 });
 
 When('I open the newsfeed', async function() {
-  await this.waitAndClick('.NewsFeedIcon_component');
+  await setNewsFeedIsOpen(this.client, true);
 });
 
 When('I dismiss the alert', async function() {
@@ -123,7 +155,8 @@ When('I dismiss the alert', async function() {
 });
 
 When(/^I click on the unread (\w+?) to expand it$/, async function(type) {
-  await this.waitAndClick(`.NewsItem_component.${type}`);
+  setNewsFeedIsOpen(this.client, true);
+  await this.waitAndClick(`.NewsItem_${type}`);
 });
 
 When('I click on the alert in the newsfeed', async function() {
@@ -147,10 +180,12 @@ Then('the newsfeed is open', async function() {
 });
 
 Then('the newsfeed is empty', async function() {
+  setNewsFeedIsOpen(this.client, true);
   await this.client.waitForVisible('.NewsFeed_newsFeedEmpty');
 });
 
 Then('no news are available', async function() {
+  setNewsFeedIsOpen(this.client, true);
   await this.client.waitForVisible('.NewsFeed_newsFeedNoFetch');
 });
 
@@ -166,19 +201,22 @@ Then(/^the newsfeed contains (\d+) read (\w+?)s$/, async function(
   expectedReadNewsCount,
   newsType
 ) {
+  setNewsFeedIsOpen(this.client, true);
   const readNewsCount = await getVisibleElementsCountForSelector(
     this.client,
-    `.NewsItem_isRead.${newsType}`
+    `.NewsItem_${newsType}.NewsItem_isRead`
   );
   expect(readNewsCount).to.equal(expectedReadNewsCount);
 });
 
 Then(/^the (\w+?) content is shown$/, async function(type) {
+  setNewsFeedIsOpen(this.client, true);
   await this.client.waitForVisible(
-    `.NewsItem_component.${type} .NewsItem_newsItemContentContainer`
+    `.NewsItem_${type} .NewsItem_newsItemContentContainer`
   );
 });
 
 Then(/^the (\w+?) is marked as read$/, async function(type) {
-  await this.client.waitForVisible(`.NewsItem_isRead.${type}`);
+  setNewsFeedIsOpen(this.client, true);
+  await this.client.waitForVisible(`.NewsItem_${type}.NewsItem_isRead`);
 });

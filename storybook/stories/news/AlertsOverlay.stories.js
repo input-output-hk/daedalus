@@ -52,5 +52,6 @@ storiesOf('NewsFeed', module)
     <AlertsOverlay
       alerts={props['0'].alerts}
       onMarkNewsAsRead={action('onMarkNewsAsRead')}
+      onOpenExternalLink={() => {}}
     />
   ));
