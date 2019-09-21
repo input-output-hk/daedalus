@@ -9,9 +9,9 @@
   position: fixed;
   right: 0;
   top: 0;
+  transition: margin-right 400ms ease;
   width: 460px;
   z-index: 20;
-  transition: margin-right 400ms ease;
 
   &.noTransition {
     transition: none;
@@ -20,12 +20,20 @@
   .newsFeedHeader {
     align-items: center;
     background: var(--theme-news-feed-header-background-color);
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-shrink: 0;
     height: 84px;
     justify-content: space-between;
     padding: 30px 30px 30px 40px;
+    position: relative;
+    transition: box-shadow 0.15s ease-in;
     width: 100%;
+    z-index: 1;
+
+    &.hasShadow {
+      box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+    }
 
     .newsFeedTitle {
       color: var(--theme-news-feed-header-title-color);
