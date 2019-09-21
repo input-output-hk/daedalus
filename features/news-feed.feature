@@ -58,6 +58,14 @@ Feature: Newsfeed
     When I dismiss the alert
     Then the alert disappears
 
+  Scenario: Opening and dismissing a read alert
+    Given there is 1 read alert
+    When I open the newsfeed
+    When I click on the alert in the newsfeed
+    Then the alert overlay opens
+    When I dismiss the alert
+    Then the alert disappears
+
   Scenario: Reading an announcement
     Given there is 1 unread announcement
     When I open the newsfeed
