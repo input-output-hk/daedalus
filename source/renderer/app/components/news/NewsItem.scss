@@ -6,13 +6,8 @@
   cursor: pointer;
   padding: 20px;
   position: relative;
-  transition: max-height 400ms ease;
   width: 100%;
   word-break: break-word;
-
-  &.noTransition {
-    transition: none;
-  }
 
   & + .component {
     margin-top: 10px;
@@ -153,17 +148,7 @@
       }
     }
   }
-
-  .newsItemContentWrapper {
-    height: 0;
-    overflow: hidden;
-  }
-
   &.expanded {
     opacity: 1;
-
-    .newsItemContentWrapper {
-      height: auto;
-    }
   }
 }

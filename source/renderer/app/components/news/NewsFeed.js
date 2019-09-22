@@ -40,8 +40,14 @@ type Props = {
   onOpenExternalLink: Function,
 };
 
+type State = {
+  hasShadow: boolean,
+};
+
+const SCROLLABLE_DOM_ELEMENT_SELECTOR = '.NewsFeed_newsFeedList';
+
 @observer
-export default class NewsFeed extends Component<Props> {
+export default class NewsFeed extends Component<Props, State> {
   static defaultProps = {
     onClose: null,
     openWithoutTransition: false,
@@ -49,6 +55,36 @@ export default class NewsFeed extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  state = {
+    hasShadow: false,
+  };
+
+  componentDidMount() {
+    this.scrollableDomElement = document.querySelector(
+      SCROLLABLE_DOM_ELEMENT_SELECTOR
+    );
+    if (!(this.scrollableDomElement instanceof HTMLElement)) return;
+    this.scrollableDomElement.addEventListener('scroll', this.handleOnScroll);
+  }
+
+  componentWillUnmount() {
+    this.scrollableDomElement.removeEventListener(
+      'scroll',
+      this.handleOnScroll
+    );
+  }
+
+  handleOnScroll = () => {
+    const { hasShadow: currentHasShadow } = this.state;
+    const { scrollTop } = this.scrollableDomElement;
+    const hasShadow = scrollTop > 3;
+    if (currentHasShadow !== hasShadow) {
+      this.setState({
+        hasShadow,
+      });
+    }
   };
 
   render() {
@@ -63,6 +99,7 @@ export default class NewsFeed extends Component<Props> {
       onOpenExternalLink,
       openWithoutTransition,
     } = this.props;
+    const { hasShadow } = this.state;
 
     const totalNewsItems = get(news, 'all', 0).length;
     const totalUnreadNewsItems = get(news, 'unread', 0).length;
@@ -72,9 +109,14 @@ export default class NewsFeed extends Component<Props> {
       openWithoutTransition ? styles.noTransition : null,
     ]);
 
+    const newsFeedHeaderStyles = classNames([
+      styles.newsFeedHeader,
+      hasShadow ? styles.hasShadow : null,
+    ]);
+
     return (
       <div className={componentClasses}>
-        <div className={styles.newsFeedHeader}>
+        <div className={newsFeedHeaderStyles}>
           <h3 className={styles.newsFeedTitle}>
             {intl.formatMessage(messages.newsFeedTitle)}
             {totalUnreadNewsItems > 0 && (
