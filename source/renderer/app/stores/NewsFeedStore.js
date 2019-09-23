@@ -1,13 +1,14 @@
 // @flow
 import { observable, action, runInAction, computed } from 'mobx';
-import { map, get } from 'lodash';
+import { map, get, find } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
   NEWS_POLL_INTERVAL,
   NEWS_POLL_INTERVAL_ON_ERROR,
+  NEWS_POLL_INTERVAL_ON_INCIDENT,
 } from '../config/timingConfig';
-import News from '../domains/News';
+import News, { NewsTypes } from '../domains/News';
 import type {
   GetNewsResponse,
   GetReadNewsResponse,
@@ -37,6 +38,7 @@ export default class NewsFeedStore extends Store {
 
   pollingNewsIntervalId: ?IntervalID = null;
   pollingNewsOnErrorIntervalId: ?IntervalID = null;
+  pollingNewsOnIncidentIntervalId: ?IntervalID = null;
 
   setup() {
     // Fetch news on app start
@@ -54,25 +56,77 @@ export default class NewsFeedStore extends Store {
     let rawNews;
     try {
       rawNews = await this.getNewsRequest.execute().promise;
-      // Reset "getNews" fast polling interval if set and set again regular polling interval
+      const hasIncident = find(
+        rawNews.items,
+        news => news.type === NewsTypes.INCIDENT
+      );
+
+      // Reset "getNews" fast polling interval if set and set regular polling interval
       if (!isTest && this.pollingNewsOnErrorIntervalId) {
-        clearInterval(this.pollingNewsIntervalId);
+        // Reset fast error interval
+        clearInterval(this.pollingNewsOnErrorIntervalId);
         this.pollingNewsOnErrorIntervalId = null;
+
+        if (!hasIncident) {
+          // set 30 min time interval if NO incidents
+          this.pollingNewsIntervalId = setInterval(
+            this.getNews,
+            NEWS_POLL_INTERVAL
+          );
+        }
+      }
+
+      // If incident occured, reset regular interval and set faster incident interval
+      if (hasIncident && !this.pollingNewsOnIncidentIntervalId) {
+        // Clear regular interval if set
+        if (this.pollingNewsIntervalId) {
+          clearInterval(this.pollingNewsIntervalId);
+          this.pollingNewsIntervalId = null;
+        }
+
+        // Set 10 min time interval and
+        this.pollingNewsOnIncidentIntervalId = setInterval(
+          this.getNews,
+          NEWS_POLL_INTERVAL_ON_INCIDENT
+        );
+      }
+
+      // If no incidents and incident poller interval active, reset interval and set regular one
+      if (!hasIncident && this.pollingNewsOnIncidentIntervalId) {
+        // Clear regulat interval
+        if (this.pollingNewsOnIncidentIntervalId) {
+          clearInterval(this.pollingNewsOnIncidentIntervalId);
+          this.pollingNewsOnIncidentIntervalId = null;
+        }
+
+        // Set 30 min time interval
         this.pollingNewsIntervalId = setInterval(
           this.getNews,
           NEWS_POLL_INTERVAL
         );
       }
+
       this._setFetchingNewsFailed(false);
     } catch (error) {
       // Decrease "getNews" fetching timer in case we got an error and there are no initial news set in store
-      if (!isTest && !this.rawNews && this.pollingNewsIntervalId) {
-        clearInterval(this.pollingNewsIntervalId);
-        this.pollingNewsIntervalId = null;
-        this.pollingNewsOnErrorIntervalId = setInterval(
-          this.getNews,
-          NEWS_POLL_INTERVAL_ON_ERROR
-        );
+      if (!isTest && !this.rawNews) {
+        // Reset all regular intervals
+        if (this.pollingNewsIntervalId) {
+          clearInterval(this.pollingNewsIntervalId);
+          this.pollingNewsIntervalId = null;
+        }
+        if (this.pollingNewsOnIncidentIntervalId) {
+          clearInterval(this.pollingNewsOnIncidentIntervalId);
+          this.pollingNewsOnIncidentIntervalId = null;
+        }
+
+        // Set fast ERROR interval
+        if (!this.pollingNewsOnErrorIntervalId) {
+          this.pollingNewsOnErrorIntervalId = setInterval(
+            this.getNews,
+            NEWS_POLL_INTERVAL_ON_ERROR
+          );
+        }
       }
       this._setFetchingNewsFailed(true);
     }

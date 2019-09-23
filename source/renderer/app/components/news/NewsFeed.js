@@ -61,6 +61,8 @@ export default class NewsFeed extends Component<Props, State> {
     hasShadow: false,
   };
 
+  scrollableDomElement: ?HTMLElement = null;
+
   componentDidMount() {
     this.scrollableDomElement = document.querySelector(
       SCROLLABLE_DOM_ELEMENT_SELECTOR
@@ -70,20 +72,25 @@ export default class NewsFeed extends Component<Props, State> {
   }
 
   componentWillUnmount() {
-    this.scrollableDomElement.removeEventListener(
-      'scroll',
-      this.handleOnScroll
-    );
+    if (this.scrollableDomElement) {
+      this.scrollableDomElement.removeEventListener(
+        'scroll',
+        this.handleOnScroll
+      );
+    }
   }
 
   handleOnScroll = () => {
     const { hasShadow: currentHasShadow } = this.state;
-    const { scrollTop } = this.scrollableDomElement;
-    const hasShadow = scrollTop > 3;
-    if (currentHasShadow !== hasShadow) {
-      this.setState({
-        hasShadow,
-      });
+
+    if (this.scrollableDomElement) {
+      const { scrollTop } = this.scrollableDomElement;
+      const hasShadow = scrollTop > 3;
+      if (currentHasShadow !== hasShadow) {
+        this.setState({
+          hasShadow,
+        });
+      }
     }
   };
 

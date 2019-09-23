@@ -12,6 +12,7 @@ import {
   MAINNET_NEWS_URL,
   TESTNET_NEWS_URL,
   STAGING_NEWS_URL,
+  DEVELOPMENT_NEWS_URL,
 } from '../config/urlsConfig';
 import {
   MAINNET,
@@ -87,6 +88,9 @@ export const getNewsURL = (network: string): string => {
   }
   if (network === TESTNET) {
     newsUrl = TESTNET_NEWS_URL;
+  }
+  if (network === DEVELOPMENT) {
+    newsUrl = DEVELOPMENT_NEWS_URL;
   }
   return newsUrl;
 };

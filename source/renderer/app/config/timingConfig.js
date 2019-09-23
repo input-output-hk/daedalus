@@ -23,4 +23,5 @@ export const STAKE_POOL_TOOLTIP_HOVER_WAIT = 700; // 700 milliseconds | unit: mi
 export const COPY_STATE_DIRECTORY_PATH_NOTIFICATION_DURATION = 10; // unit: seconds
 export const NEWS_POLL_INTERVAL = 20 * 1000; // 30 minutes | unit: milliseconds
 export const NEWS_POLL_INTERVAL_ON_ERROR = 1 * 60 * 1000; // 1 minute | unit: milliseconds
+export const NEWS_POLL_INTERVAL_ON_INCIDENT = 10 * 60 * 1000; // 10 minutes | unit: milliseconds
 /* eslint-disable max-len */
