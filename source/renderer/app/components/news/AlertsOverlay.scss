@@ -166,8 +166,9 @@
   font-family: var(--font-medium);
   font-size: 14px;
   font-weight: 500;
-  margin-bottom: 30px;
-  margin-top: 22.5px;
+  position: fixed;
+  right: 74px;
+  top: 24.5px;
 }
 
 .date {
