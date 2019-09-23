@@ -39,7 +39,7 @@ const messages = defineMessages({
   },
   newerVersionlabel: {
     id: 'automaticUpdate.newerVersion.label',
-    defaultMessage: '!!!newer version',
+    defaultMessage: '!!!a newer version',
     description: 'Label for "newer version" on "Automatic update" overlay',
   },
 });

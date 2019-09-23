@@ -20,7 +20,7 @@
   "automaticUpdate.accept.button.label": "Restart Daedalus and Update",
   "automaticUpdate.description1": "You are currently running Daedalus <b>v {currentAppVersion}</b> and <b>{nextUpdateVersion}</b> is available.",
   "automaticUpdate.description2": "Would you like to install the update? If choose to postpone, the update will be installed automatically on the next Daedalus launch.",
-  "automaticUpdate.newerVersion.label": "newer version",
+  "automaticUpdate.newerVersion.label": "a newer version",
   "automaticUpdate.postpone.button.label": "Postpone until Daedalus restart",
   "automaticUpdate.title": "Software update is available",
   "backToTopButton.label": "Back to top",

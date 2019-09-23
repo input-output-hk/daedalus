@@ -1195,7 +1195,7 @@
         }
       },
       {
-        "defaultMessage": "!!!newer version",
+        "defaultMessage": "!!!a newer version",
         "description": "Label for \"newer version\" on \"Automatic update\" overlay",
         "end": {
           "column": 3,
