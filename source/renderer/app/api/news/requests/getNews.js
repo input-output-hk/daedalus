@@ -5,7 +5,7 @@ import { getNewsURL } from '../../../utils/network';
 
 const { network } = global.environment;
 const hostname = getNewsURL(network);
-const path = '/input-output-hk/daedalus/newsfeed';
+const path = '/newsfeed';
 const filename = `newsfeed_${network}.json`;
 
 export const getNews = (): Promise<GetNewsResponse> =>
@@ -13,5 +13,5 @@ export const getNews = (): Promise<GetNewsResponse> =>
     hostname,
     path: `${path}/${filename}`,
     method: 'GET',
-    protocol: 'https',
+    protocol: 'http',
   });

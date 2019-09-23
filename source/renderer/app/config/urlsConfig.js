@@ -14,10 +14,10 @@ export const TESTNET_LATEST_VERSION_INFO_URL =
   'updates-cardano-testnet.s3.amazonaws.com';
 export const STAGING_LATEST_VERSION_INFO_URL = 'update-awstest.iohkdev.io';
 
-export const DEVELOPMENT_NEWS_URL = 'raw.githubusercontent.com';
-export const MAINNET_NEWS_URL = 'raw.githubusercontent.com';
-export const TESTNET_NEWS_URL = 'raw.githubusercontent.com';
-export const STAGING_NEWS_URL = 'raw.githubusercontent.com';
+export const DEVELOPMENT_NEWS_URL = 'daedalus.io';
+export const MAINNET_NEWS_URL = 'daedalus.io';
+export const TESTNET_NEWS_URL = 'daedalus.io';
+export const STAGING_NEWS_URL = 'daedalus.io';
 
 export const ALLOWED_EXTERNAL_HOSTNAMES = [
   MAINNET_EXPLORER_URL,
