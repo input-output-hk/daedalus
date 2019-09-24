@@ -42,6 +42,7 @@ export const DefaultSyncingConnectingStory = () => (
     onGetAvailableVersions={action('onGetAvailableVersions')}
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', true)}
+    showNewsFeedIcon
   />
 );
 
@@ -77,6 +78,7 @@ export const ConnectivityIssuesSyncingConnectingStory = () => (
     onGetAvailableVersions={action('onGetAvailableVersions')}
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', false)}
+    showNewsFeedIcon
   />
 );
 
@@ -112,5 +114,6 @@ export const SyncIssuesSyncingConnectingStory = () => (
     onGetAvailableVersions={action('onGetAvailableVersions')}
     onStatusIconClick={linkTo('Diagnostics', () => 'default')}
     disableDownloadLogs={boolean('disableDownloadLogs', false)}
+    showNewsFeedIcon
   />
 );

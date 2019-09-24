@@ -70,6 +70,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         onDownloadLogs={this.handleDownloadLogs}
         onToggleNewsFeedIconClick={toggleNewsFeed.trigger}
         disableDownloadLogs={stores.app.isDownloadNotificationVisible}
+        showNewsFeedIcon={!isNodeStopping && !isNodeStopped}
       />
     );
   }

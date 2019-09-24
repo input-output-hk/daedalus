@@ -46,6 +46,7 @@ type Props = {
   isNewAppVersionLoading: boolean,
   isNewAppVersionLoaded: boolean,
   disableDownloadLogs: boolean,
+  showNewsFeedIcon: boolean,
   onIssueClick: Function,
   onDownloadLogs: Function,
   onGetAvailableVersions: Function,
@@ -215,6 +216,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       syncPercentage,
       onStatusIconClick,
       onToggleNewsFeedIconClick,
+      showNewsFeedIcon,
     } = this.props;
 
     const componentStyles = classNames([
@@ -231,11 +233,13 @@ export default class SyncingConnecting extends Component<Props, State> {
 
     return (
       <div className={componentStyles}>
-        <NewsFeedIcon
-          onNewsFeedIconClick={onToggleNewsFeedIconClick}
-          newsFeedIconClass={newsFeedIconStyles}
-          showDot={hasUnreadNews}
-        />
+        {showNewsFeedIcon && (
+          <NewsFeedIcon
+            onNewsFeedIconClick={onToggleNewsFeedIconClick}
+            newsFeedIconClass={newsFeedIconStyles}
+            showDot={hasUnreadNews}
+          />
+        )}
         {this.showReportIssue && (
           <ReportIssue
             isConnected={isConnected}

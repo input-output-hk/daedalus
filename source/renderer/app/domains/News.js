@@ -71,7 +71,7 @@ class NewsCollection {
         (platform === 'browser' || includes(targetPlatforms, platform))
       );
     });
-    const orderedNews = orderBy(filteredNews, 'date', 'asc');
+    const orderedNews = orderBy(filteredNews, 'date', 'desc');
     runInAction(() => {
       this.all = orderedNews;
     });
@@ -109,9 +109,7 @@ class NewsCollection {
       this.all,
       item => item.type === NewsTypes.ANNOUNCEMENT && !item.read
     );
-    // Order announcements from newest to oldest
-    const orderedAnnouncements = orderBy(announcements, 'date', 'desc');
-    const obj = new NewsCollection(orderedAnnouncements);
+    const obj = new NewsCollection(announcements);
     return {
       all: obj.all,
       unread: obj.unread,
@@ -124,10 +122,8 @@ class NewsCollection {
       this.all,
       item => item.type === NewsTypes.INFO && !item.read
     );
-    // Order infos from newest to oldest
-    const orederedInfos = orderBy(infos, 'date', 'desc');
 
-    const obj = new NewsCollection(orederedInfos);
+    const obj = new NewsCollection(infos);
     return {
       all: obj.all,
       unread: obj.unread,
@@ -138,13 +134,13 @@ class NewsCollection {
   @computed get unread(): Array<News> {
     const unread = filter(this.all, item => !item.read);
     // Order unread from newest to oldest
-    return orderBy(unread, 'date', 'desc');
+    return orderBy(unread, 'date', 'asc');
   }
 
   @computed get read(): Array<News> {
     const read = filter(this.all, item => item.read);
     // Order read from newest to oldest
-    return orderBy(read, 'date', 'desc');
+    return orderBy(read, 'date', 'asc');
   }
 }
 

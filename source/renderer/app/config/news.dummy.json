@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1568983823861,
+  "updatedAt": 1569324863299,
   "items": [
     {
       "title": {
@@ -24,7 +24,7 @@
           "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
         }
       },
-      "date": 1568736864962,
+      "date": 1569324863299,
       "type": "info"
     },
     {
@@ -47,7 +47,7 @@
         },
         "route": "/settings"
       },
-      "date": 1569168864965,
+      "date": 1568979341589,
       "type": "info"
     },
     {
@@ -73,7 +73,7 @@
           "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
         }
       },
-      "date": 1569255264965,
+      "date": 1569152115002,
       "type": "info"
     },
     {
@@ -99,7 +99,7 @@
           "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
         }
       },
-      "date": 1568736864962,
+      "date": 1569065729169,
       "type": "announcement"
     },
     {
@@ -122,7 +122,7 @@
         },
         "route": "/settings"
       },
-      "date": 1569168864965,
+      "date": 1569238489658,
       "type": "announcement"
     },
     {
@@ -148,7 +148,7 @@
           "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
         }
       },
-      "date": 1569255264965,
+      "date": 1568892951736,
       "type": "announcement"
     }
   ]
