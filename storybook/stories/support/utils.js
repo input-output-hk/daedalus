@@ -11,6 +11,10 @@ import {
 } from '../../../source/renderer/app/domains/WalletTransaction';
 import WalletAddress from '../../../source/renderer/app/domains/WalletAddress';
 import { LOVELACES_PER_ADA } from '../../../source/renderer/app/config/numbersConfig';
+import {
+  WalletRecoveryPhraseVerificationStatuses,
+  WalletRecoveryPhraseVerificationTypes,
+} from '../../../source/renderer/app/stores/WalletsStore';
 import type {
   TransactionState,
   TransactionType,
@@ -37,8 +41,10 @@ export const generateWallet = (name: string, amount: string) =>
     syncState: { data: null, tag: 'synced' },
     isLegacy: false,
     recoveryPhraseVerificationDate: new Date(),
-    recoveryPhraseVerificationStatus: 'ok',
-    recoveryPhraseVerificationStatusType: 'neverChecked',
+    recoveryPhraseVerificationStatus:
+      WalletRecoveryPhraseVerificationStatuses.OK,
+    recoveryPhraseVerificationStatusType:
+      WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
   });
 
 export const generateTransaction = (

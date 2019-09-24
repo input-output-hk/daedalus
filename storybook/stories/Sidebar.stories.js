@@ -5,6 +5,7 @@ import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import StoryDecorator from './support/StoryDecorator';
 import Sidebar from '../../source/renderer/app/components/sidebar/Sidebar';
+import { WalletRecoveryPhraseVerificationStatuses } from '../../source/renderer/app/stores/WalletsStore';
 import {
   CATEGORIES_WITH_DELEGATION_COUNTDOWN,
   CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN,
@@ -19,7 +20,8 @@ const sidebarMenus = observable({
         info: '100 ADA',
         isConnected: true,
         isLegacy: false,
-        recoveryPhraseVerificationStatus: 'ok',
+        recoveryPhraseVerificationStatus:
+          WalletRecoveryPhraseVerificationStatuses.OK,
       },
       {
         id: '2',
@@ -27,7 +29,8 @@ const sidebarMenus = observable({
         info: '200 ADA',
         isConnected: true,
         isLegacy: false,
-        recoveryPhraseVerificationStatus: 'ok',
+        recoveryPhraseVerificationStatus:
+          WalletRecoveryPhraseVerificationStatuses.OK,
       },
       {
         id: '3',
@@ -35,7 +38,8 @@ const sidebarMenus = observable({
         info: '300 ADA',
         isConnected: true,
         isLegacy: false,
-        recoveryPhraseVerificationStatus: 'ok',
+        recoveryPhraseVerificationStatus:
+          WalletRecoveryPhraseVerificationStatuses.OK,
       },
     ],
     activeWalletId: '1',

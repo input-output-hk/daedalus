@@ -812,6 +812,9 @@ export const createDaedalusComponentsTheme = (
     recoveryPhrase: {
       '--theme-recovery-phrase-normal-background-color':
         'rgba(32, 34, 37, 0.05)',
+      '--theme-recovery-phrase-normal-border-color': 'rgba(68, 91, 124, .07)',
+      '--theme-recovery-phrase-warning-background-color':
+        'rgba(68, 91, 124, 0.05)',
       '--theme-recovery-phrase-attention-background-color':
         'rgba(234, 76, 91, .1)',
     },

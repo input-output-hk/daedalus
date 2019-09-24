@@ -139,7 +139,7 @@ export default class WalletsStore extends Store {
   @observable createWalletStep = null;
   @observable createWalletShowAbortConfirmation = false;
   @observable
-  recoveryPhraseVerificationData: Object = {};
+  recoveryPhraseVerificationData: RecoveryPhraseVerificationData = {};
 
   // TODO: Remove once the new wallet creation process is ready
   @observable useNewWalletCreationProcess = false;

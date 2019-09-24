@@ -4,6 +4,10 @@ import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import StoryDecorator from './support/StoryDecorator';
 import SidebarWalletsMenu from '../../source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu';
+import {
+  WalletRecoveryPhraseVerificationStatuses,
+  WalletRecoveryPhraseVerificationTypes,
+} from '../../source/renderer/app/stores/WalletsStore';
 
 storiesOf('SidebarWalletsMenu', module)
   .addDecorator(story => (
@@ -38,8 +42,10 @@ storiesOf('SidebarWalletsMenu', module)
           isLegacy: false,
           createdAt: new Date(),
           recoveryPhraseVerificationDate: new Date(),
-          recoveryPhraseVerificationStatus: 'ok',
-          recoveryPhraseVerificationStatusType: 'neverChecked',
+          recoveryPhraseVerificationStatus:
+            WalletRecoveryPhraseVerificationStatuses.OK,
+          recoveryPhraseVerificationStatusType:
+            WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
         },
         {
           id: '2',
@@ -51,8 +57,10 @@ storiesOf('SidebarWalletsMenu', module)
           isLegacy: false,
           createdAt: new Date(),
           recoveryPhraseVerificationDate: new Date(),
-          recoveryPhraseVerificationStatus: 'ok',
-          recoveryPhraseVerificationStatusType: 'neverChecked',
+          recoveryPhraseVerificationStatus:
+            WalletRecoveryPhraseVerificationStatuses.OK,
+          recoveryPhraseVerificationStatusType:
+            WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
         },
         {
           id: '3',
@@ -64,8 +72,10 @@ storiesOf('SidebarWalletsMenu', module)
           isLegacy: false,
           createdAt: new Date(),
           recoveryPhraseVerificationDate: new Date(),
-          recoveryPhraseVerificationStatus: 'ok',
-          recoveryPhraseVerificationStatusType: 'neverChecked',
+          recoveryPhraseVerificationStatus:
+            WalletRecoveryPhraseVerificationStatuses.OK,
+          recoveryPhraseVerificationStatusType:
+            WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
         },
         {
           id: '4',
@@ -77,8 +87,10 @@ storiesOf('SidebarWalletsMenu', module)
           isLegacy: false,
           createdAt: new Date(),
           recoveryPhraseVerificationDate: new Date(),
-          recoveryPhraseVerificationStatus: 'ok',
-          recoveryPhraseVerificationStatusType: 'neverChecked',
+          recoveryPhraseVerificationStatus:
+            WalletRecoveryPhraseVerificationStatuses.OK,
+          recoveryPhraseVerificationStatusType:
+            WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
         },
       ]}
       isActiveWallet={id => id === '2'}

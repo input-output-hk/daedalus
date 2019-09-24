@@ -19,6 +19,10 @@ import {
   RECOVERY_PHRASE_VERIFICATION_WARNING,
   RECOVERY_PHRASE_VERIFICATION_NOTIFICATION,
 } from '../../source/renderer/app/config/walletsConfig';
+import {
+  WalletRecoveryPhraseVerificationStatuses,
+  WalletRecoveryPhraseVerificationTypes,
+} from '../../source/renderer/app/stores/WalletsStore';
 
 /* eslint-disable react/display-name  */
 
@@ -30,28 +34,28 @@ const recoveryPhraseId = 'Recovery Phrase';
 
 const recoveryPhraseVerificationDateOptions = {
   'Never Checked - Ok': {
-    type: 'neverChecked',
-    status: 'ok',
+    type: WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+    status: WalletRecoveryPhraseVerificationStatuses.OK,
   },
   'Never Checked - Warning': {
-    type: 'neverChecked',
-    status: 'warning',
+    type: WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+    status: WalletRecoveryPhraseVerificationStatuses.WARNING,
   },
   'Never Checked - Notification': {
-    type: 'neverChecked',
-    status: 'notification',
+    type: WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+    status: WalletRecoveryPhraseVerificationStatuses.NOTIFICATION,
   },
   'Already Checked - Ok': {
-    type: 'alreadyChecked',
-    status: 'ok',
+    type: WalletRecoveryPhraseVerificationTypes.ALREADY_CHECKED,
+    status: WalletRecoveryPhraseVerificationStatuses.OK,
   },
   'Already Checked - Warning': {
-    type: 'alreadyChecked',
-    status: 'warning',
+    type: WalletRecoveryPhraseVerificationTypes.ALREADY_CHECKED,
+    status: WalletRecoveryPhraseVerificationStatuses.WARNING,
   },
   'Already Checked - Notification': {
-    type: 'alreadyChecked',
-    status: 'notification',
+    type: WalletRecoveryPhraseVerificationTypes.ALREADY_CHECKED,
+    status: WalletRecoveryPhraseVerificationStatuses.NOTIFICATION,
   },
 };
 
@@ -273,8 +277,12 @@ export default () => {
       }
       creationDate={creationDate}
       recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
-      recoveryPhraseVerificationStatus={status || 'ok'}
-      recoveryPhraseVerificationStatusType={type || 'neverChecked'}
+      recoveryPhraseVerificationStatus={
+        status || WalletRecoveryPhraseVerificationStatuses.OK
+      }
+      recoveryPhraseVerificationStatusType={
+        type || WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED
+      }
     />
   );
 };

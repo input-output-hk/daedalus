@@ -28,19 +28,19 @@ export default class SidebarStore extends Store {
 
   @computed get wallets(): Array<SidebarWalletType> {
     const { networkStatus, wallets } = this.stores;
-    return wallets.all.map(w => {
+    return wallets.all.map(wallet => {
       const {
         recoveryPhraseVerificationStatus,
-      } = wallets.getWalletRecoveryPhraseVerification(w.id);
+      } = wallets.getWalletRecoveryPhraseVerification(wallet.id);
       return {
-        id: w.id,
-        title: w.name,
-        info: formattedWalletAmount(w.amount),
+        id: wallet.id,
+        title: wallet.name,
+        info: formattedWalletAmount(wallet.amount),
         isConnected: networkStatus.isConnected,
         isRestoreActive:
-          get(w, 'syncState.tag') === WalletSyncStateTags.RESTORING,
-        restoreProgress: get(w, 'syncState.data.percentage.quantity', 0),
-        isLegacy: w.isLegacy,
+          get(wallet, 'syncState.tag') === WalletSyncStateTags.RESTORING,
+        restoreProgress: get(wallet, 'syncState.data.percentage.quantity', 0),
+        isLegacy: wallet.isLegacy,
         recoveryPhraseVerificationStatus,
       };
     });
