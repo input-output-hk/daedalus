@@ -17,6 +17,7 @@ type Props = {
   onMarkNewsAsRead: Function,
   onOpenExternalLink: Function,
   onOpenAlert?: Function,
+  onGoToRoute: Function,
   expandWithoutTransition?: boolean,
 };
 
@@ -70,10 +71,13 @@ export default class NewsItem extends Component<Props, State> {
   newsItemButtonClickHandler(event: SyntheticMouseEvent<HTMLElement>) {
     event.preventDefault();
     event.stopPropagation();
-    const { onOpenExternalLink, newsItem } = this.props;
-    const actionUrl = newsItem.action.url;
-    if (actionUrl) {
-      onOpenExternalLink(actionUrl, event);
+    const { onOpenExternalLink, newsItem, onGoToRoute } = this.props;
+    const { url, route } = newsItem.action;
+
+    if (url) {
+      onOpenExternalLink(url, event);
+    } else if (route) {
+      onGoToRoute(route);
     }
   }
 

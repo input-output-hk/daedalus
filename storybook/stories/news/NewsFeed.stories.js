@@ -122,6 +122,7 @@ storiesOf('NewsFeed', module)
   .add('NewsFeed - no news items fetched from server', () => (
     <div>
       <NewsFeed
+        onGoToRoute={action('onGoToRoute')}
         isLoadingNews={false}
         onMarkNewsAsRead={action('onMarkNewsAsRead')}
         onNewsItemActionClick={action('onNewsItemActionClick')}
@@ -137,6 +138,7 @@ storiesOf('NewsFeed', module)
   .add('NewsFeed - newsfeed empty', () => (
     <div>
       <NewsFeed
+        onGoToRoute={action('onGoToRoute')}
         isLoadingNews={false}
         onMarkNewsAsRead={action('onMarkNewsAsRead')}
         onNewsItemActionClick={action('onNewsItemActionClick')}
@@ -152,6 +154,7 @@ storiesOf('NewsFeed', module)
   .add('NewsFeed - loading', () => (
     <div>
       <NewsFeed
+        onGoToRoute={action('onGoToRoute')}
         isLoadingNews
         onMarkNewsAsRead={action('onMarkNewsAsRead')}
         onNewsItemActionClick={action('onNewsItemActionClick')}
@@ -167,6 +170,7 @@ storiesOf('NewsFeed', module)
   .add('NewsFeed', () => (
     <div>
       <NewsFeed
+        onGoToRoute={action('onGoToRoute')}
         isLoadingNews={false}
         onMarkNewsAsRead={action('onMarkNewsAsRead')}
         onNewsItemActionClick={action('onNewsItemActionClick')}

@@ -15,6 +15,11 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
     markNewsAsRead([newsTimestamps]);
   };
 
+  handleGoToRoute = (route: string) => {
+    const { actions } = this.props;
+    actions.router.goToRoute.trigger({ route });
+  };
+
   render() {
     const { stores, actions } = this.props;
     const { newsFeedData, isLoadingNews } = stores.newsFeed;
@@ -31,6 +36,7 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
         onOpenExternalLink={openExternalLink}
         onMarkNewsAsRead={this.handleMarkNewsAsRead}
         openWithoutTransition={stores.networkStatus.environment.isTest}
+        onGoToRoute={this.handleGoToRoute}
       />
     );
   }
