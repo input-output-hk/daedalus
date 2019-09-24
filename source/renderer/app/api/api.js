@@ -134,6 +134,9 @@ import type {
   GetWalletUtxosRequest,
 } from './wallets/types';
 
+// News Types
+import type { GetNewsResponse } from './news/types';
+
 // Common errors
 import {
   GenericApiError,
@@ -1009,7 +1012,7 @@ export default class AdaApi {
     }
   };
 
-  getNews = async (): Promise<any> => {
+  getNews = async (): Promise<GetNewsResponse> => {
     try {
       return await getNews();
     } catch (error) {
