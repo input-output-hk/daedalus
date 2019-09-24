@@ -50,6 +50,7 @@ storiesOf('NewsFeed', module)
   ))
   .add('Alerts Overlay', props => (
     <AlertsOverlay
+      allAlertsCount={props['0'].alerts.length}
       alerts={props['0'].alerts}
       onCloseOpenAlert={() => {}}
       onMarkNewsAsRead={action('onMarkNewsAsRead')}

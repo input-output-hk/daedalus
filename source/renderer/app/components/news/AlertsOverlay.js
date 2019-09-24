@@ -20,6 +20,8 @@ type Props = {
   onCloseOpenAlert: Function,
   onMarkNewsAsRead: Function,
   onOpenExternalLink: Function,
+  allAlertsCount: number,
+  hideCounter?: boolean,
 };
 
 @observer
@@ -72,8 +74,13 @@ export default class AlertsOverlay extends Component<Props, State> {
   };
 
   renderCounter = (alerts: Array<News.News>) => {
-    if (alerts.length > 1) {
-      return <span className={styles.counter}>1 / {alerts.length}</span>;
+    const { allAlertsCount, hideCounter } = this.props;
+    if (!hideCounter) {
+      return (
+        <span className={styles.counter}>
+          {allAlertsCount - alerts.length + 1} / {allAlertsCount}
+        </span>
+      );
     }
     return null;
   };

@@ -89,6 +89,7 @@ export default class NewsItem extends Component<Props, State> {
       this.state.newsItemExpanded ? styles.expanded : null,
       newsItem.read ? styles.isRead : null,
     ]);
+    const { route } = newsItem.action;
 
     return (
       <div
@@ -130,7 +131,7 @@ export default class NewsItem extends Component<Props, State> {
               onClick={this.newsItemButtonClickHandler.bind(this)}
             >
               {newsItem.action.label}
-              <SVGInline svg={externalLinkIcon} />
+              {!route && <SVGInline svg={externalLinkIcon} />}
             </button>
           </AnimateHeight>
         </div>
