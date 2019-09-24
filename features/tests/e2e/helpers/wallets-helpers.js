@@ -123,9 +123,12 @@ const createWalletsAsync = async (table, context) => {
   // Add or set the wallets for this scenario
   if (context.wallets != null) {
     context.wallets.push(...result.value.storeWallets);
-    context.mnemonics.push(...result.value.mnemonics);
   } else {
     context.wallets = result.value.storeWallets;
+  }
+  if (context.mnemonics != null) {
+    context.mnemonics.push(...result.value.mnemonics);
+  } else {
     context.mnemonics = result.value.mnemonics;
   }
 };
