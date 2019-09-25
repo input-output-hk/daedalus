@@ -233,13 +233,6 @@ export default class SyncingConnecting extends Component<Props, State> {
 
     return (
       <div className={componentStyles}>
-        {showNewsFeedIcon && (
-          <NewsFeedIcon
-            onNewsFeedIconClick={onToggleNewsFeedIconClick}
-            newsFeedIconClass={newsFeedIconStyles}
-            showDot={hasUnreadNews}
-          />
-        )}
         {this.showReportIssue && (
           <ReportIssue
             isConnected={isConnected}
@@ -248,6 +241,13 @@ export default class SyncingConnecting extends Component<Props, State> {
             disableDownloadLogs={disableDownloadLogs}
             isConnecting={isConnecting}
             isSyncing={isSyncing}
+          />
+        )}
+        {showNewsFeedIcon && (
+          <NewsFeedIcon
+            onNewsFeedIconClick={onToggleNewsFeedIconClick}
+            newsFeedIconClass={newsFeedIconStyles}
+            showDot={hasUnreadNews}
           />
         )}
         <LogosDisplay isConnected={isConnected} />
