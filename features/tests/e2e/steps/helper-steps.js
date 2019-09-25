@@ -10,6 +10,10 @@ When(/^I freeze$/, { timeout: oneHour }, callback => {
   setTimeout(callback, oneHour);
 });
 
+Then(/^I should see the initial screen$/, function() {
+  return this.client.waitForVisible('.SidebarLayout_component');
+});
+
 When(/^I take a screenshot named "([^"]*)"$/, async function(testName) {
   const file = generateScreenshotFilePath(testName);
   await saveScreenshot(this, file);
