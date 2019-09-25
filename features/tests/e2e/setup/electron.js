@@ -153,12 +153,12 @@ After({ tags: '@reconnectApp' }, async function() {
 // eslint-disable-next-line prefer-arrow-callback
 After(async function({ sourceLocation, result }) {
   scenariosCount++;
-  // if (result.status === 'failed') {
-  //   const testName = getTestNameFromTestFile(sourceLocation.uri);
-  //   const file = generateScreenshotFilePath(testName);
-  //   await saveScreenshot(context.app, file);
-  //   await printMainProcessLogs();
-  // }
+  if (result.status === 'failed') {
+    const testName = getTestNameFromTestFile(sourceLocation.uri);
+    const file = generateScreenshotFilePath(testName);
+    await saveScreenshot(context.app, file);
+    await printMainProcessLogs();
+  }
 });
 
 // eslint-disable-next-line prefer-arrow-callback
