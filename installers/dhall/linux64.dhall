@@ -17,7 +17,8 @@ in
 , pass      =
   { statePath           = dataDir
   , workingDir          = dataDir
-  , nodePath            = "cardano-wallet-http-bridge"
+  , nodePath            = "\${NODE_EXE}"
+  , cliPath             = "\${CLI_EXE}"
   , nodeDbPath          = "${dataDir}/DB/"
   , nodeLogConfig       = "\${DAEDALUS_CONFIG}/log-config-prod.yaml"
   , nodeLogPath         = [] : Optional Text

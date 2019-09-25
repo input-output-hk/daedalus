@@ -40,12 +40,13 @@ The result can be found at `./result/daedalus-*.bin`.
 
 `shell.nix` provides a way to load a shell with all the correct versions of all the required dependencies for development.
 
-## V2 API Integration Guide
+## V2 API Integration Guide [Jormungandr]
 
-1. From `cardano-sl` repo, start the demo cluster with reference to the custom config.yaml in the Daedalus utils folder. As an example, `./scripts/launch/demo-nix.sh -c /absolute/path/to/daedalus/utils/configurations/cardano-wallet-genesis.yaml`
-2. Run `yarn nix:dev *system-start*` from `daedalus`
-3. Run `yarn dev` from the `nix-shell`
-4. Once Daedalus has started, and has gotten past the loading screen, run `yarn v2-api-importer` from a new terminal window. This is only required if you wish to import some funded wallets
+1. Run `yarn nix:dev` from `daedalus`. The systemStart argument no longer applies.
+2. Run `yarn dev` from the `nix-shell`
+3. Once Daedalus has started, and has gotten past the loading screen, run `yarn v2-api-importer` from a new terminal window. This is only required if you wish to import some funded wallets
+
+API docs for pinned cardano-wallet version: https://input-output-hk.github.io/cardano-wallet/api/v2019-09-13/
 
 ### V2 Known Issues
 - As network-info is stubbed, the NTP check will throw. Just disregard this for now.

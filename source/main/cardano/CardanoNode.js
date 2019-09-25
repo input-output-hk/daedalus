@@ -18,6 +18,7 @@ import type {
   FaultInjectionIpcRequest,
   FaultInjectionIpcResponse,
   TlsConfig,
+  CardanoNodeImplementation,
 } from '../../common/types/cardano-node.types';
 import { CardanoNodeStates } from '../../common/types/cardano-node.types';
 import { CardanoWalletLauncher } from './CardanoWalletLauncher';
@@ -61,7 +62,9 @@ type NodeArgs = Array<string>;
 
 export type CardanoNodeConfig = {
   workingDir: string, // Path to the state directory
-  nodePath: string, // Path to cardano-node executable
+  nodePath: string, // Path to jormungandr or cardano-node executable
+  cliPath: string, // Path to node CLI tool. Jormungandr only
+  nodeImplementation: CardanoNodeImplementation,
   logFilePath: string, // Log file path for cardano-sl
   tlsPath: string, // Path to cardano-node TLS folder
   nodeArgs: NodeArgs, // Arguments that are used to spwan cardano-node
@@ -160,6 +163,14 @@ export class CardanoNode {
   _injectedFaults: Array<FaultInjection> = [];
 
   /**
+   * Cardano Node config getter
+   * @returns {CardanoNodeImplementation}
+   */
+  get config(): CardanoNodeConfig {
+    return this._config;
+  }
+
+  /**
    * Getter which copies and returns the internal tls config.
    * @returns {TlsConfig}
    */
@@ -240,7 +251,14 @@ export class CardanoNode {
 
     // Setup
     const { _log } = this;
-    const { nodePath, nodeArgs, startupTimeout } = config;
+    const {
+      nodePath,
+      cliPath,
+      nodeArgs,
+      startupTimeout,
+      nodeImplementation,
+    } = config;
+
     const { createWriteStream } = this._actions;
     this._config = config;
 
@@ -253,7 +271,7 @@ export class CardanoNode {
       { startupTries: this._startupTries }
     );
 
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const logFile = createWriteStream(config.logFilePath, { flags: 'a' });
       logFile.on('open', async () => {
         this._cardanoLogFile = logFile;
@@ -268,16 +286,19 @@ export class CardanoNode {
         const networkIndexFromArgs = nodeArgs.indexOf('--network');
         const networkFromArgs = nodeArgs[networkIndexFromArgs + 1];
 
-        const node = CardanoWalletLauncher({
+        const node = await CardanoWalletLauncher({
           path: nodePath,
           logStream: logFile,
           networkMode: networkFromArgs,
+          nodeImplementation,
+          cliPath,
           // TODO: Make this dynamic
           nodePort: 8888,
           stateDir: config.workingDir,
         });
 
         this._node = node;
+
         try {
           await promisedCondition(() => node.connected, startupTimeout);
           // Setup livecycle event handlers

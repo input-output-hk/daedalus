@@ -23,6 +23,7 @@ import {
   cardanoFaultInjectionChannel,
   cardanoRestartChannel,
   cardanoStateChangeChannel,
+  cardanoNodeImplementationChannel,
   getCachedCardanoStatusChannel,
   cardanoTlsConfigChannel,
   setCachedCardanoStatusChannel,
@@ -33,11 +34,20 @@ const startCardanoNode = (
   node: CardanoNode,
   launcherConfig: LauncherConfig
 ) => {
-  const { nodePath, tlsPath, logsPrefix, workingDir } = launcherConfig;
+  const {
+    nodePath,
+    tlsPath,
+    logsPrefix,
+    workingDir,
+    cliPath,
+    nodeImplementation,
+  } = launcherConfig;
   const nodeArgs = prepareArgs(launcherConfig);
   const logFilePath = `${logsPrefix}/cardano-node.log`;
   const config = {
     nodePath,
+    cliPath,
+    nodeImplementation,
     logFilePath,
     tlsPath,
     nodeArgs,
@@ -108,6 +118,16 @@ export const setupCardanoNodeMode = (
       status: cardanoNode.status,
     });
     return Promise.resolve(cardanoNode.status);
+  });
+
+  cardanoNodeImplementationChannel.onRequest(() => {
+    Logger.info(
+      'ipcMain: Received request from renderer for cardano node implementation',
+      {
+        nodeImplementation: cardanoNode.config.nodeImplementation,
+      }
+    );
+    return Promise.resolve(cardanoNode.config.nodeImplementation);
   });
 
   setCachedCardanoStatusChannel.onReceive((status: ?CardanoStatus) => {

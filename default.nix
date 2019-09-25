@@ -1,9 +1,10 @@
 let
-  localLib = import ./lib.nix;
   system = builtins.currentSystem; # todo
 in
 { target ? builtins.currentSystem
 #system ? builtins.currentSystem
+, nodeImplementation ? "jormungandr"
+, localLib ? import ./lib.nix { inherit nodeImplementation; }
 , config ? {}
 , pkgs ? localLib.iohkNix.getPkgs { inherit system config; }
 , cluster ? "mainnet"

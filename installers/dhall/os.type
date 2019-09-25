@@ -14,6 +14,7 @@
 , pass :
   { statePath           : Text
   , nodePath            : Text
+  , cliPath             : Text
   , nodeDbPath          : Text
   , nodeLogConfig       : Text
   , nodeLogPath         : Optional Text
