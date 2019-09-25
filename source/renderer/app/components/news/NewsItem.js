@@ -81,6 +81,27 @@ export default class NewsItem extends Component<Props, State> {
     }
   }
 
+  generateTitleWithBadge = (title: string, isRead: boolean) => {
+    const wordsArray = title.split(' ');
+    const lastWordIndex = wordsArray.length - 1;
+    const lastWord = wordsArray[lastWordIndex];
+
+    // Remove last word from array
+    wordsArray.splice(lastWordIndex, 1);
+    // Join words without last one
+    const firstSentencePart = wordsArray.join(' ');
+
+    return (
+      <h4 className={styles.newsItemTitle}>
+        {firstSentencePart ? `${firstSentencePart} ` : null}
+        <span className={styles.lastWordWrapper}>
+          {lastWord}&nbsp;
+          {!isRead && <span className={styles.newsItemBadge} />}
+        </span>
+      </h4>
+    );
+  };
+
   render() {
     const { newsItem, expandWithoutTransition } = this.props;
     const componentClasses = classNames([
@@ -90,6 +111,7 @@ export default class NewsItem extends Component<Props, State> {
       newsItem.read ? styles.isRead : null,
     ]);
     const { route } = newsItem.action;
+    const title = this.generateTitleWithBadge(newsItem.title, newsItem.read);
 
     return (
       <div
@@ -97,10 +119,7 @@ export default class NewsItem extends Component<Props, State> {
         role="presentation"
         onClick={this.newsItemClickHandler.bind(this)}
       >
-        <h4 className={styles.newsItemTitle}>
-          {newsItem.title}
-          {!newsItem.read && <span className={styles.newsItemBadge} />}
-        </h4>
+        {title}
         <div className={styles.newsItemDate}>
           {moment(newsItem.date).format(this.localizedDateFormat)}
         </div>

@@ -31,15 +31,20 @@
     font-size: 16px;
     line-height: 1.33;
     margin-bottom: 2px;
-  }
 
-  .newsItemBadge {
-    background-color: var(--theme-news-item-badge-color);
-    border-radius: 12.5px;
-    display: inline-block;
-    height: 8px;
-    margin: 3px 8px;
-    width: 8px;
+    .lastWordWrapper {
+      display: inline-block;
+      word-break: break-all;
+
+      .newsItemBadge {
+        background-color: var(--theme-news-item-badge-color);
+        border-radius: 12.5px;
+        display: inline-block;
+        height: 8px;
+        margin: 3px 8px;
+        width: 8px;
+      }
+    }
   }
 
   .newsItemDate {

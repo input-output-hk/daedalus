@@ -42,10 +42,13 @@
       },
       "action": {
         "label": {
-          "en-US": "Check en-US",
-          "ja-JP": "Check ja-JP"
+          "en-US": "Visit en-US",
+          "ja-JP": "Visit ja-JP"
         },
-        "route": "/settings"
+        "url": {
+          "en-US": "https://iohk.zendesk.com/hc/en-us/articles/",
+          "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
+        }
       },
       "date": 1568979341589,
       "type": "info"
@@ -117,10 +120,13 @@
       },
       "action": {
         "label": {
-          "en-US": "Check en-US",
-          "ja-JP": "Check ja-JP"
+          "en-US": "Visit en-US",
+          "ja-JP": "Visit ja-JP"
         },
-        "route": "/settings"
+        "url": {
+          "en-US": "https://iohk.zendesk.com/hc/en-us/articles/",
+          "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/"
+        }
       },
       "date": 1569238489658,
       "type": "announcement"
