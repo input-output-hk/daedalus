@@ -116,7 +116,6 @@ Given('there is no news', async function() {
 
 Given('there is an incident', async function() {
   await prepareFakeNews(this, newsDummyJson, (news, done) => {
-    console.debug('NEWS: ', news);
     const incident = news.items.find(i => i.type === 'incident');
     daedalus.api.ada.setFakeNewsFeedJsonForTesting({
       updatedAt: Date.now(),
