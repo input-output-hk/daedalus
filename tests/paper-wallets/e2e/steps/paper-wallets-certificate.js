@@ -10,7 +10,7 @@ declare var daedalus: Daedalus;
 
 const paperWalletCertificatePath = path.resolve(
   __dirname,
-  '../documents/paper_wallet_certificates/paper-wallet-certificate.pdf'
+  '../documents/paper-wallet-certificate.pdf'
 );
 
 Given(/^I see the "Certificate Generation Instructions" dialog$/, function() {

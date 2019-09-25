@@ -180,7 +180,7 @@ gulp.task('build:themes', gulp.series('clean:dist', 'prepare:themes'));
 gulp.task(
   'test:e2e:nodemon',
   shell.task(
-    'nodemon --watch dist --watch tests --exec "yarn cucumber && yarn test:e2e --tags \'@e2e and @watch\'"'
+    'nodemon --watch dist --watch tests --exec "yarn test:e2e --tags \'@e2e and @watch\'"'
   )
 );
 

@@ -5,7 +5,7 @@ import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
 const SELECTORS = {
-  CATEGORY_ACTIVE: 'SidebarCategory_active',
+  CATEGORY_ACTIVE: '.SidebarCategory_active',
   CATEGORY_COMPONENT: '.SidebarCategory_component',
   LAYOUT_COMPONENT: '.SidebarLayout_component',
   MENU_COMPONENT: '.SidebarMenu_component',
@@ -18,7 +18,7 @@ const SELECTORS = {
 Given(/^the sidebar submenu is (hidden|visible)/, async function(state) {
   const isVisible = state === 'visible';
   await this.client.waitForVisible(SELECTORS.SIDEBAR_COMPONENT);
-  await this.client.executeAsync((visible, done) => {
+  await this.client.executeAsync((visible, SELECTORS, done) => {
     const { isShowingSubMenus } = daedalus.stores.sidebar;
     let sidebarWillAnimate = false;
     if (isShowingSubMenus !== visible) {
@@ -39,7 +39,7 @@ Given(/^the sidebar submenu is (hidden|visible)/, async function(state) {
     } else {
       done();
     }
-  }, isVisible);
+  }, isVisible, SELECTORS);
   return this.client.waitForExist(SELECTORS.MENU_VISIBLE, null, !isVisible);
 });
 

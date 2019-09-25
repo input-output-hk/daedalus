@@ -43,21 +43,18 @@ Then(
       this.client,
       selectors.walletUtxosAmount
     );
-    const walletSettingsHistogram =
-      daedalus.stores.walletSettings.walletUtxos ?
-      daedalus.stores.walletSettings.walletUtxos.histogram :
-      null;
     const {
       value: { expextedWalletAmount, histogram },
-    } = await this.client.executeAsync(done =>
+    } = await this.client.executeAsync(done => {
+      const histogram = daedalus.stores.walletSettings.walletUtxos
+        ? daedalus.stores.walletSettings.walletUtxos.histogram
+        : null;
       done({
         expextedWalletAmount: daedalus.stores.wallets.activeValue,
-        histogram: walletSettingsHistogram,
-      })
-    );
-
+        histogram,
+      });
+    });
     const expectedWalletUtxosAmount = getWalletUtxosTotalAmount(histogram);
-
     expect(expextedWalletAmount).to.equal(renderedWalletAmount);
     expect(expectedWalletUtxosAmount).to.equal(
       parseInt(renderedWalletUtxosAmount, 10)
