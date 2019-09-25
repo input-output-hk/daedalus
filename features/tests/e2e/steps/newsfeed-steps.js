@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { Before, Given, When, Then } from 'cucumber';
 import moment from 'moment';
 
-import newsDummyJson from '../../../../source/renderer/app/config/news.dummy';
+import newsDummyJson from '../documents/dummy-news.json';
 import {
   expectTextInSelector,
   getVisibleElementsCountForSelector,
@@ -116,6 +116,7 @@ Given('there is no news', async function() {
 
 Given('there is an incident', async function() {
   await prepareFakeNews(this, newsDummyJson, (news, done) => {
+    console.debug('NEWS: ', news);
     const incident = news.items.find(i => i.type === 'incident');
     daedalus.api.ada.setFakeNewsFeedJsonForTesting({
       updatedAt: Date.now(),
@@ -195,6 +196,10 @@ Then('the incident will cover the screen', async function() {
 
 Then('the alert disappears', async function() {
   await this.client.waitForVisible('.AlertsOverlay_component', null, true);
+});
+
+Then('the alert overlay opens', async function() {
+  await this.client.waitForVisible('.AlertsOverlay_component');
 });
 
 Then(/^the newsfeed contains (\d+) read (\w+?)s$/, async function(
