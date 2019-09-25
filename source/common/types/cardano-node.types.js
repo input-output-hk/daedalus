@@ -7,6 +7,11 @@ export type TlsConfig = {
   key: Uint8Array,
 };
 
+export type CardanoNodeImplementation =
+  | 'jormungandr'
+  | 'cardano-http-bridge'
+  | 'cardano-node';
+
 export type NetworkNames =
   | 'mainnet'
   | 'staging'

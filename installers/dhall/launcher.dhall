@@ -11,6 +11,7 @@
 , logsPrefix     = os.nodeArgs.logsPrefix
 , tlsPath        = os.nodeArgs.tlsPath
 , x509ToolPath   = os.x509ToolPath
+, nodeImplementation = "\${NODE_IMPLEMENTATION}"
 , nodeArgs =
     [ "--tlsca",               "${os.nodeArgs.tlsPath}/server/ca.crt"
     , "--tlscert",             "${os.nodeArgs.tlsPath}/server/server.crt"

@@ -4,6 +4,7 @@ import {
   CARDANO_FAULT_INJECTION_CHANNEL,
   CARDANO_RESTART_CHANNEL,
   CARDANO_STATE_CHANNEL,
+  CARDANO_NODE_IMPLEMENTATION_CHANNEL,
   GET_CACHED_CARDANO_STATUS_CHANNEL,
   CARDANO_TLS_CONFIG_CHANNEL,
   CARDANO_AWAIT_UPDATE_CHANNEL,
@@ -18,6 +19,8 @@ import type {
   CardanoRestartRendererRequest,
   CardanoStateRendererResponse,
   CardanoStateRendererRequest,
+  CardanoNodeImplementationRendererResponse,
+  CardanoNodeImplementationRendererRequest,
   CardanoTlsConfigMainResponse,
   CardanoTlsConfigRendererRequest,
   GetCachedCardanoStatusRendererRequest,
@@ -47,6 +50,11 @@ export const cardanoStateChangeChannel: MainIpcChannel<
   CardanoStateRendererRequest,
   CardanoStateRendererResponse
 > = new MainIpcChannel(CARDANO_STATE_CHANNEL);
+
+export const cardanoNodeImplementationChannel: MainIpcChannel<
+  CardanoNodeImplementationRendererRequest,
+  CardanoNodeImplementationRendererResponse
+> = new MainIpcChannel(CARDANO_NODE_IMPLEMENTATION_CHANNEL);
 
 export const cardanoFaultInjectionChannel: MainIpcChannel<
   CardanoFaultInjectionRendererRequest,

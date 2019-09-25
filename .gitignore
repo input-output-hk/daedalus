@@ -91,5 +91,9 @@ public.key
 public.key.lock
 
 # Development executables
+cardano-wallet-jormungandr
 cardano-wallet-http-bridge
+jcli
+/jormungandr
+cardano-http-bridge
 cardano-node
