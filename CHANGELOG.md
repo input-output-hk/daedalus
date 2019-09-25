@@ -33,6 +33,7 @@ Changelog
 
 ### Chores
 
+- Use "daedalus" `Buildkite` to build macOS installers ([PR 1568](https://github.com/input-output-hk/daedalus/pull/1568))
 - Use improved `NumericInput` component of `React-Polymorph` v0.9.0 ([1511](https://github.com/input-output-hk/daedalus/pull/1511))
 - Added minimum heights of main app window for different environments (Windows, Linux, MacOS) ([1485](https://github.com/input-output-hk/daedalus/pull/1485))
 - Removed "Ada Redemption" feature ([PR 1510](https://github.com/input-output-hk/daedalus/pull/1510))
