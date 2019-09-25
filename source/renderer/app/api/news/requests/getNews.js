@@ -13,5 +13,5 @@ export const getNews = (): Promise<GetNewsResponse> =>
     hostname,
     path: `${path}/${filename}`,
     method: 'GET',
-    protocol: 'http',
+    protocol: 'https',
   });
