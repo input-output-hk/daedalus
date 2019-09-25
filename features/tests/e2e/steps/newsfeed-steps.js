@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import { get } from 'lodash';
 import { Before, Given, When, Then } from 'cucumber';
 import moment from 'moment';
 
@@ -13,7 +14,7 @@ async function prepareFakeNews(context, fakeNews, preparation, ...args) {
   await context.client.executeAsync(preparation, fakeNews, ...args);
   // Extract the computed newsfeed data from the store
   const newsData = await context.client.executeAsync(done => {
-    const newsFeed = daedalus.stores.newsFeed;
+    const { newsFeed } = daedalus.stores;
     // Refresh the newsfeed request & store
     newsFeed.getNews().then(() => {
       const d = newsFeed.newsFeedData;
@@ -51,7 +52,7 @@ async function prepareNewsOfType(
     context,
     newsFeed,
     (news, isRead, done) => {
-      const api = daedalus.api;
+      const { api } = daedalus;
       api.ada.setFakeNewsFeedJsonForTesting(news);
       if (isRead) {
         api.localStorage.markNewsAsRead(news.items.map(i => i.date)).then(done);
@@ -99,7 +100,7 @@ Given(/^there (?:are|is)\s?(\d+)? (read|unread) (\w+?)s?$/, async function(
   await prepareNewsOfType(
     this,
     newsType,
-    parseInt(count || 2),
+    parseInt(count || 2, 10),
     read === 'read'
   );
 });
@@ -150,7 +151,7 @@ When('I open the newsfeed', async function() {
 });
 
 When('I dismiss the alert', async function() {
-  this.dismissedAlert = this.news.alerts.unread[0];
+  this.dismissedAlert = get(this.news, ['alerts', 'unread', 0]);
   await this.waitAndClick('.AlertsOverlay_closeButton');
 });
 

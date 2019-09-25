@@ -1,4 +1,4 @@
-import { When, Then } from 'cucumber';
+import { When } from 'cucumber';
 import {
   generateScreenshotFilePath,
   saveScreenshot,
@@ -40,9 +40,9 @@ When(/^I trigger the apply-update endpoint$/, async function() {
 When(/^I set next update version to "([^"]*)"$/, async function(
   applicationVersion
 ) {
-  await this.client.executeAsync((applicationVersion, done) => {
+  await this.client.executeAsync((version, done) => {
     daedalus.api.ada
-      .setNextUpdate(parseInt(applicationVersion))
+      .setNextUpdate(parseInt(version, 10))
       .then(done)
       .catch(e => {
         throw e;
