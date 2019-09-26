@@ -11,6 +11,7 @@ import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarC
 import { formattedWalletAmount } from '../../../source/renderer/app/utils/formatters';
 import NodeSyncStatusIcon from '../../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
 import Wallet from '../../../source/renderer/app/domains/Wallet.js';
+import NewsFeedIcon from '../../../source/renderer/app/components/widgets/NewsFeedIcon';
 import type { SidebarMenus } from '../../../source/renderer/app/components/sidebar/Sidebar';
 import type { SidebarWalletType } from '../../../source/renderer/app/types/sidebarTypes';
 // import type { Wallet } from '../../../source/renderer/app/domains/WalletTransaction';
@@ -186,6 +187,10 @@ export default class StoryLayout extends Component<Props> {
         }}
         isProduction
         isMainnet
+      />
+      <NewsFeedIcon
+        onNewsFeedIconClick={action('onNewsFeedIconClick')}
+        showDot={false}
       />
     </TopBar>
   );
