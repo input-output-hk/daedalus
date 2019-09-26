@@ -750,6 +750,14 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-utxo-tooltip-text-color': '#fafbfc',
   },
+  recoveryPhrase: {
+    '--theme-recovery-phrase-normal-background-color': 'transparent',
+    '--theme-recovery-phrase-normal-border-color': 'rgba(32, 34, 37, .07)',
+    '--theme-recovery-phrase-warning-background-color':
+      'rgba(32, 34, 37, 0.05)',
+    '--theme-recovery-phrase-attention-background-color':
+      'rgba(234, 76, 91, .1)',
+  },
 };
 
 const CARDANO_THEME_PARAMS: CreateThemeParams = {

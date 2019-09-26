@@ -23,12 +23,10 @@ When(
       this.client,
       SELECTORS.newAppVersionInfo
     );
-
     const [currentAppVersionInfo] = await getVisibleTextsForSelector(
       this.client,
       SELECTORS.currentAppVersionInfo
     );
-
     expect(newAppVersionInfo.replace('v ', '')).to.equal(nextVersion);
     expect(currentAppVersionInfo.replace('v ', '')).to.equal(currentAppVersion);
     this.client.waitForVisible('.AutomaticUpdateNotification_acceptButton');

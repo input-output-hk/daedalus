@@ -8,8 +8,8 @@ Feature: Node Update Notification
     When I set next update version to "10"
     And I set next application version to "15"
     Then I should see the node update notification overlay
-    And Overlay should display "newer version" as available version and actions
-  
+    And Overlay should display "a newer version" as available version and actions
+
   Scenario: Application version and next update version match
     When I set next application version to "15"
     And I set next update version to "15"
@@ -31,4 +31,4 @@ Feature: Node Update Notification
     Then I should see the node update notification overlay
     And Overlay should display "0.14.0" as available version and actions
     When I click the accept update button
-    Then Daedalus should quit 
+    Then Daedalus should quit
