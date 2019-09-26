@@ -25,7 +25,7 @@ export const messages = defineMessages({
   recoveryPhraseStep3Paragraph2: {
     id: 'wallet.settings.recoveryPhraseStep3Paragraph2',
     defaultMessage:
-      '!!!Please make sure to keep the paper with your wallet recovery phrase in a safe place. Anyone with access to your wallet recovery phrase can take control of your funds.',
+      '!!!Please make sure to return your wallet recovery phrase to a secure place for safekeeping. Anyone with access to your wallet recovery phrase can take control of your funds.',
     description:
       'Label for the recoveryPhraseStep3Paragraph2 on wallet settings.',
   },

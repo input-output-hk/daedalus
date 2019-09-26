@@ -18,14 +18,14 @@ export const messages = defineMessages({
   recoveryPhraseStep4Paragraph1: {
     id: 'wallet.settings.recoveryPhraseStep4Paragraph1',
     defaultMessage:
-      '!!!The wallet recovery phrase you have entered does not match the recovery phrase associated with this wallet. Make sure you have entered the wallet recovery phrase which was written down during the wallet creation process for this wallet and make sure the words are in the correct order.',
+      '!!!The wallet recovery phrase you have entered does not match the recovery phrase of this wallet. Make sure you have entered the wallet recovery phrase which was written down during the wallet creation process for this wallet and make sure the words are in the correct order.',
     description:
       'Label for the recoveryPhraseStep4Paragraph1 on wallet settings.',
   },
   recoveryPhraseStep4Paragraph2: {
     id: 'wallet.settings.recoveryPhraseStep4Paragraph2',
     defaultMessage:
-      '!!!If you are unable to verify your wallet recovery phrase you should create a new wallet and move all of the funds from this wallet to the new wallet. If you do this, make sure you keep the wallet recovery phrase for the new wallet safe and secure.',
+      '!!!If you are unable to verify your wallet recovery phrase, you should create a new wallet and move all of the funds from this wallet to the new wallet. If you do this, make sure you keep the wallet recovery phrase for the new wallet safe and secure.',
     description:
       'Label for the recoveryPhraseStep4Paragraph2 on wallet settings.',
   },

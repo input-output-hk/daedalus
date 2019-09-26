@@ -17,7 +17,7 @@ export const messages = defineMessages({
   recoveryPhraseStep1Paragraph1: {
     id: 'wallet.settings.recoveryPhraseStep1Paragraph1',
     defaultMessage:
-      '!!!To verify that you have the correct recovery phrase for this wallet you can enter your 12-word wallet recovery phrase on the following screen.',
+      '!!!To verify that you have the correct recovery phrase for this wallet, you can enter it on the following screen. This wallet uses a 12-word recovery phrase.',
     description:
       'Label for the recoveryPhraseStep1Paragraph1 on wallet settings.',
   },

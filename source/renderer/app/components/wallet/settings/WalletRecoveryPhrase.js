@@ -30,7 +30,7 @@ export const messages = defineMessages({
   recoveryPhraseVerificationDescription: {
     id: 'wallet.settings.recoveryPhraseVerificationDescription',
     defaultMessage:
-      '!!!Funds in this wallet can only be recovered on another computer using the correct wallet recovery phrase. You can re-enter your wallet recovery phrase to verify that you have the correct recovery phrase for this wallet.',
+      '!!!Funds in this wallet can only be recovered using the correct wallet recovery phrase, which is a unique 12-word string you were shown and asked to write down when creating this wallet. You can re-enter your wallet recovery phrase to verify that you have the correct recovery phrase for this wallet.',
     description:
       'Label for the recoveryPhraseVerificationDescription on wallet settings.',
   },
