@@ -9,6 +9,10 @@ import {
   MAINNET_LATEST_VERSION_INFO_URL,
   STAGING_LATEST_VERSION_INFO_URL,
   TESTNET_LATEST_VERSION_INFO_URL,
+  MAINNET_NEWS_URL,
+  TESTNET_NEWS_URL,
+  STAGING_NEWS_URL,
+  DEVELOPMENT_NEWS_URL,
 } from '../config/urlsConfig';
 import {
   MAINNET,
@@ -71,4 +75,22 @@ export const getLatestVersionInfoUrl = (network: string): string => {
     latestVersionInfoUrl = TESTNET_LATEST_VERSION_INFO_URL;
   }
   return latestVersionInfoUrl;
+};
+
+export const getNewsURL = (network: string): string => {
+  // sets default to mainnet in case env.NETWORK is undefined
+  let newsUrl = MAINNET_NEWS_URL;
+  if (network === MAINNET) {
+    newsUrl = MAINNET_NEWS_URL;
+  }
+  if (network === STAGING) {
+    newsUrl = STAGING_NEWS_URL;
+  }
+  if (network === TESTNET) {
+    newsUrl = TESTNET_NEWS_URL;
+  }
+  if (network === DEVELOPMENT) {
+    newsUrl = DEVELOPMENT_NEWS_URL;
+  }
+  return newsUrl;
 };

@@ -2,6 +2,9 @@
 
 /* eslint-disable consistent-return */
 
+import { includes } from 'lodash';
+import type { NewsTimestamp } from '../news/types';
+
 const store = global.electronStore;
 
 export type WalletLocalData = {
@@ -20,6 +23,7 @@ type StorageKeys = {
   THEME: string,
   DATA_LAYER_MIGRATION_ACCEPTANCE: string,
   WALLETS: string,
+  READ_NEWS: string,
 };
 
 /**
@@ -37,6 +41,7 @@ export default class LocalStorageApi {
       THEME: `${NETWORK}-THEME`,
       DATA_LAYER_MIGRATION_ACCEPTANCE: `${NETWORK}-DATA-LAYER-MIGRATION-ACCEPTANCE`,
       WALLETS: `${NETWORK}-WALLETS`,
+      READ_NEWS: `${NETWORK}-READ_NEWS`,
     };
   }
 
@@ -222,10 +227,50 @@ export default class LocalStorageApi {
       }
     });
 
+  getReadNews = (): Promise<NewsTimestamp[]> =>
+    new Promise((resolve, reject) => {
+      try {
+        const readNews = store.get(this.storageKeys.READ_NEWS);
+        if (!readNews) return resolve([]);
+        resolve(readNews);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+
+  markNewsAsRead = (
+    newsTimestamps: NewsTimestamp[]
+  ): Promise<NewsTimestamp[]> =>
+    new Promise((resolve, reject) => {
+      try {
+        const readNews = store.get(this.storageKeys.READ_NEWS) || [];
+
+        if (!includes(readNews, newsTimestamps[0])) {
+          store.set(
+            this.storageKeys.READ_NEWS,
+            readNews.concat(newsTimestamps)
+          );
+        }
+
+        resolve(readNews);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+
+  unsetReadNews = (): Promise<void> =>
+    new Promise(resolve => {
+      try {
+        store.delete(this.storageKeys.READ_NEWS);
+        resolve();
+      } catch (error) {} // eslint-disable-line
+    });
+
   reset = async () => {
     await this.unsetUserLocale();
     await this.unsetTermsOfUseAcceptance();
     await this.unsetUserTheme();
     await this.unsetDataLayerMigrationAcceptance();
+    await this.unsetReadNews();
   };
 }

@@ -47,6 +47,9 @@ import { updateWallet } from './wallets/requests/updateWallet';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
 import { getWalletIdAndBalance } from './wallets/requests/getWalletIdAndBalance';
 
+// News requests
+import { getNews } from './news/requests/getNews';
+
 // utility functions
 import {
   awaitUpdateChannel,
@@ -134,6 +137,9 @@ import type {
   GetWalletIdAndBalanceRequest,
   GetWalletIdAndBalanceResponse,
 } from './wallets/types';
+
+// News Types
+import type { GetNewsResponse } from './news/types';
 
 // Common errors
 import {
@@ -1040,6 +1046,14 @@ export default class AdaApi {
     }
   };
 
+  getNews = async (): Promise<GetNewsResponse> => {
+    try {
+      return await getNews();
+    } catch (error) {
+      throw new Error('NEWS_FETCH_FAILED');
+    }
+  };
+
   setCardanoNodeFault = async (fault: FaultInjectionIpcRequest) => {
     await cardanoFaultInjectionChannel.send(fault);
   };
@@ -1054,6 +1068,10 @@ export default class AdaApi {
   setLatestAppVersion: Function;
   setApplicationVersion: Function;
   setFaultyNodeSettingsApi: boolean;
+  resetTestOverrides: Function;
+
+  // Newsfeed testing utility
+  setFakeNewsFeedJsonForTesting: (json: Object) => void;
 }
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
