@@ -188,8 +188,8 @@ export default (api: AdaApi) => {
     NETWORK_BLOCK_HEIGHT = height;
   };
 
-  api.setFakeNewsFeedJsonForTesting = (json: ?GetNewsResponse) => {
-    FAKE_NEWSFEED_JSON = json;
+  api.setFakeNewsFeedJsonForTesting = (fakeNewsfeedJson: ?GetNewsResponse) => {
+    FAKE_NEWSFEED_JSON = fakeNewsfeedJson;
   };
 
   api.getNews = (): Promise<GetNewsResponse> => {

@@ -17,6 +17,7 @@ type Props = {
   isRestoreActive?: boolean,
   restoreProgress?: number,
   isLegacy: boolean,
+  recoveryPhraseVerificationStatus: string,
 };
 
 @observer
@@ -31,6 +32,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       isRestoreActive,
       restoreProgress,
       isLegacy,
+      recoveryPhraseVerificationStatus,
     } = this.props;
 
     const componentStyles = classNames([
@@ -38,6 +40,9 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       active ? styles.active : null,
       isLegacy ? styles.legacyItem : null,
       className,
+      styles[
+        `recoveryPhraseVerificationStatus-${recoveryPhraseVerificationStatus}`
+      ],
     ]);
 
     return (

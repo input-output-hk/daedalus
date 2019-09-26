@@ -7,12 +7,23 @@ import type { NewsTimestamp } from '../news/types';
 
 const store = global.electronStore;
 
+export type WalletLocalData = {
+  id: string,
+  recoveryPhraseVerificationDate?: ?Date,
+  creationDate?: ?Date,
+};
+
+export type WalletsLocalData = {
+  [key: string]: WalletLocalData,
+};
+
 type StorageKeys = {
   USER_LOCALE: string,
   TERMS_OF_USE_ACCEPTANCE: string,
   THEME: string,
   DATA_LAYER_MIGRATION_ACCEPTANCE: string,
   READ_NEWS: string,
+  WALLETS: string,
 };
 
 /**
@@ -30,6 +41,7 @@ export default class LocalStorageApi {
       THEME: `${NETWORK}-THEME`,
       DATA_LAYER_MIGRATION_ACCEPTANCE: `${NETWORK}-DATA-LAYER-MIGRATION-ACCEPTANCE`,
       READ_NEWS: `${NETWORK}-READ_NEWS`,
+      WALLETS: `${NETWORK}-WALLETS`,
     };
   }
 
@@ -149,6 +161,70 @@ export default class LocalStorageApi {
         store.delete(this.storageKeys.DATA_LAYER_MIGRATION_ACCEPTANCE);
         resolve();
       } catch (error) {} // eslint-disable-line
+    });
+
+  getWalletsLocalData = (): Promise<Object> =>
+    new Promise((resolve, reject) => {
+      try {
+        const walletsLocalData = store.get(this.storageKeys.WALLETS);
+        if (!walletsLocalData) return resolve({});
+        return resolve(walletsLocalData);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+
+  getWalletLocalData = (walletId: string): Promise<WalletLocalData> =>
+    new Promise((resolve, reject) => {
+      try {
+        const walletData = store.get(`${this.storageKeys.WALLETS}.${walletId}`);
+        if (!walletData) {
+          resolve({
+            id: walletId,
+          });
+        }
+        return resolve(walletData);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+
+  setWalletLocalData = (walletData: WalletLocalData): Promise<void> =>
+    new Promise((resolve, reject) => {
+      try {
+        const walletId = walletData.id;
+        store.set(`${this.storageKeys.WALLETS}.${walletId}`, walletData);
+        return resolve();
+      } catch (error) {
+        return reject(error);
+      }
+    });
+
+  updateWalletLocalData = (updatedWalletData: Object): Promise<Object> =>
+    new Promise(async (resolve, reject) => {
+      const walletId = updatedWalletData.id;
+      const currentWalletData = await this.getWalletLocalData(walletId);
+      const walletData = Object.assign(
+        {},
+        currentWalletData,
+        updatedWalletData
+      );
+      try {
+        store.set(`${this.storageKeys.WALLETS}.${walletId}`, walletData);
+        return resolve(walletData);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+
+  unsetWalletLocalData = (walletId: string): Promise<void> =>
+    new Promise((resolve, reject) => {
+      try {
+        store.delete(`${this.storageKeys.WALLETS}.${walletId}`);
+        return resolve();
+      } catch (error) {
+        return reject(error);
+      }
     });
 
   getReadNews = (): Promise<NewsTimestamp[]> =>

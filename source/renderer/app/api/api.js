@@ -45,6 +45,7 @@ import { createWallet } from './wallets/requests/createWallet';
 import { restoreWallet } from './wallets/requests/restoreWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
+import { getWalletIdAndBalance } from './wallets/requests/getWalletIdAndBalance';
 
 // News requests
 import { getNews } from './news/requests/getNews';
@@ -121,6 +122,7 @@ import type {
   AdaWallet,
   AdaWallets,
   WalletUtxos,
+  WalletIdAndBalance,
   CreateWalletRequest,
   DeleteWalletRequest,
   RestoreWalletRequest,
@@ -132,6 +134,8 @@ import type {
   ImportWalletFromFileRequest,
   UpdateWalletRequest,
   GetWalletUtxosRequest,
+  GetWalletIdAndBalanceRequest,
+  GetWalletIdAndBalanceResponse,
 } from './wallets/types';
 
 // News Types
@@ -879,6 +883,36 @@ export default class AdaApi {
     }
   };
 
+  getWalletIdAndBalance = async (
+    request: GetWalletIdAndBalanceRequest
+  ): Promise<WalletIdAndBalance> => {
+    const { recoveryPhrase, getBalance } = request;
+    Logger.debug('AdaApi::getWalletIdAndBalance called', {
+      parameters: { getBalance },
+    });
+    try {
+      const response: GetWalletIdAndBalanceResponse = await getWalletIdAndBalance(
+        this.config,
+        {
+          recoveryPhrase,
+          getBalance,
+        }
+      );
+      Logger.debug('AdaApi::getWalletIdAndBalance success', { response });
+      const { walletId, balance } = response;
+      return {
+        walletId,
+        balance:
+          balance !== null // If balance is "null" it means we didn't fetch it - getBalance was false
+            ? new BigNumber(balance).dividedBy(LOVELACES_PER_ADA)
+            : null,
+      };
+    } catch (error) {
+      Logger.error('AdaApi::getWalletIdAndBalance error', { error });
+      throw new GenericApiError();
+    }
+  };
+
   testReset = async (): Promise<void> => {
     Logger.debug('AdaApi::testReset called');
     try {
@@ -1045,7 +1079,7 @@ export default class AdaApi {
   resetTestOverrides: Function;
 
   // Newsfeed testing utility
-  setFakeNewsFeedJsonForTesting: (json: GetNewsResponse) => void;
+  setFakeNewsFeedJsonForTesting: (fakeNewsfeedJson: GetNewsResponse) => void;
 }
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
@@ -1061,6 +1095,7 @@ const _createWalletFromServerData = action(
       hasSpendingPassword,
       spendingPasswordLastUpdate,
       syncState,
+      createdAt,
     } = data;
 
     return new Wallet({
@@ -1072,6 +1107,7 @@ const _createWalletFromServerData = action(
       passwordUpdateDate: new Date(`${spendingPasswordLastUpdate}Z`),
       syncState,
       isLegacy: false,
+      createdAt,
     });
   }
 );
