@@ -19,6 +19,7 @@ type Props = {
   onOpenAlert?: Function,
   onGoToRoute: Function,
   expandWithoutTransition?: boolean,
+  isNewsFeedOpen: boolean,
 };
 
 type State = {
@@ -39,6 +40,17 @@ export default class NewsItem extends Component<Props, State> {
     newsItemExpanded: false,
     newsItemCollapsible: true,
   };
+
+  componentWillReceiveProps(nextProps: Props) {
+    const { newsItemExpanded } = this.state;
+    if (
+      this.props.isNewsFeedOpen &&
+      !nextProps.isNewsFeedOpen &&
+      newsItemExpanded
+    ) {
+      this.setState({ newsItemExpanded: false });
+    }
+  }
 
   componentWillMount() {
     this.localizedDateFormat = moment.localeData().longDateFormat('L');

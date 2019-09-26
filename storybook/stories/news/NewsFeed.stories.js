@@ -128,7 +128,7 @@ storiesOf('NewsFeed', module)
         onNewsItemActionClick={action('onNewsItemActionClick')}
         onClose={action('onClose')}
         news={undefined}
-        newsFeedShowClass={boolean('newsFeedShowClass', true)}
+        isNewsFeedOpen={boolean('isNewsFeedOpen', true)}
         onOpenExternalLink={() => {}}
         onOpenAlert={() => {}}
       />
@@ -144,7 +144,7 @@ storiesOf('NewsFeed', module)
         onNewsItemActionClick={action('onNewsItemActionClick')}
         onClose={action('onClose')}
         news={new News.NewsCollection([])}
-        newsFeedShowClass={boolean('newsFeedShowClass2', true)}
+        isNewsFeedOpen={boolean('isNewsFeedOpen2', true)}
         onOpenExternalLink={() => {}}
         onOpenAlert={() => {}}
       />
@@ -160,7 +160,7 @@ storiesOf('NewsFeed', module)
         onNewsItemActionClick={action('onNewsItemActionClick')}
         onClose={action('onClose')}
         news={new News.NewsCollection([])}
-        newsFeedShowClass={boolean('newsFeedShowClass2', true)}
+        isNewsFeedOpen={boolean('isNewsFeedOpen2', true)}
         onOpenExternalLink={() => {}}
         onOpenAlert={() => {}}
       />
@@ -176,7 +176,7 @@ storiesOf('NewsFeed', module)
         onNewsItemActionClick={action('onNewsItemActionClick')}
         onClose={action('onClose')}
         news={newsCollection}
-        newsFeedShowClass={boolean('newsFeedShowClass3', true)}
+        isNewsFeedOpen={boolean('isNewsFeedOpen3', true)}
         onOpenExternalLink={() => {}}
         onOpenAlert={() => {}}
       />

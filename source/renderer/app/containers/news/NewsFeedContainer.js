@@ -29,7 +29,7 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
     return (
       <NewsFeed
         news={newsFeedData}
-        newsFeedShowClass={newsFeedIsOpen}
+        isNewsFeedOpen={newsFeedIsOpen}
         isLoadingNews={isLoadingNews}
         onClose={toggleNewsFeed.trigger}
         onOpenAlert={stores.newsFeed.openAlert}

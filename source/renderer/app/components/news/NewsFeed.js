@@ -33,7 +33,7 @@ type Props = {
   onClose: Function,
   onOpenAlert?: Function,
   news?: News.NewsCollection,
-  newsFeedShowClass: boolean,
+  isNewsFeedOpen: boolean,
   onMarkNewsAsRead: Function,
   openWithoutTransition?: boolean,
   isLoadingNews: boolean,
@@ -99,7 +99,7 @@ export default class NewsFeed extends Component<Props, State> {
     const { intl } = this.context;
     const {
       news,
-      newsFeedShowClass,
+      isNewsFeedOpen,
       isLoadingNews,
       onClose,
       onOpenAlert,
@@ -114,7 +114,7 @@ export default class NewsFeed extends Component<Props, State> {
     const totalUnreadNewsItems = get(news, 'unread', 0).length;
     const componentClasses = classNames([
       styles.component,
-      newsFeedShowClass ? styles.show : null,
+      isNewsFeedOpen ? styles.show : null,
       openWithoutTransition ? styles.noTransition : null,
     ]);
 
@@ -145,6 +145,7 @@ export default class NewsFeed extends Component<Props, State> {
                 <NewsItem
                   key={newsItem.date}
                   newsItem={newsItem}
+                  isNewsFeedOpen={isNewsFeedOpen}
                   onMarkNewsAsRead={onMarkNewsAsRead}
                   onOpenExternalLink={onOpenExternalLink}
                   onOpenAlert={onOpenAlert}
