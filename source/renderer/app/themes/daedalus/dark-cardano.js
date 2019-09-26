@@ -727,7 +727,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
   },
   topBar: {
     '--theme-topbar-background-color': '#2a2b3c',
-    '--theme-topbar-layout-body-background-color': '#36374d',
+    '--theme-topbar-layout-body-background-color': '#121326',
     '--theme-topbar-wallet-name-color': '#ffffff',
     '--theme-topbar-wallet-info-color': '#ffffff',
     '--theme-topbar-logo-color': '#ffffff',

@@ -728,7 +728,7 @@ export const YELLOW_THEME_OUTPUT = {
   },
   topBar: {
     '--theme-topbar-background-color': '#ffb923',
-    '--theme-topbar-layout-body-background-color': '#fdcd68',
+    '--theme-topbar-layout-body-background-color': '#f8f3ed',
     '--theme-topbar-wallet-name-color': '#2d2d2d',
     '--theme-topbar-wallet-info-color': '#2d2d2d',
     '--theme-topbar-logo-color': '#2d2d2d',

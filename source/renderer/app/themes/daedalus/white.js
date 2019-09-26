@@ -722,7 +722,7 @@ export const WHITE_THEME_OUTPUT = {
   },
   topBar: {
     '--theme-topbar-background-color': '#ffffff',
-    '--theme-topbar-layout-body-background-color': '#ffffff',
+    '--theme-topbar-layout-body-background-color': '#f9f9f9',
     '--theme-topbar-wallet-name-color': '#2d2d2d',
     '--theme-topbar-wallet-info-color': '#2d2d2d',
     '--theme-topbar-logo-color': '#2d2d2d',
