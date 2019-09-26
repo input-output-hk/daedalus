@@ -110,8 +110,8 @@ export default class NewsFeed extends Component<Props, State> {
     } = this.props;
     const { hasShadow } = this.state;
 
-    const totalNewsItems = get(news, 'all', 0).length;
-    const totalUnreadNewsItems = get(news, 'unread', 0).length;
+    const totalNewsItems = get(news, 'all', []).length;
+    const totalUnreadNewsItems = get(news, 'unread', []).length;
     const componentClasses = classNames([
       styles.component,
       isNewsFeedOpen ? styles.show : null,

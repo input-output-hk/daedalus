@@ -1037,7 +1037,7 @@ export default class AdaApi {
   resetTestOverrides: Function;
 
   // Newsfeed testing utility
-  setFakeNewsFeedJsonForTesting: (json: Object) => void;
+  setFakeNewsFeedJsonForTesting: (json: GetNewsResponse) => void;
 }
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========

@@ -22,7 +22,6 @@ const { isTest } = global.environment;
 export default class NewsFeedStore extends Store {
   @observable rawNews: ?Array<NewsItem> = null;
   @observable newsUpdatedAt: ?Date = null;
-  // @TODO - just if we don't have a data - show error
   @observable fetchingNewsFailed = false;
   @observable getNewsRequest: Request<GetNewsResponse> = new Request(
     this.api.ada.getNews

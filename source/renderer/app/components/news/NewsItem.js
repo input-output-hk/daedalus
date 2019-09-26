@@ -7,8 +7,7 @@ import moment from 'moment';
 import { get } from 'lodash';
 import SVGInline from 'react-svg-inline';
 import AnimateHeight from 'react-animate-height';
-
-import News from '../../domains/News';
+import News, { NewsTypes } from '../../domains/News';
 import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 import styles from './NewsItem.scss';
 
@@ -64,7 +63,7 @@ export default class NewsItem extends Component<Props, State> {
     } else {
       const { type, date } = this.props.newsItem;
       const { newsItemCollapsible } = this.state;
-      if (type === 'info' || type === 'announcement') {
+      if (type === NewsTypes.INFO || type === NewsTypes.ANNOUNCEMENT) {
         if (newsItemCollapsible) {
           this.setState(prevState => ({
             newsItemExpanded: !prevState.newsItemExpanded,
@@ -73,7 +72,7 @@ export default class NewsItem extends Component<Props, State> {
           this.setState({ newsItemCollapsible: true });
         }
       }
-      if (type === 'alert' && this.props.onOpenAlert) {
+      if (NewsTypes.ALERT && this.props.onOpenAlert) {
         this.props.onOpenAlert(date);
       }
       this.props.onMarkNewsAsRead(date);
