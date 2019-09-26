@@ -21,66 +21,66 @@ import WalletRecoveryPhraseStep3Dialog from './WalletRecoveryPhraseStep3Dialog';
 import WalletRecoveryPhraseStep4Dialog from './WalletRecoveryPhraseStep4Dialog';
 
 export const messages = defineMessages({
-  recoveryPhraseValidationTitle: {
-    id: 'wallet.settings.recoveryPhraseValidationTitle',
+  recoveryPhraseVerificationTitle: {
+    id: 'wallet.settings.recoveryPhraseVerificationTitle',
     defaultMessage: '!!!Do you have your wallet recovery phrase?',
     description:
-      'Label for the recoveryPhraseValidationTitle on wallet settings.',
+      'Label for the recoveryPhraseVerificationTitle on wallet settings.',
   },
-  recoveryPhraseValidationDescription: {
-    id: 'wallet.settings.recoveryPhraseValidationDescription',
+  recoveryPhraseVerificationDescription: {
+    id: 'wallet.settings.recoveryPhraseVerificationDescription',
     defaultMessage:
       '!!!Funds in this wallet can only be recovered on another computer using the correct wallet recovery phrase. You can re-enter your wallet recovery phrase to verify that you have the correct recovery phrase for this wallet.',
     description:
-      'Label for the recoveryPhraseValidationDescription on wallet settings.',
+      'Label for the recoveryPhraseVerificationDescription on wallet settings.',
   },
-  recoveryPhraseValidationNeverOk: {
-    id: 'wallet.settings.recoveryPhraseValidationNeverOk',
+  recoveryPhraseVerificationNeverOk: {
+    id: 'wallet.settings.recoveryPhraseVerificationNeverOk',
     defaultMessage:
       '!!!We recommend that you verify your wallet recovery phrase in <b>{timeUntilWarning}</b>.',
     description:
-      'Label for the recoveryPhraseValidationNeverOk on wallet settings.',
+      'Label for the recoveryPhraseVerificationNeverOk on wallet settings.',
   },
-  recoveryPhraseValidationNeverWarning: {
-    id: 'wallet.settings.recoveryPhraseValidationNeverWarning',
+  recoveryPhraseVerificationNeverWarning: {
+    id: 'wallet.settings.recoveryPhraseVerificationNeverWarning',
     defaultMessage:
       '!!!We recommend that you verify your wallet recovery phrase.',
     description:
-      'Label for the recoveryPhraseValidationNeverWarning on wallet settings.',
+      'Label for the recoveryPhraseVerificationNeverWarning on wallet settings.',
   },
-  recoveryPhraseValidationNeverNotification: {
-    id: 'wallet.settings.recoveryPhraseValidationNeverNotification',
+  recoveryPhraseVerificationNeverNotification: {
+    id: 'wallet.settings.recoveryPhraseVerificationNeverNotification',
     defaultMessage:
       '!!!We recommend that you verify your wallet recovery phrase.',
     description:
-      'Label for the recoveryPhraseValidationNeverNotification on wallet settings.',
+      'Label for the recoveryPhraseVerificationNeverNotification on wallet settings.',
   },
-  recoveryPhraseValidationCheckedOk: {
-    id: 'wallet.settings.recoveryPhraseValidationCheckedOk',
+  recoveryPhraseVerificationCheckedOk: {
+    id: 'wallet.settings.recoveryPhraseVerificationCheckedOk',
     defaultMessage:
       '!!!You verified the recovery phrase for this wallet <b>{timeAgo}</b>.',
     description:
-      'Label for the recoveryPhraseValidationCheckedOk on wallet settings.',
+      'Label for the recoveryPhraseVerificationCheckedOk on wallet settings.',
   },
-  recoveryPhraseValidationCheckedWarning: {
-    id: 'wallet.settings.recoveryPhraseValidationCheckedWarning',
+  recoveryPhraseVerificationCheckedWarning: {
+    id: 'wallet.settings.recoveryPhraseVerificationCheckedWarning',
     defaultMessage:
       '!!!You verified the recovery phrase for this wallet <b>{timeAgo}</b>.',
     description:
-      'Label for the recoveryPhraseValidationCheckedWarning on wallet settings.',
+      'Label for the recoveryPhraseVerificationCheckedWarning on wallet settings.',
   },
-  recoveryPhraseValidationCheckedNotification: {
-    id: 'wallet.settings.recoveryPhraseValidationCheckedNotification',
+  recoveryPhraseVerificationCheckedNotification: {
+    id: 'wallet.settings.recoveryPhraseVerificationCheckedNotification',
     defaultMessage:
       '!!!You verified the recovery phrase for this wallet <b>{timeAgo}</b>. We recommend that you verify your wallet recovery phrase again.',
     description:
-      'Label for the recoveryPhraseValidationCheckedNotification on wallet settings.',
+      'Label for the recoveryPhraseVerificationCheckedNotification on wallet settings.',
   },
-  recoveryPhraseValidationButton: {
-    id: 'wallet.settings.recoveryPhraseValidationButton',
+  recoveryPhraseVerificationButton: {
+    id: 'wallet.settings.recoveryPhraseVerificationButton',
     defaultMessage: '!!!Verify wallet recovery phrase',
     description:
-      'Label for the recoveryPhraseValidationButton on wallet settings.',
+      'Label for the recoveryPhraseVerificationButton on wallet settings.',
   },
 });
 
@@ -108,29 +108,29 @@ export default class WalletRecoveryPhrase extends Component<Props> {
       neverChecked: {
         ok: {
           icon: iconRecoveryPhraseOk,
-          message: messages.recoveryPhraseValidationNeverOk,
+          message: messages.recoveryPhraseVerificationNeverOk,
         },
         warning: {
           icon: iconRecoveryPhraseWarning,
-          message: messages.recoveryPhraseValidationNeverWarning,
+          message: messages.recoveryPhraseVerificationNeverWarning,
         },
         notification: {
           icon: iconRecoveryPhraseNotification,
-          message: messages.recoveryPhraseValidationNeverNotification,
+          message: messages.recoveryPhraseVerificationNeverNotification,
         },
       },
       alreadyChecked: {
         ok: {
           icon: iconRecoveryPhraseOk,
-          message: messages.recoveryPhraseValidationCheckedOk,
+          message: messages.recoveryPhraseVerificationCheckedOk,
         },
         warning: {
           icon: iconRecoveryPhraseWarning,
-          message: messages.recoveryPhraseValidationCheckedWarning,
+          message: messages.recoveryPhraseVerificationCheckedWarning,
         },
         notification: {
           icon: iconRecoveryPhraseNotification,
-          message: messages.recoveryPhraseValidationCheckedNotification,
+          message: messages.recoveryPhraseVerificationCheckedNotification,
         },
       },
     };
@@ -202,9 +202,9 @@ export default class WalletRecoveryPhrase extends Component<Props> {
 
     return (
       <div className={styles.component}>
-        <h2>{intl.formatMessage(messages.recoveryPhraseValidationTitle)}</h2>
+        <h2>{intl.formatMessage(messages.recoveryPhraseVerificationTitle)}</h2>
         <div className={styles.description}>
-          {intl.formatMessage(messages.recoveryPhraseValidationDescription)}
+          {intl.formatMessage(messages.recoveryPhraseVerificationDescription)}
         </div>
         <br />
         <div className={validationStatusStyles}>
@@ -220,7 +220,9 @@ export default class WalletRecoveryPhrase extends Component<Props> {
           <Button
             className={validationStatusButtonStyles}
             themeOverrides={styles}
-            label={intl.formatMessage(messages.recoveryPhraseValidationButton)}
+            label={intl.formatMessage(
+              messages.recoveryPhraseVerificationButton
+            )}
             onClick={() => {
               openDialogAction({
                 dialog: WalletRecoveryPhraseStep1Dialog,

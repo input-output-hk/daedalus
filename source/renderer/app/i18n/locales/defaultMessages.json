@@ -6076,13 +6076,13 @@
     "descriptors": [
       {
         "defaultMessage": "!!!Do you have your wallet recovery phrase?",
-        "description": "Label for the recoveryPhraseValidationTitle on wallet settings.",
+        "description": "Label for the recoveryPhraseVerificationTitle on wallet settings.",
         "end": {
           "column": 3,
           "line": 29
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseValidationTitle",
+        "id": "wallet.settings.recoveryPhraseVerificationTitle",
         "start": {
           "column": 33,
           "line": 24
@@ -6090,13 +6090,13 @@
       },
       {
         "defaultMessage": "!!!Funds in this wallet can only be recovered on another computer using the correct wallet recovery phrase. You can re-enter your wallet recovery phrase to verify that you have the correct recovery phrase for this wallet.",
-        "description": "Label for the recoveryPhraseValidationDescription on wallet settings.",
+        "description": "Label for the recoveryPhraseVerificationDescription on wallet settings.",
         "end": {
           "column": 3,
           "line": 36
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseValidationDescription",
+        "id": "wallet.settings.recoveryPhraseVerificationDescription",
         "start": {
           "column": 39,
           "line": 30
@@ -6104,13 +6104,13 @@
       },
       {
         "defaultMessage": "!!!We recommend that you verify your wallet recovery phrase in <b>{timeUntilWarning}</b>.",
-        "description": "Label for the recoveryPhraseValidationNeverOk on wallet settings.",
+        "description": "Label for the recoveryPhraseVerificationNeverOk on wallet settings.",
         "end": {
           "column": 3,
           "line": 43
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseValidationNeverOk",
+        "id": "wallet.settings.recoveryPhraseVerificationNeverOk",
         "start": {
           "column": 35,
           "line": 37
@@ -6118,13 +6118,13 @@
       },
       {
         "defaultMessage": "!!!We recommend that you verify your wallet recovery phrase.",
-        "description": "Label for the recoveryPhraseValidationNeverWarning on wallet settings.",
+        "description": "Label for the recoveryPhraseVerificationNeverWarning on wallet settings.",
         "end": {
           "column": 3,
           "line": 50
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseValidationNeverWarning",
+        "id": "wallet.settings.recoveryPhraseVerificationNeverWarning",
         "start": {
           "column": 40,
           "line": 44
@@ -6132,13 +6132,13 @@
       },
       {
         "defaultMessage": "!!!We recommend that you verify your wallet recovery phrase.",
-        "description": "Label for the recoveryPhraseValidationNeverNotification on wallet settings.",
+        "description": "Label for the recoveryPhraseVerificationNeverNotification on wallet settings.",
         "end": {
           "column": 3,
           "line": 57
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseValidationNeverNotification",
+        "id": "wallet.settings.recoveryPhraseVerificationNeverNotification",
         "start": {
           "column": 45,
           "line": 51
@@ -6146,13 +6146,13 @@
       },
       {
         "defaultMessage": "!!!You verified the recovery phrase for this wallet <b>{timeAgo}</b>.",
-        "description": "Label for the recoveryPhraseValidationCheckedOk on wallet settings.",
+        "description": "Label for the recoveryPhraseVerificationCheckedOk on wallet settings.",
         "end": {
           "column": 3,
           "line": 64
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseValidationCheckedOk",
+        "id": "wallet.settings.recoveryPhraseVerificationCheckedOk",
         "start": {
           "column": 37,
           "line": 58
@@ -6160,13 +6160,13 @@
       },
       {
         "defaultMessage": "!!!You verified the recovery phrase for this wallet <b>{timeAgo}</b>.",
-        "description": "Label for the recoveryPhraseValidationCheckedWarning on wallet settings.",
+        "description": "Label for the recoveryPhraseVerificationCheckedWarning on wallet settings.",
         "end": {
           "column": 3,
           "line": 71
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseValidationCheckedWarning",
+        "id": "wallet.settings.recoveryPhraseVerificationCheckedWarning",
         "start": {
           "column": 42,
           "line": 65
@@ -6174,13 +6174,13 @@
       },
       {
         "defaultMessage": "!!!You verified the recovery phrase for this wallet <b>{timeAgo}</b>. We recommend that you verify your wallet recovery phrase again.",
-        "description": "Label for the recoveryPhraseValidationCheckedNotification on wallet settings.",
+        "description": "Label for the recoveryPhraseVerificationCheckedNotification on wallet settings.",
         "end": {
           "column": 3,
           "line": 78
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseValidationCheckedNotification",
+        "id": "wallet.settings.recoveryPhraseVerificationCheckedNotification",
         "start": {
           "column": 47,
           "line": 72
@@ -6188,13 +6188,13 @@
       },
       {
         "defaultMessage": "!!!Verify wallet recovery phrase",
-        "description": "Label for the recoveryPhraseValidationButton on wallet settings.",
+        "description": "Label for the recoveryPhraseVerificationButton on wallet settings.",
         "end": {
           "column": 3,
           "line": 84
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhrase.js",
-        "id": "wallet.settings.recoveryPhraseValidationButton",
+        "id": "wallet.settings.recoveryPhraseVerificationButton",
         "start": {
           "column": 34,
           "line": 79
