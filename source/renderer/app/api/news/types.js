@@ -30,7 +30,7 @@ export type NewsItem = {
 };
 
 export type GetNewsResponse = {
-  updatedAt: Date,
+  updatedAt: number,
   items: Array<NewsItem>,
 };
 

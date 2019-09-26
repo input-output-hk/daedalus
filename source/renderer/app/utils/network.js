@@ -13,6 +13,10 @@ import {
   TESTNET_NEWS_URL,
   STAGING_NEWS_URL,
   DEVELOPMENT_NEWS_URL,
+  MAINNET_NEWS_HASH_URL,
+  STAGING_NEWS_HASH_URL,
+  TESTNET_NEWS_HASH_URL,
+  DEVELOPMENT_NEWS_HASH_URL,
 } from '../config/urlsConfig';
 import {
   MAINNET,
@@ -91,6 +95,24 @@ export const getNewsURL = (network: string): string => {
   }
   if (network === DEVELOPMENT) {
     newsUrl = DEVELOPMENT_NEWS_URL;
+  }
+  return newsUrl;
+};
+
+export const getNewsHashURL = (network: string): string => {
+  // sets default to mainnet in case env.NETWORK is undefined
+  let newsUrl = MAINNET_NEWS_HASH_URL;
+  if (network === MAINNET) {
+    newsUrl = MAINNET_NEWS_HASH_URL;
+  }
+  if (network === STAGING) {
+    newsUrl = STAGING_NEWS_HASH_URL;
+  }
+  if (network === TESTNET) {
+    newsUrl = TESTNET_NEWS_HASH_URL;
+  }
+  if (network === DEVELOPMENT) {
+    newsUrl = DEVELOPMENT_NEWS_HASH_URL;
   }
   return newsUrl;
 };
