@@ -1,10 +1,4 @@
 import { Given, When, Then } from 'cucumber';
-import { expect } from 'chai';
-import { navigateTo } from '../helpers/route-helpers';
-import {
-  waitUntilWaletNamesEqual,
-  getNameOfActiveWalletInSidebar,
-} from '../helpers/wallets-helpers';
 
 const SETTINGS_PAGE_STATUS_SELECTOR = '.WalletRecoveryPhrase_validationStatus';
 const SETTINGS_PAGE_BUTTON_SELECTOR = `${SETTINGS_PAGE_STATUS_SELECTOR} .WalletRecoveryPhrase_validationStatusButton`;
@@ -39,7 +33,7 @@ Then(
   'I should see a {string} recovery phrase veryfication feature',
   async function(status) {
     const statusClassname = `${SETTINGS_PAGE_STATUS_SELECTOR}${status}`;
-    return await this.client.waitForVisible(statusClassname);
+    return this.client.waitForVisible(statusClassname);
   }
 );
 
@@ -54,11 +48,11 @@ When(/^I click the checkbox and Continue button$/, function() {
 
 When(/^I enter the recovery phrase mnemonics correctly$/, async function() {
   const recoveryPhrase = this.mnemonics[walletName].slice();
-  await this.client.executeAsync((recoveryPhrase, done) => {
+  await this.client.executeAsync((phrase, done) => {
     const { checkRecoveryPhrase } = daedalus.actions.walletBackup;
     checkRecoveryPhrase.once(done);
     checkRecoveryPhrase.trigger({
-      recoveryPhrase,
+      phrase,
     });
   }, recoveryPhrase);
 });
