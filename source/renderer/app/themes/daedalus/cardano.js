@@ -596,8 +596,8 @@ export const CARDANO_THEME_OUTPUT = {
     '--rp-tooltip-text-color': '#fafbfc',
   },
   scrollbar: {
-    '--theme-scrollbar-thumb-background': 'rgba(200, 204, 206, 0.3)',
-    '--theme-scrollbar-thumb-background-hover': 'rgba(200, 204, 206, 0.5)',
+    '--theme-scrollbar-thumb-background': 'rgba(94, 96, 102, 0.3)',
+    '--theme-scrollbar-thumb-background-hover': 'rgba(94, 96, 102, 0.5)',
   },
   sendConfirmation: {
     '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',
@@ -739,7 +739,7 @@ export const CARDANO_THEME_OUTPUT = {
   },
   topBar: {
     '--theme-topbar-background-color': '#202225',
-    '--theme-topbar-layout-body-background-color': '#ebeff2',
+    '--theme-topbar-layout-body-background-color': '#efefef',
     '--theme-topbar-wallet-name-color': '#fafbfc',
     '--theme-topbar-wallet-info-color': '#fafbfc',
     '--theme-topbar-logo-color': 'rgb(250, 251, 252)',
