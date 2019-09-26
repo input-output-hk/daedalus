@@ -1013,10 +1013,18 @@ export default class AdaApi {
   };
 
   getNews = async (): Promise<GetNewsResponse> => {
+    Logger.debug('AdaApi::getNews called');
     try {
-      return await getNews();
+      const news: GetNewsResponse = await getNews();
+      const { updatedAt, items } = news;
+      Logger.debug('AdaApi::getNews success', {
+        updatedAt,
+        items: items.length,
+      });
+      return news;
     } catch (error) {
-      throw new Error('NEWS_FETCH_FAILED');
+      Logger.error('AdaApi::getNews error', { error });
+      throw new Error('Unable to fetch news');
     }
   };
 

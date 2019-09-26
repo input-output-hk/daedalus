@@ -24,7 +24,7 @@ let NETWORK_BLOCK_HEIGHT = null;
 let NEXT_ADA_UPDATE = null;
 let SUBSCRIPTION_STATUS = null;
 let APPLICATION_VERSION = null;
-let fakeNewsFeedJson: ?GetNewsResponse;
+let FAKE_NEWSFEED_JSON: ?GetNewsResponse;
 
 export default (api: AdaApi) => {
   api.getLocalTimeDifference = async () =>
@@ -189,15 +189,15 @@ export default (api: AdaApi) => {
   };
 
   api.setFakeNewsFeedJsonForTesting = (json: ?GetNewsResponse) => {
-    fakeNewsFeedJson = json;
+    FAKE_NEWSFEED_JSON = json;
   };
 
   api.getNews = (): Promise<GetNewsResponse> => {
     return new Promise((resolve, reject) => {
-      if (!fakeNewsFeedJson) {
-        reject(new Error('NEWS_FETCH_FAILED'));
+      if (!FAKE_NEWSFEED_JSON) {
+        reject(new Error('Unable to fetch news'));
       } else {
-        resolve(fakeNewsFeedJson);
+        resolve(FAKE_NEWSFEED_JSON);
       }
     });
   };

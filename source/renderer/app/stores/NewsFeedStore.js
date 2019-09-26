@@ -43,7 +43,7 @@ export default class NewsFeedStore extends Store {
     // Fetch news on app start
     this.getNews();
     if (!isTest) {
-      // Refetch news each 30min
+      // Refetch news every 30 mins
       this.pollingNewsIntervalId = setInterval(
         this.getNews,
         NEWS_POLL_INTERVAL
@@ -143,7 +143,7 @@ export default class NewsFeedStore extends Store {
   @action markNewsAsRead = async newsTimestamps => {
     // Set news timestamp to LC
     await this.markNewsAsReadRequest.execute(newsTimestamps);
-    // GET all read news to force @computed to trigger
+    // Get all read news to force @computed change
     await this.getReadNewsRequest.execute();
   };
 
