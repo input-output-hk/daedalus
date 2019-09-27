@@ -1,0 +1,143 @@
+.actionBtn {
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 1px solid #fafbfc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  color: #fafbfc;
+  font-family: var(--font-medium);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.36;
+  margin-bottom: 22.5px;
+  min-height: 50px;
+  width: 360px;
+  svg {
+    height: 13px;
+    margin: -1px 5px;
+    width: 13px;
+
+    g {
+      path {
+        stroke: #fafbfc;
+      }
+    }
+  }
+
+  &:hover {
+    background-color: #fafbfc;
+    color: #ab1700;
+    cursor: pointer;
+    svg {
+      g {
+        path {
+          stroke: #ab1700;
+        }
+      }
+    }
+  }
+}
+
+.component {
+  align-items: center;
+  background-color: rgba(171, 23, 0, 0.98);
+  color: #fafbfc;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-regular);
+  height: 100vh;
+  justify-content: center;
+  position: fixed;
+  top: 0px;
+  width: 100vw;
+  z-index: 20;
+}
+
+.content {
+  background-color: rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  line-height: 1.2;
+  margin-bottom: 30px;
+  max-height: 464px;
+  max-width: 600px;
+  min-width: 600px;
+  opacity: 0.8;
+  overflow-y: scroll;
+  padding: 12px 20px;
+  word-break: break-word;
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(250, 251, 252, 0.3);
+    outline: none;
+    width: 4px;
+
+    &:hover {
+      background-color: rgba(250, 251, 252, 0.5);
+    }
+  }
+
+  h1,
+  h2 {
+    font-family: var(--font-medium);
+    margin-bottom: 6px;
+  }
+
+  h1 {
+    font-size: 18px;
+  }
+
+  h2 {
+    font-size: 16px;
+  }
+
+  * + h2 {
+    margin-top: 16px;
+  }
+
+  ol,
+  ul {
+    list-style: disc;
+    margin-left: 20px;
+  }
+
+  ol {
+    list-style-type: decimal;
+  }
+
+  p,
+  li {
+    color: rgba(250, 251, 252, 0.7);
+    font-family: var(--font-regular);
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 6px;
+
+    strong {
+      color: rgba(250, 251, 252, 1);
+      font-weight: 500;
+    }
+  }
+
+  a {
+    border-bottom: 1px solid #fafbfc;
+    color: #fafbfc;
+    text-decoration: none;
+  }
+
+  em {
+    font-style: italic;
+  }
+}
+
+.date {
+  font-family: var(--font-medium);
+  font-size: 14px;
+  line-height: 1.43;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.title {
+  font-size: 20px;
+  line-height: 1.2;
+  margin-bottom: 0;
+  margin-top: 22.5px;
+}

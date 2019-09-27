@@ -1,4 +1,4 @@
-import { Given, When, Then } from 'cucumber';
+import { When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { environment } from '../../../../source/main/environment';
 import { getVisibleTextsForSelector } from '../helpers/shared-helpers';
@@ -38,7 +38,7 @@ When(/^I set next application version to "([^"]*)"$/, async function(
   applicationVersion
 ) {
   await this.client.execute(version => {
-    daedalus.api.ada.setApplicationVersion(parseInt(version));
+    daedalus.api.ada.setApplicationVersion(parseInt(version, 10));
   }, applicationVersion);
 });
 

@@ -640,6 +640,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-loading-status-icons-unloaded-syncing-color': `${text.primary}`,
       '--theme-loading-status-icons-tooltip-color': `${text.primary}`,
       '--theme-loading-spinner-color': `${text.primary}`,
+      '--theme-loading-spinner-medium-color': '#fff',
     },
     manualUpdate: {
       '--theme-manual-update-overlay-background-color': `${chroma(
@@ -723,6 +724,38 @@ export const createDaedalusComponentsTheme = (
       '--theme-network-window-button-background-color-active': `${chroma(
         background.secondary.lightest
       ).alpha(0.8)}`,
+    },
+    newsFeed: {
+      '--theme-news-feed-background-color': '#233856',
+      '--theme-news-feed-badge-background-color': '#ea4c5b',
+      '--theme-news-feed-badge-text-color': '#ffffff',
+      '--theme-news-feed-box-shadow-color': '-5px 0 20px 0 rgba(0, 0, 0, 0.25)',
+      '--theme-news-feed-header-background-color': '#1e304a',
+      '--theme-news-feed-header-title-color': '#fafbfc',
+      '--theme-news-feed-icon-close-button-color': '#fff',
+      '--theme-news-feed-icon-close-hover-background-color':
+        'rgba(0, 0, 0, 0.1)',
+      '--theme-news-feed-icon-color': '#fafbfc',
+      '--theme-news-feed-icon-color-connecting-screen': '#fafbfc',
+      '--theme-news-feed-icon-color-syncing-screen': '#5e6066',
+      '--theme-news-feed-icon-dot-background-color': '#ea4c5b',
+      '--theme-news-feed-icon-toggle-hover-background-color':
+        'rgba(0, 0, 0, 0.1)',
+      '--theme-news-feed-no-fetch-color': '#fafbfc',
+    },
+    newsItem: {
+      '--theme-news-item-action-button-background-color': 'rgba(0, 0, 0, 0.1)',
+      '--theme-news-item-action-button-background-color-hover': '#29b595',
+      '--theme-news-item-action-button-border-color': '#fafbfc',
+      '--theme-news-item-action-button-color': '#fafbfc',
+      '--theme-news-item-action-button-color-hover': '#ffffff',
+      '--theme-news-item-alert-background-color': 'rgba(242, 162, 24, 0.5)',
+      '--theme-news-item-announcement-background-color':
+        'rgba(234, 76, 91, 0.25)',
+      '--theme-news-item-badge-color': '#ea4c5b',
+      '--theme-news-item-content-link-color': '#fafbfc',
+      '--theme-news-item-info-background-color': 'rgba(0, 0, 0, 0.1)',
+      '--theme-news-item-title-color': '#fafbfc',
     },
     nodeUpdate: {
       '--theme-node-update-background-color': `${background.primary.regular}`,

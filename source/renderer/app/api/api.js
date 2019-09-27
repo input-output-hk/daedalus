@@ -47,6 +47,9 @@ import { updateWallet } from './wallets/requests/updateWallet';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
 import { getWalletIdAndBalance } from './wallets/requests/getWalletIdAndBalance';
 
+// News requests
+import { getNews } from './news/requests/getNews';
+
 // utility functions
 import {
   awaitUpdateChannel,
@@ -135,6 +138,9 @@ import type {
   GetWalletIdAndBalanceResponse,
 } from './wallets/types';
 
+// News Types
+import type { GetNewsResponse } from './news/types';
+
 // Common errors
 import {
   GenericApiError,
@@ -161,6 +167,8 @@ import {
 } from './transactions/errors';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
 import { TlsCertificateNotValidError } from './nodes/errors';
+import { getSHA256HexForString } from './utils/hashing';
+import { getNewsHash } from './news/requests/getNewsHash';
 
 export default class AdaApi {
   config: RequestConfig;
@@ -1040,6 +1048,42 @@ export default class AdaApi {
     }
   };
 
+  getNews = async (): Promise<GetNewsResponse> => {
+    Logger.debug('AdaApi::getNews called');
+
+    // Fetch news json
+    let rawNews: string;
+    let news: GetNewsResponse;
+    try {
+      rawNews = await getNews();
+      news = JSON.parse(rawNews);
+    } catch (error) {
+      Logger.error('AdaApi::getNews error', { error });
+      throw new Error('Unable to fetch news');
+    }
+
+    // Fetch news verification hash
+    let newsHash: string;
+    let expectedNewsHash: string;
+    try {
+      newsHash = await getSHA256HexForString(rawNews);
+      expectedNewsHash = await getNewsHash(news.updatedAt);
+    } catch (error) {
+      Logger.error('AdaApi::getNews (hash) error', { error });
+      throw new Error('Unable to fetch news hash');
+    }
+
+    if (newsHash !== expectedNewsHash) {
+      throw new Error('Newsfeed could not be verified');
+    }
+
+    Logger.debug('AdaApi::getNews success', {
+      updatedAt: news.updatedAt,
+      items: news.items.length,
+    });
+    return news;
+  };
+
   setCardanoNodeFault = async (fault: FaultInjectionIpcRequest) => {
     await cardanoFaultInjectionChannel.send(fault);
   };
@@ -1054,6 +1098,10 @@ export default class AdaApi {
   setLatestAppVersion: Function;
   setApplicationVersion: Function;
   setFaultyNodeSettingsApi: boolean;
+  resetTestOverrides: Function;
+
+  // Newsfeed testing utility
+  setFakeNewsFeedJsonForTesting: (fakeNewsfeedJson: GetNewsResponse) => void;
 }
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========

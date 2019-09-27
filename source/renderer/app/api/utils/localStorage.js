@@ -2,6 +2,9 @@
 
 /* eslint-disable consistent-return */
 
+import { includes } from 'lodash';
+import type { NewsTimestamp } from '../news/types';
+
 const store = global.electronStore;
 
 export type WalletLocalData = {
@@ -19,6 +22,7 @@ type StorageKeys = {
   TERMS_OF_USE_ACCEPTANCE: string,
   THEME: string,
   DATA_LAYER_MIGRATION_ACCEPTANCE: string,
+  READ_NEWS: string,
   WALLETS: string,
 };
 
@@ -36,6 +40,7 @@ export default class LocalStorageApi {
       TERMS_OF_USE_ACCEPTANCE: `${NETWORK}-TERMS-OF-USE-ACCEPTANCE`,
       THEME: `${NETWORK}-THEME`,
       DATA_LAYER_MIGRATION_ACCEPTANCE: `${NETWORK}-DATA-LAYER-MIGRATION-ACCEPTANCE`,
+      READ_NEWS: `${NETWORK}-READ_NEWS`,
       WALLETS: `${NETWORK}-WALLETS`,
     };
   }
@@ -222,10 +227,50 @@ export default class LocalStorageApi {
       }
     });
 
+  getReadNews = (): Promise<NewsTimestamp[]> =>
+    new Promise((resolve, reject) => {
+      try {
+        const readNews = store.get(this.storageKeys.READ_NEWS);
+        if (!readNews) return resolve([]);
+        resolve(readNews);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+
+  markNewsAsRead = (
+    newsTimestamps: NewsTimestamp[]
+  ): Promise<NewsTimestamp[]> =>
+    new Promise((resolve, reject) => {
+      try {
+        const readNews = store.get(this.storageKeys.READ_NEWS) || [];
+
+        if (!includes(readNews, newsTimestamps[0])) {
+          store.set(
+            this.storageKeys.READ_NEWS,
+            readNews.concat(newsTimestamps)
+          );
+        }
+
+        resolve(readNews);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+
+  unsetReadNews = (): Promise<void> =>
+    new Promise(resolve => {
+      try {
+        store.delete(this.storageKeys.READ_NEWS);
+        resolve();
+      } catch (error) {} // eslint-disable-line
+    });
+
   reset = async () => {
     await this.unsetUserLocale();
     await this.unsetTermsOfUseAcceptance();
     await this.unsetUserTheme();
     await this.unsetDataLayerMigrationAcceptance();
+    await this.unsetReadNews();
   };
 }
