@@ -16,7 +16,7 @@ export type HttpOptions = {
 
 export const externalRequest = (
   httpOptions: HttpOptions,
-  expectRawBody?: boolean
+  raw: boolean = false
 ): Promise<any> =>
   new Promise((resolve, reject) => {
     if (!ALLOWED_EXTERNAL_HOSTNAMES.includes(httpOptions.hostname)) {
@@ -35,16 +35,11 @@ export const externalRequest = (
       });
       response.on('error', error => reject(error));
       response.on('end', () => {
-        if (expectRawBody) {
-          return resolve(body);
-        }
-
         try {
-          const parsedBody = JSON.parse(body);
-          return resolve(parsedBody);
+          resolve(raw ? body : JSON.parse(body));
         } catch (error) {
           // Handle internal server errors (e.g. HTTP 500 - 'Something went wrong')
-          return reject(new Error(error));
+          reject(new Error(error));
         }
       });
     });

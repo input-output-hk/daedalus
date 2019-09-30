@@ -36,6 +36,9 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       isNewAppVersionLoaded,
     } = stores.nodeUpdate;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = stores.profile;
+    const { toggleNewsFeed } = this.props.actions.app;
+    const { unread } = stores.newsFeed.newsFeedData;
+    const hasUnreadNews = unread.length > 0;
 
     return (
       <SyncingConnecting
@@ -50,6 +53,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         isNotEnoughDiskSpace={isNotEnoughDiskSpace}
         isTlsCertInvalid={isTlsCertInvalid}
         syncPercentage={syncPercentage}
+        hasUnreadNews={hasUnreadNews}
         hasLoadedCurrentLocale={hasLoadedCurrentLocale}
         hasLoadedCurrentTheme={hasLoadedCurrentTheme}
         isCheckingSystemTime={forceCheckTimeDifferenceRequest.isExecuting}
@@ -64,7 +68,9 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         onGetAvailableVersions={this.handleGetAvailableVersions}
         onStatusIconClick={this.openDaedalusDiagnosticsDialog}
         onDownloadLogs={this.handleDownloadLogs}
+        onToggleNewsFeedIconClick={toggleNewsFeed.trigger}
         disableDownloadLogs={stores.app.isDownloadNotificationVisible}
+        showNewsFeedIcon={!isNodeStopping && !isNodeStopped}
       />
     );
   }

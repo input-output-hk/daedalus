@@ -1,8 +1,8 @@
 import { Given, When, Then } from 'cucumber';
 
 Given(/^I set Internet Connection to: "([^"]*)"$/, async function(status) {
-  await this.client.execute(status => {
-    daedalus.stores.networkStatus.setIsInternetConnected(status !== 'offline');
+  await this.client.execute(s => {
+    daedalus.stores.networkStatus.setIsInternetConnected(s !== 'offline');
   }, status);
 });
 

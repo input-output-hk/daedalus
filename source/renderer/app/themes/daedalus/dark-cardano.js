@@ -275,6 +275,19 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-input-right-floating-text-color': 'rgba(255, 255, 255, 0.5)',
     '--theme-input-text-color': '#ffffff',
   },
+  internet: {
+    '--theme-internet-offline-window-background-color': '#36374df5',
+    '--theme-internet-offline-window-text-color': '#ffffff',
+    '--theme-internet-offline-window-description-color': '#afafb8aa',
+    '--theme-internet-offline-window-button-background-color':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-internet-offline-window-button-background-color-active': '#e9e9ea',
+    '--theme-internet-offline-window-button-background-color-hover': '#fafbfc',
+    '--theme-internet-offline-window-button-text-color': '#fafbfc',
+    '--theme-internet-offline-window-button-text-color-hover': '#2a2b3c',
+    '--theme-internet-offline-window-button-border-color': '#fafbfc',
+    '--theme-internet-offline-window-button-border-color-hover': 'transparent',
+  },
   link: {
     '--theme-link-main-color': '#1fc1c3',
   },
@@ -289,6 +302,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-loading-status-icons-unloaded-syncing-color': '#ffffff',
     '--theme-loading-status-icons-tooltip-color': '#56576b',
     '--theme-loading-spinner-color': '#ffffff',
+    '--theme-loading-spinner-medium-color': '#ffffff',
   },
   manualUpdate: {
     '--theme-manual-update-overlay-background-color': '#36374df5',
@@ -340,18 +354,36 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-network-window-button-background-color-hover': '#afafb899',
     '--theme-network-window-button-background-color-active': '#afafb8cc',
   },
-  internet: {
-    '--theme-internet-offline-window-background-color': '#36374df5',
-    '--theme-internet-offline-window-text-color': '#ffffff',
-    '--theme-internet-offline-window-description-color': '#afafb8aa',
-    '--theme-internet-offline-window-button-background-color':
+  newsFeed: {
+    '--theme-news-feed-background-color': '#2a2b3c',
+    '--theme-news-feed-badge-background-color': '#ea4c5b',
+    '--theme-news-feed-badge-text-color': '#ffffff',
+    '--theme-news-feed-box-shadow-color': '-5px 0 20px 0 rgba(0, 0, 0, 0.25)',
+    '--theme-news-feed-header-background-color': '#20212e',
+    '--theme-news-feed-header-title-color': '#fafbfc',
+    '--theme-news-feed-icon-close-button-color': '#ffffff',
+    '--theme-news-feed-icon-close-hover-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-news-feed-icon-color': '#ffffff',
+    '--theme-news-feed-icon-color-connecting-screen': '#ffffff',
+    '--theme-news-feed-icon-color-syncing-screen': '#ffffff',
+    '--theme-news-feed-icon-dot-background-color': '#ea4c5b',
+    '--theme-news-feed-icon-toggle-hover-background-color':
       'rgba(0, 0, 0, 0.1)',
-    '--theme-internet-offline-window-button-background-color-active': '#e9e9ea',
-    '--theme-internet-offline-window-button-background-color-hover': '#fafbfc',
-    '--theme-internet-offline-window-button-text-color': '#fafbfc',
-    '--theme-internet-offline-window-button-text-color-hover': '#2a2b3c',
-    '--theme-internet-offline-window-button-border-color': '#fafbfc',
-    '--theme-internet-offline-window-button-border-color-hover': 'transparent',
+    '--theme-news-feed-no-fetch-color': '#fafbfc',
+  },
+  newsItem: {
+    '--theme-news-item-action-button-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-news-item-action-button-background-color-hover': '#ffffff',
+    '--theme-news-item-action-button-border-color': '#ffffff',
+    '--theme-news-item-action-button-color': '#ffffff',
+    '--theme-news-item-action-button-color-hover': '#2a2b3c',
+    '--theme-news-item-alert-background-color': 'rgba(242, 162, 24, 0.5)',
+    '--theme-news-item-announcement-background-color':
+      'rgba(31, 193, 195, 0.2)',
+    '--theme-news-item-badge-color': '#ea4c5b',
+    '--theme-news-item-content-link-color': '#ffffff',
+    '--theme-news-item-info-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-news-item-title-color': '#ffffff',
   },
   nodeUpdate: {
     '--theme-node-update-background-color': '#121326',
@@ -708,7 +740,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
   },
   topBar: {
     '--theme-topbar-background-color': '#2a2b3c',
-    '--theme-topbar-layout-body-background-color': '#36374d',
+    '--theme-topbar-layout-body-background-color': '#121326',
     '--theme-topbar-wallet-name-color': '#ffffff',
     '--theme-topbar-wallet-info-color': '#ffffff',
     '--theme-topbar-logo-color': '#ffffff',
@@ -753,6 +785,15 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-utxo-tooltip-background-color': 'rgba(63, 64, 79, 0.9)',
     '--theme-utxo-tooltip-shadow-color': 'rgba(31, 193, 195, 0.18)',
     '--theme-utxo-tooltip-text-color': '#fff',
+  },
+  recoveryPhrase: {
+    '--theme-recovery-phrase-normal-background-color':
+      'rgba(255, 255, 255, .1)',
+    '--theme-recovery-phrase-normal-border-color': 'transparent',
+    '--theme-recovery-phrase-warning-background-color':
+      'rgba(255, 255, 255, .1)',
+    '--theme-recovery-phrase-attention-background-color':
+      'rgba(234, 76, 91, .2)',
   },
 };
 

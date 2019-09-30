@@ -13,7 +13,7 @@
 
 .page {
   height: calc(100% - 50px);
-  overflow: auto;
+  overflow: overlay;
   position: relative;
 }
 

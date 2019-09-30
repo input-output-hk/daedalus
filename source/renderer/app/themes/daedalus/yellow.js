@@ -273,6 +273,22 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-input-right-floating-text-color': '#2d2d2d80',
     '--theme-input-text-color': '#2d2d2d',
   },
+  internet: {
+    '--theme-internet-offline-window-background-color':
+      'rgba(255, 185, 35, 0.96)',
+    '--theme-internet-offline-window-text-color': '#2d2d2d',
+    '--theme-internet-offline-window-description-color':
+      'rgba(45, 45, 45, 0.7)',
+    '--theme-internet-offline-window-button-background-color':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-internet-offline-window-button-background-color-active':
+      'rgba(28, 28, 28, 0.96)',
+    '--theme-internet-offline-window-button-background-color-hover': '#2d2d2d',
+    '--theme-internet-offline-window-button-text-color': '#2d2d2d',
+    '--theme-internet-offline-window-button-text-color-hover': '#ffffff',
+    '--theme-internet-offline-window-button-border-color': '#2d2d2d',
+    '--theme-internet-offline-window-button-border-color-hover': 'transparent',
+  },
   link: {
     '--theme-link-main-color': '#d6902f',
   },
@@ -287,6 +303,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-loading-status-icons-unloaded-syncing-color': '#2d2d2d',
     '--theme-loading-status-icons-tooltip-color': '#2d2d2d',
     '--theme-loading-spinner-color': '#2d2d2d',
+    '--theme-loading-spinner-medium-color': '#2d2d2d',
   },
   manualUpdate: {
     '--theme-manual-update-overlay-background-color':
@@ -343,21 +360,36 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-network-window-button-background-color-active':
       'rgba(45, 45, 45, 0.8)',
   },
-  internet: {
-    '--theme-internet-offline-window-background-color':
-      'rgba(255, 185, 35, 0.96)',
-    '--theme-internet-offline-window-text-color': '#2d2d2d',
-    '--theme-internet-offline-window-description-color':
-      'rgba(45, 45, 45, 0.7)',
-    '--theme-internet-offline-window-button-background-color':
+  newsFeed: {
+    '--theme-news-feed-background-color': '#ffb923',
+    '--theme-news-feed-badge-background-color': '#ea4c5b',
+    '--theme-news-feed-badge-text-color': '#ffffff',
+    '--theme-news-feed-box-shadow-color': '-5px 0 20px 0 rgba(0, 0, 0, 0.25)',
+    '--theme-news-feed-header-background-color': '#eda70e',
+    '--theme-news-feed-header-title-color': '#2d2d2d',
+    '--theme-news-feed-icon-close-button-color': '#2d2d2d',
+    '--theme-news-feed-icon-close-hover-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-news-feed-icon-color': '#2d2d2d',
+    '--theme-news-feed-icon-color-connecting-screen': '#2d2d2d',
+    '--theme-news-feed-icon-color-syncing-screen': '#2d2d2d',
+    '--theme-news-feed-icon-dot-background-color': '#be0b0b',
+    '--theme-news-feed-icon-toggle-hover-background-color':
       'rgba(0, 0, 0, 0.1)',
-    '--theme-internet-offline-window-button-background-color-active':
-      'rgba(28, 28, 28, 0.96)',
-    '--theme-internet-offline-window-button-background-color-hover': '#2d2d2d',
-    '--theme-internet-offline-window-button-text-color': '#2d2d2d',
-    '--theme-internet-offline-window-button-text-color-hover': '#ffffff',
-    '--theme-internet-offline-window-button-border-color': '#2d2d2d',
-    '--theme-internet-offline-window-button-border-color-hover': 'transparent',
+    '--theme-news-feed-no-fetch-color': '#fafbfc',
+  },
+  newsItem: {
+    '--theme-news-item-action-button-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-news-item-action-button-background-color-hover': '#2d2d2d',
+    '--theme-news-item-action-button-border-color': '#2d2d2d',
+    '--theme-news-item-action-button-color': '#2d2d2d',
+    '--theme-news-item-action-button-color-hover': '#ffffff',
+    '--theme-news-item-alert-background-color': 'rgba(249, 128, 10, 0.5)',
+    '--theme-news-item-announcement-background-color':
+      'rgba(31, 193, 195, 0.3)',
+    '--theme-news-item-badge-color': '#ea4c5b',
+    '--theme-news-item-content-link-color': '#2d2d2d',
+    '--theme-news-item-info-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-news-item-title-color': '#2d2d2d',
   },
   nodeUpdate: {
     '--theme-node-update-background-color': '#f8f3ed',
@@ -712,7 +744,7 @@ export const YELLOW_THEME_OUTPUT = {
   },
   topBar: {
     '--theme-topbar-background-color': '#ffb923',
-    '--theme-topbar-layout-body-background-color': '#fdcd68',
+    '--theme-topbar-layout-body-background-color': '#f8f3ed',
     '--theme-topbar-wallet-name-color': '#2d2d2d',
     '--theme-topbar-wallet-info-color': '#2d2d2d',
     '--theme-topbar-logo-color': '#2d2d2d',
@@ -754,6 +786,13 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-utxo-tooltip-background-color': '#2d2d2d',
     '--theme-utxo-tooltip-shadow-color': 'rgba(45, 45, 45, 0.18)',
     '--theme-utxo-tooltip-text-color': '#fff',
+  },
+  recoveryPhrase: {
+    '--theme-recovery-phrase-normal-background-color': 'rgba(45, 45, 45, .1)',
+    '--theme-recovery-phrase-normal-border-color': 'transparent',
+    '--theme-recovery-phrase-warning-background-color': 'rgba(45, 45, 45, .1)',
+    '--theme-recovery-phrase-attention-background-color':
+      'rgba(234, 76, 91, .1)',
   },
 };
 
