@@ -13,7 +13,6 @@ import {
 import WalletAddress from '../domains/WalletAddress';
 
 // Addresses requests
-import { getAddress } from './addresses/requests/getAddress';
 import { getAddresses } from './addresses/requests/getAddresses';
 import { createAddress } from './addresses/requests/createAddress';
 
@@ -44,7 +43,7 @@ import { updateWallet } from './wallets/requests/updateWallet';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
 import { getWallet } from './wallets/requests/getWallet';
 
-// utility functions
+// Utility functions
 import {
   awaitUpdateChannel,
   cardanoFaultInjectionChannel,
@@ -61,20 +60,15 @@ import {
 } from './utils/mnemonics';
 import { filterLogData } from '../../../common/utils/logging';
 
-// config constants
+// Config constants
 import {
   LOVELACES_PER_ADA,
-  // MAX_TRANSACTIONS_PER_PAGE,
   MAX_TRANSACTION_CONFIRMATIONS,
-  // TX_AGE_POLLING_THRESHOLD,
 } from '../config/numbersConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../config/cryptoConfig';
-
-// Accounts types
-// import type { Accounts } from './accounts/types';
 
 // Addresses Types
 import type {
@@ -148,9 +142,7 @@ import {
 
 // Transactions errors
 import {
-  CanNotCalculateTransactionFeesError,
   NotAllowedToSendMoneyToRedeemAddressError,
-  NotEnoughFundsForTransactionFeesError,
   NotEnoughFundsForTransactionError,
   NotEnoughMoneyToSendError,
   TooBigTransactionError,
@@ -229,151 +221,146 @@ export default class AdaApi {
     });
     Logger.debug('AdaApi::searchHistory called', { parameters: requestStats });
 
-    /*
-    const {
-      walletId,
-      skip,
-      limit,
-      isFirstLoad, // during first load we fetch all wallet's transactions
-      isRestoreActive, // during restoration we fetch only missing transactions
-      isRestoreCompleted, // once restoration is done we fetch potentially missing transactions
-      cachedTransactions,
-    } , unionBy= request;
-    */
-    // NOTE: Not yet available in the API
+    // @API TODO: Not yet available in the API
     return new Promise(resolve => resolve({ transactions: [], total: 0 }));
 
-    /* TODO: Uncomment once API available
-
-    const accounts: Accounts = await getAccounts(this.config, { walletId });
-
-    if (!accounts.length || !accounts[0].index) {
-      return new Promise(resolve => resolve({ transactions: [], total: 0 }));
-    }
-
-    let perPage = limit;
-    const shouldLoadAll = limit === null;
-    if (shouldLoadAll || limit > MAX_TRANSACTIONS_PER_PAGE) {
-      perPage = MAX_TRANSACTIONS_PER_PAGE;
-    }
-
-    const params = {
-      wallet_id: walletId,
-      account_index: accounts[0].index,
-      page: skip === 0 ? 1 : skip + 1,
-      per_page: perPage,
-      sort_by: 'DES[created_at]',
-      created_at: `LTE[${moment.utc().format('YYYY-MM-DDTHH:mm:ss')}]`,
-      // ^^ By setting created_at filter to current time we make sure
-      // all subsequent multi-pages requests load the same set of transactions
-    };
-
-    const shouldLoadOnlyFresh =
-      !isFirstLoad && !isRestoreActive && !isRestoreCompleted;
-    if (shouldLoadOnlyFresh) {
-      const tenMinutesAgo = moment
-        .utc(Date.now() - TX_AGE_POLLING_THRESHOLD)
-        .format('YYYY-MM-DDTHH:mm:ss');
-      // Since we load all transactions in a first load, later on we only care about fresh ones
-      Object.assign(params, { created_at: `GTE[${tenMinutesAgo}]` });
-    }
-
-    const pagesToBeLoaded = Math.ceil(limit / params.per_page);
-
-    try {
-      // Load first page of transactions
-      const response: Transactions = await getTransactionHistory(
-        this.config,
-        params
-      );
-      const { meta, data: txHistory } = response;
-      const { totalPages, totalEntries: totalTransactions } = meta.pagination;
-
-      let transactions = txHistory.map(tx =>
-        _createTransactionFromServerData(tx)
-      );
-
-      // Load additional pages of transactions
-      const hasMultiplePages =
-        totalPages > 1 && (shouldLoadAll || limit > perPage);
-      if (hasMultiplePages) {
-        let page = 2;
-        const hasNextPage = () => {
-          const hasMorePages = page < totalPages + 1;
-          if ((isRestoreActive || isRestoreCompleted) && hasMorePages) {
-            const loadedTransactions = unionBy(
-              transactions,
-              cachedTransactions,
-              'id'
-            );
-            const hasMoreTransactions =
-              totalTransactions - loadedTransactions.length > 0;
-            return hasMoreTransactions;
-          }
-          return hasMorePages;
-        };
-        const shouldLoadNextPage = () =>
-          shouldLoadAll || page <= pagesToBeLoaded;
-
-        if (isRestoreActive || isRestoreCompleted) {
-          const latestLoadedTransactionDate = transactions[0].date;
-          const latestLoadedTransactionDateString = moment
-            .utc(latestLoadedTransactionDate)
-            .format('YYYY-MM-DDTHH:mm:ss');
-          // During restoration we need to fetch only transactions older than the latest loaded one
-          // as this ensures that both totalPages and totalEntries remain unchanged throught out
-          // subsequent page loads (as in the meantime new transactions can be discovered)
-          Object.assign(params, {
-            created_at: `LTE[${latestLoadedTransactionDateString}]`,
-          });
-        }
-
-        for (page; hasNextPage() && shouldLoadNextPage(); page++) {
-          const { data: pageHistory } = await getTransactionHistory(
-            this.config,
-            Object.assign(params, { page })
-          );
-          transactions.push(
-            ...pageHistory.map(tx => _createTransactionFromServerData(tx))
-          );
-        }
-      }
-
-      // Merge newly loaded and previously loaded transactions
-      // - unionBy also serves the purpose of removing transaction duplicates
-      //   which may occur as a side-effect of transaction request pagination
-      //   as multi-page requests are not executed at the exact same time!
-      transactions = unionBy(transactions, cachedTransactions, 'id');
-
-      // Enforce the limit in case we are not loading all transactions
-      if (!shouldLoadAll) transactions.splice(limit);
-
-      const total = transactions.length;
-
-      const responseStats = {
-        apiRequested: limit || 'all',
-        apiFiltered: shouldLoadOnlyFresh ? 'fresh' : '',
-        apiReturned: totalTransactions,
-        apiPagesTotal: totalPages,
-        apiPagesRequested: params.page,
-        daedalusCached: cachedTransactions.length,
-        daedalusLoaded: total - cachedTransactions.length,
-        daedalusTotal: total,
-        requestDurationInMs: moment
-          .duration(moment().diff(requestTimestamp))
-          .as('milliseconds'),
-      };
-      Logger.debug(
-        `AdaApi::searchHistory success: ${total} transactions loaded`,
-        { responseStats }
-      );
-      return new Promise(resolve => resolve({ transactions, total }));
-    } catch (error) {
-      Logger.error('AdaApi::searchHistory error', { error });
-      throw new GenericApiError();
-    }
-
-    */
+    // @API TODO: Uncomment once API available
+    // const {
+    //   walletId,
+    //   skip,
+    //   limit,
+    //   isFirstLoad, // during first load we fetch all wallet's transactions
+    //   isRestoreActive, // during restoration we fetch only missing transactions
+    //   isRestoreCompleted, // once restoration is done we fetch potentially missing transactions
+    //   cachedTransactions,
+    // } = request;
+    // const accounts: Accounts = await getAccounts(this.config, { walletId });
+    //
+    // if (!accounts.length || !accounts[0].index) {
+    //   return new Promise(resolve => resolve({ transactions: [], total: 0 }));
+    // }
+    //
+    // let perPage = limit;
+    // const shouldLoadAll = limit === null;
+    // if (shouldLoadAll || limit > MAX_TRANSACTIONS_PER_PAGE) {
+    //   perPage = MAX_TRANSACTIONS_PER_PAGE;
+    // }
+    //
+    // const params = {
+    //   wallet_id: walletId,
+    //   account_index: accounts[0].index,
+    //   page: skip === 0 ? 1 : skip + 1,
+    //   per_page: perPage,
+    //   sort_by: 'DES[created_at]',
+    //   created_at: `LTE[${moment.utc().format('YYYY-MM-DDTHH:mm:ss')}]`,
+    //   // ^^ By setting created_at filter to current time we make sure
+    //   // all subsequent multi-pages requests load the same set of transactions
+    // };
+    //
+    // const shouldLoadOnlyFresh =
+    //   !isFirstLoad && !isRestoreActive && !isRestoreCompleted;
+    // if (shouldLoadOnlyFresh) {
+    //   const tenMinutesAgo = moment
+    //     .utc(Date.now() - TX_AGE_POLLING_THRESHOLD)
+    //     .format('YYYY-MM-DDTHH:mm:ss');
+    //   // Since we load all transactions in a first load, later on we only care about fresh ones
+    //   Object.assign(params, { created_at: `GTE[${tenMinutesAgo}]` });
+    // }
+    //
+    // const pagesToBeLoaded = Math.ceil(limit / params.per_page);
+    //
+    // try {
+    //   // Load first page of transactions
+    //   const response: Transactions = await getTransactionHistory(
+    //     this.config,
+    //     params
+    //   );
+    //   const { meta, data: txHistory } = response;
+    //   const { totalPages, totalEntries: totalTransactions } = meta.pagination;
+    //
+    //   let transactions = txHistory.map(tx =>
+    //     _createTransactionFromServerData(tx)
+    //   );
+    //
+    //   // Load additional pages of transactions
+    //   const hasMultiplePages =
+    //     totalPages > 1 && (shouldLoadAll || limit > perPage);
+    //   if (hasMultiplePages) {
+    //     let page = 2;
+    //     const hasNextPage = () => {
+    //       const hasMorePages = page < totalPages + 1;
+    //       if ((isRestoreActive || isRestoreCompleted) && hasMorePages) {
+    //         const loadedTransactions = unionBy(
+    //           transactions,
+    //           cachedTransactions,
+    //           'id'
+    //         );
+    //         const hasMoreTransactions =
+    //           totalTransactions - loadedTransactions.length > 0;
+    //         return hasMoreTransactions;
+    //       }
+    //       return hasMorePages;
+    //     };
+    //     const shouldLoadNextPage = () =>
+    //       shouldLoadAll || page <= pagesToBeLoaded;
+    //
+    //     if (isRestoreActive || isRestoreCompleted) {
+    //       const latestLoadedTransactionDate = transactions[0].date;
+    //       const latestLoadedTransactionDateString = moment
+    //         .utc(latestLoadedTransactionDate)
+    //         .format('YYYY-MM-DDTHH:mm:ss');
+    //       // During restoration we need to fetch only transactions older than the latest loaded one
+    //       // as this ensures that both totalPages and totalEntries remain unchanged throught out
+    //       // subsequent page loads (as in the meantime new transactions can be discovered)
+    //       Object.assign(params, {
+    //         created_at: `LTE[${latestLoadedTransactionDateString}]`,
+    //       });
+    //     }
+    //
+    //     for (page; hasNextPage() && shouldLoadNextPage(); page++) {
+    //       const { data: pageHistory } = await getTransactionHistory(
+    //         this.config,
+    //         Object.assign(params, { page })
+    //       );
+    //       transactions.push(
+    //         ...pageHistory.map(tx => _createTransactionFromServerData(tx))
+    //       );
+    //     }
+    //   }
+    //
+    //   // Merge newly loaded and previously loaded transactions
+    //   // - unionBy also serves the purpose of removing transaction duplicates
+    //   //   which may occur as a side-effect of transaction request pagination
+    //   //   as multi-page requests are not executed at the exact same time!
+    //   transactions = unionBy(transactions, cachedTransactions, 'id');
+    //
+    //   // Enforce the limit in case we are not loading all transactions
+    //   if (!shouldLoadAll) transactions.splice(limit);
+    //
+    //   const total = transactions.length;
+    //
+    //   const responseStats = {
+    //     apiRequested: limit || 'all',
+    //     apiFiltered: shouldLoadOnlyFresh ? 'fresh' : '',
+    //     apiReturned: totalTransactions,
+    //     apiPagesTotal: totalPages,
+    //     apiPagesRequested: params.page,
+    //     daedalusCached: cachedTransactions.length,
+    //     daedalusLoaded: total - cachedTransactions.length,
+    //     daedalusTotal: total,
+    //     requestDurationInMs: moment
+    //       .duration(moment().diff(requestTimestamp))
+    //       .as('milliseconds'),
+    //   };
+    //   Logger.debug(
+    //     `AdaApi::searchHistory success: ${total} transactions loaded`,
+    //     { responseStats }
+    //   );
+    //   return new Promise(resolve => resolve({ transactions, total }));
+    // } catch (error) {
+    //   Logger.error('AdaApi::searchHistory error', { error });
+    //   throw new GenericApiError();
+    // }
   };
 
   createWallet = async (request: CreateWalletRequest): Promise<Wallet> => {
@@ -419,17 +406,10 @@ export default class AdaApi {
     Logger.debug('AdaApi::createTransaction called', {
       parameters: filterLogData(request),
     });
-    const {
-      accountIndex,
-      walletId,
-      address,
-      amount,
-      spendingPassword,
-    } = request;
+    const { walletId, address, amount, spendingPassword } = request;
     try {
       const data = {
         source: {
-          accountIndex,
           walletId,
         },
         destinations: [
@@ -475,69 +455,49 @@ export default class AdaApi {
     Logger.debug('AdaApi::calculateTransactionFee called', {
       parameters: filterLogData(request),
     });
-    const { accountIndex, walletId, walletBalance, address, amount } = request;
+    const { walletId, address, amount } = request;
+
     try {
       const data = {
-        source: {
-          accountIndex,
-          walletId,
-        },
-        destinations: [
+        payments: [
           {
             address,
-            amount,
+            amount: {
+              quantity: amount,
+              unit: 'lovelace',
+            },
           },
         ],
-        groupingPolicy: 'OptimizeForSecurity',
       };
       const response: TransactionFee = await getTransactionFee(this.config, {
+        walletId,
         data,
       });
+
       Logger.debug('AdaApi::calculateTransactionFee success', {
         transactionFee: response,
       });
+
       return _createTransactionFeeFromServerData(response);
     } catch (error) {
       Logger.error('AdaApi::calculateTransactionFee error', { error });
-      if (
-        error.message === 'NotEnoughMoney' ||
-        error.message === 'UtxoNotEnoughFragmented'
-      ) {
-        const errorMessage = get(error, 'diagnostic.details.msg', '');
-        if (errorMessage.includes('Not enough coins to cover fee')) {
-          // Amount + fees exceeds walletBalance:
-          // - error.diagnostic.details.msg === 'Not enough coins to cover fee.'
-          // = show "Not enough Ada for fees. Try sending a smaller amount."
-          throw new NotEnoughFundsForTransactionFeesError();
-        } else if (
-          errorMessage.includes('Not enough available coins to proceed')
-        ) {
-          const availableBalance = new BigNumber(
-            get(error, 'diagnostic.details.availableBalance', 0)
-          ).dividedBy(LOVELACES_PER_ADA);
-          if (walletBalance.gt(availableBalance)) {
-            // Amount exceeds availableBalance due to pending transactions:
-            // - error.diagnostic.details.msg === 'Not enough available coins to proceed.'
-            // - total walletBalance > error.diagnostic.details.availableBalance
-            // = show "Cannot calculate fees while there are pending transactions."
-            throw new CanNotCalculateTransactionFeesError();
-          } else {
-            // Amount exceeds walletBalance:
-            // - error.diagnostic.details.msg === 'Not enough available coins to proceed.'
-            // - total walletBalance === error.diagnostic.details.availableBalance
-            // = show "Not enough Ada. Try sending a smaller amount."
-            throw new NotEnoughFundsForTransactionError();
-          }
-        } else {
-          // Amount exceeds walletBalance:
-          // = show "Not enough Ada. Try sending a smaller amount."
-          throw new NotEnoughFundsForTransactionError();
-        }
+      if (error.code === 'not_enough_money') {
+        // 1 utxo available
+        // created tx with one output
+        // transaction amount is greater than wallet's balance
+        throw new NotEnoughFundsForTransactionError();
+      } else if (error.code === 'utxo_not_enough_fragmented') {
+        // 1 utxo available
+        // created tx with 2 outputs
+        // calculated fees PLUS the transaction amount exceeds wallet's balance
+        // transaction amount is less than wallet's balance
+
+        // @API TODO - Change error message when fee calculation fails regarding to not enough fragmented UTXO
+        //           - Also check if error.code is correct
+        throw new NotEnoughFundsForTransactionError();
+      } else {
+        throw new GenericApiError();
       }
-      if (error.message === 'TooBigTransaction') {
-        throw new TooBigTransactionError();
-      }
-      throw new GenericApiError();
     }
   };
 
@@ -569,14 +529,19 @@ export default class AdaApi {
     Logger.debug('AdaApi::isValidAdaAddress called', {
       parameters: { address },
     });
-    try {
-      const response: Address = await getAddress(this.config, { address });
-      Logger.debug('AdaApi::isValidAdaAddress success', { response });
-      return true;
-    } catch (error) {
-      Logger.error('AdaApi::isValidAdaAddress error', { error });
-      return false;
-    }
+
+    // @API TODO: Not yet available in the API
+    return new Promise(resolve => resolve(true));
+
+    // @API TODO: Uncomment once API available
+    // try {
+    //   const response: Address = await getAddress(this.config, { address });
+    //   Logger.debug('AdaApi::isValidAdaAddress success', { response });
+    //   return true;
+    // } catch (error) {
+    //   Logger.error('AdaApi::isValidAdaAddress error', { error });
+    //   return false;
+    // }
   }
 
   isValidMnemonic = (mnemonic: string): boolean =>
@@ -599,7 +564,6 @@ export default class AdaApi {
     }
   }
 
-  // eslint-disable-next-line max-len
   getWalletCertificateAdditionalMnemonics(): Promise<Array<string>> {
     Logger.debug('AdaApi::getWalletCertificateAdditionalMnemonics called');
     try {
@@ -1042,7 +1006,7 @@ const _createWalletFromServerData = action(
     const isDelegated =
       delegation.status === WalletDelegationStatuses.DELEGATING;
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
-    const walletBalance =
+    const walletTotalAmount =
       balance.total.unit === 'lovelace'
         ? new BigNumber(balance.total.quantity).dividedBy(LOVELACES_PER_ADA)
         : new BigNumber(balance.total.quantity);
@@ -1051,7 +1015,7 @@ const _createWalletFromServerData = action(
       id,
       addressPoolGap: address_pool_gap,
       name,
-      amount: walletBalance,
+      amount: walletTotalAmount,
       hasPassword: size(passphrase) > 0,
       passwordUpdateDate:
         passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
@@ -1130,6 +1094,8 @@ const _createTransactionFromServerData = action(
 
 const _createTransactionFeeFromServerData = action(
   'AdaApi::_createTransactionFeeFromServerData',
-  (data: TransactionFee) =>
-    new BigNumber(data.estimatedAmount).dividedBy(LOVELACES_PER_ADA)
+  (data: TransactionFee) => {
+    const amount = get(data, ['amount', 'quantity'], 0);
+    return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
+  }
 );
