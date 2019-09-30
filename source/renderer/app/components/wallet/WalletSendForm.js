@@ -368,11 +368,11 @@ export default class WalletSendForm extends Component<Props, State> {
   async _calculateTransactionFee(address: string, amountValue: string) {
     const { walletAmount } = this.props;
     const amount = formattedAmountToLovelace(amountValue);
-    const bigAmount = new BigNumber(amountValue || 0);
+    const transactionAmount = new BigNumber(amountValue || 0);
 
     try {
       const fee = await this.props.calculateTransactionFee(address, amount);
-      const amountWithFee = bigAmount.add(fee);
+      const amountWithFee = transactionAmount.add(fee);
 
       // Amount + fees exceeds walletBalance:
       // = show "Not enough Ada for fees. Try sending a smaller amount."
