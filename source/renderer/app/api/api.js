@@ -1101,7 +1101,7 @@ const _createWalletFromServerData = action(
       amount: walletTotalAmount,
       hasPassword: size(passphrase) > 0,
       passwordUpdateDate:
-        passphraseLastUpdatedAt && new Date(`${passphraseLastUpdatedAt}Z`),
+        passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
       syncState: state,
       isLegacy: false, // @API TODO - legacy declaration not exist for now
       isDelegated,
