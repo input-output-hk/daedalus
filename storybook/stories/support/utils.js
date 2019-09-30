@@ -30,7 +30,6 @@ export const generateWallet = (name: string, amount: string) =>
     id: generateHash(),
     addressPoolGap: 20,
     amount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
-    availableAmount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
     name,
     hasPassword: false,
     passwordUpdateDate: new Date(),
