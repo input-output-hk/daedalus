@@ -21,7 +21,7 @@ import {
   promise,
 } from './support/utils';
 import { formattedWalletAmount } from '../../source/renderer/app/utils/formatters';
-import { transactionTypes } from '../../source/renderer/app/domains/WalletTransaction';
+import { TransactionTypes } from '../../source/renderer/app/domains/WalletTransaction';
 import WalletWithNavigation from '../../source/renderer/app/components/wallet/layouts/WalletWithNavigation';
 
 // Screens
@@ -153,7 +153,7 @@ storiesOf('WalletScreens', module)
       transactions={[
         ...Array.from(Array(number('Transactions Sent', 1))).map((x, i) =>
           generateTransaction(
-            transactionTypes.EXPEND,
+            TransactionTypes.EXPEND,
             moment()
               .subtract(i, 'days')
               .toDate(),
@@ -162,7 +162,7 @@ storiesOf('WalletScreens', module)
         ),
         ...Array.from(Array(number('Transactions Received', 1))).map((x, i) =>
           generateTransaction(
-            transactionTypes.INCOME,
+            TransactionTypes.INCOME,
             moment()
               .subtract(i, 'days')
               .toDate(),

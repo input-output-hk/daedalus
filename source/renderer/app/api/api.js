@@ -8,7 +8,8 @@ import BigNumber from 'bignumber.js';
 import Wallet, { WalletDelegationStatuses } from '../domains/Wallet';
 import {
   WalletTransaction,
-  transactionTypes,
+  TransactionTypes,
+  TransactionStates,
 } from '../domains/WalletTransaction';
 import WalletAddress from '../domains/WalletAddress';
 
@@ -61,10 +62,7 @@ import {
 import { filterLogData } from '../../../common/utils/logging';
 
 // Config constants
-import {
-  LOVELACES_PER_ADA,
-  MAX_TRANSACTION_CONFIRMATIONS,
-} from '../config/numbersConfig';
+import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
@@ -101,7 +99,8 @@ import type {
   Transaction,
   // Transactions,
   TransactionFee,
-  TransactionRequest,
+  GetTransactionFeeRequest,
+  CreateTransactionRequest,
   GetTransactionsRequest,
   GetTransactionsResponse,
 } from './transactions/types';
@@ -401,48 +400,54 @@ export default class AdaApi {
   };
 
   createTransaction = async (
-    request: TransactionRequest
+    request: CreateTransactionRequest
   ): Promise<WalletTransaction> => {
     Logger.debug('AdaApi::createTransaction called', {
       parameters: filterLogData(request),
     });
     const { walletId, address, amount, spendingPassword } = request;
+
     try {
       const data = {
-        source: {
-          walletId,
-        },
-        destinations: [
+        payments: [
           {
             address,
-            amount,
+            amount: {
+              quantity: amount,
+              unit: 'lovelace',
+            },
           },
         ],
-        groupingPolicy: 'OptimizeForSecurity',
-        spendingPassword: spendingPassword || '',
+        passphrase: spendingPassword,
       };
+
       const response: Transaction = await createTransaction(this.config, {
+        walletId,
         data,
       });
+
       Logger.debug('AdaApi::createTransaction success', {
         transaction: response,
       });
+
       return _createTransactionFromServerData(response);
     } catch (error) {
       Logger.error('AdaApi::createTransaction error', { error });
-      if (error.message === 'OutputIsRedeem') {
+      // @API TODO - check error codes that match old api error messages
+      if (error.message === 'output_is_redeem') {
         throw new NotAllowedToSendMoneyToRedeemAddressError();
       }
       if (
-        error.message === 'NotEnoughMoney' ||
-        error.message === 'UtxoNotEnoughFragmented'
+        error.code === 'not_enough_money' ||
+        error.message === 'utxo_not_enough_fragmented' // @API TODO - check error codes that match old api error messages
       ) {
         throw new NotEnoughMoneyToSendError();
       }
-      if (error.message === 'CannotCreateAddress') {
+      if (error.code === 'wrong_encryption_passphrase') {
         throw new IncorrectSpendingPasswordError();
       }
-      if (error.message === 'TooBigTransaction') {
+      // @API TODO - check error codes that match old api error messages
+      if (error.message === 'too_big_transaction') {
         throw new TooBigTransactionError();
       }
       throw new GenericApiError();
@@ -450,7 +455,7 @@ export default class AdaApi {
   };
 
   calculateTransactionFee = async (
-    request: TransactionRequest
+    request: GetTransactionFeeRequest
   ): Promise<BigNumber> => {
     Logger.debug('AdaApi::calculateTransactionFee called', {
       parameters: filterLogData(request),
@@ -1042,13 +1047,12 @@ const _createAddressFromServerData = action(
 
 const _conditionToTxState = (condition: string) => {
   switch (condition) {
-    case 'applying':
-    case 'creating':
-      return 'pending';
-    case 'wontApply':
-      return 'failed';
+    case 'pending':
+      return TransactionStates.PENDING;
+    case 'invalidated':
+      return TransactionStates.FAILED;
     default:
-      return 'ok';
+      return TransactionStates.OK;
     // Others V0: CPtxInBlocks && CPtxNotTracked
     // Others V1: "inNewestBlocks" "persisted" "creating"
   }
@@ -1059,35 +1063,38 @@ const _createTransactionFromServerData = action(
   (data: Transaction) => {
     const {
       id,
-      direction,
       amount,
-      confirmations,
-      creationTime,
+      inserted_at, // eslint-disable-line
+      depth,
+      direction,
       inputs,
       outputs,
       status,
     } = data;
+    const creationTime = get(inserted_at, 'time');
+    const slotNumber = get(inserted_at, 'slot_number', null);
+    const epochNumber = get(inserted_at, 'epoch_number', null);
+
     return new WalletTransaction({
       id,
+      depth,
+      slotNumber,
+      epochNumber,
       title: direction === 'outgoing' ? 'Ada sent' : 'Ada received',
       type:
         direction === 'outgoing'
-          ? transactionTypes.EXPEND
-          : transactionTypes.INCOME,
+          ? TransactionTypes.EXPEND
+          : TransactionTypes.INCOME,
       amount: new BigNumber(
-        direction === 'outgoing' ? amount * -1 : amount
+        direction === 'outgoing' ? amount.quantity * -1 : amount.quantity
       ).dividedBy(LOVELACES_PER_ADA),
-      date: utcStringToDate(creationTime),
+      date: creationTime ? utcStringToDate(creationTime) : null,
       description: '',
-      numberOfConfirmations: Math.min(
-        confirmations,
-        MAX_TRANSACTION_CONFIRMATIONS + 1
-      ),
       addresses: {
         from: inputs.map(({ address }) => address),
         to: outputs.map(({ address }) => address),
       },
-      state: _conditionToTxState(status.tag),
+      state: _conditionToTxState(status),
     });
   }
 );

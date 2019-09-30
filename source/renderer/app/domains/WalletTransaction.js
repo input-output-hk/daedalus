@@ -2,12 +2,14 @@
 import { observable } from 'mobx';
 import BigNumber from 'bignumber.js';
 import type {
-  TransactionState,
   TrasactionAddresses,
   TransactionType,
+  TransactionDepth,
 } from '../api/transactions/types';
 
-export const transactionStates: {
+export type TransactionState = 'pending' | 'failed' | 'ok';
+
+export const TransactionStates: {
   PENDING: TransactionState,
   FAILED: TransactionState,
   OK: TransactionState,
@@ -17,7 +19,7 @@ export const transactionStates: {
   OK: 'ok',
 };
 
-export const transactionTypes: {
+export const TransactionTypes: {
   CARD: TransactionType,
   EXPEND: TransactionType,
   INCOME: TransactionType,
@@ -34,22 +36,26 @@ export class WalletTransaction {
   @observable type: TransactionType;
   @observable title: string = '';
   @observable amount: BigNumber;
-  @observable date: Date;
+  @observable date: ?Date;
   @observable description: string = '';
-  @observable numberOfConfirmations: number = 0;
   @observable addresses: TrasactionAddresses = { from: [], to: [] };
   @observable state: TransactionState;
+  @observable depth: TransactionDepth;
+  @observable slotNumber: ?number;
+  @observable epochNumber: ?number;
 
   constructor(data: {
     id: string,
     type: TransactionType,
     title: string,
     amount: BigNumber,
-    date: Date,
+    date: ?Date,
     description: string,
-    numberOfConfirmations: number,
     addresses: TrasactionAddresses,
     state: TransactionState,
+    depth: TransactionDepth,
+    slotNumber: ?number,
+    epochNumber: ?number,
   }) {
     Object.assign(this, data);
   }
