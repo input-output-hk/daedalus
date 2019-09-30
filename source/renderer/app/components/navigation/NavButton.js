@@ -11,16 +11,18 @@ type Props = {
   isActive: boolean,
   onClick: Function,
   className?: string,
+  hasNotification?: boolean,
 };
 
 @observer
 export default class NavButton extends Component<Props> {
   render() {
-    const { isActive, icon, onClick, className } = this.props;
+    const { isActive, icon, onClick, className, hasNotification } = this.props;
     const componentClasses = classnames([
       className,
       styles.component,
       isActive ? styles.active : styles.normal,
+      hasNotification ? styles.hasNotification : null,
     ]);
     const iconClasses = classnames([
       styles.icon,

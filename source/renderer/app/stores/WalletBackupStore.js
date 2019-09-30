@@ -1,13 +1,15 @@
 // @flow
-import { observable, action, computed } from 'mobx';
+import { observable, action, computed, runInAction } from 'mobx';
 import remotedev from 'mobx-remotedev/lib/dev';
 import Store from './lib/Store';
+import Request from './lib/LocalizedRequest';
 import WalletBackupDialog from '../components/wallet/WalletBackupDialog';
 import { WALLET_BACKUP_STEPS } from '../types/walletBackupTypes';
 import type {
   RecoveryPhraseWord,
   walletBackupStep,
 } from '../types/walletBackupTypes';
+import type { WalletIdAndBalance } from '../api/wallets/types';
 
 @remotedev
 export default class WalletBackupStore extends Store {
@@ -23,6 +25,13 @@ export default class WalletBackupStore extends Store {
   @observable isTermDeviceAccepted = false;
   @observable isTermRecoveryAccepted = false;
   @observable countdownRemaining = 0;
+
+  // Recovery phrase confirmation dialog observables ---
+  @observable isRecoveryPhraseMatching = null;
+  @observable
+  getWalletIdAndBalanceRequest: Request<WalletIdAndBalance> = new Request(
+    this.api.ada.getWalletIdAndBalance
+  );
 
   countdownTimerInterval: ?IntervalID = null;
 
@@ -48,6 +57,9 @@ export default class WalletBackupStore extends Store {
     a.cancelWalletBackup.listen(this._cancelWalletBackup);
     a.finishWalletBackup.listen(this._finishWalletBackup);
     this.actions.app.initAppEnvironment.listen(() => {});
+    // Recovery phrase confirmation dialog actions
+    a.checkRecoveryPhrase.listen(this._checkRecoveryPhrase);
+    a.resetRecoveryPhraseCheck.listen(this._resetRecoveryPhraseCheck);
   }
 
   @action _initiateWalletBackup = (params: {
@@ -109,6 +121,31 @@ export default class WalletBackupStore extends Store {
     this.recoveryPhraseShuffled = this.recoveryPhraseShuffled.map(
       ({ word }) => ({ word, isActive: true })
     );
+  };
+
+  @action _checkRecoveryPhrase = async (params: {
+    recoveryPhrase: Array<string>,
+  }) => {
+    const { recoveryPhrase } = params;
+    const activeWallet = this.stores.wallets.active;
+    if (!activeWallet)
+      throw new Error(
+        'Active wallet required before checking recovery phrase.'
+      );
+    const {
+      walletId,
+    }: WalletIdAndBalance = await this.getWalletIdAndBalanceRequest.execute({
+      recoveryPhrase,
+      getBalance: false, // We don't need the balance (getting balance increases request response time)
+    }).promise;
+    runInAction('AdaWalletBackupStore::_checkRecoveryPhrase', () => {
+      this.isRecoveryPhraseMatching = walletId === activeWallet.id;
+    });
+  };
+
+  @action _resetRecoveryPhraseCheck = () => {
+    this.getWalletIdAndBalanceRequest.reset();
+    this.isRecoveryPhraseMatching = null;
   };
 
   @computed get isRecoveryPhraseValid(): boolean {

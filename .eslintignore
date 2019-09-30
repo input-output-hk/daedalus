@@ -5,7 +5,7 @@ main.js
 logs
 node_modules
 translations
-tests
+./tests
 features/tests/e2e/documents/*
 mainnet-genesis-dryrun-with-stakeholders.json
 source/renderer/app/i18n/locales

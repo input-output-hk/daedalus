@@ -15,6 +15,6 @@ Feature: Data Layer Migration
     | Wallet |           |
     Then I should see the Data Layer Migration screen
     When I click the migration button
-    Then I should see the initial screen
+    Then I should see the main ui
     When I refresh the main window
     Then I should not see the Data Layer Migration screen

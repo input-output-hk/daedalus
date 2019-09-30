@@ -16,6 +16,7 @@ import type { ReactIntlMessage } from '../../../types/i18nTypes';
 import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletSettings.scss';
+import WalletRecoveryPhrase from './WalletRecoveryPhrase';
 
 export const messages = defineMessages({
   name: {
@@ -54,6 +55,7 @@ export const messages = defineMessages({
 type Props = {
   assuranceLevels: Array<{ value: string, label: ReactIntlMessage }>,
   walletName: string,
+  creationDate: Date,
   walletAssurance: string,
   isSpendingPasswordSet: boolean,
   spendingPasswordUpdateDate: ?Date,
@@ -73,6 +75,13 @@ type Props = {
   changeSpendingPasswordDialog: Node,
   deleteWalletDialogContainer: Node,
   exportWalletDialogContainer: Node,
+  walletRecoveryPhraseStep1Container: Node,
+  walletRecoveryPhraseStep2Container: Node,
+  walletRecoveryPhraseStep3Container: Node,
+  walletRecoveryPhraseStep4Container: Node,
+  recoveryPhraseVerificationDate: ?Date,
+  recoveryPhraseVerificationStatus: string,
+  recoveryPhraseVerificationStatusType: string,
 };
 
 @observer
@@ -96,6 +105,7 @@ export default class WalletSettings extends Component<Props> {
       assuranceLevels,
       walletAssurance,
       walletName,
+      creationDate,
       isSpendingPasswordSet,
       spendingPasswordUpdateDate,
       error,
@@ -114,6 +124,13 @@ export default class WalletSettings extends Component<Props> {
       changeSpendingPasswordDialog,
       deleteWalletDialogContainer,
       exportWalletDialogContainer,
+      walletRecoveryPhraseStep1Container,
+      walletRecoveryPhraseStep2Container,
+      walletRecoveryPhraseStep3Container,
+      walletRecoveryPhraseStep4Container,
+      recoveryPhraseVerificationDate,
+      recoveryPhraseVerificationStatus,
+      recoveryPhraseVerificationStatusType,
     } = this.props;
 
     const assuranceLevelOptions = assuranceLevels.map(assurance => ({
@@ -170,6 +187,29 @@ export default class WalletSettings extends Component<Props> {
               openDialogAction({
                 dialog: ChangeSpendingPasswordDialog,
               })
+            }
+          />
+
+          <WalletRecoveryPhrase
+            recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
+            recoveryPhraseVerificationStatus={recoveryPhraseVerificationStatus}
+            recoveryPhraseVerificationStatusType={
+              recoveryPhraseVerificationStatusType
+            }
+            creationDate={creationDate}
+            openDialogAction={openDialogAction}
+            isDialogOpen={isDialogOpen}
+            walletRecoveryPhraseStep1Container={
+              walletRecoveryPhraseStep1Container
+            }
+            walletRecoveryPhraseStep2Container={
+              walletRecoveryPhraseStep2Container
+            }
+            walletRecoveryPhraseStep3Container={
+              walletRecoveryPhraseStep3Container
+            }
+            walletRecoveryPhraseStep4Container={
+              walletRecoveryPhraseStep4Container
             }
           />
 

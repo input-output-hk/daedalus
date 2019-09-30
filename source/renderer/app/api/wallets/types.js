@@ -1,6 +1,8 @@
 // @flow
+import BigNumber from 'bignumber.js';
+
 export type AdaWallet = {
-  createdAt: string,
+  createdAt: Date,
   syncState: WalletSyncState,
   balance: number,
   hasSpendingPassword: boolean,
@@ -48,6 +50,11 @@ export type WalletUtxos = {
   },
 };
 
+export type WalletIdAndBalance = {
+  walletId: string,
+  balance: ?BigNumber,
+};
+
 // req/res Wallet types
 export type CreateWalletRequest = {
   name: string,
@@ -67,6 +74,16 @@ export type DeleteWalletRequest = {
 
 export type GetWalletUtxosRequest = {
   walletId: string,
+};
+
+export type GetWalletIdAndBalanceRequest = {
+  recoveryPhrase: Array<string>,
+  getBalance: boolean,
+};
+
+export type GetWalletIdAndBalanceResponse = {
+  walletId: string,
+  balance: ?number,
 };
 
 export type RestoreWalletRequest = {

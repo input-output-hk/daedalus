@@ -24,6 +24,7 @@ export default class AppStore extends Store {
   @observable numberOfEpochsConsolidated: number = 0;
   @observable previousRoute: string = ROUTES.ROOT;
   @observable activeDialog: ApplicationDialog = null;
+  @observable newsFeedIsOpen: boolean = false;
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
@@ -57,6 +58,9 @@ export default class AppStore extends Store {
     this.actions.app.setNotificationVisibility.listen(
       this._setDownloadNotification
     );
+
+    this.actions.app.toggleNewsFeed.listen(this._toggleNewsFeed);
+
     toggleUiPartChannel.onReceive(this.toggleUiPart);
     showUiPartChannel.onReceive(this.showUiPart);
   }
@@ -76,6 +80,10 @@ export default class AppStore extends Store {
 
   isActiveDialog = (dialog: ApplicationDialog): boolean => {
     return this.activeDialog === dialog;
+  };
+
+  @action _toggleNewsFeed = () => {
+    this.newsFeedIsOpen = !this.newsFeedIsOpen;
   };
 
   /**
