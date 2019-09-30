@@ -63,7 +63,7 @@
         "ja-JP": "# h1 Japanese info content 1\nUt consequat semper viverra nam libero justo laoreet sit."
       },
       "target": {
-        "daedalusVersion": "0.12.0 - 0.14.0",
+        "daedalusVersion": null,
         "platforms": ["darwin", "win32", "linux"]
       },
       "action": {
@@ -89,7 +89,7 @@
         "ja-JP": "# h1 Japanese info content 2\n."
       },
       "target": {
-        "daedalusVersion": "0.12.0 - 0.14.0",
+        "daedalusVersion": null,
         "platforms": ["darwin", "win32", "linux"]
       },
       "action": {
@@ -115,7 +115,7 @@
         "ja-JP": "# h1 Japanese info content 3\nUt consequat semper viverra nam libero justo laoreet sit."
       },
       "target": {
-        "daedalusVersion": "0.12.0 - 0.14.0",
+        "daedalusVersion": null,
         "platforms": ["linux"]
       },
       "action": {
@@ -141,7 +141,7 @@
         "ja-JP": "# h1 Japanese announcement content 1\nUt consequat semper viverra nam libero justo laoreet sit."
       },
       "target": {
-        "daedalusVersion": "0.12.0 - 0.14.0",
+        "daedalusVersion": null,
         "platforms": ["darwin", "win32", "linux"]
       },
       "action": {
@@ -167,7 +167,7 @@
         "ja-JP": "# h1 Japanese announcement content 2\n."
       },
       "target": {
-        "daedalusVersion": "0.12.0 - 0.14.0",
+        "daedalusVersion": null,
         "platforms": ["darwin", "win32", "linux"]
       },
       "action": {
@@ -193,7 +193,7 @@
         "ja-JP": "# h1 Japanese announcement content 3\nUt consequat semper viverra nam libero justo laoreet sit."
       },
       "target": {
-        "daedalusVersion": "0.12.0 - 0.14.0",
+        "daedalusVersion": null,
         "platforms": ["linux"]
       },
       "action": {
