@@ -8,7 +8,7 @@ Changelog
 - Implemented "Newsfeed" feature ([PR 1570](https://github.com/input-output-hk/daedalus/pull/1570))
 - Implemented "Wallet recovery phrase verification" feature ([PR 1565](https://github.com/input-output-hk/daedalus/pull/1565))
 - Implemented new "Automated update" notification design ([PR 1491](https://github.com/input-output-hk/daedalus/pull/1491))
-- Improved "Wallets" list scrollbar look and feel ([PR 1475](https://github.com/input-output-hk/daedalus/pull/1475))
+- Improved "Wallets" list scrollbar UX ([PR 1475](https://github.com/input-output-hk/daedalus/pull/1475))
 - Removed "Ada Redemption" feature ([PR 1510](https://github.com/input-output-hk/daedalus/pull/1510))
 - Updated behavior of system dialogs ([PR 1494](https://github.com/input-output-hk/daedalus/pull/1494))
 
