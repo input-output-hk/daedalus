@@ -63,7 +63,8 @@ export default class Wallet extends Component<Props> {
       );
 
     const isRestoreActive =
-      get(wallets, ['active', 'syncState', 'status']) === WalletSyncStateStatuses.RESTORING;
+      get(wallets, ['active', 'syncState', 'status']) ===
+      WalletSyncStateStatuses.RESTORING;
     const restoreProgress = get(
       activeWallet,
       ['syncState', 'progress', 'quantity'],
