@@ -43,7 +43,7 @@ Changelog
 ### Specifications
 
 - Newsfeed ([PR 1569](https://github.com/input-output-hk/daedalus/pull/1569))
-- Implemented the new "Wallet Creation" process ([PR 1499](https://github.com/input-output-hk/daedalus/pull/1499), [PR 1515](https://github.com/input-output-hk/daedalus/pull/1515), [PR 1530](https://github.com/input-output-hk/daedalus/issues/1530))
+- New "Wallet Creation" process ([PR 1499](https://github.com/input-output-hk/daedalus/pull/1499), [PR 1515](https://github.com/input-output-hk/daedalus/pull/1515), [PR 1530](https://github.com/input-output-hk/daedalus/issues/1530))
 - "Delegation" screens UI:
   - Improved "Delegation setup" wizard ([PR 1503](https://github.com/input-output-hk/daedalus/pull/1503))
   - Implemented "Stake pools" screen "Search and Filtering" logic ([PR 1468](https://github.com/input-output-hk/daedalus/pull/1468))
