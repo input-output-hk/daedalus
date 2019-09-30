@@ -14,10 +14,10 @@ Changelog
 
 ### Fixes
 
-- Fixed the "Numeric input" component caret positioning issues ([1511](https://github.com/input-output-hk/daedalus/pull/1511))
+- Fixed the "Numeric input" component caret positioning issues ([PR 1511](https://github.com/input-output-hk/daedalus/pull/1511))
 - Fixed the "Feature Request" menu item Japanese translation ([PR 1533](https://github.com/input-output-hk/daedalus/pull/1533))
 - Implemented disk space check error handling ([PR 1562](https://github.com/input-output-hk/daedalus/pull/1562))
-- Implemented platform specific main window minimum heights ([1485](https://github.com/input-output-hk/daedalus/pull/1485))
+- Implemented platform specific main window minimum heights ([PR 1485](https://github.com/input-output-hk/daedalus/pull/1485))
 - Implemented pluralization for number of confirmations in transaction details ([PR 1531](https://github.com/input-output-hk/daedalus/pull/1531))
 - Minor UI fixes:
   - Fixed external and copy icons positioning inconsistencies ([PR 1512](https://github.com/input-output-hk/daedalus/pull/1512))
@@ -33,7 +33,7 @@ Changelog
 
 - Implemented automatic sorting of CSS properties ([PR 1483](https://github.com/input-output-hk/daedalus/pull/1483))
 - Improved "Netlify" build setup ([PR 1509](https://github.com/input-output-hk/daedalus/pull/1509))
-- Unified "Support request" data handling ([1472](https://github.com/input-output-hk/daedalus/pull/1472))
+- Unified "Support request" data handling ([PR 1472](https://github.com/input-output-hk/daedalus/pull/1472))
 - Updated Storybook to the latest version ([PR 1426](https://github.com/input-output-hk/daedalus/pull/1426))
 - Updated "Buildkite" to use "daedalus" queue for macOS builds ([PR 1568](https://github.com/input-output-hk/daedalus/pull/1568))
 - Theming improvements:
