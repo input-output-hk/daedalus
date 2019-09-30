@@ -10,6 +10,7 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import BigNumber from 'bignumber.js';
+import { get } from 'lodash';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import { submitOnEnter } from '../../utils/form';
 import AmountInputSkin from './skins/AmountInputSkin';
@@ -25,7 +26,7 @@ import {
 } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
-
+import { NotEnoughFundsForTransactionFeesError } from '../../api/transactions/errors';
 /* eslint-disable consistent-return */
 
 export const messages = defineMessages({
@@ -108,6 +109,7 @@ type Props = {
     address: string,
     amount: number
   ) => Promise<BigNumber>,
+  walletAmount: BigNumber,
   addressValidator: Function,
   openDialogAction: Function,
   isDialogOpen: Function,
@@ -364,9 +366,20 @@ export default class WalletSendForm extends Component<Props, State> {
   }
 
   async _calculateTransactionFee(address: string, amountValue: string) {
+    const { walletAmount } = this.props;
     const amount = formattedAmountToLovelace(amountValue);
+    const bigAmount = new BigNumber(amountValue || 0);
+
     try {
       const fee = await this.props.calculateTransactionFee(address, amount);
+      const amountWithFee = bigAmount.add(fee);
+
+      // Amount + fees exceeds walletBalance:
+      // = show "Not enough Ada for fees. Try sending a smaller amount."
+      if (amountWithFee.gt(walletAmount)) {
+        throw new NotEnoughFundsForTransactionFeesError();
+      }
+
       if (this._isMounted) {
         this._isCalculatingFee = false;
         this.setState({
@@ -376,7 +389,7 @@ export default class WalletSendForm extends Component<Props, State> {
         });
       }
     } catch (error) {
-      const errorHasLink = !!error.values.linkLabel;
+      const errorHasLink = !!get(error, ['values', 'linkLabel']);
       const transactionFeeError = errorHasLink ? (
         <FormattedHTMLMessageWithLink
           message={error}

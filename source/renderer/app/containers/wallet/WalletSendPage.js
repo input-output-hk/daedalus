@@ -52,6 +52,7 @@ export default class WalletSendPage extends Component<Props> {
             amount,
           })
         }
+        walletAmount={activeWallet.amount}
         addressValidator={isValidAddress}
         isDialogOpen={uiDialogs.isOpen}
         openDialogAction={actions.dialogs.open.trigger}

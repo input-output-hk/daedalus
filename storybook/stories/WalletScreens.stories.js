@@ -113,6 +113,7 @@ storiesOf('WalletScreens', module)
       currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
+      walletAmount={new BigNumber(faker.random.number(5))}
       validateAmount={promise(true)}
       calculateTransactionFee={promise(true)}
       addressValidator={action('addressValidator')}
