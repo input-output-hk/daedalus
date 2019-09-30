@@ -9,8 +9,8 @@ const { isTest, isProduction, isBlankScreenFixActive } = environment;
 // Make sure Daedalus is started with required configuration
 const { LAUNCHER_CONFIG } = process.env;
 const isStartedByLauncher = !!LAUNCHER_CONFIG;
+const isWindows = process.platform === 'win32';
 if (!isStartedByLauncher) {
-  const isWindows = process.platform === 'win32';
   const dialogTitle = 'Daedalus improperly started!';
   let dialogMessage;
   if (isProduction) {
@@ -95,6 +95,7 @@ export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
 export const appFolderPath = launcherConfig.workingDir;
 export const { nodeDbPath } = launcherConfig;
 export const stateDirectoryPath = launcherConfig.statePath;
+export const stateDrive = isWindows ? stateDirectoryPath.slice(0, 2) : '/';
 export const ALLOWED_LOGS = [
   'Daedalus.json',
   'System-info.json',

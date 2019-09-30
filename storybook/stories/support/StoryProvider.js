@@ -20,6 +20,7 @@ export const WALLETS = [
     passwordUpdateDate: new Date(),
     syncState: { data: null, tag: 'synced' },
     isLegacy: false,
+    recoveryPhraseVerificationDate: new Date(),
   },
   {
     id: '1',
@@ -31,6 +32,7 @@ export const WALLETS = [
       .toDate(),
     syncState: { data: null, tag: 'synced' },
     isLegacy: false,
+    recoveryPhraseVerificationDate: new Date(),
   },
   {
     id: '2',
@@ -40,6 +42,9 @@ export const WALLETS = [
     passwordUpdateDate: new Date(),
     syncState: { data: null, tag: 'synced' },
     isLegacy: true,
+    recoveryPhraseVerificationDate: moment()
+      .subtract(200, 'days')
+      .toDate(),
   },
   {
     id: '3',
@@ -65,6 +70,9 @@ export const WALLETS = [
       tag: 'restoring',
     },
     isLegacy: false,
+    recoveryPhraseVerificationDate: moment()
+      .subtract(400, 'days')
+      .toDate(),
   },
 ];
 

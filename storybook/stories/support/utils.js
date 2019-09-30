@@ -3,14 +3,18 @@ import hash from 'hash.js';
 import faker from 'faker';
 import moment from 'moment';
 import BigNumber from 'bignumber.js';
+import Wallet from '../../../source/renderer/app/domains/Wallet';
 import {
   WalletTransaction,
   transactionStates,
   transactionTypes,
 } from '../../../source/renderer/app/domains/WalletTransaction';
-import Wallet from '../../../source/renderer/app/domains/Wallet';
 import WalletAddress from '../../../source/renderer/app/domains/WalletAddress';
 import { LOVELACES_PER_ADA } from '../../../source/renderer/app/config/numbersConfig';
+import {
+  WalletRecoveryPhraseVerificationStatuses,
+  WalletRecoveryPhraseVerificationTypes,
+} from '../../../source/renderer/app/stores/WalletsStore';
 import type {
   TransactionState,
   TransactionType,
@@ -30,12 +34,18 @@ export const generateWallet = (name: string, amount: string) =>
     id: generateHash(),
     addressPoolGap: 20,
     amount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
+    createdAt: new Date(),
     name,
     hasPassword: false,
     passwordUpdateDate: new Date(),
     syncState: { status: 'ready' },
     isLegacy: false,
     isDelegated: false,
+    recoveryPhraseVerificationDate: new Date(),
+    recoveryPhraseVerificationStatus:
+      WalletRecoveryPhraseVerificationStatuses.OK,
+    recoveryPhraseVerificationStatusType:
+      WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
   });
 
 export const generateTransaction = (

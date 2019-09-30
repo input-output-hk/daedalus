@@ -1,6 +1,5 @@
 import { Then } from 'cucumber';
 import { expect } from 'chai';
-import { BigNumber } from 'bignumber.js';
 import { getVisibleTextsForSelector } from '../helpers/shared-helpers';
 import { getWalletUtxosTotalAmount } from '../../../../source/renderer/app/utils/utxoUtils';
 

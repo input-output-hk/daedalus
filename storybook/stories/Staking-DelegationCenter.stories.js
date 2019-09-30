@@ -6,6 +6,10 @@ import { number } from '@storybook/addon-knobs';
 import DelegationCenter from '../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
 import STAKE_POOLS from '../../source/renderer/app/config/stakingStakePools.dummy.json';
 import Wallet from '../../source/renderer/app/domains/Wallet';
+import {
+  WalletRecoveryPhraseVerificationStatuses,
+  WalletRecoveryPhraseVerificationTypes,
+} from '../../source/renderer/app/stores/WalletsStore';
 
 const defaultAdaValue = 82650.15;
 const defaultPercentage = 33.123456;
@@ -40,6 +44,12 @@ const wallets = [
     isDelegated: true,
     syncState: walletSyncedStateReady,
     delegatedStakePool: STAKE_POOLS[0],
+    createdAt: new Date(),
+    recoveryPhraseVerificationDate: new Date(),
+    recoveryPhraseVerificationStatus:
+      WalletRecoveryPhraseVerificationStatuses.OK,
+    recoveryPhraseVerificationStatusType:
+      WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
   }),
   new Wallet({
     id: 'wallet2',
@@ -53,6 +63,12 @@ const wallets = [
     isDelegated: true,
     syncState: walletSyncedStateReady,
     delegatedStakePool: STAKE_POOLS[1],
+    createdAt: new Date(),
+    recoveryPhraseVerificationDate: new Date(),
+    recoveryPhraseVerificationStatus:
+      WalletRecoveryPhraseVerificationStatuses.OK,
+    recoveryPhraseVerificationStatusType:
+      WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
   }),
   new Wallet({
     id: 'wallet3',
@@ -65,6 +81,12 @@ const wallets = [
     inactiveStakePercentage: 0,
     isDelegated: false,
     syncState: walletSyncedStateRestoring,
+    createdAt: new Date(),
+    recoveryPhraseVerificationDate: new Date(),
+    recoveryPhraseVerificationStatus:
+      WalletRecoveryPhraseVerificationStatuses.OK,
+    recoveryPhraseVerificationStatusType:
+      WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
   }),
 ];
 

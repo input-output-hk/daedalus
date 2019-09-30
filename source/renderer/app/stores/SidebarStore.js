@@ -28,17 +28,22 @@ export default class SidebarStore extends Store {
 
   @computed get wallets(): Array<SidebarWalletType> {
     const { networkStatus, wallets } = this.stores;
-    return wallets.all.map(wallet => ({
-      id: wallet.id,
-      title: wallet.name,
-      info: formattedWalletAmount(wallet.amount),
-      isConnected: networkStatus.isConnected,
-      isRestoreActive:
-        get(wallet, ['syncState', 'status'], '') ===
-        WalletSyncStateStatuses.RESTORING,
-      restoreProgress: get(wallet, ['syncState', 'progress', 'quantity'], 0),
-      isLegacy: wallet.isLegacy,
-    }));
+    return wallets.all.map(wallet => {
+      const {
+        recoveryPhraseVerificationStatus,
+      } = wallets.getWalletRecoveryPhraseVerification(wallet.id);
+      return {
+        id: wallet.id,
+        title: wallet.name,
+        info: formattedWalletAmount(wallet.amount),
+        isConnected: networkStatus.isConnected,
+        isRestoreActive:
+          get(wallet, 'syncState.tag') === WalletSyncStateStatuses.RESTORING,
+        restoreProgress: get(wallet, 'syncState.data.percentage.quantity', 0),
+        isLegacy: wallet.isLegacy,
+        recoveryPhraseVerificationStatus,
+      };
+    });
   }
 
   @action _configureCategories = () => {
