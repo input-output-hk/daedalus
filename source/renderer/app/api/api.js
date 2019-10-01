@@ -1072,8 +1072,8 @@ const _createTransactionFromServerData = action(
       status,
     } = data;
     const creationTime = get(inserted_at, 'time');
-    const slotNumber = get(inserted_at, 'slot_number', null);
-    const epochNumber = get(inserted_at, 'epoch_number', null);
+    const slotNumber = get(inserted_at, ['block', 'slot_number'], null);
+    const epochNumber = get(inserted_at, ['block', 'epoch_number'], null);
 
     return new WalletTransaction({
       id,
