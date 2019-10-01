@@ -6,6 +6,16 @@
     width: 44px;
   }
 
+  &.medium {
+    height: 24px;
+    margin: 0;
+    width: 24px;
+
+    .icon svg path {
+      fill: var(--theme-loading-spinner-medium-color);
+    }
+  }
+
   &.small {
     height: 30px;
     width: 30px;
