@@ -312,11 +312,11 @@ export default class WalletsStore extends Store {
   _sendMoney = async ({
     receiver,
     amount,
-    password,
+    passphrase,
   }: {
     receiver: string,
     amount: string,
-    password: ?string,
+    passphrase: string,
   }) => {
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
@@ -327,7 +327,7 @@ export default class WalletsStore extends Store {
     await this.sendMoneyRequest.execute({
       address: receiver,
       amount: parseInt(amount, 10),
-      spendingPassword: password,
+      passphrase,
       accountIndex,
       walletId: wallet.id,
     });

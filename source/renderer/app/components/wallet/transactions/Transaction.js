@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
@@ -10,12 +10,12 @@ import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import {
-  transactionStates,
-  transactionTypes,
+  TransactionStates,
+  TransactionTypes,
   WalletTransaction,
 } from '../../../domains/WalletTransaction';
 import globalMessages from '../../../i18n/global-messages';
-import type { TransactionState } from '../../../api/transactions/types';
+import type { TransactionState } from '../../../domains/WalletTransaction';
 import { getNetworkExplorerUrl } from '../../../utils/network';
 
 /* eslint-disable consistent-return */
@@ -36,17 +36,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Exchange',
     description:
       'Transaction type shown for money exchanges between currencies.',
-  },
-  numberOfConfirmations: {
-    id: 'wallet.transaction.numberOfConfirmations',
-    defaultMessage: '!!!Number of confirmations',
-    description: 'Number of confirmations.',
-  },
-  confirmations: {
-    id: 'wallet.transaction.confirmations',
-    defaultMessage:
-      '{confirmationsNumber, plural, one {# confirmation} =21 {20+ confirmations} other {# confirmations}}',
-    description: 'Transaction confirmations.',
   },
   transactionId: {
     id: 'wallet.transaction.transactionId',
@@ -96,17 +85,17 @@ const messages = defineMessages({
 });
 
 const stateTranslations = defineMessages({
-  [transactionStates.OK]: {
+  [TransactionStates.OK]: {
     id: 'wallet.transaction.state.confirmed',
     defaultMessage: '!!!Transaction confirmed',
     description: 'Transaction state "confirmed"',
   },
-  [transactionStates.PENDING]: {
+  [TransactionStates.PENDING]: {
     id: 'wallet.transaction.state.pending',
     defaultMessage: '!!!Transaction pending',
     description: 'Transaction state "pending"',
   },
-  [transactionStates.FAILED]: {
+  [TransactionStates.FAILED]: {
     id: 'wallet.transaction.state.failed',
     defaultMessage: '!!!Transaction failed',
     description: 'Transaction state "failed"',
@@ -158,15 +147,11 @@ export default class Transaction extends Component<Props> {
 
     const canOpenExplorer = onOpenExternalLink;
 
-    const hasConfirmations = data.numberOfConfirmations > 0;
-    const isFailedTransaction = state === transactionStates.FAILED;
-    const isPendingTransaction =
-      state === transactionStates.PENDING ||
-      (state === transactionStates.OK && !hasConfirmations);
+    const isFailedTransaction = state === TransactionStates.FAILED;
+    const isPendingTransaction = state === TransactionStates.PENDING;
 
-    // transaction state is mutated in order to capture zero-confirmations status as pending state
     const transactionState = isPendingTransaction
-      ? transactionStates.PENDING
+      ? TransactionStates.PENDING
       : state;
 
     const componentStyles = classNames([
@@ -185,11 +170,6 @@ export default class Transaction extends Component<Props> {
       styles.details,
       canOpenExplorer ? styles.clickable : null,
       isExpanded ? styles.detailsExpanded : styles.detailsClosed,
-    ]);
-
-    const numberOfConfirmationsRowStyle = classNames([
-      styles.row,
-      styles.retainHeight,
     ]);
 
     const arrowStyles = classNames([
@@ -220,14 +200,14 @@ export default class Transaction extends Component<Props> {
         <div className={styles.toggler}>
           <TransactionTypeIcon
             iconType={
-              isFailedTransaction ? transactionStates.FAILED : data.type
+              isFailedTransaction ? TransactionStates.FAILED : data.type
             }
           />
 
           <div className={styles.togglerContent}>
             <div className={styles.header}>
               <div className={styles.title}>
-                {data.type === transactionTypes.EXPEND
+                {data.type === TransactionTypes.EXPEND
                   ? intl.formatMessage(messages.sent, { currency })
                   : intl.formatMessage(messages.received, { currency })}
               </div>
@@ -302,22 +282,6 @@ export default class Transaction extends Component<Props> {
                   </span>
                 </div>
               ))}
-
-              <div className={numberOfConfirmationsRowStyle}>
-                <h2>{intl.formatMessage(messages.numberOfConfirmations)}</h2>
-                {!isRestoreActive &&
-                (transactionState === transactionStates.OK ||
-                  transactionState === transactionStates.PENDING) ? (
-                  <span>
-                    <FormattedMessage
-                      {...messages.confirmations}
-                      values={{
-                        confirmationsNumber: data.numberOfConfirmations,
-                      }}
-                    />
-                  </span>
-                ) : null}
-              </div>
 
               <h2>{intl.formatMessage(messages.transactionId)}</h2>
               <div className={styles.transactionIdRow}>

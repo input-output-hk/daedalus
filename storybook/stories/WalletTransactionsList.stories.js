@@ -10,8 +10,8 @@ import {
 } from './support/utils';
 import WalletTransactionsList from '../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
 import {
-  transactionStates,
-  transactionTypes,
+  TransactionStates,
+  TransactionTypes,
 } from '../../source/renderer/app/domains/WalletTransaction';
 import { formattedWalletAmount } from '../../source/renderer/app/utils/formatters';
 
@@ -24,31 +24,31 @@ storiesOf('WalletTransactionsList', module)
     <WalletTransactionsList
       transactions={[
         generateTransaction(
-          transactionTypes.INCOME,
+          TransactionTypes.INCOME,
           new Date(),
           new BigNumber(1)
         ),
         generateTransaction(
-          transactionTypes.INCOME,
+          TransactionTypes.INCOME,
           moment()
             .subtract(1, 'days')
             .toDate(),
           new BigNumber(1)
         ),
         generateTransaction(
-          transactionTypes.INCOME,
+          TransactionTypes.INCOME,
           new Date(),
           new BigNumber(1)
         ),
         generateTransaction(
-          transactionTypes.INCOME,
+          TransactionTypes.INCOME,
           moment()
             .subtract(2, 'days')
             .toDate(),
           new BigNumber(1)
         ),
         generateTransaction(
-          transactionTypes.INCOME,
+          TransactionTypes.INCOME,
           moment()
             .subtract(1, 'days')
             .toDate(),
@@ -68,25 +68,22 @@ storiesOf('WalletTransactionsList', module)
     <WalletTransactionsList
       transactions={[
         generateTransaction(
-          transactionTypes.INCOME,
+          TransactionTypes.INCOME,
           new Date(),
           new BigNumber(1),
-          1,
-          transactionStates.OK
+          TransactionStates.OK
         ),
         generateTransaction(
-          transactionTypes.INCOME,
+          TransactionTypes.INCOME,
           new Date(),
           new BigNumber(1),
-          0,
-          transactionStates.PENDING
+          TransactionStates.PENDING
         ),
         generateTransaction(
-          transactionTypes.INCOME,
+          TransactionTypes.INCOME,
           new Date(),
           new BigNumber(1),
-          0,
-          transactionStates.FAILED
+          TransactionStates.FAILED
         ),
       ]}
       isRestoreActive={false}

@@ -12,7 +12,7 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
   WalletTransaction,
-  transactionTypes,
+  TransactionTypes,
 } from '../domains/WalletTransaction';
 import type { GetTransactionsResponse } from '../api/transactions/types';
 import type { UnconfirmedAmount } from '../types/unconfirmedAmountType';
@@ -256,12 +256,12 @@ export default class TransactionsStore extends Store {
         unconfirmedAmount.total = unconfirmedAmount.total.plus(
           transaction.amount.absoluteValue()
         );
-        if (transaction.type === transactionTypes.EXPEND) {
+        if (transaction.type === TransactionTypes.EXPEND) {
           unconfirmedAmount.outgoing = unconfirmedAmount.outgoing.plus(
             transaction.amount.absoluteValue()
           );
         }
-        if (transaction.type === transactionTypes.INCOME) {
+        if (transaction.type === TransactionTypes.INCOME) {
           unconfirmedAmount.incoming = unconfirmedAmount.incoming.plus(
             transaction.amount.absoluteValue()
           );

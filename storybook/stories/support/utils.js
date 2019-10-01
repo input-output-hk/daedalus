@@ -6,8 +6,8 @@ import BigNumber from 'bignumber.js';
 import Wallet from '../../../source/renderer/app/domains/Wallet';
 import {
   WalletTransaction,
-  transactionStates,
-  transactionTypes,
+  TransactionStates,
+  TransactionTypes,
 } from '../../../source/renderer/app/domains/WalletTransaction';
 import WalletAddress from '../../../source/renderer/app/domains/WalletAddress';
 import { LOVELACES_PER_ADA } from '../../../source/renderer/app/config/numbersConfig';
@@ -15,10 +15,8 @@ import {
   WalletRecoveryPhraseVerificationStatuses,
   WalletRecoveryPhraseVerificationTypes,
 } from '../../../source/renderer/app/stores/WalletsStore';
-import type {
-  TransactionState,
-  TransactionType,
-} from '../../../source/renderer/app/api/transactions/types';
+import type { TransactionType } from '../../../source/renderer/app/api/transactions/types';
+import type { TransactionState } from '../../../source/renderer/app/domains/WalletTransaction';
 
 export const generateHash = () => {
   const now = new Date().valueOf().toString();
@@ -49,11 +47,10 @@ export const generateWallet = (name: string, amount: string) =>
   });
 
 export const generateTransaction = (
-  type: TransactionType = transactionTypes.INCOME,
+  type: TransactionType = TransactionTypes.INCOME,
   date: Date = faker.date.past(),
   amount: BigNumber = new BigNumber(faker.finance.amount()),
-  confirmations: number = 1,
-  state: TransactionState = transactionStates.OK
+  state: TransactionState = TransactionStates.OK
 ) =>
   new WalletTransaction({
     id: faker.random.uuid(),
@@ -62,8 +59,13 @@ export const generateTransaction = (
     amount,
     date,
     state,
+    depth: {
+      quantity: 0,
+      unit: 'slot',
+    },
+    epochNumber: 0,
+    slotNumber: 0,
     description: '',
-    numberOfConfirmations: confirmations,
     addresses: {
       from: [faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100)],
       to: [
@@ -75,7 +77,7 @@ export const generateTransaction = (
 
 export const generateRandomTransaction = (index: number) =>
   generateTransaction(
-    transactionTypes.INCOME,
+    TransactionTypes.INCOME,
     moment()
       .subtract(index, 'days')
       .toDate(),
