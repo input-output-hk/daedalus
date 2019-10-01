@@ -7,6 +7,23 @@
   justify-content: center;
   text-align: center;
   width: 100%;
+
+  &.hasNotification {
+    .container {
+      position: relative;
+      &:after {
+        background: var(--theme-button-attention-background-color);
+        border-radius: 50%;
+        content: '';
+        height: 8px;
+        transform: translate(4px, -4px);
+        width: 8px;
+      }
+      .icon {
+        margin-left: 8px;
+      }
+    }
+  }
 }
 
 .container {

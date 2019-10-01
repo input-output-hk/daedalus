@@ -1,4 +1,4 @@
-import { When, Then } from 'cucumber';
+import { When } from 'cucumber';
 import {
   generateScreenshotFilePath,
   saveScreenshot,
@@ -8,10 +8,6 @@ const oneHour = 60 * 60 * 1000;
 // Helper step to pause execution for up to an hour ;)
 When(/^I freeze$/, { timeout: oneHour }, callback => {
   setTimeout(callback, oneHour);
-});
-
-Then(/^I should see the initial screen$/, function() {
-  return this.client.waitForVisible('.SidebarLayout_component');
 });
 
 When(/^I take a screenshot named "([^"]*)"$/, async function(testName) {
@@ -44,9 +40,9 @@ When(/^I trigger the apply-update endpoint$/, async function() {
 When(/^I set next update version to "([^"]*)"$/, async function(
   applicationVersion
 ) {
-  await this.client.executeAsync((applicationVersion, done) => {
+  await this.client.executeAsync((version, done) => {
     daedalus.api.ada
-      .setNextUpdate(parseInt(applicationVersion))
+      .setNextUpdate(parseInt(version, 10))
       .then(done)
       .catch(e => {
         throw e;

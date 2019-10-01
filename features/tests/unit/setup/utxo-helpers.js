@@ -1,5 +1,5 @@
 export const getHistogramFromTable = data => {
-  let histogram = {};
+  const histogram = {};
   data.hashes().forEach(({ walletAmount, walletUtxosAmount }) => {
     histogram[walletAmount] = walletUtxosAmount;
   });

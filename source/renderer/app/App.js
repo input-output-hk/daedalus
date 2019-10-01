@@ -15,9 +15,11 @@ import DaedalusDiagnosticsDialog from './containers/status/DaedalusDiagnosticsDi
 import BlockConsolidationStatusDialog from './containers/status/BlockConsolidationStatusDialog';
 import GenericNotificationContainer from './containers/notifications/GenericNotificationContainer';
 import AutomaticUpdateNotificationDialog from './containers/notifications/AutomaticUpdateNotificationDialog';
+import NewsOverlayContainer from './containers/news/NewsOverlayContainer';
 import { DIALOGS } from '../../common/ipc/constants';
 import type { StoresMap } from './stores/index';
 import type { ActionsMap } from './actions/index';
+import NewsFeedContainer from './containers/news/NewsFeedContainer';
 
 @observer
 export default class App extends Component<{
@@ -31,14 +33,34 @@ export default class App extends Component<{
   }
   render() {
     const { stores, actions, history } = this.props;
-    const { app, nodeUpdate } = stores;
-    const { showNextUpdate } = nodeUpdate;
-    const { isActiveDialog } = app;
+    const { app, nodeUpdate, networkStatus } = stores;
+    const {
+      showNextUpdate,
+      isNewAppVersionAvailable,
+      isUpdatePostponed,
+      isUpdateAvailable,
+    } = nodeUpdate;
+    const { isActiveDialog, isSetupPage } = app;
+    const { isNodeStopping, isNodeStopped } = networkStatus;
     const locale = stores.profile.currentLocale;
     const mobxDevTools = global.environment.mobxDevTools ? <DevTools /> : null;
     const { currentTheme } = stores.profile;
     const themeVars = require(`./themes/daedalus/${currentTheme}.js`).default;
     const { ABOUT, BLOCK_CONSOLIDATION, DAEDALUS_DIAGNOSTICS } = DIALOGS;
+
+    const isManualUpdateAvailable =
+      isNewAppVersionAvailable &&
+      !isNodeStopping &&
+      !isNodeStopped &&
+      !isUpdatePostponed &&
+      !isUpdateAvailable;
+
+    const canShowNews =
+      !isSetupPage && // Active page is not "Language Selection" or "Terms of Use"
+      !showNextUpdate && // Autmatic update not available
+      !isManualUpdateAvailable && // Manual update not available
+      !isNodeStopping && // Daedalus is not shutting down
+      !isNodeStopped; // Daedalus is not shutting down
 
     return (
       <Fragment>
@@ -65,6 +87,10 @@ export default class App extends Component<{
                     <GenericNotificationContainer key="genericNotification" />,
                   ]
                 )}
+                {canShowNews && [
+                  <NewsFeedContainer key="newsFeedList" />,
+                  <NewsOverlayContainer key="newsFeedOverlay" />,
+                ]}
               </Fragment>
             </IntlProvider>
           </ThemeProvider>

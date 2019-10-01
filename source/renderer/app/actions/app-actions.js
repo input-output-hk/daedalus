@@ -8,6 +8,7 @@ export default class AppActions {
   getGpuStatus: Action<any> = new Action();
   initAppEnvironment: Action<any> = new Action();
   setNotificationVisibility: Action<boolean> = new Action();
+  toggleNewsFeed: Action<boolean> = new Action();
 
   // About dialog actions
   closeAboutDialog: Action<any> = new Action();

@@ -63,8 +63,10 @@ const buildRendererWatch = () => done =>
   rendererInputSource()
     .pipe(
       webpackStream(rendererWebpackWatchConfig, webpack, () => {
-        // Reload app everytime after renderer script has been re-compiled
-        electronServer.reload();
+        if (electronServer) {
+          // Reload app everytime after renderer script has been re-compiled
+          electronServer.reload();
+        }
         done();
       })
     )
