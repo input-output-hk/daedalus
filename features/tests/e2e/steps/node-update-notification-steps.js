@@ -1,4 +1,4 @@
-import { Given, When, Then } from 'cucumber';
+import { When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { environment } from '../../../../source/main/environment';
 import { getVisibleTextsForSelector } from '../helpers/shared-helpers';
@@ -23,12 +23,10 @@ When(
       this.client,
       SELECTORS.newAppVersionInfo
     );
-
     const [currentAppVersionInfo] = await getVisibleTextsForSelector(
       this.client,
       SELECTORS.currentAppVersionInfo
     );
-
     expect(newAppVersionInfo.replace('v ', '')).to.equal(nextVersion);
     expect(currentAppVersionInfo.replace('v ', '')).to.equal(currentAppVersion);
     this.client.waitForVisible('.AutomaticUpdateNotification_acceptButton');
@@ -40,7 +38,7 @@ When(/^I set next application version to "([^"]*)"$/, async function(
   applicationVersion
 ) {
   await this.client.execute(version => {
-    daedalus.api.ada.setApplicationVersion(parseInt(version));
+    daedalus.api.ada.setApplicationVersion(parseInt(version, 10));
   }, applicationVersion);
 });
 

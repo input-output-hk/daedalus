@@ -42,6 +42,10 @@ import { restoreWallet } from './wallets/requests/restoreWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
 import { getWallet } from './wallets/requests/getWallet';
+import { getWalletIdAndBalance } from './wallets/requests/getWalletIdAndBalance';
+
+// News requests
+import { getNews } from './news/requests/getNews';
 
 // Utility functions
 import {
@@ -111,6 +115,7 @@ import type {
   AdaWallet,
   AdaWallets,
   WalletUtxos,
+  WalletIdAndBalance,
   CreateWalletRequest,
   DeleteWalletRequest,
   RestoreWalletRequest,
@@ -123,7 +128,12 @@ import type {
   UpdateWalletRequest,
   GetWalletUtxosRequest,
   GetWalletRequest,
+  GetWalletIdAndBalanceRequest,
+  GetWalletIdAndBalanceResponse,
 } from './wallets/types';
+
+// News Types
+import type { GetNewsResponse } from './news/types';
 
 // Common errors
 import {
@@ -149,6 +159,8 @@ import {
 } from './transactions/errors';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
 import { TlsCertificateNotValidError } from './nodes/errors';
+import { getSHA256HexForString } from './utils/hashing';
+import { getNewsHash } from './news/requests/getNewsHash';
 
 export default class AdaApi {
   config: RequestConfig;
@@ -830,6 +842,36 @@ export default class AdaApi {
     }
   };
 
+  getWalletIdAndBalance = async (
+    request: GetWalletIdAndBalanceRequest
+  ): Promise<WalletIdAndBalance> => {
+    const { recoveryPhrase, getBalance } = request;
+    Logger.debug('AdaApi::getWalletIdAndBalance called', {
+      parameters: { getBalance },
+    });
+    try {
+      const response: GetWalletIdAndBalanceResponse = await getWalletIdAndBalance(
+        this.config,
+        {
+          recoveryPhrase,
+          getBalance,
+        }
+      );
+      Logger.debug('AdaApi::getWalletIdAndBalance success', { response });
+      const { walletId, balance } = response;
+      return {
+        walletId,
+        balance:
+          balance !== null // If balance is "null" it means we didn't fetch it - getBalance was false
+            ? new BigNumber(balance).dividedBy(LOVELACES_PER_ADA)
+            : null,
+      };
+    } catch (error) {
+      Logger.error('AdaApi::getWalletIdAndBalance error', { error });
+      throw new GenericApiError();
+    }
+  };
+
   testReset = async (): Promise<void> => {
     Logger.debug('AdaApi::testReset called');
     try {
@@ -972,6 +1014,42 @@ export default class AdaApi {
     }
   };
 
+  getNews = async (): Promise<GetNewsResponse> => {
+    Logger.debug('AdaApi::getNews called');
+
+    // Fetch news json
+    let rawNews: string;
+    let news: GetNewsResponse;
+    try {
+      rawNews = await getNews();
+      news = JSON.parse(rawNews);
+    } catch (error) {
+      Logger.error('AdaApi::getNews error', { error });
+      throw new Error('Unable to fetch news');
+    }
+
+    // Fetch news verification hash
+    let newsHash: string;
+    let expectedNewsHash: string;
+    try {
+      newsHash = await getSHA256HexForString(rawNews);
+      expectedNewsHash = await getNewsHash(news.updatedAt);
+    } catch (error) {
+      Logger.error('AdaApi::getNews (hash) error', { error });
+      throw new Error('Unable to fetch news hash');
+    }
+
+    if (newsHash !== expectedNewsHash) {
+      throw new Error('Newsfeed could not be verified');
+    }
+
+    Logger.debug('AdaApi::getNews success', {
+      updatedAt: news.updatedAt,
+      items: news.items.length,
+    });
+    return news;
+  };
+
   setCardanoNodeFault = async (fault: FaultInjectionIpcRequest) => {
     await cardanoFaultInjectionChannel.send(fault);
   };
@@ -986,6 +1064,10 @@ export default class AdaApi {
   setLatestAppVersion: Function;
   setApplicationVersion: Function;
   setFaultyNodeSettingsApi: boolean;
+  resetTestOverrides: Function;
+
+  // Newsfeed testing utility
+  setFakeNewsFeedJsonForTesting: (fakeNewsfeedJson: GetNewsResponse) => void;
 }
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
@@ -1001,6 +1083,7 @@ const _createWalletFromServerData = action(
       state,
       passphrase,
       delegation,
+      createdAt,
     } = data;
 
     const isDelegated =
@@ -1022,6 +1105,7 @@ const _createWalletFromServerData = action(
       syncState: state,
       isLegacy: false, // @API TODO - legacy declaration not exist for now
       isDelegated,
+      createdAt,
       // @API TODO - integrate once "Stake Pools" endpoints are done
       // inactiveStakePercentage: 0,
       // delegatedStakePool: new StakePool(),

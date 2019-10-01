@@ -1,6 +1,7 @@
 // @flow
 import { observable, action, computed, runInAction, flow } from 'mobx';
 import { get, chunk, find, isEqual } from 'lodash';
+import moment from 'moment';
 import { BigNumber } from 'bignumber.js';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -11,14 +12,45 @@ import { i18nContext } from '../utils/i18nContext';
 import { mnemonicToSeedHex } from '../utils/crypto';
 import { downloadPaperWalletCertificate } from '../utils/paperWalletPdfGenerator';
 import { buildRoute, matchRoute } from '../utils/routing';
+import { asyncForEach } from '../utils/asyncForEach';
 import { ROUTES } from '../routes-config';
+import { formattedWalletAmount } from '../utils/formatters';
+import { WalletPaperWalletOpenPdfError } from '../i18n/errors';
+import {
+  RECOVERY_PHRASE_VERIFICATION_NOTIFICATION,
+  RECOVERY_PHRASE_VERIFICATION_WARNING,
+} from '../config/walletsConfig';
 import type { GetAddressesResponse } from '../api/addresses/types';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 import type LocalizableError from '../i18n/LocalizableError';
-import { formattedWalletAmount } from '../utils/formatters';
-import { WalletPaperWalletOpenPdfError } from '../i18n/errors';
+import type {
+  WalletLocalData,
+  WalletsLocalData,
+} from '../api/utils/localStorage';
 /* eslint-disable consistent-return */
+
+export const WalletRecoveryPhraseVerificationStatuses = {
+  OK: 'ok',
+  WARNING: 'warning',
+  NOTIFICATION: 'notification',
+};
+
+export const WalletRecoveryPhraseVerificationTypes = {
+  NEVER_CHECKED: 'neverChecked',
+  ALREADY_CHECKED: 'alreadyChecked',
+};
+
+type WalletRecoveryPhraseVerificationData = {
+  creationDate: ?Date,
+  recoveryPhraseVerificationDate: ?Date,
+  recoveryPhraseVerificationStatus: string,
+  recoveryPhraseVerificationStatusType: string,
+};
+
+type RecoveryPhraseVerificationData = {
+  [key: string]: WalletRecoveryPhraseVerificationData,
+};
 
 /**
  * The base wallet store that contains the shared logic
@@ -27,6 +59,17 @@ import { WalletPaperWalletOpenPdfError } from '../i18n/errors';
 
 export default class WalletsStore extends Store {
   WALLET_REFRESH_INTERVAL = 5000;
+
+  WALLET_RECOVERY_PHRASE_VERIFICATION_STATUSES = {
+    OK: 'ok',
+    WARNING: 'warning',
+    NOTIFICATION: 'notification',
+  };
+
+  WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES = {
+    NEVER_CHECKED: 'neverChecked',
+    ALREADY_CHECKED: 'alreadyChecked',
+  };
 
   // REQUESTS
   /* eslint-disable max-len */
@@ -68,6 +111,19 @@ export default class WalletsStore extends Store {
   @observable restoreRequest: Request<Wallet> = new Request(
     this.api.ada.restoreWallet
   );
+  @observable
+  getWalletsLocalDataRequest: Request<WalletsLocalData> = new Request(
+    this.api.localStorage.getWalletsLocalData
+  );
+  @observable setWalletLocalDataRequest: Request<any> = new Request(
+    this.api.localStorage.setWalletLocalData
+  );
+  @observable updateWalletLocalDataRequest: Request<any> = new Request(
+    this.api.localStorage.updateWalletLocalData
+  );
+  @observable unsetWalletLocalDataRequest: Request<any> = new Request(
+    this.api.localStorage.unsetWalletLocalData
+  );
   /* eslint-enable max-len */
 
   @observable walletExportType: walletExportTypeChoices = 'paperWallet';
@@ -84,6 +140,9 @@ export default class WalletsStore extends Store {
   @observable additionalMnemonicWords = null;
   @observable createWalletStep = null;
   @observable createWalletShowAbortConfirmation = false;
+  @observable
+  recoveryPhraseVerificationData: RecoveryPhraseVerificationData = {};
+
   // TODO: Remove once the new wallet creation process is ready
   @observable useNewWalletCreationProcess = false;
 
@@ -103,28 +162,40 @@ export default class WalletsStore extends Store {
 
     this.registerReactions([this._updateActiveWalletOnRouteChanges]);
 
-    const { router, walletBackup, wallets, app, networkStatus } = this.actions;
+    const {
+      router,
+      walletBackup,
+      wallets: walletsActions,
+      app,
+      networkStatus,
+    } = this.actions;
     // Create Wallet Actions ---
-    wallets.createWallet.listen(this._create);
-    wallets.createWalletBegin.listen(this._createWalletBegin);
-    wallets.createWalletChangeStep.listen(this._createWalletChangeStep);
-    wallets.createWalletAbort.listen(this._createWalletAbort);
-    wallets.createWalletClose.listen(this._createWalletClose);
+    walletsActions.createWallet.listen(this._create);
+    walletsActions.createWalletBegin.listen(this._createWalletBegin);
+    walletsActions.createWalletChangeStep.listen(this._createWalletChangeStep);
+    walletsActions.createWalletAbort.listen(this._createWalletAbort);
+    walletsActions.createWalletClose.listen(this._createWalletClose);
     // ---
-    wallets.deleteWallet.listen(this._deleteWallet);
-    wallets.sendMoney.listen(this._sendMoney);
-    wallets.restoreWallet.listen(this._restoreWallet);
-    wallets.importWalletFromFile.listen(this._importWalletFromFile);
-    wallets.chooseWalletExportType.listen(this._chooseWalletExportType);
-    wallets.generateCertificate.listen(this._generateCertificate);
-    wallets.updateCertificateStep.listen(this._updateCertificateStep);
-    wallets.closeCertificateGeneration.listen(this._closeCertificateGeneration);
-    wallets.setCertificateTemplate.listen(this._setCertificateTemplate);
-    wallets.finishCertificate.listen(this._finishCertificate);
+    walletsActions.deleteWallet.listen(this._deleteWallet);
+    walletsActions.sendMoney.listen(this._sendMoney);
+    walletsActions.restoreWallet.listen(this._restoreWallet);
+    walletsActions.importWalletFromFile.listen(this._importWalletFromFile);
+    walletsActions.chooseWalletExportType.listen(this._chooseWalletExportType);
+    walletsActions.generateCertificate.listen(this._generateCertificate);
+    walletsActions.updateCertificateStep.listen(this._updateCertificateStep);
+    walletsActions.closeCertificateGeneration.listen(
+      this._closeCertificateGeneration
+    );
+    walletsActions.setCertificateTemplate.listen(this._setCertificateTemplate);
+    walletsActions.finishCertificate.listen(this._finishCertificate);
     router.goToRoute.listen(this._onRouteChange);
     walletBackup.finishWalletBackup.listen(this._finishWalletBackup);
     app.initAppEnvironment.listen(() => {});
     networkStatus.restartNode.listen(this._updateGeneratingCertificateError);
+    walletsActions.updateRecoveryPhraseVerificationDate.listen(
+      this._updateRecoveryPhraseVerificationDate
+    );
+    walletsActions.updateWalletLocalData.listen(this._updateWalletLocalData);
   }
 
   _create = async (params: { name: string, spendingPassword: ?string }) => {
@@ -178,6 +249,7 @@ export default class WalletsStore extends Store {
       this._newWalletDetails
     ).promise;
     if (wallet) {
+      await this._createWalletLocalData(wallet.id);
       await this.walletsRequest.patch(result => {
         result.push(wallet);
       });
@@ -208,6 +280,7 @@ export default class WalletsStore extends Store {
         this.activeValue = null;
       }
     });
+    this._unsetWalletLocalData(params.walletId);
     this._resumePolling();
     this.deleteWalletRequest.reset();
     this.refreshWalletsData();
@@ -226,6 +299,14 @@ export default class WalletsStore extends Store {
     this.restoreRequest.reset();
     this.goToWalletRoute(restoredWallet.id);
     this.refreshWalletsData();
+  };
+
+  _createWalletLocalData = async (id: string) => {
+    const walletLocalData = {
+      id,
+      creationDate: new Date(),
+    };
+    await this.setWalletLocalDataRequest.execute(walletLocalData);
   };
 
   _sendMoney = async ({
@@ -392,6 +473,8 @@ export default class WalletsStore extends Store {
     if (this.stores.networkStatus.isConnected) {
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
+      const walletIds = result.map((wallet: Wallet) => wallet.id);
+      await this._setWalletsRecoveryPhraseVerificationData(walletIds);
       let restoredWalletId = null; // id of a wallet which has just been restored
       runInAction('refresh active wallet', () => {
         if (this.active) {
@@ -410,7 +493,6 @@ export default class WalletsStore extends Store {
         this._setIsRestoreActive(restoringWalletId);
       });
       runInAction('refresh address data', () => {
-        const walletIds = result.map((wallet: Wallet) => wallet.id);
         this.stores.addresses.addressesRequests = walletIds.map(walletId => ({
           walletId,
           allRequest: this.stores.addresses._getAddressesAllRequest(walletId),
@@ -418,7 +500,6 @@ export default class WalletsStore extends Store {
         this.stores.addresses._refreshAddresses();
       });
       runInAction('refresh transaction data', () => {
-        const walletIds = result.map((wallet: Wallet) => wallet.id);
         this.stores.transactions.transactionsRequests = walletIds.map(
           walletId => ({
             walletId,
@@ -691,6 +772,97 @@ export default class WalletsStore extends Store {
     }
   });
 
+  /**
+   * - Receives a walet local data
+   * - Returns the wallet's recovery phrase verification status
+   */
+  _setWalletRecoveryPhraseVerificationData = ({
+    recoveryPhraseVerificationDate,
+    creationDate,
+  }: WalletLocalData) => {
+    const dateToCheck =
+      recoveryPhraseVerificationDate || creationDate || new Date();
+    const daysSinceDate = moment().diff(moment(dateToCheck), 'days');
+    let recoveryPhraseVerificationStatus =
+      WalletRecoveryPhraseVerificationStatuses.OK;
+    if (daysSinceDate > RECOVERY_PHRASE_VERIFICATION_NOTIFICATION)
+      recoveryPhraseVerificationStatus =
+        WalletRecoveryPhraseVerificationStatuses.NOTIFICATION;
+    else if (daysSinceDate > RECOVERY_PHRASE_VERIFICATION_WARNING)
+      recoveryPhraseVerificationStatus =
+        WalletRecoveryPhraseVerificationStatuses.WARNING;
+    const recoveryPhraseVerificationStatusType = recoveryPhraseVerificationDate
+      ? WalletRecoveryPhraseVerificationTypes.ALREADY_CHECKED
+      : WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED;
+    return {
+      creationDate,
+      recoveryPhraseVerificationDate,
+      recoveryPhraseVerificationStatus,
+      recoveryPhraseVerificationStatusType,
+    };
+  };
+
+  /**
+   * - Receives a list of wallets Ids
+   * - Retrieves the wallets local data from localStorage
+   * - Populates `recoveryPhraseVerificationData` with
+   *   the wallets recovery phrase verification data
+   * - Updates localStorage in case of missing information
+   */
+  _setWalletsRecoveryPhraseVerificationData = async (
+    walletIds: Array<string>
+  ): RecoveryPhraseVerificationData => {
+    const walletsLocalData = await this._getWalletsLocalData();
+    const recoveryPhraseVerificationData = {};
+    await asyncForEach(walletIds, async id => {
+      let walletLocalData = walletsLocalData[id];
+      // In case a wallet is not in the localStorage yet, it adds it
+      if (!walletLocalData) {
+        walletLocalData = {
+          id,
+          creationDate: new Date(),
+        };
+        await this.setWalletLocalDataRequest.execute(walletLocalData);
+      }
+      // In case a wallet doesn't have creationDate in the localStorage yet, it adds it
+      if (!walletLocalData.creationDate) {
+        walletLocalData.creationDate = new Date();
+        await this._updateWalletLocalData({
+          id,
+          creationDate: walletLocalData.creationDate,
+        });
+      }
+      recoveryPhraseVerificationData[
+        id
+      ] = this._setWalletRecoveryPhraseVerificationData(walletLocalData);
+    });
+    runInAction('refresh recovery phrase verification data', async () => {
+      this.recoveryPhraseVerificationData = recoveryPhraseVerificationData;
+    });
+  };
+
+  getWalletRecoveryPhraseVerification = (
+    walletId: string
+  ): WalletRecoveryPhraseVerificationData => {
+    const {
+      creationDate,
+      recoveryPhraseVerificationDate,
+      recoveryPhraseVerificationStatus,
+      recoveryPhraseVerificationStatusType,
+    } = this.recoveryPhraseVerificationData[walletId] || {};
+
+    return {
+      creationDate: creationDate || new Date(),
+      recoveryPhraseVerificationDate,
+      recoveryPhraseVerificationStatus:
+        recoveryPhraseVerificationStatus ||
+        this.WALLET_RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
+      recoveryPhraseVerificationStatusType:
+        recoveryPhraseVerificationStatusType ||
+        this.WALLET_RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_CHECKED,
+    };
+  };
+
   @action _setCertificateTemplate = (params: { selectedTemplate: string }) => {
     this.certificateTemplate = params.selectedTemplate;
     this._updateCertificateStep();
@@ -722,5 +894,33 @@ export default class WalletsStore extends Store {
     this.certificateTemplate = false;
     this.certificateStep = null;
     this._updateGeneratingCertificateError();
+  };
+
+  _getWalletsLocalData = async () => {
+    const walletsLocalData: WalletsLocalData = await this.getWalletsLocalDataRequest.execute();
+    return walletsLocalData;
+  };
+  _updateWalletLocalData = async (updatedWalletData: Object): Object => {
+    const { id } = updatedWalletData;
+    const walletLocalData = await this.updateWalletLocalDataRequest.execute(
+      updatedWalletData
+    );
+    runInAction('Update wallet verification date', () => {
+      this.recoveryPhraseVerificationData[
+        id
+      ] = this._setWalletRecoveryPhraseVerificationData(walletLocalData);
+    });
+  };
+  _updateRecoveryPhraseVerificationDate = async () => {
+    if (!this.active) return;
+    const { id } = this.active;
+    const recoveryPhraseVerificationDate = new Date();
+    await this._updateWalletLocalData({
+      id,
+      recoveryPhraseVerificationDate,
+    });
+  };
+  _unsetWalletLocalData = async (walletId: string) => {
+    await this.unsetWalletLocalDataRequest.execute(walletId);
   };
 }
