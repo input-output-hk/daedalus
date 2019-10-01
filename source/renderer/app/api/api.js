@@ -405,7 +405,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::createTransaction called', {
       parameters: filterLogData(request),
     });
-    const { walletId, address, amount, spendingPassword } = request;
+    const { walletId, address, amount, passphrase } = request;
 
     try {
       const data = {
@@ -418,7 +418,7 @@ export default class AdaApi {
             },
           },
         ],
-        passphrase: spendingPassword,
+        passphrase,
       };
 
       const response: Transaction = await createTransaction(this.config, {

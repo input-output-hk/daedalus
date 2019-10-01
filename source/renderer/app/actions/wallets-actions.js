@@ -32,7 +32,7 @@ export default class WalletsActions {
   sendMoney: Action<{
     receiver: string,
     amount: string,
-    password: ?string,
+    passphrase: string,
   }> = new Action();
   chooseWalletExportType: Action<{
     walletExportType: walletExportTypeChoices,

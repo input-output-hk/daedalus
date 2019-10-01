@@ -75,7 +75,7 @@ export type CreateTransactionRequest = {
   walletId: string,
   address: string,
   amount: number,
-  spendingPassword: string,
+  passphrase: string,
 };
 
 export type GetTransactionsResponse = {
