@@ -36,24 +36,7 @@ export default class WalletReceivePage extends Component<Props, State> {
 
   componentWillUnmount() {
     this.closeNotification();
-    this.resetErrors();
   }
-
-  handleGenerateAddress = (spendingPassword: ?string) => {
-    const { wallets } = this.props.stores;
-    const wallet = wallets.active;
-
-    if (wallet) {
-      this.props.actions.addresses.createAddress.trigger({
-        walletId: wallet.id,
-        spendingPassword,
-      });
-    }
-  };
-
-  resetErrors = () => {
-    this.props.actions.addresses.resetErrors.trigger();
-  };
 
   closeNotification = () => {
     const { wallets } = this.props.stores;
@@ -69,7 +52,7 @@ export default class WalletReceivePage extends Component<Props, State> {
   render() {
     const { copiedAddress } = this.state;
     const { actions } = this.props;
-    const { sidebar, uiNotifications, wallets, addresses } = this.props.stores;
+    const { uiNotifications, wallets, addresses } = this.props.stores;
     const wallet = wallets.active;
 
     // Guard against potential null values
@@ -106,7 +89,6 @@ export default class WalletReceivePage extends Component<Props, State> {
             walletAddress={walletAddress}
             isWalletAddressUsed={isWalletAddressUsed}
             walletAddresses={walletAddresses}
-            onGenerateAddress={this.handleGenerateAddress}
             onCopyAddress={address => {
               this.setState({ copiedAddress: address });
               actions.notifications.open.trigger({
@@ -114,10 +96,6 @@ export default class WalletReceivePage extends Component<Props, State> {
                 duration: notification.duration,
               });
             }}
-            isSidebarExpanded={sidebar.isShowingSubMenus}
-            walletHasPassword={wallet.hasPassword}
-            isSubmitting={addresses.createAddressRequest.isExecuting}
-            error={addresses.error}
           />
         </VerticalFlexContainer>
 

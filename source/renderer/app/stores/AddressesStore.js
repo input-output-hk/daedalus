@@ -1,61 +1,16 @@
 // @flow
 import { find } from 'lodash';
-import { observable, computed, action, runInAction } from 'mobx';
+import { observable, computed, action } from 'mobx';
 import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
-import Request from './lib/LocalizedRequest';
-import LocalizableError from '../i18n/LocalizableError';
 import WalletAddress from '../domains/WalletAddress';
 import type { GetAddressesResponse } from '../api/addresses/types';
 
 export default class AddressesStore extends Store {
-  @observable lastGeneratedAddress: ?WalletAddress = null;
   @observable addressesRequests: Array<{
     walletId: string,
     allRequest: CachedRequest<GetAddressesResponse>,
   }> = [];
-  @observable error: ?LocalizableError = null;
-
-  // REQUESTS
-  /* eslint-disable max-len */
-  @observable createAddressRequest: Request<WalletAddress> = new Request(
-    this.api.ada.createAddress
-  );
-  /* eslint-disable max-len */
-
-  setup() {
-    const actions = this.actions.addresses;
-    actions.createAddress.listen(this._createAddress);
-    actions.resetErrors.listen(this._resetErrors);
-  }
-
-  _createAddress = async (params: {
-    walletId: string,
-    spendingPassword: ?string,
-  }) => {
-    try {
-      const { walletId, spendingPassword } = params;
-      const accountIndex = await this.getAccountIndexByWalletId(walletId);
-
-      const address: ?WalletAddress = await this.createAddressRequest.execute({
-        accountIndex,
-        spendingPassword,
-        walletId,
-      }).promise;
-
-      if (address != null) {
-        this._refreshAddresses();
-        runInAction('set last generated address and reset error', () => {
-          this.lastGeneratedAddress = address;
-          this.error = null;
-        });
-      }
-    } catch (error) {
-      runInAction('set error', () => {
-        this.error = error;
-      });
-    }
-  };
 
   @computed get all(): Array<WalletAddress> {
     const wallet = this.stores.wallets.active;
@@ -72,7 +27,6 @@ export default class AddressesStore extends Store {
   }
 
   @computed get active(): ?WalletAddress {
-    if (this.lastGeneratedAddress) return this.lastGeneratedAddress;
     const wallet = this.stores.wallets.active;
     if (!wallet) return null;
     const results = this._getAddressesAllRequest(wallet.id).result;
@@ -95,10 +49,6 @@ export default class AddressesStore extends Store {
         allRequest.execute({ walletId: wallet.id });
       }
     }
-  };
-
-  @action _resetErrors = () => {
-    this.error = null;
   };
 
   getAccountIndexByWalletId = async (walletId: string): Promise<?number> => {

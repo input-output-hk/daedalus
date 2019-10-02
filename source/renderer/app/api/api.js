@@ -2,7 +2,7 @@
 import { split, get, size } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
-// import moment from 'moment';
+import moment from 'moment';
 
 // domains
 import Wallet, { WalletDelegationStatuses } from '../domains/Wallet';
@@ -15,7 +15,6 @@ import WalletAddress from '../domains/WalletAddress';
 
 // Addresses requests
 import { getAddresses } from './addresses/requests/getAddresses';
-import { createAddress } from './addresses/requests/createAddress';
 
 // Nodes requests
 import { applyNodeUpdate } from './nodes/requests/applyNodeUpdate';
@@ -28,7 +27,7 @@ import { getLatestAppVersion } from './nodes/requests/getLatestAppVersion';
 
 // Transactions requests
 import { getTransactionFee } from './transactions/requests/getTransactionFee';
-// import { getTransactionHistory } from './transactions/requests/getTransactionHistory';
+import { getTransactionHistory } from './transactions/requests/getTransactionHistory';
 import { createTransaction } from './transactions/requests/createTransaction';
 
 // Wallets requests
@@ -78,7 +77,6 @@ import type {
   Addresses,
   GetAddressesRequest,
   GetAddressesResponse,
-  CreateAddressRequest,
 } from './addresses/types';
 
 // Common Types
@@ -101,7 +99,7 @@ import type { NodeInfoQueryParams } from './nodes/requests/getNodeInfo';
 // Transactions Types
 import type {
   Transaction,
-  // Transactions,
+  Transactions,
   TransactionFee,
   GetTransactionFeeRequest,
   CreateTransactionRequest,
@@ -226,16 +224,56 @@ export default class AdaApi {
   getTransactions = async (
     request: GetTransactionsRequest
   ): Promise<GetTransactionsResponse> => {
+    Logger.debug('AdaApi::searchHistory called', { parameters: request });
+    const { walletId, order, fromDate, toDate } = request;
+
+    const params = Object.assign(
+      {},
+      {
+        order: order || 'descending',
+      }
+    );
+    if (fromDate)
+      params.start = `${moment.utc(fromDate).format('YYYY-MM-DDTHH:mm:ss')}Z`;
+    if (toDate)
+      params.end = `${moment.utc(toDate).format('YYYY-MM-DDTHH:mm:ss')}Z`;
+
+    try {
+      const response: Transactions = await getTransactionHistory(
+        this.config,
+        walletId,
+        params
+      );
+      const transactions = response.map(tx =>
+        _createTransactionFromServerData(tx)
+      );
+      return new Promise(resolve =>
+        resolve({ transactions, total: response.length })
+      );
+    } catch (error) {
+      Logger.error('AdaApi::searchHistory error', { error });
+      throw new GenericApiError();
+    }
+
+    // @API TODO - Filter / Search fine tunning "pending" for V2
+
+    // const requestStats = Object.assign({}, request, {
+    //   cachedTransactions: request.cachedTransactions.length,
+    // });
+    //  Logger.debug('AdaApi::searchHistory called', { parameters: requestStats });
     // const requestTimestamp = moment();
-    const requestStats = Object.assign({}, request, {
-      cachedTransactions: request.cachedTransactions.length,
-    });
-    Logger.debug('AdaApi::searchHistory called', { parameters: requestStats });
-
-    // @API TODO: Not yet available in the API
-    return new Promise(resolve => resolve({ transactions: [], total: 0 }));
-
-    // @API TODO: Uncomment once API available
+    // const params = {
+    //   wallet_id: walletId,
+    //   account_index: accounts[0].index,
+    //   page: skip === 0 ? 1 : skip + 1,
+    //   per_page: perPage,
+    //   sort_by: 'DES[created_at]',
+    //   created_at: `LTE[${moment.utc().format('YYYY-MM-DDTHH:mm:ss')}]`,
+    //   // ^^ By setting created_at filter to current time we make sure
+    //   // all subsequent multi-pages requests load the same set of transactions
+    // };
+    //
+    //
     // const {
     //   walletId,
     //   skip,
@@ -244,7 +282,11 @@ export default class AdaApi {
     //   isRestoreActive, // during restoration we fetch only missing transactions
     //   isRestoreCompleted, // once restoration is done we fetch potentially missing transactions
     //   cachedTransactions,
-    // } = request;
+    // } , unionBy= request;
+    //
+    //
+    // TODO: Uncomment once API available
+    //
     // const accounts: Accounts = await getAccounts(this.config, { walletId });
     //
     // if (!accounts.length || !accounts[0].index) {
@@ -515,30 +557,6 @@ export default class AdaApi {
       } else {
         throw new GenericApiError();
       }
-    }
-  };
-
-  createAddress = async (
-    request: CreateAddressRequest
-  ): Promise<WalletAddress> => {
-    Logger.debug('AdaApi::createAddress called', {
-      parameters: filterLogData(request),
-    });
-    const { accountIndex, walletId, spendingPassword } = request;
-    try {
-      const address: Address = await createAddress(this.config, {
-        spendingPassword: spendingPassword || '',
-        accountIndex,
-        walletId,
-      });
-      Logger.debug('AdaApi::createAddress success', { address });
-      return _createAddressFromServerData(address);
-    } catch (error) {
-      Logger.error('AdaApi::createAddress error', { error });
-      if (error.message === 'CannotCreateAddress') {
-        throw new IncorrectSpendingPasswordError();
-      }
-      throw new GenericApiError();
     }
   };
 
@@ -1137,8 +1155,6 @@ const _conditionToTxState = (condition: string) => {
       return TransactionStates.FAILED;
     default:
       return TransactionStates.OK;
-    // Others V0: CPtxInBlocks && CPtxNotTracked
-    // Others V1: "inNewestBlocks" "persisted" "creating"
   }
 };
 
@@ -1155,7 +1171,7 @@ const _createTransactionFromServerData = action(
       outputs,
       status,
     } = data;
-    const creationTime = get(inserted_at, 'time');
+    const insertedAt = get(inserted_at, 'time');
     const slotNumber = get(inserted_at, ['block', 'slot_number'], null);
     const epochNumber = get(inserted_at, ['block', 'epoch_number'], null);
 
@@ -1172,10 +1188,12 @@ const _createTransactionFromServerData = action(
       amount: new BigNumber(
         direction === 'outgoing' ? amount.quantity * -1 : amount.quantity
       ).dividedBy(LOVELACES_PER_ADA),
-      date: creationTime ? utcStringToDate(creationTime) : null,
+      date: insertedAt
+        ? utcStringToDate(insertedAt)
+        : utcStringToDate(moment().utc()),
       description: '',
       addresses: {
-        from: inputs.map(({ address }) => address),
+        from: inputs.map(({ address, id: inputId }) => address || inputId), // @API TODO: id is faked due to lack of informations
         to: outputs.map(({ address }) => address),
       },
       state: _conditionToTxState(status),

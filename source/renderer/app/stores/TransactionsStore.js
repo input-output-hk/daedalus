@@ -7,7 +7,7 @@ import {
   runInAction,
 } from 'mobx';
 import BigNumber from 'bignumber.js';
-import { find, get } from 'lodash';
+import { find } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
@@ -18,7 +18,7 @@ import type { GetTransactionsResponse } from '../api/transactions/types';
 import type { UnconfirmedAmount } from '../types/unconfirmedAmountType';
 import { isValidAmountInLovelaces } from '../utils/validations';
 import { TX_UNCONFIRMED_THRESHOLD } from '../config/numbersConfig';
-import { WalletSyncStateStatuses } from '../domains/Wallet';
+// import { WalletSyncStateStatuses } from '../domains/Wallet';
 
 /* eslint-disable consistent-return */
 
@@ -131,9 +131,10 @@ export default class TransactionsStore extends Store {
     if (this.stores.networkStatus.isConnected) {
       const allWallets = this.stores.wallets.all;
       for (const wallet of allWallets) {
-        const isRestoreActive =
-          get(wallet, ['syncState', 'status'], '') ===
-          WalletSyncStateStatuses.RESTORING;
+        // @API TODO - Params "pending" for V2
+        // const isRestoreActive =
+        //   get(wallet, ['syncState', 'status'], '') ===
+        //   WalletSyncStateStatuses.RESTORING;
         const isRestoreCompleted = restoredWalletId === wallet.id;
         const recentRequest = this._getTransactionsRecentRequest(wallet.id);
         if (isRestoreCompleted && recentRequest.isExecuting) {
@@ -143,13 +144,17 @@ export default class TransactionsStore extends Store {
         }
         recentRequest.execute({
           walletId: wallet.id,
-          limit: this.RECENT_TRANSACTIONS_LIMIT,
-          skip: 0,
-          searchTerm: '',
-          isFirstLoad: !recentRequest.wasExecuted,
-          isRestoreActive,
-          isRestoreCompleted,
-          cachedTransactions: get(recentRequest, 'result.transactions', []),
+          order: 'descending',
+          fromDate: null,
+          toDate: null,
+          // @API TODO - Params "pending" for V2
+          // limit: this.RECENT_TRANSACTIONS_LIMIT,
+          // skip: 0,
+          // searchTerm: '',
+          // isFirstLoad: !recentRequest.wasExecuted,
+          // isRestoreActive,
+          // isRestoreCompleted,
+          // cachedTransactions: get(recentRequest, 'result.transactions', []),
         });
         const allRequest = this._getTransactionsAllRequest(wallet.id);
         if (isRestoreCompleted && allRequest.isExecuting) {
@@ -159,13 +164,17 @@ export default class TransactionsStore extends Store {
         }
         allRequest.execute({
           walletId: wallet.id,
-          limit: this.INITIAL_SEARCH_LIMIT,
-          skip: 0,
-          searchTerm: '',
-          isFirstLoad: !allRequest.wasExecuted,
-          isRestoreActive,
-          isRestoreCompleted,
-          cachedTransactions: get(allRequest, 'result.transactions', []),
+          order: 'descending',
+          fromDate: null,
+          toDate: null,
+          // @API TODO - Params "pending" for V2
+          // limit: this.INITIAL_SEARCH_LIMIT,
+          // skip: 0,
+          // searchTerm: '',
+          // isFirstLoad: !allRequest.wasExecuted,
+          // isRestoreActive,
+          // isRestoreCompleted,
+          // cachedTransactions: get(allRequest, 'result.transactions', []),
         });
       }
     }
