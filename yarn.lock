@@ -34,7 +34,7 @@
     axios "^0.19.0"
     es6-promise-pool "^2.5.0"
 
-"@applitools/eyes-storybook@^2.7.36":
+"@applitools/eyes-storybook@2.7.36":
   version "2.7.36"
   resolved "https://registry.yarnpkg.com/@applitools/eyes-storybook/-/eyes-storybook-2.7.36.tgz#14d4e20f2a6e84c12618e60fc58118cb74888d5d"
   integrity sha512-GNRNiBfWA6gYqraox+oFLeoSiPjeX3iyZWCDjRSRwE8uY4CFFLmLvo2ZUIOdXhafslJSlFwxhyhm0GtNeaJxig==

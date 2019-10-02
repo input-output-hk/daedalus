@@ -41,7 +41,7 @@
     "electron": "./node_modules/.bin/electron"
   },
   "devDependencies": {
-    "@applitools/eyes-storybook": "^2.7.36",
+    "@applitools/eyes-storybook": "2.7.36",
     "@babel/cli": "7.2.0",
     "@babel/core": "7.4.5",
     "@babel/plugin-proposal-class-properties": "7.2.1",
