@@ -1,0 +1,57 @@
+.component {
+  position: absolute;
+  right: 29px;
+  top: 20px;
+
+  &.withDot::after {
+    background: var(--theme-news-feed-icon-dot-background-color);
+    border-radius: 12.5px;
+    content: '';
+    display: block;
+    height: 8px;
+    pointer-events: none;
+    position: absolute;
+    right: 7px;
+    top: 7px;
+    width: 8px;
+  }
+}
+
+.icon {
+  border-radius: 50%;
+  cursor: pointer;
+  display: block;
+  height: 44px;
+  position: relative;
+  width: 44px;
+
+  svg {
+    height: 22px;
+    left: 11px;
+    position: absolute;
+    top: 10px;
+    width: 22px;
+
+    path {
+      stroke: var(--theme-news-feed-icon-color);
+    }
+  }
+
+  &:hover {
+    background-color: var(--theme-news-feed-icon-toggle-hover-background-color);
+  }
+}
+
+:global {
+  .connectingScreen {
+    span svg path {
+      stroke: var(--theme-news-feed-icon-color-connecting-screen);
+    }
+  }
+
+  .syncingScreen {
+    span svg path {
+      stroke: var(--theme-news-feed-icon-color-syncing-screen);
+    }
+  }
+}

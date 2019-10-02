@@ -1,7 +1,5 @@
-// @flow
-import { Given, When, Then } from 'cucumber';
+import { Given, Then } from 'cucumber';
 import { expect } from 'chai';
-import { isValidSpendingPassword } from '../../../../source/renderer/app/utils/validations';
 import {
   formattedAmountToLovelace,
   formattedLovelaceToAmount,
@@ -13,6 +11,7 @@ import {
 } from '../../../../source/renderer/app/utils/utxoUtils';
 import { getHistogramFromTable } from './helpers';
 
+/* eslint-disable no-unused-expressions */
 Given('the `getUtxoChartData` function receives the following props:', function(
   data
 ) {
@@ -56,10 +55,10 @@ Then(
     const walletAmountThreshold = formattedAmountToLovelace(
       String(walletAmount)
     );
-    const { histogram, utxoChartData, sortedHistogram } = this.context;
+    const { utxoChartData, sortedHistogram } = this.context;
     const expectedAggregatedUtxosAmount = sortedHistogram.reduce(
-      (sum, [walletAmount, walletUtxosAmount]) => {
-        if (walletAmount >= walletAmountThreshold)
+      (sum, [amount, walletUtxosAmount]) => {
+        if (amount >= walletAmountThreshold)
           sum += parseInt(walletUtxosAmount, 10);
         return sum;
       },
@@ -95,7 +94,7 @@ Then('the response should have type {string}', function(type) {
   if (type === 'array') {
     return expect(Array.isArray(response)).to.be.true;
   }
-  expect(typeof response).to.equal(type);
+  return expect(typeof response).to.equal(type);
 });
 
 Then('wallet amounts less than {int} should not be modified', function(amount) {

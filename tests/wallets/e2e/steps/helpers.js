@@ -30,14 +30,17 @@ export const addWalletHelpers = {
 
 const createWalletsAsync = async (table, context) => {
   const result = await context.client.executeAsync((wallets, done) => {
+    const mnemonics = {};
     window.Promise.all(
-      wallets.map(wallet =>
-        daedalus.api.ada.createWallet({
+      wallets.map(wallet => {
+        const mnemonic = daedalus.utils.crypto.generateMnemonic();
+        mnemonics[wallet.name] = mnemonic.split(' ');
+        return daedalus.api.ada.createWallet({
           name: wallet.name,
-          mnemonic: daedalus.utils.crypto.generateMnemonic(),
+          mnemonic,
           spendingPassword: wallet.password || null,
-        })
-      )
+        });
+      })
     )
       .then(() =>
         daedalus.stores.wallets.walletsRequest
@@ -45,7 +48,7 @@ const createWalletsAsync = async (table, context) => {
           .then(storeWallets =>
             daedalus.stores.wallets
               .refreshWalletsData()
-              .then(() => done(storeWallets))
+              .then(() => done({ storeWallets, mnemonics }))
               .catch(error => done(error))
           )
           .catch(error => done(error))
@@ -54,9 +57,14 @@ const createWalletsAsync = async (table, context) => {
   }, table);
   // Add or set the wallets for this scenario
   if (context.wallets != null) {
-    context.wallets.push(...result.value);
+    context.wallets.push(...result.value.storeWallets);
   } else {
-    context.wallets = result.value;
+    context.wallets = result.value.storeWallets;
+  }
+  if (context.mnemonics != null) {
+    context.mnemonics.push(...result.value.mnemonics);
+  } else {
+    context.mnemonics = result.value.mnemonics;
   }
 };
 

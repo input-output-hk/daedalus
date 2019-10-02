@@ -1,5 +1,4 @@
-// @flow
-import { Given, When, Then } from 'cucumber';
+import { Given, Then } from 'cucumber';
 import { expect } from 'chai';
 import { pickBy, identity } from 'lodash';
 import {
