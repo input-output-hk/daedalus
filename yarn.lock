@@ -11151,6 +11151,13 @@ rcedit@^1.0.0:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/rcedit/-/rcedit-1.1.2.tgz#7a28edf981953f75b5f3e5d4cbc1f9ffa0abbc78"
 
+react-animate-height@2.0.15:
+  version "2.0.15"
+  resolved "https://registry.yarnpkg.com/react-animate-height/-/react-animate-height-2.0.15.tgz#155f42e1ab0befe785b36b3e76233230172c1857"
+  dependencies:
+    classnames "^2.2.5"
+    prop-types "^15.6.1"
+
 react-clientside-effect@^1.2.0:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/react-clientside-effect/-/react-clientside-effect-1.2.2.tgz#6212fb0e07b204e714581dd51992603d1accc837"
@@ -11355,9 +11362,9 @@ react-number-format@3.0.3:
   dependencies:
     prop-types "^15.6.0"
 
-react-polymorph@0.8.7:
-  version "0.8.7"
-  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.8.7.tgz#1f31c509006736bf1334ed2fa2386b4c74f19e3b"
+react-polymorph@0.9.0-rc.15:
+  version "0.9.0-rc.15"
+  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.0-rc.15.tgz#aff039bc034b9baa03289308042d4e98cd46f6ed"
   dependencies:
     create-react-context "0.2.2"
     create-react-ref "0.1.0"
@@ -12282,13 +12289,13 @@ semver-greatest-satisfied-range@^1.1.0:
   version "5.7.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.7.0.tgz#790a7cf6fea5459bac96110b29b60412dc8ff96b"
 
+semver@6.3.0, semver@^6.0.0, semver@^6.1.1:
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-6.3.0.tgz#ee0a64c8af5e8ceea67687b133761e1becbd1d3d"
+
 semver@^4.1.0:
   version "4.3.6"
   resolved "https://registry.yarnpkg.com/semver/-/semver-4.3.6.tgz#300bc6e0e86374f7ba61068b5b1ecd57fc6532da"
-
-semver@^6.0.0, semver@^6.1.1:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/semver/-/semver-6.3.0.tgz#ee0a64c8af5e8ceea67687b133761e1becbd1d3d"
 
 semver@~5.3.0:
   version "5.3.0"
@@ -13543,7 +13550,19 @@ tough-cookie@^2.3.2, tough-cookie@^2.3.3:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/tough-cookie/-/tough-cookie-2.5.0.tgz#cd9fb2a0aa1d5a12b473bd9fb96fa3dcff65ade2"
   integrity sha512-nlLsUzgm1kfLXSXfRZMc1KLAugd4hqJHDTvc2hDIwS3mZAfMEuMbc03SujMF+GEcpaX/qboeycw6iO8JwVv2+g==
+<<<<<<< HEAD
   dependencies:
+    psl "^1.1.28"
+    punycode "^2.1.1"
+
+tough-cookie@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/tough-cookie/-/tough-cookie-3.0.1.tgz#9df4f57e739c26930a018184887f4adb7dca73b2"
+  integrity sha512-yQyJ0u4pZsv9D4clxO69OEjLWYw+jbgspjTue4lTQZLfV0c5l1VmK2y1JK8E9ahdpltPOaAThPcp5nKPUgSnsg==
+=======
+>>>>>>> e4e2634feccd532ae5610f415f36b43e3c9f7773
+  dependencies:
+    ip-regex "^2.1.0"
     psl "^1.1.28"
     punycode "^2.1.1"
 

@@ -16,7 +16,7 @@
   right: 0;
   text-align: center;
   top: 0;
-  z-index: 1;
+  z-index: 21;
 
   .icon {
     margin-bottom: 36px;
@@ -57,7 +57,7 @@
 
   a {
     @include link(--theme-system-error-overlay-support-link-icon-color);
-    border-bottom: 2px solid var(--theme-system-error-overlay-text-color);
+    border-bottom: 1px solid var(--theme-system-error-overlay-text-color);
     color: var(--theme-system-error-overlay-text-color);
   }
 

@@ -14,7 +14,10 @@ export type HttpOptions = {
   },
 };
 
-export const externalRequest = (httpOptions: HttpOptions): Promise<any> =>
+export const externalRequest = (
+  httpOptions: HttpOptions,
+  raw: boolean = false
+): Promise<any> =>
   new Promise((resolve, reject) => {
     if (!ALLOWED_EXTERNAL_HOSTNAMES.includes(httpOptions.hostname)) {
       return reject(new Error('Hostname not allowed'));
@@ -33,8 +36,7 @@ export const externalRequest = (httpOptions: HttpOptions): Promise<any> =>
       response.on('error', error => reject(error));
       response.on('end', () => {
         try {
-          const parsedBody = JSON.parse(body);
-          resolve(parsedBody);
+          resolve(raw ? body : JSON.parse(body));
         } catch (error) {
           // Handle internal server errors (e.g. HTTP 500 - 'Something went wrong')
           reject(new Error(error));

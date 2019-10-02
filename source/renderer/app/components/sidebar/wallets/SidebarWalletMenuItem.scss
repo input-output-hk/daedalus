@@ -11,6 +11,7 @@
   justify-content: space-between;
   overflow: hidden;
   padding: 0 20px;
+  position: relative;
   width: $sidebar-width - $sidebar-minimized-category-width;
 
   &:hover {
@@ -66,4 +67,19 @@
   font-size: 14px;
   letter-spacing: 1px;
   opacity: 0.7;
+}
+
+.recoveryPhraseVerificationStatus-notification {
+  &:after {
+    background: var(--theme-button-attention-background-color);
+    border-radius: 50%;
+    content: '';
+    display: block;
+    height: 8px;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-8px);
+    width: 8px;
+  }
 }

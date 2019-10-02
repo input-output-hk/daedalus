@@ -183,7 +183,7 @@ export const createReactPolymorphTheme = (
       '--rp-switch-bg-color-off': `${background.secondary.regular}`,
       '--rp-switch-bg-color-on': `${background.secondary.regular}`,
       '--rp-switch-label-margin': '0 30px 0 0',
-      '--rp-switch-label-opacity': '0.5',
+      '--rp-switch-label-opacity': '1',
       '--rp-switch-label-text-color': `${text.primary}`,
       '--rp-switch-label-width': '100%',
       '--rp-switch-opacity-off': '0.3',
@@ -428,11 +428,15 @@ export const createDaedalusComponentsTheme = (
       '--theme-data-migration-layer-box-shadow-color': `${
         background.secondary.regular
       }`,
+      '--theme-data-migration-layer-button-background-color': `${
+        background.secondary.regular
+      }`,
       '--theme-data-migration-layer-button-background-color-hover': `${
         background.primary.regular
       }`,
       '--theme-data-migration-layer-text-opacity-color': `${text.secondary}`,
       '--theme-data-migration-layer-text-color': `${text.secondary}`,
+      '--theme-data-migration-layer-text-color-hover': `${text.primary}`,
       '--theme-data-migration-button-border-color': `${text.secondary}`,
       '--theme-data-migration-button-label-color': `${text.secondary}`,
     },
@@ -636,6 +640,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-loading-status-icons-unloaded-syncing-color': `${text.primary}`,
       '--theme-loading-status-icons-tooltip-color': `${text.primary}`,
       '--theme-loading-spinner-color': `${text.primary}`,
+      '--theme-loading-spinner-medium-color': '#fff',
     },
     manualUpdate: {
       '--theme-manual-update-overlay-background-color': `${chroma(
@@ -719,6 +724,38 @@ export const createDaedalusComponentsTheme = (
       '--theme-network-window-button-background-color-active': `${chroma(
         background.secondary.lightest
       ).alpha(0.8)}`,
+    },
+    newsFeed: {
+      '--theme-news-feed-background-color': '#233856',
+      '--theme-news-feed-badge-background-color': '#ea4c5b',
+      '--theme-news-feed-badge-text-color': '#ffffff',
+      '--theme-news-feed-box-shadow-color': '-5px 0 20px 0 rgba(0, 0, 0, 0.25)',
+      '--theme-news-feed-header-background-color': '#1e304a',
+      '--theme-news-feed-header-title-color': '#fafbfc',
+      '--theme-news-feed-icon-close-button-color': '#fff',
+      '--theme-news-feed-icon-close-hover-background-color':
+        'rgba(0, 0, 0, 0.1)',
+      '--theme-news-feed-icon-color': '#fafbfc',
+      '--theme-news-feed-icon-color-connecting-screen': '#fafbfc',
+      '--theme-news-feed-icon-color-syncing-screen': '#5e6066',
+      '--theme-news-feed-icon-dot-background-color': '#ea4c5b',
+      '--theme-news-feed-icon-toggle-hover-background-color':
+        'rgba(0, 0, 0, 0.1)',
+      '--theme-news-feed-no-fetch-color': '#fafbfc',
+    },
+    newsItem: {
+      '--theme-news-item-action-button-background-color': 'rgba(0, 0, 0, 0.1)',
+      '--theme-news-item-action-button-background-color-hover': '#29b595',
+      '--theme-news-item-action-button-border-color': '#fafbfc',
+      '--theme-news-item-action-button-color': '#fafbfc',
+      '--theme-news-item-action-button-color-hover': '#ffffff',
+      '--theme-news-item-alert-background-color': 'rgba(242, 162, 24, 0.5)',
+      '--theme-news-item-announcement-background-color':
+        'rgba(234, 76, 91, 0.25)',
+      '--theme-news-item-badge-color': '#ea4c5b',
+      '--theme-news-item-content-link-color': '#fafbfc',
+      '--theme-news-item-info-background-color': 'rgba(0, 0, 0, 0.1)',
+      '--theme-news-item-title-color': '#fafbfc',
     },
     nodeUpdate: {
       '--theme-node-update-background-color': `${background.primary.regular}`,
@@ -805,6 +842,15 @@ export const createDaedalusComponentsTheme = (
       '--theme-receive-qr-code-background-color': 'transparent',
       '--theme-receive-qr-code-foreground-color': '#000',
     },
+    recoveryPhrase: {
+      '--theme-recovery-phrase-normal-background-color':
+        'rgba(32, 34, 37, 0.05)',
+      '--theme-recovery-phrase-normal-border-color': 'rgba(68, 91, 124, .07)',
+      '--theme-recovery-phrase-warning-background-color':
+        'rgba(68, 91, 124, 0.05)',
+      '--theme-recovery-phrase-attention-background-color':
+        'rgba(234, 76, 91, .1)',
+    },
     reportIssue: {
       '--theme-report-issue-button-background-color': `${
         background.secondary.regular
@@ -832,7 +878,10 @@ export const createDaedalusComponentsTheme = (
       }`,
     },
     scrollbar: {
-      '--theme-scrollbar-thumb-background': `${background.primary.darker}`,
+      '--theme-scrollbar-thumb-background': `${background.primary.ultralight}`,
+      '--theme-scrollbar-thumb-background-hover': `${
+        background.primary.ultralighter
+      }`,
     },
     sendConfirmation: {
       '--theme-send-confirmation-dialog-send-values-color': `${error.regular}`,
