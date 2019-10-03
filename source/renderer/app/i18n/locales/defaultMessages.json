@@ -5723,13 +5723,13 @@
         "description": "Label for wallet address on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 23
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
         "id": "wallet.receive.page.walletAddressLabel",
         "start": {
           "column": 22,
-          "line": 26
+          "line": 19
         }
       },
       {
@@ -5737,13 +5737,13 @@
         "description": "Wallet receive payments instructions on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
         "id": "wallet.receive.page.walletReceiveInstructions",
         "start": {
           "column": 29,
-          "line": 31
+          "line": 24
         }
       },
       {
@@ -5751,13 +5751,13 @@
         "description": "Label for \"Generate new address\" button on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
         "id": "wallet.receive.page.generateNewAddressButtonLabel",
         "start": {
           "column": 33,
-          "line": 38
+          "line": 31
         }
       },
       {
@@ -5765,13 +5765,13 @@
         "description": "\"Generated addresses\" section title on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 42
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
         "id": "wallet.receive.page.generatedAddressesSectionTitle",
         "start": {
           "column": 34,
-          "line": 44
+          "line": 37
         }
       },
       {
@@ -5779,13 +5779,13 @@
         "description": "Label for \"show used\" wallet addresses link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
         "id": "wallet.receive.page.showUsedLabel",
         "start": {
           "column": 17,
-          "line": 50
+          "line": 43
         }
       },
       {
@@ -5793,13 +5793,13 @@
         "description": "Placeholder for \"spending password\" on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 54
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
         "id": "wallet.receive.page.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 56
+          "line": 49
         }
       },
       {
@@ -5807,13 +5807,13 @@
         "description": "Label for \"Copy address\" link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 59
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceive.js",
         "id": "wallet.receive.page.copyAddressLabel",
         "start": {
           "column": 20,
-          "line": 62
+          "line": 55
         }
       }
     ],
