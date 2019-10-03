@@ -1,10 +1,5 @@
 // @flow
 import { WalletTransaction } from '../../domains/WalletTransaction';
-import type { ResponseBase } from '../common/types';
-
-export type Transactions = ResponseBase & {
-  data: Array<Transaction>,
-};
 
 export type TransactionAmount = {
   quantity: number,
@@ -35,6 +30,8 @@ export type Transaction = {
   status: TransactionState,
 };
 
+export type Transactions = Array<Transaction>;
+
 export type TransactionInputs = {
   address: string,
   amount: TransactionAmount,
@@ -53,16 +50,22 @@ export type TrasactionAddresses = { from: Array<string>, to: Array<string> };
 
 export type TransactionType = 'card' | 'expend' | 'income' | 'exchange';
 
-// req/res Transaction Types
+// Req / Res Transaction Types
 export type GetTransactionsRequest = {
   walletId: string,
-  searchTerm: string,
-  skip: number,
-  limit: number,
-  isFirstLoad: boolean,
-  isRestoreActive: boolean,
-  isRestoreCompleted: boolean,
-  cachedTransactions: Array<WalletTransaction>,
+  order?: 'ascending' | 'descending',
+  fromDate: ?string,
+  toDate: ?string,
+
+  // @API TODO - Params "pending" for V2
+
+  // searchTerm: string,
+  // skip: number,
+  // limit: number,
+  // isFirstLoad: boolean,
+  // isRestoreActive: boolean,
+  // isRestoreCompleted: boolean,
+  // cachedTransactions: Array<WalletTransaction>,
 };
 
 export type GetTransactionFeeRequest = {

@@ -3,30 +3,23 @@ import type { RequestConfig } from '../../common/types';
 import type { Transactions } from '../types';
 import { request } from '../../utils/request';
 
-export type GetTxnHistoryParams = {
-  wallet_id: string,
-  account_index: number,
-  page: number,
-  per_page: number,
-  sort_by: string,
-  created_at: string,
+export type GetTransactionsQueryParams = {
+  start?: string,
+  end?: string,
+  order: 'ascending' | 'descending',
 };
-
-// const requestOptions = {
-//   returnMeta: true,
-// };
 
 export const getTransactionHistory = (
   config: RequestConfig,
-  { ...requestParams }: GetTxnHistoryParams
+  walletId: string,
+  { ...queryParams }: GetTransactionsQueryParams
 ): Promise<Transactions> =>
   request(
     {
       method: 'GET',
-      path: '/api/v1/transactions',
+      path: `/v2/wallets/${walletId}/transactions`,
       ...config,
     },
-    requestParams,
+    queryParams,
     null
-    // requestOptions
   );

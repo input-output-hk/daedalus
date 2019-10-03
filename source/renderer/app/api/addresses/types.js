@@ -23,9 +23,3 @@ export type GetAddressesResponse = {
   accountIndex: ?number,
   addresses: Array<WalletAddress>,
 };
-
-export type CreateAddressRequest = {
-  spendingPassword: ?string,
-  accountIndex: number,
-  walletId: string,
-};
