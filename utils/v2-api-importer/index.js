@@ -19,7 +19,6 @@ const walletNames = [
 const API_PORT = process.env.API_PORT || 8088
 
 async function main() {
-  console.debug('+++++ CALL ++++++');
   try {
     await Promise.all(mnemonics.map((mnemonic, index) => {
       const name = walletNames[index]
@@ -27,7 +26,6 @@ async function main() {
       return axios.post(`http://localhost:${API_PORT}/v2/wallets`, payload)
     }))
   } catch (e) {
-    console.debug('+++++ CALL - ERROR ++++++: ', e);
     console.log(e)
   }
 }
@@ -40,6 +38,5 @@ function generateImportPayload(mnemonic, name) {
     address_pool_gap: 20
   }
 }
-export default main;
 
-// main()
+main()
