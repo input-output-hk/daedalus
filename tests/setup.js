@@ -15,7 +15,7 @@ import {
   getTestNameFromTestFile,
   saveScreenshot,
 } from './common/e2e/steps/helpers';
-import { setNewsFeedIsOpen, resetTestNews } from './nodes/e2e/steps/newsfeed-steps';
+import { setNewsFeedIsOpen, resetTestNews } from './news/e2e/steps/newsfeed-steps';
 import { refreshClient } from './nodes/e2e/steps/helpers';
 import { TEST } from '../source/common/types/environment.types';
 import type { Daedalus } from './types';
