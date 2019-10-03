@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Implementes Applitools visual regression testing ([PR 1571](https://github.com/input-output-hk/daedalus/pull/1571))
+- Implemented Applitools visual regression testing ([PR 1571](https://github.com/input-output-hk/daedalus/pull/1571))
 
 ## 0.15.0
 
