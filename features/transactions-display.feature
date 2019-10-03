@@ -8,7 +8,7 @@ Feature: Display wallet transactions
 
   Background:
     Given I have completed the basic setup
-    And I have a "Imported Wallet" with funds
+    And I have a "Test Wallet" wallet with funds
     And I have the following wallets:
       | name         |
       | TargetWallet |
@@ -25,12 +25,12 @@ Feature: Display wallet transactions
   Scenario: More than five transactions
     Given I have made the following transactions:
       | source          | destination   | amount |
-      | Imported Wallet | TargetWallet  | 1      |
-      | Imported Wallet | TargetWallet  | 2      |
-      | Imported Wallet | TargetWallet  | 3      |
-      | Imported Wallet | TargetWallet  | 4      |
-      | Imported Wallet | TargetWallet  | 5      |
-      | Imported Wallet | TargetWallet  | 6      |
+      | Test Wallet | TargetWallet  | 1      |
+      | Test Wallet | TargetWallet  | 2      |
+      | Test Wallet | TargetWallet  | 3      |
+      | Test Wallet | TargetWallet  | 4      |
+      | Test Wallet | TargetWallet  | 5      |
+      | Test Wallet | TargetWallet  | 6      |
     When I am on the "TargetWallet" wallet "summary" screen
     Then I should see the following transactions:
       | type   | amount |

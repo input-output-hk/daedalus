@@ -17,14 +17,14 @@ Feature: Import Wallet via Sidebar
     And I select a valid wallet import key file
     And I click on the import wallet button in import wallet dialog
     Then I should not see the import wallet dialog anymore
-    And I should have newly created "Imported Wallet" wallet loaded
-    And I should be on the "Imported Wallet" wallet "summary" screen
+    And I should have newly created "Test Wallet" wallet loaded
+    And I should be on the "Test Wallet" wallet "summary" screen
     And I should see the restore status notification while import is running
     And I should not see the restore status notification once import is finished
 
   @skip
   Scenario: Wallet Already Imported Error
-    Given I have a "Imported Wallet" with funds
+    Given I have a "Test Wallet" wallet with funds
     When I try to import the wallet with funds again
     Then I see the import wallet dialog with an error that the wallet already exists
 
@@ -43,7 +43,7 @@ Feature: Import Wallet via Sidebar
       | Secret1234 | Secret1234      |
     And I click on the import wallet button in import wallet dialog
     Then I should not see the import wallet dialog anymore
-    And I should have newly created "Imported Wallet" wallet loaded
-    And I should be on the "Imported Wallet" wallet "summary" screen
+    And I should have newly created "Test Wallet" wallet loaded
+    And I should be on the "Test Wallet" wallet "summary" screen
     And I should see the restore status notification while import is running
     And I should not see the restore status notification once import is finished

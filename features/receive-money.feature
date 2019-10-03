@@ -3,7 +3,7 @@ Feature: Receive money
 
   Background:
     Given I have completed the basic setup
-    And I have a "Imported Wallet" with funds
+    And I have a "Test Wallet" wallet with funds
     And I have the following wallets:
       | name         |
       | TargetWallet |
@@ -13,7 +13,7 @@ Feature: Receive money
     And I generate 1 addresses
     And I have made the following transactions:
       | source          | destination   | amount |
-      | Imported Wallet | TargetWallet  | 1      |
+      | Test Wallet | TargetWallet  | 1      |
     Then I should see 2 addresses
     And I should see 1 used addresses
     When I click the ShowUsed switch

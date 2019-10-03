@@ -3,7 +3,7 @@
     "accounts": [{ "name": "Genesis account", "index": 2147483648 }],
     "walletSecretKey": "WIAwbsQgbz9X0WhvOnVeH+yRs7Ri93ESTdMspBHzeLnPUR6hLZL/NazfB40z2x8FZhLwNIt83DCuMR1nGG+ZqvsD/ouyzg3ec729fnrqEMO4A+qPTJmpiRgQZfYO2KDJDRxLtMyofXl90VVZOEke/QddnZ8CGHoR/lCemJgZuvzBpw==",
     "walletMeta": {
-      "name": "Imported Wallet",
+      "name": "Test Wallet",
       "assurance": "normal",
       "unit": "ADA"
     },

@@ -7,28 +7,10 @@ Feature: Send Money to Receiver
       | name   |
       | first  |
 
+  @watch
   Scenario: User Sends Money to Receiver
-    Given I have a "Imported Wallet" with funds
-    And I am on the "Imported Wallet" wallet "send" screen
-    And I can see the send form
-    When I fill out the send form with a transaction to "first" wallet:
-      | amount   |
-      | 0.000010 |
-    And the transaction fees are calculated
-    And I click on the next button in the wallet send form
-    And I see send money confirmation dialog
-    And I submit the wallet send form
-    Then I should be on the "Imported Wallet" wallet "summary" screen
-    And the latest transaction should show:
-      | title                   | amountWithoutFees |
-      | wallet.transaction.sent | -0.000010         |
-    And the balance of "first" wallet should be:
-      | balance  |
-      | 0.000010 |
-
-  Scenario: User Sends Money from wallet with spending password to Receiver
-    Given I have a "Imported Wallet" with funds and password
-    And I am on the "Imported Wallet" wallet "send" screen
+    Given I have a "Test Wallet" wallet with funds
+    And I am on the "Test Wallet" wallet "send" screen
     And I can see the send form
     When I fill out the send form with a transaction to "first" wallet:
       | amount   |
@@ -38,7 +20,7 @@ Feature: Send Money to Receiver
     And I see send money confirmation dialog
     And I enter wallet spending password in confirmation dialog "Secret1234"
     And I submit the wallet send form
-    Then I should be on the "Imported Wallet" wallet "summary" screen
+    Then I should be on the "Test Wallet" wallet "summary" screen
     And the latest transaction should show:
       | title                   | amountWithoutFees |
       | wallet.transaction.sent | -0.000010         |
