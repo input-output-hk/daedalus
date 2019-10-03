@@ -11,7 +11,6 @@ Changelog
 
 ### Features
 
-- Removed select dropdown arrow ([PR 1550](https://github.com/input-output-hk/daedalus/pull/1550))
 - Implemented "Newsfeed" feature ([PR 1570](https://github.com/input-output-hk/daedalus/pull/1570))
 - Implemented "Wallet recovery phrase verification" feature ([PR 1565](https://github.com/input-output-hk/daedalus/pull/1565))
 - Implemented new "Automated update" notification design ([PR 1491](https://github.com/input-output-hk/daedalus/pull/1491))
