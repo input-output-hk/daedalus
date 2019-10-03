@@ -27,3 +27,8 @@ import './staking/Staking.stories';
 
 // Common
 import './common/Widgets.stories';
+
+// Newsfeed
+import './news/NewsFeed.stories';
+import './news/IncidentOverlay.stories';
+import './news/AlertsOverlay.stories';

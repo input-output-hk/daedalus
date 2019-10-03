@@ -3,15 +3,49 @@ import React from 'react';
 import { text, boolean, number } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import moment from 'moment';
+import wordlist from 'bip39/wordlists/english';
 
 // Screens
 import { WalletAssuranceModeOptions } from '../../../../source/renderer/app/domains/Wallet';
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
 import DeleteWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
 import ExportWalletToFileDialog from '../../../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
+import WalletRecoveryPhraseStep1Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
+import WalletRecoveryPhraseStep2Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
+import WalletRecoveryPhraseStep3Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog';
+import WalletRecoveryPhraseStep4Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog';
 
 export const defaultProps = {
   isDialogOpen: () => {},
+  creationDate: new Date(),
+  recoveryPhraseVerificationDate: new Date(),
+  recoveryPhraseVerificationStatus: 'ok',
+  recoveryPhraseVerificationStatusType: 'alreadyChecked',
+  walletRecoveryPhraseStep1Container: (
+    <WalletRecoveryPhraseStep1Dialog
+      onClose={action('onClose')}
+      onContinue={action('onContinue')}
+    />
+  ),
+  walletRecoveryPhraseStep2Container: (
+    <WalletRecoveryPhraseStep2Dialog
+      suggestedMnemonics={wordlist}
+      mnemonicValidator={() => {}}
+      isVerifying={false}
+      onClose={action('onClose')}
+      onVerify={action('onVerify')}
+    />
+  ),
+  walletRecoveryPhraseStep3Container: (
+    <WalletRecoveryPhraseStep3Dialog onClose={action('onClose')} />
+  ),
+  walletRecoveryPhraseStep4Container: (
+    <WalletRecoveryPhraseStep4Dialog
+      onClose={action('onClose')}
+      onVerifyAgain={action('onVerifyAgain')}
+      openExternalLink={action('openExternalLink')}
+    />
+  ),
   activeField: null,
   assuranceLevels: [
     {

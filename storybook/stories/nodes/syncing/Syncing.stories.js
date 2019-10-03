@@ -19,5 +19,5 @@ storiesOf('Nodes|Syncing and Connecting', module)
   ))
   // ====== Stories ======
   .add('Default', DefaultSyncingConnectingStory)
-  .add('Connectivity Issues', ConnectivityIssuesSyncingConnectingStory)
-  .add('Sync Issues', SyncIssuesSyncingConnectingStory);
+  .add('Trouble Connecting', ConnectivityIssuesSyncingConnectingStory)
+  .add('Trouble Syncing', SyncIssuesSyncingConnectingStory);

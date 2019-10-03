@@ -5,6 +5,10 @@ import { action } from '@storybook/addon-actions';
 import StoryDecorator from '../_support/StoryDecorator';
 import WalletsWrapper from '../wallets/utils/WalletsWrapper';
 import SidebarWalletsMenu from '../../../source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu';
+import {
+  WalletRecoveryPhraseVerificationStatuses,
+  WalletRecoveryPhraseVerificationTypes,
+} from '../../../source/renderer/app/stores/WalletsStore';
 
 storiesOf('Navigation|Wallets Menu', module)
   .addDecorator(story => (
@@ -38,6 +42,12 @@ storiesOf('Navigation|Wallets Menu', module)
           isRestoreActive: false,
           restoreProgress: 0,
           isLegacy: false,
+          createdAt: new Date(),
+          recoveryPhraseVerificationDate: new Date(),
+          recoveryPhraseVerificationStatus:
+            WalletRecoveryPhraseVerificationStatuses.OK,
+          recoveryPhraseVerificationStatusType:
+            WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
         },
         {
           id: '2',
@@ -47,6 +57,12 @@ storiesOf('Navigation|Wallets Menu', module)
           isRestoreActive: false,
           restoreProgress: 0,
           isLegacy: false,
+          createdAt: new Date(),
+          recoveryPhraseVerificationDate: new Date(),
+          recoveryPhraseVerificationStatus:
+            WalletRecoveryPhraseVerificationStatuses.OK,
+          recoveryPhraseVerificationStatusType:
+            WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
         },
         {
           id: '3',
@@ -56,6 +72,12 @@ storiesOf('Navigation|Wallets Menu', module)
           isRestoreActive: false,
           restoreProgress: 0,
           isLegacy: false,
+          createdAt: new Date(),
+          recoveryPhraseVerificationDate: new Date(),
+          recoveryPhraseVerificationStatus:
+            WalletRecoveryPhraseVerificationStatuses.OK,
+          recoveryPhraseVerificationStatusType:
+            WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
         },
         {
           id: '4',
@@ -65,6 +87,12 @@ storiesOf('Navigation|Wallets Menu', module)
           isRestoreActive: false,
           restoreProgress: 0,
           isLegacy: false,
+          createdAt: new Date(),
+          recoveryPhraseVerificationDate: new Date(),
+          recoveryPhraseVerificationStatus:
+            WalletRecoveryPhraseVerificationStatuses.OK,
+          recoveryPhraseVerificationStatusType:
+            WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
         },
       ]}
       isActiveWallet={id => id === '2'}

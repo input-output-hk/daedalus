@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
 import StoryDecorator from '../../_support/StoryDecorator';
 import SidebarLayout from '../../../../source/renderer/app/components/layout/SidebarLayout';
 import TopBar from '../../../../source/renderer/app/components/layout/TopBar';
@@ -8,6 +9,7 @@ import NodeSyncStatusIcon from '../../../../source/renderer/app/components/widge
 import WalletTestEnvironmentLabel from '../../../../source/renderer/app/components/widgets/WalletTestEnvironmentLabel';
 import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
 import menuIconClosed from '../../../../source/renderer/app/assets/images/menu-ic.inline.svg';
+import NewsFeedIcon from '../../../../source/renderer/app/components/widgets/NewsFeedIcon';
 
 const topBarTestEnv = (
   <TopBar
@@ -24,6 +26,10 @@ const topBarTestEnv = (
       }}
       isProduction={false}
       isMainnet={false}
+    />
+    <NewsFeedIcon
+      onNewsFeedIconClick={action('onNewsFeedIconClick')}
+      showDot={false}
     />
   </TopBar>
 );
@@ -42,6 +48,10 @@ const topBarProductionEnv = (
       }}
       isProduction
       isMainnet
+    />
+    <NewsFeedIcon
+      onNewsFeedIconClick={action('onNewsFeedIconClick')}
+      showDot={false}
     />
   </TopBar>
 );

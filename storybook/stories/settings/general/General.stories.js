@@ -1,12 +1,11 @@
 // @flow
 import React from 'react';
 import { findKey } from 'lodash';
-import { boolean, text } from '@storybook/addon-knobs';
+import { boolean } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import SettingsWrapper from '../utils/SettingsWrapper';
 import { LANGUAGE_OPTIONS } from '../../../../source/renderer/app/config/profileConfig';
-import { ROUTES } from '../../../../source/renderer/app/routes-config';
 import { updateParam } from '../../../addons/DaedalusMenu';
 import { locales, themesIds } from '../../_support/config';
 
@@ -15,17 +14,13 @@ import GeneralSettings from '../../../../source/renderer/app/components/settings
 import DisplaySettings from '../../../../source/renderer/app/components/settings/categories/DisplaySettings';
 import SupportSettings from '../../../../source/renderer/app/components/settings/categories/SupportSettings';
 import TermsOfUseSettings from '../../../../source/renderer/app/components/settings/categories/TermsOfUseSettings';
-import SettingsMenu from '../../../../source/renderer/app/components/settings/menu/SettingsMenu';
+
+// Assets
+// $FlowFixMe
+import termsText from '../../../../source/renderer/app/i18n/locales/terms-of-use/mainnet/en-US.md';
 
 const getParamName = (obj, itemName): any =>
   Object.entries(obj).find((entry: [any, any]) => itemName === entry[1]);
-
-const isActiveItem = item => {
-  if (item === ROUTES.SETTINGS.GENERAL) {
-    return true;
-  }
-  return false;
-};
 
 /* eslint-disable consistent-return */
 storiesOf('Settings|General', module)
@@ -36,7 +31,7 @@ storiesOf('Settings|General', module)
   .add('Index', () => (
     <GeneralSettings
       languages={LANGUAGE_OPTIONS}
-      currentLocale="English"
+      currentLocale="en-US"
       onSelectLanguage={({ locale }) =>
         updateParam({
           param: 'localeName',
@@ -45,14 +40,6 @@ storiesOf('Settings|General', module)
       }
       isSubmitting={boolean('isSubmitting', false)}
     />
-  ))
-  .add('Menu', () => (
-    <div>
-      <SettingsMenu
-        onItemClick={action('onItemClick')}
-        isActiveItem={isActiveItem}
-      />
-    </div>
   ))
   .add('Select Theme', () => (
     <DisplaySettings
@@ -66,9 +53,7 @@ storiesOf('Settings|General', module)
     />
   ))
   .add('Terms of Use', () => (
-    <TermsOfUseSettings
-      localizedTermsOfUse={text('Terms os use:', 'Terms os use...')}
-    />
+    <TermsOfUseSettings localizedTermsOfUse={termsText} />
   ))
   .add('Support', () => (
     <SupportSettings

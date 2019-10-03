@@ -1,5 +1,4 @@
-import { Given, When, Then } from 'cucumber';
-import { expect } from 'chai';
+import { Given, Then } from 'cucumber';
 import { range } from 'lodash';
 import { generateAccountMnemonics } from '../../../../source/renderer/app/api/utils/mnemonics';
 import { isValidMnemonic } from '../../../../source/common/crypto/decrypt';
@@ -28,15 +27,17 @@ Given(
   'I generate and validate an unbound number of wallet recovery mnemonics',
   function() {
     let numberOfTestsExecuted = 0;
-    while (true) {
+    let generated = true;
+    while (generated) {
       const mnemonic = generateAccountMnemonics().join(' ');
       if (!isValidWalletRecoveryPhrase(mnemonic)) {
+        generated = false;
         throw new Error(`"${mnemonic}" is not valid`);
       }
       numberOfTestsExecuted++;
       process.stdout.clearLine();
       process.stdout.cursorTo(0);
-      process.stdout.write(numberOfTestsExecuted + ' mnemonics validated.');
+      process.stdout.write(`${numberOfTestsExecuted} mnemonics validated.`);
     }
   }
 );
