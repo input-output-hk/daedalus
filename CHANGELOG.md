@@ -1,11 +1,16 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Reorganized Storybook by domain ([PR 1537](https://github.com/input-output-hk/daedalus/pull/1537))
+
 ## 0.15.0
 
 ### Features
 
-- Reorganized Storybook by domain ([PR 1537](https://github.com/input-output-hk/daedalus/pull/1537))
 - Removed select dropdown arrow ([PR 1550](https://github.com/input-output-hk/daedalus/pull/1550))
 - Implemented "Newsfeed" feature ([PR 1570](https://github.com/input-output-hk/daedalus/pull/1570))
 - Implemented "Wallet recovery phrase verification" feature ([PR 1565](https://github.com/input-output-hk/daedalus/pull/1565))
