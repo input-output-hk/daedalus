@@ -106,7 +106,7 @@
     "mini-css-extract-plugin": "0.5.0",
     "minimist": "1.2.0",
     "mobx-react-devtools": "6.0.3",
-    "mobx-remotedev": "^0.3.6",
+    "mobx-remotedev": "0.3.6",
     "node-libs-browser": "2.1.0",
     "node-sass": "4.11.0",
     "nodemon": "1.18.9",

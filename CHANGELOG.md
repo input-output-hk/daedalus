@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Implemented Mobx DevTools along with React DevTools ([PR 1474](https://github.com/input-output-hk/daedalus/pull/1474))
+
 ## 0.15.0
 
 ### Features

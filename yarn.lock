@@ -9008,7 +9008,7 @@ mobx-react@5.4.2:
     hoist-non-react-statics "^3.0.0"
     react-lifecycles-compat "^3.0.2"
 
-mobx-remotedev@^0.3.6:
+mobx-remotedev@0.3.6:
   version "0.3.6"
   resolved "https://registry.yarnpkg.com/mobx-remotedev/-/mobx-remotedev-0.3.6.tgz#d61cd4f197604af321ce81fdbd47c8195393798b"
   dependencies:
