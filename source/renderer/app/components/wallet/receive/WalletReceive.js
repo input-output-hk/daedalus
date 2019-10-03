@@ -6,18 +6,11 @@ import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import QRCode from 'qrcode.react';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { Input } from 'react-polymorph/lib/components/Input';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
-import { submitOnEnter } from '../../../utils/form';
 import BorderedBox from '../../widgets/BorderedBox';
 import TinySwitch from '../../widgets/forms/TinySwitch';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import WalletAddress from '../../../domains/WalletAddress';
 import globalMessages from '../../../i18n/global-messages';
-import LocalizableError from '../../../i18n/LocalizableError';
 import { VirtualAddressesList } from './VirtualAddressesList';
 import styles from './WalletReceive.scss';
 import { Address } from './Address';
@@ -72,12 +65,7 @@ type Props = {
   walletAddress: string,
   isWalletAddressUsed: boolean,
   walletAddresses: Array<WalletAddress>,
-  onGenerateAddress: Function,
   onCopyAddress: Function,
-  isSidebarExpanded: boolean,
-  walletHasPassword: boolean,
-  isSubmitting: boolean,
-  error?: ?LocalizableError,
 };
 
 type State = {
@@ -94,45 +82,9 @@ export default class WalletReceive extends Component<Props, State> {
     showUsed: true,
   };
 
-  passwordField: Input;
-
   toggleUsedAddresses = () => {
     this.setState(prevState => ({ showUsed: !prevState.showUsed }));
   };
-
-  form = new ReactToolboxMobxForm(
-    {
-      fields: {
-        spendingPassword: {
-          type: 'password',
-          label: ' ',
-          placeholder: this.context.intl.formatMessage(
-            messages.spendingPasswordPlaceholder
-          ),
-          value: '',
-          validators: [
-            ({ field }) => {
-              if (this.props.walletHasPassword && field.value === '') {
-                return [
-                  false,
-                  this.context.intl.formatMessage(messages.fieldIsRequired),
-                ];
-              }
-              return [true];
-            },
-          ],
-        },
-      },
-    },
-    {
-      options: {
-        validationDebounceWait: 0, // Disable debounce to avoid error state after clearing
-        validateOnChange: true,
-        showErrorsOnBlur: false,
-        showErrorsOnClear: false,
-      },
-    }
-  );
 
   renderRow = (address: WalletAddress, index: number) => (
     <Address
@@ -145,24 +97,6 @@ export default class WalletReceive extends Component<Props, State> {
     />
   );
 
-  submit = () => {
-    this.form.submit({
-      onSuccess: form => {
-        const { walletHasPassword } = this.props;
-        const { spendingPassword } = form.values();
-        const password = walletHasPassword ? spendingPassword : null;
-        this.props.onGenerateAddress(password);
-        form.clear();
-      },
-      onError: () => {},
-    });
-
-    // eslint-disable-next-line no-unused-expressions
-    this.passwordField && this.passwordField.focus();
-  };
-
-  handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
-
   getFilteredAddresses = (
     walletAddresses: Array<WalletAddress>
   ): Array<WalletAddress> =>
@@ -171,15 +105,10 @@ export default class WalletReceive extends Component<Props, State> {
     );
 
   render() {
-    const { form } = this;
     const {
       walletAddress,
       walletAddresses,
       onCopyAddress,
-      isSidebarExpanded,
-      walletHasPassword,
-      isSubmitting,
-      error,
       isWalletAddressUsed,
     } = this.props;
     const { intl } = this.context;
@@ -189,43 +118,6 @@ export default class WalletReceive extends Component<Props, State> {
       styles.hash,
       isWalletAddressUsed ? styles.usedHash : null,
     ]);
-
-    const generateAddressWrapperClasses = classnames([
-      styles.generateAddressWrapper,
-      isSidebarExpanded ? styles.fullWidthOnSmallScreen : null,
-    ]);
-
-    const generateAddressButtonClasses = classnames([
-      'primary',
-      'generateAddressButton',
-      walletHasPassword ? styles.submitWithPasswordButton : styles.submitButton,
-      isSubmitting ? styles.spinning : null,
-    ]);
-
-    const passwordField = form.$('spendingPassword');
-    const generateAddressForm = (
-      <div className={generateAddressWrapperClasses}>
-        {walletHasPassword && (
-          <Input
-            className={styles.spendingPassword}
-            {...passwordField.bind()}
-            ref={input => {
-              this.passwordField = input;
-            }}
-            error={passwordField.error}
-            skin={InputSkin}
-            onKeyPress={this.handleSubmitOnEnter}
-          />
-        )}
-
-        <Button
-          className={generateAddressButtonClasses}
-          label={intl.formatMessage(messages.generateNewAddressButtonLabel)}
-          skin={ButtonSkin}
-          onClick={this.submit}
-        />
-      </div>
-    );
 
     // Get QRCode color value from active theme's CSS variable
     const qrCodeBackgroundColor = document.documentElement
@@ -272,12 +164,6 @@ export default class WalletReceive extends Component<Props, State> {
                 <div className={styles.instructionsText}>
                   {intl.formatMessage(messages.walletReceiveInstructions)}
                 </div>
-
-                {error ? (
-                  <p className={styles.error}>{intl.formatMessage(error)}</p>
-                ) : null}
-
-                {generateAddressForm}
               </div>
             </div>
 
