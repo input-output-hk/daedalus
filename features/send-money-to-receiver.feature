@@ -7,7 +7,6 @@ Feature: Send Money to Receiver
       | name   |
       | first  |
 
-  @watch
   Scenario: User Sends Money to Receiver
     Given I have a "Test Wallet" wallet with funds
     And I am on the "Test Wallet" wallet "send" screen
