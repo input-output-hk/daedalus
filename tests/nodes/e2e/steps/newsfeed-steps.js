@@ -64,7 +64,8 @@ async function prepareNewsOfType(
   );
 }
 
-function setNewsFeedIsOpen(client, flag) {
+// Set newsfeed to open before each newsfeed step
+export function setNewsFeedIsOpen(client, flag) {
   return client.execute(desiredState => {
     if (daedalus.stores.app.newsFeedIsOpen !== desiredState) {
       daedalus.actions.app.toggleNewsFeed.trigger();
@@ -72,8 +73,8 @@ function setNewsFeedIsOpen(client, flag) {
   }, flag);
 }
 
-// Reset the fake news
-function resetTestNews(client) {
+// Reset the fake news before each newsfeed step
+export function resetTestNews(client) {
   return client.executeAsync(done => {
     daedalus.api.ada.setFakeNewsFeedJsonForTesting({
       updatedAt: Date.now(),
@@ -82,13 +83,6 @@ function resetTestNews(client) {
     daedalus.stores.newsFeed.getNews().then(done);
   });
 }
-
-// SCENARIO HOOKS
-
-Before({ tags: '@newsfeed' }, async function() {
-  setNewsFeedIsOpen(this.client, false);
-  resetTestNews(this.client);
-});
 
 // GIVEN STEPS
 
@@ -142,6 +136,8 @@ Given('the latest alert will cover the screen', async function() {
   });
 });
 
+// WHEN STEPS
+
 When('I click on the newsfeed icon', async function() {
   await this.waitAndClick('.NewsFeedIcon_component');
 });
@@ -163,6 +159,8 @@ When(/^I click on the unread (\w+?) to expand it$/, async function(type) {
 When('I click on the alert in the newsfeed', async function() {
   await this.waitAndClick('.NewsItem_alert.NewsItem_isRead');
 });
+
+// THEN STEPS
 
 Then('i should see the newsfeed icon', async function() {
   await this.client.waitForVisible('.NewsFeedIcon_component');

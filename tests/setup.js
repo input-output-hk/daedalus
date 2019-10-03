@@ -15,6 +15,7 @@ import {
   getTestNameFromTestFile,
   saveScreenshot,
 } from './common/e2e/steps/helpers';
+import { setNewsFeedIsOpen, resetTestNews } from './nodes/e2e/steps/newsfeed-steps';
 import { refreshClient } from './nodes/e2e/steps/helpers';
 import { TEST } from '../source/common/types/environment.types';
 import type { Daedalus } from './types';
@@ -136,6 +137,11 @@ Before({ timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) {
 // adds context object to webdriver
 Before(function() {
   this.context = {};
+});
+
+Before({ tags: '@newsfeed' }, function() {
+  setNewsFeedIsOpen(this.client, false);
+  resetTestNews(this.client);
 });
 
 // adds waitAndClick method to webdriver

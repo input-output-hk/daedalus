@@ -1,4 +1,4 @@
-@e2e @watch
+@e2e
 Feature: Wallet Settings - Recovery Phrase Verification
 
   Background:
