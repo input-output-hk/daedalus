@@ -63,6 +63,7 @@ main opts@Options{..} = do
       , dcAppName = installDirectory installerConfig
       , dcPkgName = "org." <> (macPackageName installerConfig) <> ".pkg"
       }
+    signing = False
   print darwinConfig
 
   ver <- getBackendVersion oBackend
@@ -78,7 +79,9 @@ main opts@Options{..} = do
 
   tempInstaller <- makeInstaller opts darwinConfig appRoot pkg
 
-  signInstaller signingConfig tempInstaller opkg
+  case signing of
+    True -> signInstaller signingConfig tempInstaller opkg
+    False -> cp tempInstaller opkg
 
   run "rm" [tt tempInstaller]
   printf ("Generated "%fp%"\n") opkg
@@ -87,10 +90,13 @@ main opts@Options{..} = do
     echo $ "--test-installer passed, will test the installer for installability"
     procs "sudo" ["installer", "-dumplog", "-verbose", "-target", "/", "-pkg", tt opkg] empty
 
-  signed <- checkSignature opkg
-  case signed of
-    SignedOK -> pure ()
-    NotSigned -> rm opkg
+  case signing of
+    True -> do
+      signed <- checkSignature opkg
+      case signed of
+        SignedOK -> pure ()
+        NotSigned -> rm opkg
+    False -> pure ()
 
 makePostInstall :: Format a (Text -> a)
 makePostInstall = "#!/usr/bin/env bash\n" %

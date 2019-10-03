@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import classnames from 'classnames';
 
 import { Dropdown } from 'react-polymorph/lib/components/Dropdown';
 
@@ -14,14 +15,27 @@ type Props = {
   isActive: boolean,
   options?: Array<{ value: number | string, label: string }>,
   onChange: Function,
+  hasNotification?: boolean,
 };
 
 @observer
 export default class NavDropdown extends Component<Props> {
   render() {
-    const { label, icon, isActive, onChange, options, activeItem } = this.props;
+    const {
+      label,
+      icon,
+      isActive,
+      onChange,
+      options,
+      activeItem,
+      hasNotification,
+    } = this.props;
+    const componentStyles = classnames([
+      styles.component,
+      hasNotification ? styles.hasNotification : null,
+    ]);
     return (
-      <div className={styles.component}>
+      <div className={componentStyles}>
         <Dropdown
           label={
             <NavButton
@@ -29,6 +43,7 @@ export default class NavDropdown extends Component<Props> {
               icon={icon}
               isActive={isActive}
               onClick={() => {}}
+              hasNotification={hasNotification}
             />
           }
           onChange={({ value }) => onChange(value)}

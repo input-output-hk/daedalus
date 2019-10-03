@@ -7,7 +7,30 @@
     width: 100%;
   }
 
+  &.hasNotification {
+    :global {
+      .SimpleOptions_option:first-child span {
+        &:before {
+          background: var(--theme-button-attention-background-color);
+          border-radius: 50%;
+          content: '';
+          display: inline-block;
+          height: 8px;
+          margin-right: 8px;
+          width: 8px;
+        }
+      }
+    }
+  }
+
   :global {
+    .SimpleOptions_options {
+      left: auto !important;
+      position: absolute;
+      right: 0;
+      top: 57px !important;
+      width: 200px !important;
+    }
     .NavButton_component {
       cursor: default;
     }

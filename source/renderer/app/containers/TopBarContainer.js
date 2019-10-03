@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
+import NewsFeedIcon from '../components/widgets/NewsFeedIcon';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
 import type { InjectedProps } from '../types/injectedPropsType';
 import menuIconOpened from '../assets/images/menu-opened-ic.inline.svg';
@@ -19,7 +20,7 @@ export default class TopBarContainer extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar, app, networkStatus, wallets } = stores;
+    const { sidebar, app, networkStatus, wallets, newsFeed } = stores;
     const { active, isWalletRoute, hasAnyWallets } = wallets;
     const {
       currentRoute,
@@ -40,6 +41,9 @@ export default class TopBarContainer extends Component<Props> {
       <WalletTestEnvironmentLabel network={network} />
     ) : null;
 
+    const { unread } = newsFeed.newsFeedData;
+    const hasUnreadNews = unread.length > 0;
+
     return (
       <TopBar
         leftIcon={leftIcon}
@@ -47,9 +51,10 @@ export default class TopBarContainer extends Component<Props> {
         activeWallet={activeWallet}
       >
         {testnetLabel}
-        <NodeSyncStatusIcon
-          networkStatus={networkStatus}
-          isMainnet={isMainnet}
+        <NodeSyncStatusIcon networkStatus={networkStatus} />
+        <NewsFeedIcon
+          onNewsFeedIconClick={actions.app.toggleNewsFeed.trigger}
+          showDot={hasUnreadNews}
         />
       </TopBar>
     );
