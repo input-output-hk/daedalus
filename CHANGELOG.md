@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Reorganized tests directories by domain and added flow support to all tests JS files ([PR 1540](https://github.com/input-output-hk/daedalus/pull/1540))
+
 ## 0.15.0
 
 ### Features
@@ -39,7 +45,6 @@ Changelog
 - Theming improvements:
   - Improved scalability of theme management code ([PR 1502](https://github.com/input-output-hk/daedalus/pull/1502))
   - Renamed `themes:check` script and updated "Daedalus Theme Management" documentation ([PR 1525](https://github.com/input-output-hk/daedalus/pull/1525))
-- Reorganized tests directories by domain and added flow support to all tests JS files ([PR 1540](https://github.com/input-output-hk/daedalus/pull/1540))
 
 ### Specifications
 
