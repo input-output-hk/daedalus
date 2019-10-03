@@ -28,9 +28,7 @@ import {
 // const defaultWalletJSONFilePath = path.resolve(__dirname, '../support/default-wallet.json');
 // ^^ JSON wallet file import is currently not working due to missing JSON import V1 API endpoint
 
-Given(/^I have a "([^"]*)" wallet with funds$/, async function(
-  walletName
-) {
+Given(/^I have a "([^"]*)" wallet with funds$/, async function(walletName) {
   await importWalletWithFunds(this.client, { walletName });
   const wallet = await waitUntilWalletIsLoaded.call(this, walletName);
   addOrSetWalletsForScenario.call(this, wallet);

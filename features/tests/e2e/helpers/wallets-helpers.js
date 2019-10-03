@@ -73,32 +73,43 @@ export const addOrSetWalletsForScenario = function(wallet) {
   }
 };
 
-export const importWalletWithFunds = async (
-  client,
-  { walletName }
-) =>
-  client.executeAsync(
-   (name, done) => {
-      const axios = require('axios');
-      const API_PORT = process.env.API_PORT || 8088
-      const mnemonic = ['pass', 'proud', 'clarify', 'cargo', 'control', 'fancy', 'question', 'option', 'bring', 'recall', 'dolphin', 'meat', 'comic', 'version', 'pitch'];
-      const payload = {
-          name,
-          mnemonic_sentence: mnemonic,
-          passphrase: 'Secret1234',
-          address_pool_gap: 20
-        }
-      axios.post(`http://localhost:${API_PORT}/v2/wallets`, payload)
-       .then(() =>
-         daedalus.stores.wallets
-           .refreshWalletsData()
-           .then(done)
-           .catch(error => done(error))
-       )
-       .catch(error => done(error));
-    },
-    walletName,
-  );
+export const importWalletWithFunds = async (client, { walletName }) =>
+  client.executeAsync((name, done) => {
+    const axios = require('axios');
+    const API_PORT = process.env.API_PORT || 8088;
+    const mnemonic = [
+      'pass',
+      'proud',
+      'clarify',
+      'cargo',
+      'control',
+      'fancy',
+      'question',
+      'option',
+      'bring',
+      'recall',
+      'dolphin',
+      'meat',
+      'comic',
+      'version',
+      'pitch',
+    ];
+    const payload = {
+      name,
+      mnemonic_sentence: mnemonic,
+      passphrase: 'Secret1234',
+      address_pool_gap: 20,
+    };
+    axios
+      .post(`http://localhost:${API_PORT}/v2/wallets`, payload)
+      .then(() =>
+        daedalus.stores.wallets
+          .refreshWalletsData()
+          .then(done)
+          .catch(error => done(error))
+      )
+      .catch(error => done(error));
+  }, walletName);
 
 const createWalletsAsync = async (table, context) => {
   const result = await context.client.executeAsync((wallets, done) => {
