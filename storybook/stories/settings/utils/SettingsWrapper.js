@@ -9,7 +9,7 @@ import SettingsLayout from '../../../../source/renderer/app/components/settings/
 import SettingsMenu from '../../../../source/renderer/app/components/settings/menu/SettingsMenu';
 
 const pageNames = {
-  '/settings/general': 'General',
+  '/settings/index': 'General',
   '/settings/display': 'Themes',
   '/settings/terms-of-use': 'Terms of use',
   '/settings/support': 'Support',
@@ -25,6 +25,7 @@ export default (story: Object, context: Object) => {
       isActiveItem={item => {
         const itemName = context.story
           .toLocaleLowerCase()
+          .replace('index', 'general')
           .replace('themes', 'display')
           .replace(/ /g, '-');
         return item === `/settings/${itemName}`;

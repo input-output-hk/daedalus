@@ -28,7 +28,7 @@ storiesOf('Settings|General', module)
 
   // ====== Stories ======
 
-  .add('Index', () => (
+  .add('General', () => (
     <GeneralSettings
       languages={LANGUAGE_OPTIONS}
       currentLocale="en-US"
@@ -41,7 +41,7 @@ storiesOf('Settings|General', module)
       isSubmitting={boolean('isSubmitting', false)}
     />
   ))
-  .add('Select Theme', () => (
+  .add('Themes', () => (
     <DisplaySettings
       theme="DarkBlue"
       selectTheme={({ theme }) => {
