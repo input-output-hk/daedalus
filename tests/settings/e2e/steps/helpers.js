@@ -50,7 +50,6 @@ export const languageSelectionHelpers = {
     client: WebdriverClient,
     { language }: { language: string } = {}
   ) => {
-    await languageSelectionHelpers.waitForVisible(client);
     await i18nHelpers.setActiveLanguage(client, { language });
     await languageSelectionHelpers.waitForVisible(client, { isHidden: true });
   },
@@ -81,7 +80,6 @@ export const termsOfUseHelpers = {
   ) =>
     client.waitForVisible(TERMS_OF_USE_FORM, null, isHidden),
   acceptTerms: async (client: WebdriverClient) => {
-    await termsOfUseHelpers.waitForVisible(client);
     await client.execute(() => {
       daedalus.actions.profile.acceptTermsOfUse.trigger();
     });
