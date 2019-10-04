@@ -58,8 +58,7 @@ const decorator = (story, context) => {
           activeSidebarCategory={activeSidebarCategory}
           storyName={context.story}
         >
-          {context.parameters.id === 'countdown' ||
-          context.parameters.id === 'wizard' ? (
+          {context.parameters.id === 'countdown' ? (
             storyWithKnobs
           ) : (
             <StakingWithNavigation
