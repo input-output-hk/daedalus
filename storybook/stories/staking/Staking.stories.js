@@ -39,47 +39,45 @@ const pageNames = {
   info: 'Info',
 };
 
-storiesOf('Staking | Staking', module)
-  .addDecorator((story, context) => {
-    const storyWithKnobs = withKnobs(story, context);
-    const getItemFromContext = () => context.parameters.id;
-    let activeSidebarCategory = null;
+const decorator = (story, context) => {
+  const storyWithKnobs = withKnobs(story, context);
+  const getItemFromContext = () => context.parameters.id;
+  let activeSidebarCategory = null;
 
-    if (
-      context.parameters.id === 'countdown' ||
-      context.parameters.id === 'stake-pools-tooltip'
-    ) {
-      activeSidebarCategory =
-        CATEGORIES_BY_NAME.STAKING_DELEGATION_COUNTDOWN.route;
-    } else {
-      activeSidebarCategory = CATEGORIES_BY_NAME.STAKING.route;
-    }
+  if (context.parameters.id === 'countdown') {
+    activeSidebarCategory =
+      CATEGORIES_BY_NAME.STAKING_DELEGATION_COUNTDOWN.route;
+  } else {
+    activeSidebarCategory = CATEGORIES_BY_NAME.STAKING.route;
+  }
 
-    return (
-      <StoryDecorator>
-        <StoryProvider>
-          <StoryLayout
-            activeSidebarCategory={activeSidebarCategory}
-            storyName={context.story}
-          >
-            {context.parameters.id === 'countdown' ? (
-              storyWithKnobs
-            ) : (
-              <StakingWithNavigation
-                isActiveNavItem={item => item === getItemFromContext()}
-                activeItem={getItemFromContext()}
-                onNavItemClick={linkTo('Staking', item => pageNames[item])}
-              >
-                {storyWithKnobs}
-              </StakingWithNavigation>
-            )}
-          </StoryLayout>
-        </StoryProvider>
-      </StoryDecorator>
-    );
-  })
-  // ====== Stories ======
+  return (
+    <StoryDecorator>
+      <StoryProvider>
+        <StoryLayout
+          activeSidebarCategory={activeSidebarCategory}
+          storyName={context.story}
+        >
+          {context.parameters.id === 'countdown' ||
+          context.parameters.id === 'wizard' ? (
+            storyWithKnobs
+          ) : (
+            <StakingWithNavigation
+              isActiveNavItem={item => item === getItemFromContext()}
+              activeItem={getItemFromContext()}
+              onNavItemClick={linkTo('Staking', item => pageNames[item])}
+            >
+              {storyWithKnobs}
+            </StakingWithNavigation>
+          )}
+        </StoryLayout>
+      </StoryProvider>
+    </StoryDecorator>
+  );
+};
 
+storiesOf('Decentralization | Countdown', module)
+  .addDecorator(decorator)
   .add(
     pageNames.countdown,
     () => (
@@ -94,7 +92,11 @@ storiesOf('Staking | Staking', module)
       </div>
     ),
     { id: 'countdown' }
-  )
+  );
+
+storiesOf('Decentralization | Staking', module)
+  .addDecorator(decorator)
+  // ====== Stories ======
 
   .add(pageNames['delegation-center'], StakingDelegationCenterStory, {
     id: 'delegation-center',
@@ -128,5 +130,10 @@ storiesOf('Staking | Staking', module)
     {
       id: 'info',
     }
-  )
-  .add('Delegation Wizard', () => <StakingDelegationSteps />);
+  );
+
+storiesOf('Decentralization | Wizard', module).add(
+  'Delegation Wizard',
+  () => <StakingDelegationSteps />,
+  { id: 'wizard' }
+);

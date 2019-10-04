@@ -4,14 +4,14 @@ import { storiesOf } from '@storybook/react';
 import { boolean } from '@storybook/addon-knobs';
 
 // Assets and helpers
-import WalletsWrapper from '../utils/WalletsWrapper';
+// import WalletsWrapper from '../utils/WalletsWrapper';
 
 // Screens
 import WalletAdd from '../../../../source/renderer/app/components/wallet/WalletAdd';
 
 /* eslint-disable consistent-return */
 storiesOf('Wallets|Actions', module)
-  .addDecorator(WalletsWrapper)
+  // .addDecorator(WalletsWrapper)
 
   // ====== Stories ======
 

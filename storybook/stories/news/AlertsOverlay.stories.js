@@ -5,7 +5,7 @@ import { action } from '@storybook/addon-actions';
 import StoryDecorator from '../_support/StoryDecorator';
 import AlertsOverlay from '../../../source/renderer/app/components/news/AlertsOverlay';
 
-storiesOf('NewsFeed', module)
+storiesOf('NewsFeed|AlertsOverlay', module)
   .addDecorator(story => (
     <StoryDecorator>
       {story([

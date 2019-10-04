@@ -112,7 +112,7 @@ const news = [
 
 const newsCollection = new News.NewsCollection(news);
 
-storiesOf('NewsFeed', module)
+storiesOf('NewsFeed|NewsFeed', module)
   .addDecorator(story => (
     <StoryDecorator>{story(newsCollection)}</StoryDecorator>
   ))

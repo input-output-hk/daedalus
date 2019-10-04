@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react';
 import StoryDecorator from '../_support/StoryDecorator';
 import IncidentOverlay from '../../../source/renderer/app/components/news/IncidentOverlay';
 
-storiesOf('NewsFeed', module)
+storiesOf('NewsFeed|IncidentOverlay', module)
   .addDecorator(story => (
     <StoryDecorator>
       {story({
