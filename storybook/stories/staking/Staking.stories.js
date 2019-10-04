@@ -58,7 +58,8 @@ const decorator = (story, context) => {
           activeSidebarCategory={activeSidebarCategory}
           storyName={context.story}
         >
-          {context.parameters.id === 'countdown' ? (
+          {context.parameters.id === 'countdown' ||
+          context.parameters.id === 'wizard' ? (
             storyWithKnobs
           ) : (
             <StakingWithNavigation
@@ -131,8 +132,6 @@ storiesOf('Decentralization | Staking', module)
     }
   );
 
-storiesOf('Decentralization | Wizard', module).add(
-  'Delegation Wizard',
-  () => <StakingDelegationSteps />,
-  { id: 'wizard' }
-);
+storiesOf('Decentralization | Wizard', module)
+  .addDecorator(decorator)
+  .add('Delegation Wizard', () => <StakingDelegationSteps />, { id: 'wizard' });
