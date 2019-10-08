@@ -9,23 +9,31 @@ import { boolean } from '@storybook/addon-knobs';
 // Screens
 import WalletAdd from '../../../../source/renderer/app/components/wallet/WalletAdd';
 
+const wrapperStyles = {
+  alignItems: 'center',
+  display: 'flex',
+  flexDirection: 'column',
+  height: '100%',
+  justifyContent: 'center',
+};
 /* eslint-disable consistent-return */
 storiesOf('Wallets|Actions', module)
   // .addDecorator(WalletsWrapper)
 
   // ====== Stories ======
-
   .add('Add', () => (
-    <WalletAdd
-      onCreate={() => {}}
-      onRestore={() => {}}
-      onImportFile={() => {}}
-      isRestoreActive={boolean('isRestoreActive', false)}
-      isMainnet={boolean('isMainnet', false)}
-      isTestnet={boolean('isTestnet', false)}
-      isMaxNumberOfWalletsReached={boolean(
-        'isMaxNumberOfWalletsReached',
-        false
-      )}
-    />
+    <div style={wrapperStyles}>
+      <WalletAdd
+        onCreate={() => {}}
+        onRestore={() => {}}
+        onImportFile={() => {}}
+        isRestoreActive={boolean('isRestoreActive', false)}
+        isMainnet={boolean('isMainnet', false)}
+        isTestnet={boolean('isTestnet', false)}
+        isMaxNumberOfWalletsReached={boolean(
+          'isMaxNumberOfWalletsReached',
+          false
+        )}
+      />
+    </div>
   ));
