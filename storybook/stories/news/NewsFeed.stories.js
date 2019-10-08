@@ -112,14 +112,14 @@ const news = [
 
 const newsCollection = new News.NewsCollection(news);
 
-storiesOf('NewsFeed|NewsFeed', module)
+storiesOf('News|NewsFeed', module)
   .addDecorator(story => (
     <StoryDecorator>{story(newsCollection)}</StoryDecorator>
   ))
 
   // ====== Stories ======
 
-  .add('NewsFeed - no news items fetched from server', () => (
+  .add('Unreachable', () => (
     <div>
       <NewsFeed
         onGoToRoute={action('onGoToRoute')}
@@ -135,7 +135,7 @@ storiesOf('NewsFeed|NewsFeed', module)
     </div>
   ))
 
-  .add('NewsFeed - newsfeed empty', () => (
+  .add('Empty', () => (
     <div>
       <NewsFeed
         onGoToRoute={action('onGoToRoute')}
@@ -151,7 +151,7 @@ storiesOf('NewsFeed|NewsFeed', module)
     </div>
   ))
 
-  .add('NewsFeed - loading', () => (
+  .add('Fetching', () => (
     <div>
       <NewsFeed
         onGoToRoute={action('onGoToRoute')}
@@ -167,7 +167,7 @@ storiesOf('NewsFeed|NewsFeed', module)
     </div>
   ))
 
-  .add('NewsFeed', () => (
+  .add('Fetched', () => (
     <div>
       <NewsFeed
         onGoToRoute={action('onGoToRoute')}
