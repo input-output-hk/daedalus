@@ -24,6 +24,10 @@ import type { GetAddressesResponse } from '../api/addresses/types';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 import type LocalizableError from '../i18n/LocalizableError';
+import type {
+  WalletLocalData,
+  WalletsLocalData,
+} from '../api/utils/localStorage';
 /* eslint-disable consistent-return */
 
 export const WalletRecoveryPhraseVerificationStatuses = {
