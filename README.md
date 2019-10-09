@@ -27,6 +27,23 @@ The result can be found at `installers/csl-daedalus/daedalus-*.pkg`.
 
 [cache]: https://github.com/input-output-hk/cardano-sl/blob/3dbe220ae108fa707b55c47e689ed794edf5f4d4/docs/how-to/build-cardano-sl-and-daedalus-from-source-code.md#nix-build-mode-recommended
 
+### Bumping dependency repositories
+
+Dependency repositories can be bumped using `niv`. This tool is provided running
+`nix-shell -A devops`
+
+#### Basic niv usage
+
+* `niv update iohk-nix`: update iohk-nix to latest of current branch
+* `niv update iohk-nix -b my-branch`: update iohk-nix to latest of `my-branch`
+* `niv show`: list all dependencies managed with niv
+
+niv manages dependencies for all dependent repositories including:
+
+* cardano-wallet
+* iohk-nix
+* nixpkgs
+
 #### Pure Nix installer build
 
 This will use nix to build a Linux installer. Using the [IOHK binary

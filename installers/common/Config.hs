@@ -26,13 +26,11 @@ import qualified Control.Exception                as Ex
 
 import           Data.Bool                           (bool)
 import qualified Data.ByteString                  as BS
-import qualified Data.ByteString.Char8            as BS8
 import qualified Data.Map                         as Map
 import           Data.Maybe
 import           Data.Optional                       (Optional)
 import           Data.Semigroup                      ((<>))
 import qualified Data.Text                        as T
-import qualified Data.Text.Lazy                   as LT
 import qualified Data.Yaml                        as YAML
 
 import qualified Dhall.JSON                       as Dhall
@@ -149,7 +147,7 @@ dhallTopExpr dhallRoot cfg os cluster
   where comp x = dhallRoot <>"/"<> lshowText x <>".dhall"
 
 getInstallerConfig :: Text -> OS -> Cluster -> IO InstallerConfig
-getInstallerConfig dhallRoot os cluster = Dhall.input Dhall.auto (LT.fromStrict topexpr)
+getInstallerConfig dhallRoot os cluster = Dhall.input Dhall.auto topexpr
     where
         topexpr = format (s%" "%s%" ("%s%" "%s%")") (dhallRoot <> "/installer.dhall") (comp cluster) (comp os) (comp cluster)
         comp x = dhallRoot <>"/"<> lshowText x <>".dhall"
@@ -159,7 +157,7 @@ forConfigValues :: Text -> OS -> Cluster -> (Config -> YAML.Value -> IO a) -> IO
 forConfigValues dhallRoot os cluster action = do
   sequence_ [ let topExpr = dhallTopExpr dhallRoot cfg os cluster
               in action cfg =<<
-                 (handle $ Dhall.codeToValue (BS8.pack $ T.unpack topExpr) topExpr)
+                 (handle $ Dhall.codeToValue Dhall.NoConversion Dhall.ForbidWithinJSON Nothing topExpr)
             | cfg     <- enumFromTo minBound maxBound ]
 
 checkAllConfigs :: Text -> IO ()

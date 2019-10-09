@@ -1,12 +1,7 @@
-let
-  system = builtins.currentSystem; # todo
-in
 { target ? builtins.currentSystem
-#system ? builtins.currentSystem
 , nodeImplementation ? "jormungandr"
 , localLib ? import ./lib.nix { inherit nodeImplementation; }
 , config ? {}
-, pkgs ? localLib.iohkNix.getPkgs { inherit system config; }
 , cluster ? "mainnet"
 , version ? "versionNotSet"
 , buildNum ? null
@@ -17,45 +12,22 @@ in
 }:
 
 let
+  systemTable = {
+    x86_64-windows = builtins.currentSystem;
+  };
+  crossSystemTable = {
+    x86_64-windows = lib.systems.examples.mingwW64;
+  };
+  system = systemTable.${target} or target;
+  pkgs = localLib.iohkNix.getPkgs { inherit system config; };
+  crossSystem = crossSystemTable.${target} or null;
   # TODO, nsis cant cross-compile with the nixpkgs daedalus currently uses
-  nsisNixPkgs = import (pkgs.fetchFromGitHub {
-    owner = "nixos";
-    repo = "nixpkgs";
-    rev = "be445a9074f";
-    sha256 = "15dc7gdspimavcwyw9nif4s59v79gk18rwsafylffs9m1ld2dxwa";
-  }) {};
+  nsisNixPkgs = import localLib.sources.nixpkgs-nsis {};
   installPath = ".daedalus";
   lib = pkgs.lib;
-  cardanoSL = localLib.cardanoSL { inherit target config; };
-  cardanoJSON = builtins.fromJSON (builtins.readFile ./cardano-sl-src.json);
-  cardanoSrc = pkgs.fetchFromGitHub {
-    owner = "input-output-hk";
-    repo = "cardano-sl";
-    rev = cardanoJSON.rev;
-    sha256 = cardanoJSON.sha256;
-  };
+  cardanoSL = localLib.cardanoSL { inherit target; };
   needSignedBinaries = (signingKeys != null) || (HSMServer != null);
   buildNumSuffix = if buildNum == null then "" else ("-${builtins.toString buildNum}");
-  cleanSourceFilter = with pkgs.stdenv;
-    name: type: let baseName = baseNameOf (toString name); in ! (
-      # Filter out .git repo
-      (type == "directory" && baseName == ".git") ||
-      # Filter out editor backup / swap files.
-      lib.hasSuffix "~" baseName ||
-      builtins.match "^\\.sw[a-z]$" baseName != null ||
-      builtins.match "^\\..*\\.sw[a-z]$" baseName != null ||
-
-      # Filter out locally generated/downloaded things.
-      baseName == "dist" ||
-      baseName == "node_modules" ||
-
-      # Filter out the files which I'm editing often.
-      lib.hasSuffix ".nix" baseName ||
-      lib.hasSuffix ".dhall" baseName ||
-      lib.hasSuffix ".hs" baseName ||
-      # Filter out nix-build result symlinks
-      (type == "symlink" && lib.hasPrefix "result" baseName)
-    );
   throwSystem = throw "Unsupported system: ${pkgs.stdenv.hostPlatform.system}";
   ghcWithCardano = cardanoSL.haskellPackages.ghcWithPackages (ps: [ ps.cardano-sl ps.cardano-sl-x509 ]);
   packages = self: {
@@ -64,6 +36,7 @@ let
 
     # a cross-compiled fastlist for the ps-list package
     fastlist = pkgs.pkgsCross.mingwW64.callPackage ./fastlist.nix {};
+    wine = pkgs.wine.override { wineBuild = "wine32"; };
 
     dlls = pkgs.fetchurl {
       url = "https://s3.eu-central-1.amazonaws.com/daedalus-ci-binaries/DLLs.zip";
@@ -154,7 +127,7 @@ let
       cp daedalus.nsi uninstaller.nsi launcher-config.yaml wallet-topology.yaml $out/
     '';
 
-    unsignedUninstaller = pkgs.runCommand "uninstaller" { buildInputs = [ self.nsis pkgs.winePackages.minimal ]; } ''
+    unsignedUninstaller = pkgs.runCommand "uninstaller" { buildInputs = [ self.nsis self.wine ]; } ''
       mkdir home
       export HOME=$(realpath home)
 
@@ -236,7 +209,7 @@ let
 
     ## TODO: move to installers/nix
     hsDaedalusPkgs = import ./installers {
-      inherit (cardanoSL) daedalus-bridge;
+      #inherit (cardanoSL) daedalus-bridge;
       inherit localLib system;
     };
     daedalus-installer = pkgs.haskell.lib.justStaticExecutables self.hsDaedalusPkgs.daedalus-installer;
@@ -252,7 +225,7 @@ let
       apiVersion = cardanoSL.daedalus-bridge.version;
     };
     rawapp-win64 = self.rawapp.override { win64 = true; };
-    source = builtins.filterSource cleanSourceFilter ./.;
+    source = builtins.filterSource localLib.cleanSourceFilter ./.;
     yaml2json = pkgs.haskell.lib.disableCabalFlag pkgs.haskellPackages.yaml "no-exe";
 
     electron4 = pkgs.callPackage ./installers/nix/electron.nix {};
