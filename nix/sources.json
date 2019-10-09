@@ -1,0 +1,98 @@
+{
+    "cardano-sl": {
+        "branch": "develop",
+        "description": "Cryptographic currency implementing Ouroboros PoS protocol",
+        "homepage": "",
+        "owner": "input-output-hk",
+        "repo": "cardano-sl",
+        "rev": "1a792d7cd0f0c93a0f0c28f66372bce3c3808dbd",
+        "sha256": "1vk71zn9bnkgkhgcyj59wzrp28crjwcd0lgnm013mhzpvxycgn61",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/cardano-sl/archive/1a792d7cd0f0c93a0f0c28f66372bce3c3808dbd.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "cardano-wallet": {
+        "branch": "master",
+        "description": "Official Wallet Backend & API for Cardano decentralized",
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "cardano-wallet",
+        "rev": "b1da28896263ee2f237869109e5a6f8efdd554ea",
+        "sha256": "0rd0mhzlg32ajm7nyylbzq3r3q06p8lifagjkv5ifb0y89ncc86r",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/b1da28896263ee2f237869109e5a6f8efdd554ea.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "gitignore": {
+        "branch": "master",
+        "description": "Nix function for filtering local git sources",
+        "homepage": "",
+        "owner": "hercules-ci",
+        "repo": "gitignore",
+        "rev": "f9e996052b5af4032fe6150bba4a6fe4f7b9d698",
+        "sha256": "0jrh5ghisaqdd0vldbywags20m2cxpkbbk5jjjmwaw0gr8nhsafv",
+        "type": "tarball",
+        "url": "https://github.com/hercules-ci/gitignore/archive/f9e996052b5af4032fe6150bba4a6fe4f7b9d698.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "iohk-nix": {
+        "branch": "niv-snappy-choco",
+        "description": "nix scripts shared across projects",
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "iohk-nix",
+        "rev": "c8cdcd957186b04eaa66765ef3fbce3fa4e5c234",
+        "sha256": "1gn1mhkc2ha774ri1x40rwr6n8rdnx0vw1npa7rb8hiwrnj1yrbv",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/iohk-nix/archive/c8cdcd957186b04eaa66765ef3fbce3fa4e5c234.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "js-chain-libs": {
+        "branch": "master",
+        "description": "chain-libs javascript SDK",
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "js-chain-libs",
+        "rev": "1f1bbc5557ed5356a5fac89a3224d3449ef98ba3",
+        "sha256": "14v7zm2h3v4vb7f15i4mk6f5jsdd6akqv2pzqmj52hprh076p0hd",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/js-chain-libs/archive/1f1bbc5557ed5356a5fac89a3224d3449ef98ba3.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "niv": {
+        "branch": "iohk",
+        "description": "Easy dependency management for Nix projects",
+        "homepage": "https://github.com/nmattia/niv",
+        "owner": "input-output-hk",
+        "repo": "niv",
+        "rev": "4229fbcf62997467c34283a2f353702359e78e5a",
+        "sha256": "1y1h6aj0rxrrhvp9jpr6xw3zsa1l8ac25ng4xzjskr5kg620pxqr",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/niv/archive/4229fbcf62997467c34283a2f353702359e78e5a.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs": {
+        "branch": "nixos-19.09",
+        "description": "A read-only mirror of NixOS/nixpkgs tracking the released channels. Send issues and PRs to",
+        "homepage": "https://github.com/NixOS/nixpkgs",
+        "owner": "NixOS",
+        "repo": "nixpkgs-channels",
+        "rev": "88f32cca5a47b788556c00c7057d09ef083d3bfb",
+        "sha256": "0my931ilq66983bfr9k4s6j911a3mgwqmjbyd45w54xb68bcirba",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs-channels/archive/88f32cca5a47b788556c00c7057d09ef083d3bfb.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs-nsis": {
+        "branch": "nsis",
+        "description": "A read-only mirror of NixOS/nixpkgs tracking the released channels. Send issues and PRs to",
+        "homepage": "https://github.com/NixOS/nixpkgs",
+        "owner": "input-output-hk",
+        "repo": "nixpkgs",
+        "rev": "be445a9074f139d63e704fa82610d25456562c3d",
+        "sha256": "15dc7gdspimavcwyw9nif4s59v79gk18rwsafylffs9m1ld2dxwa",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/nixpkgs/archive/be445a9074f139d63e704fa82610d25456562c3d.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    }
+}
