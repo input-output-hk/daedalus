@@ -20,7 +20,7 @@ import './staking/Staking.stories';
 // Settings
 import './settings';
 
-// Newsfeed
+// News
 import './news/NewsFeed.stories';
 import './news/IncidentOverlay.stories';
 import './news/AlertsOverlay.stories';
