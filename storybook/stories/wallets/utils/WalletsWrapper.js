@@ -13,6 +13,7 @@ export default (story, context) => {
   const getItemFromContext = () =>
     context.story
       .replace('Wallet UTXO distribution', 'utxo')
+      .replace('Wallet Summary', 'summary')
       .toLocaleLowerCase();
 
   return (
