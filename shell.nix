@@ -114,7 +114,7 @@ let
       ${localLib.optionalString pkgs.stdenv.isLinux "export XDG_DATA_HOME=$HOME/.local/share"}
       cp -f ${daedalusPkgs.iconPath.${cluster}.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
 
-      # These links will only occur to binaries that exist for the 
+      # These links will only occur to binaries that exist for the
       # specific build config
       ln -svf $(type -P jormungandr)
       ln -svf $(type -P cardano-wallet-jormungandr)
@@ -183,4 +183,22 @@ let
       exit 0
     '';
   });
-in daedalusShell // { inherit fixYarnLock buildShell; }
+  devops = pkgs.stdenv.mkDerivation {
+    name = "devops-shell";
+    buildInputs = let
+      inherit (localLib.iohkNix) niv;
+      inherit (localLib) cardanoWallet jormungandr jcli;
+    in [ niv cardanoWallet jormungandr jcli ];
+    shellHook = ''
+      echo "DevOps Tools" \
+      | ${pkgs.figlet}/bin/figlet -f banner -c \
+      | ${pkgs.lolcat}/bin/lolcat
+
+      echo "NOTE: you may need to export GITHUB_TOKEN if you hit rate limits with niv"
+      echo "Commands:
+        * niv update <package> - update package
+
+      "
+    '';
+  };
+in daedalusShell // { inherit fixYarnLock buildShell devops; }
