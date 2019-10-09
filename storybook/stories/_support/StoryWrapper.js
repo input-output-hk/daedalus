@@ -60,7 +60,7 @@ export default class StoryWrapper extends Component<Props, State> {
         <IntlProvider
           {...{ locale, key: locale, messages: translations[locale] }}
         >
-          <Story />
+          <Story osName={this.state.osName} locale={locale} />
         </IntlProvider>
       </Fragment>
     );
