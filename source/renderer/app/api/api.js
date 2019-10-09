@@ -1,5 +1,5 @@
 // @flow
-import { split, get, size } from 'lodash';
+import { split, get, size, includes } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -554,6 +554,11 @@ export default class AdaApi {
         // @API TODO - Change error message when fee calculation fails regarding to not enough fragmented UTXO
         //           - Also check if error.code is correct
         throw new NotEnoughFundsForTransactionError();
+      } else if (
+        error.code === 'bad_request' &&
+        includes(error.message, 'Unable to decode Address')
+      ) {
+        throw new Error('INVALID_ADDRESS');
       } else {
         throw new GenericApiError();
       }

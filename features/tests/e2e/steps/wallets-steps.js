@@ -137,10 +137,6 @@ When(/^I enter spending password "([^"]*)"$/, function(password) {
   );
 });
 
-When(/^I click on the "Generate new address" button$/, function() {
-  return this.client.click('.generateAddressButton');
-});
-
 When(
   /^I click on the restore wallet button on the add wallet page$/,
   function() {

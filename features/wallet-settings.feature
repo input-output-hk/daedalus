@@ -56,7 +56,7 @@ Feature: Wallet Settings
     And I should see the "change" wallet password dialog
     And I change wallet password:
       | currentPassword | password      | repeatedPassword |
-      | Secret1234      | 新しい秘密1234  | 新しい秘密1234     |
+      | Secret1234      | 新しい秘密12345  | 新しい秘密12345     |
     And I submit the wallet password dialog
     Then I should not see the change password dialog anymore
 

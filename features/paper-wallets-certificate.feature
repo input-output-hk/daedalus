@@ -1,4 +1,6 @@
-@e2e
+@e2e @skip
+# @API TODO - We don't have API endpoint for paper wallets and whole feature existence needs to be discussed
+
 Feature: Paper Wallets Certificate generation
 
   Background:
@@ -59,7 +61,7 @@ Feature: Paper Wallets Certificate generation
     When I click the wallet receive button
     Then I should be on the "Restored CERTIFICATE wallet" wallet "receive" screen
     And I should see that address was used
-
+  
   Scenario: Paper wallets certificate generation with wrong shielded recovery phrase
     Given The sidebar shows the "wallets" category
     And I click on the "paper-wallet-create-certificate" category in the sidebar

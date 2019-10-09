@@ -29,6 +29,7 @@ Feature: Send Money to Receiver
 
   Scenario: User Enters Wrong Receiver Address
     Given I am on the "first" wallet "send" screen
+    And I can see the send form
     When I fill out the wallet send form with:
       | address | amount    |
       | invalid | 0.000010  |
@@ -38,6 +39,7 @@ Feature: Send Money to Receiver
 
   Scenario Outline: User Enters Wrong Amount
     Given I am on the "first" wallet "send" screen
+    And I can see the send form
     When I fill out the send form with a transaction to "first" wallet:
       | title          | amount         |
       | my transaction | <WRONG_AMOUNT> |

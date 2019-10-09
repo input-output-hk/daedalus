@@ -12,7 +12,7 @@ Feature: Quitting Daedalus
     Then cardano-node process is not running
     And Daedalus process is not running
 
-  @slow @restartApp
+  @skip @restartApp
   Scenario: Closing the main window, while cardano ignores exit request
     Given Daedalus is running
     And cardano-node is running

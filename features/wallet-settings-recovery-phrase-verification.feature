@@ -1,4 +1,6 @@
-@e2e
+@e2e @skip
+# @API TODO - we don't have request for `getWalletIdAndBalance`
+
 Feature: Wallet Settings - Recovery Phrase Verification
 
   Background:
@@ -29,3 +31,4 @@ Feature: Wallet Settings - Recovery Phrase Verification
     Then I should see the error dialog
     When I click the close button
     Then I should not see any dialog
+ 

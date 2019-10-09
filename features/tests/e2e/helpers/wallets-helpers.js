@@ -75,33 +75,13 @@ export const addOrSetWalletsForScenario = function(wallet) {
 
 export const importWalletWithFunds = async (client, { walletName }) =>
   client.executeAsync((name, done) => {
-    const axios = require('axios');
-    const API_PORT = process.env.API_PORT || 8088;
-    const mnemonic = [
-      'pass',
-      'proud',
-      'clarify',
-      'cargo',
-      'control',
-      'fancy',
-      'question',
-      'option',
-      'bring',
-      'recall',
-      'dolphin',
-      'meat',
-      'comic',
-      'version',
-      'pitch',
-    ];
-    const payload = {
-      name,
-      mnemonic_sentence: mnemonic,
-      passphrase: 'Secret1234',
-      address_pool_gap: 20,
-    };
-    axios
-      .post(`http://localhost:${API_PORT}/v2/wallets`, payload)
+    daedalus.api.ada
+      .restoreWallet({
+        walletName: name,
+        recoveryPhrase:
+          'pass proud clarify cargo control fancy question option bring recall dolphin meat comic version pitch',
+        spendingPassword: 'Secret1234',
+      })
       .then(() =>
         daedalus.stores.wallets
           .refreshWalletsData()

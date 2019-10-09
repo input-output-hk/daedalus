@@ -1,4 +1,4 @@
-@e2e
+@e2e @watch
 Feature: Receive money
 
   Background:
@@ -10,21 +10,9 @@ Feature: Receive money
 
   Scenario: Hide/show used addresses
     Given I am on the "TargetWallet" wallet "receive" screen
-    And I generate 1 addresses
     And I have made the following transactions:
       | source          | destination   | amount |
-      | Test Wallet | TargetWallet  | 1      |
-    Then I should see 2 addresses
+      | Test Wallet     | TargetWallet  | 1      |
     And I should see 1 used addresses
     When I click the ShowUsed switch
-    Then I should see 1 addresses
-
-  Scenario: Addresses ordering
-    Given I am on the "TargetWallet" wallet "receive" screen
-    And I generate 2 addresses
-    Then I should see the following addresses:
-      | ClassName          |
-      | generatedAddress-1 |
-      | generatedAddress-2 |
-      | generatedAddress-3 |
-    And The active address should be the newest one
+    Then I should see 19 addresses
