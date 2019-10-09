@@ -3,14 +3,12 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { boolean } from '@storybook/addon-knobs';
 
-// Assets and helpers
-// import WalletsWrapper from '../utils/WalletsWrapper';
-
 // Screens
 import WalletAdd from '../../../../source/renderer/app/components/wallet/WalletAdd';
 
 const wrapperStyles = {
   alignItems: 'center',
+  backgroundColor: 'var(--theme-main-body-background-color)',
   display: 'flex',
   flexDirection: 'column',
   height: '100%',
@@ -18,8 +16,6 @@ const wrapperStyles = {
 };
 /* eslint-disable consistent-return */
 storiesOf('Wallets|Actions', module)
-  // .addDecorator(WalletsWrapper)
-
   // ====== Stories ======
   .add('Add', () => (
     <div style={wrapperStyles}>
