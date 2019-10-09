@@ -25,7 +25,6 @@ Feature: Local Time Difference
     And I have accepted "Terms of use"
     Then the system time error overlay should be hidden
   
-
   Scenario: Wrong local time in all three checks
     Given I set the local time difference to be 60 seconds
     And I set the local time difference to be 120 seconds
