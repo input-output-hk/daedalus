@@ -65,7 +65,7 @@ const decorator = (story, context) => {
             <StakingWithNavigation
               isActiveNavItem={item => item === getItemFromContext()}
               activeItem={getItemFromContext()}
-              onNavItemClick={linkTo('Staking', item => pageNames[item])}
+              onNavItemClick={() => {}}
             >
               {storyWithKnobs}
             </StakingWithNavigation>
