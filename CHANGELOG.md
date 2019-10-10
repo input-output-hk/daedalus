@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Fixes
+
+- Fixed green Cardano theme white color and borders color ([PR 1584](https://github.com/input-output-hk/daedalus/pull/1584))
+
 ## 0.15.0
 
 ### Features
