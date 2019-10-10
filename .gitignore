@@ -97,3 +97,6 @@ jcli
 /jormungandr
 cardano-http-bridge
 cardano-node
+
+# JS Launcher
+utils/js-launcher/state
