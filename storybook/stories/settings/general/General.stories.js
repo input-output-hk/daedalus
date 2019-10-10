@@ -15,10 +15,6 @@ import DisplaySettings from '../../../../source/renderer/app/components/settings
 import SupportSettings from '../../../../source/renderer/app/components/settings/categories/SupportSettings';
 import TermsOfUseSettings from '../../../../source/renderer/app/components/settings/categories/TermsOfUseSettings';
 
-// Assets
-// $FlowFixMe
-import termsText from '../../../../source/renderer/app/i18n/locales/terms-of-use/mainnet/en-US.md';
-
 const getParamName = (obj, itemName): any =>
   Object.entries(obj).find((entry: [any, any]) => itemName === entry[1]);
 
@@ -52,8 +48,12 @@ storiesOf('Settings|General', module)
       }}
     />
   ))
-  .add('Terms of Use', () => (
-    <TermsOfUseSettings localizedTermsOfUse={termsText} />
+  .add('Terms of Use', props => (
+    <TermsOfUseSettings
+      localizedTermsOfUse={require(`../../../../source/renderer/app/i18n/locales/terms-of-use/mainnet/${
+        props.locale
+      }.md`)}
+    />
   ))
   .add('Support', () => (
     <SupportSettings
