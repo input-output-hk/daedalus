@@ -57,9 +57,14 @@ let
     );
   throwSystem = throw "Unsupported system: ${pkgs.stdenv.hostPlatform.system}";
   ghcWithCardano = cardanoSL.haskellPackages.ghcWithPackages (ps: [ ps.cardano-sl ps.cardano-sl-x509 ]);
+  daedalus-bridge = cardanoSL.daedalus-bridge.overrideAttrs (oldAttrs: {
+    buildCommand = ''
+      ${oldAttrs.buildCommand}
+      cp ${./installers/cardano-configuration.yaml} $out/config/configuration.yaml
+    '';
+  });
   packages = self: {
-    inherit cluster pkgs version;
-    inherit (cardanoSL) daedalus-bridge;
+    inherit cluster pkgs version daedalus-bridge;
 
     # a cross-compiled fastlist for the ps-list package
     fastlist = pkgs.pkgsCross.mingwW64.callPackage ./fastlist.nix {};
@@ -72,7 +77,7 @@ let
     # the native makensis binary, with cross-compiled windows stubs
     nsis = nsisNixPkgs.callPackage ./nsis.nix {};
 
-    unsignedUnpackedCardano = cardanoSL.daedalus-bridge;
+    unsignedUnpackedCardano = daedalus-bridge;
     unpackedCardano = if dummyInstaller then self.dummyUnpacked else (if needSignedBinaries then self.signedCardano else self.unsignedUnpackedCardano);
     signFile = file: let
       localSigningScript = pkgs.writeScript "signing-script" ''
@@ -235,8 +240,7 @@ let
 
     ## TODO: move to installers/nix
     hsDaedalusPkgs = import ./installers {
-      inherit (cardanoSL) daedalus-bridge;
-      inherit localLib system;
+      inherit localLib system daedalus-bridge;
     };
     daedalus-installer = pkgs.haskell.lib.justStaticExecutables self.hsDaedalusPkgs.daedalus-installer;
     daedalus = self.callPackage ./installers/nix/linux.nix {};
@@ -248,7 +252,7 @@ let
     rawapp = self.callPackage ./yarn2nix.nix {
       inherit buildNum;
       api = "ada";
-      apiVersion = cardanoSL.daedalus-bridge.version;
+      apiVersion = daedalus-bridge.version;
     };
     rawapp-win64 = self.rawapp.override { win64 = true; };
     source = builtins.filterSource cleanSourceFilter ./.;
@@ -368,7 +372,7 @@ let
       inherit (self) postInstall preInstall cluster rawapp;
       inherit pkgs;
       installationSlug = installPath;
-      installedPackages = [ daedalus' self.postInstall self.namespaceHelper daedalus'.cfg self.daedalus-bridge daedalus'.daedalus-frontend self.xdg-open ];
+      installedPackages = [ daedalus' self.postInstall self.namespaceHelper daedalus'.cfg daedalus-bridge daedalus'.daedalus-frontend self.xdg-open ];
       nix-bundle = self.nix-bundle;
     }).installerBundle;
   };
